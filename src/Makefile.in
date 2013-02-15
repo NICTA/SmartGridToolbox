@@ -48,7 +48,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = hello$(EXEEXT)
+bin_PROGRAMS = hello$(EXEEXT) tests$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
@@ -65,6 +65,9 @@ PROGRAMS = $(bin_PROGRAMS)
 am_hello_OBJECTS = hello.$(OBJEXT)
 hello_OBJECTS = $(am_hello_OBJECTS)
 hello_LDADD = $(LDADD)
+am_tests_OBJECTS = tests.$(OBJEXT)
+tests_OBJECTS = $(am_tests_OBJECTS)
+tests_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -94,8 +97,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(hello_SOURCES)
-DIST_SOURCES = $(hello_SOURCES)
+SOURCES = $(hello_SOURCES) $(tests_SOURCES)
+DIST_SOURCES = $(hello_SOURCES) $(tests_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -211,6 +214,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 hello_SOURCES = hello.cc
+tests_SOURCES = tests.cc
 all: all-am
 
 .SUFFIXES:
@@ -290,6 +294,9 @@ clean-binPROGRAMS:
 hello$(EXEEXT): $(hello_OBJECTS) $(hello_DEPENDENCIES) $(EXTRA_hello_DEPENDENCIES) 
 	@rm -f hello$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(hello_OBJECTS) $(hello_LDADD) $(LIBS)
+tests$(EXEEXT): $(tests_OBJECTS) $(tests_DEPENDENCIES) $(EXTRA_tests_DEPENDENCIES) 
+	@rm -f tests$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(tests_OBJECTS) $(tests_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -298,6 +305,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hello.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tests.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
