@@ -8,9 +8,9 @@ namespace MGSim
       public:
          Edge() : nodeFrom_(0),
          nodeTo_(0)
-      {
-         // Empty.
-      }
+         {
+            // Empty.
+         }
 
          virtual ~Edge()
          {
