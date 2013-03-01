@@ -1,21 +1,21 @@
-#ifndef SIM_ENV_DOT_H
-#define SIM_ENV_DOT_H
+#ifndef MODEL_DOT_H
+#define MODEL_DOT_H
 
 namespace MGSim
 {
    /// Simulation environment, containing global simulation data.
    /// Units: All units are internally stored in SI.
-   class SimEnv
+   class Model
    {
       public:
          /// Default constructor.
-         SimEnv() : dt_(1.0)
+         Model() : dt_(1.0)
          {
             // Empty.
          }
 
          /// Destructor.
-         ~SimEnv();
+         ~Model();
 
          /// Timestep accessor.
          double GetDt() const
@@ -30,7 +30,7 @@ namespace MGSim
 
       private:
          double dt_; // Timestep in seconds.
-   } // class SimEnv.
+   } // class Model.
 } // namespace MGSim.
 
-#endif // SIM_ENV_DOT_H
+#endif // MODEL_DOT_H

@@ -1,5 +1,5 @@
-#ifndef SIM_DOT_H
-#define SIM_DOT_H
+#ifndef SIMULTION_DOT_H
+#define SIMULTION_DOT_H
 
 namespace MGSim
 {
@@ -8,7 +8,7 @@ namespace MGSim
    {
       public:
          /// Default constructor.
-         Simulation(const SimEnv & env) : env_(env)
+         Simulation(const Model & mod) : mod_(mod)
          {
             // Empty.
          }
@@ -17,14 +17,14 @@ namespace MGSim
          ~Simulation();
 
          /// Environment accessor.
-         const SimEnv & getSimEnv() 
+         const Model & getModel() 
          {
-            return env_;
+            return mod_;
          }
 
       private:
-         const SimEnv & env_;
-   } // class SimEnv.
+         const Model & mod_;
+   } // class Model.
 } // namespace MGSim.
 
-#endif // SIM_DOT_H
+#endif // SIMULTION_DOT_H

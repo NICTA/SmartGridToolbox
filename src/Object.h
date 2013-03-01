@@ -1,28 +1,28 @@
-#ifndef SIM_OBJECT_DOT_H
-#define SIM_OBJECT_DOT_H
+#ifndef OBJECT_DOT_H
+#define OBJECT_DOT_H
 
 namespace MGSim
 {
    class Simulation;
 
    /// Base class for simulation objects.
-   class SimObject
+   class Object
    {
       public:
          /// Default constructor.
-         SimObject(const Model & mod) : mod_(mod)
+         Object(const Model & mod) : mod_(mod)
          {
             // Empty.
          }
 
          /// Copy constructor.
-         SimObject(const SimObject & from) : mod_(from.mod_),
+         Object(const Object & from) : mod_(from.mod_),
          {
             // Empty.
          }
 
          /// Destructor.
-         virtual ~SimObject();
+         virtual ~Object();
 
          /// Bring state up to time toTime.
          /** @param toTime */
@@ -30,8 +30,8 @@ namespace MGSim
 
       private:
 
-         const Simulation & mod_;
-   } // class SimObject.
+         const Model & mod_;
+   } // class Object.
 } // namespace MGSim.
 
-#endif // SIM_OBJECT_DOT_H
+#endif // OBJECT_DOT_H
