@@ -8,7 +8,7 @@ namespace MGSim
    {
       public:
          /// Default constructor.
-         Simulation(const Model & mod) : mod_(mod)
+         Simulation(const Model & mod) : mod_(&mod)
          {
             // Empty.
          }
@@ -19,7 +19,7 @@ namespace MGSim
          /// Environment accessor.
          const Model & getModel() 
          {
-            return mod_;
+            return *mod_;
          }
 
          /// Timestep accessor.
@@ -35,8 +35,8 @@ namespace MGSim
 
       private:
          double dt_; // Timestep in seconds.
-         const Model & mod_;
-   }; // class Model.
-} // namespace MGSim.
+         const Model * mod_;
+   };
+}
 
 #endif // SIMULTION_DOT_H

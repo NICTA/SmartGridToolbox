@@ -3,5 +3,7 @@
 
 namespace MGSim
 {
-   typedef int Timestamp;
+   typedef long int TimestampType;
 }
+
+#endif // SIM_OBJECT_DOT_H

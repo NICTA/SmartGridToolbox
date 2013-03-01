@@ -1,7 +1,8 @@
 #ifndef OBJECT_DOT_H
 #define OBJECT_DOT_H
 
-#include<string>
+#include <string>
+#include "MGSim.h"
 
 namespace MGSim
 {
@@ -25,9 +26,9 @@ namespace MGSim
 
          /// Bring state up to time toTime.
          /** @param toTime */
-         virtual void UpdateState(int toTime);
+         virtual void UpdateState(TimestampType toTimestep);
          
-         int GetTime();
+         TimestampType GetTimestep();
 
       private:
          Object(const Object & from); // Forbid copies. No implementation.
@@ -35,7 +36,7 @@ namespace MGSim
       private:
          std::string name_;
 
-   }; // class Object.
-} // namespace MGSim.
+   };
+}
 
 #endif // OBJECT_DOT_H

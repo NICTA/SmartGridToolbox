@@ -3,7 +3,7 @@
 
 #include <map>
 #include <string>
-
+using std::string;
 namespace MGSim
 {
    class Object;
@@ -22,10 +22,9 @@ namespace MGSim
          /// Destructor.
          ~Model();
 
-         void AddObject(Object & obj);
+         void AddObject(Object * obj);
 
-         template<typename T> 
-            const T * GetObject(const std::string & name) const
+         template<typename T> const T * GetObject(const std::string & name) const
          {
             ObjectMapType::iterator it = objectMap_.find(name);
             return (it == objectMap_.end()) ? 0 : dynamic_cast<T*>(*it);
@@ -40,9 +39,9 @@ namespace MGSim
       private:
          typedef std::pair<std::string, Object *> ObjectPairType;
          typedef std::map<std::string, Object *> ObjectMapType;
+
          ObjectMapType objectMap_;
-   }; // class Model.
+   };
 }
-// namespace MGSim.
 
 #endif // MODEL_DOT_H

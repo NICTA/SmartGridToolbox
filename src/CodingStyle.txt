@@ -15,8 +15,9 @@ ClassName.cc
 
 Getters and setters are GetObject() and SetObject(...).
 
-Always prefer to pass and return by reference, except where a null pointer
-might be required e.g. in a return type.
+Always prefer to pass and return by reference, except :
+   (1) where a null pointer might be required e.g. in a return type,
+   (2) if an object is taking explicit ownership of another object passed in.
 
 Errors at this stage are thrown. Print out a message starting "ERROR: " or
 "WARNING: ".
