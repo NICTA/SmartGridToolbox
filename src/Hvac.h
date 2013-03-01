@@ -1,5 +1,5 @@
-#ifndef OBJECT_DOT_H
-#define OBJECT_DOT_H
+#ifndef HVAC_DOT_H
+#define HVAC_DOT_H
 
 #include <string>
 #include "MGSim.h"
@@ -7,17 +7,17 @@
 namespace MGSim
 {
    /// Base class for simulation objects.
-   class Object
+   class HVAC
    {
       public:
          /// Constructor.
-         explicit Object(const std::string & name) : name_(name)
+         explicit HVAC(const std::string & name) : Object(name)
          {
             // Empty.
          }
 
          /// Pure virtual destructor.
-         virtual ~Object() = 0;
+         virtual ~HVAC() = 0;
 
          const std::string & GetName() const
          {
@@ -28,18 +28,11 @@ namespace MGSim
          /** @param toTime */
          virtual void UpdateState(TimestampType toTimestep);
          
-         /// Get the current step for the object.
-         TimestampType GetTimestep()
-         {
-            return ti_;
-         }
+         TimestampType GetTimestep();
 
       private:
-
-      private:
-         std::string name_;
-         TimestampType ti_;
+         float tsp;
    };
 }
 
-#endif // OBJECT_DOT_H
+#endif // HVAC_DOT_H

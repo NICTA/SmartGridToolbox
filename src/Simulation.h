@@ -34,8 +34,9 @@ namespace MGSim
          }
 
       private:
-         double dt_; // Timestep in seconds.
          const Model * mod_;
+         double dt_; // Timestep in seconds.
+         TimestampType it_; // Current step.
    };
 }
 
