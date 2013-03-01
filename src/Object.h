@@ -10,13 +10,13 @@ namespace MGSim
    {
       public:
          /// Default constructor.
-         SimObject(const Simulation & sim) : sim_(sim)
+         SimObject(const Model & mod) : mod_(mod)
          {
             // Empty.
          }
 
          /// Copy constructor.
-         SimObject(const SimObject & from) : sim_(from.sim_),
+         SimObject(const SimObject & from) : mod_(from.mod_),
          {
             // Empty.
          }
@@ -29,7 +29,8 @@ namespace MGSim
          virtual void UpdateState(int toTime);
 
       private:
-         const Simulation & sim_;
+
+         const Simulation & mod_;
    } // class SimObject.
 } // namespace MGSim.
 
