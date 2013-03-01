@@ -1,15 +1,20 @@
 #ifndef MODEL_DOT_H
 #define MODEL_DOT_H
 
+#include <map>
+#include <string>
+
 namespace MGSim
 {
+   class Object;
+
    /// Simulation environment, containing global simulation data.
    /// Units: All units are internally stored in SI.
    class Model
    {
       public:
          /// Default constructor.
-         Model() : dt_(1.0)
+         Model()
          {
             // Empty.
          }
@@ -17,20 +22,27 @@ namespace MGSim
          /// Destructor.
          ~Model();
 
-         /// Timestep accessor.
-         double GetDt() const
+         void AddObject(Object & obj);
+
+         template<typename T> 
+            const T * GetObject(const std::string & name) const
          {
-            return dt_;
+            ObjectMapType::iterator it = objectMap_.find(name);
+            return (it == objectMap_.end()) ? 0 : dynamic_cast<T*>(*it);
          }
-         /// Timestep accessor.
-         void SetDt(double dt)
+
+         template<typename T> T * GetObject(const std::string & name)
          {
-            dt_ = dt;
+            return const_cast<T *>((const_cast<const Model *>(this))->
+                  GetObject<T>(name));
          }
 
       private:
-         double dt_; // Timestep in seconds.
-   } // class Model.
-} // namespace MGSim.
+         typedef std::pair<std::string, Object *> ObjectPairType;
+         typedef std::map<std::string, Object *> ObjectMapType;
+         ObjectMapType objectMap_;
+   }; // class Model.
+}
+// namespace MGSim.
 
 #endif // MODEL_DOT_H

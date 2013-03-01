@@ -1,37 +1,41 @@
 #ifndef OBJECT_DOT_H
 #define OBJECT_DOT_H
 
+#include<string>
+
 namespace MGSim
 {
-   class Simulation;
-
    /// Base class for simulation objects.
    class Object
    {
       public:
-         /// Default constructor.
-         Object(const Model & mod) : mod_(mod)
+         /// Constructor.
+         explicit Object(const std::string & name) : name_(name)
          {
             // Empty.
          }
 
-         /// Copy constructor.
-         Object(const Object & from) : mod_(from.mod_),
-         {
-            // Empty.
-         }
+         /// Pure virtual destructor.
+         virtual ~Object() = 0;
 
-         /// Destructor.
-         virtual ~Object();
+         const std::string & GetName() const
+         {
+            return name_;
+         }
 
          /// Bring state up to time toTime.
          /** @param toTime */
          virtual void UpdateState(int toTime);
+         
+         int GetTime();
 
       private:
+         Object(const Object & from); // Forbid copies. No implementation.
 
-         const Model & mod_;
-   } // class Object.
+      private:
+         std::string name_;
+
+   }; // class Object.
 } // namespace MGSim.
 
 #endif // OBJECT_DOT_H

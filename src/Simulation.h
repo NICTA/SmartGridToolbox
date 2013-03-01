@@ -22,9 +22,21 @@ namespace MGSim
             return mod_;
          }
 
+         /// Timestep accessor.
+         double GetDt() const
+         {
+            return dt_;
+         }
+         /// Timestep accessor.
+         void SetDt(double dt)
+         {
+            dt_ = dt;
+         }
+
       private:
+         double dt_; // Timestep in seconds.
          const Model & mod_;
-   } // class Model.
+   }; // class Model.
 } // namespace MGSim.
 
 #endif // SIMULTION_DOT_H

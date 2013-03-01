@@ -1,9 +1,7 @@
-#include <complex>
-#include "node.h"
-#include "edge.h"
+#include "Model.h"
+#include "Simulation.h"
+#include "Object.h"
 
 int main()
 {
-  MGSim::Node n;
-  MGSim::Edge e;
 }

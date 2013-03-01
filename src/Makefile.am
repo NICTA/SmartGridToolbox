@@ -5,4 +5,4 @@ CPPFLAGS=
 LDFLAGS=
 
 bin_PROGRAMS = hello
-hello_SOURCES = hello.cc
+hello_SOURCES = Model.cc hello.cc
