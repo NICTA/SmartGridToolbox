@@ -26,7 +26,7 @@ namespace MGSim
             // Empty.
          }
 
-         void AttachHVAC(HVAC * hvac)
+         void AttachHvac(Hvac * hvac)
 
          /// Bring state up to time toTime.
          /** @param toTime */

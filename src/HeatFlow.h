@@ -26,7 +26,7 @@ namespace MGSim
             // Empty.
          }
 
-         virtual FloatType GetDqDt() = 0;
+         virtual FloatType GetQDot() = 0;
    };
 }
 

@@ -7,17 +7,17 @@
 namespace MGSim
 {
    /// Base class for simulation objects.
-   class HVAC
+   class Hvac : public HeatFlow
    {
       public:
          /// Constructor.
-         explicit HVAC(const std::string & name) : Object(name)
+         explicit Hvac(const std::string & name) : Object(name)
          {
             // Empty.
          }
 
          /// Pure virtual destructor.
-         virtual ~HVAC() = 0;
+         virtual ~Hvac() = 0;
 
          const std::string & GetName() const
          {

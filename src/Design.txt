@@ -1,0 +1,26 @@
+Design Notes for MGSim
+----------------------
+
+1. There are powerflow and non-powerflow aspects to this problem.
+
+   a) powerflow
+   b) heat flow
+   c) control aspects
+   d) climate and weather aspects
+   e) building models
+   f) market aspects
+   g) reliability aspects
+   h) optimization aspects
+
+2. Powerflow has steady state solution and non-steady state solution. Don't
+   really want to commit to either.
+
+   a) Steady state derives from Kirchoff's circuit laws, assuming constant
+      impedance for all components. Note however that the constant impedance
+      is not necessarily known and might be expressed in terms of power,
+      voltage etc.
+
+   b) Non-steady state arises directly from the physics of the components
+      (generators, transformers etc.).
+
+3. Primary design consideration is need for extensibility and flexibility.
