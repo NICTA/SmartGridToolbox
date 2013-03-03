@@ -4,12 +4,19 @@ Design Notes for MGSim
 1. There are powerflow and non-powerflow aspects to this problem.
 
    a) powerflow
+
    b) heat flow
+
    c) control aspects
+
    d) climate and weather aspects
+
    e) building models
+
    f) market aspects
+
    g) reliability aspects
+
    h) optimization aspects
 
 2. Powerflow has steady state solution and non-steady state solution. Don't
@@ -24,3 +31,52 @@ Design Notes for MGSim
       (generators, transformers etc.).
 
 3. Primary design consideration is need for extensibility and flexibility.
+   How do we achieve this?
+
+4. Network design - view this rather unconventionally.
+
+   *  Is there an upstream/downstream in a microgrid? Power could flow 
+      either direction. So on the surface, answer is "no".
+
+   *  Thus, network will consist of nodes, each of which represents a voltage
+      wrt earth, and arcs, each of which represents an impedance.
+
+   *  Impedances could be +ve (for standard impedances) or -ve (for power
+      sources).
+
+   *  Use V, I as the state variables for the system. Z = Z(I, V) 
+      and P = P(I, V).
+
+   *  Impedances could depend on other parameters of the system. For example,
+      P = V^2/Z, so a constant power load would have Z proportional to V^2.
+      A voltage source would use V = IZ, so Z would be inversely proportional
+      to I.
+
+   *  Instantaneous current will flow as dictated by Kirchoff's laws. For
+      the instantaneous problem, time dependence is dictated by physics of the
+      components.
+
+   *  For AC, use reference voltage phase at a certain point in space and time.
+      Assume a frequency e.g. 50 Hz. V(t) = V(0) exp(jwt) for reference
+      angular freq. w. Then, use "interaction picture": V'(t) = V(t) exp(-jwt).
+      This means phase of V' will evolve slowly.
+
+   *  Ground is an explicit node.
+
+   *  Essential design problem is how to map objects to the network. For
+      instance, a transformer may connect several arcs at a node in a 
+      complex manner, so the transformer contributes to the node and all the
+      arcs.
+
+      -  Each object contains several nodes and arcs, each of which are
+         wholly owned by that object. Wrt powerflow, all the object-centric
+         behaviour resides in the arcs.
+      
+      -  The nodes and arcs are not specialized, instead, their behaviour is
+         delegated to their owner object.
+
+      -  However, the nodes themselves have no extra "behaviour" - only the
+         arcs.
+
+4. One problem - the multiple inheritance issue. For example, a node could
+   also be an HVAC system.
