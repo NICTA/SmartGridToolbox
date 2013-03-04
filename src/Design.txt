@@ -39,7 +39,7 @@ Design Notes for MGSim
       either direction. So on the surface, answer is "no".
 
    *  Thus, network will consist of nodes, each of which represents a voltage
-      wrt earth, and arcs, each of which represents an impedance.
+      wrt earth, and edges, each of which represents an impedance.
 
    *  Impedances could be +ve (for standard impedances) or -ve (for power
       sources).
@@ -69,26 +69,23 @@ Design Notes for MGSim
    *  Ground is an explicit node.
 
    *  Essential design problem is how to map objects to the network. For
-      instance, a transformer may connect several arcs at a node in a 
+      instance, a transformer may connect several edges at a node in a 
       complex manner, so the transformer contributes to the node and all the
-      arcs.
+      edges.
 
-      -  Each object contains several nodes and arcs, each of which are
+      -  Each object contains several nodes and edges, each of which are
          wholly owned by that object. Wrt powerflow, all the object-centric
-         behaviour resides in the arcs.
+         behaviour resides in the edges.
       
-      -  The nodes and arcs are not specialized, instead, their behaviour is
+      -  The nodes and edges are not specialized, instead, their behaviour is
          delegated to their owner object.
-
-      -  However, the nodes themselves have no extra "behaviour" - only the
-         arcs.
 
       -  Objects are connected by "nodes" - an external "socket"
          corresponding to a single wire. A node is the same thing as a bus. 
 
       -  Busses themselves are grouped according to "scope". For example,
          a transformer may have a high voltage or a low voltage scope, or
-         a load to earch may have a "live" and an "earth" scope.
+         a load to earth may have a "live" and an "earth" scope.
 
       -  Thus when two objects are connected, we can specify scopes and busses.
          For example: Connect(Obj1, "Output",  Obj2, "Input");
@@ -114,8 +111,8 @@ Design Notes for MGSim
    *  Object: manage the identity of the object.
 
    *  Node: something that has a voltage, wrt. ground, and can have any number
-      of arcs connected to it. Nodes are owned by their parent objects.
+      of edges connected to it. Nodes are owned by their parent objects.
 
-   *  Arc: something that connects between exactly two nodes.
+   *  Edge: something that connects between exactly two nodes.
 
    *  Model: Owner of all objects in it. Each object

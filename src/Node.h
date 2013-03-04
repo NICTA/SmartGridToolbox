@@ -9,31 +9,48 @@ namespace MGSim
 
    class Node
    {
+      friend void Connect(Node * node1, Node * node2);
+
       public:
+         typedef std::vector<Edge *>::iterator iterator;
+         typedef std::vector<Edge *>::const_iterator const_iterator;
+
          Node()
          {
             // Empty.
          }
 
-         virtual ~Node()
+         ~Node()
          {
-            // Empty.
+            for (iterator it : edges_)
+            {
+               delete *it;
+            }
          }
 
-         const std::vector<const Edge *> & EdgesIn()
+         iterator begin()
          {
-            return edgesIn_;
+            return edges_.begin();
+         }
+         const_iterator begin() const
+         {
+            return edges_.begin();
          }
 
-         const std::vector<const Edge *> & EdgesOut()
+         iterator end()
          {
-            return edgesOut_;
+            return edges_.end();
          }
-
+         const_iterator end() const
+         {
+            return edges_.end();
+         }
+         
       private:
-         std::vector<const Edge *> edgesIn_;
-         std::vector<const Edge *> edgesOut_;
+         std::vector<Edge *> edges_;
    };
+
+   void Connect(Node & node1, Node & node2);
 }
 
 #endif // NODE_DOT_H
