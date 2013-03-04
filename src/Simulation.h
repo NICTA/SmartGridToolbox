@@ -1,6 +1,8 @@
 #ifndef SIMULTION_DOT_H
 #define SIMULTION_DOT_H
 
+#include "MGSim.h"
+
 namespace MGSim
 {
    /// Simulation. 
