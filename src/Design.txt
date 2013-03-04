@@ -78,5 +78,13 @@ Design Notes for MGSim
       -  However, the nodes themselves have no extra "behaviour" - only the
          arcs.
 
+      -  Objects are connected by "busses" - an external "socket"
+         corresponding to a single wire.
+
+      -  Busses are named e.g by phase ABC, N, G etc. Name is single char.
+         Can only connect like to like names.
+
+      -  However, can mutually connect multiple busses.
+
 4. One problem - the multiple inheritance issue. For example, a node could
    also be an HVAC system.
