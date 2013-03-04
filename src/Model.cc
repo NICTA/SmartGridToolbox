@@ -1,5 +1,5 @@
 #include "Model.h"
-#include "Object.h"
+#include "Component.h"
 
 namespace MGSim 
 {
@@ -7,12 +7,12 @@ namespace MGSim
    {
    }
 
-   void Model::AddObject(Object * obj)
+   void Model::AddComponent(Component * comp)
    {
-      std::pair<ObjectMapType::iterator, bool> result = 
-         objectMap_.insert(make_pair(obj->GetName(), obj));
+      std::pair<ComponentMapType::iterator, bool> result = 
+         compMap_.insert(make_pair(comp->GetName(), comp));
       if (result.second == 0) {
-         throw "ERROR: Object already exists in model!";
+         throw "ERROR: Component already exists in model!";
       }
    }
 }

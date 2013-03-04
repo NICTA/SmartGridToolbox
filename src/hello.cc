@@ -1,6 +1,6 @@
 #include "Model.h"
 #include "Simulation.h"
-#include "Object.h"
+#include "Component.h"
 
 using namespace MGSim;
 
