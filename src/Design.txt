@@ -33,7 +33,7 @@ Design Notes for MGSim
 3. Primary design consideration is need for extensibility and flexibility.
    How do we achieve this?
 
-4. Network design - view this rather unconventionally.
+4. Network design.
 
    *  Is there an upstream/downstream in a microgrid? Power could flow 
       either direction. So on the surface, answer is "no".
@@ -44,11 +44,16 @@ Design Notes for MGSim
    *  Impedances could be +ve (for standard impedances) or -ve (for power
       sources).
 
-   *  Use V, I as the state variables for the system. Z = Z(I, V) 
-      and P = P(I, V).
+   *  Use V, I as the state variables for the system (complex V and I,
+      whose real parts are the instantaneous values).
+
+   *  Z = Z(I, V) which is considered as specifying the complete electrical
+      behaviour of the object.
+   
+   *  S = VI* (Note: not using RMS here).
 
    *  Impedances could depend on other parameters of the system. For example,
-      P = V^2/Z, so a constant power load would have Z proportional to V^2.
+      S = V^2/Z, so a constant power load would have Z proportional to V^2.
       A voltage source would use V = IZ, so Z would be inversely proportional
       to I.
 
@@ -78,13 +83,39 @@ Design Notes for MGSim
       -  However, the nodes themselves have no extra "behaviour" - only the
          arcs.
 
-      -  Objects are connected by "busses" - an external "socket"
-         corresponding to a single wire.
+      -  Objects are connected by "nodes" - an external "socket"
+         corresponding to a single wire. A node is the same thing as a bus. 
 
-      -  Busses are named e.g by phase ABC, N, G etc. Name is single char.
-         Can only connect like to like names.
+      -  Busses themselves are grouped according to "scope". For example,
+         a transformer may have a high voltage or a low voltage scope, or
+         a load to earch may have a "live" and an "earth" scope.
 
-      -  However, can mutually connect multiple busses.
+      -  Thus when two objects are connected, we can specify scopes and busses.
+         For example: Connect(Obj1, "Output",  Obj2, "Input");
+         Busses are automatically matched by name? Would be possible to
+         explicitly specify how wires hook up to each other, but matching
+         by name is probably more foolproof.
 
-4. One problem - the multiple inheritance issue. For example, a node could
-   also be an HVAC system.
+      -  We can connect multiple objects to the same scope on a given object.
+         Missing busses on one of the objects are just ignored.
+
+   *  Multiple inheritance issue.
+
+      -  We have powerflow objects, heatflow objects etc. How do we deal with
+         this given the pitfalls of multiple inheritance?
+
+      -  Answer: A particular object will inherit from base Object only. It
+         will then use composition to incorporate e.g. powerflow, heatflow
+         features. It will also implement powerflow and heatflow interfaces
+         by passing them through to these objects.
+
+5) Class structure.
+
+   *  Object: manage the identity of the object.
+
+   *  Node: something that has a voltage, wrt. ground, and can have any number
+      of arcs connected to it. Nodes are owned by their parent objects.
+
+   *  Arc: something that connects between exactly two nodes.
+
+   *  Model: Owner of all objects in it. Each object

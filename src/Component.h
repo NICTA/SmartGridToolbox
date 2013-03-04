@@ -1,5 +1,5 @@
-#ifndef OBJECT_DOT_H
-#define OBJECT_DOT_H
+#ifndef COMPONENT_DOT_H
+#define COMPONENT_DOT_H
 
 #include <string>
 #include "MGSim.h"
@@ -7,17 +7,17 @@
 namespace MGSim
 {
    /// Base class for simulation objects.
-   class Object
+   class Component
    {
       public:
          /// Constructor.
-         explicit Object(const std::string & name) : name_(name)
+         explicit Component(const std::string & name) : name_(name)
          {
             // Empty.
          }
 
          /// Pure virtual destructor.
-         virtual ~Object() = 0;
+         virtual ~Component() = 0;
 
          const std::string & GetName() const
          {
@@ -42,4 +42,4 @@ namespace MGSim
    };
 }
 
-#endif // OBJECT_DOT_H
+#endif // COMPONENT_DOT_H

@@ -6,7 +6,7 @@
 using std::string;
 namespace MGSim
 {
-   class Object;
+   class Component;
 
    /// Simulation environment, containing global simulation data.
    /// Units: All units are internally stored in SI.
@@ -22,25 +22,25 @@ namespace MGSim
          /// Destructor.
          ~Model();
 
-         void AddObject(Object * obj);
+         void AddComponent(Component * comp);
 
-         template<typename T> const T * GetObject(const std::string & name) const
+         template<typename T> const T * GetComponent(const std::string & name) const
          {
-            ObjectMapType::iterator it = objectMap_.find(name);
-            return (it == objectMap_.end()) ? 0 : dynamic_cast<T*>(*it);
+            ComponentMapType::iterator it = compMap_.find(name);
+            return (it == compMap_.end()) ? 0 : dynamic_cast<T*>(*it);
          }
 
-         template<typename T> T * GetObject(const std::string & name)
+         template<typename T> T * GetComponent(const std::string & name)
          {
             return const_cast<T *>((const_cast<const Model *>(this))->
-                  GetObject<T>(name));
+                  GetComponent<T>(name));
          }
 
       private:
-         typedef std::pair<std::string, Object *> ObjectPairType;
-         typedef std::map<std::string, Object *> ObjectMapType;
+         typedef std::pair<std::string, Component *> ComponentPairType;
+         typedef std::map<std::string, Component *> ComponentMapType;
 
-         ObjectMapType objectMap_;
+         ComponentMapType compMap_;
    };
 }
 
