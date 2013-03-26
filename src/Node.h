@@ -12,45 +12,38 @@ namespace MGSim
       friend void Connect(Node * node1, Node * node2);
 
       public:
-         typedef std::vector<Edge *>::iterator iterator;
-         typedef std::vector<Edge *>::const_iterator const_iterator;
+         typedef std::vector<Edge *>::iterator EdgeIterator;
+         typedef std::vector<Edge *>::const_iterator EdgeConstIterator;
 
          Node()
          {
             // Empty.
          }
 
-         ~Node()
-         {
-            for (iterator it : edges_)
-            {
-               delete *it;
-            }
-         }
+         ~Node();
 
-         iterator begin()
+         EdgeIterator begin()
          {
             return edges_.begin();
          }
-         const_iterator begin() const
+         EdgeConstIterator begin() const
          {
             return edges_.begin();
          }
 
-         iterator end()
+         EdgeIterator end()
          {
             return edges_.end();
          }
-         const_iterator end() const
+         EdgeConstIterator end() const
          {
             return edges_.end();
          }
          
       private:
+         int idx_;
          std::vector<Edge *> edges_;
    };
-
-   void Connect(Node & node1, Node & node2);
 }
 
 #endif // NODE_DOT_H

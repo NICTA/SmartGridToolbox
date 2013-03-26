@@ -9,8 +9,8 @@ namespace MGSim
    class Socket
    {
       public:
-         typedef std::vector<Node>::iterator iterator;
-         typedef std::vector<Node>::const_iterator const_iterator;
+         typedef std::vector<Node *>::iterator NodeIterator;
+         typedef std::vector<Node *>::const_iterator NodeConstIterator;
 
          const std::string & GetName const
          {
@@ -38,7 +38,7 @@ namespace MGSim
       private:
 
          std::string name_;
-         std::vector<Node> nodes;
+         std::vector<Node *> nodes;
    }
 
    void Connect(Socket & socket1, Socket & socket2);

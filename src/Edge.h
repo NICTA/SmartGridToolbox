@@ -5,31 +5,35 @@ namespace MGSim
 {
    class Edge
    {
-      public:
-         Edge() : nodeFrom_(0),
-         nodeTo_(0)
-         {
-            // Empty.
-         }
+      friend class Network;
 
+      public:
          virtual ~Edge()
          {
             // Empty.
          }
 
-         const Node & NodeFrom()
+         const Node & Node1()
          {
-            return *nodeFrom_;
+            return *node1_;
          }
 
-         const Node & NodeTo()
+         const Node & Node2()
          {
-            return *nodeTo_;
+            return *node2_;
          }
 
       private:
-         Node * nodeFrom_;
-         Node * nodeTo_;
+
+         Edge() : node1_(0), node2_(0)
+         {
+            // Empty.
+         }
+
+      private:
+
+         Node * node1_;
+         Node * node2_;
    };
 }
 

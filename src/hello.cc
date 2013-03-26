@@ -1,10 +1,5 @@
-#include "Model.h"
-#include "Simulation.h"
-#include "Component.h"
-
-using namespace MGSim;
-
 int main()
 {
-  Model model;
+   int * const p = new int(5);
+   delete p;
 }

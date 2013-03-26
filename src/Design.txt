@@ -48,7 +48,7 @@ Design Notes for MGSim
       whose real parts are the instantaneous values).
 
    *  Z = Z(I, V) which is considered as specifying the complete electrical
-      behaviour of the object.
+      behaviour of the component.
    
    *  S = VI* (Note: not using RMS here).
 
@@ -68,51 +68,135 @@ Design Notes for MGSim
 
    *  Ground is an explicit node.
 
-   *  Essential design problem is how to map objects to the network. For
+   *  Essential design problem is how to map components to the network. For
       instance, a transformer may connect several edges at a node in a 
       complex manner, so the transformer contributes to the node and all the
       edges.
 
-      -  Each object contains several nodes and edges, each of which are
-         wholly owned by that object. Wrt powerflow, all the object-centric
-         behaviour resides in the edges.
+      -  Each component contains several nodes and edges, each of which are
+         wholly owned by that component. Wrt powerflow, all the 
+         component-centric behaviour resides in the edges.
       
       -  The nodes and edges are not specialized, instead, their behaviour is
-         delegated to their owner object.
+         delegated to their owner component.
 
-      -  Objects are connected by "nodes" - an external "socket"
+      -  Components are connected by "nodes" - an external "socket"
          corresponding to a single wire. A node is the same thing as a bus. 
 
       -  Busses themselves are grouped according to "scope". For example,
          a transformer may have a high voltage or a low voltage scope, or
          a load to earth may have a "live" and an "earth" scope.
 
-      -  Thus when two objects are connected, we can specify scopes and busses.
-         For example: Connect(Obj1, "Output",  Obj2, "Input");
+      -  Thus when two components are connected, we can specify scopes and
+         busses.  For example: Connect(Obj1, "Output",  Obj2, "Input");
          Busses are automatically matched by name? Would be possible to
          explicitly specify how wires hook up to each other, but matching
          by name is probably more foolproof.
 
-      -  We can connect multiple objects to the same scope on a given object.
-         Missing busses on one of the objects are just ignored.
+      -  We can connect multiple components to the same scope on a given 
+         component.  Missing busses on one of the components are just ignored.
 
    *  Multiple inheritance issue.
 
-      -  We have powerflow objects, heatflow objects etc. How do we deal with
-         this given the pitfalls of multiple inheritance?
+      -  We have powerflow components, heatflow components etc. How do we deal
+         with this, given the pitfalls of multiple inheritance?
 
-      -  Answer: A particular object will inherit from base Object only. It
-         will then use composition to incorporate e.g. powerflow, heatflow
-         features. It will also implement powerflow and heatflow interfaces
-         by passing them through to these objects.
+      -  Answer: A particular component will inherit from base components
+         only. It will then use composition to incorporate e.g. powerflow,
+         heatflow features. It will also implement powerflow and heatflow
+         interfaces by passing them through to these components.
 
 5) Class structure.
 
-   *  Object: manage the identity of the object.
+   *  Component: manage the identity of the components.
 
    *  Node: something that has a voltage, wrt. ground, and can have any number
-      of edges connected to it. Nodes are owned by their parent objects.
+      of edges connected to it. Nodes are owned by their parent component.
 
    *  Edge: something that connects between exactly two nodes.
 
-   *  Model: Owner of all objects in it. Each object
+6) Graph structure.
+
+   *  A component has external connections called Terminals. A terminal is
+      effectively an edge with one null node.
+
+   *  To add a component into the graph, it must be hooked up to an
+      appropriate bus.
+
+   *  Thus, there are two types of node. A device node, that 
+
+6) More thoughts on structure.
+
+   *  Node = bus. Has definite voltage.
+
+   *  Edge = impedance/admittance. Impedance is good, because infinte
+      impedance just corresponds to the edge not being there.
+
+   *  Earth is a single node in the graph, with V = 0.
+
+   *  Add device to graph : First add or identify already existing bus.
+      Then add this bus to the relevant external edges.
+
+   *  Load = impedance to earth.
+
+   *  Device determines impedance/admittance of all of its edges, as a
+      function of the connected node voltages.
+
+   *  Test the idea
+      
+      -  Constant impedance is easy.
+
+      -  Constant voltage : given current of edge, calculate impedance.
+
+      -  Constant current : given voltage drop across edge, calculate
+         impedance.
+    
+      -  Constant power : given either 
+    
+
+   Option 1. Component and bus nodes.
+   
+   -  A component is essentially a node with several edges attached.
+
+   -  Voltages and currents are properties of the edges. But there is a
+      constraint that all voltages that come together at a node must be equal
+      etc.
+
+   -  Each edge in a component node can attach to a bus node. This is
+      essentially just a point of common voltage, that conserves current. Thus
+      each edge has a single voltage associated with it.
+
+   -   
+
+   Option 2. Component nodes only.
+
+   -  A component is a node to which various attachments can be made. 
+
+
+   -  In terms of the network graph, a 
+
+   *  A component has its own internal network, plus a set of null placeholder
+      nodes called Terminals.
+
+   *  To add a component to the graph, bus nodes are added or identified in the
+      graph. Then, the component is hooked to the busses.
+
+   *  Under this scheme, edges are implicit in components. The point of this
+      scheme is that we don't create artificial edges that exist just to
+      connect components together.
+
+   *  Then, in the network, voltages exist at Nodes and impedances and
+      currents on Edges.
+
+   *  Components are responsible for setting the impedance, as a function of
+      voltage and current.
+
+   *  Interface-wise, components merely need to be able to implement a
+      function to add themselves to the network graph. They will also want to
+      store a record of which edges and nodes they use, to be able to
+      calculate impedances as a function of voltages and currents.
+
+E.g. Transformer: two sockets, MV and LV
+Both sockets have three phases, A, B, C.
+
+Create 

@@ -1,3 +1,7 @@
+Indentation is three spaces, no tabs.
+
+Lines are max 80 columns.
+
 Types are UpperCamelCase.
 
 Typedefs are UpperCamelCaseType.
@@ -8,17 +12,18 @@ Member variables are lowerCamelCase_
 
 Class name using acronym, e.g. ABC => AbstractAbcClass.
 
-Braces start on a new line e.g.  Function F() { ...  }
+Braces start on a new line e.g.  
+Function F() 
+{ 
+   ...  
+}
 
 Filenames for classes start with a capital, like the class.  ClassName.h,
 ClassName.cc
 
-Getters and setters are GetObject() and SetObject(...).
+Getters and setters are GetProperty() and SetProperty(...).
 
-Always prefer to pass and return by reference, except :
-   (1) where a null pointer might be required e.g. in a return type,
-   (2) if an object is expected to retain a pointer to the object passed in,
-       e.g. if it is taking sole ownership or just retains a relationship.
+Pass and return by reference, except where you *have to* use a pointer.
 
 Errors at this stage are thrown. Print out a message starting "ERROR: " or
 "WARNING: ".

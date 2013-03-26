@@ -1,6 +1,13 @@
 #include "Node.h"
+#include "Edge.h"
 
-void Connect(Node & node1, Node & node2) {
-   Edge * edge = new Edge(&node1, &node2);
-   node1.edges_.push_back(
+namespace MGSim
+{
+   Node::~Node()
+   {
+      for (auto edge : edges_)
+      {
+         delete edge;
+      }
+   }
 }
