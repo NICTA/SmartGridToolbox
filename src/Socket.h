@@ -1,10 +1,10 @@
 #ifndef SOCKET_DOT_H
 #define SOCKET_DOT_H
 
-#include "MGSim.h"
+#include "SmartGridToolbox.h"
 #include "Node.h"
 
-namespace MGSim
+namespace SmartGridToolbox
 {
    class Socket
    {

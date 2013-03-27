@@ -1,10 +1,10 @@
 #ifndef NETWORK_DOT_H
 #define NETWORK_DOT_H
 
-#include "MGSim.h"
+#include "SmartGridToolbox.h"
 #include <vector>
 
-namespace MGSim
+namespace SmartGridToolbox
 {
    class Node;
    class Edge;

@@ -1,11 +1,11 @@
 #ifndef NETWORK_COMPONENT_DOT_H
 #define NETWORK_COMPONENT_DOT_H
 
-#include "MGSim.h"
+#include "SmartGridToolbox.h"
 #include "Socket.h"
 #include <vector>
 
-namespace MGSim
+namespace SmartGridToolbox
 {
    /// Interface class for hooking together objects in a power network.
    class NetworkComponent

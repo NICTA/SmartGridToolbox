@@ -2,9 +2,9 @@
 #define COMPONENT_DOT_H
 
 #include <string>
-#include "MGSim.h"
+#include "SmartGridToolbox.h"
 
-namespace MGSim
+namespace SmartGridToolbox
 {
    /// Base class for simulation objects.
    class Component

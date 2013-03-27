@@ -1,7 +1,7 @@
 #ifndef EDGE_DOT_H
 #define EDGE_DOT_H
 
-namespace MGSim
+namespace SmartGridToolbox
 {
    class Edge
    {

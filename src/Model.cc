@@ -1,7 +1,7 @@
 #include "Model.h"
 #include "Component.h"
 
-namespace MGSim 
+namespace SmartGridToolbox 
 {
    Model::~Model() 
    {

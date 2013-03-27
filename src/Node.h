@@ -3,7 +3,7 @@
 
 #include <vector>
 
-namespace MGSim
+namespace SmartGridToolbox
 {
    class Edge;
 

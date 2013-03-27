@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 using std::string;
-namespace MGSim
+namespace SmartGridToolbox
 {
    class Component;
 

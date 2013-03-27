@@ -2,10 +2,10 @@
 #define BUILDING_DOT_H
 
 #include <string>
-#include "MGSim.h"
+#include "SmartGridToolbox.h"
 #include "Object.h"
 
-namespace MGSim
+namespace SmartGridToolbox
 {
    class HeatFlow;
 
