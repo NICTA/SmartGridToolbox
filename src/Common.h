@@ -3,6 +3,8 @@
 
 namespace SmartGridToolbox
 {
+   const float gTimestep = 0.001; // 1 ms timestep, 20 timeteps per 50 hz cycle.
+
    typedef long int TimestampType;
    typedef float FloatType;
 }

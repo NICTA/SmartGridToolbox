@@ -11,6 +11,7 @@
 #include "Network.h"
 #include "NetworkComponent.h"
 #include "Node.h"
+#include "Output.h"
 #include "Simulation.h"
 #include "SmartGridToolbox.h"
 #include "Socket.h"

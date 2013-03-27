@@ -29,7 +29,7 @@ namespace SmartGridToolbox
 
          /// Bring state up to time toTime.
          /** @param toTime */
-         virtual void UpdateState(TimestampType toTimestep) = 0;
+         virtual void AdvanceToTime(TimestampType toTimestep) = 0;
          
          /// Get the current step for the object.
          TimestampType GetTimestep()

@@ -2,8 +2,12 @@
 #define MODEL_DOT_H
 
 #include <map>
+#include <vector>
 #include <string>
+#include <boost/random.hpp>
+
 using std::string;
+
 namespace SmartGridToolbox
 {
    class Component;
@@ -27,7 +31,7 @@ namespace SmartGridToolbox
          template<typename T> const T * GetComponent(const std::string & name)
             const
          {
-            ComponentMapType::const_iterator it = compMap_.find(name);
+            ComponentMap::const_iterator it = compMap_.find(name);
             return (it == compMap_.end()) 
                ? 0 : dynamic_cast<const T *>(it->second);
          }
@@ -39,10 +43,13 @@ namespace SmartGridToolbox
          }
 
       private:
-         typedef std::pair<std::string, Component *> ComponentPairType;
-         typedef std::map<std::string, Component *> ComponentMapType;
+         typedef std::map<std::string, Component *> ComponentMap;
+         typedef std::vector<Component *> ComponentVec;
 
-         ComponentMapType compMap_;
+         boost::random::mt19937 rng; // Random number generator.
+
+         ComponentMap compMap_;
+         ComponentVec compVec_;
    };
 }
 

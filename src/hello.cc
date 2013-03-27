@@ -1,6 +1,8 @@
 #include "Model.h"
 #include "Component.h"
+#include "Output.h"
 #include <string>
+
 using namespace SmartGridToolbox;
 using namespace std;
 
@@ -8,17 +10,18 @@ class TestCompA : public Component
 {
    public:
       TestCompA(string name) : Component(name) {}
-      virtual void UpdateState(TimestampType toTimestep)
+      virtual void AdvanceToTime(TimestampType toTimestep)
       {
          // Empty.
       }
+   private:
 };
 
 class TestCompB : public Component
 {
    public:
       TestCompB(string name) : Component(name) {}
-      virtual void UpdateState(TimestampType toTimestep)
+      virtual void AdvanceToTime(TimestampType toTimestep)
       {
          // Empty.
       }

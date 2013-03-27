@@ -10,7 +10,7 @@ namespace SmartGridToolbox
    {
       public:
          /// Default constructor.
-         Simulation(const Model & mod) : mod_(&mod)
+         Simulation(Model & mod) : mod_(&mod)
          {
             // Empty.
          }
@@ -18,26 +18,27 @@ namespace SmartGridToolbox
          /// Destructor.
          ~Simulation();
 
-         /// Environment accessor.
-         const Model & getModel() 
+         /// Model accessor.
+         const Model & GetModel() const
          {
             return *mod_;
          }
+         /// Model accessor.
+         Model & GetModel()
+         {
+            return const_cast<Model &>((const_cast<const Simulation *>(this))->
+                  GetModel());
+         }
 
-         /// Timestep accessor.
-         double GetDt() const
+         /// Advance timestep.
+         int AdvanceTimestep() 
          {
-            return dt_;
+            
          }
-         /// Timestep accessor.
-         void SetDt(double dt)
-         {
-            dt_ = dt;
-         }
+
 
       private:
-         const Model * mod_;
-         double dt_; // Timestep in seconds.
+         Model * mod_;
          TimestampType it_; // Current step.
    };
 }
