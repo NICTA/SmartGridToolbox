@@ -1,7 +1,7 @@
 #ifndef SOCKET_DOT_H
 #define SOCKET_DOT_H
 
-#include "SmartGridToolbox.h"
+#include "Common.h"
 #include "Node.h"
 
 namespace SmartGridToolbox

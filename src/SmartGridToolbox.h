@@ -1,10 +1,18 @@
-#ifndef SIM_OBJECT_DOT_H
-#define SIM_OBJECT_DOT_H
+#ifndef SMART_GRID_TOOLBOX_DOT_H 
+#define SMART_GRID_TOOLBOX_DOT_H 
 
-namespace SmartGridToolbox
-{
-   typedef long int TimestampType;
-   typedef float FloatType;
-}
+#include "Building.h"
+#include "Common.h"
+#include "Component.h"
+#include "Edge.h"
+#include "HeatFlow.h"
+#include "Hvac.h"
+#include "Model.h"
+#include "Network.h"
+#include "NetworkComponent.h"
+#include "Node.h"
+#include "Simulation.h"
+#include "SmartGridToolbox.h"
+#include "Socket.h"
 
-#endif // SIM_OBJECT_DOT_H
+#endif // SMART_GRID_TOOLBOX_DOT_H 

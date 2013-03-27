@@ -2,7 +2,7 @@
 #define COMPONENT_DOT_H
 
 #include <string>
-#include "SmartGridToolbox.h"
+#include "Common.h"
 
 namespace SmartGridToolbox
 {

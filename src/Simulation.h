@@ -1,7 +1,7 @@
 #ifndef SIMULTION_DOT_H
 #define SIMULTION_DOT_H
 
-#include "SmartGridToolbox.h"
+#include "Common.h"
 
 namespace SmartGridToolbox
 {

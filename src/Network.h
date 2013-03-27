@@ -1,7 +1,7 @@
 #ifndef NETWORK_DOT_H
 #define NETWORK_DOT_H
 
-#include "SmartGridToolbox.h"
+#include "Common.h"
 #include <vector>
 
 namespace SmartGridToolbox

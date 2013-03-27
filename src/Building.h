@@ -2,7 +2,7 @@
 #define BUILDING_DOT_H
 
 #include <string>
-#include "SmartGridToolbox.h"
+#include "Common.h"
 #include "Object.h"
 
 namespace SmartGridToolbox
