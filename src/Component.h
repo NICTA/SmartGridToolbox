@@ -17,7 +17,10 @@ namespace SmartGridToolbox
          }
 
          /// Pure virtual destructor.
-         virtual ~Component() = 0;
+         virtual ~Component()
+         {
+            // Empty.
+         }
 
          const std::string & GetName() const
          {
@@ -26,7 +29,7 @@ namespace SmartGridToolbox
 
          /// Bring state up to time toTime.
          /** @param toTime */
-         virtual void UpdateState(TimestampType toTimestep);
+         virtual void UpdateState(TimestampType toTimestep) = 0;
          
          /// Get the current step for the object.
          TimestampType GetTimestep()

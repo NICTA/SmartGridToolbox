@@ -63,8 +63,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_hello_OBJECTS = Model.$(OBJEXT) Network.$(OBJEXT) Node.$(OBJEXT) \
-	Socket.$(OBJEXT) hello.$(OBJEXT)
+am_hello_OBJECTS = Model.$(OBJEXT) hello.$(OBJEXT)
 hello_OBJECTS = $(am_hello_OBJECTS)
 hello_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
@@ -209,7 +208,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 CFLAGS = 
-hello_SOURCES = Model.cc Network.cc Node.cc Socket.cc hello.cc
+hello_SOURCES = Model.cc hello.cc
 all: all-am
 
 .SUFFIXES:
@@ -297,9 +296,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Model.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Node.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Socket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hello.Po@am__quote@
 
 .cc.o:

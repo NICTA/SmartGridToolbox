@@ -3,19 +3,19 @@
 
 #include <string>
 #include "Common.h"
-#include "Object.h"
+#include "Component.h"
 
 namespace SmartGridToolbox
 {
    class HeatFlow;
 
    /// Base class for simulation objects.
-   class Building : public Object
+   class Building : public Component
    {
       public:
          /// Constructor.
          explicit Building(const std::string & name) :
-            Object(name)
+            Component(name)
          {
             // Empty.
          }

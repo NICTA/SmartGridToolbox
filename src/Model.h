@@ -24,15 +24,17 @@ namespace SmartGridToolbox
 
          void AddComponent(Component & comp);
 
-         template<typename T> const T & GetComponent(const std::string & name) const
+         template<typename T> const T * GetComponent(const std::string & name)
+            const
          {
-            ComponentMapType::iterator it = compMap_.find(name);
-            return (it == compMap_.end()) ? 0 : dynamic_cast<T*>(*it);
+            ComponentMapType::const_iterator it = compMap_.find(name);
+            return (it == compMap_.end()) 
+               ? 0 : dynamic_cast<const T *>(it->second);
          }
 
-         template<typename T> T & GetComponent(const std::string & name)
+         template<typename T> T * GetComponent(const std::string & name)
          {
-            return const_cast<T &>((const_cast<const Model *>(this))->
+            return const_cast<T *>((const_cast<const Model *>(this))->
                   GetComponent<T>(name));
          }
 
