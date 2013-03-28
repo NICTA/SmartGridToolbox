@@ -11,9 +11,9 @@ class TestCompA : public Component
 {
    public:
       TestCompA(string name) : Component(name) {}
-      virtual void AdvanceToTime(Timestamp toTimestep)
+      virtual void AdvanceToTime(Timestamp t)
       {
-         // Empty.
+         std::cout << "TCA AdvanceToTimestep " << t / gSecond << std::endl;
       }
    private:
 };
@@ -22,9 +22,10 @@ class TestCompB : public Component
 {
    public:
       TestCompB(string name) : Component(name) {}
-      virtual void AdvanceToTime(Timestamp toTimestep)
+      virtual void AdvanceToTime(Timestamp t)
       {
-         tcA_->AdvanceToTime(toTimestep);
+         tcA_->AdvanceToTime(t);
+         std::cout << "TCB AdvanceToTimestep " << t / gSecond << std::endl;
       }
       void SetTestCompA(TestCompA & tcA)
       {
@@ -41,6 +42,7 @@ int main()
    mod.AddComponent(*(new TestCompB("tcb1")));
    string nm1 = "tca1";
    TestCompA & tca1 = *mod.GetComponent<TestCompA>(nm1);
-   //TestCompB & tcb1 = mod.GetComponent("tcb1");
-   //tcb1.SetTestCompA(tca1);
+   TestCompB & tcb1 = *mod.GetComponent<TestCompB>("tcb1");
+   tcb1.SetTestCompA(tca1);
+   tcb1.AdvanceToTime(3 * gSecond);
 }
