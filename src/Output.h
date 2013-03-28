@@ -3,20 +3,20 @@
 
 #include <iostream>
 
-namespace SmartGridSim
+namespace SmartGridToolbox
 {
-   void Error(const char * message)
+   inline void Error(const char * message)
    {
       std::cerr << "ERROR: " << message << std::endl;
       throw(message);
    }
 
-   void Warning(const char * message)
+   inline void Warning(const char * message)
    {
       std::cerr << "WARNING: " << message << std::endl;
    }
 
-   void Message(const char * message)
+   inline void Message(const char * message)
    {
       std::cout << message << std::endl;
    }

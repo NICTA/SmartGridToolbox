@@ -35,7 +35,7 @@ namespace SmartGridToolbox
          TimestampType GetTimestep();
 
       private:
-         float tsp_;
+         double tsp_;
    };
 }
 

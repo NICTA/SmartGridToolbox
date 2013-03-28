@@ -1,12 +1,23 @@
 #ifndef COMMON_DOT_H
 #define COMMON_DOT_H
 
+#include <cmath>
+
 namespace SmartGridToolbox
 {
-   const float gTimestep = 0.001; // 1 ms timestep, 20 timeteps per 50 hz cycle.
+   typedef long int Timestamp;
 
-   typedef long int TimestampType;
-   typedef float FloatType;
+   const double gTimestep = 0.001; // 1 ms timestep, 20 per 50 hz cycle.
+
+   inline double dseconds(const Timestamp t)
+   {
+      return t * gTimestep;
+   }
+
+   inline long int iseconds(const Timestamp t)
+   {
+      return round(t * gTimestep);
+   }
 }
 
 #endif // COMMON_DOT_H

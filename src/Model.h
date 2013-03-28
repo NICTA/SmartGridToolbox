@@ -46,10 +46,10 @@ namespace SmartGridToolbox
          typedef std::map<std::string, Component *> ComponentMap;
          typedef std::vector<Component *> ComponentVec;
 
-         boost::random::mt19937 rng; // Random number generator.
-
          ComponentMap compMap_;
          ComponentVec compVec_;
+
+         boost::random::mt19937 rng; // Random number generator.
    };
 }
 

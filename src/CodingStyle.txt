@@ -31,3 +31,4 @@ Pass and return by reference, except where you *have to* use a pointer.
 Errors etc. are called through the Error(), Warning(), Message(), Debug()
 fucntions, declared in Output.h.  
 
+Floating point generally uses double. Integer types are generally int.

@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "Output.h"
 #include <string>
+#include <iostream>
 
 using namespace SmartGridToolbox;
 using namespace std;
@@ -10,7 +11,7 @@ class TestCompA : public Component
 {
    public:
       TestCompA(string name) : Component(name) {}
-      virtual void AdvanceToTime(TimestampType toTimestep)
+      virtual void AdvanceToTime(Timestamp toTimestep)
       {
          // Empty.
       }
@@ -21,9 +22,9 @@ class TestCompB : public Component
 {
    public:
       TestCompB(string name) : Component(name) {}
-      virtual void AdvanceToTime(TimestampType toTimestep)
+      virtual void AdvanceToTime(Timestamp toTimestep)
       {
-         // Empty.
+         tcA_->AdvanceToTime(toTimestep);
       }
       void SetTestCompA(TestCompA & tcA)
       {

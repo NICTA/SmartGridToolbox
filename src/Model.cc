@@ -1,5 +1,6 @@
 #include "Model.h"
 #include "Component.h"
+#include "Output.h"
 
 namespace SmartGridToolbox 
 {
@@ -12,7 +13,7 @@ namespace SmartGridToolbox
       std::pair<ComponentMap::iterator, bool> result = 
          compMap_.insert(make_pair(comp.GetName(), &comp));
       if (result.second == 0) {
-         throw "ERROR: Component already exists in model!";
+         Error("Component already exists in model!");
       }
       else
       {
