@@ -17,4 +17,18 @@ namespace SmartGridToolbox
       static DistType dist(0.0, 1.0); 
       return dist(sRng,  DistType::param_type(lower, upper));
    }
+
+   double RandWeibull(double a, double b)
+   {
+      typedef boost::random::weibull_distribution<> DistType;
+      static DistType dist(0.0, 1.0); 
+      return dist(sRng,  DistType::param_type(a, b));
+   }
+
+   double RandUniformInt(int lower, int upper)
+   {
+      typedef boost::random::weibull_distribution<> DistType;
+      static DistType dist(0, 1); 
+      return dist(sRng,  DistType::param_type(lower, upper));
+   }
 }
