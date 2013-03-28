@@ -42,6 +42,9 @@ namespace SmartGridToolbox
                   GetComponent<T>(name));
          }
 
+         double RandNormal(double mu, double sig);
+         double RandUniform(double lower, double upper);
+
       private:
          typedef std::map<std::string, Component *> ComponentMap;
          typedef std::vector<Component *> ComponentVec;
@@ -49,7 +52,7 @@ namespace SmartGridToolbox
          ComponentMap compMap_;
          ComponentVec compVec_;
 
-         boost::random::mt19937 rng; // Random number generator.
+         boost::random::mt19937 rng_; // Random number generator.
    };
 }
 
