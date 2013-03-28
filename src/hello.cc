@@ -42,8 +42,8 @@ int main()
    mod.AddComponent(*(new TestCompA("tca1")));
    mod.AddComponent(*(new TestCompB("tcb1")));
    string nm1 = "tca1";
-   TestCompA & tca1 = *mod.GetComponent<TestCompA>(nm1);
-   TestCompB & tcb1 = *mod.GetComponent<TestCompB>("tcb1");
+   TestCompA & tca1 = *mod.GetComponentNamed<TestCompA>(nm1);
+   TestCompB & tcb1 = *mod.GetComponentNamed<TestCompB>("tcb1");
    tcb1.SetTestCompA(tca1);
    tcb1.AdvanceToTime(3 * gSecond);
 
