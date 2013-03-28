@@ -1,6 +1,7 @@
 #include "Model.h"
 #include "Component.h"
 #include "Output.h"
+#include "Random.h"
 #include <string>
 #include <iostream>
 
@@ -45,4 +46,10 @@ int main()
    TestCompB & tcb1 = *mod.GetComponent<TestCompB>("tcb1");
    tcb1.SetTestCompA(tca1);
    tcb1.AdvanceToTime(3 * gSecond);
+
+   for (int i = 0; i < 10; ++i)
+   {
+      double d = RandNormal(10.0, 3.0);
+      std::cout << "Random = " << d << std::endl;
+   }
 }

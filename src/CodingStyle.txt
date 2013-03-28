@@ -14,6 +14,8 @@ Class name using acronym, e.g. ABC => AbstractAbcClass.
 
 Global constants are named as gGlobalConstant.
 
+Static (file scope, in the C sense) variables are named as sVariable.
+
 Getters and setters are GetProperty() and SetProperty(...).
 
 Braces start on a new line e.g.  

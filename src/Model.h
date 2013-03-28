@@ -4,7 +4,6 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <boost/random.hpp>
 
 using std::string;
 
@@ -42,17 +41,12 @@ namespace SmartGridToolbox
                   GetComponent<T>(name));
          }
 
-         double RandNormal(double mu, double sig);
-         double RandUniform(double lower, double upper);
-
       private:
          typedef std::map<std::string, Component *> ComponentMap;
          typedef std::vector<Component *> ComponentVec;
 
          ComponentMap compMap_;
          ComponentVec compVec_;
-
-         boost::random::mt19937 rng_; // Random number generator.
    };
 }
 
