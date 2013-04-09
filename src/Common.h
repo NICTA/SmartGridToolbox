@@ -5,9 +5,9 @@
 
 namespace SmartGridToolbox
 {
-   typedef long int Timestamp;
+   typedef long long int Timestamp;
 
-   const double gTimestep = 0.001; // 1 ms timestep, 20 per 50 hz cycle.
+   const double gTimestep = 1.0e-6; // 1 us timestep, overkill for 50 Hz!
    const double gSecond = 1 / gTimestep;
    const double gMinute = 60 * gSecond;
    const double gHour = 60 * gMinute;
