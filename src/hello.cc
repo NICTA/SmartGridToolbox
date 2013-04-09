@@ -52,4 +52,11 @@ int main()
       double d = RandNormal(10.0, 3.0);
       std::cout << "Random = " << d << std::endl;
    }
+
+   double probs[] = {0.2, 0.3, 0.5};
+   for (int i = 0; i < 20; ++i)
+   {
+      int d = RandDiscrete(probs, 3);
+      std::cout << "Random = " << d << std::endl;
+   }
 }

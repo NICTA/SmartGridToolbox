@@ -17,4 +17,6 @@
 #include "SmartGridToolbox.h"
 #include "Socket.h"
 
+#include <boost/numeric/odeint>
+
 #endif // SMART_GRID_TOOLBOX_DOT_H 
