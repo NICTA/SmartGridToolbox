@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Output.h"
 #include <string>
+#include <sstream>
 
 namespace SmartGridToolbox
 {
@@ -26,6 +27,9 @@ namespace SmartGridToolbox
             try 
             {
                model.SetStartTime(time_from_string(nodeB.as<std::string>()));
+               std::stringstream ss;
+               ss << "Start time is " << model.GetStartTime();
+               Message(ss.str().c_str());
             }
             catch (...)
             {
@@ -42,6 +46,9 @@ namespace SmartGridToolbox
             try 
             {
                model.SetEndTime(time_from_string(nodeB.as<std::string>()));
+               std::stringstream ss;
+               ss << "End time is " << model.GetStartTime();
+               Message(ss.str().c_str());
             }
             catch (...)
             {
