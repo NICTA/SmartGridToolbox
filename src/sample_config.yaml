@@ -5,8 +5,8 @@
 
 global:
    configuration_name:        config_1
-   start_date_time:           2013-01-23 13:13:00
-   end_date_time:             2013-01-23 13:13:00
+   start_date_time:           2013-01-23T13:13:00 # Use ISO8601 spec.
+   end_date_time:             2013-01-23T15:13:00
 
 prototypes: # These define object types, for convenience.
    line:
