@@ -1,0 +1,39 @@
+---
+global:
+   InitialDateTime: 2013-01-23 13:13:00
+
+objects:
+      house:
+         name: house_1
+         area_sqm: 25.0
+         heating_type: hvac
+
+      house:
+         name: house_2
+         area_sqm: 28.0
+         heating_type: hvac
+
+      line:
+         is_prototype: true
+         name: line_type_1 
+         admittance: [
+            12+3i,   1+1i,    1+2i,    0,
+            0,       1+1i,    1+2i,    3+7i,
+            0,       1+1i,    1+2i,    3+7i,
+            0,       1+1i,    1+2i,    3+7i
+         ]
+
+      bus:
+         name: bus_1
+         bus_type: PV
+
+      bus:
+         name: bus_2
+         phases: ABCN
+
+      line:
+         name: line_1_2
+         bus_1: bus_1
+         bus_2: bus_2
+         prototype: line_type_1
+...

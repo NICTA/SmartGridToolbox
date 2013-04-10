@@ -63,6 +63,8 @@ namespace SmartGridToolbox
 
          ComponentMap compMap_;
          ComponentVec compVec_;
+         ComponentMap prototypeMap_;
+         ComponentVec prototypeVec_;
    };
 }
 
