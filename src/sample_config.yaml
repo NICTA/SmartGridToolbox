@@ -11,10 +11,16 @@ global:
 prototypes: # These define object types, for convenience.
    line:
       name:                   line_type_1 
-      admittance:             [12+3i,   1+1i,    1+2i,    0,
-                               0,       1+1i,    1+2i,    3+7i,
-                               0,       1+1i,    1+2i,    3+7i,
-                               0,       1+1i,    1+2i,    3+7i]
+      admittance:             
+         data:                [[12+3i,   1+1i,    1+2i,    0],
+                               [0,       1+1i,    1+2i,    3+7i],
+                               [0,       1+1i,    1+2i,    3+7i],
+                               [0,       1+1i,    1+2i,    3+7i]]
+   
+   line:
+      name:                   line_type_2
+      admittance:
+         file:                admit_2 
 
 objects: # And these are the actual objects.
       house:
