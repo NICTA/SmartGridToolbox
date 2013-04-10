@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include "Common.h"
 
 using std::string;
 
@@ -32,6 +33,24 @@ namespace SmartGridToolbox
          const void SetName(const std::string & name)
          {
             name_ = name;
+         }
+
+         const ptime & GetStartTime() const
+         {
+            return startTime_;
+         }
+         const void SetStartTime(const ptime & startTime)
+         {
+            startTime_ = startTime;
+         }
+
+         const ptime & GetEndTime() const
+         {
+            return endTime_;
+         }
+         const void SetEndTime(const ptime & endTime)
+         {
+            endTime_ = endTime;
          }
 
          void AddComponent(Component & comp);
@@ -70,7 +89,10 @@ namespace SmartGridToolbox
          typedef std::map<std::string, Component *> ComponentMap;
          typedef std::vector<Component *> ComponentVec;
 
+      private:
          std::string name_;
+         ptime startTime_;
+         ptime endTime_;
          ComponentMap compMap_;
          ComponentVec compVec_;
    };

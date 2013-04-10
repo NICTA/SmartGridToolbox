@@ -1,4 +1,5 @@
 #include "Parser.h"
+#include "Common.h"
 #include "Output.h"
 #include <string>
 
@@ -19,6 +20,39 @@ namespace SmartGridToolbox
          {
             model.SetName(std::string("null"));
          }
+
+         if (const YAML::Node & nodeB = nodeA["start_time"])
+         {
+            try 
+            {
+               model.SetStartTime(time_from_string(nodeB.as<std::string>()));
+            }
+            catch (...)
+            {
+               Error("Couldn't parse date.");
+            }
+         }
+         else
+         {
+            Error("The configuration file must contain a start_time.");  
+         }
+
+         if (const YAML::Node & nodeB = nodeA["end_time"])
+         {
+            try 
+            {
+               model.SetEndTime(time_from_string(nodeB.as<std::string>()));
+            }
+            catch (...)
+            {
+               Error("Couldn't parse date.");
+            }
+         }
+         else
+         {
+            Error("The configuration file must contain an end_time.");  
+         }
+
       }
       else
       {

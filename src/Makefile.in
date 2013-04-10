@@ -67,7 +67,8 @@ am_hello_OBJECTS = Model.$(OBJEXT) Parser.$(OBJEXT) Random.$(OBJEXT) \
 	hello.$(OBJEXT)
 hello_OBJECTS = $(am_hello_OBJECTS)
 hello_DEPENDENCIES =  \
-	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a
+	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
+	/usr/local/lib/libboost_date_time-mt.a
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -211,7 +212,9 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 CFLAGS = 
 hello_SOURCES = Model.cc Parser.cc Random.cc hello.cc
-hello_LDADD = ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a
+hello_LDADD = ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
+				  /usr/local/lib/libboost_date_time-mt.a
+
 all: all-am
 
 .SUFFIXES:

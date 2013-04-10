@@ -17,6 +17,7 @@ namespace SmartGridToolbox
       }
       else
       {
+         comp.Initialize(startTime_);
          compVec_.push_back(&comp);
       }
    }

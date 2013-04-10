@@ -13,9 +13,9 @@ class TestCompA : public Component
 {
    public:
       TestCompA(string name) : Component(name) {}
-      virtual void AdvanceToTime(Timestamp t)
+      virtual void AdvanceToTime(ptime t)
       {
-         std::cout << "TCA AdvanceToTimestep " << t / gSecond << std::endl;
+         std::cout << "TCA AdvanceToTimestep " << t << std::endl;
       }
    private:
 };
@@ -24,10 +24,9 @@ class TestCompB : public Component
 {
    public:
       TestCompB(string name) : Component(name) {}
-      virtual void AdvanceToTime(Timestamp t)
+      virtual void AdvanceToTime(ptime t)
       {
          tcA_->AdvanceToTime(t);
-         std::cout << "TCB AdvanceToTimestep " << t / gSecond << std::endl;
       }
       void SetTestCompA(TestCompA & tcA)
       {
@@ -40,13 +39,18 @@ class TestCompB : public Component
 int main()
 {
    Model mod;
+   Parser parser;
+   parser.Parse("sample_config.yaml", mod);
+
    mod.AddComponent(*(new TestCompA("tca1")));
    mod.AddComponent(*(new TestCompB("tcb1")));
    string nm1 = "tca1";
    TestCompA & tca1 = *mod.GetComponentNamed<TestCompA>(nm1);
    TestCompB & tcb1 = *mod.GetComponentNamed<TestCompB>("tcb1");
    tcb1.SetTestCompA(tca1);
-   tcb1.AdvanceToTime(3 * gSecond);
+   date d(2012, Jan, 10);
+   ptime p(d, hours(1));
+   tcb1.AdvanceToTime(p);
 
    for (int i = 0; i < 10; ++i)
    {
@@ -65,6 +69,4 @@ int main()
    std::cout << "Complex = " << c << std::endl;
    std::cout << "Complex real = " << c.real() << std::endl;
 
-   Parser parser;
-   parser.Parse("sample_config.yaml", mod);
 }

@@ -6,4 +6,5 @@ LDFLAGS=
 
 bin_PROGRAMS = hello
 hello_SOURCES = Model.cc Parser.cc Random.cc hello.cc
-hello_LDADD = ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a
+hello_LDADD = ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
+				  /usr/local/lib/libboost_date_time-mt.a

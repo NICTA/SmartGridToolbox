@@ -11,6 +11,7 @@ namespace SmartGridToolbox
    {
       public:
          /// Constructor.
+         /** @param name the unique name */
          explicit Component(const std::string & name) : name_(name)
          {
             // Empty.
@@ -22,26 +23,32 @@ namespace SmartGridToolbox
             // Empty.
          }
 
+         /// Reset state of the object, time to timestamp t.
+         /** @param t */
+         virtual void Initialize(const ptime t)
+         {
+            t_ = t;
+         }
+
+         /// Get the name of the object.
          const std::string & GetName() const
          {
             return name_;
          }
-
-         /// Bring state up to time toTime.
-         /** @param toTime */
-         virtual void AdvanceToTime(Timestamp t) = 0;
          
          /// Get the current step for the object.
-         Timestamp GetTimestep()
+         ptime GetTimestamp()
          {
             return t_;
          }
 
-      private:
+         /// Bring state up to time t.
+         /** @param t the initial timestamp */
+         virtual void AdvanceToTime(ptime t) = 0;
 
       private:
          std::string name_;
-         Timestamp t_;
+         ptime t_;
    };
 }
 
