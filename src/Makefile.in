@@ -65,7 +65,8 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_hello_OBJECTS = Model.$(OBJEXT) Random.$(OBJEXT) hello.$(OBJEXT)
 hello_OBJECTS = $(am_hello_OBJECTS)
-hello_LDADD = $(LDADD)
+hello_DEPENDENCIES =  \
+	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -209,6 +210,7 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 CFLAGS = 
 hello_SOURCES = Model.cc Random.cc hello.cc
+hello_LDADD = ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a
 all: all-am
 
 .SUFFIXES:
