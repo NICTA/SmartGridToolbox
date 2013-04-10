@@ -16,7 +16,6 @@ prototypes: # These define object types, for convenience.
                                0,       1+1i,    1+2i,    3+7i,
                                0,       1+1i,    1+2i,    3+7i]
 
-
 objects: # And these are the actual objects.
       house:
          name:                house_1
