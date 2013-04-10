@@ -53,7 +53,7 @@ namespace SmartGridToolbox
             endTime_ = endTime;
          }
 
-         void AddComponent(Component & comp);
+         void AddComponent(Component & comp, bool isPrototype = false);
 
          template<typename T> const T * 
             GetComponentNamed(const std::string & name) const
@@ -95,6 +95,8 @@ namespace SmartGridToolbox
          ptime endTime_;
          ComponentMap compMap_;
          ComponentVec compVec_;
+         ComponentMap protoMap_;
+         ComponentVec protoVec_;
    };
 }
 

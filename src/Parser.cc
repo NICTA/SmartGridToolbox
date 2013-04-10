@@ -8,9 +8,23 @@ namespace SmartGridToolbox
    void Parser::Parse(const char * fname, Model & model)
    {
       Message("Started parsing.");
-      const YAML::Node & config = YAML::LoadFile(fname);
+      const YAML::Node & top = YAML::LoadFile(fname);
 
-      if (const YAML::Node & nodeA = config["global"]) 
+      ParseGlobal(top, model);
+      ParseObjects(top, model, true);
+      ParseObjects(top, model, false);
+
+      Message("Finished parsing.");
+      Message("Name = %s", model.GetName().c_str());
+      Message("Start time = %s", 
+            to_simple_string(model.GetStartTime()).c_str());
+      Message("End time = %s", 
+            to_simple_string(model.GetEndTime()).c_str());
+   }
+
+   void Parser::ParseGlobal(const YAML::Node & top, Model & model)
+   {
+      if (const YAML::Node & nodeA = top["global"]) 
       {
          if (const YAML::Node & nodeB = nodeA["configuration_name"])
          {
@@ -52,17 +66,21 @@ namespace SmartGridToolbox
          {
             Error("The configuration file must contain an end_time.");  
          }
-
       }
       else
       {
          Error("The configuration file must contain a \"global\" section.");
       }
-      Message("Finished parsing.");
-      Message("Name = %s", model.GetName().c_str());
-      Message("Start time = %s", 
-            to_simple_string(model.GetStartTime()).c_str());
-      Message("End time = %s", 
-            to_simple_string(model.GetEndTime()).c_str());
+   }
+
+   void Parser::ParseObjects(const YAML::Node & top, Model & model,
+                             bool isPrototype)
+   {
+      if (const YAML::Node & nodeA = isPrototype ? top["prototypes"] 
+                                                 : top["Objects"])
+      {
+
+      }
+      
    }
 }
