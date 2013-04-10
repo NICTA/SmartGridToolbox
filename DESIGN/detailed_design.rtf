@@ -17,6 +17,10 @@ Given time constraints, the overall plan will be to implement a relatively spars
 \pard\tx220\tx720\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li720\fi-720\pardirnatural
 \ls1\ilvl0\cf0 {\listtext	1.	}Infrastructure\
 \pard\tx940\tx1440\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li1440\fi-1440\pardirnatural
+\ls1\ilvl1\cf0 {\listtext	\uc0\u8259 	}Complex numbers\
+\pard\tx1660\tx2160\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li2160\fi-2160\pardirnatural
+\ls1\ilvl2\cf0 {\listtext	\uc0\u8259 	}std::complex<double>\
+\pard\tx940\tx1440\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li1440\fi-1440\pardirnatural
 \ls1\ilvl1\cf0 {\listtext	\uc0\u8259 	}Vector/matrix/linear algebra library and interface\
 \pard\tx1660\tx2160\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li2160\fi-2160\pardirnatural
 \ls1\ilvl2\cf0 {\listtext	\uc0\u8259 	}Boost uBLAS is default choice.\
@@ -42,7 +46,7 @@ Given time constraints, the overall plan will be to implement a relatively spars
 {\listtext	\uc0\u8259 	}Recommendation (if it is transferrable to most machines) is to use signed long long int as a simple timestamp, with a fixed microsecond resolution. This has advatage of easy interface to GLD.\
 \pard\tx1660\tx2160\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li2160\fi-2160\pardirnatural
 \ls1\ilvl2\cf0 {\listtext	\uc0\u8259 	}Use boost::gregorian to manage dates.\
-\ls1\ilvl2{\listtext	\uc0\u8259 	}For parsing, use ISO8601 standard\
+{\listtext	\uc0\u8259 	}For parsing, use ISO8601 standard\
 \pard\tx940\tx1440\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li1440\fi-1440\pardirnatural
 \ls1\ilvl1\cf0 {\listtext	\uc0\u8259 	}Schedules\
 \pard\tx1660\tx2160\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li2160\fi-2160\pardirnatural
@@ -75,19 +79,19 @@ Given time constraints, the overall plan will be to implement a relatively spars
 {\listtext	\uc0\u8259 	}Timestep resolution is configurable - could be seconds/miliseconds.\
 {\listtext	\uc0\u8259 	}Copy GLD basic mechanism, with added event processing.\
 \pard\tx220\tx720\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li720\fi-720\pardirnatural
-\ls1\ilvl0\cf0 {\listtext	3.	}Solvers\
+\ls1\ilvl0\cf0 {\listtext	2.	}Solvers\
 \pard\tx940\tx1440\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li1440\fi-1440\pardirnatural
 \ls1\ilvl1\cf0 {\listtext	\uc0\u8259 	}Powerflow solver capable of dealing with network\
 {\listtext	\uc0\u8259 	}At the risk of regretting this, we will initially ignore the issue of a single slack bus for an islanded microgrid.\
 {\listtext	\uc0\u8259 	}Implement NR method by copying simple code from GLD first.\
 {\listtext	\uc0\u8259 	}At a later date other solvers might be implemented.\
 \pard\tx220\tx720\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li720\fi-720\pardirnatural
-\ls1\ilvl0\cf0 {\listtext	4.	}Climate modelling\
+\ls1\ilvl0\cf0 {\listtext	3.	}Climate modelling\
 \pard\tx940\tx1440\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li1440\fi-1440\pardirnatural
 \ls1\ilvl1\cf0 {\listtext	\uc0\u8259 	}Talk to Paul\
 {\listtext	\uc0\u8259 	}Lift code from Gridlab-D (but this will not apply to Aus)\
 \pard\tx220\tx720\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li720\fi-720\pardirnatural
-\ls1\ilvl0\cf0 {\listtext	5.	}Network modelling\
+\ls1\ilvl0\cf0 {\listtext	4.	}Network modelling\
 \pard\tx940\tx1440\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li1440\fi-1440\pardirnatural
 \ls1\ilvl1\cf0 {\listtext	\uc0\u8259 	}Challenging\
 {\listtext	\uc0\u8259 	}Always assume unbalanced\
@@ -96,13 +100,13 @@ Given time constraints, the overall plan will be to implement a relatively spars
 {\listtext	\uc0\u8259 	}Switches\
 {\listtext	\uc0\u8259 	}Generic loads\
 \pard\tx220\tx720\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li720\fi-720\pardirnatural
-\ls1\ilvl0\cf0 {\listtext	6.	}Houses and buildings\
+\ls1\ilvl0\cf0 {\listtext	5.	}Houses and buildings\
 \pard\tx940\tx1440\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li1440\fi-1440\pardirnatural
 \ls1\ilvl1\cf0 {\listtext	\uc0\u8259 	}LANL simple building with HVAC model first.\
 {\listtext	\uc0\u8259 	}House: lift wholesale from GLD\
 {\listtext	\uc0\u8259 	}Use generic appliance model using markov chains etc. Lift data from GLD.\
 \pard\tx220\tx720\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li720\fi-720\pardirnatural
-\ls1\ilvl0\cf0 {\listtext	7.	}DER\
+\ls1\ilvl0\cf0 {\listtext	6.	}DER\
 \pard\tx940\tx1440\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li1440\fi-1440\pardirnatural
 \ls1\ilvl1\cf0 {\listtext	\uc0\u8259 	}Battery - from GLD\
 {\listtext	\uc0\u8259 	}Solar - from GLD\
@@ -111,7 +115,7 @@ Given time constraints, the overall plan will be to implement a relatively spars
 {\listtext	\uc0\u8259 	}EV - \'93battery on wheels?\'94\
 {\listtext	\uc0\u8259 	}Later, can do CHP etc.\
 \pard\tx220\tx720\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li720\fi-720\pardirnatural
-\ls1\ilvl0\cf0 {\listtext	8.	}Control / demand etc.\
+\ls1\ilvl0\cf0 {\listtext	7.	}Control / demand etc.\
 \pard\tx940\tx1440\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li1440\fi-1440\pardirnatural
 \ls1\ilvl1\cf0 {\listtext	\uc0\u8259 	}Electricity consumption can have a time varying cost, as a built in?\
 {\listtext	\uc0\u8259 	}Control relies on efficient object management and event processing.\

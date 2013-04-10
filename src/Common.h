@@ -2,6 +2,7 @@
 #define COMMON_DOT_H
 
 #include <cmath>
+#include <complex>
 
 namespace SmartGridToolbox
 {
@@ -23,6 +24,8 @@ namespace SmartGridToolbox
    {
       return round(t * gTimestep);
    }
+
+   typedef std::complex<double> Complex;
 }
 
 #endif // COMMON_DOT_H

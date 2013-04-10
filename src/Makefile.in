@@ -63,7 +63,8 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_hello_OBJECTS = Model.$(OBJEXT) Random.$(OBJEXT) hello.$(OBJEXT)
+am_hello_OBJECTS = Model.$(OBJEXT) Parser.$(OBJEXT) Random.$(OBJEXT) \
+	hello.$(OBJEXT)
 hello_OBJECTS = $(am_hello_OBJECTS)
 hello_DEPENDENCIES =  \
 	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a
@@ -209,7 +210,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 CFLAGS = 
-hello_SOURCES = Model.cc Random.cc hello.cc
+hello_SOURCES = Model.cc Parser.cc Random.cc hello.cc
 hello_LDADD = ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a
 all: all-am
 
@@ -298,6 +299,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Model.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hello.Po@am__quote@
 

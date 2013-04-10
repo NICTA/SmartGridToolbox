@@ -17,13 +17,22 @@ namespace SmartGridToolbox
    {
       public:
          /// Default constructor.
-         Model()
+         Model() : name_("null")
          {
             // Empty.
          }
 
          /// Destructor.
          ~Model();
+
+         const std::string & GetName() const
+         {
+            return name_;
+         }
+         const void SetName(const std::string & name)
+         {
+            name_ = name;
+         }
 
          void AddComponent(Component & comp);
 
@@ -61,10 +70,9 @@ namespace SmartGridToolbox
          typedef std::map<std::string, Component *> ComponentMap;
          typedef std::vector<Component *> ComponentVec;
 
+         std::string name_;
          ComponentMap compMap_;
          ComponentVec compVec_;
-         ComponentMap prototypeMap_;
-         ComponentVec prototypeVec_;
    };
 }
 

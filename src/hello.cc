@@ -1,6 +1,7 @@
 #include "Model.h"
 #include "Component.h"
 #include "Output.h"
+#include "Parser.h"
 #include "Random.h"
 #include <string>
 #include <iostream>
@@ -59,4 +60,11 @@ int main()
       int d = RandDiscrete(probs, 3);
       std::cout << "Random = " << d << std::endl;
    }
+
+   Complex c(1.0, 2.0);
+   std::cout << "Complex = " << c << std::endl;
+   std::cout << "Complex real = " << c.real() << std::endl;
+
+   Parser parser;
+   parser.Parse("sample_config.yaml", mod);
 }
