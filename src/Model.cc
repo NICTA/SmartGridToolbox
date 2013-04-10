@@ -9,35 +9,32 @@ namespace SmartGridToolbox
    {
    }
 
-   void Model::AddComponent(Component & comp, bool isPrototype)
+   void Model::AddPrototype(Component & comp)
    {
-      const char * type;
-      ComponentMap * map;
-      ComponentVec * vec;
-      if (isPrototype)
-      {
-         type = "Prototype";
-         map = &protoMap_;
-         vec = &protoVec_;
-      }
-      else
-      {
-         type = "Component";
-         map = &compMap_;
-         vec = &compVec_;
-      }
-
-      std::pair<ComponentMap::iterator, bool> result = 
-         map->insert(make_pair(comp.GetName(), &comp));
+      std::pair<ComponentMap::iterator, bool> result = protoMap_.insert(
+            make_pair(comp.GetName(), &comp));
       if (result.second == 0) {
-         const char * cstr = comp.GetName().c_str();
-         Error("%s %s already exists in model!", type, comp.GetName().c_str());
+         Error("Prototype %s already exists in model!", comp.GetName().c_str());
       }
       else
       {
          comp.Initialize(startTime_);
-         vec->push_back(&comp);
-         Message("%s %s added to model.", type, comp.GetName().c_str());
+         Message("Prototype %s added to model.", comp.GetName().c_str());
+      }
+   }
+
+   void Model::AddComponent(Component & comp)
+   {
+      std::pair<ComponentMap::iterator, bool> result = compMap_.insert(
+            make_pair(comp.GetName(), &comp));
+      if (result.second == 0) {
+         Error("Component %s already exists in model!", comp.GetName().c_str());
+      }
+      else
+      {
+         comp.Initialize(startTime_);
+         compVec_.push_back(&comp);
+         Message("Component %s added to model.", comp.GetName().c_str());
       }
    }
 }

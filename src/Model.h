@@ -53,7 +53,27 @@ namespace SmartGridToolbox
             endTime_ = endTime;
          }
 
-         void AddComponent(Component & comp, bool isPrototype = false);
+         void AddPrototype(Component & comp);
+
+         template<typename T> const T * 
+            GetPrototypeNamed(const std::string & name) const
+         {
+            ComponentMap::const_iterator it = protoMap_.find(name);
+            return (it == protoMap_.end()) 
+               ? 0 : dynamic_cast<const T *>(it->second);
+         }
+         template<typename T> T * GetPrototypeNamed(const std::string & name)
+         {
+            return const_cast<T *>((const_cast<const Model *>(this))->
+                  GetPrototypeNamed<T>(name));
+         }
+
+         int NPrototypes()
+         {
+            return protoMap_.size();
+         }
+
+         void AddComponent(Component & comp);
 
          template<typename T> const T * 
             GetComponentNamed(const std::string & name) const
@@ -62,7 +82,6 @@ namespace SmartGridToolbox
             return (it == compMap_.end()) 
                ? 0 : dynamic_cast<const T *>(it->second);
          }
-
          template<typename T> T * GetComponentNamed(const std::string & name)
          {
             return const_cast<T *>((const_cast<const Model *>(this))->
@@ -93,10 +112,9 @@ namespace SmartGridToolbox
          std::string name_;
          ptime startTime_;
          ptime endTime_;
+         ComponentMap protoMap_;
          ComponentMap compMap_;
          ComponentVec compVec_;
-         ComponentMap protoMap_;
-         ComponentVec protoVec_;
    };
 }
 
