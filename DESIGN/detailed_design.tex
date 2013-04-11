@@ -1,0 +1,134 @@
+\documentclass[12pt]{article}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{url}
+
+\newcommand{\itm}[1]{\begin{itemize}#1\end{itemize}}
+
+\title{Detailed Design Document for a Microgrid Simulation}
+\author{Dan Gordon}
+\date{\today}
+\begin{document}
+\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+\section{Introduction}
+After using gridlab-d and implementing a test case (randomized load control), it has been decided that converting GLD into a general purpose API would be a less attractive option than writing a new API that borrows freely from GLD.
+
+Given time constraints, the overall plan will be to implement a relatively sparse API using existing software components. Thus, vector/matrix algebra will be handled by Boost uBLAS, random number generation and distributions will be handled by Boost random, date handling will be handled by Boost gregorian, and data input will be in the JSON format and will be handled by the cajun library.  A Newton/Raphson solver will be imported, either by 
+
+\section{Components}
+
+\subsection{Complex numbers}
+Use \verb|std::complex<double>|
+
+\subsection{Vector/matrix/linear algebra library and interface}
+\itm{
+	\item Boost uBLAS is default choice. It Uses expression templates - should be fast.
+	\item Also look at Blitz++/IT++/Armadillo++ if there is some problem with this.
+}
+
+\subsection{Random numbers}
+\itm{
+	\item Use Boost random.
+	\itm{
+		\item A range of discrete and continuous distributions available.
+		\item Already essentially implemented!
+	}
+}
+
+\subsection{Dates and times}
+\itm{
+	\item Finest resolution based on a 50~Hz frequency i.e. a 20~ms period. So a 1 ms resolution is probably reasonable, but only just. Recommend using at least 64 bits of storage.
+	\item Use boost::gregorian to manage dates.
+	\item Use basic boost rules for parsing dates : 2012-01-27 14:23:00
+	\item Initial implementation will ignore DST and will assume all dates and times are wrt. local time.
+	\item Later, can add in boost \texttt{local\_date\_time} fairly easily.
+}
+
+\subsection{Schedules}
+\itm{
+	\item Initially, all data should just be provided as a list of time/value pairs, generated e.g. by matlab. Interpolation shall be used where required.
+	\item However, we will want to eventually include schedules as a way of generating values that vary over time. Possibly outsource this to a higher level. However, I don't believe C++ library is available for chron style times.
+}
+
+\subsection{Data input}
+\itm{
+	\item Data input format will be YAML
+	\itm{
+		\item More human readable than JSON or XML
+	}
+	\item C++ library available - yaml-cpp
+	\item (Next alternative would be JSON with cajun C++ library).
+	\item Need to design a basic schema
+	\item Delegate clever model generation features, such as arrays of houses etc., to the user. Scripts will be written in e.g. python.
+	\item Need to include ability to read auxiliary files containing e.g. schedule information. Like loading a matrix from a file in matlab.
+}
+
+\subsection{Component management}
+\itm{
+	\item Already started to implement
+	\item Copy basic GLD synchronisation. But hybridise this with a event listener mechanism.
+	\item Each object can register listeners to various events. Model on GUI concepts.
+	\item Think about properties vs. events...
+	\item Think about limitations of GLD properties mechanism.
+}
+
+\subsection{Simulation management}
+\itm{
+	\item Timestamp is an integer.
+	\item Timestep resolution is configurable - could be seconds/miliseconds.
+	\item Copy GLD basic mechanism, with added event processing.
+}
+
+\subsection{Solvers}
+\itm{
+	\item Powerflow solver capable of dealing with network
+	\item At the risk of regretting this, we will initially ignore the issue of a single slack bus for an islanded microgrid. See Appendix A
+	\item Implement NR method by copying simple code from GLD first.
+	\item At a later date other solvers might be implemented.
+}
+
+\subsection{Climate modelling}
+\itm{
+	\item Talk to Paul
+	\item Lift code from Gridlab-D (but this will not apply to Aus)
+}
+
+\subsection{Network modelling}
+\itm{
+	\item Always assume unbalanced
+	\item Lines: use simplest useable model initially
+	\item Transformers: lift from GLD
+	\item Switches
+	\item Generic loads
+}
+
+\subsection{Houses and buildings}
+\itm{
+	\item LANL simple building with HVAC model first.
+	\item House: lift wholesale from GLD
+	\item Use generic appliance model using markov chains etc. Lift data from GLD.
+}
+\subsection{DER}
+\itm{
+	\item Battery - from GLD
+	\item Solar - from GLD
+	\item Diesel - from GLD
+	\item Wind - from GLD
+	\item EV - Battery on wheels?
+	\item Later, can do CHP etc.
+}
+\subsection{Control / demand etc.}
+\itm{
+	\item Electricity consumption can have a time varying cost, as a built in?
+	\item Control relies on efficient object management and event processing.
+}
+
+Appendix A: Power flow modelling in a networked system or islanded microgrid
+
+The first point to understand here is that we are dealing with a modelling problem rather than a calculation problem. The traditional powerflow problem starts with the definition S = IV
+
+\end{document}
