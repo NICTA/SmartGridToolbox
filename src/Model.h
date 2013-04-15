@@ -17,6 +17,10 @@ namespace SmartGridToolbox
    class Model
    {
       public:
+         typedef std::map<std::string, Component *> ComponentMap;
+         typedef std::vector<Component *> ComponentVec;
+
+      public:
          /// Default constructor.
          Model() : name_("null")
          {
@@ -33,24 +37,6 @@ namespace SmartGridToolbox
          const void SetName(const std::string & name)
          {
             name_ = name;
-         }
-
-         const ptime & GetStartTime() const
-         {
-            return startTime_;
-         }
-         const void SetStartTime(const ptime & startTime)
-         {
-            startTime_ = startTime;
-         }
-
-         const ptime & GetEndTime() const
-         {
-            return endTime_;
-         }
-         const void SetEndTime(const ptime & endTime)
-         {
-            endTime_ = endTime;
          }
 
          void AddPrototype(Component & comp);
@@ -71,6 +57,24 @@ namespace SmartGridToolbox
          int NPrototypes()
          {
             return protoMap_.size();
+         }
+
+         ComponentVec::const_iterator beginPrototype() const
+         {
+            return protoVec_.begin();
+         }
+         ComponentVec::iterator beginPrototype()
+         {
+            return protoVec_.begin();
+         }
+
+         ComponentVec::const_iterator endPrototype() const
+         {
+            return protoVec_.end();
+         }
+         ComponentVec::iterator endPrototype()
+         {
+            return protoVec_.end();
          }
 
          void AddComponent(Component & comp);
@@ -104,15 +108,28 @@ namespace SmartGridToolbox
                   GetComponentNum<T>(i));
          }
 
-      private:
-         typedef std::map<std::string, Component *> ComponentMap;
-         typedef std::vector<Component *> ComponentVec;
+         ComponentVec::const_iterator beginComponent() const
+         {
+            return compVec_.begin();
+         }
+         ComponentVec::iterator beginComponent()
+         {
+            return compVec_.begin();
+         }
+
+         ComponentVec::const_iterator endComponent() const
+         {
+            return compVec_.end();
+         }
+         ComponentVec::iterator endComponent()
+         {
+            return compVec_.end();
+         }
 
       private:
          std::string name_;
-         ptime startTime_;
-         ptime endTime_;
          ComponentMap protoMap_;
+         ComponentVec protoVec_;
          ComponentMap compMap_;
          ComponentVec compVec_;
    };

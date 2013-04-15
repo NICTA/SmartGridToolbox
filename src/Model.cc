@@ -18,7 +18,8 @@ namespace SmartGridToolbox
       }
       else
       {
-         comp.Initialize(startTime_);
+         comp.Initialize(not_a_date_time);
+         protoVec_.push_back(&comp);
          Message("Prototype %s added to model.", comp.GetName().c_str());
       }
    }
@@ -32,7 +33,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         comp.Initialize(startTime_);
+         comp.Initialize(not_a_date_time);
          compVec_.push_back(&comp);
          Message("Component %s added to model.", comp.GetName().c_str());
       }

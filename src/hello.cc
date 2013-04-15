@@ -1,9 +1,10 @@
 #include "Common.h"
-#include "Model.h"
 #include "Component.h"
+#include "Model.h"
 #include "Output.h"
 #include "Parser.h"
 #include "Random.h"
+#include "Simulation.h"
 #include <string>
 #include <iostream>
 
@@ -40,8 +41,9 @@ class TestCompB : public Component
 int main()
 {
    Model mod;
+   Simulation sim(mod);
    Parser parser;
-   parser.Parse("sample_config.yaml", mod);
+   parser.Parse("sample_config.yaml", mod, sim);
 
    mod.AddComponent(*(new TestCompA("tca1")));
    mod.AddComponent(*(new TestCompB("tcb1")));

@@ -25,7 +25,7 @@ namespace SmartGridToolbox
 
          /// Reset state of the object, time to timestamp t.
          /** @param t */
-         virtual void Initialize(const ptime t)
+         virtual void Initialize(const ptime t = not_a_date_time)
          {
             t_ = t;
          }

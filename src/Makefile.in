@@ -64,7 +64,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_hello_OBJECTS = Model.$(OBJEXT) Output.$(OBJEXT) Parser.$(OBJEXT) \
-	Random.$(OBJEXT) hello.$(OBJEXT)
+	Random.$(OBJEXT) Simulation.$(OBJEXT) hello.$(OBJEXT)
 hello_OBJECTS = $(am_hello_OBJECTS)
 hello_DEPENDENCIES =  \
 	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
@@ -211,7 +211,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 CFLAGS = 
-hello_SOURCES = Model.cc Output.cc Parser.cc Random.cc hello.cc
+hello_SOURCES = Model.cc Output.cc Parser.cc Random.cc Simulation.cc hello.cc
 hello_LDADD = ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
 				  /usr/local/lib/libboost_date_time-mt.a
 
@@ -305,6 +305,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Output.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Simulation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hello.Po@am__quote@
 
 .cc.o:

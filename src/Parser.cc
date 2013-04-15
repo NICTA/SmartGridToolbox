@@ -1,28 +1,31 @@
-#include "Parser.h"
 #include "Common.h"
 #include "Output.h"
+#include "Parser.h"
+#include "Simulation.h"
 #include <string>
 
 namespace SmartGridToolbox
 {
-   void Parser::Parse(const char * fname, Model & model)
+   void Parser::Parse(const char * fname, Model & model, 
+                      Simulation & simulation)
    {
       Message("Started parsing.");
       const YAML::Node & top = YAML::LoadFile(fname);
 
-      ParseGlobal(top, model);
+      ParseGlobal(top, model, simulation);
       ParseObjects(top, model, true);
       ParseObjects(top, model, false);
 
       Message("Finished parsing.");
       Message("Name = %s", model.GetName().c_str());
       Message("Start time = %s", 
-            to_simple_string(model.GetStartTime()).c_str());
+            to_simple_string(simulation.GetStartTime()).c_str());
       Message("End time = %s", 
-            to_simple_string(model.GetEndTime()).c_str());
+            to_simple_string(simulation.GetEndTime()).c_str());
    }
 
-   void Parser::ParseGlobal(const YAML::Node & top, Model & model)
+   void Parser::ParseGlobal(const YAML::Node & top, Model & model,
+                            Simulation & simulation)
    {
       if (const YAML::Node & nodeA = top["global"]) 
       {
@@ -39,7 +42,8 @@ namespace SmartGridToolbox
          {
             try 
             {
-               model.SetStartTime(time_from_string(nodeB.as<std::string>()));
+               simulation.SetStartTime(
+                     time_from_string(nodeB.as<std::string>()));
             }
             catch (...)
             {
@@ -55,7 +59,8 @@ namespace SmartGridToolbox
          {
             try 
             {
-               model.SetEndTime(time_from_string(nodeB.as<std::string>()));
+               simulation.SetEndTime(
+                     time_from_string(nodeB.as<std::string>()));
             }
             catch (...)
             {

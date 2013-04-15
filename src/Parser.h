@@ -7,11 +7,15 @@
 
 namespace SmartGridToolbox
 {
+   class Simulation;
+
    class Parser {
       public:
-         void Parse(const char * fname, Model & model);
+         void Parse(const char * fname, Model & model,
+                    Simulation & simulation);
       private:
-         void ParseGlobal(const YAML::Node & top, Model & model);
+         void ParseGlobal(const YAML::Node & top, Model & model,
+                          Simulation & simulation);
          void ParseObjects(const YAML::Node & top, Model & model,
                            bool isPrototype);
    };
