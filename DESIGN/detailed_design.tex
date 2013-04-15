@@ -2,10 +2,11 @@
 \usepackage{soul}
 \usepackage{graphicx}
 \usepackage{url}
+\usepackage[parfill]{parskip}
 
 \newcommand{\itm}[1]{\begin{itemize}#1\end{itemize}}
 
-\title{Detailed Design Document for a Microgrid Simulation}
+\title{Design Document for a Microgrid Simulation}
 \author{Dan Gordon}
 \date{\today}
 \begin{document}
@@ -15,86 +16,137 @@
 %\end{abstract}
 
 \section{Introduction}
-After using gridlab-d and implementing a test case (randomized load control), it has been decided that converting GLD into a general purpose API would be a less attractive option than writing a new API that borrows freely from GLD.
+This document sets out the general design for a microgrid simulator to be built for NICTA. Initially, it seemed to be a very attractive option to build an API for a microgrid simulation that was based on Gridlab-D. Gridlab-D is an advanced simulation of distribution grids that includes many of the features that might be desired in such a simulator. It has had many man years of work put into it. Given the resources available (1 person, 1 year), it would be impossible to replicate such an effort. 
 
-Given time constraints, the overall plan will be to implement a relatively sparse API using existing software components. Thus, vector/matrix algebra will be handled by Boost uBLAS, random number generation and distributions will be handled by Boost random, date handling will be handled by Boost gregorian, and data input will be in the JSON format and will be handled by the cajun library.  A Newton/Raphson solver will be imported, either by 
+Despite these considerations, after using Gridlab-D and implementing a test case (randomized load control), it has been decided that converting GLD into a general purpose API would be a less attractive option than writing a new API that borrows freely from GLD. Essentially, Gridlab-D does not lend itself to use as a general API, for reasons that will be explained.
 
-\section{Components}
+The Gridlab-D architecture is built around a core, written in C but making extensive use of a large and sophisticated library of preprocessor macros. These macros in essence form a ``Gridlab-D'' programming language. The main feature of this language is the ability for objects to bind to properties and methods of other objects at runtime, without knowing anything about these objects. This ``runtime binding'' makes using Gridlab-D similar to programming in, say, Objective-C, although the Objective-C syntax is much cleaner due to limitations of working with the C preprocessor.
+
+There are various advantages to this approach. One of the main ones is that it offers enormous opportunities for the user to create complex behaviours by cleverly writing configuration files. For example, when an object requires access to a floating point value (e.g. the power output), a floating point property of any other object may be used. So, for example, the power output of an appliance could be easily linked to a schedule. For this reason, Gridlab-D can tackle many interesting cases just by writing configuration files - which are therefore themselves somewhat like computer programs, in that they invite a certain universality. However, there is a limit to how much one can achieve using this kind of approach.
+
+Another way to enable universality is to provide a lower level API, and let the user have more access to the ``nuts and bolts'' from within the chosen language. Think of the API as providing components of a machine that can be put together in many interesting ways, as opposed to Gridlab-D, which provides the whole machine, along with a sophisticated set of controls that can be used to produce interesting behaviours. Although it is obviously possible to write new classes for Gridlab-D, experience shows that there is a certain amount of baggage that goes along with maintaining Gridlab-D's sophisticated approach to runtime binding, etc. Furthermore, since Gridlab-D is in some ways like its own programming language, there is a fairly steep learning curve that goes with extending it. Finally, even though Gridlab-D has much code that is written in C++, the low level C core means that in fact using many standard C++ features (such as the STL containers) can create insidious bugs. In effect, Gridlab-D ``breaks'' C++.
+
+Thus, experience suggests two courses of action. In the first, Gridlab-D is accepted for what it is, and more or less used as intended. Perhaps, some new components could be written for modelling microgrids. Certainly, its use could be documented better. Effectively, we would end up with an expanded version of Gridlab-D that has been somewhat specialised to microgrids.
+
+Alternatively, a new C++ API could be built, making extensive use of Gridlab-D. For example, the details of transformers, lines etc. could be lifted wholesale from Gridlab-D and converted into the new API. Appliance and generator models could similarly be reused. This API would lack much of the sophistication and scope of Gridlab-D, but it is hoped that it will be in some ways more flexible and will offer a less steep learning curve.
+
+Given time constraints, it is proposed that a relatively sparse API shall be implemented, using existing software components. Thus, vector/matrix algebra will be handled by Boost uBLAS, random number generation and distributions will be handled by Boost random, date handling will be handled by Boost gregorian, and data input will be in the YAML format and will be handled by the yaml-cpp library.  A Newton/Raphson solver will be imported, either by directly copying from Gridlab-D or from existing code (there are several matlab implementations available, for example). The new API is tentatively named ``SmartGridToolbox''. Work has already started on it, and in the next section, the current development status of various tasks is noted. Existing work on Gridlab-D shall be documented, and Gridlab-D will be retained as an alternative tool that may prove more useful in certain situations.
+
+\section{Naming}
+It is proposed that the new API be named ``SmartGridToolbox''. Although it will be oriented toward microgrids, in reality the boundary between microgrids and other smart grid technologies is blurred, and thus we retain a more general name.
+
+\section{Overall Architecture}
+The main simulation will be stored in an object called the ``Model''. The elements of the simulation, such as houses, electrical transformers, lines, appliances, generators etc. will all derive from an abstract ``Component'' class. The Model is responsible for the storage and lifecycle of all the components in the simulation. The components are referenced by a primary key, their name. It is possible to access a component at runtime by its name.
+
+There will also be a ``Simulation'' object that is responsible for the passage of time. The simulation method will closely parallel that of Gridlab-D, with some differences. It will be event based. At each timestep, every component will be asked to update its state to the current time. An initial pass will be carried out, in which the components essentially do any work that is independent of the current state of the other components to update their state. During this pass, components will be able to register events (e.g. for a HVAC system, ``HeatingJustTurnedOn''), that will be broadcast to any other components that have registered as being listeners to this event type. The first pass will complete before any such events are broadcast.
+
+During the second update pass, the stored events will be broadcast. Any component that receives an event will be given the opportunity to update its state, and, possibly, broadcast more events to be processed in the next iteration. This process can go on until there are no more events to be processed.
+
+A final pass will then be carried out, giving objects a chance to finalise their state, given that there are no more events to be processed. At the end of this pass, each object returns the expected time of its next update. The actual time of the next update is calculated as the minimum of all these values.
+
+[Note - we have an opportunity here to introduce a further level of sophistication: using the minimum update time as above and then forcing every object to update its state may be inefficient. Instead, only those objects that need to be updated would be dealt with at the given timestep. For example, a house signals that it will update its temperature in five minutes. At that time, the HVAC system, which is a registered listener to a "HouseTempChanged" event, will be informed, and will likewise update its state. But at this time, a diesel generator, which is running at a constant rate, will not update its state.].
+
+Time will be stored in a large integer. Unlike Gridlab-D, SmartGridToolbox will use a sub second time resolution (microseconds). This is to allow for a more natural treatment of sub-second physics based dynamics of components. Gridlab-D has a nascent ``delta mode'' to deal with this, but having a separate mode seems like a clunky afterthought.
+
+\section{Libraries, platform and language standard}
+The library will be implemented in C++11, and will make use of recent extensions to the standard library. This should be no problem for most Linux and Mac platforms. Windows should be OK too, although at this stage we are not making any special effort to support it. Due to its ubiquity and high quality, various of the Boost libraries will be used, e.g. for numerical work, dates and times etc. In the absence of a compelling reason to use another library, we will use boost to simplify the build process. The YAMP-cpp library will be used to parse YAML configuration files.
+
+\section{APIs}
+The main API will be C++. Additional APIs for Matlab/Octave and Python should also be given a high priority. At this stage, no other APIs are envisaged.
+
+\section{Support for optimization}
+Some kind of linkage to Gurobi might be good. At this stage, more information is needed.
+
+\section{Components and Architecture}
+
+\subsection{Unit testing}
+\itm{
+	\item Use the boost unit testing library.
+	\item Status: test directory set up, example tests implemented.
+}
 
 \subsection{Complex numbers}
-Use \verb|std::complex<double>|
+\itm{
+	\item Use \texttt{std::complex<double>}
+	\item Status: Trivial, done.
+}
 
 \subsection{Vector/matrix/linear algebra library and interface}
 \itm{
-	\item Boost uBLAS is default choice. It Uses expression templates - should be fast.
+	\item Boost uBLAS is default choice. It uses expression templates - should be fast.
 	\item Also look at Blitz++/IT++/Armadillo++ if there is some problem with this.
+	\item Status: Added, tests not implemented.
 }
 
 \subsection{Random numbers}
 \itm{
 	\item Use Boost random.
-	\itm{
-		\item A range of discrete and continuous distributions available.
-		\item Already essentially implemented!
-	}
+	\item A range of discrete and continuous distributions available.
+	\item Status: various common distributions already included, tests not implemented.
 }
 
 \subsection{Dates and times}
 \itm{
-	\item Finest resolution based on a 50~Hz frequency i.e. a 20~ms period. So a 1 ms resolution is probably reasonable, but only just. Recommend using at least 64 bits of storage.
-	\item Use boost::gregorian to manage dates.
+	\item The finest resolution should be based on a 50~Hz frequency i.e. a 20~ms period. So a 1 ms resolution is probably reasonable, but only just. It is recommended to use at least 64 bits of storage, meaning that there will be no conceivable chance of a time overflow.
+	\item \texttt{boost::posix\_time} handles these requirements.
+	\item Use \texttt{boost::gregorian} to manage dates.
 	\item Use basic boost rules for parsing dates : 2012-01-27 14:23:00
-	\item Initial implementation will ignore DST and will assume all dates and times are wrt. local time.
-	\item Later, can add in boost \texttt{local\_date\_time} fairly easily.
+	\item Initial implementation will ignore DST and will assume all dates and times are wrt. local time. Later, can add in boost \texttt{local\_date\_time} fairly easily.
+	\item Status: essentially already implemented, timezone and DST yet to be included, tests not written.
 }
 
 \subsection{Schedules}
 \itm{
 	\item Initially, all data should just be provided as a list of time/value pairs, generated e.g. by matlab. Interpolation shall be used where required.
 	\item However, we will want to eventually include schedules as a way of generating values that vary over time. Possibly outsource this to a higher level. However, I don't believe C++ library is available for chron style times.
+	\item Status: not started.
 }
 
 \subsection{Data input}
 \itm{
-	\item Data input format will be YAML
-	\itm{
-		\item More human readable than JSON or XML
-	}
-	\item C++ library available - yaml-cpp
-	\item (Next alternative would be JSON with cajun C++ library).
-	\item Need to design a basic schema
+	\item Data input format will be YAML, primarily as it is more human readable than JSON or XML but still standard.
+	\item C++ library available - YAML-cpp.
+	\item Need to design a basic schema - some work already done in \texttt{src/sample\_config.yaml}.
 	\item Delegate clever model generation features, such as arrays of houses etc., to the user. Scripts will be written in e.g. python.
 	\item Need to include ability to read auxiliary files containing e.g. schedule information. Like loading a matrix from a file in matlab.
+	\item Status: basic parser functionality already implemented, some design and implementation yet to be carried out, tests not written.
+}
+
+\subsection{ODE solver}
+\itm{
+	\item \texttt{Use boost::odeint}.
+	\item Status: added, not used, mock test implemented but will be replaced with a proper test.
 }
 
 \subsection{Component management}
 \itm{
-	\item Already started to implement
-	\item Copy basic GLD synchronisation. But hybridise this with a event listener mechanism.
-	\item Each object can register listeners to various events. Model on GUI concepts.
-	\item Think about properties vs. events...
-	\item Think about limitations of GLD properties mechanism.
+	\item Provided by a \texttt{Model} class. 
+	\item Status: basic \texttt{Model} class implemented, but much design and implementation yet to be done.
 }
 
 \subsection{Simulation management}
 \itm{
-	\item Timestamp is an integer.
-	\item Timestep resolution is configurable - could be seconds/miliseconds.
+	\item Provided by a Simulation class
 	\item Copy GLD basic mechanism, with added event processing.
+	\item Each object can register listeners to various events. Model based on GUI concepts.
+	\item Think about properties vs. events, how to transmit data...
+	\item Status: basic time propagation mechanism started, mock example written.
 }
 
 \subsection{Solvers}
 \itm{
-	\item Powerflow solver capable of dealing with network
-	\item At the risk of regretting this, we will initially ignore the issue of a single slack bus for an islanded microgrid. See Appendix A
+	\item Powerflow solver capable of dealing with network.
+	\item At the risk of regretting this, we will initially ignore the issue of a single slack bus for an islanded microgrid. See Appendix A.
 	\item Implement NR method by copying simple code from GLD first.
 	\item At a later date other solvers might be implemented.
+	\item Status: not started.
 }
 
 \subsection{Climate modelling}
 \itm{
-	\item Talk to Paul
-	\item Lift code from Gridlab-D (but this will not apply to Aus)
+	\item Talk to Paul.
+	\item Lift code from Gridlab-D (but this will not apply to Aus).
+	\item Status: not started.
 }
 
 \subsection{Network modelling}
@@ -104,6 +156,7 @@ Use \verb|std::complex<double>|
 	\item Transformers: lift from GLD
 	\item Switches
 	\item Generic loads
+	\item Status: some design notes have been made, a few classes sketched out.
 }
 
 \subsection{Houses and buildings}
@@ -111,6 +164,7 @@ Use \verb|std::complex<double>|
 	\item LANL simple building with HVAC model first.
 	\item House: lift wholesale from GLD
 	\item Use generic appliance model using markov chains etc. Lift data from GLD.
+	\item Status: LANL example done in matlab, will be copied over.
 }
 \subsection{DER}
 \itm{
@@ -120,15 +174,74 @@ Use \verb|std::complex<double>|
 	\item Wind - from GLD
 	\item EV - Battery on wheels?
 	\item Later, can do CHP etc.
+	\item Status: not started (except for matlab LANL example code).
 }
+
 \subsection{Control / demand etc.}
 \itm{
 	\item Electricity consumption can have a time varying cost, as a built in?
 	\item Control relies on efficient object management and event processing.
+	\item Status: not started, design needed.
 }
+\newpage
+\section{Appendix A: Sample input file}
+\begin{verbatim}
+# Sample SmartGridToolbox configuration file.
+# File format is YAML.
 
-Appendix A: Power flow modelling in a networked system or islanded microgrid
+--- # Marks the start of each configuration document.
 
-The first point to understand here is that we are dealing with a modelling problem rather than a calculation problem. The traditional powerflow problem starts with the definition S = IV
+global:
+   configuration_name:        config_1
+   start_time:                2013-01-23 13:13:00
+   end_time:                  2013-01-23 15:13:00
 
+prototypes: # These define object types, for convenience.
+   line:
+      name:                   line_type_1 
+      admittance:             
+         data:                [[12+3i,   1+1i,    1+2i,    0],
+                               [0,       1+1i,    1+2i,    3+7i],
+                               [0,       1+1i,    1+2i,    3+7i],
+                               [0,       1+1i,    1+2i,    3+7i]]
+   
+   line:
+      name:                   line_type_2
+      admittance:
+         file:                admit_2 
+
+objects: # And these are the actual objects.
+      house:
+         name:                house_1
+         area_sqm:            25.0
+         heating_type:        hvac
+
+      house:
+         name:                house_2
+         area_sqm:            28.0
+         heating_type:        hvac
+
+      bus:
+         name:                bus_1
+         bus_type:            PV # Generator bus
+         constant_real_power: 3
+
+      bus:
+         name:                bus_2
+         bus_type:            PQ 
+         phases:              ABCN
+
+      line:
+         name:                line_1_2
+         bus_1:               bus_1
+         bus_2:               bus_2
+         prototype:           line_type_1
+
+--- # Marks the end of each configuration document.
+\end{verbatim}
+
+%Appendix A: Power flow modelling in a networked system or islanded microgrid
+%
+%The first point to understand here is that we are dealing with a modelling problem rather than a calculation problem. The traditional powerflow problem starts with the definition S = IV
+%
 \end{document}
