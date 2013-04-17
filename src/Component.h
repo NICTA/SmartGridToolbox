@@ -2,6 +2,7 @@
 #define COMPONENT_DOT_H
 
 #include <string>
+#include <vector>
 #include "Common.h"
 
 namespace SmartGridToolbox
@@ -23,13 +24,6 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         /// Reset state of the object, time to timestamp t.
-         /** @param t */
-         virtual void Initialize(const ptime t = not_a_date_time)
-         {
-            t_ = t;
-         }
-
          /// Get the name of the object.
          const std::string & GetName() const
          {
@@ -42,13 +36,29 @@ namespace SmartGridToolbox
             return t_;
          }
 
+         /// Reset state of the object, time to timestamp t.
+         /** @param t */
+         virtual ptime Initialize(const ptime t = not_a_date_time)
+         {
+            t_ = t;
+            return not_a_date_time;
+         }
+
          /// Bring state up to time t.
-         /** @param t the initial timestamp */
+         /** @param t the timestamp to advance to. */
          virtual void AdvanceToTime(ptime t) = 0;
+
+         /// Dependents update after I update.
+         void AddDependent(Component & dependent)
+         {
+            dependents_.push_back(&dependent);
+         }
 
       private:
          std::string name_;
          ptime t_;
+         std::vector<Component *> dependents_;
+         int rank_;  // Evaluation rank, based on weak ordering.
    };
 }
 

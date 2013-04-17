@@ -10,6 +10,10 @@ Functions are UpperCamelCase.
 
 Member variables are lowerCamelCase_
 
+Variables are lowerCamelCase
+
+Arguments are lowerCamelCase.
+
 Class name using acronym, e.g. ABC => AbstractAbcClass.
 
 Global constants are named as gGlobalConstant.
@@ -27,10 +31,9 @@ Function F()
 Filenames for classes start with a capital, like the class.  ClassName.h,
 ClassName.cc
 
-
 Pass and return by reference, except where you *have to* use a pointer.
 
 Errors etc. are called through the Error(), Warning(), Message(), Debug()
-fucntions, declared in Output.h.  
+funcntions, declared in Output.h.  
 
 Floating point generally uses double. Integer types are generally int.

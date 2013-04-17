@@ -127,6 +127,10 @@ namespace SmartGridToolbox
          }
 
       private:
+         void OrderComponents(); 
+            // Produce weak ordering based on reachability.
+
+      private:
          std::string name_;
          ComponentMap protoMap_;
          ComponentVec protoVec_;
