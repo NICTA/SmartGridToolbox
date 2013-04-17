@@ -20,21 +20,16 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
 
    g.WeakOrder();
 
-   int idx[6];
-   for (int i = 0; i < 6; ++i)
-   {
-      idx[i] = g[i].idx_;
-   }
    cout << "Precedes: " << endl;
    cout << "   ";
    for (int i = 0; i < 6; ++i)
    {
-      cout << " " << idx[i]; 
+      cout << " " << g[i].GetIndex(); 
    }
    cout << endl;
    for (const WONode * nd1 : g)
    {
-      cout << nd1->idx_ << "   ";
+      cout << nd1->GetIndex() << "   ";
       for (const WONode * nd2 : g)
       {
          std::cout << nd1->Precedes(*nd2) << " ";
@@ -46,24 +41,24 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    cout << "   ";
    for (int i = 0; i < 6; ++i)
    {
-      cout << " " << idx[i]; 
+      cout << " " << g[i].GetIndex(); 
    }
    cout << endl;
    for (const WONode * nd1 : g)
    {
-      cout << nd1->idx_ << "   ";
+      cout << nd1->GetIndex() << "   ";
       for (const WONode * nd2 : g)
       {
          std::cout << nd1->Dominates(*nd2) << " ";
       }
       std::cout << endl;
    }
-   BOOST_CHECK(g[0]-> == 3);
-   BOOST_CHECK(g[1] == 3);
-   BOOST_CHECK(g[2] == 3);
-   BOOST_CHECK(g[3] == 3);
-   BOOST_CHECK(g[4] == 3);
-   BOOST_CHECK(g[5] == 3);
+   BOOST_CHECK(g[0].GetIndex() == 3);
+   BOOST_CHECK(g[1].GetIndex() == 4);
+   BOOST_CHECK(g[2].GetIndex() == 1);
+   BOOST_CHECK(g[3].GetIndex() == 0);
+   BOOST_CHECK(g[4].GetIndex() == 5);
+   BOOST_CHECK(g[5].GetIndex() == 2);
 }
    
 BOOST_AUTO_TEST_SUITE_END( )
