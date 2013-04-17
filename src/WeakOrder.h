@@ -39,6 +39,8 @@ namespace SmartGridToolbox
                     ((!lhs.Dominates(rhs)) && (lhs.idx_ < rhs.idx_)));
          }
 
+      private:
+
          int idx_;
          bool visited_;
          std::list<WONode *> to_;
