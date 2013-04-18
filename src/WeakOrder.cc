@@ -12,48 +12,27 @@ namespace SmartGridToolbox
 {
    void WONode::DFS(std::vector<WONode *> & stack)
    {
-      in_stack_ = true;
       static int level = 0;
       ++level;
-      prlevel(level - 1); cout << "DFS " << idx_ << " {" << endl;
-      if (!finished_)
+
+      if (!visited_)
       {
-         bool all_finished = true;
          visited_ = true;
-         for (WONode * nd : to_)
+         prlevel(level - 1); cout << "DFS " << idx_ << " {" << endl;
+         for (WONode * predecessor : stack)
          {
-            if (!nd->in_stack_ && !nd->finished_)
-            {
-               nd->DFS(stack);
-               if (nd->finished_)
-               {
-                  nd->just_finished_ = true;
-               }
-               else
-               {
-                  all_finished = false;
-               }
-            }
+            prlevel(level); cout << predecessor->idx_ << " precedes " << idx_ << endl;
+            predecessor->descendents_.insert(this);
          }
-         for (WONode * nd : to_)
+         stack.push_back(this);
+         for (WONode * toNd : to_)
          {
-            descendents_.insert(nd);
-            prlevel(level); cout << "->   " << nd->idx_ << endl;
-            if (!nd->in_stack_)
-            {
-               for (const WONode * ndb : nd->descendents_)
-               {
-                  descendents_.insert(ndb);
-                  prlevel(level); cout << "->-> " << ndb->idx_ << endl;
-               }
-            }
-            nd->just_finished_ = false;
+            toNd->DFS(stack);
          }
-         finished_ = all_finished;
+         stack.pop_back();
+         prlevel(level - 1); cout << "}" << endl;
       }
-      prlevel(level - 1); cout << "} " << finished_ << endl;
       --level;
-      in_stack_ = false;
    }
 
    WOGraph::WOGraph(int n) : n_(n), nodes_(n)
@@ -77,17 +56,10 @@ namespace SmartGridToolbox
       std::vector<WONode *> stack;
       // First do a DFS to induce an order on the nodes.
       bool done = false; 
-      while (!done)
+      done = true;
+      for (WONode * nd : nodes_)
       {
-         done = true;
-         for (WONode * nd : nodes_)
-         {
-            nd->DFS(stack);
-            if (!nd->finished_)
-            {
-               done = false;
-            }
-         }
+         nd->DFS(stack);
          for (WONode * nd : nodes_)
          {
             nd->visited_ = false;

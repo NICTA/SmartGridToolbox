@@ -9,11 +9,7 @@ namespace SmartGridToolbox
       friend class WOGraph;
 
       public:
-         WONode(int idx) : idx_(idx), 
-                           visited_(false), 
-                           finished_(false), 
-                           just_finished_(false),
-                           in_stack_(false)
+         WONode(int idx) : idx_(idx), visited_(false)
          {
             // Empty.
          }
@@ -47,9 +43,6 @@ namespace SmartGridToolbox
 
          int idx_;
          bool visited_;
-         bool finished_;
-         bool just_finished_;
-         bool in_stack_;
          std::list<WONode *> to_;
          std::set<const WONode *> descendents_;
          std::set<const WONode *> dominated_;
