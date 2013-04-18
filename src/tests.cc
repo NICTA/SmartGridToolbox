@@ -8,7 +8,7 @@ BOOST_AUTO_TEST_SUITE (tests) // Name of test suite is test_template.
 
 BOOST_AUTO_TEST_CASE (test_weak_order)
 {
-   WOGraph g(6);
+   WoGraph g(6);
    g.Link(3, 1);
    g.Link(4, 1);
    g.Link(0, 4);
@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    g.Link(0, 5);
    g.Link(5, 2);
    // Order should be 3, (4, 1, 0), 5, 2.
-   g.WeakOrder();
+   g.weakOrder();
    for (int i = 0; i < g.Size(); ++i)
    {
       cout << " " << g[i].Index() << endl;
@@ -30,10 +30,10 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
       cout << " " << g[i].Index(); 
    }
    cout << endl << endl;
-   for (const WONode * nd1 : g)
+   for (const WoNode * nd1 : g)
    {
       cout << nd1->Index() << "   ";
-      for (const WONode * nd2 : g)
+      for (const WoNode * nd2 : g)
       {
          std::cout << nd1->Dominates(*nd2) << " ";
       }

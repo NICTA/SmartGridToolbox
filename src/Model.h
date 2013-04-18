@@ -31,66 +31,53 @@ namespace SmartGridToolbox
          /// Destructor.
          ~Model();
 
-         const std::string & Name() const
+         const std::string & getName() const
          {
             return name_;
          }
-         const void SetName(const std::string & name)
+         const void setName(const std::string & name)
          {
             name_ = name;
          }
 
-         void AddPrototype(Component & comp);
+         void addPrototype(Component & comp);
 
          template<typename T> const T * 
-            PrototypeNamed(const std::string & name) const
+            getPrototypeNamed(const std::string & name) const
          {
             ComponentMap::const_iterator it = protoMap_.find(name);
             return (it == protoMap_.end()) 
                ? 0 : dynamic_cast<const T *>(it->second);
          }
-         template<typename T> T * PrototypeNamed(const std::string & name)
+         template<typename T> T * getPrototypeNamed(const std::string & name)
          {
             return const_cast<T *>((const_cast<const Model *>(this))->
-                  PrototypeNamed<T>(name));
+                  getPrototypeNamed<T>(name));
          }
 
-         int NPrototypes()
+         int nPrototypes()
          {
             return protoMap_.size();
          }
 
-         ComponentVec::const_iterator beginPrototype() const
+         const ComponentVec & getPrototypes() const
          {
-            return protoVec_.begin();
-         }
-         ComponentVec::iterator beginPrototype()
-         {
-            return protoVec_.begin();
+            return protoVec_;
          }
 
-         ComponentVec::const_iterator endPrototype() const
-         {
-            return protoVec_.end();
-         }
-         ComponentVec::iterator endPrototype()
-         {
-            return protoVec_.end();
-         }
-
-         void AddComponent(Component & comp);
+         void addComponent(Component & comp);
 
          template<typename T> const T * 
-            ComponentNamed(const std::string & name) const
+            getComponentNamed(const std::string & name) const
          {
             ComponentMap::const_iterator it = compMap_.find(name);
             return (it == compMap_.end()) 
                ? 0 : dynamic_cast<const T *>(it->second);
          }
-         template<typename T> T * ComponentNamed(const std::string & name)
+         template<typename T> T * getComponentNamed(const std::string & name)
          {
             return const_cast<T *>((const_cast<const Model *>(this))->
-                  ComponentNamed<T>(name));
+                  getComponentNamed<T>(name));
          }
 
          int NComponents()
@@ -98,39 +85,30 @@ namespace SmartGridToolbox
             return compVec_.size();
          }
 
-         template<typename T> const T * ComponentNum(int i) const
+         template<typename T> const T * getComponentAt(int i) const
          {
             return (i >= 0 && i < compVec_.size()) 
                ? dynamic_cast<T *>(compVec_[i]) : 0;
          }
-         template<typename T> T * ComponentNum(int i)
+         template<typename T> T * getComponentAt(int i)
          {
             return const_cast<T *>((const_cast<const Model *>(this))->
-                  ComponentNum<T>(i));
+                  getComponentAt<T>(i));
          }
 
-         ComponentVec::const_iterator beginComponent() const
+         const ComponentVec & getComponents() const
          {
-            return compVec_.begin();
+            return compVec_;
          }
-         ComponentVec::iterator beginComponent()
+         ComponentVec & getComponents()
          {
-            return compVec_.begin();
-         }
-
-         ComponentVec::const_iterator endComponent() const
-         {
-            return compVec_.end();
-         }
-         ComponentVec::iterator endComponent()
-         {
-            return compVec_.end();
+            return compVec_;
          }
 
-         void Validate();
+         void validate();
 
       private:
-         void OrderComponents(); 
+         void orderComponents(); 
             // Produce weak ordering based on reachability.
 
       private:

@@ -15,7 +15,7 @@ class TestCompA : public Component
 {
    public:
       TestCompA(string name) : Component(name) {}
-      virtual void AdvanceToTime(ptime t)
+      virtual void advanceToTime(ptime t)
       {
          std::cout << "TCA AdvanceToTimestep " << t << std::endl;
       }
@@ -26,11 +26,11 @@ class TestCompB : public Component
 {
    public:
       TestCompB(string name) : Component(name) {}
-      virtual void AdvanceToTime(ptime t)
+      virtual void advanceToTime(ptime t)
       {
-         tcA_->AdvanceToTime(t);
+         tcA_->advanceToTime(t);
       }
-      void SetTestCompA(TestCompA & tcA)
+      void setTestCompA(TestCompA & tcA)
       {
          tcA_ = &tcA;
       }
@@ -43,28 +43,28 @@ int main()
    Model mod;
    Simulation sim(mod);
    Parser parser;
-   parser.Parse("sample_config.yaml", mod, sim);
+   parser.parse("sample_config.yaml", mod, sim);
 
-   mod.AddComponent(*(new TestCompA("tca1")));
-   mod.AddComponent(*(new TestCompB("tcb1")));
+   mod.addComponent(*(new TestCompA("tca1")));
+   mod.addComponent(*(new TestCompB("tcb1")));
    string nm1 = "tca1";
-   TestCompA & tca1 = *mod.ComponentNamed<TestCompA>(nm1);
-   TestCompB & tcb1 = *mod.ComponentNamed<TestCompB>("tcb1");
-   tcb1.SetTestCompA(tca1);
+   TestCompA & tca1 = *mod.getComponentNamed<TestCompA>(nm1);
+   TestCompB & tcb1 = *mod.getComponentNamed<TestCompB>("tcb1");
+   tcb1.setTestCompA(tca1);
    date d(2012, Jan, 10);
    ptime p(d, hours(1));
-   tcb1.AdvanceToTime(p);
+   tcb1.advanceToTime(p);
 
    for (int i = 0; i < 10; ++i)
    {
-      double d = RandNormal(10.0, 3.0);
+      double d = randNormal(10.0, 3.0);
       std::cout << "Random = " << d << std::endl;
    }
 
    double probs[] = {0.2, 0.3, 0.5};
    for (int i = 0; i < 20; ++i)
    {
-      int d = RandDiscrete(probs, 3);
+      int d = randDiscrete(probs, 3);
       std::cout << "Random = " << d << std::endl;
    }
 

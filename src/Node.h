@@ -9,7 +9,7 @@ namespace SmartGridToolbox
 
    class Node
    {
-      friend void Connect(Node * node1, Node * node2);
+      friend void connect(Node * node1, Node * node2);
 
       public:
          typedef std::vector<Edge *>::iterator EdgeIterator;
@@ -22,22 +22,9 @@ namespace SmartGridToolbox
 
          ~Node();
 
-         EdgeIterator begin()
+         const std::vector<Edge *> & getEdges
          {
-            return edges_.begin();
-         }
-         EdgeConstIterator begin() const
-         {
-            return edges_.begin();
-         }
-
-         EdgeIterator end()
-         {
-            return edges_.end();
-         }
-         EdgeConstIterator end() const
-         {
-            return edges_.end();
+            return edges_;
          }
          
       private:

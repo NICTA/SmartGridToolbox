@@ -1,7 +1,7 @@
 #include "Socket.h"
 #include "Network.h"
 
-void Connect(Socket & socket1, Socket & socket2, Network & network)
+void connect(Socket & socket1, Socket & socket2, Network & network)
 {
    for (Socket::NodeIterator it1 : socket1)
    {

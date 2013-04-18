@@ -28,40 +28,40 @@ namespace SmartGridToolbox
          }
 
          /// Model accessor.
-         const Model & Model() const
+         const Model & getModel() const
          {
             return *mod_;
          }
          /// Model accessor.
-         Model & Model()
+         Model & getModel()
          {
             return const_cast<Model &>((const_cast<const Simulation *>(this))->
-                  Model());
+                  getModel());
          }
 
-         const ptime & StartTime() const
+         const ptime & getStartTime() const
          {
             return startTime_;
          }
-         void SetStartTime(const ptime time)
+         void setStartTime(const ptime time)
          {
             startTime_ = time;
          }
 
-         const ptime & EndTime() const
+         const ptime & getEndTime() const
          {
             return endTime_;
          }
-         void SetEndTime(const ptime time)
+         void setEndTime(const ptime time)
          {
             endTime_ = time;
          }
 
          /// Initialize to start time.
-         void Initialize(const ptime & startTime, const ptime & endTime);
+         void initialize(const ptime & startTime, const ptime & endTime);
 
          /// Advance timestep.
-         void AdvanceToNextTime();
+         void advanceToNextTime();
 
 
       private:

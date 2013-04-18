@@ -13,12 +13,12 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         const Node & Node1()
+         const Node & getNode1()
          {
             return *node1_;
          }
 
-         const Node & Node2()
+         const Node & getNode2()
          {
             return *node2_;
          }

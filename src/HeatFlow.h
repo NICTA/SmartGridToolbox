@@ -26,7 +26,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual FloatType QDot() = 0;
+         virtual FloatType qDot() = 0;
    };
 }
 

@@ -3,10 +3,10 @@
 
 namespace SmartGridToolbox
 {
-   void Error(const char * fmt, ...);
-   void Warning(const char * fmt, ...);
-   void Message(const char * fmt, ...);
-   void Debug(const char * fmt, ...);
+   void error(const char * fmt, ...);
+   void warning(const char * fmt, ...);
+   void message(const char * fmt, ...);
+   void debug(const char * fmt, ...);
 }
 
 #endif // OUTPUT_DOT_H

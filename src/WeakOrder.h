@@ -4,72 +4,71 @@
 
 namespace SmartGridToolbox
 {
-   class WONode
+   class WoNode
    {
-      friend class WOGraph;
+      friend class WoGraph;
 
       public:
-         WONode(int idx) : idx_(idx), visited_(false)
+         WoNode(int idx) : idx_(idx), visited_(false)
          {
             // Empty.
          }
 
-         int Index() const
+         int getIndex() const
          {
             return idx_;
          }
 
-         bool Precedes(const WONode & nd) const
+         bool precedes(const WoNode & nd) const
          {
-            std::set<const WONode *>::iterator it = descendents_.find(&nd);
+            std::set<const WoNode *>::iterator it = descendents_.find(&nd);
             return (it != descendents_.end());
          }
 
-         bool Dominates(const WONode & nd) const
+         bool dominates(const WoNode & nd) const
          {
             return (dominated_.find(&nd) != dominated_.end());
          }
          
-         friend bool operator<(const WONode & lhs, 
-                               const WONode & rhs)
+         friend bool operator<(const WoNode & lhs, 
+                               const WoNode & rhs)
          {
-            return (rhs.Dominates(lhs) || 
-                    ((!lhs.Dominates(rhs)) && (lhs.idx_ < rhs.idx_)));
+            return (rhs.dominates(lhs) || 
+                    ((!lhs.dominates(rhs)) && (lhs.idx_ < rhs.idx_)));
          }
 
-         void DFS(std::vector<WONode *> & stack);
+         void dfs(std::vector<WoNode *> & stack);
 
       private:
 
          int idx_;
          bool visited_;
-         std::list<WONode *> to_;
-         std::set<const WONode *> descendents_;
-         std::set<const WONode *> dominated_;
+         std::list<WoNode *> to_;
+         std::set<const WoNode *> descendents_;
+         std::set<const WoNode *> dominated_;
    };
 
-   class WOGraph
+   class WoGraph
    {
       public:
-         WOGraph(int n);
+         WoGraph(int n);
 
-         ~WOGraph();
+         ~WoGraph();
 
-         void Link(int from, int to)
+         void link(int from, int to)
          {
             nodes_[from]->to_.push_back(nodes_[to]);
          }
 
-         void WeakOrder();
+         void weakOrder();
 
-         std::vector<WONode *>::const_iterator begin() const
+         const std::vector<WoNode *> & nodes() const
          {
-            return nodes_.begin();
+            return nodes_;
          }
-
-         std::vector<WONode *>::const_iterator end() const
+         std::vector<WoNode *> & nodes() 
          {
-            return nodes_.end();
+            return nodes_;
          }
 
          int Size() const
@@ -77,17 +76,17 @@ namespace SmartGridToolbox
             return nodes_.size();
          }
 
-         const WONode & operator[](int idx) const
+         const WoNode & operator[](int idx) const
          {
             return *nodes_[idx];
          }
-         WONode & operator[](int idx)
+         WoNode & operator[](int idx)
          {
             return *nodes_[idx];
          }
 
       private:
          int n_;
-         std::vector<WONode *> nodes_;
+         std::vector<WoNode *> nodes_;
    };
 }

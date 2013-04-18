@@ -26,13 +26,13 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         void AttachHvac(Hvac & hvac)
+         void attachHvac(Hvac & hvac)
 
          /// Bring state up to time toTime.
          /** @param toTime */
-         virtual void UpdateState(TimestampType toTimestep);
+         virtual void updateState(TimestampType toTimestep);
          
-         TimestampType Timestep();
+         TimestampType getTimestep();
 
       private:
          double tsp_;

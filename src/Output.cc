@@ -4,7 +4,7 @@
 
 namespace SmartGridToolbox
 {
-   void Error(const char * fmt, ...)
+   void error(const char * fmt, ...)
    {
       char buff[256];
       va_list args;
@@ -15,7 +15,7 @@ namespace SmartGridToolbox
       throw(buff);
    }
 
-   void Warning(const char * fmt, ...)
+   void warning(const char * fmt, ...)
    {
       char buff[256];
       va_list args;
@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       va_end (args);
    }
 
-   void Message(const char * fmt, ...)
+   void message(const char * fmt, ...)
    {
       char buff[256];
       va_list args;
@@ -36,7 +36,7 @@ namespace SmartGridToolbox
    }
 
 #ifdef DEBUG 
-   void Debug(const char * fmt, ...)
+   void debug(const char * fmt, ...)
    {
       char buff[256];
       va_list args;

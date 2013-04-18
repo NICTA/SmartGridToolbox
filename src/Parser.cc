@@ -6,79 +6,79 @@
 
 namespace SmartGridToolbox
 {
-   void Parser::Parse(const char * fname, Model & model, 
+   void Parser::parse(const char * fname, Model & model, 
                       Simulation & simulation)
    {
-      Message("Started parsing.");
+      message("Started parsing.");
       const YAML::Node & top = YAML::LoadFile(fname);
 
-      ParseGlobal(top, model, simulation);
-      ParseObjects(top, model, true);
-      ParseObjects(top, model, false);
+      parseGlobal(top, model, simulation);
+      parseObjects(top, model, true);
+      parseObjects(top, model, false);
 
-      Message("Finished parsing.");
-      Message("Name = %s", model.Name().c_str());
-      Message("Start time = %s", 
-            to_simple_string(simulation.StartTime()).c_str());
-      Message("End time = %s", 
-            to_simple_string(simulation.EndTime()).c_str());
+      message("Finished parsing.");
+      message("Name = %s", model.getName().c_str());
+      message("Start time = %s", 
+            to_simple_string(simulation.getStartTime()).c_str());
+      message("End time = %s", 
+            to_simple_string(simulation.getEndTime()).c_str());
    }
 
-   void Parser::ParseGlobal(const YAML::Node & top, Model & model,
+   void Parser::parseGlobal(const YAML::Node & top, Model & model,
                             Simulation & simulation)
    {
       if (const YAML::Node & nodeA = top["global"]) 
       {
          if (const YAML::Node & nodeB = nodeA["configuration_name"])
          {
-            model.SetName(nodeB.as<std::string>());
+            model.setName(nodeB.as<std::string>());
          }
          else
          {
-            model.SetName(std::string("null"));
+            model.setName(std::string("null"));
          }
 
          if (const YAML::Node & nodeB = nodeA["start_time"])
          {
             try 
             {
-               simulation.SetStartTime(
+               simulation.setStartTime(
                      time_from_string(nodeB.as<std::string>()));
             }
             catch (...)
             {
-               Error("Couldn't parse date.");
+               error("Couldn't parse date.");
             }
          }
          else
          {
-            Error("The configuration file must contain a start_time.");  
+            error("The configuration file must contain a start_time.");  
          }
 
          if (const YAML::Node & nodeB = nodeA["end_time"])
          {
             try 
             {
-               simulation.SetEndTime(
+               simulation.setEndTime(
                      time_from_string(nodeB.as<std::string>()));
             }
             catch (...)
             {
-               Error("Couldn't parse date.");
+               error("Couldn't parse date.");
             }
          }
          else
          {
-            Error("The configuration file must contain an end_time.");  
+            error("The configuration file must contain an end_time.");  
          }
       }
       else
       {
-         Error("The configuration file must contain a \"global\" section.");
+         error("The configuration file must contain a \"global\" section.");
       }
    }
 
-   void Parser::ParseObjects(const YAML::Node & top, Model & model,
+   void Parser::parseObjects(const YAML::Node & top, Model & model,
                              bool isPrototype)
    {
       if (const YAML::Node & nodeA = isPrototype ? top["prototypes"] 

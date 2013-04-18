@@ -26,9 +26,9 @@ namespace SmartGridToolbox
          {
          }
 
-         Node & MakeNode(Node & node1, Node & node2);
+         Node & makeNode(Node & node1, Node & node2);
 
-         Edge & MakeEdge(Node & node1, Node & node2);
+         Edge & makeEdge(Node & node1, Node & node2);
 
       private:
          std::vector<Node *> nodes_;

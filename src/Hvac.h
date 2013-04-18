@@ -19,16 +19,16 @@ namespace SmartGridToolbox
          /// Pure virtual destructor.
          virtual ~Hvac() = 0;
 
-         const std::string & Name() const
+         const std::string & getName() const
          {
             return name_;
          }
 
          /// Bring state up to time toTime.
          /** @param toTime */
-         virtual void UpdateState(TimestampType toTimestep);
+         virtual void updateState(TimestampType toTimestep);
          
-         TimestampType Timestep();
+         TimestampType getTimestep();
 
       private:
          double tsp;

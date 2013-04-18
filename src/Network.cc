@@ -2,7 +2,7 @@
 #include "Edge.h"
 
 namespace SmartGridToolbox {
-   Edge & Network::MakeEdge(Node & node1, Node & node2)
+   Edge & Network::makeEdge(Node & node1, Node & node2)
    {
       Edge * edge = new Edge();
       edge->node1_ = &node1;

@@ -26,31 +26,31 @@ namespace SmartGridToolbox
          }
 
          /// Get the name of the object.
-         const std::string & Name() const
+         const std::string & getName() const
          {
             return name_;
          }
          
          /// Get the current step for the object.
-         ptime Timestamp()
+         ptime getTimestamp()
          {
             return t_;
          }
 
          /// Get the rank of the object.
-         int Rank() const
+         int getRank() const
          {
             return rank_;
          }
          /// Set the rank of the object.
-         void SetRank(int rank)
+         void setRank(int rank)
          {
             rank_ = rank;
          }
 
          /// Reset state of the object, time to timestamp t.
          /** @param t */
-         virtual ptime Initialize(const ptime t = not_a_date_time)
+         virtual ptime initialize(const ptime t = not_a_date_time)
          {
             t_ = t;
             return not_a_date_time;
@@ -58,10 +58,10 @@ namespace SmartGridToolbox
 
          /// Bring state up to time t.
          /** @param t the timestamp to advance to. */
-         virtual void AdvanceToTime(ptime t) = 0;
+         virtual void advanceToTime(ptime t) = 0;
 
          /// Dependents update after I update.
-         void AddDependent(Component & dependent)
+         void addDependent(Component & dependent)
          {
             dependents_.push_back(&dependent);
          }

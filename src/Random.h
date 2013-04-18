@@ -6,11 +6,11 @@
 
 namespace SmartGridToolbox
 {
-   double RandDiscrete(const double * probs, int nProbs);
-   double RandNormal(double mu, double sig);
-   double RandUniform(double lower, double upper);
-   double RandUniformInt(int lower, int upper);
-   double RandWeibull(double a, double b);
+   double randDiscrete(const double * probs, int nProbs);
+   double randNormal(double mu, double sig);
+   double randUniform(double lower, double upper);
+   double randUniformInt(int lower, int upper);
+   double randWeibull(double a, double b);
 }
 
 #endif // RANDOM_DOT_H
