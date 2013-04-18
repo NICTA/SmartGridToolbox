@@ -12,30 +12,30 @@ namespace SmartGridToolbox
    void Model::AddPrototype(Component & comp)
    {
       std::pair<ComponentMap::iterator, bool> result = protoMap_.insert(
-            make_pair(comp.GetName(), &comp));
+            make_pair(comp.Name(), &comp));
       if (result.second == 0) {
-         Error("Prototype %s already exists in model!", comp.GetName().c_str());
+         Error("Prototype %s already exists in model!", comp.Name().c_str());
       }
       else
       {
          comp.Initialize(not_a_date_time);
          protoVec_.push_back(&comp);
-         Message("Prototype %s added to model.", comp.GetName().c_str());
+         Message("Prototype %s added to model.", comp.Name().c_str());
       }
    }
 
    void Model::AddComponent(Component & comp)
    {
       std::pair<ComponentMap::iterator, bool> result = compMap_.insert(
-            make_pair(comp.GetName(), &comp));
+            make_pair(comp.Name(), &comp));
       if (result.second == 0) {
-         Error("Component %s already exists in model!", comp.GetName().c_str());
+         Error("Component %s already exists in model!", comp.Name().c_str());
       }
       else
       {
          comp.Initialize(not_a_date_time);
          compVec_.push_back(&comp);
-         Message("Component %s added to model.", comp.GetName().c_str());
+         Message("Component %s added to model.", comp.Name().c_str());
       }
    }
 }

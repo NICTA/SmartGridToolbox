@@ -48,8 +48,8 @@ int main()
    mod.AddComponent(*(new TestCompA("tca1")));
    mod.AddComponent(*(new TestCompB("tcb1")));
    string nm1 = "tca1";
-   TestCompA & tca1 = *mod.GetComponentNamed<TestCompA>(nm1);
-   TestCompB & tcb1 = *mod.GetComponentNamed<TestCompB>("tcb1");
+   TestCompA & tca1 = *mod.ComponentNamed<TestCompA>(nm1);
+   TestCompB & tcb1 = *mod.ComponentNamed<TestCompB>("tcb1");
    tcb1.SetTestCompA(tca1);
    date d(2012, Jan, 10);
    ptime p(d, hours(1));

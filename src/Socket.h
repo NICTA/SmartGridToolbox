@@ -12,7 +12,7 @@ namespace SmartGridToolbox
          typedef std::vector<Node *>::iterator NodeIterator;
          typedef std::vector<Node *>::const_iterator NodeConstIterator;
 
-         const std::string & GetName const
+         const std::string & Name const
          {
             return name_;
          }

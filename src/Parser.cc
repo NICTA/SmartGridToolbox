@@ -17,11 +17,11 @@ namespace SmartGridToolbox
       ParseObjects(top, model, false);
 
       Message("Finished parsing.");
-      Message("Name = %s", model.GetName().c_str());
+      Message("Name = %s", model.Name().c_str());
       Message("Start time = %s", 
-            to_simple_string(simulation.GetStartTime()).c_str());
+            to_simple_string(simulation.StartTime()).c_str());
       Message("End time = %s", 
-            to_simple_string(simulation.GetEndTime()).c_str());
+            to_simple_string(simulation.EndTime()).c_str());
    }
 
    void Parser::ParseGlobal(const YAML::Node & top, Model & model,

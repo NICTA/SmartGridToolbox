@@ -32,7 +32,7 @@ namespace SmartGridToolbox
          /** @param toTime */
          virtual void UpdateState(TimestampType toTimestep);
          
-         TimestampType GetTimestep();
+         TimestampType Timestep();
 
       private:
          double tsp_;

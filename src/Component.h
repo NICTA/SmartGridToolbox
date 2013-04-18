@@ -25,13 +25,13 @@ namespace SmartGridToolbox
          }
 
          /// Get the name of the object.
-         const std::string & GetName() const
+         const std::string & Name() const
          {
             return name_;
          }
          
          /// Get the current step for the object.
-         ptime GetTimestamp()
+         ptime Timestamp()
          {
             return t_;
          }

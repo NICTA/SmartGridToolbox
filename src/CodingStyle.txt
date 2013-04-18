@@ -20,7 +20,7 @@ Global constants are named as gGlobalConstant.
 
 Static (file scope, in the C sense) variables are named as sVariable.
 
-Getters and setters are GetProperty() and SetProperty(...).
+Getters and setters are Property() and SetProperty(...).
 
 Braces start on a new line e.g.  
 Function F() 
