@@ -56,7 +56,7 @@ namespace SmartGridToolbox
          }
       }
       g.weakOrder();
-      for (int i = 0; i < g.Size(); ++i)
+      for (int i = 0; i < g.size(); ++i)
       {
          compVec_[g[i].getIndex()]->setRank(i);
       }
