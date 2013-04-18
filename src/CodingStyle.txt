@@ -6,7 +6,7 @@ Types are UpperCamelCase.
 
 Typedefs are UpperCamelCase.
 
-Functions are UpperCamelCase.
+Functions are lowerCamelCase(...).
 
 Member variables are lowerCamelCase_
 
@@ -14,13 +14,13 @@ Variables are lowerCamelCase
 
 Arguments are lowerCamelCase.
 
-Class name using acronym, e.g. ABC => AbstractAbcClass.
+Acronyms: e.g. ABC => AbstractAbcClass.
 
 Global constants are named as gGlobalConstant.
 
 Static (file scope, in the C sense) variables are named as sVariable.
 
-Getters and setters are Property() and SetProperty(...).
+Getters and setters are getProperty() and setProperty(...).
 
 Braces start on a new line e.g.  
 Function F() 
@@ -33,7 +33,7 @@ ClassName.cc
 
 Pass and return by reference, except where you *have to* use a pointer.
 
-Errors etc. are called through the Error(), Warning(), Message(), Debug()
+Errors etc. are called through the error(), warning(), message(), debug()
 funcntions, declared in Output.h.  
 
 Floating point generally uses double. Integer types are generally int.
