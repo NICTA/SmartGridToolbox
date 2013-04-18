@@ -14,8 +14,6 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         void DFS(std::vector<WONode *> & stack);
-
          int Index() const
          {
             return idx_;
@@ -38,6 +36,8 @@ namespace SmartGridToolbox
             return (rhs.Dominates(lhs) || 
                     ((!lhs.Dominates(rhs)) && (lhs.idx_ < rhs.idx_)));
          }
+
+         void DFS(std::vector<WONode *> & stack);
 
       private:
 

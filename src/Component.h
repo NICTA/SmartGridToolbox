@@ -13,7 +13,8 @@ namespace SmartGridToolbox
       public:
          /// Constructor.
          /** @param name the unique name */
-         explicit Component(const std::string & name) : name_(name)
+         explicit Component(const std::string & name) : name_(name),
+                                                        rank_(-1)
          {
             // Empty.
          }
@@ -36,6 +37,17 @@ namespace SmartGridToolbox
             return t_;
          }
 
+         /// Get the rank of the object.
+         int Rank() const
+         {
+            return rank_;
+         }
+         /// Set the rank of the object.
+         void SetRank(int rank)
+         {
+            rank_ = rank;
+         }
+
          /// Reset state of the object, time to timestamp t.
          /** @param t */
          virtual ptime Initialize(const ptime t = not_a_date_time)
@@ -52,6 +64,11 @@ namespace SmartGridToolbox
          void AddDependent(Component & dependent)
          {
             dependents_.push_back(&dependent);
+         }
+
+         const std::vector<Component *> & Dependents()
+         {
+            return dependents_;
          }
 
       private:

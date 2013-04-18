@@ -1,6 +1,7 @@
 #include "Model.h"
 #include "Component.h"
 #include "Output.h"
+#include "WeakOrder.h"
 #include <string>
 
 namespace SmartGridToolbox 
@@ -37,5 +38,30 @@ namespace SmartGridToolbox
          compVec_.push_back(&comp);
          Message("Component %s added to model.", comp.Name().c_str());
       }
+   }
+
+   void Model::Validate()
+   {
+      for (int i = 0; i < compVec_.size(); ++i)
+      {
+         compVec_[i]->SetRank(i);
+      }
+
+      WOGraph g(compVec_.size());
+      for (int i = 0; i < compVec_.size(); ++i)
+      {
+         for (const Component * dep : compVec_[i]->Dependents())
+         {
+            g.Link(i, dep->Rank());
+         }
+      }
+      g.WeakOrder();
+      for (int i = 0; i < g.Size(); ++i)
+      {
+         compVec_[g[i].Index()]->SetRank(i);
+      }
+      std::sort(compVec_.begin(), compVec_.end(), [](const Component * lhs,
+               const Component * rhs) -> bool {lhs->Rank() < rhs->Rank();});
+      isValid_ = true;
    }
 }

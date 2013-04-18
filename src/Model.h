@@ -22,7 +22,8 @@ namespace SmartGridToolbox
 
       public:
          /// Default constructor.
-         Model() : name_("null")
+         Model() : name_("null"),
+                   isValid_(false)
          {
             // Empty.
          }
@@ -126,6 +127,8 @@ namespace SmartGridToolbox
             return compVec_.end();
          }
 
+         void Validate();
+
       private:
          void OrderComponents(); 
             // Produce weak ordering based on reachability.
@@ -136,6 +139,7 @@ namespace SmartGridToolbox
          ComponentVec protoVec_;
          ComponentMap compMap_;
          ComponentVec compVec_;
+         bool isValid_;
    };
 }
 
