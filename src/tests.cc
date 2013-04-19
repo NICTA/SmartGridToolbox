@@ -86,6 +86,12 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
    mod.addComponent(*a4);
    mod.addComponent(*a5);
    mod.validate();
+   BOOST_CHECK(mod.getComponents()[0] == a3);
+   BOOST_CHECK(mod.getComponents()[1] == a4);
+   BOOST_CHECK(mod.getComponents()[2] == a1);
+   BOOST_CHECK(mod.getComponents()[3] == a0);
+   BOOST_CHECK(mod.getComponents()[4] == a5);
+   BOOST_CHECK(mod.getComponents()[5] == a2);
 }
    
 BOOST_AUTO_TEST_SUITE_END( )
