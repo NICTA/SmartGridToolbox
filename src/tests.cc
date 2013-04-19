@@ -1,5 +1,7 @@
 #define BOOST_TEST_MODULE test_template
 #include <boost/test/included/unit_test.hpp>
+#include "Model.h"
+#include "Simulation.h"
 #include "WeakOrder.h"
 using namespace SmartGridToolbox;
 using namespace std;
@@ -46,6 +48,17 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    BOOST_CHECK(g[3].getIndex() == 0);
    BOOST_CHECK(g[4].getIndex() == 5);
    BOOST_CHECK(g[5].getIndex() == 2);
+}
+
+BOOST_AUTO_TEST_CASE (test_model_dependencies)
+{
+   Model mod;
+   Simulation sim(mod);
+   Parser parser;
+   parser.parse("sample_config.yaml", mod, sim);
+   mod.addComponent(*(new TestCompA("tca1")));
+   mod.addComponent(*(new TestCompB("tcb1")));
+   TestCompA & tca1 = *mod.getComponentNamed<TestCompA>("tca1");
 }
    
 BOOST_AUTO_TEST_SUITE_END( )
