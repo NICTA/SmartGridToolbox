@@ -111,9 +111,9 @@ hello_OBJECTS = $(am_hello_OBJECTS)
 hello_DEPENDENCIES = libsmartgridtoolbox.a \
 	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
 	/usr/local/lib/libboost_date_time-mt.a
-am_tests_OBJECTS = WeakOrder.$(OBJEXT) tests.$(OBJEXT)
+am_tests_OBJECTS = tests.$(OBJEXT)
 tests_OBJECTS = $(am_tests_OBJECTS)
-tests_LDADD = $(LDADD)
+tests_DEPENDENCIES = libsmartgridtoolbox.a
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -445,7 +445,8 @@ hello_LDADD = libsmartgridtoolbox.a \
 				  ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
 				  /usr/local/lib/libboost_date_time-mt.a
 
-tests_SOURCES = WeakOrder.cc tests.cc
+tests_LDADD = libsmartgridtoolbox.a
+tests_SOURCES = tests.cc
 all: all-am
 
 .SUFFIXES:

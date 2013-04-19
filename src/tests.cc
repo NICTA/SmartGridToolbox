@@ -1,5 +1,6 @@
 #define BOOST_TEST_MODULE test_template
 #include <boost/test/included/unit_test.hpp>
+#include "Component.h"
 #include "Model.h"
 #include "Simulation.h"
 #include "WeakOrder.h"
@@ -22,14 +23,14 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    g.weakOrder();
    for (int i = 0; i < g.size(); ++i)
    {
-      cout << " " << g[i].getIndex() << endl;
+      cout << " " << g.getNodes()[i]->getIndex() << endl;
    }
    cout << endl;
 
    cout << "   ";
    for (int i = 0; i < g.size(); ++i)
    {
-      cout << " " << g[i].getIndex(); 
+      cout << " " << g.getNodes()[i]->getIndex(); 
    }
    cout << endl << endl;
    for (const WoNode * nd1 : g.getNodes())
@@ -42,23 +43,49 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
       std::cout << endl;
    }
 
-   BOOST_CHECK(g[0].getIndex() == 3);
-   BOOST_CHECK(g[1].getIndex() == 4);
-   BOOST_CHECK(g[2].getIndex() == 1);
-   BOOST_CHECK(g[3].getIndex() == 0);
-   BOOST_CHECK(g[4].getIndex() == 5);
-   BOOST_CHECK(g[5].getIndex() == 2);
+   BOOST_CHECK(g.getNodes()[0]->getIndex() == 3);
+   BOOST_CHECK(g.getNodes()[1]->getIndex() == 4);
+   BOOST_CHECK(g.getNodes()[2]->getIndex() == 1);
+   BOOST_CHECK(g.getNodes()[3]->getIndex() == 0);
+   BOOST_CHECK(g.getNodes()[4]->getIndex() == 5);
+   BOOST_CHECK(g.getNodes()[5]->getIndex() == 2);
 }
+
+class TestCompA : public Component
+{
+   public:
+      TestCompA(string name) : Component(name) {}
+      virtual void advanceToTime(ptime t)
+      {
+         std::cout << "TCA AdvanceToTimestep " << t << std::endl;
+      }
+   private:
+};
 
 BOOST_AUTO_TEST_CASE (test_model_dependencies)
 {
    Model mod;
    Simulation sim(mod);
-   Parser parser;
-   parser.parse("sample_config.yaml", mod, sim);
-   mod.addComponent(*(new TestCompA("tca1")));
-   mod.addComponent(*(new TestCompB("tcb1")));
-   TestCompA & tca1 = *mod.getComponentNamed<TestCompA>("tca1");
+   TestCompA * a0 = new TestCompA("tca0");
+   TestCompA * a1 = new TestCompA("tca1");
+   TestCompA * a2 = new TestCompA("tca2");
+   TestCompA * a3 = new TestCompA("tca3");
+   TestCompA * a4 = new TestCompA("tca4");
+   TestCompA * a5 = new TestCompA("tca5");
+   a0->addDependent(*a4);
+   a0->addDependent(*a5);
+   a1->addDependent(*a0);
+   a1->addDependent(*a2);
+   a3->addDependent(*a1);
+   a4->addDependent(*a1);
+   a5->addDependent(*a2);
+   mod.addComponent(*a0);
+   mod.addComponent(*a1);
+   mod.addComponent(*a2);
+   mod.addComponent(*a3);
+   mod.addComponent(*a4);
+   mod.addComponent(*a5);
+   mod.validate();
 }
    
 BOOST_AUTO_TEST_SUITE_END( )

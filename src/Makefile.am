@@ -12,4 +12,5 @@ hello_LDADD = libsmartgridtoolbox.a \
 
 TESTS = tests
 check_PROGRAMS = tests
-tests_SOURCES = WeakOrder.cc tests.cc
+tests_LDADD = libsmartgridtoolbox.a
+tests_SOURCES = tests.cc

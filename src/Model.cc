@@ -55,6 +55,7 @@ namespace SmartGridToolbox
       {
          compVec_[i]->setRank(i);
       }
+
       WoGraph g(compVec_.size());
       for (int i = 0; i < compVec_.size(); ++i)
       {
@@ -66,21 +67,19 @@ namespace SmartGridToolbox
       g.weakOrder();
       for (int i = 0; i < g.size(); ++i)
       {
-         compVec_[g[i].getIndex()]->setRank(i);
+         int idx_i = g.getNodes()[i]->getIndex();
+         compVec_[idx_i]->setRank(i);
       }
-      std::sort(compVec_.begin(), compVec_.end(), [](const Component * lhs,
-               const Component * rhs) -> bool 
-               {lhs->getRank() < rhs->getRank();});
+      std::sort(compVec_.begin(), compVec_.end(), 
+            [](const Component * lhs, const Component * rhs) -> bool 
+            {
+               return lhs->getRank() < rhs->getRank();
+            });
       isValid_ = true;
       message("Model after validation:");
       for (const Component * comp : compVec_)
       {
-         message("   %s", comp->getName().c_str());
-         for (const Component * dep : comp->Dependents())
-         {
-            message("      %s", dep->getName().c_str());
-         }
-
+         message("   %s %d", comp->getName().c_str(), comp->getRank());
       }
    }
 }

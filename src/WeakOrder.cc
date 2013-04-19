@@ -25,7 +25,7 @@ namespace SmartGridToolbox
          debug("%sDFS %d {", prlevel(level - 1).c_str(), idx_);
          for (WoNode * predecessor : stack)
          {
-            debug("%s %d", prlevel(level).c_str(), predecessor->idx_);
+            debug("%s%d", prlevel(level).c_str(), predecessor->idx_);
             predecessor->descendents_.insert(this);
          }
          stack.push_back(this);

@@ -75,16 +75,6 @@ namespace SmartGridToolbox
          {
             return nodes_.size();
          }
-
-         const WoNode & operator[](int idx) const
-         {
-            return *nodes_[idx];
-         }
-         WoNode & operator[](int idx)
-         {
-            return *nodes_[idx];
-         }
-
       private:
          int n_;
          std::vector<WoNode *> nodes_;
