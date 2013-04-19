@@ -588,6 +588,7 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+AM_CXXFLAGS
 am__fastdepCXX_FALSE
 am__fastdepCXX_TRUE
 CXXDEPMODE
@@ -3164,7 +3165,7 @@ eval ac_res=\$$cachevar
 	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
 $as_echo "$ac_res" >&6; }
       if eval test x\$$cachevar = xyes; then
-        CXXFLAGS="$CXXFLAGS $switch"
+        AM_CXXFLAGS="$AM_CXXFLAGS $switch"
         ac_success=yes
         break
       fi
@@ -3212,7 +3213,7 @@ eval ac_res=\$$cachevar
 	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
 $as_echo "$ac_res" >&6; }
       if eval test x\$$cachevar = xyes; then
-        CXXFLAGS="$CXXFLAGS $switch"
+        AM_CXXFLAGS="$AM_CXXFLAGS $switch"
         ac_success=yes
         break
       fi
@@ -3222,6 +3223,8 @@ $as_echo "$ac_res" >&6; }
   if test x$ac_success = xno; then
     as_fn_error $? "*** A compiler with support for C++11 language features is required." "$LINENO" 5
   fi
+
+
 
 ac_config_headers="$ac_config_headers config.h"
 

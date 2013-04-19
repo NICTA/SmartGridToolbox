@@ -74,7 +74,7 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
           [eval $cachevar=no])
          CXXFLAGS="$ac_save_CXXFLAGS"])
       if eval test x\$$cachevar = xyes; then
-        CXXFLAGS="$CXXFLAGS $switch"
+        AM_CXXFLAGS="$AM_CXXFLAGS $switch"
         ac_success=yes
         break
       fi
@@ -94,7 +94,7 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
           [eval $cachevar=no])
          CXXFLAGS="$ac_save_CXXFLAGS"])
       if eval test x\$$cachevar = xyes; then
-        CXXFLAGS="$CXXFLAGS $switch"
+        AM_CXXFLAGS="$AM_CXXFLAGS $switch"
         ac_success=yes
         break
       fi
@@ -104,4 +104,6 @@ AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
   if test x$ac_success = xno; then
     AC_MSG_ERROR([*** A compiler with support for C++11 language features is required.])
   fi
+
+  AC_SUBST(AM_CXXFLAGS)
 ])

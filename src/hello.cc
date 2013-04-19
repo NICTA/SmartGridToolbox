@@ -33,6 +33,7 @@ class TestCompB : public Component
       void setTestCompA(TestCompA & tcA)
       {
          tcA_ = &tcA;
+         addDependent(tcA);
       }
    private:
       TestCompA * tcA_;
@@ -44,13 +45,12 @@ int main()
    Simulation sim(mod);
    Parser parser;
    parser.parse("sample_config.yaml", mod, sim);
-
    mod.addComponent(*(new TestCompA("tca1")));
    mod.addComponent(*(new TestCompB("tcb1")));
-   string nm1 = "tca1";
-   TestCompA & tca1 = *mod.getComponentNamed<TestCompA>(nm1);
+   TestCompA & tca1 = *mod.getComponentNamed<TestCompA>("tca1");
    TestCompB & tcb1 = *mod.getComponentNamed<TestCompB>("tcb1");
    tcb1.setTestCompA(tca1);
+   mod.validate();
    date d(2012, Jan, 10);
    ptime p(d, hours(1));
    tcb1.advanceToTime(p);

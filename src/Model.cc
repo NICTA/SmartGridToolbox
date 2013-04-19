@@ -42,11 +42,19 @@ namespace SmartGridToolbox
 
    void Model::validate()
    {
+      message("Model before validation:");
+      for (const Component * comp : compVec_)
+      {
+         message("   %s", comp->getName().c_str());
+         for (Component * const dep : comp->Dependents())
+         {
+            message("      %s", dep->getName().c_str());
+         }
+      }
       for (int i = 0; i < compVec_.size(); ++i)
       {
          compVec_[i]->setRank(i);
       }
-
       WoGraph g(compVec_.size());
       for (int i = 0; i < compVec_.size(); ++i)
       {
@@ -64,5 +72,15 @@ namespace SmartGridToolbox
                const Component * rhs) -> bool 
                {lhs->getRank() < rhs->getRank();});
       isValid_ = true;
+      message("Model after validation:");
+      for (const Component * comp : compVec_)
+      {
+         message("   %s", comp->getName().c_str());
+         for (const Component * dep : comp->Dependents())
+         {
+            message("      %s", dep->getName().c_str());
+         }
+
+      }
    }
 }

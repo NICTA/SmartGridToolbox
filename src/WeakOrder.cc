@@ -1,11 +1,15 @@
 #include "WeakOrder.h"
+#include "Output.h"
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 using namespace std;
 
-void prlevel(int level)
+std::string prlevel(int level)
 {
-   for (int i = 0; i < level; ++i) {cout << "      ";}
+   std::stringstream ss;
+   for (int i = 0; i < level; ++i) {ss << "      ";}
+   return ss.str();
 }
 
 namespace SmartGridToolbox
@@ -18,10 +22,10 @@ namespace SmartGridToolbox
       if (!visited_)
       {
          visited_ = true;
-         prlevel(level - 1); cout << "DFS " << idx_ << " {" << endl;
+         debug("%sDFS %d {", prlevel(level - 1).c_str(), idx_);
          for (WoNode * predecessor : stack)
          {
-            prlevel(level); cout << predecessor->idx_ << " precedes " << idx_ << endl;
+            debug("%s %d", prlevel(level).c_str(), predecessor->idx_);
             predecessor->descendents_.insert(this);
          }
          stack.push_back(this);
@@ -30,7 +34,7 @@ namespace SmartGridToolbox
             toNd->dfs(stack);
          }
          stack.pop_back();
-         prlevel(level - 1); cout << "}" << endl;
+         debug("%s}", prlevel(level - 1).c_str());
       }
       --level;
    }

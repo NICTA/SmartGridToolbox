@@ -35,17 +35,21 @@ namespace SmartGridToolbox
       va_end (args);
    }
 
-#ifdef DEBUG 
    void debug(const char * fmt, ...)
    {
-      char buff[256];
-      va_list args;
-      va_start (args, fmt);
-      vsnprintf (buff, 255, fmt, args);
-      printf("DEBUG: %s\n", buff);
-      va_end (args);
-   }
+#ifdef DEBUG
+      bool dbg = true;
 #else
-#define Debug(...)
+      bool dbg = false;
 #endif
+      if (dbg)
+      {
+         char buff[256];
+         va_list args;
+         va_start (args, fmt);
+         vsnprintf (buff, 255, fmt, args);
+         printf("DEBUG: %s\n", buff);
+         va_end (args);
+      }
+   }
 }

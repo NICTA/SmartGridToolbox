@@ -808,7 +808,7 @@ m4trace:configure.ac:5: -1- m4_pattern_allow([^am__fastdepCXX_FALSE$])
 m4trace:configure.ac:5: -1- _AM_SUBST_NOTMAKE([am__fastdepCXX_TRUE])
 m4trace:configure.ac:5: -1- _AM_SUBST_NOTMAKE([am__fastdepCXX_FALSE])
 m4trace:configure.ac:6: -1- m4_include([./m4_ax_cxx_compile_stdcxx_11.m4])
-m4trace:./m4_ax_cxx_compile_stdcxx_11.m4:107: -1- AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
+m4trace:./m4_ax_cxx_compile_stdcxx_11.m4:109: -1- AC_DEFUN([AX_CXX_COMPILE_STDCXX_11], [dnl
   m4_if([$1], [], [],
         [$1], [ext], [],
         [$1], [noext], [],
@@ -837,7 +837,7 @@ m4trace:./m4_ax_cxx_compile_stdcxx_11.m4:107: -1- AC_DEFUN([AX_CXX_COMPILE_STDCX
           [eval $cachevar=no])
          CXXFLAGS="$ac_save_CXXFLAGS"])
       if eval test x\$$cachevar = xyes; then
-        CXXFLAGS="$CXXFLAGS $switch"
+        AM_CXXFLAGS="$AM_CXXFLAGS $switch"
         ac_success=yes
         break
       fi
@@ -857,7 +857,7 @@ m4trace:./m4_ax_cxx_compile_stdcxx_11.m4:107: -1- AC_DEFUN([AX_CXX_COMPILE_STDCX
           [eval $cachevar=no])
          CXXFLAGS="$ac_save_CXXFLAGS"])
       if eval test x\$$cachevar = xyes; then
-        CXXFLAGS="$CXXFLAGS $switch"
+        AM_CXXFLAGS="$AM_CXXFLAGS $switch"
         ac_success=yes
         break
       fi
@@ -867,8 +867,11 @@ m4trace:./m4_ax_cxx_compile_stdcxx_11.m4:107: -1- AC_DEFUN([AX_CXX_COMPILE_STDCX
   if test x$ac_success = xno; then
     AC_MSG_ERROR([*** A compiler with support for C++11 language features is required.])
   fi
+
+  AC_SUBST(AM_CXXFLAGS)
 ])
 m4trace:configure.ac:7: -1- AX_CXX_COMPILE_STDCXX_11
+m4trace:configure.ac:7: -1- m4_pattern_allow([^AM_CXXFLAGS$])
 m4trace:configure.ac:10: -1- m4_pattern_allow([^LIB@&t@OBJS$])
 m4trace:configure.ac:10: -1- m4_pattern_allow([^LTLIBOBJS$])
 m4trace:configure.ac:10: -1- AM_CONDITIONAL([am__EXEEXT], [test -n "$EXEEXT"])

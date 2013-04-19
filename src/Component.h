@@ -66,7 +66,7 @@ namespace SmartGridToolbox
             dependents_.push_back(&dependent);
          }
 
-         const std::vector<Component *> & Dependents()
+         const std::vector<Component *> & Dependents() const
          {
             return dependents_;
          }
