@@ -61,19 +61,26 @@ namespace SmartGridToolbox
          virtual void advanceToTime(ptime t) = 0;
 
          /// Dependents update after I update.
-         void addDependent(Component & dependent)
+         friend void aDependsOnB(Component & a, Component & b)
          {
-            dependents_.push_back(&dependent);
+            a.dependencies_.push_back(&b);
+            b.dependents_.push_back(&a);
          }
 
-         const std::vector<Component *> & Dependents() const
+         const std::vector<Component *> & dependents() const
          {
             return dependents_;
+         }
+
+         const std::vector<Component *> & dependencies() const
+         {
+            return dependencies_;
          }
 
       private:
          std::string name_;
          ptime t_;
+         std::vector<Component *> dependencies_;
          std::vector<Component *> dependents_;
          int rank_;  // Evaluation rank, based on weak ordering.
    };

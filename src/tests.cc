@@ -66,26 +66,31 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
 {
    Model mod;
    Simulation sim(mod);
+
    TestCompA * a0 = new TestCompA("tca0");
    TestCompA * a1 = new TestCompA("tca1");
    TestCompA * a2 = new TestCompA("tca2");
    TestCompA * a3 = new TestCompA("tca3");
    TestCompA * a4 = new TestCompA("tca4");
    TestCompA * a5 = new TestCompA("tca5");
-   a0->addDependent(*a4);
-   a0->addDependent(*a5);
-   a1->addDependent(*a0);
-   a1->addDependent(*a2);
-   a3->addDependent(*a1);
-   a4->addDependent(*a1);
-   a5->addDependent(*a2);
+
+   aDependsOnB(*a4, *a0);
+   aDependsOnB(*a5, *a0);
+   aDependsOnB(*a0, *a1);
+   aDependsOnB(*a2, *a1);
+   aDependsOnB(*a1, *a3);
+   aDependsOnB(*a1, *a4);
+   aDependsOnB(*a2, *a5);
+
    mod.addComponent(*a0);
    mod.addComponent(*a1);
    mod.addComponent(*a2);
    mod.addComponent(*a3);
    mod.addComponent(*a4);
    mod.addComponent(*a5);
+
    mod.validate();
+
    BOOST_CHECK(mod.getComponents()[0] == a3);
    BOOST_CHECK(mod.getComponents()[1] == a4);
    BOOST_CHECK(mod.getComponents()[2] == a1);
