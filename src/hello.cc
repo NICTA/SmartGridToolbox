@@ -33,7 +33,7 @@ class TestCompB : public Component
       void setTestCompA(TestCompA & tcA)
       {
          tcA_ = &tcA;
-         addDependent(tcA);
+         componentDependsOn(tcA, tcB);
       }
    private:
       TestCompA * tcA_;

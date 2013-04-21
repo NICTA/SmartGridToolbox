@@ -74,13 +74,13 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
    TestCompA * a4 = new TestCompA("tca4");
    TestCompA * a5 = new TestCompA("tca5");
 
-   aDependsOnB(*a4, *a0);
-   aDependsOnB(*a5, *a0);
-   aDependsOnB(*a0, *a1);
-   aDependsOnB(*a2, *a1);
-   aDependsOnB(*a1, *a3);
-   aDependsOnB(*a1, *a4);
-   aDependsOnB(*a2, *a5);
+   a4->addDependency(*a0);
+   a5->addDependency(*a0);
+   a0->addDependency(*a1);
+   a2->addDependency(*a1);
+   a1->addDependency(*a3);
+   a1->addDependency(*a4);
+   a2->addDependency(*a5);
 
    mod.addComponent(*a0);
    mod.addComponent(*a1);

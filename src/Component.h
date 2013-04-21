@@ -48,6 +48,18 @@ namespace SmartGridToolbox
             rank_ = rank;
          }
 
+         /// My dependencies.
+         const std::vector<Component *> & dependencies() const
+         {
+            return dependencies_;
+         }
+
+         /// Dependents update after I update.
+         void addDependency(Component & b)
+         {
+            dependencies_.push_back(&b);
+         }
+
          /// Reset state of the object, time to timestamp t.
          /** @param t */
          virtual ptime initialize(const ptime t = not_a_date_time)
@@ -60,28 +72,10 @@ namespace SmartGridToolbox
          /** @param t the timestamp to advance to. */
          virtual void advanceToTime(ptime t) = 0;
 
-         /// Dependents update after I update.
-         friend void aDependsOnB(Component & a, Component & b)
-         {
-            a.dependencies_.push_back(&b);
-            b.dependents_.push_back(&a);
-         }
-
-         const std::vector<Component *> & dependents() const
-         {
-            return dependents_;
-         }
-
-         const std::vector<Component *> & dependencies() const
-         {
-            return dependencies_;
-         }
-
       private:
          std::string name_;
          ptime t_;
          std::vector<Component *> dependencies_;
-         std::vector<Component *> dependents_;
          int rank_;  // Evaluation rank, based on weak ordering.
    };
 }

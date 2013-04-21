@@ -46,7 +46,7 @@ namespace SmartGridToolbox
       for (const Component * comp : compVec_)
       {
          message("   %s", comp->getName().c_str());
-         for (Component * const dep : comp->dependents())
+         for (Component * const dep : comp->dependencies())
          {
             message("      %s", dep->getName().c_str());
          }
@@ -59,9 +59,9 @@ namespace SmartGridToolbox
       WoGraph g(compVec_.size());
       for (int i = 0; i < compVec_.size(); ++i)
       {
-         for (const Component * dep : compVec_[i]->dependents())
+         for (const Component * dep : compVec_[i]->dependencies())
          {
-            g.link(i, dep->getRank());
+            g.link(dep->getRank(), i);
          }
       }
       g.weakOrder();
