@@ -49,11 +49,10 @@ namespace SmartGridToolbox
          }
 
          /// My dependencies.
-         const std::vector<Component *> & dependencies() const
+         const std::vector<Component *> & getDependencies() const
          {
             return dependencies_;
          }
-
          /// Dependents update after I update.
          void addDependency(Component & b)
          /** @param t Component on which I depend. */
@@ -63,15 +62,17 @@ namespace SmartGridToolbox
 
          /// Reset state of the object, time to timestamp t.
          /** @param t */
-         virtual ptime initialize(const ptime t = not_a_date_time)
+         virtual void initialize(const ptime t = not_a_date_time)
          {
             t_ = t;
-            return not_a_date_time;
          }
 
          /// Bring state up to time t.
          /** @param t the timestamp to advance to. */
-         virtual void advanceToTime(ptime t) = 0;
+         virtual void advanceToTime(ptime t)
+         {
+            t_ = t;
+         }
 
       private:
          std::string name_;
