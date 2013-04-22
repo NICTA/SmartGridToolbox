@@ -3,14 +3,19 @@
 
 #include<functional>
 
-template <typename T> class Property
+class PropertyBase
+{
+   // Empty.
+};
+ 
+template <typename T> class Property : public PropertyBase
 {
    public:
       Property(const std::function<const T & ()> & valueFunction) : 
          valueFunction_(valueFunction)
       {}
 
-      const T & operator() const
+      const T & operator()() const
       {
          return valueFunction_();
       }
@@ -19,19 +24,14 @@ template <typename T> class Property
       const std::function<const T & ()> valueFunction_;
 };
 
-template <typename T> class Control : public Property
+template <typename T> class Control : public Property<T>
 {
    public:
-      ReadWriteProperty(const std::function<const T & ()> & valueFunction,
+      Control(const std::function<const T & ()> & valueFunction,
                         const std::function<void(const T &)> & setFunction) : 
-         ReadProperty(valueFunction),
+         Property<T>(valueFunction),
          setFunction_(setFunction)
       {}
-
-      const T & operator() const
-      {
-         return valueFunction_();
-      }
 
       void operator=(const T & rhs)
       {
@@ -40,6 +40,7 @@ template <typename T> class Control : public Property
 
    private:
       const std::function<const T & ()> valueFunction_;
+      const std::function<const T & ()> setFunction_;
 };
 
 #endif
