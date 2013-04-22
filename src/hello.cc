@@ -33,7 +33,7 @@ class TestCompB : public Component
       void setTestCompA(TestCompA & tcA)
       {
          tcA_ = &tcA;
-         componentDependsOn(tcA, tcB);
+         addDependency(tcA);
       }
    private:
       TestCompA * tcA_;
@@ -71,5 +71,4 @@ int main()
    Complex c(1.0, 2.0);
    std::cout << "Complex = " << c << std::endl;
    std::cout << "Complex real = " << c.real() << std::endl;
-
 }

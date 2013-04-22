@@ -56,6 +56,7 @@ namespace SmartGridToolbox
 
          /// Dependents update after I update.
          void addDependency(Component & b)
+         /** @param t Component on which I depend. */
          {
             dependencies_.push_back(&b);
          }
