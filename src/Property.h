@@ -19,9 +19,9 @@ namespace SmartGridToolbox
    {
       public:
          template<typename U> Property(U func) : valueFunction_(func)
-      {
-         // Empty.
-      }
+         {
+            // Empty.
+         }
 
          virtual T getValue() const
          {
