@@ -2,45 +2,37 @@
 #define PROPERTY_DOT_H
 
 #include<functional>
+#include<iostream>
 
 class PropertyBase
 {
-   // Empty.
+   public:
+      virtual ~PropertyBase()
+      {
+         // Empty.
+      }
 };
  
 template <typename T> class Property : public PropertyBase
 {
    public:
-      Property(const std::function<const T & ()> & valueFunction) : 
-         valueFunction_(valueFunction)
-      {}
+      template<typename U> Property(U func) : valueFunction_(func)
+      {
+         // Empty.
+      }
 
-      const T & operator()() const
+      virtual T getValue() const
+      {
+         return valueFunction_();
+      }
+
+      virtual operator T () const
       {
          return valueFunction_();
       }
 
    private:
-      const std::function<const T & ()> valueFunction_;
-};
-
-template <typename T> class Control : public Property<T>
-{
-   public:
-      Control(const std::function<const T & ()> & valueFunction,
-                        const std::function<void(const T &)> & setFunction) : 
-         Property<T>(valueFunction),
-         setFunction_(setFunction)
-      {}
-
-      void operator=(const T & rhs)
-      {
-         return setFunction_();
-      }
-
-   private:
-      const std::function<const T & ()> valueFunction_;
-      const std::function<const T & ()> setFunction_;
+      std::function<T()> valueFunction_;
 };
 
 #endif

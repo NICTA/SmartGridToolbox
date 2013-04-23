@@ -1,11 +1,31 @@
 #define BOOST_TEST_MODULE test_template
 #include <boost/test/included/unit_test.hpp>
+#include <ostream>
 #include "Component.h"
 #include "Model.h"
 #include "Simulation.h"
 #include "WeakOrder.h"
 using namespace SmartGridToolbox;
 using namespace std;
+
+class TestCompA : public Component
+{
+   public:
+      TestCompA(const string & name, int x) : Component(name), x_(x)
+      {
+         addProperty<int>(std::string("prop"), [this]()->int{return x_;});
+      }
+
+      virtual void advanceToTime(ptime t)
+      {
+         std::cout << "TCA AdvanceToTimestep " << t << std::endl;
+      }
+      friend std::ostream & operator<<(std::ostream & os, const TestCompA & tca)
+      {
+         return os << tca.getName() << " " << tca.x_ << std::endl;
+      }
+      int x_;
+};
 
 BOOST_AUTO_TEST_SUITE (tests) // Name of test suite is test_template.
 
@@ -51,28 +71,17 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    BOOST_CHECK(g.getNodes()[5]->getIndex() == 2);
 }
 
-class TestCompA : public Component
-{
-   public:
-      TestCompA(string name) : Component(name) {}
-      virtual void advanceToTime(ptime t)
-      {
-         std::cout << "TCA AdvanceToTimestep " << t << std::endl;
-      }
-   private:
-};
-
 BOOST_AUTO_TEST_CASE (test_model_dependencies)
 {
    Model mod;
    Simulation sim(mod);
 
-   TestCompA * a0 = new TestCompA("tca0");
-   TestCompA * a1 = new TestCompA("tca1");
-   TestCompA * a2 = new TestCompA("tca2");
-   TestCompA * a3 = new TestCompA("tca3");
-   TestCompA * a4 = new TestCompA("tca4");
-   TestCompA * a5 = new TestCompA("tca5");
+   TestCompA * a0 = new TestCompA("tca0", 0);
+   TestCompA * a1 = new TestCompA("tca1", 1);
+   TestCompA * a2 = new TestCompA("tca2", 2);
+   TestCompA * a3 = new TestCompA("tca3", 3);
+   TestCompA * a4 = new TestCompA("tca4", 4);
+   TestCompA * a5 = new TestCompA("tca5", 5);
 
    a4->addDependency(*a0);
    a5->addDependency(*a0);
@@ -97,6 +106,22 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
    BOOST_CHECK(mod.getComponents()[3] == a0);
    BOOST_CHECK(mod.getComponents()[4] == a5);
    BOOST_CHECK(mod.getComponents()[5] == a2);
+
+   delete a0;
+   delete a1;
+   delete a2;
+   delete a3;
+   delete a4;
+   delete a5;
+}
+
+BOOST_AUTO_TEST_CASE (test_properties)
+{
+   TestCompA * tca = new TestCompA("tca0", 3);
+   const Property<int> * prop = tca->getPropertyNamed<int>("prop");
+   cout << prop->getValue() << endl;
+   BOOST_CHECK(*prop == 3);
+   delete tca;
 }
    
 BOOST_AUTO_TEST_SUITE_END( )

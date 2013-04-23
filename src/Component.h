@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <set>
+#include <map>
 #include "Common.h"
 #include "Property.h"
 
@@ -24,7 +24,10 @@ namespace SmartGridToolbox
          /// Pure virtual destructor.
          virtual ~Component()
          {
-            // Empty.
+            for (auto it : propertyMap_)
+            {
+               delete it.second;
+            }
          }
 
          /// Get the name of the object.
@@ -84,9 +87,17 @@ namespace SmartGridToolbox
                ? 0 : dynamic_cast<const Property<T> *>(it->second);
          }
 
-      private:
+      protected:
          typedef std::vector<Component *> ComponentVec;
          typedef std::map<const std::string, PropertyBase *> PropertyMap;
+
+      protected:
+         template<typename T, typename U>
+         void addProperty(const std::string & name, U func)
+         {
+            Property<T> * p = new Property<T>(func);
+            propertyMap_[name] = p;
+         }
 
       private:
          std::string name_;
