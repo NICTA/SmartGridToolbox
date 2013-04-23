@@ -18,12 +18,11 @@ namespace SmartGridToolbox
             maxDischargePower_(00),
             chargeEfficiency_(0.0),
             dischargeEfficiency_(0.0),
-            charge_(0.0)
+            charge_(0.0),
+            requestedPower_(0.0)
          {
-            addProperty<int>(std::string("chargeRate"), 
-                  [this]()->int{return chargeRate_;});
-            addProperty<int>(std::string("dischargeRate"), 
-                  [this]()->int{return dischargeRate_;});
+            addProperty<int>(std::string("requestedPower"), 
+                  [this]()->int{return requestedPower_;});
          }
 
       private:
@@ -45,8 +44,7 @@ namespace SmartGridToolbox
                   
          // State.
          double charge_;
-         double chargeRate_;
-         double dischargeRate_;
+         double requestedPower_;
    };
 }
 #endif // SIMPLE_BATTERY_DOT_H
