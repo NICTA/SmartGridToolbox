@@ -131,10 +131,14 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    bat1.setInitCharge(1.0 * kWh);
    bat1.setMaxCharge(4.0 * kWh);
    bat1.setMaxChargePower(1.0 * kW);
-   bat1.setMaxDischargePower(2.0 * kW);
+   bat1.setMaxDischargePower(0.1 * kW);
    bat1.setChargeEfficiency(0.9);
    bat1.setDischargeEfficiency(0.8);
-   bat1.setRequestedPower(0.4 * kW);
+   bat1.setRequestedPower(-0.4 * kW);
+   bat1.initializeComponent(ptime(date(2012, Feb, 11), hours(2)));
+   cout << "1 Battery charge = " << bat1.getCharge() << endl;
+   bat1.advanceComponent(bat1.getTimestamp() + hours(3));
+   cout << "2 Battery charge = " << bat1.getCharge() << endl;
 }
    
 BOOST_AUTO_TEST_SUITE_END( )
