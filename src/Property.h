@@ -4,35 +4,38 @@
 #include<functional>
 #include<iostream>
 
-class PropertyBase
+namespace SmartGridToolbox
 {
-   public:
-      virtual ~PropertyBase()
+   class PropertyBase
+   {
+      public:
+         virtual ~PropertyBase()
+         {
+            // Empty.
+         }
+   };
+
+   template <typename T> class Property : public PropertyBase
+   {
+      public:
+         template<typename U> Property(U func) : valueFunction_(func)
       {
          // Empty.
       }
-};
- 
-template <typename T> class Property : public PropertyBase
-{
-   public:
-      template<typename U> Property(U func) : valueFunction_(func)
-      {
-         // Empty.
-      }
 
-      virtual T getValue() const
-      {
-         return valueFunction_();
-      }
+         virtual T getValue() const
+         {
+            return valueFunction_();
+         }
 
-      virtual operator T () const
-      {
-         return valueFunction_();
-      }
+         virtual operator T () const
+         {
+            return valueFunction_();
+         }
 
-   private:
-      std::function<T()> valueFunction_;
-};
+      private:
+         std::function<T()> valueFunction_;
+   };
+}
 
 #endif
