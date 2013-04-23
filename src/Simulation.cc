@@ -11,7 +11,7 @@ namespace SmartGridToolbox
       for (Model::ComponentVec::iterator it = mod_->getComponents().begin();
             it != mod_->getComponents().end(); ++it)
       {
-         (**it).initialize(startTime);
+         (**it).initializeComponent(startTime);
       }
    }
 
@@ -20,7 +20,7 @@ namespace SmartGridToolbox
       for (Model::ComponentVec::iterator it = mod_->getComponents().begin();
             it != mod_->getComponents().end(); ++it)
       {
-         (**it).advanceToTime(nextTime_);
+         (**it).advanceComponent(nextTime_);
       }
    }
 }

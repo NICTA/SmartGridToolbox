@@ -19,7 +19,6 @@ namespace SmartGridToolbox
       }
       else
       {
-         comp.initialize(not_a_date_time);
          protoVec_.push_back(&comp);
          message("Prototype %s added to model.", comp.getName().c_str());
       }
@@ -34,7 +33,6 @@ namespace SmartGridToolbox
       }
       else
       {
-         comp.initialize(not_a_date_time);
          compVec_.push_back(&comp);
          message("Component %s added to model.", comp.getName().c_str());
       }

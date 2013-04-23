@@ -67,16 +67,18 @@ namespace SmartGridToolbox
 
          /// Reset state of the object, time to timestamp t.
          /** @param t */
-         virtual void initialize(const ptime t = not_a_date_time)
+         void initializeComponent(const ptime t = not_a_date_time)
          {
             t_ = t;
+            initialize();
          }
 
          /// Bring state up to time t.
          /** @param t the timestamp to advance to. */
-         virtual void advanceToTime(ptime t)
+         void advanceComponent(ptime t)
          {
             t_ = t;
+            advance();
          }
 
          template <typename T>
@@ -86,17 +88,29 @@ namespace SmartGridToolbox
             return (it == propertyMap_.end()) 
                ? 0 : dynamic_cast<const Property<T> *>(it->second);
          }
-
-      protected:
-         typedef std::vector<Component *> ComponentVec;
-         typedef std::map<const std::string, PropertyBase *> PropertyMap;
-
-      protected:
          template<typename T, typename U>
          void addProperty(const std::string & name, U func)
          {
             Property<T> * p = new Property<T>(func);
             propertyMap_[name] = p;
+         }
+
+      protected:
+         typedef std::vector<Component *> ComponentVec;
+         typedef std::map<const std::string, PropertyBase *> PropertyMap;
+
+      private:
+         /// Reset state of the object, time to timestamp t_.
+         virtual void initialize()
+         {
+            // Empty.
+         }
+
+
+         /// Bring state up to time t_.
+         virtual void advance()
+         {
+            // Empty.
          }
 
       private:
