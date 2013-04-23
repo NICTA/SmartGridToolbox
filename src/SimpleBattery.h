@@ -21,9 +21,32 @@ namespace SmartGridToolbox
             charge_(0.0),
             requestedPower_(0.0)
          {
+            addProperty<int>(std::string("charge"), 
+                  [this]()->int{return getCharge();});
             addProperty<int>(std::string("requestedPower"), 
-                  [this]()->int{return requestedPower_;});
+                  [this]()->int{return getRequestedPower();});
          }
+
+         double getInitCharge() {return initCharge_;}
+         void setInitCharge(double val) {initCharge_ = val;}
+
+         double getMaxCharge() {return maxCharge_;}
+         void setMaxCharge(double val) {maxCharge_ = val;}
+
+         double getMaxChargePower() {return maxChargePower_;}
+         void setMaxChargePower(double val) {maxChargePower_ = val;}
+
+         double getChargeEfficiency() {return chargeEfficiency_;}
+         void setChargeEfficiency(double val) {chargeEfficiency_ = val;}
+
+         double getDischargeEfficiency() {return dischargeEfficiency_;}
+         void setDischargeEfficiency(double val) {dischargeEfficiency_ = val;}
+
+         double getCharge() {return charge_;}
+         void setCharge(double val) {charge_ = val;}
+
+         double getRequestedPower() {return requestedPower_;}
+         void setRequestedPower_(double val) {requestedPower_ = val;}
 
       private:
          virtual void initialize() override
