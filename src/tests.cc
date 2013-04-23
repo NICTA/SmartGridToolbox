@@ -3,6 +3,7 @@
 #include <ostream>
 #include "Component.h"
 #include "Model.h"
+#include "SimpleBattery.h"
 #include "Simulation.h"
 #include "WeakOrder.h"
 using namespace SmartGridToolbox;
@@ -122,6 +123,18 @@ BOOST_AUTO_TEST_CASE (test_properties)
    cout << prop->getValue() << endl;
    BOOST_CHECK(*prop == 3);
    delete tca;
+}
+
+BOOST_AUTO_TEST_CASE (test_simple_battery)
+{
+   SimpleBattery bat1("bat1");
+   bat1.setInitCharge(1.0 * kWh);
+   bat1.setMaxCharge(4.0 * kWh);
+   bat1.setMaxChargePower(1.0 * kW);
+   bat1.setMaxDischargePower(2.0 * kW);
+   bat1.setChargeEfficiency(0.9);
+   bat1.setDischargeEfficiency(0.8);
+   bat1.setRequestedPower(0.4 * kW);
 }
    
 BOOST_AUTO_TEST_SUITE_END( )

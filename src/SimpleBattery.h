@@ -36,6 +36,9 @@ namespace SmartGridToolbox
          double getMaxChargePower() {return maxChargePower_;}
          void setMaxChargePower(double val) {maxChargePower_ = val;}
 
+         double getMaxDischargePower() {return maxDischargePower_;}
+         void setMaxDischargePower(double val) {maxDischargePower_ = val;}
+
          double getChargeEfficiency() {return chargeEfficiency_;}
          void setChargeEfficiency(double val) {chargeEfficiency_ = val;}
 
@@ -43,10 +46,9 @@ namespace SmartGridToolbox
          void setDischargeEfficiency(double val) {dischargeEfficiency_ = val;}
 
          double getCharge() {return charge_;}
-         void setCharge(double val) {charge_ = val;}
 
          double getRequestedPower() {return requestedPower_;}
-         void setRequestedPower_(double val) {requestedPower_ = val;}
+         void setRequestedPower(double val) {requestedPower_ = val;}
 
       private:
          virtual void initialize() override
