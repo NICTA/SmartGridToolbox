@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 lib_LIBRARIES = libsmartgridtoolbox.a
 libsmartgridtoolbox_a_SOURCES = Model.cc Output.cc Parser.cc Random.cc \
-									    Simulation.cc WeakOrder.cc
+									     SimpleBattery.cc Simulation.cc WeakOrder.cc
 
 bin_PROGRAMS = hello
 hello_SOURCES = hello.cc

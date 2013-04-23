@@ -77,8 +77,8 @@ namespace SmartGridToolbox
          /** @param t the timestamp to advance to. */
          void advanceComponent(ptime t)
          {
+            advance(t);
             t_ = t;
-            advance();
          }
 
          template <typename T>
@@ -106,9 +106,8 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-
          /// Bring state up to time t_.
-         virtual void advance()
+         virtual void advance(ptime t)
          {
             // Empty.
          }
