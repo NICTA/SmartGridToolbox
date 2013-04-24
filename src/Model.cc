@@ -77,7 +77,11 @@ namespace SmartGridToolbox
       message("Model after validation:");
       for (const Component * comp : compVec_)
       {
-         message("   %s %d", comp->getName().c_str(), comp->getRank());
+         message("   %s", comp->getName().c_str());
+         for (Component * const dep : comp->getDependencies())
+         {
+            message("      %s", dep->getName().c_str());
+         }
       }
    }
 }
