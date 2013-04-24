@@ -6,6 +6,7 @@
 #include "Output.h"
 #include "SimpleBattery.h"
 #include "Simulation.h"
+#include "Spline.h"
 #include "WeakOrder.h"
 using namespace SmartGridToolbox;
 using namespace std;
@@ -194,5 +195,45 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    BOOST_CHECK(bat1.getCharge() == comp);
    message("Testing SimpleBattery. Completed.");
 }
-   
+
+BOOST_AUTO_TEST_CASE (test_spline)
+{
+  Spline spline;
+  //Add points to the spline in any order, they're sorted in ascending
+  //x later. (If you want to spline a circle you'll need to change the class)
+  spline.addPoint(0,        0.0);
+  spline.addPoint(40.0/255, 0.0);
+  spline.addPoint(60.0/255, 0.2);
+  spline.addPoint(63.0/255, 0.05);
+  spline.addPoint(80.0/255, 0.0);
+  spline.addPoint(82.0/255, 0.9);
+  spline.addPoint(1.0, 1.0);
+
+  { //We can extract the original data points by treating the spline as
+    //a read-only STL container.
+    std::ofstream of("orig.dat");
+    for (Spline::const_iterator iPtr = spline.begin();
+	 iPtr != spline.end(); ++iPtr)
+      of << iPtr->first << " " << iPtr->second << "\n";
+  }
+  
+  { //A "natural spline" where the second derivatives are set to 0 at the boundaries.
+
+    //Each boundary condition is set seperately
+
+    //The following aren't needed as its the default setting. The 
+    //zero values are the second derivatives at the spline points.
+    spline.setLowBC(Spline::FIXED_2ND_DERIV_BC, 0);
+    spline.setHighBC(Spline::FIXED_2ND_DERIV_BC, 0);
+
+    //Note: We can calculate values outside the range spanned by the
+    //points. The extrapolation is based on the boundary conditions
+    //used.
+
+    std::ofstream of("spline.natural.dat");
+    for (double x(-0.2); x <= 1.2001; x += 0.005)
+      of << x << " " << spline(x) << "\n";
+  }
+}   
+
 BOOST_AUTO_TEST_SUITE_END( )
