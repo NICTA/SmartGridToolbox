@@ -21,10 +21,11 @@ namespace SmartGridToolbox
             charge_(0.0),
             requestedPower_(0.0)
          {
-            addProperty<int>(std::string("charge"), 
-                  [this]()->int{return getCharge();});
-            addProperty<int>(std::string("requestedPower"), 
-                  [this]()->int{return getRequestedPower();});
+            addReadProperty<double>(std::string("charge"), 
+                  [this](){return getCharge();});
+            addReadWriteProperty<double>(std::string("requestedPower"), 
+                  [this](){return getRequestedPower();},
+                  [this](const double & p){setRequestedPower(p);});
          }
 
          double getInitCharge() {return initCharge_;}

@@ -82,16 +82,48 @@ namespace SmartGridToolbox
          }
 
          template <typename T>
-         const Property<T> * getPropertyNamed(const std::string & name) const
+         const ReadProperty<T> * getReadProperty(const std::string & name) const
          {
             PropertyMap::const_iterator it = propertyMap_.find(name);
             return (it == propertyMap_.end()) 
-               ? 0 : dynamic_cast<const Property<T> *>(it->second);
+               ? 0 : dynamic_cast<const ReadProperty<T> *>(it->second);
          }
-         template<typename T, typename U>
-         void addProperty(const std::string & name, U func)
+
+         template <typename T>
+         WriteProperty<T> * getWriteProperty(const std::string & name) const
          {
-            Property<T> * p = new Property<T>(func);
+            PropertyMap::const_iterator it = propertyMap_.find(name);
+            return (it == propertyMap_.end()) 
+               ? 0 : dynamic_cast<WriteProperty<T> *>(it->second);
+         }
+
+         template <typename T>
+         ReadWriteProperty<T> * getReadWriteProperty(
+               const std::string & name) const
+         {
+            PropertyMap::const_iterator it = propertyMap_.find(name);
+            return (it == propertyMap_.end()) 
+               ? 0 : dynamic_cast<ReadWriteProperty<T> *>(it->second);
+         }
+
+         template<typename T, typename G>
+         void addReadProperty(const std::string & name, G get)
+         {
+            ReadProperty<T> * p = new ReadProperty<T>(get);
+            propertyMap_[name] = p;
+         }
+
+         template<typename T, typename S>
+         void addWriteProperty(const std::string & name, S set)
+         {
+            WriteProperty<T> * p = new WriteProperty<T>(set);
+            propertyMap_[name] = p;
+         }
+
+         template<typename T, typename G, typename S>
+         void addReadWriteProperty(const std::string & name, G get, S set)
+         {
+            ReadWriteProperty<T> * p = new ReadWriteProperty<T>(get, set);
             propertyMap_[name] = p;
          }
 
@@ -118,6 +150,7 @@ namespace SmartGridToolbox
          ComponentVec dependencies_; // I depend on these.
          int rank_;  // Evaluation rank, based on weak ordering.
          PropertyMap propertyMap_;
+         PropertyMap controlMap_;
    };
 }
 
