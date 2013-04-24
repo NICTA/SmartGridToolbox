@@ -139,6 +139,10 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    cout << "1 Battery charge = " << bat1.getCharge() << endl;
    bat1.advanceComponent(bat1.getTimestamp() + hours(3));
    cout << "2 Battery charge = " << bat1.getCharge() << endl;
+   double comp = bat1.getInitCharge() + 
+      dseconds(hours(3)) * bat1.getInternalPower();
+   cout << "comp = " << comp << endl;
+   BOOST_CHECK(bat1.getCharge() == comp);
 }
    
 BOOST_AUTO_TEST_SUITE_END( )

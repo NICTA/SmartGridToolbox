@@ -12,7 +12,7 @@ namespace SmartGridToolbox
 
    using namespace boost::posix_time;
    using namespace boost::gregorian;
-   inline double seconds(const time_duration & d) 
+   inline double dseconds(const time_duration & d) 
    {
       return d.ticks()/time_duration::ticks_per_second();
    }

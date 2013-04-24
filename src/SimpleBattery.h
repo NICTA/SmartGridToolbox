@@ -50,6 +50,21 @@ namespace SmartGridToolbox
          double getRequestedPower() {return requestedPower_;}
          void setRequestedPower(double val) {requestedPower_ = val;}
 
+         double getPower() 
+         {
+            return requestedPower_ < 0 
+            ? std::max(requestedPower_, -maxDischargePower_)
+            : std::min(requestedPower_, maxChargePower_);
+         }
+
+         double getInternalPower() 
+         {
+            return requestedPower_ < 0 
+            ? std::max(requestedPower_, -maxDischargePower_) / 
+              dischargeEfficiency_
+            : std::min(requestedPower_, maxChargePower_) * chargeEfficiency_;
+         }
+
       private:
          virtual void initialize() override
          {
