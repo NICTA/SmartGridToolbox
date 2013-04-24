@@ -144,6 +144,26 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
       bat1.getDischargeEfficiency();
    cout << "comp = " << comp / kWh << endl;
    BOOST_CHECK(bat1.getCharge() == comp);
+
+   bat1.setRequestedPower(1.3 * kW);
+   bat1.initializeComponent(ptime(date(2012, Feb, 11), hours(2)));
+   cout << "3 Battery charge = " << bat1.getCharge() / kWh << endl;
+   bat1.advanceComponent(bat1.getTimestamp() + hours(3));
+   cout << "4 Battery charge = " << bat1.getCharge() / kWh << endl;
+   comp = bat1.getInitCharge() + 
+      dseconds(hours(3)) * bat1.getMaxChargePower() *
+      bat1.getChargeEfficiency();
+   cout << "comp = " << comp / kWh << endl;
+   BOOST_CHECK(bat1.getCharge() == comp);
+
+   bat1.setRequestedPower(-1 * kW);
+   bat1.initializeComponent(ptime(date(2012, Feb, 11), hours(2)));
+   cout << "3 Battery charge = " << bat1.getCharge() / kWh << endl;
+   bat1.advanceComponent(bat1.getTimestamp() + hours(5.5));
+   cout << "4 Battery charge = " << bat1.getCharge() / kWh << endl;
+   comp = 0.0;
+   cout << "comp = " << comp / kWh << endl;
+   BOOST_CHECK(bat1.getCharge() == comp);
 }
    
 BOOST_AUTO_TEST_SUITE_END( )
