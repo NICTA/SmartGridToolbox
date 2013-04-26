@@ -51,21 +51,22 @@ namespace SmartGridToolbox
             }
             double td = dSeconds(t);
             auto pos = std::find_if(points_.begin(), points_.end(),
-                  [&](const std::pair<T, V> & elem) {return elem.first > td;});
+                  [&](const std::pair<double, V> & elem)
+                  {return elem.first > td;});
             if (pos == points_.end())
             {
                return (--pos)->second;
             }
             else if (pos == points_.begin()) 
             {
-               return pos->second();
+               return pos->second;
             }
             else
             {
-               double t2 = pos->first();
-               V v2 = pos->second();
-               double t1 = (--pos)->first();
-               V v1 = pos->second();
+               double t2 = pos->first;
+               V v2 = pos->second;
+               double t1 = (--pos)->first;
+               V v1 = pos->second;
                return v1 + (v2 - v1) * (td - t1) / (t2 - t1);
             }
          }
@@ -80,8 +81,8 @@ namespace SmartGridToolbox
          void validate()
          {
             std::sort(points_.begin(), points_.end(), 
-                  [](const std::pair<T, V> & lhs, 
-                     const std::pair<T, V> & rhs) -> bool 
+                  [](const std::pair<double, V> & lhs, 
+                     const std::pair<double, V> & rhs) -> bool 
                   {return lhs.first < rhs.first;});
             isValid_ = true;
          }

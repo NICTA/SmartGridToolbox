@@ -240,6 +240,7 @@ BOOST_AUTO_TEST_CASE (test_spline)
 
 BOOST_AUTO_TEST_CASE (test_spline_timeseries)
 {
+   message("Testing SplineTimeSeries. Starting.");
    ptime base(date(2013, Apr, 26), hours(0));
    SplineTimeSeries<ptime> sts;
    sts.addPoint(base + hours(0), sin(0*pi/12));
@@ -249,14 +250,40 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
    sts.addPoint(base + hours(16), sin(16*pi/12));
    sts.addPoint(base + hours(20), sin(20*pi/12));
    sts.addPoint(base + hours(24), sin(24*pi/12));
-   cout << "Testing SplineTimeSeries" << endl;
-   for (int i = 0; i <= 24; ++i)
+   for (int i = -1; i <= 25; ++i)
    {
       double val = sts(base + hours(i));
       double err = std::abs(val - sin(i*pi/12));
-      BOOST_CHECK(err < 0.005);
       cout << i << " " << val << " " << err << endl; 
+      if (i > -1 && i < 25)
+      {
+         BOOST_CHECK(err < 0.005);
+      }
    }
+   message("Testing SplineTimeSeries. Completed.");
+}
+
+BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
+{
+   message("Testing LerpTimeSeries. Starting.");
+   ptime base(date(2013, Apr, 26), hours(0));
+   LerpTimeSeries<ptime, Complex> lts;
+   lts.addPoint(base + hours(0), Complex(0, 0));
+   lts.addPoint(base + hours(1), Complex(3, 1));
+   lts.addPoint(base + hours(3), Complex(10, 11));
+   for (int i = -1; i <= 4; ++i)
+   {
+      Complex val = lts(base + hours(i));
+      cout << i << " " << val << endl; 
+   }
+   BOOST_CHECK(lts(base + hours(-1)) == Complex(0, 0));
+   BOOST_CHECK(lts(base + hours(0)) == Complex(0, 0));
+   BOOST_CHECK(lts(base + minutes(30)) == Complex(1.5, 0.5));
+   BOOST_CHECK(lts(base + hours(1)) == Complex(3, 1));
+   BOOST_CHECK(lts(base + hours(2)) == Complex(6.5, 6));
+   BOOST_CHECK(lts(base + hours(3)) == Complex(10, 11));
+   BOOST_CHECK(lts(base + hours(4) + seconds(1)) == Complex(10, 11));
+   message("Testing LerpTimeSeries. Completed.");
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
