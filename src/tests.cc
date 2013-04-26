@@ -1,5 +1,6 @@
 #define BOOST_TEST_MODULE test_template
 #include <boost/test/included/unit_test.hpp>
+#include <cmath>
 #include <ostream>
 #include "Component.h"
 #include "Model.h"
@@ -7,6 +8,7 @@
 #include "SimpleBattery.h"
 #include "Simulation.h"
 #include "Spline.h"
+#include "TimeSeries.h"
 #include "WeakOrder.h"
 using namespace SmartGridToolbox;
 using namespace std;
@@ -235,5 +237,26 @@ BOOST_AUTO_TEST_CASE (test_spline)
       of << x << " " << spline(x) << "\n";
   }
 }   
+
+BOOST_AUTO_TEST_CASE (test_spline_timeseries)
+{
+   ptime base(date(2013, Apr, 26), hours(0));
+   SplineTimeSeries<ptime> sts;
+   sts.addPoint(base + hours(0), sin(0*pi/12));
+   sts.addPoint(base + hours(4), sin(4*pi/12));
+   sts.addPoint(base + hours(8), sin(8*pi/12));
+   sts.addPoint(base + hours(12), sin(12*pi/12));
+   sts.addPoint(base + hours(16), sin(16*pi/12));
+   sts.addPoint(base + hours(20), sin(20*pi/12));
+   sts.addPoint(base + hours(24), sin(24*pi/12));
+   cout << "Testing SplineTimeSeries" << endl;
+   for (int i = 0; i <= 24; ++i)
+   {
+      double val = sts(base + hours(i));
+      double err = std::abs(val - sin(i*pi/12));
+      BOOST_CHECK(err < 0.005);
+      cout << i << " " << val << " " << err << endl; 
+   }
+}
 
 BOOST_AUTO_TEST_SUITE_END( )

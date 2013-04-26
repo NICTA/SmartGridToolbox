@@ -1,42 +1,70 @@
 #ifndef TIME_SERIES_DOT_H
 #define TIME_SERIES_DOT_H
 
+#include "Spline.h"
+
 namespace SmartGridToolbox
 {
-   template<typename T>
-   class TimeSeriesBase
+   template<typename T, typename V>
+   class TimeSeries
    {
       public:
-         virtual ~TimeSeriesBase
+         virtual ~TimeSeries()
          {
             // Empty.
          }
 
-         virtual T value(const ptime & timestamp) = 0;
-   }
+         V operator()(const T & t)
+         {
+            return getVal(dseconds(t));
+         }
 
-   template<typename T>
-   class TimeSeriesWithData : public TimeSeriesBase
+      private:
+         virtual V getVal(double s) = 0;
+   };
+
+   template<typename T, typename V>
+   class DataTimeSeries : public TimeSeries<T, V>
    {
       public:
-         TimeSeriesWithData()
+         virtual ~DataTimeSeries()
          {
             // Empty.
          }
 
-         typedef T Value;
-         typedef std::pair<ptime, T> Datum;
-         typedef std::vector<DataType> Data;
-
-         const Data & getData() const
+         void addPoint(const T & t, const V & v)
          {
-            return data_;
+            addPt(dseconds(t), v);
+         }
+
+      private:
+         virtual void addPt(double s, const V & v) = 0;
+   };
+   
+   template<typename T>
+   class SplineTimeSeries : public DataTimeSeries<T, double>
+   {
+      public:
+         virtual ~SplineTimeSeries()
+         {
+            // Empty.
+         }
+
+      private:
+         virtual double getVal(double s) override
+         {
+            return spline_(s);
+         }
+
+         virtual void addPt(double s, const double & v)
+         {
+            spline_.addPoint(s, v);
          }
 
       private:
 
-         Storage data_;
-   }
+         Spline spline_;
+   };
 }
 
 #endif // TIME_SERIES_DOT_H

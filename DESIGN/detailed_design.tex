@@ -62,7 +62,7 @@ Some kind of linkage to Gurobi might be good. At this stage, more information is
 \subsection{Unit testing}
 \itm{
 	\item Use the boost unit testing library.
-	\item Status: test directory set up, example tests implemented.
+	\item Status: test directory set up, tests implemented for existing classes and components.
 }
 
 \subsection{Complex numbers}
@@ -86,8 +86,13 @@ Some kind of linkage to Gurobi might be good. At this stage, more information is
 }
 
 \subsection{Dates and times}
+It is common to implement timestamps using an integer type, to avoid the possibilities of inadvertent rounding errors. For example, if a floating point type were to be used, two times that were essentially the same could be recognised as different due to roundoff error or to the difference in precision between, say, float and double.
+
+A common approach is the ``posix time'' approach, where a large integer stores the number of ``ticks'' elapsed since a fixed point in time, the ``epoch'', equal to  00:00:00 UTC on 1 January 1970. The duration of a ``tick'' can in general vary. For our purposes, we want there to be many (i.e. at least tens) of ticks in a 20~ms AC electricity cycle. Thus we require that each tick be smaller than about 1~ms. We also wish the storage type of our times to be able to handle times that differ by several years. A 64 bit integer, or long long int, allows us to use a 1~$\mu$s resolution while still representing times far far into the future.
+
+We also need to be able to handle the conversions between actual dates, with timezones, daylight savings etc., and the internal representation of time.
+
 \itm{
-	\item The finest resolution should be based on a 50~Hz frequency i.e. a 20~ms period. So a 1 ms resolution is probably reasonable, but only just. It is recommended to use at least 64 bits of storage, meaning that there will be no conceivable chance of a time overflow.
 	\item \texttt{boost::posix\_time} handles these requirements.
 	\item Use \texttt{boost::gregorian} to manage dates.
 	\item Use basic boost rules for parsing dates : 2012-01-27 14:23:00
@@ -95,12 +100,33 @@ Some kind of linkage to Gurobi might be good. At this stage, more information is
 	\item Status: essentially already implemented, timezone and DST yet to be included, tests not written.
 }
 
-\subsection{Schedules}
+
+\subsection{Time Series}
+Time series data will be needed frequently by the simulation, to represent many quantities such as the weather, demand for electricity, or the probability of an appliance being used at any given time. Here, we define a time series as a continuous function of time, whose values can be of arbitrary type. Time series can either be anchored to a specific point in time (e.g.  the weather, which will have a specific value on, say, 2~PM, Tuesday 6 Jan 2014) or unanchored (say, the cycle of a dishwasher, which depends only on the time elapsed since start was pressed).
+
+Time series will be represented by a collection of TimeSeries subclasses. The common functionality will be the ability to extract the value at a given time, as a function of an arbitrary time (for anchored timeseries) or duration from start (for unanchored timeseries). The subclasses will determine their own methods for choosing the value at a given time, e.g. spline interpolation, linear interpolation, mathematical functions etc.
+
+\itm{
+	\item Base class for hierarchy = TimeSeriesBase. Has a value(durationSinceStart) function.
+	\item AnchoredTimeSeries is a mixin class that is virtually derived from this. Adds value(timestamp) function. Any of the subclasses discussed below can be safely specialised by deriving from this class using multiple inheritance.
+	\item DataTimeSeries stores a list of duration/value pairs and provides requisite access. It uses a policy-based design approach to determine its values according to various user supplied policies: CubicSplineInterp, LinearInterp, DiscontinuousInterp etc.
+	\item Other subclasses for e.g. sinusoidally varying functions of various kinds.
+	\item Status: work started, cubic spline library found and added to code base.
+}
+
+\subsection{Recurring Schedules}
+Associated with time series is the concept of a recurring schedule. This provides the ability to define a quantity that, say, could vary differently depending on the hour of the day, the day of the week, the season etc., without having to explicitly define the values taken during every hour of the simulation period. The cannonical example of this is given by the unix ``chron'' program.
+\itm {
+	\item Planned to import this from Gridlab-D
+	\item Status: work not yet begun.
+}
+
 \itm{
 	\item Initially, all data should just be provided as a list of time/value pairs, generated e.g. by matlab. Interpolation shall be used where required.
 	\item However, we will want to eventually include schedules as a way of generating values that vary over time. Possibly outsource this to a higher level. However, I don't believe C++ library is available for chron style times.
 	\item Status: not started.
 }
+
 
 \subsection{Data input}
 \itm{
