@@ -30,10 +30,39 @@ namespace SmartGridToolbox
    };
 
    template<typename T, typename V>
+   class StepwiseTimeSeries : public DataTimeSeries<T, V>
+   {
+      public:
+         virtual ~StepwiseTimeSeries()
+         {
+            // Empty.
+         }
+
+         virtual V operator()(const T & t) override
+         {
+            auto pos = points_.upper_bound(dSeconds(t));
+            if (pos != points_.begin())
+            {
+               --pos;
+            }
+            return pos->second;
+
+         }
+
+         virtual void addPoint(const T & t, const V & v) override
+         {
+            points_[dSeconds(t)] = v;
+         }
+
+      private:
+         std::map<double, V> points_;
+   };
+
+   template<typename T, typename V>
    class LerpTimeSeries : public DataTimeSeries<T, V>
    {
       public:
-         LerpTimeSeries() : isValid_(false)
+         LerpTimeSeries()
          {
             // Empty.
          }
@@ -45,50 +74,32 @@ namespace SmartGridToolbox
 
          virtual V operator()(const T & t) override
          {
-            if (!isValid_)
-            {
-               validate();
-            }
             double td = dSeconds(t);
-            auto pos = std::find_if(points_.begin(), points_.end(),
-                  [&](const std::pair<double, V> & elem)
-                  {return elem.first > td;});
-            if (pos == points_.end())
+            auto pos2 = points_.upper_bound(td);
+            if (pos2 == points_.begin())
             {
-               return (--pos)->second;
+               return pos2->second;
             }
-            else if (pos == points_.begin()) 
+            else if (pos2 == points_.end())
             {
-               return pos->second;
+               return (--pos2)->second;
             }
             else
             {
-               double t2 = pos->first;
-               V v2 = pos->second;
-               double t1 = (--pos)->first;
-               V v1 = pos->second;
-               return v1 + (v2 - v1) * (td - t1) / (t2 - t1);
+               auto pos1 = pos2; --pos1;
+               return pos1->second + 
+                  (pos2->second - pos1->second) * (td - pos1->first) / 
+                  (pos2->first - pos1->first);
             }
          }
 
          virtual void addPoint(const T & t, const V & v) override
          {
-            isValid_ = false;
-            points_.push_back(std::make_pair(dSeconds(t), v));
+            points_[dSeconds(t)] = v;
          }
 
       private:
-         void validate()
-         {
-            std::sort(points_.begin(), points_.end(), 
-                  [](const std::pair<double, V> & lhs, 
-                     const std::pair<double, V> & rhs) -> bool 
-                  {return lhs.first < rhs.first;});
-            isValid_ = true;
-         }
-      private:
-         bool isValid_;
-         std::vector<std::pair<double, V>> points_;
+         std::map<double, V> points_;
    };
 
    template<typename T>
