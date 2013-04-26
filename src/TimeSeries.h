@@ -14,13 +14,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         V operator()(const T & t)
-         {
-            return getVal(dseconds(t));
-         }
-
-      private:
-         virtual V getVal(double s) = 0;
+         virtual V operator()(const T & t) = 0;
    };
 
    template<typename T, typename V>
@@ -32,15 +26,70 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         void addPoint(const T & t, const V & v)
+         virtual void addPoint(const T & t, const V & v) = 0;
+   };
+
+   template<typename T, typename V>
+   class LerpTimeSeries : public DataTimeSeries<T, V>
+   {
+      public:
+         LerpTimeSeries() : isValid_(false)
          {
-            addPt(dseconds(t), v);
+            // Empty.
+         }
+
+         virtual ~LerpTimeSeries()
+         {
+            // Empty.
+         }
+
+         virtual V operator()(const T & t) override
+         {
+            if (!isValid_)
+            {
+               validate();
+            }
+            double td = dSeconds(t);
+            auto pos = std::find_if(points_.begin(), points_.end(),
+                  [&](const std::pair<T, V> & elem) {return elem.first > td;});
+            if (pos == points_.end())
+            {
+               return (--pos)->second;
+            }
+            else if (pos == points_.begin()) 
+            {
+               return pos->second();
+            }
+            else
+            {
+               double t2 = pos->first();
+               V v2 = pos->second();
+               double t1 = (--pos)->first();
+               V v1 = pos->second();
+               return v1 + (v2 - v1) * (td - t1) / (t2 - t1);
+            }
+         }
+
+         virtual void addPoint(const T & t, const V & v) override
+         {
+            isValid_ = false;
+            points_.push_back(std::make_pair(dSeconds(t), v));
          }
 
       private:
-         virtual void addPt(double s, const V & v) = 0;
+         void validate()
+         {
+            std::sort(points_.begin(), points_.end(), 
+                  [](const std::pair<T, V> & lhs, 
+                     const std::pair<T, V> & rhs) -> bool 
+                  {return lhs.first < rhs.first;});
+            isValid_ = true;
+         }
+      private:
+         bool isValid_;
+         std::vector<std::pair<double, V>> points_;
    };
-   
+
    template<typename T>
    class SplineTimeSeries : public DataTimeSeries<T, double>
    {
@@ -50,15 +99,14 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-      private:
-         virtual double getVal(double s) override
+         virtual double operator()(const T & t) override
          {
-            return spline_(s);
+            return spline_(dSeconds(t));
          }
 
-         virtual void addPt(double s, const double & v)
+         virtual void addPoint(const T & t, const double & v) override
          {
-            spline_.addPoint(s, v);
+            spline_.addPoint(dSeconds(t), v);
          }
 
       private:

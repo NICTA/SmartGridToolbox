@@ -31,16 +31,28 @@ namespace SmartGridToolbox
    // Time stuff.
    const ptime epoch(date(1970,1,1));
 
-   inline double dseconds(const time_duration & d) 
+   // The following conversion functions allow lower level access to internal
+   // representation of both time_durations and ptimes. This is often useful
+   // e.g. for spline interpolation of a time series.
+   inline double dSeconds(const time_duration & d) 
    {
       return d.ticks()/time_duration::ticks_per_second();
    }
 
-   inline double dseconds(const ptime & t)
+   inline double dSeconds(const ptime & t)
    {
-      return dseconds(t - epoch);
+      return dSeconds(t - epoch);
    }
 
+   inline boost::int64_t ticks(const time_duration & d) 
+   {
+      return d.ticks();
+   }
+
+   inline boost::int64_t ticks(const ptime & t) 
+   {
+      return ticks(t - epoch);
+   }
 }
 
 #endif // COMMON_DOT_H
