@@ -286,4 +286,31 @@ BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
    message("Testing LerpTimeSeries. Completed.");
 }
 
+BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
+{
+   message("Testing StepwiseTimeSeries. Starting.");
+   time_duration base(minutes(5));
+   StepwiseTimeSeries<time_duration, double> sts;
+   sts.addPoint(base + hours(0), 1.5);
+   sts.addPoint(base + hours(1), 2.5);
+   sts.addPoint(base + hours(3), 5.5);
+   for (int i = -1; i <= 4; ++i)
+   {
+      double val = sts(base + hours(i));
+      cout << i << " " << val << endl; 
+   }
+   cout << endl;
+   for (int i = -1; i <= 4; ++i)
+   {
+      double val = sts(base + hours(i) + seconds(1));
+      cout << i << " " << val << endl; 
+   }
+   BOOST_CHECK(sts(base + seconds(-1)) == 1.5);
+   BOOST_CHECK(sts(base + seconds(1)) == 1.5);
+   BOOST_CHECK(sts(base + hours(1) - seconds(1)) == 1.5);
+   BOOST_CHECK(sts(base + hours(1) + seconds(1)) == 2.5);
+   BOOST_CHECK(sts(base + hours(3) + seconds(1)) == 5.5);
+   message("Testing StepwiseTimeSeries. Completed.");
+}
+
 BOOST_AUTO_TEST_SUITE_END( )
