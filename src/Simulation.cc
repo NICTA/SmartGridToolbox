@@ -15,12 +15,13 @@ namespace SmartGridToolbox
       }
    }
 
-   void Simulation::advanceToNextTime()
+   void Simulation::advance()
    {
-      for (Model::ComponentVec::iterator it = mod_->getComponents().begin();
-            it != mod_->getComponents().end(); ++it)
+      const Event * event = pendingEvents_.top();
+      pendingEvents_.pop();
+      for (auto action : event->getActions())
       {
-         (**it).advanceComponent(nextTime_);
+         action();
       }
    }
 }
