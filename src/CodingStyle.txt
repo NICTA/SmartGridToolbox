@@ -16,6 +16,10 @@ Arguments are lowerCamelCase.
 
 Acronyms: e.g. ABC => AbstractAbcClass.
 
+Mathematical variable names e.g. R0, r0 may often be distinguished by their
+case. Thus, don't use the usual CamelCase naming rules for these - instead,
+keep the original case.
+
 Global constants are named as gGlobalConstant.
 
 Static (file scope, in the C sense) variables are named as sVariable.
