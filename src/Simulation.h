@@ -3,7 +3,7 @@
 
 #include "Common.h"
 #include "Component.h"
-#include <set>
+#include <queue>
 
 namespace SmartGridToolbox
 {
@@ -62,11 +62,17 @@ namespace SmartGridToolbox
          void doNextUpdate();
 
       private:
+         typedef std::priority_queue<Component *, std::vector<Component *>,
+                 bool(*)(const Component *, const Component *)> UpdateQueue;
+
+      private:
+         void clearQueue();
+
+      private:
          Model * mod_;
          ptime startTime_;
          ptime endTime_;
-         std::set<Component *, bool(*)(const Component *, const Component *)>
-            pendingUpdates_;
+         UpdateQueue pendingUpdates_;
    };
 }
 

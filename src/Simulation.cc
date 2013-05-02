@@ -6,9 +6,14 @@ namespace SmartGridToolbox
 {
    static bool updateComponentComp(const Component * lhs, const Component * rhs)
    {
-      return ((lhs->getNextUpdate() < rhs->getNextUpdate()) ||
-              ((lhs->getNextUpdate() == rhs->getNextUpdate()) &&
+      return ((lhs->getValidUntil() < rhs->getValidUntil()) ||
+              ((lhs->getValidUntil() == rhs->getValidUntil()) &&
                (lhs->getRank() < rhs->getRank())));
+   }
+
+   void Simulation::clearQueue()
+   {
+      pendingUpdates_ = UpdateQueue(updateComponentComp);
    }
 
    Simulation::Simulation(Model & mod) : mod_(&mod),
@@ -19,22 +24,23 @@ namespace SmartGridToolbox
       // Empty.
    }
 
-
    void Simulation::initialize(const ptime & startTime, const ptime & endTime)
    {
       startTime_ = startTime;
       endTime_ = endTime;
-      pendingUpdates_.clear();
+      clearQueue();
       for (Model::ComponentVec::iterator it = mod_->getComponents().begin();
             it != mod_->getComponents().end(); ++it)
       {
          (**it).initializeComponent(startTime);
-         pendingUpdates_.insert(*it);
+         pendingUpdates_.push(*it);
       }
    }
 
    void Simulation::doNextUpdate()
    {
-      
+      Component * comp = pendingUpdates_.top();
+      pendingUpdates_.pop();
+      comp->update(comp->getValidUntil());
    }
 }

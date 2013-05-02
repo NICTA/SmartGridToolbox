@@ -22,11 +22,6 @@ class TestCompA : public Component
          addReadProperty<int>(std::string("x"), [this](){return x_;});
       }
 
-      virtual void advanceToTime(ptime t)
-      {
-         std::cout << "TCA AdvanceToTimestep " << t << std::endl;
-      }
-
       int getX() {return x_;}
       void setX(int x) {x_ = x;}
 
@@ -168,7 +163,7 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    bat1.setRequestedPower(-0.4 * kW);
    bat1.initializeComponent(ptime(date(2012, Feb, 11), hours(2)));
    cout << "1 Battery charge = " << bat1.getCharge() / kWh << endl;
-   bat1.advanceComponent(bat1.getTimestamp() + hours(3));
+   bat1.update(bat1.getTimestamp() + hours(3));
    cout << "2 Battery charge = " << bat1.getCharge() / kWh << endl;
    double comp = bat1.getInitCharge() + 
       dSeconds(hours(3)) * bat1.getRequestedPower() /
@@ -179,7 +174,7 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    bat1.setRequestedPower(1.3 * kW);
    bat1.initializeComponent(ptime(date(2012, Feb, 11), hours(2)));
    cout << "3 Battery charge = " << bat1.getCharge() / kWh << endl;
-   bat1.advanceComponent(bat1.getTimestamp() + hours(3));
+   bat1.update(bat1.getTimestamp() + hours(3));
    cout << "4 Battery charge = " << bat1.getCharge() / kWh << endl;
    comp = bat1.getInitCharge() + 
       dSeconds(hours(3)) * bat1.getMaxChargePower() *
@@ -190,7 +185,7 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    bat1.setRequestedPower(-1 * kW);
    bat1.initializeComponent(ptime(date(2012, Feb, 11), hours(2)));
    cout << "3 Battery charge = " << bat1.getCharge() / kWh << endl;
-   bat1.advanceComponent(bat1.getTimestamp() + hours(5.5));
+   bat1.update(bat1.getTimestamp() + hours(5.5));
    cout << "4 Battery charge = " << bat1.getCharge() / kWh << endl;
    comp = 0.0;
    cout << "comp = " << comp / kWh << endl;
@@ -331,7 +326,7 @@ class TestEventA : public Component
       }
 
       /// Bring state up to time t_.
-      virtual void advance(ptime t)
+      virtual void updateState(ptime t)
       {
          state_ = (t-tInit_).ticks() * ctrl_;
       }
@@ -360,7 +355,7 @@ class TestEventB : public Component
       }
 
       /// Bring state up to time t_.
-      virtual void advance(ptime t)
+      virtual void updateState(ptime t)
       {
          state_ = (t-tInit_).ticks() * ctrl_;
       }

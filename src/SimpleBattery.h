@@ -72,7 +72,7 @@ namespace SmartGridToolbox
             charge_ = initCharge_;
          }
 
-         virtual void advance(ptime t) override;
+         virtual void updateState(ptime t) override;
 
       private:
          // Parameters.

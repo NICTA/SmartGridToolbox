@@ -97,13 +97,13 @@ namespace SmartGridToolbox
 
          /// Bring state up to time t.
          /** @param t the timestamp to advance to. */
-         void advanceComponent(ptime t)
+         void update(ptime t)
          {
-            advance(t);
+            updateState(t);
             t_ = t;
          }
 
-         virtual ptime getNextUpdate() const
+         virtual ptime getValidUntil() const
          {
             return pos_infin;
          }
@@ -172,7 +172,7 @@ namespace SmartGridToolbox
          }
 
          /// Bring state up to time t_.
-         virtual void advance(ptime t)
+         virtual void updateState(ptime t)
          {
             // Empty.
          }
