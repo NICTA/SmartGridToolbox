@@ -2,8 +2,8 @@
 #define SIMULTION_DOT_H
 
 #include "Common.h"
-#include "Event.h"
-#include <queue>
+#include "Component.h"
+#include <set>
 
 namespace SmartGridToolbox
 {
@@ -14,12 +14,7 @@ namespace SmartGridToolbox
    {
       public:
          /// Default constructor.
-         Simulation(Model & mod) : mod_(&mod),
-                                   startTime_(not_a_date_time),
-                                   endTime_(not_a_date_time)
-         {
-            // Empty.
-         }
+         Simulation(Model & mod);
 
          /// Destructor.
          ~Simulation()
@@ -63,20 +58,15 @@ namespace SmartGridToolbox
          /// Initialize to start time.
          void initialize(const ptime & startTime, const ptime & endTime);
          
-         /// Register an event.
-         void addEvent(const Event & event)
-         {
-            pendingEvents_.push(&event);
-         }
-
-         /// Advance timestep.
-         void advance();
+         /// Do the next update.
+         void doNextUpdate();
 
       private:
          Model * mod_;
          ptime startTime_;
          ptime endTime_;
-         std::priority_queue<const Event *> pendingEvents_;
+         std::set<Component *, bool(*)(const Component *, const Component *)>
+            pendingUpdates_;
    };
 }
 

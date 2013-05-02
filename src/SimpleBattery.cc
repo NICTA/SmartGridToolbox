@@ -1,5 +1,6 @@
 #include "SimpleBattery.h"
-
+#include <iostream>
+using namespace std;
 namespace SmartGridToolbox
 {
    void SimpleBattery::advance(ptime t)

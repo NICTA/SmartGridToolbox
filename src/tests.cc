@@ -97,13 +97,13 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
    TestCompA * a4 = new TestCompA("tca4", 4, 0.1);
    TestCompA * a5 = new TestCompA("tca5", 5, 0.1);
 
-   a4->addDependency(*a0);
-   a5->addDependency(*a0);
-   a0->addDependency(*a1);
-   a2->addDependency(*a1);
-   a1->addDependency(*a3);
-   a1->addDependency(*a4);
-   a2->addDependency(*a5);
+   a4->dependsOn(*a0);
+   a5->dependsOn(*a0);
+   a0->dependsOn(*a1);
+   a2->dependsOn(*a1);
+   a1->dependsOn(*a3);
+   a1->dependsOn(*a4);
+   a2->dependsOn(*a5);
 
    mod.addComponent(*a0);
    mod.addComponent(*a1);
@@ -311,6 +311,71 @@ BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
    BOOST_CHECK(sts(base + hours(1) + seconds(1)) == 2.5);
    BOOST_CHECK(sts(base + hours(3) + seconds(1)) == 5.5);
    message("Testing StepwiseTimeSeries. Completed.");
+}
+
+class TestEventA : public Component
+{
+   public:
+
+   private:
+      TestEventA(const std::string & name) : Component(name),
+                                             state_(0)
+      {
+         // Empty.
+      }
+
+      /// Reset state of the object, time is at timestamp t_.
+      virtual void initialize()
+      {
+         tInit_ = getTimestamp();
+      }
+
+      /// Bring state up to time t_.
+      virtual void advance(ptime t)
+      {
+         state_ = (t-tInit_).ticks() * ctrl_;
+      }
+
+   private:
+      ptime tInit_;
+      int state_;
+      int ctrl_;
+};
+
+class TestEventB : public Component
+{
+   public:
+
+   private:
+      TestEventB(const std::string & name) : Component(name),
+                                             state_(0)
+      {
+         // Empty.
+      }
+
+      /// Reset state of the object, time is at timestamp t_.
+      virtual void initialize()
+      {
+         tInit_ = getTimestamp();
+      }
+
+      /// Bring state up to time t_.
+      virtual void advance(ptime t)
+      {
+         state_ = (t-tInit_).ticks() * ctrl_;
+      }
+
+   private:
+      ptime tInit_;
+      int state_;
+      int ctrl_;
+};
+
+BOOST_AUTO_TEST_CASE (test_events)
+{
+   message("Testing Events. Starting.");
+
+   message("Testing Events. Completed.");
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

@@ -13,6 +13,9 @@ namespace SmartGridToolbox
    class Component
    {
       public:
+         /// @name Lifecycle
+         /// @{
+
          /// Constructor.
          /** @param name the unique name */
          explicit Component(const std::string & name) : name_(name),
@@ -30,6 +33,8 @@ namespace SmartGridToolbox
             }
          }
 
+         /// @}
+
          /// Get the name of the object.
          const std::string & getName() const
          {
@@ -42,28 +47,45 @@ namespace SmartGridToolbox
             return t_;
          }
 
+
+         /** @name Rank
+          *  Rank: A < B means B depends on A, not vice-versa, so A should go
+          *  first. */
+         ///@{
+
          /// Get the rank of the object.
          int getRank() const
          {
             return rank_;
          }
+
          /// Set the rank of the object.
          void setRank(int rank)
          {
             rank_ = rank;
          }
 
-         /// My dependencies.
+         ///@}
+
+         /// @name Dependencies.
+         ///@{
+
          const std::vector<Component *> & getDependencies() const
          {
             return dependencies_;
          }
+
          /// Dependents update after I update.
-         void addDependency(Component & b)
+         void dependsOn(Component & b)
          /** @param t Component on which I depend. */
          {
             dependencies_.push_back(&b);
          }
+
+         ///@}
+
+         /// @name Simulation
+         /// @{
 
          /// Reset state of the object, time to timestamp t.
          /** @param t */
@@ -80,6 +102,16 @@ namespace SmartGridToolbox
             advance(t);
             t_ = t;
          }
+
+         virtual ptime getNextUpdate() const
+         {
+            return pos_infin;
+         }
+
+         /// @}
+
+         /// @name Properties
+         /// @{
 
          template <typename T>
          const ReadProperty<T> * getReadProperty(const std::string & name) const
@@ -126,13 +158,14 @@ namespace SmartGridToolbox
             ReadWriteProperty<T> * p = new ReadWriteProperty<T>(get, set);
             propertyMap_[name] = p;
          }
+         /// @}
 
       protected:
          typedef std::vector<Component *> ComponentVec;
          typedef std::map<const std::string, PropertyBase *> PropertyMap;
 
       private:
-         /// Reset state of the object, time to timestamp t_.
+         /// Reset state of the object, time is at timestamp t_.
          virtual void initialize()
          {
             // Empty.
@@ -143,7 +176,7 @@ namespace SmartGridToolbox
          {
             // Empty.
          }
-
+         
       private:
          std::string name_;
          ptime t_; // The current time.
