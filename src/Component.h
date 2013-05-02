@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include "Common.h"
+#include "Event.h"
 #include "Property.h"
 
 namespace SmartGridToolbox
@@ -42,11 +43,10 @@ namespace SmartGridToolbox
          }
          
          /// Get the current step for the object.
-         ptime getTimestamp()
+         ptime getTime() const
          {
             return t_;
          }
-
 
          /** @name Rank
           *  Rank: A < B means B depends on A, not vice-versa, so A should go
@@ -89,10 +89,10 @@ namespace SmartGridToolbox
 
          /// Reset state of the object, time to timestamp t.
          /** @param t */
-         void initializeComponent(const ptime t = not_a_date_time)
+         void initialize(const ptime t = not_a_date_time)
          {
             t_ = t;
-            initialize();
+            initializeState(t);
          }
 
          /// Bring state up to time t.
@@ -107,6 +107,17 @@ namespace SmartGridToolbox
          {
             return pos_infin;
          }
+
+         /// @name Events
+         /// @{
+
+         void triggerEvent(int id)
+         {
+            // TODO: make checked.
+            events_[id].doActions();
+         }
+
+         /// @}
 
          /// @}
 
@@ -166,7 +177,7 @@ namespace SmartGridToolbox
 
       private:
          /// Reset state of the object, time is at timestamp t_.
-         virtual void initialize()
+         virtual void initializeState(ptime t)
          {
             // Empty.
          }
@@ -184,6 +195,7 @@ namespace SmartGridToolbox
          int rank_;  // Evaluation rank, based on weak ordering.
          PropertyMap propertyMap_;
          PropertyMap controlMap_;
+         std::vector<Event> events_;
    };
 }
 

@@ -5,7 +5,7 @@ namespace SmartGridToolbox
 {
    void SimpleBattery::updateState(ptime t)
    {
-      ptime t_prev = getTimestamp();
+      ptime t_prev = getTime();
       charge_ += getInternalPower() * dSeconds(t - t_prev);
       if (charge_ < 0.0) charge_ = 0.0;
    }

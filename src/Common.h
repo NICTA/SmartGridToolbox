@@ -43,16 +43,6 @@ namespace SmartGridToolbox
    {
       return dSeconds(t - epoch);
    }
-
-   inline boost::int64_t ticks(const time_duration & d) 
-   {
-      return d.ticks();
-   }
-
-   inline boost::int64_t ticks(const ptime & t) 
-   {
-      return ticks(t - epoch);
-   }
 }
 
 #endif // COMMON_DOT_H

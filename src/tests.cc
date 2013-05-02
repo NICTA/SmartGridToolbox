@@ -3,6 +3,7 @@
 #include <cmath>
 #include <ostream>
 #include "Component.h"
+#include "Event.h"
 #include "Model.h"
 #include "Output.h"
 #include "SimpleBattery.h"
@@ -161,9 +162,9 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    bat1.setChargeEfficiency(0.9);
    bat1.setDischargeEfficiency(0.8);
    bat1.setRequestedPower(-0.4 * kW);
-   bat1.initializeComponent(ptime(date(2012, Feb, 11), hours(2)));
+   bat1.initialize(ptime(date(2012, Feb, 11), hours(2)));
    cout << "1 Battery charge = " << bat1.getCharge() / kWh << endl;
-   bat1.update(bat1.getTimestamp() + hours(3));
+   bat1.update(bat1.getTime() + hours(3));
    cout << "2 Battery charge = " << bat1.getCharge() / kWh << endl;
    double comp = bat1.getInitCharge() + 
       dSeconds(hours(3)) * bat1.getRequestedPower() /
@@ -172,9 +173,9 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    BOOST_CHECK(bat1.getCharge() == comp);
 
    bat1.setRequestedPower(1.3 * kW);
-   bat1.initializeComponent(ptime(date(2012, Feb, 11), hours(2)));
+   bat1.initialize(ptime(date(2012, Feb, 11), hours(2)));
    cout << "3 Battery charge = " << bat1.getCharge() / kWh << endl;
-   bat1.update(bat1.getTimestamp() + hours(3));
+   bat1.update(bat1.getTime() + hours(3));
    cout << "4 Battery charge = " << bat1.getCharge() / kWh << endl;
    comp = bat1.getInitCharge() + 
       dSeconds(hours(3)) * bat1.getMaxChargePower() *
@@ -183,9 +184,9 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    BOOST_CHECK(bat1.getCharge() == comp);
 
    bat1.setRequestedPower(-1 * kW);
-   bat1.initializeComponent(ptime(date(2012, Feb, 11), hours(2)));
+   bat1.initialize(ptime(date(2012, Feb, 11), hours(2)));
    cout << "3 Battery charge = " << bat1.getCharge() / kWh << endl;
-   bat1.update(bat1.getTimestamp() + hours(5.5));
+   bat1.update(bat1.getTime() + hours(5.5));
    cout << "4 Battery charge = " << bat1.getCharge() / kWh << endl;
    comp = 0.0;
    cout << "comp = " << comp / kWh << endl;
@@ -308,69 +309,78 @@ BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
    message("Testing StepwiseTimeSeries. Completed.");
 }
 
+enum class Event : int
+{
+   ZERO,
+   ONE,
+   TWO
+};
+
 class TestEventA : public Component
 {
    public:
 
-   private:
-      TestEventA(const std::string & name) : Component(name),
-                                             state_(0)
+      TestEventA(const std::string & name, time_duration dt, int ctrl) : 
+         Component(name),
+         state_(0),
+         dt_(dt),
+         ctrl_(ctrl)
       {
          // Empty.
       }
 
-      /// Reset state of the object, time is at timestamp t_.
-      virtual void initialize()
+      virtual ptime getValidUntil() const override
       {
-         tInit_ = getTimestamp();
+         return getTime() + dt_;
+      }
+
+   private:
+      /// Reset state of the object, time is at timestamp t_.
+      virtual void initializeState(ptime t) override
+      {
+         tInit_ = t;
       }
 
       /// Bring state up to time t_.
-      virtual void updateState(ptime t)
+      virtual void updateState(ptime t) override
       {
+         cout << "Update state of " << getName() << " from time " 
+              << getTime() << " to " << t << "." << endl;
          state_ = (t-tInit_).ticks() * ctrl_;
       }
 
    private:
       ptime tInit_;
       int state_;
+      time_duration dt_;
       int ctrl_;
 };
 
-class TestEventB : public Component
+BOOST_AUTO_TEST_CASE (test_events_and_sync)
 {
-   public:
+   message("Testing events and synchronization. Starting.");
+   Model mod;
+   TestEventA * a0 = new TestEventA("a0", seconds(3), 3);
+   TestEventA * a1 = new TestEventA("a1", seconds(9), 3);
+   a0->dependsOn(*a1); 
+   mod.addComponent(*a0);
+   mod.addComponent(*a1);
+   mod.validate();
+   Simulation sim(mod);
+   message("Initialize simulation. Starting.");
+   sim.initialize(epoch, epoch + seconds(10));
+   message("Initialize simulation. Completed.");
 
-   private:
-      TestEventB(const std::string & name) : Component(name),
-                                             state_(0)
-      {
-         // Empty.
-      }
+   sim.doNextUpdate();
+   sim.doNextUpdate();
+   sim.doNextUpdate();
+   sim.doNextUpdate();
+   sim.doNextUpdate();
+   sim.doNextUpdate();
+   sim.doNextUpdate();
+   sim.doNextUpdate();
 
-      /// Reset state of the object, time is at timestamp t_.
-      virtual void initialize()
-      {
-         tInit_ = getTimestamp();
-      }
-
-      /// Bring state up to time t_.
-      virtual void updateState(ptime t)
-      {
-         state_ = (t-tInit_).ticks() * ctrl_;
-      }
-
-   private:
-      ptime tInit_;
-      int state_;
-      int ctrl_;
-};
-
-BOOST_AUTO_TEST_CASE (test_events)
-{
-   message("Testing Events. Starting.");
-
-   message("Testing Events. Completed.");
+   message("Testing events and synchronization. Completed.");
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
