@@ -331,7 +331,7 @@ class TestEventA : public Component
 
       virtual ptime getValidUntil() const override
       {
-         return getTime() + dt_;
+         return nextUpdate_;
       }
 
    private:
@@ -339,6 +339,7 @@ class TestEventA : public Component
       virtual void initializeState(ptime t) override
       {
          tInit_ = t;
+         nextUpdate_ = t + dt_; 
       }
 
       /// Bring state up to time t_.
@@ -347,10 +348,12 @@ class TestEventA : public Component
          cout << "Update state of " << getName() << " from time " 
               << getTime() << " to " << t << "." << endl;
          state_ = (t-tInit_).ticks() * ctrl_;
+         nextUpdate_ = t + dt_; 
       }
 
    private:
       ptime tInit_;
+      ptime nextUpdate_;
       int state_;
       time_duration dt_;
       int ctrl_;
