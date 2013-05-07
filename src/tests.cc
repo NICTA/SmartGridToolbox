@@ -338,7 +338,6 @@ class TestEventA : public Component
       /// Reset state of the object, time is at timestamp t_.
       virtual void initializeState(ptime t) override
       {
-         tInit_ = t;
          nextUpdate_ = t + dt_; 
       }
 
@@ -347,12 +346,11 @@ class TestEventA : public Component
       {
          cout << "Update state of " << getName() << " from time " 
               << getTime() << " to " << t << "." << endl;
-         state_ = (t-tInit_).ticks() * ctrl_;
+         state_ = (t-getInitTime()).ticks() * ctrl_;
          nextUpdate_ = t + dt_; 
       }
 
    private:
-      ptime tInit_;
       ptime nextUpdate_;
       int state_;
       time_duration dt_;
@@ -384,6 +382,54 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    sim.doNextUpdate();
 
    message("Testing events and synchronization. Completed.");
+}
+
+class TestThermostat : public Component
+{
+   public:
+
+      TestEventA(const std::string & name, time_duration dt, int ctrl) : 
+         Component(name),
+         state_(0),
+         dt_(dt),
+         ctrl_(ctrl)
+      {
+         // Empty.
+      }
+
+      virtual ptime getValidUntil() const override
+      {
+         return nextUpdate_;
+      }
+
+   private:
+      /// Reset state of the object, time is at timestamp t_.
+      virtual void initializeState(ptime t) override
+      {
+         nextUpdate_ = t + dt_; 
+      }
+
+      /// Bring state up to time t_.
+      virtual void updateState(ptime t) override
+      {
+         cout << "Update state of " << getName() << " from time " 
+              << getTime() << " to " << t << "." << endl;
+         state_ = (t-tInit_).ticks() * ctrl_;
+         nextUpdate_ = t + dt_; 
+      }
+
+   private:
+      ptime nextUpdate_;
+      int state_;
+      time_duration dt_;
+      int ctrl_;
+};
+
+BOOST_AUTO_TEST_CASE (test_events_and_sync_2)
+{
+   message("Testing events and synchronization 2. Starting.");
+
+   message("Testing events and synchronization 2. Completed.");
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

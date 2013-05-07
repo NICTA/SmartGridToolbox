@@ -48,6 +48,12 @@ namespace SmartGridToolbox
             return t_;
          }
 
+         /// Get the current step for the object.
+         ptime getInitTime() const
+         {
+            return tInit_;
+         }
+
          /** @name Rank
           *  Rank: A < B means B depends on A, not vice-versa, so A should go
           *  first. */
@@ -92,6 +98,7 @@ namespace SmartGridToolbox
          void initialize(const ptime t = not_a_date_time)
          {
             t_ = t;
+            tInit_ = t;
             initializeState(t);
          }
 
@@ -190,6 +197,7 @@ namespace SmartGridToolbox
          
       private:
          std::string name_;
+         ptime tInit_; // The initial time.
          ptime t_; // The current time.
          ComponentVec dependencies_; // I depend on these.
          int rank_;  // Evaluation rank, based on weak ordering.
