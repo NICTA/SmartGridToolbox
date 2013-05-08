@@ -103,7 +103,8 @@ libsmartgridtoolbox_a_AR = $(AR) $(ARFLAGS)
 libsmartgridtoolbox_a_LIBADD =
 am_libsmartgridtoolbox_a_OBJECTS = Model.$(OBJEXT) Output.$(OBJEXT) \
 	Parser.$(OBJEXT) Random.$(OBJEXT) SimpleBattery.$(OBJEXT) \
-	Simulation.$(OBJEXT) WeakOrder.$(OBJEXT)
+	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
+	WeakOrder.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_hello_OBJECTS = hello.$(OBJEXT)
@@ -438,7 +439,8 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 lib_LIBRARIES = libsmartgridtoolbox.a
 libsmartgridtoolbox_a_SOURCES = Model.cc Output.cc Parser.cc Random.cc \
-									     SimpleBattery.cc Simulation.cc WeakOrder.cc
+									     SimpleBattery.cc SimpleBuilding.cc \
+										  Simulation.cc WeakOrder.cc
 
 hello_SOURCES = hello.cc
 hello_LDADD = libsmartgridtoolbox.a \
@@ -579,6 +581,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBattery.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBuilding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Simulation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hello.Po@am__quote@
