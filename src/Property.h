@@ -26,6 +26,16 @@ namespace SmartGridToolbox
             // Empty.
          }
 
+         template<typename G> void init(G get)
+         {
+            getFunction_ = std::function<T ()>(get);
+         }
+
+         void bindTo(ReadProperty<T> & to)
+         {
+            getFunction_ = to.getFunction_;
+         }
+
          T get() const
          {
             return getFunction_();
@@ -42,7 +52,7 @@ namespace SmartGridToolbox
          }
 
       private:
-         std::function<T()> getFunction_;
+         std::function<T ()> getFunction_;
    };
 
    template <typename T> class WriteProperty : public virtual PropertyBase

@@ -202,7 +202,6 @@ namespace SmartGridToolbox
          ComponentVec dependencies_; // I depend on these.
          int rank_;  // Evaluation rank, based on weak ordering.
          PropertyMap propertyMap_;
-         PropertyMap controlMap_;
          std::vector<Event> events_;
    };
 }
