@@ -131,51 +131,34 @@ namespace SmartGridToolbox
          /// @name Properties
          /// @{
 
-         template <typename T>
-         const ReadProperty<T> * getReadProperty(const std::string & name) const
+         template <typename T, PropAccess A>
+         const Property<T, A> * getProperty(const std::string & name) const
          {
             PropertyMap::const_iterator it = propertyMap_.find(name);
             return (it == propertyMap_.end()) 
-               ? 0 : dynamic_cast<const ReadProperty<T> *>(it->second);
+               ? 0 : dynamic_cast<const Property<T, A> *>(it->second);
          }
 
-         template <typename T>
-         WriteProperty<T> * getWriteProperty(const std::string & name) const
+         template <typename T, PropAccess A>
+         Property<T, A> * getProperty(const std::string & name)
          {
             PropertyMap::const_iterator it = propertyMap_.find(name);
             return (it == propertyMap_.end()) 
-               ? 0 : dynamic_cast<WriteProperty<T> *>(it->second);
+               ? 0 : dynamic_cast<Property<T, A> *>(it->second);
          }
 
-         template <typename T>
-         ReadWriteProperty<T> * getReadWriteProperty(
-               const std::string & name) const
+         template<typename T, PropAccess A, typename U>
+         void addProperty(const std::string & name, U u)
          {
-            PropertyMap::const_iterator it = propertyMap_.find(name);
-            return (it == propertyMap_.end()) 
-               ? 0 : dynamic_cast<ReadWriteProperty<T> *>(it->second);
+            propertyMap_[name] = new Property<T, A>(u);
          }
 
-         template<typename T, typename G>
-         void addReadProperty(const std::string & name, G get)
+         template<typename T, PropAccess A, typename G, typename S>
+         void addProperty(const std::string & name, G g, S s)
          {
-            ReadProperty<T> * p = new ReadProperty<T>(get);
-            propertyMap_[name] = p;
+            propertyMap_[name] = new Property<T, A>(g, s);
          }
 
-         template<typename T, typename S>
-         void addWriteProperty(const std::string & name, S set)
-         {
-            WriteProperty<T> * p = new WriteProperty<T>(set);
-            propertyMap_[name] = p;
-         }
-
-         template<typename T, typename G, typename S>
-         void addReadWriteProperty(const std::string & name, G get, S set)
-         {
-            ReadWriteProperty<T> * p = new ReadWriteProperty<T>(get, set);
-            propertyMap_[name] = p;
-         }
          /// @}
 
       protected:

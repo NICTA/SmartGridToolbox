@@ -9,7 +9,7 @@
 
 namespace SmartGridToolbox
 {
-   enum class PropertyAccess
+   enum class PropAccess
    {
       GET,
       SET,
@@ -25,9 +25,9 @@ namespace SmartGridToolbox
          }
    };
 
-   template <typename T, PropertyAccess access> class Property;
+   template <typename T, PropAccess access> class Property;
 
-   template <typename T> class Property<T, PropertyAccess::GET> : 
+   template <typename T> class Property<T, PropAccess::GET> : 
       public virtual PropertyBase
    {
       public:
@@ -45,7 +45,7 @@ namespace SmartGridToolbox
          std::function<T ()> getFunction_;
    };
 
-   template <typename T> class Property<T, PropertyAccess::SET> : 
+   template <typename T> class Property<T, PropAccess::SET> : 
       public virtual PropertyBase
    {
       public:
@@ -64,14 +64,14 @@ namespace SmartGridToolbox
          std::function<void(const T &)> setFunction_;
    };
 
-   template <typename T> class Property<T, PropertyAccess::BOTH> : 
-      public Property<T, PropertyAccess::GET>,
-      public Property<T, PropertyAccess::SET>
+   template <typename T> class Property<T, PropAccess::BOTH> : 
+      public Property<T, PropAccess::GET>,
+      public Property<T, PropAccess::SET>
    {
       public:
          template<typename G, typename S> Property(G get, S set) : 
-            Property<T, PropertyAccess::GET>(get),
-            Property<T, PropertyAccess::SET>(set)
+            Property<T, PropAccess::GET>(get),
+            Property<T, PropAccess::SET>(set)
          {
             // Empty.
          }

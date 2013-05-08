@@ -20,7 +20,8 @@ class TestCompA : public Component
       TestCompA(const string & name, int x, double y) : 
          Component(name), x_(x), y_(y)
       {
-         addReadProperty<int>(std::string("x"), [this](){return x_;});
+         addProperty<int, PropAccess::GET>(std::string("x"), 
+               [this](){return x_;});
       }
 
       int getX() {return x_;}
@@ -130,23 +131,22 @@ BOOST_AUTO_TEST_CASE (test_properties)
 {
    message("Testing properties. Starting.");
    TestCompA * tca = new TestCompA("tca0", 3, 0.2);
-   const ReadProperty<int> * prop1 = tca->getReadProperty<int>("x");
-   cout << "Property operator(): " << (*prop1)() << endl;
-   cout << "Property implicit conversion: " << (*prop1) << endl;
-   BOOST_CHECK(*prop1 == 3);
-   tca->addReadWriteProperty<double>(
+   const Property<int, PropAccess::GET> * prop1 = tca->getProperty<int, PropAccess::GET>("x");
+   cout << "Property value: " << prop1->get() << endl;
+   BOOST_CHECK(prop1->get() == 3);
+   tca->addProperty<double, PropAccess::BOTH>(
          "y",
          [&](){return tca->getY();}, 
          [&](const double & d){tca->setY(d);});
-   ReadWriteProperty<double> * prop2 = tca->getReadWriteProperty<double>("y");
+   Property<double, PropAccess::BOTH> * prop2 = tca->getProperty<double, PropAccess::BOTH>("y");
    BOOST_CHECK(prop2 != nullptr);
-   BOOST_CHECK(*prop2 == 0.2);
-   cout << "Property 2 " << (*prop2) << endl;
-   BOOST_CHECK(*prop1 == 3);
+   BOOST_CHECK(prop2->get() == 0.2);
+   cout << "Property 2 " << prop2->get() << endl;
+   BOOST_CHECK(prop1->get() == 3);
    //(*prop2) = 0.4;
    prop2->set(0.4);
-   cout << "Property 2 " << (*prop2) << endl;
-   BOOST_CHECK(*prop2 == 0.4);
+   cout << "Property 2 " << prop2->get() << endl;
+   BOOST_CHECK(prop2->get() == 0.4);
    delete tca;
    message("Testing properties. Completed.");
 }
@@ -382,54 +382,6 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    sim.doNextUpdate();
 
    message("Testing events and synchronization. Completed.");
-}
-
-class TestThermostat : public Component
-{
-   public:
-
-      TestEventA(const std::string & name, time_duration dt, int ctrl) : 
-         Component(name),
-         state_(0),
-         dt_(dt),
-         ctrl_(ctrl)
-      {
-         // Empty.
-      }
-
-      virtual ptime getValidUntil() const override
-      {
-         return nextUpdate_;
-      }
-
-   private:
-      /// Reset state of the object, time is at timestamp t_.
-      virtual void initializeState(ptime t) override
-      {
-         nextUpdate_ = t + dt_; 
-      }
-
-      /// Bring state up to time t_.
-      virtual void updateState(ptime t) override
-      {
-         cout << "Update state of " << getName() << " from time " 
-              << getTime() << " to " << t << "." << endl;
-         state_ = (t-tInit_).ticks() * ctrl_;
-         nextUpdate_ = t + dt_; 
-      }
-
-   private:
-      ptime nextUpdate_;
-      int state_;
-      time_duration dt_;
-      int ctrl_;
-};
-
-BOOST_AUTO_TEST_CASE (test_events_and_sync_2)
-{
-   message("Testing events and synchronization 2. Starting.");
-
-   message("Testing events and synchronization 2. Completed.");
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
