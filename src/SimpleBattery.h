@@ -21,13 +21,7 @@ namespace SmartGridToolbox
             charge_(0.0),
             requestedPower_(0.0)
          {
-            addProperty<double, PropAccess::GET>
-               (std::string("charge"), 
-                [this](){return getCharge();});
-            addProperty<double, PropAccess::BOTH>
-               (std::string("requestedPower"), 
-                [this](){return getRequestedPower();},
-                [this](const double & p){setRequestedPower(p);});
+            // Empty.
          }
 
          double getInitCharge() {return initCharge_;}
@@ -74,7 +68,7 @@ namespace SmartGridToolbox
             charge_ = initCharge_;
          }
 
-         virtual void updateState(ptime t) override;
+         virtual void updateState(ptime t0, ptime t1) override;
 
       private:
          // Parameters.

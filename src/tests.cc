@@ -20,7 +20,7 @@ class TestCompA : public Component
       TestCompA(const string & name, int x, double y) : 
          Component(name), x_(x), y_(y)
       {
-         addProperty<int, PropAccess::GET>(std::string("x"), 
+         addProperty<int, PropType::GET>(std::string("x"), 
                [this](){return x_;});
       }
 
@@ -131,14 +131,14 @@ BOOST_AUTO_TEST_CASE (test_properties)
 {
    message("Testing properties. Starting.");
    TestCompA * tca = new TestCompA("tca0", 3, 0.2);
-   const Property<int, PropAccess::GET> * prop1 = tca->getProperty<int, PropAccess::GET>("x");
+   const Property<int, PropType::GET> * prop1 = tca->getProperty<int, PropType::GET>("x");
    cout << "Property value: " << prop1->get() << endl;
    BOOST_CHECK(prop1->get() == 3);
-   tca->addProperty<double, PropAccess::BOTH>(
+   tca->addProperty<double, PropType::BOTH>(
          "y",
          [&](){return tca->getY();}, 
          [&](const double & d){tca->setY(d);});
-   Property<double, PropAccess::BOTH> * prop2 = tca->getProperty<double, PropAccess::BOTH>("y");
+   Property<double, PropType::BOTH> * prop2 = tca->getProperty<double, PropType::BOTH>("y");
    BOOST_CHECK(prop2 != nullptr);
    BOOST_CHECK(prop2->get() == 0.2);
    cout << "Property 2 " << prop2->get() << endl;
@@ -248,7 +248,7 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
    sts.addPoint(base + hours(24), sin(24*pi/12));
    for (int i = -1; i <= 25; ++i)
    {
-      double val = sts(base + hours(i));
+      double val = sts.value(base + hours(i));
       double err = std::abs(val - sin(i*pi/12));
       cout << i << " " << val << " " << err << endl; 
       if (i > -1 && i < 25)
@@ -269,16 +269,16 @@ BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
    lts.addPoint(base + hours(3), Complex(10, 11));
    for (int i = -1; i <= 4; ++i)
    {
-      Complex val = lts(base + hours(i));
+      Complex val = lts.value(base + hours(i));
       cout << i << " " << val << endl; 
    }
-   BOOST_CHECK(lts(base + hours(-1)) == Complex(0, 0));
-   BOOST_CHECK(lts(base + hours(0)) == Complex(0, 0));
-   BOOST_CHECK(lts(base + minutes(30)) == Complex(1.5, 0.5));
-   BOOST_CHECK(lts(base + hours(1)) == Complex(3, 1));
-   BOOST_CHECK(lts(base + hours(2)) == Complex(6.5, 6));
-   BOOST_CHECK(lts(base + hours(3)) == Complex(10, 11));
-   BOOST_CHECK(lts(base + hours(4) + seconds(1)) == Complex(10, 11));
+   BOOST_CHECK(lts.value(base + hours(-1)) == Complex(0, 0));
+   BOOST_CHECK(lts.value(base + hours(0)) == Complex(0, 0));
+   BOOST_CHECK(lts.value(base + minutes(30)) == Complex(1.5, 0.5));
+   BOOST_CHECK(lts.value(base + hours(1)) == Complex(3, 1));
+   BOOST_CHECK(lts.value(base + hours(2)) == Complex(6.5, 6));
+   BOOST_CHECK(lts.value(base + hours(3)) == Complex(10, 11));
+   BOOST_CHECK(lts.value(base + hours(4) + seconds(1)) == Complex(10, 11));
    message("Testing LerpTimeSeries. Completed.");
 }
 
@@ -292,20 +292,20 @@ BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
    sts.addPoint(base + hours(3), 5.5);
    for (int i = -1; i <= 4; ++i)
    {
-      double val = sts(base + hours(i));
+      double val = sts.value(base + hours(i));
       cout << i << " " << val << endl; 
    }
    cout << endl;
    for (int i = -1; i <= 4; ++i)
    {
-      double val = sts(base + hours(i) + seconds(1));
+      double val = sts.value(base + hours(i) + seconds(1));
       cout << i << " " << val << endl; 
    }
-   BOOST_CHECK(sts(base + seconds(-1)) == 1.5);
-   BOOST_CHECK(sts(base + seconds(1)) == 1.5);
-   BOOST_CHECK(sts(base + hours(1) - seconds(1)) == 1.5);
-   BOOST_CHECK(sts(base + hours(1) + seconds(1)) == 2.5);
-   BOOST_CHECK(sts(base + hours(3) + seconds(1)) == 5.5);
+   BOOST_CHECK(sts.value(base + seconds(-1)) == 1.5);
+   BOOST_CHECK(sts.value(base + seconds(1)) == 1.5);
+   BOOST_CHECK(sts.value(base + hours(1) - seconds(1)) == 1.5);
+   BOOST_CHECK(sts.value(base + hours(1) + seconds(1)) == 2.5);
+   BOOST_CHECK(sts.value(base + hours(3) + seconds(1)) == 5.5);
    message("Testing StepwiseTimeSeries. Completed.");
 }
 
@@ -342,12 +342,12 @@ class TestEventA : public Component
       }
 
       /// Bring state up to time t_.
-      virtual void updateState(ptime t) override
+      virtual void updateState(ptime t0, ptime t1) override
       {
          cout << "Update state of " << getName() << " from time " 
-              << getTime() << " to " << t << "." << endl;
-         state_ = (t-getInitTime()).ticks() * ctrl_;
-         nextUpdate_ = t + dt_; 
+              << t0 << " to " << t1 << "." << endl;
+         state_ = (t1-getInitTime()).ticks() * ctrl_;
+         nextUpdate_ = t1 + dt_; 
       }
 
    private:

@@ -14,7 +14,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual V operator()(const T & t) = 0;
+         virtual V value(const T & t) const = 0;
    };
 
    template<typename T, typename V>
@@ -38,7 +38,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual V operator()(const T & t) override
+         virtual V value(const T & t) const override
          {
             auto pos = points_.upper_bound(dSeconds(t));
             if (pos != points_.begin())
@@ -72,7 +72,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual V operator()(const T & t) override
+         virtual V value(const T & t) const override
          {
             double td = dSeconds(t);
             auto pos2 = points_.upper_bound(td);
@@ -111,7 +111,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual double operator()(const T & t) override
+         virtual double value(const T & t) const override
          {
             return spline_(dSeconds(t));
          }
@@ -123,7 +123,7 @@ namespace SmartGridToolbox
 
       private:
 
-         Spline spline_;
+         mutable Spline spline_;
    };
 }
 

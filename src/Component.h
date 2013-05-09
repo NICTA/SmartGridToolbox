@@ -106,7 +106,7 @@ namespace SmartGridToolbox
          /** @param t the timestamp to advance to. */
          void update(ptime t)
          {
-            updateState(t);
+            updateState(t_, t);
             t_ = t;
          }
 
@@ -131,7 +131,7 @@ namespace SmartGridToolbox
          /// @name Properties
          /// @{
 
-         template <typename T, PropAccess A>
+         template <typename T, PropType A>
          const Property<T, A> * getProperty(const std::string & name) const
          {
             PropertyMap::const_iterator it = propertyMap_.find(name);
@@ -139,7 +139,7 @@ namespace SmartGridToolbox
                ? 0 : dynamic_cast<const Property<T, A> *>(it->second);
          }
 
-         template <typename T, PropAccess A>
+         template <typename T, PropType A>
          Property<T, A> * getProperty(const std::string & name)
          {
             PropertyMap::const_iterator it = propertyMap_.find(name);
@@ -147,13 +147,13 @@ namespace SmartGridToolbox
                ? 0 : dynamic_cast<Property<T, A> *>(it->second);
          }
 
-         template<typename T, PropAccess A, typename U>
+         template<typename T, PropType A, typename U>
          void addProperty(const std::string & name, U u)
          {
             propertyMap_[name] = new Property<T, A>(u);
          }
 
-         template<typename T, PropAccess A, typename G, typename S>
+         template<typename T, PropType A, typename G, typename S>
          void addProperty(const std::string & name, G g, S s)
          {
             propertyMap_[name] = new Property<T, A>(g, s);
@@ -173,7 +173,7 @@ namespace SmartGridToolbox
          }
 
          /// Bring state up to time t_.
-         virtual void updateState(ptime t)
+         virtual void updateState(ptime t0, ptime t1)
          {
             // Empty.
          }

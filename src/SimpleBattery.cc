@@ -3,10 +3,9 @@
 using namespace std;
 namespace SmartGridToolbox
 {
-   void SimpleBattery::updateState(ptime t)
+   void SimpleBattery::updateState(ptime t0, ptime t1)
    {
-      ptime t_prev = getTime();
-      charge_ += getInternalPower() * dSeconds(t - t_prev);
+      charge_ += getInternalPower() * dSeconds(t1 - t0);
       if (charge_ < 0.0) charge_ = 0.0;
    }
 }
