@@ -1,5 +1,5 @@
-#ifndef SIMPLE_BATTERY_DOT_H
-#define SIMPLE_BATTERY_DOT_H
+#ifndef SIMPLE_BUILDING_DOT_H
+#define SIMPLE_BUILDING_DOT_H
 
 #include "SimpleBuilding.h"
 #include "Common.h"
@@ -75,6 +75,12 @@ namespace SmartGridToolbox
 
          double getTb() {return Tb_;}
 
+         HvacMode getMode() {return mode_;}
+
+         double getCop() {return cop_;} 
+
+         double getIsMaxed() {return isMaxed_;} 
+
          double getPh() {return Ph_;}
 
          double getdQh() {return dQh_;}
@@ -109,4 +115,4 @@ namespace SmartGridToolbox
          double dQh_;                        // Thermal output, +ve = heating.
    };
 }
-#endif // SIMPLE_BATTERY_DOT_H
+#endif // SIMPLE_BUILDING_DOT_H

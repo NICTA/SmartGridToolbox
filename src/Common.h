@@ -27,6 +27,7 @@ namespace SmartGridToolbox
    const double kWh = kW * hour;
    const double A = 1.0; 
    const double C = A/s; 
+   const double K = 1.0; 
 
    // Time stuff.
    const ptime epoch(date(1970,1,1));

@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "Output.h"
 #include "SimpleBattery.h"
+#include "SimpleBuilding.h"
 #include "Simulation.h"
 #include "Spline.h"
 #include "TimeSeries.h"
@@ -395,4 +396,17 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    message("Testing events and synchronization. Completed.");
 }
 
+BOOST_AUTO_TEST_CASE (test_simple_building)
+{
+   message("Testing SimpleBuilding. Starting.");
+   SimpleBuilding build1("build1");
+   build1.setkb(5*kW/K);
+   build1.setCb(1e5*kJ/K);
+   build1.setTbInit(22*K);
+   build1.setkh(10*kW/K);
+   build1.setCopCool(3);
+   build1.setCopHeat(4);
+   build1.setPmax(30*kW);
+   message("Testing SimpleBuilding. Completed.");
+}
 BOOST_AUTO_TEST_SUITE_END( )
