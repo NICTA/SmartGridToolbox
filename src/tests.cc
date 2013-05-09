@@ -309,6 +309,17 @@ BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
    message("Testing StepwiseTimeSeries. Completed.");
 }
 
+BOOST_AUTO_TEST_CASE (test_function_timeseries)
+{
+   message("Testing FunctionTimeSeries. Starting.");
+   FunctionTimeSeries <time_duration, double> 
+      fts([] (time_duration td) {return 2 * dSeconds(td);});
+   cout << fts.value(seconds(10)+milliseconds(3)) << endl;
+   BOOST_CHECK(fts.value(seconds(-1)) == -2.0);
+   BOOST_CHECK(fts.value(seconds(3)) == 6.0);
+   message("Testing FunctionTimeSeries. Completed.");
+}
+
 enum class Event : int
 {
    ZERO,

@@ -125,6 +125,31 @@ namespace SmartGridToolbox
 
          mutable Spline spline_;
    };
+
+   template<typename T, typename V>
+   class FunctionTimeSeries : public TimeSeries<T, V>
+   {
+      public:
+         FunctionTimeSeries<T, V>(const std::function<V (T)> & func) :
+            func_(func)
+         {
+            // Empty.
+         }
+
+         virtual ~FunctionTimeSeries()
+         {
+            // Empty.
+         }
+
+         virtual double value(const T & t) const override
+         {
+            return func_(t);
+         }
+
+      private:
+
+         std::function<V (T)> func_;
+   };
 }
 
 #endif // TIME_SERIES_DOT_H

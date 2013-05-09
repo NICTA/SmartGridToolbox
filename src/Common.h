@@ -36,7 +36,7 @@ namespace SmartGridToolbox
    // e.g. for spline interpolation of a time series.
    inline double dSeconds(const time_duration & d) 
    {
-      return d.ticks()/time_duration::ticks_per_second();
+      return double(d.ticks())/time_duration::ticks_per_second();
    }
 
    inline double dSeconds(const ptime & t)
