@@ -4,6 +4,7 @@
 #include "SimpleBuilding.h"
 #include "Common.h"
 #include "Component.h"
+#include "LoadAbc.h"
 #include<string>
 
 namespace SmartGridToolbox
@@ -15,35 +16,38 @@ namespace SmartGridToolbox
       OFF
    };
 
-   class SimpleBuilding : public Component
+   class SimpleBuilding : public Component, public LoadAbc
    {
+      // Inherited, overridden functions: from Component.
       public:
-         SimpleBuilding(const std::string & name, 
-               time_duration dt = minutes(5),
-               double kb = 0.0,
-               double Cb = 0.0,
-               double TbInit = 0.0,
-               double kh = 0.0,
-               double copCool = 0.0,
-               double copHeat = 0.0,
-               double Pmax = 0.0,
-               double Ts = 0.0,
-               const std::function<double (ptime)> & Te = 
-                  [](ptime t){return 0.0;},
-               const std::function<double (ptime)> & dQg = 
-                  [](ptime t){return 0.0;}) :
+         virtual ptime getValidUntil() const override
+         {
+            return getTime() + dt_;
+         }
+
+      private:
+         virtual void initializeState(ptime t) override;
+         virtual void updateState(ptime t0, ptime t1) override;
+
+      // Inherited, overridden functions: from LoadAbc.
+      public:
+         virtual Complex getPower() override {return Complex(Ph_, 0.0);}
+
+      // Public member functions.
+      public:
+         SimpleBuilding(const std::string & name) :
             Component(name),
-            dt_(dt),
-            kb_(kb),
-            Cb_(Cb),
-            TbInit_(TbInit),
-            kh_(kh),
-            copCool_(copCool),
-            copHeat_(copHeat),
-            Pmax_(Pmax),
-            Ts_(Ts),
-            Te_(Te),
-            dQg_(dQg),
+            dt_(minutes(5)),
+            kb_(5 * kW / K),
+            Cb_(1.0e5 * kJ / K),
+            TbInit_(20.0 * K),
+            kh_(10.0 * kW / K),
+            copCool_(3.0),
+            copHeat_(4.0),
+            Pmax_(20.0 * kW),
+            Ts_(20.0 * K),
+            Te_([](ptime t){return 25.0;}),
+            dQg_([](ptime t){return 10.0;}),
             Tb_(0.0),
             mode_(HvacMode::OFF),
             cop_(0.0),
@@ -98,18 +102,12 @@ namespace SmartGridToolbox
          double getPh() {return Ph_;}
 
          double getdQh() {return dQh_;}
-
-         virtual ptime getValidUntil() const
-         {
-            return getTime() + dt_;
-         }
-
+      
+      // Private member functions:
       private:
-         virtual void initializeState(ptime t) override;
-         virtual void updateState(ptime t0, ptime t1) override;
-
          void setOperatingParams(ptime t);
 
+      // Private member variables:
       private:
          // Parameters and controls.
          time_duration dt_;                  // Timestep.
