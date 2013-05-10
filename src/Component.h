@@ -103,25 +103,16 @@ namespace SmartGridToolbox
             initializeState(t);
          }
 
+         /// Bring state up to time t if necessary, throwing error if beyond t.
+         /** @param t the timestamp to advance to. */
+         void ensureAtTime(ptime t);
+
          /// Bring state up to time t.
          /** @param t the timestamp to advance to. */
          void update(ptime t)
          {
             updateState(t_, t);
             t_ = t;
-         }
-
-         auto ensureAtTime(ptime t) -> decltype(*this)
-         {
-            if (t_ < t)
-            {
-               update(t);
-            }
-            else if (t_ > t)
-            {
-               error("Component %s can't go back in time.", getName().c_str());
-            }
-            return *this;
          }
 
          virtual ptime getValidUntil() const
