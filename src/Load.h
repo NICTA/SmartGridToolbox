@@ -4,7 +4,6 @@
 #include "Common.h"
 
 namespace SmartGridToolbox
-
 {
    class Load
    {
