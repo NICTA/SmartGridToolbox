@@ -6,6 +6,7 @@
 #include <map>
 #include "Common.h"
 #include "Event.h"
+#include "Output.h"
 #include "Property.h"
 
 namespace SmartGridToolbox
@@ -108,6 +109,19 @@ namespace SmartGridToolbox
          {
             updateState(t_, t);
             t_ = t;
+         }
+
+         auto ensureAtTime(ptime t) -> decltype(*this)
+         {
+            if (t_ < t)
+            {
+               update(t);
+            }
+            else if (t_ > t)
+            {
+               error("Component %s can't go back in time.", getName().c_str());
+            }
+            return *this;
          }
 
          virtual ptime getValidUntil() const

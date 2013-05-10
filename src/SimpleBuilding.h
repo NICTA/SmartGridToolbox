@@ -4,7 +4,7 @@
 #include "SimpleBuilding.h"
 #include "Common.h"
 #include "Component.h"
-#include "LoadAbc.h"
+#include "Load.h"
 #include<string>
 
 namespace SmartGridToolbox
@@ -16,7 +16,7 @@ namespace SmartGridToolbox
       OFF
    };
 
-   class SimpleBuilding : public Component, public LoadAbc
+   class SimpleBuilding : public Component, public Load
    {
       // Overridden functions: from Component.
       public:
@@ -26,7 +26,7 @@ namespace SmartGridToolbox
          virtual void initializeState(ptime t) override;
          virtual void updateState(ptime t0, ptime t1) override;
 
-      // Overridden functions: from LoadAbc.
+      // Overridden functions: from Load.
       public:
          virtual Complex getPower() override {return Complex(Ph_, 0.0);}
 

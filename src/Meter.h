@@ -14,15 +14,19 @@ namespace SmartGridToolbox
          virtual ptime getValidUntil() const override {return getTime() + dt_;}
 
       private:
-         virtual void initializeState(ptime t) override;
+         virtual void initializeState(ptime t) override 
+         {
+            P_ = Complex(0.0, 0.0);
+         }
+
          virtual void updateState(ptime t0, ptime t1) override;
 
       // Overridden functions: from LoadAbc.
       public:
-         virtual Complex getPower() override {return Complex(Ph_, 0.0);}
+         virtual Complex getPower() override {return Complex(P_, 0.0);}
 
       public:
-         Meter()
+         Meter() : P_(Complex(0.0, 0.0)) {}
 
          void addLoadComponent(const Component & comp)
          {
@@ -31,6 +35,7 @@ namespace SmartGridToolbox
 
       private:
          time_duration dt_;
+         Complex P_;
          std::vector<Component *> comps_;
    };
 }
