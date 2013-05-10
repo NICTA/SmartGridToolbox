@@ -1,6 +1,8 @@
 #ifndef LOAD_DOT_H
 #define LOAD_DOT_H
 
+#include "Common.h"
+
 namespace SmartGridToolbox
 
 {
