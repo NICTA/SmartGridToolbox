@@ -101,10 +101,11 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libsmartgridtoolbox_a_AR = $(AR) $(ARFLAGS)
 libsmartgridtoolbox_a_LIBADD =
-am_libsmartgridtoolbox_a_OBJECTS = Component.$(OBJEXT) Model.$(OBJEXT) \
-	Output.$(OBJEXT) Parser.$(OBJEXT) Random.$(OBJEXT) \
-	SimpleBattery.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
-	Simulation.$(OBJEXT) WeakOrder.$(OBJEXT)
+am_libsmartgridtoolbox_a_OBJECTS = Component.$(OBJEXT) Meter.$(OBJEXT) \
+	Model.$(OBJEXT) Output.$(OBJEXT) Parser.$(OBJEXT) \
+	Random.$(OBJEXT) SimpleBattery.$(OBJEXT) \
+	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
+	WeakOrder.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_hello_OBJECTS = hello.$(OBJEXT)
@@ -438,9 +439,9 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 lib_LIBRARIES = libsmartgridtoolbox.a
-libsmartgridtoolbox_a_SOURCES = Component.cc Model.cc Output.cc Parser.cc \
-										  Random.cc SimpleBattery.cc SimpleBuilding.cc \
-										  Simulation.cc WeakOrder.cc
+libsmartgridtoolbox_a_SOURCES = Component.cc Meter.cc Model.cc Output.cc \
+										  Parser.cc Random.cc SimpleBattery.cc \
+										  SimpleBuilding.cc Simulation.cc WeakOrder.cc
 
 hello_SOURCES = hello.cc
 hello_LDADD = libsmartgridtoolbox.a \
@@ -577,6 +578,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Component.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Meter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Model.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Output.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@

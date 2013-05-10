@@ -1,9 +1,9 @@
 AUTOMAKE_OPTIONS = foreign
 
 lib_LIBRARIES = libsmartgridtoolbox.a
-libsmartgridtoolbox_a_SOURCES = Component.cc Model.cc Output.cc Parser.cc \
-										  Random.cc SimpleBattery.cc SimpleBuilding.cc \
-										  Simulation.cc WeakOrder.cc
+libsmartgridtoolbox_a_SOURCES = Component.cc Meter.cc Model.cc Output.cc \
+										  Parser.cc Random.cc SimpleBattery.cc \
+										  SimpleBuilding.cc Simulation.cc WeakOrder.cc
 
 bin_PROGRAMS = hello
 hello_SOURCES = hello.cc

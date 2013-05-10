@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    class Load
    {
       public:
-         virtual Complex getPower() = 0; 
+         virtual Complex getPower() const = 0; 
    };
 }
 

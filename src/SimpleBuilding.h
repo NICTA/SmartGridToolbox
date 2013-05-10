@@ -28,7 +28,7 @@ namespace SmartGridToolbox
 
       // Overridden functions: from Load.
       public:
-         virtual Complex getPower() override {return Complex(Ph_, 0.0);}
+         virtual Complex getPower() const override {return Complex(Ph_, 0.0);}
 
       // Public member functions.
       public:

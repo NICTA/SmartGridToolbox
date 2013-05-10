@@ -2,7 +2,8 @@
 #define METER_DOT_H
 
 #include "Component.h"
-#include "LoadAbc.h"
+#include "Load.h"
+#include <string>
 #include <vector>
 
 namespace SmartGridToolbox
@@ -21,14 +22,20 @@ namespace SmartGridToolbox
 
          virtual void updateState(ptime t0, ptime t1) override;
 
-      // Overridden functions: from LoadAbc.
+      // Overridden functions: from Load.
       public:
-         virtual Complex getPower() override {return Complex(P_, 0.0);}
+         virtual Complex getPower() const override {return P_;}
 
       public:
-         Meter() : P_(Complex(0.0, 0.0)) {}
+         Meter(const std::string & name, time_duration dt) :
+            Component(name),
+            dt_(dt),
+            P_(Complex(0.0, 0.0)) 
+         {
+            // Empty.
+         }
 
-         void addLoadComponent(const Component & comp)
+         void addLoadComponent(Component & comp)
          {
             comps_.push_back(&comp);
          }
