@@ -7,7 +7,7 @@ namespace SmartGridToolbox
    class Load
    {
       public:
-         virtual Complex getPower() override {return Complex(Ph_, 0.0);}
+         virtual Complex getPower() = 0; 
    };
 }
 
