@@ -2,6 +2,7 @@
 #include <boost/test/included/unit_test.hpp>
 #include <cmath>
 #include <ostream>
+#include <fstream>
 #include "Component.h"
 #include "Event.h"
 #include "Model.h"
@@ -396,9 +397,31 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    message("Testing events and synchronization. Completed.");
 }
 
+static double sinusoidal(double t, double T, double Delta, 
+                         double minim, double maxim)
+{
+   // Sinusoidal function, T is period, Delta is offset.
+   return minim + (maxim - minim) * 0.5 * (1.0 + 
+         cos(2.0 * pi * (t - Delta) / T));
+}
+
 BOOST_AUTO_TEST_CASE (test_simple_building)
 {
    message("Testing SimpleBuilding. Starting.");
+
+   ofstream outfile;
+   outfile.open("simple_building.out");
+
+   Model mod;
+   Simulation sim(mod);
+
+   ptime t0 = epoch;
+
+   auto Te = [&](ptime t){return sinusoidal(dSeconds(t-t0), day, 12*hour, 
+         10*K, 28*K);};
+   auto dQg = [&](ptime t){return sinusoidal(dSeconds(t-t0), day, 14*hour, 
+         40*kW, 60*kW);};
+
    SimpleBuilding build1("build1");
    build1.setkb(5*kW/K);
    build1.setCb(1e5*kJ/K);
@@ -407,6 +430,25 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
    build1.setCopCool(3);
    build1.setCopHeat(4);
    build1.setPmax(30*kW);
+   build1.setTs(20*K);
+   build1.setTeFunc(Te);
+   build1.setdQgFunc(dQg);
+
+   mod.addComponent(build1);
+
+   sim.initialize(t0, t0 + seconds(10));
+   auto print = [&] () -> void 
+   {
+      outfile << dSeconds(build1.getTime())/hour << " " << build1.getTb()
+           << " " << build1.getPh() << " " << build1.getdQh() << endl;
+   };
+   print();
+   while (build1.getTime() <= t0 + hours(240))
+   {
+      sim.doNextUpdate();
+      print();
+   }
+
    message("Testing SimpleBuilding. Completed.");
 }
 BOOST_AUTO_TEST_SUITE_END( )

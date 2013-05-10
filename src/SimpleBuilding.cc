@@ -23,7 +23,7 @@ static double propTbMaxed(double dt, double Tb0, double dQg0, double dQg1,
       double a = -kb/Cb;
       double a2 = a * a;
       double b = ((dQg1 - dQg0)/dt + kb*(Te1-Te0)/dt)/Cb;
-      double c = (dQg0 + kb*Te0 - dQh)/Cb;
+      double c = (dQg0 + kb*Te0 + dQh)/Cb;
       double eadt = exp(a*dt);
       Tb1 = (b * (-a * dt + eadt - 1) + a*(c*(eadt - 1) + a*Tb0*eadt))/a2;
    }
@@ -46,20 +46,20 @@ namespace SmartGridToolbox
       if (!isMaxed_)
       {
          // Normal operation with controllers.
-         double Tb1 = propTbNorm(dt, Tb_, Ts_, kb_, kh_, Cb_);
+         Tb_ = propTbNorm(dt, Tb_, Ts_, kb_, kh_, Cb_);
       }
       else
       {
          // Power is constrained by maximum.
-         double Tb1 = propTbMaxed(dt, Tb_, dQg_->value(t0), dQg_->value(t1), 
-               Te_->value(t0), Te_->value(t1), kb_, dQh_, Cb_);
+         Tb_ = propTbMaxed(dt, Tb_, dQg_(t0), dQg_(t1), 
+                                  Te_(t0), Te_(t1), kb_, dQh_, Cb_);
       }
       setOperatingParams(t1);
    }
 
    void SimpleBuilding::setOperatingParams(ptime t)
    {
-      dQh_ = -dQg_->value(t) + kb_ * (Ts_ - Te_->value(t)) 
+      dQh_ = -dQg_(t) + kb_ * (Ts_ - Te_(t)) 
            + kh_ * (Ts_ - Tb_); // Heat ADDED.
       mode_ = dQh_ > 0 ? HvacMode::HEATING : HvacMode::COOLING;
       cop_ = mode_ == HvacMode::HEATING ? copHeat_ : copCool_;

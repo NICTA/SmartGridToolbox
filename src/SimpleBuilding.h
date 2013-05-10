@@ -4,7 +4,6 @@
 #include "SimpleBuilding.h"
 #include "Common.h"
 #include "Component.h"
-#include "TimeSeries.h"
 #include<string>
 
 namespace SmartGridToolbox
@@ -19,29 +18,44 @@ namespace SmartGridToolbox
    class SimpleBuilding : public Component
    {
       public:
-         SimpleBuilding(const std::string & name):
+         SimpleBuilding(const std::string & name, 
+               time_duration dt = minutes(5),
+               double kb = 0.0,
+               double Cb = 0.0,
+               double TbInit = 0.0,
+               double kh = 0.0,
+               double copCool = 0.0,
+               double copHeat = 0.0,
+               double Pmax = 0.0,
+               double Ts = 0.0,
+               const std::function<double (ptime)> & Te = 
+                  [](ptime t){return 0.0;},
+               const std::function<double (ptime)> & dQg = 
+                  [](ptime t){return 0.0;}) :
             Component(name),
-            kb_(0.0),
-            Cb_(0.0),
-            TbInit_(0.0),
-            kh_(0.0),
-            copCool_(1.0),
-            copHeat_(2.0),
-            Pmax_(0.0),
-            Ts_(0.0),
-            Te_(nullptr),
-            dQg_(nullptr),
+            dt_(dt),
+            kb_(kb),
+            Cb_(Cb),
+            TbInit_(TbInit),
+            kh_(kh),
+            copCool_(copCool),
+            copHeat_(copHeat),
+            Pmax_(Pmax),
+            Ts_(Ts),
+            Te_(Te),
+            dQg_(dQg),
             Tb_(0.0),
+            mode_(HvacMode::OFF),
+            cop_(0.0),
+            isMaxed_(false),
             Ph_(0.0),
             dQh_(0.0)
          {
          }
 
-         double getPower() 
-         {
-         }
-
          // Parameters:
+         time_duration getdt() {return dt_;}
+         void setdt(time_duration val) {dt_ = val;}
 
          double getkb() {return kb_;}
          void setkb(double val) {kb_ = val;}
@@ -67,11 +81,11 @@ namespace SmartGridToolbox
          double getTs() {return Ts_;}
          void setTs(double val) {Ts_ = val;}
 
-         const TimeSeries<ptime, double> * getTe() {return Te_;}
-         void setTe(const TimeSeries<ptime, double> & Te) {Te_ = &Te;}
+         const double getTe(ptime t) {return Te_(t);}
+         void setTeFunc(const std::function<double (ptime)> & f) {Te_ = f;}
 
-         const TimeSeries<ptime, double> * getdQg() {return dQg_;}
-         void setdQg(const TimeSeries<ptime, double> & dQg) {dQg_ = &dQg;}
+         const double getdQg(ptime t) {return dQg_(t);}
+         void setdQgFunc(const std::function<double (ptime)> f) {dQg_ = f;}
 
          double getTb() {return Tb_;}
 
@@ -85,6 +99,11 @@ namespace SmartGridToolbox
 
          double getdQh() {return dQh_;}
 
+         virtual ptime getValidUntil() const
+         {
+            return getTime() + dt_;
+         }
+
       private:
          virtual void initializeState(ptime t) override;
          virtual void updateState(ptime t0, ptime t1) override;
@@ -93,6 +112,7 @@ namespace SmartGridToolbox
 
       private:
          // Parameters and controls.
+         time_duration dt_;                  // Timestep.
          double kb_;                         // Thermal conductivity, W/K.
          double Cb_;                         // Heat capacity of building, J/K.
          double TbInit_;                     // Initial temp of building.
@@ -102,8 +122,8 @@ namespace SmartGridToolbox
          double Pmax_;                       // HVAC max power, W.
          double Ts_;                         // HVAC setpoint, C.
 
-         const TimeSeries<ptime, double> * Te_;    // External temperature.
-         const TimeSeries<ptime, double> * dQg_;   // Extra heat -> building.
+         std::function<double (ptime)> Te_;  // External temperature.
+         std::function<double (ptime)> dQg_; // Extra heat -> building.
                   
          // State.
          double Tb_;                         // Building temperature, C.
