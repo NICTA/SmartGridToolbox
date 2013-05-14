@@ -17,18 +17,25 @@ namespace SmartGridToolbox
       public:
          /// @name Lifecycle
          /// @{
-
+         
          /// Constructor.
          /** @param name the unique name */
-         explicit Component() : name_("unknown"),
-                                tInit_(not_a_date_time),
-                                t_(not_a_date_time),
-                                rank_(-1)
+         explicit Component(const std::string & name) : 
+            name_(name),
+            tInit_(not_a_date_time),
+            t_(not_a_date_time),
+            rank_(-1)
          {
             // Empty.
          }
 
-         /// Pure virtual destructor.
+         /// Constructor.
+         Component() : Component("unknown")
+         {
+            // Empty.
+         }
+
+         /// Destructor.
          virtual ~Component()
          {
             for (auto it : propertyMap_)

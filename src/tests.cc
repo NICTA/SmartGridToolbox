@@ -20,7 +20,10 @@ using namespace std;
 class TestCompA : public Component
 {
    public:
-      TestCompA(const string & name, int x, double y) : x_(x), y_(y)
+      TestCompA(const string & name, int x, double y) : 
+         Component(name),
+         x_(x),
+         y_(y)
       {
          addProperty<int, PropType::GET>(std::string("x"), 
                [this](){return x_;});
@@ -335,11 +338,11 @@ class TestEventA : public Component
    public:
 
       TestEventA(const std::string & name, time_duration dt, int ctrl) : 
+         Component(name),
          state_(0),
          dt_(dt),
          ctrl_(ctrl)
       {
-         // Empty.
       }
 
       virtual ptime getValidUntil() const override
