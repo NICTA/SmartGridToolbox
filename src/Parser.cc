@@ -1,4 +1,5 @@
 #include "Common.h"
+#include "Model.h"
 #include "Output.h"
 #include "Parser.h"
 #include "Simulation.h"
@@ -12,9 +13,15 @@ namespace SmartGridToolbox
       message("Started parsing.");
       const YAML::Node & top = YAML::LoadFile(fname);
 
+      message("Parsing global.");
       parseGlobal(top, model, simulation);
-      parseObjects(top, model, true);
-      parseObjects(top, model, false);
+      message("Parsed global.");
+      message("Parsing prototypes.");
+      parseComponents(top, model, true);
+      message("Parsed prototypes.");
+      message("Parsing objects.");
+      parseComponents(top, model, false);
+      message("Parsed objects.");
 
       message("Finished parsing.");
       message("Name = %s", model.getName().c_str());
@@ -78,14 +85,16 @@ namespace SmartGridToolbox
       }
    }
 
-   void Parser::parseObjects(const YAML::Node & top, Model & model,
-                             bool isPrototype)
+   void Parser::parseComponents(const YAML::Node & top, Model & model,
+                                bool isPrototype)
    {
-      if (const YAML::Node & nodeA = isPrototype ? top["prototypes"] 
-                                                 : top["Objects"])
+      if (const YAML::Node & compsNode = isPrototype ? top["prototypes"] 
+                                                     : top["objects"])
       {
-
+         for (ComponentParser * compParser : compParsers_)
+         {
+            compParser->parse(compsNode, model);
+         }
       }
-      
    }
 }

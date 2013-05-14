@@ -7,6 +7,7 @@
 #include "Event.h"
 #include "Model.h"
 #include "Output.h"
+#include "Parser.h"
 #include "SimpleBattery.h"
 #include "SimpleBuilding.h"
 #include "Simulation.h"
@@ -19,8 +20,7 @@ using namespace std;
 class TestCompA : public Component
 {
    public:
-      TestCompA(const string & name, int x, double y) : 
-         Component(name), x_(x), y_(y)
+      TestCompA(const string & name, int x, double y) : x_(x), y_(y)
       {
          addProperty<int, PropType::GET>(std::string("x"), 
                [this](){return x_;});
@@ -156,7 +156,8 @@ BOOST_AUTO_TEST_CASE (test_properties)
 BOOST_AUTO_TEST_CASE (test_simple_battery)
 {
    message("Testing SimpleBattery. Starting.");
-   SimpleBattery bat1("bat1");
+   SimpleBattery bat1;
+   bat1.setName("bat1");
    bat1.setInitCharge(5.0 * kWh);
    bat1.setMaxCharge(8.0 * kWh);
    bat1.setMaxChargePower(1.0 * kW);
@@ -334,7 +335,6 @@ class TestEventA : public Component
    public:
 
       TestEventA(const std::string & name, time_duration dt, int ctrl) : 
-         Component(name),
          state_(0),
          dt_(dt),
          ctrl_(ctrl)
@@ -422,7 +422,8 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
    auto dQg = [&](ptime t){return sinusoidal(dSeconds(t-t0), day, 14*hour, 
          40*kW, 60*kW);};
 
-   SimpleBuilding build1("build1");
+   SimpleBuilding build1;
+   build1.setName("build1");
    build1.setkb(5*kW/K);
    build1.setCb(1e5*kJ/K);
    build1.setTbInit(22*K);
@@ -451,4 +452,15 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
 
    message("Testing SimpleBuilding. Completed.");
 }
+
+BOOST_AUTO_TEST_CASE (test_parser)
+{
+   message("Testing Parser. Starting.");
+   Model mod;
+   Simulation sim(mod);
+   Parser & p = Parser::getGlobalParser();
+   p.parse("test_parser.yaml", mod, sim);
+   message("Testing Parser. Completed.");
+}
+
 BOOST_AUTO_TEST_SUITE_END( )

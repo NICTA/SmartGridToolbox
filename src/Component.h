@@ -20,8 +20,10 @@ namespace SmartGridToolbox
 
          /// Constructor.
          /** @param name the unique name */
-         explicit Component(const std::string & name) : name_(name),
-                                                        rank_(-1)
+         explicit Component() : name_("unknown"),
+                                tInit_(not_a_date_time),
+                                t_(not_a_date_time),
+                                rank_(-1)
          {
             // Empty.
          }
@@ -41,6 +43,12 @@ namespace SmartGridToolbox
          const std::string & getName() const
          {
             return name_;
+         }
+
+         /// Set the name of the object.
+         void setName(const std::string & name)
+         {
+            name_ = name;
          }
          
          /// Get the current step for the object.

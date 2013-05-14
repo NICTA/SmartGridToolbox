@@ -49,7 +49,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = hello$(EXEEXT)
+bin_PROGRAMS =
 TESTS = tests$(EXEEXT)
 check_PROGRAMS = tests$(EXEEXT)
 subdir = src
@@ -108,14 +108,11 @@ am_libsmartgridtoolbox_a_OBJECTS = Component.$(OBJEXT) Meter.$(OBJEXT) \
 	WeakOrder.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
-am_hello_OBJECTS = hello.$(OBJEXT)
-hello_OBJECTS = $(am_hello_OBJECTS)
-hello_DEPENDENCIES = libsmartgridtoolbox.a \
-	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
-	/usr/local/lib/libboost_date_time-mt.a
 am_tests_OBJECTS = tests.$(OBJEXT)
 tests_OBJECTS = $(am_tests_OBJECTS)
-tests_DEPENDENCIES = libsmartgridtoolbox.a
+tests_DEPENDENCIES = libsmartgridtoolbox.a \
+	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
+	/usr/local/lib/libboost_date_time-mt.a
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -145,10 +142,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(hello_SOURCES) \
-	$(tests_SOURCES)
-DIST_SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(hello_SOURCES) \
-	$(tests_SOURCES)
+SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(tests_SOURCES)
+DIST_SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(tests_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -443,12 +438,10 @@ libsmartgridtoolbox_a_SOURCES = Component.cc Meter.cc Model.cc Output.cc \
 										  Parser.cc Random.cc SimpleBattery.cc \
 										  SimpleBuilding.cc Simulation.cc WeakOrder.cc
 
-hello_SOURCES = hello.cc
-hello_LDADD = libsmartgridtoolbox.a \
+tests_LDADD = libsmartgridtoolbox.a \
 				  ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
 				  /usr/local/lib/libboost_date_time-mt.a
 
-tests_LDADD = libsmartgridtoolbox.a
 tests_SOURCES = tests.cc
 all: all-am
 
@@ -564,9 +557,6 @@ clean-binPROGRAMS:
 
 clean-checkPROGRAMS:
 	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
-hello$(EXEEXT): $(hello_OBJECTS) $(hello_DEPENDENCIES) $(EXTRA_hello_DEPENDENCIES) 
-	@rm -f hello$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(hello_OBJECTS) $(hello_LDADD) $(LIBS)
 tests$(EXEEXT): $(tests_OBJECTS) $(tests_DEPENDENCIES) $(EXTRA_tests_DEPENDENCIES) 
 	@rm -f tests$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(tests_OBJECTS) $(tests_LDADD) $(LIBS)
@@ -587,7 +577,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBuilding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Simulation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hello.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tests.Po@am__quote@
 
 .cc.o:
