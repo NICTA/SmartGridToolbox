@@ -87,7 +87,7 @@ namespace SmartGridToolbox
             rank_ = rank;
          }
 
-         ///@}
+         /// @}
 
          /// @name Dependencies.
          ///@{
@@ -104,7 +104,7 @@ namespace SmartGridToolbox
             dependencies_.push_back(&b);
          }
 
-         ///@}
+         /// @}
 
          /// @name Simulation
          /// @{
