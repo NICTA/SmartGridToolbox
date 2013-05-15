@@ -106,7 +106,21 @@ namespace SmartGridToolbox
                compParser->parse(it->second, model);
             }
          }
+         for (auto it = compsNode.begin(); it != compsNode.end(); ++it)
+         {
+            std::string name = it->first.as<std::string>();
+            message("Post parsing component %s.", name.c_str());
+            const ComponentParser * compParser = getComponentParser(name);
+            if (compParser == nullptr)
+            {
+               warning("I don't know how to parse component %s.", name.c_str());
+            }
+            else
+            {
+               compParser->postParse(it->second, model);
+            }
+         }
+         message("Parsing components. Completed.");
       }
-      message("Parsing components. Completed.");
    }
 }

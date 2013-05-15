@@ -22,6 +22,8 @@ namespace SmartGridToolbox
          }
 
          virtual void parse(const YAML::Node & comp, Model & mod) const = 0;
+
+         virtual void postParse(const YAML::Node & comp, Model & mod) const = 0;
    };
 
    class Parser {

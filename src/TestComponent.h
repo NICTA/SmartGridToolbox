@@ -13,6 +13,9 @@ namespace SmartGridToolbox
       public:
          virtual void parse(const YAML::Node & nd, Model & mod) const override;
 
+         virtual void postParse(const YAML::Node & nd, 
+                                Model & mod) const override;
+
          static constexpr const char * getComponentName() 
          {
             return "test_component";
@@ -42,12 +45,17 @@ namespace SmartGridToolbox
       public:
          int getValue() {return value_;}
          void setValue(int value) {value_ = value;}
+
+         const TestComponent * getAnother() const {return another_;}
+         TestComponent * getAnother() {return another_;}
+         void setAnother(TestComponent * another) {another_ = another;}
       /// @}
 
       /// @name My private member variables.
       /// @{
       private:
          int value_;
+         TestComponent * another_;
       /// @}
    };
 }

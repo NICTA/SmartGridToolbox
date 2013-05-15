@@ -466,6 +466,11 @@ BOOST_AUTO_TEST_CASE (test_parser)
    p.registerComponentParser<TestComponentParser>();
    p.parse("test_parser.yaml", mod, sim);
    message("Testing Parser. Completed.");
+   const TestComponent * tc = mod.getComponentNamed<TestComponent>(
+         "test_component_1");
+   message("test_component_1 another is %s", 
+         tc->getAnother()->getName().c_str());
+   BOOST_CHECK(tc->getAnother()->getName() == "test_component_2");
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

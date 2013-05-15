@@ -14,4 +14,13 @@ namespace SmartGridToolbox
       tc->setValue(value);
       mod.addComponent(*tc);
    }
+
+   void TestComponentParser::postParse(const YAML::Node & nd, Model & mod) const
+   {
+      const std::string myName = nd["name"].as<std::string>();
+      const std::string anotherName = nd["another"].as<std::string>();
+      TestComponent * comp = mod.getComponentNamed<TestComponent>(myName);
+      TestComponent * another = mod.getComponentNamed<TestComponent>(anotherName);
+      comp->setAnother(another);
+   }
 }
