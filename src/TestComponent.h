@@ -11,8 +11,8 @@ namespace SmartGridToolbox
    class TestComponentParser : public ComponentParser
    {
       public:
-         virtual void parse(const YAML::Node & comp, Model & mod) 
-            const override;
+         virtual void parse(const YAML::Node & nd, Model & mod) const override;
+
          static constexpr const char * getComponentName() 
          {
             return "test_component";
