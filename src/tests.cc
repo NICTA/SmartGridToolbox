@@ -11,6 +11,7 @@
 #include "SimpleBattery.h"
 #include "SimpleBuilding.h"
 #include "Simulation.h"
+#include "TestComponent.h"
 #include "Spline.h"
 #include "TimeSeries.h"
 #include "WeakOrder.h"
@@ -462,6 +463,7 @@ BOOST_AUTO_TEST_CASE (test_parser)
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::getGlobalParser();
+   p.registerComponentParser<TestComponentParser>();
    p.parse("test_parser.yaml", mod, sim);
    message("Testing Parser. Completed.");
 }

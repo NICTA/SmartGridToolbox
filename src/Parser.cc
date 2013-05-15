@@ -88,13 +88,25 @@ namespace SmartGridToolbox
    void Parser::parseComponents(const YAML::Node & top, Model & model,
                                 bool isPrototype)
    {
+      message("Parsing components. Starting.");
       if (const YAML::Node & compsNode = isPrototype ? top["prototypes"] 
                                                      : top["objects"])
       {
-         for (ComponentParser * compParser : compParsers_)
+         for (auto it = compsNode.begin(); it != compsNode.end(); ++it)
          {
-            compParser->parse(compsNode, model);
+            std::string name = it->first.as<std::string>();
+            message("Parsing component %s.", name.c_str());
+            const ComponentParser * compParser = getComponentParser(name);
+            if (compParser == nullptr)
+            {
+               warning("I don't know how to parse component %s.", name.c_str());
+            }
+            else
+            {
+               compParser->parse(it->second, model);
+            }
          }
       }
+      message("Parsing components. Completed.");
    }
 }
