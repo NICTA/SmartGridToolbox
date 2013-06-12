@@ -15,8 +15,8 @@ function J = J(NPQ, NPV, bus, G, B, x)
       [Pi Qi Mi ti] = get(bus, x, i);
       for (k = 1:NPQ)
          [Pk Qk Mk tk] = get(bus, x, k);
-         dgd1(i, k) += G(i, k)*cos(ti-tk)-B(i, k)*sin(ti-tk);
-         dhd1(i, k) += G(i, k)*sin(ti-tk)+B(i, k)*cos(ti-tk);
+         dgd1(i, k) += G(i, k)*cos(ti-tk)+B(i, k)*sin(ti-tk);
+         dhd1(i, k) += G(i, k)*sin(ti-tk)-B(i, k)*cos(ti-tk);
       end
    end
 
@@ -29,13 +29,13 @@ function J = J(NPQ, NPV, bus, G, B, x)
       [Pi Qi Mi ti] = get(bus, x, i);
       for (k = 1:N)
          [Pk Qk Mk tk] = get(bus, x, k);
-         dgd2(i, k) += Mk * (G(i,k)*sin(ti-tk) + B(i, k)*cos(ti-tk));
-         dhd2(i, k) += Mk * (-G(i,k)*cos(ti-tk) + B(i, k)*sin(ti-tk));
+         dgd2(i, k) += Mk * (G(i,k)*sin(ti-tk) - B(i, k)*cos(ti-tk));
+         dhd2(i, k) += Mk * (-G(i,k)*cos(ti-tk) - B(i, k)*sin(ti-tk));
       end
       for (k = 1:N+1) % Last is slack.
          [Pk Qk Mk tk] = get(bus, x, k);
-         dgd2(i, i) += Mk*(-G(i,k)*sin(ti-tk)-B(i,k)*cos(ti-tk));
-         dhd2(i, i) += Mk*(G(i,k)*cos(ti-tk)-B(i,k)*sin(ti-tk));
+         dgd2(i, i) += Mk*(-G(i,k)*sin(ti-tk)+B(i,k)*cos(ti-tk));
+         dhd2(i, i) += Mk*(G(i,k)*cos(ti-tk)+B(i,k)*sin(ti-tk));
       end
    end
    J = zeros(2*N, 2*N);

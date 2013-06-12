@@ -42,4 +42,7 @@ function [busdata, branchdata] = matpower2nr(infname)
    branchdata(:, 2) = iold2new(branchdata(:, 2));
    sel = branchdata(:, 1) > branchdata(:, 2);
    branchdata(sel, 1:2) = [branchdata(sel, 2), branchdata(sel, 1)];
+
+   busdata(:, 3) /= c.baseMVA;
+   busdata(:, 4) /= c.baseMVA;
 end

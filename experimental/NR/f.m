@@ -9,8 +9,8 @@ function f = f(NPQ, NPV, bus, G, B, x)
       h(i) -= Qi/Mi;
       for (k = 1:N+1) % Last is slack.
          [Pk Qk Mk tk] = get(bus, x, k);
-         g(i) += Mk * (G(i, k)*cos(ti-tk) - B(i,k)*sin(ti-tk));
-         h(i) += Mk * (G(i, k)*sin(ti-tk) + B(i,k)*cos(ti-tk));
+         g(i) += Mk * (G(i, k)*cos(ti-tk) + B(i,k)*sin(ti-tk));
+         h(i) += Mk * (G(i, k)*sin(ti-tk) - B(i,k)*cos(ti-tk));
       end
    end
 
