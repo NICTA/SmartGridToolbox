@@ -1,7 +1,8 @@
 function x = x0(NPQ, NPV, bus)
-   N = NPQ + NPV;
-   x = zeros(2 * N, 1);
-   x(1:2:2*N-1) = bus.M(N+1);
-   x(2:2:2*N) = bus.t(N+1);
+   % 1:NPQ = M of PQ
+   % NPQ+1:2*NPQ = t of PQ
+   % 2*NPQ+1:2*NPQ+NPV = t of PV
+   x = zeros(2 * NPQ + NPV, 1);
+   x(1:NPQ) = bus.M(N+1); % M of PQ busses.
    x += 1e-2 * rand(size(x)); % To hopefully avoid degeneracy ...
 end
