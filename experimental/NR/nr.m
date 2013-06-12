@@ -1,4 +1,4 @@
-[busdata, branchdata] = matpower2nr("case2PV.m")
+[busdata, branchdata] = matpower2nr("case6ww.m")
 
 bus.id = busdata(:, 1);
 bus.type = busdata(:, 2);
@@ -54,12 +54,12 @@ end
 G = real(Y);
 B = imag(Y);
 
-x = x0(NPQ, NPV, bus)
+x = x0(NPQ, NPV, bus);
 
 maxiter = 100;
 tol = 1e-20;
 for i = 1:maxiter
-   fx = f(NPQ, NPV, bus, G, B, x)
+   fx = f(NPQ, NPV, bus, G, B, x);
    Jx = J(NPQ, NPV, bus, G, B, x);
    x = x - Jx\fx;
    err = max(fx.^2)
@@ -67,5 +67,7 @@ for i = 1:maxiter
       break;
    end
 end
-x
-i
+for (i = 1:NPQ + NPV + 1)
+   [P Q M V] = get(bus, x, i);
+   printf('%3d %3d %12f %12f %12f %12f\n', bus.id(i), bus.type(i), P, Q, M, V);
+end
