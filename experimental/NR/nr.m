@@ -1,4 +1,5 @@
-[busdata, branchdata] = matpower2nr("case6ww.m")
+addpath('~/matpower4.1');
+[busdata, branchdata] = matpower2nr('case6ww.m')
 
 bus.id = busdata(:, 1);
 bus.type = busdata(:, 2);
@@ -6,30 +7,30 @@ bus.P = busdata(:, 3);
 bus.Q = busdata(:, 4);
 bus.M = busdata(:, 5);
 bus.t = busdata(:, 6);
-NBUS = size(bus.id, 1);
+bus.N = size(bus.id, 1);
 
 branch.from = branchdata(:, 1);
 branch.to = branchdata(:, 2);
 branch.g = branchdata(:, 3);
 branch.b = branchdata(:, 4);
-NBRANCH = size(branch.from);
+branch.N = size(branch.from);
 
-NPQ = 0;
-NPV = 0;
-NSL = 0;
+bus.NPQ = 0;
+bus.NPV = 0;
+bus.NSL = 0;
 NOTHER = 0;
 type_prev = 0;
 nbus_prev = 0;
-for i = 1:NBUS
+for i = 1:bus.N
    nbus = bus.id(i);
    assert(nbus == nbus_prev + 1);
    type = bus.type(i);
    if (type == 1)
-      NPQ += 1;
+      bus.NPQ += 1;
    elseif (type == 2)
-      NPV += 1;
+      bus.NPV += 1;
    elseif (type == 0)
-      NSL += 1;
+      bus.NSL += 1;
    else
      NOTHER += 1;
    end
@@ -37,11 +38,18 @@ for i = 1:NBUS
    nbus_prev = nbus;
    type_prev = type;
 end
-assert(NSL == 1);
+assert(bus.NSL == 1);
 assert(NOTHER == 0);
 
-Y = zeros(NBUS, NBUS);
-for i = 1:NBRANCH
+bus.i1PQ = 1;
+bus.i2PQ = bus.NPQ;
+bus.i1PV = bus.i2PQ + 1;
+bus.i2PV = bus.i2PQ + bus.NPV;
+bus.i1SL = bus.i2PV + 1;
+bus.i2SL = bus.i2PV + bus.NSL;
+
+Y = zeros(bus.N, bus.N);
+for i = 1:branch.N
    k = branch.from(i);
    l = branch.to(i);
    assert(l > k);
@@ -54,20 +62,18 @@ end
 G = real(Y);
 B = imag(Y);
 
-x = x0(NPQ, NPV, bus);
+x = x0(bus);
 
 maxiter = 100;
 tol = 1e-20;
 for i = 1:maxiter
-   fx = f(NPQ, NPV, bus, G, B, x);
-   Jx = J(NPQ, NPV, bus, G, B, x);
+   fx = f(bus, G, B, x);
+   Jx = J(bus, G, B, x);
    x = x - Jx\fx;
    err = max(fx.^2)
    if (err < tol)
       break;
    end
 end
-for (i = 1:NPQ + NPV + 1)
-   [P Q M V] = get(bus, x, i);
-   printf('%3d %3d %12f %12f %12f %12f\n', bus.id(i), bus.type(i), P, Q, M, V);
-end
+[P Q M V] = get(bus, G, B, x);
+printf('%3d %3d %12f %12f %12f %12f\n', [bus.id, bus.type, P, Q, M, V]');

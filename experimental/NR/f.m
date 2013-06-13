@@ -1,17 +1,22 @@
-function f = f(NPQ, NPV, bus, G, B, x)
-   N = NPQ + NPV;
-   g = zeros(N, 1);
-   h = zeros(N, 1);
-   [P Q M t] = get(NPQ, NPV, bus, x)
-   for (i = 1:N)
-      [Mi ti] = get(NPQ, bus, x, i);
-      [Pi Qi] = S(NPQ, NPV, bus, G, B, x);
-      g(i) -= Pi/Mi;
-      h(i) -= Qi/Mi;
-      for (k = 1:N+1) % Last is slack.
-         [Pk Qk Mk tk] = get(bus, x, k);
-         g(i) += Mk * (G(i, k)*cos(ti-tk) + B(i,k)*sin(ti-tk));
-         h(i) += Mk * (G(i, k)*sin(ti-tk) - B(i,k)*cos(ti-tk));
+function f = f(bus, G, B, x)
+   [P Q M t] = get(bus, G, B, x);
+
+   g = zeros(bus.NPQ + bus.NPV, 1);
+   h = zeros(bus.NPQ, 1);
+
+   for (i = bus.i1PQ:bus.i2PV)
+      g(i) -= P(i)/M(i);
+      for (k = 1:bus.N) % Last is slack.
+         tik = t(i) - t(k);
+         g(i) += M(k) * (G(i, k)*cos(tik) + B(i,k)*sin(tik));
+      end
+   end
+
+   for (i = bus.i1PQ:bus.i2PQ)
+      h(i) -= Q(i)/M(i);
+      for (k = 1:bus.N) % Last is slack.
+         tik = t(i) - t(k);
+         h(i) += M(k) * (G(i, k)*sin(tik) - B(i,k)*cos(tik));
       end
    end
 
