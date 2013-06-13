@@ -3,10 +3,10 @@ function J = J(bus, G, B, x)
    [P Q M t] = get(bus, G, B, x);
 
    N = bus.NPQ + bus.NPV;
-   dgdM = zeros(N, bus.NPQ); 
-   dgdt = zeros(N, N); 
-   dhdM = zeros(bus.NPQ, bus.NPQ); 
-   dhdt = zeros(bus.NPQ, N); 
+   dgdM = sparse(N, bus.NPQ); 
+   dgdt = sparse(N, N); 
+   dhdM = sparse(bus.NPQ, bus.NPQ); 
+   dhdt = sparse(bus.NPQ, N); 
 
    for (i = 1:bus.NPQ)
       dgdM(i, i) += P(i)/(M(i)^2);
@@ -49,9 +49,11 @@ function J = J(bus, G, B, x)
       end
    end
 
-   J = zeros(2*bus.NPQ+bus.NPV, 2*bus.NPQ+bus.NPV);
+   NJ = 2*bus.NPQ+bus.NPV;
+   J = sparse(NJ, NJ);
    J(1:N, 1:bus.NPQ) = dgdM;
    J(1:N, bus.NPQ+1:end) = dgdt;
    J(N+1:N+bus.NPQ, 1:bus.NPQ) = dhdM;
    J(N+1:N+bus.NPQ, bus.NPQ+1:end) = dhdt;
+   %printf('Sparsity of J = %f%%\n', 100 * nnz(J)/prod(size(J)))
 end

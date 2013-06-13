@@ -1,7 +1,14 @@
 function [busdata, branchdata] = matpower2nr(infname)
    c = loadcase(infname);
    busdata = [c.bus(:,[1, 2, 3, 4, 8, 9])];
+
    nbus = size(busdata, 1);
+   ibus = busdata(:, 1);
+   maxix = max(ibus);
+   map = NA * ones(maxix, 1);
+   map(ibus) = 1:nbus;
+
+   busdata(:, 1) = map(ibus);
 
    sel_PQ = busdata(:, 2) == 1;
    sel_PV = busdata(:, 2) == 2;
@@ -9,8 +16,7 @@ function [busdata, branchdata] = matpower2nr(infname)
    assert(sum(sel_S) == 1);
    inew2old = [busdata(sel_PQ, 1); busdata(sel_PV, 1); busdata(sel_S, 1)];
    inew = (1:nbus)';
-   [s, i] = sort(inew2old);
-   iold2new = inew(i);
+
    busdata = busdata(inew2old, :);
    sel_PQ = busdata(:, 2) == 1;
    sel_PV = busdata(:, 2) == 2;
@@ -22,7 +28,7 @@ function [busdata, branchdata] = matpower2nr(infname)
    busdata(iS, 2) = 0;
 
    gen = [c.gen(:, [1, 2, 6])];
-   gen(:, 1) = iold2new(gen(:, 1));
+   gen(:, 1) = map(gen(:, 1));
    [s i] = sort(gen(:, 1));
    gen = gen(i, :);
    ngen = size(gen, 1);
@@ -38,8 +44,8 @@ function [busdata, branchdata] = matpower2nr(infname)
 
    y = 1 ./ (c.branch(:, 3) + I * c.branch(:, 4));
    branchdata = [c.branch(:, [1, 2]), real(y), imag(y)];
-   branchdata(:, 1) = iold2new(branchdata(:, 1));
-   branchdata(:, 2) = iold2new(branchdata(:, 2));
+   branchdata(:, 1) = map(branchdata(:, 1));
+   branchdata(:, 2) = map(branchdata(:, 2));
    sel = branchdata(:, 1) > branchdata(:, 2);
    branchdata(sel, 1:2) = [branchdata(sel, 2), branchdata(sel, 1)];
 
