@@ -12,20 +12,19 @@ namespace SmartGridToolbox
       SL
    };
 
-   class Bus
+   struct Bus
    {
-      public:
-         Bus(int id, BusType type, double P, double V, double M, double t) :
-            id_(id), type_(type), P_(P), V_(V), M_(M), t_(t)
-         {
-            // Empty.
-         }
-         int id_;
-         BusType type_;
-         double P_;
-         double V_;
-         double M_;
-         double t_;
+      Bus(int id, BusType type, double P, double V, double M, double t) :
+         id_(id), type_(type), P_(P), V_(V), M_(M), t_(t)
+      {
+         // Empty.
+      }
+      int id_;
+      BusType type_;
+      double P_;
+      double V_;
+      double M_;
+      double t_;
    };
 
    class Busses
