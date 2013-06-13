@@ -39,6 +39,8 @@ namespace SmartGridToolbox
          void addBus(int id, BusType type, double P, double V, double M,
                      double t);
 
+         void validate();
+
          int getNPQ() {return nPQ_;}
          int getNPV() {return nPV_;}
          int getNSL() {return nSL_;}
