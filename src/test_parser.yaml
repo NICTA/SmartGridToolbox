@@ -1,0 +1,27 @@
+# Sample SmartGridToolbox configuration file.
+# File format is YAML.
+
+--- # Marks the start of each configuration document.
+
+global:
+   configuration_name:        config_1
+   start_time:                2013-01-23 13:13:00
+   end_time:                  2013-01-23 15:13:00
+
+prototypes: # These define object types, for convenience.
+   simple_building:
+      name:                   building_p1
+
+objects: # And these are the actual objects.
+   simple_building:
+      name:                   building_1
+   test_component:
+      name:                   test_component_1
+      value:                  1
+      another:                test_component_2
+   test_component:
+      name:                   test_component_2
+      value:                  2
+      another:                test_component_1
+
+--- # Marks the end of each configuration document.
