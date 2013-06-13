@@ -1,4 +1,5 @@
 addpath('~/matpower4.1');
+cname = 'case6ww.m';
 [busdata, branchdata] = matpower2nr('case6ww.m')
 
 bus.id = busdata(:, 1);
@@ -77,3 +78,4 @@ for i = 1:maxiter
 end
 [P Q M V] = get(bus, G, B, x);
 printf('%3d %3d %12f %12f %12f %12f\n', [bus.id, bus.type, P, Q, M, V]');
+check_pf(bus, G, B, P, Q, M, V)
