@@ -1,5 +1,7 @@
 function [S V bus branch] = nr(cname); 
-   [bus, Y] = init(cname)
+   [bus, Y] = init(cname);
+   G = real(Y);
+   B = imag(Y);
    x = x0(bus);
    maxiter = 50;
    tol = 1e-20;

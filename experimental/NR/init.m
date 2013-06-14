@@ -60,5 +60,5 @@ function [bus, Y] = init(cname);
       Y(k, k) += ykl;
       Y(l, l) += ykl;
    end
-   printf('Sparsity of Y = %f%%\n', 100 * nnz(G)/prod(size(Y)))
+   printf('Sparsity of Y = %f%%\n', 100 * nnz(Y)/prod(size(Y)))
 end
