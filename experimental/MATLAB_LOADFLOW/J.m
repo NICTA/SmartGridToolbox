@@ -3,10 +3,17 @@ function J = J(bus, G, B, x)
    [P Q M t] = get(bus, G, B, x);
 
    N = bus.NPQ + bus.NPV;
-   dgdM = sparse(N, bus.NPQ); 
-   dgdt = sparse(N, N); 
-   dhdM = sparse(bus.NPQ, bus.NPQ); 
-   dhdt = sparse(bus.NPQ, N); 
+   if (issparse(Y));
+      dgdM = sparse(N, bus.NPQ); 
+      dgdt = sparse(N, N); 
+      dhdM = sparse(bus.NPQ, bus.NPQ); 
+      dhdt = sparse(bus.NPQ, N); 
+   else
+      dgdM = zeros(N, bus.NPQ); 
+      dgdt = zeros(N, N); 
+      dhdM = zeros(bus.NPQ, bus.NPQ); 
+      dhdt = zeros(bus.NPQ, N); 
+   end
 
    for (i = 1:bus.NPQ)
       dgdM(i, i) += P(i)/(M(i)^2);
@@ -50,7 +57,11 @@ function J = J(bus, G, B, x)
    end
 
    NJ = 2*bus.NPQ+bus.NPV;
-   J = sparse(NJ, NJ);
+   if (issparse(Y));
+      J = sparse(NJ, NJ);
+   else
+      J = zeros(NJ, NJ);
+   end
    J(1:N, 1:bus.NPQ) = dgdM;
    J(1:N, bus.NPQ+1:end) = dgdt;
    J(N+1:N+bus.NPQ, 1:bus.NPQ) = dhdM;

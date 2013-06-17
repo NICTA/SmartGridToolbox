@@ -43,14 +43,17 @@ function [bus, Y] = init(fname);
    assert(bus.NSL == 1);
    assert(NOTHER == 0);
    
-   bus.i1PQ = 1;
-   bus.i2PQ = bus.NPQ;
-   bus.i1PV = bus.i2PQ + 1;
-   bus.i2PV = bus.i2PQ + bus.NPV;
-   bus.i1SL = bus.i2PV + 1;
-   bus.i2SL = bus.i2PV + bus.NSL;
-   
-   Y = sparse(bus.N, bus.N);
+   bus.iPQ = bus.type == 1;
+   bus.iPV = bus.type == 2;
+   bus.iSL = bus.type == 0;
+   bus.iPQPV = bus.iPQ | bus.iPV;
+  
+   sparsity = branch.N/bus.N^2;
+   if (sparsity <= 0.10)
+      Y = sparse(bus.N, bus.N);
+   else
+      Y = zeros(bus.N, bus.N);
+   end
    for i = 1:branch.N
       k = branch.from(i);
       l = branch.to(i);
