@@ -3,7 +3,7 @@ function J = J(bus, G, B, x)
    [P Q M t] = get(bus, G, B, x);
 
    N = bus.NPQ + bus.NPV;
-   if (issparse(Y));
+   if (issparse(G));
       dgdM = sparse(N, bus.NPQ); 
       dgdt = sparse(N, N); 
       dhdM = sparse(bus.NPQ, bus.NPQ); 
@@ -57,7 +57,7 @@ function J = J(bus, G, B, x)
    end
 
    NJ = 2*bus.NPQ+bus.NPV;
-   if (issparse(Y));
+   if (issparse(G));
       J = sparse(NJ, NJ);
    else
       J = zeros(NJ, NJ);

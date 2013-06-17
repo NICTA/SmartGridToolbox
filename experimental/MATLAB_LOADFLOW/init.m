@@ -47,6 +47,12 @@ function [bus, Y] = init(fname);
    bus.iPV = bus.type == 2;
    bus.iSL = bus.type == 0;
    bus.iPQPV = bus.iPQ | bus.iPV;
+   bus.i1PQ = 1;
+   bus.i2PQ = bus.NPQ;
+   bus.i1PV = bus.NPQ + 1;
+   bus.i2PV = bus.NPQ + bus.NPV;
+   bus.i1SL = bus.NPQ + bus.NPV + 1;
+   bus.i1SL = bus.NPQ + bus.NPV + bus.NSL;
   
    sparsity = branch.N/bus.N^2;
    if (sparsity <= 0.10)
