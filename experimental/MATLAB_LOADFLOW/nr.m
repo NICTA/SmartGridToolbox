@@ -1,4 +1,4 @@
-function [S V bus branch] = nr(cname); 
+function [S V bus] = nr(cname); 
    [bus, Y] = init(cname);
    G = real(Y);
    B = imag(Y);

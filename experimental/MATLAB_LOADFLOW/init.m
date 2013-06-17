@@ -1,6 +1,6 @@
 function [bus, Y] = init(cname);
    addpath('~/matpower4.1');
-   [busdata, branchdata] = matpower2nr(cname);
+   [busdata, branchdata] = from_matpower(cname);
    
    bus.id = busdata(:, 1);
    bus.type = busdata(:, 2);
@@ -8,6 +8,8 @@ function [bus, Y] = init(cname);
    bus.Q = busdata(:, 4);
    bus.M = busdata(:, 5);
    bus.t = busdata(:, 6);
+   bus.gs = busdata(:, 7);
+   bus.bs = busdata(:, 8);
    bus.N = size(bus.id, 1);
    
    branch.from = branchdata(:, 1);

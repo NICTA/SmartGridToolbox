@@ -1,6 +1,6 @@
-function [busdata, branchdata] = matpower2nr(infname)
+function [busdata, branchdata] = from_matpower(infname)
    c = loadcase(infname);
-   busdata = [c.bus(:,[1, 2, 3, 4, 8, 9])];
+   busdata = [c.bus(:,[1, 2, 3, 4, 8, 9, 5, 6])];
 
    nbus = size(busdata, 1);
    ibus = busdata(:, 1);

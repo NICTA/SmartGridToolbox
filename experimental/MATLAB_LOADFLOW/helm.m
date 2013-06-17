@@ -1,4 +1,4 @@
-function [S V bus branch] = helm(cname); 
+function [S V bus] = helm(cname); 
    [bus, Y] = init(cname);
    NQV = bus.NPQ + bus.NPV;
    G = real(Y);
@@ -7,8 +7,8 @@ function [S V bus branch] = helm(cname);
    M2PV = bus.M(bus.i1PV:bus.i2PV).^2;
    I0R = zeros(bus.N, 1); % TODO: get proper values for shunts.
    I0I = zeros(bus.N, 1); % TODO: get proper values for shunts.
-   gs = zeros(bus.N, 1); % TODO: get proper values for shunts.
-   bs = zeros(bus.N, 1); % TODO: get proper values for shunts.
+   gs = bus.gs;
+   bs = bus.bs;
 
    GQQ = G(bus.i1PQ:bus.i2PQ, bus.i1PQ:bus.i2PQ);
    GQV = G(bus.i1PQ:bus.i2PQ, bus.i1PV:bus.i2PV);
@@ -27,7 +27,7 @@ function [S V bus branch] = helm(cname);
    i2xVd = i2xQd + bus.NPV;
    Nx = i2xVd;
 
-   niter = 100;
+   niter = 20;
    c = zeros(NQV, niter);
    d = zeros(NQV, niter);
 
@@ -74,5 +74,6 @@ function [S V bus branch] = helm(cname);
       c(bus.i1PQ:bus.i2PQ, n) = x(i1xQc:i2xQc);
       d(:, n) = x(i1xQd:i2xVd);
    end
-   V = V0 + sum(c, 2) + I * sum(d, 2)
+   V = [V0 + sum(c, 2) + I * sum(d, 2);V0];
+   S = calc_S(V, Y);
 end
