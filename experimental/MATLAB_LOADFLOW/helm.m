@@ -16,16 +16,12 @@ function [S V bus] = helm(fname);
    BQQ = B(bus.iPQ, bus.iPQ);
    BAA = B(bus.iPQPV, bus.iPQPV);
    A = [[GQQ;GVQ], BAA; BQQ, GQQ, GQV];
-   A *= -V0
+   A *= -V0;
    Ai = eye(size(A))/A;
 
-   i1xQc = 1;
-   i2xQc = bus.NPQ;
-   i1xQd = i2xQc + 1;
-   i2xQd = i2xQc + bus.NPQ;
-   i1xVd = i2xQd + 1;
-   i2xVd = i2xQd + bus.NPV;
-   Nx = i2xVd;
+   % Indices into x array.
+   ixPQc = 1:bus.NPQ;
+   ixd = (bus.NPQ+1):(bus.NPQ+N);
 
    niter = 20;
    c = zeros(N, niter);
@@ -71,8 +67,8 @@ function [S V bus] = helm(fname);
       end
       r = [rP;rQ];
       x = A\r;
-      c(bus.iPQ, n) = x(i1xQc:i2xQc);
-      d(:, n) = x(i1xQd:i2xVd);
+      c(bus.iPQ, n) = x(ixPQc);
+      d(:, n) = x(ixd);
    end
    V = [V0 + sum(c, 2) + I * sum(d, 2);V0];
    S = calc_S(V, Y);
