@@ -10,20 +10,20 @@ function [S V bus] = helm(fname);
    gs = bus.gs;
    bs = bus.bs;
 
-   GQQ = G(bus.iPQ, bus.iPQ);
-   GQV = G(bus.iPQ, bus.iPV);
-   GVQ = G(bus.iPV, bus.iPQ);
-   BQQ = B(bus.iPQ, bus.iPQ);
-   BAA = B(bus.iPQPV, bus.iPQPV);
-   A = [[GQQ;GVQ], BAA; BQQ, GQQ, GQV];
-   A *= -V0;
+   GQQ = G(bus.iPQ, bus.iPQ)
+   GQV = G(bus.iPQ, bus.iPV)
+   GVQ = G(bus.iPV, bus.iPQ)
+   GVV = G(bus.iPV, bus.iPV)
+   BQQ = B(bus.iPQ, bus.iPQ)
+   BAA = B(bus.iPQPV, bus.iPQPV)
+   A = V0 * [[-GQQ;-GVQ;-BQQ], [BAA;-GQQ;-GQV]]
    Ai = eye(size(A))/A;
 
    % Indices into x array.
    ixPQc = 1:bus.NPQ;
    ixd = (bus.NPQ+1):(bus.NPQ+N);
 
-   niter = 20;
+   niter = 1;
    c = zeros(N, niter);
    d = zeros(N, niter);
 
@@ -35,7 +35,7 @@ function [S V bus] = helm(fname);
          temp -= (c(bus.iPV, m).*c(bus.iPV, n-m) ...
                   + d(bus.iPV, m).*d(bus.iPV, n-m)); 
       end
-      c(bus.iPV, n) += temp/(2*V0);
+      c(bus.iPV, n) += temp/(2*V0)
 
       % Calculate rhs.
       rP = zeros(N, 1);
@@ -44,6 +44,8 @@ function [S V bus] = helm(fname);
          rP += -bus.P(bus.iPQPV) - V0*I0R(bus.iPQPV);
          rQ += bus.Q(bus.iPQ) - V0*I0I(bus.iPQ);
       end
+      rP += V0 * G(:, bus.iPV) * c(bus.iPV, n);
+      rQ += V0 * B(bus.iPQ, bus.iPV) * c(bus.iPV, n);
       if (n > 1)
          rP += c(:,n-1).*(V0*gs(1:N)-I0R(1:N)) ...
              + d(:,n-1).*(-V0*bs(1:N)-I0I(1:N));
@@ -65,7 +67,7 @@ function [S V bus] = helm(fname);
          rQ -= d(bus.iPQ,n-m).* ...
                (gc_m_bd(bus.iPQ)+Gc_m_Bd(bus.iPQ));
       end
-      r = [rP;rQ];
+      r = [rP;rQ]
       x = A\r;
       c(bus.iPQ, n) = x(ixPQc);
       d(:, n) = x(ixd);
