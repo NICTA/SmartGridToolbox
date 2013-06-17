@@ -1,4 +1,5 @@
 function [busdata, branchdata] = from_matpower(ifname, ofname)
+   addpath('../../third_party/matpower4.1');
    c = loadcase(ifname);
    busdata = [c.bus(:,[1, 2, 3, 4, 8, 9, 5, 6])];
 
