@@ -1,5 +1,5 @@
-function [S V bus] = nr(cname); 
-   [bus, Y] = init(cname);
+function [S V bus] = nr(fname); 
+   [bus, Y] = init(fname);
    G = real(Y);
    B = imag(Y);
    x = x0(bus);
@@ -15,8 +15,8 @@ function [S V bus] = nr(cname);
       end
    end
    [P Q M t] = get(bus, G, B, x);
-   printf('%3d %3d %12f %12f %12f %12f\n', [bus.id, bus.type, P, Q, M, t]');
-   check_pf(bus, G, B, P, Q, M, t)
+   %printf('%3d %3d %12f %12f %12f %12f\n', [bus.id, bus.type, P, Q, M, t]');
+   %check_pf(bus, G, B, P, Q, M, t)
    S = P + I * Q;
    V = M .* (cos(t) + I * sin(t));
 end

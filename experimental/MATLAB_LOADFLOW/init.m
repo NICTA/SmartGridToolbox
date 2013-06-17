@@ -1,7 +1,5 @@
 function [bus, Y] = init(fname);
-   addpath('~/matpower4.1');
-   [busdata, branchdata] = from_matpower(cname);
-   load(fname);
+   source(fname);
 
    bus.id = busdata(:, 1);
    bus.type = busdata(:, 2);
@@ -63,5 +61,5 @@ function [bus, Y] = init(fname);
       Y(k, k) += ykl;
       Y(l, l) += ykl;
    end
-   printf('Sparsity of Y = %f%%\n', 100 * nnz(Y)/prod(size(Y)))
+   %printf('Sparsity of Y = %f%%\n', 100 * nnz(Y)/prod(size(Y)))
 end

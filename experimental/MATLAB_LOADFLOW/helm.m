@@ -1,5 +1,5 @@
-function [S V bus] = helm(cname); 
-   [bus, Y] = init(cname);
+function [S V bus] = helm(fname); 
+   [bus, Y] = init(fname);
    NQV = bus.NPQ + bus.NPV;
    G = real(Y);
    B = imag(Y);
