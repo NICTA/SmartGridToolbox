@@ -1,5 +1,5 @@
-function [busdata, branchdata] = from_matpower(infname)
-   c = loadcase(infname);
+function [busdata, branchdata] = from_matpower(ifname, ofname)
+   c = loadcase(ifname);
    busdata = [c.bus(:,[1, 2, 3, 4, 8, 9, 5, 6])];
 
    nbus = size(busdata, 1);
@@ -51,4 +51,20 @@ function [busdata, branchdata] = from_matpower(infname)
 
    busdata(:, 3) /= c.baseMVA;
    busdata(:, 4) /= c.baseMVA;
+
+   f = fopen(ofname, 'w');
+   fprintf(f, '%% Bus Data\n');
+   fprintf(f, '%%\tID\tTYPE\tP\tQ\tM\ttheta\tgs\tbs\n');
+   fprintf(f, 'busdata = [ ...\n');
+   fprintf(f, '\t%-4d\t%-4d\t%-.4f\t%-.4f\t%-.4f\t%-.4f\t%-.4f\t%-.4f\n', ...
+           busdata');
+   fprintf(f, '];\n');
+   fprintf(f, '\n');
+
+   fprintf(f, '%% Branch Data\n');
+   fprintf(f, '%%\tFROM\tTO\tg\tb\n');
+   fprintf(f, 'branchdata = [ ...\n');
+   fprintf(f, '\t%-4d\t%-4d\t%-.4f\t%-.4f\n', branchdata');
+   fprintf(f, '];\n');
+   fclose(ofname);
 end

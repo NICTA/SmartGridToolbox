@@ -1,7 +1,8 @@
-function [bus, Y] = init(cname);
+function [bus, Y] = init(fname);
    addpath('~/matpower4.1');
    [busdata, branchdata] = from_matpower(cname);
-   
+   load(fname);
+
    bus.id = busdata(:, 1);
    bus.type = busdata(:, 2);
    bus.P = busdata(:, 3);
