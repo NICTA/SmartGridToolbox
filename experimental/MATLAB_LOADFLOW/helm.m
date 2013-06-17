@@ -16,7 +16,7 @@ function [S V bus] = helm(fname);
    GVV = G(bus.iPV, bus.iPV);
    BQQ = B(bus.iPQ, bus.iPQ);
    BAA = B(bus.iPQPV, bus.iPQPV);
-   A = V0 * [[-GQQ;-GVQ;-BQQ], [BAA;-GQQ;-GQV]];
+   A = V0 * [[-GQQ;-GVQ;-BQQ], [BAA;[-GQQ,-GQV]]];
    Ai = eye(size(A))/A;
 
    % Indices into x array.
@@ -41,7 +41,7 @@ function [S V bus] = helm(fname);
       rP = zeros(N, 1);
       rQ = zeros(bus.NPQ, 1);
       if (bus.NPV > 0)
-         rP += V0 * G(:, bus.iPV) * c(bus.iPV, n);
+         rP += V0 * G(bus.iPQPV, bus.iPV) * c(bus.iPV, n);
          rQ += V0 * B(bus.iPQ, bus.iPV) * c(bus.iPV, n);
       end
       if (n == 1)
