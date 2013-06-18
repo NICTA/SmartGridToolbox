@@ -1,4 +1,4 @@
-function J = J(bus, G, B, x)
+function J = nr_J(bus, G, B, x)
 
    [P Q M t] = get(bus, G, B, x);
 

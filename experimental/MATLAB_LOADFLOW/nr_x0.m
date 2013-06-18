@@ -1,4 +1,4 @@
-function x = x0(bus)
+function x = nr_x0(bus)
    % 1:NPQ = M of PQ
    % NPQ+1:2*NPQ = t of PQ
    % 2*NPQ+1:2*NPQ+NPV = t of PV
