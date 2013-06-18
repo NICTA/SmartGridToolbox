@@ -84,7 +84,7 @@ function [S V bus c d a b] = helm(fname)
       [da, db] = padeapprox(McL, N, N);
       V(i) = eval_pade(ca, cb, 1) + 1i * eval_pade(da, db, 1);
    end
-   V(bus.N) = V0
+   V(bus.N) = V0;
 
    S = S_of_V(V, Y);
    [err_P, err_Q_PQ, err_M_PV, err_V_SL, err_PF] = check_pf(bus, Y, S, V)
