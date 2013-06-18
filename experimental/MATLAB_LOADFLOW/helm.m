@@ -23,10 +23,9 @@ function [S V bus] = helm(fname);
    ixPQc = 1:bus.NPQ;
    ixd = (bus.NPQ+1):(bus.NPQ+N);
 
-   niter = 50;
+   niter = 10;
    c = zeros(N, niter);
    d = zeros(N, niter);
-whos 'bus.iPV'
    c(bus.iPV, 1) = c(bus.iPV, 1) + (M2PV - V0^2)/(2*V0);
    for n = 1:niter
       % Set c_n for PV busses:
@@ -75,15 +74,15 @@ whos 'bus.iPV'
       d(:, n) = x(ixd);
    end
    % Now compute the Pade approximation:
-   Vpad = zeros(bus.N, 1);
+   V = zeros(bus.N, 1);
    for i = 1:N
-      McL = [V0, c(i, :) + 1i * d(i, :)]';
-      size(McL)
-      [a, b] = pade(McL);
-      Vpad(i) = eval_pade(a, b, 1);
+      McL = transpose([V0, c(i, :) + 1i * d(i, :)]);
+      N = (length(McL) - 1) / 2;
+      [a, b] = padeapprox(McL, N, N);
+      V(i) = eval_pade(a, b, 1);
    end
-   Vpad(bus.N) = V0
-   V = [V0 + sum(c, 2) + 1i * sum(d, 2);V0]
+   V(bus.N) = V0
+
    S = S_of_V(V, Y);
    [err_P, err_Q_PQ, err_M_PV, err_V_SL, err_PF] = check_pf(bus, Y, S, V)
 end
