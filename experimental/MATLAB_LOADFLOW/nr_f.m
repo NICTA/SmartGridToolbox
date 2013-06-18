@@ -1,5 +1,5 @@
 function f = nr_f(bus, G, B, x)
-   [P Q M t] = get(bus, G, B, x);
+   [P Q M t] = nr_get(bus, G, B, x);
 
    g = zeros(bus.NPQ + bus.NPV, 1);
    h = zeros(bus.NPQ, 1);

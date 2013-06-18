@@ -14,7 +14,7 @@ function [S V bus] = nr(fname);
          break;
       end
    end
-   [P Q M t] = get(bus, G, B, x);
+   [P Q M t] = nr_get(bus, G, B, x);
    %printf('%3d %3d %12f %12f %12f %12f\n', [bus.id, bus.type, P, Q, M, t]');
    S = P + I * Q;
    V = M .* exp(I * t);

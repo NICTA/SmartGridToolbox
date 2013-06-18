@@ -1,6 +1,6 @@
 function J = nr_J(bus, G, B, x)
 
-   [P Q M t] = get(bus, G, B, x);
+   [P Q M t] = nr_get(bus, G, B, x);
 
    N = bus.NPQ + bus.NPV;
    if (issparse(G));
