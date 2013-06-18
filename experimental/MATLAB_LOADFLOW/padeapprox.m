@@ -1,17 +1,24 @@
 function [a, b] = padeapprox(f, m, n)
-   %  Input: Function handle f or vector of coefficients f_0,...,f_(m+n).
-   % Output: coeff vectors a and b. 
+   % Input: Function handle f or vector of coefficients f_0,...,f_(m+n).
+   % Output: coeff vectors a and b, such that the approximation for vector z
+   % is polyval(a(end:-1:1),z)./polyval(b(end:-1:1),z);
    % P. Gonnet, S. Guettel, and L. N. Trefethen, October 2011
    
-   tol = 1e-14 % default rel tolerance 1e-14
+   tol = 1e-14;
 
    c = [f(:); zeros(m+n+1-length(f),1)]; % make sure c is long enough
    c = c(1:m+n+1); % but not longer than necessary
    ts = tol*norm(c); % absolute tolerance
+
    if norm(c(1:m+1),inf)<=tol*norm(c,inf) % special case r=0
-      a = 0; b = 1; mu = -inf; nu = 0;
+      a = 0;
+      b = 1;
+      mu = -inf;
+      nu = 0;
    else
-      row = [c(1) zeros(1,n)]; col = c; % 1st row/col of Toeplitz matrix
+      % 1st row/col of Toeplitz matrix
+      row = [c(1) zeros(1,n)];
+      col = c;
       while true % diagonal hopping across block
          if n==0
             a = c(1:m+1); b = 1; 
@@ -26,7 +33,7 @@ function [a, b] = padeapprox(f, m, n)
          m = m-(n-rho); n = rho; % decrease m,n if rank-deficient
       end
       if n>0 % hopping finished; compute b,a
-         [U,S,V] = svd(C,0);
+         [U,S,V] = svd(C);
          b = V(:,n+1); % null vector gives b
          D = diag(abs(b)+sqrt(eps)); % reweighting preserves zeros better
          [Q,R] = qr((C*D).'); % so does final computation via QR
@@ -40,6 +47,4 @@ function [a, b] = padeapprox(f, m, n)
       a = a/b(1); b = b/b(1); % normalize 
       mu = length(a)-1; nu = length(b)-1; % exact numer, denom degrees
    end
-   %r = @(z) polyval(a(end:-1:1),z) ./polyval(b(end:-1:1),z);
-      % Function handle r.
 end
