@@ -39,9 +39,9 @@ function [busdata, branchdata] = from_matpower(ifname, ofname)
       busdata(g(2), [3, 5, 6]) = g(3:5)';
    end
 
-   busdata(iS, 3:4) = NA;
-   busdata(iPQ, 5:6) = NA;
-   busdata(iPV, [4, 6]) = NA;
+   busdata(iS, 3:4) = NaN;
+   busdata(iPQ, 5:6) = NaN;
+   busdata(iPV, [4, 6]) = NaN;
 
    y = 1 ./ (c.branch(:, 3) + I * c.branch(:, 4));
    branchdata = [c.branch(:, [1, 2]), real(y), imag(y)];
