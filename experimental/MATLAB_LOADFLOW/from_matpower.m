@@ -6,7 +6,7 @@ function [busdata, branchdata] = from_matpower(ifname, ofname)
    nbus = size(busdata, 1);
    ibus = busdata(:, 1);
    maxix = max(ibus);
-   map = NA * ones(maxix, 1);
+   map = NaN * ones(maxix, 1);
    map(ibus) = 1:nbus;
 
    busdata(:, 1) = map(ibus);

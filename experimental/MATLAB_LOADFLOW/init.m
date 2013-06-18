@@ -1,6 +1,5 @@
 function [bus, Y] = init(fname);
-   source(fname);
-
+   eval(fname)
    bus.id = busdata(:, 1);
    bus.type = busdata(:, 2);
    bus.P = busdata(:, 3);
@@ -28,13 +27,13 @@ function [bus, Y] = init(fname);
       assert(nbus == nbus_prev + 1);
       type = bus.type(i);
       if (type == 1)
-         bus.NPQ += 1;
+         bus.NPQ = bus.NPQ + 1;
       elseif (type == 2)
-         bus.NPV += 1;
+         bus.NPV = bus.NPV + 1;
       elseif (type == 0)
-         bus.NSL += 1;
+         bus.NSL = bus.NSL + 1;
       else
-        NOTHER += 1;
+        NOTHER = NOTHER + 1;
       end
    
       nbus_prev = nbus;
@@ -64,11 +63,11 @@ function [bus, Y] = init(fname);
       k = branch.from(i);
       l = branch.to(i);
       assert(l > k);
-      ykl = branch.g(i) + I * branch.b(i);
-      Y(k, l) -= ykl;
-      Y(l, k) -= ykl;
-      Y(k, k) += ykl;
-      Y(l, l) += ykl;
+      ykl = branch.g(i) + 1i * branch.b(i);
+      Y(k, l) = Y(k, l) - ykl;
+      Y(l, k) = Y(l, k) - ykl;
+      Y(k, k) = Y(k, k) + ykl;
+      Y(l, l) = Y(l, l) + ykl;
    end
    %printf('Sparsity of Y = %f%%\n', 100 * nnz(Y)/prod(size(Y)))
 end
