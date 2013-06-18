@@ -1,13 +1,22 @@
-function [f] = test_pade(N, vec)
-   z = 0;
-   McL = zeros(2*N,1);
-   for i=0:2*N-1
-      McL(i+1) = 1/factorial(i);
-   end
-
-   fMcL = polyval(McL(end:-1:1), vec);
-
-   [a, b]=pade(McL(2:end));
-   f =eval_pade(vec,a,b);
-   plot(vec/I, sin(vec/I), 'ro', vec/I, imag(f), 'b-', vec/I, imag(fMcL),'g+')
+% Function is cos(x)
+% Expanded about origin.
+% M = 6
+% N = 6
+% Need McLaurin series up to 12.
+M = 6;
+N = 6;
+McL = zeros(1, M + N + 1);
+for i = 0:2:(N+N)
+   McL(i+1) = (-1).^(i/2)/factorial(i);
 end
+McL = McL';
+
+[a, b] = padeapprox(McL, M, N);
+
+z = linspace(0, 2*pi, 100);
+
+fAnaly = cos(z);
+fPad = polyval(a(end:-1:1), z) ./polyval(b(end:-1:1), z);
+fMc = polyval(McL(end:-1:1), z);
+
+plot(z, fMc, z, fPad, z, fAnaly);
