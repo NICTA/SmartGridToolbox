@@ -1,4 +1,4 @@
-function [S V bus] = helm(fname); 
+function [S V bus c d a b] = helm(fname)
    [bus, Y] = init(fname);
    N = bus.NPQ + bus.NPV;
    G = real(Y);
@@ -23,7 +23,7 @@ function [S V bus] = helm(fname);
    ixPQc = 1:bus.NPQ;
    ixd = (bus.NPQ+1):(bus.NPQ+N);
 
-   niter = 10;
+   niter = 20;
    c = zeros(N, niter);
    d = zeros(N, niter);
    c(bus.iPV, 1) = c(bus.iPV, 1) + (M2PV - V0^2)/(2*V0);
