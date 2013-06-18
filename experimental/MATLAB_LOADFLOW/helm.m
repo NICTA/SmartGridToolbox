@@ -5,8 +5,8 @@ function [S V bus c d a b] = helm(fname)
    B = imag(Y);
    V0 = bus.M(bus.iSL);
    M2PV = bus.M(bus.iPV).^2;
-   I0R = zeros(bus.N, 1); % TODO: get proper values for shunts.
-   I0I = zeros(bus.N, 1); % TODO: get proper values for shunts.
+   I0R = bus.IsR;
+   I0I = bus.IsI; 
    gs = bus.gs;
    bs = bus.bs;
 
@@ -17,6 +17,7 @@ function [S V bus c d a b] = helm(fname)
    BQQ = B(bus.iPQ, bus.iPQ);
    BAA = B(bus.iPQPV, bus.iPQPV);
    A = V0 * [[-GQQ;-GVQ;-BQQ], [BAA;[-GQQ,-GQV]]];
+   printf('Condition number of A = %e\n', condest(A));
    Ai = eye(size(A))/A;
 
    % Indices into x array.
