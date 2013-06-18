@@ -1,13 +1,10 @@
 function [busdata, branchdata] = from_matpower(ifname, ofname)
    addpath('../../third_party/matpower4.1');
-   c = loadcase(ifname);
-   busdata = [c.bus(:,[1, 2, 3, 4, 8, 9, 5, 6])];
-   ibus = busdata(:, 1);
-   nbus = size(busdata, 1);
-   map(ibus) = 1:nbus;
 
-   gen = [c.gen(:, [1, 2, 6])]; % id, P, M
-   busdata(map(gen(1)), [3, 5]) = gen(2:3)';
+   c = loadcase(ifname);
+
+   busdata = [c.bus(:,[1, 2, 3, 4, 8, 9, 5, 6])];
+      % id, type, P, Q, M, theta, gs, bs
 
    iPQ = busdata(:, 2) == 1;
    iPV = busdata(:, 2) == 2;
@@ -17,14 +14,21 @@ function [busdata, branchdata] = from_matpower(ifname, ofname)
    busdata(iPQ, 5:6) = NaN;
    busdata(iPV, [4, 6]) = NaN;
 
+   map(busdata(:, 1)) = 1:size(busdata, 1);
+
+   gen = [c.gen(:, [1, 2, 6])];
+      % id, P, V
+   busdata(map(gen(1)), [3, 5]) = gen(2:3)';
+
    y = 1 ./ (c.branch(:, 3) + I * c.branch(:, 4));
    branchdata = [c.branch(:, [1, 2]), real(y), imag(y)];
    % Reorder if necessary so second idx is greater than first.
    sel = branchdata(:, 1) > branchdata(:, 2);
    branchdata(sel, 1:2) = [branchdata(sel, 2), branchdata(sel, 1)];
 
-   busdata(:, 3) /= c.baseMVA;
-   busdata(:, 4) /= c.baseMVA;
+   % Scale powers.
+   busdata(:, 3) = busdata(:, 3) / c.baseMVA;
+   busdata(:, 4) = busdata(:, 4) / c.baseMVA;
 
    f = fopen(ofname, 'w');
    fprintf(f, '%% Bus Data\n');
