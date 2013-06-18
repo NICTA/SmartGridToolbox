@@ -3,6 +3,10 @@ function [a, b] = padeapprox(f, m, n)
    % Output: coeff vectors a and b, such that the approximation for vector z
    % is polyval(a(end:-1:1),z)./polyval(b(end:-1:1),z);
    % P. Gonnet, S. Guettel, and L. N. Trefethen, October 2011
+
+   assert(isreal(f)); 
+   % Doesn't appear to work with complex numbers. Do real and imag parts
+   % separately.
    
    tol = 1e-14;
 

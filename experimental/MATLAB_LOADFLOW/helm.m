@@ -73,13 +73,16 @@ function [S V bus] = helm(fname);
       c(bus.iPQ, n) = x(ixPQc);
       d(:, n) = x(ixd);
    end
+   
    % Now compute the Pade approximation:
    V = zeros(bus.N, 1);
    for i = 1:N
-      McL = transpose([V0, c(i, :) + 1i * d(i, :)]);
+      McL = transpose([V0, c(i, :)]);
       N = (length(McL) - 1) / 2;
-      [a, b] = padeapprox(McL, N, N);
-      V(i) = eval_pade(a, b, 1);
+      [ca, cb] = padeapprox(McL, N, N);
+      McL = [0, d(i, :)]';
+      [da, db] = padeapprox(McL, N, N);
+      V(i) = eval_pade(ca, cb, 1) + 1i * eval_pade(da, db, 1);
    end
    V(bus.N) = V0
 
