@@ -16,7 +16,6 @@ McL = McL';
 z = linspace(0, 2*pi, 100);
 
 fAnaly = cos(z);
-%fPad = polyval(a(end:-1:1), z) ./polyval(b(end:-1:1), z);
 fPad = eval_pade(a, b, z);
 fMcL = polyval(McL(end:-1:1), z);
 
