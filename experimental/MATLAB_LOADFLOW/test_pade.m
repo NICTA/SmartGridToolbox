@@ -17,6 +17,6 @@ z = linspace(0, 2*pi, 100);
 
 fAnaly = cos(z);
 fPad = polyval(a(end:-1:1), z) ./polyval(b(end:-1:1), z);
-fMc = polyval(McL(end:-1:1), z);
+fMcL = polyval(McL(end:-1:1), z);
 
-plot(z, fMc, z, fPad, z, fAnaly);
+plot(z, fAnaly, z, fPad, z, fMcL);
