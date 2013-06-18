@@ -3,9 +3,6 @@ function [busdata, branchdata] = from_matpower(ifname, ofname)
    c = loadcase(ifname);
    busdata = [c.bus(:,[1, 2, 3, 4, 8, 9, 5, 6])];
    ibus = busdata(:, 1);
-   [s i] = sort(ibus);
-   busdata = busdata(i, :);
-   ibus = busdata(:, 1);
    nbus = size(busdata, 1);
    map(ibus) = 1:nbus;
 

@@ -1,4 +1,5 @@
-function [maxerr_P, maxerr_Q_PQ, maxerr_M_PV, maxerr_V_SL, maxerr_PF] = check_pf(bus, Y, S, V)
+function [maxerr_P, maxerr_Q_PQ, maxerr_M_PV, maxerr_V_SL, maxerr_PF] ...
+      = check_pf(bus, Y, S, V)
    P = real(S);
    Q = imag(S);
    M = abs(V);

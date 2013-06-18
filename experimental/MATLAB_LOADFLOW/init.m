@@ -1,6 +1,11 @@
 function [bus, Y] = init(fname);
-   eval(fname)
+   eval(fname);
 
+   % Sort as PQ, PV, SL
+   [dum perm] = sort(busdata(:, 2));
+   busdata = busdata(perm, :);
+
+   bus.id = busdata(:, 1);
    bus.type = busdata(:, 2);
    bus.P = busdata(:, 3);
    bus.Q = busdata(:, 4);
@@ -23,7 +28,7 @@ function [bus, Y] = init(fname);
          bus.NPQ = bus.NPQ + 1;
       elseif (type == 2)
          bus.NPV = bus.NPV + 1;
-      elseif (type == 0)
+      elseif (type == 3)
          bus.NSL = bus.NSL + 1;
       else
         NOTHER = NOTHER + 1;
@@ -34,7 +39,7 @@ function [bus, Y] = init(fname);
 
    bus.iPQ = bus.type == 1;
    bus.iPV = bus.type == 2;
-   bus.iSL = bus.type == 0;
+   bus.iSL = bus.type == 3;
    bus.iPQPV = bus.iPQ | bus.iPV;
    bus.i1PQ = 1;
    bus.i2PQ = bus.NPQ;

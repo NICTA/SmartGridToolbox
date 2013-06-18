@@ -1,4 +1,4 @@
-function [S V bus c d a b] = helm(fname)
+function [S V bus c d a b] = helm(fname, niter)
    [bus, Y] = init(fname);
    N = bus.NPQ + bus.NPV;
    G = real(Y);
@@ -20,58 +20,63 @@ function [S V bus c d a b] = helm(fname)
    printf('Condition number of A = %e\n', condest(A));
    Ai = eye(size(A))/A;
 
-   % Indices into x array.
-   ixPQc = 1:bus.NPQ;
-   ixd = (bus.NPQ+1):(bus.NPQ+N);
 
-   niter = 20;
    c = zeros(N, niter);
    d = zeros(N, niter);
-   c(bus.iPV, 1) = c(bus.iPV, 1) + (M2PV - V0^2)/(2*V0);
+
+   % Indices into x.
+   ixPQc = 1:bus.NPQ;
+   ixd = (bus.NPQ+1):(bus.NPQ+N);
+   % Indices into c, d.
+   iPQ = 1:bus.NPQ;
+   iPV = bus.NPQ+1:bus.NPQ+bus.NPV;
+   iPQPV = 1:N;
+
+   c(iPV, 1) = c(iPV, 1) + (M2PV - V0^2)/(2*V0);
    for n = 1:niter
-      % Set c_n for PV busses:
       temp = zeros(bus.NPV, 1);
       for m = 1:n-1
-         temp = temp - (c(bus.iPV, m).*c(bus.iPV, n-m) ...
-                        + d(bus.iPV, m).*d(bus.iPV, n-m)); 
+         temp = temp - (c(iPV, m).*c(iPV, n-m) + d(iPV, m).*d(iPV, n-m)); 
       end
-      c(bus.iPV, n) = c(bus.iPV, n) + temp/(2*V0);
+      c(iPV, n) = c(iPV, n) + temp/(2*V0);
 
       % Calculate rhs.
       rP = zeros(N, 1);
       rQ = zeros(bus.NPQ, 1);
       if (bus.NPV > 0)
-         rP = rP + V0 * G(bus.iPQPV, bus.iPV) * c(bus.iPV, n);
-         rQ = rQ + V0 * B(bus.iPQ, bus.iPV) * c(bus.iPV, n);
+         rP = rP + V0 * G(bus.iPQPV, bus.iPV) * c(iPV, n);
+         rQ = rQ + V0 * B(bus.iPQ, bus.iPV) * c(iPV, n);
       end
       if (n == 1)
          rP = rP - bus.P(bus.iPQPV) - V0*I0R(bus.iPQPV);
          rQ = rQ + bus.Q(bus.iPQ) - V0*I0I(bus.iPQ);
       end
       if (n > 1)
-         rP = rP + c(:,n-1).*(V0*gs(1:N)-I0R(1:N)) ...
-             + d(:,n-1).*(-V0*bs(1:N)-I0I(1:N));
-         rQ = rQ + c(bus.iPQ,n-1).*( ...
+         rP = rP + c(:,n-1).*(V0*gs(bus.iPQPV)-I0R(bus.iPQPV)) ...
+             + d(:,n-1).*(-V0*bs(bus.iPQPV)-I0I(bus.iPQPV));
+         rQ = rQ + c(iPQ,n-1).*( ...
                   V0*bs(bus.iPQ)-I0I(bus.iPQ)) ...
-             + d(bus.iPQ,n-1).*( ...
+             + d(iPQ,n-1).*( ...
                   V0*gs(bus.iPQ)+I0R(bus.iPQ));
       end
       for m = 1:n-1
-         gc_m_bd = gs(1:N).*c(:,m) - bs(1:N).*d(:,m);
-         bc_p_gd = bs(1:N).*c(:,m) + gs(1:N).*d(:,m);
-         Gc_m_Bd = G(1:N,1:N)*c(:,m) - B(1:N,1:N)*d(:,m);
-         Bc_p_Gd = B(1:N,1:N)*c(:,m) + G(1:N,1:N)*d(:,m);
+         gc_m_bd = gs(bus.iPQPV).*c(:,m) - bs(bus.iPQPV).*d(:,m);
+         bc_p_gd = bs(bus.iPQPV).*c(:,m) + gs(bus.iPQPV).*d(:,m);
+         Gc_m_Bd = G(bus.iPQPV,bus.iPQPV)*c(:,m) ...
+                 - B(bus.iPQPV,bus.iPQPV)*d(:,m);
+         Bc_p_Gd = B(bus.iPQPV,bus.iPQPV)*c(:,m) ...
+                 + G(bus.iPQPV,bus.iPQPV)*d(:,m);
 
          rP = rP + c(:,n-m).*(gc_m_bd+Gc_m_Bd);
          rP = rP + d(:,n-m).*(bc_p_gd+Bc_p_Gd);
-         rQ = rQ + c(bus.iPQ,n-m).* ...
-               (bc_p_gd(bus.iPQ)+Bc_p_Gd(bus.iPQ));
-         rQ = rQ - d(bus.iPQ,n-m).* ...
-               (gc_m_bd(bus.iPQ)+Gc_m_Bd(bus.iPQ));
+         rQ = rQ + c(iPQ,n-m).* ...
+               (bc_p_gd(iPQ)+Bc_p_Gd(iPQ));
+         rQ = rQ - d(iPQ,n-m).* ...
+               (gc_m_bd(iPQ)+Gc_m_Bd(iPQ));
       end
       r = [rP;rQ];
       x = A\r;
-      c(bus.iPQ, n) = x(ixPQc);
+      c(iPQ, n) = x(ixPQc);
       d(:, n) = x(ixd);
    end
    
