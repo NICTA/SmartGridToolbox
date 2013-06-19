@@ -1,9 +1,8 @@
-function [S V bus] = nr(fname); 
+function [S V bus] = nr(fname, maxiter); 
    [bus, Y] = init(fname);
    G = real(Y);
    B = imag(Y);
    x = nr_x0(bus);
-   maxiter = 50;
    tol = 1e-20;
    for i = 1:maxiter
       fx = nr_f(bus, G, B, x);
