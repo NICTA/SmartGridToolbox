@@ -9,16 +9,21 @@ function [busdata, branchdata] = from_matpower(ifname, ofname)
    iPQ = busdata(:, 2) == 1;
    iPV = busdata(:, 2) == 2;
    iS = busdata(:, 2) == 3;
-
-   busdata(iS, 3:4) = NaN;
-   busdata(iPQ, 5:6) = NaN;
-   busdata(iPV, [4, 6]) = NaN;
+   busdata = [busdata(iPQ, :); busdata(iPV, :); busdata(iS,:)]; % Sort by type.
+   iPQ = busdata(:, 2) == 1;
+   iPV = busdata(:, 2) == 2;
+   iS = busdata(:, 2) == 3;
 
    map(busdata(:, 1)) = 1:size(busdata, 1);
 
    gen = [c.gen(:, [1, 2, 6])];
       % id, P, V
    busdata(map(gen(1)), [3, 5]) = gen(2:3)';
+
+   busdata(iS, 3:4) = NaN;
+   busdata(iPQ, 5:6) = NaN;
+   busdata(iPV, [4, 6]) = NaN;
+   busdata(iPV, 3) = -busdata(iPV, 3); % Generator power is -ve power demand. 
 
    y = 1 ./ (c.branch(:, 3) + I * c.branch(:, 4));
    branchdata = [c.branch(:, [1, 2]), real(y), imag(y)];

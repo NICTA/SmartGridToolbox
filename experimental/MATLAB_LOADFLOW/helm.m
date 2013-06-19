@@ -93,5 +93,6 @@ function [S V bus c d a b] = helm(fname, niter)
    V(bus.N) = V0;
 
    S = S_of_V(V, Y);
+
    [err_P, err_Q_PQ, err_M_PV, err_V_SL, err_PF] = check_pf(bus, Y, S, V)
 end

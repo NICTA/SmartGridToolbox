@@ -1,10 +1,7 @@
 function [bus, Y] = init(fname);
    eval(fname);
 
-   % Sort as PQ, PV, SL
-   [dum perm] = sort(busdata(:, 2));
-   busdata = busdata(perm, :);
-
+   bus.N = length(busdata(:, 1));
    bus.id = busdata(:, 1);
    bus.type = busdata(:, 2);
    bus.P = busdata(:, 3);
@@ -14,9 +11,7 @@ function [bus, Y] = init(fname);
    bus.gs = busdata(:, 7);
    bus.bs = busdata(:, 8);
 
-   id = busdata(:, 1);
-   bus.N = length(id);
-   map(id) = 1:bus.N;
+   map(bus.id) = 1:bus.N;
    
    bus.NPQ = 0;
    bus.NPV = 0;
