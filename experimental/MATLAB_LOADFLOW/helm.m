@@ -15,7 +15,6 @@ function [S V bus c d] = helm(fname, niter)
    BQQ = B(bus.iPQ, bus.iPQ);
    BAA = B(bus.iPQPV, bus.iPQPV);
    A = V0 * [[-GQQ;-GVQ;-BQQ], [BAA;[-GQQ,-GQV]]];
-   printf('Condition number of A = %e\n', condest(A));
    Ai = eye(size(A))/A;
 
    c = zeros(N, niter);
@@ -67,9 +66,9 @@ function [S V bus c d] = helm(fname, niter)
          rP = rP + c(:,n-m).*(gc_m_bd+Gc_m_Bd);
          rP = rP + d(:,n-m).*(bc_p_gd+Bc_p_Gd);
          rQ = rQ + c(iPQ,n-m).* ...
-               (bc_p_gd(iPQ)+Bc_p_Gd(iPQ));
+               (bc_p_gd(iPQ,:)+Bc_p_Gd(iPQ,:));
          rQ = rQ - d(iPQ,n-m).* ...
-               (gc_m_bd(iPQ)+Gc_m_Bd(iPQ));
+               (gc_m_bd(iPQ,:)+Gc_m_Bd(iPQ,:));
       end
       r = [rP;rQ];
       x = A\r;
