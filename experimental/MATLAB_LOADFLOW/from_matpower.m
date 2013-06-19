@@ -18,7 +18,7 @@ function [busdata, branchdata] = from_matpower(ifname, ofname)
 
    gen = [c.gen(:, [1, 2, 6])];
       % id, P, V
-   busdata(map(gen(1)), [3, 5]) = gen(2:3)';
+   busdata(map(gen(:, 1)), [3, 5]) = gen(:, 2:3);
 
    busdata(iS, 3:4) = NaN;
    busdata(iPQ, 5:6) = NaN;
