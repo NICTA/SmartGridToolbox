@@ -1,4 +1,4 @@
-function [S V bus c d a b] = helm(fname, niter)
+function [S V bus c d] = helm(fname, niter)
    [bus, Y] = init(fname);
    N = bus.NPQ + bus.NPV;
    G = real(Y);
