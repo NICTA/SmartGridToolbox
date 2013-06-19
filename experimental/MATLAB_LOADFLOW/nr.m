@@ -15,8 +15,9 @@ function [S V bus] = nr(fname);
       end
    end
    [P Q M t] = nr_get(bus, G, B, x);
-   %printf('%3d %3d %12f %12f %12f %12f\n', [bus.id, bus.type, P, Q, M, t]');
-   S = P + I * Q;
    V = M .* exp(I * t);
-   [err_P, err_Q_PQ, err_M_PV, err_V_SL, err_PF] = check_pf(bus, Y, S, V)
+   % Make the power satisfy the PF equations exactly, rather than making
+   % the bus controls exact.
+   S = S_of_V(V, Y);
+   [err_P, err_Q_PQ, err_M_PV, err_V_SL] = check_pf(bus, Y, S, V)
 end
