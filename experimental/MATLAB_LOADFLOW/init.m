@@ -10,6 +10,8 @@ function [bus, Y] = init(fname);
    bus.t = busdata(:, 6);
    bus.gs = busdata(:, 7);
    bus.bs = busdata(:, 8);
+   bus.IcR = busdata(:, 9);
+   bus.IcI = busdata(:, 10);
 
    map(bus.id) = 1:bus.N;
    
@@ -43,9 +45,6 @@ function [bus, Y] = init(fname);
    bus.i1SL = bus.NPQ + bus.NPV + 1;
    bus.i1SL = bus.NPQ + bus.NPV + bus.NSL;
 
-   bus.IsR = zeros(bus.N, 1);
-   bus.IsI = zeros(bus.N, 1);
-  
    from = branchdata(:, 1);
    to = branchdata(:, 2);
    g = branchdata(:, 3);

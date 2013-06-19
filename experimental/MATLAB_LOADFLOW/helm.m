@@ -5,8 +5,6 @@ function [S V bus c d a b] = helm(fname, niter)
    B = imag(Y);
    V0 = bus.M(bus.iSL);
    M2PV = bus.M(bus.iPV).^2;
-   I0R = bus.IsR;
-   I0I = bus.IsI; 
    gs = bus.gs;
    bs = bus.bs;
 
@@ -48,16 +46,16 @@ function [S V bus c d a b] = helm(fname, niter)
          rQ = rQ + V0 * B(bus.iPQ, bus.iPV) * c(iPV, n);
       end
       if (n == 1)
-         rP = rP - bus.P(bus.iPQPV) - V0*I0R(bus.iPQPV);
-         rQ = rQ + bus.Q(bus.iPQ) - V0*I0I(bus.iPQ);
+         rP = rP - bus.P(bus.iPQPV) - V0*bus.IcR(bus.iPQPV);
+         rQ = rQ + bus.Q(bus.iPQ) - V0*bus.IcI(bus.iPQ);
       end
       if (n > 1)
-         rP = rP + c(:,n-1).*(V0*gs(bus.iPQPV)-I0R(bus.iPQPV)) ...
-             + d(:,n-1).*(-V0*bs(bus.iPQPV)-I0I(bus.iPQPV));
+         rP = rP + c(:,n-1).*(V0*gs(bus.iPQPV)-bus.IcR(bus.iPQPV)) ...
+             + d(:,n-1).*(-V0*bs(bus.iPQPV)-bus.IcI(bus.iPQPV));
          rQ = rQ + c(iPQ,n-1).*( ...
-                  V0*bs(bus.iPQ)-I0I(bus.iPQ)) ...
+                  V0*bs(bus.iPQ)-bus.IcI(bus.iPQ)) ...
              + d(iPQ,n-1).*( ...
-                  V0*gs(bus.iPQ)+I0R(bus.iPQ));
+                  V0*gs(bus.iPQ)+bus.IcR(bus.iPQ));
       end
       for m = 1:n-1
          gc_m_bd = gs(bus.iPQPV).*c(:,m) - bs(bus.iPQPV).*d(:,m);
@@ -94,5 +92,5 @@ function [S V bus c d a b] = helm(fname, niter)
 
    S = S_of_V(V, Y);
 
-   [err_P, err_Q_PQ, err_M_PV, err_V_SL] = check_pf(bus, Y, S, V)
+   [err_P, err_Q_PQ, err_M_PV] = check_pf(bus, Y, S, V)
 end

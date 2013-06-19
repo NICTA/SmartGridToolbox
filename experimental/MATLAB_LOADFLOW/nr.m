@@ -19,5 +19,5 @@ function [S V bus] = nr(fname);
    % Make the power satisfy the PF equations exactly, rather than making
    % the bus controls exact.
    S = S_of_V(V, Y);
-   [err_P, err_Q_PQ, err_M_PV, err_V_SL] = check_pf(bus, Y, S, V)
+   [err_P, err_Q_PQ, err_M_PV] = check_pf(bus, Y, S, V)
 end

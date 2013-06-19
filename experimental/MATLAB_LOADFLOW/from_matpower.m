@@ -4,26 +4,35 @@ function [busdata, branchdata] = from_matpower(ifname, ofname)
    c = loadcase(ifname);
 
    busdata = [c.bus(:,[1, 2, 3, 4, 8, 9, 5, 6])];
-      % id, type, P, Q, M, theta, gs, bs
+   nbus = size(busdata, 1);
+   busdata = [busdata(:, 1:4), busdata(:, 5:end), zeros(nbus, 2)];
+   %  1     2     3     4     5     6     7     8     9     10
+   %  id    type  P     Q     M     theta gs    bs    IcR   IcI
 
+   % Sort by type.
    iPQ = busdata(:, 2) == 1;
    iPV = busdata(:, 2) == 2;
-   iS = busdata(:, 2) == 3;
-   busdata = [busdata(iPQ, :); busdata(iPV, :); busdata(iS,:)]; % Sort by type.
+   iSL = busdata(:, 2) == 3;
+   busdata = [busdata(iPQ, :); busdata(iPV, :); busdata(iSL,:)];
+
+   % Find index vectors.
    iPQ = busdata(:, 2) == 1;
    iPV = busdata(:, 2) == 2;
-   iS = busdata(:, 2) == 3;
+   iSL = busdata(:, 2) == 3;
 
-   map(busdata(:, 1)) = 1:size(busdata, 1);
+   % Map from id to index.
+   map(busdata(:, 1)) = 1:nbus;
 
-   gen = [c.gen(:, [1, 2, 6])];
-      % id, P, V
-   busdata(map(gen(:, 1)), [3, 5]) = gen(:, 2:3);
+   % Apply generator data.
+   gen = [c.gen(:, [1, 2, 6])]; 
+   %  1     2     3
+   %  id    P     V
+   busdata(map(gen(:, 1)), 3) = busdata(map(gen(:, 1)), 3) - gen(:, 2);
+   busdata(map(gen(:, 1)), 5) = gen(:, 3);
 
-   busdata(iS, 3:4) = NaN;
    busdata(iPQ, 5:6) = NaN;
    busdata(iPV, [4, 6]) = NaN;
-   busdata(iPV, 3) = -busdata(iPV, 3); % Generator power is -ve power demand. 
+   busdata(iSL, [3, 4]) = NaN;
 
    y = 1 ./ (c.branch(:, 3) + I * c.branch(:, 4));
    branchdata = [c.branch(:, [1, 2]), real(y), imag(y)];
@@ -37,10 +46,9 @@ function [busdata, branchdata] = from_matpower(ifname, ofname)
 
    f = fopen(ofname, 'w');
    fprintf(f, '%% Bus Data\n');
-   fprintf(f, '%%\tID\tTYPE\tP\tQ\tM\ttheta\tgs\tbs\n');
+   fprintf(f, '%%\tID\tTYPE\tP\tQ\tM\ttheta\tgs\tbs\tIcR\tIcI\n');
    fprintf(f, 'busdata = [ ...\n');
-   fprintf(f, '\t%-4d\t%-4d\t%-.4f\t%-.4f\t%-.4f\t%-.4f\t%-.4f\t%-.4f\n', ...
-           busdata');
+   fprintf(f, '\t%-4d\t%-4d\t%-.4f\t%-.4f\t%-.4f\t%-.4f\t%-.4f\t%-.4f\t%-.4f\t%-.4f\n', busdata');
    fprintf(f, '];\n');
    fprintf(f, '\n');
 
