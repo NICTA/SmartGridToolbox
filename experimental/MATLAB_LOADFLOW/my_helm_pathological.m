@@ -10,7 +10,7 @@ busdata = [ ...
 % Branch Data
 %	FROM	TO	g	b
 branchdata = [ ...
-	1	2	2	-1
-	2	3	7	-1
-	3	4	3	-1
+	1	2	18	-1
+	2	3	18	-1
+	3	4	18	-1
 ];
