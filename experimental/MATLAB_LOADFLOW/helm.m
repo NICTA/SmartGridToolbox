@@ -18,7 +18,6 @@ function [S V bus c d a b] = helm(fname, niter)
    printf('Condition number of A = %e\n', condest(A));
    Ai = eye(size(A))/A;
 
-
    c = zeros(N, niter);
    d = zeros(N, niter);
 
