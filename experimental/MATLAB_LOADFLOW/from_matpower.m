@@ -30,6 +30,8 @@ function [busdata, branchdata] = from_matpower(ifname, ofname)
    busdata(map(gen(:, 1)), 3:4) = busdata(map(gen(:, 1)), 3:4) - gen(:, 2:3);
    busdata(map(gen(:, 1)), 5) = gen(:, 4);
 
+   busdata(:, 3:4) = -busdata(:, 3:4); % Convert demand to injection.
+
    busdata(iPQ, 5:6) = NaN;
    busdata(iPV, [4, 6]) = NaN;
    busdata(iSL, [3, 4]) = NaN;

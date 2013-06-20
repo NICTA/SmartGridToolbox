@@ -1,4 +1,4 @@
-function [S V bus] = nr(fname, maxiter); 
+function [S V bus Y] = nr(fname, maxiter); 
    [bus, Y] = init(fname);
    G = real(Y);
    B = imag(Y);
