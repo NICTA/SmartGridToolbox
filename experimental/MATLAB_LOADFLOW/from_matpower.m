@@ -33,6 +33,7 @@ function [busdata, branchdata] = from_matpower(ifname, ofname, use_pv_gens)
    if (!use_pv_gens)
       busdata(iGEN, 2) = 1;
    end
+   iPQ = (busdata(:, 2) == 1);
    iPV = (busdata(:, 2) == 2);
 
    busdata(iPQ, 5:6) = NaN;
