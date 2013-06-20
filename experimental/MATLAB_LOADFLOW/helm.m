@@ -81,15 +81,15 @@ function [S V bus Y c d] = helm(fname, niter)
    V = zeros(bus.N, 1);
    for i = 1:N
       McL = transpose([V0, c(i, :)]);
-      N = (length(McL) - 1) / 2;
-      [ca, cb] = padeapprox(McL, N, N);
+      NMC = (length(McL) - 1) / 2;
+      [ca, cb] = padeapprox(McL, NMC, NMC);
       McL = [0, d(i, :)]';
-      [da, db] = padeapprox(McL, N, N);
+      [da, db] = padeapprox(McL, NMC, NMC);
       V(i) = eval_pade(ca, cb, 1) + 1i * eval_pade(da, db, 1);
    end
    V(bus.N) = V0;
 
-   S = S_of_V(V, Y);
+   S = S_of_V(V, bus, Y);
 
    [err_P, err_Q_PQ, err_M_PV] = check_pf(bus, Y, S, V)
    elapsed_time = toc();

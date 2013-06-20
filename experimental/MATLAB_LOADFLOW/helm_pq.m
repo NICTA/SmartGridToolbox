@@ -41,7 +41,7 @@ function [S V bus Y c] = helm_PQ(fname, niter)
 
    V(bus.N) = V0;
 
-   S = S_of_V(V, Y);
+   S = S_of_V(V, bus, Y);
 
    [err_P, err_Q_PQ] = check_pf(bus, Y, S, V)
    elapsed_time = toc();

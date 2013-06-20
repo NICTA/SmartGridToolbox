@@ -17,6 +17,6 @@ function [S V bus] = nr(fname, maxiter);
    V = M .* exp(I * t);
    % Make the power satisfy the PF equations exactly, rather than making
    % the bus controls exact.
-   S = S_of_V(V, Y);
+   S = S_of_V(V, bus, Y);
    [err_P, err_Q_PQ, err_M_PV] = check_pf(bus, Y, S, V)
 end

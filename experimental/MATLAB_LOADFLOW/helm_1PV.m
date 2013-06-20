@@ -1,4 +1,4 @@
-function [S V bus Y c] = helm_1PV(fname, niter)
+function [S V bus Y c d] = helm_1PV(fname, niter)
    tic()
    [bus, Y] = init(fname);
    V0 = bus.M(bus.iSL);
@@ -28,14 +28,14 @@ function [S V bus Y c] = helm_1PV(fname, niter)
    NMC = (length(McL) - 1) / 2;
    [a, b] = padeapprox(McL, NMC, NMC);
    V += eval_pade(a, b, 1);
-   McL = transpose([V0, d]);
+   McL = transpose([0, d]);
    NMC = (length(McL) - 1) / 2;
    [a, b] = padeapprox(McL, NMC, NMC);
    V += 1i * eval_pade(a, b, 1);
 
    V = [V;V0];
 
-   S = S_of_V(V, Y);
+   S = S_of_V(V, bus, Y);
 
    [err_P, err_Q_PQ] = check_pf(bus, Y, S, V)
    elapsed_time = toc();
