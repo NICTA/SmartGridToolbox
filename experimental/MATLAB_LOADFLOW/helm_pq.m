@@ -1,4 +1,4 @@
-function [S V bus Y c] = helm_pq(fname, niter)
+function [S V bus Y c] = helm_PQ(fname, niter)
    tic()
    [bus, Y] = init(fname);
    V0 = bus.M(bus.iSL);
