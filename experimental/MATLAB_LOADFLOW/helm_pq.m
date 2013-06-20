@@ -1,4 +1,5 @@
-function [S V bus c] = helm_pq(fname, niter)
+function [S V bus Y c] = helm_pq(fname, niter)
+   tic()
    [bus, Y] = init(fname);
    V0 = bus.M(bus.iSL);
 
@@ -43,4 +44,6 @@ function [S V bus c] = helm_pq(fname, niter)
    S = S_of_V(V, Y);
 
    [err_P, err_Q_PQ] = check_pf(bus, Y, S, V)
+   elapsed_time = toc();
+   printf('Elapsed time = %e\n', elapsed_time);
 end
