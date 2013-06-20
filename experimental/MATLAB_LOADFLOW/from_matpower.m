@@ -1,4 +1,4 @@
-function [busdata, branchdata] = from_matpower(ifname, ofname, use_pv_gens)
+function [busdata, branchdata] = from_matpower(ifname, ofname)
    addpath('../../third_party/matpower4.1');
 
    c = loadcase(ifname);
@@ -11,13 +11,13 @@ function [busdata, branchdata] = from_matpower(ifname, ofname, use_pv_gens)
 
    % Sort by type.
    iPQ = busdata(:, 2) == 1;
-   iGEN = busdata(:, 2) == 2;
+   iPV = busdata(:, 2) == 2;
    iSL = busdata(:, 2) == 3;
-   busdata = [busdata(iPQ, :); busdata(iGEN, :); busdata(iSL,:)];
+   busdata = [busdata(iPQ, :); busdata(iPV, :); busdata(iSL,:)];
 
    % Find index vectors.
    iPQ = busdata(:, 2) == 1;
-   iGEN = busdata(:, 2) == 2;
+   iPV = busdata(:, 2) == 2;
    iSL = busdata(:, 2) == 3;
 
    % Map from id to index.
@@ -26,15 +26,9 @@ function [busdata, branchdata] = from_matpower(ifname, ofname, use_pv_gens)
    % Apply generator data.
    gen = [c.gen(:, [1, 2, 3, 6])]; 
    %  1     2     3     4
-   %  id    P     Q     V
+   %  id    P     Q     M
    busdata(map(gen(:, 1)), 3:4) = busdata(map(gen(:, 1)), 3:4) - gen(:, 2:3);
-   busdata(map(gen(:, 1)), 5) = gen(:, 3);
-
-   if (!use_pv_gens)
-      busdata(iGEN, 2) = 1;
-   end
-   iPQ = (busdata(:, 2) == 1);
-   iPV = (busdata(:, 2) == 2);
+   busdata(map(gen(:, 1)), 5) = gen(:, 4);
 
    busdata(iPQ, 5:6) = NaN;
    busdata(iPV, [4, 6]) = NaN;
