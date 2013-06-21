@@ -414,15 +414,15 @@ namespace SmartGridToolbox
                   }
 
                   // Real power calculations
-                  tempPbus = (undeltacurr[temp_index_b]).Re() * (bus[indexer].V[temp_index_b]).Re() 
-                     + (undeltacurr[temp_index_b]).Im() * (bus[indexer].V[temp_index_b]).Im();
+                  tempPbus = real(undeltacurr[temp_index_b]) * real(bus[indexer].V[temp_index_b]) 
+                     + imag(undeltacurr[temp_index_b]) * imag(bus[indexer].V[temp_index_b]);
                   // Real power portion of Constant current component multiply the magnitude of bus voltage
                   bus[indexer].PL[temp_index] = tempPbus;
                   // Real power portion - all is current based
 
                   // Reactive load calculations
-                  tempQbus = (undeltacurr[temp_index_b]).Re() * (bus[indexer].V[temp_index_b]).Im() 
-                     - (undeltacurr[temp_index_b]).Im() * (bus[indexer].V[temp_index_b]).Re();
+                  tempQbus = real(undeltacurr[temp_index_b]) * imag(bus[indexer].V[temp_index_b]) 
+                     - imag(undeltacurr[temp_index_b]) * real(bus[indexer].V[temp_index_b]);
                   // Reactive power portion of Constant current component multiply the magnitude of bus voltage
                   bus[indexer].QL[temp_index] = tempQbus;
                   // Reactive power portion - all is current based
@@ -632,34 +632,34 @@ namespace SmartGridToolbox
                   }
 
                   // Perform the power calculation
-                  tempPbus = (bus[indexer].S[temp_index_b]).Re();
+                  tempPbus = real(bus[indexer].S[temp_index_b]);
                   // Real power portion of constant power portion
-                  tempPbus += (bus[indexer].I[temp_index_b]).Re() * (bus[indexer].V[temp_index_b]).Re() 
-                     + (bus[indexer].I[temp_index_b]).Im() * (bus[indexer].V[temp_index_b]).Im();
+                  tempPbus += real(bus[indexer].I[temp_index_b]) * real(bus[indexer].V[temp_index_b]) 
+                     + imag(bus[indexer].I[temp_index_b]) * imag(bus[indexer].V[temp_index_b]);
                   // Real power portion of Constant current component multiply the magnitude of bus voltage
-                  tempPbus += (undeltacurr[temp_index_b]).Re() * (bus[indexer].V[temp_index_b]).Re() 
-                     + (undeltacurr[temp_index_b]).Im() * (bus[indexer].V[temp_index_b]).Im();
+                  tempPbus += real(undeltacurr[temp_index_b]) * real(bus[indexer].V[temp_index_b]) 
+                     + imag(undeltacurr[temp_index_b]) * imag(bus[indexer].V[temp_index_b]);
                   // Real power portion of Constant current from "different" children
-                  tempPbus += (bus[indexer].Y[temp_index_b]).Re() * (bus[indexer].V[temp_index_b]).Re() * 
-                     (bus[indexer].V[temp_index_b]).Re() + (bus[indexer].Y[temp_index_b]).Re() * 
-                     (bus[indexer].V[temp_index_b]).Im() * (bus[indexer].V[temp_index_b]).Im();
+                  tempPbus += real(bus[indexer].Y[temp_index_b]) * real(bus[indexer].V[temp_index_b]) * 
+                     real(bus[indexer].V[temp_index_b]) + real(bus[indexer].Y[temp_index_b]) * 
+                     imag(bus[indexer].V[temp_index_b]) * imag(bus[indexer].V[temp_index_b]);
                   // Real power portion of Constant impedance component multiply the square of the magnitude of bus 
                   // voltage
                   bus[indexer].PL[temp_index] = tempPbus;
                   // Real power portion
 
 
-                  tempQbus = (bus[indexer].S[temp_index_b]).Im();
+                  tempQbus = imag(bus[indexer].S[temp_index_b]);
                   // Reactive power portion of constant power portion
-                  tempQbus += (bus[indexer].I[temp_index_b]).Re() * (bus[indexer].V[temp_index_b]).Im() 
-                     - (bus[indexer].I[temp_index_b]).Im() * (bus[indexer].V[temp_index_b]).Re();
+                  tempQbus += real(bus[indexer].I[temp_index_b]) * imag(bus[indexer].V[temp_index_b]) 
+                     - imag(bus[indexer].I[temp_index_b]) * real(bus[indexer].V[temp_index_b]);
                   // Reactive power portion of Constant current component multiply the magnitude of bus voltage
-                  tempQbus += (undeltacurr[temp_index_b]).Re() * (bus[indexer].V[temp_index_b]).Im() 
-                     - (undeltacurr[temp_index_b]).Im() * (bus[indexer].V[temp_index_b]).Re();
+                  tempQbus += real(undeltacurr[temp_index_b]) * imag(bus[indexer].V[temp_index_b]) 
+                     - imag(undeltacurr[temp_index_b]) * real(bus[indexer].V[temp_index_b]);
                   // Reactive power portion of Constant current from "different" children
-                  tempQbus += -(bus[indexer].Y[temp_index_b]).Im() * (bus[indexer].V[temp_index_b]).Im() * 
-                     (bus[indexer].V[temp_index_b]).Im() - (bus[indexer].Y[temp_index_b]).Im() * 
-                     (bus[indexer].V[temp_index_b]).Re() * (bus[indexer].V[temp_index_b]).Re();
+                  tempQbus += -imag(bus[indexer].Y[temp_index_b]) * imag(bus[indexer].V[temp_index_b]) * 
+                     imag(bus[indexer].V[temp_index_b]) - imag(bus[indexer].Y[temp_index_b]) * 
+                     real(bus[indexer].V[temp_index_b]) * real(bus[indexer].V[temp_index_b]);
                   // Reactive power portion of Constant impedance component multiply the square of the magnitude of 
                   // bus voltage
                   bus[indexer].QL[temp_index] = tempQbus; // Reactive power portion
@@ -726,19 +726,19 @@ namespace SmartGridToolbox
 
                   // Get diagonal contributions - only (& always) 2
                   // Column 1
-                  tempIcalcReal += (BA_diag[indexer].Y[jindex][0]).Re() * (bus[indexer].V[0]).Re() 
-                     - (BA_diag[indexer].Y[jindex][0]).Im() * (bus[indexer].V[0]).Im();
+                  tempIcalcReal += real(BA_diag[indexer].Y[jindex][0]) * real(bus[indexer].V[0]) 
+                     - imag(BA_diag[indexer].Y[jindex][0]) * imag(bus[indexer].V[0]);
                   // equation (7), the diag elements of bus admittance matrix
-                  tempIcalcImag += (BA_diag[indexer].Y[jindex][0]).Re() * (bus[indexer].V[0]).Im() 
-                     + (BA_diag[indexer].Y[jindex][0]).Im() * (bus[indexer].V[0]).Re();
+                  tempIcalcImag += real(BA_diag[indexer].Y[jindex][0]) * imag(bus[indexer].V[0]) 
+                     + imag(BA_diag[indexer].Y[jindex][0]) * real(bus[indexer].V[0]);
                   // equation (8), the diag elements of bus admittance matrix
 
                   // Column 2
-                  tempIcalcReal += (BA_diag[indexer].Y[jindex][1]).Re() * (bus[indexer].V[1]).Re() 
-                     - (BA_diag[indexer].Y[jindex][1]).Im() * (bus[indexer].V[1]).Im();
+                  tempIcalcReal += real(BA_diag[indexer].Y[jindex][1]) * real(bus[indexer].V[1]) 
+                     - imag(BA_diag[indexer].Y[jindex][1]) * imag(bus[indexer].V[1]);
                   // equation (7), the diag elements of bus admittance matrix
-                  tempIcalcImag += (BA_diag[indexer].Y[jindex][1]).Re() * (bus[indexer].V[1]).Im() 
-                     + (BA_diag[indexer].Y[jindex][1]).Im() * (bus[indexer].V[1]).Re();
+                  tempIcalcImag += real(BA_diag[indexer].Y[jindex][1]) * imag(bus[indexer].V[1]) 
+                     + imag(BA_diag[indexer].Y[jindex][1]) * real(bus[indexer].V[1]);
                   // equation (8), the diag elements of bus admittance matrix
 
                   // Now off diagonals
@@ -756,27 +756,27 @@ namespace SmartGridToolbox
                            // This situation can only be a normal line (triplex will never be the from for another type)
                            // Again only, & always 2 columns (just do them explicitly)
                            // Column 1
-                           tempIcalcReal += ((branch[jindexer].Yfrom[work_vals_char_0])).Re() * 
-                              (bus[branch[jindexer].to].V[0]).Re() 
-                              - ((branch[jindexer].Yfrom[work_vals_char_0])).Im() * 
-                              (bus[branch[jindexer].to].V[0]).Im();
+                           tempIcalcReal += real((branch[jindexer].Yfrom[work_vals_char_0])) * 
+                              real(bus[branch[jindexer].to].V[0]) 
+                              - imag((branch[jindexer].Yfrom[work_vals_char_0])) * 
+                              imag(bus[branch[jindexer].to].V[0]);
                            // equation (7), the off_diag elements of bus admittance matrix are equal to negative value 
                            // of branch admittance
-                           tempIcalcImag += ((branch[jindexer].Yfrom[work_vals_char_0])).Re() * 
-                              (bus[branch[jindexer].to].V[0]).Im() + 
-                              ((branch[jindexer].Yfrom[work_vals_char_0])).Im() * (bus[branch[jindexer].to].V[0]).Re();
+                           tempIcalcImag += real((branch[jindexer].Yfrom[work_vals_char_0])) * 
+                              imag(bus[branch[jindexer].to].V[0]) + 
+                              imag((branch[jindexer].Yfrom[work_vals_char_0])) * real(bus[branch[jindexer].to].V[0]);
                            // equation (8), the off_diag elements of bus admittance matrix are equal to negative value
                            // of branch admittance
 
                            // Column2
-                           tempIcalcReal += ((branch[jindexer].Yfrom[jindex*3+1])).Re() * 
-                              (bus[branch[jindexer].to].V[1]).Re() - ((branch[jindexer].Yfrom[jindex*3+1])).Im() * 
-                              (bus[branch[jindexer].to].V[1]).Im();
+                           tempIcalcReal += real((branch[jindexer].Yfrom[jindex*3+1])) * 
+                              real(bus[branch[jindexer].to].V[1]) - imag((branch[jindexer].Yfrom[jindex*3+1])) * 
+                              imag(bus[branch[jindexer].to].V[1]);
                            // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
                            // value of branch admittance
-                           tempIcalcImag += ((branch[jindexer].Yfrom[jindex*3+1])).Re() * 
-                              (bus[branch[jindexer].to].V[1]).Im() + ((branch[jindexer].Yfrom[jindex*3+1])).Im() * 
-                              (bus[branch[jindexer].to].V[1]).Re();
+                           tempIcalcImag += real((branch[jindexer].Yfrom[jindex*3+1])) * 
+                              imag(bus[branch[jindexer].to].V[1]) + imag((branch[jindexer].Yfrom[jindex*3+1])) * 
+                              real(bus[branch[jindexer].to].V[1]);
                            // equation (8), the off_diag elements of bus admittance matrix are equal to negative value 
                            // of branch admittance
 
@@ -787,28 +787,28 @@ namespace SmartGridToolbox
                            // This situation can only be a normal line (triplex will never be the from for another type)
                            // Again only, & always 2 columns (just do them explicitly)
                            // Column 1
-                           tempIcalcReal += (-(branch[jindexer].Yfrom[work_vals_char_0])).Re() * 
-                              (bus[branch[jindexer].to].V[0]).Re() 
-                              - (-(branch[jindexer].Yfrom[work_vals_char_0])).Im() * 
-                              (bus[branch[jindexer].to].V[0]).Im();
+                           tempIcalcReal += real(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
+                              real(bus[branch[jindexer].to].V[0]) 
+                              - imag(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
+                              imag(bus[branch[jindexer].to].V[0]);
                            // equation (7), the off_diag elements of bus admittance matrix are equal to negative value
                            // of branch admittance
-                           tempIcalcImag += (-(branch[jindexer].Yfrom[work_vals_char_0])).Re() * 
-                              (bus[branch[jindexer].to].V[0]).Im() 
-                              + (-(branch[jindexer].Yfrom[work_vals_char_0])).Im() * 
-                              (bus[branch[jindexer].to].V[0]).Re();
+                           tempIcalcImag += real(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
+                              imag(bus[branch[jindexer].to].V[0]) 
+                              + imag(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
+                              real(bus[branch[jindexer].to].V[0]);
                            // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
                            // value of branch admittance
 
                            // Column2
-                           tempIcalcReal += (-(branch[jindexer].Yfrom[jindex*3+1])).Re() * 
-                              (bus[branch[jindexer].to].V[1]).Re() - (-(branch[jindexer].Yfrom[jindex*3+1])).Im() * 
-                              (bus[branch[jindexer].to].V[1]).Im();
+                           tempIcalcReal += real(-(branch[jindexer].Yfrom[jindex*3+1])) * 
+                              real(bus[branch[jindexer].to].V[1]) - imag(-(branch[jindexer].Yfrom[jindex*3+1])) * 
+                              imag(bus[branch[jindexer].to].V[1]);
                            // equation (7), the off_diag elements of bus admittance matrix are equal to negative value 
                            // of branch admittance
-                           tempIcalcImag += (-(branch[jindexer].Yfrom[jindex*3+1])).Re() * 
-                              (bus[branch[jindexer].to].V[1]).Im() + (-(branch[jindexer].Yfrom[jindex*3+1])).Im() * 
-                              (bus[branch[jindexer].to].V[1]).Re();
+                           tempIcalcImag += real(-(branch[jindexer].Yfrom[jindex*3+1])) * 
+                              imag(bus[branch[jindexer].to].V[1]) + imag(-(branch[jindexer].Yfrom[jindex*3+1])) * 
+                              real(bus[branch[jindexer].to].V[1]);
                            // equation (8), the off_diag elements of bus admittance matrix are equal to negative value 
                            // of branch admittance
 
@@ -841,16 +841,16 @@ namespace SmartGridToolbox
                            work_vals_char_0 = jindex*3+temp_index;
 
                            // Perform the update, it only happens for one column (nature of the transformer)
-                           tempIcalcReal += (-(branch[jindexer].Yto[work_vals_char_0])).Re() * 
-                              (bus[branch[jindexer].from].V[temp_index]).Re() 
-                              - (-(branch[jindexer].Yto[work_vals_char_0])).Im() * 
-                              (bus[branch[jindexer].from].V[temp_index]).Im();
+                           tempIcalcReal += real(-(branch[jindexer].Yto[work_vals_char_0])) * 
+                              real(bus[branch[jindexer].from].V[temp_index]) 
+                              - imag(-(branch[jindexer].Yto[work_vals_char_0])) * 
+                              imag(bus[branch[jindexer].from].V[temp_index]);
                            // equation (7), the off_diag elements of bus admittance matrix are equal to negative value 
                            // of branch admittance
-                           tempIcalcImag += (-(branch[jindexer].Yto[work_vals_char_0])).Re() * 
-                              (bus[branch[jindexer].from].V[temp_index]).Im() + 
-                              (-(branch[jindexer].Yto[work_vals_char_0])).Im() * 
-                              (bus[branch[jindexer].from].V[temp_index]).Re();
+                           tempIcalcImag += real(-(branch[jindexer].Yto[work_vals_char_0])) * 
+                              imag(bus[branch[jindexer].from].V[temp_index]) + 
+                              imag(-(branch[jindexer].Yto[work_vals_char_0])) * 
+                              real(bus[branch[jindexer].from].V[temp_index]);
                            // equation (8), the off_diag elements of bus admittance matrix are equal to negative value 
                            // of branch admittance
 
@@ -865,30 +865,30 @@ namespace SmartGridToolbox
                               // meshed secondaries, it might
                               // Again only, & always 2 columns (just do them explicitly)
                               // Column 1
-                              tempIcalcReal += ((branch[jindexer].Yto[work_vals_char_0])).Re() * 
-                                 (bus[branch[jindexer].from].V[0]).Re() - 
-                                 ((branch[jindexer].Yto[work_vals_char_0])).Im() * 
-                                 (bus[branch[jindexer].from].V[0]).Im();
+                              tempIcalcReal += real((branch[jindexer].Yto[work_vals_char_0])) * 
+                                 real(bus[branch[jindexer].from].V[0]) - 
+                                 imag((branch[jindexer].Yto[work_vals_char_0])) * 
+                                 imag(bus[branch[jindexer].from].V[0]);
                               // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
                               // value of branch admittance
-                              tempIcalcImag += ((branch[jindexer].Yto[work_vals_char_0])).Re() * 
-                                 (bus[branch[jindexer].from].V[0]).Im() + 
-                                 ((branch[jindexer].Yto[work_vals_char_0])).Im() * 
-                                 (bus[branch[jindexer].from].V[0]).Re();
+                              tempIcalcImag += real((branch[jindexer].Yto[work_vals_char_0])) * 
+                                 imag(bus[branch[jindexer].from].V[0]) + 
+                                 imag((branch[jindexer].Yto[work_vals_char_0])) * 
+                                 real(bus[branch[jindexer].from].V[0]);
                               // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
                               // value of branch admittance
 
                               // Column2
-                              tempIcalcReal += ((branch[jindexer].Yto[work_vals_char_0+1])).Re() * 
-                                 (bus[branch[jindexer].from].V[1]).Re() - 
-                                 ((branch[jindexer].Yto[work_vals_char_0+1])).Im() * 
-                                 (bus[branch[jindexer].from].V[1]).Im();
+                              tempIcalcReal += real((branch[jindexer].Yto[work_vals_char_0+1])) * 
+                                 real(bus[branch[jindexer].from].V[1]) - 
+                                 imag((branch[jindexer].Yto[work_vals_char_0+1])) * 
+                                 imag(bus[branch[jindexer].from].V[1]);
                               // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
                               // value of branch admittance
-                              tempIcalcImag += ((branch[jindexer].Yto[work_vals_char_0+1])).Re() * 
-                                 (bus[branch[jindexer].from].V[1]).Im() + 
-                                 ((branch[jindexer].Yto[work_vals_char_0+1])).Im() * 
-                                 (bus[branch[jindexer].from].V[1]).Re();
+                              tempIcalcImag += real((branch[jindexer].Yto[work_vals_char_0+1])) * 
+                                 imag(bus[branch[jindexer].from].V[1]) + 
+                                 imag((branch[jindexer].Yto[work_vals_char_0+1])) * 
+                                 real(bus[branch[jindexer].from].V[1]);
                               // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
                               // value of branch admittance
                            } // End SPCT To bus - from diagonal contributions
@@ -897,30 +897,30 @@ namespace SmartGridToolbox
                               work_vals_char_0 = jindex*3;
                               // Again only, & always 2 columns (just do them explicitly)
                               // Column 1
-                              tempIcalcReal += (-(branch[jindexer].Yto[work_vals_char_0])).Re() * 
-                                 (bus[branch[jindexer].from].V[0]).Re() - 
-                                 (-(branch[jindexer].Yto[work_vals_char_0])).Im() * 
-                                 (bus[branch[jindexer].from].V[0]).Im();
+                              tempIcalcReal += real(-(branch[jindexer].Yto[work_vals_char_0])) * 
+                                 real(bus[branch[jindexer].from].V[0]) - 
+                                 imag(-(branch[jindexer].Yto[work_vals_char_0])) * 
+                                 imag(bus[branch[jindexer].from].V[0]);
                               // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
                               // value of branch admittance
-                              tempIcalcImag += (-(branch[jindexer].Yto[work_vals_char_0])).Re() * 
-                                 (bus[branch[jindexer].from].V[0]).Im() + 
-                                 (-(branch[jindexer].Yto[work_vals_char_0])).Im() * 
-                                 (bus[branch[jindexer].from].V[0]).Re();
+                              tempIcalcImag += real(-(branch[jindexer].Yto[work_vals_char_0])) * 
+                                 imag(bus[branch[jindexer].from].V[0]) + 
+                                 imag(-(branch[jindexer].Yto[work_vals_char_0])) * 
+                                 real(bus[branch[jindexer].from].V[0]);
                               // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
                               // value of branch admittance
 
                               // Column2
-                              tempIcalcReal += (-(branch[jindexer].Yto[work_vals_char_0+1])).Re() * 
-                                 (bus[branch[jindexer].from].V[1]).Re() - 
-                                 (-(branch[jindexer].Yto[work_vals_char_0+1])).Im() * 
-                                 (bus[branch[jindexer].from].V[1]).Im();
+                              tempIcalcReal += real(-(branch[jindexer].Yto[work_vals_char_0+1])) * 
+                                 real(bus[branch[jindexer].from].V[1]) - 
+                                 imag(-(branch[jindexer].Yto[work_vals_char_0+1])) * 
+                                 imag(bus[branch[jindexer].from].V[1]);
                               // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
                               // value of branch admittance
-                              tempIcalcImag += (-(branch[jindexer].Yto[work_vals_char_0+1])).Re() * 
-                                 (bus[branch[jindexer].from].V[1]).Im() + 
-                                 (-(branch[jindexer].Yto[work_vals_char_0+1])).Im() * 
-                                 (bus[branch[jindexer].from].V[1]).Re();
+                              tempIcalcImag += real(-(branch[jindexer].Yto[work_vals_char_0+1])) * 
+                                 imag(bus[branch[jindexer].from].V[1]) + 
+                                 imag(-(branch[jindexer].Yto[work_vals_char_0+1])) * 
+                                 real(bus[branch[jindexer].from].V[1]);
                               // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
                               // value of branch admittance
                            } // End normal triplex connection
@@ -1012,11 +1012,11 @@ namespace SmartGridToolbox
                      }
 
                      // Diagonal contributions
-                     tempIcalcReal += (BA_diag[indexer].Y[jindex][kindex]).Re() * (bus[indexer].V[temp_index]).Re() - 
-                        (BA_diag[indexer].Y[jindex][kindex]).Im() * (bus[indexer].V[temp_index]).Im();
+                     tempIcalcReal += real(BA_diag[indexer].Y[jindex][kindex]) * real(bus[indexer].V[temp_index]) - 
+                        imag(BA_diag[indexer].Y[jindex][kindex]) * imag(bus[indexer].V[temp_index]);
                      // equation (7), the diag elements of bus admittance matrix
-                     tempIcalcImag += (BA_diag[indexer].Y[jindex][kindex]).Re() * (bus[indexer].V[temp_index]).Im() + 
-                        (BA_diag[indexer].Y[jindex][kindex]).Im() * (bus[indexer].V[temp_index]).Re();
+                     tempIcalcImag += real(BA_diag[indexer].Y[jindex][kindex]) * imag(bus[indexer].V[temp_index]) + 
+                        imag(BA_diag[indexer].Y[jindex][kindex]) * real(bus[indexer].V[temp_index]);
                      // equation (8), the diag elements of bus admittance matrix
 
 
@@ -1165,30 +1165,30 @@ namespace SmartGridToolbox
                                  work_vals_char_0 = temp_index_b*3;
                                  // Do columns individually
                                  // 1
-                                 tempIcalcReal += (-(branch[jindexer].Yfrom[work_vals_char_0])).Re() * 
-                                    (bus[branch[jindexer].to].V[0]).Re() - 
-                                    (-(branch[jindexer].Yfrom[work_vals_char_0])).Im() * 
-                                    (bus[branch[jindexer].to].V[0]).Im();
+                                 tempIcalcReal += real(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
+                                    real(bus[branch[jindexer].to].V[0]) - 
+                                    imag(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
+                                    imag(bus[branch[jindexer].to].V[0]);
                                  // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
                                  // value of branch admittance
-                                 tempIcalcImag += (-(branch[jindexer].Yfrom[work_vals_char_0])).Re() * 
-                                    (bus[branch[jindexer].to].V[0]).Im() + 
-                                    (-(branch[jindexer].Yfrom[work_vals_char_0])).Im() * 
-                                    (bus[branch[jindexer].to].V[0]).Re();
+                                 tempIcalcImag += real(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
+                                    imag(bus[branch[jindexer].to].V[0]) + 
+                                    imag(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
+                                    real(bus[branch[jindexer].to].V[0]);
                                  // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
                                  // value of branch admittance
 
                                  // 2
-                                 tempIcalcReal += (-(branch[jindexer].Yfrom[work_vals_char_0+1])).Re() * 
-                                    (bus[branch[jindexer].to].V[1]).Re() - 
-                                    (-(branch[jindexer].Yfrom[work_vals_char_0+1])).Im() * 
-                                    (bus[branch[jindexer].to].V[1]).Im();
+                                 tempIcalcReal += real(-(branch[jindexer].Yfrom[work_vals_char_0+1])) * 
+                                    real(bus[branch[jindexer].to].V[1]) - 
+                                    imag(-(branch[jindexer].Yfrom[work_vals_char_0+1])) * 
+                                    imag(bus[branch[jindexer].to].V[1]);
                                  // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
                                  // value of branch admittance
-                                 tempIcalcImag += (-(branch[jindexer].Yfrom[work_vals_char_0+1])).Re() * 
-                                    (bus[branch[jindexer].to].V[1]).Im() + 
-                                    (-(branch[jindexer].Yfrom[work_vals_char_0+1])).Im() * 
-                                    (bus[branch[jindexer].to].V[1]).Re();
+                                 tempIcalcImag += real(-(branch[jindexer].Yfrom[work_vals_char_0+1])) * 
+                                    imag(bus[branch[jindexer].to].V[1]) + 
+                                    imag(-(branch[jindexer].Yfrom[work_vals_char_0+1])) * 
+                                    real(bus[branch[jindexer].to].V[1]);
                                  // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
                                  // value of branch admittance
 
@@ -1198,10 +1198,10 @@ namespace SmartGridToolbox
                            else // /Must be a standard line
                            {
                               work_vals_char_0 = temp_index_b*3+temp_index;
-                              work_vals_double_0 = (-branch[jindexer].Yfrom[work_vals_char_0]).Re();
-                              work_vals_double_1 = (-branch[jindexer].Yfrom[work_vals_char_0]).Im();
-                              work_vals_double_2 = (bus[branch[jindexer].to].V[temp_index]).Re();
-                              work_vals_double_3 = (bus[branch[jindexer].to].V[temp_index]).Im();
+                              work_vals_double_0 = real(-branch[jindexer].Yfrom[work_vals_char_0]);
+                              work_vals_double_1 = imag(-branch[jindexer].Yfrom[work_vals_char_0]);
+                              work_vals_double_2 = real(bus[branch[jindexer].to].V[temp_index]);
+                              work_vals_double_3 = imag(bus[branch[jindexer].to].V[temp_index]);
 
                               tempIcalcReal += work_vals_double_0 * work_vals_double_2 - work_vals_double_1 * 
                                  work_vals_double_3;
@@ -1219,10 +1219,10 @@ namespace SmartGridToolbox
                         if  (branch[jindexer].to == indexer)
                         {
                            work_vals_char_0 = temp_index_b*3+temp_index;
-                           work_vals_double_0 = (-branch[jindexer].Yto[work_vals_char_0]).Re();
-                           work_vals_double_1 = (-branch[jindexer].Yto[work_vals_char_0]).Im();
-                           work_vals_double_2 = (bus[branch[jindexer].from].V[temp_index]).Re();
-                           work_vals_double_3 = (bus[branch[jindexer].from].V[temp_index]).Im();
+                           work_vals_double_0 = real(-branch[jindexer].Yto[work_vals_char_0]);
+                           work_vals_double_1 = imag(-branch[jindexer].Yto[work_vals_char_0]);
+                           work_vals_double_2 = real(bus[branch[jindexer].from].V[temp_index]);
+                           work_vals_double_3 = imag(bus[branch[jindexer].from].V[temp_index]);
 
                            tempIcalcReal += work_vals_double_0 * work_vals_double_2 - work_vals_double_1 * 
                               work_vals_double_3;
@@ -1244,8 +1244,8 @@ namespace SmartGridToolbox
                   if (work_vals_double_0!=0)
                      // Only normal one (not square), but a zero is still a zero even after that
                   {
-                     work_vals_double_1 = (bus[indexer].V[temp_index_b]).Re();
-                     work_vals_double_2 = (bus[indexer].V[temp_index_b]).Im();
+                     work_vals_double_1 = real(bus[indexer].V[temp_index_b]);
+                     work_vals_double_2 = imag(bus[indexer].V[temp_index_b]);
                      deltaI_NR[2*bus[indexer].Matrix_Loc+ BA_diag[indexer].size + jindex] = (tempPbus * 
                            work_vals_double_1 + tempQbus * work_vals_double_2)/ (work_vals_double_0) - tempIcalcReal ;
                      // equation(7), Real part of deltaI, left hand side of equation (11)
@@ -1472,36 +1472,36 @@ namespace SmartGridToolbox
 
                   if ((bus[indexer].V[temp_index_b]).Mag()!=0)
                   {
-                     bus[indexer].Jacob_A[temp_index] = ((bus[indexer].V[temp_index_b]).Re()*
-                           (bus[indexer].V[temp_index_b]).Im()*(undeltacurr[temp_index_b]).Re() + 
-                           (undeltacurr[temp_index_b]).Im() *pow((bus[indexer].V[temp_index_b]).Im(),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) + (undeltaimped[temp_index_b]).Im();
+                     bus[indexer].Jacob_A[temp_index] = (real(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) + 
+                           imag(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
+                           pow((bus[indexer].V[temp_index_b]).Mag(),3) + imag(undeltaimped[temp_index_b]);
                      // second part of equation(37) - no power term needed
-                     bus[indexer].Jacob_B[temp_index] = -((bus[indexer].V[temp_index_b]).Re()*
-                           (bus[indexer].V[temp_index_b]).Im()*(undeltacurr[temp_index_b]).Im() + 
-                           (undeltacurr[temp_index_b]).Re() *pow((bus[indexer].V[temp_index_b]).Re(),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - (undeltaimped[temp_index_b]).Re();
+                     bus[indexer].Jacob_B[temp_index] = -(real(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) + 
+                           real(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
+                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - real(undeltaimped[temp_index_b]);
                      // second part of equation(38) - no power term needed
-                     bus[indexer].Jacob_C[temp_index] =((bus[indexer].V[temp_index_b]).Re()*
-                           (bus[indexer].V[temp_index_b]).Im()*(undeltacurr[temp_index_b]).Im() - 
-                           (undeltacurr[temp_index_b]).Re() *pow((bus[indexer].V[temp_index_b]).Im(),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - (undeltaimped[temp_index_b]).Re();
+                     bus[indexer].Jacob_C[temp_index] =(real(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) - 
+                           real(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
+                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - real(undeltaimped[temp_index_b]);
                      // second part of equation(39) - no power term needed
-                     bus[indexer].Jacob_D[temp_index] = ((bus[indexer].V[temp_index_b]).Re()*
-                           (bus[indexer].V[temp_index_b]).Im()*(undeltacurr[temp_index_b]).Re() - 
-                           (undeltacurr[temp_index_b]).Im() *pow((bus[indexer].V[temp_index_b]).Re(),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - (undeltaimped[temp_index_b]).Im();
+                     bus[indexer].Jacob_D[temp_index] = (real(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) - 
+                           imag(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
+                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - imag(undeltaimped[temp_index_b]);
                      // second part of equation(40) - no power term needed
                   }
                   else
                      // Zero voltage = only impedance is valid (others get divided by VMag, so are IND) - not entirely 
                      // sure how this gets in here anyhow
                   {
-                     bus[indexer].Jacob_A[temp_index] = (undeltaimped[temp_index_b]).Im() - 1e-4;
+                     bus[indexer].Jacob_A[temp_index] = imag(undeltaimped[temp_index_b]) - 1e-4;
                      // Small offset to avoid singularities (if impedance is zero too)
-                     bus[indexer].Jacob_B[temp_index] = -(undeltaimped[temp_index_b]).Re() - 1e-4;
-                     bus[indexer].Jacob_C[temp_index] = -(undeltaimped[temp_index_b]).Re() - 1e-4;
-                     bus[indexer].Jacob_D[temp_index] = -(undeltaimped[temp_index_b]).Im() - 1e-4;
+                     bus[indexer].Jacob_B[temp_index] = -real(undeltaimped[temp_index_b]) - 1e-4;
+                     bus[indexer].Jacob_C[temp_index] = -real(undeltaimped[temp_index_b]) - 1e-4;
+                     bus[indexer].Jacob_D[temp_index] = -imag(undeltaimped[temp_index_b]) - 1e-4;
                   }
                } // End phase traversion
             }
@@ -1559,22 +1559,22 @@ namespace SmartGridToolbox
                {
                   if ((bus[indexer].V[jindex]).Mag()!=0) // Only current
                   {
-                     bus[indexer].Jacob_A[jindex] = ((bus[indexer].V[jindex]).Re()*(bus[indexer].V[jindex]).Im()*
-                           (temp_store[jindex]).Re() + (temp_store[jindex]).Im() *
-                           pow((bus[indexer].V[jindex]).Im(),2))/pow((bus[indexer].V[jindex]).Mag(),3);
+                     bus[indexer].Jacob_A[jindex] = (real(bus[indexer].V[jindex])*imag(bus[indexer].V[jindex])*
+                           real(temp_store[jindex]) + imag(temp_store[jindex]) *
+                           pow(imag(bus[indexer].V[jindex]),2))/pow((bus[indexer].V[jindex]).Mag(),3);
                      // second part of equation(37)
-                     bus[indexer].Jacob_B[jindex] = -((bus[indexer].V[jindex]).Re()*
-                           (bus[indexer].V[jindex]).Im()*(temp_store[jindex]).Im() + 
-                           (temp_store[jindex]).Re() *pow((bus[indexer].V[jindex]).Re(),2))/
+                     bus[indexer].Jacob_B[jindex] = -(real(bus[indexer].V[jindex])*
+                           imag(bus[indexer].V[jindex])*imag(temp_store[jindex]) + 
+                           real(temp_store[jindex]) *pow(real(bus[indexer].V[jindex]),2))/
                            pow((bus[indexer].V[jindex]).Mag(),3);
                      // second part of equation(38)
-                     bus[indexer].Jacob_C[jindex] =((bus[indexer].V[jindex]).Re()*(bus[indexer].V[jindex]).Im()*
-                           (temp_store[jindex]).Im() - (temp_store[jindex]).Re() *
-                           pow((bus[indexer].V[jindex]).Im(),2))/pow((bus[indexer].V[jindex]).Mag(),3);
+                     bus[indexer].Jacob_C[jindex] =(real(bus[indexer].V[jindex])*imag(bus[indexer].V[jindex])*
+                           imag(temp_store[jindex]) - real(temp_store[jindex]) *
+                           pow(imag(bus[indexer].V[jindex]),2))/pow((bus[indexer].V[jindex]).Mag(),3);
                      // second part of equation(39)
-                     bus[indexer].Jacob_D[jindex] = ((bus[indexer].V[jindex]).Re()*(bus[indexer].V[jindex]).Im()*
-                           (temp_store[jindex]).Re() - (temp_store[jindex]).Im() *
-                           pow((bus[indexer].V[jindex]).Re(),2))/pow((bus[indexer].V[jindex]).Mag(),3);
+                     bus[indexer].Jacob_D[jindex] = (real(bus[indexer].V[jindex])*imag(bus[indexer].V[jindex])*
+                           real(temp_store[jindex]) - imag(temp_store[jindex]) *
+                           pow(real(bus[indexer].V[jindex]),2))/pow((bus[indexer].V[jindex]).Mag(),3);
                      // second part of equation(40)
                   }
                   else
@@ -1750,79 +1750,79 @@ namespace SmartGridToolbox
 
                   if ((bus[indexer].V[temp_index_b]).Mag()!=0)
                   {
-                     bus[indexer].Jacob_A[temp_index] = ((bus[indexer].S[temp_index_b]).Im() * 
-                           (pow((bus[indexer].V[temp_index_b]).Re(),2) - pow((bus[indexer].V[temp_index_b]).Im(),2)) - 
-                           2*(bus[indexer].V[temp_index_b]).Re()*(bus[indexer].V[temp_index_b]).Im()*
-                           (bus[indexer].S[temp_index_b]).Re())/pow((bus[indexer].V[temp_index_b]).Mag(),4);
+                     bus[indexer].Jacob_A[temp_index] = (imag(bus[indexer].S[temp_index_b]) * 
+                           (pow(real(bus[indexer].V[temp_index_b]),2) - pow(imag(bus[indexer].V[temp_index_b]),2)) - 
+                           2*real(bus[indexer].V[temp_index_b])*imag(bus[indexer].V[temp_index_b])*
+                           real(bus[indexer].S[temp_index_b]))/pow((bus[indexer].V[temp_index_b]).Mag(),4);
                      // first part of equation(37)
-                     bus[indexer].Jacob_A[temp_index] += ((bus[indexer].V[temp_index_b]).Re()*
-                           (bus[indexer].V[temp_index_b]).Im()*(bus[indexer].I[temp_index_b]).Re() + 
-                           (bus[indexer].I[temp_index_b]).Im() *pow((bus[indexer].V[temp_index_b]).Im(),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) + (bus[indexer].Y[temp_index_b]).Im();
+                     bus[indexer].Jacob_A[temp_index] += (real(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].V[temp_index_b])*real(bus[indexer].I[temp_index_b]) + 
+                           imag(bus[indexer].I[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
+                           pow((bus[indexer].V[temp_index_b]).Mag(),3) + imag(bus[indexer].Y[temp_index_b]);
                      // second part of equation(37)
-                     bus[indexer].Jacob_A[temp_index] += ((bus[indexer].V[temp_index_b]).Re()*
-                           (bus[indexer].V[temp_index_b]).Im()*(undeltacurr[temp_index_b]).Re() + 
-                           (undeltacurr[temp_index_b]).Im() *pow((bus[indexer].V[temp_index_b]).Im(),2))/
+                     bus[indexer].Jacob_A[temp_index] += (real(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) + 
+                           imag(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
                            pow((bus[indexer].V[temp_index_b]).Mag(),3);
                      // current part of equation (37) - Handles "different" children
 
-                     bus[indexer].Jacob_B[temp_index] = ((bus[indexer].S[temp_index_b]).Re() * 
-                           (pow((bus[indexer].V[temp_index_b]).Re(),2) - 
-                            pow((bus[indexer].V[temp_index_b]).Im(),2)) + 
-                           2*(bus[indexer].V[temp_index_b]).Re()*(bus[indexer].V[temp_index_b]).Im()*
-                           (bus[indexer].S[temp_index_b]).Im())/pow((bus[indexer].V[temp_index_b]).Mag(),4);
+                     bus[indexer].Jacob_B[temp_index] = (real(bus[indexer].S[temp_index_b]) * 
+                           (pow(real(bus[indexer].V[temp_index_b]),2) - 
+                            pow(imag(bus[indexer].V[temp_index_b]),2)) + 
+                           2*real(bus[indexer].V[temp_index_b])*imag(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].S[temp_index_b]))/pow((bus[indexer].V[temp_index_b]).Mag(),4);
                      // first part of equation(38)
-                     bus[indexer].Jacob_B[temp_index] += -((bus[indexer].V[temp_index_b]).Re()*
-                           (bus[indexer].V[temp_index_b]).Im()*(bus[indexer].I[temp_index_b]).Im() + 
-                           (bus[indexer].I[temp_index_b]).Re() *pow((bus[indexer].V[temp_index_b]).Re(),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - (bus[indexer].Y[temp_index_b]).Re();
+                     bus[indexer].Jacob_B[temp_index] += -(real(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].V[temp_index_b])*imag(bus[indexer].I[temp_index_b]) + 
+                           real(bus[indexer].I[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
+                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - real(bus[indexer].Y[temp_index_b]);
                      // second part of equation(38)
-                     bus[indexer].Jacob_B[temp_index] += -((bus[indexer].V[temp_index_b]).Re()*
-                           (bus[indexer].V[temp_index_b]).Im()*(undeltacurr[temp_index_b]).Im() + 
-                           (undeltacurr[temp_index_b]).Re() *pow((bus[indexer].V[temp_index_b]).Re(),2))/
+                     bus[indexer].Jacob_B[temp_index] += -(real(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) + 
+                           real(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
                            pow((bus[indexer].V[temp_index_b]).Mag(),3);
                      // current part of equation(38) - Handles "different" children
 
-                     bus[indexer].Jacob_C[temp_index] = ((bus[indexer].S[temp_index_b]).Re() * 
-                           (pow((bus[indexer].V[temp_index_b]).Im(),2) - pow((bus[indexer].V[temp_index_b]).Re(),2)) - 
-                           2*(bus[indexer].V[temp_index_b]).Re()*(bus[indexer].V[temp_index_b]).Im()*
-                           (bus[indexer].S[temp_index_b]).Im())/pow((bus[indexer].V[temp_index_b]).Mag(),4);
+                     bus[indexer].Jacob_C[temp_index] = (real(bus[indexer].S[temp_index_b]) * 
+                           (pow(imag(bus[indexer].V[temp_index_b]),2) - pow(real(bus[indexer].V[temp_index_b]),2)) - 
+                           2*real(bus[indexer].V[temp_index_b])*imag(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].S[temp_index_b]))/pow((bus[indexer].V[temp_index_b]).Mag(),4);
                      // first part of equation(39)
-                     bus[indexer].Jacob_C[temp_index] +=((bus[indexer].V[temp_index_b]).Re()*
-                           (bus[indexer].V[temp_index_b]).Im()*(bus[indexer].I[temp_index_b]).Im() - 
-                           (bus[indexer].I[temp_index_b]).Re() *pow((bus[indexer].V[temp_index_b]).Im(),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - (bus[indexer].Y[temp_index_b]).Re();
+                     bus[indexer].Jacob_C[temp_index] +=(real(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].V[temp_index_b])*imag(bus[indexer].I[temp_index_b]) - 
+                           real(bus[indexer].I[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
+                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - real(bus[indexer].Y[temp_index_b]);
                      // second part of equation(39)
-                     bus[indexer].Jacob_C[temp_index] +=((bus[indexer].V[temp_index_b]).Re()*
-                           (bus[indexer].V[temp_index_b]).Im()*(undeltacurr[temp_index_b]).Im() - 
-                           (undeltacurr[temp_index_b]).Re() *pow((bus[indexer].V[temp_index_b]).Im(),2))/
+                     bus[indexer].Jacob_C[temp_index] +=(real(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) - 
+                           real(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
                         pow((bus[indexer].V[temp_index_b]).Mag(),3);
                      // Current part of equation(39) - Handles "different" children
 
-                     bus[indexer].Jacob_D[temp_index] = ((bus[indexer].S[temp_index_b]).Im() * 
-                           (pow((bus[indexer].V[temp_index_b]).Re(),2) - pow((bus[indexer].V[temp_index_b]).Im(),2)) - 
-                           2*(bus[indexer].V[temp_index_b]).Re()*(bus[indexer].V[temp_index_b]).Im()*
-                           (bus[indexer].S[temp_index_b]).Re())/pow((bus[indexer].V[temp_index_b]).Mag(),4);
+                     bus[indexer].Jacob_D[temp_index] = (imag(bus[indexer].S[temp_index_b]) * 
+                           (pow(real(bus[indexer].V[temp_index_b]),2) - pow(imag(bus[indexer].V[temp_index_b]),2)) - 
+                           2*real(bus[indexer].V[temp_index_b])*imag(bus[indexer].V[temp_index_b])*
+                           real(bus[indexer].S[temp_index_b]))/pow((bus[indexer].V[temp_index_b]).Mag(),4);
                      // first part of equation(40)
-                     bus[indexer].Jacob_D[temp_index] += ((bus[indexer].V[temp_index_b]).Re()*
-                           (bus[indexer].V[temp_index_b]).Im()*(bus[indexer].I[temp_index_b]).Re() - 
-                           (bus[indexer].I[temp_index_b]).Im() *pow((bus[indexer].V[temp_index_b]).Re(),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - (bus[indexer].Y[temp_index_b]).Im();
+                     bus[indexer].Jacob_D[temp_index] += (real(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].V[temp_index_b])*real(bus[indexer].I[temp_index_b]) - 
+                           imag(bus[indexer].I[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
+                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - imag(bus[indexer].Y[temp_index_b]);
                      // second part of equation(40)
-                     bus[indexer].Jacob_D[temp_index] += ((bus[indexer].V[temp_index_b]).Re()*
-                           (bus[indexer].V[temp_index_b]).Im()*(undeltacurr[temp_index_b]).Re() - 
-                           (undeltacurr[temp_index_b]).Im() *pow((bus[indexer].V[temp_index_b]).Re(),2))/
+                     bus[indexer].Jacob_D[temp_index] += (real(bus[indexer].V[temp_index_b])*
+                           imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) - 
+                           imag(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
                            pow((bus[indexer].V[temp_index_b]).Mag(),3);
                      // Current part of equation(40) - Handles "different" children
 
                   }
                   else
                   {
-                     bus[indexer].Jacob_A[temp_index]= (bus[indexer].Y[temp_index_b]).Im() - 1e-4;
+                     bus[indexer].Jacob_A[temp_index]= imag(bus[indexer].Y[temp_index_b]) - 1e-4;
                      // Small offset to avoid singularity issues
-                     bus[indexer].Jacob_B[temp_index]= -(bus[indexer].Y[temp_index_b]).Re() - 1e-4;
-                     bus[indexer].Jacob_C[temp_index]= -(bus[indexer].Y[temp_index_b]).Re() - 1e-4;
-                     bus[indexer].Jacob_D[temp_index]= -(bus[indexer].Y[temp_index_b]).Im() - 1e-4;
+                     bus[indexer].Jacob_B[temp_index]= -real(bus[indexer].Y[temp_index_b]) - 1e-4;
+                     bus[indexer].Jacob_C[temp_index]= -real(bus[indexer].Y[temp_index_b]) - 1e-4;
+                     bus[indexer].Jacob_D[temp_index]= -imag(bus[indexer].Y[temp_index_b]) - 1e-4;
                   }
                } // End phase traversion - Wye
             } // End wye-connected load
@@ -1912,28 +1912,28 @@ namespace SmartGridToolbox
                {
                   Y_diag_update[indexer].row_ind = 2*bus[jindexer].Matrix_Loc + jindex;
                   Y_diag_update[indexer].col_ind = Y_diag_update[indexer].row_ind;
-                  Y_diag_update[indexer].Y_value = (BA_diag[jindexer].Y[jindex][jindex]).Im() + 
+                  Y_diag_update[indexer].Y_value = imag(BA_diag[jindexer].Y[jindex][jindex]) + 
                      bus[jindexer].Jacob_A[jindex];
                   // Equation(14)
                   indexer += 1;
 
                   Y_diag_update[indexer].row_ind = 2*bus[jindexer].Matrix_Loc + jindex;
                   Y_diag_update[indexer].col_ind = Y_diag_update[indexer].row_ind + BA_diag[jindexer].size;
-                  Y_diag_update[indexer].Y_value = (BA_diag[jindexer].Y[jindex][jindex]).Re() + 
+                  Y_diag_update[indexer].Y_value = real(BA_diag[jindexer].Y[jindex][jindex]) + 
                      bus[jindexer].Jacob_B[jindex];
                   // Equation(15)
                   indexer += 1;
 
                   Y_diag_update[indexer].row_ind = 2*bus[jindexer].Matrix_Loc + jindex + BA_diag[jindexer].size;
                   Y_diag_update[indexer].col_ind = 2*bus[jindexer].Matrix_Loc + jindex;
-                  Y_diag_update[indexer].Y_value = (BA_diag[jindexer].Y[jindex][jindex]).Re() + 
+                  Y_diag_update[indexer].Y_value = real(BA_diag[jindexer].Y[jindex][jindex]) + 
                      bus[jindexer].Jacob_C[jindex];
                   // Equation(16)
                   indexer += 1;
 
                   Y_diag_update[indexer].row_ind = 2*bus[jindexer].Matrix_Loc + jindex + BA_diag[jindexer].size;
                   Y_diag_update[indexer].col_ind = Y_diag_update[indexer].row_ind;
-                  Y_diag_update[indexer].Y_value = -(BA_diag[jindexer].Y[jindex][jindex]).Im() + 
+                  Y_diag_update[indexer].Y_value = -imag(BA_diag[jindexer].Y[jindex][jindex]) + 
                      bus[jindexer].Jacob_D[jindex];
                   // Equation(17)
                   indexer += 1;
