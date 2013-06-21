@@ -2100,45 +2100,37 @@ namespace SmartGridToolbox
             if (matrices_LU.rhs_LU == NULL)
                GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
 
-            if (matrix_solver_method==MM_SUPERLU)
-            {
-               // /* Set up the arrays for the permutations. */
-               perm_r = (int *) gl_malloc(m *sizeof(int));
-               if (perm_r == NULL)
-                  GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+            // /* Set up the arrays for the permutations. */
+            perm_r = (int *) gl_malloc(m *sizeof(int));
+            if (perm_r == NULL)
+               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
 
-               perm_c = (int *) gl_malloc(n *sizeof(int));
-               if (perm_c == NULL)
-                  GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+            perm_c = (int *) gl_malloc(n *sizeof(int));
+            if (perm_c == NULL)
+               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
 
-               // Set up storage pointers - single element, but need to be malloced for some reason
-               A_LU.Store = (void *)gl_malloc(sizeof(NCformat));
-               if (A_LU.Store == NULL)
-                  GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+            // Set up storage pointers - single element, but need to be malloced for some reason
+            A_LU.Store = (void *)gl_malloc(sizeof(NCformat));
+            if (A_LU.Store == NULL)
+               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
 
-               B_LU.Store = (void *)gl_malloc(sizeof(DNformat));
-               if (B_LU.Store == NULL)
-                  GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+            B_LU.Store = (void *)gl_malloc(sizeof(DNformat));
+            if (B_LU.Store == NULL)
+               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
 
-               // Populate these structures - A_LU matrix
-               A_LU.Stype = SLU_NC;
-               A_LU.Dtype = SLU_D;
-               A_LU.Mtype = SLU_GE;
-               A_LU.nrow = n;
-               A_LU.ncol = m;
+            // Populate these structures - A_LU matrix
+            A_LU.Stype = SLU_NC;
+            A_LU.Dtype = SLU_D;
+            A_LU.Mtype = SLU_GE;
+            A_LU.nrow = n;
+            A_LU.ncol = m;
 
-               // Populate these structures - B_LU matrix
-               B_LU.Stype = SLU_DN;
-               B_LU.Dtype = SLU_D;
-               B_LU.Mtype = SLU_GE;
-               B_LU.nrow = m;
-               B_LU.ncol = 1;
-            }
-            else
-            {
-               GL_THROW("Invalid matrix solution method specified for NR solver!");
-               // Defined elsewhere
-            }
+            // Populate these structures - B_LU matrix
+            B_LU.Stype = SLU_DN;
+            B_LU.Dtype = SLU_D;
+            B_LU.Mtype = SLU_GE;
+            B_LU.nrow = m;
+            B_LU.ncol = 1;
 
             // Update tracking variable
             prev_m = m;
@@ -2151,13 +2143,9 @@ namespace SmartGridToolbox
             gl_free(matrices_LU.cols_LU);
             gl_free(matrices_LU.rhs_LU);
 
-            if (matrix_solver_method==MM_SUPERLU)
-            {
-               // Free up superLU matrices
-               gl_free(perm_r);
-               gl_free(perm_c);
-            }
-            // Default else - don't care - destructions are presumed to be handled inside external LU's alloc function
+            // Free up superLU matrices
+            gl_free(perm_r);
+            gl_free(perm_c);
 
             /* Set aside space for the arrays. - Copied from above */
             matrices_LU.a_LU = (double *) gl_malloc(nnz *sizeof(double));
@@ -2177,67 +2165,47 @@ namespace SmartGridToolbox
             if (matrices_LU.rhs_LU == NULL)
                GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
 
-            if (matrix_solver_method==MM_SUPERLU)
-            {
-               // /* Set up the arrays for the permutations. */
-               perm_r = (int *) gl_malloc(m *sizeof(int));
-               if (perm_r == NULL)
-                  GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+            // /* Set up the arrays for the permutations. */
+            perm_r = (int *) gl_malloc(m *sizeof(int));
+            if (perm_r == NULL)
+               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
 
-               perm_c = (int *) gl_malloc(n *sizeof(int));
-               if (perm_c == NULL)
-                  GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+            perm_c = (int *) gl_malloc(n *sizeof(int));
+            if (perm_c == NULL)
+               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
 
-               // Update structures - A_LU matrix
-               A_LU.Stype = SLU_NC;
-               A_LU.Dtype = SLU_D;
-               A_LU.Mtype = SLU_GE;
-               A_LU.nrow = n;
-               A_LU.ncol = m;
+            // Update structures - A_LU matrix
+            A_LU.Stype = SLU_NC;
+            A_LU.Dtype = SLU_D;
+            A_LU.Mtype = SLU_GE;
+            A_LU.nrow = n;
+            A_LU.ncol = m;
 
-               // Update structures - B_LU matrix
-               B_LU.Stype = SLU_DN;
-               B_LU.Dtype = SLU_D;
-               B_LU.Mtype = SLU_GE;
-               B_LU.nrow = m;
-               B_LU.ncol = 1;
-            }
-            else
-            {
-               GL_THROW("Invalid matrix solution method specified for NR solver!");
-               // Defined elsewhere
-            }
+            // Update structures - B_LU matrix
+            B_LU.Stype = SLU_DN;
+            B_LU.Dtype = SLU_D;
+            B_LU.Mtype = SLU_GE;
+            B_LU.nrow = m;
+            B_LU.ncol = 1;
 
             // Update tracking variable
             prev_m = m;
          }
          else if (prev_m != m) // Non-reallocing size change occurred
          {
-            if (matrix_solver_method==MM_SUPERLU)
-            {
-               // Update relevant portions
-               A_LU.nrow = n;
-               A_LU.ncol = m;
+            // Update relevant portions
+            A_LU.nrow = n;
+            A_LU.ncol = m;
 
-               B_LU.nrow = m;
-            }
-            else
-            {
-               GL_THROW("Invalid matrix solution method specified for NR solver!");
-               // Defined elsewhere
-            }
+            B_LU.nrow = m;
 
             // Update tracking variable
             prev_m = m;
          }
 
 #ifndef MT
-         if (matrix_solver_method==MM_SUPERLU)
-         {
-            /* superLU sequential options*/
-            set_default_options ( &options );
-         }
-         // Default else - not superLU
+         /* superLU sequential options*/
+         set_default_options ( &options );
 #endif
 
          for (indexer=0; indexer<size_Amatrix; indexer++)
@@ -2268,48 +2236,37 @@ namespace SmartGridToolbox
             matrices_LU.rhs_LU[temp_index_c] = deltaI_NR[temp_index_c];
          }
 
-         if (matrix_solver_method==MM_SUPERLU)
-         {
-            //
-            //* Create Matrix A in the format expected by Super LU.*/
-            // Populate the matrix values (temporary value)
-            Astore = (NCformat*)A_LU.Store;
-            Astore->nnz = nnz;
-            Astore->nzval = matrices_LU.a_LU;
-            Astore->rowind = matrices_LU.rows_LU;
-            Astore->colptr = matrices_LU.cols_LU;
+         //
+         //* Create Matrix A in the format expected by Super LU.*/
+         // Populate the matrix values (temporary value)
+         Astore = (NCformat*)A_LU.Store;
+         Astore->nnz = nnz;
+         Astore->nzval = matrices_LU.a_LU;
+         Astore->rowind = matrices_LU.rows_LU;
+         Astore->colptr = matrices_LU.cols_LU;
 
-            // Create right-hand side matrix B in format expected by Super LU
-            // Populate the matrix (temporary values)
-            Bstore = (DNformat*)B_LU.Store;
-            Bstore->lda = m;
-            Bstore->nzval = matrices_LU.rhs_LU;
+         // Create right-hand side matrix B in format expected by Super LU
+         // Populate the matrix (temporary values)
+         Bstore = (DNformat*)B_LU.Store;
+         Bstore->lda = m;
+         Bstore->nzval = matrices_LU.rhs_LU;
 
 #ifdef MT // superLU_MT commands
 
-            // Populate perm_c
-            get_perm_c(1, &A_LU, perm_c);
+         // Populate perm_c
+         get_perm_c(1, &A_LU, perm_c);
 
-            // Solve the system
-            pdgssv(NR_superLU_procs, &A_LU, perm_c, perm_r, &L_LU, &U_LU, &B_LU, &info);
+         // Solve the system
+         pdgssv(NR_superLU_procs, &A_LU, perm_c, perm_r, &L_LU, &U_LU, &B_LU, &info);
 #else // sequential superLU
 
-            StatInit ( &stat );
+         StatInit ( &stat );
 
-            // solve the system
-            dgssv(&options, &A_LU, perm_c, perm_r, &L_LU, &U_LU, &B_LU, &stat, &info);
+         // solve the system
+         dgssv(&options, &A_LU, perm_c, perm_r, &L_LU, &U_LU, &B_LU, &stat, &info);
 #endif
 
-            sol_LU = (double*) ((DNformat*) B_LU.Store)->nzval;
-         }
-         else
-         {
-            GL_THROW("Invalid matrix solution method specified for NR solver!");
-            /*  TROUBLESHOOT
-                An invalid matrix solution method was selected for the Newton-Raphson solver method.
-                Valid options are the superLU solver or an external solver.  Please select one of these methods.
-                */
-         }
+         sol_LU = (double*) ((DNformat*) B_LU.Store)->nzval;
 
          // Update bus voltages - check convergence while we're here
          Maxmismatch = 0;
@@ -2456,24 +2413,16 @@ namespace SmartGridToolbox
          // Turn off reallocation flag no matter what
          NR_realloc_needed = false;
 
-         if (matrix_solver_method==MM_SUPERLU)
-         {
-            /* De-allocate storage - superLU matrix types must be destroyed at every iteration, otherwise they balloon
-             * fast (65 MB norma becomes 1.5 GB) */
+         /* De-allocate storage - superLU matrix types must be destroyed at every iteration, otherwise they balloon
+          * fast (65 MB norma becomes 1.5 GB) */
 #ifdef MT // superLU_MT commands
-            Destroy_SuperNode_SCP(&L_LU);
-            Destroy_CompCol_NCP(&U_LU);
+         Destroy_SuperNode_SCP(&L_LU);
+         Destroy_CompCol_NCP(&U_LU);
 #else // sequential superLU commands
-            Destroy_SuperNode_Matrix( &L_LU );
-            Destroy_CompCol_Matrix( &U_LU );
-            StatFree ( &stat );
+         Destroy_SuperNode_Matrix( &L_LU );
+         Destroy_CompCol_Matrix( &U_LU );
+         StatFree ( &stat );
 #endif
-         }
-         else // Not sure how we get here
-         {
-            GL_THROW("Invalid matrix solution method specified for NR solver!");
-            // Defined above
-         }
 
          // Break us out if we are done or are singular
          if (( newiter == false ) || (info!=0))
@@ -2497,15 +2446,7 @@ namespace SmartGridToolbox
       {
          // For superLU - 2 = singular matrix it appears - positive values = process errors (singular, etc), negative 
          // values = input argument/syntax error
-         if (matrix_solver_method==MM_SUPERLU)
-         {
-            gl_verbose("superLU failed out with return value %d",info);
-         }
-         else if (matrix_solver_method==MM_EXTERN)
-         {
-            gl_verbose("External LU solver failed out with return value %d",info);
-         }
-         // Defaulted else - shouldn't exist (or make it this far), but if it does, we're failing anyways
+         gl_verbose("superLU failed out with return value %d",info);
 
          *bad_computations = true;
          // Flag our output as bad
