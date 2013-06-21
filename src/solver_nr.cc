@@ -479,11 +479,11 @@ namespace SmartGridToolbox
                temp_store[1] = -temp_current[1] - temp_current[2];
 
                // Update the stored values
-               bus[indexer].PL[0] = temp_store[0].Re();
-               bus[indexer].QL[0] = temp_store[0].Im();
+               bus[indexer].PL[0] = real(temp_store[0];
+               bus[indexer].QL[0] = imag(temp_store[0];
 
-               bus[indexer].PL[1] = temp_store[1].Re();
-               bus[indexer].QL[1] = temp_store[1].Im();
+               bus[indexer].PL[1] = real(temp_store[1];
+               bus[indexer].QL[1] = imag(temp_store[1];
             } // end split-phase connected
             else // Wye-connected node
             {
