@@ -16,13 +16,17 @@
 
 namespace SmartGridToolbox
 {
-   // TODO:
-   // The following static variables, added by Dan, are temporary replacements for Gridlab-D globals.
+   // TODO: The following static variables, added by Dan, are temporary replacements for Gridlab-D globals.
    static int NR_iteration_limit = 100;
+   static double * deltaI_NR;
 
    // TODO: Code was pulled from Gridlab-D, which defines a complex operator~ to represent the conjugate!
    // This is nasty, but for now we will mirror it instead of doing a search and replace.
    Complex operator~(const Complex & c) {return conj(c);}
+
+   // TODO: Use defined version of gl_malloc and gl_free:
+#define gl_malloc malloc
+#define gl_free free
 
    static unsigned int size_offdiag_PQ;
    static unsigned int size_diag_fixed;
@@ -1239,7 +1243,7 @@ namespace SmartGridToolbox
                      }
                   }
                   // end intermediate current for each phase column
-                  work_vals_double_0 = (bus[indexer].V[temp_index_b]).Mag()*(bus[indexer].V[temp_index_b]).Mag();
+                  work_vals_double_0 = abs(bus[indexer].V[temp_index_b])*abs(bus[indexer].V[temp_index_b]);
 
                   if (work_vals_double_0!=0)
                      // Only normal one (not square), but a zero is still a zero even after that
@@ -1470,27 +1474,27 @@ namespace SmartGridToolbox
                      // Defined below
                   }
 
-                  if ((bus[indexer].V[temp_index_b]).Mag()!=0)
+                  if (abs(bus[indexer].V[temp_index_b])!=0)
                   {
                      bus[indexer].Jacob_A[temp_index] = (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) + 
                            imag(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) + imag(undeltaimped[temp_index_b]);
+                           pow(abs(bus[indexer].V[temp_index_b]),3) + imag(undeltaimped[temp_index_b]);
                      // second part of equation(37) - no power term needed
                      bus[indexer].Jacob_B[temp_index] = -(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) + 
                            real(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - real(undeltaimped[temp_index_b]);
+                           pow(abs(bus[indexer].V[temp_index_b]),3) - real(undeltaimped[temp_index_b]);
                      // second part of equation(38) - no power term needed
                      bus[indexer].Jacob_C[temp_index] =(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) - 
                            real(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - real(undeltaimped[temp_index_b]);
+                           pow(abs(bus[indexer].V[temp_index_b]),3) - real(undeltaimped[temp_index_b]);
                      // second part of equation(39) - no power term needed
                      bus[indexer].Jacob_D[temp_index] = (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) - 
                            imag(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - imag(undeltaimped[temp_index_b]);
+                           pow(abs(bus[indexer].V[temp_index_b]),3) - imag(undeltaimped[temp_index_b]);
                      // second part of equation(40) - no power term needed
                   }
                   else
@@ -1534,9 +1538,9 @@ namespace SmartGridToolbox
                   // Update phase adjustments
                   setPolar(temp_store[0], 1.0, arg(bus[indexer].V[0]));
                   // Pull phase of V1
-                  setPolar(temp_store[1], 1.0, arg(bus[indexer].V[1]);
+                  setPolar(temp_store[1], 1.0, arg(bus[indexer].V[1]));
                   // Pull phase of V2
-                  setPolar(temp_store[2], 1.0, arg(voltageDel[0]);
+                  setPolar(temp_store[2], 1.0, arg(voltageDel[0]));
                   // Pull phase of V12
 
                   // Update these current contributions (use delta current variable, it isn't used in here anyways)
@@ -1557,24 +1561,24 @@ namespace SmartGridToolbox
 
                for (jindex=0; jindex<2; jindex++)
                {
-                  if ((bus[indexer].V[jindex]).Mag()!=0) // Only current
+                  if (abs(bus[indexer].V[jindex])!=0) // Only current
                   {
                      bus[indexer].Jacob_A[jindex] = (real(bus[indexer].V[jindex])*imag(bus[indexer].V[jindex])*
                            real(temp_store[jindex]) + imag(temp_store[jindex]) *
-                           pow(imag(bus[indexer].V[jindex]),2))/pow((bus[indexer].V[jindex]).Mag(),3);
+                           pow(imag(bus[indexer].V[jindex]),2))/pow(abs(bus[indexer].V[jindex]),3);
                      // second part of equation(37)
                      bus[indexer].Jacob_B[jindex] = -(real(bus[indexer].V[jindex])*
                            imag(bus[indexer].V[jindex])*imag(temp_store[jindex]) + 
                            real(temp_store[jindex]) *pow(real(bus[indexer].V[jindex]),2))/
-                           pow((bus[indexer].V[jindex]).Mag(),3);
+                           pow(abs(bus[indexer].V[jindex]),3);
                      // second part of equation(38)
                      bus[indexer].Jacob_C[jindex] =(real(bus[indexer].V[jindex])*imag(bus[indexer].V[jindex])*
                            imag(temp_store[jindex]) - real(temp_store[jindex]) *
-                           pow(imag(bus[indexer].V[jindex]),2))/pow((bus[indexer].V[jindex]).Mag(),3);
+                           pow(imag(bus[indexer].V[jindex]),2))/pow(abs(bus[indexer].V[jindex]),3);
                      // second part of equation(39)
                      bus[indexer].Jacob_D[jindex] = (real(bus[indexer].V[jindex])*imag(bus[indexer].V[jindex])*
                            real(temp_store[jindex]) - imag(temp_store[jindex]) *
-                           pow(real(bus[indexer].V[jindex]),2))/pow((bus[indexer].V[jindex]).Mag(),3);
+                           pow(real(bus[indexer].V[jindex]),2))/pow(abs(bus[indexer].V[jindex]),3);
                      // second part of equation(40)
                   }
                   else
@@ -1748,71 +1752,71 @@ namespace SmartGridToolbox
                          */
                   }
 
-                  if ((bus[indexer].V[temp_index_b]).Mag()!=0)
+                  if (abs(bus[indexer].V[temp_index_b])!=0)
                   {
                      bus[indexer].Jacob_A[temp_index] = (imag(bus[indexer].S[temp_index_b]) * 
                            (pow(real(bus[indexer].V[temp_index_b]),2) - pow(imag(bus[indexer].V[temp_index_b]),2)) - 
                            2*real(bus[indexer].V[temp_index_b])*imag(bus[indexer].V[temp_index_b])*
-                           real(bus[indexer].S[temp_index_b]))/pow((bus[indexer].V[temp_index_b]).Mag(),4);
+                           real(bus[indexer].S[temp_index_b]))/pow(abs(bus[indexer].V[temp_index_b]),4);
                      // first part of equation(37)
                      bus[indexer].Jacob_A[temp_index] += (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(bus[indexer].I[temp_index_b]) + 
                            imag(bus[indexer].I[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) + imag(bus[indexer].Y[temp_index_b]);
+                           pow(abs(bus[indexer].V[temp_index_b]),3) + imag(bus[indexer].Y[temp_index_b]);
                      // second part of equation(37)
                      bus[indexer].Jacob_A[temp_index] += (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) + 
                            imag(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3);
+                           pow(abs(bus[indexer].V[temp_index_b]),3);
                      // current part of equation (37) - Handles "different" children
 
                      bus[indexer].Jacob_B[temp_index] = (real(bus[indexer].S[temp_index_b]) * 
                            (pow(real(bus[indexer].V[temp_index_b]),2) - 
                             pow(imag(bus[indexer].V[temp_index_b]),2)) + 
                            2*real(bus[indexer].V[temp_index_b])*imag(bus[indexer].V[temp_index_b])*
-                           imag(bus[indexer].S[temp_index_b]))/pow((bus[indexer].V[temp_index_b]).Mag(),4);
+                           imag(bus[indexer].S[temp_index_b]))/pow(abs(bus[indexer].V[temp_index_b]),4);
                      // first part of equation(38)
                      bus[indexer].Jacob_B[temp_index] += -(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(bus[indexer].I[temp_index_b]) + 
                            real(bus[indexer].I[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - real(bus[indexer].Y[temp_index_b]);
+                           pow(abs(bus[indexer].V[temp_index_b]),3) - real(bus[indexer].Y[temp_index_b]);
                      // second part of equation(38)
                      bus[indexer].Jacob_B[temp_index] += -(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) + 
                            real(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3);
+                           pow(abs(bus[indexer].V[temp_index_b]),3);
                      // current part of equation(38) - Handles "different" children
 
                      bus[indexer].Jacob_C[temp_index] = (real(bus[indexer].S[temp_index_b]) * 
                            (pow(imag(bus[indexer].V[temp_index_b]),2) - pow(real(bus[indexer].V[temp_index_b]),2)) - 
                            2*real(bus[indexer].V[temp_index_b])*imag(bus[indexer].V[temp_index_b])*
-                           imag(bus[indexer].S[temp_index_b]))/pow((bus[indexer].V[temp_index_b]).Mag(),4);
+                           imag(bus[indexer].S[temp_index_b]))/pow(abs(bus[indexer].V[temp_index_b]),4);
                      // first part of equation(39)
                      bus[indexer].Jacob_C[temp_index] +=(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(bus[indexer].I[temp_index_b]) - 
                            real(bus[indexer].I[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - real(bus[indexer].Y[temp_index_b]);
+                           pow(abs(bus[indexer].V[temp_index_b]),3) - real(bus[indexer].Y[temp_index_b]);
                      // second part of equation(39)
                      bus[indexer].Jacob_C[temp_index] +=(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) - 
                            real(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                        pow((bus[indexer].V[temp_index_b]).Mag(),3);
+                        pow(abs(bus[indexer].V[temp_index_b]),3);
                      // Current part of equation(39) - Handles "different" children
 
                      bus[indexer].Jacob_D[temp_index] = (imag(bus[indexer].S[temp_index_b]) * 
                            (pow(real(bus[indexer].V[temp_index_b]),2) - pow(imag(bus[indexer].V[temp_index_b]),2)) - 
                            2*real(bus[indexer].V[temp_index_b])*imag(bus[indexer].V[temp_index_b])*
-                           real(bus[indexer].S[temp_index_b]))/pow((bus[indexer].V[temp_index_b]).Mag(),4);
+                           real(bus[indexer].S[temp_index_b]))/pow(abs(bus[indexer].V[temp_index_b]),4);
                      // first part of equation(40)
                      bus[indexer].Jacob_D[temp_index] += (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(bus[indexer].I[temp_index_b]) - 
                            imag(bus[indexer].I[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3) - imag(bus[indexer].Y[temp_index_b]);
+                           pow(abs(bus[indexer].V[temp_index_b]),3) - imag(bus[indexer].Y[temp_index_b]);
                      // second part of equation(40)
                      bus[indexer].Jacob_D[temp_index] += (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) - 
                            imag(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                           pow((bus[indexer].V[temp_index_b]).Mag(),3);
+                           pow(abs(bus[indexer].V[temp_index_b]),3);
                      // Current part of equation(40) - Handles "different" children
 
                   }
@@ -1948,7 +1952,7 @@ namespace SmartGridToolbox
          // Test to make sure it isn't an empty matrix - reliability induced 3-phase fault
          if (size_Amatrix==0)
          {
-            gl_warning("Empty powerflow connectivity matrix, your system is empty!");
+            warning("Empty powerflow connectivity matrix, your system is empty!");
             /*  TROUBLESHOOT
                 Newton-Raphson has an empty admittance matrix that it is trying to solve.  Either the whole system
                 faulted, or something is not properly defined.  Please try again.  If the problem persists, please
@@ -2269,7 +2273,7 @@ namespace SmartGridToolbox
                   // Negative due to convention
 
                   // Pull off the magnitude (no sense calculating it twice)
-                  CurrConvVal=DVConvCheck[0].Mag();
+                  CurrConvVal=abs(DVConvCheck[0]);
                   if (CurrConvVal > Maxmismatch) // Update our convergence check if it is bigger
                      Maxmismatch=CurrConvVal;
 
@@ -2277,7 +2281,7 @@ namespace SmartGridToolbox
                      newiter=true;
                   // Flag that a new iteration must occur
 
-                  CurrConvVal=DVConvCheck[1].Mag();
+                  CurrConvVal=abs(DVConvCheck[1]);
                   if (CurrConvVal > Maxmismatch) // Update our convergence check if it is bigger
                      Maxmismatch=CurrConvVal;
 
@@ -2363,7 +2367,7 @@ namespace SmartGridToolbox
                      bus[indexer].V[temp_index_b] += DVConvCheck[jindex];
 
                      // Pull off the magnitude (no sense calculating it twice)
-                     CurrConvVal=DVConvCheck[jindex].Mag();
+                     CurrConvVal=abs(DVConvCheck[jindex]);
                      if (CurrConvVal > bus[indexer].max_volt_error) // Check for convergence
                         newiter=true;
                      // Flag that a new iteration must occur
@@ -2403,7 +2407,7 @@ namespace SmartGridToolbox
          {
             if (newiter == false)
             {
-               gl_verbose("Power flow calculation converges at Iteration %d \n",Iteration+1);
+               message("Power flow calculation converges at Iteration %d \n",Iteration+1);
             }
             break;
          }
@@ -2412,14 +2416,14 @@ namespace SmartGridToolbox
       // Check to see how we are ending
       if ((Iteration==NR_iteration_limit) && (newiter==true)) // Reached the limit
       {
-         gl_verbose("Max solver mismatch of failed solution %f\n",Maxmismatch);
+         message("Max solver mismatch of failed solution %f\n",Maxmismatch);
          return -Iteration;
       }
       else if (info!=0) // failure of computations (singular matrix, etc.)
       {
          // For superLU - 2 = singular matrix it appears - positive values = process errors (singular, etc), negative 
          // values = input argument/syntax error
-         gl_verbose("superLU failed out with return value %d",info);
+         message("superLU failed out with return value %d",info);
 
          *bad_computations = true;
          // Flag our output as bad
