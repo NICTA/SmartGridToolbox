@@ -1,4 +1,5 @@
 #include "solver_nr.h"
+#include "output.h"
 
 // Note: due to extensive indentation, line lengths are increased from 80 to 120 characters.
 
@@ -8,13 +9,21 @@
 // This directive enables a text file dump of the sparse-formatted admittance matrix - useful for debugging
 
 #ifdef MT
-#include <pdsp_defs.h> // superLU_MT
+#include <SuperLU/SRC/pdsp_defs.h> // superLU_MT
 #else
 #include <slu_ddefs.h> // Sequential superLU (other platforms)
 #endif
 
 namespace SmartGridToolbox
 {
+   // TODO:
+   // The following static variables, added by Dan, are temporary replacements for Gridlab-D globals.
+   static int NR_iteration_limit = 100;
+
+   // TODO: Code was pulled from Gridlab-D, which defines a complex operator~ to represent the conjugate!
+   // This is nasty, but for now we will mirror it instead of doing a search and replace.
+   Complex operator~(const Complex & c) {return conj(c);}
+
    static unsigned int size_offdiag_PQ;
    static unsigned int size_diag_fixed;
    static unsigned int total_variables; // Total number of phases to be calculating (size of matrices).
@@ -89,7 +98,7 @@ namespace SmartGridToolbox
                   *Final_P++ = *rightside++;
                else // Catch for duplicate entries
                {
-                  GL_THROW("NR: duplicate entry found in admittance matrix. Look for parallel lines!");
+                  error("NR: duplicate entry found in admittance matrix. Look for parallel lines!");
                   /*  TROUBLESHOOT
                       While sorting the admittance matrix for the Newton-Raphson solver, a duplicate entry was found.
                       This is usually caused by a line between two nodes having another, parallel line between the
@@ -124,7 +133,7 @@ namespace SmartGridToolbox
                  bool *bad_computations)
    {
       // Internal iteration counter - just NR limits
-      int64 Iteration;
+      int Iteration;
 
       // A matrix size variable
       unsigned int size_Amatrix;
@@ -149,7 +158,7 @@ namespace SmartGridToolbox
       unsigned int temp_index_c;
 
       // Working matrix for admittance collapsing/determinations
-      complex tempY[3][3];
+      Complex tempY[3][3];
 
       // Miscellaneous flag variables
       bool Full_Mat_A, Full_Mat_B, proceed_flag;
@@ -158,16 +167,16 @@ namespace SmartGridToolbox
       char temp_size, temp_size_b, temp_size_c;
 
       // Temporary admittance variables
-      complex Temp_Ad_A[3][3];
-      complex Temp_Ad_B[3][3];
+      Complex Temp_Ad_A[3][3];
+      Complex Temp_Ad_B[3][3];
 
       // Temporary load calculation variables
-      complex undeltacurr[3], undeltaimped[3], undeltapower[3];
-      complex delta_current[3], voltageDel[3];
-      complex temp_current[3], temp_power[3], temp_store[3];
+      Complex undeltacurr[3], undeltaimped[3], undeltapower[3];
+      Complex delta_current[3], voltageDel[3];
+      Complex temp_current[3], temp_power[3], temp_store[3];
 
       // DV checking array
-      complex DVConvCheck[3];
+      Complex DVConvCheck[3];
       double CurrConvVal;
 
       // Miscellaneous counter tracker
@@ -209,7 +218,7 @@ namespace SmartGridToolbox
                   voltageDel[0] = bus[indexer].V[0] - bus[indexer].V[1];
 
                   // Power - convert to a current (uses less iterations this way)
-                  delta_current[0] = (voltageDel[0] == 0) ? 0 : ~(bus[indexer].S[0]/voltageDel[0]);
+                  delta_current[0] = (voltageDel[0] == 0.0) ? 0 : ~(bus[indexer].S[0]/voltageDel[0]);
 
                   // Convert delta connected load to appropriate Wye
                   delta_current[0] += voltageDel[0] * (bus[indexer].Y[0]);
@@ -228,7 +237,7 @@ namespace SmartGridToolbox
                   voltageDel[1] = bus[indexer].V[1] - bus[indexer].V[2];
 
                   // Power - convert to a current (uses less iterations this way)
-                  delta_current[1] = (voltageDel[1] == 0) ? 0 : ~(bus[indexer].S[1]/voltageDel[1]);
+                  delta_current[1] = (voltageDel[1] == 0.0) ? 0 : ~(bus[indexer].S[1]/voltageDel[1]);
 
                   // Convert delta connected load to appropriate Wye
                   delta_current[1] += voltageDel[1] * (bus[indexer].Y[1]);
@@ -247,7 +256,7 @@ namespace SmartGridToolbox
                   voltageDel[2] = bus[indexer].V[2] - bus[indexer].V[0];
 
                   // Power - convert to a current (uses less iterations this way)
-                  delta_current[2] = (voltageDel[2] == 0) ? 0 : ~(bus[indexer].S[2]/voltageDel[2]);
+                  delta_current[2] = (voltageDel[2] == 0.0) ? 0 : ~(bus[indexer].S[2]/voltageDel[2]);
 
                   // Convert delta connected load to appropriate Wye
                   delta_current[2] += voltageDel[2] * (bus[indexer].Y[2]);
@@ -270,7 +279,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
                   {
                      // Power values
-                     undeltacurr[0] += (bus[indexer].V[0] == 0) ? 0 : ~(bus[indexer].extra_var[0]/bus[indexer].V[0]);
+                     undeltacurr[0] += (bus[indexer].V[0] == 0.0) ? 0 : ~(bus[indexer].extra_var[0]/bus[indexer].V[0]);
 
                      // Shunt values
                      undeltacurr[0] += bus[indexer].extra_var[3]*bus[indexer].V[0];
@@ -293,7 +302,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
                   {
                      // Power values
-                     undeltacurr[1] += (bus[indexer].V[1] == 0) ? 0 : ~(bus[indexer].extra_var[1]/bus[indexer].V[1]);
+                     undeltacurr[1] += (bus[indexer].V[1] == 0.0) ? 0 : ~(bus[indexer].extra_var[1]/bus[indexer].V[1]);
 
                      // Shunt values
                      undeltacurr[1] += bus[indexer].extra_var[4]*bus[indexer].V[1];
@@ -317,7 +326,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
                   {
                      // Power values
-                     undeltacurr[2] += (bus[indexer].V[2] == 0) ? 0 : ~(bus[indexer].extra_var[2]/bus[indexer].V[2]);
+                     undeltacurr[2] += (bus[indexer].V[2] == 0.0) ? 0 : ~(bus[indexer].extra_var[2]/bus[indexer].V[2]);
 
                      // Shunt values
                      undeltacurr[2] += bus[indexer].extra_var[5]*bus[indexer].V[2];
@@ -400,7 +409,7 @@ namespace SmartGridToolbox
 
                   if ((temp_index==-1) || (temp_index_b==-1))
                   {
-                     GL_THROW("NR: A scheduled power update element failed.");
+                     error("NR: A scheduled power update element failed.");
                      // Defined below
                   }
 
@@ -496,7 +505,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x06) == 0x06) // Has A-B
                   {
                      // Power - put into a current value (iterates less this way)
-                     delta_current[0] = (voltageDel[0] == 0) ? 0 : ~(bus[indexer].extra_var[0]/voltageDel[0]);
+                     delta_current[0] = (voltageDel[0] == 0.0) ? 0 : ~(bus[indexer].extra_var[0]/voltageDel[0]);
 
                      // Convert delta connected load to appropriate Wye
                      delta_current[0] += voltageDel[0] * (bus[indexer].extra_var[3]);
@@ -511,7 +520,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x03) == 0x03) // Has B-C
                   {
                      // Power - put into a current value (iterates less this way)
-                     delta_current[1] = (voltageDel[1] == 0) ? 0 : ~(bus[indexer].extra_var[1]/voltageDel[1]);
+                     delta_current[1] = (voltageDel[1] == 0.0) ? 0 : ~(bus[indexer].extra_var[1]/voltageDel[1]);
 
                      // Convert delta connected load to appropriate Wye
                      delta_current[1] += voltageDel[1] * (bus[indexer].extra_var[4]);
@@ -526,7 +535,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x05) == 0x05) // Has C-A
                   {
                      // Power - put into a current value (iterates less this way)
-                     delta_current[2] = (voltageDel[2] == 0) ? 0 : ~(bus[indexer].extra_var[2]/voltageDel[2]);
+                     delta_current[2] = (voltageDel[2] == 0.0) ? 0 : ~(bus[indexer].extra_var[2]/voltageDel[2]);
 
                      // Convert delta connected load to appropriate Wye
                      delta_current[2] += voltageDel[2] * (bus[indexer].extra_var[5]);
@@ -614,7 +623,7 @@ namespace SmartGridToolbox
 
                   if ((temp_index==-1) || (temp_index_b==-1))
                   {
-                     GL_THROW("NR: A scheduled power update element failed.");
+                     error("NR: A scheduled power update element failed.");
                      /*  TROUBLESHOOT
                          While attempting to calculate the scheduled portions of the
                          attached loads, an update failed to process correctly.
@@ -667,7 +676,7 @@ namespace SmartGridToolbox
 
             // Make sure it worked
             if (deltaI_NR == NULL)
-               GL_THROW("NR: Failed to allocate memory for one of the necessary matrices");
+               error("NR: Failed to allocate memory for one of the necessary matrices");
 
             // Update the max size
             max_total_variables = total_variables;
@@ -682,7 +691,7 @@ namespace SmartGridToolbox
 
             // Make sure it worked
             if (deltaI_NR == NULL)
-               GL_THROW("NR: Failed to allocate memory for one of the necessary matrices");
+               error("NR: Failed to allocate memory for one of the necessary matrices");
 
             // Store the updated value
             max_total_variables = total_variables;
@@ -826,7 +835,7 @@ namespace SmartGridToolbox
                            }
                            else // How'd we get here!?!
                            {
-                              GL_THROW("NR: A split-phase transformer appears to have an invalid phase");
+                              error("NR: A split-phase transformer appears to have an invalid phase");
                            }
 
                            work_vals_char_0 = jindex*3+temp_index;
@@ -995,7 +1004,7 @@ namespace SmartGridToolbox
 
                      if (temp_index==-1) // Error check
                      {
-                        GL_THROW("NR: A voltage index failed to be found.");
+                        error("NR: A voltage index failed to be found.");
                         /*  TROUBLESHOOT
                             While attempting to compute the calculated power current, a voltage index failed to be
                             resolved.  Please submit your code and a bug report via the trac website.
@@ -1071,7 +1080,7 @@ namespace SmartGridToolbox
 
                      if (temp_index_b==-1) // Error check
                      {
-                        GL_THROW("NR: A voltage index failed to be found.");
+                        error("NR: A voltage index failed to be found.");
                      }
 
                      for (kindexer=0; kindexer<(bus[indexer].Link_Table_Size); kindexer++)
@@ -1266,7 +1275,7 @@ namespace SmartGridToolbox
                   voltageDel[0] = bus[indexer].V[0] - bus[indexer].V[1];
 
                   // Power - convert to a current (uses less iterations this way)
-                  delta_current[0] = (voltageDel[0] == 0) ? 0 : ~(bus[indexer].S[0]/voltageDel[0]);
+                  delta_current[0] = (voltageDel[0] == 0.0) ? 0 : ~(bus[indexer].S[0]/voltageDel[0]);
 
                   // Convert delta connected load to appropriate Wye
                   delta_current[0] += voltageDel[0] * (bus[indexer].Y[0]);
@@ -1285,7 +1294,7 @@ namespace SmartGridToolbox
                   voltageDel[1] = bus[indexer].V[1] - bus[indexer].V[2];
 
                   // Power - convert to a current (uses less iterations this way)
-                  delta_current[1] = (voltageDel[1] == 0) ? 0 : ~(bus[indexer].S[1]/voltageDel[1]);
+                  delta_current[1] = (voltageDel[1] == 0.0) ? 0 : ~(bus[indexer].S[1]/voltageDel[1]);
 
                   // Convert delta connected load to appropriate Wye
                   delta_current[1] += voltageDel[1] * (bus[indexer].Y[1]);
@@ -1304,7 +1313,7 @@ namespace SmartGridToolbox
                   voltageDel[2] = bus[indexer].V[2] - bus[indexer].V[0];
 
                   // Power - convert to a current (uses less iterations this way)
-                  delta_current[2] = (voltageDel[2] == 0) ? 0 : ~(bus[indexer].S[2]/voltageDel[2]);
+                  delta_current[2] = (voltageDel[2] == 0.0) ? 0 : ~(bus[indexer].S[2]/voltageDel[2]);
 
                   // Convert delta connected load to appropriate Wye
                   delta_current[2] += voltageDel[2] * (bus[indexer].Y[2]);
@@ -1327,7 +1336,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
                   {
                      // Power values
-                     undeltacurr[0] += (bus[indexer].V[0] == 0) ? 0 : ~(bus[indexer].extra_var[0]/bus[indexer].V[0]);
+                     undeltacurr[0] += (bus[indexer].V[0] == 0.0) ? 0 : ~(bus[indexer].extra_var[0]/bus[indexer].V[0]);
 
                      // Shunt values
                      undeltacurr[0] += bus[indexer].extra_var[3]*bus[indexer].V[0];
@@ -1350,7 +1359,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
                   {
                      // Power values
-                     undeltacurr[1] += (bus[indexer].V[1] == 0) ? 0 : ~(bus[indexer].extra_var[1]/bus[indexer].V[1]);
+                     undeltacurr[1] += (bus[indexer].V[1] == 0.0) ? 0 : ~(bus[indexer].extra_var[1]/bus[indexer].V[1]);
 
                      // Shunt values
                      undeltacurr[1] += bus[indexer].extra_var[4]*bus[indexer].V[1];
@@ -1374,7 +1383,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
                   {
                      // Power values
-                     undeltacurr[2] += (bus[indexer].V[2] == 0) ? 0 : ~(bus[indexer].extra_var[2]/bus[indexer].V[2]);
+                     undeltacurr[2] += (bus[indexer].V[2] == 0.0) ? 0 : ~(bus[indexer].extra_var[2]/bus[indexer].V[2]);
 
                      // Shunt values
                      undeltacurr[2] += bus[indexer].extra_var[5]*bus[indexer].V[2];
@@ -1457,7 +1466,7 @@ namespace SmartGridToolbox
 
                   if ((temp_index==-1) || (temp_index_b==-1))
                   {
-                     GL_THROW("NR: A Jacobian update element failed.");
+                     error("NR: A Jacobian update element failed.");
                      // Defined below
                   }
 
@@ -1604,7 +1613,7 @@ namespace SmartGridToolbox
                      voltageDel[0] = bus[indexer].V[0] - bus[indexer].V[1];
 
                      // Power - put into a current value (iterates less this way)
-                     delta_current[0] = (voltageDel[0] == 0) ? 0 : ~(bus[indexer].extra_var[0]/voltageDel[0]);
+                     delta_current[0] = (voltageDel[0] == 0.0) ? 0 : ~(bus[indexer].extra_var[0]/voltageDel[0]);
 
                      // Convert delta connected load to appropriate Wye
                      delta_current[0] += voltageDel[0] * (bus[indexer].extra_var[3]);
@@ -1623,7 +1632,7 @@ namespace SmartGridToolbox
                      voltageDel[1] = bus[indexer].V[1] - bus[indexer].V[2];
 
                      // Power - put into a current value (iterates less this way)
-                     delta_current[1] = (voltageDel[1] == 0) ? 0 : ~(bus[indexer].extra_var[1]/voltageDel[1]);
+                     delta_current[1] = (voltageDel[1] == 0.0) ? 0 : ~(bus[indexer].extra_var[1]/voltageDel[1]);
 
                      // Convert delta connected load to appropriate Wye
                      delta_current[1] += voltageDel[1] * (bus[indexer].extra_var[4]);
@@ -1642,7 +1651,7 @@ namespace SmartGridToolbox
                      voltageDel[2] = bus[indexer].V[2] - bus[indexer].V[0];
 
                      // Power - put into a current value (iterates less this way)
-                     delta_current[2] = (voltageDel[2] == 0) ? 0 : ~(bus[indexer].extra_var[2]/voltageDel[2]);
+                     delta_current[2] = (voltageDel[2] == 0.0) ? 0 : ~(bus[indexer].extra_var[2]/voltageDel[2]);
 
                      // Convert delta connected load to appropriate Wye
                      delta_current[2] += voltageDel[2] * (bus[indexer].extra_var[5]);
@@ -1731,7 +1740,7 @@ namespace SmartGridToolbox
 
                   if ((temp_index==-1) || (temp_index_b==-1))
                   {
-                     GL_THROW("NR: A Jacobian update element failed.");
+                     error("NR: A Jacobian update element failed.");
                      /*  TROUBLESHOOT
                          While attempting to calculate the "dynamic" portions of the
                          Jacobian matrix that encompass attached loads, an update failed to process correctly.
@@ -1838,7 +1847,7 @@ namespace SmartGridToolbox
 
             // Make sure it worked
             if (Y_diag_update == NULL)
-               GL_THROW("NR: Failed to allocate memory for one of the necessary matrices");
+               error("NR: Failed to allocate memory for one of the necessary matrices");
 
             // Update maximum size
             max_size_diag_update = size_diag_update;
@@ -1853,7 +1862,7 @@ namespace SmartGridToolbox
 
             // Make sure it worked
             if (Y_diag_update == NULL)
-               GL_THROW("NR: Failed to allocate memory for one of the necessary matrices");
+               error("NR: Failed to allocate memory for one of the necessary matrices");
 
             // Update the size
             max_size_diag_update = size_diag_update;
@@ -1959,7 +1968,7 @@ namespace SmartGridToolbox
 
             // Make sure it worked
             if (Y_Amatrix == NULL)
-               GL_THROW("NR: Failed to allocate memory for one of the necessary matrices");
+               error("NR: Failed to allocate memory for one of the necessary matrices");
          }
          else if (NR_realloc_needed) // If one of the above changed, we changed too
          {
@@ -1971,7 +1980,7 @@ namespace SmartGridToolbox
 
             // Make sure it worked
             if (Y_Amatrix == NULL)
-               GL_THROW("NR: Failed to allocate memory for one of the necessary matrices");
+               error("NR: Failed to allocate memory for one of the necessary matrices");
          }
 
          // integrate off diagonal components
@@ -2004,7 +2013,7 @@ namespace SmartGridToolbox
          {
             Y_Work_Amatrix = (Y_NR *)gl_malloc(size_Amatrix*sizeof(Y_NR));
             if (Y_Work_Amatrix==NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
          }
          else if (NR_realloc_needed) // Y_Amatrix was likely resized, so we need it too since we's cousins
          {
@@ -2014,7 +2023,7 @@ namespace SmartGridToolbox
             // And in with the new
             Y_Work_Amatrix = (Y_NR *)gl_malloc(size_Amatrix*sizeof(Y_NR));
             if (Y_Work_Amatrix==NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
          }
 
          merge_sort(Y_Amatrix, size_Amatrix, Y_Work_Amatrix);
@@ -2047,7 +2056,7 @@ namespace SmartGridToolbox
             matrices_LU.a_LU = (double *) gl_malloc(nnz *sizeof(double));
             if (matrices_LU.a_LU==NULL)
             {
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
                /*  TROUBLESHOOT
                    While attempting to allocate the memory for one of the SuperLU working matrices,
                    an error was encountered and it was not allocated.  Please try again.  If it fails
@@ -2057,34 +2066,34 @@ namespace SmartGridToolbox
 
             matrices_LU.rows_LU = (int *) gl_malloc(nnz *sizeof(int));
             if (matrices_LU.rows_LU == NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             matrices_LU.cols_LU = (int *) gl_malloc((n+1) *sizeof(int));
             if (matrices_LU.cols_LU == NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             /* Create the right-hand side matrix B. */
             matrices_LU.rhs_LU = (double *) gl_malloc(m *sizeof(double));
             if (matrices_LU.rhs_LU == NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             // /* Set up the arrays for the permutations. */
             perm_r = (int *) gl_malloc(m *sizeof(int));
             if (perm_r == NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             perm_c = (int *) gl_malloc(n *sizeof(int));
             if (perm_c == NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             // Set up storage pointers - single element, but need to be malloced for some reason
             A_LU.Store = (void *)gl_malloc(sizeof(NCformat));
             if (A_LU.Store == NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             B_LU.Store = (void *)gl_malloc(sizeof(DNformat));
             if (B_LU.Store == NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             // Populate these structures - A_LU matrix
             A_LU.Stype = SLU_NC;
@@ -2118,29 +2127,29 @@ namespace SmartGridToolbox
             /* Set aside space for the arrays. - Copied from above */
             matrices_LU.a_LU = (double *) gl_malloc(nnz *sizeof(double));
             if (matrices_LU.a_LU==NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             matrices_LU.rows_LU = (int *) gl_malloc(nnz *sizeof(int));
             if (matrices_LU.rows_LU == NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             matrices_LU.cols_LU = (int *) gl_malloc((n+1) *sizeof(int));
             if (matrices_LU.cols_LU == NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             /* Create the right-hand side matrix B. */
             matrices_LU.rhs_LU = (double *) gl_malloc(m *sizeof(double));
             if (matrices_LU.rhs_LU == NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             // /* Set up the arrays for the permutations. */
             perm_r = (int *) gl_malloc(m *sizeof(int));
             if (perm_r == NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             perm_c = (int *) gl_malloc(n *sizeof(int));
             if (perm_c == NULL)
-               GL_THROW("NR: One of the SuperLU solver matrices failed to allocate");
+               error("NR: One of the SuperLU solver matrices failed to allocate");
 
             // Update structures - A_LU matrix
             A_LU.Stype = SLU_NC;
@@ -2253,8 +2262,8 @@ namespace SmartGridToolbox
                if ((bus[indexer].phases & 0x80) == 0x80) // Split phase
                {
                   // Pull the two updates (assume split-phase is always 2)
-                  DVConvCheck[0]=complex(sol_LU[2*bus[indexer].Matrix_Loc],sol_LU[(2*bus[indexer].Matrix_Loc+2)]);
-                  DVConvCheck[1]=complex(sol_LU[(2*bus[indexer].Matrix_Loc+1)],sol_LU[(2*bus[indexer].Matrix_Loc+3)]);
+                  DVConvCheck[0]=Complex(sol_LU[2*bus[indexer].Matrix_Loc],sol_LU[(2*bus[indexer].Matrix_Loc+2)]);
+                  DVConvCheck[1]=Complex(sol_LU[(2*bus[indexer].Matrix_Loc+1)],sol_LU[(2*bus[indexer].Matrix_Loc+3)]);
                   bus[indexer].V[0] += DVConvCheck[0];
                   bus[indexer].V[1] += DVConvCheck[1];
                   // Negative due to convention
@@ -2341,7 +2350,7 @@ namespace SmartGridToolbox
 
                      if ((temp_index==-1) || (temp_index_b==-1))
                      {
-                        GL_THROW("NR: An error occurred indexing voltage updates");
+                        error("NR: An error occurred indexing voltage updates");
                         /*  TROUBLESHOOT
                             While attempting to create the voltage update indices for the
                             Newton-Raphson solver, an error was encountered.  Please submit
@@ -2349,7 +2358,7 @@ namespace SmartGridToolbox
                             */
                      }
 
-                     DVConvCheck[jindex]=complex(sol_LU[(2*bus[indexer].Matrix_Loc+temp_index)],
+                     DVConvCheck[jindex]=Complex(sol_LU[(2*bus[indexer].Matrix_Loc+temp_index)],
                            sol_LU[(2*bus[indexer].Matrix_Loc+BA_diag[indexer].size+temp_index)]);
                      bus[indexer].V[temp_index_b] += DVConvCheck[jindex];
 

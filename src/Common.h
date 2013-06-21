@@ -15,6 +15,7 @@ namespace SmartGridToolbox
 
    // Constants.
    const double pi = 3.141592653589793238462643383279502884;
+   const Complex czero = Complex(0.0, 0.0);
    const double second = 1.0;
    const double minute = 60.0 * second;
    const double hour = 60.0 * minute;

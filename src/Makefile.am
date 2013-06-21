@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I../third_party/SuperLU_MT_2.1/SRC
+AM_CPPFLAGS = -I../third_party
 
 lib_LIBRARIES = libsmartgridtoolbox.a
 libsmartgridtoolbox_a_SOURCES = \
