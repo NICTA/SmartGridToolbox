@@ -1,24 +1,22 @@
 #ifndef SOLVER_NR_DOT_H
 #define SOLVER_NR_DOT_H
 
-#include "complex.h"
-#include "object.h"
+#include "Common.h"
 
 namespace SmartGridToolbox
 {
-
    struct  BUSDATA
    {
       int type; ///< bus type (0=PQ, 1=PV, 2=SWING).
       unsigned char phases; ///< Phases property. Used for construction of matrices (skip bad entries).
          /**< [Split Phase | House present | To side of SPCT | Diff Phase Child | D | A | B | C] */
-      complex *V; ///< Bus voltage.
-      complex *S; ///< Constant power.
-      complex *Y; ///< Constant admittance (impedance loads).
-      complex *I; ///< Constant current.
-      complex *extra_var; ///< Extra variable
+      Complex *V; ///< Bus voltage.
+      Complex *S; ///< Constant power.
+      Complex *Y; ///< Constant admittance (impedance loads).
+      Complex *I; ///< Constant current.
+      Complex *extra_var; ///< Extra variable
          /**< Used mainly for current12 in triplex and differently-connected children. */
-      complex *house_var; ///< Extra variable, used mainly for nominal house current.
+      Complex *house_var; ///< Extra variable, used mainly for nominal house current.
       int *Link_Table; ///< Table of links that connect to us (for population purposes).
       unsigned int Link_Table_Size; ///< Number of entries in the link table (number of links connected to us).
       double PL[3]; ///< Real power component of total bus load.
@@ -43,10 +41,10 @@ namespace SmartGridToolbox
 
    struct BRANCHDATA
    {
-      complex *Yfrom; ///< Branch admittance of from side of link.
-      complex *Yto; ///< Branch admittance of to side of link.
-      complex *YSfrom; ///< Self admittance seen on from side.
-      complex *YSto; ///< Self admittance seen on to side.
+      Complex *Yfrom; ///< Branch admittance of from side of link.
+      Complex *Yto; ///< Branch admittance of to side of link.
+      Complex *YSfrom; ///< Self admittance seen on from side.
+      Complex *YSto; ///< Self admittance seen on to side.
       unsigned char phases; ///< Phases property.
          /**< Used for construction of matrices. */
       int from; ///< Index into bus data.
@@ -56,20 +54,20 @@ namespace SmartGridToolbox
          /**< 0 = UG/OH line, 1 = Triplex line, 2 = switch, 3 = fuse,
           *  4 = transformer, 5 = sectionalizer, 6 = recloser. */
       double v_ratio; ///< Voltage ratio (V_from/V_to).
-   }
+   };
    typedef struct BRANCHDATA BRANCHDATA;
 
    struct Y_NR {
       int row_ind; ///< row loc of the element in 6n*6n Y matrix in NR solver.
       int   col_ind; ///< col location of the element in 6n*6n Y matrix in NR solver.
       double Y_value; ///< value of the element in 6n*6n Y matrix in NR solver.
-   }
+   };
    typedef struct Y_NR Y_NR;
 
    struct Bus_admit {
       int row_ind; ///< Row loc of the element in n*n bus admittance matrix in NR solver.
       int   col_ind; ///< Col loc of the element in n*n bus admittance matrix in NR solver.
-      complex Y[3][3]; ///< Complex value of elements in bus admittance matrix in NR solver.
+      Complex Y[3][3]; ///< Complex value of elements in bus admittance matrix in NR solver.
       char size; ///< Size of the admittance diagonal.Assumed square, useful for smaller size.
    };
    typedef struct Bus_admit Bus_admit;
@@ -82,9 +80,8 @@ namespace SmartGridToolbox
    };
    typedef struct NR_SOLVER_VARS NR_SOLVER_VARS;
 
-   int64 solver_nr(unsigned int bus_count, BUSDATA *bus,
-         unsigned int branch_count, BRANCHDATA *branch,
-         bool *bad_computations);
+   int solver_nr(unsigned int bus_count, BUSDATA *bus, unsigned int branch_count, BRANCHDATA *branch,
+                 bool *bad_computations);
 
 }
 

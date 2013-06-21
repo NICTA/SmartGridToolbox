@@ -13,9 +13,6 @@
 #include <slu_ddefs.h> // Sequential superLU (other platforms)
 #endif
 
-// Access to module global variables.
-#include "powerflow.h"
-
 namespace SmartGridToolbox
 {
    static unsigned int size_offdiag_PQ;
