@@ -8,14 +8,8 @@
 
 namespace SmartGridToolbox
 {
-   // Namespaces and typedefs.
-   typedef std::complex<double> Complex;
-   using namespace boost::posix_time;
-   using namespace boost::gregorian;
-
    // Constants.
    const double pi = 3.141592653589793238462643383279502884;
-   const Complex czero = Complex(0.0, 0.0);
    const double second = 1.0;
    const double minute = 60.0 * second;
    const double hour = 60.0 * minute;
@@ -30,7 +24,18 @@ namespace SmartGridToolbox
    const double C = A / second; 
    const double K = 1.0; 
 
+   // Complex numbers.
+   typedef std::complex<double> Complex;
+   const Complex czero = Complex(0.0, 0.0);
+   void setPolar(Complex & c, double M, double theta)
+   {
+      c.real(M * cos(theta)); c.imag(M * sin(theta)); 
+   }
+
    // Time stuff.
+   using namespace boost::posix_time;
+   using namespace boost::gregorian;
+
    const ptime epoch(date(1970,1,1));
 
    // The following conversion functions allow lower level access to internal

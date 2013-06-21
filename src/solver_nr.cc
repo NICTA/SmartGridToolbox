@@ -455,11 +455,11 @@ namespace SmartGridToolbox
                if ((bus[indexer].phases & 0x40) == 0x40)
                {
                   // Update phase adjustments
-                  temp_store[0].SetPolar(1.0,bus[indexer].V[0].Arg());
+                  setPolar(temp_store[0], 1.0, arg(bus[indexer].V[0]));
                   // Pull phase of V1
-                  temp_store[1].SetPolar(1.0,bus[indexer].V[1].Arg());
+                  setPolar(temp_store[1], 1.0, arg(bus[indexer].V[1]));
                   // Pull phase of V2
-                  temp_store[2].SetPolar(1.0,voltageDel[0].Arg());
+                  setPolar(temp_store[2], 1.0, arg(voltageDel[0]));
                   // Pull phase of V12
 
                   // Update these current contributions (use delta current variable, it isn't used in here anyways)
@@ -479,11 +479,11 @@ namespace SmartGridToolbox
                temp_store[1] = -temp_current[1] - temp_current[2];
 
                // Update the stored values
-               bus[indexer].PL[0] = real(temp_store[0];
-               bus[indexer].QL[0] = imag(temp_store[0];
+               bus[indexer].PL[0] = real(temp_store[0]);
+               bus[indexer].QL[0] = imag(temp_store[0]);
 
-               bus[indexer].PL[1] = real(temp_store[1];
-               bus[indexer].QL[1] = imag(temp_store[1];
+               bus[indexer].PL[1] = real(temp_store[1]);
+               bus[indexer].QL[1] = imag(temp_store[1]);
             } // end split-phase connected
             else // Wye-connected node
             {
@@ -1532,11 +1532,11 @@ namespace SmartGridToolbox
                if ((bus[indexer].phases & 0x40) == 0x40)
                {
                   // Update phase adjustments
-                  temp_store[0].SetPolar(1.0,bus[indexer].V[0].Arg());
+                  setPolar(temp_store[0], 1.0, arg(bus[indexer].V[0]));
                   // Pull phase of V1
-                  temp_store[1].SetPolar(1.0,bus[indexer].V[1].Arg());
+                  setPolar(temp_store[1], 1.0, arg(bus[indexer].V[1]);
                   // Pull phase of V2
-                  temp_store[2].SetPolar(1.0,voltageDel[0].Arg());
+                  setPolar(temp_store[2], 1.0, arg(voltageDel[0]);
                   // Pull phase of V12
 
                   // Update these current contributions (use delta current variable, it isn't used in here anyways)
