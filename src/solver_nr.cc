@@ -116,8 +116,7 @@ namespace SmartGridToolbox
 
          memcpy(Input_Array,Work_Array,sizeof(Y_NR)*Alen);
          // Copy the result back into the input
-      }
-      // End length > 0
+      } // End length > 0
    }
 
    /** Newton-Raphson solver
@@ -422,10 +421,8 @@ namespace SmartGridToolbox
                   bus[indexer].QL[temp_index] = tempQbus;
                   // Reactive power portion - all is current based
 
-               }
-               // End phase traversion
-            }
-            // end delta connected
+               } // End phase traversion
+            } // end delta connected
             else if ((bus[indexer].phases & 0x80) == 0x80) // Split-phase connected node
             {
                // Convert it all back to current (easiest to handle)
@@ -469,8 +466,7 @@ namespace SmartGridToolbox
                   temp_current[0] += delta_current[0];
                   temp_current[1] += delta_current[1];
                   temp_current[2] += delta_current[2];
-               }
-               // End house-attached splitphase
+               } // End house-attached splitphase
 
                // Convert 'em to line currents
                temp_store[0] = temp_current[0] + temp_current[2];
@@ -482,8 +478,7 @@ namespace SmartGridToolbox
 
                bus[indexer].PL[1] = temp_store[1].Re();
                bus[indexer].QL[1] = temp_store[1].Im();
-            }
-            // end split-phase connected
+            } // end split-phase connected
             else // Wye-connected node
             {
                // For Wye-connected, only compute and store phases that exist (make top heavy)
@@ -661,15 +656,10 @@ namespace SmartGridToolbox
                      (bus[indexer].V[temp_index_b]).Re() * (bus[indexer].V[temp_index_b]).Re();
                   // Reactive power portion of Constant impedance component multiply the square of the magnitude of 
                   // bus voltage
-                  bus[indexer].QL[temp_index] = tempQbus;
-                  // Reactive power portion
-
-               }
-               // end phase traversion
-            }
-            // end wye-connected
-         }
-         // end bus traversion for power update
+                  bus[indexer].QL[temp_index] = tempQbus; // Reactive power portion
+               } // end phase traversion
+            } // end wye-connected
+         } // end bus traversion for power update
 
          // Calculate the mismatch of three phase current injection at each bus (deltaI),
          // and store the deltaI in terms of real and reactive value in array deltaI_NR
@@ -784,8 +774,7 @@ namespace SmartGridToolbox
                            // equation (8), the off_diag elements of bus admittance matrix are equal to negative value 
                            // of branch admittance
 
-                        }
-                        // End SPCT To bus - from diagonal contributions
+                        } // End SPCT To bus - from diagonal contributions
                         else // Normal line connection to normal triplex
                         {
                            work_vals_char_0 = jindex*3;
@@ -896,8 +885,7 @@ namespace SmartGridToolbox
                                  (bus[branch[jindexer].from].V[1]).Re();
                               // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
                               // value of branch admittance
-                           }
-                           // End SPCT To bus - from diagonal contributions
+                           } // End SPCT To bus - from diagonal contributions
                            else // Normal line connection to normal triplex
                            {
                               work_vals_char_0 = jindex*3;
@@ -929,8 +917,7 @@ namespace SmartGridToolbox
                                  (bus[branch[jindexer].from].V[1]).Re();
                               // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
                               // value of branch admittance
-                           }
-                           // End normal triplex connection
+                           } // End normal triplex connection
                         }
                         // end normal line
                      }
@@ -938,14 +925,12 @@ namespace SmartGridToolbox
                      else // We're nothing
                         ;
 
-                  }
-                  // End branch traversion
+                  } // End branch traversion
 
                   // It's I.  Just a direct conversion (P changed above to I as well)
                   deltaI_NR[2*bus[indexer].Matrix_Loc+ BA_diag[indexer].size + jindex] = tempPbus - tempIcalcReal;
                   deltaI_NR[2*bus[indexer].Matrix_Loc + jindex] = tempQbus - tempIcalcImag;
-               }
-               // End split-phase present
+               } // End split-phase present
                else // Three phase or some variant thereof
                {
                   tempPbus =  - bus[indexer].PL[jindex];
@@ -1009,8 +994,7 @@ namespace SmartGridToolbox
                               break;
                            }
                            // end 0x07
-                     }
-                     // End switch/case
+                     } // End switch/case
 
                      if (temp_index==-1) // Error check
                      {
@@ -1086,8 +1070,7 @@ namespace SmartGridToolbox
                               break;
                            }
                            // end 0x07
-                     }
-                     // End switch/case
+                     } // End switch/case
 
                      if (temp_index_b==-1) // Error check
                      {
@@ -1169,8 +1152,7 @@ namespace SmartGridToolbox
                                        // end 0x07
                                  }
                                  // end switch
-                              }
-                              // End if kindex==0
+                              } // End if kindex==0
 
                               if (proceed_flag)
                               {
@@ -1270,12 +1252,9 @@ namespace SmartGridToolbox
                      deltaI_NR[2*bus[indexer].Matrix_Loc+BA_diag[indexer].size + jindex] = 0.0;
                      deltaI_NR[2*bus[indexer].Matrix_Loc + jindex] = 0.0;
                   }
-               }
-               // End three-phase or variant thereof
-            }
-            // End delta_I for each phase row
-         }
-         // End delta_I for each bus
+               } // End three-phase or variant thereof
+            } // End delta_I for each phase row
+         } // End delta_I for each bus
 
          // Calculate the elements of a,b,c,d in equations(14),(15),(16),(17). These elements are used to update the 
          // Jacobian matrix.
@@ -1518,8 +1497,7 @@ namespace SmartGridToolbox
                      bus[indexer].Jacob_C[temp_index] = -(undeltaimped[temp_index_b]).Re() - 1e-4;
                      bus[indexer].Jacob_D[temp_index] = -(undeltaimped[temp_index_b]).Im() - 1e-4;
                   }
-               }
-               // End phase traversion
+               } // End phase traversion
             }
             // end delta-connected load
             else if	((bus[indexer].phases & 0x80) == 0x80) // Split phase computations
@@ -1565,8 +1543,7 @@ namespace SmartGridToolbox
                   temp_current[0] += delta_current[0];
                   temp_current[1] += delta_current[1];
                   temp_current[2] += delta_current[2];
-               }
-               // End house-attached splitphase
+               } // End house-attached splitphase
 
                // Convert 'em to line currents - they need to be negated (due to the convention from earlier)
                temp_store[0] = -(temp_current[0] + temp_current[2]);
@@ -1841,10 +1818,8 @@ namespace SmartGridToolbox
                      bus[indexer].Jacob_C[temp_index]= -(bus[indexer].Y[temp_index_b]).Re() - 1e-4;
                      bus[indexer].Jacob_D[temp_index]= -(bus[indexer].Y[temp_index_b]).Im() - 1e-4;
                   }
-               }
-               // End phase traversion - Wye
-            }
-            // End wye-connected load
+               } // End phase traversion - Wye
+            } // End wye-connected load
          }
          // end bus traversion for a,b,c, d value computation
 
@@ -1922,10 +1897,8 @@ namespace SmartGridToolbox
                   Y_diag_update[indexer].Y_value = -1e10;
                   // swing bus gets large admittance
                   indexer += 1;
-               }
-               // End swing bus traversion
-            }
-            // End swing bus
+               } // End swing bus traversion
+            } // End swing bus
 
             if (bus[jindexer].type != 1 && bus[jindexer].type != 2) // No PV or swing (so must be PQ)
             {
@@ -1960,10 +1933,8 @@ namespace SmartGridToolbox
                   indexer += 1;
                }
                // end PQ phase traversion
-            }
-            // End PQ bus
-         }
-         // End bus parse list
+            } // End PQ bus
+         } // End bus parse list
 
          // Build the Amatrix, Amatrix includes all the elements of Y_offdiag_PQ, Y_diag_fixed and Y_diag_update.
          size_Amatrix = size_offdiag_PQ*2 + size_diag_fixed*2 + 4*size_diag_update;
@@ -2396,10 +2367,8 @@ namespace SmartGridToolbox
                         Maxmismatch = CurrConvVal;
                      // It is, store it
 
-                  }
-                  // End For loop for phase traversion
-               }
-               // End not split phase update
+                  } // End For loop for phase traversion
+               } // End not split phase update
             }
             // end if not swing
             else // So this must be the swing
@@ -2407,8 +2376,7 @@ namespace SmartGridToolbox
                temp_index +=2*BA_diag[indexer].size;
                // Increment us for what this bus would have been had it not been a swing
             }
-         }
-         // End bus traversion
+         } // End bus traversion
 
          // Turn off reallocation flag no matter what
          NR_realloc_needed = false;
@@ -2433,8 +2401,7 @@ namespace SmartGridToolbox
             }
             break;
          }
-      }
-      // End iteration loop
+      } // End iteration loop
 
       // Check to see how we are ending
       if ((Iteration==NR_iteration_limit) && (newiter==true)) // Reached the limit

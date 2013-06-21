@@ -10,7 +10,7 @@ namespace SmartGridToolbox
    struct  BUSDATA
    {
       int type; ///< bus type (0=PQ, 1=PV, 2=SWING).
-      unsigned char phases; ///< Phases property.Used for construction of matrices (skip bad entries).
+      unsigned char phases; ///< Phases property. Used for construction of matrices (skip bad entries).
          /**< [Split Phase | House present | To side of SPCT | Diff Phase Child | D | A | B | C] */
       complex *V; ///< Bus voltage.
       complex *S; ///< Constant power.
