@@ -14,9 +14,6 @@ namespace SmartGridToolbox
          /**< Used for construction of matrices (skip bad entries)
           *   [Split Phase | House present | To side of SPCT |
           *    Diff Phase Child | D | A | B | C] */
-      unsigned char origphases; ///< Original phases property.
-         /**< Follows same format.
-         *    Used to save what object's original capabilities. */
       complex *V; ///< Bus voltage.
       complex *S; ///< Constant power.
       complex *Y; ///< Constant admittance (impedance loads).
@@ -44,8 +41,7 @@ namespace SmartGridToolbox
          /** Used to update the Jacobian matrix at each iteration. */
       double Jacob_D[3]; ///< Element d in equation (40).
          /** Used to update the Jacobian matrix at each iteration. */
-      unsigned int Matrix_Loc; 
-         ///< Starting idx of object's place in all matrices/equations.
+      unsigned int Matrix_Loc; ///< Starting idx of object's place in all matrices/equations.
       double max_volt_error; ///< Maximum voltage error specified for node.
       char *name; ///< Original name.
       OBJECT *obj; ///< Link to original object header.
@@ -55,8 +51,7 @@ namespace SmartGridToolbox
       int *Child_Nodes; ///< Index to child nodes in BUSDATA structure.
          /** Restoration related - may not be valid for meshed systems or
           *  reverse flow (restoration usage). */
-      unsigned int Child_Node_idx; 
-         ///< Indexing var to know location of next valid Child_Nodes entry.
+      unsigned int Child_Node_idx; ///< Indexing var to know location of next valid Child_Nodes entry.
    };
    typedef struct BUSDATA BUSDATA;
 
@@ -68,46 +63,27 @@ namespace SmartGridToolbox
       complex *YSto; ///< Self admittance seen on to side.
       unsigned char phases; ///< Phases property.
          /** Used for construction of matrices. */
-      unsigned char origphases; ///< Original phases property.
-         /** Follows same format.
-          *  Used to save what object's original capabilities. */
-      unsigned char faultphases; ///< Flags for induced faults.
-         /** Used to prevent restoration of objects that should otherwise still
-          *  be broken. */
       int from; ///< Index into bus data.
       int to; ///< Index into bus data.
-      int fault_link_below;
-         ///< Idx indicating next faulted link obj below the current one.
-      bool *status;
-         ///< Status of the obj, if it is a switch (restoration module usage).
-      unsigned char lnk_type;
-         ///< Type of link the object is.
+      bool *status; ///< Status of the obj, if it is a switch (restoration module usage).
+      unsigned char lnk_type; ///< Type of link the object is.
          /** 0 = UG/OH line, 1 = Triplex line, 2 = switch, 3 = fuse,
           *  4 = transformer, 5 = sectionalizer, 6 = recloser. */
       double v_ratio; ///< Voltage ratio (V_from/V_to).
-      char *name; ///< Original name.
-      OBJECT *obj; ///< Link to original object header.
-      complex *If_from; ///< 3 phase fault currents on the from side.
-      complex *If_to; ///< 3 phase fault currents on the to side .
    }
    typedef struct BRANCHDATA BRANCHDATA;
 
    struct Y_NR {
       int row_ind; ///< row loc of the element in 6n*6n Y matrix in NR solver.
-      int   col_ind;
-         ///< col location of the element in 6n*6n Y matrix in NR solver.
-      double Y_value;
-         ///< value of the element in 6n*6n Y matrix in NR solver.
+      int   col_ind; ///< col location of the element in 6n*6n Y matrix in NR solver.
+      double Y_value; ///< value of the element in 6n*6n Y matrix in NR solver.
    }
    typedef struct Y_NR Y_NR;
 
    struct Bus_admit {
-      int row_ind;
-         ///< Row loc of the element in n*n bus admittance matrix in NR solver.
-      int   col_ind;
-         ///< Col loc of the element in n*n bus admittance matrix in NR solver.
-      complex Y[3][3]; 
-         ///< Complex value of elements in bus admittance matrix in NR solver.
+      int row_ind; ///< Row loc of the element in n*n bus admittance matrix in NR solver.
+      int   col_ind; ///< Col loc of the element in n*n bus admittance matrix in NR solver.
+      complex Y[3][3]; ///< Complex value of elements in bus admittance matrix in NR solver.
       char size; ///< Size of the admittance diagonal.
          /** Assumed square, useful for smaller size. */
    };
