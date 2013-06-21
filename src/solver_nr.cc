@@ -17,7 +17,8 @@
 namespace SmartGridToolbox
 {
    // TODO: The following static variables, added by Dan, are temporary replacements for Gridlab-D globals.
-   static int NR_iteration_limit = 100;
+   static const int NR_iteration_limit = 100; // Max NR iterations.
+   static const int NR_superLU_procs = 1; // Number of processors to request.
    static double * deltaI_NR;
 
    // TODO: Code was pulled from Gridlab-D, which defines a complex operator~ to represent the conjugate!
