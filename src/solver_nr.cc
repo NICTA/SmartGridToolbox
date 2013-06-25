@@ -127,7 +127,7 @@ namespace SmartGridToolbox
     *  @return n=0 on failure to complete a single iteration, n>0 to indicate success after n interations, or
     *  n<0 to indicate failure after n iterations. */
    int solver_nr(unsigned int bus_count, BUSDATA *bus, unsigned int branch_count, BRANCHDATA *branch,
-         bool *bad_computations)
+                 bool *bad_computations)
    {
       // Internal iteration counter - just NR limits
       int Iteration;
@@ -168,9 +168,14 @@ namespace SmartGridToolbox
       Complex Temp_Ad_B[3][3];
 
       // Temporary load calculation variables
-      Complex undeltacurr[3], undeltaimped[3], undeltapower[3];
-      Complex delta_current[3], voltageDel[3];
-      Complex temp_current[3], temp_power[3], temp_store[3];
+      Complex undeltacurr[3];
+      Complex undeltaimped[3];
+      Complex undeltapower[3];
+      Complex delta_current[3];        // dI = (S_const / dV)* + Y_const * dV;
+      Complex voltageDel[3];           // Voltage diff between AB, AC, CA.
+      Complex temp_current[3];
+      Complex temp_power[3];
+      Complex temp_store[3];
 
       // DV checking array
       Complex DVConvCheck[3];
@@ -271,19 +276,6 @@ namespace SmartGridToolbox
                if ((bus[indexer].phases & 0x04) == 0x04) // Has a phase A
                {
                   undeltacurr[0]=(bus[indexer].I[0]+delta_current[0])-(bus[indexer].I[2]+delta_current[2]);
-
-                  // Check for "different" children and apply them, as well
-                  if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
-                  {
-                     // Power values
-                     undeltacurr[0] += (bus[indexer].V[0] == 0.0) ? 0 : conj(bus[indexer].extra_var[0]/bus[indexer].V[0]);
-
-                     // Shunt values
-                     undeltacurr[0] += bus[indexer].extra_var[3]*bus[indexer].V[0];
-
-                     // Current values
-                     undeltacurr[0] += bus[indexer].extra_var[6];
-                  }
                }
                else
                {
@@ -294,19 +286,6 @@ namespace SmartGridToolbox
                if ((bus[indexer].phases & 0x02) == 0x02) // Has a phase B
                {
                   undeltacurr[1]=(bus[indexer].I[1]+delta_current[1])-(bus[indexer].I[0]+delta_current[0]);
-
-                  // Check for "different" children and apply them, as well
-                  if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
-                  {
-                     // Power values
-                     undeltacurr[1] += (bus[indexer].V[1] == 0.0) ? 0 : conj(bus[indexer].extra_var[1]/bus[indexer].V[1]);
-
-                     // Shunt values
-                     undeltacurr[1] += bus[indexer].extra_var[4]*bus[indexer].V[1];
-
-                     // Current values
-                     undeltacurr[1] += bus[indexer].extra_var[7];
-                  }
                }
                else
                {
@@ -318,19 +297,6 @@ namespace SmartGridToolbox
                if ((bus[indexer].phases & 0x01) == 0x01) // Has a phase C
                {
                   undeltacurr[2]=(bus[indexer].I[2]+delta_current[2])-(bus[indexer].I[1]+delta_current[1]);
-
-                  // Check for "different" children and apply them, as well
-                  if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
-                  {
-                     // Power values
-                     undeltacurr[2] += (bus[indexer].V[2] == 0.0) ? 0 : conj(bus[indexer].extra_var[2]/bus[indexer].V[2]);
-
-                     // Shunt values
-                     undeltacurr[2] += bus[indexer].extra_var[5]*bus[indexer].V[2];
-
-                     // Current values
-                     undeltacurr[2] += bus[indexer].extra_var[8];
-                  }
                }
                else
                {
@@ -432,74 +398,7 @@ namespace SmartGridToolbox
                temp_index = -1;
                temp_index_b = -1;
 
-               if ((bus[indexer].phases & 0x10) == 0x10)
-                  // "Different" child load - in this case it must be delta - also must be three phase (just because
-                  // that's how I forced it to be implemented)
-               {
-                  // Calculate all the deltas to wyes in advance (otherwise they'll get repeated)
-                  // Delta voltages
-                  voltageDel[0] = bus[indexer].V[0] - bus[indexer].V[1];
-                  voltageDel[1] = bus[indexer].V[1] - bus[indexer].V[2];
-                  voltageDel[2] = bus[indexer].V[2] - bus[indexer].V[0];
-
-                  // Make sure phase combinations exist
-                  if ((bus[indexer].phases & 0x06) == 0x06) // Has A-B
-                  {
-                     // Power - put into a current value (iterates less this way)
-                     delta_current[0] = (voltageDel[0] == 0.0) ? 0 : conj(bus[indexer].extra_var[0]/voltageDel[0]);
-
-                     // Convert delta connected load to appropriate Wye
-                     delta_current[0] += voltageDel[0] * (bus[indexer].extra_var[3]);
-                  }
-                  else
-                  {
-                     // Zero it, for good measure
-                     delta_current[0] = 0.0;
-                  }
-
-                  // Check for BC
-                  if ((bus[indexer].phases & 0x03) == 0x03) // Has B-C
-                  {
-                     // Power - put into a current value (iterates less this way)
-                     delta_current[1] = (voltageDel[1] == 0.0) ? 0 : conj(bus[indexer].extra_var[1]/voltageDel[1]);
-
-                     // Convert delta connected load to appropriate Wye
-                     delta_current[1] += voltageDel[1] * (bus[indexer].extra_var[4]);
-                  }
-                  else
-                  {
-                     // Zero it, for good measure
-                     delta_current[1] = 0.0;
-                  }
-
-                  // Check for CA
-                  if ((bus[indexer].phases & 0x05) == 0x05) // Has C-A
-                  {
-                     // Power - put into a current value (iterates less this way)
-                     delta_current[2] = (voltageDel[2] == 0.0) ? 0 : conj(bus[indexer].extra_var[2]/voltageDel[2]);
-
-                     // Convert delta connected load to appropriate Wye
-                     delta_current[2] += voltageDel[2] * (bus[indexer].extra_var[5]);
-                  }
-                  else
-                  {
-                     // Zero it, for good measure
-                     delta_current[2] = 0.0;
-                  }
-
-                  // Convert delta-current into a phase current - reuse temp variable
-                  undeltacurr[0]=(bus[indexer].extra_var[6]+delta_current[0])-(bus[indexer].extra_var[8]
-                        +delta_current[2]);
-                  undeltacurr[1]=(bus[indexer].extra_var[7]+delta_current[1])-(bus[indexer].extra_var[6]
-                        +delta_current[0]);
-                  undeltacurr[2]=(bus[indexer].extra_var[8]+delta_current[2])-(bus[indexer].extra_var[7]
-                        +delta_current[1]);
-               }
-               else // zero the variable so we don't have excessive ifs
-               {
-                  undeltacurr[0] = undeltacurr[1] = undeltacurr[2] = 0.0;
-                  // Zero it
-               }
+               undeltacurr[0] = undeltacurr[1] = undeltacurr[2] = 0.0;
 
                for (jindex=0; jindex<BA_diag[indexer].size; jindex++)
                {
@@ -929,19 +828,6 @@ namespace SmartGridToolbox
                if ((bus[indexer].phases & 0x04) == 0x04) // Has a phase A
                {
                   undeltacurr[0]=(bus[indexer].I[0]+delta_current[0])-(bus[indexer].I[2]+delta_current[2]);
-
-                  // Check for "different" children and apply them, as well
-                  if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
-                  {
-                     // Power values
-                     undeltacurr[0] += (bus[indexer].V[0] == 0.0) ? 0 : conj(bus[indexer].extra_var[0]/bus[indexer].V[0]);
-
-                     // Shunt values
-                     undeltacurr[0] += bus[indexer].extra_var[3]*bus[indexer].V[0];
-
-                     // Current values
-                     undeltacurr[0] += bus[indexer].extra_var[6];
-                  }
                }
                else
                {
@@ -952,19 +838,6 @@ namespace SmartGridToolbox
                if ((bus[indexer].phases & 0x02) == 0x02) // Has a phase B
                {
                   undeltacurr[1]=(bus[indexer].I[1]+delta_current[1])-(bus[indexer].I[0]+delta_current[0]);
-
-                  // Check for "different" children and apply them, as well
-                  if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
-                  {
-                     // Power values
-                     undeltacurr[1] += (bus[indexer].V[1] == 0.0) ? 0 : conj(bus[indexer].extra_var[1]/bus[indexer].V[1]);
-
-                     // Shunt values
-                     undeltacurr[1] += bus[indexer].extra_var[4]*bus[indexer].V[1];
-
-                     // Current values
-                     undeltacurr[1] += bus[indexer].extra_var[7];
-                  }
                }
                else
                {
@@ -976,19 +849,6 @@ namespace SmartGridToolbox
                if ((bus[indexer].phases & 0x01) == 0x01) // Has a phase C
                {
                   undeltacurr[2]=(bus[indexer].I[2]+delta_current[2])-(bus[indexer].I[1]+delta_current[1]);
-
-                  // Check for "different" children and apply them, as well
-                  if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
-                  {
-                     // Power values
-                     undeltacurr[2] += (bus[indexer].V[2] == 0.0) ? 0 : conj(bus[indexer].extra_var[2]/bus[indexer].V[2]);
-
-                     // Shunt values
-                     undeltacurr[2] += bus[indexer].extra_var[5]*bus[indexer].V[2];
-
-                     // Current values
-                     undeltacurr[2] += bus[indexer].extra_var[8];
-                  }
                }
                else
                {
@@ -1109,81 +969,7 @@ namespace SmartGridToolbox
                temp_index = -1;
                temp_index_b = -1;
 
-               if ((bus[indexer].phases & 0x10) == 0x10)
-                  // "Different" child load - in this case it must be delta - also must be three phase (just because 
-                  // that's how I forced it to be implemented)
-               {
-                  // Calculate all the deltas to wyes in advance (otherwise they'll get repeated)
-                  // Make sure phase combinations exist
-                  if ((bus[indexer].phases & 0x06) == 0x06) // Has A-B
-                  {
-                     // Delta voltages
-                     voltageDel[0] = bus[indexer].V[0] - bus[indexer].V[1];
-
-                     // Power - put into a current value (iterates less this way)
-                     delta_current[0] = (voltageDel[0] == 0.0) ? 0 : conj(bus[indexer].extra_var[0]/voltageDel[0]);
-
-                     // Convert delta connected load to appropriate Wye
-                     delta_current[0] += voltageDel[0] * (bus[indexer].extra_var[3]);
-                  }
-                  else
-                  {
-                     // Zero it, for good measure
-                     voltageDel[0] = 0.0;
-                     delta_current[0] = 0.0;
-                  }
-
-                  // Check for BC
-                  if ((bus[indexer].phases & 0x03) == 0x03) // Has B-C
-                  {
-                     // Delta voltages
-                     voltageDel[1] = bus[indexer].V[1] - bus[indexer].V[2];
-
-                     // Power - put into a current value (iterates less this way)
-                     delta_current[1] = (voltageDel[1] == 0.0) ? 0 : conj(bus[indexer].extra_var[1]/voltageDel[1]);
-
-                     // Convert delta connected load to appropriate Wye
-                     delta_current[1] += voltageDel[1] * (bus[indexer].extra_var[4]);
-                  }
-                  else
-                  {
-                     // Zero it, for good measure
-                     voltageDel[1] = 0.0;
-                     delta_current[1] = 0.0;
-                  }
-
-                  // Check for CA
-                  if ((bus[indexer].phases & 0x05) == 0x05) // Has C-A
-                  {
-                     // Delta voltages
-                     voltageDel[2] = bus[indexer].V[2] - bus[indexer].V[0];
-
-                     // Power - put into a current value (iterates less this way)
-                     delta_current[2] = (voltageDel[2] == 0.0) ? 0 : conj(bus[indexer].extra_var[2]/voltageDel[2]);
-
-                     // Convert delta connected load to appropriate Wye
-                     delta_current[2] += voltageDel[2] * (bus[indexer].extra_var[5]);
-                  }
-                  else
-                  {
-                     // Zero it, for good measure
-                     voltageDel[2] = 0.0;
-                     delta_current[2] = 0.0;
-                  }
-
-                  // Convert delta-current into a phase current - reuse temp variable
-                  undeltacurr[0]=(bus[indexer].extra_var[6]+delta_current[0])-
-                     (bus[indexer].extra_var[8]+delta_current[2]);
-                  undeltacurr[1]=(bus[indexer].extra_var[7]+delta_current[1])-
-                     (bus[indexer].extra_var[6]+delta_current[0]);
-                  undeltacurr[2]=(bus[indexer].extra_var[8]+delta_current[2])-
-                     (bus[indexer].extra_var[7]+delta_current[1]);
-               }
-               else // zero the variable so we don't have excessive ifs
-               {
-                  undeltacurr[0] = undeltacurr[1] = undeltacurr[2] = 0.0;
-                  // Zero it
-               }
+               undeltacurr[0] = undeltacurr[1] = undeltacurr[2] = 0.0; // Zero it
 
                for (jindex=0; jindex<BA_diag[indexer].size; jindex++)
                {
