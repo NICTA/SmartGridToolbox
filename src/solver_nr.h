@@ -60,14 +60,14 @@ namespace SmartGridToolbox
 
    struct Y_NR {
       int row_ind;                    ///< row loc of the element in 6n*6n Y matrix in NR solver.
-      int   col_ind;                  ///< col location of the element in 6n*6n Y matrix in NR solver.
+      int col_ind;                    ///< col location of the element in 6n*6n Y matrix in NR solver.
       double Y_value;                 ///< value of the element in 6n*6n Y matrix in NR solver.
    };
    typedef struct Y_NR Y_NR;
 
    struct Bus_admit {
       int row_ind;                    ///< Row loc of the element in n*n bus admittance matrix in NR solver.
-      int   col_ind;                  ///< Col loc of the element in n*n bus admittance matrix in NR solver.
+      int col_ind;                    ///< Col loc of the element in n*n bus admittance matrix in NR solver.
       Complex Y[3][3];                ///< Complex value of elements in bus admittance matrix in NR solver.
       char size;                      ///< Size of the admittance diagonal.Assumed square, useful for smaller size.
    };
