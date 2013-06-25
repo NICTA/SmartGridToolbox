@@ -21,14 +21,6 @@ namespace SmartGridToolbox
    static const int NR_superLU_procs = 1; // Number of processors to request.
    static double * deltaI_NR;
 
-   // TODO: Code was pulled from Gridlab-D, which defines a complex operator~ to represent the conjugate!
-   // This is nasty, but for now we will mirror it instead of doing a search and replace.
-   Complex operator~(const Complex & c) {return conj(c);}
-
-   // TODO: Use defined version of gl_malloc and gl_free:
-#define gl_malloc malloc
-#define gl_free free
-
    static unsigned int size_offdiag_PQ;
    static unsigned int size_diag_fixed;
    static unsigned int total_variables; // Total number of phases to be calculating (size of matrices).
@@ -223,7 +215,7 @@ namespace SmartGridToolbox
                   voltageDel[0] = bus[indexer].V[0] - bus[indexer].V[1];
 
                   // Power - convert to a current (uses less iterations this way)
-                  delta_current[0] = (voltageDel[0] == 0.0) ? 0 : ~(bus[indexer].S[0]/voltageDel[0]);
+                  delta_current[0] = (voltageDel[0] == 0.0) ? 0 : conj(bus[indexer].S[0]/voltageDel[0]);
 
                   // Convert delta connected load to appropriate Wye
                   delta_current[0] += voltageDel[0] * (bus[indexer].Y[0]);
@@ -242,7 +234,7 @@ namespace SmartGridToolbox
                   voltageDel[1] = bus[indexer].V[1] - bus[indexer].V[2];
 
                   // Power - convert to a current (uses less iterations this way)
-                  delta_current[1] = (voltageDel[1] == 0.0) ? 0 : ~(bus[indexer].S[1]/voltageDel[1]);
+                  delta_current[1] = (voltageDel[1] == 0.0) ? 0 : conj(bus[indexer].S[1]/voltageDel[1]);
 
                   // Convert delta connected load to appropriate Wye
                   delta_current[1] += voltageDel[1] * (bus[indexer].Y[1]);
@@ -261,7 +253,7 @@ namespace SmartGridToolbox
                   voltageDel[2] = bus[indexer].V[2] - bus[indexer].V[0];
 
                   // Power - convert to a current (uses less iterations this way)
-                  delta_current[2] = (voltageDel[2] == 0.0) ? 0 : ~(bus[indexer].S[2]/voltageDel[2]);
+                  delta_current[2] = (voltageDel[2] == 0.0) ? 0 : conj(bus[indexer].S[2]/voltageDel[2]);
 
                   // Convert delta connected load to appropriate Wye
                   delta_current[2] += voltageDel[2] * (bus[indexer].Y[2]);
@@ -284,7 +276,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
                   {
                      // Power values
-                     undeltacurr[0] += (bus[indexer].V[0] == 0.0) ? 0 : ~(bus[indexer].extra_var[0]/bus[indexer].V[0]);
+                     undeltacurr[0] += (bus[indexer].V[0] == 0.0) ? 0 : conj(bus[indexer].extra_var[0]/bus[indexer].V[0]);
 
                      // Shunt values
                      undeltacurr[0] += bus[indexer].extra_var[3]*bus[indexer].V[0];
@@ -307,7 +299,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
                   {
                      // Power values
-                     undeltacurr[1] += (bus[indexer].V[1] == 0.0) ? 0 : ~(bus[indexer].extra_var[1]/bus[indexer].V[1]);
+                     undeltacurr[1] += (bus[indexer].V[1] == 0.0) ? 0 : conj(bus[indexer].extra_var[1]/bus[indexer].V[1]);
 
                      // Shunt values
                      undeltacurr[1] += bus[indexer].extra_var[4]*bus[indexer].V[1];
@@ -331,7 +323,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
                   {
                      // Power values
-                     undeltacurr[2] += (bus[indexer].V[2] == 0.0) ? 0 : ~(bus[indexer].extra_var[2]/bus[indexer].V[2]);
+                     undeltacurr[2] += (bus[indexer].V[2] == 0.0) ? 0 : conj(bus[indexer].extra_var[2]/bus[indexer].V[2]);
 
                      // Shunt values
                      undeltacurr[2] += bus[indexer].extra_var[5]*bus[indexer].V[2];
@@ -447,9 +439,9 @@ namespace SmartGridToolbox
                // Current12 is not part of the standard current array
 
                // Now add in power contributions
-               temp_current[0] += bus[indexer].V[0] == 0.0 ? 0.0 : ~(bus[indexer].S[0]/bus[indexer].V[0]);
-               temp_current[1] += bus[indexer].V[1] == 0.0 ? 0.0 : ~(bus[indexer].S[1]/bus[indexer].V[1]);
-               temp_current[2] += voltageDel[0] == 0.0 ? 0.0 : ~(bus[indexer].S[2]/voltageDel[0]);
+               temp_current[0] += bus[indexer].V[0] == 0.0 ? 0.0 : conj(bus[indexer].S[0]/bus[indexer].V[0]);
+               temp_current[1] += bus[indexer].V[1] == 0.0 ? 0.0 : conj(bus[indexer].S[1]/bus[indexer].V[1]);
+               temp_current[2] += voltageDel[0] == 0.0 ? 0.0 : conj(bus[indexer].S[2]/voltageDel[0]);
 
                // Last, but not least, admittance/impedance contributions
                temp_current[0] += bus[indexer].Y[0]*bus[indexer].V[0];
@@ -468,10 +460,10 @@ namespace SmartGridToolbox
                   // Pull phase of V12
 
                   // Update these current contributions (use delta current variable, it isn't used in here anyways)
-                  delta_current[0] = bus[indexer].house_var[0]/(~temp_store[0]);
+                  delta_current[0] = bus[indexer].house_var[0]/(conj(temp_store[0]));
                   // Just denominator conjugated to keep math right (rest was conjugated in house)
-                  delta_current[1] = bus[indexer].house_var[1]/(~temp_store[1]);
-                  delta_current[2] = bus[indexer].house_var[2]/(~temp_store[2]);
+                  delta_current[1] = bus[indexer].house_var[1]/(conj(temp_store[1]));
+                  delta_current[2] = bus[indexer].house_var[2]/(conj(temp_store[2]));
 
                   // Now add it into the current contributions
                   temp_current[0] += delta_current[0];
@@ -510,7 +502,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x06) == 0x06) // Has A-B
                   {
                      // Power - put into a current value (iterates less this way)
-                     delta_current[0] = (voltageDel[0] == 0.0) ? 0 : ~(bus[indexer].extra_var[0]/voltageDel[0]);
+                     delta_current[0] = (voltageDel[0] == 0.0) ? 0 : conj(bus[indexer].extra_var[0]/voltageDel[0]);
 
                      // Convert delta connected load to appropriate Wye
                      delta_current[0] += voltageDel[0] * (bus[indexer].extra_var[3]);
@@ -525,7 +517,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x03) == 0x03) // Has B-C
                   {
                      // Power - put into a current value (iterates less this way)
-                     delta_current[1] = (voltageDel[1] == 0.0) ? 0 : ~(bus[indexer].extra_var[1]/voltageDel[1]);
+                     delta_current[1] = (voltageDel[1] == 0.0) ? 0 : conj(bus[indexer].extra_var[1]/voltageDel[1]);
 
                      // Convert delta connected load to appropriate Wye
                      delta_current[1] += voltageDel[1] * (bus[indexer].extra_var[4]);
@@ -540,7 +532,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x05) == 0x05) // Has C-A
                   {
                      // Power - put into a current value (iterates less this way)
-                     delta_current[2] = (voltageDel[2] == 0.0) ? 0 : ~(bus[indexer].extra_var[2]/voltageDel[2]);
+                     delta_current[2] = (voltageDel[2] == 0.0) ? 0 : conj(bus[indexer].extra_var[2]/voltageDel[2]);
 
                      // Convert delta connected load to appropriate Wye
                      delta_current[2] += voltageDel[2] * (bus[indexer].extra_var[5]);
@@ -676,7 +668,7 @@ namespace SmartGridToolbox
          // and store the deltaI in terms of real and reactive value in array deltaI_NR
          if (deltaI_NR==NULL)
          {
-            deltaI_NR = (double *)gl_malloc((2*total_variables) *sizeof(double));
+            deltaI_NR = (double *)malloc((2*total_variables) *sizeof(double));
             // left_hand side of equation (11)
 
             // Make sure it worked
@@ -689,10 +681,10 @@ namespace SmartGridToolbox
          else if (NR_realloc_needed) // Bigger sized (this was checked above)
          {
             // Decimate the existing value
-            gl_free(deltaI_NR);
+            free(deltaI_NR);
 
             // Reallocate it...bigger...faster...stronger!
-            deltaI_NR = (double *)gl_malloc((2*total_variables) *sizeof(double));
+            deltaI_NR = (double *)malloc((2*total_variables) *sizeof(double));
 
             // Make sure it worked
             if (deltaI_NR == NULL)
@@ -1280,7 +1272,7 @@ namespace SmartGridToolbox
                   voltageDel[0] = bus[indexer].V[0] - bus[indexer].V[1];
 
                   // Power - convert to a current (uses less iterations this way)
-                  delta_current[0] = (voltageDel[0] == 0.0) ? 0 : ~(bus[indexer].S[0]/voltageDel[0]);
+                  delta_current[0] = (voltageDel[0] == 0.0) ? 0 : conj(bus[indexer].S[0]/voltageDel[0]);
 
                   // Convert delta connected load to appropriate Wye
                   delta_current[0] += voltageDel[0] * (bus[indexer].Y[0]);
@@ -1299,7 +1291,7 @@ namespace SmartGridToolbox
                   voltageDel[1] = bus[indexer].V[1] - bus[indexer].V[2];
 
                   // Power - convert to a current (uses less iterations this way)
-                  delta_current[1] = (voltageDel[1] == 0.0) ? 0 : ~(bus[indexer].S[1]/voltageDel[1]);
+                  delta_current[1] = (voltageDel[1] == 0.0) ? 0 : conj(bus[indexer].S[1]/voltageDel[1]);
 
                   // Convert delta connected load to appropriate Wye
                   delta_current[1] += voltageDel[1] * (bus[indexer].Y[1]);
@@ -1318,7 +1310,7 @@ namespace SmartGridToolbox
                   voltageDel[2] = bus[indexer].V[2] - bus[indexer].V[0];
 
                   // Power - convert to a current (uses less iterations this way)
-                  delta_current[2] = (voltageDel[2] == 0.0) ? 0 : ~(bus[indexer].S[2]/voltageDel[2]);
+                  delta_current[2] = (voltageDel[2] == 0.0) ? 0 : conj(bus[indexer].S[2]/voltageDel[2]);
 
                   // Convert delta connected load to appropriate Wye
                   delta_current[2] += voltageDel[2] * (bus[indexer].Y[2]);
@@ -1341,7 +1333,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
                   {
                      // Power values
-                     undeltacurr[0] += (bus[indexer].V[0] == 0.0) ? 0 : ~(bus[indexer].extra_var[0]/bus[indexer].V[0]);
+                     undeltacurr[0] += (bus[indexer].V[0] == 0.0) ? 0 : conj(bus[indexer].extra_var[0]/bus[indexer].V[0]);
 
                      // Shunt values
                      undeltacurr[0] += bus[indexer].extra_var[3]*bus[indexer].V[0];
@@ -1364,7 +1356,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
                   {
                      // Power values
-                     undeltacurr[1] += (bus[indexer].V[1] == 0.0) ? 0 : ~(bus[indexer].extra_var[1]/bus[indexer].V[1]);
+                     undeltacurr[1] += (bus[indexer].V[1] == 0.0) ? 0 : conj(bus[indexer].extra_var[1]/bus[indexer].V[1]);
 
                      // Shunt values
                      undeltacurr[1] += bus[indexer].extra_var[4]*bus[indexer].V[1];
@@ -1388,7 +1380,7 @@ namespace SmartGridToolbox
                   if ((bus[indexer].phases & 0x10) == 0x10) // We do, so they must be Wye-connected
                   {
                      // Power values
-                     undeltacurr[2] += (bus[indexer].V[2] == 0.0) ? 0 : ~(bus[indexer].extra_var[2]/bus[indexer].V[2]);
+                     undeltacurr[2] += (bus[indexer].V[2] == 0.0) ? 0 : conj(bus[indexer].extra_var[2]/bus[indexer].V[2]);
 
                      // Shunt values
                      undeltacurr[2] += bus[indexer].extra_var[5]*bus[indexer].V[2];
@@ -1524,9 +1516,9 @@ namespace SmartGridToolbox
                // current12 is not part of the standard current array
 
                // Now add in power contributions
-               temp_current[0] += bus[indexer].V[0] == 0.0 ? 0.0 : ~(bus[indexer].S[0]/bus[indexer].V[0]);
-               temp_current[1] += bus[indexer].V[1] == 0.0 ? 0.0 : ~(bus[indexer].S[1]/bus[indexer].V[1]);
-               temp_current[2] += voltageDel[0] == 0.0 ? 0.0 : ~(bus[indexer].S[2]/voltageDel[0]);
+               temp_current[0] += bus[indexer].V[0] == 0.0 ? 0.0 : conj(bus[indexer].S[0]/bus[indexer].V[0]);
+               temp_current[1] += bus[indexer].V[1] == 0.0 ? 0.0 : conj(bus[indexer].S[1]/bus[indexer].V[1]);
+               temp_current[2] += voltageDel[0] == 0.0 ? 0.0 : conj(bus[indexer].S[2]/voltageDel[0]);
 
                // Last, but not least, admittance/impedance contributions
                temp_current[0] += bus[indexer].Y[0]*bus[indexer].V[0];
@@ -1545,10 +1537,10 @@ namespace SmartGridToolbox
                   // Pull phase of V12
 
                   // Update these current contributions (use delta current variable, it isn't used in here anyways)
-                  delta_current[0] = bus[indexer].house_var[0]/(~temp_store[0]);
+                  delta_current[0] = bus[indexer].house_var[0]/(conj(temp_store[0]));
                   // Just denominator conjugated to keep math right (rest was conjugated in house)
-                  delta_current[1] = bus[indexer].house_var[1]/(~temp_store[1]);
-                  delta_current[2] = bus[indexer].house_var[2]/(~temp_store[2]);
+                  delta_current[1] = bus[indexer].house_var[1]/(conj(temp_store[1]));
+                  delta_current[2] = bus[indexer].house_var[2]/(conj(temp_store[2]));
 
                   // Now add it into the current contributions
                   temp_current[0] += delta_current[0];
@@ -1618,7 +1610,7 @@ namespace SmartGridToolbox
                      voltageDel[0] = bus[indexer].V[0] - bus[indexer].V[1];
 
                      // Power - put into a current value (iterates less this way)
-                     delta_current[0] = (voltageDel[0] == 0.0) ? 0 : ~(bus[indexer].extra_var[0]/voltageDel[0]);
+                     delta_current[0] = (voltageDel[0] == 0.0) ? 0 : conj(bus[indexer].extra_var[0]/voltageDel[0]);
 
                      // Convert delta connected load to appropriate Wye
                      delta_current[0] += voltageDel[0] * (bus[indexer].extra_var[3]);
@@ -1637,7 +1629,7 @@ namespace SmartGridToolbox
                      voltageDel[1] = bus[indexer].V[1] - bus[indexer].V[2];
 
                      // Power - put into a current value (iterates less this way)
-                     delta_current[1] = (voltageDel[1] == 0.0) ? 0 : ~(bus[indexer].extra_var[1]/voltageDel[1]);
+                     delta_current[1] = (voltageDel[1] == 0.0) ? 0 : conj(bus[indexer].extra_var[1]/voltageDel[1]);
 
                      // Convert delta connected load to appropriate Wye
                      delta_current[1] += voltageDel[1] * (bus[indexer].extra_var[4]);
@@ -1656,7 +1648,7 @@ namespace SmartGridToolbox
                      voltageDel[2] = bus[indexer].V[2] - bus[indexer].V[0];
 
                      // Power - put into a current value (iterates less this way)
-                     delta_current[2] = (voltageDel[2] == 0.0) ? 0 : ~(bus[indexer].extra_var[2]/voltageDel[2]);
+                     delta_current[2] = (voltageDel[2] == 0.0) ? 0 : conj(bus[indexer].extra_var[2]/voltageDel[2]);
 
                      // Convert delta connected load to appropriate Wye
                      delta_current[2] += voltageDel[2] * (bus[indexer].extra_var[5]);
@@ -1846,7 +1838,7 @@ namespace SmartGridToolbox
 
          if (Y_diag_update == NULL)
          {
-            Y_diag_update = (Y_NR *)gl_malloc((4*size_diag_update) *sizeof(Y_NR));
+            Y_diag_update = (Y_NR *)malloc((4*size_diag_update) *sizeof(Y_NR));
             // Y_diag_update store the row,column and value of the dynamic part of the diagonal PQ bus elements of 
             // 6n*6n Y_NR matrix.
 
@@ -1860,10 +1852,10 @@ namespace SmartGridToolbox
          else if (size_diag_update > max_size_diag_update) // We've exceeded our limits
          {
             // Disappear the old one
-            gl_free(Y_diag_update);
+            free(Y_diag_update);
 
             // Make a new one in its image
-            Y_diag_update = (Y_NR *)gl_malloc((4*size_diag_update) *sizeof(Y_NR));
+            Y_diag_update = (Y_NR *)malloc((4*size_diag_update) *sizeof(Y_NR));
 
             // Make sure it worked
             if (Y_diag_update == NULL)
@@ -1968,7 +1960,7 @@ namespace SmartGridToolbox
 
          if (Y_Amatrix == NULL)
          {
-            Y_Amatrix = (Y_NR *)gl_malloc((size_Amatrix) *sizeof(Y_NR));
+            Y_Amatrix = (Y_NR *)malloc((size_Amatrix) *sizeof(Y_NR));
             // Amatrix includes all the elements of Y_offdiag_PQ, Y_diag_fixed and Y_diag_update.
 
             // Make sure it worked
@@ -1978,10 +1970,10 @@ namespace SmartGridToolbox
          else if (NR_realloc_needed) // If one of the above changed, we changed too
          {
             // Destroy the faulty version
-            gl_free(Y_Amatrix);
+            free(Y_Amatrix);
 
             // Create a new one that holds our new ampleness
-            Y_Amatrix = (Y_NR *)gl_malloc((size_Amatrix) *sizeof(Y_NR));
+            Y_Amatrix = (Y_NR *)malloc((size_Amatrix) *sizeof(Y_NR));
 
             // Make sure it worked
             if (Y_Amatrix == NULL)
@@ -2016,17 +2008,17 @@ namespace SmartGridToolbox
          // Declare working array
          if (Y_Work_Amatrix == NULL)
          {
-            Y_Work_Amatrix = (Y_NR *)gl_malloc(size_Amatrix*sizeof(Y_NR));
+            Y_Work_Amatrix = (Y_NR *)malloc(size_Amatrix*sizeof(Y_NR));
             if (Y_Work_Amatrix==NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
          }
          else if (NR_realloc_needed) // Y_Amatrix was likely resized, so we need it too since we's cousins
          {
             // Get rid of the old
-            gl_free(Y_Work_Amatrix);
+            free(Y_Work_Amatrix);
 
             // And in with the new
-            Y_Work_Amatrix = (Y_NR *)gl_malloc(size_Amatrix*sizeof(Y_NR));
+            Y_Work_Amatrix = (Y_NR *)malloc(size_Amatrix*sizeof(Y_NR));
             if (Y_Work_Amatrix==NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
          }
@@ -2058,7 +2050,7 @@ namespace SmartGridToolbox
          if (matrices_LU.a_LU == NULL) // First run
          {
             /* Set aside space for the arrays. */
-            matrices_LU.a_LU = (double *) gl_malloc(nnz *sizeof(double));
+            matrices_LU.a_LU = (double *) malloc(nnz *sizeof(double));
             if (matrices_LU.a_LU==NULL)
             {
                error("NR: One of the SuperLU solver matrices failed to allocate");
@@ -2069,34 +2061,34 @@ namespace SmartGridToolbox
                    */
             }
 
-            matrices_LU.rows_LU = (int *) gl_malloc(nnz *sizeof(int));
+            matrices_LU.rows_LU = (int *) malloc(nnz *sizeof(int));
             if (matrices_LU.rows_LU == NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
-            matrices_LU.cols_LU = (int *) gl_malloc((n+1) *sizeof(int));
+            matrices_LU.cols_LU = (int *) malloc((n+1) *sizeof(int));
             if (matrices_LU.cols_LU == NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
             /* Create the right-hand side matrix B. */
-            matrices_LU.rhs_LU = (double *) gl_malloc(m *sizeof(double));
+            matrices_LU.rhs_LU = (double *) malloc(m *sizeof(double));
             if (matrices_LU.rhs_LU == NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
             // /* Set up the arrays for the permutations. */
-            perm_r = (int *) gl_malloc(m *sizeof(int));
+            perm_r = (int *) malloc(m *sizeof(int));
             if (perm_r == NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
-            perm_c = (int *) gl_malloc(n *sizeof(int));
+            perm_c = (int *) malloc(n *sizeof(int));
             if (perm_c == NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
             // Set up storage pointers - single element, but need to be malloced for some reason
-            A_LU.Store = (void *)gl_malloc(sizeof(NCformat));
+            A_LU.Store = (void *)malloc(sizeof(NCformat));
             if (A_LU.Store == NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
-            B_LU.Store = (void *)gl_malloc(sizeof(DNformat));
+            B_LU.Store = (void *)malloc(sizeof(DNformat));
             if (B_LU.Store == NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
@@ -2120,39 +2112,39 @@ namespace SmartGridToolbox
          else if (NR_realloc_needed) // Something changed, we'll just destroy everything and start over
          {
             // Get rid of all of them first
-            gl_free(matrices_LU.a_LU);
-            gl_free(matrices_LU.rows_LU);
-            gl_free(matrices_LU.cols_LU);
-            gl_free(matrices_LU.rhs_LU);
+            free(matrices_LU.a_LU);
+            free(matrices_LU.rows_LU);
+            free(matrices_LU.cols_LU);
+            free(matrices_LU.rhs_LU);
 
             // Free up superLU matrices
-            gl_free(perm_r);
-            gl_free(perm_c);
+            free(perm_r);
+            free(perm_c);
 
             /* Set aside space for the arrays. - Copied from above */
-            matrices_LU.a_LU = (double *) gl_malloc(nnz *sizeof(double));
+            matrices_LU.a_LU = (double *) malloc(nnz *sizeof(double));
             if (matrices_LU.a_LU==NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
-            matrices_LU.rows_LU = (int *) gl_malloc(nnz *sizeof(int));
+            matrices_LU.rows_LU = (int *) malloc(nnz *sizeof(int));
             if (matrices_LU.rows_LU == NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
-            matrices_LU.cols_LU = (int *) gl_malloc((n+1) *sizeof(int));
+            matrices_LU.cols_LU = (int *) malloc((n+1) *sizeof(int));
             if (matrices_LU.cols_LU == NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
             /* Create the right-hand side matrix B. */
-            matrices_LU.rhs_LU = (double *) gl_malloc(m *sizeof(double));
+            matrices_LU.rhs_LU = (double *) malloc(m *sizeof(double));
             if (matrices_LU.rhs_LU == NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
             // /* Set up the arrays for the permutations. */
-            perm_r = (int *) gl_malloc(m *sizeof(int));
+            perm_r = (int *) malloc(m *sizeof(int));
             if (perm_r == NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
-            perm_c = (int *) gl_malloc(n *sizeof(int));
+            perm_c = (int *) malloc(n *sizeof(int));
             if (perm_c == NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
 
