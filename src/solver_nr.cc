@@ -25,26 +25,26 @@ namespace SmartGridToolbox
    static unsigned int size_diag_fixed;
    static unsigned int total_variables; // Total number of phases to be calculating (size of matrices).
    static unsigned int max_size_offdiag_PQ, max_size_diag_fixed, max_total_variables, max_size_diag_update;
-      // Variables used to determine realloaction state
+   // Variables used to determine realloaction state
    static unsigned int prev_m;
-      // Track size of matrix put into superLU form - may not need a realloc, but needs to be updated.
+   // Track size of matrix put into superLU form - may not need a realloc, but needs to be updated.
    static bool NR_realloc_needed;
    static bool newiter;
 
    static Bus_admit *BA_diag;
-      // Store the diagonal elements of the bus admittance matrix. The off_diag elements of bus admittance matrix 
-      // are equal to negative value of branch admittance.
+   // Store the diagonal elements of the bus admittance matrix. The off_diag elements of bus admittance matrix 
+   // are equal to negative value of branch admittance.
 
    static Y_NR *Y_offdiag_PQ;
-      // Store the row,column and value of off_diagonal elements of 6n*6n Y_NR matrix. No PV bus is included.
+   // Store the row,column and value of off_diagonal elements of 6n*6n Y_NR matrix. No PV bus is included.
    static Y_NR *Y_diag_fixed;
-      // Y_diag_fixed store the row,column and value of fixed diagonal elements of 6n*6n Y_NR matrix. No PV bus is
-      // included.
+   // Y_diag_fixed store the row,column and value of fixed diagonal elements of 6n*6n Y_NR matrix. No PV bus is
+   // included.
    static Y_NR *Y_diag_update;
-      // Y_diag_update store the row,column and value of updated diagonal elements of 6n*6n Y_NR matrix at each
-      // iteration. No PV bus is included.
+   // Y_diag_update store the row,column and value of updated diagonal elements of 6n*6n Y_NR matrix at each
+   // iteration. No PV bus is included.
    static Y_NR *Y_Amatrix;
-      // Y_Amatrix store all the elements of Amatrix in equation AX=B;
+   // Y_Amatrix store all the elements of Amatrix in equation AX=B;
    static Y_NR *Y_Work_Amatrix;
 
    // Generic solver variables
@@ -127,7 +127,7 @@ namespace SmartGridToolbox
     *  @return n=0 on failure to complete a single iteration, n>0 to indicate success after n interations, or
     *  n<0 to indicate failure after n iterations. */
    int solver_nr(unsigned int bus_count, BUSDATA *bus, unsigned int branch_count, BRANCHDATA *branch,
-                 bool *bad_computations)
+         bool *bad_computations)
    {
       // Internal iteration counter - just NR limits
       int Iteration;
@@ -426,62 +426,6 @@ namespace SmartGridToolbox
 
                } // End phase traversion
             } // end delta connected
-            else if ((bus[indexer].phases & 0x80) == 0x80) // Split-phase connected node
-            {
-               // Convert it all back to current (easiest to handle)
-               // Get V12 first
-               voltageDel[0] = bus[indexer].V[0] + bus[indexer].V[1];
-
-               // Start with the currents (just put them in)
-               temp_current[0] = bus[indexer].I[0];
-               temp_current[1] = bus[indexer].I[1];
-               temp_current[2] = *bus[indexer].extra_var;
-               // Current12 is not part of the standard current array
-
-               // Now add in power contributions
-               temp_current[0] += bus[indexer].V[0] == 0.0 ? 0.0 : conj(bus[indexer].S[0]/bus[indexer].V[0]);
-               temp_current[1] += bus[indexer].V[1] == 0.0 ? 0.0 : conj(bus[indexer].S[1]/bus[indexer].V[1]);
-               temp_current[2] += voltageDel[0] == 0.0 ? 0.0 : conj(bus[indexer].S[2]/voltageDel[0]);
-
-               // Last, but not least, admittance/impedance contributions
-               temp_current[0] += bus[indexer].Y[0]*bus[indexer].V[0];
-               temp_current[1] += bus[indexer].Y[1]*bus[indexer].V[1];
-               temp_current[2] += bus[indexer].Y[2]*voltageDel[0];
-
-               // See if we are a house-connected node, if so, adjust and add in those values as well
-               if ((bus[indexer].phases & 0x40) == 0x40)
-               {
-                  // Update phase adjustments
-                  setPolar(temp_store[0], 1.0, arg(bus[indexer].V[0]));
-                  // Pull phase of V1
-                  setPolar(temp_store[1], 1.0, arg(bus[indexer].V[1]));
-                  // Pull phase of V2
-                  setPolar(temp_store[2], 1.0, arg(voltageDel[0]));
-                  // Pull phase of V12
-
-                  // Update these current contributions (use delta current variable, it isn't used in here anyways)
-                  delta_current[0] = bus[indexer].house_var[0]/(conj(temp_store[0]));
-                  // Just denominator conjugated to keep math right (rest was conjugated in house)
-                  delta_current[1] = bus[indexer].house_var[1]/(conj(temp_store[1]));
-                  delta_current[2] = bus[indexer].house_var[2]/(conj(temp_store[2]));
-
-                  // Now add it into the current contributions
-                  temp_current[0] += delta_current[0];
-                  temp_current[1] += delta_current[1];
-                  temp_current[2] += delta_current[2];
-               } // End house-attached splitphase
-
-               // Convert 'em to line currents
-               temp_store[0] = temp_current[0] + temp_current[2];
-               temp_store[1] = -temp_current[1] - temp_current[2];
-
-               // Update the stored values
-               bus[indexer].PL[0] = real(temp_store[0]);
-               bus[indexer].QL[0] = imag(temp_store[0]);
-
-               bus[indexer].PL[1] = real(temp_store[1]);
-               bus[indexer].QL[1] = imag(temp_store[1]);
-            } // end split-phase connected
             else // Wye-connected node
             {
                // For Wye-connected, only compute and store phases that exist (make top heavy)
@@ -701,561 +645,218 @@ namespace SmartGridToolbox
             {
                tempIcalcReal = tempIcalcImag = 0;
 
-               if ((bus[indexer].phases & 0x80) == 0x80) // Split phase - triplex bus
+               tempPbus =  - bus[indexer].PL[jindex];
+               // @@@ PG and QG is assumed to be zero here @@@ - this may change later (PV busses)
+               tempQbus =  - bus[indexer].QL[jindex];
+
+               for (kindex=0; kindex<BA_diag[indexer].size; kindex++) // cols - Still only for specified phases
                {
-                  // Two states of triplex bus - To node of SPCT transformer needs to be different
-                  // First different - Delta-I and diagonal contributions
-                  if ((bus[indexer].phases & 0x20) == 0x20) // We're the To bus
-                  {
-                     // Pre-negated due to the nature of how it's calculated (V1 compared to I1)
-                     tempPbus =  bus[indexer].PL[jindex];
-                     // @@@ PG and QG is assumed to be zero here @@@ - this may change later (PV busses)
-                     tempQbus =  bus[indexer].QL[jindex];
-                  }
-                  else // We're just a normal triplex bus
-                  {
-                     // This one isn't negated (normal operations)
-                     tempPbus =  -bus[indexer].PL[jindex];
-                     // @@@ PG and QG is assumed to be zero here @@@ - this may change later (PV busses)
-                     tempQbus =  -bus[indexer].QL[jindex];
-                  }
-                  // end normal triplex bus
+                  // Determine our indices, based on phase information
+                  temp_index = -1;
+                  switch(bus[indexer].phases & 0x07) {
+                     case 0x01: // C
+                        {
+                           temp_index=2;
+                           break;
+                        }
+                        // end 0x01
+                     case 0x02: // B
+                        {
+                           temp_index=1;
+                           break;
+                        }
+                        // end 0x02
+                     case 0x03: // BC
+                        {
+                           if (kindex==0) // B
+                              temp_index=1;
+                           else // C
+                              temp_index=2;
+                           break;
+                        }
+                        // end 0x03
+                     case 0x04: // A
+                        {
+                           temp_index=0;
+                           break;
+                        }
+                        // end 0x04
+                     case 0x05: // AC
+                        {
+                           if (kindex==0) // A
+                              temp_index=0;
+                           else // C
+                              temp_index=2;
+                           break;
+                        }
+                        // end 0x05
+                     case 0x06: // AB
+                        {
+                           if (kindex==0) // A
+                              temp_index=0;
+                           else // B
+                              temp_index=1;
+                           break;
+                        }
+                        // end 0x06
+                     case 0x07: // ABC
+                        {
+                           temp_index = kindex;
+                           // Will loop all 3
+                           break;
+                        }
+                        // end 0x07
+                  } // End switch/case
 
-                  // Get diagonal contributions - only (& always) 2
-                  // Column 1
-                  tempIcalcReal += real(BA_diag[indexer].Y[jindex][0]) * real(bus[indexer].V[0]) 
-                     - imag(BA_diag[indexer].Y[jindex][0]) * imag(bus[indexer].V[0]);
+                  if (temp_index==-1) // Error check
+                  {
+                     error("NR: A voltage index failed to be found.");
+                     /*  TROUBLESHOOT
+                         While attempting to compute the calculated power current, a voltage index failed to be
+                         resolved.  Please submit your code and a bug report via the trac website.
+                         */
+                  }
+
+                  // Diagonal contributions
+                  tempIcalcReal += real(BA_diag[indexer].Y[jindex][kindex]) * real(bus[indexer].V[temp_index]) - 
+                     imag(BA_diag[indexer].Y[jindex][kindex]) * imag(bus[indexer].V[temp_index]);
                   // equation (7), the diag elements of bus admittance matrix
-                  tempIcalcImag += real(BA_diag[indexer].Y[jindex][0]) * imag(bus[indexer].V[0]) 
-                     + imag(BA_diag[indexer].Y[jindex][0]) * real(bus[indexer].V[0]);
+                  tempIcalcImag += real(BA_diag[indexer].Y[jindex][kindex]) * imag(bus[indexer].V[temp_index]) + 
+                     imag(BA_diag[indexer].Y[jindex][kindex]) * real(bus[indexer].V[temp_index]);
                   // equation (8), the diag elements of bus admittance matrix
 
-                  // Column 2
-                  tempIcalcReal += real(BA_diag[indexer].Y[jindex][1]) * real(bus[indexer].V[1]) 
-                     - imag(BA_diag[indexer].Y[jindex][1]) * imag(bus[indexer].V[1]);
-                  // equation (7), the diag elements of bus admittance matrix
-                  tempIcalcImag += real(BA_diag[indexer].Y[jindex][1]) * imag(bus[indexer].V[1]) 
-                     + imag(BA_diag[indexer].Y[jindex][1]) * real(bus[indexer].V[1]);
-                  // equation (8), the diag elements of bus admittance matrix
 
-                  // Now off diagonals
+                  // Off diagonal contributions
+                  // Need another variable to handle the rows
+                  temp_index_b = -1;
+                  switch(bus[indexer].phases & 0x07) {
+                     case 0x01: // C
+                        {
+                           temp_index_b=2;
+                           break;
+                        }
+                        // end 0x01
+                     case 0x02: // B
+                        {
+                           temp_index_b=1;
+                           break;
+                        }
+                        // end 0x02
+                     case 0x03: // BC
+                        {
+                           if (jindex==0) // B
+                              temp_index_b=1;
+                           else // C
+                              temp_index_b=2;
+                           break;
+                        }
+                        // end 0x03
+                     case 0x04: // A
+                        {
+                           temp_index_b=0;
+                           break;
+                        }
+                        // end 0x04
+                     case 0x05: // AC
+                        {
+                           if (jindex==0) // A
+                              temp_index_b=0;
+                           else // C
+                              temp_index_b=2;
+                           break;
+                        }
+                        // end 0x05
+                     case 0x06: // AB
+                        {
+                           if (jindex==0) // A
+                              temp_index_b=0;
+                           else // B
+                              temp_index_b=1;
+                           break;
+                        }
+                        // end 0x06
+                     case 0x07: // ABC
+                        {
+                           temp_index_b = jindex;
+                           // Will loop all 3
+                           break;
+                        }
+                        // end 0x07
+                  } // End switch/case
+
+                  if (temp_index_b==-1) // Error check
+                  {
+                     error("NR: A voltage index failed to be found.");
+                  }
+
                   for (kindexer=0; kindexer<(bus[indexer].Link_Table_Size); kindexer++)
+                     // Parse through the branch list
                   {
                      // Apply proper index to jindexer (easier to implement this way)
                      jindexer=bus[indexer].Link_Table[kindexer];
 
-                     if (branch[jindexer].from == indexer) // We're the from bus
+                     if (branch[jindexer].from == indexer)
                      {
-                        if ((bus[indexer].phases & 0x20) == 0x20) // SPCT from bus - needs different signage
-                        {
-                           work_vals_char_0 = jindex*3;
+                        work_vals_char_0 = temp_index_b*3+temp_index;
+                        work_vals_double_0 = real(-branch[jindexer].Yfrom[work_vals_char_0]);
+                        work_vals_double_1 = imag(-branch[jindexer].Yfrom[work_vals_char_0]);
+                        work_vals_double_2 = real(bus[branch[jindexer].to].V[temp_index]);
+                        work_vals_double_3 = imag(bus[branch[jindexer].to].V[temp_index]);
 
-                           // This situation can only be a normal line (triplex will never be the from for another type)
-                           // Again only, & always 2 columns (just do them explicitly)
-                           // Column 1
-                           tempIcalcReal += real((branch[jindexer].Yfrom[work_vals_char_0])) * 
-                              real(bus[branch[jindexer].to].V[0]) 
-                              - imag((branch[jindexer].Yfrom[work_vals_char_0])) * 
-                              imag(bus[branch[jindexer].to].V[0]);
-                           // equation (7), the off_diag elements of bus admittance matrix are equal to negative value 
-                           // of branch admittance
-                           tempIcalcImag += real((branch[jindexer].Yfrom[work_vals_char_0])) * 
-                              imag(bus[branch[jindexer].to].V[0]) + 
-                              imag((branch[jindexer].Yfrom[work_vals_char_0])) * real(bus[branch[jindexer].to].V[0]);
-                           // equation (8), the off_diag elements of bus admittance matrix are equal to negative value
-                           // of branch admittance
+                        tempIcalcReal += work_vals_double_0 * work_vals_double_2 - work_vals_double_1 * 
+                           work_vals_double_3;
+                        // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
+                        // value of branch admittance
+                        tempIcalcImag += work_vals_double_0 * work_vals_double_3 + work_vals_double_1 * 
+                           work_vals_double_2;
+                        // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
+                        // value of branch admittance
 
-                           // Column2
-                           tempIcalcReal += real((branch[jindexer].Yfrom[jindex*3+1])) * 
-                              real(bus[branch[jindexer].to].V[1]) - imag((branch[jindexer].Yfrom[jindex*3+1])) * 
-                              imag(bus[branch[jindexer].to].V[1]);
-                           // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
-                           // value of branch admittance
-                           tempIcalcImag += real((branch[jindexer].Yfrom[jindex*3+1])) * 
-                              imag(bus[branch[jindexer].to].V[1]) + imag((branch[jindexer].Yfrom[jindex*3+1])) * 
-                              real(bus[branch[jindexer].to].V[1]);
-                           // equation (8), the off_diag elements of bus admittance matrix are equal to negative value 
-                           // of branch admittance
+                        // end standard line
 
-                        } // End SPCT To bus - from diagonal contributions
-                        else // Normal line connection to normal triplex
-                        {
-                           work_vals_char_0 = jindex*3;
-                           // This situation can only be a normal line (triplex will never be the from for another type)
-                           // Again only, & always 2 columns (just do them explicitly)
-                           // Column 1
-                           tempIcalcReal += real(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
-                              real(bus[branch[jindexer].to].V[0]) 
-                              - imag(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
-                              imag(bus[branch[jindexer].to].V[0]);
-                           // equation (7), the off_diag elements of bus admittance matrix are equal to negative value
-                           // of branch admittance
-                           tempIcalcImag += real(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
-                              imag(bus[branch[jindexer].to].V[0]) 
-                              + imag(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
-                              real(bus[branch[jindexer].to].V[0]);
-                           // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
-                           // value of branch admittance
-
-                           // Column2
-                           tempIcalcReal += real(-(branch[jindexer].Yfrom[jindex*3+1])) * 
-                              real(bus[branch[jindexer].to].V[1]) - imag(-(branch[jindexer].Yfrom[jindex*3+1])) * 
-                              imag(bus[branch[jindexer].to].V[1]);
-                           // equation (7), the off_diag elements of bus admittance matrix are equal to negative value 
-                           // of branch admittance
-                           tempIcalcImag += real(-(branch[jindexer].Yfrom[jindex*3+1])) * 
-                              imag(bus[branch[jindexer].to].V[1]) + imag(-(branch[jindexer].Yfrom[jindex*3+1])) * 
-                              real(bus[branch[jindexer].to].V[1]);
-                           // equation (8), the off_diag elements of bus admittance matrix are equal to negative value 
-                           // of branch admittance
-
-                        }
-                        // end normal triplex from
                      }
-                     // end from bus
-                     else if (branch[jindexer].to == indexer) // We're the to bus
+                     if  (branch[jindexer].to == indexer)
                      {
-                        if (branch[jindexer].v_ratio != 1.0) // Transformer
-                        {
-                           // Only a single contributor on the from side - figure out how to get to it
-                           if ((branch[jindexer].phases & 0x01) == 0x01) // C
-                           {
-                              temp_index=2;
-                           }
-                           else if ((branch[jindexer].phases & 0x02) == 0x02) // B
-                           {
-                              temp_index=1;
-                           }
-                           else if ((branch[jindexer].phases & 0x04) == 0x04) // A
-                           {
-                              temp_index=0;
-                           }
-                           else // How'd we get here!?!
-                           {
-                              error("NR: A split-phase transformer appears to have an invalid phase");
-                           }
+                        work_vals_char_0 = temp_index_b*3+temp_index;
+                        work_vals_double_0 = real(-branch[jindexer].Yto[work_vals_char_0]);
+                        work_vals_double_1 = imag(-branch[jindexer].Yto[work_vals_char_0]);
+                        work_vals_double_2 = real(bus[branch[jindexer].from].V[temp_index]);
+                        work_vals_double_3 = imag(bus[branch[jindexer].from].V[temp_index]);
 
-                           work_vals_char_0 = jindex*3+temp_index;
+                        tempIcalcReal += work_vals_double_0 * work_vals_double_2 - work_vals_double_1 * 
+                           work_vals_double_3;
+                        // equation (7), the off_diag elements of bus admittance matrix are equal to negative value 
+                        // of branch admittance
+                        tempIcalcImag += work_vals_double_0 * work_vals_double_3 + work_vals_double_1 * 
+                           work_vals_double_2;
+                        // equation (8), the off_diag elements of bus admittance matrix are equal to negative value 
+                        // of branch admittance
 
-                           // Perform the update, it only happens for one column (nature of the transformer)
-                           tempIcalcReal += real(-(branch[jindexer].Yto[work_vals_char_0])) * 
-                              real(bus[branch[jindexer].from].V[temp_index]) 
-                              - imag(-(branch[jindexer].Yto[work_vals_char_0])) * 
-                              imag(bus[branch[jindexer].from].V[temp_index]);
-                           // equation (7), the off_diag elements of bus admittance matrix are equal to negative value 
-                           // of branch admittance
-                           tempIcalcImag += real(-(branch[jindexer].Yto[work_vals_char_0])) * 
-                              imag(bus[branch[jindexer].from].V[temp_index]) + 
-                              imag(-(branch[jindexer].Yto[work_vals_char_0])) * 
-                              real(bus[branch[jindexer].from].V[temp_index]);
-                           // equation (8), the off_diag elements of bus admittance matrix are equal to negative value 
-                           // of branch admittance
-
-                        }
-                        // end transformer
-                        else // Must be a normal line then
-                        {
-                           if ((bus[indexer].phases & 0x20) == 0x20) // SPCT from bus - needs different signage
-                           {
-                              work_vals_char_0 = jindex*3;
-                              // This case should never really exist, but if someone reverses a secondary or is doing 
-                              // meshed secondaries, it might
-                              // Again only, & always 2 columns (just do them explicitly)
-                              // Column 1
-                              tempIcalcReal += real((branch[jindexer].Yto[work_vals_char_0])) * 
-                                 real(bus[branch[jindexer].from].V[0]) - 
-                                 imag((branch[jindexer].Yto[work_vals_char_0])) * 
-                                 imag(bus[branch[jindexer].from].V[0]);
-                              // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
-                              // value of branch admittance
-                              tempIcalcImag += real((branch[jindexer].Yto[work_vals_char_0])) * 
-                                 imag(bus[branch[jindexer].from].V[0]) + 
-                                 imag((branch[jindexer].Yto[work_vals_char_0])) * 
-                                 real(bus[branch[jindexer].from].V[0]);
-                              // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
-                              // value of branch admittance
-
-                              // Column2
-                              tempIcalcReal += real((branch[jindexer].Yto[work_vals_char_0+1])) * 
-                                 real(bus[branch[jindexer].from].V[1]) - 
-                                 imag((branch[jindexer].Yto[work_vals_char_0+1])) * 
-                                 imag(bus[branch[jindexer].from].V[1]);
-                              // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
-                              // value of branch admittance
-                              tempIcalcImag += real((branch[jindexer].Yto[work_vals_char_0+1])) * 
-                                 imag(bus[branch[jindexer].from].V[1]) + 
-                                 imag((branch[jindexer].Yto[work_vals_char_0+1])) * 
-                                 real(bus[branch[jindexer].from].V[1]);
-                              // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
-                              // value of branch admittance
-                           } // End SPCT To bus - from diagonal contributions
-                           else // Normal line connection to normal triplex
-                           {
-                              work_vals_char_0 = jindex*3;
-                              // Again only, & always 2 columns (just do them explicitly)
-                              // Column 1
-                              tempIcalcReal += real(-(branch[jindexer].Yto[work_vals_char_0])) * 
-                                 real(bus[branch[jindexer].from].V[0]) - 
-                                 imag(-(branch[jindexer].Yto[work_vals_char_0])) * 
-                                 imag(bus[branch[jindexer].from].V[0]);
-                              // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
-                              // value of branch admittance
-                              tempIcalcImag += real(-(branch[jindexer].Yto[work_vals_char_0])) * 
-                                 imag(bus[branch[jindexer].from].V[0]) + 
-                                 imag(-(branch[jindexer].Yto[work_vals_char_0])) * 
-                                 real(bus[branch[jindexer].from].V[0]);
-                              // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
-                              // value of branch admittance
-
-                              // Column2
-                              tempIcalcReal += real(-(branch[jindexer].Yto[work_vals_char_0+1])) * 
-                                 real(bus[branch[jindexer].from].V[1]) - 
-                                 imag(-(branch[jindexer].Yto[work_vals_char_0+1])) * 
-                                 imag(bus[branch[jindexer].from].V[1]);
-                              // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
-                              // value of branch admittance
-                              tempIcalcImag += real(-(branch[jindexer].Yto[work_vals_char_0+1])) * 
-                                 imag(bus[branch[jindexer].from].V[1]) + 
-                                 imag(-(branch[jindexer].Yto[work_vals_char_0+1])) * 
-                                 real(bus[branch[jindexer].from].V[1]);
-                              // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
-                              // value of branch admittance
-                           } // End normal triplex connection
-                        }
-                        // end normal line
                      }
-                     // end to bus
-                     else // We're nothing
-                        ;
+                     else;
 
-                  } // End branch traversion
+                  }
+               }
+               // end intermediate current for each phase column
+               work_vals_double_0 = abs(bus[indexer].V[temp_index_b])*abs(bus[indexer].V[temp_index_b]);
 
-                  // It's I.  Just a direct conversion (P changed above to I as well)
-                  deltaI_NR[2*bus[indexer].Matrix_Loc+ BA_diag[indexer].size + jindex] = tempPbus - tempIcalcReal;
-                  deltaI_NR[2*bus[indexer].Matrix_Loc + jindex] = tempQbus - tempIcalcImag;
-               } // End split-phase present
-               else // Three phase or some variant thereof
+               if (work_vals_double_0!=0)
+                  // Only normal one (not square), but a zero is still a zero even after that
                {
-                  tempPbus =  - bus[indexer].PL[jindex];
-                  // @@@ PG and QG is assumed to be zero here @@@ - this may change later (PV busses)
-                  tempQbus =  - bus[indexer].QL[jindex];
-
-                  for (kindex=0; kindex<BA_diag[indexer].size; kindex++) // cols - Still only for specified phases
-                  {
-                     // Determine our indices, based on phase information
-                     temp_index = -1;
-                     switch(bus[indexer].phases & 0x07) {
-                        case 0x01: // C
-                           {
-                              temp_index=2;
-                              break;
-                           }
-                           // end 0x01
-                        case 0x02: // B
-                           {
-                              temp_index=1;
-                              break;
-                           }
-                           // end 0x02
-                        case 0x03: // BC
-                           {
-                              if (kindex==0) // B
-                                 temp_index=1;
-                              else // C
-                                 temp_index=2;
-                              break;
-                           }
-                           // end 0x03
-                        case 0x04: // A
-                           {
-                              temp_index=0;
-                              break;
-                           }
-                           // end 0x04
-                        case 0x05: // AC
-                           {
-                              if (kindex==0) // A
-                                 temp_index=0;
-                              else // C
-                                 temp_index=2;
-                              break;
-                           }
-                           // end 0x05
-                        case 0x06: // AB
-                           {
-                              if (kindex==0) // A
-                                 temp_index=0;
-                              else // B
-                                 temp_index=1;
-                              break;
-                           }
-                           // end 0x06
-                        case 0x07: // ABC
-                           {
-                              temp_index = kindex;
-                              // Will loop all 3
-                              break;
-                           }
-                           // end 0x07
-                     } // End switch/case
-
-                     if (temp_index==-1) // Error check
-                     {
-                        error("NR: A voltage index failed to be found.");
-                        /*  TROUBLESHOOT
-                            While attempting to compute the calculated power current, a voltage index failed to be
-                            resolved.  Please submit your code and a bug report via the trac website.
-                            */
-                     }
-
-                     // Diagonal contributions
-                     tempIcalcReal += real(BA_diag[indexer].Y[jindex][kindex]) * real(bus[indexer].V[temp_index]) - 
-                        imag(BA_diag[indexer].Y[jindex][kindex]) * imag(bus[indexer].V[temp_index]);
-                     // equation (7), the diag elements of bus admittance matrix
-                     tempIcalcImag += real(BA_diag[indexer].Y[jindex][kindex]) * imag(bus[indexer].V[temp_index]) + 
-                        imag(BA_diag[indexer].Y[jindex][kindex]) * real(bus[indexer].V[temp_index]);
-                     // equation (8), the diag elements of bus admittance matrix
-
-
-                     // Off diagonal contributions
-                     // Need another variable to handle the rows
-                     temp_index_b = -1;
-                     switch(bus[indexer].phases & 0x07) {
-                        case 0x01: // C
-                           {
-                              temp_index_b=2;
-                              break;
-                           }
-                           // end 0x01
-                        case 0x02: // B
-                           {
-                              temp_index_b=1;
-                              break;
-                           }
-                           // end 0x02
-                        case 0x03: // BC
-                           {
-                              if (jindex==0) // B
-                                 temp_index_b=1;
-                              else // C
-                                 temp_index_b=2;
-                              break;
-                           }
-                           // end 0x03
-                        case 0x04: // A
-                           {
-                              temp_index_b=0;
-                              break;
-                           }
-                           // end 0x04
-                        case 0x05: // AC
-                           {
-                              if (jindex==0) // A
-                                 temp_index_b=0;
-                              else // C
-                                 temp_index_b=2;
-                              break;
-                           }
-                           // end 0x05
-                        case 0x06: // AB
-                           {
-                              if (jindex==0) // A
-                                 temp_index_b=0;
-                              else // B
-                                 temp_index_b=1;
-                              break;
-                           }
-                           // end 0x06
-                        case 0x07: // ABC
-                           {
-                              temp_index_b = jindex;
-                              // Will loop all 3
-                              break;
-                           }
-                           // end 0x07
-                     } // End switch/case
-
-                     if (temp_index_b==-1) // Error check
-                     {
-                        error("NR: A voltage index failed to be found.");
-                     }
-
-                     for (kindexer=0; kindexer<(bus[indexer].Link_Table_Size); kindexer++)
-                        // Parse through the branch list
-                     {
-                        // Apply proper index to jindexer (easier to implement this way)
-                        jindexer=bus[indexer].Link_Table[kindexer];
-
-                        if (branch[jindexer].from == indexer)
-                        {
-                           // See if we're a triplex transformer (will only occur on the from side)
-                           if ((branch[jindexer].phases & 0x80) == 0x80) // Triplexy
-                           {
-                              proceed_flag = false;
-                              phase_worka = branch[jindexer].phases & 0x07;
-
-                              if (kindex==0) // All of this will only occur the first column iteration
-                              {
-                                 switch (bus[indexer].phases & 0x07)	{
-                                    case 0x01: // C
-                                       {
-                                          if (phase_worka==0x01)
-                                             proceed_flag=true;
-                                          break;
-                                       }
-                                       // end 0x01
-                                    case 0x02: // B
-                                       {
-                                          if (phase_worka==0x02)
-                                             proceed_flag=true;
-                                          break;
-                                       }
-                                       // end 0x02
-                                    case 0x03: // BC
-                                       {
-                                          if ((jindex==0) && (phase_worka==0x02)) // First row and is a B
-                                             proceed_flag=true;
-                                          else if ((jindex==1) && (phase_worka==0x01)) // Second row and is a C
-                                             proceed_flag=true;
-                                          else
-                                             ;
-                                          break;
-                                       }
-                                       // end 0x03
-                                    case 0x04: // A
-                                       {
-                                          if (phase_worka==0x04)
-                                             proceed_flag=true;
-                                          break;
-                                       }
-                                       // end 0x04
-                                    case 0x05: // AC
-                                       {
-                                          if ((jindex==0) && (phase_worka==0x04)) // First row and is a A
-                                             proceed_flag=true;
-                                          else if ((jindex==1) && (phase_worka==0x01)) // Second row and is a C
-                                             proceed_flag=true;
-                                          else
-                                             ;
-                                          break;
-                                       }
-                                       // end 0x05
-                                    case 0x06: // AB - shares with ABC
-                                    case 0x07: // ABC
-                                       {
-                                          if ((jindex==0) && (phase_worka==0x04)) // A & first row
-                                             proceed_flag=true;
-                                          else if ((jindex==1) && (phase_worka==0x02)) // B & second row
-                                             proceed_flag=true;
-                                          else if ((jindex==2) && (phase_worka==0x01)) // C & third row
-                                             proceed_flag=true;
-                                          else;
-                                          break;
-                                       }
-                                       // end 0x07
-                                 }
-                                 // end switch
-                              } // End if kindex==0
-
-                              if (proceed_flag)
-                              {
-                                 work_vals_char_0 = temp_index_b*3;
-                                 // Do columns individually
-                                 // 1
-                                 tempIcalcReal += real(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
-                                    real(bus[branch[jindexer].to].V[0]) - 
-                                    imag(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
-                                    imag(bus[branch[jindexer].to].V[0]);
-                                 // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
-                                 // value of branch admittance
-                                 tempIcalcImag += real(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
-                                    imag(bus[branch[jindexer].to].V[0]) + 
-                                    imag(-(branch[jindexer].Yfrom[work_vals_char_0])) * 
-                                    real(bus[branch[jindexer].to].V[0]);
-                                 // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
-                                 // value of branch admittance
-
-                                 // 2
-                                 tempIcalcReal += real(-(branch[jindexer].Yfrom[work_vals_char_0+1])) * 
-                                    real(bus[branch[jindexer].to].V[1]) - 
-                                    imag(-(branch[jindexer].Yfrom[work_vals_char_0+1])) * 
-                                    imag(bus[branch[jindexer].to].V[1]);
-                                 // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
-                                 // value of branch admittance
-                                 tempIcalcImag += real(-(branch[jindexer].Yfrom[work_vals_char_0+1])) * 
-                                    imag(bus[branch[jindexer].to].V[1]) + 
-                                    imag(-(branch[jindexer].Yfrom[work_vals_char_0+1])) * 
-                                    real(bus[branch[jindexer].to].V[1]);
-                                 // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
-                                 // value of branch admittance
-
-                              }
-                           }
-                           // end SPCT transformer
-                           else // /Must be a standard line
-                           {
-                              work_vals_char_0 = temp_index_b*3+temp_index;
-                              work_vals_double_0 = real(-branch[jindexer].Yfrom[work_vals_char_0]);
-                              work_vals_double_1 = imag(-branch[jindexer].Yfrom[work_vals_char_0]);
-                              work_vals_double_2 = real(bus[branch[jindexer].to].V[temp_index]);
-                              work_vals_double_3 = imag(bus[branch[jindexer].to].V[temp_index]);
-
-                              tempIcalcReal += work_vals_double_0 * work_vals_double_2 - work_vals_double_1 * 
-                                 work_vals_double_3;
-                              // equation (7), the off_diag elements of bus admittance matrix are equal to negative 
-                              // value of branch admittance
-                              tempIcalcImag += work_vals_double_0 * work_vals_double_3 + work_vals_double_1 * 
-                                 work_vals_double_2;
-                              // equation (8), the off_diag elements of bus admittance matrix are equal to negative 
-                              // value of branch admittance
-
-                           }
-                           // end standard line
-
-                        }
-                        if  (branch[jindexer].to == indexer)
-                        {
-                           work_vals_char_0 = temp_index_b*3+temp_index;
-                           work_vals_double_0 = real(-branch[jindexer].Yto[work_vals_char_0]);
-                           work_vals_double_1 = imag(-branch[jindexer].Yto[work_vals_char_0]);
-                           work_vals_double_2 = real(bus[branch[jindexer].from].V[temp_index]);
-                           work_vals_double_3 = imag(bus[branch[jindexer].from].V[temp_index]);
-
-                           tempIcalcReal += work_vals_double_0 * work_vals_double_2 - work_vals_double_1 * 
-                              work_vals_double_3;
-                           // equation (7), the off_diag elements of bus admittance matrix are equal to negative value 
-                           // of branch admittance
-                           tempIcalcImag += work_vals_double_0 * work_vals_double_3 + work_vals_double_1 * 
-                              work_vals_double_2;
-                           // equation (8), the off_diag elements of bus admittance matrix are equal to negative value 
-                           // of branch admittance
-
-                        }
-                        else;
-
-                     }
-                  }
-                  // end intermediate current for each phase column
-                  work_vals_double_0 = abs(bus[indexer].V[temp_index_b])*abs(bus[indexer].V[temp_index_b]);
-
-                  if (work_vals_double_0!=0)
-                     // Only normal one (not square), but a zero is still a zero even after that
-                  {
-                     work_vals_double_1 = real(bus[indexer].V[temp_index_b]);
-                     work_vals_double_2 = imag(bus[indexer].V[temp_index_b]);
-                     deltaI_NR[2*bus[indexer].Matrix_Loc+ BA_diag[indexer].size + jindex] = (tempPbus * 
-                           work_vals_double_1 + tempQbus * work_vals_double_2)/ (work_vals_double_0) - tempIcalcReal ;
-                     // equation(7), Real part of deltaI, left hand side of equation (11)
-                     deltaI_NR[2*bus[indexer].Matrix_Loc + jindex] = (tempPbus * work_vals_double_2 - tempQbus * 
-                           work_vals_double_1)/ (work_vals_double_0) - tempIcalcImag;
-                     // Imaginary part of deltaI, left hand side of equation (11)
-                  }
-                  else
-                  {
-                     deltaI_NR[2*bus[indexer].Matrix_Loc+BA_diag[indexer].size + jindex] = 0.0;
-                     deltaI_NR[2*bus[indexer].Matrix_Loc + jindex] = 0.0;
-                  }
-               } // End three-phase or variant thereof
+                  work_vals_double_1 = real(bus[indexer].V[temp_index_b]);
+                  work_vals_double_2 = imag(bus[indexer].V[temp_index_b]);
+                  deltaI_NR[2*bus[indexer].Matrix_Loc+ BA_diag[indexer].size + jindex] = (tempPbus * 
+                        work_vals_double_1 + tempQbus * work_vals_double_2)/ (work_vals_double_0) - tempIcalcReal ;
+                  // equation(7), Real part of deltaI, left hand side of equation (11)
+                  deltaI_NR[2*bus[indexer].Matrix_Loc + jindex] = (tempPbus * work_vals_double_2 - tempQbus * 
+                        work_vals_double_1)/ (work_vals_double_0) - tempIcalcImag;
+                  // Imaginary part of deltaI, left hand side of equation (11)
+               }
+               else
+               {
+                  deltaI_NR[2*bus[indexer].Matrix_Loc+BA_diag[indexer].size + jindex] = 0.0;
+                  deltaI_NR[2*bus[indexer].Matrix_Loc + jindex] = 0.0;
+               }
             } // End delta_I for each phase row
          } // End delta_I for each bus
 
@@ -1472,22 +1073,22 @@ namespace SmartGridToolbox
                      bus[indexer].Jacob_A[temp_index] = (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) + 
                            imag(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                           pow(abs(bus[indexer].V[temp_index_b]),3) + imag(undeltaimped[temp_index_b]);
+                        pow(abs(bus[indexer].V[temp_index_b]),3) + imag(undeltaimped[temp_index_b]);
                      // second part of equation(37) - no power term needed
                      bus[indexer].Jacob_B[temp_index] = -(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) + 
                            real(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                           pow(abs(bus[indexer].V[temp_index_b]),3) - real(undeltaimped[temp_index_b]);
+                        pow(abs(bus[indexer].V[temp_index_b]),3) - real(undeltaimped[temp_index_b]);
                      // second part of equation(38) - no power term needed
                      bus[indexer].Jacob_C[temp_index] =(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) - 
                            real(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                           pow(abs(bus[indexer].V[temp_index_b]),3) - real(undeltaimped[temp_index_b]);
+                        pow(abs(bus[indexer].V[temp_index_b]),3) - real(undeltaimped[temp_index_b]);
                      // second part of equation(39) - no power term needed
                      bus[indexer].Jacob_D[temp_index] = (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) - 
                            imag(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                           pow(abs(bus[indexer].V[temp_index_b]),3) - imag(undeltaimped[temp_index_b]);
+                        pow(abs(bus[indexer].V[temp_index_b]),3) - imag(undeltaimped[temp_index_b]);
                      // second part of equation(40) - no power term needed
                   }
                   else
@@ -1501,97 +1102,7 @@ namespace SmartGridToolbox
                      bus[indexer].Jacob_D[temp_index] = -imag(undeltaimped[temp_index_b]) - 1e-4;
                   }
                } // End phase traversion
-            }
-            // end delta-connected load
-            else if	((bus[indexer].phases & 0x80) == 0x80) // Split phase computations
-            {
-               // Convert it all back to current (easiest to handle)
-               // Get V12 first
-               voltageDel[0] = bus[indexer].V[0] + bus[indexer].V[1];
-
-               // Start with the currents (just put them in)
-               temp_current[0] = bus[indexer].I[0];
-               temp_current[1] = bus[indexer].I[1];
-               temp_current[2] = *bus[indexer].extra_var;
-               // current12 is not part of the standard current array
-
-               // Now add in power contributions
-               temp_current[0] += bus[indexer].V[0] == 0.0 ? 0.0 : conj(bus[indexer].S[0]/bus[indexer].V[0]);
-               temp_current[1] += bus[indexer].V[1] == 0.0 ? 0.0 : conj(bus[indexer].S[1]/bus[indexer].V[1]);
-               temp_current[2] += voltageDel[0] == 0.0 ? 0.0 : conj(bus[indexer].S[2]/voltageDel[0]);
-
-               // Last, but not least, admittance/impedance contributions
-               temp_current[0] += bus[indexer].Y[0]*bus[indexer].V[0];
-               temp_current[1] += bus[indexer].Y[1]*bus[indexer].V[1];
-               temp_current[2] += bus[indexer].Y[2]*voltageDel[0];
-
-               // See if we are a house-connected node, if so, adjust and add in those values as well
-               if ((bus[indexer].phases & 0x40) == 0x40)
-               {
-                  // Update phase adjustments
-                  setPolar(temp_store[0], 1.0, arg(bus[indexer].V[0]));
-                  // Pull phase of V1
-                  setPolar(temp_store[1], 1.0, arg(bus[indexer].V[1]));
-                  // Pull phase of V2
-                  setPolar(temp_store[2], 1.0, arg(voltageDel[0]));
-                  // Pull phase of V12
-
-                  // Update these current contributions (use delta current variable, it isn't used in here anyways)
-                  delta_current[0] = bus[indexer].house_var[0]/(conj(temp_store[0]));
-                  // Just denominator conjugated to keep math right (rest was conjugated in house)
-                  delta_current[1] = bus[indexer].house_var[1]/(conj(temp_store[1]));
-                  delta_current[2] = bus[indexer].house_var[2]/(conj(temp_store[2]));
-
-                  // Now add it into the current contributions
-                  temp_current[0] += delta_current[0];
-                  temp_current[1] += delta_current[1];
-                  temp_current[2] += delta_current[2];
-               } // End house-attached splitphase
-
-               // Convert 'em to line currents - they need to be negated (due to the convention from earlier)
-               temp_store[0] = -(temp_current[0] + temp_current[2]);
-               temp_store[1] = -(-temp_current[1] - temp_current[2]);
-
-               for (jindex=0; jindex<2; jindex++)
-               {
-                  if (abs(bus[indexer].V[jindex])!=0) // Only current
-                  {
-                     bus[indexer].Jacob_A[jindex] = (real(bus[indexer].V[jindex])*imag(bus[indexer].V[jindex])*
-                           real(temp_store[jindex]) + imag(temp_store[jindex]) *
-                           pow(imag(bus[indexer].V[jindex]),2))/pow(abs(bus[indexer].V[jindex]),3);
-                     // second part of equation(37)
-                     bus[indexer].Jacob_B[jindex] = -(real(bus[indexer].V[jindex])*
-                           imag(bus[indexer].V[jindex])*imag(temp_store[jindex]) + 
-                           real(temp_store[jindex]) *pow(real(bus[indexer].V[jindex]),2))/
-                           pow(abs(bus[indexer].V[jindex]),3);
-                     // second part of equation(38)
-                     bus[indexer].Jacob_C[jindex] =(real(bus[indexer].V[jindex])*imag(bus[indexer].V[jindex])*
-                           imag(temp_store[jindex]) - real(temp_store[jindex]) *
-                           pow(imag(bus[indexer].V[jindex]),2))/pow(abs(bus[indexer].V[jindex]),3);
-                     // second part of equation(39)
-                     bus[indexer].Jacob_D[jindex] = (real(bus[indexer].V[jindex])*imag(bus[indexer].V[jindex])*
-                           real(temp_store[jindex]) - imag(temp_store[jindex]) *
-                           pow(real(bus[indexer].V[jindex]),2))/pow(abs(bus[indexer].V[jindex]),3);
-                     // second part of equation(40)
-                  }
-                  else
-                  {
-                     bus[indexer].Jacob_A[jindex]=  -1e-4;
-                     // Put very small to avoid singularity issues
-                     bus[indexer].Jacob_B[jindex]=  -1e-4;
-                     bus[indexer].Jacob_C[jindex]=  -1e-4;
-                     bus[indexer].Jacob_D[jindex]=  -1e-4;
-                  }
-               }
-
-               // Zero the last elements, just to be safe (shouldn't be an issue, but who knows)
-               bus[indexer].Jacob_A[2] = 0.0;
-               bus[indexer].Jacob_B[2] = 0.0;
-               bus[indexer].Jacob_C[2] = 0.0;
-               bus[indexer].Jacob_D[2] = 0.0;
-
-            }
-            // end split-phase connected
+            } // end delta-connected load
             else // Wye-connected system/load
             {
                // For Wye-connected, only compute and store phases that exist (make top heavy)
@@ -1755,12 +1266,12 @@ namespace SmartGridToolbox
                      bus[indexer].Jacob_A[temp_index] += (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(bus[indexer].I[temp_index_b]) + 
                            imag(bus[indexer].I[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                           pow(abs(bus[indexer].V[temp_index_b]),3) + imag(bus[indexer].Y[temp_index_b]);
+                        pow(abs(bus[indexer].V[temp_index_b]),3) + imag(bus[indexer].Y[temp_index_b]);
                      // second part of equation(37)
                      bus[indexer].Jacob_A[temp_index] += (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) + 
                            imag(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                           pow(abs(bus[indexer].V[temp_index_b]),3);
+                        pow(abs(bus[indexer].V[temp_index_b]),3);
                      // current part of equation (37) - Handles "different" children
 
                      bus[indexer].Jacob_B[temp_index] = (real(bus[indexer].S[temp_index_b]) * 
@@ -1772,12 +1283,12 @@ namespace SmartGridToolbox
                      bus[indexer].Jacob_B[temp_index] += -(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(bus[indexer].I[temp_index_b]) + 
                            real(bus[indexer].I[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                           pow(abs(bus[indexer].V[temp_index_b]),3) - real(bus[indexer].Y[temp_index_b]);
+                        pow(abs(bus[indexer].V[temp_index_b]),3) - real(bus[indexer].Y[temp_index_b]);
                      // second part of equation(38)
                      bus[indexer].Jacob_B[temp_index] += -(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) + 
                            real(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                           pow(abs(bus[indexer].V[temp_index_b]),3);
+                        pow(abs(bus[indexer].V[temp_index_b]),3);
                      // current part of equation(38) - Handles "different" children
 
                      bus[indexer].Jacob_C[temp_index] = (real(bus[indexer].S[temp_index_b]) * 
@@ -1788,7 +1299,7 @@ namespace SmartGridToolbox
                      bus[indexer].Jacob_C[temp_index] +=(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(bus[indexer].I[temp_index_b]) - 
                            real(bus[indexer].I[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                           pow(abs(bus[indexer].V[temp_index_b]),3) - real(bus[indexer].Y[temp_index_b]);
+                        pow(abs(bus[indexer].V[temp_index_b]),3) - real(bus[indexer].Y[temp_index_b]);
                      // second part of equation(39)
                      bus[indexer].Jacob_C[temp_index] +=(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) - 
@@ -1804,12 +1315,12 @@ namespace SmartGridToolbox
                      bus[indexer].Jacob_D[temp_index] += (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(bus[indexer].I[temp_index_b]) - 
                            imag(bus[indexer].I[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                           pow(abs(bus[indexer].V[temp_index_b]),3) - imag(bus[indexer].Y[temp_index_b]);
+                        pow(abs(bus[indexer].V[temp_index_b]),3) - imag(bus[indexer].Y[temp_index_b]);
                      // second part of equation(40)
                      bus[indexer].Jacob_D[temp_index] += (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) - 
                            imag(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                           pow(abs(bus[indexer].V[temp_index_b]),3);
+                        pow(abs(bus[indexer].V[temp_index_b]),3);
                      // Current part of equation(40) - Handles "different" children
 
                   }
@@ -2037,7 +1548,7 @@ namespace SmartGridToolbox
          for (jindexer=0; jindexer<size_Amatrix; jindexer++)
          {
             fprintf(FPoutVal,"%d,%d,%f\n",Y_Amatrix[jindexer].row_ind,Y_Amatrix[jindexer].col_ind,
-                    Y_Amatrix[jindexer].Y_value);
+                  Y_Amatrix[jindexer].Y_value);
          }
 
          // Close the file, we're done with it
@@ -2256,122 +1767,92 @@ namespace SmartGridToolbox
             if (bus[indexer].type != 2)
             {
                // Figure out the offset we need to be for each phase
-               if ((bus[indexer].phases & 0x80) == 0x80) // Split phase
+               for (jindex=0; jindex<BA_diag[indexer].size; jindex++) // parse through the phases
                {
-                  // Pull the two updates (assume split-phase is always 2)
-                  DVConvCheck[0]=Complex(sol_LU[2*bus[indexer].Matrix_Loc],sol_LU[(2*bus[indexer].Matrix_Loc+2)]);
-                  DVConvCheck[1]=Complex(sol_LU[(2*bus[indexer].Matrix_Loc+1)],sol_LU[(2*bus[indexer].Matrix_Loc+3)]);
-                  bus[indexer].V[0] += DVConvCheck[0];
-                  bus[indexer].V[1] += DVConvCheck[1];
-                  // Negative due to convention
-
-                  // Pull off the magnitude (no sense calculating it twice)
-                  CurrConvVal=abs(DVConvCheck[0]);
-                  if (CurrConvVal > Maxmismatch) // Update our convergence check if it is bigger
-                     Maxmismatch=CurrConvVal;
-
-                  if (CurrConvVal > bus[indexer].max_volt_error) // Check for convergence
-                     newiter=true;
-                  // Flag that a new iteration must occur
-
-                  CurrConvVal=abs(DVConvCheck[1]);
-                  if (CurrConvVal > Maxmismatch) // Update our convergence check if it is bigger
-                     Maxmismatch=CurrConvVal;
-
-                  if (CurrConvVal > bus[indexer].max_volt_error) // Check for convergence
-                     newiter=true;
-                  // Flag that a new iteration must occur
-               }
-               // end split phase update
-               else // Not split phase
-               {
-                  for (jindex=0; jindex<BA_diag[indexer].size; jindex++) // parse through the phases
-                  {
-                     switch(bus[indexer].phases & 0x07) {
-                        case 0x01: // C
-                           {
-                              temp_index=0;
-                              temp_index_b=2;
-                              break;
-                           }
-                        case 0x02: // B
+                  switch(bus[indexer].phases & 0x07) {
+                     case 0x01: // C
+                        {
+                           temp_index=0;
+                           temp_index_b=2;
+                           break;
+                        }
+                     case 0x02: // B
+                        {
+                           temp_index=0;
+                           temp_index_b=1;
+                           break;
+                        }
+                     case 0x03: // BC
+                        {
+                           if (jindex==0) // B
                            {
                               temp_index=0;
                               temp_index_b=1;
-                              break;
                            }
-                        case 0x03: // BC
+                           else // C
                            {
-                              if (jindex==0) // B
-                              {
-                                 temp_index=0;
-                                 temp_index_b=1;
-                              }
-                              else // C
-                              {
-                                 temp_index=1;
-                                 temp_index_b=2;
-                              }
-
-                              break;
+                              temp_index=1;
+                              temp_index_b=2;
                            }
-                        case 0x04: // A
+
+                           break;
+                        }
+                     case 0x04: // A
+                        {
+                           temp_index=0;
+                           temp_index_b=0;
+                           break;
+                        }
+                     case 0x05: // AC
+                        {
+                           if (jindex==0) // A
                            {
                               temp_index=0;
                               temp_index_b=0;
-                              break;
                            }
-                        case 0x05: // AC
+                           else // C
                            {
-                              if (jindex==0) // A
-                              {
-                                 temp_index=0;
-                                 temp_index_b=0;
-                              }
-                              else // C
-                              {
-                                 temp_index=1;
-                                 temp_index_b=2;
-                              }
-                              break;
+                              temp_index=1;
+                              temp_index_b=2;
                            }
-                        case 0x06: // AB
-                        case 0x07: // ABC
-                           {
-                              temp_index = jindex;
-                              temp_index_b = jindex;
-                              break;
-                           }
-                     }
-                     // end phase switch/case
+                           break;
+                        }
+                     case 0x06: // AB
+                     case 0x07: // ABC
+                        {
+                           temp_index = jindex;
+                           temp_index_b = jindex;
+                           break;
+                        }
+                  }
+                  // end phase switch/case
 
-                     if ((temp_index==-1) || (temp_index_b==-1))
-                     {
-                        error("NR: An error occurred indexing voltage updates");
-                        /*  TROUBLESHOOT
-                            While attempting to create the voltage update indices for the
-                            Newton-Raphson solver, an error was encountered.  Please submit
-                            your code and a bug report using the trac website.
-                            */
-                     }
+                  if ((temp_index==-1) || (temp_index_b==-1))
+                  {
+                     error("NR: An error occurred indexing voltage updates");
+                     /*  TROUBLESHOOT
+                         While attempting to create the voltage update indices for the
+                         Newton-Raphson solver, an error was encountered.  Please submit
+                         your code and a bug report using the trac website.
+                         */
+                  }
 
-                     DVConvCheck[jindex]=Complex(sol_LU[(2*bus[indexer].Matrix_Loc+temp_index)],
-                           sol_LU[(2*bus[indexer].Matrix_Loc+BA_diag[indexer].size+temp_index)]);
-                     bus[indexer].V[temp_index_b] += DVConvCheck[jindex];
+                  DVConvCheck[jindex]=Complex(sol_LU[(2*bus[indexer].Matrix_Loc+temp_index)],
+                        sol_LU[(2*bus[indexer].Matrix_Loc+BA_diag[indexer].size+temp_index)]);
+                  bus[indexer].V[temp_index_b] += DVConvCheck[jindex];
 
-                     // Pull off the magnitude (no sense calculating it twice)
-                     CurrConvVal=abs(DVConvCheck[jindex]);
-                     if (CurrConvVal > bus[indexer].max_volt_error) // Check for convergence
-                        newiter=true;
-                     // Flag that a new iteration must occur
+                  // Pull off the magnitude (no sense calculating it twice)
+                  CurrConvVal=abs(DVConvCheck[jindex]);
+                  if (CurrConvVal > bus[indexer].max_volt_error) // Check for convergence
+                     newiter=true;
+                  // Flag that a new iteration must occur
 
-                     if (CurrConvVal > Maxmismatch)
-                        // See if the current differential is the largest found so far or not
-                        Maxmismatch = CurrConvVal;
-                     // It is, store it
+                  if (CurrConvVal > Maxmismatch)
+                     // See if the current differential is the largest found so far or not
+                     Maxmismatch = CurrConvVal;
+                  // It is, store it
 
-                  } // End For loop for phase traversion
-               } // End not split phase update
+               } // End For loop for phase traversion
             }
             // end if not swing
             else // So this must be the swing

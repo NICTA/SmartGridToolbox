@@ -15,9 +15,6 @@ namespace SmartGridToolbox
       Complex *S;                      ///< Constant power.
       Complex *Y;                      ///< Constant admittance (impedance loads).
       Complex *I;                      ///< Constant current.
-      Complex *extra_var;              ///< Extra variable
-                                       /**< Used mainly for current12 in triplex and differently-connected children. */
-      Complex *house_var;              ///< Extra variable, used mainly for nominal house current.
       int *Link_Table;                 ///< Table of links that connect to us (for population purposes).
       unsigned int Link_Table_Size;    ///< Number of entries in the link table (number of links connected to us).
       double PL[3];                    ///< Real power component of total bus load.
