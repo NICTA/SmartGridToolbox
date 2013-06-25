@@ -25,7 +25,8 @@ void print_matrix(complex mat[3][3]);
 #endif
 
 bool use_line_cap INIT(false);         /**< Flag to include line capacitance quantities */
-bool use_link_limits INIT(true);       /**< Flag to include line/transformer ratings and provide a warning if exceeded */
+bool use_link_limits INIT(true);       /**< Flag to include line/transformer ratings and provide a warning if 
+                                        *   exceeded */
 MATRIXSOLVERMETHOD matrix_solver_method INIT(MM_SUPERLU);   /**< Newton-Raphson uses superLU as the default solver */
 unsigned int NR_bus_count INIT(0);     /**< Newton-Raphson bus count - used for determining size of bus vector */
 unsigned int NR_branch_count INIT(0);  /**< Newton-Raphson branch count - used for determining size of branch vector */
