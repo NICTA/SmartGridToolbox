@@ -40,24 +40,10 @@ GLOBAL bool NR_admit_change INIT(true);            ///< Newton-Raphson admittanc
                                                    /**< Used to prevent recalculation of admit at every timestep */
 GLOBAL int NR_superLU_procs INIT(1);               ///< Newton-Raphson related - superLU MT processor count to request
                                                    /**< separate from thread_count */
-GLOBAL OBJECT *NR_swing_bus INIT(NULL);            ///< Newton-Raphson swing bus 
-GLOBAL bool show_matrix_values INIT(false);        ///< flag to enable dumping matrix calculations as they occur 
-GLOBAL double primary_voltage_ratio INIT(60.0);    ///< primary voltage ratio
-GLOBAL double nominal_frequency INIT(60.0);        ///< nomimal operating frequencty 
-GLOBAL double warning_underfrequency INIT(55.0);   ///< frequency below which a warning is posted 
-GLOBAL double warning_overfrequency INIT(65.0);    ///< frequency above which a warning is posted 
-GLOBAL double nominal_voltage INIT(240.0);         ///< nominal voltage level 
-GLOBAL double warning_undervoltage INIT(0.8);      ///< voltage magnitude (per unit) below which a warning is posted 
-GLOBAL double warning_overvoltage INIT(1.2);       ///< voltage magnitude (per unit) above which a warning is posted 
-GLOBAL double warning_voltageangle INIT(2.0);      ///< voltage angle (over link) above which a warning is posted 
-GLOBAL bool require_voltage_control INIT(false);   ///< flag to enable voltage control source requirement 
-GLOBAL double default_maximum_voltage_error INIT(1e-6);  ///< default sync voltage convergence limit [puV] 
-GLOBAL double default_maximum_power_error INIT(0.0001);  ///< default power convergence limit for multirun 
 
 /* used by many powerflow enums */
 #define UNKNOWN 0
 #define ROUNDOFF 1e-6 //  Numerical accuracy for zero in float comparisons
-
 
 #include "powerflow_object.h"
 
