@@ -23,6 +23,9 @@ void print_matrix(complex mat[3][3]);
 #define INIT(A)
 #endif
 
+namespace SmartGridToolbox
+{
+
 GLOBAL unsigned int NR_bus_count INIT(0);          ///< Newton-Raphson bus count used for determining size of bus vect 
 GLOBAL unsigned int NR_branch_count INIT(0);       ///< Newton-Raphson branch count
                                                    /**< Used for determining size of branch vector */
@@ -33,7 +36,7 @@ GLOBAL int NR_curr_bus INIT(-1);                   ///< Newton-Raphson current b
                                                    /**< Used to populate NR_busdata */
 GLOBAL int NR_curr_branch INIT(-1);                ///< Newton-Raphson current branch indicator
                                                    /**< Used to populate NR_branchdata */
-GLOBAL int64 NR_iteration_limit INIT(500);         ///< Newton-Raphson iteration limit (per GridLAB-D iteration) 
+GLOBAL int NR_iteration_limit INIT(500);           ///< Newton-Raphson iteration limit (per GridLAB-D iteration) 
 GLOBAL bool NR_cycle INIT(true);                   ///< Newton-Raphson pass indicator
                                                    /**< false = solution pass, true = metering/accumulation pass */
 GLOBAL bool NR_admit_change INIT(true);            ///< Newton-Raphson admittance matrix change detector.
@@ -45,8 +48,7 @@ GLOBAL int NR_superLU_procs INIT(1);               ///< Newton-Raphson related -
 #define UNKNOWN 0
 #define ROUNDOFF 1e-6 //  Numerical accuracy for zero in float comparisons
 
-#include "powerflow_object.h"
+}
 
 #endif // _POWERFLOW_H
-
 /**@} */

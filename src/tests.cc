@@ -8,9 +8,11 @@
 #include "Model.h"
 #include "Output.h"
 #include "Parser.h"
+#include "powerflow.h"
 #include "SimpleBattery.h"
 #include "SimpleBuilding.h"
 #include "Simulation.h"
+#include "solver_nr.h"
 #include "TestComponent.h"
 #include "Spline.h"
 #include "TimeSeries.h"
@@ -471,6 +473,14 @@ BOOST_AUTO_TEST_CASE (test_parser)
    message("test_component_1 another is %s", 
          tc->getAnother()->getName().c_str());
    BOOST_CHECK(tc->getAnother()->getName() == "test_component_2");
+   message("Testing Parser. Completed.");
+}
+
+BOOST_AUTO_TEST_CASE (test_solver_nr)
+{
+   message("Testing solver_nr. Starting.");
+
+   message("Testing solver_nr. Completed.");
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

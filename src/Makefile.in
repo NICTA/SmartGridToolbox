@@ -113,7 +113,8 @@ am_tests_OBJECTS = tests.$(OBJEXT)
 tests_OBJECTS = $(am_tests_OBJECTS)
 tests_DEPENDENCIES = libsmartgridtoolbox.a \
 	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
-	../third_party/SuperLU_MT_2.1/libsuperlu_mt_PTHREAD.a
+	../third_party/SuperLU_MT_2.1/lib/libsuperlu_mt_PTHREAD.a \
+	/usr/local/lib/libboost_date_time-mt.a
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -444,7 +445,8 @@ libsmartgridtoolbox_a_SOURCES = \
 
 tests_LDADD = libsmartgridtoolbox.a \
 	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
-	../third_party/SuperLU_MT_2.1/libsuperlu_mt_PTHREAD.a
+	../third_party/SuperLU_MT_2.1/lib/libsuperlu_mt_PTHREAD.a \
+	/usr/local/lib/libboost_date_time-mt.a
 
 tests_SOURCES = tests.cc
 all: all-am
@@ -975,7 +977,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLIBRARIES
 	uninstall uninstall-am uninstall-binPROGRAMS \
 	uninstall-libLIBRARIES
 
-	/usr/local/lib/libboost_date_time-mt.a
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -86,4 +86,4 @@ namespace SmartGridToolbox
 
 }
 
-#endif   / SOLVER_NR_DOT_H
+#endif // SOLVER_NR_DOT_H
