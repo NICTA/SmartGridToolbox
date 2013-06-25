@@ -9,8 +9,15 @@ namespace SmartGridToolbox
    {
       int type;                        ///< bus type (0=PQ, 1=PV, 2=SWING).
       unsigned char phases;            ///< Phases property. Used for construction of matrices (skip bad entries).
-                                       /**< [Split Phase | House present | To side of SPCT | Diff Phase Child |
-                                        *    D | A | B | C] */
+                                       /**  0x01 = C
+                                        *   0x02 = B
+                                        *   0x04 = A
+                                        *   0x08 = D
+                                        *   0x10 = Diff phase child
+                                        *   0x20 = To side of SPCT
+                                        *   0x40 = House present
+                                        *   0x80 = Split phase. */
+
       Complex *V;                      ///< Bus voltage.
       Complex *S;                      ///< Constant power.
       Complex *Y;                      ///< Constant admittance (impedance loads).
