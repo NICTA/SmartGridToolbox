@@ -19,10 +19,11 @@ namespace SmartGridToolbox
                                         *   0x40 = House present
                                         *   0x80 = Split phase. */
 
-      Complex V[3];                    ///< Bus voltage / phase.
-      Complex S[3];                    ///< Constant power / phase.
-      Complex Y[3];                    ///< Constant admittance / phase (impedance loads).
-      Complex I[3];                    ///< Constant current / phase.
+      // The following appear to be A/B/C to ground for wye and AB/BC/CA for delta.
+      Complex V[3];                    ///< Bus voltage / phase (wye) or phase pair (delta).
+      Complex S[3];                    ///< Constant power / phase (wye) or phase pair (delta).
+      Complex Y[3];                    ///< Constant admittance / phase (wye) or phase pair (delta) (impedance loads).
+      Complex I[3];                    ///< Constant current / phase (wye) or phase pair (delta).
       std::vector<int> Link_Table;     ///< Table of links that connect to us (for population purposes).
       double PL[3];                    ///< Real power component of total bus load.
       double QL[3];                    ///< Reactive power component of total bus load.
