@@ -2,6 +2,7 @@
 #define SOLVER_NR_DOT_H
 
 #include "Common.h"
+#include <vector>
 
 namespace SmartGridToolbox
 {
@@ -18,12 +19,11 @@ namespace SmartGridToolbox
                                         *   0x40 = House present
                                         *   0x80 = Split phase. */
 
-      Complex *V;                      ///< Bus voltage.
-      Complex *S;                      ///< Constant power.
-      Complex *Y;                      ///< Constant admittance (impedance loads).
-      Complex *I;                      ///< Constant current.
-      int *Link_Table;                 ///< Table of links that connect to us (for population purposes).
-      unsigned int Link_Table_Size;    ///< Number of entries in the link table (number of links connected to us).
+      Complex V[3];                    ///< Bus voltage / phase.
+      Complex S[3];                    ///< Constant power / phase.
+      Complex Y[3];                    ///< Constant admittance / phase (impedance loads).
+      Complex I[3];                    ///< Constant current / phase.
+      std::vector<int> Link_Table;     ///< Table of links that connect to us (for population purposes).
       double PL[3];                    ///< Real power component of total bus load.
       double QL[3];                    ///< Reactive power component of total bus load.
       double PG[3];                    ///< Real power generation at generator bus.
@@ -40,7 +40,6 @@ namespace SmartGridToolbox
                                        /**< Used to update the Jacobian matrix at each iteration. */
       unsigned int Matrix_Loc;         ///< Starting idx of object's place in all matrices/equations.
       double max_volt_error;           ///< Maximum voltage error specified for node.
-      char *name;                      ///< Original name.
    };
    typedef struct BUSDATA BUSDATA;
 
