@@ -138,15 +138,10 @@ namespace SmartGridToolbox
       // Voltage mismatch tracking variable
       double Maxmismatch;
 
-      // Phase collapser variable
-      unsigned char phase_worka, phase_workb, phase_workc, phase_workd, phase_worke;
-
       // Temporary calculation variables
       double tempIcalcReal, tempIcalcImag;
-      double tempPbus;
-      // Store temporary value of active power load at each bus.
-      double tempQbus;
-      // Store the temporary value of reactive power load at each bus
+      double tempPbus; // Store temporary value of active power load at each bus.
+      double tempQbus; // Store the temporary value of reactive power load at each bus
 
       // Miscellaneous index variable
       unsigned int indexer, tempa, tempb, jindexer, kindexer;
@@ -154,35 +149,14 @@ namespace SmartGridToolbox
       char temp_index, temp_index_b;
       unsigned int temp_index_c;
 
-      // Working matrix for admittance collapsing/determinations
-      Complex tempY[3][3];
-
-      // Miscellaneous flag variables
-      bool Full_Mat_A, Full_Mat_B, proceed_flag;
-
-      // Temporary size variable
-      char temp_size, temp_size_b, temp_size_c;
-
-      // Temporary admittance variables
-      Complex Temp_Ad_A[3][3];
-      Complex Temp_Ad_B[3][3];
-
       // Temporary load calculation variables
-      Complex undeltacurr[3];
-      Complex undeltaimped[3];
-      Complex undeltapower[3];
+      Complex undeltacurr[3];          // Current to ground of A, B, C.
       Complex delta_current[3];        // dI = (S_const / dV)* + Y_const * dV;
       Complex voltageDel[3];           // Voltage diff between AB, AC, CA.
-      Complex temp_current[3];
-      Complex temp_power[3];
-      Complex temp_store[3];
 
       // DV checking array
       Complex DVConvCheck[3];
       double CurrConvVal;
-
-      // Miscellaneous counter tracker
-      unsigned int index_count = 0;
 
       // Miscellaneous working variable
       double work_vals_double_0, work_vals_double_1,work_vals_double_2, work_vals_double_3;
@@ -933,33 +907,32 @@ namespace SmartGridToolbox
                      bus[indexer].Jacob_A[temp_index] = (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) + 
                            imag(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                        pow(abs(bus[indexer].V[temp_index_b]),3) + imag(undeltaimped[temp_index_b]);
+                        pow(abs(bus[indexer].V[temp_index_b]),3);
                      // second part of equation(37) - no power term needed
                      bus[indexer].Jacob_B[temp_index] = -(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) + 
                            real(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                        pow(abs(bus[indexer].V[temp_index_b]),3) - real(undeltaimped[temp_index_b]);
+                        pow(abs(bus[indexer].V[temp_index_b]),3);
                      // second part of equation(38) - no power term needed
                      bus[indexer].Jacob_C[temp_index] =(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) - 
                            real(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
-                        pow(abs(bus[indexer].V[temp_index_b]),3) - real(undeltaimped[temp_index_b]);
+                        pow(abs(bus[indexer].V[temp_index_b]),3);
                      // second part of equation(39) - no power term needed
                      bus[indexer].Jacob_D[temp_index] = (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) - 
                            imag(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
-                        pow(abs(bus[indexer].V[temp_index_b]),3) - imag(undeltaimped[temp_index_b]);
+                        pow(abs(bus[indexer].V[temp_index_b]),3);
                      // second part of equation(40) - no power term needed
                   }
-                  else
-                     // Zero voltage = only impedance is valid (others get divided by VMag, so are IND) - not entirely 
-                     // sure how this gets in here anyhow
+                  else // Zero voltage = only impedance is valid (others get divided by VMag, so are IND) 
+                       // not entirely sure how this gets in here anyhow
                   {
-                     bus[indexer].Jacob_A[temp_index] = imag(undeltaimped[temp_index_b]) - 1e-4;
                      // Small offset to avoid singularities (if impedance is zero too)
-                     bus[indexer].Jacob_B[temp_index] = -real(undeltaimped[temp_index_b]) - 1e-4;
-                     bus[indexer].Jacob_C[temp_index] = -real(undeltaimped[temp_index_b]) - 1e-4;
-                     bus[indexer].Jacob_D[temp_index] = -imag(undeltaimped[temp_index_b]) - 1e-4;
+                     bus[indexer].Jacob_A[temp_index] = -1e-4;
+                     bus[indexer].Jacob_B[temp_index] = -1e-4;
+                     bus[indexer].Jacob_C[temp_index] = -1e-4;
+                     bus[indexer].Jacob_D[temp_index] = -1e-4;
                   }
                } // End phase traversion
             } // end delta-connected load
