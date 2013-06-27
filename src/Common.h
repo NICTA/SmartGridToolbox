@@ -26,10 +26,22 @@ namespace SmartGridToolbox
 
    // Complex numbers.
    typedef std::complex<double> Complex;
+
    const Complex czero = Complex(0.0, 0.0);
+
    inline void setPolar(Complex & c, double M, double theta)
    {
       c.real(M * cos(theta)); c.imag(M * sin(theta)); 
+   }
+
+   inline Complex operator*(int i, const Complex & c) 
+   {
+      return Complex(i * c.real(), i * c.imag());
+   }
+
+   inline Complex operator*(const Complex & c, int i) 
+   {
+      return Complex(i * c.real(), i * c.imag());
    }
 
    // Time stuff.

@@ -31,18 +31,14 @@ GLOBAL unsigned int NR_branch_count INIT(0);       ///< Newton-Raphson branch co
                                                    /**< Used for determining size of branch vector */
 GLOBAL BUSDATA *NR_busdata INIT(NULL);             ///< Newton-Raphson bus data pointer array 
 GLOBAL BRANCHDATA *NR_branchdata INIT(NULL);       ///< Newton-Raphson branch data pointer array 
-GLOBAL double *deltaI_NR INIT(NULL);               ///< Newton-Raphson current differences pointer array 
 GLOBAL int NR_curr_bus INIT(-1);                   ///< Newton-Raphson current bus indicator
                                                    /**< Used to populate NR_busdata */
 GLOBAL int NR_curr_branch INIT(-1);                ///< Newton-Raphson current branch indicator
                                                    /**< Used to populate NR_branchdata */
-GLOBAL int NR_iteration_limit INIT(500);           ///< Newton-Raphson iteration limit (per GridLAB-D iteration) 
 GLOBAL bool NR_cycle INIT(true);                   ///< Newton-Raphson pass indicator
                                                    /**< false = solution pass, true = metering/accumulation pass */
 GLOBAL bool NR_admit_change INIT(true);            ///< Newton-Raphson admittance matrix change detector.
                                                    /**< Used to prevent recalculation of admit at every timestep */
-GLOBAL int NR_superLU_procs INIT(1);               ///< Newton-Raphson related - superLU MT processor count to request
-                                                   /**< separate from thread_count */
 
 /* used by many powerflow enums */
 #define UNKNOWN 0
