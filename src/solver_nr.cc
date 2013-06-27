@@ -139,9 +139,6 @@ namespace SmartGridToolbox
       // Voltage mismatch tracking variable
       double Maxmismatch;
 
-      //Phase collapser variable
-      unsigned char phase_worka, phase_workb, phase_workc, phase_workd, phase_worke;
-
       // Temporary calculation variables
       double tempIcalcReal, tempIcalcImag;
       double tempPbus; // Store temporary value of active power load at each bus.
@@ -153,33 +150,13 @@ namespace SmartGridToolbox
       char temp_index, temp_index_b;
       unsigned int temp_index_c;
 
-      //Working matrix for admittance collapsing/determinations
-      Complex tempY[3][3];
-
-      //Miscellaneous flag variables
-      bool Full_Mat_A, Full_Mat_B, proceed_flag;
-
-      //Temporary size variable
-      char temp_size, temp_size_b, temp_size_c;
-
-      // Temporary admittance variables
-      Complex Temp_Ad_A[3][3];
-      Complex Temp_Ad_B[3][3];
       // Temporary load calculation variables
       Complex undeltacurr[3];          // Current to ground of A, B, C.
       Complex delta_current[3];        // dI = (S_const / dV)* + Y_const * dV;
       Complex voltageDel[3];           // Voltage diff between AB, AC, CA.
 
-      // DV checking array
-      Complex DVConvCheck[3];
-      double CurrConvVal;
-
       //Miscellaneous counter tracker
       unsigned int index_count = 0;
-
-      // Miscellaneous working variable
-      double work_vals_double_0, work_vals_double_1,work_vals_double_2, work_vals_double_3;
-      char work_vals_char_0;
 
       // SuperLU variables
       SuperMatrix L_LU,U_LU;
@@ -200,7 +177,33 @@ namespace SmartGridToolbox
 
       if (NR_admit_change) //If an admittance update was detected, fix it
       {
-         NR_admit_change = false;
+         // TODO : factor this into another fn.
+
+         //Working matrix for admittance collapsing/determinations
+         Complex tempY[3][3];
+
+         // DV checking array
+         Complex DVConvCheck[3];
+         double CurrConvVal;
+
+         //Miscellaneous flag variables
+         bool Full_Mat_A, Full_Mat_B, proceed_flag;
+
+         //Temporary size variable
+         char temp_size, temp_size_b, temp_size_c;
+
+         // Temporary admittance variables
+         Complex Temp_Ad_A[3][3];
+         Complex Temp_Ad_B[3][3];
+
+         // Miscellaneous working variable
+         double work_vals_double_0, work_vals_double_1,work_vals_double_2, work_vals_double_3;
+         char work_vals_char_0;
+
+         //Phase collapser variable
+         unsigned char phase_worka, phase_workb, phase_workc, phase_workd, phase_worke;
+
+         NR_admit_change = false; // Dan added, GLD does this elsewhere?
          //Build the diagnoal elements of the bus admittance matrix - this should only happen once no matter what
          if (BA_diag == NULL)
          {
