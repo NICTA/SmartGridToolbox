@@ -16,44 +16,6 @@
 
 namespace SmartGridToolbox
 {
-   // TODO: The following static variables, added by Dan, are temporary replacements for Gridlab-D globals.
-   static const int NR_iteration_limit = 500; // Max NR iterations.
-   static const int NR_superLU_procs = 1; // Number of processors to request.
-   static double * deltaI_NR;
-   static bool NR_admit_change = true;
-
-   static unsigned int size_offdiag_PQ;
-   static unsigned int size_diag_fixed;
-   static unsigned int total_variables; // Total number of phases to be calculating (size of matrices).
-   static unsigned int max_size_offdiag_PQ, max_size_diag_fixed, max_total_variables, max_size_diag_update;
-   // Variables used to determine realloaction state
-   static unsigned int prev_m;
-   // Track size of matrix put into superLU form - may not need a realloc, but needs to be updated.
-   static bool NR_realloc_needed;
-   static bool newiter;
-
-   static Bus_admit *BA_diag;
-   // Store the diagonal elements of the bus admittance matrix. The off_diag elements of bus admittance matrix
-   // are equal to negative value of branch admittance.
-
-   static Y_NR *Y_offdiag_PQ;
-   // Store the row,column and value of off_diagonal elements of 6n*6n Y_NR matrix. No PV bus is included.
-   static Y_NR *Y_diag_fixed;
-   // Y_diag_fixed store the row,column and value of fixed diagonal elements of 6n*6n Y_NR matrix. No PV bus is
-   // included.
-   static Y_NR *Y_diag_update;
-   // Y_diag_update store the row,column and value of updated diagonal elements of 6n*6n Y_NR matrix at each
-   // iteration. No PV bus is included.
-   static Y_NR *Y_Amatrix;
-   // Y_Amatrix store all the elements of Amatrix in equation AX=B;
-   static Y_NR *Y_Work_Amatrix;
-
-   // Generic solver variables
-   static NR_SOLVER_VARS matrices_LU;
-
-   // SuperLU variables
-   static int *perm_c, *perm_r;
-   static SuperMatrix A_LU,B_LU;
 
    void merge_sort(Y_NR *Input_Array, unsigned int Alen, Y_NR *Work_Array)
    {
@@ -123,8 +85,15 @@ namespace SmartGridToolbox
       } // End length > 0
    }
 
-   void buildAdmit(unsigned int bus_count, BUSDATA *bus, unsigned int branch_count, BRANCHDATA *branch)
+   void buildAdmit(unsigned int bus_count, BUSDATA *bus, unsigned int branch_count, BRANCHDATA *branch,
+                   unsigned int max_total_variables,
+                   unsigned int & total_variables, Bus_admit * & BA_diag, 
+                   unsigned int & size_offdiag_PQ, Y_NR * & Y_offdiag_PQ, 
+                   unsigned int & size_diag_fixed, Y_NR * & Y_diag_fixed, 
+                   bool & NR_realloc_needed)
    {
+      static unsigned int max_size_offdiag_PQ, max_size_diag_fixed;
+
       // Miscellaneous index variable
       unsigned int indexer, tempa, tempb, jindexer, kindexer;
       char jindex, kindex;
@@ -1358,6 +1327,47 @@ namespace SmartGridToolbox
    int solver_nr(unsigned int bus_count, BUSDATA *bus, unsigned int branch_count, BRANCHDATA *branch,
          bool *bad_computations)
    {
+      // TODO: The following static variables, added by Dan, are temporary replacements for Gridlab-D globals.
+      static const int NR_iteration_limit = 500; // Max NR iterations.
+      static const int NR_superLU_procs = 1; // Number of processors to request.
+      static double * deltaI_NR;
+      static bool NR_admit_change = true;
+
+      static bool newiter;
+
+      static unsigned int total_variables; // Total number of phases to be calculating (size of matrices).
+      static unsigned int max_total_variables;
+
+      static unsigned int max_size_diag_update;
+
+      static Bus_admit *BA_diag;
+         // Store the diagonal elements of the bus admittance matrix. The off_diag elements of bus admittance matrix
+         // are equal to negative value of branch admittance.
+      static unsigned int size_offdiag_PQ;
+      static Y_NR *Y_offdiag_PQ;
+         // Store the row,column and value of off_diagonal elements of 6n*6n Y_NR matrix. No PV bus is included.
+      static unsigned int size_diag_fixed;
+      static Y_NR *Y_diag_fixed;
+         // Y_diag_fixed store the row,column and value of fixed diagonal elements of 6n*6n Y_NR matrix. No PV bus is
+         // included.
+      static Y_NR *Y_diag_update;
+         // Y_diag_update store the row,column and value of updated diagonal elements of 6n*6n Y_NR matrix at each
+         // iteration. No PV bus is included.
+      static Y_NR *Y_Amatrix;
+         // Y_Amatrix store all the elements of Amatrix in equation AX=B;
+      static Y_NR *Y_Work_Amatrix;
+
+      // Variables used to determine realloaction state
+      static unsigned int prev_m;
+      // Track size of matrix put into superLU form - may not need a realloc, but needs to be updated.
+      static bool NR_realloc_needed;
+
+      // Generic solver variables
+      static NR_SOLVER_VARS matrices_LU;
+
+      // SuperLU variables
+      static int *perm_c, *perm_r;
+      static SuperMatrix A_LU,B_LU;
       // Internal iteration counter - just NR limits
       int Iteration;
 
@@ -1410,7 +1420,8 @@ namespace SmartGridToolbox
 
       if (NR_admit_change) //If an admittance update was detected, fix it
       {
-         buildAdmit(bus_count, bus, branch_count, branch);
+         buildAdmit(bus_count, bus, branch_count, branch, max_total_variables, total_variables, 
+                    BA_diag, size_offdiag_PQ, Y_offdiag_PQ, size_diag_fixed, Y_diag_fixed, NR_realloc_needed);
          NR_admit_change = false;
       }
 
