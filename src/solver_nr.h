@@ -6,6 +6,13 @@
 
 namespace SmartGridToolbox
 {
+   enum class BusType : int
+   {
+      PQ = 0,
+      PV = 1,
+      SL = 2
+   };
+
    struct  BUSDATA
    {
       int type;                        ///< bus type (0=PQ, 1=PV, 2=SWING).

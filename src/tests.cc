@@ -479,7 +479,22 @@ BOOST_AUTO_TEST_CASE (test_parser)
 BOOST_AUTO_TEST_CASE (test_solver_nr)
 {
    message("Testing solver_nr. Starting.");
-
+   std::vector<std::unique_ptr<BUSDATA>> busses;
+   std::vector<std::unique_ptr<BRANCHDATA>> branches;
+   std::unique_ptr<BUSDATA> bus(new BUSDATA);
+   bus->type = BusType::SL;
+   bus->phases = 0x7;
+   setPolar(bus->V[0], 1.0, 0.0);
+   setPolar(bus->V[1], 1.0, -2.0 * pi / 3.0);
+   setPolar(bus->V[2], 1.0, 2.0 * pi / 3.0);
+   setPolar(bus->S[0], 0.0, 0.0);
+   setPolar(bus->S[1], 0.0, 0.0);
+   setPolar(bus->S[2], 0.0, 0.0);
+   setPolar(bus->Y[0], 0.0, 0.0);
+   setPolar(bus->Y[1], 0.0, 0.0);
+   setPolar(bus->Y[2], 0.0, 0.0);
+   busses.push_back(std::move(bus));
+   bus.reset(new BUSDATA);
    message("Testing solver_nr. Completed.");
 }
 
