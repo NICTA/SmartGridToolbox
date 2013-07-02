@@ -86,8 +86,8 @@ namespace SmartGridToolbox
    }
 
    void buildAdmit(unsigned int bus_count, BUSDATA *bus, unsigned int branch_count, BRANCHDATA *branch,
-                   unsigned int max_total_variables,
-                   unsigned int & total_variables, Bus_admit * & BA_diag, 
+                   unsigned int max_total_variables, unsigned int & total_variables,
+                   Bus_admit * & BA_diag, 
                    unsigned int & size_offdiag_PQ, Y_NR * & Y_offdiag_PQ, 
                    unsigned int & size_diag_fixed, Y_NR * & Y_diag_fixed, 
                    bool & NR_realloc_needed)
@@ -140,17 +140,12 @@ namespace SmartGridToolbox
       for (indexer=0; indexer<bus_count; indexer++) // Construct the diagonal elements of Bus admittance matrix.
       {
          //Determine the size we need
-         if ((bus[indexer].phases & 0x80) == 0x80) //Split phase
-            BA_diag[indexer].size = 2;
-         else //Other cases, figure out how big they are
+         phase_worka = 0;
+         for (jindex=0; jindex<3; jindex++) //Accumulate number of phases
          {
-            phase_worka = 0;
-            for (jindex=0; jindex<3; jindex++) //Accumulate number of phases
-            {
-               phase_worka += ((bus[indexer].phases & (0x01 << jindex)) >> jindex);
-            }
-            BA_diag[indexer].size = phase_worka;
+            phase_worka += ((bus[indexer].phases & (0x01 << jindex)) >> jindex);
          }
+         BA_diag[indexer].size = phase_worka;
 
          //Ensure the admittance matrix is zeroed
          for (jindex=0; jindex<3; jindex++)
