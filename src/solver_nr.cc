@@ -468,20 +468,20 @@ namespace SmartGridToolbox
 
                   if ((phase_workd & branch[jindexer].phases) == phase_workd) //Column validity check
                   {
-                     if ((real(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != 1) &&
-                           (bus[tempb].type != 1))
+                     if ((real(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
+                           (bus[tempb].type != BusType::PV))
                         size_offdiag_PQ += 1;
 
-                     if ((real(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != 1) &&
-                           (bus[tempb].type != 1))
+                     if ((real(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
+                           (bus[tempb].type != BusType::PV))
                         size_offdiag_PQ += 1;
 
-                     if ((imag(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != 1) &&
-                           (bus[tempb].type != 1))
+                     if ((imag(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
+                           (bus[tempb].type != BusType::PV))
                         size_offdiag_PQ += 1;
 
-                     if ((imag(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != 1) &&
-                           (bus[tempb].type != 1))
+                     if ((imag(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
+                           (bus[tempb].type != BusType::PV))
                         size_offdiag_PQ += 1;
                   } //end column validity check
                } //end columns of 3 phase
@@ -555,8 +555,8 @@ namespace SmartGridToolbox
                      if ((branch[jindexer].phases & phase_worke) == phase_worke) //Valid column too!
                      {
                         //Indices counted out from Self admittance above.  needs doubling due to complex separation
-                        if ((imag(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != 1) &&
-                              (bus[tempb].type != 1)) //From imags
+                        if ((imag(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
+                              (bus[tempb].type != BusType::PV)) //From imags
                         {
                            Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + jindex;
                            Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + kindex;
@@ -568,8 +568,8 @@ namespace SmartGridToolbox
                            indexer += 1;
                         }
 
-                        if ((imag(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != 1) &&
-                              (bus[tempb].type != 1)) //To imags
+                        if ((imag(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
+                              (bus[tempb].type != BusType::PV)) //To imags
                         {
                            Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + jindex;
                            Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + kindex;
@@ -581,8 +581,8 @@ namespace SmartGridToolbox
                            indexer += 1;
                         }
 
-                        if ((real(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != 1) &&
-                              (bus[tempb].type != 1)) //From reals
+                        if ((real(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
+                              (bus[tempb].type != BusType::PV)) //From reals
                         {
                            Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + jindex + 3;
                            Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + kindex;
@@ -594,8 +594,8 @@ namespace SmartGridToolbox
                            indexer += 1;
                         }
 
-                        if ((real(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != 1) &&
-                              (bus[tempb].type != 1)) //To reals
+                        if ((real(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
+                              (bus[tempb].type != BusType::PV)) //To reals
                         {
                            Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + jindex + 3;
                            Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + kindex;
@@ -1024,7 +1024,7 @@ namespace SmartGridToolbox
                for (kindex=0; kindex<temp_size_c; kindex++) //Loop through columns of admittance matrices
                {
                   //Indices counted out from Self admittance above.  needs doubling due to complex separation
-                  if ((imag(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != 1) && (bus[tempb].type != 1))
+                  if ((imag(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //From imags
                   {
                      Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex*2;
@@ -1039,8 +1039,8 @@ namespace SmartGridToolbox
                      indexer += 1;
                   }
 
-                  if ((imag(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != 1) &&
-                        (bus[tempb].type != 1)) // To imags
+                  if ((imag(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
+                        (bus[tempb].type != BusType::PV)) // To imags
                   {
                      Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex;
                      Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex*2;
@@ -1054,7 +1054,7 @@ namespace SmartGridToolbox
                      indexer += 1;
                   }
 
-                  if ((real(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != 1) && (bus[tempb].type != 1))
+                  if ((real(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //From reals
                   {
                      Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex*2 + temp_size;
@@ -1069,7 +1069,7 @@ namespace SmartGridToolbox
                      indexer += 1;
                   }
 
-                  if ((real(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != 1) && (bus[tempb].type != 1))
+                  if ((real(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //To reals
                   {
                      Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex
@@ -1094,7 +1094,7 @@ namespace SmartGridToolbox
                for (kindex=0; kindex<temp_size_c; kindex++) //Loop through columns of admittance matrices
                {
                   //Indices counted out from Self admittance above.  needs doubling due to complex separation
-                  if ((imag(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != 1) && (bus[tempb].type != 1))
+                  if ((imag(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //From imags
                   {
                      Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex;
@@ -1109,7 +1109,7 @@ namespace SmartGridToolbox
                      indexer += 1;
                   }
 
-                  if ((imag(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != 1) && (bus[tempb].type != 1))
+                  if ((imag(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //To imags
                   {
                      Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex*2;
@@ -1124,8 +1124,8 @@ namespace SmartGridToolbox
                      indexer += 1;
                   }
 
-                  if ((real(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != 1) &&
-                        (bus[tempb].type != 1)) //From reals
+                  if ((real(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
+                        (bus[tempb].type != BusType::PV)) //From reals
                   {
                      Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex + temp_size;
                      Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex*2;
@@ -1139,7 +1139,7 @@ namespace SmartGridToolbox
                      indexer += 1;
                   }
 
-                  if ((real(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != 1) && (bus[tempb].type != 1))
+                  if ((real(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //To reals
                   {
                      Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex*2
@@ -1165,7 +1165,7 @@ namespace SmartGridToolbox
                {
 
                   //Indices counted out from Self admittance above.  needs doubling due to complex separation
-                  if ((imag(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != 1) && (bus[tempb].type != 1))
+                  if ((imag(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //From imags
                   {
                      Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex;
@@ -1180,7 +1180,7 @@ namespace SmartGridToolbox
                      indexer += 1;
                   }
 
-                  if ((imag(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != 1) && (bus[tempb].type != 1))
+                  if ((imag(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //To imags
                   {
                      Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex;
@@ -1195,7 +1195,7 @@ namespace SmartGridToolbox
                      indexer += 1;
                   }
 
-                  if ((real(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != 1) && (bus[tempb].type != 1))
+                  if ((real(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //From reals
                   {
                      Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex + temp_size;
@@ -1210,7 +1210,7 @@ namespace SmartGridToolbox
                      indexer += 1;
                   }
 
-                  if ((real(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != 1) && (bus[tempb].type != 1))
+                  if ((real(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //To reals
                   {
                      Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex
@@ -1238,9 +1238,9 @@ namespace SmartGridToolbox
          {
             for (kindex=0; kindex<3; kindex++)
             {
-               if (real(BA_diag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != 1 && jindex!=kindex)
+               if (real(BA_diag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != BusType::PV && jindex!=kindex)
                   size_diag_fixed += 1;
-               if (imag(BA_diag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != 1 && jindex!=kindex)
+               if (imag(BA_diag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != BusType::PV && jindex!=kindex)
                   size_diag_fixed += 1;
                else {}
             }
@@ -1285,7 +1285,7 @@ namespace SmartGridToolbox
          {
             for (kindex=0; kindex<BA_diag[jindexer].size; kindex++)
             {
-               if (imag(BA_diag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != 1 && jindex!=kindex)
+               if (imag(BA_diag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != BusType::PV && jindex!=kindex)
                {
                   Y_diag_fixed[indexer].row_ind = 2*BA_diag[jindexer].row_ind + jindex;
                   Y_diag_fixed[indexer].col_ind = 2*BA_diag[jindexer].col_ind + kindex;
@@ -1298,7 +1298,7 @@ namespace SmartGridToolbox
                   indexer += 1;
                }
 
-               if (real(BA_diag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != 1 && jindex!=kindex)
+               if (real(BA_diag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != BusType::PV && jindex!=kindex)
                {
                   Y_diag_fixed[indexer].row_ind = 2*BA_diag[jindexer].row_ind + jindex;
                   Y_diag_fixed[indexer].col_ind = 2*BA_diag[jindexer].col_ind + kindex +BA_diag[jindexer].size;
@@ -2307,7 +2307,7 @@ namespace SmartGridToolbox
          unsigned int size_diag_update = 0;
          for (jindexer=0; jindexer<bus_count;jindexer++)
          {
-            if  (bus[jindexer].type != 1) // PV bus ignored (for now?)
+            if  (bus[jindexer].type != BusType::PV) // PV bus ignored (for now?)
                size_diag_update += BA_diag[jindexer].size;
             else {}
          }
@@ -2349,7 +2349,7 @@ namespace SmartGridToolbox
 
          for (jindexer=0; jindexer<bus_count; jindexer++) // Parse through bus list
          {
-            if (bus[jindexer].type == 2) // Swing bus
+            if (bus[jindexer].type == BusType::SL) // Swing bus
             {
                for (jindex=0; jindex<BA_diag[jindexer].size; jindex++)
                {
@@ -2379,7 +2379,7 @@ namespace SmartGridToolbox
                } // End swing bus traversion
             } // End swing bus
 
-            if (bus[jindexer].type != 1 && bus[jindexer].type != 2) // No PV or swing (so must be PQ)
+            if (bus[jindexer].type != BusType::PV && bus[jindexer].type != BusType::SL) // No PV or swing (so must be PQ)
             {
                for (jindex=0; jindex<BA_diag[jindexer].size; jindex++)
                {
@@ -2729,7 +2729,7 @@ namespace SmartGridToolbox
          for (indexer=0; indexer<bus_count; indexer++)
          {
             // Avoid swing bus updates
-            if (bus[indexer].type != 2)
+            if (bus[indexer].type != BusType::SL)
             {
                // Figure out the offset we need to be for each phase
                for (jindex=0; jindex<BA_diag[indexer].size; jindex++) // parse through the phases

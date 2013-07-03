@@ -6,7 +6,7 @@
 
 namespace SmartGridToolbox
 {
-   enum class BusType : int
+   enum class BusType
    {
       PQ = 0,
       PV = 1,
@@ -15,7 +15,7 @@ namespace SmartGridToolbox
 
    struct  BUSDATA
    {
-      int type;                        ///< bus type (0=PQ, 1=PV, 2=SWING).
+      BusType type;                    ///< bus type (0=PQ, 1=PV, 2=SWING).
       unsigned char phases;            ///< Phases property. Used for construction of matrices (skip bad entries).
                                        /**  0x01 = C
                                         *   0x02 = B
