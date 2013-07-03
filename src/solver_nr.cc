@@ -1473,7 +1473,7 @@ namespace SmartGridToolbox
                // Everything will be accumulated into the "current" field for ease (including differents)
                for (int iphase = 0; iphase < 3; ++iphase)
                {
-                  undeltacurr[iphase] = czero;
+                  undeltacurr[iphase] = {0.0, 0.0};
                   int mask = phase_mask[iphase];
                   if ((bus[indexer].phases & mask) == mask) // Have phase mask present.
                   {

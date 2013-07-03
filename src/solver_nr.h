@@ -13,21 +13,6 @@ namespace SmartGridToolbox
       SL = 2
    };
 
-   class ThreePhase
-   {
-      public :
-         ThreePhase(Am, At, Bm, Bt, Cm, Ct) : A(Am*cos(At), Am*sin(At)),
-                                              B(Bm*cos(Bt), Bm*sin(Bt)),
-                                              C(Cm*cos(Ct), Bm*sin(Ct))
-         {
-            // Empty.
-         };
-
-         Complex A;
-         Complex B;
-         Complex C;
-   }
-
    struct  BUSDATA
    {
       BusType type;                    ///< bus type (0=PQ, 1=PV, 2=SWING).
@@ -42,24 +27,24 @@ namespace SmartGridToolbox
                                         *   0x80 = Split phase. */
 
       // The following appear to be A/B/C to ground for wye and AB/BC/CA for delta.
-      Complex V[3];                    ///< Bus voltage / phase (wye) or phase pair (delta).
-      Complex S[3];                    ///< Constant power / phase (wye) or phase pair (delta).
-      Complex Y[3];                    ///< Constant admittance / phase (wye) or phase pair (delta) (impedance loads).
-      Complex I[3];                    ///< Constant current / phase (wye) or phase pair (delta).
+      Array<Complex, 3> V;             ///< Bus voltage / phase (wye) or phase pair (delta).
+      Array<Complex, 3> S;             ///< Constant power / phase (wye) or phase pair (delta).
+      Array<Complex, 3> Y;             ///< Constant admittance/phase (wye) or phase pair (delta) (impedance loads).
+      Array<Complex, 3> I;             ///< Constant current / phase (wye) or phase pair (delta).
       std::vector<int> Link_Table;     ///< Table of links that connect to us (for population purposes).
-      double PL[3];                    ///< Real power component of total bus load.
-      double QL[3];                    ///< Reactive power component of total bus load.
-      double PG[3];                    ///< Real power generation at generator bus.
-      double QG[3];                    ///< Reactive power generation at generator bus.
+      Array<double, 3> PL;             ///< Real power component of total bus load.
+      Array<double, 3> QL;             ///< Reactive power component of total bus load.
+      Array<double, 3> PG;             ///< Real power generation at generator bus.
+      Array<double, 3> QG;             ///< Reactive power generation at generator bus.
       double kv_base;                  ///< kV basis.
       double mva_base;                 ///< MVA basis.
-      double Jacob_A[3];               ///< Element a in equation (37).
+      Array<double, 3> Jacob_A;        ///< Element a in equation (37).
                                        /**< Used to update the Jacobian matrix at each iteration. */
-      double Jacob_B[3];               ///< Element b in equation (38).
+      Array<double, 3> Jacob_B;        ///< Element b in equation (38).
                                        /**< Used to update the Jacobian matrix at each iteration. */
-      double Jacob_C[3];               ///< Element c in equation (39).
+      Array<double, 3> Jacob_C;        ///< Element c in equation (39).
                                        /**< Used to update the Jacobian matrix at each iteration. */
-      double Jacob_D[3];               ///< Element d in equation (40).
+      Array<double, 3> Jacob_D;        ///< Element d in equation (40).
                                        /**< Used to update the Jacobian matrix at each iteration. */
       unsigned int Matrix_Loc;         ///< Starting idx of object's place in all matrices/equations.
       double max_volt_error;           ///< Maximum voltage error specified for node.
@@ -94,7 +79,7 @@ namespace SmartGridToolbox
    struct Bus_admit {
       int row_ind;                     ///< Row loc of the element in n*n bus admittance matrix in NR solver.
       int col_ind;                     ///< Col loc of the element in n*n bus admittance matrix in NR solver.
-      Complex Y[3][3];                 ///< Complex value of elements in bus admittance matrix in NR solver.
+      Matrix<Complex, 3, 3> Y;         ///< Complex value of elements in bus admittance matrix in NR solver.
       char size;                       ///< Size of the admittance diagonal.Assumed square, useful for smaller size.
    };
    typedef struct Bus_admit Bus_admit;

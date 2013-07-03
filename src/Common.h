@@ -8,30 +8,26 @@
 
 namespace SmartGridToolbox
 {
-   // Constants.
-   const double pi = 3.141592653589793238462643383279502884;
-   const double second = 1.0;
-   const double minute = 60.0 * second;
-   const double hour = 60.0 * minute;
-   const double day = 24.0 * hour;
-   const double week = 7 * day;
-   const double J = 1.0;
-   const double kJ = 1000.0 * J;
-   const double W = J / second;
-   const double kW = 1000.0 * W;
-   const double kWh = kW * hour;
-   const double A = 1.0; 
-   const double C = A / second; 
-   const double K = 1.0; 
+   /// @name Array Type
+   /// @{
+   template <class T, size_t N>
+   using Array = std::array<T, N>;
+   /// @}
 
-   // Complex numbers.
+   /// @name Matrix Type
+   /// @{
+   template <class T, size_t NR, size_t NC>
+   using Matrix = std::array<std::array<T, NC>, NR>;
+   /// @}
+
+   /// @name Complex numbers
+   /// @{
    typedef std::complex<double> Complex;
 
-   const Complex czero = Complex(0.0, 0.0);
-
-   inline void setPolar(Complex & c, double M, double theta)
+   inline Complex Polar(double m, double theta)
    {
-      c.real(M * cos(theta)); c.imag(M * sin(theta)); 
+      // Note the following will use RVO in C++11, no unneeded temporaries.
+      return Complex(m * cos(theta), m * sin(theta));
    }
 
    inline Complex operator*(int i, const Complex & c) 
@@ -43,8 +39,10 @@ namespace SmartGridToolbox
    {
       return Complex(i * c.real(), i * c.imag());
    }
+   /// @}
 
-   // Time stuff.
+   /// @name Time
+   /// @{
    using namespace boost::posix_time;
    using namespace boost::gregorian;
 
@@ -62,6 +60,26 @@ namespace SmartGridToolbox
    {
       return dSeconds(t - epoch);
    }
+   /// @}
+
+   /// @name Constants
+   /// @{
+   const double pi = 3.141592653589793238462643383279502884;
+   const double second = 1.0;
+   const double minute = 60.0 * second;
+   const double hour = 60.0 * minute;
+   const double day = 24.0 * hour;
+   const double week = 7 * day;
+   const double J = 1.0;
+   const double kJ = 1000.0 * J;
+   const double W = J / second;
+   const double kW = 1000.0 * W;
+   const double kWh = kW * hour;
+   const double A = 1.0; 
+   const double C = A / second; 
+   const double K = 1.0; 
+   const Complex czero = Complex(0.0, 0.0);
+   /// @}
 }
 
 #endif // COMMON_DOT_H
