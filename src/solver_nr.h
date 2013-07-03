@@ -6,7 +6,7 @@
 
 namespace SmartGridToolbox
 {
-   enum class BusType
+   enum class BusType : int
    {
       PQ = 0,
       PV = 1,
