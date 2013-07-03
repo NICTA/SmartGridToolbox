@@ -13,6 +13,21 @@ namespace SmartGridToolbox
       SL = 2
    };
 
+   class ThreePhase
+   {
+      public :
+         ThreePhase(Am, At, Bm, Bt, Cm, Ct) : A(Am*cos(At), Am*sin(At)),
+                                              B(Bm*cos(Bt), Bm*sin(Bt)),
+                                              C(Cm*cos(Ct), Bm*sin(Ct))
+         {
+            // Empty.
+         };
+
+         Complex A;
+         Complex B;
+         Complex C;
+   }
+
    struct  BUSDATA
    {
       BusType type;                    ///< bus type (0=PQ, 1=PV, 2=SWING).
