@@ -20,7 +20,7 @@ namespace SmartGridToolbox
                                        /**  0x01 = C
                                         *   0x02 = B
                                         *   0x04 = A
-                                        *   0x08 = D
+                                        *   0x08 = D (== ABC)
                                         *   0x10 = Diff phase child
                                         *   0x20 = To side of SPCT
                                         *   0x40 = House present
