@@ -61,25 +61,25 @@ namespace SmartGridToolbox
    typedef struct NrBranchData NrBranchData;
 
    struct YNr {
-      int row_ind;                     ///< row loc of the element in 6n*6n Y matrix in NR solver.
-      int col_ind;                     ///< col location of the element in 6n*6n Y matrix in NR solver.
-      double Y_value;                  ///< value of the element in 6n*6n Y matrix in NR solver.
+      int rowInd;                      ///< row loc of the element in 6n*6n Y matrix in NR solver.
+      int colInd;                      ///< col location of the element in 6n*6n Y matrix in NR solver.
+      double YValue;                   ///< value of the element in 6n*6n Y matrix in NR solver.
    };
    typedef struct YNr YNr;
 
    struct BusAdmit {
-      int row_ind;                     ///< Row loc of the element in n*n bus admittance matrix in NR solver.
-      int col_ind;                     ///< Col loc of the element in n*n bus admittance matrix in NR solver.
+      int rowInd;                      ///< Row loc of the element in n*n bus admittance matrix in NR solver.
+      int colInd;                      ///< Col loc of the element in n*n bus admittance matrix in NR solver.
       Matrix<Complex, 3, 3> Y;         ///< Complex value of elements in bus admittance matrix in NR solver.
       char size;                       ///< Size of the admittance diagonal.Assumed square, useful for smaller size.
    };
    typedef struct BusAdmit BusAdmit;
 
    struct NrSolverVars {
-      double *a_LU;
-      double *rhs_LU;
-      int *cols_LU;
-      int *rows_LU;
+      double *aLU;
+      double *rhsLU;
+      int *colsLU;
+      int *rowsLU;
    };
    typedef struct NrSolverVars NrSolverVars;
 
