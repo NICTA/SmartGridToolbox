@@ -17,13 +17,13 @@
 namespace SmartGridToolbox
 {
 
-   void merge_sort(Y_NR *Input_Array, unsigned int Alen, Y_NR *Work_Array)
+   void merge_sort(YNr *Input_Array, unsigned int Alen, YNr *Work_Array)
    {
       // Merge sorting algorithm basis stolen from auction.cpp in market module.
       unsigned int split_point;
       unsigned int right_length;
-      Y_NR *leftside, *rightside;
-      Y_NR *Final_P;
+      YNr *leftside, *rightside;
+      YNr *Final_P;
 
       if (Alen>0) // Only occurs if over zero
       {
@@ -80,16 +80,16 @@ namespace SmartGridToolbox
             *Final_P++ = *rightside++;
          // Put any remaining entries into list.
 
-         memcpy(Input_Array,Work_Array,sizeof(Y_NR)*Alen);
+         memcpy(Input_Array,Work_Array,sizeof(YNr)*Alen);
          // Copy the result back into the input
       } // End length > 0
    }
 
-   void buildAdmit(unsigned int bus_count, BUSDATA *bus, unsigned int branch_count, BRANCHDATA *branch,
+   void buildAdmit(unsigned int bus_count, NrBusData *bus, unsigned int branch_count, NrBranchData *branch,
                    unsigned int max_total_variables, unsigned int & total_variables,
-                   Bus_admit * & BA_diag, 
-                   unsigned int & size_offdiag_PQ, Y_NR * & Y_offdiag_PQ, 
-                   unsigned int & size_diag_fixed, Y_NR * & Y_diag_fixed, 
+                   BusAdmit * & BA_diag, 
+                   unsigned int & size_offdiag_PQ, YNr * & Y_offdiag_PQ, 
+                   unsigned int & size_diag_fixed, YNr * & Y_diag_fixed, 
                    bool & NR_realloc_needed)
    {
       static unsigned int max_size_offdiag_PQ, max_size_diag_fixed;
@@ -122,7 +122,7 @@ namespace SmartGridToolbox
       //Build the diagnoal elements of the bus admittance matrix - this should only happen once no matter what
       if (BA_diag == NULL)
       {
-         BA_diag = (Bus_admit *)malloc(bus_count *sizeof(Bus_admit));
+         BA_diag = (BusAdmit *)malloc(bus_count *sizeof(BusAdmit));
          // BA_diag store the location and value of diagonal elements of Bus Admittance matrix
 
          //Make sure it worked
@@ -158,10 +158,10 @@ namespace SmartGridToolbox
          }
 
          //Now go through all of the branches to get the self admittance information (hinges on size)
-         for (kindexer=0; kindexer<(bus[indexer].Link_Table.size());kindexer++)
+         for (kindexer=0; kindexer<(bus[indexer].linkTable.size());kindexer++)
          {
             //Assign jindexer as intermediate variable (easier for me this way)
-            jindexer = bus[indexer].Link_Table[kindexer];
+            jindexer = bus[indexer].linkTable[kindexer];
 
             if ((branch[jindexer].from == indexer) || (branch[jindexer].to == indexer))
                // Bus is the from or to side of things - not sure how it would be in link table otherwise, but meh
@@ -410,7 +410,7 @@ namespace SmartGridToolbox
          //Store the self admittance into BA_diag.  Also update the indices for possible use later
          BA_diag[indexer].col_ind = BA_diag[indexer].row_ind = index_count;
          // Store the row and column starting information (square matrices)
-         bus[indexer].Matrix_Loc = index_count; // Store our location so we know where we go
+         bus[indexer].matLoc = index_count; // Store our location so we know where we go
          index_count += BA_diag[indexer].size;
          // Update the index for this matrix's size, so next one is in appropriate place
 
@@ -433,7 +433,7 @@ namespace SmartGridToolbox
       if (total_variables > max_total_variables)
          NR_realloc_needed = true;
 
-      // Build the off_diagonal_PQ bus elements of 6n*6n Y_NR matrix.Equation (12). All the value in this part
+      // Build the off_diagonal_PQ bus elements of 6n*6n YNr matrix.Equation (12). All the value in this part
       // will not be updated at each iteration.
       // Constructed using sparse methodology, non-zero elements are the only thing considered (and non-PV)
       // No longer necessarily 6n*6n any more either,
@@ -444,7 +444,7 @@ namespace SmartGridToolbox
          tempb  = branch[jindexer].to;
 
          //Preliminary check to make sure we weren't missed in the initialization
-         if ((bus[tempa].Matrix_Loc == -1) || (bus[tempb].Matrix_Loc == -1))
+         if ((bus[tempa].matLoc == -1) || (bus[tempb].matLoc == -1))
          {
             error("An element in NR line:%d was not properly localized");
             /*  TROUBLESHOOT
@@ -492,7 +492,7 @@ namespace SmartGridToolbox
       //Allocate the space - double the number found (each element goes in two places)
       if (Y_offdiag_PQ == NULL)
       {
-         Y_offdiag_PQ = (Y_NR *)malloc((size_offdiag_PQ*2) *sizeof(Y_NR));
+         Y_offdiag_PQ = (YNr *)malloc((size_offdiag_PQ*2) *sizeof(YNr));
          // Y_offdiag_PQ store the row,column and value of off_diagonal elements of Bus Admittance matrix in
          // which all the buses are not PV buses.
 
@@ -510,7 +510,7 @@ namespace SmartGridToolbox
          free(Y_offdiag_PQ);
 
          //Rebuild us, we have the technology
-         Y_offdiag_PQ = (Y_NR *)malloc((size_offdiag_PQ*2) *sizeof(Y_NR));
+         Y_offdiag_PQ = (YNr *)malloc((size_offdiag_PQ*2) *sizeof(YNr));
 
          //Make sure it worked
          if (Y_offdiag_PQ == NULL)
@@ -558,12 +558,12 @@ namespace SmartGridToolbox
                         if ((imag(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
                               (bus[tempb].type != BusType::PV)) //From imags
                         {
-                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + jindex;
-                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + kindex;
+                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + jindex;
+                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + kindex;
                            Y_offdiag_PQ[indexer].Y_value = -(imag(branch[jindexer].Yfrom[jindex*3+kindex]));
                            indexer += 1;
-                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + jindex + 3;
-                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + kindex + 3;
+                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + jindex + 3;
+                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + kindex + 3;
                            Y_offdiag_PQ[indexer].Y_value = imag(branch[jindexer].Yfrom[jindex*3+kindex]);
                            indexer += 1;
                         }
@@ -571,12 +571,12 @@ namespace SmartGridToolbox
                         if ((imag(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
                               (bus[tempb].type != BusType::PV)) //To imags
                         {
-                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + jindex;
-                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + kindex;
+                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + jindex;
+                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + kindex;
                            Y_offdiag_PQ[indexer].Y_value = -(imag(branch[jindexer].Yto[jindex*3+kindex]));
                            indexer += 1;
-                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + jindex + 3;
-                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + kindex + 3;
+                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + jindex + 3;
+                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + kindex + 3;
                            Y_offdiag_PQ[indexer].Y_value = imag(branch[jindexer].Yto[jindex*3+kindex]);
                            indexer += 1;
                         }
@@ -584,12 +584,12 @@ namespace SmartGridToolbox
                         if ((real(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
                               (bus[tempb].type != BusType::PV)) //From reals
                         {
-                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + jindex + 3;
-                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + kindex;
+                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + jindex + 3;
+                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + kindex;
                            Y_offdiag_PQ[indexer].Y_value = -(real(branch[jindexer].Yfrom[jindex*3+kindex]));
                            indexer += 1;
-                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + jindex;
-                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + kindex + 3;
+                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + jindex;
+                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + kindex + 3;
                            Y_offdiag_PQ[indexer].Y_value = -(real(branch[jindexer].Yfrom[jindex*3+kindex]));
                            indexer += 1;
                         }
@@ -597,12 +597,12 @@ namespace SmartGridToolbox
                         if ((real(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
                               (bus[tempb].type != BusType::PV)) //To reals
                         {
-                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + jindex + 3;
-                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + kindex;
+                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + jindex + 3;
+                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + kindex;
                            Y_offdiag_PQ[indexer].Y_value = -(real(branch[jindexer].Yto[jindex*3+kindex]));
                            indexer += 1;
-                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + jindex;
-                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + kindex + 3;
+                           Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + jindex;
+                           Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + kindex + 3;
                            Y_offdiag_PQ[indexer].Y_value = -(real(branch[jindexer].Yto[jindex*3+kindex]));
                            indexer += 1;
                         }
@@ -1027,13 +1027,13 @@ namespace SmartGridToolbox
                   if ((imag(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //From imags
                   {
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex*2;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex;
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + temp_index + jindex*2;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + temp_index_b + kindex;
                      Y_offdiag_PQ[indexer].Y_value = -(imag(Temp_Ad_A[jindex][kindex]));
                      indexer += 1;
 
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex*2 + temp_size;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + temp_index + jindex*2 + temp_size;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + temp_index_b + kindex
                         + temp_size_b;
                      Y_offdiag_PQ[indexer].Y_value = (imag(Temp_Ad_A[jindex][kindex]));
                      indexer += 1;
@@ -1042,14 +1042,14 @@ namespace SmartGridToolbox
                   if ((imag(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
                         (bus[tempb].type != BusType::PV)) // To imags
                   {
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex*2;
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + temp_index_b + jindex;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + temp_index + kindex*2;
                      Y_offdiag_PQ[indexer].Y_value = -(imag(Temp_Ad_B[jindex][kindex]));
                      indexer += 1;
 
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + temp_index_b + jindex
                         + temp_size_b;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex*2 + temp_size;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + temp_index + kindex*2 + temp_size;
                      Y_offdiag_PQ[indexer].Y_value = imag(Temp_Ad_B[jindex][kindex]);
                      indexer += 1;
                   }
@@ -1057,13 +1057,13 @@ namespace SmartGridToolbox
                   if ((real(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //From reals
                   {
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex*2 + temp_size;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex;
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + temp_index + jindex*2 + temp_size;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + temp_index_b + kindex;
                      Y_offdiag_PQ[indexer].Y_value = -(real(Temp_Ad_A[jindex][kindex]));
                      indexer += 1;
 
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex*2;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + temp_index + jindex*2;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + temp_index_b + kindex
                         + temp_size_b;
                      Y_offdiag_PQ[indexer].Y_value = -(real(Temp_Ad_A[jindex][kindex]));
                      indexer += 1;
@@ -1072,14 +1072,14 @@ namespace SmartGridToolbox
                   if ((real(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //To reals
                   {
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + temp_index_b + jindex
                         + temp_size_b;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex*2;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + temp_index + kindex*2;
                      Y_offdiag_PQ[indexer].Y_value = -(real(Temp_Ad_B[jindex][kindex]));
                      indexer += 1;
 
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex*2 + temp_size;
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + temp_index_b + jindex;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + temp_index + kindex*2 + temp_size;
                      Y_offdiag_PQ[indexer].Y_value = -(real(Temp_Ad_B[jindex][kindex]));
                      indexer += 1;
                   }
@@ -1097,13 +1097,13 @@ namespace SmartGridToolbox
                   if ((imag(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //From imags
                   {
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex*2;
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + temp_index + jindex;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + temp_index_b + kindex*2;
                      Y_offdiag_PQ[indexer].Y_value = -(imag(Temp_Ad_A[jindex][kindex]));
                      indexer += 1;
 
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex + temp_size;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex*2
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + temp_index + jindex + temp_size;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + temp_index_b + kindex*2
                         + temp_size_b;
                      Y_offdiag_PQ[indexer].Y_value = (imag(Temp_Ad_A[jindex][kindex]));
                      indexer += 1;
@@ -1112,14 +1112,14 @@ namespace SmartGridToolbox
                   if ((imag(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //To imags
                   {
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex*2;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex;
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + temp_index_b + jindex*2;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + temp_index + kindex;
                      Y_offdiag_PQ[indexer].Y_value = -(imag(Temp_Ad_B[jindex][kindex]));
                      indexer += 1;
 
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex*2
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + temp_index_b + jindex*2
                         + temp_size_b;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex + temp_size;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + temp_index + kindex + temp_size;
                      Y_offdiag_PQ[indexer].Y_value = imag(Temp_Ad_B[jindex][kindex]);
                      indexer += 1;
                   }
@@ -1127,13 +1127,13 @@ namespace SmartGridToolbox
                   if ((real(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
                         (bus[tempb].type != BusType::PV)) //From reals
                   {
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex + temp_size;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex*2;
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + temp_index + jindex + temp_size;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + temp_index_b + kindex*2;
                      Y_offdiag_PQ[indexer].Y_value = -(real(Temp_Ad_A[jindex][kindex]));
                      indexer += 1;
 
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex*2
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + temp_index + jindex;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + temp_index_b + kindex*2
                         + temp_size_b;
                      Y_offdiag_PQ[indexer].Y_value = -(real(Temp_Ad_A[jindex][kindex]));
                      indexer += 1;
@@ -1142,14 +1142,14 @@ namespace SmartGridToolbox
                   if ((real(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //To reals
                   {
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex*2
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + temp_index_b + jindex*2
                         + temp_size_b;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + temp_index + kindex;
                      Y_offdiag_PQ[indexer].Y_value = -(real(Temp_Ad_B[jindex][kindex]));
                      indexer += 1;
 
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex*2;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex + temp_size;
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + temp_index_b + jindex*2;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + temp_index + kindex + temp_size;
                      Y_offdiag_PQ[indexer].Y_value = -(real(Temp_Ad_B[jindex][kindex]));
                      indexer += 1;
                   }
@@ -1168,13 +1168,13 @@ namespace SmartGridToolbox
                   if ((imag(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //From imags
                   {
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex;
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + temp_index + jindex;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + temp_index_b + kindex;
                      Y_offdiag_PQ[indexer].Y_value = -(imag(Temp_Ad_A[jindex][kindex]));
                      indexer += 1;
 
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex + temp_size;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + temp_index + jindex + temp_size;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + temp_index_b + kindex
                         + temp_size_b;
                      Y_offdiag_PQ[indexer].Y_value = (imag(Temp_Ad_A[jindex][kindex]));
                      indexer += 1;
@@ -1183,14 +1183,14 @@ namespace SmartGridToolbox
                   if ((imag(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //To imags
                   {
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex;
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + temp_index_b + jindex;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + temp_index + kindex;
                      Y_offdiag_PQ[indexer].Y_value = -(imag(Temp_Ad_B[jindex][kindex]));
                      indexer += 1;
 
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + temp_index_b + jindex
                         + temp_size_b;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex + temp_size;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + temp_index + kindex + temp_size;
                      Y_offdiag_PQ[indexer].Y_value = imag(Temp_Ad_B[jindex][kindex]);
                      indexer += 1;
                   }
@@ -1198,13 +1198,13 @@ namespace SmartGridToolbox
                   if ((real(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //From reals
                   {
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex + temp_size;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex;
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + temp_index + jindex + temp_size;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + temp_index_b + kindex;
                      Y_offdiag_PQ[indexer].Y_value = -(real(Temp_Ad_A[jindex][kindex]));
                      indexer += 1;
 
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].Matrix_Loc + temp_index + jindex;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + kindex
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempa].matLoc + temp_index + jindex;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempb].matLoc + temp_index_b + kindex
                         + temp_size_b;
                      Y_offdiag_PQ[indexer].Y_value = -(real(Temp_Ad_A[jindex][kindex]));
                      indexer += 1;
@@ -1213,14 +1213,14 @@ namespace SmartGridToolbox
                   if ((real(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
                      //To reals
                   {
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + temp_index_b + jindex
                         + temp_size_b;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + temp_index + kindex;
                      Y_offdiag_PQ[indexer].Y_value = -(real(Temp_Ad_B[jindex][kindex]));
                      indexer += 1;
 
-                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].Matrix_Loc + temp_index_b + jindex;
-                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].Matrix_Loc + temp_index + kindex + temp_size;
+                     Y_offdiag_PQ[indexer].row_ind = 2*bus[tempb].matLoc + temp_index_b + jindex;
+                     Y_offdiag_PQ[indexer].col_ind = 2*bus[tempa].matLoc + temp_index + kindex + temp_size;
                      Y_offdiag_PQ[indexer].Y_value = -(real(Temp_Ad_B[jindex][kindex]));
                      indexer += 1;
                   }
@@ -1229,7 +1229,7 @@ namespace SmartGridToolbox
          } //end not full ABC with AC on either side case
       } //end branch for
 
-      // Build the fixed part of the diagonal PQ bus elements of 6n*6n Y_NR matrix.
+      // Build the fixed part of the diagonal PQ bus elements of 6n*6n YNr matrix.
       // This part will not be updated at each iteration.
       size_diag_fixed = 0;
       for (jindexer=0; jindexer<bus_count;jindexer++)
@@ -1248,9 +1248,9 @@ namespace SmartGridToolbox
       }
       if (Y_diag_fixed == NULL)
       {
-         Y_diag_fixed = (Y_NR *)malloc((size_diag_fixed*2) *sizeof(Y_NR));
+         Y_diag_fixed = (YNr *)malloc((size_diag_fixed*2) *sizeof(YNr));
          // Store the row,column and value of the fixed part of the diagonal PQ bus elements of 6n*6n
-         // Y_NR matrix.
+         // YNr matrix.
 
          //Make sure it worked
          if (Y_diag_fixed == NULL)
@@ -1265,7 +1265,7 @@ namespace SmartGridToolbox
          free(Y_diag_fixed);
 
          //Rebuild us, we have the technology
-         Y_diag_fixed = (Y_NR *)malloc((size_diag_fixed*2) *sizeof(Y_NR));
+         Y_diag_fixed = (YNr *)malloc((size_diag_fixed*2) *sizeof(YNr));
 
          //Make sure it worked
          if (Y_diag_fixed == NULL)
@@ -1319,7 +1319,7 @@ namespace SmartGridToolbox
     *  Solves a power flow problem using the Newton-Raphson method
     *  @return n=0 on failure to complete a single iteration, n>0 to indicate success after n interations, or
     *  n<0 to indicate failure after n iterations. */
-   int solver_nr(unsigned int bus_count, BUSDATA *bus, unsigned int branch_count, BRANCHDATA *branch,
+   int solver_nr(unsigned int bus_count, NrBusData *bus, unsigned int branch_count, NrBranchData *branch,
          bool *bad_computations)
    {
       // TODO: The following static variables, added by Dan, are temporary replacements for Gridlab-D globals.
@@ -1335,22 +1335,22 @@ namespace SmartGridToolbox
 
       static unsigned int max_size_diag_update;
 
-      static Bus_admit *BA_diag;
+      static BusAdmit *BA_diag;
          // Store the diagonal elements of the bus admittance matrix. The off_diag elements of bus admittance matrix
          // are equal to negative value of branch admittance.
       static unsigned int size_offdiag_PQ;
-      static Y_NR *Y_offdiag_PQ;
-         // Store the row,column and value of off_diagonal elements of 6n*6n Y_NR matrix. No PV bus is included.
+      static YNr *Y_offdiag_PQ;
+         // Store the row,column and value of off_diagonal elements of 6n*6n YNr matrix. No PV bus is included.
       static unsigned int size_diag_fixed;
-      static Y_NR *Y_diag_fixed;
-         // Y_diag_fixed store the row,column and value of fixed diagonal elements of 6n*6n Y_NR matrix. No PV bus is
+      static YNr *Y_diag_fixed;
+         // Y_diag_fixed store the row,column and value of fixed diagonal elements of 6n*6n YNr matrix. No PV bus is
          // included.
-      static Y_NR *Y_diag_update;
-         // Y_diag_update store the row,column and value of updated diagonal elements of 6n*6n Y_NR matrix at each
+      static YNr *Y_diag_update;
+         // Y_diag_update store the row,column and value of updated diagonal elements of 6n*6n YNr matrix at each
          // iteration. No PV bus is included.
-      static Y_NR *Y_Amatrix;
+      static YNr *Y_Amatrix;
          // Y_Amatrix store all the elements of Amatrix in equation AX=B;
-      static Y_NR *Y_Work_Amatrix;
+      static YNr *Y_Work_Amatrix;
 
       // Variables used to determine realloaction state
       static unsigned int prev_m;
@@ -1358,7 +1358,7 @@ namespace SmartGridToolbox
       static bool NR_realloc_needed;
 
       // Generic solver variables
-      static NR_SOLVER_VARS matrices_LU;
+      static NrSolverVars matrices_LU;
 
       // SuperLU variables
       static int *perm_c, *perm_r;
@@ -1868,11 +1868,11 @@ namespace SmartGridToolbox
                      error("NR: A voltage index failed to be found.");
                   }
 
-                  for (kindexer=0; kindexer<(bus[indexer].Link_Table.size()); kindexer++)
+                  for (kindexer=0; kindexer<(bus[indexer].linkTable.size()); kindexer++)
                      // Parse through the branch list
                   {
                      // Apply proper index to jindexer (easier to implement this way)
-                     jindexer=bus[indexer].Link_Table[kindexer];
+                     jindexer=bus[indexer].linkTable[kindexer];
 
                      if (branch[jindexer].from == indexer)
                      {
@@ -1924,17 +1924,17 @@ namespace SmartGridToolbox
                {
                   work_vals_double_1 = real(bus[indexer].V[temp_index_b]);
                   work_vals_double_2 = imag(bus[indexer].V[temp_index_b]);
-                  deltaI_NR[2*bus[indexer].Matrix_Loc+ BA_diag[indexer].size + jindex] = (tempPbus *
+                  deltaI_NR[2*bus[indexer].matLoc+ BA_diag[indexer].size + jindex] = (tempPbus *
                         work_vals_double_1 + tempQbus * work_vals_double_2)/ (work_vals_double_0) - tempIcalcReal ;
                   // equation(7), Real part of deltaI, left hand side of equation (11)
-                  deltaI_NR[2*bus[indexer].Matrix_Loc + jindex] = (tempPbus * work_vals_double_2 - tempQbus *
+                  deltaI_NR[2*bus[indexer].matLoc + jindex] = (tempPbus * work_vals_double_2 - tempQbus *
                         work_vals_double_1)/ (work_vals_double_0) - tempIcalcImag;
                   // Imaginary part of deltaI, left hand side of equation (11)
                }
                else
                {
-                  deltaI_NR[2*bus[indexer].Matrix_Loc+BA_diag[indexer].size + jindex] = 0.0;
-                  deltaI_NR[2*bus[indexer].Matrix_Loc + jindex] = 0.0;
+                  deltaI_NR[2*bus[indexer].matLoc+BA_diag[indexer].size + jindex] = 0.0;
+                  deltaI_NR[2*bus[indexer].matLoc + jindex] = 0.0;
                }
             } // End delta_I for each phase row
          } // End delta_I for each bus
@@ -2110,22 +2110,22 @@ namespace SmartGridToolbox
 
                   if (abs(bus[indexer].V[temp_index_b])!=0)
                   {
-                     bus[indexer].Jacob_A[temp_index] = (real(bus[indexer].V[temp_index_b])*
+                     bus[indexer].JacobA[temp_index] = (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) +
                            imag(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
                         pow(abs(bus[indexer].V[temp_index_b]),3);
                      // second part of equation(37) - no power term needed
-                     bus[indexer].Jacob_B[temp_index] = -(real(bus[indexer].V[temp_index_b])*
+                     bus[indexer].JacobB[temp_index] = -(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) +
                            real(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
                         pow(abs(bus[indexer].V[temp_index_b]),3);
                      // second part of equation(38) - no power term needed
-                     bus[indexer].Jacob_C[temp_index] =(real(bus[indexer].V[temp_index_b])*
+                     bus[indexer].JacobC[temp_index] =(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) -
                            real(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
                         pow(abs(bus[indexer].V[temp_index_b]),3);
                      // second part of equation(39) - no power term needed
-                     bus[indexer].Jacob_D[temp_index] = (real(bus[indexer].V[temp_index_b])*
+                     bus[indexer].JacobD[temp_index] = (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) -
                            imag(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
                         pow(abs(bus[indexer].V[temp_index_b]),3);
@@ -2135,10 +2135,10 @@ namespace SmartGridToolbox
                      // not entirely sure how this gets in here anyhow
                   {
                      // Small offset to avoid singularities (if impedance is zero too)
-                     bus[indexer].Jacob_A[temp_index] = -1e-4;
-                     bus[indexer].Jacob_B[temp_index] = -1e-4;
-                     bus[indexer].Jacob_C[temp_index] = -1e-4;
-                     bus[indexer].Jacob_D[temp_index] = -1e-4;
+                     bus[indexer].JacobA[temp_index] = -1e-4;
+                     bus[indexer].JacobB[temp_index] = -1e-4;
+                     bus[indexer].JacobC[temp_index] = -1e-4;
+                     bus[indexer].JacobD[temp_index] = -1e-4;
                   }
                } // End phase traversion
             } // end delta-connected load
@@ -2223,66 +2223,66 @@ namespace SmartGridToolbox
 
                   if (abs(bus[indexer].V[temp_index_b])!=0)
                   {
-                     bus[indexer].Jacob_A[temp_index] = (imag(bus[indexer].S[temp_index_b]) *
+                     bus[indexer].JacobA[temp_index] = (imag(bus[indexer].S[temp_index_b]) *
                            (pow(real(bus[indexer].V[temp_index_b]),2) - pow(imag(bus[indexer].V[temp_index_b]),2)) -
                            2*real(bus[indexer].V[temp_index_b])*imag(bus[indexer].V[temp_index_b])*
                            real(bus[indexer].S[temp_index_b]))/pow(abs(bus[indexer].V[temp_index_b]),4);
                      // first part of equation(37)
-                     bus[indexer].Jacob_A[temp_index] += (real(bus[indexer].V[temp_index_b])*
+                     bus[indexer].JacobA[temp_index] += (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(bus[indexer].I[temp_index_b]) +
                            imag(bus[indexer].I[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
                         pow(abs(bus[indexer].V[temp_index_b]),3) + imag(bus[indexer].Y[temp_index_b]);
                      // second part of equation(37)
-                     bus[indexer].Jacob_A[temp_index] += (real(bus[indexer].V[temp_index_b])*
+                     bus[indexer].JacobA[temp_index] += (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) +
                            imag(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
                         pow(abs(bus[indexer].V[temp_index_b]),3);
                      // current part of equation (37) - Handles "different" children
 
-                     bus[indexer].Jacob_B[temp_index] = (real(bus[indexer].S[temp_index_b]) *
+                     bus[indexer].JacobB[temp_index] = (real(bus[indexer].S[temp_index_b]) *
                            (pow(real(bus[indexer].V[temp_index_b]),2) -
                             pow(imag(bus[indexer].V[temp_index_b]),2)) +
                            2*real(bus[indexer].V[temp_index_b])*imag(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].S[temp_index_b]))/pow(abs(bus[indexer].V[temp_index_b]),4);
                      // first part of equation(38)
-                     bus[indexer].Jacob_B[temp_index] += -(real(bus[indexer].V[temp_index_b])*
+                     bus[indexer].JacobB[temp_index] += -(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(bus[indexer].I[temp_index_b]) +
                            real(bus[indexer].I[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
                         pow(abs(bus[indexer].V[temp_index_b]),3) - real(bus[indexer].Y[temp_index_b]);
                      // second part of equation(38)
-                     bus[indexer].Jacob_B[temp_index] += -(real(bus[indexer].V[temp_index_b])*
+                     bus[indexer].JacobB[temp_index] += -(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) +
                            real(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
                         pow(abs(bus[indexer].V[temp_index_b]),3);
                      // current part of equation(38) - Handles "different" children
 
-                     bus[indexer].Jacob_C[temp_index] = (real(bus[indexer].S[temp_index_b]) *
+                     bus[indexer].JacobC[temp_index] = (real(bus[indexer].S[temp_index_b]) *
                            (pow(imag(bus[indexer].V[temp_index_b]),2) - pow(real(bus[indexer].V[temp_index_b]),2)) -
                            2*real(bus[indexer].V[temp_index_b])*imag(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].S[temp_index_b]))/pow(abs(bus[indexer].V[temp_index_b]),4);
                      // first part of equation(39)
-                     bus[indexer].Jacob_C[temp_index] +=(real(bus[indexer].V[temp_index_b])*
+                     bus[indexer].JacobC[temp_index] +=(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(bus[indexer].I[temp_index_b]) -
                            real(bus[indexer].I[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
                         pow(abs(bus[indexer].V[temp_index_b]),3) - real(bus[indexer].Y[temp_index_b]);
                      // second part of equation(39)
-                     bus[indexer].Jacob_C[temp_index] +=(real(bus[indexer].V[temp_index_b])*
+                     bus[indexer].JacobC[temp_index] +=(real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*imag(undeltacurr[temp_index_b]) -
                            real(undeltacurr[temp_index_b]) *pow(imag(bus[indexer].V[temp_index_b]),2))/
                         pow(abs(bus[indexer].V[temp_index_b]),3);
                      // Current part of equation(39) - Handles "different" children
 
-                     bus[indexer].Jacob_D[temp_index] = (imag(bus[indexer].S[temp_index_b]) *
+                     bus[indexer].JacobD[temp_index] = (imag(bus[indexer].S[temp_index_b]) *
                            (pow(real(bus[indexer].V[temp_index_b]),2) - pow(imag(bus[indexer].V[temp_index_b]),2)) -
                            2*real(bus[indexer].V[temp_index_b])*imag(bus[indexer].V[temp_index_b])*
                            real(bus[indexer].S[temp_index_b]))/pow(abs(bus[indexer].V[temp_index_b]),4);
                      // first part of equation(40)
-                     bus[indexer].Jacob_D[temp_index] += (real(bus[indexer].V[temp_index_b])*
+                     bus[indexer].JacobD[temp_index] += (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(bus[indexer].I[temp_index_b]) -
                            imag(bus[indexer].I[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
                         pow(abs(bus[indexer].V[temp_index_b]),3) - imag(bus[indexer].Y[temp_index_b]);
                      // second part of equation(40)
-                     bus[indexer].Jacob_D[temp_index] += (real(bus[indexer].V[temp_index_b])*
+                     bus[indexer].JacobD[temp_index] += (real(bus[indexer].V[temp_index_b])*
                            imag(bus[indexer].V[temp_index_b])*real(undeltacurr[temp_index_b]) -
                            imag(undeltacurr[temp_index_b]) *pow(real(bus[indexer].V[temp_index_b]),2))/
                         pow(abs(bus[indexer].V[temp_index_b]),3);
@@ -2291,11 +2291,11 @@ namespace SmartGridToolbox
                   }
                   else
                   {
-                     bus[indexer].Jacob_A[temp_index]= imag(bus[indexer].Y[temp_index_b]) - 1e-4;
+                     bus[indexer].JacobA[temp_index]= imag(bus[indexer].Y[temp_index_b]) - 1e-4;
                      // Small offset to avoid singularity issues
-                     bus[indexer].Jacob_B[temp_index]= -real(bus[indexer].Y[temp_index_b]) - 1e-4;
-                     bus[indexer].Jacob_C[temp_index]= -real(bus[indexer].Y[temp_index_b]) - 1e-4;
-                     bus[indexer].Jacob_D[temp_index]= -imag(bus[indexer].Y[temp_index_b]) - 1e-4;
+                     bus[indexer].JacobB[temp_index]= -real(bus[indexer].Y[temp_index_b]) - 1e-4;
+                     bus[indexer].JacobC[temp_index]= -real(bus[indexer].Y[temp_index_b]) - 1e-4;
+                     bus[indexer].JacobD[temp_index]= -imag(bus[indexer].Y[temp_index_b]) - 1e-4;
                   }
                } // End phase traversion - Wye
             } // End wye-connected load
@@ -2314,9 +2314,9 @@ namespace SmartGridToolbox
 
          if (Y_diag_update == NULL)
          {
-            Y_diag_update = (Y_NR *)malloc((4*size_diag_update) *sizeof(Y_NR));
+            Y_diag_update = (YNr *)malloc((4*size_diag_update) *sizeof(YNr));
             // Y_diag_update store the row,column and value of the dynamic part of the diagonal PQ bus elements of
-            // 6n*6n Y_NR matrix.
+            // 6n*6n YNr matrix.
 
             // Make sure it worked
             if (Y_diag_update == NULL)
@@ -2331,7 +2331,7 @@ namespace SmartGridToolbox
             free(Y_diag_update);
 
             // Make a new one in its image
-            Y_diag_update = (Y_NR *)malloc((4*size_diag_update) *sizeof(Y_NR));
+            Y_diag_update = (YNr *)malloc((4*size_diag_update) *sizeof(YNr));
 
             // Make sure it worked
             if (Y_diag_update == NULL)
@@ -2353,25 +2353,25 @@ namespace SmartGridToolbox
             {
                for (jindex=0; jindex<BA_diag[jindexer].size; jindex++)
                {
-                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].Matrix_Loc + jindex;
+                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].matLoc + jindex;
                   Y_diag_update[indexer].col_ind = Y_diag_update[indexer].row_ind;
                   Y_diag_update[indexer].Y_value = 1e10;
                   // swing bus gets large admittance
                   indexer += 1;
 
-                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].Matrix_Loc + jindex;
+                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].matLoc + jindex;
                   Y_diag_update[indexer].col_ind = Y_diag_update[indexer].row_ind + BA_diag[jindexer].size;
                   Y_diag_update[indexer].Y_value = 1e10;
                   // swing bus gets large admittance
                   indexer += 1;
 
-                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].Matrix_Loc + jindex + BA_diag[jindexer].size;
+                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].matLoc + jindex + BA_diag[jindexer].size;
                   Y_diag_update[indexer].col_ind = Y_diag_update[indexer].row_ind - BA_diag[jindexer].size;
                   Y_diag_update[indexer].Y_value = 1e10;
                   // swing bus gets large admittance
                   indexer += 1;
 
-                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].Matrix_Loc + jindex + BA_diag[jindexer].size;
+                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].matLoc + jindex + BA_diag[jindexer].size;
                   Y_diag_update[indexer].col_ind = Y_diag_update[indexer].row_ind;
                   Y_diag_update[indexer].Y_value = -1e10;
                   // swing bus gets large admittance
@@ -2383,31 +2383,31 @@ namespace SmartGridToolbox
             {
                for (jindex=0; jindex<BA_diag[jindexer].size; jindex++)
                {
-                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].Matrix_Loc + jindex;
+                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].matLoc + jindex;
                   Y_diag_update[indexer].col_ind = Y_diag_update[indexer].row_ind;
                   Y_diag_update[indexer].Y_value = imag(BA_diag[jindexer].Y[jindex][jindex]) +
-                     bus[jindexer].Jacob_A[jindex];
+                     bus[jindexer].JacobA[jindex];
                   // Equation(14)
                   indexer += 1;
 
-                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].Matrix_Loc + jindex;
+                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].matLoc + jindex;
                   Y_diag_update[indexer].col_ind = Y_diag_update[indexer].row_ind + BA_diag[jindexer].size;
                   Y_diag_update[indexer].Y_value = real(BA_diag[jindexer].Y[jindex][jindex]) +
-                     bus[jindexer].Jacob_B[jindex];
+                     bus[jindexer].JacobB[jindex];
                   // Equation(15)
                   indexer += 1;
 
-                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].Matrix_Loc + jindex + BA_diag[jindexer].size;
-                  Y_diag_update[indexer].col_ind = 2*bus[jindexer].Matrix_Loc + jindex;
+                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].matLoc + jindex + BA_diag[jindexer].size;
+                  Y_diag_update[indexer].col_ind = 2*bus[jindexer].matLoc + jindex;
                   Y_diag_update[indexer].Y_value = real(BA_diag[jindexer].Y[jindex][jindex]) +
-                     bus[jindexer].Jacob_C[jindex];
+                     bus[jindexer].JacobC[jindex];
                   // Equation(16)
                   indexer += 1;
 
-                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].Matrix_Loc + jindex + BA_diag[jindexer].size;
+                  Y_diag_update[indexer].row_ind = 2*bus[jindexer].matLoc + jindex + BA_diag[jindexer].size;
                   Y_diag_update[indexer].col_ind = Y_diag_update[indexer].row_ind;
                   Y_diag_update[indexer].Y_value = -imag(BA_diag[jindexer].Y[jindex][jindex]) +
-                     bus[jindexer].Jacob_D[jindex];
+                     bus[jindexer].JacobD[jindex];
                   // Equation(17)
                   indexer += 1;
                }
@@ -2436,7 +2436,7 @@ namespace SmartGridToolbox
 
          if (Y_Amatrix == NULL)
          {
-            Y_Amatrix = (Y_NR *)malloc((size_Amatrix) *sizeof(Y_NR));
+            Y_Amatrix = (YNr *)malloc((size_Amatrix) *sizeof(YNr));
             // Amatrix includes all the elements of Y_offdiag_PQ, Y_diag_fixed and Y_diag_update.
 
             // Make sure it worked
@@ -2449,7 +2449,7 @@ namespace SmartGridToolbox
             free(Y_Amatrix);
 
             // Create a new one that holds our new ampleness
-            Y_Amatrix = (Y_NR *)malloc((size_Amatrix) *sizeof(Y_NR));
+            Y_Amatrix = (YNr *)malloc((size_Amatrix) *sizeof(YNr));
 
             // Make sure it worked
             if (Y_Amatrix == NULL)
@@ -2484,7 +2484,7 @@ namespace SmartGridToolbox
          // Declare working array
          if (Y_Work_Amatrix == NULL)
          {
-            Y_Work_Amatrix = (Y_NR *)malloc(size_Amatrix*sizeof(Y_NR));
+            Y_Work_Amatrix = (YNr *)malloc(size_Amatrix*sizeof(YNr));
             if (Y_Work_Amatrix==NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
          }
@@ -2494,7 +2494,7 @@ namespace SmartGridToolbox
             free(Y_Work_Amatrix);
 
             // And in with the new
-            Y_Work_Amatrix = (Y_NR *)malloc(size_Amatrix*sizeof(Y_NR));
+            Y_Work_Amatrix = (YNr *)malloc(size_Amatrix*sizeof(YNr));
             if (Y_Work_Amatrix==NULL)
                error("NR: One of the SuperLU solver matrices failed to allocate");
          }
@@ -2802,13 +2802,13 @@ namespace SmartGridToolbox
                          */
                   }
 
-                  DVConvCheck[jindex]=Complex(sol_LU[(2*bus[indexer].Matrix_Loc+temp_index)],
-                        sol_LU[(2*bus[indexer].Matrix_Loc+BA_diag[indexer].size+temp_index)]);
+                  DVConvCheck[jindex]=Complex(sol_LU[(2*bus[indexer].matLoc+temp_index)],
+                        sol_LU[(2*bus[indexer].matLoc+BA_diag[indexer].size+temp_index)]);
                   bus[indexer].V[temp_index_b] += DVConvCheck[jindex];
 
                   // Pull off the magnitude (no sense calculating it twice)
                   CurrConvVal=abs(DVConvCheck[jindex]);
-                  if (CurrConvVal > bus[indexer].max_volt_error) // Check for convergence
+                  if (CurrConvVal > bus[indexer].maxVoltError) // Check for convergence
                      newiter=true;
                   // Flag that a new iteration must occur
 
