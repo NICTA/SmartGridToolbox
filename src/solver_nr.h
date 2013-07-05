@@ -6,13 +6,6 @@
 
 namespace SmartGridToolbox
 {
-   enum class BusType : int
-   {
-      PQ = 0,
-      PV = 1,
-      SL = 2
-   };
-
    struct  BUSDATA
    {
       BusType type;                    ///< bus type (0=PQ, 1=PV, 2=SWING).
@@ -20,11 +13,7 @@ namespace SmartGridToolbox
                                        /**  0x01 = C
                                         *   0x02 = B
                                         *   0x04 = A
-                                        *   0x08 = D (== ABC)
-                                        *   0x10 = Diff phase child
-                                        *   0x20 = To side of SPCT
-                                        *   0x40 = House present
-                                        *   0x80 = Split phase. */
+                                        *   0x08 = Delta (== ABC)
 
       // The following appear to be A/B/C to ground for wye and AB/BC/CA for delta.
       Array<Complex, 3> V;             ///< Bus voltage / phase (wye) or phase pair (delta).
