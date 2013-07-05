@@ -16,6 +16,7 @@ namespace SmartGridToolbox
 
    /// @name Matrix Type
    /// @{
+   // Note transposition of NR and NC to obey standard matrix index order. 
    template <class T, size_t NR, size_t NC>
    using Matrix = std::array<std::array<T, NC>, NR>;
    /// @}
