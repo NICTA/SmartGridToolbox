@@ -10,6 +10,10 @@ function [busdata, branchdata] = from_matpower(ifname, ofname)
    %  id    type  P     Q     M     theta gs    bs    IcR   IcI
 
    % Sort by type.
+   % KLUDGE: NO PV: turn to PQ and hope for the best! 
+   iPV = busdata(:, 2) == 2;
+   busdata(iPV, 2) = 1;
+
    iPQ = busdata(:, 2) == 1;
    iPV = busdata(:, 2) == 2;
    iSL = busdata(:, 2) == 3;

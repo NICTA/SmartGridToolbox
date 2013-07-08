@@ -8,7 +8,7 @@ function [S V bus Y] = nr(fname, maxiter);
       fx = nr_f(bus, G, B, x);
       Jx = nr_J(bus, G, B, x);
       x = x - Jx\fx;
-      err = max(fx.^2);
+      err = max(fx.^2)
       if (err < tol)
          break;
       end
