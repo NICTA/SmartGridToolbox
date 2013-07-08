@@ -54,7 +54,6 @@ namespace SmartGridToolbox
       Complex *YSfrom;                 ///< Self admittance seen on from side.
       Complex *YSto;                   ///< Self admittance seen on to side.
       unsigned char phases;            ///< Phases property.
-                                       /**< Used for construction of matrices. */
       int from;                        ///< Index into bus data.
       int to;                          ///< Index into bus data.
    };
@@ -67,11 +66,12 @@ namespace SmartGridToolbox
    };
    typedef struct YNr YNr;
 
+   /// Bus Admittance structure.
    struct BusAdmit {
       int rowInd;                      ///< Row loc of the element in n*n bus admittance matrix in NR solver.
       int colInd;                      ///< Col loc of the element in n*n bus admittance matrix in NR solver.
       Matrix<Complex, 3, 3> Y;         ///< Complex value of elements in bus admittance matrix in NR solver.
-      char size;                       ///< Size of the admittance diagonal.Assumed square, useful for smaller size.
+      char size;                       ///< Size of the admittance diagonal - might be less than 3.
    };
    typedef struct BusAdmit BusAdmit;
 

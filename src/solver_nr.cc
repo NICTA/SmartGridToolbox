@@ -16,80 +16,20 @@
 
 namespace SmartGridToolbox
 {
+   static void merge_sort(YNr *Input_Array, unsigned int Alen, YNr *Work_Array);
 
-   void merge_sort(YNr *Input_Array, unsigned int Alen, YNr *Work_Array)
-   {
-      // Merge sorting algorithm basis stolen from auction.cpp in market module.
-      unsigned int split_point;
-      unsigned int right_length;
-      YNr *leftside, *rightside;
-      YNr *Final_P;
-
-      if (Alen>0) // Only occurs if over zero
-      {
-         split_point = Alen/2;
-         // Find the middle point
-         right_length = Alen - split_point;
-         // Figure out how big the right hand side is
-
-         // Make the appropriate pointers
-         leftside = Input_Array;
-         rightside = Input_Array+split_point;
-
-         // Check to see what condition we are in (keep splitting it)
-         if (split_point>1)
-            merge_sort(leftside,split_point,Work_Array);
-
-         if (right_length>1)
-            merge_sort(rightside,right_length,Work_Array);
-
-         // Point at the first location
-         Final_P = Work_Array;
-
-         // Merge them now
-         do {
-            if (leftside->colInd < rightside->colInd)
-               *Final_P++ = *leftside++;
-            else if (leftside->colInd == rightside->colInd)
-            {
-               if (leftside->rowInd < rightside->rowInd)
-                  *Final_P++ = *leftside++;
-               else if (leftside->rowInd > rightside->rowInd)
-                  *Final_P++ = *rightside++;
-               else // Catch for duplicate entries
-               {
-                  error("NR: duplicate entry found in admittance matrix. Look for parallel lines!");
-                  /*  TROUBLESHOOT
-                      While sorting the admittance matrix for the Newton-Raphson solver, a duplicate entry was found.
-                      This is usually caused by a line between two nodes having another, parallel line between the
-                      same two nodes.  This is only an issue if the parallel lines overlap in phase (e.g., AB and BC).
-                      If no overlapping phase is present, this error should not occur.  Methods to narrow down the
-                      location of this conflict are under development. */
-               }
-            }
-            else
-               *Final_P++ = *rightside++;
-         } while ((leftside<(Input_Array+split_point)) && (rightside<(Input_Array+Alen)));
-         // Sort the list until one of them empties
-
-         while (leftside<(Input_Array+split_point))
-            *Final_P++ = *leftside++;
-         // Put any remaining entries into list.
-
-         while (rightside<(Input_Array+Alen))
-            *Final_P++ = *rightside++;
-         // Put any remaining entries into list.
-
-         memcpy(Input_Array,Work_Array,sizeof(YNr)*Alen);
-         // Copy the result back into the input
-      } // End length > 0
-   }
-
-   void buildAdmit(unsigned int bus_count, NrBusData *bus, unsigned int branch_count, NrBranchData *branch,
-                   unsigned int max_total_variables, unsigned int & total_variables,
-                   BusAdmit * & BA_diag, 
-                   unsigned int & size_offdiag_PQ, YNr * & Y_offdiag_PQ, 
-                   unsigned int & size_diag_fixed, YNr * & Y_diag_fixed, 
+   // Build the bus admittance matrix, held in busAdmitDiag, Y_offdiag_PQ, Y_diag_fixed.
+   void buildAdmit(unsigned int bus_count,
+                   NrBusData *bus,
+                   unsigned int branch_count,
+                   NrBranchData *branch,
+                   unsigned int max_total_variables,
+                   unsigned int & total_variables,
+                   BusAdmit * & busAdmitDiag, 
+                   unsigned int & size_offdiag_PQ,
+                   YNr * & Y_offdiag_PQ, 
+                   unsigned int & size_diag_fixed,
+                   YNr * & Y_diag_fixed, 
                    bool & NR_realloc_needed)
    {
       static unsigned int max_size_offdiag_PQ, max_size_diag_fixed;
@@ -100,336 +40,336 @@ namespace SmartGridToolbox
       char temp_index, temp_index_b;
       unsigned int temp_index_c;
 
-      //Miscellaneous counter tracker
+      // Miscellaneous counter tracker
       unsigned int index_count = 0;
 
-      //Temporary size variable
+      // Temporary size variable
       char temp_size, temp_size_b, temp_size_c;
 
-      //Phase collapser variable
+      // Phase collapser variable
       unsigned char phase_worka, phase_workb, phase_workc, phase_workd, phase_worke;
 
-      //Working matrix for admittance collapsing/determinations
+      // Working matrix for admittance collapsing/determinations
       Complex tempY[3][3];
 
-      //Miscellaneous flag variables
+      // Miscellaneous flag variables
       bool Full_Mat_A, Full_Mat_B, proceed_flag;
 
       // Temporary admittance variables
       Complex Temp_Ad_A[3][3];
       Complex Temp_Ad_B[3][3];
 
-      //Build the diagnoal elements of the bus admittance matrix - this should only happen once no matter what
-      if (BA_diag == NULL)
+      // Build the diagnoal elements of the bus admittance matrix - this should only happen once no matter what.
+      if (busAdmitDiag == NULL)
       {
-         BA_diag = (BusAdmit *)malloc(bus_count *sizeof(BusAdmit));
-         // BA_diag store the location and value of diagonal elements of Bus Admittance matrix
+         busAdmitDiag = (BusAdmit *)malloc(bus_count *sizeof(BusAdmit));
+         // busAdmitDiag store the location and value of diagonal elements of Bus Admittance matrix
 
-         //Make sure it worked
-         if (BA_diag == NULL)
+         // Make sure it worked
+         if (busAdmitDiag == NULL)
          {
             error("NR: Failed to allocate memory for one of the necessary matrices");
             /*  TROUBLESHOOT
                 During the allocation stage of the NR algorithm, one of the matrices failed to be allocated.
                 Please try again and if this bug persists, submit your code and a bug report using the trac
-                website.
-                */
+                website.  */
          }
       }
 
       for (indexer=0; indexer<bus_count; indexer++) // Construct the diagonal elements of Bus admittance matrix.
       {
-         //Determine the size we need
+         // Determine the size we need: sum the bits in phases.
          phase_worka = 0;
-         for (jindex=0; jindex<3; jindex++) //Accumulate number of phases
+         for (jindex=0; jindex<3; jindex++)
          {
             phase_worka += ((bus[indexer].phases & (0x01 << jindex)) >> jindex);
          }
-         BA_diag[indexer].size = phase_worka;
+         busAdmitDiag[indexer].size = phase_worka;
 
-         //Ensure the admittance matrix is zeroed
+         // Ensure the admittance matrix is zeroed
          for (jindex=0; jindex<3; jindex++)
          {
             for (kindex=0; kindex<3; kindex++)
             {
-               BA_diag[indexer].Y[jindex][kindex] = 0;
+               busAdmitDiag[indexer].Y[jindex][kindex] = 0;
                tempY[jindex][kindex] = 0;
             }
          }
 
-         //Now go through all of the branches to get the self admittance information (hinges on size)
+         // Now go through all of the branches to get the self admittance information (hinges on size)
          for (kindexer=0; kindexer<(bus[indexer].linkTable.size());kindexer++)
          {
-            //Assign jindexer as intermediate variable (easier for me this way)
+            // Assign jindexer as intermediate variable (easier for me this way)
             jindexer = bus[indexer].linkTable[kindexer];
 
-            if ((branch[jindexer].from == indexer) || (branch[jindexer].to == indexer))
-               // Bus is the from or to side of things - not sure how it would be in link table otherwise, but meh
+            assert((branch[jindexer].from == indexer) || (branch[jindexer].to == indexer));
+
+            if ((bus[indexer].phases & 0x07) == 0x07) // Full three phase
             {
-               if ((bus[indexer].phases & 0x07) == 0x07) //Full three phase
+               for (jindex=0; jindex<3; jindex++) // Add in all three phase values
                {
-                  for (jindex=0; jindex<3; jindex++) //Add in all three phase values
+                  // See if this phase is valid
+                  phase_workb = 0x04 >> jindex; // 0x04, 0x02, 0x01
+
+                  if ((phase_workb & branch[jindexer].phases) == phase_workb)
                   {
-                     //See if this phase is valid
-                     phase_workb = 0x04 >> jindex;
-
-                     if ((phase_workb & branch[jindexer].phases) == phase_workb)
+                     // The branch also has phase jindex. Note bus is all phases.
+                     for (kindex=0; kindex<3; kindex++)
                      {
-                        for (kindex=0; kindex<3; kindex++)
-                        {
-                           //Check phase
-                           phase_workd = 0x04 >> kindex;
+                        // Check phase
+                        phase_workd = 0x04 >> kindex; // 0x04, 0x02, 0x01
 
-                           if ((phase_workd & branch[jindexer].phases) == phase_workd)
+                        if ((phase_workd & branch[jindexer].phases) == phase_workd)
+                        {
+                           // The branch also has phase kindex. Note bus is all phases.
+                           if (branch[jindexer].from == indexer) // We're the from version
                            {
-                              if (branch[jindexer].from == indexer) //We're the from version
-                              {
-                                 tempY[jindex][kindex] += branch[jindexer].YSfrom[jindex*3+kindex];
-                              }
-                              else //Must be the to version
-                              {
-                                 tempY[jindex][kindex] += branch[jindexer].YSto[jindex*3+kindex];
-                              }
-                           } //End valid column phase
-                        }
-                     } //End valid row phase
-                  }
+                              tempY[jindex][kindex] += branch[jindexer].YSfrom[jindex*3+kindex];
+                           }
+                           else // Must be the to version
+                           {
+                              tempY[jindex][kindex] += branch[jindexer].YSto[jindex*3+kindex];
+                           }
+                        } // End valid column phase
+                     }
+                  } // End valid row phase
                }
-               else
-               {
-                  // We must be a single or two-phase line - always populate the upper left portion of matrix
-                  // (easier for later)
-                  switch(bus[indexer].phases & 0x07) {
-                     case 0x00: //No phases (we've been faulted out
+            }
+            else
+            {
+               // We must be a single or two-phase line - always populate the upper left portion of matrix
+               // (easier for later)
+               switch(bus[indexer].phases & 0x07) 
+               { 
+                  // Switch on abc part of phases.
+                  case 0x00: // No phases (we've been faulted out
+                     {
+                        break; // Just get us outta here
+                     }
+                  case 0x01: // Only C
+                     {
+                        if ((branch[jindexer].phases & 0x01) == 0x01) // Phase C valid on branch
                         {
-                           break; //Just get us outta here
-                        }
-                     case 0x01: //Only C
-                        {
-                           if ((branch[jindexer].phases & 0x01) == 0x01) //Phase C valid on branch
+                           if (branch[jindexer].from == indexer) // From branch
                            {
-                              if (branch[jindexer].from == indexer) //From branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSfrom[8];
-                              }
-                              else //To branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSto[8];
-                              }
-                           } //End valid phase C
-                           break;
-                        }
-                     case 0x02: //Only B
-                        {
-                           if ((branch[jindexer].phases & 0x02) == 0x02) //Phase B valid on branch
+                              tempY[0][0] += branch[jindexer].YSfrom[8];
+                           }
+                           else // To branch
                            {
-                              if (branch[jindexer].from == indexer) //From branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSfrom[4];
-                              }
-                              else //To branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSto[4];
-                              }
-                           } //End valid phase B
-                           break;
-                        }
-                     case 0x03: //B & C
+                              tempY[0][0] += branch[jindexer].YSto[8];
+                           }
+                        } // End valid phase C
+                        break;
+                     }
+                  case 0x02: // Only B
+                     {
+                        if ((branch[jindexer].phases & 0x02) == 0x02) // Phase B valid on branch
                         {
-                           phase_worka = (branch[jindexer].phases & 0x03); //Extract branch phases
+                           if (branch[jindexer].from == indexer) // From branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSfrom[4];
+                           }
+                           else // To branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSto[4];
+                           }
+                        } // End valid phase B
+                        break;
+                     }
+                  case 0x03: // B & C
+                     {
+                        phase_worka = (branch[jindexer].phases & 0x03); // Extract branch phases
 
-                           if (phase_worka == 0x03) //Full B & C
-                           {
-                              if (branch[jindexer].from == indexer) //From branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSfrom[4];
-                                 tempY[0][1] += branch[jindexer].YSfrom[5];
-                                 tempY[1][0] += branch[jindexer].YSfrom[7];
-                                 tempY[1][1] += branch[jindexer].YSfrom[8];
-                              }
-                              else //To branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSto[4];
-                                 tempY[0][1] += branch[jindexer].YSto[5];
-                                 tempY[1][0] += branch[jindexer].YSto[7];
-                                 tempY[1][1] += branch[jindexer].YSto[8];
-                              }
-                           } //End valid B & C
-                           else if (phase_worka == 0x01) //Only C branch
-                           {
-                              if (branch[jindexer].from == indexer) //From branch
-                              {
-                                 tempY[1][1] += branch[jindexer].YSfrom[8];
-                              }
-                              else //To branch
-                              {
-                                 tempY[1][1] += branch[jindexer].YSto[8];
-                              }
-                           } //end valid C
-                           else if (phase_worka == 0x02) //Only B branch
-                           {
-                              if (branch[jindexer].from == indexer) //From branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSfrom[4];
-                              }
-                              else //To branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSto[4];
-                              }
-                           } //end valid B
-                           else //Must be nothing then - all phases must be faulted, or something
-                              ;
-                           break;
-                        }
-                     case 0x04: //Only A
+                        if (phase_worka == 0x03) // Full B & C
                         {
-                           if ((branch[jindexer].phases & 0x04) == 0x04) //Phase A is valid
+                           if (branch[jindexer].from == indexer) // From branch
                            {
-                              if (branch[jindexer].from == indexer) //From branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSfrom[0];
-                              }
-                              else //To branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSto[0];
-                              }
-                           } //end valid phase A
-                           break;
-                        }
-                     case 0x05: //A & C
+                              tempY[0][0] += branch[jindexer].YSfrom[4];
+                              tempY[0][1] += branch[jindexer].YSfrom[5];
+                              tempY[1][0] += branch[jindexer].YSfrom[7];
+                              tempY[1][1] += branch[jindexer].YSfrom[8];
+                           }
+                           else // To branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSto[4];
+                              tempY[0][1] += branch[jindexer].YSto[5];
+                              tempY[1][0] += branch[jindexer].YSto[7];
+                              tempY[1][1] += branch[jindexer].YSto[8];
+                           }
+                        } // End valid B & C
+                        else if (phase_worka == 0x01) // Only C branch
                         {
-                           phase_worka = branch[jindexer].phases & 0x05; //Extract phases
+                           if (branch[jindexer].from == indexer) // From branch
+                           {
+                              tempY[1][1] += branch[jindexer].YSfrom[8];
+                           }
+                           else // To branch
+                           {
+                              tempY[1][1] += branch[jindexer].YSto[8];
+                           }
+                        } // end valid C
+                        else if (phase_worka == 0x02) // Only B branch
+                        {
+                           if (branch[jindexer].from == indexer) // From branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSfrom[4];
+                           }
+                           else // To branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSto[4];
+                           }
+                        } // end valid B
+                        else // Must be nothing then - all phases must be faulted, or something
+                           ;
+                        break;
+                     }
+                  case 0x04: // Only A
+                     {
+                        if ((branch[jindexer].phases & 0x04) == 0x04) // Phase A is valid
+                        {
+                           if (branch[jindexer].from == indexer) // From branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSfrom[0];
+                           }
+                           else // To branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSto[0];
+                           }
+                        } // end valid phase A
+                        break;
+                     }
+                  case 0x05: // A & C
+                     {
+                        phase_worka = branch[jindexer].phases & 0x05; // Extract phases
 
-                           if (phase_worka == 0x05) //Both A & C valid
-                           {
-                              if (branch[jindexer].from == indexer) //From branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSfrom[0];
-                                 tempY[0][1] += branch[jindexer].YSfrom[2];
-                                 tempY[1][0] += branch[jindexer].YSfrom[6];
-                                 tempY[1][1] += branch[jindexer].YSfrom[8];
-                              }
-                              else //To branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSto[0];
-                                 tempY[0][1] += branch[jindexer].YSto[2];
-                                 tempY[1][0] += branch[jindexer].YSto[6];
-                                 tempY[1][1] += branch[jindexer].YSto[8];
-                              }
-                           } //End A & C valid
-                           else if (phase_worka == 0x04) //Only A valid
-                           {
-                              if (branch[jindexer].from == indexer) //From branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSfrom[0];
-                              }
-                              else //To branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSto[0];
-                              }
-                           } //end only A valid
-                           else if (phase_worka == 0x01) //Only C valid
-                           {
-                              if (branch[jindexer].from == indexer) //From branch
-                              {
-                                 tempY[1][1] += branch[jindexer].YSfrom[8];
-                              }
-                              else //To branch
-                              {
-                                 tempY[1][1] += branch[jindexer].YSto[8];
-                              }
-                           } //end only C valid
-                           else //No connection - must be faulted
-                              ;
-                           break;
-                        }
-                     case 0x06: //A & B
+                        if (phase_worka == 0x05) // Both A & C valid
                         {
-                           phase_worka = branch[jindexer].phases & 0x06; //Extract phases
+                           if (branch[jindexer].from == indexer) // From branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSfrom[0];
+                              tempY[0][1] += branch[jindexer].YSfrom[2];
+                              tempY[1][0] += branch[jindexer].YSfrom[6];
+                              tempY[1][1] += branch[jindexer].YSfrom[8];
+                           }
+                           else // To branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSto[0];
+                              tempY[0][1] += branch[jindexer].YSto[2];
+                              tempY[1][0] += branch[jindexer].YSto[6];
+                              tempY[1][1] += branch[jindexer].YSto[8];
+                           }
+                        } // End A & C valid
+                        else if (phase_worka == 0x04) // Only A valid
+                        {
+                           if (branch[jindexer].from == indexer) // From branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSfrom[0];
+                           }
+                           else // To branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSto[0];
+                           }
+                        } // end only A valid
+                        else if (phase_worka == 0x01) // Only C valid
+                        {
+                           if (branch[jindexer].from == indexer) // From branch
+                           {
+                              tempY[1][1] += branch[jindexer].YSfrom[8];
+                           }
+                           else // To branch
+                           {
+                              tempY[1][1] += branch[jindexer].YSto[8];
+                           }
+                        } // end only C valid
+                        else // No connection - must be faulted
+                           ;
+                        break;
+                     }
+                  case 0x06: // A & B
+                     {
+                        phase_worka = branch[jindexer].phases & 0x06; // Extract phases
 
-                           if (phase_worka == 0x06) //Valid A & B phase
-                           {
-                              if (branch[jindexer].from == indexer) //From branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSfrom[0];
-                                 tempY[0][1] += branch[jindexer].YSfrom[1];
-                                 tempY[1][0] += branch[jindexer].YSfrom[3];
-                                 tempY[1][1] += branch[jindexer].YSfrom[4];
-                              }
-                              else //To branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSto[0];
-                                 tempY[0][1] += branch[jindexer].YSto[1];
-                                 tempY[1][0] += branch[jindexer].YSto[3];
-                                 tempY[1][1] += branch[jindexer].YSto[4];
-                              }
-                           } //End valid A & B
-                           else if (phase_worka == 0x04) //Only valid A
-                           {
-                              if (branch[jindexer].from == indexer) //From branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSfrom[0];
-                              }
-                              else //To branch
-                              {
-                                 tempY[0][0] += branch[jindexer].YSto[0];
-                              }
-                           } //end valid A
-                           else if (phase_worka == 0x02) //Only valid B
-                           {
-                              if (branch[jindexer].from == indexer) //From branch
-                              {
-                                 tempY[1][1] += branch[jindexer].YSfrom[4];
-                              }
-                              else //To branch
-                              {
-                                 tempY[1][1] += branch[jindexer].YSto[4];
-                              }
-                           } //end valid B
-                           else //Default - must be already handled
-                              ;
-                           break;
-                        }
-                     default: //How'd we get here?
+                        if (phase_worka == 0x06) // Valid A & B phase
                         {
-                           error("Unknown phase connection in NR self admittance diagonal");
-                           /*  TROUBLESHOOT
-                               An unknown phase condition was encountered in the NR solver when constructing
-                               the self admittance diagonal.  Please report this bug and submit your code to
-                               the trac system.
-                               */
-                           break;
-                        }
-                  } //switch end
-               } //1 or 2 phase end
-            } //phase accumulation end
-            else //It's nothing (no connnection)
+                           if (branch[jindexer].from == indexer) // From branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSfrom[0];
+                              tempY[0][1] += branch[jindexer].YSfrom[1];
+                              tempY[1][0] += branch[jindexer].YSfrom[3];
+                              tempY[1][1] += branch[jindexer].YSfrom[4];
+                           }
+                           else // To branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSto[0];
+                              tempY[0][1] += branch[jindexer].YSto[1];
+                              tempY[1][0] += branch[jindexer].YSto[3];
+                              tempY[1][1] += branch[jindexer].YSto[4];
+                           }
+                        } // End valid A & B
+                        else if (phase_worka == 0x04) // Only valid A
+                        {
+                           if (branch[jindexer].from == indexer) // From branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSfrom[0];
+                           }
+                           else // To branch
+                           {
+                              tempY[0][0] += branch[jindexer].YSto[0];
+                           }
+                        } // end valid A
+                        else if (phase_worka == 0x02) // Only valid B
+                        {
+                           if (branch[jindexer].from == indexer) // From branch
+                           {
+                              tempY[1][1] += branch[jindexer].YSfrom[4];
+                           }
+                           else // To branch
+                           {
+                              tempY[1][1] += branch[jindexer].YSto[4];
+                           }
+                        } // end valid B
+                        else // Default - must be already handled
+                           ;
+                        break;
+                     }
+                  default: // How'd we get here?
+                     {
+                        error("Unknown phase connection in NR self admittance diagonal");
+                        /*  TROUBLESHOOT
+                            An unknown phase condition was encountered in the NR solver when constructing
+                            the self admittance diagonal.  Please report this bug and submit your code to
+                            the trac system.
+                            */
+                        break;
+                     }
+               } // switch end
+            } //1 or 2 phase end
+            else // It's nothing (no connnection)
                ;
-         } //branch traversion end
+         } // branch traversion end
 
-         //Store the self admittance into BA_diag.  Also update the indices for possible use later
-         BA_diag[indexer].colInd = BA_diag[indexer].rowInd = index_count;
+         // Store the self admittance into busAdmitDiag.  Also update the indices for possible use later
+         busAdmitDiag[indexer].colInd = busAdmitDiag[indexer].rowInd = index_count;
          // Store the row and column starting information (square matrices)
          bus[indexer].matLoc = index_count; // Store our location so we know where we go
-         index_count += BA_diag[indexer].size;
+         index_count += busAdmitDiag[indexer].size;
          // Update the index for this matrix's size, so next one is in appropriate place
 
-
-         //Store the admittance values into the BA_diag matrix structure
-         for (jindex=0; jindex<BA_diag[indexer].size; jindex++)
+         // Store the admittance values into the busAdmitDiag matrix structure
+         for (jindex=0; jindex<busAdmitDiag[indexer].size; jindex++)
          {
-            for (kindex=0; kindex<BA_diag[indexer].size; kindex++)
-               //Store values - assume square matrix - don't bother parsing what doesn't exist.
+            for (kindex=0; kindex<busAdmitDiag[indexer].size; kindex++)
+               // Store values - assume square matrix - don't bother parsing what doesn't exist.
             {
-               BA_diag[indexer].Y[jindex][kindex] = tempY[jindex][kindex]; // Store the self admittance terms.
+               busAdmitDiag[indexer].Y[jindex][kindex] = tempY[jindex][kindex]; // Store the self admittance terms.
             }
          }
-      } //End diagonal construction
+      } // End diagonal construction
 
-      //Store the size of the diagonal, since it represents how many variables we are solving (useful later)
+      // Store the size of the diagonal, since it represents how many variables we are solving (useful later)
       total_variables=index_count;
 
-      //Check to see if we've exceeded our max.  If so, reallocate!
+      // Check to see if we've exceeded our max.  If so, reallocate!
       if (total_variables > max_total_variables)
          NR_realloc_needed = true;
 
@@ -438,35 +378,26 @@ namespace SmartGridToolbox
       // Constructed using sparse methodology, non-zero elements are the only thing considered (and non-PV)
       // No longer necessarily 6n*6n any more either,
       size_offdiag_PQ = 0;
-      for (jindexer=0; jindexer<branch_count;jindexer++) //Parse all of the branches
+      for (jindexer=0; jindexer<branch_count;jindexer++) // Parse all of the branches
       {
          tempa  = branch[jindexer].from;
          tempb  = branch[jindexer].to;
 
-         //Preliminary check to make sure we weren't missed in the initialization
-         if ((bus[tempa].matLoc == -1) || (bus[tempb].matLoc == -1))
-         {
-            error("An element in NR line:%d was not properly localized");
-            /*  TROUBLESHOOT
-                When parsing the bus list, the Newton-Raphson solver found a bus that did not
-                appear to have a location within the overall admittance/Jacobian matrix.  Please
-                submit this as a bug with your code on the Trac site.
-                */
-         }
+         assert((bus[tempa].matLoc != -1) && (bus[tempb].matLoc != -1))
 
-         for (jindex=0; jindex<3; jindex++) //rows
+         for (jindex=0; jindex<3; jindex++) // rows
          {
-            //See if this phase is valid
+            // See if this phase is valid
             phase_workb = 0x04 >> jindex;
 
-            if ((phase_workb & branch[jindexer].phases) == phase_workb) //Row check
+            if ((phase_workb & branch[jindexer].phases) == phase_workb) // Row check
             {
-               for (kindex=0; kindex<3; kindex++) //columns
+               for (kindex=0; kindex<3; kindex++) // columns
                {
-                  //Check this phase as well
+                  // Check this phase as well
                   phase_workd = 0x04 >> kindex;
 
-                  if ((phase_workd & branch[jindexer].phases) == phase_workd) //Column validity check
+                  if ((phase_workd & branch[jindexer].phases) == phase_workd) // Column validity check
                   {
                      if ((real(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
                            (bus[tempb].type != BusType::PV))
@@ -483,80 +414,80 @@ namespace SmartGridToolbox
                      if ((imag(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
                            (bus[tempb].type != BusType::PV))
                         size_offdiag_PQ += 1;
-                  } //end column validity check
-               } //end columns of 3 phase
-            } //End row validity check
-         } //end rows of 3 phase
-      } //end line traversion
+                  } // end column validity check
+               } // end columns of 3 phase
+            } // End row validity check
+         } // end rows of 3 phase
+      } // end line traversion
 
-      //Allocate the space - double the number found (each element goes in two places)
+      // Allocate the space - double the number found (each element goes in two places)
       if (Y_offdiag_PQ == NULL)
       {
          Y_offdiag_PQ = (YNr *)malloc((size_offdiag_PQ*2) *sizeof(YNr));
          // Y_offdiag_PQ store the row,column and value of off_diagonal elements of Bus Admittance matrix in
          // which all the buses are not PV buses.
 
-         //Make sure it worked
+         // Make sure it worked
          if (Y_offdiag_PQ == NULL)
             error("NR: Failed to allocate memory for one of the necessary matrices");
 
-         //Save our size
+         // Save our size
          max_size_offdiag_PQ = size_offdiag_PQ;
          // Don't care about the 2x, since we'll be comparing it against itself
       }
-      else if (size_offdiag_PQ > max_size_offdiag_PQ) //Something changed and we are bigger!!
+      else if (size_offdiag_PQ > max_size_offdiag_PQ) // Something changed and we are bigger!!
       {
-         //Destroy us!
+         // Destroy us!
          free(Y_offdiag_PQ);
 
-         //Rebuild us, we have the technology
+         // Rebuild us, we have the technology
          Y_offdiag_PQ = (YNr *)malloc((size_offdiag_PQ*2) *sizeof(YNr));
 
-         //Make sure it worked
+         // Make sure it worked
          if (Y_offdiag_PQ == NULL)
             error("NR: Failed to allocate memory for one of the necessary matrices");
 
-         //Store the new size
+         // Store the new size
          max_size_offdiag_PQ = size_offdiag_PQ;
 
-         //Flag for a reallocation
+         // Flag for a reallocation
          NR_realloc_needed = true;
       }
 
       indexer = 0;
-      for (jindexer=0; jindexer<branch_count;jindexer++) //Parse through all of the branches
+      for (jindexer=0; jindexer<branch_count;jindexer++) // Parse through all of the branches
       {
-         //Extract both ends
+         // Extract both ends
          tempa  = branch[jindexer].from;
          tempb  = branch[jindexer].to;
 
          phase_worka = 0;
          phase_workb = 0;
-         for (jindex=0; jindex<3; jindex++) //Accumulate number of phases
+         for (jindex=0; jindex<3; jindex++) // Accumulate number of phases
          {
             phase_worka += ((bus[tempa].phases & (0x01 << jindex)) >> jindex);
             phase_workb += ((bus[tempb].phases & (0x01 << jindex)) >> jindex);
          }
 
-         if ((phase_worka==3) && (phase_workb==3)) //Both ends are full three phase, normal operations
+         if ((phase_worka==3) && (phase_workb==3)) // Both ends are full three phase, normal operations
          {
-            for (jindex=0; jindex<3; jindex++) //Loop through rows of admittance matrices
+            for (jindex=0; jindex<3; jindex++) // Loop through rows of admittance matrices
             {
-               //See if this row is valid for this branch
+               // See if this row is valid for this branch
                phase_workd = 0x04 >> jindex;
 
-               if ((branch[jindexer].phases & phase_workd) == phase_workd) //Validity check
+               if ((branch[jindexer].phases & phase_workd) == phase_workd) // Validity check
                {
-                  for (kindex=0; kindex<3; kindex++) //Loop through columns of admittance matrices
+                  for (kindex=0; kindex<3; kindex++) // Loop through columns of admittance matrices
                   {
-                     //Extract column information
+                     // Extract column information
                      phase_worke = 0x04 >> kindex;
 
-                     if ((branch[jindexer].phases & phase_worke) == phase_worke) //Valid column too!
+                     if ((branch[jindexer].phases & phase_worke) == phase_worke) // Valid column too!
                      {
-                        //Indices counted out from Self admittance above.  needs doubling due to complex separation
+                        // Indices counted out from Self admittance above.  needs doubling due to complex separation
                         if ((imag(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
-                              (bus[tempb].type != BusType::PV)) //From imags
+                              (bus[tempb].type != BusType::PV)) // From imags
                         {
                            Y_offdiag_PQ[indexer].rowInd = 2*bus[tempa].matLoc + jindex;
                            Y_offdiag_PQ[indexer].colInd = 2*bus[tempb].matLoc + kindex;
@@ -569,7 +500,7 @@ namespace SmartGridToolbox
                         }
 
                         if ((imag(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
-                              (bus[tempb].type != BusType::PV)) //To imags
+                              (bus[tempb].type != BusType::PV)) // To imags
                         {
                            Y_offdiag_PQ[indexer].rowInd = 2*bus[tempb].matLoc + jindex;
                            Y_offdiag_PQ[indexer].colInd = 2*bus[tempa].matLoc + kindex;
@@ -582,7 +513,7 @@ namespace SmartGridToolbox
                         }
 
                         if ((real(branch[jindexer].Yfrom[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
-                              (bus[tempb].type != BusType::PV)) //From reals
+                              (bus[tempb].type != BusType::PV)) // From reals
                         {
                            Y_offdiag_PQ[indexer].rowInd = 2*bus[tempa].matLoc + jindex + 3;
                            Y_offdiag_PQ[indexer].colInd = 2*bus[tempb].matLoc + kindex;
@@ -595,7 +526,7 @@ namespace SmartGridToolbox
                         }
 
                         if ((real(branch[jindexer].Yto[jindex*3+kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
-                              (bus[tempb].type != BusType::PV)) //To reals
+                              (bus[tempb].type != BusType::PV)) // To reals
                         {
                            Y_offdiag_PQ[indexer].rowInd = 2*bus[tempb].matLoc + jindex + 3;
                            Y_offdiag_PQ[indexer].colInd = 2*bus[tempa].matLoc + kindex;
@@ -606,38 +537,38 @@ namespace SmartGridToolbox
                            Y_offdiag_PQ[indexer].YValue = -(real(branch[jindexer].Yto[jindex*3+kindex]));
                            indexer += 1;
                         }
-                     } //End valid column
-                  } //column end
-               } //End valid row
-            } //row end
-         } //if all 3 end
-         //Clear working variables, just in case
+                     } // End valid column
+                  } // column end
+               } // End valid row
+            } // row end
+         } // if all 3 end
+         // Clear working variables, just in case
          temp_index = temp_index_b = -1;
          temp_size = temp_size_b = temp_size_c = -1;
          Full_Mat_A = Full_Mat_B = false;
 
-         //Intermediate store the admittance matrices so they can be directly indexed later
+         // Intermediate store the admittance matrices so they can be directly indexed later
          switch(branch[jindexer].phases & 0x07) {
-            case 0x00: //No phases (open switch or reliability excluded item)
+            case 0x00: // No phases (open switch or reliability excluded item)
                {
-                  temp_size_c = -99; //Arbitrary flag
+                  temp_size_c = -99; // Arbitrary flag
                   break;
                }
-            case 0x01: //C only
+            case 0x01: // C only
                {
                   Temp_Ad_A[0][0] = branch[jindexer].Yfrom[8];
                   Temp_Ad_B[0][0] = branch[jindexer].Yto[8];
                   temp_size_c = 1;
                   break;
                }
-            case 0x02: //B only
+            case 0x02: // B only
                {
                   Temp_Ad_A[0][0] = branch[jindexer].Yfrom[4];
                   Temp_Ad_B[0][0] = branch[jindexer].Yto[4];
                   temp_size_c = 1;
                   break;
                }
-            case 0x03: //BC only
+            case 0x03: // BC only
                {
                   Temp_Ad_A[0][0] = branch[jindexer].Yfrom[4];
                   Temp_Ad_A[0][1] = branch[jindexer].Yfrom[5];
@@ -652,14 +583,14 @@ namespace SmartGridToolbox
                   temp_size_c = 2;
                   break;
                }
-            case 0x04: //A only
+            case 0x04: // A only
                {
                   Temp_Ad_A[0][0] = branch[jindexer].Yfrom[0];
                   Temp_Ad_B[0][0] = branch[jindexer].Yto[0];
                   temp_size_c = 1;
                   break;
                }
-            case 0x05: //AC only
+            case 0x05: // AC only
                {
                   Temp_Ad_A[0][0] = branch[jindexer].Yfrom[0];
                   Temp_Ad_A[0][1] = branch[jindexer].Yfrom[2];
@@ -674,7 +605,7 @@ namespace SmartGridToolbox
                   temp_size_c = 2;
                   break;
                }
-            case 0x06: //AB only
+            case 0x06: // AB only
                {
                   Temp_Ad_A[0][0] = branch[jindexer].Yfrom[0];
                   Temp_Ad_A[0][1] = branch[jindexer].Yfrom[1];
@@ -693,14 +624,14 @@ namespace SmartGridToolbox
                {
                   break;
                }
-         } //end line switch/case
+         } // end line switch/case
 
          if (temp_size_c==-99)
          {
-            continue; //Next iteration of branch loop
+            continue; // Next iteration of branch loop
          }
 
-         if (temp_size_c==-1) //Make sure it is right
+         if (temp_size_c==-1) // Make sure it is right
          {
             error("NR: A line's phase was flagged as not full three-phase, but wasn't");
             /*  TROUBLESHOOT
@@ -710,14 +641,14 @@ namespace SmartGridToolbox
                 */
          }
 
-         //Check the from side and get all appropriate offsets
+         // Check the from side and get all appropriate offsets
          switch(bus[tempa].phases & 0x07) {
-            case 0x01: //C
+            case 0x01: // C
                {
-                  if ((branch[jindexer].phases & 0x07) == 0x01) //C
+                  if ((branch[jindexer].phases & 0x07) == 0x01) // C
                   {
-                     temp_size = 1; //Single size
-                     temp_index = 0; //No offset (only 1 big)
+                     temp_size = 1; // Single size
+                     temp_index = 0; // No offset (only 1 big)
                   }
                   else
                   {
@@ -729,32 +660,32 @@ namespace SmartGridToolbox
                          */
                   }
                   break;
-               } //end 0x01
-            case 0x02: //B
+               } // end 0x01
+            case 0x02: // B
                {
-                  if ((branch[jindexer].phases & 0x07) == 0x02) //B
+                  if ((branch[jindexer].phases & 0x07) == 0x02) // B
                   {
-                     temp_size = 1; //Single size
-                     temp_index = 0; //No offset (only 1 big)
+                     temp_size = 1; // Single size
+                     temp_index = 0; // No offset (only 1 big)
                   }
                   else
                   {
                      error("NR: One of the lines has invalid phase parameters");
                   }
                   break;
-               } //end 0x02
-            case 0x03: //BC
+               } // end 0x02
+            case 0x03: // BC
                {
-                  temp_size = 2; //Size of this matrix's admittance
-                  if ((branch[jindexer].phases & 0x07) == 0x01) //C
+                  temp_size = 2; // Size of this matrix's admittance
+                  if ((branch[jindexer].phases & 0x07) == 0x01) // C
                   {
-                     temp_index = 1; //offset
+                     temp_index = 1; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x02) //B
+                  else if ((branch[jindexer].phases & 0x07) == 0x02) // B
                   {
-                     temp_index = 0; //offset
+                     temp_index = 0; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x03) //BC
+                  else if ((branch[jindexer].phases & 0x07) == 0x03) // BC
                   {
                      temp_index = 0;
                   }
@@ -763,32 +694,32 @@ namespace SmartGridToolbox
                      error("NR: One of the lines has invalid phase parameters");
                   }
                   break;
-               } //end 0x03
-            case 0x04: //A
+               } // end 0x03
+            case 0x04: // A
                {
-                  if ((branch[jindexer].phases & 0x07) == 0x04) //A
+                  if ((branch[jindexer].phases & 0x07) == 0x04) // A
                   {
-                     temp_size = 1; //Single size
-                     temp_index = 0; //No offset (only 1 big)
+                     temp_size = 1; // Single size
+                     temp_index = 0; // No offset (only 1 big)
                   }
                   else
                   {
                      error("NR: One of the lines has invalid phase parameters");
                   }
                   break;
-               } //end 0x04
-            case 0x05: //AC
+               } // end 0x04
+            case 0x05: // AC
                {
-                  temp_size = 2; //Size of this matrix's admittance
-                  if ((branch[jindexer].phases & 0x07) == 0x01) //C
+                  temp_size = 2; // Size of this matrix's admittance
+                  if ((branch[jindexer].phases & 0x07) == 0x01) // C
                   {
-                     temp_index = 1; //offset
+                     temp_index = 1; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x04) //A
+                  else if ((branch[jindexer].phases & 0x07) == 0x04) // A
                   {
-                     temp_index = 0; //offset
+                     temp_index = 0; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x05) //AC
+                  else if ((branch[jindexer].phases & 0x07) == 0x05) // AC
                   {
                      temp_index = 0;
                   }
@@ -797,19 +728,19 @@ namespace SmartGridToolbox
                      error("NR: One of the lines has invalid phase parameters");
                   }
                   break;
-               } //end 0x05
-            case 0x06: //AB
+               } // end 0x05
+            case 0x06: // AB
                {
-                  temp_size = 2; //Size of this matrix's admittance
-                  if ((branch[jindexer].phases & 0x07) == 0x02) //B
+                  temp_size = 2; // Size of this matrix's admittance
+                  if ((branch[jindexer].phases & 0x07) == 0x02) // B
                   {
-                     temp_index = 1; //offset
+                     temp_index = 1; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x04) //A
+                  else if ((branch[jindexer].phases & 0x07) == 0x04) // A
                   {
-                     temp_index = 0; //offset
+                     temp_index = 0; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x06) //AB
+                  else if ((branch[jindexer].phases & 0x07) == 0x06) // AB
                   {
                      temp_index = 0;
                   }
@@ -818,32 +749,32 @@ namespace SmartGridToolbox
                      error("NR: One of the lines has invalid phase parameters");
                   }
                   break;
-               } //end 0x06
-            case 0x07: //ABC
+               } // end 0x06
+            case 0x07: // ABC
                {
-                  temp_size = 3; //Size of this matrix's admittance
-                  if ((branch[jindexer].phases & 0x07) == 0x01) //C
+                  temp_size = 3; // Size of this matrix's admittance
+                  if ((branch[jindexer].phases & 0x07) == 0x01) // C
                   {
-                     temp_index = 2; //offset
+                     temp_index = 2; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x02) //B
+                  else if ((branch[jindexer].phases & 0x07) == 0x02) // B
                   {
-                     temp_index = 1; //offset
+                     temp_index = 1; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x03) //BC
+                  else if ((branch[jindexer].phases & 0x07) == 0x03) // BC
                   {
                      temp_index = 1;
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x04) //A
+                  else if ((branch[jindexer].phases & 0x07) == 0x04) // A
                   {
-                     temp_index = 0; //offset
+                     temp_index = 0; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x05) //AC
+                  else if ((branch[jindexer].phases & 0x07) == 0x05) // AC
                   {
                      temp_index = 0;
-                     Full_Mat_A = true; //Flag so we know C needs to be gapped
+                     Full_Mat_A = true; // Flag so we know C needs to be gapped
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x06) //AB
+                  else if ((branch[jindexer].phases & 0x07) == 0x06) // AB
                   {
                      temp_index = 0;
                   }
@@ -852,21 +783,21 @@ namespace SmartGridToolbox
                      error("NR: One of the lines has invalid phase parameters");
                   }
                   break;
-               } //end 0x07
+               } // end 0x07
             default:
                {
                   break;
                }
-         } //End switch/case for from
+         } // End switch/case for from
 
-         //Check the to side and get all appropriate offsets
+         // Check the to side and get all appropriate offsets
          switch(bus[tempb].phases & 0x07) {
-            case 0x01: //C
+            case 0x01: // C
                {
-                  if ((branch[jindexer].phases & 0x07) == 0x01) //C
+                  if ((branch[jindexer].phases & 0x07) == 0x01) // C
                   {
-                     temp_size_b = 1; //Single size
-                     temp_index_b = 0; //No offset (only 1 big)
+                     temp_size_b = 1; // Single size
+                     temp_index_b = 0; // No offset (only 1 big)
                   }
                   else
                   {
@@ -878,32 +809,32 @@ namespace SmartGridToolbox
                          */
                   }
                   break;
-               } //end 0x01
-            case 0x02: //B
+               } // end 0x01
+            case 0x02: // B
                {
-                  if ((branch[jindexer].phases & 0x07) == 0x02) //B
+                  if ((branch[jindexer].phases & 0x07) == 0x02) // B
                   {
-                     temp_size_b = 1; //Single size
-                     temp_index_b = 0; //No offset (only 1 big)
+                     temp_size_b = 1; // Single size
+                     temp_index_b = 0; // No offset (only 1 big)
                   }
                   else
                   {
                      error("NR: One of the lines has invalid phase parameters");
                   }
                   break;
-               } //end 0x02
-            case 0x03: //BC
+               } // end 0x02
+            case 0x03: // BC
                {
-                  temp_size_b = 2; //Size of this matrix's admittance
-                  if ((branch[jindexer].phases & 0x07) == 0x01) //C
+                  temp_size_b = 2; // Size of this matrix's admittance
+                  if ((branch[jindexer].phases & 0x07) == 0x01) // C
                   {
-                     temp_index_b = 1; //offset
+                     temp_index_b = 1; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x02) //B
+                  else if ((branch[jindexer].phases & 0x07) == 0x02) // B
                   {
-                     temp_index_b = 0; //offset
+                     temp_index_b = 0; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x03) //BC
+                  else if ((branch[jindexer].phases & 0x07) == 0x03) // BC
                   {
                      temp_index_b = 0;
                   }
@@ -912,32 +843,32 @@ namespace SmartGridToolbox
                      error("NR: One of the lines has invalid phase parameters");
                   }
                   break;
-               } //end 0x03
-            case 0x04: //A
+               } // end 0x03
+            case 0x04: // A
                {
-                  if ((branch[jindexer].phases & 0x07) == 0x04) //A
+                  if ((branch[jindexer].phases & 0x07) == 0x04) // A
                   {
-                     temp_size_b = 1; //Single size
-                     temp_index_b = 0; //No offset (only 1 big)
+                     temp_size_b = 1; // Single size
+                     temp_index_b = 0; // No offset (only 1 big)
                   }
                   else
                   {
                      error("NR: One of the lines has invalid phase parameters");
                   }
                   break;
-               } //end 0x04
-            case 0x05: //AC
+               } // end 0x04
+            case 0x05: // AC
                {
-                  temp_size_b = 2; //Size of this matrix's admittance
-                  if ((branch[jindexer].phases & 0x07) == 0x01) //C
+                  temp_size_b = 2; // Size of this matrix's admittance
+                  if ((branch[jindexer].phases & 0x07) == 0x01) // C
                   {
-                     temp_index_b = 1; //offset
+                     temp_index_b = 1; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x04) //A
+                  else if ((branch[jindexer].phases & 0x07) == 0x04) // A
                   {
-                     temp_index_b = 0; //offset
+                     temp_index_b = 0; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x05) //AC
+                  else if ((branch[jindexer].phases & 0x07) == 0x05) // AC
                   {
                      temp_index_b = 0;
                   }
@@ -946,19 +877,19 @@ namespace SmartGridToolbox
                      error("NR: One of the lines has invalid phase parameters");
                   }
                   break;
-               } //end 0x05
-            case 0x06: //AB
+               } // end 0x05
+            case 0x06: // AB
                {
-                  temp_size_b = 2; //Size of this matrix's admittance
-                  if ((branch[jindexer].phases & 0x07) == 0x02) //B
+                  temp_size_b = 2; // Size of this matrix's admittance
+                  if ((branch[jindexer].phases & 0x07) == 0x02) // B
                   {
-                     temp_index_b = 1; //offset
+                     temp_index_b = 1; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x04) //A
+                  else if ((branch[jindexer].phases & 0x07) == 0x04) // A
                   {
-                     temp_index_b = 0; //offset
+                     temp_index_b = 0; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x06) //AB
+                  else if ((branch[jindexer].phases & 0x07) == 0x06) // AB
                   {
                      temp_index_b = 0;
                   }
@@ -967,32 +898,32 @@ namespace SmartGridToolbox
                      error("NR: One of the lines has invalid phase parameters");
                   }
                   break;
-               } //end 0x06
-            case 0x07: //ABC
+               } // end 0x06
+            case 0x07: // ABC
                {
-                  temp_size_b = 3; //Size of this matrix's admittance
-                  if ((branch[jindexer].phases & 0x07) == 0x01) //C
+                  temp_size_b = 3; // Size of this matrix's admittance
+                  if ((branch[jindexer].phases & 0x07) == 0x01) // C
                   {
-                     temp_index_b = 2; //offset
+                     temp_index_b = 2; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x02) //B
+                  else if ((branch[jindexer].phases & 0x07) == 0x02) // B
                   {
-                     temp_index_b = 1; //offset
+                     temp_index_b = 1; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x03) //BC
+                  else if ((branch[jindexer].phases & 0x07) == 0x03) // BC
                   {
                      temp_index_b = 1;
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x04) //A
+                  else if ((branch[jindexer].phases & 0x07) == 0x04) // A
                   {
-                     temp_index_b = 0; //offset
+                     temp_index_b = 0; // offset
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x05) //AC
+                  else if ((branch[jindexer].phases & 0x07) == 0x05) // AC
                   {
                      temp_index_b = 0;
-                     Full_Mat_B = true; //Flag so we know C needs to be gapped
+                     Full_Mat_B = true; // Flag so we know C needs to be gapped
                   }
-                  else if ((branch[jindexer].phases & 0x07) == 0x06) //AB
+                  else if ((branch[jindexer].phases & 0x07) == 0x06) // AB
                   {
                      temp_index_b = 0;
                   }
@@ -1001,14 +932,14 @@ namespace SmartGridToolbox
                      error("NR: One of the lines has invalid phase parameters");
                   }
                   break;
-               } //end 0x07
+               } // end 0x07
             default:
                {
                   break;
                }
-         } //End switch/case for to
+         } // End switch/case for to
 
-         //Make sure everything was set before proceeding
+         // Make sure everything was set before proceeding
          if ((temp_index==-1) || (temp_index_b==-1) || (temp_size==-1) || (temp_size_b==-1) || (temp_size_c==-1))
             error("NR: Failure to construct single/double phase line indices");
          /*  TROUBLESHOOT
@@ -1017,15 +948,15 @@ namespace SmartGridToolbox
              the trac site.
              */
 
-         if (Full_Mat_A) //From side is a full ABC and we have AC
+         if (Full_Mat_A) // From side is a full ABC and we have AC
          {
-            for (jindex=0; jindex<temp_size_c; jindex++) //Loop through rows of admittance matrices
+            for (jindex=0; jindex<temp_size_c; jindex++) // Loop through rows of admittance matrices
             {
-               for (kindex=0; kindex<temp_size_c; kindex++) //Loop through columns of admittance matrices
+               for (kindex=0; kindex<temp_size_c; kindex++) // Loop through columns of admittance matrices
                {
-                  //Indices counted out from Self admittance above.  needs doubling due to complex separation
+                  // Indices counted out from Self admittance above.  needs doubling due to complex separation
                   if ((imag(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
-                     //From imags
+                     // From imags
                   {
                      Y_offdiag_PQ[indexer].rowInd = 2*bus[tempa].matLoc + temp_index + jindex*2;
                      Y_offdiag_PQ[indexer].colInd = 2*bus[tempb].matLoc + temp_index_b + kindex;
@@ -1055,7 +986,7 @@ namespace SmartGridToolbox
                   }
 
                   if ((real(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
-                     //From reals
+                     // From reals
                   {
                      Y_offdiag_PQ[indexer].rowInd = 2*bus[tempa].matLoc + temp_index + jindex*2 + temp_size;
                      Y_offdiag_PQ[indexer].colInd = 2*bus[tempb].matLoc + temp_index_b + kindex;
@@ -1070,7 +1001,7 @@ namespace SmartGridToolbox
                   }
 
                   if ((real(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
-                     //To reals
+                     // To reals
                   {
                      Y_offdiag_PQ[indexer].rowInd = 2*bus[tempb].matLoc + temp_index_b + jindex
                         + temp_size_b;
@@ -1083,19 +1014,19 @@ namespace SmartGridToolbox
                      Y_offdiag_PQ[indexer].YValue = -(real(Temp_Ad_B[jindex][kindex]));
                      indexer += 1;
                   }
-               } //column end
-            } //row end
-         } //end full ABC for from AC
+               } // column end
+            } // row end
+         } // end full ABC for from AC
 
-         if (Full_Mat_B) //To side is a full ABC and we have AC
+         if (Full_Mat_B) // To side is a full ABC and we have AC
          {
-            for (jindex=0; jindex<temp_size_c; jindex++) //Loop through rows of admittance matrices
+            for (jindex=0; jindex<temp_size_c; jindex++) // Loop through rows of admittance matrices
             {
-               for (kindex=0; kindex<temp_size_c; kindex++) //Loop through columns of admittance matrices
+               for (kindex=0; kindex<temp_size_c; kindex++) // Loop through columns of admittance matrices
                {
-                  //Indices counted out from Self admittance above.  needs doubling due to complex separation
+                  // Indices counted out from Self admittance above.  needs doubling due to complex separation
                   if ((imag(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
-                     //From imags
+                     // From imags
                   {
                      Y_offdiag_PQ[indexer].rowInd = 2*bus[tempa].matLoc + temp_index + jindex;
                      Y_offdiag_PQ[indexer].colInd = 2*bus[tempb].matLoc + temp_index_b + kindex*2;
@@ -1110,7 +1041,7 @@ namespace SmartGridToolbox
                   }
 
                   if ((imag(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
-                     //To imags
+                     // To imags
                   {
                      Y_offdiag_PQ[indexer].rowInd = 2*bus[tempb].matLoc + temp_index_b + jindex*2;
                      Y_offdiag_PQ[indexer].colInd = 2*bus[tempa].matLoc + temp_index + kindex;
@@ -1125,7 +1056,7 @@ namespace SmartGridToolbox
                   }
 
                   if ((real(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) &&
-                        (bus[tempb].type != BusType::PV)) //From reals
+                        (bus[tempb].type != BusType::PV)) // From reals
                   {
                      Y_offdiag_PQ[indexer].rowInd = 2*bus[tempa].matLoc + temp_index + jindex + temp_size;
                      Y_offdiag_PQ[indexer].colInd = 2*bus[tempb].matLoc + temp_index_b + kindex*2;
@@ -1140,7 +1071,7 @@ namespace SmartGridToolbox
                   }
 
                   if ((real(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
-                     //To reals
+                     // To reals
                   {
                      Y_offdiag_PQ[indexer].rowInd = 2*bus[tempb].matLoc + temp_index_b + jindex*2
                         + temp_size_b;
@@ -1153,20 +1084,20 @@ namespace SmartGridToolbox
                      Y_offdiag_PQ[indexer].YValue = -(real(Temp_Ad_B[jindex][kindex]));
                      indexer += 1;
                   }
-               } //column end
-            } //row end
-         } //end full ABD for to AC
+               } // column end
+            } // row end
+         } // end full ABD for to AC
 
-         if ((!Full_Mat_A) && (!Full_Mat_B)) //Neither is a full ABC, or we aren't doing AC, so we don't care
+         if ((!Full_Mat_A) && (!Full_Mat_B)) // Neither is a full ABC, or we aren't doing AC, so we don't care
          {
-            for (jindex=0; jindex<temp_size_c; jindex++) //Loop through rows of admittance matrices
+            for (jindex=0; jindex<temp_size_c; jindex++) // Loop through rows of admittance matrices
             {
-               for (kindex=0; kindex<temp_size_c; kindex++) //Loop through columns of admittance matrices
+               for (kindex=0; kindex<temp_size_c; kindex++) // Loop through columns of admittance matrices
                {
 
-                  //Indices counted out from Self admittance above.  needs doubling due to complex separation
+                  // Indices counted out from Self admittance above.  needs doubling due to complex separation
                   if ((imag(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
-                     //From imags
+                     // From imags
                   {
                      Y_offdiag_PQ[indexer].rowInd = 2*bus[tempa].matLoc + temp_index + jindex;
                      Y_offdiag_PQ[indexer].colInd = 2*bus[tempb].matLoc + temp_index_b + kindex;
@@ -1181,7 +1112,7 @@ namespace SmartGridToolbox
                   }
 
                   if ((imag(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
-                     //To imags
+                     // To imags
                   {
                      Y_offdiag_PQ[indexer].rowInd = 2*bus[tempb].matLoc + temp_index_b + jindex;
                      Y_offdiag_PQ[indexer].colInd = 2*bus[tempa].matLoc + temp_index + kindex;
@@ -1196,7 +1127,7 @@ namespace SmartGridToolbox
                   }
 
                   if ((real(Temp_Ad_A[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
-                     //From reals
+                     // From reals
                   {
                      Y_offdiag_PQ[indexer].rowInd = 2*bus[tempa].matLoc + temp_index + jindex + temp_size;
                      Y_offdiag_PQ[indexer].colInd = 2*bus[tempb].matLoc + temp_index_b + kindex;
@@ -1211,7 +1142,7 @@ namespace SmartGridToolbox
                   }
 
                   if ((real(Temp_Ad_B[jindex][kindex]) != 0) && (bus[tempa].type != BusType::PV) && (bus[tempb].type != BusType::PV))
-                     //To reals
+                     // To reals
                   {
                      Y_offdiag_PQ[indexer].rowInd = 2*bus[tempb].matLoc + temp_index_b + jindex
                         + temp_size_b;
@@ -1224,10 +1155,10 @@ namespace SmartGridToolbox
                      Y_offdiag_PQ[indexer].YValue = -(real(Temp_Ad_B[jindex][kindex]));
                      indexer += 1;
                   }
-               } //column end
-            } //row end
-         } //end not full ABC with AC on either side case
-      } //end branch for
+               } // column end
+            } // row end
+         } // end not full ABC with AC on either side case
+      } // end branch for
 
       // Build the fixed part of the diagonal PQ bus elements of 6n*6n YNr matrix.
       // This part will not be updated at each iteration.
@@ -1238,9 +1169,9 @@ namespace SmartGridToolbox
          {
             for (kindex=0; kindex<3; kindex++)
             {
-               if (real(BA_diag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != BusType::PV && jindex!=kindex)
+               if (real(busAdmitDiag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != BusType::PV && jindex!=kindex)
                   size_diag_fixed += 1;
-               if (imag(BA_diag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != BusType::PV && jindex!=kindex)
+               if (imag(busAdmitDiag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != BusType::PV && jindex!=kindex)
                   size_diag_fixed += 1;
                else {}
             }
@@ -1252,67 +1183,67 @@ namespace SmartGridToolbox
          // Store the row,column and value of the fixed part of the diagonal PQ bus elements of 6n*6n
          // YNr matrix.
 
-         //Make sure it worked
+         // Make sure it worked
          if (Y_diag_fixed == NULL)
             error("NR: Failed to allocate memory for one of the necessary matrices");
 
-         //Update the max size
+         // Update the max size
          max_size_diag_fixed = size_diag_fixed;
       }
-      else if (size_diag_fixed > max_size_diag_fixed) //Something changed and we are bigger!!
+      else if (size_diag_fixed > max_size_diag_fixed) // Something changed and we are bigger!!
       {
-         //Destroy us!
+         // Destroy us!
          free(Y_diag_fixed);
 
-         //Rebuild us, we have the technology
+         // Rebuild us, we have the technology
          Y_diag_fixed = (YNr *)malloc((size_diag_fixed*2) *sizeof(YNr));
 
-         //Make sure it worked
+         // Make sure it worked
          if (Y_diag_fixed == NULL)
             error("NR: Failed to allocate memory for one of the necessary matrices");
 
-         //Store the new size
+         // Store the new size
          max_size_diag_fixed = size_diag_fixed;
 
-         //Flag for a reallocation
+         // Flag for a reallocation
          NR_realloc_needed = true;
       }
 
       indexer = 0;
-      for (jindexer=0; jindexer<bus_count;jindexer++) //Parse through bus list
+      for (jindexer=0; jindexer<bus_count;jindexer++) // Parse through bus list
       {
-         for (jindex=0; jindex<BA_diag[jindexer].size; jindex++)
+         for (jindex=0; jindex<busAdmitDiag[jindexer].size; jindex++)
          {
-            for (kindex=0; kindex<BA_diag[jindexer].size; kindex++)
+            for (kindex=0; kindex<busAdmitDiag[jindexer].size; kindex++)
             {
-               if (imag(BA_diag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != BusType::PV && jindex!=kindex)
+               if (imag(busAdmitDiag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != BusType::PV && jindex!=kindex)
                {
-                  Y_diag_fixed[indexer].rowInd = 2*BA_diag[jindexer].rowInd + jindex;
-                  Y_diag_fixed[indexer].colInd = 2*BA_diag[jindexer].colInd + kindex;
-                  Y_diag_fixed[indexer].YValue = imag(BA_diag[jindexer].Y[jindex][kindex]);
+                  Y_diag_fixed[indexer].rowInd = 2*busAdmitDiag[jindexer].rowInd + jindex;
+                  Y_diag_fixed[indexer].colInd = 2*busAdmitDiag[jindexer].colInd + kindex;
+                  Y_diag_fixed[indexer].YValue = imag(busAdmitDiag[jindexer].Y[jindex][kindex]);
                   indexer += 1;
 
-                  Y_diag_fixed[indexer].rowInd = 2*BA_diag[jindexer].rowInd + jindex +BA_diag[jindexer].size;
-                  Y_diag_fixed[indexer].colInd = 2*BA_diag[jindexer].colInd + kindex +BA_diag[jindexer].size;
-                  Y_diag_fixed[indexer].YValue = -imag(BA_diag[jindexer].Y[jindex][kindex]);
+                  Y_diag_fixed[indexer].rowInd = 2*busAdmitDiag[jindexer].rowInd + jindex +busAdmitDiag[jindexer].size;
+                  Y_diag_fixed[indexer].colInd = 2*busAdmitDiag[jindexer].colInd + kindex +busAdmitDiag[jindexer].size;
+                  Y_diag_fixed[indexer].YValue = -imag(busAdmitDiag[jindexer].Y[jindex][kindex]);
                   indexer += 1;
                }
 
-               if (real(BA_diag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != BusType::PV && jindex!=kindex)
+               if (real(busAdmitDiag[jindexer].Y[jindex][kindex]) != 0 && bus[jindexer].type != BusType::PV && jindex!=kindex)
                {
-                  Y_diag_fixed[indexer].rowInd = 2*BA_diag[jindexer].rowInd + jindex;
-                  Y_diag_fixed[indexer].colInd = 2*BA_diag[jindexer].colInd + kindex +BA_diag[jindexer].size;
-                  Y_diag_fixed[indexer].YValue = real(BA_diag[jindexer].Y[jindex][kindex]);
+                  Y_diag_fixed[indexer].rowInd = 2*busAdmitDiag[jindexer].rowInd + jindex;
+                  Y_diag_fixed[indexer].colInd = 2*busAdmitDiag[jindexer].colInd + kindex +busAdmitDiag[jindexer].size;
+                  Y_diag_fixed[indexer].YValue = real(busAdmitDiag[jindexer].Y[jindex][kindex]);
                   indexer += 1;
 
-                  Y_diag_fixed[indexer].rowInd = 2*BA_diag[jindexer].rowInd + jindex +BA_diag[jindexer].size;
-                  Y_diag_fixed[indexer].colInd = 2*BA_diag[jindexer].colInd + kindex;
-                  Y_diag_fixed[indexer].YValue = real(BA_diag[jindexer].Y[jindex][kindex]);
+                  Y_diag_fixed[indexer].rowInd = 2*busAdmitDiag[jindexer].rowInd + jindex +busAdmitDiag[jindexer].size;
+                  Y_diag_fixed[indexer].colInd = 2*busAdmitDiag[jindexer].colInd + kindex;
+                  Y_diag_fixed[indexer].YValue = real(busAdmitDiag[jindexer].Y[jindex][kindex]);
                   indexer += 1;
                }
             }
          }
-      } //End bus parse for fixed diagonal
+      } // End bus parse for fixed diagonal
    }
 
    /** Newton-Raphson solver
@@ -1335,7 +1266,7 @@ namespace SmartGridToolbox
 
       static unsigned int max_size_diag_update;
 
-      static BusAdmit *BA_diag;
+      static BusAdmit *busAdmitDiag;
          // Store the diagonal elements of the bus admittance matrix. The off_diag elements of bus admittance matrix
          // are equal to negative value of branch admittance.
       static unsigned int size_offdiag_PQ;
@@ -1413,10 +1344,10 @@ namespace SmartGridToolbox
       // Ensure bad computations flag is set first
       *bad_computations = false;
 
-      if (NR_admit_change) //If an admittance update was detected, fix it
+      if (NR_admit_change) // If an admittance update was detected, fix it
       {
          buildAdmit(bus_count, bus, branch_count, branch, max_total_variables, total_variables, 
-                    BA_diag, size_offdiag_PQ, Y_offdiag_PQ, size_diag_fixed, Y_diag_fixed, NR_realloc_needed);
+                    busAdmitDiag, size_offdiag_PQ, Y_offdiag_PQ, size_diag_fixed, Y_diag_fixed, NR_realloc_needed);
          NR_admit_change = false;
       }
 
@@ -1489,7 +1420,7 @@ namespace SmartGridToolbox
                temp_index = -1;
                temp_index_b = -1;
 
-               for (jindex=0; jindex<BA_diag[indexer].size; jindex++)
+               for (jindex=0; jindex<busAdmitDiag[indexer].size; jindex++)
                {
                   switch(bus[indexer].phases & 0x07) {
                      case 0x01: // C
@@ -1580,7 +1511,7 @@ namespace SmartGridToolbox
 
                undeltacurr[0] = undeltacurr[1] = undeltacurr[2] = 0.0;
 
-               for (jindex=0; jindex<BA_diag[indexer].size; jindex++)
+               for (jindex=0; jindex<busAdmitDiag[indexer].size; jindex++)
                {
                   switch(bus[indexer].phases & 0x07) {
                      case 0x01: // C
@@ -1720,7 +1651,7 @@ namespace SmartGridToolbox
          // Compute the calculated loads (not specified) at each bus
          for (indexer=0; indexer<bus_count; indexer++) // for specific bus k
          {
-            for (jindex=0; jindex<BA_diag[indexer].size; jindex++) // rows - for specific phase that exists
+            for (jindex=0; jindex<busAdmitDiag[indexer].size; jindex++) // rows - for specific phase that exists
             {
                tempIcalcReal = tempIcalcImag = 0;
 
@@ -1728,7 +1659,7 @@ namespace SmartGridToolbox
                // @@@ PG and QG is assumed to be zero here @@@ - this may change later (PV busses)
                tempQbus =  - bus[indexer].QL[jindex];
 
-               for (kindex=0; kindex<BA_diag[indexer].size; kindex++) // cols - Still only for specified phases
+               for (kindex=0; kindex<busAdmitDiag[indexer].size; kindex++) // cols - Still only for specified phases
                {
                   // Determine our indices, based on phase information
                   temp_index = -1;
@@ -1797,11 +1728,11 @@ namespace SmartGridToolbox
                   }
 
                   // Diagonal contributions
-                  tempIcalcReal += real(BA_diag[indexer].Y[jindex][kindex]) * real(bus[indexer].V[temp_index]) -
-                     imag(BA_diag[indexer].Y[jindex][kindex]) * imag(bus[indexer].V[temp_index]);
+                  tempIcalcReal += real(busAdmitDiag[indexer].Y[jindex][kindex]) * real(bus[indexer].V[temp_index]) -
+                     imag(busAdmitDiag[indexer].Y[jindex][kindex]) * imag(bus[indexer].V[temp_index]);
                   // equation (7), the diag elements of bus admittance matrix
-                  tempIcalcImag += real(BA_diag[indexer].Y[jindex][kindex]) * imag(bus[indexer].V[temp_index]) +
-                     imag(BA_diag[indexer].Y[jindex][kindex]) * real(bus[indexer].V[temp_index]);
+                  tempIcalcImag += real(busAdmitDiag[indexer].Y[jindex][kindex]) * imag(bus[indexer].V[temp_index]) +
+                     imag(busAdmitDiag[indexer].Y[jindex][kindex]) * real(bus[indexer].V[temp_index]);
                   // equation (8), the diag elements of bus admittance matrix
 
 
@@ -1924,7 +1855,7 @@ namespace SmartGridToolbox
                {
                   work_vals_double_1 = real(bus[indexer].V[temp_index_b]);
                   work_vals_double_2 = imag(bus[indexer].V[temp_index_b]);
-                  deltaI_NR[2*bus[indexer].matLoc+ BA_diag[indexer].size + jindex] = (tempPbus *
+                  deltaI_NR[2*bus[indexer].matLoc+ busAdmitDiag[indexer].size + jindex] = (tempPbus *
                         work_vals_double_1 + tempQbus * work_vals_double_2)/ (work_vals_double_0) - tempIcalcReal ;
                   // equation(7), Real part of deltaI, left hand side of equation (11)
                   deltaI_NR[2*bus[indexer].matLoc + jindex] = (tempPbus * work_vals_double_2 - tempQbus *
@@ -1933,7 +1864,7 @@ namespace SmartGridToolbox
                }
                else
                {
-                  deltaI_NR[2*bus[indexer].matLoc+BA_diag[indexer].size + jindex] = 0.0;
+                  deltaI_NR[2*bus[indexer].matLoc+busAdmitDiag[indexer].size + jindex] = 0.0;
                   deltaI_NR[2*bus[indexer].matLoc + jindex] = 0.0;
                }
             } // End delta_I for each phase row
@@ -2041,7 +1972,7 @@ namespace SmartGridToolbox
                temp_index = -1;
                temp_index_b = -1;
 
-               for (jindex=0; jindex<BA_diag[indexer].size; jindex++)
+               for (jindex=0; jindex<busAdmitDiag[indexer].size; jindex++)
                {
                   switch(bus[indexer].phases & 0x07) {
                      case 0x01: // C
@@ -2150,7 +2081,7 @@ namespace SmartGridToolbox
 
                undeltacurr[0] = undeltacurr[1] = undeltacurr[2] = 0.0; // Zero it
 
-               for (jindex=0; jindex<BA_diag[indexer].size; jindex++)
+               for (jindex=0; jindex<busAdmitDiag[indexer].size; jindex++)
                {
                   switch(bus[indexer].phases & 0x07) {
                      case 0x01: // C
@@ -2308,7 +2239,7 @@ namespace SmartGridToolbox
          for (jindexer=0; jindexer<bus_count;jindexer++)
          {
             if  (bus[jindexer].type != BusType::PV) // PV bus ignored (for now?)
-               size_diag_update += BA_diag[jindexer].size;
+               size_diag_update += busAdmitDiag[jindexer].size;
             else {}
          }
 
@@ -2351,7 +2282,7 @@ namespace SmartGridToolbox
          {
             if (bus[jindexer].type == BusType::SL) // Swing bus
             {
-               for (jindex=0; jindex<BA_diag[jindexer].size; jindex++)
+               for (jindex=0; jindex<busAdmitDiag[jindexer].size; jindex++)
                {
                   Y_diag_update[indexer].rowInd = 2*bus[jindexer].matLoc + jindex;
                   Y_diag_update[indexer].colInd = Y_diag_update[indexer].rowInd;
@@ -2360,18 +2291,18 @@ namespace SmartGridToolbox
                   indexer += 1;
 
                   Y_diag_update[indexer].rowInd = 2*bus[jindexer].matLoc + jindex;
-                  Y_diag_update[indexer].colInd = Y_diag_update[indexer].rowInd + BA_diag[jindexer].size;
+                  Y_diag_update[indexer].colInd = Y_diag_update[indexer].rowInd + busAdmitDiag[jindexer].size;
                   Y_diag_update[indexer].YValue = 1e10;
                   // swing bus gets large admittance
                   indexer += 1;
 
-                  Y_diag_update[indexer].rowInd = 2*bus[jindexer].matLoc + jindex + BA_diag[jindexer].size;
-                  Y_diag_update[indexer].colInd = Y_diag_update[indexer].rowInd - BA_diag[jindexer].size;
+                  Y_diag_update[indexer].rowInd = 2*bus[jindexer].matLoc + jindex + busAdmitDiag[jindexer].size;
+                  Y_diag_update[indexer].colInd = Y_diag_update[indexer].rowInd - busAdmitDiag[jindexer].size;
                   Y_diag_update[indexer].YValue = 1e10;
                   // swing bus gets large admittance
                   indexer += 1;
 
-                  Y_diag_update[indexer].rowInd = 2*bus[jindexer].matLoc + jindex + BA_diag[jindexer].size;
+                  Y_diag_update[indexer].rowInd = 2*bus[jindexer].matLoc + jindex + busAdmitDiag[jindexer].size;
                   Y_diag_update[indexer].colInd = Y_diag_update[indexer].rowInd;
                   Y_diag_update[indexer].YValue = -1e10;
                   // swing bus gets large admittance
@@ -2381,32 +2312,32 @@ namespace SmartGridToolbox
 
             if (bus[jindexer].type != BusType::PV && bus[jindexer].type != BusType::SL) // No PV or swing (so must be PQ)
             {
-               for (jindex=0; jindex<BA_diag[jindexer].size; jindex++)
+               for (jindex=0; jindex<busAdmitDiag[jindexer].size; jindex++)
                {
                   Y_diag_update[indexer].rowInd = 2*bus[jindexer].matLoc + jindex;
                   Y_diag_update[indexer].colInd = Y_diag_update[indexer].rowInd;
-                  Y_diag_update[indexer].YValue = imag(BA_diag[jindexer].Y[jindex][jindex]) +
+                  Y_diag_update[indexer].YValue = imag(busAdmitDiag[jindexer].Y[jindex][jindex]) +
                      bus[jindexer].JacobA[jindex];
                   // Equation(14)
                   indexer += 1;
 
                   Y_diag_update[indexer].rowInd = 2*bus[jindexer].matLoc + jindex;
-                  Y_diag_update[indexer].colInd = Y_diag_update[indexer].rowInd + BA_diag[jindexer].size;
-                  Y_diag_update[indexer].YValue = real(BA_diag[jindexer].Y[jindex][jindex]) +
+                  Y_diag_update[indexer].colInd = Y_diag_update[indexer].rowInd + busAdmitDiag[jindexer].size;
+                  Y_diag_update[indexer].YValue = real(busAdmitDiag[jindexer].Y[jindex][jindex]) +
                      bus[jindexer].JacobB[jindex];
                   // Equation(15)
                   indexer += 1;
 
-                  Y_diag_update[indexer].rowInd = 2*bus[jindexer].matLoc + jindex + BA_diag[jindexer].size;
+                  Y_diag_update[indexer].rowInd = 2*bus[jindexer].matLoc + jindex + busAdmitDiag[jindexer].size;
                   Y_diag_update[indexer].colInd = 2*bus[jindexer].matLoc + jindex;
-                  Y_diag_update[indexer].YValue = real(BA_diag[jindexer].Y[jindex][jindex]) +
+                  Y_diag_update[indexer].YValue = real(busAdmitDiag[jindexer].Y[jindex][jindex]) +
                      bus[jindexer].JacobC[jindex];
                   // Equation(16)
                   indexer += 1;
 
-                  Y_diag_update[indexer].rowInd = 2*bus[jindexer].matLoc + jindex + BA_diag[jindexer].size;
+                  Y_diag_update[indexer].rowInd = 2*bus[jindexer].matLoc + jindex + busAdmitDiag[jindexer].size;
                   Y_diag_update[indexer].colInd = Y_diag_update[indexer].rowInd;
-                  Y_diag_update[indexer].YValue = -imag(BA_diag[jindexer].Y[jindex][jindex]) +
+                  Y_diag_update[indexer].YValue = -imag(busAdmitDiag[jindexer].Y[jindex][jindex]) +
                      bus[jindexer].JacobD[jindex];
                   // Equation(17)
                   indexer += 1;
@@ -2732,7 +2663,7 @@ namespace SmartGridToolbox
             if (bus[indexer].type != BusType::SL)
             {
                // Figure out the offset we need to be for each phase
-               for (jindex=0; jindex<BA_diag[indexer].size; jindex++) // parse through the phases
+               for (jindex=0; jindex<busAdmitDiag[indexer].size; jindex++) // parse through the phases
                {
                   switch(bus[indexer].phases & 0x07) {
                      case 0x01: // C
@@ -2803,7 +2734,7 @@ namespace SmartGridToolbox
                   }
 
                   DVConvCheck[jindex]=Complex(sol_LU[(2*bus[indexer].matLoc+temp_index)],
-                        sol_LU[(2*bus[indexer].matLoc+BA_diag[indexer].size+temp_index)]);
+                        sol_LU[(2*bus[indexer].matLoc+busAdmitDiag[indexer].size+temp_index)]);
                   bus[indexer].V[temp_index_b] += DVConvCheck[jindex];
 
                   // Pull off the magnitude (no sense calculating it twice)
@@ -2822,7 +2753,7 @@ namespace SmartGridToolbox
             // end if not swing
             else // So this must be the swing
             {
-               temp_index +=2*BA_diag[indexer].size;
+               temp_index +=2*busAdmitDiag[indexer].size;
                // Increment us for what this bus would have been had it not been a swing
             }
          } // End bus traversion
@@ -2871,5 +2802,73 @@ namespace SmartGridToolbox
       }
       else // Must have converged
          return Iteration;
+   }
+
+   static void merge_sort(YNr *Input_Array, unsigned int Alen, YNr *Work_Array)
+   {
+      // Merge sorting algorithm basis stolen from auction.cpp in market module.
+      unsigned int split_point;
+      unsigned int right_length;
+      YNr *leftside, *rightside;
+      YNr *Final_P;
+
+      if (Alen>0) // Only occurs if over zero
+      {
+         split_point = Alen/2;
+         // Find the middle point
+         right_length = Alen - split_point;
+         // Figure out how big the right hand side is
+
+         // Make the appropriate pointers
+         leftside = Input_Array;
+         rightside = Input_Array+split_point;
+
+         // Check to see what condition we are in (keep splitting it)
+         if (split_point>1)
+            merge_sort(leftside,split_point,Work_Array);
+
+         if (right_length>1)
+            merge_sort(rightside,right_length,Work_Array);
+
+         // Point at the first location
+         Final_P = Work_Array;
+
+         // Merge them now
+         do {
+            if (leftside->colInd < rightside->colInd)
+               *Final_P++ = *leftside++;
+            else if (leftside->colInd == rightside->colInd)
+            {
+               if (leftside->rowInd < rightside->rowInd)
+                  *Final_P++ = *leftside++;
+               else if (leftside->rowInd > rightside->rowInd)
+                  *Final_P++ = *rightside++;
+               else // Catch for duplicate entries
+               {
+                  error("NR: duplicate entry found in admittance matrix. Look for parallel lines!");
+                  /*  TROUBLESHOOT
+                      While sorting the admittance matrix for the Newton-Raphson solver, a duplicate entry was found.
+                      This is usually caused by a line between two nodes having another, parallel line between the
+                      same two nodes.  This is only an issue if the parallel lines overlap in phase (e.g., AB and BC).
+                      If no overlapping phase is present, this error should not occur.  Methods to narrow down the
+                      location of this conflict are under development. */
+               }
+            }
+            else
+               *Final_P++ = *rightside++;
+         } while ((leftside<(Input_Array+split_point)) && (rightside<(Input_Array+Alen)));
+         // Sort the list until one of them empties
+
+         while (leftside<(Input_Array+split_point))
+            *Final_P++ = *leftside++;
+         // Put any remaining entries into list.
+
+         while (rightside<(Input_Array+Alen))
+            *Final_P++ = *rightside++;
+         // Put any remaining entries into list.
+
+         memcpy(Input_Array,Work_Array,sizeof(YNr)*Alen);
+         // Copy the result back into the input
+      } // End length > 0
    }
 } // namespace SmartGridToolbox
