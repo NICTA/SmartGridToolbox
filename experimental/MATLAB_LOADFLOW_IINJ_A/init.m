@@ -6,12 +6,16 @@ function [bus, Y] = init(fname);
    bus.type = busdata(:, 2);
    bus.P = busdata(:, 3);
    bus.Q = busdata(:, 4);
+   bus.S = bus.P + 1i * bus.Q;
    bus.M = busdata(:, 5);
    bus.t = busdata(:, 6);
+   bus.V = bus.M * exp(1i * bus.t);
    bus.gs = busdata(:, 7);
    bus.bs = busdata(:, 8);
+   bus.ys = bus.gs + 1i * bus.bs;
    bus.IcR = busdata(:, 9);
    bus.IcI = busdata(:, 10);
+   bus.Ic = bus.IcR + bus.IcI;
 
    map(bus.id) = 1:bus.N;
    
@@ -32,18 +36,15 @@ function [bus, Y] = init(fname);
       end
    end
    assert(bus.NSL == 1);
+   assert(bus.NPV == 0);
    assert(NOTHER == 0);
 
    bus.iPQ = bus.type == 1;
-   bus.iPV = bus.type == 2;
    bus.iSL = bus.type == 3;
-   bus.iPQPV = bus.iPQ | bus.iPV;
    bus.i1PQ = 1;
    bus.i2PQ = bus.NPQ;
-   bus.i1PV = bus.NPQ + 1;
-   bus.i2PV = bus.NPQ + bus.NPV;
-   bus.i1SL = bus.NPQ + bus.NPV + 1;
-   bus.i1SL = bus.NPQ + bus.NPV + bus.NSL;
+   bus.i1SL = bus.NPQ + 1;
+   bus.i1SL = bus.NPQ + bus.NSL;
 
    from = branchdata(:, 1);
    to = branchdata(:, 2);
