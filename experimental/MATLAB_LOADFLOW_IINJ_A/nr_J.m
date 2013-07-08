@@ -1,8 +1,8 @@
-function f = nr_J(bus, Y, x)
-   V = [x(1:NPQ); bus.V(bus.iSL)];
-   Vc = [x(NPQ+1:2*NPQ); conj(bus.V(bus.iSL))];
-   SPQ = bus.S(bus.iPQ);
-   ScPQ = conj(SPQ);
+function J = nr_J(bus, Y, x)
+   [V, Vc] = nr_get(bus, Y, x);
    Yc = conj(Y);
-   J = [Y, Sc./transpose(Vc); S./transpose(V), Yc];
+   SPQ = bus.S(bus.iPQ);
+   SPQc = conj(SPQ);
+   J = [Y(bus.iPQ, bus.iPQ), bsxfun(@rdivide, SPQc, transpose(Vc(bus.iPQ))); ...
+        bsxfun(@rdivide, SPQ, transpose(V(bus.iPQ))), Yc(bus.iPQ, bus.iPQ)];
 end

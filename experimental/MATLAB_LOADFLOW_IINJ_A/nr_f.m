@@ -1,9 +1,9 @@
 function f = nr_f(bus, Y, x)
-   V = [x(1:NPQ); bus.V(bus.iSL)];
-   Vc = [x(NPQ+1:2*NPQ); conj(bus.V(bus.iSL))];
-   SPQ = bus.S(bus.iPQ);
+   [V, Vc] = nr_get(bus, Y, x);
    Yc = conj(Y);
-   DI = -SPQ ./ VPQ + Yc(iPQ, :) * Vc);
-   DIc = -conj(SPQ) ./ VcPQ + Y(iPQ, :) * V;
+   SPQ = bus.S(bus.iPQ);
+   SPQc = conj(SPQ);
+   DI = -SPQc ./ Vc(bus.iPQ) + Y(bus.iPQ, :) * V;
+   DIc = -SPQ ./ V(bus.iPQ) + Yc(bus.iPQ, :) * Vc;
    f = [DI; DIc];
 end
