@@ -5,21 +5,28 @@
 #include <complex>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/vector_sparse.hpp>
+#include <boost/numeric/ublas/vector_proxy.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/matrix_sparse.hpp>
 
 namespace SmartGridToolbox
 {
-   /// @name Array Type
+   /// @name Constant dimension array type.
    /// @{
    template <class T, size_t N>
    using Array = std::array<T, N>;
    /// @}
 
-   /// @name Matrix Type
+   /// @name Constant dimension 2D array type.
    /// @{
    // Note transposition of NR and NC to obey standard matrix index order. 
    template <class T, size_t NR, size_t NC>
-   using Matrix = std::array<std::array<T, NC>, NR>;
+   using Array2D = std::array<std::array<T, NC>, NR>;
    /// @}
+
+   namespace ublas = boost::numeric::ublas;
 
    /// @name Complex numbers
    /// @{
@@ -44,20 +51,20 @@ namespace SmartGridToolbox
 
    /// @name Time
    /// @{
-   using namespace boost::posix_time;
-   using namespace boost::gregorian;
+   namespace posix_time = boost::posix_time;
+   namespace gregorian = boost::gregorian;
 
-   const ptime epoch(date(1970,1,1));
+   const posix_time::ptime epoch(gregorian::date(1970,1,1));
 
    // The following conversion functions allow lower level access to internal
    // representation of both time_durations and ptimes. This is often useful
    // e.g. for spline interpolation of a time series.
-   inline double dSeconds(const time_duration & d) 
+   inline double dSeconds(const posix_time::time_duration & d) 
    {
-      return double(d.ticks())/time_duration::ticks_per_second();
+      return double(d.ticks())/posix_time::time_duration::ticks_per_second();
    }
 
-   inline double dSeconds(const ptime & t)
+   inline double dSeconds(const posix_time::ptime & t)
    {
       return dSeconds(t - epoch);
    }
