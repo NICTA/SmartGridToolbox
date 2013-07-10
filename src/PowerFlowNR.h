@@ -31,7 +31,7 @@ namespace SmartGridToolbox
          const NRBus * busk;           ///< My k bus.
    };
 
-   class NRLoadFlow
+   class PowerFlowNR
    {
       public:
          typedef std::vector<busData *> BusVec;

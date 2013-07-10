@@ -1,8 +1,8 @@
-#include "NRLoadFlow.h"
+#include "PowerFlowNR.h"
 
 namespace SmartGridToolbox
 {
-   void NRLoadFlow::addBus(NRBus * bus);
+   void PowerFlowNR::addBus(NRBus * bus);
    {
       switch (bus.type)
       {
@@ -18,7 +18,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void NRLoadFlow::validate()
+   void PowerFlowNR::validate()
    {
       nSL_ = size(SLBusses_);
       nPQ_ = size(PQBusses_);
@@ -54,7 +54,7 @@ namespace SmartGridToolbox
       buildBusAdmit();
    }
 
-   void NRLoadFlow::buildBusAdmit()
+   void PowerFlowNR::buildBusAdmit()
    {
       for (const NrBranchData * const branch : branches)
       {
@@ -81,7 +81,7 @@ namespace SmartGridToolbox
       B_ = imag(Y_);
    }
 
-   void NRLoadFlow::initx()
+   void PowerFlowNR::initx()
    {
       x_.resize(3 * nPQ_);
 
@@ -93,7 +93,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void NRLoadFlow::updateF()
+   void PowerFlowNR::updateF()
    {
       using namespace ublas;
       range rPQ(0, nPQ_);
@@ -123,7 +123,7 @@ namespace SmartGridToolbox
       vector_range(f_, r2) = DI;
    }
 
-   void NRLoadFlow::solve()
+   void PowerFlowNR::solve()
    {
       const double tol = 1e-20;
       const int maxiter = 20;
