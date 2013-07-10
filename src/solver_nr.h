@@ -70,7 +70,7 @@ namespace SmartGridToolbox
    struct BusAdmit {
       int rowInd;                      ///< Row loc of the element in n*n bus admittance matrix in NR solver.
       int colInd;                      ///< Col loc of the element in n*n bus admittance matrix in NR solver.
-      Matrix<Complex, 3, 3> Y;         ///< Complex value of elements in bus admittance matrix in NR solver.
+      Array2D<Complex, 3, 3> Y;         ///< Complex value of elements in bus admittance matrix in NR solver.
       char size;                       ///< Size of the admittance diagonal - might be less than 3.
    };
    typedef struct BusAdmit BusAdmit;
