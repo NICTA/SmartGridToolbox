@@ -5,9 +5,9 @@ namespace SmartGridToolbox
 {
    enum class BusType : int
    {
-      PQ = 0,
-      PV = 1,
-      SL = 2
+      SL = 0,
+      PQ = 1,
+      PV = 2
    };
 
    enum class Phases : int
