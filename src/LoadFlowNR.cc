@@ -22,14 +22,15 @@ namespace SmartGridToolbox
    {
       nSL_ = size(SLBusses_);
       nPQ_ = size(PQBusses_);
+      n_ = nSL_ + nPQ_;
 
       assert(nSL_ == 1); // May change in future...
       assert(nPQ_ > 0); // May change in future...
 
       busses = BusVec(); // Clear contents...
-      busses.reserve(nSL_ + nPQ_);
-      busses_.insert(busses_.end(), SLBusses.begin(), SLBusses.end());
+      busses.reserve(nPQ_ + nSL_);
       busses_.insert(busses_.end(), PQBusses.begin(), PQBusses.end());
+      busses_.insert(busses_.end(), SLBusses.begin(), SLBusses.end());
 
       for (int i = 0; i < PQBusses_.size(); ++i)
       {
@@ -46,6 +47,9 @@ namespace SmartGridToolbox
             QPQ_(3 * i + k) = Busses[i].Q[k];
          }
       }
+
+      Vr_.resize(n_);
+      Vi_.resize(n_);
          
       buildBusAdmit();
    }
@@ -91,18 +95,32 @@ namespace SmartGridToolbox
 
    void NRLoadFlow::updateF()
    {
-      int ix1 = 1;
-      int ix2 = nPQ_;
-      int ix3 = i2 + 1;
-      int ix4 = 2 * nPQ_;
+      using namespace ublas;
+      range rPQ(0, nPQ_);
+      range rAll(0, nPQ_ + 1);
+      range r1(0, nPQ_);
+      range r2(nPQ, 2 * nPQ_);
 
+      vector_range x1(x, r1);
+      vector_range x2(x, r2);
 
-      Vr = [x(i1:i2);real(bus.V(bus.iSL))];
-      Vi = [x(i3:i4);imag(bus.V(bus.iSL))];
-      M2 = Vr(bus.iPQ).^2+Vi(bus.iPQ).^2;
-      DR = (-PPQ.*x(i1:i2) - QPQ.*x(i3:i4))./M2 + G(bus.iPQ,:) * Vr - B(bus.iPQ,:) * Vi;
-      DI = (-PPQ.*x(i3:i4) + QPQ.*x(i1:i2))./M2 + G(bus.iPQ,:) * Vi + B(bus.iPQ,:) * Vr;
-      f = [DR; DI];
+      vector_range(Vr, rPQ) = vector_range(x, r1);
+      Vr(nPQ) = V0.real();
+      vector_range(Vi, rPQ) = vector_range(x, r2);
+      Vi(nPQ) = V0.imag();
+
+      ublas::vector<double> M2 = element_prod(Vr, Vr) + element_prod(Vi, Vi); 
+
+      matrix_range<matrix<double>> Grng(G, rPQ, rAll); 
+      matrix_range<matrix<double>> Brng(G, rPQ, rAll); 
+
+      ublas::vector<double> DR = element_div((-element_prod(PPQ_, x1) - element_prod(QPQ_, x2)), M2)
+                               + prod(Grng, Vr) - prod(Brng, Vi);
+      ublas::vector<double> DI = element_div((-element_prod(PPQ_, x2) + element_prod(QPQ_, x1)), M2)
+                               + prod(Grng, Vi) + prod(Brng, Vr);
+
+      vector_range(f_, r1) = DR;
+      vector_range(f_, r2) = DI;
    }
 
    void NRLoadFlow::solve()

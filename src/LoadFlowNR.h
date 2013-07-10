@@ -60,6 +60,8 @@ namespace SmartGridToolbox
          Array<Complex, 3> V0_;
          Vector<double> PPQ_;
          Vector<double> QPQ_;
+         Vector<double> Vr_;
+         Vector<double> Vi_;
          SparseMatrix<Complex> Y_;
          SparseMatrix<double> G_;
          SparseMatrix<double> B_;
