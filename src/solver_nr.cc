@@ -1361,8 +1361,14 @@ namespace SmartGridToolbox
       static NrSolverVars matrices_LU;
 
       // SuperLU variables
-      static int *perm_c, *perm_r;
-      static SuperMatrix A_LU,B_LU;
+      static SuperMatrix A_LU, L_LU, U_LU, B_LU
+      static int *perm_r, *perm_c;
+      NCformat *Astore;
+      DNformat *Bstore;
+      int nnz, info;
+      unsigned int m,n;
+      double *sol_LU;
+
       // Internal iteration counter - just NR limits
       int Iteration;
 
@@ -1395,14 +1401,6 @@ namespace SmartGridToolbox
       // Miscellaneous working variable
       double work_vals_double_0, work_vals_double_1,work_vals_double_2, work_vals_double_3;
       char work_vals_char_0;
-
-      // SuperLU variables
-      SuperMatrix L_LU,U_LU;
-      NCformat *Astore;
-      DNformat *Bstore;
-      int nnz, info;
-      unsigned int m,n;
-      double *sol_LU;
 
 #ifndef MT
       superlu_options_t options;
@@ -2660,8 +2658,7 @@ namespace SmartGridToolbox
 
          for (indexer=0; indexer<size_Amatrix; indexer++)
          {
-            matrices_LU.rowsLU[indexer] = Y_Amatrix[indexer].rowInd ;
-            // row pointers of non zero values
+            matrices_LU.rowsLU[indexer] = Y_Amatrix[indexer].rowInd ; // row pointers of non zero values
             matrices_LU.aLU[indexer] = Y_Amatrix[indexer].YValue;
          }
          matrices_LU.colsLU[0] = 0;

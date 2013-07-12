@@ -29,11 +29,24 @@ namespace SmartGridToolbox
          const NRBus * busk;           ///< My k bus.
    };
 
+   // NR solver variables for sparse solution. Solver Ax = b.
+   class SolverVars {
+      public:
+         const unsigned int aNnz;
+         const unsigned long int * aRows;
+         const unsigned long int * aCols;
+         const double * aVals;
+         std::vector<double> b;
+
+         SolverVars(ublas::compressed_matrix<double> & m);
+   };
+
    class BalancedPowerFlowNR
    {
       public:
          typedef std::vector<NRBus *> BusVec;
          typedef std::vector<NRBranch *> BranchVec;
+
       public:
          void addBus(NRBus * bus);
          void addBranch(NRBranch * branch)
@@ -42,10 +55,19 @@ namespace SmartGridToolbox
          }
          void validate();
          void solve();
+
+      private:
+         typedef ublas::vector_range<vector<double>> VRD; 
+         typedef ublas::matrix_range<compressed_matrix<double>> MRD; 
+
       private:
          void buildBusAdmit();
          void initx();
+         void updateBusV_();
          void updateF();
+         void updateJ();
+         void setSolverVars();
+
       private:
          /// @name Vectors of busses and branches.
          /// @{
@@ -70,8 +92,8 @@ namespace SmartGridToolbox
          ublas::range rAll_;           ///< Range of all busses in list of all busses.
                                        /**< Needed for matrix_range. */
          int iSL_;                     ///< Index of slack bus in list of all busses.
-         ublas::range rx1_;            ///< Range of real voltage components in x_. 
-         ublas::range rx2_;            ///< Range of imag voltage components in x_.
+         ublas::range rx0_;            ///< Range of real voltage components in x_. 
+         ublas::range rx1_;            ///< Range of imag voltage components in x_.
          /// @}
 
          Complex V0_;                  ///< Slack voltages.
@@ -90,6 +112,7 @@ namespace SmartGridToolbox
          ublas::vector<double> x_;
          ublas::vector<double> f_;
          ublas::compressed_matrix<double> J_;
+         ublas::compressed_matrix<double> JConst_; ///< The part of J that doesn't update at each iteration.
    };
 }
 

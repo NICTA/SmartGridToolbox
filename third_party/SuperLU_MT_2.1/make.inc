@@ -30,7 +30,7 @@ MPLIB		= -lpthread
 #  If your system has no ranlib, set RANLIB = echo.
 #
 ARCH          	= ar
-ARCHFLAGS     	= cr
+ARCHFLAGS     	= cru
 RANLIB       	= ranlib
 
 ############################################################################
