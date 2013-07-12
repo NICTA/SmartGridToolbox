@@ -13,12 +13,6 @@
 
 namespace SmartGridToolbox
 {
-   /// @name Constant dimension array type.
-   /// @{
-   template <class T, size_t N>
-   using Array = std::array<T, N>;
-   /// @}
-
    /// @name Constant dimension 2D array type.
    /// @{
    // Note transposition of NR and NC to obey standard matrix index order. 
