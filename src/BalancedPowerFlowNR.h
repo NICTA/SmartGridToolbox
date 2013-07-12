@@ -1,5 +1,5 @@
-#ifndef NR_LOAD_FLOW_DOT_H
-#define NR_LOAD_FLOW_DOT_H
+#ifndef BALANCED_POWER_FLOW_NR_DOT_H
+#define BALANCED_POWER_FLOW_NR_DOT_H
 
 #include "Common.h"
 #include "PowerFlow.h"
@@ -13,13 +13,10 @@ namespace SmartGridToolbox
          int id;                       ///< Arbitrary bus ID, for external use.
          BusType type;                 ///< bus type (0=PQ, 1=PV, 2=SWING).
 
-         std::array<Complex, 3> V;     ///< NRBus voltage / phase.
-         std::array<Complex, 3> Y;     ///< Constant admittance/phase.
-         std::array<Complex, 3> I;     ///< Constant current / phase.
-         std::array<Complex, 3> S;     ///< Constant power / phase.
-
-         std::array<double, 3> P;      ///< Real power injection.
-         std::array<double, 3> Q;      ///< Reactive power injection.
+         Complex V;                    ///< NRBus voltage / phase.
+         Complex Y;                    ///< Constant admittance/phase.
+         Complex I;                    ///< Constant current / phase.
+         Complex S;                    ///< Constant power / phase.
 
          int idxPQ;                    ///< My index in list of PQ busses.
    };
@@ -27,12 +24,12 @@ namespace SmartGridToolbox
    class NRBranch
    {
       public:
-         Array2D<Complex, 6, 6> Y;     ///< Complex value of elements in bus admittance matrix in NR solver.
+         Array2D<Complex, 2, 2> Y;     ///< Complex value of elements in bus admittance matrix in NR solver.
          const NRBus * busi;           ///< My i bus.
          const NRBus * busk;           ///< My k bus.
    };
 
-   class PowerFlowNR
+   class BalancedPowerFlowNR
    {
       public:
          typedef std::vector<NRBus *> BusVec;
@@ -64,20 +61,20 @@ namespace SmartGridToolbox
          int nSL_;                     ///< Number of slack busses.
          int nPQ_;                     ///< Number of PQ busses.
          int nBus_;                    ///< Total number of busses.
-         int nTerm_;                   ///< Total number of bus terminals (each bus has 1 terminal per phase).
-         int nVar_;                    ///< Number of variables e.g. length of x_ matrix in NR algorithm.
-         int nVarD2_;                  ///< Half nVar_.
+         int nVar_;                    ///< Total number of variables.
          /// @}
 
          /// @name ublas ranges into vectors/matrices.
          /// @{
-         ublas::range rTermPQ(0, 3 * nPQ_);
-         ublas::range rTermAll(0, 3 * nPQ_ + 3);
-         ublas::range rx1(0, 3 * nPQ_);
-         ublas::range rx2(3 * nPQ_, 6 * nPQ_);
+         ublas::range rPQ_;            ///< Range of PQ busses in list of all busses.
+         ublas::range rAll_;           ///< Range of all busses in list of all busses.
+                                       /**< Needed for matrix_range. */
+         int iSL_;                     ///< Index of slack bus in list of all busses.
+         ublas::range rx1_;            ///< Range of real voltage components in x_. 
+         ublas::range rx2_;            ///< Range of imag voltage components in x_.
          /// @}
 
-         std::array<Complex, 3> V0_;   ///< Slack voltages.
+         Complex V0_;                  ///< Slack voltages.
 
          /// @name ublas ranges into vectors/matrices.
          /// @{
@@ -96,4 +93,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // NR_LOAD_FLOW_DOT_H
+#endif // BALANCED_POWER_FLOW_NR_DOT_H

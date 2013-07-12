@@ -127,9 +127,9 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libsmartgridtoolbox_a_AR = $(AR) $(ARFLAGS)
 libsmartgridtoolbox_a_LIBADD =
-am_libsmartgridtoolbox_a_OBJECTS = BusData.$(OBJEXT) \
-	Component.$(OBJEXT) Meter.$(OBJEXT) Model.$(OBJEXT) \
-	Output.$(OBJEXT) Parser.$(OBJEXT) PowerFlowNR.$(OBJEXT) \
+am_libsmartgridtoolbox_a_OBJECTS = BalancedPowerFlowNR.$(OBJEXT) \
+	BusData.$(OBJEXT) Component.$(OBJEXT) Meter.$(OBJEXT) \
+	Model.$(OBJEXT) Output.$(OBJEXT) Parser.$(OBJEXT) \
 	Random.$(OBJEXT) SimpleBattery.$(OBJEXT) \
 	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
 	solver_nr.$(OBJEXT) TestComponent.$(OBJEXT) \
@@ -286,8 +286,8 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I../third_party
 lib_LIBRARIES = libsmartgridtoolbox.a
 libsmartgridtoolbox_a_SOURCES = \
-	BusData.cc Component.cc Meter.cc Model.cc Output.cc Parser.cc \
-	PowerFlowNR.cc Random.cc SimpleBattery.cc SimpleBuilding.cc Simulation.cc \
+	BalancedPowerFlowNR.cc BusData.cc Component.cc Meter.cc Model.cc Output.cc \
+	Parser.cc Random.cc SimpleBattery.cc SimpleBuilding.cc Simulation.cc \
 	solver_nr.cc TestComponent.cc WeakOrder.cc
 
 helloworld_SOURCES = helloworld.cc
@@ -414,13 +414,13 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BalancedPowerFlowNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BusData.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Component.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Meter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Model.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Output.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlowNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBattery.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBuilding.Po@am__quote@

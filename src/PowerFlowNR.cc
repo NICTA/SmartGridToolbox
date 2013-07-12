@@ -50,7 +50,6 @@ namespace SmartGridToolbox
       busses_.insert(busses_.end(), SLBusses_.begin(), SLBusses_.end());
 
       // Index all PQ busses:
-      // TODO: remove if not needed.
       for (int i = 0; i < nPQ_; ++i)
       {
          PQBusses_[i]->idxPQ = i;

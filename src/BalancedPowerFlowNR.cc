@@ -1,9 +1,9 @@
-#include "PowerFlowNR.h"
+#include "BalancedPowerFlowNR.h"
 #include "Output.h"
 
 namespace SmartGridToolbox
 {
-   void PowerFlowNR::addBus(NRBus * bus)
+   void BalancedPowerFlowNR::addBus(NRBus * bus)
    {
       switch (bus->type)
       {
@@ -19,7 +19,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowNR::validate()
+   void BalancedPowerFlowNR::validate()
    {
       // Determine sizes:
       nSL_ = SLBusses_.size();
@@ -27,30 +27,36 @@ namespace SmartGridToolbox
       assert(nSL_ == 1); // May change in future...
       assert(nPQ_ > 0); // May change in future...
       nBus_ = nSL_ + nPQ_;
-      nTerm_ = 3 * nBus_;
-      nVar_ = 6 * nPQ_;
-      nVarD2_ = 3 * nPQ_;
+      nVar_ = 2 * nPQ_;
 
-      // Size all arrays:
-      PPQ_.resize(nTerm_, false);
-      QPQ_.resize(nTerm_, false);
-      Vr_.resize(nTerm_, false);
-      Vi_.resize(nTerm_, false);
-      Y_.resize(nTerm_, nTerm_, false);
-      G_.resize(nTerm_, nTerm_, false);
-      B_.resize(nTerm_, nTerm_, false);
-      x_.resize(nVar_, false);
-      f_.resize(nVar_, false);
-      J_.resize(nVar_, nVar_, false);
-
-      // Insert PQ and PV busses into list of all busses. 
+      // Insert PQ and PV busses into list of all busses.
+      // PQ busses at start, slack bus last.
       busses_ = BusVec(); // Clear contents...
       busses_.reserve(nBus_);
       busses_.insert(busses_.end(), PQBusses_.begin(), PQBusses_.end());
       busses_.insert(busses_.end(), SLBusses_.begin(), SLBusses_.end());
 
+      // Set array ranges:
+      // Note ublas::range goes from begin (included) to end (excluded).
+      rPQ_ = ublas::range(0, nPQ_);
+      rAll_ = ublas::range(0, nPQ_ + 1);
+      iSL_ = nPQ_;
+      rx1_ = ublas::range(0, nPQ_);
+      rx2_ = ublas::range(nPQ_, 2 * nPQ_);
+
+      // Size all arrays:
+      PPQ_.resize(nPQ_, false);
+      QPQ_.resize(nPQ_, false);
+      Vr_.resize(nBus_, false);
+      Vi_.resize(nBus_, false);
+      Y_.resize(nBus_, nBus_, false);
+      G_.resize(nBus_, nBus_, false);
+      B_.resize(nBus_, nBus_, false);
+      x_.resize(nVar_, false);
+      f_.resize(nVar_, false);
+      J_.resize(nVar_, nVar_, false);
+
       // Index all PQ busses:
-      // TODO: remove if not needed.
       for (int i = 0; i < nPQ_; ++i)
       {
          PQBusses_[i]->idxPQ = i;
@@ -62,11 +68,8 @@ namespace SmartGridToolbox
       // Set the PPQ_ and QPQ_ arrays of real and reactive power on each terminal:
       for (int i = 0; i < nPQ_; ++i)
       {
-         for (int k = 0; k < 3; ++k)
-         {
-            PPQ_(3 * i + k) = busses_[i]->P[k];
-            QPQ_(3 * i + k) = busses_[i]->Q[k];
-         }
+         PPQ_(i) = (busses_[i]->S).real();
+         QPQ_(i) = (busses_[i]->S).imag();
       }
 
       // Build the bus admittance matrix:
@@ -77,9 +80,8 @@ namespace SmartGridToolbox
       B_ = imag(Y_);
    }
 
-   void PowerFlowNR::buildBusAdmit()
+   void BalancedPowerFlowNR::buildBusAdmit()
    {
-      int ntot = 3 * (nPQ_ + nSL_);
       for (const NRBranch * const branch : branches_)
       {
          const NRBus * busi = branch->busi;
@@ -88,75 +90,60 @@ namespace SmartGridToolbox
          int ibus = busi->idxPQ;
          int kbus = busk->idxPQ;
 
-         int idxi = 3 * ibus;
-         int idxk = 3 * kbus;
-         for (int p1 = 0; p1 < 3; ++p1)
-         {
-            for (int p2 = 0; p2 < 3; ++p2)
-            {
-               Y_(idxi + p1, idxi + p2) += branch->Y[p1][p2];
-               Y_(idxk + p1, idxk + p2) += branch->Y[p1 + 3][p2 + 3];
-               Y_(idxi + p1, idxk + p2) += branch->Y[p1][p2 + 3];
-               Y_(idxk + p1, idxi + p2) += branch->Y[p1 + 3][p2];
-            }
-         }
+         Y_(ibus, ibus) += branch->Y[0][0];
+         Y_(kbus, kbus) += branch->Y[1][1];
+         Y_(ibus, kbus) += branch->Y[0][1];
+         Y_(kbus, ibus) += branch->Y[1][0];
       }
    }
 
-   void PowerFlowNR::initx()
+   void BalancedPowerFlowNR::initx()
    {
       for (int i = 0; i < nPQ_; ++i)
       {
          const NRBus & bus = *busses_[i + 1]; 
-         for (int k = 0; k < 3; ++k)
-         {
-            x_(3 * i + k) = V0_[i].real();
-            x_(3 * nPQ_ + 3 * i + k) = V0_[i].imag();
-         }
+         x_(i) = V0_.real();
+         x_(i + nPQ_) = V0_.imag();
       }
    }
 
-   void PowerFlowNR::updateF()
+   void BalancedPowerFlowNR::updateF()
    {
       using namespace ublas;
       typedef vector_range<vector<double>> VRD; 
 
-      range rPQ(0, 3 * nPQ_);
-      range rAll(0, 3 * nPQ_ + 3);
-      range r1(0, 3 * nPQ_);
-      range r2(3 * nPQ_, 6 * nPQ_);
+      VRD x1{x_, rx1_};
+      VRD x2{x_, rx2_};
 
-      VRD x1(x_, r1);
-      VRD x2(x_, r2);
+      // Get voltages on all busses.
+      // Done like this with a copy because eventually we'll include PV busses too.
+      VRD(Vr_, rPQ_) = VRD(x_, rx1_);
+      VRD(Vi_, rPQ_) = VRD(x_, rx1_);
+      Vr_(iSL_) = V0_.real();
+      Vi_(iSL_) = V0_.imag();
 
-      VRD(Vr_, rPQ) = VRD(x_, r1);
-      for (int i = 0; i < 3; ++i) Vr_(nPQ_) = V0_.real();
-      VRD(Vi, rPQ) = VRD(x_, r2);
-      Vi(nPQ_) = V0_.imag();
+      ublas::vector<double> M2 = element_prod(Vr_, Vr_) + element_prod(Vi_, Vi_); 
 
-      ublas::vector<double> M2 = element_prod(Vr, Vr) + element_prod(Vi, Vi); 
+      matrix_range<compressed_matrix<double>> Grng{G_, rPQ_, rAll_};
+      matrix_range<compressed_matrix<double>> Brng{G_, rPQ_, rAll_}; 
 
-      matrix_range<matrix<double>> Grng(G, rPQ, rAll); 
-      matrix_range<matrix<double>> Brng(G, rPQ, rAll); 
+      ublas::vector<double> dr = element_div((-element_prod(PPQ_, x1) - element_prod(QPQ_, x2)), M2)
+                               + prod(Grng, Vr_) - prod(Brng, Vi_);
+      ublas::vector<double> di = element_div((-element_prod(PPQ_, x2) + element_prod(QPQ_, x1)), M2)
+                               + prod(Grng, Vi_) + prod(Brng, Vr_);
 
-      ublas::vector<double> DR = element_div((-element_prod(PPQ_, x1) - element_prod(QPQ_, x2)), M2)
-                               + prod(Grng, Vr) - prod(Brng, Vi);
-      ublas::vector<double> DI = element_div((-element_prod(PPQ_, x2) + element_prod(QPQ_, x1)), M2)
-                               + prod(Grng, Vi) + prod(Brng, Vr);
-
-      VRD(f_, r1) = DR;
-      VRD(f_, r2) = DI;
+      VRD(f_, rx1_) = dr;
+      VRD(f_, rx2_) = di;
    }
 
-   void PowerFlowNR::solve()
+   void BalancedPowerFlowNR::solve()
    {
       const double tol = 1e-20;
       const int maxiter = 20;
       initx();
       for (int i = 0; i < maxiter; ++ i)
       {
-         calcF
-
+         updateF();
       }
    }
 }
