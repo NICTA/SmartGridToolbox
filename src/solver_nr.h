@@ -17,29 +17,29 @@ namespace SmartGridToolbox
                                         *   0x08 = Delta (== ABC) */
 
       // The following appear to be A/B/C to ground for wye and AB/BC/CA for delta.
-      Array<Complex, 3> V;             ///< Bus voltage / phase (wye) or phase pair (delta).
-      Array<Complex, 3> S;             ///< Constant power / phase (wye) or phase pair (delta).
-      Array<Complex, 3> Y;             ///< Constant admittance/phase (wye) or phase pair (delta) (impedance loads).
-      Array<Complex, 3> I;             ///< Constant current / phase (wye) or phase pair (delta).
+      std::array<Complex, 3> V;        ///< Bus voltage / phase (wye) or phase pair (delta).
+      std::array<Complex, 3> S;        ///< Constant power / phase (wye) or phase pair (delta).
+      std::array<Complex, 3> Y;        ///< Constant admittance/phase (wye) or phase pair (delta) (impedance loads).
+      std::array<Complex, 3> I;        ///< Constant current / phase (wye) or phase pair (delta).
 
       std::vector<int> linkTable;      ///< Table of links that connect to us (for population purposes).
 
       /// @name Load Components. 
       /** Refer to Garcia et al. IEEE Transactions on Power Systems, 15, 2000. */
       /// @{
-      Array<double, 3> PL;             ///< Real power component of total bus load.
-      Array<double, 3> QL;             ///< Reactive power component of total bus load.
-      Array<double, 3> PG;             ///< Real power generation at generator bus.
-      Array<double, 3> QG;             ///< Reactive power generation at generator bus.
+      std::array<double, 3> PL;        ///< Real power component of total bus load.
+      std::array<double, 3> QL;        ///< Reactive power component of total bus load.
+      std::array<double, 3> PG;        ///< Real power generation at generator bus.
+      std::array<double, 3> QG;        ///< Reactive power generation at generator bus.
       /// @}
 
       /// @name The Jacobian.
       /** Refer to Garcia et al. IEEE Transactions on Power Systems, 15, 2000. */
       /// @{
-      Array<double, 3> JacobA;         ///< Element a in equation (37).
-      Array<double, 3> JacobB;         ///< Element b in equation (38).
-      Array<double, 3> JacobC;         ///< Element c in equation (39).
-      Array<double, 3> JacobD;         ///< Element d in equation (40).
+      std::array<double, 3> JacobA;    ///< Element a in equation (37).
+      std::array<double, 3> JacobB;    ///< Element b in equation (38).
+      std::array<double, 3> JacobC;    ///< Element c in equation (39).
+      std::array<double, 3> JacobD;    ///< Element d in equation (40).
       /// @}
 
       unsigned int matLoc;             ///< Starting idx of object's place in all matrices/equations.
