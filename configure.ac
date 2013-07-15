@@ -9,9 +9,10 @@ fi
 AM_CONDITIONAL([HAVE_DOXYGEN], 
 [test -n "$DOXYGEN"])AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/Doxyfile])])
 
-AC_LANG([C++])
+AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_RANLIB
+AC_LANG([C++])
 m4_include([./m4_ax_cxx_compile_stdcxx_11.m4])
 AX_CXX_COMPILE_STDCXX_11
 AC_CONFIG_HEADERS([config.h])

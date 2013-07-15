@@ -29,20 +29,19 @@ namespace SmartGridToolbox
          const NRBus * busk;           ///< My k bus.
    };
 
-   // NR solver variables for sparse solution. Solver Ax = b.
-   class SolverVars {
-      public:
-         const unsigned int aNnz;
-         const unsigned long int * aRows;
-         const unsigned long int * aCols;
-         const double * aVals;
-         std::vector<double> b;
-
-         SolverVars(ublas::compressed_matrix<double> & m);
-   };
-
    class BalancedPowerFlowNR
    {
+      private:
+         typedef boost::numeric::ublas::vector<double> VectorDbl;
+         typedef boost::numeric::ublas::vector<Complex> VectorCplx;
+         typedef boost::numeric::ublas::compressed_matrix<double> CMatrixDbl;
+         typedef boost::numeric::ublas::compressed_matrix<Complex> CMatrixCplx;
+         typedef boost::numeric::ublas::vector_range<VectorDbl> VectorDblRange;
+         typedef boost::numeric::ublas::vector_range<VectorCplx> VectorCplxRange;
+         typedef boost::numeric::ublas::matrix_range<CMatrixDbl> CMatrixDblRange;
+         typedef boost::numeric::ublas::matrix_range<CMatrixCplx> CMatrixCplxRange;
+         typedef boost::numeric::ublas::range Range;
+
       public:
          typedef std::vector<NRBus *> BusVec;
          typedef std::vector<NRBranch *> BranchVec;
@@ -57,16 +56,11 @@ namespace SmartGridToolbox
          void solve();
 
       private:
-         typedef ublas::vector_range<vector<double>> VRD; 
-         typedef ublas::matrix_range<compressed_matrix<double>> MRD; 
-
-      private:
          void buildBusAdmit();
          void initx();
-         void updateBusV_();
+         void updateBusV();
          void updateF();
          void updateJ();
-         void setSolverVars();
 
       private:
          /// @name Vectors of busses and branches.
@@ -88,31 +82,31 @@ namespace SmartGridToolbox
 
          /// @name ublas ranges into vectors/matrices.
          /// @{
-         ublas::range rPQ_;            ///< Range of PQ busses in list of all busses.
-         ublas::range rAll_;           ///< Range of all busses in list of all busses.
+         Range rPQ_;                   ///< Range of PQ busses in list of all busses.
+         Range rAll_;                  ///< Range of all busses in list of all busses.
                                        /**< Needed for matrix_range. */
          int iSL_;                     ///< Index of slack bus in list of all busses.
-         ublas::range rx0_;            ///< Range of real voltage components in x_. 
-         ublas::range rx1_;            ///< Range of imag voltage components in x_.
+         Range rx0_;                   ///< Range of real voltage components in x_. 
+         Range rx1_;                   ///< Range of imag voltage components in x_.
          /// @}
 
          Complex V0_;                  ///< Slack voltages.
 
          /// @name ublas ranges into vectors/matrices.
          /// @{
-         ublas::vector<double> PPQ_;   ///< Total power injection of PQ busses.
-         ublas::vector<double> QPQ_;
+         VectorDbl PPQ_;               ///< Total power injection of PQ busses.
+         VectorDbl QPQ_;
 
-         ublas::vector<double> Vr_;
-         ublas::vector<double> Vi_;
-         ublas::compressed_matrix<Complex> Y_;
-         ublas::compressed_matrix<double> G_;
-         ublas::compressed_matrix<double> B_;
+         VectorDbl Vr_;
+         VectorDbl Vi_;
+         CMatrixCplx Y_;
+         CMatrixDbl G_;
+         CMatrixDbl B_;
 
-         ublas::vector<double> x_;
-         ublas::vector<double> f_;
-         ublas::compressed_matrix<double> J_;
-         ublas::compressed_matrix<double> JConst_; ///< The part of J that doesn't update at each iteration.
+         VectorDbl x_;
+         VectorDbl f_;
+         CMatrixDbl J_;
+         CMatrixDbl JConst_;           ///< The part of J that doesn't update at each iteration.
    };
 }
 

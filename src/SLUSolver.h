@@ -1,1 +1,3 @@
-void SLUSolve(int m, int n, int nnz, double * a, int * asub, int * xa, int nrhs, double * rhs);
+void KLUSolve(boost::numeric::ublas::compressed_matrix<double> & a,
+              const boost::numeric::ublas::vector<double> & b,
+              boost::numeric::ublas::vector<double> & result);

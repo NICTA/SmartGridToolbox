@@ -21,8 +21,6 @@ namespace SmartGridToolbox
    using Array2D = std::array<std::array<T, NC>, NR>;
    /// @}
 
-   namespace ublas = boost::numeric::ublas;
-
    /// @name Complex numbers
    /// @{
    typedef std::complex<double> Complex;
@@ -46,20 +44,17 @@ namespace SmartGridToolbox
 
    /// @name Time
    /// @{
-   namespace posix_time = boost::posix_time;
-   namespace gregorian = boost::gregorian;
-
-   const posix_time::ptime epoch(gregorian::date(1970,1,1));
+   const boost::posix_time::ptime epoch(boost::gregorian::date(1970,1,1));
 
    // The following conversion functions allow lower level access to internal
    // representation of both time_durations and ptimes. This is often useful
    // e.g. for spline interpolation of a time series.
-   inline double dSeconds(const posix_time::time_duration & d) 
+   inline double dSeconds(const boost::posix_time::time_duration & d) 
    {
-      return double(d.ticks())/posix_time::time_duration::ticks_per_second();
+      return double(d.ticks())/boost::posix_time::time_duration::ticks_per_second();
    }
 
-   inline double dSeconds(const posix_time::ptime & t)
+   inline double dSeconds(const boost::posix_time::ptime & t)
    {
       return dSeconds(t - epoch);
    }

@@ -1,24 +1,44 @@
-#include <SuperLU/SRC/pdsp_defs.h> // superLU_MT
+#include <SuiteSparse/KLU/Include/klu.h>
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/matrix_sparse.hpp>
 
-void SLUSolve(int m, int n, int nnz, double * a, int * rowind, int * colptr, int nrhs, double * rhs)
+using namespace boost::numeric::ublas;
+void KLUSolve(boost::numeric::ublas::compressed_matrix<double> & a,
+      const boost::numeric::ublas::vector<double> & b,
+      boost::numeric::ublas::vector<double> & result)
 {
-   SuperMatrix A, L, U, B;
-   int * perm_r; // row permutations from partial pivoting
-   int * perm_c; // column permutation vector.
-   int info, i, permc_spec;
+   boost::numeric::ublas::compressed_matrix<double, boost::numeric::ublas::column_major> ac = a;
+   a.complete_index1_data();
 
-   // Create matrix A in the format expected by SuperLU.
-   dCreate_CompCol_Matrix(&A, m, n, nnz, a, rowind, colptr, SLU_NC, SLU_D, SLU_GE);
+   int n = b.size();
+   int nnz = ac.nnz();
 
-   // Create right-hand side matrix B. */
-   dCreate_Dense_Matrix(&B, m, nrhs, rhs, m, SLU_DN, SLU_D, SLU_GE);
+   int * ap = new int[n + 1];
+   for (int i = 0; i <= n; ++i) ap[i] = ac.index1_data()[i];
 
-   if (!(perm_r = intMalloc(m))) abort();
-   if (!(perm_c = intMalloc(n))) abort();
+   int * ai = new int[nnz];
+   for (int i = 0; i < nnz; ++i) ai[i] = ac.index2_data()[i];
 
-   // Populate perm_c
-   get_perm_c(1, &A, perm_c);
-   // Solve the system
-   const int nprocs = 1;
-   pdgssv(nprocs, &A, perm_c, perm_r, &L, &B, &B, &info);
+   double * ax = new double[nnz];
+   for (int i = 0; i < nnz; ++i) ax[i] = ac.value_data()[i];
+
+   double * b1 = new double[n];
+   for (int i = 0; i < n; ++i) b1[i] = b(i);
+   
+   klu_symbolic *Symbolic;
+   klu_numeric *Numeric;
+   klu_common Common;
+   int i;
+   klu_defaults (&Common);
+   Symbolic = klu_analyze (n, ap, ai, &Common);
+   Numeric = klu_factor (ap, ai, ax, Symbolic, &Common);
+   klu_solve (Symbolic, Numeric, 5, 1, b1, &Common);
+   klu_free_symbolic (&Symbolic, &Common);
+   klu_free_numeric (&Numeric, &Common);
+
+   result = boost::numeric::ublas::vector<double>(n);
+   for (int i = 0; i < n; ++i)
+   {
+      result(i) = b1[i];
+   }
 }

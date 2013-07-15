@@ -77,7 +77,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = helloworld$(EXEEXT)
+bin_PROGRAMS = helloworld$(EXEEXT) klu_simple$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
@@ -132,14 +132,24 @@ am_libsmartgridtoolbox_a_OBJECTS = BalancedPowerFlowNR.$(OBJEXT) \
 	Model.$(OBJEXT) Output.$(OBJEXT) Parser.$(OBJEXT) \
 	Random.$(OBJEXT) SimpleBattery.$(OBJEXT) \
 	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
-	SLUSolver.$(OBJEXT) solver_nr.$(OBJEXT) \
-	TestComponent.$(OBJEXT) WeakOrder.$(OBJEXT)
+	SLUSolver.$(OBJEXT) TestComponent.$(OBJEXT) \
+	WeakOrder.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
-am_helloworld_OBJECTS = helloworld.$(OBJEXT) SLUSolver.$(OBJEXT)
+am_helloworld_OBJECTS = SLUSolver.$(OBJEXT) helloworld.$(OBJEXT)
 helloworld_OBJECTS = $(am_helloworld_OBJECTS)
 helloworld_DEPENDENCIES =  \
-	../third_party/SuperLU_MT_2.1/lib/libsuperlu_mt_PTHREAD.a
+	../third_party/SuperLU_MT_2.1/lib/libsuperlu_mt_PTHREAD.a \
+	../third_party/SuiteSparse/KLU/Lib/libklu.a \
+	../third_party/SuiteSparse/AMD/Lib/libamd.a \
+	../third_party/SuiteSparse/BTF/Lib/libbtf.a
+am_klu_simple_OBJECTS = SLUSolver.$(OBJEXT) klu_simple.$(OBJEXT)
+klu_simple_OBJECTS = $(am_klu_simple_OBJECTS)
+klu_simple_DEPENDENCIES =  \
+	../third_party/SuperLU_MT_2.1/lib/libsuperlu_mt_PTHREAD.a \
+	../third_party/SuiteSparse/KLU/Lib/libklu.a \
+	../third_party/SuiteSparse/AMD/Lib/libamd.a \
+	../third_party/SuiteSparse/BTF/Lib/libbtf.a
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -156,6 +166,18 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_@AM_V@)
+am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
+am__v_CC_0 = @echo "  CC      " $@;
+am__v_CC_1 = 
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_@AM_V@)
+am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
+am__v_CCLD_0 = @echo "  CCLD    " $@;
+am__v_CCLD_1 = 
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 AM_V_CXX = $(am__v_CXX_@AM_V@)
@@ -169,8 +191,10 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(helloworld_SOURCES)
-DIST_SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(helloworld_SOURCES)
+SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(helloworld_SOURCES) \
+	$(klu_simple_SOURCES)
+DIST_SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(helloworld_SOURCES) \
+	$(klu_simple_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -204,6 +228,9 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+CC = @CC@
+CCDEPMODE = @CCDEPMODE@
+CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
@@ -245,6 +272,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -289,16 +317,26 @@ lib_LIBRARIES = libsmartgridtoolbox.a
 libsmartgridtoolbox_a_SOURCES = \
 	BalancedPowerFlowNR.cc BusData.cc Component.cc Meter.cc Model.cc Output.cc \
 	Parser.cc Random.cc SimpleBattery.cc SimpleBuilding.cc Simulation.cc \
-	SLUSolver.cc solver_nr.cc TestComponent.cc WeakOrder.cc
+	SLUSolver.cc TestComponent.cc WeakOrder.cc
 
-helloworld_SOURCES = helloworld.cc SLUSolver.cc 
+helloworld_SOURCES = SLUSolver.cc helloworld.cc
+klu_simple_SOURCES = SLUSolver.cc klu_simple.c
 helloworld_LDADD = ../third_party/SuperLU_MT_2.1/lib/libsuperlu_mt_PTHREAD.a \
+						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
+						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
+						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
+						 -lblas
+
+klu_simple_LDADD = ../third_party/SuperLU_MT_2.1/lib/libsuperlu_mt_PTHREAD.a \
+						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
+						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
+						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
 						 -lblas
 
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cc .o .obj
+.SUFFIXES: .c .cc .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -412,6 +450,10 @@ helloworld$(EXEEXT): $(helloworld_OBJECTS) $(helloworld_DEPENDENCIES) $(EXTRA_he
 	@rm -f helloworld$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(helloworld_OBJECTS) $(helloworld_LDADD) $(LIBS)
 
+klu_simple$(EXEEXT): $(klu_simple_OBJECTS) $(klu_simple_DEPENDENCIES) $(EXTRA_klu_simple_DEPENDENCIES) 
+	@rm -f klu_simple$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(klu_simple_OBJECTS) $(klu_simple_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -433,7 +475,21 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestComponent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helloworld.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/solver_nr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klu_simple.Po@am__quote@
+
+.c.o:
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c $<
+
+.c.obj:
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

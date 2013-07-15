@@ -1,63 +1,43 @@
 #include <iostream>
-#include "Common.h"
+//#include "Common.h"
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/vector_sparse.hpp>
+#include <boost/numeric/ublas/vector_proxy.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/matrix_sparse.hpp>
+#include <boost/numeric/ublas/matrix_proxy.hpp>
 #include "SLUSolver.h"
 
 using namespace std;
-using namespace SmartGridToolbox;
+//using namespace SmartGridToolbox;
 
 int main()
 {
-   ublas::compressed_matrix<double> m(2, 2);
-   m(0, 0) = 1.0;
-   m(1, 1) = 2.0;
-   m.complete_index1_data(); 
+   int n = 5;
+   boost::numeric::ublas::compressed_matrix<double> a(n, n);
+   a(0, 0) = 2.0;
+   a(0, 1) = 3.0;
+   a(1, 0) = 3.0;
+   a(1, 2) = 4.0;
+   a(1, 4) = 6.0;
+   a(2, 1) = -1.0;
+   a(2, 2) = -3.0;
+   a(2, 3) = 2.0;
+   a(3, 2) = 1.0;
+   a(4, 1) = 4.0;
+   a(4, 2) = 2.0;
+   a(4, 4) = 1.0;
 
-   int nnz = m.nnz();
+   boost::numeric::ublas::vector<double> b(n);
+   b(0) = 8.0;
+   b(1) = 45.0;
+   b(2) = -3.0;
+   b(3) = 3.0;
+   b(4) = 19.0;
 
-   int * xa = new int[3];
-   for (int i = 0; i < 3; ++i) xa[i] = m.index1_data()[i];
-
-   int * asub = new int[nnz];
-   for (int i = 0; i < nnz; ++i) asub[i] = m.index2_data()[i];
-   
-   double * a = new double[nnz];
-   for (int i = 0; i < nnz; ++i) a[i] = m.value_data()[i];
-
-   cout << nnz << endl;
+   boost::numeric::ublas::vector<double> x(n);
+   KLUSolve(a, b, x);
+   for (int i = 0; i < n; ++i) cout << x(i) << " ";
    cout << endl;
-   for (int i = 0; xa[i] < nnz; ++i) cout << xa[i] << " ";
-   cout << endl;
-   cout << endl;
-   for (int i = 0; i < nnz; ++i) cout << asub[i] << " ";
-   cout << endl;
-   cout << endl;
-   for (int i = 0; i < nnz; ++i) cout << a[i] << " ";
-   cout << endl; 
-   cout << endl; 
-
-   ublas::vector<double> v(2);
-   v(0) = 1;
-   v(1) = 5;
-   double * b = new double[2];
-   for (int i = 0; i < 2; ++i) b[i] = v.data()[i];
-
-   cout << b[0] << " " << b[1] << endl;
-
-   SLUSolve(3, 3, nnz, a, asub, xa, 1, b);
-   for (int i = 0; xa[i] < nnz; ++i) cout << xa[i] << " ";
-   cout << endl;
-   cout << endl;
-   for (int i = 0; i < nnz; ++i) cout << asub[i] << " ";
-   cout << endl;
-   cout << endl;
-   for (int i = 0; i < nnz; ++i) cout << a[i] << " ";
-   cout << endl; 
-   cout << endl; 
-   cout << b[0] << " " << b[1] << endl;
-
-   delete[] xa;
-   delete[] asub;
-   delete[] a;
-   delete[] b;
 }
 
