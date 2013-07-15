@@ -3,6 +3,7 @@
 #include <cmath>
 #include <ostream>
 #include <fstream>
+#include "BalancedPowerFlowNR.h"
 #include "Component.h"
 #include "Event.h"
 #include "Model.h"
@@ -515,6 +516,17 @@ BOOST_AUTO_TEST_CASE (test_sparse_solver)
    BOOST_CHECK(std::abs(x(3) - 4.0) < 1e-4);
    BOOST_CHECK(std::abs(x(4) - 5.0) < 1e-4);
    message("Testing SparseSolver. Completed.");
+}
+
+BOOST_AUTO_TEST_CASE (test_balanced_power_flow_NR)
+{
+   message("Testing BalancedPowerFlowNR. Starting.");
+   BalancedPowerFlowNR bpf;
+   bpf.addBus(0, BusType::SL, 1.0, 0.0, 0.0, 0.0);
+   bpf.addBus(1, BusType::PQ, {1.07, 0.04}, 0.0, 0.0, 0.0);
+   bpf.validate();
+   bpf.solve();
+   message("Testing BalancedPowerFlowNR. Completed.");
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

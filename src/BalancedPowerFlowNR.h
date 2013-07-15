@@ -4,29 +4,31 @@
 #include "Common.h"
 #include "PowerFlow.h"
 #include <vector>
+#include <map>
 
 namespace SmartGridToolbox
 {
    class NRBus
    {
       public:
-         int id;                       ///< Arbitrary bus ID, for external use.
-         BusType type;                 ///< bus type (0=PQ, 1=PV, 2=SWING).
+         int id_;                      ///< Arbitrary bus ID, for external use.
+         BusType type_;                ///< bus type (0=PQ, 1=PV, 2=SWING).
+         Complex V_;                   ///< NRBus voltage / phase.
+         Complex Y_;                   ///< Constant admittance/phase.
+         Complex I_;                   ///< Constant current / phase.
+         Complex S_;                   ///< Constant power / phase.
 
-         Complex V;                    ///< NRBus voltage / phase.
-         Complex Y;                    ///< Constant admittance/phase.
-         Complex I;                    ///< Constant current / phase.
-         Complex S;                    ///< Constant power / phase.
-
-         int idxPQ;                    ///< My index in list of PQ busses.
+         int idxPQ_;                   ///< My index in list of PQ busses.
    };
 
    class NRBranch
    {
       public:
-         Array2D<Complex, 2, 2> Y;     ///< Complex value of elements in bus admittance matrix in NR solver.
-         const NRBus * busi;           ///< My i bus.
-         const NRBus * busk;           ///< My k bus.
+         Array2D<Complex, 2, 2> Y_;    ///< Complex value of elements in bus admittance matrix in NR solver.
+         int idi_;                     ///< id of bus i.
+         int idk_;                     ///< id of bus k.
+         const NRBus * busi_;          ///< My i bus.
+         const NRBus * busk_;          ///< My k bus.
    };
 
    class BalancedPowerFlowNR
@@ -44,14 +46,13 @@ namespace SmartGridToolbox
 
       public:
          typedef std::vector<NRBus *> BusVec;
+         typedef std::map<int, NRBus *> BusMap;
          typedef std::vector<NRBranch *> BranchVec;
 
       public:
-         void addBus(NRBus * bus);
-         void addBranch(NRBranch * branch)
-         {
-            branches_.push_back(branch);
-         }
+         void addBus(int id, BusType type, Complex V, Complex Y, Complex I, Complex S);
+         void addBranch(const Array2D<Complex, 2, 2> & Y, int idi, int idk);
+
          void validate();
          void solve();
 
@@ -68,6 +69,7 @@ namespace SmartGridToolbox
          BusVec busses_;
          BusVec SLBusses_;
          BusVec PQBusses_;
+         BusMap bussesById_;
 
          BranchVec branches_;
          /// @}

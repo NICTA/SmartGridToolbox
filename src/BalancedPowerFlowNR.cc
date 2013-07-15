@@ -1,11 +1,22 @@
+#include <algorithm>
 #include "BalancedPowerFlowNR.h"
 #include "Output.h"
+#include "SparseSolver.h"
 
 namespace SmartGridToolbox
 {
-   void BalancedPowerFlowNR::addBus(NRBus * bus)
+   void BalancedPowerFlowNR::addBus(int id, BusType type, Complex V, Complex Y, Complex I, Complex S)
    {
-      switch (bus->type)
+      NRBus * bus = new NRBus;
+      bus->id_ = id;
+      bus->type_ = type;
+      bus->V_ = V;
+      bus->Y_ = Y;
+      bus->I_ = I;
+      bus->S_ = S;
+      bus->idxPQ_ = -1;
+      bussesById_[bus->id_] = bus;
+      switch (bus->type_)
       {
          case BusType::SL :
             SLBusses_.push_back(bus);
@@ -17,6 +28,15 @@ namespace SmartGridToolbox
             error("PV busses are not supported yet.");
             break;
       }
+   }
+
+   void BalancedPowerFlowNR::addBranch(const Array2D<Complex, 2, 2> & Y, int idi, int idk)
+   {
+      NRBranch * branch = new NRBranch;
+      branch->Y_ = Y;
+      branch->idi_ = idi;
+      branch->idk_ = idk;
+      branches_.push_back(branch);
    }
 
    void BalancedPowerFlowNR::validate()
@@ -35,6 +55,29 @@ namespace SmartGridToolbox
       busses_.reserve(nBus_);
       busses_.insert(busses_.end(), PQBusses_.begin(), PQBusses_.end());
       busses_.insert(busses_.end(), SLBusses_.begin(), SLBusses_.end());
+
+      // Set bus pointers in all branches.
+      for (NRBranch * branch : branches_)
+      {
+         auto iti = bussesById_.find(branch->idi_);
+         if (iti == bussesById_.end())
+         {
+            error("Branch %d %d contains a non-existent bus %d.", branch->idi_);
+         }
+         else
+         {
+            branch->busi_ = iti->second;
+         }
+         auto itk = bussesById_.find(branch->idk_);
+         if (itk == bussesById_.end())
+         {
+            error("Branch %d %d contains a non-existent bus %d.", branch->idk_);
+         }
+         else
+         {
+            branch->busk_ = itk->second;
+         }
+      }
 
       // Set array ranges:
       // Note Range goes from begin (included) to end (excluded).
@@ -60,17 +103,17 @@ namespace SmartGridToolbox
       // Index all PQ busses:
       for (int i = 0; i < nPQ_; ++i)
       {
-         PQBusses_[i]->idxPQ = i;
+         PQBusses_[i]->idxPQ_ = i;
       }
 
       // Set the slack voltages:
-      V0_ = SLBusses_[0]->V; // Array copy.
+      V0_ = SLBusses_[0]->V_; // Array copy.
 
       // Set the PPQ_ and QPQ_ arrays of real and reactive power on each terminal:
       for (int i = 0; i < nPQ_; ++i)
       {
-         PPQ_(i) = (busses_[i]->S).real();
-         QPQ_(i) = (busses_[i]->S).imag();
+         PPQ_(i) = (busses_[i]->S_).real();
+         QPQ_(i) = (busses_[i]->S_).imag();
       }
 
       // Build the bus admittance matrix:
@@ -93,16 +136,16 @@ namespace SmartGridToolbox
    {
       for (const NRBranch * const branch : branches_)
       {
-         const NRBus * busi = branch->busi;
-         const NRBus * busk = branch->busk;
+         const NRBus * busi = branch->busi_;
+         const NRBus * busk = branch->busk_;
 
-         int ibus = busi->idxPQ;
-         int kbus = busk->idxPQ;
+         int ibus = busi->idxPQ_;
+         int kbus = busk->idxPQ_;
 
-         Y_(ibus, ibus) += branch->Y[0][0];
-         Y_(kbus, kbus) += branch->Y[1][1];
-         Y_(ibus, kbus) += branch->Y[0][1];
-         Y_(kbus, ibus) += branch->Y[1][0];
+         Y_(ibus, ibus) += branch->Y_[0][0];
+         Y_(kbus, kbus) += branch->Y_[1][1];
+         Y_(ibus, kbus) += branch->Y_[0][1];
+         Y_(kbus, ibus) += branch->Y_[1][0];
       }
    }
 
@@ -180,6 +223,15 @@ namespace SmartGridToolbox
       {
          updateF();
          updateJ();
+         KLUSolve(J_, f_, x_);
+         VectorDbl f2 = element_prod(f_, f_);
+         double err = *std::max_element(f2.begin(), f2.end());
+         std::cout << "Error at iteration " << i << " = " << err;
+         if (err <= tol)
+         {
+            std::cout << "Success at iteration" << i << ", err = " << err;
+            break;
+         }
       }
    }
 }
