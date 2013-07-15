@@ -12,13 +12,14 @@
 #include "SimpleBattery.h"
 #include "SimpleBuilding.h"
 #include "Simulation.h"
-#include "solver_nr.h"
+#include "SparseSolver.h"
 #include "TestComponent.h"
 #include "Spline.h"
 #include "TimeSeries.h"
 #include "WeakOrder.h"
 using namespace SmartGridToolbox;
 using namespace std;
+using namespace boost::posix_time;
 
 class TestCompA : public Component
 {
@@ -161,6 +162,7 @@ BOOST_AUTO_TEST_CASE (test_properties)
 
 BOOST_AUTO_TEST_CASE (test_simple_battery)
 {
+   using namespace boost::gregorian;
    message("Testing SimpleBattery. Starting.");
    SimpleBattery bat1;
    bat1.setName("bat1");
@@ -245,6 +247,7 @@ BOOST_AUTO_TEST_CASE (test_spline)
 
 BOOST_AUTO_TEST_CASE (test_spline_timeseries)
 {
+   using namespace boost::gregorian;
    message("Testing SplineTimeSeries. Starting.");
    ptime base(date(2013, Apr, 26), hours(0));
    SplineTimeSeries<ptime> sts;
@@ -270,6 +273,7 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
 
 BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
 {
+   using namespace boost::gregorian;
    message("Testing LerpTimeSeries. Starting.");
    ptime base(date(2013, Apr, 26), hours(0));
    LerpTimeSeries<ptime, Complex> lts;
@@ -476,34 +480,41 @@ BOOST_AUTO_TEST_CASE (test_parser)
    message("Testing Parser. Completed.");
 }
 
-BOOST_AUTO_TEST_CASE (test_solver_nr)
+BOOST_AUTO_TEST_CASE (test_sparse_solver)
 {
-   message("Testing solver_nr. Starting.");
+   message("Testing SparseSolver. Starting.");
+   int n = 5;
+   boost::numeric::ublas::compressed_matrix<double> a(n, n);
+   a(0, 0) = 2.0;
+   a(0, 1) = 3.0;
+   a(1, 0) = 3.0;
+   a(1, 2) = 4.0;
+   a(1, 4) = 6.0;
+   a(2, 1) = -1.0;
+   a(2, 2) = -3.0;
+   a(2, 3) = 2.0;
+   a(3, 2) = 1.0;
+   a(4, 1) = 4.0;
+   a(4, 2) = 2.0;
+   a(4, 4) = 1.0;
 
-   std::vector<std::unique_ptr<BUSDATA>> busses;
-   std::vector<std::unique_ptr<BRANCHDATA>> branches;
+   boost::numeric::ublas::vector<double> b(n);
+   b(0) = 8.0;
+   b(1) = 45.0;
+   b(2) = -3.0;
+   b(3) = 3.0;
+   b(4) = 19.0;
 
-   std::unique_ptr<BUSDATA> bus;
-
-   bus.reset(new BUSDATA);
-   bus->type = BusType::SL;
-   bus->phases = 0x7;
-   bus->V = {{Polar(1.0, 0.0), Polar(1.0, -2.0 * pi / 3.0), 
-              Polar(1.0, 2.0 * pi / 3.0)}};
-   bus->S = {{{0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}}};
-   bus->Y = {{{0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}}};
-   busses.push_back(std::move(bus));
-
-   bus.reset(new BUSDATA);
-   bus->type = BusType::PQ;
-   bus->phases = 0x7;
-   bus->V = {{Polar(1.01, 0.0), Polar(1.07, -2.0 * pi / 3.0), 
-              Polar(1.0, 2.0 * pi / 3.0)}};
-   bus->S = {{{0.03, 0.01}, {0.02, 0.01}, {0.0, 0.0}}};
-   bus->Y = {{{0.0, 0.0}, {0.0, 0.0}, {0.0, 0.0}}};
-   busses.push_back(std::move(bus));
-
-   message("Testing solver_nr. Completed.");
+   boost::numeric::ublas::vector<double> x(n);
+   KLUSolve(a, b, x);
+   for (int i = 0; i < n; ++i) cout << x(i) << " ";
+   cout << endl;
+   BOOST_CHECK(std::abs(x(0) - 1.0) < 1e-4);
+   BOOST_CHECK(std::abs(x(1) - 2.0) < 1e-4);
+   BOOST_CHECK(std::abs(x(2) - 3.0) < 1e-4);
+   BOOST_CHECK(std::abs(x(3) - 4.0) < 1e-4);
+   BOOST_CHECK(std::abs(x(4) - 5.0) < 1e-4);
+   message("Testing SparseSolver. Completed.");
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

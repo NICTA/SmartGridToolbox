@@ -44,17 +44,28 @@ namespace SmartGridToolbox
 
    /// @name Time
    /// @{
-   const boost::posix_time::ptime epoch(boost::gregorian::date(1970,1,1));
+   using boost::posix_time::ptime;
+   using boost::posix_time::time_duration;
+   using boost::posix_time::seconds;
+   using boost::posix_time::minutes;
+   using boost::posix_time::hours;
+   using boost::posix_time::not_a_date_time;
+   using boost::posix_time::neg_infin;
+   using boost::posix_time::pos_infin;
+   using boost::posix_time::time_from_string;
+   using boost::gregorian::date;
+
+   const ptime epoch(boost::gregorian::date(1970,1,1));
 
    // The following conversion functions allow lower level access to internal
    // representation of both time_durations and ptimes. This is often useful
    // e.g. for spline interpolation of a time series.
-   inline double dSeconds(const boost::posix_time::time_duration & d) 
+   inline double dSeconds(const time_duration & d) 
    {
-      return double(d.ticks())/boost::posix_time::time_duration::ticks_per_second();
+      return double(d.ticks())/time_duration::ticks_per_second();
    }
 
-   inline double dSeconds(const boost::posix_time::ptime & t)
+   inline double dSeconds(const ptime & t)
    {
       return dSeconds(t - epoch);
    }

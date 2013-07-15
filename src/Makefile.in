@@ -132,24 +132,22 @@ am_libsmartgridtoolbox_a_OBJECTS = BalancedPowerFlowNR.$(OBJEXT) \
 	Model.$(OBJEXT) Output.$(OBJEXT) Parser.$(OBJEXT) \
 	Random.$(OBJEXT) SimpleBattery.$(OBJEXT) \
 	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
-	SLUSolver.$(OBJEXT) TestComponent.$(OBJEXT) \
+	SparseSolver.$(OBJEXT) TestComponent.$(OBJEXT) \
 	WeakOrder.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
-am_helloworld_OBJECTS = SLUSolver.$(OBJEXT) helloworld.$(OBJEXT)
+am_helloworld_OBJECTS = SparseSolver.$(OBJEXT) helloworld.$(OBJEXT)
 helloworld_OBJECTS = $(am_helloworld_OBJECTS)
-helloworld_DEPENDENCIES =  \
-	../third_party/SuperLU_MT_2.1/lib/libsuperlu_mt_PTHREAD.a \
-	../third_party/SuiteSparse/KLU/Lib/libklu.a \
+helloworld_DEPENDENCIES = ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 	../third_party/SuiteSparse/AMD/Lib/libamd.a \
-	../third_party/SuiteSparse/BTF/Lib/libbtf.a
-am_klu_simple_OBJECTS = SLUSolver.$(OBJEXT) klu_simple.$(OBJEXT)
+	../third_party/SuiteSparse/BTF/Lib/libbtf.a \
+	../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a
+am_klu_simple_OBJECTS = SparseSolver.$(OBJEXT) klu_simple.$(OBJEXT)
 klu_simple_OBJECTS = $(am_klu_simple_OBJECTS)
-klu_simple_DEPENDENCIES =  \
-	../third_party/SuperLU_MT_2.1/lib/libsuperlu_mt_PTHREAD.a \
-	../third_party/SuiteSparse/KLU/Lib/libklu.a \
+klu_simple_DEPENDENCIES = ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 	../third_party/SuiteSparse/AMD/Lib/libamd.a \
-	../third_party/SuiteSparse/BTF/Lib/libbtf.a
+	../third_party/SuiteSparse/BTF/Lib/libbtf.a \
+	../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -317,20 +315,21 @@ lib_LIBRARIES = libsmartgridtoolbox.a
 libsmartgridtoolbox_a_SOURCES = \
 	BalancedPowerFlowNR.cc BusData.cc Component.cc Meter.cc Model.cc Output.cc \
 	Parser.cc Random.cc SimpleBattery.cc SimpleBuilding.cc Simulation.cc \
-	SLUSolver.cc TestComponent.cc WeakOrder.cc
+	SparseSolver.cc TestComponent.cc WeakOrder.cc
 
-helloworld_SOURCES = SLUSolver.cc helloworld.cc
-klu_simple_SOURCES = SLUSolver.cc klu_simple.c
-helloworld_LDADD = ../third_party/SuperLU_MT_2.1/lib/libsuperlu_mt_PTHREAD.a \
-						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
+helloworld_SOURCES = SparseSolver.cc helloworld.cc
+klu_simple_SOURCES = SparseSolver.cc klu_simple.c
+helloworld_LDADD = ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
 						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
+						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
 						 -lblas
 
-klu_simple_LDADD = ../third_party/SuperLU_MT_2.1/lib/libsuperlu_mt_PTHREAD.a \
+klu_simple_LDADD = \
 						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
 						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
+						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
 						 -lblas
 
 all: all-am
@@ -468,10 +467,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Output.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SLUSolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBattery.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBuilding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Simulation.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SparseSolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestComponent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helloworld.Po@am__quote@
