@@ -523,9 +523,11 @@ BOOST_AUTO_TEST_CASE (test_balanced_power_flow_NR)
    message("Testing BalancedPowerFlowNR. Starting.");
    BalancedPowerFlowNR bpf;
    bpf.addBus(0, BusType::SL, 1.0, 0.0, 0.0, 0.0);
-   bpf.addBus(1, BusType::PQ, {1.07, 0.04}, 0.0, 0.0, {0.2, 0.03});
+   bpf.addBus(1, BusType::PQ, 0.0, 0.0, 0.0, {0.0240, 0.0120});
+   bpf.addBus(2, BusType::PQ, 0.09, 0.0, 0.0, {0.0840, -0.0520});
 
-   bpf.addBranch(1, BusType::PQ, {1.07, 0.04}, 0.0, 0.0, {0.2, 0.03});
+   bpf.addBranch(1, 2, lineY({5.0, -15.0}));
+   bpf.addBranch(1, 0, lineY({3.0, -9.0}));
    bpf.validate();
    bpf.solve();
    message("Testing BalancedPowerFlowNR. Completed.");

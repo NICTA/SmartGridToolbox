@@ -18,7 +18,7 @@ namespace SmartGridToolbox
          Complex I_;                   ///< Constant current / phase.
          Complex S_;                   ///< Constant power / phase.
 
-         int idxPQ_;                   ///< My index in list of PQ busses.
+         int idx_;                     ///< My index in list of all busses.
    };
 
    class NRBranch
@@ -62,7 +62,7 @@ namespace SmartGridToolbox
          void updateF();
          void updateJ();
          void outputNetwork();
-         void outputCurrentSolution();
+         void outputCurrentState();
 
       private:
          /// @name Vectors of busses and branches.
@@ -111,6 +111,11 @@ namespace SmartGridToolbox
          CMatrixDbl J_;
          CMatrixDbl JConst_;           ///< The part of J that doesn't update at each iteration.
    };
+
+   inline Array2D<Complex, 2, 2> lineY(Complex y)
+   {
+      return {{{y, -y},{-y, y}}};
+   }
 }
 
 #endif // BALANCED_POWER_FLOW_NR_DOT_H

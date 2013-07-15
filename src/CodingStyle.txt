@@ -1,6 +1,6 @@
 Indentation is three spaces, no tabs.
 
-Lines are max 80 columns.
+Lines are max 120 columns.
 
 Types are UpperCamelCase.
 

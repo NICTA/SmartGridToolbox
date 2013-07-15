@@ -1,7 +1,30 @@
 #include <algorithm>
+#include <ostream>
 #include "BalancedPowerFlowNR.h"
 #include "Output.h"
 #include "SparseSolver.h"
+
+std::ostream & operator<<(std::ostream & os, const boost::numeric::ublas::vector<double> & v)
+{
+   for (int i = 0; i < v.size(); ++i)
+   {
+      os << v(i) << " ";
+   }
+   return os;
+}
+
+std::ostream & operator<<(std::ostream & os, const boost::numeric::ublas::compressed_matrix<double> & m)
+{
+   for (int i = 0; i < m.size1(); ++i)
+   {
+      for (int k = 0; k < m.size2(); ++k)
+      {
+         os << m(i, k) << " ";
+      }
+      os << std::endl; 
+   }
+   return os;
+}
 
 namespace SmartGridToolbox
 {
@@ -14,7 +37,7 @@ namespace SmartGridToolbox
       bus->Y_ = Y;
       bus->I_ = I;
       bus->S_ = S;
-      bus->idxPQ_ = -1;
+      bus->idx_ = -1;
       bussesById_[bus->id_] = bus;
       switch (bus->type_)
       {
@@ -55,6 +78,12 @@ namespace SmartGridToolbox
       busses_.reserve(nBus_);
       busses_.insert(busses_.end(), PQBusses_.begin(), PQBusses_.end());
       busses_.insert(busses_.end(), SLBusses_.begin(), SLBusses_.end());
+
+      // Index all PQ busses:
+      for (int i = 0; i < nBus_; ++i)
+      {
+         busses_[i]->idx_ = i;
+      }
 
       // Set bus pointers in all branches.
       for (NRBranch * branch : branches_)
@@ -99,16 +128,10 @@ namespace SmartGridToolbox
       f_.resize(nVar_, false);
       J_.resize(nVar_, nVar_, false);
       JConst_.resize(nVar_, nVar_, false);
-      // Index all PQ busses:
-      for (int i = 0; i < nPQ_; ++i)
-      {
-         PQBusses_[i]->idxPQ_ = i;
-      }
 
       // Set the slack voltages:
       V0_ = SLBusses_[0]->V_; // Array copy.
 
-      // Index all PQ busses:
       // Set the PPQ_ and QPQ_ arrays of real and reactive power on each terminal:
       for (int i = 0; i < nPQ_; ++i)
       {
@@ -130,6 +153,7 @@ namespace SmartGridToolbox
       CMatrixDblRange(JConst_, rx1_, rx1_) = CMatrixDblRange(G_, rPQ_, rPQ_);
       J_ = JConst_; // We only need to redo the elements that we mess with!
 
+      outputNetwork();
    }
 
    void BalancedPowerFlowNR::buildBusAdmit()
@@ -139,8 +163,8 @@ namespace SmartGridToolbox
          const NRBus * busi = branch->busi_;
          const NRBus * busk = branch->busk_;
 
-         int ibus = busi->idxPQ_;
-         int kbus = busk->idxPQ_;
+         int ibus = busi->idx_;
+         int kbus = busk->idx_;
 
          Y_(ibus, ibus) += branch->Y_[0][0];
          Y_(kbus, kbus) += branch->Y_[1][1];
@@ -164,7 +188,7 @@ namespace SmartGridToolbox
       // Get voltages on all busses.
       // Done like this with a copy because eventually we'll include PV busses too.
       VectorDblRange(Vr_, rPQ_) = VectorDblRange(x_, rx0_);
-      VectorDblRange(Vi_, rPQ_) = VectorDblRange(x_, rx0_);
+      VectorDblRange(Vi_, rPQ_) = VectorDblRange(x_, rx1_);
       Vr_(iSL_) = V0_.real();
       Vi_(iSL_) = V0_.imag();
    }
@@ -204,11 +228,11 @@ namespace SmartGridToolbox
       {
          J_(i, i) = JConst_(i, i) +
             (-PPQ_(i) / M2PQ(i) + 2 * Vr_(i) * (PPQ_(i) * Vr_(i) + QPQ_(i) * Vi_(i)) / M4PQ(i));
-         J_(i, i + nPQ_) = JConst_(i, i) +
+         J_(i, i + nPQ_) = JConst_(i, i + nPQ_) +
             (-QPQ_(i) / M2PQ(i) + 2 * Vi_(i) * (PPQ_(i) * Vr_(i) + QPQ_(i) * Vi_(i)) / M4PQ(i));
-         J_(i + nPQ_, i) = JConst_(i, i) +
+         J_(i + nPQ_, i) = JConst_(i + nPQ_, i) +
             ( QPQ_(i) / M2PQ(i) + 2 * Vr_(i) * (PPQ_(i) * Vi_(i) - QPQ_(i) * Vr_(i)) / M4PQ(i));
-         J_(i + nPQ_, i + nPQ_) = JConst_(i, i) +
+         J_(i + nPQ_, i + nPQ_) = JConst_(i + nPQ_, i + nPQ_) +
             (-PPQ_(i) / M2PQ(i) + 2 * Vi_(i) * (PPQ_(i) * Vi_(i) - QPQ_(i) * Vr_(i)) / M4PQ(i));
       }
    }
@@ -222,15 +246,18 @@ namespace SmartGridToolbox
       {
          updateF();
          updateJ();
-         KLUSolve(J_, f_, x_);
+         outputCurrentState();
+         VectorDbl rhs;
+         KLUSolve(J_, f_, rhs);
+         x_ = x_ - rhs;
+         VectorDbl test = prod(J_, x_) - f_;
+         std::cout << test << std::endl;
          VectorDbl f2 = element_prod(f_, f_);
          double err = *std::max_element(f2.begin(), f2.end());
          std::cout << "Error at iteration " << i << " = " << err << std::endl;
-         outputCurrentSolution();
          if (err <= tol)
          {
             std::cout << "Success at iteration" << i << ", err = " << err << std::endl;
-            outputNetwork();
             break;
          }
       }
@@ -239,35 +266,38 @@ namespace SmartGridToolbox
    void BalancedPowerFlowNR::outputNetwork()
    {
       using namespace std;
+
       cout << "Number of busses = " << nPQ_ + nSL_ << endl;
       cout << "Number of PQ busses = " << nPQ_ << endl;
-      cout << "Busses:" << endl;
+      cout << "Number of slack busses = " << nSL_ << endl;
+      cout << endl;
+
       for (const NRBus * bus : busses_)
       {
-         cout << bus->id_ << " " << (int)bus->type_ << " " << bus->V_ << " " << bus->Y_ << " " << bus->I_ << " " << bus->S_ << endl;
-      }
-   }
-   void BalancedPowerFlowNR::outputCurrentSolution()
-   {
-      using namespace std;
-      for (int i = 0; i < x_.size(); ++i)
-      {
-         cout << x_(i) << " ";
-      }
-      cout << endl << endl;
-      for (int i = 0; i < x_.size(); ++i)
-      {
-         cout << f_(i) << " ";
-      }
-      cout << endl << endl;
-      for (int i = 0; i < x_.size(); ++i)
-      {
-         for (int k = 0; k < x_.size(); ++k)
-         {
-            cout << J_(i, k) << " ";
-         }
-         cout << endl;
+         cout << "Bus: " << bus->idx_ << endl;
+         cout << bus->id_ << " " << (int)bus->type_ << " " << bus->V_ << " " 
+              << bus->Y_ << " " << bus->I_ << " " << bus->S_ << endl;
       }
       cout << endl;
+
+      for (NRBranch * branch : branches_)
+      {
+         cout << "Branch: " << branch->idi_ << " " << branch->idk_ << endl;
+         for (int i = 0; i < 2; ++i)
+         {
+            for (int k = 0; k < 2; ++k) cout << branch->Y_[i][k] << " "; cout << endl;
+         }
+      }
+      cout << endl;
+   }
+
+   void BalancedPowerFlowNR::outputCurrentState()
+   {
+      using namespace std;
+
+      cout << "x: " << x_ << endl; 
+      cout << "f: " << f_ << endl;
+      cout << "J: " << endl;
+      cout << J_ << endl;
    }
 }
