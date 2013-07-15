@@ -199,16 +199,41 @@ namespace SmartGridToolbox
       VectorDblRange x1{x_, rx1_};
 
       updateBusV();
+      std::cout << "Vr_ = " << Vr_ << std::endl;
+      std::cout << "Vi_ = " << Vi_ << std::endl;
 
       VectorDbl M2 = element_prod(x0, x0) + element_prod(x1, x1);
+      std::cout << "M2 = " << M2 << std::endl;
 
-      CMatrixDblRange Grng{G_, rPQ_, rAll_};
-      CMatrixDblRange Brng{G_, rPQ_, rAll_};
+      std::cout << "PPQ = " << PPQ_ << std::endl;
+      std::cout << "QPQ = " << QPQ_ << std::endl;
+
+      CMatrixDblRange GRng{G_, rPQ_, rAll_};
+      CMatrixDblRange BRng{B_, rPQ_, rAll_};
+
+      for (int i = 0; i < GRng.size1(); ++i)
+      {
+         for (int k = 0; k < GRng.size2(); ++k)
+         {
+            std::cout << GRng(i, k) << " ";
+         }
+         std::cout << std::endl;
+      }
+      std::cout << std::endl;
+      for (int i = 0; i < BRng.size1(); ++i)
+      {
+         for (int k = 0; k < BRng.size2(); ++k)
+         {
+            std::cout << BRng(i, k) << " ";
+         }
+         std::cout << std::endl;
+      }
+      std::cout << std::endl;
 
       VectorDbl dr = element_div((-element_prod(PPQ_, x0) - element_prod(QPQ_, x1)), M2)
-                               + prod(Grng, Vr_) - prod(Brng, Vi_);
+                               + prod(GRng, Vr_) - prod(BRng, Vi_);
       VectorDbl di = element_div((-element_prod(PPQ_, x1) + element_prod(QPQ_, x0)), M2)
-                               + prod(Grng, Vi_) + prod(Brng, Vr_);
+                               + prod(GRng, Vi_) + prod(BRng, Vr_);
 
       VectorDblRange(f_, rx0_) = dr;
       VectorDblRange(f_, rx1_) = di;
@@ -254,7 +279,7 @@ namespace SmartGridToolbox
          std::cout << test << std::endl;
          VectorDbl f2 = element_prod(f_, f_);
          double err = *std::max_element(f2.begin(), f2.end());
-         std::cout << "Error at iteration " << i << " = " << err << std::endl;
+         std::cout << "Error at iteration " << i << " = " << err << std::endl << std::endl;
          if (err <= tol)
          {
             std::cout << "Success at iteration" << i << ", err = " << err << std::endl;
