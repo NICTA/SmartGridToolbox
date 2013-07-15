@@ -1,12 +1,6 @@
 #include <iostream>
-//#include "Common.h"
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/vector_sparse.hpp>
-#include <boost/numeric/ublas/vector_proxy.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/matrix_sparse.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-#include "SLUSolver.h"
+#include "Common.h"
+#include "SparseSolver.h"
 
 using namespace std;
 //using namespace SmartGridToolbox;
