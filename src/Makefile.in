@@ -138,7 +138,8 @@ libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_helloworld_OBJECTS = SparseSolver.$(OBJEXT) helloworld.$(OBJEXT)
 helloworld_OBJECTS = $(am_helloworld_OBJECTS)
-helloworld_DEPENDENCIES = ../third_party/SuiteSparse/KLU/Lib/libklu.a \
+helloworld_DEPENDENCIES = libsmartgridtoolbox.a \
+	../third_party/SuiteSparse/KLU/Lib/libklu.a \
 	../third_party/SuiteSparse/AMD/Lib/libamd.a \
 	../third_party/SuiteSparse/BTF/Lib/libbtf.a \
 	../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a
@@ -319,7 +320,8 @@ libsmartgridtoolbox_a_SOURCES = \
 
 helloworld_SOURCES = SparseSolver.cc helloworld.cc
 klu_simple_SOURCES = SparseSolver.cc klu_simple.c
-helloworld_LDADD = ../third_party/SuiteSparse/KLU/Lib/libklu.a \
+helloworld_LDADD = libsmartgridtoolbox.a \
+						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
 						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
 						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \

@@ -30,7 +30,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void BalancedPowerFlowNR::addBranch(const Array2D<Complex, 2, 2> & Y, int idi, int idk)
+   void BalancedPowerFlowNR::addBranch(int idi, int idk, const Array2D<Complex, 2, 2> & Y)
    {
       NRBranch * branch = new NRBranch;
       branch->Y_ = Y;
@@ -99,7 +99,6 @@ namespace SmartGridToolbox
       f_.resize(nVar_, false);
       J_.resize(nVar_, nVar_, false);
       JConst_.resize(nVar_, nVar_, false);
-
       // Index all PQ busses:
       for (int i = 0; i < nPQ_; ++i)
       {
@@ -109,6 +108,7 @@ namespace SmartGridToolbox
       // Set the slack voltages:
       V0_ = SLBusses_[0]->V_; // Array copy.
 
+      // Index all PQ busses:
       // Set the PPQ_ and QPQ_ arrays of real and reactive power on each terminal:
       for (int i = 0; i < nPQ_; ++i)
       {
@@ -124,10 +124,10 @@ namespace SmartGridToolbox
       B_ = imag(Y_);
 
       // Set the part of J that doesn't update at each iteration.
-      CMatrixDblRange(JConst_,rx0_, rx0_) = G_;
-      CMatrixDblRange(JConst_,rx0_, rx1_) = -B_;
-      CMatrixDblRange(JConst_,rx1_, rx0_) = B_;
-      CMatrixDblRange(JConst_,rx1_, rx1_) = G_;
+      CMatrixDblRange(JConst_, rx0_, rx0_) = CMatrixDblRange(G_, rPQ_, rPQ_);
+      CMatrixDblRange(JConst_, rx0_, rx1_) = -CMatrixDblRange(B_, rPQ_, rPQ_);
+      CMatrixDblRange(JConst_, rx1_, rx0_) = CMatrixDblRange(B_, rPQ_, rPQ_);
+      CMatrixDblRange(JConst_, rx1_, rx1_) = CMatrixDblRange(G_, rPQ_, rPQ_);
       J_ = JConst_; // We only need to redo the elements that we mess with!
 
    }
@@ -176,7 +176,7 @@ namespace SmartGridToolbox
 
       updateBusV();
 
-      VectorDbl M2 = element_prod(Vr_, Vr_) + element_prod(Vi_, Vi_);
+      VectorDbl M2 = element_prod(x0, x0) + element_prod(x1, x1);
 
       CMatrixDblRange Grng{G_, rPQ_, rAll_};
       CMatrixDblRange Brng{G_, rPQ_, rAll_};
@@ -215,7 +215,6 @@ namespace SmartGridToolbox
 
    void BalancedPowerFlowNR::solve()
    {
-
       const double tol = 1e-20;
       const int maxiter = 20;
       initx();
@@ -226,12 +225,49 @@ namespace SmartGridToolbox
          KLUSolve(J_, f_, x_);
          VectorDbl f2 = element_prod(f_, f_);
          double err = *std::max_element(f2.begin(), f2.end());
-         std::cout << "Error at iteration " << i << " = " << err;
+         std::cout << "Error at iteration " << i << " = " << err << std::endl;
+         outputCurrentSolution();
          if (err <= tol)
          {
-            std::cout << "Success at iteration" << i << ", err = " << err;
+            std::cout << "Success at iteration" << i << ", err = " << err << std::endl;
+            outputNetwork();
             break;
          }
       }
+   }
+
+   void BalancedPowerFlowNR::outputNetwork()
+   {
+      using namespace std;
+      cout << "Number of busses = " << nPQ_ + nSL_ << endl;
+      cout << "Number of PQ busses = " << nPQ_ << endl;
+      cout << "Busses:" << endl;
+      for (const NRBus * bus : busses_)
+      {
+         cout << bus->id_ << " " << (int)bus->type_ << " " << bus->V_ << " " << bus->Y_ << " " << bus->I_ << " " << bus->S_ << endl;
+      }
+   }
+   void BalancedPowerFlowNR::outputCurrentSolution()
+   {
+      using namespace std;
+      for (int i = 0; i < x_.size(); ++i)
+      {
+         cout << x_(i) << " ";
+      }
+      cout << endl << endl;
+      for (int i = 0; i < x_.size(); ++i)
+      {
+         cout << f_(i) << " ";
+      }
+      cout << endl << endl;
+      for (int i = 0; i < x_.size(); ++i)
+      {
+         for (int k = 0; k < x_.size(); ++k)
+         {
+            cout << J_(i, k) << " ";
+         }
+         cout << endl;
+      }
+      cout << endl;
    }
 }

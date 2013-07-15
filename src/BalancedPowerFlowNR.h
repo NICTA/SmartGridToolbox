@@ -51,8 +51,7 @@ namespace SmartGridToolbox
 
       public:
          void addBus(int id, BusType type, Complex V, Complex Y, Complex I, Complex S);
-         void addBranch(const Array2D<Complex, 2, 2> & Y, int idi, int idk);
-
+         void addBranch(int idi, int idk, const Array2D<Complex, 2, 2> & Y);
          void validate();
          void solve();
 
@@ -62,6 +61,8 @@ namespace SmartGridToolbox
          void updateBusV();
          void updateF();
          void updateJ();
+         void outputNetwork();
+         void outputCurrentSolution();
 
       private:
          /// @name Vectors of busses and branches.

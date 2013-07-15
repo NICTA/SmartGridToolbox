@@ -10,7 +10,8 @@ libsmartgridtoolbox_a_SOURCES = \
 bin_PROGRAMS = helloworld klu_simple
 helloworld_SOURCES = SparseSolver.cc helloworld.cc
 klu_simple_SOURCES = SparseSolver.cc klu_simple.c
-helloworld_LDADD = ../third_party/SuiteSparse/KLU/Lib/libklu.a \
+helloworld_LDADD = libsmartgridtoolbox.a \
+						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
 						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
 						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
