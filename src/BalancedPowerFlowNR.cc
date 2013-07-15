@@ -152,8 +152,6 @@ namespace SmartGridToolbox
       CMatrixDblRange(JConst_, rx1_, rx0_) = CMatrixDblRange(B_, rPQ_, rPQ_);
       CMatrixDblRange(JConst_, rx1_, rx1_) = CMatrixDblRange(G_, rPQ_, rPQ_);
       J_ = JConst_; // We only need to redo the elements that we mess with!
-
-      outputNetwork();
    }
 
    void BalancedPowerFlowNR::buildBusAdmit()
@@ -199,36 +197,11 @@ namespace SmartGridToolbox
       VectorDblRange x1{x_, rx1_};
 
       updateBusV();
-      std::cout << "Vr_ = " << Vr_ << std::endl;
-      std::cout << "Vi_ = " << Vi_ << std::endl;
 
       VectorDbl M2 = element_prod(x0, x0) + element_prod(x1, x1);
-      std::cout << "M2 = " << M2 << std::endl;
-
-      std::cout << "PPQ = " << PPQ_ << std::endl;
-      std::cout << "QPQ = " << QPQ_ << std::endl;
 
       CMatrixDblRange GRng{G_, rPQ_, rAll_};
       CMatrixDblRange BRng{B_, rPQ_, rAll_};
-
-      for (int i = 0; i < GRng.size1(); ++i)
-      {
-         for (int k = 0; k < GRng.size2(); ++k)
-         {
-            std::cout << GRng(i, k) << " ";
-         }
-         std::cout << std::endl;
-      }
-      std::cout << std::endl;
-      for (int i = 0; i < BRng.size1(); ++i)
-      {
-         for (int k = 0; k < BRng.size2(); ++k)
-         {
-            std::cout << BRng(i, k) << " ";
-         }
-         std::cout << std::endl;
-      }
-      std::cout << std::endl;
 
       VectorDbl dr = element_div((-element_prod(PPQ_, x0) - element_prod(QPQ_, x1)), M2)
                                + prod(GRng, Vr_) - prod(BRng, Vi_);
@@ -271,7 +244,6 @@ namespace SmartGridToolbox
       {
          updateF();
          updateJ();
-         outputCurrentState();
          VectorDbl rhs;
          KLUSolve(J_, f_, rhs);
          x_ = x_ - rhs;
