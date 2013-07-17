@@ -4,30 +4,30 @@
 #include "Output.h"
 #include "SparseSolver.h"
 
-std::ostream & operator<<(std::ostream & os, const boost::numeric::ublas::vector<double> & v)
-{
-   for (int i = 0; i < v.size(); ++i)
-   {
-      os << v(i) << " ";
-   }
-   return os;
-}
-
-std::ostream & operator<<(std::ostream & os, const boost::numeric::ublas::compressed_matrix<double> & m)
-{
-   for (int i = 0; i < m.size1(); ++i)
-   {
-      for (int k = 0; k < m.size2(); ++k)
-      {
-         os << m(i, k) << " ";
-      }
-      os << std::endl; 
-   }
-   return os;
-}
-
 namespace SmartGridToolbox
 {
+   std::ostream & operator<<(std::ostream & os, const UblasVector<double> & v)
+   {
+      for (int i = 0; i < v.size(); ++i)
+      {
+         os << v(i) << " ";
+      }
+      return os;
+   }
+
+   std::ostream & operator<<(std::ostream & os, const UblasCMatrix<double> & m)
+   {
+      for (int i = 0; i < m.size1(); ++i)
+      {
+         for (int k = 0; k < m.size2(); ++k)
+         {
+            os << m(i, k) << " ";
+         }
+         os << std::endl; 
+      }
+      return os;
+   }
+
    void BalancedPowerFlowNR::addBus(int id, BusType type, Complex V, Complex Y, Complex I, Complex S)
    {
       NRBus * bus = new NRBus;
