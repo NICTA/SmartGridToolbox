@@ -8,10 +8,10 @@
 
 #include <iostream>
 
-class NetworkComponent;
-
 namespace SmartGridToolbox
 {
+   class Network1PComponent;
+
    class Bus1PComponentParser : public ComponentParser
    {
       public:
@@ -33,7 +33,7 @@ namespace SmartGridToolbox
       public:
          virtual ptime getValidUntil() const override 
          {
-            return time_pos_infin;
+            return pos_infin;
          }
       /// @}
 
@@ -54,19 +54,19 @@ namespace SmartGridToolbox
          void setType(BusType type) {type_ = type;}
 
          const Complex & getV() {return V_;}
-         void setV(const Complex & V) V_ = V;}
+         void setV(const Complex & V) {V_ = V;}
 
          const Complex & getY() {return Y_;}
-         void setY(const Complex & Y) Y_ = Y;}
+         void setY(const Complex & Y) {Y_ = Y;}
 
          const Complex & getI() {return I_;}
-         void setI(const Complex & I) I_ = I;}
+         void setI(const Complex & I) {I_ = I;}
 
          const Complex & getS() {return S_;}
-         void setS(const Complex & S) S_ = S;}
+         void setS(const Complex & S) {S_ = S;}
 
          const Complex & getSGen() {return SGen_;}
-         void setSGen(const Complex & S) SGen_ = SGen;}
+         void setSGen(const Complex & SGen) {SGen_ = SGen;}
       /// @}
 
       /// @name My private member variables.

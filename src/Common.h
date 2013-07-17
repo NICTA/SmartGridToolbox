@@ -11,6 +11,7 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <sstream>
 
 namespace SmartGridToolbox
 {
@@ -109,6 +110,15 @@ namespace SmartGridToolbox
    const double C = A / second; 
    const double K = 1.0; 
    const Complex czero = Complex(0.0, 0.0);
+
+   Complex complexFromString(const std::string & s)
+   {
+      // TODO: this implementation is no good because it doesn't handle ill-formed strings.
+      std::istringstream ss(s);
+      Complex c;
+      ss >> c;
+      return c;
+   }
    /// @}
 }
 

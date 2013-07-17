@@ -11,12 +11,12 @@ namespace SmartGridToolbox
    class NRBus
    {
       public:
-         int id_;                      ///< Arbitrary bus ID, for external use.
-         BusType type_;                ///< bus type (0=PQ, 1=PV, 2=SWING).
-         Complex V_;                   ///< NRBus voltage / phase.
-         Complex Y_;                   ///< Constant admittance/phase.
-         Complex I_;                   ///< Constant current / phase.
-         Complex S_;                   ///< Constant power / phase.
+         std::string id_;              ///< Arbitrary bus ID, for external use.
+         BusType type_;                ///< Bus type.
+         Complex V_;                   ///< Voltage.
+         Complex Y_;                   ///< Constant admittance.
+         Complex I_;                   ///< Constant current.
+         Complex S_;                   ///< Constant power.
 
          int idx_;                     ///< My index in list of all busses.
    };
@@ -25,8 +25,8 @@ namespace SmartGridToolbox
    {
       public:
          Array2D<Complex, 2, 2> Y_;    ///< Complex value of elements in bus admittance matrix in NR solver.
-         int idi_;                     ///< id of bus i.
-         int idk_;                     ///< id of bus k.
+         std::string idi_;             ///< id of bus i.
+         std::string idk_;             ///< id of bus k.
          const NRBus * busi_;          ///< My i bus.
          const NRBus * busk_;          ///< My k bus.
    };
@@ -35,12 +35,12 @@ namespace SmartGridToolbox
    {
       public:
          typedef std::vector<NRBus *> BusVec;
-         typedef std::map<int, NRBus *> BusMap;
+         typedef std::map<std::string, NRBus *> BusMap;
          typedef std::vector<NRBranch *> BranchVec;
 
       public:
-         void addBus(int id, BusType type, Complex V, Complex Y, Complex I, Complex S);
-         void addBranch(int idi, int idk, const Array2D<Complex, 2, 2> & Y);
+         void addBus(const std::string & id, BusType type, Complex V, Complex Y, Complex I, Complex S);
+         void addBranch(const std::string & idi, const std::string & idk, const Array2D<Complex, 2, 2> & Y);
          void validate();
          void solve();
 
@@ -84,8 +84,6 @@ namespace SmartGridToolbox
 
          Complex V0_;                  ///< Slack voltages.
 
-         /// @name ublas ranges into vectors/matrices.
-         /// @{
          UblasVector<double> PPQ_;     ///< Total power injection of PQ busses.
          UblasVector<double> QPQ_;
 

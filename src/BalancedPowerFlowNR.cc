@@ -28,7 +28,7 @@ namespace SmartGridToolbox
       return os;
    }
 
-   void BalancedPowerFlowNR::addBus(int id, BusType type, Complex V, Complex Y, Complex I, Complex S)
+   void BalancedPowerFlowNR::addBus(const std::string & id, BusType type, Complex V, Complex Y, Complex I, Complex S)
    {
       NRBus * bus = new NRBus;
       bus->id_ = id;
@@ -53,7 +53,8 @@ namespace SmartGridToolbox
       }
    }
 
-   void BalancedPowerFlowNR::addBranch(int idi, int idk, const Array2D<Complex, 2, 2> & Y)
+   void BalancedPowerFlowNR::addBranch(const std::string & idi, const std::string & idk, 
+                                       const Array2D<Complex, 2, 2> & Y)
    {
       NRBranch * branch = new NRBranch;
       branch->Y_ = Y;
@@ -91,7 +92,8 @@ namespace SmartGridToolbox
          auto iti = bussesById_.find(branch->idi_);
          if (iti == bussesById_.end())
          {
-            error("Branch %d %d contains a non-existent bus %d.", branch->idi_);
+            error("Branch %s %s contains a non-existent bus %d.", branch->idi_.c_str(), branch->idk_.c_str(),
+                                                                  branch->idi_.c_str());
          }
          else
          {
@@ -100,7 +102,8 @@ namespace SmartGridToolbox
          auto itk = bussesById_.find(branch->idk_);
          if (itk == bussesById_.end())
          {
-            error("Branch %d %d contains a non-existent bus %d.", branch->idk_);
+            error("Branch %s %s contains a non-existent bus %d.", branch->idi_.c_str(), branch->idk_.c_str(),
+                                                                  branch->idk_.c_str());
          }
          else
          {

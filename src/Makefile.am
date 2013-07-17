@@ -4,9 +4,9 @@ AM_CPPFLAGS = -I../third_party
 
 lib_LIBRARIES = libsmartgridtoolbox.a
 libsmartgridtoolbox_a_SOURCES = \
-	BalancedPowerFlowNR.cc BusData.cc Component.cc Meter.cc Model.cc Output.cc \
-	Parser.cc Random.cc SimpleBattery.cc SimpleBuilding.cc Simulation.cc \
-	SparseSolver.cc TestComponent.cc WeakOrder.cc
+	BalancedPowerFlowNR.cc Bus1PComponent.cc Component.cc Meter.cc Model.cc \
+	Network1PComponent.cc Output.cc Parser.cc Random.cc SimpleBattery.cc 
+	SimpleBuilding.cc Simulation.cc SparseSolver.cc TestComponent.cc WeakOrder.cc
 bin_PROGRAMS = helloworld klu_simple
 helloworld_SOURCES = SparseSolver.cc helloworld.cc
 klu_simple_SOURCES = SparseSolver.cc klu_simple.c

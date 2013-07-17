@@ -12,6 +12,15 @@ namespace SmartGridToolbox
    class Model;
    class Simulation;
 
+
+   inline void assertFieldPresent(const YAML::Node & nd, const std::string & field)
+   {
+      if (!nd[field])
+      {
+         error("Parsing %s: \"%s\" field not present.", nd.as<std::string>().c_str(), field.c_str());
+      }
+   }
+
    class ComponentParser
    {
       public:
@@ -24,6 +33,7 @@ namespace SmartGridToolbox
          virtual void parse(const YAML::Node & comp, Model & mod) const = 0;
 
          virtual void postParse(const YAML::Node & comp, Model & mod) const = 0;
+
    };
 
    class Parser {

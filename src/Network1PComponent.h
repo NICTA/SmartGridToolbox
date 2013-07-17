@@ -3,9 +3,13 @@
 
 #include "Component.h"
 #include "BalancedPowerFlowNR.h"
+#include "Parser.h"
 
 namespace SmartGridToolbox
 {
+   class Bus1PComponent;
+   class Branch1PComponent;
+
    class Network1PComponentParser : public ComponentParser
    {
       public:
@@ -27,7 +31,7 @@ namespace SmartGridToolbox
       public:
          virtual ptime getValidUntil() const override 
          {
-            return time_pos_infin;
+            return pos_infin;
          }
       /// @}
 
@@ -57,12 +61,11 @@ namespace SmartGridToolbox
       /// @name My private member variables.
       /// @{
       private:
-         std::vector<BusComponent *> busses_;
-         std::vector<BranchComponent *> branches_;
+         std::vector<Bus1PComponent *> busses_;
+         std::vector<Branch1PComponent *> branches_;
          BalancedPowerFlowNR solver_;
       /// @}
-   }
-    
+   };
 }
 
 #endif // NETWORK_1P_COMPONENT_DOT_H

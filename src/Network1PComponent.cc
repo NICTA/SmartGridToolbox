@@ -1,4 +1,5 @@
 #include "Network1PComponent.h"
+#include "Model.h"
 
 namespace SmartGridToolbox
 {
@@ -9,6 +10,4 @@ namespace SmartGridToolbox
       comp->setName(name);
       mod.addComponent(*comp);
    }
-   virtual void Network1PComponent::initializeState(ptime t) override {};
-   virtual void updateState(ptime t0, ptime t1) override {};
 }
