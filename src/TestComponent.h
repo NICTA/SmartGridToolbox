@@ -60,6 +60,4 @@ namespace SmartGridToolbox
    };
 }
 
-extern SmartGridToolbox::TestComponentParser parser_;
-
 #endif // TEST_COMPONENT_DOT_H

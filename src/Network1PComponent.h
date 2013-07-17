@@ -15,8 +15,7 @@ namespace SmartGridToolbox
       public:
          virtual void parse(const YAML::Node & nd, Model & mod) const override;
 
-         virtual void postParse(const YAML::Node & nd, 
-                                Model & mod) const override;
+         virtual void postParse(const YAML::Node & nd, Model & mod) const override;
 
          static constexpr const char * getComponentName() 
          {
@@ -46,16 +45,13 @@ namespace SmartGridToolbox
       /// @{
       public:
          // TODO: should this be done with Events interface?
-         virtual void networkHasChanged()
-         {
-
-         }
+         virtual void networkHasChanged() {}
       /// @}
 
       /// @name My private member functions.
       /// @{
       private:
-         virtual void rebuildNetwork();
+         virtual void rebuildNetwork() {}
       /// @}
 
       /// @name My private member variables.

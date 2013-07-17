@@ -1,5 +1,6 @@
 #include "Network1PComponent.h"
 #include "Model.h"
+#include <iostream>
 
 namespace SmartGridToolbox
 {
@@ -9,5 +10,9 @@ namespace SmartGridToolbox
       Network1PComponent * comp = new Network1PComponent;
       comp->setName(name);
       mod.addComponent(*comp);
+   }
+   void Network1PComponentParser::postParse(const YAML::Node & nd, Model & mod) const
+   {
+      std::cout << "Testing" << std::endl; 
    }
 }

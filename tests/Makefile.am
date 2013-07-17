@@ -1,4 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
+
 AM_CPPFLAGS = -I../third_party -I../src
 
 TESTS = tests

@@ -2,13 +2,12 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 
-using namespace boost::numeric::ublas;
-void KLUSolve(boost::numeric::ublas::compressed_matrix<double> & a,
-      const boost::numeric::ublas::vector<double> & b,
-      boost::numeric::ublas::vector<double> & result)
+void KLUSolve(const boost::numeric::ublas::compressed_matrix<double> & a,
+              const boost::numeric::ublas::vector<double> & b,
+              boost::numeric::ublas::vector<double> & result)
 {
    boost::numeric::ublas::compressed_matrix<double, boost::numeric::ublas::column_major> ac = a;
-   a.complete_index1_data();
+   ac.complete_index1_data();
 
    int n = b.size();
    int nnz = ac.nnz();

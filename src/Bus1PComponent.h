@@ -17,8 +17,7 @@ namespace SmartGridToolbox
       public:
          virtual void parse(const YAML::Node & nd, Model & mod) const override;
 
-         virtual void postParse(const YAML::Node & nd, 
-                                Model & mod) const override;
+         virtual void postParse(const YAML::Node & nd, Model & mod) const override;
 
          static constexpr const char * getComponentName() 
          {
@@ -82,7 +81,5 @@ namespace SmartGridToolbox
       /// @}
    };
 }
-
-extern SmartGridToolbox::Bus1PComponentParser parser_;
 
 #endif // BUS_1P_COMPONENT_DOT_H

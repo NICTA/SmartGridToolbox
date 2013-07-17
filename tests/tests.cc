@@ -4,9 +4,11 @@
 #include <ostream>
 #include <fstream>
 #include "BalancedPowerFlowNR.h"
+#include "Bus1PComponent.h"
 #include "Component.h"
 #include "Event.h"
 #include "Model.h"
+#include "Network1PComponent.h"
 #include "Output.h"
 #include "Parser.h"
 #include "powerflow.h"
@@ -472,11 +474,8 @@ BOOST_AUTO_TEST_CASE (test_parser)
    Parser & p = Parser::getGlobalParser();
    p.registerComponentParser<TestComponentParser>();
    p.parse("test_parser.yaml", mod, sim);
-   message("Testing Parser. Completed.");
-   const TestComponent * tc = mod.getComponentNamed<TestComponent>(
-         "test_component_1");
-   message("test_component_1 another is %s", 
-         tc->getAnother()->getName().c_str());
+   const TestComponent * tc = mod.getComponentNamed<TestComponent>("test_component_1");
+   message("test_component_1 another is %s", tc->getAnother()->getName().c_str());
    BOOST_CHECK(tc->getAnother()->getName() == "test_component_2");
    message("Testing Parser. Completed.");
 }
@@ -485,7 +484,7 @@ BOOST_AUTO_TEST_CASE (test_sparse_solver)
 {
    message("Testing SparseSolver. Starting.");
    int n = 5;
-   boost::numeric::ublas::compressed_matrix<double> a(n, n);
+   UblasCMatrix<double> a(n, n);
    a(0, 0) = 2.0;
    a(0, 1) = 3.0;
    a(1, 0) = 3.0;
@@ -499,14 +498,14 @@ BOOST_AUTO_TEST_CASE (test_sparse_solver)
    a(4, 2) = 2.0;
    a(4, 4) = 1.0;
 
-   boost::numeric::ublas::vector<double> b(n);
+   UblasVector<double> b(n);
    b(0) = 8.0;
    b(1) = 45.0;
    b(2) = -3.0;
    b(3) = 3.0;
    b(4) = 19.0;
 
-   boost::numeric::ublas::vector<double> x(n);
+   UblasVector<double> x(n);
    KLUSolve(a, b, x);
    for (int i = 0; i < n; ++i) cout << x(i) << " ";
    cout << endl;
@@ -518,19 +517,31 @@ BOOST_AUTO_TEST_CASE (test_sparse_solver)
    message("Testing SparseSolver. Completed.");
 }
 
-BOOST_AUTO_TEST_CASE (test_balanced_power_flow_NR)
+BOOST_AUTO_TEST_CASE (test_balanced_power_flow_nr)
 {
-   message("Testing BalancedPowerFlowNR. Starting.");
+   message("Testing balanced_power_flow_nr. Starting.");
    BalancedPowerFlowNR bpf;
-   bpf.addBus(0, BusType::SL, 1.0, 0.0, 0.0, 0.0);
-   bpf.addBus(1, BusType::PQ, 0.0, 0.0, 0.0, {0.0240, 0.0120});
-   bpf.addBus(2, BusType::PQ, 0.09, 0.0, 0.0, {0.0840, -0.0520});
+   bpf.addBus("0", BusType::SL, 1.0, 0.0, 0.0, 0.0);
+   bpf.addBus("1", BusType::PQ, 0.0, 0.0, 0.0, {0.0240, 0.0120});
+   bpf.addBus("2", BusType::PQ, 0.09, 0.0, 0.0, {0.0840, -0.0520});
 
-   bpf.addBranch(1, 2, lineY({5.0, -15.0}));
-   bpf.addBranch(1, 0, lineY({3.0, -9.0}));
+   bpf.addBranch("1", "2", lineY({5.0, -15.0}));
+   bpf.addBranch("1", "0", lineY({3.0, -9.0}));
    bpf.validate();
    bpf.solve();
-   message("Testing BalancedPowerFlowNR. Completed.");
+   message("Testing balanced_power_flow_nr. Completed.");
+}
+
+BOOST_AUTO_TEST_CASE (test_network_1p)
+{
+   message("Testing network_1p. Starting.");
+   Model mod;
+   Simulation sim(mod);
+   Parser & p = Parser::getGlobalParser();
+   p.registerComponentParser<Network1PComponentParser>();
+   p.registerComponentParser<Bus1PComponentParser>();
+   p.parse("test_network_1p.yaml", mod, sim);
+   message("Testing network_1p. Completed.");
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
