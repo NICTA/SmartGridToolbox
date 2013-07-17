@@ -110,11 +110,11 @@ namespace SmartGridToolbox
 
       // Set array ranges:
       // Note Range goes from begin (included) to end (excluded).
-      rPQ_ = Range(0, nPQ_);
-      rAll_ = Range(0, nPQ_ + 1);
+      rPQ_ = UblasRange(0, nPQ_);
+      rAll_ = UblasRange(0, nPQ_ + 1);
       iSL_ = nPQ_;
-      rx0_ = Range(0, nPQ_);
-      rx1_ = Range(nPQ_, 2 * nPQ_);
+      rx0_ = UblasRange(0, nPQ_);
+      rx1_ = UblasRange(nPQ_, 2 * nPQ_);
 
       // Size all arrays:
       PPQ_.resize(nPQ_, false);
@@ -147,10 +147,10 @@ namespace SmartGridToolbox
       B_ = imag(Y_);
 
       // Set the part of J that doesn't update at each iteration.
-      CMatrixDblRange(JConst_, rx0_, rx0_) = CMatrixDblRange(G_, rPQ_, rPQ_);
-      CMatrixDblRange(JConst_, rx0_, rx1_) = -CMatrixDblRange(B_, rPQ_, rPQ_);
-      CMatrixDblRange(JConst_, rx1_, rx0_) = CMatrixDblRange(B_, rPQ_, rPQ_);
-      CMatrixDblRange(JConst_, rx1_, rx1_) = CMatrixDblRange(G_, rPQ_, rPQ_);
+      UblasCMatrixRange<double>(JConst_, rx0_, rx0_) = UblasCMatrixRange<double>(G_, rPQ_, rPQ_);
+      UblasCMatrixRange<double>(JConst_, rx0_, rx1_) = -UblasCMatrixRange<double>(B_, rPQ_, rPQ_);
+      UblasCMatrixRange<double>(JConst_, rx1_, rx0_) = UblasCMatrixRange<double>(B_, rPQ_, rPQ_);
+      UblasCMatrixRange<double>(JConst_, rx1_, rx1_) = UblasCMatrixRange<double>(G_, rPQ_, rPQ_);
       J_ = JConst_; // We only need to redo the elements that we mess with!
    }
 
@@ -185,42 +185,42 @@ namespace SmartGridToolbox
    {
       // Get voltages on all busses.
       // Done like this with a copy because eventually we'll include PV busses too.
-      VectorDblRange(Vr_, rPQ_) = VectorDblRange(x_, rx0_);
-      VectorDblRange(Vi_, rPQ_) = VectorDblRange(x_, rx1_);
+      UblasVectorRange<double>(Vr_, rPQ_) = UblasVectorRange<double>(x_, rx0_);
+      UblasVectorRange<double>(Vi_, rPQ_) = UblasVectorRange<double>(x_, rx1_);
       Vr_(iSL_) = V0_.real();
       Vi_(iSL_) = V0_.imag();
    }
 
    void BalancedPowerFlowNR::updateF()
    {
-      VectorDblRange x0{x_, rx0_};
-      VectorDblRange x1{x_, rx1_};
+      UblasVectorRange<double> x0{x_, rx0_};
+      UblasVectorRange<double> x1{x_, rx1_};
 
       updateBusV();
 
-      VectorDbl M2 = element_prod(x0, x0) + element_prod(x1, x1);
+      UblasVector<double> M2 = element_prod(x0, x0) + element_prod(x1, x1);
 
-      CMatrixDblRange GRng{G_, rPQ_, rAll_};
-      CMatrixDblRange BRng{B_, rPQ_, rAll_};
+      UblasCMatrixRange<double> GRng{G_, rPQ_, rAll_};
+      UblasCMatrixRange<double> BRng{B_, rPQ_, rAll_};
 
-      VectorDbl dr = element_div((-element_prod(PPQ_, x0) - element_prod(QPQ_, x1)), M2)
+      UblasVector<double> dr = element_div((-element_prod(PPQ_, x0) - element_prod(QPQ_, x1)), M2)
                                + prod(GRng, Vr_) - prod(BRng, Vi_);
-      VectorDbl di = element_div((-element_prod(PPQ_, x1) + element_prod(QPQ_, x0)), M2)
+      UblasVector<double> di = element_div((-element_prod(PPQ_, x1) + element_prod(QPQ_, x0)), M2)
                                + prod(GRng, Vi_) + prod(BRng, Vr_);
 
-      VectorDblRange(f_, rx0_) = dr;
-      VectorDblRange(f_, rx1_) = di;
+      UblasVectorRange<double>(f_, rx0_) = dr;
+      UblasVectorRange<double>(f_, rx1_) = di;
    }
 
    void BalancedPowerFlowNR::updateJ()
    {
-      VectorDblRange x0{x_, rx0_};
-      VectorDblRange x1{x_, rx1_};
+      UblasVectorRange<double> x0{x_, rx0_};
+      UblasVectorRange<double> x1{x_, rx1_};
 
       updateBusV();
 
-      VectorDbl M2PQ = element_prod(x0, x0) + element_prod(x1, x1);
-      VectorDbl M4PQ = element_prod(M2PQ, M2PQ);
+      UblasVector<double> M2PQ = element_prod(x0, x0) + element_prod(x1, x1);
+      UblasVector<double> M4PQ = element_prod(M2PQ, M2PQ);
 
       for (int i = 0; i < nPQ_; ++i)
       {
@@ -244,12 +244,12 @@ namespace SmartGridToolbox
       {
          updateF();
          updateJ();
-         VectorDbl rhs;
+         UblasVector<double> rhs;
          KLUSolve(J_, f_, rhs);
          x_ = x_ - rhs;
-         VectorDbl test = prod(J_, x_) - f_;
+         UblasVector<double> test = prod(J_, x_) - f_;
          std::cout << test << std::endl;
-         VectorDbl f2 = element_prod(f_, f_);
+         UblasVector<double> f2 = element_prod(f_, f_);
          double err = *std::max_element(f2.begin(), f2.end());
          std::cout << "Error at iteration " << i << " = " << err << std::endl << std::endl;
          if (err <= tol)

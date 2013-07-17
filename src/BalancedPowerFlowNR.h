@@ -33,17 +33,6 @@ namespace SmartGridToolbox
 
    class BalancedPowerFlowNR
    {
-      private:
-         typedef boost::numeric::ublas::vector<double> VectorDbl;
-         typedef boost::numeric::ublas::vector<Complex> VectorCplx;
-         typedef boost::numeric::ublas::compressed_matrix<double> CMatrixDbl;
-         typedef boost::numeric::ublas::compressed_matrix<Complex> CMatrixCplx;
-         typedef boost::numeric::ublas::vector_range<VectorDbl> VectorDblRange;
-         typedef boost::numeric::ublas::vector_range<VectorCplx> VectorCplxRange;
-         typedef boost::numeric::ublas::matrix_range<CMatrixDbl> CMatrixDblRange;
-         typedef boost::numeric::ublas::matrix_range<CMatrixCplx> CMatrixCplxRange;
-         typedef boost::numeric::ublas::range Range;
-
       public:
          typedef std::vector<NRBus *> BusVec;
          typedef std::map<int, NRBus *> BusMap;
@@ -85,31 +74,31 @@ namespace SmartGridToolbox
 
          /// @name ublas ranges into vectors/matrices.
          /// @{
-         Range rPQ_;                   ///< Range of PQ busses in list of all busses.
-         Range rAll_;                  ///< Range of all busses in list of all busses.
+         UblasRange rPQ_;              ///< Range of PQ busses in list of all busses.
+         UblasRange rAll_;             ///< Range of all busses in list of all busses.
                                        /**< Needed for matrix_range. */
          int iSL_;                     ///< Index of slack bus in list of all busses.
-         Range rx0_;                   ///< Range of real voltage components in x_. 
-         Range rx1_;                   ///< Range of imag voltage components in x_.
+         UblasRange rx0_;              ///< Range of real voltage components in x_. 
+         UblasRange rx1_;              ///< Range of imag voltage components in x_.
          /// @}
 
          Complex V0_;                  ///< Slack voltages.
 
          /// @name ublas ranges into vectors/matrices.
          /// @{
-         VectorDbl PPQ_;               ///< Total power injection of PQ busses.
-         VectorDbl QPQ_;
+         UblasVector<double> PPQ_;     ///< Total power injection of PQ busses.
+         UblasVector<double> QPQ_;
 
-         VectorDbl Vr_;
-         VectorDbl Vi_;
-         CMatrixCplx Y_;
-         CMatrixDbl G_;
-         CMatrixDbl B_;
+         UblasVector<double> Vr_;
+         UblasVector<double> Vi_;
+         UblasCMatrix<Complex> Y_;
+         UblasCMatrix<double> G_;
+         UblasCMatrix<double> B_;
 
-         VectorDbl x_;
-         VectorDbl f_;
-         CMatrixDbl J_;
-         CMatrixDbl JConst_;           ///< The part of J that doesn't update at each iteration.
+         UblasVector<double> x_;
+         UblasVector<double> f_;
+         UblasCMatrix<double> J_;
+         UblasCMatrix<double> JConst_;           ///< The part of J that doesn't update at each iteration.
    };
 
    inline Array2D<Complex, 2, 2> lineY(Complex y)

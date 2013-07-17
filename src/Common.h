@@ -41,6 +41,27 @@ namespace SmartGridToolbox
       return Complex(i * c.real(), i * c.imag());
    }
    /// @}
+  
+   /// @name Linear algebra
+   /// @{
+   using UblasRange = boost::numeric::ublas::range;
+
+   /// Dense vector
+   template<typename T> using UblasVector = boost::numeric::ublas::vector<T>;
+   template<typename T> using UblasVectorRange = boost::numeric::ublas::vector_range<UblasVector<T>>;
+
+   /// Sparse compressed vector
+   template<typename T> using UblasCVector = boost::numeric::ublas::compressed_vector<T>;
+   template<typename T> using UblasCVectorRange = boost::numeric::ublas::vector_range<UblasCVector<T>>;
+
+   /// Dense matrix 
+   template<typename T> using UblasMatrix = boost::numeric::ublas::matrix<T>;
+   template<typename T> using UblasMatrixRange = boost::numeric::ublas::matrix_range<UblasMatrix<T>>;
+
+   /// Sparse compressed matrix, by rows.
+   template<typename T> using UblasCMatrix = boost::numeric::ublas::compressed_matrix<T>;
+   template<typename T> using UblasCMatrixRange = boost::numeric::ublas::matrix_range<UblasCMatrix<T>>;
+   /// @}
 
    /// @name Time
    /// @{
@@ -55,7 +76,7 @@ namespace SmartGridToolbox
    using boost::posix_time::time_from_string;
    using boost::gregorian::date;
 
-   const ptime epoch(boost::gregorian::date(1970,1,1));
+   const ptime epoch(date(1970,1,1));
 
    // The following conversion functions allow lower level access to internal
    // representation of both time_durations and ptimes. This is often useful
