@@ -11,185 +11,28 @@ namespace YAML
    using SmartGridToolbox::UblasMatrix;
    using SmartGridToolbox::Complex;
 
-   // TODO: implement these as template magic rather than repeated code?
-
    template<> struct convert<UblasVector<double>>
    {
-      static Node encode(const UblasVector<double> & from) {
-         Node nd;
-         for (double val : from) nd.push_back(val);
-         return nd;
-      }
-
-      static bool decode(const Node& nd, UblasVector<double> & to)
-      {
-         if(!nd.IsSequence())
-         {
-            return false;
-         }
-         else
-         {
-            int sz = nd.size();
-            to = UblasVector<double>(sz);
-            for (int i = 0; i < sz; ++i)
-            {
-               to(i) = nd[i].as<double>();
-            }
-         }
-         return true;
-      }
+      static Node encode(const UblasVector<double> & from);
+      static bool decode(const Node& nd, UblasVector<double> & to);
    };
 
    template<> struct convert<UblasVector<Complex>>
    {
-      static Node encode(const UblasVector<Complex> & from) {
-         Node nd;
-         for (Complex val : from)
-         {
-            Node nd1;
-            nd1.push_back(val.real());
-            nd1.push_back(val.imag());
-            nd.push_back(nd1);
-         }
-         return nd;
-      }
-
-      static bool decode(const Node& nd, UblasVector<Complex> & to)
-      {
-         if(!nd.IsSequence())
-         {
-            return false;
-         }
-         else
-         {
-            int sz = nd.size();
-            to = UblasVector<Complex>(sz);
-            for (int i = 0; i < sz; ++i)
-            {
-               double re = nd[0].as<double>();
-               double im = nd[1].as<double>();
-               to(i) = Complex(re, im);
-            }
-         }
-         return true;
-      }
+      static Node encode(const UblasVector<Complex> & from); 
+      static bool decode(const Node& nd, UblasVector<Complex> & to);
    };
 
    template<> struct convert<UblasMatrix<double>>
    {
-      static Node encode(const UblasMatrix<double> & from) {
-         Node nd;
-         for (int i = 0; i < from.size1(); ++i)
-         {
-            Node nd1;
-            for (int k = 0; k < from.size2(); ++k)
-            {
-               nd1.push_back(from(i, k));
-            }
-            nd.push_back(nd1);
-         }
-         return nd;
-      }
-
-      static bool decode(const Node& nd, UblasMatrix<double> & to)
-      {
-         if(!nd.IsSequence())
-         {
-            return false;
-         }
-         else
-         {
-            int nrows = nd.size();
-            if (nrows == 0)
-            {
-               std::cerr << "Matrix has zero rows in yaml." << std::endl;
-               return false;
-            }
-            int ncols = nd[0].size();
-            if (ncols == 0)
-            {
-               std::cerr << "Matrix has zero columns in yaml." << std::endl;
-               return false;
-            }
-            for (int i = 1; i < nrows; ++i)
-            {
-               if (nd[i].size() != ncols)
-               {
-                  std::cerr << "Ill-formed matrix in yaml." << std::endl;
-                  return false;
-               }
-            }
-            to = UblasMatrix<double>(nrows, ncols);
-            for (int i = 0; i < nrows; ++i)
-            {
-               for (int k = 0; k < nrows; ++k)
-               {
-                  to(i, k) = nd[i][k].as<double>();
-               }
-            }
-         }
-         return true;
-      }
+      static Node encode(const UblasMatrix<double> & from);
+      static bool decode(const Node& nd, UblasMatrix<double> & to);
    };
 
    template<> struct convert<UblasMatrix<Complex>>
    {
-      static Node encode(const UblasMatrix<Complex> & from) {
-         Node nd;
-         for (int i = 0; i < from.size1(); ++i)
-         {
-            Node nd1;
-            for (int k = 0; k < from.size2(); ++k)
-            {
-               Node nd2;
-               nd2.push_back(from(i, k).real());
-               nd2.push_back(from(i, k).imag());
-               nd1.push_back(nd2);
-            }
-            nd.push_back(nd1);
-         }
-         return nd;
-      }
-
-      static bool decode(const Node& nd, UblasMatrix<Complex> & to)
-      {
-         if(!nd.IsSequence())
-         {
-            return false;
-         }
-         else
-         {
-            int nrows = nd.size();
-            if (nrows == 0)
-            {
-               std::cerr << "Matrix has zero rows in yaml." << std::endl;
-               return false;
-            }
-            int ncols = nd[0].size();
-            if (ncols == 0)
-            {
-               std::cerr << "Matrix has zero columns in yaml." << std::endl;
-               return false;
-            }
-            for (int i = 1; i < nrows; ++i)
-            {
-               if (nd[i].size() != ncols)
-               {
-                  std::cerr << "Ill-formed matrix in yaml." << std::endl;
-                  return false;
-               }
-            }
-            to = UblasMatrix<Complex>(nrows, ncols);
-            for (int i = 0; i < nrows; ++i)
-            {
-               for (int k = 0; k < nrows; ++k)
-               {
-                  to(i, k) = {nd[i][k][0].as<double>(), nd[i][k][1].as<double>()};
-               }
-            }
-         }
-         return true;
-      }
+      static Node encode(const UblasMatrix<Complex> & from);
+      static bool decode(const Node& nd, UblasMatrix<Complex> & to);
    };
 }
 
