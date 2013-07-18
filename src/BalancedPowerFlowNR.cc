@@ -249,11 +249,12 @@ namespace SmartGridToolbox
       }
    }
 
-   void BalancedPowerFlowNR::solve()
+   bool BalancedPowerFlowNR::solve()
    {
       const double tol = 1e-20;
       const int maxiter = 20;
       initx();
+      bool wasSuccessful = false;
       for (int i = 0; i < maxiter; ++ i)
       {
          updateF();
@@ -269,9 +270,19 @@ namespace SmartGridToolbox
          if (err <= tol)
          {
             std::cout << "Success at iteration" << i << ", err = " << err << std::endl;
+            wasSuccessful = true;
             break;
          }
       }
+      if (wasSuccessful)
+      {
+         for (int i = 0; i < nPQ_; ++i)
+         {
+            PQBusses_[i]->V_ = {x_(i), x_(i + nPQ_)};
+         }
+         // TODO: set power e.g. on slack bus. Set current injections. Set impedances to ground. 
+      }
+      return wasSuccessful;
    }
 
    void BalancedPowerFlowNR::outputNetwork()

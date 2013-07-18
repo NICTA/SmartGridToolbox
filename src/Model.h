@@ -42,17 +42,14 @@ namespace SmartGridToolbox
 
          void addPrototype(Component & comp);
 
-         template<typename T> const T * 
-            getPrototypeNamed(const std::string & name) const
+         template<typename T> const T * getPrototypeNamed(const std::string & name) const
          {
             ComponentMap::const_iterator it = protoMap_.find(name);
-            return (it == protoMap_.end()) 
-               ? 0 : dynamic_cast<const T *>(it->second);
+            return (it == protoMap_.end()) ? 0 : dynamic_cast<const T *>(it->second);
          }
          template<typename T> T * getPrototypeNamed(const std::string & name)
          {
-            return const_cast<T *>((const_cast<const Model *>(this))->
-                  getPrototypeNamed<T>(name));
+            return const_cast<T *>((const_cast<const Model *>(this))->getPrototypeNamed<T>(name));
          }
 
          int nPrototypes()
@@ -67,17 +64,14 @@ namespace SmartGridToolbox
 
          void addComponent(Component & comp);
 
-         template<typename T> const T * 
-            getComponentNamed(const std::string & name) const
+         template<typename T> const T * getComponentNamed(const std::string & name) const
          {
             ComponentMap::const_iterator it = compMap_.find(name);
-            return (it == compMap_.end()) 
-               ? 0 : dynamic_cast<const T *>(it->second);
+            return (it == compMap_.end()) ? 0 : dynamic_cast<const T *>(it->second);
          }
          template<typename T> T * getComponentNamed(const std::string & name)
          {
-            return const_cast<T *>((const_cast<const Model *>(this))->
-                  getComponentNamed<T>(name));
+            return const_cast<T *>((const_cast<const Model *>(this))-> getComponentNamed<T>(name));
          }
 
          int NComponents()
@@ -87,13 +81,11 @@ namespace SmartGridToolbox
 
          template<typename T> const T * getComponentAt(int i) const
          {
-            return (i >= 0 && i < compVec_.size()) 
-               ? dynamic_cast<T *>(compVec_[i]) : 0;
+            return (i >= 0 && i < compVec_.size()) ? dynamic_cast<T *>(compVec_[i]) : 0;
          }
          template<typename T> T * getComponentAt(int i)
          {
-            return const_cast<T *>((const_cast<const Model *>(this))->
-                  getComponentAt<T>(i));
+            return const_cast<T *>((const_cast<const Model *>(this))-> getComponentAt<T>(i));
          }
 
          const ComponentVec & getComponents() const

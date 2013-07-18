@@ -21,11 +21,16 @@ namespace SmartGridToolbox
       public:
          virtual void parse(const YAML::Node & nd, Model & mod) const override;
 
-         virtual void postParse(const YAML::Node & nd, Model & mod) const override;
+         virtual void postParse(const YAML::Node & nd, Model & mod) const override {}
    };
 
    class Network1PComponent : public Component
    {
+      private:
+         typedef std::vector<Bus1PComponent *> BusVec;
+         typedef std::map<std::string, Bus1PComponent *> BusMap;
+         typedef std::vector<Branch1PComponent *> BranchVec;
+
       /// @name Public overridden functions: from Component.
       /// @{
       public:
@@ -38,13 +43,28 @@ namespace SmartGridToolbox
       /// @name Private overridden functions: from Component.
       /// @{
       private:
-         virtual void initializeState(ptime t) override {};
-         virtual void updateState(ptime t0, ptime t1) override {};
+         virtual void initializeState(ptime t) override
+         {
+            rebuildNetwork();
+         }
+
+         virtual void updateState(ptime t0, ptime t1) override;
       /// @}
 
       /// @name My public member functions.
       /// @{
       public:
+
+         const Bus1PComponent * findBus(const std::string & name) const
+         {
+            BusMap::const_iterator it = busMap_.find(name);
+            return (it == busMap_.end()) ? 0 : it->second;
+         }
+         Bus1PComponent * findBus(const std::string & name)
+         {
+            return const_cast<Bus1PComponent *>((const_cast<const Network1PComponent *>(this))->findBus(name));
+         }
+
          virtual void rebuildNetwork();
       /// @}
 
@@ -56,8 +76,9 @@ namespace SmartGridToolbox
       /// @name My private member variables.
       /// @{
       private:
-         std::vector<Bus1PComponent *> busses_;
-         std::vector<Branch1PComponent *> branches_;
+         BusVec busVec_;
+         BusMap busMap_;
+         BranchVec branchVec_;
          BalancedPowerFlowNR solver_;
       /// @}
    };
