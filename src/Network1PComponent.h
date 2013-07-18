@@ -15,7 +15,7 @@ namespace SmartGridToolbox
       public:
          virtual void parse(const YAML::Node & nd, Model & mod) const override;
 
-         virtual void postParse(const YAML::Node & nd, Model & mod) const override;
+         virtual void postParse(const YAML::Node & nd, Model & mod) const override {};
 
          static constexpr const char * getComponentName() 
          {

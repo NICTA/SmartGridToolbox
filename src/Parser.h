@@ -12,12 +12,11 @@ namespace SmartGridToolbox
    class Model;
    class Simulation;
 
-
    inline void assertFieldPresent(const YAML::Node & nd, const std::string & field)
    {
-      if (!nd[field])
+      if (!(nd[field]))
       {
-         error("Parsing %s: \"%s\" field not present.", nd.as<std::string>().c_str(), field.c_str());
+         error("Parsing bus_1_phase: \"%s\" field not present.", field.c_str());
       }
    }
 
@@ -30,10 +29,15 @@ namespace SmartGridToolbox
             return t; 
          }
 
+         static constexpr const char * getComponentName() 
+         {
+            return "component";
+         }
+
+
+      public:
          virtual void parse(const YAML::Node & comp, Model & mod) const = 0;
-
          virtual void postParse(const YAML::Node & comp, Model & mod) const = 0;
-
    };
 
    class Parser {
@@ -51,11 +55,11 @@ namespace SmartGridToolbox
          void parse(const char * fname, Model & model,
                     Simulation & simulation);
 
-         template<typename T>
-         void registerComponentParser()
+         template<typename T> void registerComponentParser()
          {
-            compParsers_[T::getComponentName()] = 
-               &ComponentParser::getGlobalCompParser<T>();
+            compParsers_[T::getComponentName()] = &ComponentParser::getGlobalCompParser<T>();
+            // Note: Could also be implemented using type_info. However, the getComponentName() function is 
+            // useful elsewhere, and this is probably simpler.
          }
 
          const ComponentParser * getComponentParser(const std::string & name)

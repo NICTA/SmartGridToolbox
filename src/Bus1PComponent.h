@@ -15,14 +15,15 @@ namespace SmartGridToolbox
    class Bus1PComponentParser : public ComponentParser
    {
       public:
-         virtual void parse(const YAML::Node & nd, Model & mod) const override;
-
-         virtual void postParse(const YAML::Node & nd, Model & mod) const override;
-
-         static constexpr const char * getComponentName() 
+         static constexpr const char * getComponentName()
          {
             return "bus_1_phase";
          }
+
+      public:
+         virtual void parse(const YAML::Node & nd, Model & mod) const override;
+
+         virtual void postParse(const YAML::Node & nd, Model & mod) const override;
    };
 
    class Bus1PComponent : public Component

@@ -7,7 +7,6 @@ namespace SmartGridToolbox
    void Bus1PComponentParser::parse(const YAML::Node & nd, Model & mod) const
    {
       Bus1PComponent * comp = new Bus1PComponent;
-
       assertFieldPresent(nd, "name");
       const std::string nameStr = nd["name"].as<std::string>();
       comp->setName(nameStr);
@@ -71,10 +70,10 @@ namespace SmartGridToolbox
 
    void Bus1PComponentParser::postParse(const YAML::Node & nd, Model & mod) const
    {
-      const std::string myName = nd["name"].as<std::string>();
-      Bus1PComponent * busComp = mod.getComponentNamed<Bus1PComponent>(myName);
-      const std::string networkName = nd["network_name"].as<std::string>();
-      Network1PComponent * networkComp = mod.getComponentNamed<Network1PComponent>(networkName);
+      const std::string compNameStr = nd["name"].as<std::string>();
+      Bus1PComponent * busComp = mod.getComponentNamed<Bus1PComponent>(compNameStr);
+      const std::string networkStr = nd["network"].as<std::string>();
+      Network1PComponent * networkComp = mod.getComponentNamed<Network1PComponent>(networkStr);
       if (networkComp != nullptr)
       {
          busComp->setNetwork(*networkComp);
