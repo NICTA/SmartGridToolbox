@@ -30,6 +30,7 @@ namespace SmartGridToolbox
 
    void BalancedPowerFlowNR::addBus(const std::string & id, BusType type, Complex V, Complex Y, Complex I, Complex S)
    {
+      debug("BalancedPowerFlowNR : addBus %s.", id.c_str());
       NRBus * bus = new NRBus;
       bus->id_ = id;
       bus->type_ = type;
@@ -56,6 +57,7 @@ namespace SmartGridToolbox
    void BalancedPowerFlowNR::addBranch(const std::string & idi, const std::string & idk, 
                                        const Array2D<Complex, 2, 2> & Y)
    {
+      debug("BalancedPowerFlowNR : addBus %s %s.", idi.c_str(), idk.c_str());
       NRBranch * branch = new NRBranch;
       branch->Y_ = Y;
       branch->idi_ = idi;
@@ -65,6 +67,7 @@ namespace SmartGridToolbox
 
    void BalancedPowerFlowNR::reset()
    {
+      debug("BalancedPowerFlowNR : reset.");
       for (NRBus * bus : busses_) delete bus;
       for (NRBranch * bus : branches_) delete bus;
       busses_ = BusVec();
@@ -76,6 +79,7 @@ namespace SmartGridToolbox
 
    void BalancedPowerFlowNR::validate()
    {
+      debug("BalancedPowerFlowNR : validate.");
       // Determine sizes:
       nSL_ = SLBusses_.size();
       nPQ_ = PQBusses_.size();
@@ -263,13 +267,12 @@ namespace SmartGridToolbox
          KLUSolve(J_, f_, rhs);
          x_ = x_ - rhs;
          UblasVector<double> test = prod(J_, x_) - f_;
-         std::cout << test << std::endl;
          UblasVector<double> f2 = element_prod(f_, f_);
          double err = *std::max_element(f2.begin(), f2.end());
-         std::cout << "Error at iteration " << i << " = " << err << std::endl << std::endl;
+         debug("Error at iteration %d = %e.", i, err);
          if (err <= tol)
          {
-            std::cout << "Success at iteration" << i << ", err = " << err << std::endl;
+            debug("Success at iteration %d. Error = %e.", i, err);
             wasSuccessful = true;
             break;
          }

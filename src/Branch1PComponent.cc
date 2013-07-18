@@ -7,6 +7,7 @@ namespace SmartGridToolbox
 {
    void Branch1PComponentParser::parse(const YAML::Node & nd, Model & mod) const
    {
+      debug("Branch1PComponent : parse.");
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "bus_i");
@@ -22,6 +23,7 @@ namespace SmartGridToolbox
 
    void Branch1PComponentParser::postParse(const YAML::Node & nd, Model & mod) const
    {
+      debug("Branch1PComponent : postParse.");
       const std::string compNameStr = nd["name"].as<std::string>();
       Branch1PComponent * comp = mod.getComponentNamed<Branch1PComponent>(compNameStr);
 
@@ -30,6 +32,7 @@ namespace SmartGridToolbox
       if (networkComp != nullptr)
       {
          comp->setNetwork(*networkComp);
+         networkComp->addBranch(*comp);
       }
       else
       {

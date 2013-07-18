@@ -3,6 +3,8 @@
 
 #include "Component.h"
 #include "BalancedPowerFlowNR.h"
+#include "Bus1PComponent.h"
+#include "Branch1PComponent.h"
 #include "Parser.h"
 
 namespace SmartGridToolbox
@@ -55,6 +57,12 @@ namespace SmartGridToolbox
       /// @{
       public:
 
+         void addBus(Bus1PComponent & bus)
+         {
+            busVec_.push_back(&bus);
+            busMap_[bus.getName()] = &bus;
+         }
+
          const Bus1PComponent * findBus(const std::string & name) const
          {
             BusMap::const_iterator it = busMap_.find(name);
@@ -63,6 +71,11 @@ namespace SmartGridToolbox
          Bus1PComponent * findBus(const std::string & name)
          {
             return const_cast<Bus1PComponent *>((const_cast<const Network1PComponent *>(this))->findBus(name));
+         }
+
+         void addBranch(Branch1PComponent & branch)
+         {
+            branchVec_.push_back(&branch);
          }
 
          virtual void rebuildNetwork();

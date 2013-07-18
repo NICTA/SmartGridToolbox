@@ -536,13 +536,19 @@ BOOST_AUTO_TEST_CASE (test_balanced_power_flow_nr)
 BOOST_AUTO_TEST_CASE (test_network_1p)
 {
    message("Testing network_1p. Starting.");
+
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::getGlobalParser();
+
    p.registerComponentParser<Network1PComponentParser>();
    p.registerComponentParser<Bus1PComponentParser>();
    p.registerComponentParser<Branch1PComponentParser>();
    p.parse("test_network_1p.yaml", mod, sim);
+
+   sim.initialize(epoch, epoch + seconds(10));
+   sim.doNextUpdate();
+
    message("Testing network_1p. Completed.");
 }
 
