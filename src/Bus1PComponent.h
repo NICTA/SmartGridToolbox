@@ -51,22 +51,22 @@ namespace SmartGridToolbox
          Network1PComponent & getNetwork() {return *network_;}
          void setNetwork(Network1PComponent & network) {network_ = &network;}
 
-         BusType getType() {return type_;}
+         BusType getType() const {return type_;}
          void setType(BusType type) {type_ = type;}
 
-         const Complex & getV() {return V_;}
+         const Complex & getV() const {return V_;}
          void setV(const Complex & V) {V_ = V;}
 
-         const Complex & getY() {return Y_;}
+         const Complex & getY() const {return Y_;}
          void setY(const Complex & Y) {Y_ = Y;}
 
-         const Complex & getI() {return I_;}
+         const Complex & getI() const {return I_;}
          void setI(const Complex & I) {I_ = I;}
 
-         const Complex & getS() {return S_;}
+         const Complex & getS() const {return S_;}
          void setS(const Complex & S) {S_ = S;}
 
-         const Complex & getSGen() {return SGen_;}
+         const Complex & getSGen() const {return SGen_;}
          void setSGen(const Complex & SGen) {SGen_ = SGen;}
       /// @}
 

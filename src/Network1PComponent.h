@@ -13,14 +13,15 @@ namespace SmartGridToolbox
    class Network1PComponentParser : public ComponentParser
    {
       public:
-         virtual void parse(const YAML::Node & nd, Model & mod) const override;
-
-         virtual void postParse(const YAML::Node & nd, Model & mod) const override {};
-
          static constexpr const char * getComponentName() 
          {
             return "network_1_phase";
          }
+
+      public:
+         virtual void parse(const YAML::Node & nd, Model & mod) const override;
+
+         virtual void postParse(const YAML::Node & nd, Model & mod) const override;
    };
 
    class Network1PComponent : public Component
@@ -44,14 +45,12 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         // TODO: should this be done with Events interface?
-         virtual void networkHasChanged() {}
+         virtual void rebuildNetwork();
       /// @}
 
       /// @name My private member functions.
       /// @{
       private:
-         virtual void rebuildNetwork() {}
       /// @}
 
       /// @name My private member variables.

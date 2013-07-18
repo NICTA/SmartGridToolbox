@@ -63,6 +63,17 @@ namespace SmartGridToolbox
       branches_.push_back(branch);
    }
 
+   void BalancedPowerFlowNR::reset()
+   {
+      for (NRBus * bus : busses_) delete bus;
+      for (NRBranch * bus : branches_) delete bus;
+      busses_ = BusVec();
+      SLBusses_ = BusVec();
+      PQBusses_ = BusVec();
+      bussesById_ = BusMap();
+      branches_ = BranchVec();
+   }
+
    void BalancedPowerFlowNR::validate()
    {
       // Determine sizes:

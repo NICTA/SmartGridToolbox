@@ -41,6 +41,7 @@ namespace SmartGridToolbox
       public:
          void addBus(const std::string & id, BusType type, Complex V, Complex Y, Complex I, Complex S);
          void addBranch(const std::string & idi, const std::string & idk, const Array2D<Complex, 2, 2> & Y);
+         void reset();
          void validate();
          void solve();
 
