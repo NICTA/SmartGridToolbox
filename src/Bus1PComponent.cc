@@ -6,12 +6,14 @@ namespace SmartGridToolbox
 {
    void Bus1PComponentParser::parse(const YAML::Node & nd, Model & mod) const
    {
-      Bus1PComponent * comp = new Bus1PComponent;
       assertFieldPresent(nd, "name");
+      assertFieldPresent(nd, "network");
+      assertFieldPresent(nd, "type");
+
+      Bus1PComponent * comp = new Bus1PComponent;
       const std::string nameStr = nd["name"].as<std::string>();
       comp->setName(nameStr);
 
-      assertFieldPresent(nd, "type");
       const std::string typeStr = nd["type"].as<std::string>();
       if (typeStr == "SL") 
       {

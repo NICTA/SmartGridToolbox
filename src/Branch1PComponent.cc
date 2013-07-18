@@ -7,12 +7,13 @@ namespace SmartGridToolbox
 {
    void Branch1PComponentParser::parse(const YAML::Node & nd, Model & mod) const
    {
-      Branch1PComponent * comp = new Branch1PComponent;
       assertFieldPresent(nd, "name");
+      assertFieldPresent(nd, "network");
+      assertFieldPresent(nd, "Y_");
+
+      Branch1PComponent * comp = new Branch1PComponent;
       const std::string nameStr = nd["name"].as<std::string>();
       comp->setName(nameStr);
-
-      assertFieldPresent(nd, "Y_");
 
       mod.addComponent(*comp);
    }
