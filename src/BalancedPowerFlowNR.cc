@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <ostream>
+#include <sstream>
 #include "BalancedPowerFlowNR.h"
 #include "Output.h"
 #include "SparseSolver.h"
@@ -290,39 +291,35 @@ namespace SmartGridToolbox
 
    void BalancedPowerFlowNR::outputNetwork()
    {
-      using namespace std;
-
-      cout << "Number of busses = " << nPQ_ + nSL_ << endl;
-      cout << "Number of PQ busses = " << nPQ_ << endl;
-      cout << "Number of slack busses = " << nSL_ << endl;
-      cout << endl;
-
+      debug("Number of busses = %d.", nBus_);
+      debug("Number of PQ busses = %d.", nPQ_);
+      debug("Number of slack busses = %d.", nSL_);
       for (const NRBus * bus : busses_)
       {
-         cout << "Bus: " << bus->idx_ << endl;
-         cout << bus->id_ << " " << (int)bus->type_ << " " << bus->V_ << " " 
-              << bus->Y_ << " " << bus->I_ << " " << bus->S_ << endl;
+         debug("Bus: %d %s", bus->idx_, bus->id_.c_str());
+         debug("    %d %s %s %s %s %s", bus->id_.c_str(), (int)bus->type_, complex2String(bus->V_).c_str(),
+                                        complex2String(bus->Y_).c_str(), complex2String(bus->I_).c_str(),
+                                        complex2String(bus->S_).c_str());
       }
-      cout << endl;
-
       for (NRBranch * branch : branches_)
       {
-         cout << "Branch: " << branch->idi_ << " " << branch->idk_ << endl;
+         debug("Branch: %s %s", branch->idi_.c_str(), branch->idk_.c_str());
          for (int i = 0; i < 2; ++i)
          {
-            for (int k = 0; k < 2; ++k) cout << branch->Y_[i][k] << " "; cout << endl;
+            debug("%s %s", complex2String(branch->Y_[i][0]).c_str(),
+                           complex2String(branch->Y_[i][1]).c_str());
          }
       }
-      cout << endl;
    }
 
    void BalancedPowerFlowNR::outputCurrentState()
    {
+      std::ostringstream ss;
       using namespace std;
-
-      cout << "x: " << x_ << endl; 
-      cout << "f: " << f_ << endl;
-      cout << "J: " << endl;
-      cout << J_ << endl;
+      ss << "x: " << x_; 
+      ss << "f: " << f_ << endl;
+      ss << "J: " << endl;
+      ss << J_ << endl;
+      debug("%s", ss.str().c_str());
    }
 }
