@@ -11,7 +11,6 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <sstream>
 
 namespace SmartGridToolbox
 {
@@ -41,6 +40,10 @@ namespace SmartGridToolbox
    {
       return Complex(i * c.real(), i * c.imag());
    }
+
+   Complex string2Complex(const std::string & s);
+
+   std::string complex2String(Complex c);
    /// @}
   
    /// @name Linear algebra
@@ -110,8 +113,6 @@ namespace SmartGridToolbox
    const double C = A / second; 
    const double K = 1.0; 
    const Complex czero = Complex(0.0, 0.0);
-
-   Complex complexFromString(const std::string & s);
    /// @}
 }
 

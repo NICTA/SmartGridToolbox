@@ -11,29 +11,14 @@ namespace YAML
    using SmartGridToolbox::UblasMatrix;
    using SmartGridToolbox::Complex;
 
-   template<> struct convert<UblasVector<double>>
+   template<> struct convert<Complex>
    {
-      static Node encode(const UblasVector<double> & from);
-      static bool decode(const Node& nd, UblasVector<double> & to);
+      static Node encode(const Complex & from);
+      static bool decode(const Node & nd, Complex & to);
    };
 
-   template<> struct convert<UblasVector<Complex>>
-   {
-      static Node encode(const UblasVector<Complex> & from); 
-      static bool decode(const Node& nd, UblasVector<Complex> & to);
-   };
-
-   template<> struct convert<UblasMatrix<double>>
-   {
-      static Node encode(const UblasMatrix<double> & from);
-      static bool decode(const Node& nd, UblasMatrix<double> & to);
-   };
-
-   template<> struct convert<UblasMatrix<Complex>>
-   {
-      static Node encode(const UblasMatrix<Complex> & from);
-      static bool decode(const Node& nd, UblasMatrix<Complex> & to);
-   };
+   template<typename T> struct convert<UblasVector<T>>;
+   template<typename T> struct convert<UblasMatrix<T>>;
 }
 
 namespace SmartGridToolbox
@@ -50,16 +35,6 @@ namespace SmartGridToolbox
          error("Parsing bus_1_phase: \"%s\" field not present.", field.c_str());
       }
    }
-
-   inline Complex parseComplex(const std::string & s)
-   {
-      return complexFromString(s);
-   }
-
-   UblasVector<double> parseDoubleVector(const YAML::Node & nd);
-   UblasMatrix<Complex> parseDoubleMatrix(const YAML::Node & nd);
-   UblasVector<double> parseComplexVector(const YAML::Node & nd);
-   UblasMatrix<Complex> parseComplexMatrix(const YAML::Node & nd);
 
    class ComponentParser
    {
