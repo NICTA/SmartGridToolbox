@@ -128,12 +128,13 @@ am__v_AR_1 =
 libsmartgridtoolbox_a_AR = $(AR) $(ARFLAGS)
 libsmartgridtoolbox_a_LIBADD =
 am_libsmartgridtoolbox_a_OBJECTS = BalancedPowerFlowNR.$(OBJEXT) \
-	Bus1PComponent.$(OBJEXT) Common.$(OBJEXT) Component.$(OBJEXT) \
-	Meter.$(OBJEXT) Model.$(OBJEXT) Network1PComponent.$(OBJEXT) \
-	Output.$(OBJEXT) Parser.$(OBJEXT) Random.$(OBJEXT) \
-	SimpleBattery.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
-	Simulation.$(OBJEXT) SparseSolver.$(OBJEXT) \
-	TestComponent.$(OBJEXT) WeakOrder.$(OBJEXT)
+	Bus1PComponent.$(OBJEXT) Branch1PComponent.$(OBJEXT) \
+	Common.$(OBJEXT) Component.$(OBJEXT) Meter.$(OBJEXT) \
+	Model.$(OBJEXT) Network1PComponent.$(OBJEXT) Output.$(OBJEXT) \
+	Parser.$(OBJEXT) Random.$(OBJEXT) SimpleBattery.$(OBJEXT) \
+	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
+	SparseSolver.$(OBJEXT) TestComponent.$(OBJEXT) \
+	WeakOrder.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_helloworld_OBJECTS = helloworld.$(OBJEXT)
@@ -313,11 +314,23 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I../third_party
 lib_LIBRARIES = libsmartgridtoolbox.a
-libsmartgridtoolbox_a_SOURCES = \
-	BalancedPowerFlowNR.cc Bus1PComponent.cc Common.cc Component.cc Meter.cc \
-	Model.cc Network1PComponent.cc Output.cc Parser.cc Random.cc \
-	SimpleBattery.cc SimpleBuilding.cc Simulation.cc SparseSolver.cc \
-	TestComponent.cc WeakOrder.cc
+libsmartgridtoolbox_a_SOURCES = BalancedPowerFlowNR.cc \
+										  Bus1PComponent.cc \
+										  Branch1PComponent.cc \
+										  Common.cc \
+										  Component.cc \
+										  Meter.cc \
+										  Model.cc \
+										  Network1PComponent.cc \
+										  Output.cc \
+										  Parser.cc \
+										  Random.cc \
+										  SimpleBattery.cc \
+										  SimpleBuilding.cc \
+										  Simulation.cc \
+										  SparseSolver.cc \
+										  TestComponent.cc \
+										  WeakOrder.cc
 
 helloworld_SOURCES = helloworld.cc
 klu_simple_SOURCES = klu_simple.c
@@ -463,6 +476,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BalancedPowerFlowNR.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Branch1PComponent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Bus1PComponent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Component.Po@am__quote@

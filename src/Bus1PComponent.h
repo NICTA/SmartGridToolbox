@@ -47,7 +47,8 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         const Network1PComponent & getNetwork() {return *network_;}
+         const Network1PComponent & getNetwork() const {return *network_;}
+         Network1PComponent & getNetwork() {return *network_;}
          void setNetwork(Network1PComponent & network) {network_ = &network;}
 
          BusType getType() {return type_;}

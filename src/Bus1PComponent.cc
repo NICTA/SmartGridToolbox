@@ -71,12 +71,13 @@ namespace SmartGridToolbox
    void Bus1PComponentParser::postParse(const YAML::Node & nd, Model & mod) const
    {
       const std::string compNameStr = nd["name"].as<std::string>();
-      Bus1PComponent * busComp = mod.getComponentNamed<Bus1PComponent>(compNameStr);
+      Bus1PComponent * comp = mod.getComponentNamed<Bus1PComponent>(compNameStr);
+
       const std::string networkStr = nd["network"].as<std::string>();
       Network1PComponent * networkComp = mod.getComponentNamed<Network1PComponent>(networkStr);
       if (networkComp != nullptr)
       {
-         busComp->setNetwork(*networkComp);
+         comp->setNetwork(*networkComp);
       }
       else
       {
