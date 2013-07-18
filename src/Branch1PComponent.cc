@@ -9,7 +9,9 @@ namespace SmartGridToolbox
    {
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
-      assertFieldPresent(nd, "Y_");
+      assertFieldPresent(nd, "bus_i");
+      assertFieldPresent(nd, "bus_k");
+      assertFieldPresent(nd, "Y");
 
       Branch1PComponent * comp = new Branch1PComponent;
       const std::string nameStr = nd["name"].as<std::string>();

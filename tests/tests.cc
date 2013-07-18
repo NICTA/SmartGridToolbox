@@ -4,6 +4,7 @@
 #include <ostream>
 #include <fstream>
 #include "BalancedPowerFlowNR.h"
+#include "Branch1PComponent.h"
 #include "Bus1PComponent.h"
 #include "Component.h"
 #include "Event.h"
@@ -11,7 +12,7 @@
 #include "Network1PComponent.h"
 #include "Output.h"
 #include "Parser.h"
-#include "powerflow.h"
+#include "PowerFlow.h"
 #include "SimpleBattery.h"
 #include "SimpleBuilding.h"
 #include "Simulation.h"
@@ -540,6 +541,7 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    Parser & p = Parser::getGlobalParser();
    p.registerComponentParser<Network1PComponentParser>();
    p.registerComponentParser<Bus1PComponentParser>();
+   p.registerComponentParser<Branch1PComponentParser>();
    p.parse("test_network_1p.yaml", mod, sim);
    message("Testing network_1p. Completed.");
 }

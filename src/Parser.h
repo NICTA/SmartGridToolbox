@@ -32,7 +32,8 @@ namespace SmartGridToolbox
    {
       if (!(nd[field]))
       {
-         error("Parsing bus_1_phase: \"%s\" field not present.", field.c_str());
+         error("Parsing: \"%s\" field not present.", field.c_str());
+         // TODO: this needs info about which object was the problem.
       }
    }
 

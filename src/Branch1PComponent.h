@@ -52,9 +52,6 @@ namespace SmartGridToolbox
          Network1PComponent & getNetwork() {return *network_;}
          void setNetwork(Network1PComponent & network) {network_ = &network;}
 
-         const Array2D<Complex, 2, 2> & getY() const {return Y_;}
-         Array2D<Complex, 2, 2> & getY() {return Y_;}
-
          const Bus1PComponent & getBusi() const {return *busi_;}
          Bus1PComponent & getBusi() {return *busi_;}
          void setBusi(Bus1PComponent & busi) {busi_ = &busi;}
@@ -62,15 +59,18 @@ namespace SmartGridToolbox
          const Bus1PComponent & getBusk() const {return *busk_;}
          Bus1PComponent & getBusk() {return *busk_;}
          void setBusk(Bus1PComponent & busk) {busk_ = &busk;}
+
+         const Array2D<Complex, 2, 2> & getY() const {return Y_;}
+         Array2D<Complex, 2, 2> & getY() {return Y_;}
       /// @}
 
       /// @name My private member variables.
       /// @{
       private:
          Network1PComponent * network_;   ///< Network.
-         Array2D<Complex, 2, 2> Y_;       ///< Complex value of elements in bus admittance matrix in NR solver.
          Bus1PComponent * busi_;          ///< My i bus.
          Bus1PComponent * busk_;          ///< My k bus.
+         Array2D<Complex, 2, 2> Y_;       ///< Complex value of elements in bus admittance matrix in NR solver.
       /// @}
    };
 }

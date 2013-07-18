@@ -19,6 +19,7 @@ namespace YAML
    bool convert<Complex>::decode(const Node & nd, Complex & to)
    {
       to = string2Complex(nd.as<std::string>());
+      return true;
    }
 
    template<typename T> struct convert<UblasVector<T>>

@@ -34,37 +34,27 @@ namespace SmartGridToolbox
 
       if (nd["slack_voltage"])
       {
-         const std::string s = nd["slack_voltage"].as<std::string>();
-         Complex c = string2Complex(s);
-         comp->setV(c);
+         comp->setV(nd["slack_voltage"].as<Complex>());
       }
 
       if (nd["constant_impedance_load"])
       {
-         const std::string s = nd["constant_impedance_load"].as<std::string>();
-         Complex c = string2Complex(s);
-         comp->setY(c);
+         comp->setY(nd["constant_impedance_load"].as<Complex>());
       }
 
       if (nd["constant_current_load"])
       {
-         const std::string s = nd["constant_current_load"].as<std::string>();
-         Complex c = string2Complex(s);
-         comp->setI(c);
+         comp->setI(nd["constant_current_load"].as<Complex>());
       }
 
       if (nd["constant_power_load"])
       {
-         const std::string s = nd["constant_power_load"].as<std::string>();
-         Complex c = string2Complex(s);
-         comp->setS(c);
+         comp->setS(nd["constant_power_load"].as<Complex>());
       }
 
       if (nd["generator_power"])
       {
-         const std::string s = nd["generator_power"].as<std::string>();
-         Complex c = string2Complex(s);
-         comp->setSGen(c);
+         comp->setSGen(nd["generator_power"].as<Complex>());
       }
 
       mod.addComponent(*comp);
