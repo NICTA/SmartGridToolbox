@@ -53,7 +53,6 @@ namespace YAML
 
    template<typename T> Node convert<UblasMatrix<T>>::encode(const UblasMatrix<T> & from)
    {
-std::cout << "CONVERT ENCODE" << std::endl;
       Node nd;
       for (int i = 0; i < from.size1(); ++i)
       {
@@ -71,23 +70,19 @@ std::cout << "CONVERT ENCODE" << std::endl;
 
    template<typename T> bool convert<UblasMatrix<T>>::decode(const Node & nd, UblasMatrix<T> & to)
    {
-std::cout << "CONVERT DECODE" << std::endl;
       if(!nd.IsSequence())
       {
-std::cout << "NOT SEQUENCE" << std::endl;
          return false;
       }
       else
       {
          int nrows = nd.size();
-std::cout << "NROWS = " << nrows << std::endl;
          if (nrows == 0)
          {
             std::cerr << "Matrix has zero rows in yaml." << std::endl;
             return false;
          }
          int ncols = nd[0].size();
-std::cout << "NCOLS = " << ncols << std::endl;
          if (ncols == 0)
          {
             std::cerr << "Matrix has zero columns in yaml." << std::endl;

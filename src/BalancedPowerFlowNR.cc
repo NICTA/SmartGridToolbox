@@ -292,17 +292,17 @@ namespace SmartGridToolbox
       debug("Number of slack busses = %d.", nSL_);
       for (const NRBus * bus : busses_)
       {
-         debug("Bus: %d %s", bus->idx_, bus->id_.c_str());
-         debug("     %s %d %s %s %s %s", bus->id_.c_str(), (int)bus->type_, complex2String(bus->V_).c_str(),
-                                        complex2String(bus->Y_).c_str(), complex2String(bus->I_).c_str(),
-                                        complex2String(bus->S_).c_str());
+         debug("    Bus: %d %s %d %s %s %s %s", bus->idx_, bus->id_.c_str(), (int)bus->type_, 
+                                            complex2String(bus->V_).c_str(),
+                                            complex2String(bus->Y_).c_str(), complex2String(bus->I_).c_str(),
+                                            complex2String(bus->S_).c_str());
       }
       for (NRBranch * branch : branches_)
       {
-         debug("Branch: %s %s", branch->idi_.c_str(), branch->idk_.c_str());
+         debug("    Branch: %s %s", branch->idi_.c_str(), branch->idk_.c_str());
          for (int i = 0; i < 2; ++i)
          {
-            debug("        %s %s", complex2String(branch->Y_[i][0]).c_str(),
+         debug("            %s %s", complex2String(branch->Y_[i][0]).c_str(),
                            complex2String(branch->Y_[i][1]).c_str());
          }
       }
