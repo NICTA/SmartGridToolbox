@@ -53,7 +53,8 @@ namespace SmartGridToolbox
    std::string complex2String(Complex c)
    {
       std::ostringstream ss;
-      ss << c;
+      char imSgn = c.imag() > 0 ? '+' : '-';
+      ss << c.real() << imSgn << abs(c.imag()) << "j";
       return ss.str();
    }
 }
