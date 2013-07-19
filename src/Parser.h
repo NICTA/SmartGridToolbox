@@ -17,8 +17,17 @@ namespace YAML
       static bool decode(const Node & nd, Complex & to);
    };
 
-   template<typename T> struct convert<UblasVector<T>>;
-   template<typename T> struct convert<UblasMatrix<T>>;
+   template<typename T> struct convert<UblasVector<T>>
+   {
+      static Node encode(const UblasVector<T> & from);
+      static bool decode(const Node & nd, UblasVector<T> & to);
+   };
+
+   template<typename T> struct convert<UblasMatrix<T>>
+   {
+      static Node encode(const UblasMatrix<T> & from);
+      static bool decode(const Node & nd, UblasMatrix<T> & to);
+   };
 }
 
 namespace SmartGridToolbox

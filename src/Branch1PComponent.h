@@ -62,6 +62,7 @@ namespace SmartGridToolbox
 
          const Array2D<Complex, 2, 2> & getY() const {return Y_;}
          Array2D<Complex, 2, 2> & getY() {return Y_;}
+         void setY(const Array2D<Complex, 2, 2> & Y) {Y_ = Y;}
       /// @}
 
       /// @name My private member variables.

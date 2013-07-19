@@ -18,6 +18,14 @@ namespace SmartGridToolbox
       const std::string nameStr = nd["name"].as<std::string>();
       comp->setName(nameStr);
 
+      UblasMatrix<Complex> YMat = nd["Y"].as<UblasMatrix<Complex>>();
+      Array2D<Complex, 2, 2> Y;
+      Y[0][0] = YMat(0, 0);
+      Y[0][1] = YMat(0, 1);
+      Y[1][0] = YMat(1, 0);
+      Y[1][1] = YMat(1, 1);
+      comp->setY(Y);
+
       mod.addComponent(*comp);
    }
 

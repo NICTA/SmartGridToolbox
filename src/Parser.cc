@@ -22,91 +22,86 @@ namespace YAML
       return true;
    }
 
-   template<typename T> struct convert<UblasVector<T>>
+   template<typename T> Node convert<UblasVector<T>>::encode(const UblasVector<T> & from)
    {
-      static Node encode(const UblasVector<T> & from)
+      Node nd;
+      for (const T & val : from) nd.push_back(val);
+      return nd;
+   }
+
+   template<typename T> bool convert<UblasVector<T>>::decode(const Node & nd, UblasVector<T> & to)
+   {
+      if(!nd.IsSequence())
       {
-         Node nd;
-         for (const T & val : from) nd.push_back(val);
-         return nd;
+         return false;
       }
-      static bool decode(const Node & nd, UblasVector<T> & to)
+      else
       {
-         if(!nd.IsSequence())
+         int sz = nd.size();
+         to = UblasVector<T>(sz);
+         for (int i = 0; i < sz; ++i)
          {
-            return false;
+            to(i) = nd[i].as<T>();
          }
-         else
-         {
-            int sz = nd.size();
-            to = UblasVector<T>(sz);
-            for (int i = 0; i < sz; ++i)
-            {
-               to(i) = nd[i].as<T>();
-            }
-         }
-         return true;
       }
-   };
+      return true;
+   }
    template<>struct convert<UblasVector<double>>;
    template<>struct convert<UblasVector<Complex>>;
 
-   template<typename T> struct convert<UblasMatrix<T>>
+   template<typename T> Node convert<UblasMatrix<T>>::encode(const UblasMatrix<T> & from)
    {
-      static Node encode(const UblasMatrix<T> & from)
+      Node nd;
+      for (int i = 0; i < from.size1(); ++i)
       {
-         Node nd;
-         for (int i = 0; i < from.size1(); ++i)
+         Node nd1;
+         for (int k = 0; k < from.size2(); ++k)
          {
-            Node nd1;
-            for (int k = 0; k < from.size2(); ++k)
-            {
-               nd1.push_back(from(i, k));
-            }
-            nd.push_back(nd1);
+            nd1.push_back(from(i, k));
          }
-         return nd;
+         nd.push_back(nd1);
       }
-      static bool decode(const Node & nd, UblasMatrix<T> & to)
+      return nd;
+   }
+   template<typename T> bool convert<UblasMatrix<T>>::decode(const Node & nd, UblasMatrix<T> & to)
+   {
+      if(!nd.IsSequence())
       {
-         if(!nd.IsSequence())
+         return false;
+      }
+      else
+      {
+         int nrows = nd.size();
+         if (nrows == 0)
          {
+            std::cerr << "Matrix has zero rows in yaml." << std::endl;
             return false;
          }
-         else
+         int ncols = nd[0].size();
+         if (ncols == 0)
          {
-            int nrows = nd.size();
-            if (nrows == 0)
+            std::cerr << "Matrix has zero columns in yaml." << std::endl;
+            return false;
+         }
+         for (int i = 1; i < nrows; ++i)
+         {
+            if (nd[i].size() != ncols)
             {
-               std::cerr << "Matrix has zero rows in yaml." << std::endl;
+               std::cerr << "Ill-formed matrix in yaml." << std::endl;
                return false;
-            }
-            int ncols = nd[0].size();
-            if (ncols == 0)
-            {
-               std::cerr << "Matrix has zero columns in yaml." << std::endl;
-               return false;
-            }
-            for (int i = 1; i < nrows; ++i)
-            {
-               if (nd[i].size() != ncols)
-               {
-                  std::cerr << "Ill-formed matrix in yaml." << std::endl;
-                  return false;
-               }
-            }
-            to = UblasMatrix<T>(nrows, ncols);
-            for (int i = 0; i < nrows; ++i)
-            {
-               for (int k = 0; k < nrows; ++k)
-               {
-                  to(i, k) = nd[i][k].as<T>();
-               }
             }
          }
-         return true;
+         to = UblasMatrix<T>(nrows, ncols);
+         for (int i = 0; i < nrows; ++i)
+         {
+            for (int k = 0; k < nrows; ++k)
+            {
+               to(i, k) = nd[i][k].as<T>();
+            }
+         }
       }
-   };
+      return true;
+   }
    template<>struct convert<UblasMatrix<double>>;
    template<>struct convert<UblasMatrix<Complex>>;
 }

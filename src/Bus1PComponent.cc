@@ -6,7 +6,7 @@ namespace SmartGridToolbox
 {
    void Bus1PComponentParser::parse(const YAML::Node & nd, Model & mod) const
    {
-      debug("Bus1PComponent : postParse.");
+      debug("Bus1PComponent : parse.");
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "type");

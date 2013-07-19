@@ -16,19 +16,6 @@ namespace SmartGridToolbox
       return os;
    }
 
-   std::ostream & operator<<(std::ostream & os, const UblasCMatrix<double> & m)
-   {
-      for (int i = 0; i < m.size1(); ++i)
-      {
-         for (int k = 0; k < m.size2(); ++k)
-         {
-            os << m(i, k) << " ";
-         }
-         os << std::endl; 
-      }
-      return os;
-   }
-
    void BalancedPowerFlowNR::addBus(const std::string & id, BusType type, Complex V, Complex Y, Complex I, Complex S)
    {
       debug("BalancedPowerFlowNR : addBus %s.", id.c_str());
@@ -58,7 +45,7 @@ namespace SmartGridToolbox
    void BalancedPowerFlowNR::addBranch(const std::string & idi, const std::string & idk, 
                                        const Array2D<Complex, 2, 2> & Y)
    {
-      debug("BalancedPowerFlowNR : addBus %s %s.", idi.c_str(), idk.c_str());
+      debug("BalancedPowerFlowNR : addBranch %s %s.", idi.c_str(), idk.c_str());
       NRBranch * branch = new NRBranch;
       branch->Y_ = Y;
       branch->idi_ = idi;
@@ -171,10 +158,14 @@ namespace SmartGridToolbox
       UblasCMatrixRange<double>(JConst_, rx1_, rx0_) = UblasCMatrixRange<double>(B_, rPQ_, rPQ_);
       UblasCMatrixRange<double>(JConst_, rx1_, rx1_) = UblasCMatrixRange<double>(G_, rPQ_, rPQ_);
       J_ = JConst_; // We only need to redo the elements that we mess with!
+#ifdef DEBUG
+      outputNetwork();
+#endif
    }
 
    void BalancedPowerFlowNR::buildBusAdmit()
    {
+      debug("BalancedPowerFlowNR : buildBusAdmit.");
       for (const NRBranch * const branch : branches_)
       {
          const NRBus * busi = branch->busi_;
@@ -192,6 +183,7 @@ namespace SmartGridToolbox
 
    void BalancedPowerFlowNR::initx()
    {
+      debug("BalancedPowerFlowNR : initx.");
       for (int i = 0; i < nPQ_; ++i)
       {
          const NRBus & bus = *busses_[i + 1];
@@ -202,6 +194,7 @@ namespace SmartGridToolbox
 
    void BalancedPowerFlowNR::updateBusV()
    {
+      debug("BalancedPowerFlowNR : updateBusV.");
       // Get voltages on all busses.
       // Done like this with a copy because eventually we'll include PV busses too.
       UblasVectorRange<double>(Vr_, rPQ_) = UblasVectorRange<double>(x_, rx0_);
@@ -212,6 +205,7 @@ namespace SmartGridToolbox
 
    void BalancedPowerFlowNR::updateF()
    {
+      debug("BalancedPowerFlowNR : updateF.");
       UblasVectorRange<double> x0{x_, rx0_};
       UblasVectorRange<double> x1{x_, rx1_};
 
@@ -233,6 +227,7 @@ namespace SmartGridToolbox
 
    void BalancedPowerFlowNR::updateJ()
    {
+      debug("BalancedPowerFlowNR : updateJ.");
       UblasVectorRange<double> x0{x_, rx0_};
       UblasVectorRange<double> x1{x_, rx1_};
 
@@ -256,6 +251,7 @@ namespace SmartGridToolbox
 
    bool BalancedPowerFlowNR::solve()
    {
+      debug("BalancedPowerFlowNR : solve.");
       const double tol = 1e-20;
       const int maxiter = 20;
       initx();
@@ -297,7 +293,7 @@ namespace SmartGridToolbox
       for (const NRBus * bus : busses_)
       {
          debug("Bus: %d %s", bus->idx_, bus->id_.c_str());
-         debug("    %d %s %s %s %s %s", bus->id_.c_str(), (int)bus->type_, complex2String(bus->V_).c_str(),
+         debug("     %s %d %s %s %s %s", bus->id_.c_str(), (int)bus->type_, complex2String(bus->V_).c_str(),
                                         complex2String(bus->Y_).c_str(), complex2String(bus->I_).c_str(),
                                         complex2String(bus->S_).c_str());
       }
@@ -306,7 +302,7 @@ namespace SmartGridToolbox
          debug("Branch: %s %s", branch->idi_.c_str(), branch->idk_.c_str());
          for (int i = 0; i < 2; ++i)
          {
-            debug("%s %s", complex2String(branch->Y_[i][0]).c_str(),
+            debug("        %s %s", complex2String(branch->Y_[i][0]).c_str(),
                            complex2String(branch->Y_[i][1]).c_str());
          }
       }
@@ -314,12 +310,22 @@ namespace SmartGridToolbox
 
    void BalancedPowerFlowNR::outputCurrentState()
    {
-      std::ostringstream ss;
       using namespace std;
-      ss << "x: " << x_; 
-      ss << "f: " << f_ << endl;
-      ss << "J: " << endl;
-      ss << J_ << endl;
-      debug("%s", ss.str().c_str());
+      std::ostringstream ssx;
+      ssx << "x: " << x_; 
+      debug("%s", ssx.str().c_str());
+      std::ostringstream ssf;
+      ssf << "f: " << f_ << endl;
+      debug("%s", ssf.str().c_str());
+      debug("J: ");
+      for (int i = 0; i < J_.size1(); ++i)
+      {
+         std::ostringstream ssJ;
+         for (int k = 0; k < J_.size2(); ++k)
+         {
+            ssJ << J_(i, k) << " ";
+         }
+         debug("   %s", ssJ.str().c_str());
+      }
    }
 }
