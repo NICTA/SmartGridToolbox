@@ -28,6 +28,8 @@ namespace YAML
       for (const T & val : from) nd.push_back(val);
       return nd;
    }
+   template Node convert<UblasVector<double>>::encode(const UblasVector<double> & from);
+   template Node convert<UblasVector<Complex>>::encode(const UblasVector<Complex> & from);
 
    template<typename T> bool convert<UblasVector<T>>::decode(const Node & nd, UblasVector<T> & to)
    {
@@ -46,8 +48,8 @@ namespace YAML
       }
       return true;
    }
-   template<>struct convert<UblasVector<double>>;
-   template<>struct convert<UblasVector<Complex>>;
+   template bool convert<UblasVector<double>>::decode(const Node & nd, UblasVector<double> & to);
+   template bool convert<UblasVector<Complex>>::decode(const Node & nd, UblasVector<Complex> & to);
 
    template<typename T> Node convert<UblasMatrix<T>>::encode(const UblasMatrix<T> & from)
    {
@@ -63,6 +65,9 @@ namespace YAML
       }
       return nd;
    }
+   template Node convert<UblasMatrix<double>>::encode(const UblasMatrix<double> & from);
+   template Node convert<UblasMatrix<Complex>>::encode(const UblasMatrix<Complex> & from);
+
    template<typename T> bool convert<UblasMatrix<T>>::decode(const Node & nd, UblasMatrix<T> & to)
    {
       if(!nd.IsSequence())
@@ -102,8 +107,8 @@ namespace YAML
       }
       return true;
    }
-   template<>struct convert<UblasMatrix<double>>;
-   template<>struct convert<UblasMatrix<Complex>>;
+   template bool convert<UblasMatrix<double>>::decode(const Node & nd, UblasMatrix<double> & to);
+   template bool convert<UblasMatrix<Complex>>::decode(const Node & nd, UblasMatrix<Complex> & to);
 }
 
 namespace SmartGridToolbox
