@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I../third_party
 
 lib_LIBRARIES = libsmartgridtoolbox.a
-libsmartgridtoolbox_a_SOURCES = BalancedPowerFlowNR.cc \
+libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 										  Bus1P.cc \
 										  Branch1P.cc \
 										  Common.cc \
