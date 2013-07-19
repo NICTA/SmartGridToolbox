@@ -3,13 +3,13 @@
 #include <cmath>
 #include <ostream>
 #include <fstream>
-#include "BalancedPowerFlowNR.h"
-#include "Branch1PComponent.h"
-#include "Bus1PComponent.h"
+#include "PowerFlow1PNR.h"
+#include "Branch1P.h"
+#include "Bus1P.h"
 #include "Component.h"
 #include "Event.h"
 #include "Model.h"
-#include "Network1PComponent.h"
+#include "Network1P.h"
 #include "Output.h"
 #include "Parser.h"
 #include "PowerFlow.h"
@@ -521,15 +521,15 @@ BOOST_AUTO_TEST_CASE (test_sparse_solver)
 BOOST_AUTO_TEST_CASE (test_balanced_power_flow_nr)
 {
    message("Testing balanced_power_flow_nr. Starting.");
-   BalancedPowerFlowNR bpf;
-   bpf.addBus("0", BusType::SL, 1.0, 0.0, 0.0, 0.0);
-   bpf.addBus("1", BusType::PQ, 0.0, 0.0, 0.0, {0.0240, 0.0120});
-   bpf.addBus("2", BusType::PQ, 0.09, 0.0, 0.0, {0.0840, -0.0520});
+   PowerFlow1PNR pfnr;
+   pfnr.addBus("0", BusType::SL, 1.0, 0.0, 0.0, 0.0);
+   pfnr.addBus("1", BusType::PQ, 0.0, 0.0, 0.0, {0.0240, 0.0120});
+   pfnr.addBus("2", BusType::PQ, 0.09, 0.0, 0.0, {0.0840, -0.0520});
 
-   bpf.addBranch("1", "2", lineY({5.0, -15.0}));
-   bpf.addBranch("1", "0", lineY({3.0, -9.0}));
-   bpf.validate();
-   bpf.solve();
+   pfnr.addBranch("1", "2", lineY({5.0, -15.0}));
+   pfnr.addBranch("1", "0", lineY({3.0, -9.0}));
+   pfnr.validate();
+   pfnr.solve();
    message("Testing balanced_power_flow_nr. Completed.");
 }
 
@@ -541,9 +541,9 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    Simulation sim(mod);
    Parser & p = Parser::getGlobalParser();
 
-   p.registerComponentParser<Network1PComponentParser>();
-   p.registerComponentParser<Bus1PComponentParser>();
-   p.registerComponentParser<Branch1PComponentParser>();
+   p.registerComponentParser<Network1PParser>();
+   p.registerComponentParser<Bus1PParser>();
+   p.registerComponentParser<Branch1PParser>();
    p.parse("test_network_1p.yaml", mod, sim);
 
    sim.initialize(epoch, epoch + seconds(10));

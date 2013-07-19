@@ -127,11 +127,11 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libsmartgridtoolbox_a_AR = $(AR) $(ARFLAGS)
 libsmartgridtoolbox_a_LIBADD =
-am_libsmartgridtoolbox_a_OBJECTS = BalancedPowerFlowNR.$(OBJEXT) \
-	Bus1PComponent.$(OBJEXT) Branch1PComponent.$(OBJEXT) \
-	Common.$(OBJEXT) Component.$(OBJEXT) Meter.$(OBJEXT) \
-	Model.$(OBJEXT) Network1PComponent.$(OBJEXT) Output.$(OBJEXT) \
-	Parser.$(OBJEXT) Random.$(OBJEXT) SimpleBattery.$(OBJEXT) \
+am_libsmartgridtoolbox_a_OBJECTS = PowerFlow1PNR.$(OBJEXT) \
+	Bus1P.$(OBJEXT) Branch1P.$(OBJEXT) Common.$(OBJEXT) \
+	Component.$(OBJEXT) Meter.$(OBJEXT) Model.$(OBJEXT) \
+	Network1P.$(OBJEXT) Output.$(OBJEXT) Parser.$(OBJEXT) \
+	Random.$(OBJEXT) SimpleBattery.$(OBJEXT) \
 	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
 	SparseSolver.$(OBJEXT) TestComponent.$(OBJEXT) \
 	WeakOrder.$(OBJEXT)
@@ -314,14 +314,14 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I../third_party
 lib_LIBRARIES = libsmartgridtoolbox.a
-libsmartgridtoolbox_a_SOURCES = BalancedPowerFlowNR.cc \
-										  Bus1PComponent.cc \
-										  Branch1PComponent.cc \
+libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
+										  Bus1P.cc \
+										  Branch1P.cc \
 										  Common.cc \
 										  Component.cc \
 										  Meter.cc \
 										  Model.cc \
-										  Network1PComponent.cc \
+										  Network1P.cc \
 										  Output.cc \
 										  Parser.cc \
 										  Random.cc \
@@ -475,16 +475,16 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BalancedPowerFlowNR.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Branch1PComponent.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Bus1PComponent.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Branch1P.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Bus1P.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Component.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Meter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Model.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network1PComponent.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network1P.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Output.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlow1PNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBattery.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBuilding.Po@am__quote@
