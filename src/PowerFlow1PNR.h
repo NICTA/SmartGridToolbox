@@ -1,5 +1,5 @@
-#ifndef BALANCED_POWER_FLOW_NR_DOT_H
-#define BALANCED_POWER_FLOW_NR_DOT_H
+#ifndef POWER_FLOW_1P_NR_DOT_H
+#define POWER_FLOW_1P_NR_DOT_H
 
 #include "Common.h"
 #include "PowerFlow.h"
@@ -8,7 +8,7 @@
 
 namespace SmartGridToolbox
 {
-   class NRBus
+   class Bus1PNR
    {
       public:
          std::string id_;              ///< Arbitrary bus ID, for external use.
@@ -21,22 +21,22 @@ namespace SmartGridToolbox
          int idx_;                     ///< My index in list of all busses.
    };
 
-   class NRBranch
+   class Branch1PNR
    {
       public:
          Array2D<Complex, 2, 2> Y_;    ///< Complex value of elements in bus admittance matrix in NR solver.
          std::string idi_;             ///< id of bus i.
          std::string idk_;             ///< id of bus k.
-         const NRBus * busi_;          ///< My i bus.
-         const NRBus * busk_;          ///< My k bus.
+         const Bus1PNR * busi_;        ///< My i bus.
+         const Bus1PNR * busk_;        ///< My k bus.
    };
 
-   class BalancedPowerFlowNR
+   class PowerFlow1PNR
    {
       public:
-         typedef std::vector<NRBus *> BusVec;
-         typedef std::map<std::string, NRBus *> BusMap;
-         typedef std::vector<NRBranch *> BranchVec;
+         typedef std::vector<Bus1PNR *> BusVec;
+         typedef std::map<std::string, Bus1PNR *> BusMap;
+         typedef std::vector<Branch1PNR *> BranchVec;
 
       public:
          void addBus(const std::string & id, BusType type, Complex V, Complex Y, Complex I, Complex S);
@@ -105,7 +105,7 @@ namespace SmartGridToolbox
          UblasVector<double> x_;
          UblasVector<double> f_;
          UblasCMatrix<double> J_;
-         UblasCMatrix<double> JConst_;           ///< The part of J that doesn't update at each iteration.
+         UblasCMatrix<double> JConst_; ///< The part of J that doesn't update at each iteration.
    };
 
    inline Array2D<Complex, 2, 2> lineY(Complex y)
@@ -114,4 +114,4 @@ namespace SmartGridToolbox
    }
 }
 
-#endif // BALANCED_POWER_FLOW_NR_DOT_H
+#endif // POWER_FLOW_1P_NR_DOT_H

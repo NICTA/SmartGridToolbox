@@ -3,7 +3,7 @@
 
 namespace SmartGridToolbox
 {
-   void PowerFlowNR::addBus(NRBus * bus)
+   void PowerFlowNR::addBus(Bus1PNR * bus)
    {
       switch (bus->type)
       {
@@ -79,10 +79,10 @@ namespace SmartGridToolbox
    void PowerFlowNR::buildBusAdmit()
    {
       int ntot = 3 * (nPQ_ + nSL_);
-      for (const NRBranch * const branch : branches_)
+      for (const Branch1PNR * const branch : branches_)
       {
-         const NRBus * busi = branch->busi;
-         const NRBus * busk = branch->busk;
+         const Bus1PNR * busi = branch->busi;
+         const Bus1PNR * busk = branch->busk;
 
          int ibus = busi->idxPQ;
          int kbus = busk->idxPQ;
@@ -106,7 +106,7 @@ namespace SmartGridToolbox
    {
       for (int i = 0; i < nPQ_; ++i)
       {
-         const NRBus & bus = *busses_[i + 1]; 
+         const Bus1PNR & bus = *busses_[i + 1]; 
          for (int k = 0; k < 3; ++k)
          {
             x_(3 * i + k) = V0_[i].real();

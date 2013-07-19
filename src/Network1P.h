@@ -1,18 +1,18 @@
-#ifndef NETWORK_1P_COMPONENT_DOT_H
-#define NETWORK_1P_COMPONENT_DOT_H
+#ifndef NETWORK_1P_DOT_H
+#define NETWORK_1P_DOT_H
 
 #include "Component.h"
-#include "BalancedPowerFlowNR.h"
-#include "Bus1PComponent.h"
-#include "Branch1PComponent.h"
+#include "PowerFlow1PNR.h"
+#include "Bus1P.h"
+#include "Branch1P.h"
 #include "Parser.h"
 
 namespace SmartGridToolbox
 {
-   class Bus1PComponent;
-   class Branch1PComponent;
+   class Bus1P;
+   class Branch1P;
 
-   class Network1PComponentParser : public ComponentParser
+   class Network1PParser : public ComponentParser
    {
       public:
          static constexpr const char * getComponentName() 
@@ -26,12 +26,12 @@ namespace SmartGridToolbox
          virtual void postParse(const YAML::Node & nd, Model & mod) const override {}
    };
 
-   class Network1PComponent : public Component
+   class Network1P : public Component
    {
       private:
-         typedef std::vector<Bus1PComponent *> BusVec;
-         typedef std::map<std::string, Bus1PComponent *> BusMap;
-         typedef std::vector<Branch1PComponent *> BranchVec;
+         typedef std::vector<Bus1P *> BusVec;
+         typedef std::map<std::string, Bus1P *> BusMap;
+         typedef std::vector<Branch1P *> BranchVec;
 
       /// @name Public overridden functions: from Component.
       /// @{
@@ -57,23 +57,23 @@ namespace SmartGridToolbox
       /// @{
       public:
 
-         void addBus(Bus1PComponent & bus)
+         void addBus(Bus1P & bus)
          {
             busVec_.push_back(&bus);
             busMap_[bus.getName()] = &bus;
          }
 
-         const Bus1PComponent * findBus(const std::string & name) const
+         const Bus1P * findBus(const std::string & name) const
          {
             BusMap::const_iterator it = busMap_.find(name);
             return (it == busMap_.end()) ? 0 : it->second;
          }
-         Bus1PComponent * findBus(const std::string & name)
+         Bus1P * findBus(const std::string & name)
          {
-            return const_cast<Bus1PComponent *>((const_cast<const Network1PComponent *>(this))->findBus(name));
+            return const_cast<Bus1P *>((const_cast<const Network1P *>(this))->findBus(name));
          }
 
-         void addBranch(Branch1PComponent & branch)
+         void addBranch(Branch1P & branch)
          {
             branchVec_.push_back(&branch);
          }
@@ -92,10 +92,10 @@ namespace SmartGridToolbox
          BusVec busVec_;
          BusMap busMap_;
          BranchVec branchVec_;
-         BalancedPowerFlowNR solver_;
+         PowerFlow1PNR solver_;
       /// @}
    };
 }
 
-#endif // NETWORK_1P_COMPONENT_DOT_H
+#endif // NETWORK_1P_DOT_H
 

@@ -1,5 +1,5 @@
-#ifndef BUS_1P_COMPONENT_DOT_H
-#define BUS_1P_COMPONENT_DOT_H
+#ifndef BUS_1P_DOT_H
+#define BUS_1P_DOT_H
 
 #include "Common.h"
 #include "Component.h"
@@ -10,9 +10,9 @@
 
 namespace SmartGridToolbox
 {
-   class Network1PComponent;
+   class Network1P;
 
-   class Bus1PComponentParser : public ComponentParser
+   class Bus1PParser : public ComponentParser
    {
       public:
          static constexpr const char * getComponentName()
@@ -26,7 +26,7 @@ namespace SmartGridToolbox
          virtual void postParse(const YAML::Node & nd, Model & mod) const override;
    };
 
-   class Bus1PComponent : public Component
+   class Bus1P : public Component
    {
       /// @name Public overridden functions: from Component.
       /// @{
@@ -47,9 +47,9 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         const Network1PComponent & getNetwork() const {return *network_;}
-         Network1PComponent & getNetwork() {return *network_;}
-         void setNetwork(Network1PComponent & network) {network_ = &network;}
+         const Network1P & getNetwork() const {return *network_;}
+         Network1P & getNetwork() {return *network_;}
+         void setNetwork(Network1P & network) {network_ = &network;}
 
          BusType getType() const {return type_;}
          void setType(BusType type) {type_ = type;}
@@ -73,7 +73,7 @@ namespace SmartGridToolbox
       /// @name My private member variables.
       /// @{
       private:
-         Network1PComponent * network_;   ///< Network.
+         Network1P * network_;   ///< Network.
          BusType type_;                   ///< Bus type. 
          Complex V_;                      ///< Voltage.
          Complex Y_;                      ///< Constant admittance load.
@@ -84,4 +84,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // BUS_1P_COMPONENT_DOT_H
+#endif // BUS_1P_DOT_H

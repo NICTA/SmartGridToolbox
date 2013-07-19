@@ -1,49 +1,49 @@
-#include "Network1PComponent.h"
-#include "Bus1PComponent.h"
-#include "Branch1PComponent.h"
+#include "Network1P.h"
+#include "Bus1P.h"
+#include "Branch1P.h"
 #include "Model.h"
 #include <iostream>
 
 namespace SmartGridToolbox
 {
-   void Network1PComponentParser::parse(const YAML::Node & nd, Model & mod) const
+   void Network1PParser::parse(const YAML::Node & nd, Model & mod) const
    {
-      debug("Network1PComponent : parse.");
+      debug("Network1P : parse.");
       const std::string nameStr = nd["name"].as<std::string>();
-      Network1PComponent * comp = new Network1PComponent;
+      Network1P * comp = new Network1P;
       comp->setName(nameStr);
       mod.addComponent(*comp);
    }
 
-   void Network1PComponent::updateState(ptime t0, ptime t1)
+   void Network1P::updateState(ptime t0, ptime t1)
    {
       // TODO: has network changed? If so, rebuild.
       
-      debug("Network1PComponent : update state.");
+      debug("Network1P : update state.");
       bool ok = solver_.solve();
       if (ok)
       {
-         for (const NRBus * busNR : solver_.getBusses())
+         for (const Bus1PNR * busNR : solver_.getBusses())
          {
-            Bus1PComponent * bus = findBus(busNR->id_);
+            Bus1P * bus = findBus(busNR->id_);
             bus->setV(busNR->V_);    
          }
-         debug("Updated Network1PComponent state. Dumping solver.");
+         debug("Updated Network1P state. Dumping solver.");
 #ifdef DEBUG
          solver_.outputNetwork();
 #endif
       }
    }
 
-   void Network1PComponent::rebuildNetwork()
+   void Network1P::rebuildNetwork()
    {
-      debug("Network1PComponent : rebuilding network.");
+      debug("Network1P : rebuilding network.");
       solver_.reset();
-      for (const Bus1PComponent * bus : busVec_)
+      for (const Bus1P * bus : busVec_)
       {
          solver_.addBus(bus->getName(), bus->getType(), bus->getV(), bus->getY(), bus->getI(), bus->getS());
       }
-      for (const Branch1PComponent * branch : branchVec_)
+      for (const Branch1P * branch : branchVec_)
       {
          solver_.addBranch(branch->getBusi().getName(), branch->getBusk().getName(), branch->getY());
          debug("Added branch with Y");

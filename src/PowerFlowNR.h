@@ -7,13 +7,13 @@
 
 namespace SmartGridToolbox
 {
-   class NRBus
+   class Bus1PNR
    {
       public:
          int id;                       ///< Arbitrary bus ID, for external use.
          BusType type;                 ///< bus type (0=PQ, 1=PV, 2=SWING).
 
-         std::array<Complex, 3> V;     ///< NRBus voltage / phase.
+         std::array<Complex, 3> V;     ///< Bus1PNR voltage / phase.
          std::array<Complex, 3> Y;     ///< Constant admittance/phase.
          std::array<Complex, 3> I;     ///< Constant current / phase.
          std::array<Complex, 3> S;     ///< Constant power / phase.
@@ -24,22 +24,22 @@ namespace SmartGridToolbox
          int idxPQ;                    ///< My index in list of PQ busses.
    };
 
-   class NRBranch
+   class Branch1PNR
    {
       public:
          Array2D<Complex, 6, 6> Y;     ///< Complex value of elements in bus admittance matrix in NR solver.
-         const NRBus * busi;           ///< My i bus.
-         const NRBus * busk;           ///< My k bus.
+         const Bus1PNR * busi;           ///< My i bus.
+         const Bus1PNR * busk;           ///< My k bus.
    };
 
    class PowerFlowNR
    {
       public:
-         typedef std::vector<NRBus *> BusVec;
-         typedef std::vector<NRBranch *> BranchVec;
+         typedef std::vector<Bus1PNR *> BusVec;
+         typedef std::vector<Branch1PNR *> BranchVec;
       public:
-         void addBus(NRBus * bus);
-         void addBranch(NRBranch * branch)
+         void addBus(Bus1PNR * bus);
+         void addBranch(Branch1PNR * branch)
          {
             branches_.push_back(branch);
          }

@@ -1,17 +1,17 @@
-#include "Bus1PComponent.h"
+#include "Bus1P.h"
 #include "Model.h"
-#include "Network1PComponent.h"
+#include "Network1P.h"
  
 namespace SmartGridToolbox
 {
-   void Bus1PComponentParser::parse(const YAML::Node & nd, Model & mod) const
+   void Bus1PParser::parse(const YAML::Node & nd, Model & mod) const
    {
-      debug("Bus1PComponent : parse.");
+      debug("Bus1P : parse.");
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "type");
 
-      Bus1PComponent * comp = new Bus1PComponent;
+      Bus1P * comp = new Bus1P;
       const std::string nameStr = nd["name"].as<std::string>();
       comp->setName(nameStr);
 
@@ -61,14 +61,14 @@ namespace SmartGridToolbox
       mod.addComponent(*comp);
    }
 
-   void Bus1PComponentParser::postParse(const YAML::Node & nd, Model & mod) const
+   void Bus1PParser::postParse(const YAML::Node & nd, Model & mod) const
    {
-      debug("Bus1PComponent : postParse.");
+      debug("Bus1P : postParse.");
       const std::string compNameStr = nd["name"].as<std::string>();
-      Bus1PComponent * comp = mod.getComponentNamed<Bus1PComponent>(compNameStr);
+      Bus1P * comp = mod.getComponentNamed<Bus1P>(compNameStr);
 
       const std::string networkStr = nd["network"].as<std::string>();
-      Network1PComponent * networkComp = mod.getComponentNamed<Network1PComponent>(networkStr);
+      Network1P * networkComp = mod.getComponentNamed<Network1P>(networkStr);
       if (networkComp != nullptr)
       {
          comp->setNetwork(*networkComp);

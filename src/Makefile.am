@@ -4,13 +4,13 @@ AM_CPPFLAGS = -I../third_party
 
 lib_LIBRARIES = libsmartgridtoolbox.a
 libsmartgridtoolbox_a_SOURCES = BalancedPowerFlowNR.cc \
-										  Bus1PComponent.cc \
-										  Branch1PComponent.cc \
+										  Bus1P.cc \
+										  Branch1P.cc \
 										  Common.cc \
 										  Component.cc \
 										  Meter.cc \
 										  Model.cc \
-										  Network1PComponent.cc \
+										  Network1P.cc \
 										  Output.cc \
 										  Parser.cc \
 										  Random.cc \

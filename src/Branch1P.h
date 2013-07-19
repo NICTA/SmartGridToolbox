@@ -1,5 +1,5 @@
-#ifndef BRANCH_1P_COMPONENT_DOT_H
-#define BRANCH_1P_COMPONENT_DOT_H
+#ifndef BRANCH_1P_DOT_H
+#define BRANCH_1P_DOT_H
 
 #include "Common.h"
 #include "Component.h"
@@ -10,10 +10,10 @@
 
 namespace SmartGridToolbox
 {
-   class Network1PComponent;
-   class Bus1PComponent;
+   class Network1P;
+   class Bus1P;
 
-   class Branch1PComponentParser : public ComponentParser
+   class Branch1PParser : public ComponentParser
    {
       public:
          static constexpr const char * getComponentName()
@@ -27,7 +27,7 @@ namespace SmartGridToolbox
          virtual void postParse(const YAML::Node & nd, Model & mod) const override;
    };
 
-   class Branch1PComponent : public Component
+   class Branch1P : public Component
    {
       /// @name Public overridden functions: from Component.
       /// @{
@@ -48,17 +48,17 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         const Network1PComponent & getNetwork() const {return *network_;}
-         Network1PComponent & getNetwork() {return *network_;}
-         void setNetwork(Network1PComponent & network) {network_ = &network;}
+         const Network1P & getNetwork() const {return *network_;}
+         Network1P & getNetwork() {return *network_;}
+         void setNetwork(Network1P & network) {network_ = &network;}
 
-         const Bus1PComponent & getBusi() const {return *busi_;}
-         Bus1PComponent & getBusi() {return *busi_;}
-         void setBusi(Bus1PComponent & busi) {busi_ = &busi;}
+         const Bus1P & getBusi() const {return *busi_;}
+         Bus1P & getBusi() {return *busi_;}
+         void setBusi(Bus1P & busi) {busi_ = &busi;}
 
-         const Bus1PComponent & getBusk() const {return *busk_;}
-         Bus1PComponent & getBusk() {return *busk_;}
-         void setBusk(Bus1PComponent & busk) {busk_ = &busk;}
+         const Bus1P & getBusk() const {return *busk_;}
+         Bus1P & getBusk() {return *busk_;}
+         void setBusk(Bus1P & busk) {busk_ = &busk;}
 
          const Array2D<Complex, 2, 2> & getY() const {return Y_;}
          Array2D<Complex, 2, 2> & getY() {return Y_;}
@@ -68,12 +68,12 @@ namespace SmartGridToolbox
       /// @name My private member variables.
       /// @{
       private:
-         Network1PComponent * network_;   ///< Network.
-         Bus1PComponent * busi_;          ///< My i bus.
-         Bus1PComponent * busk_;          ///< My k bus.
+         Network1P * network_;   ///< Network.
+         Bus1P * busi_;          ///< My i bus.
+         Bus1P * busk_;          ///< My k bus.
          Array2D<Complex, 2, 2> Y_;       ///< Complex value of elements in bus admittance matrix in NR solver.
       /// @}
    };
 }
 
-#endif // BRANCH_1P_COMPONENT_DOT_H
+#endif // BRANCH_1P_DOT_H

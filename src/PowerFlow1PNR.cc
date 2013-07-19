@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <ostream>
 #include <sstream>
-#include "BalancedPowerFlowNR.h"
+#include "PowerFlow1PNR.h"
 #include "Output.h"
 #include "SparseSolver.h"
 
@@ -16,10 +16,10 @@ namespace SmartGridToolbox
       return os;
    }
 
-   void BalancedPowerFlowNR::addBus(const std::string & id, BusType type, Complex V, Complex Y, Complex I, Complex S)
+   void PowerFlow1PNR::addBus(const std::string & id, BusType type, Complex V, Complex Y, Complex I, Complex S)
    {
-      debug("BalancedPowerFlowNR : addBus %s.", id.c_str());
-      NRBus * bus = new NRBus;
+      debug("PowerFlow1PNR : addBus %s.", id.c_str());
+      Bus1PNR * bus = new Bus1PNR;
       bus->id_ = id;
       bus->type_ = type;
       bus->V_ = V;
@@ -42,22 +42,22 @@ namespace SmartGridToolbox
       }
    }
 
-   void BalancedPowerFlowNR::addBranch(const std::string & idi, const std::string & idk, 
+   void PowerFlow1PNR::addBranch(const std::string & idi, const std::string & idk, 
                                        const Array2D<Complex, 2, 2> & Y)
    {
-      debug("BalancedPowerFlowNR : addBranch %s %s.", idi.c_str(), idk.c_str());
-      NRBranch * branch = new NRBranch;
+      debug("PowerFlow1PNR : addBranch %s %s.", idi.c_str(), idk.c_str());
+      Branch1PNR * branch = new Branch1PNR;
       branch->Y_ = Y;
       branch->idi_ = idi;
       branch->idk_ = idk;
       branches_.push_back(branch);
    }
 
-   void BalancedPowerFlowNR::reset()
+   void PowerFlow1PNR::reset()
    {
-      debug("BalancedPowerFlowNR : reset.");
-      for (NRBus * bus : busses_) delete bus;
-      for (NRBranch * bus : branches_) delete bus;
+      debug("PowerFlow1PNR : reset.");
+      for (Bus1PNR * bus : busses_) delete bus;
+      for (Branch1PNR * bus : branches_) delete bus;
       busses_ = BusVec();
       SLBusses_ = BusVec();
       PQBusses_ = BusVec();
@@ -65,9 +65,9 @@ namespace SmartGridToolbox
       branches_ = BranchVec();
    }
 
-   void BalancedPowerFlowNR::validate()
+   void PowerFlow1PNR::validate()
    {
-      debug("BalancedPowerFlowNR : validate.");
+      debug("PowerFlow1PNR : validate.");
       // Determine sizes:
       nSL_ = SLBusses_.size();
       nPQ_ = PQBusses_.size();
@@ -90,7 +90,7 @@ namespace SmartGridToolbox
       }
 
       // Set bus pointers in all branches.
-      for (NRBranch * branch : branches_)
+      for (Branch1PNR * branch : branches_)
       {
          auto iti = bussesById_.find(branch->idi_);
          if (iti == bussesById_.end())
@@ -163,13 +163,13 @@ namespace SmartGridToolbox
 #endif
    }
 
-   void BalancedPowerFlowNR::buildBusAdmit()
+   void PowerFlow1PNR::buildBusAdmit()
    {
-      debug("BalancedPowerFlowNR : buildBusAdmit.");
-      for (const NRBranch * const branch : branches_)
+      debug("PowerFlow1PNR : buildBusAdmit.");
+      for (const Branch1PNR * const branch : branches_)
       {
-         const NRBus * busi = branch->busi_;
-         const NRBus * busk = branch->busk_;
+         const Bus1PNR * busi = branch->busi_;
+         const Bus1PNR * busk = branch->busk_;
 
          int ibus = busi->idx_;
          int kbus = busk->idx_;
@@ -181,20 +181,20 @@ namespace SmartGridToolbox
       }
    }
 
-   void BalancedPowerFlowNR::initx()
+   void PowerFlow1PNR::initx()
    {
-      debug("BalancedPowerFlowNR : initx.");
+      debug("PowerFlow1PNR : initx.");
       for (int i = 0; i < nPQ_; ++i)
       {
-         const NRBus & bus = *busses_[i + 1];
+         const Bus1PNR & bus = *busses_[i + 1];
          x_(i) = V0_.real();
          x_(i + nPQ_) = V0_.imag();
       }
    }
 
-   void BalancedPowerFlowNR::updateBusV()
+   void PowerFlow1PNR::updateBusV()
    {
-      debug("BalancedPowerFlowNR : updateBusV.");
+      debug("PowerFlow1PNR : updateBusV.");
       // Get voltages on all busses.
       // Done like this with a copy because eventually we'll include PV busses too.
       UblasVectorRange<double>(Vr_, rPQ_) = UblasVectorRange<double>(x_, rx0_);
@@ -203,9 +203,9 @@ namespace SmartGridToolbox
       Vi_(iSL_) = V0_.imag();
    }
 
-   void BalancedPowerFlowNR::updateF()
+   void PowerFlow1PNR::updateF()
    {
-      debug("BalancedPowerFlowNR : updateF.");
+      debug("PowerFlow1PNR : updateF.");
       UblasVectorRange<double> x0{x_, rx0_};
       UblasVectorRange<double> x1{x_, rx1_};
 
@@ -225,9 +225,9 @@ namespace SmartGridToolbox
       UblasVectorRange<double>(f_, rx1_) = di;
    }
 
-   void BalancedPowerFlowNR::updateJ()
+   void PowerFlow1PNR::updateJ()
    {
-      debug("BalancedPowerFlowNR : updateJ.");
+      debug("PowerFlow1PNR : updateJ.");
       UblasVectorRange<double> x0{x_, rx0_};
       UblasVectorRange<double> x1{x_, rx1_};
 
@@ -249,9 +249,9 @@ namespace SmartGridToolbox
       }
    }
 
-   bool BalancedPowerFlowNR::solve()
+   bool PowerFlow1PNR::solve()
    {
-      debug("BalancedPowerFlowNR : solve.");
+      debug("PowerFlow1PNR : solve.");
       const double tol = 1e-20;
       const int maxiter = 20;
       initx();
@@ -285,19 +285,19 @@ namespace SmartGridToolbox
       return wasSuccessful;
    }
 
-   void BalancedPowerFlowNR::outputNetwork()
+   void PowerFlow1PNR::outputNetwork()
    {
       debug("Number of busses = %d.", nBus_);
       debug("Number of PQ busses = %d.", nPQ_);
       debug("Number of slack busses = %d.", nSL_);
-      for (const NRBus * bus : busses_)
+      for (const Bus1PNR * bus : busses_)
       {
          debug("    Bus: %d %s %d %s %s %s %s", bus->idx_, bus->id_.c_str(), (int)bus->type_, 
                                             complex2String(bus->V_).c_str(),
                                             complex2String(bus->Y_).c_str(), complex2String(bus->I_).c_str(),
                                             complex2String(bus->S_).c_str());
       }
-      for (NRBranch * branch : branches_)
+      for (Branch1PNR * branch : branches_)
       {
          debug("    Branch: %s %s", branch->idi_.c_str(), branch->idk_.c_str());
          for (int i = 0; i < 2; ++i)
@@ -308,7 +308,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void BalancedPowerFlowNR::outputCurrentState()
+   void PowerFlow1PNR::outputCurrentState()
    {
       using namespace std;
       std::ostringstream ssx;
