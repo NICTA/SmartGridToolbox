@@ -1,0 +1,35 @@
+# Sample SmartGridToolbox configuration file.
+# File format is YAML.
+
+--- # Marks the start of each configuration document.
+
+global:
+   configuration_name:        config_1
+   start_time:                2013-01-23 13:13:00
+   end_time:                  2013-01-23 15:13:00
+
+prototypes: # These define object types, for convenience.
+
+objects: # And these are the actual objects.
+   network_1_phase:
+      name:                   network_1
+   bus_1_phase:
+      name:                   bus_1
+      network:                network_1
+      type:                   SL
+      slack_voltage:          "(1.0, 0.0)"
+   bus_1_phase:
+      name:                   bus_2
+      network:                network_1
+      type:                   PQ
+      constant_power_load:    (0.01,0.005)
+      generator_power:        (0.02,0.03)
+   branch_1_phase:
+      name:                   branch_1_2
+      network:                network_1
+      bus_i:                  bus_1
+      bus_k:                  bus_2
+      Y:                      [["(-0.02,0.0)", "(0.02,0.0)"],
+                               ["(0.02,0.0)", "(-0.02,0.0)"]]
+
+--- # Marks the end of each configuration document.
