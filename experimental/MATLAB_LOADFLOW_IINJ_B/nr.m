@@ -11,6 +11,6 @@ function [S V bus Y] = nr(fname, maxiter);
          break;
       end
    end
-   V = [x(bus.iPQ);bus.V(bus.iSL)];
+   V = [x(1:bus.NPQ) + 1i * x(bus.NPQ+1:2*bus.NPQ);bus.V(bus.iSL)];
    S = [bus.S(bus.iPQ);conj(bus.V(bus.iSL)) .* conj(Y(bus.iSL, :)) * V];
 end
