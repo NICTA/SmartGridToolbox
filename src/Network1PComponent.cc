@@ -28,8 +28,10 @@ namespace SmartGridToolbox
             Bus1PComponent * bus = findBus(busNR->id_);
             bus->setV(busNR->V_);    
          }
-         message("Updated Network1PComponent state. Dumping solver.");
+         debug("Updated Network1PComponent state. Dumping solver.");
+#ifdef DEBUG
          solver_.outputNetwork();
+#endif
       }
    }
 
