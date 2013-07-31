@@ -130,16 +130,15 @@ libsmartgridtoolbox_a_LIBADD =
 am_libsmartgridtoolbox_a_OBJECTS = PowerFlow1PNR.$(OBJEXT) \
 	Bus1P.$(OBJEXT) Branch1P.$(OBJEXT) Common.$(OBJEXT) \
 	Component.$(OBJEXT) Meter.$(OBJEXT) Model.$(OBJEXT) \
-	Network1P.$(OBJEXT) Output.$(OBJEXT) Parser.$(OBJEXT) \
-	Random.$(OBJEXT) SimpleBattery.$(OBJEXT) \
-	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
-	SparseSolver.$(OBJEXT) TestComponent.$(OBJEXT) \
-	WeakOrder.$(OBJEXT)
+	Network1P.$(OBJEXT) Parser.$(OBJEXT) Random.$(OBJEXT) \
+	SimpleBattery.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
+	Simulation.$(OBJEXT) SparseSolver.$(OBJEXT) \
+	TestComponent.$(OBJEXT) WeakOrder.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_helloworld_OBJECTS = helloworld.$(OBJEXT)
 helloworld_OBJECTS = $(am_helloworld_OBJECTS)
-helloworld_LDADD = $(LDADD)
+helloworld_DEPENDENCIES = libsmartgridtoolbox.a
 am_klu_simple_OBJECTS = klu_simple.$(OBJEXT)
 klu_simple_OBJECTS = $(am_klu_simple_OBJECTS)
 klu_simple_DEPENDENCIES = ../third_party/SuiteSparse/KLU/Lib/libklu.a \
@@ -318,7 +317,6 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 										  Meter.cc \
 										  Model.cc \
 										  Network1P.cc \
-										  Output.cc \
 										  Parser.cc \
 										  Random.cc \
 										  SimpleBattery.cc \
@@ -330,12 +328,7 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 
 helloworld_SOURCES = helloworld.cc
 klu_simple_SOURCES = klu_simple.c
-#helloworld_LDADD = libsmartgridtoolbox.a \
-#						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
-#						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
-#						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
-#						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
-#						 -lblas
+helloworld_LDADD = libsmartgridtoolbox.a
 klu_simple_LDADD = \
 						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
@@ -477,7 +470,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Meter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Model.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network1P.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Output.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlow1PNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
@@ -724,6 +716,11 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLIBRARIES
 	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
 	uninstall-libLIBRARIES
 
+						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
+						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
+						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
+						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
+						 -lblas
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

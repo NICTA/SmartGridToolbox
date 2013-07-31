@@ -35,13 +35,13 @@ namespace SmartGridToolbox
       else
       {
          compVec_.push_back(&comp);
-         message << "Component " << comp.getName() << " added to model." << std::endl;
+         message() << "Component " << comp.getName() << " added to model." << std::endl;
       }
    }
 
    void Model::validate()
    {
-      message << "Model before validation:" << std::endl;
+      message() << "Model before validation:" << std::endl;
       for (const Component * comp : compVec_)
       {
          message() << "   " << comp->getName() << std::endl;
