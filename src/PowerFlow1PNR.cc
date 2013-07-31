@@ -98,7 +98,7 @@ namespace SmartGridToolbox
          if (itk == bussesById_.end())
          {
             error() << "Branch " << branch->idi_ << " " << branch->idk_ << " contains a non-existent bus "
-                  << branch->idk_ << std::endl;
+                    << branch->idk_ << std::endl;
             abort();
          }
          else
