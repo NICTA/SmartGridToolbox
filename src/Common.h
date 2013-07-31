@@ -3,6 +3,8 @@
 
 #include <cmath>
 #include <complex>
+#include <iostream>
+#include <iomanip>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -65,6 +67,15 @@ namespace SmartGridToolbox
    /// Sparse compressed matrix, by rows.
    template<typename T> using UblasCMatrix = boost::numeric::ublas::compressed_matrix<T>;
    template<typename T> using UblasCMatrixRange = boost::numeric::ublas::matrix_range<UblasCMatrix<T>>;
+
+   inline std::ostream & operator<<(std::ostream & os, const UblasVector<double> & v)
+   {
+      os << "[" << std::setprecision(4) << std::setw(12) std::left << v(0);
+      for (int i = 1; i < v.size(); ++i) os << std::setw(12) << std::left << v(i);
+      os << "]";
+      return os;
+   }
+
    /// @}
 
    /// @name Time
