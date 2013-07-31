@@ -44,7 +44,9 @@ namespace SmartGridToolbox
       }
       else
       {
-         SGTError("For component " << compNameStr <<  ", network " << networkStr <<  " was not found in the model.");
+         error() << "For component " << compNameStr <<  ", network " << networkStr <<  " was not found in the model." 
+               << std::endl;
+         abort();
       }
 
       const std::string busiStr = nd["bus_i"].as<std::string>();
@@ -55,7 +57,9 @@ namespace SmartGridToolbox
       }
       else
       {
-         SGTError("For component " << compNameStr <<  ", bus " << busiStr <<  " was not found in the model.");
+         error() << "For component " << compNameStr <<  ", bus " << busiStr <<  " was not found in the model." 
+               << std::endl;
+         abort();
       }
 
       const std::string buskStr = nd["bus_k"].as<std::string>();
@@ -66,7 +70,9 @@ namespace SmartGridToolbox
       }
       else
       {
-         SGTError("For component " << compNameStr <<  ", bus " << buskStr <<  " was not found in the model.");
+         error() << "For component " << compNameStr <<  ", bus " << buskStr <<  " was not found in the model." 
+               << std::endl;
+         abort();
       }
    }
 }

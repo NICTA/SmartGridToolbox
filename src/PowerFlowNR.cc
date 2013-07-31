@@ -13,7 +13,8 @@ namespace SmartGridToolbox
             PQBusses_.push_back(bus);
             break;
          case BusType::PV : 
-            SGTError("PV busses are not supported yet.");
+            error() << "PV busses are not supported yet." << std::endl;
+            abort();
             break;
       }
    }

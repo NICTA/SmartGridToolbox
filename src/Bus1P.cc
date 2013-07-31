@@ -30,7 +30,8 @@ namespace SmartGridToolbox
       }
       else
       { 
-         SGTError("Bus type " << typeStr << " is not supported.");
+         error() << "Bus type " << typeStr << " is not supported." << std::endl;
+         abort();
       }
 
       if (nd["slack_voltage"])
@@ -76,7 +77,9 @@ namespace SmartGridToolbox
       }
       else
       {
-         SGTError("For component " << compNameStr << ", network " << networkStr << " was not found in the model.");
+         error() << "For component " << compNameStr << ", network " << networkStr << " was not found in the model." 
+                 << std::endl;
+         abort();
       }
    }
 }

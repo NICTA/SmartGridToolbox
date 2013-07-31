@@ -27,7 +27,8 @@ namespace SmartGridToolbox
             PQBusses_.push_back(bus);
             break;
          case BusType::PV :
-            SGTError("PV busses are not supported yet.");
+            error() << "PV busses are not supported yet." << std::endl;
+            abort();
             break;
       }
    }
@@ -85,8 +86,9 @@ namespace SmartGridToolbox
          auto iti = bussesById_.find(branch->idi_);
          if (iti == bussesById_.end())
          {
-            SGTError("Branch " << branch->idi_ << " " << branch->idk_ << " contains a non-existent bus " 
-                  << branch->idi_);
+            error() << "Branch " << branch->idi_ << " " << branch->idk_ << " contains a non-existent bus " 
+                    << branch->idi_ << std::endl;
+            abort();
          }
          else
          {
@@ -95,8 +97,9 @@ namespace SmartGridToolbox
          auto itk = bussesById_.find(branch->idk_);
          if (itk == bussesById_.end())
          {
-            SGTError("Branch " << branch->idi_ << " " << branch->idk_ << " contains a non-existent bus " 
-                  << branch->idk_);
+            error() << "Branch " << branch->idi_ << " " << branch->idk_ << " contains a non-existent bus "
+                  << branch->idk_ << std::endl;
+            abort();
          }
          else
          {

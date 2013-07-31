@@ -10,7 +10,8 @@ namespace SmartGridToolbox
       }
       else if (t_ > t)
       {
-         SGTError("Component " << getName() << " can't go back in time.");
+         error() << "Component " << getName() << " can't go back in time." << std::endl;
+         abort();
       }
    }
 }

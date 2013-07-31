@@ -6,9 +6,9 @@ namespace SmartGridToolbox
    void TestComponentParser::parse(const YAML::Node & nd, Model & mod) const
    {
       const std::string name = nd["name"].as<std::string>();
-      message("TestComponentParser: name = " << name);
+      message() << "TestComponentParser: name = " << name << std::endl;
       const int value = nd["value"].as<int>();
-      message("TestComponentParser: value = " << value);
+      message() << "TestComponentParser: value = " << value << std::endl;
       TestComponent * tc = new TestComponent;
       tc->setName(name);
       tc->setValue(value);

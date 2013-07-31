@@ -115,23 +115,23 @@ namespace SmartGridToolbox
    void Parser::parse(const char * fname, Model & model, 
                       Simulation & simulation)
    {
-      message("Started parsing.");
+      message() << "Started parsing." << std::endl;
       const YAML::Node & top = YAML::LoadFile(fname);
 
-      message("Parsing global.");
+      message() << "Parsing global." << std::endl;
       parseGlobal(top, model, simulation);
-      message("Parsed global.");
-      message("Parsing prototypes.");
+      message() << "Parsed global." << std::endl;
+      message() << "Parsing prototypes." << std::endl;
       parseComponents(top, model, true);
-      message("Parsed prototypes.");
-      message("Parsing objects.");
+      message() << "Parsed prototypes." << std::endl;
+      message() << "Parsing objects." << std::endl;
       parseComponents(top, model, false);
-      message("Parsed objects.");
+      message() << "Parsed objects." << std::endl;
 
-      message("Finished parsing.");
-      message("Name = " << model.getName());
-      message("Start time = ", to_simple_string(simulation.getStartTime()));
-      message("End time = ", to_simple_string(simulation.getEndTime()));
+      message() << "Finished parsing." << std::endl;
+      message() << "Name = " << model.getName() << std::endl;
+      message() << "Start time = ", to_simple_string(simulation.getStartTime()) << std::endl;
+      message() << "End time = ", to_simple_string(simulation.getEndTime()) << std::endl;
    }
 
    void Parser::parseGlobal(const YAML::Node & top, Model & model,
@@ -157,12 +157,14 @@ namespace SmartGridToolbox
             }
             catch (...)
             {
-               SGTError("Couldn't parse start date." << nodeB.as<std::string>());
+               error() << "Couldn't parse start date." << nodeB.as<std::string>() << std::endl;
+               abort();
             }
          }
          else
          {
-            SGTError("The configuration file must contain a start_time.");  
+            error() << "The configuration file must contain a start_time." << std::endl;  
+            abort();
          }
 
          if (const YAML::Node & nodeB = nodeA["end_time"])
@@ -174,35 +176,38 @@ namespace SmartGridToolbox
             }
             catch (...)
             {
-               SGTError("Couldn't parse end date." << nodeB.as<std::string>());
+               error() << "Couldn't parse end date." << nodeB.as<std::string>() << std::endl;
+               abort();
             }
          }
          else
          {
-            SGTError("The configuration file must contain an end_time.");  
+            error() << "The configuration file must contain an end_time." << std::endl;  
+            abort();
          }
       }
       else
       {
-         SGTError("The configuration file must contain a \"global\" section.");
+         error() << "The configuration file must contain a \"global\" section." << std::endl;
+         abort();
       }
    }
 
    void Parser::parseComponents(const YAML::Node & top, Model & model,
                                 bool isPrototype)
    {
-      message("Parsing components. Starting.");
+      message() << "Parsing components. Starting." << std::endl;
       if (const YAML::Node & compsNode = isPrototype ? top["prototypes"] 
                                                      : top["objects"])
       {
          for (auto it = compsNode.begin(); it != compsNode.end(); ++it)
          {
             std::string name = it->first.as<std::string>();
-            message("Parsing component " <<  name);
+            message() << "Parsing component " <<  name << std::endl;
             const ComponentParser * compParser = getComponentParser(name);
             if (compParser == nullptr)
             {
-               SGTWarning("I don't know how to parse component " << name);
+               warning() << "I don't know how to parse component " << name << std::endl;
             }
             else
             {
@@ -212,18 +217,18 @@ namespace SmartGridToolbox
          for (auto it = compsNode.begin(); it != compsNode.end(); ++it)
          {
             std::string name = it->first.as<std::string>();
-            message("Post parsing component " << name);
+            message() << "Post parsing component " << name << std::endl;
             const ComponentParser * compParser = getComponentParser(name);
             if (compParser == nullptr)
             {
-               SGTWarning("I don't know how to parse component " << name);
+               warning() << "I don't know how to parse component " << name << std::endl;
             }
             else
             {
                compParser->postParse(it->second, model);
             }
          }
-         message("Parsing components. Completed.");
+         message() << "Parsing components. Completed." << std::endl;
       }
    }
 }

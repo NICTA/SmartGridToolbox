@@ -14,12 +14,13 @@ namespace SmartGridToolbox
       std::pair<ComponentMap::iterator, bool> result = protoMap_.insert(
             make_pair(comp.getName(), &comp));
       if (result.second == 0) {
-         SGTError("Prototype " << comp.getName() << " already exists in model!");
+         error() << "Prototype " << comp.getName() << " already exists in model!" << std::endl;
+         abort();
       }
       else
       {
          protoVec_.push_back(&comp);
-         message("Prototype " << comp.getName() << " added to model.");
+         message() << "Prototype " << comp.getName() << " added to model." << std::endl;
       }
    }
 
@@ -28,24 +29,25 @@ namespace SmartGridToolbox
       std::pair<ComponentMap::iterator, bool> result = compMap_.insert(
             make_pair(comp.getName(), &comp));
       if (result.second == 0) {
-         SGTError("Component " << comp.getName() << " already exists in model!");
+         error() << "Component " << comp.getName() << " already exists in model!" << std::endl;
+         abort();
       }
       else
       {
          compVec_.push_back(&comp);
-         message("Component " << comp.getName() << " added to model.");
+         message << "Component " << comp.getName() << " added to model." << std::endl;
       }
    }
 
    void Model::validate()
    {
-      message("Model before validation:");
+      message << "Model before validation:" << std::endl;
       for (const Component * comp : compVec_)
       {
-         message("   " << comp->getName());
+         message() << "   " << comp->getName() << std::endl;
          for (Component * const dep : comp->getDependencies())
          {
-            message("      " << dep->getName());
+            message() << "      " << dep->getName() << std::endl;
          }
       }
       for (int i = 0; i < compVec_.size(); ++i)
@@ -73,13 +75,13 @@ namespace SmartGridToolbox
                return lhs->getRank() < rhs->getRank();
             });
       isValid_ = true;
-      message("Model after validation:");
+      message() << "Model after validation:" << std::endl;
       for (const Component * comp : compVec_)
       {
-         message("   " << comp->getName());
+         message() << "   " << comp->getName() << std::endl;
          for (Component * const dep : comp->getDependencies())
          {
-            message("      " << dep->getName());
+            message() << "      " << dep->getName() << std::endl;
          }
       }
    }

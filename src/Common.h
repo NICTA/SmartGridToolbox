@@ -14,9 +14,6 @@
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
-#define SGTMessage(x) std::cout << "MESSAGE: " << x << std::endl;
-#define SGTWarning(x) std::cerr << "WARNING: " << x << std::endl;
-#define SGTError(x) std::cerr << "ERROR: " << x << std::endl; abort();
 #ifdef DEBUG
 #define SGTDebug(x) std::cerr << "DEBUG: " << x << std::endl;
 #else
@@ -25,6 +22,11 @@
 
 namespace SmartGridToolbox
 {
+   inline std::ostream & message() {return std::cout << "MESSAGE: ";}
+   inline std::ostream & warning() {return std::cerr << "WARNING: ";}
+   inline std::ostream & error() {return std::cerr << "ERROR: ";}
+   inline void abort() {std::cerr << "ABORTING." << std::endl; ::abort();}
+
    /// @name Constant dimension 2D array type.
    /// @{
    // Note transposition of NR and NC to obey standard matrix index order. 

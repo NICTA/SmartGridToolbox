@@ -41,8 +41,8 @@ namespace SmartGridToolbox
    {
       if (!(nd[field]))
       {
-         SGTError("Parsing: " << field << " field not present.");
-         // TODO: this needs info about which object was the problem.
+         error() << "Parsing: " << field << " field not present." << std::endl;
+         abort();
       }
    }
 
