@@ -6,7 +6,7 @@ namespace SmartGridToolbox
 {
    void Bus1PParser::parse(const YAML::Node & nd, Model & mod) const
    {
-      debug("Bus1P : parse.");
+      SGTDebug("Bus1P : parse.");
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "type");
@@ -30,7 +30,7 @@ namespace SmartGridToolbox
       }
       else
       { 
-         error("Bus type %s is not supported.", typeStr.c_str());
+         SGTError("Bus type " << typeStr << " is not supported.");
       }
 
       if (nd["slack_voltage"])
@@ -63,7 +63,7 @@ namespace SmartGridToolbox
 
    void Bus1PParser::postParse(const YAML::Node & nd, Model & mod) const
    {
-      debug("Bus1P : postParse.");
+      SGTDebug("Bus1P : postParse.");
       const std::string compNameStr = nd["name"].as<std::string>();
       Bus1P * comp = mod.getComponentNamed<Bus1P>(compNameStr);
 
@@ -76,7 +76,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error("For component %s, network %s was not found in the model.");
+         SGTError("For component " << compNameStr << ", network " << networkStr << " was not found in the model.");
       }
    }
 }

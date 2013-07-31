@@ -1,6 +1,5 @@
 #include "Model.h"
 #include "Component.h"
-#include "Output.h"
 #include "WeakOrder.h"
 #include <string>
 
@@ -15,12 +14,12 @@ namespace SmartGridToolbox
       std::pair<ComponentMap::iterator, bool> result = protoMap_.insert(
             make_pair(comp.getName(), &comp));
       if (result.second == 0) {
-         error("Prototype %s already exists in model!", comp.getName().c_str());
+         SGTError("Prototype " << comp.getName() << " already exists in model!");
       }
       else
       {
          protoVec_.push_back(&comp);
-         message("Prototype %s added to model.", comp.getName().c_str());
+         message("Prototype " << comp.getName() << " added to model.");
       }
    }
 
@@ -29,12 +28,12 @@ namespace SmartGridToolbox
       std::pair<ComponentMap::iterator, bool> result = compMap_.insert(
             make_pair(comp.getName(), &comp));
       if (result.second == 0) {
-         error("Component %s already exists in model!", comp.getName().c_str());
+         SGTError("Component " << comp.getName() << " already exists in model!");
       }
       else
       {
          compVec_.push_back(&comp);
-         message("Component %s added to model.", comp.getName().c_str());
+         message("Component " << comp.getName() << " added to model.");
       }
    }
 
@@ -43,10 +42,10 @@ namespace SmartGridToolbox
       message("Model before validation:");
       for (const Component * comp : compVec_)
       {
-         message("   %s", comp->getName().c_str());
+         message("   " << comp->getName());
          for (Component * const dep : comp->getDependencies())
          {
-            message("      %s", dep->getName().c_str());
+            message("      " << dep->getName());
          }
       }
       for (int i = 0; i < compVec_.size(); ++i)
@@ -77,10 +76,10 @@ namespace SmartGridToolbox
       message("Model after validation:");
       for (const Component * comp : compVec_)
       {
-         message("   %s", comp->getName().c_str());
+         message("   " << comp->getName());
          for (Component * const dep : comp->getDependencies())
          {
-            message("      %s", dep->getName().c_str());
+            message("      " << dep->getName());
          }
       }
    }

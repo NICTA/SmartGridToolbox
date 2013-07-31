@@ -7,7 +7,7 @@ namespace SmartGridToolbox
 {
    void Branch1PParser::parse(const YAML::Node & nd, Model & mod) const
    {
-      debug("Branch1P : parse.");
+      SGTDebug("Branch1P : parse.");
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "bus_i");
@@ -31,7 +31,7 @@ namespace SmartGridToolbox
 
    void Branch1PParser::postParse(const YAML::Node & nd, Model & mod) const
    {
-      debug("Branch1P : postParse.");
+      SGTDebug("Branch1P : postParse.");
       const std::string compNameStr = nd["name"].as<std::string>();
       Branch1P * comp = mod.getComponentNamed<Branch1P>(compNameStr);
 
@@ -44,7 +44,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error("For component %s, network %s was not found in the model.");
+         SGTError("For component " << compNameStr <<  ", network " << networkStr <<  " was not found in the model.");
       }
 
       const std::string busiStr = nd["bus_i"].as<std::string>();
@@ -55,7 +55,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error("For component %s, bus_i %s was not found in the model.");
+         SGTError("For component " << compNameStr <<  ", bus " << busiStr <<  " was not found in the model.");
       }
 
       const std::string buskStr = nd["bus_k"].as<std::string>();
@@ -66,7 +66,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error("For component %s, bus_k %s was not found in the model.");
+         SGTError("For component " << compNameStr <<  ", bus " << buskStr <<  " was not found in the model.");
       }
    }
 }

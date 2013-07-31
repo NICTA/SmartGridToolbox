@@ -6,7 +6,6 @@
 #include <map>
 #include "Common.h"
 #include "Event.h"
-#include "Output.h"
 #include "Property.h"
 
 namespace SmartGridToolbox

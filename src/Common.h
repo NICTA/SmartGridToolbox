@@ -14,6 +14,15 @@
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
+#define SGTMessage(x) std::cout << "MESSAGE: " << x << std::endl;
+#define SGTWarning(x) std::cerr << "WARNING: " << x << std::endl;
+#define SGTError(x) std::cerr << "ERROR: " << x << std::endl; abort();
+#ifdef DEBUG
+#define SGTDebug(x) std::cerr << "DEBUG: " << x << std::endl;
+#else
+#define SGTDebug(x)
+#endif
+
 namespace SmartGridToolbox
 {
    /// @name Constant dimension 2D array type.
@@ -70,7 +79,7 @@ namespace SmartGridToolbox
 
    inline std::ostream & operator<<(std::ostream & os, const UblasVector<double> & v)
    {
-      os << "[" << std::setprecision(4) << std::setw(12) std::left << v(0);
+      os << "[" << std::setprecision(4) << std::setw(12) << std::left << v(0);
       for (int i = 1; i < v.size(); ++i) os << std::setw(12) << std::left << v(i);
       os << "]";
       return os;

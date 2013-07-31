@@ -10,7 +10,7 @@ namespace SmartGridToolbox
       }
       else if (t_ > t)
       {
-         error("Component %s can't go back in time.", getName().c_str());
+         SGTError("Component " << getName() << " can't go back in time.");
       }
    }
 }

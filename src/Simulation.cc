@@ -41,8 +41,8 @@ namespace SmartGridToolbox
    {
       Component * comp = pendingUpdates_.top();
       pendingUpdates_.pop();
-      debug("Update component %s from %s to %s.", comp->getName().c_str(), 
-            to_simple_string(comp->getTime()).c_str(), to_simple_string(comp->getValidUntil()).c_str());
+      SGTDebug("Update component " << comp->getName() << " from " << to_simple_string(comp->getTime()) << " to " 
+            << to_simple_string(comp->getValidUntil()));
       comp->update(comp->getValidUntil());
       pendingUpdates_.push(comp);
    }

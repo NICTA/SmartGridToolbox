@@ -1,5 +1,4 @@
 #include "PowerFlowNR.h"
-#include "Output.h"
 
 namespace SmartGridToolbox
 {
@@ -14,7 +13,7 @@ namespace SmartGridToolbox
             PQBusses_.push_back(bus);
             break;
          case BusType::PV : 
-            error("PV busses are not supported yet.");
+            SGTError("PV busses are not supported yet.");
             break;
       }
    }

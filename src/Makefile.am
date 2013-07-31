@@ -23,12 +23,12 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 bin_PROGRAMS = helloworld klu_simple
 helloworld_SOURCES = helloworld.cc
 klu_simple_SOURCES = klu_simple.c
-helloworld_LDADD = libsmartgridtoolbox.a \
-						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
-						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
-						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
-						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
-						 -lblas
+#helloworld_LDADD = libsmartgridtoolbox.a \
+#						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
+#						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
+#						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
+#						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
+#						 -lblas
 klu_simple_LDADD = \
 						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \

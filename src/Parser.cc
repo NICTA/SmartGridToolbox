@@ -1,6 +1,5 @@
 #include "Common.h"
 #include "Model.h"
-#include "Output.h"
 #include "Parser.h"
 #include "Simulation.h"
 #include <string>
@@ -130,11 +129,9 @@ namespace SmartGridToolbox
       message("Parsed objects.");
 
       message("Finished parsing.");
-      message("Name = %s", model.getName().c_str());
-      message("Start time = %s", 
-            to_simple_string(simulation.getStartTime()).c_str());
-      message("End time = %s", 
-            to_simple_string(simulation.getEndTime()).c_str());
+      message("Name = " << model.getName());
+      message("Start time = ", to_simple_string(simulation.getStartTime()));
+      message("End time = ", to_simple_string(simulation.getEndTime()));
    }
 
    void Parser::parseGlobal(const YAML::Node & top, Model & model,
@@ -160,12 +157,12 @@ namespace SmartGridToolbox
             }
             catch (...)
             {
-               error("Couldn't parse date.");
+               SGTError("Couldn't parse start date." << nodeB.as<std::string>());
             }
          }
          else
          {
-            error("The configuration file must contain a start_time.");  
+            SGTError("The configuration file must contain a start_time.");  
          }
 
          if (const YAML::Node & nodeB = nodeA["end_time"])
@@ -177,17 +174,17 @@ namespace SmartGridToolbox
             }
             catch (...)
             {
-               error("Couldn't parse date.");
+               SGTError("Couldn't parse end date." << nodeB.as<std::string>());
             }
          }
          else
          {
-            error("The configuration file must contain an end_time.");  
+            SGTError("The configuration file must contain an end_time.");  
          }
       }
       else
       {
-         error("The configuration file must contain a \"global\" section.");
+         SGTError("The configuration file must contain a \"global\" section.");
       }
    }
 
@@ -201,11 +198,11 @@ namespace SmartGridToolbox
          for (auto it = compsNode.begin(); it != compsNode.end(); ++it)
          {
             std::string name = it->first.as<std::string>();
-            message("Parsing component %s.", name.c_str());
+            message("Parsing component " <<  name);
             const ComponentParser * compParser = getComponentParser(name);
             if (compParser == nullptr)
             {
-               warning("I don't know how to parse component %s.", name.c_str());
+               SGTWarning("I don't know how to parse component " << name);
             }
             else
             {
@@ -215,11 +212,11 @@ namespace SmartGridToolbox
          for (auto it = compsNode.begin(); it != compsNode.end(); ++it)
          {
             std::string name = it->first.as<std::string>();
-            message("Post parsing component %s.", name.c_str());
+            message("Post parsing component " << name);
             const ComponentParser * compParser = getComponentParser(name);
             if (compParser == nullptr)
             {
-               warning("I don't know how to parse component %s.", name.c_str());
+               SGTWarning("I don't know how to parse component " << name);
             }
             else
             {

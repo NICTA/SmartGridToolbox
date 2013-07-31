@@ -1,5 +1,4 @@
 #include "WeakOrder.h"
-#include "Output.h"
 #include <iostream>
 #include <algorithm>
 #include <sstream>
@@ -22,10 +21,10 @@ namespace SmartGridToolbox
       if (!visited_)
       {
          visited_ = true;
-         debug("%sDFS %d {", prlevel(level - 1).c_str(), idx_);
+         SGTDebug(prlevel(level - 1) << "DFS " << idx_ << " {");
          for (WoNode * predecessor : stack)
          {
-            debug("%s%d", prlevel(level).c_str(), predecessor->idx_);
+            SGTDebug(prlevel(level) << predecessor->idx_);
             predecessor->descendents_.insert(this);
          }
          stack.push_back(this);
@@ -34,7 +33,7 @@ namespace SmartGridToolbox
             toNd->dfs(stack);
          }
          stack.pop_back();
-         debug("%s}", prlevel(level - 1).c_str());
+         SGTDebug(prlevel(level - 1) << "}");
       }
       --level;
    }

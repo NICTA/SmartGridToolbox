@@ -41,7 +41,7 @@ namespace SmartGridToolbox
    {
       if (!(nd[field]))
       {
-         error("Parsing: \"%s\" field not present.", field.c_str());
+         SGTError("Parsing: " << field << " field not present.");
          // TODO: this needs info about which object was the problem.
       }
    }
