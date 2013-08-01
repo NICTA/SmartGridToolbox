@@ -74,12 +74,12 @@ namespace SmartGridToolbox
       /// @{
       private:
          Network1P * network_;   ///< Network.
-         BusType type_;                   ///< Bus type. 
-         Complex V_;                      ///< Voltage.
-         Complex Y_;                      ///< Constant admittance load.
-         Complex I_;                      ///< Constant current load.
-         Complex S_;                      ///< Constant power load.
-         Complex SGen_;                   ///< Generator power.
+         BusType type_;          ///< Bus type. 
+         Complex V_;             ///< Voltage.
+         Complex Y_;             ///< Constant admittance load.
+         Complex I_;             ///< Constant current load.
+         Complex S_;             ///< Constant power load.
+         Complex SGen_;          ///< Generator power.
       /// @}
    };
 }
