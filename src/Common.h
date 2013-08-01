@@ -5,6 +5,7 @@
 #include <complex>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/numeric/ublas/vector.hpp>
@@ -54,9 +55,14 @@ namespace SmartGridToolbox
       return Complex(i * c.real(), i * c.imag());
    }
 
-   Complex string2Complex(const std::string & s);
+   inline std::ostream & operator<<(std::ostream & os, const Complex & c)
+   {
+      char imSgn = c.imag() > 0 ? '+' : '-';
+      return os << c.real() << imSgn << abs(c.imag()) << "j";
+   }
 
-   std::string complex2String(Complex c);
+   Complex string2Complex(const std::string & s);
+   std::string complex2String(const Complex & c);
    /// @}
   
    /// @name Linear algebra
