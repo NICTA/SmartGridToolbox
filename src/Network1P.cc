@@ -42,13 +42,15 @@ namespace SmartGridToolbox
       for (const Bus1P * bus : busVec_)
       {
          solver_.addBus(bus->getName(), bus->getType(), bus->getV(), bus->getY(), bus->getI(), bus->getS());
+         SGTDebug("Added bus " << bus->getName() << " " << (int)bus->getType() << " " << bus->getV() 
+                  << " " << bus->getY() << " " << bus->getI() << " " << bus->getS());
       }
       for (const Branch1P * branch : branchVec_)
       {
          solver_.addBranch(branch->getBusi().getName(), branch->getBusk().getName(), branch->getY());
          SGTDebug("Added branch with Y");
-         SGTDebug("   " << branch->getY()[0][0] << " " << branch->getY()[0][1]);
-         SGTDebug("   " << branch->getY()[1][0] << " " << branch->getY()[1][1]);
+         SGTDebug("   " << std::left << std::setw(8) << branch->getY()[0][0] << std::setw(8) << branch->getY()[0][1])
+         SGTDebug("   " << std::left << std::setw(8) << branch->getY()[1][0] << std::setw(8) << branch->getY()[1][1]);
       }
       solver_.validate();
    }
