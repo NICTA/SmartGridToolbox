@@ -55,13 +55,10 @@ namespace SmartGridToolbox
       return Complex(i * c.real(), i * c.imag());
    }
 
-   inline std::ostream & operator<<(std::ostream & os, const Complex & c)
-   {
-      char imSgn = c.imag() > 0 ? '+' : '-';
-      return os << c.real() << imSgn << abs(c.imag()) << "j";
-   }
+   std::ostream & operator<<(std::ostream & os, const Complex & c);
 
    Complex string2Complex(const std::string & s);
+
    std::string complex2String(const Complex & c);
    /// @}
   
