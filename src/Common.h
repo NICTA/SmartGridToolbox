@@ -1,7 +1,6 @@
 #ifndef COMMON_DOT_H
 #define COMMON_DOT_H
 
-#include <cmath>
 #include <complex>
 #include <iostream>
 #include <iomanip>
@@ -83,6 +82,7 @@ namespace SmartGridToolbox
    template<typename T> using UblasCMatrixRange = boost::numeric::ublas::matrix_range<UblasCMatrix<T>>;
 
    std::ostream & operator<<(std::ostream & os, const UblasVector<double> & v);
+   std::ostream & operator<<(std::ostream & os, const UblasVector<Complex> & v);
    /// @}
 
    /// @name Time

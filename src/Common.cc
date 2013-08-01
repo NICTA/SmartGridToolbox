@@ -59,13 +59,23 @@ namespace SmartGridToolbox
    std::string complex2String(const Complex & c)
    {
       std::ostringstream ss;
-      char reSgn = c.real() > 0 ? ' ' : '-';
-      char imSgn = c.imag() > 0 ? '+' : '-';
-      ss << reSgn << abs(c.real()) << imSgn << abs(c.imag()) << "j";
+      char reSgn = c.real() >= 0.0 ? ' ' : '-';
+      char imSgn = c.imag() >= 0.0 ? '+' : '-';
+      ss << reSgn << std::abs(c.real()) << imSgn << std::abs(c.imag()) << "j";
       return ss.str();
    }
 
    std::ostream & operator<<(std::ostream & os, const UblasVector<double> & v)
+   {
+      // Doing it this way avoids hassles with stream manipulators, since there is only one insertion operator.
+      std::ostringstream ss;
+      ss << "[" << std::setprecision(4) << std::setw(12) << std::left << v(0);
+      for (int i = 1; i < v.size(); ++i) ss << std::setw(12) << std::left << v(i);
+      ss << "]";
+      return os << ss.str();
+   }
+
+   std::ostream & operator<<(std::ostream & os, const UblasVector<Complex> & v)
    {
       // Doing it this way avoids hassles with stream manipulators, since there is only one insertion operator.
       std::ostringstream ss;
