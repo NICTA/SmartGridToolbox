@@ -285,15 +285,15 @@ namespace SmartGridToolbox
       SGTDebug("Number of slack busses = " << nSL_);
       for (const Bus1PNR * bus : busses_)
       {
-         SGTDebug("    Bus: " << bus->idx_ << " " << bus->id_ << " " << (int)bus->type_ << " " << complex2String(bus->V_)
-               << " " << complex2String(bus->Y_) << " " << complex2String(bus->I_) << " " << complex2String(bus->S_));
+         SGTDebug("    Bus: " << bus->idx_ << " " << bus->id_ << " " << (int)bus->type_ << " " << bus->V_ << " " 
+                  << bus->Y_ << " " << bus->I_ << " " << bus->S_);
       }
       for (Branch1PNR * branch : branches_)
       {
          SGTDebug("    Branch: " << branch->idi_ << " " << branch->idk_);
          for (int i = 0; i < 2; ++i)
          {
-            SGTDebug("            " << complex2String(branch->Y_[i][0]) << " " << complex2String(branch->Y_[i][1]));
+            SGTDebug("            " << branch->Y_[i][0] << " " << branch->Y_[i][1]);
          }
       }
    }
