@@ -3,11 +3,36 @@
 
 #include "Common.h"
 #include "Component.h"
-#include <queue>
+#include <list>
+#include <set>
 
 namespace SmartGridToolbox
 {
    class Model;
+
+   // Soonest/smallest rank goes first. If equal rank and time, then sort on the name.
+   class ScheduledUpdatesComp
+   {
+      public:
+         bool operator()(const Component * lhs, const Component * rhs)
+         {
+            return ((lhs->getValidUntil() < rhs->getValidUntil()) ||
+                    (lhs->getValidUntil() == rhs->getValidUntil() && lhs->getRank() < rhs->getRank()) ||
+                    (lhs->getValidUntil() == rhs->getValidUntil() && lhs->getRank() == rhs->getRank() && 
+                     (lhs->getName() < rhs->getName())));
+         }
+   };
+
+   // Smallest rank goes first. If equal rank, then sort on the name.
+   class ContingentUpdatesComp
+   {
+      public:
+         bool operator()(const Component * lhs, const Component * rhs)
+         {
+            return ((lhs->getRank() < rhs->getRank()) ||
+                    ((lhs->getRank() == rhs->getRank()) && (lhs->getName() < rhs->getName())));
+         }
+   };
 
    /// Simulation. 
    class Simulation
@@ -31,8 +56,7 @@ namespace SmartGridToolbox
          /// Model accessor.
          Model & getModel()
          {
-            return const_cast<Model &>((const_cast<const Simulation *>(this))->
-                  getModel());
+            return const_cast<Model &>((const_cast<const Simulation *>(this))->getModel());
          }
 
          const ptime & getStartTime() const
@@ -62,17 +86,16 @@ namespace SmartGridToolbox
          void doNextUpdate();
 
       private:
-         typedef std::priority_queue<Component *, std::vector<Component *>,
-                 bool(*)(const Component *, const Component *)> UpdateQueue;
-
-      private:
-         void clearQueue();
+         typedef std::set<Component *, ScheduledUpdatesComp> ScheduledUpdates;
+         typedef std::set<Component *, ContingentUpdatesComp> ContingentUpdates;
 
       private:
          Model * mod_;
          ptime startTime_;
          ptime endTime_;
-         UpdateQueue pendingUpdates_;
+         ptime latestTime_;
+         ScheduledUpdates scheduledUpdates_;
+         ContingentUpdates contingentUpdates_;
    };
 }
 

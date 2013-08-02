@@ -61,6 +61,7 @@ namespace SmartGridToolbox
          {
             busVec_.push_back(&bus);
             busMap_[bus.getName()] = &bus;
+            bus.getEventDidUpdate().addAction([&](){this->getEventNeedsUpdate().trigger();});
          }
 
          const Bus1P * findBus(const std::string & name) const

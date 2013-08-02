@@ -1,25 +1,13 @@
 #include "Simulation.h"
 #include "Model.h"
 #include "Component.h"
+#include <algorithm>
 
 namespace SmartGridToolbox
 {
-   static bool updateComponentComp(const Component * lhs, const Component * rhs)
-   {
-      return ((lhs->getValidUntil() > rhs->getValidUntil()) ||
-              ((lhs->getValidUntil() == rhs->getValidUntil()) &&
-               (lhs->getRank() > rhs->getRank())));
-   }
-
-   void Simulation::clearQueue()
-   {
-      pendingUpdates_ = UpdateQueue(updateComponentComp);
-   }
-
    Simulation::Simulation(Model & mod) : mod_(&mod),
                                          startTime_(not_a_date_time),
-                                         endTime_(not_a_date_time),
-                                         pendingUpdates_(updateComponentComp)
+                                         endTime_(not_a_date_time)
    {
       // Empty.
    }
@@ -28,22 +16,41 @@ namespace SmartGridToolbox
    {
       startTime_ = startTime;
       endTime_ = endTime;
-      clearQueue();
-      for (Model::ComponentVec::iterator it = mod_->getComponents().begin();
-            it != mod_->getComponents().end(); ++it)
+      scheduledUpdates_ = ScheduledUpdates();
+      contingentUpdates_ = ContingentUpdates();
+      for (Component * comp : mod_->getComponents())
       {
-         (**it).initialize(startTime);
-         pendingUpdates_.push(*it);
+         comp->initialize(startTime);
+         comp->getEventNeedsUpdate().addAction([&](){contingentUpdates_.insert(comp);});
+         scheduledUpdates_.insert(comp);
       }
    }
 
    void Simulation::doNextUpdate()
    {
-      Component * comp = pendingUpdates_.top();
-      pendingUpdates_.pop();
-      SGTDebug("Update component " << comp->getName() << " from " << to_simple_string(comp->getTime()) << " to " 
-            << to_simple_string(comp->getValidUntil()));
-      comp->update(comp->getValidUntil());
-      pendingUpdates_.push(comp);
+      // Check the next scheduled update.
+      auto schedUpdateIt = scheduledUpdates_.begin();
+      Component * schedComp = *schedUpdateIt;
+      ptime nextTime = schedComp->getValidUntil();
+      if (nextTime > latestTime_ && contingentUpdates_.size() > 0)
+      {
+         // There are still contingent updates that need to be cleared before time is advanced.
+         Component * contComp = *contingentUpdates_.begin();
+         contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
+         // Before updating the component, we need to take it out of the scheduled updates set, because its
+         // sort key might change.
+         scheduledUpdates_.erase(scheduledUpdates_.find(contComp));
+         contComp->update(latestTime_); // Now do the update
+         scheduledUpdates_.insert(contComp); // ... and reinsert it in the scheduled updates set.
+      }
+      else
+      {
+         // Do the next scheduled update.
+         scheduledUpdates_.erase(schedUpdateIt); // Remove the update,
+         SGTDebug("Update component " << schedComp->getName() << " from " << to_simple_string(schedComp->getTime())
+               << " to " << to_simple_string(schedComp->getValidUntil()));
+         schedComp->update(latestTime_); // perform the update,
+         scheduledUpdates_.insert(schedComp); // and reinsert it.
+      }
    }
 }

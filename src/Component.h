@@ -70,7 +70,8 @@ namespace SmartGridToolbox
          }
 
          /** @name Rank
-          *  Rank: A < B means B depends on A, not vice-versa, so A should go first. */
+          *  Rank: A < B means B depends on A, not vice-versa, so A should go first. Thus, evaluation should
+          *  proceed from lowest ranked to highest ranked objects. */
          ///@{
 
          /// Get the rank of the object.
@@ -139,6 +140,7 @@ namespace SmartGridToolbox
          /// @{
          Event & getEventWillUpdate() {return willUpdate_;}
          Event & getEventDidUpdate() {return didUpdate_;}
+         Event & getEventNeedsUpdate() {return needsUpdate_;}
          /// @}
 
          /// @}
@@ -196,6 +198,7 @@ namespace SmartGridToolbox
          PropertyMap propertyMap_;
          Event willUpdate_;
          Event didUpdate_;
+         Event needsUpdate_;
    };
 }
 
