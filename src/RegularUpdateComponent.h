@@ -8,9 +8,18 @@ namespace SmartGridToolbox
    class RegularUpdateComponent : public Component
    {
       public:
-         RegularUpdateComponent(time_duration dt) : dt_(dt)
+         RegularUpdateComponent() : dt_(seconds(0))
          {
             // Empty.
+         }
+
+         time_duration getDt() const
+         {
+            return dt_;
+         }
+         void setDt(time_duration dt)
+         {
+            dt_ = dt;
          }
 
          virtual ptime getValidUntil() const
