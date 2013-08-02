@@ -124,8 +124,10 @@ namespace SmartGridToolbox
          /** @param t the timestamp to advance to. */
          void update(ptime t)
          {
+            willUpdate_.trigger();
             updateState(t_, t);
             t_ = t;
+            didUpdate_.trigger();
          }
 
          virtual ptime getValidUntil() const
@@ -135,13 +137,8 @@ namespace SmartGridToolbox
 
          /// @name Events
          /// @{
-
-         void triggerEvent(int id)
-         {
-            // TODO: make checked.
-            events_[id].doActions();
-         }
-
+         Event & getEventWillUpdate() {return willUpdate_;}
+         Event & getEventDidUpdate() {return didUpdate_;}
          /// @}
 
          /// @}
@@ -197,7 +194,8 @@ namespace SmartGridToolbox
          ComponentVec dependencies_; ///< I depend on these.
          int rank_;  ///< Evaluation rank, based on weak ordering.
          PropertyMap propertyMap_;
-         std::vector<Event> events_;
+         Event willUpdate_;
+         Event didUpdate_;
    };
 }
 

@@ -1,7 +1,7 @@
 #ifndef ZIP_LOAD_1P_DOT_H
 #define ZIP_LOAD_1P_DOT_H
 
-#include "Component.h";
+#include "Component.h"
 
 
 namespace SmartGridToolbox
@@ -29,8 +29,8 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         const Bus1P & getParentBus() const {return *parentBus;}
-         Bus1P & getParentBus() {return *parentBus;}
+         const Bus1P & getParentBus() const {return *parentBus_;}
+         Bus1P & getParentBus() {return *parentBus_;}
          void setParentBus(Bus1P & parentBus) {parentBus_ = &parentBus;}
 
          const Complex & getY() const {return Y_;}
@@ -45,7 +45,7 @@ namespace SmartGridToolbox
       
       /// @name My private member variables.
       /// @{
-         Bus1P * parentBus;   ///< The bus to which I am attached.
+         Bus1P * parentBus_;  ///< The bus to which I am attached.
          Complex Y_;          ///< Constant admittance component.
          Complex I_;          ///< Constant current component.
          Complex S_;          ///< Constant power component.

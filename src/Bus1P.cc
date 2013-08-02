@@ -82,4 +82,25 @@ namespace SmartGridToolbox
          abort();
       }
    }
+
+   void Bus1P::setLoadYUpdated(const Complex & Y0, const Complex & Y1)
+   {
+      Y_ += Y1;
+      Y_ -= Y0;
+      network_->setBusUpdated(*this);
+   }
+
+   void Bus1P::setLoadIUpdated(const Complex & I0, const Complex & I1)
+   {
+      I_ += I1;
+      I_ -= I0; 
+      network_->setBusUpdated(*this);
+   }
+
+   void Bus1P::setLoadSUpdated(const Complex & S0, const Complex & S1)
+   {
+      S_ += S1;
+      S_ -= S0;
+      network_->setBusUpdated(*this);
+   }
 }

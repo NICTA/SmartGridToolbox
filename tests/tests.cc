@@ -373,7 +373,7 @@ class TestEventA : public Component
          cout << "Update state of " << getName() << " from time " 
               << t0 << " to " << t1 << "." << endl;
          state_ = (t1-getInitTime()).ticks() * ctrl_;
-         nextUpdate_ = t1 + dt_; 
+         nextUpdate_ = t1 + dt_;
       }
 
    private:
@@ -397,6 +397,10 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    message() << "Initialize simulation. Starting." << std::endl;
    sim.initialize(epoch, epoch + seconds(10));
    message() << "Initialize simulation. Completed." << std::endl;
+
+   a0->getEventDidUpdate().addAction(
+         [&]() {cout << a1->getName() << " received did update from " << a0->getName() << std::endl;}
+   );
 
    sim.doNextUpdate();
    sim.doNextUpdate();

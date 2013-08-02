@@ -24,7 +24,7 @@ namespace SmartGridToolbox
             actions_.push_back(action);
          }
 
-         void doActions()
+         void trigger()
          {
             for (const Action & action : actions_) {action();}
          }

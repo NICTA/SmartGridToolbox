@@ -78,6 +78,18 @@ namespace SmartGridToolbox
             branchVec_.push_back(&branch);
          }
 
+         void setBusUpdated(const Bus1P & bus)
+         {
+            rebuildNetwork(); // TODO: this is the slow, brute force way!
+            updateState(getTime(), bus.getTime());
+         }
+
+         void setBranchUpdated(const Branch1P & branch)
+         {
+            rebuildNetwork(); // TODO: this is the slow, brute force way!
+            updateState(getTime(), branch.getTime());
+         }
+
          virtual void rebuildNetwork();
       /// @}
 

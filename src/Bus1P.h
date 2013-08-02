@@ -5,6 +5,7 @@
 #include "Component.h"
 #include "Parser.h"
 #include "PowerFlow.h"
+#include "ZipLoad1P.h"
 
 #include <iostream>
 
@@ -58,13 +59,15 @@ namespace SmartGridToolbox
          void setV(const Complex & V) {V_ = V;}
 
          const Complex & getY() const {return Y_;}
-         void setY(const Complex & Y) {Y_ = Y;}
-
+         void setY(const Complex & Y) {Y_ = Y;} // TODO: this will go since will be set by ziploads only.
          const Complex & getI() const {return I_;}
-         void setI(const Complex & I) {I_ = I;}
-
+         void setI(const Complex & I) {I_ = I;} // TODO: this will go since will be set by ziploads only.
          const Complex & getS() const {return S_;}
-         void setS(const Complex & S) {S_ = S;}
+         void setS(const Complex & S) {S_ = S;} // TODO: this will go since will be set by ziploads only.
+
+         void setLoadYUpdated(const Complex & Y0, const Complex & Y1);
+         void setLoadIUpdated(const Complex & I0, const Complex & I1);
+         void setLoadSUpdated(const Complex & S0, const Complex & S1);
 
          const Complex & getSGen() const {return SGen_;}
          void setSGen(const Complex & SGen) {SGen_ = SGen;}
@@ -74,6 +77,7 @@ namespace SmartGridToolbox
       /// @{
       private:
          Network1P * network_;   ///< Network.
+         std::vector<const ZipLoad1P *> zipLoads;
          BusType type_;          ///< Bus type. 
          Complex V_;             ///< Voltage.
          Complex Y_;             ///< Constant admittance load.
