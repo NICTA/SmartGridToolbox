@@ -13,6 +13,11 @@ namespace SmartGridToolbox
             // Empty.
          }
 
+         virtual ptime getValidUntil() const
+         {
+            return getTime() + dt_;
+         }
+
          time_duration getDt() const
          {
             return dt_;
@@ -20,11 +25,6 @@ namespace SmartGridToolbox
          void setDt(time_duration dt)
          {
             dt_ = dt;
-         }
-
-         virtual ptime getValidUntil() const
-         {
-            return getTime() + dt_;
          }
 
       private:
