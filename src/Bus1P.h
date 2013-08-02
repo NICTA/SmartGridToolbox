@@ -40,7 +40,7 @@ namespace SmartGridToolbox
       /// @{
       private:
          virtual void initializeState(ptime t) override {};
-         virtual void updateState(ptime t0, ptime t1) override {};
+         virtual void updateState(ptime t0, ptime t1) override;
       /// @}
 
       /// @name My public member functions.
@@ -52,6 +52,8 @@ namespace SmartGridToolbox
          const Complex & getV() const {return V_;}
          void setV(const Complex & V) {V_ = V;}
 
+         void addZipLoad(ZipLoad1P & zipLoad);
+
          const Complex & getY() const {return Y_;}
          void setY(const Complex & Y) {Y_ = Y;} // TODO: this will go since will be set by ziploads only.
          const Complex & getI() const {return I_;}
@@ -59,18 +61,14 @@ namespace SmartGridToolbox
          const Complex & getS() const {return S_;}
          void setS(const Complex & S) {S_ = S;} // TODO: this will go since will be set by ziploads only.
 
-         void setLoadYUpdated(const Complex & Y0, const Complex & Y1);
-         void setLoadIUpdated(const Complex & I0, const Complex & I1);
-         void setLoadSUpdated(const Complex & S0, const Complex & S1);
-
          const Complex & getSGen() const {return SGen_;}
          void setSGen(const Complex & SGen) {SGen_ = SGen;}
       /// @}
-
+      
       /// @name My private member variables.
       /// @{
       private:
-         std::vector<const ZipLoad1P *> zipLoads;
+         std::vector<const ZipLoad1P *> zipLoads_;
          BusType type_;          ///< Bus type. 
          Complex V_;             ///< Voltage.
          Complex Y_;             ///< Constant admittance load.

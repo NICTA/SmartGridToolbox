@@ -129,11 +129,12 @@ libsmartgridtoolbox_a_AR = $(AR) $(ARFLAGS)
 libsmartgridtoolbox_a_LIBADD =
 am_libsmartgridtoolbox_a_OBJECTS = PowerFlow1PNR.$(OBJEXT) \
 	Bus1P.$(OBJEXT) Branch1P.$(OBJEXT) Common.$(OBJEXT) \
-	Component.$(OBJEXT) Meter.$(OBJEXT) Model.$(OBJEXT) \
-	Network1P.$(OBJEXT) Parser.$(OBJEXT) Random.$(OBJEXT) \
-	SimpleBattery.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
-	Simulation.$(OBJEXT) SparseSolver.$(OBJEXT) \
-	TestComponent.$(OBJEXT) WeakOrder.$(OBJEXT)
+	Component.$(OBJEXT) Event.$(OBJEXT) Meter.$(OBJEXT) \
+	Model.$(OBJEXT) Network1P.$(OBJEXT) Parser.$(OBJEXT) \
+	Random.$(OBJEXT) SimpleBattery.$(OBJEXT) \
+	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
+	SparseSolver.$(OBJEXT) TestComponent.$(OBJEXT) \
+	WeakOrder.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_helloworld_OBJECTS = helloworld.$(OBJEXT)
@@ -314,6 +315,7 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 										  Branch1P.cc \
 										  Common.cc \
 										  Component.cc \
+										  Event.cc \
 										  Meter.cc \
 										  Model.cc \
 										  Network1P.cc \
@@ -329,8 +331,7 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 helloworld_SOURCES = helloworld.cc
 klu_simple_SOURCES = klu_simple.c
 helloworld_LDADD = libsmartgridtoolbox.a
-klu_simple_LDADD = \
-						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
+klu_simple_LDADD = ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
 						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
 						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
@@ -467,6 +468,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Bus1P.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Component.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Meter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Model.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network1P.Po@am__quote@

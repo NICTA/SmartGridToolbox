@@ -6,8 +6,6 @@
 
 namespace SmartGridToolbox
 {
-   class Bus1P;
-
    class ZipLoad1P : public Component
    {
       /// @name Public overridden functions: from Component.
@@ -29,23 +27,18 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         const Bus1P & getParentBus() const {return *parentBus_;}
-         Bus1P & getParentBus() {return *parentBus_;}
-         void setParentBus(Bus1P & parentBus) {parentBus_ = &parentBus;}
-
          const Complex & getY() const {return Y_;}
-         void setY(const Complex & Y) {Y_ = Y;}
+         void setY(const Complex & Y) {Y_ = Y; getEventNeedsUpdate().trigger();}
 
          const Complex & getI() const {return I_;}
-         void setI(const Complex & I) {I_ = I;}
+         void setI(const Complex & I) {I_ = I; getEventNeedsUpdate().trigger();}
 
          const Complex & getS() const {return S_;}
-         void setS(const Complex & S) {S_ = S;}
+         void setS(const Complex & S) {S_ = S; getEventNeedsUpdate().trigger();}
       /// @}
       
       /// @name My private member variables.
       /// @{
-         Bus1P * parentBus_;  ///< The bus to which I am attached.
          Complex Y_;          ///< Constant admittance component.
          Complex I_;          ///< Constant current component.
          Complex S_;          ///< Constant power component.

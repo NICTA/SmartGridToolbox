@@ -23,7 +23,10 @@ namespace SmartGridToolbox
             name_(name),
             tInit_(not_a_date_time),
             t_(not_a_date_time),
-            rank_(-1)
+            rank_(-1),
+            willUpdate_("Component::willUpdate_"),
+            didUpdate_("Component::didUpdate_"),
+            needsUpdate_("Component::needsUpdate_")
          {
             // Empty.
          }
@@ -141,6 +144,8 @@ namespace SmartGridToolbox
          Event & getEventWillUpdate() {return willUpdate_;}
          Event & getEventDidUpdate() {return didUpdate_;}
          Event & getEventNeedsUpdate() {return needsUpdate_;}
+
+
          /// @}
 
          /// @}

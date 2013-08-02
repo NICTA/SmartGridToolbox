@@ -82,21 +82,21 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus1P::setLoadYUpdated(const Complex & Y0, const Complex & Y1)
+   void Bus1P::updateState(ptime t0, ptime t1)
    {
-      Y_ += Y1;
-      Y_ -= Y0;
+      Y_ = I_ = S_ = {0.0, 0.0};
+      for (const ZipLoad1P * load : zipLoads_)
+      {
+         Y_ += load->getY();
+         I_ += load->getI();
+         S_ += load->getS();
+      }
    }
 
-   void Bus1P::setLoadIUpdated(const Complex & I0, const Complex & I1)
+   void Bus1P::addZipLoad(ZipLoad1P & zipLoad)
    {
-      I_ += I1;
-      I_ -= I0; 
-   }
-
-   void Bus1P::setLoadSUpdated(const Complex & S0, const Complex & S1)
-   {
-      S_ += S1;
-      S_ -= S0;
+      zipLoads_.push_back(&zipLoad);
+      zipLoad.getEventDidUpdate().addAction([&](){getEventNeedsUpdate().trigger();});
+      // TODO: this will recalculate all ziploads. Efficiency?
    }
 }

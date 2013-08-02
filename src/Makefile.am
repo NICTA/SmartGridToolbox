@@ -8,6 +8,7 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 										  Branch1P.cc \
 										  Common.cc \
 										  Component.cc \
+										  Event.cc \
 										  Meter.cc \
 										  Model.cc \
 										  Network1P.cc \
@@ -28,8 +29,7 @@ helloworld_LDADD = libsmartgridtoolbox.a
 						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
 						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
 						 -lblas
-klu_simple_LDADD = \
-						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
+klu_simple_LDADD = ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
 						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
 						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \

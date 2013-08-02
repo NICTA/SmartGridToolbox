@@ -14,23 +14,23 @@ namespace SmartGridToolbox
          typedef std::function<void()> Action;
 
       public:
-         Event()
+         Event(const std::string & description) : description_(description)
          {
             // Empty. 
          }
 
-         void addAction(const Action & action)
-         {
-            actions_.push_back(action);
-         }
+         void addAction(const Action & action);
 
-         void trigger()
+         void trigger();
+
+         const std::string & getDescription() const
          {
-            for (const Action & action : actions_) {action();}
+            return description_;
          }
 
       private:
          std::list<Action> actions_;
+         std::string description_;
    };
 }
 
