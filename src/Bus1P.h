@@ -11,8 +11,6 @@
 
 namespace SmartGridToolbox
 {
-   class Network1P;
-
    class Bus1PParser : public ComponentParser
    {
       public:
@@ -48,10 +46,6 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         const Network1P & getNetwork() const {return *network_;}
-         Network1P & getNetwork() {return *network_;}
-         void setNetwork(Network1P & network) {network_ = &network;}
-
          BusType getType() const {return type_;}
          void setType(BusType type) {type_ = type;}
 
@@ -76,7 +70,6 @@ namespace SmartGridToolbox
       /// @name My private member variables.
       /// @{
       private:
-         Network1P * network_;   ///< Network.
          std::vector<const ZipLoad1P *> zipLoads;
          BusType type_;          ///< Bus type. 
          Complex V_;             ///< Voltage.

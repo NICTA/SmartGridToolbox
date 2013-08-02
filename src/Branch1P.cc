@@ -39,7 +39,6 @@ namespace SmartGridToolbox
       Network1P * networkComp = mod.getComponentNamed<Network1P>(networkStr);
       if (networkComp != nullptr)
       {
-         comp->setNetwork(*networkComp);
          networkComp->addBranch(*comp);
       }
       else

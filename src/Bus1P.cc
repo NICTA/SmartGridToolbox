@@ -72,7 +72,6 @@ namespace SmartGridToolbox
       Network1P * networkComp = mod.getComponentNamed<Network1P>(networkStr);
       if (networkComp != nullptr)
       {
-         comp->setNetwork(*networkComp);
          networkComp->addBus(*comp);
       }
       else
@@ -87,20 +86,17 @@ namespace SmartGridToolbox
    {
       Y_ += Y1;
       Y_ -= Y0;
-      network_->setBusUpdated(*this);
    }
 
    void Bus1P::setLoadIUpdated(const Complex & I0, const Complex & I1)
    {
       I_ += I1;
       I_ -= I0; 
-      network_->setBusUpdated(*this);
    }
 
    void Bus1P::setLoadSUpdated(const Complex & S0, const Complex & S1)
    {
       S_ += S1;
       S_ -= S0;
-      network_->setBusUpdated(*this);
    }
 }

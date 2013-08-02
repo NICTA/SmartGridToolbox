@@ -10,7 +10,6 @@
 
 namespace SmartGridToolbox
 {
-   class Network1P;
    class Bus1P;
 
    class Branch1PParser : public ComponentParser
@@ -48,10 +47,6 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         const Network1P & getNetwork() const {return *network_;}
-         Network1P & getNetwork() {return *network_;}
-         void setNetwork(Network1P & network) {network_ = &network;}
-
          const Bus1P & getBusi() const {return *busi_;}
          Bus1P & getBusi() {return *busi_;}
          void setBusi(Bus1P & busi) {busi_ = &busi;}
@@ -68,7 +63,6 @@ namespace SmartGridToolbox
       /// @name My private member variables.
       /// @{
       private:
-         Network1P * network_;   ///< Network.
          Bus1P * busi_;          ///< My i bus.
          Bus1P * busk_;          ///< My k bus.
          Array2D<Complex, 2, 2> Y_;       ///< Complex value of elements in bus admittance matrix in NR solver.
