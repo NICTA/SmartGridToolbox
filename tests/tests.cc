@@ -399,8 +399,7 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    message() << "Initialize simulation. Completed." << std::endl;
 
    a0->getEventDidUpdate().addAction(
-         [&]() {cout << a1->getName() << " received did update from " << a0->getName() << std::endl;}
-   );
+         [&]() {cout << a1->getName() << " received did update from " << a0->getName() << std::endl;});
 
    sim.doNextUpdate();
    sim.doNextUpdate();
