@@ -568,6 +568,8 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    mod.validate();
 
    sim.initialize(epoch, epoch + seconds(15));
+   Network1P * network = mod.getComponentNamed<Network1P>("network_1");
+   network->getEventDidUpdate().addAction([&](){message() << "Network updated" << std::endl;}, "Network updated.");
    while (sim.doNextUpdate())
    {
       message() << "Simulation updated to " << sim.getCurrentTime() << std::endl;
