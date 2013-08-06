@@ -62,7 +62,7 @@ namespace SmartGridToolbox
             return protoVec_;
          }
 
-         template<typename T, typename... Args> T & addComponent(Args&&... args)
+         template<typename T, typename... Args> T & newComponent(Args&&... args)
          {
             T * comp = new T(std::forward<Args>(args)...);
             addGenericComponent(comp);

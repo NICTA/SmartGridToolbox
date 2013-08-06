@@ -32,7 +32,8 @@ namespace SmartGridToolbox
 
       // Public member functions.
       public:
-         SimpleBuilding() :
+         SimpleBuilding(const std::string & name) :
+            Component(name),
             dt_(minutes(5)),
             kb_(5 * kW / K),
             Cb_(1.0e5 * kJ / K),

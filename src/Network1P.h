@@ -56,6 +56,7 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
+         Network1P(const std::string & name) : Component(name) {}
 
          void addBus(Bus1P & bus)
          {

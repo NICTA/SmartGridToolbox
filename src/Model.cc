@@ -35,6 +35,7 @@ namespace SmartGridToolbox
             message() << "      " << dep->getName() << std::endl;
          }
       }
+
       for (int i = 0; i < compVec_.size(); ++i)
       {
          compVec_[i]->setRank(i);
@@ -75,7 +76,7 @@ namespace SmartGridToolbox
    {
       std::pair<ComponentMap::iterator, bool> result = compMap_.insert(make_pair(comp->getName(), comp));
       if (result.second == 0) {
-         error() << "Component " << comp->getName() << " already exists in model!" << std::endl;
+         error() << "Component " << comp->getName() << " occurs more than once in the model!" << std::endl;
          abort();
       }
       else
@@ -84,4 +85,5 @@ namespace SmartGridToolbox
          message() << "Component " << comp->getName() << " added to model." << std::endl;
       }
    }
+
 }

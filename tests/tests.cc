@@ -27,7 +27,7 @@ using namespace boost::posix_time;
 class TestCompA : public Component
 {
    public:
-      TestCompA(const string & name, int x, double y) : 
+      TestCompA(const std::string & name, int x, double y) : 
          Component(name),
          x_(x),
          y_(y)
@@ -99,43 +99,29 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
    Model mod;
    Simulation sim(mod);
 
-   TestCompA * a0 = new TestCompA("tca0", 0, 0.1);
-   TestCompA * a1 = new TestCompA("tca1", 1, 0.1);
-   TestCompA * a2 = new TestCompA("tca2", 2, 0.1);
-   TestCompA * a3 = new TestCompA("tca3", 3, 0.1);
-   TestCompA * a4 = new TestCompA("tca4", 4, 0.1);
-   TestCompA * a5 = new TestCompA("tca5", 5, 0.1);
+   TestCompA & a0 = mod.newComponent<TestCompA>("tca0", 0, 0.1);
+   TestCompA & a1 = mod.newComponent<TestCompA>("tca1", 1, 0.1);
+   TestCompA & a2 = mod.newComponent<TestCompA>("tca2", 2, 0.1);
+   TestCompA & a3 = mod.newComponent<TestCompA>("tca3", 3, 0.1);
+   TestCompA & a4 = mod.newComponent<TestCompA>("tca4", 4, 0.1);
+   TestCompA & a5 = mod.newComponent<TestCompA>("tca5", 5, 0.1);
 
-   a4->dependsOn(*a0);
-   a5->dependsOn(*a0);
-   a0->dependsOn(*a1);
-   a2->dependsOn(*a1);
-   a1->dependsOn(*a3);
-   a1->dependsOn(*a4);
-   a2->dependsOn(*a5);
-
-   mod.addComponent(*a0);
-   mod.addComponent(*a1);
-   mod.addComponent(*a2);
-   mod.addComponent(*a3);
-   mod.addComponent(*a4);
-   mod.addComponent(*a5);
+   a4.dependsOn(a0);
+   a5.dependsOn(a0);
+   a0.dependsOn(a1);
+   a2.dependsOn(a1);
+   a1.dependsOn(a3);
+   a1.dependsOn(a4);
+   a2.dependsOn(a5);
 
    mod.validate();
 
-   BOOST_CHECK(mod.getComponents()[0] == a3);
-   BOOST_CHECK(mod.getComponents()[1] == a4);
-   BOOST_CHECK(mod.getComponents()[2] == a1);
-   BOOST_CHECK(mod.getComponents()[3] == a0);
-   BOOST_CHECK(mod.getComponents()[4] == a5);
-   BOOST_CHECK(mod.getComponents()[5] == a2);
-
-   delete a0;
-   delete a1;
-   delete a2;
-   delete a3;
-   delete a4;
-   delete a5;
+   BOOST_CHECK(mod.getComponents()[0] == &a3);
+   BOOST_CHECK(mod.getComponents()[1] == &a4);
+   BOOST_CHECK(mod.getComponents()[2] == &a1);
+   BOOST_CHECK(mod.getComponents()[3] == &a0);
+   BOOST_CHECK(mod.getComponents()[4] == &a5);
+   BOOST_CHECK(mod.getComponents()[5] == &a2);
    message() << "Testing model dependencies. Completed." << std::endl;
 }
 
@@ -167,7 +153,7 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
 {
    using namespace boost::gregorian;
    message() << "Testing SimpleBattery. Starting." << std::endl;
-   SimpleBattery bat1;
+   SimpleBattery bat1("sb0");
    bat1.setName("bat1");
    bat1.setInitCharge(5.0 * kWh);
    bat1.setMaxCharge(8.0 * kWh);
@@ -387,19 +373,17 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
 {
    message() << "Testing events and synchronization. Starting." << std::endl;
    Model mod;
-   TestEventA * a0 = new TestEventA("a0", seconds(3), 3);
-   TestEventA * a1 = new TestEventA("a1", seconds(9), 3);
-   a0->dependsOn(*a1); 
-   mod.addComponent(*a0);
-   mod.addComponent(*a1);
+   TestEventA & a0 = mod.newComponent<TestEventA>("a0", seconds(3), 3);
+   TestEventA & a1 = mod.newComponent<TestEventA>("a1", seconds(9), 3);
+   a0.dependsOn(a1); 
    mod.validate();
    Simulation sim(mod);
    message() << "Initialize simulation. Starting." << std::endl;
    sim.initialize(epoch, epoch + seconds(10));
    message() << "Initialize simulation. Completed." << std::endl;
 
-   a0->getEventDidUpdate().addAction(
-         [&]() {cout << a1->getName() << " received did update from " << a0->getName() << std::endl;});
+   a0.getEventDidUpdate().addAction(
+         [&]() {cout << a1.getName() << " received did update from " << a0.getName() << std::endl;});
 
    sim.doNextUpdate();
    sim.doNextUpdate();
@@ -438,8 +422,7 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
    auto dQg = [&](ptime t){return sinusoidal(dSeconds(t-t0), day, 14*hour, 
          40*kW, 60*kW);};
 
-   SimpleBuilding build1;
-   build1.setName("build1");
+   SimpleBuilding & build1 = mod.newComponent<SimpleBuilding>("build1");
    build1.setkb(5*kW/K);
    build1.setCb(1e5*kJ/K);
    build1.setTbInit(22*K);
@@ -450,8 +433,6 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
    build1.setTs(20*K);
    build1.setTeFunc(Te);
    build1.setdQgFunc(dQg);
-
-   mod.addComponent(build1);
 
    sim.initialize(t0, t0 + seconds(10));
    auto print = [&] () -> void 
@@ -538,7 +519,7 @@ BOOST_AUTO_TEST_CASE (test_balanced_power_flow_nr)
 class TestLoad : public ZipLoad1P
 {
    public:
-      TestLoad() : dt_(seconds(0))
+      TestLoad(const std::string & name) : ZipLoad1P(name), dt_(seconds(0))
       {
          // Empty.
       }
@@ -579,7 +560,8 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    p.registerComponentParser<Branch1PParser>();
    p.parse("test_network_1p.yaml", mod, sim);
 
-   mod.addComponent(*a0);
+   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
+   tl0.setDt(seconds(5));
 
    sim.initialize(epoch, epoch + seconds(10));
    sim.doNextUpdate();

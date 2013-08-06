@@ -11,7 +11,8 @@ namespace SmartGridToolbox
    class SimpleBattery : public Component
    {
       public:
-         SimpleBattery():
+         SimpleBattery(const std::string & name) :
+            Component(name),
             initCharge_(0.0),
             maxChargePower_(0.0),
             maxDischargePower_(0.0),

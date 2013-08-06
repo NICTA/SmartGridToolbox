@@ -27,6 +27,8 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
+         ZipLoad1P(const std::string & name) : Component(name) {}
+
          const Complex & getY() const {return Y_;}
          void setY(const Complex & Y) {Y_ = Y; getEventNeedsUpdate().trigger();}
 

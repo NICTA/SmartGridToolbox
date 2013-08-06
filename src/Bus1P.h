@@ -46,6 +46,8 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
+         Bus1P(const std::string & name) : Component(name) {}
+
          BusType getType() const {return type_;}
          void setType(BusType type) {type_ = type;}
 

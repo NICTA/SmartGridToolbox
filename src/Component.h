@@ -31,12 +31,6 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         /// Constructor.
-         Component() : Component("unknown")
-         {
-            // Empty.
-         }
-
          /// Destructor.
          virtual ~Component()
          {

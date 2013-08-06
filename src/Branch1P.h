@@ -47,6 +47,8 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
+         Branch1P(const std::string & name) : Component(name) {}
+
          const Bus1P & getBusi() const {return *busi_;}
          Bus1P & getBusi() {return *busi_;}
          void setBusi(Bus1P & busi) {busi_ = &busi;}

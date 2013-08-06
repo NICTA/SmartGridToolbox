@@ -27,7 +27,8 @@ namespace SmartGridToolbox
          virtual Complex getPower() const override {return P_;}
 
       public:
-         Meter() :
+         Meter(const std::string & name) :
+            Component(name),
             dt_(minutes(5)),
             P_(Complex(0.0, 0.0)) 
          {

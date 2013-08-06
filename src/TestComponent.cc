@@ -9,7 +9,7 @@ namespace SmartGridToolbox
       message() << "TestComponentParser: name = " << name << std::endl;
       const int value = nd["value"].as<int>();
       message() << "TestComponentParser: value = " << value << std::endl;
-      TestComponent & tc = mod.addComponent<TestComponent>();
+      TestComponent & tc = mod.newComponent<TestComponent>(name);
       tc.setName(name);
       tc.setValue(value);
    }

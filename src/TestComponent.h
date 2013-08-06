@@ -43,6 +43,8 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
+         TestComponent(const std::string & name) : Component(name) {}
+
          int getValue() {return value_;}
          void setValue(int value) {value_ = value;}
 

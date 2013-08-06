@@ -14,9 +14,8 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "bus_k");
       assertFieldPresent(nd, "Y");
 
-      Branch1P & comp = mod.addComponent<Branch1P>();
       const std::string nameStr = nd["name"].as<std::string>();
-      comp.setName(nameStr);
+      Branch1P & comp = mod.newComponent<Branch1P>(nameStr);
 
       UblasMatrix<Complex> YMat = nd["Y"].as<UblasMatrix<Complex>>();
       Array2D<Complex, 2, 2> Y;

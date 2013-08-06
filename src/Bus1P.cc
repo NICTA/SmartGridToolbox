@@ -11,9 +11,8 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "type");
 
-      Bus1P & comp = mod.addComponent<Bus1P>();
       const std::string nameStr = nd["name"].as<std::string>();
-      comp.setName(nameStr);
+      Bus1P & comp = mod.newComponent<Bus1P>(nameStr);
 
       const std::string typeStr = nd["type"].as<std::string>();
       if (typeStr == "SL") 
