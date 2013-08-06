@@ -568,9 +568,10 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    mod.validate();
 
    sim.initialize(epoch, epoch + seconds(15));
-   sim.doNextUpdate();
-   sim.doNextUpdate();
-   sim.doNextUpdate();
+   while (sim.doNextUpdate())
+   {
+      message() << "Simulation updated to " << sim.getLastTime() << std::endl;
+   }
 
    message() << "Testing network_1p. Completed." << std::endl;
 }

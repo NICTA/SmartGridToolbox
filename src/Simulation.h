@@ -79,11 +79,21 @@ namespace SmartGridToolbox
             endTime_ = time;
          }
 
+         const ptime & getLastTime() const
+         {
+            return endTime_;
+         }
+
+         void setLastTime(const ptime time)
+         {
+            endTime_ = time;
+         }
+
          /// Initialize to start time.
          void initialize(const ptime & startTime, const ptime & endTime);
          
          /// Do the next update.
-         void doNextUpdate();
+         bool doNextUpdate();
 
       private:
          typedef std::set<Component *, ScheduledUpdatesComp> ScheduledUpdates;
@@ -93,7 +103,7 @@ namespace SmartGridToolbox
          Model * mod_;
          ptime startTime_;
          ptime endTime_;
-         ptime latestTime_;
+         ptime lastTime_;
          ScheduledUpdates scheduledUpdates_;
          ContingentUpdates contingentUpdates_;
    };
