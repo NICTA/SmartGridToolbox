@@ -62,7 +62,12 @@ namespace SmartGridToolbox
             return protoVec_;
          }
 
-         void addComponent(Component & comp);
+         template<typename T, typename... Args> T & addComponent(Args&&... args)
+         {
+            T * comp = new T(std::forward<Args>(args)...);
+            addGenericComponent(comp);
+            return *comp;
+         }
 
          template<typename T> const T * getComponentNamed(const std::string & name) const
          {
@@ -100,8 +105,7 @@ namespace SmartGridToolbox
          void validate();
 
       private:
-         void orderComponents(); 
-            // Produce weak ordering based on reachability.
+         void addGenericComponent(Component * comp);
 
       private:
          std::string name_;

@@ -535,6 +535,37 @@ BOOST_AUTO_TEST_CASE (test_balanced_power_flow_nr)
    message() << "Testing balanced_power_flow_nr. Completed." << std::endl;
 }
 
+class TestLoad : public ZipLoad1P
+{
+   public:
+      TestLoad() : dt_(seconds(0))
+      {
+         // Empty.
+      }
+
+      virtual ptime getValidUntil() const
+      {
+         return getTime() + dt_;
+      }
+
+      virtual void updateState(ptime t0, ptime t1)
+      {
+         setS(sin(dSeconds(t1)/60.0));
+      }
+
+      time_duration getDt() const
+      {
+         return dt_;
+      }
+      void setDt(time_duration dt)
+      {
+         dt_ = dt;
+      }
+
+   private:
+      time_duration dt_;
+};
+
 BOOST_AUTO_TEST_CASE (test_network_1p)
 {
    message() << "Testing network_1p. Starting." << std::endl;
@@ -547,6 +578,8 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    p.registerComponentParser<Bus1PParser>();
    p.registerComponentParser<Branch1PParser>();
    p.parse("test_network_1p.yaml", mod, sim);
+
+   mod.addComponent(*a0);
 
    sim.initialize(epoch, epoch + seconds(10));
    sim.doNextUpdate();

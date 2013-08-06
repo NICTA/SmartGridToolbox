@@ -10,9 +10,8 @@ namespace SmartGridToolbox
    {
       SGTDebug("Network1P : parse.");
       const std::string nameStr = nd["name"].as<std::string>();
-      Network1P * comp = new Network1P;
-      comp->setName(nameStr);
-      mod.addComponent(*comp);
+      Network1P & comp = mod.addComponent<Network1P>();
+      comp.setName(nameStr);
    }
 
    void Network1P::updateState(ptime t0, ptime t1)

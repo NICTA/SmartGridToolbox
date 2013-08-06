@@ -24,21 +24,6 @@ namespace SmartGridToolbox
       }
    }
 
-   void Model::addComponent(Component & comp)
-   {
-      std::pair<ComponentMap::iterator, bool> result = compMap_.insert(
-            make_pair(comp.getName(), &comp));
-      if (result.second == 0) {
-         error() << "Component " << comp.getName() << " already exists in model!" << std::endl;
-         abort();
-      }
-      else
-      {
-         compVec_.push_back(&comp);
-         message() << "Component " << comp.getName() << " added to model." << std::endl;
-      }
-   }
-
    void Model::validate()
    {
       message() << "Model before validation:" << std::endl;
@@ -83,6 +68,20 @@ namespace SmartGridToolbox
          {
             message() << "      " << dep->getName() << std::endl;
          }
+      }
+   }
+
+   void Model::addGenericComponent(Component * comp)
+   {
+      std::pair<ComponentMap::iterator, bool> result = compMap_.insert(make_pair(comp->getName(), comp));
+      if (result.second == 0) {
+         error() << "Component " << comp->getName() << " already exists in model!" << std::endl;
+         abort();
+      }
+      else
+      {
+         compVec_.push_back(comp);
+         message() << "Component " << comp->getName() << " added to model." << std::endl;
       }
    }
 }

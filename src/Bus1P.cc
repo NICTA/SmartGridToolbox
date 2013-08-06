@@ -11,22 +11,22 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "type");
 
-      Bus1P * comp = new Bus1P;
+      Bus1P & comp = mod.addComponent<Bus1P>();
       const std::string nameStr = nd["name"].as<std::string>();
-      comp->setName(nameStr);
+      comp.setName(nameStr);
 
       const std::string typeStr = nd["type"].as<std::string>();
       if (typeStr == "SL") 
       {
-         comp->setType(BusType::SL);
+         comp.setType(BusType::SL);
       }
       else if (typeStr == "PQ") 
       {
-         comp->setType(BusType::PQ);
+         comp.setType(BusType::PQ);
       }
       else if (typeStr == "PV") 
       {
-         comp->setType(BusType::PV);
+         comp.setType(BusType::PV);
       }
       else
       { 
@@ -36,30 +36,28 @@ namespace SmartGridToolbox
 
       if (nd["slack_voltage"])
       {
-         comp->setV(nd["slack_voltage"].as<Complex>());
+         comp.setV(nd["slack_voltage"].as<Complex>());
       }
 
       if (nd["constant_impedance_load"])
       {
-         comp->setY(nd["constant_impedance_load"].as<Complex>());
+         comp.setY(nd["constant_impedance_load"].as<Complex>());
       }
 
       if (nd["constant_current_load"])
       {
-         comp->setI(nd["constant_current_load"].as<Complex>());
+         comp.setI(nd["constant_current_load"].as<Complex>());
       }
 
       if (nd["constant_power_load"])
       {
-         comp->setS(nd["constant_power_load"].as<Complex>());
+         comp.setS(nd["constant_power_load"].as<Complex>());
       }
 
       if (nd["generator_power"])
       {
-         comp->setSGen(nd["generator_power"].as<Complex>());
+         comp.setSGen(nd["generator_power"].as<Complex>());
       }
-
-      mod.addComponent(*comp);
    }
 
    void Bus1PParser::postParse(const YAML::Node & nd, Model & mod) const

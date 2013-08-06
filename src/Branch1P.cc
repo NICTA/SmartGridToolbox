@@ -14,9 +14,9 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "bus_k");
       assertFieldPresent(nd, "Y");
 
-      Branch1P * comp = new Branch1P;
+      Branch1P & comp = mod.addComponent<Branch1P>();
       const std::string nameStr = nd["name"].as<std::string>();
-      comp->setName(nameStr);
+      comp.setName(nameStr);
 
       UblasMatrix<Complex> YMat = nd["Y"].as<UblasMatrix<Complex>>();
       Array2D<Complex, 2, 2> Y;
@@ -24,9 +24,7 @@ namespace SmartGridToolbox
       Y[0][1] = YMat(0, 1);
       Y[1][0] = YMat(1, 0);
       Y[1][1] = YMat(1, 1);
-      comp->setY(Y);
-
-      mod.addComponent(*comp);
+      comp.setY(Y);
    }
 
    void Branch1PParser::postParse(const YAML::Node & nd, Model & mod) const
