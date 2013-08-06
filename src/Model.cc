@@ -29,10 +29,10 @@ namespace SmartGridToolbox
       message() << "Model before validation:" << std::endl;
       for (const Component * comp : compVec_)
       {
-         message() << "   " << comp->getName() << std::endl;
+         message() << "\t" << comp->getName() << std::endl;
          for (Component * const dep : comp->getDependencies())
          {
-            message() << "      " << dep->getName() << std::endl;
+            message() << "\t\t" << dep->getName() << std::endl;
          }
       }
 
@@ -64,10 +64,10 @@ namespace SmartGridToolbox
       message() << "Model after validation:" << std::endl;
       for (const Component * comp : compVec_)
       {
-         message() << "   " << comp->getName() << std::endl;
+         message() << "\t" << comp->getName() << std::endl;
          for (Component * const dep : comp->getDependencies())
          {
-            message() << "      " << dep->getName() << std::endl;
+            message() << "\t\t" << dep->getName() << std::endl;
          }
       }
    }

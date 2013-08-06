@@ -14,4 +14,13 @@ namespace SmartGridToolbox
          abort();
       }
    }
+
+   void Component::update(ptime t)
+   {
+      SGTDebug("Component " << getName() << " update from " << t_ << " to " << t);
+      willUpdate_.trigger();
+      updateState(t_, t);
+      t_ = t;
+      didUpdate_.trigger();
+   }
 }

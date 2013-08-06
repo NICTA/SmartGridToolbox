@@ -24,9 +24,9 @@ namespace SmartGridToolbox
             tInit_(not_a_date_time),
             t_(not_a_date_time),
             rank_(-1),
-            willUpdate_("Component::willUpdate_"),
-            didUpdate_("Component::didUpdate_"),
-            needsUpdate_("Component::needsUpdate_")
+            willUpdate_("Component " + name_ + " will update"),
+            didUpdate_("Component " + name_ + " did update"),
+            needsUpdate_("Component " + name_ + " needs update")
          {
             // Empty.
          }
@@ -120,13 +120,7 @@ namespace SmartGridToolbox
 
          /// Bring state up to time t.
          /** @param t the timestamp to advance to. */
-         void update(ptime t)
-         {
-            willUpdate_.trigger();
-            updateState(t_, t);
-            t_ = t;
-            didUpdate_.trigger();
-         }
+         void update(ptime t);
 
          virtual ptime getValidUntil() const
          {

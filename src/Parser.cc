@@ -130,8 +130,8 @@ namespace SmartGridToolbox
 
       message() << "Finished parsing." << std::endl;
       message() << "Name = " << model.getName() << std::endl;
-      message() << "Start time = " << to_simple_string(simulation.getStartTime()) << std::endl;
-      message() << "End time = " << to_simple_string(simulation.getEndTime()) << std::endl;
+      message() << "Start time = " << simulation.getStartTime() << std::endl;
+      message() << "End time = " << simulation.getEndTime() << std::endl;
    }
 
    void Parser::parseGlobal(const YAML::Node & top, Model & model,

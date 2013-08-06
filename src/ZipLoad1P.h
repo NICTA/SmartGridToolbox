@@ -30,13 +30,13 @@ namespace SmartGridToolbox
          ZipLoad1P(const std::string & name) : Component(name) {}
 
          const Complex & getY() const {return Y_;}
-         void setY(const Complex & Y) {Y_ = Y; getEventNeedsUpdate().trigger();}
+         void setY(const Complex & Y) {Y_ = Y;}
 
          const Complex & getI() const {return I_;}
-         void setI(const Complex & I) {I_ = I; getEventNeedsUpdate().trigger();}
+         void setI(const Complex & I) {I_ = I;}
 
          const Complex & getS() const {return S_;}
-         void setS(const Complex & S) {S_ = S; getEventNeedsUpdate().trigger();}
+         void setS(const Complex & S) {S_ = S;}
       /// @}
       
       /// @name My private member variables.

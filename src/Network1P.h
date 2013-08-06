@@ -62,7 +62,8 @@ namespace SmartGridToolbox
          {
             busVec_.push_back(&bus);
             busMap_[bus.getName()] = &bus;
-            bus.getEventDidUpdate().addAction([&](){this->getEventNeedsUpdate().trigger();});
+            bus.getEventDidUpdate().addAction([this](){getEventNeedsUpdate().trigger();}, 
+                  "Trigger Network1P " + getName() + " needs update");
          }
 
          const Bus1P * findBus(const std::string & name) const
@@ -78,7 +79,8 @@ namespace SmartGridToolbox
          void addBranch(Branch1P & branch)
          {
             branchVec_.push_back(&branch);
-            branch.getEventDidUpdate().addAction([&](){this->getEventNeedsUpdate().trigger();});
+            branch.getEventDidUpdate().addAction([this](){getEventNeedsUpdate().trigger();},
+                  "Trigger Network1P " + getName() + " needs update");
          }
 
          virtual void rebuildNetwork();

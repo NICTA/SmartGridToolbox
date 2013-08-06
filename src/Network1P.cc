@@ -47,8 +47,8 @@ namespace SmartGridToolbox
       {
          solver_.addBranch(branch->getBusi().getName(), branch->getBusk().getName(), branch->getY());
          SGTDebug("Added branch with Y");
-         SGTDebug("   " << std::left << std::setw(12) << branch->getY()[0][0] << std::setw(12) << branch->getY()[0][1])
-         SGTDebug("   " << std::left << std::setw(12) << branch->getY()[1][0] << std::setw(12) << branch->getY()[1][1]);
+         SGTDebug("\t" << std::left << std::setw(12) << branch->getY()[0][0] << std::setw(12) << branch->getY()[0][1])
+         SGTDebug("\t" << std::left << std::setw(12) << branch->getY()[1][0] << std::setw(12) << branch->getY()[1][1]);
       }
       solver_.validate();
    }

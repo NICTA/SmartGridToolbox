@@ -97,7 +97,6 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
 {
    message() << "Testing model dependencies. Starting." << std::endl;
    Model mod;
-   Simulation sim(mod);
 
    TestCompA & a0 = mod.newComponent<TestCompA>("tca0", 0, 0.1);
    TestCompA & a1 = mod.newComponent<TestCompA>("tca1", 1, 0.1);
@@ -115,6 +114,7 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
    a2.dependsOn(a5);
 
    mod.validate();
+   Simulation sim(mod);
 
    BOOST_CHECK(mod.getComponents()[0] == &a3);
    BOOST_CHECK(mod.getComponents()[1] == &a4);
@@ -210,8 +210,7 @@ BOOST_AUTO_TEST_CASE (test_spline)
   { //We can extract the original data points by treating the spline as
     //a read-only STL container.
     std::ofstream of("orig.dat");
-    for (Spline::const_iterator iPtr = spline.begin();
-	 iPtr != spline.end(); ++iPtr)
+    for (Spline::const_iterator iPtr = spline.begin(); iPtr != spline.end(); ++iPtr)
       of << iPtr->first << " " << iPtr->second << "\n";
   }
   
@@ -383,7 +382,8 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    message() << "Initialize simulation. Completed." << std::endl;
 
    a0.getEventDidUpdate().addAction(
-         [&]() {cout << a1.getName() << " received did update from " << a0.getName() << std::endl;});
+         [&]() {cout << a1.getName() << " received did update from " << a0.getName() << std::endl;},
+         "Test action.");
 
    sim.doNextUpdate();
    sim.doNextUpdate();
@@ -401,8 +401,7 @@ static double sinusoidal(double t, double T, double Delta,
                          double minim, double maxim)
 {
    // Sinusoidal function, T is period, Delta is offset.
-   return minim + (maxim - minim) * 0.5 * (1.0 + 
-         cos(2.0 * pi * (t - Delta) / T));
+   return minim + (maxim - minim) * 0.5 * (1.0 + cos(2.0 * pi * (t - Delta) / T));
 }
 
 BOOST_AUTO_TEST_CASE (test_simple_building)
@@ -441,7 +440,7 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
            << " " << build1.getPh() << " " << build1.getdQh() << endl;
    };
    print();
-   while (build1.getTime() <= t0 + hours(240))
+   while (build1.getTime() <= t0 + hours(24))
    {
       sim.doNextUpdate();
       print();
@@ -525,14 +524,14 @@ class TestLoad : public ZipLoad1P
          // Empty.
       }
 
-      virtual ptime getValidUntil() const
+      virtual ptime getValidUntil() const override
       {
          return getTime() + dt_;
       }
 
-      virtual void updateState(ptime t0, ptime t1)
+      virtual void updateState(ptime t0, ptime t1) override
       {
-         setS(sin(dSeconds(t1)/60.0));
+         S_ = sin(dSeconds(t1)/60.0);
       }
 
       time_duration getDt() const
@@ -563,15 +562,12 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
 
    TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
    tl0.setDt(seconds(5));
+   Bus1P * bus2 = mod.getComponentNamed<Bus1P>("bus_2");
+   bus2->addZipLoad(tl0);
 
    mod.validate();
 
    sim.initialize(epoch, epoch + seconds(10));
-   sim.doNextUpdate();
-   sim.doNextUpdate();
-   sim.doNextUpdate();
-   sim.doNextUpdate();
-   sim.doNextUpdate();
    sim.doNextUpdate();
    sim.doNextUpdate();
    sim.doNextUpdate();

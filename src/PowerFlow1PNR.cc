@@ -285,15 +285,15 @@ namespace SmartGridToolbox
       SGTDebug("Number of slack busses = " << nSL_);
       for (const Bus1PNR * bus : busses_)
       {
-         SGTDebug("    Bus: " << bus->idx_ << " " << bus->id_ << " " << (int)bus->type_ << " " << bus->V_ << " " 
+         SGTDebug("\tBus: " << bus->idx_ << " " << bus->id_ << " " << (int)bus->type_ << " " << bus->V_ << " " 
                   << bus->Y_ << " " << bus->I_ << " " << bus->S_);
       }
       for (Branch1PNR * branch : branches_)
       {
-         SGTDebug("    Branch: " << branch->idi_ << " " << branch->idk_);
+         SGTDebug("\tBranch: " << branch->idi_ << " " << branch->idk_);
          for (int i = 0; i < 2; ++i)
          {
-            SGTDebug("            " << branch->Y_[i][0] << " " << branch->Y_[i][1]);
+            SGTDebug("\t\t" << branch->Y_[i][0] << " " << branch->Y_[i][1]);
          }
       }
    }
@@ -307,7 +307,7 @@ namespace SmartGridToolbox
       ssJ << "J: " << std::endl;
       for (int i = 0; i < J_.size1(); ++i)
       {
-         ssJ << "   ";
+         ssJ << "\t";
          for (int k = 0; k < J_.size2(); ++k)
          {
             ssJ << J_(i, k) << " ";

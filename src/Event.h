@@ -8,18 +8,37 @@ namespace SmartGridToolbox
 {
    class Component;
 
-   class Event
+   class Action
    {
       public:
-         typedef std::function<void()> Action;
+         Action(const std::function<void ()> & function, const std::string & description) : 
+            function_(function), description_(description)
+         {
+            // Empty.
+         }
 
+         const std::string & getDescription() const {return description_;}
+
+         void perform() const {function_();}
+
+      private:
+         std::function<void ()> function_;
+         std::string description_;
+   };
+
+   class Event
+   {
       public:
          Event(const std::string & description) : description_(description)
          {
             // Empty. 
          }
 
-         void addAction(const Action & action);
+         void addAction(const std::function<void ()> & action, const std::string & description)
+         {
+            SGTDebug("Event: " << description_ << ": addAction: " << description);
+            actions_.emplace_back(action, description);
+         }
 
          void trigger();
 

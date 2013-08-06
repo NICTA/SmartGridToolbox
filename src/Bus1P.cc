@@ -93,7 +93,8 @@ namespace SmartGridToolbox
    void Bus1P::addZipLoad(ZipLoad1P & zipLoad)
    {
       zipLoads_.push_back(&zipLoad);
-      zipLoad.getEventDidUpdate().addAction([&](){getEventNeedsUpdate().trigger();});
+      zipLoad.getEventDidUpdate().addAction([this](){getEventNeedsUpdate().trigger();}, 
+            "Trigger Bus1P " + getName() + " needs update.");
       // TODO: this will recalculate all ziploads. Efficiency?
    }
 }

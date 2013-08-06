@@ -8,7 +8,7 @@ using namespace std;
 std::string prlevel(int level)
 {
    std::stringstream ss;
-   for (int i = 0; i < level; ++i) {ss << "      ";}
+   for (int i = 0; i < level; ++i) {ss << "\t";}
    return ss.str();
 }
 
