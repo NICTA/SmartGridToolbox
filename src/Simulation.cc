@@ -7,7 +7,8 @@ namespace SmartGridToolbox
 {
    Simulation::Simulation(Model & mod) : mod_(&mod),
                                          startTime_(not_a_date_time),
-                                         endTime_(not_a_date_time)
+                                         endTime_(not_a_date_time),
+                                         latestTime_(pos_infin)
    {
       // Empty.
    }
@@ -33,6 +34,7 @@ namespace SmartGridToolbox
       auto schedUpdateIt = scheduledUpdates_.begin();
       Component * schedComp = *schedUpdateIt;
       ptime nextTime = schedComp->getValidUntil();
+      SGTDebug("Simulation::doNextUpdate() " << latestTime_ << " " << nextTime << " " << contingentUpdates_.size());
       if (nextTime > latestTime_ && contingentUpdates_.size() > 0)
       {
          // There are still contingent updates that need to be cleared before time is advanced.
@@ -49,10 +51,11 @@ namespace SmartGridToolbox
       else
       {
          // Do the next scheduled update.
+         latestTime_ = nextTime;
          SGTDebug("Scheduled update component " << schedComp->getName() << " from " 
-               << schedComp->getTime() << " to " << schedComp->getValidUntil());
+               << schedComp->getTime() << " to " << latestTime_);
          scheduledUpdates_.erase(schedUpdateIt); // Remove the update,
-         schedComp->update(schedComp->getValidUntil()); // perform the update,
+         schedComp->update(latestTime_); // perform the update,
          scheduledUpdates_.insert(schedComp); // and reinsert it.
       }
    }

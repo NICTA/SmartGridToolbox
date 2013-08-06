@@ -567,7 +567,7 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
 
    mod.validate();
 
-   sim.initialize(epoch, epoch + seconds(10));
+   sim.initialize(epoch, epoch + seconds(15));
    sim.doNextUpdate();
    sim.doNextUpdate();
    sim.doNextUpdate();
