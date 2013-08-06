@@ -24,7 +24,7 @@ namespace SmartGridToolbox
          for (const Bus1PNR * busNR : solver_.getBusses())
          {
             Bus1P * bus = findBus(busNR->id_);
-            bus->setV(busNR->V_);    
+            bus->setV(busNR->V_); // Push the state back onto bus. We don't want to trigger any events.    
          }
          SGTDebug("Updated Network1P state. Dumping solver.");
 #ifdef DEBUG

@@ -560,16 +560,35 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    p.registerComponentParser<Branch1PParser>();
    p.parse("test_network_1p.yaml", mod, sim);
 
+   Bus1P * bus1 = mod.getComponentNamed<Bus1P>("bus_1");
+   Bus1P * bus2 = mod.getComponentNamed<Bus1P>("bus_2");
+   Bus1P * bus3 = mod.getComponentNamed<Bus1P>("bus_3");
+
    TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
    tl0.setDt(seconds(5));
-   Bus1P * bus2 = mod.getComponentNamed<Bus1P>("bus_2");
    bus2->addZipLoad(tl0);
 
    mod.validate();
 
    sim.initialize(epoch, epoch + seconds(15));
    Network1P * network = mod.getComponentNamed<Network1P>("network_1");
-   network->getEventDidUpdate().addAction([&](){message() << "Network updated" << std::endl;}, "Network updated.");
+   network->getEventDidUpdate().addAction([&]()
+         {
+            message() << "Network updated" << std::endl;
+            message() << "\tbus_1 V = " << bus1->getV() << std::endl;
+            message() << "\tbus_2 V = " << bus2->getV() << std::endl;
+            message() << "\tbus_3 V = " << bus3->getV() << std::endl;
+         }, "Network updated.");
+   tl0.getEventDidUpdate().addAction([&]()
+         {
+            message() << "Test load updated" << std::endl;
+            message() << "\t S_ = " << tl0.getS() << std::endl;
+         }, "tl0 updated.");
+   bus2->getEventDidUpdate().addAction([&]()
+         {
+            message() << "bus_2 updated" << std::endl;
+            message() << "\t S_ = " << bus2->getS() << std::endl;
+         }, "bus_2 updated.");
    while (sim.doNextUpdate())
    {
       message() << "Simulation updated to " << sim.getCurrentTime() << std::endl;
