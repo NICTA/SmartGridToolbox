@@ -79,14 +79,9 @@ namespace SmartGridToolbox
             endTime_ = time;
          }
 
-         const ptime & getLastTime() const
+         const ptime & getCurrentTime() const
          {
-            return endTime_;
-         }
-
-         void setLastTime(const ptime time)
-         {
-            endTime_ = time;
+            return currentTime_;
          }
 
          /// Initialize to start time.
@@ -103,7 +98,7 @@ namespace SmartGridToolbox
          Model * mod_;
          ptime startTime_;
          ptime endTime_;
-         ptime lastTime_;
+         ptime currentTime_;
          ScheduledUpdates scheduledUpdates_;
          ContingentUpdates contingentUpdates_;
    };

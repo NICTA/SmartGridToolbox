@@ -570,7 +570,7 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    sim.initialize(epoch, epoch + seconds(15));
    while (sim.doNextUpdate())
    {
-      message() << "Simulation updated to " << sim.getLastTime() << std::endl;
+      message() << "Simulation updated to " << sim.getCurrentTime() << std::endl;
    }
 
    message() << "Testing network_1p. Completed." << std::endl;

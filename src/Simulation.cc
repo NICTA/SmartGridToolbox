@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    Simulation::Simulation(Model & mod) : mod_(&mod),
                                          startTime_(not_a_date_time),
                                          endTime_(not_a_date_time),
-                                         lastTime_(neg_infin)
+                                         currentTime_(neg_infin)
    {
       // Empty.
    }
@@ -40,28 +40,28 @@ namespace SmartGridToolbox
          schedComp = *schedUpdateIt;
          nextTime = schedComp->getValidUntil();
       }
-      if (nextTime > lastTime_ && contingentUpdates_.size() > 0 && lastTime_ <= endTime_)
+      if (nextTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ <= endTime_)
       {
          // There are contingent updates pending.
          Component * contComp = *contingentUpdates_.begin();
          SGTDebug("Contingent update component " << contComp->getName() << " from " 
-               << schedComp->getTime() << " to " << lastTime_);
+               << schedComp->getTime() << " to " << currentTime_);
          contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
          // Before updating the component, we need to take it out of the scheduled updates set, because its
          // sort key might change.
          scheduledUpdates_.erase(scheduledUpdates_.find(contComp));
-         contComp->update(lastTime_); // Now do the update
+         contComp->update(currentTime_); // Now do the update
          scheduledUpdates_.insert(contComp); // ... and reinsert it in the scheduled updates set.
          result = true;
       }
       else if (scheduledUpdates_.size() > 0 && nextTime <= endTime_)
       {
          // There is a scheduled update to do next.
-         lastTime_ = nextTime;
+         currentTime_ = nextTime;
          SGTDebug("Scheduled update component " << schedComp->getName() << " from " 
-               << schedComp->getTime() << " to " << lastTime_);
+               << schedComp->getTime() << " to " << currentTime_);
          scheduledUpdates_.erase(schedUpdateIt); // Remove the update,
-         schedComp->update(lastTime_); // perform the update,
+         schedComp->update(currentTime_); // perform the update,
          scheduledUpdates_.insert(schedComp); // and reinsert it.
          result = true;
       }
