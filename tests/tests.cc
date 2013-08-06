@@ -458,6 +458,7 @@ BOOST_AUTO_TEST_CASE (test_parser)
    Parser & p = Parser::getGlobalParser();
    p.registerComponentParser<TestComponentParser>();
    p.parse("test_parser.yaml", mod, sim);
+   mod.validate();
    const TestComponent * tc = mod.getComponentNamed<TestComponent>("test_component_1");
    message() << "test_component_1 another is " << tc->getAnother()->getName() << std::endl;
    BOOST_CHECK(tc->getAnother()->getName() == "test_component_2");
@@ -563,7 +564,16 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
    tl0.setDt(seconds(5));
 
+   mod.validate();
+
    sim.initialize(epoch, epoch + seconds(10));
+   sim.doNextUpdate();
+   sim.doNextUpdate();
+   sim.doNextUpdate();
+   sim.doNextUpdate();
+   sim.doNextUpdate();
+   sim.doNextUpdate();
+   sim.doNextUpdate();
    sim.doNextUpdate();
 
    message() << "Testing network_1p. Completed." << std::endl;
