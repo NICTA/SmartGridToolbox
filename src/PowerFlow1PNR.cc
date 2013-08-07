@@ -159,6 +159,10 @@ namespace SmartGridToolbox
    void PowerFlow1PNR::buildBusAdmit()
    {
       SGT_DEBUG(debug() << "PowerFlow1PNR : buildBusAdmit." << std::endl);
+      // Zero the matrix:
+      Y_.clear();
+
+      // Add branch admittances.
       for (const Branch1PNR * const branch : branches_)
       {
          const Bus1PNR * busi = branch->busi_;
@@ -171,6 +175,13 @@ namespace SmartGridToolbox
          Y_(kbus, kbus) += branch->Y_[1][1];
          Y_(ibus, kbus) += branch->Y_[0][1];
          Y_(kbus, ibus) += branch->Y_[1][0];
+      }
+
+      // Add bus shunt admittances.
+      for (const Bus1PNR * const bus : busses_)
+      {
+         int ibus = bus->idx_;
+         Y_(ibus, ibus) += bus->Y_;
       }
    }
 
