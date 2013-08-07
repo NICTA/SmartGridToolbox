@@ -132,8 +132,6 @@ namespace SmartGridToolbox
          Event & getEventWillUpdate() {return willUpdate_;}
          Event & getEventDidUpdate() {return didUpdate_;}
          Event & getEventNeedsUpdate() {return needsUpdate_;}
-
-
          /// @}
 
          /// @}

@@ -3,6 +3,7 @@
 
 #include "Common.h"
 #include "Component.h"
+#include "Event.h"
 #include <list>
 #include <set>
 
@@ -90,6 +91,9 @@ namespace SmartGridToolbox
          /// Do the next update.
          bool doNextUpdate();
 
+         /// Get the time did advance event.
+         Event & getEventTimeDidAdvance() {return timeDidAdvance_;}
+
       private:
          typedef std::set<Component *, ScheduledUpdatesComp> ScheduledUpdates;
          typedef std::set<Component *, ContingentUpdatesComp> ContingentUpdates;
@@ -101,6 +105,7 @@ namespace SmartGridToolbox
          ptime currentTime_;
          ScheduledUpdates scheduledUpdates_;
          ContingentUpdates contingentUpdates_;
+         Event timeDidAdvance_;
    };
 }
 

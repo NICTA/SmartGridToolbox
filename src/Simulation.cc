@@ -8,7 +8,8 @@ namespace SmartGridToolbox
    Simulation::Simulation(Model & mod) : mod_(&mod),
                                          startTime_(not_a_date_time),
                                          endTime_(not_a_date_time),
-                                         currentTime_(neg_infin)
+                                         currentTime_(neg_infin),
+                                         timeDidAdvance_("Simulation time did advance")
    {
       // Empty.
    }
@@ -32,6 +33,7 @@ namespace SmartGridToolbox
    bool Simulation::doNextUpdate()
    {
       bool result = false;
+      bool didAdvance = false;
       ptime nextTime = pos_infin;
       Component * schedComp = 0;
       auto schedUpdateIt = scheduledUpdates_.begin();
@@ -57,6 +59,10 @@ namespace SmartGridToolbox
       else if (scheduledUpdates_.size() > 0 && nextTime <= endTime_)
       {
          // There is a scheduled update to do next.
+         if (nextTime > currentTime_)
+         {
+            didAdvance = true;
+         }
          currentTime_ = nextTime;
          SGT_DEBUG(debug() << "Scheduled update component " << schedComp->getName() << " from " 
                << schedComp->getTime() << " to " << currentTime_ << std::endl);
@@ -64,6 +70,10 @@ namespace SmartGridToolbox
          schedComp->update(currentTime_); // perform the update,
          scheduledUpdates_.insert(schedComp); // and reinsert it.
          result = true;
+      }
+      if (didAdvance)
+      {
+         timeDidAdvance_.trigger();
       }
       return result;
    }
