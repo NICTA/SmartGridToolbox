@@ -93,8 +93,11 @@ namespace SmartGridToolbox
 
          Complex V0_;                  ///< Slack voltages.
 
-         UblasVector<double> PPQ_;     ///< Total power injection of PQ busses.
+         UblasVector<double> PPQ_;     ///< Constant power injection of PQ busses.
          UblasVector<double> QPQ_;
+
+         UblasVector<double> IrPQ_;    ///< Constant current injection of PQ busses.
+         UblasVector<double> IiPQ_;
 
          UblasVector<double> Vr_;
          UblasVector<double> Vi_;

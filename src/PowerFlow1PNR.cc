@@ -118,6 +118,8 @@ namespace SmartGridToolbox
       // Size all arrays:
       PPQ_.resize(nPQ_, false);
       QPQ_.resize(nPQ_, false);
+      IrPQ_.resize(nPQ_, false);
+      IiPQ_.resize(nPQ_, false);
       Vr_.resize(nBus_, false);
       Vi_.resize(nBus_, false);
       Y_.resize(nBus_, nBus_, false);
@@ -131,11 +133,14 @@ namespace SmartGridToolbox
       // Set the slack voltages:
       V0_ = SLBusses_[0]->V_; // Array copy.
 
-      // Set the PPQ_ and QPQ_ arrays of real and reactive power on each terminal:
       for (int i = 0; i < nPQ_; ++i)
       {
+         // Set the PPQ_ and QPQ_ arrays of real and reactive power on each terminal:
          PPQ_(i) = (busses_[i]->S_).real();
          QPQ_(i) = (busses_[i]->S_).imag();
+         // Set the constant current arrays of real and reactive power on each terminal:
+         IrPQ_(i) = (busses_[i]->I_).real();
+         IiPQ_(i) = (busses_[i]->I_).imag();
       }
 
       // Build the bus admittance matrix:
@@ -146,6 +151,7 @@ namespace SmartGridToolbox
       B_ = imag(Y_);
 
       // Set the part of J that doesn't update at each iteration.
+      JConst_.clear();
       UblasCMatrixRange<double>(JConst_, rx0_, rx0_) = UblasCMatrixRange<double>(G_, rPQ_, rPQ_);
       UblasCMatrixRange<double>(JConst_, rx0_, rx1_) = -UblasCMatrixRange<double>(B_, rPQ_, rPQ_);
       UblasCMatrixRange<double>(JConst_, rx1_, rx0_) = UblasCMatrixRange<double>(B_, rPQ_, rPQ_);
