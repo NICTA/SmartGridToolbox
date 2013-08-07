@@ -317,6 +317,7 @@ Define the current mismatch:
 \begin{align}
 \Delta_i = -\frac{S^*_i}{V_i^*} + \sum_{k=0}^NY_{ik}V_k
 \end{align}
+
 Note that we can treat $V$ and $V^*$ as independent variables in the following calculation of the Jacobian. 
 \footnote{
 	For example, for a function $f(V, V^*)$ we have
@@ -331,22 +332,16 @@ Note that we can treat $V$ and $V^*$ as independent variables in the following c
 \frac{\partial \Delta^*_i}{\partial V_k} &= \frac{S_i}{{V_i}^2}\delta_{ik} + \frac{\partial S_i}{\partial V_k}, &\frac{\partial \Delta^*_i}{\partial V^*_k} &= Y^*_{ik} + \frac{\partial S_i}{\partial V^*_k},
 \end{align}
 
-For PQ busses, the partial derivatives of $S$ and $S^*$ above are zero, since the $S$s are constant. In general, a bus may have a constant power element, a constant current element or a constant shunt admittance element. Thus
-\begin{align}
-S_i = S_{Ci} + V_iI_{Ci} + V_iV^*_iy^*_{Ci}
-\end{align}
-From which we can deduce the partial derivatives.
-
 However, the treatment above gives a $2N \times 2N$ matrix. At the expense of brevity, it may be better numerically to work with the real and imaginary parts of $V$. Also, numerical experiments show faster convergence, probably because the configuration space has half as many dimensions.
 \begin{align}
-\Delta_i &= -\frac{S^*_i\left(V_{Ri}+jV_{Ii}\right)}{V_{Ri}^2 + V_{Ii}^2} + \sum_{k=0}^NY_{ik}\left(V_{Rk} + j V_{Ik}\right)
+\Delta_i &= -\frac{S^*_i\left(V_{Ri}+jV_{Ii}\right)}{M^2} + \sum_{k=0}^NY_{ik}\left(V_{Rk} + j V_{Ik}\right)
 \end{align}
 or,
 \begin{align}
 \Delta_{Ri} &= \frac{-P_iV_{Ri}-Q_iV_{Ii}}{M^2_i} + \sum_{k=0}^N\left(G_{ik}V_{Rk} - B_{ik}V_{Ik}\right)\notag \\
 \Delta_{Ii} &= \frac{-P_iV_{Ii}+Q_iV_{Ri}}{M^2_i} + \sum_{k=0}^N\left(G_{ik}V_{Ik} + B_{ik}V_{Rk}\right)
 \end{align}
-Which gives the Jacobian
+Where $M^2_i$ is the voltage magnitude, $M^2_i := V_{Ri}^2 + V_{Ii}^2$. The Jacobian is then
 \begin{align}
 \frac{\partial \Delta_{Ri}}{\partial V_{Rk}} &= \left[\frac{-P_i}{M^2_i} + 2V_{Ri}\frac{P_iV_{Ri} + Q_iV_{Ii}}{M^4_i}\right]\delta_{ik}+G_{ik} 
 +\frac{-V_{Ri}\partial P_i/\partial V_{Rk}-V_{Ii}\partial Q_i/\partial V_{Rk}}{M^2_i}\notag \\
@@ -358,6 +353,24 @@ Which gives the Jacobian
 +\frac{-V_{Ii}\partial P_i/\partial V_{Ik}+V_{Ri}\partial Q_i/\partial V_{Ik}}{M^2_i}
 \end{align}
 
+\subsection{PQ Busses}
+A generalised PQ bus may have a constant power element, a constant current element or a constant shunt admittance element. Thus
+\begin{align}
+S_i &= S_{Ci} + V_iI^*_{Ci} + V_iV^*_iy^*_{Ci},
+\end{align}
+In this case, we have
+\begin{align}
+\Delta_{Ri} &= \frac{-P_{Ci}V_{Ri}-Q_{Ci}V_{Ii}}{M^2_i} - I_{Ri} - V_{Ri}y_{Ri} + V_{Ii}y_{Ii} + \sum_{k=0}^N\left(G_{ik}V_{Rk} - B_{ik}V_{Ik}\right)\notag \\
+\Delta_{Ii} &= \frac{-P_{Ci}V_{Ii}+Q_{Ci}V_{Ri}}{M^2_i} - I_{Ii} -V_{Ri}I_{Ii} - V_{Ii}I_{Ri} + \sum_{k=0}^N\left(G_{ik}V_{Ik} + B_{ik}V_{Rk}\right)
+\end{align}
+The Jacobian is now
+\begin{align}
+\frac{\partial \Delta_{Ri}}{\partial V_{Rk}} &= \left[\frac{-P_{Ci}}{M^2_i} + 2V_{Ri}\frac{P_{Ci}V_{Ri} + Q_{Ci}V_{Ii}}{M^4_i} - y_{Ri}\right]\delta_{ik}+G_{ik} \notag \\
+\frac{\partial \Delta_{Ri}}{\partial V_{Ik}} &= \left[\frac{-Q_{Ci}}{M^2_i} + 2V_{Ii}\frac{P_{Ci}V_{Ri} + Q_{Ci}V_{Ii}}{M^4_i} + y_{Ii}\right]\delta_{ik}-B_{ik} \notag \\
+\frac{\partial \Delta_{Ii}}{\partial V_{Rk}} &= \left[\frac{Q_{Ci}}{M^2_i} + 2V_{Ri}\frac{P_{Ci}V_{Ii} - Q_{Ci}V_{Ri}}{M^4_i} - y_{Ii}\right]\delta_{ik}+B_{ik} \notag \\
+\frac{\partial \Delta_{Ii}}{\partial V_{Ik}} &= \left[\frac{-P_{Ci}}{M^2_i} + 2V_{Ii}\frac{P_{Ci}V_{Ii} - Q_{Ci}V_{Ri}}{M^4_i} - y_{Ri}\right]\delta_{ik}+G_{ik}
+\end{align}
+Note: in this formulation, the shunts are not included in $G$ and $B$ because we are explicitly accounting for them as part of the load. Note that this expression splits into a $V$ dependent part that needs to be recalculated at each iteration and a constant part that doesn't depend on $V$.
 \subsection{PV Busses}
 For PV busses, the unknowns are 
 
