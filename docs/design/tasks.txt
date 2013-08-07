@@ -1,0 +1,2 @@
+1. Add shunt admittances, constant current injections to Network1P.
+2. Extend Network1P to n-phase.
