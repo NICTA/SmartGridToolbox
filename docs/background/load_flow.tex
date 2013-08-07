@@ -354,24 +354,23 @@ Where $M^2_i$ is the voltage magnitude, $M^2_i := V_{Ri}^2 + V_{Ii}^2$. The Jaco
 \end{align}
 
 \subsection{PQ Busses}
-A generalised PQ bus may have a constant power element, a constant current element or a constant shunt admittance element. Thus
+A generalised PQ bus may have a constant power element, a constant current element or a constant shunt admittance element. We have already seen how the constant shunt element gets absorbed as diagonal elements of the $Y$ matrix. Thus, we need only explicitly consider only the constant power and constant current.
 \begin{align}
-S_i &= S_{Ci} + V_iI^*_{Ci} - V_iV^*_iy^*_{Ci}.
+S_i &= S_{Ci} + V_iI^*_{Ci}.
 \end{align}
-(The negative sign on the last term is because we are working with power and current injections into the bus: a positive voltage will give a negative injection for a shunt admittance. Also beware that $I$ is expressed as an injection, so a constant current load would have a negative $I$.)
 In this case, we have
 \begin{align}
-\Delta_{Ri} &= \frac{-P_{Ci}V_{Ri}-Q_{Ci}V_{Ii}}{M^2_i} - I_{Ri} + V_{Ri}y_{Ri} - V_{Ii}y_{Ii} + \sum_{k=0}^N\left(G_{ik}V_{Rk} - B_{ik}V_{Ik}\right)\notag \\
-\Delta_{Ii} &= \frac{-P_{Ci}V_{Ii}+Q_{Ci}V_{Ri}}{M^2_i} - I_{Ii} -V_{Ri}I_{Ii} - V_{Ii}y_{Ri} + \sum_{k=0}^N\left(G_{ik}V_{Ik} + B_{ik}V_{Rk}\right)
+\Delta_{Ri} &= \frac{-P_{Ci}V_{Ri}-Q_{Ci}V_{Ii}}{M^2_i} - I_{Ri} + \sum_{k=0}^N\left(G_{ik}V_{Rk} - B_{ik}V_{Ik}\right)\notag \\
+\Delta_{Ii} &= \frac{-P_{Ci}V_{Ii}+Q_{Ci}V_{Ri}}{M^2_i} - I_{Ii} + \sum_{k=0}^N\left(G_{ik}V_{Ik} + B_{ik}V_{Rk}\right)
 \end{align}
-The Jacobian is now
+The Jacobian is then
 \begin{align}
-\frac{\partial \Delta_{Ri}}{\partial V_{Rk}} &= \left[\frac{-P_{Ci}}{M^2_i} + 2V_{Ri}\frac{P_{Ci}V_{Ri} + Q_{Ci}V_{Ii}}{M^4_i} + y_{Ri}\right]\delta_{ik}+G_{ik} \notag \\
-\frac{\partial \Delta_{Ri}}{\partial V_{Ik}} &= \left[\frac{-Q_{Ci}}{M^2_i} + 2V_{Ii}\frac{P_{Ci}V_{Ri} + Q_{Ci}V_{Ii}}{M^4_i} - y_{Ii}\right]\delta_{ik}-B_{ik} \notag \\
-\frac{\partial \Delta_{Ii}}{\partial V_{Rk}} &= \left[\frac{Q_{Ci}}{M^2_i} + 2V_{Ri}\frac{P_{Ci}V_{Ii} - Q_{Ci}V_{Ri}}{M^4_i} + y_{Ii}\right]\delta_{ik}+B_{ik} \notag \\
-\frac{\partial \Delta_{Ii}}{\partial V_{Ik}} &= \left[\frac{-P_{Ci}}{M^2_i} + 2V_{Ii}\frac{P_{Ci}V_{Ii} - Q_{Ci}V_{Ri}}{M^4_i} + y_{Ri}\right]\delta_{ik}+G_{ik}
+\frac{\partial \Delta_{Ri}}{\partial V_{Rk}} &= \left[\frac{-P_{Ci}}{M^2_i} + 2V_{Ri}\frac{P_{Ci}V_{Ri} + Q_{Ci}V_{Ii}}{M^4_i}\right]\delta_{ik}+G_{ik} \notag \\
+\frac{\partial \Delta_{Ri}}{\partial V_{Ik}} &= \left[\frac{-Q_{Ci}}{M^2_i} + 2V_{Ii}\frac{P_{Ci}V_{Ri} + Q_{Ci}V_{Ii}}{M^4_i}\right]\delta_{ik}-B_{ik} \notag \\
+\frac{\partial \Delta_{Ii}}{\partial V_{Rk}} &= \left[\frac{Q_{Ci}}{M^2_i} + 2V_{Ri}\frac{P_{Ci}V_{Ii} - Q_{Ci}V_{Ri}}{M^4_i} \right]\delta_{ik}+B_{ik} \notag \\
+\frac{\partial \Delta_{Ii}}{\partial V_{Ik}} &= \left[\frac{-P_{Ci}}{M^2_i} + 2V_{Ii}\frac{P_{Ci}V_{Ii} - Q_{Ci}V_{Ri}}{M^4_i}\right]\delta_{ik}+G_{ik}
 \end{align}
-Note: in this formulation, the shunts are not included in $G$ and $B$ because we are explicitly accounting for them as part of the load. Note that this expression splits into a $V$ dependent part that needs to be recalculated at each iteration and a constant part that doesn't depend on $V$. In practice, we can absorb the shunt admittances as diagonal terms in $G$ and $B$. From then on, we can just forget about the shunt admittances in all calculations. So all we need to do for generalised PQ busses is to add an extra constant current term into $\Delta$.
+Note that this expression splits into a $V$ dependent part that needs to be recalculated at each iteration and a constant part that doesn't depend on $V$.
 \subsection{PV Busses}
 For PV busses, the unknowns are 
 
