@@ -8,7 +8,7 @@ namespace SmartGridToolbox
 {
    void PowerFlow1PNR::addBus(const std::string & id, BusType type, Complex V, Complex Y, Complex I, Complex S)
    {
-      SGTDebug("PowerFlow1PNR : addBus " << id);
+      SGT_DEBUG(debug() << "PowerFlow1PNR : addBus " << id << std::endl);
       Bus1PNR * bus = new Bus1PNR;
       bus->id_ = id;
       bus->type_ = type;
@@ -36,7 +36,7 @@ namespace SmartGridToolbox
    void PowerFlow1PNR::addBranch(const std::string & idi, const std::string & idk, 
                                        const Array2D<Complex, 2, 2> & Y)
    {
-      SGTDebug("PowerFlow1PNR : addBranch " << idi << " " << idk);
+      SGT_DEBUG(debug() << "PowerFlow1PNR : addBranch " << idi << " " << idk << std::endl);
       Branch1PNR * branch = new Branch1PNR;
       branch->Y_ = Y;
       branch->idi_ = idi;
@@ -46,7 +46,7 @@ namespace SmartGridToolbox
 
    void PowerFlow1PNR::reset()
    {
-      SGTDebug("PowerFlow1PNR : reset.");
+      SGT_DEBUG(debug() << "PowerFlow1PNR : reset." << std::endl);
       for (Bus1PNR * bus : busses_) delete bus;
       for (Branch1PNR * bus : branches_) delete bus;
       busses_ = BusVec();
@@ -58,7 +58,7 @@ namespace SmartGridToolbox
 
    void PowerFlow1PNR::validate()
    {
-      SGTDebug("PowerFlow1PNR : validate.");
+      SGT_DEBUG(debug() << "PowerFlow1PNR : validate." << std::endl);
       // Determine sizes:
       nSL_ = SLBusses_.size();
       nPQ_ = PQBusses_.size();
@@ -158,7 +158,7 @@ namespace SmartGridToolbox
 
    void PowerFlow1PNR::buildBusAdmit()
    {
-      SGTDebug("PowerFlow1PNR : buildBusAdmit.");
+      SGT_DEBUG(debug() << "PowerFlow1PNR : buildBusAdmit." << std::endl);
       for (const Branch1PNR * const branch : branches_)
       {
          const Bus1PNR * busi = branch->busi_;
@@ -176,7 +176,7 @@ namespace SmartGridToolbox
 
    void PowerFlow1PNR::initx()
    {
-      SGTDebug("PowerFlow1PNR : initx.");
+      SGT_DEBUG(debug() << "PowerFlow1PNR : initx." << std::endl);
       for (int i = 0; i < nPQ_; ++i)
       {
          const Bus1PNR & bus = *busses_[i + 1];
@@ -187,7 +187,7 @@ namespace SmartGridToolbox
 
    void PowerFlow1PNR::updateBusV()
    {
-      SGTDebug("PowerFlow1PNR : updateBusV.");
+      SGT_DEBUG(debug() << "PowerFlow1PNR : updateBusV." << std::endl);
       // Get voltages on all busses.
       // Done like this with a copy because eventually we'll include PV busses too.
       UblasVectorRange<double>(Vr_, rPQ_) = UblasVectorRange<double>(x_, rx0_);
@@ -198,7 +198,7 @@ namespace SmartGridToolbox
 
    void PowerFlow1PNR::updateF()
    {
-      SGTDebug("PowerFlow1PNR : updateF.");
+      SGT_DEBUG(debug() << "PowerFlow1PNR : updateF." << std::endl);
       UblasVectorRange<double> x0{x_, rx0_};
       UblasVectorRange<double> x1{x_, rx1_};
 
@@ -220,7 +220,7 @@ namespace SmartGridToolbox
 
    void PowerFlow1PNR::updateJ()
    {
-      SGTDebug("PowerFlow1PNR : updateJ.");
+      SGT_DEBUG(debug() << "PowerFlow1PNR : updateJ." << std::endl);
       UblasVectorRange<double> x0{x_, rx0_};
       UblasVectorRange<double> x1{x_, rx1_};
 
@@ -244,7 +244,7 @@ namespace SmartGridToolbox
 
    bool PowerFlow1PNR::solve()
    {
-      SGTDebug("PowerFlow1PNR : solve.");
+      SGT_DEBUG(debug() << "PowerFlow1PNR : solve." << std::endl);
       const double tol = 1e-20;
       const int maxiter = 20;
       initx();
@@ -259,10 +259,10 @@ namespace SmartGridToolbox
          UblasVector<double> test = prod(J_, x_) - f_;
          UblasVector<double> f2 = element_prod(f_, f_);
          double err = *std::max_element(f2.begin(), f2.end());
-         SGTDebug("Error at iteration " << i << " = " << err);
+         SGT_DEBUG(debug() << "Error at iteration " << i << " = " << err << std::endl);
          if (err <= tol)
          {
-            SGTDebug("Success at iteration " << i << ". Error = " << err);
+            SGT_DEBUG(debug() << "Success at iteration " << i << ". Error = " << err << std::endl);
             wasSuccessful = true;
             break;
          }
@@ -280,20 +280,20 @@ namespace SmartGridToolbox
 
    void PowerFlow1PNR::outputNetwork()
    {
-      SGTDebug("Number of busses = " << nBus_);
-      SGTDebug("Number of PQ busses = " << nPQ_);
-      SGTDebug("Number of slack busses = " << nSL_);
+      SGT_DEBUG(debug() << "Number of busses = " << nBus_ << std::endl);
+      SGT_DEBUG(debug() << "Number of PQ busses = " << nPQ_ << std::endl);
+      SGT_DEBUG(debug() << "Number of slack busses = " << nSL_ << std::endl);
       for (const Bus1PNR * bus : busses_)
       {
-         SGTDebug("\tBus: " << bus->idx_ << " " << bus->id_ << " " << (int)bus->type_ << " " << bus->V_ << " " 
-                  << bus->Y_ << " " << bus->I_ << " " << bus->S_);
+         SGT_DEBUG(debug() << "\tBus: " << bus->idx_ << " " << bus->id_ << " " << (int)bus->type_ << " " 
+               << bus->V_ << " " << bus->Y_ << " " << bus->I_ << " " << bus->S_ << std::endl);
       }
       for (Branch1PNR * branch : branches_)
       {
-         SGTDebug("\tBranch: " << branch->idi_ << " " << branch->idk_);
+         SGT_DEBUG(debug() << "\tBranch: " << branch->idi_ << " " << branch->idk_ << std::endl);
          for (int i = 0; i < 2; ++i)
          {
-            SGTDebug("\t\t" << branch->Y_[i][0] << " " << branch->Y_[i][1]);
+            SGT_DEBUG(debug() << "\t\t" << branch->Y_[i][0] << " " << branch->Y_[i][1] << std::endl);
          }
       }
    }
@@ -301,8 +301,8 @@ namespace SmartGridToolbox
    void PowerFlow1PNR::outputCurrentState()
    {
       using namespace std;
-      SGTDebug("x : " << x_);
-      SGTDebug("f : " << f_);
+      SGT_DEBUG(debug() << "x : " << x_ << std::endl);
+      SGT_DEBUG(debug() << "f : " << f_ << std::endl);
       std::ostringstream ssJ;
       ssJ << "J: " << std::endl;
       for (int i = 0; i < J_.size1(); ++i)
@@ -314,6 +314,6 @@ namespace SmartGridToolbox
          }
          ssJ << endl;
       }
-      SGTDebug(ssJ.str());
+      SGT_DEBUG(debug() << ssJ.str() << std::endl);
    }
 }

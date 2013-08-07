@@ -8,7 +8,7 @@ namespace SmartGridToolbox
 {
    void Network1PParser::parse(const YAML::Node & nd, Model & mod) const
    {
-      SGTDebug("Network1P : parse.");
+      SGT_DEBUG(debug() << "Network1P : parse." << std::endl);
       const std::string nameStr = nd["name"].as<std::string>();
       Network1P & comp = mod.newComponent<Network1P>(nameStr);
    }
@@ -16,7 +16,7 @@ namespace SmartGridToolbox
    void Network1P::updateState(ptime t0, ptime t1)
    {
       rebuildNetwork(); // TODO: inefficient to rebuild even if not needed.
-      SGTDebug("Network1P : update state.");
+      SGT_DEBUG(debug() << "Network1P : update state." << std::endl);
       bool ok = solver_.solve();
       if (ok)
       {
@@ -25,7 +25,7 @@ namespace SmartGridToolbox
             Bus1P * bus = findBus(busNR->id_);
             bus->setV(busNR->V_); // Push the state back onto bus. We don't want to trigger any events.    
          }
-         SGTDebug("Updated Network1P state. Dumping solver.");
+         SGT_DEBUG(debug() << "Updated Network1P state. Dumping solver." << std::endl);
 #ifdef DEBUG
          solver_.outputNetwork();
 #endif
@@ -34,20 +34,22 @@ namespace SmartGridToolbox
 
    void Network1P::rebuildNetwork()
    {
-      SGTDebug("Network1P : rebuilding network.");
+      SGT_DEBUG(debug() << "Network1P : rebuilding network." << std::endl);
       solver_.reset();
       for (const Bus1P * bus : busVec_)
       {
          solver_.addBus(bus->getName(), bus->getType(), bus->getV(), bus->getY(), bus->getI(), bus->getS());
-         SGTDebug("Added bus " << bus->getName() << " " << (int)bus->getType() << " " << bus->getV() 
-                  << " " << bus->getY() << " " << bus->getI() << " " << bus->getS());
+         SGT_DEBUG(debug() << "Added bus " << bus->getName() << " " << (int)bus->getType() << " " << bus->getV() 
+               << " " << bus->getY() << " " << bus->getI() << " " << bus->getS() << std::endl);
       }
       for (const Branch1P * branch : branchVec_)
       {
          solver_.addBranch(branch->getBusi().getName(), branch->getBusk().getName(), branch->getY());
-         SGTDebug("Added branch with Y");
-         SGTDebug("\t" << std::left << std::setw(12) << branch->getY()[0][0] << std::setw(12) << branch->getY()[0][1])
-         SGTDebug("\t" << std::left << std::setw(12) << branch->getY()[1][0] << std::setw(12) << branch->getY()[1][1]);
+         SGT_DEBUG(debug() << "Added branch with Y" << std::endl);
+         SGT_DEBUG(debug() << "\t" << std::left << std::setw(12) << branch->getY()[0][0] << std::setw(12) 
+               << branch->getY()[0][1] << std::endl);
+         SGT_DEBUG(debug() << "\t" << std::left << std::setw(12) << branch->getY()[1][0] << std::setw(12) 
+               << branch->getY()[1][1] << std::endl);
       }
       solver_.validate();
    }

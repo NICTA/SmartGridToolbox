@@ -44,8 +44,8 @@ namespace SmartGridToolbox
       {
          // There are contingent updates pending.
          Component * contComp = *contingentUpdates_.begin();
-         SGTDebug("Contingent update component " << contComp->getName() << " from " 
-               << schedComp->getTime() << " to " << currentTime_);
+         SGT_DEBUG(debug() << "Contingent update component " << contComp->getName() << " from " 
+               << schedComp->getTime() << " to " << currentTime_ << std::endl);
          contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
          // Before updating the component, we need to take it out of the scheduled updates set, because its
          // sort key might change.
@@ -58,8 +58,8 @@ namespace SmartGridToolbox
       {
          // There is a scheduled update to do next.
          currentTime_ = nextTime;
-         SGTDebug("Scheduled update component " << schedComp->getName() << " from " 
-               << schedComp->getTime() << " to " << currentTime_);
+         SGT_DEBUG(debug() << "Scheduled update component " << schedComp->getName() << " from " 
+               << schedComp->getTime() << " to " << currentTime_ << std::endl);
          scheduledUpdates_.erase(schedUpdateIt); // Remove the update,
          schedComp->update(currentTime_); // perform the update,
          scheduledUpdates_.insert(schedComp); // and reinsert it.

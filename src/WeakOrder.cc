@@ -22,10 +22,10 @@ namespace SmartGridToolbox
       if (!visited_)
       {
          visited_ = true;
-         SGTDebug(prlevel(level - 1) << "DFS " << idx_ << " {");
+         SGT_DEBUG(debug() << prlevel(level - 1) << "DFS " << idx_ << " {" << std::endl);
          for (WoNode * predecessor : stack)
          {
-            SGTDebug(prlevel(level) << predecessor->idx_);
+            SGT_DEBUG(debug() << prlevel(level) << predecessor->idx_ << std::endl);
             predecessor->descendents_.insert(this);
          }
          stack.push_back(this);
@@ -34,7 +34,7 @@ namespace SmartGridToolbox
             toNd->dfs(stack);
          }
          stack.pop_back();
-         SGTDebug(prlevel(level - 1) << "}");
+         SGT_DEBUG(debug() << prlevel(level - 1) << "}" << std::endl);
       }
       --level;
    }

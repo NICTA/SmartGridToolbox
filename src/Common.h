@@ -15,16 +15,17 @@
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
 #ifdef DEBUG
-#define SGTDebug(x) std::cerr << "DEBUG:  \t" << x << std::endl;
+#define SGT_DEBUG(x) x
 #else
-#define SGTDebug(x)
+#define SGT_DEBUG(x)
 #endif
 
 namespace SmartGridToolbox
 {
-   inline std::ostream & message() {return std::cout << "MESSAGE:\t";}
-   inline std::ostream & warning() {return std::cerr << "WARNING:\t";}
-   inline std::ostream & error() {return std::cerr << "ERROR:  \t";}
+   inline std::ostream & message() {return std::cout <<  "MESSAGE:\t";}
+   inline std::ostream & warning() {return std::cerr <<  "WARNING:\t";}
+   inline std::ostream & error() {return std::cerr <<    "ERROR:  \t";}
+   inline std::ostream & debug() {return std::cout <<    "DEBUG:  \t";}
    inline void abort() {std::cerr << "ABORTING." << std::endl; ::abort();}
 
    /// @name Constant dimension 2D array type.

@@ -6,7 +6,7 @@ namespace SmartGridToolbox
 {
    void Bus1PParser::parse(const YAML::Node & nd, Model & mod) const
    {
-      SGTDebug("Bus1P : parse.");
+      SGT_DEBUG(debug() << "Bus1P : parse." << std::endl);
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "type");
@@ -61,7 +61,7 @@ namespace SmartGridToolbox
 
    void Bus1PParser::postParse(const YAML::Node & nd, Model & mod) const
    {
-      SGTDebug("Bus1P : postParse.");
+      SGT_DEBUG(debug() << "Bus1P : postParse." << std::endl);
       const std::string compNameStr = nd["name"].as<std::string>();
       Bus1P * comp = mod.getComponentNamed<Bus1P>(compNameStr);
 

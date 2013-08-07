@@ -5,13 +5,13 @@ namespace SmartGridToolbox
 {
    void Event::trigger()
    {
-      SGTDebug("Event was triggered: " << description_); 
+      SGT_DEBUG(debug() << "Event was triggered: " << description_ << std::endl); 
       for (const Action & action : actions_)
       {
-         SGTDebug("Event perform action: " << action.getDescription());
+         SGT_DEBUG(debug() << "Event perform action: " << action.getDescription() << std::endl);
          action.perform();
-         SGTDebug("Event performed action: " << action.getDescription());
+         SGT_DEBUG(debug() << "Event performed action: " << action.getDescription() << std::endl);
       }
-      SGTDebug("Event finished: " << description_); 
+      SGT_DEBUG(debug() << "Event finished: " << description_ << std::endl); 
    }
 }

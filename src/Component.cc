@@ -17,7 +17,7 @@ namespace SmartGridToolbox
 
    void Component::update(ptime t)
    {
-      SGTDebug("Component " << getName() << " update from " << t_ << " to " << t);
+      SGT_DEBUG(debug() << "Component " << getName() << " update from " << t_ << " to " << t << std::endl);
       willUpdate_.trigger();
       updateState(t_, t);
       t_ = t;
