@@ -531,6 +531,8 @@ class TestLoad : public ZipLoad1P
       virtual void updateState(ptime t0, ptime t1) override
       {
          S_ = sin(dSeconds(t1)/60.0);
+         I_ = sin(dSeconds(t1)/300.0) * exp(Complex(0.0, dSeconds(t1)/713.0));
+         Y_ = sin(dSeconds(t1)/123.0);
       }
 
       time_duration getDt() const
@@ -569,30 +571,20 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
 
    mod.validate();
 
-   sim.initialize(epoch, epoch + seconds(15));
+   sim.initialize(epoch, epoch + hours(2));
    Network1P * network = mod.getComponentNamed<Network1P>("network_1");
+   ofstream outfile;
+   outfile.open("network_1p.out");
    network->getEventDidUpdate().addAction([&]()
          {
-            message() << "Network updated" << std::endl;
-            message() << "\tbus_1 V = " << bus1->getV() << std::endl;
-            message() << "\tbus_2 V = " << bus2->getV() << std::endl;
-            message() << "\tbus_3 V = " << bus3->getV() << std::endl;
+            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
+                    << " " << bus3->getV() << std::endl;
          }, "Network updated.");
-   tl0.getEventDidUpdate().addAction([&]()
-         {
-            message() << "Test load updated" << std::endl;
-            message() << "\t S_ = " << tl0.getS() << std::endl;
-         }, "tl0 updated.");
-   bus2->getEventDidUpdate().addAction([&]()
-         {
-            message() << "bus_2 updated" << std::endl;
-            message() << "\t S_ = " << bus2->getS() << std::endl;
-         }, "bus_2 updated.");
    while (sim.doNextUpdate())
    {
-      message() << "Simulation updated to " << sim.getCurrentTime() << std::endl;
+      ;
    }
-
+   outfile.close();
    message() << "Testing network_1p. Completed." << std::endl;
 }
 

@@ -227,9 +227,9 @@ namespace SmartGridToolbox
       UblasCMatrixRange<double> BRng{B_, rPQ_, rAll_};
 
       UblasVector<double> dr = element_div((-element_prod(PPQ_, x0) - element_prod(QPQ_, x1)), M2)
-                               + prod(GRng, Vr_) - prod(BRng, Vi_);
+                               + prod(GRng, Vr_) - prod(BRng, Vi_) - IrPQ_;
       UblasVector<double> di = element_div((-element_prod(PPQ_, x1) + element_prod(QPQ_, x0)), M2)
-                               + prod(GRng, Vi_) + prod(BRng, Vr_);
+                               + prod(GRng, Vi_) + prod(BRng, Vr_) - IiPQ_;
 
       UblasVectorRange<double>(f_, rx0_) = dr;
       UblasVectorRange<double>(f_, rx1_) = di;

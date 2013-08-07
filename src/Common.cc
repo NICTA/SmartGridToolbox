@@ -61,7 +61,7 @@ namespace SmartGridToolbox
       std::ostringstream ss;
       char reSgn = c.real() >= 0.0 ? ' ' : '-';
       char imSgn = c.imag() >= 0.0 ? '+' : '-';
-      ss << reSgn << std::abs(c.real()) << " " << imSgn << " " << std::abs(c.imag()) << "j";
+      ss << reSgn << std::abs(c.real()) << imSgn << std::abs(c.imag()) << "j";
       return ss.str();
    }
 
