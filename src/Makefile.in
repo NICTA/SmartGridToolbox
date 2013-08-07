@@ -329,8 +329,8 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 										  WeakOrder.cc
 
 helloworld_SOURCES = helloworld.cc
-klu_simple_SOURCES = klu_simple.c
 helloworld_LDADD = libsmartgridtoolbox.a
+klu_simple_SOURCES = klu_simple.c
 klu_simple_LDADD = ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
 						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
