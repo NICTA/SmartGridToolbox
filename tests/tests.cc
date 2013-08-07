@@ -433,16 +433,15 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
    build1.setTeFunc(Te);
    build1.setdQgFunc(dQg);
 
-   sim.initialize(t0, t0 + seconds(10));
+   sim.initialize(t0, t0 + hours(24));
    auto print = [&] () -> void 
    {
       outfile << dSeconds(build1.getTime())/hour << " " << build1.getTb()
            << " " << build1.getPh() << " " << build1.getdQh() << endl;
    };
    print();
-   while (build1.getTime() <= t0 + hours(24))
+   while (sim.doNextUpdate())
    {
-      sim.doNextUpdate();
       print();
    }
 

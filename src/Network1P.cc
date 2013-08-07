@@ -15,8 +15,7 @@ namespace SmartGridToolbox
 
    void Network1P::updateState(ptime t0, ptime t1)
    {
-      // TODO: has network changed? If so, rebuild.
-      
+      rebuildNetwork(); // TODO: inefficient to rebuild even if not needed.
       SGTDebug("Network1P : update state.");
       bool ok = solver_.solve();
       if (ok)
