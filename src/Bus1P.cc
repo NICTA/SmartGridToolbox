@@ -4,6 +4,8 @@
  
 namespace SmartGridToolbox
 {
+   class ZipToGround1P;
+
    void Bus1PParser::parse(const YAML::Node & nd, Model & mod) const
    {
       SGT_DEBUG(debug() << "Bus1P : parse." << std::endl);
@@ -37,26 +39,6 @@ namespace SmartGridToolbox
       {
          comp.setV(nd["slack_voltage"].as<Complex>());
       }
-
-      if (nd["constant_impedance_load"])
-      {
-         comp.setY(nd["constant_impedance_load"].as<Complex>());
-      }
-
-      if (nd["constant_current_load"])
-      {
-         comp.setI(nd["constant_current_load"].as<Complex>());
-      }
-
-      if (nd["constant_power_load"])
-      {
-         comp.setS(nd["constant_power_load"].as<Complex>());
-      }
-
-      if (nd["generator_power"])
-      {
-         comp.setSGen(nd["generator_power"].as<Complex>());
-      }
    }
 
    void Bus1PParser::postParse(const YAML::Node & nd, Model & mod) const
@@ -82,19 +64,19 @@ namespace SmartGridToolbox
    void Bus1P::updateState(ptime t0, ptime t1)
    {
       Y_ = I_ = S_ = {0.0, 0.0};
-      for (const ZipLoad1P * load : zipLoads_)
+      for (const ZipToGround1P * zip : zipsToGround_)
       {
-         Y_ += load->getY();
-         I_ += load->getI();
-         S_ += load->getS();
+         Y_ += zip->getY();
+         I_ += zip->getI(); // Injection.
+         S_ += zip->getS(); // Injection.
       }
    }
 
-   void Bus1P::addZipLoad(ZipLoad1P & zipLoad)
+   void Bus1P::addZipToGround(ZipToGround1P & zipToGround)
    {
-      zipLoads_.push_back(&zipLoad);
-      zipLoad.getEventDidUpdate().addAction([this](){getEventNeedsUpdate().trigger();}, 
+      zipsToGround_.push_back(&zipToGround);
+      zipToGround.getEventDidUpdate().addAction([this](){getEventNeedsUpdate().trigger();}, 
             "Trigger Bus1P " + getName() + " needs update.");
-      // TODO: this will recalculate all ziploads. Efficiency?
+      // TODO: this will recalculate all zips. Efficiency?
    }
 }

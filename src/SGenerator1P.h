@@ -1,12 +1,12 @@
-#ifndef ZIP_LOAD_1P_DOT_H
-#define ZIP_LOAD_1P_DOT_H
+#ifndef S_GENERATOR_1P_DOT_H
+#define S_GENERATOR_1P_DOT_H
 
 #include "Component.h"
 
 
 namespace SmartGridToolbox
 {
-   class ZipLoad1P : public Component
+   class SGenerator1P : public Component
    {
       /// @name Public overridden functions: from Component.
       /// @{
@@ -27,13 +27,7 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         ZipLoad1P(const std::string & name) : Component(name) {}
-
-         const Complex & getY() const {return Y_;}
-         void setY(const Complex & Y) {Y_ = Y;}
-
-         const Complex & getI() const {return I_;}
-         void setI(const Complex & I) {I_ = I;}
+         SGenerator1P(const std::string & name) : Component(name) {}
 
          const Complex & getS() const {return S_;}
          void setS(const Complex & S) {S_ = S;}
@@ -41,11 +35,9 @@ namespace SmartGridToolbox
       
       /// @name My private member variables.
       /// @{
-         Complex Y_;          ///< Constant admittance component.
-         Complex I_;          ///< Constant current component.
          Complex S_;          ///< Constant power component.
       /// @}
    };
 }
 
-#endif // ZIP_LOAD_1P_DOT_H
+#endif // S_GENERATOR_1P_DOT_H

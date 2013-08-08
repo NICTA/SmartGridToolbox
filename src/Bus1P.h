@@ -5,12 +5,14 @@
 #include "Component.h"
 #include "Parser.h"
 #include "PowerFlow.h"
-#include "ZipLoad1P.h"
+#include "ZipToGround1P.h"
 
 #include <iostream>
 
 namespace SmartGridToolbox
 {
+   class ZipToGround1P;
+
    class Bus1PParser : public ComponentParser
    {
       public:
@@ -54,29 +56,22 @@ namespace SmartGridToolbox
          const Complex & getV() const {return V_;}
          void setV(const Complex & V) {V_ = V;}
 
-         void addZipLoad(ZipLoad1P & zipLoad);
+         void addZipToGround(ZipToGround1P & zipToGround);
 
-         const Complex & getY() const {return Y_;}
-         void setY(const Complex & Y) {Y_ = Y;} // TODO: this will go since will be set by ziploads only.
-         const Complex & getI() const {return I_;}
-         void setI(const Complex & I) {I_ = I;} // TODO: this will go since will be set by ziploads only.
-         const Complex & getS() const {return S_;}
-         void setS(const Complex & S) {S_ = S;} // TODO: this will go since will be set by ziploads only.
-
-         const Complex & getSGen() const {return SGen_;}
-         void setSGen(const Complex & SGen) {SGen_ = SGen;}
+         const Complex & getY() const {return Y_;} // Injection.
+         const Complex & getI() const {return I_;} // Injection.
+         const Complex & getS() const {return S_;} // Injection.
       /// @}
       
       /// @name My private member variables.
       /// @{
       private:
-         std::vector<const ZipLoad1P *> zipLoads_;
+         std::vector<const ZipToGround1P *> zipsToGround_;
          BusType type_;          ///< Bus type. 
          Complex V_;             ///< Voltage.
-         Complex Y_;             ///< Constant admittance load.
-         Complex I_;             ///< Constant current load.
-         Complex S_;             ///< Constant power load.
-         Complex SGen_;          ///< Generator power.
+         Complex Y_;             ///< Constant admittance shunt.
+         Complex I_;             ///< Constant current injection.
+         Complex S_;             ///< Constant power injection.
       /// @}
    };
 }

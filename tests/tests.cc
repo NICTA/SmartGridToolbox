@@ -515,10 +515,10 @@ BOOST_AUTO_TEST_CASE (test_balanced_power_flow_nr)
    message() << "Testing balanced_power_flow_nr. Completed." << std::endl;
 }
 
-class TestLoad : public ZipLoad1P
+class TestLoad : public ZipToGround1P
 {
    public:
-      TestLoad(const std::string & name) : ZipLoad1P(name), dt_(seconds(0))
+      TestLoad(const std::string & name) : ZipToGround1P(name), dt_(seconds(0))
       {
          // Empty.
       }
@@ -567,7 +567,7 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
 
    TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
    tl0.setDt(seconds(5));
-   bus2->addZipLoad(tl0);
+   bus2->addZipToGround(tl0);
 
    mod.validate();
 
