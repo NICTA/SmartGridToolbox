@@ -114,7 +114,6 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
    a2.dependsOn(a5);
 
    mod.validate();
-   Simulation sim(mod);
 
    BOOST_CHECK(mod.getComponents()[0] == &a3);
    BOOST_CHECK(mod.getComponents()[1] == &a4);
@@ -378,7 +377,9 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    mod.validate();
    Simulation sim(mod);
    message() << "Initialize simulation. Starting." << std::endl;
-   sim.initialize(epoch, epoch + seconds(10));
+   sim.setStartTime(epoch);
+   sim.setStartTime(epoch + seconds(10));
+   sim.initialize();
    message() << "Initialize simulation. Completed." << std::endl;
 
    a0.getEventDidUpdate().addAction(
@@ -433,7 +434,9 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
    build1.setTeFunc(Te);
    build1.setdQgFunc(dQg);
 
-   sim.initialize(t0, t0 + hours(24));
+   sim.setStartTime(t0);
+   sim.setEndTime(t0 + hours(24));
+   sim.initialize();
    auto print = [&] () -> void 
    {
       outfile << dSeconds(build1.getTime())/hour << " " << build1.getTb()
@@ -454,9 +457,9 @@ BOOST_AUTO_TEST_CASE (test_parser)
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::getGlobalParser();
-   p.registerComponentParser<TestComponentParser>();
    p.parse("test_parser.yaml", mod, sim);
    mod.validate();
+   sim.initialize();
    const TestComponent * tc = mod.getComponentNamed<TestComponent>("test_component_1");
    message() << "test_component_1 another is " << tc->getAnother()->getName() << std::endl;
    BOOST_CHECK(tc->getAnother()->getName() == "test_component_2");
@@ -554,12 +557,8 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
 
    Model mod;
    Simulation sim(mod);
-   Parser & p = Parser::getGlobalParser();
 
-   p.registerComponentParser<Network1PParser>();
-   p.registerComponentParser<Bus1PParser>();
-   p.registerComponentParser<Branch1PParser>();
-   p.registerComponentParser<ZipToGround1PParser>();
+   Parser & p = Parser::getGlobalParser();
    p.parse("test_network_1p.yaml", mod, sim);
 
    Bus1P * bus1 = mod.getComponentNamed<Bus1P>("bus_1");
@@ -571,8 +570,8 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    bus2->addZipToGround(tl0);
 
    mod.validate();
+   sim.initialize();
 
-   sim.initialize(epoch, epoch + hours(2));
    Network1P * network = mod.getComponentNamed<Network1P>("network_1");
    ofstream outfile;
    outfile.open("network_1p.out");
@@ -581,6 +580,7 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
             outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
                     << " " << bus3->getV() << std::endl;
          }, "Network updated.");
+
    while (sim.doNextUpdate())
    {
       ;

@@ -128,9 +128,6 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "Parsing objects." << std::endl);
       parseComponents(top, model, false);
       SGT_DEBUG(debug() << "Parsed objects." << std::endl);
-      SGT_DEBUG(debug() << "Initialize simulation." << std::endl);
-      simulation.initialize();
-      SGT_DEBUG(debug() << "Initialized simulation." << std::endl);
 
       message() << "Finished parsing." << std::endl;
       message() << "Name = " << model.getName() << std::endl;

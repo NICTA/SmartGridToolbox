@@ -20,5 +20,7 @@ int main(int argc, const char ** argv)
    Simulation sim(mod);
    Parser & p = Parser::getGlobalParser();
    p.parse(configName, mod, sim);
+   mod.validate();
+   sim.initialize();
    while (sim.doNextUpdate());
 }
