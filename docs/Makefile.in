@@ -77,7 +77,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 subdir = docs
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(srcdir)/Doxyfile.in $(dist_man_MANS)
+	$(srcdir)/Doxyfile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/./m4_ax_cxx_compile_stdcxx_11.m4 \
 	$(top_srcdir)/configure.ac
@@ -106,37 +106,6 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
-am__install_max = 40
-am__nobase_strip_setup = \
-  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
-am__nobase_strip = \
-  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
-am__nobase_list = $(am__nobase_strip_setup); \
-  for p in $$list; do echo "$$p $$p"; done | \
-  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
-  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
-    if (++n[$$2] == $(am__install_max)) \
-      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
-    END { for (dir in files) print dir, files[dir] }'
-am__base_list = \
-  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
-  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__uninstall_files_from_dir = { \
-  test -z "$$files" \
-    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
-    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
-         $(am__cd) "$$dir" && rm -f $$files; }; \
-  }
-man3dir = $(mandir)/man3
-am__installdirs = "$(DESTDIR)$(man3dir)"
-NROFF = nroff
-MANS = $(dist_man_MANS)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -230,8 +199,6 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@HAVE_DOXYGEN_TRUE@directory = $(top_srcdir)/docs/man/man3/
-@HAVE_DOXYGEN_TRUE@dist_man_MANS = $(directory)/man_page_1.3 $(directory)/man_page_2.3
 @HAVE_DOXYGEN_TRUE@CLEANFILES = doxyfile.stamp
 all: all-am
 
@@ -268,49 +235,6 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 $(am__aclocal_m4_deps):
 @HAVE_DOXYGEN_TRUE@Doxyfile: $(top_builddir)/config.status $(srcdir)/Doxyfile.in
 @HAVE_DOXYGEN_TRUE@	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
-install-man3: $(dist_man_MANS)
-	@$(NORMAL_INSTALL)
-	@list1=''; \
-	list2='$(dist_man_MANS)'; \
-	test -n "$(man3dir)" \
-	  && test -n "`echo $$list1$$list2`" \
-	  || exit 0; \
-	echo " $(MKDIR_P) '$(DESTDIR)$(man3dir)'"; \
-	$(MKDIR_P) "$(DESTDIR)$(man3dir)" || exit 1; \
-	{ for i in $$list1; do echo "$$i"; done;  \
-	if test -n "$$list2"; then \
-	  for i in $$list2; do echo "$$i"; done \
-	    | sed -n '/\.3[a-z]*$$/p'; \
-	fi; \
-	} | while read p; do \
-	  if test -f $$p; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; echo "$$p"; \
-	done | \
-	sed -e 'n;s,.*/,,;p;h;s,.*\.,,;s,^[^3][0-9a-z]*$$,3,;x' \
-	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,' | \
-	sed 'N;N;s,\n, ,g' | { \
-	list=; while read file base inst; do \
-	  if test "$$base" = "$$inst"; then list="$$list $$file"; else \
-	    echo " $(INSTALL_DATA) '$$file' '$(DESTDIR)$(man3dir)/$$inst'"; \
-	    $(INSTALL_DATA) "$$file" "$(DESTDIR)$(man3dir)/$$inst" || exit $$?; \
-	  fi; \
-	done; \
-	for i in $$list; do echo "$$i"; done | $(am__base_list) | \
-	while read files; do \
-	  test -z "$$files" || { \
-	    echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(man3dir)'"; \
-	    $(INSTALL_DATA) $$files "$(DESTDIR)$(man3dir)" || exit $$?; }; \
-	done; }
-
-uninstall-man3:
-	@$(NORMAL_UNINSTALL)
-	@list=''; test -n "$(man3dir)" || exit 0; \
-	files=`{ for i in $$list; do echo "$$i"; done; \
-	l2='$(dist_man_MANS)'; for i in $$l2; do echo "$$i"; done | \
-	  sed -n '/\.3[a-z]*$$/p'; \
-	} | sed -e 's,.*/,,;h;s,.*\.,,;s,^[^3][0-9a-z]*$$,3,;x' \
-	      -e 's,\.[0-9a-z]*$$,,;$(transform);G;s,\n,.,'`; \
-	dir='$(DESTDIR)$(man3dir)'; $(am__uninstall_files_from_dir)
 tags TAGS:
 
 ctags CTAGS:
@@ -351,11 +275,8 @@ distdir: $(DISTFILES)
 check-am: all-am
 check: check-am
 @HAVE_DOXYGEN_FALSE@all-local:
-all-am: Makefile $(MANS) all-local
+all-am: Makefile all-local
 installdirs:
-	for dir in "$(DESTDIR)$(man3dir)"; do \
-	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
-	done
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -408,7 +329,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-man
+install-data-am:
 
 install-dvi: install-dvi-am
 
@@ -424,7 +345,7 @@ install-info: install-info-am
 
 install-info-am:
 
-install-man: install-man3
+install-man:
 
 install-pdf: install-pdf-am
 
@@ -452,9 +373,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-man
-
-uninstall-man: uninstall-man3
+uninstall-am:
 
 .MAKE: install-am install-strip
 
@@ -464,14 +383,11 @@ uninstall-man: uninstall-man3
 	install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am install-man \
-	install-man3 install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic pdf pdf-am ps ps-am tags-am \
-	uninstall uninstall-am uninstall-man uninstall-man3
-
-@HAVE_DOXYGEN_TRUE@$(directory)/man_page_1.3: doxyfile.stamp
-@HAVE_DOXYGEN_TRUE@$(directory)/man_page_2.3: doxyfile.stamp
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic pdf pdf-am ps ps-am tags-am uninstall \
+	uninstall-am
 
 @HAVE_DOXYGEN_TRUE@doxyfile.stamp:
 @HAVE_DOXYGEN_TRUE@	$(DOXYGEN) Doxyfile
