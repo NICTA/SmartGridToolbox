@@ -91,12 +91,10 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am_tests_OBJECTS = tests.$(OBJEXT)
 tests_OBJECTS = $(am_tests_OBJECTS)
-tests_DEPENDENCIES = ../src/libsmartgridtoolbox.a \
-	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
-	../third_party/SuiteSparse/KLU/Lib/libklu.a \
-	../third_party/SuiteSparse/AMD/Lib/libamd.a \
-	../third_party/SuiteSparse/BTF/Lib/libbtf.a \
-	../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a
+tests_DEPENDENCIES = ../src ../third_party/yaml-cpp-0.5.0/build \
+	../third_party/SuiteSparse/KLU ../third_party/SuiteSparse/AMD \
+	../third_party/SuiteSparse/BTF \
+	../third_party/SuiteSparse/COLAMD
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -451,12 +449,17 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I../third_party -I../src
 tests_SOURCES = tests.cc
-tests_LDADD = ../src/libsmartgridtoolbox.a \
-				  ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
-				  ../third_party/SuiteSparse/KLU/Lib/libklu.a \
-				  ../third_party/SuiteSparse/AMD/Lib/libamd.a \
-				  ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
-				  ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
+tests_LDADD = -L ../src \
+				  -L ../third_party/yaml-cpp-0.5.0/build \
+				  -L ../third_party/SuiteSparse/KLU \
+				  -L ../third_party/SuiteSparse/AMD \
+				  -L ../third_party/SuiteSparse/BTF \
+				  -L ../third_party/SuiteSparse/COLAMD \
+				  -lsmartgridtoolbox \
+				  -lyaml-cpp \
+				  -lklu \
+				  -lamd \
+				  -lbtf \
 				  -lboost_date_time-mt \
 				  -lblas
 
