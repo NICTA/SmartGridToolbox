@@ -459,6 +459,7 @@ tests_LDADD = -L ../src \
 				  -lyaml-cpp \
 				  -lklu \
 				  -lamd \
+				  -lcolamd \
 				  -lbtf \
 				  -lboost_date_time-mt \
 				  -lblas

@@ -1,4 +1,5 @@
 #include "ZipToGround1P.h"
+#include "Model.h"
 
 namespace SmartGridToolbox
 {

@@ -2,7 +2,7 @@
 #define ZIP_TO_GROUND_1P_DOT_H
 
 #include "Component.h"
-
+#include "Parser.h"
 
 namespace SmartGridToolbox
 {

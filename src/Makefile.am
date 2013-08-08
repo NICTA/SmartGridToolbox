@@ -20,7 +20,8 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 										  Simulation.cc \
 										  SparseSolver.cc \
 										  TestComponent.cc \
-										  WeakOrder.cc
+										  WeakOrder.cc \
+										  ZipToGround1P.cc
 
 bin_PROGRAMS = helloworld
 

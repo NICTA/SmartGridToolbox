@@ -134,7 +134,7 @@ am_libsmartgridtoolbox_a_OBJECTS = PowerFlow1PNR.$(OBJEXT) \
 	Random.$(OBJEXT) SimpleBattery.$(OBJEXT) \
 	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
 	SparseSolver.$(OBJEXT) TestComponent.$(OBJEXT) \
-	WeakOrder.$(OBJEXT)
+	WeakOrder.$(OBJEXT) ZipToGround1P.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_helloworld_OBJECTS = helloworld.$(OBJEXT)
@@ -308,7 +308,8 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 										  Simulation.cc \
 										  SparseSolver.cc \
 										  TestComponent.cc \
-										  WeakOrder.cc
+										  WeakOrder.cc \
+										  ZipToGround1P.cc
 
 helloworld_SOURCES = helloworld.cc
 helloworld_LDADD = -L . \
@@ -462,6 +463,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SparseSolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestComponent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGround1P.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helloworld.Po@am__quote@
 
 .cc.o:
