@@ -559,6 +559,7 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    p.registerComponentParser<Network1PParser>();
    p.registerComponentParser<Bus1PParser>();
    p.registerComponentParser<Branch1PParser>();
+   p.registerComponentParser<ZipToGround1PParser>();
    p.parse("test_network_1p.yaml", mod, sim);
 
    Bus1P * bus1 = mod.getComponentNamed<Bus1P>("bus_1");

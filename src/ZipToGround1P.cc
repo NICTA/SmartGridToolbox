@@ -49,19 +49,27 @@ namespace SmartGridToolbox
       }
       if (ndSLoad)
       {
-         comp.setI(-ndSLoad.as<Complex>());
+         comp.setS(-ndSLoad.as<Complex>());
       }
       if (ndSGen)
       {
-         comp.setI(ndSGen.as<Complex>());
+         comp.setS(ndSGen.as<Complex>());
       }
    }
 
-   void Bus1PParser::postParse(const YAML::Node & nd, Model & mod) const
+   void ZipToGround1PParser::postParse(const YAML::Node & nd, Model & mod) const
    {
       SGT_DEBUG(debug() << "ZipToGround1P : postParse." << std::endl);
-      ZipToGround1P * zip = mod.getComponentNamed<ZipToGround1P>(nd["name"].as<std::string>());
-      Bus1P * bus = mod.getComponentNamed<Bus1P>(nd["bus"].as<std::string>());
+      const std::string compNameStr = nd["name"].as<std::string>();
+      ZipToGround1P * zip = mod.getComponentNamed<ZipToGround1P>(compNameStr);
+      std::string busStr = nd["bus"].as<std::string>();
+      Bus1P * bus = mod.getComponentNamed<Bus1P>(busStr);
+      if (bus == nullptr)
+      {
+         error() << "For component " << compNameStr << ", bus " << busStr << " was not found in the model." 
+                 << std::endl;
+         abort();
+      }
       bus->addZipToGround(*zip);
    }
 }
