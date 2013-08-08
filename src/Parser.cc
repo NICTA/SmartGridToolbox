@@ -199,16 +199,14 @@ namespace SmartGridToolbox
       }
    }
 
-   void Parser::parseComponents(const YAML::Node & top, Model & model,
-                                bool isPrototype)
+   void Parser::parseComponents(const YAML::Node & top, Model & model, bool isPrototype)
    {
       message() << "Parsing components. Starting." << std::endl;
-      if (const YAML::Node & compsNode = isPrototype ? top["prototypes"] 
-                                                     : top["objects"])
+      if (const YAML::Node & compsNode = isPrototype ? top["prototypes"] : top["objects"])
       {
-         for (auto it = compsNode.begin(); it != compsNode.end(); ++it)
+         for (const auto & compPair : compsNode)
          {
-            std::string name = it->first.as<std::string>();
+            std::string name = compPair.first.as<std::string>();
             message() << "Parsing component " <<  name << std::endl;
             const ComponentParser * compParser = getComponentParser(name);
             if (compParser == nullptr)
@@ -217,12 +215,12 @@ namespace SmartGridToolbox
             }
             else
             {
-               compParser->parse(it->second, model);
+               compParser->parse(compPair.second, model);
             }
          }
-         for (auto it = compsNode.begin(); it != compsNode.end(); ++it)
+         for (const auto & compPair : compsNode)
          {
-            std::string name = it->first.as<std::string>();
+            std::string name = compPair.first.as<std::string>();
             message() << "Post parsing component " << name << std::endl;
             const ComponentParser * compParser = getComponentParser(name);
             if (compParser == nullptr)
@@ -231,7 +229,7 @@ namespace SmartGridToolbox
             }
             else
             {
-               compParser->postParse(it->second, model);
+               compParser->postParse(compPair.second, model);
             }
          }
          message() << "Parsing components. Completed." << std::endl;
