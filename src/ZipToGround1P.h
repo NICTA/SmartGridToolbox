@@ -13,10 +13,8 @@ namespace SmartGridToolbox
          {
             return "zip_to_ground_1_phase";
          }
-
       public:
          virtual void parse(const YAML::Node & nd, Model & mod) const override;
-
          virtual void postParse(const YAML::Node & nd, Model & mod) const override;
    };
 
@@ -41,7 +39,7 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         ZipToGround1P(const std::string & name) : Component(name) {}
+         ZipToGround1P(const std::string & name) : Component(name), Y_(0.0), I_(0.0), S_(0.0) {}
 
          const Complex & getY() const {return Y_;}
          void setY(const Complex & Y) {Y_ = Y;}

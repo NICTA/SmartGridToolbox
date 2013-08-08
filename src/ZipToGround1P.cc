@@ -1,4 +1,5 @@
 #include "ZipToGround1P.h"
+#include "Bus1P.h"
 #include "Model.h"
 
 namespace SmartGridToolbox
@@ -7,8 +8,7 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "ZipToGround1P : parse." << std::endl);
       assertFieldPresent(nd, "name");
-      assertFieldPresent(nd, "network");
-      assertFieldPresent(nd, "type");
+      assertFieldPresent(nd, "bus");
 
       const std::string nameStr = nd["name"].as<std::string>();
       ZipToGround1P & comp = mod.newComponent<ZipToGround1P>(nameStr);
@@ -55,5 +55,13 @@ namespace SmartGridToolbox
       {
          comp.setI(ndSGen.as<Complex>());
       }
+   }
+
+   void Bus1PParser::postParse(const YAML::Node & nd, Model & mod) const
+   {
+      SGT_DEBUG(debug() << "ZipToGround1P : postParse." << std::endl);
+      ZipToGround1P * zip = mod.getComponentNamed<ZipToGround1P>(nd["name"].as<std::string>());
+      Bus1P * bus = mod.getComponentNamed<Bus1P>(nd["bus"].as<std::string>());
+      bus->addZipToGround(*zip);
    }
 }

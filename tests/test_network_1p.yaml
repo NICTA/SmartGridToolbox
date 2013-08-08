@@ -17,14 +17,18 @@ objects: # And these are the actual objects.
       name:                   bus_1
       network:                network_1
       type:                   PQ
+   zip_to_ground_1_phase:
+      name:                   zip_load_1
+      bus:                    bus_1
       constant_power_load:    0.0240 + 0.0120j
-      generator_power:        0
    bus_1_phase:
       name:                   bus_2
       network:                network_1
       type:                   PQ
+   zip_to_ground_1_phase:
+      name:                   zip_load_2
+      bus:                    bus_2
       constant_power_load:    0.0840 - 0.0520j
-      generator_power:        (0,0)
    bus_1_phase:
       name:                   bus_3
       network:                network_1

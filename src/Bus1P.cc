@@ -39,6 +39,10 @@ namespace SmartGridToolbox
       {
          comp.setV(nd["slack_voltage"].as<Complex>());
       }
+
+      if (nd["zip_to_ground"])
+      {
+      }
    }
 
    void Bus1PParser::postParse(const YAML::Node & nd, Model & mod) const
