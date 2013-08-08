@@ -86,7 +86,7 @@ namespace SmartGridToolbox
          }
 
          /// Initialize to start time.
-         void initialize(const ptime & startTime, const ptime & endTime);
+         void initialize();
          
          /// Do the next update.
          bool doNextUpdate();

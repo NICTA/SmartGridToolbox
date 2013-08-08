@@ -77,7 +77,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = helloworld$(EXEEXT)
+bin_PROGRAMS = run_config$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp
@@ -131,16 +131,18 @@ am_libsmartgridtoolbox_a_OBJECTS = PowerFlow1PNR.$(OBJEXT) \
 	Bus1P.$(OBJEXT) Branch1P.$(OBJEXT) Common.$(OBJEXT) \
 	Component.$(OBJEXT) Event.$(OBJEXT) Meter.$(OBJEXT) \
 	Model.$(OBJEXT) Network1P.$(OBJEXT) Parser.$(OBJEXT) \
-	Random.$(OBJEXT) SimpleBattery.$(OBJEXT) \
-	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
-	SparseSolver.$(OBJEXT) TestComponent.$(OBJEXT) \
-	WeakOrder.$(OBJEXT) ZipToGround1P.$(OBJEXT)
+	Random.$(OBJEXT) RegisterComponentParsers.$(OBJEXT) \
+	SimpleBattery.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
+	Simulation.$(OBJEXT) SparseSolver.$(OBJEXT) \
+	TestComponent.$(OBJEXT) WeakOrder.$(OBJEXT) \
+	ZipToGround1P.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
-am_helloworld_OBJECTS = helloworld.$(OBJEXT)
-helloworld_OBJECTS = $(am_helloworld_OBJECTS)
-helloworld_DEPENDENCIES = . ../third_party/SuiteSparse/KLU \
-	../third_party/SuiteSparse/AMD ../third_party/SuiteSparse/BTF \
+am_run_config_OBJECTS = run_config.$(OBJEXT)
+run_config_OBJECTS = $(am_run_config_OBJECTS)
+run_config_DEPENDENCIES = libsmartgridtoolbox.a \
+	../third_party/SuiteSparse/KLU ../third_party/SuiteSparse/AMD \
+	../third_party/SuiteSparse/BTF \
 	../third_party/SuiteSparse/COLAMD
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -171,8 +173,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(helloworld_SOURCES)
-DIST_SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(helloworld_SOURCES)
+SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(run_config_SOURCES)
+DIST_SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(run_config_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -303,6 +305,7 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 										  Network1P.cc \
 										  Parser.cc \
 										  Random.cc \
+										  RegisterComponentParsers.cc \
 										  SimpleBattery.cc \
 										  SimpleBuilding.cc \
 										  Simulation.cc \
@@ -311,16 +314,18 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 										  WeakOrder.cc \
 										  ZipToGround1P.cc
 
-helloworld_SOURCES = helloworld.cc
-helloworld_LDADD = -L . \
+run_config_SOURCES = run_config.cc
+run_config_LDADD = libsmartgridtoolbox.a \
 						 -L ../third_party/SuiteSparse/KLU \
 						 -L ../third_party/SuiteSparse/AMD \
 						 -L ../third_party/SuiteSparse/BTF \
 						 -L ../third_party/SuiteSparse/COLAMD \
-						 -lsmartgridtoolbox \
+						 -lyaml-cpp \
 						 -lklu \
 						 -lamd \
+						 -lcolamd \
 						 -lbtf \
+						 -lboost_date_time-mt \
 						 -lblas
 
 all: all-am
@@ -436,9 +441,9 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-helloworld$(EXEEXT): $(helloworld_OBJECTS) $(helloworld_DEPENDENCIES) $(EXTRA_helloworld_DEPENDENCIES) 
-	@rm -f helloworld$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(helloworld_OBJECTS) $(helloworld_LDADD) $(LIBS)
+run_config$(EXEEXT): $(run_config_OBJECTS) $(run_config_DEPENDENCIES) $(EXTRA_run_config_DEPENDENCIES) 
+	@rm -f run_config$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(run_config_OBJECTS) $(run_config_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -457,6 +462,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlow1PNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RegisterComponentParsers.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBattery.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBuilding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Simulation.Po@am__quote@
@@ -464,7 +470,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestComponent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGround1P.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helloworld.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/run_config.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

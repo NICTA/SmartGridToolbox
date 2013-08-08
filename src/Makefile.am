@@ -15,6 +15,7 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 										  Network1P.cc \
 										  Parser.cc \
 										  Random.cc \
+										  RegisterComponentParsers.cc \
 										  SimpleBattery.cc \
 										  SimpleBuilding.cc \
 										  Simulation.cc \
@@ -23,16 +24,18 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 										  WeakOrder.cc \
 										  ZipToGround1P.cc
 
-bin_PROGRAMS = helloworld
+bin_PROGRAMS = run_config
 
-helloworld_SOURCES = helloworld.cc
-helloworld_LDADD = -L . \
+run_config_SOURCES = run_config.cc
+run_config_LDADD = libsmartgridtoolbox.a \
 						 -L ../third_party/SuiteSparse/KLU \
 						 -L ../third_party/SuiteSparse/AMD \
 						 -L ../third_party/SuiteSparse/BTF \
 						 -L ../third_party/SuiteSparse/COLAMD \
-						 -lsmartgridtoolbox \
+						 -lyaml-cpp \
 						 -lklu \
 						 -lamd \
+						 -lcolamd \
 						 -lbtf \
+						 -lboost_date_time-mt \
 						 -lblas

@@ -1,6 +1,7 @@
 #include "Common.h"
 #include "Model.h"
 #include "Parser.h"
+#include "RegisterComponentParsers.h"
 #include "Simulation.h"
 #include <string>
 
@@ -118,20 +119,28 @@ namespace SmartGridToolbox
       message() << "Started parsing." << std::endl;
       const YAML::Node & top = YAML::LoadFile(fname);
 
-      message() << "Parsing global." << std::endl;
+      SGT_DEBUG(debug() << "Parsing global." << std::endl);
       parseGlobal(top, model, simulation);
-      message() << "Parsed global." << std::endl;
-      message() << "Parsing prototypes." << std::endl;
+      SGT_DEBUG(debug() << "Parsed global." << std::endl);
+      SGT_DEBUG(debug() << "Parsing prototypes." << std::endl);
       parseComponents(top, model, true);
-      message() << "Parsed prototypes." << std::endl;
-      message() << "Parsing objects." << std::endl;
+      SGT_DEBUG(debug() << "Parsed prototypes." << std::endl);
+      SGT_DEBUG(debug() << "Parsing objects." << std::endl);
       parseComponents(top, model, false);
-      message() << "Parsed objects." << std::endl;
+      SGT_DEBUG(debug() << "Parsed objects." << std::endl);
+      SGT_DEBUG(debug() << "Initialize simulation." << std::endl);
+      simulation.initialize();
+      SGT_DEBUG(debug() << "Initialized simulation." << std::endl);
 
       message() << "Finished parsing." << std::endl;
       message() << "Name = " << model.getName() << std::endl;
       message() << "Start time = " << simulation.getStartTime() << std::endl;
       message() << "End time = " << simulation.getEndTime() << std::endl;
+   }
+   
+   Parser::Parser()
+   {
+      registerComponentParsers(*this);
    }
 
    void Parser::parseGlobal(const YAML::Node & top, Model & model,

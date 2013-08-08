@@ -14,15 +14,13 @@ namespace SmartGridToolbox
       // Empty.
    }
 
-   void Simulation::initialize(const ptime & startTime, const ptime & endTime)
+   void Simulation::initialize()
    {
-      startTime_ = startTime;
-      endTime_ = endTime;
       scheduledUpdates_ = ScheduledUpdates();
       contingentUpdates_ = ContingentUpdates();
       for (Component * comp : mod_->getComponents())
       {
-         comp->initialize(startTime);
+         comp->initialize(startTime_);
          comp->getEventNeedsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
                "Simulation insert contingent update of component " + comp->getName());
          scheduledUpdates_.insert(comp);

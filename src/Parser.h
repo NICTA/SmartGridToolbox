@@ -95,7 +95,7 @@ namespace SmartGridToolbox
          }
 
       private:
-         Parser() = default;
+         Parser();
 
          void parseGlobal(const YAML::Node & top, Model & model,
                           Simulation & simulation);
