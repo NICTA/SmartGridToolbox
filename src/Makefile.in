@@ -141,9 +141,13 @@ PROGRAMS = $(bin_PROGRAMS)
 am_run_config_OBJECTS = run_config.$(OBJEXT)
 run_config_OBJECTS = $(am_run_config_OBJECTS)
 run_config_DEPENDENCIES = libsmartgridtoolbox.a \
-	../third_party/SuiteSparse/KLU ../third_party/SuiteSparse/AMD \
-	../third_party/SuiteSparse/BTF \
-	../third_party/SuiteSparse/COLAMD
+	../third_party/SuiteSparse/KLU/Lib/libklu.a \
+	../third_party/SuiteSparse/AMD/Lib/libamd.a \
+	../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
+	../third_party/SuiteSparse/BTF/Lib/libbtf.a \
+	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a
+run_config_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	$(run_config_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -316,17 +320,14 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 
 run_config_SOURCES = run_config.cc
 run_config_LDADD = libsmartgridtoolbox.a \
-						 -L ../third_party/SuiteSparse/KLU \
-						 -L ../third_party/SuiteSparse/AMD \
-						 -L ../third_party/SuiteSparse/BTF \
-						 -L ../third_party/SuiteSparse/COLAMD \
-						 -lyaml-cpp \
-						 -lklu \
-						 -lamd \
-						 -lcolamd \
-						 -lbtf \
-						 -lboost_date_time-mt \
-						 -lblas
+						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
+						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
+						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
+						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
+						 ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a
+
+run_config_LDFLAGS = -lboost_date_time-mt \
+							-lblas
 
 all: all-am
 
@@ -443,7 +444,7 @@ clean-binPROGRAMS:
 
 run_config$(EXEEXT): $(run_config_OBJECTS) $(run_config_DEPENDENCIES) $(EXTRA_run_config_DEPENDENCIES) 
 	@rm -f run_config$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(run_config_OBJECTS) $(run_config_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(run_config_LINK) $(run_config_OBJECTS) $(run_config_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

@@ -28,14 +28,10 @@ bin_PROGRAMS = run_config
 
 run_config_SOURCES = run_config.cc
 run_config_LDADD = libsmartgridtoolbox.a \
-						 -L ../third_party/SuiteSparse/KLU \
-						 -L ../third_party/SuiteSparse/AMD \
-						 -L ../third_party/SuiteSparse/BTF \
-						 -L ../third_party/SuiteSparse/COLAMD \
-						 -lyaml-cpp \
-						 -lklu \
-						 -lamd \
-						 -lcolamd \
-						 -lbtf \
-						 -lboost_date_time-mt \
-						 -lblas
+						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
+						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
+						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
+						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
+						 ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a
+run_config_LDFLAGS = -lboost_date_time-mt \
+							-lblas
