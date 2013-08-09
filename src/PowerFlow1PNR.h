@@ -110,11 +110,6 @@ namespace SmartGridToolbox
          UblasCMatrix<double> J_;
          UblasCMatrix<double> JConst_; ///< The part of J that doesn't update at each iteration.
    };
-
-   inline Array2D<Complex, 2, 2> lineY(Complex y)
-   {
-      return {{{y, -y},{-y, y}}};
-   }
 }
 
 #endif // POWER_FLOW_1P_NR_DOT_H

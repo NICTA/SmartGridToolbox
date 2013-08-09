@@ -1,99 +1,180 @@
-#ifndef NR_LOAD_FLOW_DOT_H
-#define NR_LOAD_FLOW_DOT_H
+#ifndef POWER_FLOW_NR_DOT_H
+#define POWER_FLOW_NR_DOT_H
 
 #include "Common.h"
 #include "PowerFlow.h"
 #include <vector>
+#include <map>
+
+// Terminology:
+// "Bus" and "Branch" refer to n-phase objects i.e. they can contain several phases.
+// "Node" and "Link" refer to individual bus conductors and single phase lines.
+// A three phase network involving busses and branches can always be decomposed into a single phase network
+// involving nodes and links. Thus use of busses and branches is simply a convenience that lumps together nodes and
+// links.
 
 namespace SmartGridToolbox
 {
-   class Bus1PNR
+   class BusNR
    {
       public:
-         int id;                       ///< Arbitrary bus ID, for external use.
-         BusType type;                 ///< bus type (0=PQ, 1=PV, 2=SWING).
+         BusNR(const std::string & id, BusType type, const std::vector<Phase> & phases, const Vector<Complex> & V,
+               const Vector<Complex> & Y, const Vector<Complex> & I, const Vector<Complex> & S);
 
-         std::array<Complex, 3> V;     ///< Bus1PNR voltage / phase.
-         std::array<Complex, 3> Y;     ///< Constant admittance/phase.
-         std::array<Complex, 3> I;     ///< Constant current / phase.
-         std::array<Complex, 3> S;     ///< Constant power / phase.
+         const std::string & getId() const {return id_;}
+         BusType getType() const {return type_;}
+         const std::vector<NodeNR> & getNodes() const {return nodes_;}
+         std::vector<NodeNR> & getNodes() {return nodes_;}
 
-         std::array<double, 3> P;      ///< Real power injection.
-         std::array<double, 3> Q;      ///< Reactive power injection.
-
-         int idxPQ;                    ///< My index in list of PQ busses.
+      private:
+         std::string id_;           ///< Arbitrary bus ID, for external use.
+         BusType type_;             ///< Bus type.
+         std::vector<NodeNR> nodes_ ///< Bus nodes.
    };
 
-   class Branch1PNR
+   class NodeNR
    {
       public:
-         Array2D<Complex, 6, 6> Y;     ///< Complex value of elements in bus admittance matrix in NR solver.
-         const Bus1PNR * busi;           ///< My i bus.
-         const Bus1PNR * busk;           ///< My k bus.
+         NodeNR(Bus & bus, Phase phase, const Complex & V, const Complex & Y, const Complex & I, const Complex & S);
+
+         const Bus & getBus() const {return *bus;}
+         Bus & getBus() {return *bus;}
+
+         Phase getPhase() const {return phase_;}
+
+         const Complex & getV() const {return V_;}
+         const Complex & getY() const {return V_;}
+         const Complex & getI() const {return V_;}
+         const Complex & getS() const {return V_;}
+
+         int getIdx() {return idx_;}
+         void setIdx(int idx) {idx_ = idx;}
+
+      private:
+         Bus * bus_;
+
+         Phase phase_;
+
+         Complex V_; ///< Voltage.
+         Complex Y_; ///< Constant admittance.
+         Complex I_; ///< Constant current.
+         Complex S_; ///< Constant power.
+
+         int idx_;   ///< Node index.
+   };
+
+   class BranchNR
+   {
+      public:
+         BranchNR(const std::string & id, const std::string & id0, const std::string & id1, 
+               const std::vector<Phase> & phasesBus0, const std::vector<Phase> & phasesBus1,
+               const Matrix<Complex> & Y);
+
+      private:
+         std::string id_;                    ///< id of branch.
+         std::array<std::string, 2> busIds_; ///< id of bus 0/1.
+         std::vector<Link> links_;           ///< Branch links.
+   };
+
+   class LinkNR
+   {
+      public:
+         LinkNR(const Branch & branch, int busIdx0, int busIdx0, int phaseIdx1, int phaseIdx1, 
+               const Array2D<Complex, 2, 2> & Y);
+
+      private:
+         const BranchNR * branch_;              ///< My branch.
+         std::array<int, 2> busIdxs_;           ///< bus indices of terminals in parent branch.
+         std::array<int, 2> phaseIdxs_;         ///< Phases indices on terminals in parent branch.
+         Array2D<Complex, 2, 2> Y_;             ///< Complex value of elements in bus admittance matrix in NR solver.
+         std::array<const NodeNR *, 2> nodes_;  ///< My nodes.
    };
 
    class PowerFlowNR
    {
       public:
-         typedef std::vector<Bus1PNR *> BusVec;
-         typedef std::vector<Branch1PNR *> BranchVec;
+         typedef std::map<std::string, BusNR *> BusMap;
+         typedef std::vector<BranchNR *> BranchVec;
+         typedef std::vector<NodeNR *> NodeVec;
+         typedef std::vector<LinkNR *> LinkVec;
+
       public:
-         void addBus(Bus1PNR * bus);
-         void addBranch(Branch1PNR * branch)
+         void addBus(const std::string & id, BusType type, int nPhase, const Vector<Phase> & phases,
+               const Vector<Complex> & V, const Vector<Complex> & Y, Vector<Complex> & I, Vector<Complex> & S);
+
+         const BusMap & getBusses()
          {
-            branches_.push_back(branch);
+            return bussesById_;
          }
+
+         void addBranch(const std::string & id0, const std::string & id1, int nPhase, 
+               const Vector<Phase> & phasesBus0, const Vector<Phase> & phasesBus1, const Matrix<Complex> & Y);
+
+         const BranchVec & getBranches()
+         {
+            return branches_;
+         }
+
+         void reset();
          void validate();
-         void solve();
+         bool solve();
+         void outputNetwork();
+
       private:
          void buildBusAdmit();
          void initx();
+         void updateBusV();
          void updateF();
+         void updateJ();
+         void outputCurrentState();
+
       private:
          /// @name Vectors of busses and branches.
          /// @{
-         BusVec busses_;
-         BusVec SLBusses_;
-         BusVec PQBusses_;
+         BusMap bussesById_;
+         NodeVec SLNodes;
+         NodeVec PQNodes;
 
          BranchVec branches_;
          /// @}
 
          /// @name Array bounds.
          /// @{
-         int nSL_;                     ///< Number of slack busses.
-         int nPQ_;                     ///< Number of PQ busses.
-         int nBus_;                    ///< Total number of busses.
-         int nTerm_;                   ///< Total number of bus terminals (each bus has 1 terminal per phase).
-         int nVar_;                    ///< Number of variables e.g. length of x_ matrix in NR algorithm.
-         int nVarD2_;                  ///< Half nVar_.
+         int nSL_;                     ///< Number of slack nodes.
+         int nPQ_;                     ///< Number of PQ nodes.
+         int nNode;                    ///< Total number of nodes.
+         int nVar_;                    ///< Total number of variables.
          /// @}
 
          /// @name ublas ranges into vectors/matrices.
          /// @{
-         ublas::range rTermPQ(0, 3 * nPQ_);
-         ublas::range rTermAll(0, 3 * nPQ_ + 3);
-         ublas::range rx1(0, 3 * nPQ_);
-         ublas::range rx2(3 * nPQ_, 6 * nPQ_);
+         UblasRange rPQ_;              ///< Range of PQ nodes in list of all nodes.
+         UblasRange rAll_;             ///< Range of all nodes in list of all nodes.
+                                       /**< Needed for matrix_range. */
+         int iSL_;                     ///< Index of slack node in list of all nodes.
+         UblasRange rx0_;              ///< Range of real voltage components in x_. 
+         UblasRange rx1_;              ///< Range of imag voltage components in x_.
          /// @}
 
-         std::array<Complex, 3> V0_;   ///< Slack voltages.
+         Complex V0_;                  ///< Slack voltages.
 
-         /// @name ublas ranges into vectors/matrices.
-         /// @{
-         ublas::vector<double> PPQ_;   ///< Total power injection of PQ busses.
-         ublas::vector<double> QPQ_;
+         UblasVector<double> PPQ_;     ///< Constant power injection of PQ nodes.
+         UblasVector<double> QPQ_;
 
-         ublas::vector<double> Vr_;
-         ublas::vector<double> Vi_;
-         ublas::compressed_matrix<Complex> Y_;
-         ublas::compressed_matrix<double> G_;
-         ublas::compressed_matrix<double> B_;
+         UblasVector<double> IrPQ_;    ///< Constant current injection of PQ nodes.
+         UblasVector<double> IiPQ_;
 
-         ublas::vector<double> x_;
-         ublas::vector<double> f_;
-         ublas::compressed_matrix<double> J_;
+         UblasVector<double> Vr_;
+         UblasVector<double> Vi_;
+         UblasCMatrix<Complex> Y_;
+         UblasCMatrix<double> G_;
+         UblasCMatrix<double> B_;
+
+         UblasVector<double> x_;
+         UblasVector<double> f_;
+         UblasCMatrix<double> J_;
+         UblasCMatrix<double> JConst_; ///< The part of J that doesn't update at each iteration.
    };
 }
 
-#endif // NR_LOAD_FLOW_DOT_H
+#endif // POWER_FLOW_NR_DOT_H
