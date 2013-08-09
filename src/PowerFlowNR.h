@@ -99,7 +99,7 @@ namespace SmartGridToolbox
          typedef std::vector<LinkNR *> LinkVec;
 
       public:
-         void addBus(const std::string & id, BusType type, int nPhase, const Vector<Phase> & phases,
+         void addBus(const std::string & id, BusType type, const Vector<Phase> & phases,
                const Vector<Complex> & V, const Vector<Complex> & Y, Vector<Complex> & I, Vector<Complex> & S);
 
          const BusMap & getBusses()
@@ -107,7 +107,7 @@ namespace SmartGridToolbox
             return bussesById_;
          }
 
-         void addBranch(const std::string & id0, const std::string & id1, int nPhase, 
+         void addBranch(const std::string & id, const std::string & idBus0, const std::string & idBus1,
                const Vector<Phase> & phasesBus0, const Vector<Phase> & phasesBus1, const Matrix<Complex> & Y);
 
          const BranchVec & getBranches()

@@ -36,8 +36,7 @@ namespace SmartGridToolbox
    }
    
    BranchNR::BranchNR(const std::string & id, const std::string & idBus0, const std::string & idBus1, 
-         const std::vector<Phase> & phasesBus0, const std::vector<Phase> & phasesBus1,
-         const Matrix<Complex> & Y) :
+         const std::vector<Phase> & phasesBus0, const std::vector<Phase> & phasesBus1, const Matrix<Complex> & Y) :
       id_(id),
       idBus0_(idBus0),
       idBus1_(idBus1)
@@ -80,39 +79,26 @@ namespace SmartGridToolbox
    }
 
    void PowerFlowNR::addBus(const std::string & id, BusType type, const Vector<Phase> & phases,
-         const Vector<Complex> & V, const Vector<Complex> & Y, Vector<Complex> & I, Vector<Complex> & S);
+         const Vector<Complex> & V, const Vector<Complex> & Y, Vector<Complex> & I, Vector<Complex> & S)
    {
       SGT_DEBUG(debug() << "PowerFlowNR : addBus " << id << std::endl);
       BusNR * bus = new BusNR(id, type, phases, V, Y, I, S);
       bussesById_[bus->id_] = bus;
-      switch (bus->type_)
-      {
-         case BusType::SL :
-            SLBusses_.push_back(bus);
-            break;
-         case BusType::PQ :
-            PQBusses_.push_back(bus);
-            break;
-         case BusType::PV :
-            error() << "PV busses are not supported yet." << std::endl;
-            abort();
-            break;
-      }
    }
 
-   void PowerFlowNR::addBranch(const std::string & idBus0, const std::string & idBus1, int nPhase,
-         const Vector<Phase> & phasesBus0, const Vector<Phase> & phasesBus1, const Matrix<Complex> & Y);
+   void PowerFlowNR::addBranch(const std::string & id, const std::string & idBus0, const std::string & idBus1,
+         const Vector<Phase> & phasesBus0, const Vector<Phase> & phasesBus1, const Matrix<Complex> & Y)
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : addBranch " << idBus0 << " " << idBus1 << std::endl);
-      BranchNR * branch = new BranchNR(idBus0, idBus1, nPhase, phasesBus0, phasesBus1, Y);
+      SGT_DEBUG(debug() << "PowerFlowNR : addBranch " << id << " " << idBus0 << " " << idBus1 << std::endl);
+      BranchNR * branch = new BranchNR(id, idBus0, idBus1, phasesBus0, phasesBus1, Y);
       branches_.push_back(branch);
    }
 
    void PowerFlowNR::reset()
    {
       SGT_DEBUG(debug() << "PowerFlowNR : reset." << std::endl);
-      for (BusNR * bus : busses_) delete bus;
-      for (BranchNR * bus : branches_) delete bus;
+      for (auto & pair : bussesById_) delete pair.second;
+      for (auto branch : branches_) delete branch;
       busses_ = BusVec();
       SLBusses_ = BusVec();
       PQBusses_ = BusVec();
