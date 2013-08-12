@@ -4,16 +4,20 @@ AM_CPPFLAGS = -I../third_party
 
 lib_LIBRARIES = libsmartgridtoolbox.a
 
-libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
+libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Bus1P.cc \
+										  Branch.cc \
 										  Branch1P.cc \
 										  Common.cc \
 										  Component.cc \
 										  Event.cc \
 										  Meter.cc \
 										  Model.cc \
+										  Network.cc \
 										  Network1P.cc \
 										  Parser.cc \
+										  PowerFlowNR.cc \
+										  PowerFlow1PNR.cc \
 										  Random.cc \
 										  RegisterComponentParsers.cc \
 										  SimpleBattery.cc \
@@ -22,6 +26,7 @@ libsmartgridtoolbox_a_SOURCES = PowerFlow1PNR.cc \
 										  SparseSolver.cc \
 										  TestComponent.cc \
 										  WeakOrder.cc \
+										  ZipToGround.cc
 										  ZipToGround1P.cc
 
 bin_PROGRAMS = run_config

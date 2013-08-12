@@ -97,12 +97,9 @@ namespace SmartGridToolbox
    void PowerFlowNR::reset()
    {
       SGT_DEBUG(debug() << "PowerFlowNR : reset." << std::endl);
-      for (auto & pair : bussesById_) delete pair.second;
-      for (auto branch : branches_) delete branch;
-      busses_ = BusVec();
+      bussesById_ = BusMap();
       SLBusses_ = BusVec();
       PQBusses_ = BusVec();
-      bussesById_ = BusMap();
       branches_ = BranchVec();
    }
 

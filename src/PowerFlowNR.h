@@ -15,30 +15,17 @@
 
 namespace SmartGridToolbox
 {
-   class BusNR
-   {
-      public:
-         BusNR(const std::string & id, BusType type, const std::vector<Phase> & phases, const Vector<Complex> & V,
-               const Vector<Complex> & Y, const Vector<Complex> & I, const Vector<Complex> & S);
+   class BusNR;
+   class BranchNR;
 
-         const std::string & getId() const {return id_;}
-         BusType getType() const {return type_;}
-         const std::vector<NodeNR> & getNodes() const {return nodes_;}
-         std::vector<NodeNR> & getNodes() {return nodes_;}
-
-      private:
-         std::string id_;           ///< Arbitrary bus ID, for external use.
-         BusType type_;             ///< Bus type.
-         std::vector<NodeNR> nodes_ ///< Bus nodes.
-   };
-
+   /// A NodeNR represents a single conductor, i.e. a single phase of a BusNR.
    class NodeNR
    {
       public:
-         NodeNR(Bus & bus, Phase phase, const Complex & V, const Complex & Y, const Complex & I, const Complex & S);
+         NodeNR(BusNR & bus, Phase phase, const Complex & V, const Complex & Y, const Complex & I, const Complex & S);
 
-         const Bus & getBus() const {return *bus;}
-         Bus & getBus() {return *bus;}
+         const BusNR & getBus() const {return *bus_;}
+         BusNR & getBus() {return *bus_;}
 
          Phase getPhase() const {return phase_;}
 
@@ -51,7 +38,7 @@ namespace SmartGridToolbox
          void setIdx(int idx) {idx_ = idx;}
 
       private:
-         Bus * bus_;
+         BusNR * bus_;
 
          Phase phase_;
 
@@ -63,23 +50,12 @@ namespace SmartGridToolbox
          int idx_;   ///< Node index.
    };
 
-   class BranchNR
-   {
-      public:
-         BranchNR(const std::string & id, const std::string & id0, const std::string & id1, 
-               const std::vector<Phase> & phasesBus0, const std::vector<Phase> & phasesBus1,
-               const Matrix<Complex> & Y);
-
-      private:
-         std::string id_;                    ///< id of branch.
-         std::array<std::string, 2> busIds_; ///< id of bus 0/1.
-         std::vector<Link> links_;           ///< Branch links.
-   };
-
+   /// A LinkNR represents a single phase of a BranchNR.
+   /** It links to a two NodeNR objects. */
    class LinkNR
    {
       public:
-         LinkNR(const Branch & branch, int busIdx0, int busIdx0, int phaseIdx1, int phaseIdx1, 
+         LinkNR(const BranchNR & branch, int busIdx0, int busIdx1, int phaseIdx0, int phaseIdx1, 
                const Array2D<Complex, 2, 2> & Y);
 
       private:
@@ -90,17 +66,53 @@ namespace SmartGridToolbox
          std::array<const NodeNR *, 2> nodes_;  ///< My nodes.
    };
 
+   /// A BusNR is a container that manages its nodes: one node per phase.
+   class BusNR
+   {
+      public:
+         BusNR(const std::string & id, BusType type, const std::vector<Phase> & phases, const UblasVector<Complex> & V,
+               const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S);
+         ~BusNR();
+
+         const std::string & getId() const {return id_;}
+         BusType getType() const {return type_;}
+         const std::vector<NodeNR> & getNodes() const {return nodes_;}
+         std::vector<NodeNR> & getNodes() {return nodes_;}
+
+      private:
+         std::string id_;              ///< Arbitrary bus ID, for external use.
+         BusType type_;                ///< Bus type.
+         std::vector<NodeNR> nodes_;   ///< Bus nodes.
+   };
+
+   /// A BranchNR represents an n-phase line as a collection of LinkNR single phase lines.
+   /** It links to a given set of phases on two BusNR objects. */
+   class BranchNR
+   {
+      public:
+         BranchNR(const std::string & id, const std::string & id0, const std::string & id1, 
+               const std::vector<Phase> & phasesBus0, const std::vector<Phase> & phasesBus1,
+               const UblasCMatrix<Complex> & Y);
+         ~BranchNR();
+
+      private:
+         std::string id_;                    ///< id of branch.
+         std::array<std::string, 2> busIds_; ///< id of bus 0/1.
+         std::vector<LinkNR> links_;         ///< Branch links.
+   };
+
    class PowerFlowNR
    {
       public:
-         typedef std::map<std::string, BusNR *> BusMap;
-         typedef std::vector<BranchNR *> BranchVec;
+         typedef std::map<std::string, BusNR> BusMap;    ///< Key is id.
+         typedef std::vector<BranchNR > BranchVec;
          typedef std::vector<NodeNR *> NodeVec;
          typedef std::vector<LinkNR *> LinkVec;
 
       public:
-         void addBus(const std::string & id, BusType type, const Vector<Phase> & phases,
-               const Vector<Complex> & V, const Vector<Complex> & Y, Vector<Complex> & I, Vector<Complex> & S);
+         void addBus(const std::string & id, BusType type, const UblasVector<Phase> & phases,
+               const UblasVector<Complex> & V, const UblasVector<Complex> & Y, UblasVector<Complex> & I, 
+               UblasVector<Complex> & S);
 
          const BusMap & getBusses()
          {
@@ -108,7 +120,8 @@ namespace SmartGridToolbox
          }
 
          void addBranch(const std::string & id, const std::string & idBus0, const std::string & idBus1,
-               const Vector<Phase> & phasesBus0, const Vector<Phase> & phasesBus1, const Matrix<Complex> & Y);
+               const UblasVector<Phase> & phasesBus0, const UblasVector<Phase> & phasesBus1, 
+               const UblasCMatrix<Complex> & Y);
 
          const BranchVec & getBranches()
          {
@@ -129,13 +142,14 @@ namespace SmartGridToolbox
          void outputCurrentState();
 
       private:
-         /// @name Vectors of busses and branches.
+         /// @name UblasVector of busses and branches.
          /// @{
          BusMap bussesById_;
+         BranchVec branches_;
+
          NodeVec SLNodes;
          NodeVec PQNodes;
 
-         BranchVec branches_;
          /// @}
 
          /// @name Array bounds.

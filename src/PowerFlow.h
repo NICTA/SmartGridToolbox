@@ -11,14 +11,14 @@ namespace SmartGridToolbox
       BAD
    };
 
-   constexpr const char * busTypeStr(BusType type)
+   const char * busTypeStr(BusType type)
    {
       switch (type)
       {
-         case SL: return "SL"; break;
-         case PQ: return "PQ"; break;
-         case PV: return "PV"; break;
-         case BAD: return "UNDEFINED"; break;
+         case BusType::SL: return "SL"; break;
+         case BusType::PQ: return "PQ"; break;
+         case BusType::PV: return "PV"; break;
+         case BusType::BAD: return "UNDEFINED"; break;
       }
    }
 
@@ -36,20 +36,20 @@ namespace SmartGridToolbox
       BAD
    };
 
-   constexpr const char * phaseStr(Phase phase)
+   const char * phaseStr(Phase phase)
    {
       switch (phase)
       {
-         case BAL: return "balanced/1-phase"; break;
-         case A: return "3-phase A"; break;
-         case B: return "3-phase B"; break;
-         case C: return "3-phase C"; break;
-         case G: return "ground"; break;
-         case N: return "neutral"; break;
-         case SP: return "split-phase +ve"; break;
-         case SM: return "split-phase -ve"; break;
-         case SN: return "split-phase neutral"; break;
-         case BAD: return "UNDEFINED"; break;
+         case Phase::BAL: return "balanced/1-phase"; break;
+         case Phase::A: return "3-phase A"; break;
+         case Phase::B: return "3-phase B"; break;
+         case Phase::C: return "3-phase C"; break;
+         case Phase::G: return "ground"; break;
+         case Phase::N: return "neutral"; break;
+         case Phase::SP: return "split-phase +ve"; break;
+         case Phase::SM: return "split-phase -ve"; break;
+         case Phase::SN: return "split-phase neutral"; break;
+         case Phase::BAD: return "UNDEFINED"; break;
       }
    }
 }
