@@ -503,6 +503,12 @@ BOOST_AUTO_TEST_CASE (test_sparse_solver)
    message() << "Testing SparseSolver. Completed." << std::endl;
 }
 
+inline Array2D<Complex, 2, 2> lineY(Complex y)
+{
+   return {{{y, -y},{-y, y}}};
+}
+
+
 BOOST_AUTO_TEST_CASE (test_balanced_power_flow_nr)
 {
    message() << "Testing balanced_power_flow_nr. Starting." << std::endl;

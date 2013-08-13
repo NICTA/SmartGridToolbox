@@ -16,7 +16,7 @@ namespace SmartGridToolbox
       public:
          static constexpr const char * getComponentName() 
          {
-            return "network_1_phase";
+            return "network";
          }
 
       public:

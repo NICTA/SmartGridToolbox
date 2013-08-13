@@ -82,7 +82,7 @@ namespace SmartGridToolbox
                                const std::vector<Phase> & phases0, const std::vector<Phase> & phases1, 
                                const UblasMatrix<Complex> & Y)
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : addBranch " << id << " " << idBus0 << " " << idBus1 << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNR : addBranch " << idBus0 << " " << idBus1 << std::endl);
       branches_.push_back(new BranchNR(idBus0, idBus1, phases0, phases1, Y));
    }
 
@@ -252,10 +252,6 @@ namespace SmartGridToolbox
       UblasCMatrixRange<double>(JConst_, rx1_, rx0_) = UblasCMatrixRange<double>(B_, rPQ_, rPQ_);
       UblasCMatrixRange<double>(JConst_, rx1_, rx1_) = UblasCMatrixRange<double>(G_, rPQ_, rPQ_);
       J_ = JConst_; // We only need to redo the elements that we mess with!
-
-#ifdef DEBUG
-      outputNetwork();
-#endif
    }
 
    void PowerFlowNR::initx()
