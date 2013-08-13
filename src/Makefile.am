@@ -16,6 +16,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Network.cc \
 										  Network1P.cc \
 										  Parser.cc \
+										  PowerFlow.cc \
 										  PowerFlowNR.cc \
 										  PowerFlow1PNR.cc \
 										  Random.cc \
@@ -26,7 +27,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  SparseSolver.cc \
 										  TestComponent.cc \
 										  WeakOrder.cc \
-										  ZipToGround.cc
+										  ZipToGround.cc \
 										  ZipToGround1P.cc
 
 bin_PROGRAMS = run_config

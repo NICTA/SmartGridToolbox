@@ -49,13 +49,19 @@ namespace SmartGridToolbox
       public:
          Branch(const std::string & name) : Component(name) {}
 
-         const Bus & getBusi() const {return *busi_;}
-         Bus & getBusi() {return *busi_;}
-         void setBusi(Bus & busi) {busi_ = &busi;}
+         const Bus & getBus0() const {return *bus0_;}
+         Bus & getBus0() {return *bus0_;}
+         void setBus0(Bus & bus0) {bus0_ = &bus0;}
 
-         const Bus & getBusk() const {return *busk_;}
-         Bus & getBusk() {return *busk_;}
-         void setBusk(Bus & busk) {busk_ = &busk;}
+         const Bus & getBus1() const {return *bus1_;}
+         Bus & getBus1() {return *bus1_;}
+         void setBus1(Bus & bus1) {bus1_ = &bus1;}
+
+         const std::vector<Phase> & getPhases0() const {return phases0_;}
+         void setPhases0(const std::vector<Phase> phases0) {phases0_ = phases0;}
+
+         const std::vector<Phase> & getPhases1() const {return phases1_;}
+         void setPhases1(const std::vector<Phase> phases1) {phases1_ = phases1;}
 
          const UblasCMatrix<Complex> & getY() const {return Y_;}
          UblasCMatrix<Complex> & getY() {return Y_;}
@@ -65,9 +71,11 @@ namespace SmartGridToolbox
       /// @name My private member variables.
       /// @{
       private:
-         Bus * busi_;             ///< My i bus.
-         Bus * busk_;             ///< My k bus.
-         UblasCMatrix<Complex> Y_;  ///< Complex value of elements in bus admittance matrix in NR solver.
+         Bus * bus0_;                  ///< My bus 0.
+         Bus * bus1_;                  ///< My bus 1.
+         std::vector<Phase> phases0_;  ///< Phases on bus 0.
+         std::vector<Phase> phases1_;  ///< Phases on bus 1.
+         UblasCMatrix<Complex> Y_;     ///< Complex value of elements in bus admittance matrix in NR solver.
       /// @}
    };
 }

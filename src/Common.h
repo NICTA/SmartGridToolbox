@@ -28,11 +28,15 @@ namespace SmartGridToolbox
    inline std::ostream & debug() {return std::cout <<    "DEBUG:  \t";}
    inline void abort() {std::cerr << "ABORTING." << std::endl; ::abort();}
 
+   /// @name Constant dimension 1D array type.
+   /// @{
+   template <class T, size_t N> using Array = std::array<T, N>; // Just std::array but rename for nice consistency.
+   /// @}
+
    /// @name Constant dimension 2D array type.
    /// @{
    // Note transposition of NR and NC to obey standard matrix index order. 
-   template <class T, size_t NR, size_t NC>
-   using Array2D = std::array<std::array<T, NC>, NR>;
+   template <class T, size_t NR, size_t NC> using Array2D = std::array<std::array<T, NC>, NR>;
    /// @}
 
    /// @name Complex numbers

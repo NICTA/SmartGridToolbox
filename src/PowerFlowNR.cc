@@ -6,159 +6,147 @@
 
 namespace SmartGridToolbox
 {
-   BusNR::BusNR(const std::string & id, BusType type, const std::vector<Phase> & phases, const Vector<Complex> & V,
-         const Vector<Complex> & Y, const Vector<Complex> & I, const Vector<Complex> & S)
+   BusNR::BusNR(const std::string & id, BusType type, const std::vector<Phase> & phases, 
+                const UblasVector<Complex> & V, const UblasVector<Complex> & Y, const UblasVector<Complex> & I,
+                const UblasVector<Complex> & S) :
       id_(id),
       type_(type),
-      idx_(-1)
+      V_(V),
+      Y_(Y),
+      I_(I),
+      S_(S)
    {
       int nPhase = phases.size();
+
       assert(V.size() == nPhase);
       assert(Y.size() == nPhase);
       assert(I.size() == nPhase);
       assert(S.size() == nPhase);
+
       for (int i = 0; i < nPhase; ++i)
       {
-         nodes_.emplace_back(*this, phases[i], V(i), Y(i), I(i), S(i));
+         phaseIdx_[phases[i]] = i;
       }
-   }
 
-   NodeNR::NodeNR(Bus & bus, Phase phase, const Complex & V, const Complex & Y, const Complex & I, const Complex & S) :
-      bus_(bus),
-      phase_(phase),
-      V_(V),
-      Y_(Y),
-      I_(I),
-      S_(S),
-      idx_(-1)
-   {
-      // Empty. 
-   }
-   
-   BranchNR::BranchNR(const std::string & id, const std::string & idBus0, const std::string & idBus1, 
-         const std::vector<Phase> & phasesBus0, const std::vector<Phase> & phasesBus1, const Matrix<Complex> & Y) :
-      id_(id),
-      idBus0_(idBus0),
-      idBus1_(idBus1)
-   {
-      int nPhase = phasesBus0.size();
-      int nTerm = 2 * nPhase;
-      assert(phasesBus1.size() == nPhase);
-      assert(Y.size() == nTerm);
-
-      // There is a single link for every distinct pair of terminals.
-      for (int i0 = 0; i0 < nTerm; ++i0)
+      for (int i = 0; i < nPhase; ++i)
       {
-         for (int i1 = i0 + 1; i1 < nTerm; ++i1)
-         {
-            Array2D<Complex, 2, 2> YLink;
-            YLink[0][0] = Y(i0, i0);
-            YLink[0][1] = Y(i0, i1);
-            YLink[1][0] = Y(i1, i0);
-            YLink[1][1] = Y(i1, i1);
-
-            int busIdx0 = i0 / nPhase;
-            int busIdx1 = i1 / nPhase;
-            int phaseIdx0 = i0 % nPhase;
-            int phaseIdx1 = i1 % nPhase;
-            links_.emplace_back(*this, busIdx0, busIdx1, phaseIdx0, phaseIdx1, YLink);
-         }
+         nodes_.push_back(new NodeNR(*this, i));  
       }
    }
 
-   LinkNR::LinkNR(const Branch & branch, int busIdx0, int busIdx0, int phaseIdx1, int phaseIdx1, 
-         const Array2D<Complex, 2, 2> & Y) :
-      branch_(&branch),
-      busIdxs_{busIdx0, busIdx1},
-      phaseIdxs_{phaseIdx0, phaseIdx1},
-      Y_(Y),
-      nodei_(nullptr),
-      nodek_(nullptr)
+   BusNR::~BusNR()
+   {
+      for (auto node : nodes_) delete node; 
+   }
+
+   NodeNR::NodeNR(BusNR & bus, int phaseIdx) :
+      bus_(&bus),
+      phaseIdx_(phaseIdx),
+      V_(bus.V_(phaseIdx)),
+      Y_(bus.Y_(phaseIdx)),
+      I_(bus.I_(phaseIdx)),
+      S_(bus.S_(phaseIdx)),
+      idx_(-1)
    {
       // Empty.
    }
 
-   void PowerFlowNR::addBus(const std::string & id, BusType type, const Vector<Phase> & phases,
-         const Vector<Complex> & V, const Vector<Complex> & Y, Vector<Complex> & I, Vector<Complex> & S)
+   BranchNR::BranchNR(const std::string & id0, const std::string & id1, const std::vector<Phase> & phases0, 
+                      const std::vector<Phase> & phases1, const UblasMatrix<Complex> & Y) :
+      nPhase_(phases0.size()),
+      ids_{id0, id1},
+      phases_{phases0, phases1},
+      Y_(Y)
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : addBus " << id << std::endl);
-      BusNR * bus = new BusNR(id, type, phases, V, Y, I, S);
-      bussesById_[bus->id_] = bus;
+      assert(phases1.size() == nPhase_);
+      int nTerm = 2 * nPhase_;
+      assert(Y.size1() == nTerm);
+      assert(Y.size2() == nTerm);
    }
 
-   void PowerFlowNR::addBranch(const std::string & id, const std::string & idBus0, const std::string & idBus1,
-         const Vector<Phase> & phasesBus0, const Vector<Phase> & phasesBus1, const Matrix<Complex> & Y)
+   PowerFlowNR::~PowerFlowNR()
+   {
+      for (auto pair : busses_) delete pair.second;
+      for (auto branch : branches_) delete branch;
+   }
+
+   void PowerFlowNR::addBus(const std::string & id, BusType type, const std::vector<Phase> & phases,
+         const UblasVector<Complex> & V, const UblasVector<Complex> & Y, const UblasVector<Complex> & I,
+         const UblasVector<Complex> & S)
+   {
+      SGT_DEBUG(debug() << "PowerFlowNR : addBus " << id << std::endl);
+      busses_[id] = new BusNR(id, type, phases, V, Y, I, S);
+   }
+
+   void PowerFlowNR::addBranch(const std::string & idBus0, const std::string & idBus1,
+                               const std::vector<Phase> & phases0, const std::vector<Phase> & phases1, 
+                               const UblasMatrix<Complex> & Y)
    {
       SGT_DEBUG(debug() << "PowerFlowNR : addBranch " << id << " " << idBus0 << " " << idBus1 << std::endl);
-      BranchNR * branch = new BranchNR(id, idBus0, idBus1, phasesBus0, phasesBus1, Y);
-      branches_.push_back(branch);
+      branches_.push_back(new BranchNR(idBus0, idBus1, phases0, phases1, Y));
    }
 
    void PowerFlowNR::reset()
    {
       SGT_DEBUG(debug() << "PowerFlowNR : reset." << std::endl);
-      bussesById_ = BusMap();
-      SLBusses_ = BusVec();
-      PQBusses_ = BusVec();
+      busses_ = BusMap();
       branches_ = BranchVec();
    }
 
    void PowerFlowNR::validate()
    {
       SGT_DEBUG(debug() << "PowerFlowNR : validate." << std::endl);
-      // Determine sizes:
-      nSL_ = SLBusses_.size();
-      nPQ_ = PQBusses_.size();
-      assert(nSL_ == 1); // May change in future...
-      assert(nPQ_ > 0); // May change in future...
-      nBus_ = nSL_ + nPQ_;
-      nVar_ = 2 * nPQ_;
 
-      // Insert PQ and PV busses into list of all busses.
-      // PQ busses at start, slack bus last.
-      busses_ = BusVec(); // Clear contents...
-      busses_.reserve(nBus_);
-      busses_.insert(busses_.end(), PQBusses_.begin(), PQBusses_.end());
-      busses_.insert(busses_.end(), SLBusses_.begin(), SLBusses_.end());
-
-      // Index all PQ busses:
-      for (int i = 0; i < nBus_; ++i)
+      // Make Nodes:
+      SLNodes_ = NodeVec();
+      PQNodes_ = NodeVec();
+      for (auto & busPair : busses_)
       {
-         busses_[i]->idx_ = i;
+         BusNR & bus = *busPair.second;
+         NodeVec * vec = nullptr;
+         if (bus.type_ == BusType::SL)
+         {
+            vec = &SLNodes_;
+         }
+         else if (bus.type_ == BusType::PQ)
+         {
+            vec = &PQNodes_;
+         }
+         else
+         {
+            error() << "Unsupported bus type " << busTypeStr(bus.type_) << std::endl;
+            abort();
+         }
+         for (NodeNR * node : bus.nodes_)
+         {
+            vec->push_back(node);
+         }
       }
 
-      // Set bus pointers in all branches.
-      for (BranchNR * branch : branches_)
+      // Determine sizes:
+      nSL_ = SLNodes_.size();
+      nPQ_ = PQNodes_.size();
+      assert(nSL_ > 1); // TODO: What is correct here?
+      assert(nPQ_ > 0); // TODO: What is correct here?
+      nNode_ = nSL_ + nPQ_;
+      nVar_ = 2 * nPQ_;
+
+      nodes_ = NodeVec();
+      nodes_.reserve(nNode_);
+      nodes_.insert(nodes_.end(), PQNodes_.begin(), PQNodes_.end());
+      nodes_.insert(nodes_.end(), SLNodes_.begin(), SLNodes_.end());
+
+      // Index all nodes (PQ ones come first):
+      for (int i = 0; i < nNode_; ++i)
       {
-         auto iti = bussesById_.find(branch->idBus0_);
-         if (iti == bussesById_.end())
-         {
-            error() << "Branch " << branch->idBus0_ << " " << branch->idBus1_ << " contains a non-existent bus " 
-                    << branch->idBus0_ << std::endl;
-            abort();
-         }
-         else
-         {
-            branch->bus0_ = iti->second;
-         }
-         auto itk = bussesById_.find(branch->idBus1_);
-         if (itk == bussesById_.end())
-         {
-            error() << "Branch " << branch->idBus0_ << " " << branch->idBus1_ << " contains a non-existent bus "
-                    << branch->idBus1_ << std::endl;
-            abort();
-         }
-         else
-         {
-            branch->bus1_ = itk->second;
-         }
+         nodes_[i]->idx_ = i;
       }
 
       // Set array ranges:
       // Note Range goes from begin (included) to end (excluded).
       rPQ_ = UblasRange(0, nPQ_);
-      rAll_ = UblasRange(0, nPQ_ + 1);
-      iSL_ = nPQ_;
+      rSL_ = UblasRange(nPQ_, nPQ_ + nSL_);
+      rAll_ = UblasRange(0, nNode_);
       rx0_ = UblasRange(0, nPQ_);
       rx1_ = UblasRange(nPQ_, 2 * nPQ_);
 
@@ -167,31 +155,91 @@ namespace SmartGridToolbox
       QPQ_.resize(nPQ_, false);
       IrPQ_.resize(nPQ_, false);
       IiPQ_.resize(nPQ_, false);
-      Vr_.resize(nBus_, false);
-      Vi_.resize(nBus_, false);
-      Y_.resize(nBus_, nBus_, false);
-      G_.resize(nBus_, nBus_, false);
-      B_.resize(nBus_, nBus_, false);
+      Vr_.resize(nNode_, false);
+      Vi_.resize(nNode_, false);
+      Y_.resize(nNode_, nNode_, false);
+      G_.resize(nNode_, nNode_, false);
+      B_.resize(nNode_, nNode_, false);
       x_.resize(nVar_, false);
       f_.resize(nVar_, false);
       J_.resize(nVar_, nVar_, false);
       JConst_.resize(nVar_, nVar_, false);
 
-      // Set the slack voltages:
-      V0_ = SLBusses_[0]->V_; // Array copy.
+      // Build the bus admittance matrix:
+      Y_.clear();
+      // Branch admittances:
+      for (BranchNR * branch : branches_)
+      {
+         auto it0 = busses_.find(branch->ids_[0]);
+         if (it0 == busses_.end())
+         {
+            error() << "Branch " << branch->ids_[0] << " " << branch->ids_[1] << " contains a non-existent bus " 
+                    << branch->ids_[0] << std::endl;
+            abort();
+         }
+         auto it1 = busses_.find(branch->ids_[1]);
+         if (it1 == busses_.end())
+         {
+            error() << "Branch " << branch->ids_[0] << " " << branch->ids_[1] << " contains a non-existent bus "
+                    << branch->ids_[1] << std::endl;
+            abort();
+         }
+         const BusNR * busses[] = {it0->second, it1->second};
+         int nTerm = 2 * branch->nPhase_;
+
+         // There is one link per distinct pair of bus/phase pairs.
+         for (int i = 0; i < nTerm; ++i)
+         {
+            int busIdxI = i / branch->nPhase_; // 0 or 1
+            int branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
+            const BusNR * busI = busses[busIdxI];
+            int busPhaseIdxI = busI->phaseIdx_.find(branch->phases_[busIdxI][branchPhaseIdxI])->second;
+            const NodeNR * nodeI = busI->nodes_[busPhaseIdxI];
+            int idxNodeI = nodeI->idx_;
+
+            for (int k = i + 1; k < nTerm; ++k)
+            {
+               int busIdxK = k / branch->nPhase_; // 0 or 1
+               int branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
+               const BusNR * busK = busses[busIdxK];
+               int busPhaseIdxK = busK->phaseIdx_.find(branch->phases_[busIdxK][branchPhaseIdxK])->second;
+               const NodeNR * nodeK = busK->nodes_[busPhaseIdxK];
+               int idxNodeK = nodeK->idx_;
+
+               Y_(idxNodeI, idxNodeI) += branch->Y_(i, i);
+               Y_(idxNodeK, idxNodeK) += branch->Y_(k, k);
+               Y_(idxNodeI, idxNodeK) += branch->Y_(i, k);
+               Y_(idxNodeK, idxNodeI) += branch->Y_(k, i);
+            }
+         }
+      } // Loop over branches.
+
+      // Add bus shunt admittances.
+      for (auto pair : busses_)
+      {
+         for (const NodeNR * const node : pair.second->nodes_)
+         {
+            int nodeIdx = node->idx_;
+            Y_(nodeIdx, nodeIdx) += node->Y_;
+         }
+      }
 
       for (int i = 0; i < nPQ_; ++i)
       {
          // Set the PPQ_ and QPQ_ arrays of real and reactive power on each terminal:
-         PPQ_(i) = (busses_[i]->S_).real();
-         QPQ_(i) = (busses_[i]->S_).imag();
+         PPQ_(i) = PQNodes_[i]->S_.real();
+         QPQ_(i) = PQNodes_[i]->S_.imag();
+
          // Set the constant current arrays of real and reactive power on each terminal:
-         IrPQ_(i) = (busses_[i]->I_).real();
-         IiPQ_(i) = (busses_[i]->I_).imag();
+         IrPQ_(i) = PQNodes_[i]->I_.real();
+         IiPQ_(i) = PQNodes_[i]->I_.imag();
       }
 
-      // Build the bus admittance matrix:
-      buildBusAdmit();
+      for (int i = 0; i < nSL_; ++i)
+      {
+         V0r_(i) = SLNodes_[i]->V_.real();
+         V0i_(i) = SLNodes_[i]->V_.imag();
+      }
 
       // And set G_ and B_:
       G_ = real(Y_);
@@ -204,38 +252,10 @@ namespace SmartGridToolbox
       UblasCMatrixRange<double>(JConst_, rx1_, rx0_) = UblasCMatrixRange<double>(B_, rPQ_, rPQ_);
       UblasCMatrixRange<double>(JConst_, rx1_, rx1_) = UblasCMatrixRange<double>(G_, rPQ_, rPQ_);
       J_ = JConst_; // We only need to redo the elements that we mess with!
+
 #ifdef DEBUG
       outputNetwork();
 #endif
-   }
-
-   void PowerFlowNR::buildBusAdmit()
-   {
-      SGT_DEBUG(debug() << "PowerFlowNR : buildBusAdmit." << std::endl);
-      // Zero the matrix:
-      Y_.clear();
-
-      // Add branch admittances.
-      for (const BranchNR * const branch : branches_)
-      {
-         const BusNR * bus0 = branch->bus0_;
-         const BusNR * bus1 = branch->bus1_;
-
-         int ibus0 = bus0->idx_;
-         int ibus1 = bus1->idx_;
-
-         Y_(ibus0, ibus0) += branch->Y_[0][0];
-         Y_(ibus1, ibus1) += branch->Y_[1][1];
-         Y_(ibus0, ibus1) += branch->Y_[0][1];
-         Y_(ibus1, ibus0) += branch->Y_[1][0];
-      }
-
-      // Add bus shunt admittances.
-      for (const BusNR * const bus : busses_)
-      {
-         int ibus0 = bus->idx_;
-         Y_(ibus0, ibus0) += bus->Y_;
-      }
    }
 
    void PowerFlowNR::initx()
@@ -243,9 +263,9 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "PowerFlowNR : initx." << std::endl);
       for (int i = 0; i < nPQ_; ++i)
       {
-         const BusNR & bus = *busses_[i + 1];
-         x_(i) = V0_.real();
-         x_(i + nPQ_) = V0_.imag();
+         const NodeNR & node = *PQNodes_[i];
+         x_(i) = node.V_.real();
+         x_(i + nPQ_) = node.V_.imag();
       }
    }
 
@@ -256,8 +276,8 @@ namespace SmartGridToolbox
       // Done like this with a copy because eventually we'll include PV busses too.
       UblasVectorRange<double>(Vr_, rPQ_) = UblasVectorRange<double>(x_, rx0_);
       UblasVectorRange<double>(Vi_, rPQ_) = UblasVectorRange<double>(x_, rx1_);
-      Vr_(iSL_) = V0_.real();
-      Vi_(iSL_) = V0_.imag();
+      UblasVectorRange<double>(Vr_, rSL_) = V0r_;
+      UblasVectorRange<double>(Vi_, rSL_) = V0i_;
    }
 
    void PowerFlowNR::updateF()
@@ -335,49 +355,12 @@ namespace SmartGridToolbox
       {
          for (int i = 0; i < nPQ_; ++i)
          {
-            PQBusses_[i]->V_ = {x_(i), x_(i + nPQ_)};
+            NodeNR * node = PQNodes_[i];
+            node->V_ = {x_(i), x_(i + nPQ_)};
+            node->bus_->V_[node->phaseIdx_] = node->V_;
          }
          // TODO: set power e.g. on slack bus. Set current injections. Set impedances to ground. 
       }
       return wasSuccessful;
-   }
-
-   void PowerFlowNR::outputNetwork()
-   {
-      SGT_DEBUG(debug() << "Number of busses = " << nBus_ << std::endl);
-      SGT_DEBUG(debug() << "Number of PQ busses = " << nPQ_ << std::endl);
-      SGT_DEBUG(debug() << "Number of slack busses = " << nSL_ << std::endl);
-      for (const BusNR * bus : busses_)
-      {
-         SGT_DEBUG(debug() << "\tBus: " << bus->idx_ << " " << bus->id_ << " " << (int)bus->type_ << " " 
-               << bus->V_ << " " << bus->Y_ << " " << bus->I_ << " " << bus->S_ << std::endl);
-      }
-      for (BranchNR * branch : branches_)
-      {
-         SGT_DEBUG(debug() << "\tBranch: " << branch->idBus0_ << " " << branch->idBus1_ << std::endl);
-         for (int i = 0; i < 2; ++i)
-         {
-            SGT_DEBUG(debug() << "\t\t" << branch->Y_[i][0] << " " << branch->Y_[i][1] << std::endl);
-         }
-      }
-   }
-
-   void PowerFlowNR::outputCurrentState()
-   {
-      using namespace std;
-      SGT_DEBUG(debug() << "x : " << x_ << std::endl);
-      SGT_DEBUG(debug() << "f : " << f_ << std::endl);
-      std::ostringstream ssJ;
-      ssJ << "J: " << std::endl;
-      for (int i = 0; i < J_.size1(); ++i)
-      {
-         ssJ << "\t";
-         for (int k = 0; k < J_.size2(); ++k)
-         {
-            ssJ << J_(i, k) << " ";
-         }
-         ssJ << endl;
-      }
-      SGT_DEBUG(debug() << ssJ.str() << std::endl);
    }
 }

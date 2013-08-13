@@ -131,12 +131,13 @@ am_libsmartgridtoolbox_a_OBJECTS = Bus.$(OBJEXT) Bus1P.$(OBJEXT) \
 	Branch.$(OBJEXT) Branch1P.$(OBJEXT) Common.$(OBJEXT) \
 	Component.$(OBJEXT) Event.$(OBJEXT) Meter.$(OBJEXT) \
 	Model.$(OBJEXT) Network.$(OBJEXT) Network1P.$(OBJEXT) \
-	Parser.$(OBJEXT) PowerFlowNR.$(OBJEXT) PowerFlow1PNR.$(OBJEXT) \
-	Random.$(OBJEXT) RegisterComponentParsers.$(OBJEXT) \
-	SimpleBattery.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
-	Simulation.$(OBJEXT) SparseSolver.$(OBJEXT) \
-	TestComponent.$(OBJEXT) WeakOrder.$(OBJEXT) \
-	ZipToGround.$(OBJEXT)
+	Parser.$(OBJEXT) PowerFlow.$(OBJEXT) PowerFlowNR.$(OBJEXT) \
+	PowerFlow1PNR.$(OBJEXT) Random.$(OBJEXT) \
+	RegisterComponentParsers.$(OBJEXT) SimpleBattery.$(OBJEXT) \
+	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
+	SparseSolver.$(OBJEXT) TestComponent.$(OBJEXT) \
+	WeakOrder.$(OBJEXT) ZipToGround.$(OBJEXT) \
+	ZipToGround1P.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_run_config_OBJECTS = run_config.$(OBJEXT)
@@ -311,6 +312,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Network.cc \
 										  Network1P.cc \
 										  Parser.cc \
+										  PowerFlow.cc \
 										  PowerFlowNR.cc \
 										  PowerFlow1PNR.cc \
 										  Random.cc \
@@ -321,7 +323,8 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  SparseSolver.cc \
 										  TestComponent.cc \
 										  WeakOrder.cc \
-										  ZipToGround.cc
+										  ZipToGround.cc \
+										  ZipToGround1P.cc
 
 run_config_SOURCES = run_config.cc
 run_config_LDADD = libsmartgridtoolbox.a \
@@ -469,6 +472,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network1P.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlow1PNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlowNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
@@ -480,6 +484,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestComponent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGround.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGround1P.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/run_config.Po@am__quote@
 
 .cc.o:
@@ -702,7 +707,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLIBRARIES
 	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
 	uninstall-libLIBRARIES
 
-										  ZipToGround1P.cc
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

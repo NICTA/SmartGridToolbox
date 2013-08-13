@@ -10,8 +10,8 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "Branch : parse." << std::endl);
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
-      assertFieldPresent(nd, "bus_i");
-      assertFieldPresent(nd, "bus_k");
+      assertFieldPresent(nd, "bus_0");
+      assertFieldPresent(nd, "bus_1");
       assertFieldPresent(nd, "Y");
 
       const std::string nameStr = nd["name"].as<std::string>();
@@ -39,28 +39,28 @@ namespace SmartGridToolbox
          abort();
       }
 
-      const std::string busiStr = nd["bus_i"].as<std::string>();
-      Bus * busiComp = mod.getComponentNamed<Bus>(busiStr);
+      const std::string bus0Str = nd["bus_0"].as<std::string>();
+      Bus * bus0Comp = mod.getComponentNamed<Bus>(bus0Str);
       if (networkComp != nullptr)
       {
-         comp->setBusi(*busiComp);
+         comp->setBus0(*bus0Comp);
       }
       else
       {
-         error() << "For component " << compNameStr <<  ", bus " << busiStr <<  " was not found in the model." 
+         error() << "For component " << compNameStr <<  ", bus " << bus0Str <<  " was not found in the model." 
                << std::endl;
          abort();
       }
 
-      const std::string buskStr = nd["bus_k"].as<std::string>();
-      Bus * buskComp = mod.getComponentNamed<Bus>(buskStr);
+      const std::string bus1Str = nd["bus_1"].as<std::string>();
+      Bus * bus1Comp = mod.getComponentNamed<Bus>(bus1Str);
       if (networkComp != nullptr)
       {
-         comp->setBusk(*buskComp);
+         comp->setBus1(*bus1Comp);
       }
       else
       {
-         error() << "For component " << compNameStr <<  ", bus " << buskStr <<  " was not found in the model." 
+         error() << "For component " << compNameStr <<  ", bus " << bus1Str <<  " was not found in the model." 
                << std::endl;
          abort();
       }

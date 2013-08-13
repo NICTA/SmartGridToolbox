@@ -35,9 +35,10 @@ namespace SmartGridToolbox
          abort();
       }
 
-      if (nd["slack_voltage"])
+      if (nd["nominal_voltage"])
       {
-         comp.setV(nd["slack_voltage"].as<UblasVector<Complex>>());
+         comp.setNominalV(nd["nominal_voltage"].as<UblasVector<Complex>>());
+         comp.setV(comp.getNominalV());
       }
    }
 
