@@ -2,6 +2,7 @@
 #define PARSER_DOT_H
 
 #include "Common.h"
+#include "PowerFlow.h"
 #include "../third_party/yaml-cpp-0.5.0/include/yaml-cpp/yaml.h"
 #include <map>
 
@@ -10,11 +11,18 @@ namespace YAML
    using SmartGridToolbox::UblasVector;
    using SmartGridToolbox::UblasMatrix;
    using SmartGridToolbox::Complex;
+   using SmartGridToolbox::Phase;
 
    template<> struct convert<Complex>
    {
       static Node encode(const Complex & from);
       static bool decode(const Node & nd, Complex & to);
+   };
+
+   template<> struct convert<Phase>
+   {
+      static Node encode(const Phase & from);
+      static bool decode(const Node & nd, Phase & to);
    };
 
    template<typename T> struct convert<UblasVector<T>>

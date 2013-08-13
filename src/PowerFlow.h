@@ -1,6 +1,8 @@
 #ifndef POWERFLOW_DOT_H
 #define POWERFLOW_DOT_H
 
+#include <string>
+
 namespace SmartGridToolbox
 {
    enum class BusType
@@ -12,6 +14,7 @@ namespace SmartGridToolbox
    };
 
    const char * busTypeStr(BusType type);
+   BusType str2BusType(const std::string & str);
 
    enum class Phase
    {
@@ -27,7 +30,9 @@ namespace SmartGridToolbox
       BAD
    };
 
-   const char * phaseStr(Phase phase);
+   const char * phase2Str(Phase phase);
+   Phase str2Phase(const std::string & str);
+   const char * phaseDescr(Phase phase);
 }
 
 #endif // POWERFLOW_DOT_H

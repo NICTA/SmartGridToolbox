@@ -9,10 +9,12 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "ZipToGround : parse." << std::endl);
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "bus");
+      assertFieldPresent(nd, "phases");
 
       const std::string nameStr = nd["name"].as<std::string>();
       ZipToGround & comp = mod.newComponent<ZipToGround>(nameStr);
 
+      auto ndPhases = nd["phases"];
       auto ndImp = nd["impedance"];
       auto ndCurLoad = nd["current_load"];
       auto ndCurGen = nd["current_gen"];
@@ -35,6 +37,10 @@ namespace SmartGridToolbox
          }
       }
 
+      if (ndPhases)
+      {
+         comp.setPhases(ndImp.as<std::vector<Phase>>());
+      }
       if (ndImp)
       {
          comp.setY(ndImp.as<UblasVector<Complex>>());

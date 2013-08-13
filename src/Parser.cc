@@ -22,6 +22,19 @@ namespace YAML
       return true;
    }
 
+   Node convert<Phase>::encode(const Phase & from)
+   {
+      Node nd;
+      nd.push_back(phase2Str(from));
+      return nd;
+   }
+
+   bool convert<Phase>::decode(const Node & nd, Phase & to)
+   {
+      to = str2Phase(nd.as<std::string>());
+      return true;
+   }
+
    template<typename T> Node convert<UblasVector<T>>::encode(const UblasVector<T> & from)
    {
       Node nd;
