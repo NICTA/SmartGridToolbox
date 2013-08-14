@@ -35,6 +35,19 @@ namespace YAML
       return true;
    }
 
+   Node convert<BusType>::encode(const BusType & from)
+   {
+      Node nd;
+      nd.push_back(busType2Str(from));
+      return nd;
+   }
+
+   bool convert<BusType>::decode(const Node & nd, BusType & to)
+   {
+      to = str2BusType(nd.as<std::string>());
+      return true;
+   }
+
    template<typename T> Node convert<UblasVector<T>>::encode(const UblasVector<T> & from)
    {
       Node nd;

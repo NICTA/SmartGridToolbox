@@ -37,14 +37,14 @@ objects: # And these are the actual objects.
    branch_1_phase:
       name:                   branch_1_2
       network:                network_1
-      bus_i:                  bus_1
-      bus_k:                  bus_2
+      bus_0:                  bus_1
+      bus_1:                  bus_2
       Y:                      [[5 - 15j, -5 + 15j], [-5 + 15j, 5 - 15j]]
    branch_1_phase:
       name:                   branch_1_3
       network:                network_1
-      bus_i:                  bus_1
-      bus_k:                  bus_3
+      bus_0:                  bus_1
+      bus_1:                  bus_3
       Y:                      [[3 - 9j, -3 + 9j], [-3 + 9j, 3 - 9j]]
 
 --- # Marks the end of each configuration document.

@@ -79,8 +79,8 @@ namespace SmartGridToolbox
    {
       // Doing it this way avoids hassles with stream manipulators, since there is only one insertion operator.
       std::ostringstream ss;
-      ss << "[" << std::setprecision(4) << std::setw(12) << std::left << v(0);
-      for (int i = 1; i < v.size(); ++i) ss << std::setw(12) << std::left << v(i);
+      ss << "[" << std::setprecision(4) << std::setw(13) << std::left << v(0);
+      for (int i = 1; i < v.size(); ++i) ss << std::setw(13) << std::left << v(i);
       ss << "]";
       return os << ss.str();
    }

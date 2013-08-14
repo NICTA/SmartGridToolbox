@@ -12,11 +12,15 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "bus_0");
       assertFieldPresent(nd, "bus_1");
+      assertFieldPresent(nd, "phases_0");
+      assertFieldPresent(nd, "phases_1");
       assertFieldPresent(nd, "Y");
 
       const std::string nameStr = nd["name"].as<std::string>();
       Branch & comp = mod.newComponent<Branch>(nameStr);
 
+      comp.setPhases0(nd["phases_0"].as<Phases>());
+      comp.setPhases1(nd["phases_1"].as<Phases>());
       comp.setY(nd["Y"].as<UblasMatrix<Complex>>());
    }
 

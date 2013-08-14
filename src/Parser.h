@@ -8,11 +8,12 @@
 
 namespace YAML
 {
-   using SmartGridToolbox::UblasVector;
-   using SmartGridToolbox::UblasMatrix;
+   using SmartGridToolbox::BusType;
    using SmartGridToolbox::Complex;
    using SmartGridToolbox::Phase;
    using SmartGridToolbox::Phases;
+   using SmartGridToolbox::UblasMatrix;
+   using SmartGridToolbox::UblasVector;
 
    template<> struct convert<Complex>
    {
@@ -24,6 +25,12 @@ namespace YAML
    {
       static Node encode(const Phase & from);
       static bool decode(const Node & nd, Phase & to);
+   };
+
+   template<> struct convert<BusType>
+   {
+      static Node encode(const BusType & from);
+      static bool decode(const Node & nd, BusType & to);
    };
 
    template<typename T> struct convert<UblasVector<T>>

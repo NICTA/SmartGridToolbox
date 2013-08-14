@@ -10,8 +10,8 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "Branch1P : parse." << std::endl);
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
-      assertFieldPresent(nd, "bus_i");
-      assertFieldPresent(nd, "bus_k");
+      assertFieldPresent(nd, "bus_0");
+      assertFieldPresent(nd, "bus_1");
       assertFieldPresent(nd, "Y");
 
       const std::string nameStr = nd["name"].as<std::string>();
@@ -45,7 +45,7 @@ namespace SmartGridToolbox
          abort();
       }
 
-      const std::string busiStr = nd["bus_i"].as<std::string>();
+      const std::string busiStr = nd["bus_0"].as<std::string>();
       Bus1P * busiComp = mod.getComponentNamed<Bus1P>(busiStr);
       if (networkComp != nullptr)
       {
@@ -58,7 +58,7 @@ namespace SmartGridToolbox
          abort();
       }
 
-      const std::string buskStr = nd["bus_k"].as<std::string>();
+      const std::string buskStr = nd["bus_1"].as<std::string>();
       Bus1P * buskComp = mod.getComponentNamed<Bus1P>(buskStr);
       if (networkComp != nullptr)
       {

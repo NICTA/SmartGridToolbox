@@ -94,6 +94,8 @@ namespace SmartGridToolbox
       for (auto & busPair : busses_)
       {
          BusNR & bus = *busPair.second;
+         SGT_DEBUG(debug() << "\tBus: " << bus.id_ << std::endl);
+         SGT_DEBUG(debug() << "\t\tType: " << bus.type_ << std::endl);
          NodeVec * vec = nullptr;
          if (bus.type_ == BusType::SL)
          {

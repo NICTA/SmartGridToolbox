@@ -12,32 +12,20 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "type");
+      assertFieldPresent(nd, "phases");
 
       const std::string nameStr = nd["name"].as<std::string>();
       Bus & comp = mod.newComponent<Bus>(nameStr);
+      comp.setPhases(nd["phases"].as<Phases>());
+      comp.setType(nd["type"].as<BusType>());
 
-      const std::string typeStr = nd["type"].as<std::string>();
-      if (typeStr == "SL") 
+      int nPhase = comp.getPhases().size();
+      comp.setNominalV(UblasVector<Complex>(nPhase, czero));
+      comp.setV(UblasVector<Complex>(nPhase, czero));
+      auto ndNominal = nd["nominal_voltage"];
+      if (ndNominal)
       {
-         comp.setType(BusType::SL);
-      }
-      else if (typeStr == "PQ") 
-      {
-         comp.setType(BusType::PQ);
-      }
-      else if (typeStr == "PV") 
-      {
-         comp.setType(BusType::PV);
-      }
-      else
-      { 
-         error() << "Bus type " << typeStr << " is not supported." << std::endl;
-         abort();
-      }
-
-      if (nd["nominal_voltage"])
-      {
-         comp.setNominalV(nd["nominal_voltage"].as<UblasVector<Complex>>());
+         comp.setNominalV(ndNominal.as<UblasVector<Complex>>());
          comp.setV(comp.getNominalV());
       }
    }
@@ -59,6 +47,19 @@ namespace SmartGridToolbox
          error() << "For component " << compNameStr << ", network " << networkStr << " was not found in the model." 
                  << std::endl;
          abort();
+      }
+   }
+
+   void Bus::initializeState(ptime t)
+   {
+      Y_ = UblasVector<Complex>(phases_.size(), czero);
+      I_ = UblasVector<Complex>(phases_.size(), czero);
+      S_ = UblasVector<Complex>(phases_.size(), czero);
+      for (const ZipToGround * zip : zipsToGround_)
+      {
+         Y_ += zip->getY();
+         I_ += zip->getI(); // Injection.
+         S_ += zip->getS(); // Injection.
       }
    }
 

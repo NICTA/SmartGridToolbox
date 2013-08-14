@@ -11,9 +11,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "bus");
       assertFieldPresent(nd, "phases");
 
-      const std::string nameStr = nd["name"].as<std::string>();
-      ZipToGround & comp = mod.newComponent<ZipToGround>(nameStr);
-
+      auto ndName = nd["name"];
       auto ndPhases = nd["phases"];
       auto ndImp = nd["impedance"];
       auto ndCurLoad = nd["current_load"];
@@ -37,10 +35,17 @@ namespace SmartGridToolbox
          }
       }
 
-      if (ndPhases)
-      {
-         comp.setPhases(ndImp.as<Phases>());
-      }
+      const std::string nameStr = ndName.as<std::string>();
+      ZipToGround & comp = mod.newComponent<ZipToGround>(nameStr);
+
+      comp.setPhases(ndPhases.as<Phases>());
+      int nPhase = comp.getPhases().size();
+
+      // Defaults:
+      comp.setY(UblasVector<Complex>(nPhase, czero));
+      comp.setI(UblasVector<Complex>(nPhase, czero));
+      comp.setS(UblasVector<Complex>(nPhase, czero));
+
       if (ndImp)
       {
          comp.setY(ndImp.as<UblasVector<Complex>>());

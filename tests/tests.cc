@@ -4,11 +4,14 @@
 #include <ostream>
 #include <fstream>
 #include "PowerFlow1PNR.h"
+#include "Branch.h"
 #include "Branch1P.h"
+#include "Bus.h"
 #include "Bus1P.h"
 #include "Component.h"
 #include "Event.h"
 #include "Model.h"
+#include "Network.h"
 #include "Network1P.h"
 #include "Parser.h"
 #include "PowerFlow.h"
@@ -621,6 +624,40 @@ BOOST_AUTO_TEST_CASE (test_phases)
    Phases p4 = p1 | Phase::C;
    BOOST_CHECK(p1.isSubsetOf(p4));
    message() << "Testing phases. Completed." << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE (test_network)
+{
+   message() << "Testing network. Starting." << std::endl;
+
+   Model mod;
+   Simulation sim(mod);
+
+   Parser & p = Parser::getGlobalParser();
+   p.parse("test_network.yaml", mod, sim);
+
+   Bus * bus1 = mod.getComponentNamed<Bus>("bus_1");
+   Bus * bus2 = mod.getComponentNamed<Bus>("bus_2");
+   Bus * bus3 = mod.getComponentNamed<Bus>("bus_3");
+
+   mod.validate();
+   sim.initialize();
+
+   Network * network = mod.getComponentNamed<Network>("network_1");
+   ofstream outfile;
+   outfile.open("network.out");
+   network->getEventDidUpdate().addAction([&]()
+         {
+            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
+                    << " " << bus3->getV() << std::endl;
+         }, "Network updated.");
+
+   while (sim.doNextUpdate())
+   {
+      ;
+   }
+   outfile.close();
+   message() << "Testing network. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
