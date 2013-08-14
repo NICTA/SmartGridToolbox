@@ -654,7 +654,7 @@ BOOST_AUTO_TEST_CASE (test_network)
 
    while (sim.doNextUpdate())
    {
-      ;
+      std::cout << "update" << std::endl;
    }
    outfile.close();
    message() << "Testing network. Completed." << std::endl;
