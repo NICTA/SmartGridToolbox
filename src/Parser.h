@@ -12,6 +12,7 @@ namespace YAML
    using SmartGridToolbox::UblasMatrix;
    using SmartGridToolbox::Complex;
    using SmartGridToolbox::Phase;
+   using SmartGridToolbox::Phases;
 
    template<> struct convert<Complex>
    {
@@ -35,6 +36,12 @@ namespace YAML
    {
       static Node encode(const UblasMatrix<T> & from);
       static bool decode(const Node & nd, UblasMatrix<T> & to);
+   };
+
+   template<> struct convert<Phases>
+   {
+      static Node encode(const Phases & from);
+      static bool decode(const Node & nd, Phases & to);
    };
 }
 

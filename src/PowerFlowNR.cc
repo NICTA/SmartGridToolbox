@@ -6,29 +6,22 @@
 
 namespace SmartGridToolbox
 {
-   BusNR::BusNR(const std::string & id, BusType type, const std::vector<Phase> & phases, 
-                const UblasVector<Complex> & V, const UblasVector<Complex> & Y, const UblasVector<Complex> & I,
-                const UblasVector<Complex> & S) :
+   BusNR::BusNR(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
+                const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S) :
       id_(id),
       type_(type),
+      phases_(phases),
       V_(V),
       Y_(Y),
       I_(I),
       S_(S)
    {
-      int nPhase = phases.size();
+      assert(V.size() == phases.size());
+      assert(Y.size() == phases.size());
+      assert(I.size() == phases.size());
+      assert(S.size() == phases.size());
 
-      assert(V.size() == nPhase);
-      assert(Y.size() == nPhase);
-      assert(I.size() == nPhase);
-      assert(S.size() == nPhase);
-
-      for (int i = 0; i < nPhase; ++i)
-      {
-         phaseIdx_[phases[i]] = i;
-      }
-
-      for (int i = 0; i < nPhase; ++i)
+      for (int i = 0; i < phases.size(); ++i)
       {
          nodes_.push_back(new NodeNR(*this, i));  
       }
@@ -51,8 +44,8 @@ namespace SmartGridToolbox
       // Empty.
    }
 
-   BranchNR::BranchNR(const std::string & id0, const std::string & id1, const std::vector<Phase> & phases0, 
-                      const std::vector<Phase> & phases1, const UblasMatrix<Complex> & Y) :
+   BranchNR::BranchNR(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1, 
+                      const UblasMatrix<Complex> & Y) :
       nPhase_(phases0.size()),
       ids_{id0, id1},
       phases_{phases0, phases1},
@@ -70,16 +63,14 @@ namespace SmartGridToolbox
       for (auto branch : branches_) delete branch;
    }
 
-   void PowerFlowNR::addBus(const std::string & id, BusType type, const std::vector<Phase> & phases,
-         const UblasVector<Complex> & V, const UblasVector<Complex> & Y, const UblasVector<Complex> & I,
-         const UblasVector<Complex> & S)
+   void PowerFlowNR::addBus(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
+         const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S)
    {
       SGT_DEBUG(debug() << "PowerFlowNR : addBus " << id << std::endl);
       busses_[id] = new BusNR(id, type, phases, V, Y, I, S);
    }
 
-   void PowerFlowNR::addBranch(const std::string & idBus0, const std::string & idBus1,
-                               const std::vector<Phase> & phases0, const std::vector<Phase> & phases1, 
+   void PowerFlowNR::addBranch(const std::string & idBus0, const std::string & idBus1, Phases phases0, Phases phases1,
                                const UblasMatrix<Complex> & Y)
    {
       SGT_DEBUG(debug() << "PowerFlowNR : addBranch " << idBus0 << " " << idBus1 << std::endl);
@@ -114,7 +105,7 @@ namespace SmartGridToolbox
          }
          else
          {
-            error() << "Unsupported bus type " << busTypeStr(bus.type_) << std::endl;
+            error() << "Unsupported bus type " << busType2Str(bus.type_) << std::endl;
             abort();
          }
          for (NodeNR * node : bus.nodes_)
@@ -193,7 +184,7 @@ namespace SmartGridToolbox
             int busIdxI = i / branch->nPhase_; // 0 or 1
             int branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
             const BusNR * busI = busses[busIdxI];
-            int busPhaseIdxI = busI->phaseIdx_.find(branch->phases_[busIdxI][branchPhaseIdxI])->second;
+            int busPhaseIdxI = busI->phases_.getPhaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
             const NodeNR * nodeI = busI->nodes_[busPhaseIdxI];
             int idxNodeI = nodeI->idx_;
 
@@ -202,7 +193,7 @@ namespace SmartGridToolbox
                int busIdxK = k / branch->nPhase_; // 0 or 1
                int branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
                const BusNR * busK = busses[busIdxK];
-               int busPhaseIdxK = busK->phaseIdx_.find(branch->phases_[busIdxK][branchPhaseIdxK])->second;
+               int busPhaseIdxK = busK->phases_.getPhaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
                const NodeNR * nodeK = busK->nodes_[busPhaseIdxK];
                int idxNodeK = nodeK->idx_;
 

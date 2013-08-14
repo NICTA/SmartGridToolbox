@@ -1,8 +1,23 @@
 #include "PowerFlow.h"
 
+#include <sstream>
+
 namespace SmartGridToolbox
 {
-   const char * busTypeStr(BusType type)
+   static const int nPhases = 9;
+   static Phase allPhases[nPhases] = {
+      Phase::BAL, 
+      Phase::A, 
+      Phase::B, 
+      Phase::C, 
+      Phase::G, 
+      Phase::N, 
+      Phase::SP, 
+      Phase::SM, 
+      Phase::SN
+   };
+
+   const char * busType2Str(BusType type)
    {
       switch (type)
       {
@@ -19,7 +34,7 @@ namespace SmartGridToolbox
       BusType result = BusType::BAD;
       for (BusType * test = &busTypes[0]; *test != BusType::BAD; ++test)
       {
-         if (str == busTypeStr(*test))
+         if (str == busType2Str(*test))
          {
             result = *test; 
          }
@@ -75,4 +90,45 @@ namespace SmartGridToolbox
          case Phase::BAD: return "UNDEFINED"; break;
       }
    }   
+
+   Phases & Phases::operator&=(const Phases & other)
+   {
+      mask_ &= other;
+      rebuild();
+      return *this;
+   }
+
+   Phases & Phases::operator|=(const Phases & other)
+   {
+      mask_ |= other;
+      rebuild();
+      return *this;
+   }
+
+   std::string Phases::toStr() const
+   {
+      std::ostringstream ss;
+      ss << phaseVec_[0];
+      for (int i = 1; i < phaseVec_.size(); ++i)
+      {
+         ss << "|" << phaseVec_[i];
+      }
+      return ss.str();
+   }
+
+   void Phases::rebuild()
+   {
+      phaseVec_ = PhaseVec();
+      phaseVec_.reserve(nPhases);
+      idxMap_ = IdxMap();
+      for (unsigned int i = 0, j = 0; allPhases[i] != Phase::BAD; ++i)
+      {
+         if (hasPhase(allPhases[i]))
+         {
+            phaseVec_.push_back(allPhases[i]);
+            idxMap_[allPhases[i]] = j++;
+         }
+      }
+      phaseVec_.shrink_to_fit();
+   }
 }

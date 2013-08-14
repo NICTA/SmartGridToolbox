@@ -39,7 +39,7 @@ namespace SmartGridToolbox
 
       if (ndPhases)
       {
-         comp.setPhases(ndImp.as<std::vector<Phase>>());
+         comp.setPhases(ndImp.as<Phases>());
       }
       if (ndImp)
       {

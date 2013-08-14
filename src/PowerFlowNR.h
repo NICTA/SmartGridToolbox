@@ -20,33 +20,32 @@ namespace SmartGridToolbox
    class BusNR
    {
       public:
-         BusNR(const std::string & id, BusType type, const std::vector<Phase> & phases, 
-               const UblasVector<Complex> & V, const UblasVector<Complex> & Y, const UblasVector<Complex> & I,
-               const UblasVector<Complex> & S);
+         BusNR(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
+               const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S);
          ~BusNR();
 
-         std::string id_;                 ///< Externally relevant id. 
-         BusType type_;                   ///< Bus type.
-         std::map<Phase, int> phaseIdx_;  ///< Phase to index map.
-         UblasVector<Complex> V_;         ///< Voltage.
-         UblasVector<Complex> Y_;         ///< Constant admittance shunt.
-         UblasVector<Complex> I_;         ///< Constant current injection.
-         UblasVector<Complex> S_;         ///< Constant power injection.
+         std::string id_;                          ///< Externally relevant id. 
+         BusType type_;                            ///< Bus type.
+         Phases phases_;                           ///< Bus phases.
+         UblasVector<Complex> V_;                  ///< Voltage, one per phase.
+         UblasVector<Complex> Y_;                  ///< Constant admittance shunt, one per phase.
+         UblasVector<Complex> I_;                  ///< Constant current injection, one per phase.
+         UblasVector<Complex> S_;                  ///< Constant power injection, one per phase.
 
-         typedef std::vector<NodeNR *> NodeVec;
-         NodeVec nodes_;                  ///< Primary list of nodes.
+         typedef std::vector<NodeNR *> NodeVec;    ///< Nodes, one per phase.
+         NodeVec nodes_;                           ///< Primary list of nodes.
    };
 
    class BranchNR
    {
       public:
-         BranchNR(const std::string & id0, const std::string & id1, const std::vector<Phase> & phases0, 
-                  const std::vector<Phase> & phases1, const UblasMatrix<Complex> & Y);
+         BranchNR(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1, 
+                  const UblasMatrix<Complex> & Y);
 
-         int nPhase_;                                 ///< Number of phases.
-         Array<std::string, 2> ids_;                  ///< Id of bus 0/1
-         Array<std::vector<Phase>, 2> phases_;        ///< phases of bus 0/1.
-         UblasMatrix<Complex> Y_;                     ///< Bus admittance matrix.
+         int nPhase_;                  ///< Number of phases.
+         Array<std::string, 2> ids_;   ///< Id of bus 0/1
+         Array<Phases, 2> phases_;     ///< phases of bus 0/1.
+         UblasMatrix<Complex> Y_;      ///< Bus admittance matrix.
    };
 
    class NodeNR
@@ -75,17 +74,15 @@ namespace SmartGridToolbox
       public:
          ~PowerFlowNR();
 
-         void addBus(const std::string & id, BusType type, const std::vector<Phase> & phases,
-                     const UblasVector<Complex> & V, const UblasVector<Complex> & Y, const UblasVector<Complex> & I, 
-                     const UblasVector<Complex> & S);
+         void addBus(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
+                     const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S);
 
          const BusMap & getBusses()
          {
             return busses_;
          }
 
-         void addBranch(const std::string & idBus0, const std::string & idBus1,
-                        const std::vector<Phase> & phases0, const std::vector<Phase> & phases1, 
+         void addBranch(const std::string & idBus0, const std::string & idBus1, Phases phases0, Phases phases1,
                         const UblasMatrix<Complex> & Y);
 
          const BranchVec & getBranches()

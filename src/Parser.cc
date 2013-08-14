@@ -122,6 +122,33 @@ namespace YAML
    }
    template bool convert<UblasMatrix<double>>::decode(const Node & nd, UblasMatrix<double> & to);
    template bool convert<UblasMatrix<Complex>>::decode(const Node & nd, UblasMatrix<Complex> & to);
+
+   Node convert<Phases>::encode(const Phases & from)
+   {
+      Node nd;
+      for (const auto & phasePair : from)
+      {
+         nd.push_back(phase2Str(phasePair.first)); 
+      }
+      return nd;
+   }
+   bool convert<Phases>::decode(const Node & nd, Phases & to)
+   {
+      if(!nd.IsSequence())
+      {
+         return false;
+      }
+      else
+      {
+         int sz = nd.size();
+         to = Phases();
+         for (int i = 0; i < sz; ++i)
+         {
+            to |= nd[i].as<Phase>();
+         }
+      }
+      return true;
+   }
 }
 
 namespace SmartGridToolbox

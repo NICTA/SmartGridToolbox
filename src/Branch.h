@@ -57,11 +57,11 @@ namespace SmartGridToolbox
          Bus & getBus1() {return *bus1_;}
          void setBus1(Bus & bus1) {bus1_ = &bus1;}
 
-         const std::vector<Phase> & getPhases0() const {return phases0_;}
-         void setPhases0(const std::vector<Phase> phases0) {phases0_ = phases0;}
+         Phases getPhases0() const {return phases0_;}
+         void setPhases0(Phases phases0) {phases0_ = phases0;}
 
-         const std::vector<Phase> & getPhases1() const {return phases1_;}
-         void setPhases1(const std::vector<Phase> phases1) {phases1_ = phases1;}
+         Phases getPhases1() const {return phases1_;}
+         void setPhases1(Phases phases1) {phases1_ = phases1;}
 
          const UblasCMatrix<Complex> & getY() const {return Y_;}
          UblasCMatrix<Complex> & getY() {return Y_;}
@@ -73,8 +73,8 @@ namespace SmartGridToolbox
       private:
          Bus * bus0_;                  ///< My bus 0.
          Bus * bus1_;                  ///< My bus 1.
-         std::vector<Phase> phases0_;  ///< Phases on bus 0.
-         std::vector<Phase> phases1_;  ///< Phases on bus 1.
+         Phases phases0_;              ///< Phases on bus 0.
+         Phases phases1_;              ///< Phases on bus 1.
          UblasCMatrix<Complex> Y_;     ///< Complex value of elements in bus admittance matrix in NR solver.
       /// @}
    };

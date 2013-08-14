@@ -41,8 +41,8 @@ namespace SmartGridToolbox
       public:
          ZipToGround(const std::string & name) : Component(name), Y_(0.0), I_(0.0), S_(0.0) {}
 
-         const std::vector<Phase> & getPhases() const {return phases_;}
-         void setPhases(const std::vector<Phase> & phases) {phases_ = phases;}
+         Phases getPhases() const {return phases_;}
+         void setPhases(Phases phases) {phases_ = phases;}
 
          const UblasVector<Complex> & getY() const {return Y_;}
          void setY(const UblasVector<Complex> & Y) {Y_ = Y;}
@@ -56,7 +56,7 @@ namespace SmartGridToolbox
       
       /// @name My private member variables.
       /// @{
-         std::vector<Phase> phases_;   ///< My phases on parent bus.
+         Phases phases_;               ///< My phases on parent bus.
          UblasVector<Complex> Y_;      ///< Constant admittance component.
          UblasVector<Complex> I_;      ///< Constant current injection component.
          UblasVector<Complex> S_;      ///< Constant power injection component.

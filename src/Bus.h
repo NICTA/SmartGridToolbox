@@ -53,8 +53,8 @@ namespace SmartGridToolbox
          BusType getType() const {return type_;}
          void setType(BusType type) {type_ = type;}
 
-         const std::vector<Phase> & getPhases() const {return phases_;}
-         void setPhases(const std::vector<Phase> & phases) {phases_ = phases;}
+         Phases getPhases() const {return phases_;}
+         void setPhases(Phases phases) {phases_ = phases;}
 
          const UblasVector<Complex> & getNominalV() const {return nominalV_;}
          void setNominalV(const UblasVector<Complex> & nominalV) {nominalV_ = nominalV;}
@@ -73,7 +73,7 @@ namespace SmartGridToolbox
       /// @{
       private:
          BusType type_;                                     ///< Bus type. 
-         std::vector<Phase> phases_;                        ///< Phases.
+         Phases phases_;                                    ///< Phases.
          std::vector<const ZipToGround *> zipsToGround_;    ///< ZIP loads of generation.
          UblasVector<Complex> nominalV_;                    ///< Nominal voltage.
          UblasVector<Complex> V_;                           ///< Voltage.
