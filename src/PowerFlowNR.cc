@@ -115,7 +115,6 @@ namespace SmartGridToolbox
             vec->push_back(node);
          }
       }
-
       // Determine sizes:
       nSL_ = SLNodes_.size();
       nPQ_ = PQNodes_.size();
@@ -144,6 +143,8 @@ namespace SmartGridToolbox
       rx1_ = UblasRange(nPQ_, 2 * nPQ_);
 
       // Size all arrays:
+      V0r_.resize(nSL_, false);
+      V0i_.resize(nSL_, false);
       PPQ_.resize(nPQ_, false);
       QPQ_.resize(nPQ_, false);
       IrPQ_.resize(nPQ_, false);
