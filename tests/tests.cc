@@ -595,4 +595,32 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    message() << "Testing network_1p. Completed." << std::endl;
 }
 
+BOOST_AUTO_TEST_CASE (test_phases)
+{
+   message() << "Testing phases. Starting." << std::endl;
+   Phases p1 = Phase::A | Phase::B;
+   BOOST_CHECK(p1.size() == 2);
+   BOOST_CHECK(p1[0] == Phase::A);
+   BOOST_CHECK(p1[1] == Phase::B);
+   Phases p2{str2Phase("SP") | str2Phase("SM") | Phase::SN};
+   for (auto pair : p2)
+   {
+      BOOST_CHECK((pair.second == 0 && pair.first == Phase::SP) ||
+                  (pair.second == 1 && pair.first == Phase::SM) ||
+                  (pair.second == 2 && pair.first == Phase::SN));
+   }
+   Phases p3 = p1 | p2;
+   BOOST_CHECK(p3.hasPhase(Phase::A));
+   BOOST_CHECK(p3.hasPhase(Phase::B));
+   BOOST_CHECK(!p3.hasPhase(Phase::C));
+   BOOST_CHECK(p3.hasPhase(Phase::SP));
+   BOOST_CHECK(p3.hasPhase(Phase::SM));
+   BOOST_CHECK(p3.hasPhase(Phase::SN));
+   p3 &= Phase::A;
+   BOOST_CHECK(p3 == Phase::A);
+   Phases p4 = p1 | Phase::C;
+   BOOST_CHECK(p1.isSubsetOf(p4));
+   message() << "Testing phases. Completed." << std::endl;
+}
+
 BOOST_AUTO_TEST_SUITE_END( )

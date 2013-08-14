@@ -1,11 +1,12 @@
 #include "PowerFlow.h"
 
+#include <iostream>
 #include <sstream>
 
 namespace SmartGridToolbox
 {
    static const int nPhases = 9;
-   static Phase allPhases[nPhases] = {
+   static Phase allPhases[nPhases + 1] = {
       Phase::BAL, 
       Phase::A, 
       Phase::B, 
@@ -14,7 +15,8 @@ namespace SmartGridToolbox
       Phase::N, 
       Phase::SP, 
       Phase::SM, 
-      Phase::SN
+      Phase::SN,
+      Phase::BAD
    };
 
    const char * busType2Str(BusType type)

@@ -28,12 +28,12 @@ namespace SmartGridToolbox
       C   = 0x8,     // Three phase C.
       G   = 0x10,    // Ground.
       N   = 0x20,    // Neutral, to be used only when it is distinct from ground.
-      SP  = 0x40,   // Split phase plus.
-      SM  = 0x80,   // Split phase minus.
+      SP  = 0x40,    // Split phase plus.
+      SM  = 0x80,    // Split phase minus.
       SN  = 0x100,   // Split phase neutral.
       BAD = 0x200    // Not a phase.
    };
-   
+
    const char * phase2Str(Phase phase);
    inline std::ostream & operator<<(std::ostream & os, Phase p) {return os << phase2Str(p);}
    Phase str2Phase(const std::string & str);
@@ -56,10 +56,13 @@ namespace SmartGridToolbox
          Phases & operator&=(const Phases & other);
          Phases & operator|=(const Phases & other);
 
-         bool hasPhase(Phase phase) const {return mask_ & phase == phase;}
+         bool hasPhase(Phase phase) const
+         {
+            return (mask_ & static_cast<unsigned int>(phase)) == static_cast<unsigned int>(phase);
+         }
          bool isSubsetOf(const Phases & other) const {return (*this & other) == *this;}
 
-         int size() {phaseVec_.size();}
+         int size() {return phaseVec_.size();}
          Phase operator[](int i) const {return phaseVec_[i];}
          int getPhaseIndex(Phase p) const {return hasPhase(p) ? idxMap_.at(p) : -1;}
          IdxMap::iterator begin() {return idxMap_.begin();}
@@ -81,6 +84,9 @@ namespace SmartGridToolbox
          PhaseVec phaseVec_;
          IdxMap idxMap_;
    };
+
+   inline Phases operator|(Phase a, Phase b) {return {static_cast<unsigned int>(a) | static_cast<unsigned int>(b)};}
+   inline Phases operator&(Phase a, Phase b) {return {static_cast<unsigned int>(a) & static_cast<unsigned int>(b)};}
 }
 
 #endif // POWERFLOW_DOT_H
