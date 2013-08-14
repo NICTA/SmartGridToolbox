@@ -1,0 +1,65 @@
+# Sample SmartGridToolbox configuration file.
+# File format is YAML.
+
+--- # Marks the start of each configuration document.
+
+global:
+   configuration_name:        config_1
+   start_time:                2013-01-23 13:13:00
+   end_time:                  2013-01-23 15:13:00
+
+prototypes: # These define object types, for convenience.
+
+objects: # And these are the actual objects.
+   network:
+      name:                   network_1
+   bus:
+      name:                   bus_1
+      phases:                 [A, B]
+      network:                network_1
+      type:                   PQ
+   zip_to_ground:
+      name:                   zip_load_1
+      phases:                 [A, B]
+      bus:                    bus_1
+      complex_power_load:     [0.0240 + 0.0120j, 0.0240 - 0.0120j]
+   bus:
+      name:                   bus_2
+      phases:                 [A, B]
+      network:                network_1
+      type:                   PQ
+   zip_to_ground:
+      name:                   zip_load_2
+      phases:                 [A, B]
+      bus:                    bus_2
+      complex_power_load:     [0.0840 - 0.0520j, 0.0840 + 0.0520j]
+   bus:
+      name:                   bus_3
+      phases:                 [A, B]
+      network:                network_1
+      type:                   SL
+      slack_voltage:          [1.0, 0.0 + 1.0j]
+   branch:
+      name:                   branch_1_2
+      phases_0:               [A, B]
+      phases_1:               [A, B]
+      network:                network_1
+      bus_0:                  bus_1
+      bus_1:                  bus_2
+      Y:                      [[5 - 15j   , 0         , -5 + 15j  , 0         ],
+                               [0         , -5 + 15j  , 0         , 5 - 15j   ],
+                               [-5 + 15j  , 0         , 5 - 15j   , 0         ],
+                               [0         , 5 - 15j   , 0         , -5 + 15j  ]]
+   branch:
+      name:                   branch_1_3
+      phases_0:               [A, B]
+      phases_1:               [A, B]
+      network:                network_1
+      bus_0:                  bus_1
+      bus_1:                  bus_3
+      Y:                      [[5 - 15j   , 0         , -5 + 15j  , 0         ],
+                               [0         , -5 + 15j  , 0         , 5 - 15j   ],
+                               [-5 + 15j  , 0         , 5 - 15j   , 0         ],
+                               [0         , 5 - 15j   , 0         , -5 + 15j  ]]
+
+--- # Marks the end of each configuration document.
