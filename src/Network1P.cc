@@ -40,11 +40,11 @@ namespace SmartGridToolbox
       {
          solver_.addBus(bus->getName(), bus->getType(), bus->getV(), bus->getY(), bus->getI(), bus->getS());
          SGT_DEBUG(debug() << "Added bus " << bus->getName() << std::endl);
-         SGT_DEBUG(debug() << "\tType:" << bus->getType() << std::endl);
-         SGT_DEBUG(debug() << "\tV:" << bus->getV() << std::endl);
-         SGT_DEBUG(debug() << "\tY:" << bus->getY() << std::endl);
-         SGT_DEBUG(debug() << "\tI:" << bus->getI() << std::endl);
-         SGT_DEBUG(debug() << "\tS:" << bus->getS() << std::endl);
+         SGT_DEBUG(debug() << "\tType :" << bus->getType() << std::endl);
+         SGT_DEBUG(debug() << "\tV    :" << bus->getV() << std::endl);
+         SGT_DEBUG(debug() << "\tY    :" << bus->getY() << std::endl);
+         SGT_DEBUG(debug() << "\tI    :" << bus->getI() << std::endl);
+         SGT_DEBUG(debug() << "\tS    :" << bus->getS() << std::endl);
       }
       for (const Branch1P * branch : branchVec_)
       {
