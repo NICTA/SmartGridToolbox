@@ -542,9 +542,9 @@ class TestLoad1P : public ZipToGround1P
 
       virtual void updateState(ptime t0, ptime t1) override
       {
-         S_ = sin(dSeconds(t1)/60.0);
-         I_ = sin(dSeconds(t1)/300.0) * exp(Complex(0.0, dSeconds(t1)/713.0));
          Y_ = sin(dSeconds(t1)/123.0);
+         I_ = sin(dSeconds(t1)/300.0) * exp(Complex(0.0, dSeconds(t1)/713.0));
+         S_ = sin(dSeconds(t1)/60.0);
       }
 
       time_duration getDt() const
@@ -583,9 +583,8 @@ class TestLoad : public ZipToGround
       virtual void updateState(ptime t0, ptime t1) override
       {
          Y_(0) = sin(dSeconds(t1)/123.0);
-         Y_(1) = sin(0.234 + dSeconds(t1)/123.0);
          I_(0) = sin(dSeconds(t1)/300.0) * exp(Complex(0.0, dSeconds(t1)/713.0));
-         S_(1) = sin(dSeconds(t1)/60.0);
+         S_(0) = sin(dSeconds(t1)/60.0);
       }
 
       time_duration getDt() const
@@ -665,6 +664,44 @@ BOOST_AUTO_TEST_CASE (test_phases)
    Phases p4 = p1 | Phase::C;
    BOOST_CHECK(p1.isSubsetOf(p4));
    message() << "Testing phases. Completed." << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE (test_network_n1p)
+{
+   message() << "Testing network. Starting." << std::endl;
+
+   Model mod;
+   Simulation sim(mod);
+
+   Parser & p = Parser::getGlobalParser();
+   p.parse("test_network_n1p.yaml", mod, sim);
+
+   Bus * bus1 = mod.getComponentNamed<Bus>("bus_1");
+   Bus * bus2 = mod.getComponentNamed<Bus>("bus_2");
+   Bus * bus3 = mod.getComponentNamed<Bus>("bus_3");
+
+   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
+   tl0.setPhases(bus2->getPhases());
+   tl0.setDt(seconds(5));
+   bus2->addZipToGround(tl0);
+
+   mod.validate();
+   sim.initialize();
+
+   Network * network = mod.getComponentNamed<Network>("network_1");
+   ofstream outfile;
+   outfile.open("network_n1p.out");
+   network->getEventDidUpdate().addAction([&]()
+         {
+            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
+                    << " " << bus3->getV() << std::endl;
+         }, "Network updated.");
+
+   while (sim.doNextUpdate())
+   {
+   }
+   outfile.close();
+   message() << "Testing network. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_network)

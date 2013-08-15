@@ -40,7 +40,6 @@ objects: # And these are the actual objects.
       phases:                 [A, B]
       network:                network_1
       type:                   SL
-      slack_voltage:          [1.0, 0.0 + 1.0j]
       nominal_voltage:        [1, 0+1j]
    branch:
       name:                   branch_1_2

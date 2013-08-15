@@ -82,7 +82,8 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "PowerFlowNR : addBranch " << idBus0 << " " << idBus1 << std::endl);
       SGT_DEBUG(debug() << "\tPhases0 : " << phases0 << std::endl);
       SGT_DEBUG(debug() << "\tPhases1 : " << phases1 << std::endl);
-      SGT_DEBUG(debug() << "\tY :" << std::endl; for (int i = 0; i < Y.size1(); ++i) debug() << row(Y, i) << std::endl);
+      SGT_DEBUG(debug() << "\tY :" << std::endl);
+      SGT_DEBUG(for (int i = 0; i < Y.size1(); ++i) debug() << "\t\t" << std::setw(13) << row(Y, i) << std::endl);
       branches_.push_back(new BranchNR(idBus0, idBus1, phases0, phases1, Y));
    }
 
@@ -127,7 +128,7 @@ namespace SmartGridToolbox
       // Determine sizes:
       nSL_ = SLNodes_.size();
       nPQ_ = PQNodes_.size();
-      assert(nSL_ > 1); // TODO: What is correct here?
+      assert(nSL_ > 0); // TODO: What is correct here?
       assert(nPQ_ > 0); // TODO: What is correct here?
       nNode_ = nSL_ + nPQ_;
       nVar_ = 2 * nPQ_;
