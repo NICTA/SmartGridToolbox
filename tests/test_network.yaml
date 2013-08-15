@@ -46,7 +46,9 @@ objects: # And these are the actual objects.
       network:                network_1
       bus_0:                  bus_1
       bus_1:                  bus_2
-      Y:                      [[5 - 15j   , 0         , -5 + 15j  , 0         ],
+      Y:
+         matrix:
+                              [[5 - 15j   , 0         , -5 + 15j  , 0         ],
                                [0         , -5 + 15j  , 0         , 5 - 15j   ],
                                [-5 + 15j  , 0         , 5 - 15j   , 0         ],
                                [0         , 5 - 15j   , 0         , -5 + 15j  ]]
@@ -57,7 +59,9 @@ objects: # And these are the actual objects.
       network:                network_1
       bus_0:                  bus_1
       bus_1:                  bus_3
-      Y:                      [[5 - 15j   , 0         , -5 + 15j  , 0         ],
+      Y:
+         matrix:
+                              [[5 - 15j   , 0         , -5 + 15j  , 0         ],
                                [0         , -5 + 15j  , 0         , 5 - 15j   ],
                                [-5 + 15j  , 0         , 5 - 15j   , 0         ],
                                [0         , 5 - 15j   , 0         , -5 + 15j  ]]

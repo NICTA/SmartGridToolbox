@@ -1,6 +1,8 @@
 #ifndef POWERFLOW_DOT_H
 #define POWERFLOW_DOT_H
 
+#include "Common.h"
+
 #include <map>
 #include <ostream>
 #include <string>
@@ -87,6 +89,9 @@ namespace SmartGridToolbox
 
    inline Phases operator|(Phase a, Phase b) {return {static_cast<unsigned int>(a) | static_cast<unsigned int>(b)};}
    inline Phases operator&(Phase a, Phase b) {return {static_cast<unsigned int>(a) & static_cast<unsigned int>(b)};}
+
+   const UblasMatrix<Complex> YLine1P(const Complex & y);
+   const UblasMatrix<Complex> YSimpleLine(const UblasVector<Complex> & y);
 }
 
 #endif // POWERFLOW_DOT_H

@@ -133,4 +133,31 @@ namespace SmartGridToolbox
       }
       phaseVec_.shrink_to_fit();
    }
+
+   // Balanced/1-phase simple line with a single admittance.
+   const UblasMatrix<Complex> YLine1P(const Complex & y)
+   {
+      UblasMatrix<Complex> Y(2, 2);
+      Y(0, 0) = y;
+      Y(1, 1) = y;
+      Y(0, 1) = -y;
+      Y(1, 0) = -y;
+      return Y;
+   }
+
+   // No cross terms, just nPhase lines with single admittances.
+   const UblasMatrix<Complex> YSimpleLine(const UblasVector<Complex> & y)
+   {
+      int nPhase = y.size();
+      int nTerm = 2 * nPhase; 
+      UblasMatrix<Complex> Y(nTerm, nTerm);
+      for (int i = 0; i < nPhase; ++i)
+      {
+         Y(i, i) = y(i);
+         Y(i + nPhase, i + nPhase) = y(i);
+         Y(i, i + nPhase) = -y(i);
+         Y(i + nPhase, i) = -y(i);
+      }
+      return Y;
+   }
 }

@@ -2,6 +2,7 @@
 #include "Bus.h"
 #include "Model.h"
 #include "Network.h"
+#include "PowerFlow.h"
  
 namespace SmartGridToolbox
 {
@@ -21,7 +22,20 @@ namespace SmartGridToolbox
 
       comp.setPhases0(nd["phases_0"].as<Phases>());
       comp.setPhases1(nd["phases_1"].as<Phases>());
-      comp.setY(nd["Y"].as<UblasMatrix<Complex>>());
+
+      const YAML::Node & ndY = nd["Y"];
+      const YAML::Node & ndYMatrix = ndY["matrix"];
+      const YAML::Node & ndYSimpleLine = ndY["simple_line"];
+      if (ndYMatrix)
+      {
+         comp.setY(ndYMatrix.as<UblasMatrix<Complex>>());
+      }
+      else if (ndYSimpleLine)
+      {
+         UblasVector<Complex> y = ndYSimpleLine.as<UblasVector<Complex>>();
+         UblasMatrix<Complex> Y = YSimpleLine(y); 
+         comp.setY(Y);
+      }
    }
 
    void BranchParser::postParse(const YAML::Node & nd, Model & mod) const
