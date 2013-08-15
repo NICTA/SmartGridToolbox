@@ -67,6 +67,12 @@ namespace SmartGridToolbox
          const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S)
    {
       SGT_DEBUG(debug() << "PowerFlowNR : addBus " << id << std::endl);
+      SGT_DEBUG(debug() << "\tType   : " << type << std::endl);
+      SGT_DEBUG(debug() << "\tPhases : " << phases << std::endl);
+      SGT_DEBUG(debug() << "\tV      : " << V << std::endl);
+      SGT_DEBUG(debug() << "\tY      : " << V << std::endl);
+      SGT_DEBUG(debug() << "\tI      : " << V << std::endl);
+      SGT_DEBUG(debug() << "\tS      : " << V << std::endl);
       busses_[id] = new BusNR(id, type, phases, V, Y, I, S);
    }
 
@@ -74,6 +80,9 @@ namespace SmartGridToolbox
                                const UblasMatrix<Complex> & Y)
    {
       SGT_DEBUG(debug() << "PowerFlowNR : addBranch " << idBus0 << " " << idBus1 << std::endl);
+      SGT_DEBUG(debug() << "\tPhases0 : " << phases0 << std::endl);
+      SGT_DEBUG(debug() << "\tPhases1 : " << phases1 << std::endl);
+      SGT_DEBUG(debug() << "\tY :" << std::endl; for (int i = 0; i < Y.size1(); ++i) debug() << row(Y, i) << std::endl);
       branches_.push_back(new BranchNR(idBus0, idBus1, phases0, phases1, Y));
    }
 

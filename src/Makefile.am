@@ -30,7 +30,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  ZipToGround.cc \
 										  ZipToGround1P.cc
 
-bin_PROGRAMS = run_config
+bin_PROGRAMS = run_config helloworld
 
 run_config_SOURCES = run_config.cc
 run_config_LDADD = libsmartgridtoolbox.a \
@@ -40,4 +40,9 @@ run_config_LDADD = libsmartgridtoolbox.a \
 						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
 						 ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a
 run_config_LDFLAGS = -lboost_date_time-mt \
+							-lblas
+
+helloworld_SOURCES = helloworld.cc\
+							Common.cc
+helloworld_LDFLAGS = -lboost_date_time-mt \
 							-lblas

@@ -18,6 +18,7 @@ objects: # And these are the actual objects.
       phases:                 [A, B]
       network:                network_1
       type:                   PQ
+      nominal_voltage:        [1, 0+1j]
    zip_to_ground:
       name:                   zip_load_1
       phases:                 [A, B]
@@ -28,6 +29,7 @@ objects: # And these are the actual objects.
       phases:                 [A, B]
       network:                network_1
       type:                   PQ
+      nominal_voltage:        [1, 0+1j]
    zip_to_ground:
       name:                   zip_load_2
       phases:                 [A, B]
@@ -39,6 +41,7 @@ objects: # And these are the actual objects.
       network:                network_1
       type:                   SL
       slack_voltage:          [1.0, 0.0 + 1.0j]
+      nominal_voltage:        [1, 0+1j]
    branch:
       name:                   branch_1_2
       phases_0:               [A, B]
@@ -47,11 +50,7 @@ objects: # And these are the actual objects.
       bus_0:                  bus_1
       bus_1:                  bus_2
       Y:
-         matrix:
-                              [[5 - 15j   , 0         , -5 + 15j  , 0         ],
-                               [0         , -5 + 15j  , 0         , 5 - 15j   ],
-                               [-5 + 15j  , 0         , 5 - 15j   , 0         ],
-                               [0         , 5 - 15j   , 0         , -5 + 15j  ]]
+         simple_line:         [5 - 15j, 5 - 15j]
    branch:
       name:                   branch_1_3
       phases_0:               [A, B]
@@ -60,10 +59,6 @@ objects: # And these are the actual objects.
       bus_0:                  bus_1
       bus_1:                  bus_3
       Y:
-         matrix:
-                              [[5 - 15j   , 0         , -5 + 15j  , 0         ],
-                               [0         , -5 + 15j  , 0         , 5 - 15j   ],
-                               [-5 + 15j  , 0         , 5 - 15j   , 0         ],
-                               [0         , 5 - 15j   , 0         , -5 + 15j  ]]
+         simple_line:         [5 - 15j, 5 - 15j]
 
 --- # Marks the end of each configuration document.

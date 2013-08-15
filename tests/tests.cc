@@ -67,19 +67,19 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    g.weakOrder();
    for (int i = 0; i < g.size(); ++i)
    {
-      cout << " " << g.getNodes()[i]->getIndex() << endl;
+      message() << " " << g.getNodes()[i]->getIndex() << endl;
    }
-   cout << endl;
+   message() << endl;
 
-   cout << "   ";
+   message() << "   ";
    for (int i = 0; i < g.size(); ++i)
    {
-      cout << " " << g.getNodes()[i]->getIndex(); 
+      std::cout << " " << g.getNodes()[i]->getIndex(); 
    }
-   cout << endl << endl;
+   std::cout << endl << endl;
    for (const WoNode * nd1 : g.getNodes())
    {
-      cout << nd1->getIndex() << "   ";
+      message() << nd1->getIndex() << "   ";
       for (const WoNode * nd2 : g.getNodes())
       {
          std::cout << nd1->dominates(*nd2) << " ";
@@ -132,7 +132,7 @@ BOOST_AUTO_TEST_CASE (test_properties)
    message() << "Testing properties. Starting." << std::endl;
    TestCompA * tca = new TestCompA("tca0", 3, 0.2);
    const Property<int, PropType::GET> * prop1 = tca->getProperty<int, PropType::GET>("x");
-   cout << "Property value: " << prop1->get() << endl;
+   message() << "Property value: " << prop1->get() << endl;
    BOOST_CHECK(prop1->get() == 3);
    tca->addProperty<double, PropType::BOTH>(
          "y",
@@ -141,11 +141,11 @@ BOOST_AUTO_TEST_CASE (test_properties)
    Property<double, PropType::BOTH> * prop2 = tca->getProperty<double, PropType::BOTH>("y");
    BOOST_CHECK(prop2 != nullptr);
    BOOST_CHECK(prop2->get() == 0.2);
-   cout << "Property 2 " << prop2->get() << endl;
+   message() << "Property 2 " << prop2->get() << endl;
    BOOST_CHECK(prop1->get() == 3);
    //(*prop2) = 0.4;
    prop2->set(0.4);
-   cout << "Property 2 " << prop2->get() << endl;
+   message() << "Property 2 " << prop2->get() << endl;
    BOOST_CHECK(prop2->get() == 0.4);
    delete tca;
    message() << "Testing properties. Completed." << std::endl;
@@ -165,33 +165,33 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    bat1.setDischargeEfficiency(0.8);
    bat1.setRequestedPower(-0.4 * kW);
    bat1.initialize(ptime(date(2012, Feb, 11), hours(2)));
-   cout << "1 Battery charge = " << bat1.getCharge() / kWh << endl;
+   message() << "1 Battery charge = " << bat1.getCharge() / kWh << endl;
    bat1.update(bat1.getTime() + hours(3));
-   cout << "2 Battery charge = " << bat1.getCharge() / kWh << endl;
+   message() << "2 Battery charge = " << bat1.getCharge() / kWh << endl;
    double comp = bat1.getInitCharge() + 
       dSeconds(hours(3)) * bat1.getRequestedPower() /
       bat1.getDischargeEfficiency();
-   cout << "comp = " << comp / kWh << endl;
+   message() << "comp = " << comp / kWh << endl;
    BOOST_CHECK(bat1.getCharge() == comp);
 
    bat1.setRequestedPower(1.3 * kW);
    bat1.initialize(ptime(date(2012, Feb, 11), hours(2)));
-   cout << "3 Battery charge = " << bat1.getCharge() / kWh << endl;
+   message() << "3 Battery charge = " << bat1.getCharge() / kWh << endl;
    bat1.update(bat1.getTime() + hours(3));
-   cout << "4 Battery charge = " << bat1.getCharge() / kWh << endl;
+   message() << "4 Battery charge = " << bat1.getCharge() / kWh << endl;
    comp = bat1.getInitCharge() + 
       dSeconds(hours(3)) * bat1.getMaxChargePower() *
       bat1.getChargeEfficiency();
-   cout << "comp = " << comp / kWh << endl;
+   message() << "comp = " << comp / kWh << endl;
    BOOST_CHECK(bat1.getCharge() == comp);
 
    bat1.setRequestedPower(-1 * kW);
    bat1.initialize(ptime(date(2012, Feb, 11), hours(2)));
-   cout << "3 Battery charge = " << bat1.getCharge() / kWh << endl;
+   message() << "3 Battery charge = " << bat1.getCharge() / kWh << endl;
    bat1.update(bat1.getTime() + hours(5.5));
-   cout << "4 Battery charge = " << bat1.getCharge() / kWh << endl;
+   message() << "4 Battery charge = " << bat1.getCharge() / kWh << endl;
    comp = 0.0;
-   cout << "comp = " << comp / kWh << endl;
+   message() << "comp = " << comp / kWh << endl;
    BOOST_CHECK(bat1.getCharge() == comp);
    message() << "Testing SimpleBattery. Completed." << std::endl;
 }
@@ -252,7 +252,7 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
    {
       double val = sts.value(base + hours(i));
       double err = std::abs(val - sin(i*pi/12));
-      cout << i << " " << val << " " << err << endl; 
+      message() << i << " " << val << " " << err << endl; 
       if (i > -1 && i < 25)
       {
          BOOST_CHECK(err < 0.005);
@@ -273,7 +273,7 @@ BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
    for (int i = -1; i <= 4; ++i)
    {
       Complex val = lts.value(base + hours(i));
-      cout << i << " " << val << endl; 
+      message() << i << " " << val << endl; 
    }
    BOOST_CHECK(lts.value(base + hours(-1)) == Complex(0, 0));
    BOOST_CHECK(lts.value(base + hours(0)) == Complex(0, 0));
@@ -296,13 +296,13 @@ BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
    for (int i = -1; i <= 4; ++i)
    {
       double val = sts.value(base + hours(i));
-      cout << i << " " << val << endl; 
+      message() << i << " " << val << endl; 
    }
-   cout << endl;
+   message() << endl;
    for (int i = -1; i <= 4; ++i)
    {
       double val = sts.value(base + hours(i) + seconds(1));
-      cout << i << " " << val << endl; 
+      message() << i << " " << val << endl; 
    }
    BOOST_CHECK(sts.value(base + seconds(-1)) == 1.5);
    BOOST_CHECK(sts.value(base + seconds(1)) == 1.5);
@@ -317,7 +317,7 @@ BOOST_AUTO_TEST_CASE (test_function_timeseries)
    message() << "Testing FunctionTimeSeries. Starting." << std::endl;
    FunctionTimeSeries <time_duration, double> 
       fts([] (time_duration td) {return 2 * dSeconds(td);});
-   cout << fts.value(seconds(10)+milliseconds(3)) << endl;
+   message() << fts.value(seconds(10)+milliseconds(3)) << endl;
    BOOST_CHECK(fts.value(seconds(-1)) == -2.0);
    BOOST_CHECK(fts.value(seconds(3)) == 6.0);
    message() << "Testing FunctionTimeSeries. Completed." << std::endl;
@@ -357,7 +357,7 @@ class TestEventA : public Component
       /// Bring state up to time t_.
       virtual void updateState(ptime t0, ptime t1) override
       {
-         cout << "Update state of " << getName() << " from time " 
+         message() << "Update state of " << getName() << " from time " 
               << t0 << " to " << t1 << "." << endl;
          state_ = (t1-getInitTime()).ticks() * ctrl_;
          nextUpdate_ = t1 + dt_;
@@ -386,7 +386,7 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    message() << "Initialize simulation. Completed." << std::endl;
 
    a0.getEventDidUpdate().addAction(
-         [&]() {cout << a1.getName() << " received did update from " << a0.getName() << std::endl;},
+         [&]() {message() << a1.getName() << " received did update from " << a0.getName() << std::endl;},
          "Test action.");
 
    sim.doNextUpdate();
@@ -496,8 +496,8 @@ BOOST_AUTO_TEST_CASE (test_sparse_solver)
 
    UblasVector<double> x(n);
    KLUSolve(a, b, x);
-   for (int i = 0; i < n; ++i) cout << x(i) << " ";
-   cout << endl;
+   message(); for (int i = 0; i < n; ++i) std::cout << x(i) << " ";
+   std::cout << endl;
    BOOST_CHECK(std::abs(x(0) - 1.0) < 1e-4);
    BOOST_CHECK(std::abs(x(1) - 2.0) < 1e-4);
    BOOST_CHECK(std::abs(x(2) - 3.0) < 1e-4);
@@ -527,10 +527,10 @@ BOOST_AUTO_TEST_CASE (test_balanced_power_flow_nr)
    message() << "Testing balanced_power_flow_nr. Completed." << std::endl;
 }
 
-class TestLoad : public ZipToGround1P
+class TestLoad1P : public ZipToGround1P
 {
    public:
-      TestLoad(const std::string & name) : ZipToGround1P(name), dt_(seconds(0))
+      TestLoad1P(const std::string & name) : ZipToGround1P(name), dt_(seconds(0))
       {
          // Empty.
       }
@@ -560,6 +560,47 @@ class TestLoad : public ZipToGround1P
       time_duration dt_;
 };
 
+class TestLoad : public ZipToGround
+{
+   public:
+      TestLoad(const std::string & name) : ZipToGround(name), dt_(seconds(0))
+      {
+         // Empty.
+      }
+
+      virtual ptime getValidUntil() const override
+      {
+         return getTime() + dt_;
+      }
+
+      virtual void initializeState(ptime t) override
+      {
+         Y_ = UblasVector<Complex>(getPhases().size(), czero);
+         I_ = UblasVector<Complex>(getPhases().size(), czero);
+         S_ = UblasVector<Complex>(getPhases().size(), czero);
+      }
+
+      virtual void updateState(ptime t0, ptime t1) override
+      {
+         Y_(0) = sin(dSeconds(t1)/123.0);
+         Y_(1) = sin(0.234 + dSeconds(t1)/123.0);
+         I_(0) = sin(dSeconds(t1)/300.0) * exp(Complex(0.0, dSeconds(t1)/713.0));
+         S_(1) = sin(dSeconds(t1)/60.0);
+      }
+
+      time_duration getDt() const
+      {
+         return dt_;
+      }
+      void setDt(time_duration dt)
+      {
+         dt_ = dt;
+      }
+
+   private:
+      time_duration dt_;
+};
+
 BOOST_AUTO_TEST_CASE (test_network_1p)
 {
    message() << "Testing network_1p. Starting." << std::endl;
@@ -574,7 +615,7 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    Bus1P * bus2 = mod.getComponentNamed<Bus1P>("bus_2");
    Bus1P * bus3 = mod.getComponentNamed<Bus1P>("bus_3");
 
-   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
+   TestLoad1P & tl0 = mod.newComponent<TestLoad1P>("tl0");
    tl0.setDt(seconds(5));
    bus2->addZipToGround(tl0);
 
@@ -640,6 +681,11 @@ BOOST_AUTO_TEST_CASE (test_network)
    Bus * bus2 = mod.getComponentNamed<Bus>("bus_2");
    Bus * bus3 = mod.getComponentNamed<Bus>("bus_3");
 
+   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
+   tl0.setPhases(bus2->getPhases());
+   tl0.setDt(seconds(5));
+   bus2->addZipToGround(tl0);
+
    mod.validate();
    sim.initialize();
 
@@ -654,7 +700,6 @@ BOOST_AUTO_TEST_CASE (test_network)
 
    while (sim.doNextUpdate())
    {
-      std::cout << "update" << std::endl;
    }
    outfile.close();
    message() << "Testing network. Completed." << std::endl;

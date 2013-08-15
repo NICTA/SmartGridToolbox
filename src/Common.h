@@ -86,8 +86,22 @@ namespace SmartGridToolbox
    template<typename T> using UblasCMatrix = boost::numeric::ublas::compressed_matrix<T>;
    template<typename T> using UblasCMatrixRange = boost::numeric::ublas::matrix_range<UblasCMatrix<T>>;
 
-   std::ostream & operator<<(std::ostream & os, const UblasVector<double> & v);
-   std::ostream & operator<<(std::ostream & os, const UblasVector<Complex> & v);
+   template<typename VE> using UblasVectorExpression = boost::numeric::ublas::vector_expression<VE>;
+   template<typename ME> using UblasMatrixExpression = boost::numeric::ublas::matrix_expression<ME>;
+
+   template<typename VE> std::ostream & operator<<(std::ostream & os, const UblasVectorExpression<VE> & v)
+   {
+      unsigned int size = v().size();
+      unsigned int w = os.width();
+      std::ostringstream ss;
+      ss.flags(os.flags());
+      ss.imbue(os.getloc());
+      ss.precision(os.precision());
+      ss << "[" << std::setw(w) << std::left << v()(0);
+      for (int i = 1; i < size; ++i) ss << " " << std::setw(w) << std::left << v()(i);
+      ss << "]";
+      return os << ss.str();
+   }
    /// @}
 
    /// @name Time

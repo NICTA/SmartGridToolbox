@@ -9,6 +9,11 @@ namespace SmartGridToolbox
    void PowerFlow1PNR::addBus(const std::string & id, BusType type, Complex V, Complex Y, Complex I, Complex S)
    {
       SGT_DEBUG(debug() << "PowerFlow1PNR : addBus " << id << std::endl);
+      SGT_DEBUG(debug() << "\tType : " << type << std::endl);
+      SGT_DEBUG(debug() << "\tV    : " << V << std::endl);
+      SGT_DEBUG(debug() << "\tY    : " << Y << std::endl);
+      SGT_DEBUG(debug() << "\tI    : " << I << std::endl);
+      SGT_DEBUG(debug() << "\tS    : " << S << std::endl);
       Bus1PNR * bus = new Bus1PNR;
       bus->id_ = id;
       bus->type_ = type;
