@@ -70,9 +70,9 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "\tType   : " << type << std::endl);
       SGT_DEBUG(debug() << "\tPhases : " << phases << std::endl);
       SGT_DEBUG(debug() << "\tV      : " << V << std::endl);
-      SGT_DEBUG(debug() << "\tY      : " << V << std::endl);
-      SGT_DEBUG(debug() << "\tI      : " << V << std::endl);
-      SGT_DEBUG(debug() << "\tS      : " << V << std::endl);
+      SGT_DEBUG(debug() << "\tY      : " << Y << std::endl);
+      SGT_DEBUG(debug() << "\tI      : " << I << std::endl);
+      SGT_DEBUG(debug() << "\tS      : " << S << std::endl);
       busses_[id] = new BusNR(id, type, phases, V, Y, I, S);
    }
 
