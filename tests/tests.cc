@@ -530,9 +530,12 @@ class TestLoad : public ZipToGround
 
       virtual void updateState(ptime t0, ptime t1) override
       {
-         Y_(0) = sin(dSeconds(t1)/123.0);
-         I_(0) = sin(dSeconds(t1)/300.0) * exp(Complex(0.0, dSeconds(t1)/713.0));
-         S_(0) = sin(dSeconds(t1)/60.0);
+         for (int i = 0; i < getPhases().size(); ++i)
+         {
+            Y_(i) = sin(dSeconds(t1)/123.0);
+            I_(i) = sin(dSeconds(t1)/300.0) * exp(Complex(0.0, dSeconds(t1)/713.0));
+            S_(i) = sin(dSeconds(t1)/60.0);
+         }
       }
 
       time_duration getDt() const
@@ -576,7 +579,7 @@ BOOST_AUTO_TEST_CASE (test_phases)
    message() << "Testing phases. Completed." << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE (test_network_n1p)
+BOOST_AUTO_TEST_CASE (test_network_1p)
 {
    message() << "Testing network. Starting." << std::endl;
 
@@ -584,7 +587,7 @@ BOOST_AUTO_TEST_CASE (test_network_n1p)
    Simulation sim(mod);
 
    Parser & p = Parser::getGlobalParser();
-   p.parse("test_network_n1p.yaml", mod, sim);
+   p.parse("test_network_1p.yaml", mod, sim);
 
    Bus * bus1 = mod.getComponentNamed<Bus>("bus_1");
    Bus * bus2 = mod.getComponentNamed<Bus>("bus_2");
@@ -600,7 +603,7 @@ BOOST_AUTO_TEST_CASE (test_network_n1p)
 
    Network * network = mod.getComponentNamed<Network>("network_1");
    ofstream outfile;
-   outfile.open("network_n1p.out");
+   outfile.open("test_network_1p.out");
    network->getEventDidUpdate().addAction([&]()
          {
             outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV()(0) 
@@ -614,7 +617,7 @@ BOOST_AUTO_TEST_CASE (test_network_n1p)
    message() << "Testing network. Completed." << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE (test_network)
+BOOST_AUTO_TEST_CASE (test_network_b3p)
 {
    message() << "Testing network. Starting." << std::endl;
 
@@ -622,7 +625,7 @@ BOOST_AUTO_TEST_CASE (test_network)
    Simulation sim(mod);
 
    Parser & p = Parser::getGlobalParser();
-   p.parse("test_network.yaml", mod, sim);
+   p.parse("test_network_b3p.yaml", mod, sim);
 
    Bus * bus1 = mod.getComponentNamed<Bus>("bus_1");
    Bus * bus2 = mod.getComponentNamed<Bus>("bus_2");
@@ -638,7 +641,9 @@ BOOST_AUTO_TEST_CASE (test_network)
 
    Network * network = mod.getComponentNamed<Network>("network_1");
    ofstream outfile;
-   outfile.open("network.out");
+   outfile.open("test_network_b3p.out");
+   outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
+      << " " << bus3->getV() << std::endl;
    network->getEventDidUpdate().addAction([&]()
          {
             outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
