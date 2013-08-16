@@ -8,7 +8,7 @@ namespace SmartGridToolbox
 {
    void PowerFlow1PNR::addBus(const std::string & id, BusType type, Complex V, Complex Y, Complex I, Complex S)
    {
-      SGT_DEBUG(debug() << "PowerFlow1PNR : addBus " << id << std::endl);
+      SGT_DEBUG(debug() << "PowerFlow1PNR : add bus " << id << std::endl);
       SGT_DEBUG(debug() << "\tType : " << type << std::endl);
       SGT_DEBUG(debug() << "\tV    : " << V << std::endl);
       SGT_DEBUG(debug() << "\tY    : " << Y << std::endl);
@@ -42,6 +42,9 @@ namespace SmartGridToolbox
                                        const Array2D<Complex, 2, 2> & Y)
    {
       SGT_DEBUG(debug() << "PowerFlow1PNR : addBranch " << idi << " " << idk << std::endl);
+      SGT_DEBUG(debug() << "\tY = :" << std::endl);
+      SGT_DEBUG(debug() << "\t\t" << Y[0][0] << ", " << Y[0][1] << std::endl);
+      SGT_DEBUG(debug() << "\t\t" << Y[1][0] << ", " << Y[1][1] << std::endl);
       Branch1PNR * branch = new Branch1PNR;
       branch->Y_ = Y;
       branch->idi_ = idi;
@@ -161,9 +164,6 @@ namespace SmartGridToolbox
       UblasCMatrixRange<double>(JConst_, rx1_, rx0_) = UblasCMatrixRange<double>(B_, rPQ_, rPQ_);
       UblasCMatrixRange<double>(JConst_, rx1_, rx1_) = UblasCMatrixRange<double>(G_, rPQ_, rPQ_);
       J_ = JConst_; // We only need to redo the elements that we mess with!
-#ifdef DEBUG
-      outputNetwork();
-#endif
    }
 
    void PowerFlow1PNR::buildBusAdmit()
@@ -266,6 +266,7 @@ namespace SmartGridToolbox
    bool PowerFlow1PNR::solve()
    {
       SGT_DEBUG(debug() << "PowerFlow1PNR : solve." << std::endl);
+      SGT_DEBUG(printProblem());
       const double tol = 1e-20;
       const int maxiter = 20;
       initx();
@@ -298,43 +299,24 @@ namespace SmartGridToolbox
       }
       return wasSuccessful;
    }
-
-   void PowerFlow1PNR::outputNetwork()
+   bool PowerFlow1PNR::printProblem()
    {
-      SGT_DEBUG(debug() << "Number of busses = " << nBus_ << std::endl);
-      SGT_DEBUG(debug() << "Number of PQ busses = " << nPQ_ << std::endl);
-      SGT_DEBUG(debug() << "Number of slack busses = " << nSL_ << std::endl);
-      for (const Bus1PNR * bus : busses_)
+      debug() << "PowerFlow1PNR::printProblem()" << std::endl;
+      debug() << "\tBusses:" << std::endl;
+      for (int i = 0; i < nBus_; ++i)
       {
-         SGT_DEBUG(debug() << "\tBus: " << bus->idx_ << " " << bus->id_ << " " << (int)bus->type_ << " " 
-               << bus->V_ << " " << bus->Y_ << " " << bus->I_ << " " << bus->S_ << std::endl);
+         Bus1PNR & bus = *busses_[i];
+         debug() << "\t\tId    : " << bus.id_ << std::endl;
+         debug() << "\t\t\tType : " << bus.type_ << std::endl;
+         debug() << "\t\t\tV    : " << bus.V_ << std::endl;
+         debug() << "\t\t\tY    : " << bus.Y_ << std::endl;
+         debug() << "\t\t\tI    : " << bus.I_ << std::endl;
+         debug() << "\t\t\tS    : " << bus.S_ << std::endl;
       }
-      for (Branch1PNR * branch : branches_)
+      debug() << "\tY:" << std::endl;
+      for (int i = 0; i < Y_.size1(); ++i)
       {
-         SGT_DEBUG(debug() << "\tBranch: " << branch->idi_ << " " << branch->idk_ << std::endl);
-         for (int i = 0; i < 2; ++i)
-         {
-            SGT_DEBUG(debug() << "\t\t" << branch->Y_[i][0] << " " << branch->Y_[i][1] << std::endl);
-         }
+         debug() << "\t\t" << row(Y_, i) << std::endl;
       }
-   }
-
-   void PowerFlow1PNR::outputCurrentState()
-   {
-      using namespace std;
-      SGT_DEBUG(debug() << "x : " << x_ << std::endl);
-      SGT_DEBUG(debug() << "f : " << f_ << std::endl);
-      std::ostringstream ssJ;
-      ssJ << "J: " << std::endl;
-      for (int i = 0; i < J_.size1(); ++i)
-      {
-         ssJ << "\t";
-         for (int k = 0; k < J_.size2(); ++k)
-         {
-            ssJ << J_(i, k) << " ";
-         }
-         ssJ << endl;
-      }
-      SGT_DEBUG(debug() << ssJ.str() << std::endl);
    }
 }

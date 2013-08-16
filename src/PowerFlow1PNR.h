@@ -52,7 +52,7 @@ namespace SmartGridToolbox
          void reset();
          void validate();
          bool solve();
-         void outputNetwork();
+         bool printProblem();
 
       private:
          void buildBusAdmit();
@@ -60,7 +60,6 @@ namespace SmartGridToolbox
          void updateBusV();
          void updateF();
          void updateJ();
-         void outputCurrentState();
 
       private:
          /// @name Vectors of busses and branches.

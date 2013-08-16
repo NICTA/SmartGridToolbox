@@ -348,13 +348,13 @@ class TestEventA : public Component
       }
 
    private:
-      /// Reset state of the object, time is at timestamp t_.
+      // Reset state of the object, time is at timestamp t_.
       virtual void initializeState(ptime t) override
       {
          nextUpdate_ = t + dt_; 
       }
 
-      /// Bring state up to time t_.
+      // Bring state up to time t_.
       virtual void updateState(ptime t0, ptime t1) override
       {
          message() << "Update state of " << getName() << " from time " 

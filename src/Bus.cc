@@ -13,6 +13,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "type");
       assertFieldPresent(nd, "phases");
+      assertFieldPresent(nd, "nominal_voltage");
 
       const std::string nameStr = nd["name"].as<std::string>();
       Bus & comp = mod.newComponent<Bus>(nameStr);

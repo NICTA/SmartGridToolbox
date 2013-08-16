@@ -25,10 +25,6 @@ namespace SmartGridToolbox
             Bus1P * bus = findBus(busNR->id_);
             bus->setV(busNR->V_); // Push the state back onto bus. We don't want to trigger any events.    
          }
-         SGT_DEBUG(debug() << "Updated Network1P state. Dumping solver." << std::endl);
-#ifdef DEBUG
-         solver_.outputNetwork();
-#endif
       }
    }
 
@@ -43,11 +39,6 @@ namespace SmartGridToolbox
       for (const Branch1P * branch : branchVec_)
       {
          solver_.addBranch(branch->getBusi().getName(), branch->getBusk().getName(), branch->getY());
-         SGT_DEBUG(debug() << "Added branch with Y" << std::endl);
-         SGT_DEBUG(debug() << "\t" << std::left << std::setw(12) << branch->getY()[0][0] << std::setw(12) 
-               << branch->getY()[0][1] << std::endl);
-         SGT_DEBUG(debug() << "\t" << std::left << std::setw(12) << branch->getY()[1][0] << std::setw(12) 
-               << branch->getY()[1][1] << std::endl);
       }
       solver_.validate();
    }

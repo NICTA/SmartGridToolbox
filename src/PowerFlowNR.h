@@ -93,6 +93,7 @@ namespace SmartGridToolbox
          void reset();
          void validate();
          bool solve();
+         bool printProblem();
 
       private:
          void initx();

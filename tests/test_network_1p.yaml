@@ -17,6 +17,7 @@ objects: # And these are the actual objects.
       name:                   bus_1
       network:                network_1
       type:                   PQ
+      nominal_voltage:        1
    zip_to_ground_1_phase:
       name:                   zip_load_1
       bus:                    bus_1
@@ -25,6 +26,7 @@ objects: # And these are the actual objects.
       name:                   bus_2
       network:                network_1
       type:                   PQ
+      nominal_voltage:        1
    zip_to_ground_1_phase:
       name:                   zip_load_2
       bus:                    bus_2
@@ -33,7 +35,7 @@ objects: # And these are the actual objects.
       name:                   bus_3
       network:                network_1
       type:                   SL
-      slack_voltage:          1.0 
+      nominal_voltage:        1
    branch_1_phase:
       name:                   branch_1_2
       network:                network_1

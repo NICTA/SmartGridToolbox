@@ -12,6 +12,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "type");
+      assertFieldPresent(nd, "nominal_voltage");
 
       const std::string nameStr = nd["name"].as<std::string>();
       Bus1P & comp = mod.newComponent<Bus1P>(nameStr);
@@ -35,9 +36,9 @@ namespace SmartGridToolbox
          abort();
       }
 
-      if (nd["slack_voltage"])
+      if (nd["nominal_voltage"])
       {
-         comp.setV(nd["slack_voltage"].as<Complex>());
+         comp.setV(nd["nominal_voltage"].as<Complex>());
       }
    }
 

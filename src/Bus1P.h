@@ -41,7 +41,7 @@ namespace SmartGridToolbox
       /// @name Private overridden functions: from Component.
       /// @{
       private:
-         virtual void initializeState(ptime t) override {};
+         virtual void initializeState(ptime t) override {updateState(t, t);}
          virtual void updateState(ptime t0, ptime t1) override;
       /// @}
 

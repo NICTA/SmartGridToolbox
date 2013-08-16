@@ -66,7 +66,7 @@ namespace SmartGridToolbox
    void PowerFlowNR::addBus(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
          const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S)
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : addBus " << id << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNR : add bus " << id << std::endl);
       SGT_DEBUG(debug() << "\tType   : " << type << std::endl);
       SGT_DEBUG(debug() << "\tPhases : " << phases << std::endl);
       SGT_DEBUG(debug() << "\tV      : " << V << std::endl);
@@ -329,6 +329,7 @@ namespace SmartGridToolbox
    bool PowerFlowNR::solve()
    {
       SGT_DEBUG(debug() << "PowerFlowNR : solve." << std::endl);
+      SGT_DEBUG(printProblem());
       const double tol = 1e-20;
       const int maxiter = 20;
       initx();
@@ -362,5 +363,27 @@ namespace SmartGridToolbox
          // TODO: set power e.g. on slack bus. Set current injections. Set impedances to ground. 
       }
       return wasSuccessful;
+   }
+
+   bool PowerFlowNR::printProblem()
+   {
+      debug() << "PowerFlowNR::printProblem()" << std::endl;
+      debug() << "\tNodes:" << std::endl;
+      for (int i = 0; i < nNode_; ++i)
+      {
+         NodeNR & nd = *nodes_[i];
+         debug() << "\t\tBus id : " << nd.bus_->id_ << std::endl;
+         debug() << "\t\t\tType  : " << nd.bus_->type_ << std::endl;
+         debug() << "\t\t\tPhase : " << nd.bus_->phases_[nd.phaseIdx_] << std::endl;
+         debug() << "\t\t\tV     : " << nd.V_ << std::endl;
+         debug() << "\t\t\tY     : " << nd.Y_ << std::endl;
+         debug() << "\t\t\tI     : " << nd.I_ << std::endl;
+         debug() << "\t\t\tS     : " << nd.S_ << std::endl;
+      }
+      debug() << "\tY:" << std::endl;
+      for (int i = 0; i < Y_.size1(); ++i)
+      {
+         debug() << "\t\t" << row(Y_, i) << std::endl;
+      }
    }
 }
