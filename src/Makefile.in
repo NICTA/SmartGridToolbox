@@ -127,17 +127,15 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libsmartgridtoolbox_a_AR = $(AR) $(ARFLAGS)
 libsmartgridtoolbox_a_LIBADD =
-am_libsmartgridtoolbox_a_OBJECTS = Bus.$(OBJEXT) Bus1P.$(OBJEXT) \
-	Branch.$(OBJEXT) Branch1P.$(OBJEXT) Common.$(OBJEXT) \
-	Component.$(OBJEXT) Event.$(OBJEXT) Meter.$(OBJEXT) \
-	Model.$(OBJEXT) Network.$(OBJEXT) Network1P.$(OBJEXT) \
+am_libsmartgridtoolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
+	Common.$(OBJEXT) Component.$(OBJEXT) Event.$(OBJEXT) \
+	Meter.$(OBJEXT) Model.$(OBJEXT) Network.$(OBJEXT) \
 	Parser.$(OBJEXT) PowerFlow.$(OBJEXT) PowerFlowNR.$(OBJEXT) \
-	PowerFlow1PNR.$(OBJEXT) Random.$(OBJEXT) \
-	RegisterComponentParsers.$(OBJEXT) SimpleBattery.$(OBJEXT) \
-	SimpleBuilding.$(OBJEXT) Simulation.$(OBJEXT) \
-	SparseSolver.$(OBJEXT) TestComponent.$(OBJEXT) \
-	WeakOrder.$(OBJEXT) ZipToGround.$(OBJEXT) \
-	ZipToGround1P.$(OBJEXT)
+	Random.$(OBJEXT) RegisterComponentParsers.$(OBJEXT) \
+	SimpleBattery.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
+	Simulation.$(OBJEXT) SparseSolver.$(OBJEXT) \
+	TestComponent.$(OBJEXT) WeakOrder.$(OBJEXT) \
+	ZipToGround.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_helloworld_OBJECTS = helloworld.$(OBJEXT) Common.$(OBJEXT)
@@ -308,20 +306,16 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I../third_party
 lib_LIBRARIES = libsmartgridtoolbox.a
 libsmartgridtoolbox_a_SOURCES = Bus.cc \
-										  Bus1P.cc \
 										  Branch.cc \
-										  Branch1P.cc \
 										  Common.cc \
 										  Component.cc \
 										  Event.cc \
 										  Meter.cc \
 										  Model.cc \
 										  Network.cc \
-										  Network1P.cc \
 										  Parser.cc \
 										  PowerFlow.cc \
 										  PowerFlowNR.cc \
-										  PowerFlow1PNR.cc \
 										  Random.cc \
 										  RegisterComponentParsers.cc \
 										  SimpleBattery.cc \
@@ -330,8 +324,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  SparseSolver.cc \
 										  TestComponent.cc \
 										  WeakOrder.cc \
-										  ZipToGround.cc \
-										  ZipToGround1P.cc
+										  ZipToGround.cc
 
 run_config_SOURCES = run_config.cc
 run_config_LDADD = libsmartgridtoolbox.a \
@@ -478,19 +471,15 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Branch.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Branch1P.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Bus.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Bus1P.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Component.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Meter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Model.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network1P.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlow.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlow1PNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlowNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RegisterComponentParsers.Po@am__quote@
@@ -501,7 +490,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestComponent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGround.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGround1P.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helloworld.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/run_config.Po@am__quote@
 
