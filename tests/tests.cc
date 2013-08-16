@@ -3,16 +3,12 @@
 #include <cmath>
 #include <ostream>
 #include <fstream>
-#include "PowerFlow1PNR.h"
 #include "Branch.h"
-#include "Branch1P.h"
 #include "Bus.h"
-#include "Bus1P.h"
 #include "Component.h"
 #include "Event.h"
 #include "Model.h"
 #include "Network.h"
-#include "Network1P.h"
 #include "Parser.h"
 #include "PowerFlow.h"
 #include "SimpleBattery.h"
@@ -512,54 +508,6 @@ inline Array2D<Complex, 2, 2> lineY(Complex y)
 }
 
 
-BOOST_AUTO_TEST_CASE (test_balanced_power_flow_nr)
-{
-   message() << "Testing balanced_power_flow_nr. Starting." << std::endl;
-   PowerFlow1PNR pfnr;
-   pfnr.addBus("0", BusType::SL, 1.0, 0.0, 0.0, 0.0);
-   pfnr.addBus("1", BusType::PQ, 0.0, 0.0, 0.0, {0.0240, 0.0120});
-   pfnr.addBus("2", BusType::PQ, 0.09, 0.0, 0.0, {0.0840, -0.0520});
-
-   pfnr.addBranch("1", "2", lineY({5.0, -15.0}));
-   pfnr.addBranch("1", "0", lineY({3.0, -9.0}));
-   pfnr.validate();
-   pfnr.solve();
-   message() << "Testing balanced_power_flow_nr. Completed." << std::endl;
-}
-
-class TestLoad1P : public ZipToGround1P
-{
-   public:
-      TestLoad1P(const std::string & name) : ZipToGround1P(name), dt_(seconds(0))
-      {
-         // Empty.
-      }
-
-      virtual ptime getValidUntil() const override
-      {
-         return getTime() + dt_;
-      }
-
-      virtual void updateState(ptime t0, ptime t1) override
-      {
-         Y_ = sin(dSeconds(t1)/123.0);
-         I_ = sin(dSeconds(t1)/300.0) * exp(Complex(0.0, dSeconds(t1)/713.0));
-         S_ = sin(dSeconds(t1)/60.0);
-      }
-
-      time_duration getDt() const
-      {
-         return dt_;
-      }
-      void setDt(time_duration dt)
-      {
-         dt_ = dt;
-      }
-
-   private:
-      time_duration dt_;
-};
-
 class TestLoad : public ZipToGround
 {
    public:
@@ -599,44 +547,6 @@ class TestLoad : public ZipToGround
    private:
       time_duration dt_;
 };
-
-BOOST_AUTO_TEST_CASE (test_network_1p)
-{
-   message() << "Testing network_1p. Starting." << std::endl;
-
-   Model mod;
-   Simulation sim(mod);
-
-   Parser & p = Parser::getGlobalParser();
-   p.parse("test_network_1p.yaml", mod, sim);
-
-   Bus1P * bus1 = mod.getComponentNamed<Bus1P>("bus_1");
-   Bus1P * bus2 = mod.getComponentNamed<Bus1P>("bus_2");
-   Bus1P * bus3 = mod.getComponentNamed<Bus1P>("bus_3");
-
-   TestLoad1P & tl0 = mod.newComponent<TestLoad1P>("tl0");
-   tl0.setDt(seconds(5));
-   bus2->addZipToGround(tl0);
-
-   mod.validate();
-   sim.initialize();
-
-   Network1P * network = mod.getComponentNamed<Network1P>("network_1");
-   ofstream outfile;
-   outfile.open("network_1p.out");
-   network->getEventDidUpdate().addAction([&]()
-         {
-            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
-                    << " " << bus3->getV() << std::endl;
-         }, "Network updated.");
-
-   while (sim.doNextUpdate())
-   {
-      ;
-   }
-   outfile.close();
-   message() << "Testing network_1p. Completed." << std::endl;
-}
 
 BOOST_AUTO_TEST_CASE (test_phases)
 {
