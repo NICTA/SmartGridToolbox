@@ -43,7 +43,7 @@ namespace SmartGridToolbox
    /// @{
    typedef std::complex<double> Complex;
 
-   inline Complex Polar(double m, double theta)
+   inline Complex polar(double m, double theta) // theta is radians.
    {
       // Note the following will use RVO in C++11, no unneeded temporaries.
       return Complex(m * cos(theta), m * sin(theta));
