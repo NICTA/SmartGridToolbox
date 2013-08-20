@@ -83,6 +83,8 @@ namespace SmartGridToolbox
          }
 
          virtual void rebuildNetwork();
+
+         void print();
       /// @}
 
       /// @name My private member functions.

@@ -99,9 +99,18 @@ namespace SmartGridToolbox
    std::string complex2String(const Complex & c)
    {
       std::ostringstream ss;
-      char reSgn = c.real() >= 0.0 ? ' ' : '-';
-      char imSgn = c.imag() >= 0.0 ? '+' : '-';
-      ss << reSgn << std::abs(c.real()) << imSgn << std::abs(c.imag()) << "j";
+      float re = static_cast<float>(c.real());
+      float im = static_cast<float>(c.imag());
+      char reSgn = re >= 0.0 ? ' ' : '-';
+      char imSgn = im >= 0.0 ? '+' : '-';
+      if (im == 0.0)
+      {
+         ss << reSgn << std::abs(re); 
+      }
+      else
+      {
+         ss << reSgn << std::abs(re) << imSgn << std::abs(im) << "j";
+      }
       return ss.str();
    }
 }

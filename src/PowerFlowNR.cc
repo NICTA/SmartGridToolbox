@@ -369,21 +369,45 @@ namespace SmartGridToolbox
    {
       debug() << "PowerFlowNR::printProblem()" << std::endl;
       debug() << "\tNodes:" << std::endl;
-      for (int i = 0; i < nNode_; ++i)
+      for (const NodeNR * nd : nodes_)
       {
-         NodeNR & nd = *nodes_[i];
-         debug() << "\t\tBus id : " << nd.bus_->id_ << std::endl;
-         debug() << "\t\t\tType  : " << nd.bus_->type_ << std::endl;
-         debug() << "\t\t\tPhase : " << nd.bus_->phases_[nd.phaseIdx_] << std::endl;
-         debug() << "\t\t\tV     : " << nd.V_ << std::endl;
-         debug() << "\t\t\tY     : " << nd.Y_ << std::endl;
-         debug() << "\t\t\tI     : " << nd.I_ << std::endl;
-         debug() << "\t\t\tS     : " << nd.S_ << std::endl;
+         debug() << "\t\tNode:" << std::endl;
+         debug() << "\t\t\tId    : " << nd->bus_->id_ << std::endl;
+         debug() << "\t\t\tType  : " << nd->bus_->type_ << std::endl;
+         debug() << "\t\t\tPhase : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
+         debug() << "\t\t\tV     : " << nd->V_ << std::endl;
+         debug() << "\t\t\tY     : " << nd->Y_ << std::endl;
+         debug() << "\t\t\tI     : " << nd->I_ << std::endl;
+         debug() << "\t\t\tS     : " << nd->S_ << std::endl;
+      }
+      for (const BranchNR * branch : branches_)
+      {
+         for (int i = 0; i < branch->Y_.size1(); ++i)
+         {
+            int iBus = i / branch->nPhase_;
+            int iPhase = i % branch->nPhase_;
+            for (int k = 0; k < branch->Y_.size2(); ++k)
+            {
+               int kBus = k / branch->nPhase_;
+               int kPhase = k % branch->nPhase_;
+
+               debug() << "\t\tLink:" << std::endl; 
+               debug() << "\t\t\tTerminal 0 : " << branch->ids_[iBus] << ", " << branch->phases_[iBus][iPhase] 
+                       << std::endl;
+               debug() << "\t\t\tTerminal 1 : " << branch->ids_[kBus] << ", " << branch->phases_[kBus][kPhase] 
+                       << std::endl;
+               debug() << "\t\t\tY          :" << std::endl;
+               debug() << "\t\t\t\t" << "[" 
+                       << std::setw(16) << branch->Y_(i, i) << std::setw(16) << branch->Y_(i, k) << "]" << std::endl;
+               debug() << "\t\t\t\t" << "[" 
+                       << std::setw(16) << branch->Y_(k, i) << std::setw(16) << branch->Y_(k, k) << "]" << std::endl;
+            }
+         }
       }
       debug() << "\tY:" << std::endl;
       for (int i = 0; i < Y_.size1(); ++i)
       {
-         debug() << "\t\t" << row(Y_, i) << std::endl;
+         debug() << "\t\t" << std::setw(16) << row(Y_, i) << std::endl;
       }
    }
 }

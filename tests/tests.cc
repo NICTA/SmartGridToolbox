@@ -50,7 +50,6 @@ BOOST_AUTO_TEST_SUITE (tests) // Name of test suite is test_template.
 
 BOOST_AUTO_TEST_CASE (test_weak_order)
 {
-   message() << "Testing weak ordering. Starting." << std::endl;
    WoGraph g(6);
    g.link(3, 1);
    g.link(4, 1);
@@ -89,12 +88,10 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    BOOST_CHECK(g.getNodes()[3]->getIndex() == 0);
    BOOST_CHECK(g.getNodes()[4]->getIndex() == 5);
    BOOST_CHECK(g.getNodes()[5]->getIndex() == 2);
-   message() << "Testing weak ordering. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_model_dependencies)
 {
-   message() << "Testing model dependencies. Starting." << std::endl;
    Model mod;
 
    TestCompA & a0 = mod.newComponent<TestCompA>("tca0", 0, 0.1);
@@ -120,12 +117,10 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
    BOOST_CHECK(mod.getComponents()[3] == &a0);
    BOOST_CHECK(mod.getComponents()[4] == &a5);
    BOOST_CHECK(mod.getComponents()[5] == &a2);
-   message() << "Testing model dependencies. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_properties)
 {
-   message() << "Testing properties. Starting." << std::endl;
    TestCompA * tca = new TestCompA("tca0", 3, 0.2);
    const Property<int, PropType::GET> * prop1 = tca->getProperty<int, PropType::GET>("x");
    message() << "Property value: " << prop1->get() << endl;
@@ -144,13 +139,11 @@ BOOST_AUTO_TEST_CASE (test_properties)
    message() << "Property 2 " << prop2->get() << endl;
    BOOST_CHECK(prop2->get() == 0.4);
    delete tca;
-   message() << "Testing properties. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_simple_battery)
 {
    using namespace boost::gregorian;
-   message() << "Testing SimpleBattery. Starting." << std::endl;
    SimpleBattery bat1("sb0");
    bat1.setName("bat1");
    bat1.setInitCharge(5.0 * kWh);
@@ -189,7 +182,6 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    comp = 0.0;
    message() << "comp = " << comp / kWh << endl;
    BOOST_CHECK(bat1.getCharge() == comp);
-   message() << "Testing SimpleBattery. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_spline)
@@ -234,7 +226,6 @@ BOOST_AUTO_TEST_CASE (test_spline)
 BOOST_AUTO_TEST_CASE (test_spline_timeseries)
 {
    using namespace boost::gregorian;
-   message() << "Testing SplineTimeSeries. Starting." << std::endl;
    ptime base(date(2013, Apr, 26), hours(0));
    SplineTimeSeries<ptime> sts;
    sts.addPoint(base + hours(0), sin(0*pi/12));
@@ -254,13 +245,11 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
          BOOST_CHECK(err < 0.005);
       }
    }
-   message() << "Testing SplineTimeSeries. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
 {
    using namespace boost::gregorian;
-   message() << "Testing LerpTimeSeries. Starting." << std::endl;
    ptime base(date(2013, Apr, 26), hours(0));
    LerpTimeSeries<ptime, Complex> lts;
    lts.addPoint(base + hours(0), Complex(0, 0));
@@ -278,12 +267,10 @@ BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
    BOOST_CHECK(lts.value(base + hours(2)) == Complex(6.5, 6));
    BOOST_CHECK(lts.value(base + hours(3)) == Complex(10, 11));
    BOOST_CHECK(lts.value(base + hours(4) + seconds(1)) == Complex(10, 11));
-   message() << "Testing LerpTimeSeries. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
 {
-   message() << "Testing StepwiseTimeSeries. Starting." << std::endl;
    time_duration base(minutes(5));
    StepwiseTimeSeries<time_duration, double> sts;
    sts.addPoint(base + hours(0), 1.5);
@@ -305,18 +292,15 @@ BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
    BOOST_CHECK(sts.value(base + hours(1) - seconds(1)) == 1.5);
    BOOST_CHECK(sts.value(base + hours(1) + seconds(1)) == 2.5);
    BOOST_CHECK(sts.value(base + hours(3) + seconds(1)) == 5.5);
-   message() << "Testing StepwiseTimeSeries. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_function_timeseries)
 {
-   message() << "Testing FunctionTimeSeries. Starting." << std::endl;
    FunctionTimeSeries <time_duration, double> 
       fts([] (time_duration td) {return 2 * dSeconds(td);});
    message() << fts.value(seconds(10)+milliseconds(3)) << endl;
    BOOST_CHECK(fts.value(seconds(-1)) == -2.0);
    BOOST_CHECK(fts.value(seconds(3)) == 6.0);
-   message() << "Testing FunctionTimeSeries. Completed." << std::endl;
 }
 
 enum class Event : int
@@ -368,18 +352,15 @@ class TestEventA : public Component
 
 BOOST_AUTO_TEST_CASE (test_events_and_sync)
 {
-   message() << "Testing events and synchronization. Starting." << std::endl;
    Model mod;
    TestEventA & a0 = mod.newComponent<TestEventA>("a0", seconds(3), 3);
    TestEventA & a1 = mod.newComponent<TestEventA>("a1", seconds(9), 3);
    a0.dependsOn(a1); 
    mod.validate();
    Simulation sim(mod);
-   message() << "Initialize simulation. Starting." << std::endl;
    sim.setStartTime(epoch);
    sim.setStartTime(epoch + seconds(10));
    sim.initialize();
-   message() << "Initialize simulation. Completed." << std::endl;
 
    a0.getEventDidUpdate().addAction(
          [&]() {message() << a1.getName() << " received did update from " << a0.getName() << std::endl;},
@@ -393,8 +374,6 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    sim.doNextUpdate();
    sim.doNextUpdate();
    sim.doNextUpdate();
-
-   message() << "Testing events and synchronization. Completed." << std::endl;
 }
 
 static double sinusoidal(double t, double T, double Delta, 
@@ -406,8 +385,6 @@ static double sinusoidal(double t, double T, double Delta,
 
 BOOST_AUTO_TEST_CASE (test_simple_building)
 {
-   message() << "Testing SimpleBuilding. Starting." << std::endl;
-
    ofstream outfile;
    outfile.open("simple_building.out");
 
@@ -446,13 +423,10 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
    {
       print();
    }
-
-   message() << "Testing SimpleBuilding. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_parser)
 {
-   message() << "Testing Parser. Starting." << std::endl;
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::getGlobalParser();
@@ -462,12 +436,10 @@ BOOST_AUTO_TEST_CASE (test_parser)
    const TestComponent * tc = mod.getComponentNamed<TestComponent>("test_component_1");
    message() << "test_component_1 another is " << tc->getAnother()->getName() << std::endl;
    BOOST_CHECK(tc->getAnother()->getName() == "test_component_2");
-   message() << "Testing Parser. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_sparse_solver)
 {
-   message() << "Testing SparseSolver. Starting." << std::endl;
    int n = 5;
    UblasCMatrix<double> a(n, n);
    a(0, 0) = 2.0;
@@ -499,7 +471,6 @@ BOOST_AUTO_TEST_CASE (test_sparse_solver)
    BOOST_CHECK(std::abs(x(2) - 3.0) < 1e-4);
    BOOST_CHECK(std::abs(x(3) - 4.0) < 1e-4);
    BOOST_CHECK(std::abs(x(4) - 5.0) < 1e-4);
-   message() << "Testing SparseSolver. Completed." << std::endl;
 }
 
 inline Array2D<Complex, 2, 2> lineY(Complex y)
@@ -553,7 +524,6 @@ class TestLoad : public ZipToGround
 
 BOOST_AUTO_TEST_CASE (test_phases)
 {
-   message() << "Testing phases. Starting." << std::endl;
    Phases p1 = Phase::A | Phase::B;
    BOOST_CHECK(p1.size() == 2);
    BOOST_CHECK(p1[0] == Phase::A);
@@ -576,13 +546,10 @@ BOOST_AUTO_TEST_CASE (test_phases)
    BOOST_CHECK(p3 == Phase::A);
    Phases p4 = p1 | Phase::C;
    BOOST_CHECK(p1.isSubsetOf(p4));
-   message() << "Testing phases. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_network_1p)
 {
-   message() << "Testing network. Starting." << std::endl;
-
    Model mod;
    Simulation sim(mod);
 
@@ -614,13 +581,10 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    {
    }
    outfile.close();
-   message() << "Testing network. Completed." << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_network_b3p)
 {
-   message() << "Testing network. Starting." << std::endl;
-
    Model mod;
    Simulation sim(mod);
 
@@ -654,7 +618,43 @@ BOOST_AUTO_TEST_CASE (test_network_b3p)
    {
    }
    outfile.close();
-   message() << "Testing network. Completed." << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE (test_network_2p_identical)
+{
+   Model mod;
+   Simulation sim(mod);
+
+   Parser & p = Parser::getGlobalParser();
+   p.parse("test_network_2p_identical.yaml", mod, sim);
+
+   Bus * bus1 = mod.getComponentNamed<Bus>("bus_1");
+   Bus * bus2 = mod.getComponentNamed<Bus>("bus_2");
+   Bus * bus3 = mod.getComponentNamed<Bus>("bus_3");
+
+   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
+   tl0.setPhases(bus2->getPhases());
+   tl0.setDt(seconds(5));
+   bus2->addZipToGround(tl0);
+
+   mod.validate();
+   sim.initialize();
+
+   Network * network = mod.getComponentNamed<Network>("network_1");
+   ofstream outfile;
+   outfile.open("test_network_2p_identical.out");
+   outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
+      << " " << bus3->getV() << std::endl;
+   network->getEventDidUpdate().addAction([&]()
+         {
+            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
+                    << " " << bus3->getV() << std::endl;
+         }, "Network updated.");
+
+   while (sim.doNextUpdate())
+   {
+   }
+   outfile.close();
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
