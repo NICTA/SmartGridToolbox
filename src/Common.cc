@@ -1,64 +1,79 @@
 #include <Common.h>
 #include <sstream>
-#include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/spirit/include/phoenix_function.hpp>
+#include <boost/spirit/include/phoenix_statement.hpp>
+#include <boost/spirit/include/phoenix_bind.hpp>
+#include <boost/spirit/include/phoenix.hpp>
+
+namespace Qi = boost::spirit::qi;
+namespace Ascii = boost::spirit::ascii;
+namespace Phoenix = boost::phoenix;
 
 namespace SmartGridToolbox
 {
-
-   template <typename Iterator> bool parse_complex(Iterator first, Iterator last, Complex & c)
+   struct CGram : Qi::grammar<std::string::const_iterator, Complex(), Ascii::space_type>
    {
-      // TODO: I'm sure this can be done better if I learn something about boost spirit.
-      using boost::spirit::qi::double_;
-      using boost::spirit::qi::char_;
-      using boost::spirit::qi::string;
-      using boost::spirit::qi::_1;
-      using boost::spirit::qi::phrase_parse;
-      using boost::spirit::ascii::space;
-      using boost::phoenix::ref;
-      using Expression = boost::spirit::qi::rule<Iterator, int(), boost::spirit::ascii::space_type>; 
-
-      double re = 0.0;
-      double im = 0.0;
-      double ang = 0.0;
-      bool hasDeg = false;
-      bool hasRad = false;
-
-      Expression cplxRect(
-            '(' >> double_[ref(re) = _1] >> -(',' >> double_[ref(im) = _1]) >> ')' |
-            double_[ref(re) = _1] >> -('+' >> double_[ref(im) = _1]) >> char_("ij") |
-            double_[ref(re) = _1] >> -('-' >> double_[ref(im) = -_1]) >> char_("ij") |
-            double_[ref(im) = _1] >> char_("ij") |
-            char_("ij")[ref(im) = 1] |
-            '-' >> char_("ij")[ref(im) = -1] |
-            double_[ref(re) = _1]);
-
-      Expression cplxRectPlusAng(
-            (cplxRect >> char_('R') >> double_[ref(ang) = _1])[ref(hasRad) = true] |
-            (cplxRect >> char_('D') >> double_[ref(ang) = _1])[ref(hasDeg) = true]);
-
-      Expression cplx(cplxRectPlusAng | cplxRect);
-
-      bool r = phrase_parse(first, last, cplx, space);
-
-      if (!r || first != last) // fail if we did not get a full match
+      CGram(): CGram::base_type(start_)
       {
-         return false;
+         phaseRad_ = Qi::lit('R') >> Qi::double_[Phoenix::bind(&CGram::setAngRad, this, Qi::_1)];
+         phaseDeg_ = Qi::lit('D') >> Qi::double_[Phoenix::bind(&CGram::setAngDeg, this, Qi::_1)];
+
+         bracketedBoth_ = (Qi::lit('(') >> Qi::double_ >> Qi::lit(',') >> Qi::double_ >> Qi::lit(')'))
+            [Phoenix::bind(&CGram::setResult, this, Qi::_1, Qi::_2)];
+         bracketedIm_ = (Qi::lit('(') >> Qi::lit(',') >> Qi::double_ >> Qi::lit(')'))
+            [Phoenix::bind(&CGram::setResult, this, 0.0, Qi::_1)];
+         bracketedRe_ = (Qi::lit('(') >> Qi::double_ >> -Qi::lit(',') >> Qi::lit(')'))
+            [Phoenix::bind(&CGram::setResult, this, Qi::_1, 0.0)];
+         rePlusIm_ = (Qi::double_ >> Qi::lit('+') >> Qi::double_ >> Qi::char_("ij"))
+            [Phoenix::bind(&CGram::setResult, this, Qi::_1, Qi::_2)];
+         reMinusIm_ = (Qi::double_ >> Qi::lit('-') >> Qi::double_ >> Qi::char_("ij"))
+            [Phoenix::bind(&CGram::setResult, this, Qi::_1, -Qi::_2)];
+         im_ = (Qi::double_ >> Qi::char_("ij"))
+            [Phoenix::bind(&CGram::setResult, this, 0.0, Qi::_2)];
+         re_ = (Qi::double_) 
+            [Phoenix::bind(&CGram::setResult, this, Qi::_1, 0.0)];
+
+         start_ = Qi::eps[Phoenix::bind(&CGram::init, this)] >>
+            ((bracketedBoth_ | bracketedIm_ | bracketedRe_ | rePlusIm_ | reMinusIm_ | im_ | re_) >>
+             -(phaseRad_ | phaseDeg_))
+            [Qi::_val = Phoenix::construct<Complex>(Phoenix::bind(&CGram::getResult, this))];
       }
 
-      c = Complex(re, im);
-      if (hasDeg)
+      void init()
       {
-         c *= polar(1.0, ang * pi / 180.0);
+         result_ = czero;
       }
-      else if (hasRad)
+      void setResult(double re, double im)
       {
-         c *= polar(1.0, ang);
+         result_ = {re, im};
       }
-      return r;
-   }
+      void setAngRad(double ang)
+      {
+         result_ *= polar(1.0, ang);
+      }
+      void setAngDeg(double ang)
+      {
+         result_ *= polar(1.0, ang * pi / 180.0);
+      }
+      Complex getResult()
+      {
+         return result_;
+      }
+
+      Qi::rule<std::string::const_iterator, Complex(), Ascii::space_type> start_;
+      Qi::rule<std::string::const_iterator, Complex(), Ascii::space_type> phaseRad_;
+      Qi::rule<std::string::const_iterator, Complex(), Ascii::space_type> phaseDeg_;
+      Qi::rule<std::string::const_iterator, Complex(), Ascii::space_type> bracketedBoth_;
+      Qi::rule<std::string::const_iterator, Complex(), Ascii::space_type> bracketedIm_;
+      Qi::rule<std::string::const_iterator, Complex(), Ascii::space_type> bracketedRe_;
+      Qi::rule<std::string::const_iterator, Complex(), Ascii::space_type> rePlusIm_;
+      Qi::rule<std::string::const_iterator, Complex(), Ascii::space_type> reMinusIm_;
+      Qi::rule<std::string::const_iterator, Complex(), Ascii::space_type> im_;
+      Qi::rule<std::string::const_iterator, Complex(), Ascii::space_type> re_;
+      Complex result_;
+   };
 
    std::ostream & operator<<(std::ostream & os, const Complex & c)
    {
@@ -69,9 +84,14 @@ namespace SmartGridToolbox
    Complex string2Complex(const std::string & s)
    {
       Complex c;
-      if (!parse_complex(s.begin(), s.end(), c))
+      std::string::const_iterator iter = s.begin();
+      std::string::const_iterator end = s.end();
+      bool ok = Qi::phrase_parse(iter, end, CGram(), Ascii::space, c);
+      if (!ok)
       {
-         c = {NAN, NAN};
+         error() << "Bad complex number string: " << c << std::endl;
+         error() << "Came unstuck at substring: " << *iter << std::endl;
+         abort();
       }
       return c;
    }

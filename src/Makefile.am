@@ -37,7 +37,7 @@ run_config_LDADD = libsmartgridtoolbox.a \
 run_config_LDFLAGS = -lboost_date_time-mt \
 							-lblas
 
-helloworld_SOURCES = helloworld.cc\
+helloworld_SOURCES = helloworld.cc \
 							Common.cc
 helloworld_LDFLAGS = -lboost_date_time-mt \
 							-lblas
