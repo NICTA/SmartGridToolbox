@@ -201,6 +201,9 @@ namespace SmartGridToolbox
             const NodeNR * nodeI = busI->nodes_[busPhaseIdxI];
             int idxNodeI = nodeI->idx_;
 
+            // Only count each diagonal element in branch->Y_ once!
+            Y_(idxNodeI, idxNodeI) += branch->Y_(i, i);
+
             for (int k = i + 1; k < nTerm; ++k)
             {
                int busIdxK = k / branch->nPhase_; // 0 or 1
@@ -210,8 +213,6 @@ namespace SmartGridToolbox
                const NodeNR * nodeK = busK->nodes_[busPhaseIdxK];
                int idxNodeK = nodeK->idx_;
 
-               Y_(idxNodeI, idxNodeI) += branch->Y_(i, i);
-               Y_(idxNodeK, idxNodeK) += branch->Y_(k, k);
                Y_(idxNodeI, idxNodeK) += branch->Y_(i, k);
                Y_(idxNodeK, idxNodeI) += branch->Y_(k, i);
             }
@@ -382,26 +383,13 @@ namespace SmartGridToolbox
       }
       for (const BranchNR * branch : branches_)
       {
+         debug() << "\t\tBranch:" << std::endl; 
+         debug() << "\t\t\tBusses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;
+         debug() << "\t\t\tPhases : " << branch->phases_[0] << ", " << branch->phases_[1] << std::endl;
+         debug() << "\t\t\tY      :" << std::endl;
          for (int i = 0; i < branch->Y_.size1(); ++i)
          {
-            int iBus = i / branch->nPhase_;
-            int iPhase = i % branch->nPhase_;
-            for (int k = 0; k < branch->Y_.size2(); ++k)
-            {
-               int kBus = k / branch->nPhase_;
-               int kPhase = k % branch->nPhase_;
-
-               debug() << "\t\tLink:" << std::endl; 
-               debug() << "\t\t\tTerminal 0 : " << branch->ids_[iBus] << ", " << branch->phases_[iBus][iPhase] 
-                       << std::endl;
-               debug() << "\t\t\tTerminal 1 : " << branch->ids_[kBus] << ", " << branch->phases_[kBus][kPhase] 
-                       << std::endl;
-               debug() << "\t\t\tY          :" << std::endl;
-               debug() << "\t\t\t\t" << "[" 
-                       << std::setw(16) << branch->Y_(i, i) << std::setw(16) << branch->Y_(i, k) << "]" << std::endl;
-               debug() << "\t\t\t\t" << "[" 
-                       << std::setw(16) << branch->Y_(k, i) << std::setw(16) << branch->Y_(k, k) << "]" << std::endl;
-            }
+            debug() << "\t\t\t\t" << std::setw(16) << row(branch->Y_, i) << std::endl;
          }
       }
       debug() << "\tY:" << std::endl;
