@@ -321,6 +321,15 @@ namespace SmartGridToolbox
          SGT_DEBUG(debug() << "\tIteration = " << i << std::endl);
          updateNodeV();
          updateF();
+         UblasVector<double> f2 = element_prod(f_, f_);
+         double err = *std::max_element(f2.begin(), f2.end());
+         SGT_DEBUG(debug() << "\tError = " << err << std::endl);
+         if (err <= tol)
+         {
+            SGT_DEBUG(debug() << "\tSuccess at iteration " << i << ". Error = " << err << std::endl);
+            wasSuccessful = true;
+            break;
+         }
          updateJ();
          UblasVector<double> rhs;
 
@@ -344,16 +353,6 @@ namespace SmartGridToolbox
          }
          x_ = x_ - rhs;
          SGT_DEBUG(debug() << "\tNew x = " << std::setw(8) << x_ << std::endl);
-         UblasVector<double> test = prod(J_, x_) - f_;
-         UblasVector<double> f2 = element_prod(f_, f_);
-         double err = *std::max_element(f2.begin(), f2.end());
-         SGT_DEBUG(debug() << "\tError = " << err << std::endl);
-         if (err <= tol)
-         {
-            SGT_DEBUG(debug() << "\tSuccess at iteration " << i << ". Error = " << err << std::endl);
-            wasSuccessful = true;
-            break;
-         }
       }
       if (wasSuccessful)
       {
