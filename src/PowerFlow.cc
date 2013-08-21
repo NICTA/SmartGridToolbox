@@ -137,7 +137,7 @@ namespace SmartGridToolbox
    // Balanced/1-phase simple line with a single admittance.
    const UblasMatrix<Complex> YLine1P(const Complex & y)
    {
-      UblasMatrix<Complex> Y(2, 2);
+      UblasMatrix<Complex> Y(2, 2, czero);
       Y(0, 0) = y;
       Y(1, 1) = y;
       Y(0, 1) = -y;
@@ -150,7 +150,7 @@ namespace SmartGridToolbox
    {
       int nPhase = y.size();
       int nTerm = 2 * nPhase; 
-      UblasMatrix<Complex> Y(nTerm, nTerm);
+      UblasMatrix<Complex> Y(nTerm, nTerm, czero);
       for (int i = 0; i < nPhase; ++i)
       {
          Y(i, i) = y(i);
