@@ -67,12 +67,6 @@ namespace SmartGridToolbox
          const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S)
    {
       SGT_DEBUG(debug() << "PowerFlowNR : add bus " << id << std::endl);
-      SGT_DEBUG(debug() << "\tType   : " << type << std::endl);
-      SGT_DEBUG(debug() << "\tPhases : " << phases << std::endl);
-      SGT_DEBUG(debug() << "\tV      : " << V << std::endl);
-      SGT_DEBUG(debug() << "\tY      : " << Y << std::endl);
-      SGT_DEBUG(debug() << "\tI      : " << I << std::endl);
-      SGT_DEBUG(debug() << "\tS      : " << S << std::endl);
       busses_[id] = new BusNR(id, type, phases, V, Y, I, S);
    }
 
@@ -80,10 +74,6 @@ namespace SmartGridToolbox
                                const UblasMatrix<Complex> & Y)
    {
       SGT_DEBUG(debug() << "PowerFlowNR : addBranch " << idBus0 << " " << idBus1 << std::endl);
-      SGT_DEBUG(debug() << "\tPhases0 : " << phases0 << std::endl);
-      SGT_DEBUG(debug() << "\tPhases1 : " << phases1 << std::endl);
-      SGT_DEBUG(debug() << "\tY :" << std::endl);
-      SGT_DEBUG(for (int i = 0; i < Y.size1(); ++i) debug() << "\t\t" << std::setw(13) << row(Y, i) << std::endl);
       branches_.push_back(new BranchNR(idBus0, idBus1, phases0, phases1, Y));
    }
 
@@ -104,8 +94,6 @@ namespace SmartGridToolbox
       for (auto & busPair : busses_)
       {
          BusNR & bus = *busPair.second;
-         SGT_DEBUG(debug() << "\tBus: " << bus.id_ << std::endl);
-         SGT_DEBUG(debug() << "\t\tType: " << bus.type_ << std::endl);
          NodeVec * vec = nullptr;
          if (bus.type_ == BusType::SL)
          {
@@ -122,6 +110,8 @@ namespace SmartGridToolbox
          }
          for (NodeNR * node : bus.nodes_)
          {
+            SGT_DEBUG(debug() << "\tAdding node " << node->bus_->id_ << ", " 
+                              << node->bus_->phases_[node->phaseIdx_] << " to network." << std::endl);
             vec->push_back(node);
          }
       }
@@ -137,6 +127,7 @@ namespace SmartGridToolbox
       nodes_.reserve(nNode_);
       nodes_.insert(nodes_.end(), PQNodes_.begin(), PQNodes_.end());
       nodes_.insert(nodes_.end(), SLNodes_.begin(), SLNodes_.end());
+      SGT_DEBUG(debug() << "\tSize of nodes_ vector = " << nodes_.size() << std::endl);
 
       // Index all nodes (PQ ones come first):
       for (int i = 0; i < nNode_; ++i)
@@ -257,6 +248,8 @@ namespace SmartGridToolbox
       UblasCMatrixRange<double>(JConst_, rx1_, rx0_) = UblasCMatrixRange<double>(B_, rPQ_, rPQ_);
       UblasCMatrixRange<double>(JConst_, rx1_, rx1_) = UblasCMatrixRange<double>(G_, rPQ_, rPQ_);
       J_ = JConst_; // We only need to redo the elements that we mess with!
+      SGT_DEBUG(debug() << "PowerFlowNR : validate complete." << std::endl);
+      SGT_DEBUG(printProblem());
    }
 
    void PowerFlowNR::initx()
@@ -330,7 +323,6 @@ namespace SmartGridToolbox
    bool PowerFlowNR::solve()
    {
       SGT_DEBUG(debug() << "PowerFlowNR : solve." << std::endl);
-      SGT_DEBUG(printProblem());
       const double tol = 1e-20;
       const int maxiter = 20;
       initx();
@@ -381,6 +373,7 @@ namespace SmartGridToolbox
          debug() << "\t\t\tI     : " << nd->I_ << std::endl;
          debug() << "\t\t\tS     : " << nd->S_ << std::endl;
       }
+      debug() << "\tBranches:" << std::endl;
       for (const BranchNR * branch : branches_)
       {
          debug() << "\t\tBranch:" << std::endl; 
