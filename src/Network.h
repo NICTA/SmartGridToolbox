@@ -46,7 +46,8 @@ namespace SmartGridToolbox
       private:
          virtual void initializeState(ptime t) override
          {
-            rebuildNetwork();
+            SGT_DEBUG(debug() << "Network : initialize state." << std::endl);
+            updateState(t, t);
          }
 
          virtual void updateState(ptime t0, ptime t1) override;
