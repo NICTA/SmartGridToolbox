@@ -606,12 +606,18 @@ BOOST_AUTO_TEST_CASE (test_network_b3p)
    Network * network = mod.getComponentNamed<Network>("network_1");
    ofstream outfile;
    outfile.open("test_network_b3p.out");
-   outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
-      << " " << bus3->getV() << std::endl;
+   outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
+           << bus1->getV()(0) << " " << bus1->getV()(1) << " " << bus1->getV()(2)
+           << bus2->getV()(0) << " " << bus2->getV()(1) << " " << bus2->getV()(2)
+           << bus3->getV()(0) << " " << bus3->getV()(1) << " " << bus3->getV()(2)
+           << std::endl;
    network->getEventDidUpdate().addAction([&]()
          {
-            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
-                    << " " << bus3->getV() << std::endl;
+            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
+                    << bus1->getV()(0) << " " << bus1->getV()(1) << " " << bus1->getV()(2) << " "
+                    << bus2->getV()(0) << " " << bus2->getV()(1) << " " << bus2->getV()(2) << " "
+                    << bus3->getV()(0) << " " << bus3->getV()(1) << " " << bus3->getV()(2)
+                    << std::endl;
          }, "Network updated.");
 
    while (sim.doNextUpdate())
