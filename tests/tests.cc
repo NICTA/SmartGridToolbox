@@ -643,12 +643,12 @@ BOOST_AUTO_TEST_CASE (test_network_2p_identical)
    Network * network = mod.getComponentNamed<Network>("network_1");
    ofstream outfile;
    outfile.open("test_network_2p_identical.out");
-   outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
-      << " " << bus3->getV() << std::endl;
+   outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
+           << bus1->getV()(0) << " " << bus2->getV()(0) << " " << bus3->getV()(0) << std::endl;
    network->getEventDidUpdate().addAction([&]()
          {
-            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV() << " " << bus2->getV() 
-                    << " " << bus3->getV() << std::endl;
+            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
+                    << bus1->getV()(0) << " " << bus2->getV()(0) << " " << bus3->getV()(0) << std::endl;
          }, "Network updated.");
 
    while (sim.doNextUpdate())

@@ -25,6 +25,7 @@ namespace SmartGridToolbox
                "Simulation insert contingent update of component " + comp->getName());
          scheduledUpdates_.insert(comp);
       }
+      currentTime_ = startTime_;
    }
 
    // TODO: can we tidy up the logic in this function?
