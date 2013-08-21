@@ -5,13 +5,12 @@
 #include "Component.h"
 #include "Parser.h"
 #include "PowerFlow.h"
-#include "ZipToGround.h"
 
 #include <iostream>
 
 namespace SmartGridToolbox
 {
-   class ZipToGround;
+   class ZipToGroundBase;
 
    class BusParser : public ComponentParser
    {
@@ -62,7 +61,7 @@ namespace SmartGridToolbox
          const UblasVector<Complex> & getV() const {return V_;}
          void setV(const UblasVector<Complex> & V) {V_ = V;}
 
-         void addZipToGround(ZipToGround & zipToGround);
+         void addZipToGround(ZipToGroundBase & zipToGround);
 
          const UblasVector<Complex> & getY() const {return Y_;} // Injection.
          const UblasVector<Complex> & getI() const {return I_;} // Injection.
@@ -74,7 +73,7 @@ namespace SmartGridToolbox
       private:
          BusType type_;                                     ///< Bus type. 
          Phases phases_;                                    ///< Phases.
-         std::vector<const ZipToGround *> zipsToGround_;    ///< ZIP loads of generation.
+         std::vector<const ZipToGroundBase *> zipsToGround_;    ///< ZIP loads of generation.
          UblasVector<Complex> nominalV_;                    ///< Nominal voltage.
          UblasVector<Complex> V_;                           ///< Voltage.
          UblasVector<Complex> Y_;                           ///< Constant admittance shunt.

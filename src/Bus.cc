@@ -1,11 +1,10 @@
 #include "Bus.h"
 #include "Model.h"
 #include "Network.h"
+#include "ZipToGroundBase.h"
  
 namespace SmartGridToolbox
 {
-   class ZipToGround;
-
    void BusParser::parse(const YAML::Node & nd, Model & mod) const
    {
       SGT_DEBUG(debug() << "Bus : parse." << std::endl);
@@ -56,7 +55,7 @@ namespace SmartGridToolbox
       Y_ = UblasVector<Complex>(phases_.size(), czero);
       I_ = UblasVector<Complex>(phases_.size(), czero);
       S_ = UblasVector<Complex>(phases_.size(), czero);
-      for (const ZipToGround * zip : zipsToGround_)
+      for (const ZipToGroundBase * zip : zipsToGround_)
       {
          Y_ += zip->getY();
          I_ += zip->getI(); // Injection.
@@ -70,7 +69,7 @@ namespace SmartGridToolbox
       {
          Y_(i) = I_(i) = S_(i) = {0.0, 0.0};
       }
-      for (const ZipToGround * zip : zipsToGround_)
+      for (const ZipToGroundBase * zip : zipsToGround_)
       {
          Y_ += zip->getY();
          I_ += zip->getI(); // Injection.
@@ -78,7 +77,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus::addZipToGround(ZipToGround & zipToGround)
+   void Bus::addZipToGround(ZipToGroundBase & zipToGround)
    {
       zipsToGround_.push_back(&zipToGround);
       zipToGround.getEventDidUpdate().addAction([this](){getEventNeedsUpdate().trigger();}, 

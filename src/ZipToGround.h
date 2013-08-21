@@ -1,8 +1,8 @@
 #ifndef ZIP_TO_GROUND_DOT_H
 #define ZIP_TO_GROUND_DOT_H
 
-#include "Component.h"
 #include "Parser.h"
+#include "ZipToGroundBase.h"
 
 namespace SmartGridToolbox
 {
@@ -18,7 +18,7 @@ namespace SmartGridToolbox
          virtual void postParse(const YAML::Node & nd, Model & mod) const override;
    };
 
-   class ZipToGround : public Component
+   class ZipToGround : public ZipToGroundBase
    {
       /// @name Public overridden functions: from Component.
       /// @{
@@ -39,19 +39,19 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         ZipToGround(const std::string & name) : Component(name), Y_(0.0), I_(0.0), S_(0.0) {}
+         ZipToGround(const std::string & name) : ZipToGroundBase(name), Y_(0.0), I_(0.0), S_(0.0) {}
 
-         Phases getPhases() const {return phases_;}
-         void setPhases(Phases phases) {phases_ = phases;}
+         virtual Phases getPhases() const override {return phases_;}
+         virtual void setPhases(Phases phases) {phases_ = phases;}
 
-         const UblasVector<Complex> & getY() const {return Y_;}
-         void setY(const UblasVector<Complex> & Y) {Y_ = Y;}
+         virtual const UblasVector<Complex> & getY() const override {return Y_;}
+         virtual void setY(const UblasVector<Complex> & Y) {Y_ = Y;}
 
-         const UblasVector<Complex> & getI() const {return I_;} // Injection.
-         void setI(const UblasVector<Complex> & I) {I_ = I;} // Injection.
+         virtual const UblasVector<Complex> & getI() const override {return I_;} // Injection.
+         virtual void setI(const UblasVector<Complex> & I) {I_ = I;} // Injection.
 
-         const UblasVector<Complex> & getS() const {return S_;} // Injection.
-         void setS(const UblasVector<Complex> & S) {S_ = S;} // Injection.
+         virtual const UblasVector<Complex> & getS() const override {return S_;} // Injection.
+         virtual void setS(const UblasVector<Complex> & S) {S_ = S;} // Injection.
       /// @}
       
       /// @name My private member variables.
