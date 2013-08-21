@@ -21,7 +21,6 @@ objects: # And these are the actual objects.
       nominal_voltage:        [1, 1D120, 1D240]
    zip_to_ground:
       name:                   zip_load_1
-      network:                network_1
       phases:                 [A, B, C]
       bus:                    bus_1
       complex_power_load:     [0.0240+0.0120j, 0.0240+0.0120j, 0.0240+0.0120j]
@@ -33,7 +32,6 @@ objects: # And these are the actual objects.
       nominal_voltage:        [1, 1D120, 1D240]
    zip_to_ground:
       name:                   zip_load_2
-      network:                network_1
       phases:                 [A, B, C]
       bus:                    bus_2
       complex_power_load:     [0.0840-0.0520j, 0.0840-0.0520j, 0.0840-0.0520j]
