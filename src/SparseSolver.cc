@@ -2,7 +2,7 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 
-void KLUSolve(const boost::numeric::ublas::compressed_matrix<double> & a,
+bool KLUSolve(const boost::numeric::ublas::compressed_matrix<double> & a,
               const boost::numeric::ublas::vector<double> & b,
               boost::numeric::ublas::vector<double> & result)
 {
@@ -31,7 +31,7 @@ void KLUSolve(const boost::numeric::ublas::compressed_matrix<double> & a,
    klu_defaults (&Common);
    Symbolic = klu_analyze (n, ap, ai, &Common);
    Numeric = klu_factor (ap, ai, ax, Symbolic, &Common);
-   klu_solve (Symbolic, Numeric, 5, 1, b1, &Common);
+   bool ok = klu_solve(Symbolic, Numeric, 5, 1, b1, &Common) == 1;
    klu_free_symbolic (&Symbolic, &Common);
    klu_free_numeric (&Numeric, &Common);
 
@@ -40,4 +40,6 @@ void KLUSolve(const boost::numeric::ublas::compressed_matrix<double> & a,
    {
       result(i) = b1[i];
    }
+
+   return ok;
 }

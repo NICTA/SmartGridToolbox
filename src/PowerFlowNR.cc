@@ -110,8 +110,6 @@ namespace SmartGridToolbox
          }
          for (NodeNR * node : bus.nodes_)
          {
-            SGT_DEBUG(debug() << "\tAdding node " << node->bus_->id_ << ", " 
-                              << node->bus_->phases_[node->phaseIdx_] << " to network." << std::endl);
             vec->push_back(node);
          }
       }
@@ -127,7 +125,6 @@ namespace SmartGridToolbox
       nodes_.reserve(nNode_);
       nodes_.insert(nodes_.end(), PQNodes_.begin(), PQNodes_.end());
       nodes_.insert(nodes_.end(), SLNodes_.begin(), SLNodes_.end());
-      SGT_DEBUG(debug() << "\tSize of nodes_ vector = " << nodes_.size() << std::endl);
 
       // Index all nodes (PQ ones come first):
       for (int i = 0; i < nNode_; ++i)
@@ -254,7 +251,6 @@ namespace SmartGridToolbox
 
    void PowerFlowNR::initx()
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : initx." << std::endl);
       for (int i = 0; i < nPQ_; ++i)
       {
          const NodeNR & node = *PQNodes_[i];
@@ -263,9 +259,8 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowNR::updateBusV()
+   void PowerFlowNR::updateNodeV()
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : updateBusV." << std::endl);
       // Get voltages on all busses.
       // Done like this with a copy because eventually we'll include PV busses too.
       UblasVectorRange<double>(Vr_, rPQ_) = UblasVectorRange<double>(x_, rx0_);
@@ -276,11 +271,8 @@ namespace SmartGridToolbox
 
    void PowerFlowNR::updateF()
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : updateF." << std::endl);
       UblasVectorRange<double> x0{x_, rx0_};
       UblasVectorRange<double> x1{x_, rx1_};
-
-      updateBusV();
 
       UblasVector<double> M2 = element_prod(x0, x0) + element_prod(x1, x1);
 
@@ -298,11 +290,8 @@ namespace SmartGridToolbox
 
    void PowerFlowNR::updateJ()
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : updateJ." << std::endl);
       UblasVectorRange<double> x0{x_, rx0_};
       UblasVectorRange<double> x1{x_, rx1_};
-
-      updateBusV();
 
       UblasVector<double> M2PQ = element_prod(x0, x0) + element_prod(x1, x1);
       UblasVector<double> M4PQ = element_prod(M2PQ, M2PQ);
@@ -329,18 +318,39 @@ namespace SmartGridToolbox
       bool wasSuccessful = false;
       for (int i = 0; i < maxiter; ++ i)
       {
+         SGT_DEBUG(debug() << "\tIteration = " << i << std::endl);
+         updateNodeV();
          updateF();
          updateJ();
          UblasVector<double> rhs;
-         KLUSolve(J_, f_, rhs);
+
+         SGT_DEBUG(debug() << "\tOld x_ = " << std::setw(8) << x_ << std::endl);
+         SGT_DEBUG
+         (
+            debug() << "\tJ_ =" << std::endl;
+            for (int i = 0; i < nVar_; ++i)
+            {
+            debug() << "\t\t" << std::setw(8) << row(J_, i) << std::endl; 
+            }
+         );
+         SGT_DEBUG(debug() << "\tf_ = " << std::setw(8) << f_ << std::endl);
+
+         bool ok = KLUSolve(J_, f_, rhs);
+         SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", rhs = " << std::setw(8) << rhs << std::endl);
+         if (!ok)
+         {
+            error() << "KLUSolve failed." << std::endl;
+            abort();
+         }
          x_ = x_ - rhs;
+         SGT_DEBUG(debug() << "\tNew x = " << std::setw(8) << x_ << std::endl);
          UblasVector<double> test = prod(J_, x_) - f_;
          UblasVector<double> f2 = element_prod(f_, f_);
          double err = *std::max_element(f2.begin(), f2.end());
-         SGT_DEBUG(debug() << "Error at iteration " << i << " = " << err << std::endl);
+         SGT_DEBUG(debug() << "\tError = " << err << std::endl);
          if (err <= tol)
          {
-            SGT_DEBUG(debug() << "Success at iteration " << i << ". Error = " << err << std::endl);
+            SGT_DEBUG(debug() << "\tSuccess at iteration " << i << ". Error = " << err << std::endl);
             wasSuccessful = true;
             break;
          }
@@ -355,6 +365,7 @@ namespace SmartGridToolbox
          }
          // TODO: set power e.g. on slack bus. Set current injections. Set impedances to ground. 
       }
+      SGT_DEBUG(debug() << "PowerFlowNR : solve finished. Was successful = " << wasSuccessful << std::endl);
       return wasSuccessful;
    }
 

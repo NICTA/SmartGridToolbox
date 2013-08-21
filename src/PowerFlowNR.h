@@ -97,7 +97,7 @@ namespace SmartGridToolbox
 
       private:
          void initx();
-         void updateBusV();
+         void updateNodeV();
          void updateF();
          void updateJ();
 
