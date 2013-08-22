@@ -588,6 +588,52 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+DOXYGEN_PAPER_SIZE
+DX_COND_latex_FALSE
+DX_COND_latex_TRUE
+DX_COND_pdf_FALSE
+DX_COND_pdf_TRUE
+DX_PDFLATEX
+DX_FLAG_pdf
+DX_COND_ps_FALSE
+DX_COND_ps_TRUE
+DX_EGREP
+DX_DVIPS
+DX_MAKEINDEX
+DX_LATEX
+DX_FLAG_ps
+DX_COND_html_FALSE
+DX_COND_html_TRUE
+DX_FLAG_html
+DX_COND_chi_FALSE
+DX_COND_chi_TRUE
+DX_FLAG_chi
+DX_COND_chm_FALSE
+DX_COND_chm_TRUE
+DX_HHC
+DX_FLAG_chm
+DX_COND_xml_FALSE
+DX_COND_xml_TRUE
+DX_FLAG_xml
+DX_COND_rtf_FALSE
+DX_COND_rtf_TRUE
+DX_FLAG_rtf
+DX_COND_man_FALSE
+DX_COND_man_TRUE
+DX_FLAG_man
+DX_COND_dot_FALSE
+DX_COND_dot_TRUE
+DX_DOT
+DX_FLAG_dot
+DX_COND_doc_FALSE
+DX_COND_doc_TRUE
+DX_PERL
+DX_DOXYGEN
+DX_FLAG_doc
+DX_ENV
+DX_DOCDIR
+DX_CONFIG
+DX_PROJECT
 AM_CXXFLAGS
 RANLIB
 am__fastdepCXX_FALSE
@@ -613,9 +659,6 @@ CPPFLAGS
 LDFLAGS
 CFLAGS
 CC
-HAVE_DOXYGEN_FALSE
-HAVE_DOXYGEN_TRUE
-DOXYGEN
 AM_BACKSLASH
 AM_DEFAULT_VERBOSITY
 AM_DEFAULT_V
@@ -686,6 +729,16 @@ ac_user_opts='
 enable_option_checking
 enable_silent_rules
 enable_dependency_tracking
+enable_doxygen_doc
+enable_doxygen_dot
+enable_doxygen_man
+enable_doxygen_rtf
+enable_doxygen_xml
+enable_doxygen_chm
+enable_doxygen_chi
+enable_doxygen_html
+enable_doxygen_ps
+enable_doxygen_pdf
 '
       ac_precious_vars='build_alias
 host_alias
@@ -697,7 +750,8 @@ LIBS
 CPPFLAGS
 CXX
 CXXFLAGS
-CCC'
+CCC
+DOXYGEN_PAPER_SIZE'
 
 
 # Initialize some variables set by options.
@@ -1319,6 +1373,17 @@ Optional Features:
                           do not reject slow dependency extractors
   --disable-dependency-tracking
                           speeds up one-time build
+  --disable-doxygen-doc   don't generate any doxygen documentation
+  --enable-doxygen-dot    generate graphics for doxygen documentation
+  --enable-doxygen-man    generate doxygen manual pages
+  --enable-doxygen-rtf    generate doxygen RTF documentation
+  --enable-doxygen-xml    generate doxygen XML documentation
+  --enable-doxygen-chm    generate doxygen compressed HTML help documentation
+  --enable-doxygen-chi    generate doxygen seperate compressed HTML help index
+                          file
+  --disable-doxygen-html  don't generate doxygen plain HTML documentation
+  --enable-doxygen-ps     generate doxygen PostScript documentation
+  --enable-doxygen-pdf    generate doxygen PDF documentation
 
 Some influential environment variables:
   CC          C compiler command
@@ -1330,6 +1395,8 @@ Some influential environment variables:
               you have headers in a nonstandard directory <include dir>
   CXX         C++ compiler command
   CXXFLAGS    C++ compiler flags
+  DOXYGEN_PAPER_SIZE
+              a4wide (default), a4, letter, legal or executive
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -2405,64 +2472,390 @@ am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
 
 
 
-for ac_prog in doxygen
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_DOXYGEN+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test -n "$DOXYGEN"; then
-  ac_cv_prog_DOXYGEN="$DOXYGEN" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_DOXYGEN="$ac_prog"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
+# ============================================================================
+#  http://www.gnu.org/software/autoconf-archive/ax_cxx_compile_stdcxx_11.html
+# ============================================================================
+#
+# SYNOPSIS
+#
+#   AX_CXX_COMPILE_STDCXX_11([ext|noext])
+#
+# DESCRIPTION
+#
+#   Check for baseline language coverage in the compiler for the C++11
+#   standard; if necessary, add switches to CXXFLAGS to enable support.
+#   Errors out if no mode that supports C++11 baseline syntax can be found.
+#   The argument, if specified, indicates whether you insist on an extended
+#   mode (e.g. -std=gnu++11) or a strict conformance mode (e.g. -std=c++11).
+#   If neither is specified, you get whatever works, with preference for an
+#   extended mode.
+#
+# LICENSE
+#
+#   Copyright (c) 2008 Benjamin Kosnik <bkoz@redhat.com>
+#   Copyright (c) 2012 Zack Weinberg <zackw@panix.com>
+#
+#   Copying and distribution of this file, with or without modification, are
+#   permitted in any medium without royalty provided the copyright notice
+#   and this notice are preserved. This file is offered as-is, without any
+#   warranty.
 
-fi
-fi
-DOXYGEN=$ac_cv_prog_DOXYGEN
-if test -n "$DOXYGEN"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DOXYGEN" >&5
-$as_echo "$DOXYGEN" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
+#serial 1
 
 
-  test -n "$DOXYGEN" && break
-done
 
-if test -z "$DOXYGEN";
-   then { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Doxygen not found - continuing without Doxygen support" >&5
-$as_echo "$as_me: WARNING: Doxygen not found - continuing without Doxygen support" >&2;}
-fi
 
- if test -n "$DOXYGEN"; then
-  HAVE_DOXYGEN_TRUE=
-  HAVE_DOXYGEN_FALSE='#'
-else
-  HAVE_DOXYGEN_TRUE='#'
-  HAVE_DOXYGEN_FALSE=
-fi
-if test -z "$HAVE_DOXYGEN_TRUE"; then :
-  ac_config_files="$ac_config_files docs/Doxyfile"
 
-fi
+# ===========================================================================
+#      http://www.gnu.org/software/autoconf-archive/ax_prog_doxygen.html
+# ===========================================================================
+#
+# SYNOPSIS
+#
+#   DX_INIT_DOXYGEN(PROJECT-NAME, DOXYFILE-PATH, [OUTPUT-DIR])
+#   DX_DOXYGEN_FEATURE(ON|OFF)
+#   DX_DOT_FEATURE(ON|OFF)
+#   DX_HTML_FEATURE(ON|OFF)
+#   DX_CHM_FEATURE(ON|OFF)
+#   DX_CHI_FEATURE(ON|OFF)
+#   DX_MAN_FEATURE(ON|OFF)
+#   DX_RTF_FEATURE(ON|OFF)
+#   DX_XML_FEATURE(ON|OFF)
+#   DX_PDF_FEATURE(ON|OFF)
+#   DX_PS_FEATURE(ON|OFF)
+#
+# DESCRIPTION
+#
+#   The DX_*_FEATURE macros control the default setting for the given
+#   Doxygen feature. Supported features are 'DOXYGEN' itself, 'DOT' for
+#   generating graphics, 'HTML' for plain HTML, 'CHM' for compressed HTML
+#   help (for MS users), 'CHI' for generating a seperate .chi file by the
+#   .chm file, and 'MAN', 'RTF', 'XML', 'PDF' and 'PS' for the appropriate
+#   output formats. The environment variable DOXYGEN_PAPER_SIZE may be
+#   specified to override the default 'a4wide' paper size.
+#
+#   By default, HTML, PDF and PS documentation is generated as this seems to
+#   be the most popular and portable combination. MAN pages created by
+#   Doxygen are usually problematic, though by picking an appropriate subset
+#   and doing some massaging they might be better than nothing. CHM and RTF
+#   are specific for MS (note that you can't generate both HTML and CHM at
+#   the same time). The XML is rather useless unless you apply specialized
+#   post-processing to it.
+#
+#   The macros mainly control the default state of the feature. The use can
+#   override the default by specifying --enable or --disable. The macros
+#   ensure that contradictory flags are not given (e.g.,
+#   --enable-doxygen-html and --enable-doxygen-chm,
+#   --enable-doxygen-anything with --disable-doxygen, etc.) Finally, each
+#   feature will be automatically disabled (with a warning) if the required
+#   programs are missing.
+#
+#   Once all the feature defaults have been specified, call DX_INIT_DOXYGEN
+#   with the following parameters: a one-word name for the project for use
+#   as a filename base etc., an optional configuration file name (the
+#   default is 'Doxyfile', the same as Doxygen's default), and an optional
+#   output directory name (the default is 'doxygen-doc').
+#
+#   Automake Support
+#
+#   The following is a template aminclude.am file for use with Automake.
+#   Make targets and variables values are controlled by the various
+#   DX_COND_* conditionals set by autoconf.
+#
+#   The provided targets are:
+#
+#     doxygen-doc: Generate all doxygen documentation.
+#
+#     doxygen-run: Run doxygen, which will generate some of the
+#                  documentation (HTML, CHM, CHI, MAN, RTF, XML)
+#                  but will not do the post processing required
+#                  for the rest of it (PS, PDF, and some MAN).
+#
+#     doxygen-man: Rename some doxygen generated man pages.
+#
+#     doxygen-ps:  Generate doxygen PostScript documentation.
+#
+#     doxygen-pdf: Generate doxygen PDF documentation.
+#
+#   Note that by default these are not integrated into the automake targets.
+#   If doxygen is used to generate man pages, you can achieve this
+#   integration by setting man3_MANS to the list of man pages generated and
+#   then adding the dependency:
+#
+#     $(man3_MANS): doxygen-doc
+#
+#   This will cause make to run doxygen and generate all the documentation.
+#
+#   The following variable is intended for use in Makefile.am:
+#
+#     DX_CLEANFILES = everything to clean.
+#
+#   Then add this variable to MOSTLYCLEANFILES.
+#
+#     ----- begin aminclude.am -------------------------------------
+#
+#     ## --------------------------------- ##
+#     ## Format-independent Doxygen rules. ##
+#     ## --------------------------------- ##
+#
+#     if DX_COND_doc
+#
+#     ## ------------------------------- ##
+#     ## Rules specific for HTML output. ##
+#     ## ------------------------------- ##
+#
+#     if DX_COND_html
+#
+#     DX_CLEAN_HTML = @DX_DOCDIR@/html
+#
+#     endif DX_COND_html
+#
+#     ## ------------------------------ ##
+#     ## Rules specific for CHM output. ##
+#     ## ------------------------------ ##
+#
+#     if DX_COND_chm
+#
+#     DX_CLEAN_CHM = @DX_DOCDIR@/chm
+#
+#     if DX_COND_chi
+#
+#     DX_CLEAN_CHI = @DX_DOCDIR@/@PACKAGE@.chi
+#
+#     endif DX_COND_chi
+#
+#     endif DX_COND_chm
+#
+#     ## ------------------------------ ##
+#     ## Rules specific for MAN output. ##
+#     ## ------------------------------ ##
+#
+#     if DX_COND_man
+#
+#     DX_CLEAN_MAN = @DX_DOCDIR@/man
+#
+#     endif DX_COND_man
+#
+#     ## ------------------------------ ##
+#     ## Rules specific for RTF output. ##
+#     ## ------------------------------ ##
+#
+#     if DX_COND_rtf
+#
+#     DX_CLEAN_RTF = @DX_DOCDIR@/rtf
+#
+#     endif DX_COND_rtf
+#
+#     ## ------------------------------ ##
+#     ## Rules specific for XML output. ##
+#     ## ------------------------------ ##
+#
+#     if DX_COND_xml
+#
+#     DX_CLEAN_XML = @DX_DOCDIR@/xml
+#
+#     endif DX_COND_xml
+#
+#     ## ----------------------------- ##
+#     ## Rules specific for PS output. ##
+#     ## ----------------------------- ##
+#
+#     if DX_COND_ps
+#
+#     DX_CLEAN_PS = @DX_DOCDIR@/@PACKAGE@.ps
+#
+#     DX_PS_GOAL = doxygen-ps
+#
+#     doxygen-ps: @DX_DOCDIR@/@PACKAGE@.ps
+#
+#     @DX_DOCDIR@/@PACKAGE@.ps: @DX_DOCDIR@/@PACKAGE@.tag
+#         cd @DX_DOCDIR@/latex; \
+#         rm -f *.aux *.toc *.idx *.ind *.ilg *.log *.out; \
+#         $(DX_LATEX) refman.tex; \
+#         $(MAKEINDEX_PATH) refman.idx; \
+#         $(DX_LATEX) refman.tex; \
+#         countdown=5; \
+#         while $(DX_EGREP) 'Rerun (LaTeX|to get cross-references right)' \
+#                           refman.log > /dev/null 2>&1 \
+#            && test $$countdown -gt 0; do \
+#             $(DX_LATEX) refman.tex; \
+#             countdown=`expr $$countdown - 1`; \
+#         done; \
+#         $(DX_DVIPS) -o ../@PACKAGE@.ps refman.dvi
+#
+#     endif DX_COND_ps
+#
+#     ## ------------------------------ ##
+#     ## Rules specific for PDF output. ##
+#     ## ------------------------------ ##
+#
+#     if DX_COND_pdf
+#
+#     DX_CLEAN_PDF = @DX_DOCDIR@/@PACKAGE@.pdf
+#
+#     DX_PDF_GOAL = doxygen-pdf
+#
+#     doxygen-pdf: @DX_DOCDIR@/@PACKAGE@.pdf
+#
+#     @DX_DOCDIR@/@PACKAGE@.pdf: @DX_DOCDIR@/@PACKAGE@.tag
+#         cd @DX_DOCDIR@/latex; \
+#         rm -f *.aux *.toc *.idx *.ind *.ilg *.log *.out; \
+#         $(DX_PDFLATEX) refman.tex; \
+#         $(DX_MAKEINDEX) refman.idx; \
+#         $(DX_PDFLATEX) refman.tex; \
+#         countdown=5; \
+#         while $(DX_EGREP) 'Rerun (LaTeX|to get cross-references right)' \
+#                           refman.log > /dev/null 2>&1 \
+#            && test $$countdown -gt 0; do \
+#             $(DX_PDFLATEX) refman.tex; \
+#             countdown=`expr $$countdown - 1`; \
+#         done; \
+#         mv refman.pdf ../@PACKAGE@.pdf
+#
+#     endif DX_COND_pdf
+#
+#     ## ------------------------------------------------- ##
+#     ## Rules specific for LaTeX (shared for PS and PDF). ##
+#     ## ------------------------------------------------- ##
+#
+#     if DX_COND_latex
+#
+#     DX_CLEAN_LATEX = @DX_DOCDIR@/latex
+#
+#     endif DX_COND_latex
+#
+#     .PHONY: doxygen-run doxygen-doc $(DX_PS_GOAL) $(DX_PDF_GOAL)
+#
+#     .INTERMEDIATE: doxygen-run $(DX_PS_GOAL) $(DX_PDF_GOAL)
+#
+#     doxygen-run: @DX_DOCDIR@/@PACKAGE@.tag
+#
+#     doxygen-doc: doxygen-run $(DX_PS_GOAL) $(DX_PDF_GOAL)
+#
+#     @DX_DOCDIR@/@PACKAGE@.tag: $(DX_CONFIG) $(pkginclude_HEADERS)
+#         rm -rf @DX_DOCDIR@
+#         $(DX_ENV) $(DX_DOXYGEN) $(srcdir)/$(DX_CONFIG)
+#
+#     DX_CLEANFILES = \
+#         @DX_DOCDIR@/@PACKAGE@.tag \
+#         -r \
+#         $(DX_CLEAN_HTML) \
+#         $(DX_CLEAN_CHM) \
+#         $(DX_CLEAN_CHI) \
+#         $(DX_CLEAN_MAN) \
+#         $(DX_CLEAN_RTF) \
+#         $(DX_CLEAN_XML) \
+#         $(DX_CLEAN_PS) \
+#         $(DX_CLEAN_PDF) \
+#         $(DX_CLEAN_LATEX)
+#
+#     endif DX_COND_doc
+#
+#     ----- end aminclude.am ---------------------------------------
+#
+# LICENSE
+#
+#   Copyright (c) 2009 Oren Ben-Kiki <oren@ben-kiki.org>
+#
+#   Copying and distribution of this file, with or without modification, are
+#   permitted in any medium without royalty provided the copyright notice
+#   and this notice are preserved. This file is offered as-is, without any
+#   warranty.
+
+#serial 12
+
+## ----------##
+## Defaults. ##
+## ----------##
+
+DX_ENV=""
+
+
+
+
+
+
+
+
+
+
+
+## --------------- ##
+## Private macros. ##
+## --------------- ##
+
+# DX_ENV_APPEND(VARIABLE, VALUE)
+# ------------------------------
+# Append VARIABLE="VALUE" to DX_ENV for invoking doxygen.
+
+
+# DX_DIRNAME_EXPR
+# ---------------
+# Expand into a shell expression prints the directory part of a path.
+
+
+# DX_IF_FEATURE(FEATURE, IF-ON, IF-OFF)
+# -------------------------------------
+# Expands according to the M4 (static) status of the feature.
+
+
+# DX_REQUIRE_PROG(VARIABLE, PROGRAM)
+# ----------------------------------
+# Require the specified program to be found for the DX_CURRENT_FEATURE to work.
+
+
+# DX_TEST_FEATURE(FEATURE)
+# ------------------------
+# Expand to a shell expression testing whether the feature is active.
+
+
+# DX_CHECK_DEPEND(REQUIRED_FEATURE, REQUIRED_STATE)
+# -------------------------------------------------
+# Verify that a required features has the right state before trying to turn on
+# the DX_CURRENT_FEATURE.
+
+
+# DX_CLEAR_DEPEND(FEATURE, REQUIRED_FEATURE, REQUIRED_STATE)
+# ----------------------------------------------------------
+# Turn off the DX_CURRENT_FEATURE if the required feature is off.
+
+
+# DX_FEATURE_ARG(FEATURE, DESCRIPTION,
+#                CHECK_DEPEND, CLEAR_DEPEND,
+#                REQUIRE, DO-IF-ON, DO-IF-OFF)
+# --------------------------------------------
+# Parse the command-line option controlling a feature. CHECK_DEPEND is called
+# if the user explicitly turns the feature on (and invokes DX_CHECK_DEPEND),
+# otherwise CLEAR_DEPEND is called to turn off the default state if a required
+# feature is disabled (using DX_CLEAR_DEPEND). REQUIRE performs additional
+# requirement tests (DX_REQUIRE_PROG). Finally, an automake flag is set and
+# DO-IF-ON or DO-IF-OFF are called according to the final state of the feature.
+
+
+## -------------- ##
+## Public macros. ##
+## -------------- ##
+
+# DX_XXX_FEATURE(DEFAULT_STATE)
+# -----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+# DX_INIT_DOXYGEN(PROJECT, [CONFIG-FILE], [OUTPUT-DOC-DIR])
+# ---------------------------------------------------------
+# PROJECT also serves as the base name for the documentation files.
+# The default CONFIG-FILE is "Doxyfile" and OUTPUT-DOC-DIR is "doxygen-doc".
+
+
 
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -3829,6 +4222,391 @@ else
 fi
 
 
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+if test -z "$CXX"; then
+  if test -n "$CCC"; then
+    CXX=$CCC
+  else
+    if test -n "$ac_tool_prefix"; then
+  for ac_prog in g++ c++ gpp aCC CC cxx cc++ cl.exe FCC KCC RCC xlC_r xlC
+  do
+    # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
+set dummy $ac_tool_prefix$ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_CXX+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$CXX"; then
+  ac_cv_prog_CXX="$CXX" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_CXX="$ac_tool_prefix$ac_prog"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+CXX=$ac_cv_prog_CXX
+if test -n "$CXX"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $CXX" >&5
+$as_echo "$CXX" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+    test -n "$CXX" && break
+  done
+fi
+if test -z "$CXX"; then
+  ac_ct_CXX=$CXX
+  for ac_prog in g++ c++ gpp aCC CC cxx cc++ cl.exe FCC KCC RCC xlC_r xlC
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_ac_ct_CXX+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$ac_ct_CXX"; then
+  ac_cv_prog_ac_ct_CXX="$ac_ct_CXX" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_ac_ct_CXX="$ac_prog"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+ac_ct_CXX=$ac_cv_prog_ac_ct_CXX
+if test -n "$ac_ct_CXX"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_ct_CXX" >&5
+$as_echo "$ac_ct_CXX" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$ac_ct_CXX" && break
+done
+
+  if test "x$ac_ct_CXX" = x; then
+    CXX="g++"
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    CXX=$ac_ct_CXX
+  fi
+fi
+
+  fi
+fi
+# Provide some information about the compiler.
+$as_echo "$as_me:${as_lineno-$LINENO}: checking for C++ compiler version" >&5
+set X $ac_compile
+ac_compiler=$2
+for ac_option in --version -v -V -qversion; do
+  { { ac_try="$ac_compiler $ac_option >&5"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_compiler $ac_option >&5") 2>conftest.err
+  ac_status=$?
+  if test -s conftest.err; then
+    sed '10a\
+... rest of stderr output deleted ...
+         10q' conftest.err >conftest.er1
+    cat conftest.er1 >&5
+  fi
+  rm -f conftest.er1 conftest.err
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+done
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether we are using the GNU C++ compiler" >&5
+$as_echo_n "checking whether we are using the GNU C++ compiler... " >&6; }
+if ${ac_cv_cxx_compiler_gnu+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+#ifndef __GNUC__
+       choke me
+#endif
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ac_compiler_gnu=yes
+else
+  ac_compiler_gnu=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+ac_cv_cxx_compiler_gnu=$ac_compiler_gnu
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_cxx_compiler_gnu" >&5
+$as_echo "$ac_cv_cxx_compiler_gnu" >&6; }
+if test $ac_compiler_gnu = yes; then
+  GXX=yes
+else
+  GXX=
+fi
+ac_test_CXXFLAGS=${CXXFLAGS+set}
+ac_save_CXXFLAGS=$CXXFLAGS
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CXX accepts -g" >&5
+$as_echo_n "checking whether $CXX accepts -g... " >&6; }
+if ${ac_cv_prog_cxx_g+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_save_cxx_werror_flag=$ac_cxx_werror_flag
+   ac_cxx_werror_flag=yes
+   ac_cv_prog_cxx_g=no
+   CXXFLAGS="-g"
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ac_cv_prog_cxx_g=yes
+else
+  CXXFLAGS=""
+      cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+
+else
+  ac_cxx_werror_flag=$ac_save_cxx_werror_flag
+	 CXXFLAGS="-g"
+	 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ac_cv_prog_cxx_g=yes
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+   ac_cxx_werror_flag=$ac_save_cxx_werror_flag
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_cxx_g" >&5
+$as_echo "$ac_cv_prog_cxx_g" >&6; }
+if test "$ac_test_CXXFLAGS" = set; then
+  CXXFLAGS=$ac_save_CXXFLAGS
+elif test $ac_cv_prog_cxx_g = yes; then
+  if test "$GXX" = yes; then
+    CXXFLAGS="-g -O2"
+  else
+    CXXFLAGS="-g"
+  fi
+else
+  if test "$GXX" = yes; then
+    CXXFLAGS="-O2"
+  else
+    CXXFLAGS=
+  fi
+fi
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+depcc="$CXX"  am_compiler_list=
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking dependency style of $depcc" >&5
+$as_echo_n "checking dependency style of $depcc... " >&6; }
+if ${am_cv_CXX_dependencies_compiler_type+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -z "$AMDEP_TRUE" && test -f "$am_depcomp"; then
+  # We make a subdir and do the tests there.  Otherwise we can end up
+  # making bogus files that we don't know about and never remove.  For
+  # instance it was reported that on HP-UX the gcc test will end up
+  # making a dummy file named 'D' -- because '-MD' means "put the output
+  # in D".
+  rm -rf conftest.dir
+  mkdir conftest.dir
+  # Copy depcomp to subdir because otherwise we won't find it if we're
+  # using a relative directory.
+  cp "$am_depcomp" conftest.dir
+  cd conftest.dir
+  # We will build objects and dependencies in a subdirectory because
+  # it helps to detect inapplicable dependency modes.  For instance
+  # both Tru64's cc and ICC support -MD to output dependencies as a
+  # side effect of compilation, but ICC will put the dependencies in
+  # the current directory while Tru64 will put them in the object
+  # directory.
+  mkdir sub
+
+  am_cv_CXX_dependencies_compiler_type=none
+  if test "$am_compiler_list" = ""; then
+     am_compiler_list=`sed -n 's/^#*\([a-zA-Z0-9]*\))$/\1/p' < ./depcomp`
+  fi
+  am__universal=false
+  case " $depcc " in #(
+     *\ -arch\ *\ -arch\ *) am__universal=true ;;
+     esac
+
+  for depmode in $am_compiler_list; do
+    # Setup a source with many dependencies, because some compilers
+    # like to wrap large dependency lists on column 80 (with \), and
+    # we should not choose a depcomp mode which is confused by this.
+    #
+    # We need to recreate these files for each test, as the compiler may
+    # overwrite some of them when testing with obscure command lines.
+    # This happens at least with the AIX C compiler.
+    : > sub/conftest.c
+    for i in 1 2 3 4 5 6; do
+      echo '#include "conftst'$i'.h"' >> sub/conftest.c
+      # Using ": > sub/conftst$i.h" creates only sub/conftst1.h with
+      # Solaris 10 /bin/sh.
+      echo '/* dummy */' > sub/conftst$i.h
+    done
+    echo "${am__include} ${am__quote}sub/conftest.Po${am__quote}" > confmf
+
+    # We check with '-c' and '-o' for the sake of the "dashmstdout"
+    # mode.  It turns out that the SunPro C++ compiler does not properly
+    # handle '-M -o', and we need to detect this.  Also, some Intel
+    # versions had trouble with output in subdirs.
+    am__obj=sub/conftest.${OBJEXT-o}
+    am__minus_obj="-o $am__obj"
+    case $depmode in
+    gcc)
+      # This depmode causes a compiler race in universal mode.
+      test "$am__universal" = false || continue
+      ;;
+    nosideeffect)
+      # After this tag, mechanisms are not by side-effect, so they'll
+      # only be used when explicitly requested.
+      if test "x$enable_dependency_tracking" = xyes; then
+	continue
+      else
+	break
+      fi
+      ;;
+    msvc7 | msvc7msys | msvisualcpp | msvcmsys)
+      # This compiler won't grok '-c -o', but also, the minuso test has
+      # not run yet.  These depmodes are late enough in the game, and
+      # so weak that their functioning should not be impacted.
+      am__obj=conftest.${OBJEXT-o}
+      am__minus_obj=
+      ;;
+    none) break ;;
+    esac
+    if depmode=$depmode \
+       source=sub/conftest.c object=$am__obj \
+       depfile=sub/conftest.Po tmpdepfile=sub/conftest.TPo \
+       $SHELL ./depcomp $depcc -c $am__minus_obj sub/conftest.c \
+         >/dev/null 2>conftest.err &&
+       grep sub/conftst1.h sub/conftest.Po > /dev/null 2>&1 &&
+       grep sub/conftst6.h sub/conftest.Po > /dev/null 2>&1 &&
+       grep $am__obj sub/conftest.Po > /dev/null 2>&1 &&
+       ${MAKE-make} -s -f confmf > /dev/null 2>&1; then
+      # icc doesn't choke on unknown options, it will just issue warnings
+      # or remarks (even with -Werror).  So we grep stderr for any message
+      # that says an option was ignored or not supported.
+      # When given -MP, icc 7.0 and 7.1 complain thusly:
+      #   icc: Command line warning: ignoring option '-M'; no argument required
+      # The diagnosis changed in icc 8.0:
+      #   icc: Command line remark: option '-MP' not supported
+      if (grep 'ignoring option' conftest.err ||
+          grep 'not supported' conftest.err) >/dev/null 2>&1; then :; else
+        am_cv_CXX_dependencies_compiler_type=$depmode
+        break
+      fi
+    fi
+  done
+
+  cd ..
+  rm -rf conftest.dir
+else
+  am_cv_CXX_dependencies_compiler_type=none
+fi
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $am_cv_CXX_dependencies_compiler_type" >&5
+$as_echo "$am_cv_CXX_dependencies_compiler_type" >&6; }
+CXXDEPMODE=depmode=$am_cv_CXX_dependencies_compiler_type
+
+ if
+  test "x$enable_dependency_tracking" != xno \
+  && test "$am_cv_CXX_dependencies_compiler_type" = gcc3; then
+  am__fastdepCXX_TRUE=
+  am__fastdepCXX_FALSE='#'
+else
+  am__fastdepCXX_TRUE='#'
+  am__fastdepCXX_FALSE=
+fi
+
+
 if test -n "$ac_tool_prefix"; then
   # Extract the first word of "${ac_tool_prefix}ranlib", so it can be a program name with args.
 set dummy ${ac_tool_prefix}ranlib; ac_word=$2
@@ -3926,40 +4704,6 @@ ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-# ============================================================================
-#  http://www.gnu.org/software/autoconf-archive/ax_cxx_compile_stdcxx_11.html
-# ============================================================================
-#
-# SYNOPSIS
-#
-#   AX_CXX_COMPILE_STDCXX_11([ext|noext])
-#
-# DESCRIPTION
-#
-#   Check for baseline language coverage in the compiler for the C++11
-#   standard; if necessary, add switches to CXXFLAGS to enable support.
-#   Errors out if no mode that supports C++11 baseline syntax can be found.
-#   The argument, if specified, indicates whether you insist on an extended
-#   mode (e.g. -std=gnu++11) or a strict conformance mode (e.g. -std=c++11).
-#   If neither is specified, you get whatever works, with preference for an
-#   extended mode.
-#
-# LICENSE
-#
-#   Copyright (c) 2008 Benjamin Kosnik <bkoz@redhat.com>
-#   Copyright (c) 2012 Zack Weinberg <zackw@panix.com>
-#
-#   Copying and distribution of this file, with or without modification, are
-#   permitted in any medium without royalty provided the copyright notice
-#   and this notice are preserved. This file is offered as-is, without any
-#   warranty.
-
-#serial 1
-
-
-
-
 
 
       ac_success=no
@@ -4102,9 +4846,1848 @@ $as_echo "$ac_res" >&6; }
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+# Files:
+DX_PROJECT=SmartGridToolbox
+
+DX_CONFIG=Doxyfile
+
+DX_DOCDIR=doxygen-doc
+
+
+# Environment variables used inside doxygen.cfg:
+DX_ENV="$DX_ENV SRCDIR='$srcdir'"
+
+DX_ENV="$DX_ENV PROJECT='$DX_PROJECT'"
+
+DX_ENV="$DX_ENV DOCDIR='$DX_DOCDIR'"
+
+DX_ENV="$DX_ENV VERSION='$PACKAGE_VERSION'"
+
+
+# Doxygen itself:
+
+
+
+    # Check whether --enable-doxygen-doc was given.
+if test "${enable_doxygen_doc+set}" = set; then :
+  enableval=$enable_doxygen_doc;
+case "$enableval" in
+#(
+y|Y|yes|Yes|YES)
+    DX_FLAG_doc=1
+
+
+;; #(
+n|N|no|No|NO)
+    DX_FLAG_doc=0
+
+;; #(
+*)
+    as_fn_error $? "invalid value '$enableval' given to doxygen-doc" "$LINENO" 5
+;;
+esac
+
+else
+
+DX_FLAG_doc=1
+
+
+
+fi
+
+if test "$DX_FLAG_doc" = 1; then
+
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}doxygen", so it can be a program name with args.
+set dummy ${ac_tool_prefix}doxygen; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_DX_DOXYGEN+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $DX_DOXYGEN in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_DX_DOXYGEN="$DX_DOXYGEN" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_DX_DOXYGEN="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+DX_DOXYGEN=$ac_cv_path_DX_DOXYGEN
+if test -n "$DX_DOXYGEN"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DX_DOXYGEN" >&5
+$as_echo "$DX_DOXYGEN" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_DX_DOXYGEN"; then
+  ac_pt_DX_DOXYGEN=$DX_DOXYGEN
+  # Extract the first word of "doxygen", so it can be a program name with args.
+set dummy doxygen; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_DX_DOXYGEN+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_DX_DOXYGEN in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_DX_DOXYGEN="$ac_pt_DX_DOXYGEN" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_DX_DOXYGEN="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_DX_DOXYGEN=$ac_cv_path_ac_pt_DX_DOXYGEN
+if test -n "$ac_pt_DX_DOXYGEN"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_DX_DOXYGEN" >&5
+$as_echo "$ac_pt_DX_DOXYGEN" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_DX_DOXYGEN" = x; then
+    DX_DOXYGEN=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    DX_DOXYGEN=$ac_pt_DX_DOXYGEN
+  fi
+else
+  DX_DOXYGEN="$ac_cv_path_DX_DOXYGEN"
+fi
+
+if test "$DX_FLAG_doc$DX_DOXYGEN" = 1; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: doxygen not found - will not generate any doxygen documentation" >&5
+$as_echo "$as_me: WARNING: doxygen not found - will not generate any doxygen documentation" >&2;}
+    DX_FLAG_doc=0
+
+fi
+
+
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}perl", so it can be a program name with args.
+set dummy ${ac_tool_prefix}perl; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_DX_PERL+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $DX_PERL in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_DX_PERL="$DX_PERL" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_DX_PERL="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+DX_PERL=$ac_cv_path_DX_PERL
+if test -n "$DX_PERL"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DX_PERL" >&5
+$as_echo "$DX_PERL" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_DX_PERL"; then
+  ac_pt_DX_PERL=$DX_PERL
+  # Extract the first word of "perl", so it can be a program name with args.
+set dummy perl; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_DX_PERL+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_DX_PERL in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_DX_PERL="$ac_pt_DX_PERL" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_DX_PERL="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_DX_PERL=$ac_cv_path_ac_pt_DX_PERL
+if test -n "$ac_pt_DX_PERL"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_DX_PERL" >&5
+$as_echo "$ac_pt_DX_PERL" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_DX_PERL" = x; then
+    DX_PERL=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    DX_PERL=$ac_pt_DX_PERL
+  fi
+else
+  DX_PERL="$ac_cv_path_DX_PERL"
+fi
+
+if test "$DX_FLAG_doc$DX_PERL" = 1; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: perl not found - will not generate any doxygen documentation" >&5
+$as_echo "$as_me: WARNING: perl not found - will not generate any doxygen documentation" >&2;}
+    DX_FLAG_doc=0
+
+fi
+
+    :
+fi
+ if test "$DX_FLAG_doc" = 1; then
+  DX_COND_doc_TRUE=
+  DX_COND_doc_FALSE='#'
+else
+  DX_COND_doc_TRUE='#'
+  DX_COND_doc_FALSE=
+fi
+
+if test "$DX_FLAG_doc" = 1; then
+    DX_ENV="$DX_ENV PERL_PATH='$DX_PERL'"
+
+    :
+else
+
+    :
+fi
+
+
+# Dot for graphics:
+
+
+
+    # Check whether --enable-doxygen-dot was given.
+if test "${enable_doxygen_dot+set}" = set; then :
+  enableval=$enable_doxygen_dot;
+case "$enableval" in
+#(
+y|Y|yes|Yes|YES)
+    DX_FLAG_dot=1
+
+
+test "$DX_FLAG_doc" = "1" \
+|| as_fn_error $? "doxygen-dot requires doxygen-dot" "$LINENO" 5
+
+;; #(
+n|N|no|No|NO)
+    DX_FLAG_dot=0
+
+;; #(
+*)
+    as_fn_error $? "invalid value '$enableval' given to doxygen-dot" "$LINENO" 5
+;;
+esac
+
+else
+
+DX_FLAG_dot=0
+
+
+test "$DX_FLAG_doc" = "1" || DX_FLAG_dot=0
+
+
+
+fi
+
+if test "$DX_FLAG_dot" = 1; then
+
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}dot", so it can be a program name with args.
+set dummy ${ac_tool_prefix}dot; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_DX_DOT+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $DX_DOT in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_DX_DOT="$DX_DOT" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_DX_DOT="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+DX_DOT=$ac_cv_path_DX_DOT
+if test -n "$DX_DOT"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DX_DOT" >&5
+$as_echo "$DX_DOT" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_DX_DOT"; then
+  ac_pt_DX_DOT=$DX_DOT
+  # Extract the first word of "dot", so it can be a program name with args.
+set dummy dot; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_DX_DOT+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_DX_DOT in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_DX_DOT="$ac_pt_DX_DOT" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_DX_DOT="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_DX_DOT=$ac_cv_path_ac_pt_DX_DOT
+if test -n "$ac_pt_DX_DOT"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_DX_DOT" >&5
+$as_echo "$ac_pt_DX_DOT" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_DX_DOT" = x; then
+    DX_DOT=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    DX_DOT=$ac_pt_DX_DOT
+  fi
+else
+  DX_DOT="$ac_cv_path_DX_DOT"
+fi
+
+if test "$DX_FLAG_dot$DX_DOT" = 1; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: dot not found - will not generate graphics for doxygen documentation" >&5
+$as_echo "$as_me: WARNING: dot not found - will not generate graphics for doxygen documentation" >&2;}
+    DX_FLAG_dot=0
+
+fi
+
+    :
+fi
+ if test "$DX_FLAG_dot" = 1; then
+  DX_COND_dot_TRUE=
+  DX_COND_dot_FALSE='#'
+else
+  DX_COND_dot_TRUE='#'
+  DX_COND_dot_FALSE=
+fi
+
+if test "$DX_FLAG_dot" = 1; then
+    DX_ENV="$DX_ENV HAVE_DOT='YES'"
+
+             DX_ENV="$DX_ENV DOT_PATH='`expr ".$DX_DOT" : '\(\.\)[^/]*$' \| "x$DX_DOT" : 'x\(.*\)/[^/]*$'`'"
+
+    :
+else
+    DX_ENV="$DX_ENV HAVE_DOT='NO'"
+
+    :
+fi
+
+
+# Man pages generation:
+
+
+
+    # Check whether --enable-doxygen-man was given.
+if test "${enable_doxygen_man+set}" = set; then :
+  enableval=$enable_doxygen_man;
+case "$enableval" in
+#(
+y|Y|yes|Yes|YES)
+    DX_FLAG_man=1
+
+
+test "$DX_FLAG_doc" = "1" \
+|| as_fn_error $? "doxygen-man requires doxygen-man" "$LINENO" 5
+
+;; #(
+n|N|no|No|NO)
+    DX_FLAG_man=0
+
+;; #(
+*)
+    as_fn_error $? "invalid value '$enableval' given to doxygen-man" "$LINENO" 5
+;;
+esac
+
+else
+
+DX_FLAG_man=0
+
+
+test "$DX_FLAG_doc" = "1" || DX_FLAG_man=0
+
+
+
+fi
+
+if test "$DX_FLAG_man" = 1; then
+
+    :
+fi
+ if test "$DX_FLAG_man" = 1; then
+  DX_COND_man_TRUE=
+  DX_COND_man_FALSE='#'
+else
+  DX_COND_man_TRUE='#'
+  DX_COND_man_FALSE=
+fi
+
+if test "$DX_FLAG_man" = 1; then
+    DX_ENV="$DX_ENV GENERATE_MAN='YES'"
+
+    :
+else
+    DX_ENV="$DX_ENV GENERATE_MAN='NO'"
+
+    :
+fi
+
+
+# RTF file generation:
+
+
+
+    # Check whether --enable-doxygen-rtf was given.
+if test "${enable_doxygen_rtf+set}" = set; then :
+  enableval=$enable_doxygen_rtf;
+case "$enableval" in
+#(
+y|Y|yes|Yes|YES)
+    DX_FLAG_rtf=1
+
+
+test "$DX_FLAG_doc" = "1" \
+|| as_fn_error $? "doxygen-rtf requires doxygen-rtf" "$LINENO" 5
+
+;; #(
+n|N|no|No|NO)
+    DX_FLAG_rtf=0
+
+;; #(
+*)
+    as_fn_error $? "invalid value '$enableval' given to doxygen-rtf" "$LINENO" 5
+;;
+esac
+
+else
+
+DX_FLAG_rtf=0
+
+
+test "$DX_FLAG_doc" = "1" || DX_FLAG_rtf=0
+
+
+
+fi
+
+if test "$DX_FLAG_rtf" = 1; then
+
+    :
+fi
+ if test "$DX_FLAG_rtf" = 1; then
+  DX_COND_rtf_TRUE=
+  DX_COND_rtf_FALSE='#'
+else
+  DX_COND_rtf_TRUE='#'
+  DX_COND_rtf_FALSE=
+fi
+
+if test "$DX_FLAG_rtf" = 1; then
+    DX_ENV="$DX_ENV GENERATE_RTF='YES'"
+
+    :
+else
+    DX_ENV="$DX_ENV GENERATE_RTF='NO'"
+
+    :
+fi
+
+
+# XML file generation:
+
+
+
+    # Check whether --enable-doxygen-xml was given.
+if test "${enable_doxygen_xml+set}" = set; then :
+  enableval=$enable_doxygen_xml;
+case "$enableval" in
+#(
+y|Y|yes|Yes|YES)
+    DX_FLAG_xml=1
+
+
+test "$DX_FLAG_doc" = "1" \
+|| as_fn_error $? "doxygen-xml requires doxygen-xml" "$LINENO" 5
+
+;; #(
+n|N|no|No|NO)
+    DX_FLAG_xml=0
+
+;; #(
+*)
+    as_fn_error $? "invalid value '$enableval' given to doxygen-xml" "$LINENO" 5
+;;
+esac
+
+else
+
+DX_FLAG_xml=0
+
+
+test "$DX_FLAG_doc" = "1" || DX_FLAG_xml=0
+
+
+
+fi
+
+if test "$DX_FLAG_xml" = 1; then
+
+    :
+fi
+ if test "$DX_FLAG_xml" = 1; then
+  DX_COND_xml_TRUE=
+  DX_COND_xml_FALSE='#'
+else
+  DX_COND_xml_TRUE='#'
+  DX_COND_xml_FALSE=
+fi
+
+if test "$DX_FLAG_xml" = 1; then
+    DX_ENV="$DX_ENV GENERATE_XML='YES'"
+
+    :
+else
+    DX_ENV="$DX_ENV GENERATE_XML='NO'"
+
+    :
+fi
+
+
+# (Compressed) HTML help generation:
+
+
+
+    # Check whether --enable-doxygen-chm was given.
+if test "${enable_doxygen_chm+set}" = set; then :
+  enableval=$enable_doxygen_chm;
+case "$enableval" in
+#(
+y|Y|yes|Yes|YES)
+    DX_FLAG_chm=1
+
+
+test "$DX_FLAG_doc" = "1" \
+|| as_fn_error $? "doxygen-chm requires doxygen-chm" "$LINENO" 5
+
+;; #(
+n|N|no|No|NO)
+    DX_FLAG_chm=0
+
+;; #(
+*)
+    as_fn_error $? "invalid value '$enableval' given to doxygen-chm" "$LINENO" 5
+;;
+esac
+
+else
+
+DX_FLAG_chm=0
+
+
+test "$DX_FLAG_doc" = "1" || DX_FLAG_chm=0
+
+
+
+fi
+
+if test "$DX_FLAG_chm" = 1; then
+
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}hhc", so it can be a program name with args.
+set dummy ${ac_tool_prefix}hhc; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_DX_HHC+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $DX_HHC in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_DX_HHC="$DX_HHC" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_DX_HHC="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+DX_HHC=$ac_cv_path_DX_HHC
+if test -n "$DX_HHC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DX_HHC" >&5
+$as_echo "$DX_HHC" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_DX_HHC"; then
+  ac_pt_DX_HHC=$DX_HHC
+  # Extract the first word of "hhc", so it can be a program name with args.
+set dummy hhc; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_DX_HHC+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_DX_HHC in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_DX_HHC="$ac_pt_DX_HHC" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_DX_HHC="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_DX_HHC=$ac_cv_path_ac_pt_DX_HHC
+if test -n "$ac_pt_DX_HHC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_DX_HHC" >&5
+$as_echo "$ac_pt_DX_HHC" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_DX_HHC" = x; then
+    DX_HHC=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    DX_HHC=$ac_pt_DX_HHC
+  fi
+else
+  DX_HHC="$ac_cv_path_DX_HHC"
+fi
+
+if test "$DX_FLAG_chm$DX_HHC" = 1; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: hhc not found - will not generate doxygen compressed HTML help documentation" >&5
+$as_echo "$as_me: WARNING: hhc not found - will not generate doxygen compressed HTML help documentation" >&2;}
+    DX_FLAG_chm=0
+
+fi
+
+    :
+fi
+ if test "$DX_FLAG_chm" = 1; then
+  DX_COND_chm_TRUE=
+  DX_COND_chm_FALSE='#'
+else
+  DX_COND_chm_TRUE='#'
+  DX_COND_chm_FALSE=
+fi
+
+if test "$DX_FLAG_chm" = 1; then
+    DX_ENV="$DX_ENV HHC_PATH='$DX_HHC'"
+
+             DX_ENV="$DX_ENV GENERATE_HTML='YES'"
+
+             DX_ENV="$DX_ENV GENERATE_HTMLHELP='YES'"
+
+    :
+else
+    DX_ENV="$DX_ENV GENERATE_HTMLHELP='NO'"
+
+    :
+fi
+
+
+# Seperate CHI file generation.
+
+
+
+    # Check whether --enable-doxygen-chi was given.
+if test "${enable_doxygen_chi+set}" = set; then :
+  enableval=$enable_doxygen_chi;
+case "$enableval" in
+#(
+y|Y|yes|Yes|YES)
+    DX_FLAG_chi=1
+
+
+test "$DX_FLAG_chm" = "1" \
+|| as_fn_error $? "doxygen-chi requires doxygen-chi" "$LINENO" 5
+
+;; #(
+n|N|no|No|NO)
+    DX_FLAG_chi=0
+
+;; #(
+*)
+    as_fn_error $? "invalid value '$enableval' given to doxygen-chi" "$LINENO" 5
+;;
+esac
+
+else
+
+DX_FLAG_chi=0
+
+
+test "$DX_FLAG_chm" = "1" || DX_FLAG_chi=0
+
+
+
+fi
+
+if test "$DX_FLAG_chi" = 1; then
+
+    :
+fi
+ if test "$DX_FLAG_chi" = 1; then
+  DX_COND_chi_TRUE=
+  DX_COND_chi_FALSE='#'
+else
+  DX_COND_chi_TRUE='#'
+  DX_COND_chi_FALSE=
+fi
+
+if test "$DX_FLAG_chi" = 1; then
+    DX_ENV="$DX_ENV GENERATE_CHI='YES'"
+
+    :
+else
+    DX_ENV="$DX_ENV GENERATE_CHI='NO'"
+
+    :
+fi
+
+
+# Plain HTML pages generation:
+
+
+
+    # Check whether --enable-doxygen-html was given.
+if test "${enable_doxygen_html+set}" = set; then :
+  enableval=$enable_doxygen_html;
+case "$enableval" in
+#(
+y|Y|yes|Yes|YES)
+    DX_FLAG_html=1
+
+
+test "$DX_FLAG_doc" = "1" \
+|| as_fn_error $? "doxygen-html requires doxygen-html" "$LINENO" 5
+
+test "$DX_FLAG_chm" = "0" \
+|| as_fn_error $? "doxygen-html contradicts doxygen-html" "$LINENO" 5
+
+;; #(
+n|N|no|No|NO)
+    DX_FLAG_html=0
+
+;; #(
+*)
+    as_fn_error $? "invalid value '$enableval' given to doxygen-html" "$LINENO" 5
+;;
+esac
+
+else
+
+DX_FLAG_html=1
+
+
+test "$DX_FLAG_doc" = "1" || DX_FLAG_html=0
+
+
+test "$DX_FLAG_chm" = "0" || DX_FLAG_html=0
+
+
+
+fi
+
+if test "$DX_FLAG_html" = 1; then
+
+    :
+fi
+ if test "$DX_FLAG_html" = 1; then
+  DX_COND_html_TRUE=
+  DX_COND_html_FALSE='#'
+else
+  DX_COND_html_TRUE='#'
+  DX_COND_html_FALSE=
+fi
+
+if test "$DX_FLAG_html" = 1; then
+    DX_ENV="$DX_ENV GENERATE_HTML='YES'"
+
+    :
+else
+    test "$DX_FLAG_chm" = 1 || DX_ENV="$DX_ENV GENERATE_HTML='NO'"
+
+    :
+fi
+
+
+# PostScript file generation:
+
+
+
+    # Check whether --enable-doxygen-ps was given.
+if test "${enable_doxygen_ps+set}" = set; then :
+  enableval=$enable_doxygen_ps;
+case "$enableval" in
+#(
+y|Y|yes|Yes|YES)
+    DX_FLAG_ps=1
+
+
+test "$DX_FLAG_doc" = "1" \
+|| as_fn_error $? "doxygen-ps requires doxygen-ps" "$LINENO" 5
+
+;; #(
+n|N|no|No|NO)
+    DX_FLAG_ps=0
+
+;; #(
+*)
+    as_fn_error $? "invalid value '$enableval' given to doxygen-ps" "$LINENO" 5
+;;
+esac
+
+else
+
+DX_FLAG_ps=0
+
+
+test "$DX_FLAG_doc" = "1" || DX_FLAG_ps=0
+
+
+
+fi
+
+if test "$DX_FLAG_ps" = 1; then
+
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}latex", so it can be a program name with args.
+set dummy ${ac_tool_prefix}latex; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_DX_LATEX+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $DX_LATEX in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_DX_LATEX="$DX_LATEX" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_DX_LATEX="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+DX_LATEX=$ac_cv_path_DX_LATEX
+if test -n "$DX_LATEX"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DX_LATEX" >&5
+$as_echo "$DX_LATEX" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_DX_LATEX"; then
+  ac_pt_DX_LATEX=$DX_LATEX
+  # Extract the first word of "latex", so it can be a program name with args.
+set dummy latex; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_DX_LATEX+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_DX_LATEX in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_DX_LATEX="$ac_pt_DX_LATEX" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_DX_LATEX="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_DX_LATEX=$ac_cv_path_ac_pt_DX_LATEX
+if test -n "$ac_pt_DX_LATEX"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_DX_LATEX" >&5
+$as_echo "$ac_pt_DX_LATEX" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_DX_LATEX" = x; then
+    DX_LATEX=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    DX_LATEX=$ac_pt_DX_LATEX
+  fi
+else
+  DX_LATEX="$ac_cv_path_DX_LATEX"
+fi
+
+if test "$DX_FLAG_ps$DX_LATEX" = 1; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: latex not found - will not generate doxygen PostScript documentation" >&5
+$as_echo "$as_me: WARNING: latex not found - will not generate doxygen PostScript documentation" >&2;}
+    DX_FLAG_ps=0
+
+fi
+
+
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}makeindex", so it can be a program name with args.
+set dummy ${ac_tool_prefix}makeindex; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_DX_MAKEINDEX+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $DX_MAKEINDEX in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_DX_MAKEINDEX="$DX_MAKEINDEX" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_DX_MAKEINDEX="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+DX_MAKEINDEX=$ac_cv_path_DX_MAKEINDEX
+if test -n "$DX_MAKEINDEX"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DX_MAKEINDEX" >&5
+$as_echo "$DX_MAKEINDEX" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_DX_MAKEINDEX"; then
+  ac_pt_DX_MAKEINDEX=$DX_MAKEINDEX
+  # Extract the first word of "makeindex", so it can be a program name with args.
+set dummy makeindex; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_DX_MAKEINDEX+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_DX_MAKEINDEX in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_DX_MAKEINDEX="$ac_pt_DX_MAKEINDEX" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_DX_MAKEINDEX="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_DX_MAKEINDEX=$ac_cv_path_ac_pt_DX_MAKEINDEX
+if test -n "$ac_pt_DX_MAKEINDEX"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_DX_MAKEINDEX" >&5
+$as_echo "$ac_pt_DX_MAKEINDEX" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_DX_MAKEINDEX" = x; then
+    DX_MAKEINDEX=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    DX_MAKEINDEX=$ac_pt_DX_MAKEINDEX
+  fi
+else
+  DX_MAKEINDEX="$ac_cv_path_DX_MAKEINDEX"
+fi
+
+if test "$DX_FLAG_ps$DX_MAKEINDEX" = 1; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: makeindex not found - will not generate doxygen PostScript documentation" >&5
+$as_echo "$as_me: WARNING: makeindex not found - will not generate doxygen PostScript documentation" >&2;}
+    DX_FLAG_ps=0
+
+fi
+
+
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}dvips", so it can be a program name with args.
+set dummy ${ac_tool_prefix}dvips; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_DX_DVIPS+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $DX_DVIPS in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_DX_DVIPS="$DX_DVIPS" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_DX_DVIPS="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+DX_DVIPS=$ac_cv_path_DX_DVIPS
+if test -n "$DX_DVIPS"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DX_DVIPS" >&5
+$as_echo "$DX_DVIPS" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_DX_DVIPS"; then
+  ac_pt_DX_DVIPS=$DX_DVIPS
+  # Extract the first word of "dvips", so it can be a program name with args.
+set dummy dvips; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_DX_DVIPS+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_DX_DVIPS in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_DX_DVIPS="$ac_pt_DX_DVIPS" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_DX_DVIPS="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_DX_DVIPS=$ac_cv_path_ac_pt_DX_DVIPS
+if test -n "$ac_pt_DX_DVIPS"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_DX_DVIPS" >&5
+$as_echo "$ac_pt_DX_DVIPS" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_DX_DVIPS" = x; then
+    DX_DVIPS=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    DX_DVIPS=$ac_pt_DX_DVIPS
+  fi
+else
+  DX_DVIPS="$ac_cv_path_DX_DVIPS"
+fi
+
+if test "$DX_FLAG_ps$DX_DVIPS" = 1; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: dvips not found - will not generate doxygen PostScript documentation" >&5
+$as_echo "$as_me: WARNING: dvips not found - will not generate doxygen PostScript documentation" >&2;}
+    DX_FLAG_ps=0
+
+fi
+
+
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}egrep", so it can be a program name with args.
+set dummy ${ac_tool_prefix}egrep; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_DX_EGREP+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $DX_EGREP in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_DX_EGREP="$DX_EGREP" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_DX_EGREP="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+DX_EGREP=$ac_cv_path_DX_EGREP
+if test -n "$DX_EGREP"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DX_EGREP" >&5
+$as_echo "$DX_EGREP" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_DX_EGREP"; then
+  ac_pt_DX_EGREP=$DX_EGREP
+  # Extract the first word of "egrep", so it can be a program name with args.
+set dummy egrep; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_DX_EGREP+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_DX_EGREP in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_DX_EGREP="$ac_pt_DX_EGREP" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_DX_EGREP="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_DX_EGREP=$ac_cv_path_ac_pt_DX_EGREP
+if test -n "$ac_pt_DX_EGREP"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_DX_EGREP" >&5
+$as_echo "$ac_pt_DX_EGREP" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_DX_EGREP" = x; then
+    DX_EGREP=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    DX_EGREP=$ac_pt_DX_EGREP
+  fi
+else
+  DX_EGREP="$ac_cv_path_DX_EGREP"
+fi
+
+if test "$DX_FLAG_ps$DX_EGREP" = 1; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: egrep not found - will not generate doxygen PostScript documentation" >&5
+$as_echo "$as_me: WARNING: egrep not found - will not generate doxygen PostScript documentation" >&2;}
+    DX_FLAG_ps=0
+
+fi
+
+    :
+fi
+ if test "$DX_FLAG_ps" = 1; then
+  DX_COND_ps_TRUE=
+  DX_COND_ps_FALSE='#'
+else
+  DX_COND_ps_TRUE='#'
+  DX_COND_ps_FALSE=
+fi
+
+if test "$DX_FLAG_ps" = 1; then
+
+    :
+else
+
+    :
+fi
+
+
+# PDF file generation:
+
+
+
+    # Check whether --enable-doxygen-pdf was given.
+if test "${enable_doxygen_pdf+set}" = set; then :
+  enableval=$enable_doxygen_pdf;
+case "$enableval" in
+#(
+y|Y|yes|Yes|YES)
+    DX_FLAG_pdf=1
+
+
+test "$DX_FLAG_doc" = "1" \
+|| as_fn_error $? "doxygen-pdf requires doxygen-pdf" "$LINENO" 5
+
+;; #(
+n|N|no|No|NO)
+    DX_FLAG_pdf=0
+
+;; #(
+*)
+    as_fn_error $? "invalid value '$enableval' given to doxygen-pdf" "$LINENO" 5
+;;
+esac
+
+else
+
+DX_FLAG_pdf=0
+
+
+test "$DX_FLAG_doc" = "1" || DX_FLAG_pdf=0
+
+
+
+fi
+
+if test "$DX_FLAG_pdf" = 1; then
+
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}pdflatex", so it can be a program name with args.
+set dummy ${ac_tool_prefix}pdflatex; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_DX_PDFLATEX+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $DX_PDFLATEX in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_DX_PDFLATEX="$DX_PDFLATEX" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_DX_PDFLATEX="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+DX_PDFLATEX=$ac_cv_path_DX_PDFLATEX
+if test -n "$DX_PDFLATEX"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DX_PDFLATEX" >&5
+$as_echo "$DX_PDFLATEX" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_DX_PDFLATEX"; then
+  ac_pt_DX_PDFLATEX=$DX_PDFLATEX
+  # Extract the first word of "pdflatex", so it can be a program name with args.
+set dummy pdflatex; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_DX_PDFLATEX+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_DX_PDFLATEX in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_DX_PDFLATEX="$ac_pt_DX_PDFLATEX" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_DX_PDFLATEX="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_DX_PDFLATEX=$ac_cv_path_ac_pt_DX_PDFLATEX
+if test -n "$ac_pt_DX_PDFLATEX"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_DX_PDFLATEX" >&5
+$as_echo "$ac_pt_DX_PDFLATEX" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_DX_PDFLATEX" = x; then
+    DX_PDFLATEX=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    DX_PDFLATEX=$ac_pt_DX_PDFLATEX
+  fi
+else
+  DX_PDFLATEX="$ac_cv_path_DX_PDFLATEX"
+fi
+
+if test "$DX_FLAG_pdf$DX_PDFLATEX" = 1; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: pdflatex not found - will not generate doxygen PDF documentation" >&5
+$as_echo "$as_me: WARNING: pdflatex not found - will not generate doxygen PDF documentation" >&2;}
+    DX_FLAG_pdf=0
+
+fi
+
+
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}makeindex", so it can be a program name with args.
+set dummy ${ac_tool_prefix}makeindex; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_DX_MAKEINDEX+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $DX_MAKEINDEX in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_DX_MAKEINDEX="$DX_MAKEINDEX" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_DX_MAKEINDEX="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+DX_MAKEINDEX=$ac_cv_path_DX_MAKEINDEX
+if test -n "$DX_MAKEINDEX"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DX_MAKEINDEX" >&5
+$as_echo "$DX_MAKEINDEX" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_DX_MAKEINDEX"; then
+  ac_pt_DX_MAKEINDEX=$DX_MAKEINDEX
+  # Extract the first word of "makeindex", so it can be a program name with args.
+set dummy makeindex; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_DX_MAKEINDEX+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_DX_MAKEINDEX in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_DX_MAKEINDEX="$ac_pt_DX_MAKEINDEX" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_DX_MAKEINDEX="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_DX_MAKEINDEX=$ac_cv_path_ac_pt_DX_MAKEINDEX
+if test -n "$ac_pt_DX_MAKEINDEX"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_DX_MAKEINDEX" >&5
+$as_echo "$ac_pt_DX_MAKEINDEX" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_DX_MAKEINDEX" = x; then
+    DX_MAKEINDEX=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    DX_MAKEINDEX=$ac_pt_DX_MAKEINDEX
+  fi
+else
+  DX_MAKEINDEX="$ac_cv_path_DX_MAKEINDEX"
+fi
+
+if test "$DX_FLAG_pdf$DX_MAKEINDEX" = 1; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: makeindex not found - will not generate doxygen PDF documentation" >&5
+$as_echo "$as_me: WARNING: makeindex not found - will not generate doxygen PDF documentation" >&2;}
+    DX_FLAG_pdf=0
+
+fi
+
+
+if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}egrep", so it can be a program name with args.
+set dummy ${ac_tool_prefix}egrep; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_DX_EGREP+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $DX_EGREP in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_DX_EGREP="$DX_EGREP" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_DX_EGREP="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+DX_EGREP=$ac_cv_path_DX_EGREP
+if test -n "$DX_EGREP"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $DX_EGREP" >&5
+$as_echo "$DX_EGREP" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_DX_EGREP"; then
+  ac_pt_DX_EGREP=$DX_EGREP
+  # Extract the first word of "egrep", so it can be a program name with args.
+set dummy egrep; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_ac_pt_DX_EGREP+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_DX_EGREP in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_DX_EGREP="$ac_pt_DX_EGREP" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_ac_pt_DX_EGREP="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_DX_EGREP=$ac_cv_path_ac_pt_DX_EGREP
+if test -n "$ac_pt_DX_EGREP"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_DX_EGREP" >&5
+$as_echo "$ac_pt_DX_EGREP" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_DX_EGREP" = x; then
+    DX_EGREP=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    DX_EGREP=$ac_pt_DX_EGREP
+  fi
+else
+  DX_EGREP="$ac_cv_path_DX_EGREP"
+fi
+
+if test "$DX_FLAG_pdf$DX_EGREP" = 1; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: egrep not found - will not generate doxygen PDF documentation" >&5
+$as_echo "$as_me: WARNING: egrep not found - will not generate doxygen PDF documentation" >&2;}
+    DX_FLAG_pdf=0
+
+fi
+
+    :
+fi
+ if test "$DX_FLAG_pdf" = 1; then
+  DX_COND_pdf_TRUE=
+  DX_COND_pdf_FALSE='#'
+else
+  DX_COND_pdf_TRUE='#'
+  DX_COND_pdf_FALSE=
+fi
+
+if test "$DX_FLAG_pdf" = 1; then
+
+    :
+else
+
+    :
+fi
+
+
+# LaTeX generation for PS and/or PDF:
+ if test "$DX_FLAG_ps" = 1 || test "$DX_FLAG_pdf" = 1; then
+  DX_COND_latex_TRUE=
+  DX_COND_latex_FALSE='#'
+else
+  DX_COND_latex_TRUE='#'
+  DX_COND_latex_FALSE=
+fi
+
+if test "$DX_FLAG_ps" = 1 || test "$DX_FLAG_pdf" = 1; then
+    DX_ENV="$DX_ENV GENERATE_LATEX='YES'"
+
+else
+    DX_ENV="$DX_ENV GENERATE_LATEX='NO'"
+
+fi
+
+# Paper size for PS and/or PDF:
+
+case "$DOXYGEN_PAPER_SIZE" in
+#(
+"")
+    DOXYGEN_PAPER_SIZE=""
+
+;; #(
+a4wide|a4|letter|legal|executive)
+    DX_ENV="$DX_ENV PAPER_SIZE='$DOXYGEN_PAPER_SIZE'"
+
+;; #(
+*)
+    as_fn_error $? "unknown DOXYGEN_PAPER_SIZE='$DOXYGEN_PAPER_SIZE'" "$LINENO" 5
+;;
+esac
+
+#For debugging:
+#echo DX_FLAG_doc=$DX_FLAG_doc
+#echo DX_FLAG_dot=$DX_FLAG_dot
+#echo DX_FLAG_man=$DX_FLAG_man
+#echo DX_FLAG_html=$DX_FLAG_html
+#echo DX_FLAG_chm=$DX_FLAG_chm
+#echo DX_FLAG_chi=$DX_FLAG_chi
+#echo DX_FLAG_rtf=$DX_FLAG_rtf
+#echo DX_FLAG_xml=$DX_FLAG_xml
+#echo DX_FLAG_pdf=$DX_FLAG_pdf
+#echo DX_FLAG_ps=$DX_FLAG_ps
+#echo DX_ENV=$DX_ENV
+
+
 ac_config_headers="$ac_config_headers config.h"
 
-ac_config_files="$ac_config_files Makefile src/Makefile tests/Makefile docs/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile tests/Makefile docs/Makefile docs/Doxyfile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -4231,10 +6814,6 @@ else
   am__EXEEXT_FALSE=
 fi
 
-if test -z "${HAVE_DOXYGEN_TRUE}" && test -z "${HAVE_DOXYGEN_FALSE}"; then
-  as_fn_error $? "conditional \"HAVE_DOXYGEN\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
 if test -z "${AMDEP_TRUE}" && test -z "${AMDEP_FALSE}"; then
   as_fn_error $? "conditional \"AMDEP\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -4245,6 +6824,54 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
+  as_fn_error $? "conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DX_COND_doc_TRUE}" && test -z "${DX_COND_doc_FALSE}"; then
+  as_fn_error $? "conditional \"DX_COND_doc\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DX_COND_dot_TRUE}" && test -z "${DX_COND_dot_FALSE}"; then
+  as_fn_error $? "conditional \"DX_COND_dot\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DX_COND_man_TRUE}" && test -z "${DX_COND_man_FALSE}"; then
+  as_fn_error $? "conditional \"DX_COND_man\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DX_COND_rtf_TRUE}" && test -z "${DX_COND_rtf_FALSE}"; then
+  as_fn_error $? "conditional \"DX_COND_rtf\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DX_COND_xml_TRUE}" && test -z "${DX_COND_xml_FALSE}"; then
+  as_fn_error $? "conditional \"DX_COND_xml\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DX_COND_chm_TRUE}" && test -z "${DX_COND_chm_FALSE}"; then
+  as_fn_error $? "conditional \"DX_COND_chm\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DX_COND_chi_TRUE}" && test -z "${DX_COND_chi_FALSE}"; then
+  as_fn_error $? "conditional \"DX_COND_chi\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DX_COND_html_TRUE}" && test -z "${DX_COND_html_FALSE}"; then
+  as_fn_error $? "conditional \"DX_COND_html\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DX_COND_ps_TRUE}" && test -z "${DX_COND_ps_FALSE}"; then
+  as_fn_error $? "conditional \"DX_COND_ps\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DX_COND_pdf_TRUE}" && test -z "${DX_COND_pdf_FALSE}"; then
+  as_fn_error $? "conditional \"DX_COND_pdf\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DX_COND_latex_TRUE}" && test -z "${DX_COND_latex_FALSE}"; then
+  as_fn_error $? "conditional \"DX_COND_latex\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
@@ -4839,13 +7466,13 @@ cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
 for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
-    "docs/Doxyfile") CONFIG_FILES="$CONFIG_FILES docs/Doxyfile" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
     "docs/Makefile") CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
+    "docs/Doxyfile") CONFIG_FILES="$CONFIG_FILES docs/Doxyfile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
