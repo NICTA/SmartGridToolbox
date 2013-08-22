@@ -5,6 +5,8 @@
 
 namespace SmartGridToolbox
 {
+   class DCPowerSourceBase;
+
    /// InverterBase: DC power to n-phase AC converter.
    class InverterBase : public ZipToGroundBase
    {
@@ -20,12 +22,24 @@ namespace SmartGridToolbox
          }
       /// @}
       
+      /// @name My public member functions. 
+      /// @{
+      public:
+         void addDCPowerSource(const DCPowerSourceBase & source);
+      /// @}
+      
       /// @name My private member functions.
       /// @{
       private:
          virtual double getEfficiency(const double powerDC) const = 0;
          virtual double getDCPower() = 0;
          virtual double getPowerFactorRadians() = 0;
+      /// @}
+      
+      /// @name My private member variables.
+      /// @{
+      private:
+         std::vector<const DCPowerSourceBase *> sources_;    ///< My DC power sources.
       /// @}
    };
 }

@@ -12,6 +12,7 @@ namespace SmartGridToolbox
       /// @{
       public:
          virtual double getEfficiency(const double powerDC) = 0;
+         virtual double setEfficiency(const double powerDC) = 0;
       /// @}
 
       /// @name Private member variables.

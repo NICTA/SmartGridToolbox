@@ -52,7 +52,7 @@ namespace SmartGridToolbox
          const UblasVector<Complex> & getV() const {return V_;}
          void setV(const UblasVector<Complex> & V) {V_ = V;}
 
-         void addZipToGround(ZipToGroundBase & zipToGround);
+         void addZipToGround(const ZipToGroundBase & zipToGround);
 
          const UblasVector<Complex> & getY() const {return Y_;} // Injection.
          const UblasVector<Complex> & getI() const {return I_;} // Injection.
