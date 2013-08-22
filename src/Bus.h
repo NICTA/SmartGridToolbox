@@ -28,15 +28,6 @@ namespace SmartGridToolbox
 
    class Bus : public Component
    {
-      /// @name Public overridden functions: from Component.
-      /// @{
-      public:
-         virtual ptime getValidUntil() const override 
-         {
-            return pos_infin;
-         }
-      /// @}
-
       /// @name Private overridden functions: from Component.
       /// @{
       private:

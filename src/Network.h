@@ -32,15 +32,6 @@ namespace SmartGridToolbox
          typedef std::map<std::string, Bus *> BusMap;
          typedef std::vector<Branch *> BranchVec;
 
-      /// @name Public overridden functions: from Component.
-      /// @{
-      public:
-         virtual ptime getValidUntil() const override 
-         {
-            return pos_infin;
-         }
-      /// @}
-
       /// @name Private overridden functions: from Component.
       /// @{
       private:
