@@ -13,7 +13,7 @@ namespace SmartGridToolbox
       public:
          ZipToGroundBase(const std::string & name) : Component(name) {}
 
-         virtual Phases getPhases() const override {return phases_;}
+         virtual Phases getPhases() const {return phases_;}
          virtual void setPhases(Phases phases) {phases_ = phases;}
 
          virtual const UblasVector<Complex> & getY() const = 0;
