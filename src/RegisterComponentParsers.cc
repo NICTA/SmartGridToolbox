@@ -2,6 +2,8 @@
 #include "Branch.h"
 #include "Bus.h"
 #include "Network.h"
+#include "SimpleDCPowerSource.h"
+#include "SimpleInverter.h"
 #include "TestComponent.h"
 #include "ZipToGround.h"
 
@@ -12,6 +14,8 @@ namespace SmartGridToolbox
       p.registerComponentParser<BranchParser>();
       p.registerComponentParser<BusParser>();
       p.registerComponentParser<NetworkParser>();
+      p.registerComponentParser<SimpleDCPowerSourceParser>();
+      p.registerComponentParser<SimpleInverterParser>();
       p.registerComponentParser<TestComponentParser>();
       p.registerComponentParser<ZipToGroundParser>();
    }

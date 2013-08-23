@@ -34,7 +34,7 @@ namespace SmartGridToolbox
       public:
          InverterBase(const std::string & name) : ZipToGroundBase(name) {}
 
-         void addDCPowerSource(const DCPowerSourceBase & source);
+         void addDCPowerSource(DCPowerSourceBase & source);
 
          virtual double getEfficiency(double powerDC) const = 0;
 

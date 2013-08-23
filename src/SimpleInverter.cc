@@ -23,7 +23,7 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "SimpleInverter : postParse." << std::endl);
 
       const std::string nameStr = nd["name"].as<std::string>();
-      SimpleInverter & comp = mod.newComponent<SimpleInverter>(nameStr);
+      SimpleInverter & comp = *mod.getComponentNamed<SimpleInverter>(nameStr);
 
       const std::string busStr = nd["bus"].as<std::string>();
       Bus * busComp = mod.getComponentNamed<Bus>(busStr);

@@ -4,6 +4,14 @@
 
 namespace SmartGridToolbox
 {
+   void InverterBase::addDCPowerSource(DCPowerSourceBase & source)
+   {
+      sources_.push_back(&source);
+      source.getEventDidUpdate().addAction([this](){getEventNeedsUpdate().trigger();}, 
+            "Trigger InverterBase " + getName() + " needs update.");
+      // TODO: this will recalculate all zips. Efficiency?
+   }
+
    void InverterBase::updateState(ptime t0, ptime t1)
    {
       PDC_ = 0.0;

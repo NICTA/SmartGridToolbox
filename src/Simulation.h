@@ -91,6 +91,9 @@ namespace SmartGridToolbox
          /// Do the next update.
          bool doNextUpdate();
 
+         /// Signal that an abnormal exit should occur.
+         void signalAbnormalExit();
+
          /// Get the time did advance event.
          Event & getEventTimeDidAdvance() {return timeDidAdvance_;}
 
