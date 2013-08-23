@@ -9,6 +9,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Common.cc \
 										  Component.cc \
 										  Event.cc \
+										  InverterBase.cc \
 										  Meter.cc \
 										  Model.cc \
 										  Network.cc \
@@ -19,6 +20,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  RegisterComponentParsers.cc \
 										  SimpleBattery.cc \
 										  SimpleBuilding.cc \
+										  SimpleInverter.cc \
 										  Simulation.cc \
 										  SparseSolver.cc \
 										  TestComponent.cc \

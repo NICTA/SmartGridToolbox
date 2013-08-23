@@ -20,18 +20,21 @@ namespace SmartGridToolbox
 
    class ZipToGround : public ZipToGroundBase
    {
+      /// @name Overridden public member functions from ZipToGroundBase.
+      /// @{
+      public:
+         virtual UblasVector<Complex> getY() const override {return Y_;}
+         virtual UblasVector<Complex> getI() const override {return I_;} // Injection.
+         virtual UblasVector<Complex> getS() const override {return S_;} // Injection.
+      /// @}
+
       /// @name My public member functions.
       /// @{
       public:
          ZipToGround(const std::string & name) : ZipToGroundBase(name), Y_(0.0), I_(0.0), S_(0.0) {}
 
-         virtual const UblasVector<Complex> & getY() const override {return Y_;}
          virtual void setY(const UblasVector<Complex> & Y) {Y_ = Y;}
-
-         virtual const UblasVector<Complex> & getI() const override {return I_;} // Injection.
          virtual void setI(const UblasVector<Complex> & I) {I_ = I;} // Injection.
-
-         virtual const UblasVector<Complex> & getS() const override {return S_;} // Injection.
          virtual void setS(const UblasVector<Complex> & S) {S_ = S;} // Injection.
       /// @}
       

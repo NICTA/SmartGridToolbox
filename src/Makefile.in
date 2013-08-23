@@ -130,10 +130,11 @@ libsmartgridtoolbox_a_AR = $(AR) $(ARFLAGS)
 libsmartgridtoolbox_a_LIBADD =
 am_libsmartgridtoolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
 	Common.$(OBJEXT) Component.$(OBJEXT) Event.$(OBJEXT) \
-	Meter.$(OBJEXT) Model.$(OBJEXT) Network.$(OBJEXT) \
-	Parser.$(OBJEXT) PowerFlow.$(OBJEXT) PowerFlowNR.$(OBJEXT) \
-	Random.$(OBJEXT) RegisterComponentParsers.$(OBJEXT) \
-	SimpleBattery.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
+	InverterBase.$(OBJEXT) Meter.$(OBJEXT) Model.$(OBJEXT) \
+	Network.$(OBJEXT) Parser.$(OBJEXT) PowerFlow.$(OBJEXT) \
+	PowerFlowNR.$(OBJEXT) Random.$(OBJEXT) \
+	RegisterComponentParsers.$(OBJEXT) SimpleBattery.$(OBJEXT) \
+	SimpleBuilding.$(OBJEXT) SimpleInverter.$(OBJEXT) \
 	Simulation.$(OBJEXT) SparseSolver.$(OBJEXT) \
 	TestComponent.$(OBJEXT) WeakOrder.$(OBJEXT) \
 	ZipToGround.$(OBJEXT)
@@ -334,6 +335,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Common.cc \
 										  Component.cc \
 										  Event.cc \
+										  InverterBase.cc \
 										  Meter.cc \
 										  Model.cc \
 										  Network.cc \
@@ -344,6 +346,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  RegisterComponentParsers.cc \
 										  SimpleBattery.cc \
 										  SimpleBuilding.cc \
+										  SimpleInverter.cc \
 										  Simulation.cc \
 										  SparseSolver.cc \
 										  TestComponent.cc \
@@ -499,6 +502,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Component.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Event.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InverterBase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Meter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Model.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network.Po@am__quote@
@@ -509,6 +513,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RegisterComponentParsers.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBattery.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBuilding.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleInverter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Simulation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SparseSolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestComponent.Po@am__quote@

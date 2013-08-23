@@ -1,5 +1,7 @@
 #include "InverterBase.h"
 
+#include "DCPowerSourceBase.h"
+
 namespace SmartGridToolbox
 {
    void InverterBase::updateState(ptime t0, ptime t1)
@@ -11,9 +13,8 @@ namespace SmartGridToolbox
       }
    }
 
-   const UblasVector<Complex> & InverterBase::getS()
+   UblasVector<Complex> InverterBase::getS() const
    {
-      double PDC = getDCPower();
-      return UblasVector<Complex>(getPhases.size(), polar(PDC * getEfficiency(PDC), getPowerFactorRadians()));
+      return UblasVector<Complex>(getPhases().size(), polar(PDC_ * getEfficiency(PDC_), getPowerFactorRadians(PDC_)));
    }
 }

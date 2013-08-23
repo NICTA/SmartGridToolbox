@@ -24,32 +24,26 @@ namespace SmartGridToolbox
       /// @name Public overridden member functions from ZipToGroundBase.
       /// @{
       public:
-         virtual const UblasVector<Complex> & getY() {return UblasVector<Complex>(getPhases().size(), czero);}
-         virtual const UblasVector<Complex> & getI() {return UblasVector<Complex>(getPhases().size(), czero);}
-         virtual const UblasVector<Complex> & getS(); 
+         virtual UblasVector<Complex> getY() const override {return UblasVector<Complex>(getPhases().size(), czero);}
+         virtual UblasVector<Complex> getI() const override {return UblasVector<Complex>(getPhases().size(), czero);}
+         virtual UblasVector<Complex> getS() const override; 
       /// @}
       
       /// @name My public member functions. 
       /// @{
       public:
-         InverterBase(const std::string & name) : Component(name) {}
+         InverterBase(const std::string & name) : ZipToGroundBase(name) {}
 
          void addDCPowerSource(const DCPowerSourceBase & source);
-      /// @}
-      
-      /// @name My private member functions.
-      /// @{
-      private:
-         virtual double getEfficiency(const double powerDC) const = 0;
-         virtual double getDCPower() = 0;
-         virtual double getPowerFactorRadians() = 0;
+         virtual double getEfficiency(double powerDC) const = 0;
+         virtual double getPowerFactorRadians(double powerDC) const = 0;
       /// @}
       
       /// @name My private member variables.
       /// @{
       private:
-         std::vector<const DCPowerSourceBase *> sources_;    ///< My DC power sources.
-         double PDC_;
+         std::vector<const DCPowerSourceBase *> sources_;   ///< My DC power sources.
+         double PDC_;                                       ///< DC power = sum of all sources.
       /// @}
    };
 }
