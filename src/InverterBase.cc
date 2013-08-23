@@ -15,6 +15,6 @@ namespace SmartGridToolbox
 
    UblasVector<Complex> InverterBase::getS() const
    {
-      return UblasVector<Complex>(getPhases().size(), polar(PDC_ * getEfficiency(PDC_), getPowerFactorRadians(PDC_)));
+      return UblasVector<Complex>(getPhases().size(), polar(PDC_ * getEfficiency(PDC_), getPhaseAngleRadians(PDC_)));
    }
 }

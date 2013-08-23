@@ -35,8 +35,13 @@ namespace SmartGridToolbox
          InverterBase(const std::string & name) : ZipToGroundBase(name) {}
 
          void addDCPowerSource(const DCPowerSourceBase & source);
+
          virtual double getEfficiency(double powerDC) const = 0;
-         virtual double getPowerFactorRadians(double powerDC) const = 0;
+
+         /// Get the phase angle, as a function of DC power
+         /** Note: this makes a limiting assumption that the phase angle of each phase is equal.
+          *  If in the future this turns out to be too limiting, then we can use a vector of phase angles. */
+         virtual double getPhaseAngleRadians(double powerDC) const = 0;
       /// @}
       
       /// @name My private member variables.

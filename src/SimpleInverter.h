@@ -26,7 +26,7 @@ namespace SmartGridToolbox
       /// @{
       public:
          virtual double getEfficiency(double powerDC) const override {return efficiency_;}
-         virtual double getPowerFactorRadians(double powerDC) const override {return powerFactor_;}
+         virtual double getPhaseAngleRadians(double powerDC) const override {return phaseAngle_;}
       /// @}
       
       /// @name My public member functions.
@@ -36,14 +36,14 @@ namespace SmartGridToolbox
 
          void setEfficiency(double efficiency) {efficiency_ = efficiency;}
 
-         void setPowerFactorRadians(double powerFactor) {powerFactor_ = powerFactor;}
+         void setPhaseAngleRadians(double phaseAngle) {phaseAngle_ = phaseAngle;}
       /// @}
 
       /// @name Private member variables.
       /// @{
       public:
          double efficiency_;
-         double powerFactor_;
+         double phaseAngle_;
       /// @}
    };
 }
