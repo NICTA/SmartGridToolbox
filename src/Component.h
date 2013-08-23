@@ -21,7 +21,6 @@ namespace SmartGridToolbox
          /** @param name the unique name */
          explicit Component(const std::string & name) : 
             name_(name),
-            tInit_(not_a_date_time),
             t_(not_a_date_time),
             rank_(-1),
             willUpdate_("Component " + name_ + " will update"),
@@ -58,12 +57,6 @@ namespace SmartGridToolbox
          ptime getTime() const
          {
             return t_;
-         }
-
-         /// Get the current step for the object.
-         ptime getInitTime() const
-         {
-            return tInit_;
          }
 
          /** @name Rank
@@ -110,7 +103,6 @@ namespace SmartGridToolbox
          void initialize(const ptime t = not_a_date_time)
          {
             t_ = t;
-            tInit_ = t;
             initializeState(t);
          }
 
@@ -182,7 +174,6 @@ namespace SmartGridToolbox
          
       private:
          std::string name_;
-         ptime tInit_; ///< The initial time.
          ptime t_; ///< The current time.
          ComponentVec dependencies_; ///< I depend on these.
          int rank_;  ///< Evaluation rank, based on weak ordering.

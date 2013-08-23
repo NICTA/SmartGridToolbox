@@ -33,13 +33,15 @@ namespace SmartGridToolbox
       public:
          ZipToGround(const std::string & name) : ZipToGroundBase(name), Y_(0.0), I_(0.0), S_(0.0) {}
 
-         virtual void setY(const UblasVector<Complex> & Y) {Y_ = Y;}
-         virtual void setI(const UblasVector<Complex> & I) {I_ = I;} // Injection.
-         virtual void setS(const UblasVector<Complex> & S) {S_ = S;} // Injection.
+         // Add non-const reference accessors:
+         virtual UblasVector<Complex> & getY() {return Y_;}
+         virtual UblasVector<Complex> & getI() {return I_;} // Injection.
+         virtual UblasVector<Complex> & getS() {return S_;} // Injection.
       /// @}
       
       /// @name My private member variables.
       /// @{
+      private:
          UblasVector<Complex> Y_;      ///< Constant admittance component.
          UblasVector<Complex> I_;      ///< Constant current injection component.
          UblasVector<Complex> S_;      ///< Constant power injection component.

@@ -11,8 +11,10 @@ namespace SmartGridToolbox
 
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "inverter");
+      assertFieldPresent(nd, "dc_power");
       const std::string nameStr = nd["name"].as<std::string>();
-      mod.newComponent<SimpleDCPowerSource>(nameStr);
+      auto & comp = mod.newComponent<SimpleDCPowerSource>(nameStr);
+      comp.setPDC(nd["dc_power"].as<double>());
    }
 
    void SimpleDCPowerSourceParser::postParse(const YAML::Node & nd, Model & mod) const

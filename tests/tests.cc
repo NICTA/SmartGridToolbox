@@ -6,6 +6,7 @@
 #include "Branch.h"
 #include "Bus.h"
 #include "Component.h"
+#include "DCPowerSourceBase.h"
 #include "Event.h"
 #include "Model.h"
 #include "Network.h"
@@ -19,6 +20,7 @@
 #include "Spline.h"
 #include "TimeSeries.h"
 #include "WeakOrder.h"
+#include "ZipToGround.h"
 using namespace SmartGridToolbox;
 using namespace std;
 using namespace boost::posix_time;
@@ -483,9 +485,6 @@ class TestLoad : public ZipToGround
 {
    public:
       TestLoad(const std::string & name) : ZipToGround(name), dt_(seconds(0))
-      {
-         // Empty.
-      }
 
       virtual ptime getValidUntil() const override
       {
@@ -494,9 +493,9 @@ class TestLoad : public ZipToGround
 
       virtual void initializeState(ptime t) override
       {
-         Y_ = UblasVector<Complex>(getPhases().size(), czero);
-         I_ = UblasVector<Complex>(getPhases().size(), czero);
-         S_ = UblasVector<Complex>(getPhases().size(), czero);
+         setY(UblasVector<Complex>(getPhases().size(), czero));
+         setI(UblasVector<Complex>(getPhases().size(), czero));
+         setS(UblasVector<Complex>(getPhases().size(), czero));
       }
 
       virtual void updateState(ptime t0, ptime t1) override
@@ -655,6 +654,83 @@ BOOST_AUTO_TEST_CASE (test_network_2p_identical)
          {
             outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
                     << bus1->getV()(0) << " " << bus2->getV()(0) << " " << bus3->getV()(0) << std::endl;
+         }, "Network updated.");
+
+   while (sim.doNextUpdate())
+   {
+   }
+   outfile.close();
+}
+
+class TestDC : public DCPowerSourceBase
+{
+   public:
+      TestDC(const std::string & name) : DCPowerSourceBase(name), dt_(seconds(0))
+
+      virtual ptime getValidUntil() const override
+      {
+         return getTime() + dt_;
+      }
+
+      virtual void initializeState(ptime t) override
+      {
+         set
+         updateState
+      }
+
+      virtual void updateState(ptime t0, ptime t1) override
+      {
+         for (int i = 0; i < getPhases().size(); ++i)
+         {
+            Y_(i) = sin(dSeconds(t1)/123.0);
+            I_(i) = sin(dSeconds(t1)/300.0) * exp(Complex(0.0, dSeconds(t1)/713.0));
+            S_(i) = sin(dSeconds(t1)/60.0);
+         }
+      }
+
+      time_duration getDt() const
+      {
+         return dt_;
+      }
+      void setDt(time_duration dt)
+      {
+         dt_ = dt;
+      }
+
+   private:
+      time_duration dt_;
+};
+
+BOOST_AUTO_TEST_CASE (test_networked_dc)
+{
+   Model mod;
+   Simulation sim(mod);
+
+   Parser & p = Parser::getGlobalParser();
+   p.parse("test_networked_dc.yaml", mod, sim);
+
+   Bus * bus1 = mod.getComponentNamed<Bus>("bus_1");
+   Bus * bus2 = mod.getComponentNamed<Bus>("bus_2");
+   Bus * bus3 = mod.getComponentNamed<Bus>("bus_3");
+
+   mod.validate();
+   sim.initialize();
+
+   Network * network = mod.getComponentNamed<Network>("network_1");
+   ofstream outfile;
+   outfile.open("test_networked_dc.out");
+   outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
+           << bus1->getV()(0) << " " << bus1->getV()(1) << " " << bus1->getV()(2)
+           << bus2->getV()(0) << " " << bus2->getV()(1) << " " << bus2->getV()(2)
+           << bus3->getV()(0) << " " << bus3->getV()(1) << " " << bus3->getV()(2)
+           << std::endl;
+   network->getEventDidUpdate().addAction([&]()
+         {
+            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
+                    << bus1->getV()(0) << " " << bus1->getV()(1) << " " << bus1->getV()(2) << " "
+                    << bus2->getV()(0) << " " << bus2->getV()(1) << " " << bus2->getV()(2) << " "
+                    << bus3->getV()(0) << " " << bus3->getV()(1) << " " << bus3->getV()(2)
+                    << std::endl;
          }, "Network updated.");
 
    while (sim.doNextUpdate())

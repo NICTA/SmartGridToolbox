@@ -42,29 +42,29 @@ namespace SmartGridToolbox
       int nPhase = comp.getPhases().size();
 
       // Defaults:
-      comp.setY(UblasVector<Complex>(nPhase, czero));
-      comp.setI(UblasVector<Complex>(nPhase, czero));
-      comp.setS(UblasVector<Complex>(nPhase, czero));
+      comp.getY() = UblasVector<Complex>(nPhase, czero);
+      comp.getI() = UblasVector<Complex>(nPhase, czero);
+      comp.getS() = UblasVector<Complex>(nPhase, czero);
 
       if (ndImp)
       {
-         comp.setY(ndImp.as<UblasVector<Complex>>());
+         comp.getY() = ndImp.as<UblasVector<Complex>>();
       }
       if (ndCurLoad)
       {
-         comp.setI(-ndCurLoad.as<UblasVector<Complex>>());
+         comp.getI() = -ndCurLoad.as<UblasVector<Complex>>();
       }
       if (ndCurGen)
       {
-         comp.setI(ndCurGen.as<UblasVector<Complex>>());
+         comp.getI() = ndCurGen.as<UblasVector<Complex>>();
       }
       if (ndSLoad)
       {
-         comp.setS(-ndSLoad.as<UblasVector<Complex>>());
+         comp.getS() = -ndSLoad.as<UblasVector<Complex>>();
       }
       if (ndSGen)
       {
-         comp.setS(ndSGen.as<UblasVector<Complex>>());
+         comp.getS() = ndSGen.as<UblasVector<Complex>>();
       }
    }
 
