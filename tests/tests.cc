@@ -8,6 +8,7 @@
 #include "Component.h"
 #include "DCPowerSourceBase.h"
 #include "Event.h"
+#include "InverterBase.h"
 #include "Model.h"
 #include "Network.h"
 #include "Parser.h"
@@ -700,6 +701,12 @@ BOOST_AUTO_TEST_CASE (test_networked_dc)
    Bus * bus1 = mod.componentNamed<Bus>("bus_1");
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
    Bus * bus3 = mod.componentNamed<Bus>("bus_3");
+   
+   InverterBase * inverter2 = mod.componentNamed<InverterBase>("inverter_bus_2");
+
+   TestDC & tDC = mod.newComponent<TestDC>("tdc");
+   tDC.setDt(seconds(5));
+   inverter2->addDCPowerSource(tDC);
 
    mod.validate();
    sim.initialize();
