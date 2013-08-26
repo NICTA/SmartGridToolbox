@@ -71,13 +71,13 @@ namespace SmartGridToolbox
    class ComponentParser
    {
       public:
-         template<typename T> static ComponentParser & getGlobalCompParser()
+         template<typename T> static ComponentParser & globalCompParser()
          {
             static T t;
             return t; 
          }
 
-         static constexpr const char * getComponentName() 
+         static constexpr const char * componentName() 
          {
             return "component";
          }
@@ -93,7 +93,7 @@ namespace SmartGridToolbox
       friend class ComponentParser;
 
       public:
-         static Parser & getGlobalParser()
+         static Parser & globalParser()
          {
             static Parser parser;
             return parser;
@@ -105,12 +105,12 @@ namespace SmartGridToolbox
 
          template<typename T> void registerComponentParser()
          {
-            compParsers_[T::getComponentName()] = &ComponentParser::getGlobalCompParser<T>();
-            // Note: Could also be implemented using type_info. However, the getComponentName() function is 
+            compParsers_[T::componentName()] = &ComponentParser::globalCompParser<T>();
+            // Note: Could also be implemented using type_info. However, the componentName() function is 
             // useful elsewhere, and this is probably simpler.
          }
 
-         const ComponentParser * getComponentParser(const std::string & name)
+         const ComponentParser * componentParser(const std::string & name)
          {
             auto it = compParsers_.find(name);
             return ((it == compParsers_.end()) ? nullptr : it->second);

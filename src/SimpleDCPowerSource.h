@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    class SimpleDCPowerSourceParser : public ComponentParser
    {
       public:
-         static constexpr const char * getComponentName()
+         static constexpr const char * componentName()
          {
             return "dc_power_source";
          }
@@ -26,7 +26,7 @@ namespace SmartGridToolbox
       /// @{
       public:
          SimpleDCPowerSource(const std::string & name) : DCPowerSourceBase(name) {}
-         virtual double getPDC() const {return PDC_;}
+         virtual double PDC() const {return PDC_;}
       /// @}
 
       /// @name My public member functions.

@@ -22,7 +22,7 @@ namespace SmartGridToolbox
       if (ndCurLoad and ndCurGen)
       {
          {
-            error() << "A " << getComponentName() << " can't have both a current load and injection." << std::endl;
+            error() << "A " << componentName() << " can't have both a current load and injection." << std::endl;
             abort();
          }
       }
@@ -30,7 +30,7 @@ namespace SmartGridToolbox
       if (ndSLoad and ndSGen)
       {
          {
-            error() << "A " << getComponentName() << " can't have both a power load and injection." << std::endl;
+            error() << "A " << componentName() << " can't have both a power load and injection." << std::endl;
             abort();
          }
       }
@@ -38,33 +38,33 @@ namespace SmartGridToolbox
       const std::string nameStr = ndName.as<std::string>();
       ZipToGround & comp = mod.newComponent<ZipToGround>(nameStr);
 
-      comp.setPhases(ndPhases.as<Phases>());
-      int nPhase = comp.getPhases().size();
+      comp.phases() = ndPhases.as<Phases>();
+      int nPhase = comp.phases().size();
 
       // Defaults:
-      comp.getY() = UblasVector<Complex>(nPhase, czero);
-      comp.getI() = UblasVector<Complex>(nPhase, czero);
-      comp.getS() = UblasVector<Complex>(nPhase, czero);
+      comp.Y() = UblasVector<Complex>(nPhase, czero);
+      comp.I() = UblasVector<Complex>(nPhase, czero);
+      comp.S() = UblasVector<Complex>(nPhase, czero);
 
       if (ndImp)
       {
-         comp.getY() = ndImp.as<UblasVector<Complex>>();
+         comp.Y() = ndImp.as<UblasVector<Complex>>();
       }
       if (ndCurLoad)
       {
-         comp.getI() = -ndCurLoad.as<UblasVector<Complex>>();
+         comp.I() = -ndCurLoad.as<UblasVector<Complex>>();
       }
       if (ndCurGen)
       {
-         comp.getI() = ndCurGen.as<UblasVector<Complex>>();
+         comp.I() = ndCurGen.as<UblasVector<Complex>>();
       }
       if (ndSLoad)
       {
-         comp.getS() = -ndSLoad.as<UblasVector<Complex>>();
+         comp.S() = -ndSLoad.as<UblasVector<Complex>>();
       }
       if (ndSGen)
       {
-         comp.getS() = ndSGen.as<UblasVector<Complex>>();
+         comp.S() = ndSGen.as<UblasVector<Complex>>();
       }
    }
 
@@ -72,9 +72,9 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "ZipToGround : postParse." << std::endl);
       const std::string compNameStr = nd["name"].as<std::string>();
-      ZipToGround * zip = mod.getComponentNamed<ZipToGround>(compNameStr);
+      ZipToGround * zip = mod.componentNamed<ZipToGround>(compNameStr);
       std::string busStr = nd["bus"].as<std::string>();
-      Bus * bus = mod.getComponentNamed<Bus>(busStr);
+      Bus * bus = mod.componentNamed<Bus>(busStr);
       if (bus == nullptr)
       {
          error() << "For component " << compNameStr << ", bus " << busStr << " was not found in the model." 

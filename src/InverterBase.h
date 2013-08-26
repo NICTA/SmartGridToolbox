@@ -24,9 +24,9 @@ namespace SmartGridToolbox
       /// @name Public overridden member functions from ZipToGroundBase.
       /// @{
       public:
-         virtual UblasVector<Complex> getY() const override {return UblasVector<Complex>(getPhases().size(), czero);}
-         virtual UblasVector<Complex> getI() const override {return UblasVector<Complex>(getPhases().size(), czero);}
-         virtual UblasVector<Complex> getS() const override; 
+         virtual UblasVector<Complex> Y() const override {return UblasVector<Complex>(phases().size(), czero);}
+         virtual UblasVector<Complex> I() const override {return UblasVector<Complex>(phases().size(), czero);}
+         virtual UblasVector<Complex> S() const override; 
       /// @}
       
       /// @name My public member functions. 
@@ -36,12 +36,12 @@ namespace SmartGridToolbox
 
          void addDCPowerSource(DCPowerSourceBase & source);
 
-         virtual double getEfficiency(double powerDC) const = 0;
+         virtual double efficiency(double powerDC) const = 0;
 
          /// Get the phase angle, as a function of DC power
          /** Note: this makes a limiting assumption that the phase angle of each phase is equal.
           *  If in the future this turns out to be too limiting, then we can use a vector of phase angles. */
-         virtual double getPhaseAngleRadians(double powerDC) const = 0;
+         virtual double phaseAngleRadians(double powerDC) const = 0;
       /// @}
       
       /// @name My private member variables.

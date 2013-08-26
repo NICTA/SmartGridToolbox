@@ -31,18 +31,18 @@ namespace SmartGridToolbox
       public virtual PropertyBase
    {
       public:
-         template<typename G> Property(G get) : getFunction_(get)
+         template<typename G> Property(G get) : function_(get)
          {
             // Empty.
          }
 
          T get() const
          {
-            return getFunction_();
+            return function_();
          }
 
       private:
-         std::function<T ()> getFunction_;
+         std::function<T ()> function_;
    };
 
    template <typename T> class Property<T, PropType::SET> : 

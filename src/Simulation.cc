@@ -18,11 +18,11 @@ namespace SmartGridToolbox
    {
       scheduledUpdates_ = ScheduledUpdates();
       contingentUpdates_ = ContingentUpdates();
-      for (Component * comp : mod_->getComponents())
+      for (Component * comp : mod_->components())
       {
          comp->initialize(startTime_);
-         comp->getEventNeedsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
-               "Simulation insert contingent update of component " + comp->getName());
+         comp->eventNeedsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
+               "Simulation insert contingent update of component " + comp->name());
          scheduledUpdates_.insert(comp);
       }
       currentTime_ = startTime_;
@@ -42,7 +42,7 @@ namespace SmartGridToolbox
       if (scheduledUpdates_.size() > 0)
       {
          schedComp = *schedUpdateIt;
-         nextSchedTime = schedComp->getValidUntil();
+         nextSchedTime = schedComp->validUntil();
          SGT_DEBUG(debug() << "\tStart time = " << startTime_ << std::endl);
          SGT_DEBUG(debug() << "\tCurrent time = " << currentTime_ << std::endl);
          SGT_DEBUG(debug() << "\tNext scheduled time = " << nextSchedTime << std::endl);
@@ -52,8 +52,8 @@ namespace SmartGridToolbox
       {
          // There are contingent updates pending.
          Component * contComp = *contingentUpdates_.begin();
-         SGT_DEBUG(debug() << "\tContingent update component " << contComp->getName() << " from " 
-               << schedComp->getTime() << " to " << currentTime_ << std::endl);
+         SGT_DEBUG(debug() << "\tContingent update component " << contComp->name() << " from " 
+               << schedComp->time() << " to " << currentTime_ << std::endl);
          contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
          // Before updating the component, we need to take it out of the scheduled updates set, because its
          // sort key might change.
@@ -70,8 +70,8 @@ namespace SmartGridToolbox
             didAdvance = true;
          }
          currentTime_ = nextSchedTime;
-         SGT_DEBUG(debug() << "\tScheduled update component " << schedComp->getName() << " from " 
-               << schedComp->getTime() << " to " << currentTime_ << std::endl);
+         SGT_DEBUG(debug() << "\tScheduled update component " << schedComp->name() << " from " 
+               << schedComp->time() << " to " << currentTime_ << std::endl);
          scheduledUpdates_.erase(schedUpdateIt); // Remove the update,
          schedComp->update(currentTime_); // perform the update,
          scheduledUpdates_.insert(schedComp); // and reinsert it.

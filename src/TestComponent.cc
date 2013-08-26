@@ -18,8 +18,8 @@ namespace SmartGridToolbox
    {
       const std::string myName = nd["name"].as<std::string>();
       const std::string anotherName = nd["another"].as<std::string>();
-      TestComponent * comp = mod.getComponentNamed<TestComponent>(myName);
-      TestComponent * another = mod.getComponentNamed<TestComponent>(anotherName);
+      TestComponent * comp = mod.componentNamed<TestComponent>(myName);
+      TestComponent * another = mod.componentNamed<TestComponent>(anotherName);
       comp->setAnother(another);
    }
 }

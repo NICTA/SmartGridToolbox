@@ -15,7 +15,7 @@ namespace SmartGridToolbox
    class BranchParser : public ComponentParser
    {
       public:
-         static constexpr const char * getComponentName()
+         static constexpr const char * componentName()
          {
             return "branch";
          }
@@ -33,23 +33,20 @@ namespace SmartGridToolbox
       public:
          Branch(const std::string & name) : Component(name) {}
 
-         const Bus & getBus0() const {return *bus0_;}
-         Bus & getBus0() {return *bus0_;}
+         const Bus & bus0() const {return *bus0_;}
          void setBus0(Bus & bus0) {bus0_ = &bus0;}
 
-         const Bus & getBus1() const {return *bus1_;}
-         Bus & getBus1() {return *bus1_;}
+         const Bus & bus1() const {return *bus1_;}
          void setBus1(Bus & bus1) {bus1_ = &bus1;}
 
-         Phases getPhases0() const {return phases0_;}
-         void setPhases0(Phases phases0) {phases0_ = phases0;}
+         const Phases & phases0() const {return phases0_;}
+         Phases & phases0() {return phases0_;}
 
-         Phases getPhases1() const {return phases1_;}
-         void setPhases1(Phases phases1) {phases1_ = phases1;}
+         const Phases & phases1() const {return phases1_;}
+         Phases & phases1() {return phases1_;}
 
-         const UblasCMatrix<Complex> & getY() const {return Y_;}
-         UblasCMatrix<Complex> & getY() {return Y_;}
-         void setY(const UblasCMatrix<Complex> & Y) {Y_ = Y;}
+         const UblasCMatrix<Complex> & Y() const {return Y_;}
+         UblasCMatrix<Complex> & Y() {return Y_;}
       /// @}
 
       /// @name My private member variables.

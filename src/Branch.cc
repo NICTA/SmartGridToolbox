@@ -20,21 +20,21 @@ namespace SmartGridToolbox
       const std::string nameStr = nd["name"].as<std::string>();
       Branch & comp = mod.newComponent<Branch>(nameStr);
 
-      comp.setPhases0(nd["phases_0"].as<Phases>());
-      comp.setPhases1(nd["phases_1"].as<Phases>());
+      comp.phases0() = nd["phases_0"].as<Phases>();
+      comp.phases1() = nd["phases_1"].as<Phases>();
 
       const YAML::Node & ndY = nd["Y"];
       const YAML::Node & ndYMatrix = ndY["matrix"];
       const YAML::Node & ndYSimpleLine = ndY["simple_line"];
       if (ndYMatrix)
       {
-         comp.setY(ndYMatrix.as<UblasMatrix<Complex>>());
+         comp.Y() = ndYMatrix.as<UblasMatrix<Complex>>();
       }
       else if (ndYSimpleLine)
       {
          UblasVector<Complex> y = ndYSimpleLine.as<UblasVector<Complex>>();
          UblasMatrix<Complex> Y = YSimpleLine(y); 
-         comp.setY(Y);
+         comp.Y() = Y;
       }
    }
 
@@ -42,10 +42,10 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "Branch : postParse." << std::endl);
       const std::string compNameStr = nd["name"].as<std::string>();
-      Branch * comp = mod.getComponentNamed<Branch>(compNameStr);
+      Branch * comp = mod.componentNamed<Branch>(compNameStr);
 
       const std::string networkStr = nd["network"].as<std::string>();
-      Network * networkComp = mod.getComponentNamed<Network>(networkStr);
+      Network * networkComp = mod.componentNamed<Network>(networkStr);
       if (networkComp != nullptr)
       {
          networkComp->addBranch(*comp);
@@ -58,7 +58,7 @@ namespace SmartGridToolbox
       }
 
       const std::string bus0Str = nd["bus_0"].as<std::string>();
-      Bus * bus0Comp = mod.getComponentNamed<Bus>(bus0Str);
+      Bus * bus0Comp = mod.componentNamed<Bus>(bus0Str);
       if (networkComp != nullptr)
       {
          comp->setBus0(*bus0Comp);
@@ -71,7 +71,7 @@ namespace SmartGridToolbox
       }
 
       const std::string bus1Str = nd["bus_1"].as<std::string>();
-      Bus * bus1Comp = mod.getComponentNamed<Bus>(bus1Str);
+      Bus * bus1Comp = mod.componentNamed<Bus>(bus1Str);
       if (networkComp != nullptr)
       {
          comp->setBus1(*bus1Comp);

@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    class ZipToGroundParser : public ComponentParser
    {
       public:
-         static constexpr const char * getComponentName()
+         static constexpr const char * componentName()
          {
             return "zip_to_ground";
          }
@@ -23,9 +23,9 @@ namespace SmartGridToolbox
       /// @name Overridden public member functions from ZipToGroundBase.
       /// @{
       public:
-         virtual UblasVector<Complex> getY() const override {return Y_;}
-         virtual UblasVector<Complex> getI() const override {return I_;} // Injection.
-         virtual UblasVector<Complex> getS() const override {return S_;} // Injection.
+         virtual UblasVector<Complex> Y() const override {return Y_;}
+         virtual UblasVector<Complex> I() const override {return I_;} // Injection.
+         virtual UblasVector<Complex> S() const override {return S_;} // Injection.
       /// @}
 
       /// @name My public member functions.
@@ -34,9 +34,9 @@ namespace SmartGridToolbox
          ZipToGround(const std::string & name) : ZipToGroundBase(name), Y_(0.0), I_(0.0), S_(0.0) {}
 
          // Add non-const reference accessors:
-         virtual UblasVector<Complex> & getY() {return Y_;}
-         virtual UblasVector<Complex> & getI() {return I_;} // Injection.
-         virtual UblasVector<Complex> & getS() {return S_;} // Injection.
+         virtual UblasVector<Complex> & Y() {return Y_;}
+         virtual UblasVector<Complex> & I() {return I_;} // Injection.
+         virtual UblasVector<Complex> & S() {return S_;} // Injection.
       /// @}
       
       /// @name My private member variables.

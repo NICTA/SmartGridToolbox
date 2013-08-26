@@ -20,10 +20,10 @@ namespace SmartGridToolbox
       bool ok = solver_.solve();
       if (ok)
       {
-         for (const auto & busPair: solver_.getBusses())
+         for (const auto & busPair: solver_.busses())
          {
             Bus * bus = findBus(busPair.second->id_);
-            bus->setV(busPair.second->V_); // Push the state back onto bus. We don't want to trigger any events.    
+            bus->V() = busPair.second->V_; // Push the state back onto bus. We don't want to trigger any events.    
          }
       }
    }
@@ -35,13 +35,13 @@ namespace SmartGridToolbox
       solver_.reset();
       for (const Bus * bus : busVec_)
       {
-         solver_.addBus(bus->getName(), bus->getType(), bus->getPhases(), bus->getV(), bus->getY(), bus->getI(),
-                        bus->getS());
+         solver_.addBus(bus->name(), bus->type(), bus->phases(), bus->V(), bus->Y(), bus->I(),
+                        bus->S());
       }
       for (const Branch * branch : branchVec_)
       {
-         solver_.addBranch(branch->getBus0().getName(), branch->getBus1().getName(), branch->getPhases0(),
-                           branch->getPhases1(), branch->getY());
+         solver_.addBranch(branch->bus0().name(), branch->bus1().name(), branch->phases0(),
+                           branch->phases1(), branch->Y());
       }
       solver_.validate();
    }
@@ -53,25 +53,25 @@ namespace SmartGridToolbox
       for (const Bus * bus : busVec_)
       {
          debug() << "\t\tBus:" << std::endl;
-         debug() << "\t\t\tName   : " << bus->getName() << std::endl;
-         debug() << "\t\t\tType   : " << bus->getType() << std::endl;
-         debug() << "\t\t\tPhases : " << bus->getPhases() << std::endl;
-         debug() << "\t\t\tV      : " << bus->getV() << std::endl;
-         debug() << "\t\t\tY      : " << bus->getY() << std::endl;
-         debug() << "\t\t\tI      : " << bus->getI() << std::endl;
-         debug() << "\t\t\tS      : " << bus->getS() << std::endl;
+         debug() << "\t\t\tName   : " << bus->name() << std::endl;
+         debug() << "\t\t\tType   : " << bus->type() << std::endl;
+         debug() << "\t\t\tPhases : " << bus->phases() << std::endl;
+         debug() << "\t\t\tV      : " << bus->V() << std::endl;
+         debug() << "\t\t\tY      : " << bus->Y() << std::endl;
+         debug() << "\t\t\tI      : " << bus->I() << std::endl;
+         debug() << "\t\t\tS      : " << bus->S() << std::endl;
       }
       debug() << "\tBranches:" << std::endl;
       for (const Branch * branch : branchVec_)
       {
          debug() << "\t\tBranch:" << std::endl; 
          debug() << "\t\t\tBus names  : " 
-            << branch->getBus0().getName() << " " << branch->getBus1().getName() << std::endl;
-         debug() << "\t\t\tBus phases : " << branch->getPhases0() << " " << branch->getPhases1() << std::endl;
+            << branch->bus0().name() << " " << branch->bus1().name() << std::endl;
+         debug() << "\t\t\tBus phases : " << branch->phases0() << " " << branch->phases1() << std::endl;
          debug() << "\t\t\tY          :" << std::endl;
-         for (int i = 0; i < branch->getY().size1(); ++i)
+         for (int i = 0; i < branch->Y().size1(); ++i)
          {
-            debug() << "\t\t\t\t" << std::setw(16) << row(branch->getY(), i) << std::endl;
+            debug() << "\t\t\t\t" << std::setw(16) << row(branch->Y(), i) << std::endl;
          }
       }
    }

@@ -9,7 +9,7 @@ namespace SmartGridToolbox
       {
          comp->ensureAtTime(t1);
          const Load & ld = dynamic_cast<const Load &>(*comp);
-         P_ += ld.getPower();
+         P_ += ld.power();
       }
    }
 }

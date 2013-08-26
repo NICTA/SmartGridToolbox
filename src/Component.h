@@ -42,7 +42,7 @@ namespace SmartGridToolbox
          /// @}
 
          /// Get the name of the object.
-         const std::string & getName() const
+         const std::string & name() const
          {
             return name_;
          }
@@ -54,9 +54,15 @@ namespace SmartGridToolbox
          }
          
          /// Get the current step for the object.
-         ptime getTime() const
+         ptime time() const
          {
             return t_;
+         }
+
+         /// Get the initial time for the object.
+         ptime initTime() const
+         {
+            return tInit_;
          }
 
          /** @name Rank
@@ -65,7 +71,7 @@ namespace SmartGridToolbox
          ///@{
 
          /// Get the rank of the object.
-         int getRank() const
+         int rank() const
          {
             return rank_;
          }
@@ -81,7 +87,7 @@ namespace SmartGridToolbox
          /// @name Dependencies.
          ///@{
 
-         const std::vector<Component *> & getDependencies() const
+         const std::vector<Component *> & dependencies() const
          {
             return dependencies_;
          }
@@ -103,6 +109,7 @@ namespace SmartGridToolbox
          void initialize(const ptime t = not_a_date_time)
          {
             t_ = t;
+            tInit_ = t;
             initializeState(t);
          }
 
@@ -114,16 +121,16 @@ namespace SmartGridToolbox
          /** @param t the timestamp to advance to. */
          void update(ptime t);
 
-         virtual ptime getValidUntil() const
+         virtual ptime validUntil() const
          {
             return pos_infin;
          }
 
          /// @name Events
          /// @{
-         Event & getEventWillUpdate() {return willUpdate_;}
-         Event & getEventDidUpdate() {return didUpdate_;}
-         Event & getEventNeedsUpdate() {return needsUpdate_;}
+         Event & eventWillUpdate() {return willUpdate_;}
+         Event & eventDidUpdate() {return didUpdate_;}
+         Event & eventNeedsUpdate() {return needsUpdate_;}
          /// @}
 
          /// @}
@@ -131,13 +138,13 @@ namespace SmartGridToolbox
          /// @name Properties
          /// @{
 
-         template <typename T, PropType A> const Property<T, A> * getProperty(const std::string & name) const
+         template <typename T, PropType A> const Property<T, A> * property(const std::string & name) const
          {
             PropertyMap::const_iterator it = propertyMap_.find(name);
             return (it == propertyMap_.end()) ? 0 : dynamic_cast<const Property<T, A> *>(it->second);
          }
 
-         template <typename T, PropType A> Property<T, A> * getProperty(const std::string & name)
+         template <typename T, PropType A> Property<T, A> * property(const std::string & name)
          {
             PropertyMap::const_iterator it = propertyMap_.find(name);
             return (it == propertyMap_.end()) ? 0 : dynamic_cast<Property<T, A> *>(it->second);
@@ -175,6 +182,7 @@ namespace SmartGridToolbox
       private:
          std::string name_;
          ptime t_; ///< The current time.
+         ptime tInit_; ///< The initial time.
          ComponentVec dependencies_; ///< I depend on these.
          int rank_;  ///< Evaluation rank, based on weak ordering.
          PropertyMap propertyMap_;

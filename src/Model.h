@@ -31,7 +31,7 @@ namespace SmartGridToolbox
          /// Destructor.
          ~Model();
 
-         const std::string & getName() const
+         const std::string & name() const
          {
             return name_;
          }
@@ -42,14 +42,14 @@ namespace SmartGridToolbox
 
          void addPrototype(Component & comp);
 
-         template<typename T> const T * getPrototypeNamed(const std::string & name) const
+         template<typename T> const T * prototypeNamed(const std::string & name) const
          {
             ComponentMap::const_iterator it = protoMap_.find(name);
             return (it == protoMap_.end()) ? 0 : dynamic_cast<const T *>(it->second);
          }
-         template<typename T> T * getPrototypeNamed(const std::string & name)
+         template<typename T> T * prototypeNamed(const std::string & name)
          {
-            return const_cast<T *>((const_cast<const Model *>(this))->getPrototypeNamed<T>(name));
+            return const_cast<T *>((const_cast<const Model *>(this))->prototypeNamed<T>(name));
          }
 
          int nPrototypes()
@@ -57,7 +57,7 @@ namespace SmartGridToolbox
             return protoMap_.size();
          }
 
-         const ComponentVec & getPrototypes() const
+         const ComponentVec & prototypes() const
          {
             return protoVec_;
          }
@@ -69,14 +69,14 @@ namespace SmartGridToolbox
             return *comp;
          }
 
-         template<typename T> const T * getComponentNamed(const std::string & name) const
+         template<typename T> const T * componentNamed(const std::string & name) const
          {
             ComponentMap::const_iterator it = compMap_.find(name);
             return (it == compMap_.end()) ? 0 : dynamic_cast<const T *>(it->second);
          }
-         template<typename T> T * getComponentNamed(const std::string & name)
+         template<typename T> T * componentNamed(const std::string & name)
          {
-            return const_cast<T *>((const_cast<const Model *>(this))-> getComponentNamed<T>(name));
+            return const_cast<T *>((const_cast<const Model *>(this))-> componentNamed<T>(name));
          }
 
          int NComponents()
@@ -84,20 +84,20 @@ namespace SmartGridToolbox
             return compVec_.size();
          }
 
-         template<typename T> const T * getComponentAt(int i) const
+         template<typename T> const T * componentAt(int i) const
          {
             return (i >= 0 && i < compVec_.size()) ? dynamic_cast<T *>(compVec_[i]) : 0;
          }
-         template<typename T> T * getComponentAt(int i)
+         template<typename T> T * componentAt(int i)
          {
-            return const_cast<T *>((const_cast<const Model *>(this))-> getComponentAt<T>(i));
+            return const_cast<T *>((const_cast<const Model *>(this))-> componentAt<T>(i));
          }
 
-         const ComponentVec & getComponents() const
+         const ComponentVec & components() const
          {
             return compVec_;
          }
-         ComponentVec & getComponents()
+         ComponentVec & components()
          {
             return compVec_;
          }

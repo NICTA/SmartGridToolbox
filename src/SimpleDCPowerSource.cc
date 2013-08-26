@@ -22,10 +22,10 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "SimpleDCPowerSource : postParse." << std::endl);
 
       const std::string nameStr = nd["name"].as<std::string>();
-      SimpleDCPowerSource & comp = *mod.getComponentNamed<SimpleDCPowerSource>(nameStr);
+      SimpleDCPowerSource & comp = *mod.componentNamed<SimpleDCPowerSource>(nameStr);
 
       const std::string inverterStr = nd["inverter"].as<std::string>();
-      InverterBase * inverterComp = mod.getComponentNamed<InverterBase>(inverterStr);
+      InverterBase * inverterComp = mod.componentNamed<InverterBase>(inverterStr);
       if (inverterComp != nullptr)
       {
          inverterComp->addDCPowerSource(comp);

@@ -12,15 +12,15 @@ namespace SmartGridToolbox
    void Model::addPrototype(Component & comp)
    {
       std::pair<ComponentMap::iterator, bool> result = protoMap_.insert(
-            make_pair(comp.getName(), &comp));
+            make_pair(comp.name(), &comp));
       if (result.second == 0) {
-         error() << "Prototype " << comp.getName() << " already exists in model!" << std::endl;
+         error() << "Prototype " << comp.name() << " already exists in model!" << std::endl;
          abort();
       }
       else
       {
          protoVec_.push_back(&comp);
-         message() << "Prototype " << comp.getName() << " added to model." << std::endl;
+         message() << "Prototype " << comp.name() << " added to model." << std::endl;
       }
    }
 
@@ -29,10 +29,10 @@ namespace SmartGridToolbox
       message() << "Model before validation:" << std::endl;
       for (const Component * comp : compVec_)
       {
-         message() << "\t" << comp->getName() << std::endl;
-         for (Component * const dep : comp->getDependencies())
+         message() << "\t" << comp->name() << std::endl;
+         for (Component * const dep : comp->dependencies())
          {
-            message() << "\t\t" << dep->getName() << std::endl;
+            message() << "\t\t" << dep->name() << std::endl;
          }
       }
 
@@ -44,45 +44,45 @@ namespace SmartGridToolbox
       WoGraph g(compVec_.size());
       for (int i = 0; i < compVec_.size(); ++i)
       {
-         for (const Component * dep : compVec_[i]->getDependencies())
+         for (const Component * dep : compVec_[i]->dependencies())
          {
-            g.link(dep->getRank(), i);
+            g.link(dep->rank(), i);
          }
       }
       g.weakOrder();
       for (int i = 0; i < g.size(); ++i)
       {
-         int idx_i = g.getNodes()[i]->getIndex();
+         int idx_i = g.nodes()[i]->index();
          compVec_[idx_i]->setRank(i);
       }
       std::sort(compVec_.begin(), compVec_.end(), 
             [](const Component * lhs, const Component * rhs) -> bool 
             {
-               return lhs->getRank() < rhs->getRank();
+               return lhs->rank() < rhs->rank();
             });
       isValid_ = true;
       message() << "Model after validation:" << std::endl;
       for (const Component * comp : compVec_)
       {
-         message() << "\t" << comp->getName() << std::endl;
-         for (Component * const dep : comp->getDependencies())
+         message() << "\t" << comp->name() << std::endl;
+         for (Component * const dep : comp->dependencies())
          {
-            message() << "\t\t" << dep->getName() << std::endl;
+            message() << "\t\t" << dep->name() << std::endl;
          }
       }
    }
 
    void Model::addGenericComponent(Component * comp)
    {
-      std::pair<ComponentMap::iterator, bool> result = compMap_.insert(make_pair(comp->getName(), comp));
+      std::pair<ComponentMap::iterator, bool> result = compMap_.insert(make_pair(comp->name(), comp));
       if (result.second == 0) {
-         error() << "Component " << comp->getName() << " occurs more than once in the model!" << std::endl;
+         error() << "Component " << comp->name() << " occurs more than once in the model!" << std::endl;
          abort();
       }
       else
       {
          compVec_.push_back(comp);
-         message() << "Component " << comp->getName() << " added to model." << std::endl;
+         message() << "Component " << comp->name() << " added to model." << std::endl;
       }
    }
 

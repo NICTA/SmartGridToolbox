@@ -17,10 +17,10 @@ namespace SmartGridToolbox
       public:
          bool operator()(const Component * lhs, const Component * rhs)
          {
-            return ((lhs->getValidUntil() < rhs->getValidUntil()) ||
-                    (lhs->getValidUntil() == rhs->getValidUntil() && lhs->getRank() < rhs->getRank()) ||
-                    (lhs->getValidUntil() == rhs->getValidUntil() && lhs->getRank() == rhs->getRank() && 
-                     (lhs->getName() < rhs->getName())));
+            return ((lhs->validUntil() < rhs->validUntil()) ||
+                    (lhs->validUntil() == rhs->validUntil() && lhs->rank() < rhs->rank()) ||
+                    (lhs->validUntil() == rhs->validUntil() && lhs->rank() == rhs->rank() && 
+                     (lhs->name() < rhs->name())));
          }
    };
 
@@ -30,8 +30,8 @@ namespace SmartGridToolbox
       public:
          bool operator()(const Component * lhs, const Component * rhs)
          {
-            return ((lhs->getRank() < rhs->getRank()) ||
-                    ((lhs->getRank() == rhs->getRank()) && (lhs->getName() < rhs->getName())));
+            return ((lhs->rank() < rhs->rank()) ||
+                    ((lhs->rank() == rhs->rank()) && (lhs->name() < rhs->name())));
          }
    };
 
@@ -49,18 +49,18 @@ namespace SmartGridToolbox
          }
 
          /// Model accessor.
-         const Model & getModel() const
+         const Model & model() const
          {
             return *mod_;
          }
 
          /// Model accessor.
-         Model & getModel()
+         Model & model()
          {
-            return const_cast<Model &>((const_cast<const Simulation *>(this))->getModel());
+            return const_cast<Model &>((const_cast<const Simulation *>(this))->model());
          }
 
-         const ptime & getStartTime() const
+         const ptime & startTime() const
          {
             return startTime_;
          }
@@ -70,7 +70,7 @@ namespace SmartGridToolbox
             startTime_ = time;
          }
 
-         const ptime & getEndTime() const
+         const ptime & endTime() const
          {
             return endTime_;
          }
@@ -80,7 +80,7 @@ namespace SmartGridToolbox
             endTime_ = time;
          }
 
-         const ptime & getCurrentTime() const
+         const ptime & currentTime() const
          {
             return currentTime_;
          }
@@ -95,7 +95,7 @@ namespace SmartGridToolbox
          void signalAbnormalExit();
 
          /// Get the time did advance event.
-         Event & getEventTimeDidAdvance() {return timeDidAdvance_;}
+         Event & eventTimeDidAdvance() {return timeDidAdvance_;}
 
       private:
          typedef std::set<Component *, ScheduledUpdatesComp> ScheduledUpdates;

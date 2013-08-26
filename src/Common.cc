@@ -38,7 +38,7 @@ namespace SmartGridToolbox
          start_ = Qi::eps[Phoenix::bind(&CGram::init, this)] >>
             ((bracketedBoth_ | bracketedIm_ | bracketedRe_ | rePlusIm_ | reMinusIm_ | im_ | re_) >>
              -(phaseRad_ | phaseDeg_))
-            [Qi::_val = Phoenix::construct<Complex>(Phoenix::bind(&CGram::getResult, this))];
+            [Qi::_val = Phoenix::construct<Complex>(Phoenix::bind(&CGram::result, this))];
       }
 
       void init()
@@ -57,7 +57,7 @@ namespace SmartGridToolbox
       {
          result_ *= polar(1.0, ang * pi / 180.0);
       }
-      Complex getResult()
+      Complex result()
       {
          return result_;
       }

@@ -12,7 +12,7 @@ namespace SmartGridToolbox
    {
       // Overridden functions: from Component.
       public:
-         virtual ptime getValidUntil() const override {return getTime() + dt_;}
+         virtual ptime validUntil() const override {return time() + dt_;}
 
       private:
          virtual void initializeState(ptime t) override 
@@ -24,7 +24,7 @@ namespace SmartGridToolbox
 
       // Overridden functions: from Load.
       public:
-         virtual Complex getPower() const override {return P_;}
+         virtual Complex power() const override {return P_;}
 
       public:
          Meter(const std::string & name) :

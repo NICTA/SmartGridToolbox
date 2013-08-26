@@ -185,7 +185,7 @@ namespace SmartGridToolbox
             int busIdxI = i / branch->nPhase_; // 0 or 1
             int branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
             const BusNR * busI = busses[busIdxI];
-            int busPhaseIdxI = busI->phases_.getPhaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
+            int busPhaseIdxI = busI->phases_.phaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
             const NodeNR * nodeI = busI->nodes_[busPhaseIdxI];
             int idxNodeI = nodeI->idx_;
 
@@ -197,7 +197,7 @@ namespace SmartGridToolbox
                int busIdxK = k / branch->nPhase_; // 0 or 1
                int branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
                const BusNR * busK = busses[busIdxK];
-               int busPhaseIdxK = busK->phases_.getPhaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
+               int busPhaseIdxK = busK->phases_.phaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
                const NodeNR * nodeK = busK->nodes_[busPhaseIdxK];
                int idxNodeK = nodeK->idx_;
 

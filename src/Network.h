@@ -14,7 +14,7 @@ namespace SmartGridToolbox
    class NetworkParser : public ComponentParser
    {
       public:
-         static constexpr const char * getComponentName() 
+         static constexpr const char * componentName() 
          {
             return "network";
          }
@@ -52,9 +52,9 @@ namespace SmartGridToolbox
          void addBus(Bus & bus)
          {
             busVec_.push_back(&bus);
-            busMap_[bus.getName()] = &bus;
-            bus.getEventDidUpdate().addAction([this](){getEventNeedsUpdate().trigger();}, 
-                  "Trigger Network " + getName() + " needs update");
+            busMap_[bus.name()] = &bus;
+            bus.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();}, 
+                  "Trigger Network " + name() + " needs update");
          }
 
          const Bus * findBus(const std::string & name) const
@@ -70,8 +70,8 @@ namespace SmartGridToolbox
          void addBranch(Branch & branch)
          {
             branchVec_.push_back(&branch);
-            branch.getEventDidUpdate().addAction([this](){getEventNeedsUpdate().trigger();},
-                  "Trigger Network " + getName() + " needs update");
+            branch.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();},
+                  "Trigger Network " + name() + " needs update");
          }
 
          virtual void rebuildNetwork();

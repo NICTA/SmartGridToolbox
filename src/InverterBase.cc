@@ -7,8 +7,8 @@ namespace SmartGridToolbox
    void InverterBase::addDCPowerSource(DCPowerSourceBase & source)
    {
       sources_.push_back(&source);
-      source.getEventDidUpdate().addAction([this](){getEventNeedsUpdate().trigger();}, 
-            "Trigger InverterBase " + getName() + " needs update.");
+      source.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();}, 
+            "Trigger InverterBase " + name() + " needs update.");
       // TODO: this will recalculate all zips. Efficiency?
    }
 
@@ -17,12 +17,12 @@ namespace SmartGridToolbox
       PDC_ = 0.0;
       for (const DCPowerSourceBase * source : sources_)
       {
-         PDC_ += source->getPDC();
+         PDC_ += source->PDC();
       }
    }
 
-   UblasVector<Complex> InverterBase::getS() const
+   UblasVector<Complex> InverterBase::S() const
    {
-      return UblasVector<Complex>(getPhases().size(), polar(PDC_ * getEfficiency(PDC_), getPhaseAngleRadians(PDC_)));
+      return UblasVector<Complex>(phases().size(), polar(PDC_ * efficiency(PDC_), phaseAngleRadians(PDC_)));
    }
 }

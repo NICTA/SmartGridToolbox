@@ -183,9 +183,9 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "Parsed objects." << std::endl);
 
       message() << "Finished parsing." << std::endl;
-      message() << "Name = " << model.getName() << std::endl;
-      message() << "Start time = " << simulation.getStartTime() << std::endl;
-      message() << "End time = " << simulation.getEndTime() << std::endl;
+      message() << "Name = " << model.name() << std::endl;
+      message() << "Start time = " << simulation.startTime() << std::endl;
+      message() << "End time = " << simulation.endTime() << std::endl;
    }
    
    Parser::Parser()
@@ -261,7 +261,7 @@ namespace SmartGridToolbox
          {
             std::string name = compPair.first.as<std::string>();
             message() << "Parsing component " <<  name << std::endl;
-            const ComponentParser * compParser = getComponentParser(name);
+            const ComponentParser * compParser = componentParser(name);
             if (compParser == nullptr)
             {
                warning() << "I don't know how to parse component " << name << std::endl;
@@ -275,7 +275,7 @@ namespace SmartGridToolbox
          {
             std::string name = compPair.first.as<std::string>();
             message() << "Post parsing component " << name << std::endl;
-            const ComponentParser * compParser = getComponentParser(name);
+            const ComponentParser * compParser = componentParser(name);
             if (compParser == nullptr)
             {
                warning() << "I don't know how to parse component " << name << std::endl;

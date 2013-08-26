@@ -18,7 +18,7 @@ int main(int argc, const char ** argv)
 
    Model mod;
    Simulation sim(mod);
-   Parser & p = Parser::getGlobalParser();
+   Parser & p = Parser::globalParser();
    p.parse(configName, mod, sim);
    mod.validate();
    sim.initialize();

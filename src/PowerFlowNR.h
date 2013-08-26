@@ -77,7 +77,7 @@ namespace SmartGridToolbox
          void addBus(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
                      const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S);
 
-         const BusMap & getBusses()
+         const BusMap & busses()
          {
             return busses_;
          }
@@ -85,7 +85,7 @@ namespace SmartGridToolbox
          void addBranch(const std::string & idBus0, const std::string & idBus1, Phases phases0, Phases phases1,
                         const UblasMatrix<Complex> & Y);
 
-         const BranchVec & getBranches()
+         const BranchVec & branches()
          {
             return branches_;
          }

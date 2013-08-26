@@ -16,7 +16,7 @@ namespace SmartGridToolbox
          virtual void postParse(const YAML::Node & nd, 
                                 Model & mod) const override;
 
-         static constexpr const char * getComponentName() 
+         static constexpr const char * componentName() 
          {
             return "test_component";
          }
@@ -27,9 +27,9 @@ namespace SmartGridToolbox
       /// @name Public overridden functions: from Component.
       /// @{
       public:
-         virtual ptime getValidUntil() const override 
+         virtual ptime validUntil() const override 
          {
-            return getTime() + seconds(5);
+            return time() + seconds(5);
          }
       /// @}
 
@@ -45,11 +45,11 @@ namespace SmartGridToolbox
       public:
          TestComponent(const std::string & name) : Component(name) {}
 
-         int getValue() {return value_;}
+         int value() {return value_;}
          void setValue(int value) {value_ = value;}
 
-         const TestComponent * getAnother() const {return another_;}
-         TestComponent * getAnother() {return another_;}
+         const TestComponent * another() const {return another_;}
+         TestComponent * another() {return another_;}
          void setAnother(TestComponent * another) {another_ = another;}
       /// @}
 

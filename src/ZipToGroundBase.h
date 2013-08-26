@@ -13,12 +13,12 @@ namespace SmartGridToolbox
       public:
          ZipToGroundBase(const std::string & name) : Component(name) {}
 
-         virtual Phases getPhases() const {return phases_;}
-         virtual void setPhases(Phases phases) {phases_ = phases;}
+         virtual const Phases & phases() const {return phases_;}
+         virtual Phases & phases() {return phases_;}
 
-         virtual UblasVector<Complex> getY() const = 0;
-         virtual UblasVector<Complex> getI() const = 0;
-         virtual UblasVector<Complex> getS() const = 0;
+         virtual UblasVector<Complex> Y() const = 0;
+         virtual UblasVector<Complex> I() const = 0;
+         virtual UblasVector<Complex> S() const = 0;
       /// @}
       
       /// @name My private member variables.

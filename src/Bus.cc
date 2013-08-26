@@ -16,17 +16,17 @@ namespace SmartGridToolbox
 
       const std::string nameStr = nd["name"].as<std::string>();
       Bus & comp = mod.newComponent<Bus>(nameStr);
-      comp.setPhases(nd["phases"].as<Phases>());
+      comp.phases() = nd["phases"].as<Phases>();
       comp.setType(nd["type"].as<BusType>());
 
-      int nPhase = comp.getPhases().size();
-      comp.setNominalV(UblasVector<Complex>(nPhase, czero));
-      comp.setV(UblasVector<Complex>(nPhase, czero));
+      int nPhase = comp.phases().size();
+      comp.nominalV() = UblasVector<Complex>(nPhase, czero);
+      comp.V() = UblasVector<Complex>(nPhase, czero);
       auto ndNominal = nd["nominal_voltage"];
       if (ndNominal)
       {
-         comp.setNominalV(ndNominal.as<UblasVector<Complex>>());
-         comp.setV(comp.getNominalV());
+         comp.nominalV() = ndNominal.as<UblasVector<Complex>>();
+         comp.V() = comp.nominalV();
       }
    }
 
@@ -34,10 +34,10 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "Bus : postParse." << std::endl);
       const std::string compNameStr = nd["name"].as<std::string>();
-      Bus * comp = mod.getComponentNamed<Bus>(compNameStr);
+      Bus * comp = mod.componentNamed<Bus>(compNameStr);
 
       const std::string networkStr = nd["network"].as<std::string>();
-      Network * networkComp = mod.getComponentNamed<Network>(networkStr);
+      Network * networkComp = mod.componentNamed<Network>(networkStr);
       if (networkComp != nullptr)
       {
          networkComp->addBus(*comp);
@@ -57,9 +57,9 @@ namespace SmartGridToolbox
       S_ = UblasVector<Complex>(phases_.size(), czero);
       for (const ZipToGroundBase * zip : zipsToGround_)
       {
-         Y_ += zip->getY();
-         I_ += zip->getI(); // Injection.
-         S_ += zip->getS(); // Injection.
+         Y_ += zip->Y();
+         I_ += zip->I(); // Injection.
+         S_ += zip->S(); // Injection.
       }
    }
 
@@ -71,17 +71,17 @@ namespace SmartGridToolbox
       }
       for (const ZipToGroundBase * zip : zipsToGround_)
       {
-         Y_ += zip->getY();
-         I_ += zip->getI(); // Injection.
-         S_ += zip->getS(); // Injection.
+         Y_ += zip->Y();
+         I_ += zip->I(); // Injection.
+         S_ += zip->S(); // Injection.
       }
    }
 
    void Bus::addZipToGround(ZipToGroundBase & zipToGround)
    {
       zipsToGround_.push_back(&zipToGround);
-      zipToGround.getEventDidUpdate().addAction([this](){getEventNeedsUpdate().trigger();}, 
-            "Trigger Bus " + getName() + " needs update.");
+      zipToGround.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();}, 
+            "Trigger Bus " + name() + " needs update.");
       // TODO: this will recalculate all zips. Efficiency?
    }
 }

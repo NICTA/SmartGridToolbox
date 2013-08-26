@@ -15,7 +15,7 @@ namespace SmartGridToolbox
    class BusParser : public ComponentParser
    {
       public:
-         static constexpr const char * getComponentName()
+         static constexpr const char * componentName()
          {
             return "bus";
          }
@@ -28,6 +28,8 @@ namespace SmartGridToolbox
 
    class Bus : public Component
    {
+      friend class BusParser;
+
       /// @name Private overridden functions: from Component.
       /// @{
       private:
@@ -40,23 +42,28 @@ namespace SmartGridToolbox
       public:
          Bus(const std::string & name) : Component(name) {}
 
-         BusType getType() const {return type_;}
-         void setType(BusType type) {type_ = type;}
+         BusType type() const {return type_;}
+         void setType(const BusType type) {type_ = type;}
 
-         Phases getPhases() const {return phases_;}
-         void setPhases(Phases phases) {phases_ = phases;}
+         const Phases & phases() const {return phases_;}
+         Phases & phases() {return phases_;}
 
-         const UblasVector<Complex> & getNominalV() const {return nominalV_;}
-         void setNominalV(const UblasVector<Complex> & nominalV) {nominalV_ = nominalV;}
+         const UblasVector<Complex> & nominalV() const {return nominalV_;}
+         UblasVector<Complex> & nominalV() {return nominalV_;}
 
-         const UblasVector<Complex> & getV() const {return V_;}
-         void setV(const UblasVector<Complex> & V) {V_ = V;}
+         const UblasVector<Complex> & V() const {return V_;}
+         UblasVector<Complex> & V() {return V_;}
 
          void addZipToGround(ZipToGroundBase & zipToGround);
 
-         const UblasVector<Complex> & getY() const {return Y_;} // Injection.
-         const UblasVector<Complex> & getI() const {return I_;} // Injection.
-         const UblasVector<Complex> & getS() const {return S_;} // Injection.
+         const UblasVector<Complex> & Y() const {return Y_;} // Injection.
+         UblasVector<Complex> & Y() {return Y_;} // Injection.
+
+         const UblasVector<Complex> & I() const {return I_;} // Injection.
+         UblasVector<Complex> & I() {return I_;} // Injection.
+
+         const UblasVector<Complex> & S() const {return S_;} // Injection.
+         UblasVector<Complex> & S() {return S_;} // Injection.
       /// @}
       
       /// @name My private member variables.

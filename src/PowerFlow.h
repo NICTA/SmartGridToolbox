@@ -64,9 +64,9 @@ namespace SmartGridToolbox
          }
          bool isSubsetOf(const Phases & other) const {return (*this & other) == *this;}
 
-         int size() {return phaseVec_.size();}
+         int size() const {return phaseVec_.size();}
          Phase operator[](int i) const {return phaseVec_[i];}
-         int getPhaseIndex(Phase p) const {return hasPhase(p) ? idxMap_.at(p) : -1;}
+         int phaseIndex(Phase p) const {return hasPhase(p) ? idxMap_.at(p) : -1;}
          IdxMap::iterator begin() {return idxMap_.begin();}
          IdxMap::iterator end() {return idxMap_.end();}
          IdxMap::const_iterator begin() const {return idxMap_.begin();}

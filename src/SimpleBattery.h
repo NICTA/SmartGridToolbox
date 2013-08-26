@@ -24,37 +24,37 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         double getInitCharge() {return initCharge_;}
+         double initCharge() {return initCharge_;}
          void setInitCharge(double val) {initCharge_ = val;}
 
-         double getMaxCharge() {return maxCharge_;}
+         double maxCharge() {return maxCharge_;}
          void setMaxCharge(double val) {maxCharge_ = val;}
 
-         double getMaxChargePower() {return maxChargePower_;}
+         double maxChargePower() {return maxChargePower_;}
          void setMaxChargePower(double val) {maxChargePower_ = val;}
 
-         double getMaxDischargePower() {return maxDischargePower_;}
+         double maxDischargePower() {return maxDischargePower_;}
          void setMaxDischargePower(double val) {maxDischargePower_ = val;}
 
-         double getChargeEfficiency() {return chargeEfficiency_;}
+         double chargeEfficiency() {return chargeEfficiency_;}
          void setChargeEfficiency(double val) {chargeEfficiency_ = val;}
 
-         double getDischargeEfficiency() {return dischargeEfficiency_;}
+         double dischargeEfficiency() {return dischargeEfficiency_;}
          void setDischargeEfficiency(double val) {dischargeEfficiency_ = val;}
 
-         double getCharge() {return charge_;}
+         double charge() {return charge_;}
 
-         double getRequestedPower() {return requestedPower_;}
+         double requestedPower() {return requestedPower_;}
          void setRequestedPower(double val) {requestedPower_ = val;}
 
-         double getPower() 
+         double power() 
          {
             return requestedPower_ < 0 
             ? std::max(requestedPower_, -maxDischargePower_)
             : std::min(requestedPower_, maxChargePower_);
          }
 
-         double getInternalPower() 
+         double internalPower() 
          {
             return requestedPower_ < 0 
             ? std::max(requestedPower_, -maxDischargePower_) / 

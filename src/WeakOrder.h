@@ -14,7 +14,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         int getIndex() const
+         int index() const
          {
             return idx_;
          }
@@ -62,11 +62,11 @@ namespace SmartGridToolbox
 
          void weakOrder();
 
-         const std::vector<WoNode *> & getNodes() const
+         const std::vector<WoNode *> & nodes() const
          {
             return nodes_;
          }
-         std::vector<WoNode *> & getNodes() 
+         std::vector<WoNode *> & nodes() 
          {
             return nodes_;
          }

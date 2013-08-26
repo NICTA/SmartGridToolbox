@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    class SimpleInverterParser : public ComponentParser
    {
       public:
-         static constexpr const char * getComponentName()
+         static constexpr const char * componentName()
          {
             return "inverter";
          }
@@ -25,8 +25,8 @@ namespace SmartGridToolbox
       /// @name Overridden public member functions from InverterBase.
       /// @{
       public:
-         virtual double getEfficiency(double powerDC) const override {return efficiency_;}
-         virtual double getPhaseAngleRadians(double powerDC) const override {return phaseAngle_;}
+         virtual double efficiency(double powerDC) const override {return efficiency_;}
+         virtual double phaseAngleRadians(double powerDC) const override {return phaseAngle_;}
       /// @}
       
       /// @name My public member functions.

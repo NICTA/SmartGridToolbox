@@ -13,12 +13,12 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual ptime getValidUntil() const
+         virtual ptime validUntil() const
          {
-            return getTime() + dt_;
+            return time() + dt_;
          }
 
-         time_duration getDt() const
+         time_duration dt() const
          {
             return dt_;
          }

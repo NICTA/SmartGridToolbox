@@ -16,7 +16,7 @@ namespace SmartGridToolbox
 
       const std::string nameStr = nd["name"].as<std::string>();
       SimpleInverter & comp = mod.newComponent<SimpleInverter>(nameStr);
-      comp.setPhases(nd["phases"].as<Phases>());
+      comp.phases() = nd["phases"].as<Phases>();
       comp.setPhaseAngleRadians(nd["phase_angle_degrees"].as<double>() * pi / 180.0);
    }
 
@@ -25,10 +25,10 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "SimpleInverter : postParse." << std::endl);
 
       const std::string nameStr = nd["name"].as<std::string>();
-      SimpleInverter & comp = *mod.getComponentNamed<SimpleInverter>(nameStr);
+      SimpleInverter & comp = *mod.componentNamed<SimpleInverter>(nameStr);
 
       const std::string busStr = nd["bus"].as<std::string>();
-      Bus * busComp = mod.getComponentNamed<Bus>(busStr);
+      Bus * busComp = mod.componentNamed<Bus>(busStr);
       if (busComp != nullptr)
       {
          busComp->addZipToGround(comp);

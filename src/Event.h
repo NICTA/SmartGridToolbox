@@ -17,7 +17,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         const std::string & getDescription() const {return description_;}
+         const std::string & description() const {return description_;}
 
          void perform() const {function_();}
 
@@ -42,7 +42,7 @@ namespace SmartGridToolbox
 
          void trigger();
 
-         const std::string & getDescription() const
+         const std::string & description() const
          {
             return description_;
          }

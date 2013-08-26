@@ -37,10 +37,10 @@ class TestCompA : public Component
                [this](){return x_;});
       }
 
-      int getX() {return x_;}
+      int x() {return x_;}
       void setX(int x) {x_ = x;}
 
-      double getY() {return y_;}
+      double Y() {return y_;}
       void setY(double y) {y_ = y;}
 
    private:
@@ -64,32 +64,32 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    g.weakOrder();
    for (int i = 0; i < g.size(); ++i)
    {
-      message() << " " << g.getNodes()[i]->getIndex() << endl;
+      message() << " " << g.nodes()[i]->index() << endl;
    }
    message() << endl;
 
    message() << "   ";
    for (int i = 0; i < g.size(); ++i)
    {
-      std::cout << " " << g.getNodes()[i]->getIndex(); 
+      std::cout << " " << g.nodes()[i]->index(); 
    }
    std::cout << endl << endl;
-   for (const WoNode * nd1 : g.getNodes())
+   for (const WoNode * nd1 : g.nodes())
    {
-      message() << nd1->getIndex() << "   ";
-      for (const WoNode * nd2 : g.getNodes())
+      message() << nd1->index() << "   ";
+      for (const WoNode * nd2 : g.nodes())
       {
          std::cout << nd1->dominates(*nd2) << " ";
       }
       std::cout << endl;
    }
 
-   BOOST_CHECK(g.getNodes()[0]->getIndex() == 3);
-   BOOST_CHECK(g.getNodes()[1]->getIndex() == 4);
-   BOOST_CHECK(g.getNodes()[2]->getIndex() == 1);
-   BOOST_CHECK(g.getNodes()[3]->getIndex() == 0);
-   BOOST_CHECK(g.getNodes()[4]->getIndex() == 5);
-   BOOST_CHECK(g.getNodes()[5]->getIndex() == 2);
+   BOOST_CHECK(g.nodes()[0]->index() == 3);
+   BOOST_CHECK(g.nodes()[1]->index() == 4);
+   BOOST_CHECK(g.nodes()[2]->index() == 1);
+   BOOST_CHECK(g.nodes()[3]->index() == 0);
+   BOOST_CHECK(g.nodes()[4]->index() == 5);
+   BOOST_CHECK(g.nodes()[5]->index() == 2);
 }
 
 BOOST_AUTO_TEST_CASE (test_model_dependencies)
@@ -113,25 +113,25 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
 
    mod.validate();
 
-   BOOST_CHECK(mod.getComponents()[0] == &a3);
-   BOOST_CHECK(mod.getComponents()[1] == &a4);
-   BOOST_CHECK(mod.getComponents()[2] == &a1);
-   BOOST_CHECK(mod.getComponents()[3] == &a0);
-   BOOST_CHECK(mod.getComponents()[4] == &a5);
-   BOOST_CHECK(mod.getComponents()[5] == &a2);
+   BOOST_CHECK(mod.components()[0] == &a3);
+   BOOST_CHECK(mod.components()[1] == &a4);
+   BOOST_CHECK(mod.components()[2] == &a1);
+   BOOST_CHECK(mod.components()[3] == &a0);
+   BOOST_CHECK(mod.components()[4] == &a5);
+   BOOST_CHECK(mod.components()[5] == &a2);
 }
 
 BOOST_AUTO_TEST_CASE (test_properties)
 {
    TestCompA * tca = new TestCompA("tca0", 3, 0.2);
-   const Property<int, PropType::GET> * prop1 = tca->getProperty<int, PropType::GET>("x");
+   const Property<int, PropType::GET> * prop1 = tca->property<int, PropType::GET>("x");
    message() << "Property value: " << prop1->get() << endl;
    BOOST_CHECK(prop1->get() == 3);
    tca->addProperty<double, PropType::BOTH>(
          "y",
-         [&](){return tca->getY();}, 
+         [&](){return tca->Y();}, 
          [&](const double & d){tca->setY(d);});
-   Property<double, PropType::BOTH> * prop2 = tca->getProperty<double, PropType::BOTH>("y");
+   Property<double, PropType::BOTH> * prop2 = tca->property<double, PropType::BOTH>("y");
    BOOST_CHECK(prop2 != nullptr);
    BOOST_CHECK(prop2->get() == 0.2);
    message() << "Property 2 " << prop2->get() << endl;
@@ -156,34 +156,34 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    bat1.setDischargeEfficiency(0.8);
    bat1.setRequestedPower(-0.4 * kW);
    bat1.initialize(ptime(date(2012, Feb, 11), hours(2)));
-   message() << "1 Battery charge = " << bat1.getCharge() / kWh << endl;
-   bat1.update(bat1.getTime() + hours(3));
-   message() << "2 Battery charge = " << bat1.getCharge() / kWh << endl;
-   double comp = bat1.getInitCharge() + 
-      dSeconds(hours(3)) * bat1.getRequestedPower() /
-      bat1.getDischargeEfficiency();
+   message() << "1 Battery charge = " << bat1.charge() / kWh << endl;
+   bat1.update(bat1.time() + hours(3));
+   message() << "2 Battery charge = " << bat1.charge() / kWh << endl;
+   double comp = bat1.initCharge() + 
+      dSeconds(hours(3)) * bat1.requestedPower() /
+      bat1.dischargeEfficiency();
    message() << "comp = " << comp / kWh << endl;
-   BOOST_CHECK(bat1.getCharge() == comp);
+   BOOST_CHECK(bat1.charge() == comp);
 
    bat1.setRequestedPower(1.3 * kW);
    bat1.initialize(ptime(date(2012, Feb, 11), hours(2)));
-   message() << "3 Battery charge = " << bat1.getCharge() / kWh << endl;
-   bat1.update(bat1.getTime() + hours(3));
-   message() << "4 Battery charge = " << bat1.getCharge() / kWh << endl;
-   comp = bat1.getInitCharge() + 
-      dSeconds(hours(3)) * bat1.getMaxChargePower() *
-      bat1.getChargeEfficiency();
+   message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
+   bat1.update(bat1.time() + hours(3));
+   message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
+   comp = bat1.initCharge() + 
+      dSeconds(hours(3)) * bat1.maxChargePower() *
+      bat1.chargeEfficiency();
    message() << "comp = " << comp / kWh << endl;
-   BOOST_CHECK(bat1.getCharge() == comp);
+   BOOST_CHECK(bat1.charge() == comp);
 
    bat1.setRequestedPower(-1 * kW);
    bat1.initialize(ptime(date(2012, Feb, 11), hours(2)));
-   message() << "3 Battery charge = " << bat1.getCharge() / kWh << endl;
-   bat1.update(bat1.getTime() + hours(5.5));
-   message() << "4 Battery charge = " << bat1.getCharge() / kWh << endl;
+   message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
+   bat1.update(bat1.time() + hours(5.5));
+   message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
    comp = 0.0;
    message() << "comp = " << comp / kWh << endl;
-   BOOST_CHECK(bat1.getCharge() == comp);
+   BOOST_CHECK(bat1.charge() == comp);
 }
 
 BOOST_AUTO_TEST_CASE (test_spline)
@@ -324,7 +324,7 @@ class TestEventA : public Component
       {
       }
 
-      virtual ptime getValidUntil() const override
+      virtual ptime validUntil() const override
       {
          return nextUpdate_;
       }
@@ -339,9 +339,9 @@ class TestEventA : public Component
       // Bring state up to time t_.
       virtual void updateState(ptime t0, ptime t1) override
       {
-         message() << "Update state of " << getName() << " from time " 
+         message() << "Update state of " << name() << " from time " 
               << t0 << " to " << t1 << "." << endl;
-         state_ = (t1-getInitTime()).ticks() * ctrl_;
+         state_ = (t1-initTime()).ticks() * ctrl_;
          nextUpdate_ = t1 + dt_;
       }
 
@@ -364,8 +364,8 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    sim.setStartTime(epoch + seconds(10));
    sim.initialize();
 
-   a0.getEventDidUpdate().addAction(
-         [&]() {message() << a1.getName() << " received did update from " << a0.getName() << std::endl;},
+   a0.eventDidUpdate().addAction(
+         [&]() {message() << a1.name() << " received did update from " << a0.name() << std::endl;},
          "Test action.");
 
    sim.doNextUpdate();
@@ -405,8 +405,8 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
    build1.setCb(1e5*kJ/K);
    build1.setTbInit(22*K);
    build1.setkh(10*kW/K);
-   build1.setCopCool(3);
-   build1.setCopHeat(4);
+   build1.setCOPCool(3);
+   build1.setCOPHeat(4);
    build1.setPmax(30*kW);
    build1.setTs(20*K);
    build1.setTeFunc(Te);
@@ -417,8 +417,8 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
    sim.initialize();
    auto print = [&] () -> void 
    {
-      outfile << dSeconds(build1.getTime())/hour << " " << build1.getTb()
-           << " " << build1.getPh() << " " << build1.getdQh() << endl;
+      outfile << dSeconds(build1.time())/hour << " " << build1.Tb()
+           << " " << build1.Ph() << " " << build1.getdQh() << endl;
    };
    print();
    while (sim.doNextUpdate())
@@ -431,13 +431,13 @@ BOOST_AUTO_TEST_CASE (test_parser)
 {
    Model mod;
    Simulation sim(mod);
-   Parser & p = Parser::getGlobalParser();
+   Parser & p = Parser::globalParser();
    p.parse("test_parser.yaml", mod, sim);
    mod.validate();
    sim.initialize();
-   const TestComponent * tc = mod.getComponentNamed<TestComponent>("test_component_1");
-   message() << "test_component_1 another is " << tc->getAnother()->getName() << std::endl;
-   BOOST_CHECK(tc->getAnother()->getName() == "test_component_2");
+   const TestComponent * tc = mod.componentNamed<TestComponent>("test_component_1");
+   message() << "test_component_1 another is " << tc->another()->name() << std::endl;
+   BOOST_CHECK(tc->another()->name() == "test_component_2");
 }
 
 BOOST_AUTO_TEST_CASE (test_sparse_solver)
@@ -481,34 +481,33 @@ inline Array2D<Complex, 2, 2> lineY(Complex y)
 }
 
 
-class TestLoad : public ZipToGround
+class TestLoad : public ZipToGroundBase
 {
    public:
-      TestLoad(const std::string & name) : ZipToGround(name), dt_(seconds(0))
+      TestLoad(const std::string & name) : ZipToGroundBase(name), dt_(seconds(0)) {}
 
-      virtual ptime getValidUntil() const override
+      virtual ptime validUntil() const override
       {
-         return getTime() + dt_;
+         return time() + dt_;
       }
 
-      virtual void initializeState(ptime t) override
+      virtual UblasVector<Complex> Y() const override 
       {
-         setY(UblasVector<Complex>(getPhases().size(), czero));
-         setI(UblasVector<Complex>(getPhases().size(), czero));
-         setS(UblasVector<Complex>(getPhases().size(), czero));
+         return UblasVector<Complex>(phases().size(), sin(dSeconds(time())/123.0));
       }
 
-      virtual void updateState(ptime t0, ptime t1) override
+      virtual UblasVector<Complex> I() const override 
       {
-         for (int i = 0; i < getPhases().size(); ++i)
-         {
-            Y_(i) = sin(dSeconds(t1)/123.0);
-            I_(i) = sin(dSeconds(t1)/300.0) * exp(Complex(0.0, dSeconds(t1)/713.0));
-            S_(i) = sin(dSeconds(t1)/60.0);
-         }
+         return UblasVector<Complex>(phases().size(), 
+               sin(dSeconds(time())/300.0) * exp(Complex(0.0, dSeconds(time())/713.0)));
       }
 
-      time_duration getDt() const
+      virtual UblasVector<Complex> S() const override 
+      {
+         return UblasVector<Complex>(phases().size(), sin(dSeconds(time())/60.0));
+      }
+
+      time_duration dt() const
       {
          return dt_;
       }
@@ -552,28 +551,28 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    Model mod;
    Simulation sim(mod);
 
-   Parser & p = Parser::getGlobalParser();
+   Parser & p = Parser::globalParser();
    p.parse("test_network_1p.yaml", mod, sim);
 
-   Bus * bus1 = mod.getComponentNamed<Bus>("bus_1");
-   Bus * bus2 = mod.getComponentNamed<Bus>("bus_2");
-   Bus * bus3 = mod.getComponentNamed<Bus>("bus_3");
+   Bus * bus1 = mod.componentNamed<Bus>("bus_1");
+   Bus * bus2 = mod.componentNamed<Bus>("bus_2");
+   Bus * bus3 = mod.componentNamed<Bus>("bus_3");
 
    TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
-   tl0.setPhases(bus2->getPhases());
+   tl0.phases() = bus2->phases();
    tl0.setDt(seconds(5));
    bus2->addZipToGround(tl0);
 
    mod.validate();
    sim.initialize();
 
-   Network * network = mod.getComponentNamed<Network>("network_1");
+   Network * network = mod.componentNamed<Network>("network_1");
    ofstream outfile;
    outfile.open("test_network_1p.out");
-   network->getEventDidUpdate().addAction([&]()
+   network->eventDidUpdate().addAction([&]()
          {
-            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " << bus1->getV()(0) 
-                    << " " << bus2->getV()(0) << " " << bus3->getV()(0) << std::endl;
+            outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " << bus1->V()(0) 
+                    << " " << bus2->V()(0) << " " << bus3->V()(0) << std::endl;
          }, "Network updated.");
 
    while (sim.doNextUpdate())
@@ -587,35 +586,35 @@ BOOST_AUTO_TEST_CASE (test_network_b3p)
    Model mod;
    Simulation sim(mod);
 
-   Parser & p = Parser::getGlobalParser();
+   Parser & p = Parser::globalParser();
    p.parse("test_network_b3p.yaml", mod, sim);
 
-   Bus * bus1 = mod.getComponentNamed<Bus>("bus_1");
-   Bus * bus2 = mod.getComponentNamed<Bus>("bus_2");
-   Bus * bus3 = mod.getComponentNamed<Bus>("bus_3");
+   Bus * bus1 = mod.componentNamed<Bus>("bus_1");
+   Bus * bus2 = mod.componentNamed<Bus>("bus_2");
+   Bus * bus3 = mod.componentNamed<Bus>("bus_3");
 
    TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
-   tl0.setPhases(bus2->getPhases());
+   tl0.phases() = bus2->phases();
    tl0.setDt(seconds(5));
    bus2->addZipToGround(tl0);
 
    mod.validate();
    sim.initialize();
 
-   Network * network = mod.getComponentNamed<Network>("network_1");
+   Network * network = mod.componentNamed<Network>("network_1");
    ofstream outfile;
    outfile.open("test_network_b3p.out");
-   outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
-           << bus1->getV()(0) << " " << bus1->getV()(1) << " " << bus1->getV()(2)
-           << bus2->getV()(0) << " " << bus2->getV()(1) << " " << bus2->getV()(2)
-           << bus3->getV()(0) << " " << bus3->getV()(1) << " " << bus3->getV()(2)
+   outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
+           << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2)
+           << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2)
+           << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2)
            << std::endl;
-   network->getEventDidUpdate().addAction([&]()
+   network->eventDidUpdate().addAction([&]()
          {
-            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
-                    << bus1->getV()(0) << " " << bus1->getV()(1) << " " << bus1->getV()(2) << " "
-                    << bus2->getV()(0) << " " << bus2->getV()(1) << " " << bus2->getV()(2) << " "
-                    << bus3->getV()(0) << " " << bus3->getV()(1) << " " << bus3->getV()(2)
+            outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
+                    << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << " "
+                    << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) << " "
+                    << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2)
                     << std::endl;
          }, "Network updated.");
 
@@ -630,30 +629,30 @@ BOOST_AUTO_TEST_CASE (test_network_2p_identical)
    Model mod;
    Simulation sim(mod);
 
-   Parser & p = Parser::getGlobalParser();
+   Parser & p = Parser::globalParser();
    p.parse("test_network_2p_identical.yaml", mod, sim);
 
-   Bus * bus1 = mod.getComponentNamed<Bus>("bus_1");
-   Bus * bus2 = mod.getComponentNamed<Bus>("bus_2");
-   Bus * bus3 = mod.getComponentNamed<Bus>("bus_3");
+   Bus * bus1 = mod.componentNamed<Bus>("bus_1");
+   Bus * bus2 = mod.componentNamed<Bus>("bus_2");
+   Bus * bus3 = mod.componentNamed<Bus>("bus_3");
 
    TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
-   tl0.setPhases(bus2->getPhases());
+   tl0.phases() = bus2->phases();
    tl0.setDt(seconds(5));
    bus2->addZipToGround(tl0);
 
    mod.validate();
    sim.initialize();
 
-   Network * network = mod.getComponentNamed<Network>("network_1");
+   Network * network = mod.componentNamed<Network>("network_1");
    ofstream outfile;
    outfile.open("test_network_2p_identical.out");
-   outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
-           << bus1->getV()(0) << " " << bus2->getV()(0) << " " << bus3->getV()(0) << std::endl;
-   network->getEventDidUpdate().addAction([&]()
+   outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
+           << bus1->V()(0) << " " << bus2->V()(0) << " " << bus3->V()(0) << std::endl;
+   network->eventDidUpdate().addAction([&]()
          {
-            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
-                    << bus1->getV()(0) << " " << bus2->getV()(0) << " " << bus3->getV()(0) << std::endl;
+            outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
+                    << bus1->V()(0) << " " << bus2->V()(0) << " " << bus3->V()(0) << std::endl;
          }, "Network updated.");
 
    while (sim.doNextUpdate())
@@ -665,36 +664,25 @@ BOOST_AUTO_TEST_CASE (test_network_2p_identical)
 class TestDC : public DCPowerSourceBase
 {
    public:
-      TestDC(const std::string & name) : DCPowerSourceBase(name), dt_(seconds(0))
+      TestDC(const std::string & name) : DCPowerSourceBase(name), dt_(seconds(0)) {}
 
-      virtual ptime getValidUntil() const override
+      virtual ptime validUntil() const override
       {
-         return getTime() + dt_;
+         return time() + dt_;
       }
 
-      virtual void initializeState(ptime t) override
-      {
-         set
-         updateState
-      }
-
-      virtual void updateState(ptime t0, ptime t1) override
-      {
-         for (int i = 0; i < getPhases().size(); ++i)
-         {
-            Y_(i) = sin(dSeconds(t1)/123.0);
-            I_(i) = sin(dSeconds(t1)/300.0) * exp(Complex(0.0, dSeconds(t1)/713.0));
-            S_(i) = sin(dSeconds(t1)/60.0);
-         }
-      }
-
-      time_duration getDt() const
+      time_duration dt() const
       {
          return dt_;
       }
       void setDt(time_duration dt)
       {
          dt_ = dt;
+      }
+
+      virtual double PDC() const override
+      {
+         return sin(dSeconds(time())/60.0);
       }
 
    private:
@@ -706,30 +694,30 @@ BOOST_AUTO_TEST_CASE (test_networked_dc)
    Model mod;
    Simulation sim(mod);
 
-   Parser & p = Parser::getGlobalParser();
+   Parser & p = Parser::globalParser();
    p.parse("test_networked_dc.yaml", mod, sim);
 
-   Bus * bus1 = mod.getComponentNamed<Bus>("bus_1");
-   Bus * bus2 = mod.getComponentNamed<Bus>("bus_2");
-   Bus * bus3 = mod.getComponentNamed<Bus>("bus_3");
+   Bus * bus1 = mod.componentNamed<Bus>("bus_1");
+   Bus * bus2 = mod.componentNamed<Bus>("bus_2");
+   Bus * bus3 = mod.componentNamed<Bus>("bus_3");
 
    mod.validate();
    sim.initialize();
 
-   Network * network = mod.getComponentNamed<Network>("network_1");
+   Network * network = mod.componentNamed<Network>("network_1");
    ofstream outfile;
    outfile.open("test_networked_dc.out");
-   outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
-           << bus1->getV()(0) << " " << bus1->getV()(1) << " " << bus1->getV()(2)
-           << bus2->getV()(0) << " " << bus2->getV()(1) << " " << bus2->getV()(2)
-           << bus3->getV()(0) << " " << bus3->getV()(1) << " " << bus3->getV()(2)
+   outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
+           << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2)
+           << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2)
+           << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2)
            << std::endl;
-   network->getEventDidUpdate().addAction([&]()
+   network->eventDidUpdate().addAction([&]()
          {
-            outfile << dSeconds(sim.getCurrentTime()-sim.getStartTime()) << " " 
-                    << bus1->getV()(0) << " " << bus1->getV()(1) << " " << bus1->getV()(2) << " "
-                    << bus2->getV()(0) << " " << bus2->getV()(1) << " " << bus2->getV()(2) << " "
-                    << bus3->getV()(0) << " " << bus3->getV()(1) << " " << bus3->getV()(2)
+            outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
+                    << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << " "
+                    << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) << " "
+                    << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2)
                     << std::endl;
          }, "Network updated.");
 
