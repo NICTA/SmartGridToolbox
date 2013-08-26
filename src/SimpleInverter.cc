@@ -18,6 +18,14 @@ namespace SmartGridToolbox
       SimpleInverter & comp = mod.newComponent<SimpleInverter>(nameStr);
       comp.phases() = nd["phases"].as<Phases>();
       comp.setPhaseAngleRadians(nd["phase_angle_degrees"].as<double>() * pi / 180.0);
+      if (nd["efficiency"])
+      {
+         comp.setEfficiency(nd["efficiency"].as<double>());
+      }
+      else
+      {
+         comp.setEfficiency(1.0);
+      }
    }
 
    void SimpleInverterParser::postParse(const YAML::Node & nd, Model & mod) const
