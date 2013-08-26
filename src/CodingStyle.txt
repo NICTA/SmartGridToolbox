@@ -8,23 +8,42 @@ Typedefs are UpperCamelCase.
 
 Functions are lowerCamelCase(...).
 
-Member variables are lowerCamelCase_
+Member variables are lowerCamelCase_. This makes them easily identifiable, as
+well as preventing typical naming conflicts e.g. in accessors.
 
-Variables are lowerCamelCase
+Variables are lowerCamelCase.
 
 Arguments are lowerCamelCase.
 
 Acronyms: e.g. ABC => AbstractAbcClass.
 
-Mathematical variable names e.g. R0, r0 may often be distinguished by their
-case. Thus, don't use the usual CamelCase naming rules for these - instead,
-keep the original case.
+A lexical requirement for a capital letter e.g. a proper noun, abbreviation
+etc. shall trump the requirements of CamelCase. This is particularly noticeable
+with mathematical variable names e.g. R0, r0 may often be distinguished by their
+case.
 
 Global constants are named as gGlobalConstant.
 
 Static (file scope, in the C sense) variables are named as sVariable.
 
-Getters and setters are getProperty() and setProperty(...).
+Getters, setters, member data access and mutation:
+Naming scheme is e.g. property() and setProperty(const Property & p).
+The practical reason for this is that the function names will not then
+conflict with the argument names e.g. getPhase(phase) vs. phase(phase), 
+where the second is a name conflict.
+
+Getters may return by const reference (for efficiency) or by value. In the
+absence of any other reason, the latter is preferred because it doesn't assume
+that there is an lvalue reference which may be returned by the object. However,
+for efficiency reasons a const reference may be a better choice.
+
+It is sometimes more useful to return a non-const reference instead
+of having a setter. This should only be done when there is a reason, and 
+should be decided on a common sense basis. For example, return a non-const
+reference to a vector member, so that the user is free to modify just a 
+single component without recreating the entire vector.
+
+It is good OO coding style not to use getters and setters without good reason.
 
 Braces start on a new line e.g.  
 Function F() 
@@ -35,9 +54,10 @@ Function F()
 Filenames for classes start with a capital, like the class.  ClassName.h,
 ClassName.cc
 
-Pass and return by reference, except where you *have to* use a pointer.
+Pass and return by reference, except where you *have to* use a pointer, e.g.
+when the return value or argument may be null.
 
 Errors etc. are called through the error(), warning(), message(), debug()
-funcntions, declared in Output.h.  
+functions, declared in Output.h.  
 
 Floating point generally uses double. Integer types are generally int.
