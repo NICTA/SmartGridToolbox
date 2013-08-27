@@ -194,10 +194,11 @@ namespace SmartGridToolbox
                             Simulation & simulation)
    {
       assertFieldPresent(top, "global");
-      assertFieldPresent(top, "start_time");
-      assertFieldPresent(top, "end_time");
-
       const YAML::Node & nodeGlobal = top["global"];
+
+      assertFieldPresent(nodeGlobal, "start_time");
+      assertFieldPresent(nodeGlobal, "end_time");
+
       if (const YAML::Node & nodeConfig = nodeGlobal["configuration_name"])
       {
          model.setName(nodeConfig.as<std::string>());
@@ -207,7 +208,7 @@ namespace SmartGridToolbox
          model.setName(std::string("null"));
       }
 
-      const YAML::Node & nodeStart = top["start_time"];
+      const YAML::Node & nodeStart = nodeGlobal["start_time"];
       try 
       {
          simulation.setStartTime(time_from_string(nodeGlobal["start_time"].as<std::string>()));
@@ -218,7 +219,7 @@ namespace SmartGridToolbox
          abort();
       }
 
-      const YAML::Node & nodeEnd = top["start_time"];
+      const YAML::Node & nodeEnd = nodeGlobal["end_time"];
       try 
       {
          simulation.setEndTime(time_from_string(nodeEnd.as<std::string>()));
