@@ -31,36 +31,8 @@ namespace SmartGridToolbox
          /// Destructor.
          ~Model();
 
-         const std::string & name() const
-         {
-            return name_;
-         }
-         const void setName(const std::string & name)
-         {
-            name_ = name;
-         }
-
-         void addPrototype(Component & comp);
-
-         template<typename T> const T * prototypeNamed(const std::string & name) const
-         {
-            ComponentMap::const_iterator it = protoMap_.find(name);
-            return (it == protoMap_.end()) ? 0 : dynamic_cast<const T *>(it->second);
-         }
-         template<typename T> T * prototypeNamed(const std::string & name)
-         {
-            return const_cast<T *>((const_cast<const Model *>(this))->prototypeNamed<T>(name));
-         }
-
-         int nPrototypes()
-         {
-            return protoMap_.size();
-         }
-
-         const ComponentVec & prototypes() const
-         {
-            return protoVec_;
-         }
+         const std::string & name() const {return name_;}
+         const void setName(const std::string & name) {name_ = name;}
 
          template<typename T, typename... Args> T & newComponent(Args&&... args)
          {
@@ -79,11 +51,6 @@ namespace SmartGridToolbox
             return const_cast<T *>((const_cast<const Model *>(this))-> componentNamed<T>(name));
          }
 
-         int NComponents()
-         {
-            return compVec_.size();
-         }
-
          template<typename T> const T * componentAt(int i) const
          {
             return (i >= 0 && i < compVec_.size()) ? dynamic_cast<T *>(compVec_[i]) : 0;
@@ -93,14 +60,11 @@ namespace SmartGridToolbox
             return const_cast<T *>((const_cast<const Model *>(this))-> componentAt<T>(i));
          }
 
-         const ComponentVec & components() const
-         {
-            return compVec_;
-         }
-         ComponentVec & components()
-         {
-            return compVec_;
-         }
+         const ComponentVec & components() const {return compVec_;}
+         ComponentVec & components() {return compVec_;}
+
+         LatLong getLatLong() {return latLong_;}
+         void setLatLong(const LatLong & latLong) {latLong_ = latLong;}
 
          void validate();
 
@@ -109,11 +73,12 @@ namespace SmartGridToolbox
 
       private:
          std::string name_;
-         ComponentMap protoMap_;
-         ComponentVec protoVec_;
+         bool isValid_;
+
          ComponentMap compMap_;
          ComponentVec compVec_;
-         bool isValid_;
+
+         LatLong latLong_;
    };
 }
 

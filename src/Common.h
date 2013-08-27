@@ -133,6 +133,16 @@ namespace SmartGridToolbox
    }
    /// @}
 
+   /// @name LatLongs
+   /// @{
+   class LatLong
+   {
+      public:
+         double lat_;
+         double long_;
+   };
+   /// @}
+
    /// @name Constants
    /// @{
    const double pi = 3.141592653589793238462643383279502884;

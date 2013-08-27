@@ -9,21 +9,6 @@ namespace SmartGridToolbox
    {
    }
 
-   void Model::addPrototype(Component & comp)
-   {
-      std::pair<ComponentMap::iterator, bool> result = protoMap_.insert(
-            make_pair(comp.name(), &comp));
-      if (result.second == 0) {
-         error() << "Prototype " << comp.name() << " already exists in model!" << std::endl;
-         abort();
-      }
-      else
-      {
-         protoVec_.push_back(&comp);
-         message() << "Prototype " << comp.name() << " added to model." << std::endl;
-      }
-   }
-
    void Model::validate()
    {
       message() << "Model before validation:" << std::endl;

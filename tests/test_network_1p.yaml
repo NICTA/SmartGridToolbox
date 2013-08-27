@@ -8,8 +8,6 @@ global:
    start_time:                2013-01-23 13:13:00
    end_time:                  2013-01-23 15:13:00
 
-prototypes: # These define object types, for convenience.
-
 objects: # And these are the actual objects.
    network:
       name:                   network_1

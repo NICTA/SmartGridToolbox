@@ -122,8 +122,7 @@ namespace SmartGridToolbox
          void parseGlobal(const YAML::Node & top, Model & model,
                           Simulation & simulation);
 
-         void parseComponents(const YAML::Node & top, Model & model,
-                              bool isPrototype);
+         void parseComponents(const YAML::Node & top, Model & model);
 
       private:
          std::map<std::string, const ComponentParser *> compParsers_;

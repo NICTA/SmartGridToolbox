@@ -8,10 +8,6 @@ global:
    start_time:                2013-01-23 13:13:00
    end_time:                  2013-01-23 15:13:00
 
-prototypes: # These define object types, for convenience.
-   simple_building:
-      name:                   building_p1
-
 objects: # And these are the actual objects.
    simple_building:
       name:                   building_1

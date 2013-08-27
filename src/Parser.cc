@@ -175,11 +175,8 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "Parsing global." << std::endl);
       parseGlobal(top, model, simulation);
       SGT_DEBUG(debug() << "Parsed global." << std::endl);
-      SGT_DEBUG(debug() << "Parsing prototypes." << std::endl);
-      parseComponents(top, model, true);
-      SGT_DEBUG(debug() << "Parsed prototypes." << std::endl);
       SGT_DEBUG(debug() << "Parsing objects." << std::endl);
-      parseComponents(top, model, false);
+      parseComponents(top, model);
       SGT_DEBUG(debug() << "Parsed objects." << std::endl);
 
       message() << "Finished parsing." << std::endl;
@@ -196,66 +193,65 @@ namespace SmartGridToolbox
    void Parser::parseGlobal(const YAML::Node & top, Model & model,
                             Simulation & simulation)
    {
-      if (const YAML::Node & nodeA = top["global"]) 
+      assertFieldPresent(top, "global");
+      assertFieldPresent(top, "start_time");
+      assertFieldPresent(top, "end_time");
+
+      const YAML::Node & nodeGlobal = top["global"];
+      if (const YAML::Node & nodeConfig = nodeGlobal["configuration_name"])
       {
-         if (const YAML::Node & nodeB = nodeA["configuration_name"])
-         {
-            model.setName(nodeB.as<std::string>());
-         }
-         else
-         {
-            model.setName(std::string("null"));
-         }
-
-         if (const YAML::Node & nodeB = nodeA["start_time"])
-         {
-            try 
-            {
-               simulation.setStartTime(
-                     time_from_string(nodeB.as<std::string>()));
-            }
-            catch (...)
-            {
-               error() << "Couldn't parse start date." << nodeB.as<std::string>() << std::endl;
-               abort();
-            }
-         }
-         else
-         {
-            error() << "The configuration file must contain a start_time." << std::endl;  
-            abort();
-         }
-
-         if (const YAML::Node & nodeB = nodeA["end_time"])
-         {
-            try 
-            {
-               simulation.setEndTime(
-                     time_from_string(nodeB.as<std::string>()));
-            }
-            catch (...)
-            {
-               error() << "Couldn't parse end date." << nodeB.as<std::string>() << std::endl;
-               abort();
-            }
-         }
-         else
-         {
-            error() << "The configuration file must contain an end_time." << std::endl;  
-            abort();
-         }
+         model.setName(nodeConfig.as<std::string>());
       }
       else
       {
-         error() << "The configuration file must contain a \"global\" section." << std::endl;
+         model.setName(std::string("null"));
+      }
+
+      const YAML::Node & nodeStart = top["start_time"];
+      try 
+      {
+         simulation.setStartTime(time_from_string(nodeGlobal["start_time"].as<std::string>()));
+      }
+      catch (...)
+      {
+         error() << "Couldn't parse start date." << nodeStart.as<std::string>() << std::endl;
          abort();
+      }
+
+      const YAML::Node & nodeEnd = top["start_time"];
+      try 
+      {
+         simulation.setEndTime(time_from_string(nodeEnd.as<std::string>()));
+      }
+      catch (...)
+      {
+         error() << "Couldn't parse end date." << nodeEnd.as<std::string>() << std::endl;
+         abort();
+      }
+
+      if (const YAML::Node & nodeLatLong = nodeGlobal["lat_long"])
+      {
+         try 
+         {
+            std::vector<double> llvec = nodeLatLong.as<std::vector<double>>();
+            if (llvec.size() != 2)
+            {
+               throw;
+            };
+            model.setLatLong({llvec[0], llvec[1]});
+         }
+         catch (...)
+         {
+            error() << "Couldn't parse lat_long." << nodeLatLong.as<std::string>() << std::endl;
+            abort();
+         }
       }
    }
 
-   void Parser::parseComponents(const YAML::Node & top, Model & model, bool isPrototype)
+   void Parser::parseComponents(const YAML::Node & top, Model & model)
    {
       message() << "Parsing components. Starting." << std::endl;
-      if (const YAML::Node & compsNode = isPrototype ? top["prototypes"] : top["objects"])
+      if (const YAML::Node & compsNode = top["objects"])
       {
          for (const auto & compPair : compsNode)
          {
