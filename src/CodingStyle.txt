@@ -1,39 +1,64 @@
-Indentation is three spaces, no tabs.
+Indentation
+------------
+Three spaces, no tabs.
 
-Lines are max 120 columns.
+Line length
+-----------
+Max 120 columns.
 
+Type names
+----------
 Types are UpperCamelCase.
 
+Typedef names
+----------
 Typedefs are UpperCamelCase.
 
-Functions are lowerCamelCase(...).
+Function names
+--------------
+Free and member functions are lowerCamelCase(...).
 
+Member variable names
+---------------------
 Member variables are lowerCamelCase_. This makes them easily identifiable, as
 well as preventing typical naming conflicts e.g. in accessors.
 
-Variables are lowerCamelCase.
+Non-member variable names
+-------------------------
+Stack and other variables are lowerCamelCase.
 
+Static variable names
+-------------------------
+Static (file scope, in the C sense) variables are named as sVariable.
+
+Global constant names
+---------------------
+Global constants are named as gGlobalConstant.
+
+Function argument names
+-----------------------
 Arguments are lowerCamelCase.
 
-Acronyms: e.g. ABC => AbstractAbcClass.
+Acronyms
+--------
+e.g. ABC => AbstractAbcClass.
 
 A lexical requirement for a capital letter e.g. a proper noun, abbreviation
 etc. shall trump the requirements of CamelCase. This is particularly noticeable
 with mathematical variable names e.g. R0, r0 may often be distinguished by their
 case.
 
-Global constants are named as gGlobalConstant.
-
-Static (file scope, in the C sense) variables are named as sVariable.
-
+Accessors
+---------
 Getters, setters, member data access and mutation:
 Naming scheme is e.g. property() and setProperty(const Property & p).
+
 The practical reason for this is that the function names will not then
-conflict with the argument names e.g. getPhase(phase) vs. phase(phase), 
+conflict with the argument names e.g. setPhase(phase) vs. phase(phase), 
 where the second is a name conflict.
 
-Getters may return by const reference (for efficiency) or by value. In the
-absence of any other reason, the latter is preferred because it doesn't assume
+Getters may return by value, or by const reference (for efficiency). In the
+absence of any other reason, the former is preferred because it doesn't assume
 that there is an lvalue reference which may be returned by the object. However,
 for efficiency reasons a const reference may be a better choice.
 
@@ -43,21 +68,33 @@ should be decided on a common sense basis. For example, return a non-const
 reference to a vector member, so that the user is free to modify just a 
 single component without recreating the entire vector.
 
-It is good OO coding style not to use getters and setters without good reason.
+It is considered good OO coding style not to use too many getters and setters
+without good reason.
 
+Brace style
+-----------
 Braces start on a new line e.g.  
 Function F() 
 { 
    ...  
 }
 
+Filenames
+---------
 Filenames for classes start with a capital, like the class.  ClassName.h,
 ClassName.cc
 
+References vs pointers
+----------------------
 Pass and return by reference, except where you *have to* use a pointer, e.g.
 when the return value or argument may be null.
 
+Error reporting, etc.
+---------------------
 Errors etc. are called through the error(), warning(), message(), debug()
-functions, declared in Output.h.  
+functions, declared in Output.h. Debug statements are usually surrounded by
+the SGT_DEBUG() macro, which evaluates to nothing unless DEBUG is defined.
 
+Numerical types
+---------------
 Floating point generally uses double. Integer types are generally int.
