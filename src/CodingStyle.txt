@@ -50,9 +50,15 @@ Acronyms etc. in naming
 e.g. ABC => AbstractAbcClass.
 
 A lexical requirement for a capital letter e.g. a proper noun, abbreviation
-etc. shall trump the requirements of CamelCase. This is particularly noticeable
-with mathematical variable names e.g. R0, r0 may often be distinguished by their
-case, and dropping this distinction would create confusion.
+etc. shall trump the requirements of CamelCase.
+
+Mathematical names
+------------------
+Problems with CamelCase are particularly noticeable with mathematical variable
+names e.g. R0, r0 may often be distinguished by their case, and dropping this
+distinction would create confusion. Thus, always keep the correct case for
+mathematical variables. If necessary, an underscore may be inserted when
+lower case is used, eg. Area_m2 instead of Aream2.
 
 Filenames
 ---------

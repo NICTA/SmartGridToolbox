@@ -111,3 +111,11 @@ double angleFactor(cSunCoordinates & scSun, sSunCoordinates & scPlane)
    if (dot < 0) dot = 0;
    return dot;
 }
+
+void sunPowerW(cTime udtTime, cLocation udtLocation, cSunCoordinates planeNormal, double planeArea_m2)
+{
+   const double sunPowerPer_m2 = 1004.0; // Wikipedia.
+   cSunCoordinates sunCoord = {0.0, 0.0};
+   sunpos(udtTime, udtLocation, &sunCoord);
+   double P = sunPowerPer_m2 * planeArea_m2 * angleFactor(sunCoord, planeNormal);
+}
