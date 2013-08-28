@@ -4,7 +4,9 @@ Three spaces, no tabs.
 
 Line length
 -----------
-Max 120 columns.
+Max 120 columns. Continuation lines may start with two extra levels of
+indentation, or may choose to nicely line up e.g. operators, braces, brackets
+etc.
 
 Type names
 ----------

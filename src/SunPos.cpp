@@ -100,3 +100,14 @@ void sunpos(cTime udtTime,cLocation udtLocation, cSunCoordinates * udtSunCoordin
       udtSunCoordinates->dZenithAngle = (udtSunCoordinates->dZenithAngle + dParallax) / rad;
    }
 }
+
+double angleFactor(cSunCoordinates & scSun, sSunCoordinates & scPlane)
+{
+   using std::cos;
+   using std::sin;
+   double xSun[3] = {cos(scSun.dAzimuth), sin(scSun.dAzimuth), cos(scSun.dZenithAngle)};
+   double xPlane[3] = {cos(scPlane.dAzimuth), sin(scPlane.dAzimuth), cos(scPlane.dZenithAngle)};
+   double dot = xSun[0] * xPlane[0] + xSun[1] * xPlane[1] + xSun[2] * xPlane[2];
+   if (dot < 0) dot = 0;
+   return dot;
+}
