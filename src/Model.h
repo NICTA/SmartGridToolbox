@@ -23,7 +23,9 @@ namespace SmartGridToolbox
       public:
          /// Default constructor.
          Model() : name_("null"),
-                   isValid_(false)
+                   isValid_(false),
+                   timeZone_(new posix_time_zone("UTC0"))
+
          {
             // Empty.
          }
@@ -66,6 +68,11 @@ namespace SmartGridToolbox
          LatLong getLatLong() {return latLong_;}
          void setLatLong(const LatLong & latLong) {latLong_ = latLong;}
 
+         ptime utcTime(ptime localTime)
+         {
+            return SmartGridToolbox::utcTime(localTime, timeZone_); 
+         }
+
          void validate();
 
       private:
@@ -79,6 +86,7 @@ namespace SmartGridToolbox
          ComponentVec compVec_;
 
          LatLong latLong_;
+         time_zone_ptr timeZone_;
    };
 }
 

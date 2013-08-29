@@ -1,7 +1,8 @@
-// This file is available in electronic form at http://www.psa.es/sdg/sunpos.htm
+#ifndef SUN_DOT_H
+#define SUN_DOT_H
 
-#ifndef __SUNPOS_H
-#define __SUNPOS_H
+// Much of this file is based on subpos.h and sunpos.cpp
+// http://www.psa.es/sdg/sunpos.htm
 
 struct cTime
 {
@@ -30,4 +31,4 @@ struct cSunCoordinates
  *  normal and the sun. */
 double angleFactor(cSunCoordinates & scSun, sSunCoordinates & scPlane);
 
-#endif
+#endif // SUN_DOT_H

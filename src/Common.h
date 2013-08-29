@@ -7,6 +7,7 @@
 #include <sstream>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/local_time/local_time.hpp>
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_sparse.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
@@ -116,6 +117,8 @@ namespace SmartGridToolbox
    using boost::posix_time::pos_infin;
    using boost::posix_time::time_from_string;
    using boost::gregorian::date;
+   using boost::local_time::posix_time_zone;
+   using boost::local_time::time_zone_ptr;
 
    const ptime epoch(date(1970,1,1));
 
@@ -131,6 +134,9 @@ namespace SmartGridToolbox
    {
       return dSeconds(t - epoch);
    }
+
+   ptime utcTime(ptime localTime, const time_zone_ptr localTz);
+
    /// @}
 
    /// @name LatLongs
