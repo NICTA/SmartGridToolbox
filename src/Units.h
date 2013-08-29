@@ -55,12 +55,13 @@ namespace Units
    {
       const char dot = 187;
       std::ostringstream ss;
-      ss << q.val; 
-      if (m != 0) {ss << " m"; if (m != 1) ss << "^" << m;}
-      if (kg != 0) {ss << "kg"; if (kg != 1) ss << "^" << kg;}
-      if (s != 0) {ss << " s"; if (s != 1) ss << "^" << s;}
-      if (A != 0) {ss << " A"; if (A != 1) ss << "^" << A;}
-      if (K != 0) {ss << " K"; if (K != 1) ss << "^" << K;}
+      ss << q.val << " ";
+      bool prevUnit = false;
+      if (m != 0) {ss << "m"; if (m != 1) ss << "^" << m; prevUnit = true;}
+      if (kg != 0) {if (prevUnit) ss << u8"\u00B7"; ss << "kg"; if (kg != 1) ss << "^" << kg; prevUnit = true;}
+      if (s != 0) {if (prevUnit) ss << u8"\u00B7";ss << "s"; if (s != 1) ss << "^" << s; prevUnit = true;}
+      if (A != 0) {if (prevUnit) ss << u8"\u00B7";ss << "A"; if (A != 1) ss << "^" << A; prevUnit = true;}
+      if (K != 0) {if (prevUnit) ss << u8"\u00B7";ss << "K"; if (K != 1) ss << "^" << K; prevUnit = true;}
       return os << ss.str();
    }
 
