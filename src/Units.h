@@ -50,13 +50,16 @@ namespace Units
    using MDimType = Dimensions<0, 1, 0, 0, 0>;
    using TDimType = Dimensions<0, 0, 1, 0, 0>;
    using IDimType = Dimensions<0, 0, 0, 1, 0>;
-   using ThDimType = Dimensions<0, 0, 0, 0, 0>;
+   using ThDimType = Dimensions<0, 0, 0, 0, 1>;
 
    constexpr LDimType LDim() {return LDimType();}
    constexpr MDimType MDim() {return MDimType();}
    constexpr TDimType TDim() {return TDimType();}
    constexpr IDimType IDim() {return IDimType();}
    constexpr ThDimType ThDim() {return ThDimType();}
+
+   using QDimType = decltype(IDim() * TDim());
+   constexpr QDimType QDim() {return QDimType();}
 
    template<typename D, typename V = double>
    class DimensionalQuantity : public D 
@@ -65,7 +68,7 @@ namespace Units
          typedef V ValType;
 
       public:
-         DimensionalQuantity(V stdVal) : stdVal_(stdVal) {}
+         DimensionalQuantity(const D & dim, const V & stdVal) : stdVal_(stdVal) {}
 
          const V & stdVal() const {return stdVal_;}
          V & stdVal() {return stdVal_;}
@@ -148,9 +151,12 @@ namespace Units
    class Unit : public DimensionalQuantity<D, V>
    {
       public:
-         Unit(V & stdVal, const std::string & name) : DimensionalQuantity<D, V>(stdVal), name_(name) {}
          Unit(const DimensionalQuantity<D, V> & q, const std::string & name) :
-            DimensionalQuantity<D, V>(q), name_(name) {}
+            DimensionalQuantity<D, V>(q),
+            name_(name) 
+         {
+            // Empty.
+         }
 
          const std::string & name() const {return name_;}
 
@@ -158,11 +164,17 @@ namespace Units
          std::string name_;
    };
 
-   extern const Unit<LDimType> m = {1.0, "m"};
-   extern const Unit<MDimType> kg = {1.0, "kg"};
-   extern const Unit<TDimType> s = {1.0, "s"};
-   extern const Unit<IDimType> A = {1.0, "A"};
-   extern const Unit<ThDimType> K = {1.0, "K"};
+   namespace SI
+   {
+      // Base SI units.
+      extern const Unit<LDimType> m = {{LDim(), 1.0}, "m"};
+      extern const Unit<MDimType> kg = {{MDim(), 1.0}, "kg"};
+      extern const Unit<TDimType> s = {{TDim(), 1.0}, "s"};
+      extern const Unit<IDimType> A = {{IDim(), 1.0}, "A"};
+      extern const Unit<ThDimType> K = {{ThDim(), 1.0}, "K"};
+
+      extern const Unit<QDimType> C = {{IDim() * TDim(), 1.0}, "C"};
+   }
 
    template<typename D, typename V = double, typename V2 = double>
    class UnitQuantity
