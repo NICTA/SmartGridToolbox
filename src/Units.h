@@ -14,7 +14,7 @@ namespace Units
    class Dimensions
    {
       public:
-         typedef Dimensions DimType;
+         typedef Dimensions D;
 
       public:
          static constexpr int LDim() {return L;}
@@ -22,13 +22,41 @@ namespace Units
          static constexpr int TDim() {return T;}
          static constexpr int IDim() {return I;}
          static constexpr int ThDim() {return Th;}
+
+         template<int p>
+         static constexpr auto pow() -> Dimensions<L * p, M * p, T * p, I * p, Th * p>
+         {
+            return Dimensions<L * p, M * p, T * p, I * p, Th * p>();
+         }
    };
 
-   using LDim = Dimensions<1, 0, 0, 0, 0>;
-   using MDim = Dimensions<0, 1, 0, 0, 0>;
-   using TDim = Dimensions<0, 0, 1, 0, 0>;
-   using IDim = Dimensions<0, 0, 0, 1, 0>;
-   using ThDim = Dimensions<0, 0, 0, 0, 0>;
+   template<int LL, int ML, int TL, int IL, int ThL, int LR, int MR, int TR, int IR, int ThR>
+   static constexpr auto operator*(const Dimensions<LL, ML, TL, IL, ThL> & lhs,
+                                   const Dimensions<LR, MR, TR, IR, ThR> & rhs)
+      -> Dimensions<LL + LR, ML + MR, TL + TR, IL + IR, ThL + ThR>
+   {
+      return Dimensions<LL + LR, ML + MR, TL + TR, IL + IR, ThL + ThR>();
+   }
+
+   template<int LL, int ML, int TL, int IL, int ThL, int LR, int MR, int TR, int IR, int ThR>
+   static constexpr auto operator/(const Dimensions<LL, ML, TL, IL, ThL> & lhs,
+                                   const Dimensions<LR, MR, TR, IR, ThR> & rhs)
+      -> Dimensions<LL - LR, ML - MR, TL - TR, IL - IR, ThL - ThR>
+   {
+      return Dimensions<LL - LR, ML - MR, TL - TR, IL - IR, ThL - ThR>();
+   }
+
+   using LDimType = Dimensions<1, 0, 0, 0, 0>;
+   using MDimType = Dimensions<0, 1, 0, 0, 0>;
+   using TDimType = Dimensions<0, 0, 1, 0, 0>;
+   using IDimType = Dimensions<0, 0, 0, 1, 0>;
+   using ThDimType = Dimensions<0, 0, 0, 0, 0>;
+
+   constexpr LDimType LDim() {return LDimType();}
+   constexpr MDimType MDim() {return MDimType();}
+   constexpr TDimType TDim() {return TDimType();}
+   constexpr IDimType IDim() {return IDimType();}
+   constexpr ThDimType ThDim() {return ThDimType();}
 
    template<typename D, typename V = double>
    class DimensionalQuantity : public D 
@@ -110,11 +138,11 @@ namespace Units
       return {lhs.stdVal() / rhs.stdVal()};
    }
 
-   template<typename V = double> using Length = DimensionalQuantity<LDim, V>;
-   template<typename V = double> using Mass = DimensionalQuantity<MDim, V>;
-   template<typename V = double> using Time = DimensionalQuantity<TDim, V>;
-   template<typename V = double> using Current = DimensionalQuantity<IDim, V>;
-   template<typename V = double> using Temperature = DimensionalQuantity<ThDim, V>;
+   template<typename V = double> using Length = DimensionalQuantity<LDimType, V>;
+   template<typename V = double> using Mass = DimensionalQuantity<MDimType, V>;
+   template<typename V = double> using Time = DimensionalQuantity<TDimType, V>;
+   template<typename V = double> using Current = DimensionalQuantity<IDimType, V>;
+   template<typename V = double> using Temperature = DimensionalQuantity<ThDimType, V>;
 
    template<typename D, typename V = double>
    class Unit : public DimensionalQuantity<D, V>
@@ -130,11 +158,11 @@ namespace Units
          std::string name_;
    };
 
-   extern const Unit<LDim> m = {1.0, "m"};
-   extern const Unit<MDim> kg = {1.0, "kg"};
-   extern const Unit<TDim> s = {1.0, "s"};
-   extern const Unit<IDim> A = {1.0, "A"};
-   extern const Unit<ThDim> K = {1.0, "K"};
+   extern const Unit<LDimType> m = {1.0, "m"};
+   extern const Unit<MDimType> kg = {1.0, "kg"};
+   extern const Unit<TDimType> s = {1.0, "s"};
+   extern const Unit<IDimType> A = {1.0, "A"};
+   extern const Unit<ThDimType> K = {1.0, "K"};
 
    template<typename D, typename V = double, typename V2 = double>
    class UnitQuantity
