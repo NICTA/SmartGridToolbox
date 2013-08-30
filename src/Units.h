@@ -9,8 +9,20 @@
 namespace Units
 {
    constexpr const char * cdot = u8"\u00B7"; 
+
+   template<int m, int kg, int s, int A, int K>
+   class Dimensions
+   {
+      public:
+         static constexpr int mPow() {return L;}
+         static constexpr int kgPow() {return M;}
+         static constexpr int sPow() {return T;}
+         static constexpr int APow() {return I;}
+         static constexpr int KPow() {return Th;}
+   };
+
    template<typename T1, int m, int kg, int s, int A, int K>
-   class DimensionalQuantity
+   class DimensionalQuantity : public Dimensions
    {
       public:
          typedef T1 ValueType;
@@ -24,8 +36,11 @@ namespace Units
 
       public:
          DimensionalQuantity(T1 stdVal) : stdVal_(stdVal) {}
+
          const T1 & stdVal() const {return stdVal_;}
          T1 & stdVal() {return stdVal_;}
+
+      public:
 
       private:
          T1 stdVal_;
@@ -42,55 +57,60 @@ namespace Units
          static constexpr int sPow() {return 0;}
          static constexpr int APow() {return 0;}
          static constexpr int KPow() {return 0;}
-         operator const T1 &() const {return val;} 
-         operator T1 &() {return val;} 
+
+      public:
+         operator const T1 &() const {return stdVal_;} 
+         operator T1 &() {return stdVal_;} 
+
       private:
-         T1 val;
+         T1 stdVal_;
    };
 
    template<typename T1, typename T2, int m, int kg, int s, int A, int K>
    auto operator*(const DimensionalQuantity<T1, m, kg, s, A, K> & q, const T2 & scalar) 
-      -> DimensionalQuantity<decltype(q.val * scalar), m, kg, s, A, K>
+      -> DimensionalQuantity<decltype(q.stdVal() * scalar), m, kg, s, A, K>
    {
-      return {q.val * scalar};
+      return {q.stdVal() * scalar};
    };
 
    template<typename T1, typename T2, int m, int kg, int s, int A, int K>
    auto operator*(const T1 & scalar, const DimensionalQuantity<T2, m, kg, s, A, K> & q)
-      -> DimensionalQuantity<decltype(q.val * scalar), m, kg, s, A, K>
+      -> DimensionalQuantity<decltype(q.stdVal() * scalar), m, kg, s, A, K>
    {
-      return {q.val * scalar};
+      return {q.stdVal() * scalar};
    };
 
    template<typename T1, typename T2, int m, int kg, int s, int A, int K>
-   auto operator+(const DimensionalQuantity<T1, m, kg, s, A, K> & lhs, const DimensionalQuantity<T1, m, kg, s, A, K> & rhs)
-      -> DimensionalQuantity<decltype(lhs.val * rhs.val), m, kg, s, A, K>
+   auto operator+(const DimensionalQuantity<T1, m, kg, s, A, K> & lhs,
+                  const DimensionalQuantity<T1, m, kg, s, A, K> & rhs)
+      -> DimensionalQuantity<decltype(lhs.stdVal() * rhs.stdVal()), m, kg, s, A, K>
    {
-      return {lhs.val + rhs.val};
+      return {lhs.stdVal() + rhs.stdVal()};
    };
 
-   template<typename T1, typename T2, int m1, int m2, int kg1, int kg2, int s1, int s2, int A1, int A2, int K1, int K2>
+   template<typename T1, typename T2, int m1, int m2, int kg1, int kg2, int s1, int s2, int A1, int A2,
+            int K1, int K2>
    auto operator*(const DimensionalQuantity<T1, m1, kg1, s1, A1, K1> & lhs,
                   const DimensionalQuantity<T2, m2, kg2, s2, A2, K2> & rhs) 
-      -> DimensionalQuantity<decltype(lhs.val * rhs.val), m1 + m2, kg1 + kg2, s1 + s2, A1 + A2, K1 + K2>
+      -> DimensionalQuantity<decltype(lhs.stdVal() * rhs.stdVal()), m1 + m2, kg1 + kg2, s1 + s2, A1 + A2, K1 + K2>
    {
-      return {lhs.val * rhs.val};
+      return {lhs.stdVal() * rhs.stdVal()};
    }
 
-   template<typename T1, typename T2, int m1, int m2, int kg1, int kg2, int s1, int s2, int A1, int A2, int K1, int K2>
+   template<typename T1, typename T2, int m1, int m2, int kg1, int kg2, int s1, int s2, int A1, int A2,
+            int K1, int K2>
    auto operator/(const DimensionalQuantity<T1, m1, kg1, s1, A1, K1> & lhs,
                   const DimensionalQuantity<T2, m2, kg2, s2, A2, K2> & rhs) 
-      -> DimensionalQuantity<decltype(lhs.val / rhs.val), m1 - m2, kg1 - kg2, s1 - s2, A1 - A2, K1 - K2>
+      -> DimensionalQuantity<decltype(lhs.stdVal() / rhs.stdVal()), m1 - m2, kg1 - kg2, s1 - s2, A1 - A2, K1 - K2>
    {
-      return {lhs.val / rhs.val};
+      return {lhs.stdVal() / rhs.stdVal()};
    }
 
    template<typename T1, int m, int kg, int s, int A, int K>
    std::ostream & operator<<(std::ostream & os, const DimensionalQuantity<T1, m, kg, s, A, K> & q)
    {
-      const char dot = 187;
       std::ostringstream ss;
-      ss << q.val << " ";
+      ss << q.stdVal() << " ";
       bool prevUnit = false;
       if (m != 0) {ss << "m"; if (m != 1) ss << "^" << m; prevUnit = true;}
       if (kg != 0) {if (prevUnit) ss << cdot << ss << "kg"; if (kg != 1) ss << "^" << kg; prevUnit = true;}
