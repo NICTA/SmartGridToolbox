@@ -54,7 +54,16 @@ namespace Units
    constexpr Dimensions<0, 0, 0, 0, 1> ThDim() {return decltype(ThDim())();}
 
    // Derived dimensions.
+   constexpr decltype(LDim() / TDim()) vDim() {return decltype(vDim())();}
+   constexpr decltype(LDim() / TDim().pow<2>()) aDim() {return decltype(aDim())();}
+   constexpr decltype(MDim() * vDim()) pDim() {return decltype(pDim())();}
+   constexpr decltype(MDim() * aDim()) fDim() {return decltype(fDim())();}
+   constexpr decltype(fDim() * LDim()) EDim() {return decltype(EDim())();}
+   constexpr decltype(EDim() / TDim()) PDim() {return decltype(PDim())();}
    constexpr decltype(IDim() * TDim()) QDim() {return decltype(QDim())();}
+   constexpr decltype(QDim() / LDim()) VDim() {return decltype(VDim())();}
+
+   constexpr decltype(MDim * ) EDim() {return decltype(QDim())();}
 
    template<typename D, typename V = double>
    class DimensionalQuantity : public D 
