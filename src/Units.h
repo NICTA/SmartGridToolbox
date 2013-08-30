@@ -46,20 +46,15 @@ namespace Units
       return Dimensions<LL - LR, ML - MR, TL - TR, IL - IR, ThL - ThR>();
    }
 
-   using LDimType = Dimensions<1, 0, 0, 0, 0>;
-   using MDimType = Dimensions<0, 1, 0, 0, 0>;
-   using TDimType = Dimensions<0, 0, 1, 0, 0>;
-   using IDimType = Dimensions<0, 0, 0, 1, 0>;
-   using ThDimType = Dimensions<0, 0, 0, 0, 1>;
+   // Base dimensions.
+   constexpr Dimensions<1, 0, 0, 0, 0> LDim() {return decltype(LDim())();}
+   constexpr Dimensions<0, 1, 0, 0, 0> MDim() {return decltype(MDim())();}
+   constexpr Dimensions<0, 0, 1, 0, 0> TDim() {return decltype(TDim())();}
+   constexpr Dimensions<0, 0, 0, 1, 0> IDim() {return decltype(IDim())();}
+   constexpr Dimensions<0, 0, 0, 0, 1> ThDim() {return decltype(ThDim())();}
 
-   constexpr LDimType LDim() {return LDimType();}
-   constexpr MDimType MDim() {return MDimType();}
-   constexpr TDimType TDim() {return TDimType();}
-   constexpr IDimType IDim() {return IDimType();}
-   constexpr ThDimType ThDim() {return ThDimType();}
-
-   using QDimType = decltype(IDim() * TDim());
-   constexpr QDimType QDim() {return QDimType();}
+   // Derived dimensions.
+   constexpr decltype(IDim() * TDim()) QDim() {return decltype(QDim())();}
 
    template<typename D, typename V = double>
    class DimensionalQuantity : public D 
@@ -141,11 +136,11 @@ namespace Units
       return {lhs.stdVal() / rhs.stdVal()};
    }
 
-   template<typename V = double> using Length = DimensionalQuantity<LDimType, V>;
-   template<typename V = double> using Mass = DimensionalQuantity<MDimType, V>;
-   template<typename V = double> using Time = DimensionalQuantity<TDimType, V>;
-   template<typename V = double> using Current = DimensionalQuantity<IDimType, V>;
-   template<typename V = double> using Temperature = DimensionalQuantity<ThDimType, V>;
+   template<typename V = double> using Length = DimensionalQuantity<decltype(LDim()), V>;
+   template<typename V = double> using Mass = DimensionalQuantity<decltype(MDim()), V>;
+   template<typename V = double> using Time = DimensionalQuantity<decltype(TDim()), V>;
+   template<typename V = double> using Current = DimensionalQuantity<decltype(IDim()), V>;
+   template<typename V = double> using Temperature = DimensionalQuantity<decltype(ThDim()), V>;
 
    template<typename D, typename V = double>
    class Unit : public DimensionalQuantity<D, V>
