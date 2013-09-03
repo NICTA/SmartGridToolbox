@@ -106,12 +106,7 @@ namespace SmartGridToolbox
 
          /// Reset state of the object, time to t.
          /** @param t */
-         void initialize(Time t = not_a_date_time)
-         {
-            currentTime_ = t;
-            startTime_ = t;
-            initializeState(t);
-         }
+         void initialize(Time t);
 
          /// Bring state up to time t.
          /** @param t the Time to advance to. */
