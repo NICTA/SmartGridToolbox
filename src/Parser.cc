@@ -215,7 +215,7 @@ namespace SmartGridToolbox
       }
       catch (...)
       {
-         error() << "Couldn't parse start date" << nodeStart.as<std::string>() << "." << std::endl;
+         error() << "Couldn't parse start date " << nodeStart.as<std::string>() << "." << std::endl;
          abort();
       }
 
@@ -226,7 +226,7 @@ namespace SmartGridToolbox
       }
       catch (...)
       {
-         error() << "Couldn't parse end date" << nodeEnd.as<std::string>() << "." << std::endl;
+         error() << "Couldn't parse end date " << nodeEnd.as<std::string>() << "." << std::endl;
          abort();
       }
 
@@ -243,7 +243,7 @@ namespace SmartGridToolbox
          }
          catch (...)
          {
-            error() << "Couldn't parse lat_long" << nodeLatLong.as<std::string>() << "." << std::endl;
+            error() << "Couldn't parse lat_long " << nodeLatLong.as<std::string>() << "." << std::endl;
             abort();
          }
       }
@@ -256,7 +256,7 @@ namespace SmartGridToolbox
          }
          catch (...)
          {
-            error() << "Couldn't parse timezone" << nodeTz.as<std::string>() << "." << std::endl;
+            error() << "Couldn't parse timezone " << nodeTz.as<std::string>() << "." << std::endl;
             abort();
          }
       }

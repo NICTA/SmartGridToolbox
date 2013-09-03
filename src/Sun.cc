@@ -105,7 +105,6 @@ namespace SmartGridToolbox
          // Parallax Correction
          dParallax = (dEarthMeanRadius / dAstronomicalUnit) * sin(result.zenith);
          result.zenith = (result.zenith + dParallax);
-         std::cout << "zenith deg = " << result.zenith*180/pi << std::endl;
       }
 
       return result;
@@ -116,7 +115,9 @@ namespace SmartGridToolbox
       using std::cos;
       using std::sin;
       double xSun[3] = {cos(sunCoords.azimuth), sin(sunCoords.azimuth), cos(sunCoords.zenith)};
-      double xPlane[3] = {cos(planeNormal.azimuth), sin(planeNormal.azimuth), cos(planeNormal.zenith)};
+      double xPlane[3] = {cos(planeNormal.azimuth) * sin(planeNormal.zenith), 
+                          sin(planeNormal.azimuth) * sin(planeNormal.zenith),
+                          cos(planeNormal.zenith)};
       double dot = xSun[0] * xPlane[0] + xSun[1] * xPlane[1] + xSun[2] * xPlane[2];
       if (dot < 0) dot = 0;
       return dot;
