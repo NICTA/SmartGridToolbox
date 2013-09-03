@@ -107,38 +107,44 @@ namespace SmartGridToolbox
 
    /// @name Time
    /// @{
-   using boost::posix_time::ptime;
-   using boost::posix_time::time_duration;
+   using Time = boost::posix_time::time_duration;
    using boost::posix_time::seconds;
    using boost::posix_time::minutes;
    using boost::posix_time::hours;
+
+   using boost::posix_time::ptime;
+   using boost::posix_time::time_from_string;
+   using boost::posix_time::to_simple_string;
+
    using boost::posix_time::not_a_date_time;
    using boost::posix_time::neg_infin;
    using boost::posix_time::pos_infin;
-   using boost::posix_time::time_from_string;
-   using boost::posix_time::to_simple_string;
+
    using boost::gregorian::date;
+
    using boost::local_time::time_zone_ptr;
    using boost::local_time::posix_time_zone;
 
-   const ptime epoch(date(1970,1,1));
+   extern const ptime epoch;
 
-   // The following conversion functions allow lower level access to internal
-   // representation of both time_durations and ptimes. This is often useful
-   // e.g. for spline interpolation of a time series.
-   inline double dSeconds(const time_duration & d) 
+   inline double dSeconds(const Time & d) 
    {
-      return double(d.ticks())/time_duration::ticks_per_second();
+      return double(d.ticks())/Time::ticks_per_second();
    }
 
-   inline ptime localTime(const time_duration & timestamp, const time_zone_ptr localTz)
+   inline ptime localTime(const Time & t, const time_zone_ptr localTz)
    {
-      return boost::local_time::local_date_time(epoch + timestamp, localTz).local_time();
+      return boost::local_time::local_date_time(epoch + t, localTz).local_time();
    }
 
-   ptime utcTime(const ptime & localTime, const time_zone_ptr localTz);
+   inline ptime utcTime(Time t)
+   {
+      return (epoch + t);
+   }
 
-   inline time_duration timestampFromLocalTime(ptime localTime, const time_zone_ptr localTz)
+   ptime utcTime(ptime localTime, const time_zone_ptr localTz);
+
+   inline Time timeFromLocalTime(ptime localTime, const time_zone_ptr localTz)
    {
       return (utcTime(localTime, localTz) - epoch);
    }

@@ -13,22 +13,22 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual time_duration validUntil() const
+         virtual Time validUntil() const
          {
             return time() + dt_;
          }
 
-         time_duration dt() const
+         Time dt() const
          {
             return dt_;
          }
-         void setDt(time_duration dt)
+         void setDt(Time dt)
          {
             dt_ = dt;
          }
 
       private:
-         time_duration dt_;
+         Time dt_;
    };
 }
 

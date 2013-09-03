@@ -13,7 +13,7 @@ namespace SmartGridToolbox
       Network & comp = mod.newComponent<Network>(nameStr);
    }
 
-   void Network::updateState(time_duration t0, time_duration t1)
+   void Network::updateState(Time t0, Time t1)
    {
       SGT_DEBUG(debug() << "Network : update state." << std::endl);
       rebuildNetwork(); // TODO: inefficient to rebuild even if not needed.

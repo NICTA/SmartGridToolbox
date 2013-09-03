@@ -13,12 +13,12 @@ namespace SmartGridToolbox
       /// @name Private overridden functions: from Component.
       /// @{
       private:
-         virtual void initializeState(time_duration t) override
+         virtual void initializeState(Time t) override
          {
             updateState(t, t);
          }
 
-         virtual void updateState(time_duration t0, time_duration t1) override;
+         virtual void updateState(Time t0, Time t1) override;
       /// @}
 
       /// @name Public overridden member functions from ZipToGroundBase.

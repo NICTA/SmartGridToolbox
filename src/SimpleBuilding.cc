@@ -32,14 +32,14 @@ static double propTbMaxed(double dt, double Tb0, double dQg0, double dQg1,
 
 namespace SmartGridToolbox
 {
-   void SimpleBuilding::initializeState(time_duration t)
+   void SimpleBuilding::initializeState(Time t)
    {
       Tb_ = TbInit_;
       Ph_ = TbInit_;
       setOperatingParams(t);
    }
 
-   void SimpleBuilding::updateState(time_duration t0, time_duration t1)
+   void SimpleBuilding::updateState(Time t0, Time t1)
    {
       double dt = dSeconds(t1 - t0);
 
@@ -57,7 +57,7 @@ namespace SmartGridToolbox
       setOperatingParams(t1);
    }
 
-   void SimpleBuilding::setOperatingParams(time_duration t)
+   void SimpleBuilding::setOperatingParams(Time t)
    {
       dQh_ = -dQg_(t) + kb_ * (Ts_ - Te_(t)) 
            + kh_ * (Ts_ - Tb_); // Heat ADDED.

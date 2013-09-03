@@ -70,14 +70,14 @@ namespace SmartGridToolbox
          const time_zone_ptr timezone() const {return timezone_;}
          void setTimezone(time_zone_ptr tz) {timezone_ = tz;}
 
-         ptime localTime(time_duration timestamp)
+         ptime localTime(Time t)
          {
-            return SmartGridToolbox::localTime(timestamp, timezone_); 
+            return SmartGridToolbox::localTime(t, timezone_); 
          }
 
-         time_duration timestampFromLocalTime(ptime localTime)
+         Time timeFromLocalTime(ptime localTime)
          {
-            return SmartGridToolbox::timestampFromLocalTime(localTime, timezone_);
+            return SmartGridToolbox::timeFromLocalTime(localTime, timezone_);
          }
 
          void validate();

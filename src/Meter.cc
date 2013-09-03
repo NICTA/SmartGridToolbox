@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   void Meter::updateState(time_duration t0, time_duration t1)
+   void Meter::updateState(Time t0, Time t1)
    {
       P_ = Complex(0.0, 0.0);
       for (Component * comp : comps_)

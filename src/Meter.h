@@ -12,15 +12,15 @@ namespace SmartGridToolbox
    {
       // Overridden functions: from Component.
       public:
-         virtual time_duration validUntil() const override {return time() + dt_;}
+         virtual Time validUntil() const override {return time() + dt_;}
 
       private:
-         virtual void initializeState(time_duration t) override 
+         virtual void initializeState(Time t) override 
          {
             P_ = Complex(0.0, 0.0);
          }
 
-         virtual void updateState(time_duration t0, time_duration t1) override;
+         virtual void updateState(Time t0, Time t1) override;
 
       // Overridden functions: from Load.
       public:
@@ -41,7 +41,7 @@ namespace SmartGridToolbox
          }
 
       private:
-         time_duration dt_;
+         Time dt_;
          Complex P_;
          std::vector<Component *> comps_;
    };

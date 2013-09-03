@@ -17,15 +17,6 @@ namespace SmartGridToolbox
     *  @return Struct containing zenith and azimuth angles of the sun. */
    SunCoordsRadians sunPos(ptime utcTime, LatLong location);
 
-   /// Zenith and azimuth angles of the sun at a given time and location.
-   /** @parameter localTime: Local time.
-    *  @parameter time_zone_ptr: The local timezone.
-    *  @return Struct containing zenith and azimuth angles of the sun. */
-   inline SunCoordsRadians sunPos(ptime localTime, time_zone_ptr tz, LatLong location)
-   {
-      return sunPos(utcTime(localTime, tz), location);
-   }
-
    /// Attenuation factor of radiation on a plane, due to an oblique angle.
    /** @parameter sunCoords: The sun's coordinates. 
     *  @parameter planeNormal: The coordinates specified by the normal of a plane. 

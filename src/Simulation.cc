@@ -36,7 +36,7 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "\tNumber of contingent = " << scheduledUpdates_.size() << std::endl);
       bool result = false;
       bool didAdvance = false;
-      time_duration nextSchedTime = pos_infin;
+      Time nextSchedTime = pos_infin;
       Component * schedComp = 0;
       auto schedUpdateIt = scheduledUpdates_.begin();
       if (scheduledUpdates_.size() > 0)

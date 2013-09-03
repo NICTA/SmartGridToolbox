@@ -54,13 +54,13 @@ namespace SmartGridToolbox
          }
          
          /// Get the current step for the object.
-         time_duration time() const
+         Time time() const
          {
             return currentTime_;
          }
 
          /// Get the initial time for the object.
-         time_duration initTime() const
+         Time initTime() const
          {
             return startTime_;
          }
@@ -104,9 +104,9 @@ namespace SmartGridToolbox
          /// @name Simulation
          /// @{
 
-         /// Reset state of the object, time to timestamp t.
+         /// Reset state of the object, time to t.
          /** @param t */
-         void initialize(time_duration t = not_a_date_time)
+         void initialize(Time t = not_a_date_time)
          {
             currentTime_ = t;
             startTime_ = t;
@@ -114,10 +114,10 @@ namespace SmartGridToolbox
          }
 
          /// Bring state up to time t.
-         /** @param t the timestamp to advance to. */
-         void update(time_duration t);
+         /** @param t the Time to advance to. */
+         void update(Time t);
 
-         virtual time_duration validUntil() const
+         virtual Time validUntil() const
          {
             return pos_infin;
          }
@@ -163,22 +163,22 @@ namespace SmartGridToolbox
          typedef std::map<const std::string, PropertyBase *> PropertyMap;
 
       private:
-         /// Reset state of the object, time is at timestamp currentTime_.
-         virtual void initializeState(time_duration t)
+         /// Reset state of the object, time is at currentTime_.
+         virtual void initializeState(Time t)
          {
             // Empty.
          }
 
          /// Bring state up to time currentTime_.
-         virtual void updateState(time_duration t0, time_duration t1)
+         virtual void updateState(Time t0, Time t1)
          {
             // Empty.
          }
          
       private:
          std::string name_;
-         time_duration currentTime_; ///< The current time.
-         time_duration startTime_; ///< The initial time.
+         Time currentTime_; ///< The current time.
+         Time startTime_; ///< The initial time.
          ComponentVec dependencies_; ///< I depend on these.
          int rank_;  ///< Evaluation rank, based on weak ordering.
          PropertyMap propertyMap_;

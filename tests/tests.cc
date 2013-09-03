@@ -148,6 +148,7 @@ BOOST_AUTO_TEST_CASE (test_properties)
 
 BOOST_AUTO_TEST_CASE (test_simple_battery)
 {
+   time_zone_ptr tz(new posix_time_zone("UTC0"));
    using namespace boost::gregorian;
    SimpleBattery bat1("sb0");
    bat1.setName("bat1");
@@ -158,7 +159,7 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    bat1.setChargeEfficiency(0.9);
    bat1.setDischargeEfficiency(0.8);
    bat1.setRequestedPower(-0.4 * kW);
-   bat1.initialize(ptime(date(2012, Feb, 11), hours(2)));
+   bat1.initialize(timeFromLocalTime(ptime(date(2012, Feb, 11), hours(2)), tz));
    message() << "1 Battery charge = " << bat1.charge() / kWh << endl;
    bat1.update(bat1.time() + hours(3));
    message() << "2 Battery charge = " << bat1.charge() / kWh << endl;
@@ -169,7 +170,7 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    BOOST_CHECK(bat1.charge() == comp);
 
    bat1.setRequestedPower(1.3 * kW);
-   bat1.initialize(ptime(date(2012, Feb, 11), hours(2)));
+   bat1.initialize(timeFromLocalTime(ptime(date(2012, Feb, 11), hours(2)), tz));
    message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
    bat1.update(bat1.time() + hours(3));
    message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
@@ -180,7 +181,7 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    BOOST_CHECK(bat1.charge() == comp);
 
    bat1.setRequestedPower(-1 * kW);
-   bat1.initialize(ptime(date(2012, Feb, 11), hours(2)));
+   bat1.initialize(timeFromLocalTime(ptime(date(2012, Feb, 11), hours(2)), tz));
    message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
    bat1.update(bat1.time() + hours(5.5));
    message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
@@ -230,9 +231,10 @@ BOOST_AUTO_TEST_CASE (test_spline)
 
 BOOST_AUTO_TEST_CASE (test_spline_timeseries)
 {
+   time_zone_ptr tz(new posix_time_zone("UTC0"));
    using namespace boost::gregorian;
-   ptime base(date(2013, Apr, 26), hours(0));
-   SplineTimeSeries<ptime> sts;
+   Time base = timeFromLocalTime(ptime(date(2013, Apr, 26), hours(0)), tz);
+   SplineTimeSeries<Time> sts;
    sts.addPoint(base + hours(0), sin(0*pi/12));
    sts.addPoint(base + hours(4), sin(4*pi/12));
    sts.addPoint(base + hours(8), sin(8*pi/12));
@@ -254,9 +256,10 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
 
 BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
 {
+   time_zone_ptr tz(new posix_time_zone("UTC0"));
    using namespace boost::gregorian;
-   ptime base(date(2013, Apr, 26), hours(0));
-   LerpTimeSeries<ptime, Complex> lts;
+   Time base = timeFromLocalTime(ptime(date(2013, Apr, 26), hours(0)), tz);
+   LerpTimeSeries<Time, Complex> lts;
    lts.addPoint(base + hours(0), Complex(0, 0));
    lts.addPoint(base + hours(1), Complex(3, 1));
    lts.addPoint(base + hours(3), Complex(10, 11));
@@ -327,20 +330,20 @@ class TestEventA : public Component
       {
       }
 
-      virtual ptime validUntil() const override
+      virtual time_duration validUntil() const override
       {
          return nextUpdate_;
       }
 
    private:
       // Reset state of the object, time is at timestamp t_.
-      virtual void initializeState(ptime t) override
+      virtual void initializeState(Time t) override
       {
          nextUpdate_ = t + dt_; 
       }
 
       // Bring state up to time t_.
-      virtual void updateState(ptime t0, ptime t1) override
+      virtual void updateState(Time t0, Time t1) override
       {
          message() << "Update state of " << name() << " from time " 
               << t0 << " to " << t1 << "." << endl;
@@ -349,7 +352,7 @@ class TestEventA : public Component
       }
 
    private:
-      ptime nextUpdate_;
+      Time nextUpdate_;
       int state_;
       time_duration dt_;
       int ctrl_;
@@ -363,8 +366,8 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    a0.dependsOn(a1); 
    mod.validate();
    Simulation sim(mod);
-   sim.setStartTime(epoch);
-   sim.setStartTime(epoch + seconds(10));
+   sim.setStartTime(seconds(0));
+   sim.setEndTime(seconds(10));
    sim.initialize();
 
    a0.eventDidUpdate().addAction(
@@ -390,17 +393,18 @@ static double sinusoidal(double t, double T, double Delta,
 
 BOOST_AUTO_TEST_CASE (test_simple_building)
 {
+   time_zone_ptr tz(new posix_time_zone("UTC0"));
    ofstream outfile;
    outfile.open("simple_building.out");
 
    Model mod;
    Simulation sim(mod);
 
-   ptime t0 = epoch;
+   Time t0 = seconds(0);
 
-   auto Te = [&](ptime t){return sinusoidal(dSeconds(t-t0), day, 12*hour, 
+   auto Te = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 12*hour, 
          10*K, 28*K);};
-   auto dQg = [&](ptime t){return sinusoidal(dSeconds(t-t0), day, 14*hour, 
+   auto dQg = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 14*hour, 
          40*kW, 60*kW);};
 
    SimpleBuilding & build1 = mod.newComponent<SimpleBuilding>("build1");
@@ -489,7 +493,7 @@ class TestLoad : public ZipToGroundBase
    public:
       TestLoad(const std::string & name) : ZipToGroundBase(name), dt_(seconds(0)) {}
 
-      virtual ptime validUntil() const override
+      virtual Time validUntil() const override
       {
          return time() + dt_;
       }
@@ -669,7 +673,7 @@ class TestDC : public DCPowerSourceBase
    public:
       TestDC(const std::string & name) : DCPowerSourceBase(name), dt_(seconds(0)) {}
 
-      virtual ptime validUntil() const override
+      virtual Time validUntil() const override
       {
          return time() + dt_;
       }
@@ -752,7 +756,7 @@ BOOST_AUTO_TEST_CASE (test_sun)
    SunCoordsRadians planeNormal{0.0, 0.0};
    clock1.eventDidUpdate().addAction([&]() 
          {
-            SunCoordsRadians sunCoords = sunPos(clock1.time(), mod.timezone(), mod.latLong());
+            SunCoordsRadians sunCoords = sunPos(utcTime(clock1.time()), mod.latLong());
             outfile << dSeconds(clock1.time() - sim.startTime())/3600 << " " << sunCoords.zenith << " "
                     << sunPowerW(sunCoords, {0.0, 0.0}, 1.0) << std::endl;
          }, "clock1 update");
