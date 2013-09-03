@@ -181,8 +181,8 @@ namespace SmartGridToolbox
 
       message() << "Finished parsing." << std::endl;
       message() << "Name = " << model.name() << std::endl;
-      message() << "Start time = " << simulation.startTime() << std::endl;
-      message() << "End time = " << simulation.endTime() << std::endl;
+      message() << "UTC start time = " << simulation.startTime() << std::endl;
+      message() << "UTC end time = " << simulation.endTime() << std::endl;
    }
    
    Parser::Parser()
@@ -211,7 +211,7 @@ namespace SmartGridToolbox
       const YAML::Node & nodeStart = nodeGlobal["start_time"];
       try 
       {
-         simulation.setStartTime(mod.utcTime(time_from_string(nodeStart.as<std::string>())));
+         simulation.setStartTime(model.utcTime(time_from_string(nodeStart.as<std::string>())));
       }
       catch (...)
       {
@@ -222,7 +222,7 @@ namespace SmartGridToolbox
       const YAML::Node & nodeEnd = nodeGlobal["end_time"];
       try 
       {
-         simulation.setEndTime(mod.utcTime(time_from_string(nodeEnd.as<std::string>())));
+         simulation.setEndTime(model.utcTime(time_from_string(nodeEnd.as<std::string>())));
       }
       catch (...)
       {

@@ -138,7 +138,7 @@ namespace SmartGridToolbox
 
    inline ptime localTime(const ptime & utcTime, const time_zone_ptr localTz)
    {
-      return boost::local_time::local_date_time(utcTime, localTz);
+      return boost::local_time::local_date_time(utcTime, localTz).local_time();
    }
    ptime utcTime(const ptime & localTime, const time_zone_ptr localTz);
 
