@@ -21,7 +21,7 @@ namespace SmartGridToolbox
          /** @param name the unique name */
          explicit Component(const std::string & name) : 
             name_(name),
-            t_(not_a_date_time),
+            currentTime_(not_a_date_time),
             rank_(-1),
             willUpdate_("Component " + name_ + " will update"),
             didUpdate_("Component " + name_ + " did update"),
@@ -56,13 +56,13 @@ namespace SmartGridToolbox
          /// Get the current step for the object.
          ptime time() const
          {
-            return t_;
+            return currentTime_;
          }
 
          /// Get the initial time for the object.
          ptime initTime() const
          {
-            return tInit_;
+            return startTime_;
          }
 
          /** @name Rank
@@ -108,8 +108,8 @@ namespace SmartGridToolbox
          /** @param t */
          void initialize(const ptime t = not_a_date_time)
          {
-            t_ = t;
-            tInit_ = t;
+            currentTime_ = t;
+            startTime_ = t;
             initializeState(t);
          }
 
@@ -163,13 +163,13 @@ namespace SmartGridToolbox
          typedef std::map<const std::string, PropertyBase *> PropertyMap;
 
       private:
-         /// Reset state of the object, time is at timestamp t_.
+         /// Reset state of the object, time is at timestamp currentTime_.
          virtual void initializeState(ptime t)
          {
             // Empty.
          }
 
-         /// Bring state up to time t_.
+         /// Bring state up to time currentTime_.
          virtual void updateState(ptime t0, ptime t1)
          {
             // Empty.
@@ -177,8 +177,8 @@ namespace SmartGridToolbox
          
       private:
          std::string name_;
-         ptime t_; ///< The current time.
-         ptime tInit_; ///< The initial time.
+         ptime currentTime_; ///< The current time.
+         ptime startTime_; ///< The initial time.
          ComponentVec dependencies_; ///< I depend on these.
          int rank_;  ///< Evaluation rank, based on weak ordering.
          PropertyMap propertyMap_;
