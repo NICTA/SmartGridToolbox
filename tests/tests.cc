@@ -752,7 +752,7 @@ BOOST_AUTO_TEST_CASE (test_sun)
    SunCoordsRadians planeNormal{0.0, 0.0};
    clock1.eventDidUpdate().addAction([&]() 
          {
-            SunCoordsRadians sunCoords = sunPos(mod.utcTime(clock1.time()), mod.latLong());
+            SunCoordsRadians sunCoords = sunPos(clock1.time(), mod.timezone(), mod.latLong());
             outfile << dSeconds(clock1.time() - sim.startTime())/3600 << " " << sunCoords.zenith << " "
                     << sunPowerW(sunCoords, {0.0, 0.0}, 1.0) << std::endl;
          }, "clock1 update");

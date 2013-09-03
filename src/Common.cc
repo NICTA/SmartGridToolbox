@@ -121,7 +121,7 @@ namespace SmartGridToolbox
       {
          return localTime;
       }
-      local_date_time lt(localTime.date(), localTime.time_of_day(), localTz, local_date_time::NOT_DATE_TIME_ON_ERROR);
-      return lt.utc_time();
+      local_date_time ldt(localTime.date(), localTime.time_of_day(), localTz, local_date_time::NOT_DATE_TIME_ON_ERROR);
+      return ldt.utc_time();
    }
 }
