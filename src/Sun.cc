@@ -13,13 +13,15 @@ namespace SmartGridToolbox
    static const double dEarthMeanRadius = 6371.01; // km.
    static const double dAstronomicalUnit = 149597890.0; // km.
 
-   void sunpos(ptime utcTime, LatLong location, SunCoords * sunCoords)
+   SunCoordsRadians sunPos(ptime utcTime, LatLong location)
    {
       // Note: in original code, time was "udtTime". "UT" was also mentioned. Not sure exactly what "UDT" refers to
       // but UT is probably either UT1 or UTC, both being approximately equivalent. So I changed variable name 
       // to "utcTime".
 
       // Main variables
+      SunCoordsRadians result;
+
       double dElapsedJulianDays;
       double dHours;
       double dEclipticLongitude;
@@ -55,12 +57,9 @@ namespace SmartGridToolbox
       // Calculate ecliptic coordinates (ecliptic longitude and obliquity of the ecliptic in radians but without 
       // limiting the angle to be less than 2 * Pi (i.e., the result may be greater than 2 * Pi)
       {
-         double dMeanLongitude;
-         double dMeanAnomaly;
-         double dOmega;
-         dOmega = 2.1429 - 0.0010394594 * dElapsedJulianDays;
-         dMeanLongitude = 4.8950630 + 0.017202791698 * dElapsedJulianDays; // Radians
-         dMeanAnomaly = 6.2400600 + 0.0172019699 * dElapsedJulianDays;
+         double dOmega = 2.1429 - 0.0010394594 * dElapsedJulianDays;
+         double dMeanLongitude = 4.8950630 + 0.017202791698 * dElapsedJulianDays; // Radians
+         double dMeanAnomaly = 6.2400600 + 0.0172019699 * dElapsedJulianDays;
          dEclipticLongitude = dMeanLongitude + 0.03341607 * sin(dMeanAnomaly)
             + 0.00034894 * sin(2 * dMeanAnomaly) - 0.0001134 - 0.0000203 * sin(dOmega);
          dEclipticObliquity = 0.4090928 - 6.2140e-9 * dElapsedJulianDays
@@ -96,36 +95,36 @@ namespace SmartGridToolbox
          dCos_Latitude = cos(dLatitudeInRadians);
          dSin_Latitude = sin(dLatitudeInRadians);
          dCos_HourAngle = cos(dHourAngle);
-         sunCoords->dZenithAngle = (acos(dCos_Latitude * dCos_HourAngle * cos(dDeclination) 
+         result.zenith = (acos(dCos_Latitude * dCos_HourAngle * cos(dDeclination) 
                   + sin(dDeclination) * dSin_Latitude));
          dY = - sin(dHourAngle);
          dX = tan(dDeclination) * dCos_Latitude - dSin_Latitude * dCos_HourAngle;
-         sunCoords->dAzimuth = atan2(dY, dX);
-         if (sunCoords->dAzimuth < 0.0)
-            sunCoords->dAzimuth = sunCoords->dAzimuth + twopi;
-         sunCoords->dAzimuth = sunCoords->dAzimuth / rad;
+         result.azimuth = atan2(dY, dX);
+         if (result.azimuth < 0.0) result.azimuth = result.azimuth + twopi;
+         result.azimuth = result.azimuth;
          // Parallax Correction
-         dParallax = (dEarthMeanRadius / dAstronomicalUnit) * sin(sunCoords->dZenithAngle);
-         sunCoords->dZenithAngle = (sunCoords->dZenithAngle + dParallax) / rad;
+         dParallax = (dEarthMeanRadius / dAstronomicalUnit) * sin(result.zenith);
+         result.zenith = (result.zenith + dParallax);
+         std::cout << "zenith deg = " << result.zenith*180/pi << std::endl;
       }
+
+      return result;
    }
 
-   double angleFactor(SunCoords & sunCoords, SunCoords & planeNormal)
+   double angleFactor(SunCoordsRadians & sunCoords, SunCoordsRadians & planeNormal)
    {
       using std::cos;
       using std::sin;
-      double xSun[3] = {cos(sunCoords.dAzimuth), sin(sunCoords.dAzimuth), cos(sunCoords.dZenithAngle)};
-      double xPlane[3] = {cos(planeNormal.dAzimuth), sin(planeNormal.dAzimuth), cos(planeNormal.dZenithAngle)};
+      double xSun[3] = {cos(sunCoords.azimuth), sin(sunCoords.azimuth), cos(sunCoords.zenith)};
+      double xPlane[3] = {cos(planeNormal.azimuth), sin(planeNormal.azimuth), cos(planeNormal.zenith)};
       double dot = xSun[0] * xPlane[0] + xSun[1] * xPlane[1] + xSun[2] * xPlane[2];
       if (dot < 0) dot = 0;
       return dot;
    }
 
-   double sunPowerW(ptime utcTime, LatLong location, SunCoords planeNormal, double planeArea_m2)
+   double sunPowerW(SunCoordsRadians sunCoords, SunCoordsRadians planeNormal, double planeArea_m2)
    {
       const double sunPowerPer_m2 = 1004.0; // Wikipedia.
-      SunCoords sunCoord = {0.0, 0.0};
-      sunpos(utcTime, location, &sunCoord);
-      return sunPowerPer_m2 * planeArea_m2 * angleFactor(sunCoord, planeNormal);
+      return sunPowerPer_m2 * planeArea_m2 * angleFactor(sunCoords, planeNormal);
    }
 }

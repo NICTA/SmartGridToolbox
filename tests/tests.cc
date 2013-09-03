@@ -13,10 +13,12 @@
 #include "Network.h"
 #include "Parser.h"
 #include "PowerFlow.h"
+#include "RegularUpdateComponent.h"
 #include "SimpleBattery.h"
 #include "SimpleBuilding.h"
 #include "Simulation.h"
 #include "SparseSolver.h"
+#include "Sun.h"
 #include "TestComponent.h"
 #include "Spline.h"
 #include "TimeSeries.h"
@@ -728,6 +730,35 @@ BOOST_AUTO_TEST_CASE (test_networked_dc)
                     << std::endl;
          }, "Network updated.");
 
+   while (sim.doNextUpdate())
+   {
+   }
+   outfile.close();
+}
+
+BOOST_AUTO_TEST_CASE (test_sun)
+{
+   Model mod;
+   Simulation sim(mod);
+   Parser & p = Parser::globalParser();
+   p.parse("test_sun.yaml", mod, sim);
+
+   RegularUpdateComponent & clock1 = mod.newComponent<RegularUpdateComponent>("clock1");
+   clock1.setDt(minutes(10));
+
+   ofstream outfile;
+   outfile.open("test_sun.out");
+
+   SunCoordsRadians planeNormal{0.0, 0.0};
+   clock1.eventDidUpdate().addAction([&]() 
+         {
+            SunCoordsRadians sunCoords = sunPos(clock1.time(), mod.latLong());
+            outfile << dSeconds(clock1.time() - sim.startTime())/3600 << " " << sunCoords.zenith << " "
+                    << sunPowerW(sunCoords, {0.0, 0.0}, 1.0) << std::endl;
+         }, "clock1 update");
+
+   mod.validate();
+   sim.initialize();
    while (sim.doNextUpdate())
    {
    }
