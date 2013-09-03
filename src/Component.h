@@ -113,10 +113,6 @@ namespace SmartGridToolbox
             initializeState(t);
          }
 
-         /// Bring state up to time t if necessary, throwing error if beyond t.
-         /** @param t the timestamp to advance to. */
-         void ensureAtTime(ptime t);
-
          /// Bring state up to time t.
          /** @param t the timestamp to advance to. */
          void update(ptime t);
