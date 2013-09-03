@@ -22,6 +22,19 @@ namespace YAML
       return true;
    }
 
+   Node convert<ptime>::encode(const ptime & from)
+   {
+      Node nd;
+      nd.push_back(to_simple_string(from));
+      return nd;
+   }
+
+   bool convert<ptime>::decode(const Node & nd, ptime & to)
+   {
+      to = time_from_string(nd.as<std::string>());
+      return true;
+   }
+
    Node convert<Phase>::encode(const Phase & from)
    {
       Node nd;

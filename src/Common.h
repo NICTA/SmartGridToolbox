@@ -116,6 +116,7 @@ namespace SmartGridToolbox
    using boost::posix_time::neg_infin;
    using boost::posix_time::pos_infin;
    using boost::posix_time::time_from_string;
+   using boost::posix_time::to_simple_string;
    using boost::gregorian::date;
    using boost::local_time::time_zone_ptr;
    using boost::local_time::posix_time_zone;
