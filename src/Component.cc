@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   void Component::update(ptime t)
+   void Component::update(time_duration t)
    {
       SGT_DEBUG(debug() << "Component " << name() << " update from " << currentTime_ << " to " << t << std::endl);
       willUpdate_.trigger();

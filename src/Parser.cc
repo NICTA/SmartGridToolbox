@@ -211,7 +211,7 @@ namespace SmartGridToolbox
       const YAML::Node & nodeStart = nodeGlobal["start_time"];
       try 
       {
-         simulation.setStartTime(model.utcTime(time_from_string(nodeStart.as<std::string>())));
+         simulation.setStartTime(model.timestampFromLocalTime(time_from_string(nodeStart.as<std::string>())));
       }
       catch (...)
       {
@@ -222,7 +222,7 @@ namespace SmartGridToolbox
       const YAML::Node & nodeEnd = nodeGlobal["end_time"];
       try 
       {
-         simulation.setEndTime(model.utcTime(time_from_string(nodeEnd.as<std::string>())));
+         simulation.setEndTime(model.timestampFromLocalTime(time_from_string(nodeEnd.as<std::string>())));
       }
       catch (...)
       {

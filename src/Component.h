@@ -54,13 +54,13 @@ namespace SmartGridToolbox
          }
          
          /// Get the current step for the object.
-         ptime time() const
+         time_duration time() const
          {
             return currentTime_;
          }
 
          /// Get the initial time for the object.
-         ptime initTime() const
+         time_duration initTime() const
          {
             return startTime_;
          }
@@ -106,7 +106,7 @@ namespace SmartGridToolbox
 
          /// Reset state of the object, time to timestamp t.
          /** @param t */
-         void initialize(const ptime t = not_a_date_time)
+         void initialize(time_duration t = not_a_date_time)
          {
             currentTime_ = t;
             startTime_ = t;
@@ -115,9 +115,9 @@ namespace SmartGridToolbox
 
          /// Bring state up to time t.
          /** @param t the timestamp to advance to. */
-         void update(ptime t);
+         void update(time_duration t);
 
-         virtual ptime validUntil() const
+         virtual time_duration validUntil() const
          {
             return pos_infin;
          }
@@ -164,21 +164,21 @@ namespace SmartGridToolbox
 
       private:
          /// Reset state of the object, time is at timestamp currentTime_.
-         virtual void initializeState(ptime t)
+         virtual void initializeState(time_duration t)
          {
             // Empty.
          }
 
          /// Bring state up to time currentTime_.
-         virtual void updateState(ptime t0, ptime t1)
+         virtual void updateState(time_duration t0, time_duration t1)
          {
             // Empty.
          }
          
       private:
          std::string name_;
-         ptime currentTime_; ///< The current time.
-         ptime startTime_; ///< The initial time.
+         time_duration currentTime_; ///< The current time.
+         time_duration startTime_; ///< The initial time.
          ComponentVec dependencies_; ///< I depend on these.
          int rank_;  ///< Evaluation rank, based on weak ordering.
          PropertyMap propertyMap_;

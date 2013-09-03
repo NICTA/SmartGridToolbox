@@ -20,11 +20,11 @@ namespace SmartGridToolbox
    {
       // Overridden functions: from Component.
       public:
-         virtual ptime validUntil() const override {return time() + dt_;}
+         virtual time_duration validUntil() const override {return time() + dt_;}
 
       private:
-         virtual void initializeState(ptime t) override;
-         virtual void updateState(ptime t0, ptime t1) override;
+         virtual void initializeState(time_duration t) override;
+         virtual void updateState(time_duration t0, time_duration t1) override;
 
       // Overridden functions: from Load.
       public:
@@ -43,8 +43,8 @@ namespace SmartGridToolbox
             COPHeat_(4.0),
             Pmax_(20.0 * kW),
             Ts_(20.0 * K),
-            Te_([](ptime t){return 25.0;}),
-            dQg_([](ptime t){return 10.0;}),
+            Te_([](time_duration t){return 25.0;}),
+            dQg_([](time_duration t){return 10.0;}),
             Tb_(0.0),
             mode_(HvacMode::OFF),
             COP_(0.0),
@@ -82,11 +82,11 @@ namespace SmartGridToolbox
          double Ts() {return Ts_;}
          void setTs(double val) {Ts_ = val;}
 
-         const double Te(ptime t) {return Te_(t);}
-         void setTeFunc(const std::function<double (ptime)> & f) {Te_ = f;}
+         const double Te(time_duration t) {return Te_(t);}
+         void setTeFunc(const std::function<double (time_duration)> & f) {Te_ = f;}
 
-         const double getdQg(ptime t) {return dQg_(t);}
-         void setdQgFunc(const std::function<double (ptime)> f) {dQg_ = f;}
+         const double getdQg(time_duration t) {return dQg_(t);}
+         void setdQgFunc(const std::function<double (time_duration)> f) {dQg_ = f;}
 
          double Tb() {return Tb_;}
 
@@ -102,7 +102,7 @@ namespace SmartGridToolbox
       
       // Private member functions:
       private:
-         void setOperatingParams(ptime t);
+         void setOperatingParams(time_duration t);
 
       // Private member variables:
       private:
@@ -117,8 +117,8 @@ namespace SmartGridToolbox
          double Pmax_;                       // HVAC max power, W.
          double Ts_;                         // HVAC setpoint, C.
 
-         std::function<double (ptime)> Te_;  // External temperature.
-         std::function<double (ptime)> dQg_; // Extra heat -> building.
+         std::function<double (time_duration)> Te_;  // External temperature.
+         std::function<double (time_duration)> dQg_; // Extra heat -> building.
                   
          // State.
          double Tb_;                         // Building temperature, C.

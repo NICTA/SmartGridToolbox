@@ -131,17 +131,17 @@ namespace SmartGridToolbox
       return double(d.ticks())/time_duration::ticks_per_second();
    }
 
-   inline double dSeconds(const ptime & t)
+   inline ptime localTime(const time_duration & timestamp, const time_zone_ptr localTz)
    {
-      return dSeconds(t - epoch);
+      return boost::local_time::local_date_time(epoch + timestamp, localTz).local_time();
    }
 
-   inline ptime localTime(const ptime & utcTime, const time_zone_ptr localTz)
-   {
-      return boost::local_time::local_date_time(utcTime, localTz).local_time();
-   }
    ptime utcTime(const ptime & localTime, const time_zone_ptr localTz);
 
+   inline time_duration timestampFromLocalTime(ptime localTime, const time_zone_ptr localTz)
+   {
+      return (utcTime(localTime, localTz) - epoch);
+   }
    /// @}
 
    /// @name LatLongs

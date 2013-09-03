@@ -27,7 +27,7 @@ namespace SmartGridToolbox
       /// @name Public overridden functions: from Component.
       /// @{
       public:
-         virtual ptime validUntil() const override 
+         virtual time_duration validUntil() const override 
          {
             return time() + seconds(5);
          }
@@ -36,8 +36,8 @@ namespace SmartGridToolbox
       /// @name Private overridden functions: from Component.
       /// @{
       private:
-         virtual void initializeState(ptime t) override {};
-         virtual void updateState(ptime t0, ptime t1) override {};
+         virtual void initializeState(time_duration t) override {};
+         virtual void updateState(time_duration t0, time_duration t1) override {};
       /// @}
 
       /// @name My public member functions.

@@ -60,27 +60,27 @@ namespace SmartGridToolbox
             return const_cast<Model &>((const_cast<const Simulation *>(this))->model());
          }
 
-         const ptime & startTime() const
+         time_duration startTime() const
          {
             return startTime_;
          }
 
-         void setStartTime(const ptime time)
+         void setStartTime(time_duration time)
          {
             startTime_ = time;
          }
 
-         const ptime & endTime() const
+         time_duration endTime() const
          {
             return endTime_;
          }
 
-         void setEndTime(const ptime time)
+         void setEndTime(time_duration time)
          {
             endTime_ = time;
          }
 
-         const ptime & currentTime() const
+         time_duration currentTime() const
          {
             return currentTime_;
          }
@@ -103,9 +103,9 @@ namespace SmartGridToolbox
 
       private:
          Model * mod_;
-         ptime startTime_;
-         ptime endTime_;
-         ptime currentTime_;
+         time_duration startTime_;
+         time_duration endTime_;
+         time_duration currentTime_;
          ScheduledUpdates scheduledUpdates_;
          ContingentUpdates contingentUpdates_;
          Event timeDidAdvance_;

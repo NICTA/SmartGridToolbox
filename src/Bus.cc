@@ -50,7 +50,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus::initializeState(ptime t)
+   void Bus::initializeState(time_duration t)
    {
       Y_ = UblasVector<Complex>(phases_.size(), czero);
       I_ = UblasVector<Complex>(phases_.size(), czero);
@@ -63,7 +63,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus::updateState(ptime t0, ptime t1)
+   void Bus::updateState(time_duration t0, time_duration t1)
    {
       for (int i = 0; i < phases_.size(); ++i)
       {

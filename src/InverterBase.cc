@@ -12,7 +12,7 @@ namespace SmartGridToolbox
       // TODO: this will recalculate all zips. Efficiency?
    }
 
-   void InverterBase::updateState(ptime t0, ptime t1)
+   void InverterBase::updateState(time_duration t0, time_duration t1)
    {
       PDC_ = 0.0;
       for (const DCPowerSourceBase * source : sources_)
