@@ -117,8 +117,8 @@ namespace SmartGridToolbox
    using boost::posix_time::pos_infin;
    using boost::posix_time::time_from_string;
    using boost::gregorian::date;
-   using boost::local_time::posix_time_zone;
    using boost::local_time::time_zone_ptr;
+   using boost::local_time::posix_time_zone;
 
    const ptime epoch(date(1970,1,1));
 

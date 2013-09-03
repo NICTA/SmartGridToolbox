@@ -1,121 +1,131 @@
-// This file is available in electronic form at http: // www.psa.es / sdg / sunpos.htm
+// Much of this file is based on subpos.h and sunpos.cpp
+// http://www.psa.es/sdg/sunpos.htm
 
-#include "sunpos.h"
+#include "Sun.h"
 #include <math.h>
 
-// Declaration of some constants
-#define pi 3.14159265358979323846
-#define twopi (2 * pi)
-#define rad (pi / 180)
-#define dEarthMeanRadius 6371.01	 // In km
-#define dAstronomicalUnit 149597890	 // In km
-
-void sunpos(cTime udtTime,cLocation udtLocation, cSunCoordinates * udtSunCoordinates)
+namespace SmartGridToolbox
 {
-   // Main variables
-   double dElapsedJulianDays;
-   double dDecimalHours;
-   double dEclipticLongitude;
-   double dEclipticObliquity;
-   double dRightAscension;
-   double dDeclination;
 
-   // Auxiliary variables
-   double dY;
-   double dX;
+   // Declaration of some constants
+   static const double twopi = 2 * pi;
+   static const double rad = pi / 180;
+   static const double dEarthMeanRadius = 6371.01; // km.
+   static const double dAstronomicalUnit = 149597890.0; // km.
 
-   // Calculate difference in days between the current Julian Day and JD 2451545.0, which is noon 1 January 2000
-   // Universal Time
+   void sunpos(ptime utcTime, LatLong location, SunCoords * sunCoords)
    {
-      double dJulianDate;
-      long int liAux1;
-      long int liAux2;
-      // Calculate time of the day in UT decimal hours
-      dDecimalHours = udtTime.dHours + (udtTime.dMinutes + udtTime.dSeconds / 60.0) / 60.0;
-      // Calculate current Julian Day
-      liAux1 = (udtTime.iMonth - 14) / 12;
-      liAux2 = (1461 * (udtTime.iYear + 4800 + liAux1)) / 4
-             + (367 * (udtTime.iMonth - 2 - 12 * liAux1)) / 12
-             - (3 * ((udtTime.iYear + 4900 + liAux1) / 100)) / 4
-             + udtTime.iDay - 32075;
-      dJulianDate = (double)(liAux2) - 0.5 + dDecimalHours / 24.0;
-      // Calculate difference between current Julian Day and JD 2451545.0
-      dElapsedJulianDays = dJulianDate - 2451545.0;
+      // Note: in original code, time was "udtTime". "UT" was also mentioned. Not sure exactly what "UDT" refers to
+      // but UT is probably either UT1 or UTC, both being approximately equivalent. So I changed variable name 
+      // to "utcTime".
+
+      // Main variables
+      double dElapsedJulianDays;
+      double dHours;
+      double dEclipticLongitude;
+      double dEclipticObliquity;
+      double dRightAscension;
+      double dDeclination;
+
+      // Auxiliary variables
+      double dY;
+      double dX;
+
+      // Calculate difference in days between the current Julian Day and JD 2451545.0, which is noon 1 January 2000
+      // Universal Time
+      {
+         // TODO: can use boost date::julian_day, but we'd need to check that this returns the same result.
+         // Defer this until testing can be done.
+
+         // Calculate time of the day in UT decimal hours
+         dHours = dSeconds(utcTime.time_of_day()) / 3600.0;
+
+         // Calculate current Julian Day
+         long int liAux1 = (utcTime.date().month() - 14) / 12;
+         long int liAux2 = (1461 * (utcTime.date().year() + 4800 + liAux1)) / 4
+            + (367 * (utcTime.date().month() - 2 - 12 * liAux1)) / 12
+            - (3 * ((utcTime.date().year() + 4900 + liAux1) / 100)) / 4
+            + utcTime.date().day() - 32075;
+         double dJulianDate = (double)(liAux2) - 0.5 + dHours / 24.0;
+
+         // Calculate difference between current Julian Day and JD 2451545.0
+         dElapsedJulianDays = dJulianDate - 2451545.0;
+      }
+
+      // Calculate ecliptic coordinates (ecliptic longitude and obliquity of the ecliptic in radians but without 
+      // limiting the angle to be less than 2 * Pi (i.e., the result may be greater than 2 * Pi)
+      {
+         double dMeanLongitude;
+         double dMeanAnomaly;
+         double dOmega;
+         dOmega = 2.1429 - 0.0010394594 * dElapsedJulianDays;
+         dMeanLongitude = 4.8950630 + 0.017202791698 * dElapsedJulianDays; // Radians
+         dMeanAnomaly = 6.2400600 + 0.0172019699 * dElapsedJulianDays;
+         dEclipticLongitude = dMeanLongitude + 0.03341607 * sin(dMeanAnomaly)
+            + 0.00034894 * sin(2 * dMeanAnomaly) - 0.0001134 - 0.0000203 * sin(dOmega);
+         dEclipticObliquity = 0.4090928 - 6.2140e-9 * dElapsedJulianDays
+            + 0.0000396 * cos(dOmega);
+      }
+
+      // Calculate celestial coordinates (right ascension and declination) in radians but without limiting the angle 
+      // to be less than 2 * Pi (i.e., the result may be greater than 2 * Pi)
+      {
+         double dSin_EclipticLongitude;
+         dSin_EclipticLongitude = sin(dEclipticLongitude);
+         dY = cos(dEclipticObliquity) * dSin_EclipticLongitude;
+         dX = cos(dEclipticLongitude);
+         dRightAscension = atan2(dY,dX);
+         if(dRightAscension < 0.0) dRightAscension = dRightAscension + twopi;
+         dDeclination = asin(sin(dEclipticObliquity) * dSin_EclipticLongitude);
+      }
+
+      // Calculate local coordinates (azimuth and zenith angle) in degrees
+      {
+         double dGreenwichMeanSiderealTime;
+         double dLocalMeanSiderealTime;
+         double dLatitudeInRadians;
+         double dHourAngle;
+         double dCos_Latitude;
+         double dSin_Latitude;
+         double dCos_HourAngle;
+         double dParallax;
+         dGreenwichMeanSiderealTime = 6.6974243242 + 0.0657098283 * dElapsedJulianDays + dHours;
+         dLocalMeanSiderealTime = (dGreenwichMeanSiderealTime * 15 + location.long_) * rad;
+         dHourAngle = dLocalMeanSiderealTime - dRightAscension;
+         dLatitudeInRadians = location.lat_ * rad;
+         dCos_Latitude = cos(dLatitudeInRadians);
+         dSin_Latitude = sin(dLatitudeInRadians);
+         dCos_HourAngle = cos(dHourAngle);
+         sunCoords->dZenithAngle = (acos(dCos_Latitude * dCos_HourAngle * cos(dDeclination) 
+                  + sin(dDeclination) * dSin_Latitude));
+         dY = - sin(dHourAngle);
+         dX = tan(dDeclination) * dCos_Latitude - dSin_Latitude * dCos_HourAngle;
+         sunCoords->dAzimuth = atan2(dY, dX);
+         if (sunCoords->dAzimuth < 0.0)
+            sunCoords->dAzimuth = sunCoords->dAzimuth + twopi;
+         sunCoords->dAzimuth = sunCoords->dAzimuth / rad;
+         // Parallax Correction
+         dParallax = (dEarthMeanRadius / dAstronomicalUnit) * sin(sunCoords->dZenithAngle);
+         sunCoords->dZenithAngle = (sunCoords->dZenithAngle + dParallax) / rad;
+      }
    }
 
-   // Calculate ecliptic coordinates (ecliptic longitude and obliquity of the ecliptic in radians but without 
-   // limiting the angle to be less than 2 * Pi (i.e., the result may be greater than 2 * Pi)
+   double angleFactor(SunCoords & sunCoords, SunCoords & planeNormal)
    {
-      double dMeanLongitude;
-      double dMeanAnomaly;
-      double dOmega;
-      dOmega = 2.1429 - 0.0010394594 * dElapsedJulianDays;
-      dMeanLongitude = 4.8950630 + 0.017202791698 * dElapsedJulianDays; // Radians
-      dMeanAnomaly = 6.2400600 + 0.0172019699 * dElapsedJulianDays;
-      dEclipticLongitude = dMeanLongitude + 0.03341607 * sin(dMeanAnomaly)
-         + 0.00034894 * sin(2 * dMeanAnomaly) - 0.0001134 - 0.0000203 * sin(dOmega);
-      dEclipticObliquity = 0.4090928 - 6.2140e - 9 * dElapsedJulianDays
-         + 0.0000396 * cos(dOmega);
+      using std::cos;
+      using std::sin;
+      double xSun[3] = {cos(sunCoords.dAzimuth), sin(sunCoords.dAzimuth), cos(sunCoords.dZenithAngle)};
+      double xPlane[3] = {cos(planeNormal.dAzimuth), sin(planeNormal.dAzimuth), cos(planeNormal.dZenithAngle)};
+      double dot = xSun[0] * xPlane[0] + xSun[1] * xPlane[1] + xSun[2] * xPlane[2];
+      if (dot < 0) dot = 0;
+      return dot;
    }
 
-   // Calculate celestial coordinates (right ascension and declination) in radians but without limiting the angle 
-   // to be less than 2 * Pi (i.e., the result may be greater than 2 * Pi)
+   double sunPowerW(ptime utcTime, LatLong location, SunCoords planeNormal, double planeArea_m2)
    {
-      double dSin_EclipticLongitude;
-      dSin_EclipticLongitude = sin(dEclipticLongitude);
-      dY = cos(dEclipticObliquity) * dSin_EclipticLongitude;
-      dX = cos(dEclipticLongitude);
-      dRightAscension = atan2(dY,dX);
-      if(dRightAscension < 0.0) dRightAscension = dRightAscension + twopi;
-      dDeclination = asin(sin(dEclipticObliquity) * dSin_EclipticLongitude);
+      const double sunPowerPer_m2 = 1004.0; // Wikipedia.
+      SunCoords sunCoord = {0.0, 0.0};
+      sunpos(utcTime, location, &sunCoord);
+      return sunPowerPer_m2 * planeArea_m2 * angleFactor(sunCoord, planeNormal);
    }
-
-   // Calculate local coordinates (azimuth and zenith angle) in degrees
-   {
-      double dGreenwichMeanSiderealTime;
-      double dLocalMeanSiderealTime;
-      double dLatitudeInRadians;
-      double dHourAngle;
-      double dCos_Latitude;
-      double dSin_Latitude;
-      double dCos_HourAngle;
-      double dParallax;
-      dGreenwichMeanSiderealTime = 6.6974243242 + 0.0657098283 * dElapsedJulianDays + dDecimalHours;
-      dLocalMeanSiderealTime = (dGreenwichMeanSiderealTime * 15 + udtLocation.dLongitude) * rad;
-      dHourAngle = dLocalMeanSiderealTime - dRightAscension;
-      dLatitudeInRadians = udtLocation.dLatitude * rad;
-      dCos_Latitude = cos(dLatitudeInRadians);
-      dSin_Latitude = sin(dLatitudeInRadians);
-      dCos_HourAngle = cos(dHourAngle);
-      udtSunCoordinates->dZenithAngle = (acos(dCos_Latitude * dCos_HourAngle * cos(dDeclination) 
-                                      + sin(dDeclination) * dSin_Latitude));
-      dY = - sin(dHourAngle);
-      dX = tan(dDeclination) * dCos_Latitude - dSin_Latitude * dCos_HourAngle;
-      udtSunCoordinates->dAzimuth = atan2(dY, dX);
-      if (udtSunCoordinates->dAzimuth < 0.0)
-         udtSunCoordinates->dAzimuth = udtSunCoordinates->dAzimuth + twopi;
-      udtSunCoordinates->dAzimuth = udtSunCoordinates->dAzimuth / rad;
-      // Parallax Correction
-      dParallax = (dEarthMeanRadius / dAstronomicalUnit) * sin(udtSunCoordinates->dZenithAngle);
-      udtSunCoordinates->dZenithAngle = (udtSunCoordinates->dZenithAngle + dParallax) / rad;
-   }
-}
-
-double angleFactor(cSunCoordinates & scSun, sSunCoordinates & scPlane)
-{
-   using std::cos;
-   using std::sin;
-   double xSun[3] = {cos(scSun.dAzimuth), sin(scSun.dAzimuth), cos(scSun.dZenithAngle)};
-   double xPlane[3] = {cos(scPlane.dAzimuth), sin(scPlane.dAzimuth), cos(scPlane.dZenithAngle)};
-   double dot = xSun[0] * xPlane[0] + xSun[1] * xPlane[1] + xSun[2] * xPlane[2];
-   if (dot < 0) dot = 0;
-   return dot;
-}
-
-void sunPowerW(cTime udtTime, cLocation udtLocation, cSunCoordinates planeNormal, double planeArea_m2)
-{
-   const double sunPowerPer_m2 = 1004.0; // Wikipedia.
-   cSunCoordinates sunCoord = {0.0, 0.0};
-   sunpos(udtTime, udtLocation, &sunCoord);
-   double P = sunPowerPer_m2 * planeArea_m2 * angleFactor(sunCoord, planeNormal);
 }

@@ -252,7 +252,7 @@ namespace SmartGridToolbox
       {
          try 
          {
-            model.setLatLong({llvec[0], llvec[1]});
+            model.setTimezone(time_zone_ptr(new posix_time_zone(nodeTz.as<std::string>())));
          }
          catch (...)
          {
@@ -260,7 +260,6 @@ namespace SmartGridToolbox
             abort();
          }
       }
-
    }
 
    void Parser::parseComponents(const YAML::Node & top, Model & model)

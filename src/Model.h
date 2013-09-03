@@ -24,7 +24,7 @@ namespace SmartGridToolbox
          /// Default constructor.
          Model() : name_("null"),
                    isValid_(false),
-                   timeZone_(new posix_time_zone("UTC0"))
+                   timezone_(new posix_time_zone("UTC0"))
 
          {
             // Empty.
@@ -65,12 +65,15 @@ namespace SmartGridToolbox
          const ComponentVec & components() const {return compVec_;}
          ComponentVec & components() {return compVec_;}
 
-         LatLong getLatLong() {return latLong_;}
+         LatLong latLong() const {return latLong_;}
          void setLatLong(const LatLong & latLong) {latLong_ = latLong;}
+
+         const time_zone_ptr timezone() const {return timezone_;}
+         void setTimezone(time_zone_ptr tz) {timezone_ = tz;}
 
          ptime utcTime(ptime localTime)
          {
-            return SmartGridToolbox::utcTime(localTime, timeZone_); 
+            return SmartGridToolbox::utcTime(localTime, timezone_); 
          }
 
          void validate();
@@ -86,7 +89,7 @@ namespace SmartGridToolbox
          ComponentVec compVec_;
 
          LatLong latLong_;
-         time_zone_ptr timeZone_;
+         time_zone_ptr timezone_;
    };
 }
 

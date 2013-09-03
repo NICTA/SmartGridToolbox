@@ -1,34 +1,27 @@
 #ifndef SUN_DOT_H
 #define SUN_DOT_H
 
-// Much of this file is based on subpos.h and sunpos.cpp
-// http://www.psa.es/sdg/sunpos.htm
+#include "Common.h"
 
-struct cTime
+namespace SmartGridToolbox
 {
-   int iYear;
-   int iMonth;
-   int iDay;
-   double dHours;
-   double dMinutes;
-   double dSeconds;
-};
+   struct SunCoords
+   {
+      double dZenithAngle; ///< Angle between directly overhead and the center of sun's disk.
+      double dAzimuth; ///< Direction of sun, angle clockwise from due north(?).
+   };
 
-struct cLocation
-{
-   double dLongitude;
-   double dLatitude;
-};
+   /// Attenuation factor of radiation on a plane, due to an oblique angle.
+   /** @parameter sunCoords: The sun's coordinates. 
+    *  @parameter planeNormal: The coordinates specified by the normal of a plane. 
+    *  @return the cosine of the angle between the plane normal and the sun. */
+   double angleFactor(SunCoords & sunCoords, SunCoords & planeNormal);
 
-struct cSunCoordinates
-{
-   double dZenithAngle; ///< Angle between directly overhead and the center of sun's disk.
-   double dAzimuth; ///< Direction of sun, angle clockwise from due north(?).
-};
-
-/// Attenuation factor of radiation on a plane, due to an oblique angle.
-/** scPlane specifies the normal of a plane. The angleFactor is then the cos of the angle between the plane
- *  normal and the sun. */
-double angleFactor(cSunCoordinates & scSun, sSunCoordinates & scPlane);
+   /// Solar power in Watts.
+   /** @parameter sunCoords: The sun's coordinates. 
+    *  @parameter planeNormal: The coordinates specified by the normal of a plane. 
+    *  @return the power in watts. */
+   double sunPowerW(ptime utcTime, LatLong location, SunCoords planeNormal, double planeArea_m2);
+}
 
 #endif // SUN_DOT_H
