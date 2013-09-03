@@ -135,6 +135,10 @@ namespace SmartGridToolbox
       return dSeconds(t - epoch);
    }
 
+   inline ptime localTime(ptime utcTime, const time_zone_ptr localTz)
+   {
+      return boost::local_time::local_date_time(utcTime, localTz);
+   }
    ptime utcTime(ptime localTime, const time_zone_ptr localTz);
 
    /// @}
