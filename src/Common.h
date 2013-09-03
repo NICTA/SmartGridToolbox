@@ -132,9 +132,9 @@ namespace SmartGridToolbox
       return double(d.ticks())/Time::ticks_per_second();
    }
 
-   inline ptime localTime(const Time & t, const time_zone_ptr localTz)
+   inline Time timeFromUTCTime(ptime utcTime)
    {
-      return boost::local_time::local_date_time(epoch + t, localTz).local_time();
+      return (utcTime - epoch);
    }
 
    inline ptime utcTime(Time t)
@@ -142,11 +142,16 @@ namespace SmartGridToolbox
       return (epoch + t);
    }
 
-   ptime utcTime(ptime localTime, const time_zone_ptr localTz);
+   ptime utcTimeFromLocalTime(ptime localTime, const time_zone_ptr localTz);
+
+   inline ptime localTime(const Time & t, const time_zone_ptr localTz)
+   {
+      return boost::local_time::local_date_time(epoch + t, localTz).local_time();
+   }
 
    inline Time timeFromLocalTime(ptime localTime, const time_zone_ptr localTz)
    {
-      return (utcTime(localTime, localTz) - epoch);
+      return (utcTimeFromLocalTime(localTime, localTz) - epoch);
    }
    /// @}
 

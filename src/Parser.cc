@@ -208,10 +208,23 @@ namespace SmartGridToolbox
          model.setName(std::string("null"));
       }
 
+      if (const YAML::Node & nodeTz = nodeGlobal["timezone"])
+      {
+         try 
+         {
+            model.setTimezone(time_zone_ptr(new posix_time_zone(nodeTz.as<std::string>())));
+         }
+         catch (...)
+         {
+            error() << "Couldn't parse timezone " << nodeTz.as<std::string>() << "." << std::endl;
+            abort();
+         }
+      }
+
       const YAML::Node & nodeStart = nodeGlobal["start_time"];
       try 
       {
-         simulation.setStartTime(model.timeFromLocalTime(time_from_string(nodeStart.as<std::string>())));
+         simulation.setStartTime(timeFromLocalTime(time_from_string(nodeStart.as<std::string>()), model.timezone()));
       }
       catch (...)
       {
@@ -222,7 +235,7 @@ namespace SmartGridToolbox
       const YAML::Node & nodeEnd = nodeGlobal["end_time"];
       try 
       {
-         simulation.setEndTime(model.timeFromLocalTime(time_from_string(nodeEnd.as<std::string>())));
+         simulation.setEndTime(timeFromLocalTime(time_from_string(nodeEnd.as<std::string>()), model.timezone()));
       }
       catch (...)
       {
@@ -248,18 +261,6 @@ namespace SmartGridToolbox
          }
       }
 
-      if (const YAML::Node & nodeTz = nodeGlobal["timezone"])
-      {
-         try 
-         {
-            model.setTimezone(time_zone_ptr(new posix_time_zone(nodeTz.as<std::string>())));
-         }
-         catch (...)
-         {
-            error() << "Couldn't parse timezone " << nodeTz.as<std::string>() << "." << std::endl;
-            abort();
-         }
-      }
    }
 
    void Parser::parseComponents(const YAML::Node & top, Model & model)
