@@ -21,12 +21,6 @@ namespace YAML
       static bool decode(const Node & nd, Complex & to);
    };
 
-   template<> struct convert<ptime>
-   {
-      static Node encode(const ptime & from);
-      static bool decode(const Node & nd, ptime & to);
-   };
-
    template<> struct convert<Phase>
    {
       static Node encode(const Phase & from);

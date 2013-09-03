@@ -5,12 +5,10 @@
 
 global:
    configuration_name:        config_1
+   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
    start_time:                2013-01-01 00:00:00
    end_time:                  2013-07-10 00:00:00
-   #lat_long:                  [51.4791, 0.0000] # Greenwich.
-   #timezone:                  UTC0 # UTC time.
    lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
-   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
 
 objects: # And these are the actual objects.
 

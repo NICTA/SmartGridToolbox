@@ -25,7 +25,6 @@ namespace SmartGridToolbox
          Model() : name_("null"),
                    isValid_(false),
                    timezone_(new posix_time_zone("UTC0"))
-
          {
             // Empty.
          }

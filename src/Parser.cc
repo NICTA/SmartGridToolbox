@@ -22,19 +22,6 @@ namespace YAML
       return true;
    }
 
-   Node convert<ptime>::encode(const ptime & from)
-   {
-      Node nd;
-      nd.push_back(to_simple_string(from));
-      return nd;
-   }
-
-   bool convert<ptime>::decode(const Node & nd, ptime & to)
-   {
-      to = time_from_string(nd.as<std::string>());
-      return true;
-   }
-
    Node convert<Phase>::encode(const Phase & from)
    {
       Node nd;
@@ -224,7 +211,7 @@ namespace SmartGridToolbox
       const YAML::Node & nodeStart = nodeGlobal["start_time"];
       try 
       {
-         simulation.setStartTime(time_from_string(nodeGlobal["start_time"].as<std::string>()));
+         simulation.setStartTime(mod.utcTime(time_from_string(nodeStart.as<std::string>())));
       }
       catch (...)
       {
@@ -235,7 +222,7 @@ namespace SmartGridToolbox
       const YAML::Node & nodeEnd = nodeGlobal["end_time"];
       try 
       {
-         simulation.setEndTime(time_from_string(nodeEnd.as<std::string>()));
+         simulation.setEndTime(mod.utcTime(time_from_string(nodeEnd.as<std::string>())));
       }
       catch (...)
       {
