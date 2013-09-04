@@ -2,7 +2,6 @@
 // http://www.psa.es/sdg/sunpos.htm
 
 #include "Sun.h"
-#include <math.h>
 
 namespace SmartGridToolbox
 {
@@ -13,14 +12,14 @@ namespace SmartGridToolbox
    static const double dEarthMeanRadius = 6371.01; // km.
    static const double dAstronomicalUnit = 149597890.0; // km.
 
-   SunCoordsRadians sunPos(ptime utcTime, LatLong location)
+   SphericalAnglesRadians sunPos(ptime utcTime, LatLong location)
    {
       // Note: in original code, time was "udtTime". "UT" was also mentioned. Not sure exactly what "UDT" refers to
       // but UT is probably either UT1 or UTC, both being approximately equivalent. So I changed variable name 
       // to "utcTime".
 
       // Main variables
-      SunCoordsRadians result;
+      SphericalAnglesRadians result;
 
       double dElapsedJulianDays;
       double dHours;
@@ -110,25 +109,16 @@ namespace SmartGridToolbox
       return result;
    }
 
-   static Array<double, 3> makeVec(SunCoordsRadians coords, double mag)
-   {
-      using std::cos;
-      using std::sin;
-      return {mag * cos(coords.azimuth) * sin(coords.zenith), 
-              mag * sin(coords.azimuth) * sin(coords.zenith),
-              mag * cos(coords.zenith)};
-   }
-
-   Array<double, 3> sunIrradianceVec(SunCoordsRadians sunCoords)
+   Array<double, 3> sunIrradianceVec(SphericalAnglesRadians sunCoords)
    {
       const double mag = 1004.0; // Wikipedia.
-      return makeVec(sunCoords, mag);
+      return vecFromSpherical(sunCoords, mag);
    }
 
-   double sunPower(SunCoordsRadians sunCoords, SunCoordsRadians planeNormal, double planeArea)
+   double sunPower(SphericalAnglesRadians sunCoords, SphericalAnglesRadians planeNormal, double planeArea)
    {
       Array<double, 3> xSun = sunIrradianceVec(sunCoords);
-      Array<double, 3> xPlane = makeVec(planeNormal, planeArea);
+      Array<double, 3> xPlane = vecFromSpherical(planeNormal, planeArea);
       double dot = xSun[0] * xPlane[0] + xSun[1] * xPlane[1] + xSun[2] * xPlane[2];
       if (dot < 0) dot = 0;
       return dot;
