@@ -753,12 +753,11 @@ BOOST_AUTO_TEST_CASE (test_sun)
    ofstream outfile;
    outfile.open("test_sun.out");
 
-   SunCoordsRadians planeNormal{0.0, 0.0};
    clock1.eventDidUpdate().addAction([&]() 
          {
-            SunCoordsRadians sunCoords = sunPos(utcTime(clock1.time()), mod.latLong());
+            SphericalAngles sunCoords = sunPos(utcTime(clock1.time()), mod.latLong());
             outfile << dSeconds(clock1.time() - sim.startTime())/(24 * 3600) << " " << sunCoords.zenith << " "
-                    << sunPowerW(sunCoords, {0.0, 0.0}, 1.0) << std::endl;
+                    << solarPower(sunCoords, {0.0, 0.0}, 1.0) << std::endl;
          }, "clock1 update");
 
    mod.validate();

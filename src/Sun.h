@@ -67,17 +67,18 @@ namespace SmartGridToolbox
 
    /// Solar power falling on a plane, W.
    /** @parameter solarAngles : spherical angles of the sun.
-    *  @parameter plane: vector with direction being the normal to the plane, and magnitude its area.
+    *  @parameter planeNormal: the coordinates specified by the normal of a plane. 
+    *  @parameter planeArea: the area of the plane.
     *  @return Power in W. Angle between sun and plane normal of >= 90 degrees implies zero power. */
-   double solarPower(SphericalAngles solarAngles, Array<double, 3> plane);
+   double solarPower(SphericalAngles solarAngles, SphericalAngles planeNormal, double planeArea);
 
    /// Solar power per m^2 falling on a plane, W/m^2.
-   /** @parameter solarAngles : Struct containing zenith and azimuth angles of the sun.
-    *  @parameter planeNormal: The coordinates specified by the normal of a plane. 
+   /** @parameter solarAngles : struct containing zenith and azimuth angles of the sun.
+    *  @parameter planeNormal: the coordinates specified by the normal of a plane. 
     *  @return Irradiance in W/m^2. Angle between sun and plane normal of >= 90 degrees implies zero power. */
-   double solarIrradiance(SphericalAngles solarAngles, SphericalAngles planeNormal)
+   inline double solarIrradiance(SphericalAngles solarAngles, SphericalAngles planeNormal)
    {
-      return solarPower(solarAngles, angsAndMagToVec(planeNormal, 1.0));
+      return solarPower(solarAngles, planeNormal, 1.0);
    }
 }
 
