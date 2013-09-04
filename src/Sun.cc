@@ -109,15 +109,14 @@ namespace SmartGridToolbox
       return result;
    }
 
-   Array<double, 3> sunIrradianceVec(SphericalAnglesRadians sunCoords)
+   Array<double, 3> solarIrradianceInVacuoVec(SphericalAnglesRadians solarAngles)
    {
-      const double mag = 1004.0; // Wikipedia.
-      return vecFromSpherical(sunCoords, mag);
+      return vecFromSpherical(solarAngles, solarIrradianceInVacuo());
    }
 
-   double sunPower(SphericalAnglesRadians sunCoords, SphericalAnglesRadians planeNormal, double planeArea)
+   double solarPowerInVacuo(SphericalAnglesRadians solarAngles, SphericalAnglesRadians planeNormal, double planeArea)
    {
-      Array<double, 3> xSun = sunIrradianceVec(sunCoords);
+      Array<double, 3> xSun = solarIrradianceInVacuoVec(solarAngles);
       Array<double, 3> xPlane = vecFromSpherical(planeNormal, planeArea);
       double dot = xSun[0] * xPlane[0] + xSun[1] * xPlane[1] + xSun[2] * xPlane[2];
       if (dot < 0) dot = 0;

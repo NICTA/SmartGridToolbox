@@ -3,29 +3,33 @@
 
 #include "RegularUpdateComponent.h"
 #include "Sun.h"
+#include "TimeSeries.h"
 
 namespace SmartGridToolbox
 {
    class Weather : public RegularUpdateComponent
    {
       public:
-         Weather(const std::string & name, const LatLong & latLong) :
+         Weather(const std::string & name) :
             RegularUpdateComponent(name),
-            latLong{}
+            latLong_(Greenwich),
+            cloudCoverSeries_(nullptr)
          {
             setDt(minutes(5));
          }
 
          void setLatLong(const LatLong & latLong) {latLong_ = latLong;}
 
-         double solarPower(Array<double, 3> plane)
+         void takeCloudCoverSeries(TimeSeries<Time, double> * newSeries)
          {
-            SphericalAnglesRadians sun = sunPos(utcTime(time()), latLong_);
-            return SmartGridToolbox::sunPower(sun, plane);
+            std::swap(cloudCoverSeries_, newSeries);
          }
+
+         double solarPower(Array<double, 3> plane);
 
       private:
          LatLong latLong_;
+         TimeSeries<Time, double> * cloudCoverSeries_;
    };
 }
 

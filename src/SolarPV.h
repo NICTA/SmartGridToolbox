@@ -2,7 +2,7 @@
 #define SOLAR_PV_DOT_H
 
 #include "Component.h"
-#include "Sun.h"
+#include "Weather.h"
 
 namespace SmartGridToolbox
 {
@@ -11,14 +11,15 @@ namespace SmartGridToolbox
       /// @name My public member functions. 
       /// @{
       public:
-         DCPowerSourceBase(const std::string & name) : Component(name), weather(nullptr) {}
+         DCPowerSourceBase(const std::string & name) : Component(name), weather(nullptr), efficiency_(1.0) {}
 
          virtual double PDC() const override;
 
          void setWeather(const Weather & weather) {weather_ = &weather;}
 
       public:
-            const Weather * weather_;
+         const Weather * weather_;
+         double efficiency_;
    };
 }
 

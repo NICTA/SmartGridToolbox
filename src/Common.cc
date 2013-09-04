@@ -126,4 +126,20 @@ namespace SmartGridToolbox
       local_date_time ldt(localTime.date(), localTime.time_of_day(), localTz, local_date_time::NOT_DATE_TIME_ON_ERROR);
       return ldt.utc_time();
    }
+   const double pi = 3.141592653589793238462643383279502884;
+   const double second = 1.0;
+   const double minute = 60.0 * second;
+   const double hour = 60.0 * minute;
+   const double day = 24.0 * hour;
+   const double week = 7 * day;
+   const double J = 1.0;
+   const double kJ = 1000.0 * J;
+   const double W = J / second;
+   const double kW = 1000.0 * W;
+   const double kWh = kW * hour;
+   const double A = 1.0; 
+   const double C = A / second; 
+   const double K = 1.0; 
+   const Complex czero{0.0, 0.0};
+   const LatLong Greenwich{51.4791, 0.0};
 }

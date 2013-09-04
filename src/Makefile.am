@@ -26,6 +26,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Sun.cc \
 										  TestComponent.cc \
 										  WeakOrder.cc \
+										  Weather.cc \
 										  ZipToGround.cc
 
 bin_PROGRAMS = run_config helloworld
