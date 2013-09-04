@@ -1,8 +1,38 @@
 #include "Weather.h"
+#include "Model.h"
 #include "TimeSeries.h"
 
 namespace SmartGridToolbox
 {
+   void WeatherParser::parse(const YAML::Node & nd, Model & mod) const
+   {
+      SGT_DEBUG(debug() << "Weather : parse." << std::endl);
+
+      assertFieldPresent(nd, "name");
+
+      const std::string nameStr = nd["name"].as<std::string>();
+      Weather & comp = mod.newComponent<Weather>(nameStr);
+
+      const auto & cloudNd = nd["cloud_cover"];
+      if (cloudNd)
+      {
+         const auto & constNd = cloudNd["constant"];
+         if (constNd)
+         {
+            comp.takeCloudCoverSeries(new ConstTimeSeries<Time, double>(constNd.as<double>()));  
+         }
+         else
+         {
+            error() << "Weather : cloud_cover keyword is present, but no value specified." << std::endl;
+            abort();
+         }
+      }
+      else
+      {
+         comp.takeCloudCoverSeries(new ConstTimeSeries<Time, double>(0.0));
+      }
+   }
+
    double Weather::solarPower(Array<double, 3> plane)
    {
       // Possibly dodgy model.

@@ -18,14 +18,21 @@ namespace SmartGridToolbox
    };
 
    template<typename T, typename V>
+   class ConstTimeSeries : public TimeSeries<T, V>
+   {
+      public:
+         ConstTimeSeries(const V & val) {val_ = val;}
+
+         virtual V value(const T & t) const {return val_;}
+
+      private:
+         V val_;
+   };
+
+   template<typename T, typename V>
    class DataTimeSeries : public TimeSeries<T, V>
    {
       public:
-         virtual ~DataTimeSeries()
-         {
-            // Empty.
-         }
-
          virtual void addPoint(const T & t, const V & v) = 0;
    };
 
@@ -33,11 +40,6 @@ namespace SmartGridToolbox
    class StepwiseTimeSeries : public DataTimeSeries<T, V>
    {
       public:
-         virtual ~StepwiseTimeSeries()
-         {
-            // Empty.
-         }
-
          virtual V value(const T & t) const override
          {
             auto pos = points_.upper_bound(dSeconds(t));
@@ -62,16 +64,6 @@ namespace SmartGridToolbox
    class LerpTimeSeries : public DataTimeSeries<T, V>
    {
       public:
-         LerpTimeSeries()
-         {
-            // Empty.
-         }
-
-         virtual ~LerpTimeSeries()
-         {
-            // Empty.
-         }
-
          virtual V value(const T & t) const override
          {
             double td = dSeconds(t);
@@ -106,11 +98,6 @@ namespace SmartGridToolbox
    class SplineTimeSeries : public DataTimeSeries<T, double>
    {
       public:
-         virtual ~SplineTimeSeries()
-         {
-            // Empty.
-         }
-
          virtual double value(const T & t) const override
          {
             return spline_(dSeconds(t));
@@ -132,11 +119,6 @@ namespace SmartGridToolbox
       public:
          FunctionTimeSeries<T, V>(const std::function<V (T)> & func) :
             func_(func)
-         {
-            // Empty.
-         }
-
-         virtual ~FunctionTimeSeries()
          {
             // Empty.
          }
