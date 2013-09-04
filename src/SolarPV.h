@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "DCPowerSourceBase.h"
 #include "Parser.h"
+#include "Sun.h"
 
 namespace SmartGridToolbox
 {
@@ -29,7 +30,11 @@ namespace SmartGridToolbox
       /// @{
       public:
          SolarPV(const std::string & name) :
-            DCPowerSourceBase(name), weather_(nullptr), efficiency_(1.0), plane_({0.0, 1.0, 0.0})
+            DCPowerSourceBase(name),
+            weather_(nullptr),
+            efficiency_(1.0),
+            planeNormal_({0.0, 0.0}),
+            planeArea_(0.0)
          {}
 
          virtual double PDC() const override;
@@ -38,12 +43,15 @@ namespace SmartGridToolbox
 
          void setEfficiency(double efficiency) {efficiency_ = efficiency;}
 
-         void setPlane(const Array<double, 3> & plane) {plane_ = plane;}
+         void setPlaneNormal(SphericalAngles planeNormal) {planeNormal_ = planeNormal;}
+
+         void setPlaneArea(double planeArea) {planeArea_ = planeArea;}
 
       public:
          const Weather * weather_;
          double efficiency_;
-         Array<double, 3> plane_; // TODO : more than one plane?
+         SphericalAngles planeNormal_; // TODO : more than one plane?
+         double planeArea_; // TODO : more than one plane?
    };
 }
 

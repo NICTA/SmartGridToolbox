@@ -89,10 +89,10 @@ single component without recreating the entire vector.
 It is considered good OO coding style not to use too many getters and setters
 without good reason.
 
-One style is to use swap semantics to take a new value. In such a case,
+One style is to use swap semantics to acquire a new value. In such a case,
 the following style can be used:
 
-void takeValue(Value * val) {std::swap(val_, val);}
+void acquireValue(Value * val) {std::swap(val_, val);}
 
 Brace style
 -----------

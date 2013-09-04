@@ -5,15 +5,20 @@
 
 namespace SmartGridToolbox
 {
-   constexpr double solarIrradianceInVacuo() {return 1367;} // W/m^2, atmospheric absorbance not taken into account.
+   constexpr double solarIrradianceMag() {return 1367;} // W/m^2, atmospheric absorbance not taken into account.
 
-   struct SphericalAnglesRadians
+   struct SphericalAngles
    {
-      double zenith;    ///< Angle between directly overhead and the desired point on sphere.
-      double azimuth;   ///< Direction of point, angle clockwise from due north(?).
+      double zenith;    ///< Angle in radians between directly overhead and the desired point on sphere.
+      double azimuth;   ///< Direction of point in radians, angle clockwise from due north(?).
    };
 
-   inline Array<double, 3> vecFromSpherical(const SphericalAnglesRadians & angs, double mag)
+   /// Convert spherical angles and magnitude to a vector.
+   /** x -> north, y -> east, z -> directly up.
+    *  @parameter angs: struct containing spherical angles of the sun.
+    *  @parameter mag: magnitude of the vector.
+    *  @return The vector. */ 
+   inline Array<double, 3> angsAndMagToVec(const SphericalAngles & angs, double mag)
    {
       using std::cos;
       using std::sin;
@@ -21,31 +26,58 @@ namespace SmartGridToolbox
               mag * cos(angs.zenith)};
    }
 
-   /// Zenith and azimuth angles of the sun at a given time and location.
-   /** @parameter utcTime: UTC time.
-    *  @parameter planeNormal: The coordinates specified by the normal of a plane. 
-    *  @return Struct containing zenith and azimuth angles of the sun. */
-   SphericalAnglesRadians sunPos(ptime utcTime, LatLong location);
+   /// Convert spherical angles and projection to a vector.
+   /** x -> north, y -> east, z -> directly up.
+    *  @parameter angs: struct containing spherical angles of the sun.
+    *  @parameter proj: projection of the vector onto a vertical vector.
+    *  @return The vector.
+    *  If the vector is interpreted as the normal to an area, then the projection is interpreted as being
+    *  onto the horizontal plane. */
+   inline Array<double, 3> angsAndProjToVec(const SphericalAngles & angs, double proj)
+   {
+      using std::cos;
+      using std::sin;
 
-   /// Solar irradiance, W/m^2.
-   /** @parameter solarAngles : Struct containing zenith and azimuth angles of the sun.
+      return angsAndMagToVec(angs, proj / cos(angs.zenith));
+   }
+
+   /// Spherical angles of the sun at a given time and location.
+   /** @parameter utcTime: UTC time.
+    *  @parameter planeNormal: the coordinates specified by the normal of a plane. 
+    *  @return Spherical angles of the sun. */
+   SphericalAngles sunPos(ptime utcTime, LatLong location);
+
+   /// Horizontal solar irradiance.
+   /** This quantity is often used as a proxy for the solar irradiance magnitude, as it is easier to measure.
+    *  @parameter angs: spherical angles of the sun.
+    *  @return Horizontal solar irradiance of the sun, in W/m^2. */
+   inline double horizontalSolarIrradiance(const SphericalAngles & angs)
+   {
+      double cosZen = cos(angs.zenith);
+      return (cosZen > 0.0 ? solarIrradianceMag() * cosZen : 0.0);
+   }
+
+   /// Solar irradiance vector, W/m^2.
+   /** @parameter solarAngles : solar angles of the sun.
     *  @return Irradiance vector in W/m^2. Direction of vector points to the sun. */
-   Array<double, 3> solarIrradianceInVacuoVec(SphericalAnglesRadians solarAngles);
+   inline Array<double, 3> solarIrradianceVec(SphericalAngles solarAngles)
+   {
+      return angsAndMagToVec(solarAngles, solarIrradianceMag());
+   }
 
    /// Solar power falling on a plane, W.
-   /** @parameter solarAngles : Struct containing zenith and azimuth angles of the sun.
-    *  @parameter planeNormal: The coordinates specified by the normal of a plane. 
-    *  @parameter planeArea: The area of the plane in m^2.
+   /** @parameter solarAngles : spherical angles of the sun.
+    *  @parameter plane: vector with direction being the normal to the plane, and magnitude its area.
     *  @return Power in W. Angle between sun and plane normal of >= 90 degrees implies zero power. */
-   double solarPowerInVacuo(SphericalAnglesRadians solarAngles, Array<double, 3> plane);
+   double solarPower(SphericalAngles solarAngles, Array<double, 3> plane);
 
    /// Solar power per m^2 falling on a plane, W/m^2.
    /** @parameter solarAngles : Struct containing zenith and azimuth angles of the sun.
     *  @parameter planeNormal: The coordinates specified by the normal of a plane. 
     *  @return Irradiance in W/m^2. Angle between sun and plane normal of >= 90 degrees implies zero power. */
-   double solarIrradianceInVacuo(SphericalAnglesRadians solarAngles, SphericalAnglesRadians planeNormal)
+   double solarIrradiance(SphericalAngles solarAngles, SphericalAngles planeNormal)
    {
-      return solarPowerInVacuo(solarAngles, vecFromSpherical(planeNormal, 1.0));
+      return solarPower(solarAngles, angsAndMagToVec(planeNormal, 1.0));
    }
 }
 

@@ -20,6 +20,12 @@ namespace SmartGridToolbox
          virtual void parse(const YAML::Node & nd, Model & mod) const override;
    };
 
+   struct SolarIrradiance
+   {
+      Array<double, 3> direct;
+      double horizontalDiffuse;
+   };
+
    class Weather : public RegularUpdateComponent
    {
       public:
@@ -35,12 +41,14 @@ namespace SmartGridToolbox
 
          void setLatLong(const LatLong & latLong) {latLong_ = latLong;}
 
-         void takeCloudCoverSeries(TimeSeries<Time, double> * newSeries)
+         void acquireCloudCoverSeries(TimeSeries<Time, double> * newSeries)
          {
             std::swap(cloudCoverSeries_, newSeries);
          }
 
-         double solarPower(Array<double, 3> plane);
+         SolarIrradiance irradiance();
+
+         double solarPower(SphericalAngles planeNormal, double planeArea);
 
       private:
          LatLong latLong_;

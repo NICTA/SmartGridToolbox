@@ -12,14 +12,14 @@ namespace SmartGridToolbox
    static const double dEarthMeanRadius = 6371.01; // km.
    static const double dAstronomicalUnit = 149597890.0; // km.
 
-   SphericalAnglesRadians sunPos(ptime utcTime, LatLong location)
+   SphericalAngles sunPos(ptime utcTime, LatLong location)
    {
       // Note: in original code, time was "udtTime". "UT" was also mentioned. Not sure exactly what "UDT" refers to
       // but UT is probably either UT1 or UTC, both being approximately equivalent. So I changed variable name 
       // to "utcTime".
 
       // Main variables
-      SphericalAnglesRadians result;
+      SphericalAngles result;
 
       double dElapsedJulianDays;
       double dHours;
@@ -109,17 +109,13 @@ namespace SmartGridToolbox
       return result;
    }
 
-   Array<double, 3> solarIrradianceInVacuoVec(SphericalAnglesRadians solarAngles)
-   {
-      return vecFromSpherical(solarAngles, solarIrradianceInVacuo());
-   }
 
-   double solarPowerInVacuo(SphericalAnglesRadians solarAngles, SphericalAnglesRadians planeNormal, double planeArea)
+   double solarPower(SphericalAngles solarAngles, SphericalAngles planeNormal, double planeArea)
    {
-      Array<double, 3> xSun = solarIrradianceInVacuoVec(solarAngles);
-      Array<double, 3> xPlane = vecFromSpherical(planeNormal, planeArea);
-      double dot = xSun[0] * xPlane[0] + xSun[1] * xPlane[1] + xSun[2] * xPlane[2];
-      if (dot < 0) dot = 0;
-      return dot;
+      Array<double, 3> xSun = solarIrradianceVec(solarAngles);
+      Array<double, 3> xPlane = angsAndMagToVec(planeNormal, planeArea);
+      double d = dot<double, 3>(xSun, xPlane);
+      if (d < 0) d = 0;
+      return d;
    }
 }

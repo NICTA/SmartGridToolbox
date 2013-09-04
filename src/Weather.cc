@@ -19,7 +19,7 @@ namespace SmartGridToolbox
          const auto & constNd = cloudNd["constant"];
          if (constNd)
          {
-            comp.takeCloudCoverSeries(new ConstTimeSeries<Time, double>(constNd.as<double>()));  
+            comp.acquireCloudCoverSeries(new ConstTimeSeries<Time, double>(constNd.as<double>()));  
          }
          else
          {
@@ -29,11 +29,11 @@ namespace SmartGridToolbox
       }
       else
       {
-         comp.takeCloudCoverSeries(new ConstTimeSeries<Time, double>(0.0));
+         comp.acquireCloudCoverSeries(new ConstTimeSeries<Time, double>(0.0));
       }
    }
 
-   double Weather::solarPower(Array<double, 3> plane)
+   SolarIrradiance Weather::irradiance()
    {
       // Possibly dodgy model.
       // Assume transmitted and diffuse components vary linearly with the cloud cover coefficient.
@@ -46,15 +46,28 @@ namespace SmartGridToolbox
       const double maxDiffuse = 0.26;
 
       double cloudCover = cloudCoverSeries_->value(time());
-
-      double transmit = maxTransmit - cloudCover * (maxTransmit - minTransmit);
-      double diffuse = minDiffuse + cloudCover * (maxDiffuse - minDiffuse);
-
       assert(cloudCover >= 0 && cloudCover <= 1);
 
-      SphericalAnglesRadians sun = sunPos(utcTime(time()), latLong_);
-      double pow = transmit * SmartGridToolbox::solarPowerInVacuo(sun, plane) + diffuse * solarIrradianceInVacuo();
+      double directFrac = maxTransmit - cloudCover * (maxTransmit - minTransmit);
+      double diffuseFrac = minDiffuse + cloudCover * (maxDiffuse - minDiffuse);
 
-      return pow;
+      SphericalAngles sunAngs = sunPos(utcTime(time()), latLong_);
+
+      SolarIrradiance result;
+      result.direct = directFrac * solarIrradianceVec(sunAngs);
+      result.horizontalDiffuse = diffuseFrac * solarIrradianceMag();
+
+      return result;
+   }
+
+   double Weather::solarPower(SphericalAngles planeNormal, double planeArea)
+   {
+      // Neglect ground reflected radiation.
+      SolarIrradiance irr = irradiance();
+      Array<double, 3> planeVec = angsAndMagToVec(planeNormal, planeArea); 
+      double direct = dot<double, 3>(planeVec, irr.direct);
+      if (direct < 0) direct = 0;
+      double diffuse = irr.horizontalDiffuse * (pi - planeNormal.zenith) / pi; 
+      return direct + diffuse;
    }
 }
