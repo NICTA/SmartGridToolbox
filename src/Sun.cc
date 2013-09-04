@@ -110,22 +110,27 @@ namespace SmartGridToolbox
       return result;
    }
 
-   double angleFactor(SunCoordsRadians & sunCoords, SunCoordsRadians & planeNormal)
+   static Array<double, 3> makeVec(SunCoordsRadians coords, double mag)
    {
       using std::cos;
       using std::sin;
-      double xSun[3] = {cos(sunCoords.azimuth), sin(sunCoords.azimuth), cos(sunCoords.zenith)};
-      double xPlane[3] = {cos(planeNormal.azimuth) * sin(planeNormal.zenith), 
-                          sin(planeNormal.azimuth) * sin(planeNormal.zenith),
-                          cos(planeNormal.zenith)};
+      return {mag * cos(coords.azimuth) * sin(coords.zenith), 
+              mag * sin(coords.azimuth) * sin(coords.zenith),
+              mag * cos(coords.zenith)};
+   }
+
+   Array<double, 3> sunIrradianceVec(SunCoordsRadians sunCoords)
+   {
+      const double mag = 1004.0; // Wikipedia.
+      return makeVec(sunCoords, mag);
+   }
+
+   double sunPower(SunCoordsRadians sunCoords, SunCoordsRadians planeNormal, double planeArea)
+   {
+      Array<double, 3> xSun = sunIrradianceVec(sunCoords);
+      Array<double, 3> xPlane = makeVec(planeNormal, planeArea);
       double dot = xSun[0] * xPlane[0] + xSun[1] * xPlane[1] + xSun[2] * xPlane[2];
       if (dot < 0) dot = 0;
       return dot;
-   }
-
-   double sunPowerW(SunCoordsRadians sunCoords, SunCoordsRadians planeNormal, double planeArea_m2)
-   {
-      const double sunPowerPer_m2 = 1004.0; // Wikipedia.
-      return sunPowerPer_m2 * planeArea_m2 * angleFactor(sunCoords, planeNormal);
    }
 }

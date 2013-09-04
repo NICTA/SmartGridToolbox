@@ -17,16 +17,26 @@ namespace SmartGridToolbox
     *  @return Struct containing zenith and azimuth angles of the sun. */
    SunCoordsRadians sunPos(ptime utcTime, LatLong location);
 
-   /// Attenuation factor of radiation on a plane, due to an oblique angle.
-   /** @parameter sunCoords: The sun's coordinates. 
-    *  @parameter planeNormal: The coordinates specified by the normal of a plane. 
-    *  @return the cosine of the angle between the plane normal and the sun. */
-   double angleFactor(SunCoordsRadians & sunCoords, SunCoordsRadians & planeNormal);
+   /// Solar irradiance, W/m^2.
+   /** @parameter sunCoords : Struct containing zenith and azimuth angles of the sun.
+    *  @return Irradiance vector in W/m^2. Direction of vector points to the sun. */
+   Array<double, 3> sunIrradianceVec(SunCoordsRadians sunCoords);
 
-   /// Solar power in Watts.
-   /** @parameter sunCoords: The sun's coordinates. 
-    *  @parameter planeNormal: The coordinates specified by the normal of a plane. */
-   double sunPowerW(SunCoordsRadians sunCoords, SunCoordsRadians planeNormal, double planeArea_m2);
+   /// Solar power falling on a plane, W.
+   /** @parameter sunCoords : Struct containing zenith and azimuth angles of the sun.
+    *  @parameter planeNormal: The coordinates specified by the normal of a plane. 
+    *  @parameter planeArea: The area of the plane in m^2.
+    *  @return Power in W. Angle between sun and plane normal of >= 90 degrees implies zero power. */
+   double sunPower(SunCoordsRadians sunCoords, SunCoordsRadians planeNormal, double planeArea);
+
+   /// Solar power per m^2 falling on a plane, W/m^2.
+   /** @parameter sunCoords : Struct containing zenith and azimuth angles of the sun.
+    *  @parameter planeNormal: The coordinates specified by the normal of a plane. 
+    *  @return Irradiance in W/m^2. Angle between sun and plane normal of >= 90 degrees implies zero power. */
+   double sunIrradiance(SunCoordsRadians sunCoords, SunCoordsRadians planeNormal)
+   {
+      return sunPower(sunCoords, planeNormal, 1.0);
+   }
 }
 
 #endif // SUN_DOT_H
