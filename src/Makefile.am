@@ -22,6 +22,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  SimpleDCPowerSource.cc \
 										  SimpleInverter.cc \
 										  Simulation.cc \
+										  SolarPV.cc \
 										  SparseSolver.cc \
 										  Sun.cc \
 										  TestComponent.cc \
