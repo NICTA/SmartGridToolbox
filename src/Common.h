@@ -188,30 +188,23 @@ namespace SmartGridToolbox
 
    /// @name Basic vector algebra in n dimensions.
    /// @{
-   template<typename T, int d> double dot(const Array<T, d> & v1, const Array<T, d> & v2)
+   template<typename T, std::size_t d> double dot(const Array<T, d> & v1, const Array<T, d> & v2)
    {
       T result(0.0);
-      for (int i = 0; i < d; ++i) result += v1[i] * v2[i];
+      for (std::size_t i = 0; i < d; ++i) result += v1[i] * v2[i];
       return result;
    }
 
-   template<typename T, int d, typename S> Array<T, d> operator*(const Array<T, d> & v, const S & s)
+   template<typename T, std::size_t d, typename S> Array<T, d> operator*(const Array<T, d> & v, const S & s)
    {
       Array<T, d> result = v;
-      for (int i = 0; i < d; ++i) result *= s;
+      for (std::size_t i = 0; i < d; ++i) result[i] *= s;
       return result;
    }
 
-   template<typename T, int d, typename S> Array<T, d> operator*(const S & s, const Array<T, d> & v)
+   template<typename T, std::size_t d, typename S> Array<T, d> operator*(const S & s, const Array<T, d> & v)
    {
-      return v * s;
-   }
-
-   template<typename T, int d, typename S> Array<T, d> operator/(const Array<T, d> & v, const S & s)
-   {
-      Array<T, d> result = v;
-      for (int i = 0; i < d; ++i) result /= s;
-      return result;
+      return operator*(v, s);
    }
    /// @}
 }

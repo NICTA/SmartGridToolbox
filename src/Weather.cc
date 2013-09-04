@@ -62,7 +62,8 @@ namespace SmartGridToolbox
 
    double Weather::solarPower(SphericalAngles planeNormal, double planeArea)
    {
-      // Neglect ground reflected radiation.
+      // Neglect ground reflected radiation. This is reasonable, because typically a solar collector etc would
+      // be pointing at a zenith angle of less than 90 degrees, so would not get a ground component.
       SolarIrradiance irr = irradiance();
       Array<double, 3> planeVec = angsAndMagToVec(planeNormal, planeArea); 
       double direct = dot<double, 3>(planeVec, irr.direct);
