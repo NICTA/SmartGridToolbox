@@ -14,10 +14,10 @@ namespace SmartGridToolbox
       message() << "Model before validation:" << std::endl;
       for (const Component * comp : compVec_)
       {
-         message() << "\t" << comp->name() << std::endl;
+         message() << "\t" << comp->name() << " " << comp->rank() << std::endl;
          for (Component * const dep : comp->dependencies())
          {
-            message() << "\t\t" << dep->name() << std::endl;
+            message() << "\t\t" << dep->name() << " " << dep->rank() << std::endl;
          }
       }
 
@@ -49,10 +49,10 @@ namespace SmartGridToolbox
       message() << "Model after validation:" << std::endl;
       for (const Component * comp : compVec_)
       {
-         message() << "\t" << comp->name() << std::endl;
+         message() << "\t" << comp->name() << " " << comp->rank() << std::endl;
          for (Component * const dep : comp->dependencies())
          {
-            message() << "\t\t" << dep->name() << std::endl;
+            message() << "\t\t" << dep->name() << " " << dep->rank() << std::endl;
          }
       }
    }

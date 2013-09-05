@@ -6,6 +6,7 @@ namespace SmartGridToolbox
 {
    void InverterBase::addDCPowerSource(DCPowerSourceBase & source)
    {
+      dependsOn(source);
       sources_.push_back(&source);
       source.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();}, 
             "Trigger InverterBase " + name() + " needs update.");

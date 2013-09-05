@@ -92,7 +92,7 @@ namespace SmartGridToolbox
             return dependencies_;
          }
 
-         /// Dependents update after I update.
+         /// Components on which I depend will update first.
          void dependsOn(Component & b)
          /** @param t Component on which I depend. */
          {
