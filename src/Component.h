@@ -112,6 +112,10 @@ namespace SmartGridToolbox
          /** @param t the Time to advance to. */
          void update(Time t);
 
+         /// Bring state up to time t if it is not already there.
+         /** @param t the Time to advance to. */
+         void ensureAtTime(Time t);
+
          virtual Time validUntil() const
          {
             return pos_infin;

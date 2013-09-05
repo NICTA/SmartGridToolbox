@@ -20,4 +20,21 @@ namespace SmartGridToolbox
       currentTime_ = t;
       didUpdate_.trigger();
    }
+
+   void Component::ensureAtTime(Time t)
+   {
+      if (currentTime_ == not_a_date_time)
+      {
+         initialize(t);
+      }
+      if (t > time())
+      {
+         update(t);
+      }
+      else if (t < time())
+      {
+         error() << "Component " << name() << " was asked to go back in time." << std::endl;
+         abort();
+      }
+   }
 }
