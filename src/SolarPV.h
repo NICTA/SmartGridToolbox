@@ -39,7 +39,7 @@ namespace SmartGridToolbox
 
          virtual double PDC() const override;
 
-         void setWeather(const Weather & weather) {weather_ = &weather;}
+         void setWeather(Weather & weather);
 
          void setEfficiency(double efficiency) {efficiency_ = efficiency;}
 

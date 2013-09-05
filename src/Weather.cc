@@ -33,7 +33,7 @@ namespace SmartGridToolbox
       }
    }
 
-   SolarIrradiance Weather::irradiance()
+   SolarIrradiance Weather::irradiance() const
    {
       // Possibly dodgy model.
       // Assume transmitted and diffuse components vary linearly with the cloud cover coefficient.
@@ -60,7 +60,7 @@ namespace SmartGridToolbox
       return result;
    }
 
-   double Weather::solarPower(SphericalAngles planeNormal, double planeArea)
+   double Weather::solarPower(SphericalAngles planeNormal, double planeArea) const
    {
       // Neglect ground reflected radiation. This is reasonable, because typically a solar collector etc would
       // be pointing at a zenith angle of less than 90 degrees, so would not get a ground component.

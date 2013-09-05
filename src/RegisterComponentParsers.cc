@@ -4,7 +4,9 @@
 #include "Network.h"
 #include "SimpleDCPowerSource.h"
 #include "SimpleInverter.h"
+#include "SolarPV.h"
 #include "TestComponent.h"
+#include "Weather.h"
 #include "ZipToGround.h"
 
 namespace SmartGridToolbox
@@ -16,7 +18,9 @@ namespace SmartGridToolbox
       p.registerComponentParser<NetworkParser>();
       p.registerComponentParser<SimpleDCPowerSourceParser>();
       p.registerComponentParser<SimpleInverterParser>();
+      p.registerComponentParser<SolarPVParser>();
       p.registerComponentParser<TestComponentParser>();
+      p.registerComponentParser<WeatherParser>();
       p.registerComponentParser<ZipToGroundParser>();
    }
 }

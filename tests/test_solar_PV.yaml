@@ -1,0 +1,76 @@
+# Sample SmartGridToolbox configuration file.
+# File format is YAML.
+
+--- # Marks the start of each configuration document.
+
+global:
+   configuration_name:        test_solar_PV
+   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03  # Timezone info for Canberra, Australia.
+   lat_long:                  [-35.3075, 149.1244]             # Canberra, Australia.
+   start_time:                2013-01-23 13:13:00
+   end_time:                  2013-01-23 15:13:00
+
+objects: # And these are the actual objects.
+   weather:
+      name:                   weather_1
+      cloud_cover:
+         constant:            0.7
+   network:
+      name:                   network_1
+   bus:
+      name:                   bus_1
+      network:                network_1
+      type:                   PQ
+      phases:                 [A, B, C]
+      nominal_voltage:        [1, 1D120, 1D240]
+   zip_to_ground:
+      name:                   zip_load_1
+      phases:                 [A, B, C]
+      bus:                    bus_1
+      complex_power_load:     [0.0240+0.0120j, 0.0240+0.0120j, 0.0240+0.0120j]
+   bus:
+      name:                   bus_2
+      network:                network_1
+      type:                   PQ
+      phases:                 [A, B, C]
+      nominal_voltage:        [1, 1D120, 1D240]
+   inverter:
+      name:                   inverter_bus_2
+      bus:                    bus_2
+      phases:                 [A, B, C]
+      phase_angle_degrees:    10
+      efficiency:             0.85
+   solar_PV:
+      name:                   solar_PV_bus_2
+      weather:                weather_1
+      inverter:               inverter_bus_2
+      efficiency:             0.75
+      area_m2:                6.45
+      zenith_degrees:         30
+      azimuth_degrees:        10
+   bus:
+      name:                   bus_3
+      network:                network_1
+      type:                   SL
+      phases:                 [A, B, C]
+      nominal_voltage:        [1, 1D120, 1D240]
+   branch:
+      name:                   branch_1_2
+      network:                network_1
+      phases_0:               [A, B, C]
+      phases_1:               [A, B, C]
+      bus_0:                  bus_1
+      bus_1:                  bus_2
+      Y:
+         simple_line:         [5-15j, 5-15j, 5-15j]
+   branch:
+      name:                   branch_1_3
+      network:                network_1
+      phases_0:               [A, B, C]
+      phases_1:               [A, B, C]
+      bus_0:                  bus_1
+      bus_1:                  bus_3
+      Y:
+         simple_line:         [3-9j, 3-9j, 3-9j]
+
+--- # Marks the end of each configuration document.

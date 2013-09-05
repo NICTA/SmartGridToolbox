@@ -46,9 +46,9 @@ namespace SmartGridToolbox
             std::swap(cloudCoverSeries_, newSeries);
          }
 
-         SolarIrradiance irradiance();
+         SolarIrradiance irradiance() const;
 
-         double solarPower(SphericalAngles planeNormal, double planeArea);
+         double solarPower(SphericalAngles planeNormal, double planeArea) const;
 
       private:
          LatLong latLong_;
