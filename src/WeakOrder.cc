@@ -57,6 +57,8 @@ namespace SmartGridToolbox
 
    void WoGraph::weakOrder()
    {
+      SGT_DEBUG (debug() << "Weak order graph: initial:" << std::endl; debugPrint());
+
       std::vector<WoNode *> stack;
       // First do a DFS to induce an order on the nodes.
       bool done = false; 
@@ -89,5 +91,32 @@ namespace SmartGridToolbox
       std::sort(nodes_.begin(), nodes_.end(),
             [](const WoNode * lhs, const WoNode * rhs) -> bool
             {return *rhs < *lhs;});
+
+      SGT_DEBUG (debug() << "Weak order graph: final:" << std::endl; debugPrint());
+   }
+   
+   void WoGraph::debugPrint()
+   {
+      debug() << "Weak order graph: direct descent" << std::endl;
+      for (const WoNode * nd1 : nodes())
+      {
+         debug() << nd1->index() << "   ";
+         for (const WoNode * nd2 : nd1->to_)
+         {
+            std::cout << nd2->index() << " ";
+         }
+         std::cout << endl;
+      }
+
+      debug() << "Weak order graph: domination" << std::endl;
+      for (const WoNode * nd1 : nodes())
+      {
+         debug() << nd1->index() << "   ";
+         for (const WoNode * nd2 : nd1->dominated_)
+         {
+            std::cout << nd2->index() << " ";
+         }
+         std::cout << endl;
+      }
    }
 }

@@ -19,12 +19,18 @@ namespace SmartGridToolbox
             return idx_;
          }
 
+         /// Is there a link from here to nd? 
+         /** This relation could model dependency: nd would directly depend on me. */
          bool precedes(const WoNode & nd) const
          {
             std::set<const WoNode *>::iterator it = descendents_.find(&nd);
             return (it != descendents_.end());
          }
 
+         /// Can I get from here to nd, but not the reverse?
+         /** This relation could model dependency: nd would indirectly depend on me, and not vice-versa.
+          *  So of node A dominates node B, then B depends on A and not vice-versa.
+          *  We want to order this so that A comes before B. */ 
          bool dominates(const WoNode & nd) const
          {
             return (dominated_.find(&nd) != dominated_.end());
@@ -33,8 +39,7 @@ namespace SmartGridToolbox
          friend bool operator<(const WoNode & lhs, 
                                const WoNode & rhs)
          {
-            return (rhs.dominates(lhs) || 
-                    ((!lhs.dominates(rhs)) && (lhs.idx_ < rhs.idx_)));
+            return (rhs.dominates(lhs) || ((!lhs.dominates(rhs)) && (rhs.idx_ < lhs.idx_)));
          }
 
          void dfs(std::vector<WoNode *> & stack);
@@ -44,8 +49,8 @@ namespace SmartGridToolbox
          int idx_;
          bool visited_;
          std::list<WoNode *> to_;
-         std::set<const WoNode *> descendents_;
-         std::set<const WoNode *> dominated_;
+         std::set<const WoNode *> descendents_; // Can be reached from here.
+         std::set<const WoNode *> dominated_; // Can be reached from here, not vice-versa.
    };
 
    class WoGraph
@@ -75,6 +80,10 @@ namespace SmartGridToolbox
          {
             return nodes_.size();
          }
+
+      private:
+         void debugPrint();
+
       private:
          int n_;
          std::vector<WoNode *> nodes_;

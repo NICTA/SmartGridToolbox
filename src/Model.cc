@@ -29,8 +29,10 @@ namespace SmartGridToolbox
       WoGraph g(compVec_.size());
       for (int i = 0; i < compVec_.size(); ++i)
       {
+         // At this point, rank of component i is i.
          for (const Component * dep : compVec_[i]->dependencies())
          {
+            // i depends on dep->rank().
             g.link(dep->rank(), i);
          }
       }

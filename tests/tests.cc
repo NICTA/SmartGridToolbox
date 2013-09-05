@@ -77,6 +77,7 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
       std::cout << " " << g.nodes()[i]->index(); 
    }
    std::cout << endl << endl;
+   
    for (const WoNode * nd1 : g.nodes())
    {
       message() << nd1->index() << "   ";
@@ -775,25 +776,19 @@ BOOST_AUTO_TEST_CASE (test_solar_PV)
    Parser & p = Parser::globalParser();
    p.parse("test_solar_pv.yaml", mod, sim);
 
-   Bus * bus1 = mod.componentNamed<Bus>("bus_1");
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
-   Bus * bus3 = mod.componentNamed<Bus>("bus_3");
    Network * network = mod.componentNamed<Network>("network_1");
 
    ofstream outfile;
    outfile.open("test_solar_pv.out");
 
    outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
-           << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2)
            << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2)
-           << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2)
            << std::endl;
    network->eventDidUpdate().addAction([&]()
          {
             outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
-                    << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << " "
                     << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) << " "
-                    << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2)
                     << std::endl;
          }, "Network updated.");
 
