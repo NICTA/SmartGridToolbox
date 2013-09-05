@@ -28,6 +28,23 @@ namespace SmartGridToolbox
       }
    }
 
+   void Network::addBus(Bus & bus)
+   {
+      dependsOn(bus);
+      busVec_.push_back(&bus);
+      busMap_[bus.name()] = &bus;
+      bus.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();}, 
+            "Trigger Network " + name() + " needs update");
+   }
+ 
+   void Network::addBranch(Branch & branch)
+   {
+      dependsOn(branch);
+      branchVec_.push_back(&branch);
+      branch.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();},
+            "Trigger Network " + name() + " needs update");
+   }
+
    void Network::rebuildNetwork()
    {
       SGT_DEBUG(debug() << "Network : rebuilding network." << std::endl);

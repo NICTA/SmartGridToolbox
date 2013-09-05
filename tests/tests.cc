@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    g.link(1, 2);
    g.link(0, 5);
    g.link(5, 2);
-   // Order should be 3, (4, 1, 0), 5, 2.
+   // Order should be 3, (0, 1, 4), 5, 2.
    g.weakOrder();
    for (int i = 0; i < g.size(); ++i)
    {
@@ -89,9 +89,9 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    }
 
    BOOST_CHECK(g.nodes()[0]->index() == 3);
-   BOOST_CHECK(g.nodes()[1]->index() == 4);
+   BOOST_CHECK(g.nodes()[1]->index() == 0);
    BOOST_CHECK(g.nodes()[2]->index() == 1);
-   BOOST_CHECK(g.nodes()[3]->index() == 0);
+   BOOST_CHECK(g.nodes()[3]->index() == 4);
    BOOST_CHECK(g.nodes()[4]->index() == 5);
    BOOST_CHECK(g.nodes()[5]->index() == 2);
 }
@@ -118,9 +118,9 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
    mod.validate();
 
    BOOST_CHECK(mod.components()[0] == &a3);
-   BOOST_CHECK(mod.components()[1] == &a4);
+   BOOST_CHECK(mod.components()[1] == &a0);
    BOOST_CHECK(mod.components()[2] == &a1);
-   BOOST_CHECK(mod.components()[3] == &a0);
+   BOOST_CHECK(mod.components()[3] == &a4);
    BOOST_CHECK(mod.components()[4] == &a5);
    BOOST_CHECK(mod.components()[5] == &a2);
 }

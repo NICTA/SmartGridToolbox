@@ -49,13 +49,7 @@ namespace SmartGridToolbox
       public:
          Network(const std::string & name) : Component(name) {}
 
-         void addBus(Bus & bus)
-         {
-            busVec_.push_back(&bus);
-            busMap_[bus.name()] = &bus;
-            bus.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();}, 
-                  "Trigger Network " + name() + " needs update");
-         }
+         void addBus(Bus & bus);
 
          const Bus * findBus(const std::string & name) const
          {
@@ -67,12 +61,7 @@ namespace SmartGridToolbox
             return const_cast<Bus *>((const_cast<const Network *>(this))->findBus(name));
          }
 
-         void addBranch(Branch & branch)
-         {
-            branchVec_.push_back(&branch);
-            branch.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();},
-                  "Trigger Network " + name() + " needs update");
-         }
+         void addBranch(Branch & branch);
 
          virtual void rebuildNetwork();
 
