@@ -23,10 +23,16 @@
 
 namespace SmartGridToolbox
 {
-   inline std::ostream & message() {return std::cout <<  "MESSAGE:\t";}
-   inline std::ostream & warning() {return std::cerr <<  "WARNING:\t";}
-   inline std::ostream & error() {return std::cerr <<    "ERROR:  \t";}
-   inline std::ostream & debug() {return std::cout <<    "DEBUG:  \t";}
+   inline std::ostream & messageStream() {return std::cout;}
+   inline std::ostream & warningStream() {return std::cerr;}
+   inline std::ostream & errorStream() {return std::cerr;}
+   inline std::ostream & debugStream() {return std::cout;}
+
+   inline std::ostream & message() {return messageStream()  <<  "MESSAGE:\t";}
+   inline std::ostream & warning() {return warningStream()  <<  "WARNING:\t";}
+   inline std::ostream & error() {return errorStream()      <<  "ERROR:  \t";}
+   inline std::ostream & debug() {return debugStream()      <<  "DEBUG:  \t";}
+
    inline void abort() {std::cerr << "ABORTING." << std::endl; ::abort();}
 
    /// @name Constant dimension 1D array type.

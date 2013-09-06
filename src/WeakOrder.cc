@@ -87,36 +87,97 @@ namespace SmartGridToolbox
          }
       }
 
-      // Sort the nodes, based on domination. 
-      std::sort(nodes_.begin(), nodes_.end(),
-            [](const WoNode * lhs, const WoNode * rhs) -> bool
-            {return *rhs < *lhs;});
+      // Sort the nodes, based on <. Note that it isn't a strict weak ordering, so can't use stl sort.
+      // TODO: This is probably a very dumb kind of sort!
+      for (auto it1 = nodes_.begin(); it1 != nodes_.end(); ++it1)
+      {
+         for (auto it2 = it1 + 1; it2 != nodes_.end(); ++it2)
+         {
+            if (**it2 < **it1)
+            {
+               auto it3 = it2;
+               while (it3 != it1)
+               {
+                  std::swap(*it3, *(it3 - 1));
+                  --it3;
+               }
+            }
+         }
+      }
 
       SGT_DEBUG (debug() << "Weak order graph: final:" << std::endl; debugPrint());
    }
    
    void WoGraph::debugPrint()
    {
-      debug() << "Weak order graph: direct descent" << std::endl;
+      debug() << "Weak order graph: Node i : direct descendents" << std::endl;
       for (const WoNode * nd1 : nodes())
       {
          debug() << nd1->index() << "   ";
          for (const WoNode * nd2 : nd1->to_)
          {
-            std::cout << nd2->index() << " ";
+            debugStream() << nd2->index() << " ";
          }
-         std::cout << endl;
+         debugStream() << endl;
       }
+      debugStream() << endl;
 
-      debug() << "Weak order graph: domination" << std::endl;
+      debug() << "Weak order graph: Node i : indirect descendents" << std::endl;
+      for (const WoNode * nd1 : nodes())
+      {
+         debug() << nd1->index() << "   ";
+         for (const WoNode * nd2 : nd1->descendents_)
+         {
+            debugStream() << nd2->index() << " ";
+         }
+         debugStream() << endl;
+      }
+      debugStream() << endl;
+
+      debug() << "Weak order graph: Node i : dominated nodes" << std::endl;
       for (const WoNode * nd1 : nodes())
       {
          debug() << nd1->index() << "   ";
          for (const WoNode * nd2 : nd1->dominated_)
          {
-            std::cout << nd2->index() << " ";
+            debugStream() << nd2->index() << " ";
          }
-         std::cout << endl;
+         debugStream() << endl;
+      }
+      debugStream() << endl;
+
+      debug() << "Weak order graph: (i, j) : i dominates j" << std::endl;
+      debug() << "     ";
+      for (const WoNode * nd2 : nodes())
+      {
+         debugStream() << setw(3) << left << nd2->index();
+      }
+      debugStream() << endl << endl;
+      for (const WoNode * nd1 : nodes())
+      {
+         debug() << setw(5) << left << nd1->index();
+         for (const WoNode * nd2 : nodes())
+         {
+            debugStream() << setw(3) << left << (nd1->dominates(*nd2));
+         }
+         debugStream() << endl;
+      }
+
+      debug() << "Weak order graph: (i, j) : i < j" << std::endl;
+      debug() << "     ";
+      for (const WoNode * nd2 : nodes())
+      {
+         debugStream() << setw(3) << left << nd2->index();
+      }
+      debugStream() << endl << endl;
+      for (const WoNode * nd1 : nodes())
+      {
+         debug() << setw(5) << left << nd1->index();
+         for (const WoNode * nd2 : nodes())
+         {
+            debugStream() << setw(3) << left << (*nd1 < *nd2);
+         }
+         debugStream() << endl;
       }
    }
 }

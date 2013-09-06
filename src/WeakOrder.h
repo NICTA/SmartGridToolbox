@@ -29,17 +29,17 @@ namespace SmartGridToolbox
 
          /// Can I get from here to nd, but not the reverse?
          /** This relation could model dependency: nd would indirectly depend on me, and not vice-versa.
-          *  So of node A dominates node B, then B depends on A and not vice-versa.
-          *  We want to order this so that A comes before B. */ 
+          *  Thus domination == "goes first." */
          bool dominates(const WoNode & nd) const
          {
             return (dominated_.find(&nd) != dominated_.end());
          }
-         
-         friend bool operator<(const WoNode & lhs, 
-                               const WoNode & rhs)
+       
+         /// Partial ordering operator.
+         /** Smaller goes first. So lhs < rhs if lhs dominates rhs. */
+         friend bool operator<(const WoNode & lhs, const WoNode & rhs)
          {
-            return (rhs.dominates(lhs) || ((!lhs.dominates(rhs)) && (rhs.idx_ < lhs.idx_)));
+            return (lhs.dominates(rhs) || ((!rhs.dominates(lhs)) && (lhs.idx_ < rhs.idx_)));
          }
 
          void dfs(std::vector<WoNode *> & stack);
