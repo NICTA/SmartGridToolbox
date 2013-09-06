@@ -776,6 +776,9 @@ BOOST_AUTO_TEST_CASE (test_solar_PV)
    Parser & p = Parser::globalParser();
    p.parse("test_solar_pv.yaml", mod, sim);
 
+   mod.validate();
+   sim.initialize();
+
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
    Network * network = mod.componentNamed<Network>("network_1");
 
