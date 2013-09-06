@@ -54,8 +54,17 @@ namespace SmartGridToolbox
       SphericalAngles sunAngs = sunPos(utcTime(time()), latLong_);
 
       SolarIrradiance result;
-      result.direct = directFrac * solarIrradianceVec(sunAngs);
-      result.horizontalDiffuse = diffuseFrac * solarIrradianceMag();
+
+      if (sunAngs.zenith < pi/2)
+      {
+         result.direct = directFrac * solarIrradianceVec(sunAngs);
+         result.horizontalDiffuse = diffuseFrac * solarIrradianceMag();
+      }
+      else
+      {
+         result.direct = Array<double, 3>{0.0, 0.0, 0.0};
+         result.horizontalDiffuse = 0.0; 
+      }
 
       return result;
    }
