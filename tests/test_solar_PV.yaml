@@ -46,7 +46,7 @@ objects: # And these are the actual objects.
       inverter:               inverter_bus_2
       efficiency:             0.75
       area_m2:                6.45
-      zenith_degrees:         30
+      zenith_degrees:         10
       azimuth_degrees:        10
    bus:
       name:                   bus_3
