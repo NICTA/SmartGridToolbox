@@ -774,7 +774,7 @@ BOOST_AUTO_TEST_CASE (test_solar_PV)
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::globalParser();
-   p.parse("test_solar_pv.yaml", mod, sim);
+   p.parse("test_solar_PV.yaml", mod, sim);
 
    mod.validate();
    sim.initialize();
@@ -783,7 +783,7 @@ BOOST_AUTO_TEST_CASE (test_solar_PV)
    Network * network = mod.componentNamed<Network>("network_1");
 
    ofstream outfile;
-   outfile.open("test_solar_pv.out");
+   outfile.open("test_solar_PV.out");
 
    outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
            << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2)
