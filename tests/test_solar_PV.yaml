@@ -24,7 +24,7 @@ objects: # And these are the actual objects.
       phases:                 [A, B, C]
       nominal_voltage:        [240, 240D120, 240D240]
    zip_to_ground:
-      name:                   zip_load_1
+      name:                   zip_bus_1_1
       phases:                 [A, B, C]
       bus:                    bus_1
       complex_power_load:     [240+120j, 240+120j, 240+120j]
