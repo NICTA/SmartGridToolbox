@@ -741,8 +741,31 @@ BOOST_AUTO_TEST_CASE (test_networked_dc)
    outfile.close();
 }
 
+BOOST_AUTO_TEST_CASE (test_sun_1)
+{
+
+}
+
 BOOST_AUTO_TEST_CASE (test_sun)
 {
+   // Canberra, Australia Lat Long = 35.3075 S, 149.1244 E (-35.3075, 149.1244).
+   // Round off to (-35, 149) because reference calculator uses integer latlongs.
+   // Take Jan 26 2013, 8:30 AM.
+   // This is daylight savings time, UMT +11 hours.
+   // http://pveducation.org/pvcdrom/properties-of-sunlight/sun-position-calculator is reference:
+   // Values from website are: zenith: 64.47, azimuth: 96.12 (i.e. nearly due east, 0 is north, 90 is east).
+
+   using namespace boost::gregorian;
+   time_zone_ptr tz(new posix_time_zone("AEST10AEDT,M10.5.0/02,M3.5.0/03"));
+
+   SphericalAngles sunCoords = sunPos(utcTimeFromLocalTime(ptime(date(2013, Jan, 26), hours(8) + minutes(30)), tz), 
+         {-35.0, 149.0});
+   message() << "Zenith:  " << sunCoords.zenith * 180 / pi << " expected: " << 64.47 << std::endl;
+   message() << "Azimuth: " << sunCoords.azimuth * 180 / pi << " expected: " << 96.12 << std::endl;
+
+   BOOST_CHECK(std::abs(sunCoords.zenith * 180 / pi - 64.47) < 1.25); // 5 minutes error.
+   BOOST_CHECK(std::abs(sunCoords.azimuth * 180 / pi - 96.12) < 1.25); // 5 minutes error.
+
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::globalParser();
