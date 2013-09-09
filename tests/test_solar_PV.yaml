@@ -8,7 +8,7 @@ global:
    timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03  # Timezone info for Canberra, Australia.
    lat_long:                  [-35.3075, 149.1244]             # Canberra, Australia.
    start_time:                2013-01-01 00:00:00
-   end_time:                  2013-06-01 00:00:00
+   end_time:                  2013-01-07 00:00:00
 
 objects: # And these are the actual objects.
    weather:
@@ -53,7 +53,7 @@ objects: # And these are the actual objects.
       name:                   zip_bus_2_1
       phases:                 [A, B, C]
       bus:                    bus_2
-      admittance:             [0.12, 0.12, 0.12]
+      admittance:             [100j, 100j, 100j]
    bus:
       name:                   bus_3
       network:                network_1
