@@ -53,7 +53,7 @@ objects: # And these are the actual objects.
       name:                   zip_bus_2_1
       phases:                 [A, B, C]
       bus:                    bus_2
-      admittance:             [100j, 100j, 100j]
+      admittance:             [0.7j, 0.7j, 0.7j]
    bus:
       name:                   bus_3
       network:                network_1
