@@ -79,6 +79,7 @@ namespace SmartGridToolbox
 
    void Bus::addZipToGround(ZipToGroundBase & zipToGround)
    {
+      dependsOn(zipToGround);
       zipsToGround_.push_back(&zipToGround);
       zipToGround.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();}, 
             "Trigger Bus " + name() + " needs update.");

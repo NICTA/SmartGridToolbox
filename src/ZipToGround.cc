@@ -13,7 +13,7 @@ namespace SmartGridToolbox
 
       auto ndName = nd["name"];
       auto ndPhases = nd["phases"];
-      auto ndImp = nd["impedance"];
+      auto ndAdmit = nd["admittance"];
       auto ndCurLoad = nd["current_load"];
       auto ndCurGen = nd["current_gen"];
       auto ndSLoad = nd["complex_power_load"];
@@ -46,9 +46,9 @@ namespace SmartGridToolbox
       comp.I() = UblasVector<Complex>(nPhase, czero);
       comp.S() = UblasVector<Complex>(nPhase, czero);
 
-      if (ndImp)
+      if (ndAdmit)
       {
-         comp.Y() = ndImp.as<UblasVector<Complex>>();
+         comp.Y() = ndAdmit.as<UblasVector<Complex>>();
       }
       if (ndCurLoad)
       {
