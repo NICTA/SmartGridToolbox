@@ -212,6 +212,20 @@ namespace SmartGridToolbox
    {
       return operator*(v, s);
    }
+
+   template<typename T, std::size_t d> Array<T, d> operator+(const Array<T, d> & lhs, const Array<T, d> & rhs)
+   {
+      Array<T, d> result = lhs;
+      for (std::size_t i = 0; i < d; ++i) result[i] += rhs[i];
+      return result;
+   }
+
+   template<typename T, std::size_t d> Array<T, d> operator-(const Array<T, d> & lhs, const Array<T, d> & rhs)
+   {
+      Array<T, d> result = lhs;
+      for (std::size_t i = 0; i < d; ++i) result[i] -= rhs[i];
+      return result;
+   }
    /// @}
 }
 

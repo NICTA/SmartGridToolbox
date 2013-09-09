@@ -48,7 +48,7 @@ namespace SmartGridToolbox
          SGT_DEBUG(debug() << "\tNext scheduled time = " << nextSchedTime << std::endl);
          SGT_DEBUG(debug() << "\tEnd time = " << endTime_ << std::endl);
       }
-      if (nextSchedTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ <= endTime_)
+      if (nextSchedTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ < endTime_)
       {
          // There are contingent updates pending.
          Component * contComp = *contingentUpdates_.begin();
@@ -62,7 +62,7 @@ namespace SmartGridToolbox
          scheduledUpdates_.insert(contComp); // ... and reinsert it in the scheduled updates set.
          result = true;
       }
-      else if (scheduledUpdates_.size() > 0 && nextSchedTime <= endTime_)
+      else if (scheduledUpdates_.size() > 0 && nextSchedTime < endTime_)
       {
          // There is a scheduled update to do next.
          if (nextSchedTime > currentTime_)

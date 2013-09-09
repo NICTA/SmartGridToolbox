@@ -46,13 +46,29 @@ namespace SmartGridToolbox
             std::swap(cloudCoverSeries_, newSeries);
          }
 
-         SolarIrradiance irradiance() const;
-
          double solarPower(SphericalAngles planeNormal, double planeArea) const;
+
+         const SolarIrradiance & irradiance()
+         {
+            return irradiance_;
+         }
+
+      private:
+         virtual void initializeState(Time t)
+         {
+            irradiance_ = unaveragedIrradiance(t);
+         }
+
+         virtual void updateState(Time t0, Time t1) override;
+
+         SolarIrradiance unaveragedIrradiance(const Time & tm) const;
 
       private:
          LatLong latLong_;
          TimeSeries<Time, double> * cloudCoverSeries_;
+
+         SolarIrradiance prevIrradiance_;
+         SolarIrradiance irradiance_;
    };
 }
 

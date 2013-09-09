@@ -760,8 +760,10 @@ BOOST_AUTO_TEST_CASE (test_sun)
 
    SphericalAngles sunCoords = sunPos(utcTimeFromLocalTime(ptime(date(2013, Jan, 26), hours(8) + minutes(30)), tz), 
          {-35.0, 149.0});
-   message() << "Zenith:  " << sunCoords.zenith * 180 / pi << " expected: " << 64.47 << std::endl;
-   message() << "Azimuth: " << sunCoords.azimuth * 180 / pi << " expected: " << 96.12 << std::endl;
+   message() << "UTC time:  " << utcTimeFromLocalTime(ptime(date(2013, Jan, 26), hours(8) + minutes(30)), tz) 
+             << std::endl;
+   message() << "Zenith:    " << sunCoords.zenith * 180 / pi << " expected: " << 64.47 << std::endl;
+   message() << "Azimuth:   " << sunCoords.azimuth * 180 / pi << " expected: " << 96.12 << std::endl;
 
    BOOST_CHECK(std::abs(sunCoords.zenith * 180 / pi - 64.47) < 1.25); // 5 minutes error.
    BOOST_CHECK(std::abs(sunCoords.azimuth * 180 / pi - 96.12) < 1.25); // 5 minutes error.
@@ -813,7 +815,7 @@ BOOST_AUTO_TEST_CASE (test_solar_PV)
            << std::endl;
    network->eventDidUpdate().addAction([&]()
          {
-            outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
+            outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " 
                     << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) << " "
                     << std::endl;
          }, "Network updated.");

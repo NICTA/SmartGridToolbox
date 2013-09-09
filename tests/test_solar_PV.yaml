@@ -7,14 +7,14 @@ global:
    configuration_name:        test_solar_PV
    timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03  # Timezone info for Canberra, Australia.
    lat_long:                  [-35.3075, 149.1244]             # Canberra, Australia.
-   start_time:                2013-01-23 13:13:00
-   end_time:                  2013-05-24 13:13:00
+   start_time:                2013-01-01 00:00:00
+   end_time:                  2013-06-01 00:00:00
 
 objects: # And these are the actual objects.
    weather:
       name:                   weather_1
       cloud_cover:
-         constant:            0.7
+         constant:            0.3
    network:
       name:                   network_1
    bus:
@@ -46,8 +46,9 @@ objects: # And these are the actual objects.
       inverter:               inverter_bus_2
       efficiency:             0.75
       area_m2:                6.45
-      zenith_degrees:         10
-      azimuth_degrees:        10
+      zenith_degrees:         64.6
+      azimuth_degrees:        95.8
+      # Should point right at sun on Jan 26, 2013, 0830. 
    bus:
       name:                   bus_3
       network:                network_1

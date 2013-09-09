@@ -181,8 +181,10 @@ namespace SmartGridToolbox
 
       message() << "Finished parsing." << std::endl;
       message() << "Name = " << model.name() << std::endl;
-      message() << "Start time = " << simulation.startTime() << std::endl;
-      message() << "End time = " << simulation.endTime() << std::endl;
+      message() << "Start time (local) = " << localTime(simulation.startTime(), model.timezone()) << std::endl;
+      message() << "Start time (UTC)   = " << utcTime(simulation.startTime()) << std::endl;
+      message() << "End time (local)   = " << localTime(simulation.endTime(), model.timezone()) << std::endl;
+      message() << "End time (UTC)     = " << utcTime(simulation.endTime()) << std::endl;
    }
    
    Parser::Parser()
