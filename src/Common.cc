@@ -31,7 +31,7 @@ namespace SmartGridToolbox
          reMinusIm_ = (Qi::double_ >> Qi::lit('-') >> Qi::double_ >> Qi::char_("ij"))
             [Phoenix::bind(&CGram::setResult, this, Qi::_1, -Qi::_2)];
          im_ = (Qi::double_ >> Qi::char_("ij"))
-            [Phoenix::bind(&CGram::setResult, this, 0.0, Qi::_2)];
+            [Phoenix::bind(&CGram::setResult, this, 0.0, Qi::_1)];
          re_ = (Qi::double_) 
             [Phoenix::bind(&CGram::setResult, this, Qi::_1, 0.0)];
 
