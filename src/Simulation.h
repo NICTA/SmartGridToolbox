@@ -95,7 +95,7 @@ namespace SmartGridToolbox
          void signalAbnormalExit();
 
          /// Get the time did advance event.
-         Event & eventTimeDidAdvance() {return timeDidAdvance_;}
+         Event & eventNewTimestep() {return newTimestep_;}
 
       private:
          typedef std::set<Component *, ScheduledUpdatesComp> ScheduledUpdates;
@@ -108,7 +108,7 @@ namespace SmartGridToolbox
          Time currentTime_;
          ScheduledUpdates scheduledUpdates_;
          ContingentUpdates contingentUpdates_;
-         Event timeDidAdvance_;
+         Event newTimestep_;
    };
 }
 

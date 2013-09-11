@@ -801,27 +801,25 @@ BOOST_AUTO_TEST_CASE (test_solar_PV)
    Parser & p = Parser::globalParser();
    p.parse("test_solar_PV.yaml", mod, sim);
 
-   mod.validate();
-   sim.initialize();
-
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
    Network * network = mod.componentNamed<Network>("network_1");
 
    ofstream outfile;
    outfile.open("test_solar_PV.out");
 
-   outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
-           << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2)
-           << std::endl;
    network->eventDidUpdate().addAction([&]()
          {
             outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " 
                     << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) << " "
                     << std::endl;
          }, "Network updated.");
-
    mod.validate();
    sim.initialize();
+
+   outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
+           << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2)
+           << std::endl;
+
    while (sim.doNextUpdate())
    {
    }

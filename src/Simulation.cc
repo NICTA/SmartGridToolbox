@@ -9,7 +9,7 @@ namespace SmartGridToolbox
                                          startTime_(not_a_date_time),
                                          endTime_(not_a_date_time),
                                          currentTime_(neg_infin),
-                                         timeDidAdvance_("Simulation time did advance")
+                                         newTimestep_("Simulation time did advance")
    {
       // Empty.
    }
@@ -26,6 +26,7 @@ namespace SmartGridToolbox
          scheduledUpdates_.insert(comp);
       }
       currentTime_ = startTime_;
+      newTimestep_.trigger();
    }
 
    // TODO: can we tidy up the logic in this function?
@@ -83,7 +84,7 @@ namespace SmartGridToolbox
       }
       if (didAdvance)
       {
-         timeDidAdvance_.trigger();
+         newTimestep_.trigger();
       }
       return result;
    }
