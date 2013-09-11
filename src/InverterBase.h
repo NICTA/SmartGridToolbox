@@ -26,7 +26,7 @@ namespace SmartGridToolbox
       public:
          virtual UblasVector<Complex> Y() const override {return UblasVector<Complex>(phases().size(), czero);}
          virtual UblasVector<Complex> I() const override {return UblasVector<Complex>(phases().size(), czero);}
-         virtual UblasVector<Complex> S() const override; 
+         virtual UblasVector<Complex> S() const override = 0;
       /// @}
       
       /// @name My public member functions. 
@@ -38,10 +38,8 @@ namespace SmartGridToolbox
 
          virtual double efficiency(double powerDC) const = 0;
 
-         /// Get the phase angle, as a function of DC power
-         /** Note: this makes a limiting assumption that the phase angle of each phase is equal.
-          *  If in the future this turns out to be too limiting, then we can use a vector of phase angles. */
-         virtual double phaseAngleRadians(double powerDC) const = 0;
+         /// Real power output, per phase.
+         double PPerPhase() const;
       /// @}
       
       /// @name My private member variables.

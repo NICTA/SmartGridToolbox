@@ -22,28 +22,91 @@ namespace SmartGridToolbox
    /// SimpleInverter: DC power to n-phase AC converter.
    class SimpleInverter : public InverterBase
    {
-      /// @name Overridden public member functions from InverterBase.
+      /// @name Overridden from InverterBase
       /// @{
-      public:
-         virtual double efficiency(double powerDC) const override {return efficiency_;}
-         virtual double phaseAngleRadians(double powerDC) const override {return phaseAngle_;}
+      UblasVector<Complex> S() const;
       /// @}
       
       /// @name My public member functions.
       /// @{
       public:
-         SimpleInverter(const std::string & name) : InverterBase(name) {}
+         SimpleInverter(const std::string & name) :
+            InverterBase(name), 
+            efficiency_(1.0), 
+            maxPAppPerPhase_(5000.0), 
+            minPowerFactor_(0.9), 
+            requestedQPerPhase_(0.0), 
+            inService_(true)
+         {
+            // Empty.
+         }
 
-         void setEfficiency(double efficiency) {efficiency_ = efficiency;}
+         virtual double efficiency(double powerDC) const override
+         {
+            return efficiency_;
+         }
+         void setEfficiency(double efficiency)
+         {
+            efficiency_ = efficiency;
+         }
 
-         void setPhaseAngleRadians(double phaseAngle) {phaseAngle_ = phaseAngle;}
+         double maxPAppPerPhase() const
+         {
+            return maxPAppPerPhase_;
+         }
+         void setMaxPAppPerPhase(double maxPAppPerPhase)
+         {
+            maxPAppPerPhase_ = maxPAppPerPhase;
+         }
+
+         double minPhaseAngle() const
+         {
+            return minPhaseAngle_;
+         }
+         void setMinPhaseAngle(double minPhaseAngle)
+         {
+            minPhaseAngle_ = minPhaseAngle;
+         }
+
+         double requestedQPerPhase() const
+         {
+            return requestedQPerPhase_;
+         }
+         void setRequestedQPerPhase(double requestedQPerPhase)
+         {
+            requestedQPerPhase_ = requestedQPerPhase;
+         }
+
+         bool inService() const
+         {
+            return inService_;
+         }
+         bool setInService(bool inService)
+         {
+            inService_ = inService;
+         }
+      /// @}
+
+      /// @name My private member functions.
+      /// @{
+      public:
       /// @}
 
       /// @name Private member variables.
       /// @{
       public:
+         // Operating parameters:
          double efficiency_;
-         double phaseAngle_;
+         double maxPAppPerPhase_;
+         double minPhaseAngle_;
+         double minPowerFactor_;
+
+         // Settings:
+         double requestedQPerPhase_;
+         bool inService_;
+
+         // State:
+         UblasVector<Complex> S_;
       /// @}
    };
 }
