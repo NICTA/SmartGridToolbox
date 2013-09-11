@@ -26,18 +26,18 @@ namespace SmartGridToolbox
          comp.setEfficiency(1.0);
       }
 
-      if (nd["max_apparent_power_per_phase"])
+      if (nd["max_app_pow_per_phase"])
       {
-         comp.setMaxPAppPerPhase(nd["max_apparent_power_per_phase"].as<double>());
+         comp.setMaxPAppPerPhase(nd["max_app_pow_per_phase"].as<double>());
       }
       else
       {
          comp.setMaxPAppPerPhase(10000.0);
       }
 
-      if (nd["min_phase_angle"])
+      if (nd["min_power_factor"])
       {
-         comp.setMinPhaseAngle(nd["min_phase_angle"].as<double>());
+         comp.setMinPhaseAngle(nd["min_power_factor"].as<double>());
       }
       else
       {

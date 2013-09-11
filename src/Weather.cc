@@ -32,6 +32,15 @@ namespace SmartGridToolbox
       {
          comp.acquireCloudCoverSeries(new ConstTimeSeries<Time, double>(0.0));
       }
+
+      if (nd["dt"])
+      {
+         comp.setDt(parseDuration(nd["dt"].as<std::string>()));
+      }
+      else
+      {
+         comp.setDt(minutes(5.0));
+      }
    }
 
    double Weather::solarPower(SphericalAngles planeNormal, double planeArea) const

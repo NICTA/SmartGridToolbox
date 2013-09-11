@@ -68,6 +68,11 @@ namespace SmartGridToolbox
       }
    }
 
+   inline Time parseDuration(const std::string & str)
+   {
+      return duration_from_string(str); 
+   }
+
    class ComponentParser
    {
       public:

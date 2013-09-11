@@ -15,6 +15,7 @@ objects: # And these are the actual objects.
       name:                   weather_1
       cloud_cover:
          constant:            0.3
+      dt:                     00:30:00
    network:
       name:                   network_1
    bus:
@@ -38,7 +39,8 @@ objects: # And these are the actual objects.
       name:                   inverter_bus_2
       bus:                    bus_2
       phases:                 [A, B, C]
-      phase_angle_degrees:    10
+      max_app_pow_per_phase:  1100
+      min_phase_anglee:       0.9
       efficiency:             0.86
    solar_PV:
       name:                   solar_PV_bus_2
