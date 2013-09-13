@@ -33,7 +33,7 @@ namespace SmartGridToolbox
       dependsOn(bus);
       busVec_.push_back(&bus);
       busMap_[bus.name()] = &bus;
-      bus.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();}, 
+      bus.didUpdate().addAction([this](){needsUpdate().trigger();}, 
             "Trigger Network " + name() + " needs update");
    }
  
@@ -41,7 +41,7 @@ namespace SmartGridToolbox
    {
       dependsOn(branch);
       branchVec_.push_back(&branch);
-      branch.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();},
+      branch.didUpdate().addAction([this](){needsUpdate().trigger();},
             "Trigger Network " + name() + " needs update");
    }
 

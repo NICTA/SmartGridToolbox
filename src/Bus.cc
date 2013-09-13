@@ -50,7 +50,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus::initializeState(Time t)
+   void Bus::initializeState()
    {
       Y_ = UblasVector<Complex>(phases_.size(), czero);
       I_ = UblasVector<Complex>(phases_.size(), czero);
@@ -81,7 +81,7 @@ namespace SmartGridToolbox
    {
       dependsOn(zipToGround);
       zipsToGround_.push_back(&zipToGround);
-      zipToGround.eventDidUpdate().addAction([this](){eventNeedsUpdate().trigger();}, 
+      zipToGround.didUpdate().addAction([this](){needsUpdate().trigger();}, 
             "Trigger Bus " + name() + " needs update.");
       // TODO: this will recalculate all zips. Efficiency?
    }

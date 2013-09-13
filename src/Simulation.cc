@@ -9,7 +9,8 @@ namespace SmartGridToolbox
                                          startTime_(not_a_date_time),
                                          endTime_(not_a_date_time),
                                          currentTime_(neg_infin),
-                                         newTimestep_("Simulation time did advance")
+                                         timestepWillStart_("Simulation timestep will start"),
+                                         timestepDidComplete_("Simulation timestep did complete")
    {
       // Empty.
    }
@@ -21,12 +22,11 @@ namespace SmartGridToolbox
       for (Component * comp : mod_->components())
       {
          comp->initialize(startTime_);
-         comp->eventNeedsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
+         comp->needsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
                "Simulation insert contingent update of component " + comp->name());
          scheduledUpdates_.insert(comp);
       }
-      currentTime_ = startTime_;
-      newTimestep_.trigger();
+      currentTime_ = neg_infin;
    }
 
    // TODO: can we tidy up the logic in this function?
@@ -36,7 +36,6 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "\tNumber of scheduled = " << scheduledUpdates_.size() << std::endl);
       SGT_DEBUG(debug() << "\tNumber of contingent = " << scheduledUpdates_.size() << std::endl);
       bool result = false;
-      bool didAdvance = false;
       Time nextSchedTime = pos_infin;
       Component * schedComp = 0;
       auto schedUpdateIt = scheduledUpdates_.begin();
@@ -68,7 +67,7 @@ namespace SmartGridToolbox
          // There is a scheduled update to do next.
          if (nextSchedTime > currentTime_)
          {
-            didAdvance = true;
+            timestepWillStart_.trigger();
          }
          currentTime_ = nextSchedTime;
          SGT_DEBUG(debug() << "\tScheduled update component " << schedComp->name() << " from " 
@@ -82,10 +81,21 @@ namespace SmartGridToolbox
       {
          SGT_DEBUG(debug() << "\tNo update." << std::endl); 
       }
-      if (didAdvance)
+
+      if (  contingentUpdates_.size() == 0 && 
+            (scheduledUpdates_.size() == 0 || (**scheduledUpdates_.begin()).time() > currentTime_))
       {
-         newTimestep_.trigger();
+         // We've reached the end of this step.
+         for (Component * comp : mod_->components())
+         {
+            if (comp->time() == currentTime_)
+            {
+               comp->didCompleteTimestep().trigger();
+            }
+         }
+         timestepDidComplete_.trigger();
       }
+
       return result;
    }
 }

@@ -32,11 +32,11 @@ static double propTbMaxed(double dt, double Tb0, double dQg0, double dQg1,
 
 namespace SmartGridToolbox
 {
-   void SimpleBuilding::initializeState(Time t)
+   void SimpleBuilding::initializeState()
    {
       Tb_ = TbInit_;
       Ph_ = TbInit_;
-      setOperatingParams(t);
+      setOperatingParams(startTime());
    }
 
    void SimpleBuilding::updateState(Time t0, Time t1)

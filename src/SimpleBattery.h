@@ -63,7 +63,7 @@ namespace SmartGridToolbox
          }
 
       private:
-         virtual void initializeState(Time t) override
+         virtual void initializeState() override
          {
             charge_ = initCharge_;
          }
