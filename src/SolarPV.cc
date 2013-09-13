@@ -74,4 +74,11 @@ namespace SmartGridToolbox
    {
       return weather_->solarPower(planeNormal_, planeArea_) * efficiency_;
    }
+
+   void SolarPV::setWeather(Weather & weather)
+   {
+      weather_ = &weather;
+      dependsOn(weather);
+      weather.didUpdate().addAction([this](){needsUpdate().trigger();}, "Trigger SolarPV " + name() + " needs update");
+   }
 };
