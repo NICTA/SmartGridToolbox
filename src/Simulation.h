@@ -94,8 +94,11 @@ namespace SmartGridToolbox
          /// Signal that an abnormal exit should occur.
          void signalAbnormalExit();
 
-         /// Get the time did advance event.
-         Event & eventNewTimestep() {return newTimestep_;}
+         /// Get the timestep will start event.
+         Event & timestepWillStart() {return timestepWillStart_;}
+
+         /// Get the timestep did complete event.
+         Event & timestepDidComplete() {return timestepDidComplete_;}
 
       private:
          typedef std::set<Component *, ScheduledUpdatesComp> ScheduledUpdates;
@@ -108,7 +111,8 @@ namespace SmartGridToolbox
          Time currentTime_;
          ScheduledUpdates scheduledUpdates_;
          ContingentUpdates contingentUpdates_;
-         Event newTimestep_;
+         Event timestepWillStart_;
+         Event timestepDidComplete_;
    };
 }
 

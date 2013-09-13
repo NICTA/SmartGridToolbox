@@ -15,7 +15,7 @@ namespace SmartGridToolbox
          virtual Time validUntil() const override {return time() + dt_;}
 
       private:
-         virtual void initializeState(Time t) override 
+         virtual void initializeState() override 
          {
             P_ = Complex(0.0, 0.0);
          }

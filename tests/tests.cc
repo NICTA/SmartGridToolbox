@@ -338,9 +338,9 @@ class TestEventA : public Component
 
    private:
       // Reset state of the object, time is at timestamp t_.
-      virtual void initializeState(Time t) override
+      virtual void initializeState() override
       {
-         nextUpdate_ = t + dt_; 
+         nextUpdate_ = startTime() + dt_; 
       }
 
       // Bring state up to time t_.
@@ -348,7 +348,7 @@ class TestEventA : public Component
       {
          message() << "Update state of " << name() << " from time " 
               << t0 << " to " << t1 << "." << endl;
-         state_ = (t1-initTime()).ticks() * ctrl_;
+         state_ = (t1-startTime()).ticks() * ctrl_;
          nextUpdate_ = t1 + dt_;
       }
 
@@ -371,7 +371,7 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    sim.setEndTime(seconds(10));
    sim.initialize();
 
-   a0.eventDidUpdate().addAction(
+   a0.didUpdate().addAction(
          [&]() {message() << a1.name() << " received did update from " << a0.name() << std::endl;},
          "Test action.");
 
@@ -577,7 +577,7 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    Network * network = mod.componentNamed<Network>("network_1");
    ofstream outfile;
    outfile.open("test_network_1p.out");
-   network->eventDidUpdate().addAction([&]()
+   network->didUpdate().addAction([&]()
          {
             outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " << bus1->V()(0) 
                     << " " << bus2->V()(0) << " " << bus3->V()(0) << std::endl;
@@ -617,7 +617,7 @@ BOOST_AUTO_TEST_CASE (test_network_b3p)
            << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2)
            << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2)
            << std::endl;
-   network->eventDidUpdate().addAction([&]()
+   network->didUpdate().addAction([&]()
          {
             outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
                     << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << " "
@@ -657,7 +657,7 @@ BOOST_AUTO_TEST_CASE (test_network_2p_identical)
    outfile.open("test_network_2p_identical.out");
    outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
            << bus1->V()(0) << " " << bus2->V()(0) << " " << bus3->V()(0) << std::endl;
-   network->eventDidUpdate().addAction([&]()
+   network->didUpdate().addAction([&]()
          {
             outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
                     << bus1->V()(0) << " " << bus2->V()(0) << " " << bus3->V()(0) << std::endl;
@@ -726,7 +726,7 @@ BOOST_AUTO_TEST_CASE (test_networked_dc)
            << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2)
            << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2)
            << std::endl;
-   network->eventDidUpdate().addAction([&]()
+   network->didUpdate().addAction([&]()
          {
             outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
                     << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << " "
@@ -779,7 +779,7 @@ BOOST_AUTO_TEST_CASE (test_sun)
    ofstream outfile;
    outfile.open("test_sun.out");
 
-   clock1.eventDidUpdate().addAction([&]() 
+   clock1.didUpdate().addAction([&]() 
          {
             SphericalAngles sunCoords = sunPos(utcTime(clock1.time()), mod.latLong());
             outfile << dSeconds(clock1.time() - sim.startTime())/(24 * 3600) << " " << sunCoords.zenith << " "
@@ -807,7 +807,7 @@ BOOST_AUTO_TEST_CASE (test_solar_PV)
    ofstream outfile;
    outfile.open("test_solar_PV.out");
 
-   network->eventDidUpdate().addAction([&]()
+   network->didUpdate().addAction([&]()
          {
             outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " 
                     << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) << " "

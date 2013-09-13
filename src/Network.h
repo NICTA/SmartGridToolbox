@@ -35,12 +35,6 @@ namespace SmartGridToolbox
       /// @name Private overridden functions: from Component.
       /// @{
       private:
-         virtual void initializeState(Time t) override
-         {
-            SGT_DEBUG(debug() << "Network : initialize state." << std::endl);
-            updateState(t, t);
-         }
-
          virtual void updateState(Time t0, Time t1) override;
       /// @}
 

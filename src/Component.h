@@ -19,25 +19,10 @@ namespace SmartGridToolbox
          
          /// Constructor.
          /** @param name the unique name */
-         explicit Component(const std::string & name) : 
-            name_(name),
-            currentTime_(not_a_date_time),
-            rank_(-1),
-            willUpdate_("Component " + name_ + " will update"),
-            didUpdate_("Component " + name_ + " did update"),
-            needsUpdate_("Component " + name_ + " needs update")
-         {
-            // Empty.
-         }
+         explicit Component(const std::string & name); 
 
          /// Destructor.
-         virtual ~Component()
-         {
-            for (auto it : propertyMap_)
-            {
-               delete it.second;
-            }
-         }
+         virtual ~Component();
 
          /// @}
 
@@ -60,7 +45,7 @@ namespace SmartGridToolbox
          }
 
          /// Get the initial time for the object.
-         Time initTime() const
+         Time startTime() const
          {
             return startTime_;
          }
@@ -123,9 +108,11 @@ namespace SmartGridToolbox
 
          /// @name Events
          /// @{
-         Event & eventWillUpdate() {return willUpdate_;}
-         Event & eventDidUpdate() {return didUpdate_;}
-         Event & eventNeedsUpdate() {return needsUpdate_;}
+         Event & willUpdate() {return willUpdate_;}
+         Event & didUpdate() {return didUpdate_;}
+         Event & needsUpdate() {return needsUpdate_;}
+         Event & willStartNewTimestep() {return willStartNewTimestep_;}
+         Event & didCompleteTimestep() {return didCompleteTimestep_;}
          /// @}
 
          /// @}
@@ -163,7 +150,7 @@ namespace SmartGridToolbox
 
       private:
          /// Reset state of the object, time is at currentTime_.
-         virtual void initializeState(Time t)
+         virtual void initializeState()
          {
             // Empty.
          }
@@ -184,6 +171,8 @@ namespace SmartGridToolbox
          Event willUpdate_;
          Event didUpdate_;
          Event needsUpdate_;
+         Event willStartNewTimestep_;
+         Event didCompleteTimestep_;
    };
 }
 

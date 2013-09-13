@@ -23,7 +23,7 @@ namespace SmartGridToolbox
          virtual Time validUntil() const override {return time() + dt_;}
 
       private:
-         virtual void initializeState(Time t) override;
+         virtual void initializeState() override;
          virtual void updateState(Time t0, Time t1) override;
 
       // Overridden functions: from Load.
