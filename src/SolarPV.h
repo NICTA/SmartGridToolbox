@@ -29,13 +29,7 @@ namespace SmartGridToolbox
       /// @name My public member functions. 
       /// @{
       public:
-         SolarPV(const std::string & name) :
-            DCPowerSourceBase(name),
-            weather_(nullptr),
-            efficiency_(1.0),
-            planeNormal_({0.0, 0.0}),
-            planeArea_(0.0)
-         {}
+         SolarPV(const std::string & name);
 
          virtual double PDC() const override;
 
