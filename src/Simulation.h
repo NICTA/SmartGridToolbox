@@ -15,12 +15,13 @@ namespace SmartGridToolbox
    class ScheduledUpdatesComp
    {
       public:
-         bool operator()(const Component * lhs, const Component * rhs)
+         bool operator()(const std::pair<Component *, Time> & lhs, 
+                         const std::pair<Component *, Time> & rhs) 
          {
-            return ((lhs->validUntil() < rhs->validUntil()) ||
-                    (lhs->validUntil() == rhs->validUntil() && lhs->rank() < rhs->rank()) ||
-                    (lhs->validUntil() == rhs->validUntil() && lhs->rank() == rhs->rank() && 
-                     (lhs->name() < rhs->name())));
+            return ((lhs.second < rhs.second) ||
+                    (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
+                    (lhs.second == rhs.second && lhs.first->rank() == rhs.first->rank() && 
+                     (lhs.first->name() < rhs.first->name())));
          }
    };
 
@@ -101,7 +102,7 @@ namespace SmartGridToolbox
          Event & timestepDidComplete() {return timestepDidComplete_;}
 
       private:
-         typedef std::set<Component *, ScheduledUpdatesComp> ScheduledUpdates;
+         typedef std::set<std::pair<Component *, Time>, ScheduledUpdatesComp> ScheduledUpdates;
          typedef std::set<Component *, ContingentUpdatesComp> ContingentUpdates;
 
       private:

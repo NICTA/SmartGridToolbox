@@ -27,8 +27,8 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "Component " << name() << " initialize to " << t << std::endl);
       startTime_ = t;
-      initializeState();
       currentTime_ = neg_infin;
+      initializeState();
    }
 
    void Component::update(Time t)

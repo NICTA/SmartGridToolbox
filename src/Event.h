@@ -42,6 +42,11 @@ namespace SmartGridToolbox
 
          void trigger();
 
+         void clear()
+         {
+            actions_.clear();
+         }
+
          const std::string & description() const
          {
             return description_;

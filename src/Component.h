@@ -163,8 +163,8 @@ namespace SmartGridToolbox
          
       private:
          std::string name_;
-         Time currentTime_; ///< The current time.
          Time startTime_; ///< The initial time.
+         Time currentTime_; ///< The current time.
          ComponentVec dependencies_; ///< I depend on these.
          int rank_;  ///< Evaluation rank, based on weak ordering.
          PropertyMap propertyMap_;

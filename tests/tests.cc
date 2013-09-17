@@ -816,10 +816,6 @@ BOOST_AUTO_TEST_CASE (test_solar_PV)
    mod.validate();
    sim.initialize();
 
-   outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
-           << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2)
-           << std::endl;
-
    while (sim.doNextUpdate())
    {
    }
