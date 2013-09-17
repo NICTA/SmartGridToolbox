@@ -24,7 +24,8 @@ namespace SmartGridToolbox
    {
       /// @name Overridden from InverterBase
       /// @{
-      UblasVector<Complex> S() const;
+      UblasVector<Complex> S() const override;
+      virtual double PPerPhase() const override;
       /// @}
       
       /// @name My public member functions.
@@ -33,7 +34,7 @@ namespace SmartGridToolbox
          SimpleInverter(const std::string & name) :
             InverterBase(name), 
             efficiency_(1.0), 
-            maxPAppPerPhase_(5000.0), 
+            maxSMagPerPhase_(5000.0), 
             minPowerFactor_(0.9), 
             requestedQPerPhase_(0.0), 
             inService_(true)
@@ -50,22 +51,22 @@ namespace SmartGridToolbox
             efficiency_ = efficiency;
          }
 
-         double maxPAppPerPhase() const
+         double maxSMagPerPhase() const
          {
-            return maxPAppPerPhase_;
+            return maxSMagPerPhase_;
          }
-         void setMaxPAppPerPhase(double maxPAppPerPhase)
+         void setMaxSMagPerPhase(double maxSMagPerPhase)
          {
-            maxPAppPerPhase_ = maxPAppPerPhase;
+            maxSMagPerPhase_ = maxSMagPerPhase;
          }
 
-         double minPhaseAngle() const
+         double minPowerFactor() const
          {
-            return minPhaseAngle_;
+            return minPowerFactor_;
          }
-         void setMinPhaseAngle(double minPhaseAngle)
+         void setMinPowerFactor(double minPowerFactor)
          {
-            minPhaseAngle_ = minPhaseAngle;
+            minPowerFactor_ = minPowerFactor;
          }
 
          double requestedQPerPhase() const
@@ -97,8 +98,7 @@ namespace SmartGridToolbox
       public:
          // Operating parameters:
          double efficiency_;
-         double maxPAppPerPhase_;
-         double minPhaseAngle_;
+         double maxSMagPerPhase_;
          double minPowerFactor_;
 
          // Settings:

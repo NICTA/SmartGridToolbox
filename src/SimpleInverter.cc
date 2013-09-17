@@ -26,27 +26,27 @@ namespace SmartGridToolbox
          comp.setEfficiency(1.0);
       }
 
-      if (nd["max_app_pow_per_phase"])
+      if (nd["max_S_mag_per_phase"])
       {
-         comp.setMaxPAppPerPhase(nd["max_app_pow_per_phase"].as<double>());
+         comp.setMaxSMagPerPhase(nd["max_S_mag_per_phase"].as<double>());
       }
       else
       {
-         comp.setMaxPAppPerPhase(10000.0);
+         comp.setMaxSMagPerPhase(10000.0);
       }
 
       if (nd["min_power_factor"])
       {
-         comp.setMinPhaseAngle(nd["min_power_factor"].as<double>());
+         comp.setMinPowerFactor(nd["min_power_factor"].as<double>());
       }
       else
       {
-         comp.setMinPhaseAngle(0.0);
+         comp.setMinPowerFactor(0.0);
       }
 
-      if (nd["requested_reactive_power_per_phase"])
+      if (nd["requested_Q_per_phase"])
       {
-         comp.setRequestedQPerPhase(nd["requested_reactive_power_per_phase"].as<double>());
+         comp.setRequestedQPerPhase(nd["requested_Q_per_phase"].as<double>());
       }
       else
       {
@@ -77,16 +77,23 @@ namespace SmartGridToolbox
 
    UblasVector<Complex> SimpleInverter::S() const
    {
-      double P2PerPh = PPerPhase(); P2PerPh *= P2PerPh;
-      double Q2PerPh = requestedQPerPhase(); Q2PerPh *= Q2PerPh;
-      double maxPApp2PerPh =  maxPAppPerPhase_ * maxPAppPerPhase_;
-      double PApp2PerPh = std::min(P2PerPh + Q2PerPh, maxPApp2PerPh);
-      double QPerPh = sqrt(PApp2PerPh - P2PerPh);
+      double PPerPh = PPerPhase();
+      double P2PerPh = PPerPh * PPerPh; // Limited by maxSMagPerPhase_.
+      double Q2PerPh = requestedQPerPhase_ * requestedQPerPhase_;
+      double maxSMag2PerPh =  maxSMagPerPhase_ * maxSMagPerPhase_;
+      double SMag2PerPh = std::min(P2PerPh + Q2PerPh, maxSMag2PerPh);
+      double QPerPh = sqrt(SMag2PerPh - P2PerPh);
       if (requestedQPerPhase() < 0.0)
       {
          QPerPh *= -1;
       }
       Complex SPerPh{PPerPhase(), QPerPh};
       return UblasVector<Complex>(phases().size(), SPerPh);
+   }
+
+   double SimpleInverter::PPerPhase() const
+   {
+      double P = InverterBase::PPerPhase();
+      return std::min(std::abs(P), maxSMagPerPhase_) * (P < 0 ? -1 : 1);
    }
 }

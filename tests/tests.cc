@@ -18,6 +18,7 @@
 #include "SimpleBuilding.h"
 #include "Simulation.h"
 #include "SparseSolver.h"
+#include "SolarPV.h"
 #include "Sun.h"
 #include "TestComponent.h"
 #include "Spline.h"
@@ -801,6 +802,8 @@ BOOST_AUTO_TEST_CASE (test_solar_PV)
    Parser & p = Parser::globalParser();
    p.parse("test_solar_PV.yaml", mod, sim);
 
+   SolarPV * spv2 = mod.componentNamed<SolarPV>("solar_PV_bus_2");
+   InverterBase * inv2 = mod.componentNamed<InverterBase>("inverter_bus_2");
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
    Network * network = mod.componentNamed<Network>("network_1");
 
@@ -809,9 +812,8 @@ BOOST_AUTO_TEST_CASE (test_solar_PV)
 
    network->didCompleteTimestep().addAction([&]()
          {
-            outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " 
-                    << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) << " "
-                    << std::endl;
+            outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " << spv2->PDC() << " " << inv2->S()(0)
+                    << " " << bus2->V()(0) << std::endl;
          }, "Network updated.");
    mod.validate();
    sim.initialize();

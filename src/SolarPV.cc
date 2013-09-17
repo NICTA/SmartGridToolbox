@@ -25,7 +25,9 @@ namespace SmartGridToolbox
          comp.setEfficiency(1.0);
       }
       comp.setPlaneArea(nd["area_m2"].as<double>());
-      comp.setPlaneNormal({nd["zenith_degrees"].as<double>(), nd["azimuth_degrees"].as<double>()});
+      double zen = nd["zenith_degrees"].as<double>() * pi / 180;
+      double azi = nd["azimuth_degrees"].as<double>() * pi / 180;
+      comp.setPlaneNormal({zen, azi});
    }
 
    void SolarPVParser::postParse(const YAML::Node & nd, Model & mod) const

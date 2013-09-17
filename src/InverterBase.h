@@ -34,7 +34,7 @@ namespace SmartGridToolbox
          virtual double efficiency(double powerDC) const = 0;
 
          /// Real power output, per phase.
-         double PPerPhase() const;
+         virtual double PPerPhase() const;
       /// @}
       
       /// @name My private member variables.

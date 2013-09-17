@@ -39,8 +39,9 @@ objects: # And these are the actual objects.
       name:                   inverter_bus_2
       bus:                    bus_2
       phases:                 [A, B, C]
-      max_app_pow_per_phase:  1100
-      min_phase_anglee:       0.9
+      requested_Q_per_phase:  100
+      max_S_mag_per_phase:    1200
+      min_power_factor:       0.9
       efficiency:             0.86
    solar_PV:
       name:                   solar_PV_bus_2
