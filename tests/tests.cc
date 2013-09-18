@@ -829,6 +829,7 @@ BOOST_AUTO_TEST_CASE (test_loops)
          {
             outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " << spv2->PDC() << " " << inv2->S()(0)
                     << " " << bus2->V()(0) << std::endl;
+            std::cout << "timestep " << sim.currentTime()-sim.startTime() << std::endl;
          }, "Network updated.");
    mod.validate();
    sim.initialize();

@@ -8,7 +8,7 @@ global:
    timezone:                        AEST10AEDT,M10.5.0/02,M3.5.0/03  # Timezone info for Canberra, Australia.
    lat_long:                        [-35.3075, 149.1244]             # Canberra, Australia.
    start_time:                      2013-01-01 00:00:00
-   end_time:                        2014-01-07 00:00:00
+   end_time:                        2013-01-02 00:00:00
 
 objects:       # And these are the actual objects.
    weather:      
@@ -26,7 +26,7 @@ objects:       # And these are the actual objects.
       nominal_voltage:              [240, 240D120, 240D240]
    loop:
       name:                         i
-      count:                        4
+      count:                        200
       body:
          bus:      
             name:                   bus_1_${i}
