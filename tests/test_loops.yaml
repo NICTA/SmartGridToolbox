@@ -71,14 +71,6 @@ objects:       # And these are the actual objects.
             max_S_mag_per_phase:    1200
             min_power_factor:       0.9
             efficiency:             0.86
-         solar_PV:      
-            name:                   solar_PV_bus_2_${i}
-            weather:                weather_1
-            inverter:               inverter_bus_2_${i}
-            efficiency:             0.75
-            area_m2:                6.45
-            zenith_degrees:         64.6
-            azimuth_degrees:        95.8
       # Should point right at sun on Jan 26, 2013, 0830. 
          zip_to_ground:      
             name:                   zip_bus_2_${i}
@@ -86,5 +78,12 @@ objects:       # And these are the actual objects.
             bus:                    bus_2_${i}
             admittance:             [0.5j, 0.5j, 0.5j]
             complex_power_load:     [100, 100, 100]
-
+   solar_PV:      
+      name:                   solar_PV_bus_2
+      weather:                weather_1
+      inverter:               inverter_bus_2_0
+      efficiency:             0.75
+      area_m2:                6.45
+      zenith_degrees:         64.6
+      azimuth_degrees:        95.8
 --- # Marks the end of each configuration document.

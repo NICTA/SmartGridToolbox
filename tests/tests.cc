@@ -817,9 +817,9 @@ BOOST_AUTO_TEST_CASE (test_loops)
    Parser & p = Parser::globalParser();
    p.parse("test_loops.yaml", mod, sim);
 
-   SolarPV * spv2 = mod.componentNamed<SolarPV>("solar_PV_bus_2_2");
-   InverterBase * inv2 = mod.componentNamed<InverterBase>("inverter_bus_2_2");
-   Bus * bus2 = mod.componentNamed<Bus>("bus_2_2");
+   SolarPV * spv2 = mod.componentNamed<SolarPV>("solar_PV_bus_2");
+   InverterBase * inv2 = mod.componentNamed<InverterBase>("inverter_bus_2_0");
+   Bus * bus2 = mod.componentNamed<Bus>("bus_2_1");
    Network * network = mod.componentNamed<Network>("network_1");
 
    ofstream outfile;
