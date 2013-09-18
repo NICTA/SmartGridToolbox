@@ -5,17 +5,16 @@
  
 namespace SmartGridToolbox
 {
-   void BusParser::parse(const YAML::Node & nd, Model & mod) const
+   void BusParser::parse(const YAML::Node & nd, Model & mod, const std::string & name,
+                         const ParserState & state) const
    {
       SGT_DEBUG(debug() << "Bus : parse." << std::endl);
-      assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "type");
       assertFieldPresent(nd, "phases");
       assertFieldPresent(nd, "nominal_voltage");
 
-      const std::string nameStr = nd["name"].as<std::string>();
-      Bus & comp = mod.newComponent<Bus>(nameStr);
+      Bus & comp = mod.newComponent<Bus>(name);
       comp.phases() = nd["phases"].as<Phases>();
       comp.setType(nd["type"].as<BusType>());
 
@@ -30,13 +29,13 @@ namespace SmartGridToolbox
       }
    }
 
-   void BusParser::postParse(const YAML::Node & nd, Model & mod) const
+   void BusParser::postParse(const YAML::Node & nd, Model & mod, const std::string & name,
+                             const ParserState & state) const
    {
       SGT_DEBUG(debug() << "Bus : postParse." << std::endl);
-      const std::string compNameStr = nd["name"].as<std::string>();
-      Bus * comp = mod.componentNamed<Bus>(compNameStr);
+      Bus * comp = mod.componentNamed<Bus>(name);
 
-      const std::string networkStr = nd["network"].as<std::string>();
+      const std::string networkStr = state.expandLoopRefs(nd["network"].as<std::string>());
       Network * networkComp = mod.componentNamed<Network>(networkStr);
       if (networkComp != nullptr)
       {
@@ -44,7 +43,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << compNameStr << ", network " << networkStr << " was not found in the model." 
+         error() << "For component " << name << ", network " << networkStr << " was not found in the model." 
                  << std::endl;
          abort();
       }

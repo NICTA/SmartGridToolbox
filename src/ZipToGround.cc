@@ -4,7 +4,8 @@
 
 namespace SmartGridToolbox
 {
-   void ZipToGroundParser::parse(const YAML::Node & nd, Model & mod) const
+   void ZipToGroundParser::parse(const YAML::Node & nd, Model & mod, const std::string & name,
+                                 const ParserState & state) const
    {
       SGT_DEBUG(debug() << "ZipToGround : parse." << std::endl);
       assertFieldPresent(nd, "name");
@@ -35,8 +36,7 @@ namespace SmartGridToolbox
          }
       }
 
-      const std::string nameStr = ndName.as<std::string>();
-      ZipToGround & comp = mod.newComponent<ZipToGround>(nameStr);
+      ZipToGround & comp = mod.newComponent<ZipToGround>(name);
 
       comp.phases() = ndPhases.as<Phases>();
       int nPhase = comp.phases().size();
@@ -68,16 +68,16 @@ namespace SmartGridToolbox
       }
    }
 
-   void ZipToGroundParser::postParse(const YAML::Node & nd, Model & mod) const
+   void ZipToGroundParser::postParse(const YAML::Node & nd, Model & mod, const std::string & name,
+                                     const ParserState & state) const
    {
       SGT_DEBUG(debug() << "ZipToGround : postParse." << std::endl);
-      const std::string compNameStr = nd["name"].as<std::string>();
-      ZipToGround * zip = mod.componentNamed<ZipToGround>(compNameStr);
-      std::string busStr = nd["bus"].as<std::string>();
+      ZipToGround * zip = mod.componentNamed<ZipToGround>(name);
+      std::string busStr = state.expandLoopRefs(nd["bus"].as<std::string>());
       Bus * bus = mod.componentNamed<Bus>(busStr);
       if (bus == nullptr)
       {
-         error() << "For component " << compNameStr << ", bus " << busStr << " was not found in the model." 
+         error() << "For component " << name << ", bus " << busStr << " was not found in the model." 
                  << std::endl;
          abort();
       }

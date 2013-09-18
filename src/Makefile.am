@@ -25,7 +25,6 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  SolarPV.cc \
 										  SparseSolver.cc \
 										  Sun.cc \
-										  TestComponent.cc \
 										  WeakOrder.cc \
 										  Weather.cc \
 										  ZipToGround.cc

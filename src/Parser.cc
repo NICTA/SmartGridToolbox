@@ -4,6 +4,7 @@
 #include "RegisterComponentParsers.h"
 #include "Simulation.h"
 #include <string>
+#include <boost/algorithm/string.hpp>
 
 namespace YAML
 {
@@ -192,8 +193,28 @@ namespace YAML
 
 namespace SmartGridToolbox
 {
-   void Parser::parse(const char * fname, Model & model, 
-                      Simulation & simulation)
+   std::string ParserState::expandLoopRefs(const std::string & target) const
+   {
+      std::string result(target);
+      for (const ParserLoop & loop : loops_)
+      {
+         std::string search = "${" + loop.name_ + "}";
+         std::string replace = std::to_string(loop.i_);
+         boost::replace_all(result, search, replace);
+      }
+      return result;
+   }
+
+   void assertFieldPresent(const YAML::Node & nd, const std::string & field)
+   {
+      if (!(nd[field]))
+      {
+         error() << "Parsing: " << field << " field not present." << std::endl;
+         abort();
+      }
+   };
+
+   void Parser::parse(const char * fname, Model & model, Simulation & simulation)
    {
       message() << "Started parsing." << std::endl;
       const YAML::Node & top = YAML::LoadFile(fname);
@@ -201,16 +222,24 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "Parsing global." << std::endl);
       parseGlobal(top, model, simulation);
       SGT_DEBUG(debug() << "Parsed global." << std::endl);
-      SGT_DEBUG(debug() << "Parsing objects." << std::endl);
-      parseComponents(top, model);
-      SGT_DEBUG(debug() << "Parsed objects." << std::endl);
 
-      message() << "Finished parsing." << std::endl;
-      message() << "Name = " << model.name() << std::endl;
+      const YAML::Node & objsNode = top["objects"];
+      if (objsNode)
+      {
+         SGT_DEBUG(debug() << "Parsing objects." << std::endl);
+         ParserState s;
+         parseComponents(objsNode, s, model, false);
+         parseComponents(objsNode, s, model, true);
+         SGT_DEBUG(debug() << "Parsed objects." << std::endl);
+      }
+
+      message() << "Finished parsing " << model.name() << "." << std::endl;
       message() << "Start time (local) = " << localTime(simulation.startTime(), model.timezone()) << std::endl;
       message() << "Start time (UTC)   = " << utcTime(simulation.startTime()) << std::endl;
       message() << "End time (local)   = " << localTime(simulation.endTime(), model.timezone()) << std::endl;
       message() << "End time (UTC)     = " << utcTime(simulation.endTime()) << std::endl;
+      message() << "timezone           = " << model.timezone()->to_posix_string() << std::endl;
+      message() << "lat_long           = " << model.latLong().lat_ << ", " << model.latLong().long_ << "." << std::endl;
    }
    
    Parser::Parser()
@@ -291,40 +320,43 @@ namespace SmartGridToolbox
 
    }
 
-   void Parser::parseComponents(const YAML::Node & top, Model & model)
+   void Parser::parseComponents(const YAML::Node & node, ParserState & state, Model & model, bool isPostParse)
    {
       message() << "Parsing components. Starting." << std::endl;
-      if (const YAML::Node & compsNode = top["objects"])
+      for (const auto & compPair : node)
       {
-         for (const auto & compPair : compsNode)
+         std::string nodeType = compPair.first.as<std::string>();
+         const YAML::Node & nodeVal = compPair.second;;
+         if (nodeType == "loop")
          {
-            std::string name = compPair.first.as<std::string>();
-            message() << "Parsing component " <<  name << std::endl;
-            const ComponentParser * compParser = componentParser(name);
+            std::string loopName = nodeVal["name"].as<std::string>();
+            int loopCount = nodeVal["count"].as<int>();
+            const YAML::Node & loopBody = nodeVal["body"];
+            for (state.pushLoop(loopName); state.loopVal() < loopCount; state.incrLoop())
+            {
+               parseComponents(loopBody, state, model, isPostParse);
+            }
+            state.popLoop();
+         }
+         else
+         {
+            std::string name = state.expandLoopRefs(nodeVal["name"].as<std::string>());
+            message() << "Parsing " <<  nodeType << " " << name << "." << std::endl;
+            const ComponentParser * compParser = componentParser(nodeType);
             if (compParser == nullptr)
             {
-               warning() << "I don't know how to parse component " << name << std::endl;
+               warning() << "I don't know how to parse component " << nodeType << std::endl;
+            }
+            else if (isPostParse)
+            {
+               compParser->postParse(nodeVal, model, name, state);
             }
             else
             {
-               compParser->parse(compPair.second, model);
+               compParser->parse(nodeVal, model, name, state);
             }
          }
-         for (const auto & compPair : compsNode)
-         {
-            std::string name = compPair.first.as<std::string>();
-            message() << "Post parsing component " << name << std::endl;
-            const ComponentParser * compParser = componentParser(name);
-            if (compParser == nullptr)
-            {
-               warning() << "I don't know how to parse component " << name << std::endl;
-            }
-            else
-            {
-               compParser->postParse(compPair.second, model);
-            }
-         }
-         message() << "Parsing components. Completed." << std::endl;
       }
+      message() << "Parsing components. Completed." << std::endl;
    }
 }

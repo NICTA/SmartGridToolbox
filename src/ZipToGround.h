@@ -14,8 +14,11 @@ namespace SmartGridToolbox
             return "zip_to_ground";
          }
       public:
-         virtual void parse(const YAML::Node & nd, Model & mod) const override;
-         virtual void postParse(const YAML::Node & nd, Model & mod) const override;
+         virtual void parse(const YAML::Node & nd, Model & mod, const std::string & name,
+                            const ParserState & state) const override;
+
+         virtual void postParse(const YAML::Node & nd, Model & mod, const std::string & name,
+                                const ParserState & state) const override;
    };
 
    class ZipToGround : public ZipToGroundBase

@@ -6,10 +6,10 @@
  
 namespace SmartGridToolbox
 {
-   void BranchParser::parse(const YAML::Node & nd, Model & mod) const
+   void BranchParser::parse(const YAML::Node & nd, Model & mod, const std::string & name,
+                            const ParserState & state) const
    {
       SGT_DEBUG(debug() << "Branch : parse." << std::endl);
-      assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "bus_0");
       assertFieldPresent(nd, "bus_1");
@@ -17,8 +17,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "phases_1");
       assertFieldPresent(nd, "Y");
 
-      const std::string nameStr = nd["name"].as<std::string>();
-      Branch & comp = mod.newComponent<Branch>(nameStr);
+      Branch & comp = mod.newComponent<Branch>(name);
 
       comp.phases0() = nd["phases_0"].as<Phases>();
       comp.phases1() = nd["phases_1"].as<Phases>();
@@ -38,13 +37,13 @@ namespace SmartGridToolbox
       }
    }
 
-   void BranchParser::postParse(const YAML::Node & nd, Model & mod) const
+   void BranchParser::postParse(const YAML::Node & nd, Model & mod, const std::string & name,
+                                const ParserState & state) const
    {
       SGT_DEBUG(debug() << "Branch : postParse." << std::endl);
-      const std::string compNameStr = nd["name"].as<std::string>();
-      Branch * comp = mod.componentNamed<Branch>(compNameStr);
+      Branch * comp = mod.componentNamed<Branch>(name);
 
-      const std::string networkStr = nd["network"].as<std::string>();
+      const std::string networkStr = state.expandLoopRefs(nd["network"].as<std::string>());
       Network * networkComp = mod.componentNamed<Network>(networkStr);
       if (networkComp != nullptr)
       {
@@ -52,12 +51,12 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << compNameStr <<  ", network " << networkStr <<  " was not found in the model." 
+         error() << "For component " << name <<  ", network " << networkStr <<  " was not found in the model." 
                << std::endl;
          abort();
       }
 
-      const std::string bus0Str = nd["bus_0"].as<std::string>();
+      const std::string bus0Str = state.expandLoopRefs(nd["bus_0"].as<std::string>());
       Bus * bus0Comp = mod.componentNamed<Bus>(bus0Str);
       if (networkComp != nullptr)
       {
@@ -65,12 +64,12 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << compNameStr <<  ", bus " << bus0Str <<  " was not found in the model." 
+         error() << "For component " << name <<  ", bus " << bus0Str <<  " was not found in the model." 
                << std::endl;
          abort();
       }
 
-      const std::string bus1Str = nd["bus_1"].as<std::string>();
+      const std::string bus1Str = state.expandLoopRefs(nd["bus_1"].as<std::string>());
       Bus * bus1Comp = mod.componentNamed<Bus>(bus1Str);
       if (networkComp != nullptr)
       {
@@ -78,7 +77,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << compNameStr <<  ", bus " << bus1Str <<  " was not found in the model." 
+         error() << "For component " << name <<  ", bus " << bus1Str <<  " was not found in the model." 
                << std::endl;
          abort();
       }

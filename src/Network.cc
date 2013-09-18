@@ -6,11 +6,11 @@
 
 namespace SmartGridToolbox
 {
-   void NetworkParser::parse(const YAML::Node & nd, Model & mod) const
+   void NetworkParser::parse(const YAML::Node & nd, Model & mod, const std::string & name,
+                             const ParserState & state) const
    {
       SGT_DEBUG(debug() << "Network : parse." << std::endl);
-      const std::string nameStr = nd["name"].as<std::string>();
-      Network & comp = mod.newComponent<Network>(nameStr);
+      Network & comp = mod.newComponent<Network>(name);
    }
 
    void Network::updateState(Time t0, Time t1)

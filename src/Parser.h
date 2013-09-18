@@ -74,14 +74,43 @@ namespace SmartGridToolbox
    class Model;
    class Simulation;
 
-   inline void assertFieldPresent(const YAML::Node & nd, const std::string & field)
+   struct ParserState
    {
-      if (!(nd[field]))
-      {
-         error() << "Parsing: " << field << " field not present." << std::endl;
-         abort();
-      }
-   }
+      public:
+         std::string expandLoopRefs(const std::string & target) const;
+
+         void pushLoop(const std::string & name)
+         {
+            loops_.push_back({name, 0});
+         }
+
+         int loopVal()
+         {
+            return loops_.back().i_;
+         }
+
+         void incrLoop()
+         {
+            ++loops_.back().i_;
+         }
+
+         void popLoop()
+         {
+            loops_.pop_back();
+         }
+
+      private:
+
+         struct ParserLoop
+         {
+            std::string name_;
+            int i_;
+         };
+
+         std::vector<ParserLoop> loops_;
+   };
+
+   void assertFieldPresent(const YAML::Node & nd, const std::string & field);
 
    class ComponentParser
    {
@@ -97,10 +126,18 @@ namespace SmartGridToolbox
             return "component";
          }
 
-
       public:
-         virtual void parse(const YAML::Node & comp, Model & mod) const {};
-         virtual void postParse(const YAML::Node & comp, Model & mod) const {};
+         virtual void parse(const YAML::Node & nd, Model & mod, const std::string & name,
+                            const ParserState & state) const
+         {
+            // Empty.
+         }
+
+         virtual void postParse(const YAML::Node & nd, Model & mod, const std::string & name,
+                                const ParserState & state) const
+         {
+            // Empty.
+         }
    };
 
    class Parser {
@@ -142,7 +179,7 @@ namespace SmartGridToolbox
          void parseGlobal(const YAML::Node & top, Model & model,
                           Simulation & simulation);
 
-         void parseComponents(const YAML::Node & top, Model & model);
+         void parseComponents(const YAML::Node & node, ParserState & state, Model & model, bool isPostParse);
 
       private:
          std::map<std::string, const ComponentParser *> compParsers_;

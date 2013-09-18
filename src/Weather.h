@@ -17,7 +17,8 @@ namespace SmartGridToolbox
          }
 
       public:
-         virtual void parse(const YAML::Node & nd, Model & mod) const override;
+         virtual void parse(const YAML::Node & nd, Model & mod, const std::string & name,
+                            const ParserState & state) const override;
    };
 
    struct SolarIrradiance

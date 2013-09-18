@@ -5,17 +5,17 @@
 
 namespace SmartGridToolbox
 {
-   void SolarPVParser::parse(const YAML::Node & nd, Model & mod) const
+   void SolarPVParser::parse(const YAML::Node & nd, Model & mod, const std::string & name,
+                             const ParserState & state) const
    {
       SGT_DEBUG(debug() << "SolarPV : parse." << std::endl);
-      assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "weather");
       assertFieldPresent(nd, "inverter");
       assertFieldPresent(nd, "area_m2");
       assertFieldPresent(nd, "zenith_degrees");
       assertFieldPresent(nd, "azimuth_degrees");
 
-      SolarPV & comp = mod.newComponent<SolarPV>(nd["name"].as<std::string>());
+      SolarPV & comp = mod.newComponent<SolarPV>(name);
       if (nd["efficiency"])
       {
          comp.setEfficiency(nd["efficiency"].as<double>());
@@ -30,14 +30,14 @@ namespace SmartGridToolbox
       comp.setPlaneNormal({zen, azi});
    }
 
-   void SolarPVParser::postParse(const YAML::Node & nd, Model & mod) const
+   void SolarPVParser::postParse(const YAML::Node & nd, Model & mod, const std::string & name,
+                                 const ParserState & state) const
    {
       SGT_DEBUG(debug() << "SolarPV : postParse." << std::endl);
 
-      const std::string nameStr = nd["name"].as<std::string>();
-      SolarPV & comp = *mod.componentNamed<SolarPV>(nameStr);
+      SolarPV & comp = *mod.componentNamed<SolarPV>(name);
 
-      const std::string weatherStr = nd["weather"].as<std::string>();
+      const std::string weatherStr = state.expandLoopRefs(nd["weather"].as<std::string>());
       Weather * weather = mod.componentNamed<Weather>(weatherStr);
       if (weather != nullptr)
       {
@@ -45,12 +45,12 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << nameStr << ", weather " << weatherStr << " was not found in the model." 
+         error() << "For component " << name << ", weather " << weatherStr << " was not found in the model." 
                  << std::endl;
          abort();
       }
 
-      const std::string inverterStr = nd["inverter"].as<std::string>();
+      const std::string inverterStr = state.expandLoopRefs(nd["inverter"].as<std::string>());
       InverterBase * inverter = mod.componentNamed<InverterBase>(inverterStr);
       if (inverter != nullptr)
       {
@@ -58,7 +58,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << nameStr << ", inverter " << inverterStr << " was not found in the model." 
+         error() << "For component " << name << ", inverter " << inverterStr << " was not found in the model." 
                  << std::endl;
          abort();
       }

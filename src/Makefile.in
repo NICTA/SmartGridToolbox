@@ -136,8 +136,8 @@ am_libsmartgridtoolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
 	SimpleBattery.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
 	SimpleDCPowerSource.$(OBJEXT) SimpleInverter.$(OBJEXT) \
 	Simulation.$(OBJEXT) SolarPV.$(OBJEXT) SparseSolver.$(OBJEXT) \
-	Sun.$(OBJEXT) TestComponent.$(OBJEXT) WeakOrder.$(OBJEXT) \
-	Weather.$(OBJEXT) ZipToGround.$(OBJEXT)
+	Sun.$(OBJEXT) WeakOrder.$(OBJEXT) Weather.$(OBJEXT) \
+	ZipToGround.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_helloworld_OBJECTS = helloworld.$(OBJEXT) Common.$(OBJEXT)
@@ -351,7 +351,6 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  SolarPV.cc \
 										  SparseSolver.cc \
 										  Sun.cc \
-										  TestComponent.cc \
 										  WeakOrder.cc \
 										  Weather.cc \
 										  ZipToGround.cc
@@ -521,7 +520,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SolarPV.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SparseSolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sun.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestComponent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Weather.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGround.Po@am__quote@
