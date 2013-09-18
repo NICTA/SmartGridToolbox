@@ -2,6 +2,7 @@
 #define PARSER_DOT_H
 
 #include "Common.h"
+#include "Model.h"
 #include "PowerFlow.h"
 #include "../third_party/yaml-cpp-0.5.0/include/yaml-cpp/yaml.h"
 #include <map>
@@ -12,6 +13,8 @@ namespace YAML
    using SmartGridToolbox::Complex;
    using SmartGridToolbox::Phase;
    using SmartGridToolbox::Phases;
+   using SmartGridToolbox::Time;
+   using SmartGridToolbox::ptime;
    using SmartGridToolbox::UblasMatrix;
    using SmartGridToolbox::UblasVector;
 
@@ -27,10 +30,28 @@ namespace YAML
       static bool decode(const Node & nd, Phase & to);
    };
 
+   template<> struct convert<Phases>
+   {
+      static Node encode(const Phases & from);
+      static bool decode(const Node & nd, Phases & to);
+   };
+
    template<> struct convert<BusType>
    {
       static Node encode(const BusType & from);
       static bool decode(const Node & nd, BusType & to);
+   };
+
+   template<> struct convert<Time>
+   {
+      static Node encode(const Time & from);
+      static bool decode(const Node & nd, Time & to);
+   };
+
+   template<> struct convert<ptime>
+   {
+      static Node encode(const ptime & from);
+      static bool decode(const Node & nd, ptime & to);
    };
 
    template<typename T> struct convert<UblasVector<T>>
@@ -43,12 +64,6 @@ namespace YAML
    {
       static Node encode(const UblasMatrix<T> & from);
       static bool decode(const Node & nd, UblasMatrix<T> & to);
-   };
-
-   template<> struct convert<Phases>
-   {
-      static Node encode(const Phases & from);
-      static bool decode(const Node & nd, Phases & to);
    };
 }
 
@@ -66,11 +81,6 @@ namespace SmartGridToolbox
          error() << "Parsing: " << field << " field not present." << std::endl;
          abort();
       }
-   }
-
-   inline Time parseDuration(const std::string & str)
-   {
-      return duration_from_string(str); 
    }
 
    class ComponentParser
@@ -119,6 +129,11 @@ namespace SmartGridToolbox
          {
             auto it = compParsers_.find(name);
             return ((it == compParsers_.end()) ? nullptr : it->second);
+         }
+
+         Time parseTime(const YAML::Node & nd, const Model & model)
+         {
+            return timeFromLocalTime(nd.as<ptime>(), model.timezone());
          }
 
       private:

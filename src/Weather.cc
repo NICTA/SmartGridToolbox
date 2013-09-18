@@ -35,7 +35,7 @@ namespace SmartGridToolbox
 
       if (nd["dt"])
       {
-         comp.setDt(parseDuration(nd["dt"].as<std::string>()));
+         comp.setDt(nd["dt"].as<Time>());
       }
       else
       {

@@ -121,6 +121,7 @@ namespace SmartGridToolbox
 
    using boost::posix_time::ptime;
    using boost::posix_time::time_from_string;
+   
    using boost::posix_time::to_simple_string;
 
    using boost::posix_time::not_a_date_time;

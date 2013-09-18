@@ -35,6 +35,33 @@ namespace YAML
       return true;
    }
 
+   Node convert<Phases>::encode(const Phases & from)
+   {
+      Node nd;
+      for (const auto & phasePair : from)
+      {
+         nd.push_back(phase2Str(phasePair.first)); 
+      }
+      return nd;
+   }
+   bool convert<Phases>::decode(const Node & nd, Phases & to)
+   {
+      if(!nd.IsSequence())
+      {
+         return false;
+      }
+      else
+      {
+         int sz = nd.size();
+         to = Phases();
+         for (int i = 0; i < sz; ++i)
+         {
+            to |= nd[i].as<Phase>();
+         }
+      }
+      return true;
+   }
+
    Node convert<BusType>::encode(const BusType & from)
    {
       Node nd;
@@ -45,6 +72,32 @@ namespace YAML
    bool convert<BusType>::decode(const Node & nd, BusType & to)
    {
       to = str2BusType(nd.as<std::string>());
+      return true;
+   }
+
+   Node convert<Time>::encode(const Time & from)
+   {
+      Node nd;
+      nd.push_back(to_simple_string(from));
+      return nd;
+   }
+
+   bool convert<Time>::decode(const Node & nd, Time & to)
+   {
+      to = duration_from_string(nd.as<std::string>()); 
+      return true;
+   }
+
+   Node convert<ptime>::encode(const ptime & from)
+   {
+      Node nd;
+      nd.push_back(to_simple_string(from));
+      return nd;
+   }
+
+   bool convert<ptime>::decode(const Node & nd, ptime & to)
+   {
+      to = time_from_string(nd.as<std::string>()); 
       return true;
    }
 
@@ -135,33 +188,6 @@ namespace YAML
    }
    template bool convert<UblasMatrix<double>>::decode(const Node & nd, UblasMatrix<double> & to);
    template bool convert<UblasMatrix<Complex>>::decode(const Node & nd, UblasMatrix<Complex> & to);
-
-   Node convert<Phases>::encode(const Phases & from)
-   {
-      Node nd;
-      for (const auto & phasePair : from)
-      {
-         nd.push_back(phase2Str(phasePair.first)); 
-      }
-      return nd;
-   }
-   bool convert<Phases>::decode(const Node & nd, Phases & to)
-   {
-      if(!nd.IsSequence())
-      {
-         return false;
-      }
-      else
-      {
-         int sz = nd.size();
-         to = Phases();
-         for (int i = 0; i < sz; ++i)
-         {
-            to |= nd[i].as<Phase>();
-         }
-      }
-      return true;
-   }
 }
 
 namespace SmartGridToolbox
@@ -226,7 +252,7 @@ namespace SmartGridToolbox
       const YAML::Node & nodeStart = nodeGlobal["start_time"];
       try 
       {
-         simulation.setStartTime(timeFromLocalTime(time_from_string(nodeStart.as<std::string>()), model.timezone()));
+         simulation.setStartTime(parseTime(nodeStart, model));
       }
       catch (...)
       {
@@ -237,7 +263,7 @@ namespace SmartGridToolbox
       const YAML::Node & nodeEnd = nodeGlobal["end_time"];
       try 
       {
-         simulation.setEndTime(timeFromLocalTime(time_from_string(nodeEnd.as<std::string>()), model.timezone()));
+         simulation.setEndTime(parseTime(nodeEnd, model));
       }
       catch (...)
       {
