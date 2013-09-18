@@ -92,7 +92,7 @@ without good reason.
 One style is to use swap semantics to acquire a new value. In such a case,
 the following style can be used:
 
-void acquireValue(Value * val) {std::swap(val_, val);}
+void acquireValue(Value * & val) {std::swap(val_, val);}
 
 Brace style
 -----------
