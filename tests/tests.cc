@@ -20,7 +20,6 @@
 #include "SparseSolver.h"
 #include "SolarPV.h"
 #include "Sun.h"
-#include "TestComponent.h"
 #include "Spline.h"
 #include "TimeSeries.h"
 #include "WeakOrder.h"
@@ -436,19 +435,6 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
    }
 }
 
-BOOST_AUTO_TEST_CASE (test_parser)
-{
-   Model mod;
-   Simulation sim(mod);
-   Parser & p = Parser::globalParser();
-   p.parse("test_parser.yaml", mod, sim);
-   mod.validate();
-   sim.initialize();
-   const TestComponent * tc = mod.componentNamed<TestComponent>("test_component_1");
-   message() << "test_component_1 another is " << tc->another()->name() << std::endl;
-   BOOST_CHECK(tc->another()->name() == "test_component_2");
-}
-
 BOOST_AUTO_TEST_CASE (test_sparse_solver)
 {
    int n = 5;
@@ -809,6 +795,35 @@ BOOST_AUTO_TEST_CASE (test_solar_PV)
 
    ofstream outfile;
    outfile.open("test_solar_PV.out");
+
+   network->didCompleteTimestep().addAction([&]()
+         {
+            outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " << spv2->PDC() << " " << inv2->S()(0)
+                    << " " << bus2->V()(0) << std::endl;
+         }, "Network updated.");
+   mod.validate();
+   sim.initialize();
+
+   while (sim.doNextUpdate())
+   {
+   }
+   outfile.close();
+}
+
+BOOST_AUTO_TEST_CASE (test_loops)
+{
+   Model mod;
+   Simulation sim(mod);
+   Parser & p = Parser::globalParser();
+   p.parse("test_loops.yaml", mod, sim);
+
+   SolarPV * spv2 = mod.componentNamed<SolarPV>("solar_PV_bus_2_2");
+   InverterBase * inv2 = mod.componentNamed<InverterBase>("inverter_bus_2_2");
+   Bus * bus2 = mod.componentNamed<Bus>("bus_2_2");
+   Network * network = mod.componentNamed<Network>("network_1");
+
+   ofstream outfile;
+   outfile.open("test_loops.out");
 
    network->didCompleteTimestep().addAction([&]()
          {
