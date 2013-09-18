@@ -89,10 +89,9 @@ single component without recreating the entire vector.
 It is considered good OO coding style not to use too many getters and setters
 without good reason.
 
-One style is to use swap semantics to acquire a new value. In such a case,
-the following style can be used:
-
-void acquireValue(Value * & val) {std::swap(val_, val);}
+Finally, sometimes it is useful to acquire ownership of a heap allocated
+object. We may do this simply as follows:
+void acquireValue(Value * val);
 
 Brace style
 -----------

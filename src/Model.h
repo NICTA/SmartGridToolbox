@@ -42,12 +42,10 @@ namespace SmartGridToolbox
             return *comp;
          }
 
-         template<typename T> T & acquireComponent(T * & comp)
+         template<typename T> T & acquireComponent(T * comp)
          {
-            T * myComp = nullptr;
-            std::swap(myComp, comp);
-            addGenericComponent(myComp);
-            return *myComp;
+            addGenericComponent(comp);
+            return *comp;
          }
 
          template<typename T> const T * componentNamed(const std::string & name) const
