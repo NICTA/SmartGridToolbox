@@ -132,7 +132,7 @@ am_libsmartgridtoolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
 	Common.$(OBJEXT) Component.$(OBJEXT) Event.$(OBJEXT) \
 	InverterBase.$(OBJEXT) Model.$(OBJEXT) Network.$(OBJEXT) \
 	Parser.$(OBJEXT) PowerFlow.$(OBJEXT) PowerFlowNR.$(OBJEXT) \
-	Random.$(OBJEXT) RegisterComponentParsers.$(OBJEXT) \
+	Random.$(OBJEXT) RegisterParserPlugins.$(OBJEXT) \
 	SimpleBattery.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
 	SimpleDCPowerSource.$(OBJEXT) SimpleInverter.$(OBJEXT) \
 	Simulation.$(OBJEXT) SolarPV.$(OBJEXT) SparseSolver.$(OBJEXT) \
@@ -342,7 +342,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  PowerFlow.cc \
 										  PowerFlowNR.cc \
 										  Random.cc \
-										  RegisterComponentParsers.cc \
+										  RegisterParserPlugins.cc \
 										  SimpleBattery.cc \
 										  SimpleBuilding.cc \
 										  SimpleDCPowerSource.cc \
@@ -511,7 +511,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlowNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RegisterComponentParsers.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RegisterParserPlugins.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBattery.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBuilding.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleDCPowerSource.Po@am__quote@
