@@ -4,12 +4,11 @@
 
 namespace SmartGridToolbox
 {
-   void WeatherParser::parse(const YAML::Node & nd, Model & mod, const std::string & name,
-                             const ParserState & state) const
+   void WeatherParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
       SGT_DEBUG(debug() << "Weather : parse." << std::endl);
 
-      Weather & comp = mod.newComponent<Weather>(name);
+      Weather & comp = mod.newComponent<Weather>(state.curCompName());
       comp.setLatLong(mod.latLong());
 
       const auto & cloudNd = nd["cloud_cover"];

@@ -4,15 +4,12 @@
 
 namespace SmartGridToolbox
 {
-   void ZipToGroundParser::parse(const YAML::Node & nd, Model & mod, const std::string & name,
-                                 const ParserState & state) const
+   void ZipToGroundParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
       SGT_DEBUG(debug() << "ZipToGround : parse." << std::endl);
-      assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "bus");
       assertFieldPresent(nd, "phases");
 
-      auto ndName = nd["name"];
       auto ndPhases = nd["phases"];
       auto ndAdmit = nd["admittance"];
       auto ndCurLoad = nd["current_load"];
@@ -36,7 +33,7 @@ namespace SmartGridToolbox
          }
       }
 
-      ZipToGround & comp = mod.newComponent<ZipToGround>(name);
+      ZipToGround & comp = mod.newComponent<ZipToGround>(state.curCompName());
 
       comp.phases() = ndPhases.as<Phases>();
       int nPhase = comp.phases().size();
@@ -68,17 +65,16 @@ namespace SmartGridToolbox
       }
    }
 
-   void ZipToGroundParser::postParse(const YAML::Node & nd, Model & mod, const std::string & name,
-                                     const ParserState & state) const
+   void ZipToGroundParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
       SGT_DEBUG(debug() << "ZipToGround : postParse." << std::endl);
-      ZipToGround * zip = mod.componentNamed<ZipToGround>(name);
-      std::string busStr = state.expandLoopRefs(nd["bus"].as<std::string>());
+      ZipToGround * zip = mod.componentNamed<ZipToGround>(state.curCompName());
+      std::string busStr = state.expandName(nd["bus"].as<std::string>());
       Bus * bus = mod.componentNamed<Bus>(busStr);
       if (bus == nullptr)
       {
-         error() << "For component " << name << ", bus " << busStr << " was not found in the model." 
-                 << std::endl;
+         error() << "For component " << state.curCompName() << ", bus " << busStr 
+                 << " was not found in the model." << std::endl;
          abort();
       }
       bus->addZipToGround(*zip);

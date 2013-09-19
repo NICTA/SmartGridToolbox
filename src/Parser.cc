@@ -193,7 +193,7 @@ namespace YAML
 
 namespace SmartGridToolbox
 {
-   std::string ParserState::expandLoopRefs(const std::string & target) const
+   std::string ParserState::expandName(const std::string & target) const
    {
       std::string result(target);
       for (const ParserLoop & loop : loops_)
@@ -332,7 +332,7 @@ namespace SmartGridToolbox
             std::string loopName = nodeVal["name"].as<std::string>();
             int loopCount = nodeVal["count"].as<int>();
             const YAML::Node & loopBody = nodeVal["body"];
-            for (state.pushLoop(loopName); state.loopVal() < loopCount; state.incrLoop())
+            for (state.pushLoop(loopName); state.topLoopVal() < loopCount; state.incrTopLoop())
             {
                parseComponents(loopBody, state, model, isPostParse);
             }
@@ -340,8 +340,8 @@ namespace SmartGridToolbox
          }
          else
          {
-            std::string name = state.expandLoopRefs(nodeVal["name"].as<std::string>());
-            message() << "Parsing " <<  nodeType << " " << name << "." << std::endl;
+            state.setCurCompName(state.expandName(nodeVal["name"].as<std::string>()));
+            message() << "Parsing " <<  nodeType << " " << state.curCompName() << "." << std::endl;
             const ComponentParser * compParser = componentParser(nodeType);
             if (compParser == nullptr)
             {
@@ -349,11 +349,11 @@ namespace SmartGridToolbox
             }
             else if (isPostParse)
             {
-               compParser->postParse(nodeVal, model, name, state);
+               compParser->postParse(nodeVal, model, state);
             }
             else
             {
-               compParser->parse(nodeVal, model, name, state);
+               compParser->parse(nodeVal, model, state);
             }
          }
       }

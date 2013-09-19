@@ -77,19 +77,19 @@ namespace SmartGridToolbox
    struct ParserState
    {
       public:
-         std::string expandLoopRefs(const std::string & target) const;
+         std::string expandName(const std::string & target) const;
 
          void pushLoop(const std::string & name)
          {
             loops_.push_back({name, 0});
          }
 
-         int loopVal()
+         int topLoopVal()
          {
             return loops_.back().i_;
          }
 
-         void incrLoop()
+         void incrTopLoop()
          {
             ++loops_.back().i_;
          }
@@ -99,15 +99,20 @@ namespace SmartGridToolbox
             loops_.pop_back();
          }
 
-      private:
+         const std::string & curCompName() const {return curCompName_;}
 
+         void setCurCompName(const std::string & val) {curCompName_ = val;}
+
+      private:
          struct ParserLoop
          {
             std::string name_;
             int i_;
          };
 
+      private:
          std::vector<ParserLoop> loops_;
+         std::string curCompName_;
    };
 
    void assertFieldPresent(const YAML::Node & nd, const std::string & field);
@@ -127,17 +132,8 @@ namespace SmartGridToolbox
          }
 
       public:
-         virtual void parse(const YAML::Node & nd, Model & mod, const std::string & name,
-                            const ParserState & state) const
-         {
-            // Empty.
-         }
-
-         virtual void postParse(const YAML::Node & nd, Model & mod, const std::string & name,
-                                const ParserState & state) const
-         {
-            // Empty.
-         }
+         virtual void parse(const YAML::Node & nd, Model & mod, const ParserState & state) const {}
+         virtual void postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const {}
    };
 
    class Parser {
@@ -152,8 +148,7 @@ namespace SmartGridToolbox
          };
 
       public:
-         void parse(const char * fname, Model & model,
-                    Simulation & simulation);
+         void parse(const char * fname, Model & model, Simulation & simulation);
 
          template<typename T> void registerComponentParser()
          {
