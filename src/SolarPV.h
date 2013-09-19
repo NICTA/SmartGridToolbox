@@ -13,7 +13,7 @@ namespace SmartGridToolbox
    class SolarPVParser : public ParserPlugin
    {
       public:
-         static constexpr const char * componentName()
+         static constexpr const char * pluginKey()
          {
             return "solar_PV";
          }

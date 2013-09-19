@@ -24,7 +24,7 @@ namespace SmartGridToolbox
       if (ndCurLoad and ndCurGen)
       {
          {
-            error() << "A " << componentName() << " can't have both a current load and injection." << std::endl;
+            error() << "A " << pluginKey() << " can't have both a current load and injection." << std::endl;
             abort();
          }
       }
@@ -32,7 +32,7 @@ namespace SmartGridToolbox
       if (ndSLoad and ndSGen)
       {
          {
-            error() << "A " << componentName() << " can't have both a power load and injection." << std::endl;
+            error() << "A " << pluginKey() << " can't have both a power load and injection." << std::endl;
             abort();
          }
       }

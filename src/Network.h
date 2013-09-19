@@ -14,7 +14,7 @@ namespace SmartGridToolbox
    class NetworkParser : public ParserPlugin
    {
       public:
-         static constexpr const char * componentName() 
+         static constexpr const char * pluginKey() 
          {
             return "network";
          }
