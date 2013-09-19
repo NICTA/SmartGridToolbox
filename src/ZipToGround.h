@@ -6,7 +6,7 @@
 
 namespace SmartGridToolbox
 {
-   class ZipToGroundParser : public ComponentParser
+   class ZipToGroundParser : public ParserPlugin
    {
       public:
          static constexpr const char * componentName()

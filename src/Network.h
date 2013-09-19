@@ -11,7 +11,7 @@ namespace SmartGridToolbox
 {
    class Bus;
 
-   class NetworkParser : public ComponentParser
+   class NetworkParser : public ParserPlugin
    {
       public:
          static constexpr const char * componentName() 

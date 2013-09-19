@@ -1,7 +1,7 @@
 #include "Common.h"
 #include "Model.h"
 #include "Parser.h"
-#include "RegisterComponentParsers.h"
+#include "RegisterParserPlugins.h"
 #include "Simulation.h"
 #include <string>
 #include <boost/algorithm/string.hpp>
@@ -244,7 +244,7 @@ namespace SmartGridToolbox
    
    Parser::Parser()
    {
-      registerComponentParsers(*this);
+      registerParserPlugins(*this);
    }
 
    void Parser::parseGlobal(const YAML::Node & top, Model & model,
@@ -341,7 +341,7 @@ namespace SmartGridToolbox
          else
          {
             message() << "Parsing plugin " <<  nodeType << "." << std::endl;
-            const ComponentParser * compParser = componentParser(nodeType);
+            const ParserPlugin * compParser = componentParser(nodeType);
             if (compParser == nullptr)
             {
                warning() << "I don't know how to parse component " << nodeType << std::endl;

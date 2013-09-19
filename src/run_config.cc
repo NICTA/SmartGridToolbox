@@ -1,7 +1,7 @@
 #include "Common.h"
 #include "Model.h"
 #include "Parser.h"
-#include "RegisterComponentParsers.h"
+#include "RegisterParserPlugins.h"
 #include "Simulation.h"
 
 using namespace SmartGridToolbox;

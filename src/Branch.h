@@ -12,7 +12,7 @@ namespace SmartGridToolbox
 {
    class Bus;
 
-   class BranchParser : public ComponentParser
+   class BranchParser : public ParserPlugin
    {
       public:
          static constexpr const char * componentName()

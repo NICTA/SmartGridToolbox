@@ -4,7 +4,7 @@
 namespace SmartGridToolbox
 {
    class Parser;
-   void registerComponentParsers(Parser & p);
+   void registerParserPlugins(Parser & p);
 }
 
 #endif // REGISTER_COMPONENT_PARSERS

@@ -1,4 +1,4 @@
-#include "RegisterComponentParsers.h"
+#include "RegisterParserPlugins.h"
 #include "Branch.h"
 #include "Bus.h"
 #include "Network.h"
@@ -10,15 +10,15 @@
 
 namespace SmartGridToolbox
 {
-   void registerComponentParsers(Parser & p)
+   void registerParserPlugins(Parser & p)
    {
-      p.registerComponentParser<BranchParser>();
-      p.registerComponentParser<BusParser>();
-      p.registerComponentParser<NetworkParser>();
-      p.registerComponentParser<SimpleDCPowerSourceParser>();
-      p.registerComponentParser<SimpleInverterParser>();
-      p.registerComponentParser<SolarPVParser>();
-      p.registerComponentParser<WeatherParser>();
-      p.registerComponentParser<ZipToGroundParser>();
+      p.registerParserPlugin<BranchParser>();
+      p.registerParserPlugin<BusParser>();
+      p.registerParserPlugin<NetworkParser>();
+      p.registerParserPlugin<SimpleDCPowerSourceParser>();
+      p.registerParserPlugin<SimpleInverterParser>();
+      p.registerParserPlugin<SolarPVParser>();
+      p.registerParserPlugin<WeatherParser>();
+      p.registerParserPlugin<ZipToGroundParser>();
    }
 }

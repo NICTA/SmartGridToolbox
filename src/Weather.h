@@ -8,7 +8,7 @@
 
 namespace SmartGridToolbox
 {
-   class WeatherParser : public ComponentParser
+   class WeatherParser : public ParserPlugin
    {
       public:
          static constexpr const char * componentName()

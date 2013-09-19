@@ -70,7 +70,7 @@ namespace YAML
 namespace SmartGridToolbox
 {
    class Component;
-   class ComponentParser;
+   class ParserPlugin;
    class Model;
    class Simulation;
 
@@ -112,10 +112,10 @@ namespace SmartGridToolbox
 
    void assertFieldPresent(const YAML::Node & nd, const std::string & field);
 
-   class ComponentParser
+   class ParserPlugin
    {
       public:
-         template<typename T> static ComponentParser & globalCompParser()
+         template<typename T> static ParserPlugin & globalCompParser()
          {
             static T t;
             return t; 
@@ -133,7 +133,7 @@ namespace SmartGridToolbox
 
    class Parser {
 
-      friend class ComponentParser;
+      friend class ParserPlugin;
 
       public:
          static Parser & globalParser()
@@ -145,14 +145,14 @@ namespace SmartGridToolbox
       public:
          void parse(const char * fname, Model & model, Simulation & simulation);
 
-         template<typename T> void registerComponentParser()
+         template<typename T> void registerParserPlugin()
          {
-            compParsers_[T::componentName()] = &ComponentParser::globalCompParser<T>();
+            compParsers_[T::componentName()] = &ParserPlugin::globalCompParser<T>();
             // Note: Could also be implemented using type_info. However, the componentName() function is 
             // useful elsewhere, and this is probably simpler.
          }
 
-         const ComponentParser * componentParser(const std::string & name)
+         const ParserPlugin * componentParser(const std::string & name)
          {
             auto it = compParsers_.find(name);
             return ((it == compParsers_.end()) ? nullptr : it->second);
@@ -172,7 +172,7 @@ namespace SmartGridToolbox
          void parseComponents(const YAML::Node & node, ParserState & state, Model & model, bool isPostParse);
 
       private:
-         std::map<std::string, const ComponentParser *> compParsers_;
+         std::map<std::string, const ParserPlugin *> compParsers_;
    };
 
 }

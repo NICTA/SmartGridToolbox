@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   class SimpleInverterParser : public ComponentParser
+   class SimpleInverterParser : public ParserPlugin
    {
       public:
          static constexpr const char * componentName()

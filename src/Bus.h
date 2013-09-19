@@ -12,7 +12,7 @@ namespace SmartGridToolbox
 {
    class ZipToGroundBase;
 
-   class BusParser : public ComponentParser
+   class BusParser : public ParserPlugin
    {
       public:
          static constexpr const char * componentName()
