@@ -10,6 +10,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Component.cc \
 										  Event.cc \
 										  InverterBase.cc \
+										  MatpowerParser.cc \
 										  Model.cc \
 										  Network.cc \
 										  Parser.cc \

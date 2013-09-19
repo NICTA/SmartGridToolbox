@@ -1,6 +1,7 @@
 #include "RegisterParserPlugins.h"
 #include "Branch.h"
 #include "Bus.h"
+#include "MatpowerParser.h"
 #include "Network.h"
 #include "SimpleDCPowerSource.h"
 #include "SimpleInverter.h"
@@ -14,6 +15,7 @@ namespace SmartGridToolbox
    {
       p.registerParserPlugin<BranchParser>();
       p.registerParserPlugin<BusParser>();
+      p.registerParserPlugin<MatpowerParser>();
       p.registerParserPlugin<NetworkParser>();
       p.registerParserPlugin<SimpleDCPowerSourceParser>();
       p.registerParserPlugin<SimpleInverterParser>();

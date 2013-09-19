@@ -130,14 +130,14 @@ libsmartgridtoolbox_a_AR = $(AR) $(ARFLAGS)
 libsmartgridtoolbox_a_LIBADD =
 am_libsmartgridtoolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
 	Common.$(OBJEXT) Component.$(OBJEXT) Event.$(OBJEXT) \
-	InverterBase.$(OBJEXT) Model.$(OBJEXT) Network.$(OBJEXT) \
-	Parser.$(OBJEXT) PowerFlow.$(OBJEXT) PowerFlowNR.$(OBJEXT) \
-	Random.$(OBJEXT) RegisterParserPlugins.$(OBJEXT) \
-	SimpleBattery.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
-	SimpleDCPowerSource.$(OBJEXT) SimpleInverter.$(OBJEXT) \
-	Simulation.$(OBJEXT) SolarPV.$(OBJEXT) SparseSolver.$(OBJEXT) \
-	Sun.$(OBJEXT) WeakOrder.$(OBJEXT) Weather.$(OBJEXT) \
-	ZipToGround.$(OBJEXT)
+	InverterBase.$(OBJEXT) MatpowerParser.$(OBJEXT) \
+	Model.$(OBJEXT) Network.$(OBJEXT) Parser.$(OBJEXT) \
+	PowerFlow.$(OBJEXT) PowerFlowNR.$(OBJEXT) Random.$(OBJEXT) \
+	RegisterParserPlugins.$(OBJEXT) SimpleBattery.$(OBJEXT) \
+	SimpleBuilding.$(OBJEXT) SimpleDCPowerSource.$(OBJEXT) \
+	SimpleInverter.$(OBJEXT) Simulation.$(OBJEXT) \
+	SolarPV.$(OBJEXT) SparseSolver.$(OBJEXT) Sun.$(OBJEXT) \
+	WeakOrder.$(OBJEXT) Weather.$(OBJEXT) ZipToGround.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_helloworld_OBJECTS = helloworld.$(OBJEXT) Common.$(OBJEXT)
@@ -336,6 +336,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Component.cc \
 										  Event.cc \
 										  InverterBase.cc \
+										  MatpowerParser.cc \
 										  Model.cc \
 										  Network.cc \
 										  Parser.cc \
@@ -505,6 +506,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Component.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InverterBase.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MatpowerParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Model.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
