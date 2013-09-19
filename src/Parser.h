@@ -121,7 +121,7 @@ namespace SmartGridToolbox
             return t; 
          }
 
-         static constexpr const char * componentName() 
+         static constexpr const char * pluginKey() 
          {
             return "component";
          }
@@ -147,8 +147,8 @@ namespace SmartGridToolbox
 
          template<typename T> void registerParserPlugin()
          {
-            compParsers_[T::componentName()] = &ParserPlugin::globalCompParser<T>();
-            // Note: Could also be implemented using type_info. However, the componentName() function is 
+            compParsers_[T::pluginKey()] = &ParserPlugin::globalCompParser<T>();
+            // Note: Could also be implemented using type_info. However, the pluginKey() function is 
             // useful elsewhere, and this is probably simpler.
          }
 
