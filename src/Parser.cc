@@ -340,8 +340,7 @@ namespace SmartGridToolbox
          }
          else
          {
-            state.setCurCompName(state.expandName(nodeVal["name"].as<std::string>()));
-            message() << "Parsing " <<  nodeType << " " << state.curCompName() << "." << std::endl;
+            message() << "Parsing plugin " <<  nodeType << "." << std::endl;
             const ComponentParser * compParser = componentParser(nodeType);
             if (compParser == nullptr)
             {

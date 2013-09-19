@@ -8,13 +8,16 @@ namespace SmartGridToolbox
    void SolarPVParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
       SGT_DEBUG(debug() << "SolarPV : parse." << std::endl);
+      assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "weather");
       assertFieldPresent(nd, "inverter");
       assertFieldPresent(nd, "area_m2");
       assertFieldPresent(nd, "zenith_degrees");
       assertFieldPresent(nd, "azimuth_degrees");
 
-      SolarPV & comp = mod.newComponent<SolarPV>(state.curCompName());
+      string name = state.expandName(nd["name"].as<std::string>());
+      SolarPV & comp = mod.newComponent<SolarPV>(name);
+
       if (nd["efficiency"])
       {
          comp.setEfficiency(nd["efficiency"].as<double>());
@@ -33,7 +36,8 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "SolarPV : postParse." << std::endl);
 
-      SolarPV & comp = *mod.componentNamed<SolarPV>(state.curCompName());
+      string name = state.expandName(nd["name"].as<std::string>());
+      SolarPV & comp = *mod.componentNamed<SolarPV>(name);
 
       const std::string weatherStr = state.expandName(nd["weather"].as<std::string>());
       Weather * weather = mod.componentNamed<Weather>(weatherStr);
@@ -43,7 +47,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << state.curCompName() << ", weather " << weatherStr
+         error() << "For component " << name << ", weather " << weatherStr
                  << " was not found in the model." 
                  << std::endl;
          abort();
@@ -57,7 +61,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << state.curCompName() << ", inverter " << inverterStr
+         error() << "For component " << name << ", inverter " << inverterStr
                  << " was not found in the model." << std::endl;
          abort();
       }

@@ -99,10 +99,6 @@ namespace SmartGridToolbox
             loops_.pop_back();
          }
 
-         const std::string & curCompName() const {return curCompName_;}
-
-         void setCurCompName(const std::string & val) {curCompName_ = val;}
-
       private:
          struct ParserLoop
          {
@@ -112,7 +108,6 @@ namespace SmartGridToolbox
 
       private:
          std::vector<ParserLoop> loops_;
-         std::string curCompName_;
    };
 
    void assertFieldPresent(const YAML::Node & nd, const std::string & field);

@@ -9,9 +9,13 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "SimpleDCPowerSource : parse." << std::endl);
 
+      assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "inverter");
       assertFieldPresent(nd, "dc_power");
-      auto & comp = mod.newComponent<SimpleDCPowerSource>(state.curCompName());
+
+      string name = state.expandName(nd["name"].as<std::string>());
+      auto & comp = mod.newComponent<SimpleDCPowerSource>(name);
+
       comp.setPDC(nd["dc_power"].as<double>());
    }
 
@@ -19,7 +23,8 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "SimpleDCPowerSource : postParse." << std::endl);
 
-      SimpleDCPowerSource & comp = *mod.componentNamed<SimpleDCPowerSource>(state.curCompName());
+      string name = state.expandName(nd["name"].as<std::string>());
+      SimpleDCPowerSource & comp = *mod.componentNamed<SimpleDCPowerSource>(name);
 
       const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
       InverterBase * inverterComp = mod.componentNamed<InverterBase>(inverterStr);
@@ -29,7 +34,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << state.curCompName() << ", inverter " 
+         error() << "For component " << name << ", inverter " 
                  << inverterStr << " was not found in the model." << std::endl;
          abort();
       }

@@ -8,7 +8,11 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "Weather : parse." << std::endl);
 
-      Weather & comp = mod.newComponent<Weather>(state.curCompName());
+      assertFieldPresent(nd, "name");
+
+      string name = state.expandName(nd["name"].as<std::string>());
+      Weather & comp = mod.newComponent<Weather>(name);
+
       comp.setLatLong(mod.latLong());
 
       const auto & cloudNd = nd["cloud_cover"];
