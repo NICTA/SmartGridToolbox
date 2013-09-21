@@ -15,7 +15,7 @@ namespace SmartGridToolbox
 {
    struct CGram : Qi::grammar<std::string::const_iterator, Complex(), Ascii::space_type>
    {
-      CGram(): CGram::base_type(start_)
+      CGram() : CGram::base_type(start_)
       {
          phaseRad_ = Qi::lit('R') >> Qi::double_[Phoenix::bind(&CGram::setAngRad, this, Qi::_1)];
          phaseDeg_ = Qi::lit('D') >> Qi::double_[Phoenix::bind(&CGram::setAngDeg, this, Qi::_1)];
