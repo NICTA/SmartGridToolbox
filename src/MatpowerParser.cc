@@ -6,7 +6,6 @@
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
 #include <boost/spirit/include/phoenix_statement.hpp>
-#include <boost/spirit/include/phoenix_bind.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/spirit/include/support_multi_pass.hpp>
 
@@ -14,75 +13,65 @@ namespace Qi = boost::spirit::qi;
 namespace Ascii = boost::spirit::ascii;
 namespace Phoenix = boost::phoenix;
 
-using Ascii::blank;
-using Phoenix::bind;
-using Phoenix::ref;
-using Qi::char_;
-using Qi::double_;
-using Qi::eol;
-using Qi::eps;
-using Qi::grammar;
-using Qi::lexeme;
-using Qi::lit;
-using Qi::phrase_parse;
-using Qi::rule;
-using Qi::skip;
-using Qi::_val;
-using Qi::_1;
-using Qi::_2;
-
 typedef std::istreambuf_iterator<char> BaseIterator;
 typedef boost::spirit::multi_pass<BaseIterator> ForwardIterator;
 
 namespace SmartGridToolbox
 {
    typedef ForwardIterator Iterator;
-   typedef decltype(blank) SpaceType;
+   typedef decltype(Ascii::blank) SpaceType;
 
-   void showMat(const std::vector<double> & from)
+   struct Gram : Qi::grammar<Iterator, SpaceType>
    {
-      std::cout << "showMat " << from.size() << std::endl;
-   }
-
-   struct Gram : grammar<Iterator, SpaceType>
-   {
-      Gram(double & baseMVAVal, std::vector<double> & busMatrixVal) : Gram::base_type(start_)
+      Gram(double & baseMVAVal,
+           std::vector<double> & busMatrixVal,
+           std::vector<double> & genMatrixVal,
+           std::vector<double> & branchMatrixVal)
+         : Gram::base_type(start_)
       {
-         statementTerm_ = (eol | lit(';'));
+         statementTerm_ = (Qi::eol | Qi::lit(';'));
 
-         ignore_ =   (eol) | (lit('%') >> *(char_-eol) >> eol);
-         other_ = (*(char_-statementTerm_) >> statementTerm_);
+         ignore_ =   (Qi::eol) | (Qi::lit('%') >> *(Qi::char_-Qi::eol) >> Qi::eol);
+         other_ = (*(Qi::char_-statementTerm_) >> statementTerm_);
 
-         matrix_ = lit('[') >> -eol >> skip(blank|eol|char_(",;"))[*double_] >> -eol >> lit(']');
+         matrix_ = Qi::lit('[') >> -Qi::eol >> Qi::skip(Ascii::blank|Qi::eol|Qi::char_(",;"))[*Qi::double_] >> -Qi::eol
+            >> Qi::lit(']');
+         // TODO: having struggled with Qi, I am quitting while ahead. No attempt is made to verify that there are
+         // the right number of rows and columns in the matrix; it is just treated as a one-dimensional array of
+         // elements.
 
-         topFunction_ = lit("function") >> lit("mpc") >> lit("=") >> *(char_-statementTerm_) >> statementTerm_;
-         baseMVA_ = (lit("mpc.baseMVA") >> lit('=') >> double_ >> statementTerm_)
-                    [Phoenix::ref(baseMVAVal) = _1];
-         busMatrix_ = (lit("mpc.bus") >> lit('=') >> matrix_ >> statementTerm_)
-                    [Phoenix::ref(busMatrixVal) = _1];
+         topFunction_ = Qi::lit("function") >> Qi::lit("mpc") >> Qi::lit("=") >> *(Qi::char_-statementTerm_)
+            >> statementTerm_;
+         baseMVA_ = (Qi::lit("mpc.baseMVA") >> Qi::lit('=') >> Qi::double_ >> statementTerm_)
+                    [Phoenix::ref(baseMVAVal) = Qi::_1];
+         busMatrix_ = (Qi::lit("mpc.bus") >> Qi::lit('=') >> matrix_ >> statementTerm_)
+            [Phoenix::ref(busMatrixVal) = Qi::_1];
+         genMatrix_ = (Qi::lit("mpc.gen") >> Qi::lit('=') >> matrix_ >> statementTerm_)
+            [Phoenix::ref(genMatrixVal) = Qi::_1];
+         branchMatrix_ = (Qi::lit("mpc.branch") >> Qi::lit('=') >> matrix_ >> statementTerm_)
+            [Phoenix::ref(branchMatrixVal) = Qi::_1];
 
-         start_ =  *ignore_ >> topFunction_ >> *(ignore_ | baseMVA_ | busMatrix_ | other_);
+         start_ =  *ignore_ >> topFunction_ >> *(ignore_ | baseMVA_ | busMatrix_ | genMatrix_ | branchMatrix_ | other_);
 
          // To debug: e.g.
          // BOOST_SPIRIT_DEBUG_NODE(baseMVA_); 
          // debug(baseMVA_); 
       }
 
-      rule<Iterator, SpaceType> statementTerm_;
-      rule<Iterator, SpaceType> colSep_;
-      rule<Iterator, SpaceType> rowSep_;
-      rule<Iterator, SpaceType> matSep_;
+      Qi::rule<Iterator, SpaceType> statementTerm_;
 
-      rule<Iterator, SpaceType> ignore_;
-      rule<Iterator, SpaceType> other_;
+      Qi::rule<Iterator, SpaceType> ignore_;
+      Qi::rule<Iterator, SpaceType> other_;
 
-      rule<Iterator, std::vector<double>(), SpaceType> matrix_;
+      Qi::rule<Iterator, std::vector<double>(), SpaceType> matrix_;
 
-      rule<Iterator, SpaceType> topFunction_;
-      rule<Iterator, SpaceType> baseMVA_;
-      rule<Iterator, SpaceType> busMatrix_;
+      Qi::rule<Iterator, SpaceType> topFunction_;
+      Qi::rule<Iterator, SpaceType> baseMVA_;
+      Qi::rule<Iterator, SpaceType> busMatrix_;
+      Qi::rule<Iterator, SpaceType> genMatrix_;
+      Qi::rule<Iterator, SpaceType> branchMatrix_;
 
-      rule<Iterator, SpaceType> start_;
+      Qi::rule<Iterator, SpaceType> start_;
    };
 
 
@@ -96,29 +85,58 @@ namespace SmartGridToolbox
       string inputName = state.expandName(nd["input_file"].as<std::string>());
       string networkName = state.expandName(nd["network_name"].as<std::string>());
 
-      std::fstream infile(inputName);
-      if (!infile.is_open())
+      double baseMVA;
+      std::vector<double> busMatrix;
+      std::vector<double> genMatrix;
+      std::vector<double> branchMatrix;
       {
-         error() << "Could not open the matpower input file " << inputName << "." << std::endl;
-         abort();
+         Gram gram(baseMVA, busMatrix, genMatrix, branchMatrix);
+         std::fstream infile(inputName);
+         if (!infile.is_open())
+         {
+            error() << "Could not open the matpower input file " << inputName << "." << std::endl;
+            abort();
+         }
+
+         // Iterate over stream input:
+         BaseIterator inBegin(infile);
+
+         ForwardIterator fwdBegin = boost::spirit::make_default_multi_pass(inBegin);
+         ForwardIterator fwdEnd;
+
+         while (fwdBegin != fwdEnd)
+         {
+            bool ok = Qi::phrase_parse(fwdBegin, fwdEnd, gram, Ascii::blank);
+         }
       }
 
-      // Iterate over stream input:
-      BaseIterator inBegin(infile);
+      const int busCols = 13;
+      const int genCols = 21;
+      const int branchCols = 13;
 
-      ForwardIterator fwdBegin = boost::spirit::make_default_multi_pass(inBegin);
-      ForwardIterator fwdEnd;
+      int nBus = busMatrix.size() / busCols;
+      int nGen = genMatrix.size() / genCols;
+      int nBranch = branchMatrix.size() / branchCols;
 
-      Network & comp = mod.newComponent<Network>(networkName);
+      message() << "Matpower: Bus matrix size = " << busCols << std::endl;
+      message() << "Matpower: Gen matrix size = " << genCols << std::endl;
+      message() << "Matpower: Branch matrix size = " << branchCols << std::endl;
 
-      double baseMVAVal;
-      std::vector<double> busMatrixVal;
-      Gram gram(baseMVAVal, busMatrixVal);
-      while (fwdBegin != fwdEnd)
+      Network & netw = mod.newComponent<Network>(networkName);
+
+      for (int i = 0; i < nBus; ++i)
       {
-         bool ok = phrase_parse(fwdBegin, fwdEnd, gram, blank);
+         int id         = busMatrix[busCols * i];
+         int mpType     = busMatrix[busCols * i + 1];
+         double Pd      = busMatrix[busCols * i + 2];
+         double Qd      = busMatrix[busCols * i + 3];
+         double Gs      = busMatrix[busCols * i + 4];
+         double Bs      = busMatrix[busCols * i + 5];
+         double baseKV  = busMatrix[busCols * i + 6];
+
+         string busName = networkName + "_bus_" + std::to_string(id);
+         message() << "Matpower: adding bus " << busName << "." << std::endl;
       }
-      std::cout << "Bus matrix size = " << busMatrixVal.size() << std::endl;
    }
 
    void MatpowerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
