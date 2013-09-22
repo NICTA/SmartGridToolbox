@@ -25,6 +25,7 @@ using Qi::lexeme;
 using Qi::lit;
 using Qi::phrase_parse;
 using Qi::rule;
+using Qi::_val;
 using Qi::_1;
 using Qi::_2;
 
@@ -80,13 +81,13 @@ namespace SmartGridToolbox
          ignore_ = *(char_-statementTerm_) >> statementTerm_;
 
          row_ = (double_ % *lit(','));//[&showVec];
-         matrix_ = lit('[') >> -eol >> *(row_ % rowSep_) >> -rowSep_ >> lit(']');//[&showMat];
+         matrix_ = lit('[') >> -eol >> *(row_ % rowSep_) >> -rowSep_ >> lit(']');
 
          topFunction_ = lit("function") >> lit("mpc") >> lit("=") >> *(char_-statementTerm_) >> statementTerm_;
          baseMVA_ = (lit("mpc.baseMVA") >> lit('=') >> double_ >> statementTerm_)
                     [bind(&Gram::setBaseMVA, this, _1)];
-         busMatrix_ = (lit("mpc.bus") >> lit('=') >> matrix_ >> statementTerm_);
-                      //[bind(&Gram::setBusMatrix, this, _1)];
+         busMatrix_ = (lit("mpc.bus") >> lit('=') >> matrix_ >> statementTerm_)
+                      [bind(&showMat, _1)];
 
          start_ = eps[bind(&Gram::init, this)] >> *comment_ >> topFunction_ >> *(
                   comment_ |
@@ -94,15 +95,7 @@ namespace SmartGridToolbox
                   busMatrix_ |
                   ignore_);
 
-         BOOST_SPIRIT_DEBUG_NODE(row_); 
-         BOOST_SPIRIT_DEBUG_NODE(topFunction_); 
-         BOOST_SPIRIT_DEBUG_NODE(baseMVA_); 
-         BOOST_SPIRIT_DEBUG_NODE(busMatrix_); 
          BOOST_SPIRIT_DEBUG_NODE(matrix_); 
-         debug(row_); 
-         debug(topFunction_); 
-         debug(baseMVA_); 
-         debug(busMatrix_); 
          debug(matrix_); 
       }
 
