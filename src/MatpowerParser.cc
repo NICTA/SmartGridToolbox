@@ -132,7 +132,7 @@ namespace SmartGridToolbox
          double Qd      = busMatrix[busCols * i + 3];
          double Gs      = busMatrix[busCols * i + 4];
          double Bs      = busMatrix[busCols * i + 5];
-         double baseKV  = busMatrix[busCols * i + 6];
+         double baseKV  = busMatrix[busCols * i + 9];
 
          string busName = networkName + "_bus_" + std::to_string(id);
          message() << "Matpower: adding bus " << busName << "." << std::endl;
