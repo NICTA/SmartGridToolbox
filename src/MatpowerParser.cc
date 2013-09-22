@@ -25,22 +25,18 @@ using Qi::lexeme;
 using Qi::lit;
 using Qi::phrase_parse;
 using Qi::rule;
+using Qi::skip;
 using Qi::_val;
 using Qi::_1;
 using Qi::_2;
 
 typedef std::istreambuf_iterator<char> BaseIterator;
 typedef boost::spirit::multi_pass<BaseIterator> ForwardIterator;
-typedef std::vector<double> Row;
-typedef std::vector<Row> Matrix;
+typedef std::vector<double> Matrix;
 
-void showRow(const Row & v)
-{
-   std::cout << "show vec v " << v.size() << " " << v.front() << " ... " << v.back() << std::endl;
-}
 void showMat(const Matrix & m)
 {
-   std::cout << "show mat m " << m.size() << " " << m.front().front() << " ... " << m.back().back() << std::endl;
+   std::cout << "show mat m " << m.size() << " " << m.front() << " ... " << m.back() << std::endl;
 }
 
 namespace SmartGridToolbox
@@ -53,12 +49,12 @@ namespace SmartGridToolbox
       rule<Iterator, SpaceType> statementTerm_;
       rule<Iterator, SpaceType> colSep_;
       rule<Iterator, SpaceType> rowSep_;
+      rule<Iterator, SpaceType> matSep_;
 
       rule<Iterator, SpaceType> blankLine_;
       rule<Iterator, SpaceType> comment_;
       rule<Iterator, SpaceType> ignore_;
 
-      rule<Iterator, Row(), SpaceType> row_;
       rule<Iterator, Matrix(), SpaceType> matrix_;
 
       rule<Iterator, SpaceType> topFunction_;
@@ -73,15 +69,12 @@ namespace SmartGridToolbox
       Gram() : Gram::base_type(start_)
       {
          statementTerm_ = (eol | lit(';'));
-         colSep_ = lexeme[*blank >> +(lit(',') | blank) >> *blank]; 
-         rowSep_ = eol | (lit(';') >> -eol);
 
          blankLine_ = eol;
          comment_ = lit('%') >> *(char_-eol) >> eol;
          ignore_ = *(char_-statementTerm_) >> statementTerm_;
 
-         row_ = (double_ % *lit(','));//[&showVec];
-         matrix_ = lit('[') >> -eol >> *(row_ % rowSep_) >> -rowSep_ >> lit(']');
+         matrix_ = lit('[') >> -eol >> skip(blank|eol|char_(",;"))[*double_] >> -eol >> lit(']');
 
          topFunction_ = lit("function") >> lit("mpc") >> lit("=") >> *(char_-statementTerm_) >> statementTerm_;
          baseMVA_ = (lit("mpc.baseMVA") >> lit('=') >> double_ >> statementTerm_)
@@ -97,6 +90,12 @@ namespace SmartGridToolbox
 
          BOOST_SPIRIT_DEBUG_NODE(matrix_); 
          debug(matrix_); 
+         BOOST_SPIRIT_DEBUG_NODE(colSep_); 
+         debug(colSep_); 
+         BOOST_SPIRIT_DEBUG_NODE(rowSep_); 
+         debug(rowSep_); 
+         BOOST_SPIRIT_DEBUG_NODE(matSep_); 
+         debug(matSep_); 
       }
 
       void init() {baseMVAVal_ = 0.0;}
