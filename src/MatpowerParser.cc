@@ -34,38 +34,18 @@ typedef std::istreambuf_iterator<char> BaseIterator;
 typedef boost::spirit::multi_pass<BaseIterator> ForwardIterator;
 typedef std::vector<double> Matrix;
 
-void showMat(const Matrix & m)
-{
-   std::cout << "show mat m " << m.size() << " " << m.front() << " ... " << m.back() << std::endl;
-}
-
 namespace SmartGridToolbox
 {
    typedef ForwardIterator Iterator;
    typedef decltype(blank) SpaceType;
 
+   void showMat(const Matrix & from)
+   {
+      std::cout << "showMat " << from.size() << std::endl;
+   }
+
    struct Gram : grammar<Iterator, SpaceType>
    {
-      rule<Iterator, SpaceType> statementTerm_;
-      rule<Iterator, SpaceType> colSep_;
-      rule<Iterator, SpaceType> rowSep_;
-      rule<Iterator, SpaceType> matSep_;
-
-      rule<Iterator, SpaceType> blankLine_;
-      rule<Iterator, SpaceType> comment_;
-      rule<Iterator, SpaceType> ignore_;
-
-      rule<Iterator, Matrix(), SpaceType> matrix_;
-
-      rule<Iterator, SpaceType> topFunction_;
-      rule<Iterator, SpaceType> baseMVA_;
-      rule<Iterator, SpaceType> busMatrix_;
-
-      rule<Iterator, SpaceType> start_;
-
-      double baseMVAVal_;
-      Matrix busMatrixVal_;
-
       Gram() : Gram::base_type(start_)
       {
          statementTerm_ = (eol | lit(';'));
@@ -79,7 +59,9 @@ namespace SmartGridToolbox
          topFunction_ = lit("function") >> lit("mpc") >> lit("=") >> *(char_-statementTerm_) >> statementTerm_;
          baseMVA_ = (lit("mpc.baseMVA") >> lit('=') >> double_ >> statementTerm_)
                     [bind(&Gram::setBaseMVA, this, _1)];
+         bind(&Gram::setBusMatrix, this, busMatrixVal_);
          busMatrix_ = (lit("mpc.bus") >> lit('=') >> matrix_ >> statementTerm_)
+                      //[bind(&Gram::setBusMatrix, this, _1)];
                       [bind(&showMat, _1)];
 
          start_ = eps[bind(&Gram::init, this)] >> *comment_ >> topFunction_ >> *(
@@ -109,7 +91,28 @@ namespace SmartGridToolbox
       {
          busMatrixVal_ = val;
       }
+
+      rule<Iterator, SpaceType> statementTerm_;
+      rule<Iterator, SpaceType> colSep_;
+      rule<Iterator, SpaceType> rowSep_;
+      rule<Iterator, SpaceType> matSep_;
+
+      rule<Iterator, SpaceType> blankLine_;
+      rule<Iterator, SpaceType> comment_;
+      rule<Iterator, SpaceType> ignore_;
+
+      rule<Iterator, Matrix(), SpaceType> matrix_;
+
+      rule<Iterator, SpaceType> topFunction_;
+      rule<Iterator, SpaceType> baseMVA_;
+      rule<Iterator, SpaceType> busMatrix_;
+
+      rule<Iterator, SpaceType> start_;
+
+      double baseMVAVal_;
+      Matrix busMatrixVal_;
    };
+
 
    void MatpowerParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
