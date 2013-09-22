@@ -16,6 +16,7 @@ namespace Phoenix = boost::phoenix;
 
 using Ascii::blank;
 using Phoenix::bind;
+using Phoenix::ref;
 using Qi::char_;
 using Qi::double_;
 using Qi::eol;
@@ -32,64 +33,39 @@ using Qi::_2;
 
 typedef std::istreambuf_iterator<char> BaseIterator;
 typedef boost::spirit::multi_pass<BaseIterator> ForwardIterator;
-typedef std::vector<double> Matrix;
 
 namespace SmartGridToolbox
 {
    typedef ForwardIterator Iterator;
    typedef decltype(blank) SpaceType;
 
-   void showMat(const Matrix & from)
+   void showMat(const std::vector<double> & from)
    {
       std::cout << "showMat " << from.size() << std::endl;
    }
 
    struct Gram : grammar<Iterator, SpaceType>
    {
-      Gram() : Gram::base_type(start_)
+      Gram(double & baseMVAVal, std::vector<double> & busMatrixVal) : Gram::base_type(start_)
       {
          statementTerm_ = (eol | lit(';'));
 
-         blankLine_ = eol;
-         comment_ = lit('%') >> *(char_-eol) >> eol;
-         ignore_ = *(char_-statementTerm_) >> statementTerm_;
+         ignore_ =   (eol) | (lit('%') >> *(char_-eol) >> eol);
+         other_ = (*(char_-statementTerm_) >> statementTerm_);
 
          matrix_ = lit('[') >> -eol >> skip(blank|eol|char_(",;"))[*double_] >> -eol >> lit(']');
 
          topFunction_ = lit("function") >> lit("mpc") >> lit("=") >> *(char_-statementTerm_) >> statementTerm_;
          baseMVA_ = (lit("mpc.baseMVA") >> lit('=') >> double_ >> statementTerm_)
-                    [bind(&Gram::setBaseMVA, this, _1)];
-         bind(&Gram::setBusMatrix, this, busMatrixVal_);
+                    [Phoenix::ref(baseMVAVal) = _1];
          busMatrix_ = (lit("mpc.bus") >> lit('=') >> matrix_ >> statementTerm_)
-                      //[bind(&Gram::setBusMatrix, this, _1)];
-                      [bind(&showMat, _1)];
+                    [Phoenix::ref(busMatrixVal) = _1];
 
-         start_ = eps[bind(&Gram::init, this)] >> *comment_ >> topFunction_ >> *(
-                  comment_ |
-                  baseMVA_ |
-                  busMatrix_ |
-                  ignore_);
+         start_ =  *ignore_ >> topFunction_ >> *(ignore_ | baseMVA_ | busMatrix_ | other_);
 
-         BOOST_SPIRIT_DEBUG_NODE(matrix_); 
-         debug(matrix_); 
-         BOOST_SPIRIT_DEBUG_NODE(colSep_); 
-         debug(colSep_); 
-         BOOST_SPIRIT_DEBUG_NODE(rowSep_); 
-         debug(rowSep_); 
-         BOOST_SPIRIT_DEBUG_NODE(matSep_); 
-         debug(matSep_); 
-      }
-
-      void init() {baseMVAVal_ = 0.0;}
-
-      void setBaseMVA(double val) 
-      {
-         baseMVAVal_ = val;
-      }
-
-      void setBusMatrix(const Matrix & val) 
-      {
-         busMatrixVal_ = val;
+         // To debug: e.g.
+         // BOOST_SPIRIT_DEBUG_NODE(baseMVA_); 
+         // debug(baseMVA_); 
       }
 
       rule<Iterator, SpaceType> statementTerm_;
@@ -97,20 +73,16 @@ namespace SmartGridToolbox
       rule<Iterator, SpaceType> rowSep_;
       rule<Iterator, SpaceType> matSep_;
 
-      rule<Iterator, SpaceType> blankLine_;
-      rule<Iterator, SpaceType> comment_;
       rule<Iterator, SpaceType> ignore_;
+      rule<Iterator, SpaceType> other_;
 
-      rule<Iterator, Matrix(), SpaceType> matrix_;
+      rule<Iterator, std::vector<double>(), SpaceType> matrix_;
 
       rule<Iterator, SpaceType> topFunction_;
       rule<Iterator, SpaceType> baseMVA_;
       rule<Iterator, SpaceType> busMatrix_;
 
       rule<Iterator, SpaceType> start_;
-
-      double baseMVAVal_;
-      Matrix busMatrixVal_;
    };
 
 
@@ -139,11 +111,14 @@ namespace SmartGridToolbox
 
       Network & comp = mod.newComponent<Network>(networkName);
 
-      Gram gram;
+      double baseMVAVal;
+      std::vector<double> busMatrixVal;
+      Gram gram(baseMVAVal, busMatrixVal);
       while (fwdBegin != fwdEnd)
       {
          bool ok = phrase_parse(fwdBegin, fwdEnd, gram, blank);
       }
+      std::cout << "Bus matrix size = " << busMatrixVal.size() << std::endl;
    }
 
    void MatpowerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
