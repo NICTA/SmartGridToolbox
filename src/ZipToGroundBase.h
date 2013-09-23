@@ -11,10 +11,12 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         ZipToGroundBase(const std::string & name) : Component(name) {}
+         ZipToGroundBase(const std::string & name, const Phases & phases) : Component(name), phases_(phases) 
+         {
+            // Empty.
+         }
 
          virtual const Phases & phases() const {return phases_;}
-         virtual Phases & phases() {return phases_;}
 
          virtual UblasVector<Complex> Y() const = 0;
          virtual UblasVector<Complex> I() const = 0;

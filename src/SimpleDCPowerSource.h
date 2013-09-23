@@ -24,7 +24,7 @@ namespace SmartGridToolbox
       /// @name Overridden member functions from DCPowerSourceBase.
       /// @{
       public:
-         SimpleDCPowerSource(const std::string & name) : DCPowerSourceBase(name) {}
+         SimpleDCPowerSource(const std::string & name) : DCPowerSourceBase(name), PDC_(0.0) {}
          virtual double PDC() const {return PDC_;}
       /// @}
 

@@ -27,7 +27,10 @@ namespace SmartGridToolbox
       /// @name My public member functions. 
       /// @{
       public:
-         InverterBase(const std::string & name) : ZipToGroundBase(name) {}
+         InverterBase(const std::string & name, const Phases & phases) : ZipToGroundBase(name, phases)
+         {
+            // Empty.
+         }
 
          void addDCPowerSource(DCPowerSourceBase & source);
 

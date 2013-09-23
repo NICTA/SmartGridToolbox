@@ -19,24 +19,25 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "Y");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      Branch & comp = mod.newComponent<Branch>(name);
-
-      comp.phases0() = nd["phases_0"].as<Phases>();
-      comp.phases1() = nd["phases_1"].as<Phases>();
+      Phases phases0 = nd["phases_0"].as<Phases>();
+      Phases phases1 = nd["phases_1"].as<Phases>();
 
       const YAML::Node & ndY = nd["Y"];
       const YAML::Node & ndYMatrix = ndY["matrix"];
       const YAML::Node & ndYSimpleLine = ndY["simple_line"];
+      UblasMatrix<Complex> Y; 
       if (ndYMatrix)
       {
-         comp.Y() = ndYMatrix.as<UblasMatrix<Complex>>();
+         Y = ndYMatrix.as<UblasMatrix<Complex>>();
       }
       else if (ndYSimpleLine)
       {
          UblasVector<Complex> y = ndYSimpleLine.as<UblasVector<Complex>>();
-         UblasMatrix<Complex> Y = YSimpleLine(y); 
-         comp.Y() = Y;
+         Y = YSimpleLine(y); 
       }
+
+      Branch & comp = mod.newComponent<Branch>(name, phases0, phases1);
+      comp.Y() = Y;
    }
 
    void BranchParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
@@ -84,5 +85,16 @@ namespace SmartGridToolbox
                  <<  " was not found in the model." << std::endl;
          abort();
       }
+   }
+
+   Branch::Branch(const std::string & name, const Phases & phases0, const Phases & phases1) :
+      Component(name),
+      bus0_(nullptr),
+      bus1_(nullptr),
+      phases0_(phases0),
+      phases1_(phases1),
+      Y_(2 * phases0.size(), 2 * phases0.size(), czero)
+   {
+      assert(phases0.size() == phases1.size());
    }
 }

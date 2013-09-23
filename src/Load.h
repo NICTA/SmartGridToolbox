@@ -3,6 +3,8 @@
 
 #include "Common.h"
 
+// TODO : deprecated!
+
 namespace SmartGridToolbox
 {
    class Load

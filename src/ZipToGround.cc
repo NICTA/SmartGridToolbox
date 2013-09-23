@@ -12,9 +12,10 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "phases");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      ZipToGround & comp = mod.newComponent<ZipToGround>(name);
+      Phases phases = nd["phases"].as<Phases>();
 
-      auto ndPhases = nd["phases"];
+      ZipToGround & comp = mod.newComponent<ZipToGround>(name, phases);
+
       auto ndAdmit = nd["admittance"];
       auto ndCurLoad = nd["current_load"];
       auto ndCurGen = nd["current_gen"];
@@ -36,14 +37,6 @@ namespace SmartGridToolbox
             abort();
          }
       }
-
-      comp.phases() = ndPhases.as<Phases>();
-      int nPhase = comp.phases().size();
-
-      // Defaults:
-      comp.Y() = UblasVector<Complex>(nPhase, czero);
-      comp.I() = UblasVector<Complex>(nPhase, czero);
-      comp.S() = UblasVector<Complex>(nPhase, czero);
 
       if (ndAdmit)
       {
@@ -84,4 +77,14 @@ namespace SmartGridToolbox
       }
       bus->addZipToGround(*zip);
    }
+
+   ZipToGround::ZipToGround(const std::string & name, const Phases & phases) : 
+      ZipToGroundBase(name, phases),
+      Y_(phases.size(), 0.0),
+      I_(phases.size(), 0.0),
+      S_(phases.size(), 0.0)
+   {
+      // Empty.
+   }
+
 }

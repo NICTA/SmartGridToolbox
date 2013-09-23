@@ -14,9 +14,9 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "phases");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SimpleInverter & comp = mod.newComponent<SimpleInverter>(name);
+      Phases phases = nd["phases"].as<Phases>();
 
-      comp.phases() = nd["phases"].as<Phases>();
+      SimpleInverter & comp = mod.newComponent<SimpleInverter>(name, phases);
 
       if (nd["efficiency"])
       {
@@ -96,5 +96,17 @@ namespace SmartGridToolbox
    {
       double P = InverterBase::PPerPhase();
       return std::min(std::abs(P), maxSMagPerPhase_) * (P < 0 ? -1 : 1);
+   }
+
+   SimpleInverter::SimpleInverter(const std::string & name, const Phases & phases) :
+      InverterBase(name, phases),
+      efficiency_(1.0), 
+      maxSMagPerPhase_(5000.0), 
+      minPowerFactor_(0.9), 
+      requestedQPerPhase_(0.0), 
+      inService_(true),
+      S_(phases.size(), czero)
+   {
+      // Empty.
    }
 }

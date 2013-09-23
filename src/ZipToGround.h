@@ -31,7 +31,7 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         ZipToGround(const std::string & name) : ZipToGroundBase(name), Y_(0.0), I_(0.0), S_(0.0) {}
+         ZipToGround(const std::string & name, const Phases & phases);
 
          // Add non-const reference accessors:
          virtual UblasVector<Complex> & Y() {return Y_;}

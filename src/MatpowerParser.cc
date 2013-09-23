@@ -210,14 +210,9 @@ namespace SmartGridToolbox
          UblasVector<Complex> SVec(phases.size(), -Sd); // Note: load = -ve injection.
          UblasVector<Complex> YsVec(phases.size(), Ys);
 
-         Bus & bus = mod.newComponent<Bus>(busName(networkName, busId));
-         bus.phases() = phases;
-         bus.setType(type);
-         bus.nominalV() = nomVVec;
-         bus.V() = nomVVec;
+         Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, nomVVec);
 
-         ZipToGround & load = mod.newComponent<ZipToGround>(loadName(networkName, busId));
-         load.phases() = phases;
+         ZipToGround & load = mod.newComponent<ZipToGround>(loadName(networkName, busId), phases);
          load.S() = SVec;
          load.Y() = YsVec;
          bus.addZipToGround(load);
@@ -244,8 +239,7 @@ namespace SmartGridToolbox
             abort();
          }
 
-         ZipToGround & gen = mod.newComponent<ZipToGround>(genName(networkName, busId));
-         gen.phases() = phases;
+         ZipToGround & gen = mod.newComponent<ZipToGround>(genName(networkName, busId), phases);
          gen.S() = SVec;
          bus->addZipToGround(gen);
       }
@@ -290,15 +284,11 @@ namespace SmartGridToolbox
          Complex Y01 = -(ys / tau) * Complex{cos(theta), sin(theta)};
          Complex Y10 = -(ys / tau) * Complex{cos(theta), -sin(theta)};
 
-         Branch & branch = mod.newComponent<Branch>(branchName(networkName, bus0Id, bus1Id));
+         Branch & branch = mod.newComponent<Branch>(branchName(networkName, bus0Id, bus1Id), phases, phases);
 
          branch.setBus0(*bus0);
          branch.setBus1(*bus1);
 
-         branch.phases0() = phases;
-         branch.phases1() = phases;
-
-         branch.Y() = UblasMatrix<Complex>(2 * phases.size(), 2 * phases.size());
          for (int k = 0; k < phases.size(); ++k)
          {
             branch.Y()(k, k) = Y00;

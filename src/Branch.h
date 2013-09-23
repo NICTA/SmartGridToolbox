@@ -30,7 +30,7 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         Branch(const std::string & name) : Component(name) {}
+         Branch(const std::string & name, const Phases & phases0, const Phases & phases1);
 
          const Bus & bus0() const {return *bus0_;}
          void setBus0(Bus & bus0) {bus0_ = &bus0;}
@@ -39,13 +39,11 @@ namespace SmartGridToolbox
          void setBus1(Bus & bus1) {bus1_ = &bus1;}
 
          const Phases & phases0() const {return phases0_;}
-         Phases & phases0() {return phases0_;}
 
          const Phases & phases1() const {return phases1_;}
-         Phases & phases1() {return phases1_;}
 
-         const UblasCMatrix<Complex> & Y() const {return Y_;}
-         UblasCMatrix<Complex> & Y() {return Y_;}
+         const UblasMatrix<Complex> & Y() const {return Y_;}
+         UblasMatrix<Complex> & Y() {return Y_;}
       /// @}
 
       /// @name My private member variables.
@@ -55,7 +53,7 @@ namespace SmartGridToolbox
          Bus * bus1_;                  ///< My bus 1.
          Phases phases0_;              ///< Phases on bus 0.
          Phases phases1_;              ///< Phases on bus 1.
-         UblasCMatrix<Complex> Y_;     ///< Complex value of elements in bus admittance matrix in NR solver.
+         UblasMatrix<Complex> Y_;      ///< Complex value of elements in bus admittance matrix in NR solver.
       /// @}
    };
 }

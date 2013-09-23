@@ -30,16 +30,7 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         SimpleInverter(const std::string & name) :
-            InverterBase(name), 
-            efficiency_(1.0), 
-            maxSMagPerPhase_(5000.0), 
-            minPowerFactor_(0.9), 
-            requestedQPerPhase_(0.0), 
-            inService_(true)
-         {
-            // Empty.
-         }
+         SimpleInverter(const std::string & name, const Phases & phases);
 
          virtual double efficiency(double powerDC) const override
          {
