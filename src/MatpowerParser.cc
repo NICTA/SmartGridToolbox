@@ -254,6 +254,11 @@ namespace SmartGridToolbox
          double tau  = branchMatrix[branchCols * i + 8];
          double theta  = branchMatrix[branchCols * i + 9] * pi / 180.0; // Matpower format is in deg, convert to rad.
 
+         if (tau == 0.0)
+         {
+            tau = 1.0; // I think 0 means "default".
+         }
+
          if (tau != 1.0 || theta != 0.0)
          {
             warning() << "Matpower: the tau and theta branch parameters have yet to be tested, " 
