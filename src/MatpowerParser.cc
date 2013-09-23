@@ -92,15 +92,28 @@ namespace SmartGridToolbox
       return prefix + "_gen_" + std::to_string(id);
    }
 
+   static std::string branchName(const std::string & prefix, int id1, int id2)
+   {
+      return prefix + "_branch_" + std::to_string(id1) + "_" + std::to_string(id2);
+   }
+
    void MatpowerParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
       SGT_DEBUG(debug() << "Matpower : parse." << std::endl);
 
       assertFieldPresent(nd, "input_file");
       assertFieldPresent(nd, "network_name");
+      assertFieldPresent(nd, "area_base_V");
 
       std::string inputName = state.expandName(nd["input_file"].as<std::string>());
       std::string networkName = state.expandName(nd["network_name"].as<std::string>());
+
+      std::map<int, double> areaBaseV;
+      YAML::Node ndBaseV = nd["area_base_V"];
+      for (int i = 0; i < ndBaseV.size(); ++i)
+      {
+         areaBaseV[ndBaseV[0][0].as<int>()] = ndBaseV[0][1].as<double>();
+      }
 
       Phases phases;
       const YAML::Node ndPhases = nd["phases"];
@@ -150,6 +163,8 @@ namespace SmartGridToolbox
       message() << "Matpower: Gen matrix size = " << genCols << std::endl;
       message() << "Matpower: Branch matrix size = " << branchCols << std::endl;
 
+      double baseS = 1e6 * baseMVA;
+
       Network & netw = mod.newComponent<Network>(networkName);
 
       for (int i = 0; i < nBus; ++i)
@@ -160,14 +175,14 @@ namespace SmartGridToolbox
          double Qd      = busMatrix[busCols * i + 3];
          double Gs      = busMatrix[busCols * i + 4];
          double Bs      = busMatrix[busCols * i + 5];
+         int area       = busMatrix[busCols * i + 6];
          double baseKV  = busMatrix[busCols * i + 9];
 
-         double baseV = 1e3 * baseKV;
-         double baseS = 1e6 * baseMVA;
-         double baseY = baseS / (baseV * baseV);
+         double baseV = (baseKV == 0) ? areaBaseV[area] : 1e3 * baseKV;
+         double basey = baseS / (baseV * baseV);
 
          Complex Sd = Complex{Pd, Qd} * baseS;
-         Complex Ys = Complex{Gs, Bs} * baseY; 
+         Complex Ys = Complex{Gs, Bs} * basey; 
 
          BusType type = BusType::BAD;
          switch (mpType)
@@ -202,9 +217,12 @@ namespace SmartGridToolbox
          bus.V() = nomVVec;
 
          ZipToGround & load = mod.newComponent<ZipToGround>(loadName(networkName, busId));
+         load.phases() = phases;
          load.S() = SVec;
          load.Y() = YsVec;
          bus.addZipToGround(load);
+
+         netw.addBus(bus);
       }
 
       for (int i = 0; i < nGen; ++i)
@@ -227,9 +245,71 @@ namespace SmartGridToolbox
          }
 
          ZipToGround & gen = mod.newComponent<ZipToGround>(genName(networkName, busId));
+         gen.phases() = phases;
          gen.S() = SVec;
          bus->addZipToGround(gen);
       }
+
+      for (int i = 0; i < nBranch; ++i)
+      {
+         int bus0Id  = branchMatrix[branchCols * i];
+         int bus1Id  = branchMatrix[branchCols * i + 1];
+         double Rs  = branchMatrix[branchCols * i + 2];
+         double Xs  = branchMatrix[branchCols * i + 3];
+         double Bc  = branchMatrix[branchCols * i + 4];
+         double tau  = branchMatrix[branchCols * i + 8];
+         double theta  = branchMatrix[branchCols * i + 9] * pi / 180.0; // Matpower format is in deg, convert to rad.
+
+         if (tau != 1.0 || theta != 0.0)
+         {
+            warning() << "Matpower: the tau and theta branch parameters have yet to be tested, " 
+                         "and are likely to be wrong." << std::endl;
+         }
+
+         Bus * bus0 = mod.componentNamed<Bus>(busName(networkName, bus0Id));
+         if (bus0 == nullptr)
+         {
+            error() << "Matpower: for generator " << i << ", from bus " << bus0Id << " was not found." << std::endl;
+            abort();
+         }
+         Bus * bus1 = mod.componentNamed<Bus>(busName(networkName, bus1Id));
+         if (bus1 == nullptr)
+         {
+            error() << "Matpower: for generator " << i << ", to bus " << bus1Id << " was not found." << std::endl;
+            abort();
+         }
+
+         double baseV = bus0->nominalV()(0).real();
+         assert(baseV = bus1->nominalV()(0).real()); // TODO: Otherwise, how is p.u. defined?
+         double basey = baseS / (baseV * baseV);
+
+         Complex ys = basey / Complex{Rs, Xs};
+
+         Complex Y11 = (ys + Complex{0, 0.5 * basey * Bc});
+         Complex Y00 = Y11 / (tau * tau);
+         Complex Y01 = -(ys / tau) * Complex{cos(theta), sin(theta)};
+         Complex Y10 = -(ys / tau) * Complex{cos(theta), -sin(theta)};
+
+         Branch & branch = mod.newComponent<Branch>(branchName(networkName, bus0Id, bus1Id));
+
+         branch.setBus0(*bus0);
+         branch.setBus1(*bus1);
+
+         branch.phases0() = phases;
+         branch.phases1() = phases;
+
+         branch.Y() = UblasMatrix<Complex>(2 * phases.size(), 2 * phases.size());
+         for (int k = 0; k < phases.size(); ++k)
+         {
+            branch.Y()(k, k) = Y00;
+            branch.Y()(k + phases.size(), k + phases.size()) = Y11;
+            branch.Y()(k, k + phases.size()) = Y01;
+            branch.Y()(k + phases.size(), k) = Y10;
+         }
+
+         netw.addBranch(branch);
+      }
+
    }
 
    void MatpowerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
