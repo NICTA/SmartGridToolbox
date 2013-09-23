@@ -39,16 +39,13 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         Bus(const std::string & name) : Component(name) {}
+         Bus(const std::string & name, BusType type, const Phases & phases, const UblasVector<Complex> & nominalV);
 
          BusType type() const {return type_;}
-         void setType(const BusType type) {type_ = type;}
 
          const Phases & phases() const {return phases_;}
-         Phases & phases() {return phases_;}
 
          const UblasVector<Complex> & nominalV() const {return nominalV_;}
-         UblasVector<Complex> & nominalV() {return nominalV_;}
 
          const UblasVector<Complex> & V() const {return V_;}
          UblasVector<Complex> & V() {return V_;}

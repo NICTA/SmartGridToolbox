@@ -16,20 +16,15 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "nominal_voltage");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      Bus & comp = mod.newComponent<Bus>(name);
+      BusType type = nd["type"].as<BusType>();
+      Phases phases = nd["phases"].as<Phases>();
+      int nPhase = phases.size();
 
-      comp.phases() = nd["phases"].as<Phases>();
-      comp.setType(nd["type"].as<BusType>());
-
-      int nPhase = comp.phases().size();
-      comp.nominalV() = UblasVector<Complex>(nPhase, czero);
-      comp.V() = UblasVector<Complex>(nPhase, czero);
       auto ndNominal = nd["nominal_voltage"];
-      if (ndNominal)
-      {
-         comp.nominalV() = ndNominal.as<UblasVector<Complex>>();
-         comp.V() = comp.nominalV();
-      }
+      UblasVector<Complex> nominalV = ndNominal ? ndNominal.as<UblasVector<Complex>>()
+                                                : UblasVector<Complex>(nPhase, czero);
+
+      Bus & comp = mod.newComponent<Bus>(name, type, phases, nominalV);
    }
 
    void BusParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
@@ -78,6 +73,19 @@ namespace SmartGridToolbox
          I_ += zip->I(); // Injection.
          S_ += zip->S(); // Injection.
       }
+   }
+
+   Bus::Bus(const std::string & name, BusType type, const Phases & phases, const UblasVector<Complex> & nominalV) :
+      Component(name),
+      type_(type),
+      phases_(phases),
+      nominalV_(nominalV),
+      V_(nominalV),
+      Y_(UblasVector<Complex>(phases.size(), czero)),
+      I_(UblasVector<Complex>(phases.size(), czero)),
+      S_(UblasVector<Complex>(phases.size(), czero))
+   {
+      assert(nominalV_.size() == phases_.size());
    }
 
    void Bus::addZipToGround(ZipToGroundBase & zipToGround)
