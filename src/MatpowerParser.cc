@@ -225,9 +225,13 @@ namespace SmartGridToolbox
          int busId  = genMatrix[genCols * i];
          double Pg  = genMatrix[genCols * i + 1];
          double Qg  = genMatrix[genCols * i + 2];
-         double baseMVA  = genMatrix[genCols * i + 6];
+         double baseMVAGen  = genMatrix[genCols * i + 6];
+         if (baseMVAGen == 0.0)
+         {
+            baseMVAGen = baseMVA;
+         }
 
-         double baseS = 1e6 * baseMVA;
+         double baseS = 1e6 * baseMVAGen;
 
          Complex Sg = Complex{Pg, Qg} * baseS;
          UblasVector<Complex> SVec(phases.size(), Sg);
@@ -251,19 +255,21 @@ namespace SmartGridToolbox
          double Rs  = branchMatrix[branchCols * i + 2];
          double Xs  = branchMatrix[branchCols * i + 3];
          double Bc  = branchMatrix[branchCols * i + 4];
-         double tau  = branchMatrix[branchCols * i + 8];
-         double theta  = branchMatrix[branchCols * i + 9] * pi / 180.0; // Matpower format is in deg, convert to rad.
+         double tap  = branchMatrix[branchCols * i + 8];
+         double thetaRad  = branchMatrix[branchCols * i + 9] * pi / 180.0; // Matpower format is in deg, convert to rad.
 
-         if (tau == 0.0)
+         if (tap == 0.0)
          {
-            tau = 1.0; // I think 0 means "default".
+            tap = 1.0; // 0 means "default", i.e. 1.
          }
 
-         if (tau != 1.0 || theta != 0.0)
+         if (tap != 1.0 || thetaRad != 0.0)
          {
-            warning() << "Matpower: the tau and theta branch parameters have yet to be tested, " 
+            warning() << "Matpower: the tap and theta branch parameters have yet to be tested, " 
                          "and are likely to be wrong." << std::endl;
          }
+
+         Complex cTap = polar(tap, thetaRad);
 
          Bus * bus0 = mod.componentNamed<Bus>(busName(networkName, bus0Id));
          if (bus0 == nullptr)
@@ -282,12 +288,12 @@ namespace SmartGridToolbox
          assert(baseV = bus1->nominalV()(0).real()); // TODO: Otherwise, how is p.u. defined?
          double basey = baseS / (baseV * baseV);
 
-         Complex ys = basey / Complex{Rs, Xs};
+         Complex ys = 1.0 / Complex{Rs, Xs};
 
-         Complex Y11 = (ys + Complex{0, 0.5 * basey * Bc});
-         Complex Y00 = Y11 / (tau * tau);
-         Complex Y01 = -(ys / tau) * Complex{cos(theta), sin(theta)};
-         Complex Y10 = -(ys / tau) * Complex{cos(theta), -sin(theta)};
+         Complex Y11 = basey * ((ys + Complex{0, 0.5 * Bc}));
+         Complex Y00 = basey * (Y11 / (tap * tap));
+         Complex Y01 = basey * (-(ys / conj(cTap)));
+         Complex Y10 = basey * (-(ys / cTap));
 
          Branch & branch = mod.newComponent<Branch>(branchName(networkName, bus0Id, bus1Id), phases, phases);
 
