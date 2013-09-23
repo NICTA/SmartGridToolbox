@@ -1,5 +1,8 @@
 #include "MatpowerParser.h"
+#include "Bus.h"
 #include "Network.h"
+#include "PowerFlow.h"
+#include "ZipToGround.h"
 
 #include <fstream>
 #include <boost/spirit/include/qi.hpp>
@@ -74,6 +77,20 @@ namespace SmartGridToolbox
       Qi::rule<Iterator, SpaceType> start_;
    };
 
+   static std::string busName(const std::string & prefix, int id)
+   {
+      return prefix + "_bus_" + std::to_string(id);
+   }
+
+   static std::string loadName(const std::string & prefix, int id)
+   {
+      return prefix + "_load_" + std::to_string(id);
+   }
+
+   static std::string genName(const std::string & prefix, int id)
+   {
+      return prefix + "_gen_" + std::to_string(id);
+   }
 
    void MatpowerParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
@@ -82,8 +99,19 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "input_file");
       assertFieldPresent(nd, "network_name");
 
-      string inputName = state.expandName(nd["input_file"].as<std::string>());
-      string networkName = state.expandName(nd["network_name"].as<std::string>());
+      std::string inputName = state.expandName(nd["input_file"].as<std::string>());
+      std::string networkName = state.expandName(nd["network_name"].as<std::string>());
+
+      Phases phases;
+      const YAML::Node ndPhases = nd["phases"];
+      if (ndPhases)
+      {
+         phases = ndPhases.as<Phases>();
+      }
+      else
+      {
+         phases = Phase::BAL;
+      }
 
       double baseMVA;
       std::vector<double> busMatrix;
@@ -126,7 +154,7 @@ namespace SmartGridToolbox
 
       for (int i = 0; i < nBus; ++i)
       {
-         int id         = busMatrix[busCols * i];
+         int busId      = busMatrix[busCols * i];
          int mpType     = busMatrix[busCols * i + 1];
          double Pd      = busMatrix[busCols * i + 2];
          double Qd      = busMatrix[busCols * i + 3];
@@ -134,8 +162,73 @@ namespace SmartGridToolbox
          double Bs      = busMatrix[busCols * i + 5];
          double baseKV  = busMatrix[busCols * i + 9];
 
-         string busName = networkName + "_bus_" + std::to_string(id);
-         message() << "Matpower: adding bus " << busName << "." << std::endl;
+         double baseV = 1e3 * baseKV;
+         double baseS = 1e6 * baseMVA;
+         double baseY = baseS / (baseV * baseV);
+
+         Complex Sd = Complex{Pd, Qd} * baseS;
+         Complex Ys = Complex{Gs, Bs} * baseY; 
+
+         BusType type = BusType::BAD;
+         switch (mpType)
+         {
+            case 1 :
+               type = BusType::PQ;
+               break;
+            case 2 :
+               type = BusType::PV;
+               break;
+            case 3 :
+               type = BusType::SL;
+               break;
+            case 4:
+               error() << "Matpower isolated bus type not supported." << std::endl; 
+               abort();
+               break;
+            default:
+               error() << "Bad matpower bus type (type = " << mpType << ") encountered." << std::endl;
+               abort();
+               break;
+         }
+
+         UblasVector<Complex> nomVVec(phases.size(), baseV);
+         UblasVector<Complex> SVec(phases.size(), -Sd); // Note: load = -ve injection.
+         UblasVector<Complex> YsVec(phases.size(), Ys);
+
+         Bus & bus = mod.newComponent<Bus>(busName(networkName, busId));
+         bus.phases() = phases;
+         bus.setType(type);
+         bus.nominalV() = nomVVec;
+         bus.V() = nomVVec;
+
+         ZipToGround & load = mod.newComponent<ZipToGround>(loadName(networkName, busId));
+         load.S() = SVec;
+         load.Y() = YsVec;
+         bus.addZipToGround(load);
+      }
+
+      for (int i = 0; i < nGen; ++i)
+      {
+         int busId  = genMatrix[genCols * i];
+         double Pg  = genMatrix[genCols * i + 1];
+         double Qg  = genMatrix[genCols * i + 2];
+         double baseMVA  = genMatrix[genCols * i + 6];
+
+         double baseS = 1e6 * baseMVA;
+
+         Complex Sg = Complex{Pg, Qg} * baseS;
+         UblasVector<Complex> SVec(phases.size(), Sg);
+
+         Bus * bus = mod.componentNamed<Bus>(busName(networkName, busId));
+         if (bus == nullptr)
+         {
+            error() << "Matpower: for generator " << i << ", bus " << busId << " was not found." << std::endl;
+            abort();
+         }
+
+         ZipToGround & gen = mod.newComponent<ZipToGround>(genName(networkName, busId));
+         gen.S() = SVec;
+         bus->addZipToGround(gen);
       }
    }
 
