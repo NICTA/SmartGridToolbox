@@ -147,8 +147,8 @@ namespace SmartGridToolbox
       rx1_ = UblasRange(nPQ_, 2 * nPQ_);
 
       // Size all arrays:
-      V0r_.resize(nSL_, false);
-      V0i_.resize(nSL_, false);
+      VSLr_.resize(nSL_, false);
+      VSLi_.resize(nSL_, false);
       PPQ_.resize(nPQ_, false);
       QPQ_.resize(nPQ_, false);
       IrPQ_.resize(nPQ_, false);
@@ -236,8 +236,8 @@ namespace SmartGridToolbox
 
       for (int i = 0; i < nSL_; ++i)
       {
-         V0r_(i) = SLNodes_[i]->V_.real();
-         V0i_(i) = SLNodes_[i]->V_.imag();
+         VSLr_(i) = SLNodes_[i]->V_.real();
+         VSLi_(i) = SLNodes_[i]->V_.imag();
       }
 
       // And set G_ and B_:
@@ -271,8 +271,8 @@ namespace SmartGridToolbox
       // Done like this with a copy because eventually we'll include PV busses too.
       UblasVectorRange<double>(Vr_, rPQ_) = UblasVectorRange<double>(x_, rx0_);
       UblasVectorRange<double>(Vi_, rPQ_) = UblasVectorRange<double>(x_, rx1_);
-      UblasVectorRange<double>(Vr_, rSL_) = V0r_;
-      UblasVectorRange<double>(Vi_, rSL_) = V0i_;
+      UblasVectorRange<double>(Vr_, rSL_) = VSLr_;
+      UblasVectorRange<double>(Vi_, rSL_) = VSLi_;
    }
 
    void PowerFlowNR::updateF()

@@ -109,47 +109,62 @@ namespace SmartGridToolbox
 
          // The following are NOT owned by me - they are owned by their parent Busses.
          NodeVec nodes_;
-         NodeVec SLNodes_;
          NodeVec PQNodes_;
+         NodeVec PVNodes_;
+         NodeVec SLNodes_;
 
          /// @}
 
          /// @name Array bounds.
          /// @{
-         int nSL_;                     ///< Number of slack nodes.
          int nPQ_;                     ///< Number of PQ nodes.
+         int nPV_;                     ///< Number of PV nodes.
+         int nPQPV_;                   ///< NPQ_ + NPV_.
+         int nSL_;                     ///< Number of slack nodes.
          int nNode_;                   ///< Total number of nodes.
          int nVar_;                    ///< Total number of variables.
          /// @}
 
-         /// @name ublas ranges into vectors/matrices.
+         /// @name ublas ranges and slices into vectors/matrices.
          /// @{
          UblasRange rPQ_;              ///< Range of PQ nodes in list of all nodes.
+         UblasRange rPV_;              ///< Range of PV nodes in list of all nodes.
+         UblasRange rPQPV_;            ///< Range of PQ and PV nodes in list of all nodes.
          UblasRange rSL_;              ///< Range of SL nodes in list of all nodes.
          UblasRange rAll_;             ///< Range of all nodes in list of all nodes.
-                                       /**< Needed for matrix_range. */
-         UblasRange rx0_;              ///< Range of real voltage components in x_. 
-         UblasRange rx1_;              ///< Range of imag voltage components in x_.
+         UblasSlice slx0_;             ///< Slice indexing variable 0 for each bus. 
+         UblasSlice slx1_;             ///< Slice indexing variable 1 for each bus. 
          /// @}
 
-         UblasVector<double> V0r_;     ///< Slack voltages real part - one per phase.
-         UblasVector<double> V0i_;     ///< Slack voltages imag part - one per phase.
+         // Constant / supplied quantities:
+         UblasVector<double> PPQ_;     ///< Constant real power injection of PQ nodes.
+         UblasVector<double> QPQ_;     ///< Constant reactive power injection of PQ nodes.
 
-         UblasVector<double> PPQ_;     ///< Constant power injection of PQ nodes.
-         UblasVector<double> QPQ_;
+         UblasVector<double> PPV_;     ///< Constant real power injection of PV nodes.
+         UblasVector<double> VPV_;     ///< Constant voltage magnitude of PV nodes.
 
-         UblasVector<double> IrPQ_;    ///< Constant current injection of PQ nodes.
-         UblasVector<double> IiPQ_;
+         UblasVector<double> VSLr_;    ///< Slack voltages real part - one per phase.
+         UblasVector<double> VSLi_;    ///< Slack voltages imag part - one per phase.
 
-         UblasVector<double> Vr_;
-         UblasVector<double> Vi_;
-         UblasCMatrix<Complex> Y_;
-         UblasCMatrix<double> G_;
-         UblasCMatrix<double> B_;
+         UblasVector<double> IrPQPV_;  ///< Constant real current injection of PQ and PV nodes.
+         UblasVector<double> IiPQPV_;  ///< Constant imag current injection of PQ and PV nodes.
 
-         UblasVector<double> x_;
-         UblasVector<double> f_;
-         UblasCMatrix<double> J_;
+         // Vectors of unknowns:
+         UblasVector<double> VrPQ_;    ///< Unknown real voltage of PQ nodes.   
+         UblasVector<double> ViPQ_;    ///< Unknown imag voltage of PQ nodes.   
+
+         UblasVector<double> VrPV_;    ///< Unknown real voltage of PV nodes.   
+         UblasVector<double> QPV_;     ///< Unknown reactive power of PV nodes.   
+
+         // Y matrix:
+         UblasCMatrix<Complex> Y_;     ///< Complex Y matrix.
+         UblasCMatrix<double> G_;      ///< Real part of Y matrix.
+         UblasCMatrix<double> B_;      ///< Imag part of Y matrix.
+
+         // Mathematical problem:
+         UblasVector<double> x_;       ///< Vector of unknowns / LHS.
+         UblasVector<double> f_;       ///< Function.
+         UblasCMatrix<double> J_;      ///< Jacobian matrix.
          UblasCMatrix<double> JConst_; ///< The part of J that doesn't update at each iteration.
    };
 }
