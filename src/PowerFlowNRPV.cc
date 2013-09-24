@@ -89,24 +89,24 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "PowerFlowNR : validate." << std::endl);
 
       // Make Nodes:
-      SLNodes_ = NodeVec();
       PQNodes_ = NodeVec();
       PVNodes_ = NodeVec();
+      SLNodes_ = NodeVec();
       for (auto & busPair : busses_)
       {
          BusNR & bus = *busPair.second;
          NodeVec * vec = nullptr;
-         if (bus.type_ == BusType::SL)
-         {
-            vec = &SLNodes_;
-         }
-         else if (bus.type_ == BusType::PQ)
+         if (bus.type_ == BusType::PQ)
          {
             vec = &PQNodes_;
          }
          else if (bus.type_ == BusType::PV)
          {
             vec = &PVNodes_;
+         }
+         else if (bus.type_ == BusType::SL)
+         {
+            vec = &SLNodes_;
          }
          else
          {
@@ -119,10 +119,11 @@ namespace SmartGridToolbox
          }
       }
       // Determine sizes:
-      nSL_ = SLNodes_.size();
       nPQ_ = PQNodes_.size();
       nPV_ = PVNodes_.size();
+      nSL_ = SLNodes_.size();
       assert(nSL_ > 0); // TODO: What is correct here?
+      nPQPV_ = nPQ_ + nPV_;
       nNode_ = nSL_ + nPQ_ + nPV_;
       nVar_ = 2 * (nPQ_ + nPV_);
 
@@ -132,7 +133,7 @@ namespace SmartGridToolbox
       nodes_.insert(nodes_.end(), PVNodes_.begin(), PVNodes_.end());
       nodes_.insert(nodes_.end(), SLNodes_.begin(), SLNodes_.end());
 
-      // Index all nodes (PQ ones come first):
+      // Index all nodes:
       for (int i = 0; i < nNode_; ++i)
       {
          nodes_[i]->idx_ = i;
@@ -141,23 +142,35 @@ namespace SmartGridToolbox
       // Set array ranges:
       // Note Range goes from begin (included) to end (excluded).
       rPQ_ = UblasRange(0, nPQ_);
-      rSL_ = UblasRange(nPQ_, nPQ_ + nSL_);
+      rPV_ = UblasRange(nPQ_, nPQ_ + nPV_);
+      rSL_ = UblasRange(nPQ_ + nPV_, nPQ_ + nPV_ + nSL_);
       rAll_ = UblasRange(0, nNode_);
-      rx0_ = UblasRange(0, nPQ_);
-      rx1_ = UblasRange(nPQ_, 2 * nPQ_);
+      slx0_ = UblasSlice(0, 2, nPQPV_);
+      slx1_ = UblasSlice(1, 2, nPQPV_);
 
       // Size all arrays:
-      VSLr_.resize(nSL_, false);
-      VSLi_.resize(nSL_, false);
       PPQ_.resize(nPQ_, false);
       QPQ_.resize(nPQ_, false);
-      IrPQ_.resize(nPQ_, false);
-      IiPQ_.resize(nPQ_, false);
-      Vr_.resize(nNode_, false);
-      Vi_.resize(nNode_, false);
+
+      PPV_.resize(nPV_, false);
+      VPV_.resize(nPV_, false);
+
+      VSLr_.resize(nSL_, false);
+      VSLi_.resize(nSL_, false);
+
+      IrPQPV_.resize(nPQPV_, false);
+      IiPQPV_.resize(nPQPV_, false);
+
+      VrPQ_.resize(nPQ_, false);
+      ViPQ_.resize(nPQ_, false);
+
+      ViPV_.resize(nPV_, false);
+      QPV_.resize(nPV_, false);
+
       Y_.resize(nNode_, nNode_, false);
       G_.resize(nNode_, nNode_, false);
       B_.resize(nNode_, nNode_, false);
+
       x_.resize(nVar_, false);
       f_.resize(nVar_, false);
       J_.resize(nVar_, nVar_, false);

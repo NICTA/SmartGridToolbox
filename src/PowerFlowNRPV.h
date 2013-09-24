@@ -119,8 +119,8 @@ namespace SmartGridToolbox
          /// @{
          int nPQ_;                     ///< Number of PQ nodes.
          int nPV_;                     ///< Number of PV nodes.
-         int nPQPV_;                   ///< NPQ_ + NPV_.
          int nSL_;                     ///< Number of slack nodes.
+         int nPQPV_;                   ///< NPQ_ + NPV_.
          int nNode_;                   ///< Total number of nodes.
          int nVar_;                    ///< Total number of variables.
          /// @}
@@ -153,7 +153,7 @@ namespace SmartGridToolbox
          UblasVector<double> VrPQ_;    ///< Unknown real voltage of PQ nodes.   
          UblasVector<double> ViPQ_;    ///< Unknown imag voltage of PQ nodes.   
 
-         UblasVector<double> VrPV_;    ///< Unknown real voltage of PV nodes.   
+         UblasVector<double> ViPV_;    ///< Unknown imag voltage of PV nodes.   
          UblasVector<double> QPV_;     ///< Unknown reactive power of PV nodes.   
 
          // Y matrix:
