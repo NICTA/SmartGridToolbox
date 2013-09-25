@@ -61,18 +61,18 @@ namespace SmartGridToolbox
          const UblasVector<Complex> & S() const {return S_;} // Injection.
          UblasVector<Complex> & S() {return S_;} // Injection.
       /// @}
-      
+
       /// @name My private member variables.
       /// @{
       private:
-         BusType type_;                                     ///< Bus type. 
-         Phases phases_;                                    ///< Phases.
-         std::vector<const ZipToGroundBase *> zipsToGround_;    ///< ZIP loads of generation.
-         UblasVector<Complex> nominalV_;                    ///< Nominal voltage.
-         UblasVector<Complex> V_;                           ///< Voltage.
-         UblasVector<Complex> Y_;                           ///< Constant admittance shunt.
-         UblasVector<Complex> I_;                           ///< Constant current injection.
-         UblasVector<Complex> S_;                           ///< Constant power injection.
+         BusType type_;                                        ///< Bus type.
+         Phases phases_;                                       ///< Phases.
+         std::vector<const ZipToGroundBase *> zipsToGround_;   ///< ZIP loads of generation.
+         UblasVector<Complex> nominalV_;                       ///< Nominal voltage.
+         UblasVector<Complex> V_;                              ///< Voltage.
+         UblasVector<Complex> Y_;                              ///< Constant admittance shunt.
+         UblasVector<Complex> I_;                              ///< Constant current injection.
+         UblasVector<Complex> S_;                              ///< Constant power injection.
       /// @}
    };
 }
