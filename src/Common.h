@@ -77,26 +77,19 @@ namespace SmartGridToolbox
    /// @{
    using UblasRange = boost::numeric::ublas::range;
    using UblasSlice = boost::numeric::ublas::slice;
+   using boost::numeric::ublas::project;
 
    /// Dense vector
    template<typename T> using UblasVector = boost::numeric::ublas::vector<T>;
-   template<typename T> using UblasVectorRange = boost::numeric::ublas::vector_range<UblasVector<T>>;
-   template<typename T> using UblasVectorSlice = boost::numeric::ublas::vector_slice<UblasVector<T>>;
 
    /// Sparse compressed vector
    template<typename T> using UblasCVector = boost::numeric::ublas::compressed_vector<T>;
-   template<typename T> using UblasCVectorRange = boost::numeric::ublas::vector_range<UblasCVector<T>>;
-   template<typename T> using UblasCVectorSlice = boost::numeric::ublas::vector_slice<UblasCVector<T>>;
 
    /// Dense matrix 
    template<typename T> using UblasMatrix = boost::numeric::ublas::matrix<T>;
-   template<typename T> using UblasMatrixRange = boost::numeric::ublas::matrix_range<UblasMatrix<T>>;
-   template<typename T> using UblasMatrixSlice = boost::numeric::ublas::matrix_slice<UblasMatrix<T>>;
 
    /// Sparse compressed matrix, by rows.
    template<typename T> using UblasCMatrix = boost::numeric::ublas::compressed_matrix<T>;
-   template<typename T> using UblasCMatrixRange = boost::numeric::ublas::matrix_range<UblasCMatrix<T>>;
-   template<typename T> using UblasCMatrixSlice = boost::numeric::ublas::matrix_slice<UblasCMatrix<T>>;
 
    template<typename VE> using UblasVectorExpression = boost::numeric::ublas::vector_expression<VE>;
    template<typename ME> using UblasMatrixExpression = boost::numeric::ublas::matrix_expression<ME>;

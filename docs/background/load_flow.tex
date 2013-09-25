@@ -315,7 +315,17 @@ I_i = \frac{S_i^*}{V_i^*} = \sum_{k=0}^NY_{ik}V_k
 \end{align}
 Define the current mismatch:
 \begin{align}
-\Delta_i = -\frac{S^*_i}{V_i^*} + \sum_{k=0}^NY_{ik}V_k
+\Delta I_i = -\frac{S^*_i}{V_i^*} + \sum_{k=0}^NY_{ik}V_k
+\end{align}
+which will be zero if the power flow equations are satisfied.
+
+The Newton-Raphson method solves the equation $\Delta I(x) = 0$ by iteration, where $x$ is the set of independent variables. Letting $x$ be at the current timestep, and letting $\Delta x$ be the update at the next iteration, it specifies that
+\begin{align}
+\Delta I_j(x) &= J_{jk}(x) \Delta x
+\end{align}
+Here, $J$ is the Jacobian matrix
+\begin{align}
+J_{ik} = \frac{\partial \Delta I_k}{\partial x_k}
 \end{align}
 
 Note that we can treat $V$ and $V^*$ as independent variables in the following calculation of the Jacobian. 
@@ -328,28 +338,28 @@ Note that we can treat $V$ and $V^*$ as independent variables in the following c
 	\end{align}
 }
 \begin{align}
-\frac{\partial \Delta_i}{\partial V_k} &= Y_{ik} + \frac{\partial S^*_i}{\partial V_k}, &\frac{\partial \Delta_i}{\partial V^*_k} &=  \frac{S^*_i}{{V^*_i}^2}\delta_{ik} + \frac{\partial S^*_i}{\partial V^*_k},  \notag \\
-\frac{\partial \Delta^*_i}{\partial V_k} &= \frac{S_i}{{V_i}^2}\delta_{ik} + \frac{\partial S_i}{\partial V_k}, &\frac{\partial \Delta^*_i}{\partial V^*_k} &= Y^*_{ik} + \frac{\partial S_i}{\partial V^*_k},
+\frac{\partial \Delta I_i}{\partial V_k} &= Y_{ik} + \frac{\partial S^*_i}{\partial V_k}, &\frac{\partial \Delta I_i}{\partial V^*_k} &=  \frac{S^*_i}{{V^*_i}^2}\Delta I_{ik} + \frac{\partial S^*_i}{\partial V^*_k},  \notag \\
+\frac{\partial \Delta I^*_i}{\partial V_k} &= \frac{S_i}{{V_i}^2}\Delta I_{ik} + \frac{\partial S_i}{\partial V_k}, &\frac{\partial \Delta I^*_i}{\partial V^*_k} &= Y^*_{ik} + \frac{\partial S_i}{\partial V^*_k},
 \end{align}
 
 However, the treatment above gives a $2N \times 2N$ matrix. At the expense of brevity, it may be better numerically to work with the real and imaginary parts of $V$. Also, numerical experiments show faster convergence, probably because the configuration space has half as many dimensions.
 \begin{align}
-\Delta_i &= -\frac{S^*_i\left(V_{Ri}+jV_{Ii}\right)}{M^2} + \sum_{k=0}^NY_{ik}\left(V_{Rk} + j V_{Ik}\right)
+\Delta I_i &= -\frac{S^*_i\left(V_{Ri}+jV_{Ii}\right)}{M^2} + \sum_{k=0}^NY_{ik}\left(V_{Rk} + j V_{Ik}\right)
 \end{align}
 or,
 \begin{align}
-\Delta_{Ri} &= \frac{-P_iV_{Ri}-Q_iV_{Ii}}{M^2_i} + \sum_{k=0}^N\left(G_{ik}V_{Rk} - B_{ik}V_{Ik}\right)\notag \\
-\Delta_{Ii} &= \frac{-P_iV_{Ii}+Q_iV_{Ri}}{M^2_i} + \sum_{k=0}^N\left(G_{ik}V_{Ik} + B_{ik}V_{Rk}\right)
+\Delta I_{Ri} &= \frac{-P_iV_{Ri}-Q_iV_{Ii}}{M^2_i} + \sum_{k=0}^N\left(G_{ik}V_{Rk} - B_{ik}V_{Ik}\right)\notag \\
+\Delta I_{Ii} &= \frac{-P_iV_{Ii}+Q_iV_{Ri}}{M^2_i} + \sum_{k=0}^N\left(G_{ik}V_{Ik} + B_{ik}V_{Rk}\right)
 \end{align}
 Where $M^2_i$ is the voltage magnitude, $M^2_i := V_{Ri}^2 + V_{Ii}^2$. The Jacobian is then
 \begin{align}
-\frac{\partial \Delta_{Ri}}{\partial V_{Rk}} &= \left[\frac{-P_i}{M^2_i} + 2V_{Ri}\frac{P_iV_{Ri} + Q_iV_{Ii}}{M^4_i}\right]\delta_{ik}+G_{ik} 
+\frac{\partial \Delta I_{Ri}}{\partial V_{Rk}} &= \left[\frac{-P_i}{M^2_i} + 2V_{Ri}\frac{P_iV_{Ri} + Q_iV_{Ii}}{M^4_i}\right]\delta_{ik}+G_{ik} 
 +\frac{-V_{Ri}\partial P_i/\partial V_{Rk}-V_{Ii}\partial Q_i/\partial V_{Rk}}{M^2_i}\notag \\
-\frac{\partial \Delta_{Ri}}{\partial V_{Ik}} &= \left[\frac{-Q_i}{M^2_i} + 2V_{Ii}\frac{P_iV_{Ri} + Q_iV_{Ii}}{M^4_i}\right]\delta_{ik}-B_{ik}
+\frac{\partial \Delta I_{Ri}}{\partial V_{Ik}} &= \left[\frac{-Q_i}{M^2_i} + 2V_{Ii}\frac{P_iV_{Ri} + Q_iV_{Ii}}{M^4_i}\right]\delta_{ik}-B_{ik}
 +\frac{-V_{Ri}\partial P_i/\partial V_{Ik}-V_{Ii}\partial Q_i/\partial V_{Ik}}{M^2_i}\notag \\
-\frac{\partial \Delta_{Ii}}{\partial V_{Rk}} &= \left[\frac{Q_i}{M^2_i} + 2V_{Ri}\frac{P_iV_{Ii} - Q_iV_{Ri}}{M^4_i}\right]\delta_{ik}+B_{ik}
+\frac{\partial \Delta I_{Ii}}{\partial V_{Rk}} &= \left[\frac{Q_i}{M^2_i} + 2V_{Ri}\frac{P_iV_{Ii} - Q_iV_{Ri}}{M^4_i}\right]\delta_{ik}+B_{ik}
 +\frac{-V_{Ii}\partial P_i/\partial V_{Rk}+V_{Ri}\partial Q_i/\partial V_{Rk}}{M^2_i} \notag \\
-\frac{\partial \Delta_{Ii}}{\partial V_{Ik}} &= \left[\frac{-P_i}{M^2_i} + 2V_{Ii}\frac{P_iV_{Ii} - Q_iV_{Ri}}{M^4_i}\right]\delta_{ik}+G_{ik}
+\frac{\partial \Delta I_{Ii}}{\partial V_{Ik}} &= \left[\frac{-P_i}{M^2_i} + 2V_{Ii}\frac{P_iV_{Ii} - Q_iV_{Ri}}{M^4_i}\right]\delta_{ik}+G_{ik}
 +\frac{-V_{Ii}\partial P_i/\partial V_{Ik}+V_{Ri}\partial Q_i/\partial V_{Ik}}{M^2_i}
 \end{align}
 
@@ -360,19 +370,20 @@ S_i &= S_{Ci} + V_iI^*_{Ci}.
 \end{align}
 In this case, we have
 \begin{align}
-\Delta_{Ri} &= \frac{-P_{Ci}V_{Ri}-Q_{Ci}V_{Ii}}{M^2_i} - I_{Ri} + \sum_{k=0}^N\left(G_{ik}V_{Rk} - B_{ik}V_{Ik}\right)\notag \\
-\Delta_{Ii} &= \frac{-P_{Ci}V_{Ii}+Q_{Ci}V_{Ri}}{M^2_i} - I_{Ii} + \sum_{k=0}^N\left(G_{ik}V_{Ik} + B_{ik}V_{Rk}\right)
+\Delta I_{Ri} &= \frac{-P_{Ci}V_{Ri}-Q_{Ci}V_{Ii}}{M^2_i} - I_{Ri} + \sum_{k=0}^N\left(G_{ik}V_{Rk} - B_{ik}V_{Ik}\right)\notag \\
+\Delta I_{Ii} &= \frac{-P_{Ci}V_{Ii}+Q_{Ci}V_{Ri}}{M^2_i} - I_{Ii} + \sum_{k=0}^N\left(G_{ik}V_{Ik} + B_{ik}V_{Rk}\right)
 \end{align}
 The Jacobian is then
 \begin{align}
-\frac{\partial \Delta_{Ri}}{\partial V_{Rk}} &= \left[\frac{-P_{Ci}}{M^2_i} + 2V_{Ri}\frac{P_{Ci}V_{Ri} + Q_{Ci}V_{Ii}}{M^4_i}\right]\delta_{ik}+G_{ik} \notag \\
-\frac{\partial \Delta_{Ri}}{\partial V_{Ik}} &= \left[\frac{-Q_{Ci}}{M^2_i} + 2V_{Ii}\frac{P_{Ci}V_{Ri} + Q_{Ci}V_{Ii}}{M^4_i}\right]\delta_{ik}-B_{ik} \notag \\
-\frac{\partial \Delta_{Ii}}{\partial V_{Rk}} &= \left[\frac{Q_{Ci}}{M^2_i} + 2V_{Ri}\frac{P_{Ci}V_{Ii} - Q_{Ci}V_{Ri}}{M^4_i} \right]\delta_{ik}+B_{ik} \notag \\
-\frac{\partial \Delta_{Ii}}{\partial V_{Ik}} &= \left[\frac{-P_{Ci}}{M^2_i} + 2V_{Ii}\frac{P_{Ci}V_{Ii} - Q_{Ci}V_{Ri}}{M^4_i}\right]\delta_{ik}+G_{ik}
+\frac{\partial \Delta I_{Ri}}{\partial V_{Rk}} &= \left[\frac{-P_{Ci}}{M^2_i} + 2V_{Ri}\frac{P_{Ci}V_{Ri} + Q_{Ci}V_{Ii}}{M^4_i}\right]\delta_{ik}+G_{ik} \notag \\
+\frac{\partial \Delta I_{Ri}}{\partial V_{Ik}} &= \left[\frac{-Q_{Ci}}{M^2_i} + 2V_{Ii}\frac{P_{Ci}V_{Ri} + Q_{Ci}V_{Ii}}{M^4_i}\right]\delta_{ik}-B_{ik} \notag \\
+\frac{\partial \Delta I_{Ii}}{\partial V_{Rk}} &= \left[\frac{Q_{Ci}}{M^2_i} + 2V_{Ri}\frac{P_{Ci}V_{Ii} - Q_{Ci}V_{Ri}}{M^4_i} \right]\delta_{ik}+B_{ik} \notag \\
+\frac{\partial \Delta I_{Ii}}{\partial V_{Ik}} &= \left[\frac{-P_{Ci}}{M^2_i} + 2V_{Ii}\frac{P_{Ci}V_{Ii} - Q_{Ci}V_{Ri}}{M^4_i}\right]\delta_{ik}+G_{ik}
 \end{align}
 Note that this expression splits into a $V$ dependent part that needs to be recalculated at each iteration and a constant part that doesn't depend on $V$.
+
 \subsection{PV Busses}
-For PV busses, the unknowns are 
+For PV busses, the unknowns are $Q$ and the voltage angle. Since we know $M$ and, essentially, the sign of $V_R$, we can therefore treat $V_I$ as a proxy for the voltage angle. 
 
 \section{General branch admittances}
 For a simple line, $I_{ik} = y_{ik}V_{ik}$ defines both the current flowing from $i$ into the line and the current flowing from the line to $k$. However, for more complex cases, like transformers (which internally can be represented as equivalent two port networks), the current in is not necessarily the current out. We interpret $I_{ik}$ to mean the current injected from the link $ik$ to the node $k$, and $I_{ki}$ to mean the current injected from the link $ki$ to the node $i$.

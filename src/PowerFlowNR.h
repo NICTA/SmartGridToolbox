@@ -118,6 +118,7 @@ namespace SmartGridToolbox
          /// @{
          int nSL_;                     ///< Number of slack nodes.
          int nPQ_;                     ///< Number of PQ nodes.
+         int nPQPV_;                   ///< nPQ_ + nPV_.
          int nNode_;                   ///< Total number of nodes.
          int nVar_;                    ///< Total number of variables.
          /// @}

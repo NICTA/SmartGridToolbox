@@ -77,7 +77,7 @@ namespace SmartGridToolbox
          void addBus(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
                      const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S);
 
-         const BusMap & busses()
+         const BusMap & busses() const
          {
             return busses_;
          }
@@ -85,7 +85,7 @@ namespace SmartGridToolbox
          void addBranch(const std::string & idBus0, const std::string & idBus1, Phases phases0, Phases phases1,
                         const UblasMatrix<Complex> & Y);
 
-         const BranchVec & branches()
+         const BranchVec & branches() const
          {
             return branches_;
          }
@@ -96,10 +96,36 @@ namespace SmartGridToolbox
          bool printProblem();
 
       private:
-         void initx();
-         void updateNodeV();
-         void updatef();
-         void updateJ();
+
+         unsigned int nPQPV() const {return nPQ_ + nPV_;}
+         unsigned int nNode() const {return nPQ_ + nPV_ + nSL_;}
+         unsigned int nVar() const {return 2 * (nPQ_ + nPV_);}
+
+         UblasRange rPQ() const {return {0, nPQ_};}
+         UblasRange rPV() const {return {nPQ_, nPQ_ + nPV_};}
+         UblasRange rSL() const {return {nPQ_ + nPV_, nPQ_ + nPV_ + nSL_};}
+
+         UblasSlice slPQi() const {return {0, 2, nPQ_};}                ///< f_i, or V_i
+         UblasSlice slPQr() const {return {1, 2, nPQ_};}                ///< f_r, or V_r
+
+         UblasSlice slPVi() const {return {nPQ_, 2, nPV_};}             ///< f_i, V_i
+         UblasSlice slPVr() const {return {nPQ_ + 1, 2, nPV_};}         ///< f_r, or Q
+
+         UblasSlice slSLi() const {return {nPQ_ + nPV_, 2, nSL_};}      ///< V_i
+         UblasSlice slSLr() const {return {nPQ_ + nPV_ + 1, 2, nSL_};}  ///< V_r
+
+         UblasSlice slPQPVi() const {return {0, 2, nPQ_ + nPV_};}       ///< f_i
+         UblasSlice slPQPVr() const {return {1, 2, nPQ_ + nPV_};}       ///< f_r
+
+         UblasSlice slAlli() const {return {0, 2, nPQ_ + nPV_ + nSL_};} ///< f_i
+         UblasSlice slAllr() const {return {1, 2, nPQ_ + nPV_ + nSL_};} ///< f_r
+
+         void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;
+         void initJConst(UblasCMatrix<double> & JConst) const;
+
+         void updatef(UblasVector<double> & f,
+                           const UblasVector<double> & Vr, const UblasVector<double> & Vi) const
+         void updateJ(UblasCMatrix<double> & J, const UblasVector<double> x) const;
 
       private:
          /// @name UblasVector of busses and branches.
@@ -109,28 +135,13 @@ namespace SmartGridToolbox
 
          /// @name Array bounds.
          /// @{
-         int nPQ_;                     ///< Number of PQ nodes.
-         int nPV_;                     ///< Number of PV nodes.
-         int nSL_;                     ///< Number of slack nodes.
-         int nPQPV_;                   ///< NPQ_ + NPV_.
-         int nNode_;                   ///< Total number of nodes.
-         int nVar_;                    ///< Total number of variables.
+         unsigned int nPQ_;            ///< Number of PQ nodes.
+         unsigned int nPV_;            ///< Number of PV nodes.
+         unsigned int nSL_;            ///< Number of slack nodes.
          /// @}
 
          // The following are NOT owned by me - they are owned by their parent Busses.
          NodeVec nodes_;
-         NodeVec PQNodes_;
-         NodeVec PVNodes_;
-         NodeVec SLNodes_;
-         /// @}
-
-         /// @name ublas ranges into vectors.
-         /// @{
-         UblasRange rPQ_;              ///< Range of PQ nodes in list of all nodes.
-         UblasRange rPV_;              ///< Range of PV nodes in list of all nodes.
-         UblasRange rPQPV_;            ///< Range of PQ and PV nodes in list of all nodes.
-         UblasRange rSL_;              ///< Range of SL nodes in list of all nodes.
-         UblasRange rAll_;             ///< Range of all nodes in list of all nodes.
          /// @}
 
          /// @name Constant / supplied quantities.
@@ -144,28 +155,14 @@ namespace SmartGridToolbox
          UblasVector<double> VSLr_;    ///< Slack voltages real part - one per phase.
          UblasVector<double> VSLi_;    ///< Slack voltages imag part - one per phase.
 
-         UblasVector<double> IcrPQPV_;  ///< Constant real current injection of PQ and PV nodes.
-         UblasVector<double> IciPQPV_;  ///< Constant imag current injection of PQ and PV nodes.
+         UblasVector<double> IcrPQPV_; ///< Constant real current injection of PQ and PV nodes.
+         UblasVector<double> IciPQPV_; ///< Constant imag current injection of PQ and PV nodes.
          /// @}
 
          /// @name Y matrix.
          /// @{
-         UblasCMatrix<Complex> Y_;     ///< Complex Y matrix.
          UblasCMatrix<double> G_;      ///< Real part of Y matrix.
          UblasCMatrix<double> B_;      ///< Imag part of Y matrix.
-         /// @}
-
-         /// @name NR formulation. 
-         /// @{
-         UblasSlice slVrPQ_;           ///< Slice indexing real voltage of PQ nodes.
-         UblasSlice slViPQ_;           ///< Slice indexing imag voltage of PQ nodes.
-         UblasSlice slQPV_;            ///< Slice indexing reactive power of PV nodes.
-         UblasSlice slViPV_;           ///< Slice indexing imag voltage of PV nodes.
-
-         UblasVector<double> x_;       ///< Vector of unknowns / LHS.
-         UblasVector<double> f_;       ///< Current mismatch function.
-         UblasCMatrix<double> J_;      ///< Jacobian of current mismatch f_ wrt. x_.
-         UblasCMatrix<double> JConst_; ///< The part of J that doesn't update at each iteration.
          /// @}
    };
 }
