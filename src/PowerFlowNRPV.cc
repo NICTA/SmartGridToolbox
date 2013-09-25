@@ -118,6 +118,7 @@ namespace SmartGridToolbox
             vec->push_back(node);
          }
       }
+
       // Determine sizes:
       nPQ_ = PQNodes_.size();
       nPV_ = PVNodes_.size();
@@ -127,11 +128,20 @@ namespace SmartGridToolbox
       nNode_ = nSL_ + nPQ_ + nPV_;
       nVar_ = 2 * (nPQ_ + nPV_);
 
+      // Insert nodes into ordered list of all nodes:
       nodes_ = NodeVec();
       nodes_.reserve(nNode_);
       nodes_.insert(nodes_.end(), PQNodes_.begin(), PQNodes_.end());
       nodes_.insert(nodes_.end(), PVNodes_.begin(), PVNodes_.end());
       nodes_.insert(nodes_.end(), SLNodes_.begin(), SLNodes_.end());
+
+      // Set array ranges:
+      // Note Range goes from begin (included) to end (excluded).
+      rPQ_ = UblasRange(0, nPQ_);
+      rPV_ = UblasRange(nPQ_, nPQ_ + nPV_);
+      rSL_ = UblasRange(nPQ_ + nPV_, nPQ_ + nPV_ + nSL_);
+      rPQPV_ = UblasRange(0, nPQ_ + nPV_);
+      rAll_ = UblasRange(0, nNode_);
 
       // Index all nodes:
       for (int i = 0; i < nNode_; ++i)
@@ -139,42 +149,57 @@ namespace SmartGridToolbox
          nodes_[i]->idx_ = i;
       }
 
-      // Set array ranges:
-      // Note Range goes from begin (included) to end (excluded).
-      rPQ_ = UblasRange(0, nPQ_);
-      rPV_ = UblasRange(nPQ_, nPQ_ + nPV_);
-      rSL_ = UblasRange(nPQ_ + nPV_, nPQ_ + nPV_ + nSL_);
-      rAll_ = UblasRange(0, nNode_);
-      slx0_ = UblasSlice(0, 2, nPQPV_);
-      slx1_ = UblasSlice(1, 2, nPQPV_);
-
-      // Size all arrays:
+      // Size and set up arrays of constant input quantities:
       PPQ_.resize(nPQ_, false);
       QPQ_.resize(nPQ_, false);
+      for (int i = 0; i < nPQ_; ++i)
+      {
+         PPQ_(i) = PQNodes_[i]->S_.real();
+         QPQ_(i) = PQNodes_[i]->S_.imag();
+      }
 
       PPV_.resize(nPV_, false);
       VPV_.resize(nPV_, false);
+      for (int i = 0; i < nPV_; ++i)
+      {
+         PPV_(i) = PVNodes_[i]->S_.real();
+         VPV_(i) = abs(PVNodes_[i]->V_);
+      }
 
       VSLr_.resize(nSL_, false);
       VSLi_.resize(nSL_, false);
+      for (int i = 0; i < nSL_; ++i)
+      {
+         VSLr_(i) = SLNodes_[i]->V_.real();
+         VSLi_(i) = SLNodes_[i]->V_.imag();
+      }
 
-      IrPQPV_.resize(nPQPV_, false);
-      IiPQPV_.resize(nPQPV_, false);
+      IcrPQPV_.resize(nPQPV_, false);
+      IciPQPV_.resize(nPQPV_, false);
+      for (int i = 0; i < nPQPV_; ++i)
+      {
+         IcrPQPV_(i) = nodes_[i]->I_.real();
+         IciPQPV_(i) = nodes_[i]->I_.imag();
+      }
 
-      VrPQ_.resize(nPQ_, false);
-      ViPQ_.resize(nPQ_, false);
-
-      ViPV_.resize(nPV_, false);
-      QPV_.resize(nPV_, false);
-
+      // Size nodal admittance matrix:
       Y_.resize(nNode_, nNode_, false);
       G_.resize(nNode_, nNode_, false);
       B_.resize(nNode_, nNode_, false);
 
+      // Size array to hold solution...
       x_.resize(nVar_, false);
+      // ... current mismatch...
       f_.resize(nVar_, false);
+      // ... and Jacobian.
       J_.resize(nVar_, nVar_, false);
       JConst_.resize(nVar_, nVar_, false);
+
+      // Make slices for various solution quantities.
+      slVrPQ_ = UblasSlice(0, 2, nPQ_);
+      slViPQ_ = UblasSlice(1, 2, nPQ_);
+      slQPV_ = UblasSlice(2 * nPQ_, 2, nPV_);
+      slViPV_ = UblasSlice(2 * nPQ_, 2, nPV_);
 
       // Build the bus admittance matrix:
       Y_.clear();
@@ -236,23 +261,6 @@ namespace SmartGridToolbox
          }
       }
 
-      for (int i = 0; i < nPQ_; ++i)
-      {
-         // Set the PPQ_ and QPQ_ arrays of real and reactive power on each terminal:
-         PPQ_(i) = PQNodes_[i]->S_.real();
-         QPQ_(i) = PQNodes_[i]->S_.imag();
-
-         // Set the constant current arrays of real and reactive power on each terminal:
-         IrPQ_(i) = PQNodes_[i]->I_.real();
-         IiPQ_(i) = PQNodes_[i]->I_.imag();
-      }
-
-      for (int i = 0; i < nSL_; ++i)
-      {
-         VSLr_(i) = SLNodes_[i]->V_.real();
-         VSLi_(i) = SLNodes_[i]->V_.imag();
-      }
-
       // And set G_ and B_:
       G_ = real(Y_);
       B_ = imag(Y_);
@@ -270,25 +278,27 @@ namespace SmartGridToolbox
 
    void PowerFlowNR::initx()
    {
-      for (int i = 0; i < nPQ_; ++i)
+      UblasVectorRange<double> VrPQ{x_, slVrPQ_};
+      UblasVectorRange<double> ViPQ{x_, slViPQ_};
+      UblasVectorRange<double> QPV{x_, slQPV_};
+      UblasVectorRange<double> ViPV{x_, slViPV_};
+
+      for (int i = 0; i < 2 * nPQ_; i += 2)
       {
          const NodeNR & node = *PQNodes_[i];
          x_(i) = node.V_.real();
-         x_(i + nPQ_) = node.V_.imag();
+         x_(i + 1) = node.V_.imag();
+      }
+
+      for (int i = 0; i < 2 * nPV_; i += 2)
+      {
+         const NodeNR & node = *PVNodes_[i];
+         x_(i) = node.V_.real();
+         x_(i + 1) = node.V_.imag();
       }
    }
 
-   void PowerFlowNR::updateNodeV()
-   {
-      // Get voltages on all busses.
-      // Done like this with a copy because eventually we'll include PV busses too.
-      UblasVectorRange<double>(Vr_, rPQ_) = UblasVectorRange<double>(x_, rx0_);
-      UblasVectorRange<double>(Vi_, rPQ_) = UblasVectorRange<double>(x_, rx1_);
-      UblasVectorRange<double>(Vr_, rSL_) = VSLr_;
-      UblasVectorRange<double>(Vi_, rSL_) = VSLi_;
-   }
-
-   void PowerFlowNR::updateF()
+   void PowerFlowNR::updatef()
    {
       UblasVectorRange<double> x0{x_, rx0_};
       UblasVectorRange<double> x1{x_, rx1_};
@@ -299,9 +309,9 @@ namespace SmartGridToolbox
       UblasCMatrixRange<double> BRng{B_, rPQ_, rAll_};
 
       UblasVector<double> dr = element_div((-element_prod(PPQ_, x0) - element_prod(QPQ_, x1)), M2)
-                               + prod(GRng, Vr_) - prod(BRng, Vi_) - IrPQ_;
+                             + prod(GRng, Vr_) - prod(BRng, Vi_) - IcrPQ_;
       UblasVector<double> di = element_div((-element_prod(PPQ_, x1) + element_prod(QPQ_, x0)), M2)
-                               + prod(GRng, Vi_) + prod(BRng, Vr_) - IiPQ_;
+                             + prod(GRng, Vi_) + prod(BRng, Vr_) - IciPQ_;
 
       UblasVectorRange<double>(f_, rx0_) = dr;
       UblasVectorRange<double>(f_, rx1_) = di;
@@ -339,7 +349,7 @@ namespace SmartGridToolbox
       {
          SGT_DEBUG(debug() << "\tIteration = " << i << std::endl);
          updateNodeV();
-         updateF();
+         updatef();
          UblasVector<double> f2 = element_prod(f_, f_);
          double err = *std::max_element(f2.begin(), f2.end());
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);

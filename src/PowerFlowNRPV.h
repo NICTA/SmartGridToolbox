@@ -24,7 +24,7 @@ namespace SmartGridToolbox
                const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S);
          ~BusNR();
 
-         std::string id_;                          ///< Externally relevant id. 
+         std::string id_;                          ///< Externally relevant id.
          BusType type_;                            ///< Bus type.
          Phases phases_;                           ///< Bus phases.
          UblasVector<Complex> V_;                  ///< Voltage, one per phase.
@@ -39,7 +39,7 @@ namespace SmartGridToolbox
    class BranchNR
    {
       public:
-         BranchNR(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1, 
+         BranchNR(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1,
                   const UblasMatrix<Complex> & Y);
 
          int nPhase_;                  ///< Number of phases.
@@ -98,7 +98,7 @@ namespace SmartGridToolbox
       private:
          void initx();
          void updateNodeV();
-         void updateF();
+         void updatef();
          void updateJ();
 
       private:
@@ -106,14 +106,6 @@ namespace SmartGridToolbox
          /// @{
          BusMap busses_;
          BranchVec branches_;
-
-         // The following are NOT owned by me - they are owned by their parent Busses.
-         NodeVec nodes_;
-         NodeVec PQNodes_;
-         NodeVec PVNodes_;
-         NodeVec SLNodes_;
-
-         /// @}
 
          /// @name Array bounds.
          /// @{
@@ -125,18 +117,24 @@ namespace SmartGridToolbox
          int nVar_;                    ///< Total number of variables.
          /// @}
 
-         /// @name ublas ranges and slices into vectors/matrices.
+         // The following are NOT owned by me - they are owned by their parent Busses.
+         NodeVec nodes_;
+         NodeVec PQNodes_;
+         NodeVec PVNodes_;
+         NodeVec SLNodes_;
+         /// @}
+
+         /// @name ublas ranges into vectors.
          /// @{
          UblasRange rPQ_;              ///< Range of PQ nodes in list of all nodes.
          UblasRange rPV_;              ///< Range of PV nodes in list of all nodes.
          UblasRange rPQPV_;            ///< Range of PQ and PV nodes in list of all nodes.
          UblasRange rSL_;              ///< Range of SL nodes in list of all nodes.
          UblasRange rAll_;             ///< Range of all nodes in list of all nodes.
-         UblasSlice slx0_;             ///< Slice indexing variable 0 for each bus. 
-         UblasSlice slx1_;             ///< Slice indexing variable 1 for each bus. 
          /// @}
 
-         // Constant / supplied quantities:
+         /// @name Constant / supplied quantities.
+         /// @{
          UblasVector<double> PPQ_;     ///< Constant real power injection of PQ nodes.
          UblasVector<double> QPQ_;     ///< Constant reactive power injection of PQ nodes.
 
@@ -146,26 +144,29 @@ namespace SmartGridToolbox
          UblasVector<double> VSLr_;    ///< Slack voltages real part - one per phase.
          UblasVector<double> VSLi_;    ///< Slack voltages imag part - one per phase.
 
-         UblasVector<double> IrPQPV_;  ///< Constant real current injection of PQ and PV nodes.
-         UblasVector<double> IiPQPV_;  ///< Constant imag current injection of PQ and PV nodes.
+         UblasVector<double> IcrPQPV_;  ///< Constant real current injection of PQ and PV nodes.
+         UblasVector<double> IciPQPV_;  ///< Constant imag current injection of PQ and PV nodes.
+         /// @}
 
-         // Vectors of unknowns:
-         UblasVector<double> VrPQ_;    ///< Unknown real voltage of PQ nodes.   
-         UblasVector<double> ViPQ_;    ///< Unknown imag voltage of PQ nodes.   
-
-         UblasVector<double> ViPV_;    ///< Unknown imag voltage of PV nodes.   
-         UblasVector<double> QPV_;     ///< Unknown reactive power of PV nodes.   
-
-         // Y matrix:
+         /// @name Y matrix.
+         /// @{
          UblasCMatrix<Complex> Y_;     ///< Complex Y matrix.
          UblasCMatrix<double> G_;      ///< Real part of Y matrix.
          UblasCMatrix<double> B_;      ///< Imag part of Y matrix.
+         /// @}
 
-         // Mathematical problem:
+         /// @name NR formulation. 
+         /// @{
+         UblasSlice slVrPQ_;           ///< Slice indexing real voltage of PQ nodes.
+         UblasSlice slViPQ_;           ///< Slice indexing imag voltage of PQ nodes.
+         UblasSlice slQPV_;            ///< Slice indexing reactive power of PV nodes.
+         UblasSlice slViPV_;           ///< Slice indexing imag voltage of PV nodes.
+
          UblasVector<double> x_;       ///< Vector of unknowns / LHS.
-         UblasVector<double> f_;       ///< Function.
-         UblasCMatrix<double> J_;      ///< Jacobian matrix.
+         UblasVector<double> f_;       ///< Current mismatch function.
+         UblasCMatrix<double> J_;      ///< Jacobian of current mismatch f_ wrt. x_.
          UblasCMatrix<double> JConst_; ///< The part of J that doesn't update at each iteration.
+         /// @}
    };
 }
 
