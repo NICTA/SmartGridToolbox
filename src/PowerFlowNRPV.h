@@ -123,8 +123,9 @@ namespace SmartGridToolbox
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;
          void initJConst(UblasCMatrix<double> & JConst) const;
 
-         void updatef(UblasVector<double> & f, const UblasVector<double> & Vr, const UblasVector<double> & Vi) const
-         void updateJ(UblasCMatrix<double> & J, const UblasVector<double> x) const;
+         void updatef(UblasVector<double> & f, const UblasVector<double> & Vr, const UblasVector<double> & Vi) const;
+         void updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JConst,
+                      const UblasVector<double> Vr, const UblasVector<double> Vi) const;
 
       private:
          /// @name UblasVector of busses and branches.
@@ -153,15 +154,22 @@ namespace SmartGridToolbox
 
          UblasVector<double> VSLr_;    ///< Slack voltages real part - one per phase.
          UblasVector<double> VSLi_;    ///< Slack voltages imag part - one per phase.
-
-         UblasVector<double> IcrPQPV_; ///< Constant real current injection of PQ and PV nodes.
-         UblasVector<double> IciPQPV_; ///< Constant imag current injection of PQ and PV nodes.
          /// @}
 
          /// @name Y matrix.
          /// @{
          UblasCMatrix<double> G_;      ///< Real part of Y matrix.
          UblasCMatrix<double> B_;      ///< Imag part of Y matrix.
+         /// @}
+
+         /// @name Load model
+         /// @{
+         UblasVector<double> P0_;      ///< Const power component of load/gen (power).
+         UblasVector<double> Q0_;      ///< Const power component of load/gen (power).
+         UblasVector<double> P1_;      ///< Const current component of load/gen (current).
+         UblasVector<double> Q1_;      ///< Const current component of load/gen (current).
+         UblasVector<double> P2_;      ///< Const impedance component of load (current).
+         UblasVector<double> Q2_;      ///< Const impedance component of load (current).
          /// @}
    };
 }

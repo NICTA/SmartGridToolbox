@@ -169,16 +169,26 @@ namespace SmartGridToolbox
          VSLi_(i) = SLNodes[i]->V_.imag();
       }
 
-      IcrPQPV_.resize(nPQPV(), false);
-      IciPQPV_.resize(nPQPV(), false);
-      for (int i = 0; i < nPQPV(); ++i)
-      {
-         IcrPQPV_(i) = nodes_[i]->I_.real();
-         IciPQPV_(i) = nodes_[i]->I_.imag();
-      }
-
       G_.resize(nNode(), nNode(), false);
       B_.resize(nNode(), nNode(), false);
+
+      P0_.resize(nNode());
+      Q0_.resize(nNode());
+      P1_.resize(nNode());
+      Q1_.resize(nNode());
+      P2_.resize(nNode());
+      Q2_.resize(nNode());
+
+      // Set up the load model:
+      for (int i = 0; i < nNode(); ++i)
+      {
+         P0_[i] = nodes_[i]->S_.real();
+         Q0_[i] = nodes_[i]->S_.imag();
+         P1_[i] = nodes_[i]->I_.real();
+         Q1_[i] = nodes_[i]->I_.imag();
+         P2_[i] = nodes_[i]->Y_.real();
+         Q2_[i] = nodes_[i]->Y_.imag();
+      }
 
       // Build the bus admittance matrix:
       UblasCMatrix<Complex> Y(nNode(), nNode()); // Complex Y matrix.
@@ -231,16 +241,6 @@ namespace SmartGridToolbox
          }
       } // Loop over branches.
 
-      // Add bus shunt admittances.
-      for (auto pair : busses_)
-      {
-         for (const NodeNR * const node : pair.second->nodes_)
-         {
-            int nodeIdx = node->idx_;
-            Y(nodeIdx, nodeIdx) += node->Y_;
-         }
-      }
-
       // And set G_ and B_:
       G_ = real(Y);
       B_ = imag(Y);
@@ -254,7 +254,7 @@ namespace SmartGridToolbox
    {
       for (int i = 0; i < nNode(); ++i)
       {
-         const NodeNR & node = *nodes[i];
+         const NodeNR & node = *nodes_[i];
          Vr(i) = node.V_.real();
          Vi(i) = node.V_.imag();
       }
@@ -263,12 +263,11 @@ namespace SmartGridToolbox
    /// Set the part of J that doesn't update at each iteration.
    void PowerFlowNR::initJConst(UblasCMatrix<double> & JConst) const
    {
-      project(JConst, selVrPQ(), selVrPQ()) = project(G_, selPQ(), selPQ());
-      project(JConst, selVrPQ(), selViPQ()) = -project(B_, selPQ(), selPQ());
-      project(JConst, selViPQ(), selVrPQ()) = project(B_, selPQ(), selPQ());
-      project(JConst, selViPQ(), selViPQ()) = project(G_, selPQ(), selPQ());
-
-      // TODO: non PQ parts.
+      project(JConst, selPQi(), selPQi()) = project(B_, selPQ(), selPQ());
+      project(JConst, selPQi(), selPQr()) = project(G_, selPQ(), selPQ());
+      project(JConst, selPQr(), selPQi()) = project(G_, selPQ(), selPQ());
+      project(JConst, selPQr(), selPQr()) = -project(B_, selPQ(), selPQ());
+      // TODO: PV parts.
    }
 
    void PowerFlowNR::updatef(UblasVector<double> & f,
@@ -287,8 +286,8 @@ namespace SmartGridToolbox
       UblasVector<double> M2PQPV = element_prod(VrPQPV, VrPQPV) + element_prod(ViPQPV, ViPQPV);
       const auto M2PQ = project(M2PQPV, selPQ());
 
-      UblasVector<double> Icalci = prod(GRng, Vi_) + prod(BRng, Vr_) - IciPQPV_;
-      UblasVector<double> Icalcr = prod(GRng, Vr_) - prod(BRng, Vi_) - IcrPQPV_;
+      UblasVector<double> Icalci = prod(GRng, Vi) + prod(BRng, Vr);
+      UblasVector<double> Icalcr = prod(GRng, Vr) - prod(BRng, Vi);
 
       UblasVector<double> Pcalc = element_prod(VrPQPV, Icalcr) + element_prod(ViPQPV, Icalci);
       UblasVector<double> Qcalc = element_prod(ViPQPV, Icalcr) - element_prod(VrPQPV, Icalci);
@@ -296,31 +295,46 @@ namespace SmartGridToolbox
       UblasVector<double> DeltaPPQ = PPQ_ - project(Pcalc, selPQ());
       UblasVector<double> DeltaQPQ = QPQ_ - project(Qcalc, selPQ());
 
-      project(f, selPQr) = element_div(element_prod(VrPQ, DeltaPPQ) + element_prod(ViPQ, DeltaQPQ), M2PQ);
-      project(f, selPQi) = element_div(element_prod(ViPQ, DeltaPPQ) - element_prod(VrPQ, DeltaQPQ), M2PQ);
+      project(f, selPQr()) = element_div(element_prod(VrPQ, DeltaPPQ) + element_prod(ViPQ, DeltaQPQ), M2PQ);
+      project(f, selPQi()) = element_div(element_prod(ViPQ, DeltaPPQ) - element_prod(VrPQ, DeltaQPQ), M2PQ);
 
-      project(f, selPVr) = element_div(element_prod(VrPV, DeltaPPQ), M2PQ);
-      project(f, selPVi) = element_div(element_prod(ViPV, DeltaPPQ), M2PQ);
+      project(f, selPVr()) = element_div(element_prod(VrPV, DeltaPPQ), M2PQ);
+      project(f, selPVi()) = element_div(element_prod(ViPV, DeltaPPQ), M2PQ);
    }
 
-   void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasVector<double> x) const
+   void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JConst,
+                             const UblasVector<double> Vr, const UblasVector<double> Vi) const
    {
-      UblasVectorRange<double> x0{x_, rx0_};
-      UblasVectorRange<double> x1{x_, rx1_};
-
-      UblasVector<double> M2PQ = element_prod(x0, x0) + element_prod(x1, x1);
-      UblasVector<double> M4PQ = element_prod(M2PQ, M2PQ);
-
-      for (int i = 0; i < nPQ_; ++i)
+      for (int i = 0; i < nPQPV(); ++i)
       {
-         J_(i, i) = JConst(i, i) +
-            (-PPQ_(i) / M2PQ(i) + 2 * Vr_(i) * (PPQ_(i) * Vr_(i) + QPQ_(i) * Vi_(i)) / M4PQ(i));
-         J_(i, i + nPQ_) = JConst(i, i + nPQ_) +
-            (-QPQ_(i) / M2PQ(i) + 2 * Vi_(i) * (PPQ_(i) * Vr_(i) + QPQ_(i) * Vi_(i)) / M4PQ(i));
-         J_(i + nPQ_, i) = JConst(i + nPQ_, i) +
-            ( QPQ_(i) / M2PQ(i) + 2 * Vr_(i) * (PPQ_(i) * Vi_(i) - QPQ_(i) * Vr_(i)) / M4PQ(i));
-         J_(i + nPQ_, i + nPQ_) = JConst(i + nPQ_, i + nPQ_) +
-            (-PPQ_(i) / M2PQ(i) + 2 * Vi_(i) * (PPQ_(i) * Vi_(i) - QPQ_(i) * Vr_(i)) / M4PQ(i));
+         double Vr2 = Vr(i) * Vr(i);
+         double Vi2 = Vi(i) * Vi(i);
+         double VrVi = Vr(i) * Vi(i);
+         double M2 = Vr2 + Vi2;
+         double M4 = M2 * M2;
+         double M3 = sqrt(M4 * M2);
+
+         J(2*i  , 2*i  ) = JConst(2*i  , 2*i  )
+                         - (Q0_(i) * (Vr2 - Vi2) - 2 * P0_(i) * VrVi) / M4
+                         - (P1_(i) * VrVi + Q1_(i) * Vi2) / M3
+                         - Q2_(i);
+
+         J(2*i  , 2*i+1) = JConst(2*i  , 2*i+1)
+                         - (P0_(i) * (Vr2 - Vi2) + 2 * Q0_(i) * VrVi) / M4
+                         + (Q1_(i) * VrVi + P1_(i) * Vr2) / M3
+                         + P2_(i);
+
+         J(2*i+1, 2*i  ) = JConst(2*i+1, 2*i  )
+                         - (P0_(i) * (Vi2 - Vr2) - 2 * Q0_(i) * VrVi) / M4
+                         - (Q1_(i) * VrVi - P1_(i) * Vi2) / M3
+                         + P2_(i);
+
+         J(2*i+1, 2*i+1) = JConst(2*i+1, 2*i+1)
+                         - (Q0_(i) * (Vr2 - Vi2) - 2 * P0_(i) * VrVi) / M4
+                         - (P1_(i) * VrVi - Q1_(i) * Vr2) / M3
+                         + Q2_(i);
+
+         // TODO: PV nodes.
       }
    }
 
@@ -348,7 +362,7 @@ namespace SmartGridToolbox
       {
          SGT_DEBUG(debug() << "\tIteration = " << i << std::endl);
          updatef(f, x);
-         UblasVector<double> f2 = element_prod(f_, f_);
+         UblasVector<double> f2 = element_prod(f, f);
          double err = *std::max_element(f2.begin(), f2.end());
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
          if (err <= tol)
@@ -369,9 +383,9 @@ namespace SmartGridToolbox
             debug() << "\t\t" << std::setw(8) << row(J_, i) << std::endl; 
             }
          );
-         SGT_DEBUG(debug() << "\tf_ = " << std::setw(8) << f_ << std::endl);
+         SGT_DEBUG(debug() << "\tf = " << std::setw(8) << f << std::endl);
 
-         bool ok = KLUSolve(J_, f_, rhs);
+         bool ok = KLUSolve(J_, f, rhs);
          SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", rhs = " << std::setw(8) << rhs << std::endl);
          if (!ok)
          {
