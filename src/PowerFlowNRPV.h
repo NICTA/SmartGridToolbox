@@ -101,30 +101,29 @@ namespace SmartGridToolbox
          unsigned int nNode() const {return nPQ_ + nPV_ + nSL_;}
          unsigned int nVar() const {return 2 * (nPQ_ + nPV_);}
 
-         UblasRange rPQ() const {return {0, nPQ_};}
-         UblasRange rPV() const {return {nPQ_, nPQ_ + nPV_};}
-         UblasRange rSL() const {return {nPQ_ + nPV_, nPQ_ + nPV_ + nSL_};}
+         UblasRange selPQ() const {return {0, nPQ_};}
+         UblasRange selPV() const {return {nPQ_, nPQ_ + nPV_};}
+         UblasRange selSL() const {return {nPQ_ + nPV_, nPQ_ + nPV_ + nSL_};}
 
-         UblasSlice slPQi() const {return {0, 2, nPQ_};}                ///< f_i, or V_i
-         UblasSlice slPQr() const {return {1, 2, nPQ_};}                ///< f_r, or V_r
+         UblasSlice selPQi() const {return {0, 2, nPQ_};}                ///< f_i, or V_i
+         UblasSlice selPQr() const {return {1, 2, nPQ_};}                ///< f_r, or V_r
 
-         UblasSlice slPVi() const {return {nPQ_, 2, nPV_};}             ///< f_i, V_i
-         UblasSlice slPVr() const {return {nPQ_ + 1, 2, nPV_};}         ///< f_r, or Q
+         UblasSlice selPVi() const {return {nPQ_, 2, nPV_};}             ///< f_i, V_i
+         UblasSlice selPVr() const {return {nPQ_ + 1, 2, nPV_};}         ///< f_r, or Q
 
-         UblasSlice slSLi() const {return {nPQ_ + nPV_, 2, nSL_};}      ///< V_i
-         UblasSlice slSLr() const {return {nPQ_ + nPV_ + 1, 2, nSL_};}  ///< V_r
+         UblasSlice selSLi() const {return {nPQ_ + nPV_, 2, nSL_};}      ///< V_i
+         UblasSlice selSLr() const {return {nPQ_ + nPV_ + 1, 2, nSL_};}  ///< V_r
 
-         UblasSlice slPQPVi() const {return {0, 2, nPQ_ + nPV_};}       ///< f_i
-         UblasSlice slPQPVr() const {return {1, 2, nPQ_ + nPV_};}       ///< f_r
+         UblasSlice selPQPVi() const {return {0, 2, nPQ_ + nPV_};}       ///< f_i
+         UblasSlice selPQPVr() const {return {1, 2, nPQ_ + nPV_};}       ///< f_r
 
-         UblasSlice slAlli() const {return {0, 2, nPQ_ + nPV_ + nSL_};} ///< f_i
-         UblasSlice slAllr() const {return {1, 2, nPQ_ + nPV_ + nSL_};} ///< f_r
+         UblasSlice selAlli() const {return {0, 2, nPQ_ + nPV_ + nSL_};} ///< f_i
+         UblasSlice selAllr() const {return {1, 2, nPQ_ + nPV_ + nSL_};} ///< f_r
 
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;
          void initJConst(UblasCMatrix<double> & JConst) const;
 
-         void updatef(UblasVector<double> & f,
-                           const UblasVector<double> & Vr, const UblasVector<double> & Vi) const
+         void updatef(UblasVector<double> & f, const UblasVector<double> & Vr, const UblasVector<double> & Vi) const
          void updateJ(UblasCMatrix<double> & J, const UblasVector<double> x) const;
 
       private:

@@ -6,11 +6,11 @@
 
 namespace SmartGridToolbox
 {
-   UblasRange rPQ();
-   UblasRange rPV();
-   UblasRange rSL();
-   UblasRange rPQPV();
-   UblasRange rAll();
+   UblasRange selPQ();
+   UblasRange selPV();
+   UblasRange selSL();
+   UblasRange selPQPV();
+   UblasRange selAll();
 
    BusNR::BusNR(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
                 const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S) :
@@ -263,23 +263,29 @@ namespace SmartGridToolbox
    /// Set the part of J that doesn't update at each iteration.
    void PowerFlowNR::initJConst(UblasCMatrix<double> & JConst) const
    {
-      project(JConst, slVrPQ(), slVrPQ()) = project(G_, rPQ(), rPQ());
-      project(JConst, slVrPQ(), slViPQ()) = -project(B_, rPQ(), rPQ());
-      project(JConst, slViPQ(), slVrPQ()) = project(B_, rPQ(), rPQ());
-      project(JConst, slViPQ(), slViPQ()) = project(G_, rPQ(), rPQ());
+      project(JConst, selVrPQ(), selVrPQ()) = project(G_, selPQ(), selPQ());
+      project(JConst, selVrPQ(), selViPQ()) = -project(B_, selPQ(), selPQ());
+      project(JConst, selViPQ(), selVrPQ()) = project(B_, selPQ(), selPQ());
+      project(JConst, selViPQ(), selViPQ()) = project(G_, selPQ(), selPQ());
 
       // TODO: non PQ parts.
    }
 
    void PowerFlowNR::updatef(UblasVector<double> & f,
-                                  const UblasVector<double> & Vr, const UblasVector<double> & Vi) const
+                             const UblasVector<double> & Vr, const UblasVector<double> & Vi) const
    {
-      const auto GRng = project(G_, rPQPV(), rAll());
-      const auto BRng = project(B_, rPQPV(), rAll());
+      const auto GRng = project(G_, selPQPV(), selAll());
+      const auto BRng = project(B_, selPQPV(), selAll());
 
-      const auto VrPQPV = project(Vr, rPQPV());
-      const auto ViPQPV = project(Vi, rPQPV());
+      const auto VrPQPV = project(Vr, selPQPV());
+      const auto ViPQPV = project(Vi, selPQPV());
+      const auto VrPQ = project(Vr, selPQ());
+      const auto ViPQ = project(Vi, selPQ());
+      const auto VrPV = project(Vr, selPV());
+      const auto ViPV = project(Vi, selPV());
+
       UblasVector<double> M2PQPV = element_prod(VrPQPV, VrPQPV) + element_prod(ViPQPV, ViPQPV);
+      const auto M2PQ = project(M2PQPV, selPQ());
 
       UblasVector<double> Icalci = prod(GRng, Vi_) + prod(BRng, Vr_) - IciPQPV_;
       UblasVector<double> Icalcr = prod(GRng, Vr_) - prod(BRng, Vi_) - IcrPQPV_;
@@ -287,59 +293,14 @@ namespace SmartGridToolbox
       UblasVector<double> Pcalc = element_prod(VrPQPV, Icalcr) + element_prod(ViPQPV, Icalci);
       UblasVector<double> Qcalc = element_prod(ViPQPV, Icalcr) - element_prod(VrPQPV, Icalci);
 
-      UblasVector<double> DeltaPPQ = PPQ_ - project(Pcalc, rPQ());
-      UblasVector<double> DeltaQPQ = QPQ_ - project(Qcalc, rPQ());
+      UblasVector<double> DeltaPPQ = PPQ_ - project(Pcalc, selPQ());
+      UblasVector<double> DeltaQPQ = QPQ_ - project(Qcalc, selPQ());
 
-      const auto VrPQ = project(Vr, rPQ());
-      const auto ViPQ = project(Vi, rPQ());
-      const auto M2PQ = project(M2PQPV, rPQ());
-      project(f, slPQr) = element_div(element_prod(VrPQ, DeltaPPQ) + element_prod(ViPQ, DeltaQPQ), M2PQ);
-      project(f, slPQi) = element_div(element_prod(ViPQ, DeltaPPQ) - element_prod(VrPQ, DeltaQPQ), M2PQ);
+      project(f, selPQr) = element_div(element_prod(VrPQ, DeltaPPQ) + element_prod(ViPQ, DeltaQPQ), M2PQ);
+      project(f, selPQi) = element_div(element_prod(ViPQ, DeltaPPQ) - element_prod(VrPQ, DeltaQPQ), M2PQ);
 
-      
-
-
-      fi = -Icalci;
-      fr = -Icalcr;
-
-
-      const auto VrPQ = project(x, slVrPQ());
-      const auto ViPQ = project(x, slViPQ());
-      const auto M2PQ = project(M2PQPV, rPQ());
-      project(fi, slViPQ) += element_div(element_prod(PPQ_, VrPQ) + element_prod(QPQ_, ViPQ), M2PQ);
-      project(fr, slVrPQ) += element_div(element_prod(PPQ_, ViPQ) - element_prod(QPQ_, VrPQ), M2PQ);
-
-      project(fi, slViPQ) += element_div(element_prod(PPQ_, VrPQ) + element_prod(QPQ_, ViPQ), M2PQ);
-      project(fr, slVrPQ) += element_div(element_prod(PPQ_, ViPQ) - element_prod(QPQ_, VrPQ), M2PQ);
-
-
-
-
-      project(Vr, rPQ()) = project(x, slVrPQ());
-      project(Vi, rPQ()) = project(x, slViPQ());
-      project(Vr, rPV()) = project(x, slVrPQ());
-      project(Vi, rPQ()) = project(x, slViPQ());
-
-
-      UblasVector<double> Icalcr = -prod(GRng, Vr_) + prod(BRng, Vi_) + IcrPQPV_;
-
-
-      const auto VrPV = 
-
-
-      UblasVector<double> M2PQ = element_prod(VrPQ, VrPQ) + element_prod(ViPQ, ViPQ);
-
-      // PQ nodes, first part.
-      project(f, slVrPQ()) = element_div(element_prod(PPQ_, VrPQ) + element_prod(QPQ, ViPQ), M2PQ)
-      project(f, slViPQ()) = element_div(element_prod(PPQ_, ViPQ) - element_prod(QPQ, VrPQ), M2PQ)
-
-      // PQ nodes, second part.
-      project(f, slVrPQ()) += -prod(GRng, Vr_) + prod(BRng, Vi_) + IcrPQ_;
-      project(f, slViPQ()) += -prod(GRng, Vi_) - prod(BRng, Vr_) + IciPQ_;
-
-      // PV nodes, first part.
-      project(f, slVrPV()) = element_div(element_prod(PPQ_, VrPQ) + element_prod(QPQ, ViPQ), M2PQ)
-      project(f, slViPV()) = element_div(element_prod(PPQ_, ViPQ) - element_prod(QPQ, VrPQ), M2PQ)
+      project(f, selPVr) = element_div(element_prod(VrPV, DeltaPPQ), M2PQ);
+      project(f, selPVi) = element_div(element_prod(ViPV, DeltaPPQ), M2PQ);
    }
 
    void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasVector<double> x) const
