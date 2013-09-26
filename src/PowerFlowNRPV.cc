@@ -350,18 +350,19 @@ namespace SmartGridToolbox
       initV(Vr, Vi);
 
       UblasCMatrix<double> JConst(nVar(), nVar()); ///< The part of J that doesn't update at each iteration.
-      UblasVector<double> f(nVar());  ///< Current mismatch function.
-      UblasCMatrix<double> J(nVar(), nVar());      ///< Jacobian, d f_i / d x_i.
-
       initJConst(JConst);
 
+      UblasVector<double> f(nVar()); ///< Current mismatch function.
+
+      UblasCMatrix<double> J = JConst; ///< Jacobian, d f_i / d x_i.
       J = JConst; // We only need to redo the elements that we mess with!
 
       bool wasSuccessful = false;
       for (int i = 0; i < maxiter; ++ i)
       {
          SGT_DEBUG(debug() << "\tIteration = " << i << std::endl);
-         updatef(f, x);
+
+         updatef(f, Vr, Vi);
          UblasVector<double> f2 = element_prod(f, f);
          double err = *std::max_element(f2.begin(), f2.end());
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
@@ -371,7 +372,9 @@ namespace SmartGridToolbox
             wasSuccessful = true;
             break;
          }
-         updateJ(J, x);
+
+         updateJ(J, JConst, Vr, Vi);
+
          UblasVector<double> rhs;
 
          SGT_DEBUG(debug() << "\tOld x_ = " << std::setw(8) << x_ << std::endl);
@@ -385,22 +388,29 @@ namespace SmartGridToolbox
          );
          SGT_DEBUG(debug() << "\tf = " << std::setw(8) << f << std::endl);
 
-         bool ok = KLUSolve(J_, f, rhs);
+         bool ok = KLUSolve(J, f, rhs);
          SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", rhs = " << std::setw(8) << rhs << std::endl);
          if (!ok)
          {
             error() << "KLUSolve failed." << std::endl;
             abort();
          }
-         x_ = x_ - rhs;
+
+         // Update the current values of V from rhs:
+         project(Vr, selPQ()) += project(rhs, selPQr());
+         project(Vi, selPQ()) += project(rhs, selPQi());
+         project(Vr, selPV()) -= element_prod(element_div(project(Vi, selPV()), project(Vr, selPV())), 
+                                              project(rhs, selPVi())); 
+         project(Vi, selPV()) += project(rhs, selPVi());
+
          SGT_DEBUG(debug() << "\tNew x = " << std::setw(8) << x_ << std::endl);
       }
       if (wasSuccessful)
       {
-         for (int i = 0; i < nPQ_; ++i)
+         for (int i = 0; i < nNode(); ++i)
          {
-            NodeNR * node = PQNodes[i];
-            node->V_ = {x_(i), x_(i + nPQ_)};
+            NodeNR * node = nodes_[i];
+            node->V_ = {Vr(i), Vi(i)};
             node->bus_->V_[node->phaseIdx_] = node->V_;
          }
          // TODO: set power e.g. on slack bus. Set current injections. Set impedances to ground. 
