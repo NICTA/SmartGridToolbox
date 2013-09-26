@@ -479,7 +479,7 @@ inline Array2D<Complex, 2, 2> lineY(Complex y)
 class TestLoad : public ZipToGroundBase
 {
    public:
-      TestLoad(const std::string & name) : ZipToGroundBase(name), dt_(seconds(0)) {}
+      TestLoad(const std::string & name, Phases phases, Time dt) : ZipToGroundBase(name, phases), dt_(dt) {}
 
       virtual Time validUntil() const override
       {
@@ -553,9 +553,7 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
    Bus * bus3 = mod.componentNamed<Bus>("bus_3");
 
-   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
-   tl0.phases() = bus2->phases();
-   tl0.setDt(seconds(5));
+   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0", bus2->phases(), seconds(5));
    bus2->addZipToGround(tl0);
 
    mod.validate();
@@ -588,9 +586,7 @@ BOOST_AUTO_TEST_CASE (test_network_b3p)
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
    Bus * bus3 = mod.componentNamed<Bus>("bus_3");
 
-   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
-   tl0.phases() = bus2->phases();
-   tl0.setDt(seconds(5));
+   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0", bus2->phases(), seconds(5));
    bus2->addZipToGround(tl0);
 
    mod.validate();
@@ -631,9 +627,7 @@ BOOST_AUTO_TEST_CASE (test_network_2p_identical)
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
    Bus * bus3 = mod.componentNamed<Bus>("bus_3");
 
-   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0");
-   tl0.phases() = bus2->phases();
-   tl0.setDt(seconds(5));
+   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0", bus2->phases(), seconds(5));
    bus2->addZipToGround(tl0);
 
    mod.validate();

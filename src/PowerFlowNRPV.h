@@ -104,6 +104,8 @@ namespace SmartGridToolbox
          UblasRange selPQ() const {return {0, nPQ_};}
          UblasRange selPV() const {return {nPQ_, nPQ_ + nPV_};}
          UblasRange selSL() const {return {nPQ_ + nPV_, nPQ_ + nPV_ + nSL_};}
+         UblasRange selPQPV() const {return {0, nPQ_ + nPV_};}
+         UblasRange selAll() const {return {0, nPQ_ + nPV_ + nSL_};}
 
          UblasSlice selPQi() const {return {0, 2, nPQ_};}                ///< f_i, or V_i
          UblasSlice selPQr() const {return {1, 2, nPQ_};}                ///< f_r, or V_r
