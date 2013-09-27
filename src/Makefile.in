@@ -132,7 +132,7 @@ am_libsmartgridtoolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
 	Common.$(OBJEXT) Component.$(OBJEXT) Event.$(OBJEXT) \
 	InverterBase.$(OBJEXT) MatpowerParser.$(OBJEXT) \
 	Model.$(OBJEXT) Network.$(OBJEXT) Parser.$(OBJEXT) \
-	PowerFlow.$(OBJEXT) PowerFlowNRPV.$(OBJEXT) Random.$(OBJEXT) \
+	PowerFlow.$(OBJEXT) PowerFlowNR.$(OBJEXT) Random.$(OBJEXT) \
 	RegisterParserPlugins.$(OBJEXT) SimpleBattery.$(OBJEXT) \
 	SimpleBuilding.$(OBJEXT) SimpleDCPowerSource.$(OBJEXT) \
 	SimpleInverter.$(OBJEXT) Simulation.$(OBJEXT) \
@@ -341,7 +341,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Network.cc \
 										  Parser.cc \
 										  PowerFlow.cc \
-										  PowerFlowNRPV.cc \
+										  PowerFlowNR.cc \
 										  Random.cc \
 										  RegisterParserPlugins.cc \
 										  SimpleBattery.cc \
@@ -511,7 +511,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlow.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlowNRPV.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlowNR.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RegisterParserPlugins.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBattery.Po@am__quote@

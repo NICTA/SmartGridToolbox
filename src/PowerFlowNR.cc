@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <ostream>
 #include <sstream>
-#include "PowerFlowNRPV.h"
+#include "PowerFlowNR.h"
 #include "SparseSolver.h"
 
 namespace SmartGridToolbox
