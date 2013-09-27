@@ -15,7 +15,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Network.cc \
 										  Parser.cc \
 										  PowerFlow.cc \
-										  PowerFlowNRPV.cc \
+										  PowerFlowNR.cc \
 										  Random.cc \
 										  RegisterParserPlugins.cc \
 										  SimpleBattery.cc \
