@@ -435,14 +435,15 @@ namespace SmartGridToolbox
             debug() << "\t\t\t\t" << std::setw(16) << row(branch->Y_, i) << std::endl;
          }
       }
-      debug() << "\tG:" << std::endl;
+      debug() << "\tY:" << std::endl;
       for (int i = 0; i < G_.size1(); ++i)
       {
-         debug() << "\t\t" << std::setw(8) << row(G_, i) << std::endl;
-      }
-      for (int i = 0; i < B_.size1(); ++i)
-      {
-         debug() << "\t\t" << std::setw(8) << row(B_, i) << std::endl;
+         debug() << "\t\t[" << std::setw(16) << std::left << Complex{G_(i, 0), B_(i, 0)};
+         for (int k = 1; k < G_.size2(); ++k) 
+         {
+            debugStream() << " " << std::setw(16) << std::left << Complex{G_(i, k), B_(i, k)};
+         }
+         debugStream() << "]" << std::endl;
       }
    }
 }
