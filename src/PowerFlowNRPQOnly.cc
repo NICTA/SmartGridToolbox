@@ -6,6 +6,9 @@
 
 namespace SmartGridToolbox
 {
+   template<typename T> using UblasCMatrixRange = boost::numeric::ublas::matrix_range<UblasCMatrix<T>>;
+   template<typename T> using UblasVectorRange = boost::numeric::ublas::vector_range<UblasVector<T>>;
+
    BusNR::BusNR(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
                 const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S) :
       id_(id),
