@@ -381,8 +381,10 @@ namespace SmartGridToolbox
 
          SGT_DEBUG
          (
-            debug() << "\tBefore KLUSolve: f = " << std::setw(8) << f << std::endl;
-            debug() << "\tBefore KLUSolve: J = " << std::endl;
+            debug() << "\tBefore KLUSolve: Vr = " << std::setw(8) << Vr << std::endl;
+            debug() << "\tBefore KLUSolve: Vi = " << std::setw(8) << Vi << std::endl;
+            debug() << "\tBefore KLUSolve: f  = " << std::setw(8) << f << std::endl;
+            debug() << "\tBefore KLUSolve: J  = " << std::endl;
             for (int i = 0; i < nVar(); ++i)
             {
                debug() << "\t\t" << std::setw(8) << row(J, i) << std::endl;

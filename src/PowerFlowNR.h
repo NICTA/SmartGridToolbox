@@ -107,20 +107,16 @@ namespace SmartGridToolbox
          UblasRange selPQPV() const {return {0, nPQ_ + nPV_};}
          UblasRange selAll() const {return {0, nPQ_ + nPV_ + nSL_};}
 
-         UblasSlice selPQi() const {return {0, 2, nPQ_};}                ///< f_i, or V_i
-         UblasSlice selPQr() const {return {1, 2, nPQ_};}                ///< f_r, or V_r
-
-         UblasSlice selPVi() const {return {nPQ_, 2, nPV_};}             ///< f_i, V_i
-         UblasSlice selPVr() const {return {nPQ_ + 1, 2, nPV_};}         ///< f_r, or Q
-
-         UblasSlice selSLi() const {return {nPQ_ + nPV_, 2, nSL_};}      ///< V_i
-         UblasSlice selSLr() const {return {nPQ_ + nPV_ + 1, 2, nSL_};}  ///< V_r
-
-         UblasSlice selPQPVi() const {return {0, 2, nPQ_ + nPV_};}       ///< f_i
-         UblasSlice selPQPVr() const {return {1, 2, nPQ_ + nPV_};}       ///< f_r
-
-         UblasSlice selAlli() const {return {0, 2, nPQ_ + nPV_ + nSL_};} ///< f_i
-         UblasSlice selAllr() const {return {1, 2, nPQ_ + nPV_ + nSL_};} ///< f_r
+         UblasSlice selPQi() const {return {0, 2, nPQ_};}                     ///< f_i, or V_i
+         UblasSlice selPQr() const {return {1, 2, nPQ_};}                     ///< f_r, or V_r
+         UblasSlice selPVi() const {return {2 * nPQ_, 2, nPV_};}              ///< f_i, V_i
+         UblasSlice selPVr() const {return {2 * nPQ_ + 1, 2, nPV_};}          ///< f_r, or Q
+         UblasSlice selSLi() const {return {2 * (nPQ_ + nPV_), 2, nSL_};}     ///< V_i
+         UblasSlice selSLr() const {return {2 * (nPQ_ + nPV_) + 1, 2, nSL_};} ///< V_r
+         UblasSlice selPQPVi() const {return {0, 2, nPQ_ + nPV_};}            ///< f_i
+         UblasSlice selPQPVr() const {return {1, 2, nPQ_ + nPV_};}            ///< f_r
+         UblasSlice selAlli() const {return {0, 2, nPQ_ + nPV_ + nSL_};}      ///< f_i
+         UblasSlice selAllr() const {return {1, 2, nPQ_ + nPV_ + nSL_};}      ///< f_r
 
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;
          void initJConst(UblasCMatrix<double> & JConst) const;
