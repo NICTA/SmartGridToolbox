@@ -379,6 +379,16 @@ namespace SmartGridToolbox
 
          UblasVector<double> rhs;
 
+         SGT_DEBUG
+         (
+            debug() << "\tBefore KLUSolve: f = " << std::setw(8) << f << std::endl;
+            debug() << "\tBefore KLUSolve: J = " << std::endl;
+            for (int i = 0; i < nVar(); ++i)
+            {
+               debug() << "\t\t" << std::setw(8) << row(J, i) << std::endl;
+            }
+         );
+
          bool ok = KLUSolve(J, f, rhs);
          SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", rhs = " << std::setw(8) << rhs << std::endl);
          if (!ok)
