@@ -284,6 +284,7 @@ namespace SmartGridToolbox
 
       UblasVector<double> M2PQPV = element_prod(VrPQPV, VrPQPV) + element_prod(ViPQPV, ViPQPV);
       const auto M2PQ = project(M2PQPV, selPQ());
+      const auto M2PV = project(M2PQPV, selPV());
 
       UblasVector<double> Icalci = prod(GRng, Vi) + prod(BRng, Vr);
       UblasVector<double> Icalcr = prod(GRng, Vr) - prod(BRng, Vi);
@@ -294,11 +295,13 @@ namespace SmartGridToolbox
       UblasVector<double> DeltaPPQ = PPQ_ - project(Pcalc, selPQ());
       UblasVector<double> DeltaQPQ = QPQ_ - project(Qcalc, selPQ());
 
+      UblasVector<double> DeltaPPV = PPV_ - project(Pcalc, selPV());
+
       project(f, selPQr()) = element_div(element_prod(VrPQ, DeltaPPQ) + element_prod(ViPQ, DeltaQPQ), M2PQ);
       project(f, selPQi()) = element_div(element_prod(ViPQ, DeltaPPQ) - element_prod(VrPQ, DeltaQPQ), M2PQ);
 
-      project(f, selPVr()) = element_div(element_prod(VrPV, DeltaPPQ), M2PQ);
-      project(f, selPVi()) = element_div(element_prod(ViPV, DeltaPPQ), M2PQ);
+      project(f, selPVr()) = element_div(element_prod(VrPV, DeltaPPV), M2PV);
+      project(f, selPVi()) = element_div(element_prod(ViPV, DeltaPPV), M2PV);
    }
 
    void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JConst,
