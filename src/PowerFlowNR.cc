@@ -6,12 +6,6 @@
 
 namespace SmartGridToolbox
 {
-   UblasRange selPQ();
-   UblasRange selPV();
-   UblasRange selSL();
-   UblasRange selPQPV();
-   UblasRange selAll();
-
    BusNR::BusNR(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
                 const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S) :
       id_(id),
