@@ -137,7 +137,6 @@ namespace SmartGridToolbox
       nodes_.insert(nodes_.end(), PQNodes.begin(), PQNodes.end());
       nodes_.insert(nodes_.end(), PVNodes.begin(), PVNodes.end());
       nodes_.insert(nodes_.end(), SLNodes.begin(), SLNodes.end());
-
       // Index all nodes:
       for (int i = 0; i < nNode(); ++i)
       {
@@ -172,12 +171,12 @@ namespace SmartGridToolbox
       G_.resize(nNode(), nNode(), false);
       B_.resize(nNode(), nNode(), false);
 
-      P0_.resize(nNode());
-      Q0_.resize(nNode());
-      P1_.resize(nNode());
-      Q1_.resize(nNode());
-      P2_.resize(nNode());
-      Q2_.resize(nNode());
+      P0_.resize(nNode(), false);
+      Q0_.resize(nNode(), false);
+      P1_.resize(nNode(), false);
+      Q1_.resize(nNode(), false);
+      P2_.resize(nNode(), false);
+      Q2_.resize(nNode(), false);
 
       // Set up the load model:
       for (int i = 0; i < nNode(); ++i)
@@ -377,17 +376,6 @@ namespace SmartGridToolbox
 
          UblasVector<double> rhs;
 
-         SGT_DEBUG(debug() << "\tOld x_ = " << std::setw(8) << x_ << std::endl);
-         SGT_DEBUG
-         (
-            debug() << "\tJ_ =" << std::endl;
-            for (int i = 0; i < nVar(); ++i)
-            {
-            debug() << "\t\t" << std::setw(8) << row(J_, i) << std::endl; 
-            }
-         );
-         SGT_DEBUG(debug() << "\tf = " << std::setw(8) << f << std::endl);
-
          bool ok = KLUSolve(J, f, rhs);
          SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", rhs = " << std::setw(8) << rhs << std::endl);
          if (!ok)
@@ -402,8 +390,6 @@ namespace SmartGridToolbox
          project(Vr, selPV()) -= element_prod(element_div(project(Vi, selPV()), project(Vr, selPV())), 
                                               project(rhs, selPVi())); 
          project(Vi, selPV()) += project(rhs, selPVi());
-
-         SGT_DEBUG(debug() << "\tNew x = " << std::setw(8) << x_ << std::endl);
       }
       if (wasSuccessful)
       {
