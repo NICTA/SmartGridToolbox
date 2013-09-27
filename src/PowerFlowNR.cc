@@ -262,10 +262,10 @@ namespace SmartGridToolbox
    /// Set the part of J that doesn't update at each iteration.
    void PowerFlowNR::initJConst(UblasCMatrix<double> & JConst) const
    {
-      project(JConst, selPQi(), selPQi()) = project(B_, selPQ(), selPQ());
-      project(JConst, selPQi(), selPQr()) = project(G_, selPQ(), selPQ());
-      project(JConst, selPQr(), selPQi()) = project(G_, selPQ(), selPQ());
-      project(JConst, selPQr(), selPQr()) = -project(B_, selPQ(), selPQ());
+      project(JConst, selfiPQ(), selVrPQ()) =  project(B_, selPQ(), selPQ());
+      project(JConst, selfiPQ(), selViPQ()) =  project(G_, selPQ(), selPQ());
+      project(JConst, selfrPQ(), selVrPQ()) =  project(G_, selPQ(), selPQ());
+      project(JConst, selfrPQ(), selViPQ()) = -project(B_, selPQ(), selPQ());
       // TODO: PV parts.
    }
 
@@ -297,11 +297,11 @@ namespace SmartGridToolbox
 
       UblasVector<double> DeltaPPV = PPV_ - project(Pcalc, selPV());
 
-      project(f, selPQr()) = element_div(element_prod(VrPQ, DeltaPPQ) + element_prod(ViPQ, DeltaQPQ), M2PQ);
-      project(f, selPQi()) = element_div(element_prod(ViPQ, DeltaPPQ) - element_prod(VrPQ, DeltaQPQ), M2PQ);
+      project(f, selfrPQ()) = element_div(element_prod(VrPQ, DeltaPPQ) + element_prod(ViPQ, DeltaQPQ), M2PQ);
+      project(f, selfiPQ()) = element_div(element_prod(ViPQ, DeltaPPQ) - element_prod(VrPQ, DeltaQPQ), M2PQ);
 
-      project(f, selPVr()) = element_div(element_prod(VrPV, DeltaPPV), M2PV);
-      project(f, selPVi()) = element_div(element_prod(ViPV, DeltaPPV), M2PV);
+      project(f, selfiPV()) = element_div(element_prod(ViPV, DeltaPPV), M2PV);
+      project(f, selfrPV()) = element_div(element_prod(VrPV, DeltaPPV), M2PV);
    }
 
    void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JConst,
@@ -316,25 +316,35 @@ namespace SmartGridToolbox
          double M4 = M2 * M2;
          double M3 = sqrt(M4 * M2);
 
-         J(2*i  , 2*i  ) = JConst(2*i  , 2*i  )
-                         - (Q0_(i) * (Vr2 - Vi2) - 2 * P0_(i) * VrVi) / M4
-                         - (P1_(i) * VrVi + Q1_(i) * Vi2) / M3
-                         - Q2_(i);
+         auto JPQrr = project(J, selfrPQ(), selVrPQ());
+         auto JPQri = project(J, selfrPQ(), selViPQ());
+         auto JPQir = project(J, selfiPQ(), selVrPQ());
+         auto JPQii = project(J, selfiPQ(), selViPQ());
 
-         J(2*i  , 2*i+1) = JConst(2*i  , 2*i+1)
-                         - (P0_(i) * (Vr2 - Vi2) + 2 * Q0_(i) * VrVi) / M4
-                         + (Q1_(i) * VrVi + P1_(i) * Vr2) / M3
-                         + P2_(i);
+         auto JConstPQrr = project(J, selfrPQ(), selVrPQ());
+         auto JConstPQri = project(J, selfrPQ(), selViPQ());
+         auto JConstPQir = project(J, selfiPQ(), selVrPQ());
+         auto JConstPQii = project(J, selfiPQ(), selViPQ());
 
-         J(2*i+1, 2*i  ) = JConst(2*i+1, 2*i  )
-                         - (P0_(i) * (Vi2 - Vr2) - 2 * Q0_(i) * VrVi) / M4
-                         - (Q1_(i) * VrVi - P1_(i) * Vi2) / M3
-                         + P2_(i);
+         JPQir(i, i) = JConstPQii(i, i)
+                     - (Q0_(i) * (Vr2 - Vi2) - 2 * P0_(i) * VrVi) / M4
+                     - (P1_(i) * VrVi + Q1_(i) * Vi2) / M3
+                     - Q2_(i);
 
-         J(2*i+1, 2*i+1) = JConst(2*i+1, 2*i+1)
-                         - (Q0_(i) * (Vr2 - Vi2) - 2 * P0_(i) * VrVi) / M4
-                         - (P1_(i) * VrVi - Q1_(i) * Vr2) / M3
-                         + Q2_(i);
+         JPQii(i, i) = JConstPQir(i, i)
+                     - (P0_(i) * (Vr2 - Vi2) + 2 * Q0_(i) * VrVi) / M4
+                     + (Q1_(i) * VrVi + P1_(i) * Vr2) / M3
+                     + P2_(i);
+
+         JPQrr(i, i) = JConstPQri(i, i)
+                     - (P0_(i) * (Vi2 - Vr2) - 2 * Q0_(i) * VrVi) / M4
+                     - (Q1_(i) * VrVi - P1_(i) * Vi2) / M3
+                     + P2_(i);
+
+         JPQri(i, i) = JConstPQrr(i, i)
+                     - (Q0_(i) * (Vr2 - Vi2) - 2 * P0_(i) * VrVi) / M4
+                     - (P1_(i) * VrVi - Q1_(i) * Vr2) / M3
+                     + Q2_(i);
 
          // TODO: PV nodes.
       }
@@ -400,11 +410,11 @@ namespace SmartGridToolbox
          }
 
          // Update the current values of V from rhs:
-         project(Vr, selPQ()) += project(rhs, selPQr());
-         project(Vi, selPQ()) += project(rhs, selPQi());
+         project(Vr, selPQ()) += project(rhs, selVrPQ());
+         project(Vi, selPQ()) += project(rhs, selViPQ());
          project(Vr, selPV()) -= element_prod(element_div(project(Vi, selPV()), project(Vr, selPV())), 
-                                              project(rhs, selPVi())); 
-         project(Vi, selPV()) += project(rhs, selPVi());
+                                              project(rhs, selViPV())); 
+         project(Vi, selPV()) += project(rhs, selViPV());
       }
       if (wasSuccessful)
       {
