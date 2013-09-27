@@ -17,8 +17,8 @@ namespace SmartGridToolbox
       ZipToGround & comp = mod.newComponent<ZipToGround>(name, phases);
 
       auto ndAdmit = nd["admittance"];
-      auto ndCurLoad = nd["current_load"];
-      auto ndCurGen = nd["current_gen"];
+      auto ndCurLoad = nd["complex_current_load"];
+      auto ndCurGen = nd["complex_current_gen"];
       auto ndSLoad = nd["complex_power_load"];
       auto ndSGen = nd["complex_power_gen"];
 

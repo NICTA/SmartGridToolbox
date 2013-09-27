@@ -338,6 +338,8 @@ namespace SmartGridToolbox
 
          SGT_DEBUG
          (
+            debug() << "\tBefore KLUSolve: Vr = " << std::setw(8) << project(x_, UblasRange(0, nPQ_)) << std::endl;
+            debug() << "\tBefore KLUSolve: Vi = " << std::setw(8) << project(x_, UblasRange(nPQ_, 2*nPQ_)) << std::endl;
             debug() << "\tBefore KLUSolve: f = " << std::setw(8) << f_ << std::endl;
             debug() << "\tBefore KLUSolve: J = " << std::endl;
             for (int i = 0; i < nVar_; ++i)
@@ -354,7 +356,6 @@ namespace SmartGridToolbox
             abort();
          }
          x_ = x_ - rhs;
-         SGT_DEBUG(debug() << "\tNew x = " << std::setw(8) << x_ << std::endl);
       }
       if (wasSuccessful)
       {
