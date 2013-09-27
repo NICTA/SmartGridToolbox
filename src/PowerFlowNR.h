@@ -107,17 +107,25 @@ namespace SmartGridToolbox
          UblasRange selPQPV() const {return {0, nPQ_ + nPV_};}
          UblasRange selAll() const {return {0, nPQ_ + nPV_ + nSL_};}
 
-         UblasSlice selfrPQ() const {return {1, 2, nPQ_};}
-         UblasSlice selfiPQ() const {return {0, 2, nPQ_};}
-         UblasSlice selfrPV() const {return {2 * nPQ_ + 1, 2, nPV_};}
-         UblasSlice selfiPV() const {return {2 * nPQ_, 2, nPV_};}
-         UblasSlice selfr() const {return {1, 2, nPQ_ + nPV_};}
-         UblasSlice selfi() const {return {0, 2, nPQ_ + nPV_};}
+         //UblasSlice selfrPQ() const {return {1, 2, nPQ_};}
+         //UblasSlice selfiPQ() const {return {0, 2, nPQ_};}
+         //UblasSlice selfrPV() const {return {2 * nPQ_ + 1, 2, nPV_};}
+         //UblasSlice selfiPV() const {return {2 * nPQ_, 2, nPV_};}
 
-         UblasSlice selVrPQ() const {return {0, 2, nPQ_};}
-         UblasSlice selViPQ() const {return {1, 2, nPQ_};}
-         UblasSlice selViPV() const {return {nPQ_, 2, nPV_};}
-         UblasSlice selQPV() const {return {nPQ_+1, 2, nPV_};}
+         //UblasSlice selVrPQ() const {return {0, 2, nPQ_};}
+         //UblasSlice selViPQ() const {return {1, 2, nPQ_};}
+         //UblasSlice selViPV() const {return {nPQ_, 2, nPV_};}
+         //UblasSlice selQPV() const {return {nPQ_+1, 2, nPV_};}
+
+         UblasRange selfrPQ() const {return {0, nPQ_};}
+         UblasRange selfiPQ() const {return {nPQ_, 2 * nPQ_};}
+         UblasRange selfrPV() const {return {2 * nPQ_, 2 * nPQ_ + nPV_};}
+         UblasRange selfiPV() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
+
+         UblasRange selVrPQ() const {return {0, nPQ_};}
+         UblasRange selViPQ() const {return {nPQ_, 2 * nPQ_};}
+         UblasRange selViPV() const {return {2 * nPQ_, 2 * nPQ_ + nPV_};}
+         UblasRange selQPV() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
          
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;
          void initJConst(UblasCMatrix<double> & JConst) const;

@@ -320,22 +320,22 @@ namespace SmartGridToolbox
          auto JConstPQir = project(J, selfiPQ(), selVrPQ());
          auto JConstPQii = project(J, selfiPQ(), selViPQ());
 
-         JPQir(i, i) = JConstPQii(i, i)
+         JPQir(i, i) = JConstPQir(i, i)
                      - (Q0_(i) * (Vr2 - Vi2) - 2 * P0_(i) * VrVi) / M4
                      - (P1_(i) * VrVi + Q1_(i) * Vi2) / M3
                      - Q2_(i);
 
-         JPQii(i, i) = JConstPQir(i, i)
+         JPQii(i, i) = JConstPQii(i, i)
                      - (P0_(i) * (Vr2 - Vi2) + 2 * Q0_(i) * VrVi) / M4
                      + (Q1_(i) * VrVi + P1_(i) * Vr2) / M3
                      + P2_(i);
 
-         JPQrr(i, i) = JConstPQri(i, i)
+         JPQrr(i, i) = JConstPQrr(i, i)
                      - (P0_(i) * (Vi2 - Vr2) - 2 * Q0_(i) * VrVi) / M4
                      - (Q1_(i) * VrVi - P1_(i) * Vi2) / M3
                      + P2_(i);
 
-         JPQri(i, i) = JConstPQrr(i, i)
+         JPQri(i, i) = JConstPQri(i, i)
                      - (Q0_(i) * (Vr2 - Vi2) - 2 * P0_(i) * VrVi) / M4
                      - (P1_(i) * VrVi - Q1_(i) * Vr2) / M3
                      + Q2_(i);
