@@ -1,0 +1,98 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{geometry}
+\geometry{a4paper}
+\usepackage[parfill]{parskip}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{listings}
+\lstset{language = C++}
+\usepackage{url}
+
+\newcommand{\re}[1]{{{#1}_R}}
+\newcommand{\im}[1]{{{#1}_I}}
+
+\title{Title}
+\author{Author}
+
+\begin{document}
+
+\maketitle
+
+\section{Power flow equations in current form}
+For simplicity, we write all bus quantities as injections \emph{into} the bus. Thus a normal load will use quantities expressed as negative injections, while a generator will have positive injections.
+
+Each bus has an associated load. 
+\begin{align*}
+y_{ik} &= g_{ik} + jb_{ik} = \text{complex admittance along branch $ik$.} \\
+Y_{ik} &= G_{ik} + jB_{ik} = \text{nodal admittance matrix element $i, k$.} \\
+&= 
+	\begin{cases}
+		-y_{ik}&\text{if $i \ne k$} \\
+		y_i + \sum_l y_{il}& \text{if $i = k$}
+	\end{cases} \\
+V_i &= \text{complex voltage at bus $i$.} \\
+I_{\text{br}i} &= \text{complex current injection from branches at bus $i$.} \\
+I_{\text{ld}i} &= \text{total complex current injection from load at bus $i$.} \\
+I_{\text{bus}i} &= \text{complex current injection due to the bus at bus $i$.} \\
+S_{\text{bus}i} &= \text{complex power injection due to bus $i$.} \\
+S_{ci} &= \text{constant power component of load at bus $i$.} \\
+I_{ci} &= \text{constant current injection component of load.} \\
+y_{ci} &= \text{constant impedance component of load.} \\
+\end{align*}
+The total current injection into bus $i$ is:
+\begin{align}
+I_i &= I_{\text{br}, i} + I_{\text{ld}i} + I_{\text{bus}, i} = 0\\
+I_{\text{bri}} &= -\sum_{k=0}^NY_{ik}V_k \\
+I_{\text{ld}i} &= \frac{S^*_{ci}}{V^*_i} + I_{ci} - y_{ci}V_i \\
+I_{\text{bus}i} &= \frac{S^*_{\text{bus}i}}{V^*_i}
+\end{align}
+which is zero, due to Kirchoff's current conservation law. Thus,
+\begin{align}
+I_i &= \frac{S^*_{ci} + S^*_{\text{bus}i}}{V^*_i} + I_{ci} - y_{ci}V_i - \sum_{k=0}^NY_{ik}V_k = 0
+\end{align}
+or, absorbing $y_c$ into $Y$ and $S_{\text{bus}}$ into $S_c$ we have
+\begin{align}
+I_i &= \frac{S'^*_{ci}}{V^*_i} + I_{ci} - \sum_{k=0}^NY'_{ik}V_k = 0
+\end{align}
+where
+\begin{align}
+	Y'_{ik} &= 
+		\begin{cases}
+			Y_{ik} & \text{if $i \ne k$} \\
+			Y_{ik} + y_{ck} & \text{if $i = k$}
+		\end{cases} 
+\end{align}
+and $S'_c = S_c + S_{\text{bus}}$.
+
+Real and imaginary components are:
+\begin{align}
+\re{I}_i &= \frac{P'_{ci}\re{V}_{i} + Q'_{ci}\im{V}_{i}}{M^2_i} + \re{I_c}_{i} + \sum_{k=0}^N\left(-G'_{ik}\re{V}_k + B'_{ik}\im{V}_k\right) \\
+\im{I}_i &= \frac{P'_{ci}\im{V}_{i} - Q'_{ci}\re{V}_{i}}{M^2_i} + \im{I_c}_{i} + \sum_{k=0}^N\left(-G'_{ik}\im{V}_k - B'_{ik}\re{V}_k\right) = 0
+\end{align}
+
+For PQ busses, the unknowns are the real and imaginary parts of $V$, so this equation can be solved using the Newton-Raphson method. Letting the function to which we want to find the zero be $f = \{\re{I}, \im{I}\}$, the unknows be $x = \{\re{V}, \im{V}\}$, we wish to solve $f(x) = 0$. Using the Jacobian
+\begin{align}
+J_{ik}(x) = \frac{\partial f_i(x)}{\partial x_k}
+\end{align}
+the NR method calculates the update to $x$ at each iteration as the solution to the linear equations
+\begin{align}
+-f_{(n)} &= J(x_{(n)})(x_{(n+1)}-x_{(n)}) = J(x_{(n)})\Delta x_{(n,n+1)}
+\end{align}
+The Jacobian is given by:
+\begin{align}
+\frac{\partial \re{I}_i}{\partial \re{V}_{k}} &= \frac{P'_{ci}}{M_i^2} - \frac{2\re{V}_i(P'_{ci}\re{V}_i + Q'_{ci}\im{V}_i)}{M_i^4} - G'_{ik} \\
+\frac{\partial \re{I}_i}{\partial \im{V}_{k}} &= \frac{Q'_{ci}}{M_i^2} - \frac{2\im{V}_i(P'_{ci}\re{V}_i + Q'_{ci}\im{V}_i)}{M_i^4} + B'_{ik} \\
+\frac{\partial \im{I}_i}{\partial \re{V}_{k}} &= -\frac{Q'_{ci}}{M_i^2} - \frac{2\re{V}_i(P'_{ci}\im{V}_i - Q'_{ci}\re{V}_i)}{M_i^4} - B'_{ik} \\
+\frac{\partial \im{I}_i}{\partial \im{V}_{k}} &= \frac{P'_{ci}}{M_i^2} - \frac{2\im{V}_i(P'_{ci}\im{V}_i - Q'_{ci}\re{V}_i)}{M_i^4} - G'_{ik} \\
+\end{align}
+
+For PV busses, the power flow equations also hold, but with an variable $Q_{\text{bus}}$ and an extra constraint:
+\begin{align}
+\re{V}_{i}^2 + \im{V}_i^2 = M^2_{\text{PV}}
+\end{align}
+The unknowns are $V_I$ and $Q$. $V_R$ is replaced by $Q$ in $x$.  
+\end{document}
