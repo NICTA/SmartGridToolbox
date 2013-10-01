@@ -15,17 +15,14 @@
 \newcommand{\re}[1]{{{#1}_R}}
 \newcommand{\im}[1]{{{#1}_I}}
 
-\title{Title}
-\author{Author}
+\title{Power Flow Theory}
+\author{Dan Gordon}
+\date{}
 
 \begin{document}
-
 \maketitle
 
-\section{Power flow equations in current form}
-For simplicity, we write all bus quantities as injections \emph{into} the bus. Thus a normal load will use quantities expressed as negative injections, while a generator will have positive injections.
-
-Each bus has an associated load. 
+\section{Nomenclature}
 \begin{align*}
 y_{ik} &= g_{ik} + jb_{ik} = \text{complex admittance along branch $ik$.} \\
 Y_{ik} &= G_{ik} + jB_{ik} = \text{nodal admittance matrix element $i, k$.} \\
@@ -35,6 +32,7 @@ Y_{ik} &= G_{ik} + jB_{ik} = \text{nodal admittance matrix element $i, k$.} \\
 		y_i + \sum_l y_{il}& \text{if $i = k$}
 	\end{cases} \\
 V_i &= \text{complex voltage at bus $i$.} \\
+M_i &= \text{voltage magnitude at bus $i$, $M_i := |V_i|$.} \\
 I_{\text{br}i} &= \text{complex current injection from branches at bus $i$.} \\
 I_{\text{ld}i} &= \text{total complex current injection from load at bus $i$.} \\
 I_{\text{bus}i} &= \text{complex current injection due to the bus at bus $i$.} \\
@@ -42,7 +40,14 @@ S_{\text{bus}i} &= \text{complex power injection due to bus $i$.} \\
 S_{ci} &= \text{constant power component of load at bus $i$.} \\
 I_{ci} &= \text{constant current injection component of load.} \\
 y_{ci} &= \text{constant impedance component of load.} \\
+\delta_{ik} &= \text{the Kronecker delta, $\delta_{ik} = 1$ if $i = k$, 0 otherwise.}
 \end{align*}
+
+\section{Power flow equations in current form}
+For simplicity, we write all bus quantities as injections \emph{into} the bus. Thus a normal load will use quantities expressed as negative injections, while a generator will have positive injections.
+
+Each bus has an associated load, containing a constant power component, a constant current component, and a constant shunt impedance current. As well as receiving injections from branches and loads, busses provide their own injections according to their bus type. PQ busses provide a specified complex power injection. PV busses instead keep the voltage magnitude of the bus constant while providing a specified real power injection. Slack busses keep the complex voltage of the bus constant.
+
 The total current injection into bus $i$ is:
 \begin{align}
 I_i &= I_{\text{br}, i} + I_{\text{ld}i} + I_{\text{bus}, i} = 0\\
@@ -60,11 +65,7 @@ I_i &= \frac{S'^*_{ci}}{V^*_i} + I_{ci} - \sum_{k=0}^NY'_{ik}V_k = 0
 \end{align}
 where
 \begin{align}
-	Y'_{ik} &= 
-		\begin{cases}
-			Y_{ik} & \text{if $i \ne k$} \\
-			Y_{ik} + y_{ck} & \text{if $i = k$}
-		\end{cases} 
+	Y'_{ik} &= Y_{ik} + y_{ci}\delta_{ki}
 \end{align}
 and $S'_c = S_c + S_{\text{bus}}$.
 
@@ -84,15 +85,18 @@ the NR method calculates the update to $x$ at each iteration as the solution to 
 \end{align}
 The Jacobian is given by:
 \begin{align}
-\frac{\partial \re{I}_i}{\partial \re{V}_{k}} &= \frac{P'_{ci}}{M_i^2} - \frac{2\re{V}_i(P'_{ci}\re{V}_i + Q'_{ci}\im{V}_i)}{M_i^4} - G'_{ik} \\
-\frac{\partial \re{I}_i}{\partial \im{V}_{k}} &= \frac{Q'_{ci}}{M_i^2} - \frac{2\im{V}_i(P'_{ci}\re{V}_i + Q'_{ci}\im{V}_i)}{M_i^4} + B'_{ik} \\
-\frac{\partial \im{I}_i}{\partial \re{V}_{k}} &= -\frac{Q'_{ci}}{M_i^2} - \frac{2\re{V}_i(P'_{ci}\im{V}_i - Q'_{ci}\re{V}_i)}{M_i^4} - B'_{ik} \\
-\frac{\partial \im{I}_i}{\partial \im{V}_{k}} &= \frac{P'_{ci}}{M_i^2} - \frac{2\im{V}_i(P'_{ci}\im{V}_i - Q'_{ci}\re{V}_i)}{M_i^4} - G'_{ik} \\
+\frac{\partial \re{I}_i}{\partial \re{V}_{k}} &= \left[-\frac{2\re{V}_i(P'_{ci}\re{V}_i + Q'_{ci}\im{V}_i)}{M_i^4} + \frac{P'_{ci}}{M_i^2} \right]\delta_{ik} - G'_{ik} \\
+\frac{\partial \re{I}_i}{\partial \im{V}_{k}} &= \left[-\frac{2\im{V}_i(P'_{ci}\re{V}_i + Q'_{ci}\im{V}_i)}{M_i^4} + \frac{Q'_{ci}}{M_i^2} \right]\delta_{ik}  + B'_{ik} \\
+\frac{\partial \im{I}_i}{\partial \re{V}_{k}} &= \left[-\frac{2\re{V}_i(P'_{ci}\im{V}_i - Q'_{ci}\re{V}_i)}{M_i^4} - \frac{Q'_{ci}}{M_i^2} \right]\delta_{ik}  - B'_{ik} \\
+\frac{\partial \im{I}_i}{\partial \im{V}_{k}} &= \left[-\frac{2\im{V}_i(P'_{ci}\im{V}_i - Q'_{ci}\re{V}_i)}{M_i^4} + \frac{P'_{ci}}{M_i^2} \right] \delta_{ik} - G'_{ik} \\
 \end{align}
 
-For PV busses, the power flow equations also hold, but with an variable $Q_{\text{bus}}$ and an extra constraint:
+For PV busses, the power flow equations also hold, but with an extra variable $Q_{\text{bus}}$ and an extra constraint:
 \begin{align}
-\re{V}_{i}^2 + \im{V}_i^2 = M^2_{\text{PV}}
+\re{V}_{i}^2 + \im{V}_i^2 = M^2_{\text{PVi}}
 \end{align}
-The unknowns are $V_I$ and $Q$. $V_R$ is replaced by $Q$ in $x$.  
+Thus,
+\begin{align}
+\frac{\partial \re{I}_i}{\partial Q_{\text{bus}k}} &= \frac{\im{V}_i}{M_i^2}\delta_{ik}
+\end{align}
 \end{document}
