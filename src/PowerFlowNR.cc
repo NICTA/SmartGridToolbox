@@ -305,20 +305,16 @@ namespace SmartGridToolbox
 
       for (int i = 0; i < nPQ_; ++i)
       {
-         double Vr = VrPQ(i);
-         double Vi = ViPQ(i);
-         double P = PPQ(i);
-         double Q = QPQ(i);
-         double PVr = P * Vr;
-         double PVi = P * Vi;
-         double QVr = Q * Vr;
-         double QVi = Q * Vi;
-         double M2 = Vr * Vr;
+         double PVr = PPQ(i) * VrPQ(i);
+         double PVi = PPQ(i) * ViPQ(i);
+         double QVr = QPQ(i) * VrPQ(i);
+         double QVi = QPQ(i) * ViPQ(i);
+         double M2 = VrPQ(i) * VrPQ(i);
          double M4 = M2 * M2;
-         double VrdM4 = Vr / M4;
-         double VidM4 = Vi / M4;
-         double PdM2 = P / M2;
-         double QdM2 = Q / M2;
+         double VrdM4 = VrPQ(i) / M4;
+         double VidM4 = ViPQ(i) / M4;
+         double PdM2 = PPQ(i) / M2;
+         double QdM2 = QPQ(i) / M2;
 
          JPQrr(i, i) = JConstPQrr(i, i) - (2 * VrdM4 * (PVr + QVi)) + PdM2;
          JPQri(i, i) = JConstPQri(i, i) - (2 * VidM4 * (PVr + QVi)) + QdM2;
