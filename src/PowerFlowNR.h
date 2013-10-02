@@ -173,6 +173,14 @@ namespace SmartGridToolbox
          UblasCMatrix<double> G_;      ///< Real part of Y matrix.
          UblasCMatrix<double> B_;      ///< Imag part of Y matrix.
          /// @}
+
+         /// @name Load.
+         /// @{
+         UblasVector<double> IcR_;     ///< Constant current component of load.
+         UblasVector<double> IcI_;     ///< Constant current component of load.
+         UblasVector<double> Pc_;      ///< Constant power component of load.
+         UblasVector<double> Qc_;      ///< Constant power component of load.
+         /// @}
    };
 }
 

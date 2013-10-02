@@ -212,13 +212,25 @@ namespace SmartGridToolbox
                Y(idxNodeI, idxNodeK) += branch->Y_(i, k);
                Y(idxNodeK, idxNodeI) += branch->Y_(k, i);
             }
-
          }
       } // Loop over branches.
 
       // And set G_ and B_:
       G_ = real(Y);
       B_ = imag(Y);
+
+      // Load quantities.
+      IcR_.resize(nNode(), false);
+      IcI_.resize(nNode(), false);
+      Pc_.resize(nNode(), false);
+      Qc_.resize(nNode(), false);
+      for (int i = 0; i < nNode(); ++i)
+      {
+         IcR_(i) = nodes_[i]->I_.real();
+         IcI_(i) = nodes_[i]->I_.imag();
+         Pc_(i) = nodes_[i]->S_.real();
+         Qc_(i) = nodes_[i]->S_.imag();
+      }
 
       SGT_DEBUG(debug() << "PowerFlowNR : validate complete." << std::endl);
       SGT_DEBUG(printProblem());
@@ -281,8 +293,13 @@ namespace SmartGridToolbox
 
       UblasVector<double> M2PQPV = element_prod(VrPQPV, VrPQPV) + element_prod(ViPQPV, ViPQPV);
 
-      project(f, selfrPQPV()) = element_div(element_prod(VrPQPV, PPQPV) + element_prod(ViPQPV, QPQPV), M2PQPV);
-      project(f, selfiPQPV()) = element_div(element_prod(ViPQPV, PPQPV) - element_prod(VrPQPV, QPQPV), M2PQPV);
+      project(f, selfrPQPV()) = element_div(element_prod(VrPQPV, PPQPV) + element_prod(ViPQPV, QPQPV), M2PQPV)
+                              + project(IcR_, selPQPV())
+                              - prod(GRng, Vr) + prod(BRng, Vi);
+
+      project(f, selfiPQPV()) = element_div(element_prod(ViPQPV, PPQPV) - element_prod(VrPQPV, QPQPV), M2PQPV)
+                              + project(IcI_, selPQPV())
+                              - prod(GRng, Vi) - prod(BRng, Vr);
    }
 
    void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JConst,
