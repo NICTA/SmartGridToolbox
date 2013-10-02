@@ -118,11 +118,11 @@ namespace SmartGridToolbox
          //UblasSlice selQPV() const {return {nPQ_+1, 2, nPV_};}
 
          UblasRange selfrPQ() const {return {0, nPQ_};}
-         UblasRange selfiPQ() const {return {nPQ_, 2 * nPQ_};}
-         UblasRange selfrPV() const {return {2 * nPQ_, 2 * nPQ_ + nPV_};}
+         UblasRange selfiPQ() const {return {nPQ_ + nPV_, 2 * nPQ_ + nPV_};}
+         UblasRange selfrPV() const {return {nPQ_, nPQ_ + nPV_};}
          UblasRange selfiPV() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
-         UblasRange selfrPQPV() const {return {0, 2 * nPQ_ + nPV_};}
-         UblasRange selfiPQPV() const {return {0, 2 * (nPQ_ + nPV_)};}
+         UblasRange selfrPQPV() const {return {0, nPQ_ + nPV_};}
+         UblasRange selfiPQPV() const {return {nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
 
          UblasRange selVrPQ() const {return {0, nPQ_};}
          UblasRange selViPQ() const {return {nPQ_, 2 * nPQ_};}

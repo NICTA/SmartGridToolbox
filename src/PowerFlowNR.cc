@@ -257,12 +257,13 @@ namespace SmartGridToolbox
    /// Set the part of J that doesn't update at each iteration.
    void PowerFlowNR::initJConst(UblasCMatrix<double> & JConst) const
    {
-      project(JConst, selfrPQPV(), selVrPQ()) = -project(G_, selPQ(), selPQ());
-      project(JConst, selfrPQPV(), selViPQ()) =  project(B_, selPQ(), selPQ());
-      project(JConst, selfiPQPV(), selVrPQ()) = -project(B_, selPQ(), selPQ());
-      project(JConst, selfiPQPV(), selViPQ()) = -project(G_, selPQ(), selPQ());
-      project(JConst, selfrPQPV(), selViPV()) =  project(B_, selPV(), selPV());
-      project(JConst, selfiPQPV(), selViPV()) = -project(G_, selPV(), selPV());
+      project(JConst, selfrPQPV(), selVrPQ()) = -project(G_, selPQPV(), selPQ());
+      project(JConst, selfrPQPV(), selViPQ()) =  project(B_, selPQPV(), selPQ());
+      project(JConst, selfiPQPV(), selVrPQ()) = -project(B_, selPQPV(), selPQ());
+      project(JConst, selfiPQPV(), selViPQ()) = -project(G_, selPQPV(), selPQ());
+
+      project(JConst, selfrPQPV(), selViPV()) =  project(B_, selPQPV(), selPV());
+      project(JConst, selfiPQPV(), selViPV()) = -project(G_, selPQPV(), selPV());
    }
 
    void PowerFlowNR::updatef(UblasVector<double> & f,
