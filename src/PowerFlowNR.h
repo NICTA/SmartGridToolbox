@@ -121,6 +121,8 @@ namespace SmartGridToolbox
          UblasRange selfiPQ() const {return {nPQ_, 2 * nPQ_};}
          UblasRange selfrPV() const {return {2 * nPQ_, 2 * nPQ_ + nPV_};}
          UblasRange selfiPV() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
+         UblasRange selfrPQPV() const {return {0, 2 * nPQ_ + nPV_};}
+         UblasRange selfiPQPV() const {return {0, 2 * (nPQ_ + nPV_)};}
 
          UblasRange selVrPQ() const {return {0, nPQ_};}
          UblasRange selViPQ() const {return {nPQ_, 2 * nPQ_};}
@@ -128,11 +130,14 @@ namespace SmartGridToolbox
          UblasRange selQPV() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
          
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;
+         void initS(UblasVector<double> & P, UblasVector<double> & Q) const;
          void initJConst(UblasCMatrix<double> & JConst) const;
-
-         void updatef(UblasVector<double> & f, const UblasVector<double> & Vr, const UblasVector<double> & Vi) const;
+         void updatef(UblasVector<double> & f,
+                      const UblasVector<double> & Vr, const UblasVector<double> & Vi,
+                      const UblasVector<double> & P, const UblasVector<double> & Q) const;
          void updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JConst,
-                      const UblasVector<double> Vr, const UblasVector<double> Vi) const;
+                      const UblasVector<double> Vr, const UblasVector<double> Vi,
+                      const UblasVector<double> P, const UblasVector<double> Q) const;
 
       private:
          /// @name UblasVector of busses and branches.

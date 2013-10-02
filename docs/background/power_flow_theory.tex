@@ -102,7 +102,7 @@ If we begin with this constraint being satisfied, and enforce during NR that
 \end{align}
 then the constraint will always continue be satisfied. Thus, $\re{\Delta V}$ may be eliminated from the NR equations. (This result may easily be more formally derived by considering the Jacobian terms in the constraint). Any terms that would normally be in the $\re{\Delta V}_k$ column of the Jacobian will then need to be multiplied by $-\im{V}_k/\re{V}_k$ and then shifted to the $\im{\Delta V}_k$ column.
 
-The $\re{\Delta V}_k$ variable will need to be replaced with a column for the extra variable $\Delta Q_k$.  The extra terms are:
+The $\re{\Delta V}_k$ variable will need to be replaced with a column for the extra variable $\Delta Q_{\text{bus}k}$.  The extra terms are:
 \begin{align}
 \frac{\partial \re{I}_i}{\partial Q_{\text{bus}k}} &= \frac{\im{V}_k}{M_k^2}\delta_{ik} \\
 \frac{\partial \im{I}_i}{\partial Q_{\text{bus}k}} &= -\frac{\re{V}_k}{M_k^2}\delta_{ik}
