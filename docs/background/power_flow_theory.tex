@@ -85,10 +85,10 @@ the NR method calculates the update to $x$ at each iteration as the solution to 
 \end{align}
 The Jacobian is given by:
 \begin{align}
-\frac{\partial \re{I}_i}{\partial \re{V}_{k}} &= \left[-\frac{2\re{V}_i(P'_{ci}\re{V}_i + Q'_{ci}\im{V}_i)}{M_i^4} + \frac{P'_{ci}}{M_i^2} \right]\delta_{ik} - G'_{ik} \\
-\frac{\partial \re{I}_i}{\partial \im{V}_{k}} &= \left[-\frac{2\im{V}_i(P'_{ci}\re{V}_i + Q'_{ci}\im{V}_i)}{M_i^4} + \frac{Q'_{ci}}{M_i^2} \right]\delta_{ik}  + B'_{ik} \\
-\frac{\partial \im{I}_i}{\partial \re{V}_{k}} &= \left[-\frac{2\re{V}_i(P'_{ci}\im{V}_i - Q'_{ci}\re{V}_i)}{M_i^4} - \frac{Q'_{ci}}{M_i^2} \right]\delta_{ik}  - B'_{ik} \\
-\frac{\partial \im{I}_i}{\partial \im{V}_{k}} &= \left[-\frac{2\im{V}_i(P'_{ci}\im{V}_i - Q'_{ci}\re{V}_i)}{M_i^4} + \frac{P'_{ci}}{M_i^2} \right] \delta_{ik} - G'_{ik} \\
+\frac{\partial \re{I}_i}{\partial \re{V}_{k}} &= \left[-\frac{2\re{V}_k(P'_{ck}\re{V}_k + Q'_{ck}\im{V}_k)}{M_k^4} + \frac{P'_{ck}}{M_k^2} \right]\delta_{ik} - G'_{ik} \\
+\frac{\partial \re{I}_i}{\partial \im{V}_{k}} &= \left[-\frac{2\im{V}_k(P'_{ck}\re{V}_k + Q'_{ck}\im{V}_k)}{M_k^4} + \frac{Q'_{ck}}{M_k^2} \right]\delta_{ik}  + B'_{ik} \\
+\frac{\partial \im{I}_i}{\partial \re{V}_{k}} &= \left[-\frac{2\re{V}_k(P'_{ck}\im{V}_k - Q'_{ck}\re{V}_k)}{M_k^4} - \frac{Q'_{ck}}{M_k^2} \right]\delta_{ik}  - B'_{ik} \\
+\frac{\partial \im{I}_i}{\partial \im{V}_{k}} &= \left[-\frac{2\im{V}_k(P'_{ck}\im{V}_k - Q'_{ck}\re{V}_k)}{M_k^4} + \frac{P'_{ck}}{M_k^2} \right] \delta_{ik} - G'_{ik} \\
 \end{align}
 
 For a PV bus $k$, the power flow equations also hold, but with $Q_{\text{bus}}$ being considered as a variable rather than a constant, and an extra constraint:
@@ -102,12 +102,18 @@ If we begin with this constraint being satisfied, and enforce during NR that
 \end{align}
 then the constraint will always continue be satisfied. Thus, $\re{\Delta V}$ may be eliminated from the NR equations. (This result may easily be more formally derived by considering the Jacobian terms in the constraint). Any terms that would normally be in the $\re{\Delta V}_k$ column of the Jacobian will then need to be multiplied by $-\im{V}_k/\re{V}_k$ and then shifted to the $\im{\Delta V}_k$ column.
 
+
 The $\re{\Delta V}_k$ variable will need to be replaced with a column for the extra variable $\Delta Q_{\text{bus}k}$.  The extra terms are:
 \begin{align}
 \frac{\partial \re{I}_i}{\partial Q_{\text{bus}k}} &= \frac{\im{V}_k}{M_k^2}\delta_{ik} \\
 \frac{\partial \im{I}_i}{\partial Q_{\text{bus}k}} &= -\frac{\re{V}_k}{M_k^2}\delta_{ik}
 \end{align}
 
-For PV busses, $I$ is the same as that of $PQ$ busses.
-
+In summary, for PV busses, $I$ is the same as that of $PQ$ busses. The RHS variables for a PV bus are $\Delta Q$ and $\im{\Delta V}$. Columns corresponding to a PV bus in the Jacobian are different than those of PQ busses. If $i$ corresponds to any PQ or PV bus, and $k$ is a PV bus, then the corresponding terms in the Jacobian are:
+\begin{align}
+\frac{\partial \re{I}_i}{\partial Q_{\text{bus}k}} &= \frac{\im{V}_k}{M_k^2}\delta_{ik} \\
+\frac{\partial \im{I}_i}{\partial Q_{\text{bus}k}} &= -\frac{\re{V}_k}{M_k^2}\delta_{ik} \\
+\frac{\partial \re{I}_i}{\partial \im{V}_{k}} &= \left[\frac{1}{M_k^2}\left(Q'_{ck}  - \frac{\im{V}_kP'_{ck}}{\re{V}_k}\right) \right]\delta_{ik}  + B'_{ik} + \frac{\im{V}_k}{\re{V}_k} G'_{ik} \\
+\frac{\partial \im{I}_i}{\partial \im{V}_{k}} &= \left[\frac{1}{M_k^2}\left(P'_{ck}  + \frac{\im{V}_kQ'_{ck}}{\re{V}_k}\right) \right]\delta_{ik}  - G'_{ik} + \frac{\im{V}_k}{\re{V}_k} B'_{ik}
+\end{align}
 \end{document}
