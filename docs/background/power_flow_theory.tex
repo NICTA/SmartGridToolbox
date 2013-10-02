@@ -93,10 +93,21 @@ The Jacobian is given by:
 
 For PV busses, the power flow equations also hold, but with an extra variable $Q_{\text{bus}}$ and an extra constraint:
 \begin{align}
-\re{V}_{i}^2 + \im{V}_i^2 = M^2_{\text{PVi}}
+\Delta M^2_i = \re{V}_{i}^2 + \im{V}_i^2 - M^2_{\text{PVi}} = 0
 \end{align}
-Thus,
+
+If we begin with this constraint being satisfied, and enforce during NR that
 \begin{align}
-\frac{\partial \re{I}_i}{\partial Q_{\text{bus}k}} &= \frac{\im{V}_i}{M_i^2}\delta_{ik}
+\re{\Delta V}_i &= -\frac{\im{V}_i\im{\Delta V}_i}{\re{V}_i}
 \end{align}
+then the constraint will always be satisfied. Thus, $\re{\Delta V}$ may be eliminated from the NR equations. (This result may be easily more formally derived by considering the Jacobian terms in the constraint). Any terms that would normally be in the $\re{\Delta V}_i$ column of the Jacobian will then need to be multiplied by $-\im{V}_i/\re{V}_i$ and then shifted to the $\re{\Delta V}_i$ column.
+
+The $\re{\Delta V}_i$ will also need to be replaced with a column for the extra variable $\Delta Q_i$.  The extra terms are:
+\begin{align}
+\frac{\partial \re{I}_i}{\partial Q_{\text{bus}k}} &= \frac{\im{V}_i}{M_i^2}\delta_{ik} \\
+\frac{\partial \im{I}_i}{\partial Q_{\text{bus}k}} &= -\frac{\re{V}_i}{M_i^2}\delta_{ik}
+\end{align}
+
+For PV busses, $I$ is the same as that of $PQ$ busses.
+
 \end{document}
