@@ -288,15 +288,14 @@ namespace SmartGridToolbox
       const auto VrPQPV = project(Vr, selPQPV());
       const auto ViPQPV = project(Vi, selPQPV());
       
-      const auto PPQPV = project(Vr, selPQPV());
-      const auto QPQPV = project(Vi, selPQPV());
+      const auto PPQPV = project(P, selPQPV());
+      const auto QPQPV = project(Q, selPQPV());
 
       UblasVector<double> M2PQPV = element_prod(VrPQPV, VrPQPV) + element_prod(ViPQPV, ViPQPV);
 
       project(f, selfrPQPV()) = element_div(element_prod(VrPQPV, PPQPV) + element_prod(ViPQPV, QPQPV), M2PQPV)
                               + project(IcR_, selPQPV())
                               - prod(GRng, Vr) + prod(BRng, Vi);
-
       project(f, selfiPQPV()) = element_div(element_prod(ViPQPV, PPQPV) - element_prod(VrPQPV, QPQPV), M2PQPV)
                               + project(IcI_, selPQPV())
                               - prod(GRng, Vi) - prod(BRng, Vr);
@@ -374,6 +373,7 @@ namespace SmartGridToolbox
          updatef(f, Vr, Vi, P, Q);
          UblasVector<double> f2 = element_prod(f, f);
          double err = *std::max_element(f2.begin(), f2.end());
+         SGT_DEBUG(debug() << "\tf  = " << std::setw(8) << f << std::endl);
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
          if (err <= tol)
          {
@@ -407,11 +407,13 @@ namespace SmartGridToolbox
          }
 
          // Update the current values of V from rhs:
-         project(Vr, selPQ()) += project(rhs, selVrPQ());
-         project(Vi, selPQ()) += project(rhs, selViPQ());
-         project(Vr, selPV()) -= element_prod(element_div(project(Vi, selPV()), project(Vr, selPV())), 
+         project(Vr, selPQ()) -= project(rhs, selVrPQ());
+         project(Vi, selPQ()) -= project(rhs, selViPQ());
+         project(Vr, selPV()) += element_prod(element_div(project(Vi, selPV()), project(Vr, selPV())), 
                                               project(rhs, selViPV())); 
-         project(Vi, selPV()) += project(rhs, selViPV());
+         project(Vi, selPV()) -= project(rhs, selViPV());
+         SGT_DEBUG(debug() << "\tUpdated Vr = " << std::setw(8) << Vr << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated Vi = " << std::setw(8) << Vi << std::endl);
       }
       if (wasSuccessful)
       {
