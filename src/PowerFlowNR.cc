@@ -147,11 +147,11 @@ namespace SmartGridToolbox
       }
 
       PPV_.resize(nPV_, false);
-      VPV_.resize(nPV_, false);
+      MPV_.resize(nPV_, false);
       for (int i = 0; i < nPV_; ++i)
       {
          PPV_(i) = PVNodes[i]->S_.real();
-         VPV_(i) = abs(PVNodes[i]->V_);
+         MPV_(i) = abs(PVNodes[i]->V_);
       }
 
       VSLr_.resize(nSL_, false);
@@ -169,8 +169,6 @@ namespace SmartGridToolbox
       Q0_.resize(nNode(), false);
       P1_.resize(nNode(), false);
       Q1_.resize(nNode(), false);
-      P2_.resize(nNode(), false);
-      Q2_.resize(nNode(), false);
 
       // Set up the load model:
       for (int i = 0; i < nNode(); ++i)
@@ -179,8 +177,6 @@ namespace SmartGridToolbox
          Q0_[i] = nodes_[i]->S_.imag();
          P1_[i] = nodes_[i]->I_.real();
          Q1_[i] = nodes_[i]->I_.imag();
-         P2_[i] = nodes_[i]->Y_.real();
-         Q2_[i] = nodes_[i]->Y_.imag();
       }
 
       // Build the bus admittance matrix:
@@ -216,7 +212,7 @@ namespace SmartGridToolbox
             int idxNodeI = nodeI->idx_;
 
             // Only count each diagonal element in branch->Y_ once!
-            Y(idxNodeI, idxNodeI) += branch->Y_(i, i);
+            Y(idxNodeI, idxNodeI) += branch->Y_(i, i) + nodeI->Y_;
 
             for (int k = i + 1; k < nTerm; ++k)
             {
@@ -242,7 +238,7 @@ namespace SmartGridToolbox
       SGT_DEBUG(printProblem());
    }
 
-   /// Initialize x:
+   /// Initialize voltages:
    void PowerFlowNR::initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const
    {
       for (int i = 0; i < nNode(); ++i)
@@ -253,54 +249,72 @@ namespace SmartGridToolbox
       }
    }
 
+   void PowerFlowNR::initS(UblasVector<double> & P, UblasVector<double> & Q) const
+   {
+      for (int i = 0; i < nPQ(); ++i)
+      {
+         project(P, selPQ()) = PPQ_(i);
+         project(Q, selPQ()) = QPQ_(i);
+      }
+      for (int i = 0; i < nPV(); ++i)
+      {
+         project(P, selPV()) = PPV_(i);
+         project(Q, selPV()) = 0;
+      }
+      for (int i = 0; i < nSL(); ++i)
+      {
+         project(P, selSL()) = 0;
+         project(Q, selSL()) = 0;
+      }
+   }
+
    /// Set the part of J that doesn't update at each iteration.
    void PowerFlowNR::initJConst(UblasCMatrix<double> & JConst) const
    {
-      project(JConst, selfiPQ(), selVrPQ()) =  project(B_, selPQ(), selPQ());
-      project(JConst, selfiPQ(), selViPQ()) =  project(G_, selPQ(), selPQ());
-      project(JConst, selfrPQ(), selVrPQ()) =  project(G_, selPQ(), selPQ());
-      project(JConst, selfrPQ(), selViPQ()) = -project(B_, selPQ(), selPQ());
-      // TODO: PV parts.
+      project(JConst, selfrPQPV(), selVrPQ()) = -project(G_, selPQ(), selPQ());
+      project(JConst, selfrPQPV(), selViPQ()) =  project(B_, selPQ(), selPQ());
+      project(JConst, selfiPQPV(), selVrPQ()) = -project(B_, selPQ(), selPQ());
+      project(JConst, selfiPQPV(), selViPQ()) = -project(G_, selPQ(), selPQ());
+
+      project(JConst, selfrPQPV(), selQPV()) = 0;
+      project(JConst, selfiPQPV(), selQPV()) = 0;
+      project(JConst, selfrPQPV(), selViPV()) =  project(B_, selPV(), selPV());
+      project(JConst, selfiPQPV(), selViPV()) = -project(G_, selPV(), selPV());
    }
 
    void PowerFlowNR::updatef(UblasVector<double> & f,
-                             const UblasVector<double> & Vr, const UblasVector<double> & Vi) const
+                             const UblasVector<double> & Vr, const UblasVector<double> & Vi,
+                             const UblasVector<double> & P, const UblasVector<double> & Q) const
    {
       const auto GRng = project(G_, selPQPV(), selAll());
       const auto BRng = project(B_, selPQPV(), selAll());
 
       const auto VrPQPV = project(Vr, selPQPV());
       const auto ViPQPV = project(Vi, selPQPV());
-      const auto VrPQ = project(Vr, selPQ());
-      const auto ViPQ = project(Vi, selPQ());
-      const auto VrPV = project(Vr, selPV());
-      const auto ViPV = project(Vi, selPV());
+      
+      const auto PPQPV = project(Vr, selPQPV());
+      const auto QPQPV = project(Vi, selPQPV());
 
       UblasVector<double> M2PQPV = element_prod(VrPQPV, VrPQPV) + element_prod(ViPQPV, ViPQPV);
-      const auto M2PQ = project(M2PQPV, selPQ());
-      const auto M2PV = project(M2PQPV, selPV());
 
-      UblasVector<double> Icalci = prod(GRng, Vi) + prod(BRng, Vr);
-      UblasVector<double> Icalcr = prod(GRng, Vr) - prod(BRng, Vi);
-
-      UblasVector<double> Pcalc = element_prod(VrPQPV, Icalcr) + element_prod(ViPQPV, Icalci);
-      UblasVector<double> Qcalc = element_prod(ViPQPV, Icalcr) - element_prod(VrPQPV, Icalci);
-
-      UblasVector<double> DeltaPPQ = PPQ_ - project(Pcalc, selPQ());
-      UblasVector<double> DeltaQPQ = QPQ_ - project(Qcalc, selPQ());
-
-      UblasVector<double> DeltaPPV = PPV_ - project(Pcalc, selPV());
-
-      project(f, selfrPQ()) = element_div(element_prod(VrPQ, DeltaPPQ) + element_prod(ViPQ, DeltaQPQ), M2PQ);
-      project(f, selfiPQ()) = element_div(element_prod(ViPQ, DeltaPPQ) - element_prod(VrPQ, DeltaQPQ), M2PQ);
-
-      project(f, selfiPV()) = element_div(element_prod(ViPV, DeltaPPV), M2PV);
-      project(f, selfrPV()) = element_div(element_prod(VrPV, DeltaPPV), M2PV);
+      project(f, selfrPQPV()) = element_div(element_prod(VrPQPV, PPQPV) + element_prod(ViPQPV, QPQPV), M2PQPV);
+      project(f, selfiPQPV()) = element_div(element_prod(ViPQPV, PPQPV) - element_prod(VrPQPV, QPQPV), M2PQPV);
    }
 
    void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JConst,
-                             const UblasVector<double> Vr, const UblasVector<double> Vi) const
+                             const UblasVector<double> Vr, const UblasVector<double> Vi,
+                             const UblasVector<double> P, const UblasVector<double> Q) const
    {
+      auto JPQrr = project(J, selfrPQPV(), selVrPQ());
+      auto JPQri = project(J, selfrPQPV(), selViPQ());
+      auto JPQir = project(J, selfiPQPV(), selVrPQ());
+      auto JPQii = project(J, selfiPQPV(), selViPQ());
+
+      auto JConstPQrr = project(Jconst, selfrPQPV(), selVrPQ());
+      auto JConstPQri = project(Jconst, selfrPQPV(), selViPQ());
+      auto JConstPQir = project(Jconst, selfiPQPV(), selVrPQ());
+      auto JConstPQii = project(Jconst, selfiPQPV(), selViPQ());
+
       for (int i = 0; i < nPQPV(); ++i)
       {
          double Vr2 = Vr(i) * Vr(i);
@@ -310,35 +324,21 @@ namespace SmartGridToolbox
          double M4 = M2 * M2;
          double M3 = sqrt(M4 * M2);
 
-         auto JPQrr = project(J, selfrPQ(), selVrPQ());
-         auto JPQri = project(J, selfrPQ(), selViPQ());
-         auto JPQir = project(J, selfiPQ(), selVrPQ());
-         auto JPQii = project(J, selfiPQ(), selViPQ());
-
-         auto JConstPQrr = project(J, selfrPQ(), selVrPQ());
-         auto JConstPQri = project(J, selfrPQ(), selViPQ());
-         auto JConstPQir = project(J, selfiPQ(), selVrPQ());
-         auto JConstPQii = project(J, selfiPQ(), selViPQ());
-
          JPQir(i, i) = JConstPQir(i, i)
                      - (Q0_(i) * (Vr2 - Vi2) - 2 * P0_(i) * VrVi) / M4
-                     - (P1_(i) * VrVi + Q1_(i) * Vi2) / M3
-                     - Q2_(i);
+                     - (P1_(i) * VrVi + Q1_(i) * Vi2) / M3;
 
          JPQii(i, i) = JConstPQii(i, i)
                      - (P0_(i) * (Vr2 - Vi2) + 2 * Q0_(i) * VrVi) / M4
-                     + (Q1_(i) * VrVi + P1_(i) * Vr2) / M3
-                     + P2_(i);
+                     + (Q1_(i) * VrVi + P1_(i) * Vr2) / M3;
 
          JPQrr(i, i) = JConstPQrr(i, i)
                      - (P0_(i) * (Vi2 - Vr2) - 2 * Q0_(i) * VrVi) / M4
-                     - (Q1_(i) * VrVi - P1_(i) * Vi2) / M3
-                     + P2_(i);
+                     - (Q1_(i) * VrVi - P1_(i) * Vi2) / M3;
 
          JPQri(i, i) = JConstPQri(i, i)
                      - (Q0_(i) * (Vr2 - Vi2) - 2 * P0_(i) * VrVi) / M4
-                     - (P1_(i) * VrVi - Q1_(i) * Vr2) / M3
-                     + Q2_(i);
+                     - (P1_(i) * VrVi - Q1_(i) * Vr2) / M3;
 
          // TODO: PV nodes.
       }
@@ -354,6 +354,10 @@ namespace SmartGridToolbox
       UblasVector<double> Vr(nNode());
       UblasVector<double> Vi(nNode());
       initV(Vr, Vi);
+
+      UblasVector<double> P(nNode());
+      UblasVector<double> Q(nNode());
+      initS(P, Q);
 
       UblasCMatrix<double> JConst(nVar(), nVar()); ///< The part of J that doesn't update at each iteration.
       initJConst(JConst);
