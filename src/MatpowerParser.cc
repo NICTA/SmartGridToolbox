@@ -312,10 +312,4 @@ namespace SmartGridToolbox
       }
 
    }
-
-   void MatpowerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
-   {
-
-   }
-
 }
