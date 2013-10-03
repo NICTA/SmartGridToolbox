@@ -399,17 +399,6 @@ namespace SmartGridToolbox
          JPQIiPQVi(i, i) = JCPQIiPQVi(i, i) - (2 * VidM4 * PVi_m_QVr) + PdM2;
       }
 
-      // (PV, PV) block diagonal:
-      for (int i = 0; i < nPV_; ++i)
-      {
-         double M2 = VrPV(i) * VrPV(i);
-
-         JPVIrPVQ(i, i) = JCPVIrPVQ(i, i) + ViPV(i) / M2;
-         JPVIiPVQ(i, i) = JCPVIiPVQ(i, i) - VrPV(i) / M2;
-         JPVIrPVVi(i, i) = JCPVIrPVVi(i, i) + (QPV(i) - ViPV(i) * PPV(i) / VrPV(i)) / M2;
-         JPVIiPVVi(i, i) = JCPVIiPVVi(i, i) + (PPV(i) + ViPV(i) * QPV(i) / VrPV(i)) / M2;
-      }
-
       // (*, PV) columns:
       // TODO: vectorize.
       for (int k = 0; k < nPV_; ++k)
@@ -427,6 +416,17 @@ namespace SmartGridToolbox
             JPVIrPVQ(i, k) = JCPVIrPVQ(i, k) + mult * GPVPV(i, k);
             JPVIiPVQ(i, k) = JCPVIiPVQ(i, k) + mult * BPVPV(i, k);
          }
+      }
+
+      // (PV, PV) block diagonal:
+      for (int i = 0; i < nPV_; ++i)
+      {
+         double M2 = VrPV(i) * VrPV(i);
+
+         JPVIrPVQ(i, i) += ViPV(i) / M2;
+         JPVIiPVQ(i, i) -= VrPV(i) / M2;
+         JPVIrPVVi(i, i) += (QPV(i) - ViPV(i) * PPV(i) / VrPV(i)) / M2;
+         JPVIiPVVi(i, i) += (PPV(i) + ViPV(i) * QPV(i) / VrPV(i)) / M2;
       }
    }
 
@@ -478,6 +478,8 @@ namespace SmartGridToolbox
          (
             debug() << "\tBefore KLUSolve: Vr = " << std::setw(8) << Vr << std::endl;
             debug() << "\tBefore KLUSolve: Vi = " << std::setw(8) << Vi << std::endl;
+            debug() << "\tBefore KLUSolve: P  = " << std::setw(8) << P << std::endl;
+            debug() << "\tBefore KLUSolve: Q  = " << std::setw(8) << Q << std::endl;
             debug() << "\tBefore KLUSolve: f  = " << std::setw(8) << f << std::endl;
             debug() << "\tBefore KLUSolve: J  = " << std::endl;
             for (int i = 0; i < nVar(); ++i)
@@ -500,8 +502,11 @@ namespace SmartGridToolbox
          project(Vr, selPV()) += element_prod(element_div(project(Vi, selPV()), project(Vr, selPV())), 
                                               project(rhs, selViPV())); 
          project(Vi, selPV()) -= project(rhs, selViPV());
+         project(Q, selPV()) -= project(rhs, selQPV());
          SGT_DEBUG(debug() << "\tUpdated Vr = " << std::setw(8) << Vr << std::endl);
          SGT_DEBUG(debug() << "\tUpdated Vi = " << std::setw(8) << Vi << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated P  = " << std::setw(8) << P << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated Q  = " << std::setw(8) << Q << std::endl);
       }
       if (wasSuccessful)
       {
