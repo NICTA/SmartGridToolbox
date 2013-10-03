@@ -160,7 +160,7 @@ namespace SmartGridToolbox
          UblasVector<double> QPQ_;     ///< Constant reactive power injection of PQ nodes.
 
          UblasVector<double> PPV_;     ///< Constant real power injection of PV nodes.
-         UblasVector<double> MPV_;     ///< Constant voltage magnitude of PV nodes.
+         UblasVector<double> M2PV_;    ///< Constant voltage magnitude squared of PV nodes.
 
          UblasVector<double> VSLr_;    ///< Slack voltages real part - one per phase.
          UblasVector<double> VSLi_;    ///< Slack voltages imag part - one per phase.

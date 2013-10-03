@@ -147,11 +147,11 @@ namespace SmartGridToolbox
       }
 
       PPV_.resize(nPV_, false);
-      MPV_.resize(nPV_, false);
+      M2PV_.resize(nPV_, false);
       for (int i = 0; i < nPV_; ++i)
       {
          PPV_(i) = PVNodes[i]->S_.real();
-         MPV_(i) = abs(PVNodes[i]->V_);
+         M2PV_(i) = PVNodes[i]->V_.real() * PVNodes[i]->V_.real() + PVNodes[i]->V_.imag() * PVNodes[i]->V_.imag();
       }
 
       VSLr_.resize(nSL_, false);
@@ -434,7 +434,7 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "PowerFlowNR : solve." << std::endl);
 
-      const double tol = 1e-20;
+      const double tol = 1e-10;
       const int maxiter = 20;
 
       UblasVector<double> Vr(nNode());
@@ -460,7 +460,7 @@ namespace SmartGridToolbox
 
          updatef(f, Vr, Vi, P, Q);
          UblasVector<double> f2 = element_prod(f, f);
-         double err = *std::max_element(f2.begin(), f2.end());
+         double err = sqrt(*std::max_element(f2.begin(), f2.end()));
          SGT_DEBUG(debug() << "\tf  = " << std::setw(8) << f << std::endl);
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
          if (err <= tol)
@@ -476,19 +476,21 @@ namespace SmartGridToolbox
 
          SGT_DEBUG
          (
-            debug() << "\tBefore KLUSolve: Vr = " << std::setw(8) << Vr << std::endl;
-            debug() << "\tBefore KLUSolve: Vi = " << std::setw(8) << Vi << std::endl;
-            debug() << "\tBefore KLUSolve: P  = " << std::setw(8) << P << std::endl;
-            debug() << "\tBefore KLUSolve: Q  = " << std::setw(8) << Q << std::endl;
-            debug() << "\tBefore KLUSolve: f  = " << std::setw(8) << f << std::endl;
-            debug() << "\tBefore KLUSolve: J  = " << std::endl;
+            debug() << "\tBefore KLUSolve: Vr  = " << std::setw(8) << Vr << std::endl;
+            debug() << "\tBefore KLUSolve: Vi  = " << std::setw(8) << Vi << std::endl;
+            debug() << "\tBefore KLUSolve: M^2 = " << std::setw(8) 
+                    << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl;
+            debug() << "\tBefore KLUSolve: P   = " << std::setw(8) << P << std::endl;
+            debug() << "\tBefore KLUSolve: Q   = " << std::setw(8) << Q << std::endl;
+            debug() << "\tBefore KLUSolve: f   = " << std::setw(8) << f << std::endl;
+            debug() << "\tBefore KLUSolve: J   = " << std::endl;
             for (int i = 0; i < nVar(); ++i)
             {
                debug() << "\t\t" << std::setw(8) << row(J, i) << std::endl;
             }
          );
 
-         bool ok = KLUSolve(J, f, rhs);
+         bool ok = KLUSolve(J, -f, rhs);
          SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", rhs = " << std::setw(8) << rhs << std::endl);
          if (!ok)
          {
@@ -497,16 +499,23 @@ namespace SmartGridToolbox
          }
 
          // Update the current values of V from rhs:
-         project(Vr, selPQ()) -= project(rhs, selVrPQ());
-         project(Vi, selPQ()) -= project(rhs, selViPQ());
-         project(Vr, selPV()) += element_prod(element_div(project(Vi, selPV()), project(Vr, selPV())), 
-                                              project(rhs, selViPV())); 
-         project(Vi, selPV()) -= project(rhs, selViPV());
-         project(Q, selPV()) -= project(rhs, selQPV());
-         SGT_DEBUG(debug() << "\tUpdated Vr = " << std::setw(8) << Vr << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated Vi = " << std::setw(8) << Vi << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated P  = " << std::setw(8) << P << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated Q  = " << std::setw(8) << Q << std::endl);
+         project(Vr, selPQ()) += project(rhs, selVrPQ());
+         project(Vi, selPQ()) += project(rhs, selViPQ());
+
+         project(Vi, selPV()) += project(rhs, selViPV());
+         project(Vr, selPV()) += element_div(M2PV_ - element_prod(project(Vr, selPV()), project(Vr, selPV()))
+                                                   - element_prod(project(Vi, selPV()), project(Vi, selPV())),
+                                             2 * project(Vr, selPV()))
+                               - element_div(element_prod(project(Vi, selPV()), project(rhs, selViPV())),
+                                             project(Vr, selPV()));
+
+         project(Q, selPV()) += project(rhs, selQPV());
+         SGT_DEBUG(debug() << "\tUpdated Vr  = " << std::setw(8) << Vr << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated Vi  = " << std::setw(8) << Vi << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated M^2 = " << std::setw(8) 
+                           << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated P   = " << std::setw(8) << P << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated Q   = " << std::setw(8) << Q << std::endl);
       }
       if (wasSuccessful)
       {
