@@ -267,15 +267,23 @@ namespace SmartGridToolbox
    }
 
    /// Set the part of J that doesn't update at each iteration.
-   void PowerFlowNR::initJConst(UblasCMatrix<double> & JConst) const
+   void PowerFlowNR::initJC(UblasCMatrix<double> & JC) const
    {
-      project(JConst, selfrPQPV(), selVrPQ()) = -project(G_, selPQPV(), selPQ());
-      project(JConst, selfrPQPV(), selViPQ()) =  project(B_, selPQPV(), selPQ());
-      project(JConst, selfiPQPV(), selVrPQ()) = -project(B_, selPQPV(), selPQ());
-      project(JConst, selfiPQPV(), selViPQ()) = -project(G_, selPQPV(), selPQ());
+      project(JC, selfIrPQ(), selVrPQ()) = -project(G_, selPQ(), selPQ());
+      project(JC, selfIrPQ(), selViPQ()) =  project(B_, selPQ(), selPQ());
+      project(JC, selfIiPQ(), selVrPQ()) = -project(B_, selPQ(), selPQ());
+      project(JC, selfIiPQ(), selViPQ()) = -project(G_, selPQ(), selPQ());
 
-      project(JConst, selfrPQPV(), selViPV()) =  project(B_, selPQPV(), selPV());
-      project(JConst, selfiPQPV(), selViPV()) = -project(G_, selPQPV(), selPV());
+      project(JC, selfIrPV(), selVrPQ()) = -project(G_, selPV(), selPQ());
+      project(JC, selfIrPV(), selViPQ()) =  project(B_, selPV(), selPQ());
+      project(JC, selfIiPV(), selVrPQ()) = -project(B_, selPV(), selPQ());
+      project(JC, selfIiPV(), selViPQ()) = -project(G_, selPV(), selPQ());
+
+      project(JC, selfIrPQ(), selViPV()) =  project(B_, selPQ(), selPV());
+      project(JC, selfIiPQ(), selViPV()) = -project(G_, selPQ(), selPV());
+
+      project(JC, selfIrPV(), selViPV()) =  project(B_, selPV(), selPV());
+      project(JC, selfIiPV(), selViPV()) = -project(G_, selPV(), selPV());
    }
 
    void PowerFlowNR::updatef(UblasVector<double> & f,
@@ -293,39 +301,91 @@ namespace SmartGridToolbox
 
       UblasVector<double> M2PQPV = element_prod(VrPQPV, VrPQPV) + element_prod(ViPQPV, ViPQPV);
 
-      project(f, selfrPQPV()) = element_div(element_prod(VrPQPV, PPQPV) + element_prod(ViPQPV, QPQPV), M2PQPV)
-                              + project(IcR_, selPQPV())
-                              - prod(GRng, Vr) + prod(BRng, Vi);
-      project(f, selfiPQPV()) = element_div(element_prod(ViPQPV, PPQPV) - element_prod(VrPQPV, QPQPV), M2PQPV)
-                              + project(IcI_, selPQPV())
-                              - prod(GRng, Vi) - prod(BRng, Vr);
+      auto Ir = element_div(element_prod(VrPQPV, PPQPV) + element_prod(ViPQPV, QPQPV), M2PQPV)
+                            + project(IcR_, selPQPV())
+                            - prod(GRng, Vr) + prod(BRng, Vi);
+      auto Ii = element_div(element_prod(ViPQPV, PPQPV) - element_prod(VrPQPV, QPQPV), M2PQPV)
+                            + project(IcI_, selPQPV())
+                            - prod(GRng, Vi) - prod(BRng, Vr);
+      project(f, selfIrPQ()) = project(Ir, selPQ());
+      project(f, selfIiPQ()) = project(Ii, selPQ());
+      project(f, selfIrPV()) = project(Ir, selPV());
+      project(f, selfIiPV()) = project(Ii, selPV());
    }
 
-   void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JConst,
+   void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JC,
                              const UblasVector<double> Vr, const UblasVector<double> Vi,
                              const UblasVector<double> P, const UblasVector<double> Q) const
    {
-      auto JPQrr = project(J, selfrPQ(), selVrPQ());
-      auto JPQri = project(J, selfrPQ(), selViPQ());
-      auto JPQir = project(J, selfiPQ(), selVrPQ());
-      auto JPQii = project(J, selfiPQ(), selViPQ());
-
-      auto JConstPQrr = project(JConst, selfrPQ(), selVrPQ());
-      auto JConstPQri = project(JConst, selfrPQ(), selViPQ());
-      auto JConstPQir = project(JConst, selfiPQ(), selVrPQ());
-      auto JConstPQii = project(JConst, selfiPQ(), selViPQ());
-
+      // Elements in J that have no non-constant part will be initialized to the corresponding term in JC at the
+      // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
+      // Thus we need to do (PQ,PQ) diagonal and (*, PV) columns.
+    
       auto VrPQ = project(Vr, selPQ());
       auto ViPQ = project(Vi, selPQ());
       auto PPQ = project(P, selPQ());
       auto QPQ = project(Q, selPQ());
 
+      auto VrPV = project(Vr, selPV());
+      auto ViPV = project(Vi, selPV());
+      auto PPV = project(P, selPV());
+      auto QPV = project(Q, selPV());
+
+      // (PQ, PQ):
+      auto JPQIrPQVr = project(J, selfIrPQ(), selVrPQ());
+      auto JPQIrPQVi = project(J, selfIrPQ(), selViPQ());
+      auto JPQIiPQVr = project(J, selfIiPQ(), selVrPQ());
+      auto JPQIiPQVi = project(J, selfIiPQ(), selViPQ());
+
+      auto JCPQIrPQVr = project(JC, selfIrPQ(), selVrPQ());
+      auto JCPQIrPQVi = project(JC, selfIrPQ(), selViPQ());
+      auto JCPQIiPQVr = project(JC, selfIiPQ(), selVrPQ());
+      auto JCPQIiPQVi = project(JC, selfIiPQ(), selViPQ());
+      
+      // (PQ, PV)
+      auto JPQIrPVQ = project(J, selfIrPQ(), selQPV());
+      auto JPQIrPVVi = project(J, selfIrPQ(), selViPV());
+      auto JPQIiPVQ = project(J, selfIiPQ(), selQPV());
+      auto JPQIiPVVi = project(J, selfIiPQ(), selViPV());
+
+      auto JCPQIrPVQ = project(JC, selfIrPQ(), selQPV());
+      auto JCPQIrPVVi = project(JC, selfIrPQ(), selViPV());
+      auto JCPQIiPVQ = project(JC, selfIiPQ(), selQPV());
+      auto JCPQIiPVVi = project(JC, selfIiPQ(), selViPV());
+
+      auto GPQPV = project(G_, selPQ(), selPV());
+      auto BPQPV = project(G_, selPQ(), selPV());
+
+      // (PV, PQ):
+      auto JPVIrPQIr = project(J, selfIrPV(), selVrPQ());
+      auto JPVIrPQIi = project(J, selfIrPV(), selViPQ());
+      auto JPVIiPQIr = project(J, selfIiPV(), selVrPQ());
+      auto JPVIiPQIi = project(J, selfIiPV(), selViPQ());
+
+      auto JCPVIrPQIr = project(JC, selfIrPV(), selVrPQ());
+      auto JCPVIrPQIi = project(JC, selfIrPV(), selViPQ());
+      auto JCPVIiPQIr = project(JC, selfIiPV(), selVrPQ());
+      auto JCPVIiPQIi = project(JC, selfIiPV(), selViPQ());
+
+      // (PV, PV):
+      auto JPVIrPVQ = project(J, selfIrPV(), selQPV());
+      auto JPVIrPVVi = project(J, selfIrPV(), selViPV());
+      auto JPVIiPVQ = project(J, selfIiPV(), selQPV());
+      auto JPVIiPVVi = project(J, selfIiPV(), selViPV());
+
+      auto JCPVIrPVQ = project(JC, selfIrPV(), selQPV());
+      auto JCPVIrPVVi = project(JC, selfIrPV(), selViPV());
+      auto JCPVIiPVQ = project(JC, selfIiPV(), selQPV());
+      auto JCPVIiPVVi = project(JC, selfIiPV(), selViPV());
+
+      auto GPVPV = project(G_, selPV(), selPV());
+      auto BPVPV = project(G_, selPV(), selPV());
+
+      // (PQ, PQ) block diagonal:
       for (int i = 0; i < nPQ_; ++i)
       {
-         double PVr = PPQ(i) * VrPQ(i);
-         double PVi = PPQ(i) * ViPQ(i);
-         double QVr = QPQ(i) * VrPQ(i);
-         double QVi = QPQ(i) * ViPQ(i);
+         double PVr_p_QVi = PPQ(i) * VrPQ(i) + QPQ(i) * ViPQ(i);
+         double PVi_m_QVr = PPQ(i) * ViPQ(i) - QPQ(i) * VrPQ(i);
          double M2 = VrPQ(i) * VrPQ(i);
          double M4 = M2 * M2;
          double VrdM4 = VrPQ(i) / M4;
@@ -333,13 +393,41 @@ namespace SmartGridToolbox
          double PdM2 = PPQ(i) / M2;
          double QdM2 = QPQ(i) / M2;
 
-         JPQrr(i, i) = JConstPQrr(i, i) - (2 * VrdM4 * (PVr + QVi)) + PdM2;
-         JPQri(i, i) = JConstPQri(i, i) - (2 * VidM4 * (PVr + QVi)) + QdM2;
-         JPQir(i, i) = JConstPQir(i, i) - (2 * VrdM4 * (PVi - QVr)) - QdM2;
-         JPQii(i, i) = JConstPQii(i, i) - (2 * VidM4 * (PVi - QVr)) + PdM2;
+         JPQIrPQVr(i, i) = JCPQIrPQVr(i, i) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
+         JPQIrPQVi(i, i) = JCPQIrPQVi(i, i) - (2 * VidM4 * PVr_p_QVi) + QdM2;
+         JPQIiPQVr(i, i) = JCPQIiPQVr(i, i) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
+         JPQIiPQVi(i, i) = JCPQIiPQVi(i, i) - (2 * VidM4 * PVi_m_QVr) + PdM2;
       }
 
-      // TODO: PV nodes.
+      // (PV, PV) block diagonal:
+      for (int i = 0; i < nPV_; ++i)
+      {
+         double M2 = VrPV(i) * VrPV(i);
+
+         JPVIrPVQ(i, i) = JCPVIrPVQ(i, i) + ViPV(i) / M2;
+         JPVIiPVQ(i, i) = JCPVIiPVQ(i, i) - VrPV(i) / M2;
+         JPVIrPVVi(i, i) = JCPVIrPVVi(i, i) + (QPV(i) - ViPV(i) * PPV(i) / VrPV(i)) / M2;
+         JPVIiPVVi(i, i) = JCPVIiPVVi(i, i) + (PPV(i) + ViPV(i) * QPV(i) / VrPV(i)) / M2;
+      }
+
+      // (*, PV) columns:
+      // TODO: vectorize.
+      for (int k = 0; k < nPV_; ++k)
+      {
+         double mult = ViPV(k) / VrPV(k);
+         // PQ PV:
+         for (int i = 0; i < nPQ_; ++i)
+         {
+            JPQIrPVQ(i, k) = JCPQIrPVQ(i, k) + mult * GPQPV(i, k);
+            JPQIiPVQ(i, k) = JCPQIiPVQ(i, k) + mult * BPQPV(i, k);
+         }
+         // PV PV:
+         for (int i = 0; i < nPV_; ++i)
+         {
+            JPVIrPVQ(i, k) = JCPVIrPVQ(i, k) + mult * GPVPV(i, k);
+            JPVIiPVQ(i, k) = JCPVIiPVQ(i, k) + mult * BPVPV(i, k);
+         }
+      }
    }
 
    bool PowerFlowNR::solve()
@@ -357,13 +445,13 @@ namespace SmartGridToolbox
       UblasVector<double> Q(nNode());
       initS(P, Q);
 
-      UblasCMatrix<double> JConst(nVar(), nVar()); ///< The part of J that doesn't update at each iteration.
-      initJConst(JConst);
+      UblasCMatrix<double> JC(nVar(), nVar()); ///< The part of J that doesn't update at each iteration.
+      initJC(JC);
 
       UblasVector<double> f(nVar()); ///< Current mismatch function.
 
-      UblasCMatrix<double> J = JConst; ///< Jacobian, d f_i / d x_i.
-      J = JConst; // We only need to redo the elements that we mess with!
+      UblasCMatrix<double> J = JC; ///< Jacobian, d f_i / d x_i.
+      J = JC; // We only need to redo the elements that we mess with!
 
       bool wasSuccessful = false;
       for (int i = 0; i < maxiter; ++ i)
@@ -382,7 +470,7 @@ namespace SmartGridToolbox
             break;
          }
 
-         updateJ(J, JConst, Vr, Vi, P, Q);
+         updateJ(J, JC, Vr, Vi, P, Q);
 
          UblasVector<double> rhs;
 

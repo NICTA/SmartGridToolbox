@@ -107,35 +107,33 @@ namespace SmartGridToolbox
          UblasRange selPQPV() const {return {0, nPQ_ + nPV_};}
          UblasRange selAll() const {return {0, nPQ_ + nPV_ + nSL_};}
 
-         //UblasSlice selfrPQ() const {return {1, 2, nPQ_};}
-         //UblasSlice selfiPQ() const {return {0, 2, nPQ_};}
-         //UblasSlice selfrPV() const {return {2 * nPQ_ + 1, 2, nPV_};}
-         //UblasSlice selfiPV() const {return {2 * nPQ_, 2, nPV_};}
+         //UblasSlice selfIrPQ() const {return {1, 2, nPQ_};}
+         //UblasSlice selfIiPQ() const {return {0, 2, nPQ_};}
+         //UblasSlice selfIrPV() const {return {2 * nPQ_ + 1, 2, nPV_};}
+         //UblasSlice selfIiPV() const {return {2 * nPQ_, 2, nPV_};}
 
          //UblasSlice selVrPQ() const {return {0, 2, nPQ_};}
          //UblasSlice selViPQ() const {return {1, 2, nPQ_};}
-         //UblasSlice selViPV() const {return {nPQ_, 2, nPV_};}
          //UblasSlice selQPV() const {return {nPQ_+1, 2, nPV_};}
+         //UblasSlice selViPV() const {return {nPQ_, 2, nPV_};}
 
-         UblasRange selfrPQ() const {return {0, nPQ_};}
-         UblasRange selfiPQ() const {return {nPQ_ + nPV_, 2 * nPQ_ + nPV_};}
-         UblasRange selfrPV() const {return {nPQ_, nPQ_ + nPV_};}
-         UblasRange selfiPV() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
-         UblasRange selfrPQPV() const {return {0, nPQ_ + nPV_};}
-         UblasRange selfiPQPV() const {return {nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
+         UblasRange selfIrPQ() const {return {0, nPQ_};}
+         UblasRange selfIiPQ() const {return {nPQ_ + nPV_, 2 * nPQ_ + nPV_};}
+         UblasRange selfIrPV() const {return {nPQ_, nPQ_ + nPV_};}
+         UblasRange selfIiPV() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
 
          UblasRange selVrPQ() const {return {0, nPQ_};}
          UblasRange selViPQ() const {return {nPQ_, 2 * nPQ_};}
-         UblasRange selViPV() const {return {2 * nPQ_, 2 * nPQ_ + nPV_};}
          UblasRange selQPV() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
+         UblasRange selViPV() const {return {2 * nPQ_, 2 * nPQ_ + nPV_};}
          
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;
          void initS(UblasVector<double> & P, UblasVector<double> & Q) const;
-         void initJConst(UblasCMatrix<double> & JConst) const;
+         void initJC(UblasCMatrix<double> & JC) const;
          void updatef(UblasVector<double> & f,
                       const UblasVector<double> & Vr, const UblasVector<double> & Vi,
                       const UblasVector<double> & P, const UblasVector<double> & Q) const;
-         void updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JConst,
+         void updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JC,
                       const UblasVector<double> Vr, const UblasVector<double> Vi,
                       const UblasVector<double> P, const UblasVector<double> Q) const;
 
