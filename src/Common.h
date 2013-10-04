@@ -94,6 +94,11 @@ namespace SmartGridToolbox
    template<typename VE> using UblasVectorExpression = boost::numeric::ublas::vector_expression<VE>;
    template<typename ME> using UblasMatrixExpression = boost::numeric::ublas::matrix_expression<ME>;
 
+   template<typename M> using UblasMatrixRow = boost::numeric::ublas::matrix_row<M>;
+   template<typename M> using UblasMatrixColumn = boost::numeric::ublas::matrix_column<M>;
+   using boost::numeric::ublas::row;
+   using boost::numeric::ublas::column;
+
    template<typename VE> std::ostream & operator<<(std::ostream & os, const UblasVectorExpression<VE> & v)
    {
       unsigned int size = v().size();
