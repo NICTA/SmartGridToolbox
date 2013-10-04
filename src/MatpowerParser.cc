@@ -176,10 +176,13 @@ namespace SmartGridToolbox
          double Gs      = busMatrix[busCols * i + 4];
          double Bs      = busMatrix[busCols * i + 5];
          int area       = busMatrix[busCols * i + 6];
+         double Vm      = busMatrix[busCols * i + 7];
+         double VaDeg   = busMatrix[busCols * i + 8];
          double baseKV  = busMatrix[busCols * i + 9];
 
          double baseV = (baseKV == 0) ? areaBaseV[area] : 1e3 * baseKV;
          double basey = baseS / (baseV * baseV);
+         Complex V = polar(Vm * baseV, VaDeg * pi / 180);
 
          Complex Sd = Complex{Pd, Qd} * baseS;
          Complex Ys = Complex{Gs, Bs} * basey; 
@@ -207,10 +210,11 @@ namespace SmartGridToolbox
          }
 
          UblasVector<Complex> nomVVec(phases.size(), baseV);
+         UblasVector<Complex> VVec(phases.size(), V);
          UblasVector<Complex> SVec(phases.size(), -Sd); // Note: load = -ve injection.
          UblasVector<Complex> YsVec(phases.size(), Ys);
 
-         Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, nomVVec);
+         Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, nomVVec, VVec);
 
          ZipToGround & load = mod.newComponent<ZipToGround>(loadName(networkName, busId), phases);
          load.S() = SVec;
@@ -310,6 +314,5 @@ namespace SmartGridToolbox
 
          netw.addBranch(branch);
       }
-
    }
 }

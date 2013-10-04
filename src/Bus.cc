@@ -23,8 +23,11 @@ namespace SmartGridToolbox
       auto ndNominal = nd["nominal_voltage"];
       UblasVector<Complex> nominalV = ndNominal ? ndNominal.as<UblasVector<Complex>>()
                                                 : UblasVector<Complex>(nPhase, czero);
+      
+      auto ndV = nd["voltage"];
+      UblasVector<Complex> V = ndV ? ndV.as<UblasVector<Complex>>() : nominalV;
 
-      Bus & comp = mod.newComponent<Bus>(name, type, phases, nominalV);
+      Bus & comp = mod.newComponent<Bus>(name, type, phases, nominalV, V);
    }
 
    void BusParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
@@ -75,12 +78,13 @@ namespace SmartGridToolbox
       }
    }
 
-   Bus::Bus(const std::string & name, BusType type, const Phases & phases, const UblasVector<Complex> & nominalV) :
+   Bus::Bus(const std::string & name, BusType type, const Phases & phases, const UblasVector<Complex> & nominalV,
+            const UblasVector<Complex> & V) :
       Component(name),
       type_(type),
       phases_(phases),
       nominalV_(nominalV),
-      V_(nominalV),
+      V_(V),
       Y_(UblasVector<Complex>(phases.size(), czero)),
       I_(UblasVector<Complex>(phases.size(), czero)),
       S_(UblasVector<Complex>(phases.size(), czero))
