@@ -132,7 +132,7 @@ namespace SmartGridToolbox
       double scaleV = ndScaleV ? ndScaleV.as<double>() : 1;
       
       const YAML::Node ndScaleP = nd["scale_P"];
-      double scaleS = ndScaleP ? ndScaleP.as<double>() : 1;
+      double scaleP = ndScaleP ? ndScaleP.as<double>() : 1;
 
       // Parse in the raw matpower data.
       std::vector<double> busMatrix;
@@ -183,14 +183,15 @@ namespace SmartGridToolbox
             double KVBase  = busMatrix[busCols * i + 9];
             busInfo.VBase  = KVBase == 0 ? defaultVBase : KVBase * 1000;
 
-            double SBase   = MVABase * 1e6;
-            double yBase   = SBase / (busInfo.VBase * busInfo.VBase);
+            double PBase   = MVABase * 1e6;
+            double yBase   = 1e6 / (busInfo.VBase * busInfo.VBase); // Matpower input is in MW demand at V = 1 p.u!
 
             busInfo.mPType = busMatrix[busCols * i + 1];
 
             double Pd      = busMatrix[busCols * i + 2];
             double Qd      = busMatrix[busCols * i + 3];
-            busInfo.S      = -Complex(Pd, Qd) * SBase; // Injection is -ve load.
+            std::cout << Pd << " " << PBase << " " << Pd * PBase << std::endl;
+            busInfo.S      = -Complex(Pd, Qd) * PBase; // Injection is -ve load.
 
             double Gs      = busMatrix[busCols * i + 4];
             double Bs      = busMatrix[busCols * i + 5];
@@ -207,20 +208,20 @@ namespace SmartGridToolbox
             BusInfo & busInfo = busMap[busId];
 
             double MVABaseGen  = genMatrix[genCols * i + 6];
-            double SBase = (MVABaseGen == 0 ? MVABase : MVABaseGen) * 1e6;
+            double PBase = (MVABaseGen == 0 ? MVABase : MVABaseGen) * 1e6;
 
-            double Pg  = genMatrix[genCols * i + 1] * SBase;
-            double Qg  = genMatrix[genCols * i + 2] * SBase;
+            double Pg  = genMatrix[genCols * i + 1] * PBase;
+            double Qg  = genMatrix[genCols * i + 2] * PBase;
             double Vg  = genMatrix[genCols * i + 5] * busInfo.VBase;
 
-            busInfo.S += Complex(Pg, Qg) / SBase;
+            busInfo.S += Complex(Pg, Qg) / PBase;
             busInfo.V *= Vg / abs(busInfo.V);
          }
       }
 
       // Add new components.
       {
-         double scaleY = scaleS / (scaleV * scaleV);
+         double scaleY = scaleP / (scaleV * scaleV);
          Network & netw = mod.newComponent<Network>(networkName);
          for (const auto pair : busMap)
          {
@@ -255,7 +256,9 @@ namespace SmartGridToolbox
             Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec / scaleV, VVec / scaleV);
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
-            zip.S() = SVec / scaleS;
+            std::cout << SVec << " " << scaleP << std::endl;
+            zip.S() = SVec / scaleP;
+            std::cout << "zip S = " << zip.S() << std::endl;
             zip.Y() = YsVec / scaleY;
             bus.addZipToGround(zip);
 
@@ -272,9 +275,9 @@ namespace SmartGridToolbox
 
             double VBase0 = busInfo0.VBase;
             double VBase1 = busInfo1.VBase;
-            double SBase = MVABase * 1e6;
-            double yBase0 = SBase / (VBase0 * VBase0);
-            double yBase1 = SBase / (VBase1 * VBase1);
+            double PBase = MVABase * 1e6;
+            double yBase0 = 1e6 / (VBase0 * VBase0); // Matpower input is in MW demand at V = 1 p.u!
+            double yBase1 = 1e6 / (VBase1 * VBase1); // Matpower input is in MW demand at V = 1 p.u!
 
             double Rs = branchMatrix[branchCols * i + 2];
             double Xs = branchMatrix[branchCols * i + 3];
