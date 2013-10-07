@@ -19,16 +19,7 @@ namespace SmartGridToolbox
    void Network::updateState(Time t0, Time t1)
    {
       SGT_DEBUG(debug() << "Network : update state." << std::endl);
-      rebuildNetwork(); // TODO: inefficient to rebuild even if not needed.
-      bool ok = solver_.solve();
-      if (ok)
-      {
-         for (const auto & busPair: solver_.busses())
-         {
-            Bus * bus = findBus(busPair.second->id_);
-            bus->V() = busPair.second->V_; // Push the state back onto bus. We don't want to trigger any events.    
-         }
-      }
+      solvePowerFlow(); // TODO: inefficient to rebuild even if not needed.
    }
 
    void Network::addBus(Bus & bus)
@@ -48,9 +39,9 @@ namespace SmartGridToolbox
             "Trigger Network " + name() + " needs update");
    }
 
-   void Network::rebuildNetwork()
+   void Network::solvePowerFlow()
    {
-      SGT_DEBUG(debug() << "Network : rebuilding network." << std::endl);
+      SGT_DEBUG(debug() << "Network : solving power flow." << std::endl);
       SGT_DEBUG(print());
       solver_.reset();
       for (const Bus * bus : busVec_)
@@ -63,7 +54,19 @@ namespace SmartGridToolbox
          solver_.addBranch(branch->bus0().name(), branch->bus1().name(), branch->phases0(),
                            branch->phases1(), branch->Y());
       }
+
       solver_.validate();
+
+      bool ok = solver_.solve();
+
+      if (ok)
+      {
+         for (const auto & busPair: solver_.busses())
+         {
+            Bus * bus = findBus(busPair.second->id_);
+            bus->V() = busPair.second->V_; // Push the state back onto bus. We don't want to trigger any events.    
+         }
+      }
    }
 
    void Network::print()

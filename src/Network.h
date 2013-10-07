@@ -55,7 +55,7 @@ namespace SmartGridToolbox
 
          void addBranch(Branch & branch);
 
-         virtual void rebuildNetwork();
+         virtual void solvePowerFlow();
 
          void print();
       /// @}
