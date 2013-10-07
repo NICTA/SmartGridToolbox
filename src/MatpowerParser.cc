@@ -330,10 +330,15 @@ namespace SmartGridToolbox
             double yBase0 = MVABase * 1e6 / (VBase0 * VBase0); // Matpower input is in MW demand at V = 1 p.u.
             double yBase1 = MVABase * 1e6 / (VBase1 * VBase1); // Matpower input is in MW demand at V = 1 p.u.
 
-            Complex Y11 = yBase1 * ((ys + Complex{0, 0.5 * Bc}));
-            Complex Y00 = yBase0 * (Y11 / (tap * tap));
-            Complex Y01 = yBase1 * (-(ys / conj(cTap)));
-            Complex Y10 = yBase0 * (-(ys / cTap));
+            Complex Y11 = (ys + Complex{0, 0.5 * Bc});
+            Complex Y00 = Y11 / (tap * tap);
+            Complex Y01 = -(ys / conj(cTap));
+            Complex Y10 = -(ys / cTap);
+
+            Y00 *= yBase0;
+            Y10 *= yBase0;
+            Y01 *= yBase1;
+            Y11 *= yBase1;
 
             Branch & branch = mod.newComponent<Branch>(branchName(networkName, bus0Id, bus1Id), phases, phases);
 
