@@ -109,24 +109,26 @@ namespace SmartGridToolbox
       // Matpower input units:
       // Power is in MW.
       // Voltage is in p.u., with the base being specified in KV by the KVBase field.
-      // Admittance is in MW per (1 p.u. voltage)^2.
+      // Branch admittance is in p.u., that is, MVABase / (KVBase)^2.
+      // Shunt admittance is in MW / (KVBase)^2.
       
       // Power in SI = input * 1e6.
       // Voltage in SI = input * 1000 * KVBase.
-      // Admittance in SI = input * 1e6 / (1000 * KVBase)^2 = input / KVBase^2.
+      // Branch admittance in SI = input * 1e6 * MVABase / KVBase^2.
+      // Shunt admittance in SI = input * 1e6 / KVBase^2.
       
-      // Matpower internal units:
-      // Power is input value divided by the BaseMVA value specified in the input: thus in MW / BaseMVA.
-      // Voltage remains in p.u.
-      // Admittance is input value divided by BaseMVA.
+      // Matpower input to internal units (p.u.):
+      // Power is p.u. : input value divided by MVABase.
+      // Voltage remains in p.u. : input value.
+      // Branch admittance remains in p.u. : input value.
+      // Shunt admittance is p.u. : input value divided by MVABase.
       
       // SI to matpower internal:
-      // Divide SI power by (1e6 * BaseMVA)
-      // Divide SI voltage by (1000 * KVBase)
+      // P_mp_intl = P_SI / (1e6 * MVABase)
+      // V_mp_intl = V_SI / (1000 * KVBase)
+      // y_mp_intl = y_SI * MVABase / KVBase^2 
 
       // TODO: Investigate what effect the generator base power field has on matpower by looking at the code.
-
-      const double PBase = 1e6;
 
       SGT_DEBUG(debug() << "Matpower : parse." << std::endl);
 
@@ -209,12 +211,11 @@ namespace SmartGridToolbox
 
             double Pd = busMatrix[busCols * i + 2];
             double Qd = busMatrix[busCols * i + 3];
-            busInfo.S = -Complex(Pd, Qd) * PBase; // Injection is -ve load.
+            busInfo.S = -Complex(Pd, Qd) * 1e6; // Injection is -ve load.
 
             double Gs = busMatrix[busCols * i + 4];
             double Bs = busMatrix[busCols * i + 5];
-            double yBase = MVABase * 1e6 / (busInfo.VBase * busInfo.VBase); // MW demand at V = 1 p.u.
-            busInfo.Ys = Complex(Gs, Bs) * yBase;
+            busInfo.Ys = Complex(Gs, Bs) * 1e6 / (busInfo.VBase * busInfo.VBase);
 
             double Vm = busMatrix[busCols * i + 7];
             double Va = busMatrix[busCols * i + 8];
@@ -230,8 +231,8 @@ namespace SmartGridToolbox
             double Qg  = genMatrix[genCols * i + 2];
             double Vg  = genMatrix[genCols * i + 5];
 
-            busInfo.S += Complex(Pg, Qg) * PBase;
-            busInfo.V *= (Vg * busInfo.VBase) / abs(busInfo.V);
+            busInfo.S += Complex(Pg, Qg) * 1e6;
+            busInfo.V *= (Vg * busInfo.VBase) / abs(busInfo.V); // Scale V of bus to match specified generator V.
          }
       }
 
@@ -324,13 +325,14 @@ namespace SmartGridToolbox
 
             Complex ys = 1.0 / Complex{Rs, Xs};
 
-            double yBase0 = MVABase * 1e6 / (VBase0 * VBase0); // Matpower input is in MW demand at V = 1 p.u.
-            double yBase1 = MVABase * 1e6 / (VBase1 * VBase1); // Matpower input is in MW demand at V = 1 p.u.
-
             Complex Y11 = (ys + Complex{0, 0.5 * Bc});
             Complex Y00 = Y11 / (tap * tap);
             Complex Y01 = -(ys / conj(cTap));
             Complex Y10 = -(ys / cTap);
+
+            // TODO: scaling across a transformer, looks fishy. Careful.
+            double yBase0 = 1e6 * MVABase / (VBase0 * VBase0);
+            double yBase1 = 1e6 * MVABase / (VBase1 * VBase1);
 
             Y00 *= yBase0;
             Y10 *= yBase0;
