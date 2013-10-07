@@ -209,7 +209,6 @@ namespace SmartGridToolbox
 
             double Pd = busMatrix[busCols * i + 2];
             double Qd = busMatrix[busCols * i + 3];
-            std::cout << Pd << " " << PBase << " " << Pd * PBase << std::endl;
             busInfo.S = -Complex(Pd, Qd) * PBase; // Injection is -ve load.
 
             double Gs = busMatrix[busCols * i + 4];
@@ -273,9 +272,7 @@ namespace SmartGridToolbox
             Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec / scaleV, VVec / scaleV);
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
-            std::cout << SVec << " " << scaleP << std::endl;
             zip.S() = SVec / scaleP;
-            std::cout << "zip S = " << zip.S() << std::endl;
             zip.Y() = YsVec / scaleY;
             bus.addZipToGround(zip);
 
