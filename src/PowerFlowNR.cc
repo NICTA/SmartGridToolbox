@@ -222,14 +222,10 @@ namespace SmartGridToolbox
       // Load quantities.
       IcR_.resize(nNode(), false);
       IcI_.resize(nNode(), false);
-      Pc_.resize(nNode(), false);
-      Qc_.resize(nNode(), false);
       for (int i = 0; i < nNode(); ++i)
       {
          IcR_(i) = nodes_[i]->I_.real();
          IcI_(i) = nodes_[i]->I_.imag();
-         Pc_(i) = nodes_[i]->S_.real();
-         Qc_(i) = nodes_[i]->S_.imag();
       }
 
       SGT_DEBUG(debug() << "PowerFlowNR : validate complete." << std::endl);
@@ -249,12 +245,12 @@ namespace SmartGridToolbox
 
    void PowerFlowNR::initS(UblasVector<double> & P, UblasVector<double> & Q) const
    {
-      project(P, selPQ()) = PPQ_;
-      project(Q, selPQ()) = QPQ_;
-      project(P, selPV()) = PPV_;
-      auto QPV = project(Q, selPV());
-      auto PSL = project(P, selSL());
-      auto QSL = project(Q, selSL());
+      project(P, selPQFromAll()) = PPQ_;
+      project(Q, selPQFromAll()) = QPQ_;
+      project(P, selPVFromAll()) = PPV_;
+      auto QPV = project(Q, selPVFromAll());
+      auto PSL = project(P, selSLFromAll());
+      auto QSL = project(Q, selSLFromAll());
       for (int i = 0; i < nPV_; ++i)
       {
          QPV(i) = 0;
@@ -269,48 +265,48 @@ namespace SmartGridToolbox
    /// Set the part of J that doesn't update at each iteration.
    void PowerFlowNR::initJC(UblasCMatrix<double> & JC) const
    {
-      project(JC, selfIrPQ(), selVrPQ()) = -project(G_, selPQ(), selPQ());
-      project(JC, selfIrPQ(), selViPQ()) =  project(B_, selPQ(), selPQ());
-      project(JC, selfIiPQ(), selVrPQ()) = -project(B_, selPQ(), selPQ());
-      project(JC, selfIiPQ(), selViPQ()) = -project(G_, selPQ(), selPQ());
+      project(JC, selIrPQFromf(), selVrPQFromx()) = -project(G_, selPQFromAll(), selPQFromAll());
+      project(JC, selIrPQFromf(), selViPQFromx()) =  project(B_, selPQFromAll(), selPQFromAll());
+      project(JC, selIiPQFromf(), selVrPQFromx()) = -project(B_, selPQFromAll(), selPQFromAll());
+      project(JC, selIiPQFromf(), selViPQFromx()) = -project(G_, selPQFromAll(), selPQFromAll());
 
-      project(JC, selfIrPV(), selVrPQ()) = -project(G_, selPV(), selPQ());
-      project(JC, selfIrPV(), selViPQ()) =  project(B_, selPV(), selPQ());
-      project(JC, selfIiPV(), selVrPQ()) = -project(B_, selPV(), selPQ());
-      project(JC, selfIiPV(), selViPQ()) = -project(G_, selPV(), selPQ());
+      project(JC, selIrPVFromf(), selVrPQFromx()) = -project(G_, selPVFromAll(), selPQFromAll());
+      project(JC, selIrPVFromf(), selViPQFromx()) =  project(B_, selPVFromAll(), selPQFromAll());
+      project(JC, selIiPVFromf(), selVrPQFromx()) = -project(B_, selPVFromAll(), selPQFromAll());
+      project(JC, selIiPVFromf(), selViPQFromx()) = -project(G_, selPVFromAll(), selPQFromAll());
 
-      project(JC, selfIrPQ(), selViPV()) =  project(B_, selPQ(), selPV());
-      project(JC, selfIiPQ(), selViPV()) = -project(G_, selPQ(), selPV());
+      project(JC, selIrPQFromf(), selViPVFromx()) =  project(B_, selPQFromAll(), selPVFromAll());
+      project(JC, selIiPQFromf(), selViPVFromx()) = -project(G_, selPQFromAll(), selPVFromAll());
 
-      project(JC, selfIrPV(), selViPV()) =  project(B_, selPV(), selPV());
-      project(JC, selfIiPV(), selViPV()) = -project(G_, selPV(), selPV());
+      project(JC, selIrPVFromf(), selViPVFromx()) =  project(B_, selPVFromAll(), selPVFromAll());
+      project(JC, selIiPVFromf(), selViPVFromx()) = -project(G_, selPVFromAll(), selPVFromAll());
    }
 
    void PowerFlowNR::updatef(UblasVector<double> & f,
                              const UblasVector<double> & Vr, const UblasVector<double> & Vi,
                              const UblasVector<double> & P, const UblasVector<double> & Q) const
    {
-      const auto GRng = project(G_, selPQPV(), selAll());
-      const auto BRng = project(B_, selPQPV(), selAll());
+      const auto GRng = project(G_, selPQPVFromAll(), selAllFromAll());
+      const auto BRng = project(B_, selPQPVFromAll(), selAllFromAll());
 
-      const auto VrPQPV = project(Vr, selPQPV());
-      const auto ViPQPV = project(Vi, selPQPV());
+      const auto VrPQPV = project(Vr, selPQPVFromAll());
+      const auto ViPQPV = project(Vi, selPQPVFromAll());
       
-      const auto PPQPV = project(P, selPQPV());
-      const auto QPQPV = project(Q, selPQPV());
+      const auto PPQPV = project(P, selPQPVFromAll());
+      const auto QPQPV = project(Q, selPQPVFromAll());
 
       UblasVector<double> M2PQPV = element_prod(VrPQPV, VrPQPV) + element_prod(ViPQPV, ViPQPV);
 
       auto Ir = element_div(element_prod(VrPQPV, PPQPV) + element_prod(ViPQPV, QPQPV), M2PQPV)
-                            + project(IcR_, selPQPV())
+                            + project(IcR_, selPQPVFromAll())
                             - prod(GRng, Vr) + prod(BRng, Vi);
       auto Ii = element_div(element_prod(ViPQPV, PPQPV) - element_prod(VrPQPV, QPQPV), M2PQPV)
-                            + project(IcI_, selPQPV())
+                            + project(IcI_, selPQPVFromAll())
                             - prod(GRng, Vi) - prod(BRng, Vr);
-      project(f, selfIrPQ()) = project(Ir, selPQ());
-      project(f, selfIiPQ()) = project(Ii, selPQ());
-      project(f, selfIrPV()) = project(Ir, selPV());
-      project(f, selfIiPV()) = project(Ii, selPV());
+      project(f, selIrPQFromf()) = project(Ir, selPQFromPQPV());
+      project(f, selIiPQFromf()) = project(Ii, selPQFromPQPV());
+      project(f, selIrPVFromf()) = project(Ir, selPVFromPQPV());
+      project(f, selIiPVFromf()) = project(Ii, selPVFromPQPV());
    }
 
    void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JC,
@@ -321,65 +317,65 @@ namespace SmartGridToolbox
       // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
       // Thus we need to do (PQ,PQ) diagonal and (*, PV) columns.
     
-      auto VrPQ = project(Vr, selPQ());
-      auto ViPQ = project(Vi, selPQ());
-      auto PPQ = project(P, selPQ());
-      auto QPQ = project(Q, selPQ());
+      auto VrPQ = project(Vr, selPQFromAll());
+      auto ViPQ = project(Vi, selPQFromAll());
+      auto PPQ = project(P, selPQFromAll());
+      auto QPQ = project(Q, selPQFromAll());
 
-      auto VrPV = project(Vr, selPV());
-      auto ViPV = project(Vi, selPV());
-      auto PPV = project(P, selPV());
-      auto QPV = project(Q, selPV());
+      auto VrPV = project(Vr, selPVFromAll());
+      auto ViPV = project(Vi, selPVFromAll());
+      auto PPV = project(P, selPVFromAll());
+      auto QPV = project(Q, selPVFromAll());
 
       // (PQ, PQ):
-      auto JPQIrPQVr = project(J, selfIrPQ(), selVrPQ());
-      auto JPQIrPQVi = project(J, selfIrPQ(), selViPQ());
-      auto JPQIiPQVr = project(J, selfIiPQ(), selVrPQ());
-      auto JPQIiPQVi = project(J, selfIiPQ(), selViPQ());
+      auto JPQIrPQVr = project(J, selIrPQFromf(), selVrPQFromx());
+      auto JPQIrPQVi = project(J, selIrPQFromf(), selViPQFromx());
+      auto JPQIiPQVr = project(J, selIiPQFromf(), selVrPQFromx());
+      auto JPQIiPQVi = project(J, selIiPQFromf(), selViPQFromx());
 
-      auto JCPQIrPQVr = project(JC, selfIrPQ(), selVrPQ());
-      auto JCPQIrPQVi = project(JC, selfIrPQ(), selViPQ());
-      auto JCPQIiPQVr = project(JC, selfIiPQ(), selVrPQ());
-      auto JCPQIiPQVi = project(JC, selfIiPQ(), selViPQ());
+      auto JCPQIrPQVr = project(JC, selIrPQFromf(), selVrPQFromx());
+      auto JCPQIrPQVi = project(JC, selIrPQFromf(), selViPQFromx());
+      auto JCPQIiPQVr = project(JC, selIiPQFromf(), selVrPQFromx());
+      auto JCPQIiPQVi = project(JC, selIiPQFromf(), selViPQFromx());
       
       // (PQ, PV)
-      auto JPQIrPVQ = project(J, selfIrPQ(), selQPV());
-      auto JPQIrPVVi = project(J, selfIrPQ(), selViPV());
-      auto JPQIiPVQ = project(J, selfIiPQ(), selQPV());
-      auto JPQIiPVVi = project(J, selfIiPQ(), selViPV());
+      auto JPQIrPVQ = project(J, selIrPQFromf(), selQPVFromx());
+      auto JPQIrPVVi = project(J, selIrPQFromf(), selViPVFromx());
+      auto JPQIiPVQ = project(J, selIiPQFromf(), selQPVFromx());
+      auto JPQIiPVVi = project(J, selIiPQFromf(), selViPVFromx());
 
-      auto JCPQIrPVQ = project(JC, selfIrPQ(), selQPV());
-      auto JCPQIrPVVi = project(JC, selfIrPQ(), selViPV());
-      auto JCPQIiPVQ = project(JC, selfIiPQ(), selQPV());
-      auto JCPQIiPVVi = project(JC, selfIiPQ(), selViPV());
+      auto JCPQIrPVQ = project(JC, selIrPQFromf(), selQPVFromx());
+      auto JCPQIrPVVi = project(JC, selIrPQFromf(), selViPVFromx());
+      auto JCPQIiPVQ = project(JC, selIiPQFromf(), selQPVFromx());
+      auto JCPQIiPVVi = project(JC, selIiPQFromf(), selViPVFromx());
 
-      auto GPQPV = project(G_, selPQ(), selPV());
-      auto BPQPV = project(G_, selPQ(), selPV());
+      auto GPQPV = project(G_, selPQFromAll(), selPVFromAll());
+      auto BPQPV = project(G_, selPQFromAll(), selPVFromAll());
 
       // (PV, PQ):
-      auto JPVIrPQIr = project(J, selfIrPV(), selVrPQ());
-      auto JPVIrPQIi = project(J, selfIrPV(), selViPQ());
-      auto JPVIiPQIr = project(J, selfIiPV(), selVrPQ());
-      auto JPVIiPQIi = project(J, selfIiPV(), selViPQ());
+      auto JPVIrPQIr = project(J, selIrPVFromf(), selVrPQFromx());
+      auto JPVIrPQIi = project(J, selIrPVFromf(), selViPQFromx());
+      auto JPVIiPQIr = project(J, selIiPVFromf(), selVrPQFromx());
+      auto JPVIiPQIi = project(J, selIiPVFromf(), selViPQFromx());
 
-      auto JCPVIrPQIr = project(JC, selfIrPV(), selVrPQ());
-      auto JCPVIrPQIi = project(JC, selfIrPV(), selViPQ());
-      auto JCPVIiPQIr = project(JC, selfIiPV(), selVrPQ());
-      auto JCPVIiPQIi = project(JC, selfIiPV(), selViPQ());
+      auto JCPVIrPQIr = project(JC, selIrPVFromf(), selVrPQFromx());
+      auto JCPVIrPQIi = project(JC, selIrPVFromf(), selViPQFromx());
+      auto JCPVIiPQIr = project(JC, selIiPVFromf(), selVrPQFromx());
+      auto JCPVIiPQIi = project(JC, selIiPVFromf(), selViPQFromx());
 
       // (PV, PV):
-      auto JPVIrPVQ = project(J, selfIrPV(), selQPV());
-      auto JPVIrPVVi = project(J, selfIrPV(), selViPV());
-      auto JPVIiPVQ = project(J, selfIiPV(), selQPV());
-      auto JPVIiPVVi = project(J, selfIiPV(), selViPV());
+      auto JPVIrPVQ = project(J, selIrPVFromf(), selQPVFromx());
+      auto JPVIrPVVi = project(J, selIrPVFromf(), selViPVFromx());
+      auto JPVIiPVQ = project(J, selIiPVFromf(), selQPVFromx());
+      auto JPVIiPVVi = project(J, selIiPVFromf(), selViPVFromx());
 
-      auto JCPVIrPVQ = project(JC, selfIrPV(), selQPV());
-      auto JCPVIrPVVi = project(JC, selfIrPV(), selViPV());
-      auto JCPVIiPVQ = project(JC, selfIiPV(), selQPV());
-      auto JCPVIiPVVi = project(JC, selfIiPV(), selViPV());
+      auto JCPVIrPVQ = project(JC, selIrPVFromf(), selQPVFromx());
+      auto JCPVIrPVVi = project(JC, selIrPVFromf(), selViPVFromx());
+      auto JCPVIiPVQ = project(JC, selIiPVFromf(), selQPVFromx());
+      auto JCPVIiPVVi = project(JC, selIiPVFromf(), selViPVFromx());
 
-      auto GPVPV = project(G_, selPV(), selPV());
-      auto BPVPV = project(G_, selPV(), selPV());
+      auto GPVPV = project(G_, selPVFromAll(), selPVFromAll());
+      auto BPVPV = project(G_, selPVFromAll(), selPVFromAll());
 
       // (PQ, PQ) block diagonal:
       for (int i = 0; i < nPQ_; ++i)
@@ -491,7 +487,7 @@ namespace SmartGridToolbox
          );
 
          bool ok = KLUSolve(J, -f, rhs);
-         SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", rhs = " << std::setw(8) << rhs << std::endl);
+         SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", x = " << std::setw(8) << rhs << std::endl);
          if (!ok)
          {
             error() << "KLUSolve failed." << std::endl;
@@ -499,17 +495,18 @@ namespace SmartGridToolbox
          }
 
          // Update the current values of V from rhs:
-         project(Vr, selPQ()) += project(rhs, selVrPQ());
-         project(Vi, selPQ()) += project(rhs, selViPQ());
+         project(Vr, selPQFromAll()) += project(rhs, selVrPQFromx());
+         project(Vi, selPQFromAll()) += project(rhs, selViPQFromx());
 
-         project(Vi, selPV()) += project(rhs, selViPV());
-         project(Vr, selPV()) += element_div(M2PV_ - element_prod(project(Vr, selPV()), project(Vr, selPV()))
-                                                   - element_prod(project(Vi, selPV()), project(Vi, selPV())),
-                                             2 * project(Vr, selPV()))
-                               - element_div(element_prod(project(Vi, selPV()), project(rhs, selViPV())),
-                                             project(Vr, selPV()));
+         project(Vi, selPVFromAll()) += project(rhs, selViPVFromx());
+         project(Vr, selPVFromAll()) += 
+            element_div(M2PV_ - element_prod(project(Vr, selPVFromAll()), project(Vr, selPVFromAll()))
+                              - element_prod(project(Vi, selPVFromAll()), project(Vi, selPVFromAll())),
+                        2 * project(Vr, selPVFromAll()))
+            - element_div(element_prod(project(Vi, selPVFromAll()), project(rhs, selViPVFromx())),
+                          project(Vr, selPVFromAll()));
 
-         project(Q, selPV()) += project(rhs, selQPV());
+         project(Q, selPVFromAll()) += project(rhs, selQPVFromx());
          SGT_DEBUG(debug() << "\tUpdated Vr  = " << std::setw(8) << Vr << std::endl);
          SGT_DEBUG(debug() << "\tUpdated Vi  = " << std::setw(8) << Vi << std::endl);
          SGT_DEBUG(debug() << "\tUpdated M^2 = " << std::setw(8) 

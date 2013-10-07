@@ -101,31 +101,34 @@ namespace SmartGridToolbox
          unsigned int nNode() const {return nPQ_ + nPV_ + nSL_;}
          unsigned int nVar() const {return 2 * (nPQ_ + nPV_);}
 
-         UblasRange selPQ() const {return {0, nPQ_};}
-         UblasRange selPV() const {return {nPQ_, nPQ_ + nPV_};}
-         UblasRange selSL() const {return {nPQ_ + nPV_, nPQ_ + nPV_ + nSL_};}
-         UblasRange selPQPV() const {return {0, nPQ_ + nPV_};}
-         UblasRange selAll() const {return {0, nPQ_ + nPV_ + nSL_};}
+         UblasRange selSLFromAll() const {return {0, nSL_};}
+         UblasRange selPQFromAll() const {return {nSL_, nSL_ + nPQ_};}
+         UblasRange selPVFromAll() const {return {nSL_ + nPQ_, nSL_ + nPQ_ + nPV_};}
+         UblasRange selPQPVFromAll() const {return {nSL_, nSL_ + nPQ_ + nPV_};}
+         UblasRange selAllFromAll() const {return {0, nSL_ + nPQ_ + nPV_};}
 
-         //UblasSlice selfIrPQ() const {return {1, 2, nPQ_};}
-         //UblasSlice selfIiPQ() const {return {0, 2, nPQ_};}
-         //UblasSlice selfIrPV() const {return {2 * nPQ_ + 1, 2, nPV_};}
-         //UblasSlice selfIiPV() const {return {2 * nPQ_, 2, nPV_};}
+         UblasRange selPQFromPQPV() const {return {0, nPQ_};}
+         UblasRange selPVFromPQPV() const {return {nPQ_, nPQ_ + nPV_};}
 
-         //UblasSlice selVrPQ() const {return {0, 2, nPQ_};}
-         //UblasSlice selViPQ() const {return {1, 2, nPQ_};}
-         //UblasSlice selQPV() const {return {nPQ_+1, 2, nPV_};}
-         //UblasSlice selViPV() const {return {nPQ_, 2, nPV_};}
+         //UblasSlice selIrPQFromf() const {return {1, 2, nPQ_};}
+         //UblasSlice selIiPQFromf() const {return {0, 2, nPQ_};}
+         //UblasSlice selIrPVFromf() const {return {2 * nPQ_ + 1, 2, nPV_};}
+         //UblasSlice selIiPVFromf() const {return {2 * nPQ_, 2, nPV_};}
 
-         UblasRange selfIrPQ() const {return {0, nPQ_};}
-         UblasRange selfIiPQ() const {return {nPQ_ + nPV_, 2 * nPQ_ + nPV_};}
-         UblasRange selfIrPV() const {return {nPQ_, nPQ_ + nPV_};}
-         UblasRange selfIiPV() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
+         //UblasSlice selVrPQFromx() const {return {0, 2, nPQ_};}
+         //UblasSlice selViPQFromx() const {return {1, 2, nPQ_};}
+         //UblasSlice selQPVFromx() const {return {nPQ_+1, 2, nPV_};}
+         //UblasSlice selViPVFromx() const {return {nPQ_, 2, nPV_};}
 
-         UblasRange selVrPQ() const {return {0, nPQ_};}
-         UblasRange selViPQ() const {return {nPQ_, 2 * nPQ_};}
-         UblasRange selQPV() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
-         UblasRange selViPV() const {return {2 * nPQ_, 2 * nPQ_ + nPV_};}
+         UblasRange selIrPQFromf() const {return {0, nPQ_};}
+         UblasRange selIiPQFromf() const {return {nPQ_ + nPV_, 2 * nPQ_ + nPV_};}
+         UblasRange selIrPVFromf() const {return {nPQ_, nPQ_ + nPV_};}
+         UblasRange selIiPVFromf() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
+
+         UblasRange selVrPQFromx() const {return {0, nPQ_};}
+         UblasRange selViPQFromx() const {return {nPQ_, 2 * nPQ_};}
+         UblasRange selQPVFromx() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
+         UblasRange selViPVFromx() const {return {2 * nPQ_, 2 * nPQ_ + nPV_};}
          
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;
          void initS(UblasVector<double> & P, UblasVector<double> & Q) const;
@@ -145,9 +148,9 @@ namespace SmartGridToolbox
 
          /// @name Array bounds.
          /// @{
+         unsigned int nSL_;            ///< Number of slack nodes.
          unsigned int nPQ_;            ///< Number of PQ nodes.
          unsigned int nPV_;            ///< Number of PV nodes.
-         unsigned int nSL_;            ///< Number of slack nodes.
          /// @}
 
          // The following are NOT owned by me - they are owned by their parent Busses.
@@ -176,8 +179,6 @@ namespace SmartGridToolbox
          /// @{
          UblasVector<double> IcR_;     ///< Constant current component of load.
          UblasVector<double> IcI_;     ///< Constant current component of load.
-         UblasVector<double> Pc_;      ///< Constant power component of load.
-         UblasVector<double> Qc_;      ///< Constant power component of load.
          /// @}
    };
 }
