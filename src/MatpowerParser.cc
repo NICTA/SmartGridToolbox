@@ -152,11 +152,11 @@ namespace SmartGridToolbox
 
       double defaultVBase = nd["default_V_base"].as<double>();
 
-      const YAML::Node ndScaleV = nd["scale_V"];
-      double scaleV = ndScaleV ? ndScaleV.as<double>() : 1;
+      const YAML::Node ndVNewUnit = nd["V_new_unit"];
+      double VNewUnit = ndVNewUnit ? ndVNewUnit.as<double>() : 1;
       
-      const YAML::Node ndScaleP = nd["scale_P"];
-      double scaleP = ndScaleP ? ndScaleP.as<double>() : 1;
+      const YAML::Node ndNewUnit = nd["P_new_unit"];
+      double PNewUnit = ndNewUnit ? ndNewUnit.as<double>() : 1;
 
       // Parse in the raw matpower data.
       std::vector<double> busMatrix;
@@ -238,7 +238,7 @@ namespace SmartGridToolbox
 
       // Add new components.
       {
-         double scaleY = scaleP / (scaleV * scaleV);
+         double YNewUnit = PNewUnit / (VNewUnit * VNewUnit);
          Network & netw = mod.newComponent<Network>(networkName);
          for (const auto pair : busMap)
          {
@@ -270,11 +270,12 @@ namespace SmartGridToolbox
             UblasVector<Complex> SVec(phases.size(), info.S);
             UblasVector<Complex> YsVec(phases.size(), info.Ys);
 
-            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec / scaleV, VVec / scaleV);
+            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec / VNewUnit,
+                                              VVec / VNewUnit);
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
-            zip.S() = SVec / scaleP;
-            zip.Y() = YsVec / scaleY;
+            zip.S() = SVec / PNewUnit;
+            zip.Y() = YsVec / YNewUnit;
             bus.addZipToGround(zip);
 
             netw.addBus(bus);
@@ -351,7 +352,7 @@ namespace SmartGridToolbox
                branch.Y()(k, k + phases.size()) = Y01;
                branch.Y()(k + phases.size(), k) = Y10;
             }
-            branch.Y() /= scaleY;
+            branch.Y() /= YNewUnit;
 
             netw.addBranch(branch);
          }
