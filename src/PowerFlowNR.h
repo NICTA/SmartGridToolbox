@@ -21,16 +21,18 @@ namespace SmartGridToolbox
    {
       public:
          BusNR(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
-               const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S);
+               const UblasVector<Complex> & Ys, const UblasVector<Complex> & Ic, const UblasVector<Complex> & Sc);
          ~BusNR();
 
          std::string id_;                          ///< Externally relevant id.
          BusType type_;                            ///< Bus type.
          Phases phases_;                           ///< Bus phases.
          UblasVector<Complex> V_;                  ///< Voltage, one per phase.
-         UblasVector<Complex> Y_;                  ///< Constant admittance shunt, one per phase.
-         UblasVector<Complex> I_;                  ///< Constant current injection, one per phase.
-         UblasVector<Complex> S_;                  ///< Constant power injection, one per phase.
+         UblasVector<Complex> S_;                  ///< Total power injection, one per phase.
+
+         UblasVector<Complex> Ys_;                 ///< Constant admittance shunt, one per phase.
+         UblasVector<Complex> Ic_;                 ///< Constant current injection, one per phase.
+         UblasVector<Complex> Sc_;                 ///< Constant power injection, one per phase.
 
          typedef std::vector<NodeNR *> NodeVec;    ///< Nodes, one per phase.
          NodeVec nodes_;                           ///< Primary list of nodes.
@@ -57,9 +59,11 @@ namespace SmartGridToolbox
          int phaseIdx_;
 
          Complex V_;
-         Complex Y_;
-         Complex I_;
          Complex S_;
+
+         Complex Ys_;
+         Complex Ic_;
+         Complex Sc_;
 
          int idx_;
    };
@@ -155,18 +159,6 @@ namespace SmartGridToolbox
 
          // The following are NOT owned by me - they are owned by their parent Busses.
          NodeVec nodes_;
-         /// @}
-
-         /// @name Constant / supplied quantities.
-         /// @{
-         UblasVector<double> PPQ_;     ///< Constant real power injection of PQ nodes.
-         UblasVector<double> QPQ_;     ///< Constant reactive power injection of PQ nodes.
-
-         UblasVector<double> PPV_;     ///< Constant real power injection of PV nodes.
-         UblasVector<double> M2PV_;    ///< Constant voltage magnitude squared of PV nodes.
-
-         UblasVector<double> VSLr_;    ///< Slack voltages real part - one per phase.
-         UblasVector<double> VSLi_;    ///< Slack voltages imag part - one per phase.
          /// @}
 
          /// @name Y matrix.

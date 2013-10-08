@@ -65,9 +65,9 @@ namespace SmartGridToolbox
          const UblasVector<Complex> & Sc() const {return Sc_;}
          UblasVector<Complex> & Sc() {return Sc_;}
 
-         /// Total bus power injection (loads, gen).
-         const UblasVector<Complex> & STot() const {return STot_;}
-         UblasVector<Complex> & STot() {return STot_;}
+         /// Total power injection (loads, gen).
+         const UblasVector<Complex> & S() const {return S_;}
+         UblasVector<Complex> & S() {return S_;}
       /// @}
 
       /// @name My private member variables.
@@ -81,12 +81,11 @@ namespace SmartGridToolbox
          UblasVector<Complex> nominalV_;                       ///< Nominal voltage.
 
          UblasVector<Complex> V_;                              ///< Voltage.
+         UblasVector<Complex> S_;                              ///< Total power injection.
 
          UblasVector<Complex> Ys_;                             ///< Constant admittance shunt (loads).
          UblasVector<Complex> Ic_;                             ///< Constant current injection (loads).
          UblasVector<Complex> Sc_;                             ///< Constant power injection (loads).
-
-         UblasVector<Complex> STot_;                           ///< Total power injection.
       /// @}
    };
 }

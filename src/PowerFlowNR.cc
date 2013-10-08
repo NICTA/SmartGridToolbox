@@ -7,19 +7,20 @@
 namespace SmartGridToolbox
 {
    BusNR::BusNR(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
-                const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S) :
+                const UblasVector<Complex> & Ys, const UblasVector<Complex> & Ic, const UblasVector<Complex> & Sc) :
       id_(id),
       type_(type),
       phases_(phases),
       V_(V),
-      Y_(Y),
-      I_(I),
-      S_(S)
+      S_(Sc),
+      Ys_(Ys),
+      Ic_(Ic),
+      Sc_(Sc)
    {
       assert(V.size() == phases.size());
-      assert(Y.size() == phases.size());
-      assert(I.size() == phases.size());
-      assert(S.size() == phases.size());
+      assert(Ys.size() == phases.size());
+      assert(Ic.size() == phases.size());
+      assert(Sc.size() == phases.size());
 
       for (int i = 0; i < phases.size(); ++i)
       {
@@ -36,9 +37,10 @@ namespace SmartGridToolbox
       bus_(&bus),
       phaseIdx_(phaseIdx),
       V_(bus.V_(phaseIdx)),
-      Y_(bus.Y_(phaseIdx)),
-      I_(bus.I_(phaseIdx)),
       S_(bus.S_(phaseIdx)),
+      Ys_(bus.Ys_(phaseIdx)),
+      Ic_(bus.Ic_(phaseIdx)),
+      Sc_(bus.Sc_(phaseIdx)),
       idx_(-1)
    {
       // Empty.
@@ -173,7 +175,7 @@ namespace SmartGridToolbox
             int idxNodeI = nodeI->idx_;
 
             // Only count each diagonal element in branch->Y_ once!
-            Y(idxNodeI, idxNodeI) += branch->Y_(i, i) + nodeI->Y_;
+            Y(idxNodeI, idxNodeI) += branch->Y_(i, i) + nodeI->Ys_;
 
             for (int k = i + 1; k < nTerm; ++k)
             {
@@ -199,8 +201,8 @@ namespace SmartGridToolbox
       IcI_.resize(nNode(), false);
       for (int i = 0; i < nNode(); ++i)
       {
-         IcR_(i) = nodes_[i]->I_.real();
-         IcI_(i) = nodes_[i]->I_.imag();
+         IcR_(i) = nodes_[i]->Ic_.real();
+         IcI_(i) = nodes_[i]->Ic_.imag();
       }
 
       SGT_DEBUG(debug() << "PowerFlowNR : validate complete." << std::endl);
@@ -489,7 +491,9 @@ namespace SmartGridToolbox
          {
             NodeNR * node = nodes_[i];
             node->V_ = {Vr(i), Vi(i)};
+            node->S_ = {P(i), Q(i)};
             node->bus_->V_[node->phaseIdx_] = node->V_;
+            node->bus_->S_[node->phaseIdx_] = node->S_;
          }
          // TODO: set power e.g. on slack bus. Set current injections. Set impedances to ground. 
       }
@@ -508,9 +512,9 @@ namespace SmartGridToolbox
          debug() << "\t\t\tType  : " << nd->bus_->type_ << std::endl;
          debug() << "\t\t\tPhase : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
          debug() << "\t\t\tV     : " << nd->V_ << std::endl;
-         debug() << "\t\t\tY     : " << nd->Y_ << std::endl;
-         debug() << "\t\t\tI     : " << nd->I_ << std::endl;
-         debug() << "\t\t\tS     : " << nd->S_ << std::endl;
+         debug() << "\t\t\tY     : " << nd->Ys_ << std::endl;
+         debug() << "\t\t\tI     : " << nd->Ic_ << std::endl;
+         debug() << "\t\t\tS     : " << nd->Sc_ << std::endl;
       }
       debug() << "\tBranches:" << std::endl;
       for (const BranchNR * branch : branches_)
