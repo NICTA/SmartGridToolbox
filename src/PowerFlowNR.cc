@@ -125,41 +125,16 @@ namespace SmartGridToolbox
       nSL_ = SLNodes.size();
       assert(nSL_ > 0); // TODO: What is correct here?
 
-      // Insert nodes into ordered list of all nodes:
+      // Insert nodes into ordered list of all nodes. Be careful of ordering!
       nodes_ = NodeVec();
       nodes_.reserve(nNode());
+      nodes_.insert(nodes_.end(), SLNodes.begin(), SLNodes.end());
       nodes_.insert(nodes_.end(), PQNodes.begin(), PQNodes.end());
       nodes_.insert(nodes_.end(), PVNodes.begin(), PVNodes.end());
-      nodes_.insert(nodes_.end(), SLNodes.begin(), SLNodes.end());
       // Index all nodes:
       for (int i = 0; i < nNode(); ++i)
       {
          nodes_[i]->idx_ = i;
-      }
-
-      // Size and set up arrays of constant input quantities:
-      PPQ_.resize(nPQ_, false);
-      QPQ_.resize(nPQ_, false);
-      for (int i = 0; i < nPQ_; ++i)
-      {
-         PPQ_(i) = PQNodes[i]->S_.real();
-         QPQ_(i) = PQNodes[i]->S_.imag();
-      }
-
-      PPV_.resize(nPV_, false);
-      M2PV_.resize(nPV_, false);
-      for (int i = 0; i < nPV_; ++i)
-      {
-         PPV_(i) = PVNodes[i]->S_.real();
-         M2PV_(i) = PVNodes[i]->V_.real() * PVNodes[i]->V_.real() + PVNodes[i]->V_.imag() * PVNodes[i]->V_.imag();
-      }
-
-      VSLr_.resize(nSL_, false);
-      VSLi_.resize(nSL_, false);
-      for (int i = 0; i < nSL_; ++i)
-      {
-         VSLr_(i) = SLNodes[i]->V_.real();
-         VSLi_(i) = SLNodes[i]->V_.imag();
       }
 
       G_.resize(nNode(), nNode(), false);
@@ -245,20 +220,11 @@ namespace SmartGridToolbox
 
    void PowerFlowNR::initS(UblasVector<double> & P, UblasVector<double> & Q) const
    {
-      project(P, selPQFromAll()) = PPQ_;
-      project(Q, selPQFromAll()) = QPQ_;
-      project(P, selPVFromAll()) = PPV_;
-      auto QPV = project(Q, selPVFromAll());
-      auto PSL = project(P, selSLFromAll());
-      auto QSL = project(Q, selSLFromAll());
-      for (int i = 0; i < nPV_; ++i)
+      for (int i = 0; i < nNode(); ++i)
       {
-         QPV(i) = 0;
-      }
-      for (int i = 0; i < nSL_; ++i)
-      {
-         PSL(i) = 0;
-         QSL(i) = 0;
+         const NodeNR & node = *nodes_[i];
+         P(i) = node.S_.real();
+         Q(i) = node.S_.imag();
       }
    }
 
@@ -436,6 +402,9 @@ namespace SmartGridToolbox
       UblasVector<double> Vr(nNode());
       UblasVector<double> Vi(nNode());
       initV(Vr, Vi);
+     
+      auto M2PV = element_prod(project(Vr, selPVFromAll()), project(Vr, selPVFromAll()))
+                + element_prod(project(Vi, selPVFromAll()), project(Vi, selPVFromAll()));
 
       UblasVector<double> P(nNode());
       UblasVector<double> Q(nNode());
@@ -500,8 +469,8 @@ namespace SmartGridToolbox
 
          project(Vi, selPVFromAll()) += project(rhs, selViPVFromx());
          project(Vr, selPVFromAll()) += 
-            element_div(M2PV_ - element_prod(project(Vr, selPVFromAll()), project(Vr, selPVFromAll()))
-                              - element_prod(project(Vi, selPVFromAll()), project(Vi, selPVFromAll())),
+            element_div(M2PV - element_prod(project(Vr, selPVFromAll()), project(Vr, selPVFromAll()))
+                             - element_prod(project(Vi, selPVFromAll()), project(Vi, selPVFromAll())),
                         2 * project(Vr, selPVFromAll()))
             - element_div(element_prod(project(Vi, selPVFromAll()), project(rhs, selViPVFromx())),
                           project(Vr, selPVFromAll()));

@@ -64,7 +64,7 @@ namespace SmartGridToolbox
          for (const auto & busPair: solver_.busses())
          {
             Bus * bus = findBus(busPair.second->id_);
-            bus->V() = busPair.second->V_; // Push the state back onto bus. We don't want to trigger any events.    
+            bus->V() = busPair.second->V_; // Push the state back onto bus. We don't want to trigger any events.
          }
       }
    }
@@ -80,9 +80,9 @@ namespace SmartGridToolbox
          debug() << "\t\t\tType   : " << bus->type() << std::endl;
          debug() << "\t\t\tPhases : " << bus->phases() << std::endl;
          debug() << "\t\t\tV      : " << bus->V() << std::endl;
-         debug() << "\t\t\tY      : " << bus->Ys() << std::endl;
-         debug() << "\t\t\tI      : " << bus->Ic() << std::endl;
-         debug() << "\t\t\tS      : " << bus->Sc() << std::endl;
+         debug() << "\t\t\tYs     : " << bus->Ys() << std::endl;
+         debug() << "\t\t\tIc     : " << bus->Ic() << std::endl;
+         debug() << "\t\t\tSc     : " << bus->Sc() << std::endl;
       }
       debug() << "\tBranches:" << std::endl;
       for (const Branch * branch : branchVec_)

@@ -834,4 +834,24 @@ BOOST_AUTO_TEST_CASE (test_loops)
    outfile.close();
 }
 
+BOOST_AUTO_TEST_CASE (test_mp_SLPQ)
+{
+   Model mod;
+   Simulation sim(mod);
+   Parser & p = Parser::globalParser();
+   p.parse("test_mp_SLPQ.yaml", mod, sim);
+   mod.validate();
+   sim.initialize();
+
+   Network * network = mod.componentNamed<Network>("matpower");
+   Bus * bus1 = mod.componentNamed<Bus>("matpower_bus_1");
+   Bus * bus2 = mod.componentNamed<Bus>("matpower_bus_2");
+
+   network->solvePowerFlow();
+   message() << "test_mp_SLPQ: bus1->V() = " << bus1->V() << std::endl;
+   message() << "test_mp_SLPQ: bus2->V() = " << bus2->V() << std::endl;
+   BOOST_CHECK(bus1->V()(0) == Complex(1.0, 0.0)); // Slack bus, should be exact.
+   BOOST_CHECK(abs(bus2->V()(0) - Complex(0.91991, -0.07550)) < 0.001); // Compare against matpower answer.
+}
+
 BOOST_AUTO_TEST_SUITE_END( )
