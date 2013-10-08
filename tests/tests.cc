@@ -848,8 +848,14 @@ BOOST_AUTO_TEST_CASE (test_mp_SLPQ)
    Bus * bus2 = mod.componentNamed<Bus>("matpower_bus_2");
 
    network->solvePowerFlow();
-   message() << "test_mp_SLPQ: bus1->V() = " << bus1->V() << std::endl;
-   message() << "test_mp_SLPQ: bus2->V() = " << bus2->V() << std::endl;
+   message() << "test_mp_SLPQ: bus1->V()     = " << bus1->V() << std::endl;
+   message() << "test_mp_SLPQ: bus1->S()     = " << bus1->S() << std::endl;
+   message() << "test_mp_SLPQ: bus1->Sc()    = " << bus1->Sc() << std::endl;
+   message() << "test_mp_SLPQ: bus1->Sgen()  = " << (bus1->S() - bus1->Sc()) << std::endl;
+   message() << "test_mp_SLPQ: bus2->V()     = " << bus2->V() << std::endl;
+   message() << "test_mp_SLPQ: bus1->S()     = " << bus2->S() << std::endl;
+   message() << "test_mp_SLPQ: bus1->Sc()    = " << bus2->Sc() << std::endl;
+   message() << "test_mp_SLPQ: bus1->Sgen()  = " << (bus2->S() - bus2->Sc()) << std::endl;
    BOOST_CHECK(bus1->V()(0) == Complex(1.0, 0.0)); // Slack bus, should be exact.
    BOOST_CHECK(abs(bus2->V()(0) - Complex(0.91991, -0.07550)) < 0.001); // Compare against matpower answer.
 }

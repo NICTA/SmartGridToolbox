@@ -64,7 +64,10 @@ namespace SmartGridToolbox
          for (const auto & busPair: solver_.busses())
          {
             Bus * bus = findBus(busPair.second->id_);
-            bus->V() = busPair.second->V_; // Push the state back onto bus. We don't want to trigger any events.
+
+            // Push the state back onto bus. We don't want to trigger any events.
+            bus->V() = busPair.second->V_;
+            bus->S() = busPair.second->S_;
          }
       }
    }
