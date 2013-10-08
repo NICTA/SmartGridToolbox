@@ -80,12 +80,22 @@ namespace SmartGridToolbox
 
          UblasVector<Complex> nominalV_;                       ///< Nominal voltage.
 
+         /// @name Quantities due to operation of bus:
+         /** For PQ busses, the voltage is supposed to adjust so that the drawn power matches Sc_. Thus S_ will be
+          *  equal to Sc_. For PV busses, the reactive power is supposed to adjust to keep the voltage magnitude
+          *  constant. So S_ may differ in its reactive component from Sc_. For slack busses, the both the real and
+          *  reactive power will adjust to keep a constant voltage, so both components of S_ may differ from Sc_.*/
+         /// @{
          UblasVector<Complex> V_;                              ///< Voltage.
          UblasVector<Complex> S_;                              ///< Total power injection.
+         /// @}
 
+         /// @name ZIP load quantities:
+         /// @{
          UblasVector<Complex> Ys_;                             ///< Constant admittance shunt (loads).
          UblasVector<Complex> Ic_;                             ///< Constant current injection (loads).
          UblasVector<Complex> Sc_;                             ///< Constant power injection (loads).
+         /// @}
       /// @}
    };
 }

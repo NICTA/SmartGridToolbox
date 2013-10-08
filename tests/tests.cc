@@ -848,16 +848,31 @@ BOOST_AUTO_TEST_CASE (test_mp_SLPQ)
    Bus * bus2 = mod.componentNamed<Bus>("matpower_bus_2");
 
    network->solvePowerFlow();
-   message() << "test_mp_SLPQ: bus1->V()     = " << bus1->V() << std::endl;
-   message() << "test_mp_SLPQ: bus1->S()     = " << bus1->S() << std::endl;
-   message() << "test_mp_SLPQ: bus1->Sc()    = " << bus1->Sc() << std::endl;
-   message() << "test_mp_SLPQ: bus1->Sgen()  = " << (bus1->S() - bus1->Sc()) << std::endl;
-   message() << "test_mp_SLPQ: bus2->V()     = " << bus2->V() << std::endl;
-   message() << "test_mp_SLPQ: bus1->S()     = " << bus2->S() << std::endl;
-   message() << "test_mp_SLPQ: bus1->Sc()    = " << bus2->Sc() << std::endl;
-   message() << "test_mp_SLPQ: bus1->Sgen()  = " << (bus2->S() - bus2->Sc()) << std::endl;
-   BOOST_CHECK(bus1->V()(0) == Complex(1.0, 0.0)); // Slack bus, should be exact.
-   BOOST_CHECK(abs(bus2->V()(0) - Complex(0.91991, -0.07550)) < 0.001); // Compare against matpower answer.
+
+   Complex V1 = bus1->V()(0);
+   Complex V2 = bus2->V()(0);
+
+   Complex Sc1 = bus1->Sc()(0);
+   Complex Sc2 = bus2->Sc()(0);
+   
+   Complex Sgen1 = bus1->S()(0) - Sc1;
+   Complex Sgen2 = bus2->S()(0) - Sc2;
+
+   message() << "test_mp_SLPQ: bus1->V()     = " << V1 << std::endl;
+   message() << "test_mp_SLPQ: bus2->V()     = " << V2 << std::endl;
+   message() << "test_mp_SLPQ: bus1->Sc()    = " << Sc1 << std::endl;
+   message() << "test_mp_SLPQ: bus2->Sc()    = " << Sc2 << std::endl;
+   message() << "test_mp_SLPQ: bus1->Sgen()    = " << Sgen1 << std::endl;
+   message() << "test_mp_SLPQ: bus2->Sgen()    = " << Sgen2 << std::endl;
+
+   BOOST_CHECK(V1 == Complex(1.0, 0.0)); // Slack bus, should be exact.
+   BOOST_CHECK(abs(V2 - Complex(0.91991, -0.07550)) < 0.001); // Compare against matpower.
+
+   BOOST_CHECK(Sc1 == Complex(-0.5, -0.3099));
+   BOOST_CHECK(Sc2 == Complex(-1.7, -1.0535));
+
+   BOOST_CHECK(abs(Sgen1 - Complex(2.2463, 1.4998)) < 0.001); // Compare against matpower. 
+   BOOST_CHECK(Sgen2 == czero); // PQ, gen S is 0. 
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
