@@ -53,14 +53,14 @@ namespace SmartGridToolbox
 
    void Bus::initializeState()
    {
-      Y_ = UblasVector<Complex>(phases_.size(), czero);
-      I_ = UblasVector<Complex>(phases_.size(), czero);
-      S_ = UblasVector<Complex>(phases_.size(), czero);
+      Ys_ = UblasVector<Complex>(phases_.size(), czero);
+      Ic_ = UblasVector<Complex>(phases_.size(), czero);
+      Sc_ = UblasVector<Complex>(phases_.size(), czero);
       for (const ZipToGroundBase * zip : zipsToGround_)
       {
-         Y_ += zip->Y();
-         I_ += zip->I(); // Injection.
-         S_ += zip->S(); // Injection.
+         Ys_ += zip->Y();
+         Ic_ += zip->I(); // Injection.
+         Sc_ += zip->S(); // Injection.
       }
    }
 
@@ -68,13 +68,13 @@ namespace SmartGridToolbox
    {
       for (int i = 0; i < phases_.size(); ++i)
       {
-         Y_(i) = I_(i) = S_(i) = {0.0, 0.0};
+         Ys_(i) = Ic_(i) = Sc_(i) = {0.0, 0.0};
       }
       for (const ZipToGroundBase * zip : zipsToGround_)
       {
-         Y_ += zip->Y();
-         I_ += zip->I(); // Injection.
-         S_ += zip->S(); // Injection.
+         Ys_ += zip->Y();
+         Ic_ += zip->I(); // Injection.
+         Sc_ += zip->S(); // Injection.
       }
    }
 
@@ -85,9 +85,9 @@ namespace SmartGridToolbox
       phases_(phases),
       nominalV_(nominalV),
       V_(V),
-      Y_(UblasVector<Complex>(phases.size(), czero)),
-      I_(UblasVector<Complex>(phases.size(), czero)),
-      S_(UblasVector<Complex>(phases.size(), czero))
+      Ys_(UblasVector<Complex>(phases.size(), czero)),
+      Ic_(UblasVector<Complex>(phases.size(), czero)),
+      Sc_(UblasVector<Complex>(phases.size(), czero))
    {
       assert(nominalV_.size() == phases_.size());
    }

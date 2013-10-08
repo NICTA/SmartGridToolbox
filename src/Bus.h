@@ -1,5 +1,5 @@
-#ifndef BUS_DOT_H
-#define BUS_DOT_H
+#ifndef BUSc_DOT_H
+#define BUSc_DOT_H
 
 #include "Common.h"
 #include "Component.h"
@@ -53,14 +53,21 @@ namespace SmartGridToolbox
 
          void addZipToGround(ZipToGroundBase & zipToGround);
 
-         const UblasVector<Complex> & Y() const {return Y_;}
-         UblasVector<Complex> & Y() {return Y_;}
+         /// Total shunt admittance (loads).
+         const UblasVector<Complex> & Ys() const {return Ys_;}
+         UblasVector<Complex> & Ys() {return Ys_;}
 
-         const UblasVector<Complex> & I() const {return I_;} // Injection.
-         UblasVector<Complex> & I() {return I_;} // Injection.
+         /// Total constant current injection (loads).
+         const UblasVector<Complex> & Ic() const {return Ic_;}
+         UblasVector<Complex> & Ic() {return Ic_;}
 
-         const UblasVector<Complex> & S() const {return S_;} // Injection.
-         UblasVector<Complex> & S() {return S_;} // Injection.
+         /// Total constant power injection (loads).
+         const UblasVector<Complex> & Sc() const {return Sc_;}
+         UblasVector<Complex> & Sc() {return Sc_;}
+
+         /// Total bus power injection (loads, gen).
+         const UblasVector<Complex> & STot() const {return STot_;}
+         UblasVector<Complex> & STot() {return STot_;}
       /// @}
 
       /// @name My private member variables.
@@ -68,14 +75,20 @@ namespace SmartGridToolbox
       private:
          BusType type_;                                        ///< Bus type.
          Phases phases_;                                       ///< Phases.
+
          std::vector<const ZipToGroundBase *> zipsToGround_;   ///< ZIP loads of generation.
+
          UblasVector<Complex> nominalV_;                       ///< Nominal voltage.
+
          UblasVector<Complex> V_;                              ///< Voltage.
-         UblasVector<Complex> Y_;                              ///< Constant admittance shunt.
-         UblasVector<Complex> I_;                              ///< Constant current injection.
-         UblasVector<Complex> S_;                              ///< Constant power injection.
+
+         UblasVector<Complex> Ys_;                             ///< Constant admittance shunt (loads).
+         UblasVector<Complex> Ic_;                             ///< Constant current injection (loads).
+         UblasVector<Complex> Sc_;                             ///< Constant power injection (loads).
+
+         UblasVector<Complex> STot_;                           ///< Total power injection.
       /// @}
    };
 }
 
-#endif // BUS_DOT_H
+#endif // BUSc_DOT_H

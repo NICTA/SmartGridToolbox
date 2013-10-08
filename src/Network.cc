@@ -46,8 +46,8 @@ namespace SmartGridToolbox
       solver_.reset();
       for (const Bus * bus : busVec_)
       {
-         solver_.addBus(bus->name(), bus->type(), bus->phases(), bus->V(), bus->Y(), bus->I(),
-                        bus->S());
+         solver_.addBus(bus->name(), bus->type(), bus->phases(), bus->V(), bus->Ys(), bus->Ic(),
+                        bus->Sc());
       }
       for (const Branch * branch : branchVec_)
       {
@@ -80,9 +80,9 @@ namespace SmartGridToolbox
          debug() << "\t\t\tType   : " << bus->type() << std::endl;
          debug() << "\t\t\tPhases : " << bus->phases() << std::endl;
          debug() << "\t\t\tV      : " << bus->V() << std::endl;
-         debug() << "\t\t\tY      : " << bus->Y() << std::endl;
-         debug() << "\t\t\tI      : " << bus->I() << std::endl;
-         debug() << "\t\t\tS      : " << bus->S() << std::endl;
+         debug() << "\t\t\tY      : " << bus->Ys() << std::endl;
+         debug() << "\t\t\tI      : " << bus->Ic() << std::endl;
+         debug() << "\t\t\tS      : " << bus->Sc() << std::endl;
       }
       debug() << "\tBranches:" << std::endl;
       for (const Branch * branch : branchVec_)
