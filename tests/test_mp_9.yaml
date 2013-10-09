@@ -1,0 +1,20 @@
+# Sample SmartGridToolbox configuration file.
+# File format is YAML.
+
+--- # Marks the start of each configuration document.
+
+global:
+   configuration_name:        config_1
+   start_time:                2013-01-23 13:13:00
+   end_time:                  2013-01-23 15:13:00
+   lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
+   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
+
+objects: # And these are the actual objects.
+   matpower:
+      input_file:             case9.m
+      network_name:           matpower
+      default_V_base:         345e3
+      V_new_unit:             345e3
+      P_new_unit:             100e6
+--- # Marks the end of each configuration document.
