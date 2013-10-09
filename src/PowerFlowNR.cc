@@ -439,11 +439,9 @@ namespace SmartGridToolbox
          auto VrPV = project(Vr, selPVFromAll());
          auto ViPV = project(Vi, selPVFromAll());
          const auto DeltaViPV = project(x, selViPVFromx());
-         const UblasVector<double> DeltaVrPV = 
-            element_div(M2PV - element_prod(VrPV, VrPV) - element_prod(ViPV, ViPV) - 2 * element_prod(ViPV, DeltaViPV),
-                        2 * VrPV);
+         VrPV += element_div(M2PV - element_prod(VrPV, VrPV) - element_prod(ViPV, ViPV) 
+                             - 2 * element_prod(ViPV, DeltaViPV), 2 * VrPV);
          ViPV += DeltaViPV;
-         VrPV += DeltaVrPV;
 
          // Update Q for PV busses based on the solution.
          project(Q, selPVFromAll()) += project(x, selQPVFromx());
