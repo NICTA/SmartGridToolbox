@@ -235,8 +235,6 @@ namespace SmartGridToolbox
       project(JC, selIrFromf(), selViFromx()) =  BRng;
       project(JC, selIiFromf(), selVrFromx()) = -BRng;
       project(JC, selIiFromf(), selViFromx()) = -GRng;
-      std::cout << "initJC, JC = " << std::endl;
-      for (int i = 0; i < JC.size1(); ++i) std::cout << row(JC, i) << std::endl;
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
@@ -278,11 +276,8 @@ namespace SmartGridToolbox
       // Elements in J that have no non-constant part will be initialized to the corresponding term in JC at the
       // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
 
-      const auto G = real(Y_);
-      const auto B = imag(Y_);
-
       auto VrPQPV = project(Vr, selPQPVFromAll());
-      auto ViPQPV = project(Vr, selPQPVFromAll());
+      auto ViPQPV = project(Vi, selPQPVFromAll());
       auto PPQPV = project(P, selPQPVFromAll());
       auto QPQPV = project(Q, selPQPVFromAll());
 
@@ -328,8 +323,6 @@ namespace SmartGridToolbox
          JIiVr(i, i) = JCIiVr(i, i) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
          JIiVi(i, i) = JCIiVi(i, i) - (2 * VidM4 * PVi_m_QVr) + PdM2;
       }
-      std::cout << "updateJ, J = " << std::endl;
-      for (int i = 0; i < J.size1(); ++i) std::cout << row(J, i) << std::endl;
    }
 
    // Modify J and f to take into account PV busses.
