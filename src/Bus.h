@@ -40,7 +40,7 @@ namespace SmartGridToolbox
       /// @{
       public:
          Bus(const std::string & name, BusType type, const Phases & phases, const UblasVector<Complex> & nominalV,
-             const UblasVector<Complex> & V);
+             const UblasVector<Complex> & V, const UblasVector<Complex> & SGen);
 
          BusType type() const {return type_;}
 
@@ -65,9 +65,12 @@ namespace SmartGridToolbox
          const UblasVector<Complex> & Sc() const {return Sc_;}
          UblasVector<Complex> & Sc() {return Sc_;}
 
-         /// Total power injection (loads, gen).
-         const UblasVector<Complex> & S() const {return S_;}
-         UblasVector<Complex> & S() {return S_;}
+         /// Generator power injection.
+         const UblasVector<Complex> & SGen() const {return SGen_;}
+         UblasVector<Complex> & SGen() {return SGen_;}
+         
+         /// Total power injection (loads + gen).
+         const UblasVector<Complex> STot() const {return Sc_ + SGen_;}
       /// @}
 
       /// @name My private member variables.
@@ -81,13 +84,14 @@ namespace SmartGridToolbox
          UblasVector<Complex> nominalV_;                       ///< Nominal voltage.
 
          /// @name Quantities due to operation of bus:
-         /** For PQ busses, the voltage is supposed to adjust so that the drawn power matches Sc_. Thus S_ will be
-          *  equal to Sc_. For PV busses, the reactive power is supposed to adjust to keep the voltage magnitude
-          *  constant. So S_ may differ in its reactive component from Sc_. For slack busses, the both the real and
-          *  reactive power will adjust to keep a constant voltage, so both components of S_ may differ from Sc_.*/
+         /** For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_. 
+          *  Thus Sgen_ will be zero. For PV busses, the reactive power is supposed to adjust to keep the voltage
+          *  magnitude constant. So Sgen_ will in general have zero real power and nonzero reactive power. 
+          *  For slack busses, the both the real and reactive power will adjust to keep a constant voltage, 
+          *  both components of SGen may be nonzero.*/
          /// @{
          UblasVector<Complex> V_;                              ///< Voltage.
-         UblasVector<Complex> S_;                              ///< Total power injection.
+         UblasVector<Complex> SGen_;                           ///< Generator power.
          /// @}
 
          /// @name ZIP load quantities:

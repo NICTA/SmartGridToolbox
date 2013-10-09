@@ -46,8 +46,7 @@ namespace SmartGridToolbox
       solver_.reset();
       for (const Bus * bus : busVec_)
       {
-         solver_.addBus(bus->name(), bus->type(), bus->phases(), bus->V(), bus->Ys(), bus->Ic(),
-                        bus->Sc());
+         solver_.addBus(bus->name(), bus->type(), bus->phases(), bus->V(), bus->Ys(), bus->Ic(), bus->STot());
       }
       for (const Branch * branch : branchVec_)
       {
@@ -67,7 +66,7 @@ namespace SmartGridToolbox
 
             // Push the state back onto bus. We don't want to trigger any events.
             bus->V() = busPair.second->V_;
-            bus->S() = busPair.second->S_;
+            bus->SGen() = busPair.second->S_ - bus->Sc();
          }
       }
    }

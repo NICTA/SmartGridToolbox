@@ -855,8 +855,8 @@ BOOST_AUTO_TEST_CASE (test_mp_SLPQ)
    Complex Sc1 = bus1->Sc()(0);
    Complex Sc2 = bus2->Sc()(0);
    
-   Complex Sgen1 = bus1->S()(0) - Sc1;
-   Complex Sgen2 = bus2->S()(0) - Sc2;
+   Complex Sgen1 = bus1->SGen()(0);
+   Complex Sgen2 = bus2->SGen()(0);
 
    message() << "test_mp_SLPQ: bus1->V()     = " << V1 << std::endl;
    message() << "test_mp_SLPQ: bus2->V()     = " << V2 << std::endl;
@@ -866,7 +866,7 @@ BOOST_AUTO_TEST_CASE (test_mp_SLPQ)
    message() << "test_mp_SLPQ: bus2->Sgen()    = " << Sgen2 << std::endl;
 
    BOOST_CHECK(V1 == Complex(1.0, 0.0)); // Slack bus, should be exact.
-   BOOST_CHECK(abs(V2 - Complex(0.91991, -0.07550)) < 0.001); // Compare against matpower.
+   BOOST_CHECK(abs(V2 - polar(0.923, -4.692 * pi / 180)) < 0.001); // Compare against matpower.
 
    BOOST_CHECK(Sc1 == Complex(-0.5, -0.3099));
    BOOST_CHECK(Sc2 == Complex(-1.7, -1.0535));
@@ -896,8 +896,8 @@ BOOST_AUTO_TEST_CASE (test_mp_SLPV)
    Complex Sc1 = bus1->Sc()(0);
    Complex Sc2 = bus2->Sc()(0);
    
-   Complex Sgen1 = bus1->S()(0) - Sc1;
-   Complex Sgen2 = bus2->S()(0) - Sc2;
+   Complex Sgen1 = bus1->SGen()(0);
+   Complex Sgen2 = bus2->SGen()(0);
 
    message() << "test_mp_SLPV: bus1->V()     = " << V1 << std::endl;
    message() << "test_mp_SLPV: bus2->V()     = " << V2 << std::endl;
@@ -907,7 +907,7 @@ BOOST_AUTO_TEST_CASE (test_mp_SLPV)
    message() << "test_mp_SLPV: bus2->Sgen()    = " << Sgen2 << std::endl;
 
    BOOST_CHECK(V1 == Complex(1.0, 0.0)); // Slack bus, should be exact.
-   BOOST_CHECK(abs(V2 - Complex(1.0157, -0.094058)) < 0.001); // Compare against matpower.
+   BOOST_CHECK(abs(V2 - polar(1.020, -5.291 * pi / 180)) < 0.001); // Compare against matpower.
 
    BOOST_CHECK(Sc1 == Complex(-0.5, -0.3099));
    BOOST_CHECK(Sc2 == Complex(-1.7, -1.0535));
@@ -940,9 +940,9 @@ BOOST_AUTO_TEST_CASE (test_mp_SLPQPV)
    Complex Sc2 = bus2->Sc()(0);
    Complex Sc3 = bus3->Sc()(0);
    
-   Complex Sgen1 = bus1->S()(0) - Sc1;
-   Complex Sgen2 = bus2->S()(0) - Sc2;
-   Complex Sgen3 = bus3->S()(0) - Sc3;
+   Complex Sgen1 = bus1->SGen()(0);
+   Complex Sgen2 = bus2->SGen()(0);
+   Complex Sgen3 = bus3->SGen()(0);
 
    message() << "test_mp_SLPQPV: bus1->V()     = " << V1 << std::endl;
    message() << "test_mp_SLPQPV: bus2->V()     = " << V2 << std::endl;
@@ -955,8 +955,8 @@ BOOST_AUTO_TEST_CASE (test_mp_SLPQPV)
    message() << "test_mp_SLPQPV: bus3->Sgen()    = " << Sgen3 << std::endl;
 
    BOOST_CHECK(V1 == Complex(1.0, 0.0)); // Slack bus, should be exact.
-   BOOST_CHECK(abs(V2 - Complex(0.980302, 0.037008)) < 0.001); // Compare against matpower.
-   BOOST_CHECK(abs(V3 - Complex(1.01252, 0.12328)) < 0.001); // Compare against matpower.
+   BOOST_CHECK(abs(V2 - polar(0.981, 2.162 * pi / 180)) < 0.001); // Compare against matpower.
+   BOOST_CHECK(abs(V3 - polar(1.020, 6.942 * pi / 180)) < 0.001); // Compare against matpower.
 
    BOOST_CHECK(Sc1 == Complex(-0.5, -0.3099));
    BOOST_CHECK(Sc2 == Complex(-1.7, -1.0535));

@@ -7,20 +7,19 @@
 namespace SmartGridToolbox
 {
    BusNR::BusNR(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
-                const UblasVector<Complex> & Ys, const UblasVector<Complex> & Ic, const UblasVector<Complex> & Sc) :
+                const UblasVector<Complex> & Ys, const UblasVector<Complex> & Ic, const UblasVector<Complex> & S) :
       id_(id),
       type_(type),
       phases_(phases),
       V_(V),
-      S_(Sc),
+      S_(S),
       Ys_(Ys),
-      Ic_(Ic),
-      Sc_(Sc)
+      Ic_(Ic)
    {
       assert(V.size() == phases.size());
       assert(Ys.size() == phases.size());
       assert(Ic.size() == phases.size());
-      assert(Sc.size() == phases.size());
+      assert(S.size() == phases.size());
 
       for (int i = 0; i < phases.size(); ++i)
       {
@@ -40,7 +39,6 @@ namespace SmartGridToolbox
       S_(bus.S_(phaseIdx)),
       Ys_(bus.Ys_(phaseIdx)),
       Ic_(bus.Ic_(phaseIdx)),
-      Sc_(bus.Sc_(phaseIdx)),
       idx_(-1)
    {
       // Empty.
@@ -505,9 +503,9 @@ namespace SmartGridToolbox
          debug() << "\t\t\tType  : " << nd->bus_->type_ << std::endl;
          debug() << "\t\t\tPhase : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
          debug() << "\t\t\tV     : " << nd->V_ << std::endl;
-         debug() << "\t\t\tY     : " << nd->Ys_ << std::endl;
-         debug() << "\t\t\tI     : " << nd->Ic_ << std::endl;
-         debug() << "\t\t\tS     : " << nd->Sc_ << std::endl;
+         debug() << "\t\t\tS     : " << nd->S_ << std::endl;
+         debug() << "\t\t\tYs    : " << nd->Ys_ << std::endl;
+         debug() << "\t\t\tIc    : " << nd->Ic_ << std::endl;
       }
       debug() << "\tBranches:" << std::endl;
       for (const BranchNR * branch : branches_)

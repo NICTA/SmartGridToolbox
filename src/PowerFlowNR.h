@@ -21,7 +21,7 @@ namespace SmartGridToolbox
    {
       public:
          BusNR(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
-               const UblasVector<Complex> & Ys, const UblasVector<Complex> & Ic, const UblasVector<Complex> & Sc);
+               const UblasVector<Complex> & Ys, const UblasVector<Complex> & Ic, const UblasVector<Complex> & S);
          ~BusNR();
 
          std::string id_;                          ///< Externally relevant id.
@@ -32,7 +32,6 @@ namespace SmartGridToolbox
 
          UblasVector<Complex> Ys_;                 ///< Constant admittance shunt, one per phase.
          UblasVector<Complex> Ic_;                 ///< Constant current injection, one per phase.
-         UblasVector<Complex> Sc_;                 ///< Constant power injection, one per phase.
 
          typedef std::vector<NodeNR *> NodeVec;    ///< Nodes, one per phase.
          NodeVec nodes_;                           ///< Primary list of nodes.
@@ -63,7 +62,6 @@ namespace SmartGridToolbox
 
          Complex Ys_;
          Complex Ic_;
-         Complex Sc_;
 
          int idx_;
    };

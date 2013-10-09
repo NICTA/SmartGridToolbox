@@ -85,7 +85,8 @@ namespace SmartGridToolbox
       int mPType;
       double VBase;
       Complex V;
-      Complex S;
+      Complex SLoad;
+      Complex SGen;
       Complex Ys;
    };
 
@@ -211,7 +212,7 @@ namespace SmartGridToolbox
 
             double Pd = busMatrix[busCols * i + 2];
             double Qd = busMatrix[busCols * i + 3];
-            busInfo.S = -Complex(Pd, Qd) * 1e6; // Injection is -ve load.
+            busInfo.SLoad = -Complex(Pd, Qd) * 1e6; // Injection is -ve load.
 
             double Gs = busMatrix[busCols * i + 4];
             double Bs = busMatrix[busCols * i + 5];
@@ -231,7 +232,7 @@ namespace SmartGridToolbox
             double Qg  = genMatrix[genCols * i + 2];
             double Vg  = genMatrix[genCols * i + 5];
 
-            busInfo.S += Complex(Pg, Qg) * 1e6;
+            busInfo.SGen += Complex(Pg, Qg) * 1e6;
             busInfo.V *= (Vg * busInfo.VBase) / abs(busInfo.V); // Scale V of bus to match specified generator V.
          }
       }
@@ -267,14 +268,15 @@ namespace SmartGridToolbox
             }
 
             UblasVector<Complex> VVec(phases.size(), info.V);
-            UblasVector<Complex> SVec(phases.size(), info.S);
+            UblasVector<Complex> SLoadVec(phases.size(), info.SLoad);
+            UblasVector<Complex> SGenVec(phases.size(), info.SGen);
             UblasVector<Complex> YsVec(phases.size(), info.Ys);
 
             Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec / VNewUnit,
-                                              VVec / VNewUnit);
+                                              VVec / VNewUnit, SGenVec / PNewUnit);
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
-            zip.S() = SVec / PNewUnit;
+            zip.S() = SLoadVec / PNewUnit;
             zip.Y() = YsVec / YNewUnit;
             bus.addZipToGround(zip);
 
