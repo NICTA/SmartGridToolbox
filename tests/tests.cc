@@ -916,4 +916,55 @@ BOOST_AUTO_TEST_CASE (test_mp_SLPV)
    BOOST_CHECK(abs(Sgen2 - Complex(0, 1.8312)) < 0.001); // Compare against matpower. 
 }
 
+BOOST_AUTO_TEST_CASE (test_mp_SLPQPV)
+{
+   Model mod;
+   Simulation sim(mod);
+   Parser & p = Parser::globalParser();
+   p.parse("test_mp_SLPQPV.yaml", mod, sim);
+   mod.validate();
+   sim.initialize();
+
+   Network * network = mod.componentNamed<Network>("matpower");
+   Bus * bus1 = mod.componentNamed<Bus>("matpower_bus_1");
+   Bus * bus2 = mod.componentNamed<Bus>("matpower_bus_2");
+   Bus * bus3 = mod.componentNamed<Bus>("matpower_bus_3");
+
+   network->solvePowerFlow();
+
+   Complex V1 = bus1->V()(0);
+   Complex V2 = bus2->V()(0);
+   Complex V3 = bus3->V()(0);
+
+   Complex Sc1 = bus1->Sc()(0);
+   Complex Sc2 = bus2->Sc()(0);
+   Complex Sc3 = bus3->Sc()(0);
+   
+   Complex Sgen1 = bus1->S()(0) - Sc1;
+   Complex Sgen2 = bus2->S()(0) - Sc2;
+   Complex Sgen3 = bus3->S()(0) - Sc3;
+
+   message() << "test_mp_SLPQPV: bus1->V()     = " << V1 << std::endl;
+   message() << "test_mp_SLPQPV: bus2->V()     = " << V2 << std::endl;
+   message() << "test_mp_SLPQPV: bus3->V()     = " << V3 << std::endl;
+   message() << "test_mp_SLPQPV: bus1->Sc()    = " << Sc1 << std::endl;
+   message() << "test_mp_SLPQPV: bus2->Sc()    = " << Sc2 << std::endl;
+   message() << "test_mp_SLPQPV: bus3->Sc()    = " << Sc3 << std::endl;
+   message() << "test_mp_SLPQPV: bus1->Sgen()    = " << Sgen1 << std::endl;
+   message() << "test_mp_SLPQPV: bus2->Sgen()    = " << Sgen2 << std::endl;
+   message() << "test_mp_SLPQPV: bus3->Sgen()    = " << Sgen3 << std::endl;
+
+   BOOST_CHECK(V1 == Complex(1.0, 0.0)); // Slack bus, should be exact.
+   BOOST_CHECK(abs(V2 - Complex(0.980302, 0.037008)) < 0.001); // Compare against matpower.
+   BOOST_CHECK(abs(V3 - Complex(1.01252, 0.12328)) < 0.001); // Compare against matpower.
+
+   BOOST_CHECK(Sc1 == Complex(-0.5, -0.3099));
+   BOOST_CHECK(Sc2 == Complex(-1.7, -1.0535));
+   BOOST_CHECK(Sc3 == Complex(-0.8, -0.4958));
+
+   BOOST_CHECK(abs(Sgen1 - Complex(-0.1293, 0.7825)) < 0.001); // Compare against matpower. 
+   BOOST_CHECK(Sgen2 == czero); // PQ bus, no gen.
+   BOOST_CHECK(abs(Sgen3 - Complex(3.1800, 1.1523)) < 0.001); // Compare against matpower. 
+}
+
 BOOST_AUTO_TEST_SUITE_END( )
