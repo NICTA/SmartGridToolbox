@@ -393,7 +393,7 @@ namespace SmartGridToolbox
          updatef(f, Vr, Vi, P, Q, J);
          UblasVector<double> f2 = element_prod(f, f);
          err = sqrt(*std::max_element(f2.begin(), f2.end()));
-         SGT_DEBUG(debug() << "\tf  = " << std::setw(8) << f << std::endl);
+         SGT_DEBUG(debug() << "\tf  = " << std::setprecision(5) << std::setw(8) << f << std::endl);
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
          if (err <= tol)
          {
@@ -410,22 +410,23 @@ namespace SmartGridToolbox
 
          SGT_DEBUG
          (
-            debug() << "\tBefore KLUSolve: Vr  = " << std::setw(8) << Vr << std::endl;
-            debug() << "\tBefore KLUSolve: Vi  = " << std::setw(8) << Vi << std::endl;
-            debug() << "\tBefore KLUSolve: M^2 = " << std::setw(8)
+            debug() << "\tBefore KLUSolve: Vr  = " << std::setprecision(5) << std::setw(8) << Vr << std::endl;
+            debug() << "\tBefore KLUSolve: Vi  = " << std::setprecision(5) << std::setw(8) << Vi << std::endl;
+            debug() << "\tBefore KLUSolve: M^2 = " << std::setprecision(5) << std::setw(8)
                     << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl;
-            debug() << "\tBefore KLUSolve: P   = " << std::setw(8) << P << std::endl;
-            debug() << "\tBefore KLUSolve: Q   = " << std::setw(8) << Q << std::endl;
-            debug() << "\tBefore KLUSolve: f   = " << std::setw(8) << f << std::endl;
+            debug() << "\tBefore KLUSolve: P   = " << std::setprecision(5) << std::setw(8) << P << std::endl;
+            debug() << "\tBefore KLUSolve: Q   = " << std::setprecision(5) << std::setw(8) << Q << std::endl;
+            debug() << "\tBefore KLUSolve: f   = " << std::setprecision(5) << std::setw(8) << f << std::endl;
             debug() << "\tBefore KLUSolve: J   = " << std::endl;
             for (int i = 0; i < nVar(); ++i)
             {
-               debug() << "\t\t" << std::setw(8) << row(J, i) << std::endl;
+               debug() << "\t\t" << std::setprecision(5) << std::setw(8) << row(J, i) << std::endl;
             }
          );
 
          bool ok = KLUSolve(J, -f, x);
-         SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", x = " << std::setw(8) << x << std::endl);
+         SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", x = " << std::setprecision(5) << std::setw(8)
+                           << x << std::endl);
          if (!ok)
          {
             error() << "KLUSolve failed." << std::endl;
@@ -447,12 +448,12 @@ namespace SmartGridToolbox
          // Update Q for PV busses based on the solution.
          project(Q, selPVFromAll()) += project(x, selQPVFromx());
 
-         SGT_DEBUG(debug() << "\tUpdated Vr  = " << std::setw(8) << Vr << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated Vi  = " << std::setw(8) << Vi << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated M^2 = " << std::setw(8)
+         SGT_DEBUG(debug() << "\tUpdated Vr  = " << std::setprecision(5) << std::setw(8) << Vr << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated Vi  = " << std::setprecision(5) << std::setw(8) << Vi << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated M^2 = " << std::setprecision(5) << std::setw(8)
                            << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated P   = " << std::setw(8) << P << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated Q   = " << std::setw(8) << Q << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated P   = " << std::setprecision(5) << std::setw(8) << P << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated Q   = " << std::setprecision(5) << std::setw(8) << Q << std::endl);
       }
       if (wasSuccessful)
       {
@@ -519,13 +520,13 @@ namespace SmartGridToolbox
          debug() << "\t\t\tY      :" << std::endl;
          for (int i = 0; i < branch->Y_.size1(); ++i)
          {
-            debug() << "\t\t\t\t" << std::setw(16) << row(branch->Y_, i) << std::endl;
+            debug() << "\t\t\t\t" << std::setprecision(5) << std::setw(16) << row(branch->Y_, i) << std::endl;
          }
       }
       debug() << "\tY:" << std::endl;
       for (int i = 0; i < Y_.size1(); ++i)
       {
-         debug() << "\t\t\t\t" << std::setw(16) << row(Y_, i) << std::endl;
+         debug() << "\t\t\t\t" << std::setprecision(5) << std::setw(16) << row(Y_, i) << std::endl;
       }
    }
 }
