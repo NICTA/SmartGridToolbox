@@ -111,39 +111,33 @@ namespace SmartGridToolbox
          UblasRange selPQPVFromAll() const {return {nSL_, nSL_ + nPQ_ + nPV_};}
          UblasRange selAllFromAll() const {return {0, nSL_ + nPQ_ + nPV_};}
 
-         UblasRange selPQFromPQPV() const {return {0, nPQ_};}
-         UblasRange selPVFromPQPV() const {return {nPQ_, nPQ_ + nPV_};}
-
-         //UblasSlice selIrPQFromf() const {return {1, 2, nPQ_};}
-         //UblasSlice selIiPQFromf() const {return {0, 2, nPQ_};}
-         //UblasSlice selIrPVFromf() const {return {2 * nPQ_ + 1, 2, nPV_};}
-         //UblasSlice selIiPVFromf() const {return {2 * nPQ_, 2, nPV_};}
-
-         //UblasSlice selVrPQFromx() const {return {0, 2, nPQ_};}
-         //UblasSlice selViPQFromx() const {return {1, 2, nPQ_};}
-         //UblasSlice selQPVFromx() const {return {nPQ_+1, 2, nPV_};}
-         //UblasSlice selViPVFromx() const {return {nPQ_, 2, nPV_};}
-
-         UblasRange selIrPQFromf() const {return {0, nPQ_};}
-         UblasRange selIiPQFromf() const {return {nPQ_ + nPV_, 2 * nPQ_ + nPV_};}
+         UblasRange selIrFromf() const {return {0, nPQ_ + nPV_};}
+         UblasRange selIiFromf() const {return {nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
+         UblasRange selAllFromf() const {return {0, 2 * (nPQ_ + nPV_)};}
          UblasRange selIrPVFromf() const {return {nPQ_, nPQ_ + nPV_};}
          UblasRange selIiPVFromf() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
 
+         UblasRange selVrFromx() const {return {0, nPQ_ + nPV_};} ///< i.e. as if all busses were PQ.
+         UblasRange selViFromx() const {return {nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};} ///< i.e. as if all busses were PQ.
          UblasRange selVrPQFromx() const {return {0, nPQ_};}
-         UblasRange selViPQFromx() const {return {nPQ_, 2 * nPQ_};}
-         UblasRange selQPVFromx() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
-         UblasRange selViPVFromx() const {return {2 * nPQ_, 2 * nPQ_ + nPV_};}
+         UblasRange selViPQFromx() const {return {nPQ_ + nPV_, 2 * nPQ_ + nPV_};}
+         UblasRange selQPVFromx() const {return {nPQ_, nPQ_ + nPV_};}
+         UblasRange selViPVFromx() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
          
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;
          void initS(UblasVector<double> & P, UblasVector<double> & Q) const;
          void initJC(UblasCMatrix<double> & JC) const;
+
          void updatef(UblasVector<double> & f,
                       const UblasVector<double> & Vr, const UblasVector<double> & Vi,
-                      const UblasVector<double> & P, const UblasVector<double> & Q) const;
+                      const UblasVector<double> & P, const UblasVector<double> & Q,
+                      const UblasCMatrix<double> & J) const;
          void updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JC,
                       const UblasVector<double> Vr, const UblasVector<double> Vi,
                       const UblasVector<double> P, const UblasVector<double> Q) const;
-
+         void modifyForPV(UblasCMatrix<double> & J, UblasVector<double> f, 
+                          const UblasVector<double> Vr, const UblasVector<double> Vi,
+                          const UblasVector<double> M2PV);
       private:
          /// @name UblasVector of busses and branches.
          /// @{
