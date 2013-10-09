@@ -405,7 +405,7 @@ namespace SmartGridToolbox
 
          modifyForPV(J, f, Vr, Vi, M2PV);
 
-         UblasVector<double> rhs;
+         UblasVector<double> x;
 
          SGT_DEBUG
          (
@@ -423,8 +423,8 @@ namespace SmartGridToolbox
             }
          );
 
-         bool ok = KLUSolve(J, -f, rhs);
-         SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", x = " << std::setw(8) << rhs << std::endl);
+         bool ok = KLUSolve(J, -f, x);
+         SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", x = " << std::setw(8) << x << std::endl);
          if (!ok)
          {
             error() << "KLUSolve failed." << std::endl;
@@ -432,21 +432,21 @@ namespace SmartGridToolbox
          }
 
          // Update the current values of V from the solution:
-         project(Vr, selPQFromAll()) += project(rhs, selVrPQFromx());
-         project(Vi, selPQFromAll()) += project(rhs, selViPQFromx());
+         project(Vr, selPQFromAll()) += project(x, selVrPQFromx());
+         project(Vi, selPQFromAll()) += project(x, selViPQFromx());
 
          // Explicitly deal with the voltage magnitude constraint by updating VrPV by hand.
          auto VrPV = project(Vr, selPVFromAll());
          auto ViPV = project(Vi, selPVFromAll());
-         auto DeltaViPV = project(rhs, selViPVFromx());
-         auto DeltaVrPV = element_div(
-               M2PV - element_prod(VrPV, VrPV) - element_prod(ViPV, ViPV) - 2 * element_prod(ViPV, DeltaViPV),
-               2 * VrPV);
+         const auto DeltaViPV = project(x, selViPVFromx());
+         const UblasVector<double> DeltaVrPV = 
+            element_div(M2PV - element_prod(VrPV, VrPV) - element_prod(ViPV, ViPV) - 2 * element_prod(ViPV, DeltaViPV),
+                        2 * VrPV);
          ViPV += DeltaViPV;
          VrPV += DeltaVrPV;
 
          // Update Q for PV busses based on the solution.
-         project(Q, selPVFromAll()) += project(rhs, selQPVFromx());
+         project(Q, selPVFromAll()) += project(x, selQPVFromx());
 
          SGT_DEBUG(debug() << "\tUpdated Vr  = " << std::setw(8) << Vr << std::endl);
          SGT_DEBUG(debug() << "\tUpdated Vi  = " << std::setw(8) << Vi << std::endl);
