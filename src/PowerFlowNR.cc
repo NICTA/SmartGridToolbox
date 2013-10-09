@@ -297,7 +297,7 @@ namespace SmartGridToolbox
       auto JIiQPV = project(J, selIiFromf(), selQPVFromx());
       auto JIiViPV = project(J, selIiFromf(), selViPVFromx());
       
-      auto JCAllQPV = project(J, selAllFromf(), selQPVFromx());
+      auto JCAllQPV = project(JC, selAllFromf(), selQPVFromx());
       auto JCIrQPV = project(JC, selIrFromf(), selQPVFromx());
       auto JCIrViPV = project(JC, selIrFromf(), selViPVFromx());
       auto JCIiQPV = project(JC, selIiFromf(), selQPVFromx());
