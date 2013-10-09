@@ -102,7 +102,7 @@ The corresponding rows in the NR equation may be solved by hand, with the follow
 \begin{align}
 \re{\Delta V}_k &= \frac{M^2_{\text{PV}k} - \re{V}_k^2 - \im{V}_k^2- 2\im{V}_k\im{\Delta V}_k}{2\re{V}_k}
 \end{align}
-Thus, $\re{\Delta V}$ may be eliminated from the NR equations.  First write the Jacobian as if all busses were PQ. Let $k$ be a PV bus. Take the column corresponding to $\re{\Delta V}_k$, and add its product with $-\im{V}_k/\re{V}_k$ to the matching column for  $\im{\Delta V}_k$. Add its product with $(M^2_{\text{PV}k} - \re{V}_k^2 - \im{V}_k^2)/(2\re{V}_k)$ to $f$. The column and the corresponding element of $x$ will now be replaced to correspond to $Q_k$. Set the column to zero, and set the diagonal element, using:
+Thus, $\re{\Delta V}$ may be eliminated from the NR equations.  First write the Jacobian as if all busses were PQ. Let $k$ be a PV bus. Take the column corresponding to $\re{\Delta V}_k$, and add its product with $-\im{V}_k/\re{V}_k$ to the matching column for  $\im{\Delta V}_k$. Add its product with $(M^2_{\text{PV}k} - \re{V}_k^2 - \im{V}_k^2)/(2\re{V}_k)$ to $f$. The column and the corresponding element of $x$ will now be replaced to correspond to $Q_k$. Set the column to zero, and set the block diagonal elements, using:
 \begin{align}
 \frac{\partial \re{I}_k}{\partial Q_{\text{bus}k}} &= \frac{\im{V}_k}{M_k^2} \\
 \frac{\partial \im{I}_k}{\partial Q_{\text{bus}k}} &= -\frac{\re{V}_k}{M_k^2}

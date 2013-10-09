@@ -875,4 +875,45 @@ BOOST_AUTO_TEST_CASE (test_mp_SLPQ)
    BOOST_CHECK(Sgen2 == czero); // PQ, gen S is 0. 
 }
 
+BOOST_AUTO_TEST_CASE (test_mp_SLPV)
+{
+   Model mod;
+   Simulation sim(mod);
+   Parser & p = Parser::globalParser();
+   p.parse("test_mp_SLPV.yaml", mod, sim);
+   mod.validate();
+   sim.initialize();
+
+   Network * network = mod.componentNamed<Network>("matpower");
+   Bus * bus1 = mod.componentNamed<Bus>("matpower_bus_1");
+   Bus * bus2 = mod.componentNamed<Bus>("matpower_bus_2");
+
+   network->solvePowerFlow();
+
+   Complex V1 = bus1->V()(0);
+   Complex V2 = bus2->V()(0);
+
+   Complex Sc1 = bus1->Sc()(0);
+   Complex Sc2 = bus2->Sc()(0);
+   
+   Complex Sgen1 = bus1->S()(0) - Sc1;
+   Complex Sgen2 = bus2->S()(0) - Sc2;
+
+   message() << "test_mp_SLPV: bus1->V()     = " << V1 << std::endl;
+   message() << "test_mp_SLPV: bus2->V()     = " << V2 << std::endl;
+   message() << "test_mp_SLPV: bus1->Sc()    = " << Sc1 << std::endl;
+   message() << "test_mp_SLPV: bus2->Sc()    = " << Sc2 << std::endl;
+   message() << "test_mp_SLPV: bus1->Sgen()    = " << Sgen1 << std::endl;
+   message() << "test_mp_SLPV: bus2->Sgen()    = " << Sgen2 << std::endl;
+
+   BOOST_CHECK(V1 == Complex(1.0, 0.0)); // Slack bus, should be exact.
+   BOOST_CHECK(abs(V2 - Complex(1.0157, -0.094058)) < 0.001); // Compare against matpower.
+
+   BOOST_CHECK(Sc1 == Complex(-0.5, -0.3099));
+   BOOST_CHECK(Sc2 == Complex(-1.7, -1.0535));
+
+   BOOST_CHECK(abs(Sgen1 - Complex(2.2347, -0.3989)) < 0.001); // Compare against matpower. 
+   BOOST_CHECK(abs(Sgen2 - Complex(0, 1.8312)) < 0.001); // Compare against matpower. 
+}
+
 BOOST_AUTO_TEST_SUITE_END( )
