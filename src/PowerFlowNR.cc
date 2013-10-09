@@ -433,7 +433,7 @@ namespace SmartGridToolbox
             abort();
          }
 
-         // Update the current values of V from rhs:
+         // Update the current values of V from the solution:
          project(Vr, selPQFromAll()) += project(rhs, selVrPQFromx());
          project(Vi, selPQFromAll()) += project(rhs, selViPQFromx());
 
@@ -442,11 +442,12 @@ namespace SmartGridToolbox
          auto ViPV = project(Vi, selPVFromAll());
          auto DeltaViPV = project(rhs, selViPVFromx());
          auto DeltaVrPV = element_div(
-               element_prod(VrPV, VrPV) + element_prod(ViPV, ViPV) - M2PV - 2 * element_prod(ViPV, DeltaViPV),
+               M2PV - element_prod(VrPV, VrPV) - element_prod(ViPV, ViPV) - 2 * element_prod(ViPV, DeltaViPV),
                2 * VrPV);
          ViPV += DeltaViPV;
          VrPV += DeltaVrPV;
 
+         // Update Q for PV busses based on the solution.
          project(Q, selPVFromAll()) += project(rhs, selQPVFromx());
 
          SGT_DEBUG(debug() << "\tUpdated Vr  = " << std::setw(8) << Vr << std::endl);
