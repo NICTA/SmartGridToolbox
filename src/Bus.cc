@@ -62,6 +62,7 @@ namespace SmartGridToolbox
          Ic_ += zip->I(); // Injection.
          Sc_ += zip->S(); // Injection.
       }
+      S_ = Sc_;
    }
 
    void Bus::updateState(Time t0, Time t1)
