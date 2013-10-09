@@ -7,6 +7,10 @@ namespace SmartGridToolbox
 {
    Model::~Model() 
    {
+      for (Component * comp : compVec_)
+      {
+         delete comp;
+      }
    }
 
    void Model::validate()

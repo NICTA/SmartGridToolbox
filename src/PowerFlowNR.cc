@@ -385,13 +385,14 @@ namespace SmartGridToolbox
       J = JC; // We only need to redo the elements that we mess with!
 
       bool wasSuccessful = false;
+      double err = 0;
       for (int i = 0; i < maxiter; ++ i)
       {
          SGT_DEBUG(debug() << "\tIteration = " << i << std::endl);
 
          updatef(f, Vr, Vi, P, Q, J);
          UblasVector<double> f2 = element_prod(f, f);
-         double err = sqrt(*std::max_element(f2.begin(), f2.end()));
+         err = sqrt(*std::max_element(f2.begin(), f2.end()));
          SGT_DEBUG(debug() << "\tf  = " << std::setw(8) << f << std::endl);
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
          if (err <= tol)
@@ -485,6 +486,10 @@ namespace SmartGridToolbox
             node->bus_->V_[node->phaseIdx_] = node->V_;
             node->bus_->S_[node->phaseIdx_] = node->S_;
          }
+      }
+      else
+      {
+         warning() << "PowerFlowNR: Newton-Raphson method failed to converge. Error = " << err << "." << std::endl; 
       }
       SGT_DEBUG(debug() << "PowerFlowNR : solve finished. Was successful = " << wasSuccessful << std::endl);
       return wasSuccessful;
