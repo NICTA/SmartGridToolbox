@@ -109,6 +109,10 @@ namespace SmartGridToolbox
          UblasRange selPQPVFromAll() const {return {nSL_, nSL_ + nPQ_ + nPV_};}
          UblasRange selAllFromAll() const {return {0, nSL_ + nPQ_ + nPV_};}
 
+         /// @name Ordering of variables etc.
+         /// @{
+         // Matpower ordering for testing:
+         /*
          UblasRange selIrFromf() const {return {0, nPQ_ + nPV_};}
          UblasRange selIiFromf() const {return {nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
          UblasRange selAllFromf() const {return {0, 2 * (nPQ_ + nPV_)};}
@@ -121,6 +125,22 @@ namespace SmartGridToolbox
          UblasRange selViPQFromx() const {return {nPQ_ + nPV_, 2 * nPQ_ + nPV_};}
          UblasRange selQPVFromx() const {return {nPQ_, nPQ_ + nPV_};}
          UblasRange selViPVFromx() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
+         */
+
+         // Ordering to give a diagonal dominant Jacobian:
+         UblasSlice selIrFromf() const {return {1, 2, nPQ_ + nPV_};}
+         UblasSlice selIiFromf() const {return {0, 2, nPQ_ + nPV_};}
+         UblasSlice selAllFromf() const {return {0, 1, 2 * (nPQ_ + nPV_)};}
+         UblasSlice selIrPVFromf() const {return {2 * nPQ_ + 1, 2, nPV_};}
+         UblasSlice selIiPVFromf() const {return {2 * nPQ_, 2, nPV_};}
+
+         UblasSlice selVrFromx() const {return {0, 2, nPQ_ + nPV_};} ///< i.e. as if all busses were PQ.
+         UblasSlice selViFromx() const {return {1, 2, nPQ_ + nPV_};} ///< i.e. as if all busses were PQ.
+         UblasSlice selVrPQFromx() const {return {0, 2, nPQ_};}
+         UblasSlice selViPQFromx() const {return {1, 2, nPQ_};}
+         UblasSlice selQPVFromx() const {return {2 * nPQ_, 2, nPV_};}
+         UblasSlice selViPVFromx() const {return {2 * nPQ_ + 1, 2, nPV_};}
+         /// @}
          
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;
          void initS(UblasVector<double> & P, UblasVector<double> & Q) const;
