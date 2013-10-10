@@ -75,9 +75,6 @@ namespace SmartGridToolbox
   
    /// @name Linear algebra
    /// @{
-   using UblasRange = boost::numeric::ublas::range;
-   using UblasSlice = boost::numeric::ublas::slice;
-   using boost::numeric::ublas::project;
 
    /// Dense vector
    template<typename T> using UblasVector = boost::numeric::ublas::vector<T>;
@@ -93,9 +90,17 @@ namespace SmartGridToolbox
 
    template<typename VE> using UblasVectorExpression = boost::numeric::ublas::vector_expression<VE>;
    template<typename ME> using UblasMatrixExpression = boost::numeric::ublas::matrix_expression<ME>;
+   
+   using UblasRange = boost::numeric::ublas::range;
+   template<typename M> using UblasMatrixRange = boost::numeric::ublas::matrix_range<M>;
+
+   using UblasSlice = boost::numeric::ublas::slice;
+   template<typename M> using UblasMatrixSlice = boost::numeric::ublas::matrix_slice<M>;
 
    template<typename M> using UblasMatrixRow = boost::numeric::ublas::matrix_row<M>;
    template<typename M> using UblasMatrixColumn = boost::numeric::ublas::matrix_column<M>;
+
+   using boost::numeric::ublas::project;
    using boost::numeric::ublas::row;
    using boost::numeric::ublas::column;
 
