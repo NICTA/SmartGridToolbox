@@ -348,9 +348,9 @@ namespace SmartGridToolbox
          colAllVik -= colAllVrk * (ViPV(k) / VrPV(k));
 
          // Modify Vr column in J:
-         for (int i = 0; i < colAllVrk.size(); ++i)
+         for (auto it = colAllVrk.begin(); it != colAllVrk.end(); ++it)
          {
-            colAllVrk(i) = 0; // TODO: destroys sparsity in all PV columns. 
+            *it = 0;
          }
 
          JIrPVQPV(k, k) = ViPV(k) / M2PV(k);
