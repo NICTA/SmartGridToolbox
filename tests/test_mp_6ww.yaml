@@ -12,7 +12,7 @@ global:
 
 objects: # And these are the actual objects.
    matpower:
-      input_file:             case4gs.m
+      input_file:             case6ww.m
       network_name:           matpower
       default_V_base:         230e3
       V_new_unit:             230e3
