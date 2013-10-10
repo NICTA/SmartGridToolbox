@@ -114,19 +114,33 @@ namespace SmartGridToolbox
          // Note: a more elegant general solution to ordering would be to use matrix_slice. But assigning into
          // a matrix slice of a compressed_matrix appears to destroy the sparsity. MatrixRange works, but does not
          // present a general solution to ordering.
-         int if_Ir(int iPQPV) {return 2 * iPQPV + 1;}
-         int if_Ii(int iPQPV) {return 2 * iPQPV;}
-         int ifPQ_Ir(int iPQ) {return 2 * iPQ + 1;}
-         int ifPQ_Ii(int iPQ) {return 2 * iPQ;}
-         int ifPV_Ir(int iPV) {return 2 * nPQ_ + 2 * iPV + 1;}
-         int ifPV_Ii(int iPV) {return 2 * nPQ_ + 2 * iPV;}
+         int if_Ir(int iPQPV) const {return 2 * iPQPV + 1;}
+         int if_Ii(int iPQPV) const {return 2 * iPQPV;}
+         int ifPQ_Ir(int iPQ) const {return 2 * iPQ + 1;}
+         int ifPQ_Ii(int iPQ) const {return 2 * iPQ;}
+         int ifPV_Ir(int iPV) const {return 2 * nPQ_ + 2 * iPV + 1;}
+         int ifPV_Ii(int iPV) const {return 2 * nPQ_ + 2 * iPV;}
 
-         int ix_Vr(int iPQPV) {return 2 * iPQPV;}
-         int ix_Vi(int iPQPV) {return 2 * iPQPV + 1;}
-         int ixPQ_Vr(int iPQ) {return 2 * iPQ;}
-         int ixPQ_Vi(int iPQ) {return 2 * iPQ + 1;}
-         int ixPV_Q(int iPV)  {return 2 * nPQ_ + 2 * iPQ;}
-         int ixPV_Vi(int iPV) {return 2 * nPQ_ + 2 * iPQ + 1;}
+         int ix_Vr(int iPQPV) const {return 2 * iPQPV;}
+         int ix_Vi(int iPQPV) const {return 2 * iPQPV + 1;}
+         int ixPQ_Vr(int iPQ) const {return 2 * iPQ;}
+         int ixPQ_Vi(int iPQ) const {return 2 * iPQ + 1;}
+         int ixPV_Vr(int iPV) const {return 2 * nPQ_ + 2 * iPV;} // Or Q.
+         int ixPV_Vi(int iPV) const {return 2 * nPQ_ + 2 * iPV + 1;}
+        
+         // Note: see above: don't assign into a slice of a sparse matrix!
+         UblasSlice selIrFromf() const {return {1, 2, nPQ_ + nPV_};}
+         UblasSlice selIiFromf() const {return {0, 2, nPQ_ + nPV_};}
+         UblasSlice selAllFromf() const {return {0, 1, 2 * (nPQ_ + nPV_)};}
+         UblasSlice selIrPVFromf() const {return {2 * nPQ_ + 1, 2, nPV_};}
+         UblasSlice selIiPVFromf() const {return {2 * nPQ_, 2, nPV_};}
+
+         UblasSlice selVrFromx() const {return {0, 2, nPQ_ + nPV_};} ///< i.e. as if all busses were PQ.
+         UblasSlice selViFromx() const {return {1, 2, nPQ_ + nPV_};} ///< i.e. as if all busses were PQ.
+         UblasSlice selVrPQFromx() const {return {0, 2, nPQ_};}
+         UblasSlice selViPQFromx() const {return {1, 2, nPQ_};}
+         UblasSlice selQPVFromx() const {return {2 * nPQ_, 2, nPV_};}
+         UblasSlice selViPVFromx() const {return {2 * nPQ_ + 1, 2, nPV_};}
          /// @}
 
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;

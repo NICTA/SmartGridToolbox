@@ -296,8 +296,11 @@ namespace SmartGridToolbox
       auto PPQPV = project(P, selPQPVFromAll());
       auto QPQPV = project(Q, selPQPVFromAll());
 
-      // Reset PV columns:
-      JAllQPV = JCAllQPV;
+      // Reset PV Q columns:
+      for (int k = 0; k < nPV_; ++k)
+      {
+         column(J, ixPV_Vr(k)) = column(JC, ixPV_Vr(k)); // TODO: check we're not destroying sparsity!
+      }
 
       // Block diagonal:
       for (int i = 0; i < nPQPV(); ++i)
@@ -311,10 +314,10 @@ namespace SmartGridToolbox
          double PdM2 = PPQPV(i) / M2;
          double QdM2 = QPQPV(i) / M2;
 
-         JIrVr(ifIr(i), ixVr(i)) = JCIrVr(i, i) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
-         JIrVi(i, i) = JCIrVi(i, i) - (2 * VidM4 * PVr_p_QVi) + QdM2;
-         JIiVr(i, i) = JCIiVr(i, i) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
-         JIiVi(i, i) = JCIiVi(i, i) - (2 * VidM4 * PVi_m_QVr) + PdM2;
+         J(if_Ir(i), ix_Vr(i)) = JC(if_Ir(i), ix_Vr(i)) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
+         J(if_Ir(i), ix_Vi(i)) = JC(if_Ir(i), ix_Vi(i)) - (2 * VidM4 * PVr_p_QVi) + QdM2;
+         J(if_Ii(i), ix_Vr(i)) = JC(if_Ii(i), ix_Vr(i)) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
+         J(if_Ii(i), ix_Vi(i)) = JC(if_Ii(i), ix_Vi(i)) - (2 * VidM4 * PVi_m_QVr) + PdM2;
       }
    }
 
@@ -323,18 +326,13 @@ namespace SmartGridToolbox
                                  const UblasVector<double> Vr, const UblasVector<double> Vi,
                                  const UblasVector<double> M2PV)
    {
-      auto JAllQPV = project(J, selAllFromf(), selQPVFromx());
-      auto JAllViPV = project(J, selAllFromf(), selViPVFromx());
-      auto JIrPVQPV = project(J, selIrPVFromf(), selQPVFromx());
-      auto JIiPVQPV = project(J, selIiPVFromf(), selQPVFromx());
-
       const auto VrPV = project(Vr, selPVFromAll());
       const auto ViPV = project(Vi, selPVFromAll());
 
-      for (int k = 0; k < JAllQPV.size2(); ++k)
+      for (int k = 0; k < nPV_; ++k)
       {
-         auto colAllVrk = column(JAllQPV, k);
-         auto colAllVik = column(JAllViPV, k);
+         auto colAllVrk = column(J, ixPV_Vr(k));
+         auto colAllVik = column(J, ixPV_Vi(k));
          
          // Modify f:
          f += colAllVrk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
@@ -347,9 +345,8 @@ namespace SmartGridToolbox
          {
             *it = 0;
          }
-
-         JIrPVQPV(k, k) = ViPV(k) / M2PV(k);
-         JIiPVQPV(k, k) = -VrPV(k) / M2PV(k);
+         J(ifPV_Ir(k), ixPV_Vr(k)) = ViPV(k) / M2PV(k);
+         J(ifPV_Ii(k), ixPV_Vr(k)) = -VrPV(k) / M2PV(k);
       }
    }
 
