@@ -111,39 +111,24 @@ namespace SmartGridToolbox
 
          /// @name Ordering of variables etc.
          /// @{
-         // Matpower ordering for testing:
-         UblasRange selIrFromf() const {return {0, nPQ_ + nPV_};}
-         UblasRange selIiFromf() const {return {nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
-         UblasRange selAllFromf() const {return {0, 2 * (nPQ_ + nPV_)};}
-         UblasRange selIrPVFromf() const {return {nPQ_, nPQ_ + nPV_};}
-         UblasRange selIiPVFromf() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
+         // Note: a more elegant general solution to ordering would be to use matrix_slice. But assigning into
+         // a matrix slice of a compressed_matrix appears to destroy the sparsity. MatrixRange works, but does not
+         // present a general solution to ordering.
+         int if_Ir(int iPQPV) {return 2 * iPQPV + 1;}
+         int if_Ii(int iPQPV) {return 2 * iPQPV;}
+         int ifPQ_Ir(int iPQ) {return 2 * iPQ + 1;}
+         int ifPQ_Ii(int iPQ) {return 2 * iPQ;}
+         int ifPV_Ir(int iPV) {return 2 * nPQ_ + 2 * iPV + 1;}
+         int ifPV_Ii(int iPV) {return 2 * nPQ_ + 2 * iPV;}
 
-         UblasRange selVrFromx() const {return {0, nPQ_ + nPV_};} ///< i.e. as if all busses were PQ.
-         UblasRange selViFromx() const {return {nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};} ///< i.e. as if all busses were PQ.
-         UblasRange selVrPQFromx() const {return {0, nPQ_};}
-         UblasRange selViPQFromx() const {return {nPQ_ + nPV_, 2 * nPQ_ + nPV_};}
-         UblasRange selQPVFromx() const {return {nPQ_, nPQ_ + nPV_};}
-         UblasRange selViPVFromx() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
-
-         // Ordering to give a diagonal dominant Jacobian:
-         // TODO: assigning into a matrix slice of a sparse matrix destroys the sparsity of the matrix.
-         // Thus, for now, we stick with ranges and use the ordering above. 
-         /*
-         UblasSlice selIrFromf() const {return {1, 2, nPQ_ + nPV_};}
-         UblasSlice selIiFromf() const {return {0, 2, nPQ_ + nPV_};}
-         UblasSlice selAllFromf() const {return {0, 1, 2 * (nPQ_ + nPV_)};}
-         UblasSlice selIrPVFromf() const {return {2 * nPQ_ + 1, 2, nPV_};}
-         UblasSlice selIiPVFromf() const {return {2 * nPQ_, 2, nPV_};}
-
-         UblasSlice selVrFromx() const {return {0, 2, nPQ_ + nPV_};} ///< i.e. as if all busses were PQ.
-         UblasSlice selViFromx() const {return {1, 2, nPQ_ + nPV_};} ///< i.e. as if all busses were PQ.
-         UblasSlice selVrPQFromx() const {return {0, 2, nPQ_};}
-         UblasSlice selViPQFromx() const {return {1, 2, nPQ_};}
-         UblasSlice selQPVFromx() const {return {2 * nPQ_, 2, nPV_};}
-         UblasSlice selViPVFromx() const {return {2 * nPQ_ + 1, 2, nPV_};}
-         */
+         int ix_Vr(int iPQPV) {return 2 * iPQPV;}
+         int ix_Vi(int iPQPV) {return 2 * iPQPV + 1;}
+         int ixPQ_Vr(int iPQ) {return 2 * iPQ;}
+         int ixPQ_Vi(int iPQ) {return 2 * iPQ + 1;}
+         int ixPV_Q(int iPV)  {return 2 * nPQ_ + 2 * iPQ;}
+         int ixPV_Vi(int iPV) {return 2 * nPQ_ + 2 * iPQ + 1;}
          /// @}
-         
+
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;
          void initS(UblasVector<double> & P, UblasVector<double> & Q) const;
          void initJC(UblasCMatrix<double> & JC) const;
@@ -155,7 +140,7 @@ namespace SmartGridToolbox
          void updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JC,
                       const UblasVector<double> Vr, const UblasVector<double> Vi,
                       const UblasVector<double> P, const UblasVector<double> Q) const;
-         void modifyForPV(UblasCMatrix<double> & J, UblasVector<double> f, 
+         void modifyForPV(UblasCMatrix<double> & J, UblasVector<double> f,
                           const UblasVector<double> Vr, const UblasVector<double> Vi,
                           const UblasVector<double> M2PV);
       private:

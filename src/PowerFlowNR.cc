@@ -229,10 +229,27 @@ namespace SmartGridToolbox
       const auto GRng = project(G, selPQPVFromAll(), selPQPVFromAll());
       const auto BRng = project(B, selPQPVFromAll(), selPQPVFromAll());
 
-      project(JC, selIrFromf(), selVrFromx()) = -GRng;
-      project(JC, selIrFromf(), selViFromx()) =  BRng;
-      project(JC, selIiFromf(), selVrFromx()) = -BRng;
-      project(JC, selIiFromf(), selViFromx()) = -GRng;
+      for (auto it1 = GRng.begin1(); it1 != GRng.end1(); ++it1)
+      {
+         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
+         {
+            int i = it2.index1();
+            int k = it2.index2();
+            JC(if_Ir(i), ix_Vr(k)) = -(*it2);
+            JC(if_Ii(i), ix_Vi(k)) = -(*it2);
+         }
+      }
+
+      for (auto it1 = BRng.begin1(); it1 != BRng.end1(); ++it1)
+      {
+         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
+         {
+            int i = it2.index1();
+            int k = it2.index2();
+            JC(if_Ir(i), ix_Vi(k)) = *it2;
+            JC(if_Ii(i), ix_Vr(k)) = -(*it2);
+         }
+      }
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
@@ -279,28 +296,6 @@ namespace SmartGridToolbox
       auto PPQPV = project(P, selPQPVFromAll());
       auto QPQPV = project(Q, selPQPVFromAll());
 
-      auto JIrVr = project(J, selIrFromf(), selVrFromx());
-      auto JIrVi = project(J, selIrFromf(), selViFromx());
-      auto JIiVr = project(J, selIiFromf(), selVrFromx());
-      auto JIiVi = project(J, selIiFromf(), selViFromx());
-      
-      auto JCIrVr = project(JC, selIrFromf(), selVrFromx());
-      auto JCIrVi = project(JC, selIrFromf(), selViFromx());
-      auto JCIiVr = project(JC, selIiFromf(), selVrFromx());
-      auto JCIiVi = project(JC, selIiFromf(), selViFromx());
-
-      auto JAllQPV = project(J, selAllFromf(), selQPVFromx());
-      auto JIrQPV = project(J, selIrFromf(), selQPVFromx());
-      auto JIrViPV = project(J, selIrFromf(), selViPVFromx());
-      auto JIiQPV = project(J, selIiFromf(), selQPVFromx());
-      auto JIiViPV = project(J, selIiFromf(), selViPVFromx());
-      
-      auto JCAllQPV = project(JC, selAllFromf(), selQPVFromx());
-      auto JCIrQPV = project(JC, selIrFromf(), selQPVFromx());
-      auto JCIrViPV = project(JC, selIrFromf(), selViPVFromx());
-      auto JCIiQPV = project(JC, selIiFromf(), selQPVFromx());
-      auto JCIiViPV = project(JC, selIiFromf(), selViPVFromx());
-
       // Reset PV columns:
       JAllQPV = JCAllQPV;
 
@@ -316,7 +311,7 @@ namespace SmartGridToolbox
          double PdM2 = PPQPV(i) / M2;
          double QdM2 = QPQPV(i) / M2;
 
-         JIrVr(i, i) = JCIrVr(i, i) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
+         JIrVr(ifIr(i), ixVr(i)) = JCIrVr(i, i) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
          JIrVi(i, i) = JCIrVi(i, i) - (2 * VidM4 * PVr_p_QVi) + QdM2;
          JIiVr(i, i) = JCIiVr(i, i) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
          JIiVi(i, i) = JCIiVi(i, i) - (2 * VidM4 * PVi_m_QVr) + PdM2;
