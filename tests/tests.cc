@@ -1028,6 +1028,32 @@ BOOST_AUTO_TEST_CASE (test_mp_4gs)
    BOOST_CHECK(abs(Sgen4 - Complex(3.1800, 1.8143)) < 0.001); // Compare against matpower. 
 }
 
+BOOST_AUTO_TEST_CASE (test_mp_6ww)
+{
+   Model mod;
+   Simulation sim(mod);
+   Parser & p = Parser::globalParser();
+   p.parse("test_mp_6ww.yaml", mod, sim);
+   mod.validate();
+   sim.initialize();
+
+   Network * network = mod.componentNamed<Network>("matpower");
+
+   network->solvePowerFlow();
+
+   for (const Component * comp : mod.components())
+   {
+      const Bus * bus = dynamic_cast<const Bus *>(comp);
+      if (bus)
+      {
+         message() << "Bus  : " << bus->name() << std::endl;
+         message() << "V    = " << bus->V()(0) << std::endl;
+         message() << "Sc   = " << bus->Sc()(0) << std::endl;
+         message() << "Sgen = " << bus->SGen()(0) << std::endl;
+      }
+   }
+}
+
 BOOST_AUTO_TEST_CASE (test_mp_9)
 {
    Model mod;
