@@ -112,7 +112,6 @@ namespace SmartGridToolbox
          /// @name Ordering of variables etc.
          /// @{
          // Matpower ordering for testing:
-         /*
          UblasRange selIrFromf() const {return {0, nPQ_ + nPV_};}
          UblasRange selIiFromf() const {return {nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
          UblasRange selAllFromf() const {return {0, 2 * (nPQ_ + nPV_)};}
@@ -125,9 +124,11 @@ namespace SmartGridToolbox
          UblasRange selViPQFromx() const {return {nPQ_ + nPV_, 2 * nPQ_ + nPV_};}
          UblasRange selQPVFromx() const {return {nPQ_, nPQ_ + nPV_};}
          UblasRange selViPVFromx() const {return {2 * nPQ_ + nPV_, 2 * (nPQ_ + nPV_)};}
-         */
 
          // Ordering to give a diagonal dominant Jacobian:
+         // TODO: assigning into a matrix slice of a sparse matrix destroys the sparsity of the matrix.
+         // Thus, for now, we stick with ranges and use the ordering above. 
+         /*
          UblasSlice selIrFromf() const {return {1, 2, nPQ_ + nPV_};}
          UblasSlice selIiFromf() const {return {0, 2, nPQ_ + nPV_};}
          UblasSlice selAllFromf() const {return {0, 1, 2 * (nPQ_ + nPV_)};}
@@ -140,6 +141,7 @@ namespace SmartGridToolbox
          UblasSlice selViPQFromx() const {return {1, 2, nPQ_};}
          UblasSlice selQPVFromx() const {return {2 * nPQ_, 2, nPV_};}
          UblasSlice selViPVFromx() const {return {2 * nPQ_ + 1, 2, nPV_};}
+         */
          /// @}
          
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;

@@ -382,7 +382,6 @@ namespace SmartGridToolbox
       UblasVector<double> f(nVar()); ///< Current mismatch function.
 
       UblasCMatrix<double> J = JC; ///< Jacobian, d f_i / d x_i.
-      J = JC; // We only need to redo the elements that we mess with!
 
       bool wasSuccessful = false;
       double err = 0;
