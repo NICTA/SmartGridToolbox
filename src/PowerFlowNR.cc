@@ -350,7 +350,7 @@ namespace SmartGridToolbox
          // Modify Vr column in J:
          for (int i = 0; i < colAllVrk.size(); ++i)
          {
-            colAllVrk(i) = 0; // Set to zero rather than erase is OK here, since column is dense anyhow.
+            colAllVrk(i) = 0; // TODO: destroys sparsity in all PV columns. 
          }
 
          JIrPVQPV(k, k) = ViPV(k) / M2PV(k);
@@ -382,6 +382,7 @@ namespace SmartGridToolbox
       UblasVector<double> f(nVar()); ///< Current mismatch function.
 
       UblasCMatrix<double> J = JC; ///< Jacobian, d f_i / d x_i.
+      SGT_DEBUG(debug() << "Initial : J.nnz() = " << J.nnz() << std::endl);
 
       bool wasSuccessful = false;
       double err = 0;
@@ -402,8 +403,10 @@ namespace SmartGridToolbox
          }
 
          updateJ(J, JC, Vr, Vi, P, Q);
+         SGT_DEBUG(debug() << "After updateJ : J.nnz() = " << J.nnz() << std::endl);
 
          modifyForPV(J, f, Vr, Vi, M2PV);
+         SGT_DEBUG(debug() << "After modifyForPV : J.nnz() = " << J.nnz() << std::endl);
 
          UblasVector<double> x;
 
