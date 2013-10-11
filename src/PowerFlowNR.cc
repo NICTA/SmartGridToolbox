@@ -186,6 +186,7 @@ namespace SmartGridToolbox
             }
          }
       } // Loop over branches.
+      SGT_DEBUG(debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
 
       // Load quantities.
       Ic_.resize(nNode(), false);
@@ -299,7 +300,7 @@ namespace SmartGridToolbox
       // Reset PV Q columns:
       for (int k = 0; k < nPV_; ++k)
       {
-         column(J, ixPV_Vr(k)) = column(JC, ixPV_Vr(k)); // TODO: check we're not destroying sparsity!
+         column(J, ixPV_Vr(k)) = column(JC, ixPV_Vr(k));
       }
 
       // Block diagonal:
@@ -370,6 +371,12 @@ namespace SmartGridToolbox
 
       UblasCMatrix<double> JC(nVar(), nVar()); ///< The part of J that doesn't update at each iteration.
       initJC(JC);
+      SGT_DEBUG(debug() << "After initialization, JC.nnz() = " << JC.nnz() << std::endl);
+      debug() << "\tAfter initialization: JC = " << std::endl;
+      for (int i = 0; i < nVar(); ++i)
+      {
+         debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JC, i) << std::endl;
+      }
 
       UblasVector<double> f(nVar()); ///< Current mismatch function.
 

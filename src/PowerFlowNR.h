@@ -113,7 +113,8 @@ namespace SmartGridToolbox
          /// @{
          // Note: a more elegant general solution to ordering would be to use matrix_slice. But assigning into
          // a matrix slice of a compressed_matrix appears to destroy the sparsity. MatrixRange works, but does not
-         // present a general solution to ordering.
+         // present a general solution to ordering. Thus, when assigning into a compressed_matrix, we need to work
+         // element by element, using an indexing scheme.
          int if_Ir(int iPQPV) const {return 2 * iPQPV + 1;}
          int if_Ii(int iPQPV) const {return 2 * iPQPV;}
          int ifPQ_Ir(int iPQ) const {return 2 * iPQ + 1;}
@@ -131,12 +132,7 @@ namespace SmartGridToolbox
          // Note: see above: don't assign into a slice of a sparse matrix!
          UblasSlice selIrFromf() const {return {1, 2, nPQ_ + nPV_};}
          UblasSlice selIiFromf() const {return {0, 2, nPQ_ + nPV_};}
-         UblasSlice selAllFromf() const {return {0, 1, 2 * (nPQ_ + nPV_)};}
-         UblasSlice selIrPVFromf() const {return {2 * nPQ_ + 1, 2, nPV_};}
-         UblasSlice selIiPVFromf() const {return {2 * nPQ_, 2, nPV_};}
 
-         UblasSlice selVrFromx() const {return {0, 2, nPQ_ + nPV_};} ///< i.e. as if all busses were PQ.
-         UblasSlice selViFromx() const {return {1, 2, nPQ_ + nPV_};} ///< i.e. as if all busses were PQ.
          UblasSlice selVrPQFromx() const {return {0, 2, nPQ_};}
          UblasSlice selViPQFromx() const {return {1, 2, nPQ_};}
          UblasSlice selQPVFromx() const {return {2 * nPQ_, 2, nPV_};}
