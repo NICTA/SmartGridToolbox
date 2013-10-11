@@ -100,9 +100,9 @@ namespace SmartGridToolbox
       return prefix + "_zip_" + std::to_string(id);
    }
 
-   static std::string branchName(const std::string & prefix, int id1, int id2)
+   static std::string branchName(const std::string & prefix, int nBranch, int id1, int id2)
    {
-      return prefix + "_branch_" + std::to_string(id1) + "_" + std::to_string(id2);
+      return prefix + "_branch_" + std::to_string(nBranch) + "_" + std::to_string(id1) + "_" + std::to_string(id2);
    }
 
    void MatpowerParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
@@ -342,7 +342,7 @@ namespace SmartGridToolbox
             Y01 *= yBase1;
             Y11 *= yBase1;
 
-            Branch & branch = mod.newComponent<Branch>(branchName(networkName, bus0Id, bus1Id), phases, phases);
+            Branch & branch = mod.newComponent<Branch>(branchName(networkName, i, bus0Id, bus1Id), phases, phases);
 
             branch.setBus0(*bus0);
             branch.setBus1(*bus1);
