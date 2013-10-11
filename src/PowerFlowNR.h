@@ -143,16 +143,16 @@ namespace SmartGridToolbox
          void initS(UblasVector<double> & P, UblasVector<double> & Q) const;
          void initJC(UblasCMatrix<double> & JC) const;
 
-         void updatef(UblasVector<double> & f,
-                      const UblasVector<double> & Vr, const UblasVector<double> & Vi,
-                      const UblasVector<double> & P, const UblasVector<double> & Q,
-                      const UblasCMatrix<double> & J) const;
+         void calcf(UblasVector<double> & f,
+                    const UblasVector<double> & Vr, const UblasVector<double> & Vi,
+                    const UblasVector<double> & P, const UblasVector<double> & Q,
+                    const UblasCMatrix<double> & J) const;
          void updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JC,
-                      const UblasVector<double> Vr, const UblasVector<double> Vi,
-                      const UblasVector<double> P, const UblasVector<double> Q) const;
-         void modifyForPV(UblasCMatrix<double> & J, UblasVector<double> f,
-                          const UblasVector<double> Vr, const UblasVector<double> Vi,
-                          const UblasVector<double> M2PV);
+                      const UblasVector<double> & Vr, const UblasVector<double> & Vi,
+                      const UblasVector<double> & P, const UblasVector<double> & Q) const;
+         void modifyForPV(UblasCMatrix<double> & J, UblasVector<double> & f,
+                          const UblasVector<double> & Vr, const UblasVector<double> & Vi,
+                          const UblasVector<double> & M2PV);
       private:
          /// @name UblasVector of busses and branches.
          /// @{

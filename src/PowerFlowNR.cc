@@ -227,10 +227,10 @@ namespace SmartGridToolbox
       const auto G = real(Y_);
       const auto B = imag(Y_);
 
-      const auto GRng = project(G, selPQPVFromAll(), selPQPVFromAll());
-      const auto BRng = project(B, selPQPVFromAll(), selPQPVFromAll());
+      const auto GPQPV = project(G, selPQPVFromAll(), selPQPVFromAll());
+      const auto BPQPV = project(B, selPQPVFromAll(), selPQPVFromAll());
 
-      for (auto it1 = GRng.begin1(); it1 != GRng.end1(); ++it1)
+      for (auto it1 = GPQPV.begin1(); it1 != GPQPV.end1(); ++it1)
       {
          for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
          {
@@ -241,7 +241,7 @@ namespace SmartGridToolbox
          }
       }
 
-      for (auto it1 = BRng.begin1(); it1 != BRng.end1(); ++it1)
+      for (auto it1 = BPQPV.begin1(); it1 != BPQPV.end1(); ++it1)
       {
          for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
          {
@@ -254,10 +254,10 @@ namespace SmartGridToolbox
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-   void PowerFlowNR::updatef(UblasVector<double> & f,
-                             const UblasVector<double> & Vr, const UblasVector<double> & Vi,
-                             const UblasVector<double> & P, const UblasVector<double> & Q,
-                             const UblasCMatrix<double> & J) const
+   void PowerFlowNR::calcf(UblasVector<double> & f,
+                           const UblasVector<double> & Vr, const UblasVector<double> & Vi,
+                           const UblasVector<double> & P, const UblasVector<double> & Q,
+                           const UblasCMatrix<double> & J) const
    {
       const auto G = real(Y_);
       const auto B = imag(Y_);
@@ -273,21 +273,22 @@ namespace SmartGridToolbox
 
       const auto PPQPV = project(P, selPQPVFromAll());
       const auto QPQPV = project(Q, selPQPVFromAll());
+      
+      const auto IcrPQPV = project(real(Ic_), selPQPVFromAll());
+      const auto IciPQPV = project(imag(Ic_), selPQPVFromAll());
 
       UblasVector<double> M2PQPV = element_prod(VrPQPV, VrPQPV) + element_prod(ViPQPV, ViPQPV);
 
       project(f, selIrFromf()) = element_div(element_prod(VrPQPV, PPQPV) + element_prod(ViPQPV, QPQPV), M2PQPV)
-                               + project(real(Ic_), selPQPVFromAll())
-                               - prod(GRng, Vr) + prod(BRng, Vi);
+                               + IcrPQPV - prod(GRng, Vr) + prod(BRng, Vi);
       project(f, selIiFromf()) = element_div(element_prod(ViPQPV, PPQPV) - element_prod(VrPQPV, QPQPV), M2PQPV)
-                               + project(imag(Ic_), selPQPVFromAll())
-                               - prod(GRng, Vi) - prod(BRng, Vr);
+                               + IciPQPV - prod(GRng, Vi) - prod(BRng, Vr);
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
    void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JC,
-                             const UblasVector<double> Vr, const UblasVector<double> Vi,
-                             const UblasVector<double> P, const UblasVector<double> Q) const
+                             const UblasVector<double> & Vr, const UblasVector<double> & Vi,
+                             const UblasVector<double> & P, const UblasVector <double> & Q) const
    {
       // Elements in J that have no non-constant part will be initialized to the corresponding term in JC at the
       // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
@@ -323,9 +324,9 @@ namespace SmartGridToolbox
    }
 
    // Modify J and f to take into account PV busses.
-   void PowerFlowNR::modifyForPV(UblasCMatrix<double> & J, UblasVector<double> f, 
-                                 const UblasVector<double> Vr, const UblasVector<double> Vi,
-                                 const UblasVector<double> M2PV)
+   void PowerFlowNR::modifyForPV(UblasCMatrix<double> & J, UblasVector<double> & f,
+                                 const UblasVector<double> & Vr, const UblasVector<double> & Vi,
+                                 const UblasVector<double> & M2PV)
    {
       const auto VrPV = project(Vr, selPVFromAll());
       const auto ViPV = project(Vi, selPVFromAll());
@@ -389,9 +390,8 @@ namespace SmartGridToolbox
       {
          SGT_DEBUG(debug() << "\tIteration = " << i << std::endl);
 
-         updatef(f, Vr, Vi, P, Q, J);
-         UblasVector<double> f2 = element_prod(f, f);
-         err = sqrt(*std::max_element(f2.begin(), f2.end()));
+         calcf(f, Vr, Vi, P, Q, J);
+         err = norm_inf(f);
          SGT_DEBUG(debug() << "\tf  = " << std::setprecision(5) << std::setw(9) << f << std::endl);
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
          if (err <= tol)
