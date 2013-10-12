@@ -100,14 +100,8 @@ namespace SmartGridToolbox
       private:
 
          unsigned int nPQPV() const {return nPQ_ + nPV_;}
-         unsigned int nNode() const {return nPQ_ + nPV_ + nSL_;}
+         unsigned int nNode() const {return nSL_ + nPQ_ + nPV_;}
          unsigned int nVar() const {return 2 * (nPQ_ + nPV_);}
-
-         UblasRange selSLFromAll() const {return {0, nSL_};}
-         UblasRange selPQFromAll() const {return {nSL_, nSL_ + nPQ_};}
-         UblasRange selPVFromAll() const {return {nSL_ + nPQ_, nSL_ + nPQ_ + nPV_};}
-         UblasRange selPQPVFromAll() const {return {nSL_, nSL_ + nPQ_ + nPV_};}
-         UblasRange selAllFromAll() const {return {0, nSL_ + nPQ_ + nPV_};}
 
          /// @name Ordering of variables etc.
          /// @{
@@ -115,24 +109,35 @@ namespace SmartGridToolbox
          // a matrix slice of a compressed_matrix appears to destroy the sparsity. MatrixRange works, but does not
          // present a general solution to ordering. Thus, when assigning into a compressed_matrix, we need to work
          // element by element, using an indexing scheme.
-         int if_Ir(int iPQPV) const {return 2 * iPQPV + 1;}
-         int if_Ii(int iPQPV) const {return 2 * iPQPV;}
-         int ifPQ_Ir(int iPQ) const {return 2 * iPQ + 1;}
-         int ifPQ_Ii(int iPQ) const {return 2 * iPQ;}
-         int ifPV_Ir(int iPV) const {return 2 * nPQ_ + 2 * iPV + 1;}
-         int ifPV_Ii(int iPV) const {return 2 * nPQ_ + 2 * iPV;}
 
-         int ix_Vr(int iPQPV) const {return 2 * iPQPV;}
-         int ix_Vi(int iPQPV) const {return 2 * iPQPV + 1;}
-         int ixPQ_Vr(int iPQ) const {return 2 * iPQ;}
-         int ixPQ_Vi(int iPQ) const {return 2 * iPQ + 1;}
-         int ixPV_Vr(int iPV) const {return 2 * nPQ_ + 2 * iPV;} // Or Q.
-         int ixPV_Vi(int iPV) const {return 2 * nPQ_ + 2 * iPV + 1;}
-        
+         int iSL(int i) const {return i;}
+         int iPQ(int i) const {return nSL_ + i;}
+         int iPV(int i) const {return nSL_ + nPQ_ + i;}
+
+         UblasRange selSLFromAll() const {return {0, nSL_};}
+         UblasRange selPQFromAll() const {return {nSL_, nSL_ + nPQ_};}
+         UblasRange selPVFromAll() const {return {nSL_ + nPQ_, nSL_ + nPQ_ + nPV_};}
+         UblasRange selPQPVFromAll() const {return {nSL_, nSL_ + nPQ_ + nPV_};}
+         UblasRange selAllFromAll() const {return {0, nSL_ + nPQ_ + nPV_};}
+
+         int if_Ir(int i) const {return 2 * i + 1;}
+         int if_Ii(int i) const {return 2 * i;}
+         int ifPQ_Ir(int i) const {return 2 * i + 1;}
+         int ifPQ_Ii(int i) const {return 2 * i;}
+         int ifPV_Ir(int i) const {return 2 * nPQ_ + 2 * i + 1;}
+         int ifPV_Ii(int i) const {return 2 * nPQ_ + 2 * i;}
+
          // Note: see above: don't assign into a slice of a sparse matrix!
          UblasSlice selIrFromf() const {return {1, 2, nPQ_ + nPV_};}
          UblasSlice selIiFromf() const {return {0, 2, nPQ_ + nPV_};}
 
+         int ix_Vr(int i) const {return 2 * i;}
+         int ix_Vi(int i) const {return 2 * i + 1;}
+         int ixPQ_Vr(int i) const {return 2 * i;}
+         int ixPQ_Vi(int i) const {return 2 * i + 1;}
+         int ixPV_Vr(int i) const {return 2 * nPQ_ + 2 * i;} // Or Q.
+         int ixPV_Vi(int i) const {return 2 * nPQ_ + 2 * i + 1;}
+        
          UblasSlice selVrPQFromx() const {return {0, 2, nPQ_};}
          UblasSlice selViPQFromx() const {return {1, 2, nPQ_};}
          UblasSlice selQPVFromx() const {return {2 * nPQ_, 2, nPV_};}
@@ -149,7 +154,8 @@ namespace SmartGridToolbox
                     const UblasCMatrix<double> & J) const;
          void updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JC,
                       const UblasVector<double> & Vr, const UblasVector<double> & Vi,
-                      const UblasVector<double> & P, const UblasVector<double> & Q) const;
+                      const UblasVector<double> & P, const UblasVector<double> & Q,
+                      const UblasVector<double> & M2PV) const;
          void modifyForPV(UblasCMatrix<double> & J, UblasVector<double> & f,
                           const UblasVector<double> & Vr, const UblasVector<double> & Vi,
                           const UblasVector<double> & M2PV);

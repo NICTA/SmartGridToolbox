@@ -288,15 +288,11 @@ namespace SmartGridToolbox
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
    void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JC,
                              const UblasVector<double> & Vr, const UblasVector<double> & Vi,
-                             const UblasVector<double> & P, const UblasVector <double> & Q) const
+                             const UblasVector<double> & P, const UblasVector <double> & Q,
+                             const UblasVector<double> & M2PV) const
    {
       // Elements in J that have no non-constant part will be initialized to the corresponding term in JC at the
       // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
-
-      auto VrPQPV = project(Vr, selPQPVFromAll());
-      auto ViPQPV = project(Vi, selPQPVFromAll());
-      auto PPQPV = project(P, selPQPVFromAll());
-      auto QPQPV = project(Q, selPQPVFromAll());
 
       // Reset PV Q columns:
       for (int k = 0; k < nPV_; ++k)
@@ -305,22 +301,36 @@ namespace SmartGridToolbox
       }
 
       // Block diagonal:
-      for (int i = 0; i < nPQPV(); ++i)
+      for (int i = 0; i < nPQ_; ++i)
       {
-         double PVr_p_QVi = PPQPV(i) * VrPQPV(i) + QPQPV(i) * ViPQPV(i);
-         double PVi_m_QVr = PPQPV(i) * ViPQPV(i) - QPQPV(i) * VrPQPV(i);
-         double M2 = VrPQPV(i) * VrPQPV(i) + ViPQPV(i) * ViPQPV(i);
+         int iPQi = iPQ(i);
+
+         double PVr_p_QVi = P(iPQi) * Vr(iPQi) + Q(iPQi) * Vi(iPQi);
+         double PVi_m_QVr = P(iPQi) * Vi(iPQi) - Q(iPQi) * Vr(iPQi);
+         double M2 = Vr(iPQi) * Vr(iPQi) + Vi(iPQi) * Vi(iPQi);
          double M4 = M2 * M2;
-         double VrdM4 = VrPQPV(i) / M4;
-         double VidM4 = ViPQPV(i) / M4;
-         double PdM2 = PPQPV(i) / M2;
-         double QdM2 = QPQPV(i) / M2;
+         double VrdM4 = Vr(iPQi) / M4;
+         double VidM4 = Vi(iPQi) / M4;
+         double PdM2 = P(iPQi) / M2;
+         double QdM2 = Q(iPQi) / M2;
 
          J(if_Ir(i), ix_Vr(i)) = JC(if_Ir(i), ix_Vr(i)) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
          J(if_Ir(i), ix_Vi(i)) = JC(if_Ir(i), ix_Vi(i)) - (2 * VidM4 * PVr_p_QVi) + QdM2;
          J(if_Ii(i), ix_Vr(i)) = JC(if_Ii(i), ix_Vr(i)) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
          J(if_Ii(i), ix_Vi(i)) = JC(if_Ii(i), ix_Vi(i)) - (2 * VidM4 * PVi_m_QVr) + PdM2;
       }
+
+      // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
+      for (int i = 0; i < nPV_; ++i)
+      {
+         int iPVi = iPV(i);
+
+         J(if_Ir(i), ix_Vr(i)) = JC(if_Ir(i), ix_Vr(i)) + P(iPVi) / M2PV(i); // This could be put in JC if we wanted.
+         J(if_Ir(i), ix_Vi(i)) = JC(if_Ir(i), ix_Vi(i)) + Q(iPVi) / M2PV(i);
+         J(if_Ii(i), ix_Vr(i)) = JC(if_Ii(i), ix_Vr(i)) - Q(iPVi) / M2PV(i);
+         J(if_Ii(i), ix_Vi(i)) = JC(if_Ii(i), ix_Vi(i)) + P(iPVi) / M2PV(i);
+      }
+
    }
 
    // Modify J and f to take into account PV busses.
@@ -342,7 +352,7 @@ namespace SmartGridToolbox
          // Modify Vi column in J:
          colAllVik -= colAllVrk * (ViPV(k) / VrPV(k));
 
-         // Modify Vr column in J:
+         // Now turn Vr column into Q column.
          for (auto it = colAllVrk.begin(); it != colAllVrk.end(); ++it)
          {
             *it = 0;
@@ -401,7 +411,7 @@ namespace SmartGridToolbox
             break;
          }
 
-         updateJ(J, JC, Vr, Vi, P, Q);
+         updateJ(J, JC, Vr, Vi, P, Q, M2PV);
          SGT_DEBUG(debug() << "After updateJ : J.nnz() = " << J.nnz() << std::endl);
 
          modifyForPV(J, f, Vr, Vi, M2PV);
