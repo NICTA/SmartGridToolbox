@@ -309,7 +309,7 @@ namespace SmartGridToolbox
       {
          double PVr_p_QVi = PPQPV(i) * VrPQPV(i) + QPQPV(i) * ViPQPV(i);
          double PVi_m_QVr = PPQPV(i) * ViPQPV(i) - QPQPV(i) * VrPQPV(i);
-         double M2 = VrPQPV(i) * VrPQPV(i);
+         double M2 = VrPQPV(i) * VrPQPV(i) + ViPQPV(i) * ViPQPV(i);
          double M4 = M2 * M2;
          double VrdM4 = VrPQPV(i) / M4;
          double VidM4 = ViPQPV(i) / M4;
