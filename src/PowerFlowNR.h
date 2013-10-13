@@ -128,8 +128,10 @@ namespace SmartGridToolbox
          int ifPV_Ii(int i) const {return 2 * nPQ_ + 2 * i;}
 
          // Note: see above: don't assign into a slice of a sparse matrix!
-         UblasSlice selIrFromf() const {return {1, 2, nPQ_ + nPV_};}
-         UblasSlice selIiFromf() const {return {0, 2, nPQ_ + nPV_};}
+         UblasSlice selIrPQFromf() const {return {1, 2, nPQ_};}
+         UblasSlice selIiPQFromf() const {return {0, 2, nPQ_};}
+         UblasSlice selIrPVFromf() const {return {2 * nPQ_ + 1, 2, nPV_};}
+         UblasSlice selIiPVFromf() const {return {2 * nPQ_, 2, nPV_};}
 
          int ix_Vr(int i) const {return 2 * i;}
          int ix_Vi(int i) const {return 2 * i + 1;}
@@ -151,7 +153,7 @@ namespace SmartGridToolbox
          void calcf(UblasVector<double> & f,
                     const UblasVector<double> & Vr, const UblasVector<double> & Vi,
                     const UblasVector<double> & P, const UblasVector<double> & Q,
-                    const UblasCMatrix<double> & J) const;
+                    const UblasVector<double> & M2PV) const;
          void updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JC,
                       const UblasVector<double> & Vr, const UblasVector<double> & Vi,
                       const UblasVector<double> & P, const UblasVector<double> & Q,
