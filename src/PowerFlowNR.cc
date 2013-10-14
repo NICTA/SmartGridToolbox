@@ -313,7 +313,7 @@ namespace SmartGridToolbox
       // Reset PV Q columns:
       for (int k = 0; k < nPV_; ++k)
       {
-         column(J, ixPV_Vr(k)) = column(JC, ixPV_Vr(k));
+         column(J, ix_Vr_PV(k)) = column(JC, ix_Vr_PV(k));
       }
 
       // Block diagonal:
@@ -330,10 +330,10 @@ namespace SmartGridToolbox
          double PdM2 = P(iPQi) / M2;
          double QdM2 = Q(iPQi) / M2;
 
-         J(ifPQ_Ir(i), ixPQ_Vr(i)) = JC(ifPQ_Ir(i), ixPQ_Vr(i)) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
-         J(ifPQ_Ir(i), ixPQ_Vi(i)) = JC(ifPQ_Ir(i), ixPQ_Vi(i)) - (2 * VidM4 * PVr_p_QVi) + QdM2;
-         J(ifPQ_Ii(i), ixPQ_Vr(i)) = JC(ifPQ_Ii(i), ixPQ_Vr(i)) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
-         J(ifPQ_Ii(i), ixPQ_Vi(i)) = JC(ifPQ_Ii(i), ixPQ_Vi(i)) - (2 * VidM4 * PVi_m_QVr) + PdM2;
+         J(if_Ir_PQ(i), ix_Vr_PQ(i)) = JC(if_Ir_PQ(i), ix_Vr_PQ(i)) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
+         J(if_Ir_PQ(i), ix_Vi_PQ(i)) = JC(if_Ir_PQ(i), ix_Vi_PQ(i)) - (2 * VidM4 * PVr_p_QVi) + QdM2;
+         J(if_Ii_PQ(i), ix_Vr_PQ(i)) = JC(if_Ii_PQ(i), ix_Vr_PQ(i)) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
+         J(if_Ii_PQ(i), ix_Vi_PQ(i)) = JC(if_Ii_PQ(i), ix_Vi_PQ(i)) - (2 * VidM4 * PVi_m_QVr) + PdM2;
       }
 
       // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
@@ -341,10 +341,10 @@ namespace SmartGridToolbox
       {
          int iPVi = iPV(i);
 
-         J(ifPV_Ir(i), ixPV_Vr(i)) = JC(ifPV_Ir(i), ixPV_Vr(i)) + P(iPVi) / M2PV(i); // This could -> JC if we wanted.
-         J(ifPV_Ir(i), ixPV_Vi(i)) = JC(ifPV_Ir(i), ixPV_Vi(i)) + Q(iPVi) / M2PV(i);
-         J(ifPV_Ii(i), ixPV_Vr(i)) = JC(ifPV_Ii(i), ixPV_Vr(i)) - Q(iPVi) / M2PV(i);
-         J(ifPV_Ii(i), ixPV_Vi(i)) = JC(ifPV_Ii(i), ixPV_Vi(i)) + P(iPVi) / M2PV(i);
+         J(if_Ir_PV(i), ix_Vr_PV(i)) = JC(if_Ir_PV(i), ix_Vr_PV(i)) + P(iPVi) / M2PV(i); // Could -> JC if we wanted.
+         J(if_Ir_PV(i), ix_Vi_PV(i)) = JC(if_Ir_PV(i), ix_Vi_PV(i)) + Q(iPVi) / M2PV(i);
+         J(if_Ii_PV(i), ix_Vr_PV(i)) = JC(if_Ii_PV(i), ix_Vr_PV(i)) - Q(iPVi) / M2PV(i);
+         J(if_Ii_PV(i), ix_Vi_PV(i)) = JC(if_Ii_PV(i), ix_Vi_PV(i)) + P(iPVi) / M2PV(i);
       }
 
    }
@@ -359,8 +359,8 @@ namespace SmartGridToolbox
 
       for (int k = 0; k < nPV_; ++k)
       {
-         auto colAllVrk = column(J, ixPV_Vr(k));
-         auto colAllVik = column(J, ixPV_Vi(k));
+         auto colAllVrk = column(J, ix_Vr_PV(k));
+         auto colAllVik = column(J, ix_Vi_PV(k));
          
          // Modify f:
          f += colAllVrk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
@@ -373,8 +373,8 @@ namespace SmartGridToolbox
          {
             *it = 0;
          }
-         J(ifPV_Ir(k), ixPV_Vr(k)) = ViPV(k) / M2PV(k);
-         J(ifPV_Ii(k), ixPV_Vr(k)) = -VrPV(k) / M2PV(k);
+         J(if_Ir_PV(k), ix_Vr_PV(k)) = ViPV(k) / M2PV(k);
+         J(if_Ii_PV(k), ix_Vr_PV(k)) = -VrPV(k) / M2PV(k);
       }
    }
 

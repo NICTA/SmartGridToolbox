@@ -122,10 +122,10 @@ namespace SmartGridToolbox
 
          int if_Ir(int i) const {return 2 * i + 1;}
          int if_Ii(int i) const {return 2 * i;}
-         int ifPQ_Ir(int i) const {return 2 * i + 1;}
-         int ifPQ_Ii(int i) const {return 2 * i;}
-         int ifPV_Ir(int i) const {return 2 * nPQ_ + 2 * i + 1;}
-         int ifPV_Ii(int i) const {return 2 * nPQ_ + 2 * i;}
+         int if_Ir_PQ(int i) const {return 2 * i + 1;}
+         int if_Ii_PQ(int i) const {return 2 * i;}
+         int if_Ir_PV(int i) const {return 2 * nPQ_ + 2 * i + 1;}
+         int if_Ii_PV(int i) const {return 2 * nPQ_ + 2 * i;}
 
          // Note: see above: don't assign into a slice of a sparse matrix!
          UblasSlice selIrPQFromf() const {return {1, 2, nPQ_};}
@@ -135,10 +135,10 @@ namespace SmartGridToolbox
 
          int ix_Vr(int i) const {return 2 * i;}
          int ix_Vi(int i) const {return 2 * i + 1;}
-         int ixPQ_Vr(int i) const {return 2 * i;}
-         int ixPQ_Vi(int i) const {return 2 * i + 1;}
-         int ixPV_Vr(int i) const {return 2 * nPQ_ + 2 * i;} // Or Q.
-         int ixPV_Vi(int i) const {return 2 * nPQ_ + 2 * i + 1;}
+         int ix_Vr_PQ(int i) const {return 2 * i;}
+         int ix_Vi_PQ(int i) const {return 2 * i + 1;}
+         int ix_Vr_PV(int i) const {return 2 * nPQ_ + 2 * i;} // Or Q.
+         int ix_Vi_PV(int i) const {return 2 * nPQ_ + 2 * i + 1;}
         
          UblasSlice selVrPQFromx() const {return {0, 2, nPQ_};}
          UblasSlice selViPQFromx() const {return {1, 2, nPQ_};}
