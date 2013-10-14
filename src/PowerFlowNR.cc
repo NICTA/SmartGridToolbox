@@ -227,8 +227,39 @@ namespace SmartGridToolbox
       const auto G = real(Y_);
       const auto B = imag(Y_);
 
-      const auto GPQPV = project(G, selPQPVFromAll(), selPQPVFromAll());
-      const auto BPQPV = project(B, selPQPVFromAll(), selPQPVFromAll());
+      const auto GPQPQ = project(G, selPQFromAll(), selPQFromAll());
+      const auto BPQPQ = project(B, selPQFromAll(), selPQFromAll());
+      
+      const auto GPQPV = project(G, selPQFromAll(), selPVFromAll());
+      const auto BPQPV = project(B, selPQFromAll(), selPVFromAll());
+      
+      const auto GPVPQ = project(G, selPVFromAll(), selPQFromAll());
+      const auto BPVPQ = project(B, selPVFromAll(), selPQFromAll());
+      
+      const auto GPVPV = project(G, selPVFromAll(), selPVFromAll());
+      const auto BPVPV = project(B, selPVFromAll(), selPVFromAll());
+
+      for (auto it1 = GPQPQ.begin1(); it1 != GPQPQ.end1(); ++it1)
+      {
+         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
+         {
+            int i = it2.index1();
+            int k = it2.index2();
+            JC(if_Ir_PQ(i), ix_Vr_PQ(k)) = -(*it2);
+            JC(if_Ii_PQ(i), ix_Vi_PQ(k)) = -(*it2);
+         }
+      }
+
+      for (auto it1 = BPQPQ.begin1(); it1 != BPQPQ.end1(); ++it1)
+      {
+         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
+         {
+            int i = it2.index1();
+            int k = it2.index2();
+            JC(if_Ir_PQ(i), ix_Vi_PQ(k)) = *it2;
+            JC(if_Ii_PQ(i), ix_Vr_PQ(k)) = -(*it2);
+         }
+      }
 
       for (auto it1 = GPQPV.begin1(); it1 != GPQPV.end1(); ++it1)
       {
@@ -236,8 +267,8 @@ namespace SmartGridToolbox
          {
             int i = it2.index1();
             int k = it2.index2();
-            JC(if_Ir(i), ix_Vr(k)) = -(*it2);
-            JC(if_Ii(i), ix_Vi(k)) = -(*it2);
+            JC(if_Ir_PQ(i), ix_Vr_PV(k)) = -(*it2);
+            JC(if_Ii_PQ(i), ix_Vi_PV(k)) = -(*it2);
          }
       }
 
@@ -247,8 +278,52 @@ namespace SmartGridToolbox
          {
             int i = it2.index1();
             int k = it2.index2();
-            JC(if_Ir(i), ix_Vi(k)) = *it2;
-            JC(if_Ii(i), ix_Vr(k)) = -(*it2);
+            JC(if_Ir_PQ(i), ix_Vi_PV(k)) = *it2;
+            JC(if_Ii_PQ(i), ix_Vr_PV(k)) = -(*it2);
+         }
+      }
+
+      for (auto it1 = GPVPQ.begin1(); it1 != GPVPQ.end1(); ++it1)
+      {
+         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
+         {
+            int i = it2.index1();
+            int k = it2.index2();
+            JC(if_Ir_PV(i), ix_Vr_PQ(k)) = -(*it2);
+            JC(if_Ii_PV(i), ix_Vi_PQ(k)) = -(*it2);
+         }
+      }
+
+      for (auto it1 = BPVPQ.begin1(); it1 != BPVPQ.end1(); ++it1)
+      {
+         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
+         {
+            int i = it2.index1();
+            int k = it2.index2();
+            JC(if_Ir_PV(i), ix_Vi_PQ(k)) = *it2;
+            JC(if_Ii_PV(i), ix_Vr_PQ(k)) = -(*it2);
+         }
+      }
+
+      for (auto it1 = GPVPV.begin1(); it1 != GPVPV.end1(); ++it1)
+      {
+         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
+         {
+            int i = it2.index1();
+            int k = it2.index2();
+            JC(if_Ir_PV(i), ix_Vr_PV(k)) = -(*it2);
+            JC(if_Ii_PV(i), ix_Vi_PV(k)) = -(*it2);
+         }
+      }
+
+      for (auto it1 = BPVPV.begin1(); it1 != BPVPV.end1(); ++it1)
+      {
+         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
+         {
+            int i = it2.index1();
+            int k = it2.index2();
+            JC(if_Ir_PV(i), ix_Vi_PV(k)) = *it2;
+            JC(if_Ii_PV(i), ix_Vr_PV(k)) = -(*it2);
          }
       }
    }
@@ -294,11 +369,12 @@ namespace SmartGridToolbox
       
       const auto IcrPV = project(real(Ic_), selPVFromAll());
       const auto IciPV = project(imag(Ic_), selPVFromAll());
-
+      
       project(f, selIrPVFromf()) = element_div(element_prod(VrPV, PPV) + element_prod(ViPV, QPV), M2PV)
                                  + IcrPV - prod(GPV, Vr) + prod(BPV, Vi);
       project(f, selIiPVFromf()) = element_div(element_prod(ViPV, PPV) - element_prod(VrPV, QPV), M2PV)
                                  + IciPV - prod(GPV, Vi) - prod(BPV, Vr);
+      project(f, selM2PVFromf()) = element_prod(VrPV, VrPV) + element_prod(ViPV, ViPV) - M2PV;
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
@@ -309,12 +385,6 @@ namespace SmartGridToolbox
    {
       // Elements in J that have no non-constant part will be initialized to the corresponding term in JC at the
       // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
-
-      // Reset PV Q columns:
-      for (int k = 0; k < nPV_; ++k)
-      {
-         column(J, ix_Vr_PV(k)) = column(JC, ix_Vr_PV(k));
-      }
 
       // Block diagonal:
       for (int i = 0; i < nPQ_; ++i)
@@ -347,34 +417,12 @@ namespace SmartGridToolbox
          J(if_Ii_PV(i), ix_Vi_PV(i)) = JC(if_Ii_PV(i), ix_Vi_PV(i)) + P(iPVi) / M2PV(i);
       }
 
-   }
-
-   // Modify J and f to take into account PV busses.
-   void PowerFlowNR::modifyForPV(UblasCMatrix<double> & J, UblasVector<double> & f,
-                                 const UblasVector<double> & Vr, const UblasVector<double> & Vi,
-                                 const UblasVector<double> & M2PV)
-   {
-      const auto VrPV = project(Vr, selPVFromAll());
-      const auto ViPV = project(Vi, selPVFromAll());
-
-      for (int k = 0; k < nPV_; ++k)
+      for (int i = 0; i < nPV_; ++i)
       {
-         auto colAllVrk = column(J, ix_Vr_PV(k));
-         auto colAllVik = column(J, ix_Vi_PV(k));
-         
-         // Modify f:
-         f += colAllVrk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
-
-         // Modify Vi column in J:
-         colAllVik -= colAllVrk * (ViPV(k) / VrPV(k));
-
-         // Now turn Vr column into Q column.
-         for (auto it = colAllVrk.begin(); it != colAllVrk.end(); ++it)
-         {
-            *it = 0;
-         }
-         J(if_Ir_PV(k), ix_Vr_PV(k)) = ViPV(k) / M2PV(k);
-         J(if_Ii_PV(k), ix_Vr_PV(k)) = -VrPV(k) / M2PV(k);
+         J(if_Ir_PV(i), ix_Q_PV(i)) = Vi(iPV(i)) / M2PV(i);
+         J(if_Ii_PV(i), ix_Q_PV(i)) = -Vr(iPV(i)) / M2PV(i);
+         J(if_M2_PV(i), ix_Vr_PV(i)) = 2 * Vr(iPV(i));
+         J(if_M2_PV(i), ix_Vi_PV(i)) = 2 * Vi(iPV(i));
       }
    }
 
@@ -430,9 +478,6 @@ namespace SmartGridToolbox
          updateJ(J, JC, Vr, Vi, P, Q, M2PV);
          SGT_DEBUG(debug() << "After updateJ : J.nnz() = " << J.nnz() << std::endl);
 
-         modifyForPV(J, f, Vr, Vi, M2PV);
-         SGT_DEBUG(debug() << "After modifyForPV : J.nnz() = " << J.nnz() << std::endl);
-
          UblasVector<double> x;
 
          SGT_DEBUG
@@ -460,19 +505,12 @@ namespace SmartGridToolbox
             abort();
          }
 
-         // Update the current values of V from the solution:
+         // Update the current values of V and Q from the solution:
          project(Vr, selPQFromAll()) += project(x, selVrPQFromx());
          project(Vi, selPQFromAll()) += project(x, selViPQFromx());
-
-         // Explicitly deal with the voltage magnitude constraint by updating VrPV by hand.
-         auto VrPV = project(Vr, selPVFromAll());
-         auto ViPV = project(Vi, selPVFromAll());
-         const auto DeltaViPV = project(x, selViPVFromx());
-         VrPV += element_div(M2PV - element_prod(VrPV, VrPV) - element_prod(ViPV, ViPV) 
-                             - 2 * element_prod(ViPV, DeltaViPV), 2 * VrPV);
-         ViPV += DeltaViPV;
-
-         // Update Q for PV busses based on the solution.
+         
+         project(Vr, selPVFromAll()) += project(x, selVrPVFromx());
+         project(Vi, selPVFromAll()) += project(x, selViPVFromx());
          project(Q, selPVFromAll()) += project(x, selQPVFromx());
 
          SGT_DEBUG(debug() << "\tUpdated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl);

@@ -101,7 +101,7 @@ namespace SmartGridToolbox
 
          unsigned int nPQPV() const {return nPQ_ + nPV_;}
          unsigned int nNode() const {return nSL_ + nPQ_ + nPV_;}
-         unsigned int nVar() const {return 2 * (nPQ_ + nPV_);}
+         unsigned int nVar() const {return 2 * nPQ_ + 3 * nPV_;}
 
          /// @name Ordering of variables etc.
          /// @{
@@ -120,30 +120,30 @@ namespace SmartGridToolbox
          UblasRange selPQPVFromAll() const {return {nSL_, nSL_ + nPQ_ + nPV_};}
          UblasRange selAllFromAll() const {return {0, nSL_ + nPQ_ + nPV_};}
 
-         int if_Ir(int i) const {return 2 * i + 1;}
-         int if_Ii(int i) const {return 2 * i;}
          int if_Ir_PQ(int i) const {return 2 * i + 1;}
          int if_Ii_PQ(int i) const {return 2 * i;}
-         int if_Ir_PV(int i) const {return 2 * nPQ_ + 2 * i + 1;}
-         int if_Ii_PV(int i) const {return 2 * nPQ_ + 2 * i;}
+         int if_Ir_PV(int i) const {return 2 * nPQ_ + 3 * i + 1;}
+         int if_Ii_PV(int i) const {return 2 * nPQ_ + 3 * i;}
+         int if_M2_PV(int i) const {return 2 * nPQ_ + 3 * i + 2;}
 
          // Note: see above: don't assign into a slice of a sparse matrix!
          UblasSlice selIrPQFromf() const {return {1, 2, nPQ_};}
          UblasSlice selIiPQFromf() const {return {0, 2, nPQ_};}
-         UblasSlice selIrPVFromf() const {return {2 * nPQ_ + 1, 2, nPV_};}
-         UblasSlice selIiPVFromf() const {return {2 * nPQ_, 2, nPV_};}
+         UblasSlice selIrPVFromf() const {return {2 * nPQ_ + 1, 3, nPV_};}
+         UblasSlice selIiPVFromf() const {return {2 * nPQ_, 3, nPV_};}
+         UblasSlice selM2PVFromf() const {return {2 * nPQ_ + 2, 3, nPV_};}
 
-         int ix_Vr(int i) const {return 2 * i;}
-         int ix_Vi(int i) const {return 2 * i + 1;}
          int ix_Vr_PQ(int i) const {return 2 * i;}
          int ix_Vi_PQ(int i) const {return 2 * i + 1;}
-         int ix_Vr_PV(int i) const {return 2 * nPQ_ + 2 * i;} // Or Q.
-         int ix_Vi_PV(int i) const {return 2 * nPQ_ + 2 * i + 1;}
+         int ix_Vr_PV(int i) const {return 2 * nPQ_ + 3 * i;} // Or Q.
+         int ix_Vi_PV(int i) const {return 2 * nPQ_ + 3 * i + 1;}
+         int ix_Q_PV(int i) const {return 2 * nPQ_ + 3 * i + 2;}
         
          UblasSlice selVrPQFromx() const {return {0, 2, nPQ_};}
          UblasSlice selViPQFromx() const {return {1, 2, nPQ_};}
-         UblasSlice selQPVFromx() const {return {2 * nPQ_, 2, nPV_};}
-         UblasSlice selViPVFromx() const {return {2 * nPQ_ + 1, 2, nPV_};}
+         UblasSlice selVrPVFromx() const {return {2 * nPQ_, 3, nPV_};}
+         UblasSlice selViPVFromx() const {return {2 * nPQ_ + 1, 3, nPV_};}
+         UblasSlice selQPVFromx() const {return {2 * nPQ_ + 2, 3, nPV_};}
          /// @}
 
          void initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const;
@@ -158,9 +158,6 @@ namespace SmartGridToolbox
                       const UblasVector<double> & Vr, const UblasVector<double> & Vi,
                       const UblasVector<double> & P, const UblasVector<double> & Q,
                       const UblasVector<double> & M2PV) const;
-         void modifyForPV(UblasCMatrix<double> & J, UblasVector<double> & f,
-                          const UblasVector<double> & Vr, const UblasVector<double> & Vi,
-                          const UblasVector<double> & M2PV);
       private:
          /// @name UblasVector of busses and branches.
          /// @{
