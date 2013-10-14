@@ -330,10 +330,10 @@ namespace SmartGridToolbox
          double PdM2 = P(iPQi) / M2;
          double QdM2 = Q(iPQi) / M2;
 
-         J(if_Ir(i), ix_Vr(i)) = JC(if_Ir(i), ix_Vr(i)) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
-         J(if_Ir(i), ix_Vi(i)) = JC(if_Ir(i), ix_Vi(i)) - (2 * VidM4 * PVr_p_QVi) + QdM2;
-         J(if_Ii(i), ix_Vr(i)) = JC(if_Ii(i), ix_Vr(i)) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
-         J(if_Ii(i), ix_Vi(i)) = JC(if_Ii(i), ix_Vi(i)) - (2 * VidM4 * PVi_m_QVr) + PdM2;
+         J(ifPQ_Ir(i), ixPQ_Vr(i)) = JC(ifPQ_Ir(i), ixPQ_Vr(i)) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
+         J(ifPQ_Ir(i), ixPQ_Vi(i)) = JC(ifPQ_Ir(i), ixPQ_Vi(i)) - (2 * VidM4 * PVr_p_QVi) + QdM2;
+         J(ifPQ_Ii(i), ixPQ_Vr(i)) = JC(ifPQ_Ii(i), ixPQ_Vr(i)) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
+         J(ifPQ_Ii(i), ixPQ_Vi(i)) = JC(ifPQ_Ii(i), ixPQ_Vi(i)) - (2 * VidM4 * PVi_m_QVr) + PdM2;
       }
 
       // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
@@ -341,10 +341,10 @@ namespace SmartGridToolbox
       {
          int iPVi = iPV(i);
 
-         J(if_Ir(i), ix_Vr(i)) = JC(if_Ir(i), ix_Vr(i)) + P(iPVi) / M2PV(i); // This could be put in JC if we wanted.
-         J(if_Ir(i), ix_Vi(i)) = JC(if_Ir(i), ix_Vi(i)) + Q(iPVi) / M2PV(i);
-         J(if_Ii(i), ix_Vr(i)) = JC(if_Ii(i), ix_Vr(i)) - Q(iPVi) / M2PV(i);
-         J(if_Ii(i), ix_Vi(i)) = JC(if_Ii(i), ix_Vi(i)) + P(iPVi) / M2PV(i);
+         J(ifPV_Ir(i), ixPV_Vr(i)) = JC(ifPV_Ir(i), ixPV_Vr(i)) + P(iPVi) / M2PV(i); // This could -> JC if we wanted.
+         J(ifPV_Ir(i), ixPV_Vi(i)) = JC(ifPV_Ir(i), ixPV_Vi(i)) + Q(iPVi) / M2PV(i);
+         J(ifPV_Ii(i), ixPV_Vr(i)) = JC(ifPV_Ii(i), ixPV_Vr(i)) - Q(iPVi) / M2PV(i);
+         J(ifPV_Ii(i), ixPV_Vi(i)) = JC(ifPV_Ii(i), ixPV_Vi(i)) + P(iPVi) / M2PV(i);
       }
 
    }
