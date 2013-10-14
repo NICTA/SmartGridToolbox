@@ -382,8 +382,8 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "PowerFlowNR : solve." << std::endl);
 
-      const double tol = 1e-10;
-      const int maxiter = 20;
+      const double tol = 1e-14;
+      const int maxiter = 50;
 
       UblasVector<double> Vr(nNode());
       UblasVector<double> Vi(nNode());
@@ -422,7 +422,7 @@ namespace SmartGridToolbox
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
          if (err <= tol)
          {
-            SGT_DEBUG(debug() << "\tSuccess at iteration " << i << ". Error = " << err << std::endl);
+            SGT_DEBUG(debug() << "\tSuccess at iteration " << i << "." << std::endl);
             wasSuccessful = true;
             break;
          }
@@ -517,7 +517,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         warning() << "PowerFlowNR: Newton-Raphson method failed to converge. Error = " << err << "." << std::endl; 
+         warning() << "PowerFlowNR: Newton-Raphson method failed to converge." << std::endl; 
       }
       SGT_DEBUG(debug() << "PowerFlowNR : solve finished. Was successful = " << wasSuccessful << std::endl);
       return wasSuccessful;
