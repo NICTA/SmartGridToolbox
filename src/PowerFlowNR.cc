@@ -430,8 +430,8 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "PowerFlowNR : solve." << std::endl);
 
-      const double tol = 1e-14;
-      const int maxiter = 50;
+      const double tol = 1e-10;
+      const int maxiter = 20;
 
       UblasVector<double> Vr(nNode());
       UblasVector<double> Vi(nNode());
