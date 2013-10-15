@@ -15,15 +15,18 @@ namespace SmartGridToolbox
 
    void Model::validate()
    {
-      message() << "Model before validation:" << std::endl;
-      for (const Component * comp : compVec_)
-      {
-         message() << "\t" << comp->name() << " " << comp->rank() << std::endl;
-         for (Component * const dep : comp->dependencies())
+      SGT_DEBUG
+      (
+         debug() << "Model before validation:" << std::endl;
+         for (const Component * comp : compVec_)
          {
-            message() << "\t\t" << dep->name() << " " << dep->rank() << std::endl;
+            debug() << "\t" << comp->name() << " " << comp->rank() << std::endl;
+            for (Component * const dep : comp->dependencies())
+            {
+               debug() << "\t\t" << dep->name() << " " << dep->rank() << std::endl;
+            }
          }
-      }
+      )
 
       for (int i = 0; i < compVec_.size(); ++i)
       {

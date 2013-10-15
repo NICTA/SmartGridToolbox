@@ -188,9 +188,9 @@ namespace SmartGridToolbox
       int nGen = genMatrix.size() / genCols;
       int nBranch = branchMatrix.size() / branchCols;
 
-      message() << "Matpower: Bus matrix size = " << busCols << std::endl;
-      message() << "Matpower: Gen matrix size = " << genCols << std::endl;
-      message() << "Matpower: Branch matrix size = " << branchCols << std::endl;
+      SGT_DEBUG(debug() << "Matpower: Bus matrix size = " << busCols << std::endl);
+      SGT_DEBUG(debug() << "Matpower: Gen matrix size = " << genCols << std::endl);
+      SGT_DEBUG(debug() << "Matpower: Branch matrix size = " << branchCols << std::endl);
 
       // Organize and scale the data:
       std::map<int, BusInfo> busMap;
