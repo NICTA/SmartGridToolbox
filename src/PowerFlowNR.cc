@@ -403,7 +403,7 @@ namespace SmartGridToolbox
       debug() << "\tAfter initialization: JC = " << std::endl;
       for (int i = 0; i < nVar(); ++i)
       {
-         debug() << "\t\t" << std::setprecision(14) << std::setw(18) << row(JC, i) << std::endl;
+         debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JC, i) << std::endl;
       }
 
       UblasVector<double> f(nVar()); ///< Current mismatch function.
@@ -419,7 +419,7 @@ namespace SmartGridToolbox
 
          calcf(f, Vr, Vi, P, Q, M2PV);
          err = norm_inf(f);
-         SGT_DEBUG(debug() << "\tf  = " << std::setprecision(14) << std::setw(18) << f << std::endl);
+         SGT_DEBUG(debug() << "\tf  = " << std::setprecision(5) << std::setw(9) << f << std::endl);
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
          if (err <= tol)
          {
@@ -433,12 +433,12 @@ namespace SmartGridToolbox
          debug() << "\tAfter updateJ : J   = " << std::endl;
          for (int i = 0; i < nVar(); ++i)
          {
-            debug() << "\t\t" << std::setprecision(14) << std::setw(18) << row(J, i) << std::endl;
+            debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(J, i) << std::endl;
          }
          debug() << "\tAfter updateJ : JC  = " << std::endl;
          for (int i = 0; i < nVar(); ++i)
          {
-            debug() << "\t\t" << std::setprecision(14) << std::setw(18) << row(JC, i) << std::endl;
+            debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JC, i) << std::endl;
          }
 
          modifyForPV(J, f, Vr, Vi, M2PV);
@@ -448,23 +448,23 @@ namespace SmartGridToolbox
 
          SGT_DEBUG
          (
-            debug() << "\tBefore KLUSolve: Vr  = " << std::setprecision(14) << std::setw(18) << Vr << std::endl;
-            debug() << "\tBefore KLUSolve: Vi  = " << std::setprecision(14) << std::setw(18) << Vi << std::endl;
-            debug() << "\tBefore KLUSolve: M^2 = " << std::setprecision(14) << std::setw(18)
+            debug() << "\tBefore KLUSolve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
+            debug() << "\tBefore KLUSolve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
+            debug() << "\tBefore KLUSolve: M^2 = " << std::setprecision(5) << std::setw(9)
                     << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl;
-            debug() << "\tBefore KLUSolve: P   = " << std::setprecision(14) << std::setw(18) << P << std::endl;
-            debug() << "\tBefore KLUSolve: Q   = " << std::setprecision(14) << std::setw(18) << Q << std::endl;
-            debug() << "\tBefore KLUSolve: f   = " << std::setprecision(14) << std::setw(18) << f << std::endl;
+            debug() << "\tBefore KLUSolve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
+            debug() << "\tBefore KLUSolve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
+            debug() << "\tBefore KLUSolve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
             debug() << "\tBefore KLUSolve: J   = " << std::endl;
             for (int i = 0; i < nVar(); ++i)
             {
-               debug() << "\t\t" << std::setprecision(14) << std::setw(18) << row(J, i) << std::endl;
+               debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(J, i) << std::endl;
             }
          );
 
          bool ok = KLUSolve(J, -f, x);
          SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << std::endl); 
-         SGT_DEBUG(debug() << "\tAfter KLUSolve: x  = " << std::setprecision(14) << std::setw(18) << x << std::endl);
+         SGT_DEBUG(debug() << "\tAfter KLUSolve: x  = " << std::setprecision(5) << std::setw(9) << x << std::endl);
          if (!ok)
          {
             error() << "KLUSolve failed." << std::endl;
@@ -486,12 +486,12 @@ namespace SmartGridToolbox
          // Update Q for PV busses based on the solution.
          project(Q, selPVFromAll()) += project(x, selQPVFromx());
 
-         SGT_DEBUG(debug() << "\tUpdated Vr  = " << std::setprecision(14) << std::setw(18) << Vr << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated Vi  = " << std::setprecision(14) << std::setw(18) << Vi << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated M^2 = " << std::setprecision(14) << std::setw(18)
+         SGT_DEBUG(debug() << "\tUpdated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated M^2 = " << std::setprecision(5) << std::setw(9)
                            << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated P   = " << std::setprecision(14) << std::setw(18) << P << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated Q   = " << std::setprecision(14) << std::setw(18) << Q << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated P   = " << std::setprecision(5) << std::setw(9) << P << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl);
       }
 
       if (wasSuccessful)
