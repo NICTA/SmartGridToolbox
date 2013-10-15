@@ -319,12 +319,6 @@ namespace SmartGridToolbox
                tap = 1.0; // 0 means "default", i.e. 1.
             }
 
-            if (tap != 1.0 || theta != 0.0)
-            {
-               warning() << "Matpower: the tap and theta branch parameters have yet to be tested, " 
-                  "and are likely to be wrong." << std::endl;
-            }
-
             Complex cTap = polar(tap, theta * pi / 180);
 
             Bus * bus0 = mod.componentNamed<Bus>(busName(networkName, bus0Id));
