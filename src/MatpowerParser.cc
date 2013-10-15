@@ -218,7 +218,7 @@ namespace SmartGridToolbox
             busInfo.Ys = Complex(Gs, Bs) * 1e6 / (busInfo.VBase * busInfo.VBase);
             if (usePerUnit)
             {
-               busInfo.Ys *= (busInfo.VBase * busInfo.VBase) / MVABase;
+               busInfo.Ys *= (busInfo.VBase * busInfo.VBase) / SBase;
             }
 
             double Vm = busMatrix[busCols * i + 7];
