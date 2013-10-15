@@ -227,39 +227,8 @@ namespace SmartGridToolbox
       const auto G = real(Y_);
       const auto B = imag(Y_);
 
-      const auto GPQPQ = project(G, selPQFromAll(), selPQFromAll());
-      const auto BPQPQ = project(B, selPQFromAll(), selPQFromAll());
-      
-      const auto GPQPV = project(G, selPQFromAll(), selPVFromAll());
-      const auto BPQPV = project(B, selPQFromAll(), selPVFromAll());
-      
-      const auto GPVPQ = project(G, selPVFromAll(), selPQFromAll());
-      const auto BPVPQ = project(B, selPVFromAll(), selPQFromAll());
-      
-      const auto GPVPV = project(G, selPVFromAll(), selPVFromAll());
-      const auto BPVPV = project(B, selPVFromAll(), selPVFromAll());
-
-      for (auto it1 = GPQPQ.begin1(); it1 != GPQPQ.end1(); ++it1)
-      {
-         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
-         {
-            int i = it2.index1();
-            int k = it2.index2();
-            JC(if_Ir_PQ(i), ix_Vr_PQ(k)) = -(*it2);
-            JC(if_Ii_PQ(i), ix_Vi_PQ(k)) = -(*it2);
-         }
-      }
-
-      for (auto it1 = BPQPQ.begin1(); it1 != BPQPQ.end1(); ++it1)
-      {
-         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
-         {
-            int i = it2.index1();
-            int k = it2.index2();
-            JC(if_Ir_PQ(i), ix_Vi_PQ(k)) = *it2;
-            JC(if_Ii_PQ(i), ix_Vr_PQ(k)) = -(*it2);
-         }
-      }
+      const auto GPQPV = project(G, selPQPVFromAll(), selPQPVFromAll());
+      const auto BPQPV = project(B, selPQPVFromAll(), selPQPVFromAll());
 
       for (auto it1 = GPQPV.begin1(); it1 != GPQPV.end1(); ++it1)
       {
@@ -267,8 +236,8 @@ namespace SmartGridToolbox
          {
             int i = it2.index1();
             int k = it2.index2();
-            JC(if_Ir_PQ(i), ix_Vr_PV(k)) = -(*it2);
-            JC(if_Ii_PQ(i), ix_Vi_PV(k)) = -(*it2);
+            JC(if_Ir(i), ix_Vr(k)) = -(*it2);
+            JC(if_Ii(i), ix_Vi(k)) = -(*it2);
          }
       }
 
@@ -278,52 +247,8 @@ namespace SmartGridToolbox
          {
             int i = it2.index1();
             int k = it2.index2();
-            JC(if_Ir_PQ(i), ix_Vi_PV(k)) = *it2;
-            JC(if_Ii_PQ(i), ix_Vr_PV(k)) = -(*it2);
-         }
-      }
-
-      for (auto it1 = GPVPQ.begin1(); it1 != GPVPQ.end1(); ++it1)
-      {
-         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
-         {
-            int i = it2.index1();
-            int k = it2.index2();
-            JC(if_Ir_PV(i), ix_Vr_PQ(k)) = -(*it2);
-            JC(if_Ii_PV(i), ix_Vi_PQ(k)) = -(*it2);
-         }
-      }
-
-      for (auto it1 = BPVPQ.begin1(); it1 != BPVPQ.end1(); ++it1)
-      {
-         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
-         {
-            int i = it2.index1();
-            int k = it2.index2();
-            JC(if_Ir_PV(i), ix_Vi_PQ(k)) = *it2;
-            JC(if_Ii_PV(i), ix_Vr_PQ(k)) = -(*it2);
-         }
-      }
-
-      for (auto it1 = GPVPV.begin1(); it1 != GPVPV.end1(); ++it1)
-      {
-         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
-         {
-            int i = it2.index1();
-            int k = it2.index2();
-            JC(if_Ir_PV(i), ix_Vr_PV(k)) = -(*it2);
-            JC(if_Ii_PV(i), ix_Vi_PV(k)) = -(*it2);
-         }
-      }
-
-      for (auto it1 = BPVPV.begin1(); it1 != BPVPV.end1(); ++it1)
-      {
-         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
-         {
-            int i = it2.index1();
-            int k = it2.index2();
-            JC(if_Ir_PV(i), ix_Vi_PV(k)) = *it2;
-            JC(if_Ii_PV(i), ix_Vr_PV(k)) = -(*it2);
+            JC(if_Ir(i), ix_Vi(k)) = *it2;
+            JC(if_Ii(i), ix_Vr(k)) = -(*it2);
          }
       }
    }
@@ -369,12 +294,11 @@ namespace SmartGridToolbox
       
       const auto IcrPV = project(real(Ic_), selPVFromAll());
       const auto IciPV = project(imag(Ic_), selPVFromAll());
-      
+
       project(f, selIrPVFromf()) = element_div(element_prod(VrPV, PPV) + element_prod(ViPV, QPV), M2PV)
                                  + IcrPV - prod(GPV, Vr) + prod(BPV, Vi);
       project(f, selIiPVFromf()) = element_div(element_prod(ViPV, PPV) - element_prod(VrPV, QPV), M2PV)
                                  + IciPV - prod(GPV, Vi) - prod(BPV, Vr);
-      project(f, selM2PVFromf()) = element_prod(VrPV, VrPV) + element_prod(ViPV, ViPV) - M2PV;
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
@@ -385,6 +309,13 @@ namespace SmartGridToolbox
    {
       // Elements in J that have no non-constant part will be initialized to the corresponding term in JC at the
       // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
+
+      // Reset PV Q and Vi columns, since these get messed with:
+      for (int k = 0; k < nPV_; ++k)
+      {
+         column(J, ix_Q_PV(k)) = column(JC, ix_Q_PV(k));
+         column(J, ix_Vi_PV(k)) = column(JC, ix_Vi_PV(k));
+      }
 
       // Block diagonal:
       for (int i = 0; i < nPQ_; ++i)
@@ -411,18 +342,40 @@ namespace SmartGridToolbox
       {
          int iPVi = iPV(i);
 
-         J(if_Ir_PV(i), ix_Vr_PV(i)) = JC(if_Ir_PV(i), ix_Vr_PV(i)) + P(iPVi) / M2PV(i); // Could -> JC if we wanted.
+         J(if_Ir_PV(i), ix_Q_PV(i)) = JC(if_Ir_PV(i), ix_Q_PV(i)) + P(iPVi) / M2PV(i); // Could -> JC if we wanted.
          J(if_Ir_PV(i), ix_Vi_PV(i)) = JC(if_Ir_PV(i), ix_Vi_PV(i)) + Q(iPVi) / M2PV(i);
-         J(if_Ii_PV(i), ix_Vr_PV(i)) = JC(if_Ii_PV(i), ix_Vr_PV(i)) - Q(iPVi) / M2PV(i);
+         J(if_Ii_PV(i), ix_Q_PV(i)) = JC(if_Ii_PV(i), ix_Q_PV(i)) - Q(iPVi) / M2PV(i);
          J(if_Ii_PV(i), ix_Vi_PV(i)) = JC(if_Ii_PV(i), ix_Vi_PV(i)) + P(iPVi) / M2PV(i);
       }
 
-      for (int i = 0; i < nPV_; ++i)
+   }
+
+   // Modify J and f to take into account PV busses.
+   void PowerFlowNR::modifyForPV(UblasCMatrix<double> & J, UblasVector<double> & f,
+                                 const UblasVector<double> & Vr, const UblasVector<double> & Vi,
+                                 const UblasVector<double> & M2PV)
+   {
+      const auto VrPV = project(Vr, selPVFromAll());
+      const auto ViPV = project(Vi, selPVFromAll());
+
+      for (int k = 0; k < nPV_; ++k)
       {
-         J(if_Ir_PV(i), ix_Q_PV(i)) = Vi(iPV(i)) / M2PV(i);
-         J(if_Ii_PV(i), ix_Q_PV(i)) = -Vr(iPV(i)) / M2PV(i);
-         J(if_M2_PV(i), ix_Vr_PV(i)) = 2 * Vr(iPV(i));
-         J(if_M2_PV(i), ix_Vi_PV(i)) = 2 * Vi(iPV(i));
+         auto colAllVrk = column(J, ix_Q_PV(k));
+         auto colAllVik = column(J, ix_Vi_PV(k));
+         
+         // Modify f:
+         f += colAllVrk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
+
+         // Modify Vi column in J:
+         colAllVik -= colAllVrk * (ViPV(k) / VrPV(k));
+
+         // Now turn Vr column into Q column.
+         for (auto it = colAllVrk.begin(); it != colAllVrk.end(); ++it)
+         {
+            *it = 0;
+         }
+         J(if_Ir_PV(k), ix_Q_PV(k)) = ViPV(k) / M2PV(k);
+         J(if_Ii_PV(k), ix_Q_PV(k)) = -VrPV(k) / M2PV(k);
       }
    }
 
@@ -430,8 +383,8 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "PowerFlowNR : solve." << std::endl);
 
-      const double tol = 1e-10;
-      const int maxiter = 20;
+      const double tol = 1e-14;
+      const int maxiter = 50;
 
       UblasVector<double> Vr(nNode());
       UblasVector<double> Vi(nNode());
@@ -450,7 +403,7 @@ namespace SmartGridToolbox
       debug() << "\tAfter initialization: JC = " << std::endl;
       for (int i = 0; i < nVar(); ++i)
       {
-         debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JC, i) << std::endl;
+         debug() << "\t\t" << std::setprecision(14) << std::setw(18) << row(JC, i) << std::endl;
       }
 
       UblasVector<double> f(nVar()); ///< Current mismatch function.
@@ -466,7 +419,7 @@ namespace SmartGridToolbox
 
          calcf(f, Vr, Vi, P, Q, M2PV);
          err = norm_inf(f);
-         SGT_DEBUG(debug() << "\tf  = " << std::setprecision(5) << std::setw(9) << f << std::endl);
+         SGT_DEBUG(debug() << "\tf  = " << std::setprecision(14) << std::setw(18) << f << std::endl);
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
          if (err <= tol)
          {
@@ -477,49 +430,70 @@ namespace SmartGridToolbox
 
          updateJ(J, JC, Vr, Vi, P, Q, M2PV);
          SGT_DEBUG(debug() << "After updateJ : J.nnz() = " << J.nnz() << std::endl);
+         debug() << "\tAfter updateJ : J   = " << std::endl;
+         for (int i = 0; i < nVar(); ++i)
+         {
+            debug() << "\t\t" << std::setprecision(14) << std::setw(18) << row(J, i) << std::endl;
+         }
+         debug() << "\tAfter updateJ : JC  = " << std::endl;
+         for (int i = 0; i < nVar(); ++i)
+         {
+            debug() << "\t\t" << std::setprecision(14) << std::setw(18) << row(JC, i) << std::endl;
+         }
+
+         modifyForPV(J, f, Vr, Vi, M2PV);
+         SGT_DEBUG(debug() << "After modifyForPV : J.nnz() = " << J.nnz() << std::endl);
 
          UblasVector<double> x;
 
          SGT_DEBUG
          (
-            debug() << "\tBefore KLUSolve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
-            debug() << "\tBefore KLUSolve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
-            debug() << "\tBefore KLUSolve: M^2 = " << std::setprecision(5) << std::setw(9)
+            debug() << "\tBefore KLUSolve: Vr  = " << std::setprecision(14) << std::setw(18) << Vr << std::endl;
+            debug() << "\tBefore KLUSolve: Vi  = " << std::setprecision(14) << std::setw(18) << Vi << std::endl;
+            debug() << "\tBefore KLUSolve: M^2 = " << std::setprecision(14) << std::setw(18)
                     << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl;
-            debug() << "\tBefore KLUSolve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
-            debug() << "\tBefore KLUSolve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
-            debug() << "\tBefore KLUSolve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
+            debug() << "\tBefore KLUSolve: P   = " << std::setprecision(14) << std::setw(18) << P << std::endl;
+            debug() << "\tBefore KLUSolve: Q   = " << std::setprecision(14) << std::setw(18) << Q << std::endl;
+            debug() << "\tBefore KLUSolve: f   = " << std::setprecision(14) << std::setw(18) << f << std::endl;
             debug() << "\tBefore KLUSolve: J   = " << std::endl;
             for (int i = 0; i < nVar(); ++i)
             {
-               debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(J, i) << std::endl;
+               debug() << "\t\t" << std::setprecision(14) << std::setw(18) << row(J, i) << std::endl;
             }
          );
 
          bool ok = KLUSolve(J, -f, x);
-         SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << ", x = " << std::setprecision(5) << std::setw(9)
-                           << x << std::endl);
+         SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << std::endl); 
+         SGT_DEBUG(debug() << "\tAfter KLUSolve: x  = " << std::setprecision(14) << std::setw(18) << x << std::endl);
          if (!ok)
          {
             error() << "KLUSolve failed." << std::endl;
             abort();
          }
 
-         // Update the current values of V and Q from the solution:
+         // Update the current values of V from the solution:
          project(Vr, selPQFromAll()) += project(x, selVrPQFromx());
          project(Vi, selPQFromAll()) += project(x, selViPQFromx());
-         
-         project(Vr, selPVFromAll()) += project(x, selVrPVFromx());
-         project(Vi, selPVFromAll()) += project(x, selViPVFromx());
+
+         // Explicitly deal with the voltage magnitude constraint by updating VrPV by hand.
+         auto VrPV = project(Vr, selPVFromAll());
+         auto ViPV = project(Vi, selPVFromAll());
+         const auto DeltaViPV = project(x, selViPVFromx());
+         VrPV += element_div(M2PV - element_prod(VrPV, VrPV) - element_prod(ViPV, ViPV) 
+                             - 2 * element_prod(ViPV, DeltaViPV), 2 * VrPV);
+         ViPV += DeltaViPV;
+
+         // Update Q for PV busses based on the solution.
          project(Q, selPVFromAll()) += project(x, selQPVFromx());
 
-         SGT_DEBUG(debug() << "\tUpdated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated M^2 = " << std::setprecision(5) << std::setw(9)
+         SGT_DEBUG(debug() << "\tUpdated Vr  = " << std::setprecision(14) << std::setw(18) << Vr << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated Vi  = " << std::setprecision(14) << std::setw(18) << Vi << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated M^2 = " << std::setprecision(14) << std::setw(18)
                            << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated P   = " << std::setprecision(5) << std::setw(9) << P << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated P   = " << std::setprecision(14) << std::setw(18) << P << std::endl);
+         SGT_DEBUG(debug() << "\tUpdated Q   = " << std::setprecision(14) << std::setw(18) << Q << std::endl);
       }
+
       if (wasSuccessful)
       {
          UblasVector<Complex> V(nNode());
@@ -585,13 +559,13 @@ namespace SmartGridToolbox
          debug() << "\t\t\tY      :" << std::endl;
          for (int i = 0; i < branch->Y_.size1(); ++i)
          {
-            debug() << "\t\t\t\t" << std::setprecision(5) << std::setw(20) << row(branch->Y_, i) << std::endl;
+            debug() << "\t\t\t\t" << std::setprecision(14) << std::setw(20) << row(branch->Y_, i) << std::endl;
          }
       }
       debug() << "\tY:" << std::endl;
       for (int i = 0; i < Y_.size1(); ++i)
       {
-         debug() << "\t\t\t\t" << std::setprecision(5) << std::setw(20) << row(Y_, i) << std::endl;
+         debug() << "\t\t\t\t" << std::setprecision(14) << std::setw(20) << row(Y_, i) << std::endl;
       }
    }
 }
