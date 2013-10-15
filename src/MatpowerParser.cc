@@ -135,7 +135,6 @@ namespace SmartGridToolbox
 
       assertFieldPresent(nd, "input_file");
       assertFieldPresent(nd, "network_name");
-      assertFieldPresent(nd, "default_V_base");
 
       std::string inputName = state.expandName(nd["input_file"].as<std::string>());
       std::string networkName = state.expandName(nd["network_name"].as<std::string>());
@@ -151,13 +150,8 @@ namespace SmartGridToolbox
          phases = Phase::BAL;
       }
 
-      double defaultVBase = nd["default_V_base"].as<double>();
-
-      const YAML::Node ndVNewUnit = nd["V_new_unit"];
-      double VNewUnit = ndVNewUnit ? ndVNewUnit.as<double>() : 1;
-      
-      const YAML::Node ndNewUnit = nd["P_new_unit"];
-      double PNewUnit = ndNewUnit ? ndNewUnit.as<double>() : 1;
+      const YAML::Node ndPerUnit = nd["use_per_unit"];
+      bool usePerUnit = ndPerUnit ? ndPerUnit.as<bool>() : false;
 
       // Parse in the raw matpower data.
       std::vector<double> busMatrix;
@@ -184,6 +178,7 @@ namespace SmartGridToolbox
             bool ok = Qi::phrase_parse(fwdBegin, fwdEnd, gram, Ascii::blank);
          }
       }
+      double SBase = 1e6 * MVABase;
 
       const int busCols = 13;
       const int genCols = 21;
@@ -206,21 +201,33 @@ namespace SmartGridToolbox
             BusInfo & busInfo = busMap[busId];
 
             double KVBase = busMatrix[busCols * i + 9];
-            busInfo.VBase = KVBase == 0 ? defaultVBase : KVBase * 1000;
+            busInfo.VBase = KVBase == 0 ? 1.0 : KVBase * 1000;
 
             busInfo.mPType = busMatrix[busCols * i + 1];
 
             double Pd = busMatrix[busCols * i + 2];
             double Qd = busMatrix[busCols * i + 3];
             busInfo.SLoad = -Complex(Pd, Qd) * 1e6; // Injection is -ve load.
+            if (usePerUnit)
+            {
+               busInfo.SLoad /= SBase;
+            }
 
             double Gs = busMatrix[busCols * i + 4];
             double Bs = busMatrix[busCols * i + 5];
             busInfo.Ys = Complex(Gs, Bs) * 1e6 / (busInfo.VBase * busInfo.VBase);
+            if (usePerUnit)
+            {
+               busInfo.Ys *= (busInfo.VBase * busInfo.VBase) / MVABase;
+            }
 
             double Vm = busMatrix[busCols * i + 7];
             double Va = busMatrix[busCols * i + 8];
-            busInfo.V = polar(Vm * busInfo.VBase, Va * pi/180);
+            busInfo.V = polar(Vm, Va * pi/180);
+            if (!usePerUnit)
+            {
+               busInfo.V *= busInfo.VBase;
+            }
          }
 
          for (int i = 0; i < nGen; ++i)
@@ -231,15 +238,23 @@ namespace SmartGridToolbox
             double Pg  = genMatrix[genCols * i + 1];
             double Qg  = genMatrix[genCols * i + 2];
             double Vg  = genMatrix[genCols * i + 5];
+            if (!usePerUnit)
+            {
+               Vg *= busInfo.VBase;
+            }
 
-            busInfo.SGen += Complex(Pg, Qg) * 1e6;
-            busInfo.V *= (Vg * busInfo.VBase) / abs(busInfo.V); // Scale V of bus to match specified generator V.
+            busInfo.SGen = Complex(Pg, Qg) * 1e6; // Assuming 1 generator max per bus.
+            if (usePerUnit)
+            {
+               busInfo.SGen /= SBase;
+            }
+
+            busInfo.V *= Vg / abs(busInfo.V); // Scale V of bus to match specified generator V.
          }
       }
 
       // Add new components.
       {
-         double YNewUnit = PNewUnit / (VNewUnit * VNewUnit);
          Network & netw = mod.newComponent<Network>(networkName);
          for (const auto pair : busMap)
          {
@@ -272,12 +287,11 @@ namespace SmartGridToolbox
             UblasVector<Complex> SGenVec(phases.size(), info.SGen);
             UblasVector<Complex> YsVec(phases.size(), info.Ys);
 
-            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec / VNewUnit,
-                                              VVec / VNewUnit, SGenVec / PNewUnit);
+            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec, VVec, SGenVec);
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
-            zip.S() = SLoadVec / PNewUnit;
-            zip.Y() = YsVec / YNewUnit;
+            zip.S() = SLoadVec;
+            zip.Y() = YsVec;
             bus.addZipToGround(zip);
 
             netw.addBus(bus);
@@ -333,14 +347,14 @@ namespace SmartGridToolbox
             Complex Y01 = -(ys / conj(cTap));
             Complex Y10 = -(ys / cTap);
 
-            // TODO: scaling across a transformer, looks fishy. Careful.
-            double yBase0 = 1e6 * MVABase / (VBase0 * VBase0);
-            double yBase1 = 1e6 * MVABase / (VBase1 * VBase1);
-
-            Y00 *= yBase0;
-            Y10 *= yBase0;
-            Y01 *= yBase1;
-            Y11 *= yBase1;
+            if (!usePerUnit)
+            {
+               // TODO: scaling across a transformer, looks fishy. Careful.
+               Y00 *= SBase / (VBase0 * VBase0);
+               Y01 *= SBase / (VBase0 * VBase1);
+               Y10 *= SBase / (VBase1 * VBase0);
+               Y11 *= SBase / (VBase1 * VBase1);
+            }
 
             Branch & branch = mod.newComponent<Branch>(branchName(networkName, i, bus0Id, bus1Id), phases, phases);
 
@@ -354,7 +368,6 @@ namespace SmartGridToolbox
                branch.Y()(k, k + phases.size()) = Y01;
                branch.Y()(k + phases.size(), k) = Y10;
             }
-            branch.Y() /= YNewUnit;
 
             netw.addBranch(branch);
          }
