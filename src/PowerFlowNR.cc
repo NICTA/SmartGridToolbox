@@ -559,13 +559,13 @@ namespace SmartGridToolbox
          debug() << "\t\t\tY      :" << std::endl;
          for (int i = 0; i < branch->Y_.size1(); ++i)
          {
-            debug() << "\t\t\t\t" << std::setprecision(14) << std::setw(20) << row(branch->Y_, i) << std::endl;
+            debug() << "\t\t\t\t" << std::setprecision(14) << std::setw(18) << row(branch->Y_, i) << std::endl;
          }
       }
       debug() << "\tY:" << std::endl;
       for (int i = 0; i < Y_.size1(); ++i)
       {
-         debug() << "\t\t\t\t" << std::setprecision(14) << std::setw(20) << row(Y_, i) << std::endl;
+         debug() << "\t\t\t\t" << std::setprecision(14) << std::setw(18) << row(Y_, i) << std::endl;
       }
    }
 }
