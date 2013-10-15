@@ -383,8 +383,8 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "PowerFlowNR : solve." << std::endl);
 
-      const double tol = 1e-14;
-      const int maxiter = 50;
+      const double tol = 1e-10;
+      const int maxiter = 20;
 
       UblasVector<double> Vr(nNode());
       UblasVector<double> Vi(nNode());
@@ -400,10 +400,10 @@ namespace SmartGridToolbox
       UblasCMatrix<double> JC(nVar(), nVar()); ///< The part of J that doesn't update at each iteration.
       initJC(JC);
       SGT_DEBUG(debug() << "After initialization, JC.nnz() = " << JC.nnz() << std::endl);
-      debug() << "\tAfter initialization: JC = " << std::endl;
+      SGT_DEBUG(debug() << "\tAfter initialization: JC = " << std::endl);
       for (int i = 0; i < nVar(); ++i)
       {
-         debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JC, i) << std::endl;
+         SGT_DEBUG(debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JC, i) << std::endl);
       }
 
       UblasVector<double> f(nVar()); ///< Current mismatch function.
@@ -413,9 +413,10 @@ namespace SmartGridToolbox
 
       bool wasSuccessful = false;
       double err = 0;
-      for (int i = 0; i < maxiter; ++ i)
+      int niter;
+      for (niter = 0; niter < maxiter; ++niter)
       {
-         SGT_DEBUG(debug() << "\tIteration = " << i << std::endl);
+         SGT_DEBUG(debug() << "\tIteration = " << niter << std::endl);
 
          calcf(f, Vr, Vi, P, Q, M2PV);
          err = norm_inf(f);
@@ -423,22 +424,22 @@ namespace SmartGridToolbox
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
          if (err <= tol)
          {
-            SGT_DEBUG(debug() << "\tSuccess at iteration " << i << "." << std::endl);
+            SGT_DEBUG(debug() << "\tSuccess at iteration " << niter << "." << std::endl);
             wasSuccessful = true;
             break;
          }
 
          updateJ(J, JC, Vr, Vi, P, Q, M2PV);
          SGT_DEBUG(debug() << "After updateJ : J.nnz() = " << J.nnz() << std::endl);
-         debug() << "\tAfter updateJ : J   = " << std::endl;
+         SGT_DEBUG(debug() << "\tAfter updateJ : J   = " << std::endl);
          for (int i = 0; i < nVar(); ++i)
          {
-            debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(J, i) << std::endl;
+            SGT_DEBUG(debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(J, i) << std::endl);
          }
-         debug() << "\tAfter updateJ : JC  = " << std::endl;
+         SGT_DEBUG(debug() << "\tAfter updateJ : JC  = " << std::endl);
          for (int i = 0; i < nVar(); ++i)
          {
-            debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JC, i) << std::endl;
+            SGT_DEBUG(debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JC, i) << std::endl);
          }
 
          modifyForPV(J, f, Vr, Vi, M2PV);
@@ -531,7 +532,8 @@ namespace SmartGridToolbox
       {
          warning() << "PowerFlowNR: Newton-Raphson method failed to converge." << std::endl; 
       }
-      SGT_DEBUG(debug() << "PowerFlowNR : solve finished. Was successful = " << wasSuccessful << std::endl);
+      message() << "PowerFlowNR : was successful = " << wasSuccessful << ", error = " << err << ", iterations = "
+                << niter << "." << std::endl;
       return wasSuccessful;
    }
 
