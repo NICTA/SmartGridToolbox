@@ -14,7 +14,5 @@ objects: # And these are the actual objects.
    matpower:
       input_file:             caseSLPV.m
       network_name:           matpower
-      default_V_base:         230e3
-      V_new_unit:             230e3
-      P_new_unit:             100e6
+      use_per_unit:           Y
 --- # Marks the end of each configuration document.
