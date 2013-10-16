@@ -312,7 +312,7 @@ namespace SmartGridToolbox
             double Xs = branchMatrix[branchCols * i + 3];
             double Bc = branchMatrix[branchCols * i + 4];
             double tap = branchMatrix[branchCols * i + 8];
-            double theta = branchMatrix[branchCols * i + 9] * pi / 180.0; // Matpower format is in deg, convert to rad.
+            double theta = branchMatrix[branchCols * i + 9]; // Matpower format is in deg, convert to rad.
 
             if (tap == 0.0)
             {
