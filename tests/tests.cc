@@ -834,7 +834,7 @@ BOOST_AUTO_TEST_CASE (test_loops)
    outfile.close();
 }
 
-static void prepareMPInput(const std::string & yamlName, const std::string & caseName)
+static void prepareMPInput(const std::string & yamlName, const std::string & caseName, bool usePerUnit)
 {
    std::fstream yamlFile(yamlName, ios_base::out);
    if (!yamlFile.is_open())
@@ -855,12 +855,18 @@ static void prepareMPInput(const std::string & yamlName, const std::string & cas
    yamlFile << "      input_file:             " << caseName << std::endl;
    yamlFile << "      network_name:           matpower" << std::endl;
    yamlFile << "      default_V_base:         1000 # 1 KV default." << std::endl;
+   if (usePerUnit)
+   {
+      yamlFile << "      use_per_unit:           Y" << std::endl;
+   }
+
 
    yamlFile.close();
 }
 
-static void readMPOutput(const std::string & fileName, double & SBase, UblasVector<int> & iBus,
-      UblasVector<double> & VBase, UblasVector<Complex> & V, UblasVector<Complex> & Sc, UblasVector<Complex> & Sg)
+static void readMPOutput(const std::string & fileName, bool usePerUnit, 
+                         double & SBase, UblasVector<int> & iBus, UblasVector<double> & VBase, 
+                         UblasVector<Complex> & V, UblasVector<Complex> & Sc, UblasVector<Complex> & Sg)
 {
    std::fstream infile(fileName);
    if (!infile.is_open())
@@ -891,9 +897,16 @@ static void readMPOutput(const std::string & fileName, double & SBase, UblasVect
       Sc(i) = Complex(Scr, Sci);
       Sg(i) = Complex(Sgr, Sgi);
    }
+
+   if (!usePerUnit)
+   {
+      V = element_prod(VBase, V);
+      Sc *= SBase;
+      Sg *= SBase;
+   }
 }
 
-static void testMatpower(const std::string & baseName)
+static void testMatpower(const std::string & baseName, bool usePerUnit)
 {
    std::string caseName = baseName + ".m";
    std::string yamlName = "test_mp_" + baseName + ".yaml";
@@ -903,7 +916,7 @@ static void testMatpower(const std::string & baseName)
    Simulation sim(mod);
    Parser & p = Parser::globalParser();
    
-   prepareMPInput(yamlName, caseName);
+   prepareMPInput(yamlName, caseName, usePerUnit);
 
    p.parse(yamlName.c_str(), mod, sim);
    mod.validate();
@@ -917,9 +930,9 @@ static void testMatpower(const std::string & baseName)
    UblasVector<Complex> V;
    UblasVector<Complex> Sc;
    UblasVector<Complex> Sg;
-   readMPOutput(compareName, SBase, iBus, VBase, V, Sc, Sg);
+   readMPOutput(compareName, usePerUnit, SBase, iBus, VBase, V, Sc, Sg);
 
-   double STol = SBase * 1e-4;
+   double STol = usePerUnit ? 1e-4 : SBase * 1e-4;
 
    for (int i = 0; i < iBus.size(); ++i)
    {
@@ -927,7 +940,7 @@ static void testMatpower(const std::string & baseName)
       std::string busName = "matpower_bus_" + std::to_string(ib);
       Bus * bus = mod.componentNamed<Bus>(busName);
       assert(bus != nullptr);
-      double VTol = VBase(i) * 1e-4;
+      double VTol = usePerUnit ? 1e-4 : VBase(i) * 1e-4;
 
       message() << "V tolerance = " << VTol << std::endl;
       message() << "S tolerance = " << STol << std::endl;
@@ -958,52 +971,62 @@ static void testMatpower(const std::string & baseName)
 
 BOOST_AUTO_TEST_CASE (test_mp_SLPQ)
 {
-   testMatpower("caseSLPQ");
+   testMatpower("caseSLPQ", true);
+   testMatpower("caseSLPQ", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_SLPV)
 {
-   testMatpower("caseSLPV");
+   testMatpower("caseSLPV", true);
+   testMatpower("caseSLPV", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_SLPQPV)
 {
-   testMatpower("caseSLPQPV");
+   testMatpower("caseSLPQPV", true);
+   testMatpower("caseSLPQPV", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_4gs)
 {
-   testMatpower("case4gs");
+   testMatpower("case4gs", true);
+   testMatpower("case4gs", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_6ww)
 {
-   testMatpower("case6ww");
+   testMatpower("case6ww", true);
+   testMatpower("case6ww", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_9)
 {
-   testMatpower("case9");
+   testMatpower("case9", true);
+   testMatpower("case9", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_trans3)
 {
-   testMatpower("case_trans3");
+   testMatpower("case_trans3", true);
+   testMatpower("case_trans3", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_trans3_shift)
 {
-   testMatpower("case_trans3_shift");
+   testMatpower("case_trans3_shift", true);
+   testMatpower("case_trans3_shift", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_14)
 {
-   testMatpower("case14");
+   testMatpower("case14", true);
+   testMatpower("case14", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_14_shift)
 {
-   testMatpower("case14_shift");
+   testMatpower("case14_shift", true);
+   testMatpower("case14_shift", false);
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
