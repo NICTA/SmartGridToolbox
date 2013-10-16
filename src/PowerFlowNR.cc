@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <chrono>
 #include <ostream>
 #include <sstream>
 #include "PowerFlowNR.h"
@@ -383,7 +384,14 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "PowerFlowNR : solve." << std::endl);
 
-      const double tol = 1e-10;
+      std::chrono::time_point<std::chrono::system_clock> start;
+      std::chrono::time_point<std::chrono::system_clock> end;
+      std::chrono::duration<double> durationSetup;
+      std::chrono::duration<double> durationSolve;
+
+      start = std::chrono::system_clock::now();
+
+      const double tol = 1e-8;
       const int maxiter = 20;
 
       UblasVector<double> Vr(nNode());
@@ -414,8 +422,13 @@ namespace SmartGridToolbox
       bool wasSuccessful = false;
       double err = 0;
       int niter;
+
+      end = std::chrono::system_clock::now();
+      durationSetup += end - start;
+
       for (niter = 0; niter < maxiter; ++niter)
       {
+         start = std::chrono::system_clock::now();
          SGT_DEBUG(debug() << "\tIteration = " << niter << std::endl);
 
          calcf(f, Vr, Vi, P, Q, M2PV);
@@ -462,8 +475,15 @@ namespace SmartGridToolbox
                debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(J, i) << std::endl;
             }
          );
+         end = std::chrono::system_clock::now();
+         durationSetup += end - start;
 
+         start = std::chrono::system_clock::now();
          bool ok = KLUSolve(J, -f, x);
+         end = std::chrono::system_clock::now();
+         durationSolve += end - start;
+
+         start = std::chrono::system_clock::now();
          SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << std::endl); 
          SGT_DEBUG(debug() << "\tAfter KLUSolve: x  = " << std::setprecision(5) << std::setw(9) << x << std::endl);
          if (!ok)
@@ -493,7 +513,12 @@ namespace SmartGridToolbox
                            << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl);
          SGT_DEBUG(debug() << "\tUpdated P   = " << std::setprecision(5) << std::setw(9) << P << std::endl);
          SGT_DEBUG(debug() << "\tUpdated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl);
+         end = std::chrono::system_clock::now();
+         durationSetup += end - start;
       }
+
+      message() << "PowerFlowNR: total setup time = " << durationSetup.count() << " s." << std::endl;
+      message() << "PowerFlowNR: total solve time = " << durationSolve.count() << std::endl;
 
       if (wasSuccessful)
       {
