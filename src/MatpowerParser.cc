@@ -135,6 +135,7 @@ namespace SmartGridToolbox
 
       assertFieldPresent(nd, "input_file");
       assertFieldPresent(nd, "network_name");
+      assertFieldPresent(nd, "default_V_base");
 
       std::string inputName = state.expandName(nd["input_file"].as<std::string>());
       std::string networkName = state.expandName(nd["network_name"].as<std::string>());
@@ -152,6 +153,8 @@ namespace SmartGridToolbox
 
       const YAML::Node ndPerUnit = nd["use_per_unit"];
       bool usePerUnit = ndPerUnit ? ndPerUnit.as<bool>() : false;
+      
+      double defaultVBase = nd["default_V_base"].as<double>();
 
       // Parse in the raw matpower data.
       std::vector<double> busMatrix;
@@ -201,7 +204,7 @@ namespace SmartGridToolbox
             BusInfo & busInfo = busMap[busId];
 
             double KVBase = busMatrix[busCols * i + 9];
-            busInfo.VBase = KVBase == 0 ? 1.0 : KVBase * 1000;
+            busInfo.VBase = KVBase == 0 ? defaultVBase : KVBase * 1000;
 
             busInfo.mPType = busMatrix[busCols * i + 1];
 
