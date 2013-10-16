@@ -214,7 +214,7 @@ namespace SmartGridToolbox
       }
    };
 
-   void Parser::parse(const char * fname, Model & model, Simulation & simulation)
+   void Parser::parse(const std::string & fname, Model & model, Simulation & simulation)
    {
       message() << "Started parsing." << std::endl;
       const YAML::Node & top = YAML::LoadFile(fname);

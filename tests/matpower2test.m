@@ -3,7 +3,7 @@ function matpower2test(casename, outname)
 
    [MVABase bus gen branch] = runpf(casename);
 
-   SBase = MVABase * 1e6;
+   SBase = 1e6; % Matpower powers are reported in MVA, not MVABase...
 
    ibus = bus(:, 1);
 
@@ -12,7 +12,7 @@ function matpower2test(casename, outname)
 
    V = VBase .* bus(:,8) .* exp(I * bus(:, 9) * pi / 180);
 
-   Sc = -SBase * (bus(:, 2) + I * bus(:,3));
+   Sc = -SBase * (bus(:, 3) + I * bus(:,4));
 
    Sg = zeros(size(bus, 1), 1);
    Sg(gen(:,1)) = SBase * (gen(:, 2) + I * gen(:, 3));
@@ -20,7 +20,8 @@ function matpower2test(casename, outname)
    out = [ibus, V, Sc, Sg];
 
    fout = fopen(outname, 'w');
-   printf('%d %e %e %e %e %e %e\n', [ibus, real(V), imag(V), real(Sc), imag(Sc), real(Sg), imag(Sg)]');
-   fprintf(fout, '%d %e %e %e %e %e %e\n', [ibus, real(V), imag(V), real(Sc), imag(Sc), real(Sg), imag(Sg)]');
+   fprintf(fout, '%e\n', MVABase * 1e6);
+   fprintf(fout, '%d\n', size(bus, 1));
+   fprintf(fout, '%d %e %e %e %e %e %e %e\n', [ibus, VBase, real(V), imag(V), real(Sc), imag(Sc), real(Sg), imag(Sg)]');
    fclose(fout);
 end

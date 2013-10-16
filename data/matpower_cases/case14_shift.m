@@ -1,4 +1,4 @@
-function mpc = case14
+function mpc = case14_shift
 %CASE14    Power flow data for IEEE 14 bus test case.
 %   Please see CASEFORMAT for details on the case file format.
 %   This data was converted from IEEE Common Data Format
@@ -60,7 +60,7 @@ mpc.branch = [
 	3	4	0.06701	0.17103	0.0128	9900	0	0	0	0	1	-360	360;
 	4	5	0.01335	0.04211	0	9900	0	0	0	0	1	-360	360;
 	4	7	0	0.20912	0	9900	0	0	0.978	0	1	-360	360;
-	4	9	0	0.55618	0	9900	0	0	0.969	0	1	-360	360;
+	4	9	0	0.55618	0	9900	0	0	0.969	5	1	-360	360;
 	5	6	0	0.25202	0	9900	0	0	0.932	0	1	-360	360;
 	6	11	0.09498	0.1989	0	9900	0	0	0	0	1	-360	360;
 	6	12	0.12291	0.25581	0	9900	0	0	0	0	1	-360	360;

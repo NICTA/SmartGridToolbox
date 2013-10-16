@@ -834,250 +834,156 @@ BOOST_AUTO_TEST_CASE (test_loops)
    outfile.close();
 }
 
-BOOST_AUTO_TEST_CASE (test_mp_SLPQ)
+static void prepareMPInput(const std::string & yamlName, const std::string & caseName)
 {
+   std::fstream yamlFile(yamlName, ios_base::out);
+   if (!yamlFile.is_open())
+   {
+      error() << "Could not open the yaml outputfile file " << yamlName << "." << std::endl;
+      SmartGridToolbox::abort();
+   }
+
+   yamlFile << "global:" << std::endl;
+   yamlFile << "   configuration_name:        config_1" << std::endl;
+   yamlFile << "   start_time:                2013-01-23 13:13:00" << std::endl;
+   yamlFile << "   end_time:                  2013-01-23 15:13:00" << std::endl;
+   yamlFile << "   lat_long:                  [-35.3075, 149.1244] # Canberra, Australia." << std::endl;
+   yamlFile << "   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia."
+            << std::endl;
+   yamlFile << "objects: # And these are the actual objects." << std::endl;
+   yamlFile << "   matpower:" << std::endl;
+   yamlFile << "      input_file:             " << caseName << std::endl;
+   yamlFile << "      network_name:           matpower" << std::endl;
+   yamlFile << "      use_per_unit:           N" << std::endl;
+
+   yamlFile.close();
+}
+
+static void readMPOutput(const std::string & fileName, double & SBase, UblasVector<int> & iBus,
+      UblasVector<double> & VBase, UblasVector<Complex> & V, UblasVector<Complex> & Sc, UblasVector<Complex> & Sg)
+{
+   std::fstream infile(fileName);
+   if (!infile.is_open())
+   {
+      error() << "Could not open the matpower compare file " << fileName << "." << std::endl;
+      SmartGridToolbox::abort();
+   }
+   infile >> SBase;
+   int nBus;
+   infile >> nBus;
+   message() << "Matpower output: nBus = " << nBus << std::endl;
+   iBus.resize(nBus, false);
+   VBase.resize(nBus, false);
+   V.resize(nBus, false);
+   Sc.resize(nBus, false);
+   Sg.resize(nBus, false);
+   for (int i = 0; i < nBus; ++i)
+   {
+      int ib;
+      double Vb;
+      double Vr; double Vi;
+      double Scr; double Sci;
+      double Sgr; double Sgi;
+      infile >> ib >> Vb >> Vr >> Vi >> Scr >> Sci >> Sgr >> Sgi;
+      iBus(i) = ib;
+      VBase(i) = Vb;
+      V(i) = Complex(Vr, Vi);
+      Sc(i) = Complex(Scr, Sci);
+      Sg(i) = Complex(Sgr, Sgi);
+   }
+}
+
+static void testMatpower(const std::string & baseName)
+{
+   std::string caseName = baseName + ".m";
+   std::string yamlName = "test_mp_" + baseName + ".yaml";
+   std::string compareName = "test_mp_" + baseName + ".compare";
+
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::globalParser();
-   p.parse("test_mp_SLPQ.yaml", mod, sim);
+   
+   prepareMPInput(yamlName, caseName);
+
+   p.parse(yamlName.c_str(), mod, sim);
    mod.validate();
    sim.initialize();
-
    Network * network = mod.componentNamed<Network>("matpower");
-   Bus * bus1 = mod.componentNamed<Bus>("matpower_bus_1");
-   Bus * bus2 = mod.componentNamed<Bus>("matpower_bus_2");
-
    network->solvePowerFlow();
 
-   Complex V1 = bus1->V()(0);
-   Complex V2 = bus2->V()(0);
+   double SBase;
+   UblasVector<int> iBus;
+   UblasVector<double> VBase;
+   UblasVector<Complex> V;
+   UblasVector<Complex> Sc;
+   UblasVector<Complex> Sg;
+   readMPOutput(compareName, SBase, iBus, VBase, V, Sc, Sg);
 
-   Complex Sc1 = bus1->Sc()(0);
-   Complex Sc2 = bus2->Sc()(0);
-   
-   Complex Sgen1 = bus1->SGen()(0);
-   Complex Sgen2 = bus2->SGen()(0);
+   double STol = SBase * 1e-4;
 
-   message() << "test_mp_SLPQ: bus1->V()     = " << V1 << std::endl;
-   message() << "test_mp_SLPQ: bus2->V()     = " << V2 << std::endl;
-   message() << "test_mp_SLPQ: bus1->Sc()    = " << Sc1 << std::endl;
-   message() << "test_mp_SLPQ: bus2->Sc()    = " << Sc2 << std::endl;
-   message() << "test_mp_SLPQ: bus1->Sgen()    = " << Sgen1 << std::endl;
-   message() << "test_mp_SLPQ: bus2->Sgen()    = " << Sgen2 << std::endl;
+   for (int i = 0; i < iBus.size(); ++i)
+   {
+      int ib = iBus(i);
+      std::string busName = "matpower_bus_" + std::to_string(ib);
+      Bus * bus = mod.componentNamed<Bus>(busName);
+      assert(bus != nullptr);
+      double VTol = VBase(i) * 1e-4;
 
-   BOOST_CHECK(V1 == Complex(1.0, 0.0)); // Slack bus, should be exact.
-   BOOST_CHECK(abs(V2 - polar(0.923, -4.692 * pi / 180)) < 0.001); // Compare against matpower.
+      message() << "V tolerance = " << VTol << std::endl;
+      message() << "S tolerance = " << STol << std::endl;
+      message() << std::endl;
 
-   BOOST_CHECK(Sc1 == Complex(-0.5, -0.3099));
-   BOOST_CHECK(Sc2 == Complex(-1.7, -1.0535));
+      message() << setw(24) << std::left << busName
+                << setw(24) << std::left << "V"
+                << setw(24) << std::left << "Sc"
+                << setw(24) << std::left << "Sg"
+                << std::endl;
+      message() << setw(24) << left << "SGT"
+                << setw(24) << left << bus->V()(0)
+                << setw(24) << left << bus->Sc()(0)
+                << setw(24) << left << bus->SGen()(0)
+                << std::endl;
+      message() << setw(24) << left << "Matpower"
+                << setw(24) << left << V(i) 
+                << setw(24) << left << Sc(i)
+                << setw(24) << left << Sg(i)
+                << std::endl; 
+      message() << std::endl;
 
-   BOOST_CHECK(abs(Sgen1 - Complex(2.2463, 1.4998)) < 0.001); // Compare against matpower. 
-   BOOST_CHECK(Sgen2 == czero); // PQ, gen S is 0. 
+      BOOST_CHECK(abs(bus->V()(0) - V(i)) < VTol);
+      BOOST_CHECK(abs(bus->Sc()(0) - Sc(i)) < STol);
+      BOOST_CHECK(abs(bus->SGen()(0) - Sg(i)) < STol);
+   }
+}
+
+BOOST_AUTO_TEST_CASE (test_mp_SLPQ)
+{
+   testMatpower("caseSLPQ");
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_SLPV)
 {
-   Model mod;
-   Simulation sim(mod);
-   Parser & p = Parser::globalParser();
-   p.parse("test_mp_SLPV.yaml", mod, sim);
-   mod.validate();
-   sim.initialize();
-
-   Network * network = mod.componentNamed<Network>("matpower");
-   Bus * bus1 = mod.componentNamed<Bus>("matpower_bus_1");
-   Bus * bus2 = mod.componentNamed<Bus>("matpower_bus_2");
-
-   network->solvePowerFlow();
-
-   Complex V1 = bus1->V()(0);
-   Complex V2 = bus2->V()(0);
-
-   Complex Sc1 = bus1->Sc()(0);
-   Complex Sc2 = bus2->Sc()(0);
-   
-   Complex Sgen1 = bus1->SGen()(0);
-   Complex Sgen2 = bus2->SGen()(0);
-
-   message() << "test_mp_SLPV: bus1->V()     = " << V1 << std::endl;
-   message() << "test_mp_SLPV: bus2->V()     = " << V2 << std::endl;
-   message() << "test_mp_SLPV: bus1->Sc()    = " << Sc1 << std::endl;
-   message() << "test_mp_SLPV: bus2->Sc()    = " << Sc2 << std::endl;
-   message() << "test_mp_SLPV: bus1->Sgen()    = " << Sgen1 << std::endl;
-   message() << "test_mp_SLPV: bus2->Sgen()    = " << Sgen2 << std::endl;
-
-   BOOST_CHECK(V1 == Complex(1.0, 0.0)); // Slack bus, should be exact.
-   BOOST_CHECK(abs(V2 - polar(1.020, -5.291 * pi / 180)) < 0.001); // Compare against matpower.
-
-   BOOST_CHECK(Sc1 == Complex(-0.5, -0.3099));
-   BOOST_CHECK(Sc2 == Complex(-1.7, -1.0535));
-
-   BOOST_CHECK(abs(Sgen1 - Complex(2.2347, -0.3989)) < 0.001); // Compare against matpower. 
-   BOOST_CHECK(abs(Sgen2 - Complex(0, 1.8312)) < 0.001); // Compare against matpower. 
+   testMatpower("caseSLPV");
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_SLPQPV)
 {
-   Model mod;
-   Simulation sim(mod);
-   Parser & p = Parser::globalParser();
-   p.parse("test_mp_SLPQPV.yaml", mod, sim);
-   mod.validate();
-   sim.initialize();
-
-   Network * network = mod.componentNamed<Network>("matpower");
-   Bus * bus1 = mod.componentNamed<Bus>("matpower_bus_1");
-   Bus * bus2 = mod.componentNamed<Bus>("matpower_bus_2");
-   Bus * bus3 = mod.componentNamed<Bus>("matpower_bus_3");
-
-   network->solvePowerFlow();
-
-   Complex V1 = bus1->V()(0);
-   Complex V2 = bus2->V()(0);
-   Complex V3 = bus3->V()(0);
-
-   Complex Sc1 = bus1->Sc()(0);
-   Complex Sc2 = bus2->Sc()(0);
-   Complex Sc3 = bus3->Sc()(0);
-   
-   Complex Sgen1 = bus1->SGen()(0);
-   Complex Sgen2 = bus2->SGen()(0);
-   Complex Sgen3 = bus3->SGen()(0);
-
-   message() << "test_mp_SLPQPV: bus1->V()     = " << V1 << std::endl;
-   message() << "test_mp_SLPQPV: bus2->V()     = " << V2 << std::endl;
-   message() << "test_mp_SLPQPV: bus3->V()     = " << V3 << std::endl;
-   message() << "test_mp_SLPQPV: bus1->Sc()    = " << Sc1 << std::endl;
-   message() << "test_mp_SLPQPV: bus2->Sc()    = " << Sc2 << std::endl;
-   message() << "test_mp_SLPQPV: bus3->Sc()    = " << Sc3 << std::endl;
-   message() << "test_mp_SLPQPV: bus1->Sgen()    = " << Sgen1 << std::endl;
-   message() << "test_mp_SLPQPV: bus2->Sgen()    = " << Sgen2 << std::endl;
-   message() << "test_mp_SLPQPV: bus3->Sgen()    = " << Sgen3 << std::endl;
-
-   BOOST_CHECK(V1 == Complex(1.0, 0.0)); // Slack bus, should be exact.
-   BOOST_CHECK(abs(V2 - polar(0.981, 2.162 * pi / 180)) < 0.001); // Compare against matpower.
-   BOOST_CHECK(abs(V3 - polar(1.020, 6.942 * pi / 180)) < 0.001); // Compare against matpower.
-
-   BOOST_CHECK(Sc1 == Complex(-0.5, -0.3099));
-   BOOST_CHECK(Sc2 == Complex(-1.7, -1.0535));
-   BOOST_CHECK(Sc3 == Complex(-0.8, -0.4958));
-
-   BOOST_CHECK(abs(Sgen1 - Complex(-0.1293, 0.7825)) < 0.001); // Compare against matpower. 
-   BOOST_CHECK(Sgen2 == czero); // PQ bus, no gen.
-   BOOST_CHECK(abs(Sgen3 - Complex(3.1800, 1.1523)) < 0.001); // Compare against matpower. 
+   testMatpower("caseSLPQPV");
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_4gs)
 {
-   Model mod;
-   Simulation sim(mod);
-   Parser & p = Parser::globalParser();
-   p.parse("test_mp_4gs.yaml", mod, sim);
-   mod.validate();
-   sim.initialize();
-
-   Network * network = mod.componentNamed<Network>("matpower");
-   Bus * bus1 = mod.componentNamed<Bus>("matpower_bus_1");
-   Bus * bus2 = mod.componentNamed<Bus>("matpower_bus_2");
-   Bus * bus3 = mod.componentNamed<Bus>("matpower_bus_3");
-   Bus * bus4 = mod.componentNamed<Bus>("matpower_bus_4");
-
-   network->solvePowerFlow();
-
-   Complex V1 = bus1->V()(0);
-   Complex V2 = bus2->V()(0);
-   Complex V3 = bus3->V()(0);
-   Complex V4 = bus4->V()(0);
-
-   Complex Sc1 = bus1->Sc()(0);
-   Complex Sc2 = bus2->Sc()(0);
-   Complex Sc3 = bus3->Sc()(0);
-   Complex Sc4 = bus4->Sc()(0);
-   
-   Complex Sgen1 = bus1->SGen()(0);
-   Complex Sgen2 = bus2->SGen()(0);
-   Complex Sgen3 = bus3->SGen()(0);
-   Complex Sgen4 = bus4->SGen()(0);
-
-   message() << "test_mp_4gs: bus1->V()     = " << V1 << std::endl;
-   message() << "test_mp_4gs: bus2->V()     = " << V2 << std::endl;
-   message() << "test_mp_4gs: bus3->V()     = " << V3 << std::endl;
-   message() << "test_mp_4gs: bus4->V()     = " << V4 << std::endl;
-   message() << "test_mp_4gs: bus1->Sc()    = " << Sc1 << std::endl;
-   message() << "test_mp_4gs: bus2->Sc()    = " << Sc2 << std::endl;
-   message() << "test_mp_4gs: bus3->Sc()    = " << Sc3 << std::endl;
-   message() << "test_mp_4gs: bus4->Sc()    = " << Sc4 << std::endl;
-   message() << "test_mp_4gs: bus1->Sgen()    = " << Sgen1 << std::endl;
-   message() << "test_mp_4gs: bus2->Sgen()    = " << Sgen2 << std::endl;
-   message() << "test_mp_4gs: bus3->Sgen()    = " << Sgen3 << std::endl;
-   message() << "test_mp_4gs: bus4->Sgen()    = " << Sgen4 << std::endl;
-
-   BOOST_CHECK(V1 == Complex(1.0, 0.0)); // Slack bus, should be exact.
-   BOOST_CHECK(abs(V2 - polar(0.982, -0.976 * pi / 180)) < 0.001); // Compare against matpower.
-   BOOST_CHECK(abs(V3 - polar(0.969, -1.872 * pi / 180)) < 0.001); // Compare against matpower.
-   BOOST_CHECK(abs(V4 - polar(1.020, 1.523 * pi / 180)) < 0.001); // Compare against matpower.
-
-   BOOST_CHECK(Sc1 == Complex(-0.5, -0.3099));
-   BOOST_CHECK(Sc2 == Complex(-1.7, -1.0535));
-   BOOST_CHECK(Sc3 == Complex(-2.0, -1.2394));
-   BOOST_CHECK(Sc4 == Complex(-0.8, -0.4958));
-
-   BOOST_CHECK(abs(Sgen1 - Complex(1.8681, 1.1450)) < 0.001); // Compare against matpower. 
-   BOOST_CHECK(Sgen2 == czero); // PQ bus, no gen.
-   BOOST_CHECK(Sgen3 == czero); // PQ bus, no gen.
-   BOOST_CHECK(abs(Sgen4 - Complex(3.1800, 1.8143)) < 0.001); // Compare against matpower. 
+   testMatpower("case4gs");
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_6ww)
 {
-   Model mod;
-   Simulation sim(mod);
-   Parser & p = Parser::globalParser();
-   p.parse("test_mp_6ww.yaml", mod, sim);
-   mod.validate();
-   sim.initialize();
-
-   Network * network = mod.componentNamed<Network>("matpower");
-
-   network->solvePowerFlow();
-
-   for (const Component * comp : mod.components())
-   {
-      const Bus * bus = dynamic_cast<const Bus *>(comp);
-      if (bus)
-      {
-         message() << "Bus  : " << bus->name() << std::endl;
-         message() << "V    = " << bus->V()(0) << std::endl;
-         message() << "Sc   = " << bus->Sc()(0) << std::endl;
-         message() << "Sgen = " << bus->SGen()(0) << std::endl;
-      }
-   }
+   testMatpower("case6ww");
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_9)
 {
-   Model mod;
-   Simulation sim(mod);
-   Parser & p = Parser::globalParser();
-   p.parse("test_mp_9.yaml", mod, sim);
-   mod.validate();
-   sim.initialize();
-
-   Network * network = mod.componentNamed<Network>("matpower");
-
-   network->solvePowerFlow();
-
-   for (const Component * comp : mod.components())
-   {
-      const Bus * bus = dynamic_cast<const Bus *>(comp);
-      if (bus)
-      {
-         message() << "Bus  : " << bus->name() << std::endl;
-         message() << "V    = " << bus->V()(0) << std::endl;
-         message() << "Sc   = " << bus->Sc()(0) << std::endl;
-         message() << "Sgen = " << bus->SGen()(0) << std::endl;
-      }
-   }
+   testMatpower("case9");
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
