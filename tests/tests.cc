@@ -854,7 +854,7 @@ static void prepareMPInput(const std::string & yamlName, const std::string & cas
    yamlFile << "   matpower:" << std::endl;
    yamlFile << "      input_file:             " << caseName << std::endl;
    yamlFile << "      network_name:           matpower" << std::endl;
-   yamlFile << "      use_per_unit:           N" << std::endl;
+   yamlFile << "      default_V_base:         1000 # 1 KV default." << std::endl;
 
    yamlFile.close();
 }
