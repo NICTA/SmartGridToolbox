@@ -79,5 +79,4 @@ namespace SmartGridToolbox
          message() << "Component " << comp->name() << " added to model." << std::endl;
       }
    }
-
 }
