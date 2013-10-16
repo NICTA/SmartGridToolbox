@@ -991,6 +991,11 @@ BOOST_AUTO_TEST_CASE (test_mp_trans3)
    testMatpower("case_trans3");
 }
 
+BOOST_AUTO_TEST_CASE (test_mp_trans3_shift)
+{
+   testMatpower("case_trans3_shift");
+}
+
 BOOST_AUTO_TEST_CASE (test_mp_14)
 {
    testMatpower("case14");
