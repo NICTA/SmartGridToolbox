@@ -90,8 +90,8 @@ namespace SmartGridToolbox
    inline Phases operator|(Phase a, Phase b) {return {static_cast<unsigned int>(a) | static_cast<unsigned int>(b)};}
    inline Phases operator&(Phase a, Phase b) {return {static_cast<unsigned int>(a) & static_cast<unsigned int>(b)};}
 
-   const UblasMatrix<Complex> YLine1P(const Complex & y);
-   const UblasMatrix<Complex> YSimpleLine(const UblasVector<Complex> & y);
+   const ublas::matrix<Complex> YLine1P(const Complex & y);
+   const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex> & y);
 }
 
 #endif // POWERFLOW_DOT_H

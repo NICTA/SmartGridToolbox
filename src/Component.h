@@ -103,7 +103,7 @@ namespace SmartGridToolbox
 
          virtual Time validUntil() const
          {
-            return pos_infin;
+            return posix_time::pos_infin;
          }
 
          /// @name Events

@@ -12,7 +12,7 @@ namespace SmartGridToolbox
    static const double dEarthMeanRadius = 6371.01; // km.
    static const double dAstronomicalUnit = 149597890.0; // km.
 
-   SphericalAngles sunPos(ptime utcTime, LatLong location)
+   SphericalAngles sunPos(posix_time::ptime utcTime, LatLong location)
    {
       // Note: in original code, time was "udtTime". "UT" was also mentioned. Not sure exactly what "UDT" refers to
       // but UT is probably either UT1 or UTC, both being approximately equivalent. So I changed variable name 

@@ -285,10 +285,10 @@ namespace SmartGridToolbox
                   break;
             }
 
-            UblasVector<Complex> VVec(phases.size(), info.V);
-            UblasVector<Complex> SLoadVec(phases.size(), info.SLoad);
-            UblasVector<Complex> SGenVec(phases.size(), info.SGen);
-            UblasVector<Complex> YsVec(phases.size(), info.Ys);
+            ublas::vector<Complex> VVec(phases.size(), info.V);
+            ublas::vector<Complex> SLoadVec(phases.size(), info.SLoad);
+            ublas::vector<Complex> SGenVec(phases.size(), info.SGen);
+            ublas::vector<Complex> YsVec(phases.size(), info.Ys);
 
             Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec, VVec, SGenVec);
 

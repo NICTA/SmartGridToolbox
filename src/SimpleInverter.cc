@@ -76,7 +76,7 @@ namespace SmartGridToolbox
       }
    }
 
-   UblasVector<Complex> SimpleInverter::S() const
+   ublas::vector<Complex> SimpleInverter::S() const
    {
       double PPerPh = PPerPhase();
       double P2PerPh = PPerPh * PPerPh; // Limited by maxSMagPerPhase_.
@@ -89,7 +89,7 @@ namespace SmartGridToolbox
          QPerPh *= -1;
       }
       Complex SPerPh{PPerPhase(), QPerPh};
-      return UblasVector<Complex>(phases().size(), SPerPh);
+      return ublas::vector<Complex>(phases().size(), SPerPh);
    }
 
    double SimpleInverter::PPerPhase() const

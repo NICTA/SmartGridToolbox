@@ -135,9 +135,9 @@ namespace SmartGridToolbox
    }
 
    // Balanced/1-phase simple line with a single admittance.
-   const UblasMatrix<Complex> YLine1P(const Complex & y)
+   const ublas::matrix<Complex> YLine1P(const Complex & y)
    {
-      UblasMatrix<Complex> Y(2, 2, czero);
+      ublas::matrix<Complex> Y(2, 2, czero);
       Y(0, 0) = y;
       Y(1, 1) = y;
       Y(0, 1) = -y;
@@ -146,11 +146,11 @@ namespace SmartGridToolbox
    }
 
    // No cross terms, just nPhase lines with single admittances.
-   const UblasMatrix<Complex> YSimpleLine(const UblasVector<Complex> & y)
+   const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex> & y)
    {
       int nPhase = y.size();
       int nTerm = 2 * nPhase; 
-      UblasMatrix<Complex> Y(nTerm, nTerm, czero);
+      ublas::matrix<Complex> Y(nTerm, nTerm, czero);
       for (int i = 0; i < nPhase; ++i)
       {
          Y(i, i) = y(i);

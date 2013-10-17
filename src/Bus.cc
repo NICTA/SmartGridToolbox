@@ -21,14 +21,14 @@ namespace SmartGridToolbox
       int nPhase = phases.size();
 
       auto ndNominal = nd["nominal_voltage"];
-      UblasVector<Complex> nominalV = ndNominal ? ndNominal.as<UblasVector<Complex>>()
-                                                : UblasVector<Complex>(nPhase, czero);
+      ublas::vector<Complex> nominalV = ndNominal ? ndNominal.as<ublas::vector<Complex>>()
+                                                : ublas::vector<Complex>(nPhase, czero);
       
       auto ndV = nd["voltage"];
-      UblasVector<Complex> V = ndV ? ndV.as<UblasVector<Complex>>() : nominalV;
+      ublas::vector<Complex> V = ndV ? ndV.as<ublas::vector<Complex>>() : nominalV;
       
       auto ndSGen = nd["complex_power_gen"];
-      UblasVector<Complex> SGen = ndSGen ? ndSGen.as<UblasVector<Complex>>() : UblasVector<Complex>(nPhase, czero);
+      ublas::vector<Complex> SGen = ndSGen ? ndSGen.as<ublas::vector<Complex>>() : ublas::vector<Complex>(nPhase, czero);
 
       Bus & comp = mod.newComponent<Bus>(name, type, phases, nominalV, V, SGen);
    }
@@ -56,9 +56,9 @@ namespace SmartGridToolbox
 
    void Bus::initializeState()
    {
-      Ys_ = UblasVector<Complex>(phases_.size(), czero);
-      Ic_ = UblasVector<Complex>(phases_.size(), czero);
-      Sc_ = UblasVector<Complex>(phases_.size(), czero);
+      Ys_ = ublas::vector<Complex>(phases_.size(), czero);
+      Ic_ = ublas::vector<Complex>(phases_.size(), czero);
+      Sc_ = ublas::vector<Complex>(phases_.size(), czero);
       for (const ZipToGroundBase * zip : zipsToGround_)
       {
          Ys_ += zip->Y();
@@ -81,17 +81,17 @@ namespace SmartGridToolbox
       }
    }
 
-   Bus::Bus(const std::string & name, BusType type, const Phases & phases, const UblasVector<Complex> & nominalV,
-            const UblasVector<Complex> & V, const UblasVector<Complex> & SGen) :
+   Bus::Bus(const std::string & name, BusType type, const Phases & phases, const ublas::vector<Complex> & nominalV,
+            const ublas::vector<Complex> & V, const ublas::vector<Complex> & SGen) :
       Component(name),
       type_(type),
       phases_(phases),
       nominalV_(nominalV),
       V_(V),
       SGen_(SGen),
-      Ys_(UblasVector<Complex>(phases.size(), czero)),
-      Ic_(UblasVector<Complex>(phases.size(), czero)),
-      Sc_(UblasVector<Complex>(phases.size(), czero))
+      Ys_(ublas::vector<Complex>(phases.size(), czero)),
+      Ic_(ublas::vector<Complex>(phases.size(), czero)),
+      Sc_(ublas::vector<Complex>(phases.size(), czero))
    {
       assert(nominalV_.size() == phases_.size());
    }

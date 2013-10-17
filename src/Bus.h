@@ -39,38 +39,38 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         Bus(const std::string & name, BusType type, const Phases & phases, const UblasVector<Complex> & nominalV,
-             const UblasVector<Complex> & V, const UblasVector<Complex> & SGen);
+         Bus(const std::string & name, BusType type, const Phases & phases, const ublas::vector<Complex> & nominalV,
+             const ublas::vector<Complex> & V, const ublas::vector<Complex> & SGen);
 
          BusType type() const {return type_;}
 
          const Phases & phases() const {return phases_;}
 
-         const UblasVector<Complex> & nominalV() const {return nominalV_;}
+         const ublas::vector<Complex> & nominalV() const {return nominalV_;}
 
-         const UblasVector<Complex> & V() const {return V_;}
-         UblasVector<Complex> & V() {return V_;}
+         const ublas::vector<Complex> & V() const {return V_;}
+         ublas::vector<Complex> & V() {return V_;}
 
          void addZipToGround(ZipToGroundBase & zipToGround);
 
          /// Total shunt admittance (loads).
-         const UblasVector<Complex> & Ys() const {return Ys_;}
-         UblasVector<Complex> & Ys() {return Ys_;}
+         const ublas::vector<Complex> & Ys() const {return Ys_;}
+         ublas::vector<Complex> & Ys() {return Ys_;}
 
          /// Total constant current injection (loads).
-         const UblasVector<Complex> & Ic() const {return Ic_;}
-         UblasVector<Complex> & Ic() {return Ic_;}
+         const ublas::vector<Complex> & Ic() const {return Ic_;}
+         ublas::vector<Complex> & Ic() {return Ic_;}
 
          /// Total constant power injection (loads).
-         const UblasVector<Complex> & Sc() const {return Sc_;}
-         UblasVector<Complex> & Sc() {return Sc_;}
+         const ublas::vector<Complex> & Sc() const {return Sc_;}
+         ublas::vector<Complex> & Sc() {return Sc_;}
 
          /// Generator power injection.
-         const UblasVector<Complex> & SGen() const {return SGen_;}
-         UblasVector<Complex> & SGen() {return SGen_;}
+         const ublas::vector<Complex> & SGen() const {return SGen_;}
+         ublas::vector<Complex> & SGen() {return SGen_;}
          
          /// Total power injection (loads + gen).
-         const UblasVector<Complex> STot() const {return Sc_ + SGen_;}
+         const ublas::vector<Complex> STot() const {return Sc_ + SGen_;}
       /// @}
 
       /// @name My private member variables.
@@ -81,7 +81,7 @@ namespace SmartGridToolbox
 
          std::vector<const ZipToGroundBase *> zipsToGround_;   ///< ZIP loads of generation.
 
-         UblasVector<Complex> nominalV_;                       ///< Nominal voltage.
+         ublas::vector<Complex> nominalV_;                       ///< Nominal voltage.
 
          /// @name Quantities due to operation of bus:
          /** For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_. 
@@ -90,15 +90,15 @@ namespace SmartGridToolbox
           *  For slack busses, the both the real and reactive power will adjust to keep a constant voltage, 
           *  both components of SGen may be nonzero.*/
          /// @{
-         UblasVector<Complex> V_;                              ///< Voltage.
-         UblasVector<Complex> SGen_;                           ///< Generator power.
+         ublas::vector<Complex> V_;                              ///< Voltage.
+         ublas::vector<Complex> SGen_;                           ///< Generator power.
          /// @}
 
          /// @name ZIP load quantities:
          /// @{
-         UblasVector<Complex> Ys_;                             ///< Constant admittance shunt (loads).
-         UblasVector<Complex> Ic_;                             ///< Constant current injection (loads).
-         UblasVector<Complex> Sc_;                             ///< Constant power injection (loads).
+         ublas::vector<Complex> Ys_;                             ///< Constant admittance shunt (loads).
+         ublas::vector<Complex> Ic_;                             ///< Constant current injection (loads).
+         ublas::vector<Complex> Sc_;                             ///< Constant power injection (loads).
          /// @}
       /// @}
    };

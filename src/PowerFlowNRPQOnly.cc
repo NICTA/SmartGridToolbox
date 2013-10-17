@@ -6,11 +6,11 @@
 
 namespace SmartGridToolbox
 {
-   template<typename T> using UblasCMatrixRange = boost::numeric::ublas::matrix_range<UblasCMatrix<T>>;
-   template<typename T> using UblasVectorRange = boost::numeric::ublas::vector_range<UblasVector<T>>;
+   template<typename T> using ublas::compressed_matrixRange = boost::numeric::ublas::matrix_range<ublas::compressed_matrix<T>>;
+   template<typename T> using ublas::vector_range = boost::numeric::ublas::vector_range<ublas::vector<T>>;
 
-   BusNR::BusNR(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
-                const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S) :
+   BusNR::BusNR(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
+                const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S) :
       id_(id),
       type_(type),
       phases_(phases),
@@ -48,7 +48,7 @@ namespace SmartGridToolbox
    }
 
    BranchNR::BranchNR(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1, 
-                      const UblasMatrix<Complex> & Y) :
+                      const ublas::matrix<Complex> & Y) :
       nPhase_(phases0.size()),
       ids_{id0, id1},
       phases_{phases0, phases1},
@@ -66,15 +66,15 @@ namespace SmartGridToolbox
       for (auto branch : branches_) delete branch;
    }
 
-   void PowerFlowNR::addBus(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
-         const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S)
+   void PowerFlowNR::addBus(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
+         const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S)
    {
       SGT_DEBUG(debug() << "PowerFlowNR : add bus " << id << std::endl);
       busses_[id] = new BusNR(id, type, phases, V, Y, I, S);
    }
 
    void PowerFlowNR::addBranch(const std::string & idBus0, const std::string & idBus1, Phases phases0, Phases phases1,
-                               const UblasMatrix<Complex> & Y)
+                               const ublas::matrix<Complex> & Y)
    {
       SGT_DEBUG(debug() << "PowerFlowNR : addBranch " << idBus0 << " " << idBus1 << std::endl);
       branches_.push_back(new BranchNR(idBus0, idBus1, phases0, phases1, Y));
@@ -137,11 +137,11 @@ namespace SmartGridToolbox
 
       // Set array ranges:
       // Note Range goes from begin (included) to end (excluded).
-      rPQ_ = UblasRange(0, nPQ_);
-      rSL_ = UblasRange(nPQ_, nPQ_ + nSL_);
-      rAll_ = UblasRange(0, nNode_);
-      rx0_ = UblasRange(0, nPQ_);
-      rx1_ = UblasRange(nPQ_, 2 * nPQ_);
+      rPQ_ = ublas::range(0, nPQ_);
+      rSL_ = ublas::range(nPQ_, nPQ_ + nSL_);
+      rAll_ = ublas::range(0, nNode_);
+      rx0_ = ublas::range(0, nPQ_);
+      rx1_ = ublas::range(nPQ_, 2 * nPQ_);
 
       // Size all arrays:
       V0r_.resize(nSL_, false);
@@ -243,10 +243,10 @@ namespace SmartGridToolbox
 
       // Set the part of J that doesn't update at each iteration.
       JConst_.clear();
-      UblasCMatrixRange<double>(JConst_, rx0_, rx0_) = UblasCMatrixRange<double>(G_, rPQ_, rPQ_);
-      UblasCMatrixRange<double>(JConst_, rx0_, rx1_) = -UblasCMatrixRange<double>(B_, rPQ_, rPQ_);
-      UblasCMatrixRange<double>(JConst_, rx1_, rx0_) = UblasCMatrixRange<double>(B_, rPQ_, rPQ_);
-      UblasCMatrixRange<double>(JConst_, rx1_, rx1_) = UblasCMatrixRange<double>(G_, rPQ_, rPQ_);
+      ublas::compressed_matrixRange<double>(JConst_, rx0_, rx0_) = ublas::compressed_matrixRange<double>(G_, rPQ_, rPQ_);
+      ublas::compressed_matrixRange<double>(JConst_, rx0_, rx1_) = -ublas::compressed_matrixRange<double>(B_, rPQ_, rPQ_);
+      ublas::compressed_matrixRange<double>(JConst_, rx1_, rx0_) = ublas::compressed_matrixRange<double>(B_, rPQ_, rPQ_);
+      ublas::compressed_matrixRange<double>(JConst_, rx1_, rx1_) = ublas::compressed_matrixRange<double>(G_, rPQ_, rPQ_);
       J_ = JConst_; // We only need to redo the elements that we mess with!
       SGT_DEBUG(debug() << "PowerFlowNR : validate complete." << std::endl);
       SGT_DEBUG(printProblem());
@@ -266,38 +266,38 @@ namespace SmartGridToolbox
    {
       // Get voltages on all busses.
       // Done like this with a copy because eventually we'll include PV busses too.
-      UblasVectorRange<double>(Vr_, rPQ_) = UblasVectorRange<double>(x_, rx0_);
-      UblasVectorRange<double>(Vi_, rPQ_) = UblasVectorRange<double>(x_, rx1_);
-      UblasVectorRange<double>(Vr_, rSL_) = V0r_;
-      UblasVectorRange<double>(Vi_, rSL_) = V0i_;
+      ublas::vector_range<double>(Vr_, rPQ_) = ublas::vector_range<double>(x_, rx0_);
+      ublas::vector_range<double>(Vi_, rPQ_) = ublas::vector_range<double>(x_, rx1_);
+      ublas::vector_range<double>(Vr_, rSL_) = V0r_;
+      ublas::vector_range<double>(Vi_, rSL_) = V0i_;
    }
 
    void PowerFlowNR::updateF()
    {
-      UblasVectorRange<double> x0{x_, rx0_};
-      UblasVectorRange<double> x1{x_, rx1_};
+      ublas::vector_range<double> x0{x_, rx0_};
+      ublas::vector_range<double> x1{x_, rx1_};
 
-      UblasVector<double> M2 = element_prod(x0, x0) + element_prod(x1, x1);
+      ublas::vector<double> M2 = element_prod(x0, x0) + element_prod(x1, x1);
 
-      UblasCMatrixRange<double> GRng{G_, rPQ_, rAll_};
-      UblasCMatrixRange<double> BRng{B_, rPQ_, rAll_};
+      ublas::compressed_matrixRange<double> GRng{G_, rPQ_, rAll_};
+      ublas::compressed_matrixRange<double> BRng{B_, rPQ_, rAll_};
 
-      UblasVector<double> dr = element_div((-element_prod(PPQ_, x0) - element_prod(QPQ_, x1)), M2)
+      ublas::vector<double> dr = element_div((-element_prod(PPQ_, x0) - element_prod(QPQ_, x1)), M2)
                                + prod(GRng, Vr_) - prod(BRng, Vi_) - IrPQ_;
-      UblasVector<double> di = element_div((-element_prod(PPQ_, x1) + element_prod(QPQ_, x0)), M2)
+      ublas::vector<double> di = element_div((-element_prod(PPQ_, x1) + element_prod(QPQ_, x0)), M2)
                                + prod(GRng, Vi_) + prod(BRng, Vr_) - IiPQ_;
 
-      UblasVectorRange<double>(f_, rx0_) = dr;
-      UblasVectorRange<double>(f_, rx1_) = di;
+      ublas::vector_range<double>(f_, rx0_) = dr;
+      ublas::vector_range<double>(f_, rx1_) = di;
    }
 
    void PowerFlowNR::updateJ()
    {
-      UblasVectorRange<double> x0{x_, rx0_};
-      UblasVectorRange<double> x1{x_, rx1_};
+      ublas::vector_range<double> x0{x_, rx0_};
+      ublas::vector_range<double> x1{x_, rx1_};
 
-      UblasVector<double> M2PQ = element_prod(x0, x0) + element_prod(x1, x1);
-      UblasVector<double> M4PQ = element_prod(M2PQ, M2PQ);
+      ublas::vector<double> M2PQ = element_prod(x0, x0) + element_prod(x1, x1);
+      ublas::vector<double> M4PQ = element_prod(M2PQ, M2PQ);
 
       for (int i = 0; i < nPQ_; ++i)
       {
@@ -324,7 +324,7 @@ namespace SmartGridToolbox
          SGT_DEBUG(debug() << "\tIteration = " << i << std::endl);
          updateNodeV();
          updateF();
-         UblasVector<double> f2 = element_prod(f_, f_);
+         ublas::vector<double> f2 = element_prod(f_, f_);
          double err = *std::max_element(f2.begin(), f2.end());
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
          if (err <= tol)
@@ -334,12 +334,12 @@ namespace SmartGridToolbox
             break;
          }
          updateJ();
-         UblasVector<double> rhs;
+         ublas::vector<double> rhs;
 
          SGT_DEBUG
          (
-            debug() << "\tBefore KLUSolve: Vr = " << std::setw(8) << project(x_, UblasRange(0, nPQ_)) << std::endl;
-            debug() << "\tBefore KLUSolve: Vi = " << std::setw(8) << project(x_, UblasRange(nPQ_, 2*nPQ_)) << std::endl;
+            debug() << "\tBefore KLUSolve: Vr = " << std::setw(8) << project(x_, ublas::range(0, nPQ_)) << std::endl;
+            debug() << "\tBefore KLUSolve: Vi = " << std::setw(8) << project(x_, ublas::range(nPQ_, 2*nPQ_)) << std::endl;
             debug() << "\tBefore KLUSolve: f = " << std::setw(8) << f_ << std::endl;
             debug() << "\tBefore KLUSolve: J = " << std::endl;
             for (int i = 0; i < nVar_; ++i)

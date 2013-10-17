@@ -34,7 +34,7 @@ namespace SmartGridToolbox
       public:
          SimpleBuilding(const std::string & name) :
             Component(name),
-            dt_(minutes(5)),
+            dt_(posix_time::minutes(5)),
             kb_(5 * kW / K),
             Cb_(1.0e5 * kJ / K),
             TbInit_(20.0 * K),

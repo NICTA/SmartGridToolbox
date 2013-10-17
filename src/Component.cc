@@ -4,7 +4,7 @@ namespace SmartGridToolbox
 {
    Component::Component(const std::string & name) : 
       name_(name),
-      currentTime_(not_a_date_time),
+      currentTime_(posix_time::not_a_date_time),
       rank_(-1),
       willUpdate_("Component " + name_ + " will update"),
       didUpdate_("Component " + name_ + " did update"),
@@ -27,7 +27,7 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "Component " << name() << " initialize to " << t << std::endl);
       startTime_ = t;
-      currentTime_ = neg_infin;
+      currentTime_ = posix_time::neg_infin;
       initializeState();
    }
 
@@ -46,7 +46,7 @@ namespace SmartGridToolbox
 
    void Component::ensureAtTime(Time t)
    {
-      if (currentTime_ == not_a_date_time)
+      if (currentTime_ == posix_time::not_a_date_time)
       {
          initialize(t);
       }

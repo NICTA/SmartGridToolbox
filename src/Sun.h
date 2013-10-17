@@ -45,7 +45,7 @@ namespace SmartGridToolbox
    /** @parameter utcTime: UTC time.
     *  @parameter planeNormal: the coordinates specified by the normal of a plane. 
     *  @return Spherical angles of the sun. */
-   SphericalAngles sunPos(ptime utcTime, LatLong location);
+   SphericalAngles sunPos(posix_time::ptime utcTime, LatLong location);
 
    /// Horizontal solar irradiance.
    /** This quantity is often used as a proxy for the solar irradiance magnitude, as it is easier to measure.

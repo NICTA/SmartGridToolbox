@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    class RegularUpdateComponent : public Component
    {
       public:
-         RegularUpdateComponent(const std::string & name) : Component(name), dt_(seconds(0))
+         RegularUpdateComponent(const std::string & name) : Component(name), dt_(posix_time::seconds(0))
          {
             // Empty.
          }

@@ -20,17 +20,17 @@ namespace SmartGridToolbox
    class BusNR
    {
       public:
-         BusNR(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
-               const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S);
+         BusNR(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
+               const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S);
          ~BusNR();
 
          std::string id_;                          ///< Externally relevant id. 
          BusType type_;                            ///< Bus type.
          Phases phases_;                           ///< Bus phases.
-         UblasVector<Complex> V_;                  ///< Voltage, one per phase.
-         UblasVector<Complex> Y_;                  ///< Constant admittance shunt, one per phase.
-         UblasVector<Complex> I_;                  ///< Constant current injection, one per phase.
-         UblasVector<Complex> S_;                  ///< Constant power injection, one per phase.
+         ublas::vector<Complex> V_;                  ///< Voltage, one per phase.
+         ublas::vector<Complex> Y_;                  ///< Constant admittance shunt, one per phase.
+         ublas::vector<Complex> I_;                  ///< Constant current injection, one per phase.
+         ublas::vector<Complex> S_;                  ///< Constant power injection, one per phase.
 
          typedef std::vector<NodeNR *> NodeVec;    ///< Nodes, one per phase.
          NodeVec nodes_;                           ///< Primary list of nodes.
@@ -40,12 +40,12 @@ namespace SmartGridToolbox
    {
       public:
          BranchNR(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1, 
-                  const UblasMatrix<Complex> & Y);
+                  const ublas::matrix<Complex> & Y);
 
          int nPhase_;                  ///< Number of phases.
          Array<std::string, 2> ids_;   ///< Id of bus 0/1
          Array<Phases, 2> phases_;     ///< phases of bus 0/1.
-         UblasMatrix<Complex> Y_;      ///< Bus admittance matrix.
+         ublas::matrix<Complex> Y_;      ///< Bus admittance matrix.
    };
 
    class NodeNR
@@ -74,8 +74,8 @@ namespace SmartGridToolbox
       public:
          ~PowerFlowNR();
 
-         void addBus(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
-                     const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S);
+         void addBus(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
+                     const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S);
 
          const BusMap & busses()
          {
@@ -83,7 +83,7 @@ namespace SmartGridToolbox
          }
 
          void addBranch(const std::string & idBus0, const std::string & idBus1, Phases phases0, Phases phases1,
-                        const UblasMatrix<Complex> & Y);
+                        const ublas::matrix<Complex> & Y);
 
          const BranchVec & branches()
          {
@@ -102,7 +102,7 @@ namespace SmartGridToolbox
          void updateJ();
 
       private:
-         /// @name UblasVector of busses and branches.
+         /// @name ublas::vector of busses and branches.
          /// @{
          BusMap busses_;
          BranchVec branches_;
@@ -125,33 +125,33 @@ namespace SmartGridToolbox
 
          /// @name ublas ranges into vectors/matrices.
          /// @{
-         UblasRange rPQ_;              ///< Range of PQ nodes in list of all nodes.
-         UblasRange rSL_;              ///< Range of SL nodes in list of all nodes.
-         UblasRange rAll_;             ///< Range of all nodes in list of all nodes.
+         ublas::range rPQ_;              ///< Range of PQ nodes in list of all nodes.
+         ublas::range rSL_;              ///< Range of SL nodes in list of all nodes.
+         ublas::range rAll_;             ///< Range of all nodes in list of all nodes.
                                        /**< Needed for matrix_range. */
-         UblasRange rx0_;              ///< Range of real voltage components in x_. 
-         UblasRange rx1_;              ///< Range of imag voltage components in x_.
+         ublas::range rx0_;              ///< Range of real voltage components in x_. 
+         ublas::range rx1_;              ///< Range of imag voltage components in x_.
          /// @}
 
-         UblasVector<double> V0r_;     ///< Slack voltages real part - one per phase.
-         UblasVector<double> V0i_;     ///< Slack voltages imag part - one per phase.
+         ublas::vector<double> V0r_;     ///< Slack voltages real part - one per phase.
+         ublas::vector<double> V0i_;     ///< Slack voltages imag part - one per phase.
 
-         UblasVector<double> PPQ_;     ///< Constant power injection of PQ nodes.
-         UblasVector<double> QPQ_;
+         ublas::vector<double> PPQ_;     ///< Constant power injection of PQ nodes.
+         ublas::vector<double> QPQ_;
 
-         UblasVector<double> IrPQ_;    ///< Constant current injection of PQ nodes.
-         UblasVector<double> IiPQ_;
+         ublas::vector<double> IrPQ_;    ///< Constant current injection of PQ nodes.
+         ublas::vector<double> IiPQ_;
 
-         UblasVector<double> Vr_;
-         UblasVector<double> Vi_;
-         UblasCMatrix<Complex> Y_;
-         UblasCMatrix<double> G_;
-         UblasCMatrix<double> B_;
+         ublas::vector<double> Vr_;
+         ublas::vector<double> Vi_;
+         ublas::compressed_matrix<Complex> Y_;
+         ublas::compressed_matrix<double> G_;
+         ublas::compressed_matrix<double> B_;
 
-         UblasVector<double> x_;
-         UblasVector<double> f_;
-         UblasCMatrix<double> J_;
-         UblasCMatrix<double> JConst_; ///< The part of J that doesn't update at each iteration.
+         ublas::vector<double> x_;
+         ublas::vector<double> f_;
+         ublas::compressed_matrix<double> J_;
+         ublas::compressed_matrix<double> JConst_; ///< The part of J that doesn't update at each iteration.
    };
 }
 

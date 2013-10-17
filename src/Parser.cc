@@ -79,39 +79,39 @@ namespace YAML
    Node convert<Time>::encode(const Time & from)
    {
       Node nd;
-      nd.push_back(to_simple_string(from));
+      nd.push_back(posix_time::to_simple_string(from));
       return nd;
    }
 
    bool convert<Time>::decode(const Node & nd, Time & to)
    {
-      to = duration_from_string(nd.as<std::string>()); 
+      to = posix_time::duration_from_string(nd.as<std::string>()); 
       return true;
    }
 
-   Node convert<ptime>::encode(const ptime & from)
+   Node convert<posix_time::ptime>::encode(const posix_time::ptime & from)
    {
       Node nd;
-      nd.push_back(to_simple_string(from));
+      nd.push_back(posix_time::to_simple_string(from));
       return nd;
    }
 
-   bool convert<ptime>::decode(const Node & nd, ptime & to)
+   bool convert<posix_time::ptime>::decode(const Node & nd, posix_time::ptime & to)
    {
-      to = time_from_string(nd.as<std::string>()); 
+      to = posix_time::time_from_string(nd.as<std::string>()); 
       return true;
    }
 
-   template<typename T> Node convert<UblasVector<T>>::encode(const UblasVector<T> & from)
+   template<typename T> Node convert<ublas::vector<T>>::encode(const ublas::vector<T> & from)
    {
       Node nd;
       for (const T & val : from) nd.push_back(val);
       return nd;
    }
-   template Node convert<UblasVector<double>>::encode(const UblasVector<double> & from);
-   template Node convert<UblasVector<Complex>>::encode(const UblasVector<Complex> & from);
+   template Node convert<ublas::vector<double>>::encode(const ublas::vector<double> & from);
+   template Node convert<ublas::vector<Complex>>::encode(const ublas::vector<Complex> & from);
 
-   template<typename T> bool convert<UblasVector<T>>::decode(const Node & nd, UblasVector<T> & to)
+   template<typename T> bool convert<ublas::vector<T>>::decode(const Node & nd, ublas::vector<T> & to)
    {
       if(!nd.IsSequence())
       {
@@ -120,7 +120,7 @@ namespace YAML
       else
       {
          int sz = nd.size();
-         to = UblasVector<T>(sz);
+         to = ublas::vector<T>(sz);
          for (int i = 0; i < sz; ++i)
          {
             to(i) = nd[i].as<T>();
@@ -128,10 +128,10 @@ namespace YAML
       }
       return true;
    }
-   template bool convert<UblasVector<double>>::decode(const Node & nd, UblasVector<double> & to);
-   template bool convert<UblasVector<Complex>>::decode(const Node & nd, UblasVector<Complex> & to);
+   template bool convert<ublas::vector<double>>::decode(const Node & nd, ublas::vector<double> & to);
+   template bool convert<ublas::vector<Complex>>::decode(const Node & nd, ublas::vector<Complex> & to);
 
-   template<typename T> Node convert<UblasMatrix<T>>::encode(const UblasMatrix<T> & from)
+   template<typename T> Node convert<ublas::matrix<T>>::encode(const ublas::matrix<T> & from)
    {
       Node nd;
       for (int i = 0; i < from.size1(); ++i)
@@ -145,10 +145,10 @@ namespace YAML
       }
       return nd;
    }
-   template Node convert<UblasMatrix<double>>::encode(const UblasMatrix<double> & from);
-   template Node convert<UblasMatrix<Complex>>::encode(const UblasMatrix<Complex> & from);
+   template Node convert<ublas::matrix<double>>::encode(const ublas::matrix<double> & from);
+   template Node convert<ublas::matrix<Complex>>::encode(const ublas::matrix<Complex> & from);
 
-   template<typename T> bool convert<UblasMatrix<T>>::decode(const Node & nd, UblasMatrix<T> & to)
+   template<typename T> bool convert<ublas::matrix<T>>::decode(const Node & nd, ublas::matrix<T> & to)
    {
       if(!nd.IsSequence())
       {
@@ -176,7 +176,7 @@ namespace YAML
                return false;
             }
          }
-         to = UblasMatrix<T>(nrows, ncols);
+         to = ublas::matrix<T>(nrows, ncols);
          for (int i = 0; i < nrows; ++i)
          {
             for (int k = 0; k < nrows; ++k)
@@ -187,8 +187,8 @@ namespace YAML
       }
       return true;
    }
-   template bool convert<UblasMatrix<double>>::decode(const Node & nd, UblasMatrix<double> & to);
-   template bool convert<UblasMatrix<Complex>>::decode(const Node & nd, UblasMatrix<Complex> & to);
+   template bool convert<ublas::matrix<double>>::decode(const Node & nd, ublas::matrix<double> & to);
+   template bool convert<ublas::matrix<Complex>>::decode(const Node & nd, ublas::matrix<Complex> & to);
 }
 
 namespace SmartGridToolbox
@@ -269,7 +269,7 @@ namespace SmartGridToolbox
       {
          try 
          {
-            model.setTimezone(time_zone_ptr(new posix_time_zone(nodeTz.as<std::string>())));
+            model.setTimezone(local_time::time_zone_ptr(new local_time::posix_time_zone(nodeTz.as<std::string>())));
          }
          catch (...)
          {

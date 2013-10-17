@@ -24,8 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <boost/numeric/ublas/lu.hpp>
 #include <exception>
 
-namespace ublas = boost::numeric::ublas;
-
 class Spline : private std::vector<std::pair<double, double> >
 { 
    public:
@@ -106,7 +104,7 @@ class Spline : private std::vector<std::pair<double, double> >
       //vector of calculated spline data
       std::vector<SplineData> _data;
       //Second derivative at each point
-      ublas::vector<double> _ddy;
+      boost::numeric::ublas::vector<double> _ddy;
       //Tracks whether the spline parameters have been calculated for
       //the current set of points
       bool _valid;
@@ -174,10 +172,10 @@ class Spline : private std::vector<std::pair<double, double> >
 
       //Invert a arbitrary matrix using the boost ublas library
       template<class T>
-         bool InvertMatrix(ublas::matrix<T> A,
-               ublas::matrix<T>& inverse) 
+         bool InvertMatrix(boost::numeric::ublas::matrix<T> A,
+               boost::numeric::ublas::matrix<T>& inverse) 
          {
-            using namespace ublas;
+            using namespace boost::numeric::ublas;
 
             // create a permutation matrix for the LU-factorization
             permutation_matrix<std::size_t> pm(A.size1());
@@ -187,7 +185,7 @@ class Spline : private std::vector<std::pair<double, double> >
             if( res != 0 ) return false;
 
             // create identity matrix of "inverse"
-            inverse.assign(ublas::identity_matrix<T>(A.size1()));
+            inverse.assign(identity_matrix<T>(A.size1()));
 
             // backsubstitute to get the inverse
             lu_substitute(A, pm, inverse);
@@ -244,7 +242,7 @@ class Spline : private std::vector<std::pair<double, double> >
                }
             case CUBIC:
                {
-                  ublas::matrix<double> A(size(), size());
+                  boost::numeric::ublas::matrix<double> A(size(), size());
                   for (size_t yv(0); yv <= e; ++yv)
                      for (size_t xv(0); xv <= e; ++xv)
                         A(xv,yv) = 0;
@@ -256,7 +254,7 @@ class Spline : private std::vector<std::pair<double, double> >
                      A(i+1,i) = h(i);
                   }
 
-                  ublas::vector<double> C(size());
+                  boost::numeric::ublas::vector<double> C(size());
                   for (size_t xv(0); xv <= e; ++xv)
                      C(xv) = 0;
 
@@ -298,10 +296,10 @@ class Spline : private std::vector<std::pair<double, double> >
                         break;
                   }
 
-                  ublas::matrix<double> AInv(size(), size());
+                  boost::numeric::ublas::matrix<double> AInv(size(), size());
                   InvertMatrix(A,AInv);
 
-                  _ddy = ublas::prod(C, AInv);
+                  _ddy = boost::numeric::ublas::prod(C, AInv);
 
                   _data.resize(size()-1);
                   for (size_t i(0); i < e; ++i)

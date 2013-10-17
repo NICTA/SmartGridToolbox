@@ -7,8 +7,9 @@
 
 namespace SmartGridToolbox
 {
-   BusNR::BusNR(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
-                const UblasVector<Complex> & Ys, const UblasVector<Complex> & Ic, const UblasVector<Complex> & S) :
+   BusNR::BusNR(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
+                const ublas::vector<Complex> & Ys, const ublas::vector<Complex> & Ic,
+                const ublas::vector<Complex> & S) :
       id_(id),
       type_(type),
       phases_(phases),
@@ -46,7 +47,7 @@ namespace SmartGridToolbox
    }
 
    BranchNR::BranchNR(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1,
-                      const UblasMatrix<Complex> & Y) :
+                      const ublas::matrix<Complex> & Y) :
       nPhase_(phases0.size()),
       ids_{id0, id1},
       phases_{phases0, phases1},
@@ -64,15 +65,15 @@ namespace SmartGridToolbox
       for (auto branch : branches_) delete branch;
    }
 
-   void PowerFlowNR::addBus(const std::string & id, BusType type, Phases phases, const UblasVector<Complex> & V,
-         const UblasVector<Complex> & Y, const UblasVector<Complex> & I, const UblasVector<Complex> & S)
+   void PowerFlowNR::addBus(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
+         const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S)
    {
       SGT_DEBUG(debug() << "PowerFlowNR : add bus " << id << std::endl);
       busses_[id] = new BusNR(id, type, phases, V, Y, I, S);
    }
 
    void PowerFlowNR::addBranch(const std::string & idBus0, const std::string & idBus1, Phases phases0, Phases phases1,
-                               const UblasMatrix<Complex> & Y)
+                               const ublas::matrix<Complex> & Y)
    {
       SGT_DEBUG(debug() << "PowerFlowNR : addBranch " << idBus0 << " " << idBus1 << std::endl);
       branches_.push_back(new BranchNR(idBus0, idBus1, phases0, phases1, Y));
@@ -201,7 +202,7 @@ namespace SmartGridToolbox
    }
 
    /// Initialize voltages:
-   void PowerFlowNR::initV(UblasVector<double> & Vr, UblasVector<double> & Vi) const
+   void PowerFlowNR::initV(ublas::vector<double> & Vr, ublas::vector<double> & Vi) const
    {
       for (int i = 0; i < nNode(); ++i)
       {
@@ -211,7 +212,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowNR::initS(UblasVector<double> & P, UblasVector<double> & Q) const
+   void PowerFlowNR::initS(ublas::vector<double> & P, ublas::vector<double> & Q) const
    {
       for (int i = 0; i < nNode(); ++i)
       {
@@ -223,7 +224,7 @@ namespace SmartGridToolbox
 
    /// Set the part of J that doesn't update at each iteration.
    /** At this stage, we are treating J as if all busses were PQ. */
-   void PowerFlowNR::initJC(UblasCMatrix<double> & JC) const
+   void PowerFlowNR::initJC(ublas::compressed_matrix<double> & JC) const
    {
       const auto G = real(Y_);
       const auto B = imag(Y_);
@@ -255,10 +256,10 @@ namespace SmartGridToolbox
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-   void PowerFlowNR::calcf(UblasVector<double> & f,
-                           const UblasVector<double> & Vr, const UblasVector<double> & Vi,
-                           const UblasVector<double> & P, const UblasVector<double> & Q,
-                           const UblasVector<double> & M2PV) const
+   void PowerFlowNR::calcf(ublas::vector<double> & f,
+                           const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
+                           const ublas::vector<double> & P, const ublas::vector<double> & Q,
+                           const ublas::vector<double> & M2PV) const
    {
       const auto G = real(Y_);
       const auto B = imag(Y_);
@@ -276,7 +277,7 @@ namespace SmartGridToolbox
       const auto IcrPQ = project(real(Ic_), selPQFromAll());
       const auto IciPQ = project(imag(Ic_), selPQFromAll());
 
-      UblasVector<double> M2PQ = element_prod(VrPQ, VrPQ) + element_prod(ViPQ, ViPQ);
+      ublas::vector<double> M2PQ = element_prod(VrPQ, VrPQ) + element_prod(ViPQ, ViPQ);
 
       project(f, selIrPQFromf()) = element_div(element_prod(VrPQ, PPQ) + element_prod(ViPQ, QPQ), M2PQ)
                                  + IcrPQ - prod(GPQ, Vr) + prod(BPQ, Vi);
@@ -303,10 +304,10 @@ namespace SmartGridToolbox
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-   void PowerFlowNR::updateJ(UblasCMatrix<double> & J, const UblasCMatrix<double> & JC,
-                             const UblasVector<double> & Vr, const UblasVector<double> & Vi,
-                             const UblasVector<double> & P, const UblasVector <double> & Q,
-                             const UblasVector<double> & M2PV) const
+   void PowerFlowNR::updateJ(ublas::compressed_matrix<double> & J, const ublas::compressed_matrix<double> & JC,
+                             const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
+                             const ublas::vector<double> & P, const ublas::vector <double> & Q,
+                             const ublas::vector<double> & M2PV) const
    {
       std::chrono::time_point<std::chrono::system_clock> start;
       std::chrono::time_point<std::chrono::system_clock> stop;
@@ -367,9 +368,9 @@ namespace SmartGridToolbox
    }
 
    // Modify J and f to take into account PV busses.
-   void PowerFlowNR::modifyForPV(UblasCMatrix<double> & J, UblasVector<double> & f,
-                                 const UblasVector<double> & Vr, const UblasVector<double> & Vi,
-                                 const UblasVector<double> & M2PV)
+   void PowerFlowNR::modifyForPV(ublas::compressed_matrix<double> & J, ublas::vector<double> & f,
+                                 const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
+                                 const ublas::vector<double> & M2PV)
    {
       const auto VrPV = project(Vr, selPVFromAll());
       const auto ViPV = project(Vi, selPVFromAll());
@@ -417,18 +418,18 @@ namespace SmartGridToolbox
       const double tol = 1e-8;
       const int maxiter = 20;
 
-      UblasVector<double> Vr(nNode());
-      UblasVector<double> Vi(nNode());
+      ublas::vector<double> Vr(nNode());
+      ublas::vector<double> Vi(nNode());
       initV(Vr, Vi);
 
-      UblasVector<double> M2PV = element_prod(project(Vr, selPVFromAll()), project(Vr, selPVFromAll()))
+      ublas::vector<double> M2PV = element_prod(project(Vr, selPVFromAll()), project(Vr, selPVFromAll()))
                                + element_prod(project(Vi, selPVFromAll()), project(Vi, selPVFromAll()));
 
-      UblasVector<double> P(nNode());
-      UblasVector<double> Q(nNode());
+      ublas::vector<double> P(nNode());
+      ublas::vector<double> Q(nNode());
       initS(P, Q);
 
-      UblasCMatrix<double> JC(nVar(), nVar()); ///< The part of J that doesn't update at each iteration.
+      ublas::compressed_matrix<double> JC(nVar(), nVar()); ///< The part of J that doesn't update at each iteration.
       initJC(JC);
       SGT_DEBUG(debug() << "After initialization, JC.nnz() = " << JC.nnz() << std::endl);
       SGT_DEBUG(debug() << "\tAfter initialization: JC = " << std::endl);
@@ -437,9 +438,9 @@ namespace SmartGridToolbox
          SGT_DEBUG(debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JC, i) << std::endl);
       }
 
-      UblasVector<double> f(nVar()); ///< Current mismatch function.
+      ublas::vector<double> f(nVar()); ///< Current mismatch function.
 
-      UblasCMatrix<double> J = JC; ///< Jacobian, d f_i / d x_i.
+      ublas::compressed_matrix<double> J = JC; ///< Jacobian, d f_i / d x_i.
       SGT_DEBUG(debug() << "Initial : J.nnz() = " << J.nnz() << std::endl);
 
       bool wasSuccessful = false;
@@ -489,7 +490,7 @@ namespace SmartGridToolbox
          durationModifyForPV += stop - start;
          SGT_DEBUG(debug() << "After modifyForPV : J.nnz() = " << J.nnz() << std::endl);
 
-         UblasVector<double> x;
+         ublas::vector<double> x;
 
          SGT_DEBUG
          (
@@ -548,8 +549,8 @@ namespace SmartGridToolbox
 
       if (wasSuccessful)
       {
-         UblasVector<Complex> V(nNode());
-         UblasVector<Complex> S(nNode());
+         ublas::vector<Complex> V(nNode());
+         ublas::vector<Complex> S(nNode());
 
          for (int i = 0; i < nNode(); ++i)
          {

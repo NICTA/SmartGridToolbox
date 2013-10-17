@@ -14,9 +14,9 @@ namespace YAML
    using SmartGridToolbox::Phase;
    using SmartGridToolbox::Phases;
    using SmartGridToolbox::Time;
-   using SmartGridToolbox::ptime;
-   using SmartGridToolbox::UblasMatrix;
-   using SmartGridToolbox::UblasVector;
+   using SmartGridToolbox::posix_time::ptime;
+   using SmartGridToolbox::ublas::matrix;
+   using SmartGridToolbox::ublas::vector;
 
    template<> struct convert<Complex>
    {
@@ -54,16 +54,16 @@ namespace YAML
       static bool decode(const Node & nd, ptime & to);
    };
 
-   template<typename T> struct convert<UblasVector<T>>
+   template<typename T> struct convert<vector<T>>
    {
-      static Node encode(const UblasVector<T> & from);
-      static bool decode(const Node & nd, UblasVector<T> & to);
+      static Node encode(const vector<T> & from);
+      static bool decode(const Node & nd, vector<T> & to);
    };
 
-   template<typename T> struct convert<UblasMatrix<T>>
+   template<typename T> struct convert<matrix<T>>
    {
-      static Node encode(const UblasMatrix<T> & from);
-      static bool decode(const Node & nd, UblasMatrix<T> & to);
+      static Node encode(const matrix<T> & from);
+      static bool decode(const Node & nd, matrix<T> & to);
    };
 }
 
@@ -160,7 +160,7 @@ namespace SmartGridToolbox
 
          Time parseTime(const YAML::Node & nd, const Model & model)
          {
-            return timeFromLocalTime(nd.as<ptime>(), model.timezone());
+            return timeFromLocalTime(nd.as<posix_time::ptime>(), model.timezone());
          }
 
       private:

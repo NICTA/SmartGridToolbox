@@ -75,36 +75,9 @@ namespace SmartGridToolbox
   
    /// @name Linear algebra
    /// @{
+   namespace ublas = boost::numeric::ublas;
 
-   /// Dense vector
-   template<typename T> using UblasVector = boost::numeric::ublas::vector<T>;
-
-   /// Sparse compressed vector
-   template<typename T> using UblasCVector = boost::numeric::ublas::compressed_vector<T>;
-
-   /// Dense matrix 
-   template<typename T> using UblasMatrix = boost::numeric::ublas::matrix<T>;
-
-   /// Sparse compressed matrix, by rows.
-   template<typename T> using UblasCMatrix = boost::numeric::ublas::compressed_matrix<T>;
-
-   template<typename VE> using UblasVectorExpression = boost::numeric::ublas::vector_expression<VE>;
-   template<typename ME> using UblasMatrixExpression = boost::numeric::ublas::matrix_expression<ME>;
-   
-   using UblasRange = boost::numeric::ublas::range;
-   template<typename M> using UblasMatrixRange = boost::numeric::ublas::matrix_range<M>;
-
-   using UblasSlice = boost::numeric::ublas::slice;
-   template<typename M> using UblasMatrixSlice = boost::numeric::ublas::matrix_slice<M>;
-
-   template<typename M> using UblasMatrixRow = boost::numeric::ublas::matrix_row<M>;
-   template<typename M> using UblasMatrixColumn = boost::numeric::ublas::matrix_column<M>;
-
-   using boost::numeric::ublas::project;
-   using boost::numeric::ublas::row;
-   using boost::numeric::ublas::column;
-
-   template<typename VE> std::ostream & operator<<(std::ostream & os, const UblasVectorExpression<VE> & v)
+   template<typename VE> std::ostream & operator<<(std::ostream & os, const ublas::vector_expression<VE> & v)
    {
       unsigned int size = v().size();
       unsigned int w = os.width();
@@ -121,51 +94,37 @@ namespace SmartGridToolbox
 
    /// @name Time
    /// @{
-   using Time = boost::posix_time::time_duration;
-   using boost::posix_time::seconds;
-   using boost::posix_time::minutes;
-   using boost::posix_time::hours;
-   using boost::posix_time::duration_from_string;
+   namespace posix_time = boost::posix_time;
+   namespace gregorian = boost::gregorian;
+   namespace local_time = boost::local_time;
 
-   using boost::posix_time::ptime;
-   using boost::posix_time::time_from_string;
-   
-   using boost::posix_time::to_simple_string;
+   using Time = posix_time::time_duration;
 
-   using boost::posix_time::not_a_date_time;
-   using boost::posix_time::neg_infin;
-   using boost::posix_time::pos_infin;
-
-   using boost::gregorian::date;
-
-   using boost::local_time::time_zone_ptr;
-   using boost::local_time::posix_time_zone;
-
-   extern const ptime epoch;
+   extern const posix_time::ptime epoch;
 
    inline double dSeconds(const Time & d) 
    {
       return double(d.ticks())/Time::ticks_per_second();
    }
 
-   inline Time timeFromUTCTime(ptime utcTime)
+   inline Time timeFromUTCTime(posix_time::ptime utcTime)
    {
       return (utcTime - epoch);
    }
 
-   inline ptime utcTime(Time t)
+   inline posix_time::ptime utcTime(Time t)
    {
       return (epoch + t);
    }
 
-   ptime utcTimeFromLocalTime(ptime localTime, const time_zone_ptr localTz);
+   posix_time::ptime utcTimeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz);
 
-   inline ptime localTime(const Time & t, const time_zone_ptr localTz)
+   inline posix_time::ptime localTime(const Time & t, const local_time::time_zone_ptr localTz)
    {
       return boost::local_time::local_date_time(epoch + t, localTz).local_time();
    }
 
-   inline Time timeFromLocalTime(ptime localTime, const time_zone_ptr localTz)
+   inline Time timeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz)
    {
       return (utcTimeFromLocalTime(localTime, localTz) - epoch);
    }

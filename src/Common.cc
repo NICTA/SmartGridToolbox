@@ -114,9 +114,9 @@ namespace SmartGridToolbox
       return ss.str();
    }
 
-   const ptime epoch(date(1970,1,1));
+   const posix_time::ptime epoch(gregorian::date(1970,1,1));
 
-   ptime utcTimeFromLocalTime(ptime localTime, const time_zone_ptr localTz)
+   posix_time::ptime utcTimeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz)
    {
       using namespace boost::local_time;
       if (localTime.is_not_a_date_time())

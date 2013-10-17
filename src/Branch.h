@@ -42,8 +42,8 @@ namespace SmartGridToolbox
 
          const Phases & phases1() const {return phases1_;}
 
-         const UblasMatrix<Complex> & Y() const {return Y_;}
-         UblasMatrix<Complex> & Y() {return Y_;}
+         const ublas::matrix<Complex> & Y() const {return Y_;}
+         ublas::matrix<Complex> & Y() {return Y_;}
       /// @}
 
       /// @name My private member variables.
@@ -53,7 +53,7 @@ namespace SmartGridToolbox
          Bus * bus1_;                  ///< My bus 1.
          Phases phases0_;              ///< Phases on bus 0.
          Phases phases1_;              ///< Phases on bus 1.
-         UblasMatrix<Complex> Y_;      ///< Complex value of elements in bus admittance matrix in NR solver.
+         ublas::matrix<Complex> Y_;      ///< Complex value of elements in bus admittance matrix in NR solver.
       /// @}
    };
 }

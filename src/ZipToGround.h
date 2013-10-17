@@ -23,9 +23,9 @@ namespace SmartGridToolbox
       /// @name Overridden public member functions from ZipToGroundBase.
       /// @{
       public:
-         virtual UblasVector<Complex> Y() const override {return Y_;}
-         virtual UblasVector<Complex> I() const override {return I_;} // Injection.
-         virtual UblasVector<Complex> S() const override {return S_;} // Injection.
+         virtual ublas::vector<Complex> Y() const override {return Y_;}
+         virtual ublas::vector<Complex> I() const override {return I_;} // Injection.
+         virtual ublas::vector<Complex> S() const override {return S_;} // Injection.
       /// @}
 
       /// @name My public member functions.
@@ -34,17 +34,17 @@ namespace SmartGridToolbox
          ZipToGround(const std::string & name, const Phases & phases);
 
          // Add non-const reference accessors:
-         virtual UblasVector<Complex> & Y() {return Y_;}
-         virtual UblasVector<Complex> & I() {return I_;} // Injection.
-         virtual UblasVector<Complex> & S() {return S_;} // Injection.
+         virtual ublas::vector<Complex> & Y() {return Y_;}
+         virtual ublas::vector<Complex> & I() {return I_;} // Injection.
+         virtual ublas::vector<Complex> & S() {return S_;} // Injection.
       /// @}
       
       /// @name My private member variables.
       /// @{
       private:
-         UblasVector<Complex> Y_;      ///< Constant admittance component.
-         UblasVector<Complex> I_;      ///< Constant current injection component.
-         UblasVector<Complex> S_;      ///< Constant power injection component.
+         ublas::vector<Complex> Y_;      ///< Constant admittance component.
+         ublas::vector<Complex> I_;      ///< Constant current injection component.
+         ublas::vector<Complex> S_;      ///< Constant power injection component.
       /// @}
    };
 }

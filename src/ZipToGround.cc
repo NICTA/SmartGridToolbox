@@ -40,23 +40,23 @@ namespace SmartGridToolbox
 
       if (ndAdmit)
       {
-         comp.Y() = ndAdmit.as<UblasVector<Complex>>();
+         comp.Y() = ndAdmit.as<ublas::vector<Complex>>();
       }
       if (ndCurLoad)
       {
-         comp.I() = -ndCurLoad.as<UblasVector<Complex>>();
+         comp.I() = -ndCurLoad.as<ublas::vector<Complex>>();
       }
       if (ndCurGen)
       {
-         comp.I() = ndCurGen.as<UblasVector<Complex>>();
+         comp.I() = ndCurGen.as<ublas::vector<Complex>>();
       }
       if (ndSLoad)
       {
-         comp.S() = -ndSLoad.as<UblasVector<Complex>>();
+         comp.S() = -ndSLoad.as<ublas::vector<Complex>>();
       }
       if (ndSGen)
       {
-         comp.S() = ndSGen.as<UblasVector<Complex>>();
+         comp.S() = ndSGen.as<ublas::vector<Complex>>();
       }
    }
 

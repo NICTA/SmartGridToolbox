@@ -18,9 +18,9 @@ namespace SmartGridToolbox
 
          virtual const Phases & phases() const {return phases_;}
 
-         virtual UblasVector<Complex> Y() const = 0;
-         virtual UblasVector<Complex> I() const = 0;
-         virtual UblasVector<Complex> S() const = 0;
+         virtual ublas::vector<Complex> Y() const = 0;
+         virtual ublas::vector<Complex> I() const = 0;
+         virtual ublas::vector<Complex> S() const = 0;
       /// @}
       
       /// @name My private member variables.

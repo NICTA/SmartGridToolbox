@@ -19,9 +19,9 @@ namespace SmartGridToolbox
       /// @name Public overridden member functions from ZipToGroundBase.
       /// @{
       public:
-         virtual UblasVector<Complex> Y() const override {return UblasVector<Complex>(phases().size(), czero);}
-         virtual UblasVector<Complex> I() const override {return UblasVector<Complex>(phases().size(), czero);}
-         virtual UblasVector<Complex> S() const override = 0;
+         virtual ublas::vector<Complex> Y() const override {return ublas::vector<Complex>(phases().size(), czero);}
+         virtual ublas::vector<Complex> I() const override {return ublas::vector<Complex>(phases().size(), czero);}
+         virtual ublas::vector<Complex> S() const override = 0;
       /// @}
       
       /// @name My public member functions. 

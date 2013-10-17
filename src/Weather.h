@@ -34,7 +34,7 @@ namespace SmartGridToolbox
             latLong_(Greenwich),
             cloudCoverSeries_(nullptr)
          {
-            setDt(minutes(5));
+            setDt(posix_time::minutes(5));
          }
 
          virtual ~Weather() {delete cloudCoverSeries_;}

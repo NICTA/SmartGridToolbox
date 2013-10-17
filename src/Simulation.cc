@@ -6,9 +6,9 @@
 namespace SmartGridToolbox
 {
    Simulation::Simulation(Model & mod) : mod_(&mod),
-                                         startTime_(not_a_date_time),
-                                         endTime_(not_a_date_time),
-                                         currentTime_(neg_infin),
+                                         startTime_(posix_time::not_a_date_time),
+                                         endTime_(posix_time::not_a_date_time),
+                                         currentTime_(posix_time::neg_infin),
                                          timestepWillStart_("Simulation timestep will start"),
                                          timestepDidComplete_("Simulation timestep did complete")
    {
@@ -26,7 +26,7 @@ namespace SmartGridToolbox
                "Simulation insert contingent update of component " + comp->name());
          scheduledUpdates_.insert(std::make_pair(comp, comp->startTime()));
       }
-      currentTime_ = neg_infin;
+      currentTime_ = posix_time::neg_infin;
    }
 
    // TODO: can we tidy up the logic in this function?
@@ -36,7 +36,7 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "\tNumber of scheduled = " << scheduledUpdates_.size() << std::endl);
       SGT_DEBUG(debug() << "\tNumber of contingent = " << contingentUpdates_.size() << std::endl);
       bool result = false;
-      Time nextSchedTime = pos_infin;
+      Time nextSchedTime = posix_time::pos_infin;
       Component * schedComp = 0;
       auto schedUpdateIt = scheduledUpdates_.begin();
       if (scheduledUpdates_.size() > 0)

@@ -40,7 +40,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         comp.setDt(minutes(5.0));
+         comp.setDt(posix_time::minutes(5.0));
       }
    }
 

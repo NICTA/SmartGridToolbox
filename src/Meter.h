@@ -29,7 +29,7 @@ namespace SmartGridToolbox
       public:
          Meter(const std::string & name) :
             Component(name),
-            dt_(minutes(5)),
+            dt_(posix_time::minutes(5)),
             P_(Complex(0.0, 0.0)) 
          {
             // Empty.

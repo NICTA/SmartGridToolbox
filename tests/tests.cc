@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE (test_properties)
 
 BOOST_AUTO_TEST_CASE (test_simple_battery)
 {
-   time_zone_ptr tz(new posix_time_zone("UTC0"));
+   local_time::time_zone_ptr tz(new local_time::posix_time_zone("UTC0"));
    using namespace boost::gregorian;
    SimpleBattery bat1("sb0");
    bat1.setName("bat1");
@@ -160,31 +160,31 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    bat1.setChargeEfficiency(0.9);
    bat1.setDischargeEfficiency(0.8);
    bat1.setRequestedPower(-0.4 * kW);
-   bat1.initialize(timeFromLocalTime(ptime(date(2012, Feb, 11), hours(2)), tz));
+   bat1.initialize(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
    message() << "1 Battery charge = " << bat1.charge() / kWh << endl;
-   bat1.update(bat1.time() + hours(3));
+   bat1.update(bat1.time() + posix_time::hours(3));
    message() << "2 Battery charge = " << bat1.charge() / kWh << endl;
    double comp = bat1.initCharge() + 
-      dSeconds(hours(3)) * bat1.requestedPower() /
+      dSeconds(posix_time::hours(3)) * bat1.requestedPower() /
       bat1.dischargeEfficiency();
    message() << "comp = " << comp / kWh << endl;
    BOOST_CHECK(bat1.charge() == comp);
 
    bat1.setRequestedPower(1.3 * kW);
-   bat1.initialize(timeFromLocalTime(ptime(date(2012, Feb, 11), hours(2)), tz));
+   bat1.initialize(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
    message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
-   bat1.update(bat1.time() + hours(3));
+   bat1.update(bat1.time() + posix_time::hours(3));
    message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
    comp = bat1.initCharge() + 
-      dSeconds(hours(3)) * bat1.maxChargePower() *
+      dSeconds(posix_time::hours(3)) * bat1.maxChargePower() *
       bat1.chargeEfficiency();
    message() << "comp = " << comp / kWh << endl;
    BOOST_CHECK(bat1.charge() == comp);
 
    bat1.setRequestedPower(-1 * kW);
-   bat1.initialize(timeFromLocalTime(ptime(date(2012, Feb, 11), hours(2)), tz));
+   bat1.initialize(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
    message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
-   bat1.update(bat1.time() + hours(5.5));
+   bat1.update(bat1.time() + posix_time::hours(5.5));
    message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
    comp = 0.0;
    message() << "comp = " << comp / kWh << endl;
@@ -232,20 +232,20 @@ BOOST_AUTO_TEST_CASE (test_spline)
 
 BOOST_AUTO_TEST_CASE (test_spline_timeseries)
 {
-   time_zone_ptr tz(new posix_time_zone("UTC0"));
+   local_time::time_zone_ptr tz(new local_time::posix_time_zone("UTC0"));
    using namespace boost::gregorian;
-   Time base = timeFromLocalTime(ptime(date(2013, Apr, 26), hours(0)), tz);
+   Time base = timeFromLocalTime(posix_time::ptime(gregorian::date(2013, Apr, 26), posix_time::hours(0)), tz);
    SplineTimeSeries<Time> sts;
-   sts.addPoint(base + hours(0), sin(0*pi/12));
-   sts.addPoint(base + hours(4), sin(4*pi/12));
-   sts.addPoint(base + hours(8), sin(8*pi/12));
-   sts.addPoint(base + hours(12), sin(12*pi/12));
-   sts.addPoint(base + hours(16), sin(16*pi/12));
-   sts.addPoint(base + hours(20), sin(20*pi/12));
-   sts.addPoint(base + hours(24), sin(24*pi/12));
+   sts.addPoint(base + posix_time::hours(0), sin(0*pi/12));
+   sts.addPoint(base + posix_time::hours(4), sin(4*pi/12));
+   sts.addPoint(base + posix_time::hours(8), sin(8*pi/12));
+   sts.addPoint(base + posix_time::hours(12), sin(12*pi/12));
+   sts.addPoint(base + posix_time::hours(16), sin(16*pi/12));
+   sts.addPoint(base + posix_time::hours(20), sin(20*pi/12));
+   sts.addPoint(base + posix_time::hours(24), sin(24*pi/12));
    for (int i = -1; i <= 25; ++i)
    {
-      double val = sts.value(base + hours(i));
+      double val = sts.value(base + posix_time::hours(i));
       double err = std::abs(val - sin(i*pi/12));
       message() << i << " " << val << " " << err << endl; 
       if (i > -1 && i < 25)
@@ -257,59 +257,59 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
 
 BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
 {
-   time_zone_ptr tz(new posix_time_zone("UTC0"));
+   local_time::time_zone_ptr tz(new local_time::posix_time_zone("UTC0"));
    using namespace boost::gregorian;
-   Time base = timeFromLocalTime(ptime(date(2013, Apr, 26), hours(0)), tz);
+   Time base = timeFromLocalTime(posix_time::ptime(gregorian::date(2013, Apr, 26), posix_time::hours(0)), tz);
    LerpTimeSeries<Time, Complex> lts;
-   lts.addPoint(base + hours(0), Complex(0, 0));
-   lts.addPoint(base + hours(1), Complex(3, 1));
-   lts.addPoint(base + hours(3), Complex(10, 11));
+   lts.addPoint(base + posix_time::hours(0), Complex(0, 0));
+   lts.addPoint(base + posix_time::hours(1), Complex(3, 1));
+   lts.addPoint(base + posix_time::hours(3), Complex(10, 11));
    for (int i = -1; i <= 4; ++i)
    {
-      Complex val = lts.value(base + hours(i));
+      Complex val = lts.value(base + posix_time::hours(i));
       message() << i << " " << val << endl; 
    }
-   BOOST_CHECK(lts.value(base + hours(-1)) == Complex(0, 0));
-   BOOST_CHECK(lts.value(base + hours(0)) == Complex(0, 0));
-   BOOST_CHECK(lts.value(base + minutes(30)) == Complex(1.5, 0.5));
-   BOOST_CHECK(lts.value(base + hours(1)) == Complex(3, 1));
-   BOOST_CHECK(lts.value(base + hours(2)) == Complex(6.5, 6));
-   BOOST_CHECK(lts.value(base + hours(3)) == Complex(10, 11));
-   BOOST_CHECK(lts.value(base + hours(4) + seconds(1)) == Complex(10, 11));
+   BOOST_CHECK(lts.value(base + posix_time::hours(-1)) == Complex(0, 0));
+   BOOST_CHECK(lts.value(base + posix_time::hours(0)) == Complex(0, 0));
+   BOOST_CHECK(lts.value(base + posix_time::minutes(30)) == Complex(1.5, 0.5));
+   BOOST_CHECK(lts.value(base + posix_time::hours(1)) == Complex(3, 1));
+   BOOST_CHECK(lts.value(base + posix_time::hours(2)) == Complex(6.5, 6));
+   BOOST_CHECK(lts.value(base + posix_time::hours(3)) == Complex(10, 11));
+   BOOST_CHECK(lts.value(base + posix_time::hours(4) + posix_time::seconds(1)) == Complex(10, 11));
 }
 
 BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
 {
-   time_duration base(minutes(5));
+   time_duration base(posix_time::minutes(5));
    StepwiseTimeSeries<time_duration, double> sts;
-   sts.addPoint(base + hours(0), 1.5);
-   sts.addPoint(base + hours(1), 2.5);
-   sts.addPoint(base + hours(3), 5.5);
+   sts.addPoint(base + posix_time::hours(0), 1.5);
+   sts.addPoint(base + posix_time::hours(1), 2.5);
+   sts.addPoint(base + posix_time::hours(3), 5.5);
    for (int i = -1; i <= 4; ++i)
    {
-      double val = sts.value(base + hours(i));
+      double val = sts.value(base + posix_time::hours(i));
       message() << i << " " << val << endl; 
    }
    message() << endl;
    for (int i = -1; i <= 4; ++i)
    {
-      double val = sts.value(base + hours(i) + seconds(1));
+      double val = sts.value(base + posix_time::hours(i) + posix_time::seconds(1));
       message() << i << " " << val << endl; 
    }
-   BOOST_CHECK(sts.value(base + seconds(-1)) == 1.5);
-   BOOST_CHECK(sts.value(base + seconds(1)) == 1.5);
-   BOOST_CHECK(sts.value(base + hours(1) - seconds(1)) == 1.5);
-   BOOST_CHECK(sts.value(base + hours(1) + seconds(1)) == 2.5);
-   BOOST_CHECK(sts.value(base + hours(3) + seconds(1)) == 5.5);
+   BOOST_CHECK(sts.value(base + posix_time::seconds(-1)) == 1.5);
+   BOOST_CHECK(sts.value(base + posix_time::seconds(1)) == 1.5);
+   BOOST_CHECK(sts.value(base + posix_time::hours(1) - posix_time::seconds(1)) == 1.5);
+   BOOST_CHECK(sts.value(base + posix_time::hours(1) + posix_time::seconds(1)) == 2.5);
+   BOOST_CHECK(sts.value(base + posix_time::hours(3) + posix_time::seconds(1)) == 5.5);
 }
 
 BOOST_AUTO_TEST_CASE (test_function_timeseries)
 {
    FunctionTimeSeries <time_duration, double> 
       fts([] (time_duration td) {return 2 * dSeconds(td);});
-   message() << fts.value(seconds(10)+milliseconds(3)) << endl;
-   BOOST_CHECK(fts.value(seconds(-1)) == -2.0);
-   BOOST_CHECK(fts.value(seconds(3)) == 6.0);
+   message() << fts.value(posix_time::seconds(10)+milliseconds(3)) << endl;
+   BOOST_CHECK(fts.value(posix_time::seconds(-1)) == -2.0);
+   BOOST_CHECK(fts.value(posix_time::seconds(3)) == 6.0);
 }
 
 enum class Event : int
@@ -362,13 +362,13 @@ class TestEventA : public Component
 BOOST_AUTO_TEST_CASE (test_events_and_sync)
 {
    Model mod;
-   TestEventA & a0 = mod.newComponent<TestEventA>("a0", seconds(3), 3);
-   TestEventA & a1 = mod.newComponent<TestEventA>("a1", seconds(9), 3);
+   TestEventA & a0 = mod.newComponent<TestEventA>("a0", posix_time::seconds(3), 3);
+   TestEventA & a1 = mod.newComponent<TestEventA>("a1", posix_time::seconds(9), 3);
    a0.dependsOn(a1); 
    mod.validate();
    Simulation sim(mod);
-   sim.setStartTime(seconds(0));
-   sim.setEndTime(seconds(10));
+   sim.setStartTime(posix_time::seconds(0));
+   sim.setEndTime(posix_time::seconds(10));
    sim.initialize();
 
    a0.didCompleteTimestep().addAction(
@@ -394,14 +394,14 @@ static double sinusoidal(double t, double T, double Delta,
 
 BOOST_AUTO_TEST_CASE (test_simple_building)
 {
-   time_zone_ptr tz(new posix_time_zone("UTC0"));
+   local_time::time_zone_ptr tz(new local_time::posix_time_zone("UTC0"));
    ofstream outfile;
    outfile.open("simple_building.out");
 
    Model mod;
    Simulation sim(mod);
 
-   Time t0 = seconds(0);
+   Time t0 = posix_time::seconds(0);
 
    auto Te = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 12*hour, 
          10*K, 28*K);};
@@ -421,7 +421,7 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
    build1.setdQgFunc(dQg);
 
    sim.setStartTime(t0);
-   sim.setEndTime(t0 + hours(24));
+   sim.setEndTime(t0 + posix_time::hours(24));
    sim.initialize();
    auto print = [&] () -> void 
    {
@@ -438,7 +438,7 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
 BOOST_AUTO_TEST_CASE (test_sparse_solver)
 {
    int n = 5;
-   UblasCMatrix<double> a(n, n);
+   ublas::compressed_matrix<double> a(n, n);
    a(0, 0) = 2.0;
    a(0, 1) = 3.0;
    a(1, 0) = 3.0;
@@ -452,14 +452,14 @@ BOOST_AUTO_TEST_CASE (test_sparse_solver)
    a(4, 2) = 2.0;
    a(4, 4) = 1.0;
 
-   UblasVector<double> b(n);
+   ublas::vector<double> b(n);
    b(0) = 8.0;
    b(1) = 45.0;
    b(2) = -3.0;
    b(3) = 3.0;
    b(4) = 19.0;
 
-   UblasVector<double> x(n);
+   ublas::vector<double> x(n);
    KLUSolve(a, b, x);
    message(); for (int i = 0; i < n; ++i) std::cout << x(i) << " ";
    std::cout << endl;
@@ -486,20 +486,20 @@ class TestLoad : public ZipToGroundBase
          return time() + dt_;
       }
 
-      virtual UblasVector<Complex> Y() const override 
+      virtual ublas::vector<Complex> Y() const override 
       {
-         return UblasVector<Complex>(phases().size(), sin(dSeconds(time())/123.0));
+         return ublas::vector<Complex>(phases().size(), sin(dSeconds(time())/123.0));
       }
 
-      virtual UblasVector<Complex> I() const override 
+      virtual ublas::vector<Complex> I() const override 
       {
-         return UblasVector<Complex>(phases().size(), 
+         return ublas::vector<Complex>(phases().size(), 
                sin(dSeconds(time())/300.0) * exp(Complex(0.0, dSeconds(time())/713.0)));
       }
 
-      virtual UblasVector<Complex> S() const override 
+      virtual ublas::vector<Complex> S() const override 
       {
-         return UblasVector<Complex>(phases().size(), sin(dSeconds(time())/60.0));
+         return ublas::vector<Complex>(phases().size(), sin(dSeconds(time())/60.0));
       }
 
       time_duration dt() const
@@ -553,7 +553,7 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
    Bus * bus3 = mod.componentNamed<Bus>("bus_3");
 
-   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0", bus2->phases(), seconds(5));
+   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0", bus2->phases(), posix_time::seconds(5));
    bus2->addZipToGround(tl0);
 
    mod.validate();
@@ -586,7 +586,7 @@ BOOST_AUTO_TEST_CASE (test_network_b3p)
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
    Bus * bus3 = mod.componentNamed<Bus>("bus_3");
 
-   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0", bus2->phases(), seconds(5));
+   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0", bus2->phases(), posix_time::seconds(5));
    bus2->addZipToGround(tl0);
 
    mod.validate();
@@ -627,7 +627,7 @@ BOOST_AUTO_TEST_CASE (test_network_2p_identical)
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
    Bus * bus3 = mod.componentNamed<Bus>("bus_3");
 
-   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0", bus2->phases(), seconds(5));
+   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0", bus2->phases(), posix_time::seconds(5));
    bus2->addZipToGround(tl0);
 
    mod.validate();
@@ -653,7 +653,7 @@ BOOST_AUTO_TEST_CASE (test_network_2p_identical)
 class TestDC : public DCPowerSourceBase
 {
    public:
-      TestDC(const std::string & name) : DCPowerSourceBase(name), dt_(seconds(0)) {}
+      TestDC(const std::string & name) : DCPowerSourceBase(name), dt_(posix_time::seconds(0)) {}
 
       virtual Time validUntil() const override
       {
@@ -693,7 +693,7 @@ BOOST_AUTO_TEST_CASE (test_networked_dc)
    InverterBase * inverter2 = mod.componentNamed<InverterBase>("inverter_bus_2");
 
    TestDC & tDC = mod.newComponent<TestDC>("tdc");
-   tDC.setDt(seconds(5));
+   tDC.setDt(posix_time::seconds(5));
    inverter2->addDCPowerSource(tDC);
 
    mod.validate();
@@ -737,11 +737,11 @@ BOOST_AUTO_TEST_CASE (test_sun)
    // Values from website are: zenith: 64.47, azimuth: 96.12 (i.e. nearly due east, 0 is north, 90 is east).
 
    using namespace boost::gregorian;
-   time_zone_ptr tz(new posix_time_zone("AEST10AEDT,M10.5.0/02,M3.5.0/03"));
+   local_time::time_zone_ptr tz(new local_time::posix_time_zone("AEST10AEDT,M10.5.0/02,M3.5.0/03"));
 
-   SphericalAngles sunCoords = sunPos(utcTimeFromLocalTime(ptime(date(2013, Jan, 26), hours(8) + minutes(30)), tz), 
+   SphericalAngles sunCoords = sunPos(utcTimeFromLocalTime(posix_time::ptime(gregorian::date(2013, Jan, 26), posix_time::hours(8) + posix_time::minutes(30)), tz), 
          {-35.0, 149.0});
-   message() << "UTC time:  " << utcTimeFromLocalTime(ptime(date(2013, Jan, 26), hours(8) + minutes(30)), tz) 
+   message() << "UTC time:  " << utcTimeFromLocalTime(posix_time::ptime(gregorian::date(2013, Jan, 26), posix_time::hours(8) + posix_time::minutes(30)), tz) 
              << std::endl;
    message() << "Zenith:    " << sunCoords.zenith * 180 / pi << " expected: " << 64.47 << std::endl;
    message() << "Azimuth:   " << sunCoords.azimuth * 180 / pi << " expected: " << 96.12 << std::endl;
@@ -755,7 +755,7 @@ BOOST_AUTO_TEST_CASE (test_sun)
    p.parse("test_sun.yaml", mod, sim);
 
    RegularUpdateComponent & clock1 = mod.newComponent<RegularUpdateComponent>("clock1");
-   clock1.setDt(minutes(10));
+   clock1.setDt(posix_time::minutes(10));
 
    ofstream outfile;
    outfile.open("test_sun.out");
@@ -865,8 +865,8 @@ static void prepareMPInput(const std::string & yamlName, const std::string & cas
 }
 
 static void readMPOutput(const std::string & fileName, bool usePerUnit, 
-                         double & SBase, UblasVector<int> & iBus, UblasVector<double> & VBase, 
-                         UblasVector<Complex> & V, UblasVector<Complex> & Sc, UblasVector<Complex> & Sg)
+                         double & SBase, ublas::vector<int> & iBus, ublas::vector<double> & VBase, 
+                         ublas::vector<Complex> & V, ublas::vector<Complex> & Sc, ublas::vector<Complex> & Sg)
 {
    std::fstream infile(fileName);
    if (!infile.is_open())
@@ -925,11 +925,11 @@ static void testMatpower(const std::string & baseName, bool usePerUnit)
    network->solvePowerFlow();
 
    double SBase;
-   UblasVector<int> iBus;
-   UblasVector<double> VBase;
-   UblasVector<Complex> V;
-   UblasVector<Complex> Sc;
-   UblasVector<Complex> Sg;
+   ublas::vector<int> iBus;
+   ublas::vector<double> VBase;
+   ublas::vector<Complex> V;
+   ublas::vector<Complex> Sc;
+   ublas::vector<Complex> Sg;
    readMPOutput(compareName, usePerUnit, SBase, iBus, VBase, V, Sc, Sg);
 
    double STol = usePerUnit ? 1e-4 : SBase * 1e-4;
