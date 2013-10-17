@@ -28,11 +28,11 @@ namespace SmartGridToolbox
          std::string id_;                          ///< Externally relevant id.
          BusType type_;                            ///< Bus type.
          Phases phases_;                           ///< Bus phases.
-         ublas::vector<Complex> V_;                  ///< Voltage, one per phase.
-         ublas::vector<Complex> S_;                  ///< Total power injection, one per phase.
+         ublas::vector<Complex> V_;                ///< Voltage, one per phase.
+         ublas::vector<Complex> S_;                ///< Total power injection, one per phase.
 
-         ublas::vector<Complex> Ys_;                 ///< Constant admittance shunt, one per phase.
-         ublas::vector<Complex> Ic_;                 ///< Constant current injection, one per phase.
+         ublas::vector<Complex> Ys_;               ///< Constant admittance shunt, one per phase.
+         ublas::vector<Complex> Ic_;               ///< Constant current injection, one per phase.
 
          typedef std::vector<NodeNR *> NodeVec;    ///< Nodes, one per phase.
          NodeVec nodes_;                           ///< Primary list of nodes.
@@ -170,9 +170,9 @@ namespace SmartGridToolbox
 
          /// @name Array bounds.
          /// @{
-         unsigned int nSL_;            ///< Number of slack nodes.
-         unsigned int nPQ_;            ///< Number of PQ nodes.
-         unsigned int nPV_;            ///< Number of PV nodes.
+         unsigned int nSL_;   ///< Number of slack nodes.
+         unsigned int nPQ_;   ///< Number of PQ nodes.
+         unsigned int nPV_;   ///< Number of PV nodes.
          /// @}
 
          // The following are NOT owned by me - they are owned by their parent Busses.
@@ -181,12 +181,12 @@ namespace SmartGridToolbox
 
          /// @name Y matrix.
          /// @{
-         ublas::compressed_matrix<Complex> Y_;      ///< Real part of Y matrix.
+         ublas::compressed_matrix<Complex> Y_;  ///< Real part of Y matrix.
          /// @}
 
          /// @name Load.
          /// @{
-         ublas::vector<Complex> Ic_;     ///< Constant current component of load.
+         ublas::vector<Complex> Ic_;   ///< Constant current component of load.
          /// @}
    };
 }

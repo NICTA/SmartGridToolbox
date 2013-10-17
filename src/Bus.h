@@ -81,7 +81,7 @@ namespace SmartGridToolbox
 
          std::vector<const ZipToGroundBase *> zipsToGround_;   ///< ZIP loads of generation.
 
-         ublas::vector<Complex> nominalV_;                       ///< Nominal voltage.
+         ublas::vector<Complex> nominalV_;                     ///< Nominal voltage.
 
          /// @name Quantities due to operation of bus:
          /** For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_. 
@@ -90,15 +90,15 @@ namespace SmartGridToolbox
           *  For slack busses, the both the real and reactive power will adjust to keep a constant voltage, 
           *  both components of SGen may be nonzero.*/
          /// @{
-         ublas::vector<Complex> V_;                              ///< Voltage.
-         ublas::vector<Complex> SGen_;                           ///< Generator power.
+         ublas::vector<Complex> V_;                            ///< Voltage.
+         ublas::vector<Complex> SGen_;                         ///< Generator power.
          /// @}
 
          /// @name ZIP load quantities:
          /// @{
-         ublas::vector<Complex> Ys_;                             ///< Constant admittance shunt (loads).
-         ublas::vector<Complex> Ic_;                             ///< Constant current injection (loads).
-         ublas::vector<Complex> Sc_;                             ///< Constant power injection (loads).
+         ublas::vector<Complex> Ys_;                           ///< Constant admittance shunt (loads).
+         ublas::vector<Complex> Ic_;                           ///< Constant current injection (loads).
+         ublas::vector<Complex> Sc_;                           ///< Constant power injection (loads).
          /// @}
       /// @}
    };

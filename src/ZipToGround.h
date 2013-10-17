@@ -42,9 +42,9 @@ namespace SmartGridToolbox
       /// @name My private member variables.
       /// @{
       private:
-         ublas::vector<Complex> Y_;      ///< Constant admittance component.
-         ublas::vector<Complex> I_;      ///< Constant current injection component.
-         ublas::vector<Complex> S_;      ///< Constant power injection component.
+         ublas::vector<Complex> Y_; ///< Constant admittance component.
+         ublas::vector<Complex> I_; ///< Constant current injection component.
+         ublas::vector<Complex> S_; ///< Constant power injection component.
       /// @}
    };
 }
