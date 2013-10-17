@@ -17,54 +17,83 @@ namespace SmartGridToolbox
 {
    class NodeNR;
 
-   class BusNR
+   struct BusNR
    {
-      public:
-         BusNR(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
-               const ublas::vector<Complex> & Ys, const ublas::vector<Complex> & Ic,
-               const ublas::vector<Complex> & S);
-         ~BusNR();
+      BusNR(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
+            const ublas::vector<Complex> & Ys, const ublas::vector<Complex> & Ic,
+            const ublas::vector<Complex> & S);
+      ~BusNR();
 
-         std::string id_;                          ///< Externally relevant id.
-         BusType type_;                            ///< Bus type.
-         Phases phases_;                           ///< Bus phases.
-         ublas::vector<Complex> V_;                ///< Voltage, one per phase.
-         ublas::vector<Complex> S_;                ///< Total power injection, one per phase.
+      std::string id_;                          ///< Externally relevant id.
+      BusType type_;                            ///< Bus type.
+      Phases phases_;                           ///< Bus phases.
+      ublas::vector<Complex> V_;                ///< Voltage, one per phase.
+      ublas::vector<Complex> S_;                ///< Total power injection, one per phase.
 
-         ublas::vector<Complex> Ys_;               ///< Constant admittance shunt, one per phase.
-         ublas::vector<Complex> Ic_;               ///< Constant current injection, one per phase.
+      ublas::vector<Complex> Ys_;               ///< Constant admittance shunt, one per phase.
+      ublas::vector<Complex> Ic_;               ///< Constant current injection, one per phase.
 
-         typedef std::vector<NodeNR *> NodeVec;    ///< Nodes, one per phase.
-         NodeVec nodes_;                           ///< Primary list of nodes.
+      typedef std::vector<NodeNR *> NodeVec;    ///< Nodes, one per phase.
+      NodeVec nodes_;                           ///< Primary list of nodes.
    };
 
-   class BranchNR
+   struct BranchNR
    {
-      public:
-         BranchNR(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1,
-                  const ublas::matrix<Complex> & Y);
+      BranchNR(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1,
+            const ublas::matrix<Complex> & Y);
 
-         int nPhase_;                  ///< Number of phases.
-         Array<std::string, 2> ids_;   ///< Id of bus 0/1
-         Array<Phases, 2> phases_;     ///< phases of bus 0/1.
-         ublas::matrix<Complex> Y_;      ///< Bus admittance matrix.
+      int nPhase_;                  ///< Number of phases.
+      Array<std::string, 2> ids_;   ///< Id of bus 0/1
+      Array<Phases, 2> phases_;     ///< phases of bus 0/1.
+      ublas::matrix<Complex> Y_;      ///< Bus admittance matrix.
+      ublas::matrix<Complex> G_;      ///< Bus admittance matrix.
+      ublas::matrix<Complex> B_;      ///< Bus admittance matrix.
    };
 
-   class NodeNR
+   struct NodeNR
    {
-      public:
-         NodeNR(BusNR & bus, int phaseIdx);
+      NodeNR(BusNR & bus, int phaseIdx);
 
-         BusNR * bus_;
-         int phaseIdx_;
+      BusNR * bus_;
+      int phaseIdx_;
 
-         Complex V_;
-         Complex S_;
+      Complex V_;
+      Complex S_;
 
-         Complex Ys_;
-         Complex Ic_;
+      Complex Ys_;
+      Complex Ic_;
 
-         int idx_;
+      int idx_;
+   };
+
+   struct Jacobian
+   {
+      Jacobian(int nPQ, int nPV);
+
+      ublas::compressed_matrix<double> IrPQ_VrPQ;
+      ublas::compressed_matrix<double> IiPQ_VrPQ;
+      ublas::compressed_matrix<double> IrPV_VrPQ;
+      ublas::compressed_matrix<double> IiPV_VrPQ;
+
+      ublas::compressed_matrix<double> IrPQ_ViPQ;
+      ublas::compressed_matrix<double> IiPQ_ViPQ;
+      ublas::compressed_matrix<double> IrPV_ViPQ;
+      ublas::compressed_matrix<double> IiPV_ViPQ;
+      
+      ublas::compressed_matrix<double> IrPQ_VrPV;
+      ublas::compressed_matrix<double> IiPQ_VrPV;
+      ublas::compressed_matrix<double> IrPV_VrPV;
+      ublas::compressed_matrix<double> IiPV_VrPV;
+      
+      ublas::compressed_matrix<double> IrPQ_ViPV;
+      ublas::compressed_matrix<double> IiPQ_ViPV;
+      ublas::compressed_matrix<double> IrPV_ViPV;
+      ublas::compressed_matrix<double> IiPV_ViPV;
+      
+      ublas::compressed_matrix<double> IrPQ_QPV;
+      ublas::compressed_matrix<double> IiPQ_QPV;
+      ublas::compressed_matrix<double> IrPV_QPV;
+      ublas::compressed_matrix<double> IiPV_QPV;
    };
 
    class PowerFlowNR
@@ -78,7 +107,7 @@ namespace SmartGridToolbox
          ~PowerFlowNR();
 
          void addBus(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
-                     const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S);
+               const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S);
 
          const BusMap & busses() const
          {
@@ -121,45 +150,32 @@ namespace SmartGridToolbox
          ublas::range selPQPVFromAll() const {return {nSL_, nSL_ + nPQ_ + nPV_};}
          ublas::range selAllFromAll() const {return {0, nSL_ + nPQ_ + nPV_};}
 
-         int if_Ir(int i) const {return 2 * i + 1;}
-         int if_Ii(int i) const {return 2 * i;}
-         int if_Ir_PQ(int i) const {return 2 * i + 1;}
-         int if_Ii_PQ(int i) const {return 2 * i;}
-         int if_Ir_PV(int i) const {return 2 * nPQ_ + 2 * i + 1;}
-         int if_Ii_PV(int i) const {return 2 * nPQ_ + 2 * i;}
-
          // Note: see above: don't assign into a slice of a sparse matrix!
          ublas::slice selIrPQFromf() const {return {1, 2, nPQ_};}
          ublas::slice selIiPQFromf() const {return {0, 2, nPQ_};}
          ublas::slice selIrPVFromf() const {return {2 * nPQ_ + 1, 2, nPV_};}
          ublas::slice selIiPVFromf() const {return {2 * nPQ_, 2, nPV_};}
 
-         int ix_Vr(int i) const {return 2 * i;}
-         int ix_Vi(int i) const {return 2 * i + 1;}
-         int ix_Vr_PQ(int i) const {return 2 * i;}
-         int ix_Vi_PQ(int i) const {return 2 * i + 1;}
-         int ix_Q_PV(int i) const {return 2 * nPQ_ + 2 * i;}
-         int ix_Vi_PV(int i) const {return 2 * nPQ_ + 2 * i + 1;}
-        
          ublas::slice selVrPQFromx() const {return {0, 2, nPQ_};}
          ublas::slice selViPQFromx() const {return {1, 2, nPQ_};}
-         ublas::slice selQPVFromx() const {return {2 * nPQ_, 2, nPV_};}
+         ublas::slice selVrPVFromx() const {return {2 * nPQ_, 2, nPV_};}
+         ublas::slice selQPVFromx() const {return {2 * nPQ_, 2, nPV_};} // Synonym for VrPV.
          ublas::slice selViPVFromx() const {return {2 * nPQ_ + 1, 2, nPV_};}
          /// @}
 
          void initV(ublas::vector<double> & Vr, ublas::vector<double> & Vi) const;
          void initS(ublas::vector<double> & P, ublas::vector<double> & Q) const;
-         void initJC(ublas::compressed_matrix<double> & JC) const;
+         void initJC(Jacobian & JC) const;
 
          void calcf(ublas::vector<double> & f,
                     const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
                     const ublas::vector<double> & P, const ublas::vector<double> & Q,
                     const ublas::vector<double> & M2PV) const;
-         void updateJ(ublas::compressed_matrix<double> & J, const ublas::compressed_matrix<double> & JC,
+         void updateJ(Jacobian & J, const Jacobian & JC,
                       const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
                       const ublas::vector<double> & P, const ublas::vector<double> & Q,
                       const ublas::vector<double> & M2PV) const;
-         void modifyForPV(ublas::compressed_matrix<double> & J, ublas::vector<double> & f,
+         void modifyForPV(Jacobian & J, ublas::vector<double> & f,
                           const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
                           const ublas::vector<double> & M2PV);
       private:
@@ -181,7 +197,9 @@ namespace SmartGridToolbox
 
          /// @name Y matrix.
          /// @{
-         ublas::compressed_matrix<Complex> Y_;  ///< Real part of Y matrix.
+         ublas::compressed_matrix<Complex> Y_;  ///< Y matrix.
+         ublas::compressed_matrix<double> G_;   ///< Real part of Y matrix.
+         ublas::compressed_matrix<double> B_;   ///< Imag part of Y matrix.
          /// @}
 
          /// @name Load.

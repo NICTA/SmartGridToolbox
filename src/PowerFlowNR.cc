@@ -59,6 +59,32 @@ namespace SmartGridToolbox
       assert(Y.size2() == nTerm);
    }
 
+   Jacobian::Jacobian(int nPQ, int nPV) :
+      IrPQ_VrPQ(nPQ, nPQ),
+      IiPQ_VrPQ(nPQ, nPQ),
+      IrPV_VrPQ(nPV, nPQ),
+      IiPV_VrPQ(nPV, nPQ),
+      IrPQ_ViPQ(nPQ, nPQ),
+      IiPQ_ViPQ(nPQ, nPQ),
+      IrPV_ViPQ(nPV, nPQ),
+      IiPV_ViPQ(nPV, nPQ),
+      IrPQ_VrPV(nPQ, nPV),
+      IiPQ_VrPV(nPQ, nPV),
+      IrPV_VrPV(nPV, nPV),
+      IiPV_VrPV(nPV, nPV),
+      IrPQ_QPV(nPQ, nPV),
+      IiPQ_QPV(nPQ, nPV),
+      IrPV_QPV(nPV, nPV),
+      IiPV_QPV(nPV, nPV),
+      IrPQ_ViPV(nPQ, nPV),
+      IiPQ_ViPV(nPQ, nPV),
+      IrPV_ViPV(nPV, nPV),
+      IiPV_ViPV(nPV, nPV)
+   {
+      // Empty.
+   }
+
+
    PowerFlowNR::~PowerFlowNR()
    {
       for (auto pair : busses_) delete pair.second;
@@ -188,6 +214,8 @@ namespace SmartGridToolbox
             }
          }
       } // Loop over branches.
+      G_ = real(Y_);
+      B_ = imag(Y_);
       SGT_DEBUG(debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
 
       // Load quantities.
@@ -222,37 +250,47 @@ namespace SmartGridToolbox
       }
    }
 
+   static void initJCBlock(const ublas::matrix_range<const ublas::compressed_matrix<double>> & G,
+                           const ublas::matrix_range<const ublas::compressed_matrix<double>> & B,
+                           ublas::compressed_matrix<double> & Jrr,
+                           ublas::compressed_matrix<double> & Jri,
+                           ublas::compressed_matrix<double> & Jir,
+                           ublas::compressed_matrix<double> & Jii)
+   {
+      Jrr = -G; 
+      Jri =  B; 
+      Jir = -B; 
+      Jii = -G; 
+   }
+
    /// Set the part of J that doesn't update at each iteration.
    /** At this stage, we are treating J as if all busses were PQ. */
-   void PowerFlowNR::initJC(ublas::compressed_matrix<double> & JC) const
+   void PowerFlowNR::initJC(Jacobian & JC) const
    {
-      const auto G = real(Y_);
-      const auto B = imag(Y_);
-
-      const auto GPQPV = project(G, selPQPVFromAll(), selPQPVFromAll());
-      const auto BPQPV = project(B, selPQPVFromAll(), selPQPVFromAll());
-
-      for (auto it1 = GPQPV.begin1(); it1 != GPQPV.end1(); ++it1)
-      {
-         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
-         {
-            int i = it2.index1();
-            int k = it2.index2();
-            JC(if_Ir(i), ix_Vr(k)) = -(*it2);
-            JC(if_Ii(i), ix_Vi(k)) = -(*it2);
-         }
-      }
-
-      for (auto it1 = BPQPV.begin1(); it1 != BPQPV.end1(); ++it1)
-      {
-         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
-         {
-            int i = it2.index1();
-            int k = it2.index2();
-            JC(if_Ir(i), ix_Vi(k)) = *it2;
-            JC(if_Ii(i), ix_Vr(k)) = -(*it2);
-         }
-      }
+      initJCBlock(project(G_, selPQFromAll(), selPQFromAll()), 
+                  project(B_, selPQFromAll(), selPQFromAll()),
+                  JC.IrPQ_VrPQ,
+                  JC.IrPQ_ViPQ,
+                  JC.IiPQ_VrPQ,
+                  JC.IiPQ_ViPQ);
+      initJCBlock(project(G_, selPQFromAll(), selPVFromAll()), 
+                  project(B_, selPQFromAll(), selPVFromAll()),
+                  JC.IrPQ_VrPV,
+                  JC.IrPQ_ViPV,
+                  JC.IiPQ_VrPV,
+                  JC.IiPQ_ViPV);
+      initJCBlock(project(G_, selPVFromAll(), selPQFromAll()), 
+                  project(B_, selPVFromAll(), selPQFromAll()),
+                  JC.IrPV_VrPQ,
+                  JC.IrPV_ViPQ,
+                  JC.IiPV_VrPQ,
+                  JC.IiPV_ViPQ);
+      initJCBlock(project(G_, selPVFromAll(), selPVFromAll()), 
+                  project(B_, selPVFromAll(), selPVFromAll()),
+                  JC.IrPV_VrPV,
+                  JC.IrPV_ViPV,
+                  JC.IiPV_VrPV,
+                  JC.IiPV_ViPV);
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
@@ -261,12 +299,10 @@ namespace SmartGridToolbox
                            const ublas::vector<double> & P, const ublas::vector<double> & Q,
                            const ublas::vector<double> & M2PV) const
    {
-      const auto G = real(Y_);
-      const auto B = imag(Y_);
 
       // PQ busses:
-      const auto GPQ = project(G, selPQFromAll(), selAllFromAll());
-      const auto BPQ = project(B, selPQFromAll(), selAllFromAll());
+      const auto GPQ = project(G_, selPQFromAll(), selAllFromAll());
+      const auto BPQ = project(B_, selPQFromAll(), selAllFromAll());
 
       const auto VrPQ = project(Vr, selPQFromAll());
       const auto ViPQ = project(Vi, selPQFromAll());
@@ -285,8 +321,8 @@ namespace SmartGridToolbox
                                  + IciPQ - prod(GPQ, Vi) - prod(BPQ, Vr);
       
       // PV busses. Note that these differ in that M2PV is considered a constant.
-      const auto GPV = project(G, selPVFromAll(), selAllFromAll());
-      const auto BPV = project(B, selPVFromAll(), selAllFromAll());
+      const auto GPV = project(G_, selPVFromAll(), selAllFromAll());
+      const auto BPV = project(B_, selPVFromAll(), selAllFromAll());
 
       const auto VrPV = project(Vr, selPVFromAll());
       const auto ViPV = project(Vi, selPVFromAll());
@@ -304,31 +340,21 @@ namespace SmartGridToolbox
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-   void PowerFlowNR::updateJ(ublas::compressed_matrix<double> & J, const ublas::compressed_matrix<double> & JC,
+   void PowerFlowNR::updateJ(Jacobian & J, const Jacobian & JC,
                              const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
                              const ublas::vector<double> & P, const ublas::vector <double> & Q,
                              const ublas::vector<double> & M2PV) const
    {
-      std::chrono::time_point<std::chrono::system_clock> start;
-      std::chrono::time_point<std::chrono::system_clock> stop;
-      std::chrono::duration<double> dur;
-
       // Elements in J that have no non-constant part will be initialized to the corresponding term in JC at the
       // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
 
-      // Reset PV Q and Vi columns, since these get messed with:
-      start = std::chrono::system_clock::now();
-      for (int k = 0; k < nPV_; ++k)
-      {
-         column(J, ix_Q_PV(k)) = column(JC, ix_Q_PV(k));
-         column(J, ix_Vi_PV(k)) = column(JC, ix_Vi_PV(k));
-      }
-      stop = std::chrono::system_clock::now();
-      dur = stop - start;
-      message() << "Time A = " << dur.count() << std::endl;
+      // Reset PV Vi columns, since these get messed with:
+      J.IrPQ_ViPV = JC.IrPQ_ViPV;
+      J.IiPQ_ViPV = JC.IiPQ_ViPV;
+      J.IrPV_ViPV = JC.IrPV_ViPV;
+      J.IiPV_ViPV = JC.IiPV_ViPV;
 
       // Block diagonal:
-      start = std::chrono::system_clock::now();
       for (int i = 0; i < nPQ_; ++i)
       {
          int iPQi = iPQ(i);
@@ -342,33 +368,35 @@ namespace SmartGridToolbox
          double PdM2 = P(iPQi) / M2;
          double QdM2 = Q(iPQi) / M2;
 
-         J(if_Ir_PQ(i), ix_Vr_PQ(i)) = JC(if_Ir_PQ(i), ix_Vr_PQ(i)) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
-         J(if_Ir_PQ(i), ix_Vi_PQ(i)) = JC(if_Ir_PQ(i), ix_Vi_PQ(i)) - (2 * VidM4 * PVr_p_QVi) + QdM2;
-         J(if_Ii_PQ(i), ix_Vr_PQ(i)) = JC(if_Ii_PQ(i), ix_Vr_PQ(i)) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
-         J(if_Ii_PQ(i), ix_Vi_PQ(i)) = JC(if_Ii_PQ(i), ix_Vi_PQ(i)) - (2 * VidM4 * PVi_m_QVr) + PdM2;
+         J.IrPQ_VrPQ(i, i) = JC.IrPQ_VrPQ(i, i) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
+         J.IrPQ_ViPQ(i, i) = JC.IrPQ_ViPQ(i, i) - (2 * VidM4 * PVr_p_QVi) + QdM2;
+         J.IiPQ_VrPQ(i, i) = JC.IiPQ_VrPQ(i, i) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
+         J.IiPQ_ViPQ(i, i) = JC.IiPQ_ViPQ(i, i) - (2 * VidM4 * PVi_m_QVr) + PdM2;
       }
-      stop = std::chrono::system_clock::now();
-      dur = stop - start;
-      message() << "Time B = " << dur.count() << std::endl;
 
       // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
-      start = std::chrono::system_clock::now();
       for (int i = 0; i < nPV_; ++i)
       {
          int iPVi = iPV(i);
 
-         J(if_Ir_PV(i), ix_Q_PV(i)) = JC(if_Ir_PV(i), ix_Q_PV(i)) + P(iPVi) / M2PV(i); // Could -> JC if we wanted.
-         J(if_Ir_PV(i), ix_Vi_PV(i)) = JC(if_Ir_PV(i), ix_Vi_PV(i)) + Q(iPVi) / M2PV(i);
-         J(if_Ii_PV(i), ix_Q_PV(i)) = JC(if_Ii_PV(i), ix_Q_PV(i)) - Q(iPVi) / M2PV(i);
-         J(if_Ii_PV(i), ix_Vi_PV(i)) = JC(if_Ii_PV(i), ix_Vi_PV(i)) + P(iPVi) / M2PV(i);
+         J.IrPV_VrPV(i, i) = JC.IrPV_VrPV(i, i) + P(iPVi) / M2PV(i); // Could -> JC if we wanted.
+         J.IrPV_ViPV(i, i) = JC.IrPV_ViPV(i, i) + Q(iPVi) / M2PV(i);
+         J.IiPV_VrPV(i, i) = JC.IiPV_VrPV(i, i) - Q(iPVi) / M2PV(i);
+         J.IiPV_ViPV(i, i) = JC.IiPV_ViPV(i, i) + P(iPVi) / M2PV(i);
       }
-      stop = std::chrono::system_clock::now();
-      dur = stop - start;
-      message() << "Time C = " << dur.count() << std::endl;
+
+      // Set the PV Q columns in the Jacobian. They are diagonal.
+      const auto VrPV = project(Vr, selPVFromAll());
+      const auto ViPV = project(Vi, selPVFromAll());
+      for (int i = 0; i < nPV_; ++i)
+      {
+         J.IrPV_QPV(i, i) = ViPV(i) / M2PV(i);
+         J.IiPV_QPV(i, i) = -VrPV(i) / M2PV(i);
+      }
    }
 
    // Modify J and f to take into account PV busses.
-   void PowerFlowNR::modifyForPV(ublas::compressed_matrix<double> & J, ublas::vector<double> & f,
+   void PowerFlowNR::modifyForPV(Jacobian & J, ublas::vector<double> & f,
                                  const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
                                  const ublas::vector<double> & M2PV)
    {
@@ -377,22 +405,31 @@ namespace SmartGridToolbox
 
       for (int k = 0; k < nPV_; ++k)
       {
-         auto colAllVrk = column(J, ix_Q_PV(k));
-         auto colAllVik = column(J, ix_Vi_PV(k));
+         auto colIrPQ_VrPVk = column(J.IrPQ_VrPV, k);
+         auto colIiPQ_VrPVk = column(J.IiPQ_VrPV, k);
+         auto colIrPV_VrPVk = column(J.IrPV_VrPV, k);
+         auto colIiPV_VrPVk = column(J.IiPV_VrPV, k);
          
+         auto colIrPQ_ViPVk = column(J.IrPQ_ViPV, k);
+         auto colIiPQ_ViPVk = column(J.IiPQ_ViPV, k);
+         auto colIrPV_ViPVk = column(J.IrPV_ViPV, k);
+         auto colIiPV_ViPVk = column(J.IiPV_ViPV, k);
+
          // Modify f:
-         f += colAllVrk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
+         project(f, selIrPQFromf()) +=
+            colIrPQ_VrPVk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
+         project(f, selIiPQFromf()) +=
+            colIiPQ_VrPVk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
+         project(f, selIrPVFromf()) +=
+            colIrPV_VrPVk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
+         project(f, selIiPVFromf()) +=
+            colIiPV_VrPVk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
 
          // Modify Vi column in J:
-         colAllVik -= colAllVrk * (ViPV(k) / VrPV(k));
-
-         // Now turn Vr column into Q column.
-         for (auto it = colAllVrk.begin(); it != colAllVrk.end(); ++it)
-         {
-            *it = 0;
-         }
-         J(if_Ir_PV(k), ix_Q_PV(k)) = ViPV(k) / M2PV(k);
-         J(if_Ii_PV(k), ix_Q_PV(k)) = -VrPV(k) / M2PV(k);
+         colIrPQ_ViPVk -= colIrPQ_VrPVk * (ViPV(k) / VrPV(k));
+         colIiPQ_ViPVk -= colIiPQ_VrPVk * (ViPV(k) / VrPV(k));
+         colIrPV_ViPVk -= colIrPV_VrPVk * (ViPV(k) / VrPV(k));
+         colIiPV_ViPVk -= colIiPV_VrPVk * (ViPV(k) / VrPV(k));
       }
    }
 
@@ -408,12 +445,15 @@ namespace SmartGridToolbox
       std::chrono::duration<double> durationCalcf;
       std::chrono::duration<double> durationUpdateJ;
       std::chrono::duration<double> durationModifyForPV;
+      std::chrono::duration<double> durationConstructJTot;
       std::chrono::duration<double> durationSolve;
       std::chrono::duration<double> durationUpdateIter;
       std::chrono::duration<double> durationTot;
 
-      start = std::chrono::system_clock::now();
       startTot = std::chrono::system_clock::now();
+     
+      // Do the initial setup.
+      start = std::chrono::system_clock::now();
 
       const double tol = 1e-8;
       const int maxiter = 20;
@@ -423,25 +463,18 @@ namespace SmartGridToolbox
       initV(Vr, Vi);
 
       ublas::vector<double> M2PV = element_prod(project(Vr, selPVFromAll()), project(Vr, selPVFromAll()))
-                               + element_prod(project(Vi, selPVFromAll()), project(Vi, selPVFromAll()));
+                                 + element_prod(project(Vi, selPVFromAll()), project(Vi, selPVFromAll()));
 
       ublas::vector<double> P(nNode());
       ublas::vector<double> Q(nNode());
       initS(P, Q);
 
-      ublas::compressed_matrix<double> JC(nVar(), nVar()); ///< The part of J that doesn't update at each iteration.
+      Jacobian JC(nPQ_, nPV_); ///< The part of J that doesn't update at each iteration.
       initJC(JC);
-      SGT_DEBUG(debug() << "After initialization, JC.nnz() = " << JC.nnz() << std::endl);
-      SGT_DEBUG(debug() << "\tAfter initialization: JC = " << std::endl);
-      for (int i = 0; i < nVar(); ++i)
-      {
-         SGT_DEBUG(debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JC, i) << std::endl);
-      }
 
       ublas::vector<double> f(nVar()); ///< Current mismatch function.
 
-      ublas::compressed_matrix<double> J = JC; ///< Jacobian, d f_i / d x_i.
-      SGT_DEBUG(debug() << "Initial : J.nnz() = " << J.nnz() << std::endl);
+      Jacobian J = JC; ///< Jacobian, d f_i / d x_i.
 
       bool wasSuccessful = false;
       double err = 0;
@@ -472,25 +505,66 @@ namespace SmartGridToolbox
          updateJ(J, JC, Vr, Vi, P, Q, M2PV);
          stop = std::chrono::system_clock::now();
          durationUpdateJ += stop - start;
-         SGT_DEBUG(debug() << "After updateJ : J.nnz() = " << J.nnz() << std::endl);
-         SGT_DEBUG(debug() << "\tAfter updateJ : J   = " << std::endl);
-         for (int i = 0; i < nVar(); ++i)
-         {
-            SGT_DEBUG(debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(J, i) << std::endl);
-         }
-         SGT_DEBUG(debug() << "\tAfter updateJ : JC  = " << std::endl);
-         for (int i = 0; i < nVar(); ++i)
-         {
-            SGT_DEBUG(debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JC, i) << std::endl);
-         }
 
          start = std::chrono::system_clock::now();
          modifyForPV(J, f, Vr, Vi, M2PV);
          stop = std::chrono::system_clock::now();
          durationModifyForPV += stop - start;
-         SGT_DEBUG(debug() << "After modifyForPV : J.nnz() = " << J.nnz() << std::endl);
 
-         ublas::vector<double> x;
+         // Construct the full Jacobian from J, which contains the block structure.
+         // TODO: A complicated set of indexing operations follows. Basically, this could all be done much easier
+         // except for the fact that assinging to a slice of a compressed matrix destroys its sparsity
+         // (not sure if this is a bug or feature).
+         start = std::chrono::system_clock::now();
+         ublas::compressed_matrix<double> JTot(nVar(), nVar());
+         // All the blocks in J, in order...
+         std::vector<ublas::compressed_matrix<double> *> JVec {
+            &J.IrPQ_VrPQ, &J.IiPQ_VrPQ, &J.IrPV_VrPQ, &J.IiPV_VrPQ,
+            &J.IrPQ_ViPQ, &J.IiPQ_ViPQ, &J.IrPV_ViPQ, &J.IiPV_ViPQ,
+            &J.IrPQ_QPV , &J.IiPQ_QPV , &J.IrPV_QPV , &J.IiPV_QPV,
+            &J.IrPQ_ViPV, &J.IiPQ_ViPV, &J.IrPV_ViPV, &J.IiPV_ViPV};
+         
+         // their corresponding first index slices into JTot...
+         std::vector<ublas::slice> sl1Vec {
+            selIrPQFromf(), selIiPQFromf(), selIrPVFromf(), selIiPVFromf(),
+            selIrPQFromf(), selIiPQFromf(), selIrPVFromf(), selIiPVFromf(),
+            selIrPQFromf(), selIiPQFromf(), selIrPVFromf(), selIiPVFromf(),
+            selIrPQFromf(), selIiPQFromf(), selIrPVFromf(), selIiPVFromf()};
+
+         // and their corresponding second index slices into JTot...
+         std::vector<ublas::slice> sl2Vec {
+            selVrPQFromx(), selVrPQFromx(), selVrPQFromx(), selVrPQFromx(),
+            selViPQFromx(), selViPQFromx(), selViPQFromx(), selViPQFromx(),
+            selQPVFromx() , selQPVFromx() , selQPVFromx() , selQPVFromx(),
+            selViPVFromx(), selViPVFromx(), selViPVFromx(), selViPVFromx()};
+        
+         // Loop over all blocks in J.
+         for (int ib = 0; ib < JVec.size(); ++ib)
+         {
+            ublas::compressed_matrix<double> & Jib = *JVec[ib];
+            ublas::slice sl1 = sl1Vec[ib];
+            ublas::slice sl2 = sl2Vec[ib];
+
+            // Loop over all non-zero elements in the block.
+            for (auto it1 = Jib.begin1(); it1 != Jib.end1(); ++it1)
+            {
+               for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
+               {
+                  // Get the indices into Jib.
+                  int iJib = it2.index1();
+                  int kJib = it2.index2();
+                  
+                  // Get the indices into JTot.
+                  int iJTot = sl1(iJib);
+                  int kJTot = sl2(kJib);
+                  
+                  // Assign the element.
+                  JTot(iJTot, kJTot) = Jib(iJib, kJib);
+               }
+            }
+         }
+         stop = std::chrono::system_clock::now();
+         durationConstructJTot = stop - start;
 
          SGT_DEBUG
          (
@@ -504,12 +578,13 @@ namespace SmartGridToolbox
             debug() << "\tBefore KLUSolve: J   = " << std::endl;
             for (int i = 0; i < nVar(); ++i)
             {
-               debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(J, i) << std::endl;
+               debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JTot, i) << std::endl;
             }
          );
 
          start = std::chrono::system_clock::now();
-         bool ok = KLUSolve(J, -f, x);
+         ublas::vector<double> x;
+         bool ok = KLUSolve(JTot, -f, x);
          stop = std::chrono::system_clock::now();
          durationSolve += stop - start;
 
@@ -588,15 +663,16 @@ namespace SmartGridToolbox
       stopTot = std::chrono::system_clock::now();
       durationTot = stopTot - startTot;
 
-      message() << "PowerFlowNR : was successful     = " << wasSuccessful << ", error = " << err << ", iterations = "
-                << niter << "." << std::endl;
-      message() << "PowerFlowNR: total time          = " << durationTot.count() << std::endl;
-      message() << "PowerFlowNR: init setup time     = " << durationInitSetup.count() << " s." << std::endl;
-      message() << "PowerFlowNR: time in calcf       = " << durationCalcf.count() << " s." << std::endl;
-      message() << "PowerFlowNR: time in updateJ     = " << durationUpdateJ.count() << " s." << std::endl;
-      message() << "PowerFlowNR: time in modifyForPV = " << durationModifyForPV.count() << " s." << std::endl;
-      message() << "PowerFlowNR: solve time          = " << durationSolve.count() << std::endl;
-      message() << "PowerFlowNR: time to update iter = " << durationUpdateIter.count() << std::endl;
+      message() << "PowerFlowNR : was successful         = " << wasSuccessful << ", error = " << err 
+                << ", iterations = " << niter << "." << std::endl;
+      message() << "PowerFlowNR: total time              = " << durationTot.count() << std::endl;
+      message() << "PowerFlowNR: init setup time         = " << durationInitSetup.count() << " s." << std::endl;
+      message() << "PowerFlowNR: time in calcf           = " << durationCalcf.count() << " s." << std::endl;
+      message() << "PowerFlowNR: time in updateJ         = " << durationUpdateJ.count() << " s." << std::endl;
+      message() << "PowerFlowNR: time in modifyForPV     = " << durationModifyForPV.count() << " s." << std::endl;
+      message() << "PowerFlowNR: time to construct JTot  = " << durationConstructJTot.count() << " s." << std::endl;
+      message() << "PowerFlowNR: solve time              = " << durationSolve.count() << std::endl;
+      message() << "PowerFlowNR: time to update iter     = " << durationUpdateIter.count() << std::endl;
 
       return wasSuccessful;
    }
