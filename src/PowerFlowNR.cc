@@ -1,9 +1,9 @@
 #include <algorithm>
-#include <chrono>
 #include <ostream>
 #include <sstream>
 #include "PowerFlowNR.h"
 #include "SparseSolver.h"
+#include "Stopwatch.h"
 
 namespace SmartGridToolbox
 {
@@ -299,7 +299,10 @@ namespace SmartGridToolbox
                            const ublas::vector<double> & P, const ublas::vector<double> & Q,
                            const ublas::vector<double> & M2PV) const
    {
+      Stopwatch stopwatch;
+
       // PQ busses:
+      stopwatch.reset(); stopwatch.start();
       const auto GPQ = project(G_, selPQFromAll(), selAllFromAll());
       const auto BPQ = project(B_, selPQFromAll(), selAllFromAll());
 
@@ -311,15 +314,19 @@ namespace SmartGridToolbox
       
       const auto IcrPQ = project(real(Ic_), selPQFromAll());
       const auto IciPQ = project(imag(Ic_), selPQFromAll());
+      stopwatch.stop(); message() << "Time A = " << stopwatch.seconds() << std::endl;
 
+      stopwatch.reset(); stopwatch.start();
       ublas::vector<double> M2PQ = element_prod(VrPQ, VrPQ) + element_prod(ViPQ, ViPQ);
 
       project(f, selIrPQFromf()) = element_div(element_prod(VrPQ, PPQ) + element_prod(ViPQ, QPQ), M2PQ)
                                  + IcrPQ - prod(GPQ, Vr) + prod(BPQ, Vi);
       project(f, selIiPQFromf()) = element_div(element_prod(ViPQ, PPQ) - element_prod(VrPQ, QPQ), M2PQ)
                                  + IciPQ - prod(GPQ, Vi) - prod(BPQ, Vr);
+      stopwatch.stop(); message() << "Time B = " << stopwatch.seconds() << std::endl;
       
       // PV busses. Note that these differ in that M2PV is considered a constant.
+      stopwatch.reset(); stopwatch.start();
       const auto GPV = project(G_, selPVFromAll(), selAllFromAll());
       const auto BPV = project(B_, selPVFromAll(), selAllFromAll());
 
@@ -331,11 +338,14 @@ namespace SmartGridToolbox
       
       const auto IcrPV = project(real(Ic_), selPVFromAll());
       const auto IciPV = project(imag(Ic_), selPVFromAll());
+      stopwatch.stop(); message() << "Time E = " << stopwatch.seconds() << std::endl;
 
+      stopwatch.reset(); stopwatch.start();
       project(f, selIrPVFromf()) = element_div(element_prod(VrPV, PPV) + element_prod(ViPV, QPV), M2PV)
                                  + IcrPV - prod(GPV, Vr) + prod(BPV, Vi);
       project(f, selIiPVFromf()) = element_div(element_prod(ViPV, PPV) - element_prod(VrPV, QPV), M2PV)
                                  + IciPV - prod(GPV, Vi) - prod(BPV, Vr);
+      stopwatch.stop(); message() << "Time F = " << stopwatch.seconds() << std::endl;
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
@@ -469,23 +479,22 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "PowerFlowNR : solve." << std::endl);
 
-      std::chrono::time_point<std::chrono::system_clock> start;
-      std::chrono::time_point<std::chrono::system_clock> stop;
-      std::chrono::time_point<std::chrono::system_clock> startTot;
-      std::chrono::time_point<std::chrono::system_clock> stopTot;
-      std::chrono::duration<double> durationInitSetup;
-      std::chrono::duration<double> durationCalcf;
-      std::chrono::duration<double> durationUpdateJ;
-      std::chrono::duration<double> durationModifyForPV;
-      std::chrono::duration<double> durationConstructJMat;
-      std::chrono::duration<double> durationSolve;
-      std::chrono::duration<double> durationUpdateIter;
-      std::chrono::duration<double> durationTot;
+      Stopwatch stopwatch;
+      Stopwatch stopwatchTot;
 
-      startTot = std::chrono::system_clock::now();
+      double durationInitSetup;
+      double durationCalcf;
+      double durationUpdateJ;
+      double durationModifyForPV;
+      double durationConstructJMat;
+      double durationSolve;
+      double durationUpdateIter;
+      double durationTot;
+
+      stopwatch.reset(); stopwatchTot.start();
      
       // Do the initial setup.
-      start = std::chrono::system_clock::now();
+      stopwatch.reset(); stopwatch.start();
 
       const double tol = 1e-8;
       const int maxiter = 20;
@@ -512,17 +521,16 @@ namespace SmartGridToolbox
       double err = 0;
       int niter;
 
-      stop = std::chrono::system_clock::now();
-      durationInitSetup = stop - start;
+      stopwatch.stop(); durationInitSetup = stopwatch.seconds();
 
       for (niter = 0; niter < maxiter; ++niter)
       {
          SGT_DEBUG(debug() << "\tIteration = " << niter << std::endl);
 
-         start = std::chrono::system_clock::now();
+         stopwatch.reset(); stopwatch.start();
          calcf(f, Vr, Vi, P, Q, M2PV);
-         stop = std::chrono::system_clock::now();
-         durationCalcf += stop - start;
+         stopwatch.stop(); durationCalcf = stopwatch.seconds();
+
          err = norm_inf(f);
          SGT_DEBUG(debug() << "\tf  = " << std::setprecision(5) << std::setw(9) << f << std::endl);
          SGT_DEBUG(debug() << "\tError = " << err << std::endl);
@@ -533,21 +541,18 @@ namespace SmartGridToolbox
             break;
          }
 
-         start = std::chrono::system_clock::now();
+         stopwatch.reset(); stopwatch.start();
          updateJ(J, JC, Vr, Vi, P, Q, M2PV);
-         stop = std::chrono::system_clock::now();
-         durationUpdateJ += stop - start;
+         stopwatch.stop(); durationUpdateJ = stopwatch.seconds();
 
-         start = std::chrono::system_clock::now();
+         stopwatch.reset(); stopwatch.start();
          modifyForPV(J, f, Vr, Vi, M2PV);
-         stop = std::chrono::system_clock::now();
-         durationModifyForPV += stop - start;
+         stopwatch.stop(); durationModifyForPV = stopwatch.seconds();
 
          // Construct the full Jacobian from J, which contains the block structure.
-         start = std::chrono::system_clock::now();
+         stopwatch.reset(); stopwatch.start();
          ublas::compressed_matrix<double> JMat; calcJMatrix(JMat, J);
-         stop = std::chrono::system_clock::now();
-         durationConstructJMat = stop - start;
+         stopwatch.stop(); durationConstructJMat = stopwatch.seconds();
 
          SGT_DEBUG
          (
@@ -565,11 +570,10 @@ namespace SmartGridToolbox
             }
          );
 
-         start = std::chrono::system_clock::now();
+         stopwatch.reset(); stopwatch.start();
          ublas::vector<double> x;
          bool ok = KLUSolve(JMat, -f, x);
-         stop = std::chrono::system_clock::now();
-         durationSolve += stop - start;
+         stopwatch.stop(); durationSolve = stopwatch.seconds();
 
          SGT_DEBUG(debug() << "\tAfter KLUSolve: ok = " << ok << std::endl); 
          SGT_DEBUG(debug() << "\tAfter KLUSolve: x  = " << std::setprecision(5) << std::setw(9) << x << std::endl);
@@ -579,7 +583,7 @@ namespace SmartGridToolbox
             abort();
          }
 
-         start = std::chrono::system_clock::now();
+         stopwatch.reset(); stopwatch.start();
          // Update the current values of V from the solution:
          project(Vr, selPQFromAll()) += project(x, selVrPQFromx());
          project(Vi, selPQFromAll()) += project(x, selViPQFromx());
@@ -601,8 +605,7 @@ namespace SmartGridToolbox
                            << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl);
          SGT_DEBUG(debug() << "\tUpdated P   = " << std::setprecision(5) << std::setw(9) << P << std::endl);
          SGT_DEBUG(debug() << "\tUpdated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl);
-         stop = std::chrono::system_clock::now();
-         durationUpdateIter += stop - start;
+         stopwatch.stop(); durationUpdateIter = stopwatch.seconds();
       }
 
       if (wasSuccessful)
@@ -643,19 +646,18 @@ namespace SmartGridToolbox
          warning() << "PowerFlowNR: Newton-Raphson method failed to converge." << std::endl; 
       }
 
-      stopTot = std::chrono::system_clock::now();
-      durationTot = stopTot - startTot;
+      stopwatchTot.stop(); durationTot = stopwatchTot.seconds();
 
       message() << "PowerFlowNR : was successful         = " << wasSuccessful << ", error = " << err 
                 << ", iterations = " << niter << "." << std::endl;
-      message() << "PowerFlowNR: total time              = " << durationTot.count() << std::endl;
-      message() << "PowerFlowNR: init setup time         = " << durationInitSetup.count() << " s." << std::endl;
-      message() << "PowerFlowNR: time in calcf           = " << durationCalcf.count() << " s." << std::endl;
-      message() << "PowerFlowNR: time in updateJ         = " << durationUpdateJ.count() << " s." << std::endl;
-      message() << "PowerFlowNR: time in modifyForPV     = " << durationModifyForPV.count() << " s." << std::endl;
-      message() << "PowerFlowNR: time to construct JMat  = " << durationConstructJMat.count() << " s." << std::endl;
-      message() << "PowerFlowNR: solve time              = " << durationSolve.count() << std::endl;
-      message() << "PowerFlowNR: time to update iter     = " << durationUpdateIter.count() << std::endl;
+      message() << "PowerFlowNR: total time              = " << durationTot << std::endl;
+      message() << "PowerFlowNR: init setup time         = " << durationInitSetup << " s." << std::endl;
+      message() << "PowerFlowNR: time in calcf           = " << durationCalcf << " s." << std::endl;
+      message() << "PowerFlowNR: time in updateJ         = " << durationUpdateJ << " s." << std::endl;
+      message() << "PowerFlowNR: time in modifyForPV     = " << durationModifyForPV << " s." << std::endl;
+      message() << "PowerFlowNR: time to construct JMat  = " << durationConstructJMat << " s." << std::endl;
+      message() << "PowerFlowNR: solve time              = " << durationSolve << std::endl;
+      message() << "PowerFlowNR: time to update iter     = " << durationUpdateIter << std::endl;
 
       return wasSuccessful;
    }
