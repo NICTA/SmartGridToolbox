@@ -303,8 +303,8 @@ namespace SmartGridToolbox
 
       // PQ busses:
       stopwatch.reset(); stopwatch.start();
-      const auto GPQ = project(G_, selPQFromAll(), selAllFromAll());
-      const auto BPQ = project(B_, selPQFromAll(), selAllFromAll());
+      const ublas::compressed_matrix<double> GPQ = project(G_, selPQFromAll(), selAllFromAll());
+      const ublas::compressed_matrix<double> BPQ = project(B_, selPQFromAll(), selAllFromAll());
 
       const auto VrPQ = project(Vr, selPQFromAll());
       const auto ViPQ = project(Vi, selPQFromAll());
@@ -318,11 +318,15 @@ namespace SmartGridToolbox
 
       stopwatch.reset(); stopwatch.start();
       ublas::vector<double> M2PQ = element_prod(VrPQ, VrPQ) + element_prod(ViPQ, ViPQ);
+      ublas::vector<double> GPQVr(nPQ_); ublas::axpy_prod(GPQ, Vr, GPQVr, true);
+      ublas::vector<double> GPQVi(nPQ_); ublas::axpy_prod(GPQ, Vi, GPQVi, true);
+      ublas::vector<double> BPQVr(nPQ_); ublas::axpy_prod(BPQ, Vr, BPQVr, true);
+      ublas::vector<double> BPQVi(nPQ_); ublas::axpy_prod(BPQ, Vi, BPQVi, true);
 
       project(f, selIrPQFromf()) = element_div(element_prod(VrPQ, PPQ) + element_prod(ViPQ, QPQ), M2PQ)
-                                 + IcrPQ - prod(GPQ, Vr) + prod(BPQ, Vi);
+                                 + IcrPQ - GPQVr + BPQVi;
       project(f, selIiPQFromf()) = element_div(element_prod(ViPQ, PPQ) - element_prod(VrPQ, QPQ), M2PQ)
-                                 + IciPQ - prod(GPQ, Vi) - prod(BPQ, Vr);
+                                 + IciPQ - GPQVi - BPQVr;
       stopwatch.stop(); message() << "Time B = " << stopwatch.seconds() << std::endl;
       
       // PV busses. Note that these differ in that M2PV is considered a constant.
