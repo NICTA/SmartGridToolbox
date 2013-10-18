@@ -299,7 +299,6 @@ namespace SmartGridToolbox
                            const ublas::vector<double> & P, const ublas::vector<double> & Q,
                            const ublas::vector<double> & M2PV) const
    {
-
       // PQ busses:
       const auto GPQ = project(G_, selPQFromAll(), selAllFromAll());
       const auto BPQ = project(B_, selPQFromAll(), selAllFromAll());
@@ -403,33 +402,27 @@ namespace SmartGridToolbox
       const auto VrPV = project(Vr, selPVFromAll());
       const auto ViPV = project(Vi, selPVFromAll());
 
-      for (int k = 0; k < nPV_; ++k)
+      typedef ublas::vector_slice<ublas::vector<double>> VecSel;
+      typedef ublas::matrix_column<ublas::compressed_matrix<double>> Column;
+      auto mod = [](VecSel fProj, Column colViPV, const Column colVrPV, double fMult, double colViPVMult)
       {
-         auto colIrPQ_VrPVk = column(J.IrPQ_VrPV(), k);
-         auto colIiPQ_VrPVk = column(J.IiPQ_VrPV(), k);
-         auto colIrPV_VrPVk = column(J.IrPV_VrPV(), k);
-         auto colIiPV_VrPVk = column(J.IiPV_VrPV(), k);
-         
-         auto colIrPQ_ViPVk = column(J.IrPQ_ViPV(), k);
-         auto colIiPQ_ViPVk = column(J.IiPQ_ViPV(), k);
-         auto colIrPV_ViPVk = column(J.IrPV_ViPV(), k);
-         auto colIiPV_ViPVk = column(J.IiPV_ViPV(), k);
+         for (auto it = colVrPV.begin(); it != colVrPV.end(); ++it)
+         {
+            int idx = it.index();
+            fProj(idx) += colVrPV(idx) * fMult;
+            colViPV(idx) += colVrPV(idx) * colViPVMult;
+         }
+      };
 
-         // Modify f:
-         project(f, selIrPQFromf()) +=
-            colIrPQ_VrPVk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
-         project(f, selIiPQFromf()) +=
-            colIiPQ_VrPVk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
-         project(f, selIrPVFromf()) +=
-            colIrPV_VrPVk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
-         project(f, selIiPVFromf()) +=
-            colIiPV_VrPVk * (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
+      for (int k = 0; k < nPV_; ++k)
+      { 
+         double fMult = (0.5 * (M2PV(k) - VrPV(k) * VrPV(k) - ViPV(k) * ViPV(k)) / VrPV(k));
+         double colViPVMult = -ViPV(k) / VrPV(k);
 
-         // Modify Vi column in J:
-         colIrPQ_ViPVk -= colIrPQ_VrPVk * (ViPV(k) / VrPV(k));
-         colIiPQ_ViPVk -= colIiPQ_VrPVk * (ViPV(k) / VrPV(k));
-         colIrPV_ViPVk -= colIrPV_VrPVk * (ViPV(k) / VrPV(k));
-         colIiPV_ViPVk -= colIiPV_VrPVk * (ViPV(k) / VrPV(k));
+         mod(project(f, selIrPQFromf()), column(J.IrPQ_ViPV(), k), column(J.IrPQ_VrPV(), k), fMult, colViPVMult);
+         mod(project(f, selIiPQFromf()), column(J.IiPQ_ViPV(), k), column(J.IiPQ_VrPV(), k), fMult, colViPVMult);
+         mod(project(f, selIrPVFromf()), column(J.IrPV_ViPV(), k), column(J.IrPV_VrPV(), k), fMult, colViPVMult);
+         mod(project(f, selIiPVFromf()), column(J.IiPV_ViPV(), k), column(J.IiPV_VrPV(), k), fMult, colViPVMult);
       }
    }
 
