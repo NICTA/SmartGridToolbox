@@ -7,6 +7,22 @@
 
 namespace SmartGridToolbox
 {
+   // For some reason, even ublas::axpy_prod is much slower than this!
+   static ublas::vector<double> myProd(const ublas::compressed_matrix<double> & A, const ublas::vector<double> & x)
+   {
+      ublas::vector<double> result(A.size1(), 0.0);
+      for (auto it1 = A.begin1(); it1 != A.end1(); ++it1)
+      {
+         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
+         {
+            int i = it2.index1();
+            int k = it2.index2();
+            result(i) += A(i, k) * x(k);
+         }
+      }
+      return result;
+   }
+
    BusNR::BusNR(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
                 const ublas::vector<Complex> & Ys, const ublas::vector<Complex> & Ic,
                 const ublas::vector<Complex> & S) :
@@ -318,15 +334,11 @@ namespace SmartGridToolbox
 
       stopwatch.reset(); stopwatch.start();
       ublas::vector<double> M2PQ = element_prod(VrPQ, VrPQ) + element_prod(ViPQ, ViPQ);
-      ublas::vector<double> GPQVr(nPQ_); ublas::axpy_prod(GPQ, Vr, GPQVr, true);
-      ublas::vector<double> GPQVi(nPQ_); ublas::axpy_prod(GPQ, Vi, GPQVi, true);
-      ublas::vector<double> BPQVr(nPQ_); ublas::axpy_prod(BPQ, Vr, BPQVr, true);
-      ublas::vector<double> BPQVi(nPQ_); ublas::axpy_prod(BPQ, Vi, BPQVi, true);
 
       project(f, selIrPQFromf()) = element_div(element_prod(VrPQ, PPQ) + element_prod(ViPQ, QPQ), M2PQ)
-                                 + IcrPQ - GPQVr + BPQVi;
+                                 + IcrPQ - myProd(GPQ, Vr) + myProd(BPQ, Vi);
       project(f, selIiPQFromf()) = element_div(element_prod(ViPQ, PPQ) - element_prod(VrPQ, QPQ), M2PQ)
-                                 + IciPQ - GPQVi - BPQVr;
+                                 + IciPQ - myProd(GPQ, Vi) - myProd(BPQ, Vr);
       stopwatch.stop(); message() << "Time B = " << stopwatch.seconds() << std::endl;
       
       // PV busses. Note that these differ in that M2PV is considered a constant.
@@ -346,9 +358,9 @@ namespace SmartGridToolbox
 
       stopwatch.reset(); stopwatch.start();
       project(f, selIrPVFromf()) = element_div(element_prod(VrPV, PPV) + element_prod(ViPV, QPV), M2PV)
-                                 + IcrPV - prod(GPV, Vr) + prod(BPV, Vi);
+                                 + IcrPV - myProd(GPV, Vr) + myProd(BPV, Vi);
       project(f, selIiPVFromf()) = element_div(element_prod(ViPV, PPV) - element_prod(VrPV, QPV), M2PV)
-                                 + IciPV - prod(GPV, Vi) - prod(BPV, Vr);
+                                 + IciPV - myProd(GPV, Vi) - myProd(BPV, Vr);
       stopwatch.stop(); message() << "Time F = " << stopwatch.seconds() << std::endl;
    }
 
