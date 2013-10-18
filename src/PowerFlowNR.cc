@@ -656,7 +656,7 @@ namespace SmartGridToolbox
 
       message() << "PowerFlowNR : was successful         = " << wasSuccessful << ", error = " << err 
                 << ", iterations = " << niter << "." << std::endl;
-      message() << "PowerFlowNR: total time              = " << durationTot << std::endl;
+      message() << "PowerFlowNR: -----------------------   " << std::endl;
       message() << "PowerFlowNR: init setup time         = " << durationInitSetup << " s." << std::endl;
       message() << "PowerFlowNR: time in calcf           = " << durationCalcf << " s." << std::endl;
       message() << "PowerFlowNR: time in updateJ         = " << durationUpdateJ << " s." << std::endl;
@@ -664,6 +664,8 @@ namespace SmartGridToolbox
       message() << "PowerFlowNR: time to construct JMat  = " << durationConstructJMat << " s." << std::endl;
       message() << "PowerFlowNR: solve time              = " << durationSolve << std::endl;
       message() << "PowerFlowNR: time to update iter     = " << durationUpdateIter << std::endl;
+      message() << "PowerFlowNR: -----------------------   " << std::endl;
+      message() << "PowerFlowNR: total time              = " << durationTot << std::endl;
 
       return wasSuccessful;
    }
