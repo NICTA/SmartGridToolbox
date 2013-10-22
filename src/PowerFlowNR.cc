@@ -654,7 +654,7 @@ namespace SmartGridToolbox
 
       stopwatchTot.stop(); durationTot = stopwatchTot.seconds();
 
-      message() << "PowerFlowNR : was successful         = " << wasSuccessful << ", error = " << err 
+      message() << "PowerFlowNR: was successful          = " << wasSuccessful << ", error = " << err 
                 << ", iterations = " << niter << "." << std::endl;
       message() << "PowerFlowNR: -----------------------   " << std::endl;
       message() << "PowerFlowNR: init setup time         = " << durationInitSetup << " s." << std::endl;
