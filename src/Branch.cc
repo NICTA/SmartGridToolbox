@@ -60,6 +60,16 @@ namespace SmartGridToolbox
          abort();
       }
 
+      // Depends on network freq, so do in postParse.
+      const YAML::Node & ndY = nd["Y"];
+      const YAML::Node & ndYOverhead = ndY["overhead_line"];
+      if (ndYOverhead)
+      {
+         ublas::vector<double> r = ndYOverhead["r"].as<ublas::vector<double>>();
+         ublas::matrix<double> D = ndYOverhead["D"].as<ublas::matrix<double>>();
+         comp->Y() = YOverheadLine(r, D, networkComp->freq()); 
+      }
+
       const std::string bus0Str = state.expandName(nd["bus_0"].as<std::string>());
       Bus * bus0Comp = mod.componentNamed<Bus>(bus0Str);
       if (networkComp != nullptr)

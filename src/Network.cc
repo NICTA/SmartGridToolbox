@@ -13,7 +13,11 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "name");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      Network & comp = mod.newComponent<Network>(name);
+
+      auto ndFreq = nd["freq_Hz"];
+      double freq = ndFreq ? ndFreq.as<double>() : 50.0;
+
+      Network & comp = mod.newComponent<Network>(name, freq);
    }
 
    void Network::updateState(Time t0, Time t1)

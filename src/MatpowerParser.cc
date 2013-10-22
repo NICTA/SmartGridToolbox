@@ -156,6 +156,9 @@ namespace SmartGridToolbox
       
       double defaultVBase = nd["default_V_base"].as<double>();
 
+      const YAML::Node ndFreq = nd["freq_Hz"];
+      double freq = ndFreq ? ndFreq.as<double>() : 50.0;
+
       // Parse in the raw matpower data.
       std::vector<double> busMatrix;
       std::vector<double> genMatrix;
@@ -258,7 +261,7 @@ namespace SmartGridToolbox
 
       // Add new components.
       {
-         Network & netw = mod.newComponent<Network>(networkName);
+         Network & netw = mod.newComponent<Network>(networkName, freq);
          for (const auto pair : busMap)
          {
             const int & busId = pair.first;

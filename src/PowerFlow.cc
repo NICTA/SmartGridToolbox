@@ -160,4 +160,23 @@ namespace SmartGridToolbox
       }
       return Y;
    }
+   
+   ublas::matrix<Complex> YOverheadLine(ublas::vector<double> r, ublas::matrix<double> DMat, double freq, double rho)
+   {
+      int n = r.size();
+      assert(DMat.size1() == n);
+      assert(DMat.size2() == n);
+
+      ublas::matrix<Complex> Y(n, n, czero);
+      for (int i = 0; i < n; ++i)
+      {
+         Y(i, i) += r(i);
+         for (int k = 0; k < n; ++k)
+         {
+            Y(i, k) += Complex(9.8696e-7 * freq, 1.2566e-6 * (log(1.0/DMat(i, k)) + 8.8664 + 0.5 * log(rho/freq)));
+            Y(i, k) = 1.0 / Y(i, k);
+         }
+      }
+      return Y;
+   }
 }

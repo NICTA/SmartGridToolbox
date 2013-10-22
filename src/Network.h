@@ -39,7 +39,9 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         Network(const std::string & name) : Component(name) {}
+         Network(const std::string & name, double freq) : Component(name), freq_(freq) {}
+
+         double freq() const {return freq_;}
 
          void addBus(Bus & bus);
 
@@ -68,6 +70,7 @@ namespace SmartGridToolbox
       /// @name My private member variables.
       /// @{
       private:
+         double freq_;
          BusVec busVec_;
          BusMap busMap_;
          BranchVec branchVec_;
