@@ -67,7 +67,8 @@ namespace SmartGridToolbox
       {
          ublas::vector<double> r = ndYOverhead["r"].as<ublas::vector<double>>();
          ublas::matrix<double> D = ndYOverhead["D"].as<ublas::matrix<double>>();
-         comp->Y() = YOverheadLine(r, D, networkComp->freq()); 
+         double length = ndYOverhead["length"].as<double>();
+         comp->Y() = YOverheadLine(r, D, networkComp->freq()) / length;
       }
 
       const std::string bus0Str = state.expandName(nd["bus_0"].as<std::string>());
