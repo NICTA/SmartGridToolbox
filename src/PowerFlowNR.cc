@@ -654,18 +654,17 @@ namespace SmartGridToolbox
 
       stopwatchTot.stop(); durationTot = stopwatchTot.seconds();
 
-      message() << "PowerFlowNR: was successful          = " << wasSuccessful << ", error = " << err 
-                << ", iterations = " << niter << "." << std::endl;
-      message() << "PowerFlowNR: -----------------------   " << std::endl;
-      message() << "PowerFlowNR: init setup time         = " << durationInitSetup << " s." << std::endl;
-      message() << "PowerFlowNR: time in calcf           = " << durationCalcf << " s." << std::endl;
-      message() << "PowerFlowNR: time in updateJ         = " << durationUpdateJ << " s." << std::endl;
-      message() << "PowerFlowNR: time in modifyForPV     = " << durationModifyForPV << " s." << std::endl;
-      message() << "PowerFlowNR: time to construct JMat  = " << durationConstructJMat << " s." << std::endl;
-      message() << "PowerFlowNR: solve time              = " << durationSolve << std::endl;
-      message() << "PowerFlowNR: time to update iter     = " << durationUpdateIter << std::endl;
-      message() << "PowerFlowNR: -----------------------   " << std::endl;
-      message() << "PowerFlowNR: total time              = " << durationTot << std::endl;
+      message() << "PowerFlowNR: successful = " << wasSuccessful << ", error = " << err 
+                << ", iterations = " << niter << ", total time = " << durationTot << "." << std::endl;
+      SGT_DEBUG(debug() << "PowerFlowNR: -----------------------   " << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNR: init setup time         = " << durationInitSetup << " s." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNR: time in calcf           = " << durationCalcf << " s." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNR: time in updateJ         = " << durationUpdateJ << " s." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNR: time in modifyForPV     = " << durationModifyForPV << " s." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNR: time to construct JMat  = " << durationConstructJMat << " s." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNR: solve time              = " << durationSolve << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNR: time to update iter     = " << durationUpdateIter << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNR: -----------------------   " << std::endl);
 
       return wasSuccessful;
    }

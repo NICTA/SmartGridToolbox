@@ -171,21 +171,21 @@ namespace SmartGridToolbox
       assert(DMat.size1() == n);
       assert(DMat.size2() == n);
 
-		double freqCoeffReal = 0.00158836 * freq;
-		double freqCoeffImag = 0.00202237 * freq;
+		double freqCoeffReal = 0.00158836 * freq / mile;
+		double freqCoeffImag = 0.00202237 * freq / mile;
 		double freqAdditiveTerm = 0.5 * log(rho / freq) + 7.6786;
 
       ublas::matrix<Complex> z(n, n, czero);
       for (int i = 0; i < n; ++i)
       {
-         z(i, i) = {r(i) + freqCoeffReal, freqCoeffImag * (log(1.0 / (foot * DMat(i, i))) + freqAdditiveTerm)};
+         z(i, i) = {r(i) + freqCoeffReal, freqCoeffImag * (log(foot / (DMat(i, i))) + freqAdditiveTerm)};
          for (int k = i + 1; k < n; ++k)
          {
-				z(i, k) = {freqCoeffReal, freqCoeffImag * (log(1.0 / (foot * DMat(i, k)) + freqAdditiveTerm))};
+				z(i, k) = {freqCoeffReal, freqCoeffImag * (log(foot / (DMat(i, k)) + freqAdditiveTerm))};
 				z(k, i) = z(i, k);
          }
       }
-      z *= L / mile;
+      z *= L;
 
       // TODO: eliminate the neutral phase, as per calculation of b_mat in gridLAB-D overhead_line.cpp.
       // Very easy, but interface needs consideration. Equation is:
@@ -197,7 +197,11 @@ namespace SmartGridToolbox
       std::cout << "z = " << row(z, 1) << std::endl;
       std::cout << "z = " << row(z, 2) << std::endl;
       
-      ublas::matrix<Complex> y; invertMatrix(z, y);
+      ublas::matrix<Complex> y(n, n); bool ok = invertMatrix(z, y); assert(ok);
+      
+      std::cout << "y = " << row(y, 0) << std::endl;
+      std::cout << "y = " << row(y, 1) << std::endl;
+      std::cout << "y = " << row(y, 2) << std::endl;
       
       ublas::matrix<Complex> Y(2 * n, 2 * n, czero);
       for (int i = 0; i < n; ++i)
@@ -207,19 +211,24 @@ namespace SmartGridToolbox
 
          for (int k = i + 1; k < n; ++k)
          {
+            // Diagonal terms in node admittance matrix.
             Y(i, i)         += y(i, k);
             Y(k, k)         += y(k, i);
-
             Y(i + n, i + n) += y(i, k);
             Y(k + n, k + n) += y(k, i);
 
             Y(i, k + n)      = -y(i, k);
             Y(i + n, k)      = -y(i, k);
-
-            Y(k + n, i)      = -y(i, k);
-            Y(k, i + n)      = -y(i, k);
+            Y(k, i + n)      = -y(k, i);
+            Y(k + n, i)      = -y(k, i);
          }
       }
+      std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 0) << std::endl;
+      std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 1) << std::endl;
+      std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 2) << std::endl;
+      std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 3) << std::endl;
+      std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 4) << std::endl;
+      std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 5) << std::endl;
 
       return Y;
    }

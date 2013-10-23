@@ -1039,30 +1039,15 @@ BOOST_AUTO_TEST_CASE (test_network_overhead)
 
    Bus * bus1 = mod.componentNamed<Bus>("bus_1");
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
-   Bus * bus3 = mod.componentNamed<Bus>("bus_3");
-
-   TestLoad & tl0 = mod.newComponent<TestLoad>("tl0", bus2->phases(), posix_time::seconds(5));
-   bus2->addZipToGround(tl0);
 
    mod.validate();
    sim.initialize();
 
    Network * network = mod.componentNamed<Network>("network_1");
-   ofstream outfile;
-   outfile.open("test_network_overhead.out");
-   network->didCompleteTimestep().addAction([&]()
-         {
-            outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
-                    << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << " "
-                    << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) << " "
-                    << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2)
-                    << std::endl;
-         }, "Network updated.");
-
-   while (sim.doNextUpdate())
-   {
-   }
-   outfile.close();
+   network->solvePowerFlow();
+   message() << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << " "
+             << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) << " "
+             << std::endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
