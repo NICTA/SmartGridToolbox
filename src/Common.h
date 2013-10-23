@@ -8,13 +8,14 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/local_time/local_time.hpp>
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/vector_sparse.hpp>
-#include <boost/numeric/ublas/vector_proxy.hpp>
+#include <boost/numeric/ublas/lu.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/ublas/matrix_sparse.hpp>
 #include <boost/numeric/ublas/operation.hpp>
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/vector_proxy.hpp>
+#include <boost/numeric/ublas/vector_sparse.hpp>
 
 #ifdef DEBUG
 #define SGT_DEBUG(x) x
@@ -77,6 +78,21 @@ namespace SmartGridToolbox
    /// @name Linear algebra
    /// @{
    namespace ublas = boost::numeric::ublas;
+
+   template<class T>
+   bool invertMatrix(const ublas::matrix<T>& input, ublas::matrix<T>& inverse)
+   {
+      ublas::matrix<T> A(input);
+      ublas::permutation_matrix<std::size_t> pm(A.size1());
+      int res = ublas::lu_factorize(A, pm);
+      if (res != 0)
+      {
+         return false;
+      }
+      inverse.assign(ublas::identity_matrix<T>(A.size1()));
+      ublas::lu_substitute(A, pm, inverse);
+      return true;
+   }
 
    template<typename VE> std::ostream & operator<<(std::ostream & os, const ublas::vector_expression<VE> & v)
    {

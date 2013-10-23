@@ -161,22 +161,66 @@ namespace SmartGridToolbox
       return Y;
    }
    
-   ublas::matrix<Complex> YOverheadLine(ublas::vector<double> r, ublas::matrix<double> DMat, double freq, double rho)
+   ublas::matrix<Complex> YOverheadLine(ublas::vector<double> r, ublas::matrix<double> DMat, double L,
+                                        double freq, double rho)
    {
+      const double mile = 1609.344; // meters
+      const double foot = 0.3048; // meters
+
       int n = r.size();
       assert(DMat.size1() == n);
       assert(DMat.size2() == n);
 
-      ublas::matrix<Complex> Y(n, n, czero);
+		double freqCoeffReal = 0.00158836 * freq;
+		double freqCoeffImag = 0.00202237 * freq;
+		double freqAdditiveTerm = 0.5 * log(rho / freq) + 7.6786;
+
+      ublas::matrix<Complex> z(n, n, czero);
       for (int i = 0; i < n; ++i)
       {
-         Y(i, i) += r(i);
-         for (int k = 0; k < n; ++k)
+         z(i, i) = {r(i) + freqCoeffReal, freqCoeffImag * (log(1.0 / (foot * DMat(i, i))) + freqAdditiveTerm)};
+         for (int k = i + 1; k < n; ++k)
          {
-            Y(i, k) += Complex(9.8696e-7 * freq, 1.2566e-6 * (log(1.0/DMat(i, k)) + 8.8664 + 0.5 * log(rho/freq)));
-            Y(i, k) = 1.0 / Y(i, k);
+				z(i, k) = {freqCoeffReal, freqCoeffImag * (log(1.0 / (foot * DMat(i, k)) + freqAdditiveTerm))};
+				z(k, i) = z(i, k);
          }
       }
+      z *= L / mile;
+
+      // TODO: eliminate the neutral phase, as per calculation of b_mat in gridLAB-D overhead_line.cpp.
+      // Very easy, but interface needs consideration. Equation is:
+		// b_mat[0][0] = (z_aa - z_an * z_an * z_nn_inv) * miles;
+      // b_mat[0][1] = (z_ab - z_an * z_bn * z_nn_inv) * miles;
+      // etc.
+      
+      std::cout << "z = " << row(z, 0) << std::endl;
+      std::cout << "z = " << row(z, 1) << std::endl;
+      std::cout << "z = " << row(z, 2) << std::endl;
+      
+      ublas::matrix<Complex> y; invertMatrix(z, y);
+      
+      ublas::matrix<Complex> Y(2 * n, 2 * n, czero);
+      for (int i = 0; i < n; ++i)
+      {
+         Y(i, i + n) = -y(i, i); 
+         Y(i + n, i) = -y(i, i); 
+
+         for (int k = i + 1; k < n; ++k)
+         {
+            Y(i, i)         += y(i, k);
+            Y(k, k)         += y(k, i);
+
+            Y(i + n, i + n) += y(i, k);
+            Y(k + n, k + n) += y(k, i);
+
+            Y(i, k + n)      = -y(i, k);
+            Y(i + n, k)      = -y(i, k);
+
+            Y(k + n, i)      = -y(i, k);
+            Y(k, i + n)      = -y(i, k);
+         }
+      }
+
       return Y;
    }
 }
