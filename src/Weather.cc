@@ -96,7 +96,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         result.direct = Array<double, 3>{0.0, 0.0, 0.0};
+         result.direct = Array<double, 3>{{0.0, 0.0, 0.0}};
          result.horizontalDiffuse = 0.0; 
       }
 

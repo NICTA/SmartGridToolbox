@@ -144,7 +144,7 @@ namespace SmartGridToolbox
          void reset();
          void validate();
          bool solve();
-         bool printProblem();
+         void printProblem();
 
       private:
 

@@ -72,7 +72,7 @@ namespace SmartGridToolbox
          {
             return inService_;
          }
-         bool setInService(bool inService)
+         void setInService(bool inService)
          {
             inService_ = inService;
          }

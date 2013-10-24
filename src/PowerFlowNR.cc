@@ -65,8 +65,8 @@ namespace SmartGridToolbox
    BranchNR::BranchNR(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1,
                       const ublas::matrix<Complex> & Y) :
       nPhase_(phases0.size()),
-      ids_{id0, id1},
-      phases_{phases0, phases1},
+      ids_{{id0, id1}},
+      phases_{{phases0, phases1}},
       Y_(Y)
    {
       assert(phases1.size() == nPhase_);
@@ -669,7 +669,7 @@ namespace SmartGridToolbox
       return wasSuccessful;
    }
 
-   bool PowerFlowNR::printProblem()
+   void PowerFlowNR::printProblem()
    {
       debug() << "PowerFlowNR::printProblem()" << std::endl;
       debug() << "\tNodes:" << std::endl;
