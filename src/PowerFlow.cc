@@ -178,10 +178,10 @@ namespace SmartGridToolbox
       ublas::matrix<Complex> z(n, n, czero);
       for (int i = 0; i < n; ++i)
       {
-         z(i, i) = {r(i) + freqCoeffReal, freqCoeffImag * (log(foot / (DMat(i, i))) + freqAdditiveTerm)};
+         z(i, i) = {r(i) + freqCoeffReal, freqCoeffImag * (log(foot / DMat(i, i)) + freqAdditiveTerm)};
          for (int k = i + 1; k < n; ++k)
          {
-				z(i, k) = {freqCoeffReal, freqCoeffImag * (log(foot / (DMat(i, k)) + freqAdditiveTerm))};
+				z(i, k) = {freqCoeffReal, freqCoeffImag * (log(foot / DMat(i, k)) + freqAdditiveTerm)};
 				z(k, i) = z(i, k);
          }
       }
@@ -196,16 +196,21 @@ namespace SmartGridToolbox
       std::cout << "z = " << row(z, 0) << std::endl;
       std::cout << "z = " << row(z, 1) << std::endl;
       std::cout << "z = " << row(z, 2) << std::endl;
+      std::cout << std::endl;
       
       ublas::matrix<Complex> y(n, n); bool ok = invertMatrix(z, y); assert(ok);
       
       std::cout << "y = " << row(y, 0) << std::endl;
       std::cout << "y = " << row(y, 1) << std::endl;
       std::cout << "y = " << row(y, 2) << std::endl;
+      std::cout << std::endl;
       
       ublas::matrix<Complex> Y(2 * n, 2 * n, czero);
       for (int i = 0; i < n; ++i)
       {
+         Y(i, i) += y(i, i); 
+         Y(i + n, i + n) += y(i, i); 
+
          Y(i, i + n) = -y(i, i); 
          Y(i + n, i) = -y(i, i); 
 
@@ -229,6 +234,7 @@ namespace SmartGridToolbox
       std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 3) << std::endl;
       std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 4) << std::endl;
       std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 5) << std::endl;
+      std::cout << std::endl;
 
       return Y;
    }

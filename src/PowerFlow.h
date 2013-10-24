@@ -94,7 +94,7 @@ namespace SmartGridToolbox
    const ublas::matrix<Complex> YLine1P(const Complex & y);
    const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex> & y);
    ublas::matrix<Complex> YOverheadLine(ublas::vector<double> r, ublas::matrix<double> DMat, double L,
-                                        double freq, double rho = 100.0);
+                                        double freq, double rho);
 }
 
 #endif // POWERFLOW_DOT_H
