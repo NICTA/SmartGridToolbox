@@ -164,24 +164,21 @@ namespace SmartGridToolbox
    ublas::matrix<Complex> YOverheadLine(ublas::vector<double> r, ublas::matrix<double> DMat, double L,
                                         double freq, double rho)
    {
-      const double mile = 1609.344; // meters
-      const double foot = 0.3048; // meters
-
       int n = r.size();
       assert(DMat.size1() == n);
       assert(DMat.size2() == n);
 
-		double freqCoeffReal = 0.00158836 * freq / mile;
-		double freqCoeffImag = 0.00202237 * freq / mile;
-		double freqAdditiveTerm = 0.5 * log(rho / freq) + 7.6786;
+		double freqCoeffReal = 9.869611e-7 * freq;
+		double freqCoeffImag = 1.256642e-6 * freq;
+		double freqAdditiveTerm = 0.5 * log(rho / freq) + 6.490501;
 
       ublas::matrix<Complex> z(n, n, czero);
       for (int i = 0; i < n; ++i)
       {
-         z(i, i) = {r(i) + freqCoeffReal, freqCoeffImag * (log(foot / DMat(i, i)) + freqAdditiveTerm)};
+         z(i, i) = {r(i) + freqCoeffReal, freqCoeffImag * (log(1 / DMat(i, i)) + freqAdditiveTerm)};
          for (int k = i + 1; k < n; ++k)
          {
-				z(i, k) = {freqCoeffReal, freqCoeffImag * (log(foot / DMat(i, k)) + freqAdditiveTerm)};
+				z(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / DMat(i, k)) + freqAdditiveTerm)};
 				z(k, i) = z(i, k);
          }
       }
