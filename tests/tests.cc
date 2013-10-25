@@ -1045,10 +1045,18 @@ BOOST_AUTO_TEST_CASE (test_network_overhead)
 
    Network * network = mod.componentNamed<Network>("network_1");
    network->solvePowerFlow();
+
    message() << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << std::endl;
    message() << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) <<  std::endl;
+   message() << std::endl;
+
    message() << abs(bus1->V()(0)) << " " << abs(bus1->V()(1)) << " " << abs(bus1->V()(2)) <<  std::endl;
    message() << abs(bus2->V()(0)) << " " << abs(bus2->V()(1)) << " " << abs(bus2->V()(2)) <<  std::endl;
+   message() << std::endl;
+
+   message() << bus1->STot()(0) << " " << bus1->STot()(1) << " " << bus1->STot()(2) << std::endl;
+   message() << bus2->STot()(0) << " " << bus2->STot()(1) << " " << bus2->STot()(2) <<  std::endl;
+   message() << std::endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
