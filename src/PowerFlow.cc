@@ -185,7 +185,7 @@ namespace SmartGridToolbox
 				z(k, i) = z(i, k);
          }
       }
-      z *= L;
+      z *= L; // z has been checked against example in Kersting and found to be OK.
 
       // TODO: eliminate the neutral phase, as per calculation of b_mat in gridLAB-D overhead_line.cpp.
       // Very easy, but interface needs consideration. Equation is:
@@ -193,17 +193,7 @@ namespace SmartGridToolbox
       // b_mat[0][1] = (z_ab - z_an * z_bn * z_nn_inv) * miles;
       // etc.
       
-      std::cout << "z = " << row(z, 0) << std::endl;
-      std::cout << "z = " << row(z, 1) << std::endl;
-      std::cout << "z = " << row(z, 2) << std::endl;
-      std::cout << std::endl;
-      
       ublas::matrix<Complex> y(n, n); bool ok = invertMatrix(z, y); assert(ok);
-      
-      std::cout << "y = " << row(y, 0) << std::endl;
-      std::cout << "y = " << row(y, 1) << std::endl;
-      std::cout << "y = " << row(y, 2) << std::endl;
-      std::cout << std::endl;
       
       ublas::matrix<Complex> Y(2 * n, 2 * n, czero);
       for (int i = 0; i < n; ++i)
@@ -228,13 +218,6 @@ namespace SmartGridToolbox
             Y(k + n, i)      = -y(k, i);
          }
       }
-      std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 0) << std::endl;
-      std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 1) << std::endl;
-      std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 2) << std::endl;
-      std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 3) << std::endl;
-      std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 4) << std::endl;
-      std::cout << "Y = " << std::setw(20) << std::left <<  row(Y, 5) << std::endl;
-      std::cout << std::endl;
 
       return Y;
    }
