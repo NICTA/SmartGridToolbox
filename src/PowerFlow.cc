@@ -183,6 +183,12 @@ namespace SmartGridToolbox
          }
       }
       z *= L; // z has been checked against example in Kersting and found to be OK.
+      SGT_DEBUG(
+            for (int i = 0; i < z.size1(); ++i)
+            {
+               message() << "z(" << i << ", :) = " << row(z, i) << std::endl;
+               message() << std::endl;
+            });
 
       // TODO: eliminate the neutral phase, as per calculation of b_mat in gridLAB-D overhead_line.cpp.
       // Very easy, but interface needs consideration. Equation is:
@@ -191,11 +197,17 @@ namespace SmartGridToolbox
       // etc.
       
       ublas::matrix<Complex> y(n, n); bool ok = invertMatrix(z, y); assert(ok);
+      SGT_DEBUG(
+            for (int i = 0; i < y.size1(); ++i)
+            {
+               message() << "y(" << i << ", :) = " << row(y, i) << std::endl;
+               message() << std::endl;
+            });
       
       ublas::matrix<Complex> Y(2 * n, 2 * n, czero);
       for (int i = 0; i < n; ++i)
       {
-         Y(i, i) += y(i, i); 
+         Y(i, i) += y(i, i);
          Y(i + n, i + n) += y(i, i); 
 
          Y(i, i + n) = -y(i, i); 
