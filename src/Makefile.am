@@ -4,8 +4,7 @@ AM_CPPFLAGS = -I../third_party
 
 lib_LIBRARIES = libsmartgridtoolbox.a
 
-sgtheadersdir = $(includedir)/smart_grid_toolbox
-sgtheaders_HEADERS = Branch.h \
+pkginclude_HEADERS = Branch.h \
 						   Bus.h \
 							Common.h \
 							Component.h \
