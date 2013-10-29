@@ -128,9 +128,9 @@ AM_V_AR = $(am__v_AR_@AM_V@)
 am__v_AR_ = $(am__v_AR_@AM_DEFAULT_V@)
 am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
-libsmart_grid_toolbox_a_AR = $(AR) $(ARFLAGS)
-libsmart_grid_toolbox_a_LIBADD =
-am_libsmart_grid_toolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
+libsmartgridtoolbox_a_AR = $(AR) $(ARFLAGS)
+libsmartgridtoolbox_a_LIBADD =
+am_libsmartgridtoolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
 	CDFParser.$(OBJEXT) Common.$(OBJEXT) Component.$(OBJEXT) \
 	Event.$(OBJEXT) InverterBase.$(OBJEXT) \
 	MatpowerParser.$(OBJEXT) Model.$(OBJEXT) Network.$(OBJEXT) \
@@ -141,8 +141,7 @@ am_libsmart_grid_toolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
 	Simulation.$(OBJEXT) SolarPV.$(OBJEXT) SparseSolver.$(OBJEXT) \
 	Sun.$(OBJEXT) WeakOrder.$(OBJEXT) Weather.$(OBJEXT) \
 	ZipToGround.$(OBJEXT)
-libsmart_grid_toolbox_a_OBJECTS =  \
-	$(am_libsmart_grid_toolbox_a_OBJECTS)
+libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_helloworld_OBJECTS = helloworld.$(OBJEXT) Common.$(OBJEXT)
 helloworld_OBJECTS = $(am_helloworld_OBJECTS)
@@ -151,7 +150,7 @@ helloworld_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(helloworld_LDFLAGS) $(LDFLAGS) -o $@
 am_run_config_OBJECTS = run_config.$(OBJEXT)
 run_config_OBJECTS = $(am_run_config_OBJECTS)
-run_config_DEPENDENCIES = libsmart_grid_toolbox.a \
+run_config_DEPENDENCIES = libsmartgridtoolbox.a \
 	../third_party/SuiteSparse/KLU/Lib/libklu.a \
 	../third_party/SuiteSparse/AMD/Lib/libamd.a \
 	../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
@@ -187,10 +186,10 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libsmart_grid_toolbox_a_SOURCES) $(helloworld_SOURCES) \
+SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(helloworld_SOURCES) \
 	$(run_config_SOURCES)
-DIST_SOURCES = $(libsmart_grid_toolbox_a_SOURCES) \
-	$(helloworld_SOURCES) $(run_config_SOURCES)
+DIST_SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(helloworld_SOURCES) \
+	$(run_config_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -333,7 +332,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I../third_party
-lib_LIBRARIES = libsmart_grid_toolbox.a
+lib_LIBRARIES = libsmartgridtoolbox.a
 pkginclude_HEADERS = Branch.h \
 						   Bus.h \
 							Common.h \
@@ -365,7 +364,7 @@ pkginclude_HEADERS = Branch.h \
 							ZipToGround.h \
 							ZipToGroundBase.h
 
-libsmart_grid_toolbox_a_SOURCES = Bus.cc \
+libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Branch.cc \
 										  CDFParser.cc \
 										  Common.cc \
@@ -393,7 +392,7 @@ libsmart_grid_toolbox_a_SOURCES = Bus.cc \
 										  ZipToGround.cc
 
 run_config_SOURCES = run_config.cc
-run_config_LDADD = libsmart_grid_toolbox.a \
+run_config_LDADD = libsmartgridtoolbox.a \
 						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
 						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
@@ -475,10 +474,10 @@ uninstall-libLIBRARIES:
 clean-libLIBRARIES:
 	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
-libsmart_grid_toolbox.a: $(libsmart_grid_toolbox_a_OBJECTS) $(libsmart_grid_toolbox_a_DEPENDENCIES) $(EXTRA_libsmart_grid_toolbox_a_DEPENDENCIES) 
-	$(AM_V_at)-rm -f libsmart_grid_toolbox.a
-	$(AM_V_AR)$(libsmart_grid_toolbox_a_AR) libsmart_grid_toolbox.a $(libsmart_grid_toolbox_a_OBJECTS) $(libsmart_grid_toolbox_a_LIBADD)
-	$(AM_V_at)$(RANLIB) libsmart_grid_toolbox.a
+libsmartgridtoolbox.a: $(libsmartgridtoolbox_a_OBJECTS) $(libsmartgridtoolbox_a_DEPENDENCIES) $(EXTRA_libsmartgridtoolbox_a_DEPENDENCIES) 
+	$(AM_V_at)-rm -f libsmartgridtoolbox.a
+	$(AM_V_AR)$(libsmartgridtoolbox_a_AR) libsmartgridtoolbox.a $(libsmartgridtoolbox_a_OBJECTS) $(libsmartgridtoolbox_a_LIBADD)
+	$(AM_V_at)$(RANLIB) libsmartgridtoolbox.a
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
