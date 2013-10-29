@@ -4,6 +4,38 @@ AM_CPPFLAGS = -I../third_party
 
 lib_LIBRARIES = libsmartgridtoolbox.a
 
+sgtheadersdir = $(includedir)/smart_grid_toolbox
+sgtheaders_HEADERS = Branch.h \
+						   Bus.h \
+							Common.h \
+							Component.h \
+							DCPowerSourceBase.h \
+							Event.h \
+							InverterBase.h \
+							Load.h \
+							Model.h \
+							Network.h \
+							Parser.h \
+							PowerFlow.h \
+							Property.h \
+							Random.h \
+							RegularUpdateComponent.h \
+							SimpleBattery.h \
+							SimpleBuilding.h \
+							SimpleDCPowerSource.h \
+							SimpleInverter.h \
+							Simulation.h \
+							SolarPV.h \
+							SparseSolver.h \
+							Spline.h \
+							Stopwatch.h \
+							Sun.h \
+							TimeSeries.h \
+							Units.h \
+							Weather.h \
+							ZipToGround.h \
+							ZipToGroundBase.h
+
 libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Branch.cc \
 										  CDFParser.cc \
