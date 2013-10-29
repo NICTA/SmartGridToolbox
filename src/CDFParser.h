@@ -10,7 +10,7 @@ namespace SmartGridToolbox
       public:
          static constexpr const char * pluginKey()
          {
-            return "CDF";
+            return "cdf";
          }
 
       public:

@@ -839,7 +839,7 @@ static void prepareMPInput(const std::string & yamlName, const std::string & cas
    std::fstream yamlFile(yamlName, ios_base::out);
    if (!yamlFile.is_open())
    {
-      error() << "Could not open the yaml outputfile file " << yamlName << "." << std::endl;
+      error() << "Could not open the yaml output file " << yamlName << "." << std::endl;
       SmartGridToolbox::abort();
    }
 
@@ -1057,6 +1057,105 @@ BOOST_AUTO_TEST_CASE (test_network_overhead)
    message() << bus1->STot()(0) << " " << bus1->STot()(1) << " " << bus1->STot()(2) << std::endl;
    message() << bus2->STot()(0) << " " << bus2->STot()(1) << " " << bus2->STot()(2) <<  std::endl;
    message() << std::endl;
+}
+
+static void prepareCDFInput(const std::string & yamlName, const std::string & caseName, bool usePerUnit)
+{
+   std::fstream yamlFile(yamlName, ios_base::out);
+   if (!yamlFile.is_open())
+   {
+      error() << "Could not open the yaml output file " << yamlName << "." << std::endl;
+      SmartGridToolbox::abort();
+   }
+
+   yamlFile << "global:" << std::endl;
+   yamlFile << "   configuration_name:        config_1" << std::endl;
+   yamlFile << "   start_time:                2013-01-23 13:13:00" << std::endl;
+   yamlFile << "   end_time:                  2013-01-23 15:13:00" << std::endl;
+   yamlFile << "   lat_long:                  [-35.3075, 149.1244] # Canberra, Australia." << std::endl;
+   yamlFile << "   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia."
+            << std::endl;
+   yamlFile << "objects: # And these are the actual objects." << std::endl;
+   yamlFile << "   cdf:" << std::endl;
+   yamlFile << "      input_file:             " << caseName << std::endl;
+   yamlFile << "      network_name:           cdf" << std::endl;
+   yamlFile << "      default_V_base:         1000 # 1 KV default." << std::endl;
+   if (usePerUnit)
+   {
+      yamlFile << "      use_per_unit:           Y" << std::endl;
+   }
+
+
+   yamlFile.close();
+}
+
+static void testCDF(const std::string & baseName, bool usePerUnit)
+{
+   std::string caseName = baseName + ".cdf";
+   std::string yamlName = "test_cdf_" + baseName + ".yaml";
+   std::string compareName = "test_mp_" + baseName + ".compare";
+
+   Model mod;
+   Simulation sim(mod);
+   Parser & p = Parser::globalParser();
+   
+   prepareCDFInput(yamlName, caseName, usePerUnit);
+
+   p.parse(yamlName.c_str(), mod, sim);
+   mod.validate();
+   sim.initialize();
+   Network * network = mod.componentNamed<Network>("cdf");
+   network->solvePowerFlow();
+
+   double SBase;
+   ublas::vector<int> iBus;
+   ublas::vector<double> VBase;
+   ublas::vector<Complex> V;
+   ublas::vector<Complex> Sc;
+   ublas::vector<Complex> Sg;
+   readMPOutput(compareName, usePerUnit, SBase, iBus, VBase, V, Sc, Sg);
+
+   double STol = usePerUnit ? 1e-4 : SBase * 1e-4;
+
+   for (int i = 0; i < iBus.size(); ++i)
+   {
+      int ib = iBus(i);
+      std::string busName = "cdf_bus_" + std::to_string(ib);
+      Bus * bus = mod.componentNamed<Bus>(busName);
+      assert(bus != nullptr);
+      double VTol = usePerUnit ? 1e-4 : VBase(i) * 1e-4;
+
+      message() << "V tolerance = " << VTol << std::endl;
+      message() << "S tolerance = " << STol << std::endl;
+      message() << std::endl;
+
+      message() << setw(24) << std::left << busName
+                << setw(24) << std::left << "V"
+                << setw(24) << std::left << "Sc"
+                << setw(24) << std::left << "Sg"
+                << std::endl;
+      message() << setw(24) << left << "SGT"
+                << setw(24) << left << bus->V()(0)
+                << setw(24) << left << bus->Sc()(0)
+                << setw(24) << left << bus->SGen()(0)
+                << std::endl;
+      message() << setw(24) << left << "Matpower"
+                << setw(24) << left << V(i) 
+                << setw(24) << left << Sc(i)
+                << setw(24) << left << Sg(i)
+                << std::endl; 
+      message() << std::endl;
+
+      BOOST_CHECK(abs(bus->V()(0) - V(i)) < VTol);
+      BOOST_CHECK(abs(bus->Sc()(0) - Sc(i)) < STol);
+      BOOST_CHECK(abs(bus->SGen()(0) - Sg(i)) < STol);
+   }
+}
+
+BOOST_AUTO_TEST_CASE (test_cdf_14)
+{
+   testCDF("ieee14", true);
+   testCDF("ieee14", false);
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
