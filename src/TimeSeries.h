@@ -1,7 +1,7 @@
 #ifndef TIME_SERIES_DOT_H
 #define TIME_SERIES_DOT_H
 
-#include "Spline.h"
+#include <smartgridtoolbox/Spline.h>
 
 namespace SmartGridToolbox
 {

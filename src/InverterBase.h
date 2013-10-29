@@ -1,7 +1,7 @@
 #ifndef INVERTER_BASE_DOT_H
 #define INVERTER_BASE_DOT_H
 
-#include "ZipToGroundBase.h"
+#include <smartgridtoolbox/ZipToGroundBase.h>
 
 namespace SmartGridToolbox
 {

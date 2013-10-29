@@ -1,7 +1,7 @@
 #ifndef DC_POWER_SOURCE_BASE
 #define DC_POWER_SOURCE_BASE
 
-#include "Component.h"
+#include <smartgridtoolbox/Component.h>
 
 namespace SmartGridToolbox
 {

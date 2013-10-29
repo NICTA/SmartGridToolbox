@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "Common.h"
-#include "Event.h"
-#include "Property.h"
+#include <smartgridtoolbox/Common.h>
+#include <smartgridtoolbox/Event.h>
+#include <smartgridtoolbox/Property.h>
 
 namespace SmartGridToolbox
 {

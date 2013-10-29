@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 #include <string>
-#include "Common.h"
+#include <smartgridtoolbox/Common.h>
 
 using std::string;
 

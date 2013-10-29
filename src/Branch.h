@@ -1,10 +1,10 @@
 #ifndef BRANCH_DOT_H
 #define BRANCH_DOT_H
 
-#include "Common.h"
-#include "Component.h"
-#include "Parser.h"
-#include "PowerFlow.h"
+#include <smartgridtoolbox/Common.h>
+#include <smartgridtoolbox/Component.h>
+#include <smartgridtoolbox/Parser.h>
+#include <smartgridtoolbox/PowerFlow.h>
 
 #include <iostream>
 

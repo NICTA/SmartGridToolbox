@@ -1,11 +1,11 @@
 #ifndef NETWORK_DOT_H
 #define NETWORK_DOT_H
 
-#include "Component.h"
+#include <smartgridtoolbox/Component.h>
 #include "PowerFlowNR.h"
-#include "Bus.h"
-#include "Branch.h"
-#include "Parser.h"
+#include <smartgridtoolbox/Bus.h>
+#include <smartgridtoolbox/Branch.h>
+#include <smartgridtoolbox/Parser.h>
 
 namespace SmartGridToolbox
 {

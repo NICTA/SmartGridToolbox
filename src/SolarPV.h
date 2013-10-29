@@ -1,10 +1,10 @@
 #ifndef SOLAR_PV_DOT_H
 #define SOLAR_PV_DOT_H
 
-#include "Component.h"
-#include "DCPowerSourceBase.h"
-#include "Parser.h"
-#include "Sun.h"
+#include <smartgridtoolbox/Component.h>
+#include <smartgridtoolbox/DCPowerSourceBase.h>
+#include <smartgridtoolbox/Parser.h>
+#include <smartgridtoolbox/Sun.h>
 
 namespace SmartGridToolbox
 {

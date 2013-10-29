@@ -1,10 +1,10 @@
 #ifndef SIMPLE_BUILDING_DOT_H
 #define SIMPLE_BUILDING_DOT_H
 
-#include "SimpleBuilding.h"
-#include "Common.h"
-#include "Component.h"
-#include "Load.h"
+#include <smartgridtoolbox/SimpleBuilding.h>
+#include <smartgridtoolbox/Common.h>
+#include <smartgridtoolbox/Component.h>
+#include <smartgridtoolbox/Load.h>
 #include<string>
 
 namespace SmartGridToolbox

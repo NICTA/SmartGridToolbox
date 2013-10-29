@@ -1,8 +1,8 @@
 #ifndef SIMPLE_DC_POWER_SOURCE
 #define SIMPLE_DC_POWER_SOURCE
 
-#include "DCPowerSourceBase.h"
-#include "Parser.h"
+#include <smartgridtoolbox/DCPowerSourceBase.h>
+#include <smartgridtoolbox/Parser.h>
 
 namespace SmartGridToolbox
 {
