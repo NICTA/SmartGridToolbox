@@ -149,7 +149,8 @@ namespace SmartGridToolbox
             busInfo.YsPU = Complex(GsPU, BsPU);
          }
 
-         if (line.substr(0, 6) == "BRANCH") errInvalidCDF();
+         std::getline(infile, line); 
+         if (line.substr(0, 6) != "BRANCH") errInvalidCDF();
 
          for (std::getline(infile, line); line.substr(0, 4) != std::string("-999"); std::getline(infile, line))
          {
@@ -180,6 +181,7 @@ namespace SmartGridToolbox
             BusType type = BusType::BAD;
             switch (info.CDFType)
             {
+               case 0 :
                case 1 :
                   type = BusType::PQ;
                   break;
