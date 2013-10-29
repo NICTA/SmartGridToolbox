@@ -860,7 +860,6 @@ static void prepareMPInput(const std::string & yamlName, const std::string & cas
       yamlFile << "      use_per_unit:           Y" << std::endl;
    }
 
-
    yamlFile.close();
 }
 
@@ -1085,7 +1084,6 @@ static void prepareCDFInput(const std::string & yamlName, const std::string & ca
       yamlFile << "      use_per_unit:           Y" << std::endl;
    }
 
-
    yamlFile.close();
 }
 
@@ -1093,7 +1091,7 @@ static void testCDF(const std::string & baseName, bool usePerUnit)
 {
    std::string caseName = baseName + ".cdf";
    std::string yamlName = "test_cdf_" + baseName + ".yaml";
-   std::string compareName = "test_mp_" + baseName + ".compare";
+   std::string compareName = "test_cdf_" + baseName + ".compare";
 
    Model mod;
    Simulation sim(mod);

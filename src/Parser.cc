@@ -216,8 +216,13 @@ namespace SmartGridToolbox
 
    void Parser::parse(const std::string & fname, Model & model, Simulation & simulation)
    {
-      message() << "Started parsing." << std::endl;
+      message() << "Started parsing file " << fname << "." << std::endl;
       const YAML::Node & top = YAML::LoadFile(fname);
+      if (top.size() == 0)
+      {
+         error() << "Parsing file " << fname << ". File is empty or doesn't exist." << std::endl;
+         abort();
+      }
 
       SGT_DEBUG(debug() << "Parsing global." << std::endl);
       parseGlobal(top, model, simulation);

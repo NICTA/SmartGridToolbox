@@ -38,10 +38,10 @@ run_config_LDADD = libsmartgridtoolbox.a \
 						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
 						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
 						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
-						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a \
-						 ../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a
+						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a
 run_config_LDFLAGS = -lboost_date_time-mt \
-							-lblas
+							-lblas \
+							-lyaml-cpp
 
 helloworld_SOURCES = helloworld.cc \
 							Common.cc
