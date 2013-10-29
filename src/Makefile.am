@@ -6,6 +6,7 @@ lib_LIBRARIES = libsmartgridtoolbox.a
 
 libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Branch.cc \
+										  CDFParser.cc \
 										  Common.cc \
 										  Component.cc \
 										  Event.cc \

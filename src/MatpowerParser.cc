@@ -330,13 +330,13 @@ namespace SmartGridToolbox
             Bus * bus0 = mod.componentNamed<Bus>(busName(networkName, bus0Id));
             if (bus0 == nullptr)
             {
-               error() << "Matpower: for generator " << i << ", from bus " << bus0Id << " was not found." << std::endl;
+               error() << "Matpower: for branch " << i << ", from bus " << bus0Id << " was not found." << std::endl;
                abort();
             }
             Bus * bus1 = mod.componentNamed<Bus>(busName(networkName, bus1Id));
             if (bus1 == nullptr)
             {
-               error() << "Matpower: for generator " << i << ", to bus " << bus1Id << " was not found." << std::endl;
+               error() << "Matpower: for branch " << i << ", to bus " << bus1Id << " was not found." << std::endl;
                abort();
             }
 
