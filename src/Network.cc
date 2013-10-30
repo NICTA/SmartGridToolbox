@@ -2,6 +2,7 @@
 #include "Bus.h"
 #include "Branch.h"
 #include "Model.h"
+#include "PowerFlowNR.h"
 #include <iostream>
 
 namespace SmartGridToolbox
@@ -46,25 +47,26 @@ namespace SmartGridToolbox
    void Network::solvePowerFlow()
    {
       SGT_DEBUG(debug() << "Network : solving power flow." << std::endl);
-      SGT_DEBUG(print());
-      solver_.reset();
+      SGT_DEBUG(debug() << *this);
+      PowerFlowNR solver;
+      solver.reset();
       for (const Bus * bus : busVec_)
       {
-         solver_.addBus(bus->name(), bus->type(), bus->phases(), bus->V(), bus->Ys(), bus->Ic(), bus->STot());
+         solver.addBus(bus->name(), bus->type(), bus->phases(), bus->V(), bus->Ys(), bus->Ic(), bus->STot());
       }
       for (const Branch * branch : branchVec_)
       {
-         solver_.addBranch(branch->bus0().name(), branch->bus1().name(), branch->phases0(),
-                           branch->phases1(), branch->Y());
+         solver.addBranch(branch->bus0().name(), branch->bus1().name(), branch->phases0(),
+                          branch->phases1(), branch->Y());
       }
 
-      solver_.validate();
+      solver.validate();
 
-      bool ok = solver_.solve();
+      bool ok = solver.solve();
 
       if (ok)
       {
-         for (const auto & busPair: solver_.busses())
+         for (const auto & busPair: solver.busses())
          {
             Bus * bus = findBus(busPair.second->id_);
 
@@ -75,33 +77,34 @@ namespace SmartGridToolbox
       }
    }
 
-   void Network::print()
+   std::ostream & operator<<(std::ostream & os, const Network & nw)
    {
-      debug() << "Network::print()" << std::endl;
-      debug() << "\tBusses:" << std::endl;
-      for (const Bus * bus : busVec_)
+      os << "Network: " << nw.name() << std::endl;
+      os << "\tBusses:" << std::endl;
+      for (const Bus * bus : nw.busVec_)
       {
-         debug() << "\t\tBus:" << std::endl;
-         debug() << "\t\t\tName   : " << bus->name() << std::endl;
-         debug() << "\t\t\tType   : " << bus->type() << std::endl;
-         debug() << "\t\t\tPhases : " << bus->phases() << std::endl;
-         debug() << "\t\t\tV      : " << bus->V() << std::endl;
-         debug() << "\t\t\tYs     : " << bus->Ys() << std::endl;
-         debug() << "\t\t\tIc     : " << bus->Ic() << std::endl;
-         debug() << "\t\t\tSc     : " << bus->Sc() << std::endl;
+         os << "\t\tBus:" << std::endl;
+         os << "\t\t\tName   : " << bus->name() << std::endl;
+         os << "\t\t\tType   : " << bus->type() << std::endl;
+         os << "\t\t\tPhases : " << bus->phases() << std::endl;
+         os << "\t\t\tV      : " << bus->V() << std::endl;
+         os << "\t\t\tYs     : " << bus->Ys() << std::endl;
+         os << "\t\t\tIc     : " << bus->Ic() << std::endl;
+         os << "\t\t\tSc     : " << bus->Sc() << std::endl;
       }
-      debug() << "\tBranches:" << std::endl;
-      for (const Branch * branch : branchVec_)
+      os << "\tBranches:" << std::endl;
+      for (const Branch * branch : nw.branchVec_)
       {
-         debug() << "\t\tBranch:" << std::endl; 
-         debug() << "\t\t\tBus names  : " 
+         os << "\t\tBranch:" << std::endl; 
+         os << "\t\t\tBus names  : " 
             << branch->bus0().name() << " " << branch->bus1().name() << std::endl;
-         debug() << "\t\t\tBus phases : " << branch->phases0() << " " << branch->phases1() << std::endl;
-         debug() << "\t\t\tY          :" << std::endl;
+         os << "\t\t\tBus phases : " << branch->phases0() << " " << branch->phases1() << std::endl;
+         os << "\t\t\tY          :" << std::endl;
          for (int i = 0; i < branch->Y().size1(); ++i)
          {
-            debug() << "\t\t\t\t" << std::setw(16) << row(branch->Y(), i) << std::endl;
+            os << "\t\t\t\t" << std::setw(16) << row(branch->Y(), i) << std::endl;
          }
       }
+      return os;
    }
 }

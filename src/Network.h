@@ -2,7 +2,6 @@
 #define NETWORK_DOT_H
 
 #include <smartgridtoolbox/Component.h>
-#include "PowerFlowNR.h"
 #include <smartgridtoolbox/Bus.h>
 #include <smartgridtoolbox/Branch.h>
 #include <smartgridtoolbox/Parser.h>
@@ -25,10 +24,12 @@ namespace SmartGridToolbox
 
    class Network : public Component
    {
-      private:
+      public:
          typedef std::vector<Bus *> BusVec;
-         typedef std::map<std::string, Bus *> BusMap;
          typedef std::vector<Branch *> BranchVec;
+
+      private:
+         typedef std::map<std::string, Bus *> BusMap;
 
       /// @name Private overridden functions: from Component.
       /// @{
@@ -63,7 +64,7 @@ namespace SmartGridToolbox
 
          virtual void solvePowerFlow();
 
-         void print();
+         friend std::ostream & operator<<(std::ostream & os, const Network & nw);
       /// @}
 
       /// @name My private member functions.
@@ -78,7 +79,6 @@ namespace SmartGridToolbox
          BusVec busVec_;
          BusMap busMap_;
          BranchVec branchVec_;
-         PowerFlowNR solver_;
       /// @}
    };
 }
