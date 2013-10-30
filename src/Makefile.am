@@ -62,7 +62,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  Weather.cc \
 										  ZipToGround.cc
 
-bin_PROGRAMS = run_config
+bin_PROGRAMS = run_config helloworld
 
 run_config_SOURCES = run_config.cc
 run_config_LDADD = libsmartgridtoolbox.a \
@@ -73,3 +73,5 @@ run_config_LDADD = libsmartgridtoolbox.a \
 run_config_LDFLAGS = -lboost_date_time-mt \
 							-lblas \
 							-lyaml-cpp
+
+helloworld_SOURCES = helloworld.cc

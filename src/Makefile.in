@@ -78,7 +78,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = run_config$(EXEEXT)
+bin_PROGRAMS = run_config$(EXEEXT) helloworld$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp $(pkginclude_HEADERS)
@@ -143,6 +143,9 @@ am_libsmartgridtoolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
 	ZipToGround.$(OBJEXT)
 libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
+am_helloworld_OBJECTS = helloworld.$(OBJEXT)
+helloworld_OBJECTS = $(am_helloworld_OBJECTS)
+helloworld_LDADD = $(LDADD)
 am_run_config_OBJECTS = run_config.$(OBJEXT)
 run_config_OBJECTS = $(am_run_config_OBJECTS)
 run_config_DEPENDENCIES = libsmartgridtoolbox.a \
@@ -181,8 +184,10 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(run_config_SOURCES)
-DIST_SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(run_config_SOURCES)
+SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(helloworld_SOURCES) \
+	$(run_config_SOURCES)
+DIST_SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(helloworld_SOURCES) \
+	$(run_config_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -395,6 +400,7 @@ run_config_LDFLAGS = -lboost_date_time-mt \
 							-lblas \
 							-lyaml-cpp
 
+helloworld_SOURCES = helloworld.cc
 all: all-am
 
 .SUFFIXES:
@@ -508,6 +514,10 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
+helloworld$(EXEEXT): $(helloworld_OBJECTS) $(helloworld_DEPENDENCIES) $(EXTRA_helloworld_DEPENDENCIES) 
+	@rm -f helloworld$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(helloworld_OBJECTS) $(helloworld_LDADD) $(LIBS)
+
 run_config$(EXEEXT): $(run_config_OBJECTS) $(run_config_DEPENDENCIES) $(EXTRA_run_config_DEPENDENCIES) 
 	@rm -f run_config$(EXEEXT)
 	$(AM_V_CXXLD)$(run_config_LINK) $(run_config_OBJECTS) $(run_config_LDADD) $(LIBS)
@@ -544,6 +554,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Weather.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGround.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helloworld.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/run_config.Po@am__quote@
 
 .cc.o:
