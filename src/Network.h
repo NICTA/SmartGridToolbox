@@ -45,6 +45,8 @@ namespace SmartGridToolbox
 
          void addBus(Bus & bus);
 
+         const BusVec & busVec() const {return busVec_;}
+
          const Bus * findBus(const std::string & name) const
          {
             BusMap::const_iterator it = busMap_.find(name);
@@ -56,6 +58,8 @@ namespace SmartGridToolbox
          }
 
          void addBranch(Branch & branch);
+
+         const BranchVec & branchVec() const {return branchVec_;}
 
          virtual void solvePowerFlow();
 

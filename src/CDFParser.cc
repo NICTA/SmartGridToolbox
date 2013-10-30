@@ -19,7 +19,7 @@ namespace SmartGridToolbox
       double VBase;  // SI.
       Complex VPU;   // Per unit.
       Complex SLoad; // SI.
-      Complex SGen;  // SI.
+      Complex Sg;  // SI.
       Complex YsPU;  // Per unit.
    };
 
@@ -140,7 +140,7 @@ namespace SmartGridToolbox
             std::istringstream(line.substr(59, 8)) >> PgMW;
             double QgMW;
             std::istringstream(line.substr(67, 8)) >> QgMW;
-            busInfo.SGen = Complex(PgMW, QgMW) * MW; // Injection is -ve load.
+            busInfo.Sg = Complex(PgMW, QgMW) * MW; // Injection is -ve load.
 
             double GsPU;
             std::istringstream(line.substr(106, 8)) >> GsPU;
@@ -203,15 +203,15 @@ namespace SmartGridToolbox
 
             Complex V = usePerUnit ? info.VPU : info.VPU * info.VBase;
             Complex SLoad = usePerUnit ? info.SLoad / SBase : info.SLoad;
-            Complex SGen = usePerUnit ? info.SGen / SBase : info.SGen;
+            Complex Sg = usePerUnit ? info.Sg / SBase : info.Sg;
             Complex Ys = usePerUnit ? info.YsPU : info.YsPU * SBase / (info.VBase * info.VBase);
 
             ublas::vector<Complex> VVec(phases.size(), V);
             ublas::vector<Complex> SLoadVec(phases.size(), SLoad);
-            ublas::vector<Complex> SGenVec(phases.size(), SGen);
+            ublas::vector<Complex> SgVec(phases.size(), Sg);
             ublas::vector<Complex> YsVec(phases.size(), Ys);
 
-            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec, VVec, SGenVec);
+            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec, VVec, SgVec);
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;

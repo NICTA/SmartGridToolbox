@@ -86,7 +86,7 @@ namespace SmartGridToolbox
       double VBase;
       Complex V;
       Complex SLoad;
-      Complex SGen;
+      Complex Sg;
       Complex Ys;
    };
 
@@ -249,10 +249,10 @@ namespace SmartGridToolbox
                Vg *= busInfo.VBase;
             }
 
-            busInfo.SGen = Complex(Pg, Qg) * 1e6; // Assuming 1 generator max per bus.
+            busInfo.Sg = Complex(Pg, Qg) * 1e6; // Assuming 1 generator max per bus.
             if (usePerUnit)
             {
-               busInfo.SGen /= SBase;
+               busInfo.Sg /= SBase;
             }
 
             busInfo.V *= Vg / abs(busInfo.V); // Scale V of bus to match specified generator V.
@@ -290,10 +290,10 @@ namespace SmartGridToolbox
 
             ublas::vector<Complex> VVec(phases.size(), info.V);
             ublas::vector<Complex> SLoadVec(phases.size(), info.SLoad);
-            ublas::vector<Complex> SGenVec(phases.size(), info.SGen);
+            ublas::vector<Complex> SgVec(phases.size(), info.Sg);
             ublas::vector<Complex> YsVec(phases.size(), info.Ys);
 
-            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec, VVec, SGenVec);
+            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec, VVec, SgVec);
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;

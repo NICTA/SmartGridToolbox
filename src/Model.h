@@ -47,6 +47,19 @@ namespace SmartGridToolbox
             addGenericComponent(comp);
             return *comp;
          }
+         
+         template<typename T, typename... Args> T & replaceComponentWithNew(Args&&... args)
+         {
+            T * comp = new T(std::forward<Args>(args)...);
+            replaceGenericComponent(comp);
+            return *comp;
+         }
+         
+         template<typename T> T & replaceComponent(T * comp)
+         {
+            replaceGenericComponent(comp);
+            return *comp;
+         }
 
          template<typename T> const T * componentNamed(const std::string & name) const
          {
@@ -80,6 +93,7 @@ namespace SmartGridToolbox
 
       private:
          void addGenericComponent(Component * comp);
+         void replaceGenericComponent(Component * comp);
 
       private:
          std::string name_;

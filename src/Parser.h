@@ -4,7 +4,7 @@
 #include <smartgridtoolbox/Common.h>
 #include <smartgridtoolbox/Model.h>
 #include <smartgridtoolbox/PowerFlow.h>
-#include "../third_party/yaml-cpp-0.5.0/include/yaml-cpp/yaml.h"
+#include <yaml-cpp/yaml.h>
 #include <map>
 
 namespace YAML

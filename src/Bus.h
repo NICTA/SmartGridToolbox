@@ -40,7 +40,7 @@ namespace SmartGridToolbox
       /// @{
       public:
          Bus(const std::string & name, BusType type, const Phases & phases, const ublas::vector<Complex> & nominalV,
-             const ublas::vector<Complex> & V, const ublas::vector<Complex> & SGen);
+             const ublas::vector<Complex> & V, const ublas::vector<Complex> & Sg);
 
          BusType type() const {return type_;}
 
@@ -66,11 +66,11 @@ namespace SmartGridToolbox
          ublas::vector<Complex> & Sc() {return Sc_;}
 
          /// Generator power injection.
-         const ublas::vector<Complex> & SGen() const {return SGen_;}
-         ublas::vector<Complex> & SGen() {return SGen_;}
+         const ublas::vector<Complex> & Sg() const {return Sg_;}
+         ublas::vector<Complex> & Sg() {return Sg_;}
          
          /// Total power injection (loads + gen).
-         const ublas::vector<Complex> STot() const {return Sc_ + SGen_;}
+         const ublas::vector<Complex> STot() const {return Sc_ + Sg_;}
       /// @}
 
       /// @name My private member variables.
@@ -88,10 +88,10 @@ namespace SmartGridToolbox
           *  Thus Sgen_ will be zero. For PV busses, the reactive power is supposed to adjust to keep the voltage
           *  magnitude constant. So Sgen_ will in general have zero real power and nonzero reactive power. 
           *  For slack busses, the both the real and reactive power will adjust to keep a constant voltage, 
-          *  both components of SGen may be nonzero.*/
+          *  both components of Sg may be nonzero.*/
          /// @{
          ublas::vector<Complex> V_;                            ///< Voltage.
-         ublas::vector<Complex> SGen_;                         ///< Generator power.
+         ublas::vector<Complex> Sg_;                         ///< Generator power.
          /// @}
 
          /// @name ZIP load quantities:

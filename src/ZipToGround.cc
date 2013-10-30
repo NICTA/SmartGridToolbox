@@ -20,7 +20,7 @@ namespace SmartGridToolbox
       auto ndCurLoad = nd["complex_current_load"];
       auto ndCurGen = nd["complex_current_gen"];
       auto ndSLoad = nd["complex_power_load"];
-      auto ndSGen = nd["complex_power_gen"];
+      auto ndSg = nd["complex_power_gen"];
 
       if (ndCurLoad and ndCurGen)
       {
@@ -30,7 +30,7 @@ namespace SmartGridToolbox
          }
       }
 
-      if (ndSLoad and ndSGen)
+      if (ndSLoad and ndSg)
       {
          {
             error() << "A " << pluginKey() << " can't have both a power load and injection." << std::endl;
@@ -54,9 +54,9 @@ namespace SmartGridToolbox
       {
          comp.S() = -ndSLoad.as<ublas::vector<Complex>>();
       }
-      if (ndSGen)
+      if (ndSg)
       {
-         comp.S() = ndSGen.as<ublas::vector<Complex>>();
+         comp.S() = ndSg.as<ublas::vector<Complex>>();
       }
    }
 

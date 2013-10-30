@@ -1,11 +1,12 @@
 #include "Model.h"
 #include "Component.h"
 #include "WeakOrder.h"
+#include <algorithm>
 #include <string>
 
 namespace SmartGridToolbox 
 {
-   Model::~Model() 
+   Model::~Model()
    {
       for (Component * comp : compVec_)
       {
@@ -75,6 +76,27 @@ namespace SmartGridToolbox
       }
       else
       {
+         compVec_.push_back(comp);
+         message() << "Component " << comp->name() << " added to model." << std::endl;
+      }
+   }
+
+   void Model::replaceGenericComponent(Component * comp)
+   {
+      const std::string & name = comp->name();
+      ComponentMap::iterator it1 = compMap_.find(name);
+      if (it1 != compMap_.end())
+      {
+         Component * oldComp = it1->second;
+         it1->second = comp;
+         ComponentVec::iterator it2 = std::find(compVec_.begin(), compVec_.end(), oldComp);
+         *it2 = comp;
+         delete oldComp;
+         message() << "Component " << comp->name() << " replaced in model." << std::endl;
+      }
+      else
+      {
+         compMap_[comp->name()] = comp;
          compVec_.push_back(comp);
          message() << "Component " << comp->name() << " added to model." << std::endl;
       }

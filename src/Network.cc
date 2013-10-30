@@ -70,7 +70,7 @@ namespace SmartGridToolbox
 
             // Push the state back onto bus. We don't want to trigger any events.
             bus->V() = busPair.second->V_;
-            bus->SGen() = busPair.second->S_ - bus->Sc();
+            bus->Sg() = busPair.second->S_ - bus->Sc();
          }
       }
    }
