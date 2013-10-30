@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    bat1.setRequestedPower(-1 * kW);
    bat1.initialize(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
    message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
-   bat1.update(bat1.time() + posix_time::hours(5.5));
+   bat1.update(bat1.time() + posix_time::hours(5) + posix_time::minutes(30));
    message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
    comp = 0.0;
    message() << "comp = " << comp / kWh << endl;
@@ -953,7 +953,7 @@ static void testMatpower(const std::string & baseName, bool usePerUnit)
       message() << setw(24) << left << "SGT"
                 << setw(24) << left << bus->V()(0)
                 << setw(24) << left << bus->Sc()(0)
-                << setw(24) << left << bus->SGen()(0)
+                << setw(24) << left << bus->Sg()(0)
                 << std::endl;
       message() << setw(24) << left << "Matpower"
                 << setw(24) << left << V(i) 
@@ -964,7 +964,7 @@ static void testMatpower(const std::string & baseName, bool usePerUnit)
 
       BOOST_CHECK(abs(bus->V()(0) - V(i)) < VTol);
       BOOST_CHECK(abs(bus->Sc()(0) - Sc(i)) < STol);
-      BOOST_CHECK(abs(bus->SGen()(0) - Sg(i)) < STol);
+      BOOST_CHECK(abs(bus->Sg()(0) - Sg(i)) < STol);
    }
 }
 
@@ -1135,7 +1135,7 @@ static void testCDF(const std::string & baseName, bool usePerUnit)
       message() << setw(24) << left << "SGT"
                 << setw(24) << left << bus->V()(0)
                 << setw(24) << left << bus->Sc()(0)
-                << setw(24) << left << bus->SGen()(0)
+                << setw(24) << left << bus->Sg()(0)
                 << std::endl;
       message() << setw(24) << left << "Matpower"
                 << setw(24) << left << V(i) 
@@ -1146,7 +1146,7 @@ static void testCDF(const std::string & baseName, bool usePerUnit)
 
       BOOST_CHECK(abs(bus->V()(0) - V(i)) < VTol);
       BOOST_CHECK(abs(bus->Sc()(0) - Sc(i)) < STol);
-      BOOST_CHECK(abs(bus->SGen()(0) - Sg(i)) < STol);
+      BOOST_CHECK(abs(bus->Sg()(0) - Sg(i)) < STol);
    }
 }
 

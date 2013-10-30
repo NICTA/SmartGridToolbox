@@ -1,7 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I../third_party
-
 lib_LIBRARIES = libsmartgridtoolbox.a
 
 pkginclude_HEADERS = Branch.h \
@@ -65,13 +63,13 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 bin_PROGRAMS = run_config helloworld
 
 run_config_SOURCES = run_config.cc
-run_config_LDADD = libsmartgridtoolbox.a \
-						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
-						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
-						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
-						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a
+run_config_LDADD = libsmartgridtoolbox.a
 run_config_LDFLAGS = -lboost_date_time-mt \
 							-lblas \
-							-lyaml-cpp
+							-lyaml-cpp \
+							-lklu \
+							-lamd \
+							-lcolamd \
+							-lbtf
 
 helloworld_SOURCES = helloworld.cc

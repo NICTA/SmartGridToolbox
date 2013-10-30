@@ -148,11 +148,7 @@ helloworld_OBJECTS = $(am_helloworld_OBJECTS)
 helloworld_LDADD = $(LDADD)
 am_run_config_OBJECTS = run_config.$(OBJEXT)
 run_config_OBJECTS = $(am_run_config_OBJECTS)
-run_config_DEPENDENCIES = libsmartgridtoolbox.a \
-	../third_party/SuiteSparse/KLU/Lib/libklu.a \
-	../third_party/SuiteSparse/AMD/Lib/libamd.a \
-	../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
-	../third_party/SuiteSparse/BTF/Lib/libbtf.a
+run_config_DEPENDENCIES = libsmartgridtoolbox.a
 run_config_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(run_config_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
@@ -329,7 +325,6 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-AM_CPPFLAGS = -I../third_party
 lib_LIBRARIES = libsmartgridtoolbox.a
 pkginclude_HEADERS = Branch.h \
 						   Bus.h \
@@ -390,15 +385,14 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  ZipToGround.cc
 
 run_config_SOURCES = run_config.cc
-run_config_LDADD = libsmartgridtoolbox.a \
-						 ../third_party/SuiteSparse/KLU/Lib/libklu.a \
-						 ../third_party/SuiteSparse/AMD/Lib/libamd.a \
-						 ../third_party/SuiteSparse/COLAMD/Lib/libcolamd.a \
-						 ../third_party/SuiteSparse/BTF/Lib/libbtf.a
-
+run_config_LDADD = libsmartgridtoolbox.a
 run_config_LDFLAGS = -lboost_date_time-mt \
 							-lblas \
-							-lyaml-cpp
+							-lyaml-cpp \
+							-lklu \
+							-lamd \
+							-lcolamd \
+							-lbtf
 
 helloworld_SOURCES = helloworld.cc
 all: all-am
