@@ -1,5 +1,5 @@
-#ifndef BUSc_DOT_H
-#define BUSc_DOT_H
+#ifndef BUS_DOT_H
+#define BUS_DOT_H
 
 #include <smartgridtoolbox/Common.h>
 #include <smartgridtoolbox/Component.h>
@@ -104,4 +104,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // BUSc_DOT_H
+#endif // BUS_DOT_H
