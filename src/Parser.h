@@ -144,6 +144,7 @@ namespace SmartGridToolbox
 
       public:
          void parse(const std::string & fname, Model & model, Simulation & simulation);
+         void validate();
 
          template<typename T> void registerParserPlugin()
          {
@@ -172,6 +173,9 @@ namespace SmartGridToolbox
          void parseComponents(const YAML::Node & node, ParserState & state, Model & model, bool isPostParse);
 
       private:
+         Model * mod_;
+         Simulation * sim_;
+         YAML::Node top_;
          std::map<std::string, const ParserPlugin *> compParsers_;
    };
 

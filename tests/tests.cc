@@ -547,7 +547,7 @@ BOOST_AUTO_TEST_CASE (test_network_1p)
    Simulation sim(mod);
 
    Parser & p = Parser::globalParser();
-   p.parse("test_network_1p.yaml", mod, sim);
+   p.parse("test_network_1p.yaml", mod, sim); p.validate();
 
    Bus * bus1 = mod.componentNamed<Bus>("bus_1");
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
@@ -580,7 +580,7 @@ BOOST_AUTO_TEST_CASE (test_network_b3p)
    Simulation sim(mod);
 
    Parser & p = Parser::globalParser();
-   p.parse("test_network_b3p.yaml", mod, sim);
+   p.parse("test_network_b3p.yaml", mod, sim); p.validate();
 
    Bus * bus1 = mod.componentNamed<Bus>("bus_1");
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
@@ -621,7 +621,7 @@ BOOST_AUTO_TEST_CASE (test_network_2p_identical)
    Simulation sim(mod);
 
    Parser & p = Parser::globalParser();
-   p.parse("test_network_2p_identical.yaml", mod, sim);
+   p.parse("test_network_2p_identical.yaml", mod, sim); p.validate();
 
    Bus * bus1 = mod.componentNamed<Bus>("bus_1");
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
@@ -684,7 +684,7 @@ BOOST_AUTO_TEST_CASE (test_networked_dc)
    Simulation sim(mod);
 
    Parser & p = Parser::globalParser();
-   p.parse("test_networked_dc.yaml", mod, sim);
+   p.parse("test_networked_dc.yaml", mod, sim); p.validate();
 
    Bus * bus1 = mod.componentNamed<Bus>("bus_1");
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
@@ -752,7 +752,7 @@ BOOST_AUTO_TEST_CASE (test_sun)
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::globalParser();
-   p.parse("test_sun.yaml", mod, sim);
+   p.parse("test_sun.yaml", mod, sim); p.validate();
 
    RegularUpdateComponent & clock1 = mod.newComponent<RegularUpdateComponent>("clock1");
    clock1.setDt(posix_time::minutes(10));
@@ -780,7 +780,7 @@ BOOST_AUTO_TEST_CASE (test_solar_PV)
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::globalParser();
-   p.parse("test_solar_PV.yaml", mod, sim);
+   p.parse("test_solar_PV.yaml", mod, sim); p.validate();
 
    SolarPV * spv2 = mod.componentNamed<SolarPV>("solar_PV_bus_2");
    InverterBase * inv2 = mod.componentNamed<InverterBase>("inverter_bus_2");
@@ -809,7 +809,7 @@ BOOST_AUTO_TEST_CASE (test_loops)
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::globalParser();
-   p.parse("test_loops.yaml", mod, sim);
+   p.parse("test_loops.yaml", mod, sim); p.validate();
 
    SolarPV * spv2 = mod.componentNamed<SolarPV>("solar_PV_bus_2");
    InverterBase * inv2 = mod.componentNamed<InverterBase>("inverter_bus_2_0");
@@ -917,7 +917,7 @@ static void testMatpower(const std::string & baseName, bool usePerUnit)
    
    prepareMPInput(yamlName, caseName, usePerUnit);
 
-   p.parse(yamlName.c_str(), mod, sim);
+   p.parse(yamlName.c_str(), mod, sim); p.validate();
    mod.validate();
    sim.initialize();
    Network * network = mod.componentNamed<Network>("matpower");
@@ -1034,7 +1034,7 @@ BOOST_AUTO_TEST_CASE (test_network_overhead)
    Simulation sim(mod);
 
    Parser & p = Parser::globalParser();
-   p.parse("test_network_overhead.yaml", mod, sim);
+   p.parse("test_network_overhead.yaml", mod, sim); p.validate();
 
    Bus * bus1 = mod.componentNamed<Bus>("bus_1");
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
@@ -1099,7 +1099,7 @@ static void testCDF(const std::string & baseName, bool usePerUnit)
    
    prepareCDFInput(yamlName, caseName, usePerUnit);
 
-   p.parse(yamlName.c_str(), mod, sim);
+   p.parse(yamlName.c_str(), mod, sim); p.validate();
    mod.validate();
    sim.initialize();
    Network * network = mod.componentNamed<Network>("cdf");

@@ -217,24 +217,25 @@ namespace SmartGridToolbox
    void Parser::parse(const std::string & fname, Model & model, Simulation & simulation)
    {
       message() << "Started parsing file " << fname << "." << std::endl;
-      const YAML::Node & top = YAML::LoadFile(fname);
-      if (top.size() == 0)
+      mod_ = &model;
+      sim_ = &simulation;
+      top_ = YAML::LoadFile(fname);
+      if (top_.size() == 0)
       {
          error() << "Parsing file " << fname << ". File is empty or doesn't exist." << std::endl;
          abort();
       }
 
       SGT_DEBUG(debug() << "Parsing global." << std::endl);
-      parseGlobal(top, model, simulation);
+      parseGlobal(top_, model, simulation);
       SGT_DEBUG(debug() << "Parsed global." << std::endl);
 
-      const YAML::Node & objsNode = top["objects"];
+      const YAML::Node & objsNode = top_["objects"];
       if (objsNode)
       {
          SGT_DEBUG(debug() << "Parsing objects." << std::endl);
          ParserState s;
          parseComponents(objsNode, s, model, false);
-         parseComponents(objsNode, s, model, true);
          SGT_DEBUG(debug() << "Parsed objects." << std::endl);
       }
 
@@ -245,6 +246,18 @@ namespace SmartGridToolbox
       message() << "End time (UTC)     = " << utcTime(simulation.endTime()) << std::endl;
       message() << "timezone           = " << model.timezone()->to_posix_string() << std::endl;
       message() << "lat_long           = " << model.latLong().lat_ << ", " << model.latLong().long_ << "." << std::endl;
+   }
+
+   void Parser::validate()
+   {
+      const YAML::Node & objsNode = top_["objects"];
+      if (objsNode)
+      {
+         ParserState s;
+         parseComponents(objsNode, s, *mod_, true);
+         SGT_DEBUG(debug() << "Parsed objects." << std::endl);
+      }
+      message() << "Parser validated " << mod_->name() << "." << std::endl;
    }
    
    Parser::Parser()
