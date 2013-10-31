@@ -248,7 +248,7 @@ namespace SmartGridToolbox
       message() << "lat_long           = " << model.latLong().lat_ << ", " << model.latLong().long_ << "." << std::endl;
    }
 
-   void Parser::validate()
+   void Parser::postParse()
    {
       const YAML::Node & objsNode = top_["objects"];
       if (objsNode)
@@ -257,7 +257,7 @@ namespace SmartGridToolbox
          parseComponents(objsNode, s, *mod_, true);
          SGT_DEBUG(debug() << "Parsed objects." << std::endl);
       }
-      message() << "Parser validated " << mod_->name() << "." << std::endl;
+      message() << "Parser post-parse " << mod_->name() << "." << std::endl;
    }
    
    Parser::Parser()

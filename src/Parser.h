@@ -144,7 +144,7 @@ namespace SmartGridToolbox
 
       public:
          void parse(const std::string & fname, Model & model, Simulation & simulation);
-         void validate();
+         void postParse();
 
          template<typename T> void registerParserPlugin()
          {
