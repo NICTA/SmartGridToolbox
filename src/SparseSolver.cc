@@ -1,4 +1,4 @@
-#include <SuiteSparse/KLU/Include/klu.h>
+#include <klu.h>
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 
