@@ -74,7 +74,7 @@ namespace SmartGridToolbox
    class Model;
    class Simulation;
 
-   struct ParserState
+   class ParserState
    {
       public:
          std::string expandName(const std::string & target) const;
