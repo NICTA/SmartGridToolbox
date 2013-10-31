@@ -44,16 +44,20 @@ namespace SmartGridToolbox
 
          const ublas::matrix<Complex> & Y() const {return Y_;}
          ublas::matrix<Complex> & Y() {return Y_;}
+
+         const ublas::matrix<double> & SAppMax() const {return SAppMax_;}
+         ublas::matrix<double> & SAppMax() {return SAppMax_;}
       /// @}
 
       /// @name My private member variables.
       /// @{
       private:
-         Bus * bus0_;                  ///< My bus 0.
-         Bus * bus1_;                  ///< My bus 1.
-         Phases phases0_;              ///< Phases on bus 0.
-         Phases phases1_;              ///< Phases on bus 1.
-         ublas::matrix<Complex> Y_;    ///< Complex value of elements in bus admittance matrix in NR solver.
+         Bus * bus0_;                     ///< My bus 0.
+         Bus * bus1_;                     ///< My bus 1.
+         Phases phases0_;                 ///< Phases on bus 0.
+         Phases phases1_;                 ///< Phases on bus 1.
+         ublas::matrix<Complex> Y_;       ///< Complex value of elements in bus admittance matrix in NR solver.
+         ublas::matrix<double> SAppMax;   ///< Max apparent power.
       /// @}
    };
 }
