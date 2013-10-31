@@ -127,6 +127,7 @@ namespace SmartGridToolbox
       return ldt.utc_time();
    }
    const double pi = 3.141592653589793238462643383279502884;
+   const double infinity = std::numeric_limits<double>::infinity();
    const double second = 1.0;
    const double minute = 60.0 * second;
    const double hour = 60.0 * minute;

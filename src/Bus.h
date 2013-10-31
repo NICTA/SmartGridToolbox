@@ -71,6 +71,12 @@ namespace SmartGridToolbox
          
          /// Total power injection (loads + gen).
          const ublas::vector<Complex> STot() const {return Sc_ + Sg_;}
+         
+         /// Generator reactive power bounds.
+         const ublas::vector<double> & QMin() const {return QMin_;}
+         ublas::vector<double> & QMin() {return QMin_;}
+         const ublas::vector<double> & QMax() const {return QMax_;}
+         ublas::vector<double> & QMax() {return QMax_;}
       /// @}
 
       /// @name My private member variables.
@@ -99,6 +105,9 @@ namespace SmartGridToolbox
          ublas::vector<Complex> Ys_;                           ///< Constant admittance shunt (loads).
          ublas::vector<Complex> Ic_;                           ///< Constant current injection (loads).
          ublas::vector<Complex> Sc_;                           ///< Constant power injection (loads).
+
+         ublas::vector<double> QMin_;                          ///< Reactive power min. 
+         ublas::vector<double> QMax_;                          ///< Reactive power max. 
          /// @}
       /// @}
    };

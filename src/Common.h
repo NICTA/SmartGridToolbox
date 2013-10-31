@@ -161,6 +161,7 @@ namespace SmartGridToolbox
    /// @name Constants
    /// @{
    extern const double pi;
+   extern const double infinity;
    extern const double second;
    extern const double minute;
    extern const double hour;

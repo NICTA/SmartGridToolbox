@@ -59,6 +59,8 @@ namespace SmartGridToolbox
       Ys_ = ublas::vector<Complex>(phases_.size(), czero);
       Ic_ = ublas::vector<Complex>(phases_.size(), czero);
       Sc_ = ublas::vector<Complex>(phases_.size(), czero);
+      QMin_ = ublas::vector<double>(phases_.size(), 0.0);
+      QMax_ = ublas::vector<double>(phases_.size(), infinity);
       for (const ZipToGroundBase * zip : zipsToGround_)
       {
          Ys_ += zip->Y();

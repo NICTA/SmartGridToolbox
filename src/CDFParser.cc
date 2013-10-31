@@ -19,7 +19,9 @@ namespace SmartGridToolbox
       double VBase;  // SI.
       Complex VPU;   // Per unit.
       Complex SLoad; // SI.
-      Complex Sg;  // SI.
+      Complex Sg;    // SI.
+      double QMin;   // SI.
+      double QMax;   // SI.
       Complex YsPU;  // Per unit.
    };
 
@@ -141,6 +143,14 @@ namespace SmartGridToolbox
             double QgMW;
             std::istringstream(line.substr(67, 8)) >> QgMW;
             busInfo.Sg = Complex(PgMW, QgMW) * MW; // Injection is -ve load.
+            
+            double QMinMW;
+            std::istringstream(line.substr(98, 8)) >> QMinMW;
+            busInfo.QMin = QMinMW * MW;
+
+            double QMaxMW;
+            std::istringstream(line.substr(90, 8)) >> QMaxMW;
+            busInfo.QMax = QMaxMW * MW;
 
             double GsPU;
             std::istringstream(line.substr(106, 8)) >> GsPU;
