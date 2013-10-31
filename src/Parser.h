@@ -146,6 +146,8 @@ namespace SmartGridToolbox
          void parse(const std::string & fname, Model & model, Simulation & simulation);
          void postParse();
 
+         const YAML::Node top() {return top_;}
+
          template<typename T> void registerParserPlugin()
          {
             compParsers_[T::pluginKey()] = &ParserPlugin::globalCompParser<T>();
