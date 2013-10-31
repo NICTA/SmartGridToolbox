@@ -1,7 +1,7 @@
-#include "Bus.h"
-#include "Model.h"
-#include "Network.h"
-#include "ZipToGroundBase.h"
+#include <smartgridtoolbox/Bus.h>
+#include <smartgridtoolbox/Model.h>
+#include <smartgridtoolbox/Network.h>
+#include <smartgridtoolbox/ZipToGroundBase.h>
  
 namespace SmartGridToolbox
 {

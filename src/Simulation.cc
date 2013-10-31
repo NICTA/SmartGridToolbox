@@ -1,6 +1,6 @@
-#include "Simulation.h"
-#include "Model.h"
-#include "Component.h"
+#include <smartgridtoolbox/Simulation.h>
+#include <smartgridtoolbox/Model.h>
+#include <smartgridtoolbox/Component.h>
 #include <algorithm>
 
 namespace SmartGridToolbox

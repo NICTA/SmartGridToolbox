@@ -1,4 +1,4 @@
-#include "SimpleBattery.h"
+#include <smartgridtoolbox/SimpleBattery.h>
 #include <iostream>
 using namespace std;
 namespace SmartGridToolbox

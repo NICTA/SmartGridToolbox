@@ -1,7 +1,7 @@
-#include "SimpleInverter.h"
+#include <smartgridtoolbox/SimpleInverter.h>
 
-#include "Model.h"
-#include "Bus.h"
+#include <smartgridtoolbox/Model.h>
+#include <smartgridtoolbox/Bus.h>
 
 namespace SmartGridToolbox
 {

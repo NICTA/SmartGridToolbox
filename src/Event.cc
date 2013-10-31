@@ -1,5 +1,5 @@
-#include "Common.h"
-#include "Event.h"
+#include <smartgridtoolbox/Common.h>
+#include <smartgridtoolbox/Event.h>
 
 namespace SmartGridToolbox
 {

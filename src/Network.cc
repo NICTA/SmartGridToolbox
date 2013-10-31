@@ -1,7 +1,7 @@
-#include "Network.h"
-#include "Bus.h"
-#include "Branch.h"
-#include "Model.h"
+#include <smartgridtoolbox/Network.h>
+#include <smartgridtoolbox/Bus.h>
+#include <smartgridtoolbox/Branch.h>
+#include <smartgridtoolbox/Model.h>
 #include "PowerFlowNR.h"
 #include <iostream>
 

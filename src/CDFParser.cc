@@ -1,8 +1,8 @@
 #include "CDFParser.h"
-#include "Bus.h"
-#include "Network.h"
-#include "PowerFlow.h"
-#include "ZipToGround.h"
+#include <smartgridtoolbox/Bus.h>
+#include <smartgridtoolbox/Network.h>
+#include <smartgridtoolbox/PowerFlow.h>
+#include <smartgridtoolbox/ZipToGround.h>
 
 #include <fstream>
 #include <list>

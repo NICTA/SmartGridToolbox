@@ -1,14 +1,14 @@
 #include "RegisterParserPlugins.h"
-#include "Branch.h"
-#include "Bus.h"
+#include <smartgridtoolbox/Branch.h>
+#include <smartgridtoolbox/Bus.h>
 #include "CDFParser.h"
 #include "MatpowerParser.h"
-#include "Network.h"
-#include "SimpleDCPowerSource.h"
-#include "SimpleInverter.h"
-#include "SolarPV.h"
-#include "Weather.h"
-#include "ZipToGround.h"
+#include <smartgridtoolbox/Network.h>
+#include <smartgridtoolbox/SimpleDCPowerSource.h>
+#include <smartgridtoolbox/SimpleInverter.h>
+#include <smartgridtoolbox/SolarPV.h>
+#include <smartgridtoolbox/Weather.h>
+#include <smartgridtoolbox/ZipToGround.h>
 
 namespace SmartGridToolbox
 {

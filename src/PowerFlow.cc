@@ -1,4 +1,4 @@
-#include "PowerFlow.h"
+#include <smartgridtoolbox/PowerFlow.h>
 
 #include <iostream>
 #include <sstream>

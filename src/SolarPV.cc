@@ -1,7 +1,7 @@
-#include "SolarPV.h"
-#include "InverterBase.h"
-#include "Model.h"
-#include "Weather.h"
+#include <smartgridtoolbox/SolarPV.h>
+#include <smartgridtoolbox/InverterBase.h>
+#include <smartgridtoolbox/Model.h>
+#include <smartgridtoolbox/Weather.h>
 
 namespace SmartGridToolbox
 {

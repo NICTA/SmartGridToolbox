@@ -1,4 +1,4 @@
-#include "Common.h"
+#include <smartgridtoolbox/Common.h>
 #include "WeakOrder.h"
 #include <iostream>
 #include <algorithm>
