@@ -1,10 +1,10 @@
 #ifndef BRANCH_DOT_H
 #define BRANCH_DOT_H
 
-#include <smartgridtoolbox/Common.h>
-#include <smartgridtoolbox/Component.h>
-#include <smartgridtoolbox/Parser.h>
-#include <smartgridtoolbox/PowerFlow.h>
+#include <SmartGridToolbox/Common.h>
+#include <SmartGridToolbox/Component.h>
+#include <SmartGridToolbox/Parser.h>
+#include <SmartGridToolbox/PowerFlow.h>
 
 #include <iostream>
 
@@ -57,7 +57,7 @@ namespace SmartGridToolbox
          Phases phases0_;                 ///< Phases on bus 0.
          Phases phases1_;                 ///< Phases on bus 1.
          ublas::matrix<Complex> Y_;       ///< Complex value of elements in bus admittance matrix in NR solver.
-         ublas::matrix<double> SAppMax;   ///< Max apparent power.
+         ublas::matrix<double> SAppMax_;  ///< Max apparent power.
       /// @}
    };
 }

@@ -1,6 +1,6 @@
-#include <smartgridtoolbox/InverterBase.h>
+#include <SmartGridToolbox/InverterBase.h>
 
-#include <smartgridtoolbox/DCPowerSourceBase.h>
+#include <SmartGridToolbox/DCPowerSourceBase.h>
 
 namespace SmartGridToolbox
 {

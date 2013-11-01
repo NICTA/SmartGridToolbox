@@ -1,5 +1,5 @@
-#include <smartgridtoolbox/Model.h>
-#include <smartgridtoolbox/Component.h>
+#include <SmartGridToolbox/Model.h>
+#include <SmartGridToolbox/Component.h>
 #include "WeakOrder.h"
 #include <algorithm>
 #include <string>

@@ -1,6 +1,6 @@
-#include <smartgridtoolbox/ZipToGround.h>
-#include <smartgridtoolbox/Bus.h>
-#include <smartgridtoolbox/Model.h>
+#include <SmartGridToolbox/ZipToGround.h>
+#include <SmartGridToolbox/Bus.h>
+#include <SmartGridToolbox/Model.h>
 
 namespace SmartGridToolbox
 {

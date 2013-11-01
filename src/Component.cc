@@ -1,4 +1,4 @@
-#include <smartgridtoolbox/Component.h>
+#include <SmartGridToolbox/Component.h>
 
 namespace SmartGridToolbox
 {

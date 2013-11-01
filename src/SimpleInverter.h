@@ -1,7 +1,7 @@
 #ifndef SIMPLE_INVERTER_DOT_H
 #define SIMPLE_INVERTER_DOT_H
 
-#include <smartgridtoolbox/InverterBase.h>
+#include <SmartGridToolbox/InverterBase.h>
 
 namespace SmartGridToolbox
 {

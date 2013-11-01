@@ -1,9 +1,9 @@
 #ifndef SIMPLE_BATTERY_DOT_H
 #define SIMPLE_BATTERY_DOT_H
 
-#include <smartgridtoolbox/SimpleBattery.h>
-#include <smartgridtoolbox/Common.h>
-#include <smartgridtoolbox/Component.h>
+#include <SmartGridToolbox/SimpleBattery.h>
+#include <SmartGridToolbox/Common.h>
+#include <SmartGridToolbox/Component.h>
 #include<string>
 
 namespace SmartGridToolbox

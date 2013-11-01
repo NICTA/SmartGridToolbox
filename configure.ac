@@ -1,4 +1,5 @@
-AC_INIT([smartgridtoolbox], [1.0], [dan.gordon@nicta.com.au])
+AC_INIT([SmartGridToolbox], [1.0], [dan.gordon@nicta.com.au], [SmartGridToolbox])
+AC_CONFIG_SRCDIR([src/Common.cc])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 m4_include([./m4_ax_cxx_compile_stdcxx_11.m4])
@@ -19,7 +20,7 @@ DX_RTF_FEATURE(OFF)
 DX_XML_FEATURE(OFF)
 DX_PDF_FEATURE(OFF)
 DX_PS_FEATURE(OFF)
-DX_INIT_DOXYGEN(smartgridtoolbox, Doxyfile)
+DX_INIT_DOXYGEN(SmartGridToolbox, Doxyfile)
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile docs/Makefile \

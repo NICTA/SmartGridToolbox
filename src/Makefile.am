@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-lib_LIBRARIES = libsmartgridtoolbox.a
+lib_LIBRARIES = libSmartGridToolbox.a
 
 pkginclude_HEADERS = Branch.h \
 						   Bus.h \
@@ -33,7 +33,7 @@ pkginclude_HEADERS = Branch.h \
 							ZipToGround.h \
 							ZipToGroundBase.h
 
-libsmartgridtoolbox_a_SOURCES = Bus.cc \
+libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  Branch.cc \
 										  CDFParser.cc \
 										  Common.cc \
@@ -63,7 +63,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 bin_PROGRAMS = run_config helloworld
 
 run_config_SOURCES = run_config.cc
-run_config_LDADD = libsmartgridtoolbox.a
+run_config_LDADD = libSmartGridToolbox.a
 run_config_LDFLAGS = -lboost_date_time-mt \
 							-lblas \
 							-lyaml-cpp \

@@ -1,7 +1,7 @@
 #ifndef REGULAR_UPDATE_COMPONENT
 #define REGULAR_UPDATE_COMPONENT
 
-#include <smartgridtoolbox/Component.h>
+#include <SmartGridToolbox/Component.h>
 
 namespace SmartGridToolbox
 {

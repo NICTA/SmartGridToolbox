@@ -128,9 +128,9 @@ AM_V_AR = $(am__v_AR_@AM_V@)
 am__v_AR_ = $(am__v_AR_@AM_DEFAULT_V@)
 am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
-libsmartgridtoolbox_a_AR = $(AR) $(ARFLAGS)
-libsmartgridtoolbox_a_LIBADD =
-am_libsmartgridtoolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
+libSmartGridToolbox_a_AR = $(AR) $(ARFLAGS)
+libSmartGridToolbox_a_LIBADD =
+am_libSmartGridToolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
 	CDFParser.$(OBJEXT) Common.$(OBJEXT) Component.$(OBJEXT) \
 	Event.$(OBJEXT) InverterBase.$(OBJEXT) \
 	MatpowerParser.$(OBJEXT) Model.$(OBJEXT) Network.$(OBJEXT) \
@@ -141,14 +141,14 @@ am_libsmartgridtoolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
 	Simulation.$(OBJEXT) SolarPV.$(OBJEXT) SparseSolver.$(OBJEXT) \
 	Sun.$(OBJEXT) WeakOrder.$(OBJEXT) Weather.$(OBJEXT) \
 	ZipToGround.$(OBJEXT)
-libsmartgridtoolbox_a_OBJECTS = $(am_libsmartgridtoolbox_a_OBJECTS)
+libSmartGridToolbox_a_OBJECTS = $(am_libSmartGridToolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_helloworld_OBJECTS = helloworld.$(OBJEXT)
 helloworld_OBJECTS = $(am_helloworld_OBJECTS)
 helloworld_LDADD = $(LDADD)
 am_run_config_OBJECTS = run_config.$(OBJEXT)
 run_config_OBJECTS = $(am_run_config_OBJECTS)
-run_config_DEPENDENCIES = libsmartgridtoolbox.a
+run_config_DEPENDENCIES = libSmartGridToolbox.a
 run_config_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(run_config_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
@@ -180,9 +180,9 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(helloworld_SOURCES) \
+SOURCES = $(libSmartGridToolbox_a_SOURCES) $(helloworld_SOURCES) \
 	$(run_config_SOURCES)
-DIST_SOURCES = $(libsmartgridtoolbox_a_SOURCES) $(helloworld_SOURCES) \
+DIST_SOURCES = $(libSmartGridToolbox_a_SOURCES) $(helloworld_SOURCES) \
 	$(run_config_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
@@ -325,7 +325,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
-lib_LIBRARIES = libsmartgridtoolbox.a
+lib_LIBRARIES = libSmartGridToolbox.a
 pkginclude_HEADERS = Branch.h \
 						   Bus.h \
 							Common.h \
@@ -357,7 +357,7 @@ pkginclude_HEADERS = Branch.h \
 							ZipToGround.h \
 							ZipToGroundBase.h
 
-libsmartgridtoolbox_a_SOURCES = Bus.cc \
+libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  Branch.cc \
 										  CDFParser.cc \
 										  Common.cc \
@@ -385,7 +385,7 @@ libsmartgridtoolbox_a_SOURCES = Bus.cc \
 										  ZipToGround.cc
 
 run_config_SOURCES = run_config.cc
-run_config_LDADD = libsmartgridtoolbox.a
+run_config_LDADD = libSmartGridToolbox.a
 run_config_LDFLAGS = -lboost_date_time-mt \
 							-lblas \
 							-lyaml-cpp \
@@ -461,10 +461,10 @@ uninstall-libLIBRARIES:
 clean-libLIBRARIES:
 	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
 
-libsmartgridtoolbox.a: $(libsmartgridtoolbox_a_OBJECTS) $(libsmartgridtoolbox_a_DEPENDENCIES) $(EXTRA_libsmartgridtoolbox_a_DEPENDENCIES) 
-	$(AM_V_at)-rm -f libsmartgridtoolbox.a
-	$(AM_V_AR)$(libsmartgridtoolbox_a_AR) libsmartgridtoolbox.a $(libsmartgridtoolbox_a_OBJECTS) $(libsmartgridtoolbox_a_LIBADD)
-	$(AM_V_at)$(RANLIB) libsmartgridtoolbox.a
+libSmartGridToolbox.a: $(libSmartGridToolbox_a_OBJECTS) $(libSmartGridToolbox_a_DEPENDENCIES) $(EXTRA_libSmartGridToolbox_a_DEPENDENCIES) 
+	$(AM_V_at)-rm -f libSmartGridToolbox.a
+	$(AM_V_AR)$(libSmartGridToolbox_a_AR) libSmartGridToolbox.a $(libSmartGridToolbox_a_OBJECTS) $(libSmartGridToolbox_a_LIBADD)
+	$(AM_V_at)$(RANLIB) libSmartGridToolbox.a
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \

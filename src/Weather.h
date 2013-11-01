@@ -1,10 +1,10 @@
 #ifndef WEATHER_DOT_H
 #define WEATHER_DOT_H
 
-#include <smartgridtoolbox/Parser.h>
-#include <smartgridtoolbox/RegularUpdateComponent.h>
-#include <smartgridtoolbox/Sun.h>
-#include <smartgridtoolbox/TimeSeries.h>
+#include <SmartGridToolbox/Parser.h>
+#include <SmartGridToolbox/RegularUpdateComponent.h>
+#include <SmartGridToolbox/Sun.h>
+#include <SmartGridToolbox/TimeSeries.h>
 
 namespace SmartGridToolbox
 {

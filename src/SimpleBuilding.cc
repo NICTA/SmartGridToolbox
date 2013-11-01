@@ -1,4 +1,4 @@
-#include <smartgridtoolbox/SimpleBuilding.h>
+#include <SmartGridToolbox/SimpleBuilding.h>
 
 static double propTbNorm(double dt, double Tb0, double Ts, double kb,
                          double kh, double Cb)

@@ -1,7 +1,7 @@
 #ifndef LOAD_DOT_H
 #define LOAD_DOT_H
 
-#include <smartgridtoolbox/Common.h>
+#include <SmartGridToolbox/Common.h>
 
 // TODO : deprecated!
 

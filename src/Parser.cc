@@ -1,8 +1,8 @@
-#include <smartgridtoolbox/Common.h>
-#include <smartgridtoolbox/Model.h>
-#include <smartgridtoolbox/Parser.h>
+#include <SmartGridToolbox/Common.h>
+#include <SmartGridToolbox/Model.h>
+#include <SmartGridToolbox/Parser.h>
 #include "RegisterParserPlugins.h"
-#include <smartgridtoolbox/Simulation.h>
+#include <SmartGridToolbox/Simulation.h>
 #include <string>
 #include <boost/algorithm/string.hpp>
 

@@ -1,7 +1,7 @@
 #ifndef POWERFLOW_DOT_H
 #define POWERFLOW_DOT_H
 
-#include <smartgridtoolbox/Common.h>
+#include <SmartGridToolbox/Common.h>
 
 #include <map>
 #include <ostream>
