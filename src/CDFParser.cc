@@ -11,7 +11,7 @@
 namespace SmartGridToolbox
 {
    // All quantities expressed as injections:
-   struct BusInfo
+   struct CDFBusInfo
    {
       std::string name;
       int CDFType;
@@ -90,7 +90,7 @@ namespace SmartGridToolbox
       const YAML::Node ndFreq = nd["freq_Hz"];
       double freq = ndFreq ? ndFreq.as<double>() : 50.0;
 
-      std::map<int, BusInfo> busMap;
+      std::map<int, CDFBusInfo> busMap;
       std::list<BranchInfo> branchList;
       double SBase;
       {
@@ -116,7 +116,7 @@ namespace SmartGridToolbox
          {
             int busId;
             std::istringstream(line.substr(0, 4)) >> busId;
-            BusInfo & busInfo = busMap[busId];
+            CDFBusInfo & busInfo = busMap[busId];
 
             busInfo.name = busName(networkName, busId);
 
@@ -187,7 +187,7 @@ namespace SmartGridToolbox
          for (const auto pair : busMap)
          {
             const int & busId = pair.first;
-            const BusInfo & info = pair.second;
+            const CDFBusInfo & info = pair.second;
             BusType type = BusType::BAD;
             switch (info.CDFType)
             {
@@ -234,8 +234,8 @@ namespace SmartGridToolbox
          int i = 0;
          for (const BranchInfo & info : branchList)
          {
-            const BusInfo & busInfo0 = busMap[info.bus0Id];
-            const BusInfo & busInfo1 = busMap[info.bus1Id];
+            const CDFBusInfo & busInfo0 = busMap[info.bus0Id];
+            const CDFBusInfo & busInfo1 = busMap[info.bus1Id];
 
             double VBase0 = busInfo0.VBase;
             double VBase1 = busInfo1.VBase;
