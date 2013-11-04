@@ -90,10 +90,12 @@ namespace SmartGridToolbox
       phases_(phases),
       nominalV_(nominalV),
       V_(V),
-      Sg_(Sg),
       Ys_(ublas::vector<Complex>(phases.size(), czero)),
       Ic_(ublas::vector<Complex>(phases.size(), czero)),
-      Sc_(ublas::vector<Complex>(phases.size(), czero))
+      Sc_(ublas::vector<Complex>(phases.size(), czero)),
+      Sg_(Sg),
+      QMin_(ublas::vector<double>(phases.size(), 0.0)),
+      QMax_(ublas::vector<double>(phases.size(), 0.0))
    {
       assert(nominalV_.size() == phases_.size());
    }
