@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       Complex YsPU;  // Per unit.
    };
 
-   struct BranchInfo
+   struct CDFBranchInfo
    {
       int bus0Id; 
       int bus1Id;
@@ -91,7 +91,7 @@ namespace SmartGridToolbox
       double freq = ndFreq ? ndFreq.as<double>() : 50.0;
 
       std::map<int, CDFBusInfo> busMap;
-      std::list<BranchInfo> branchList;
+      std::list<CDFBranchInfo> branchList;
       double SBase;
       {
          // Parse in the raw CDF data.
@@ -164,8 +164,8 @@ namespace SmartGridToolbox
 
          for (std::getline(infile, line); line.substr(0, 4) != std::string("-999"); std::getline(infile, line))
          {
-            branchList.push_back(BranchInfo());
-            BranchInfo & branchInfo = branchList.back();
+            branchList.push_back(CDFBranchInfo());
+            CDFBranchInfo & branchInfo = branchList.back();
 
             std::istringstream(line.substr(0, 4)) >> branchInfo.bus0Id;
             std::istringstream(line.substr(5, 4)) >> branchInfo.bus1Id;
@@ -232,7 +232,7 @@ namespace SmartGridToolbox
          }
 
          int i = 0;
-         for (const BranchInfo & info : branchList)
+         for (const CDFBranchInfo & info : branchList)
          {
             const CDFBusInfo & busInfo0 = busMap[info.bus0Id];
             const CDFBusInfo & busInfo1 = busMap[info.bus1Id];
