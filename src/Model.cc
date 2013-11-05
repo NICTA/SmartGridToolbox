@@ -56,15 +56,18 @@ namespace SmartGridToolbox
                return lhs->rank() < rhs->rank();
             });
       isValid_ = true;
-      message() << "Model after validation:" << std::endl;
-      for (const Component * comp : compVec_)
-      {
-         message() << "\t" << comp->name() << " " << comp->rank() << std::endl;
-         for (Component * const dep : comp->dependencies())
+      SGT_DEBUG
+      (
+         debug() << "Model after validation:" << std::endl;
+         for (const Component * comp : compVec_)
          {
-            message() << "\t\t" << dep->name() << " " << dep->rank() << std::endl;
+            debug() << "\t" << comp->name() << " " << comp->rank() << std::endl;
+            for (Component * const dep : comp->dependencies())
+            {
+               debug() << "\t\t" << dep->name() << " " << dep->rank() << std::endl;
+            }
          }
-      }
+      )
    }
 
    void Model::addGenericComponent(Component * comp)
@@ -77,7 +80,7 @@ namespace SmartGridToolbox
       else
       {
          compVec_.push_back(comp);
-         message() << "Component " << comp->name() << " added to model." << std::endl;
+         SGT_DEBUG(message() << "Component " << comp->name() << " added to model." << std::endl);
       }
    }
 

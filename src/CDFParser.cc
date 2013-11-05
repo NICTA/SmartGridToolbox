@@ -215,13 +215,19 @@ namespace SmartGridToolbox
             Complex SLoad = usePerUnit ? info.SLoad / SBase : info.SLoad;
             Complex Sg = usePerUnit ? info.Sg / SBase : info.Sg;
             Complex Ys = usePerUnit ? info.YsPU : info.YsPU * SBase / (info.VBase * info.VBase);
+            double QMin = usePerUnit ? info.QMin / SBase : info.QMin;
+            double QMax = usePerUnit ? info.QMax / SBase : info.QMax;
 
             ublas::vector<Complex> VVec(phases.size(), V);
             ublas::vector<Complex> SLoadVec(phases.size(), SLoad);
             ublas::vector<Complex> SgVec(phases.size(), Sg);
             ublas::vector<Complex> YsVec(phases.size(), Ys);
+            ublas::vector<double> QMinVec(phases.size(), QMin);
+            ublas::vector<double> QMaxVec(phases.size(), QMax);
 
             Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec, VVec, SgVec);
+            bus.QMin() = QMinVec; // For PV busses, place bound on Q.
+            bus.QMax() = QMaxVec; // For PV busses, place bound on Q.
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;

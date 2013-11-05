@@ -47,6 +47,7 @@ namespace SmartGridToolbox
          const Phases & phases() const {return phases_;}
 
          const ublas::vector<Complex> & nominalV() const {return nominalV_;}
+         ublas::vector<Complex> & nominalV() {return nominalV_;}
 
          const ublas::vector<Complex> & V() const {return V_;}
          ublas::vector<Complex> & V() {return V_;}
@@ -72,11 +73,13 @@ namespace SmartGridToolbox
          /// Total power injection (loads + gen).
          const ublas::vector<Complex> STot() const {return Sc_ + Sg_;}
          
-         /// Generator reactive power bounds.
+         /// Reactive power bounds.
          const ublas::vector<double> & QMin() const {return QMin_;}
          ublas::vector<double> & QMin() {return QMin_;}
          const ublas::vector<double> & QMax() const {return QMax_;}
          ublas::vector<double> & QMax() {return QMax_;}
+
+         // TODO: bounds on other quantities e.g. theta etc.
       /// @}
 
       /// @name My private member variables.

@@ -83,14 +83,20 @@ namespace SmartGridToolbox
       os << "\tBusses:" << std::endl;
       for (const Bus * bus : nw.busVec_)
       {
+         ublas::vector<double> VMag(bus->V().size());
+         for (int i = 0; i < bus->V().size(); ++i) VMag(i) = abs(bus->V()(i));
+
          os << "\t\tBus:" << std::endl;
          os << "\t\t\tName   : " << bus->name() << std::endl;
          os << "\t\t\tType   : " << bus->type() << std::endl;
          os << "\t\t\tPhases : " << bus->phases() << std::endl;
          os << "\t\t\tV      : " << bus->V() << std::endl;
+         os << "\t\t\t|V|    : " << VMag << std::endl;
          os << "\t\t\tYs     : " << bus->Ys() << std::endl;
          os << "\t\t\tIc     : " << bus->Ic() << std::endl;
          os << "\t\t\tSc     : " << bus->Sc() << std::endl;
+         os << "\t\t\tSg     : " << bus->Sg() << std::endl;
+         os << "\t\t\tSTot   : " << bus->STot() << std::endl;
       }
       os << "\tBranches:" << std::endl;
       for (const Branch * branch : nw.branchVec_)
