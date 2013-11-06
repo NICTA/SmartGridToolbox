@@ -22,7 +22,7 @@ namespace SmartGridToolbox
       Complex Sg;    // SI.
       double QMin;   // SI.
       double QMax;   // SI.
-      Complex ysPU;  // Per unit.
+      Complex ysPu;  // Per unit.
    };
 
    struct CdfBranchInfo
@@ -30,9 +30,9 @@ namespace SmartGridToolbox
       int bus0Id; 
       int bus1Id;
 
-      double RsPU;
-      double XsPU;
-      double BcPU;
+      double RsPu;
+      double XsPu;
+      double BcPu;
       double tap;
       double thetaRad;
    };
@@ -126,11 +126,11 @@ namespace SmartGridToolbox
             std::istringstream(line.substr(76, 7)) >> KVBase;
             busInfo.VBase = KVBase == 0 ? defaultVBase : KVBase * 1000;
 
-            double VmPU;
-            std::istringstream(line.substr(27, 6)) >> VmPU;
+            double VmPu;
+            std::istringstream(line.substr(27, 6)) >> VmPu;
             double VaDeg;
             std::istringstream(line.substr(33, 7)) >> VaDeg;
-            busInfo.VPu = polar(VmPU, VaDeg * pi/180);
+            busInfo.VPu = polar(VmPu, VaDeg * pi/180);
 
             double PdMW;
             std::istringstream(line.substr(40, 9)) >> PdMW;
@@ -152,11 +152,11 @@ namespace SmartGridToolbox
             std::istringstream(line.substr(90, 8)) >> QMaxMW;
             busInfo.QMax = QMaxMW * MW;
 
-            double GsPU;
-            std::istringstream(line.substr(106, 8)) >> GsPU;
-            double BsPU;
-            std::istringstream(line.substr(114, 8)) >> BsPU;
-            busInfo.ysPU = Complex(GsPU, BsPU);
+            double GsPu;
+            std::istringstream(line.substr(106, 8)) >> GsPu;
+            double BsPu;
+            std::istringstream(line.substr(114, 8)) >> BsPu;
+            busInfo.ysPu = Complex(GsPu, BsPu);
          }
 
          std::getline(infile, line); 
@@ -169,9 +169,9 @@ namespace SmartGridToolbox
 
             std::istringstream(line.substr(0, 4)) >> branchInfo.bus0Id;
             std::istringstream(line.substr(5, 4)) >> branchInfo.bus1Id;
-            std::istringstream(line.substr(19, 10)) >> branchInfo.RsPU;
-            std::istringstream(line.substr(29, 11)) >> branchInfo.XsPU;
-            std::istringstream(line.substr(40, 10)) >> branchInfo.BcPU;
+            std::istringstream(line.substr(19, 10)) >> branchInfo.RsPu;
+            std::istringstream(line.substr(29, 11)) >> branchInfo.XsPu;
+            std::istringstream(line.substr(40, 10)) >> branchInfo.BcPu;
             std::istringstream(line.substr(76, 6)) >> branchInfo.tap;
             if (branchInfo.tap == 0.0)
             {
@@ -214,7 +214,7 @@ namespace SmartGridToolbox
             Complex V = usePerUnit ? info.VPu : info.VPu * info.VBase;
             Complex SLoad = usePerUnit ? info.SLoad / SBase : info.SLoad;
             Complex Sg = usePerUnit ? info.Sg / SBase : info.Sg;
-            Complex ys = usePerUnit ? info.ysPU : info.ysPU * SBase / (info.VBase * info.VBase);
+            Complex ys = usePerUnit ? info.ysPu : info.ysPu * SBase / (info.VBase * info.VBase);
             double QMin = usePerUnit ? info.QMin / SBase : info.QMin;
             double QMax = usePerUnit ? info.QMax / SBase : info.QMax;
 
@@ -245,9 +245,9 @@ namespace SmartGridToolbox
 
             double VBase0 = busInfo0.VBase;
             double VBase1 = busInfo1.VBase;
-            double Rs = usePerUnit ? info.RsPU : info.RsPU * SBase / (VBase0 * VBase1);
-            double Xs = usePerUnit ? info.XsPU : info.XsPU * SBase / (VBase0 * VBase1);
-            double Bc = usePerUnit ? info.BcPU : info.BcPU * SBase / (VBase0 * VBase1);
+            double Rs = usePerUnit ? info.RsPu : info.RsPu * SBase / (VBase0 * VBase1);
+            double Xs = usePerUnit ? info.XsPu : info.XsPu * SBase / (VBase0 * VBase1);
+            double Bc = usePerUnit ? info.BcPu : info.BcPu * SBase / (VBase0 * VBase1);
 
             Complex cTap = polar(info.tap, info.thetaRad);
 

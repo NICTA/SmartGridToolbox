@@ -2,7 +2,7 @@
 #include <SmartGridToolbox/Bus.h>
 #include <SmartGridToolbox/Branch.h>
 #include <SmartGridToolbox/Model.h>
-#include "PowerFlowNR.h"
+#include "PowerFlowNr.h"
 #include <iostream>
 
 namespace SmartGridToolbox
@@ -48,7 +48,7 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "Network : solving power flow." << std::endl);
       SGT_DEBUG(debug() << *this);
-      PowerFlowNR solver;
+      PowerFlowNr solver;
       solver.reset();
       for (const Bus * bus : busVec_)
       {

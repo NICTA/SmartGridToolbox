@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <ostream>
 #include <sstream>
-#include "PowerFlowNR.h"
+#include "PowerFlowNr.h"
 #include <SmartGridToolbox/SparseSolver.h>
 #include <SmartGridToolbox/Stopwatch.h>
 
@@ -23,7 +23,7 @@ namespace SmartGridToolbox
       return result;
    }
 
-   BusNR::BusNR(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
+   BusNr::BusNr(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
                 const ublas::vector<Complex> & ys, const ublas::vector<Complex> & Ic,
                 const ublas::vector<Complex> & S) :
       id_(id),
@@ -41,16 +41,16 @@ namespace SmartGridToolbox
 
       for (int i = 0; i < phases.size(); ++i)
       {
-         nodes_.push_back(new NodeNR(*this, i));
+         nodes_.push_back(new NodeNr(*this, i));
       }
    }
 
-   BusNR::~BusNR()
+   BusNr::~BusNr()
    {
       for (auto node : nodes_) delete node;
    }
 
-   NodeNR::NodeNR(BusNR & bus, int phaseIdx) :
+   NodeNr::NodeNr(BusNr & bus, int phaseIdx) :
       bus_(&bus),
       phaseIdx_(phaseIdx),
       V_(bus.V_(phaseIdx)),
@@ -62,7 +62,7 @@ namespace SmartGridToolbox
       // Empty.
    }
 
-   BranchNR::BranchNR(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1,
+   BranchNr::BranchNr(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1,
                       const ublas::matrix<Complex> & Y) :
       nPhase_(phases0.size()),
       ids_{{id0, id1}},
@@ -101,36 +101,36 @@ namespace SmartGridToolbox
       }
    }
 
-   PowerFlowNR::~PowerFlowNR()
+   PowerFlowNr::~PowerFlowNr()
    {
       for (auto pair : busses_) delete pair.second;
       for (auto branch : branches_) delete branch;
    }
 
-   void PowerFlowNR::addBus(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
+   void PowerFlowNr::addBus(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
          const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S)
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : add bus " << id << std::endl);
-      busses_[id] = new BusNR(id, type, phases, V, Y, I, S);
+      SGT_DEBUG(debug() << "PowerFlowNr : add bus " << id << std::endl);
+      busses_[id] = new BusNr(id, type, phases, V, Y, I, S);
    }
 
-   void PowerFlowNR::addBranch(const std::string & idBus0, const std::string & idBus1, Phases phases0, Phases phases1,
+   void PowerFlowNr::addBranch(const std::string & idBus0, const std::string & idBus1, Phases phases0, Phases phases1,
                                const ublas::matrix<Complex> & Y)
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : addBranch " << idBus0 << " " << idBus1 << std::endl);
-      branches_.push_back(new BranchNR(idBus0, idBus1, phases0, phases1, Y));
+      SGT_DEBUG(debug() << "PowerFlowNr : addBranch " << idBus0 << " " << idBus1 << std::endl);
+      branches_.push_back(new BranchNr(idBus0, idBus1, phases0, phases1, Y));
    }
 
-   void PowerFlowNR::reset()
+   void PowerFlowNr::reset()
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : reset." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr : reset." << std::endl);
       busses_ = BusMap();
       branches_ = BranchVec();
    }
 
-   void PowerFlowNR::validate()
+   void PowerFlowNr::validate()
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : validate." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr : validate." << std::endl);
 
       // Make Nodes:
       NodeVec PqNodes = NodeVec();
@@ -138,7 +138,7 @@ namespace SmartGridToolbox
       NodeVec SlNodes = NodeVec();
       for (auto & busPair : busses_)
       {
-         BusNR & bus = *busPair.second;
+         BusNr & bus = *busPair.second;
          NodeVec * vec = nullptr;
          if (bus.type_ == BusType::PQ)
          {
@@ -157,7 +157,7 @@ namespace SmartGridToolbox
             error() << "Unsupported bus type " << busType2Str(bus.type_) << std::endl;
             abort();
          }
-         for (NodeNR * node : bus.nodes_)
+         for (NodeNr * node : bus.nodes_)
          {
             vec->push_back(node);
          }
@@ -184,7 +184,7 @@ namespace SmartGridToolbox
       Y_.resize(nNode(), nNode(), false);
 
       // Branch admittances:
-      for (BranchNR * branch : branches_)
+      for (BranchNr * branch : branches_)
       {
          auto it0 = busses_.find(branch->ids_[0]);
          if (it0 == busses_.end())
@@ -200,7 +200,7 @@ namespace SmartGridToolbox
                     << branch->ids_[1] << std::endl;
             abort();
          }
-         const BusNR * busses[] = {it0->second, it1->second};
+         const BusNr * busses[] = {it0->second, it1->second};
          int nTerm = 2 * branch->nPhase_;
 
          // There is one link per distinct pair of bus/phase pairs.
@@ -208,9 +208,9 @@ namespace SmartGridToolbox
          {
             int busIdxI = i / branch->nPhase_; // 0 or 1
             int branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
-            const BusNR * busI = busses[busIdxI];
+            const BusNr * busI = busses[busIdxI];
             int busPhaseIdxI = busI->phases_.phaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
-            const NodeNR * nodeI = busI->nodes_[busPhaseIdxI];
+            const NodeNr * nodeI = busI->nodes_[busPhaseIdxI];
             int idxNodeI = nodeI->idx_;
 
             // Only count each diagonal element in branch->Y_ once!
@@ -220,9 +220,9 @@ namespace SmartGridToolbox
             {
                int busIdxK = k / branch->nPhase_; // 0 or 1
                int branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
-               const BusNR * busK = busses[busIdxK];
+               const BusNr * busK = busses[busIdxK];
                int busPhaseIdxK = busK->phases_.phaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
-               const NodeNR * nodeK = busK->nodes_[busPhaseIdxK];
+               const NodeNr * nodeK = busK->nodes_[busPhaseIdxK];
                int idxNodeK = nodeK->idx_;
 
                Y_(idxNodeI, idxNodeK) += branch->Y_(i, k);
@@ -241,26 +241,26 @@ namespace SmartGridToolbox
          Ic_(i) = nodes_[i]->Ic_;
       }
 
-      SGT_DEBUG(debug() << "PowerFlowNR : validate complete." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr : validate complete." << std::endl);
       SGT_DEBUG(printProblem());
    }
 
    /// Initialize voltages:
-   void PowerFlowNR::initV(ublas::vector<double> & Vr, ublas::vector<double> & Vi) const
+   void PowerFlowNr::initV(ublas::vector<double> & Vr, ublas::vector<double> & Vi) const
    {
       for (int i = 0; i < nNode(); ++i)
       {
-         const NodeNR & node = *nodes_[i];
+         const NodeNr & node = *nodes_[i];
          Vr(i) = node.V_.real();
          Vi(i) = node.V_.imag();
       }
    }
 
-   void PowerFlowNR::initS(ublas::vector<double> & P, ublas::vector<double> & Q) const
+   void PowerFlowNr::initS(ublas::vector<double> & P, ublas::vector<double> & Q) const
    {
       for (int i = 0; i < nNode(); ++i)
       {
-         const NodeNR & node = *nodes_[i];
+         const NodeNr & node = *nodes_[i];
          P(i) = node.S_.real();
          Q(i) = node.S_.imag();
       }
@@ -281,7 +281,7 @@ namespace SmartGridToolbox
 
    /// Set the part of J that doesn't update at each iteration.
    /** At this stage, we are treating J as if all busses were PQ. */
-   void PowerFlowNR::initJc(Jacobian & Jc) const
+   void PowerFlowNr::initJc(Jacobian & Jc) const
    {
       initJcBlock(project(G_, selPqFromAll(), selPqFromAll()), 
                   project(B_, selPqFromAll(), selPqFromAll()),
@@ -310,7 +310,7 @@ namespace SmartGridToolbox
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-   void PowerFlowNR::calcf(ublas::vector<double> & f,
+   void PowerFlowNr::calcf(ublas::vector<double> & f,
                            const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
                            const ublas::vector<double> & P, const ublas::vector<double> & Q,
                            const ublas::vector<double> & M2Pv) const
@@ -355,7 +355,7 @@ namespace SmartGridToolbox
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-   void PowerFlowNR::updateJ(Jacobian & J, const Jacobian & Jc,
+   void PowerFlowNr::updateJ(Jacobian & J, const Jacobian & Jc,
                              const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
                              const ublas::vector<double> & P, const ublas::vector <double> & Q,
                              const ublas::vector<double> & M2Pv) const
@@ -411,7 +411,7 @@ namespace SmartGridToolbox
    }
 
    // Modify J and f to take into account PV busses.
-   void PowerFlowNR::modifyForPv(Jacobian & J, ublas::vector<double> & f,
+   void PowerFlowNr::modifyForPv(Jacobian & J, ublas::vector<double> & f,
                                  const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
                                  const ublas::vector<double> & M2Pv)
    {
@@ -442,7 +442,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowNR::calcJMatrix(ublas::compressed_matrix<double> & JMat, const Jacobian & J) const
+   void PowerFlowNr::calcJMatrix(ublas::compressed_matrix<double> & JMat, const Jacobian & J) const
    {
       Array<int, 4> ibInd = {0, 1, 2, 3};
       Array<int, 4> kbInd = {0, 1, 3, 4}; // Skip VrPv, since it doesn't appear as a variable.
@@ -481,9 +481,9 @@ namespace SmartGridToolbox
       }
    }
 
-   bool PowerFlowNR::solve()
+   bool PowerFlowNr::solve()
    {
-      SGT_DEBUG(debug() << "PowerFlowNR : solve." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr : solve." << std::endl);
 
       Stopwatch stopwatch;
       Stopwatch stopwatchTot;
@@ -640,7 +640,7 @@ namespace SmartGridToolbox
          // Update nodes and busses.
          for (int i = 0; i < nNode(); ++i)
          {
-            NodeNR * node = nodes_[i];
+            NodeNr * node = nodes_[i];
             node->V_ = V(i);
             node->S_ = S(i);
             node->bus_->V_[node->phaseIdx_] = node->V_;
@@ -649,31 +649,31 @@ namespace SmartGridToolbox
       }
       else
       {
-         warning() << "PowerFlowNR: Newton-Raphson method failed to converge." << std::endl; 
+         warning() << "PowerFlowNr: Newton-Raphson method failed to converge." << std::endl; 
       }
 
       stopwatchTot.stop(); durationTot = stopwatchTot.seconds();
 
-      message() << "PowerFlowNR: successful = " << wasSuccessful << ", error = " << err 
+      message() << "PowerFlowNr: successful = " << wasSuccessful << ", error = " << err 
                 << ", iterations = " << niter << ", total time = " << durationTot << "." << std::endl;
-      SGT_DEBUG(debug() << "PowerFlowNR: -----------------------   " << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNR: init setup time         = " << durationInitSetup << " s." << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNR: time in calcf           = " << durationCalcf << " s." << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNR: time in updateJ         = " << durationUpdateJ << " s." << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNR: time in modifyForPv     = " << durationModifyForPv << " s." << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNR: time to construct JMat  = " << durationConstructJMat << " s." << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNR: solve time              = " << durationSolve << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNR: time to update iter     = " << durationUpdateIter << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNR: -----------------------   " << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr: -----------------------   " << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr: init setup time         = " << durationInitSetup << " s." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr: time in calcf           = " << durationCalcf << " s." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr: time in updateJ         = " << durationUpdateJ << " s." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr: time in modifyForPv     = " << durationModifyForPv << " s." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr: time to construct JMat  = " << durationConstructJMat << " s." << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr: solve time              = " << durationSolve << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr: time to update iter     = " << durationUpdateIter << std::endl);
+      SGT_DEBUG(debug() << "PowerFlowNr: -----------------------   " << std::endl);
 
       return wasSuccessful;
    }
 
-   void PowerFlowNR::printProblem()
+   void PowerFlowNr::printProblem()
    {
-      debug() << "PowerFlowNR::printProblem()" << std::endl;
+      debug() << "PowerFlowNr::printProblem()" << std::endl;
       debug() << "\tNodes:" << std::endl;
-      for (const NodeNR * nd : nodes_)
+      for (const NodeNr * nd : nodes_)
       {
          debug() << "\t\tNode:" << std::endl;
          debug() << "\t\t\tId    : " << nd->bus_->id_ << std::endl;
@@ -685,7 +685,7 @@ namespace SmartGridToolbox
          debug() << "\t\t\tIc    : " << nd->Ic_ << std::endl;
       }
       debug() << "\tBranches:" << std::endl;
-      for (const BranchNR * branch : branches_)
+      for (const BranchNr * branch : branches_)
       {
          debug() << "\t\tBranch:" << std::endl;
          debug() << "\t\t\tBusses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;

@@ -92,7 +92,7 @@ namespace SmartGridToolbox
 
          HvacMode mode() {return mode_;}
 
-         double COP() {return cop_;} 
+         double cop() {return cop_;} 
 
          double isMaxed() {return isMaxed_;} 
 

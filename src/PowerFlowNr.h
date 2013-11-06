@@ -15,14 +15,14 @@
 
 namespace SmartGridToolbox
 {
-   class NodeNR;
+   class NodeNr;
 
-   struct BusNR
+   struct BusNr
    {
-      BusNR(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
+      BusNr(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
             const ublas::vector<Complex> & ys, const ublas::vector<Complex> & Ic,
             const ublas::vector<Complex> & S);
-      ~BusNR();
+      ~BusNr();
 
       std::string id_;                          ///< Externally relevant id.
       BusType type_;                            ///< Bus type.
@@ -33,13 +33,13 @@ namespace SmartGridToolbox
       ublas::vector<Complex> ys_;               ///< Constant admittance shunt, one per phase.
       ublas::vector<Complex> Ic_;               ///< Constant current injection, one per phase.
 
-      typedef std::vector<NodeNR *> NodeVec;    ///< Nodes, one per phase.
+      typedef std::vector<NodeNr *> NodeVec;    ///< Nodes, one per phase.
       NodeVec nodes_;                           ///< Primary list of nodes.
    };
 
-   struct BranchNR
+   struct BranchNr
    {
-      BranchNR(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1,
+      BranchNr(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1,
             const ublas::matrix<Complex> & Y);
 
       int nPhase_;                  ///< Number of phases.
@@ -50,11 +50,11 @@ namespace SmartGridToolbox
       ublas::matrix<Complex> B_;      ///< Bus admittance matrix.
    };
 
-   struct NodeNR
+   struct NodeNr
    {
-      NodeNR(BusNR & bus, int phaseIdx);
+      NodeNr(BusNr & bus, int phaseIdx);
 
-      BusNR * bus_;
+      BusNr * bus_;
       int phaseIdx_;
 
       Complex V_;
@@ -115,15 +115,15 @@ namespace SmartGridToolbox
       Array2D<ublas::compressed_matrix<double>, 4, 5> blocks_;
    };
 
-   class PowerFlowNR
+   class PowerFlowNr
    {
       public:
-         typedef std::map<std::string, BusNR *> BusMap;  ///< Key is id.
-         typedef std::vector<BranchNR *> BranchVec;
-         typedef std::vector<NodeNR *> NodeVec;
+         typedef std::map<std::string, BusNr *> BusMap;  ///< Key is id.
+         typedef std::vector<BranchNr *> BranchVec;
+         typedef std::vector<NodeNr *> NodeVec;
 
       public:
-         ~PowerFlowNR();
+         ~PowerFlowNr();
 
          void addBus(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
                const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S);

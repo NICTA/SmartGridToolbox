@@ -32,7 +32,7 @@ namespace SmartGridToolbox
       public:
          SimpleInverter(const std::string & name, const Phases & phases);
 
-         virtual double efficiency(double powerDC) const override
+         virtual double efficiency(double powerDc) const override
          {
             return efficiency_;
          }

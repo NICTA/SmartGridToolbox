@@ -34,7 +34,7 @@ namespace SmartGridToolbox
 
          void addDcPowerSource(DcPowerSourceBase & source);
 
-         virtual double efficiency(double powerDC) const = 0;
+         virtual double efficiency(double powerDc) const = 0;
 
          /// Real power output, per phase.
          virtual double PPerPhase() const;

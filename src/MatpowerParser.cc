@@ -82,7 +82,7 @@ namespace SmartGridToolbox
    struct MpBusInfo
    {
       std::string name;
-      int mPType;
+      int mpType;
       double VBase;
       Complex V;
       Complex SLoad;
@@ -209,7 +209,7 @@ namespace SmartGridToolbox
             double KVBase = busMatrix[busCols * i + 9];
             busInfo.VBase = KVBase == 0 ? defaultVBase : KVBase * 1000;
 
-            busInfo.mPType = busMatrix[busCols * i + 1];
+            busInfo.mpType = busMatrix[busCols * i + 1];
 
             double Pd = busMatrix[busCols * i + 2];
             double Qd = busMatrix[busCols * i + 3];
@@ -267,7 +267,7 @@ namespace SmartGridToolbox
             const int & busId = pair.first;
             const MpBusInfo & info = pair.second;
             BusType type = BusType::BAD;
-            switch (info.mPType)
+            switch (info.mpType)
             {
                case 1 :
                   type = BusType::PQ;
@@ -283,7 +283,7 @@ namespace SmartGridToolbox
                   abort();
                   break;
                default:
-                  error() << "Bad matpower bus type (type = " << info.mPType << ") encountered." << std::endl;
+                  error() << "Bad matpower bus type (type = " << info.mpType << ") encountered." << std::endl;
                   abort();
                   break;
             }
