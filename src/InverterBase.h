@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   class DCPowerSourceBase;
+   class DcPowerSourceBase;
 
    /// InverterBase: DC power to n-phase AC converter.
    class InverterBase : public ZipToGroundBase
@@ -32,7 +32,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         void addDCPowerSource(DCPowerSourceBase & source);
+         void addDcPowerSource(DcPowerSourceBase & source);
 
          virtual double efficiency(double powerDC) const = 0;
 
@@ -43,8 +43,8 @@ namespace SmartGridToolbox
       /// @name My private member variables.
       /// @{
       private:
-         std::vector<const DCPowerSourceBase *> sources_;   ///< My DC power sources.
-         double PDC_;                                       ///< DC power = sum of all sources.
+         std::vector<const DcPowerSourceBase *> sources_;   ///< My DC power sources.
+         double PDc_;                                       ///< DC power = sum of all sources.
       /// @}
    };
 }

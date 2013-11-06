@@ -1,12 +1,12 @@
 #ifndef SIMPLE_DC_POWER_SOURCE_DOT_H
 #define SIMPLE_DC_POWER_SOURCE_DOT_H
 
-#include <SmartGridToolbox/DCPowerSourceBase.h>
+#include <SmartGridToolbox/DcPowerSourceBase.h>
 #include <SmartGridToolbox/Parser.h>
 
 namespace SmartGridToolbox
 {
-   class SimpleDCPowerSourceParser : public ParserPlugin
+   class SimpleDcPowerSourceParser : public ParserPlugin
    {
       public:
          static constexpr const char * pluginKey()
@@ -19,25 +19,25 @@ namespace SmartGridToolbox
          virtual void postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
    };
 
-   class SimpleDCPowerSource : public DCPowerSourceBase
+   class SimpleDcPowerSource : public DcPowerSourceBase
    {
-      /// @name Overridden member functions from DCPowerSourceBase.
+      /// @name Overridden member functions from DcPowerSourceBase.
       /// @{
       public:
-         SimpleDCPowerSource(const std::string & name) : DCPowerSourceBase(name), PDC_(0.0) {}
-         virtual double PDC() const {return PDC_;}
+         SimpleDcPowerSource(const std::string & name) : DcPowerSourceBase(name), PDc_(0.0) {}
+         virtual double PDc() const {return PDc_;}
       /// @}
 
       /// @name My public member functions.
       /// @{
       public:
-         void setPDC(double PDC) {PDC_ = PDC;}
+         void setPDc(double PDc) {PDc_ = PDc;}
       /// @}
       
       /// @name My private member variables.
       /// @{
       public:
-         double PDC_;
+         double PDc_;
    };
 }
 

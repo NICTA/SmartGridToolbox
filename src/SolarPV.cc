@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   void SolarPVParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SolarPvParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
       SGT_DEBUG(debug() << "SolarPV : parse." << std::endl);
       assertFieldPresent(nd, "name");
@@ -32,7 +32,7 @@ namespace SmartGridToolbox
       comp.setPlaneNormal({zen, azi});
    }
 
-   void SolarPVParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SolarPvParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
       SGT_DEBUG(debug() << "SolarPV : postParse." << std::endl);
 
@@ -57,7 +57,7 @@ namespace SmartGridToolbox
       InverterBase * inverter = mod.componentNamed<InverterBase>(inverterStr);
       if (inverter != nullptr)
       {
-         inverter->addDCPowerSource(comp);
+         inverter->addDcPowerSource(comp);
       }
       else
       {
@@ -68,14 +68,14 @@ namespace SmartGridToolbox
    }
 
    SolarPV::SolarPV(const std::string & name) :
-      DCPowerSourceBase(name),
+      DcPowerSourceBase(name),
       weather_(nullptr),
       efficiency_(1.0),
       planeNormal_({0.0, 0.0}),
       planeArea_(0.0)
    {}
 
-   double SolarPV::PDC() const
+   double SolarPV::PDc() const
    {
       return weather_->solarPower(planeNormal_, planeArea_) * efficiency_;
    }

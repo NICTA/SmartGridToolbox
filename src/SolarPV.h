@@ -2,7 +2,7 @@
 #define SOLAR_PV_DOT_H
 
 #include <SmartGridToolbox/Component.h>
-#include <SmartGridToolbox/DCPowerSourceBase.h>
+#include <SmartGridToolbox/DcPowerSourceBase.h>
 #include <SmartGridToolbox/Parser.h>
 #include <SmartGridToolbox/Sun.h>
 
@@ -10,7 +10,7 @@ namespace SmartGridToolbox
 {
    class Weather;
 
-   class SolarPVParser : public ParserPlugin
+   class SolarPvParser : public ParserPlugin
    {
       public:
          static constexpr const char * pluginKey()
@@ -23,14 +23,14 @@ namespace SmartGridToolbox
          virtual void postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
    };
 
-   class SolarPV : public DCPowerSourceBase
+   class SolarPV : public DcPowerSourceBase
    {
       /// @name My public member functions. 
       /// @{
       public:
          SolarPV(const std::string & name);
 
-         virtual double PDC() const override;
+         virtual double PDc() const override;
 
          void setWeather(Weather & weather);
 

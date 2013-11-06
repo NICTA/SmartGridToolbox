@@ -1,4 +1,4 @@
-#include "CDFParser.h"
+#include "CdfParser.h"
 #include <SmartGridToolbox/Bus.h>
 #include <SmartGridToolbox/Network.h>
 #include <SmartGridToolbox/PowerFlow.h>
@@ -11,13 +11,13 @@
 namespace SmartGridToolbox
 {
    // All quantities expressed as injections:
-   struct CDFBusInfo
+   struct CdfBusInfo
    {
       std::string name;
-      int CDFType;
+      int CdfType;
 
       double VBase;  // SI.
-      Complex VPU;   // Per unit.
+      Complex VPu;   // Per unit.
       Complex SLoad; // SI.
       Complex Sg;    // SI.
       double QMin;   // SI.
@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       Complex ysPU;  // Per unit.
    };
 
-   struct CDFBranchInfo
+   struct CdfBranchInfo
    {
       int bus0Id; 
       int bus1Id;
@@ -52,13 +52,13 @@ namespace SmartGridToolbox
       return prefix + "_branch_" + std::to_string(nBranch) + "_" + std::to_string(id1) + "_" + std::to_string(id2);
    }
 
-   static void errInvalidCDF()
+   static void errInvalidCdf()
    {
       error() << "The CDF file is not in the correct format." << std::endl;
       abort();
    }
 
-   void CDFParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void CdfParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
       const double MW = 1e6;
 
@@ -90,8 +90,8 @@ namespace SmartGridToolbox
       const YAML::Node ndFreq = nd["freq_Hz"];
       double freq = ndFreq ? ndFreq.as<double>() : 50.0;
 
-      std::map<int, CDFBusInfo> busMap;
-      std::list<CDFBranchInfo> branchList;
+      std::map<int, CdfBusInfo> busMap;
+      std::list<CdfBranchInfo> branchList;
       double SBase;
       {
          // Parse in the raw CDF data.
@@ -103,24 +103,24 @@ namespace SmartGridToolbox
             abort();
          }
 
-         if (!std::getline(infile, line)) errInvalidCDF();
+         if (!std::getline(infile, line)) errInvalidCdf();
          double MVABase;
          std::istringstream(line.substr(31, 6)) >> MVABase;
 
          SBase = MW * MVABase;
 
-         if (!std::getline(infile, line)) errInvalidCDF();
-         if (line.substr(0, 3) != "BUS") errInvalidCDF();
+         if (!std::getline(infile, line)) errInvalidCdf();
+         if (line.substr(0, 3) != "BUS") errInvalidCdf();
          int i = 0;
          for (std::getline(infile, line); line.substr(0, 4) != std::string("-999"); std::getline(infile, line), ++i)
          {
             int busId;
             std::istringstream(line.substr(0, 4)) >> busId;
-            CDFBusInfo & busInfo = busMap[busId];
+            CdfBusInfo & busInfo = busMap[busId];
 
             busInfo.name = busName(networkName, busId);
 
-            std::istringstream(line.substr(24, 2)) >> busInfo.CDFType;
+            std::istringstream(line.substr(24, 2)) >> busInfo.CdfType;
 
             double KVBase;
             std::istringstream(line.substr(76, 7)) >> KVBase;
@@ -130,7 +130,7 @@ namespace SmartGridToolbox
             std::istringstream(line.substr(27, 6)) >> VmPU;
             double VaDeg;
             std::istringstream(line.substr(33, 7)) >> VaDeg;
-            busInfo.VPU = polar(VmPU, VaDeg * pi/180);
+            busInfo.VPu = polar(VmPU, VaDeg * pi/180);
 
             double PdMW;
             std::istringstream(line.substr(40, 9)) >> PdMW;
@@ -160,12 +160,12 @@ namespace SmartGridToolbox
          }
 
          std::getline(infile, line); 
-         if (line.substr(0, 6) != "BRANCH") errInvalidCDF();
+         if (line.substr(0, 6) != "BRANCH") errInvalidCdf();
 
          for (std::getline(infile, line); line.substr(0, 4) != std::string("-999"); std::getline(infile, line))
          {
-            branchList.push_back(CDFBranchInfo());
-            CDFBranchInfo & branchInfo = branchList.back();
+            branchList.push_back(CdfBranchInfo());
+            CdfBranchInfo & branchInfo = branchList.back();
 
             std::istringstream(line.substr(0, 4)) >> branchInfo.bus0Id;
             std::istringstream(line.substr(5, 4)) >> branchInfo.bus1Id;
@@ -187,9 +187,9 @@ namespace SmartGridToolbox
          for (const auto pair : busMap)
          {
             const int & busId = pair.first;
-            const CDFBusInfo & info = pair.second;
+            const CdfBusInfo & info = pair.second;
             BusType type = BusType::BAD;
-            switch (info.CDFType)
+            switch (info.CdfType)
             {
                case 0 :
                case 1 :
@@ -206,12 +206,12 @@ namespace SmartGridToolbox
                   abort();
                   break;
                default:
-                  error() << "Bad CDF bus type (type = " << info.CDFType << ") encountered." << std::endl;
+                  error() << "Bad CDF bus type (type = " << info.CdfType << ") encountered." << std::endl;
                   abort();
                   break;
             }
 
-            Complex V = usePerUnit ? info.VPU : info.VPU * info.VBase;
+            Complex V = usePerUnit ? info.VPu : info.VPu * info.VBase;
             Complex SLoad = usePerUnit ? info.SLoad / SBase : info.SLoad;
             Complex Sg = usePerUnit ? info.Sg / SBase : info.Sg;
             Complex ys = usePerUnit ? info.ysPU : info.ysPU * SBase / (info.VBase * info.VBase);
@@ -238,10 +238,10 @@ namespace SmartGridToolbox
          }
 
          int i = 0;
-         for (const CDFBranchInfo & info : branchList)
+         for (const CdfBranchInfo & info : branchList)
          {
-            const CDFBusInfo & busInfo0 = busMap[info.bus0Id];
-            const CDFBusInfo & busInfo1 = busMap[info.bus1Id];
+            const CdfBusInfo & busInfo0 = busMap[info.bus0Id];
+            const CdfBusInfo & busInfo1 = busMap[info.bus1Id];
 
             double VBase0 = busInfo0.VBase;
             double VBase1 = busInfo1.VBase;

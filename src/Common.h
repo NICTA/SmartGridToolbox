@@ -124,7 +124,7 @@ namespace SmartGridToolbox
       return double(d.ticks())/Time::ticks_per_second();
    }
 
-   inline Time timeFromUTCTime(posix_time::ptime utcTime)
+   inline Time timeFromUtcTime(posix_time::ptime utcTime)
    {
       return (utcTime - epoch);
    }

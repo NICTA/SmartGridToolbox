@@ -39,15 +39,15 @@ namespace SmartGridToolbox
             Cb_(1.0e5 * kJ / K),
             TbInit_(20.0 * K),
             kh_(10.0 * kW / K),
-            COPCool_(3.0),
-            COPHeat_(4.0),
+            copCool_(3.0),
+            copHeat_(4.0),
             Pmax_(20.0 * kW),
             Ts_(20.0 * K),
             Te_([](Time t){return 25.0;}),
             dQg_([](Time t){return 10.0;}),
             Tb_(0.0),
             mode_(HvacMode::OFF),
-            COP_(0.0),
+            cop_(0.0),
             isMaxed_(false),
             Ph_(0.0),
             dQh_(0.0)
@@ -70,11 +70,11 @@ namespace SmartGridToolbox
          double getkh() {return kh_;}
          void setkh(double val) {kh_ = val;}
 
-         double COPCool() {return COPCool_;}
-         void setCOPCool(double val) {COPCool_ = val;}
+         double copCool() {return copCool_;}
+         void setcopCool(double val) {copCool_ = val;}
 
-         double COPHeat() {return COPHeat_;}
-         void setCOPHeat(double val) {COPHeat_ = val;}
+         double copHeat() {return copHeat_;}
+         void setcopHeat(double val) {copHeat_ = val;}
 
          double Pmax() {return Pmax_;}
          void setPmax(double val) {Pmax_ = val;}
@@ -92,7 +92,7 @@ namespace SmartGridToolbox
 
          HvacMode mode() {return mode_;}
 
-         double COP() {return COP_;} 
+         double COP() {return cop_;} 
 
          double isMaxed() {return isMaxed_;} 
 
@@ -112,8 +112,8 @@ namespace SmartGridToolbox
          double Cb_;                         // Heat capacity of building, J/K.
          double TbInit_;                     // Initial temp of building.
          double kh_;                         // HVAC PID parameter, W/K.
-         double COPCool_;                    // HVAC cooling coeff. of perf.
-         double COPHeat_;                    // HVAC heating coeff. of perf.
+         double copCool_;                    // HVAC cooling coeff. of perf.
+         double copHeat_;                    // HVAC heating coeff. of perf.
          double Pmax_;                       // HVAC max power, W.
          double Ts_;                         // HVAC setpoint, C.
 
@@ -124,7 +124,7 @@ namespace SmartGridToolbox
          double Tb_;                         // Building temperature, C.
          // Operating parameters.
          HvacMode mode_;                     // Cooling or heating?
-         double COP_;                        // Depends on mode.
+         double cop_;                        // Depends on mode.
          bool isMaxed_;                      // On maximum power?
          double Ph_;                         // Power drawn from grid by HVAC.
          double dQh_;                        // Thermal output, +ve = heating.

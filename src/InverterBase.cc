@@ -1,10 +1,10 @@
 #include <SmartGridToolbox/InverterBase.h>
 
-#include <SmartGridToolbox/DCPowerSourceBase.h>
+#include <SmartGridToolbox/DcPowerSourceBase.h>
 
 namespace SmartGridToolbox
 {
-   void InverterBase::addDCPowerSource(DCPowerSourceBase & source)
+   void InverterBase::addDcPowerSource(DcPowerSourceBase & source)
    {
       dependsOn(source);
       sources_.push_back(&source);
@@ -15,15 +15,15 @@ namespace SmartGridToolbox
 
    void InverterBase::updateState(Time t0, Time t1)
    {
-      PDC_ = 0.0;
-      for (const DCPowerSourceBase * source : sources_)
+      PDc_ = 0.0;
+      for (const DcPowerSourceBase * source : sources_)
       {
-         PDC_ += source->PDC();
+         PDc_ += source->PDc();
       }
    }
 
    double InverterBase::PPerPhase() const
    {
-      return PDC_ * efficiency(PDC_) / phases().size();
+      return PDc_ * efficiency(PDc_) / phases().size();
    }
 }

@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   class CDFParser : public ParserPlugin
+   class CdfParser : public ParserPlugin
    {
       public:
          static constexpr const char * pluginKey()

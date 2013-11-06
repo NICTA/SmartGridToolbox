@@ -79,7 +79,7 @@ namespace SmartGridToolbox
    };
 
    // All quantities expressed as injections:
-   struct MPBusInfo
+   struct MpBusInfo
    {
       std::string name;
       int mPType;
@@ -199,12 +199,12 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "Matpower: Branch matrix size = " << branchCols << std::endl);
 
       // Organize and scale the data:
-      std::map<int, MPBusInfo> busMap;
+      std::map<int, MpBusInfo> busMap;
       {
          for (int i = 0; i < nBus; ++i)
          {
             int busId = busMatrix[busCols * i];
-            MPBusInfo & busInfo = busMap[busId];
+            MpBusInfo & busInfo = busMap[busId];
 
             double KVBase = busMatrix[busCols * i + 9];
             busInfo.VBase = KVBase == 0 ? defaultVBase : KVBase * 1000;
@@ -239,7 +239,7 @@ namespace SmartGridToolbox
          for (int i = 0; i < nGen; ++i)
          {
             int busId  = genMatrix[genCols * i];
-            MPBusInfo & busInfo = busMap[busId];
+            MpBusInfo & busInfo = busMap[busId];
 
             double Pg  = genMatrix[genCols * i + 1];
             double Qg  = genMatrix[genCols * i + 2];
@@ -265,7 +265,7 @@ namespace SmartGridToolbox
          for (const auto pair : busMap)
          {
             const int & busId = pair.first;
-            const MPBusInfo & info = pair.second;
+            const MpBusInfo & info = pair.second;
             BusType type = BusType::BAD;
             switch (info.mPType)
             {
@@ -308,8 +308,8 @@ namespace SmartGridToolbox
             int bus0Id = branchMatrix[branchCols * i];
             int bus1Id = branchMatrix[branchCols * i + 1];
 
-            const MPBusInfo & busInfo0 = busMap[bus0Id];
-            const MPBusInfo & busInfo1 = busMap[bus1Id];
+            const MpBusInfo & busInfo0 = busMap[bus0Id];
+            const MpBusInfo & busInfo1 = busMap[bus1Id];
 
             double VBase0 = busInfo0.VBase;
             double VBase1 = busInfo1.VBase;

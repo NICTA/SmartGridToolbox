@@ -1,10 +1,10 @@
 #include "RegisterParserPlugins.h"
 #include <SmartGridToolbox/Branch.h>
 #include <SmartGridToolbox/Bus.h>
-#include "CDFParser.h"
+#include "CdfParser.h"
 #include "MatpowerParser.h"
 #include <SmartGridToolbox/Network.h>
-#include <SmartGridToolbox/SimpleDCPowerSource.h>
+#include <SmartGridToolbox/SimpleDcPowerSource.h>
 #include <SmartGridToolbox/SimpleInverter.h>
 #include <SmartGridToolbox/SolarPV.h>
 #include <SmartGridToolbox/Weather.h>
@@ -16,12 +16,12 @@ namespace SmartGridToolbox
    {
       p.registerParserPlugin<BranchParser>();
       p.registerParserPlugin<BusParser>();
-      p.registerParserPlugin<CDFParser>();
+      p.registerParserPlugin<CdfParser>();
       p.registerParserPlugin<MatpowerParser>();
       p.registerParserPlugin<NetworkParser>();
-      p.registerParserPlugin<SimpleDCPowerSourceParser>();
+      p.registerParserPlugin<SimpleDcPowerSourceParser>();
       p.registerParserPlugin<SimpleInverterParser>();
-      p.registerParserPlugin<SolarPVParser>();
+      p.registerParserPlugin<SolarPvParser>();
       p.registerParserPlugin<WeatherParser>();
       p.registerParserPlugin<ZipToGroundParser>();
    }
