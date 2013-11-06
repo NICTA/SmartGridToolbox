@@ -1,5 +1,5 @@
-#ifndef SIMPLE_DC_POWER_SOURCE
-#define SIMPLE_DC_POWER_SOURCE
+#ifndef SIMPLE_DC_POWER_SOURCE_DOT_H
+#define SIMPLE_DC_POWER_SOURCE_DOT_H
 
 #include <SmartGridToolbox/DCPowerSourceBase.h>
 #include <SmartGridToolbox/Parser.h>
@@ -41,4 +41,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // DC_POWER_SOURCE
+#endif // DC_POWER_SOURCE_DOT_H

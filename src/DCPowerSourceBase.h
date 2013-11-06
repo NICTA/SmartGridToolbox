@@ -1,5 +1,5 @@
-#ifndef DC_POWER_SOURCE_BASE
-#define DC_POWER_SOURCE_BASE
+#ifndef DC_POWER_SOURCE_BASE_DOT_H
+#define DC_POWER_SOURCE_BASE_DOT_H
 
 #include <SmartGridToolbox/Component.h>
 
@@ -13,4 +13,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // DC_POWER_SOURCE_BASE
+#endif // DC_POWER_SOURCE_BASE_DOT_H

@@ -66,6 +66,7 @@ namespace SmartGridToolbox
       Bus * busComp = mod.componentNamed<Bus>(busStr);
       if (busComp != nullptr)
       {
+         busComp->dependsOn(comp);
          busComp->addZipToGround(comp);
       }
       else

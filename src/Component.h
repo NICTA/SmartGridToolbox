@@ -72,13 +72,13 @@ namespace SmartGridToolbox
          /// @name Dependencies.
          ///@{
 
-         const std::vector<Component *> & dependencies() const
+         const std::vector<const Component *> & dependencies() const
          {
             return dependencies_;
          }
 
          /// Components on which I depend will update first.
-         void dependsOn(Component & b)
+         void dependsOn(const Component & b)
          /** @param t Component on which I depend. */
          {
             dependencies_.push_back(&b);
@@ -145,7 +145,7 @@ namespace SmartGridToolbox
          /// @}
 
       protected:
-         typedef std::vector<Component *> ComponentVec;
+         typedef std::vector<const Component *> ComponentVec;
          typedef std::map<const std::string, PropertyBase *> PropertyMap;
 
       private:
