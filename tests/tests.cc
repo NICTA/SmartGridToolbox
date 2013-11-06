@@ -3,27 +3,27 @@
 #include <cmath>
 #include <ostream>
 #include <fstream>
-#include <smartgridtoolbox/Branch.h>
-#include <smartgridtoolbox/Bus.h>
-#include <smartgridtoolbox/Component.h>
-#include <smartgridtoolbox/DCPowerSourceBase.h>
-#include <smartgridtoolbox/Event.h>
-#include <smartgridtoolbox/InverterBase.h>
-#include <smartgridtoolbox/Model.h>
-#include <smartgridtoolbox/Network.h>
-#include <smartgridtoolbox/Parser.h>
-#include <smartgridtoolbox/PowerFlow.h>
-#include <smartgridtoolbox/RegularUpdateComponent.h>
-#include <smartgridtoolbox/SimpleBattery.h>
-#include <smartgridtoolbox/SimpleBuilding.h>
-#include <smartgridtoolbox/Simulation.h>
-#include <smartgridtoolbox/SparseSolver.h>
-#include <smartgridtoolbox/SolarPV.h>
-#include <smartgridtoolbox/Sun.h>
-#include <smartgridtoolbox/Spline.h>
-#include <smartgridtoolbox/TimeSeries.h>
-#include <smartgridtoolbox/WeakOrder.h>
-#include <smartgridtoolbox/ZipToGround.h>
+#include <SmartGridToolbox/Branch.h>
+#include <SmartGridToolbox/Bus.h>
+#include <SmartGridToolbox/Component.h>
+#include <SmartGridToolbox/DcPowerSourceBase.h>
+#include <SmartGridToolbox/Event.h>
+#include <SmartGridToolbox/InverterBase.h>
+#include <SmartGridToolbox/Model.h>
+#include <SmartGridToolbox/Network.h>
+#include <SmartGridToolbox/Parser.h>
+#include <SmartGridToolbox/PowerFlow.h>
+#include <SmartGridToolbox/RegularUpdateComponent.h>
+#include <SmartGridToolbox/SimpleBattery.h>
+#include <SmartGridToolbox/SimpleBuilding.h>
+#include <SmartGridToolbox/Simulation.h>
+#include <SmartGridToolbox/SparseSolver.h>
+#include <SmartGridToolbox/SolarPv.h>
+#include <SmartGridToolbox/Sun.h>
+#include <SmartGridToolbox/Spline.h>
+#include <SmartGridToolbox/TimeSeries.h>
+#include <SmartGridToolbox/WeakOrder.h>
+#include <SmartGridToolbox/ZipToGround.h>
 using namespace SmartGridToolbox;
 using namespace std;
 using namespace boost::posix_time;
@@ -413,8 +413,8 @@ BOOST_AUTO_TEST_CASE (test_simple_building)
    build1.setCb(1e5*kJ/K);
    build1.setTbInit(22*K);
    build1.setkh(10*kW/K);
-   build1.setCOPCool(3);
-   build1.setCOPHeat(4);
+   build1.setCopCool(3);
+   build1.setCopHeat(4);
    build1.setPmax(30*kW);
    build1.setTs(20*K);
    build1.setTeFunc(Te);
@@ -460,7 +460,7 @@ BOOST_AUTO_TEST_CASE (test_sparse_solver)
    b(4) = 19.0;
 
    ublas::vector<double> x(n);
-   KLUSolve(a, b, x);
+   kluSolve(a, b, x);
    message(); for (int i = 0; i < n; ++i) std::cout << x(i) << " ";
    std::cout << endl;
    BOOST_CHECK(std::abs(x(0) - 1.0) < 1e-4);
@@ -650,10 +650,10 @@ BOOST_AUTO_TEST_CASE (test_network_2p_identical)
    outfile.close();
 }
 
-class TestDC : public DCPowerSourceBase
+class TestDc : public DcPowerSourceBase
 {
    public:
-      TestDC(const std::string & name) : DCPowerSourceBase(name), dt_(posix_time::seconds(0)) {}
+      TestDc(const std::string & name) : DcPowerSourceBase(name), dt_(posix_time::seconds(0)) {}
 
       virtual Time validUntil() const override
       {
@@ -669,7 +669,7 @@ class TestDC : public DCPowerSourceBase
          dt_ = dt;
       }
 
-      virtual double PDC() const override
+      virtual double PDc() const override
       {
          return sin(dSeconds(time())/60.0);
       }
@@ -692,9 +692,9 @@ BOOST_AUTO_TEST_CASE (test_networked_dc)
    
    InverterBase * inverter2 = mod.componentNamed<InverterBase>("inverter_bus_2");
 
-   TestDC & tDC = mod.newComponent<TestDC>("tdc");
-   tDC.setDt(posix_time::seconds(5));
-   inverter2->addDCPowerSource(tDC);
+   TestDc & tDc = mod.newComponent<TestDc>("tdc");
+   tDc.setDt(posix_time::seconds(5));
+   inverter2->addDcPowerSource(tDc);
 
    mod.validate();
    sim.initialize();
@@ -775,24 +775,24 @@ BOOST_AUTO_TEST_CASE (test_sun)
    outfile.close();
 }
 
-BOOST_AUTO_TEST_CASE (test_solar_PV)
+BOOST_AUTO_TEST_CASE (test_solar_Pv)
 {
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::globalParser();
-   p.parse("test_solar_PV.yaml", mod, sim); p.postParse();
+   p.parse("test_solar_Pv.yaml", mod, sim); p.postParse();
 
-   SolarPV * spv2 = mod.componentNamed<SolarPV>("solar_PV_bus_2");
+   SolarPv * spv2 = mod.componentNamed<SolarPv>("solar_Pv_bus_2");
    InverterBase * inv2 = mod.componentNamed<InverterBase>("inverter_bus_2");
    Bus * bus2 = mod.componentNamed<Bus>("bus_2");
    Network * network = mod.componentNamed<Network>("network_1");
 
    ofstream outfile;
-   outfile.open("test_solar_PV.out");
+   outfile.open("test_solar_Pv.out");
 
    network->didCompleteTimestep().addAction([&]()
          {
-            outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " << spv2->PDC() << " " << inv2->S()(0)
+            outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " << spv2->PDc() << " " << inv2->S()(0)
                     << " " << bus2->V()(0) << std::endl;
          }, "Network updated.");
    mod.validate();
@@ -811,7 +811,7 @@ BOOST_AUTO_TEST_CASE (test_loops)
    Parser & p = Parser::globalParser();
    p.parse("test_loops.yaml", mod, sim); p.postParse();
 
-   SolarPV * spv2 = mod.componentNamed<SolarPV>("solar_PV_bus_2");
+   SolarPv * spv2 = mod.componentNamed<SolarPv>("solar_Pv_bus_2");
    InverterBase * inv2 = mod.componentNamed<InverterBase>("inverter_bus_2_0");
    Bus * bus2 = mod.componentNamed<Bus>("bus_2_1");
    Network * network = mod.componentNamed<Network>("network_1");
@@ -821,7 +821,7 @@ BOOST_AUTO_TEST_CASE (test_loops)
 
    network->didCompleteTimestep().addAction([&]()
          {
-            outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " << spv2->PDC() << " " << inv2->S()(0)
+            outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " << spv2->PDc() << " " << inv2->S()(0)
                     << " " << bus2->V()(0) << std::endl;
             std::cout << "timestep " << sim.currentTime()-sim.startTime() << std::endl;
          }, "Network updated.");
@@ -974,16 +974,16 @@ BOOST_AUTO_TEST_CASE (test_mp_SLPQ)
    testMatpower("caseSLPQ", false);
 }
 
-BOOST_AUTO_TEST_CASE (test_mp_SLPV)
+BOOST_AUTO_TEST_CASE (test_mp_SLPv)
 {
-   testMatpower("caseSLPV", true);
-   testMatpower("caseSLPV", false);
+   testMatpower("caseSLPv", true);
+   testMatpower("caseSLPv", false);
 }
 
-BOOST_AUTO_TEST_CASE (test_mp_SLPQPV)
+BOOST_AUTO_TEST_CASE (test_mp_SLPQPv)
 {
-   testMatpower("caseSLPQPV", true);
-   testMatpower("caseSLPQPV", false);
+   testMatpower("caseSLPQPv", true);
+   testMatpower("caseSLPQPv", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_4gs)

@@ -1,4 +1,4 @@
-#include <SmartGridToolbox/SolarPV.h>
+#include <SmartGridToolbox/SolarPv.h>
 #include <SmartGridToolbox/InverterBase.h>
 #include <SmartGridToolbox/Model.h>
 #include <SmartGridToolbox/Weather.h>
@@ -7,7 +7,7 @@ namespace SmartGridToolbox
 {
    void SolarPvParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
-      SGT_DEBUG(debug() << "SolarPV : parse." << std::endl);
+      SGT_DEBUG(debug() << "SolarPv : parse." << std::endl);
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "weather");
       assertFieldPresent(nd, "inverter");
@@ -16,7 +16,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "azimuth_degrees");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SolarPV & comp = mod.newComponent<SolarPV>(name);
+      SolarPv & comp = mod.newComponent<SolarPv>(name);
 
       if (nd["efficiency"])
       {
@@ -34,10 +34,10 @@ namespace SmartGridToolbox
 
    void SolarPvParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
-      SGT_DEBUG(debug() << "SolarPV : postParse." << std::endl);
+      SGT_DEBUG(debug() << "SolarPv : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SolarPV & comp = *mod.componentNamed<SolarPV>(name);
+      SolarPv & comp = *mod.componentNamed<SolarPv>(name);
 
       const std::string weatherStr = state.expandName(nd["weather"].as<std::string>());
       Weather * weather = mod.componentNamed<Weather>(weatherStr);
@@ -67,7 +67,7 @@ namespace SmartGridToolbox
       }
    }
 
-   SolarPV::SolarPV(const std::string & name) :
+   SolarPv::SolarPv(const std::string & name) :
       DcPowerSourceBase(name),
       weather_(nullptr),
       efficiency_(1.0),
@@ -75,15 +75,15 @@ namespace SmartGridToolbox
       planeArea_(0.0)
    {}
 
-   double SolarPV::PDc() const
+   double SolarPv::PDc() const
    {
       return weather_->solarPower(planeNormal_, planeArea_) * efficiency_;
    }
 
-   void SolarPV::setWeather(Weather & weather)
+   void SolarPv::setWeather(Weather & weather)
    {
       weather_ = &weather;
       dependsOn(weather);
-      weather.didUpdate().addAction([this](){needsUpdate().trigger();}, "Trigger SolarPV " + name() + " needs update");
+      weather.didUpdate().addAction([this](){needsUpdate().trigger();}, "Trigger SolarPv " + name() + " needs update");
    }
 };

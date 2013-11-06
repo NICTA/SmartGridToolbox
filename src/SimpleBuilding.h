@@ -71,10 +71,10 @@ namespace SmartGridToolbox
          void setkh(double val) {kh_ = val;}
 
          double copCool() {return copCool_;}
-         void setcopCool(double val) {copCool_ = val;}
+         void setCopCool(double val) {copCool_ = val;}
 
          double copHeat() {return copHeat_;}
-         void setcopHeat(double val) {copHeat_ = val;}
+         void setCopHeat(double val) {copHeat_ = val;}
 
          double Pmax() {return Pmax_;}
          void setPmax(double val) {Pmax_ = val;}

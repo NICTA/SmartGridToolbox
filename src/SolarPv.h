@@ -23,12 +23,12 @@ namespace SmartGridToolbox
          virtual void postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
    };
 
-   class SolarPV : public DcPowerSourceBase
+   class SolarPv : public DcPowerSourceBase
    {
       /// @name My public member functions. 
       /// @{
       public:
-         SolarPV(const std::string & name);
+         SolarPv(const std::string & name);
 
          virtual double PDc() const override;
 
