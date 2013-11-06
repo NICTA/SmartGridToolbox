@@ -92,6 +92,9 @@ namespace SmartGridToolbox
          /// Do the next update.
          bool doNextUpdate();
 
+         /// Complete the pending timestep.
+         bool doTimestep();
+
          /// Signal that an abnormal exit should occur.
          void signalAbnormalExit();
 
