@@ -6,7 +6,7 @@ pkginclude_HEADERS = Branch.h \
 						   Bus.h \
 							Common.h \
 							Component.h \
-							DCPowerSourceBase.h \
+							DcPowerSourceBase.h \
 							Event.h \
 							InverterBase.h \
 							Load.h \
@@ -19,10 +19,10 @@ pkginclude_HEADERS = Branch.h \
 							RegularUpdateComponent.h \
 							SimpleBattery.h \
 							SimpleBuilding.h \
-							SimpleDCPowerSource.h \
+							SimpleDcPowerSource.h \
 							SimpleInverter.h \
 							Simulation.h \
-							SolarPV.h \
+							SolarPv.h \
 							SparseSolver.h \
 							Spline.h \
 							Stopwatch.h \
@@ -35,7 +35,7 @@ pkginclude_HEADERS = Branch.h \
 
 libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  Branch.cc \
-										  CDFParser.cc \
+										  CdfParser.cc \
 										  Common.cc \
 										  Component.cc \
 										  Event.cc \
@@ -45,15 +45,15 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  Network.cc \
 										  Parser.cc \
 										  PowerFlow.cc \
-										  PowerFlowNR.cc \
+										  PowerFlowNr.cc \
 										  Random.cc \
 										  RegisterParserPlugins.cc \
 										  SimpleBattery.cc \
 										  SimpleBuilding.cc \
-										  SimpleDCPowerSource.cc \
+										  SimpleDcPowerSource.cc \
 										  SimpleInverter.cc \
 										  Simulation.cc \
-										  SolarPV.cc \
+										  SolarPv.cc \
 										  SparseSolver.cc \
 										  Sun.cc \
 										  WeakOrder.cc \
