@@ -1,5 +1,5 @@
-#ifndef REGULAR_UPDATE_COMPONENT
-#define REGULAR_UPDATE_COMPONENT
+#ifndef REGULAR_UPDATE_COMPONENT_DOT_H
+#define REGULAR_UPDATE_COMPONENT_DOT_H
 
 #include <SmartGridToolbox/Component.h>
 
@@ -32,4 +32,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // REGULAR_UPDATE_COMPONENT
+#endif // REGULAR_UPDATE_COMPONENT_DOT_H

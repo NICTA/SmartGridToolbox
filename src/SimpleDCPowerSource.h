@@ -41,4 +41,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // DC_POWER_SOURCE_DOT_H
+#endif // SIMPLE_DC_POWER_SOURCE_DOT_H

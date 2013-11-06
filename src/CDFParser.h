@@ -1,5 +1,5 @@
-#ifndef CDF_PARSER
-#define CDF_PARSER
+#ifndef CDF_PARSER_DOT_H
+#define CDF_PARSER_DOT_H
 
 #include "Parser.h"
 
@@ -18,4 +18,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // CDF_PARSER
+#endif // CDF_PARSER_DOT_H

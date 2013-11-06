@@ -1,5 +1,5 @@
-#ifndef REGISTER_COMPONENT_PARSERS
-#define REGISTER_COMPONENT_PARSERS
+#ifndef REGISTER_PARSER_PLUGINS_DOT_H
+#define REGISTER_PARSER_PLUGINS_DOT_H
 
 namespace SmartGridToolbox
 {
@@ -7,4 +7,4 @@ namespace SmartGridToolbox
    void registerParserPlugins(Parser & p);
 }
 
-#endif // REGISTER_COMPONENT_PARSERS
+#endif // REGISTER_PARSER_PLUGINS_DOT_H
