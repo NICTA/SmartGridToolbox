@@ -87,7 +87,7 @@ namespace SmartGridToolbox
       Complex V;
       Complex SLoad;
       Complex Sg;
-      Complex Ys;
+      Complex ys;
    };
 
    static std::string busName(const std::string & prefix, int id)
@@ -221,10 +221,10 @@ namespace SmartGridToolbox
 
             double Gs = busMatrix[busCols * i + 4];
             double Bs = busMatrix[busCols * i + 5];
-            busInfo.Ys = Complex(Gs, Bs) * 1e6 / (busInfo.VBase * busInfo.VBase);
+            busInfo.ys = Complex(Gs, Bs) * 1e6 / (busInfo.VBase * busInfo.VBase);
             if (usePerUnit)
             {
-               busInfo.Ys *= (busInfo.VBase * busInfo.VBase) / SBase;
+               busInfo.ys *= (busInfo.VBase * busInfo.VBase) / SBase;
             }
 
             double Vm = busMatrix[busCols * i + 7];
@@ -291,13 +291,13 @@ namespace SmartGridToolbox
             ublas::vector<Complex> VVec(phases.size(), info.V);
             ublas::vector<Complex> SLoadVec(phases.size(), info.SLoad);
             ublas::vector<Complex> SgVec(phases.size(), info.Sg);
-            ublas::vector<Complex> YsVec(phases.size(), info.Ys);
+            ublas::vector<Complex> ysVec(phases.size(), info.ys);
 
             Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec, VVec, SgVec);
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;
-            zip.Y() = YsVec;
+            zip.Y() = ysVec;
             bus.addZipToGround(zip);
 
             netw.addBus(bus);

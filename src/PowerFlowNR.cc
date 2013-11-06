@@ -24,18 +24,18 @@ namespace SmartGridToolbox
    }
 
    BusNR::BusNR(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
-                const ublas::vector<Complex> & Ys, const ublas::vector<Complex> & Ic,
+                const ublas::vector<Complex> & ys, const ublas::vector<Complex> & Ic,
                 const ublas::vector<Complex> & S) :
       id_(id),
       type_(type),
       phases_(phases),
       V_(V),
       S_(S),
-      Ys_(Ys),
+      ys_(ys),
       Ic_(Ic)
    {
       assert(V.size() == phases.size());
-      assert(Ys.size() == phases.size());
+      assert(ys.size() == phases.size());
       assert(Ic.size() == phases.size());
       assert(S.size() == phases.size());
 
@@ -55,7 +55,7 @@ namespace SmartGridToolbox
       phaseIdx_(phaseIdx),
       V_(bus.V_(phaseIdx)),
       S_(bus.S_(phaseIdx)),
-      Ys_(bus.Ys_(phaseIdx)),
+      ys_(bus.ys_(phaseIdx)),
       Ic_(bus.Ic_(phaseIdx)),
       idx_(-1)
    {
@@ -214,7 +214,7 @@ namespace SmartGridToolbox
             int idxNodeI = nodeI->idx_;
 
             // Only count each diagonal element in branch->Y_ once!
-            Y_(idxNodeI, idxNodeI) += branch->Y_(i, i) + nodeI->Ys_;
+            Y_(idxNodeI, idxNodeI) += branch->Y_(i, i) + nodeI->ys_;
 
             for (int k = i + 1; k < nTerm; ++k)
             {
@@ -681,7 +681,7 @@ namespace SmartGridToolbox
          debug() << "\t\t\tPhase : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
          debug() << "\t\t\tV     : " << nd->V_ << std::endl;
          debug() << "\t\t\tS     : " << nd->S_ << std::endl;
-         debug() << "\t\t\tYs    : " << nd->Ys_ << std::endl;
+         debug() << "\t\t\tys    : " << nd->ys_ << std::endl;
          debug() << "\t\t\tIc    : " << nd->Ic_ << std::endl;
       }
       debug() << "\tBranches:" << std::endl;

@@ -56,12 +56,12 @@ namespace SmartGridToolbox
 
    void Bus::initializeState()
    {
-      Ys_ = ublas::vector<Complex>(phases_.size(), czero);
+      ys_ = ublas::vector<Complex>(phases_.size(), czero);
       Ic_ = ublas::vector<Complex>(phases_.size(), czero);
       Sc_ = ublas::vector<Complex>(phases_.size(), czero);
       for (const ZipToGroundBase * zip : zipsToGround_)
       {
-         Ys_ += zip->Y();
+         ys_ += zip->Y();
          Ic_ += zip->I(); // Injection.
          Sc_ += zip->S(); // Injection.
       }
@@ -71,11 +71,11 @@ namespace SmartGridToolbox
    {
       for (int i = 0; i < phases_.size(); ++i)
       {
-         Ys_(i) = Ic_(i) = Sc_(i) = {0.0, 0.0};
+         ys_(i) = Ic_(i) = Sc_(i) = {0.0, 0.0};
       }
       for (const ZipToGroundBase * zip : zipsToGround_)
       {
-         Ys_ += zip->Y();
+         ys_ += zip->Y();
          Ic_ += zip->I(); // Injection.
          Sc_ += zip->S(); // Injection.
       }
@@ -88,7 +88,7 @@ namespace SmartGridToolbox
       phases_(phases),
       nominalV_(nominalV),
       V_(V),
-      Ys_(ublas::vector<Complex>(phases.size(), czero)),
+      ys_(ublas::vector<Complex>(phases.size(), czero)),
       Ic_(ublas::vector<Complex>(phases.size(), czero)),
       Sc_(ublas::vector<Complex>(phases.size(), czero)),
       Sg_(Sg),

@@ -22,7 +22,7 @@ namespace SmartGridToolbox
       Complex Sg;    // SI.
       double QMin;   // SI.
       double QMax;   // SI.
-      Complex YsPU;  // Per unit.
+      Complex ysPU;  // Per unit.
    };
 
    struct CDFBranchInfo
@@ -156,7 +156,7 @@ namespace SmartGridToolbox
             std::istringstream(line.substr(106, 8)) >> GsPU;
             double BsPU;
             std::istringstream(line.substr(114, 8)) >> BsPU;
-            busInfo.YsPU = Complex(GsPU, BsPU);
+            busInfo.ysPU = Complex(GsPU, BsPU);
          }
 
          std::getline(infile, line); 
@@ -214,14 +214,14 @@ namespace SmartGridToolbox
             Complex V = usePerUnit ? info.VPU : info.VPU * info.VBase;
             Complex SLoad = usePerUnit ? info.SLoad / SBase : info.SLoad;
             Complex Sg = usePerUnit ? info.Sg / SBase : info.Sg;
-            Complex Ys = usePerUnit ? info.YsPU : info.YsPU * SBase / (info.VBase * info.VBase);
+            Complex ys = usePerUnit ? info.ysPU : info.ysPU * SBase / (info.VBase * info.VBase);
             double QMin = usePerUnit ? info.QMin / SBase : info.QMin;
             double QMax = usePerUnit ? info.QMax / SBase : info.QMax;
 
             ublas::vector<Complex> VVec(phases.size(), V);
             ublas::vector<Complex> SLoadVec(phases.size(), SLoad);
             ublas::vector<Complex> SgVec(phases.size(), Sg);
-            ublas::vector<Complex> YsVec(phases.size(), Ys);
+            ublas::vector<Complex> ysVec(phases.size(), ys);
             ublas::vector<double> QMinVec(phases.size(), QMin);
             ublas::vector<double> QMaxVec(phases.size(), QMax);
 
@@ -231,7 +231,7 @@ namespace SmartGridToolbox
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;
-            zip.Y() = YsVec;
+            zip.Y() = ysVec;
             bus.addZipToGround(zip);
 
             netw.addBus(bus);
