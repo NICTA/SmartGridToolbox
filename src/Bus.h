@@ -53,24 +53,22 @@ namespace SmartGridToolbox
          ublas::vector<Complex> & V() {return V_;}
 
          void addZipToGround(ZipToGroundBase & zipToGround);
+         const std::vector<const ZipToGroundBase *> & zipsToGround() const {return zipsToGround_;}
 
-         /// Total shunt admittance (loads).
+         /// Total shunt admittance (sum of ZIPs).
          const ublas::vector<Complex> & ys() const {return ys_;}
-         ublas::vector<Complex> & ys() {return ys_;}
 
-         /// Total constant current injection (loads).
+         /// Total constant current injection (sum of ZIPs).
          const ublas::vector<Complex> & Ic() const {return Ic_;}
-         ublas::vector<Complex> & Ic() {return Ic_;}
 
-         /// Total constant power injection (loads).
+         /// Total constant power injection (sum of ZIPs).
          const ublas::vector<Complex> & Sc() const {return Sc_;}
-         ublas::vector<Complex> & Sc() {return Sc_;}
 
          /// Generator power injection.
          const ublas::vector<Complex> & Sg() const {return Sg_;}
          ublas::vector<Complex> & Sg() {return Sg_;}
          
-         /// Total power injection (loads + gen).
+         /// Total power injection (Sc() + Sg()).
          const ublas::vector<Complex> STot() const {return Sc_ + Sg_;}
          
          /// Reactive power bounds.
