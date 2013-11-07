@@ -118,12 +118,10 @@ namespace SmartGridToolbox
 
    bool Simulation::doTimestep()
    {
-      bool result = true;
-      if (currentTime_ == posix_time::neg_infin)
-      {
-         result = result && doNextUpdate();
-      }
-      while ((result) &&
+      // Do at least one step.
+      bool result = doNextUpdate();
+      // No finish off all contingent and scheduled updates in this step.
+      while (result && 
              ((contingentUpdates_.size() > 0) ||
               (scheduledUpdates_.size() > 0 && (scheduledUpdates_.begin()->second == currentTime_))))
       {
