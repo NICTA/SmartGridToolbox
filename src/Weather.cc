@@ -51,7 +51,7 @@ namespace SmartGridToolbox
       Array<double, 3> planeVec = angsAndMagToVec(planeNormal, planeArea); 
       double direct = dot<double, 3>(planeVec, irradiance_.direct);
       if (direct < 0) direct = 0;
-      double diffuse = irradiance_.horizontalDiffuse * (pi - planeNormal.zenith) / pi; 
+      double diffuse = planeArea * irradiance_.horizontalDiffuse * (pi - planeNormal.zenith) / pi; 
       return direct + diffuse;
    }
 
