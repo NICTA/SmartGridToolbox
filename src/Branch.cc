@@ -37,7 +37,7 @@ namespace SmartGridToolbox
       }
 
       Branch & comp = mod.newComponent<Branch>(name, phases0, phases1);
-      comp.Y() = Y;
+      comp.setY(Y);
    }
 
    void BranchParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
@@ -70,7 +70,7 @@ namespace SmartGridToolbox
          double length = ndYOverhead["length"].as<double>();
          const YAML::Node & ndEarthResist = ndYOverhead["earth_resist"];
          double rho = ndEarthResist ? ndEarthResist.as<double>() : 100.0;
-         comp->Y() = YOverheadLine(r, D, length, networkComp->freq(), rho);
+         comp->setY(YOverheadLine(r, D, length, networkComp->freq(), rho));
       }
 
       const std::string bus0Str = state.expandName(nd["bus_0"].as<std::string>());

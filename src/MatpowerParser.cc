@@ -366,13 +366,15 @@ namespace SmartGridToolbox
             branch.setBus0(*bus0);
             branch.setBus1(*bus1);
 
+            ublas::matrix<Complex> Y(2 * phases.size(), 2 * phases.size());
             for (int k = 0; k < phases.size(); ++k)
             {
-               branch.Y()(k, k) = Y00;
-               branch.Y()(k + phases.size(), k + phases.size()) = Y11;
-               branch.Y()(k, k + phases.size()) = Y01;
-               branch.Y()(k + phases.size(), k) = Y10;
+               Y(k, k) = Y00;
+               Y(k + phases.size(), k + phases.size()) = Y11;
+               Y(k, k + phases.size()) = Y01;
+               Y(k + phases.size(), k) = Y10;
             }
+            branch.setY(Y);
 
             netw.addBranch(branch);
          }

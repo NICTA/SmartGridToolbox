@@ -33,20 +33,17 @@ namespace SmartGridToolbox
          Branch(const std::string & name, const Phases & phases0, const Phases & phases1);
 
          const Bus & bus0() const {return *bus0_;}
-         void setBus0(Bus & bus0) {bus0_ = &bus0;}
+         void setBus0(Bus & bus0) {bus0_ = &bus0; needsUpdate().trigger();}
 
          const Bus & bus1() const {return *bus1_;}
-         void setBus1(Bus & bus1) {bus1_ = &bus1;}
+         void setBus1(Bus & bus1) {bus1_ = &bus1; needsUpdate().trigger();}
 
          const Phases & phases0() const {return phases0_;}
 
          const Phases & phases1() const {return phases1_;}
 
          const ublas::matrix<Complex> & Y() const {return Y_;}
-         ublas::matrix<Complex> & Y() {return Y_;}
-
-         const ublas::matrix<double> & SAppMax() const {return SAppMax_;}
-         ublas::matrix<double> & SAppMax() {return SAppMax_;}
+         void setY(const ublas::matrix<Complex> & Y) {Y_ = Y; needsUpdate().trigger();}
       /// @}
 
       /// @name My private member variables.
@@ -57,7 +54,6 @@ namespace SmartGridToolbox
          Phases phases0_;                 ///< Phases on bus 0.
          Phases phases1_;                 ///< Phases on bus 1.
          ublas::matrix<Complex> Y_;       ///< Complex value of elements in bus admittance matrix in NR solver.
-         ublas::matrix<double> SAppMax_;  ///< Max apparent power.
       /// @}
    };
 }
