@@ -12,4 +12,7 @@ endif
 
 MOSTLYCLEANFILES = $(DX_CLEANFILES)
 
-EXTRA_DIST = $(DX_CONFIG)
+EXTRA_DIST = $(DX_CONFIG) html
+
+install-data-hook:
+	cp -r html $(htmldir)
