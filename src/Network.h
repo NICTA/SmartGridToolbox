@@ -70,6 +70,7 @@ namespace SmartGridToolbox
       /// @name My private member functions.
       /// @{
       private:
+         void applyBusSetpoints();
       /// @}
 
       /// @name My private member variables.

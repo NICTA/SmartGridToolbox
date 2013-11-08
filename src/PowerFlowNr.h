@@ -27,8 +27,8 @@ namespace SmartGridToolbox
       std::string id_;                          ///< Externally relevant id.
       BusType type_;                            ///< Bus type.
       Phases phases_;                           ///< Bus phases.
-      ublas::vector<Complex> V_;                ///< Voltage, one per phase.
-      ublas::vector<Complex> S_;                ///< Total power injection, one per phase.
+      ublas::vector<Complex> V_;                ///< Voltage, one per phase. Setpoint/warm start on input.
+      ublas::vector<Complex> S_;                ///< Total power injection, one per phase. Setpoint/warm start on input.
 
       ublas::vector<Complex> ys_;               ///< Constant admittance shunt, one per phase.
       ublas::vector<Complex> Ic_;               ///< Constant current injection, one per phase.
