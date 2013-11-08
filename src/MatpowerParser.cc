@@ -81,13 +81,13 @@ namespace SmartGridToolbox
    // All quantities expressed as injections:
    struct MpBusInfo
    {
-      std::string name;
       int mpType;
-      double VBase;
-      Complex V;
-      Complex SLoad;
-      Complex Sg;
-      Complex ys;
+
+      double VBase;  // SI.
+      Complex VPu;   // Per unit.
+      Complex SLoad; // SI.
+      Complex Sg;    // SI.
+      Complex ysPu;  // Per unit.
    };
 
    static std::string busName(const std::string & prefix, int id)
@@ -206,34 +206,22 @@ namespace SmartGridToolbox
             int busId = busMatrix[busCols * i];
             MpBusInfo & busInfo = busMap[busId];
 
+            busInfo.mpType = busMatrix[busCols * i + 1];
+
             double KVBase = busMatrix[busCols * i + 9];
             busInfo.VBase = KVBase == 0 ? defaultVBase : KVBase * 1000;
-
-            busInfo.mpType = busMatrix[busCols * i + 1];
+            
+            double Vm = busMatrix[busCols * i + 7];
+            double Va = busMatrix[busCols * i + 8];
+            busInfo.VPu = polar(Vm, Va * pi/180);
 
             double Pd = busMatrix[busCols * i + 2];
             double Qd = busMatrix[busCols * i + 3];
             busInfo.SLoad = -Complex(Pd, Qd) * 1e6; // Injection is -ve load.
-            if (usePerUnit)
-            {
-               busInfo.SLoad /= SBase;
-            }
 
             double Gs = busMatrix[busCols * i + 4];
             double Bs = busMatrix[busCols * i + 5];
-            busInfo.ys = Complex(Gs, Bs) * 1e6 / (busInfo.VBase * busInfo.VBase);
-            if (usePerUnit)
-            {
-               busInfo.ys *= (busInfo.VBase * busInfo.VBase) / SBase;
-            }
-
-            double Vm = busMatrix[busCols * i + 7];
-            double Va = busMatrix[busCols * i + 8];
-            busInfo.V = polar(Vm, Va * pi/180);
-            if (!usePerUnit)
-            {
-               busInfo.V *= busInfo.VBase;
-            }
+            busInfo.ysPu = Complex(Gs, Bs) * 1e6 / SBase; // Matpower has ys in MW / VBase^2
          }
 
          for (int i = 0; i < nGen; ++i)
@@ -244,18 +232,10 @@ namespace SmartGridToolbox
             double Pg  = genMatrix[genCols * i + 1];
             double Qg  = genMatrix[genCols * i + 2];
             double Vg  = genMatrix[genCols * i + 5];
-            if (!usePerUnit)
-            {
-               Vg *= busInfo.VBase;
-            }
 
             busInfo.Sg = Complex(Pg, Qg) * 1e6; // Assuming 1 generator max per bus.
-            if (usePerUnit)
-            {
-               busInfo.Sg /= SBase;
-            }
 
-            busInfo.V *= Vg / abs(busInfo.V); // Scale V of bus to match specified generator V.
+            busInfo.VPu *= Vg / abs(busInfo.VPu); // Scale V of bus to match specified generator V.
          }
       }
 
@@ -288,12 +268,37 @@ namespace SmartGridToolbox
                   break;
             }
 
-            ublas::vector<Complex> VVec(phases.size(), info.V);
-            ublas::vector<Complex> SLoadVec(phases.size(), info.SLoad);
-            ublas::vector<Complex> SgVec(phases.size(), info.Sg);
-            ublas::vector<Complex> ysVec(phases.size(), info.ys);
+            ublas::vector<Complex> VNomVec(phases.size(), info.VBase);
 
-            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec, VVec, SgVec);
+            Complex V = usePerUnit ? info.VPu : info.VPu * info.VBase;
+            ublas::vector<Complex> VVec(phases.size(), V);
+
+            double VMag = usePerUnit ? abs(info.VPu) : abs(info.VPu * info.VBase);
+            ublas::vector<double> VMagVec(phases.size(), VMag);
+            
+            double VAng = usePerUnit ? arg(info.VPu) : arg(info.VPu * info.VBase);
+            ublas::vector<double> VAngVec(phases.size(), VAng);
+            
+            Complex SLoad = usePerUnit ? info.SLoad / SBase : info.SLoad;
+            ublas::vector<Complex> SLoadVec(phases.size(), SLoad);
+
+            Complex Sg = usePerUnit ? info.Sg / SBase : info.Sg;
+            ublas::vector<Complex> SgVec(phases.size(), Sg);
+            
+            Complex ys = usePerUnit ? info.ysPu : info.ysPu * SBase / (info.VBase * info.VBase);
+            ublas::vector<Complex> ysVec(phases.size(), ys);
+
+            // TODO: bounds on values.
+            
+            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VNomVec);
+
+            bus.setPgSetpt(real(SgVec));
+            bus.setQgSetpt(imag(SgVec));
+            bus.setVMagSetpt(VMagVec);
+            bus.setVAngSetpt(VAngVec);
+
+            bus.setV(VVec);
+            bus.setSg(SgVec);
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;

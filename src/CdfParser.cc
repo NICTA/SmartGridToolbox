@@ -210,24 +210,50 @@ namespace SmartGridToolbox
                   abort();
                   break;
             }
+            
+            ublas::vector<Complex> VNomVec(phases.size(), info.VBase);
 
             Complex V = usePerUnit ? info.VPu : info.VPu * info.VBase;
-            Complex SLoad = usePerUnit ? info.SLoad / SBase : info.SLoad;
-            Complex Sg = usePerUnit ? info.Sg / SBase : info.Sg;
-            Complex ys = usePerUnit ? info.ysPu : info.ysPu * SBase / (info.VBase * info.VBase);
-            double QMin = usePerUnit ? info.QMin / SBase : info.QMin;
-            double QMax = usePerUnit ? info.QMax / SBase : info.QMax;
-
             ublas::vector<Complex> VVec(phases.size(), V);
+            
+            double VMag = usePerUnit ? abs(info.VPu) : abs(info.VPu * info.VBase);
+            ublas::vector<double> VMagVec(phases.size(), VMag);
+            
+            double VAng = usePerUnit ? arg(info.VPu) : arg(info.VPu * info.VBase);
+            ublas::vector<double> VAngVec(phases.size(), VAng);
+            
+            Complex SLoad = usePerUnit ? info.SLoad / SBase : info.SLoad;
             ublas::vector<Complex> SLoadVec(phases.size(), SLoad);
+
+            Complex Sg = usePerUnit ? info.Sg / SBase : info.Sg;
             ublas::vector<Complex> SgVec(phases.size(), Sg);
+
+            Complex ys = usePerUnit ? info.ysPu : info.ysPu * SBase / (info.VBase * info.VBase);
             ublas::vector<Complex> ysVec(phases.size(), ys);
+
+            // TODO: WARNING: There are fields in CDF giving min and max MVAR or voltage.
+            // MVAR should only apply for PV busses, and voltage for PV busses. But due to non-standard usage, we're
+            // making it MVAR for both types of bus. This is all pretty nasty.
+            double QMin = usePerUnit ? info.QMin / SBase : info.QMin;
             ublas::vector<double> QMinVec(phases.size(), QMin);
+
+            double QMax = usePerUnit ? info.QMax / SBase : info.QMax;
             ublas::vector<double> QMaxVec(phases.size(), QMax);
 
-            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VVec, VVec, SgVec);
-            bus.QMin() = QMinVec; // For PV busses, place bound on Q.
-            bus.QMax() = QMaxVec; // For PV busses, place bound on Q.
+            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VNomVec);
+
+            bus.setPgSetpt(real(SgVec));
+
+            bus.setQgSetpt(imag(SgVec));
+            bus.setQgMinSetpt(QMinVec);
+            bus.setQgMaxSetpt(QMaxVec);
+            
+            bus.setVMagSetpt(VMagVec);
+            
+            bus.setVAngSetpt(VAngVec);
+
+            bus.setV(VVec);
+            bus.setSg(SgVec);
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;

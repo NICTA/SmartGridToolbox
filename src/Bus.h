@@ -39,21 +39,143 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         Bus(const std::string & name, BusType type, const Phases & phases, const ublas::vector<Complex> & nominalV,
-             const ublas::vector<Complex> & V, const ublas::vector<Complex> & Sg);
+         /// @name Lifecycle.
+         /// @{
+         Bus(const std::string & name, BusType type, const Phases & phases, const ublas::vector<Complex> & nominalV);
+         /// @}
 
+         /// @name Basic info.
+         /// @{
          BusType type() const {return type_;}
-
          const Phases & phases() const {return phases_;}
-
          const ublas::vector<Complex> & nominalV() const {return nominalV_;}
-         ublas::vector<Complex> & nominalV() {return nominalV_;}
+         /// @}
 
-         const ublas::vector<Complex> & V() const {return V_;}
-         ublas::vector<Complex> & V() {return V_;}
+         /// @name Setpoints.
+         /// @{
+         /// @name Real generated power.
+         /** Equality for PQ, PV, bounds for SL. */
+         /// @{
+         ublas::vector<double> PgSetpt() const
+         {
+            return PgSetpt_;
+         }
+         void setPgSetpt(const ublas::vector<double> & PgSetpt)
+         {
+            PgSetpt_ = PgSetpt; needsUpdate().trigger();
+         }
+         ublas::vector<double> PgMinSetpt() const
+         {
+            return PgMinSetpt_;
+         }
+         void setPgMinSetpt(const ublas::vector<double> & PgMinSetpt)
+         {
+            PgMinSetpt_ = PgMinSetpt; needsUpdate().trigger();
+         }
+         ublas::vector<double> PgMaxSetpt() const
+         {
+            return PgMaxSetpt_;
+         }
+         void setPgMaxSetpt(const ublas::vector<double> & PgMaxSetpt)
+         {
+            PgMaxSetpt_ = PgMaxSetpt; needsUpdate().trigger();
+         }
+         /// @}
 
-         void addZipToGround(ZipToGroundBase & zipToGround);
+         /// @name Reactive generated power.
+         /** Equality for PQ, bounds for SL, PV. */
+         /// @{
+         ublas::vector<double> QgSetpt() const
+         {
+            return QgSetpt_;
+         }
+         void setQgSetpt(const ublas::vector<double> & QgSetpt)
+         {
+            QgSetpt_ = QgSetpt; needsUpdate().trigger();
+         }
+         ublas::vector<double> QgMinSetpt() const
+         {
+            return QgMinSetpt_;
+         }
+         void setQgMinSetpt(const ublas::vector<double> & QgMinSetpt)
+         {
+            QgMinSetpt_ = QgMinSetpt; needsUpdate().trigger();
+         }
+         ublas::vector<double> QgMaxSetpt() const
+         {
+            return QgMaxSetpt_;
+         }
+         void setQgMaxSetpt(const ublas::vector<double> & QgMaxSetpt)
+         {
+            QgMaxSetpt_ = QgMaxSetpt; needsUpdate().trigger();
+         }
+         /// @}
+
+         /// @name Voltage magnitude.
+         /** Equality for SL, PV, bounds for PQ. */
+         /// @{
+         ublas::vector<double> VMagSetpt() const
+         {
+            return VMagSetpt_;
+         }
+         void setVMagSetpt(const ublas::vector<double> & VMagSetpt)
+         {
+            VMagSetpt_ = VMagSetpt; needsUpdate().trigger();
+         }
+         ublas::vector<double> VMagMinSetpt() const
+         {
+            return VMagMinSetpt_;
+         }
+         void setVMagMinSetpt(const ublas::vector<double> & VMagMinSetpt)
+         {
+            VMagMinSetpt_ = VMagMinSetpt; needsUpdate().trigger();
+         }
+         ublas::vector<double> VMagMaxSetpt() const
+         {
+            return VMagMaxSetpt_;
+         }
+         void setVMagMaxSetpt(const ublas::vector<double> & VMagMaxSetpt)
+         {
+            VMagMaxSetpt_ = VMagMaxSetpt; needsUpdate().trigger();
+         }
+         /// @}
+
+         /// @name Voltage angle (radians).
+         /** Equality for SL, bounds for PQ, PV. */
+         /// @{
+         ublas::vector<double> VAngSetpt() const
+         {
+            return VAngSetpt_;
+         }
+         void setVAngSetpt(const ublas::vector<double> & VAngSetpt)
+         {
+            VAngSetpt_ = VAngSetpt; needsUpdate().trigger();
+         }
+         ublas::vector<double> VAngMinSetpt() const
+         {
+            return VAngMinSetpt_;
+         }
+         void setVAngMinSetpt(const ublas::vector<double> & VAngMinSetpt)
+         {
+            VAngMinSetpt_ = VAngMinSetpt; needsUpdate().trigger();
+         }
+         ublas::vector<double> VAngMaxSetpt() const
+         {
+            return VAngMaxSetpt_;
+         }
+         void setVAngMaxSetpt(const ublas::vector<double> & VAngMaxSetpt)
+         {
+            VAngMaxSetpt_ = VAngMaxSetpt; needsUpdate().trigger();
+         }
+         /// @}
+         /// @}
+
+         /// @name Loads / constant power generation.
+         /// @{
+         /// ZIP = constant Z, I, P (or Y, I, S).
          const std::vector<const ZipToGroundBase *> & zipsToGround() const {return zipsToGround_;}
+         /// ZIP = constant Z, I, P (or Y, I, S).
+         void addZipToGround(ZipToGroundBase & zipToGround);
 
          /// Total shunt admittance (sum of ZIPs).
          const ublas::vector<Complex> & ys() const {return ys_;}
@@ -63,52 +185,66 @@ namespace SmartGridToolbox
 
          /// Total constant power injection (sum of ZIPs).
          const ublas::vector<Complex> & Sc() const {return Sc_;}
+         /// @}
 
-         /// Generator power injection.
+         /// @name State.
+         /// @{
+         /// Get bus voltage.
+         const ublas::vector<Complex> & V() const {return V_;}
+         /// Set bus voltage (warm start or solver).
+         void setV(const ublas::vector<Complex> & V) {V_ = V; needsUpdate().trigger();}
+
+         /// Get bus generated power.
          const ublas::vector<Complex> & Sg() const {return Sg_;}
-         ublas::vector<Complex> & Sg() {return Sg_;}
-         
+         /// Set bus generated power (warm start or solver).
+         void setSg(const ublas::vector<Complex> & Sg) {Sg_ = Sg;}
+
          /// Total power injection (Sc() + Sg()).
          const ublas::vector<Complex> STot() const {return Sc_ + Sg_;}
-         
-         /// Reactive power bounds.
-         const ublas::vector<double> & QMin() const {return QMin_;}
-         ublas::vector<double> & QMin() {return QMin_;}
-         const ublas::vector<double> & QMax() const {return QMax_;}
-         ublas::vector<double> & QMax() {return QMax_;}
-
-         // TODO: bounds on other quantities e.g. theta etc.
+         /// @}
       /// @}
 
       /// @name My private member variables.
       /// @{
       private:
-         BusType type_;                                        ///< Bus type.
-         Phases phases_;                                       ///< Phases.
+         BusType type_;                    ///< Bus type.
+         Phases phases_;                   ///< Phases.
+         ublas::vector<Complex> nominalV_; ///< Nominal voltage.
 
-         std::vector<const ZipToGroundBase *> zipsToGround_;   ///< ZIP loads of generation.
+         ublas::vector<double> PgSetpt_;      ///< For PQ or PV bus.
+         ublas::vector<double> PgMinSetpt_;   ///< For SL bus.
+         ublas::vector<double> PgMaxSetpt_;   ///< For SL bus.
 
-         ublas::vector<Complex> nominalV_;                     ///< Nominal voltage.
+         ublas::vector<double> QgSetpt_;      ///< For PQ bus.
+         ublas::vector<double> QgMinSetpt_;   ///< For PV or SL bus.
+         ublas::vector<double> QgMaxSetpt_;   ///< For PV or SL bus.
+
+         ublas::vector<double> VMagSetpt_;    ///< For PV or SL bus.
+         ublas::vector<double> VMagMinSetpt_; ///< For PQ bus.
+         ublas::vector<double> VMagMaxSetpt_; ///< For PQ bus.
+
+         ublas::vector<double> VAngSetpt_;    ///< For SL bus.
+         ublas::vector<double> VAngMinSetpt_; ///< For PV bus.
+         ublas::vector<double> VAngMaxSetpt_; ///< For PV bus.
+
+         std::vector<const ZipToGroundBase *> zipsToGround_; ///< ZIP loads of generation.
 
          /// @name Quantities due to operation of bus:
-         /** For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_. 
+         /** For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_.
           *  Thus Sgen_ will be zero. For PV busses, the reactive power is supposed to adjust to keep the voltage
-          *  magnitude constant. So Sgen_ will in general have zero real power and nonzero reactive power. 
-          *  For slack busses, the both the real and reactive power will adjust to keep a constant voltage, 
+          *  magnitude constant. So Sgen_ will in general have zero real power and nonzero reactive power.
+          *  For slack busses, the both the real and reactive power will adjust to keep a constant voltage,
           *  both components of Sg may be nonzero.*/
          /// @{
-         ublas::vector<Complex> V_;                            ///< Voltage.
-         ublas::vector<Complex> Sg_;                         ///< Generator power.
+         ublas::vector<Complex> V_;  ///< Voltage.
+         ublas::vector<Complex> Sg_; ///< Generator power.
          /// @}
 
-         /// @name ZIP load quantities:
+         /// @name cached ZIP load quantities:
          /// @{
-         ublas::vector<Complex> ys_;                           ///< Constant admittance shunt (loads).
-         ublas::vector<Complex> Ic_;                           ///< Constant current injection (loads).
-         ublas::vector<Complex> Sc_;                           ///< Constant power injection (loads).
-
-         ublas::vector<double> QMin_;                          ///< Reactive power min. 
-         ublas::vector<double> QMax_;                          ///< Reactive power max. 
+         ublas::vector<Complex> ys_; ///< Constant admittance shunt (loads).
+         ublas::vector<Complex> Ic_; ///< Constant current injection (loads).
+         ublas::vector<Complex> Sc_; ///< Constant power injection (loads).
          /// @}
       /// @}
    };

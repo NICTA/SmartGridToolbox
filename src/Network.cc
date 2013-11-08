@@ -71,8 +71,8 @@ namespace SmartGridToolbox
             Bus * bus = findBus(busPair.second->id_);
 
             // Push the state back onto bus. We don't want to trigger any events.
-            bus->V() = busPair.second->V_;
-            bus->Sg() = busPair.second->S_ - bus->Sc();
+            bus->setV(busPair.second->V_);
+            bus->setSg(busPair.second->S_ - bus->Sc());
          }
       }
    }
