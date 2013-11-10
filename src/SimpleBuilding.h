@@ -56,7 +56,7 @@ namespace SmartGridToolbox
 
          // Parameters:
          Time getdt() {return dt_;}
-         void setdt(Time val) {dt_ = val;}
+         void setdt(Time val) {dt_ = val; needsUpdate().trigger();}
 
          double getkb() {return kb_;}
          void setkb(double val) {kb_ = val;}
@@ -65,7 +65,7 @@ namespace SmartGridToolbox
          void setCb(double val) {Cb_ = val;}
 
          double TbInit() {return TbInit_;}
-         void setTbInit(double val) {TbInit_ = val;}
+         void setTbInit(double val) {TbInit_ = val; needsUpdate().trigger();}
 
          double getkh() {return kh_;}
          void setkh(double val) {kh_ = val;}
@@ -74,7 +74,7 @@ namespace SmartGridToolbox
          void setCopCool(double val) {copCool_ = val;}
 
          double copHeat() {return copHeat_;}
-         void setCopHeat(double val) {copHeat_ = val;}
+         void setCopHeat(double val) {copHeat_ = val; needsUpdate().trigger();}
 
          double Pmax() {return Pmax_;}
          void setPmax(double val) {Pmax_ = val;}
@@ -83,10 +83,10 @@ namespace SmartGridToolbox
          void setTs(double val) {Ts_ = val;}
 
          const double Te(Time t) {return Te_(t);}
-         void setTeFunc(const std::function<double (Time)> & f) {Te_ = f;}
+         void setTeFunc(const std::function<double (Time)> & f) {Te_ = f; needsUpdate().trigger();}
 
          const double getdQg(Time t) {return dQg_(t);}
-         void setdQgFunc(const std::function<double (Time)> f) {dQg_ = f;}
+         void setdQgFunc(const std::function<double (Time)> f) {dQg_ = f; needsUpdate().trigger();}
 
          double Tb() {return Tb_;}
 

@@ -242,15 +242,15 @@ namespace SmartGridToolbox
 
             Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VNomVec);
 
-            bus.setPgSetpt(real(SgVec));
+            bus.setPgSetpoint(real(SgVec));
 
-            bus.setQgSetpt(imag(SgVec));
-            bus.setQgMinSetpt(QMinVec);
-            bus.setQgMaxSetpt(QMaxVec);
+            bus.setQgSetpoint(imag(SgVec));
+            bus.setQgMinSetpoint(QMinVec);
+            bus.setQgMaxSetpoint(QMaxVec);
             
-            bus.setVMagSetpt(VMagVec);
+            bus.setVMagSetpoint(VMagVec);
             
-            bus.setVAngSetpt(VAngVec);
+            bus.setVAngSetpoint(VAngVec);
 
             bus.setV(VVec);
             bus.setSg(SgVec);

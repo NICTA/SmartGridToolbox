@@ -39,11 +39,11 @@ namespace SmartGridToolbox
 
          virtual ~Weather() {delete cloudCoverSeries_;}
 
-         void setLatLong(const LatLong & latLong) {latLong_ = latLong;}
+         void setLatLong(const LatLong & latLong) {latLong_ = latLong; needsUpdate().trigger();}
 
          void acquireCloudCoverSeries(TimeSeries<Time, double> * newSeries)
          {
-            std::swap(cloudCoverSeries_, newSeries);
+            std::swap(cloudCoverSeries_, newSeries); needsUpdate().trigger();
          }
 
          double solarPower(SphericalAngles planeNormal, double planeArea) const;

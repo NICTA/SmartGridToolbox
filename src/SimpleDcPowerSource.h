@@ -31,7 +31,7 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
       public:
-         void setPDc(double PDc) {PDc_ = PDc;}
+         void setPDc(double PDc) {PDc_ = PDc; needsUpdate().trigger();}
       /// @}
       
       /// @name My private member variables.

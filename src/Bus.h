@@ -56,117 +56,81 @@ namespace SmartGridToolbox
          /// @name Real generated power.
          /** Equality for PQ, PV, bounds for SL. */
          /// @{
-         ublas::vector<double> PgSetpt() const
+         ublas::vector<double> PgSetpoint() const
          {
-            return PgSetpt_;
+            return PgSetpoint_;
          }
-         void setPgSetpt(const ublas::vector<double> & PgSetpt)
+         void setPgSetpoint(const ublas::vector<double> & PgSetpoint);
+         ublas::vector<double> PgMinSetpoint() const
          {
-            PgSetpt_ = PgSetpt; needsUpdate().trigger();
+            return PgMinSetpoint_;
          }
-         ublas::vector<double> PgMinSetpt() const
+         void setPgMinSetpoint(const ublas::vector<double> & PgMinSetpoint);
+         ublas::vector<double> PgMaxSetpoint() const
          {
-            return PgMinSetpt_;
+            return PgMaxSetpoint_;
          }
-         void setPgMinSetpt(const ublas::vector<double> & PgMinSetpt)
-         {
-            PgMinSetpt_ = PgMinSetpt; needsUpdate().trigger();
-         }
-         ublas::vector<double> PgMaxSetpt() const
-         {
-            return PgMaxSetpt_;
-         }
-         void setPgMaxSetpt(const ublas::vector<double> & PgMaxSetpt)
-         {
-            PgMaxSetpt_ = PgMaxSetpt; needsUpdate().trigger();
-         }
+         void setPgMaxSetpoint(const ublas::vector<double> & PgMaxSetpoint);
          /// @}
 
          /// @name Reactive generated power.
          /** Equality for PQ, bounds for SL, PV. */
          /// @{
-         ublas::vector<double> QgSetpt() const
+         ublas::vector<double> QgSetpoint() const
          {
-            return QgSetpt_;
+            return QgSetpoint_;
          }
-         void setQgSetpt(const ublas::vector<double> & QgSetpt)
+         void setQgSetpoint(const ublas::vector<double> & QgSetpoint);
+         ublas::vector<double> QgMinSetpoint() const
          {
-            QgSetpt_ = QgSetpt; needsUpdate().trigger();
+            return QgMinSetpoint_;
          }
-         ublas::vector<double> QgMinSetpt() const
+         void setQgMinSetpoint(const ublas::vector<double> & QgMinSetpoint);
+         ublas::vector<double> QgMaxSetpoint() const
          {
-            return QgMinSetpt_;
+            return QgMaxSetpoint_;
          }
-         void setQgMinSetpt(const ublas::vector<double> & QgMinSetpt)
-         {
-            QgMinSetpt_ = QgMinSetpt; needsUpdate().trigger();
-         }
-         ublas::vector<double> QgMaxSetpt() const
-         {
-            return QgMaxSetpt_;
-         }
-         void setQgMaxSetpt(const ublas::vector<double> & QgMaxSetpt)
-         {
-            QgMaxSetpt_ = QgMaxSetpt; needsUpdate().trigger();
-         }
+         void setQgMaxSetpoint(const ublas::vector<double> & QgMaxSetpoint);
          /// @}
 
          /// @name Voltage magnitude.
          /** Equality for SL, PV, bounds for PQ. */
          /// @{
-         ublas::vector<double> VMagSetpt() const
+         ublas::vector<double> VMagSetpoint() const
          {
-            return VMagSetpt_;
+            return VMagSetpoint_;
          }
-         void setVMagSetpt(const ublas::vector<double> & VMagSetpt)
+         void setVMagSetpoint(const ublas::vector<double> & VMagSetpoint);
+         ublas::vector<double> VMagMinSetpoint() const
          {
-            VMagSetpt_ = VMagSetpt; needsUpdate().trigger();
+            return VMagMinSetpoint_;
          }
-         ublas::vector<double> VMagMinSetpt() const
+         void setVMagMinSetpoint(const ublas::vector<double> & VMagMinSetpoint);
+         ublas::vector<double> VMagMaxSetpoint() const
          {
-            return VMagMinSetpt_;
+            return VMagMaxSetpoint_;
          }
-         void setVMagMinSetpt(const ublas::vector<double> & VMagMinSetpt)
-         {
-            VMagMinSetpt_ = VMagMinSetpt; needsUpdate().trigger();
-         }
-         ublas::vector<double> VMagMaxSetpt() const
-         {
-            return VMagMaxSetpt_;
-         }
-         void setVMagMaxSetpt(const ublas::vector<double> & VMagMaxSetpt)
-         {
-            VMagMaxSetpt_ = VMagMaxSetpt; needsUpdate().trigger();
-         }
+         void setVMagMaxSetpoint(const ublas::vector<double> & VMagMaxSetpoint);
          /// @}
 
          /// @name Voltage angle (radians).
          /** Equality for SL, bounds for PQ, PV. */
          /// @{
-         ublas::vector<double> VAngSetpt() const
+         ublas::vector<double> VAngSetpoint() const
          {
-            return VAngSetpt_;
+            return VAngSetpoint_;
          }
-         void setVAngSetpt(const ublas::vector<double> & VAngSetpt)
+         void setVAngSetpoint(const ublas::vector<double> & VAngSetpoint);
+         ublas::vector<double> VAngMinSetpoint() const
          {
-            VAngSetpt_ = VAngSetpt; needsUpdate().trigger();
+            return VAngMinSetpoint_;
          }
-         ublas::vector<double> VAngMinSetpt() const
+         void setVAngMinSetpoint(const ublas::vector<double> & VAngMinSetpoint);
+         ublas::vector<double> VAngMaxSetpoint() const
          {
-            return VAngMinSetpt_;
+            return VAngMaxSetpoint_;
          }
-         void setVAngMinSetpt(const ublas::vector<double> & VAngMinSetpt)
-         {
-            VAngMinSetpt_ = VAngMinSetpt; needsUpdate().trigger();
-         }
-         ublas::vector<double> VAngMaxSetpt() const
-         {
-            return VAngMaxSetpt_;
-         }
-         void setVAngMaxSetpt(const ublas::vector<double> & VAngMaxSetpt)
-         {
-            VAngMaxSetpt_ = VAngMaxSetpt; needsUpdate().trigger();
-         }
+         void setVAngMaxSetpoint(const ublas::vector<double> & VAngMaxSetpoint);
          /// @}
          /// @}
 
@@ -211,21 +175,21 @@ namespace SmartGridToolbox
          Phases phases_;                   ///< Phases.
          ublas::vector<Complex> nominalV_; ///< Nominal voltage.
 
-         ublas::vector<double> PgSetpt_;      ///< For PQ or PV bus.
-         ublas::vector<double> PgMinSetpt_;   ///< For SL bus.
-         ublas::vector<double> PgMaxSetpt_;   ///< For SL bus.
+         ublas::vector<double> PgSetpoint_;      ///< For PQ or PV bus.
+         ublas::vector<double> PgMinSetpoint_;   ///< For SL bus.
+         ublas::vector<double> PgMaxSetpoint_;   ///< For SL bus.
 
-         ublas::vector<double> QgSetpt_;      ///< For PQ bus.
-         ublas::vector<double> QgMinSetpt_;   ///< For PV or SL bus.
-         ublas::vector<double> QgMaxSetpt_;   ///< For PV or SL bus.
+         ublas::vector<double> QgSetpoint_;      ///< For PQ bus.
+         ublas::vector<double> QgMinSetpoint_;   ///< For PV or SL bus.
+         ublas::vector<double> QgMaxSetpoint_;   ///< For PV or SL bus.
 
-         ublas::vector<double> VMagSetpt_;    ///< For PV or SL bus.
-         ublas::vector<double> VMagMinSetpt_; ///< For PQ bus.
-         ublas::vector<double> VMagMaxSetpt_; ///< For PQ bus.
+         ublas::vector<double> VMagSetpoint_;    ///< For PV or SL bus.
+         ublas::vector<double> VMagMinSetpoint_; ///< For PQ bus.
+         ublas::vector<double> VMagMaxSetpoint_; ///< For PQ bus.
 
-         ublas::vector<double> VAngSetpt_;    ///< For SL bus.
-         ublas::vector<double> VAngMinSetpt_; ///< For PV bus.
-         ublas::vector<double> VAngMaxSetpt_; ///< For PV bus.
+         ublas::vector<double> VAngSetpoint_;    ///< For SL bus.
+         ublas::vector<double> VAngMinSetpoint_; ///< For PV bus.
+         ublas::vector<double> VAngMaxSetpoint_; ///< For PV bus.
 
          std::vector<const ZipToGroundBase *> zipsToGround_; ///< ZIP loads of generation.
 

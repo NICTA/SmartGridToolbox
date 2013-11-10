@@ -35,6 +35,7 @@ namespace SmartGridToolbox
       busMap_[bus.name()] = &bus;
       bus.didUpdate().addAction([this](){needsUpdate().trigger();}, 
             "Trigger Network " + name() + " needs update");
+      needsUpdate().trigger();
    }
  
    void Network::addBranch(Branch & branch)
@@ -43,6 +44,7 @@ namespace SmartGridToolbox
       branchVec_.push_back(&branch);
       branch.didUpdate().addAction([this](){needsUpdate().trigger();},
             "Trigger Network " + name() + " needs update");
+      needsUpdate().trigger();
    }
 
    void Network::solvePowerFlow()
@@ -126,7 +128,7 @@ namespace SmartGridToolbox
                   ublas::vector<Complex> V(bus->phases().size());
                   for (int i = 0; i < bus->phases().size(); ++i)
                   {
-                     V(i) = polar(bus->VMagSetpt()(i), bus->VAngSetpt()(i));
+                     V(i) = polar(bus->VMagSetpoint()(i), bus->VAngSetpoint()(i));
                   }
                   bus->setV(V);
                }
@@ -136,7 +138,7 @@ namespace SmartGridToolbox
                   ublas::vector<Complex> Sg(bus->phases().size());
                   for (int i = 0; i < bus->phases().size(); ++i)
                   {
-                     Sg(i) = {bus->PgSetpt()(i), bus->QgSetpt()(i)};
+                     Sg(i) = {bus->PgSetpoint()(i), bus->QgSetpoint()(i)};
                   }
                   bus->setSg(Sg);
                }
@@ -147,8 +149,8 @@ namespace SmartGridToolbox
                   ublas::vector<Complex> V(bus->phases().size());
                   for (int i = 0; i < bus->phases().size(); ++i)
                   {
-                     Sg(i) = {bus->PgSetpt()(i), bus->Sg()(i).imag()};
-                     V(i) = bus->VMagSetpt()(i) * bus->V()(i) / abs(bus->V()(i));
+                     Sg(i) = {bus->PgSetpoint()(i), bus->Sg()(i).imag()};
+                     V(i) = bus->VMagSetpoint()(i) * bus->V()(i) / abs(bus->V()(i));
                   }
                   bus->setSg(Sg);
                   bus->setV(V);

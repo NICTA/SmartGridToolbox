@@ -25,6 +25,7 @@ namespace SmartGridToolbox
          void setDt(Time dt)
          {
             dt_ = dt;
+            needsUpdate().trigger();
          }
 
       private:

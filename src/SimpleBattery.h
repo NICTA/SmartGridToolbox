@@ -25,27 +25,27 @@ namespace SmartGridToolbox
          }
 
          double initCharge() {return initCharge_;}
-         void setInitCharge(double val) {initCharge_ = val;}
+         void setInitCharge(double val) {initCharge_ = val; needsUpdate().trigger();}
 
          double maxCharge() {return maxCharge_;}
-         void setMaxCharge(double val) {maxCharge_ = val;}
+         void setMaxCharge(double val) {maxCharge_ = val; needsUpdate().trigger();}
 
          double maxChargePower() {return maxChargePower_;}
-         void setMaxChargePower(double val) {maxChargePower_ = val;}
+         void setMaxChargePower(double val) {maxChargePower_ = val; needsUpdate().trigger();}
 
          double maxDischargePower() {return maxDischargePower_;}
-         void setMaxDischargePower(double val) {maxDischargePower_ = val;}
+         void setMaxDischargePower(double val) {maxDischargePower_ = val; needsUpdate().trigger();}
 
          double chargeEfficiency() {return chargeEfficiency_;}
-         void setChargeEfficiency(double val) {chargeEfficiency_ = val;}
+         void setChargeEfficiency(double val) {chargeEfficiency_ = val; needsUpdate().trigger();}
 
          double dischargeEfficiency() {return dischargeEfficiency_;}
-         void setDischargeEfficiency(double val) {dischargeEfficiency_ = val;}
+         void setDischargeEfficiency(double val) {dischargeEfficiency_ = val; needsUpdate().trigger();}
 
          double charge() {return charge_;}
 
          double requestedPower() {return requestedPower_;}
-         void setRequestedPower(double val) {requestedPower_ = val;}
+         void setRequestedPower(double val) {requestedPower_ = val; needsUpdate().trigger();}
 
          double power() 
          {

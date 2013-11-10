@@ -34,11 +34,11 @@ namespace SmartGridToolbox
 
          void setWeather(Weather & weather);
 
-         void setEfficiency(double efficiency) {efficiency_ = efficiency;}
+         void setEfficiency(double efficiency) {efficiency_ = efficiency; needsUpdate().trigger();}
 
-         void setPlaneNormal(SphericalAngles planeNormal) {planeNormal_ = planeNormal;}
+         void setPlaneNormal(SphericalAngles planeNormal) {planeNormal_ = planeNormal; needsUpdate().trigger();}
 
-         void setPlaneArea(double planeArea) {planeArea_ = planeArea;}
+         void setPlaneArea(double planeArea) {planeArea_ = planeArea; needsUpdate().trigger();}
 
       public:
          const Weather * weather_;

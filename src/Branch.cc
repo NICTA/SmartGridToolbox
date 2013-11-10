@@ -108,6 +108,41 @@ namespace SmartGridToolbox
       phases1_(phases1),
       Y_(2 * phases0.size(), 2 * phases0.size(), czero)
    {
-      assert(phases0.size() == phases1.size());
+      if (phases0.size() != phases1.size())
+      {
+         error() << "Branch must have equal number of phases for both sides." << std::endl;
+         abort();
+      }
+   }
+
+   void Branch::setBus0(Bus & bus0) 
+   {
+      if (!phases0_.isSubsetOf(bus0_->phases()))
+      {
+         error() << "Connecting a bus to a branch with a phase mismatch." << std::endl;
+         abort();
+      }
+      bus0_ = &bus0; needsUpdate().trigger();
+   }
+   
+   void Branch::setBus1(Bus & bus1) 
+   {
+      if (!phases1_.isSubsetOf(bus1_->phases()))
+      {
+         error() << "Connecting a bus to a branch with a phase mismatch." << std::endl;
+         abort();
+      }
+      bus1_ = &bus1; needsUpdate().trigger();
+   }
+
+   void Branch::setY(const ublas::matrix<Complex> & Y)
+   {
+      if (Y.size1() != 2 * phases0_.size() && Y.size2() != 2 * phases0_.size())
+      {
+         error() << "Both dimensions of Y should be of size twice the number of phases." << std::endl;
+         abort();
+      }
+      Y_ = Y;
+      needsUpdate().trigger();
    }
 }

@@ -33,17 +33,17 @@ namespace SmartGridToolbox
          Branch(const std::string & name, const Phases & phases0, const Phases & phases1);
 
          const Bus & bus0() const {return *bus0_;}
-         void setBus0(Bus & bus0) {bus0_ = &bus0; needsUpdate().trigger();}
+         void setBus0(Bus & bus0);
 
          const Bus & bus1() const {return *bus1_;}
-         void setBus1(Bus & bus1) {bus1_ = &bus1; needsUpdate().trigger();}
+         void setBus1(Bus & bus1);
 
          const Phases & phases0() const {return phases0_;}
 
          const Phases & phases1() const {return phases1_;}
 
          const ublas::matrix<Complex> & Y() const {return Y_;}
-         void setY(const ublas::matrix<Complex> & Y) {Y_ = Y; needsUpdate().trigger();}
+         void setY(const ublas::matrix<Complex> & Y);
       /// @}
 
       /// @name My private member variables.
