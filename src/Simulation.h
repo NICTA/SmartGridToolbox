@@ -11,31 +11,6 @@ namespace SmartGridToolbox
 {
    class Model;
 
-   // Soonest/smallest rank goes first. If equal rank and time, then sort on the name.
-   class ScheduledUpdatesComp
-   {
-      public:
-         bool operator()(const std::pair<Component *, Time> & lhs, 
-                         const std::pair<Component *, Time> & rhs) 
-         {
-            return ((lhs.second < rhs.second) ||
-                    (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
-                    (lhs.second == rhs.second && lhs.first->rank() == rhs.first->rank() && 
-                     (lhs.first->name() < rhs.first->name())));
-         }
-   };
-
-   // Smallest rank goes first. If equal rank, then sort on the name.
-   class ContingentUpdatesComp
-   {
-      public:
-         bool operator()(const Component * lhs, const Component * rhs)
-         {
-            return ((lhs->rank() < rhs->rank()) ||
-                    ((lhs->rank() == rhs->rank()) && (lhs->name() < rhs->name())));
-         }
-   };
-
    /// Simulation. 
    class Simulation
    {
@@ -105,8 +80,34 @@ namespace SmartGridToolbox
          Event & timestepDidComplete() {return timestepDidComplete_;}
 
       private:
-         typedef std::set<std::pair<Component *, Time>, ScheduledUpdatesComp> ScheduledUpdates;
-         typedef std::set<Component *, ContingentUpdatesComp> ContingentUpdates;
+
+         // Soonest/smallest rank goes first. If equal rank and time, then sort on the name.
+         class ScheduledUpdatesCompare
+         {
+            public:
+               bool operator()(const std::pair<Component *, Time> & lhs, 
+                     const std::pair<Component *, Time> & rhs) 
+               {
+                  return ((lhs.second < rhs.second) ||
+                        (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
+                        (lhs.second == rhs.second && lhs.first->rank() == rhs.first->rank() && 
+                         (lhs.first->name() < rhs.first->name())));
+               }
+         };
+
+         // Smallest rank goes first. If equal rank, then sort on the name.
+         class ContingentUpdatesCompare
+         {
+            public:
+               bool operator()(const Component * lhs, const Component * rhs)
+               {
+                  return ((lhs->rank() < rhs->rank()) ||
+                        ((lhs->rank() == rhs->rank()) && (lhs->name() < rhs->name())));
+               }
+         };
+
+         typedef std::set<std::pair<Component *, Time>, ScheduledUpdatesCompare> ScheduledUpdates;
+         typedef std::set<Component *, ContingentUpdatesCompare> ContingentUpdates;
 
       private:
          Model * mod_;

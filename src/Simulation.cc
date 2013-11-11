@@ -23,7 +23,7 @@ namespace SmartGridToolbox
       {
          comp->initialize(startTime_);
          comp->needsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
-               "Simulation insert contingent update of component " + comp->name());
+                                       "Simulation insert contingent update of component " + comp->name());
          scheduledUpdates_.insert(std::make_pair(comp, comp->startTime()));
       }
       currentTime_ = posix_time::neg_infin;
@@ -35,26 +35,30 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "Simulation doNextUpdate(): " << std::endl);
       SGT_DEBUG(debug() << "\tNumber of scheduled = " << scheduledUpdates_.size() << std::endl);
       SGT_DEBUG(debug() << "\tNumber of contingent = " << contingentUpdates_.size() << std::endl);
+
       bool result = false;
+
       Time nextSchedTime = posix_time::pos_infin;
       Component * schedComp = 0;
       auto schedUpdateIt = scheduledUpdates_.begin();
+
       if (scheduledUpdates_.size() > 0)
       {
          schedComp = schedUpdateIt->first;
          nextSchedTime = schedUpdateIt->second;
-         SGT_DEBUG(debug() << "\tStart time = " << startTime_ << std::endl);
-         SGT_DEBUG(debug() << "\tCurrent time = " << currentTime_ << std::endl);
+
          SGT_DEBUG(debug() << "\tNext scheduled time = " << nextSchedTime << " for component " 
                            << schedComp->name() << std::endl);
-         SGT_DEBUG(debug() << "\tEnd time = " << endTime_ << std::endl);
+         SGT_DEBUG(debug() << "\t\t(Start, current, end time = " << startTime_ << " " << currentTime_ 
+                           << " " << endTime << ")." << std::endl);
       }
+
       if (nextSchedTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ < endTime_)
       {
          // There are contingent updates pending.
          Component * contComp = *contingentUpdates_.begin();
          SGT_DEBUG(debug() << "\tContingent update component " << contComp->name() << " from " 
-               << schedComp->time() << " to " << currentTime_ << std::endl);
+                           << schedComp->time() << " to " << currentTime_ << std::endl);
          contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
          // Before updating the component, we need to take it out of the scheduled updates set, because its
          // sort key might change.
@@ -80,7 +84,7 @@ namespace SmartGridToolbox
          }
          currentTime_ = nextSchedTime;
          SGT_DEBUG(debug() << "\tScheduled update component " << schedComp->name() << " from " 
-               << schedComp->time() << " to " << currentTime_ << std::endl);
+                           << schedComp->time() << " to " << currentTime_ << std::endl);
 
          // Remove the scheduled and possible contingent update. Note that if there is a contingent update, it was
          // inserted by an element that has already updated, and so it is safe to do the scheduled update in place of
@@ -118,12 +122,17 @@ namespace SmartGridToolbox
 
    bool Simulation::doTimestep()
    {
-      // Do at least one step.
+      Time time1 = currentTime_;
+      // Do at least one step. This may push us over into the next timestep, in which case we should stop, unless
+      // this was the very first timestep.
       bool result = doNextUpdate();
-      // No finish off all contingent and scheduled updates in this step.
+      Time time2 = currentTime_;
+      Time timeToComplete = (time1 == posix_time::neg_infin) ? time2 : time1;
+
+      // Now finish off all contingent and scheduled updates in this step.
       while (result && 
              ((contingentUpdates_.size() > 0) ||
-              (scheduledUpdates_.size() > 0 && (scheduledUpdates_.begin()->second == currentTime_))))
+              (scheduledUpdates_.size() > 0 && (scheduledUpdates_.begin()->second == timeToComplete))))
       {
          result = result && doNextUpdate();
       }
