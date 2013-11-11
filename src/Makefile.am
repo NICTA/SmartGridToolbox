@@ -14,7 +14,6 @@ pkginclude_HEADERS = Branch.h \
 							Network.h \
 							Parser.h \
 							PowerFlow.h \
-							Property.h \
 							Random.h \
 							RegularUpdateComponent.h \
 							SimpleBattery.h \

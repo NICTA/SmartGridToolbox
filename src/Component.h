@@ -21,7 +21,10 @@ namespace SmartGridToolbox
          explicit Component(const std::string & name); 
 
          /// Destructor.
-         virtual ~Component();
+         virtual ~Component()
+         {
+            // Empty.
+         }
 
          /// @}
 

@@ -15,14 +15,6 @@ namespace SmartGridToolbox
       // Empty.
    }
 
-   Component::~Component()
-   {
-      for (auto it : propertyMap_)
-      {
-         delete it.second;
-      }
-   }
-
    void Component::initialize(Time t)
    {
       SGT_DEBUG(debug() << "Component " << name() << " initialize to " << t << std::endl);
