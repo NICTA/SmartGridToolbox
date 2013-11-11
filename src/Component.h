@@ -6,7 +6,6 @@
 #include <map>
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Event.h>
-#include <SmartGridToolbox/Property.h>
 
 namespace SmartGridToolbox
 {
@@ -117,36 +116,8 @@ namespace SmartGridToolbox
 
          /// @}
 
-         /// @name Properties
-         /// @{
-
-         template <typename T, PropType A> const Property<T, A> * property(const std::string & name) const
-         {
-            PropertyMap::const_iterator it = propertyMap_.find(name);
-            return (it == propertyMap_.end()) ? 0 : dynamic_cast<const Property<T, A> *>(it->second);
-         }
-
-         template <typename T, PropType A> Property<T, A> * property(const std::string & name)
-         {
-            PropertyMap::const_iterator it = propertyMap_.find(name);
-            return (it == propertyMap_.end()) ? 0 : dynamic_cast<Property<T, A> *>(it->second);
-         }
-
-         template<typename T, PropType A, typename U> void addProperty(const std::string & name, U u)
-         {
-            propertyMap_[name] = new Property<T, A>(u);
-         }
-
-         template<typename T, PropType A, typename G, typename S> void addProperty(const std::string & name, G g, S s)
-         {
-            propertyMap_[name] = new Property<T, A>(g, s);
-         }
-
-         /// @}
-
       protected:
          typedef std::vector<const Component *> ComponentVec;
-         typedef std::map<const std::string, PropertyBase *> PropertyMap;
 
       private:
          /// Reset state of the object, time is at currentTime_.
@@ -167,7 +138,6 @@ namespace SmartGridToolbox
          Time currentTime_; ///< The current time.
          ComponentVec dependencies_; ///< I depend on these.
          int rank_;  ///< Evaluation rank, based on weak ordering.
-         PropertyMap propertyMap_;
          Event willUpdate_;
          Event didUpdate_;
          Event needsUpdate_;
