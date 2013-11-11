@@ -11,7 +11,6 @@ namespace SmartGridToolbox
       source.didUpdate().addAction([this](){needsUpdate().trigger();}, 
             "Trigger InverterBase " + name() + " needs update.");
       // TODO: this will recalculate all zips. Efficiency?
-      needsUpdate().trigger();
    }
 
    void InverterBase::updateState(Time t0, Time t1)

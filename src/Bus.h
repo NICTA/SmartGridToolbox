@@ -3,6 +3,7 @@
 
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Component.h>
+#include <SmartGridToolbox/Event.h>
 #include <SmartGridToolbox/Parser.h>
 #include <SmartGridToolbox/PowerFlow.h>
 
@@ -156,7 +157,7 @@ namespace SmartGridToolbox
          /// Get bus voltage.
          const ublas::vector<Complex> & V() const {return V_;}
          /// Set bus voltage (warm start or solver).
-         void setV(const ublas::vector<Complex> & V) {V_ = V; needsUpdate().trigger();}
+         void setV(const ublas::vector<Complex> & V) {V_ = V;}
 
          /// Get bus generated power.
          const ublas::vector<Complex> & Sg() const {return Sg_;}
@@ -165,6 +166,11 @@ namespace SmartGridToolbox
 
          /// Total power injection (Sc() + Sg()).
          const ublas::vector<Complex> STot() const {return Sc_ + Sg_;}
+         /// @}
+
+         /// @name Events.
+         /// @{
+         Event & setpointChanged() {return setpointChanged_;}
          /// @}
       /// @}
 
@@ -209,6 +215,11 @@ namespace SmartGridToolbox
          ublas::vector<Complex> ys_; ///< Constant admittance shunt (loads).
          ublas::vector<Complex> Ic_; ///< Constant current injection (loads).
          ublas::vector<Complex> Sc_; ///< Constant power injection (loads).
+         /// @}
+         
+         /// @name Events:
+         /// @{
+         Event setpointChanged_;
          /// @}
       /// @}
    };

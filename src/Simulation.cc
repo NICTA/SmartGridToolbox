@@ -3,6 +3,8 @@
 #include <SmartGridToolbox/Component.h>
 #include <algorithm>
 
+#define DEBUG 1
+
 namespace SmartGridToolbox
 {
    Simulation::Simulation(Model & mod) : mod_(&mod),
@@ -18,15 +20,17 @@ namespace SmartGridToolbox
    void Simulation::initialize()
    {
       scheduledUpdates_.clear();
-      contingentUpdates_.clear();
       for (Component * comp : mod_->components())
       {
          comp->initialize(startTime_);
+         scheduledUpdates_.insert(std::make_pair(comp, comp->startTime()));
          comp->needsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
                                        "Simulation insert contingent update of component " + comp->name());
-         scheduledUpdates_.insert(std::make_pair(comp, comp->startTime()));
       }
       currentTime_ = posix_time::neg_infin;
+      // Contingent updates may have been inserted during initialization process e.g. when setting up setpoints etc.
+      contingentUpdates_.clear(); 
+      doTimestep(); // Do the first timestep, to advance the start time for -infinity to startTime_.
    }
 
    // TODO: can we tidy up the logic in this function?
@@ -50,7 +54,7 @@ namespace SmartGridToolbox
          SGT_DEBUG(debug() << "\tNext scheduled time = " << nextSchedTime << " for component " 
                            << schedComp->name() << std::endl);
          SGT_DEBUG(debug() << "\t\t(Start, current, end time = " << startTime_ << " " << currentTime_ 
-                           << " " << endTime << ")." << std::endl);
+                           << " " << endTime_ << ")." << std::endl);
       }
 
       if (nextSchedTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ < endTime_)

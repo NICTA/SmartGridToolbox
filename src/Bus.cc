@@ -132,7 +132,8 @@ namespace SmartGridToolbox
       Sg_(ublas::vector<Complex>(phases.size(), czero)),
       ys_(ublas::vector<Complex>(phases.size(), czero)),
       Ic_(ublas::vector<Complex>(phases.size(), czero)),
-      Sc_(ublas::vector<Complex>(phases.size(), czero))
+      Sc_(ublas::vector<Complex>(phases.size(), czero)),
+      setpointChanged_("Bus " + name + " setpoint changed")
    {
       assert(nominalV_.size() == phases_.size());
    }
@@ -144,7 +145,7 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       PgSetpoint_ = PgSetpoint;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
          
    void Bus::setPgMinSetpoint(const ublas::vector<double> & PgMinSetpoint)
@@ -154,7 +155,7 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       PgMinSetpoint_ = PgMinSetpoint;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
          
    void Bus::setPgMaxSetpoint(const ublas::vector<double> & PgMaxSetpoint)
@@ -164,7 +165,7 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       PgMaxSetpoint_ = PgMaxSetpoint;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
          
    void Bus::setQgSetpoint(const ublas::vector<double> & QgSetpoint)
@@ -174,7 +175,7 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       QgSetpoint_ = QgSetpoint;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
          
    void Bus::setQgMinSetpoint(const ublas::vector<double> & QgMinSetpoint)
@@ -184,7 +185,7 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       QgMinSetpoint_ = QgMinSetpoint;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
          
    void Bus::setQgMaxSetpoint(const ublas::vector<double> & QgMaxSetpoint)
@@ -194,7 +195,7 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       QgMaxSetpoint_ = QgMaxSetpoint;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
          
    void Bus::setVMagSetpoint(const ublas::vector<double> & VMagSetpoint)
@@ -204,7 +205,7 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       VMagSetpoint_ = VMagSetpoint;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
          
    void Bus::setVMagMinSetpoint(const ublas::vector<double> & VMagMinSetpoint)
@@ -214,7 +215,7 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       VMagMinSetpoint_ = VMagMinSetpoint;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
          
    void Bus::setVMagMaxSetpoint(const ublas::vector<double> & VMagMaxSetpoint)
@@ -224,7 +225,7 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       VMagMaxSetpoint_ = VMagMaxSetpoint;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
          
    void Bus::setVAngSetpoint(const ublas::vector<double> & VAngSetpoint)
@@ -234,7 +235,7 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       VAngSetpoint_ = VAngSetpoint;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
          
    void Bus::setVAngMinSetpoint(const ublas::vector<double> & VAngMinSetpoint)
@@ -244,7 +245,7 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       VAngMinSetpoint_ = VAngMinSetpoint;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
          
    void Bus::setVAngMaxSetpoint(const ublas::vector<double> & VAngMaxSetpoint)
@@ -254,7 +255,7 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       VAngMaxSetpoint_ = VAngMaxSetpoint;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
 
    void Bus::addZipToGround(ZipToGroundBase & zipToGround)
@@ -264,6 +265,6 @@ namespace SmartGridToolbox
       zipToGround.didUpdate().addAction([this](){needsUpdate().trigger();}, 
             "Trigger Bus " + name() + " needs update.");
       // TODO: this will recalculate all zips. Efficiency?
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
 }

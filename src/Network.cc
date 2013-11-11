@@ -33,18 +33,16 @@ namespace SmartGridToolbox
       dependsOn(bus);
       busVec_.push_back(&bus);
       busMap_[bus.name()] = &bus;
-      bus.didUpdate().addAction([this](){needsUpdate().trigger();}, 
+      bus.setpointChanged().addAction([this](){needsUpdate().trigger();}, 
             "Trigger Network " + name() + " needs update");
-      needsUpdate().trigger();
    }
  
    void Network::addBranch(Branch & branch)
    {
       dependsOn(branch);
       branchVec_.push_back(&branch);
-      branch.didUpdate().addAction([this](){needsUpdate().trigger();},
+      branch.setpointChanged().addAction([this](){needsUpdate().trigger();},
             "Trigger Network " + name() + " needs update");
-      needsUpdate().trigger();
    }
 
    void Network::solvePowerFlow()

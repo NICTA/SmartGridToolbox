@@ -106,7 +106,8 @@ namespace SmartGridToolbox
       bus1_(nullptr),
       phases0_(phases0),
       phases1_(phases1),
-      Y_(2 * phases0.size(), 2 * phases0.size(), czero)
+      Y_(2 * phases0.size(), 2 * phases0.size(), czero),
+      setpointChanged_("Branch " + name + " setpoint changed")
    {
       if (phases0.size() != phases1.size())
       {
@@ -117,22 +118,24 @@ namespace SmartGridToolbox
 
    void Branch::setBus0(Bus & bus0) 
    {
-      if (!phases0_.isSubsetOf(bus0_->phases()))
+      if (!phases0_.isSubsetOf(bus0.phases()))
       {
          error() << "Connecting a bus to a branch with a phase mismatch." << std::endl;
          abort();
       }
-      bus0_ = &bus0; needsUpdate().trigger();
+      bus0_ = &bus0;
+      setpointChanged().trigger();
    }
    
    void Branch::setBus1(Bus & bus1) 
    {
-      if (!phases1_.isSubsetOf(bus1_->phases()))
+      if (!phases1_.isSubsetOf(bus1.phases()))
       {
          error() << "Connecting a bus to a branch with a phase mismatch." << std::endl;
          abort();
       }
-      bus1_ = &bus1; needsUpdate().trigger();
+      bus1_ = &bus1;
+      setpointChanged().trigger();
    }
 
    void Branch::setY(const ublas::matrix<Complex> & Y)
@@ -143,6 +146,6 @@ namespace SmartGridToolbox
          abort();
       }
       Y_ = Y;
-      needsUpdate().trigger();
+      setpointChanged().trigger();
    }
 }

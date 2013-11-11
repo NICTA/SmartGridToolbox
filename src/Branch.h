@@ -44,6 +44,8 @@ namespace SmartGridToolbox
 
          const ublas::matrix<Complex> & Y() const {return Y_;}
          void setY(const ublas::matrix<Complex> & Y);
+         
+         Event & setpointChanged() {return setpointChanged_;}
       /// @}
 
       /// @name My private member variables.
@@ -54,6 +56,8 @@ namespace SmartGridToolbox
          Phases phases0_;                 ///< Phases on bus 0.
          Phases phases1_;                 ///< Phases on bus 1.
          ublas::matrix<Complex> Y_;       ///< Complex value of elements in bus admittance matrix in NR solver.
+         Event setpointChanged_;          ///< Updates when a setpoint property of the branch changes.
+      /// @}
       /// @}
    };
 }
