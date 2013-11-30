@@ -23,8 +23,9 @@ namespace SmartGridToolbox
    {
       /// @name Overridden from InverterBase
       /// @{
-      virtual ublas::vector<Complex> S() const override;
-      virtual double PPerPhase() const override;
+      public:
+         virtual ublas::vector<Complex> S() const override;
+         virtual double PPerPhase() const override;
       /// @}
       
       /// @name My public member functions.

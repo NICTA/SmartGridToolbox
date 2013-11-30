@@ -22,7 +22,7 @@ namespace SmartGridToolbox
          for (const Component * comp : compVec_)
          {
             debug() << "\t" << comp->name() << " " << comp->rank() << std::endl;
-            for (Component * const dep : comp->dependencies())
+            for (const Component * const dep : comp->dependencies())
             {
                debug() << "\t\t" << dep->name() << " " << dep->rank() << std::endl;
             }

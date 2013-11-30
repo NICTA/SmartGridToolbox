@@ -138,7 +138,7 @@ namespace SmartGridToolbox
          /// @name Loads / constant power generation.
          /// @{
          /// ZIP = constant Z, I, P (or Y, I, S).
-         const std::vector<const ZipToGroundBase *> & zipsToGround() const {return zipsToGround_;}
+         const std::vector<ZipToGroundBase *> & zipsToGround() const {return zipsToGround_;}
          /// ZIP = constant Z, I, P (or Y, I, S).
          void addZipToGround(ZipToGroundBase & zipToGround);
 
@@ -177,27 +177,27 @@ namespace SmartGridToolbox
       /// @name My private member variables.
       /// @{
       private:
-         BusType type_;                    ///< Bus type.
-         Phases phases_;                   ///< Phases.
-         ublas::vector<Complex> nominalV_; ///< Nominal voltage.
+         BusType type_;                                ///< Bus type.
+         Phases phases_;                               ///< Phases.
+         ublas::vector<Complex> nominalV_;             ///< Nominal voltage.
 
-         ublas::vector<double> PgSetpoint_;      ///< For PQ or PV bus.
-         ublas::vector<double> PgMinSetpoint_;   ///< For SL bus.
-         ublas::vector<double> PgMaxSetpoint_;   ///< For SL bus.
+         ublas::vector<double> PgSetpoint_;            ///< For PQ or PV bus.
+         ublas::vector<double> PgMinSetpoint_;         ///< For SL bus.
+         ublas::vector<double> PgMaxSetpoint_;         ///< For SL bus.
 
-         ublas::vector<double> QgSetpoint_;      ///< For PQ bus.
-         ublas::vector<double> QgMinSetpoint_;   ///< For PV or SL bus.
-         ublas::vector<double> QgMaxSetpoint_;   ///< For PV or SL bus.
+         ublas::vector<double> QgSetpoint_;            ///< For PQ bus.
+         ublas::vector<double> QgMinSetpoint_;         ///< For PV or SL bus.
+         ublas::vector<double> QgMaxSetpoint_;         ///< For PV or SL bus.
 
-         ublas::vector<double> VMagSetpoint_;    ///< For PV or SL bus.
-         ublas::vector<double> VMagMinSetpoint_; ///< For PQ bus.
-         ublas::vector<double> VMagMaxSetpoint_; ///< For PQ bus.
+         ublas::vector<double> VMagSetpoint_;          ///< For PV or SL bus.
+         ublas::vector<double> VMagMinSetpoint_;       ///< For PQ bus.
+         ublas::vector<double> VMagMaxSetpoint_;       ///< For PQ bus.
 
-         ublas::vector<double> VAngSetpoint_;    ///< For SL bus.
-         ublas::vector<double> VAngMinSetpoint_; ///< For PV bus.
-         ublas::vector<double> VAngMaxSetpoint_; ///< For PV bus.
+         ublas::vector<double> VAngSetpoint_;          ///< For SL bus.
+         ublas::vector<double> VAngMinSetpoint_;       ///< For PV bus.
+         ublas::vector<double> VAngMaxSetpoint_;       ///< For PV bus.
 
-         std::vector<const ZipToGroundBase *> zipsToGround_; ///< ZIP loads of generation.
+         std::vector<ZipToGroundBase *> zipsToGround_; ///< ZIP loads of generation.
 
          /// @name Quantities due to operation of bus:
          /** For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_.
