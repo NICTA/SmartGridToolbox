@@ -22,7 +22,7 @@ namespace SmartGridToolbox
       public:
          virtual Time validUntil() const override {return time() + dt_;}
 
-      private:
+      protected:
          virtual void initializeState() override;
          virtual void updateState(Time t0, Time t1) override;
 

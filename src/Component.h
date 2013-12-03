@@ -99,6 +99,13 @@ namespace SmartGridToolbox
          /** @param t the Time to advance to. */
          void update(Time t);
 
+         /// Bring state up to time t.
+         /** @param t the Time to advance to. */
+         void ensureValid()
+         {
+            updateState(currentTime_, currentTime_);
+         }
+
          /// Bring state up to time t if it is not already there.
          /** @param t the Time to advance to. */
          void ensureAtTime(Time t);
@@ -122,7 +129,7 @@ namespace SmartGridToolbox
       protected:
          typedef std::vector<const Component *> ComponentVec;
 
-      private:
+      protected:
          /// Reset state of the object, time is at currentTime_.
          virtual void initializeState()
          {

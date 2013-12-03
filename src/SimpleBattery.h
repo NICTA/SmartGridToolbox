@@ -62,7 +62,7 @@ namespace SmartGridToolbox
             : std::min(requestedPower_, maxChargePower_) * chargeEfficiency_;
          }
 
-      private:
+      protected:
          virtual void initializeState() override
          {
             charge_ = initCharge_;

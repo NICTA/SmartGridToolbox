@@ -53,7 +53,7 @@ namespace SmartGridToolbox
             return irradiance_;
          }
 
-      private:
+      protected:
          virtual void initializeState()
          {
             irradiance_ = unaveragedIrradiance(startTime());
