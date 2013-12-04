@@ -170,7 +170,7 @@ namespace SmartGridToolbox
 
          /// @name Events.
          /// @{
-         Event & setpointChanged() {return setpointChanged_;}
+         Event & changed() {return changed_;}
          /// @}
       /// @}
 
@@ -219,7 +219,7 @@ namespace SmartGridToolbox
          
          /// @name Events:
          /// @{
-         Event setpointChanged_;
+         Event changed_;
          /// @}
       /// @}
    };

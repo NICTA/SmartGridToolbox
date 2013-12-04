@@ -107,7 +107,7 @@ namespace SmartGridToolbox
       phases0_(phases0),
       phases1_(phases1),
       Y_(2 * phases0.size(), 2 * phases0.size(), czero),
-      setpointChanged_("Branch " + name + " setpoint changed")
+      changed_("Branch " + name + " setpoint changed")
    {
       if (phases0.size() != phases1.size())
       {
@@ -124,7 +124,7 @@ namespace SmartGridToolbox
          abort();
       }
       bus0_ = &bus0;
-      setpointChanged().trigger();
+      changed().trigger();
    }
    
    void Branch::setBus1(Bus & bus1) 
@@ -135,7 +135,7 @@ namespace SmartGridToolbox
          abort();
       }
       bus1_ = &bus1;
-      setpointChanged().trigger();
+      changed().trigger();
    }
 
    void Branch::setY(const ublas::matrix<Complex> & Y)
@@ -146,6 +146,6 @@ namespace SmartGridToolbox
          abort();
       }
       Y_ = Y;
-      setpointChanged().trigger();
+      changed().trigger();
    }
 }

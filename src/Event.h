@@ -11,11 +11,18 @@ namespace SmartGridToolbox
    class Action
    {
       public:
-         Action(const std::function<void ()> & function, const std::string & description) : 
-            function_(function), description_(description)
+         Action(const std::function<void ()> & function, const std::string & description)
+            : function_(function), description_(description)
          {
             // Empty.
          }
+         
+         Action(const std::function<void ()> & function)
+            : function_(function), description_("N/A")
+         {
+            // Empty.
+         }
+         
 
          const std::string & description() const {return description_;}
 
@@ -29,7 +36,14 @@ namespace SmartGridToolbox
    class Event
    {
       public:
-         Event(const std::string & description) : description_(description)
+         Event(const std::string & description)
+            : description_(description)
+         {
+            // Empty. 
+         }
+
+         Event()
+            : description_("N/A")
          {
             // Empty. 
          }
