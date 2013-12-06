@@ -7,6 +7,7 @@
 #include <fstream>
 #include <list>
 #include <map>
+#include <sstream>
 
 namespace SmartGridToolbox
 {
@@ -37,19 +38,27 @@ namespace SmartGridToolbox
       double thetaRad;
    };
 
+   static std::string num2PaddedString(int num)
+   {
+      std::ostringstream ss;
+      ss << std::setfill('0') << std::setw(5) << num;
+      return ss.str();
+   }
+
    static std::string busName(const std::string & prefix, int id)
    {
-      return prefix + "_bus_" + std::to_string(id);
+      return prefix + "_bus_" + num2PaddedString(id);
    }
 
    static std::string zipName(const std::string & prefix, int id)
    {
-      return prefix + "_zip_" + std::to_string(id);
+      return prefix + "_zip_" + num2PaddedString(id);
    }
 
    static std::string branchName(const std::string & prefix, int nBranch, int id1, int id2)
    {
-      return prefix + "_branch_" + std::to_string(nBranch) + "_" + std::to_string(id1) + "_" + std::to_string(id2);
+      return prefix + "_branch_" + num2PaddedString(nBranch) + "_" + num2PaddedString(id1) + "_" 
+                    + num2PaddedString(id2);
    }
 
    static void errInvalidCdf()
