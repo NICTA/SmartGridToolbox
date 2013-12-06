@@ -89,17 +89,35 @@ namespace SmartGridToolbox
 
       // Sort the nodes, based on <. Note that it isn't a strict weak ordering, so can't use stl sort.
       // TODO: This is probably a very dumb kind of sort!
+      
+      SGT_DEBUG (debug() << "Weak order graph: pre-sort:" << std::endl; debugPrint());
+
       for (auto it1 = nodes_.begin(); it1 != nodes_.end(); ++it1)
       {
          for (auto it2 = it1 + 1; it2 != nodes_.end(); ++it2)
          {
-            if (**it2 < **it1)
+            SGT_DEBUG(
+                  debug() << std::setw(3) << (**it1).index() << " " << std::setw(3) << (**it2).index() << " A ";
+                  for (auto it4 = nodes_.begin(); it4 != nodes_.end(); ++it4)
+                  {
+                     debugStream() << std::setw(3) << (**it4).index() << " ";
+                  }
+                  debugStream() << std::endl;);
+
+            if ((**it2).dominates(**it1))
             {
                auto it3 = it2;
                while (it3 != it1)
                {
                   std::swap(*it3, *(it3 - 1));
                   --it3;
+                  SGT_DEBUG(
+                        debug() << std::setw(3) << (**it1).index() << " " << std::setw(3) << (**it2).index() << " A ";
+                        for (auto it4 = nodes_.begin(); it4 != nodes_.end(); ++it4)
+                        {
+                           debugStream() << std::setw(3) << (**it4).index() << " ";
+                        }
+                        debugStream() << std::endl;);
                }
             }
          }
