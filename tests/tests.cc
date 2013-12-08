@@ -36,8 +36,6 @@ class TestCompA : public Component
          x_(x),
          y_(y)
       {
-         addProperty<int, PropType::GET>(std::string("x"), 
-               [this](){return x_;});
       }
 
       int x() {return x_;}
@@ -123,28 +121,6 @@ BOOST_AUTO_TEST_CASE (test_model_dependencies)
    BOOST_CHECK(mod.components()[3] == &a4);
    BOOST_CHECK(mod.components()[4] == &a5);
    BOOST_CHECK(mod.components()[5] == &a2);
-}
-
-BOOST_AUTO_TEST_CASE (test_properties)
-{
-   TestCompA * tca = new TestCompA("tca0", 3, 0.2);
-   const Property<int, PropType::GET> * prop1 = tca->property<int, PropType::GET>("x");
-   message() << "Property value: " << prop1->get() << endl;
-   BOOST_CHECK(prop1->get() == 3);
-   tca->addProperty<double, PropType::BOTH>(
-         "y",
-         [&](){return tca->Y();}, 
-         [&](const double & d){tca->setY(d);});
-   Property<double, PropType::BOTH> * prop2 = tca->property<double, PropType::BOTH>("y");
-   BOOST_CHECK(prop2 != nullptr);
-   BOOST_CHECK(prop2->get() == 0.2);
-   message() << "Property 2 " << prop2->get() << endl;
-   BOOST_CHECK(prop1->get() == 3);
-   //(*prop2) = 0.4;
-   prop2->set(0.4);
-   message() << "Property 2 " << prop2->get() << endl;
-   BOOST_CHECK(prop2->get() == 0.4);
-   delete tca;
 }
 
 BOOST_AUTO_TEST_CASE (test_simple_battery)
@@ -1026,6 +1002,12 @@ BOOST_AUTO_TEST_CASE (test_mp_14_shift)
 {
    testMatpower("case14_shift", true);
    testMatpower("case14_shift", false);
+}
+
+BOOST_AUTO_TEST_CASE (test_mp_57)
+{
+   testMatpower("case57", true);
+   testMatpower("case57", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_network_overhead)
