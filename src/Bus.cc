@@ -99,6 +99,7 @@ namespace SmartGridToolbox
 
    void Bus::updateState(Time t0, Time t1)
    {
+      applySetpoints();
       for (int i = 0; i < phases_.size(); ++i)
       {
          ys_(i) = Ic_(i) = Sc_(i) = {0.0, 0.0};
@@ -256,6 +257,48 @@ namespace SmartGridToolbox
       }
       VAngMaxSetpoint_ = VAngMaxSetpoint;
       changed().trigger();
+   }
+
+   void Bus::applySetpoints()
+   {
+      switch (type())
+      {
+         case BusType::SL :
+            {
+               ublas::vector<Complex> newV(phases().size());
+               for (int i = 0; i < phases().size(); ++i)
+               {
+                  newV(i) = polar(VMagSetpoint()(i), VAngSetpoint()(i));
+               }
+               setV(newV);
+            }
+            break;
+         case BusType::PQ :
+            {
+               ublas::vector<Complex> newSg(phases().size());
+               for (int i = 0; i < phases().size(); ++i)
+               {
+                  newSg(i) = {PgSetpoint()(i), QgSetpoint()(i)};
+               }
+               setSg(newSg);
+            }
+            break;
+         case BusType::PV :
+            {
+               ublas::vector<Complex> newSg(phases().size());
+               ublas::vector<Complex> newV(phases().size());
+               for (int i = 0; i < phases().size(); ++i)
+               {
+                  newSg(i) = {PgSetpoint()(i), Sg()(i).imag()};
+                  newV(i) = VMagSetpoint()(i) * V()(i) / abs(V()(i));
+               }
+               setSg(newSg);
+               setV(newV);
+            }
+            break;
+         default :
+            ;
+      }
    }
 
    void Bus::addZipToGround(ZipToGroundBase & zipToGround)

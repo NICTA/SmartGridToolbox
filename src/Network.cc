@@ -24,7 +24,6 @@ namespace SmartGridToolbox
    void Network::updateState(Time t0, Time t1)
    {
       SGT_DEBUG(debug() << "Network : update state." << std::endl);
-      applyBusSetpoints();
       solvePowerFlow(); // TODO: inefficient to rebuild even if not needed.
    }
 
@@ -113,50 +112,5 @@ namespace SmartGridToolbox
          }
       }
       return os;
-   }
-
-   void Network::applyBusSetpoints()
-   {
-      for (Bus * bus : busVec_)
-      {
-         switch (bus->type())
-         {
-            case BusType::SL :
-               {
-                  ublas::vector<Complex> V(bus->phases().size());
-                  for (int i = 0; i < bus->phases().size(); ++i)
-                  {
-                     V(i) = polar(bus->VMagSetpoint()(i), bus->VAngSetpoint()(i));
-                  }
-                  bus->setV(V);
-               }
-               break;
-            case BusType::PQ :
-               {
-                  ublas::vector<Complex> Sg(bus->phases().size());
-                  for (int i = 0; i < bus->phases().size(); ++i)
-                  {
-                     Sg(i) = {bus->PgSetpoint()(i), bus->QgSetpoint()(i)};
-                  }
-                  bus->setSg(Sg);
-               }
-               break;
-            case BusType::PV :
-               {
-                  ublas::vector<Complex> Sg(bus->phases().size());
-                  ublas::vector<Complex> V(bus->phases().size());
-                  for (int i = 0; i < bus->phases().size(); ++i)
-                  {
-                     Sg(i) = {bus->PgSetpoint()(i), bus->Sg()(i).imag()};
-                     V(i) = bus->VMagSetpoint()(i) * bus->V()(i) / abs(bus->V()(i));
-                  }
-                  bus->setSg(Sg);
-                  bus->setV(V);
-               }
-               break;
-            default :
-               ;
-         }
-      }
    }
 }

@@ -67,12 +67,6 @@ namespace SmartGridToolbox
          friend std::ostream & operator<<(std::ostream & os, const Network & nw);
       /// @}
 
-      /// @name My private member functions.
-      /// @{
-      private:
-         void applyBusSetpoints();
-      /// @}
-
       /// @name My private member variables.
       /// @{
       private:

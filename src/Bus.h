@@ -133,6 +133,8 @@ namespace SmartGridToolbox
          }
          void setVAngMaxSetpoint(const ublas::vector<double> & VAngMaxSetpoint);
          /// @}
+
+         void applySetpoints();
          /// @}
 
          /// @name Loads / constant power generation.
