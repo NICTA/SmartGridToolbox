@@ -25,13 +25,15 @@ int main(int argc, const char ** argv)
       SmartGridToolbox::abort();
    }
    
-   const char * configName = argv[1];
-   const char * outputName = argv[2];
+   std::string configName(argv[1]);
+   std::string outputName(argv[2]);
 
    std::cout << "Configuration filename = " << configName << std::endl;
    std::cout << "Output filename        = " << outputName << std::endl;
 
-   std::ofstream outFile(outputName);
+   std::ofstream VFile(outputName + ".out_V");
+   std::ofstream SFile(outputName + ".out_S");
+   std::ofstream TFile(outputName + ".out_T");
 
    Model mod;
    Simulation sim(mod);
@@ -40,8 +42,8 @@ int main(int argc, const char ** argv)
 
    Network * network = mod.componentNamed<Network>("network");
    SimpleBuilding * build = mod.componentNamed<SimpleBuilding>("build");
-   Time t0 = posix_time::seconds(0);
-   auto Te = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 12*hour, 10*K, 28*K);};
+   Time t0 = sim.startTime();
+   auto Te = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 15*hour, 10*K, 28*K);};
    auto dQg = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 14*hour, 40*kW, 60*kW);};
    build->setTeFunc(Te);
    build->set_dQgFunc(dQg);
@@ -53,20 +55,25 @@ int main(int argc, const char ** argv)
    auto busses = network->busVec();
    while (sim.doTimestep())
    {
-      outFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
+      VFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
       for (auto & bus : busses)
       {
-         outFile <<  bus->V()(0)  << " ";
+         VFile <<  bus->V()(0)  << " ";
       }
-      outFile << std::endl;
+      VFile << std::endl;
 
-      outFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
+      SFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
       for (auto & bus : busses)
       {
-         outFile <<  bus->STot()(0)  << " ";
+         SFile <<  bus->STot()(0)  << " ";
       }
-      outFile << std::endl;
+      SFile << std::endl;
+      
+      TFile << (dSeconds(sim.currentTime() - sim.startTime())) << " " << build->Te() 
+            << " " << build->Tb() << std::endl;
    }
 
-   outFile.close();
+   VFile.close();
+   SFile.close();
+   TFile.close();
 }

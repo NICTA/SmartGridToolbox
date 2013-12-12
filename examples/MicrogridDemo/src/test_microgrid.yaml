@@ -129,12 +129,12 @@ objects: # And these are the actual objects.
       name:                   build
       bus:                    bus_build
       dt:                     00:05:00
-      kb:                     5000 # 5 kW/K
+      kb:                     5e3 # 5 kW/K
       Cb:                     1e8 # 28 kWh/K
       Tb_init:                23
       kh:                     1e4 # 10 kW/K
       COP_cool:               3
       COP_heat:               4
-      P_max:                  5e4 # 50 kW
+      P_max:                  4e4 # 50 kW
       Ts:                     20
 --- # Marks the end of each configuration document.

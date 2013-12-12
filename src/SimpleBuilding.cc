@@ -97,7 +97,7 @@ namespace SmartGridToolbox
 
    void SimpleBuilding::updateState(Time t0, Time t1)
    {
-      double dt = dSeconds(t1 - t0);
+      double dt = t0 == posix_time::neg_infin ? 0 : dSeconds(t1 - t0);
 
       if (!isMaxed_)
       {
@@ -107,8 +107,7 @@ namespace SmartGridToolbox
       else
       {
          // Power is constrained by maximum.
-         Tb_ = propTbMaxed(dt, Tb_, dQg_(t0), dQg_(t1), 
-                                  Te_(t0), Te_(t1), kb_, dQh_, Cb_);
+         Tb_ = propTbMaxed(dt, Tb_, dQg_(t0), dQg_(t1), Te_(t0), Te_(t1), kb_, dQh_, Cb_);
       }
       setOperatingParams(t1);
    }

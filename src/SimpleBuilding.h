@@ -100,7 +100,9 @@ namespace SmartGridToolbox
 
          const double Te(Time t) {return Te_(t);}
          void setTeFunc(const std::function<double (Time)> & f) {Te_ = f; needsUpdate().trigger();}
-
+         
+         const double Te() {return Te_(time());}
+         
          const double get_dQg(Time t) {return dQg_(t);}
          void set_dQgFunc(const std::function<double (Time)> f) {dQg_ = f; needsUpdate().trigger();}
 
