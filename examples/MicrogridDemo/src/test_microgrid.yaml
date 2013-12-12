@@ -15,7 +15,7 @@ objects: # And these are the actual objects.
       name:                   weather
       cloud_cover:
          constant:            0.3
-      dt:                     00:30:00
+      dt:                     00:00:30
    network:
       name:                   network
    bus:
