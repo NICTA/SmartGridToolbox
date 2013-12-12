@@ -1,4 +1,5 @@
 #include <SmartGridToolbox/SimpleBuilding.h>
+#include <SmartGridToolbox/Bus.h>
 
 static double propTbNorm(double dt, double Tb0, double Ts, double kb,
                          double kh, double Cb)
@@ -67,6 +68,24 @@ namespace SmartGridToolbox
       
       auto ndTs = nd["Ts"];
       if (ndTs) build.setTs(ndTs.as<double>());
+   }
+
+   void SimpleBuildingParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   {
+      SGT_DEBUG(debug() << "SimpleBuilding : postParse." << std::endl);
+
+      string name = state.expandName(nd["name"].as<std::string>());
+      SimpleBuilding * build = mod.componentNamed<SimpleBuilding>(name);
+
+      std::string busStr = state.expandName(nd["bus"].as<std::string>());
+      Bus * bus = mod.componentNamed<Bus>(busStr);
+      if (bus == nullptr)
+      {
+         error() << "For component " << name << ", bus " << busStr 
+                 << " was not found in the model." << std::endl;
+         abort();
+      }
+      bus->addZipToGround(*build);
    }
 
    void SimpleBuilding::initializeState()

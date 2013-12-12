@@ -33,7 +33,7 @@ namespace SmartGridToolbox
       auto ndDischargeEfficiency = nd["discharge_efficiency"];
       if (ndDischargeEfficiency) batt.setDischargeEfficiency(ndDischargeEfficiency.as<double>());
       
-      auto ndRequestedPower = nd["requestedPower"];
+      auto ndRequestedPower = nd["requested_power"];
       if (ndRequestedPower) batt.setRequestedPower(ndRequestedPower.as<double>());
    }
 

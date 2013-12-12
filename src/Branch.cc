@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       const YAML::Node & ndY = nd["Y"];
       const YAML::Node & ndYMatrix = ndY["matrix"];
       const YAML::Node & ndYSimpleLine = ndY["simple_line"];
-      ublas::matrix<Complex> Y; 
+      ublas::matrix<Complex> Y(2 * phases0.size(), 2 * phases1.size(), czero);
       if (ndYMatrix)
       {
          Y = ndYMatrix.as<ublas::matrix<Complex>>();

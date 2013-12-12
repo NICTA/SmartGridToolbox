@@ -20,6 +20,7 @@ namespace SmartGridToolbox
 
       public:
          virtual void parse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
+         virtual void postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
    };
 
    enum class HvacMode
@@ -43,7 +44,7 @@ namespace SmartGridToolbox
       public:
          virtual ublas::vector<Complex> Y() const override {return {1, czero};}
          virtual ublas::vector<Complex> I() const override {return {1, czero};}
-         virtual ublas::vector<Complex> S() const override {return {1, Complex(Ph_, 0.0)};}
+         virtual ublas::vector<Complex> S() const override {return {1, Complex(-Ph_, 0.0)};}
 
       // Public member functions.
       public:

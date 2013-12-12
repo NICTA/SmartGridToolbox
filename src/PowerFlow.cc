@@ -227,6 +227,7 @@ namespace SmartGridToolbox
             Y(k + n, i)      = -y(k, i);
          }
       }
+      std::cout << "Returning " << Y.size1() << std::endl;
 
       return Y;
    }
