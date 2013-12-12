@@ -1,0 +1,140 @@
+# Sample SmartGridToolbox configuration file.
+# File format is YAML.
+
+--- # Marks the start of each configuration document.
+
+global:
+   configuration_name:        test_microgrid
+   start_time:                2013-01-23 00:00:00
+   end_time:                  2013-01-30 00:00:00
+   lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
+   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
+
+objects: # And these are the actual objects.
+   weather:
+      name:                   weather
+      cloud_cover:
+         constant:            0.3
+      dt:                     00:30:00
+   network:
+      name:                   network
+   bus:
+      name:                   bus_trans
+      network:                network
+      type:                   SL
+      phases:                 [BAL]
+      nominal_voltage:        [240]
+      V_mag_setpoint:         [240]
+      V_ang_setpoint:         [0] 
+   bus:
+      name:                   bus_build
+      network:                network
+      type:                   PQ
+      phases:                 [BAL]
+      nominal_voltage:        [240]
+   bus:
+      name:                   bus_pv
+      network:                network
+      type:                   PQ
+      phases:                 [BAL]
+      nominal_voltage:        [240]
+   bus:
+      name:                   bus_batt
+      network:                network
+      type:                   PQ
+      phases:                 [BAL]
+      nominal_voltage:        [240]
+   branch:
+      name:                   branch_trans_pv
+      network:                network
+      phases_0:               [BAL]
+      phases_1:               [BAL]
+      bus_0:                  bus_trans
+      bus_1:                  bus_pv
+      Y:
+         overhead_line:
+            r:                [1.9014e-04]
+            D:                [[0.00743712]]
+            length:           20
+            earth_resist:     100
+   branch:
+      name:                   branch_trans_batt
+      network:                network
+      phases_0:               [BAL]
+      phases_1:               [BAL]
+      bus_0:                  bus_trans
+      bus_1:                  bus_batt
+      Y:
+         overhead_line:
+            r:                [1.9014e-04]
+            D:                [[0.00743712]]
+            length:           20
+            earth_resist:     100
+   branch:
+      name:                   branch_trans_build
+      network:                network
+      phases_0:               [BAL]
+      phases_1:               [BAL]
+      bus_0:                  bus_trans
+      bus_1:                  bus_build
+      Y:
+         overhead_line:
+            r:                [1.9014e-04]
+            D:                [[0.00743712]]
+            length:           100
+            earth_resist:     100
+   inverter:
+      name:                   inverter_batt
+      bus:                    bus_batt
+      phases:                 [BAL]
+      requested_Q_per_phase:  0
+      max_S_mag_per_phase:    50000
+      min_power_factor:       0.9
+      efficiency:             0.9
+   simple_battery:
+      name:                   batt
+      inverter:               inverter_batt
+      init_charge:            1.8e8 # SI, 50 kWh
+      max_charge:             3.6e8 # SI, 100 kWh 
+      max_charge_power:       100000 
+      max_discharge_power:    300000 
+      charge_efficiency:      0.85 
+      discharge_efficiency:   0.85 
+      requested_power:        0 
+   inverter:
+      name:                   inverter_pv
+      bus:                    bus_pv
+      phases:                 [BAL]
+      requested_Q_per_phase:  0
+      max_S_mag_per_phase:    50000
+      min_power_factor:       0.9
+      efficiency:             0.9
+   solar_PV:
+       name:                   pv
+       inverter:               inverter_pv
+       weather:                weather
+       efficiency:             0.75
+       area_m2:                6.45
+       zenith_degrees:         64.6
+       azimuth_degrees:        95.8
+   inverter:
+       name:                   inverter_build
+       bus:                    bus_pv
+       phases:                 [BAL]
+       requested_Q_per_phase:  0
+       max_S_mag_per_phase:    50000
+       min_power_factor:       0.9
+       efficiency:             0.9
+   simple_building:
+      name:                   build
+      bus:                    bus_build
+      dt:                     05:00:00
+      kb:                     5000 # 5 kW/K
+      Cb:                     1e8 # 28 kWh/K
+      Tb_init:                23
+      kh:                     1e4 # 10 kW/K
+      COP_cool:               3
+      COP_heat:               4
+      P_max:                  5e4 # 50 kW
+      Ts:                     20
+--- # Marks the end of each configuration document.
