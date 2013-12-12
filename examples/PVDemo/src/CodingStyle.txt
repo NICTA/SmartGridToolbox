@@ -1,0 +1,122 @@
+Indentation
+------------
+Three spaces, no tabs.
+
+Line length
+-----------
+Max 120 columns. Continuation lines may start with two extra levels of
+indentation, or may choose to nicely line up e.g. operators, braces, brackets
+etc.
+
+Type names
+----------
+Types are UpperCamelCase.
+
+Typedef names
+----------
+Typedefs are UpperCamelCase.
+
+Function names
+--------------
+Free and member functions are lowerCamelCase(...).
+
+Member variable names
+---------------------
+Member variables are lowerCamelCase_. This makes them easily identifiable, as
+well as preventing typical naming conflicts e.g. in accessors.
+
+Static member variable names
+---------------------
+Static member variables are sVariableName_.
+
+Stack variable names
+-------------------------
+Stack variables are lowerCamelCase.
+
+Static (file scope) variable names
+----------------------------------
+Static (file scope, in the C sense) variables are named as sVariableName.
+
+Global variable names
+---------------------
+Global variables (including constants) are named as gVariableName.
+
+Function argument names
+-----------------------
+Arguments are lowerCamelCase.
+
+Acronyms etc. in naming
+-----------------------
+e.g. ABC => AbstractAbcClass.
+
+Mathematical names
+------------------
+Problems with CamelCase are particularly noticeable with mathematical variable
+names e.g. R0, r0 may often be distinguished by their case, and dropping this
+distinction would create confusion. Thus, always keep the correct case for
+mathematical variables. If necessary, an underscore may be inserted when
+lower case is used, eg. Area_m2 instead of Aream2.
+
+Filenames
+---------
+Filenames will typically be the same as the main object in the file. Thus,
+Filenames for classes start with a capital, like the class: ClassName.h,
+ClassName.cc.
+
+Accessors
+---------
+Getters, setters, member data access and mutation:
+Naming scheme is e.g. property() and setProperty(const Property & p).
+
+The practical reason for this is that the function names will not then
+conflict with the argument names e.g. setPhase(phase) vs. phase(phase), 
+where the second is a name conflict.
+
+Getters may return by value, or by const reference (for efficiency). In the
+absence of any other reason, the former is preferred because it doesn't assume
+that there is an lvalue reference which may be returned by the object. However,
+for efficiency reasons a const reference may be a better choice.
+
+It is sometimes more useful to return a non-const reference instead
+of having a setter. This should only be done when there is a reason, and 
+should be decided on a common sense basis. For example, return a non-const
+reference to a vector member, so that the user is free to modify just a 
+single component without recreating the entire vector.
+
+It is considered good OO coding style not to use too many getters and setters
+without good reason.
+
+One style is to use swap semantics to acquire a new value. In such a case,
+the following style can be used:
+
+void acquireValue(Value * val) {std::swap(val_, val);}
+
+Brace style
+-----------
+Braces start on a new line e.g.  
+Function F() 
+{ 
+   ...  
+}
+
+Pointer and reference grouping
+------------------------------
+int * i;
+int & j;
+int * k = &j;
+int & j = *i;
+
+References vs pointers
+----------------------
+Pass and return by reference, except where you *have to* use a pointer, e.g.
+when the return value or argument may be null.
+
+Numerical types
+---------------
+Floating point generally uses double. Integer types are generally int.
+
+Error reporting, etc.
+---------------------
+Errors etc. are called through the error(), warning(), message(), debug()
+functions, declared in Output.h. Debug statements are usually surrounded by
+the SGT_DEBUG() macro, which evaluates to nothing unless DEBUG is defined.
