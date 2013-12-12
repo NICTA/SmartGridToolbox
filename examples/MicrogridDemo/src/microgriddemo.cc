@@ -1,5 +1,3 @@
-#include "PVDemoController.h"
-#include "PVDemoInverter.h"
 #include <fstream>
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Model.h>
@@ -11,26 +9,20 @@ extern "C" {
 }
 
 using namespace SmartGridToolbox;
-using namespace PVDemo;
 
 int main(int argc, const char ** argv)
 {
-   if (argc != 5)
+   if (argc != 3)
    {
-      error() << "Usage: " << argv[0] << " config_name output_name voltage_lower_bound voltage_upper_bound" 
-              << std::endl;
+      error() << "Usage: " << argv[0] << " config_name output_name" << std::endl;
       SmartGridToolbox::abort();
    }
    
    const char * configName = argv[1];
    const char * outputName = argv[2];
-   double vlb = atof(argv[3]);
-   double vub = atof(argv[4]);
 
    std::cout << "Configuration filename = " << configName << std::endl;
    std::cout << "Output filename        = " << outputName << std::endl;
-   std::cout << "Voltage lower bound    = " << vlb << std::endl;
-   std::cout << "Voltage upper bound    = " << vub << std::endl;
 
    std::ofstream outFile(outputName);
 
@@ -38,61 +30,25 @@ int main(int argc, const char ** argv)
    Simulation sim(mod);
    Parser & p = Parser::globalParser();
    p.parse(configName, mod, sim);
-
-   auto top = p.top();
-   std::vector<std::string> special = top["special_inverters"].as<std::vector<std::string>>();
-
-   std::cout << "special inverters " << std::endl;
-   for (std::string name : special)
-   {
-      std::cout << "\t" << name << std::endl;
-      SimpleInverter * inv = mod.componentNamed<SimpleInverter>(name);
-      assert(inv);
-      mod.replaceComponentWithNew<PVDemoInverter>(*inv);
-   }
-   
-   Network * netw = mod.componentNamed<Network>("cdf");
-   PVDemoController & pvdc = mod.newComponent<PVDemoController>("pvdc", *netw, vlb, vub);
-   
    p.postParse();
 
    mod.validate();
    sim.initialize();
-
-   netw->solvePowerFlow();
-
-   auto busses = pvdc.busses();
+   Network * network = mod.componentNamed<Network>("network");
+   auto busses = network->busVec();
    while (sim.doTimestep())
    {
       outFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
-      for (auto & pvdBus : busses)
+      for (auto & bus : busses)
       {
-         Bus * sgtBus = pvdBus->sgtBus_;
-         outFile <<  sgtBus->V()(0)  << " ";
+         outFile <<  bus->V()(0)  << " ";
       }
       outFile << std::endl;
 
       outFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
-      for (auto & pvdBus : busses)
+      for (auto & bus : busses)
       {
-         Bus * sgtBus = pvdBus->sgtBus_;
-         outFile <<  pvdBus->VSol_  << " ";
-      }
-      outFile << std::endl;
-
-      outFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
-      for (auto & pvdBus : busses)
-      {
-         Bus * sgtBus = pvdBus->sgtBus_;
-         outFile <<  sgtBus->STot()(0)  << " ";
-      }
-      outFile << std::endl;
-
-      outFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
-      for (auto & pvdBus : busses)
-      {
-         Bus * sgtBus = pvdBus->sgtBus_;
-         outFile <<  pvdBus->SSol_  << " ";
+         outFile <<  bus->STot()(0)  << " ";
       }
       outFile << std::endl;
    }

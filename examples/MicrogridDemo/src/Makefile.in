@@ -77,7 +77,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = pvdemo$(EXEEXT)
+bin_PROGRAMS = microgriddemo$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/../../depcomp
@@ -121,11 +121,11 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)"
 LIBRARIES = $(lib_LIBRARIES)
 PROGRAMS = $(bin_PROGRAMS)
-am_pvdemo_OBJECTS = pvdemo.$(OBJEXT) PVDemoController.$(OBJEXT)
-pvdemo_OBJECTS = $(am_pvdemo_OBJECTS)
-pvdemo_LDADD = $(LDADD)
-pvdemo_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(pvdemo_LDFLAGS) \
-	$(LDFLAGS) -o $@
+am_microgriddemo_OBJECTS = microgriddemo.$(OBJEXT)
+microgriddemo_OBJECTS = $(am_microgriddemo_OBJECTS)
+microgriddemo_LDADD = $(LDADD)
+microgriddemo_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	$(microgriddemo_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -155,8 +155,8 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(pvdemo_SOURCES)
-DIST_SOURCES = $(pvdemo_SOURCES)
+SOURCES = $(microgriddemo_SOURCES)
+DIST_SOURCES = $(microgriddemo_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -299,8 +299,8 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = 
 lib_LIBRARIES = 
-pvdemo_SOURCES = pvdemo.cc PVDemoController.cc
-pvdemo_LDFLAGS = -lSmartGridToolbox -lyaml-cpp -lboost_date_time-mt -lklu -lamd -lbtf -lcolamd -lgurobi55
+microgriddemo_SOURCES = microgriddemo.cc
+microgriddemo_LDFLAGS = -lSmartGridToolbox -lyaml-cpp -lboost_date_time-mt -lklu -lamd -lbtf -lcolamd -lgurobi55
 all: all-am
 
 .SUFFIXES:
@@ -409,9 +409,9 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 
-pvdemo$(EXEEXT): $(pvdemo_OBJECTS) $(pvdemo_DEPENDENCIES) $(EXTRA_pvdemo_DEPENDENCIES) 
-	@rm -f pvdemo$(EXEEXT)
-	$(AM_V_CXXLD)$(pvdemo_LINK) $(pvdemo_OBJECTS) $(pvdemo_LDADD) $(LIBS)
+microgriddemo$(EXEEXT): $(microgriddemo_OBJECTS) $(microgriddemo_DEPENDENCIES) $(EXTRA_microgriddemo_DEPENDENCIES) 
+	@rm -f microgriddemo$(EXEEXT)
+	$(AM_V_CXXLD)$(microgriddemo_LINK) $(microgriddemo_OBJECTS) $(microgriddemo_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -419,8 +419,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PVDemoController.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pvdemo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/microgriddemo.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

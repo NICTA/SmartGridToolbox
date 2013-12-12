@@ -4,7 +4,7 @@ AM_CPPFLAGS =
 
 lib_LIBRARIES = 
 
-bin_PROGRAMS = pvdemo
+bin_PROGRAMS = microgriddemo
 
-pvdemo_SOURCES = pvdemo.cc PVDemoController.cc
-pvdemo_LDFLAGS = -lSmartGridToolbox -lyaml-cpp -lboost_date_time-mt -lklu -lamd -lbtf -lcolamd -lgurobi55
+microgriddemo_SOURCES = microgriddemo.cc
+microgriddemo_LDFLAGS = -lSmartGridToolbox -lyaml-cpp -lboost_date_time-mt -lklu -lamd -lbtf -lcolamd -lgurobi55
