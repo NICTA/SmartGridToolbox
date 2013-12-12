@@ -4,15 +4,29 @@
 #include <SmartGridToolbox/SimpleBattery.h>
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Component.h>
+#include <SmartGridToolbox/DcPowerSourceBase.h>
+#include <SmartGridToolbox/Parser.h>
 #include<string>
 
 namespace SmartGridToolbox
 {
-   class SimpleBattery : public Component
+   class SimpleBatteryParser : public ParserPlugin
+   {
+      public:
+         static constexpr const char * pluginKey()
+         {
+            return "simple_battery";
+         }
+
+      public:
+         virtual void parse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
+   };
+
+   class SimpleBattery : public DcPowerSourceBase
    {
       public:
          SimpleBattery(const std::string & name) :
-            Component(name),
+            DcPowerSourceBase(name),
             initCharge_(0.0),
             maxChargePower_(0.0),
             maxDischargePower_(0.0),
@@ -22,6 +36,13 @@ namespace SmartGridToolbox
             requestedPower_(0.0)
          {
             // Empty.
+         }
+
+         virtual double PDc() const override
+         {
+            return requestedPower_ < 0 
+            ? std::max(requestedPower_, -maxDischargePower_)
+            : std::min(requestedPower_, maxChargePower_);
          }
 
          double initCharge() {return initCharge_;}
@@ -46,13 +67,6 @@ namespace SmartGridToolbox
 
          double requestedPower() {return requestedPower_;}
          void setRequestedPower(double val) {requestedPower_ = val; needsUpdate().trigger();}
-
-         double power() 
-         {
-            return requestedPower_ < 0 
-            ? std::max(requestedPower_, -maxDischargePower_)
-            : std::min(requestedPower_, maxChargePower_);
-         }
 
          double internalPower() 
          {
@@ -79,9 +93,11 @@ namespace SmartGridToolbox
          double chargeEfficiency_;
          double dischargeEfficiency_;
                   
+         // Setpoint.
+         double requestedPower_;
+
          // State.
          double charge_;
-         double requestedPower_;
    };
 }
 #endif // SIMPLE_BATTERY_DOT_H
