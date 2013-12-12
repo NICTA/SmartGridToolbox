@@ -1,6 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS =
+AM_CPPFLAGS = -I$(includedir)
+AM_LDFLAGS = -L$(libdir)
 
 lib_LIBRARIES = 
 
