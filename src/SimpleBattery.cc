@@ -1,4 +1,5 @@
 #include <SmartGridToolbox/SimpleBattery.h>
+#include <SmartGridToolbox/InverterBase.h>
 #include <iostream>
 
 using namespace std;
@@ -14,6 +15,9 @@ namespace SmartGridToolbox
 
       string name = state.expandName(nd["name"].as<std::string>());
       SimpleBattery & batt = mod.newComponent<SimpleBattery>(name);
+      
+      auto nd_dt = nd["dt"];
+      if (nd_dt) batt.set_dt(nd_dt.as<Time>());
 
       auto ndInitCharge = nd["init_charge"];
       if (ndInitCharge) batt.setInitCharge(ndInitCharge.as<double>());
@@ -37,9 +41,34 @@ namespace SmartGridToolbox
       if (ndRequestedPower) batt.setRequestedPower(ndRequestedPower.as<double>());
    }
 
+   void SimpleBatteryParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   {
+      SGT_DEBUG(debug() << "SimpleBattery : postParse." << std::endl);
+
+      string name = state.expandName(nd["name"].as<std::string>());
+      SimpleBattery & batt = *mod.componentNamed<SimpleBattery>(name);
+
+      const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
+      InverterBase * inverter = mod.componentNamed<InverterBase>(inverterStr);
+      if (inverter != nullptr)
+      {
+         inverter->addDcPowerSource(batt);
+      }
+      else
+      {
+         error() << "For component " << name << ", inverter " << inverterStr
+                 << " was not found in the model." << std::endl;
+         abort();
+      }
+   }
+
    void SimpleBattery::updateState(Time t0, Time t1)
    {
-      charge_ += internalPower() * dSeconds(t1 - t0);
-      if (charge_ < 0.0) charge_ = 0.0;
+      double dt = t0 == posix_time::neg_infin ? 0 : dSeconds(t1 - t0);
+      if (dt > 0)
+      {
+         charge_ += internalPower() * dSeconds(t1 - t0);
+         if (charge_ < 0.0) charge_ = 0.0;
+      }
    }
 }

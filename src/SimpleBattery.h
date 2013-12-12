@@ -20,13 +20,40 @@ namespace SmartGridToolbox
 
       public:
          virtual void parse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
+         virtual void postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
    };
 
    class SimpleBattery : public DcPowerSourceBase
    {
+      // Overridden functions: from Component.
+      protected:
+         virtual void initializeState() override
+         {
+            charge_ = initCharge_;
+         }
+
+         virtual void updateState(Time t0, Time t1) override;
+
+         
+         virtual Time validUntil() const override
+         {
+            return time() + dt_;
+         }
+
+      // Overridden functions: from DCPowerSourceBase.
+      public:
+         virtual double PDc() const override
+         {
+            return requestedPower_ < 0 
+            ? std::max(requestedPower_, -maxDischargePower_)
+            : std::min(requestedPower_, maxChargePower_);
+         }
+
+      // Public member functions.
       public:
          SimpleBattery(const std::string & name) :
             DcPowerSourceBase(name),
+            dt_(posix_time::minutes(5)),
             initCharge_(0.0),
             maxChargePower_(0.0),
             maxDischargePower_(0.0),
@@ -37,14 +64,10 @@ namespace SmartGridToolbox
          {
             // Empty.
          }
-
-         virtual double PDc() const override
-         {
-            return requestedPower_ < 0 
-            ? std::max(requestedPower_, -maxDischargePower_)
-            : std::min(requestedPower_, maxChargePower_);
-         }
-
+         
+         Time get_dt() {return dt_;}
+         void set_dt(Time val) {dt_ = val; needsUpdate().trigger();}
+      
          double initCharge() {return initCharge_;}
          void setInitCharge(double val) {initCharge_ = val; needsUpdate().trigger();}
 
@@ -76,16 +99,10 @@ namespace SmartGridToolbox
             : std::min(requestedPower_, maxChargePower_) * chargeEfficiency_;
          }
 
-      protected:
-         virtual void initializeState() override
-         {
-            charge_ = initCharge_;
-         }
-
-         virtual void updateState(Time t0, Time t1) override;
-
+      // Member variables.
       private:
          // Parameters.
+         Time dt_;                           // Timestep.
          double initCharge_;
          double maxCharge_;
          double maxChargePower_;
