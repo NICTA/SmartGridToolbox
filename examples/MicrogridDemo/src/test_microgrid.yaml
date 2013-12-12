@@ -15,7 +15,7 @@ objects: # And these are the actual objects.
       name:                   weather
       cloud_cover:
          constant:            0.3
-      dt:                     00:00:30
+      dt:                     00:30:00
    network:
       name:                   network
    bus:
@@ -114,7 +114,7 @@ objects: # And these are the actual objects.
        inverter:               inverter_pv
        weather:                weather
        efficiency:             0.75
-       area_m2:                6.45
+       area_m2:                20
        zenith_degrees:         64.6
        azimuth_degrees:        95.8
    inverter:
@@ -128,7 +128,7 @@ objects: # And these are the actual objects.
    simple_building:
       name:                   build
       bus:                    bus_build
-      dt:                     05:00:00
+      dt:                     00:05:00
       kb:                     5000 # 5 kW/K
       Cb:                     1e8 # 28 kWh/K
       Tb_init:                23
