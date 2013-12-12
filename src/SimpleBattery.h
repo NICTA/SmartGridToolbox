@@ -42,12 +42,7 @@ namespace SmartGridToolbox
 
       // Overridden functions: from DCPowerSourceBase.
       public:
-         virtual double PDc() const override
-         {
-            return requestedPower_ < 0 
-            ? std::max(requestedPower_, -maxDischargePower_)
-            : std::min(requestedPower_, maxChargePower_);
-         }
+         virtual double PDc() const override; ///< Positive = charging.
 
       // Public member functions.
       public:
@@ -91,13 +86,7 @@ namespace SmartGridToolbox
          double requestedPower() {return requestedPower_;}
          void setRequestedPower(double val) {requestedPower_ = val; needsUpdate().trigger();}
 
-         double internalPower() 
-         {
-            return requestedPower_ < 0 
-            ? std::max(requestedPower_, -maxDischargePower_) / 
-              dischargeEfficiency_
-            : std::min(requestedPower_, maxChargePower_) * chargeEfficiency_;
-         }
+         double internalPower();
 
       // Member variables.
       private:
@@ -111,7 +100,7 @@ namespace SmartGridToolbox
          double dischargeEfficiency_;
                   
          // Setpoint.
-         double requestedPower_;
+         double requestedPower_; ///< Positive = charging.
 
          // State.
          double charge_;

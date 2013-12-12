@@ -3,7 +3,9 @@
 #include <SmartGridToolbox/Model.h>
 #include <SmartGridToolbox/Network.h>
 #include <SmartGridToolbox/Parser.h>
+#include <SmartGridToolbox/SimpleBattery.h>
 #include <SmartGridToolbox/SimpleBuilding.h>
+#include <SmartGridToolbox/SimpleInverter.h>
 #include <SmartGridToolbox/Simulation.h>
 extern "C" {
 #include <gurobi_c.h>
@@ -42,6 +44,9 @@ int main(int argc, const char ** argv)
 
    Network * network = mod.componentNamed<Network>("network");
    SimpleBuilding * build = mod.componentNamed<SimpleBuilding>("build");
+   SimpleBattery * batt = mod.componentNamed<SimpleBattery>("batt");
+   SimpleInverter * inv = mod.componentNamed<SimpleInverter>("inverter_batt");
+
    Time t0 = sim.startTime();
    auto Te = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 15*hour, 10*K, 28*K);};
    auto dQg = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 14*hour, 40*kW, 60*kW);};
