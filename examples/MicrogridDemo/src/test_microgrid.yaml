@@ -5,8 +5,8 @@
 
 global:
    configuration_name:        test_microgrid
-   start_time:                2013-01-23 00:00:00
-   end_time:                  2013-01-25 00:00:00
+   start_time:                2013-01-10 00:00:00
+   end_time:                  2013-01-20 00:00:00
    lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
    timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
 
@@ -87,44 +87,35 @@ objects: # And these are the actual objects.
       name:                   inverter_batt
       bus:                    bus_batt
       phases:                 [BAL]
-      requested_Q_per_phase:  0
-      max_S_mag_per_phase:    50000
-      min_power_factor:       0.9
       efficiency:             0.9
    simple_battery:
       name:                   batt
       dt  :                   00:05:00
       inverter:               inverter_batt
-      init_charge:            1.8e8 # SI, 50 kWh
-      max_charge:             3.6e8 # SI, 100 kWh 
-      max_charge_power:       3e4 
-      max_discharge_power:    2e4 
-      charge_efficiency:      0.85 
-      discharge_efficiency:   0.85 
+      init_charge:            3.6e8 # SI, 100 kWh
+      max_charge:             7.2e8 # SI, 200 kWh 
+      max_charge_power:       2e4 # Charge in 10 hours.
+      max_discharge_power:    5e4 # Discharge in 4 hours.
+      charge_efficiency:      0.85 # Typical Li-I
+      discharge_efficiency:   0.85 # Typical Li-I
       requested_power:        -1e4
    inverter:
       name:                   inverter_pv
       bus:                    bus_pv
       phases:                 [BAL]
-      requested_Q_per_phase:  0
-      max_S_mag_per_phase:    50000
-      min_power_factor:       0.9
       efficiency:             0.9
    solar_PV:
        name:                   pv
        inverter:               inverter_pv
        weather:                weather
-       efficiency:             0.75
-       area_m2:                20
+       efficiency:             0.4
+       area_m2:                100
        zenith_degrees:         64.6
        azimuth_degrees:        95.8
    inverter:
        name:                   inverter_build
        bus:                    bus_pv
        phases:                 [BAL]
-       requested_Q_per_phase:  0
-       max_S_mag_per_phase:    50000
-       min_power_factor:       0.9
        efficiency:             0.9
    simple_building:
       name:                   build
@@ -136,13 +127,13 @@ objects: # And these are the actual objects.
       kh:                     1e4 # 10 kW/K
       COP_cool:               3
       COP_heat:               4
-      P_max:                  4e4 # 50 kW
+      P_max:                  1e5 # 70 kW, about typical for largeish building.
       Ts:                     20
    microgrid_controller:
       name:                   controller
       building_bus:           bus_build
       pv_bus:                 bus_pv
       battery:                batt
-      min_P:                  -5e3
-      max_P:                  -1e3
+      min_P:                  -15e3
+      max_P:                  -5e3
 --- # Marks the end of each configuration document.

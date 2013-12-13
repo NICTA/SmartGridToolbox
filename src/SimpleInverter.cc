@@ -101,8 +101,8 @@ namespace SmartGridToolbox
    SimpleInverter::SimpleInverter(const std::string & name, const Phases & phases) :
       InverterBase(name, phases),
       efficiency_(1.0), 
-      maxSMagPerPhase_(5000.0), 
-      minPowerFactor_(0.9), 
+      maxSMagPerPhase_(1e9), 
+      minPowerFactor_(0.0), 
       requestedQPerPhase_(0.0), 
       inService_(true),
       S_(phases.size(), czero)
