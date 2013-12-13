@@ -121,7 +121,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)"
 LIBRARIES = $(lib_LIBRARIES)
 PROGRAMS = $(bin_PROGRAMS)
-am_microgriddemo_OBJECTS = microgriddemo.$(OBJEXT)
+am_microgriddemo_OBJECTS = microgriddemo.$(OBJEXT) \
+	MicrogridController.$(OBJEXT)
 microgriddemo_OBJECTS = $(am_microgriddemo_OBJECTS)
 microgriddemo_LDADD = $(LDADD)
 microgriddemo_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
@@ -299,7 +300,7 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = 
 lib_LIBRARIES = 
-microgriddemo_SOURCES = microgriddemo.cc
+microgriddemo_SOURCES = microgriddemo.cc MicrogridController.cc
 microgriddemo_LDFLAGS = -lSmartGridToolbox -lyaml-cpp -lboost_date_time-mt -lklu -lamd -lbtf -lcolamd -lgurobi55
 all: all-am
 
@@ -419,6 +420,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MicrogridController.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/microgriddemo.Po@am__quote@
 
 .cc.o:

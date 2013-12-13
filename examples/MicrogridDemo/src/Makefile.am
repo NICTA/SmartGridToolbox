@@ -6,5 +6,5 @@ lib_LIBRARIES =
 
 bin_PROGRAMS = microgriddemo
 
-microgriddemo_SOURCES = microgriddemo.cc
+microgriddemo_SOURCES = microgriddemo.cc MicrogridController.cc
 microgriddemo_LDFLAGS = -lSmartGridToolbox -lyaml-cpp -lboost_date_time-mt -lklu -lamd -lbtf -lcolamd -lgurobi55

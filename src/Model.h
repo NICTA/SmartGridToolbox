@@ -94,6 +94,7 @@ namespace SmartGridToolbox
       private:
          void addGenericComponent(Component * comp);
          void replaceGenericComponent(Component * comp);
+         void printDependencies(std::ostream & os);
 
       private:
          std::string name_;

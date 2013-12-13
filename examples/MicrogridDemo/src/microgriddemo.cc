@@ -1,4 +1,5 @@
 #include <fstream>
+#include "MicrogridController.h"
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Model.h>
 #include <SmartGridToolbox/Network.h>
@@ -12,6 +13,7 @@ extern "C" {
 }
 
 using namespace SmartGridToolbox;
+using namespace MicrogridDemo;
 
 static double sinusoidal(double t, double T, double Delta, double minim, double maxim)
 {
@@ -40,6 +42,7 @@ int main(int argc, const char ** argv)
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::globalParser();
+   p.registerParserPlugin<MicrogridControllerParser>();
    p.parse(configName, mod, sim);
 
    Network * network = mod.componentNamed<Network>("network");

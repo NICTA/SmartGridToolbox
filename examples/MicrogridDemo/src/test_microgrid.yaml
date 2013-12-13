@@ -97,8 +97,8 @@ objects: # And these are the actual objects.
       inverter:               inverter_batt
       init_charge:            1.8e8 # SI, 50 kWh
       max_charge:             3.6e8 # SI, 100 kWh 
-      max_charge_power:       1e5 
-      max_discharge_power:    3e5 
+      max_charge_power:       3e4 
+      max_discharge_power:    2e4 
       charge_efficiency:      0.85 
       discharge_efficiency:   0.85 
       requested_power:        -1e4
@@ -138,4 +138,11 @@ objects: # And these are the actual objects.
       COP_heat:               4
       P_max:                  4e4 # 50 kW
       Ts:                     20
+   microgrid_controller:
+      name:                   controller
+      building_bus:           bus_build
+      pv_bus:                 bus_pv
+      battery:                batt
+      min_P:                  -5e3
+      max_P:                  -1e3
 --- # Marks the end of each configuration document.

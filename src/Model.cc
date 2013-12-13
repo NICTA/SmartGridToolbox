@@ -45,15 +45,21 @@ namespace SmartGridToolbox
          }
       }
       g.weakOrder();
+      int newRank = 0;
       for (int i = 0; i < g.size(); ++i)
       {
+         if (i > 0 && g.nodes()[i-1]->dominates(*g.nodes()[i]))
+         {
+            ++newRank;
+         }
          int idx_i = g.nodes()[i]->index();
-         compVec_[idx_i]->setRank(i);
+         compVec_[idx_i]->setRank(newRank);
       }
       std::sort(compVec_.begin(), compVec_.end(), 
             [](const Component * lhs, const Component * rhs) -> bool 
             {
-               return lhs->rank() < rhs->rank();
+               return ((lhs->rank() < rhs->rank()) ||
+                       ((lhs->rank() == rhs->rank()) && (lhs->name() < rhs->name())));
             });
       isValid_ = true;
       message() << "Model after validation:" << std::endl;
