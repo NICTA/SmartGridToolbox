@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <SmartGridToolbox/Common.h>
+#include <SmartGridToolbox/TimeSeries.h>
 
 using std::string;
 
@@ -18,6 +19,7 @@ namespace SmartGridToolbox
    {
       public:
          typedef std::map<std::string, Component *> ComponentMap;
+         typedef std::map<std::string, TimeSeriesBase *> TimeSeriesMap;
          typedef std::vector<Component *> ComponentVec;
 
       public:
@@ -83,6 +85,21 @@ namespace SmartGridToolbox
          const ComponentVec & components() const {return compVec_;}
          ComponentVec & components() {return compVec_;}
 
+         template<typename T> const T * timeSeries(const std::string & name) const
+         {
+            TimeSeriesMap::const_iterator it = timeSeriesMap_.find(name);
+            return (it == timeSeriesMap_.end()) ? 0 : dynamic_cast<const T *>(it->second);
+         }
+         template<typename T> T * timeSeries(const std::string & name)
+         {
+            return const_cast<T *>((const_cast<const Model *>(this))-> timeSeries<T>(name));
+         }
+
+         void acquireTimeSeries (const std::string & name, TimeSeriesBase * timeSeries)
+         {
+            timeSeriesMap_[name] = timeSeries;
+         }
+
          LatLong latLong() const {return latLong_;}
          void setLatLong(const LatLong & latLong) {latLong_ = latLong;}
 
@@ -102,6 +119,8 @@ namespace SmartGridToolbox
 
          ComponentMap compMap_;
          ComponentVec compVec_;
+         
+         TimeSeriesMap timeSeriesMap_;
 
          LatLong latLong_;
          local_time::time_zone_ptr timezone_;

@@ -336,6 +336,128 @@ namespace SmartGridToolbox
          }
       }
 
+      if (const YAML::Node & nodeTimeSeries = nodeGlobal["time_series"])
+      {
+         for (const auto & compPair : nodeTimeSeries)
+         {
+            std::string nodeType = compPair.first.as<std::string>();
+            if (nodeType != "series")
+            {
+               error() 
+                  << "time_series section of input file must consist of a list of entries with the key \"series\"."
+                  << std::endl;
+               abort();
+            }
+            const YAML::Node & nodeVal = compPair.second;
+            parseTimeSeries(nodeVal, model);
+         }
+      }
+   }
+
+   void Parser::parseTimeSeries(const YAML::Node & node, Model & model)
+   {
+      assertFieldPresent(node, "name");
+      assertFieldPresent(node, "type"); // data
+      assertFieldPresent(node, "value_type"); // real_scalar / complex_scalar / real_vector / complex_vector
+
+      std::string name = node["name"].as<std::string>();
+      std::string timeSeriesType = node["type"].as<std::string>();
+      std::string valType = node["value_type"].as<std::string>();
+
+      bool isData = false;
+      bool isComplex = false;
+      bool isVector = false;
+
+      if (timeSeriesType == "data")
+      {
+         isData = true;
+      }
+      else
+      {
+         error() << "Bad type for time series." << std::endl;
+         abort();
+      }
+
+      if (valType == "real_scalar")
+      {
+         isComplex = false;
+         isVector = false;
+      }
+      else if (valType == "complex_scalar")
+      {
+         isComplex = true;
+         isVector = false;
+      }
+      else if (valType == "real_vector")
+      {
+         isComplex = false;
+         isVector = true;
+      }
+      else if (valType == "complex_vector")
+      {
+         isComplex = true;
+         isVector = true;
+      }
+      else
+      {
+         error() << "Bad data_type for time series." << std::endl;
+         abort();
+      }
+
+      if (isData)
+      {
+         assertFieldPresent(node, "data_file");
+         assertFieldPresent(node, "interp_type");
+
+         std::string dataFName = node["data_file"].as<std::string>();
+         std::ifstream infile(dataFName);
+         if (!infile.is_open())
+         {
+            error() << "Could not open the timeseries input file " << dataFName << "." << std::endl;
+            abort();
+         }
+
+         std::string interpType = node["interp_type"].as<std::string>();
+
+         if (!isComplex && !isVector)
+         {
+            DataTimeSeries<Time, double> * ts;
+
+            if (interpType == "stepwise")
+            {
+               ts = new StepwiseTimeSeries<Time, double>();
+            }
+            else if (interpType == "lerp")
+            {
+               ts = new LerpTimeSeries<Time, double>();
+            }
+            else if (interpType == "spline")
+            {
+               ts = new SplineTimeSeries<Time>();
+            }
+
+            std::string line;
+            while (std::getline(infile, line))
+            {
+               std::istringstream ss(line);
+               std::string dateStr;
+               std::string timeStr;
+               double val;
+               ss >> dateStr >> timeStr >> val;
+               assert(!ss);
+               posix_time::ptime pt = posix_time::time_from_string(dateStr + " " + timeStr);
+               Time t = timeFromLocalTime(pt, model.timezone());
+               ts->addPoint(t, val); 
+            }
+
+            model.acquireTimeSeries(name, ts);
+         }
+         else
+         {
+            error() << "Time series not yet supported." << std::endl;
+            abort();
+         }
+      }
    }
 
    void Parser::parseComponents(const YAML::Node & node, ParserState & state, Model & model, bool isPostParse)

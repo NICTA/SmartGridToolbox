@@ -9,6 +9,13 @@ global:
    end_time:                  2013-01-20 00:00:00
    lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
    timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
+   time_series:
+      series:
+         name:                ts
+         type:                data
+         value_type:          real_scalar
+         data_file:           ts.txt
+         interp_type:         spline
 
 objects: # And these are the actual objects.
    weather:
@@ -93,7 +100,7 @@ objects: # And these are the actual objects.
       dt  :                   00:05:00
       inverter:               inverter_batt
       init_charge:            3.6e8 # SI, 100 kWh
-      max_charge:             7.2e8 # SI, 200 kWh 
+      max_charge:             0 #7.2e8 # SI, 200 kWh 
       max_charge_power:       2e4 # Charge in 10 hours.
       max_discharge_power:    5e4 # Discharge in 4 hours.
       charge_efficiency:      0.85 # Typical Li-I

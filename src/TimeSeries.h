@@ -5,15 +5,16 @@
 
 namespace SmartGridToolbox
 {
-   template<typename T, typename V>
-   class TimeSeries
+   class TimeSeriesBase
    {
       public:
-         virtual ~TimeSeries()
-         {
-            // Empty.
-         }
+         virtual ~TimeSeriesBase() {}
+   };
 
+   template<typename T, typename V>
+   class TimeSeries : public TimeSeriesBase
+   {
+      public:
          virtual V value(const T & t) const = 0;
    };
 
