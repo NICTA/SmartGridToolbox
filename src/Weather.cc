@@ -18,20 +18,14 @@ namespace SmartGridToolbox
       const auto & cloudNd = nd["cloud_cover"];
       if (cloudNd)
       {
-         const auto & constNd = cloudNd["constant"];
-         if (constNd)
+         std::string name = cloudNd.as<std::string>();
+         const TimeSeries<Time, double> * series = mod.timeSeries<TimeSeries<Time, double>>(name);
+         if (series == nullptr)
          {
-            comp.acquireCloudCoverSeries(new ConstTimeSeries<Time, double>(constNd.as<double>()));  
-         }
-         else
-         {
-            error() << "Weather : cloud_cover keyword is present, but no value specified." << std::endl;
+            error() << "Parsing weather: couldn't find time series " << name << std::endl;
             abort();
          }
-      }
-      else
-      {
-         comp.acquireCloudCoverSeries(new ConstTimeSeries<Time, double>(0.0));
+         comp.setCloudCoverSeries(*series);
       }
 
       if (nd["dt"])

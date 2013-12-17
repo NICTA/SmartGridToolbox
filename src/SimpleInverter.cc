@@ -22,36 +22,20 @@ namespace SmartGridToolbox
       {
          comp.setEfficiency(nd["efficiency"].as<double>());
       }
-      else
-      {
-         comp.setEfficiency(1.0);
-      }
 
       if (nd["max_S_mag_per_phase"])
       {
          comp.setMaxSMagPerPhase(nd["max_S_mag_per_phase"].as<double>());
-      }
-      else
-      {
-         comp.setMaxSMagPerPhase(10000.0);
       }
 
       if (nd["min_power_factor"])
       {
          comp.setMinPowerFactor(nd["min_power_factor"].as<double>());
       }
-      else
-      {
-         comp.setMinPowerFactor(0.0);
-      }
 
       if (nd["requested_Q_per_phase"])
       {
          comp.setRequestedQPerPhase(nd["requested_Q_per_phase"].as<double>());
-      }
-      else
-      {
-         comp.setRequestedQPerPhase(0.0);
       }
    }
 

@@ -37,13 +37,11 @@ namespace SmartGridToolbox
             setDt(posix_time::minutes(5));
          }
 
-         virtual ~Weather() {delete cloudCoverSeries_;}
-
          void setLatLong(const LatLong & latLong) {latLong_ = latLong; needsUpdate().trigger();}
 
-         void acquireCloudCoverSeries(TimeSeries<Time, double> * newSeries)
+         void setCloudCoverSeries(const TimeSeries<Time, double> & series)
          {
-            std::swap(cloudCoverSeries_, newSeries); needsUpdate().trigger();
+            cloudCoverSeries_ = &series; needsUpdate().trigger();
          }
 
          double solarPower(SphericalAngles planeNormal, double planeArea) const;
@@ -65,7 +63,7 @@ namespace SmartGridToolbox
 
       private:
          LatLong latLong_;
-         TimeSeries<Time, double> * cloudCoverSeries_;
+         const TimeSeries<Time, double> * cloudCoverSeries_;
 
          SolarIrradiance prevIrradiance_;
          SolarIrradiance irradiance_;

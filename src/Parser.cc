@@ -408,6 +408,7 @@ namespace SmartGridToolbox
       {
          assertFieldPresent(node, "data_file");
          assertFieldPresent(node, "interp_type");
+         assertFieldPresent(node, "relative_to_time");
 
          std::string dataFName = node["data_file"].as<std::string>();
          std::ifstream infile(dataFName);
@@ -418,6 +419,11 @@ namespace SmartGridToolbox
          }
 
          std::string interpType = node["interp_type"].as<std::string>();
+         
+         std::string relto = node["relative_to_time"].as<std::string>();
+
+         posix_time::ptime pt = posix_time::time_from_string(relto);
+         Time t0 = timeFromLocalTime(pt, model.timezone());
 
          if (!isComplex && !isVector)
          {
@@ -442,11 +448,11 @@ namespace SmartGridToolbox
                std::istringstream ss(line);
                std::string dateStr;
                std::string timeStr;
+               double secs;
                double val;
-               ss >> dateStr >> timeStr >> val;
-               assert(!ss);
-               posix_time::ptime pt = posix_time::time_from_string(dateStr + " " + timeStr);
-               Time t = timeFromLocalTime(pt, model.timezone());
+               ss >> secs >> val;
+               assert(ss.eof());
+               Time t = t0 + posix_time::seconds(secs);
                ts->addPoint(t, val); 
             }
 
