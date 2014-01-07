@@ -8,6 +8,7 @@
 #include <SmartGridToolbox/SimpleBuilding.h>
 #include <SmartGridToolbox/SimpleInverter.h>
 #include <SmartGridToolbox/Simulation.h>
+#include <SmartGridToolbox/TimeSeries.h>
 extern "C" {
 #include <gurobi_c.h>
 }
@@ -60,6 +61,7 @@ int main(int argc, const char ** argv)
 
    mod.validate();
    sim.initialize();
+
    auto busses = network->busVec();
    while (sim.doTimestep())
    {
