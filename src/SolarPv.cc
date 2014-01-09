@@ -37,10 +37,10 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "SolarPv : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SolarPv & comp = *mod.componentNamed<SolarPv>(name);
+      SolarPv & comp = *mod.component<SolarPv>(name);
 
       const std::string weatherStr = state.expandName(nd["weather"].as<std::string>());
-      Weather * weather = mod.componentNamed<Weather>(weatherStr);
+      Weather * weather = mod.component<Weather>(weatherStr);
       if (weather != nullptr)
       {
          comp.setWeather(*weather);
@@ -54,7 +54,7 @@ namespace SmartGridToolbox
       }
 
       const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
-      InverterBase * inverter = mod.componentNamed<InverterBase>(inverterStr);
+      InverterBase * inverter = mod.component<InverterBase>(inverterStr);
       if (inverter != nullptr)
       {
          inverter->addDcPowerSource(comp);

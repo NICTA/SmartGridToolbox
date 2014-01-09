@@ -286,13 +286,13 @@ namespace SmartGridToolbox
 
             Complex cTap = polar(info.tap, info.thetaRad);
 
-            Bus * bus0 = mod.componentNamed<Bus>(busName(networkName, info.bus0Id));
+            Bus * bus0 = mod.component<Bus>(busName(networkName, info.bus0Id));
             if (bus0 == nullptr)
             {
                error() << "CDF: for branch, from bus " << info.bus0Id << " was not found." << std::endl;
                abort();
             }
-            Bus * bus1 = mod.componentNamed<Bus>(busName(networkName, info.bus1Id));
+            Bus * bus1 = mod.component<Bus>(busName(networkName, info.bus1Id));
             if (bus1 == nullptr)
             {
                error() << "CDF: for branch, to bus " << info.bus0Id << " was not found." << std::endl;

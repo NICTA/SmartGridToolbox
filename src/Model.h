@@ -17,10 +17,11 @@ namespace SmartGridToolbox
    /// Units: All units are internally stored in SI.
    class Model
    {
-      public:
+      private:
          typedef std::map<std::string, std::unique_ptr<Component>> ComponentMap;
          typedef std::map<std::string, std::unique_ptr<TimeSeriesBase>> TimeSeriesMap;
          typedef std::vector<Component *> ComponentVec;
+         typedef std::vector<const Component *> ConstComponentVec;
 
       public:
          /// Default constructor.
@@ -62,27 +63,18 @@ namespace SmartGridToolbox
             return *comp;
          }
 
-         template<typename T> const T * componentNamed(const std::string & name) const
+         template<typename T> const T * component(const std::string & name) const
          {
             ComponentMap::const_iterator it = compMap_.find(name);
             return (it == compMap_.end()) ? 0 : dynamic_cast<const T *>(it->second.get());
          }
-         template<typename T> T * componentNamed(const std::string & name)
+         template<typename T> T * component(const std::string & name)
          {
-            return const_cast<T *>((const_cast<const Model *>(this))-> componentNamed<T>(name));
+            return const_cast<T *>((const_cast<const Model *>(this))-> component<T>(name));
          }
 
-         template<typename T> const T * componentAt(int i) const
-         {
-            return (i >= 0 && i < compVec_.size()) ? dynamic_cast<T *>(compVec_[i]) : 0;
-         }
-         template<typename T> T * componentAt(int i)
-         {
-            return const_cast<T *>((const_cast<const Model *>(this))-> componentAt<T>(i));
-         }
-
-         const ComponentVec & components() const {return compVec_;}
-         ComponentVec & components() {return compVec_;}
+         ConstComponentVec components() const;
+         ComponentVec components() {return compVec_;}
 
          template<typename T> const T * timeSeries(const std::string & name) const
          {

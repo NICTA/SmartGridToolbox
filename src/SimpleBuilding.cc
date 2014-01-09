@@ -75,10 +75,10 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "SimpleBuilding : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SimpleBuilding * build = mod.componentNamed<SimpleBuilding>(name);
+      SimpleBuilding * build = mod.component<SimpleBuilding>(name);
 
       std::string busStr = state.expandName(nd["bus"].as<std::string>());
-      Bus * bus = mod.componentNamed<Bus>(busStr);
+      Bus * bus = mod.component<Bus>(busStr);
       if (bus == nullptr)
       {
          error() << "For component " << name << ", bus " << busStr 

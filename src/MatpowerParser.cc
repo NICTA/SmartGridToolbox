@@ -332,13 +332,13 @@ namespace SmartGridToolbox
 
             Complex cTap = polar(tap, theta * pi / 180);
 
-            Bus * bus0 = mod.componentNamed<Bus>(busName(networkName, bus0Id));
+            Bus * bus0 = mod.component<Bus>(busName(networkName, bus0Id));
             if (bus0 == nullptr)
             {
                error() << "Matpower: for branch " << i << ", from bus " << bus0Id << " was not found." << std::endl;
                abort();
             }
-            Bus * bus1 = mod.componentNamed<Bus>(busName(networkName, bus1Id));
+            Bus * bus1 = mod.component<Bus>(busName(networkName, bus1Id));
             if (bus1 == nullptr)
             {
                error() << "Matpower: for branch " << i << ", to bus " << bus1Id << " was not found." << std::endl;

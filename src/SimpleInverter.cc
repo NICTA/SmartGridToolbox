@@ -44,10 +44,10 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "SimpleInverter : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SimpleInverter & comp = *mod.componentNamed<SimpleInverter>(name);
+      SimpleInverter & comp = *mod.component<SimpleInverter>(name);
 
       const std::string busStr = state.expandName(nd["bus"].as<std::string>());
-      Bus * busComp = mod.componentNamed<Bus>(busStr);
+      Bus * busComp = mod.component<Bus>(busStr);
       if (busComp != nullptr)
       {
          busComp->addZipToGround(comp);

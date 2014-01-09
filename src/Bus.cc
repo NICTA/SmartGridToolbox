@@ -68,10 +68,10 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "Bus : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      Bus * comp = mod.componentNamed<Bus>(name);
+      Bus * comp = mod.component<Bus>(name);
 
       const std::string networkStr = state.expandName(nd["network"].as<std::string>());
-      Network * networkComp = mod.componentNamed<Network>(networkStr);
+      Network * networkComp = mod.component<Network>(networkStr);
       if (networkComp != nullptr)
       {
          networkComp->addBus(*comp);

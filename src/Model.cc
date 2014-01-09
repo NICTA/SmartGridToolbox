@@ -6,6 +6,13 @@
 
 namespace SmartGridToolbox 
 {
+   Model::ConstComponentVec Model::components() const
+   {
+      ConstComponentVec result(compVec_.size());
+      std::copy(compVec_.begin(), compVec_.end(), result.begin());
+      return result;
+   }
+
    void Model::validate()
    {
       SGT_DEBUG
