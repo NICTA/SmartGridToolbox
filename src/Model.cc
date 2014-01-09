@@ -6,14 +6,6 @@
 
 namespace SmartGridToolbox 
 {
-   Model::~Model()
-   {
-      for (Component * comp : compVec_)
-      {
-         delete comp;
-      }
-   }
-
    void Model::validate()
    {
       SGT_DEBUG
@@ -73,38 +65,28 @@ namespace SmartGridToolbox
       }
    }
 
-   void Model::addGenericComponent(Component * comp)
+   void Model::addOrReplaceGenericComponent(std::unique_ptr<Component> && comp, bool allowReplace)
    {
-      std::pair<ComponentMap::iterator, bool> result = compMap_.insert(make_pair(comp->name(), comp));
-      if (result.second == 0) {
-         error() << "Component " << comp->name() << " occurs more than once in the model!" << std::endl;
-         abort();
-      }
-      else
-      {
-         compVec_.push_back(comp);
-         SGT_DEBUG(message() << "Component " << comp->name() << " added to model." << std::endl);
-      }
-   }
-
-   void Model::replaceGenericComponent(Component * comp)
-   {
-      const std::string & name = comp->name();
-      ComponentMap::iterator it1 = compMap_.find(name);
+      Component & ref = *comp;
+      ComponentMap::iterator it1 = compMap_.find(ref.name());
       if (it1 != compMap_.end())
       {
-         Component * oldComp = it1->second;
-         it1->second = comp;
-         ComponentVec::iterator it2 = std::find(compVec_.begin(), compVec_.end(), oldComp);
-         *it2 = comp;
-         delete oldComp;
-         message() << "Component " << comp->name() << " replaced in model." << std::endl;
+         if (allowReplace)
+         {
+            it1->second.swap(comp);
+            message() << "Component " << ref.name() << " replaced in model." << std::endl;
+         }
+         else
+         {
+            error() << "Component " << ref.name() << " occurs more than once in the model!" << std::endl;
+            abort();
+         }
       }
       else
       {
-         compMap_[comp->name()] = comp;
-         compVec_.push_back(comp);
-         message() << "Component " << comp->name() << " added to model." << std::endl;
+         compMap_[ref.name()] = std::move(comp);
+         compVec_.push_back(comp.get());
+         message() << "Component " << ref.name() << " added to model." << std::endl;
       }
    }
 }

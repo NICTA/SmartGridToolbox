@@ -18,8 +18,8 @@ namespace SmartGridToolbox
    class Model
    {
       public:
-         typedef std::map<std::string, Component *> ComponentMap;
-         typedef std::map<std::string, TimeSeriesBase *> TimeSeriesMap;
+         typedef std::map<std::string, std::unique_ptr<Component>> ComponentMap;
+         typedef std::map<std::string, std::unique_ptr<TimeSeriesBase>> TimeSeriesMap;
          typedef std::vector<Component *> ComponentVec;
 
       public:
@@ -31,42 +31,41 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         /// Destructor.
-         ~Model();
-
          const std::string & name() const {return name_;}
          const void setName(const std::string & name) {name_ = name;}
 
          template<typename T, typename... Args> T & newComponent(Args&&... args)
          {
-            T * comp = new T(std::forward<Args>(args)...);
-            addGenericComponent(comp);
-            return *comp;
+            std::unique_ptr<T> comp(new T(std::forward<Args>(args)...));
+            T & t = *comp;
+            addOrReplaceGenericComponent(std::move(comp), false);
+            return t;
          }
 
-         template<typename T> T & acquireComponent(T * comp)
+         template<typename T> T & acquireComponent(std::unique_ptr<T> && comp)
          {
-            addGenericComponent(comp);
+            addOrReplaceGenericComponent(std::move(comp), false);
             return *comp;
          }
          
          template<typename T, typename... Args> T & replaceComponentWithNew(Args&&... args)
          {
-            T * comp = new T(std::forward<Args>(args)...);
-            replaceGenericComponent(comp);
-            return *comp;
+            std::unique_ptr<T> comp(new T(std::forward<Args>(args)...));
+            T & t = *comp;
+            addOrReplaceGenericComponent(std::move(comp), true);
+            return t;
          }
          
-         template<typename T> T & replaceComponent(T * comp)
+         template<typename T> T & replaceComponent(std::unique_ptr<T> && comp)
          {
-            replaceGenericComponent(comp);
+            addOrReplaceGenericComponent(std::move(comp), true);
             return *comp;
          }
 
          template<typename T> const T * componentNamed(const std::string & name) const
          {
             ComponentMap::const_iterator it = compMap_.find(name);
-            return (it == compMap_.end()) ? 0 : dynamic_cast<const T *>(it->second);
+            return (it == compMap_.end()) ? 0 : dynamic_cast<const T *>(it->second.get());
          }
          template<typename T> T * componentNamed(const std::string & name)
          {
@@ -88,16 +87,16 @@ namespace SmartGridToolbox
          template<typename T> const T * timeSeries(const std::string & name) const
          {
             TimeSeriesMap::const_iterator it = timeSeriesMap_.find(name);
-            return (it == timeSeriesMap_.end()) ? 0 : dynamic_cast<const T *>(it->second);
+            return (it == timeSeriesMap_.end()) ? 0 : dynamic_cast<const T *>(it->second.get());
          }
          template<typename T> T * timeSeries(const std::string & name)
          {
             return const_cast<T *>((const_cast<const Model *>(this))-> timeSeries<T>(name));
          }
 
-         void acquireTimeSeries (const std::string & name, TimeSeriesBase * timeSeries)
+         void acquireTimeSeries (const std::string & name, std::unique_ptr<TimeSeriesBase> timeSeries)
          {
-            timeSeriesMap_[name] = timeSeries;
+            timeSeriesMap_[name] = std::move(timeSeries);
          }
 
          LatLong latLong() const {return latLong_;}
@@ -109,8 +108,7 @@ namespace SmartGridToolbox
          void validate();
 
       private:
-         void addGenericComponent(Component * comp);
-         void replaceGenericComponent(Component * comp);
+         void addOrReplaceGenericComponent(std::unique_ptr<Component> && comp, bool allowReplace);
          void printDependencies(std::ostream & os);
 
       private:
@@ -118,9 +116,9 @@ namespace SmartGridToolbox
          bool isValid_;
 
          ComponentMap compMap_;
-         ComponentVec compVec_;
-         
          TimeSeriesMap timeSeriesMap_;
+
+         ComponentVec compVec_; // Secondary vector encoding order of evaluation/rank.
 
          LatLong latLong_;
          local_time::time_zone_ptr timezone_;

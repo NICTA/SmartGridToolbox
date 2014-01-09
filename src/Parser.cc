@@ -427,19 +427,19 @@ namespace SmartGridToolbox
 
          if (!isComplex && !isVector)
          {
-            DataTimeSeries<Time, double> * ts;
+            std::unique_ptr<DataTimeSeries<Time, double>> ts;
 
             if (interpType == "stepwise")
             {
-               ts = new StepwiseTimeSeries<Time, double>();
+               ts.reset(new StepwiseTimeSeries<Time, double>());
             }
             else if (interpType == "lerp")
             {
-               ts = new LerpTimeSeries<Time, double>();
+               ts.reset(new LerpTimeSeries<Time, double>());
             }
             else if (interpType == "spline")
             {
-               ts = new SplineTimeSeries<Time>();
+               ts.reset(new SplineTimeSeries<Time>());
             }
 
             std::string line;
@@ -456,7 +456,7 @@ namespace SmartGridToolbox
                ts->addPoint(t, val); 
             }
 
-            model.acquireTimeSeries(name, ts);
+            model.acquireTimeSeries(name, std::move(ts));
          }
          else
          {
