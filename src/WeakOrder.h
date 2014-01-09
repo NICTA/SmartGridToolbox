@@ -58,20 +58,18 @@ namespace SmartGridToolbox
       public:
          WoGraph(int n);
 
-         ~WoGraph();
-
          void link(int from, int to)
          {
-            nodes_[from]->to_.push_back(nodes_[to]);
+            nodes_[from]->to_.push_back(nodes_[to].get());
          }
 
          void weakOrder();
 
-         const std::vector<WoNode *> & nodes() const
+         const std::vector<std::unique_ptr<WoNode>> & nodes() const
          {
             return nodes_;
          }
-         std::vector<WoNode *> & nodes() 
+         std::vector<std::unique_ptr<WoNode>> & nodes() 
          {
             return nodes_;
          }
@@ -86,6 +84,6 @@ namespace SmartGridToolbox
 
       private:
          int n_;
-         std::vector<WoNode *> nodes_;
+         std::vector<std::unique_ptr<WoNode>> nodes_;
    };
 }

@@ -41,13 +41,8 @@ namespace SmartGridToolbox
 
       for (int i = 0; i < phases.size(); ++i)
       {
-         nodes_.push_back(new NodeNr(*this, i));
+         nodes_.push_back(std::unique_ptr<NodeNr>(new NodeNr(*this, i)));
       }
-   }
-
-   BusNr::~BusNr()
-   {
-      for (auto node : nodes_) delete node;
    }
 
    NodeNr::NodeNr(BusNr & bus, int phaseIdx) :
@@ -101,24 +96,18 @@ namespace SmartGridToolbox
       }
    }
 
-   PowerFlowNr::~PowerFlowNr()
-   {
-      for (auto pair : busses_) delete pair.second;
-      for (auto branch : branches_) delete branch;
-   }
-
    void PowerFlowNr::addBus(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
          const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S)
    {
       SGT_DEBUG(debug() << "PowerFlowNr : add bus " << id << std::endl);
-      busses_[id] = new BusNr(id, type, phases, V, Y, I, S);
+      busses_[id].reset(new BusNr(id, type, phases, V, Y, I, S));
    }
 
    void PowerFlowNr::addBranch(const std::string & idBus0, const std::string & idBus1, Phases phases0, Phases phases1,
                                const ublas::matrix<Complex> & Y)
    {
       SGT_DEBUG(debug() << "PowerFlowNr : addBranch " << idBus0 << " " << idBus1 << std::endl);
-      branches_.push_back(new BranchNr(idBus0, idBus1, phases0, phases1, Y));
+      branches_.push_back(std::unique_ptr<BranchNr>(new BranchNr(idBus0, idBus1, phases0, phases1, Y)));
    }
 
    void PowerFlowNr::reset()
@@ -157,9 +146,9 @@ namespace SmartGridToolbox
             error() << "Unsupported bus type " << busType2Str(bus.type_) << std::endl;
             abort();
          }
-         for (NodeNr * node : bus.nodes_)
+         for (const std::unique_ptr<NodeNr> & node : bus.nodes_)
          {
-            vec->push_back(node);
+            vec->push_back(node.get());
          }
       }
 
@@ -184,7 +173,7 @@ namespace SmartGridToolbox
       Y_.resize(nNode(), nNode(), false);
 
       // Branch admittances:
-      for (BranchNr * branch : branches_)
+      for (const std::unique_ptr<BranchNr> & branch : branches_)
       {
          auto it0 = busses_.find(branch->ids_[0]);
          if (it0 == busses_.end())
@@ -200,7 +189,7 @@ namespace SmartGridToolbox
                     << branch->ids_[1] << std::endl;
             abort();
          }
-         const BusNr * busses[] = {it0->second, it1->second};
+         const BusNr * busses[] = {it0->second.get(), it1->second.get()};
          int nTerm = 2 * branch->nPhase_;
 
          // There is one link per distinct pair of bus/phase pairs.
@@ -210,7 +199,7 @@ namespace SmartGridToolbox
             int branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
             const BusNr * busI = busses[busIdxI];
             int busPhaseIdxI = busI->phases_.phaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
-            const NodeNr * nodeI = busI->nodes_[busPhaseIdxI];
+            const NodeNr * nodeI = busI->nodes_[busPhaseIdxI].get();
             int idxNodeI = nodeI->idx_;
 
             // Only count each diagonal element in branch->Y_ once!
@@ -222,7 +211,7 @@ namespace SmartGridToolbox
                int branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
                const BusNr * busK = busses[busIdxK];
                int busPhaseIdxK = busK->phases_.phaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
-               const NodeNr * nodeK = busK->nodes_[busPhaseIdxK];
+               const NodeNr * nodeK = busK->nodes_[busPhaseIdxK].get();
                int idxNodeK = nodeK->idx_;
 
                Y_(idxNodeI, idxNodeK) += branch->Y_(i, k);
@@ -685,7 +674,7 @@ namespace SmartGridToolbox
          debug() << "\t\t\tIc    : " << nd->Ic_ << std::endl;
       }
       debug() << "\tBranches:" << std::endl;
-      for (const BranchNr * branch : branches_)
+      for (const std::unique_ptr<BranchNr> & branch : branches_)
       {
          debug() << "\t\tBranch:" << std::endl;
          debug() << "\t\t\tBusses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;

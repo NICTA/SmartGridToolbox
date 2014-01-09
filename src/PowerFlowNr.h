@@ -19,22 +19,21 @@ namespace SmartGridToolbox
 
    struct BusNr
    {
+      typedef std::vector<std::unique_ptr<NodeNr>> NodeVec; ///< Nodes, one per phase, owned by me.
+
       BusNr(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
             const ublas::vector<Complex> & ys, const ublas::vector<Complex> & Ic,
             const ublas::vector<Complex> & S);
-      ~BusNr();
 
-      std::string id_;                          ///< Externally relevant id.
-      BusType type_;                            ///< Bus type.
-      Phases phases_;                           ///< Bus phases.
-      ublas::vector<Complex> V_;                ///< Voltage, one per phase. Setpoint/warm start on input.
-      ublas::vector<Complex> S_;                ///< Total power injection, one per phase. Setpoint/warm start on input.
+      std::string id_;            ///< Externally relevant id.
+      BusType type_;              ///< Bus type.
+      Phases phases_;             ///< Bus phases.
+      ublas::vector<Complex> V_;  ///< Voltage, one per phase. Setpoint/warm start on input.
+      ublas::vector<Complex> S_;  ///< Total power injection, one per phase. Setpt/wm start on input.
 
-      ublas::vector<Complex> ys_;               ///< Constant admittance shunt, one per phase.
-      ublas::vector<Complex> Ic_;               ///< Constant current injection, one per phase.
-
-      typedef std::vector<NodeNr *> NodeVec;    ///< Nodes, one per phase.
-      NodeVec nodes_;                           ///< Primary list of nodes.
+      ublas::vector<Complex> ys_; ///< Constant admittance shunt, one per phase.
+      ublas::vector<Complex> Ic_; ///< Constant current injection, one per phase.
+      NodeVec nodes_;             ///< Nodes, one per phase.
    };
 
    struct BranchNr
@@ -42,12 +41,12 @@ namespace SmartGridToolbox
       BranchNr(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1,
             const ublas::matrix<Complex> & Y);
 
-      int nPhase_;                  ///< Number of phases.
-      Array<std::string, 2> ids_;   ///< Id of bus 0/1
-      Array<Phases, 2> phases_;     ///< phases of bus 0/1.
-      ublas::matrix<Complex> Y_;      ///< Bus admittance matrix.
-      ublas::matrix<Complex> G_;      ///< Bus admittance matrix.
-      ublas::matrix<Complex> B_;      ///< Bus admittance matrix.
+      int nPhase_;                ///< Number of phases.
+      Array<std::string, 2> ids_; ///< Id of bus 0/1
+      Array<Phases, 2> phases_;   ///< phases of bus 0/1.
+      ublas::matrix<Complex> Y_;  ///< Bus admittance matrix.
+      ublas::matrix<Complex> G_;  ///< Bus admittance matrix.
+      ublas::matrix<Complex> B_;  ///< Bus admittance matrix.
    };
 
    struct NodeNr
@@ -118,13 +117,11 @@ namespace SmartGridToolbox
    class PowerFlowNr
    {
       public:
-         typedef std::map<std::string, BusNr *> BusMap;  ///< Key is id.
-         typedef std::vector<BranchNr *> BranchVec;
+         typedef std::map<std::string, std::unique_ptr<BusNr>> BusMap;
+         typedef std::vector<std::unique_ptr<BranchNr>> BranchVec;
          typedef std::vector<NodeNr *> NodeVec;
 
       public:
-         ~PowerFlowNr();
-
          void addBus(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
                const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S);
 

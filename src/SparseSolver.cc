@@ -49,5 +49,10 @@ bool kluSolve(const boost::numeric::ublas::compressed_matrix<double> & a,
       result(i) = b1[i];
    }
 
+   delete[] ap;
+   delete[] ai;
+   delete[] ax;
+   delete[] b1;
+
    return ok;
 }
