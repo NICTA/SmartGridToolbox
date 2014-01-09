@@ -70,9 +70,6 @@ namespace SmartGridToolbox
          /// Complete the pending timestep.
          bool doTimestep();
 
-         /// Signal that an abnormal exit should occur.
-         void signalAbnormalExit();
-
          /// Get the timestep will start event.
          Event & timestepWillStart() {return timestepWillStart_;}
 
