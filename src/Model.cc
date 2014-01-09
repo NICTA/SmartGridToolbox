@@ -80,7 +80,7 @@ namespace SmartGridToolbox
       {
          if (allowReplace)
          {
-            it1->second.swap(comp);
+            it1->second.reset(comp);
             message() << "Component " << ref.name() << " replaced in model." << std::endl;
          }
          else
