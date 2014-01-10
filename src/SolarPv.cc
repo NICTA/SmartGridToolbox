@@ -5,7 +5,6 @@
 
 namespace SmartGridToolbox
 {
-
    SolarPv::SolarPv(const std::string & name) :
       DcPowerSourceBase(name),
       weather_(nullptr),

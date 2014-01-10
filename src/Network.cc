@@ -7,7 +7,6 @@
 
 namespace SmartGridToolbox
 {
-
    void Network::updateState(Time t0, Time t1)
    {
       SGT_DEBUG(debug() << "Network : update state." << std::endl);

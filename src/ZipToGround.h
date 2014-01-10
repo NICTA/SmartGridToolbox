@@ -5,7 +5,6 @@
 
 namespace SmartGridToolbox
 {
-
    class ZipToGround : public ZipToGroundBase
    {
       /// @name Overridden public member functions from ZipToGroundBase.

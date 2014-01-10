@@ -7,7 +7,6 @@
 
 namespace SmartGridToolbox
 {
-
    struct SolarIrradiance
    {
       Array<double, 3> direct;

@@ -5,7 +5,6 @@
 
 namespace SmartGridToolbox
 {
-
    // Declaration of some constants
    static const double twopi = 2 * pi;
    static const double rad = pi / 180;
