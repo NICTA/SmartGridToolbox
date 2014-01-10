@@ -1,7 +1,6 @@
 #ifndef SIMPLE_BUILDING_DOT_H
 #define SIMPLE_BUILDING_DOT_H
 
-#include <SmartGridToolbox/SimpleBuilding.h>
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Component.h>
 #include <SmartGridToolbox/Load.h>
@@ -10,19 +9,6 @@
 
 namespace SmartGridToolbox
 {
-   class SimpleBuildingParser : public ParserPlugin
-   {
-      public:
-         static constexpr const char * pluginKey()
-         {
-            return "simple_building";
-         }
-
-      public:
-         virtual void parse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
-         virtual void postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
-   };
-
    enum class HvacMode
    {
       COOLING,

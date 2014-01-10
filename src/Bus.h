@@ -4,7 +4,6 @@
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Component.h>
 #include <SmartGridToolbox/Event.h>
-#include <SmartGridToolbox/Parser.h>
 #include <SmartGridToolbox/PowerFlow.h>
 
 #include <iostream>
@@ -12,19 +11,6 @@
 namespace SmartGridToolbox
 {
    class ZipToGroundBase;
-
-   class BusParser : public ParserPlugin
-   {
-      public:
-         static constexpr const char * pluginKey()
-         {
-            return "bus";
-         }
-
-      public:
-         virtual void parse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
-         virtual void postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
-   };
 
    class Bus : public Component
    {

@@ -1,21 +1,22 @@
-#ifndef CDF_PARSER_DOT_H
-#define CDF_PARSER_DOT_H
+#ifndef SOLAR_PV_PARSER_DOT_H
+#define SOLAR_PV_PARSER_DOT_H
 
 #include <SmartGridToolbox/Parser.h>
 
 namespace SmartGridToolbox
 {
-   class CdfParser : public ParserPlugin
+   class SolarPvParser : public ParserPlugin
    {
       public:
          static constexpr const char * pluginKey()
          {
-            return "cdf";
+            return "solar_pv";
          }
 
       public:
          virtual void parse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
+         virtual void postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
    };
 }
 
-#endif // CDF_PARSER_DOT_H
+#endif // SOLAR_PV_PARSER_DOT_H

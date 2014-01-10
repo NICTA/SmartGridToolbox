@@ -4,23 +4,10 @@
 #include <SmartGridToolbox/Component.h>
 #include <SmartGridToolbox/Bus.h>
 #include <SmartGridToolbox/Branch.h>
-#include <SmartGridToolbox/Parser.h>
 
 namespace SmartGridToolbox
 {
    class Bus;
-
-   class NetworkParser : public ParserPlugin
-   {
-      public:
-         static constexpr const char * pluginKey() 
-         {
-            return "network";
-         }
-
-      public:
-         virtual void parse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
-   };
 
    class Network : public Component
    {

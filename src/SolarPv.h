@@ -3,25 +3,11 @@
 
 #include <SmartGridToolbox/Component.h>
 #include <SmartGridToolbox/DcPowerSourceBase.h>
-#include <SmartGridToolbox/Parser.h>
 #include <SmartGridToolbox/Sun.h>
 
 namespace SmartGridToolbox
 {
    class Weather;
-
-   class SolarPvParser : public ParserPlugin
-   {
-      public:
-         static constexpr const char * pluginKey()
-         {
-            return "solar_PV";
-         }
-
-      public:
-         virtual void parse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
-         virtual void postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
-   };
 
    class SolarPv : public DcPowerSourceBase
    {

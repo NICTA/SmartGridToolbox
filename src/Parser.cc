@@ -1,6 +1,7 @@
+#include <SmartGridToolbox/Parser.h>
+
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Model.h>
-#include <SmartGridToolbox/Parser.h>
 #include "RegisterParserPlugins.h"
 #include <SmartGridToolbox/Simulation.h>
 #include <string>

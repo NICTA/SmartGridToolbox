@@ -130,17 +130,21 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libSmartGridToolbox_a_AR = $(AR) $(ARFLAGS)
 libSmartGridToolbox_a_LIBADD =
-am_libSmartGridToolbox_a_OBJECTS = Bus.$(OBJEXT) Branch.$(OBJEXT) \
-	CdfParser.$(OBJEXT) Common.$(OBJEXT) Component.$(OBJEXT) \
-	Event.$(OBJEXT) InverterBase.$(OBJEXT) \
-	MatpowerParser.$(OBJEXT) Model.$(OBJEXT) Network.$(OBJEXT) \
+am_libSmartGridToolbox_a_OBJECTS = Bus.$(OBJEXT) BusParser.$(OBJEXT) \
+	Branch.$(OBJEXT) BranchParser.$(OBJEXT) CdfParser.$(OBJEXT) \
+	Common.$(OBJEXT) Component.$(OBJEXT) Event.$(OBJEXT) \
+	InverterBase.$(OBJEXT) MatpowerParser.$(OBJEXT) \
+	Model.$(OBJEXT) Network.$(OBJEXT) NetworkParser.$(OBJEXT) \
 	Parser.$(OBJEXT) PowerFlow.$(OBJEXT) PowerFlowNr.$(OBJEXT) \
 	Random.$(OBJEXT) RegisterParserPlugins.$(OBJEXT) \
-	SimpleBattery.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
-	SimpleDcPowerSource.$(OBJEXT) SimpleInverter.$(OBJEXT) \
-	Simulation.$(OBJEXT) SolarPv.$(OBJEXT) SparseSolver.$(OBJEXT) \
-	Sun.$(OBJEXT) WeakOrder.$(OBJEXT) Weather.$(OBJEXT) \
-	ZipToGround.$(OBJEXT)
+	SimpleBattery.$(OBJEXT) SimpleBatteryParser.$(OBJEXT) \
+	SimpleBuilding.$(OBJEXT) SimpleBuildingParser.$(OBJEXT) \
+	SimpleDcPowerSourceParser.$(OBJEXT) SimpleInverter.$(OBJEXT) \
+	SimpleInverterParser.$(OBJEXT) Simulation.$(OBJEXT) \
+	SolarPv.$(OBJEXT) SolarPvParser.$(OBJEXT) \
+	SparseSolver.$(OBJEXT) Sun.$(OBJEXT) WeakOrder.$(OBJEXT) \
+	Weather.$(OBJEXT) WeatherParser.$(OBJEXT) \
+	ZipToGround.$(OBJEXT) ZipToGroundParser.$(OBJEXT)
 libSmartGridToolbox_a_OBJECTS = $(am_libSmartGridToolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
 am_helloworld_OBJECTS = helloworld.$(OBJEXT)
@@ -357,7 +361,9 @@ pkginclude_HEADERS = Branch.h \
 							ZipToGroundBase.h
 
 libSmartGridToolbox_a_SOURCES = Bus.cc \
+										  BusParser.cc \
 										  Branch.cc \
+										  BranchParser.cc \
 										  CdfParser.cc \
 										  Common.cc \
 										  Component.cc \
@@ -366,22 +372,29 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  MatpowerParser.cc \
 										  Model.cc \
 										  Network.cc \
+										  NetworkParser.cc \
 										  Parser.cc \
 										  PowerFlow.cc \
 										  PowerFlowNr.cc \
 										  Random.cc \
 										  RegisterParserPlugins.cc \
 										  SimpleBattery.cc \
+										  SimpleBatteryParser.cc \
 										  SimpleBuilding.cc \
-										  SimpleDcPowerSource.cc \
+										  SimpleBuildingParser.cc \
+										  SimpleDcPowerSourceParser.cc \
 										  SimpleInverter.cc \
+										  SimpleInverterParser.cc \
 										  Simulation.cc \
 										  SolarPv.cc \
+										  SolarPvParser.cc \
 										  SparseSolver.cc \
 										  Sun.cc \
 										  WeakOrder.cc \
 										  Weather.cc \
-										  ZipToGround.cc
+										  WeatherParser.cc \
+										  ZipToGround.cc \
+										  ZipToGroundParser.cc
 
 run_config_SOURCES = run_config.cc
 run_config_LDADD = libSmartGridToolbox.a
@@ -522,7 +535,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Branch.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BranchParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Bus.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BusParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CdfParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Component.Po@am__quote@
@@ -531,22 +546,29 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MatpowerParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Model.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetworkParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlowNr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RegisterParserPlugins.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBattery.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBatteryParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBuilding.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleDcPowerSource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBuildingParser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleDcPowerSourceParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleInverter.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleInverterParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Simulation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SolarPv.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SolarPvParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SparseSolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sun.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Weather.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeatherParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGround.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGroundParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helloworld.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/run_config.Po@am__quote@
 

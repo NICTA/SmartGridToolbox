@@ -1,8 +1,9 @@
 #ifndef ZIP_TO_GROUND_BASE_DOT_H
 #define ZIP_TO_GROUND_BASE_DOT_H
 
+#include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Component.h>
-#include <SmartGridToolbox/Parser.h>
+#include <SmartGridToolbox/PowerFlow.h>
 
 namespace SmartGridToolbox
 {

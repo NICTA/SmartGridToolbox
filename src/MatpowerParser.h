@@ -1,7 +1,7 @@
 #ifndef MATPOWER_PARSER_DOT_H
 #define MATPOWER_PARSER_DOT_H
 
-#include "Parser.h"
+#include <SmartGridToolbox/Parser.h>
 
 namespace SmartGridToolbox
 {

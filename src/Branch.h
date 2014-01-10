@@ -3,7 +3,6 @@
 
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Component.h>
-#include <SmartGridToolbox/Parser.h>
 #include <SmartGridToolbox/PowerFlow.h>
 
 #include <iostream>
@@ -11,19 +10,6 @@
 namespace SmartGridToolbox
 {
    class Bus;
-
-   class BranchParser : public ParserPlugin
-   {
-      public:
-         static constexpr const char * pluginKey()
-         {
-            return "branch";
-         }
-
-      public:
-         virtual void parse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
-         virtual void postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const override;
-   };
 
    class Branch : public Component
    {

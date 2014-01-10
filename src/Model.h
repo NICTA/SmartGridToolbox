@@ -5,14 +5,13 @@
 #include <vector>
 #include <string>
 #include <SmartGridToolbox/Common.h>
+#include <SmartGridToolbox/Component.h>
 #include <SmartGridToolbox/TimeSeries.h>
 
 using std::string;
 
 namespace SmartGridToolbox
 {
-   class Component;
-
    /// Simulation environment, containing global simulation data.
    /// Units: All units are internally stored in SI.
    class Model

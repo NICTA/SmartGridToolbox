@@ -33,7 +33,9 @@ pkginclude_HEADERS = Branch.h \
 							ZipToGroundBase.h
 
 libSmartGridToolbox_a_SOURCES = Bus.cc \
+										  BusParser.cc \
 										  Branch.cc \
+										  BranchParser.cc \
 										  CdfParser.cc \
 										  Common.cc \
 										  Component.cc \
@@ -42,22 +44,29 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  MatpowerParser.cc \
 										  Model.cc \
 										  Network.cc \
+										  NetworkParser.cc \
 										  Parser.cc \
 										  PowerFlow.cc \
 										  PowerFlowNr.cc \
 										  Random.cc \
 										  RegisterParserPlugins.cc \
 										  SimpleBattery.cc \
+										  SimpleBatteryParser.cc \
 										  SimpleBuilding.cc \
-										  SimpleDcPowerSource.cc \
+										  SimpleBuildingParser.cc \
+										  SimpleDcPowerSourceParser.cc \
 										  SimpleInverter.cc \
+										  SimpleInverterParser.cc \
 										  Simulation.cc \
 										  SolarPv.cc \
+										  SolarPvParser.cc \
 										  SparseSolver.cc \
 										  Sun.cc \
 										  WeakOrder.cc \
 										  Weather.cc \
-										  ZipToGround.cc
+										  WeatherParser.cc \
+										  ZipToGround.cc \
+										  ZipToGroundParser.cc
 
 bin_PROGRAMS = run_config helloworld
 
