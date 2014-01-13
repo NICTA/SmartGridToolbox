@@ -1,5 +1,7 @@
 #include "OverheadLineParser.h"
 
+#include "OverheadLine.h"
+
 namespace SmartGridToolbox
 {
    void OverheadLineParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
@@ -16,6 +18,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "line_resistivity");
       assertFieldPresent(nd, "earth_resistivity");
       assertFieldPresent(nd, "distance_matrix");
+      assertFieldPresent(nd, "freq");
 
       string name = state.expandName(nd["name"].as<std::string>());
       Phases phases0 = nd["phases_0"].as<Phases>();
@@ -25,13 +28,9 @@ namespace SmartGridToolbox
       ublas::vector<double> lineResistivity = nd["line_resistivity"].as<ublas::vector<double>>();
       double earthResistivity = nd["earth_resistivity"].as<double>();
       ublas::matrix<double> distMatrix = nd["distance_matrix"].as<ublas::matrix<double>>();
+      double freq = nd["freq"].as<double>();
       
-      OverheadLine & comp = mod.newComponent<OverheadLine>(name, phases0, phases1, length, nNeutral, lineResistivity,
-                                                           earthResistivity, distMatrix, 50.0);
-   }
-
-   void OverheadLineParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
-   {
-
+      mod.newComponent<OverheadLine>(name, phases0, phases1, length, nNeutral, lineResistivity,
+                                     earthResistivity, distMatrix, freq);
    }
 }

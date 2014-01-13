@@ -135,11 +135,11 @@ am_libSmartGridToolbox_a_OBJECTS = Bus.$(OBJEXT) BusParser.$(OBJEXT) \
 	Common.$(OBJEXT) Component.$(OBJEXT) Event.$(OBJEXT) \
 	InverterBase.$(OBJEXT) MatpowerParser.$(OBJEXT) \
 	Model.$(OBJEXT) Network.$(OBJEXT) NetworkParser.$(OBJEXT) \
-	OverheadLine.$(OBJEXT) Parser.$(OBJEXT) PowerFlow.$(OBJEXT) \
-	PowerFlowNr.$(OBJEXT) Random.$(OBJEXT) \
-	RegisterParserPlugins.$(OBJEXT) SimpleBattery.$(OBJEXT) \
-	SimpleBatteryParser.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
-	SimpleBuildingParser.$(OBJEXT) \
+	OverheadLine.$(OBJEXT) OverheadLineParser.$(OBJEXT) \
+	Parser.$(OBJEXT) PowerFlow.$(OBJEXT) PowerFlowNr.$(OBJEXT) \
+	Random.$(OBJEXT) RegisterParserPlugins.$(OBJEXT) \
+	SimpleBattery.$(OBJEXT) SimpleBatteryParser.$(OBJEXT) \
+	SimpleBuilding.$(OBJEXT) SimpleBuildingParser.$(OBJEXT) \
 	SimpleDcPowerSourceParser.$(OBJEXT) SimpleInverter.$(OBJEXT) \
 	SimpleInverterParser.$(OBJEXT) Simulation.$(OBJEXT) \
 	SolarPv.$(OBJEXT) SolarPvParser.$(OBJEXT) \
@@ -376,6 +376,7 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  Network.cc \
 										  NetworkParser.cc \
 										  OverheadLine.cc \
+										  OverheadLineParser.cc \
 										  Parser.cc \
 										  PowerFlow.cc \
 										  PowerFlowNr.cc \
@@ -551,6 +552,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Network.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NetworkParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OverheadLine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OverheadLineParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PowerFlowNr.Po@am__quote@

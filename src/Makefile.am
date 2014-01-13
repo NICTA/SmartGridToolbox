@@ -47,6 +47,7 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  Network.cc \
 										  NetworkParser.cc \
 										  OverheadLine.cc \
+										  OverheadLineParser.cc \
 										  Parser.cc \
 										  PowerFlow.cc \
 										  PowerFlowNr.cc \
