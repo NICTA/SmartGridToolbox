@@ -91,8 +91,8 @@ namespace SmartGridToolbox
       }
       else
       {
-         compMap_[ref.name()] = std::move(comp);
          compVec_.push_back(comp.get());
+         compMap_[ref.name()] = std::move(comp);
          message() << "Component " << ref.name() << " added to model." << std::endl;
       }
    }
