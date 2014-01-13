@@ -12,6 +12,7 @@ pkginclude_HEADERS = Branch.h \
 							Load.h \
 							Model.h \
 							Network.h \
+							OverheadLine.h \
 							Parser.h \
 							PowerFlow.h \
 							Random.h \
@@ -45,6 +46,7 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  Model.cc \
 										  Network.cc \
 										  NetworkParser.cc \
+										  OverheadLine.cc \
 										  Parser.cc \
 										  PowerFlow.cc \
 										  PowerFlowNr.cc \
