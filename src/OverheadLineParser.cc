@@ -1,5 +1,6 @@
 #include "OverheadLineParser.h"
 
+#include "Network.h"
 #include "OverheadLine.h"
 
 namespace SmartGridToolbox
@@ -15,6 +16,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "phases_0");
       assertFieldPresent(nd, "phases_1");
       assertFieldPresent(nd, "length");
+      assertFieldPresent(nd, "n_neutral");
       assertFieldPresent(nd, "line_resistivity");
       assertFieldPresent(nd, "earth_resistivity");
       assertFieldPresent(nd, "distance_matrix");
@@ -32,5 +34,52 @@ namespace SmartGridToolbox
       
       mod.newComponent<OverheadLine>(name, phases0, phases1, length, nNeutral, lineResistivity,
                                      earthResistivity, distMatrix, freq);
+   }
+
+   void OverheadLineParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   {
+      SGT_DEBUG(debug() << "OverheadLine : postParse." << std::endl);
+
+      string name = state.expandName(nd["name"].as<std::string>());
+      OverheadLine * comp = mod.component<OverheadLine>(name);
+
+      const std::string networkStr = state.expandName(nd["network"].as<std::string>());
+      Network * networkComp = mod.component<Network>(networkStr);
+      if (networkComp != nullptr)
+      {
+         networkComp->addBranch(*comp);
+      }
+      else
+      {
+         error() << "For component " << name <<  ", network " << networkStr 
+                 <<  " was not found in the model." << std::endl;
+         abort();
+      }
+
+      const std::string bus0Str = state.expandName(nd["bus_0"].as<std::string>());
+      Bus * bus0Comp = mod.component<Bus>(bus0Str);
+      if (networkComp != nullptr)
+      {
+         comp->setBus0(*bus0Comp);
+      }
+      else
+      {
+         error() << "For component " << name <<  ", bus " << bus0Str 
+                 <<  " was not found in the model." << std::endl;
+         abort();
+      }
+
+      const std::string bus1Str = state.expandName(nd["bus_1"].as<std::string>());
+      Bus * bus1Comp = mod.component<Bus>(bus1Str);
+      if (networkComp != nullptr)
+      {
+         comp->setBus1(*bus1Comp);
+      }
+      else
+      {
+         error() << "For component " << name <<  ", bus " << bus1Str 
+                 <<  " was not found in the model." << std::endl;
+         abort();
+      }
    }
 }

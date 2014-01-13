@@ -5,6 +5,7 @@
 #include "CdfParser.h"
 #include "MatpowerParser.h"
 #include "NetworkParser.h"
+#include "OverheadLineParser.h"
 #include "SimpleBatteryParser.h"
 #include "SimpleBuildingParser.h"
 #include "SimpleDcPowerSourceParser.h"
@@ -22,6 +23,7 @@ namespace SmartGridToolbox
       p.registerParserPlugin<CdfParser>();
       p.registerParserPlugin<MatpowerParser>();
       p.registerParserPlugin<NetworkParser>();
+      p.registerParserPlugin<OverheadLineParser>();
       p.registerParserPlugin<SimpleBatteryParser>();
       p.registerParserPlugin<SimpleBuildingParser>();
       p.registerParserPlugin<SimpleDcPowerSourceParser>();
