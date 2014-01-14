@@ -48,6 +48,13 @@ namespace SmartGridToolbox
          }
       }
       zWire *= L_; // z has been checked against example in Kersting and found to be OK.
+      SGT_DEBUG(
+            message() << "Before Kron:" << std::endl;
+            for (int i = 0; i < zWire.size1(); ++i)
+            {
+               message() << "z(" << i << ", :) = " << row(zWire, i) << std::endl;
+               message() << std::endl;
+            });
 
       ublas::matrix<Complex> zPhase = project(zWire, ublas::range(0, nPhase), ublas::range(0, nPhase));
 
@@ -66,6 +73,7 @@ namespace SmartGridToolbox
       }
 
       SGT_DEBUG(
+            message() << "After Kron:" << std::endl;
             for (int i = 0; i < zPhase.size1(); ++i)
             {
                message() << "z(" << i << ", :) = " << row(zPhase, i) << std::endl;
