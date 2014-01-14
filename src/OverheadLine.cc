@@ -13,9 +13,9 @@ namespace SmartGridToolbox
         Dij_(distMat),
         f_(freq)
    {
-      if (nNeutral != 0)
+      if (nNeutral > 1)
       {
-         error() << "OverheadLine : internal neutrals not yet implemented." << std::endl;
+         error() << "OverheadLine : currently there must be either zero or one neutral wires." << std::endl;
          abort();
       }
       int n = phases0.size() + nNeutral;
@@ -30,37 +30,50 @@ namespace SmartGridToolbox
 
    void OverheadLine::recalcY()
    {
-      int n = phases0().size() + nNeutral_;
+      int nPhase = phases0().size();
+      int nWire = nPhase + nNeutral_;
 
 		double freqCoeffReal = 9.869611e-7 * f_;
 		double freqCoeffImag = 1.256642e-6 * f_;
 		double freqAdditiveTerm = 0.5 * log(rhoEarth_ / f_) + 6.490501;
 
-      ublas::matrix<Complex> z(n, n, czero);
-      for (int i = 0; i < n; ++i)
+      ublas::matrix<Complex> zWire(nWire, nWire, czero);
+      for (int i = 0; i < nWire; ++i)
       {
-         z(i, i) = {rhoLine_(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij_(i, i)) + freqAdditiveTerm)};
-         for (int k = i + 1; k < n; ++k)
+         zWire(i, i) = {rhoLine_(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij_(i, i)) + freqAdditiveTerm)};
+         for (int k = i + 1; k < nWire; ++k)
          {
-				z(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / Dij_(i, k)) + freqAdditiveTerm)};
-				z(k, i) = z(i, k);
+				zWire(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / Dij_(i, k)) + freqAdditiveTerm)};
+				zWire(k, i) = zWire(i, k);
          }
       }
-      z *= L_; // z has been checked against example in Kersting and found to be OK.
-      SGT_DEBUG(
-            for (int i = 0; i < z.size1(); ++i)
+      zWire *= L_; // z has been checked against example in Kersting and found to be OK.
+
+      ublas::matrix<Complex> zPhase = project(zWire, ublas::range(0, nPhase), ublas::range(0, nPhase));
+
+      // Apply Kron reduction to eliminate neutral.
+      if (nNeutral_ == 1)
+      {
+         int iNeutral = nPhase;
+         Complex znnInv = 1.0 / zWire(iNeutral, iNeutral); // Assuming only one neutral!
+         for (int i = 0; i < nPhase; ++i)
+         {
+            for (int j = 0; j < nPhase; ++j)
             {
-               message() << "z(" << i << ", :) = " << row(z, i) << std::endl;
+               zPhase(i, j) -= zWire(i, iNeutral) * zWire(iNeutral, j) * znnInv;
+            }
+         }
+      }
+
+      SGT_DEBUG(
+            for (int i = 0; i < zPhase.size1(); ++i)
+            {
+               message() << "z(" << i << ", :) = " << row(zPhase, i) << std::endl;
                message() << std::endl;
             });
 
-      // TODO: eliminate the neutral phase, as per calculation of b_mat in gridLAB-D overhead_line.cpp.
-      // Very easy, but interface needs consideration. Equation is:
-		// b_mat[0][0] = (z_aa - z_an * z_an * z_nn_inv) * miles;
-      // b_mat[0][1] = (z_ab - z_an * z_bn * z_nn_inv) * miles;
-      // etc.
-      
-      ublas::matrix<Complex> y(n, n); bool ok = invertMatrix(z, y); assert(ok);
+      ublas::matrix<Complex> y(nPhase, nPhase);
+      bool ok = invertMatrix(zPhase, y); assert(ok);
       SGT_DEBUG(
             for (int i = 0; i < y.size1(); ++i)
             {
@@ -68,29 +81,29 @@ namespace SmartGridToolbox
                message() << std::endl;
             });
       
-      ublas::matrix<Complex> YNew(2 * n, 2 * n, czero);
-      for (int i = 0; i < n; ++i)
+      ublas::matrix<Complex> YNode(2 * nPhase, 2 * nPhase, czero);
+      for (int i = 0; i < nPhase; ++i)
       {
-         YNew(i, i) += y(i, i);
-         YNew(i + n, i + n) += y(i, i); 
+         YNode(i, i) += y(i, i);
+         YNode(i + nPhase, i + nPhase) += y(i, i); 
 
-         YNew(i, i + n) = -y(i, i); 
-         YNew(i + n, i) = -y(i, i); 
+         YNode(i, i + nPhase) = -y(i, i); 
+         YNode(i + nPhase, i) = -y(i, i); 
 
-         for (int k = i + 1; k < n; ++k)
+         for (int k = i + 1; k < nPhase; ++k)
          {
             // Diagonal terms in node admittance matrix.
-            YNew(i, i)         += y(i, k);
-            YNew(k, k)         += y(k, i);
-            YNew(i + n, i + n) += y(i, k);
-            YNew(k + n, k + n) += y(k, i);
+            YNode(i, i)         += y(i, k);
+            YNode(k, k)         += y(k, i);
+            YNode(i + nPhase, i + nPhase) += y(i, k);
+            YNode(k + nPhase, k + nPhase) += y(k, i);
 
-            YNew(i, k + n)      = -y(i, k);
-            YNew(i + n, k)      = -y(i, k);
-            YNew(k, i + n)      = -y(k, i);
-            YNew(k + n, i)      = -y(k, i);
+            YNode(i, k + nPhase)      = -y(i, k);
+            YNode(i + nPhase, k)      = -y(i, k);
+            YNode(k, i + nPhase)      = -y(k, i);
+            YNode(k + nPhase, i)      = -y(k, i);
          }
       }
-      setY(YNew);
+      setY(YNode);
    }
 }
