@@ -107,4 +107,43 @@ Thus, $\re{\Delta V}$ may be eliminated from the NR equations.  First write the 
 \frac{\partial \re{I}_k}{\partial Q_{\text{bus}k}} &= \frac{\im{V}_k}{M_k^2} \\
 \frac{\partial \im{I}_k}{\partial Q_{\text{bus}k}} &= -\frac{\re{V}_k}{M_k^2}
 \end{align}
+\section{Multi phase lines}
+Lines are typically handled in terms of $a$, $b$, $c$ and $d$ matrices. Assume for discussion that there are three phases, so these are $3 \times 3$ matrices, and $V$ and $I$ are assumed to be 3-vectors.
+\begin{align}
+	\begin{bmatrix} V_0 \\ I_0 \end{bmatrix} &=
+	\begin{bmatrix} a & -b \\ c & -d \end{bmatrix} \begin{bmatrix} V_1 \\ I_1 \end{bmatrix}
+\end{align}
+Be careful of signs! Conventionally, the equations are written in terms of currents entering and leaving the line. But we'll move to a nodal admittance model, and hence all currents are treated as injections. This is why we have a negative sign on $b$ and $d$.
+
+These equations can be transformed to the following:
+\begin{align}
+	\begin{bmatrix} I_0 \\ I_1 \end{bmatrix} &=
+	\begin{bmatrix} db^{-1} & c - db^{-1}a \\ -b^{-1} & b^{-1}a \end{bmatrix} \begin{bmatrix} V_0 \\ V_1 \end{bmatrix} = Y\begin{bmatrix} V_0 \\ V_1 \end{bmatrix} 
+\end{align}
+which defines the nodal admittance matrix $Y$.
+
+What is the interpretation of $a$, $b$, $c$, $d$? From Kersting \cite{KerstingXXXXa}, using a pi-model of a transmission line, $Z$ being the matrix of self and cross impedances of the line, $U$ being the identity matrix and $Y_s/2$ being the shunt admittance matrix for each of the two legs of the pi, we have
+\begin{align}
+a = d &= U + \frac{1}{2}ZY_s \\
+b &= Z \\
+c &= Y_s + \frac{1}{4}Y_s Z Y_s
+\end{align}
+and thus
+\begin{align}
+Y &= \begin{bmatrix} Z^{-1} + \frac{1}{2}ZY_sZ^{-1} & \frac{1}{2}Y_s + \frac{1}{2}Y_sZY_s - Z^{-1}-\frac{1}{2}ZY_sZ^{-1}-\frac{1}{4}ZY^2 \\
+-Z^{-1} & Z^{-1}+\frac{1}{2}Y \end{bmatrix} 
+\end{align}
+\subsection{Short three wire lines}
+For three phase delta lines of up to around 80 km in length, the shunt admittance $Y_s$ is small enough to neglect, and thus the nodal admittance matrix is:
+\begin{align}
+	Y &=
+	\begin{bmatrix} Z^{-1} & -Z^{-1} \\ -Z^{-1} & Z^{-1} \end{bmatrix}
+\end{align}
+which is very reminiscent of the expression used in the single wire definition of nodal admittance.
+\section{Multi-phase ideal transformers}
+For an ideal transformer with a single turns ratio $r = n_0/n_1$, we have
+\begin{align}
+\begin{bmatrix}V_0 \\ I_0\end{bmatrix} &= \begin{bmatrix}n & 0 \\ 0 & -\frac{1}{n}\end{bmatrix}\begin{bmatrix}V_1 \\ I_1 \end{bmatrix}
+\end{align}
+This can't be modelled correctly in the formalism of nodal admittance.
 \end{document}
