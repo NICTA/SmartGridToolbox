@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   SinglePhaseTransformer::SinglePhaseTransformer(const std::string & name, Phase phase0, Phase phase1, &
+   SinglePhaseTransformer::SinglePhaseTransformer(const std::string & name, Phase phase0, Phase phase1,
                                                   Complex alpha, Complex ZLeak)
       : Branch(name, phase0, phase1),
         alpha_(alpha),
@@ -14,12 +14,12 @@ namespace SmartGridToolbox
 
    void SinglePhaseTransformer::recalcY()
    {
-      double a2 = real(a * conj(a));
+      Complex YLeak = 1.0 / ZLeak_;
       ublas::matrix<Complex> YNode(2, 2, czero);
-      YNode(0, 0) = YLeak_ / a2;  
-      YNode(0, 1) = -YLeak_ / conj(a);  
-      YNode(1, 0) = -YLeak_ / a;  
-      YNode(1, 1) = YLeak_;
+      YNode(0, 0) = YLeak / (alpha_ * conj(alpha_));
+      YNode(0, 1) = -YLeak / conj(alpha_);  
+      YNode(1, 0) = -YLeak / alpha_;  
+      YNode(1, 1) = YLeak;
       setY(YNode);
    }
 };

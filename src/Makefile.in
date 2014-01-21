@@ -142,9 +142,10 @@ am_libSmartGridToolbox_a_OBJECTS = Bus.$(OBJEXT) BusParser.$(OBJEXT) \
 	SimpleBuilding.$(OBJEXT) SimpleBuildingParser.$(OBJEXT) \
 	SimpleDcPowerSourceParser.$(OBJEXT) SimpleInverter.$(OBJEXT) \
 	SimpleInverterParser.$(OBJEXT) Simulation.$(OBJEXT) \
-	SolarPv.$(OBJEXT) SolarPvParser.$(OBJEXT) \
-	SparseSolver.$(OBJEXT) Sun.$(OBJEXT) WeakOrder.$(OBJEXT) \
-	Weather.$(OBJEXT) WeatherParser.$(OBJEXT) \
+	SinglePhaseTransformer.$(OBJEXT) \
+	SinglePhaseTransformerParser.$(OBJEXT) SolarPv.$(OBJEXT) \
+	SolarPvParser.$(OBJEXT) SparseSolver.$(OBJEXT) Sun.$(OBJEXT) \
+	WeakOrder.$(OBJEXT) Weather.$(OBJEXT) WeatherParser.$(OBJEXT) \
 	ZipToGround.$(OBJEXT) ZipToGroundParser.$(OBJEXT)
 libSmartGridToolbox_a_OBJECTS = $(am_libSmartGridToolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
@@ -351,6 +352,7 @@ pkginclude_HEADERS = Branch.h \
 							SimpleDcPowerSource.h \
 							SimpleInverter.h \
 							Simulation.h \
+							SinglePhaseTransformer.h \
 							SolarPv.h \
 							SparseSolver.h \
 							Spline.h \
@@ -390,6 +392,8 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  SimpleInverter.cc \
 										  SimpleInverterParser.cc \
 										  Simulation.cc \
+										  SinglePhaseTransformer.cc \
+										  SinglePhaseTransformerParser.cc \
 										  SolarPv.cc \
 										  SolarPvParser.cc \
 										  SparseSolver.cc \
@@ -566,6 +570,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleInverter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleInverterParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Simulation.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SinglePhaseTransformer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SinglePhaseTransformerParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SolarPv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SolarPvParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SparseSolver.Po@am__quote@

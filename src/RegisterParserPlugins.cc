@@ -10,6 +10,7 @@
 #include "SimpleBuildingParser.h"
 #include "SimpleDcPowerSourceParser.h"
 #include "SimpleInverterParser.h"
+#include "SinglePhaseTransformerParser.h"
 #include "SolarPvParser.h"
 #include "WeatherParser.h"
 #include "ZipToGroundParser.h"
@@ -28,6 +29,7 @@ namespace SmartGridToolbox
       p.registerParserPlugin<SimpleBuildingParser>();
       p.registerParserPlugin<SimpleDcPowerSourceParser>();
       p.registerParserPlugin<SimpleInverterParser>();
+      p.registerParserPlugin<SinglePhaseTransformerParser>();
       p.registerParserPlugin<SolarPvParser>();
       p.registerParserPlugin<WeatherParser>();
       p.registerParserPlugin<ZipToGroundParser>();

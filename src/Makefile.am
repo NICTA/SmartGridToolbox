@@ -22,6 +22,7 @@ pkginclude_HEADERS = Branch.h \
 							SimpleDcPowerSource.h \
 							SimpleInverter.h \
 							Simulation.h \
+							SinglePhaseTransformer.h \
 							SolarPv.h \
 							SparseSolver.h \
 							Spline.h \
@@ -61,6 +62,8 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  SimpleInverter.cc \
 										  SimpleInverterParser.cc \
 										  Simulation.cc \
+										  SinglePhaseTransformer.cc \
+										  SinglePhaseTransformerParser.cc \
 										  SolarPv.cc \
 										  SolarPvParser.cc \
 										  SparseSolver.cc \

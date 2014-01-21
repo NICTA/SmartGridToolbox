@@ -14,8 +14,8 @@ namespace SmartGridToolbox
          void recalcY();
 
       private:
-         Complex alpha01; ///< Complex turns ratio, n0/n1.
-         Complex ZLeak;   ///< Leakage impedance.
+         Complex alpha_; ///< Complex turns ratio, n0/n1.
+         Complex ZLeak_; ///< Leakage impedance.
    };
 }
 

@@ -1,47 +1,38 @@
-#include "OverheadLineParser.h"
+#include "SinglePhaseTransformerParser.h"
 
 #include "Network.h"
-#include "OverheadLine.h"
+#include "SinglePhaseTransformer.h"
 
 namespace SmartGridToolbox
 {
-   void OverheadLineParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SinglePhaseTransformerParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
-      SGT_DEBUG(debug() << "OverheadLine : parse." << std::endl);
+      SGT_DEBUG(debug() << "SinglePhaseTransformer : parse." << std::endl);
 
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "bus_0");
       assertFieldPresent(nd, "bus_1");
-      assertFieldPresent(nd, "phases_0");
-      assertFieldPresent(nd, "phases_1");
-      assertFieldPresent(nd, "length");
-      assertFieldPresent(nd, "n_neutral");
-      assertFieldPresent(nd, "line_resistivity");
-      assertFieldPresent(nd, "earth_resistivity");
-      assertFieldPresent(nd, "distance_matrix");
-      assertFieldPresent(nd, "freq");
+      assertFieldPresent(nd, "phase_0");
+      assertFieldPresent(nd, "phase_1");
+      assertFieldPresent(nd, "complex_turns_ratio_01");
+      assertFieldPresent(nd, "leakage_impedance");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      Phases phases0 = nd["phases_0"].as<Phases>();
-      Phases phases1 = nd["phases_1"].as<Phases>();
-      double length = nd["length"].as<double>();
-      int nNeutral = nd["n_neutral"].as<int>();
-      ublas::vector<double> lineResistivity = nd["line_resistivity"].as<ublas::vector<double>>();
-      double earthResistivity = nd["earth_resistivity"].as<double>();
-      ublas::matrix<double> distMatrix = nd["distance_matrix"].as<ublas::matrix<double>>();
-      double freq = nd["freq"].as<double>();
+      Phase phase0 = nd["phase_0"].as<Phase>();
+      Phase phase1 = nd["phase_1"].as<Phase>();
+      Complex alpha = nd["complex_turns_ratio_01"].as<Complex>();
+      Complex ZLeak = nd["leakage_impedance"].as<Complex>();
       
-      mod.newComponent<OverheadLine>(name, phases0, phases1, length, nNeutral, lineResistivity,
-                                     earthResistivity, distMatrix, freq);
+      mod.newComponent<SinglePhaseTransformer>(name, phase0, phase1, alpha, ZLeak);
    }
 
-   void OverheadLineParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SinglePhaseTransformerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
-      SGT_DEBUG(debug() << "OverheadLine : postParse." << std::endl);
+      SGT_DEBUG(debug() << "SinglePhaseTransformer : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      OverheadLine * comp = mod.component<OverheadLine>(name);
+      SinglePhaseTransformer * comp = mod.component<SinglePhaseTransformer>(name);
 
       const std::string networkStr = state.expandName(nd["network"].as<std::string>());
       Network * networkComp = mod.component<Network>(networkStr);
