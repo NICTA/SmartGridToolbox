@@ -22,9 +22,10 @@ namespace SmartGridToolbox
       Phases phases0 = nd["phase_0"].as<Phases>();
       Phases phases1 = nd["phase_1"].as<Phases>();
       ublas::vector<Complex> alpha = nd["complex_turns_ratio_01"].as<ublas::vector<Complex>>();
-      ublas::vector<Complex> ZLeak = nd["leakage_impedance"].as<ublas::vector<Complex>>();
+      ublas::vector<Complex> ZL = nd["leakage_impedance"].as<ublas::vector<Complex>>();
+      ublas::vector<Complex> ZM = nd["magnetising_impedance"].as<ublas::vector<Complex>>();
       
-      mod.newComponent<YYTransformer>(name, phases0, phases1, alpha, ZLeak);
+      mod.newComponent<YYTransformer>(name, phases0, phases1, alpha, ZL, ZM);
    }
 
    void YYTransformerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
