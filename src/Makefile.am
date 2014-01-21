@@ -31,6 +31,7 @@ pkginclude_HEADERS = Branch.h \
 							TimeSeries.h \
 							Units.h \
 							Weather.h \
+							YYTransformer.h \
 							ZipToGround.h \
 							ZipToGroundBase.h
 
@@ -71,6 +72,8 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  WeakOrder.cc \
 										  Weather.cc \
 										  WeatherParser.cc \
+										  YYTransformer.cc \
+										  YYTransformerParser.cc \
 										  ZipToGround.cc \
 										  ZipToGroundParser.cc
 

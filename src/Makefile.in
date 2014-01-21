@@ -146,6 +146,7 @@ am_libSmartGridToolbox_a_OBJECTS = Bus.$(OBJEXT) BusParser.$(OBJEXT) \
 	SinglePhaseTransformerParser.$(OBJEXT) SolarPv.$(OBJEXT) \
 	SolarPvParser.$(OBJEXT) SparseSolver.$(OBJEXT) Sun.$(OBJEXT) \
 	WeakOrder.$(OBJEXT) Weather.$(OBJEXT) WeatherParser.$(OBJEXT) \
+	YYTransformer.$(OBJEXT) YYTransformerParser.$(OBJEXT) \
 	ZipToGround.$(OBJEXT) ZipToGroundParser.$(OBJEXT)
 libSmartGridToolbox_a_OBJECTS = $(am_libSmartGridToolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
@@ -361,6 +362,7 @@ pkginclude_HEADERS = Branch.h \
 							TimeSeries.h \
 							Units.h \
 							Weather.h \
+							YYTransformer.h \
 							ZipToGround.h \
 							ZipToGroundBase.h
 
@@ -401,6 +403,8 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  WeakOrder.cc \
 										  Weather.cc \
 										  WeatherParser.cc \
+										  YYTransformer.cc \
+										  YYTransformerParser.cc \
 										  ZipToGround.cc \
 										  ZipToGroundParser.cc
 
@@ -579,6 +583,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Weather.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeatherParser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/YYTransformer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/YYTransformerParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGround.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGroundParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helloworld.Po@am__quote@

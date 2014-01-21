@@ -7,7 +7,6 @@ namespace SmartGridToolbox
       : Branch(name, phase0, phase1),
         alpha_(alpha),
         ZLeak_(ZLeak)
-
    {
       recalcY();      
    }
