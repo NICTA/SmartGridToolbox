@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       const YAML::Node & ndY = nd["Y"];
       const YAML::Node & ndYMatrix = ndY["matrix"];
       const YAML::Node & ndYSimpleLine = ndY["simple_line"];
-      ublas::matrix<Complex> Y(2 * phases0.size(), 2 * phases1.size(), czero);
+      ublas::matrix<Complex> Y(2*phases0.size(), 2*phases1.size(), czero);
       if (ndYMatrix)
       {
          Y = ndYMatrix.as<ublas::matrix<Complex>>();
@@ -45,10 +45,10 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "Branch : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      Branch * comp = mod.component<Branch>(name);
+      Branch* comp = mod.component<Branch>(name);
 
       const std::string networkStr = state.expandName(nd["network"].as<std::string>());
-      Network * networkComp = mod.component<Network>(networkStr);
+      Network* networkComp = mod.component<Network>(networkStr);
       if (networkComp != nullptr)
       {
          networkComp->addBranch(*comp);
@@ -74,7 +74,7 @@ namespace SmartGridToolbox
       }
 
       const std::string bus0Str = state.expandName(nd["bus_0"].as<std::string>());
-      Bus * bus0Comp = mod.component<Bus>(bus0Str);
+      Bus* bus0Comp = mod.component<Bus>(bus0Str);
       if (networkComp != nullptr)
       {
          comp->setBus0(*bus0Comp);
@@ -87,7 +87,7 @@ namespace SmartGridToolbox
       }
 
       const std::string bus1Str = state.expandName(nd["bus_1"].as<std::string>());
-      Bus * bus1Comp = mod.component<Bus>(bus1Str);
+      Bus* bus1Comp = mod.component<Bus>(bus1Str);
       if (networkComp != nullptr)
       {
          comp->setBus1(*bus1Comp);

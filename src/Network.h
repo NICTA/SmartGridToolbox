@@ -12,11 +12,11 @@ namespace SmartGridToolbox
    class Network : public Component
    {
       public:
-         typedef std::vector<Bus *> BusVec;
-         typedef std::vector<Branch *> BranchVec;
+         typedef std::vector<Bus*> BusVec;
+         typedef std::vector<Branch*> BranchVec;
 
       private:
-         typedef std::map<std::string, Bus *> BusMap;
+         typedef std::map<std::string, Bus*> BusMap;
 
       /// @name Private overridden functions: from Component.
       /// @{
@@ -35,14 +35,14 @@ namespace SmartGridToolbox
 
          const BusVec & busVec() const {return busVec_;}
 
-         const Bus * findBus(const std::string & name) const
+         const Bus* findBus(const std::string & name) const
          {
             BusMap::const_iterator it = busMap_.find(name);
             return (it == busMap_.end()) ? 0 : it->second;
          }
-         Bus * findBus(const std::string & name)
+         Bus* findBus(const std::string & name)
          {
-            return const_cast<Bus *>((const_cast<const Network *>(this))->findBus(name));
+            return const_cast<Bus*>((const_cast<const Network*>(this))->findBus(name));
          }
 
          void addBranch(Branch & branch);

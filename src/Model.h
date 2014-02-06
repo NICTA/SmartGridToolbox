@@ -19,8 +19,8 @@ namespace SmartGridToolbox
       private:
          typedef std::map<std::string, std::unique_ptr<Component>> ComponentMap;
          typedef std::map<std::string, std::unique_ptr<TimeSeriesBase>> TimeSeriesMap;
-         typedef std::vector<Component *> ComponentVec;
-         typedef std::vector<const Component *> ConstComponentVec;
+         typedef std::vector<Component*> ComponentVec;
+         typedef std::vector<const Component*> ConstComponentVec;
 
       public:
          /// Default constructor.
@@ -62,27 +62,27 @@ namespace SmartGridToolbox
             return *comp;
          }
 
-         template<typename T> const T * component(const std::string & name) const
+         template<typename T> const T* component(const std::string & name) const
          {
             ComponentMap::const_iterator it = compMap_.find(name);
-            return (it == compMap_.end()) ? 0 : dynamic_cast<const T *>(it->second.get());
+            return (it == compMap_.end()) ? 0 : dynamic_cast<const T*>(it->second.get());
          }
-         template<typename T> T * component(const std::string & name)
+         template<typename T> T* component(const std::string & name)
          {
-            return const_cast<T *>((const_cast<const Model *>(this))-> component<T>(name));
+            return const_cast<T*>((const_cast<const Model*>(this))-> component<T>(name));
          }
 
          ConstComponentVec components() const;
          ComponentVec components() {return compVec_;}
 
-         template<typename T> const T * timeSeries(const std::string & name) const
+         template<typename T> const T* timeSeries(const std::string & name) const
          {
             TimeSeriesMap::const_iterator it = timeSeriesMap_.find(name);
-            return (it == timeSeriesMap_.end()) ? 0 : dynamic_cast<const T *>(it->second.get());
+            return (it == timeSeriesMap_.end()) ? 0 : dynamic_cast<const T*>(it->second.get());
          }
-         template<typename T> T * timeSeries(const std::string & name)
+         template<typename T> T* timeSeries(const std::string & name)
          {
-            return const_cast<T *>((const_cast<const Model *>(this))-> timeSeries<T>(name));
+            return const_cast<T*>((const_cast<const Model*>(this))-> timeSeries<T>(name));
          }
 
          void acquireTimeSeries (const std::string & name, std::unique_ptr<TimeSeriesBase> timeSeries)

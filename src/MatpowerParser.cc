@@ -111,13 +111,13 @@ namespace SmartGridToolbox
       // Matpower input units:
       // Power is in MW.
       // Voltage is in p.u., with the base being specified in KV by the KVBase field.
-      // Branch admittance is in p.u., that is, MVABase / (KVBase)^2.
-      // Shunt admittance is in MW / (KVBase)^2.
+      // Branch admittance is in p.u., that is, MVABase/(KVBase)^2.
+      // Shunt admittance is in MW/(KVBase)^2.
       
-      // Power in SI = input * 1e6.
-      // Voltage in SI = input * 1000 * KVBase.
-      // Branch admittance in SI = input * 1e6 * MVABase / KVBase^2.
-      // Shunt admittance in SI = input * 1e6 / KVBase^2.
+      // Power in SI = input*1e6.
+      // Voltage in SI = input*1000*KVBase.
+      // Branch admittance in SI = input*1e6*MVABase/KVBase^2.
+      // Shunt admittance in SI = input*1e6/KVBase^2.
       
       // Matpower input to internal units (p.u.):
       // Power is p.u. : input value divided by MVABase.
@@ -126,9 +126,9 @@ namespace SmartGridToolbox
       // Shunt admittance is p.u. : input value divided by MVABase.
       
       // SI to matpower internal:
-      // P_mp_intl = P_SI / (1e6 * MVABase)
-      // V_mp_intl = V_SI / (1000 * KVBase)
-      // y_mp_intl = y_SI * MVABase / KVBase^2 
+      // P_mp_intl = P_SI/(1e6*MVABase)
+      // V_mp_intl = V_SI/(1000*KVBase)
+      // y_mp_intl = y_SI*MVABase/KVBase^2 
 
       // TODO: Investigate what effect the generator base power field has on matpower by looking at the code.
 
@@ -185,15 +185,15 @@ namespace SmartGridToolbox
             bool ok = Qi::phrase_parse(fwdBegin, fwdEnd, gram, Ascii::blank);
          }
       }
-      double SBase = 1e6 * MVABase;
+      double SBase = 1e6*MVABase;
 
       const int busCols = 13;
       const int genCols = 21;
       const int branchCols = 13;
 
-      int nBus = busMatrix.size() / busCols;
-      int nGen = genMatrix.size() / genCols;
-      int nBranch = branchMatrix.size() / branchCols;
+      int nBus = busMatrix.size()/busCols;
+      int nGen = genMatrix.size()/genCols;
+      int nBranch = branchMatrix.size()/branchCols;
 
       SGT_DEBUG(debug() << "Matpower: Bus matrix size = " << busCols << std::endl);
       SGT_DEBUG(debug() << "Matpower: Gen matrix size = " << genCols << std::endl);
@@ -204,39 +204,39 @@ namespace SmartGridToolbox
       {
          for (int i = 0; i < nBus; ++i)
          {
-            int busId = busMatrix[busCols * i];
+            int busId = busMatrix[busCols*i];
             MpBusInfo & busInfo = busMap[busId];
 
-            busInfo.mpType = busMatrix[busCols * i + 1];
+            busInfo.mpType = busMatrix[busCols*i + 1];
 
-            double KVBase = busMatrix[busCols * i + 9];
-            busInfo.VBase = KVBase == 0 ? defaultVBase : KVBase * 1000;
+            double KVBase = busMatrix[busCols*i + 9];
+            busInfo.VBase = KVBase == 0 ? defaultVBase : KVBase*1000;
             
-            double Vm = busMatrix[busCols * i + 7];
-            double Va = busMatrix[busCols * i + 8];
-            busInfo.VPu = polar(Vm, Va * pi/180);
+            double Vm = busMatrix[busCols*i + 7];
+            double Va = busMatrix[busCols*i + 8];
+            busInfo.VPu = polar(Vm, Va*pi/180);
 
-            double Pd = busMatrix[busCols * i + 2];
-            double Qd = busMatrix[busCols * i + 3];
-            busInfo.SLoad = -Complex(Pd, Qd) * 1e6; // Injection is -ve load.
+            double Pd = busMatrix[busCols*i + 2];
+            double Qd = busMatrix[busCols*i + 3];
+            busInfo.SLoad = -Complex(Pd, Qd)*1e6; // Injection is -ve load.
 
-            double Gs = busMatrix[busCols * i + 4];
-            double Bs = busMatrix[busCols * i + 5];
-            busInfo.ysPu = Complex(Gs, Bs) * 1e6 / SBase; // Matpower has ys in MW / VBase^2
+            double Gs = busMatrix[busCols*i + 4];
+            double Bs = busMatrix[busCols*i + 5];
+            busInfo.ysPu = Complex(Gs, Bs)*1e6/SBase; // Matpower has ys in MW/VBase^2
          }
 
          for (int i = 0; i < nGen; ++i)
          {
-            int busId  = genMatrix[genCols * i];
+            int busId  = genMatrix[genCols*i];
             MpBusInfo & busInfo = busMap[busId];
 
-            double Pg  = genMatrix[genCols * i + 1];
-            double Qg  = genMatrix[genCols * i + 2];
-            double Vg  = genMatrix[genCols * i + 5];
+            double Pg  = genMatrix[genCols*i + 1];
+            double Qg  = genMatrix[genCols*i + 2];
+            double Vg  = genMatrix[genCols*i + 5];
 
-            busInfo.Sg = Complex(Pg, Qg) * 1e6; // Assuming 1 generator max per bus.
+            busInfo.Sg = Complex(Pg, Qg)*1e6; // Assuming 1 generator max per bus.
 
-            busInfo.VPu *= Vg / abs(busInfo.VPu); // Scale V of bus to match specified generator V.
+            busInfo.VPu *= Vg/abs(busInfo.VPu); // Scale V of bus to match specified generator V.
          }
       }
 
@@ -271,22 +271,22 @@ namespace SmartGridToolbox
 
             ublas::vector<Complex> VNomVec(phases.size(), info.VBase);
 
-            Complex V = usePerUnit ? info.VPu : info.VPu * info.VBase;
+            Complex V = usePerUnit ? info.VPu : info.VPu*info.VBase;
             ublas::vector<Complex> VVec(phases.size(), V);
 
-            double VMag = usePerUnit ? abs(info.VPu) : abs(info.VPu * info.VBase);
+            double VMag = usePerUnit ? abs(info.VPu) : abs(info.VPu*info.VBase);
             ublas::vector<double> VMagVec(phases.size(), VMag);
             
-            double VAng = usePerUnit ? arg(info.VPu) : arg(info.VPu * info.VBase);
+            double VAng = usePerUnit ? arg(info.VPu) : arg(info.VPu*info.VBase);
             ublas::vector<double> VAngVec(phases.size(), VAng);
             
-            Complex SLoad = usePerUnit ? info.SLoad / SBase : info.SLoad;
+            Complex SLoad = usePerUnit ? info.SLoad/SBase : info.SLoad;
             ublas::vector<Complex> SLoadVec(phases.size(), SLoad);
 
-            Complex Sg = usePerUnit ? info.Sg / SBase : info.Sg;
+            Complex Sg = usePerUnit ? info.Sg/SBase : info.Sg;
             ublas::vector<Complex> SgVec(phases.size(), Sg);
             
-            Complex ys = usePerUnit ? info.ysPu : info.ysPu * SBase / (info.VBase * info.VBase);
+            Complex ys = usePerUnit ? info.ysPu : info.ysPu*SBase/(info.VBase*info.VBase);
             ublas::vector<Complex> ysVec(phases.size(), ys);
 
             // TODO: bounds on values.
@@ -311,8 +311,8 @@ namespace SmartGridToolbox
 
          for (int i = 0; i < nBranch; ++i)
          {
-            int bus0Id = branchMatrix[branchCols * i];
-            int bus1Id = branchMatrix[branchCols * i + 1];
+            int bus0Id = branchMatrix[branchCols*i];
+            int bus1Id = branchMatrix[branchCols*i + 1];
 
             const MpBusInfo & busInfo0 = busMap[bus0Id];
             const MpBusInfo & busInfo1 = busMap[bus1Id];
@@ -320,46 +320,46 @@ namespace SmartGridToolbox
             double VBase0 = busInfo0.VBase;
             double VBase1 = busInfo1.VBase;
 
-            double Rs = branchMatrix[branchCols * i + 2];
-            double Xs = branchMatrix[branchCols * i + 3];
-            double Bc = branchMatrix[branchCols * i + 4];
-            double tap = branchMatrix[branchCols * i + 8];
-            double theta = branchMatrix[branchCols * i + 9]; // Matpower format is in deg, convert to rad.
+            double Rs = branchMatrix[branchCols*i + 2];
+            double Xs = branchMatrix[branchCols*i + 3];
+            double Bc = branchMatrix[branchCols*i + 4];
+            double tap = branchMatrix[branchCols*i + 8];
+            double theta = branchMatrix[branchCols*i + 9]; // Matpower format is in deg, convert to rad.
 
             if (tap == 0.0)
             {
                tap = 1.0; // 0 means "default", i.e. 1.
             }
 
-            Complex cTap = polar(tap, theta * pi / 180);
+            Complex cTap = polar(tap, theta*pi/180);
 
-            Bus * bus0 = mod.component<Bus>(busName(networkName, bus0Id));
+            Bus* bus0 = mod.component<Bus>(busName(networkName, bus0Id));
             if (bus0 == nullptr)
             {
                error() << "Matpower: for branch " << i << ", from bus " << bus0Id << " was not found." << std::endl;
                abort();
             }
-            Bus * bus1 = mod.component<Bus>(busName(networkName, bus1Id));
+            Bus* bus1 = mod.component<Bus>(busName(networkName, bus1Id));
             if (bus1 == nullptr)
             {
                error() << "Matpower: for branch " << i << ", to bus " << bus1Id << " was not found." << std::endl;
                abort();
             }
 
-            Complex ys = 1.0 / Complex{Rs, Xs};
+            Complex ys = 1.0/Complex{Rs, Xs};
 
-            Complex Y11 = (ys + Complex{0, 0.5 * Bc});
-            Complex Y00 = Y11 / (tap * tap);
-            Complex Y01 = -(ys / conj(cTap));
-            Complex Y10 = -(ys / cTap);
+            Complex Y11 = (ys + Complex{0, 0.5*Bc});
+            Complex Y00 = Y11/(tap*tap);
+            Complex Y01 = -(ys/conj(cTap));
+            Complex Y10 = -(ys/cTap);
 
             if (!usePerUnit)
             {
                // TODO: scaling across a transformer, looks fishy. Careful.
-               Y00 *= SBase / (VBase0 * VBase0);
-               Y01 *= SBase / (VBase0 * VBase1);
-               Y10 *= SBase / (VBase1 * VBase0);
-               Y11 *= SBase / (VBase1 * VBase1);
+               Y00 *= SBase/(VBase0*VBase0);
+               Y01 *= SBase/(VBase0*VBase1);
+               Y10 *= SBase/(VBase1*VBase0);
+               Y11 *= SBase/(VBase1*VBase1);
             }
 
             Branch & branch = mod.newComponent<Branch>(branchName(networkName, i, bus0Id, bus1Id), phases, phases);
@@ -367,7 +367,7 @@ namespace SmartGridToolbox
             branch.setBus0(*bus0);
             branch.setBus1(*bus1);
 
-            ublas::matrix<Complex> Y(2 * phases.size(), 2 * phases.size());
+            ublas::matrix<Complex> Y(2*phases.size(), 2*phases.size());
             for (int k = 0; k < phases.size(); ++k)
             {
                Y(k, k) = Y00;

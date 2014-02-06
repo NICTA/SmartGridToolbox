@@ -16,7 +16,7 @@ namespace SmartGridToolbox
    void InverterBase::updateState(Time t0, Time t1)
    {
       PDc_ = 0.0;
-      for (const DcPowerSourceBase * source : sources_)
+      for (const DcPowerSourceBase* source : sources_)
       {
          PDc_ += source->PDc();
       }
@@ -24,6 +24,6 @@ namespace SmartGridToolbox
 
    double InverterBase::PPerPhase() const
    {
-      return PDc_ * efficiency(PDc_) / phases().size();
+      return PDc_*efficiency(PDc_)/phases().size();
    }
 }

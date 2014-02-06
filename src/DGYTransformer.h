@@ -8,16 +8,14 @@ namespace SmartGridToolbox
    class DGYTransformer : public Branch
    {
       public:
-         DGYTransformer(const std::string & name, Phases phases0, Phases phases1,
-                       ublas::vector<Complex> alpha, ublas::vector<Complex> ZL, ublas::vector<Complex> ZM);
+         DGYTransformer(const std::string & name, Complex alpha, Complex ZL);
       
       private:
          void recalcY();
 
       private:
-         ublas::vector<Complex> alpha_; ///< Complex turns ratio, n0/n1.
-         ublas::vector<Complex> YL_;    ///< Series leakage impedance.
-         ublas::vector<Complex> YM_;    ///< Shunt magnetising impedance.
+         Complex a_;  ///< Complex turns ratio, n0/n1 where 0 is primary and 1 is secondary.
+         Complex YL_; ///< Series leakage impedance.
    };
 }
 

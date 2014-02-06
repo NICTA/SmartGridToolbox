@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    class WeatherParser : public ParserPlugin
    {
       public:
-         static constexpr const char * pluginKey()
+         static constexpr const char* pluginKey()
          {
             return "weather";
          }

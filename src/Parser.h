@@ -121,7 +121,7 @@ namespace SmartGridToolbox
             return t; 
          }
 
-         static constexpr const char * pluginKey() 
+         static constexpr const char* pluginKey() 
          {
             return "component";
          }
@@ -155,7 +155,7 @@ namespace SmartGridToolbox
             // useful elsewhere, and this is probably simpler.
          }
 
-         const ParserPlugin * componentParser(const std::string & name)
+         const ParserPlugin* componentParser(const std::string & name)
          {
             auto it = compParsers_.find(name);
             return ((it == compParsers_.end()) ? nullptr : it->second);
@@ -174,10 +174,10 @@ namespace SmartGridToolbox
          void parseComponents(const YAML::Node & node, ParserState & state, Model & model, bool isPostParse);
 
       private:
-         Model * mod_;
-         Simulation * sim_;
+         Model* mod_;
+         Simulation* sim_;
          YAML::Node top_;
-         std::map<std::string, const ParserPlugin *> compParsers_;
+         std::map<std::string, const ParserPlugin*> compParsers_;
    };
 
 }

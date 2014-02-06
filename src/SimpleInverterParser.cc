@@ -47,7 +47,7 @@ namespace SmartGridToolbox
       SimpleInverter & comp = *mod.component<SimpleInverter>(name);
 
       const std::string busStr = state.expandName(nd["bus"].as<std::string>());
-      Bus * busComp = mod.component<Bus>(busStr);
+      Bus* busComp = mod.component<Bus>(busStr);
       if (busComp != nullptr)
       {
          busComp->addZipToGround(comp);

@@ -36,11 +36,11 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << *this);
       PowerFlowNr solver;
       solver.reset();
-      for (const Bus * bus : busVec_)
+      for (const Bus* bus : busVec_)
       {
          solver.addBus(bus->name(), bus->type(), bus->phases(), bus->V(), bus->ys(), bus->Ic(), bus->STot());
       }
-      for (const Branch * branch : branchVec_)
+      for (const Branch* branch : branchVec_)
       {
          solver.addBranch(branch->bus0().name(), branch->bus1().name(), branch->phases0(),
                           branch->phases1(), branch->Y());
@@ -54,7 +54,7 @@ namespace SmartGridToolbox
       {
          for (const auto & busPair: solver.busses())
          {
-            Bus * bus = findBus(busPair.second->id_);
+            Bus* bus = findBus(busPair.second->id_);
 
             // Push the state back onto bus. We don't want to trigger any events.
             bus->setV(busPair.second->V_);
@@ -67,7 +67,7 @@ namespace SmartGridToolbox
    {
       os << "Network: " << nw.name() << std::endl;
       os << "\tBusses:" << std::endl;
-      for (const Bus * bus : nw.busVec_)
+      for (const Bus* bus : nw.busVec_)
       {
          ublas::vector<double> VMag(bus->V().size());
          for (int i = 0; i < bus->V().size(); ++i) VMag(i) = abs(bus->V()(i));
@@ -85,7 +85,7 @@ namespace SmartGridToolbox
          os << "\t\t\tSTot   : " << bus->STot() << std::endl;
       }
       os << "\tBranches:" << std::endl;
-      for (const Branch * branch : nw.branchVec_)
+      for (const Branch* branch : nw.branchVec_)
       {
          os << "\t\tBranch:" << std::endl; 
          os << "\t\t\tBus names  : " 

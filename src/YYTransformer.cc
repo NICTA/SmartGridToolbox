@@ -34,8 +34,8 @@ namespace SmartGridToolbox
       }
       for (int i = 1; i < n; ++i)
       {
-         YL_(i) = 1.0 / ZL(i);
-         YM_(i) = 1.0 / ZM(i);
+         YL_(i) = 1.0/ZL(i);
+         YM_(i) = 1.0/ZM(i);
       }
       recalcY();      
    }
@@ -43,12 +43,12 @@ namespace SmartGridToolbox
    void YYTransformer::recalcY()
    {
       int n = phases0().size();
-      ublas::matrix<Complex> YNode(2 * n, 2 * n, czero);
+      ublas::matrix<Complex> YNode(2*n, 2*n, czero);
       for (int i = 0; i < n; ++i)
       {
-         YNode(i, i) = (YL_(i) + YM_(i))  / (alpha_(i) * conj(alpha_(i)));
-         YNode(i, i + n) = -YL_(i) / conj(alpha_(i));  
-         YNode(i + n, i) = -YL_(i) / alpha_(i);  
+         YNode(i, i) = (YL_(i) + YM_(i)) /(alpha_(i)*conj(alpha_(i)));
+         YNode(i, i + n) = -YL_(i)/conj(alpha_(i));  
+         YNode(i + n, i) = -YL_(i)/alpha_(i);  
          YNode(i + n, i + n) = YL_(i);
       }
       setY(YNode);

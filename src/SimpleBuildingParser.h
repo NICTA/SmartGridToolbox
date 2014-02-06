@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    class SimpleBuildingParser : public ParserPlugin
    {
       public:
-         static constexpr const char * pluginKey()
+         static constexpr const char* pluginKey()
          {
             return "simple_building";
          }

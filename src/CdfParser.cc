@@ -117,7 +117,7 @@ namespace SmartGridToolbox
          double MVABase;
          std::istringstream(line.substr(31, 6)) >> MVABase;
 
-         SBase = MW * MVABase;
+         SBase = MW*MVABase;
 
          if (!std::getline(infile, line)) errInvalidCdf();
          if (line.substr(0, 3) != "BUS") errInvalidCdf();
@@ -134,33 +134,33 @@ namespace SmartGridToolbox
 
             double KVBase;
             std::istringstream(line.substr(76, 7)) >> KVBase;
-            busInfo.VBase = KVBase == 0 ? defaultVBase : KVBase * 1000;
+            busInfo.VBase = KVBase == 0 ? defaultVBase : KVBase*1000;
 
             double VmPu;
             std::istringstream(line.substr(27, 6)) >> VmPu;
             double VaDeg;
             std::istringstream(line.substr(33, 7)) >> VaDeg;
-            busInfo.VPu = polar(VmPu, VaDeg * pi/180);
+            busInfo.VPu = polar(VmPu, VaDeg*pi/180);
 
             double PdMW;
             std::istringstream(line.substr(40, 9)) >> PdMW;
             double QdMW;
             std::istringstream(line.substr(49, 10)) >> QdMW;
-            busInfo.SLoad = -Complex(PdMW, QdMW) * MW; // Injection is -ve load.
+            busInfo.SLoad = -Complex(PdMW, QdMW)*MW; // Injection is -ve load.
 
             double PgMW;
             std::istringstream(line.substr(59, 8)) >> PgMW;
             double QgMW;
             std::istringstream(line.substr(67, 8)) >> QgMW;
-            busInfo.Sg = Complex(PgMW, QgMW) * MW; // Injection is -ve load.
+            busInfo.Sg = Complex(PgMW, QgMW)*MW; // Injection is -ve load.
             
             double QMinMW;
             std::istringstream(line.substr(98, 8)) >> QMinMW;
-            busInfo.QMin = QMinMW * MW;
+            busInfo.QMin = QMinMW*MW;
 
             double QMaxMW;
             std::istringstream(line.substr(90, 8)) >> QMaxMW;
-            busInfo.QMax = QMaxMW * MW;
+            busInfo.QMax = QMaxMW*MW;
 
             double GsPu;
             std::istringstream(line.substr(106, 8)) >> GsPu;
@@ -188,7 +188,7 @@ namespace SmartGridToolbox
                branchInfo.tap = 1.0; // 0 means "default", i.e. 1.
             }
             std::istringstream(line.substr(83, 7)) >> branchInfo.thetaRad;
-            branchInfo.thetaRad *= pi / 180.0;
+            branchInfo.thetaRad *= pi/180.0;
          }
       }
       
@@ -223,31 +223,31 @@ namespace SmartGridToolbox
             
             ublas::vector<Complex> VNomVec(phases.size(), info.VBase);
 
-            Complex V = usePerUnit ? info.VPu : info.VPu * info.VBase;
+            Complex V = usePerUnit ? info.VPu : info.VPu*info.VBase;
             ublas::vector<Complex> VVec(phases.size(), V);
             
-            double VMag = usePerUnit ? abs(info.VPu) : abs(info.VPu * info.VBase);
+            double VMag = usePerUnit ? abs(info.VPu) : abs(info.VPu*info.VBase);
             ublas::vector<double> VMagVec(phases.size(), VMag);
             
-            double VAng = usePerUnit ? arg(info.VPu) : arg(info.VPu * info.VBase);
+            double VAng = usePerUnit ? arg(info.VPu) : arg(info.VPu*info.VBase);
             ublas::vector<double> VAngVec(phases.size(), VAng);
             
-            Complex SLoad = usePerUnit ? info.SLoad / SBase : info.SLoad;
+            Complex SLoad = usePerUnit ? info.SLoad/SBase : info.SLoad;
             ublas::vector<Complex> SLoadVec(phases.size(), SLoad);
 
-            Complex Sg = usePerUnit ? info.Sg / SBase : info.Sg;
+            Complex Sg = usePerUnit ? info.Sg/SBase : info.Sg;
             ublas::vector<Complex> SgVec(phases.size(), Sg);
 
-            Complex ys = usePerUnit ? info.ysPu : info.ysPu * SBase / (info.VBase * info.VBase);
+            Complex ys = usePerUnit ? info.ysPu : info.ysPu*SBase/(info.VBase*info.VBase);
             ublas::vector<Complex> ysVec(phases.size(), ys);
 
             // TODO: WARNING: There are fields in CDF giving min and max MVAR or voltage.
             // MVAR should only apply for PV busses, and voltage for PV busses. But due to non-standard usage, we're
             // making it MVAR for both types of bus. This is all pretty nasty.
-            double QMin = usePerUnit ? info.QMin / SBase : info.QMin;
+            double QMin = usePerUnit ? info.QMin/SBase : info.QMin;
             ublas::vector<double> QMinVec(phases.size(), QMin);
 
-            double QMax = usePerUnit ? info.QMax / SBase : info.QMax;
+            double QMax = usePerUnit ? info.QMax/SBase : info.QMax;
             ublas::vector<double> QMaxVec(phases.size(), QMax);
 
             Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VNomVec);
@@ -281,31 +281,31 @@ namespace SmartGridToolbox
 
             double VBase0 = busInfo0.VBase;
             double VBase1 = busInfo1.VBase;
-            double Rs = usePerUnit ? info.RsPu : info.RsPu * SBase / (VBase0 * VBase1);
-            double Xs = usePerUnit ? info.XsPu : info.XsPu * SBase / (VBase0 * VBase1);
-            double Bc = usePerUnit ? info.BcPu : info.BcPu * SBase / (VBase0 * VBase1);
+            double Rs = usePerUnit ? info.RsPu : info.RsPu*SBase/(VBase0*VBase1);
+            double Xs = usePerUnit ? info.XsPu : info.XsPu*SBase/(VBase0*VBase1);
+            double Bc = usePerUnit ? info.BcPu : info.BcPu*SBase/(VBase0*VBase1);
 
             Complex cTap = polar(info.tap, info.thetaRad);
 
-            Bus * bus0 = mod.component<Bus>(busName(networkName, info.bus0Id));
+            Bus* bus0 = mod.component<Bus>(busName(networkName, info.bus0Id));
             if (bus0 == nullptr)
             {
                error() << "CDF: for branch, from bus " << info.bus0Id << " was not found." << std::endl;
                abort();
             }
-            Bus * bus1 = mod.component<Bus>(busName(networkName, info.bus1Id));
+            Bus* bus1 = mod.component<Bus>(busName(networkName, info.bus1Id));
             if (bus1 == nullptr)
             {
                error() << "CDF: for branch, to bus " << info.bus0Id << " was not found." << std::endl;
                abort();
             }
 
-            Complex ys = 1.0 / Complex{Rs, Xs};
+            Complex ys = 1.0/Complex{Rs, Xs};
 
-            Complex Y11 = (ys + Complex{0, 0.5 * Bc});
-            Complex Y00 = Y11 / (info.tap * info.tap);
-            Complex Y01 = -(ys / conj(cTap));
-            Complex Y10 = -(ys / cTap);
+            Complex Y11 = (ys + Complex{0, 0.5*Bc});
+            Complex Y00 = Y11/(info.tap*info.tap);
+            Complex Y01 = -(ys/conj(cTap));
+            Complex Y10 = -(ys/cTap);
 
             Branch & branch = mod.newComponent<Branch>(branchName(networkName, i, info.bus0Id, info.bus1Id), 
                               phases, phases);
@@ -313,7 +313,7 @@ namespace SmartGridToolbox
             branch.setBus0(*bus0);
             branch.setBus1(*bus1);
 
-            ublas::matrix<Complex> Y(2 * phases.size(), 2 * phases.size());
+            ublas::matrix<Complex> Y(2*phases.size(), 2*phases.size());
             for (int k = 0; k < phases.size(); ++k)
             {
                Y(k, k) = Y00;

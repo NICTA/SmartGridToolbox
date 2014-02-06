@@ -6,7 +6,7 @@
 
 using namespace SmartGridToolbox;
 
-int main(int argc, const char ** argv)
+int main(int argc, const char** argv)
 {
    if (argc != 2)
    {
@@ -14,7 +14,7 @@ int main(int argc, const char ** argv)
       SmartGridToolbox::abort();
    }
 
-   const char * configName = argv[1];
+   const char* configName = argv[1];
 
    Model mod;
    Simulation sim(mod);

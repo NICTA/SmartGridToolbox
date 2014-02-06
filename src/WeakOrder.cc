@@ -23,13 +23,13 @@ namespace SmartGridToolbox
       {
          visited_ = true;
          SGT_DEBUG(debug() << prlevel(level - 1) << "DFS " << idx_ << " {" << std::endl);
-         for (WoNode * predecessor : stack)
+         for (WoNode* predecessor : stack)
          {
             SGT_DEBUG(debug() << prlevel(level) << predecessor->idx_ << std::endl);
             predecessor->descendents_.insert(this);
          }
          stack.push_back(this);
-         for (WoNode * toNd : to_)
+         for (WoNode* toNd : to_)
          {
             toNd->dfs(stack);
          }
@@ -70,7 +70,7 @@ namespace SmartGridToolbox
       // A dominates B -> A precedes B but not vice versa. 
       for (const std::unique_ptr<WoNode> & nd : nodes_)
       {
-         for (const WoNode * nd2 : nd->descendents_)
+         for (const WoNode* nd2 : nd->descendents_)
          {
             if (nd2->descendents_.find(nd.get()) == nd2->descendents_.end())
             {
@@ -124,7 +124,7 @@ namespace SmartGridToolbox
       for (const std::unique_ptr<WoNode> & nd1 : nodes())
       {
          debug() << nd1->index() << "   ";
-         for (const WoNode * nd2 : nd1->to_)
+         for (const WoNode* nd2 : nd1->to_)
          {
             debugStream() << nd2->index() << " ";
          }
@@ -136,7 +136,7 @@ namespace SmartGridToolbox
       for (const std::unique_ptr<WoNode> & nd1 : nodes())
       {
          debug() << nd1->index() << "   ";
-         for (const WoNode * nd2 : nd1->descendents_)
+         for (const WoNode* nd2 : nd1->descendents_)
          {
             debugStream() << nd2->index() << " ";
          }
@@ -148,7 +148,7 @@ namespace SmartGridToolbox
       for (const std::unique_ptr<WoNode> & nd1 : nodes())
       {
          debug() << nd1->index() << "   ";
-         for (const WoNode * nd2 : nd1->dominated_)
+         for (const WoNode* nd2 : nd1->dominated_)
          {
             debugStream() << nd2->index() << " ";
          }

@@ -18,7 +18,7 @@ namespace SmartGridToolbox
       BAD
    };
 
-   const char * busType2Str(BusType type);
+   const char* busType2Str(BusType type);
    inline std::ostream & operator<<(std::ostream & os, BusType t) {return os << busType2Str(t);}
    BusType str2BusType(const std::string & str);
 
@@ -36,10 +36,10 @@ namespace SmartGridToolbox
       BAD = 0x200    // Not a phase.
    };
 
-   const char * phase2Str(Phase phase);
+   const char* phase2Str(Phase phase);
    inline std::ostream & operator<<(std::ostream & os, Phase p) {return os << phase2Str(p);}
    Phase str2Phase(const std::string & str);
-   const char * phaseDescr(Phase phase);
+   const char* phaseDescr(Phase phase);
 
    class Phases
    {

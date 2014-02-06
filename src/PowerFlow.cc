@@ -19,7 +19,7 @@ namespace SmartGridToolbox
       Phase::BAD
    };
 
-   const char * busType2Str(BusType type)
+   const char* busType2Str(BusType type)
    {
       switch (type)
       {
@@ -34,7 +34,7 @@ namespace SmartGridToolbox
    {
       static BusType busTypes[] = {BusType::SL, BusType::PQ, BusType::PV, BusType::BAD};
       BusType result = BusType::BAD;
-      for (BusType * test = &busTypes[0]; *test != BusType::BAD; ++test)
+      for (BusType* test = &busTypes[0]; *test != BusType::BAD; ++test)
       {
          if (str == busType2Str(*test))
          {
@@ -44,7 +44,7 @@ namespace SmartGridToolbox
       return result;
    }
 
-   const char * phase2Str(Phase phase)
+   const char* phase2Str(Phase phase)
    {
       switch (phase)
       {
@@ -66,7 +66,7 @@ namespace SmartGridToolbox
       static Phase phases[] = {Phase::BAL, Phase::A, Phase::B, Phase::C, Phase::G, Phase::N, Phase::SP, 
                                Phase::SM, Phase:: SN, Phase::BAD};
       Phase result = Phase::BAD;
-      for (Phase * test = &phases[0]; *test != Phase::BAD; ++test)
+      for (Phase* test = &phases[0]; *test != Phase::BAD; ++test)
       {
          if (str == phase2Str(*test))
          {
@@ -76,7 +76,7 @@ namespace SmartGridToolbox
       return result;
    }
 
-   const char * phaseDescr(Phase phase)
+   const char* phaseDescr(Phase phase)
    {
       switch (phase)
       {
@@ -149,7 +149,7 @@ namespace SmartGridToolbox
    const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex> & y)
    {
       int nPhase = y.size();
-      int nTerm = 2 * nPhase; 
+      int nTerm = 2*nPhase; 
       ublas::matrix<Complex> Y(nTerm, nTerm, czero);
       for (int i = 0; i < nPhase; ++i)
       {
@@ -168,17 +168,17 @@ namespace SmartGridToolbox
       assert(DMat.size1() == n);
       assert(DMat.size2() == n);
 
-		double freqCoeffReal = 9.869611e-7 * freq;
-		double freqCoeffImag = 1.256642e-6 * freq;
-		double freqAdditiveTerm = 0.5 * log(rho / freq) + 6.490501;
+		double freqCoeffReal = 9.869611e-7*freq;
+		double freqCoeffImag = 1.256642e-6*freq;
+		double freqAdditiveTerm = 0.5*log(rho/freq) + 6.490501;
 
       ublas::matrix<Complex> z(n, n, czero);
       for (int i = 0; i < n; ++i)
       {
-         z(i, i) = {r(i) + freqCoeffReal, freqCoeffImag * (log(1 / DMat(i, i)) + freqAdditiveTerm)};
+         z(i, i) = {r(i) + freqCoeffReal, freqCoeffImag*(log(1/DMat(i, i)) + freqAdditiveTerm)};
          for (int k = i + 1; k < n; ++k)
          {
-				z(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / DMat(i, k)) + freqAdditiveTerm)};
+				z(i, k) = {freqCoeffReal, freqCoeffImag*(log(1/DMat(i, k)) + freqAdditiveTerm)};
 				z(k, i) = z(i, k);
          }
       }
@@ -192,8 +192,8 @@ namespace SmartGridToolbox
 
       // TODO: eliminate the neutral phase, as per calculation of b_mat in gridLAB-D overhead_line.cpp.
       // Very easy, but interface needs consideration. Equation is:
-		// b_mat[0][0] = (z_aa - z_an * z_an * z_nn_inv) * miles;
-      // b_mat[0][1] = (z_ab - z_an * z_bn * z_nn_inv) * miles;
+		// b_mat[0][0] = (z_aa - z_an*z_an*z_nn_inv)*miles;
+      // b_mat[0][1] = (z_ab - z_an*z_bn*z_nn_inv)*miles;
       // etc.
       
       ublas::matrix<Complex> y(n, n); bool ok = invertMatrix(z, y); assert(ok);
@@ -204,7 +204,7 @@ namespace SmartGridToolbox
                message() << std::endl;
             });
       
-      ublas::matrix<Complex> Y(2 * n, 2 * n, czero);
+      ublas::matrix<Complex> Y(2*n, 2*n, czero);
       for (int i = 0; i < n; ++i)
       {
          Y(i, i) += y(i, i);

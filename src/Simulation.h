@@ -33,7 +33,7 @@ namespace SmartGridToolbox
          /// Model accessor.
          Model & model()
          {
-            return const_cast<Model &>((const_cast<const Simulation *>(this))->model());
+            return const_cast<Model &>((const_cast<const Simulation*>(this))->model());
          }
 
          Time startTime() const
@@ -82,8 +82,8 @@ namespace SmartGridToolbox
          class ScheduledUpdatesCompare
          {
             public:
-               bool operator()(const std::pair<Component *, Time> & lhs, 
-                     const std::pair<Component *, Time> & rhs) 
+               bool operator()(const std::pair<Component*, Time> & lhs, 
+                     const std::pair<Component*, Time> & rhs) 
                {
                   return ((lhs.second < rhs.second) ||
                         (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
@@ -96,18 +96,18 @@ namespace SmartGridToolbox
          class ContingentUpdatesCompare
          {
             public:
-               bool operator()(const Component * lhs, const Component * rhs)
+               bool operator()(const Component* lhs, const Component* rhs)
                {
                   return ((lhs->rank() < rhs->rank()) ||
                         ((lhs->rank() == rhs->rank()) && (lhs->name() < rhs->name())));
                }
          };
 
-         typedef std::set<std::pair<Component *, Time>, ScheduledUpdatesCompare> ScheduledUpdates;
-         typedef std::set<Component *, ContingentUpdatesCompare> ContingentUpdates;
+         typedef std::set<std::pair<Component*, Time>, ScheduledUpdatesCompare> ScheduledUpdates;
+         typedef std::set<Component*, ContingentUpdatesCompare> ContingentUpdates;
 
       private:
-         Model * mod_;
+         Model* mod_;
          Time startTime_;
          Time endTime_;
          Time currentTime_;

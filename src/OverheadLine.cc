@@ -33,17 +33,17 @@ namespace SmartGridToolbox
       int nPhase = phases0().size();
       int nWire = nPhase + nNeutral_;
 
-		double freqCoeffReal = 9.869611e-7 * f_;
-		double freqCoeffImag = 1.256642e-6 * f_;
-		double freqAdditiveTerm = 0.5 * log(rhoEarth_ / f_) + 6.490501;
+		double freqCoeffReal = 9.869611e-7*f_;
+		double freqCoeffImag = 1.256642e-6*f_;
+		double freqAdditiveTerm = 0.5*log(rhoEarth_/f_) + 6.490501;
 
       ublas::matrix<Complex> zWire(nWire, nWire, czero);
       for (int i = 0; i < nWire; ++i)
       {
-         zWire(i, i) = {rhoLine_(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij_(i, i)) + freqAdditiveTerm)};
+         zWire(i, i) = {rhoLine_(i) + freqCoeffReal, freqCoeffImag*(log(1/Dij_(i, i)) + freqAdditiveTerm)};
          for (int k = i + 1; k < nWire; ++k)
          {
-				zWire(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / Dij_(i, k)) + freqAdditiveTerm)};
+				zWire(i, k) = {freqCoeffReal, freqCoeffImag*(log(1/Dij_(i, k)) + freqAdditiveTerm)};
 				zWire(k, i) = zWire(i, k);
          }
       }
@@ -62,12 +62,12 @@ namespace SmartGridToolbox
       if (nNeutral_ == 1)
       {
          int iNeutral = nPhase;
-         Complex znnInv = 1.0 / zWire(iNeutral, iNeutral); // Assuming only one neutral!
+         Complex znnInv = 1.0/zWire(iNeutral, iNeutral); // Assuming only one neutral!
          for (int i = 0; i < nPhase; ++i)
          {
             for (int j = 0; j < nPhase; ++j)
             {
-               zPhase(i, j) -= zWire(i, iNeutral) * zWire(iNeutral, j) * znnInv;
+               zPhase(i, j) -= zWire(i, iNeutral)*zWire(iNeutral, j)*znnInv;
             }
          }
       }
@@ -89,7 +89,7 @@ namespace SmartGridToolbox
                message() << std::endl;
             });
       
-      ublas::matrix<Complex> YNode(2 * nPhase, 2 * nPhase, czero);
+      ublas::matrix<Complex> YNode(2*nPhase, 2*nPhase, czero);
       for (int i = 0; i < nPhase; ++i)
       {
          YNode(i, i) += y(i, i);

@@ -15,7 +15,7 @@ namespace SmartGridToolbox
 
    double SolarPv::PDc() const
    {
-      return weather_->solarPower(planeNormal_, planeArea_) * efficiency_;
+      return weather_->solarPower(planeNormal_, planeArea_)*efficiency_;
    }
 
    void SolarPv::setWeather(Weather & weather)

@@ -2,54 +2,33 @@
 
 namespace SmartGridToolbox
 {
-   DGYTransformer::DGYTransformer(const std::string & name, Phases phases0, Phases phases1,
-                                ublas::vector<Complex> alpha, ublas::vector<Complex> ZL, ublas::vector<Complex> ZM)
-      : Branch(name, phases0, phases1),
-        alpha_(alpha)
+   DGYTransformer::DGYTransformer(const std::string & name, Complex a, Complex ZL)
+      : Branch(name, Phase::A & Phase::B & Phase::C, Phase::A & Phase::B & Phase::C), a_(a)
    {
-      int n = phases0.size();
-      if (phases1.size() != n)
-      {
-         error() << "A D_GY_transformer should have the same number of phases on the primary and secondary." 
-                 << std::endl;
-         abort();
-      }
-      if (alpha.size() != n)
-      {
-         error() << "A D_GY_transformer should have the same number of turns ratios as there are phases."
-                 << std::endl;
-         abort();
-      }
-      if (ZL.size() != n)
-      {
-         error() << "A D_GY_transformer should have the same number of leakage impedances as there are phases." 
-                 << std::endl;
-         abort();
-      }
-      if (ZM.size() != n)
-      {
-         error() << "A D_GY_transformer should have the same number of magnetising impedances as there are phases." 
-                 << std::endl;
-         abort();
-      }
-      for (int i = 1; i < n; ++i)
-      {
-         YL_(i) = 1.0 / ZL(i);
-         YM_(i) = 1.0 / ZM(i);
-      }
+      YL_ = 1.0/ZL;
       recalcY();      
    }
 
    void DGYTransformer::recalcY()
    {
-      int n = phases0().size();
-      ublas::matrix<Complex> YNode(2 * n, 2 * n, czero);
-      for (int i = 0; i < n; ++i)
+      Complex ai = 1.0/a_;
+      Complex aci = 1.0/conj(a_);
+      Complex a2i = ai*aci;
+
+      Complex data[] =  {2*a2i,  -a2i,  -a2i, -aci,  0.0,  aci,
+                          -a2i, 2*a2i,  -a2i,  aci, -aci,  0.0,
+                          -a2i,  -a2i, 2*a2i,  0.0,  aci, -aci,
+                           -ai,    ai,   0.0,  1.0,  0.0,  0.0,
+                           0.0,   -ai,    ai,  0.0,  1.0,  0.0,
+                            ai,   0.0,   -ai,  0.0,  0.0,  1.0};
+
+      ublas::matrix<Complex> YNode(6, 6, czero);
+      for (int i = 0; i < 6; ++i)
       {
-         YNode(i, i) = (YL_(i) + YM_(i))  / (alpha_(i) * conj(alpha_(i)));
-         YNode(i, i + n) = -YL_(i) / conj(alpha_(i));  
-         YNode(i + n, i) = -YL_(i) / alpha_(i);  
-         YNode(i + n, i + n) = YL_(i);
+         for (int j = 0; j < 6; ++j)
+         {
+            YNode(i, j) = YL_ * data[6 * i + j];
+         }
       }
       setY(YNode);
    }

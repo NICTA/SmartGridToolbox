@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    class SimpleDcPowerSourceParser : public ParserPlugin
    {
       public:
-         static constexpr const char * pluginKey()
+         static constexpr const char* pluginKey()
          {
             return "dc_power_source";
          }

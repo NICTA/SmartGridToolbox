@@ -123,10 +123,10 @@ namespace SmartGridToolbox
          void applySetpoints();
          /// @}
 
-         /// @name Loads / constant power generation.
+         /// @name Loads/constant power generation.
          /// @{
          /// ZIP = constant Z, I, P (or Y, I, S).
-         const std::vector<ZipToGroundBase *> & zipsToGround() const {return zipsToGround_;}
+         const std::vector<ZipToGroundBase*> & zipsToGround() const {return zipsToGround_;}
          /// ZIP = constant Z, I, P (or Y, I, S).
          void addZipToGround(ZipToGroundBase & zipToGround);
 
@@ -185,7 +185,7 @@ namespace SmartGridToolbox
          ublas::vector<double> VAngMinSetpoint_;       ///< For PV bus.
          ublas::vector<double> VAngMaxSetpoint_;       ///< For PV bus.
 
-         std::vector<ZipToGroundBase *> zipsToGround_; ///< ZIP loads of generation.
+         std::vector<ZipToGroundBase*> zipsToGround_;  ///< ZIP loads of generation.
 
          /// @name Quantities due to operation of bus:
          /** For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_.

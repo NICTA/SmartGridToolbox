@@ -48,7 +48,7 @@ namespace SmartGridToolbox
       SimpleBattery & batt = *mod.component<SimpleBattery>(name);
 
       const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
-      InverterBase * inverter = mod.component<InverterBase>(inverterStr);
+      InverterBase* inverter = mod.component<InverterBase>(inverterStr);
       if (inverter != nullptr)
       {
          inverter->addDcPowerSource(batt);

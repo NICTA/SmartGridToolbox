@@ -27,7 +27,7 @@ namespace SmartGridToolbox
          void setPlaneArea(double planeArea) {planeArea_ = planeArea; needsUpdate().trigger();}
 
       public:
-         const Weather * weather_;
+         const Weather* weather_;
          double efficiency_;
          SphericalAngles planeNormal_; // TODO : more than one plane?
          double planeArea_; // TODO : more than one plane?

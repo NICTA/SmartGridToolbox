@@ -45,7 +45,7 @@ namespace SmartGridToolbox
       /// @name My private member variables.
       /// @{
       private:
-         std::vector<const DcPowerSourceBase *> sources_;   ///< My DC power sources.
+         std::vector<const DcPowerSourceBase*> sources_;    ///< My DC power sources.
          double PDc_;                                       ///< DC power = sum of all sources.
       /// @}
    };

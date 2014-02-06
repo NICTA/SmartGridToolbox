@@ -1,14 +1,20 @@
 #include <iostream>
 #include <vector>
 
+class A
+{
+   public:
+      A() {std::cout << a << std::endl;}
+      int a;
+};
+
+class B : public A
+{
+   public:
+      B() : a(1) {} 
+};
+
 int main()
 {
-   using namespace std;
-
-   cout << "Hello, world." << endl;
-
-   vector<int *> vi = {new int(1), new int(2), new int(3)};
-   const vector<int*> & vir = vi;
-   *vir[2] = 4;
-   cout << *vi[2] << endl;
+   B b;
 }

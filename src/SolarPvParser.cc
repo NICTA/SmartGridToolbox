@@ -28,8 +28,8 @@ namespace SmartGridToolbox
          comp.setEfficiency(1.0);
       }
       comp.setPlaneArea(nd["area_m2"].as<double>());
-      double zen = nd["zenith_degrees"].as<double>() * pi / 180;
-      double azi = nd["azimuth_degrees"].as<double>() * pi / 180;
+      double zen = nd["zenith_degrees"].as<double>()*pi/180;
+      double azi = nd["azimuth_degrees"].as<double>()*pi/180;
       comp.setPlaneNormal({zen, azi});
    }
 
@@ -41,7 +41,7 @@ namespace SmartGridToolbox
       SolarPv & comp = *mod.component<SolarPv>(name);
 
       const std::string weatherStr = state.expandName(nd["weather"].as<std::string>());
-      Weather * weather = mod.component<Weather>(weatherStr);
+      Weather* weather = mod.component<Weather>(weatherStr);
       if (weather != nullptr)
       {
          comp.setWeather(*weather);
@@ -55,7 +55,7 @@ namespace SmartGridToolbox
       }
 
       const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
-      InverterBase * inverter = mod.component<InverterBase>(inverterStr);
+      InverterBase* inverter = mod.component<InverterBase>(inverterStr);
       if (inverter != nullptr)
       {
          inverter->addDcPowerSource(comp);

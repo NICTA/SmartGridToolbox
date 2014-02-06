@@ -12,16 +12,16 @@ bool kluSolve(const boost::numeric::ublas::compressed_matrix<double> & a,
    int n = b.size();
    int nnz = ac.nnz();
 
-   int * ap = new int[n + 1];
+   int* ap = new int[n + 1];
    for (int i = 0; i <= n; ++i) ap[i] = ac.index1_data()[i];
 
-   int * ai = new int[nnz];
+   int* ai = new int[nnz];
    for (int i = 0; i < nnz; ++i) ai[i] = ac.index2_data()[i];
 
-   double * ax = new double[nnz];
+   double* ax = new double[nnz];
    for (int i = 0; i < nnz; ++i) ax[i] = ac.value_data()[i];
 
-   double * b1 = new double[n];
+   double* b1 = new double[n];
    for (int i = 0; i < n; ++i) b1[i] = b(i);
    
    klu_symbolic *Symbolic;

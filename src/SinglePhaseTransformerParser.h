@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    class SinglePhaseTransformerParser : public ParserPlugin
    {
       public:
-         static constexpr const char * pluginKey()
+         static constexpr const char* pluginKey()
          {
             return "single_phase_transformer";
          }

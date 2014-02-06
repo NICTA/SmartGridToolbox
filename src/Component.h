@@ -74,7 +74,7 @@ namespace SmartGridToolbox
          /// @name Dependencies.
          ///@{
 
-         const std::vector<const Component *> & dependencies() const
+         const std::vector<const Component*> & dependencies() const
          {
             return dependencies_;
          }
@@ -127,7 +127,7 @@ namespace SmartGridToolbox
          /// @}
 
       protected:
-         typedef std::vector<const Component *> ComponentVec;
+         typedef std::vector<const Component*> ComponentVec;
 
       protected:
          /// Reset state of the object, time is at currentTime_.

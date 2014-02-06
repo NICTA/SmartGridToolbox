@@ -18,10 +18,10 @@ namespace SmartGridToolbox
       SGT_DEBUG
       (
          debug() << "Model before validation:" << std::endl;
-         for (const Component * comp : compVec_)
+         for (const Component* comp : compVec_)
          {
             debug() << "\t" << comp->name() << " " << comp->rank() << std::endl;
-            for (const Component * const dep : comp->dependencies())
+            for (const Component* const dep : comp->dependencies())
             {
                debug() << "\t\t" << dep->name() << " " << dep->rank() << std::endl;
             }
@@ -37,7 +37,7 @@ namespace SmartGridToolbox
       for (int i = 0; i < compVec_.size(); ++i)
       {
          // At this point, rank of component i is i.
-         for (const Component * dep : compVec_[i]->dependencies())
+         for (const Component* dep : compVec_[i]->dependencies())
          {
             // i depends on dep->rank().
             g.link(dep->rank(), i);
@@ -55,17 +55,17 @@ namespace SmartGridToolbox
          compVec_[idx_i]->setRank(newRank);
       }
       std::sort(compVec_.begin(), compVec_.end(), 
-            [](const Component * lhs, const Component * rhs) -> bool 
+            [](const Component* lhs, const Component* rhs) -> bool 
             {
                return ((lhs->rank() < rhs->rank()) ||
                        ((lhs->rank() == rhs->rank()) && (lhs->name() < rhs->name())));
             });
       isValid_ = true;
       message() << "Model after validation:" << std::endl;
-      for (const Component * comp : compVec_)
+      for (const Component* comp : compVec_)
       {
          message() << "\t" << comp->name() << " " << comp->rank() << std::endl;
-         for (const Component * const dep : comp->dependencies())
+         for (const Component* const dep : comp->dependencies())
          {
             message() << "\t\t" << dep->name() << " " << dep->rank() << std::endl;
          }

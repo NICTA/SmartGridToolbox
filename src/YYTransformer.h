@@ -16,8 +16,8 @@ namespace SmartGridToolbox
 
       private:
          ublas::vector<Complex> alpha_; ///< Complex turns ratio, n0/n1.
-         ublas::vector<Complex> YL_; ///< Series leakage impedance.
-         ublas::vector<Complex> YM_; ///< Shunt magnetising impedance.
+         ublas::vector<Complex> YL_;    ///< Series leakage impedance.
+         ublas::vector<Complex> YM_;    ///< Shunt magnetising impedance.
    };
 }
 

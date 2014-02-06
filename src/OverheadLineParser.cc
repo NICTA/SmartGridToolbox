@@ -41,10 +41,10 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "OverheadLine : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      OverheadLine * comp = mod.component<OverheadLine>(name);
+      OverheadLine* comp = mod.component<OverheadLine>(name);
 
       const std::string networkStr = state.expandName(nd["network"].as<std::string>());
-      Network * networkComp = mod.component<Network>(networkStr);
+      Network* networkComp = mod.component<Network>(networkStr);
       if (networkComp != nullptr)
       {
          networkComp->addBranch(*comp);
@@ -57,7 +57,7 @@ namespace SmartGridToolbox
       }
 
       const std::string bus0Str = state.expandName(nd["bus_0"].as<std::string>());
-      Bus * bus0Comp = mod.component<Bus>(bus0Str);
+      Bus* bus0Comp = mod.component<Bus>(bus0Str);
       if (networkComp != nullptr)
       {
          comp->setBus0(*bus0Comp);
@@ -70,7 +70,7 @@ namespace SmartGridToolbox
       }
 
       const std::string bus1Str = state.expandName(nd["bus_1"].as<std::string>());
-      Bus * bus1Comp = mod.component<Bus>(bus1Str);
+      Bus* bus1Comp = mod.component<Bus>(bus1Str);
       if (networkComp != nullptr)
       {
          comp->setBus1(*bus1Comp);

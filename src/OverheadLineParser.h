@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    class OverheadLineParser : public ParserPlugin
    {
       public:
-         static constexpr const char * pluginKey()
+         static constexpr const char* pluginKey()
          {
             return "overhead_line";
          }

@@ -6,7 +6,7 @@
 
 namespace SmartGridToolbox
 {
-   double randDiscrete(const double * probs, int nProbs);
+   double randDiscrete(const double* probs, int nProbs);
    double randNormal(double mu, double sig);
    double randUniform(double lower, double upper);
    double randUniformInt(int lower, int upper);

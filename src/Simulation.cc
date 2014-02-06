@@ -20,7 +20,7 @@ namespace SmartGridToolbox
    void Simulation::initialize()
    {
       scheduledUpdates_.clear();
-      for (Component * comp : mod_->components())
+      for (Component* comp : mod_->components())
       {
          comp->initialize(startTime_);
          scheduledUpdates_.insert(std::make_pair(comp, comp->startTime()));
@@ -43,7 +43,7 @@ namespace SmartGridToolbox
       bool result = false;
 
       Time nextSchedTime = posix_time::pos_infin;
-      Component * schedComp = 0;
+      Component* schedComp = 0;
       auto schedUpdateIt = scheduledUpdates_.begin();
 
       if (scheduledUpdates_.size() > 0)
@@ -60,7 +60,7 @@ namespace SmartGridToolbox
       if (nextSchedTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ < endTime_)
       {
          // There are contingent updates pending.
-         Component * contComp = *contingentUpdates_.begin();
+         Component* contComp = *contingentUpdates_.begin();
          SGT_DEBUG(debug() << "\tContingent update component " << contComp->name() << " from " 
                            << schedComp->time() << " to " << currentTime_ << std::endl);
          contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
@@ -110,7 +110,7 @@ namespace SmartGridToolbox
       {
          // We've reached the end of this step.
          SGT_DEBUG(debug() << "\tTimestep completed at " << currentTime_ << std::endl); 
-         for (Component * comp : mod_->components())
+         for (Component* comp : mod_->components())
          {
             if (comp->time() == currentTime_)
             {

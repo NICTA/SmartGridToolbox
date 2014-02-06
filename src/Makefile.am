@@ -7,6 +7,7 @@ pkginclude_HEADERS = Branch.h \
 							Common.h \
 							Component.h \
 							DcPowerSourceBase.h \
+							DGYTransformer.h \
 							Event.h \
 							InverterBase.h \
 							Load.h \
@@ -42,6 +43,7 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  CdfParser.cc \
 										  Common.cc \
 										  Component.cc \
+										  DGYTransformer.cc \
 										  Event.cc \
 										  InverterBase.cc \
 										  MatpowerParser.cc \

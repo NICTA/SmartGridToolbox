@@ -144,14 +144,14 @@ which is very reminiscent of the expression used in the single wire definition o
 \subsection{Single phase transformers}
 For an ideal transformer with a single turns ratio $r = n_0/n_1$, we have
 \begin{align}
-\begin{bmatrix}V_0 \\ I_0\end{bmatrix} &= \begin{bmatrix}n & 0 \\ 0 & -\frac{1}{n}\end{bmatrix}\begin{bmatrix}V_1 \\ I_1 \end{bmatrix}
+\begin{bmatrix}V_0 \\ I_0\end{bmatrix} &= \begin{bmatrix}n & 0 \\ 0 & -1/n\end{bmatrix}\begin{bmatrix}V_1 \\ I_1 \end{bmatrix}
 \end{align}
 This can't be modelled correctly in the formalism of nodal admittance.
 
 A real transformer includes a leakage impedance (due to finite resistance of copper windings and core losses) and a shunt magnetising impedance. The latter is often large and may often be ignored. The nodal admittance matrix may be then derived:
 \begin{align}
 \begin{bmatrix}I_A \\ I_B \end{bmatrix} &= 
-\begin{bmatrix}\frac{Y_L}{a^2} & -\frac{Y_L}{a^*} \\ -\frac{Y_L}{a} & Y_L\end{bmatrix}
+\begin{bmatrix}y_l/|a|^2 & -y_l/a^* \\ -y_l/a & y_l\end{bmatrix}
 \begin{bmatrix}V_P \\ V_S \end{bmatrix}
 \end{align}
 where $a = V_P / V_S = N_P / N_S$ for an ideal transformer.
@@ -168,33 +168,34 @@ The nodal admittance matrices of three-phase transformers may be derived from th
 \end{figure}
 Considering Fig. \ref{FIG_DELTA_GWYE}, we have,
 \begin{align}
-I_{AB} &= \frac{Y_L}{a^2}(V_A - V_B) - \frac{Y_L}{a^*}V_a \\
-I_{BC} &= \frac{Y_L}{a^2}(V_B - V_C) - \frac{Y_L}{a^*}V_b \\
-I_{CA} &= \frac{Y_L}{a^2}(V_C - V_A) - \frac{Y_L}{a^*}V_c \\
-I_a &= -\frac{Y_L}{a}(V_A - V_B) + Y_L V_a \\
-I_b &= -\frac{Y_L}{a}(V_B - V_C) + Y_L V_b \\
-I_c &= -\frac{Y_L}{a}(V_C - V_A) + Y_L V_c \\
+I_{AB} &= \frac{y_l}{|a|^2}(V_A - V_B) - \frac{y_l}{a^*}V_a \\
+I_{BC} &= \frac{y_l}{|a|^2}(V_B - V_C) - \frac{y_l}{a^*}V_b \\
+I_{CA} &= \frac{y_l}{|a|^2}(V_C - V_A) - \frac{y_l}{a^*}V_c \\
+I_a &= -\frac{y_l}{a}(V_A - V_B) + y_l V_a \\
+I_b &= -\frac{y_l}{a}(V_B - V_C) + y_l V_b \\
+I_c &= -\frac{y_l}{a}(V_C - V_A) + y_l V_c \\
 \end{align}
 Also, by the KCL, we have
 \begin{align}
 I_A &= I_{AB} - I_{CA} \\
-&= \frac{Y_L}{a^2}(2V_A - V_B - V_C) + \frac{Y_L}{a^*}(V_c - V_a) \\
+&= \frac{y_l}{|a|^2}(2V_A - V_B - V_C) + \frac{y_l}{a^*}(V_c - V_a) \\
 I_B &= I_{BC} - I_{AB} \\
-&= \frac{Y_L}{a^2}(2V_B - V_C - V_A) + \frac{Y_L}{a^*}(V_a - V_b) \\
+&= \frac{y_l}{|a|^2}(2V_B - V_C - V_A) + \frac{y_l}{a^*}(V_a - V_b) \\
 I_C &= I_{CA} - I_{BC} \\
-&= \frac{Y_L}{a^2}(2V_C - V_A - V_B) + \frac{Y_L}{a^*}(V_b - V_c)
+&= \frac{y_l}{|a|^2}(2V_C - V_A - V_B) + \frac{y_l}{a^*}(V_b - V_c)
 \end{align}
 So we can immediately write down the nodal admittance relationship:
 \begin{align}
 \begin{bmatrix}I_A \\ I_B \\ I_C \\ I_a \\ I_b \\ I_c\end{bmatrix} &=
-\begin{bmatrix}
-	2/a^2 & -1/a^2 & -1/a^2 & -1/a^* & 0 & 1/a^* \\
-	-1/a^2 & 2/a^2 &  -1/a^2 & 1/a^*  & -1/a^* & 0 \\
-	-1/a^2 &  -1/a^2 & 2/a^2 & 0 & 1/a^*  & -1/a^* \\
+y_l \begin{bmatrix}
+	2/|a|^2 & -1/|a|^2 & -1/|a|^2 & -1/a^* & 0 & 1/a^* \\
+	-1/|a|^2 & 2/|a|^2 &  -1/|a|^2 & 1/a^*  & -1/a^* & 0 \\
+	-1/|a|^2 &  -1/|a|^2 & 2/|a|^2 & 0 & 1/a^*  & -1/a^* \\
 	-1/a & 1/a & 0 & 1 & 0 & 0 \\
 	0 & -1/a & 1/a & 0 & 1 & 0 \\
 	1/a & 0 & -1/a & 0 & 0 & 1
 \end{bmatrix}
-\begin{bmatrix}V_A \\ V_B \\ V_C \\ V_a \\ V_b \\ V_c\end{bmatrix} &=
+\begin{bmatrix}V_A \\ V_B \\ V_C \\ V_a \\ V_b \\ V_c\end{bmatrix}
 \end{align}
+with the nodal admittance matrix being specified by the matrix on the right, including the factor of $y_l$.
 \end{document}

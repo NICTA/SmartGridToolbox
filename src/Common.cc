@@ -55,7 +55,7 @@ namespace SmartGridToolbox
       }
       void setAngDeg(double ang)
       {
-         result_ *= polar(1.0, ang * pi / 180.0);
+         result_ *= polar(1.0, ang*pi/180.0);
       }
       Complex result()
       {
@@ -130,17 +130,17 @@ namespace SmartGridToolbox
    const double negInfinity = -std::numeric_limits<double>::infinity(); // No guarantee, but no better option?
    const double infinity = std::numeric_limits<double>::infinity();
    const double second = 1.0;
-   const double minute = 60.0 * second;
-   const double hour = 60.0 * minute;
-   const double day = 24.0 * hour;
-   const double week = 7 * day;
+   const double minute = 60.0*second;
+   const double hour = 60.0*minute;
+   const double day = 24.0*hour;
+   const double week = 7*day;
    const double J = 1.0;
-   const double kJ = 1000.0 * J;
-   const double W = J / second;
-   const double kW = 1000.0 * W;
-   const double kWh = kW * hour;
+   const double kJ = 1000.0*J;
+   const double W = J/second;
+   const double kW = 1000.0*W;
+   const double kWh = kW*hour;
    const double A = 1.0; 
-   const double C = A / second; 
+   const double C = A/second; 
    const double K = 1.0; 
    const Complex czero{0.0, 0.0};
    const LatLong Greenwich{51.4791, 0.0};

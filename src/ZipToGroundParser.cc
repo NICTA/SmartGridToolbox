@@ -66,10 +66,10 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "ZipToGround : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      ZipToGround * zip = mod.component<ZipToGround>(name);
+      ZipToGround* zip = mod.component<ZipToGround>(name);
 
       std::string busStr = state.expandName(nd["bus"].as<std::string>());
-      Bus * bus = mod.component<Bus>(busStr);
+      Bus* bus = mod.component<Bus>(busStr);
       if (bus == nullptr)
       {
          error() << "For component " << name << ", bus " << busStr 

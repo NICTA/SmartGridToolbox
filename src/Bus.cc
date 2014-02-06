@@ -10,7 +10,7 @@ namespace SmartGridToolbox
       ys_ = ublas::vector<Complex>(phases_.size(), czero);
       Ic_ = ublas::vector<Complex>(phases_.size(), czero);
       Sc_ = ublas::vector<Complex>(phases_.size(), czero);
-      for (const ZipToGroundBase * zip : zipsToGround_)
+      for (const ZipToGroundBase* zip : zipsToGround_)
       {
          ys_ += zip->Y();
          Ic_ += zip->I(); // Injection.
@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       {
          ys_(i) = Ic_(i) = Sc_(i) = {0.0, 0.0};
       }
-      for (const ZipToGroundBase * zip : zipsToGround_)
+      for (const ZipToGroundBase* zip : zipsToGround_)
       {
          ys_ += zip->Y();
          Ic_ += zip->I(); // Injection.
@@ -211,7 +211,7 @@ namespace SmartGridToolbox
                for (int i = 0; i < phases().size(); ++i)
                {
                   newSg(i) = {PgSetpoint()(i), Sg()(i).imag()};
-                  newV(i) = VMagSetpoint()(i) * V()(i) / abs(V()(i));
+                  newV(i) = VMagSetpoint()(i)*V()(i)/abs(V()(i));
                }
                setSg(newSg);
                setV(newV);

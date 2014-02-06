@@ -23,7 +23,7 @@ namespace SmartGridToolbox
          /** This relation could model dependency: nd would directly depend on me. */
          bool precedes(const WoNode & nd) const
          {
-            std::set<const WoNode *>::iterator it = descendents_.find(&nd);
+            std::set<const WoNode*>::iterator it = descendents_.find(&nd);
             return (it != descendents_.end());
          }
 
@@ -42,15 +42,15 @@ namespace SmartGridToolbox
             return (lhs.dominates(rhs) || ((!rhs.dominates(lhs)) && (lhs.idx_ < rhs.idx_)));
          }
 
-         void dfs(std::vector<WoNode *> & stack);
+         void dfs(std::vector<WoNode*> & stack);
 
       private:
 
          int idx_;
          bool visited_;
-         std::list<WoNode *> to_;
-         std::set<const WoNode *> descendents_; // Can be reached from here.
-         std::set<const WoNode *> dominated_; // Can be reached from here, not vice-versa.
+         std::list<WoNode*> to_;
+         std::set<const WoNode*> descendents_; // Can be reached from here.
+         std::set<const WoNode*> dominated_; // Can be reached from here, not vice-versa.
    };
 
    class WoGraph

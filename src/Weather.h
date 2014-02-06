@@ -50,7 +50,7 @@ namespace SmartGridToolbox
 
       private:
          LatLong latLong_;
-         const TimeSeries<Time, double> * cloudCoverSeries_;
+         const TimeSeries<Time, double>* cloudCoverSeries_;
 
          SolarIrradiance prevIrradiance_;
          SolarIrradiance irradiance_;

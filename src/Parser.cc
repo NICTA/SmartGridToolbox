@@ -359,7 +359,7 @@ namespace SmartGridToolbox
    {
       assertFieldPresent(node, "name");
       assertFieldPresent(node, "type"); // data
-      assertFieldPresent(node, "value_type"); // real_scalar / complex_scalar / real_vector / complex_vector
+      assertFieldPresent(node, "value_type"); // real_scalar/complex_scalar/real_vector/complex_vector
 
       std::string name = node["name"].as<std::string>();
       std::string timeSeriesType = node["type"].as<std::string>();
@@ -488,7 +488,7 @@ namespace SmartGridToolbox
          else
          {
             message() << "Parsing plugin " <<  nodeType << "." << std::endl;
-            const ParserPlugin * compParser = componentParser(nodeType);
+            const ParserPlugin* compParser = componentParser(nodeType);
             if (compParser == nullptr)
             {
                warning() << "I don't know how to parse component " << nodeType << std::endl;

@@ -12,7 +12,7 @@ namespace SmartGridToolbox
       bus1_(nullptr),
       phases0_(phases0),
       phases1_(phases1),
-      Y_(2 * phases0.size(), 2 * phases0.size(), czero),
+      Y_(2*phases0.size(), 2*phases0.size(), czero),
       changed_("Branch " + name + " setpoint changed")
    {
       if (phases0.size() != phases1.size())
@@ -46,7 +46,7 @@ namespace SmartGridToolbox
 
    void Branch::setY(const ublas::matrix<Complex> & Y)
    {
-      if (Y.size1() != 2 * phases0_.size() && Y.size2() != 2 * phases0_.size())
+      if (Y.size1() != 2*phases0_.size() && Y.size2() != 2*phases0_.size())
       {
          error() << "Both dimensions of Y should be of size twice the number of phases." << std::endl;
          abort();
