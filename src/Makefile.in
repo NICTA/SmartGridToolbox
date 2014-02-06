@@ -133,14 +133,14 @@ libSmartGridToolbox_a_LIBADD =
 am_libSmartGridToolbox_a_OBJECTS = Bus.$(OBJEXT) BusParser.$(OBJEXT) \
 	Branch.$(OBJEXT) BranchParser.$(OBJEXT) CdfParser.$(OBJEXT) \
 	Common.$(OBJEXT) Component.$(OBJEXT) DGYTransformer.$(OBJEXT) \
-	Event.$(OBJEXT) InverterBase.$(OBJEXT) \
-	MatpowerParser.$(OBJEXT) Model.$(OBJEXT) Network.$(OBJEXT) \
-	NetworkParser.$(OBJEXT) OverheadLine.$(OBJEXT) \
-	OverheadLineParser.$(OBJEXT) Parser.$(OBJEXT) \
-	PowerFlow.$(OBJEXT) PowerFlowNr.$(OBJEXT) Random.$(OBJEXT) \
-	RegisterParserPlugins.$(OBJEXT) SimpleBattery.$(OBJEXT) \
-	SimpleBatteryParser.$(OBJEXT) SimpleBuilding.$(OBJEXT) \
-	SimpleBuildingParser.$(OBJEXT) \
+	DGYTransformerParser.$(OBJEXT) Event.$(OBJEXT) \
+	InverterBase.$(OBJEXT) MatpowerParser.$(OBJEXT) \
+	Model.$(OBJEXT) Network.$(OBJEXT) NetworkParser.$(OBJEXT) \
+	OverheadLine.$(OBJEXT) OverheadLineParser.$(OBJEXT) \
+	Parser.$(OBJEXT) PowerFlow.$(OBJEXT) PowerFlowNr.$(OBJEXT) \
+	Random.$(OBJEXT) RegisterParserPlugins.$(OBJEXT) \
+	SimpleBattery.$(OBJEXT) SimpleBatteryParser.$(OBJEXT) \
+	SimpleBuilding.$(OBJEXT) SimpleBuildingParser.$(OBJEXT) \
 	SimpleDcPowerSourceParser.$(OBJEXT) SimpleInverter.$(OBJEXT) \
 	SimpleInverterParser.$(OBJEXT) Simulation.$(OBJEXT) \
 	SinglePhaseTransformer.$(OBJEXT) \
@@ -376,6 +376,7 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  Common.cc \
 										  Component.cc \
 										  DGYTransformer.cc \
+										  DGYTransformerParser.cc \
 										  Event.cc \
 										  InverterBase.cc \
 										  MatpowerParser.cc \
@@ -557,6 +558,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Component.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DGYTransformer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DGYTransformerParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InverterBase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MatpowerParser.Po@am__quote@

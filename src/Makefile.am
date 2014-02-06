@@ -44,6 +44,7 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  Common.cc \
 										  Component.cc \
 										  DGYTransformer.cc \
+										  DGYTransformerParser.cc \
 										  Event.cc \
 										  InverterBase.cc \
 										  MatpowerParser.cc \

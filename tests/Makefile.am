@@ -9,7 +9,7 @@ check_PROGRAMS = tests
 
 tests_SOURCES = tests.cc
 tests_LDFLAGS = $(AM_LDFLAGS) \
-					 -lsmartgridtoolbox \
+					 -lSmartGridToolbox \
 					 -lboost_date_time-mt \
 					 -lblas \
 					 -lyaml-cpp \

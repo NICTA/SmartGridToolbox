@@ -54,7 +54,6 @@ namespace SmartGridToolbox
 
          operator unsigned int() const {return mask_;}
 
-
          Phases & operator&=(const Phases & other);
          Phases & operator|=(const Phases & other);
 

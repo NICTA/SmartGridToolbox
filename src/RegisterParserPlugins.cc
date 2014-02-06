@@ -3,6 +3,7 @@
 #include "BranchParser.h"
 #include "BusParser.h"
 #include "CdfParser.h"
+#include "DGYTransformerParser.h"
 #include "MatpowerParser.h"
 #include "NetworkParser.h"
 #include "OverheadLineParser.h"
@@ -23,6 +24,7 @@ namespace SmartGridToolbox
       p.registerParserPlugin<BranchParser>();
       p.registerParserPlugin<BusParser>();
       p.registerParserPlugin<CdfParser>();
+      p.registerParserPlugin<DGYTransformerParser>();
       p.registerParserPlugin<MatpowerParser>();
       p.registerParserPlugin<NetworkParser>();
       p.registerParserPlugin<OverheadLineParser>();
