@@ -1149,8 +1149,8 @@ BOOST_AUTO_TEST_CASE (test_dgy_transformer)
    mod.validate();
    sim.initialize();
 
-   Bus * bus1 = mod.component<Bus>("slack_bus");
-   Bus * bus2 = mod.component<Bus>("pq_bus");
+   Bus * bus1 = mod.component<Bus>("bus_1");
+   Bus * bus2 = mod.component<Bus>("bus_2");
 
    Network * network = mod.component<Network>("network_1");
    network->solvePowerFlow();
