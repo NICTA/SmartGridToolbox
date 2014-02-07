@@ -20,12 +20,19 @@ objects: # And these are the actual objects.
       type:                   SL
       phases:                 [A, B, C]
       nominal_voltage:        [240, 240D120, 240D240]
+      V_mag_setpoint:         [240, 240, 240]
+      V_ang_setpoint_deg:     [0, 120, 240]
    bus:
       name:                   bus_2
       network:                network_1
       type:                   PQ
       phases:                 [A, B, C]
       nominal_voltage:        [240, 240D120, 240D240]
+   zip_to_ground:
+      name:                   zip_bus_2
+      phases:                 [A, B, C]
+      bus:                    bus_2
+      complex_power_load:     [1000.0, 1000.0, 1000.0]
    #overhead_line:
    #   name:                   line_1_2
    #   network:                network_1
@@ -33,22 +40,38 @@ objects: # And these are the actual objects.
    #   phases_1:               [A, B, C]
    #   bus_0:                  bus_1
    #   bus_1:                  bus_2
-   #   length:                 1609.34
+   #   length:                 200.0
    #   n_neutral:              1
    #   line_resistivity:       [1.9014e-04, 1.9014e-4, 1.9014e-4, 1.9014e-4]
    #   earth_resistivity:      100
    #   distance_matrix:        [  
-   #                              [7.5e-3,     1.0,     2.0,     3.0],
+   #                             [7.5e-3,     1.0,     2.0,     3.0],
    #                              [1.0,     7.5e-3,     1.0,     2.0],
    #                              [2.0,        1.0,  7.5e-3,     1.0],
    #                              [3.0,        2.0,     1.0,  7.5e-3]
    #                           ]
    #   freq:                   60.0
-   delta_g_wye_transformer:
-      name:                   dgy_transformer
+   #branch:
+   #   name:                   line_1_2
+   #   network:                network_1
+   #   phases_0:               [A, B, C]
+   #   phases_1:               [A, B, C]
+   #   bus_0:                  bus_1
+   #   bus_1:                  bus_2
+   #   Y:
+   #      simple_line:         [5-15j, 5-15j, 5-15j]
+   #delta_g_wye_transformer:
+   #   name:                   dgy_transformer
+   #   network:                network_1
+   #   bus_0:                  bus_1
+   #   bus_1:                  bus_2
+   #   complex_turns_ratio_01: 1.73
+   #   leakage_impedance:      0.1
+   wye_wye_transformer:
+      name:                   yy_transformer
       network:                network_1
       bus_0:                  bus_1
       bus_1:                  bus_2
-      complex_turns_ratio_01: 1
+      complex_turns_ratio_01: 1.73
       leakage_impedance:      0.1
 --- # Marks the end of each configuration document.

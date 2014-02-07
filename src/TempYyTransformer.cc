@@ -3,9 +3,9 @@
 namespace SmartGridToolbox
 {
    YYTransformer::YYTransformer(const std::string & name, Phases phases0, Phases phases1,
-                                ublas::vector<Complex> alpha, ublas::vector<Complex> ZL, ublas::vector<Complex> ZM)
+                                ublas::vector<Complex> a, ublas::vector<Complex> ZL, ublas::vector<Complex> ZM)
       : Branch(name, phases0, phases1),
-        alpha_(alpha)
+        a_(a)
    {
       int n = phases0.size();
       if (phases1.size() != n)
@@ -14,7 +14,7 @@ namespace SmartGridToolbox
                  << std::endl;
          abort();
       }
-      if (alpha.size() != n)
+      if (a.size() != n)
       {
          error() << "A Y_Y_transformer should have the same number of turns ratios as there are phases."
                  << std::endl;
@@ -46,9 +46,9 @@ namespace SmartGridToolbox
       ublas::matrix<Complex> YNode(2*n, 2*n, czero);
       for (int i = 0; i < n; ++i)
       {
-         YNode(i, i) = (YL_(i) + YM_(i)) /(alpha_(i)*conj(alpha_(i)));
-         YNode(i, i + n) = -YL_(i)/conj(alpha_(i));  
-         YNode(i + n, i) = -YL_(i)/alpha_(i);  
+         YNode(i, i) = (YL_(i) + YM_(i)) /(a_(i)*conj(a_(i)));
+         YNode(i, i + n) = -YL_(i)/conj(a_(i));  
+         YNode(i + n, i) = -YL_(i)/a_(i);  
          YNode(i + n, i + n) = YL_(i);
       }
       setY(YNode);

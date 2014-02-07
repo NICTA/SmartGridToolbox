@@ -1,5 +1,5 @@
-#ifndef D_GY_TRANSFORMER_DOT_H
-#define D_GY_TRANSFORMER_DOT_H
+#ifndef DGY_TRANSFORMER_DOT_H
+#define DGY_TRANSFORMER_DOT_H
 
 #include <SmartGridToolbox/Branch.h>
 

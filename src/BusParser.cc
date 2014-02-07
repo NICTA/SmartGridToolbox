@@ -54,14 +54,14 @@ namespace SmartGridToolbox
       auto ndVMagMax = nd["V_mag_max_setpoint"];
       if (ndVMagMax) bus.setVMagMaxSetpoint(ndVMagMax.as<ublas::vector<double>>());
 
-      auto ndVAng = nd["V_ang_setpoint_rad"];
-      if (ndVAng) bus.setVAngSetpoint(ndVAng.as<ublas::vector<double>>());
+      auto ndVAng = nd["V_ang_setpoint_deg"];
+      if (ndVAng) bus.setVAngSetpoint(ndVAng.as<ublas::vector<double>>()*pi/180.0);
 
-      auto ndVAngMin = nd["V_ang_min_setpoint_rad"];
-      if (ndVAngMin) bus.setVAngMinSetpoint(ndVAngMin.as<ublas::vector<double>>());
+      auto ndVAngMin = nd["V_ang_min_setpoint_deg"];
+      if (ndVAngMin) bus.setVAngMinSetpoint(ndVAngMin.as<ublas::vector<double>>()*pi/180.0);
       
-      auto ndVAngMax = nd["V_ang_max_setpoint_rad"];
-      if (ndVAngMax) bus.setVAngMaxSetpoint(ndVAngMax.as<ublas::vector<double>>());
+      auto ndVAngMax = nd["V_ang_max_setpoint_deg"];
+      if (ndVAngMax) bus.setVAngMaxSetpoint(ndVAngMax.as<ublas::vector<double>>()*pi/180.0);
    }
 
    void BusParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
