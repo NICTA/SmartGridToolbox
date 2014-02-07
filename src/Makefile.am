@@ -7,7 +7,7 @@ pkginclude_HEADERS = Branch.h \
 							Common.h \
 							Component.h \
 							DcPowerSourceBase.h \
-							DGYTransformer.h \
+							DgyTransformer.h \
 							Event.h \
 							InverterBase.h \
 							Load.h \
@@ -32,7 +32,7 @@ pkginclude_HEADERS = Branch.h \
 							TimeSeries.h \
 							Units.h \
 							Weather.h \
-							YYTransformer.h \
+							YyTransformer.h \
 							ZipToGround.h \
 							ZipToGroundBase.h
 
@@ -43,8 +43,8 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  CdfParser.cc \
 										  Common.cc \
 										  Component.cc \
-										  DGYTransformer.cc \
-										  DGYTransformerParser.cc \
+										  DgyTransformer.cc \
+										  DgyTransformerParser.cc \
 										  Event.cc \
 										  InverterBase.cc \
 										  MatpowerParser.cc \
@@ -75,8 +75,8 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  WeakOrder.cc \
 										  Weather.cc \
 										  WeatherParser.cc \
-										  YYTransformer.cc \
-										  YYTransformerParser.cc \
+										  YyTransformer.cc \
+										  YyTransformerParser.cc \
 										  ZipToGround.cc \
 										  ZipToGroundParser.cc
 

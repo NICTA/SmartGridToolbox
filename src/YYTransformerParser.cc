@@ -1,13 +1,13 @@
-#include "YYTransformerParser.h"
+#include "YyTransformerParser.h"
 
 #include "Network.h"
-#include "YYTransformer.h"
+#include "YyTransformer.h"
 
 namespace SmartGridToolbox
 {
-   void YYTransformerParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void YyTransformerParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
-      SGT_DEBUG(debug() << "YYTransformer : parse." << std::endl);
+      SGT_DEBUG(debug() << "YyTransformer : parse." << std::endl);
 
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
@@ -25,15 +25,15 @@ namespace SmartGridToolbox
       ublas::vector<Complex> ZL = nd["leakage_impedance"].as<ublas::vector<Complex>>();
       ublas::vector<Complex> ZM = nd["magnetising_impedance"].as<ublas::vector<Complex>>();
       
-      mod.newComponent<YYTransformer>(name, phases0, phases1, alpha, ZL, ZM);
+      mod.newComponent<YyTransformer>(name, phases0, phases1, alpha, ZL, ZM);
    }
 
-   void YYTransformerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void YyTransformerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
-      SGT_DEBUG(debug() << "YYTransformer : postParse." << std::endl);
+      SGT_DEBUG(debug() << "YyTransformer : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      YYTransformer* comp = mod.component<YYTransformer>(name);
+      YyTransformer* comp = mod.component<YyTransformer>(name);
 
       const std::string networkStr = state.expandName(nd["network"].as<std::string>());
       Network* networkComp = mod.component<Network>(networkStr);

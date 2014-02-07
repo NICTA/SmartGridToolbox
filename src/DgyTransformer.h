@@ -5,10 +5,10 @@
 
 namespace SmartGridToolbox
 {
-   class DGYTransformer : public Branch
+   class DgyTransformer : public Branch
    {
       public:
-         DGYTransformer(const std::string & name, Complex alpha, Complex ZL);
+         DgyTransformer(const std::string & name, Complex alpha, Complex ZL);
       
       private:
          void recalcY();

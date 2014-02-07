@@ -1,8 +1,8 @@
-#include "YYTransformer.h"
+#include "YyTransformer.h"
 
 namespace SmartGridToolbox
 {
-   YYTransformer::YYTransformer(const std::string & name, Phases phases0, Phases phases1,
+   YyTransformer::YyTransformer(const std::string & name, Phases phases0, Phases phases1,
                                 ublas::vector<Complex> a, ublas::vector<Complex> ZL, ublas::vector<Complex> ZM)
       : Branch(name, phases0, phases1),
         a_(a)
@@ -40,7 +40,7 @@ namespace SmartGridToolbox
       recalcY();      
    }
 
-   void YYTransformer::recalcY()
+   void YyTransformer::recalcY()
    {
       int n = phases0().size();
       ublas::matrix<Complex> YNode(2*n, 2*n, czero);

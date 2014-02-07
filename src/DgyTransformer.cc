@@ -1,15 +1,15 @@
-#include "DGYTransformer.h"
+#include "DgyTransformer.h"
 
 namespace SmartGridToolbox
 {
-   DGYTransformer::DGYTransformer(const std::string & name, Complex a, Complex ZL)
+   DgyTransformer::DgyTransformer(const std::string & name, Complex a, Complex ZL)
       : Branch(name, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C), a_(a)
    {
       YL_ = 1.0/ZL;
       recalcY();      
    }
 
-   void DGYTransformer::recalcY()
+   void DgyTransformer::recalcY()
    {
       Complex ai = 1.0/a_;
       Complex aci = 1.0/conj(a_);

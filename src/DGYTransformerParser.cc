@@ -1,13 +1,13 @@
-#include "DGYTransformerParser.h"
+#include "DgyTransformerParser.h"
 
 #include "Network.h"
-#include "DGYTransformer.h"
+#include "DgyTransformer.h"
 
 namespace SmartGridToolbox
 {
-   void DGYTransformerParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void DgyTransformerParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
-      SGT_DEBUG(debug() << "DGYTransformer : parse." << std::endl);
+      SGT_DEBUG(debug() << "DgyTransformer : parse." << std::endl);
 
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
@@ -20,15 +20,15 @@ namespace SmartGridToolbox
       Complex alpha = nd["complex_turns_ratio_01"].as<Complex>();
       Complex ZLeak = nd["leakage_impedance"].as<Complex>();
       
-      mod.newComponent<DGYTransformer>(name, alpha, ZLeak);
+      mod.newComponent<DgyTransformer>(name, alpha, ZLeak);
    }
 
-   void DGYTransformerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void DgyTransformerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
    {
-      SGT_DEBUG(debug() << "DGYTransformer : postParse." << std::endl);
+      SGT_DEBUG(debug() << "DgyTransformer : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      DGYTransformer* comp = mod.component<DGYTransformer>(name);
+      DgyTransformer* comp = mod.component<DgyTransformer>(name);
 
       const std::string networkStr = state.expandName(nd["network"].as<std::string>());
       Network* networkComp = mod.component<Network>(networkStr);

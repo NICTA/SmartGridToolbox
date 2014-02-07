@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   class YYTransformerParser : public ParserPlugin
+   class YyTransformerParser : public ParserPlugin
    {
       public:
          static constexpr const char* pluginKey()
