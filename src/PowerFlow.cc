@@ -135,30 +135,30 @@ namespace SmartGridToolbox
    }
 
    // Balanced/1-phase simple line with a single admittance.
-   const ublas::matrix<Complex> YLine1P(const Complex & y)
+   const ublas::matrix<Complex> YLine1P(const Complex & Y)
    {
-      ublas::matrix<Complex> Y(2, 2, czero);
-      Y(0, 0) = y;
-      Y(1, 1) = y;
-      Y(0, 1) = -y;
-      Y(1, 0) = -y;
-      return Y;
+      ublas::matrix<Complex> YNode(2, 2, czero);
+      YNode(0, 0) = Y;
+      YNode(1, 1) = Y;
+      YNode(0, 1) = -Y;
+      YNode(1, 0) = -Y;
+      return YNode;
    }
 
    // No cross terms, just nPhase lines with single admittances.
-   const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex> & y)
+   const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex> & Y)
    {
-      int nPhase = y.size();
+      int nPhase = Y.size();
       int nTerm = 2*nPhase; 
-      ublas::matrix<Complex> Y(nTerm, nTerm, czero);
+      ublas::matrix<Complex> YNode(nTerm, nTerm, czero);
       for (int i = 0; i < nPhase; ++i)
       {
-         Y(i, i) = y(i);
-         Y(i + nPhase, i + nPhase) = y(i);
-         Y(i, i + nPhase) = -y(i);
-         Y(i + nPhase, i) = -y(i);
+         YNode(i, i) = Y(i);
+         YNode(i + nPhase, i + nPhase) = Y(i);
+         YNode(i, i + nPhase) = -Y(i);
+         YNode(i + nPhase, i) = -Y(i);
       }
-      return Y;
+      return YNode;
    }
    
    ublas::matrix<Complex> YOverheadLine(ublas::vector<double> r, ublas::matrix<double> DMat, double L,
@@ -172,63 +172,63 @@ namespace SmartGridToolbox
 		double freqCoeffImag = 1.256642e-6*freq;
 		double freqAdditiveTerm = 0.5*log(rho/freq) + 6.490501;
 
-      ublas::matrix<Complex> z(n, n, czero);
+      ublas::matrix<Complex> Z(n, n, czero);
       for (int i = 0; i < n; ++i)
       {
-         z(i, i) = {r(i) + freqCoeffReal, freqCoeffImag*(log(1/DMat(i, i)) + freqAdditiveTerm)};
+         Z(i, i) = {r(i) + freqCoeffReal, freqCoeffImag*(log(1/DMat(i, i)) + freqAdditiveTerm)};
          for (int k = i + 1; k < n; ++k)
          {
-				z(i, k) = {freqCoeffReal, freqCoeffImag*(log(1/DMat(i, k)) + freqAdditiveTerm)};
-				z(k, i) = z(i, k);
+				Z(i, k) = {freqCoeffReal, freqCoeffImag*(log(1/DMat(i, k)) + freqAdditiveTerm)};
+				Z(k, i) = Z(i, k);
          }
       }
-      z *= L; // z has been checked against example in Kersting and found to be OK.
+      Z *= L; // Z has been checked against example in Kersting and found to be OK.
       SGT_DEBUG(
-            for (int i = 0; i < z.size1(); ++i)
+            for (int i = 0; i < Z.size1(); ++i)
             {
-               message() << "z(" << i << ", :) = " << row(z, i) << std::endl;
+               message() << "Z(" << i << ", :) = " << row(Z, i) << std::endl;
                message() << std::endl;
             });
 
       // TODO: eliminate the neutral phase, as per calculation of b_mat in gridLAB-D overhead_line.cpp.
       // Very easy, but interface needs consideration. Equation is:
-		// b_mat[0][0] = (z_aa - z_an*z_an*z_nn_inv)*miles;
-      // b_mat[0][1] = (z_ab - z_an*z_bn*z_nn_inv)*miles;
+		// b_mat[0][0] = (Z_aa - Z_an*Z_an*Z_nn_inv)*miles;
+      // b_mat[0][1] = (Z_ab - Z_an*Z_bn*Z_nn_inv)*miles;
       // etc.
       
-      ublas::matrix<Complex> y(n, n); bool ok = invertMatrix(z, y); assert(ok);
+      ublas::matrix<Complex> Y(n, n); bool ok = invertMatrix(Z, Y); assert(ok);
       SGT_DEBUG(
-            for (int i = 0; i < y.size1(); ++i)
+            for (int i = 0; i < Y.size1(); ++i)
             {
-               message() << "y(" << i << ", :) = " << row(y, i) << std::endl;
+               message() << "Y(" << i << ", :) = " << row(Y, i) << std::endl;
                message() << std::endl;
             });
       
-      ublas::matrix<Complex> Y(2*n, 2*n, czero);
+      ublas::matrix<Complex> YNode(2*n, 2*n, czero);
       for (int i = 0; i < n; ++i)
       {
-         Y(i, i) += y(i, i);
-         Y(i + n, i + n) += y(i, i); 
+         YNode(i, i) += Y(i, i);
+         YNode(i + n, i + n) += Y(i, i); 
 
-         Y(i, i + n) = -y(i, i); 
-         Y(i + n, i) = -y(i, i); 
+         YNode(i, i + n) = -Y(i, i); 
+         YNode(i + n, i) = -Y(i, i); 
 
          for (int k = i + 1; k < n; ++k)
          {
             // Diagonal terms in node admittance matrix.
-            Y(i, i)         += y(i, k);
-            Y(k, k)         += y(k, i);
-            Y(i + n, i + n) += y(i, k);
-            Y(k + n, k + n) += y(k, i);
+            YNode(i, i)         += Y(i, k);
+            YNode(k, k)         += Y(k, i);
+            YNode(i + n, i + n) += Y(i, k);
+            YNode(k + n, k + n) += Y(k, i);
 
-            Y(i, k + n)      = -y(i, k);
-            Y(i + n, k)      = -y(i, k);
-            Y(k, i + n)      = -y(k, i);
-            Y(k + n, i)      = -y(k, i);
+            YNode(i, k + n)      = -Y(i, k);
+            YNode(i + n, k)      = -Y(i, k);
+            YNode(k, i + n)      = -Y(k, i);
+            YNode(k + n, i)      = -Y(k, i);
          }
       }
-      std::cout << "Returning " << Y.size1() << std::endl;
+      std::cout << "Returning " << YNode.size1() << std::endl;
 
-      return Y;
+      return YNode;
    }
 }

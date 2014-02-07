@@ -22,7 +22,7 @@ namespace SmartGridToolbox
       typedef std::vector<std::unique_ptr<NodeNr>> NodeVec; ///< Nodes, one per phase, owned by me.
 
       BusNr(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
-            const ublas::vector<Complex> & ys, const ublas::vector<Complex> & Ic,
+            const ublas::vector<Complex> & Ys, const ublas::vector<Complex> & Ic,
             const ublas::vector<Complex> & S);
 
       std::string id_;            ///< Externally relevant id.
@@ -31,7 +31,7 @@ namespace SmartGridToolbox
       ublas::vector<Complex> V_;  ///< Voltage, one per phase. Setpoint/warm start on input.
       ublas::vector<Complex> S_;  ///< Total power injection, one per phase. Setpt/wm start on input.
 
-      ublas::vector<Complex> ys_; ///< Constant admittance shunt, one per phase.
+      ublas::vector<Complex> Ys_; ///< Constant admittance shunt, one per phase.
       ublas::vector<Complex> Ic_; ///< Constant current injection, one per phase.
       NodeVec nodes_;             ///< Nodes, one per phase.
    };
@@ -59,7 +59,7 @@ namespace SmartGridToolbox
       Complex V_;
       Complex S_;
 
-      Complex ys_;
+      Complex Ys_;
       Complex Ic_;
 
       int idx_;

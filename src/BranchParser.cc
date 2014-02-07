@@ -32,8 +32,8 @@ namespace SmartGridToolbox
       }
       else if (ndYSimpleLine)
       {
-         ublas::vector<Complex> y = ndYSimpleLine.as<ublas::vector<Complex>>();
-         Y = YSimpleLine(y); 
+         ublas::vector<Complex> YLine = ndYSimpleLine.as<ublas::vector<Complex>>();
+         Y = YSimpleLine(YLine); 
       }
 
       Branch & comp = mod.newComponent<Branch>(name, phases0, phases1);

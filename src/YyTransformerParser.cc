@@ -19,13 +19,14 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "leakage_impedance");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      Phases phases0 = nd["phase_0"].as<Phases>();
-      Phases phases1 = nd["phase_1"].as<Phases>();
-      ublas::vector<Complex> alpha = nd["complex_turns_ratio_01"].as<ublas::vector<Complex>>();
-      ublas::vector<Complex> ZL = nd["leakage_impedance"].as<ublas::vector<Complex>>();
-      ublas::vector<Complex> ZM = nd["magnetising_impedance"].as<ublas::vector<Complex>>();
+      Phases phases0 = nd["phases_0"].as<Phases>();
+      Phases phases1 = nd["phases_1"].as<Phases>();
+      Complex a = nd["complex_turns_ratio_01"].as<Complex>();
+      Complex ZL = nd["leakage_impedance"].as<Complex>();
+      YAML::Node nd_mag_admit = nd["magnetising_admittance"];
+      Complex YM = nd_mag_admit ? nd["magnetising_admittance"].as<Complex>() : czero;
       
-      mod.newComponent<YyTransformer>(name, phases0, phases1, alpha, ZL, ZM);
+      mod.newComponent<YyTransformer>(name, phases0, phases1, a, ZL, YM);
    }
 
    void YyTransformerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const

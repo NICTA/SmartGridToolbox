@@ -24,7 +24,7 @@ namespace SmartGridToolbox
       Complex Sg;    // SI.
       double QMin;   // SI.
       double QMax;   // SI.
-      Complex ysPu;  // Per unit.
+      Complex YsPu;  // Per unit.
    };
 
    struct CdfBranchInfo
@@ -166,7 +166,7 @@ namespace SmartGridToolbox
             std::istringstream(line.substr(106, 8)) >> GsPu;
             double BsPu;
             std::istringstream(line.substr(114, 8)) >> BsPu;
-            busInfo.ysPu = Complex(GsPu, BsPu);
+            busInfo.YsPu = Complex(GsPu, BsPu);
          }
 
          std::getline(infile, line); 
@@ -238,8 +238,8 @@ namespace SmartGridToolbox
             Complex Sg = usePerUnit ? info.Sg/SBase : info.Sg;
             ublas::vector<Complex> SgVec(phases.size(), Sg);
 
-            Complex ys = usePerUnit ? info.ysPu : info.ysPu*SBase/(info.VBase*info.VBase);
-            ublas::vector<Complex> ysVec(phases.size(), ys);
+            Complex Ys = usePerUnit ? info.YsPu : info.YsPu*SBase/(info.VBase*info.VBase);
+            ublas::vector<Complex> YsVec(phases.size(), Ys);
 
             // TODO: WARNING: There are fields in CDF giving min and max MVAR or voltage.
             // MVAR should only apply for PV busses, and voltage for PV busses. But due to non-standard usage, we're
@@ -267,7 +267,7 @@ namespace SmartGridToolbox
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;
-            zip.Y() = ysVec;
+            zip.Y() = YsVec;
             bus.addZipToGround(zip);
 
             netw.addBus(bus);
@@ -300,12 +300,12 @@ namespace SmartGridToolbox
                abort();
             }
 
-            Complex ys = 1.0/Complex{Rs, Xs};
+            Complex Ys = 1.0/Complex{Rs, Xs};
 
-            Complex Y11 = (ys + Complex{0, 0.5*Bc});
+            Complex Y11 = (Ys + Complex{0, 0.5*Bc});
             Complex Y00 = Y11/(info.tap*info.tap);
-            Complex Y01 = -(ys/conj(cTap));
-            Complex Y10 = -(ys/cTap);
+            Complex Y01 = -(Ys/conj(cTap));
+            Complex Y10 = -(Ys/cTap);
 
             Branch & branch = mod.newComponent<Branch>(branchName(networkName, i, info.bus0Id, info.bus1Id), 
                               phases, phases);

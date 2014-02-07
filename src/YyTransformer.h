@@ -9,15 +9,15 @@ namespace SmartGridToolbox
    {
       public:
          YyTransformer(const std::string & name, Phases phases0, Phases phases1,
-                       ublas::vector<Complex> a, ublas::vector<Complex> ZL, ublas::vector<Complex> ZM);
+                       Complex a, Complex ZL, Complex YM);
       
       private:
          void recalcY();
 
       private:
-         ublas::vector<Complex> a_; ///< Complex turns ratio, n0/n1.
-         ublas::vector<Complex> YL_;    ///< Series leakage impedance.
-         ublas::vector<Complex> YM_;    ///< Shunt magnetising impedance.
+         Complex a_; ///< Complex turns ratio, n0/n1.
+         Complex YL_;    ///< Series leakage impedance.
+         Complex YM_;    ///< Shunt magnetising impedance.
    };
 }
 

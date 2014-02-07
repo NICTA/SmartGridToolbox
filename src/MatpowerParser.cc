@@ -88,7 +88,7 @@ namespace SmartGridToolbox
       Complex VPu;   // Per unit.
       Complex SLoad; // SI.
       Complex Sg;    // SI.
-      Complex ysPu;  // Per unit.
+      Complex YsPu;  // Per unit.
    };
 
    static std::string busName(const std::string & prefix, int id)
@@ -128,7 +128,7 @@ namespace SmartGridToolbox
       // SI to matpower internal:
       // P_mp_intl = P_SI/(1e6*MVABase)
       // V_mp_intl = V_SI/(1000*KVBase)
-      // y_mp_intl = y_SI*MVABase/KVBase^2 
+      // Y_mp_intl = Y_SI*MVABase/KVBase^2 
 
       // TODO: Investigate what effect the generator base power field has on matpower by looking at the code.
 
@@ -222,7 +222,7 @@ namespace SmartGridToolbox
 
             double Gs = busMatrix[busCols*i + 4];
             double Bs = busMatrix[busCols*i + 5];
-            busInfo.ysPu = Complex(Gs, Bs)*1e6/SBase; // Matpower has ys in MW/VBase^2
+            busInfo.YsPu = Complex(Gs, Bs)*1e6/SBase; // Matpower has Ys in MW/VBase^2
          }
 
          for (int i = 0; i < nGen; ++i)
@@ -286,8 +286,8 @@ namespace SmartGridToolbox
             Complex Sg = usePerUnit ? info.Sg/SBase : info.Sg;
             ublas::vector<Complex> SgVec(phases.size(), Sg);
             
-            Complex ys = usePerUnit ? info.ysPu : info.ysPu*SBase/(info.VBase*info.VBase);
-            ublas::vector<Complex> ysVec(phases.size(), ys);
+            Complex Ys = usePerUnit ? info.YsPu : info.YsPu*SBase/(info.VBase*info.VBase);
+            ublas::vector<Complex> YsVec(phases.size(), Ys);
 
             // TODO: bounds on values.
             
@@ -303,7 +303,7 @@ namespace SmartGridToolbox
 
             ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;
-            zip.Y() = ysVec;
+            zip.Y() = YsVec;
             bus.addZipToGround(zip);
 
             netw.addBus(bus);
@@ -346,12 +346,12 @@ namespace SmartGridToolbox
                abort();
             }
 
-            Complex ys = 1.0/Complex{Rs, Xs};
+            Complex Ys = 1.0/Complex{Rs, Xs};
 
-            Complex Y11 = (ys + Complex{0, 0.5*Bc});
+            Complex Y11 = (Ys + Complex{0, 0.5*Bc});
             Complex Y00 = Y11/(tap*tap);
-            Complex Y01 = -(ys/conj(cTap));
-            Complex Y10 = -(ys/cTap);
+            Complex Y01 = -(Ys/conj(cTap));
+            Complex Y10 = -(Ys/cTap);
 
             if (!usePerUnit)
             {

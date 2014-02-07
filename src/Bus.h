@@ -131,7 +131,7 @@ namespace SmartGridToolbox
          void addZipToGround(ZipToGroundBase & zipToGround);
 
          /// Total shunt admittance (sum of ZIPs).
-         const ublas::vector<Complex> & ys() const {return ys_;}
+         const ublas::vector<Complex> & Ys() const {return Ys_;}
 
          /// Total constant current injection (sum of ZIPs).
          const ublas::vector<Complex> & Ic() const {return Ic_;}
@@ -200,7 +200,7 @@ namespace SmartGridToolbox
 
          /// @name cached ZIP load quantities:
          /// @{
-         ublas::vector<Complex> ys_; ///< Constant admittance shunt (loads).
+         ublas::vector<Complex> Ys_; ///< Constant admittance shunt (loads).
          ublas::vector<Complex> Ic_; ///< Constant current injection (loads).
          ublas::vector<Complex> Sc_; ///< Constant power injection (loads).
          /// @}

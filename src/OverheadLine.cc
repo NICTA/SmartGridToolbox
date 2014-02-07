@@ -37,79 +37,79 @@ namespace SmartGridToolbox
 		double freqCoeffImag = 1.256642e-6*f_;
 		double freqAdditiveTerm = 0.5*log(rhoEarth_/f_) + 6.490501;
 
-      ublas::matrix<Complex> zWire(nWire, nWire, czero);
+      ublas::matrix<Complex> ZWire(nWire, nWire, czero);
       for (int i = 0; i < nWire; ++i)
       {
-         zWire(i, i) = {rhoLine_(i) + freqCoeffReal, freqCoeffImag*(log(1/Dij_(i, i)) + freqAdditiveTerm)};
+         ZWire(i, i) = {rhoLine_(i) + freqCoeffReal, freqCoeffImag*(log(1/Dij_(i, i)) + freqAdditiveTerm)};
          for (int k = i + 1; k < nWire; ++k)
          {
-				zWire(i, k) = {freqCoeffReal, freqCoeffImag*(log(1/Dij_(i, k)) + freqAdditiveTerm)};
-				zWire(k, i) = zWire(i, k);
+				ZWire(i, k) = {freqCoeffReal, freqCoeffImag*(log(1/Dij_(i, k)) + freqAdditiveTerm)};
+				ZWire(k, i) = ZWire(i, k);
          }
       }
-      zWire *= L_; // z has been checked against example in Kersting and found to be OK.
+      ZWire *= L_; // Z has been checked against example in Kersting and found to be OK.
       SGT_DEBUG(
             message() << "Before Kron:" << std::endl;
-            for (int i = 0; i < zWire.size1(); ++i)
+            for (int i = 0; i < ZWire.size1(); ++i)
             {
-               message() << "z(" << i << ", :) = " << row(zWire, i) << std::endl;
+               message() << "Z(" << i << ", :) = " << row(ZWire, i) << std::endl;
                message() << std::endl;
             });
 
-      ublas::matrix<Complex> zPhase = project(zWire, ublas::range(0, nPhase), ublas::range(0, nPhase));
+      ublas::matrix<Complex> ZPhase = project(ZWire, ublas::range(0, nPhase), ublas::range(0, nPhase));
 
       // Apply Kron reduction to eliminate neutral.
       if (nNeutral_ == 1)
       {
          int iNeutral = nPhase;
-         Complex znnInv = 1.0/zWire(iNeutral, iNeutral); // Assuming only one neutral!
+         Complex ZnnInv = 1.0/ZWire(iNeutral, iNeutral); // Assuming only one neutral!
          for (int i = 0; i < nPhase; ++i)
          {
             for (int j = 0; j < nPhase; ++j)
             {
-               zPhase(i, j) -= zWire(i, iNeutral)*zWire(iNeutral, j)*znnInv;
+               ZPhase(i, j) -= ZWire(i, iNeutral)*ZWire(iNeutral, j)*ZnnInv;
             }
          }
       }
 
       SGT_DEBUG(
             message() << "After Kron:" << std::endl;
-            for (int i = 0; i < zPhase.size1(); ++i)
+            for (int i = 0; i < ZPhase.size1(); ++i)
             {
-               message() << "z(" << i << ", :) = " << row(zPhase, i) << std::endl;
+               message() << "Z(" << i << ", :) = " << row(ZPhase, i) << std::endl;
                message() << std::endl;
             });
 
-      ublas::matrix<Complex> y(nPhase, nPhase);
-      bool ok = invertMatrix(zPhase, y); assert(ok);
+      ublas::matrix<Complex> Y(nPhase, nPhase);
+      bool ok = invertMatrix(ZPhase, Y); assert(ok);
       SGT_DEBUG(
-            for (int i = 0; i < y.size1(); ++i)
+            for (int i = 0; i < Y.size1(); ++i)
             {
-               message() << "y(" << i << ", :) = " << row(y, i) << std::endl;
+               message() << "Y(" << i << ", :) = " << row(Y, i) << std::endl;
                message() << std::endl;
             });
       
       ublas::matrix<Complex> YNode(2*nPhase, 2*nPhase, czero);
       for (int i = 0; i < nPhase; ++i)
       {
-         YNode(i, i) += y(i, i);
-         YNode(i + nPhase, i + nPhase) += y(i, i); 
+         YNode(i, i) += Y(i, i);
+         YNode(i + nPhase, i + nPhase) += Y(i, i); 
 
-         YNode(i, i + nPhase) = -y(i, i); 
-         YNode(i + nPhase, i) = -y(i, i); 
+         YNode(i, i + nPhase) = -Y(i, i); 
+         YNode(i + nPhase, i) = -Y(i, i); 
 
          for (int k = i + 1; k < nPhase; ++k)
          {
             // Diagonal terms in node admittance matrix.
-            YNode(i, i)         += y(i, k);
-            YNode(k, k)         += y(k, i);
-            YNode(i + nPhase, i + nPhase) += y(i, k);
-            YNode(k + nPhase, k + nPhase) += y(k, i);
+            YNode(i, i)         += Y(i, k);
+            YNode(k, k)         += Y(k, i);
+            YNode(i + nPhase, i + nPhase) += Y(i, k);
+            YNode(k + nPhase, k + nPhase) += Y(k, i);
 
-            YNode(i, k + nPhase)      = -y(i, k);
-            YNode(i + nPhase, k)      = -y(i, k);
-            YNode(k, i + nPhase)      = -y(k, i);
-            YNode(k + nPhase, i)      = -y(k, i);
+            YNode(i, k + nPhase)      = -Y(i, k);
+            YNode(i + nPhase, k)      = -Y(i, k);
+            YNode(k, i + nPhase)      = -Y(k, i);
+            YNode(k + nPhase, i)      = -Y(k, i);
          }
       }
       setY(YNode);

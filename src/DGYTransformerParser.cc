@@ -17,10 +17,10 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "leakage_impedance");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      Complex alpha = nd["complex_turns_ratio_01"].as<Complex>();
-      Complex ZLeak = nd["leakage_impedance"].as<Complex>();
+      Complex a = nd["complex_turns_ratio_01"].as<Complex>();
+      Complex ZL = nd["leakage_impedance"].as<Complex>();
       
-      mod.newComponent<DgyTransformer>(name, alpha, ZLeak);
+      mod.newComponent<DgyTransformer>(name, a, ZL);
    }
 
    void DgyTransformerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const

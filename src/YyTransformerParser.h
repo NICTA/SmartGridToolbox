@@ -1,5 +1,5 @@
-#ifndef Y_Y_TRANSFORMER_PARSER
-#define Y_Y_TRANSFORMER_PARSER
+#ifndef YY_TRANSFORMER_PARSER
+#define YY_TRANSFORMER_PARSER
 
 #include <SmartGridToolbox/Parser.h>
 
@@ -19,4 +19,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // Y_Y_TRANSFORMER_PARSER
+#endif // YY_TRANSFORMER_PARSER

@@ -7,12 +7,12 @@ namespace SmartGridToolbox
 {
    void Bus::initializeState()
    {
-      ys_ = ublas::vector<Complex>(phases_.size(), czero);
+      Ys_ = ublas::vector<Complex>(phases_.size(), czero);
       Ic_ = ublas::vector<Complex>(phases_.size(), czero);
       Sc_ = ublas::vector<Complex>(phases_.size(), czero);
       for (const ZipToGroundBase* zip : zipsToGround_)
       {
-         ys_ += zip->Y();
+         Ys_ += zip->Y();
          Ic_ += zip->I(); // Injection.
          Sc_ += zip->S(); // Injection.
       }
@@ -23,11 +23,11 @@ namespace SmartGridToolbox
       applySetpoints();
       for (int i = 0; i < phases_.size(); ++i)
       {
-         ys_(i) = Ic_(i) = Sc_(i) = {0.0, 0.0};
+         Ys_(i) = Ic_(i) = Sc_(i) = {0.0, 0.0};
       }
       for (const ZipToGroundBase* zip : zipsToGround_)
       {
-         ys_ += zip->Y();
+         Ys_ += zip->Y();
          Ic_ += zip->I(); // Injection.
          Sc_ += zip->S(); // Injection.
       }
@@ -52,7 +52,7 @@ namespace SmartGridToolbox
       VAngMaxSetpoint_(ublas::vector<double>(phases.size(), infinity)),
       V_(nominalV),
       Sg_(ublas::vector<Complex>(phases.size(), czero)),
-      ys_(ublas::vector<Complex>(phases.size(), czero)),
+      Ys_(ublas::vector<Complex>(phases.size(), czero)),
       Ic_(ublas::vector<Complex>(phases.size(), czero)),
       Sc_(ublas::vector<Complex>(phases.size(), czero)),
       changed_("Bus " + name + " setpoint changed")
