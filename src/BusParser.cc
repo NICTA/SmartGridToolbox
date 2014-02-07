@@ -23,7 +23,7 @@ namespace SmartGridToolbox
 
       auto ndNominal = nd["nominal_voltage"];
       ublas::vector<Complex> nominalV = ndNominal ? ndNominal.as<ublas::vector<Complex>>()
-                                                : ublas::vector<Complex>(nPhase, czero);
+                                                  : ublas::vector<Complex>(nPhase, czero);
       
       Bus & bus = mod.newComponent<Bus>(name, type, phases, nominalV);
 

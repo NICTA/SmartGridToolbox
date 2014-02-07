@@ -132,8 +132,8 @@ libSmartGridToolbox_a_AR = $(AR) $(ARFLAGS)
 libSmartGridToolbox_a_LIBADD =
 am_libSmartGridToolbox_a_OBJECTS = Bus.$(OBJEXT) BusParser.$(OBJEXT) \
 	Branch.$(OBJEXT) BranchParser.$(OBJEXT) CdfParser.$(OBJEXT) \
-	Common.$(OBJEXT) Component.$(OBJEXT) DGYTransformer.$(OBJEXT) \
-	DGYTransformerParser.$(OBJEXT) Event.$(OBJEXT) \
+	Common.$(OBJEXT) Component.$(OBJEXT) DgyTransformer.$(OBJEXT) \
+	DgyTransformerParser.$(OBJEXT) Event.$(OBJEXT) \
 	InverterBase.$(OBJEXT) MatpowerParser.$(OBJEXT) \
 	Model.$(OBJEXT) Network.$(OBJEXT) NetworkParser.$(OBJEXT) \
 	OverheadLine.$(OBJEXT) OverheadLineParser.$(OBJEXT) \
@@ -147,7 +147,7 @@ am_libSmartGridToolbox_a_OBJECTS = Bus.$(OBJEXT) BusParser.$(OBJEXT) \
 	SinglePhaseTransformerParser.$(OBJEXT) SolarPv.$(OBJEXT) \
 	SolarPvParser.$(OBJEXT) SparseSolver.$(OBJEXT) Sun.$(OBJEXT) \
 	WeakOrder.$(OBJEXT) Weather.$(OBJEXT) WeatherParser.$(OBJEXT) \
-	YYTransformer.$(OBJEXT) YYTransformerParser.$(OBJEXT) \
+	YyTransformer.$(OBJEXT) YyTransformerParser.$(OBJEXT) \
 	ZipToGround.$(OBJEXT) ZipToGroundParser.$(OBJEXT)
 libSmartGridToolbox_a_OBJECTS = $(am_libSmartGridToolbox_a_OBJECTS)
 PROGRAMS = $(bin_PROGRAMS)
@@ -339,7 +339,7 @@ pkginclude_HEADERS = Branch.h \
 							Common.h \
 							Component.h \
 							DcPowerSourceBase.h \
-							DGYTransformer.h \
+							DgyTransformer.h \
 							Event.h \
 							InverterBase.h \
 							Load.h \
@@ -364,7 +364,7 @@ pkginclude_HEADERS = Branch.h \
 							TimeSeries.h \
 							Units.h \
 							Weather.h \
-							YYTransformer.h \
+							YyTransformer.h \
 							ZipToGround.h \
 							ZipToGroundBase.h
 
@@ -375,8 +375,8 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  CdfParser.cc \
 										  Common.cc \
 										  Component.cc \
-										  DGYTransformer.cc \
-										  DGYTransformerParser.cc \
+										  DgyTransformer.cc \
+										  DgyTransformerParser.cc \
 										  Event.cc \
 										  InverterBase.cc \
 										  MatpowerParser.cc \
@@ -407,8 +407,8 @@ libSmartGridToolbox_a_SOURCES = Bus.cc \
 										  WeakOrder.cc \
 										  Weather.cc \
 										  WeatherParser.cc \
-										  YYTransformer.cc \
-										  YYTransformerParser.cc \
+										  YyTransformer.cc \
+										  YyTransformerParser.cc \
 										  ZipToGround.cc \
 										  ZipToGroundParser.cc
 
@@ -557,8 +557,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CdfParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Common.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Component.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DGYTransformer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DGYTransformerParser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DgyTransformer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DgyTransformerParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InverterBase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MatpowerParser.Po@am__quote@
@@ -589,8 +589,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeakOrder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Weather.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WeatherParser.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/YYTransformer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/YYTransformerParser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/YyTransformer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/YyTransformerParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGround.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ZipToGroundParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/helloworld.Po@am__quote@

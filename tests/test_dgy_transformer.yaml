@@ -20,8 +20,6 @@ objects: # And these are the actual objects.
       type:                   SL
       phases:                 [A, B, C]
       nominal_voltage:        [240, 240D120, 240D240]
-      V_mag_setpoint:         [240, 240, 240]
-      V_ang_setpoint_deg:     [0, 120, 240]
    bus:
       name:                   bus_2
       network:                network_1
@@ -59,7 +57,7 @@ objects: # And these are the actual objects.
    #   bus_0:                  bus_1
    #   bus_1:                  bus_2
    #   Y:
-   #      simple_line:         [5-15j, 5-15j, 5-15j]
+   #      simple_line:         [2-5j, 2-5j, 2-5j]
    #delta_g_wye_transformer:
    #   name:                   dgy_transformer
    #   network:                network_1
@@ -72,6 +70,8 @@ objects: # And these are the actual objects.
       network:                network_1
       bus_0:                  bus_1
       bus_1:                  bus_2
-      complex_turns_ratio_01: 1.73
+      phases_0:               [A, B, C]
+      phases_1:               [A, B, C]
+      complex_turns_ratio_01: 1.0
       leakage_impedance:      0.1
 --- # Marks the end of each configuration document.

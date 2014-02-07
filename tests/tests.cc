@@ -1153,6 +1153,7 @@ BOOST_AUTO_TEST_CASE (test_dgy_transformer)
    Bus * bus2 = mod.component<Bus>("bus_2");
 
    Network * network = mod.component<Network>("network_1");
+   message() << *network << std::endl;
    network->solvePowerFlow();
 
    message() << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << std::endl;

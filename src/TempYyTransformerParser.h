@@ -10,7 +10,7 @@ namespace SmartGridToolbox
       public:
          static constexpr const char* pluginKey()
          {
-            return "Y_Y_transformer";
+            return "wye_wye_transformer";
          }
 
       public:

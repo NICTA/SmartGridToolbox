@@ -58,8 +58,13 @@ namespace SmartGridToolbox
       changed_("Bus " + name + " setpoint changed")
    {
       assert(nominalV_.size() == phases_.size());
+      for (int i = 0; i < phases_.size(); ++i)
+      {
+         VMagSetpoint_(i) = std::abs(nominalV(i));
+         VAngSetpoint_(i) = std::arg(nominalV(i));
+      }
    }
-         
+
    void Bus::setPgSetpoint(const ublas::vector<double> & PgSetpoint)
    {
       if (PgSetpoint.size() != phases_.size())
