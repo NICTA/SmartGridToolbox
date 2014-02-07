@@ -1138,13 +1138,13 @@ BOOST_AUTO_TEST_CASE (test_cdf_14)
    testCDF("ieee14", false);
 }
 
-BOOST_AUTO_TEST_CASE (test_dgy_transformer)
+BOOST_AUTO_TEST_CASE (test_transformers)
 {
    Model mod;
    Simulation sim(mod);
 
    Parser & p = Parser::globalParser();
-   p.parse("test_dgy_transformer.yaml", mod, sim); p.postParse();
+   p.parse("test_transformers.yaml", mod, sim); p.postParse();
 
    mod.validate();
    sim.initialize();
