@@ -15,11 +15,16 @@ namespace SmartGridToolbox
    class Branch : public Component
    {
       public:
+         /// @name Lifecycle:
+         /// @{
+
          Branch(const std::string & name, const Phases & phases0, const Phases & phases1);
 
-         /// @name Bus accessors.
+         /// @}
+
+         /// @name Bus accessors:
          /// @{
-         
+        
          const Bus & bus0() const {return *bus0_;}
          void setBus0(Bus & bus0);
 
@@ -28,7 +33,7 @@ namespace SmartGridToolbox
          
          /// @}
 
-         /// @name Phase accessors.
+         /// @name Phase accessors:
          /// @{
          
          const Phases & phases0() const {return phases0_;}
@@ -36,7 +41,7 @@ namespace SmartGridToolbox
          
          /// @}
 
-         /// @name Nodal admittance matrix (Y) accessors.
+         /// @name Nodal admittance matrix (Y) accessors:
          /// @{
          
          const ublas::matrix<Complex> & Y() const {return Y_;}
@@ -44,10 +49,10 @@ namespace SmartGridToolbox
          
          /// @}
          
-         /// @name Custom events.
+         /// @name Custom events:
          /// @{
          
-         /// Event triggered whenever branch is changed in some way.
+         /// Event triggered whenever branch is changed in some way:
          Event & changed() {return changed_;}
          
          /// @}

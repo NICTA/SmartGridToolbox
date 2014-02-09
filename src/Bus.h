@@ -16,120 +16,147 @@ namespace SmartGridToolbox
    {
       friend class BusParser;
 
-      /// @name Private overridden functions: from Component.
-      /// @{
       protected:
          virtual void initializeState() override;
          virtual void updateState(Time t0, Time t1) override;
-      /// @}
 
-      /// @name My public member functions.
-      /// @{
       public:
          /// @name Lifecycle.
          /// @{
+         
          Bus(const std::string & name, BusType type, const Phases & phases, const ublas::vector<Complex> & nominalV);
+         
          /// @}
 
          /// @name Basic info.
          /// @{
+         
          BusType type() const {return type_;}
          const Phases & phases() const {return phases_;}
          const ublas::vector<Complex> & nominalV() const {return nominalV_;}
+         
          /// @}
 
-         /// @name Setpoints.
+         /// @name Real generated power setpoints.
+         ///< Equality for SL, PV, bounds for PQ.
          /// @{
-         /// @name Real generated power.
-         /** Equality for PQ, PV, bounds for SL. */
-         /// @{
+         
          ublas::vector<double> PgSetpoint() const
          {
             return PgSetpoint_;
          }
+
          void setPgSetpoint(const ublas::vector<double> & PgSetpoint);
+         
          ublas::vector<double> PgMinSetpoint() const
          {
             return PgMinSetpoint_;
          }
+
          void setPgMinSetpoint(const ublas::vector<double> & PgMinSetpoint);
+
          ublas::vector<double> PgMaxSetpoint() const
          {
             return PgMaxSetpoint_;
          }
+
          void setPgMaxSetpoint(const ublas::vector<double> & PgMaxSetpoint);
+         
          /// @}
 
-         /// @name Reactive generated power.
-         /** Equality for PQ, bounds for SL, PV. */
+         /// @name Reactive generated power setpoints.
+         ///< Equality for SL, PV, bounds for PQ.
          /// @{
+         
          ublas::vector<double> QgSetpoint() const
          {
             return QgSetpoint_;
          }
+
          void setQgSetpoint(const ublas::vector<double> & QgSetpoint);
+
          ublas::vector<double> QgMinSetpoint() const
          {
             return QgMinSetpoint_;
          }
+
          void setQgMinSetpoint(const ublas::vector<double> & QgMinSetpoint);
+
          ublas::vector<double> QgMaxSetpoint() const
          {
             return QgMaxSetpoint_;
          }
+
          void setQgMaxSetpoint(const ublas::vector<double> & QgMaxSetpoint);
+         
          /// @}
 
-         /// @name Voltage magnitude.
-         /** Equality for SL, PV, bounds for PQ. */
+         /// @name Voltage magnitude setpoints.
+         ///< Equality for SL, PV, bounds for PQ.
          /// @{
+         
          ublas::vector<double> VMagSetpoint() const
          {
             return VMagSetpoint_;
          }
+
          void setVMagSetpoint(const ublas::vector<double> & VMagSetpoint);
+
          ublas::vector<double> VMagMinSetpoint() const
          {
             return VMagMinSetpoint_;
          }
+
          void setVMagMinSetpoint(const ublas::vector<double> & VMagMinSetpoint);
+
          ublas::vector<double> VMagMaxSetpoint() const
          {
             return VMagMaxSetpoint_;
          }
+
          void setVMagMaxSetpoint(const ublas::vector<double> & VMagMaxSetpoint);
+         
          /// @}
 
-         /// @name Voltage angle (radians).
-         /** Equality for SL, bounds for PQ, PV. */
+         /// @name Voltage angle (radians) setpoints.
+         ///< Equality for SL, PV, bounds for PQ.
          /// @{
+         
          ublas::vector<double> VAngSetpoint() const
          {
             return VAngSetpoint_;
          }
+         
          void setVAngSetpoint(const ublas::vector<double> & VAngSetpoint);
+         
          ublas::vector<double> VAngMinSetpoint() const
          {
             return VAngMinSetpoint_;
          }
+         
          void setVAngMinSetpoint(const ublas::vector<double> & VAngMinSetpoint);
+         
          ublas::vector<double> VAngMaxSetpoint() const
          {
             return VAngMaxSetpoint_;
          }
+         
          void setVAngMaxSetpoint(const ublas::vector<double> & VAngMaxSetpoint);
+         
          /// @}
 
+         /// @name Apply setpoints.
+         /// Set quantities such as voltage, power according to the setpoints.
          void applySetpoints();
-         /// @}
 
          /// @name Loads/constant power generation.
+         ///< ZIP = constant Z, I, P (or Y, I, S).
          /// @{
-         /// ZIP = constant Z, I, P (or Y, I, S).
+         
          const std::vector<ZipToGroundBase*> & zipsToGround() const {return zipsToGround_;}
-         /// ZIP = constant Z, I, P (or Y, I, S).
-         void addZipToGround(ZipToGroundBase & zipToGround);
 
+         void addZipToGround(ZipToGroundBase & zipToGround);
+         
          /// Total shunt admittance (sum of ZIPs).
          const ublas::vector<Complex> & Ys() const {return Ys_;}
 
@@ -138,32 +165,37 @@ namespace SmartGridToolbox
 
          /// Total constant power injection (sum of ZIPs).
          const ublas::vector<Complex> & Sc() const {return Sc_;}
+         
          /// @}
 
          /// @name State.
          /// @{
+         
          /// Get bus voltage.
          const ublas::vector<Complex> & V() const {return V_;}
+         
          /// Set bus voltage (warm start or solver).
          void setV(const ublas::vector<Complex> & V) {V_ = V;}
 
          /// Get bus generated power.
          const ublas::vector<Complex> & Sg() const {return Sg_;}
+         
          /// Set bus generated power (warm start or solver).
          void setSg(const ublas::vector<Complex> & Sg) {Sg_ = Sg;}
 
          /// Total power injection (Sc() + Sg()).
          const ublas::vector<Complex> STot() const {return Sc_ + Sg_;}
+         
          /// @}
 
          /// @name Events.
          /// @{
+        
+         /// Event triggered when bus (e.g. setpoint) has changed.
          Event & changed() {return changed_;}
-         /// @}
-      /// @}
 
-      /// @name My private member variables.
-      /// @{
+         /// @}
+
       private:
          BusType type_;                                ///< Bus type.
          Phases phases_;                               ///< Phases.
