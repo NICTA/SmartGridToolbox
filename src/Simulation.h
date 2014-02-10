@@ -11,7 +11,7 @@ namespace SmartGridToolbox
 {
    class Model;
 
-   /// Simulation. 
+   /// Simulation: takes a Model, and steps time according to discrete event simulation principles.
    class Simulation
    {
       public:

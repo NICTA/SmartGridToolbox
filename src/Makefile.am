@@ -10,7 +10,6 @@ pkginclude_HEADERS = Branch.h \
 							DgyTransformer.h \
 							Event.h \
 							InverterBase.h \
-							Load.h \
 							Model.h \
 							Network.h \
 							OverheadLine.h \

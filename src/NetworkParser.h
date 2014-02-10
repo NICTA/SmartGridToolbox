@@ -5,6 +5,7 @@
 
 namespace SmartGridToolbox
 {
+   /// ParserPlugin that parses the network keyword, adding a new Network to the model.
    class NetworkParser : public ParserPlugin
    {
       public:

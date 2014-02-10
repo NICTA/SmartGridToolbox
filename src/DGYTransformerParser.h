@@ -5,6 +5,7 @@
 
 namespace SmartGridToolbox
 {
+   /// ParserPlugin that parses DgyTransformer objects.
    class DgyTransformerParser : public ParserPlugin
    {
       public:

@@ -8,15 +8,6 @@ namespace SmartGridToolbox
    /// SimpleInverter: DC power to n-phase AC converter.
    class SimpleInverter : public InverterBase
    {
-      /// @name Overridden from InverterBase
-      /// @{
-      public:
-         virtual ublas::vector<Complex> S() const override;
-         virtual double PPerPhase() const override;
-      /// @}
-      
-      /// @name My public member functions.
-      /// @{
       public:
          SimpleInverter(const std::string & name, const Phases & phases);
 
@@ -64,15 +55,13 @@ namespace SmartGridToolbox
          {
             inService_ = inService;
          }
-      /// @}
 
-      /// @name My private member functions.
-      /// @{
+      // Overridden from InverterBase
       public:
-      /// @}
+         virtual ublas::vector<Complex> S() const override;
+         virtual double PPerPhase() const override;
+      
 
-      /// @name Private member variables.
-      /// @{
       public:
          // Operating parameters:
          double efficiency_;
@@ -85,7 +74,6 @@ namespace SmartGridToolbox
 
          // State:
          ublas::vector<Complex> S_;
-      /// @}
    };
 }
 

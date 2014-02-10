@@ -10,6 +10,10 @@
 
 namespace SmartGridToolbox
 {
+   /// @defgroup PowerFlow Power flow utilities.
+   /// @brief Utility functions, classes and constants related to AC power flow.
+   /// @{
+
    enum class BusType
    {
       SL,
@@ -94,6 +98,7 @@ namespace SmartGridToolbox
    const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex> & Y);
    ublas::matrix<Complex> YOverheadLine(ublas::vector<double> r, ublas::matrix<double> DMat, double L,
                                         double freq, double rho);
+   /// @}
 }
 
 #endif // POWERFLOW_DOT_H

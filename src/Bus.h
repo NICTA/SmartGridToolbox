@@ -16,10 +16,6 @@ namespace SmartGridToolbox
    {
       friend class BusParser;
 
-      protected:
-         virtual void initializeState() override;
-         virtual void updateState(Time t0, Time t1) override;
-
       public:
          /// @name Lifecycle.
          /// @{
@@ -195,6 +191,10 @@ namespace SmartGridToolbox
          Event & changed() {return changed_;}
 
          /// @}
+      
+      protected:
+         virtual void initializeState() override;
+         virtual void updateState(Time t0, Time t1) override;
 
       private:
          BusType type_;                                ///< Bus type.
@@ -219,12 +219,14 @@ namespace SmartGridToolbox
 
          std::vector<ZipToGroundBase*> zipsToGround_;  ///< ZIP loads of generation.
 
-         /// @name Quantities due to operation of bus:
-         /** For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_.
-          *  Thus Sgen_ will be zero. For PV busses, the reactive power is supposed to adjust to keep the voltage
-          *  magnitude constant. So Sgen_ will in general have zero real power and nonzero reactive power.
-          *  For slack busses, the both the real and reactive power will adjust to keep a constant voltage,
-          *  both components of Sg may be nonzero.*/
+         /// @name Bus Quantities
+         /// @brief Quantities due to operation of bus.
+         ///
+         /// For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_.
+         /// Thus Sgen_ will be zero. For PV busses, the reactive power is supposed to adjust to keep the voltage
+         /// magnitude constant. So Sgen_ will in general have zero real power and nonzero reactive power.
+         /// For slack busses, the both the real and reactive power will adjust to keep a constant voltage,
+         /// both components of Sg may be nonzero.
          /// @{
          ublas::vector<Complex> V_;  ///< Voltage.
          ublas::vector<Complex> Sg_; ///< Generator power.

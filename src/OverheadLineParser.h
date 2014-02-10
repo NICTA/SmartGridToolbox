@@ -5,6 +5,7 @@
 
 namespace SmartGridToolbox
 {
+   /// ParserPlugin that parses OverheadLine objects.
    class OverheadLineParser : public ParserPlugin
    {
       public:

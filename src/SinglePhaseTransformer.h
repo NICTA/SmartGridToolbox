@@ -5,6 +5,7 @@
 
 namespace SmartGridToolbox
 {
+   /// Single phase transformer.
    class SinglePhaseTransformer : public Branch
    {
       public:

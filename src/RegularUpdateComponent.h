@@ -5,6 +5,7 @@
 
 namespace SmartGridToolbox
 {
+   /// Utility base class for a component that updates with a regular "tick" dt.
    class RegularUpdateComponent : public Component
    {
       public:

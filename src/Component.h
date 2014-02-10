@@ -17,7 +17,6 @@ namespace SmartGridToolbox
          /// @{
          
          /// Constructor.
-         /** @param name the unique name */
          explicit Component(const std::string & name); 
 
          /// Destructor.
@@ -28,6 +27,9 @@ namespace SmartGridToolbox
 
          /// @}
 
+         /// @name Name
+         /// @{
+         
          /// Get the name of the object.
          const std::string & name() const
          {
@@ -39,6 +41,11 @@ namespace SmartGridToolbox
          {
             name_ = name;
          }
+         
+         /// @}
+         
+         /// @name Timestepping
+         /// @{
          
          /// Get the current step for the object.
          Time time() const
@@ -52,10 +59,11 @@ namespace SmartGridToolbox
             return startTime_;
          }
 
-         /** @name Rank
-          *  Rank: A < B means B depends on A, not vice-versa, so A should go first. Thus, evaluation should
-          *  proceed from lowest ranked to highest ranked objects. */
-         ///@{
+         /// @}
+         
+         /// @name Rank
+         /// @brief Rank: A < B means B depends on A, not vice-versa, so A should go first.
+         /// @{
 
          /// Get the rank of the object.
          int rank() const
@@ -81,7 +89,6 @@ namespace SmartGridToolbox
 
          /// Components on which I depend will update first.
          void dependsOn(const Component & b)
-         /** @param t Component on which I depend. */
          {
             dependencies_.push_back(&b);
          }
@@ -92,35 +99,43 @@ namespace SmartGridToolbox
          /// @{
 
          /// Reset state of the object, time to t.
-         /** @param t */
          void initialize(Time t);
 
          /// Bring state up to time t.
-         /** @param t the Time to advance to. */
          void update(Time t);
 
          /// Bring state up to time t.
-         /** @param t the Time to advance to. */
          void ensureValid()
          {
             updateState(currentTime_, currentTime_);
          }
 
          /// Bring state up to time t if it is not already there.
-         /** @param t the Time to advance to. */
          void ensureAtTime(Time t);
 
          virtual Time validUntil() const
          {
             return posix_time::pos_infin;
          }
+         
+         /// @}
 
          /// @name Events
          /// @{
+
+         /// Triggered just before my update.
          Event & willUpdate() {return willUpdate_;}
+         
+         /// Triggered after my update.
          Event & didUpdate() {return didUpdate_;}
+         
+         /// Triggered when I am flagged for future update.
          Event & needsUpdate() {return needsUpdate_;}
+         
+         /// Triggered when I am about to update to a new timestep. 
          Event & willStartNewTimestep() {return willStartNewTimestep_;}
+         
+         /// Triggered when I just updated, completing the current timestep. 
          Event & didCompleteTimestep() {return didCompleteTimestep_;}
          /// @}
 
@@ -130,13 +145,13 @@ namespace SmartGridToolbox
          typedef std::vector<const Component*> ComponentVec;
 
       protected:
-         /// Reset state of the object, time is at currentTime_.
+         /// Reset state of the object, time is at current time.
          virtual void initializeState()
          {
             // Empty.
          }
 
-         /// Bring state up to time currentTime_.
+         /// Bring state up to time current time.
          virtual void updateState(Time t0, Time t1)
          {
             // Empty.

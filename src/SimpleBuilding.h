@@ -3,7 +3,6 @@
 
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Component.h>
-#include <SmartGridToolbox/Load.h>
 #include <SmartGridToolbox/ZipToGroundBase.h>
 #include<string>
 

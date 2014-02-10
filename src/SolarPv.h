@@ -11,8 +11,6 @@ namespace SmartGridToolbox
 
    class SolarPv : public DcPowerSourceBase
    {
-      /// @name My public member functions. 
-      /// @{
       public:
          SolarPv(const std::string & name);
 

@@ -16,3 +16,9 @@ EXTRA_DIST = $(DX_CONFIG) html
 
 install-data-hook:
 	cp -r html $(htmldir)
+
+doxyfile.stamp:
+	$(DOXYGEN) Doxyfile
+	echo Timestamp > doxyfile.stamp
+
+all-local: doxygen-doc

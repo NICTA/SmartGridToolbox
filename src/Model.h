@@ -12,8 +12,7 @@ using std::string;
 
 namespace SmartGridToolbox
 {
-   /// Simulation environment, containing global simulation data.
-   /// Units: All units are internally stored in SI.
+   /// All components and other objects that form the static model that is the subject of the simulation. 
    class Model
    {
       private:

@@ -4,8 +4,9 @@
 #include<ostream>
 #include<sstream>
 
-/// Physical units.
-/** Represents a nearly SI system of units. */
+/// @brief Physical units.
+/// 
+/// Represents a nearly SI system of units.
 namespace Units
 {
    constexpr const char* cdot = u8"\u00B7"; 

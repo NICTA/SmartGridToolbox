@@ -5,6 +5,9 @@
 
 namespace SmartGridToolbox
 {
+   /// @brief Wye-wye transformer.
+   ///
+   /// Equivalent to a single phase transformer on each phase.
    class YyTransformer : public Branch
    {
       public:
@@ -15,9 +18,9 @@ namespace SmartGridToolbox
          void recalcY();
 
       private:
-         Complex a_; ///< Complex turns ratio, n0/n1.
-         Complex YL_;    ///< Series leakage impedance.
-         Complex YM_;    ///< Shunt magnetising impedance.
+         Complex a_;  ///< Complex turns ratio, n0/n1.
+         Complex YL_; ///< Series leakage impedance.
+         Complex YM_; ///< Shunt magnetising impedance.
    };
 }
 
