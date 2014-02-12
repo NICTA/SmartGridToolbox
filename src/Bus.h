@@ -12,6 +12,7 @@ namespace SmartGridToolbox
 {
    class ZipToGroundBase;
 
+   /// A Bus component of a Network.
    class Bus : public Component
    {
       friend class BusParser;

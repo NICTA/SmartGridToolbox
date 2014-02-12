@@ -1,11 +1,19 @@
-include doxygen.am
-
-MOSTLYCLEANFILES = $(DX_CLEANFILES)
-
-EXTRA_DIST = $(DX_CONFIG)
+if HAVE_DOXYGEN
 
 install-data-hook:
-	cp -r $(DX_DOCDIR)/html $(htmldir)
-	cp $(DX_DOCDIR)/SmartGridToolbox.pdf $(pdfdir)
+	cp -r doxygen-doc/html $(htmldir)
 
-all-local: doxygen-doc
+doxygen-doc/html/index.html: doxyfile.stamp
+
+doxyfile.stamp:
+	$(DOXYGEN) Doxyfile
+	echo Timestamp > doxyfile.stamp
+
+CLEANFILES = doxyfile.stamp
+
+all-local: doxyfile.stamp
+
+clean-local:
+	rm -rf doxygen-doc
+
+endif
