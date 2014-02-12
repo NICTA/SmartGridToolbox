@@ -1,24 +1,11 @@
 include doxygen.am
 
-if DX_COND_man
-
-# You'd probably want to post-process man pages and installed the patched
-# versions.
-dist_man1_MANS = @DX_DOCDIR@/man/man1/doxample.c.1
-
-$(dist_man1_MANS): doxygen-doc
-
-endif
-
 MOSTLYCLEANFILES = $(DX_CLEANFILES)
 
-EXTRA_DIST = $(DX_CONFIG) html
+EXTRA_DIST = $(DX_CONFIG)
 
 install-data-hook:
-	cp -r html $(htmldir)
-
-doxyfile.stamp:
-	$(DOXYGEN) Doxyfile
-	echo Timestamp > doxyfile.stamp
+	cp -r $(DX_DOCDIR)/html $(htmldir)
+	cp $(DX_DOCDIR)/SmartGridToolbox.pdf $(pdfdir)
 
 all-local: doxygen-doc

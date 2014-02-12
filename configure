@@ -1384,7 +1384,7 @@ Optional Features:
                           file
   --disable-doxygen-html  don't generate doxygen plain HTML documentation
   --enable-doxygen-ps     generate doxygen PostScript documentation
-  --enable-doxygen-pdf    generate doxygen PDF documentation
+  --disable-doxygen-pdf   don't generate doxygen PDF documentation
 
 Some influential environment variables:
   CC          C compiler command
@@ -6392,7 +6392,7 @@ esac
 
 else
 
-DX_FLAG_pdf=0
+DX_FLAG_pdf=1
 
 
 test "$DX_FLAG_doc" = "1" || DX_FLAG_pdf=0
