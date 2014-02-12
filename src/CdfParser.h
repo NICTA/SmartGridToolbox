@@ -3,7 +3,7 @@
 
 #include <SmartGridToolbox/Parser.h>
 
-namespace SmartGridToolboxInternal
+namespace SmartGridToolbox
 {
    /// @brief ParserPlugin that parses IEEE CDF data files.
    ///

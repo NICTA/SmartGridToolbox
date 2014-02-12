@@ -3,7 +3,7 @@
 
 #include <SmartGridToolbox/Parser.h>
 
-namespace SmartGridToolboxInternal
+namespace SmartGridToolbox
 {
    /// ParserPlugin that parses Bus objects.
    class BusParser : public ParserPlugin

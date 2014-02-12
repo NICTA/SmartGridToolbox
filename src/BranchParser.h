@@ -3,7 +3,7 @@
 
 #include <SmartGridToolbox/Parser.h>
 
-namespace SmartGridToolboxInternal
+namespace SmartGridToolbox
 {
    /// ParserPlugin that parses Branch objects.
    class BranchParser : public ParserPlugin
