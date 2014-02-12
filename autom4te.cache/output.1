@@ -4532,11 +4532,6 @@ $as_echo "$ac_res" >&6; }
   
 
 
-ac_config_headers="$ac_config_headers config.h"
-
-ac_config_files="$ac_config_files Makefile src/Makefile tests/Makefile docs/Makefile"
-
-
 for ac_prog in doxygen
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
@@ -4591,17 +4586,15 @@ else
   HAVE_DOXYGEN_FALSE=
 fi
 
+
+ac_config_headers="$ac_config_headers config.h"
+
+ac_config_files="$ac_config_files Makefile src/Makefile tests/Makefile docs/Makefile"
+
 if test -z "$HAVE_DOXYGEN_TRUE"; then :
   ac_config_files="$ac_config_files docs/Doxyfile"
 
 fi
-
-#AC_CHECK_PROGS([PDFLATEX], [pdflatex])
-#if test -z "$PDFLATEX";
-#   then AC_MSG_WARN([pdflatex not found - continuing without pdflatex support])
-#fi
-#AM_CONDITIONAL([HAVE_PDFLATEX], 
-#               [test -n "$PDFLATEX"])
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
