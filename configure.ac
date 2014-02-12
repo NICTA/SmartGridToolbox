@@ -12,11 +12,18 @@ AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11
 
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
+AC_CHECK_PROGS([PDFLATEX], [pdflatex])
+AC_CHECK_PROGS([MAKEINDEX], [makeindex])
+
 if test -z "$DOXYGEN";
    then AC_MSG_WARN([Doxygen not found - continuing without Doxygen support])
 fi
-AM_CONDITIONAL([HAVE_DOXYGEN], 
-               [test -n "$DOXYGEN"])
+AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
+
+if test -z "$PDFLATEX" || test -z "$MAKEINDEX";
+   then AC_MSG_WARN([pdflatex and/or makeindex not found - continuing without pdflatex support])
+fi
+AM_CONDITIONAL([HAVE_PDFLATEX], [test -n "$PDFLATEX" && test -n "$MAKEINDEX"])
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile docs/Makefile])

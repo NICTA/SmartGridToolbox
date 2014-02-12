@@ -13,6 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -106,6 +107,35 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__uninstall_files_from_dir = { \
+  test -z "$$files" \
+    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
+    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
+         $(am__cd) "$$dir" && rm -f $$files; }; \
+  }
+am__installdirs = "$(DESTDIR)$(pdfdir)"
+DATA = $(pdf_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -140,6 +170,7 @@ LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LTLIBOBJS = @LTLIBOBJS@
+MAKEINDEX = @MAKEINDEX@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 OBJEXT = @OBJEXT@
@@ -151,6 +182,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PDFLATEX = @PDFLATEX@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
@@ -200,6 +232,9 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @HAVE_DOXYGEN_TRUE@CLEANFILES = doxyfile.stamp
+@HAVE_DOXYGEN_TRUE@@HAVE_PDFLATEX_TRUE@PDF_DOC_DIR = doxygen-doc/latex
+@HAVE_DOXYGEN_TRUE@@HAVE_PDFLATEX_TRUE@PDF_DOC = $(PDF_DOC_DIR)/SmartGridToolbox.pdf
+@HAVE_DOXYGEN_TRUE@@HAVE_PDFLATEX_TRUE@pdf_DATA = $(PDF_DOC)
 all: all-am
 
 .SUFFIXES:
@@ -235,6 +270,27 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 $(am__aclocal_m4_deps):
 @HAVE_DOXYGEN_TRUE@Doxyfile: $(top_builddir)/config.status $(srcdir)/Doxyfile.in
 @HAVE_DOXYGEN_TRUE@	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+install-pdfDATA: $(pdf_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(pdf_DATA)'; test -n "$(pdfdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(pdfdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(pdfdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(pdfdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(pdfdir)" || exit $$?; \
+	done
+
+uninstall-pdfDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(pdf_DATA)'; test -n "$(pdfdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(pdfdir)'; $(am__uninstall_files_from_dir)
 tags TAGS:
 
 ctags CTAGS:
@@ -275,8 +331,11 @@ distdir: $(DISTFILES)
 check-am: all-am
 check: check-am
 @HAVE_DOXYGEN_FALSE@all-local:
-all-am: Makefile all-local
+all-am: Makefile $(DATA) all-local
 installdirs:
+	for dir in "$(DESTDIR)$(pdfdir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -330,7 +389,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-pdfDATA
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 install-dvi: install-dvi-am
@@ -375,7 +434,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am:
+uninstall-am: uninstall-pdfDATA
 
 .MAKE: install-am install-data-am install-strip
 
@@ -385,11 +444,12 @@ uninstall-am:
 	install-am install-data install-data-am install-data-hook \
 	install-dvi install-dvi-am install-exec install-exec-am \
 	install-html install-html-am install-info install-info-am \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic pdf pdf-am ps ps-am tags-am \
-	uninstall uninstall-am
+	install-man install-pdf install-pdf-am install-pdfDATA \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
+	pdf-am ps ps-am tags-am uninstall uninstall-am \
+	uninstall-pdfDATA
 
 
 @HAVE_DOXYGEN_TRUE@install-data-hook:
@@ -405,6 +465,13 @@ uninstall-am:
 
 @HAVE_DOXYGEN_TRUE@clean-local:
 @HAVE_DOXYGEN_TRUE@	rm -rf doxygen-doc
+
+@HAVE_DOXYGEN_TRUE@@HAVE_PDFLATEX_TRUE@$(PDF_DOC): doxyfile.stamp
+@HAVE_DOXYGEN_TRUE@@HAVE_PDFLATEX_TRUE@	cd $(PDF_DOC_DIR); \
+@HAVE_DOXYGEN_TRUE@@HAVE_PDFLATEX_TRUE@	$(PDFLATEX) refman.tex;\
+@HAVE_DOXYGEN_TRUE@@HAVE_PDFLATEX_TRUE@	$(MAKEINDEX) refman.tex;\
+@HAVE_DOXYGEN_TRUE@@HAVE_PDFLATEX_TRUE@	$(PDFLATEX) refman.tex; \
+@HAVE_DOXYGEN_TRUE@@HAVE_PDFLATEX_TRUE@	cp refman.pdf SmartGridToolbox.pdf
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
