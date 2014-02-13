@@ -126,8 +126,11 @@ libSmartGridToolbox_a_SOURCES = Bus.h \
 bin_PROGRAMS = run_config helloworld
 
 run_config_SOURCES = run_config.cc
-run_config_LDADD = libSmartGridToolbox.a
-run_config_LDFLAGS = \
+
+# Need to put -l values in LDADD rather than LDFLAGS to keep the correct
+# order - otherwise link errors can (but don't always) result.
+run_config_LDADD = \
+	libSmartGridToolbox.a \
 	-lboost_date_time-mt \
 	-lblas \
 	-lyaml-cpp \
