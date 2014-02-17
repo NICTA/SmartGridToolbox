@@ -56,6 +56,9 @@ need to specify the "-ftemplate-depth=160" compiler flag, e.g.
 
 ./configure CXXFLAGS='-g -O2 -ftemplate-depth=160'
 
+If running from e.g. a source distribution cloned from git, you should first
+run autogen.sh. You will need an up to date version of gnu autotools.
+
 4. To compile and link your program:
 
 > g++ {options} -o myprogram myprogram.cc \
