@@ -1,0 +1,63 @@
+Building and Installing SmartGridToolbox
+----------------------------------------
+
+1. Prerequisites
+----------------
+
+SmartGridToolbox programs will need to be linked with various libraries, and
+will also be required to have access to   
+
+Install up to date versions of the following libraries:
+
+a) Boost libraries:
+
+   boost/date_time, boost/numeric/ublas (header only), 
+   boost/random (header only), boost/spirit (header only)
+
+   The easiest procedure is to just install the whole of boost, either by
+   downloading the latest version from www.boost.org and following the build
+   instructions, or by using a tool such as homebrew (Mac OSX), apt-get
+   (Debian Linux distributions such as Ubuntu) or similar.  
+
+b) SuiteSparse libraries:
+
+   amd, colamd, btf, klu
+
+   The source code for these is provided in the third_party/SuiteSparse
+   directory. The build is straightforward, but Makefiles may need to be
+   modified for your system. Alternatively, install using homebrew (OSX),
+   apt-get (Ubuntu) or similar.
+
+c) The blas library:
+
+   The easiest procedure is to use homebrew (OSX), apt-get (Ubuntu) or similar.
+
+d) The yaml-cpp library:
+
+   Source code is provided in third_party/yaml-cpp-0.5.0, or alternatively,
+   install using homebrew, apt-get or the like.
+
+2. If building on a Mac, make sure xcode is installed. If building under Linux,
+   make sure a recent version of g++ (v. 4.7 or higher), or a compiler that
+   supports C++-11, is used.
+
+3. Build and install the library:
+
+If installing from a tarball: simply run the usual configure/make/install
+procedure, using the desired options to configure (type "configure --help" for a
+list).
+
+> ./configure
+> make
+> sudo make install
+
+When building on a Mac using the system supplied (LLVM) version of g++, you will
+need to specify the "-ftemplate-depth=160" compiler flag, e.g.
+
+./configure CXXFLAGS='-g -O2 -ftemplate-depth=160'
+
+4. To compile and link your program:
+
+> g++ {options} -o myprogram myprogram.cc \
+  -lSmartGridToolbox -lboost_date_time-mt -lblas -lyaml-cpp -lklu -lamd \
+  -lcolamd -lbtf 
