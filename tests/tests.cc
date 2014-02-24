@@ -967,6 +967,11 @@ BOOST_AUTO_TEST_CASE (test_mp_14)
    testMatpower("case14", false);
 }
 
+BOOST_AUTO_TEST_CASE (test_mp_debug14)
+{
+   testMatpower("case14", true);
+}
+
 BOOST_AUTO_TEST_CASE (test_mp_14_shift)
 {
    testMatpower("case14_shift", true);
@@ -1052,9 +1057,12 @@ static void testCDF(const std::string & baseName, bool usePerUnit)
 
    p.parse(yamlName.c_str(), mod, sim); p.postParse();
    mod.validate();
+   std::cout << "A" << std::endl;
    sim.initialize();
+   std::cout << "B" << std::endl;
    Network * network = mod.component<Network>("cdf");
    network->solvePowerFlow();
+   std::cout << "C" << std::endl;
 
    double SBase;
    ublas::vector<int> iBus;
