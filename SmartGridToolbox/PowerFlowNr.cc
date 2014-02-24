@@ -203,7 +203,7 @@ namespace SmartGridToolbox
             int idxNodeI = nodeI->idx_;
 
             // Only count each diagonal element in branch->Y_ once!
-            Y_(idxNodeI, idxNodeI) += branch->Y_(i, i) + nodeI->Ys_;
+            Y_(idxNodeI, idxNodeI) += branch->Y_(i, i);
 
             for (int k = i + 1; k < nTerm; ++k)
             {
@@ -219,6 +219,13 @@ namespace SmartGridToolbox
             }
          }
       } // Loop over branches.
+
+      // Add shunt terms:
+      for (int i = 0; i < nNode(); ++i)
+      {
+         Y_(i, i) += nodes_[i]->Ys_;
+      }
+
       G_ = real(Y_);
       B_ = imag(Y_);
       SGT_DEBUG(debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
