@@ -1,4 +1,4 @@
-function mpc = case14
+function mpc = case_debug
 %CASE14    Power flow data for IEEE 14 bus test case.
 %   Please see CASEFORMAT for details on the case file format.
 %   This data was converted from IEEE Common Data Format
