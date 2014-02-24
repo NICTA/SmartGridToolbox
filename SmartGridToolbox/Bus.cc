@@ -5,34 +5,6 @@
  
 namespace SmartGridToolbox
 {
-   void Bus::initializeState()
-   {
-      Ys_ = ublas::vector<Complex>(phases_.size(), czero);
-      Ic_ = ublas::vector<Complex>(phases_.size(), czero);
-      Sc_ = ublas::vector<Complex>(phases_.size(), czero);
-      for (const ZipToGroundBase* zip : zipsToGround_)
-      {
-         Ys_ += zip->Y();
-         Ic_ += zip->I(); // Injection.
-         Sc_ += zip->S(); // Injection.
-      }
-   }
-
-   void Bus::updateState(Time t0, Time t1)
-   {
-      applySetpoints();
-      for (int i = 0; i < phases_.size(); ++i)
-      {
-         Ys_(i) = Ic_(i) = Sc_(i) = {0.0, 0.0};
-      }
-      for (const ZipToGroundBase* zip : zipsToGround_)
-      {
-         Ys_ += zip->Y();
-         Ic_ += zip->I(); // Injection.
-         Sc_ += zip->S(); // Injection.
-      }
-   }
-
    Bus::Bus(const std::string & name, BusType type, const Phases & phases, const ublas::vector<Complex> & nominalV) :
       Component(name),
       type_(type),
@@ -237,5 +209,33 @@ namespace SmartGridToolbox
             "Trigger Bus " + name() + " changed.");
       // TODO: this will recalculate all zips. Efficiency?
       changed().trigger();
+   }
+
+   void Bus::initializeState()
+   {
+      Ys_ = ublas::vector<Complex>(phases_.size(), czero);
+      Ic_ = ublas::vector<Complex>(phases_.size(), czero);
+      Sc_ = ublas::vector<Complex>(phases_.size(), czero);
+      for (const ZipToGroundBase* zip : zipsToGround_)
+      {
+         Ys_ += zip->Y();
+         Ic_ += zip->I(); // Injection.
+         Sc_ += zip->S(); // Injection.
+      }
+   }
+
+   void Bus::updateState(Time t0, Time t1)
+   {
+      applySetpoints();
+      for (int i = 0; i < phases_.size(); ++i)
+      {
+         Ys_(i) = Ic_(i) = Sc_(i) = {0.0, 0.0};
+      }
+      for (const ZipToGroundBase* zip : zipsToGround_)
+      {
+         Ys_ += zip->Y();
+         Ic_ += zip->I(); // Injection.
+         Sc_ += zip->S(); // Injection.
+      }
    }
 }
