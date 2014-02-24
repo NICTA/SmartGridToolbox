@@ -969,7 +969,7 @@ BOOST_AUTO_TEST_CASE (test_mp_14)
 
 BOOST_AUTO_TEST_CASE (test_mp_debug14)
 {
-   testMatpower("case14", true);
+   testMatpower("casedebug14", true);
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_14_shift)
