@@ -50,13 +50,7 @@ namespace SmartGridToolbox
          /// Get the current step for the object.
          Time time() const
          {
-            return currentTime_;
-         }
-
-         /// Get the initial time for the object.
-         Time startTime() const
-         {
-            return startTime_;
+            return time_;
          }
 
          /// @}
@@ -98,20 +92,14 @@ namespace SmartGridToolbox
          /// @name Simulation
          /// @{
 
-         /// Reset state of the object, time to t.
-         void initialize(Time t);
+         /// Initialize state of the object.
+         /** This simply does the initial work needed to set the object up, prior to simulation. The time following
+          *  initialization will be set to negative infinity, and the object will not be considered to be in an
+          *  invalid state. To progress to a valid state, the object will need to undergo an update(). */
+         void initialize();
 
          /// Bring state up to time t.
          void update(Time t);
-
-         /// Bring state up to time t.
-         void ensureValid()
-         {
-            updateState(currentTime_, currentTime_);
-         }
-
-         /// Bring state up to time t if it is not already there.
-         void ensureAtTime(Time t);
 
          virtual Time validUntil() const
          {
@@ -159,10 +147,9 @@ namespace SmartGridToolbox
          
       private:
          std::string name_;
-         Time startTime_; ///< The initial time.
-         Time currentTime_; ///< The current time.
+         Time time_;                 ///< The current time.
          ComponentVec dependencies_; ///< I depend on these.
-         int rank_;  ///< Evaluation rank, based on weak ordering.
+         int rank_;                  ///< Evaluation rank, based on weak ordering.
          Event willUpdate_;
          Event didUpdate_;
          Event needsUpdate_;

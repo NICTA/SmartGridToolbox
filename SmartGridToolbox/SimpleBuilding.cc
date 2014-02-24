@@ -37,7 +37,7 @@ namespace SmartGridToolbox
    {
       Tb_ = TbInit_;
       Ph_ = TbInit_;
-      setOperatingParams(startTime());
+      setOperatingParams(time());
    }
 
    void SimpleBuilding::updateState(Time t0, Time t1)

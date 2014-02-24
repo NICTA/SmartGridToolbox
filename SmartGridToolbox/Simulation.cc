@@ -22,8 +22,8 @@ namespace SmartGridToolbox
       scheduledUpdates_.clear();
       for (Component* comp : mod_->components())
       {
-         comp->initialize(startTime_);
-         scheduledUpdates_.insert(std::make_pair(comp, comp->startTime()));
+         comp->initialize();
+         scheduledUpdates_.insert(std::make_pair(comp, startTime_));
          comp->needsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
                                        "Simulation insert contingent update of component " + comp->name());
       }

@@ -1,8 +1,12 @@
 #define BOOST_TEST_MODULE test_template
-#include <boost/test/included/unit_test.hpp>
+
 #include <cmath>
 #include <ostream>
 #include <fstream>
+
+#include <boost/test/included/unit_test.hpp>
+#include <boost/test/detail/unit_test_parameters.hpp>
+
 #include <SmartGridToolbox/Branch.h>
 #include <SmartGridToolbox/Bus.h>
 #include <SmartGridToolbox/Component.h>
@@ -24,9 +28,11 @@
 #include <SmartGridToolbox/TimeSeries.h>
 #include <SmartGridToolbox/WeakOrder.h>
 #include <SmartGridToolbox/ZipToGround.h>
+
 using namespace SmartGridToolbox;
 using namespace std;
 using namespace boost::posix_time;
+using namespace boost::unit_test;
 
 class TestCompA : public Component
 {
@@ -136,7 +142,8 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    bat1.setChargeEfficiency(0.9);
    bat1.setDischargeEfficiency(0.8);
    bat1.setRequestedPower(-0.4 * kW);
-   bat1.initialize(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
+   bat1.initialize();
+   bat1.update(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
    message() << "1 Battery charge = " << bat1.charge() / kWh << endl;
    bat1.update(bat1.time() + posix_time::hours(3));
    message() << "2 Battery charge = " << bat1.charge() / kWh << endl;
@@ -147,7 +154,8 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    BOOST_CHECK(bat1.charge() == comp);
 
    bat1.setRequestedPower(1.3 * kW);
-   bat1.initialize(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
+   bat1.initialize();
+   bat1.update(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
    message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
    bat1.update(bat1.time() + posix_time::hours(3));
    message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
@@ -158,7 +166,8 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    BOOST_CHECK(bat1.charge() == comp);
 
    bat1.setRequestedPower(-1 * kW);
-   bat1.initialize(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
+   bat1.initialize();
+   bat1.update(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
    message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
    bat1.update(bat1.time() + posix_time::hours(5) + posix_time::minutes(30));
    message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
@@ -316,7 +325,8 @@ class TestEventA : public Component
       // Reset state of the object, time is at timestamp t_.
       virtual void initializeState() override
       {
-         nextUpdate_ = startTime() + dt_; 
+         startTime_ = time();
+         nextUpdate_ = time() + dt_; 
       }
 
       // Bring state up to time t_.
@@ -324,12 +334,13 @@ class TestEventA : public Component
       {
          message() << "Update state of " << name() << " from time " 
               << t0 << " to " << t1 << "." << endl;
-         state_ = (t1-startTime()).ticks() * ctrl_;
+         state_ = (t1 - startTime_).ticks()*ctrl_;
          nextUpdate_ = t1 + dt_;
       }
 
    private:
       Time nextUpdate_;
+      Time startTime_;
       int state_;
       time_duration dt_;
       int ctrl_;
@@ -654,55 +665,6 @@ class TestDc : public DcPowerSourceBase
       time_duration dt_;
 };
 
-BOOST_AUTO_TEST_CASE (test_networked_dc)
-{
-   Model mod;
-   Simulation sim(mod);
-
-   Parser & p = Parser::globalParser();
-   p.parse("test_networked_dc.yaml", mod, sim); p.postParse();
-
-   Bus * bus1 = mod.component<Bus>("bus_1");
-   Bus * bus2 = mod.component<Bus>("bus_2");
-   Bus * bus3 = mod.component<Bus>("bus_3");
-   
-   InverterBase * inverter2 = mod.component<InverterBase>("inverter_bus_2");
-
-   TestDc & tDc = mod.newComponent<TestDc>("tdc");
-   tDc.setDt(posix_time::seconds(5));
-   inverter2->addDcPowerSource(tDc);
-
-   mod.validate();
-   sim.initialize();
-
-   Network * network = mod.component<Network>("network_1");
-   ofstream outfile;
-   outfile.open("test_networked_dc.out");
-   outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
-           << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2)
-           << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2)
-           << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2)
-           << std::endl;
-   network->didCompleteTimestep().addAction([&]()
-         {
-            outfile << dSeconds(sim.currentTime()-sim.startTime()) << " " 
-                    << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << " "
-                    << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) << " "
-                    << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2)
-                    << std::endl;
-         }, "Network updated.");
-
-   while (sim.doNextUpdate())
-   {
-   }
-   outfile.close();
-}
-
-BOOST_AUTO_TEST_CASE (test_sun_1)
-{
-
-}
-
 BOOST_AUTO_TEST_CASE (test_sun)
 {
    // Canberra, Australia Lat Long = 35.3075 S, 149.1244 E (-35.3075, 149.1244).
@@ -751,20 +713,20 @@ BOOST_AUTO_TEST_CASE (test_sun)
    outfile.close();
 }
 
-BOOST_AUTO_TEST_CASE (test_solar_Pv)
+BOOST_AUTO_TEST_CASE (test_solar_pv)
 {
    Model mod;
    Simulation sim(mod);
    Parser & p = Parser::globalParser();
-   p.parse("test_solar_Pv.yaml", mod, sim); p.postParse();
+   p.parse("test_solar_pv.yaml", mod, sim); p.postParse();
 
-   SolarPv * spv2 = mod.component<SolarPv>("solar_Pv_bus_2");
+   SolarPv * spv2 = mod.component<SolarPv>("solar_pv_bus_2");
    InverterBase * inv2 = mod.component<InverterBase>("inverter_bus_2");
    Bus * bus2 = mod.component<Bus>("bus_2");
    Network * network = mod.component<Network>("network_1");
 
    ofstream outfile;
-   outfile.open("test_solar_Pv.out");
+   outfile.open("test_solar_pv.out");
 
    network->didCompleteTimestep().addAction([&]()
          {
@@ -787,7 +749,7 @@ BOOST_AUTO_TEST_CASE (test_loops)
    Parser & p = Parser::globalParser();
    p.parse("test_loops.yaml", mod, sim); p.postParse();
 
-   SolarPv * spv2 = mod.component<SolarPv>("solar_Pv_bus_2");
+   SolarPv * spv2 = mod.component<SolarPv>("solar_pv_bus_2");
    InverterBase * inv2 = mod.component<InverterBase>("inverter_bus_2_0");
    Bus * bus2 = mod.component<Bus>("bus_2_1");
    Network * network = mod.component<Network>("network_1");
@@ -881,6 +843,13 @@ static void readMPOutput(const std::string & fileName, bool usePerUnit,
    }
 }
 
+static std::string num2PaddedString5(int num)
+{
+   std::ostringstream ss;
+   ss << std::setfill('0') << std::setw(5) << num;
+   return ss.str();
+}
+
 static void testMatpower(const std::string & baseName, bool usePerUnit)
 {
    std::string caseName = baseName + ".m";
@@ -912,7 +881,7 @@ static void testMatpower(const std::string & baseName, bool usePerUnit)
    for (int i = 0; i < iBus.size(); ++i)
    {
       int ib = iBus(i);
-      std::string busName = "matpower_bus_" + std::to_string(ib);
+      std::string busName = "matpower_bus_" + num2PaddedString5(ib);
       Bus * bus = mod.component<Bus>(busName);
       assert(bus != nullptr);
       double VTol = usePerUnit ? 1e-4 : VBase(i) * 1e-4;
@@ -1100,7 +1069,7 @@ static void testCDF(const std::string & baseName, bool usePerUnit)
    for (int i = 0; i < iBus.size(); ++i)
    {
       int ib = iBus(i);
-      std::string busName = "cdf_bus_" + std::to_string(ib);
+      std::string busName = "cdf_bus_" + num2PaddedString5(ib);
       Bus * bus = mod.component<Bus>(busName);
       assert(bus != nullptr);
       double VTol = usePerUnit ? 1e-4 : VBase(i) * 1e-4;

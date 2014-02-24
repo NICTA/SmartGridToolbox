@@ -41,7 +41,7 @@ namespace SmartGridToolbox
       protected:
          virtual void initializeState()
          {
-            irradiance_ = unaveragedIrradiance(startTime());
+            irradiance_ = unaveragedIrradiance(time());
          }
 
          virtual void updateState(Time t0, Time t1) override;
