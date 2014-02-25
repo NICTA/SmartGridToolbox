@@ -46,10 +46,10 @@ int main(int argc, const char ** argv)
    p.registerParserPlugin<MicrogridControllerParser>();
    p.parse(configName, mod, sim);
 
-   Network * network = mod.componentNamed<Network>("network");
-   SimpleBuilding * build = mod.componentNamed<SimpleBuilding>("build");
-   SimpleBattery * batt = mod.componentNamed<SimpleBattery>("batt");
-   SimpleInverter * inv = mod.componentNamed<SimpleInverter>("inverter_batt");
+   Network * network = mod.component<Network>("network");
+   SimpleBuilding * build = mod.component<SimpleBuilding>("build");
+   SimpleBattery * batt = mod.component<SimpleBattery>("batt");
+   SimpleInverter * inv = mod.component<SimpleInverter>("inverter_batt");
 
    Time t0 = sim.startTime();
    auto Te = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 15*hour, 10*K, 28*K);};

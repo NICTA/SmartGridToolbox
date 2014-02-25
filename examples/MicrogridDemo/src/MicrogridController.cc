@@ -27,16 +27,16 @@ namespace MicrogridDemo
       SGT_DEBUG(debug() << "MicrogridController : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      MicrogridController * contr = mod.componentNamed<MicrogridController>(name);
+      MicrogridController * contr = mod.component<MicrogridController>(name);
       
       name = state.expandName(nd["building_bus"].as<std::string>());
-      contr->setBuildBus(*mod.componentNamed<Bus>(name));
+      contr->setBuildBus(*mod.component<Bus>(name));
       
       name = state.expandName(nd["pv_bus"].as<std::string>());
-      contr->setPvBus(*mod.componentNamed<Bus>(name));
+      contr->setPvBus(*mod.component<Bus>(name));
       
       name = state.expandName(nd["battery"].as<std::string>());
-      contr->setBatt(*mod.componentNamed<SimpleBattery>(name));
+      contr->setBatt(*mod.component<SimpleBattery>(name));
    }
 
    void MicrogridController::setBuildBus(SmartGridToolbox::Bus & bus)

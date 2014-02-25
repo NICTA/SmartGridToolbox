@@ -51,45 +51,45 @@ objects: # And these are the actual objects.
       type:                   PQ
       phases:                 [BAL]
       nominal_voltage:        [240]
-   branch:
+   overhead_line:
       name:                   branch_trans_pv
       network:                network
       phases_0:               [BAL]
       phases_1:               [BAL]
       bus_0:                  bus_trans
       bus_1:                  bus_pv
-      Y:
-         overhead_line:
-            r:                [1.9014e-04]
-            D:                [[0.00743712]]
-            length:           20
-            earth_resist:     100
-   branch:
+      length:                 20
+      n_neutral:              0
+      line_resistivity:       [1.9014e-04]
+      earth_resistivity:      100
+      distance_matrix:        [[0.00743712]]
+      freq:                   50
+   overhead_line:
       name:                   branch_trans_batt
       network:                network
       phases_0:               [BAL]
       phases_1:               [BAL]
       bus_0:                  bus_trans
       bus_1:                  bus_batt
-      Y:
-         overhead_line:
-            r:                [1.9014e-04]
-            D:                [[0.00743712]]
-            length:           20
-            earth_resist:     100
-   branch:
+      length:                 20
+      n_neutral:              0
+      line_resistivity:       [1.9014e-04]
+      distance_matrix:        [[0.00743712]]
+      earth_resistivity:      100
+      freq:                   50
+   overhead_line:
       name:                   branch_trans_build
       network:                network
       phases_0:               [BAL]
       phases_1:               [BAL]
       bus_0:                  bus_trans
       bus_1:                  bus_build
-      Y:
-         overhead_line:
-            r:                [1.9014e-04]
-            D:                [[0.00743712]]
-            length:           100
-            earth_resist:     100
+      length:                 100
+      n_neutral:              0
+      line_resistivity:       [1.9014e-04]
+      distance_matrix:        [[0.00743712]]
+      earth_resistivity:      100
+      freq:                   50
    inverter:
       name:                   inverter_batt
       bus:                    bus_batt
