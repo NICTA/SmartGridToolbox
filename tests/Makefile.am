@@ -6,7 +6,7 @@ tests_LDADD = \
 	../SmartGridToolbox/libSmartGridToolbox.a \
 	-lboost_date_time-mt \
 	-lblas \
-	../third_party/yaml-cpp-0.5.0/build/libyaml-cpp.a \
+	-lyaml-cpp \
 	-lklu \
 	-lamd \
 	-lcolamd \

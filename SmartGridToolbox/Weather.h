@@ -39,11 +39,6 @@ namespace SmartGridToolbox
          }
 
       protected:
-         virtual void initializeState()
-         {
-            irradiance_ = unaveragedIrradiance(time());
-         }
-
          virtual void updateState(Time t0, Time t1) override;
 
          SolarIrradiance unaveragedIrradiance(const Time & tm) const;

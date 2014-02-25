@@ -365,20 +365,8 @@ namespace SmartGridToolbox
       std::string timeSeriesType = node["type"].as<std::string>();
       std::string valType = node["value_type"].as<std::string>();
 
-      bool isData = false;
       bool isComplex = false;
       bool isVector = false;
-
-      if (timeSeriesType == "data")
-      {
-         isData = true;
-      }
-      else
-      {
-         error() << "Bad type for time series." << std::endl;
-         abort();
-      }
-
       if (valType == "real_scalar")
       {
          isComplex = false;
@@ -405,7 +393,22 @@ namespace SmartGridToolbox
          abort();
       }
 
-      if (isData)
+      if (timeSeriesType == "const")
+      {
+         assertFieldPresent(node, "const_value");
+         double v = node["const_value"].as<double>();
+         if (!isComplex && !isVector)
+         {
+            std::unique_ptr<ConstTimeSeries<Time, double>> ts(new ConstTimeSeries<Time, double>(v));
+            model.acquireTimeSeries(name, std::move(ts));
+         }
+         else
+         {
+            error() << "Time series not yet supported." << std::endl;
+            abort();
+         }
+      }
+      else if (timeSeriesType == "data")
       {
          assertFieldPresent(node, "data_file");
          assertFieldPresent(node, "interp_type");
@@ -464,6 +467,11 @@ namespace SmartGridToolbox
             error() << "Time series not yet supported." << std::endl;
             abort();
          }
+      }
+      else
+      {
+         error() << "Bad time series type " << timeSeriesType << "." << std::endl;
+         abort();
       }
    }
 
