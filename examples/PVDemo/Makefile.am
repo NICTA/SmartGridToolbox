@@ -1,4 +1,4 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = src docs tests
+SUBDIRS = src
 dist_doc_DATA = README
