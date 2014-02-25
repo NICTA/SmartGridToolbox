@@ -5,7 +5,6 @@
 #include <fstream>
 
 #include <boost/test/included/unit_test.hpp>
-#include <boost/test/detail/unit_test_parameters.hpp>
 
 #include <SmartGridToolbox/Branch.h>
 #include <SmartGridToolbox/Bus.h>
@@ -1057,12 +1056,9 @@ static void testCDF(const std::string & baseName, bool usePerUnit)
 
    p.parse(yamlName.c_str(), mod, sim); p.postParse();
    mod.validate();
-   std::cout << "A" << std::endl;
    sim.initialize();
-   std::cout << "B" << std::endl;
    Network * network = mod.component<Network>("cdf");
    network->solvePowerFlow();
-   std::cout << "C" << std::endl;
 
    double SBase;
    ublas::vector<int> iBus;

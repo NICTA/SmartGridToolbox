@@ -360,7 +360,6 @@ namespace SmartGridToolbox
             Complex Y00 = Y11/(tap*tap);
             Complex Y01 = -(Ys/conj(cTap));
             Complex Y10 = -(Ys/cTap);
-
             if (!usePerUnit)
             {
                // TODO: scaling across a transformer, looks fishy. Careful.

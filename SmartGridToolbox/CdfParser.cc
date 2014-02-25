@@ -281,9 +281,6 @@ namespace SmartGridToolbox
 
             double VBase0 = busInfo0.VBase;
             double VBase1 = busInfo1.VBase;
-            double Rs = usePerUnit ? info.RsPu : info.RsPu*SBase/(VBase0*VBase1);
-            double Xs = usePerUnit ? info.XsPu : info.XsPu*SBase/(VBase0*VBase1);
-            double Bc = usePerUnit ? info.BcPu : info.BcPu*SBase/(VBase0*VBase1);
 
             Complex cTap = polar(info.tap, info.thetaRad);
 
@@ -300,12 +297,20 @@ namespace SmartGridToolbox
                abort();
             }
 
-            Complex Ys = 1.0/Complex{Rs, Xs};
+            Complex YsPu = 1.0/Complex{info.RsPu, info.XsPu};
 
-            Complex Y11 = (Ys + Complex{0, 0.5*Bc});
+            Complex Y11 = (YsPu + Complex{0, 0.5*info.BcPu});
             Complex Y00 = Y11/(info.tap*info.tap);
-            Complex Y01 = -(Ys/conj(cTap));
-            Complex Y10 = -(Ys/cTap);
+            Complex Y01 = -(YsPu/conj(cTap));
+            Complex Y10 = -(YsPu/cTap);
+            if (!usePerUnit)
+            {
+               // TODO: scaling across a transformer, looks fishy. Careful.
+               Y00 *= SBase/(VBase0*VBase0);
+               Y01 *= SBase/(VBase0*VBase1);
+               Y10 *= SBase/(VBase1*VBase0);
+               Y11 *= SBase/(VBase1*VBase1);
+            }
 
             Branch & branch = mod.newComponent<Branch>(branchName(networkName, i, info.bus0Id, info.bus1Id), 
                               phases, phases);
