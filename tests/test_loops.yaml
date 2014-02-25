@@ -3,18 +3,23 @@
 
 --- # Marks the start of each configuration document.
 
-global:      
-   configuration_name:              test_solar_PV
+global:
+   configuration_name:              test_loops
    timezone:                        AEST10AEDT,M10.5.0/02,M3.5.0/03  # Timezone info for Canberra, Australia.
    lat_long:                        [-35.3075, 149.1244]             # Canberra, Australia.
    start_time:                      2013-01-01 00:00:00
    end_time:                        2013-01-02 00:00:00
+   time_series:
+      series:
+         name:                cloud_cover_series
+         type:                const
+         value_type:          real_scalar
+         const_value:         0.3
 
 objects:       # And these are the actual objects.
    weather:      
       name:                         weather_1
-      cloud_cover:      
-         constant:                  0.3
+      cloud_cover:                  cloud_cover_series
       dt:                           00:30:00
    network:      
       name:                         network_1
@@ -78,8 +83,8 @@ objects:       # And these are the actual objects.
             bus:                    bus_2_${i}
             admittance:             [0.5j, 0.5j, 0.5j]
             complex_power_load:     [100, 100, 100]
-   solar_PV:      
-      name:                   solar_PV_bus_2
+   solar_pv:      
+      name:                   solar_pv_bus_2
       weather:                weather_1
       inverter:               inverter_bus_2_0
       efficiency:             0.75
