@@ -94,9 +94,9 @@ namespace SmartGridToolbox
       {
          for (int j = 0; j < nPhase; ++j)
          {
-            YNode(i, j) = -Y(i, j);
-            YNode(i, j + nPhase) = Y(i, j);
-            YNode(i + nPhase, j) = Y(i, j);
+            YNode(i, j) = Y(i, j);
+            YNode(i, j + nPhase) = -Y(i, j);
+            YNode(i + nPhase, j) = -Y(i, j);
             YNode(i + nPhase, j + nPhase) = Y(i, j);
          }
       }
