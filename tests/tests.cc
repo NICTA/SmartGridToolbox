@@ -14,6 +14,7 @@
 #include <SmartGridToolbox/InverterBase.h>
 #include <SmartGridToolbox/Model.h>
 #include <SmartGridToolbox/Network.h>
+#include <SmartGridToolbox/OverheadLine.h>
 #include <SmartGridToolbox/Parser.h>
 #include <SmartGridToolbox/PowerFlow.h>
 #include <SmartGridToolbox/RegularUpdateComponent.h>
@@ -1144,6 +1145,71 @@ BOOST_AUTO_TEST_CASE (test_transformers)
    message() << bus2->STot()(0) << " " << bus2->STot()(1) << " " << bus2->STot()(2) <<  std::endl;
    message() << bus3->STot()(0) << " " << bus3->STot()(1) << " " << bus3->STot()(2) <<  std::endl;
    message() << std::endl;
+}
+
+BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
+{
+   // For this test and the next one, we compare values for an overhead line examined in one of Kersting's papers:
+   // see docs/background/Kersting_Carson.pdf for the original source of data.
+   Model mod;
+   Simulation sim(mod);
+
+   Parser & p = Parser::globalParser();
+   p.parse("test_overhead_compare_carson_1.yaml", mod, sim); p.postParse();
+
+   mod.validate();
+   sim.initialize();
+
+   OverheadLine * oh = mod.component<OverheadLine>("line_1_2");
+
+   ublas::matrix<Complex> ZWire = oh->ZWire();
+   ublas::matrix<Complex> ZPhase = oh->ZPhase();
+   message() << "ZWire = " << std::endl;
+   for (int i = 0; i < ZWire.size1(); ++i)
+   {
+      messageStream() << row(ZWire, i) << std::endl;
+   }
+   message() << "ZPhase = " << std::endl;
+   for (int i = 0; i < ZPhase.size1(); ++i)
+   {
+      messageStream() << row(ZPhase, i) << std::endl;
+   }
+   message() << "YNode = " << std::endl;
+   for (int i = 0; i < oh->Y().size1(); ++i)
+   {
+      messageStream() << row(oh->Y(), i) << std::endl;
+   }
+
+   Complex cmp;
+   cmp = {1.3369, 1.3331}; BOOST_CHECK(abs(ZPhase(0,0) - cmp)/abs(cmp) < 0.02);
+   cmp = {0.2102, 0.5778}; BOOST_CHECK(abs(ZPhase(0,1) - cmp)/abs(cmp) < 0.02);
+   cmp = {0.2132, 0.5014}; BOOST_CHECK(abs(ZPhase(0,2) - cmp)/abs(cmp) < 0.02);
+   cmp = {1.3239, 1.3557}; BOOST_CHECK(abs(ZPhase(1,1) - cmp)/abs(cmp) < 0.02);
+   cmp = {0.2067, 0.4591}; BOOST_CHECK(abs(ZPhase(1,2) - cmp)/abs(cmp) < 0.02);
+   cmp = {1.3295, 1.3459}; BOOST_CHECK(abs(ZPhase(2,2) - cmp)/abs(cmp) < 0.02);
+   BOOST_CHECK_EQUAL(ZPhase(0,1), ZPhase(1,0));
+   BOOST_CHECK_EQUAL(ZPhase(0,2), ZPhase(2,0));
+   BOOST_CHECK_EQUAL(ZPhase(1,2), ZPhase(2,1));
+}
+
+BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
+{
+   Model mod;
+   Simulation sim(mod);
+
+   Parser & p = Parser::globalParser();
+   p.parse("test_overhead_compare_carson_2.yaml", mod, sim); p.postParse();
+
+   mod.validate();
+   sim.initialize();
+
+   Bus * bus1 = mod.component<Bus>("bus_1");
+   Bus * bus2 = mod.component<Bus>("bus_2");
+
+   message() << "Bus 1 voltages: " << abs(bus1->V()(0)) << " " << abs(bus1->V()(1)) << " " << abs(bus1->V()(2))
+             << std::endl;
+   message() << "Bus 2 voltages: " << abs(bus2->V()(0)) << " " << abs(bus2->V()(1)) << " " << abs(bus2->V()(2))
+             << std::endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

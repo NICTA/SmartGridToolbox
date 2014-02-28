@@ -37,51 +37,51 @@ namespace SmartGridToolbox
 		double freqCoeffImag = 1.256642e-6*f_;
 		double freqAdditiveTerm = 0.5*log(rhoEarth_/f_) + 6.490501;
 
-      ublas::matrix<Complex> ZWire(nWire, nWire, czero);
+      ZWire_ = ublas::matrix<Complex>(nWire, nWire, czero);
       for (int i = 0; i < nWire; ++i)
       {
-         ZWire(i, i) = {rhoLine_(i) + freqCoeffReal, freqCoeffImag*(log(1/Dij_(i, i)) + freqAdditiveTerm)};
+         ZWire_(i, i) = {rhoLine_(i) + freqCoeffReal, freqCoeffImag*(log(1/Dij_(i, i)) + freqAdditiveTerm)};
          for (int k = i + 1; k < nWire; ++k)
          {
-				ZWire(i, k) = {freqCoeffReal, freqCoeffImag*(log(1/Dij_(i, k)) + freqAdditiveTerm)};
-				ZWire(k, i) = ZWire(i, k);
+				ZWire_(i, k) = {freqCoeffReal, freqCoeffImag*(log(1/Dij_(i, k)) + freqAdditiveTerm)};
+				ZWire_(k, i) = ZWire_(i, k);
          }
       }
-      ZWire *= L_; // Z has been checked against example in Kersting and found to be OK.
+      ZWire_ *= L_; // Z has been checked against example in Kersting and found to be OK.
       SGT_DEBUG(
             message() << "Before Kron:" << std::endl;
-            for (int i = 0; i < ZWire.size1(); ++i)
+            for (int i = 0; i < ZWire_.size1(); ++i)
             {
-               message() << "Z(" << i << ", :) = " << row(ZWire, i) << std::endl;
+               message() << "Z(" << i << ", :) = " << row(ZWire_, i) << std::endl;
                message() << std::endl;
             });
 
-      ublas::matrix<Complex> ZPhase = project(ZWire, ublas::range(0, nPhase), ublas::range(0, nPhase));
+      ZPhase_ = project(ZWire_, ublas::range(0, nPhase), ublas::range(0, nPhase));
 
       // Apply Kron reduction to eliminate neutral.
       if (nNeutral_ == 1)
       {
          int iNeutral = nPhase;
-         Complex ZnnInv = 1.0/ZWire(iNeutral, iNeutral); // Assuming only one neutral!
+         Complex ZnnInv = 1.0/ZWire_(iNeutral, iNeutral); // Assuming only one neutral!
          for (int i = 0; i < nPhase; ++i)
          {
             for (int j = 0; j < nPhase; ++j)
             {
-               ZPhase(i, j) -= ZWire(i, iNeutral)*ZWire(iNeutral, j)*ZnnInv;
+               ZPhase_(i, j) -= ZWire_(i, iNeutral)*ZWire_(iNeutral, j)*ZnnInv;
             }
          }
       }
 
       SGT_DEBUG(
             message() << "After Kron:" << std::endl;
-            for (int i = 0; i < ZPhase.size1(); ++i)
+            for (int i = 0; i < ZPhase_.size1(); ++i)
             {
-               message() << "Z(" << i << ", :) = " << row(ZPhase, i) << std::endl;
+               message() << "Z(" << i << ", :) = " << row(ZPhase_, i) << std::endl;
                message() << std::endl;
             });
 
       ublas::matrix<Complex> Y(nPhase, nPhase);
-      bool ok = invertMatrix(ZPhase, Y); assert(ok);
+      bool ok = invertMatrix(ZPhase_, Y); assert(ok);
       SGT_DEBUG(
             for (int i = 0; i < Y.size1(); ++i)
             {

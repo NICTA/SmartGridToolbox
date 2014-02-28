@@ -24,7 +24,17 @@ namespace SmartGridToolbox
          OverheadLine(const std::string & name, const Phases & phases0, const Phases & phases1, double length,
                       int nNeutral, ublas::vector<double> lineResistivity, double earthResistivity,
                       ublas::matrix<double> distMat, double freq); 
-      
+
+         const ublas::matrix<Complex> & ZWire()
+         {
+            return ZWire_;
+         }
+         
+         const ublas::matrix<Complex> & ZPhase()
+         {
+            return ZPhase_;
+         }
+
       private:
          void recalcY();
 
@@ -35,6 +45,9 @@ namespace SmartGridToolbox
          double rhoEarth_;               ///< Earth resistivity.
          ublas::matrix<double> Dij_;     ///< Distance between lines, diagonal = GMR.
          double f_;                      ///< Frequency : TODO : link to network frequency.
+         
+         ublas::matrix<Complex> ZWire_;  ///< Cached.
+         ublas::matrix<Complex> ZPhase_; ///< Cached.
    };
 }
 
