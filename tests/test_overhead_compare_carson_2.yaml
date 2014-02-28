@@ -18,13 +18,13 @@ objects: # And these are the actual objects.
       network:                network_1
       type:                   SL
       phases:                 [A, B, C]
-      nominal_voltage:        [15095.0D0, 15095.0D120, 15095.0D240] # 24.9 kV L-L nominal @ 1.05 p.u, convert L-G.
+      nominal_voltage:        [15094.8D0, 15094.8D-120, 15094.8D120] # 24.9 kV L-L nominal @ 1.05 p.u, convert L-G.
    bus:
       name:                   bus_2
       network:                network_1
       type:                   PQ
       phases:                 [A, B, C]
-      nominal_voltage:        [15095.0D0, 15095.0D120, 15095.0D240]
+      nominal_voltage:        [15094.8D0, 15094.8D-120, 15094.8D120] # 24.9 kV L-L nominal @ 1.05 p.u, convert L-G.
    zip_to_ground:
      name:                   zip_load_2
      phases:                 [A, B, C]
@@ -39,13 +39,13 @@ objects: # And these are the actual objects.
       bus_1:                  bus_2
       length:                 11137.392 # 36,540'.
       n_neutral:              1
-      line_resistivity:       [6.959e-04, 6.959e-4, 6.959e-4, 6.959e-4]
+      line_resistivity:       [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
       earth_resistivity:      100.0
       distance_matrix:        [  
-                                 [1.372e-3   , 0.762     , 1.372     , 1.302     ],
-                                 [0.762      , 1.372e-3  , 2.134     , 1.438     ],
-                                 [1.372      , 2.134     , 1.372e-3  , 1.524     ],
-                                 [1.302      , 1.438     , 1.524     , 1.372e-3  ]
+                                 [1.37160e-3    , 0.7620       , 1.37160      , 1.30211      ],
+                                 [0.7620        , 1.3716e-3    , 2.13360      , 1.72421      ],
+                                 [1.37160       , 2.13360      , 1.3716e-3    , 1.5240       ],
+                                 [1.30211       , 1.72421      , 1.5240       , 1.3716e-3    ]
                               ]
       freq:                   60.0
 --- # Marks the end of each configuration document.

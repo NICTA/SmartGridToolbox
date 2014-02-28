@@ -1208,10 +1208,12 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
    Bus * bus1 = mod.component<Bus>("bus_1");
    Bus * bus2 = mod.component<Bus>("bus_2");
 
-   message() << "Bus 1 voltages: " << abs(bus1->V()(0)) << " " << abs(bus1->V()(1)) << " " << abs(bus1->V()(2))
-             << std::endl;
-   message() << "Bus 2 voltages: " << abs(bus2->V()(0)) << " " << abs(bus2->V()(1)) << " " << abs(bus2->V()(2))
-             << std::endl;
+   message() << "Bus 1 voltages: " << abs(bus1->V()(0)) << "@" << arg(bus1->V()(0))*180/pi << std::endl;
+   message() << "Bus 1 voltages: " << abs(bus1->V()(1)) << "@" << arg(bus1->V()(1))*180/pi << std::endl;
+   message() << "Bus 1 voltages: " << abs(bus1->V()(2)) << "@" << arg(bus1->V()(2))*180/pi << std::endl;
+   message() << "Bus 2 voltages: " << abs(bus2->V()(0)) << "@" << arg(bus2->V()(0))*180/pi << std::endl;
+   message() << "Bus 2 voltages: " << abs(bus2->V()(1)) << "@" << arg(bus2->V()(1))*180/pi << std::endl;
+   message() << "Bus 2 voltages: " << abs(bus2->V()(2)) << "@" << arg(bus2->V()(2))*180/pi << std::endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
