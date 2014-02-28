@@ -1181,12 +1181,22 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
    }
 
    Complex cmp;
-   cmp = {1.3369, 1.3331}; BOOST_CHECK(abs(ZPhase(0,0) - cmp)/abs(cmp) < 0.02);
-   cmp = {0.2102, 0.5778}; BOOST_CHECK(abs(ZPhase(0,1) - cmp)/abs(cmp) < 0.02);
-   cmp = {0.2132, 0.5014}; BOOST_CHECK(abs(ZPhase(0,2) - cmp)/abs(cmp) < 0.02);
-   cmp = {1.3239, 1.3557}; BOOST_CHECK(abs(ZPhase(1,1) - cmp)/abs(cmp) < 0.02);
-   cmp = {0.2067, 0.4591}; BOOST_CHECK(abs(ZPhase(1,2) - cmp)/abs(cmp) < 0.02);
-   cmp = {1.3295, 1.3459}; BOOST_CHECK(abs(ZPhase(2,2) - cmp)/abs(cmp) < 0.02);
+   cmp = {1.3369, 1.3331}; double err00 = abs(ZPhase(0,0) - cmp)/abs(cmp);
+   cmp = {0.2102, 0.5778}; double err01 = abs(ZPhase(0, 1) - cmp)/abs(cmp);
+   cmp = {0.2132, 0.5014}; double err02 = abs(ZPhase(0, 2) - cmp)/abs(cmp);
+   cmp = {1.3239, 1.3557}; double err11 = abs(ZPhase(1, 1) - cmp)/abs(cmp);
+   cmp = {0.2067, 0.4591}; double err12 = abs(ZPhase(1, 2) - cmp)/abs(cmp);
+   cmp = {1.3295, 1.3459}; double err22 = abs(ZPhase(2, 2) - cmp)/abs(cmp);
+   message() << "Err = " 
+             << err00 << " " << err01 << " " << err02 << " " << err11 << " " << err12 << " " << err22 << std::endl;
+
+   BOOST_CHECK(err00 < 0.001);
+   BOOST_CHECK(err01 < 0.001);
+   BOOST_CHECK(err02 < 0.001);
+   BOOST_CHECK(err11 < 0.001);
+   BOOST_CHECK(err12 < 0.001);
+   BOOST_CHECK(err22 < 0.001);
+
    BOOST_CHECK_EQUAL(ZPhase(0,1), ZPhase(1,0));
    BOOST_CHECK_EQUAL(ZPhase(0,2), ZPhase(2,0));
    BOOST_CHECK_EQUAL(ZPhase(1,2), ZPhase(2,1));
@@ -1214,6 +1224,16 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
    message() << "Bus 2 voltages: " << abs(bus2->V()(0)) << "@" << arg(bus2->V()(0))*180/pi << std::endl;
    message() << "Bus 2 voltages: " << abs(bus2->V()(1)) << "@" << arg(bus2->V()(1))*180/pi << std::endl;
    message() << "Bus 2 voltages: " << abs(bus2->V()(2)) << "@" << arg(bus2->V()(2))*180/pi << std::endl;
+
+   Complex cmp;
+   cmp = polar(14606.60, -0.62 * pi / 180.0); double err0 = abs(bus2->V()(0) - cmp)/abs(cmp);
+   cmp = polar(14726.69, -121.0 * pi / 180.0); double err1 = abs(bus2->V()(1) - cmp)/abs(cmp);
+   cmp = polar(14801.37, 119.2 * pi / 180.0); double err2 = abs(bus2->V()(2) - cmp)/abs(cmp);
+   message() << "Err = " << err0 << " " << err1 << " " << err2 << std::endl;
+
+   BOOST_CHECK(err0 < 0.001);
+   BOOST_CHECK(err1 < 0.001);
+   BOOST_CHECK(err2 < 0.001);
 }
 
 BOOST_AUTO_TEST_SUITE_END( )
