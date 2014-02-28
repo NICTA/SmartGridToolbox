@@ -1149,8 +1149,8 @@ BOOST_AUTO_TEST_CASE (test_transformers)
 
 BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
 {
-   // For this test and the next one, we compare values for an overhead line examined in one of Kersting's papers:
-   // see docs/background/Kersting_Carson.pdf for the original source of data.
+   // For this test, we compare values for an overhead line examined in one of Kersting's papers:
+   // docs/background/Kersting_Carson.pdf.
    Model mod;
    Simulation sim(mod);
 
@@ -1194,6 +1194,8 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
 
 BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
 {
+   // For this test, we compare values for an overhead line examined in one of Kersting's papers:
+   // docs/background/Kersting_Carson.pdf.
    Model mod;
    Simulation sim(mod);
 

@@ -26,10 +26,10 @@ objects: # And these are the actual objects.
       phases:                 [A, B, C]
       nominal_voltage:        [15095.0D0, 15095.0D120, 15095.0D240]
    zip_to_ground:
-      name:                   zip_load_2
-      phases:                 [A, B, C]
-      bus:                    bus_2
-      complex_power_load:     [6.99e5 + 1.43e5j, 6.90e5 + 1.03e5j, 5.91e5 + 1.60e4j]
+     name:                   zip_load_2
+     phases:                 [A, B, C]
+     bus:                    bus_2
+     complex_power_load:     [6.99e5 + 1.43e5j, 6.90e5 + 1.03e5j, 5.91e5 + 1.60e4j]
    overhead_line:
       name:                   line_1_2
       network:                network_1

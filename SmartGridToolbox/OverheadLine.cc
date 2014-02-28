@@ -92,26 +92,20 @@ namespace SmartGridToolbox
       ublas::matrix<Complex> YNode(2*nPhase, 2*nPhase, czero);
       for (int i = 0; i < nPhase; ++i)
       {
-         YNode(i, i) += Y(i, i);
-         YNode(i + nPhase, i + nPhase) += Y(i, i); 
-
-         YNode(i, i + nPhase) = -Y(i, i); 
-         YNode(i + nPhase, i) = -Y(i, i); 
-
-         for (int k = i + 1; k < nPhase; ++k)
+         for (int j = 0; j < nPhase; ++j)
          {
-            // Diagonal terms in node admittance matrix.
-            YNode(i, i)         += Y(i, k);
-            YNode(k, k)         += Y(k, i);
-            YNode(i + nPhase, i + nPhase) += Y(i, k);
-            YNode(k + nPhase, k + nPhase) += Y(k, i);
-
-            YNode(i, k + nPhase)      = -Y(i, k);
-            YNode(i + nPhase, k)      = -Y(i, k);
-            YNode(k, i + nPhase)      = -Y(k, i);
-            YNode(k + nPhase, i)      = -Y(k, i);
+            YNode(i, j) = -Y(i, j);
+            YNode(i, j + nPhase) = Y(i, j);
+            YNode(i + nPhase, j) = Y(i, j);
+            YNode(i + nPhase, j + nPhase) = Y(i, j);
          }
       }
+      SGT_DEBUG(
+            for (int i = 0; i < YNode.size1(); ++i)
+            {
+               message() << "YNode(" << i << ", :) = " << row(YNode, i) << std::endl;
+               message() << std::endl;
+            });
       setY(YNode);
    }
 }
