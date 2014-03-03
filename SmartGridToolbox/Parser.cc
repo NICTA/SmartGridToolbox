@@ -394,6 +394,7 @@ namespace SmartGridToolbox
          assertFieldPresent(node, "data_file");
          assertFieldPresent(node, "interp_type");
          assertFieldPresent(node, "relative_to_time");
+         assertFieldPresent(node, "time_unit");
 
          std::string dataFName = node["data_file"].as<std::string>();
          std::ifstream infile(dataFName);
@@ -406,9 +407,33 @@ namespace SmartGridToolbox
          std::string interpType = node["interp_type"].as<std::string>();
          
          std::string relto = node["relative_to_time"].as<std::string>();
-
+         
          posix_time::ptime pt = posix_time::time_from_string(relto);
          Time t0 = timeFromLocalTime(pt, model.timezone());
+         
+         std::string time_unit = node["time_unit"].as<std::string>();
+         double to_secs = 1.0;
+         if (time_unit == "s")
+         {
+            to_secs = 1.0;
+         }
+         else if (time_unit == "m")
+         {
+            to_secs = 60.0;
+         }
+         else if (time_unit == "h")
+         {
+            to_secs = 3600.0;
+         }
+         else if (time_unit == "d")
+         {
+            to_secs = 86400.0;
+         }
+         else
+         {
+            error() << "Invalid time unit in data_time_series. Aborting." << std::endl;
+            abort();
+         }
 
          if (!isComplex && !isVector)
          {
@@ -437,6 +462,7 @@ namespace SmartGridToolbox
                double val;
                ss >> secs >> val;
                assert(ss.eof());
+               secs *= to_secs;
                Time t = t0 + posix_time::seconds(secs);
                ts->addPoint(t, val); 
             }

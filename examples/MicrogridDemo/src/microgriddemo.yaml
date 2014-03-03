@@ -16,18 +16,21 @@ time_series_list:
       value_type:             real_scalar
       interp_type:            lerp
       relative_to_time:       2013-01-01 00:00:00
+      time_unit:              h
    data_time_series:
       name:                   external_temperature
       data_file:              external_temperature.txt
       value_type:             real_scalar
       interp_type:            lerp
       relative_to_time:       2013-01-01 00:00:00
+      time_unit:              h
    data_time_series:
       name:                   internal_thermal_power
       data_file:              internal_thermal_power.txt
       value_type:             real_scalar
       interp_type:            lerp
       relative_to_time:       2013-01-01 00:00:00
+      time_unit:              h
 
 components:
    weather:
