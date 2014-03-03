@@ -169,8 +169,8 @@ namespace SmartGridToolbox
       private:
          Parser();
 
-         void parseGlobal(const YAML::Node & top, Model & model, Simulation & simulation);
-         void parseTimeSeries(const YAML::Node & node, Model & model);
+         void parseGlobal(Model & model, Simulation & simulation);
+         void parseTimeSeries(const std::string & type, const YAML::Node & node, Model & model);
          void parseComponents(const YAML::Node & node, ParserState & state, Model & model, bool isPostParse);
 
       private:

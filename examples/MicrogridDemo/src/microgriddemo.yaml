@@ -3,22 +3,21 @@
 
 --- # Marks the start of each configuration document.
 
-global:
-   configuration_name:        test_microgrid
-   start_time:                2013-01-10 00:00:00
-   end_time:                  2013-01-20 00:00:00
-   lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
-   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
-   time_series:
-      series:
-         name:                cloud_cover_series
-         type:                data
-         value_type:          real_scalar
-         data_file:           cloud_cover.txt
-         interp_type:         lerp
-         relative_to_time:    2013-01-10 00:00:00
+configuration_name:           test_microgrid                   # Name for this model.
+lat_long:                     [-35.3075, 149.1244]             # Canberra, Australia.
+timezone:                     AEST10AEDT,M10.5.0/02,M3.5.0/03  # Canberra, Australia.
+start_time:                   2013-01-10 00:00:00
+end_time:                     2013-01-20 00:00:00
 
-objects: # And these are the actual objects.
+time_series_list:
+   data_time_series:
+      name:                   cloud_cover_series
+      data_file:              cloud_cover.txt
+      value_type:             real_scalar
+      interp_type:            lerp
+      relative_to_time:       2013-01-10 00:00:00
+
+components:
    weather:
       name:                   weather
       cloud_cover:            cloud_cover_series
@@ -32,7 +31,7 @@ objects: # And these are the actual objects.
       phases:                 [BAL]
       nominal_voltage:        [240]
       V_mag_setpoint:         [240]
-      V_ang_setpoint:         [0] 
+      V_ang_setpoint:         [0]
    bus:
       name:                   bus_build
       network:                network
@@ -97,10 +96,10 @@ objects: # And these are the actual objects.
       efficiency:             0.9
    simple_battery:
       name:                   batt
-      dt  :                   00:05:00
+      dt:                     00:05:00
       inverter:               inverter_batt
       init_charge:            0 # SI, 100 kWh
-      max_charge:             4.5e8 # SI, 200 kWh 
+      max_charge:             4.5e8 # SI, 200 kWh
       max_charge_power:       2e4 # Charge in 10 hours.
       max_discharge_power:    5e4 # Discharge in 4 hours.
       charge_efficiency:      0.85 # Typical Li-I
@@ -112,18 +111,18 @@ objects: # And these are the actual objects.
       phases:                 [BAL]
       efficiency:             0.9
    solar_PV:
-       name:                   pv
-       inverter:               inverter_pv
-       weather:                weather
-       efficiency:             0.4
-       area_m2:                50
-       zenith_degrees:         64.6
-       azimuth_degrees:        95.8
+      name:                   pv
+      inverter:               inverter_pv
+      weather:                weather
+      efficiency:             0.4
+      area_m2:                50
+      zenith_degrees:         64.6
+      azimuth_degrees:        95.8
    inverter:
-       name:                   inverter_build
-       bus:                    bus_pv
-       phases:                 [BAL]
-       efficiency:             0.9
+      name:                   inverter_build
+      bus:                    bus_pv
+      phases:                 [BAL]
+      efficiency:             0.9
    simple_building:
       name:                   build
       bus:                    bus_build
@@ -143,4 +142,5 @@ objects: # And these are the actual objects.
       battery:                batt
       min_P:                  -15e3
       max_P:                  -5e3
+
 --- # Marks the end of each configuration document.

@@ -228,35 +228,37 @@ namespace SmartGridToolbox
       }
 
       SGT_DEBUG(debug() << "Parsing global." << std::endl);
-      parseGlobal(top_, model, simulation);
+      parseGlobal(model, simulation);
       SGT_DEBUG(debug() << "Parsed global." << std::endl);
-
-      const YAML::Node & objsNode = top_["objects"];
-      if (objsNode)
+      
+      if (const YAML::Node & nodeTimeSeriesList = top_["time_series_list"])
       {
-         SGT_DEBUG(debug() << "Parsing objects." << std::endl);
+         for (const auto & tsPair : nodeTimeSeriesList)
+         {
+            parseTimeSeries(tsPair.first.as<std::string>(), tsPair.second, model);
+         }
+      }
+      
+      const YAML::Node & nodeComponents = top_["components"];
+      if (nodeComponents)
+      {
+         SGT_DEBUG(debug() << "Parsing components." << std::endl);
          ParserState s;
-         parseComponents(objsNode, s, model, false);
-         SGT_DEBUG(debug() << "Parsed objects." << std::endl);
+         parseComponents(nodeComponents, s, model, false);
+         SGT_DEBUG(debug() << "Parsed components." << std::endl);
       }
 
       message() << "Finished parsing " << model.name() << "." << std::endl;
-      message() << "Start time (local) = " << localTime(simulation.startTime(), model.timezone()) << std::endl;
-      message() << "Start time (UTC)   = " << utcTime(simulation.startTime()) << std::endl;
-      message() << "End time (local)   = " << localTime(simulation.endTime(), model.timezone()) << std::endl;
-      message() << "End time (UTC)     = " << utcTime(simulation.endTime()) << std::endl;
-      message() << "timezone           = " << model.timezone()->to_posix_string() << std::endl;
-      message() << "lat_long           = " << model.latLong().lat_ << ", " << model.latLong().long_ << "." << std::endl;
    }
 
    void Parser::postParse()
    {
-      const YAML::Node & objsNode = top_["objects"];
-      if (objsNode)
+      const YAML::Node & nodeComponents = top_["components"];
+      if (nodeComponents)
       {
          ParserState s;
-         parseComponents(objsNode, s, *mod_, true);
-         SGT_DEBUG(debug() << "Parsed objects." << std::endl);
+         parseComponents(nodeComponents, s, *mod_, true);
+         SGT_DEBUG(debug() << "Parsed components." << std::endl);
       }
       message() << "Parser post-parse " << mod_->name() << "." << std::endl;
    }
@@ -266,16 +268,12 @@ namespace SmartGridToolbox
       registerParserPlugins(*this);
    }
 
-   void Parser::parseGlobal(const YAML::Node & top, Model & model,
-                            Simulation & simulation)
+   void Parser::parseGlobal(Model & model, Simulation & simulation)
    {
-      assertFieldPresent(top, "global");
-      const YAML::Node & nodeGlobal = top["global"];
+      assertFieldPresent(top_, "start_time");
+      assertFieldPresent(top_, "end_time");
 
-      assertFieldPresent(nodeGlobal, "start_time");
-      assertFieldPresent(nodeGlobal, "end_time");
-
-      if (const YAML::Node & nodeConfig = nodeGlobal["configuration_name"])
+      if (const YAML::Node & nodeConfig = top_["configuration_name"])
       {
          model.setName(nodeConfig.as<std::string>());
       }
@@ -284,7 +282,7 @@ namespace SmartGridToolbox
          model.setName(std::string("null"));
       }
 
-      if (const YAML::Node & nodeTz = nodeGlobal["timezone"])
+      if (const YAML::Node & nodeTz = top_["timezone"])
       {
          try 
          {
@@ -297,7 +295,7 @@ namespace SmartGridToolbox
          }
       }
 
-      const YAML::Node & nodeStart = nodeGlobal["start_time"];
+      const YAML::Node & nodeStart = top_["start_time"];
       try 
       {
          simulation.setStartTime(parseTime(nodeStart, model));
@@ -308,7 +306,7 @@ namespace SmartGridToolbox
          abort();
       }
 
-      const YAML::Node & nodeEnd = nodeGlobal["end_time"];
+      const YAML::Node & nodeEnd = top_["end_time"];
       try 
       {
          simulation.setEndTime(parseTime(nodeEnd, model));
@@ -319,7 +317,7 @@ namespace SmartGridToolbox
          abort();
       }
 
-      if (const YAML::Node & nodeLatLong = nodeGlobal["lat_long"])
+      if (const YAML::Node & nodeLatLong = top_["lat_long"])
       {
          try 
          {
@@ -337,32 +335,15 @@ namespace SmartGridToolbox
          }
       }
 
-      if (const YAML::Node & nodeTimeSeries = nodeGlobal["time_series"])
-      {
-         for (const auto & compPair : nodeTimeSeries)
-         {
-            std::string nodeType = compPair.first.as<std::string>();
-            if (nodeType != "series")
-            {
-               error() 
-                  << "time_series section of input file must consist of a list of entries with the key \"series\"."
-                  << std::endl;
-               abort();
-            }
-            const YAML::Node & nodeVal = compPair.second;
-            parseTimeSeries(nodeVal, model);
-         }
-      }
    }
 
-   void Parser::parseTimeSeries(const YAML::Node & node, Model & model)
+   void Parser::parseTimeSeries(const std::string & type, const YAML::Node & node, Model & model)
    {
-      assertFieldPresent(node, "name");
-      assertFieldPresent(node, "type"); // data
+      assertFieldPresent(node, "name"); // data
       assertFieldPresent(node, "value_type"); // real_scalar/complex_scalar/real_vector/complex_vector
 
       std::string name = node["name"].as<std::string>();
-      std::string timeSeriesType = node["type"].as<std::string>();
+
       std::string valType = node["value_type"].as<std::string>();
 
       bool isComplex = false;
@@ -393,7 +374,7 @@ namespace SmartGridToolbox
          abort();
       }
 
-      if (timeSeriesType == "const")
+      if (type == "const_time_series")
       {
          assertFieldPresent(node, "const_value");
          double v = node["const_value"].as<double>();
@@ -408,7 +389,7 @@ namespace SmartGridToolbox
             abort();
          }
       }
-      else if (timeSeriesType == "data")
+      else if (type == "data_time_series")
       {
          assertFieldPresent(node, "data_file");
          assertFieldPresent(node, "interp_type");
@@ -470,7 +451,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "Bad time series type " << timeSeriesType << "." << std::endl;
+         error() << "Bad time series type " << type << "." << std::endl;
          abort();
       }
    }
