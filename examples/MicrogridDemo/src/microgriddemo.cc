@@ -51,12 +51,6 @@ int main(int argc, const char ** argv)
    SimpleBattery * batt = mod.component<SimpleBattery>("batt");
    SimpleInverter * inv = mod.component<SimpleInverter>("inverter_batt");
 
-   Time t0 = sim.startTime();
-   auto Te = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 15*hour, 10*K, 28*K);};
-   auto dQg = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 14*hour, 40*kW, 60*kW);};
-   build->setTeFunc(Te);
-   build->set_dQgFunc(dQg);
-
    p.postParse();
 
    mod.validate();

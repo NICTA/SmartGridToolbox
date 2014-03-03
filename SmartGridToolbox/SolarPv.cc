@@ -13,15 +13,15 @@ namespace SmartGridToolbox
       planeArea_(0.0)
    {}
 
-   double SolarPv::PDc() const
-   {
-      return weather_->solarPower(planeNormal_, planeArea_)*efficiency_;
-   }
-
    void SolarPv::setWeather(Weather & weather)
    {
       weather_ = &weather;
       dependsOn(weather);
       weather.didUpdate().addAction([this](){needsUpdate().trigger();}, "Trigger SolarPv " + name() + " needs update");
+   }
+   
+   double SolarPv::PDc() const
+   {
+      return weather_->solarPower(planeNormal_, planeArea_)*efficiency_;
    }
 };

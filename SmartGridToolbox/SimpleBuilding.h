@@ -3,6 +3,7 @@
 
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Component.h>
+#include <SmartGridToolbox/TimeSeries.h>
 #include <SmartGridToolbox/ZipToGroundBase.h>
 #include<string>
 
@@ -17,21 +18,6 @@ namespace SmartGridToolbox
 
    class SimpleBuilding : public ZipToGroundBase
    {
-      // Overridden functions: from Component.
-      public:
-         virtual Time validUntil() const override {return time() + dt_;}
-
-      protected:
-         virtual void initializeState() override;
-         virtual void updateState(Time t0, Time t1) override;
-
-      // Overridden functions: from ZipToGroundBase.
-      public:
-         virtual ublas::vector<Complex> Y() const override {return {1, czero};}
-         virtual ublas::vector<Complex> I() const override {return {1, czero};}
-         virtual ublas::vector<Complex> S() const override {return {1, Complex(-Ph_, 0.0)};}
-
-      // Public member functions.
       public:
          SimpleBuilding(const std::string & name) :
             ZipToGroundBase(name, Phase::BAL),
@@ -44,8 +30,6 @@ namespace SmartGridToolbox
             copHeat_(4.0),
             PMax_(20.0*kW),
             Ts_(20.0*K),
-            Te_([](Time t){return 25.0;}),
-            dQg_([](Time t){return 10.0;}),
             Tb_(0.0),
             mode_(HvacMode::OFF),
             cop_(0.0),
@@ -54,12 +38,12 @@ namespace SmartGridToolbox
             dQh_(0.0)
          {
          }
-
+         
          // Parameters:
-         Time get_dt() {return dt_;}
+         Time dt() {return dt_;}
          void set_dt(Time val) {dt_ = val; needsUpdate().trigger();}
 
-         double get_kb() {return kb_;}
+         double kb() {return kb_;}
          void set_kb(double val) {kb_ = val;}
 
          double Cb() {return Cb_;}
@@ -68,7 +52,7 @@ namespace SmartGridToolbox
          double TbInit() {return TbInit_;}
          void setTbInit(double val) {TbInit_ = val; needsUpdate().trigger();}
 
-         double get_kh() {return kh_;}
+         double kh() {return kh_;}
          void set_kh(double val) {kh_ = val;}
 
          double copCool() {return copCool_;}
@@ -83,15 +67,15 @@ namespace SmartGridToolbox
          double Ts() {return Ts_;}
          void setTs(double val) {Ts_ = val;}
 
-         const double Te(Time t) {return Te_(t);}
-         void setTeFunc(const std::function<double (Time)> & f) {Te_ = f; needsUpdate().trigger();}
-         
-         const double Te() {return Te_(time());}
-         
-         const double get_dQg(Time t) {return dQg_(t);}
-         void set_dQgFunc(const std::function<double (Time)> f) {dQg_ = f; needsUpdate().trigger();}
+         void setTeSeries(const TimeSeries<Time, double>& Te) {Te_ = &Te; needsUpdate().trigger();}
+
+         void set_dQgSeries(const TimeSeries<Time, double>& dQg) {dQg_ = &dQg; needsUpdate().trigger();}
 
          double Tb() {return Tb_;}
+
+         const double Te() {return Te_->value(time());}
+         
+         const double dQg() {return dQg_->value(time());}
 
          HvacMode mode() {return mode_;}
 
@@ -101,8 +85,22 @@ namespace SmartGridToolbox
 
          double Ph() {return Ph_;}
 
-         double get_dQh() {return dQh_;}
+         double dQh() {return dQh_;}
       
+      // Overridden functions: from ZipToGroundBase.
+      public:
+         virtual ublas::vector<Complex> Y() const override {return {1, czero};}
+         virtual ublas::vector<Complex> I() const override {return {1, czero};}
+         virtual ublas::vector<Complex> S() const override {return {1, Complex(-Ph_, 0.0)};}
+
+      // Overridden functions: from Component.
+      public:
+         virtual Time validUntil() const override {return time() + dt_;}
+
+      protected:
+         virtual void initializeState() override;
+         virtual void updateState(Time t0, Time t1) override;
+
       // Private member functions:
       private:
          void setOperatingParams(Time t);
@@ -110,27 +108,27 @@ namespace SmartGridToolbox
       // Private member variables:
       private:
          // Parameters and controls.
-         Time dt_;                           // Timestep.
-         double kb_;                         // Thermal conductivity, W/K.
-         double Cb_;                         // Heat capacity of building, J/K.
-         double TbInit_;                     // Initial temp of building.
-         double kh_;                         // HVAC PID parameter, W/K.
-         double copCool_;                    // HVAC cooling coeff. of perf.
-         double copHeat_;                    // HVAC heating coeff. of perf.
-         double PMax_;                       // HVAC max power, W.
-         double Ts_;                         // HVAC set_point, C.
+         Time dt_;                              // Timestep.
+         double kb_;                            // Thermal conductivity, W/K.
+         double Cb_;                            // Heat capacity of building, J/K.
+         double TbInit_;                        // Initial temp of building.
+         double kh_;                            // HVAC PID parameter, W/K.
+         double copCool_;                       // HVAC cooling coeff. of perf.
+         double copHeat_;                       // HVAC heating coeff. of perf.
+         double PMax_;                          // HVAC max power, W.
+         double Ts_;                            // HVAC set_point, C.
 
-         std::function<double (Time)> Te_;  // External temperature.
-         std::function<double (Time)> dQg_; // Extra heat -> building.
-                  
-         // State.
-         double Tb_;                         // Building temperature, C.
-         // Operating parameters.
-         HvacMode mode_;                     // Cooling or heating?
-         double cop_;                        // Depends on mode.
-         bool isMaxed_;                      // On maximum power?
-         double Ph_;                         // Power drawn from grid by HVAC.
-         double dQh_;                        // Thermal output, +ve = heating.
+         const TimeSeries<Time, double> * Te_;  // External temperature.
+         const TimeSeries<Time, double> * dQg_; // Extra heat -> building.
+
+                                                // State.
+         double Tb_;                            // Building temperature, C.
+                                                // Operating parameters.
+         HvacMode mode_;                        // Cooling or heating?
+         double cop_;                           // Depends on mode.
+         bool isMaxed_;                         // On maximum power?
+         double Ph_;                            // Power drawn from grid by HVAC.
+         double dQh_;                           // Thermal output, +ve = heating.
    };
 }
 #endif // SIMPLE_BUILDING_DOT_H

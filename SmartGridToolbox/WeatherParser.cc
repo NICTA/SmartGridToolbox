@@ -14,6 +14,19 @@ namespace SmartGridToolbox
       Weather & comp = mod.newComponent<Weather>(name);
 
       comp.setLatLong(mod.latLong());
+      
+      const auto & temperatureNd = nd["temperature"];
+      if (temperatureNd)
+      {
+         std::string name = temperatureNd.as<std::string>();
+         const TimeSeries<Time, double>*series = mod.timeSeries<TimeSeries<Time, double>>(name);
+         if (series == nullptr)
+         {
+            error() << "Parsing weather: couldn't find time series " << name << std::endl;
+            abort();
+         }
+         comp.setTemperatureSeries(*series);
+      }
 
       const auto & cloudNd = nd["cloud_cover"];
       if (cloudNd)

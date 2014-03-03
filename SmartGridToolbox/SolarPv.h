@@ -14,8 +14,6 @@ namespace SmartGridToolbox
       public:
          SolarPv(const std::string & name);
 
-         virtual double PDc() const override;
-
          void setWeather(Weather & weather);
 
          void setEfficiency(double efficiency) {efficiency_ = efficiency; needsUpdate().trigger();}
@@ -23,6 +21,8 @@ namespace SmartGridToolbox
          void setPlaneNormal(SphericalAngles planeNormal) {planeNormal_ = planeNormal; needsUpdate().trigger();}
 
          void setPlaneArea(double planeArea) {planeArea_ = planeArea; needsUpdate().trigger();}
+         
+         virtual double PDc() const override;
 
       public:
          const Weather* weather_;

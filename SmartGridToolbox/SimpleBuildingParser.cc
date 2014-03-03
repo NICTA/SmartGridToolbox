@@ -40,6 +40,32 @@ namespace SmartGridToolbox
       
       auto ndTs = nd["Ts"];
       if (ndTs) build.setTs(ndTs.as<double>());
+      
+      const auto & temperatureNd = nd["external_temperature"];
+      if (temperatureNd)
+      {
+         std::string name = temperatureNd.as<std::string>();
+         const TimeSeries<Time, double>*series = mod.timeSeries<TimeSeries<Time, double>>(name);
+         if (series == nullptr)
+         {
+            error() << "Parsing simple_building: couldn't find time series " << name << std::endl;
+            abort();
+         }
+         build.setTeSeries(*series);
+      }
+      
+      const auto & dQgNd = nd["internal_heat_power"];
+      if (dQgNd)
+      {
+         std::string name = dQgNd.as<std::string>();
+         const TimeSeries<Time, double>*series = mod.timeSeries<TimeSeries<Time, double>>(name);
+         if (series == nullptr)
+         {
+            error() << "Parsing simple_building: couldn't find time series " << name << std::endl;
+            abort();
+         }
+         build.set_dQgSeries(*series);
+      }
    }
 
    void SimpleBuildingParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const

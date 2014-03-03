@@ -19,18 +19,40 @@ namespace SmartGridToolbox
          Weather(const std::string & name) :
             RegularUpdateComponent(name),
             latLong_(Greenwich),
-            cloudCoverSeries_(nullptr)
+            cloudCoverSeries_(nullptr),
+            temperatureSeries_(nullptr)
          {
             setDt(posix_time::minutes(5));
          }
 
          void setLatLong(const LatLong & latLong) {latLong_ = latLong; needsUpdate().trigger();}
+         
+         const TimeSeries<Time, double> * temperatureSeries()
+         {
+            return temperatureSeries_;
+         }
+         void setTemperatureSeries(const TimeSeries<Time, double> & series)
+         {
+            temperatureSeries_ = &series; needsUpdate().trigger();
+         }
+         double temperature() const
+         {
+            return temperatureSeries_->value(time());
+         }
 
+         const TimeSeries<Time, double> * cloudCoverSeries()
+         {
+            return cloudCoverSeries_;
+         }
          void setCloudCoverSeries(const TimeSeries<Time, double> & series)
          {
             cloudCoverSeries_ = &series; needsUpdate().trigger();
          }
-
+         double cloudCover() const
+         {
+            return cloudCoverSeries_->value(time());
+         }
+        
          double solarPower(SphericalAngles planeNormal, double planeArea) const;
 
          const SolarIrradiance & irradiance()
@@ -46,6 +68,7 @@ namespace SmartGridToolbox
       private:
          LatLong latLong_;
          const TimeSeries<Time, double>* cloudCoverSeries_;
+         const TimeSeries<Time, double>* temperatureSeries_;
 
          SolarIrradiance prevIrradiance_;
          SolarIrradiance irradiance_;

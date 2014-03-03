@@ -6,8 +6,8 @@
 configuration_name:           test_microgrid                   # Name for this model.
 lat_long:                     [-35.3075, 149.1244]             # Canberra, Australia.
 timezone:                     AEST10AEDT,M10.5.0/02,M3.5.0/03  # Canberra, Australia.
-start_time:                   2013-01-10 00:00:00
-end_time:                     2013-01-20 00:00:00
+start_time:                   2013-06-10 00:00:00
+end_time:                     2013-08-10 00:00:00
 
 time_series_list:
    data_time_series:
@@ -15,7 +15,19 @@ time_series_list:
       data_file:              cloud_cover.txt
       value_type:             real_scalar
       interp_type:            lerp
-      relative_to_time:       2013-01-10 00:00:00
+      relative_to_time:       2013-01-01 00:30:00
+   data_time_series:
+      name:                   external_temperature
+      data_file:              external_temperature.txt
+      value_type:             real_scalar
+      interp_type:            lerp
+      relative_to_time:       2013-01-01 00:30:00
+   data_time_series:
+      name:                   internal_thermal_power
+      data_file:              internal_thermal_power.txt
+      value_type:             real_scalar
+      interp_type:            lerp
+      relative_to_time:       2013-06-10 00:00:00
 
 components:
    weather:
@@ -135,6 +147,8 @@ components:
       COP_heat:               4
       P_max:                  1e5 # 70 kW, about typical for largeish building.
       Ts:                     20
+      external_temperature:   temperature
+      internal_heat_power:    building_internal_heat_power
    microgrid_controller:
       name:                   controller
       building_bus:           bus_build

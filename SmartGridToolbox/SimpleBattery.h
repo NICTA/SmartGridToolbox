@@ -27,7 +27,7 @@ namespace SmartGridToolbox
             // Empty.
          }
          
-         Time get_dt() {return dt_;}
+         Time dt() {return dt_;}
          void set_dt(Time val) {dt_ = val; needsUpdate().trigger();}
       
          double initCharge() {return initCharge_;}
