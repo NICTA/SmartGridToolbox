@@ -122,7 +122,7 @@ components:
       bus:                    bus_pv
       phases:                 [BAL]
       efficiency:             0.9
-   solar_PV:
+   solar_pv:
       name:                   pv
       inverter:               inverter_pv
       weather:                weather
@@ -147,8 +147,8 @@ components:
       COP_heat:               4
       P_max:                  1e5 # 70 kW, about typical for largeish building.
       Ts:                     20
-      external_temperature:   temperature
-      internal_heat_power:    building_internal_heat_power
+      external_temperature:   external_temperature
+      internal_heat_power:    internal_thermal_power
    microgrid_controller:
       name:                   controller
       building_bus:           bus_build

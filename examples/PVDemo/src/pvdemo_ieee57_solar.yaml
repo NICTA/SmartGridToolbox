@@ -23,8 +23,8 @@ objects: # And these are the actual objects.
       max_S_mag_per_phase:    0.1
       min_power_factor:       0.9
       efficiency:             0.86
-   solar_PV:                  # Should point right at sun on Jan 26, 2013, 0830. 
-      name:                   solar_PV_cdf_bus_00020
+   solar_pv:                  # Should point right at sun on Jan 26, 2013, 0830. 
+      name:                   solar_pv_cdf_bus_00020
       weather:                weather_1
       inverter:               inverter_cdf_bus_00020
       efficiency:             0.75
@@ -39,8 +39,8 @@ objects: # And these are the actual objects.
       max_S_mag_per_phase:    0.1
       min_power_factor:       0.9
       efficiency:             0.86
-   solar_PV:                  # Should point right at sun on Jan 26, 2013, 0830. 
-      name:                   solar_PV_cdf_bus_00030
+   solar_pv:                  # Should point right at sun on Jan 26, 2013, 0830. 
+      name:                   solar_pv_cdf_bus_00030
       weather:                weather_1
       inverter:               inverter_cdf_bus_00030
       efficiency:             0.75
@@ -55,8 +55,8 @@ objects: # And these are the actual objects.
       max_S_mag_per_phase:    0.1
       min_power_factor:       0.9
       efficiency:             0.86
-   solar_PV:                  # Should point right at sun on Jan 26, 2013, 0830. 
-      name:                   solar_PV_cdf_bus_00035
+   solar_pv:                  # Should point right at sun on Jan 26, 2013, 0830. 
+      name:                   solar_pv_cdf_bus_00035
       weather:                weather_1
       inverter:               inverter_cdf_bus_00035
       efficiency:             0.75
@@ -71,8 +71,8 @@ objects: # And these are the actual objects.
       max_S_mag_per_phase:    0.1
       min_power_factor:       0.9
       efficiency:             0.86
-   solar_PV:                  # Should point right at sun on Jan 26, 2013, 0830. 
-      name:                   solar_PV_cdf_bus_00050
+   solar_pv:                  # Should point right at sun on Jan 26, 2013, 0830. 
+      name:                   solar_pv_cdf_bus_00050
       weather:                weather_1
       inverter:               inverter_cdf_bus_00050
       efficiency:             0.75
@@ -87,8 +87,8 @@ objects: # And these are the actual objects.
       max_S_mag_per_phase:    0.1
       min_power_factor:       0.9
       efficiency:             0.86
-   solar_PV:                  # Should point right at sun on Jan 26, 2013, 0830. 
-      name:                   solar_PV_cdf_bus_00053
+   solar_pv:                  # Should point right at sun on Jan 26, 2013, 0830. 
+      name:                   solar_pv_cdf_bus_00053
       weather:                weather_1
       inverter:               inverter_cdf_bus_00053
       efficiency:             0.75
@@ -103,8 +103,8 @@ objects: # And these are the actual objects.
       max_S_mag_per_phase:    0.1
       min_power_factor:       0.9
       efficiency:             0.86
-   solar_PV:                  # Should point right at sun on Jan 26, 2013, 0830. 
-      name:                   solar_PV_cdf_bus_00056
+   solar_pv:                  # Should point right at sun on Jan 26, 2013, 0830. 
+      name:                   solar_pv_cdf_bus_00056
       weather:                weather_1
       inverter:               inverter_cdf_bus_00056
       efficiency:             0.75
