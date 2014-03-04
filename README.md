@@ -1,4 +1,4 @@
-MGSim
-=====
+SmartGridToolbox
+================
 
-Microgrid simulator for NICTA.
+Microgrid and smart grid simulator.
