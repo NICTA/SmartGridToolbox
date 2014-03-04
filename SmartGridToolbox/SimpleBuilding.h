@@ -4,6 +4,7 @@
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/Component.h>
 #include <SmartGridToolbox/TimeSeries.h>
+#include <SmartGridToolbox/Weather.h>
 #include <SmartGridToolbox/ZipToGroundBase.h>
 #include<string>
 
@@ -30,6 +31,8 @@ namespace SmartGridToolbox
             copHeat_(4.0),
             PMax_(20.0*kW),
             Ts_(20.0*K),
+            weather_(nullptr),
+            dQg_(nullptr),
             Tb_(0.0),
             mode_(HvacMode::OFF),
             cop_(0.0),
@@ -67,13 +70,13 @@ namespace SmartGridToolbox
          double Ts() {return Ts_;}
          void setTs(double val) {Ts_ = val;}
 
-         void setTeSeries(const TimeSeries<Time, double>& Te) {Te_ = &Te; needsUpdate().trigger();}
+         void setWeather(const Weather& weather) {weather_ = &weather; needsUpdate().trigger();}
 
          void set_dQgSeries(const TimeSeries<Time, double>& dQg) {dQg_ = &dQg; needsUpdate().trigger();}
 
          double Tb() {return Tb_;}
 
-         const double Te() {return Te_->value(time());}
+         const double Te() {return weather_->temperatureSeries()->value(time());}
          
          const double dQg() {return dQg_->value(time());}
 
@@ -118,10 +121,10 @@ namespace SmartGridToolbox
          double PMax_;                          // HVAC max power, W.
          double Ts_;                            // HVAC set_point, C.
 
-         const TimeSeries<Time, double> * Te_;  // External temperature.
-         const TimeSeries<Time, double> * dQg_; // Extra heat -> building.
+         const Weather* weather_;               // For external temperature.
+         const TimeSeries<Time, double>* dQg_;  // Extra heat -> building.
 
-                                                // State.
+         // State.
          double Tb_;                            // Building temperature, C.
                                                 // Operating parameters.
          HvacMode mode_;                        // Cooling or heating?
