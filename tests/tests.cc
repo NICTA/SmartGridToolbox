@@ -875,16 +875,16 @@ BOOST_AUTO_TEST_CASE (test_mp_SLPQ)
    testMatpower("caseSLPQ", false);
 }
 
-BOOST_AUTO_TEST_CASE (test_mp_SLPv)
+BOOST_AUTO_TEST_CASE (test_mp_SLPV)
 {
-   testMatpower("caseSLPv", true);
-   testMatpower("caseSLPv", false);
+   testMatpower("caseSLPV", true);
+   testMatpower("caseSLPV", false);
 }
 
-BOOST_AUTO_TEST_CASE (test_mp_SLPQPv)
+BOOST_AUTO_TEST_CASE (test_mp_SLPQPV)
 {
-   testMatpower("caseSLPQPv", true);
-   testMatpower("caseSLPQPv", false);
+   testMatpower("caseSLPQPV", true);
+   testMatpower("caseSLPQPV", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_mp_4gs)
