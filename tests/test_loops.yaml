@@ -3,20 +3,19 @@
 
 --- # Marks the start of each configuration document.
 
-global:
-   configuration_name:              test_loops
-   timezone:                        AEST10AEDT,M10.5.0/02,M3.5.0/03  # Timezone info for Canberra, Australia.
-   lat_long:                        [-35.3075, 149.1244]             # Canberra, Australia.
-   start_time:                      2013-01-01 00:00:00
-   end_time:                        2013-01-02 00:00:00
-   time_series:
-      series:
-         name:                cloud_cover_series
-         type:                const
-         value_type:          real_scalar
-         const_value:         0.3
+configuration_name:                 test_loops
+timezone:                           AEST10AEDT,M10.5.0/02,M3.5.0/03  # Timezone info for Canberra, Australia.
+lat_long:                           [-35.3075, 149.1244]             # Canberra, Australia.
+start_time:                         2013-01-01 00:00:00
+end_time:                           2013-01-02 00:00:00
 
-objects:       # And these are the actual objects.
+time_series_list:
+   const_time_series:
+      name:                         cloud_cover_series
+      value_type:                   real_scalar
+      const_value:                  0.3
+
+components:
    weather:      
       name:                         weather_1
       cloud_cover:                  cloud_cover_series

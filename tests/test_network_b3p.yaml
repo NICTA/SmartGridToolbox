@@ -3,14 +3,13 @@
 
 --- # Marks the start of each configuration document.
 
-global:
-   configuration_name:        test_network_b3p
-   start_time:                2013-01-23 13:13:00
-   end_time:                  2013-01-23 15:13:00
-   lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
-   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
+configuration_name:        test_network_b3p
+start_time:                2013-01-23 13:13:00
+end_time:                  2013-01-23 15:13:00
+lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
+timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
 
-objects: # And these are the actual objects.
+components:
    network:
       name:                   network_1
    bus:

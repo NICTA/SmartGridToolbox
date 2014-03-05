@@ -379,49 +379,6 @@ static double sinusoidal(double t, double T, double Delta,
    return minim + (maxim - minim) * 0.5 * (1.0 + cos(2.0 * pi * (t - Delta) / T));
 }
 
-BOOST_AUTO_TEST_CASE (test_simple_building)
-{
-   local_time::time_zone_ptr tz(new local_time::posix_time_zone("UTC0"));
-   ofstream outfile;
-   outfile.open("simple_building.out");
-
-   Model mod;
-   Simulation sim(mod);
-
-   Time t0 = posix_time::seconds(0);
-
-   auto Te = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 12*hour, 
-         10*K, 28*K);};
-   auto dQg = [&](Time t){return sinusoidal(dSeconds(t-t0), day, 14*hour, 
-         40*kW, 60*kW);};
-
-   SimpleBuilding & build1 = mod.newComponent<SimpleBuilding>("build1");
-   build1.set_kb(5*kW/K);
-   build1.setCb(1e5*kJ/K);
-   build1.setTbInit(22*K);
-   build1.set_kh(10*kW/K);
-   build1.setCopCool(3);
-   build1.setCopHeat(4);
-   build1.setPMax(30*kW);
-   build1.setTs(20*K);
-   build1.setTeFunc(Te);
-   build1.set_dQgFunc(dQg);
-
-   sim.setStartTime(t0);
-   sim.setEndTime(t0 + posix_time::hours(24));
-   sim.initialize();
-   auto print = [&] () -> void 
-   {
-      outfile << dSeconds(build1.time())/hour << " " << build1.Tb()
-           << " " << build1.Ph() << " " << build1.get_dQh() << endl;
-   };
-   print();
-   while (sim.doNextUpdate())
-   {
-      print();
-   }
-}
-
 BOOST_AUTO_TEST_CASE (test_sparse_solver)
 {
    int n = 5;
@@ -781,14 +738,13 @@ static void prepareMPInput(const std::string & yamlName, const std::string & cas
       SmartGridToolbox::abort();
    }
 
-   yamlFile << "global:" << std::endl;
-   yamlFile << "   configuration_name:        config_1" << std::endl;
-   yamlFile << "   start_time:                2013-01-23 13:13:00" << std::endl;
-   yamlFile << "   end_time:                  2013-01-23 15:13:00" << std::endl;
-   yamlFile << "   lat_long:                  [-35.3075, 149.1244] # Canberra, Australia." << std::endl;
-   yamlFile << "   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia."
+   yamlFile << "configuration_name:           config_1" << std::endl;
+   yamlFile << "start_time:                   2013-01-23 13:13:00" << std::endl;
+   yamlFile << "end_time:                     2013-01-23 15:13:00" << std::endl;
+   yamlFile << "lat_long:                     [-35.3075, 149.1244] # Canberra, Australia." << std::endl;
+   yamlFile << "timezone:                     AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia."
             << std::endl;
-   yamlFile << "objects: # And these are the actual objects." << std::endl;
+   yamlFile << "components:" << std::endl;
    yamlFile << "   matpower:" << std::endl;
    yamlFile << "      input_file:             " << caseName << std::endl;
    yamlFile << "      network_name:           matpower" << std::endl;
@@ -1023,14 +979,13 @@ static void prepareCDFInput(const std::string & yamlName, const std::string & ca
       SmartGridToolbox::abort();
    }
 
-   yamlFile << "global:" << std::endl;
-   yamlFile << "   configuration_name:        config_1" << std::endl;
-   yamlFile << "   start_time:                2013-01-23 13:13:00" << std::endl;
-   yamlFile << "   end_time:                  2013-01-23 15:13:00" << std::endl;
-   yamlFile << "   lat_long:                  [-35.3075, 149.1244] # Canberra, Australia." << std::endl;
-   yamlFile << "   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia."
+   yamlFile << "configuration_name:           config_1" << std::endl;
+   yamlFile << "start_time:                   2013-01-23 13:13:00" << std::endl;
+   yamlFile << "end_time:                     2013-01-23 15:13:00" << std::endl;
+   yamlFile << "lat_long:                     [-35.3075, 149.1244] # Canberra, Australia." << std::endl;
+   yamlFile << "timezone:                     AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia."
             << std::endl;
-   yamlFile << "objects: # And these are the actual objects." << std::endl;
+   yamlFile << "components:" << std::endl;
    yamlFile << "   cdf:" << std::endl;
    yamlFile << "      input_file:             " << caseName << std::endl;
    yamlFile << "      network_name:           cdf" << std::endl;
