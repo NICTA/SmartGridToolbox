@@ -9,9 +9,6 @@
 #include <SmartGridToolbox/SimpleInverter.h>
 #include <SmartGridToolbox/Simulation.h>
 #include <SmartGridToolbox/TimeSeries.h>
-extern "C" {
-#include <gurobi_c.h>
-}
 
 using namespace SmartGridToolbox;
 using namespace MicrogridDemo;

@@ -5,10 +5,6 @@
 #include <SmartGridToolbox/Parser.h>
 #include <SmartGridToolbox/SimpleBattery.h>
 
-extern "C" {
-#include <gurobi_c.h>
-}
-
 namespace MicrogridDemo
 {
    class MicrogridControllerParser : public SmartGridToolbox::ParserPlugin

@@ -47,7 +47,7 @@ components:
       name:                   bus_trans
       network:                network                       # My network
       type:                   SL                            # SL = slack/swing/infinite bus, PQ = PQ bus, PV = PV bus.
-      phases:                 [BAL]                         # e.g. [A, B, C] = three phase, [BAL] = balanced/single phase.
+      phases:                 [BAL]                         # e.g. [A, B, C] = three phase, [BAL] = balanced/sing phase.
       nominal_voltage:        [240]                         # Nominal/starting voltage, SI (Volts).
       V_mag_setpoint:         [240]                         # For slack / PV busses, voltage magnitude setpoint
       V_ang_setpoint:         [0]                           # For slack busses, voltage angle setpoint in degrees.
