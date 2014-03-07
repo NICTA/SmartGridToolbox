@@ -12,7 +12,7 @@ AC_PROG_RANLIB
 AC_LANG([C++])
 
 AX_CXX_COMPILE_STDCXX_11
-AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [CXXFLAGS="$CXXFLAGS -ftemplate-depth=160"])
+AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [AM_CXXFLAGS="$AM_CXXFLAGS -ftemplate-depth=160"])
 
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
 AC_CHECK_PROGS([PDFLATEX], [pdflatex])
