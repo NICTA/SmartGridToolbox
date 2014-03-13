@@ -2,6 +2,8 @@ AUTOMAKE_OPTIONS = foreign
 
 lib_LIBRARIES = libSmartGridToolbox.a
 
+include_HEADERS = SmartGridToolbox.h
+
 pkginclude_HEADERS = \
 	Branch.h \
 	Bus.h \
@@ -100,6 +102,7 @@ libSmartGridToolbox_a_SOURCES = Bus.h \
 	SinglePhaseTransformer.cc \
 	SinglePhaseTransformerParser.h \
 	SinglePhaseTransformerParser.cc \
+	SmartGridToolbox.h \
 	SolarPv.h \
 	SolarPv.cc \
 	SolarPvParser.h \
