@@ -46,7 +46,7 @@ namespace SmartGridToolbox
          friend std::ostream & operator<<(std::ostream & os, const Network & nw);
 
       protected:
-         virtual void updateState(Time t0, Time t1) override;
+         virtual void updateState(Time t) override;
 
       private:
          double freq_;

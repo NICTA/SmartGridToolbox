@@ -31,8 +31,7 @@ namespace SmartGridToolbox
          virtual double PPerPhase() const;
 
       protected:
-         virtual void updateState(Time t0, Time t1) override;
-
+         virtual void updateState(Time t) override;
       
       private:
          std::vector<const DcPowerSourceBase*> sources_;    ///< My DC power sources.

@@ -62,8 +62,7 @@ namespace SmartGridToolbox
             charge_ = initCharge_;
          }
 
-         virtual void updateState(Time t0, Time t1) override;
-
+         virtual void updateState(Time t) override;
          
          virtual Time validUntil() const override
          {

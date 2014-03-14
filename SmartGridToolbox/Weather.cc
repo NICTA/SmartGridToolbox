@@ -15,13 +15,13 @@ namespace SmartGridToolbox
       return direct + diffuse;
    }
 
-   void Weather::updateState(Time t0, Time t1)
+   void Weather::updateState(Time t)
    {
       const double tConst = 900.0; // 15 minute smoothing constant.
       prevIrradiance_ = irradiance_;
-      double prevFrac = exp(-dSeconds(t1-t0)/tConst);
+      double prevFrac = exp(-dSeconds(t - time())/tConst);
       double curFrac = 1.0 - prevFrac;
-      SolarIrradiance newUnav = unaveragedIrradiance(t1);
+      SolarIrradiance newUnav = unaveragedIrradiance(t);
       irradiance_.direct = prevFrac*prevIrradiance_.direct + curFrac*newUnav.direct;
       irradiance_.horizontalDiffuse = prevFrac*prevIrradiance_.horizontalDiffuse 
                                     + curFrac*newUnav.horizontalDiffuse;

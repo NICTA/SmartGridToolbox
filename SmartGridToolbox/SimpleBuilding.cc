@@ -42,9 +42,9 @@ namespace SmartGridToolbox
       setOperatingParams(time());
    }
 
-   void SimpleBuilding::updateState(Time t0, Time t1)
+   void SimpleBuilding::updateState(Time t)
    {
-      double dt = t0 == posix_time::neg_infin ? 0 : dSeconds(t1 - t0);
+      double dt = time() == posix_time::neg_infin ? 0 : dSeconds(t - time());
 
       if (!isMaxed_)
       {
@@ -54,10 +54,10 @@ namespace SmartGridToolbox
       else
       {
          // Power is constrained by maximum.
-         Tb_ = propTbMaxed(dt, Tb_, dQg_->value(t0), dQg_->value(t1), weather_->temperatureSeries()->value(t0),
-                           weather_->temperatureSeries()->value(t1), kb_, dQh_, Cb_);
+         Tb_ = propTbMaxed(dt, Tb_, dQg_->value(time()), dQg_->value(t), weather_->temperatureSeries()->value(time()),
+                           weather_->temperatureSeries()->value(t), kb_, dQh_, Cb_);
       }
-      setOperatingParams(t1);
+      setOperatingParams(t);
    }
 
    void SimpleBuilding::setOperatingParams(Time t)

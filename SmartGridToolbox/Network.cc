@@ -7,7 +7,7 @@
 
 namespace SmartGridToolbox
 {
-   void Network::updateState(Time t0, Time t1)
+   void Network::updateState(Time t)
    {
       SGT_DEBUG(debug() << "Network : update state." << std::endl);
       solvePowerFlow(); // TODO: inefficient to rebuild even if not needed.

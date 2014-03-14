@@ -224,7 +224,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus::updateState(Time t0, Time t1)
+   void Bus::updateState(Time t)
    {
       applySetpoints();
       for (int i = 0; i < phases_.size(); ++i)

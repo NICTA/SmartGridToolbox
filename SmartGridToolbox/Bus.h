@@ -195,7 +195,7 @@ namespace SmartGridToolbox
       
       protected:
          virtual void initializeState() override;
-         virtual void updateState(Time t0, Time t1) override;
+         virtual void updateState(Time t) override;
 
       private:
          BusType type_;                                ///< Bus type.

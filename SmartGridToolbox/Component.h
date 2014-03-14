@@ -10,6 +10,21 @@
 namespace SmartGridToolbox
 {
    /// Base class for simulation objects.
+   /** Component derived classes are expected to override three methods:
+    *
+    *  virtual Time validUntil() const, 
+    *  virtual void initializeState(),
+    *  virtual void updateState(Time t).
+    *
+    *  validUntil() tells the simulation when the component will require its next scheduled update. Note that it may
+    *  be called on to update before this time, due to the requirements of other components that depend on it.
+    *
+    *  initialiseState() does any required initial work, before the simulation has even started. At this point, the
+    *  timestep of the component will be at negative infinity (SmartGridToolbox::posix_time::neg_infin).
+    *
+    *  updateState(t) updates the state from the current time to the next scheduled time t. Note that at the time the
+    *  function is called, the current time of a Component comp is comp.time(), which will advance to t until
+    *  directly after the function returns. */
    class Component
    {
       public:
@@ -20,10 +35,7 @@ namespace SmartGridToolbox
          explicit Component(const std::string & name); 
 
          /// Destructor.
-         virtual ~Component()
-         {
-            // Empty.
-         }
+         virtual ~Component() = 0;
 
          /// @}
 
@@ -101,7 +113,7 @@ namespace SmartGridToolbox
          /// Bring state up to time t.
          void update(Time t);
 
-         virtual Time validUntil() const
+         virtual Time validUntil() const = 0
          {
             return posix_time::pos_infin;
          }
@@ -133,14 +145,14 @@ namespace SmartGridToolbox
          typedef std::vector<const Component*> ComponentVec;
 
       protected:
-         /// Reset state of the object, time is at current time.
+         /// Reset state of the object, time will be at negative infinity.
          virtual void initializeState()
          {
             // Empty.
          }
 
          /// Bring state up to time current time.
-         virtual void updateState(Time t0, Time t1)
+         virtual void updateState(Time t)
          {
             // Empty.
          }
@@ -156,6 +168,9 @@ namespace SmartGridToolbox
          Event willStartNewTimestep_;
          Event didCompleteTimestep_;
    };
+
+inline virtual Component::~Component() {}
+
 }
 
 #endif // COMPONENT_DOT_H
