@@ -126,3 +126,5 @@ libSmartGridToolbox_a_SOURCES = \
 	ZipToGround.cc \
 	ZipToGroundParser.h \
 	ZipToGroundParser.cc
+
+EXTRA_DIST = mainpage.dox

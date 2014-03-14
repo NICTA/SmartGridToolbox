@@ -7,6 +7,7 @@ namespace SmartGridToolbox
 {
    /// @brief DC power source.
    /// Abstract base class for any object that can provide a source of DC power, i.e. a single real power.
+   /// @ingroup PowerFlowCore
    class DcPowerSourceBase : public Component
    {
       public:

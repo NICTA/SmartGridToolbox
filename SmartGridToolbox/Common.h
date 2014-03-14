@@ -25,8 +25,10 @@
 
 namespace SmartGridToolbox
 {
-   /// @defgroup Common Common Utilities
-   /// @brief Utility functions, classes and constants.
+   /// @addtogroup Common
+   /// @{
+   
+   /// @name Reporting and errors.
    /// @{
    inline std::ostream & messageStream() {return std::cout;}
    inline std::ostream & warningStream() {return std::cerr;}
@@ -39,6 +41,7 @@ namespace SmartGridToolbox
    inline std::ostream & debug() {return debugStream()      <<  "DEBUG:  \t";}
 
    inline void abort() {std::cerr << "ABORTING." << std::endl; ::abort();}
+   /// @}
 
    /// @name Constant dimension 1D array type.
    /// @{

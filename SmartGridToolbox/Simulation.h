@@ -12,6 +12,7 @@ namespace SmartGridToolbox
    class Model;
 
    /// @brief Simulation: takes a Model, and steps time according to discrete event simulation principles.
+   /// @ingroup Core
    class Simulation
    {
       public:

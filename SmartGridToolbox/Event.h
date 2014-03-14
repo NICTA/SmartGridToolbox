@@ -40,6 +40,7 @@ namespace SmartGridToolbox
    /// @brief An event, when triggered, performs all of its registered actions.
    /// Actions are stored as a list in the event in question. Anyone may register an action. Deregistration is
    /// not currently supported.
+   /// @ingroup Core
    class Event
    {
       public:

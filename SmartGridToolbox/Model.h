@@ -13,6 +13,7 @@ using std::string;
 namespace SmartGridToolbox
 {
    /// @brief All components and other objects that form the static model that is the subject of the simulation. 
+   /// @ingroup Core
    class Model
    {
       private:

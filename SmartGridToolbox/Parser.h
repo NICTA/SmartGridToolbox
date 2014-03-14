@@ -112,6 +112,7 @@ namespace SmartGridToolbox
 
    void assertFieldPresent(const YAML::Node & nd, const std::string & field);
 
+   /// @ingroup Core
    class ParserPlugin
    {
       public:
@@ -131,6 +132,7 @@ namespace SmartGridToolbox
          virtual void postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const {}
    };
 
+   /// @ingroup Core
    class Parser {
 
       friend class ParserPlugin;

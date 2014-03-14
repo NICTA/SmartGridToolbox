@@ -5,6 +5,8 @@
 
 namespace SmartGridToolbox
 {
+   /// @brief A load (or sometimes generator) with constant Z, I, P components.
+   /// @ingroup PowerFlowCore
    class ZipToGround : public ZipToGroundBase
    {
 

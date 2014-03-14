@@ -10,6 +10,7 @@ namespace SmartGridToolbox
    class DcPowerSourceBase;
 
    /// @brief DC power to n-phase AC converter.
+   /// @ingroup PowerFlowCore
    class InverterBase : public ZipToGroundBase
    {
       public:

@@ -9,6 +9,7 @@ namespace SmartGridToolbox
 {
    class Bus;
 
+   /// @ingroup PowerFlowCore
    class Network : public Component
    {
       public:

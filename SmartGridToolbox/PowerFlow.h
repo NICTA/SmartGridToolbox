@@ -10,8 +10,7 @@
 
 namespace SmartGridToolbox
 {
-   /// @defgroup PowerFlow Powerflow Utilities
-   /// @brief Utility functions, classes and constants related to AC power flow.
+   /// @addtogroup PowerFlow
    /// @{
 
    enum class BusType
