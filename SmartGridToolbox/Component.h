@@ -23,7 +23,7 @@ namespace SmartGridToolbox
     *  timestep of the component will be at negative infinity (SmartGridToolbox::posix_time::neg_infin).
     *
     *  updateState(t) updates the state from the current time to the next scheduled time t. Note that at the time the
-    *  function is called, the current time of a Component comp is comp.time(), which will advance to t until
+    *  function is called, the current time of a Component comp is comp.time(), which will not advance to t until
     *  directly after the function returns. */
    class Component
    {
