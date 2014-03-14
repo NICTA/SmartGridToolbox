@@ -25,9 +25,9 @@ namespace PVDemo
          void setS(Complex S) {S_ = S;};
 
       private:
-         virtual void updateState(SmartGridToolbox::Time t0, SmartGridToolbox::Time t1)
+         virtual void updateState(SmartGridToolbox::Time t)
          {
-            SmartGridToolbox::SimpleInverter::updateState(t0, t1);
+            SmartGridToolbox::SimpleInverter::updateState(t);
             setS(SmartGridToolbox::SimpleInverter::S()(0));
          }
 

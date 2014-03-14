@@ -35,7 +35,7 @@ namespace MicrogridDemo
          void setBatt(SmartGridToolbox::SimpleBattery & batt);
 
       protected:
-         virtual void updateState(SmartGridToolbox::Time t0, SmartGridToolbox::Time t1) override;
+         virtual void updateState(SmartGridToolbox::Time t) override;
 
       private:
 

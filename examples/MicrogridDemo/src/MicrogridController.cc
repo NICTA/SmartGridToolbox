@@ -60,7 +60,7 @@ namespace MicrogridDemo
       didUpdate().addAction([this](){batt_->needsUpdate().trigger();}, "trigger " + batt_->name() + " needsUpdate()");
    }
 
-   void MicrogridController::updateState(Time t0, Time t1)
+   void MicrogridController::updateState(Time t)
    {
       double P = (buildBus_->Sc()(0) + pvBus_->Sc()(0)).real();
       if (P < minP_)
