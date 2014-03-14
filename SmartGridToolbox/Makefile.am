@@ -38,7 +38,8 @@ pkginclude_HEADERS = \
 	ZipToGround.h \
 	ZipToGroundBase.h
 
-libSmartGridToolbox_a_SOURCES = Bus.h \
+libSmartGridToolbox_a_SOURCES = \
+	Bus.h \
 	Bus.cc \
 	BusParser.h \
 	BusParser.cc \
