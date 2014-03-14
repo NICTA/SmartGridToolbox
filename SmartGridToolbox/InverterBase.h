@@ -9,7 +9,7 @@ namespace SmartGridToolbox
 {
    class DcPowerSourceBase;
 
-   /// DC power to n-phase AC converter.
+   /// @brief DC power to n-phase AC converter.
    class InverterBase : public ZipToGroundBase
    {
       public:
@@ -27,7 +27,7 @@ namespace SmartGridToolbox
 
          virtual double efficiency(double powerDc) const = 0;
 
-         /// Real power output, per phase.
+         /// @brief Real power output, per phase.
          virtual double PPerPhase() const;
 
       protected:

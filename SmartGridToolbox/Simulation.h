@@ -11,26 +11,26 @@ namespace SmartGridToolbox
 {
    class Model;
 
-   /// Simulation: takes a Model, and steps time according to discrete event simulation principles.
+   /// @brief Simulation: takes a Model, and steps time according to discrete event simulation principles.
    class Simulation
    {
       public:
-         /// Default constructor.
+         /// @brief Default constructor.
          Simulation(Model & mod);
 
-         /// Destructor.
+         /// @brief Destructor.
          ~Simulation()
          {
             // Empty.
          }
 
-         /// Model accessor.
+         /// @brief Model accessor.
          const Model & model() const
          {
             return *mod_;
          }
 
-         /// Model accessor.
+         /// @brief Model accessor.
          Model & model()
          {
             return const_cast<Model &>((const_cast<const Simulation*>(this))->model());
@@ -61,24 +61,24 @@ namespace SmartGridToolbox
             return currentTime_;
          }
 
-         /// Initialize to start time.
+         /// @brief Initialize to start time.
          void initialize();
          
-         /// Do the next update.
+         /// @brief Do the next update.
          bool doNextUpdate();
 
-         /// Complete the pending timestep.
+         /// @brief Complete the pending timestep.
          bool doTimestep();
 
-         /// Get the timestep will start event.
+         /// @brief Get the timestep will start event.
          Event & timestepWillStart() {return timestepWillStart_;}
 
-         /// Get the timestep did complete event.
+         /// @brief Get the timestep did complete event.
          Event & timestepDidComplete() {return timestepDidComplete_;}
 
       private:
 
-         // Soonest/smallest rank goes first. If equal rank and time, then sort on the name.
+         /// @brief Soonest/smallest rank goes first. If equal rank and time, then sort on the name.
          class ScheduledUpdatesCompare
          {
             public:

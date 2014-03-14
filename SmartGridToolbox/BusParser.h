@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   /// ParserPlugin that parses Bus objects.
+   /// @brief ParserPlugin that parses Bus objects.
    class BusParser : public ParserPlugin
    {
       public:

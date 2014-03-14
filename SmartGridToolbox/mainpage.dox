@@ -1,5 +1,11 @@
 /** @mainpage
  *  This is the doxygen main page. */
 
+/// These will typically be included in most headers, and provide access to utility functions etc. for time,
+/// complex numbers, linear algebra, etc.
 /// @defgroup Core SmartGridToolbox core
 /// @brief Core classes of SmartGridToolbox.
+
+/// @defgroup PowerFlowCore Power flow core
+/// @brief Core power flow classes of SmartGridToolbox.
+

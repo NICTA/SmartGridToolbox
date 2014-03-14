@@ -12,7 +12,7 @@ using std::string;
 
 namespace SmartGridToolbox
 {
-   /// All components and other objects that form the static model that is the subject of the simulation. 
+   /// @brief All components and other objects that form the static model that is the subject of the simulation. 
    class Model
    {
       private:
@@ -22,7 +22,7 @@ namespace SmartGridToolbox
          typedef std::vector<const Component*> ConstComponentVec;
 
       public:
-         /// Default constructor.
+         /// @brief Default constructor.
          Model() : name_("null"),
                    isValid_(false),
                    timezone_(new local_time::posix_time_zone("UTC0"))

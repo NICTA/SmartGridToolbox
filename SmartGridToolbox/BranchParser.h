@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   /// ParserPlugin that parses Branch objects.
+   /// @brief ParserPlugin that parses Branch objects.
    class BranchParser : public ParserPlugin
    {
       public:

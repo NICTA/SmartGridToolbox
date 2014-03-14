@@ -27,11 +27,7 @@ namespace SmartGridToolbox
 {
    /// @defgroup Common Common Utilities
    /// @brief Utility functions, classes and constants.
-   ///
-   /// These will typically be included in most headers, and provide access to utility functions etc. for time,
-   /// complex numbers, linear algebra, etc.
    /// @{
-
    inline std::ostream & messageStream() {return std::cout;}
    inline std::ostream & warningStream() {return std::cerr;}
    inline std::ostream & errorStream() {return std::cerr;}

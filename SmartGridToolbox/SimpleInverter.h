@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   /// SimpleInverter: DC power to n-phase AC converter.
+   /// @brief SimpleInverter: DC power to n-phase AC converter.
    class SimpleInverter : public InverterBase
    {
       public:

@@ -12,7 +12,8 @@ namespace SmartGridToolbox
 {
    class ZipToGroundBase;
 
-   /// A Bus component of a Network.
+   /// @brief A Bus component of a Network.
+   /// @ingroup PowerFlowCore
    class Bus : public Component
    {
       friend class BusParser;
@@ -143,7 +144,7 @@ namespace SmartGridToolbox
          /// @}
 
          /// @name Apply setpoints.
-         /// Set quantities such as voltage, power according to the setpoints.
+         /// @brief Set quantities such as voltage, power according to the setpoints.
          void applySetpoints();
 
          /// @name Loads/constant power generation.
@@ -154,13 +155,13 @@ namespace SmartGridToolbox
 
          void addZipToGround(ZipToGroundBase & zipToGround);
          
-         /// Total shunt admittance (sum of ZIPs).
+         /// @brief Total shunt admittance (sum of ZIPs).
          const ublas::vector<Complex> & Ys() const {return Ys_;}
 
-         /// Total constant current injection (sum of ZIPs).
+         /// @brief Total constant current injection (sum of ZIPs).
          const ublas::vector<Complex> & Ic() const {return Ic_;}
 
-         /// Total constant power injection (sum of ZIPs).
+         /// @brief Total constant power injection (sum of ZIPs).
          const ublas::vector<Complex> & Sc() const {return Sc_;}
          
          /// @}
@@ -168,19 +169,19 @@ namespace SmartGridToolbox
          /// @name State.
          /// @{
          
-         /// Get bus voltage.
+         /// @brief Get bus voltage.
          const ublas::vector<Complex> & V() const {return V_;}
          
-         /// Set bus voltage (warm start or solver).
+         /// @brief Set bus voltage (warm start or solver).
          void setV(const ublas::vector<Complex> & V) {V_ = V;}
 
-         /// Get bus generated power.
+         /// @brief Get bus generated power.
          const ublas::vector<Complex> & Sg() const {return Sg_;}
          
-         /// Set bus generated power (warm start or solver).
+         /// @brief Set bus generated power (warm start or solver).
          void setSg(const ublas::vector<Complex> & Sg) {Sg_ = Sg;}
 
-         /// Total power injection (Sc() + Sg()).
+         /// @brief Total power injection (Sc() + Sg()).
          const ublas::vector<Complex> STot() const {return Sc_ + Sg_;}
          
          /// @}
@@ -188,7 +189,7 @@ namespace SmartGridToolbox
          /// @name Events.
          /// @{
         
-         /// Event triggered when bus (e.g. setpoint) has changed.
+         /// @brief Event triggered when bus (e.g. setpoint) has changed.
          Event & changed() {return changed_;}
 
          /// @}
@@ -222,7 +223,6 @@ namespace SmartGridToolbox
 
          /// @name Bus Quantities
          /// @brief Quantities due to operation of bus.
-         ///
          /// For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_.
          /// Thus Sgen_ will be zero. For PV busses, the reactive power is supposed to adjust to keep the voltage
          /// magnitude constant. So Sgen_ will in general have zero real power and nonzero reactive power.

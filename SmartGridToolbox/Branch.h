@@ -11,7 +11,8 @@ namespace SmartGridToolbox
 {
    class Bus;
 
-   /// A Branch connects two Busses in a Network.
+   /// @brief A Branch connects two Busses in a Network.
+   /// @ingroup PowerFlowCore
    class Branch : public Component
    {
       public:
@@ -52,7 +53,7 @@ namespace SmartGridToolbox
          /// @name Custom events:
          /// @{
          
-         /// Event triggered whenever branch is changed in some way:
+         /// @brief Event triggered whenever branch is changed in some way:
          Event & changed() {return changed_;}
          
          /// @}
