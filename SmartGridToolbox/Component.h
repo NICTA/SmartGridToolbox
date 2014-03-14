@@ -113,7 +113,7 @@ namespace SmartGridToolbox
          /// Bring state up to time t.
          void update(Time t);
 
-         virtual Time validUntil() const = 0
+         virtual Time validUntil() const
          {
             return posix_time::pos_infin;
          }
@@ -169,7 +169,7 @@ namespace SmartGridToolbox
          Event didCompleteTimestep_;
    };
 
-inline virtual Component::~Component() {}
+inline Component::~Component() {}
 
 }
 

@@ -330,12 +330,12 @@ class TestEventA : public Component
       }
 
       // Bring state up to time t_.
-      virtual void updateState(Time t0, Time t1) override
+      virtual void updateState(Time t) override
       {
          message() << "Update state of " << name() << " from time " 
-              << t0 << " to " << t1 << "." << endl;
-         state_ = (t1 - startTime_).ticks()*ctrl_;
-         nextUpdate_ = t1 + dt_;
+              << time() << " to " << t << "." << endl;
+         state_ = (t - startTime_).ticks()*ctrl_;
+         nextUpdate_ = t + dt_;
       }
 
    private:

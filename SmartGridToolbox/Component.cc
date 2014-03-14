@@ -30,7 +30,7 @@ namespace SmartGridToolbox
          willStartNewTimestep_.trigger();
       }
       willUpdate_.trigger();
-      updateState(time_, t);
+      updateState(t);
       time_ = t;
       didUpdate_.trigger();
    }
