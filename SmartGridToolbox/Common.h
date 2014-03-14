@@ -25,7 +25,7 @@
 
 namespace SmartGridToolbox
 {
-   /// @defgroup Common Common utilities.
+   /// @defgroup Common Common Utilities
    /// @brief Utility functions, classes and constants.
    ///
    /// These will typically be included in most headers, and provide access to utility functions etc. for time,

@@ -1,0 +1,5 @@
+/** @mainpage
+ *  This is the doxygen main page. */
+
+/// @defgroup Core SmartGridToolbox core
+/// @brief Core classes of SmartGridToolbox.
