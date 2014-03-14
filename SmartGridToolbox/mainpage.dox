@@ -14,3 +14,6 @@
 
 /// @defgroup PowerFlow Power Flow Utilities
 /// @brief Utility functions, classes and constants related to AC power flow.
+
+/// @namespace SmartGridToolbox
+/// @brief The primary namespace for SmartGridToolbox
