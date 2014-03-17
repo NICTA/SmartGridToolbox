@@ -130,8 +130,7 @@ namespace SmartGridToolbox
       // Do at least one step. This may push us over into the next timestep, in which case we should stop, unless
       // this was the very first timestep.
       bool result = doNextUpdate();
-      Time time2 = currentTime_;
-      Time timeToComplete = (time1 == posix_time::neg_infin) ? time2 : time1;
+      Time timeToComplete = (time1 == posix_time::neg_infin) ? currentTime_ : time1;
 
       // Now finish off all contingent and scheduled updates in this step.
       while (result && 
@@ -140,6 +139,16 @@ namespace SmartGridToolbox
       {
          result = result && doNextUpdate();
       }
+      
+      // Now bring up all lagging components to the new time, if they have an update.
+      Time time2 = currentTime_;
+      while (result && 
+             ((contingentUpdates_.size() > 0) ||
+              (scheduledUpdates_.size() > 0 && (scheduledUpdates_.begin()->second == time2))))
+      {
+         result = result && doNextUpdate();
+      }
+
       return result;
    }
 }

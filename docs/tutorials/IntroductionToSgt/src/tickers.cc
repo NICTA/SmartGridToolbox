@@ -28,13 +28,13 @@ int main()
    sim.setEndTime(seconds(5));
    sim.initialize();
 
-   std::cout << "Initial timestep: simulation is at time = " << sim.currentTime() << "." << std::endl;
-   std::cout << "                : ticker1 is at time = " << ticker1.time() << "." << std::endl;
-   std::cout << "                : ticker2 is at time = " << ticker2.time() << "." << std::endl;
+   std::cout << "Initial timestep : simulation is at time = " << sim.currentTime() << "." << std::endl;
+   std::cout << "                 : ticker1 is at time = " << ticker1.time() << "." << std::endl;
+   std::cout << "                 : ticker2 is at time = " << ticker2.time() << "." << std::endl;
    while(sim.doTimestep())
    {
-      std::cout << "New timestep    : simulation is at time = " << sim.currentTime() << "." << std::endl;
-      std::cout << "                : ticker1 is at time = " << ticker1.time() << "." << std::endl;
-      std::cout << "                : ticker2 is at time = " << ticker2.time() << "." << std::endl;
+      std::cout << "New timestep     : simulation is at time = " << sim.currentTime() << "." << std::endl;
+      std::cout << "                 : ticker1 is at time = " << ticker1.time() << "." << std::endl;
+      std::cout << "                 : ticker2 is at time = " << ticker2.time() << "." << std::endl;
    }
 }

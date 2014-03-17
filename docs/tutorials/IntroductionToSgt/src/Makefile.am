@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
 
-bin_PROGRAMS = ticker
-ticker_LDADD = -lSmartGridToolbox
-ticker_SOURCES = tickers.cc
+bin_PROGRAMS = tickers
+tickers_LDADD = -lSmartGridToolbox
+tickers_SOURCES = tickers.cc
