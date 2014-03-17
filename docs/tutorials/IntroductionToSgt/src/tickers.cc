@@ -32,7 +32,7 @@ int main()
    std::cout << "                 : ticker_1 is at time = " << ticker1.time() << "." << std::endl;
    std::cout << "                 : ticker_2 is at time = " << ticker2.time() << "." << std::endl;
    std::cout << std::endl;
-   while(sim.doTimestep())
+   while (sim.doTimestep())
    {
       std::cout << "New timestep     : simulation is at time = " << sim.currentTime() << "." << std::endl;
       std::cout << "                 : ticker_1 is at time = " << ticker1.time() << "." << std::endl;
