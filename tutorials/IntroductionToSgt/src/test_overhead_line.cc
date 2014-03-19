@@ -17,10 +17,12 @@ int main()
    sim.initialize();
    // That's it!
 
-   // Since there is no time dependence this model, none of the components will ever undergo an update. 
-   // But, the initial call to sim.initialize() will ensure that the model is put into a valid state, with its time
-   // equal to the start time of the simulation in the yaml configuration file. Thus, the power flow equations will
-   // already be solved. We can look at the voltages etc. on the busses:
+   // Since there is no time dependence this model, none of the components will
+   // ever undergo an update. But, the initial call to sim.initialize() will
+   // ensure that the model is put into a valid state, with its time equal to
+   // the start time of the simulation in the yaml configuration file. Thus,
+   // the power flow equations will already be solved. We can look at the 
+   // voltages etc. on the busses:
    
    Bus * bus_1 = mod.component<Bus>("bus_1");
    Bus * bus_2 = mod.component<Bus>("bus_2");
