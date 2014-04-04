@@ -42,7 +42,7 @@ namespace YAML
       Node nd;
       for (const auto & phasePair : from)
       {
-         nd.push_back(phase2Str(phasePair.first)); 
+         nd.push_back(phase2Str(phasePair.first));
       }
       return nd;
    }
@@ -86,7 +86,7 @@ namespace YAML
 
    bool convert<Time>::decode(const Node & nd, Time & to)
    {
-      to = posix_time::duration_from_string(nd.as<std::string>()); 
+      to = posix_time::duration_from_string(nd.as<std::string>());
       return true;
    }
 
@@ -99,7 +99,7 @@ namespace YAML
 
    bool convert<posix_time::ptime>::decode(const Node & nd, posix_time::ptime & to)
    {
-      to = posix_time::time_from_string(nd.as<std::string>()); 
+      to = posix_time::time_from_string(nd.as<std::string>());
       return true;
    }
 
@@ -230,7 +230,7 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "Parsing global." << std::endl);
       parseGlobal(model, simulation);
       SGT_DEBUG(debug() << "Parsed global." << std::endl);
-      
+
       if (const YAML::Node & nodeTimeSeriesList = top_["time_series_list"])
       {
          for (const auto & tsPair : nodeTimeSeriesList)
@@ -238,7 +238,7 @@ namespace SmartGridToolbox
             parseTimeSeries(tsPair.first.as<std::string>(), tsPair.second, model);
          }
       }
-      
+
       const YAML::Node & nodeComponents = top_["components"];
       if (nodeComponents)
       {
@@ -262,7 +262,7 @@ namespace SmartGridToolbox
       }
       message() << "Parser post-parse " << mod_->name() << "." << std::endl;
    }
-   
+
    Parser::Parser()
    {
       registerParserPlugins(*this);
@@ -284,7 +284,7 @@ namespace SmartGridToolbox
 
       if (const YAML::Node & nodeTz = top_["timezone"])
       {
-         try 
+         try
          {
             model.setTimezone(local_time::time_zone_ptr(new local_time::posix_time_zone(nodeTz.as<std::string>())));
          }
@@ -296,7 +296,7 @@ namespace SmartGridToolbox
       }
 
       const YAML::Node & nodeStart = top_["start_time"];
-      try 
+      try
       {
          simulation.setStartTime(parseTime(nodeStart, model));
       }
@@ -307,7 +307,7 @@ namespace SmartGridToolbox
       }
 
       const YAML::Node & nodeEnd = top_["end_time"];
-      try 
+      try
       {
          simulation.setEndTime(parseTime(nodeEnd, model));
       }
@@ -319,7 +319,7 @@ namespace SmartGridToolbox
 
       if (const YAML::Node & nodeLatLong = top_["lat_long"])
       {
-         try 
+         try
          {
             std::vector<double> llvec = nodeLatLong.as<std::vector<double>>();
             if (llvec.size() != 2)
@@ -405,12 +405,12 @@ namespace SmartGridToolbox
          }
 
          std::string interpType = node["interp_type"].as<std::string>();
-         
+
          std::string relto = node["relative_to_time"].as<std::string>();
-         
+
          posix_time::ptime pt = posix_time::time_from_string(relto);
          Time t0 = timeFromLocalTime(pt, model.timezone());
-         
+
          std::string time_unit = node["time_unit"].as<std::string>();
          double to_secs = 1.0;
          if (time_unit == "s")
@@ -464,7 +464,7 @@ namespace SmartGridToolbox
                assert(ss.eof());
                secs *= to_secs;
                Time t = t0 + posix_time::seconds(secs);
-               ts->addPoint(t, val); 
+               ts->addPoint(t, val);
             }
 
             model.acquireTimeSeries(name, std::move(ts));

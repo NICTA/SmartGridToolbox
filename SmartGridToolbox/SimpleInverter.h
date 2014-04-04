@@ -60,7 +60,7 @@ namespace SmartGridToolbox
       public:
          virtual ublas::vector<Complex> S() const override;
          virtual double PPerPhase() const override;
-      
+
 
       public:
          // Operating parameters:

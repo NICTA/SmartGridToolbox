@@ -11,7 +11,7 @@ namespace SmartGridToolbox
          SimpleDcPowerSource(const std::string & name) : DcPowerSourceBase(name), PDc_(0.0) {}
 
          void setPDc(double PDc) {PDc_ = PDc; needsUpdate().trigger();}
-     
+
       // Overridden from DcPowerSourceBase.
       public:
          virtual double PDc() const {return PDc_;}

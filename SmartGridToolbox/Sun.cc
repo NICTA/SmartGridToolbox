@@ -14,7 +14,7 @@ namespace SmartGridToolbox
    SphericalAngles sunPos(posix_time::ptime utcTime, LatLong location)
    {
       // Note: in original code, time was "udtTime". "UT" was also mentioned. Not sure exactly what "UDT" refers to
-      // but UT is probably either UT1 or UTC, both being approximately equivalent. So I changed variable name 
+      // but UT is probably either UT1 or UTC, both being approximately equivalent. So I changed variable name
       // to "utcTime".
 
       // Main variables
@@ -52,7 +52,7 @@ namespace SmartGridToolbox
          dElapsedJulianDays = dJulianDate - 2451545.0;
       }
 
-      // Calculate ecliptic coordinates (ecliptic longitude and obliquity of the ecliptic in radians but without 
+      // Calculate ecliptic coordinates (ecliptic longitude and obliquity of the ecliptic in radians but without
       // limiting the angle to be less than 2*Pi (i.e., the result may be greater than 2*Pi)
       {
          double dOmega = 2.1429 - 0.0010394594*dElapsedJulianDays;
@@ -64,7 +64,7 @@ namespace SmartGridToolbox
             + 0.0000396*cos(dOmega);
       }
 
-      // Calculate celestial coordinates (right ascension and declination) in radians but without limiting the angle 
+      // Calculate celestial coordinates (right ascension and declination) in radians but without limiting the angle
       // to be less than 2*Pi (i.e., the result may be greater than 2*Pi)
       {
          double dSin_EclipticLongitude;
@@ -93,7 +93,7 @@ namespace SmartGridToolbox
          dCos_Latitude = cos(dLatitudeInRadians);
          dSin_Latitude = sin(dLatitudeInRadians);
          dCos_HourAngle = cos(dHourAngle);
-         result.zenith = (acos(dCos_Latitude*dCos_HourAngle*cos(dDeclination) 
+         result.zenith = (acos(dCos_Latitude*dCos_HourAngle*cos(dDeclination)
                   + sin(dDeclination)*dSin_Latitude));
          dY = - sin(dHourAngle);
          dX = tan(dDeclination)*dCos_Latitude - dSin_Latitude*dCos_HourAngle;

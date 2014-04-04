@@ -45,7 +45,7 @@ namespace SmartGridToolbox
 
    /// @brief Spherical angles of the sun at a given time and location.
    /// @parameter utcTime: UTC time.
-   /// @parameter planeNormal: the coordinates specified by the normal of a plane. 
+   /// @parameter planeNormal: the coordinates specified by the normal of a plane.
    /// @return Spherical angles of the sun.
    SphericalAngles sunPos(posix_time::ptime utcTime, LatLong location);
 
@@ -69,14 +69,14 @@ namespace SmartGridToolbox
 
    /// @brief Solar power falling on a plane, W.
    /// @parameter solarAngles : spherical angles of the sun.
-   /// @parameter planeNormal: the coordinates specified by the normal of a plane. 
+   /// @parameter planeNormal: the coordinates specified by the normal of a plane.
    /// @parameter planeArea: the area of the plane.
    /// @return Power in W. Angle between sun and plane normal of >= 90 degrees implies zero power.
    double solarPower(SphericalAngles solarAngles, SphericalAngles planeNormal, double planeArea);
 
    /// @brief Solar power per m^2 falling on a plane, W/m^2.
    /// @parameter solarAngles : struct containing zenith and azimuth angles of the sun.
-   /// @parameter planeNormal: the coordinates specified by the normal of a plane. 
+   /// @parameter planeNormal: the coordinates specified by the normal of a plane.
    /// @return Irradiance in W/m^2. Angle between sun and plane normal of >= 90 degrees implies zero power.
    inline double solarIrradiance(SphericalAngles solarAngles, SphericalAngles planeNormal)
    {

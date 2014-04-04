@@ -18,10 +18,10 @@ namespace SmartGridToolbox
       dependsOn(bus);
       busVec_.push_back(&bus);
       busMap_[bus.name()] = &bus;
-      bus.changed().addAction([this](){needsUpdate().trigger();}, 
+      bus.changed().addAction([this](){needsUpdate().trigger();},
             "Trigger Network " + name() + " needs update");
    }
- 
+
    void Network::addBranch(Branch & branch)
    {
       dependsOn(branch);
@@ -87,8 +87,8 @@ namespace SmartGridToolbox
       os << "\tBranches:" << std::endl;
       for (const Branch* branch : nw.branchVec_)
       {
-         os << "\t\tBranch:" << std::endl; 
-         os << "\t\t\tBus names  : " 
+         os << "\t\tBranch:" << std::endl;
+         os << "\t\t\tBus names  : "
             << branch->bus0().name() << " " << branch->bus1().name() << std::endl;
          os << "\t\t\tBus phases : " << branch->phases0() << " " << branch->phases1() << std::endl;
          os << "\t\t\tY          :" << std::endl;

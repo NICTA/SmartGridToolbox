@@ -19,7 +19,7 @@ namespace SmartGridToolbox
       dependsOn(weather);
       weather.didUpdate().addAction([this](){needsUpdate().trigger();}, "Trigger SolarPv " + name() + " needs update");
    }
-   
+
    double SolarPv::PDc() const
    {
       return weather_->solarPower(planeNormal_, planeArea_)*efficiency_;

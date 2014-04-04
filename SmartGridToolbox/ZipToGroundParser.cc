@@ -72,7 +72,7 @@ namespace SmartGridToolbox
       Bus* bus = mod.component<Bus>(busStr);
       if (bus == nullptr)
       {
-         error() << "For component " << name << ", bus " << busStr 
+         error() << "For component " << name << ", bus " << busStr
                  << " was not found in the model." << std::endl;
          abort();
       }

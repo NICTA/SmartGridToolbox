@@ -53,7 +53,7 @@ namespace SmartGridToolbox
 
       std::vector<WoNode *> stack;
       // First do a DFS to induce an order on the nodes.
-      bool done = false; 
+      bool done = false;
       done = true;
       for (const std::unique_ptr<WoNode> & nd : nodes_)
       {
@@ -67,7 +67,7 @@ namespace SmartGridToolbox
       // Now sort and rank the nodes.
 
       // First calculate dominance.
-      // A dominates B -> A precedes B but not vice versa. 
+      // A dominates B -> A precedes B but not vice versa.
       for (const std::unique_ptr<WoNode> & nd : nodes_)
       {
          for (const WoNode* nd2 : nd->descendents_)
@@ -81,7 +81,7 @@ namespace SmartGridToolbox
 
       // Sort the nodes, based on <. Note that it isn't a strict weak ordering, so can't use stl sort.
       // TODO: This is probably a very dumb kind of sort!
-      
+
       SGT_DEBUG (debug() << "Weak order graph: pre-sort:" << std::endl; debugPrint());
 
       for (auto it1 = nodes_.begin(); it1 != nodes_.end(); ++it1)
@@ -117,7 +117,7 @@ namespace SmartGridToolbox
 
       SGT_DEBUG (debug() << "Weak order graph: final:" << std::endl; debugPrint());
    }
-   
+
    void WoGraph::debugPrint()
    {
       debug() << "Weak order graph: Node i : direct descendents" << std::endl;

@@ -12,7 +12,7 @@ using std::string;
 
 namespace SmartGridToolbox
 {
-   /// @brief All components and other objects that form the static model that is the subject of the simulation. 
+   /// @brief All components and other objects that form the static model that is the subject of the simulation.
    /// @ingroup Core
    class Model
    {
@@ -47,7 +47,7 @@ namespace SmartGridToolbox
             addOrReplaceGenericComponent(std::move(comp), false);
             return *comp;
          }
-         
+
          template<typename T, typename... Args> T & replaceComponentWithNew(Args&&... args)
          {
             std::unique_ptr<T> comp(new T(std::forward<Args>(args)...));
@@ -55,7 +55,7 @@ namespace SmartGridToolbox
             addOrReplaceGenericComponent(std::move(comp), true);
             return t;
          }
-         
+
          template<typename T> T & replaceComponent(std::unique_ptr<T> && comp)
          {
             addOrReplaceGenericComponent(std::move(comp), true);

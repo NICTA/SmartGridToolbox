@@ -92,7 +92,7 @@ namespace SmartGridToolbox
    inline Phases operator|(Phase a, Phase b) {return {static_cast<unsigned int>(a) | static_cast<unsigned int>(b)};}
    inline Phases operator&(Phase a, Phase b) {return {static_cast<unsigned int>(a) & static_cast<unsigned int>(b)};}
 
-   /// @brief Complex impedance  
+   /// @brief Complex impedance
    const ublas::matrix<Complex> YLine1P(const Complex & Y);
    const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex> & Y);
    ublas::matrix<Complex> YOverheadLine(ublas::vector<double> r, ublas::matrix<double> DMat, double L,

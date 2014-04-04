@@ -31,7 +31,7 @@ namespace SmartGridToolbox
       double earthResistivity = nd["earth_resistivity"].as<double>();
       ublas::matrix<double> distMatrix = nd["distance_matrix"].as<ublas::matrix<double>>();
       double freq = nd["freq"].as<double>();
-      
+
       mod.newComponent<OverheadLine>(name, phases0, phases1, length, nNeutral, lineResistivity,
                                      earthResistivity, distMatrix, freq);
    }
@@ -51,7 +51,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", network " << networkStr 
+         error() << "For component " << name <<  ", network " << networkStr
                  <<  " was not found in the model." << std::endl;
          abort();
       }
@@ -64,7 +64,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", bus " << bus0Str 
+         error() << "For component " << name <<  ", bus " << bus0Str
                  <<  " was not found in the model." << std::endl;
          abort();
       }
@@ -77,7 +77,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", bus " << bus1Str 
+         error() << "For component " << name <<  ", bus " << bus1Str
                  <<  " was not found in the model." << std::endl;
          abort();
       }

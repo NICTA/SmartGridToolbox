@@ -8,10 +8,10 @@ namespace SmartGridToolbox
    {
       // Neglect ground reflected radiation. This is reasonable, because typically a solar collector etc would
       // be pointing at a zenith angle of less than 90 degrees, so would not get a ground component.
-      Array<double, 3> planeVec = angsAndMagToVec(planeNormal, planeArea); 
+      Array<double, 3> planeVec = angsAndMagToVec(planeNormal, planeArea);
       double direct = dot<double, 3>(planeVec, irradiance_.direct);
       if (direct < 0) direct = 0;
-      double diffuse = planeArea*irradiance_.horizontalDiffuse*(pi - planeNormal.zenith)/pi; 
+      double diffuse = planeArea*irradiance_.horizontalDiffuse*(pi - planeNormal.zenith)/pi;
       return direct + diffuse;
    }
 
@@ -23,7 +23,7 @@ namespace SmartGridToolbox
       double curFrac = 1.0 - prevFrac;
       SolarIrradiance newUnav = unaveragedIrradiance(t);
       irradiance_.direct = prevFrac*prevIrradiance_.direct + curFrac*newUnav.direct;
-      irradiance_.horizontalDiffuse = prevFrac*prevIrradiance_.horizontalDiffuse 
+      irradiance_.horizontalDiffuse = prevFrac*prevIrradiance_.horizontalDiffuse
                                     + curFrac*newUnav.horizontalDiffuse;
    }
 
@@ -57,7 +57,7 @@ namespace SmartGridToolbox
       else
       {
          result.direct = Array<double, 3>{{0.0, 0.0, 0.0}};
-         result.horizontalDiffuse = 0.0; 
+         result.horizontalDiffuse = 0.0;
       }
 
       return result;

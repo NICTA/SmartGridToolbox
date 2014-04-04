@@ -59,8 +59,8 @@ namespace SmartGridToolbox
          start_ =  *ignore_ >> topFunction_ >> *(ignore_ | MVABase_ | busMatrix_ | genMatrix_ | branchMatrix_ | other_);
 
          // To debug: e.g.
-         // BOOST_SPIRIT_DEBUG_NODE(MVABase_); 
-         // debug(MVABase_); 
+         // BOOST_SPIRIT_DEBUG_NODE(MVABase_);
+         // debug(MVABase_);
       }
 
       Qi::rule<Iterator, SpaceType> statementTerm_;
@@ -121,22 +121,22 @@ namespace SmartGridToolbox
       // Voltage is in p.u., with the base being specified in KV by the KVBase field.
       // Branch admittance is in p.u., that is, MVABase/(KVBase)^2.
       // Shunt admittance is in MW/(KVBase)^2.
-      
+
       // Power in SI = input*1e6.
       // Voltage in SI = input*1000*KVBase.
       // Branch admittance in SI = input*1e6*MVABase/KVBase^2.
       // Shunt admittance in SI = input*1e6/KVBase^2.
-      
+
       // Matpower input to internal units (p.u.):
       // Power is p.u. : input value divided by MVABase.
       // Voltage remains in p.u. : input value.
       // Branch admittance remains in p.u. : input value.
       // Shunt admittance is p.u. : input value divided by MVABase.
-      
+
       // SI to matpower internal:
       // P_mp_intl = P_SI/(1e6*MVABase)
       // V_mp_intl = V_SI/(1000*KVBase)
-      // Y_mp_intl = Y_SI*MVABase/KVBase^2 
+      // Y_mp_intl = Y_SI*MVABase/KVBase^2
 
       // TODO: Investigate what effect the generator base power field has on matpower by looking at the code.
 
@@ -162,7 +162,7 @@ namespace SmartGridToolbox
 
       const YAML::Node ndPerUnit = nd["use_per_unit"];
       bool usePerUnit = ndPerUnit ? ndPerUnit.as<bool>() : false;
-      
+
       double defaultVBase = nd["default_V_base"].as<double>();
 
       const YAML::Node ndFreq = nd["freq_Hz"];
@@ -219,7 +219,7 @@ namespace SmartGridToolbox
 
             double KVBase = busMatrix[busCols*i + 9];
             busInfo.VBase = KVBase == 0 ? defaultVBase : KVBase*1000;
-            
+
             double Vm = busMatrix[busCols*i + 7];
             double Va = busMatrix[busCols*i + 8];
             busInfo.VPu = polar(Vm, Va*pi/180);
@@ -268,7 +268,7 @@ namespace SmartGridToolbox
                   type = BusType::SL;
                   break;
                case 4:
-                  error() << "Matpower isolated bus type not supported." << std::endl; 
+                  error() << "Matpower isolated bus type not supported." << std::endl;
                   abort();
                   break;
                default:
@@ -284,21 +284,21 @@ namespace SmartGridToolbox
 
             double VMag = usePerUnit ? abs(info.VPu) : abs(info.VPu*info.VBase);
             ublas::vector<double> VMagVec(phases.size(), VMag);
-            
+
             double VAng = usePerUnit ? arg(info.VPu) : arg(info.VPu*info.VBase);
             ublas::vector<double> VAngVec(phases.size(), VAng);
-            
+
             Complex SLoad = usePerUnit ? info.SLoad/SBase : info.SLoad;
             ublas::vector<Complex> SLoadVec(phases.size(), SLoad);
 
             Complex Sg = usePerUnit ? info.Sg/SBase : info.Sg;
             ublas::vector<Complex> SgVec(phases.size(), Sg);
-            
+
             Complex Ys = usePerUnit ? info.YsPu : info.YsPu*SBase/(info.VBase*info.VBase);
             ublas::vector<Complex> YsVec(phases.size(), Ys);
 
             // TODO: bounds on values.
-            
+
             Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VNomVec);
 
             bus.setPgSetpoint(real(SgVec));

@@ -8,11 +8,11 @@ namespace SmartGridToolbox
    {
       if (phases0.size() != phases1.size())
       {
-         error() << "A Y_Y_transformer should have the same number of phases on the primary and secondary." 
+         error() << "A Y_Y_transformer should have the same number of phases on the primary and secondary."
                  << std::endl;
          abort();
       }
-      recalcY();      
+      recalcY();
    }
 
    void YyTransformer::recalcY()
@@ -22,8 +22,8 @@ namespace SmartGridToolbox
       for (int i = 0; i < n; ++i)
       {
          YNode(i, i) = (YL_ + YM_) /(a_*conj(a_));
-         YNode(i, i + n) = -YL_/conj(a_);  
-         YNode(i + n, i) = -YL_/a_;  
+         YNode(i, i + n) = -YL_/conj(a_);
+         YNode(i + n, i) = -YL_/a_;
          YNode(i + n, i + n) = YL_;
       }
       setY(YNode);

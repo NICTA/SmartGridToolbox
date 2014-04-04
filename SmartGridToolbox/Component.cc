@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   Component::Component(const std::string & name) : 
+   Component::Component(const std::string & name) :
       name_(name),
       time_(posix_time::not_a_date_time),
       rank_(-1),

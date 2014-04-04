@@ -14,7 +14,7 @@ namespace SmartGridToolbox
       Weather & comp = mod.newComponent<Weather>(name);
 
       comp.setLatLong(mod.latLong());
-      
+
       const auto & temperatureNd = nd["temperature"];
       if (temperatureNd)
       {

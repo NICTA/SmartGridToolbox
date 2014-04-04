@@ -7,14 +7,14 @@ namespace SmartGridToolbox
 {
    static const int nPhases = 9;
    static Phase allPhases[nPhases + 1] = {
-      Phase::BAL, 
-      Phase::A, 
-      Phase::B, 
-      Phase::C, 
-      Phase::G, 
-      Phase::N, 
-      Phase::SP, 
-      Phase::SM, 
+      Phase::BAL,
+      Phase::A,
+      Phase::B,
+      Phase::C,
+      Phase::G,
+      Phase::N,
+      Phase::SP,
+      Phase::SM,
       Phase::SN,
       Phase::BAD
    };
@@ -38,7 +38,7 @@ namespace SmartGridToolbox
       {
          if (str == busType2Str(*test))
          {
-            result = *test; 
+            result = *test;
          }
       }
       return result;
@@ -63,14 +63,14 @@ namespace SmartGridToolbox
 
    Phase str2Phase(const std::string & str)
    {
-      static Phase phases[] = {Phase::BAL, Phase::A, Phase::B, Phase::C, Phase::G, Phase::N, Phase::SP, 
+      static Phase phases[] = {Phase::BAL, Phase::A, Phase::B, Phase::C, Phase::G, Phase::N, Phase::SP,
                                Phase::SM, Phase:: SN, Phase::BAD};
       Phase result = Phase::BAD;
       for (Phase* test = &phases[0]; *test != Phase::BAD; ++test)
       {
          if (str == phase2Str(*test))
          {
-            result = *test; 
+            result = *test;
          }
       }
       return result;
@@ -91,7 +91,7 @@ namespace SmartGridToolbox
          case Phase::SN: return "split-phase neutral"; break;
          case Phase::BAD: return "UNDEFINED"; break;
       }
-   }   
+   }
 
    Phases & Phases::operator&=(const Phases & other)
    {
@@ -149,7 +149,7 @@ namespace SmartGridToolbox
    const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex> & Y)
    {
       int nPhase = Y.size();
-      int nTerm = 2*nPhase; 
+      int nTerm = 2*nPhase;
       ublas::matrix<Complex> YNode(nTerm, nTerm, czero);
       for (int i = 0; i < nPhase; ++i)
       {
@@ -160,7 +160,7 @@ namespace SmartGridToolbox
       }
       return YNode;
    }
-   
+
    ublas::matrix<Complex> YOverheadLine(ublas::vector<double> r, ublas::matrix<double> DMat, double L,
                                         double freq, double rho)
    {
@@ -195,7 +195,7 @@ namespace SmartGridToolbox
 		// b_mat[0][0] = (Z_aa - Z_an*Z_an*Z_nn_inv)*miles;
       // b_mat[0][1] = (Z_ab - Z_an*Z_bn*Z_nn_inv)*miles;
       // etc.
-      
+
       ublas::matrix<Complex> Y(n, n); bool ok = invertMatrix(Z, Y); assert(ok);
       SGT_DEBUG(
             for (int i = 0; i < Y.size1(); ++i)
@@ -203,15 +203,15 @@ namespace SmartGridToolbox
                message() << "Y(" << i << ", :) = " << row(Y, i) << std::endl;
                message() << std::endl;
             });
-      
+
       ublas::matrix<Complex> YNode(2*n, 2*n, czero);
       for (int i = 0; i < n; ++i)
       {
          YNode(i, i) += Y(i, i);
-         YNode(i + n, i + n) += Y(i, i); 
+         YNode(i + n, i + n) += Y(i, i);
 
-         YNode(i, i + n) = -Y(i, i); 
-         YNode(i + n, i) = -Y(i, i); 
+         YNode(i, i + n) = -Y(i, i);
+         YNode(i + n, i) = -Y(i, i);
 
          for (int k = i + 1; k < n; ++k)
          {

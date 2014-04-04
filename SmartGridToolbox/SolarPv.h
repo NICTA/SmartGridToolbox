@@ -21,7 +21,7 @@ namespace SmartGridToolbox
          void setPlaneNormal(SphericalAngles planeNormal) {planeNormal_ = planeNormal; needsUpdate().trigger();}
 
          void setPlaneArea(double planeArea) {planeArea_ = planeArea; needsUpdate().trigger();}
-         
+
          virtual double PDc() const override;
 
       public:

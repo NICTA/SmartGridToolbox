@@ -23,7 +23,7 @@ namespace SmartGridToolbox
       Phase phase1 = nd["phase_1"].as<Phase>();
       Complex alpha = nd["complex_turns_ratio_01"].as<Complex>();
       Complex ZLeak = nd["leakage_impedance"].as<Complex>();
-      
+
       mod.newComponent<SinglePhaseTransformer>(name, phase0, phase1, alpha, ZLeak);
    }
 
@@ -42,7 +42,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", network " << networkStr 
+         error() << "For component " << name <<  ", network " << networkStr
                  <<  " was not found in the model." << std::endl;
          abort();
       }
@@ -55,7 +55,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", bus " << bus0Str 
+         error() << "For component " << name <<  ", bus " << bus0Str
                  <<  " was not found in the model." << std::endl;
          abort();
       }
@@ -68,7 +68,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", bus " << bus1Str 
+         error() << "For component " << name <<  ", bus " << bus1Str
                  <<  " was not found in the model." << std::endl;
          abort();
       }

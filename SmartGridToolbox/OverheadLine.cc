@@ -25,7 +25,7 @@ namespace SmartGridToolbox
          abort();
       }
 
-      recalcY(); 
+      recalcY();
    }
 
    void OverheadLine::recalcY()
@@ -88,7 +88,7 @@ namespace SmartGridToolbox
                message() << "Y(" << i << ", :) = " << row(Y, i) << std::endl;
                message() << std::endl;
             });
-      
+
       ublas::matrix<Complex> YNode(2*nPhase, 2*nPhase, czero);
       for (int i = 0; i < nPhase; ++i)
       {

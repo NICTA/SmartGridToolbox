@@ -9,7 +9,7 @@
 /// Represents a nearly SI system of units.
 namespace Units
 {
-   constexpr const char* cdot = u8"\u00B7"; 
+   constexpr const char* cdot = u8"\u00B7";
 
    template<int L, int M, int T, int I, int Th>
    class Dimensions
@@ -65,7 +65,7 @@ namespace Units
    constexpr decltype(QDim()/LDim()) VDim() {return decltype(VDim())();}
 
    template<typename D, typename V = double>
-   class DimensionalQuantity : public D 
+   class DimensionalQuantity : public D
    {
       public:
          typedef V ValType;
@@ -92,15 +92,15 @@ namespace Units
          const V & stdVal() const {return stdVal_;}
          V & stdVal() {return stdVal_;}
 
-         operator const V &() const {return stdVal_;} 
-         operator V &() {return stdVal_;} 
+         operator const V &() const {return stdVal_;}
+         operator V &() {return stdVal_;}
 
       private:
          V stdVal_;
    };
 
    template<typename D, typename V, typename V2>
-   auto operator*(const DimensionalQuantity<D, V> & q, const V2 & val) 
+   auto operator*(const DimensionalQuantity<D, V> & q, const V2 & val)
       -> DimensionalQuantity<D, decltype(q.stdVal()*val)>
    {
       return {q.stdVal()*val};
@@ -121,7 +121,7 @@ namespace Units
    };
 
    template<typename D1, typename D2, typename V1, typename V2>
-   auto operator*(const DimensionalQuantity<D1, V1> & lhs, const DimensionalQuantity<D2, V2> & rhs) 
+   auto operator*(const DimensionalQuantity<D1, V1> & lhs, const DimensionalQuantity<D2, V2> & rhs)
       -> DimensionalQuantity<Dimensions<D1::LDim() + D2::LDim(),
                                         D1::MDim() + D2::MDim(),
                                         D1::TDim() + D2::TDim(),
@@ -133,7 +133,7 @@ namespace Units
    }
 
    template<typename V1, typename D1, typename V2, typename D2>
-   auto operator/(const DimensionalQuantity<D1, V1> & lhs, const DimensionalQuantity<D2, V2> & rhs) 
+   auto operator/(const DimensionalQuantity<D1, V1> & lhs, const DimensionalQuantity<D2, V2> & rhs)
       -> DimensionalQuantity<Dimensions<D1::LDim() - D2::LDim(),
                                         D1::MDim() - D2::MDim(),
                                         D1::TDim() - D2::TDim(),
@@ -156,7 +156,7 @@ namespace Units
       public:
          Unit(const DimensionalQuantity<D, V> & q, const std::string & name) :
             DimensionalQuantity<D, V>(q),
-            name_(name) 
+            name_(name)
          {
             // Empty.
          }

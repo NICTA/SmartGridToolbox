@@ -29,7 +29,7 @@ namespace SmartGridToolbox
       }
       currentTime_ = posix_time::neg_infin;
       // Contingent updates may have been inserted during initialization process e.g. when setting up setpoints etc.
-      contingentUpdates_.clear(); 
+      contingentUpdates_.clear();
       doTimestep(); // Do the first timestep, to advance the start time for -infinity to startTime_.
    }
 
@@ -51,9 +51,9 @@ namespace SmartGridToolbox
          schedComp = schedUpdateIt->first;
          nextSchedTime = schedUpdateIt->second;
 
-         SGT_DEBUG(debug() << "\tNext scheduled time = " << nextSchedTime << " for component " 
+         SGT_DEBUG(debug() << "\tNext scheduled time = " << nextSchedTime << " for component "
                            << schedComp->name() << std::endl);
-         SGT_DEBUG(debug() << "\t\t(Start, current, end time = " << startTime_ << " " << currentTime_ 
+         SGT_DEBUG(debug() << "\t\t(Start, current, end time = " << startTime_ << " " << currentTime_
                            << " " << endTime_ << ")." << std::endl);
       }
 
@@ -61,7 +61,7 @@ namespace SmartGridToolbox
       {
          // There are contingent updates pending.
          Component* contComp = *contingentUpdates_.begin();
-         SGT_DEBUG(debug() << "\tContingent update component " << contComp->name() << " from " 
+         SGT_DEBUG(debug() << "\tContingent update component " << contComp->name() << " from "
                            << schedComp->time() << " to " << currentTime_ << std::endl);
          contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
          // Before updating the component, we need to take it out of the scheduled updates set, because its
@@ -87,7 +87,7 @@ namespace SmartGridToolbox
             timestepWillStart_.trigger();
          }
          currentTime_ = nextSchedTime;
-         SGT_DEBUG(debug() << "\tScheduled update component " << schedComp->name() << " from " 
+         SGT_DEBUG(debug() << "\tScheduled update component " << schedComp->name() << " from "
                            << schedComp->time() << " to " << currentTime_ << std::endl);
 
          // Remove the scheduled and possible contingent update. Note that if there is a contingent update, it was
@@ -103,18 +103,18 @@ namespace SmartGridToolbox
       }
       else
       {
-         SGT_DEBUG(debug() << "\tNo update." << std::endl); 
+         SGT_DEBUG(debug() << "\tNo update." << std::endl);
       }
-      if (  contingentUpdates_.size() == 0 && 
+      if (  contingentUpdates_.size() == 0 &&
             (scheduledUpdates_.size() == 0 || (scheduledUpdates_.begin()->second > currentTime_)))
       {
          // We've reached the end of this step.
-         SGT_DEBUG(debug() << "\tTimestep completed at " << currentTime_ << std::endl); 
+         SGT_DEBUG(debug() << "\tTimestep completed at " << currentTime_ << std::endl);
          for (Component* comp : mod_->components())
          {
             if (comp->time() == currentTime_)
             {
-               SGT_DEBUG(debug() << "\tComponent " << comp->name() << " completed timestep." << std::endl); 
+               SGT_DEBUG(debug() << "\tComponent " << comp->name() << " completed timestep." << std::endl);
                comp->didCompleteTimestep().trigger();
             }
          }
@@ -133,16 +133,16 @@ namespace SmartGridToolbox
       Time timeToComplete = (time1 == posix_time::neg_infin) ? currentTime_ : time1;
 
       // Now finish off all contingent and scheduled updates in this step.
-      while (result && 
+      while (result &&
              ((contingentUpdates_.size() > 0) ||
               (scheduledUpdates_.size() > 0 && (scheduledUpdates_.begin()->second == timeToComplete))))
       {
          result = result && doNextUpdate();
       }
-      
+
       // Now bring up all lagging components to the new time, if they have an update.
       Time time2 = currentTime_;
-      while (result && 
+      while (result &&
              ((contingentUpdates_.size() > 0) ||
               (scheduledUpdates_.size() > 0 && (scheduledUpdates_.begin()->second == time2))))
       {

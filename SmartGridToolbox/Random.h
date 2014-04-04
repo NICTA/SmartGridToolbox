@@ -11,7 +11,7 @@ namespace SmartGridToolbox
 
    /// @name Random number generation.
    /// @{
-   
+
    /// @brief Sample from discrete distribution with nProbs given probabilities.
    double randDiscrete(const double* probs, int nProbs);
    /// @brief Sample from normal distribution with given mean and s.d.
@@ -22,7 +22,7 @@ namespace SmartGridToolbox
    double randUniformInt(int lower, int upper);
    /// @brief Sample from Weibull distribution with given a and b parameters.
    double randWeibull(double a, double b);
-   
+
    /// @}
 
    /// @}

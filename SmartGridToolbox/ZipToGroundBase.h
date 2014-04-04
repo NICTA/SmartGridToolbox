@@ -12,7 +12,7 @@ namespace SmartGridToolbox
    class ZipToGroundBase : public Component
    {
       public:
-         ZipToGroundBase(const std::string & name, const Phases & phases) : Component(name), phases_(phases) 
+         ZipToGroundBase(const std::string & name, const Phases & phases) : Component(name), phases_(phases)
          {
             // Empty.
          }
@@ -22,7 +22,7 @@ namespace SmartGridToolbox
          virtual ublas::vector<Complex> Y() const = 0;
          virtual ublas::vector<Complex> I() const = 0;
          virtual ublas::vector<Complex> S() const = 0;
-     
+
       private:
          Phases phases_; ///< My phases on parent bus.
    };

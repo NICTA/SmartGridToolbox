@@ -21,13 +21,13 @@ namespace SmartGridToolbox
          {
             // Empty.
          }
-         
+
          Action(const std::function<void ()> & function)
             : function_(function), description_("N/A")
          {
             // Empty.
          }
-         
+
 
          const std::string & description() const {return description_;}
 
@@ -49,13 +49,13 @@ namespace SmartGridToolbox
          Event(const std::string & description)
             : description_(description)
          {
-            // Empty. 
+            // Empty.
          }
 
          Event()
             : description_("N/A")
          {
-            // Empty. 
+            // Empty.
          }
 
          void addAction(const std::function<void ()> & action, const std::string & description)

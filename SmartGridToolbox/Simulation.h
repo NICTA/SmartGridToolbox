@@ -64,7 +64,7 @@ namespace SmartGridToolbox
 
          /// @brief Initialize to start time.
          void initialize();
-         
+
          /// @brief Do the next update.
          bool doNextUpdate();
 
@@ -83,12 +83,12 @@ namespace SmartGridToolbox
          class ScheduledUpdatesCompare
          {
             public:
-               bool operator()(const std::pair<Component*, Time> & lhs, 
-                     const std::pair<Component*, Time> & rhs) 
+               bool operator()(const std::pair<Component*, Time> & lhs,
+                     const std::pair<Component*, Time> & rhs)
                {
                   return ((lhs.second < rhs.second) ||
                         (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
-                        (lhs.second == rhs.second && lhs.first->rank() == rhs.first->rank() && 
+                        (lhs.second == rhs.second && lhs.first->rank() == rhs.first->rank() &&
                          (lhs.first->name() < rhs.first->name())));
                }
          };

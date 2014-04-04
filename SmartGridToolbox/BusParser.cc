@@ -24,7 +24,7 @@ namespace SmartGridToolbox
       auto ndNominal = nd["nominal_voltage"];
       ublas::vector<Complex> nominalV = ndNominal ? ndNominal.as<ublas::vector<Complex>>()
                                                   : ublas::vector<Complex>(nPhase, czero);
-      
+
       Bus & bus = mod.newComponent<Bus>(name, type, phases, nominalV);
 
       auto ndPg = nd["P_gen_setpoint"];
@@ -32,7 +32,7 @@ namespace SmartGridToolbox
 
       auto ndPgMin = nd["P_gen_min_setpoint"];
       if (ndPgMin) bus.setPgMinSetpoint(ndPgMin.as<ublas::vector<double>>());
-      
+
       auto ndPgMax = nd["P_gen_max_setpoint"];
       if (ndPgMax) bus.setPgMaxSetpoint(ndPgMax.as<ublas::vector<double>>());
 
@@ -41,7 +41,7 @@ namespace SmartGridToolbox
 
       auto ndQgMin = nd["Q_gen_min_setpoint"];
       if (ndQgMin) bus.setQgMinSetpoint(ndQgMin.as<ublas::vector<double>>());
-      
+
       auto ndQgMax = nd["Q_gen_max_setpoint"];
       if (ndQgMax) bus.setQgMaxSetpoint(ndQgMax.as<ublas::vector<double>>());
 
@@ -50,7 +50,7 @@ namespace SmartGridToolbox
 
       auto ndVMagMin = nd["V_mag_min_setpoint"];
       if (ndVMagMin) bus.setVMagMinSetpoint(ndVMagMin.as<ublas::vector<double>>());
-      
+
       auto ndVMagMax = nd["V_mag_max_setpoint"];
       if (ndVMagMax) bus.setVMagMaxSetpoint(ndVMagMax.as<ublas::vector<double>>());
 
@@ -59,7 +59,7 @@ namespace SmartGridToolbox
 
       auto ndVAngMin = nd["V_ang_min_setpoint_deg"];
       if (ndVAngMin) bus.setVAngMinSetpoint(ndVAngMin.as<ublas::vector<double>>()*pi/180.0);
-      
+
       auto ndVAngMax = nd["V_ang_max_setpoint_deg"];
       if (ndVAngMax) bus.setVAngMaxSetpoint(ndVAngMax.as<ublas::vector<double>>()*pi/180.0);
    }
@@ -79,7 +79,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name << ", network " << networkStr 
+         error() << "For component " << name << ", network " << networkStr
                  << " was not found in the model." << std::endl;
          abort();
       }

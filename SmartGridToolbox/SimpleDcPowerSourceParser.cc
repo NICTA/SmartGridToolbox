@@ -34,7 +34,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name << ", inverter " 
+         error() << "For component " << name << ", inverter "
                  << inverterStr << " was not found in the model." << std::endl;
          abort();
       }

@@ -1,4 +1,4 @@
-#include "SimpleBuildingParser.h" 
+#include "SimpleBuildingParser.h"
 
 #include <SmartGridToolbox/Bus.h>
 #include <SmartGridToolbox/SimpleBuilding.h>
@@ -16,31 +16,31 @@ namespace SmartGridToolbox
 
       auto nd_dt = nd["dt"];
       if (nd_dt) build.set_dt(nd_dt.as<Time>());
-      
+
       auto nd_kb = nd["kb"];
       if (nd_kb) build.set_kb(nd_kb.as<double>());
-      
+
       auto ndCb = nd["Cb"];
       if (ndCb) build.setCb(ndCb.as<double>());
-      
+
       auto ndTbInit = nd["Tb_init"];
       if (ndTbInit) build.setTbInit(ndTbInit.as<double>());
-      
+
       auto nd_kh = nd["kh"];
       if (nd_kh) build.set_kh(nd_kh.as<double>());
-      
+
       auto ndCopCool = nd["COP_cool"];
       if (ndCopCool) build.setCopCool(ndCopCool.as<double>());
-      
+
       auto ndCopHeat = nd["COP_heat"];
       if (ndCopHeat) build.setCopHeat(ndCopHeat.as<double>());
-      
+
       auto ndPMax = nd["P_max"];
       if (ndPMax) build.setPMax(ndPMax.as<double>());
-      
+
       auto ndTs = nd["Ts"];
       if (ndTs) build.setTs(ndTs.as<double>());
-      
+
       const auto & dQgNd = nd["internal_heat_power"];
       if (dQgNd)
       {
@@ -66,12 +66,12 @@ namespace SmartGridToolbox
       Bus* bus = mod.component<Bus>(busStr);
       if (bus == nullptr)
       {
-         error() << "For component " << name << ", bus " << busStr 
+         error() << "For component " << name << ", bus " << busStr
                  << " was not found in the model." << std::endl;
          abort();
       }
       bus->addZipToGround(*build);
-      
+
       const auto & weatherNd = nd["weather"];
       if (weatherNd)
       {

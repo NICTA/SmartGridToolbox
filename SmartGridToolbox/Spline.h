@@ -1,4 +1,4 @@
-/*  dynamo:- Event driven molecular dynamics simulator 
+/*  dynamo:- Event driven molecular dynamics simulator
 http://www.dynamomd.org
 Copyright (C) 2011  Marcus N Campbell Bannerman <m.bannerman@gmail.com>
 
@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <exception>
 
 class Spline : private std::vector<std::pair<double, double> >
-{ 
+{
    public:
       //The boundary conditions available
       enum BC_type {
@@ -64,9 +64,9 @@ class Spline : private std::vector<std::pair<double, double> >
       //Add a point to the spline, and invalidate it so its
       //recalculated on the next access
       inline void addPoint(double x, double y)
-      { 
+      {
          _valid = false;
-         base::push_back(std::pair<double, double>(x,y)); 
+         base::push_back(std::pair<double, double>(x,y));
       }
 
       //Reset the boundary conditions
@@ -109,7 +109,7 @@ class Spline : private std::vector<std::pair<double, double> >
       //the current set of points
       bool _valid;
       //The boundary conditions
-      BC_type _BCLow, _BCHigh; 
+      BC_type _BCLow, _BCHigh;
       //The values of the boundary conditions
       double _BCLowVal, _BCHighVal;
 
@@ -118,7 +118,7 @@ class Spline : private std::vector<std::pair<double, double> >
       ///////PRIVATE FUNCTIONS
       //Function to calculate the value of a given spline at a point xval
       inline double splineCalc(std::vector<SplineData>::const_iterator i, double xval)
-      { 
+      {
          const double lx = xval - i->x;
          return ((i->a*lx + i->b)*lx + i->c)*lx + i->d;
       }
@@ -173,7 +173,7 @@ class Spline : private std::vector<std::pair<double, double> >
       //Invert a arbitrary matrix using the boost ublas library
       template<class T>
          bool InvertMatrix(boost::numeric::ublas::matrix<T> A,
-               boost::numeric::ublas::matrix<T>& inverse) 
+               boost::numeric::ublas::matrix<T>& inverse)
          {
             using namespace boost::numeric::ublas;
 
@@ -197,12 +197,12 @@ class Spline : private std::vector<std::pair<double, double> >
       //them in _data, ready for spline interpolation
       void generate()
       {
-         if (size() < 2) 
+         if (size() < 2)
             throw std::runtime_error("Spline requires at least 2 points");
 
          //If any spline points are at the same x location, we have to
          //just slightly seperate them
-         { 
+         {
             bool testPassed(false);
             while (!testPassed)
             {
@@ -220,7 +220,7 @@ class Spline : private std::vector<std::pair<double, double> >
                      break;
                   }
             }
-         }   
+         }
 
          const size_t e = size() - 1;
 
@@ -290,7 +290,7 @@ class Spline : private std::vector<std::pair<double, double> >
                         A(e,e) = 1;
                         break;
                      case PARABOLIC_RUNOUT_BC:
-                        C(e) = 0; A(e,e) = 1; A(e-1,e) = -1;   
+                        C(e) = 0; A(e,e) = 1; A(e-1,e) = -1;
                         break;
                   }
 

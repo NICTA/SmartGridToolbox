@@ -19,7 +19,7 @@ namespace SmartGridToolbox
       string name = state.expandName(nd["name"].as<std::string>());
       Complex a = nd["complex_turns_ratio_01"].as<Complex>();
       Complex ZL = nd["leakage_impedance"].as<Complex>();
-      
+
       mod.newComponent<DgyTransformer>(name, a, ZL);
    }
 
@@ -38,7 +38,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", network " << networkStr 
+         error() << "For component " << name <<  ", network " << networkStr
                  <<  " was not found in the model." << std::endl;
          abort();
       }
@@ -51,7 +51,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", bus " << bus0Str 
+         error() << "For component " << name <<  ", bus " << bus0Str
                  <<  " was not found in the model." << std::endl;
          abort();
       }
@@ -64,7 +64,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", bus " << bus1Str 
+         error() << "For component " << name <<  ", bus " << bus1Str
                  <<  " was not found in the model." << std::endl;
          abort();
       }

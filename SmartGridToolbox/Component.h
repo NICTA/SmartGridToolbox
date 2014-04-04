@@ -13,7 +13,7 @@ namespace SmartGridToolbox
    ///
    /// Component derived classes are expected to override three methods:
    ///
-   /// virtual Time validUntil() const, 
+   /// virtual Time validUntil() const,
    /// virtual void initializeState(),
    /// virtual void updateState(Time t).
    ///
@@ -32,9 +32,9 @@ namespace SmartGridToolbox
       public:
          /// @name Lifecycle
          /// @{
-         
+
          /// @brief Constructor.
-         explicit Component(const std::string & name); 
+         explicit Component(const std::string & name);
 
          /// @brief Destructor.
          virtual ~Component() = 0;
@@ -43,7 +43,7 @@ namespace SmartGridToolbox
 
          /// @name Name
          /// @{
-         
+
          /// @brief Get the name of the object.
          const std::string & name() const
          {
@@ -55,12 +55,12 @@ namespace SmartGridToolbox
          {
             name_ = name;
          }
-         
+
          /// @}
-         
+
          /// @name Timestepping
          /// @{
-         
+
          /// @brief Get the current step for the object.
          Time time() const
          {
@@ -68,7 +68,7 @@ namespace SmartGridToolbox
          }
 
          /// @}
-         
+
          /// @name Rank
          /// @brief Rank: A < B means B depends on A, not vice-versa, so A should go first.
          /// @{
@@ -120,7 +120,7 @@ namespace SmartGridToolbox
          {
             return posix_time::pos_infin;
          }
-         
+
          /// @}
 
          /// @name Events
@@ -128,17 +128,17 @@ namespace SmartGridToolbox
 
          /// @brief Triggered just before my update.
          Event & willUpdate() {return willUpdate_;}
-         
+
          /// @brief Triggered after my update.
          Event & didUpdate() {return didUpdate_;}
-         
+
          /// @brief Triggered when I am flagged for future update.
          Event & needsUpdate() {return needsUpdate_;}
-         
-         /// @brief Triggered when I am about to update to a new timestep. 
+
+         /// @brief Triggered when I am about to update to a new timestep.
          Event & willStartNewTimestep() {return willStartNewTimestep_;}
-         
-         /// @brief Triggered when I just updated, completing the current timestep. 
+
+         /// @brief Triggered when I just updated, completing the current timestep.
          Event & didCompleteTimestep() {return didCompleteTimestep_;}
          /// @}
 
@@ -159,7 +159,7 @@ namespace SmartGridToolbox
          {
             // Empty.
          }
-         
+
       private:
          std::string name_;
          Time time_;                 ///< The current time.

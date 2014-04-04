@@ -33,7 +33,7 @@ namespace SmartGridToolbox
       else if (ndYSimpleLine)
       {
          ublas::vector<Complex> YLine = ndYSimpleLine.as<ublas::vector<Complex>>();
-         Y = YSimpleLine(YLine); 
+         Y = YSimpleLine(YLine);
       }
 
       Branch & comp = mod.newComponent<Branch>(name, phases0, phases1);
@@ -55,7 +55,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", network " << networkStr 
+         error() << "For component " << name <<  ", network " << networkStr
                  <<  " was not found in the model." << std::endl;
          abort();
       }
@@ -71,7 +71,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", bus " << bus0Str 
+         error() << "For component " << name <<  ", bus " << bus0Str
                  <<  " was not found in the model." << std::endl;
          abort();
       }
@@ -84,7 +84,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", bus " << bus1Str 
+         error() << "For component " << name <<  ", bus " << bus1Str
                  <<  " was not found in the model." << std::endl;
          abort();
       }

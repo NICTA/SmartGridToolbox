@@ -17,13 +17,13 @@ namespace SmartGridToolbox
          virtual ublas::vector<Complex> & Y() {return Y_;}
          virtual ublas::vector<Complex> & I() {return I_;} // Injection.
          virtual ublas::vector<Complex> & S() {return S_;} // Injection.
-     
+
       // Overridden from ZipToGroundBase:
       public:
          virtual ublas::vector<Complex> Y() const override {return Y_;}
          virtual ublas::vector<Complex> I() const override {return I_;} // Injection.
          virtual ublas::vector<Complex> S() const override {return S_;} // Injection.
-      
+
       private:
          ublas::vector<Complex> Y_; ///< Constant admittance component.
          ublas::vector<Complex> I_; ///< Constant current injection component.

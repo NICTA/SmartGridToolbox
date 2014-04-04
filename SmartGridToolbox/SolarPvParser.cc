@@ -49,7 +49,7 @@ namespace SmartGridToolbox
       else
       {
          error() << "For component " << name << ", weather " << weatherStr
-                 << " was not found in the model." 
+                 << " was not found in the model."
                  << std::endl;
          abort();
       }

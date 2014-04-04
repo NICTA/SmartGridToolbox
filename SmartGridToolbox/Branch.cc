@@ -3,7 +3,7 @@
 #include <SmartGridToolbox/Model.h>
 #include <SmartGridToolbox/Network.h>
 #include <SmartGridToolbox/PowerFlow.h>
- 
+
 namespace SmartGridToolbox
 {
    Branch::Branch(const std::string & name, const Phases & phases0, const Phases & phases1) :
@@ -22,7 +22,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void Branch::setBus0(Bus & bus0) 
+   void Branch::setBus0(Bus & bus0)
    {
       if (!phases0_.isSubsetOf(bus0.phases()))
       {
@@ -32,8 +32,8 @@ namespace SmartGridToolbox
       bus0_ = &bus0;
       changed().trigger();
    }
-   
-   void Branch::setBus1(Bus & bus1) 
+
+   void Branch::setBus1(Bus & bus1)
    {
       if (!phases1_.isSubsetOf(bus1.phases()))
       {

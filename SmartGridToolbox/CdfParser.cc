@@ -29,7 +29,7 @@ namespace SmartGridToolbox
 
    struct CdfBranchInfo
    {
-      int bus0Id; 
+      int bus0Id;
       int bus1Id;
 
       double RsPu;
@@ -58,7 +58,7 @@ namespace SmartGridToolbox
 
    static std::string branchName(const std::string & prefix, int nBranch, int id1, int id2)
    {
-      return prefix + "_branch_" + num2PaddedString(nBranch) + "_" + num2PaddedString(id1) + "_" 
+      return prefix + "_branch_" + num2PaddedString(nBranch) + "_" + num2PaddedString(id1) + "_"
                     + num2PaddedString(id2);
    }
 
@@ -94,7 +94,7 @@ namespace SmartGridToolbox
 
       const YAML::Node ndPerUnit = nd["use_per_unit"];
       bool usePerUnit = ndPerUnit ? ndPerUnit.as<bool>() : false;
-      
+
       double defaultVBase = nd["default_V_base"].as<double>();
 
       const YAML::Node ndFreq = nd["freq_Hz"];
@@ -153,7 +153,7 @@ namespace SmartGridToolbox
             double QgMW;
             std::istringstream(line.substr(67, 8)) >> QgMW;
             busInfo.Sg = Complex(PgMW, QgMW)*MW; // Injection is -ve load.
-            
+
             double QMinMW;
             std::istringstream(line.substr(98, 8)) >> QMinMW;
             busInfo.QMin = QMinMW*MW;
@@ -169,7 +169,7 @@ namespace SmartGridToolbox
             busInfo.YsPu = Complex(GsPu, BsPu);
          }
 
-         std::getline(infile, line); 
+         std::getline(infile, line);
          if (line.substr(0, 6) != "BRANCH") errInvalidCdf();
 
          for (std::getline(infile, line); line.substr(0, 4) != std::string("-999"); std::getline(infile, line))
@@ -191,7 +191,7 @@ namespace SmartGridToolbox
             branchInfo.thetaRad *= pi/180.0;
          }
       }
-      
+
       {
          Network & netw = mod.newComponent<Network>(networkName, freq);
          for (const auto pair : busMap)
@@ -212,7 +212,7 @@ namespace SmartGridToolbox
                   type = BusType::SL;
                   break;
                case 4:
-                  error() << "CDF isolated bus type not supported." << std::endl; 
+                  error() << "CDF isolated bus type not supported." << std::endl;
                   abort();
                   break;
                default:
@@ -220,18 +220,18 @@ namespace SmartGridToolbox
                   abort();
                   break;
             }
-            
+
             ublas::vector<Complex> VNomVec(phases.size(), info.VBase);
 
             Complex V = usePerUnit ? info.VPu : info.VPu*info.VBase;
             ublas::vector<Complex> VVec(phases.size(), V);
-            
+
             double VMag = usePerUnit ? abs(info.VPu) : abs(info.VPu*info.VBase);
             ublas::vector<double> VMagVec(phases.size(), VMag);
-            
+
             double VAng = usePerUnit ? arg(info.VPu) : arg(info.VPu*info.VBase);
             ublas::vector<double> VAngVec(phases.size(), VAng);
-            
+
             Complex SLoad = usePerUnit ? info.SLoad/SBase : info.SLoad;
             ublas::vector<Complex> SLoadVec(phases.size(), SLoad);
 
@@ -257,9 +257,9 @@ namespace SmartGridToolbox
             bus.setQgSetpoint(imag(SgVec));
             bus.setQgMinSetpoint(QMinVec);
             bus.setQgMaxSetpoint(QMaxVec);
-            
+
             bus.setVMagSetpoint(VMagVec);
-            
+
             bus.setVAngSetpoint(VAngVec);
 
             bus.setV(VVec);
@@ -312,7 +312,7 @@ namespace SmartGridToolbox
                Y11 *= SBase/(VBase1*VBase1);
             }
 
-            Branch & branch = mod.newComponent<Branch>(branchName(networkName, i, info.bus0Id, info.bus1Id), 
+            Branch & branch = mod.newComponent<Branch>(branchName(networkName, i, info.bus0Id, info.bus1Id),
                               phases, phases);
 
             branch.setBus0(*bus0);

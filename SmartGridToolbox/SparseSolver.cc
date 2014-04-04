@@ -23,7 +23,7 @@ bool kluSolve(const boost::numeric::ublas::compressed_matrix<double> & a,
 
    double* b1 = new double[n];
    for (int i = 0; i < n; ++i) b1[i] = b(i);
-   
+
    klu_symbolic *Symbolic;
    klu_numeric *Numeric;
    klu_common Common;

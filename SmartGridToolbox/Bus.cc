@@ -2,7 +2,7 @@
 #include <SmartGridToolbox/Model.h>
 #include <SmartGridToolbox/Network.h>
 #include <SmartGridToolbox/ZipToGroundBase.h>
- 
+
 namespace SmartGridToolbox
 {
    Bus::Bus(const std::string & name, BusType type, const Phases & phases, const ublas::vector<Complex> & nominalV) :
@@ -46,7 +46,7 @@ namespace SmartGridToolbox
       PgSetpoint_ = PgSetpoint;
       changed().trigger();
    }
-         
+
    void Bus::setPgMinSetpoint(const ublas::vector<double> & PgMinSetpoint)
    {
       if (PgMinSetpoint.size() != phases_.size())
@@ -56,7 +56,7 @@ namespace SmartGridToolbox
       PgMinSetpoint_ = PgMinSetpoint;
       changed().trigger();
    }
-         
+
    void Bus::setPgMaxSetpoint(const ublas::vector<double> & PgMaxSetpoint)
    {
       if (PgMaxSetpoint.size() != phases_.size())
@@ -66,7 +66,7 @@ namespace SmartGridToolbox
       PgMaxSetpoint_ = PgMaxSetpoint;
       changed().trigger();
    }
-         
+
    void Bus::setQgSetpoint(const ublas::vector<double> & QgSetpoint)
    {
       if (QgSetpoint.size() != phases_.size())
@@ -76,7 +76,7 @@ namespace SmartGridToolbox
       QgSetpoint_ = QgSetpoint;
       changed().trigger();
    }
-         
+
    void Bus::setQgMinSetpoint(const ublas::vector<double> & QgMinSetpoint)
    {
       if (QgMinSetpoint.size() != phases_.size())
@@ -86,7 +86,7 @@ namespace SmartGridToolbox
       QgMinSetpoint_ = QgMinSetpoint;
       changed().trigger();
    }
-         
+
    void Bus::setQgMaxSetpoint(const ublas::vector<double> & QgMaxSetpoint)
    {
       if (QgMaxSetpoint.size() != phases_.size())
@@ -96,7 +96,7 @@ namespace SmartGridToolbox
       QgMaxSetpoint_ = QgMaxSetpoint;
       changed().trigger();
    }
-         
+
    void Bus::setVMagSetpoint(const ublas::vector<double> & VMagSetpoint)
    {
       if (VMagSetpoint.size() != phases_.size())
@@ -106,7 +106,7 @@ namespace SmartGridToolbox
       VMagSetpoint_ = VMagSetpoint;
       changed().trigger();
    }
-         
+
    void Bus::setVMagMinSetpoint(const ublas::vector<double> & VMagMinSetpoint)
    {
       if (VMagMinSetpoint.size() != phases_.size())
@@ -116,7 +116,7 @@ namespace SmartGridToolbox
       VMagMinSetpoint_ = VMagMinSetpoint;
       changed().trigger();
    }
-         
+
    void Bus::setVMagMaxSetpoint(const ublas::vector<double> & VMagMaxSetpoint)
    {
       if (VMagMaxSetpoint.size() != phases_.size())
@@ -126,7 +126,7 @@ namespace SmartGridToolbox
       VMagMaxSetpoint_ = VMagMaxSetpoint;
       changed().trigger();
    }
-         
+
    void Bus::setVAngSetpoint(const ublas::vector<double> & VAngSetpoint)
    {
       if (VAngSetpoint.size() != phases_.size())
@@ -136,7 +136,7 @@ namespace SmartGridToolbox
       VAngSetpoint_ = VAngSetpoint;
       changed().trigger();
    }
-         
+
    void Bus::setVAngMinSetpoint(const ublas::vector<double> & VAngMinSetpoint)
    {
       if (VAngMinSetpoint.size() != phases_.size())
@@ -146,7 +146,7 @@ namespace SmartGridToolbox
       VAngMinSetpoint_ = VAngMinSetpoint;
       changed().trigger();
    }
-         
+
    void Bus::setVAngMaxSetpoint(const ublas::vector<double> & VAngMaxSetpoint)
    {
       if (VAngMaxSetpoint.size() != phases_.size())
@@ -203,9 +203,9 @@ namespace SmartGridToolbox
    {
       dependsOn(zipToGround);
       zipsToGround_.push_back(&zipToGround);
-      zipToGround.didUpdate().addAction([this](){needsUpdate().trigger();}, 
+      zipToGround.didUpdate().addAction([this](){needsUpdate().trigger();},
             "Trigger Bus " + name() + " needsUpdate.");
-      zipToGround.didUpdate().addAction([this](){changed().trigger();}, 
+      zipToGround.didUpdate().addAction([this](){changed().trigger();},
             "Trigger Bus " + name() + " changed.");
       // TODO: this will recalculate all zips. Efficiency?
       changed().trigger();

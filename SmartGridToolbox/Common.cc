@@ -32,7 +32,7 @@ namespace SmartGridToolbox
             [Phoenix::bind(&CGram::setResult, this, Qi::_1, -Qi::_2)];
          im_ = (Qi::double_ >> Qi::char_("ij"))
             [Phoenix::bind(&CGram::setResult, this, 0.0, Qi::_1)];
-         re_ = (Qi::double_) 
+         re_ = (Qi::double_)
             [Phoenix::bind(&CGram::setResult, this, Qi::_1, 0.0)];
 
          start_ = Qi::eps[Phoenix::bind(&CGram::init, this)] >>
@@ -105,7 +105,7 @@ namespace SmartGridToolbox
       char imSgn = im >= 0.0 ? '+' : '-';
       if (im == 0.0)
       {
-         ss << reSgn << std::abs(re); 
+         ss << reSgn << std::abs(re);
       }
       else
       {
@@ -139,9 +139,9 @@ namespace SmartGridToolbox
    const double W = J/second;
    const double kW = 1000.0*W;
    const double kWh = kW*hour;
-   const double A = 1.0; 
-   const double C = A/second; 
-   const double K = 1.0; 
+   const double A = 1.0;
+   const double C = A/second;
+   const double K = 1.0;
    const Complex czero{0.0, 0.0};
    const LatLong Greenwich{51.4791, 0.0};
 }

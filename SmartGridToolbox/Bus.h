@@ -21,31 +21,31 @@ namespace SmartGridToolbox
       public:
          /// @name Lifecycle.
          /// @{
-         
+
          Bus(const std::string & name, BusType type, const Phases & phases, const ublas::vector<Complex> & nominalV);
-         
+
          /// @}
 
          /// @name Basic info.
          /// @{
-         
+
          BusType type() const {return type_;}
          const Phases & phases() const {return phases_;}
          const ublas::vector<Complex> & nominalV() const {return nominalV_;}
-         
+
          /// @}
 
          /// @name Real generated power setpoints.
          ///< Equality for SL, PV, bounds for PQ.
          /// @{
-         
+
          ublas::vector<double> PgSetpoint() const
          {
             return PgSetpoint_;
          }
 
          void setPgSetpoint(const ublas::vector<double> & PgSetpoint);
-         
+
          ublas::vector<double> PgMinSetpoint() const
          {
             return PgMinSetpoint_;
@@ -59,13 +59,13 @@ namespace SmartGridToolbox
          }
 
          void setPgMaxSetpoint(const ublas::vector<double> & PgMaxSetpoint);
-         
+
          /// @}
 
          /// @name Reactive generated power setpoints.
          ///< Equality for SL, PV, bounds for PQ.
          /// @{
-         
+
          ublas::vector<double> QgSetpoint() const
          {
             return QgSetpoint_;
@@ -86,13 +86,13 @@ namespace SmartGridToolbox
          }
 
          void setQgMaxSetpoint(const ublas::vector<double> & QgMaxSetpoint);
-         
+
          /// @}
 
          /// @name Voltage magnitude setpoints.
          ///< Equality for SL, PV, bounds for PQ.
          /// @{
-         
+
          ublas::vector<double> VMagSetpoint() const
          {
             return VMagSetpoint_;
@@ -113,34 +113,34 @@ namespace SmartGridToolbox
          }
 
          void setVMagMaxSetpoint(const ublas::vector<double> & VMagMaxSetpoint);
-         
+
          /// @}
 
          /// @name Voltage angle (radians) setpoints.
          ///< Equality for SL, PV, bounds for PQ.
          /// @{
-         
+
          ublas::vector<double> VAngSetpoint() const
          {
             return VAngSetpoint_;
          }
-         
+
          void setVAngSetpoint(const ublas::vector<double> & VAngSetpoint);
-         
+
          ublas::vector<double> VAngMinSetpoint() const
          {
             return VAngMinSetpoint_;
          }
-         
+
          void setVAngMinSetpoint(const ublas::vector<double> & VAngMinSetpoint);
-         
+
          ublas::vector<double> VAngMaxSetpoint() const
          {
             return VAngMaxSetpoint_;
          }
-         
+
          void setVAngMaxSetpoint(const ublas::vector<double> & VAngMaxSetpoint);
-         
+
          /// @}
 
          /// @name Apply setpoints.
@@ -150,11 +150,11 @@ namespace SmartGridToolbox
          /// @name Loads/constant power generation.
          ///< ZIP = constant Z, I, P (or Y, I, S).
          /// @{
-         
+
          const std::vector<ZipToGroundBase*> & zipsToGround() const {return zipsToGround_;}
 
          void addZipToGround(ZipToGroundBase & zipToGround);
-         
+
          /// @brief Total shunt admittance (sum of ZIPs).
          const ublas::vector<Complex> & Ys() const {return Ys_;}
 
@@ -163,37 +163,37 @@ namespace SmartGridToolbox
 
          /// @brief Total constant power injection (sum of ZIPs).
          const ublas::vector<Complex> & Sc() const {return Sc_;}
-         
+
          /// @}
 
          /// @name State.
          /// @{
-         
+
          /// @brief Get bus voltage.
          const ublas::vector<Complex> & V() const {return V_;}
-         
+
          /// @brief Set bus voltage (warm start or solver).
          void setV(const ublas::vector<Complex> & V) {V_ = V;}
 
          /// @brief Get bus generated power.
          const ublas::vector<Complex> & Sg() const {return Sg_;}
-         
+
          /// @brief Set bus generated power (warm start or solver).
          void setSg(const ublas::vector<Complex> & Sg) {Sg_ = Sg;}
 
          /// @brief Total power injection (Sc() + Sg()).
          const ublas::vector<Complex> STot() const {return Sc_ + Sg_;}
-         
+
          /// @}
 
          /// @name Events.
          /// @{
-        
+
          /// @brief Event triggered when bus (e.g. setpoint) has changed.
          Event & changed() {return changed_;}
 
          /// @}
-      
+
       protected:
          virtual void initializeState() override;
          virtual void updateState(Time t) override;
@@ -240,7 +240,7 @@ namespace SmartGridToolbox
          ublas::vector<Complex> Ic_; ///< Constant current injection (loads).
          ublas::vector<Complex> Sc_; ///< Constant power injection (loads).
          /// @}
-         
+
          /// @name Events:
          /// @{
          Event changed_;

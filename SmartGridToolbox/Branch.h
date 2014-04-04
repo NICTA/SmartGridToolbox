@@ -25,37 +25,37 @@ namespace SmartGridToolbox
 
          /// @name Bus accessors:
          /// @{
-        
+
          const Bus & bus0() const {return *bus0_;}
          void setBus0(Bus & bus0);
 
          const Bus & bus1() const {return *bus1_;}
          void setBus1(Bus & bus1);
-         
+
          /// @}
 
          /// @name Phase accessors:
          /// @{
-         
+
          const Phases & phases0() const {return phases0_;}
          const Phases & phases1() const {return phases1_;}
-         
+
          /// @}
 
          /// @name Nodal admittance matrix (Y) accessors:
          /// @{
-         
+
          const ublas::matrix<Complex> & Y() const {return Y_;}
          void setY(const ublas::matrix<Complex> & Y);
-         
+
          /// @}
-         
+
          /// @name Custom events:
          /// @{
-         
+
          /// @brief Event triggered whenever branch is changed in some way:
          Event & changed() {return changed_;}
-         
+
          /// @}
 
       private:

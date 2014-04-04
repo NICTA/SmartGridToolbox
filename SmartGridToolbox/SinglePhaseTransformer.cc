@@ -8,7 +8,7 @@ namespace SmartGridToolbox
         alpha_(alpha),
         ZLeak_(ZLeak)
    {
-      recalcY();      
+      recalcY();
    }
 
    void SinglePhaseTransformer::recalcY()
@@ -16,8 +16,8 @@ namespace SmartGridToolbox
       Complex YLeak = 1.0/ZLeak_;
       ublas::matrix<Complex> YNode(2, 2, czero);
       YNode(0, 0) = YLeak/(alpha_*conj(alpha_));
-      YNode(0, 1) = -YLeak/conj(alpha_);  
-      YNode(1, 0) = -YLeak/alpha_;  
+      YNode(0, 1) = -YLeak/conj(alpha_);
+      YNode(1, 0) = -YLeak/alpha_;
       YNode(1, 1) = YLeak;
       setY(YNode);
    }

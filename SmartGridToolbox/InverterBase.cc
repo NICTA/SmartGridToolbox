@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    {
       dependsOn(source);
       sources_.push_back(&source);
-      source.didUpdate().addAction([this](){needsUpdate().trigger();}, 
+      source.didUpdate().addAction([this](){needsUpdate().trigger();},
             "Trigger InverterBase " + name() + " needs update.");
       // TODO: this will recalculate all zips. Efficiency?
    }

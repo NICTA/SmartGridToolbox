@@ -26,10 +26,10 @@ namespace SmartGridToolbox
          {
             // Empty.
          }
-         
+
          Time dt() {return dt_;}
          void set_dt(Time val) {dt_ = val; needsUpdate().trigger();}
-      
+
          double initCharge() {return initCharge_;}
          void setInitCharge(double val) {initCharge_ = val; needsUpdate().trigger();}
 
@@ -54,7 +54,7 @@ namespace SmartGridToolbox
          void setRequestedPower(double val) {requestedPower_ = val; needsUpdate().trigger();}
 
          double internalPower();
-      
+
       // Overridden functions: from Component.
       protected:
          virtual void initializeState() override
@@ -63,7 +63,7 @@ namespace SmartGridToolbox
          }
 
          virtual void updateState(Time t) override;
-         
+
          virtual Time validUntil() const override
          {
             return time() + dt_;
@@ -84,7 +84,7 @@ namespace SmartGridToolbox
          double maxDischargePower_;
          double chargeEfficiency_;
          double dischargeEfficiency_;
-                  
+
          // Setpoint.
          double requestedPower_; ///< Positive = charging.
 

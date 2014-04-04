@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <string>
 
-namespace SmartGridToolbox 
+namespace SmartGridToolbox
 {
    Model::ConstComponentVec Model::components() const
    {
@@ -54,8 +54,8 @@ namespace SmartGridToolbox
          int idx_i = g.nodes()[i]->index();
          compVec_[idx_i]->setRank(newRank);
       }
-      std::sort(compVec_.begin(), compVec_.end(), 
-            [](const Component* lhs, const Component* rhs) -> bool 
+      std::sort(compVec_.begin(), compVec_.end(),
+            [](const Component* lhs, const Component* rhs) -> bool
             {
                return ((lhs->rank() < rhs->rank()) ||
                        ((lhs->rank() == rhs->rank()) && (lhs->name() < rhs->name())));

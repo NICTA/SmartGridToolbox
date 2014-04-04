@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       Complex ZL = nd["leakage_impedance"].as<Complex>();
       YAML::Node nd_mag_admit = nd["magnetising_admittance"];
       Complex YM = nd_mag_admit ? nd["magnetising_admittance"].as<Complex>() : czero;
-      
+
       mod.newComponent<YyTransformer>(name, phases0, phases1, a, ZL, YM);
    }
 
@@ -44,7 +44,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", network " << networkStr 
+         error() << "For component " << name <<  ", network " << networkStr
                  <<  " was not found in the model." << std::endl;
          abort();
       }
@@ -57,7 +57,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", bus " << bus0Str 
+         error() << "For component " << name <<  ", bus " << bus0Str
                  <<  " was not found in the model." << std::endl;
          abort();
       }
@@ -70,7 +70,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", bus " << bus1Str 
+         error() << "For component " << name <<  ", bus " << bus1Str
                  <<  " was not found in the model." << std::endl;
          abort();
       }

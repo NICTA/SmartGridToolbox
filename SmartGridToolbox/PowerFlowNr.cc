@@ -269,35 +269,35 @@ namespace SmartGridToolbox
                            ublas::compressed_matrix<double> & Jir,
                            ublas::compressed_matrix<double> & Jii)
    {
-      Jrr = -G; 
-      Jri =  B; 
-      Jir = -B; 
-      Jii = -G; 
+      Jrr = -G;
+      Jri =  B;
+      Jir = -B;
+      Jii = -G;
    }
 
    /// Set the part of J that doesn't update at each iteration.
    /** At this stage, we are treating J as if all busses were PQ. */
    void PowerFlowNr::initJc(Jacobian & Jc) const
    {
-      initJcBlock(project(G_, selPqFromAll(), selPqFromAll()), 
+      initJcBlock(project(G_, selPqFromAll(), selPqFromAll()),
                   project(B_, selPqFromAll(), selPqFromAll()),
                   Jc.IrPqVrPq(),
                   Jc.IrPqViPq(),
                   Jc.IiPqVrPq(),
                   Jc.IiPqViPq());
-      initJcBlock(project(G_, selPqFromAll(), selPvFromAll()), 
+      initJcBlock(project(G_, selPqFromAll(), selPvFromAll()),
                   project(B_, selPqFromAll(), selPvFromAll()),
                   Jc.IrPqVrPv(),
                   Jc.IrPqViPv(),
                   Jc.IiPqVrPv(),
                   Jc.IiPqViPv());
-      initJcBlock(project(G_, selPvFromAll(), selPqFromAll()), 
+      initJcBlock(project(G_, selPvFromAll(), selPqFromAll()),
                   project(B_, selPvFromAll(), selPqFromAll()),
                   Jc.IrPvVrPq(),
                   Jc.IrPvViPq(),
                   Jc.IiPvVrPq(),
                   Jc.IiPvViPq());
-      initJcBlock(project(G_, selPvFromAll(), selPvFromAll()), 
+      initJcBlock(project(G_, selPvFromAll(), selPvFromAll()),
                   project(B_, selPvFromAll(), selPvFromAll()),
                   Jc.IrPvVrPv(),
                   Jc.IrPvViPv(),
@@ -320,7 +320,7 @@ namespace SmartGridToolbox
 
       const auto PPq = project(P, selPqFromAll());
       const auto QPq = project(Q, selPqFromAll());
-      
+
       const auto IcrPq = project(real(Ic_), selPqFromAll());
       const auto IciPq = project(imag(Ic_), selPqFromAll());
 
@@ -330,7 +330,7 @@ namespace SmartGridToolbox
                                  + IcrPq - myProd(GPq, Vr) + myProd(BPq, Vi);
       project(f, selIiPqFrom_f()) = element_div(element_prod(ViPq, PPq) - element_prod(VrPq, QPq), M2Pq)
                                  + IciPq - myProd(GPq, Vi) - myProd(BPq, Vr);
-      
+
       // PV busses. Note that these differ in that M2Pv is considered a constant.
       const auto GPv = project(G_, selPvFromAll(), selAllFromAll());
       const auto BPv = project(B_, selPvFromAll(), selAllFromAll());
@@ -340,7 +340,7 @@ namespace SmartGridToolbox
 
       const auto PPv = project(P, selPvFromAll());
       const auto QPv = project(Q, selPvFromAll());
-      
+
       const auto IcrPv = project(real(Ic_), selPvFromAll());
       const auto IciPv = project(imag(Ic_), selPvFromAll());
 
@@ -427,7 +427,7 @@ namespace SmartGridToolbox
       };
 
       for (int k = 0; k < nPv_; ++k)
-      { 
+      {
          double fMult = (0.5*(M2Pv(k) - VrPv(k)*VrPv(k) - ViPv(k)*ViPv(k))/VrPv(k));
          double colViPvMult = -ViPv(k)/VrPv(k);
 
@@ -494,7 +494,7 @@ namespace SmartGridToolbox
       double durationTot;
 
       stopwatchTot.reset(); stopwatchTot.start();
-     
+
       // Do the initial setup.
       stopwatch.reset(); stopwatch.start();
 
@@ -577,7 +577,7 @@ namespace SmartGridToolbox
          bool ok = kluSolve(JMat, -f, x);
          stopwatch.stop(); durationSolve += stopwatch.seconds();
 
-         SGT_DEBUG(debug() << "\tAfter kluSolve: ok = " << ok << std::endl); 
+         SGT_DEBUG(debug() << "\tAfter kluSolve: ok = " << ok << std::endl);
          SGT_DEBUG(debug() << "\tAfter kluSolve: x  = " << std::setprecision(5) << std::setw(9) << x << std::endl);
          if (!ok)
          {
@@ -594,7 +594,7 @@ namespace SmartGridToolbox
          auto VrPv = project(Vr, selPvFromAll());
          auto ViPv = project(Vi, selPvFromAll());
          const auto DeltaViPv = project(x, selViPvFrom_x());
-         VrPv += element_div(M2Pv - element_prod(VrPv, VrPv) - element_prod(ViPv, ViPv) 
+         VrPv += element_div(M2Pv - element_prod(VrPv, VrPv) - element_prod(ViPv, ViPv)
                              - 2*element_prod(ViPv, DeltaViPv), 2*VrPv);
          ViPv += DeltaViPv;
 
@@ -645,12 +645,12 @@ namespace SmartGridToolbox
       }
       else
       {
-         warning() << "PowerFlowNr: Newton-Raphson method failed to converge." << std::endl; 
+         warning() << "PowerFlowNr: Newton-Raphson method failed to converge." << std::endl;
       }
 
       stopwatchTot.stop(); durationTot = stopwatchTot.seconds();
 
-      message() << "PowerFlowNr: successful = " << wasSuccessful << ", error = " << err 
+      message() << "PowerFlowNr: successful = " << wasSuccessful << ", error = " << err
                 << ", iterations = " << niter << ", total time = " << durationTot << "." << std::endl;
       SGT_DEBUG(debug() << "PowerFlowNr: -----------------------   " << std::endl);
       SGT_DEBUG(debug() << "PowerFlowNr: init setup time         = " << durationInitSetup << " s." << std::endl);

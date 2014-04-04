@@ -41,7 +41,7 @@ namespace SmartGridToolbox
             dQh_(0.0)
          {
          }
-         
+
          // Parameters:
          Time dt() {return dt_;}
          void set_dt(Time val) {dt_ = val; needsUpdate().trigger();}
@@ -77,19 +77,19 @@ namespace SmartGridToolbox
          double Tb() {return Tb_;}
 
          const double Te() {return weather_->temperatureSeries()->value(time());}
-         
+
          const double dQg() {return dQg_->value(time());}
 
          HvacMode mode() {return mode_;}
 
-         double cop() {return cop_;} 
+         double cop() {return cop_;}
 
-         double isMaxed() {return isMaxed_;} 
+         double isMaxed() {return isMaxed_;}
 
          double Ph() {return Ph_;}
 
          double dQh() {return dQh_;}
-      
+
       // Overridden functions: from ZipToGroundBase.
       public:
          virtual ublas::vector<Complex> Y() const override {return {1, czero};}

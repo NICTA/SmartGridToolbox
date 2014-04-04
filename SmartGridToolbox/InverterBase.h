@@ -17,7 +17,7 @@ namespace SmartGridToolbox
          virtual ublas::vector<Complex> Y() const override {return ublas::vector<Complex>(phases().size(), czero);}
          virtual ublas::vector<Complex> I() const override {return ublas::vector<Complex>(phases().size(), czero);}
          virtual ublas::vector<Complex> S() const override = 0;
-      
+
       public:
          InverterBase(const std::string & name, const Phases & phases) : ZipToGroundBase(name, phases), PDc_(0.0)
          {
@@ -33,7 +33,7 @@ namespace SmartGridToolbox
 
       protected:
          virtual void updateState(Time t) override;
-      
+
       private:
          std::vector<const DcPowerSourceBase*> sources_;    ///< My DC power sources.
          double PDc_;                                       ///< DC power = sum of all sources.

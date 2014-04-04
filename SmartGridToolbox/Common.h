@@ -27,7 +27,7 @@ namespace SmartGridToolbox
 {
    /// @addtogroup Common
    /// @{
-   
+
    /// @name Reporting and errors.
    /// @{
    inline std::ostream & messageStream() {return std::cout;}
@@ -50,7 +50,7 @@ namespace SmartGridToolbox
 
    /// @name Constant dimension 2D array type.
    /// @{
-   // Note transposition of NR and NC to obey standard matrix index order. 
+   // Note transposition of NR and NC to obey standard matrix index order.
    template <class T, size_t NR, size_t NC> using Array2D = std::array<std::array<T, NC>, NR>;
    /// @}
 
@@ -64,12 +64,12 @@ namespace SmartGridToolbox
       return Complex(m*cos(theta), m*sin(theta));
    }
 
-   inline Complex operator*(int i, const Complex & c) 
+   inline Complex operator*(int i, const Complex & c)
    {
       return Complex(i*c.real(), i*c.imag());
    }
 
-   inline Complex operator*(const Complex & c, int i) 
+   inline Complex operator*(const Complex & c, int i)
    {
       return Complex(i*c.real(), i*c.imag());
    }
@@ -80,7 +80,7 @@ namespace SmartGridToolbox
 
    std::string complex2String(const Complex & c);
    /// @}
-  
+
    /// @name Linear algebra
    /// @{
    namespace ublas = boost::numeric::ublas;
@@ -125,7 +125,7 @@ namespace SmartGridToolbox
 
    extern const posix_time::ptime epoch;
 
-   inline double dSeconds(const Time & d) 
+   inline double dSeconds(const Time & d)
    {
       return double(d.ticks())/Time::ticks_per_second();
    }
@@ -221,7 +221,7 @@ namespace SmartGridToolbox
       return result;
    }
    /// @}
-   
+
    /// @}
 }
 

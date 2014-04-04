@@ -5,7 +5,7 @@ namespace SmartGridToolbox
    DgyTransformer::DgyTransformer(const std::string & name, Complex a, Complex ZL)
       : Branch(name, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C), a_(a), YL_(1.0/ZL)
    {
-      recalcY();      
+      recalcY();
    }
 
    void DgyTransformer::recalcY()
