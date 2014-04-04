@@ -6,6 +6,7 @@
 namespace SmartGridToolbox
 {
    /// @brief An overhead power line.
+   ///
    /// Consists of N + M wires, where N is the number of phases and M is the number of phases, and M is the number of
    /// extra grounded neutral wires that will be eliminated via the Kron reduction.
    class OverheadLine : public Branch

@@ -14,6 +14,7 @@ namespace SmartGridToolbox
    };
 
    /// @brief Convert spherical angles and magnitude to a vector.
+   ///
    /// x -> north, y -> east, z -> directly up.
    /// @parameter angs: struct containing spherical angles of the sun.
    /// @parameter mag: magnitude of the vector.
@@ -27,6 +28,7 @@ namespace SmartGridToolbox
    }
 
    /// @brief Convert spherical angles and projection to a vector.
+   ///
    /// @parameter angs: struct containing spherical angles of the sun.
    /// @parameter proj: projection of the vector onto a vertical vector.
    /// @return The vector.

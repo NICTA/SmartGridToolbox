@@ -223,6 +223,7 @@ namespace SmartGridToolbox
 
          /// @name Bus Quantities
          /// @brief Quantities due to operation of bus.
+         ///
          /// For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_.
          /// Thus Sgen_ will be zero. For PV busses, the reactive power is supposed to adjust to keep the voltage
          /// magnitude constant. So Sgen_ will in general have zero real power and nonzero reactive power.

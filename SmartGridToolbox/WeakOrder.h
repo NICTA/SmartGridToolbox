@@ -19,7 +19,8 @@ namespace SmartGridToolbox
             return idx_;
          }
 
-         /// @brief Is there a link from here to nd? 
+         /// @brief Is there a link from here to nd?
+         ///
          /// This relation could model dependency: nd would directly depend on me.
          bool precedes(const WoNode & nd) const
          {
@@ -28,14 +29,16 @@ namespace SmartGridToolbox
          }
 
          /// @brief Can I get from here to nd, but not the reverse?
+         ///
          /// This relation could model dependency: nd would indirectly depend on me, and not vice-versa.
          /// Thus domination == "goes first."
          bool dominates(const WoNode & nd) const
          {
             return (dominated_.find(&nd) != dominated_.end());
          }
-       
+
          /// @brief Partial ordering operator.
+         ///
          /// Smaller goes first. So lhs < rhs if lhs dominates rhs.
          friend bool operator<(const WoNode & lhs, const WoNode & rhs)
          {
@@ -70,7 +73,7 @@ namespace SmartGridToolbox
          {
             return nodes_;
          }
-         std::vector<std::unique_ptr<WoNode>> & nodes() 
+         std::vector<std::unique_ptr<WoNode>> & nodes()
          {
             return nodes_;
          }

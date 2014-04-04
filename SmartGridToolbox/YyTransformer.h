@@ -6,13 +6,14 @@
 namespace SmartGridToolbox
 {
    /// @brief Wye-wye transformer.
+   ///
    /// Equivalent to a single phase transformer on each phase.
    class YyTransformer : public Branch
    {
       public:
          YyTransformer(const std::string & name, Phases phases0, Phases phases1,
                        Complex a, Complex ZL, Complex YM);
-      
+
       private:
          void recalcY();
 

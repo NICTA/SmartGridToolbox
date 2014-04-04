@@ -5,6 +5,7 @@
 #include<sstream>
 
 /// @brief Physical units.
+///
 /// Represents a nearly SI system of units.
 namespace Units
 {
