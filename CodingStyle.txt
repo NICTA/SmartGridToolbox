@@ -101,10 +101,9 @@ Function F()
 
 Pointer and reference grouping
 ------------------------------
-int * i;
-int & j;
-int * k = &j;
-int & j = *i;
+int* i;
+int& j = *i;
+int* k = &j;
 
 References vs pointers
 ----------------------
