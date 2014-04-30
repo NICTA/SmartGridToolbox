@@ -27,7 +27,7 @@ namespace SmartGridToolbox
 
          void setLatLong(const LatLong & latLong) {latLong_ = latLong; needsUpdate().trigger();}
 
-         const TimeSeries<Time, double> * temperatureSeries() const
+         const TimeSeries<Time, double>* temperatureSeries() const
          {
             return temperatureSeries_;
          }
@@ -40,7 +40,7 @@ namespace SmartGridToolbox
             return temperatureSeries_->value(time());
          }
 
-         const TimeSeries<Time, double> * cloudCoverSeries() const
+         const TimeSeries<Time, double>* cloudCoverSeries() const
          {
             return cloudCoverSeries_;
          }

@@ -26,7 +26,7 @@ namespace SmartGridToolbox
       {
          for (int j = 0; j < 6; ++j)
          {
-            YNode(i, j) = YL_ * data[6 * i + j];
+            YNode(i, j) = YL_*data[6*i + j];
          }
       }
       setY(YNode);

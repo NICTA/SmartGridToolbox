@@ -14,7 +14,7 @@ std::string prlevel(int level)
 
 namespace SmartGridToolbox
 {
-   void WoNode::dfs(std::vector<WoNode *> & stack)
+   void WoNode::dfs(std::vector<WoNode*> & stack)
    {
       static int level = 0;
       ++level;
@@ -51,7 +51,7 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG (debug() << "Weak order graph: initial:" << std::endl; debugPrint());
 
-      std::vector<WoNode *> stack;
+      std::vector<WoNode*> stack;
       // First do a DFS to induce an order on the nodes.
       bool done = false;
       done = true;

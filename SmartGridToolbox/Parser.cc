@@ -282,19 +282,6 @@ namespace SmartGridToolbox
          model.setName(std::string("null"));
       }
 
-      if (const YAML::Node & nodeTz = top_["timezone"])
-      {
-         try
-         {
-            model.setTimezone(local_time::time_zone_ptr(new local_time::posix_time_zone(nodeTz.as<std::string>())));
-         }
-         catch (...)
-         {
-            error() << "Couldn't parse timezone " << nodeTz.as<std::string>() << "." << std::endl;
-            abort();
-         }
-      }
-
       const YAML::Node & nodeStart = top_["start_time"];
       try
       {
@@ -335,6 +322,18 @@ namespace SmartGridToolbox
          }
       }
 
+      if (const YAML::Node & nodeTz = top_["timezone"])
+      {
+         try
+         {
+            model.setTimezone(local_time::time_zone_ptr(new local_time::posix_time_zone(nodeTz.as<std::string>())));
+         }
+         catch (...)
+         {
+            error() << "Couldn't parse timezone " << nodeTz.as<std::string>() << "." << std::endl;
+            abort();
+         }
+      }
    }
 
    void Parser::parseTimeSeries(const std::string & type, const YAML::Node & node, Model & model)
