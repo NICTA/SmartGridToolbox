@@ -17,7 +17,7 @@ namespace SmartGridToolbox
          /// @brief Constructor
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
-         DgyTransformer(const std::string & name, Complex a, Complex ZL);
+         DgyTransformer(const std::string& name, Complex a, Complex ZL);
 
       private:
          void recalcY();

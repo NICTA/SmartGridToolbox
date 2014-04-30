@@ -11,12 +11,12 @@ namespace SmartGridToolbox
    {
 
       public:
-         ZipToGround(const std::string & name, const Phases & phases);
+         ZipToGround(const std::string& name, const Phases& phases);
 
          // Add non-const reference accessors:
-         virtual ublas::vector<Complex> & Y() {return Y_;}
-         virtual ublas::vector<Complex> & I() {return I_;} // Injection.
-         virtual ublas::vector<Complex> & S() {return S_;} // Injection.
+         virtual ublas::vector<Complex>& Y() {return Y_;}
+         virtual ublas::vector<Complex>& I() {return I_;} // Injection.
+         virtual ublas::vector<Complex>& S() {return S_;} // Injection.
 
       // Overridden from ZipToGroundBase:
       public:

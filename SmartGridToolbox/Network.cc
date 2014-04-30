@@ -13,7 +13,7 @@ namespace SmartGridToolbox
       solvePowerFlow(); // TODO: inefficient to rebuild even if not needed.
    }
 
-   void Network::addBus(Bus & bus)
+   void Network::addBus(Bus& bus)
    {
       dependsOn(bus);
       busVec_.push_back(&bus);
@@ -22,7 +22,7 @@ namespace SmartGridToolbox
             "Trigger Network " + name() + " needs update");
    }
 
-   void Network::addBranch(Branch & branch)
+   void Network::addBranch(Branch& branch)
    {
       dependsOn(branch);
       branchVec_.push_back(&branch);
@@ -52,7 +52,7 @@ namespace SmartGridToolbox
 
       if (ok)
       {
-         for (const auto & busPair: solver.busses())
+         for (const auto& busPair: solver.busses())
          {
             Bus* bus = findBus(busPair.second->id_);
 
@@ -63,7 +63,7 @@ namespace SmartGridToolbox
       }
    }
 
-   std::ostream & operator<<(std::ostream & os, const Network & nw)
+   std::ostream& operator<<(std::ostream& os, const Network& nw)
    {
       os << "Network: " << nw.name() << std::endl;
       os << "\tBusses:" << std::endl;

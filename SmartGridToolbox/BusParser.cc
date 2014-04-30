@@ -6,7 +6,7 @@
 
 namespace SmartGridToolbox
 {
-   void BusParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void BusParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "Bus : parse." << std::endl);
 
@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       ublas::vector<Complex> nominalV = ndNominal ? ndNominal.as<ublas::vector<Complex>>()
                                                   : ublas::vector<Complex>(nPhase, czero);
 
-      Bus & bus = mod.newComponent<Bus>(name, type, phases, nominalV);
+      Bus& bus = mod.newComponent<Bus>(name, type, phases, nominalV);
 
       auto ndPg = nd["P_gen_setpoint"];
       if (ndPg) bus.setPgSetpoint(ndPg.as<ublas::vector<double>>());
@@ -64,7 +64,7 @@ namespace SmartGridToolbox
       if (ndVAngMax) bus.setVAngMaxSetpoint(ndVAngMax.as<ublas::vector<double>>()*pi/180.0);
    }
 
-   void BusParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void BusParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "Bus : postParse." << std::endl);
 

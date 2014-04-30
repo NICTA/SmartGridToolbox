@@ -31,43 +31,43 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         const std::string & name() const {return name_;}
-         const void setName(const std::string & name) {name_ = name;}
+         const std::string& name() const {return name_;}
+         const void setName(const std::string& name) {name_ = name;}
 
-         template<typename T, typename... Args> T & newComponent(Args&&... args)
+         template<typename T, typename... Args> T& newComponent(Args&&... args)
          {
             std::unique_ptr<T> comp(new T(std::forward<Args>(args)...));
-            T & t = *comp;
+            T& t = *comp;
             addOrReplaceGenericComponent(std::move(comp), false);
             return t;
          }
 
-         template<typename T> T & acquireComponent(std::unique_ptr<T> && comp)
+         template<typename T> T& acquireComponent(std::unique_ptr<T>&& comp)
          {
             addOrReplaceGenericComponent(std::move(comp), false);
             return *comp;
          }
 
-         template<typename T, typename... Args> T & replaceComponentWithNew(Args&&... args)
+         template<typename T, typename... Args> T& replaceComponentWithNew(Args&&... args)
          {
             std::unique_ptr<T> comp(new T(std::forward<Args>(args)...));
-            T & t = *comp;
+            T& t = *comp;
             addOrReplaceGenericComponent(std::move(comp), true);
             return t;
          }
 
-         template<typename T> T & replaceComponent(std::unique_ptr<T> && comp)
+         template<typename T> T& replaceComponent(std::unique_ptr<T>&& comp)
          {
             addOrReplaceGenericComponent(std::move(comp), true);
             return *comp;
          }
 
-         template<typename T> const T* component(const std::string & name) const
+         template<typename T> const T* component(const std::string& name) const
          {
             ComponentMap::const_iterator it = compMap_.find(name);
             return (it == compMap_.end()) ? 0 : dynamic_cast<const T*>(it->second.get());
          }
-         template<typename T> T* component(const std::string & name)
+         template<typename T> T* component(const std::string& name)
          {
             return const_cast<T*>((const_cast<const Model*>(this))-> component<T>(name));
          }
@@ -75,23 +75,23 @@ namespace SmartGridToolbox
          ConstComponentVec components() const;
          ComponentVec components() {return compVec_;}
 
-         template<typename T> const T* timeSeries(const std::string & name) const
+         template<typename T> const T* timeSeries(const std::string& name) const
          {
             TimeSeriesMap::const_iterator it = timeSeriesMap_.find(name);
             return (it == timeSeriesMap_.end()) ? 0 : dynamic_cast<const T*>(it->second.get());
          }
-         template<typename T> T* timeSeries(const std::string & name)
+         template<typename T> T* timeSeries(const std::string& name)
          {
             return const_cast<T*>((const_cast<const Model*>(this))-> timeSeries<T>(name));
          }
 
-         void acquireTimeSeries (const std::string & name, std::unique_ptr<TimeSeriesBase> timeSeries)
+         void acquireTimeSeries (const std::string& name, std::unique_ptr<TimeSeriesBase> timeSeries)
          {
             timeSeriesMap_[name] = std::move(timeSeries);
          }
 
          LatLong latLong() const {return latLong_;}
-         void setLatLong(const LatLong & latLong) {latLong_ = latLong;}
+         void setLatLong(const LatLong& latLong) {latLong_ = latLong;}
 
          const local_time::time_zone_ptr timezone() const {return timezone_;}
          void setTimezone(local_time::time_zone_ptr tz) {timezone_ = tz;}
@@ -99,8 +99,8 @@ namespace SmartGridToolbox
          void validate();
 
       private:
-         void addOrReplaceGenericComponent(std::unique_ptr<Component> && comp, bool allowReplace);
-         void printDependencies(std::ostream & os);
+         void addOrReplaceGenericComponent(std::unique_ptr<Component>&& comp, bool allowReplace);
+         void printDependencies(std::ostream& os);
 
       private:
          std::string name_;

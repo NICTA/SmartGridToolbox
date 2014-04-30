@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   void ZipToGroundParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void ZipToGroundParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "ZipToGround : parse." << std::endl);
       assertFieldPresent(nd, "name");
@@ -15,7 +15,7 @@ namespace SmartGridToolbox
       string name = state.expandName(nd["name"].as<std::string>());
       Phases phases = nd["phases"].as<Phases>();
 
-      ZipToGround & comp = mod.newComponent<ZipToGround>(name, phases);
+      ZipToGround& comp = mod.newComponent<ZipToGround>(name, phases);
 
       auto ndAdmit = nd["admittance"];
       auto ndCurLoad = nd["complex_current_load"];
@@ -61,7 +61,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void ZipToGroundParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void ZipToGroundParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "ZipToGround : postParse." << std::endl);
 

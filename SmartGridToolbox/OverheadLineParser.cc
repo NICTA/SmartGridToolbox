@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   void OverheadLineParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void OverheadLineParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "OverheadLine : parse." << std::endl);
 
@@ -36,7 +36,7 @@ namespace SmartGridToolbox
                                      earthResistivity, distMatrix, freq);
    }
 
-   void OverheadLineParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void OverheadLineParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "OverheadLine : postParse." << std::endl);
 

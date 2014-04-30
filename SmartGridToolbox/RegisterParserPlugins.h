@@ -4,7 +4,7 @@
 namespace SmartGridToolbox
 {
    class Parser;
-   void registerParserPlugins(Parser & p);
+   void registerParserPlugins(Parser& p);
 }
 
 #endif // REGISTER_PARSER_PLUGINS_DOT_H

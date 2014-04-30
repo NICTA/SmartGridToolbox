@@ -8,7 +8,7 @@
 namespace SmartGridToolbox
 {
    // For some reason, even ublas::axpy_prod is much slower than this!
-   static ublas::vector<double> myProd(const ublas::compressed_matrix<double> & A, const ublas::vector<double> & x)
+   static ublas::vector<double> myProd(const ublas::compressed_matrix<double>& A, const ublas::vector<double>& x)
    {
       ublas::vector<double> result(A.size1(), 0.0);
       for (auto it1 = A.begin1(); it1 != A.end1(); ++it1)
@@ -23,9 +23,9 @@ namespace SmartGridToolbox
       return result;
    }
 
-   BusNr::BusNr(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
-                const ublas::vector<Complex> & Ys, const ublas::vector<Complex> & Ic,
-                const ublas::vector<Complex> & S) :
+   BusNr::BusNr(const std::string& id, BusType type, Phases phases, const ublas::vector<Complex>& V,
+                const ublas::vector<Complex>& Ys, const ublas::vector<Complex>& Ic,
+                const ublas::vector<Complex>& S) :
       id_(id),
       type_(type),
       phases_(phases),
@@ -45,7 +45,7 @@ namespace SmartGridToolbox
       }
    }
 
-   NodeNr::NodeNr(BusNr & bus, int phaseIdx) :
+   NodeNr::NodeNr(BusNr& bus, int phaseIdx) :
       bus_(&bus),
       phaseIdx_(phaseIdx),
       V_(bus.V_(phaseIdx)),
@@ -57,8 +57,8 @@ namespace SmartGridToolbox
       // Empty.
    }
 
-   BranchNr::BranchNr(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1,
-                      const ublas::matrix<Complex> & Y) :
+   BranchNr::BranchNr(const std::string& id0, const std::string& id1, Phases phases0, Phases phases1,
+                      const ublas::matrix<Complex>& Y) :
       nPhase_(phases0.size()),
       ids_{{id0, id1}},
       phases_{{phases0, phases1}},
@@ -96,15 +96,15 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowNr::addBus(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
-         const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S)
+   void PowerFlowNr::addBus(const std::string& id, BusType type, Phases phases, const ublas::vector<Complex>& V,
+         const ublas::vector<Complex>& Y, const ublas::vector<Complex>& I, const ublas::vector<Complex>& S)
    {
       SGT_DEBUG(debug() << "PowerFlowNr : add bus " << id << std::endl);
       busses_[id].reset(new BusNr(id, type, phases, V, Y, I, S));
    }
 
-   void PowerFlowNr::addBranch(const std::string & idBus0, const std::string & idBus1, Phases phases0, Phases phases1,
-                               const ublas::matrix<Complex> & Y)
+   void PowerFlowNr::addBranch(const std::string& idBus0, const std::string& idBus1, Phases phases0, Phases phases1,
+                               const ublas::matrix<Complex>& Y)
    {
       SGT_DEBUG(debug() << "PowerFlowNr : addBranch " << idBus0 << " " << idBus1 << std::endl);
       branches_.push_back(std::unique_ptr<BranchNr>(new BranchNr(idBus0, idBus1, phases0, phases1, Y)));
@@ -125,9 +125,9 @@ namespace SmartGridToolbox
       NodeVec PqNodes = NodeVec();
       NodeVec PvNodes = NodeVec();
       NodeVec SlNodes = NodeVec();
-      for (auto & busPair : busses_)
+      for (auto& busPair : busses_)
       {
-         BusNr & bus = *busPair.second;
+         BusNr& bus = *busPair.second;
          NodeVec* vec = nullptr;
          if (bus.type_ == BusType::PQ)
          {
@@ -146,7 +146,7 @@ namespace SmartGridToolbox
             error() << "Unsupported bus type " << busType2Str(bus.type_) << std::endl;
             abort();
          }
-         for (const std::unique_ptr<NodeNr> & node : bus.nodes_)
+         for (const std::unique_ptr<NodeNr>& node : bus.nodes_)
          {
             vec->push_back(node.get());
          }
@@ -173,7 +173,7 @@ namespace SmartGridToolbox
       Y_.resize(nNode(), nNode(), false);
 
       // Branch admittances:
-      for (const std::unique_ptr<BranchNr> & branch : branches_)
+      for (const std::unique_ptr<BranchNr>& branch : branches_)
       {
          auto it0 = busses_.find(branch->ids_[0]);
          if (it0 == busses_.end())
@@ -242,32 +242,32 @@ namespace SmartGridToolbox
    }
 
    /// Initialize voltages:
-   void PowerFlowNr::initV(ublas::vector<double> & Vr, ublas::vector<double> & Vi) const
+   void PowerFlowNr::initV(ublas::vector<double>& Vr, ublas::vector<double>& Vi) const
    {
       for (int i = 0; i < nNode(); ++i)
       {
-         const NodeNr & node = *nodes_[i];
+         const NodeNr& node = *nodes_[i];
          Vr(i) = node.V_.real();
          Vi(i) = node.V_.imag();
       }
    }
 
-   void PowerFlowNr::initS(ublas::vector<double> & P, ublas::vector<double> & Q) const
+   void PowerFlowNr::initS(ublas::vector<double>& P, ublas::vector<double>& Q) const
    {
       for (int i = 0; i < nNode(); ++i)
       {
-         const NodeNr & node = *nodes_[i];
+         const NodeNr& node = *nodes_[i];
          P(i) = node.S_.real();
          Q(i) = node.S_.imag();
       }
    }
 
-   static void initJcBlock(const ublas::matrix_range<const ublas::compressed_matrix<double>> & G,
-                           const ublas::matrix_range<const ublas::compressed_matrix<double>> & B,
-                           ublas::compressed_matrix<double> & Jrr,
-                           ublas::compressed_matrix<double> & Jri,
-                           ublas::compressed_matrix<double> & Jir,
-                           ublas::compressed_matrix<double> & Jii)
+   static void initJcBlock(const ublas::matrix_range<const ublas::compressed_matrix<double>>& G,
+                           const ublas::matrix_range<const ublas::compressed_matrix<double>>& B,
+                           ublas::compressed_matrix<double>& Jrr,
+                           ublas::compressed_matrix<double>& Jri,
+                           ublas::compressed_matrix<double>& Jir,
+                           ublas::compressed_matrix<double>& Jii)
    {
       Jrr = -G;
       Jri =  B;
@@ -277,7 +277,7 @@ namespace SmartGridToolbox
 
    /// Set the part of J that doesn't update at each iteration.
    /** At this stage, we are treating J as if all busses were PQ. */
-   void PowerFlowNr::initJc(Jacobian & Jc) const
+   void PowerFlowNr::initJc(Jacobian& Jc) const
    {
       initJcBlock(project(G_, selPqFromAll(), selPqFromAll()),
                   project(B_, selPqFromAll(), selPqFromAll()),
@@ -306,10 +306,10 @@ namespace SmartGridToolbox
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-   void PowerFlowNr::calcf(ublas::vector<double> & f,
-                           const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
-                           const ublas::vector<double> & P, const ublas::vector<double> & Q,
-                           const ublas::vector<double> & M2Pv) const
+   void PowerFlowNr::calcf(ublas::vector<double>& f,
+                           const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
+                           const ublas::vector<double>& P, const ublas::vector<double>& Q,
+                           const ublas::vector<double>& M2Pv) const
    {
       // PQ busses:
       const ublas::compressed_matrix<double> GPq = project(G_, selPqFromAll(), selAllFromAll());
@@ -351,10 +351,10 @@ namespace SmartGridToolbox
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-   void PowerFlowNr::updateJ(Jacobian & J, const Jacobian & Jc,
-                             const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
-                             const ublas::vector<double> & P, const ublas::vector <double> & Q,
-                             const ublas::vector<double> & M2Pv) const
+   void PowerFlowNr::updateJ(Jacobian& J, const Jacobian& Jc,
+                             const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
+                             const ublas::vector<double>& P, const ublas::vector <double>& Q,
+                             const ublas::vector<double>& M2Pv) const
    {
       // Elements in J that have no non-constant part will be initialized to the corresponding term in Jc at the
       // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
@@ -407,9 +407,9 @@ namespace SmartGridToolbox
    }
 
    // Modify J and f to take into account PV busses.
-   void PowerFlowNr::modifyForPv(Jacobian & J, ublas::vector<double> & f,
-                                 const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
-                                 const ublas::vector<double> & M2Pv)
+   void PowerFlowNr::modifyForPv(Jacobian& J, ublas::vector<double>& f,
+                                 const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
+                                 const ublas::vector<double>& M2Pv)
    {
       const auto VrPv = project(Vr, selPvFromAll());
       const auto ViPv = project(Vi, selPvFromAll());
@@ -438,7 +438,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowNr::calcJMatrix(ublas::compressed_matrix<double> & JMat, const Jacobian & J) const
+   void PowerFlowNr::calcJMatrix(ublas::compressed_matrix<double>& JMat, const Jacobian& J) const
    {
       Array<int, 4> ibInd = {0, 1, 2, 3};
       Array<int, 4> kbInd = {0, 1, 3, 4}; // Skip VrPv, since it doesn't appear as a variable.
@@ -454,7 +454,7 @@ namespace SmartGridToolbox
          for (int kb = 0; kb < 4; ++kb)
          {
             ublas::slice sl2 = sl2Vec[kb];
-            const ublas::compressed_matrix<double> & block = J.blocks_[ibInd[ib]][kbInd[kb]];
+            const ublas::compressed_matrix<double>& block = J.blocks_[ibInd[ib]][kbInd[kb]];
 
             // Loop over all non-zero elements in the block.
             for (auto it1 = block.begin1(); it1 != block.end1(); ++it1)
@@ -681,7 +681,7 @@ namespace SmartGridToolbox
          debug() << "\t\t\tIc    : " << nd->Ic_ << std::endl;
       }
       debug() << "\tBranches:" << std::endl;
-      for (const std::unique_ptr<BranchNr> & branch : branches_)
+      for (const std::unique_ptr<BranchNr>& branch : branches_)
       {
          debug() << "\t\tBranch:" << std::endl;
          debug() << "\t\t\tBusses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;

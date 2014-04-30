@@ -13,7 +13,7 @@ namespace SmartGridToolbox
    class SimpleBattery : public DcPowerSourceBase
    {
       public:
-         SimpleBattery(const std::string & name) :
+         SimpleBattery(const std::string& name) :
             DcPowerSourceBase(name),
             dt_(posix_time::minutes(5)),
             initCharge_(0.0),

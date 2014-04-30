@@ -5,14 +5,14 @@
 
 namespace SmartGridToolbox
 {
-   void SimpleBuildingParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SimpleBuildingParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SimpleBuilding : parse." << std::endl);
 
       assertFieldPresent(nd, "name");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SimpleBuilding & build = mod.newComponent<SimpleBuilding>(name);
+      SimpleBuilding& build = mod.newComponent<SimpleBuilding>(name);
 
       auto nd_dt = nd["dt"];
       if (nd_dt) build.set_dt(nd_dt.as<Time>());
@@ -41,7 +41,7 @@ namespace SmartGridToolbox
       auto ndTs = nd["Ts"];
       if (ndTs) build.setTs(ndTs.as<double>());
 
-      const auto & dQgNd = nd["internal_heat_power"];
+      const auto& dQgNd = nd["internal_heat_power"];
       if (dQgNd)
       {
          std::string name = dQgNd.as<std::string>();
@@ -55,7 +55,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void SimpleBuildingParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SimpleBuildingParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SimpleBuilding : postParse." << std::endl);
 
@@ -72,7 +72,7 @@ namespace SmartGridToolbox
       }
       bus->addZipToGround(*build);
 
-      const auto & weatherNd = nd["weather"];
+      const auto& weatherNd = nd["weather"];
       if (weatherNd)
       {
          std::string weatherStr = weatherNd.as<std::string>();

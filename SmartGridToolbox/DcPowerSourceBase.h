@@ -12,7 +12,7 @@ namespace SmartGridToolbox
    class DcPowerSourceBase : public Component
    {
       public:
-         DcPowerSourceBase(const std::string & name) : Component(name) {}
+         DcPowerSourceBase(const std::string& name) : Component(name) {}
          virtual double PDc() const = 0;
    };
 }

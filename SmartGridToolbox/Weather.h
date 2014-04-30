@@ -16,7 +16,7 @@ namespace SmartGridToolbox
    class Weather : public RegularUpdateComponent
    {
       public:
-         Weather(const std::string & name) :
+         Weather(const std::string& name) :
             RegularUpdateComponent(name),
             latLong_(Greenwich),
             cloudCoverSeries_(nullptr),
@@ -25,13 +25,13 @@ namespace SmartGridToolbox
             setDt(posix_time::minutes(5));
          }
 
-         void setLatLong(const LatLong & latLong) {latLong_ = latLong; needsUpdate().trigger();}
+         void setLatLong(const LatLong& latLong) {latLong_ = latLong; needsUpdate().trigger();}
 
          const TimeSeries<Time, double>* temperatureSeries() const
          {
             return temperatureSeries_;
          }
-         void setTemperatureSeries(const TimeSeries<Time, double> & series)
+         void setTemperatureSeries(const TimeSeries<Time, double>& series)
          {
             temperatureSeries_ = &series; needsUpdate().trigger();
          }
@@ -44,7 +44,7 @@ namespace SmartGridToolbox
          {
             return cloudCoverSeries_;
          }
-         void setCloudCoverSeries(const TimeSeries<Time, double> & series)
+         void setCloudCoverSeries(const TimeSeries<Time, double>& series)
          {
             cloudCoverSeries_ = &series; needsUpdate().trigger();
          }
@@ -55,7 +55,7 @@ namespace SmartGridToolbox
 
          double solarPower(SphericalAngles planeNormal, double planeArea) const;
 
-         const SolarIrradiance & irradiance()
+         const SolarIrradiance& irradiance()
          {
             return irradiance_;
          }
@@ -63,7 +63,7 @@ namespace SmartGridToolbox
       protected:
          virtual void updateState(Time t) override;
 
-         SolarIrradiance unaveragedIrradiance(const Time & tm) const;
+         SolarIrradiance unaveragedIrradiance(const Time& tm) const;
 
       private:
          LatLong latLong_;

@@ -22,8 +22,8 @@ namespace SmartGridToolbox
    };
 
    const char* busType2Str(BusType type);
-   inline std::ostream & operator<<(std::ostream & os, BusType t) {return os << busType2Str(t);}
-   BusType str2BusType(const std::string & str);
+   inline std::ostream& operator<<(std::ostream& os, BusType t) {return os << busType2Str(t);}
+   BusType str2BusType(const std::string& str);
 
    enum class Phase : unsigned int
    {
@@ -40,8 +40,8 @@ namespace SmartGridToolbox
    };
 
    const char* phase2Str(Phase phase);
-   inline std::ostream & operator<<(std::ostream & os, Phase p) {return os << phase2Str(p);}
-   Phase str2Phase(const std::string & str);
+   inline std::ostream& operator<<(std::ostream& os, Phase p) {return os << phase2Str(p);}
+   Phase str2Phase(const std::string& str);
    const char* phaseDescr(Phase phase);
 
    class Phases
@@ -57,14 +57,14 @@ namespace SmartGridToolbox
 
          operator unsigned int() const {return mask_;}
 
-         Phases & operator&=(const Phases & other);
-         Phases & operator|=(const Phases & other);
+         Phases& operator&=(const Phases& other);
+         Phases& operator|=(const Phases& other);
 
          bool hasPhase(Phase phase) const
          {
-            return (mask_ & static_cast<unsigned int>(phase)) == static_cast<unsigned int>(phase);
+            return (mask_& static_cast<unsigned int>(phase)) == static_cast<unsigned int>(phase);
          }
-         bool isSubsetOf(const Phases & other) const {return (*this & other) == *this;}
+         bool isSubsetOf(const Phases& other) const {return (*this& other) == *this;}
 
          int size() const {return phaseVec_.size();}
          Phase operator[](int i) const {return phaseVec_[i];}
@@ -76,10 +76,10 @@ namespace SmartGridToolbox
 
          std::string toStr() const;
 
-         friend bool operator==(const Phases & a, const Phases & b) {return a.mask_ == b.mask_;}
-         friend Phases operator&(const Phases & a, const Phases & b) {return {a.mask_ & b.mask_};}
-         friend Phases operator|(const Phases & a, const Phases & b) {return {a.mask_ | b.mask_};}
-         friend std::ostream & operator<<(std::ostream & os, const Phases & p) {return os << p.toStr();}
+         friend bool operator==(const Phases& a, const Phases& b) {return a.mask_ == b.mask_;}
+         friend Phases operator&(const Phases& a, const Phases& b) {return {a.mask_& b.mask_};}
+         friend Phases operator|(const Phases& a, const Phases& b) {return {a.mask_ | b.mask_};}
+         friend std::ostream& operator<<(std::ostream& os, const Phases& p) {return os << p.toStr();}
       private:
          void rebuild();
 
@@ -93,8 +93,8 @@ namespace SmartGridToolbox
    inline Phases operator&(Phase a, Phase b) {return {static_cast<unsigned int>(a) & static_cast<unsigned int>(b)};}
 
    /// @brief Complex impedance
-   const ublas::matrix<Complex> YLine1P(const Complex & Y);
-   const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex> & Y);
+   const ublas::matrix<Complex> YLine1P(const Complex& Y);
+   const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex>& Y);
    ublas::matrix<Complex> YOverheadLine(ublas::vector<double> r, ublas::matrix<double> DMat, double L,
                                         double freq, double rho);
    /// @}

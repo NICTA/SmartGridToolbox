@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   YyTransformer::YyTransformer(const std::string & name, Phases phases0, Phases phases1,
+   YyTransformer::YyTransformer(const std::string& name, Phases phases0, Phases phases1,
                                 Complex a, Complex ZL, Complex YM)
       : Branch(name, phases0, phases1), a_(a), YL_(1.0/ZL), YM_(YM)
    {

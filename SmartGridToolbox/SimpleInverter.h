@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    class SimpleInverter : public InverterBase
    {
       public:
-         SimpleInverter(const std::string & name, const Phases & phases);
+         SimpleInverter(const std::string& name, const Phases& phases);
 
          virtual double efficiency(double powerDc) const override
          {

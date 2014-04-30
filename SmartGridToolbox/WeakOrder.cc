@@ -14,7 +14,7 @@ std::string prlevel(int level)
 
 namespace SmartGridToolbox
 {
-   void WoNode::dfs(std::vector<WoNode*> & stack)
+   void WoNode::dfs(std::vector<WoNode*>& stack)
    {
       static int level = 0;
       ++level;
@@ -55,10 +55,10 @@ namespace SmartGridToolbox
       // First do a DFS to induce an order on the nodes.
       bool done = false;
       done = true;
-      for (const std::unique_ptr<WoNode> & nd : nodes_)
+      for (const std::unique_ptr<WoNode>& nd : nodes_)
       {
          nd->dfs(stack);
-         for (const std::unique_ptr<WoNode> & nd : nodes_)
+         for (const std::unique_ptr<WoNode>& nd : nodes_)
          {
             nd->visited_ = false;
          }
@@ -68,7 +68,7 @@ namespace SmartGridToolbox
 
       // First calculate dominance.
       // A dominates B -> A precedes B but not vice versa.
-      for (const std::unique_ptr<WoNode> & nd : nodes_)
+      for (const std::unique_ptr<WoNode>& nd : nodes_)
       {
          for (const WoNode* nd2 : nd->descendents_)
          {
@@ -121,7 +121,7 @@ namespace SmartGridToolbox
    void WoGraph::debugPrint()
    {
       debug() << "Weak order graph: Node i : direct descendents" << std::endl;
-      for (const std::unique_ptr<WoNode> & nd1 : nodes())
+      for (const std::unique_ptr<WoNode>& nd1 : nodes())
       {
          debug() << nd1->index() << "   ";
          for (const WoNode* nd2 : nd1->to_)
@@ -133,7 +133,7 @@ namespace SmartGridToolbox
       debugStream() << endl;
 
       debug() << "Weak order graph: Node i : indirect descendents" << std::endl;
-      for (const std::unique_ptr<WoNode> & nd1 : nodes())
+      for (const std::unique_ptr<WoNode>& nd1 : nodes())
       {
          debug() << nd1->index() << "   ";
          for (const WoNode* nd2 : nd1->descendents_)
@@ -145,7 +145,7 @@ namespace SmartGridToolbox
       debugStream() << endl;
 
       debug() << "Weak order graph: Node i : dominated nodes" << std::endl;
-      for (const std::unique_ptr<WoNode> & nd1 : nodes())
+      for (const std::unique_ptr<WoNode>& nd1 : nodes())
       {
          debug() << nd1->index() << "   ";
          for (const WoNode* nd2 : nd1->dominated_)
@@ -158,15 +158,15 @@ namespace SmartGridToolbox
 
       debug() << "Weak order graph: (i, j) : i dominates j" << std::endl;
       debug() << "     ";
-      for (const std::unique_ptr<WoNode> & nd2 : nodes())
+      for (const std::unique_ptr<WoNode>& nd2 : nodes())
       {
          debugStream() << setw(3) << left << nd2->index();
       }
       debugStream() << endl << endl;
-      for (const std::unique_ptr<WoNode> & nd1 : nodes())
+      for (const std::unique_ptr<WoNode>& nd1 : nodes())
       {
          debug() << setw(5) << left << nd1->index();
-         for (const std::unique_ptr<WoNode> & nd2 : nodes())
+         for (const std::unique_ptr<WoNode>& nd2 : nodes())
          {
             debugStream() << setw(3) << left << (nd1->dominates(*nd2));
          }
@@ -175,15 +175,15 @@ namespace SmartGridToolbox
 
       debug() << "Weak order graph: (i, j) : i < j" << std::endl;
       debug() << "     ";
-      for (const std::unique_ptr<WoNode> & nd2 : nodes())
+      for (const std::unique_ptr<WoNode>& nd2 : nodes())
       {
          debugStream() << setw(3) << left << nd2->index();
       }
       debugStream() << endl << endl;
-      for (const std::unique_ptr<WoNode> & nd1 : nodes())
+      for (const std::unique_ptr<WoNode>& nd1 : nodes())
       {
          debug() << setw(5) << left << nd1->index();
-         for (const std::unique_ptr<WoNode> & nd2 : nodes())
+         for (const std::unique_ptr<WoNode>& nd2 : nodes())
          {
             debugStream() << setw(3) << left << (*nd1 < *nd2);
          }

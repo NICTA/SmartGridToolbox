@@ -4,18 +4,18 @@
 
 namespace SmartGridToolbox
 {
-   void WeatherParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void WeatherParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "Weather : parse." << std::endl);
 
       assertFieldPresent(nd, "name");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      Weather & comp = mod.newComponent<Weather>(name);
+      Weather& comp = mod.newComponent<Weather>(name);
 
       comp.setLatLong(mod.latLong());
 
-      const auto & temperatureNd = nd["temperature"];
+      const auto& temperatureNd = nd["temperature"];
       if (temperatureNd)
       {
          std::string name = temperatureNd.as<std::string>();
@@ -28,7 +28,7 @@ namespace SmartGridToolbox
          comp.setTemperatureSeries(*series);
       }
 
-      const auto & cloudNd = nd["cloud_cover"];
+      const auto& cloudNd = nd["cloud_cover"];
       if (cloudNd)
       {
          std::string name = cloudNd.as<std::string>();

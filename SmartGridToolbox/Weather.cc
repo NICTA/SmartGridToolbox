@@ -27,7 +27,7 @@ namespace SmartGridToolbox
                                     + curFrac*newUnav.horizontalDiffuse;
    }
 
-   SolarIrradiance Weather::unaveragedIrradiance(const Time & tm) const
+   SolarIrradiance Weather::unaveragedIrradiance(const Time& tm) const
    {
       // Possibly dodgy model.
       // Assume transmitted and diffuse components vary linearly with the cloud cover coefficient.

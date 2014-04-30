@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   void SimpleInverterParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SimpleInverterParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SimpleInverter : parse." << std::endl);
 
@@ -16,7 +16,7 @@ namespace SmartGridToolbox
       string name = state.expandName(nd["name"].as<std::string>());
       Phases phases = nd["phases"].as<Phases>();
 
-      SimpleInverter & comp = mod.newComponent<SimpleInverter>(name, phases);
+      SimpleInverter& comp = mod.newComponent<SimpleInverter>(name, phases);
 
       if (nd["efficiency"])
       {
@@ -39,12 +39,12 @@ namespace SmartGridToolbox
       }
    }
 
-   void SimpleInverterParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SimpleInverterParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SimpleInverter : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SimpleInverter & comp = *mod.component<SimpleInverter>(name);
+      SimpleInverter& comp = *mod.component<SimpleInverter>(name);
 
       const std::string busStr = state.expandName(nd["bus"].as<std::string>());
       Bus* busComp = mod.component<Bus>(busStr);

@@ -19,12 +19,12 @@ namespace SmartGridToolbox
          virtual ublas::vector<Complex> S() const override = 0;
 
       public:
-         InverterBase(const std::string & name, const Phases & phases) : ZipToGroundBase(name, phases), PDc_(0.0)
+         InverterBase(const std::string& name, const Phases& phases) : ZipToGroundBase(name, phases), PDc_(0.0)
          {
             // Empty.
          }
 
-         void addDcPowerSource(DcPowerSourceBase & source);
+         void addDcPowerSource(DcPowerSourceBase& source);
 
          virtual double efficiency(double powerDc) const = 0;
 

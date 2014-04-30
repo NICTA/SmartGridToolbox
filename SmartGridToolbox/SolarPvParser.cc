@@ -6,7 +6,7 @@
 
 namespace SmartGridToolbox
 {
-   void SolarPvParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SolarPvParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SolarPv : parse." << std::endl);
       assertFieldPresent(nd, "name");
@@ -17,7 +17,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "azimuth_degrees");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SolarPv & comp = mod.newComponent<SolarPv>(name);
+      SolarPv& comp = mod.newComponent<SolarPv>(name);
 
       if (nd["efficiency"])
       {
@@ -33,12 +33,12 @@ namespace SmartGridToolbox
       comp.setPlaneNormal({zen, azi});
    }
 
-   void SolarPvParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SolarPvParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SolarPv : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SolarPv & comp = *mod.component<SolarPv>(name);
+      SolarPv& comp = *mod.component<SolarPv>(name);
 
       const std::string weatherStr = state.expandName(nd["weather"].as<std::string>());
       Weather* weather = mod.component<Weather>(weatherStr);

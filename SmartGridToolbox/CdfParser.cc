@@ -46,17 +46,17 @@ namespace SmartGridToolbox
       return ss.str();
    }
 
-   static std::string busName(const std::string & prefix, int id)
+   static std::string busName(const std::string& prefix, int id)
    {
       return prefix + "_bus_" + num2PaddedString(id);
    }
 
-   static std::string zipName(const std::string & prefix, int id)
+   static std::string zipName(const std::string& prefix, int id)
    {
       return prefix + "_zip_" + num2PaddedString(id);
    }
 
-   static std::string branchName(const std::string & prefix, int nBranch, int id1, int id2)
+   static std::string branchName(const std::string& prefix, int nBranch, int id1, int id2)
    {
       return prefix + "_branch_" + num2PaddedString(nBranch) + "_" + num2PaddedString(id1) + "_"
                     + num2PaddedString(id2);
@@ -68,7 +68,7 @@ namespace SmartGridToolbox
       abort();
    }
 
-   void CdfParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void CdfParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       const double MW = 1e6;
 
@@ -126,7 +126,7 @@ namespace SmartGridToolbox
          {
             int busId;
             std::istringstream(line.substr(0, 4)) >> busId;
-            CdfBusInfo & busInfo = busMap[busId];
+            CdfBusInfo& busInfo = busMap[busId];
 
             busInfo.name = busName(networkName, busId);
 
@@ -175,7 +175,7 @@ namespace SmartGridToolbox
          for (std::getline(infile, line); line.substr(0, 4) != std::string("-999"); std::getline(infile, line))
          {
             branchList.push_back(CdfBranchInfo());
-            CdfBranchInfo & branchInfo = branchList.back();
+            CdfBranchInfo& branchInfo = branchList.back();
 
             std::istringstream(line.substr(0, 4)) >> branchInfo.bus0Id;
             std::istringstream(line.substr(5, 4)) >> branchInfo.bus1Id;
@@ -193,11 +193,11 @@ namespace SmartGridToolbox
       }
 
       {
-         Network & netw = mod.newComponent<Network>(networkName, freq);
+         Network& netw = mod.newComponent<Network>(networkName, freq);
          for (const auto pair : busMap)
          {
-            const int & busId = pair.first;
-            const CdfBusInfo & info = pair.second;
+            const int& busId = pair.first;
+            const CdfBusInfo& info = pair.second;
             BusType type = BusType::BAD;
             switch (info.CdfType)
             {
@@ -250,7 +250,7 @@ namespace SmartGridToolbox
             double QMax = usePerUnit ? info.QMax/SBase : info.QMax;
             ublas::vector<double> QMaxVec(phases.size(), QMax);
 
-            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VNomVec);
+            Bus& bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VNomVec);
 
             bus.setPgSetpoint(real(SgVec));
 
@@ -265,7 +265,7 @@ namespace SmartGridToolbox
             bus.setV(VVec);
             bus.setSg(SgVec);
 
-            ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
+            ZipToGround& zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;
             zip.Y() = YsVec;
             bus.addZipToGround(zip);
@@ -274,10 +274,10 @@ namespace SmartGridToolbox
          }
 
          int i = 0;
-         for (const CdfBranchInfo & info : branchList)
+         for (const CdfBranchInfo& info : branchList)
          {
-            const CdfBusInfo & busInfo0 = busMap[info.bus0Id];
-            const CdfBusInfo & busInfo1 = busMap[info.bus1Id];
+            const CdfBusInfo& busInfo0 = busMap[info.bus0Id];
+            const CdfBusInfo& busInfo1 = busMap[info.bus1Id];
 
             double VBase0 = busInfo0.VBase;
             double VBase1 = busInfo1.VBase;
@@ -312,7 +312,7 @@ namespace SmartGridToolbox
                Y11 *= SBase/(VBase1*VBase1);
             }
 
-            Branch & branch = mod.newComponent<Branch>(branchName(networkName, i, info.bus0Id, info.bus1Id),
+            Branch& branch = mod.newComponent<Branch>(branchName(networkName, i, info.bus0Id, info.bus1Id),
                               phases, phases);
 
             branch.setBus0(*bus0);

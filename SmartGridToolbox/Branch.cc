@@ -6,7 +6,7 @@
 
 namespace SmartGridToolbox
 {
-   Branch::Branch(const std::string & name, const Phases & phases0, const Phases & phases1) :
+   Branch::Branch(const std::string& name, const Phases& phases0, const Phases& phases1) :
       Component(name),
       bus0_(nullptr),
       bus1_(nullptr),
@@ -22,7 +22,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void Branch::setBus0(Bus & bus0)
+   void Branch::setBus0(Bus& bus0)
    {
       if (!phases0_.isSubsetOf(bus0.phases()))
       {
@@ -33,7 +33,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Branch::setBus1(Bus & bus1)
+   void Branch::setBus1(Bus& bus1)
    {
       if (!phases1_.isSubsetOf(bus1.phases()))
       {
@@ -44,7 +44,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Branch::setY(const ublas::matrix<Complex> & Y)
+   void Branch::setY(const ublas::matrix<Complex>& Y)
    {
       if (Y.size1() != 2*phases0_.size() && Y.size2() != 2*phases0_.size())
       {

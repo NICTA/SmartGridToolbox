@@ -12,9 +12,9 @@ namespace SmartGridToolbox
    class SolarPv : public DcPowerSourceBase
    {
       public:
-         SolarPv(const std::string & name);
+         SolarPv(const std::string& name);
 
-         void setWeather(Weather & weather);
+         void setWeather(Weather& weather);
 
          void setEfficiency(double efficiency) {efficiency_ = efficiency; needsUpdate().trigger();}
 

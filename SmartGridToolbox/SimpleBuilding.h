@@ -20,7 +20,7 @@ namespace SmartGridToolbox
    class SimpleBuilding : public ZipToGroundBase
    {
       public:
-         SimpleBuilding(const std::string & name) :
+         SimpleBuilding(const std::string& name) :
             ZipToGroundBase(name, Phase::BAL),
             dt_(posix_time::minutes(5)),
             kb_(5*kW/K),

@@ -4,7 +4,7 @@
 
 namespace SmartGridToolbox
 {
-   void NetworkParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void NetworkParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "Network : parse." << std::endl);
 
@@ -15,6 +15,6 @@ namespace SmartGridToolbox
       auto ndFreq = nd["freq_Hz"];
       double freq = ndFreq ? ndFreq.as<double>() : 50.0;
 
-      Network & comp = mod.newComponent<Network>(name, freq);
+      Network& comp = mod.newComponent<Network>(name, freq);
    }
 }

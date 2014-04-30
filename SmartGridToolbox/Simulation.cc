@@ -7,7 +7,7 @@
 
 namespace SmartGridToolbox
 {
-   Simulation::Simulation(Model & mod) : mod_(&mod),
+   Simulation::Simulation(Model& mod) : mod_(&mod),
                                          startTime_(posix_time::not_a_date_time),
                                          endTime_(posix_time::not_a_date_time),
                                          currentTime_(posix_time::neg_infin),

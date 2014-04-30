@@ -75,13 +75,13 @@ namespace SmartGridToolbox
       Complex result_;
    };
 
-   std::ostream & operator<<(std::ostream & os, const Complex & c)
+   std::ostream& operator<<(std::ostream& os, const Complex& c)
    {
       return os << complex2String(c);
       // Doing it this way avoids hassles with stream manipulators, since there is only one insertion operator.
    }
 
-   Complex string2Complex(const std::string & s)
+   Complex string2Complex(const std::string& s)
    {
       Complex c;
       std::string::const_iterator iter = s.begin();
@@ -96,7 +96,7 @@ namespace SmartGridToolbox
       return c;
    }
 
-   std::string complex2String(const Complex & c)
+   std::string complex2String(const Complex& c)
    {
       std::ostringstream ss;
       float re = static_cast<float>(c.real());

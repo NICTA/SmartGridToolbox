@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   SolarPv::SolarPv(const std::string & name) :
+   SolarPv::SolarPv(const std::string& name) :
       DcPowerSourceBase(name),
       weather_(nullptr),
       efficiency_(1.0),
@@ -13,7 +13,7 @@ namespace SmartGridToolbox
       planeArea_(0.0)
    {}
 
-   void SolarPv::setWeather(Weather & weather)
+   void SolarPv::setWeather(Weather& weather)
    {
       weather_ = &weather;
       dependsOn(weather);

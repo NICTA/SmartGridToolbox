@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   void DgyTransformerParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void DgyTransformerParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "DgyTransformer : parse." << std::endl);
 
@@ -23,7 +23,7 @@ namespace SmartGridToolbox
       mod.newComponent<DgyTransformer>(name, a, ZL);
    }
 
-   void DgyTransformerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void DgyTransformerParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "DgyTransformer : postParse." << std::endl);
 

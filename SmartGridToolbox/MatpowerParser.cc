@@ -28,10 +28,10 @@ namespace SmartGridToolbox
 
    struct Gram : Qi::grammar<Iterator, SpaceType>
    {
-      Gram(double & MVABaseVal,
-           std::vector<double> & busMatrixVal,
-           std::vector<double> & genMatrixVal,
-           std::vector<double> & branchMatrixVal)
+      Gram(double& MVABaseVal,
+           std::vector<double>& busMatrixVal,
+           std::vector<double>& genMatrixVal,
+           std::vector<double>& branchMatrixVal)
          : Gram::base_type(start_)
       {
          statementTerm_ = (Qi::eol | Qi::lit(';'));
@@ -98,23 +98,23 @@ namespace SmartGridToolbox
       return ss.str();
    }
 
-   static std::string busName(const std::string & prefix, int id)
+   static std::string busName(const std::string& prefix, int id)
    {
       return prefix + "_bus_" + num2PaddedString(id);
    }
 
-   static std::string zipName(const std::string & prefix, int id)
+   static std::string zipName(const std::string& prefix, int id)
    {
       return prefix + "_zip_" + num2PaddedString(id);
    }
 
-   static std::string branchName(const std::string & prefix, int nBranch, int id1, int id2)
+   static std::string branchName(const std::string& prefix, int nBranch, int id1, int id2)
    {
       return prefix + "_branch_" + num2PaddedString(nBranch) + "_" + num2PaddedString(id1)
                     + "_" + num2PaddedString(id2);
    }
 
-   void MatpowerParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void MatpowerParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       // Matpower input units:
       // Power is in MW.
@@ -213,7 +213,7 @@ namespace SmartGridToolbox
          for (int i = 0; i < nBus; ++i)
          {
             int busId = busMatrix[busCols*i];
-            MpBusInfo & busInfo = busMap[busId];
+            MpBusInfo& busInfo = busMap[busId];
 
             busInfo.mpType = busMatrix[busCols*i + 1];
 
@@ -236,7 +236,7 @@ namespace SmartGridToolbox
          for (int i = 0; i < nGen; ++i)
          {
             int busId  = genMatrix[genCols*i];
-            MpBusInfo & busInfo = busMap[busId];
+            MpBusInfo& busInfo = busMap[busId];
 
             double Pg  = genMatrix[genCols*i + 1];
             double Qg  = genMatrix[genCols*i + 2];
@@ -250,11 +250,11 @@ namespace SmartGridToolbox
 
       // Add new components.
       {
-         Network & netw = mod.newComponent<Network>(networkName, freq);
+         Network& netw = mod.newComponent<Network>(networkName, freq);
          for (const auto pair : busMap)
          {
-            const int & busId = pair.first;
-            const MpBusInfo & info = pair.second;
+            const int& busId = pair.first;
+            const MpBusInfo& info = pair.second;
             BusType type = BusType::BAD;
             switch (info.mpType)
             {
@@ -299,7 +299,7 @@ namespace SmartGridToolbox
 
             // TODO: bounds on values.
 
-            Bus & bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VNomVec);
+            Bus& bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VNomVec);
 
             bus.setPgSetpoint(real(SgVec));
             bus.setQgSetpoint(imag(SgVec));
@@ -309,7 +309,7 @@ namespace SmartGridToolbox
             bus.setV(VVec);
             bus.setSg(SgVec);
 
-            ZipToGround & zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
+            ZipToGround& zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;
             zip.Y() = YsVec;
             bus.addZipToGround(zip);
@@ -322,8 +322,8 @@ namespace SmartGridToolbox
             int bus0Id = branchMatrix[branchCols*i];
             int bus1Id = branchMatrix[branchCols*i + 1];
 
-            const MpBusInfo & busInfo0 = busMap[bus0Id];
-            const MpBusInfo & busInfo1 = busMap[bus1Id];
+            const MpBusInfo& busInfo0 = busMap[bus0Id];
+            const MpBusInfo& busInfo1 = busMap[bus1Id];
 
             double VBase0 = busInfo0.VBase;
             double VBase1 = busInfo1.VBase;
@@ -369,7 +369,7 @@ namespace SmartGridToolbox
                Y11 *= SBase/(VBase1*VBase1);
             }
 
-            Branch & branch = mod.newComponent<Branch>(branchName(networkName, i, bus0Id, bus1Id), phases, phases);
+            Branch& branch = mod.newComponent<Branch>(branchName(networkName, i, bus0Id, bus1Id), phases, phases);
 
             branch.setBus0(*bus0);
             branch.setBus1(*bus1);

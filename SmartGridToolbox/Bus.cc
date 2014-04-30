@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   Bus::Bus(const std::string & name, BusType type, const Phases & phases, const ublas::vector<Complex> & nominalV) :
+   Bus::Bus(const std::string& name, BusType type, const Phases& phases, const ublas::vector<Complex>& nominalV) :
       Component(name),
       type_(type),
       phases_(phases),
@@ -37,7 +37,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus::setPgSetpoint(const ublas::vector<double> & PgSetpoint)
+   void Bus::setPgSetpoint(const ublas::vector<double>& PgSetpoint)
    {
       if (PgSetpoint.size() != phases_.size())
       {
@@ -47,7 +47,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setPgMinSetpoint(const ublas::vector<double> & PgMinSetpoint)
+   void Bus::setPgMinSetpoint(const ublas::vector<double>& PgMinSetpoint)
    {
       if (PgMinSetpoint.size() != phases_.size())
       {
@@ -57,7 +57,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setPgMaxSetpoint(const ublas::vector<double> & PgMaxSetpoint)
+   void Bus::setPgMaxSetpoint(const ublas::vector<double>& PgMaxSetpoint)
    {
       if (PgMaxSetpoint.size() != phases_.size())
       {
@@ -67,7 +67,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setQgSetpoint(const ublas::vector<double> & QgSetpoint)
+   void Bus::setQgSetpoint(const ublas::vector<double>& QgSetpoint)
    {
       if (QgSetpoint.size() != phases_.size())
       {
@@ -77,7 +77,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setQgMinSetpoint(const ublas::vector<double> & QgMinSetpoint)
+   void Bus::setQgMinSetpoint(const ublas::vector<double>& QgMinSetpoint)
    {
       if (QgMinSetpoint.size() != phases_.size())
       {
@@ -87,7 +87,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setQgMaxSetpoint(const ublas::vector<double> & QgMaxSetpoint)
+   void Bus::setQgMaxSetpoint(const ublas::vector<double>& QgMaxSetpoint)
    {
       if (QgMaxSetpoint.size() != phases_.size())
       {
@@ -97,7 +97,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setVMagSetpoint(const ublas::vector<double> & VMagSetpoint)
+   void Bus::setVMagSetpoint(const ublas::vector<double>& VMagSetpoint)
    {
       if (VMagSetpoint.size() != phases_.size())
       {
@@ -107,7 +107,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setVMagMinSetpoint(const ublas::vector<double> & VMagMinSetpoint)
+   void Bus::setVMagMinSetpoint(const ublas::vector<double>& VMagMinSetpoint)
    {
       if (VMagMinSetpoint.size() != phases_.size())
       {
@@ -117,7 +117,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setVMagMaxSetpoint(const ublas::vector<double> & VMagMaxSetpoint)
+   void Bus::setVMagMaxSetpoint(const ublas::vector<double>& VMagMaxSetpoint)
    {
       if (VMagMaxSetpoint.size() != phases_.size())
       {
@@ -127,7 +127,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setVAngSetpoint(const ublas::vector<double> & VAngSetpoint)
+   void Bus::setVAngSetpoint(const ublas::vector<double>& VAngSetpoint)
    {
       if (VAngSetpoint.size() != phases_.size())
       {
@@ -137,7 +137,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setVAngMinSetpoint(const ublas::vector<double> & VAngMinSetpoint)
+   void Bus::setVAngMinSetpoint(const ublas::vector<double>& VAngMinSetpoint)
    {
       if (VAngMinSetpoint.size() != phases_.size())
       {
@@ -147,7 +147,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setVAngMaxSetpoint(const ublas::vector<double> & VAngMaxSetpoint)
+   void Bus::setVAngMaxSetpoint(const ublas::vector<double>& VAngMaxSetpoint)
    {
       if (VAngMaxSetpoint.size() != phases_.size())
       {
@@ -199,7 +199,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus::addZipToGround(ZipToGroundBase & zipToGround)
+   void Bus::addZipToGround(ZipToGroundBase& zipToGround)
    {
       dependsOn(zipToGround);
       zipsToGround_.push_back(&zipToGround);

@@ -21,9 +21,9 @@ namespace SmartGridToolbox
    {
       typedef std::vector<std::unique_ptr<NodeNr>> NodeVec; ///< Nodes, one per phase, owned by me.
 
-      BusNr(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
-            const ublas::vector<Complex> & Ys, const ublas::vector<Complex> & Ic,
-            const ublas::vector<Complex> & S);
+      BusNr(const std::string& id, BusType type, Phases phases, const ublas::vector<Complex>& V,
+            const ublas::vector<Complex>& Ys, const ublas::vector<Complex>& Ic,
+            const ublas::vector<Complex>& S);
 
       std::string id_;            ///< Externally relevant id.
       BusType type_;              ///< Bus type.
@@ -38,8 +38,8 @@ namespace SmartGridToolbox
 
    struct BranchNr
    {
-      BranchNr(const std::string & id0, const std::string & id1, Phases phases0, Phases phases1,
-            const ublas::matrix<Complex> & Y);
+      BranchNr(const std::string& id0, const std::string& id1, Phases phases0, Phases phases1,
+            const ublas::matrix<Complex>& Y);
 
       int nPhase_;                ///< Number of phases.
       Array<std::string, 2> ids_; ///< Id of bus 0/1
@@ -51,7 +51,7 @@ namespace SmartGridToolbox
 
    struct NodeNr
    {
-      NodeNr(BusNr & bus, int phaseIdx);
+      NodeNr(BusNr& bus, int phaseIdx);
 
       BusNr* bus_;
       int phaseIdx_;
@@ -69,47 +69,47 @@ namespace SmartGridToolbox
    {
       Jacobian(int nPq, int nPv);
 
-      ublas::compressed_matrix<double> & IrPqVrPq() {return blocks_[0][0];}
-      ublas::compressed_matrix<double> & IiPqVrPq() {return blocks_[1][0];}
-      ublas::compressed_matrix<double> & IrPvVrPq() {return blocks_[2][0];}
-      ublas::compressed_matrix<double> & IiPvVrPq() {return blocks_[3][0];}
-      ublas::compressed_matrix<double> & IrPqViPq() {return blocks_[0][1];}
-      ublas::compressed_matrix<double> & IiPqViPq() {return blocks_[1][1];}
-      ublas::compressed_matrix<double> & IrPvViPq() {return blocks_[2][1];}
-      ublas::compressed_matrix<double> & IiPvViPq() {return blocks_[3][1];}
-      ublas::compressed_matrix<double> & IrPqVrPv() {return blocks_[0][2];}
-      ublas::compressed_matrix<double> & IiPqVrPv() {return blocks_[1][2];}
-      ublas::compressed_matrix<double> & IrPvVrPv() {return blocks_[2][2];}
-      ublas::compressed_matrix<double> & IiPvVrPv() {return blocks_[3][2];}
-      ublas::compressed_matrix<double> & IrPqViPv() {return blocks_[0][3];}
-      ublas::compressed_matrix<double> & IiPqViPv() {return blocks_[1][3];}
-      ublas::compressed_matrix<double> & IrPvViPv() {return blocks_[2][3];}
-      ublas::compressed_matrix<double> & IiPvViPv() {return blocks_[3][3];}
-      ublas::compressed_matrix<double> & IrPqQPv()  {return blocks_[0][4];}
-      ublas::compressed_matrix<double> & IiPqQPv()  {return blocks_[1][4];}
-      ublas::compressed_matrix<double> & IrPvQPv()  {return blocks_[2][4];}
-      ublas::compressed_matrix<double> & IiPvQPv()  {return blocks_[3][4];}
+      ublas::compressed_matrix<double>& IrPqVrPq() {return blocks_[0][0];}
+      ublas::compressed_matrix<double>& IiPqVrPq() {return blocks_[1][0];}
+      ublas::compressed_matrix<double>& IrPvVrPq() {return blocks_[2][0];}
+      ublas::compressed_matrix<double>& IiPvVrPq() {return blocks_[3][0];}
+      ublas::compressed_matrix<double>& IrPqViPq() {return blocks_[0][1];}
+      ublas::compressed_matrix<double>& IiPqViPq() {return blocks_[1][1];}
+      ublas::compressed_matrix<double>& IrPvViPq() {return blocks_[2][1];}
+      ublas::compressed_matrix<double>& IiPvViPq() {return blocks_[3][1];}
+      ublas::compressed_matrix<double>& IrPqVrPv() {return blocks_[0][2];}
+      ublas::compressed_matrix<double>& IiPqVrPv() {return blocks_[1][2];}
+      ublas::compressed_matrix<double>& IrPvVrPv() {return blocks_[2][2];}
+      ublas::compressed_matrix<double>& IiPvVrPv() {return blocks_[3][2];}
+      ublas::compressed_matrix<double>& IrPqViPv() {return blocks_[0][3];}
+      ublas::compressed_matrix<double>& IiPqViPv() {return blocks_[1][3];}
+      ublas::compressed_matrix<double>& IrPvViPv() {return blocks_[2][3];}
+      ublas::compressed_matrix<double>& IiPvViPv() {return blocks_[3][3];}
+      ublas::compressed_matrix<double>& IrPqQPv()  {return blocks_[0][4];}
+      ublas::compressed_matrix<double>& IiPqQPv()  {return blocks_[1][4];}
+      ublas::compressed_matrix<double>& IrPvQPv()  {return blocks_[2][4];}
+      ublas::compressed_matrix<double>& IiPvQPv()  {return blocks_[3][4];}
 
-      const ublas::compressed_matrix<double> & IrPqVrPq() const {return blocks_[0][0];}
-      const ublas::compressed_matrix<double> & IiPqVrPq() const {return blocks_[1][0];}
-      const ublas::compressed_matrix<double> & IrPvVrPq() const {return blocks_[2][0];}
-      const ublas::compressed_matrix<double> & IiPvVrPq() const {return blocks_[3][0];}
-      const ublas::compressed_matrix<double> & IrPqViPq() const {return blocks_[0][1];}
-      const ublas::compressed_matrix<double> & IiPqViPq() const {return blocks_[1][1];}
-      const ublas::compressed_matrix<double> & IrPvViPq() const {return blocks_[2][1];}
-      const ublas::compressed_matrix<double> & IiPvViPq() const {return blocks_[3][1];}
-      const ublas::compressed_matrix<double> & IrPqVrPv() const {return blocks_[0][2];}
-      const ublas::compressed_matrix<double> & IiPqVrPv() const {return blocks_[1][2];}
-      const ublas::compressed_matrix<double> & IrPvVrPv() const {return blocks_[2][2];}
-      const ublas::compressed_matrix<double> & IiPvVrPv() const {return blocks_[3][2];}
-      const ublas::compressed_matrix<double> & IrPqViPv() const {return blocks_[0][3];}
-      const ublas::compressed_matrix<double> & IiPqViPv() const {return blocks_[1][3];}
-      const ublas::compressed_matrix<double> & IrPvViPv() const {return blocks_[2][3];}
-      const ublas::compressed_matrix<double> & IiPvViPv() const {return blocks_[3][3];}
-      const ublas::compressed_matrix<double> & IrPqQPv()  const {return blocks_[0][4];}
-      const ublas::compressed_matrix<double> & IiPqQPv()  const {return blocks_[1][4];}
-      const ublas::compressed_matrix<double> & IrPvQPv()  const {return blocks_[2][4];}
-      const ublas::compressed_matrix<double> & IiPvQPv()  const {return blocks_[3][4];}
+      const ublas::compressed_matrix<double>& IrPqVrPq() const {return blocks_[0][0];}
+      const ublas::compressed_matrix<double>& IiPqVrPq() const {return blocks_[1][0];}
+      const ublas::compressed_matrix<double>& IrPvVrPq() const {return blocks_[2][0];}
+      const ublas::compressed_matrix<double>& IiPvVrPq() const {return blocks_[3][0];}
+      const ublas::compressed_matrix<double>& IrPqViPq() const {return blocks_[0][1];}
+      const ublas::compressed_matrix<double>& IiPqViPq() const {return blocks_[1][1];}
+      const ublas::compressed_matrix<double>& IrPvViPq() const {return blocks_[2][1];}
+      const ublas::compressed_matrix<double>& IiPvViPq() const {return blocks_[3][1];}
+      const ublas::compressed_matrix<double>& IrPqVrPv() const {return blocks_[0][2];}
+      const ublas::compressed_matrix<double>& IiPqVrPv() const {return blocks_[1][2];}
+      const ublas::compressed_matrix<double>& IrPvVrPv() const {return blocks_[2][2];}
+      const ublas::compressed_matrix<double>& IiPvVrPv() const {return blocks_[3][2];}
+      const ublas::compressed_matrix<double>& IrPqViPv() const {return blocks_[0][3];}
+      const ublas::compressed_matrix<double>& IiPqViPv() const {return blocks_[1][3];}
+      const ublas::compressed_matrix<double>& IrPvViPv() const {return blocks_[2][3];}
+      const ublas::compressed_matrix<double>& IiPvViPv() const {return blocks_[3][3];}
+      const ublas::compressed_matrix<double>& IrPqQPv()  const {return blocks_[0][4];}
+      const ublas::compressed_matrix<double>& IiPqQPv()  const {return blocks_[1][4];}
+      const ublas::compressed_matrix<double>& IrPvQPv()  const {return blocks_[2][4];}
+      const ublas::compressed_matrix<double>& IiPvQPv()  const {return blocks_[3][4];}
 
       Array2D<ublas::compressed_matrix<double>, 4, 5> blocks_;
    };
@@ -122,18 +122,18 @@ namespace SmartGridToolbox
          typedef std::vector<NodeNr*> NodeVec;
 
       public:
-         void addBus(const std::string & id, BusType type, Phases phases, const ublas::vector<Complex> & V,
-               const ublas::vector<Complex> & Y, const ublas::vector<Complex> & I, const ublas::vector<Complex> & S);
+         void addBus(const std::string& id, BusType type, Phases phases, const ublas::vector<Complex>& V,
+               const ublas::vector<Complex>& Y, const ublas::vector<Complex>& I, const ublas::vector<Complex>& S);
 
-         const BusMap & busses() const
+         const BusMap& busses() const
          {
             return busses_;
          }
 
-         void addBranch(const std::string & idBus0, const std::string & idBus1, Phases phases0, Phases phases1,
-                        const ublas::matrix<Complex> & Y);
+         void addBranch(const std::string& idBus0, const std::string& idBus1, Phases phases0, Phases phases1,
+                        const ublas::matrix<Complex>& Y);
 
-         const BranchVec & branches() const
+         const BranchVec& branches() const
          {
             return branches_;
          }
@@ -178,22 +178,22 @@ namespace SmartGridToolbox
          ublas::slice selViPvFrom_x() const {return {2*nPq_ + 1, 2, nPv_};}
          /// @}
 
-         void initV(ublas::vector<double> & Vr, ublas::vector<double> & Vi) const;
-         void initS(ublas::vector<double> & P, ublas::vector<double> & Q) const;
-         void initJc(Jacobian & Jc) const;
+         void initV(ublas::vector<double>& Vr, ublas::vector<double>& Vi) const;
+         void initS(ublas::vector<double>& P, ublas::vector<double>& Q) const;
+         void initJc(Jacobian& Jc) const;
 
-         void calcf(ublas::vector<double> & f,
-                    const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
-                    const ublas::vector<double> & P, const ublas::vector<double> & Q,
-                    const ublas::vector<double> & M2Pv) const;
-         void updateJ(Jacobian & J, const Jacobian & Jc,
-                      const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
-                      const ublas::vector<double> & P, const ublas::vector<double> & Q,
-                      const ublas::vector<double> & M2Pv) const;
-         void modifyForPv(Jacobian & J, ublas::vector<double> & f,
-                          const ublas::vector<double> & Vr, const ublas::vector<double> & Vi,
-                          const ublas::vector<double> & M2Pv);
-         void calcJMatrix(ublas::compressed_matrix<double> & JMat, const Jacobian & J) const;
+         void calcf(ublas::vector<double>& f,
+                    const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
+                    const ublas::vector<double>& P, const ublas::vector<double>& Q,
+                    const ublas::vector<double>& M2Pv) const;
+         void updateJ(Jacobian& J, const Jacobian& Jc,
+                      const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
+                      const ublas::vector<double>& P, const ublas::vector<double>& Q,
+                      const ublas::vector<double>& M2Pv) const;
+         void modifyForPv(Jacobian& J, ublas::vector<double>& f,
+                          const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
+                          const ublas::vector<double>& M2Pv);
+         void calcJMatrix(ublas::compressed_matrix<double>& JMat, const Jacobian& J) const;
       private:
          /// @name ublas::vector of busses and branches.
          /// @{

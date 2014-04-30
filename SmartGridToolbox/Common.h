@@ -30,15 +30,15 @@ namespace SmartGridToolbox
 
    /// @name Reporting and errors.
    /// @{
-   inline std::ostream & messageStream() {return std::cout;}
-   inline std::ostream & warningStream() {return std::cerr;}
-   inline std::ostream & errorStream() {return std::cerr;}
-   inline std::ostream & debugStream() {return std::cout;}
+   inline std::ostream& messageStream() {return std::cout;}
+   inline std::ostream& warningStream() {return std::cerr;}
+   inline std::ostream& errorStream() {return std::cerr;}
+   inline std::ostream& debugStream() {return std::cout;}
 
-   inline std::ostream & message() {return messageStream()  <<  "MESSAGE:\t";}
-   inline std::ostream & warning() {return warningStream()  <<  "WARNING:\t";}
-   inline std::ostream & error() {return errorStream()      <<  "ERROR:  \t";}
-   inline std::ostream & debug() {return debugStream()      <<  "DEBUG:  \t";}
+   inline std::ostream& message() {return messageStream()  <<  "MESSAGE:\t";}
+   inline std::ostream& warning() {return warningStream()  <<  "WARNING:\t";}
+   inline std::ostream& error() {return errorStream()      <<  "ERROR:  \t";}
+   inline std::ostream& debug() {return debugStream()      <<  "DEBUG:  \t";}
 
    inline void abort() {std::cerr << "ABORTING." << std::endl; ::abort();}
    /// @}
@@ -64,21 +64,21 @@ namespace SmartGridToolbox
       return Complex(m*cos(theta), m*sin(theta));
    }
 
-   inline Complex operator*(int i, const Complex & c)
+   inline Complex operator*(int i, const Complex& c)
    {
       return Complex(i*c.real(), i*c.imag());
    }
 
-   inline Complex operator*(const Complex & c, int i)
+   inline Complex operator*(const Complex& c, int i)
    {
       return Complex(i*c.real(), i*c.imag());
    }
 
-   std::ostream & operator<<(std::ostream & os, const Complex & c);
+   std::ostream& operator<<(std::ostream& os, const Complex& c);
 
-   Complex string2Complex(const std::string & s);
+   Complex string2Complex(const std::string& s);
 
-   std::string complex2String(const Complex & c);
+   std::string complex2String(const Complex& c);
    /// @}
 
    /// @name Linear algebra
@@ -100,7 +100,7 @@ namespace SmartGridToolbox
       return true;
    }
 
-   template<typename VE> std::ostream & operator<<(std::ostream & os, const ublas::vector_expression<VE> & v)
+   template<typename VE> std::ostream& operator<<(std::ostream& os, const ublas::vector_expression<VE>& v)
    {
       unsigned int size = v().size();
       unsigned int w = os.width();
@@ -125,7 +125,7 @@ namespace SmartGridToolbox
 
    extern const posix_time::ptime epoch;
 
-   inline double dSeconds(const Time & d)
+   inline double dSeconds(const Time& d)
    {
       return double(d.ticks())/Time::ticks_per_second();
    }
@@ -142,7 +142,7 @@ namespace SmartGridToolbox
 
    posix_time::ptime utcTimeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz);
 
-   inline posix_time::ptime localTime(const Time & t, const local_time::time_zone_ptr localTz)
+   inline posix_time::ptime localTime(const Time& t, const local_time::time_zone_ptr localTz)
    {
       return boost::local_time::local_date_time(epoch + t, localTz).local_time();
    }
@@ -188,33 +188,33 @@ namespace SmartGridToolbox
 
    /// @name Basic vector algebra in n dimensions.
    /// @{
-   template<typename T, std::size_t d> double dot(const Array<T, d> & v1, const Array<T, d> & v2)
+   template<typename T, std::size_t d> double dot(const Array<T, d>& v1, const Array<T, d>& v2)
    {
       T result(0.0);
       for (std::size_t i = 0; i < d; ++i) result += v1[i]*v2[i];
       return result;
    }
 
-   template<typename T, std::size_t d, typename S> Array<T, d> operator*(const Array<T, d> & v, const S & s)
+   template<typename T, std::size_t d, typename S> Array<T, d> operator*(const Array<T, d>& v, const S& s)
    {
       Array<T, d> result = v;
       for (std::size_t i = 0; i < d; ++i) result[i] *= s;
       return result;
    }
 
-   template<typename T, std::size_t d, typename S> Array<T, d> operator*(const S & s, const Array<T, d> & v)
+   template<typename T, std::size_t d, typename S> Array<T, d> operator*(const S& s, const Array<T, d>& v)
    {
       return operator*(v, s);
    }
 
-   template<typename T, std::size_t d> Array<T, d> operator+(const Array<T, d> & lhs, const Array<T, d> & rhs)
+   template<typename T, std::size_t d> Array<T, d> operator+(const Array<T, d>& lhs, const Array<T, d>& rhs)
    {
       Array<T, d> result = lhs;
       for (std::size_t i = 0; i < d; ++i) result[i] += rhs[i];
       return result;
    }
 
-   template<typename T, std::size_t d> Array<T, d> operator-(const Array<T, d> & lhs, const Array<T, d> & rhs)
+   template<typename T, std::size_t d> Array<T, d> operator-(const Array<T, d>& lhs, const Array<T, d>& rhs)
    {
       Array<T, d> result = lhs;
       for (std::size_t i = 0; i < d; ++i) result[i] -= rhs[i];

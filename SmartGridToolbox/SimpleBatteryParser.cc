@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   void SimpleBatteryParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SimpleBatteryParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SimpleBattery : parse." << std::endl);
 
@@ -13,7 +13,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "inverter");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SimpleBattery & batt = mod.newComponent<SimpleBattery>(name);
+      SimpleBattery& batt = mod.newComponent<SimpleBattery>(name);
 
       auto nd_dt = nd["dt"];
       if (nd_dt) batt.set_dt(nd_dt.as<Time>());
@@ -40,12 +40,12 @@ namespace SmartGridToolbox
       if (ndRequestedPower) batt.setRequestedPower(ndRequestedPower.as<double>());
    }
 
-   void SimpleBatteryParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SimpleBatteryParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SimpleBattery : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SimpleBattery & batt = *mod.component<SimpleBattery>(name);
+      SimpleBattery& batt = *mod.component<SimpleBattery>(name);
 
       const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
       InverterBase* inverter = mod.component<InverterBase>(inverterStr);

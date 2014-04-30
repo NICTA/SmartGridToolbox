@@ -19,7 +19,7 @@ namespace SmartGridToolbox
    /// @parameter angs: struct containing spherical angles of the sun.
    /// @parameter mag: magnitude of the vector.
    /// @return The vector.
-   inline Array<double, 3> angsAndMagToVec(const SphericalAngles & angs, double mag)
+   inline Array<double, 3> angsAndMagToVec(const SphericalAngles& angs, double mag)
    {
       using std::cos;
       using std::sin;
@@ -35,7 +35,7 @@ namespace SmartGridToolbox
    /// x -> north, y -> east, z -> directly up.
    /// If the vector is interpreted as the normal to an area, then the projection is interpreted as being
    /// onto the horizontal plane.
-   inline Array<double, 3> angsAndProjToVec(const SphericalAngles & angs, double proj)
+   inline Array<double, 3> angsAndProjToVec(const SphericalAngles& angs, double proj)
    {
       using std::cos;
       using std::sin;
@@ -53,7 +53,7 @@ namespace SmartGridToolbox
    /// This quantity is often used as a proxy for the solar irradiance magnitude, as it is easier to measure.
    /// @parameter angs: spherical angles of the sun.
    /// @return Horizontal solar irradiance of the sun, in W/m^2.
-   inline double horizontalSolarIrradiance(const SphericalAngles & angs)
+   inline double horizontalSolarIrradiance(const SphericalAngles& angs)
    {
       double cosZen = cos(angs.zenith);
       return (cosZen > 0.0 ? solarIrradianceMag()*cosZen : 0.0);

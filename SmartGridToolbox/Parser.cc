@@ -11,42 +11,42 @@ namespace YAML
 {
    using namespace SmartGridToolbox;
 
-   Node convert<Complex>::encode(const Complex & from)
+   Node convert<Complex>::encode(const Complex& from)
    {
       Node nd;
       nd.push_back(complex2String(from));
       return nd;
    }
 
-   bool convert<Complex>::decode(const Node & nd, Complex & to)
+   bool convert<Complex>::decode(const Node& nd, Complex& to)
    {
       to = string2Complex(nd.as<std::string>());
       return true;
    }
 
-   Node convert<Phase>::encode(const Phase & from)
+   Node convert<Phase>::encode(const Phase& from)
    {
       Node nd;
       nd.push_back(phase2Str(from));
       return nd;
    }
 
-   bool convert<Phase>::decode(const Node & nd, Phase & to)
+   bool convert<Phase>::decode(const Node& nd, Phase& to)
    {
       to = str2Phase(nd.as<std::string>());
       return true;
    }
 
-   Node convert<Phases>::encode(const Phases & from)
+   Node convert<Phases>::encode(const Phases& from)
    {
       Node nd;
-      for (const auto & phasePair : from)
+      for (const auto& phasePair : from)
       {
          nd.push_back(phase2Str(phasePair.first));
       }
       return nd;
    }
-   bool convert<Phases>::decode(const Node & nd, Phases & to)
+   bool convert<Phases>::decode(const Node& nd, Phases& to)
    {
       if(!nd.IsSequence())
       {
@@ -64,55 +64,55 @@ namespace YAML
       return true;
    }
 
-   Node convert<BusType>::encode(const BusType & from)
+   Node convert<BusType>::encode(const BusType& from)
    {
       Node nd;
       nd.push_back(busType2Str(from));
       return nd;
    }
 
-   bool convert<BusType>::decode(const Node & nd, BusType & to)
+   bool convert<BusType>::decode(const Node& nd, BusType& to)
    {
       to = str2BusType(nd.as<std::string>());
       return true;
    }
 
-   Node convert<Time>::encode(const Time & from)
+   Node convert<Time>::encode(const Time& from)
    {
       Node nd;
       nd.push_back(posix_time::to_simple_string(from));
       return nd;
    }
 
-   bool convert<Time>::decode(const Node & nd, Time & to)
+   bool convert<Time>::decode(const Node& nd, Time& to)
    {
       to = posix_time::duration_from_string(nd.as<std::string>());
       return true;
    }
 
-   Node convert<posix_time::ptime>::encode(const posix_time::ptime & from)
+   Node convert<posix_time::ptime>::encode(const posix_time::ptime& from)
    {
       Node nd;
       nd.push_back(posix_time::to_simple_string(from));
       return nd;
    }
 
-   bool convert<posix_time::ptime>::decode(const Node & nd, posix_time::ptime & to)
+   bool convert<posix_time::ptime>::decode(const Node& nd, posix_time::ptime& to)
    {
       to = posix_time::time_from_string(nd.as<std::string>());
       return true;
    }
 
-   template<typename T> Node convert<ublas::vector<T>>::encode(const ublas::vector<T> & from)
+   template<typename T> Node convert<ublas::vector<T>>::encode(const ublas::vector<T>& from)
    {
       Node nd;
-      for (const T & val : from) nd.push_back(val);
+      for (const T& val : from) nd.push_back(val);
       return nd;
    }
-   template Node convert<ublas::vector<double>>::encode(const ublas::vector<double> & from);
-   template Node convert<ublas::vector<Complex>>::encode(const ublas::vector<Complex> & from);
+   template Node convert<ublas::vector<double>>::encode(const ublas::vector<double>& from);
+   template Node convert<ublas::vector<Complex>>::encode(const ublas::vector<Complex>& from);
 
-   template<typename T> bool convert<ublas::vector<T>>::decode(const Node & nd, ublas::vector<T> & to)
+   template<typename T> bool convert<ublas::vector<T>>::decode(const Node& nd, ublas::vector<T>& to)
    {
       if(!nd.IsSequence())
       {
@@ -129,10 +129,10 @@ namespace YAML
       }
       return true;
    }
-   template bool convert<ublas::vector<double>>::decode(const Node & nd, ublas::vector<double> & to);
-   template bool convert<ublas::vector<Complex>>::decode(const Node & nd, ublas::vector<Complex> & to);
+   template bool convert<ublas::vector<double>>::decode(const Node& nd, ublas::vector<double>& to);
+   template bool convert<ublas::vector<Complex>>::decode(const Node& nd, ublas::vector<Complex>& to);
 
-   template<typename T> Node convert<ublas::matrix<T>>::encode(const ublas::matrix<T> & from)
+   template<typename T> Node convert<ublas::matrix<T>>::encode(const ublas::matrix<T>& from)
    {
       Node nd;
       for (int i = 0; i < from.size1(); ++i)
@@ -146,10 +146,10 @@ namespace YAML
       }
       return nd;
    }
-   template Node convert<ublas::matrix<double>>::encode(const ublas::matrix<double> & from);
-   template Node convert<ublas::matrix<Complex>>::encode(const ublas::matrix<Complex> & from);
+   template Node convert<ublas::matrix<double>>::encode(const ublas::matrix<double>& from);
+   template Node convert<ublas::matrix<Complex>>::encode(const ublas::matrix<Complex>& from);
 
-   template<typename T> bool convert<ublas::matrix<T>>::decode(const Node & nd, ublas::matrix<T> & to)
+   template<typename T> bool convert<ublas::matrix<T>>::decode(const Node& nd, ublas::matrix<T>& to)
    {
       if(!nd.IsSequence())
       {
@@ -188,16 +188,16 @@ namespace YAML
       }
       return true;
    }
-   template bool convert<ublas::matrix<double>>::decode(const Node & nd, ublas::matrix<double> & to);
-   template bool convert<ublas::matrix<Complex>>::decode(const Node & nd, ublas::matrix<Complex> & to);
+   template bool convert<ublas::matrix<double>>::decode(const Node& nd, ublas::matrix<double>& to);
+   template bool convert<ublas::matrix<Complex>>::decode(const Node& nd, ublas::matrix<Complex>& to);
 }
 
 namespace SmartGridToolbox
 {
-   std::string ParserState::expandName(const std::string & target) const
+   std::string ParserState::expandName(const std::string& target) const
    {
       std::string result(target);
-      for (const ParserLoop & loop : loops_)
+      for (const ParserLoop& loop : loops_)
       {
          std::string search = "${" + loop.name_ + "}";
          std::string replace = std::to_string(loop.i_);
@@ -206,7 +206,7 @@ namespace SmartGridToolbox
       return result;
    }
 
-   void assertFieldPresent(const YAML::Node & nd, const std::string & field)
+   void assertFieldPresent(const YAML::Node& nd, const std::string& field)
    {
       if (!(nd[field]))
       {
@@ -215,7 +215,7 @@ namespace SmartGridToolbox
       }
    };
 
-   void Parser::parse(const std::string & fname, Model & model, Simulation & simulation)
+   void Parser::parse(const std::string& fname, Model& model, Simulation& simulation)
    {
       message() << "Started parsing file " << fname << "." << std::endl;
       mod_ = &model;
@@ -231,15 +231,15 @@ namespace SmartGridToolbox
       parseGlobal(model, simulation);
       SGT_DEBUG(debug() << "Parsed global." << std::endl);
 
-      if (const YAML::Node & nodeTimeSeriesList = top_["time_series_list"])
+      if (const YAML::Node& nodeTimeSeriesList = top_["time_series_list"])
       {
-         for (const auto & tsPair : nodeTimeSeriesList)
+         for (const auto& tsPair : nodeTimeSeriesList)
          {
             parseTimeSeries(tsPair.first.as<std::string>(), tsPair.second, model);
          }
       }
 
-      const YAML::Node & nodeComponents = top_["components"];
+      const YAML::Node& nodeComponents = top_["components"];
       if (nodeComponents)
       {
          SGT_DEBUG(debug() << "Parsing components." << std::endl);
@@ -253,7 +253,7 @@ namespace SmartGridToolbox
 
    void Parser::postParse()
    {
-      const YAML::Node & nodeComponents = top_["components"];
+      const YAML::Node& nodeComponents = top_["components"];
       if (nodeComponents)
       {
          ParserState s;
@@ -268,12 +268,12 @@ namespace SmartGridToolbox
       registerParserPlugins(*this);
    }
 
-   void Parser::parseGlobal(Model & model, Simulation & simulation)
+   void Parser::parseGlobal(Model& model, Simulation& simulation)
    {
       assertFieldPresent(top_, "start_time");
       assertFieldPresent(top_, "end_time");
 
-      if (const YAML::Node & nodeConfig = top_["configuration_name"])
+      if (const YAML::Node& nodeConfig = top_["configuration_name"])
       {
          model.setName(nodeConfig.as<std::string>());
       }
@@ -282,7 +282,7 @@ namespace SmartGridToolbox
          model.setName(std::string("null"));
       }
 
-      const YAML::Node & nodeStart = top_["start_time"];
+      const YAML::Node& nodeStart = top_["start_time"];
       try
       {
          simulation.setStartTime(parseTime(nodeStart, model));
@@ -293,7 +293,7 @@ namespace SmartGridToolbox
          abort();
       }
 
-      const YAML::Node & nodeEnd = top_["end_time"];
+      const YAML::Node& nodeEnd = top_["end_time"];
       try
       {
          simulation.setEndTime(parseTime(nodeEnd, model));
@@ -304,7 +304,7 @@ namespace SmartGridToolbox
          abort();
       }
 
-      if (const YAML::Node & nodeLatLong = top_["lat_long"])
+      if (const YAML::Node& nodeLatLong = top_["lat_long"])
       {
          try
          {
@@ -322,7 +322,7 @@ namespace SmartGridToolbox
          }
       }
 
-      if (const YAML::Node & nodeTz = top_["timezone"])
+      if (const YAML::Node& nodeTz = top_["timezone"])
       {
          try
          {
@@ -336,7 +336,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void Parser::parseTimeSeries(const std::string & type, const YAML::Node & node, Model & model)
+   void Parser::parseTimeSeries(const std::string& type, const YAML::Node& node, Model& model)
    {
       assertFieldPresent(node, "name"); // data
       assertFieldPresent(node, "value_type"); // real_scalar/complex_scalar/real_vector/complex_vector
@@ -481,18 +481,18 @@ namespace SmartGridToolbox
       }
    }
 
-   void Parser::parseComponents(const YAML::Node & node, ParserState & state, Model & model, bool isPostParse)
+   void Parser::parseComponents(const YAML::Node& node, ParserState& state, Model& model, bool isPostParse)
    {
       message() << "Parsing components. Starting." << std::endl;
-      for (const auto & compPair : node)
+      for (const auto& compPair : node)
       {
          std::string nodeType = compPair.first.as<std::string>();
-         const YAML::Node & nodeVal = compPair.second;;
+         const YAML::Node& nodeVal = compPair.second;;
          if (nodeType == "loop")
          {
             std::string loopName = nodeVal["name"].as<std::string>();
             int loopCount = nodeVal["count"].as<int>();
-            const YAML::Node & loopBody = nodeVal["body"];
+            const YAML::Node& loopBody = nodeVal["body"];
             for (state.pushLoop(loopName); state.topLoopVal() < loopCount; state.incrTopLoop())
             {
                parseComponents(loopBody, state, model, isPostParse);

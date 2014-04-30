@@ -4,7 +4,7 @@
 
 namespace SmartGridToolbox
 {
-   void InverterBase::addDcPowerSource(DcPowerSourceBase & source)
+   void InverterBase::addDcPowerSource(DcPowerSourceBase& source)
    {
       dependsOn(source);
       sources_.push_back(&source);

@@ -4,7 +4,7 @@
 
 namespace SmartGridToolbox
 {
-   ZipToGround::ZipToGround(const std::string & name, const Phases & phases) :
+   ZipToGround::ZipToGround(const std::string& name, const Phases& phases) :
       ZipToGroundBase(name, phases),
       Y_(phases.size(), 0.0),
       I_(phases.size(), 0.0),

@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    class SinglePhaseTransformer : public Branch
    {
       public:
-         SinglePhaseTransformer(const std::string & name, Phase phase0, Phase phase1, Complex alpha, Complex ZLeak);
+         SinglePhaseTransformer(const std::string& name, Phase phase0, Phase phase1, Complex alpha, Complex ZLeak);
 
       private:
          void recalcY();

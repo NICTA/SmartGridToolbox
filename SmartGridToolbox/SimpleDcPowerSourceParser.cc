@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   void SimpleDcPowerSourceParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SimpleDcPowerSourceParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SimpleDcPowerSource : parse." << std::endl);
 
@@ -14,17 +14,17 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "dc_power");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      auto & comp = mod.newComponent<SimpleDcPowerSource>(name);
+      auto& comp = mod.newComponent<SimpleDcPowerSource>(name);
 
       comp.setPDc(nd["dc_power"].as<double>());
    }
 
-   void SimpleDcPowerSourceParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SimpleDcPowerSourceParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SimpleDcPowerSource : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SimpleDcPowerSource & comp = *mod.component<SimpleDcPowerSource>(name);
+      SimpleDcPowerSource& comp = *mod.component<SimpleDcPowerSource>(name);
 
       const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
       InverterBase* inverterComp = mod.component<InverterBase>(inverterStr);

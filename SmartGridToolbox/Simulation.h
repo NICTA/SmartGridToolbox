@@ -17,7 +17,7 @@ namespace SmartGridToolbox
    {
       public:
          /// @brief Default constructor.
-         Simulation(Model & mod);
+         Simulation(Model& mod);
 
          /// @brief Destructor.
          ~Simulation()
@@ -26,13 +26,13 @@ namespace SmartGridToolbox
          }
 
          /// @brief Model accessor.
-         const Model & model() const
+         const Model& model() const
          {
             return *mod_;
          }
 
          /// @brief Model accessor.
-         Model & model()
+         Model& model()
          {
             return const_cast<Model &>((const_cast<const Simulation*>(this))->model());
          }
@@ -72,10 +72,10 @@ namespace SmartGridToolbox
          bool doTimestep();
 
          /// @brief Get the timestep will start event.
-         Event & timestepWillStart() {return timestepWillStart_;}
+         Event& timestepWillStart() {return timestepWillStart_;}
 
          /// @brief Get the timestep did complete event.
-         Event & timestepDidComplete() {return timestepDidComplete_;}
+         Event& timestepDidComplete() {return timestepDidComplete_;}
 
       private:
 
@@ -83,8 +83,8 @@ namespace SmartGridToolbox
          class ScheduledUpdatesCompare
          {
             public:
-               bool operator()(const std::pair<Component*, Time> & lhs,
-                     const std::pair<Component*, Time> & rhs)
+               bool operator()(const std::pair<Component*, Time>& lhs,
+                     const std::pair<Component*, Time>& rhs)
                {
                   return ((lhs.second < rhs.second) ||
                         (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||

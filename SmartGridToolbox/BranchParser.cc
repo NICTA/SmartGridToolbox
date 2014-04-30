@@ -6,7 +6,7 @@
 
 namespace SmartGridToolbox
 {
-   void BranchParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void BranchParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "Branch : parse." << std::endl);
 
@@ -22,9 +22,9 @@ namespace SmartGridToolbox
       Phases phases0 = nd["phases_0"].as<Phases>();
       Phases phases1 = nd["phases_1"].as<Phases>();
 
-      const YAML::Node & ndY = nd["Y"];
-      const YAML::Node & ndYMatrix = ndY["matrix"];
-      const YAML::Node & ndYSimpleLine = ndY["simple_line"];
+      const YAML::Node& ndY = nd["Y"];
+      const YAML::Node& ndYMatrix = ndY["matrix"];
+      const YAML::Node& ndYSimpleLine = ndY["simple_line"];
       ublas::matrix<Complex> Y(2*phases0.size(), 2*phases1.size(), czero);
       if (ndYMatrix)
       {
@@ -36,11 +36,11 @@ namespace SmartGridToolbox
          Y = YSimpleLine(YLine);
       }
 
-      Branch & comp = mod.newComponent<Branch>(name, phases0, phases1);
+      Branch& comp = mod.newComponent<Branch>(name, phases0, phases1);
       comp.setY(Y);
    }
 
-   void BranchParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void BranchParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "Branch : postParse." << std::endl);
 
@@ -61,7 +61,7 @@ namespace SmartGridToolbox
       }
 
       // Depends on network freq, so do in postParse.
-      const YAML::Node & ndY = nd["Y"];
+      const YAML::Node& ndY = nd["Y"];
 
       const std::string bus0Str = state.expandName(nd["bus_0"].as<std::string>());
       Bus* bus0Comp = mod.component<Bus>(bus0Str);

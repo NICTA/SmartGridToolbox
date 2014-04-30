@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   void SinglePhaseTransformerParser::parse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SinglePhaseTransformerParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SinglePhaseTransformer : parse." << std::endl);
 
@@ -27,7 +27,7 @@ namespace SmartGridToolbox
       mod.newComponent<SinglePhaseTransformer>(name, phase0, phase1, alpha, ZLeak);
    }
 
-   void SinglePhaseTransformerParser::postParse(const YAML::Node & nd, Model & mod, const ParserState & state) const
+   void SinglePhaseTransformerParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SinglePhaseTransformer : postParse." << std::endl);
 

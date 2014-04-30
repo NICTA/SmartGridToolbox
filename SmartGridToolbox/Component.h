@@ -34,7 +34,7 @@ namespace SmartGridToolbox
          /// @{
 
          /// @brief Constructor.
-         explicit Component(const std::string & name);
+         explicit Component(const std::string& name);
 
          /// @brief Destructor.
          virtual ~Component() = 0;
@@ -45,13 +45,13 @@ namespace SmartGridToolbox
          /// @{
 
          /// @brief Get the name of the object.
-         const std::string & name() const
+         const std::string& name() const
          {
             return name_;
          }
 
          /// @brief Set the name of the object.
-         void setName(const std::string & name)
+         void setName(const std::string& name)
          {
             name_ = name;
          }
@@ -90,13 +90,13 @@ namespace SmartGridToolbox
          /// @name Dependencies.
          ///@{
 
-         const std::vector<const Component*> & dependencies() const
+         const std::vector<const Component*>& dependencies() const
          {
             return dependencies_;
          }
 
          /// @brief Components on which I depend will update first.
-         void dependsOn(const Component & b)
+         void dependsOn(const Component& b)
          {
             dependencies_.push_back(&b);
          }
@@ -127,19 +127,19 @@ namespace SmartGridToolbox
          /// @{
 
          /// @brief Triggered just before my update.
-         Event & willUpdate() {return willUpdate_;}
+         Event& willUpdate() {return willUpdate_;}
 
          /// @brief Triggered after my update.
-         Event & didUpdate() {return didUpdate_;}
+         Event& didUpdate() {return didUpdate_;}
 
          /// @brief Triggered when I am flagged for future update.
-         Event & needsUpdate() {return needsUpdate_;}
+         Event& needsUpdate() {return needsUpdate_;}
 
          /// @brief Triggered when I am about to update to a new timestep.
-         Event & willStartNewTimestep() {return willStartNewTimestep_;}
+         Event& willStartNewTimestep() {return willStartNewTimestep_;}
 
          /// @brief Triggered when I just updated, completing the current timestep.
-         Event & didCompleteTimestep() {return didCompleteTimestep_;}
+         Event& didCompleteTimestep() {return didCompleteTimestep_;}
          /// @}
 
          /// @}

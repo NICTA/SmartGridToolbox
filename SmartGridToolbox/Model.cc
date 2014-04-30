@@ -74,7 +74,7 @@ namespace SmartGridToolbox
 
    void Model::addOrReplaceGenericComponent(std::unique_ptr<Component> && comp, bool allowReplace)
    {
-      Component & ref = *comp;
+      Component& ref = *comp;
       ComponentMap::iterator it1 = compMap_.find(ref.name());
       if (it1 != compMap_.end())
       {

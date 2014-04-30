@@ -22,7 +22,7 @@ namespace SmartGridToolbox
          /// @name Lifecycle.
          /// @{
 
-         Bus(const std::string & name, BusType type, const Phases & phases, const ublas::vector<Complex> & nominalV);
+         Bus(const std::string& name, BusType type, const Phases& phases, const ublas::vector<Complex>& nominalV);
 
          /// @}
 
@@ -30,8 +30,8 @@ namespace SmartGridToolbox
          /// @{
 
          BusType type() const {return type_;}
-         const Phases & phases() const {return phases_;}
-         const ublas::vector<Complex> & nominalV() const {return nominalV_;}
+         const Phases& phases() const {return phases_;}
+         const ublas::vector<Complex>& nominalV() const {return nominalV_;}
 
          /// @}
 
@@ -44,21 +44,21 @@ namespace SmartGridToolbox
             return PgSetpoint_;
          }
 
-         void setPgSetpoint(const ublas::vector<double> & PgSetpoint);
+         void setPgSetpoint(const ublas::vector<double>& PgSetpoint);
 
          ublas::vector<double> PgMinSetpoint() const
          {
             return PgMinSetpoint_;
          }
 
-         void setPgMinSetpoint(const ublas::vector<double> & PgMinSetpoint);
+         void setPgMinSetpoint(const ublas::vector<double>& PgMinSetpoint);
 
          ublas::vector<double> PgMaxSetpoint() const
          {
             return PgMaxSetpoint_;
          }
 
-         void setPgMaxSetpoint(const ublas::vector<double> & PgMaxSetpoint);
+         void setPgMaxSetpoint(const ublas::vector<double>& PgMaxSetpoint);
 
          /// @}
 
@@ -71,21 +71,21 @@ namespace SmartGridToolbox
             return QgSetpoint_;
          }
 
-         void setQgSetpoint(const ublas::vector<double> & QgSetpoint);
+         void setQgSetpoint(const ublas::vector<double>& QgSetpoint);
 
          ublas::vector<double> QgMinSetpoint() const
          {
             return QgMinSetpoint_;
          }
 
-         void setQgMinSetpoint(const ublas::vector<double> & QgMinSetpoint);
+         void setQgMinSetpoint(const ublas::vector<double>& QgMinSetpoint);
 
          ublas::vector<double> QgMaxSetpoint() const
          {
             return QgMaxSetpoint_;
          }
 
-         void setQgMaxSetpoint(const ublas::vector<double> & QgMaxSetpoint);
+         void setQgMaxSetpoint(const ublas::vector<double>& QgMaxSetpoint);
 
          /// @}
 
@@ -98,21 +98,21 @@ namespace SmartGridToolbox
             return VMagSetpoint_;
          }
 
-         void setVMagSetpoint(const ublas::vector<double> & VMagSetpoint);
+         void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint);
 
          ublas::vector<double> VMagMinSetpoint() const
          {
             return VMagMinSetpoint_;
          }
 
-         void setVMagMinSetpoint(const ublas::vector<double> & VMagMinSetpoint);
+         void setVMagMinSetpoint(const ublas::vector<double>& VMagMinSetpoint);
 
          ublas::vector<double> VMagMaxSetpoint() const
          {
             return VMagMaxSetpoint_;
          }
 
-         void setVMagMaxSetpoint(const ublas::vector<double> & VMagMaxSetpoint);
+         void setVMagMaxSetpoint(const ublas::vector<double>& VMagMaxSetpoint);
 
          /// @}
 
@@ -125,21 +125,21 @@ namespace SmartGridToolbox
             return VAngSetpoint_;
          }
 
-         void setVAngSetpoint(const ublas::vector<double> & VAngSetpoint);
+         void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint);
 
          ublas::vector<double> VAngMinSetpoint() const
          {
             return VAngMinSetpoint_;
          }
 
-         void setVAngMinSetpoint(const ublas::vector<double> & VAngMinSetpoint);
+         void setVAngMinSetpoint(const ublas::vector<double>& VAngMinSetpoint);
 
          ublas::vector<double> VAngMaxSetpoint() const
          {
             return VAngMaxSetpoint_;
          }
 
-         void setVAngMaxSetpoint(const ublas::vector<double> & VAngMaxSetpoint);
+         void setVAngMaxSetpoint(const ublas::vector<double>& VAngMaxSetpoint);
 
          /// @}
 
@@ -151,18 +151,18 @@ namespace SmartGridToolbox
          ///< ZIP = constant Z, I, P (or Y, I, S).
          /// @{
 
-         const std::vector<ZipToGroundBase*> & zipsToGround() const {return zipsToGround_;}
+         const std::vector<ZipToGroundBase*>& zipsToGround() const {return zipsToGround_;}
 
-         void addZipToGround(ZipToGroundBase & zipToGround);
+         void addZipToGround(ZipToGroundBase& zipToGround);
 
          /// @brief Total shunt admittance (sum of ZIPs).
-         const ublas::vector<Complex> & Ys() const {return Ys_;}
+         const ublas::vector<Complex>& Ys() const {return Ys_;}
 
          /// @brief Total constant current injection (sum of ZIPs).
-         const ublas::vector<Complex> & Ic() const {return Ic_;}
+         const ublas::vector<Complex>& Ic() const {return Ic_;}
 
          /// @brief Total constant power injection (sum of ZIPs).
-         const ublas::vector<Complex> & Sc() const {return Sc_;}
+         const ublas::vector<Complex>& Sc() const {return Sc_;}
 
          /// @}
 
@@ -170,16 +170,16 @@ namespace SmartGridToolbox
          /// @{
 
          /// @brief Get bus voltage.
-         const ublas::vector<Complex> & V() const {return V_;}
+         const ublas::vector<Complex>& V() const {return V_;}
 
          /// @brief Set bus voltage (warm start or solver).
-         void setV(const ublas::vector<Complex> & V) {V_ = V;}
+         void setV(const ublas::vector<Complex>& V) {V_ = V;}
 
          /// @brief Get bus generated power.
-         const ublas::vector<Complex> & Sg() const {return Sg_;}
+         const ublas::vector<Complex>& Sg() const {return Sg_;}
 
          /// @brief Set bus generated power (warm start or solver).
-         void setSg(const ublas::vector<Complex> & Sg) {Sg_ = Sg;}
+         void setSg(const ublas::vector<Complex>& Sg) {Sg_ = Sg;}
 
          /// @brief Total power injection (Sc() + Sg()).
          const ublas::vector<Complex> STot() const {return Sc_ + Sg_;}
@@ -190,7 +190,7 @@ namespace SmartGridToolbox
          /// @{
 
          /// @brief Event triggered when bus (e.g. setpoint) has changed.
-         Event & changed() {return changed_;}
+         Event& changed() {return changed_;}
 
          /// @}
 

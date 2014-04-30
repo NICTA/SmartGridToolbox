@@ -19,7 +19,7 @@
 
 namespace SmartGridToolbox
 {
-   void registerParserPlugins(Parser & p)
+   void registerParserPlugins(Parser& p)
    {
       p.registerParserPlugin<BranchParser>();
       p.registerParserPlugin<BusParser>();

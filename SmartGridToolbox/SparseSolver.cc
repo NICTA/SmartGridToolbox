@@ -2,9 +2,9 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 
-bool kluSolve(const boost::numeric::ublas::compressed_matrix<double> & a,
-              const boost::numeric::ublas::vector<double> & b,
-              boost::numeric::ublas::vector<double> & result)
+bool kluSolve(const boost::numeric::ublas::compressed_matrix<double>& a,
+              const boost::numeric::ublas::vector<double>& b,
+              boost::numeric::ublas::vector<double>& result)
 {
    boost::numeric::ublas::compressed_matrix<double, boost::numeric::ublas::column_major> ac = a;
    ac.complete_index1_data();

@@ -16,20 +16,20 @@ namespace SmartGridToolbox
    class Action
    {
       public:
-         Action(const std::function<void ()> & function, const std::string & description)
+         Action(const std::function<void ()>& function, const std::string& description)
             : function_(function), description_(description)
          {
             // Empty.
          }
 
-         Action(const std::function<void ()> & function)
+         Action(const std::function<void ()>& function)
             : function_(function), description_("N/A")
          {
             // Empty.
          }
 
 
-         const std::string & description() const {return description_;}
+         const std::string& description() const {return description_;}
 
          void perform() const {function_();}
 
@@ -46,7 +46,7 @@ namespace SmartGridToolbox
    class Event
    {
       public:
-         Event(const std::string & description)
+         Event(const std::string& description)
             : description_(description)
          {
             // Empty.
@@ -58,7 +58,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         void addAction(const std::function<void ()> & action, const std::string & description)
+         void addAction(const std::function<void ()>& action, const std::string& description)
          {
             SGT_DEBUG(debug() << "Event: " << description_ << ": addAction: " << description << std::endl);
             actions_.emplace_back(action, description);
@@ -71,7 +71,7 @@ namespace SmartGridToolbox
             actions_.clear();
          }
 
-         const std::string & description() const
+         const std::string& description() const
          {
             return description_;
          }

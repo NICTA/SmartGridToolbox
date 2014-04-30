@@ -22,7 +22,7 @@ namespace SmartGridToolbox
          /// @brief Is there a link from here to nd?
          ///
          /// This relation could model dependency: nd would directly depend on me.
-         bool precedes(const WoNode & nd) const
+         bool precedes(const WoNode& nd) const
          {
             std::set<const WoNode*>::iterator it = descendents_.find(&nd);
             return (it != descendents_.end());
@@ -32,7 +32,7 @@ namespace SmartGridToolbox
          ///
          /// This relation could model dependency: nd would indirectly depend on me, and not vice-versa.
          /// Thus domination == "goes first."
-         bool dominates(const WoNode & nd) const
+         bool dominates(const WoNode& nd) const
          {
             return (dominated_.find(&nd) != dominated_.end());
          }
@@ -40,13 +40,13 @@ namespace SmartGridToolbox
          /// @brief Partial ordering operator.
          ///
          /// Smaller goes first. So lhs < rhs if lhs dominates rhs.
-         friend bool operator<(const WoNode & lhs, const WoNode & rhs)
+         friend bool operator<(const WoNode& lhs, const WoNode& rhs)
          {
             return (lhs.dominates(rhs) || ((!rhs.dominates(lhs)) && (lhs.idx_ < rhs.idx_)));
          }
 
          /// @brief Perform depth first search.
-         void dfs(std::vector<WoNode*> & stack);
+         void dfs(std::vector<WoNode*>& stack);
 
       private:
 
@@ -69,11 +69,11 @@ namespace SmartGridToolbox
 
          void weakOrder();
 
-         const std::vector<std::unique_ptr<WoNode>> & nodes() const
+         const std::vector<std::unique_ptr<WoNode>>& nodes() const
          {
             return nodes_;
          }
-         std::vector<std::unique_ptr<WoNode>> & nodes()
+         std::vector<std::unique_ptr<WoNode>>& nodes()
          {
             return nodes_;
          }
