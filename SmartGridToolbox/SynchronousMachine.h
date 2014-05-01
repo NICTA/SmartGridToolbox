@@ -1,17 +1,17 @@
-#ifndef COMPONENT_TEMPLATE_DOT_H
-#define COMPONENT_TEMPLATE_DOT_H
+#ifndef SYNCHRONOUS_MACHINE_DOT_H
+#define SYNCHRONOUS_MACHINE_DOT_H
 
 #include <iostream>
 
 namespace SmartGridToolbox
 {
-   class ComponentTemplate : public Component
+   class SynchronousMachine : public Component
    {
       public:
          /// @name Lifecycle.
          /// @{
-         ComponentTemplate(std::string name);
-         virtual ~ComponentTemplate();
+         SynchronousMachine(std::string name);
+         virtual ~SynchronousMachine();
          /// @}
 
       public:
@@ -36,7 +36,7 @@ namespace SmartGridToolbox
          /// @name My private member functions.
          /// @{
          /// @}
-
+      
       private:
          /// @name My private member data.
          /// @{
@@ -44,4 +44,4 @@ namespace SmartGridToolbox
    }
 }
 
-#endif // COMPONENT_TEMPLATE_DOT_H
+#endif // SYNCHRONOUS_MACHINE_DOT_H
