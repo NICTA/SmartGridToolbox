@@ -5,19 +5,23 @@
 
 namespace SmartGridToolbox
 {
-   static const int nPhases = 9;
-   static Phase allPhases[nPhases + 1] = {
-      Phase::BAL,
-      Phase::A,
-      Phase::B,
-      Phase::C,
-      Phase::G,
-      Phase::N,
-      Phase::SP,
-      Phase::SM,
-      Phase::SN,
-      Phase::BAD
-   };
+   namespace
+   {
+      const int nPhases = 9;
+
+      Phase allPhases[nPhases + 1] = {
+         Phase::BAL,
+         Phase::A,
+         Phase::B,
+         Phase::C,
+         Phase::G,
+         Phase::N,
+         Phase::SP,
+         Phase::SM,
+         Phase::SN,
+         Phase::BAD
+      };
+   }
 
    const char* busType2Str(BusType type)
    {
@@ -132,33 +136,6 @@ namespace SmartGridToolbox
          }
       }
       phaseVec_.shrink_to_fit();
-   }
-
-   // Balanced/1-phase simple line with a single admittance.
-   const ublas::matrix<Complex> YLine1P(const Complex& Y)
-   {
-      ublas::matrix<Complex> YNode(2, 2, czero);
-      YNode(0, 0) = Y;
-      YNode(1, 1) = Y;
-      YNode(0, 1) = -Y;
-      YNode(1, 0) = -Y;
-      return YNode;
-   }
-
-   // No cross terms, just nPhase lines with single admittances.
-   const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex>& Y)
-   {
-      int nPhase = Y.size();
-      int nTerm = 2*nPhase;
-      ublas::matrix<Complex> YNode(nTerm, nTerm, czero);
-      for (int i = 0; i < nPhase; ++i)
-      {
-         YNode(i, i) = Y(i);
-         YNode(i + nPhase, i + nPhase) = Y(i);
-         YNode(i, i + nPhase) = -Y(i);
-         YNode(i + nPhase, i) = -Y(i);
-      }
-      return YNode;
    }
 
    ublas::matrix<Complex> YOverheadLine(ublas::vector<double> r, ublas::matrix<double> DMat, double L,

@@ -6,6 +6,24 @@
 
 namespace SmartGridToolbox
 {
+   // No cross terms, just nPhase lines with single admittances.
+   namespace {
+      const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex>& Y)
+      {
+         int nPhase = Y.size();
+         int nTerm = 2*nPhase;
+         ublas::matrix<Complex> YNode(nTerm, nTerm, czero);
+         for (int i = 0; i < nPhase; ++i)
+         {
+            YNode(i, i) = Y(i);
+            YNode(i + nPhase, i + nPhase) = Y(i);
+            YNode(i, i + nPhase) = -Y(i);
+            YNode(i + nPhase, i) = -Y(i);
+         }
+         return YNode;
+      }
+   }
+
    void BranchParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "Branch : parse." << std::endl);

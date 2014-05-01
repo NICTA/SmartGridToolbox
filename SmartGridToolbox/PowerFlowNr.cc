@@ -7,25 +7,42 @@
 
 namespace SmartGridToolbox
 {
-   // For some reason, even ublas::axpy_prod is much slower than this!
-   static ublas::vector<double> myProd(const ublas::compressed_matrix<double>& A, const ublas::vector<double>& x)
+   namespace
    {
-      ublas::vector<double> result(A.size1(), 0.0);
-      for (auto it1 = A.begin1(); it1 != A.end1(); ++it1)
+      // For some reason, even ublas::axpy_prod is much slower than this!
+      ublas::vector<double> myProd(const ublas::compressed_matrix<double>& A, const ublas::vector<double>& x)
       {
-         for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
+         ublas::vector<double> result(A.size1(), 0.0);
+         for (auto it1 = A.begin1(); it1 != A.end1(); ++it1)
          {
-            int i = it2.index1();
-            int k = it2.index2();
-            result(i) += A(i, k)*x(k);
+            for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
+            {
+               int i = it2.index1();
+               int k = it2.index2();
+               result(i) += A(i, k)*x(k);
+            }
          }
+         return result;
       }
-      return result;
+
+      void initJcBlock(
+            const ublas::matrix_range<const ublas::compressed_matrix<double>>& G,
+            const ublas::matrix_range<const ublas::compressed_matrix<double>>& B,
+            ublas::compressed_matrix<double>& Jrr,
+            ublas::compressed_matrix<double>& Jri,
+            ublas::compressed_matrix<double>& Jir,
+            ublas::compressed_matrix<double>& Jii)
+      {
+         Jrr = -G;
+         Jri =  B;
+         Jir = -B;
+         Jii = -G;
+      }
    }
 
    BusNr::BusNr(const std::string& id, BusType type, Phases phases, const ublas::vector<Complex>& V,
-                const ublas::vector<Complex>& Ys, const ublas::vector<Complex>& Ic,
-                const ublas::vector<Complex>& S) :
+         const ublas::vector<Complex>& Ys, const ublas::vector<Complex>& Ic,
+         const ublas::vector<Complex>& S) :
       id_(id),
       type_(type),
       phases_(phases),
@@ -260,19 +277,6 @@ namespace SmartGridToolbox
          P(i) = node.S_.real();
          Q(i) = node.S_.imag();
       }
-   }
-
-   static void initJcBlock(const ublas::matrix_range<const ublas::compressed_matrix<double>>& G,
-                           const ublas::matrix_range<const ublas::compressed_matrix<double>>& B,
-                           ublas::compressed_matrix<double>& Jrr,
-                           ublas::compressed_matrix<double>& Jri,
-                           ublas::compressed_matrix<double>& Jir,
-                           ublas::compressed_matrix<double>& Jii)
-   {
-      Jrr = -G;
-      Jri =  B;
-      Jir = -B;
-      Jii = -G;
    }
 
    /// Set the part of J that doesn't update at each iteration.

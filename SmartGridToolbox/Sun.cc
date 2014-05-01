@@ -5,11 +5,14 @@
 
 namespace SmartGridToolbox
 {
-   // Declaration of some constants
-   static const double twopi = 2*pi;
-   static const double rad = pi/180;
-   static const double dEarthMeanRadius = 6371.01; // km.
-   static const double dAstronomicalUnit = 149597890.0; // km.
+   namespace
+   {
+      // Declaration of some constants
+      const double twopi = 2*pi;
+      const double rad = pi/180;
+      const double dEarthMeanRadius = 6371.01; // km.
+      const double dAstronomicalUnit = 149597890.0; // km.
+   }
 
    SphericalAngles sunPos(posix_time::ptime utcTime, LatLong location)
    {

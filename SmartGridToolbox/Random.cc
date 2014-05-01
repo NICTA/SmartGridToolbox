@@ -7,7 +7,10 @@
 
 namespace SmartGridToolbox
 {
-   static boost::random::mt19937 sRng; // Random number generator.
+   namespace
+   {
+      boost::random::mt19937 sRng; // Random number generator.
+   }
 
    double randDiscrete(const double* probs, int nProbs)
    {

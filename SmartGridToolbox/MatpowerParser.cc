@@ -91,27 +91,30 @@ namespace SmartGridToolbox
       Complex YsPu;  // Per unit.
    };
 
-   static std::string num2PaddedString(int num)
+   namespace
    {
-      std::ostringstream ss;
-      ss << std::setfill('0') << std::setw(5) << num;
-      return ss.str();
-   }
+      std::string num2PaddedString(int num)
+      {
+         std::ostringstream ss;
+         ss << std::setfill('0') << std::setw(5) << num;
+         return ss.str();
+      }
 
-   static std::string busName(const std::string& prefix, int id)
-   {
-      return prefix + "_bus_" + num2PaddedString(id);
-   }
+      std::string busName(const std::string& prefix, int id)
+      {
+         return prefix + "_bus_" + num2PaddedString(id);
+      }
 
-   static std::string zipName(const std::string& prefix, int id)
-   {
-      return prefix + "_zip_" + num2PaddedString(id);
-   }
+      std::string zipName(const std::string& prefix, int id)
+      {
+         return prefix + "_zip_" + num2PaddedString(id);
+      }
 
-   static std::string branchName(const std::string& prefix, int nBranch, int id1, int id2)
-   {
-      return prefix + "_branch_" + num2PaddedString(nBranch) + "_" + num2PaddedString(id1)
-                    + "_" + num2PaddedString(id2);
+      std::string branchName(const std::string& prefix, int nBranch, int id1, int id2)
+      {
+         return prefix + "_branch_" + num2PaddedString(nBranch) + "_" + num2PaddedString(id1)
+            + "_" + num2PaddedString(id2);
+      }
    }
 
    void MatpowerParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
