@@ -8,15 +8,28 @@ namespace SmartGridToolbox
    /// @brief Utility base class for a component that updates with a regular "tick" dt.
    class RegularUpdateComponent : public Component
    {
+      /// @name Overridden member functions from Component.
+      /// @{
+      
+      public:
+         virtual Time validUntil() const override
+         {
+            return time() + dt_;
+         }
+
+      protected:
+         // virtual void initializeState() override;
+         // virtual void updateState(Time t) override;
+
+      /// @}
+
+      /// @name My public member functions.
+      /// @{
+      
       public:
          RegularUpdateComponent(const std::string& name) : Component(name), dt_(posix_time::seconds(0))
          {
             // Empty.
-         }
-
-         virtual Time validUntil() const
-         {
-            return time() + dt_;
          }
 
          Time dt() const
@@ -29,6 +42,8 @@ namespace SmartGridToolbox
             needsUpdate().trigger();
          }
 
+      /// @}
+      
       private:
          Time dt_;
    };

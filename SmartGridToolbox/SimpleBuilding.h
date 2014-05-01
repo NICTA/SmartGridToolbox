@@ -19,6 +19,31 @@ namespace SmartGridToolbox
 
    class SimpleBuilding : public ZipToGroundBase
    {
+      /// @name Overridden member functions from Component.
+      /// @{
+      
+      public:
+         virtual Time validUntil() const override {return time() + dt_;}
+
+      protected:
+         virtual void initializeState() override;
+         virtual void updateState(Time t) override;
+      
+      /// @}
+      
+      /// @name Overridden member functions from ZipToGroundBase.
+      /// @{
+      
+      public:
+         virtual ublas::vector<Complex> Y() const override {return {1, czero};}
+         virtual ublas::vector<Complex> I() const override {return {1, czero};}
+         virtual ublas::vector<Complex> S() const override {return {1, Complex(-Ph_, 0.0)};}
+
+      /// @}
+      
+      /// @name My public member functions.
+      /// @{
+      
       public:
          SimpleBuilding(const std::string& name) :
             ZipToGroundBase(name, Phase::BAL),
@@ -89,26 +114,17 @@ namespace SmartGridToolbox
          double Ph() {return Ph_;}
 
          double dQh() {return dQh_;}
+      
+      /// @}
 
-      // Overridden functions: from ZipToGroundBase.
-      public:
-         virtual ublas::vector<Complex> Y() const override {return {1, czero};}
-         virtual ublas::vector<Complex> I() const override {return {1, czero};}
-         virtual ublas::vector<Complex> S() const override {return {1, Complex(-Ph_, 0.0)};}
-
-      // Overridden functions: from Component.
-      public:
-         virtual Time validUntil() const override {return time() + dt_;}
-
-      protected:
-         virtual void initializeState() override;
-         virtual void updateState(Time t) override;
-
-      // Private member functions:
+      /// @name My private member functions.
+      /// @{
+      
       private:
          void setOperatingParams(Time t);
 
-      // Private member variables:
+      /// @}
+      
       private:
          // Parameters and controls.
          Time dt_;                              // Timestep.

@@ -15,6 +15,21 @@ namespace SmartGridToolbox
 
    class Weather : public RegularUpdateComponent
    {
+      /// @name Overridden member functions from Component.
+      /// @{
+      
+      public:
+         // virtual Time validUntil() const override;
+
+      protected:
+         // virtual void initializeState() override;
+         virtual void updateState(Time t) override;
+      
+      /// @}
+
+      /// @name My member functions.
+      /// @{
+     
       public:
          Weather(const std::string& name) :
             RegularUpdateComponent(name),
@@ -61,10 +76,10 @@ namespace SmartGridToolbox
          }
 
       protected:
-         virtual void updateState(Time t) override;
-
          SolarIrradiance unaveragedIrradiance(const Time& tm) const;
 
+      /// @}
+      
       private:
          LatLong latLong_;
          const TimeSeries<Time, double>* temperatureSeries_;

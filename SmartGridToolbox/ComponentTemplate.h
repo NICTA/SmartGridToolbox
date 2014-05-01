@@ -7,40 +7,30 @@ namespace SmartGridToolbox
 {
    class ComponentTemplate : public Component
    {
+      /// @name Overridden member functions from Component.
+      /// @{
+      
       public:
-         /// @name Lifecycle.
-         /// @{
-         ComponentTemplate(std::string name);
-         virtual ~ComponentTemplate();
-         /// @}
-
-      public:
-         /// @name Public overridden member functions from Component.
-         /// @{
          virtual Time validUntil() const override;
-         /// @}
 
       protected:
-         /// @name Protected overridden member functions from Component.
-         /// @{
          virtual void initializeState() override;
          virtual void updateState(Time t) override;
-         /// @}
+      
+      /// @}
 
+      /// @name My member functions.
+      /// @{
+      
       public:
-         /// @name My public member functions.
-         /// @{
-         /// @}
+         ComponentTemplate(std::string name);
+         virtual ~ComponentTemplate();
 
       private:
-         /// @name My private member functions.
-         /// @{
-         /// @}
+
+      /// @}
 
       private:
-         /// @name My private member data.
-         /// @{
-         /// @}
    }
 }
 

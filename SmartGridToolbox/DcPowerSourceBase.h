@@ -11,9 +11,26 @@ namespace SmartGridToolbox
    /// @ingroup PowerFlowCore
    class DcPowerSourceBase : public Component
    {
+      /// @name Overridden member functions from Component.
+      /// @{
+      
       public:
+         // virtual Time validUntil() const override;
+
+      protected:
+         // virtual void initializeState() override;
+         // virtual void updateState(Time t) override;
+
+      /// @}
+      
+      public:
+      /// @name My public member functions.
+      /// @{
+         
          DcPowerSourceBase(const std::string& name) : Component(name) {}
          virtual double PDc() const = 0;
+
+      /// @}
    };
 }
 

@@ -11,6 +11,21 @@ namespace SmartGridToolbox
 
    class SolarPv : public DcPowerSourceBase
    {
+      /// @name Overridden member functions from Component.
+      /// @{
+
+      public:
+         // virtual Time validUntil() const override;
+
+      protected:
+         // virtual void initializeState() override;
+         // virtual void updateState(Time t) override;
+      
+      /// @}
+
+      /// @name My public member functions.
+      /// @{
+     
       public:
          SolarPv(const std::string& name);
 
@@ -24,7 +39,9 @@ namespace SmartGridToolbox
 
          virtual double PDc() const override;
 
-      public:
+      /// @}
+      
+      private:
          const Weather* weather_;
          double efficiency_;
          SphericalAngles planeNormal_; // TODO : more than one plane?

@@ -4,15 +4,6 @@
 
 namespace SmartGridToolbox
 {
-   void InverterBase::addDcPowerSource(DcPowerSourceBase& source)
-   {
-      dependsOn(source);
-      sources_.push_back(&source);
-      source.didUpdate().addAction([this](){needsUpdate().trigger();},
-            "Trigger InverterBase " + name() + " needs update.");
-      // TODO: this will recalculate all zips. Efficiency?
-   }
-
    void InverterBase::updateState(Time t)
    {
       PDc_ = 0.0;
@@ -20,6 +11,15 @@ namespace SmartGridToolbox
       {
          PDc_ += source->PDc();
       }
+   }
+
+   void InverterBase::addDcPowerSource(DcPowerSourceBase& source)
+   {
+      dependsOn(source);
+      sources_.push_back(&source);
+      source.didUpdate().addAction([this](){needsUpdate().trigger();},
+            "Trigger InverterBase " + name() + " needs update.");
+      // TODO: this will recalculate all zips. Efficiency?
    }
 
    double InverterBase::PPerPhase() const

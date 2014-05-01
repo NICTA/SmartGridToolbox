@@ -11,6 +11,21 @@ namespace SmartGridToolbox
    /// extra grounded neutral wires that will be eliminated via the Kron reduction.
    class OverheadLine : public Branch
    {
+      /// @name Overridden member functions from Component.
+      /// @{
+      
+      public:
+         // virtual Time validUntil() const override;
+
+      protected:
+         // virtual void initializeState() override;
+         // virtual void updateState(Time t) override;
+
+      /// @}
+
+      /// @name My public member functions.
+      /// @{
+         
       public:
          /// @brief Constructor.
          /// @param phases0 The phases on side A of the line.
@@ -35,9 +50,16 @@ namespace SmartGridToolbox
             return ZPhase_;
          }
 
+      /// @}
+      
+      /// @name My private member functions.
+      /// @{
+      
       private:
          void recalcY();
 
+      /// @}
+      
       private:
          double L_;                      ///< Length.
          int nNeutral_;                  ///< Internal multigrounded neutral lines.

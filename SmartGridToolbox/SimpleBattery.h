@@ -12,6 +12,36 @@ namespace SmartGridToolbox
    /// @brief Basic battery class, deriving from DCPowerSourceBase.
    class SimpleBattery : public DcPowerSourceBase
    {
+      /// @name Overridden member functions from Component.
+      /// @{
+      
+      public:
+         virtual Time validUntil() const override
+         {
+            return time() + dt_;
+         }
+
+      protected:
+         virtual void initializeState() override
+         {
+            charge_ = initCharge_;
+         }
+
+         virtual void updateState(Time t) override;
+
+      /// @}
+
+      /// @name Overridden member functions from DcPowerSourceBase.
+      /// @{
+      
+      public:
+         virtual double PDc() const override; ///< Positive = charging.
+
+      /// @}
+
+      /// @name My public member functions.
+      /// @{
+      
       public:
          SimpleBattery(const std::string& name) :
             DcPowerSourceBase(name),
@@ -55,29 +85,11 @@ namespace SmartGridToolbox
 
          double internalPower();
 
-      // Overridden functions: from Component.
-      protected:
-         virtual void initializeState() override
-         {
-            charge_ = initCharge_;
-         }
+      /// @}
 
-         virtual void updateState(Time t) override;
-
-         virtual Time validUntil() const override
-         {
-            return time() + dt_;
-         }
-
-      // Overridden functions: from DCPowerSourceBase.
-      public:
-         virtual double PDc() const override; ///< Positive = charging.
-
-
-      // Member variables.
       private:
          // Parameters.
-         Time dt_;                           // Timestep.
+         Time dt_; ///< Timestep.
          double initCharge_;
          double maxCharge_;
          double maxChargePower_;

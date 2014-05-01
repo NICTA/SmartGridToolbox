@@ -30,6 +30,7 @@ namespace SmartGridToolbox
 
    /// @name Reporting and errors.
    /// @{
+   
    inline std::ostream& messageStream() {return std::cout;}
    inline std::ostream& warningStream() {return std::cerr;}
    inline std::ostream& errorStream() {return std::cerr;}
@@ -41,21 +42,27 @@ namespace SmartGridToolbox
    inline std::ostream& debug() {return debugStream()      <<  "DEBUG:  \t";}
 
    inline void abort() {std::cerr << "ABORTING." << std::endl; ::abort();}
+   
    /// @}
 
    /// @name Constant dimension 1D array type.
    /// @{
+   
    template <class T, size_t N> using Array = std::array<T, N>; // Just std::array but rename for nice consistency.
+   
    /// @}
 
    /// @name Constant dimension 2D array type.
    /// @{
+   
    // Note transposition of NR and NC to obey standard matrix index order.
    template <class T, size_t NR, size_t NC> using Array2D = std::array<std::array<T, NC>, NR>;
+   
    /// @}
 
    /// @name Complex numbers
    /// @{
+   
    typedef std::complex<double> Complex;
 
    inline Complex polar(double m, double theta) // theta is radians.
@@ -79,10 +86,12 @@ namespace SmartGridToolbox
    Complex string2Complex(const std::string& s);
 
    std::string complex2String(const Complex& c);
+   
    /// @}
 
    /// @name Linear algebra
    /// @{
+   
    namespace ublas = boost::numeric::ublas;
 
    template<class T>
@@ -113,10 +122,12 @@ namespace SmartGridToolbox
       ss << "]";
       return os << ss.str();
    }
+
    /// @}
 
    /// @name Time
    /// @{
+   
    namespace posix_time = boost::posix_time;
    namespace gregorian = boost::gregorian;
    namespace local_time = boost::local_time;
@@ -151,10 +162,12 @@ namespace SmartGridToolbox
    {
       return (utcTimeFromLocalTime(localTime, localTz) - epoch);
    }
+
    /// @}
 
    /// @name LatLongs
    /// @{
+   
    class LatLong
    {
       public:
@@ -166,6 +179,7 @@ namespace SmartGridToolbox
 
    /// @name Constants
    /// @{
+   
    extern const double pi;
    extern const double negInfinity;
    extern const double infinity;
@@ -184,10 +198,12 @@ namespace SmartGridToolbox
    extern const double K;
    extern const Complex czero;
    extern const LatLong Greenwich;
+   
    /// @}
 
    /// @name Basic vector algebra in n dimensions.
    /// @{
+   
    template<typename T, std::size_t d> double dot(const Array<T, d>& v1, const Array<T, d>& v2)
    {
       T result(0.0);
@@ -220,6 +236,7 @@ namespace SmartGridToolbox
       for (std::size_t i = 0; i < d; ++i) result[i] -= rhs[i];
       return result;
    }
+   
    /// @}
 
    /// @}

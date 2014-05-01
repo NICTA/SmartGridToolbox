@@ -29,20 +29,47 @@ namespace SmartGridToolbox
    /// @ingroup Core
    class Component
    {
+      /// @name Member functions which derived classes may override.
+      /// @{
+      
       public:
-         /// @name Lifecycle
-         /// @{
+
+         /// @brief What is the latest time that I should update?
+         virtual Time validUntil() const
+         {
+            return posix_time::pos_infin;
+         }
+
+      protected:
+
+         /// @brief Reset state of the object, time will be at negative infinity.
+         virtual void initializeState()
+         {
+            // Empty.
+         }
+
+         /// @brief Bring state up to time current time.
+         virtual void updateState(Time t)
+         {
+            // Empty.
+         }
+      /// @}
+
+      public:
+
+      /// @name Lifecycle
+      /// @{
 
          /// @brief Constructor.
          explicit Component(const std::string& name);
 
          /// @brief Destructor.
          virtual ~Component() = 0;
+      
+      /// @}
 
-         /// @}
-
-         /// @name Name
-         /// @{
+      /// @name Name
+      /// @{
 
          /// @brief Get the name of the object.
          const std::string& name() const
@@ -56,10 +83,10 @@ namespace SmartGridToolbox
             name_ = name;
          }
 
-         /// @}
+      /// @}
 
-         /// @name Timestepping
-         /// @{
+      /// @name Timestepping
+      /// @{
 
          /// @brief Get the current step for the object.
          Time time() const
@@ -67,11 +94,11 @@ namespace SmartGridToolbox
             return time_;
          }
 
-         /// @}
+      /// @}
 
-         /// @name Rank
-         /// @brief Rank: A < B means B depends on A, not vice-versa, so A should go first.
-         /// @{
+      /// @name Rank
+      /// @brief Rank: A < B means B depends on A, not vice-versa, so A should go first.
+      /// @{
 
          /// @brief Get the rank of the object.
          int rank() const
@@ -85,10 +112,10 @@ namespace SmartGridToolbox
             rank_ = rank;
          }
 
-         /// @}
+      /// @}
 
-         /// @name Dependencies.
-         ///@{
+      /// @name Dependencies.
+      /// @{
 
          const std::vector<const Component*>& dependencies() const
          {
@@ -101,10 +128,10 @@ namespace SmartGridToolbox
             dependencies_.push_back(&b);
          }
 
-         /// @}
+      /// @}
 
-         /// @name Simulation
-         /// @{
+      /// @name Simulation
+      /// @{
 
          /// @brief Initialize state of the object.
          ///
@@ -116,15 +143,10 @@ namespace SmartGridToolbox
          /// @brief Bring state up to time t.
          void update(Time t);
 
-         virtual Time validUntil() const
-         {
-            return posix_time::pos_infin;
-         }
+      /// @}
 
-         /// @}
-
-         /// @name Events
-         /// @{
+      /// @name Events
+      /// @{
 
          /// @brief Triggered just before my update.
          Event& willUpdate() {return willUpdate_;}
@@ -140,25 +162,11 @@ namespace SmartGridToolbox
 
          /// @brief Triggered when I just updated, completing the current timestep.
          Event& didCompleteTimestep() {return didCompleteTimestep_;}
-         /// @}
 
-         /// @}
+      /// @}
 
       protected:
          typedef std::vector<const Component*> ComponentVec;
-
-      protected:
-         /// @brief Reset state of the object, time will be at negative infinity.
-         virtual void initializeState()
-         {
-            // Empty.
-         }
-
-         /// @brief Bring state up to time current time.
-         virtual void updateState(Time t)
-         {
-            // Empty.
-         }
 
       private:
          std::string name_;

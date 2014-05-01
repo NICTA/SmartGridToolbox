@@ -11,11 +11,28 @@ namespace SmartGridToolbox
    /// @ingroup PowerFlowCore
    class ZipToGroundBase : public Component
    {
+      /// @name Overridden member functions from Component.
+      /// @{
+      
+      public:
+         // virtual Time validUntil() const override;
+
+      protected:
+         // virtual void initializeState() override;
+         // virtual void updateState(Time t) override;
+      
+      /// @}
+
+      /// @name My member functions.
+      /// @{
+      
       public:
          ZipToGroundBase(const std::string& name, const Phases& phases) : Component(name), phases_(phases)
          {
             // Empty.
          }
+
+         virtual ~ZipToGroundBase() {}
 
          virtual const Phases& phases() const {return phases_;}
 

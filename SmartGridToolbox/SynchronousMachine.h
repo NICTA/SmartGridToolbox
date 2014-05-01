@@ -7,40 +7,28 @@ namespace SmartGridToolbox
 {
    class SynchronousMachine : public Component
    {
+      /// @name Overridden member functions from Component.
+      /// @{
+      
       public:
-         /// @name Lifecycle.
-         /// @{
-         SynchronousMachine(std::string name);
-         virtual ~SynchronousMachine();
-         /// @}
-
-      public:
-         /// @name Public overridden member functions from Component.
-         /// @{
-         virtual Time validUntil() const override;
-         /// @}
-
+         virtual Time validUntil() const override {return posix_time::pos_infin}
+         
       protected:
-         /// @name Protected overridden member functions from Component.
-         /// @{
          virtual void initializeState() override;
          virtual void updateState(Time t) override;
-         /// @}
 
+      /// @}
+
+      /// @name My member functions.
+      /// @{
+         
       public:
-         /// @name My public member functions.
-         /// @{
-         /// @}
+         SynchronousMachine(std::string name);
+         virtual ~SynchronousMachine();
+
+      /// @}
 
       private:
-         /// @name My private member functions.
-         /// @{
-         /// @}
-      
-      private:
-         /// @name My private member data.
-         /// @{
-         /// @}
    }
 }
 

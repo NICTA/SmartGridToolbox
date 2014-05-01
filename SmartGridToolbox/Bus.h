@@ -18,27 +18,39 @@ namespace SmartGridToolbox
    {
       friend class BusParser;
 
+      /// @name Overridden member functions from Component.
+      /// @{
+
       public:
-         /// @name Lifecycle.
-         /// @{
+         // virtual Time validUntil() const override;
 
+      protected:
+         virtual void initializeState() override;
+         virtual void updateState(Time t) override;
+      
+      /// @}
+      
+      public:
+      /// @name Lifecycle.
+      /// @{
+         
          Bus(const std::string& name, BusType type, const Phases& phases, const ublas::vector<Complex>& nominalV);
+      
+      /// @}
 
-         /// @}
-
-         /// @name Basic info.
-         /// @{
-
+      /// @name Basic info.
+      /// @{
+         
          BusType type() const {return type_;}
          const Phases& phases() const {return phases_;}
          const ublas::vector<Complex>& nominalV() const {return nominalV_;}
+      
+      /// @}
 
-         /// @}
-
-         /// @name Real generated power setpoints.
-         ///< Equality for SL, PV, bounds for PQ.
-         /// @{
-
+      /// @name Real generated power setpoints.
+      ///< Equality for SL, PV, bounds for PQ.
+      /// @{
+         
          ublas::vector<double> PgSetpoint() const
          {
             return PgSetpoint_;
@@ -59,13 +71,13 @@ namespace SmartGridToolbox
          }
 
          void setPgMaxSetpoint(const ublas::vector<double>& PgMaxSetpoint);
+      
+      /// @}
 
-         /// @}
-
-         /// @name Reactive generated power setpoints.
-         ///< Equality for SL, PV, bounds for PQ.
-         /// @{
-
+      /// @name Reactive generated power setpoints.
+      ///< Equality for SL, PV, bounds for PQ.
+      /// @{
+         
          ublas::vector<double> QgSetpoint() const
          {
             return QgSetpoint_;
@@ -86,13 +98,13 @@ namespace SmartGridToolbox
          }
 
          void setQgMaxSetpoint(const ublas::vector<double>& QgMaxSetpoint);
+      
+      /// @}
 
-         /// @}
-
-         /// @name Voltage magnitude setpoints.
-         ///< Equality for SL, PV, bounds for PQ.
-         /// @{
-
+      /// @name Voltage magnitude setpoints.
+      ///< Equality for SL, PV, bounds for PQ.
+      /// @{
+         
          ublas::vector<double> VMagSetpoint() const
          {
             return VMagSetpoint_;
@@ -113,13 +125,13 @@ namespace SmartGridToolbox
          }
 
          void setVMagMaxSetpoint(const ublas::vector<double>& VMagMaxSetpoint);
+      
+      /// @}
 
-         /// @}
-
-         /// @name Voltage angle (radians) setpoints.
-         ///< Equality for SL, PV, bounds for PQ.
-         /// @{
-
+      /// @name Voltage angle (radians) setpoints.
+      ///< Equality for SL, PV, bounds for PQ.
+      /// @{
+         
          ublas::vector<double> VAngSetpoint() const
          {
             return VAngSetpoint_;
@@ -140,17 +152,21 @@ namespace SmartGridToolbox
          }
 
          void setVAngMaxSetpoint(const ublas::vector<double>& VAngMaxSetpoint);
+      
+      /// @}
 
-         /// @}
-
-         /// @name Apply setpoints.
+      /// @name Apply setpoints.
+      /// @{
+         
          /// @brief Set quantities such as voltage, power according to the setpoints.
          void applySetpoints();
 
-         /// @name Loads/constant power generation.
-         ///< ZIP = constant Z, I, P (or Y, I, S).
-         /// @{
-
+      /// @}
+      
+      /// @name Loads/constant power generation.
+      /// ZIP = constant Z, I, P (or Y, I, S).
+      /// @{
+         
          const std::vector<ZipToGroundBase*>& zipsToGround() const {return zipsToGround_;}
 
          void addZipToGround(ZipToGroundBase& zipToGround);
@@ -163,12 +179,12 @@ namespace SmartGridToolbox
 
          /// @brief Total constant power injection (sum of ZIPs).
          const ublas::vector<Complex>& Sc() const {return Sc_;}
+      
+      /// @}
 
-         /// @}
-
-         /// @name State.
-         /// @{
-
+      /// @name State.
+      /// @{
+         
          /// @brief Get bus voltage.
          const ublas::vector<Complex>& V() const {return V_;}
 
@@ -183,20 +199,16 @@ namespace SmartGridToolbox
 
          /// @brief Total power injection (Sc() + Sg()).
          const ublas::vector<Complex> STot() const {return Sc_ + Sg_;}
+      
+      /// @}
 
-         /// @}
-
-         /// @name Events.
-         /// @{
-
+      /// @name Events.
+      /// @{
+         
          /// @brief Event triggered when bus (e.g. setpoint) has changed.
          Event& changed() {return changed_;}
-
-         /// @}
-
-      protected:
-         virtual void initializeState() override;
-         virtual void updateState(Time t) override;
+      
+      /// @}
 
       private:
          BusType type_;                                ///< Bus type.
@@ -221,30 +233,29 @@ namespace SmartGridToolbox
 
          std::vector<ZipToGroundBase*> zipsToGround_;  ///< ZIP loads of generation.
 
-         /// @name Bus Quantities
-         /// @brief Quantities due to operation of bus.
-         ///
-         /// For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_.
-         /// Thus Sgen_ will be zero. For PV busses, the reactive power is supposed to adjust to keep the voltage
-         /// magnitude constant. So Sgen_ will in general have zero real power and nonzero reactive power.
-         /// For slack busses, the both the real and reactive power will adjust to keep a constant voltage,
-         /// both components of Sg may be nonzero.
-         /// @{
+      /// @name Bus Quantities
+      /// @brief Quantities due to operation of bus.
+      ///
+      /// For PQ busses, the voltage is supposed to adjust so that the power injection matches Sc_.
+      /// Thus Sgen_ will be zero. For PV busses, the reactive power is supposed to adjust to keep the voltage
+      /// magnitude constant. So Sgen_ will in general have zero real power and nonzero reactive power.
+      /// For slack busses, the both the real and reactive power will adjust to keep a constant voltage,
+      /// both components of Sg may be nonzero.
+      /// @{
          ublas::vector<Complex> V_;  ///< Voltage.
          ublas::vector<Complex> Sg_; ///< Generator power.
-         /// @}
+      /// @}
 
-         /// @name cached ZIP load quantities:
-         /// @{
+      /// @name cached ZIP load quantities:
+      /// @{
          ublas::vector<Complex> Ys_; ///< Constant admittance shunt (loads).
          ublas::vector<Complex> Ic_; ///< Constant current injection (loads).
          ublas::vector<Complex> Sc_; ///< Constant power injection (loads).
-         /// @}
+      /// @}
 
-         /// @name Events:
-         /// @{
+      /// @name Events:
+      /// @{
          Event changed_;
-         /// @}
       /// @}
    };
 }

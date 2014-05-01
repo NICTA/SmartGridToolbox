@@ -13,16 +13,31 @@ namespace SmartGridToolbox
    /// @ingroup PowerFlowCore
    class InverterBase : public ZipToGroundBase
    {
+      /// @name Overridden member functions from Component.
+      /// @{
+      
       public:
-         virtual ublas::vector<Complex> Y() const override {return ublas::vector<Complex>(phases().size(), czero);}
-         virtual ublas::vector<Complex> I() const override {return ublas::vector<Complex>(phases().size(), czero);}
-         virtual ublas::vector<Complex> S() const override = 0;
+         virtual Time validUntil() const override;
 
+      protected:
+         virtual void initializeState() override;
+         virtual void updateState(Time t) override;
+
+      /// @}
+      
       public:
+      /// @name My public member functions.
+      /// @{
+         
          InverterBase(const std::string& name, const Phases& phases) : ZipToGroundBase(name, phases), PDc_(0.0)
          {
             // Empty.
          }
+         
+         virtual ublas::vector<Complex> Y() const override {return ublas::vector<Complex>(phases().size(), czero);}
+         virtual ublas::vector<Complex> I() const override {return ublas::vector<Complex>(phases().size(), czero);}
+         virtual ublas::vector<Complex> S() const override = 0;
+
 
          void addDcPowerSource(DcPowerSourceBase& source);
 
@@ -30,9 +45,8 @@ namespace SmartGridToolbox
 
          /// @brief Real power output, per phase.
          virtual double PPerPhase() const;
-
-      protected:
-         virtual void updateState(Time t) override;
+         
+      /// @}
 
       private:
          std::vector<const DcPowerSourceBase*> sources_;    ///< My DC power sources.

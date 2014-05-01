@@ -10,6 +10,21 @@ namespace SmartGridToolbox
    /// Equivalent to a single phase transformer on each phase.
    class YyTransformer : public Branch
    {
+      /// @name Overridden member functions from Component.
+      /// @{
+      
+      public:
+         // virtual Time validUntil() const override;
+
+      protected:
+         // virtual void initializeState() override;
+         // virtual void updateState(Time t) override;
+      
+      /// @}
+
+      /// @name My member functions.
+      /// @{
+      
       public:
          YyTransformer(const std::string& name, Phases phases0, Phases phases1,
                        Complex a, Complex ZL, Complex YM);
@@ -17,6 +32,8 @@ namespace SmartGridToolbox
       private:
          void recalcY();
 
+      /// @}
+      
       private:
          Complex a_;  ///< Complex turns ratio, n0/n1.
          Complex YL_; ///< Series leakage impedance.

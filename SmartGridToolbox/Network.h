@@ -19,7 +19,22 @@ namespace SmartGridToolbox
       private:
          typedef std::map<std::string, Bus*> BusMap;
 
+      /// @name Overridden member functions from Component.
+      /// @{
+      
       public:
+         // virtual Time validUntil() const override;
+
+      protected:
+         // virtual void initializeState() override;
+         virtual void updateState(Time t) override;
+
+      /// @}
+
+      public:
+      /// @name My public member functions.
+      /// @{
+         
          Network(const std::string& name, double freq) : Component(name), freq_(freq) {}
 
          double freq() const {return freq_;}
@@ -46,9 +61,8 @@ namespace SmartGridToolbox
 
          friend std::ostream& operator<<(std::ostream& os, const Network& nw);
 
-      protected:
-         virtual void updateState(Time t) override;
-
+      /// @}
+      
       private:
          double freq_;
          BusVec busVec_;
