@@ -11,7 +11,7 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         virtual Time validUntil() const override {return posix_time::pos_infin}
+         // virtual Time validUntil() const override;
          
       protected:
          virtual void initializeState() override;
@@ -26,9 +26,13 @@ namespace SmartGridToolbox
          SynchronousMachine(std::string name);
          virtual ~SynchronousMachine();
 
+         void addToNetwork(Network& nw);
+
       /// @}
 
       private:
+         Bus bus_;
+         Branch branch_;
    }
 }
 
