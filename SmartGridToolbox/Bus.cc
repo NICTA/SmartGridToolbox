@@ -39,17 +39,9 @@ namespace SmartGridToolbox
       phases_(phases),
       nominalV_(nominalV),
       PgSetpoint_(ublas::vector<double>(phases.size(), 0.0)),
-      PgMinSetpoint_(ublas::vector<double>(phases.size(), negInfinity)),
-      PgMaxSetpoint_(ublas::vector<double>(phases.size(), infinity)),
       QgSetpoint_(ublas::vector<double>(phases.size(), 0.0)),
-      QgMinSetpoint_(ublas::vector<double>(phases.size(), negInfinity)),
-      QgMaxSetpoint_(ublas::vector<double>(phases.size(), infinity)),
       VMagSetpoint_(ublas::vector<double>(phases.size(), 0.0)),
-      VMagMinSetpoint_(ublas::vector<double>(phases.size(), negInfinity)),
-      VMagMaxSetpoint_(ublas::vector<double>(phases.size(), infinity)),
       VAngSetpoint_(ublas::vector<double>(phases.size(), 0.0)),
-      VAngMinSetpoint_(ublas::vector<double>(phases.size(), negInfinity)),
-      VAngMaxSetpoint_(ublas::vector<double>(phases.size(), infinity)),
       V_(nominalV),
       Sg_(ublas::vector<Complex>(phases.size(), czero)),
       Ys_(ublas::vector<Complex>(phases.size(), czero)),
@@ -75,26 +67,6 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setPgMinSetpoint(const ublas::vector<double>& PgMinSetpoint)
-   {
-      if (PgMinSetpoint.size() != phases_.size())
-      {
-         error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
-      }
-      PgMinSetpoint_ = PgMinSetpoint;
-      changed().trigger();
-   }
-
-   void Bus::setPgMaxSetpoint(const ublas::vector<double>& PgMaxSetpoint)
-   {
-      if (PgMaxSetpoint.size() != phases_.size())
-      {
-         error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
-      }
-      PgMaxSetpoint_ = PgMaxSetpoint;
-      changed().trigger();
-   }
-
    void Bus::setQgSetpoint(const ublas::vector<double>& QgSetpoint)
    {
       if (QgSetpoint.size() != phases_.size())
@@ -102,26 +74,6 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       QgSetpoint_ = QgSetpoint;
-      changed().trigger();
-   }
-
-   void Bus::setQgMinSetpoint(const ublas::vector<double>& QgMinSetpoint)
-   {
-      if (QgMinSetpoint.size() != phases_.size())
-      {
-         error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
-      }
-      QgMinSetpoint_ = QgMinSetpoint;
-      changed().trigger();
-   }
-
-   void Bus::setQgMaxSetpoint(const ublas::vector<double>& QgMaxSetpoint)
-   {
-      if (QgMaxSetpoint.size() != phases_.size())
-      {
-         error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
-      }
-      QgMaxSetpoint_ = QgMaxSetpoint;
       changed().trigger();
    }
 
@@ -135,26 +87,6 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void Bus::setVMagMinSetpoint(const ublas::vector<double>& VMagMinSetpoint)
-   {
-      if (VMagMinSetpoint.size() != phases_.size())
-      {
-         error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
-      }
-      VMagMinSetpoint_ = VMagMinSetpoint;
-      changed().trigger();
-   }
-
-   void Bus::setVMagMaxSetpoint(const ublas::vector<double>& VMagMaxSetpoint)
-   {
-      if (VMagMaxSetpoint.size() != phases_.size())
-      {
-         error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
-      }
-      VMagMaxSetpoint_ = VMagMaxSetpoint;
-      changed().trigger();
-   }
-
    void Bus::setVAngSetpoint(const ublas::vector<double>& VAngSetpoint)
    {
       if (VAngSetpoint.size() != phases_.size())
@@ -162,26 +94,6 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       VAngSetpoint_ = VAngSetpoint;
-      changed().trigger();
-   }
-
-   void Bus::setVAngMinSetpoint(const ublas::vector<double>& VAngMinSetpoint)
-   {
-      if (VAngMinSetpoint.size() != phases_.size())
-      {
-         error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
-      }
-      VAngMinSetpoint_ = VAngMinSetpoint;
-      changed().trigger();
-   }
-
-   void Bus::setVAngMaxSetpoint(const ublas::vector<double>& VAngMaxSetpoint)
-   {
-      if (VAngMaxSetpoint.size() != phases_.size())
-      {
-         error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
-      }
-      VAngMaxSetpoint_ = VAngMaxSetpoint;
       changed().trigger();
    }
 

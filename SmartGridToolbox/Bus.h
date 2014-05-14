@@ -58,20 +58,6 @@ namespace SmartGridToolbox
 
          void setPgSetpoint(const ublas::vector<double>& PgSetpoint);
 
-         ublas::vector<double> PgMinSetpoint() const
-         {
-            return PgMinSetpoint_;
-         }
-
-         void setPgMinSetpoint(const ublas::vector<double>& PgMinSetpoint);
-
-         ublas::vector<double> PgMaxSetpoint() const
-         {
-            return PgMaxSetpoint_;
-         }
-
-         void setPgMaxSetpoint(const ublas::vector<double>& PgMaxSetpoint);
-      
       /// @}
 
       /// @name Reactive generated power setpoints.
@@ -85,20 +71,6 @@ namespace SmartGridToolbox
 
          void setQgSetpoint(const ublas::vector<double>& QgSetpoint);
 
-         ublas::vector<double> QgMinSetpoint() const
-         {
-            return QgMinSetpoint_;
-         }
-
-         void setQgMinSetpoint(const ublas::vector<double>& QgMinSetpoint);
-
-         ublas::vector<double> QgMaxSetpoint() const
-         {
-            return QgMaxSetpoint_;
-         }
-
-         void setQgMaxSetpoint(const ublas::vector<double>& QgMaxSetpoint);
-      
       /// @}
 
       /// @name Voltage magnitude setpoints.
@@ -112,20 +84,6 @@ namespace SmartGridToolbox
 
          void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint);
 
-         ublas::vector<double> VMagMinSetpoint() const
-         {
-            return VMagMinSetpoint_;
-         }
-
-         void setVMagMinSetpoint(const ublas::vector<double>& VMagMinSetpoint);
-
-         ublas::vector<double> VMagMaxSetpoint() const
-         {
-            return VMagMaxSetpoint_;
-         }
-
-         void setVMagMaxSetpoint(const ublas::vector<double>& VMagMaxSetpoint);
-      
       /// @}
 
       /// @name Voltage angle (radians) setpoints.
@@ -139,20 +97,6 @@ namespace SmartGridToolbox
 
          void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint);
 
-         ublas::vector<double> VAngMinSetpoint() const
-         {
-            return VAngMinSetpoint_;
-         }
-
-         void setVAngMinSetpoint(const ublas::vector<double>& VAngMinSetpoint);
-
-         ublas::vector<double> VAngMaxSetpoint() const
-         {
-            return VAngMaxSetpoint_;
-         }
-
-         void setVAngMaxSetpoint(const ublas::vector<double>& VAngMaxSetpoint);
-      
       /// @}
 
       /// @name Apply setpoints.
@@ -213,23 +157,13 @@ namespace SmartGridToolbox
       private:
          BusType type_;                                ///< Bus type.
          Phases phases_;                               ///< Phases.
-         ublas::vector<Complex> nominalV_;             ///< Nominal voltage.
+         ublas::vector<Complex> nominalV_;             ///< Nominal/base voltage.
 
          ublas::vector<double> PgSetpoint_;            ///< For PQ or PV bus.
-         ublas::vector<double> PgMinSetpoint_;         ///< For SL bus.
-         ublas::vector<double> PgMaxSetpoint_;         ///< For SL bus.
-
          ublas::vector<double> QgSetpoint_;            ///< For PQ bus.
-         ublas::vector<double> QgMinSetpoint_;         ///< For PV or SL bus.
-         ublas::vector<double> QgMaxSetpoint_;         ///< For PV or SL bus.
-
          ublas::vector<double> VMagSetpoint_;          ///< For PV or SL bus.
-         ublas::vector<double> VMagMinSetpoint_;       ///< For PQ bus.
-         ublas::vector<double> VMagMaxSetpoint_;       ///< For PQ bus.
 
-         ublas::vector<double> VAngSetpoint_;          ///< For SL bus.
-         ublas::vector<double> VAngMinSetpoint_;       ///< For PV bus.
-         ublas::vector<double> VAngMaxSetpoint_;       ///< For PV bus.
+         ublas::vector<double> VAngSetpoint_;          ///< For SL bus only.
 
          std::vector<ZipToGroundBase*> zipsToGround_;  ///< ZIP loads of generation.
 
