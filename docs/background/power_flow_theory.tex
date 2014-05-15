@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 
-\usepackage{amsmath}
+\usepackage{dsfont}
+\usepackage{amssymb}
 \usepackage{mathtools}
 \usepackage{geometry}
 \geometry{a4paper}
@@ -12,8 +13,17 @@
 \lstset{language = C++}
 \usepackage{url}
 
-\newcommand{\re}[1]{{{#1}_R}}
-\newcommand{\im}[1]{{{#1}_I}}
+\newcommand{\re}[1]{\ensuremath{\operatorname{Re}(#1)}}
+\newcommand{\im}[1]{\ensuremath{\operatorname{Im}(#1)}}
+
+\newcommand{\Vr}{\ensuremath{U}}
+\newcommand{\Vi}{\ensuremath{W}}
+\newcommand{\Ir}{\ensuremath{H}}
+\newcommand{\Ii}{\ensuremath{K}}
+\newcommand{\Sr}{\ensuremath{P}}
+\newcommand{\Si}{\ensuremath{Q}}
+
+\newcommand{\Id}{\mathds{1}}
 
 \title{Power Flow Theory}
 \author{Dan Gordon}
@@ -24,42 +34,66 @@
 
 \section{Nomenclature}
 \begin{align*}
-y_{ik} &= g_{ik} + jb_{ik} = \text{complex admittance along branch $ik$.} \\
+V &= \Vr + jW = \text{complex voltage.} \\
+I &= \Ir + j\Ii = \text{complex current.} \\
+S &= P + jQ = \text{complex power.} \\
+y &= g + jb = \text{a complex admittance.} \\
+Z &= R + jX = \text{a complex impedance.} \\
+Y &= G + jB = \text{nodal admittance matrix.} \\
+y_{ik} &= \text{complex admittance along branch $ik$.} \\
 Y_{ik} &= G_{ik} + jB_{ik} = \text{nodal admittance matrix element $i, k$.} \\
 &= 
 	\begin{cases}
 		-y_{ik}&\text{if $i \ne k$} \\
 		y_i + \sum_l y_{il}& \text{if $i = k$}
 	\end{cases} \\
-V_i &= \text{complex voltage at bus $i$.} \\
-M_i &= \text{voltage magnitude at bus $i$, $M_i := |V_i|$.} \\
-I_{\text{br}i} &= \text{complex current injection from branches at bus $i$.} \\
-I_{\text{ld}i} &= \text{total complex current injection from load at bus $i$.} \\
-I_{\text{bus}i} &= \text{complex current injection due to the bus at bus $i$.} \\
-S_{\text{bus}i} &= \text{complex power injection due to bus $i$.} \\
+I_{\text{br},i} &= \text{complex current injection from branches at bus $i$.} \\
+I_{\text{zip},i} &= \text{total complex current injection from load at bus $i$.} \\
+I_{\text{gen},i} &= \text{complex current injection due to the voltage controlled generation at bus $i$.} \\
+S_{\text{gen},i} &= \text{complex power injection due to the voltage controlled generation at bus $i$.} \\
 S_{ci} &= \text{constant power component of load at bus $i$.} \\
 I_{ci} &= \text{constant current injection component of load.} \\
 y_{ci} &= \text{constant impedance component of load.} \\
+\theta_{i} &= \text{the voltage angle of bus $i$.} \\
+\theta_{ik} &= \theta_i - \theta_k = \text{the voltage angle difference between busses $i$ and $k$.} \\
 \delta_{ik} &= \text{the Kronecker delta, $\delta_{ik} = 1$ if $i = k$, 0 otherwise.}
 \end{align*}
 
-\section{Power flow equations in current form}
-For simplicity, we write all bus quantities as injections \emph{into} the bus. Thus a normal load will use quantities expressed as negative injections, while a generator will have positive injections.
+\section{Problem description}
+The network is represented as a graph, with the nodes being \emph{busses} and the arcs being \emph{branches}. Busses are considered points at which there is a single value of voltage $V$. \emph{Ground} is considered to have zero voltage and can be considered as a special implicit bus. 
 
-Each bus has an associated load, containing a constant power component, a constant current component, and a constant shunt impedance current. As well as receiving injections from branches and loads, busses provide their own injections according to their bus type. PQ busses provide a specified complex power injection. PV busses instead keep the voltage magnitude of the bus constant while providing a specified real power injection. Slack busses keep the complex voltage of the bus constant.
+Power/current flows into the busses via branches, and also in the form of current injections at busses. The relationship between power, current and voltage is $S = I^*V$, so we can interchangeably talk about power and current flow, since one can be transformed into the other. Also, the impedance of a flow is defined by Ohm's law $V = IZ$, or $I = VY$ where $Y = 1/Z$. We use the convention that all flows into/out of busses are specified as injections: that is, positive is power or current flowing into the bus and negative is power or current flowing out of the bus.
+
+\emph{Loads} and \emph{generation} at a bus are current flows between ground and the bus.
+
+Load injections from ground at a bus can often be modeled as:
+\begin{align}
+	I = I_c + \frac{S^*_c}{V^*}  + VY_c
+\end{align}
+This is the \emph{ZIP} model: constant current, impedance, and power components. This is a good model for many types of load, but could also model certain types of generation - e.g. fixed power generation. However, we will always refer to this kind of generation as a negative load.
+
+Generators may apply some kind of additional voltage control on the bus. Normally, we consider two types of generator busses: slack or swing generators, where the total complex voltage is kept fixed by injecting variable $P$ or $Q$, and $PV$ or voltage-controlled busses, where the voltage magnitude $V$ and power $P$ are kept fixed while injecting a variable current\footnote{Note that the voltage angle is relative to the slack bus, and so is a non-local property of the network, hence it usually does not make sense to control it anywhere except at the slack bus.}. A bus without any voltage control is a PQ bus, where the injections are purely determined by the ZIP loads.
+
+In summary, all busses may have a constant ZIP load associated with them. In theory, this ZIP load can correspond to generation, if the total $P$ injection from the ZIP is positive. There are three types of busses. For PQ busses, the power/current injection is just that of the ZIP, and $V$ is free to vary. For SL (slack/swing/infinite) busses, there is additional current injected to keep the complex voltage constant. For PV busses, there is additional current applied to keep the bus at a constant voltage magnitude $|V|$ and constant real power $P$.
+
+\section{Power flow equations in current form}
+As mentioned before, we write all bus quantities as injections \emph{into} the bus. Thus a normal load will use quantities expressed as negative injections, while a generator will have positive injections.
+
+Each bus has an associated ZIP load. As well as receiving injections from branches and loads, busses may provide their own injections according to their bus type. PQ busses just apply the ZIP load while letting $V$ vary freely. PV busses instead keep the voltage magnitude of the bus constant while providing a specified real power injection. Slack busses keep the complex voltage of the bus constant.
 
 The total current injection into bus $i$ is:
 \begin{align}
-I_i &= I_{\text{br}, i} + I_{\text{ld}i} + I_{\text{bus}, i} = 0\\
-I_{\text{bri}} &= -\sum_{k=0}^NY_{ik}V_k \\
-I_{\text{ld}i} &= \frac{S^*_{ci}}{V^*_i} + I_{ci} - y_{ci}V_i \\
-I_{\text{bus}i} &= \frac{S^*_{\text{bus}i}}{V^*_i}
+I_i &= I_{\text{br}, i} + I_{\text{zip},i} + I_{\text{gen}, i} = 0\\
+I_{\text{br},i} &= -\sum_{k=0}^NY_{ik}V_k \\
+I_{\text{zip},i} &= \frac{S^*_{ci}}{V^*_i} + I_{ci} - y_{ci}V_i \\
+I_{\text{gen},i} &= \frac{S^*_{\text{gen},i}}{V^*_i}
 \end{align}
+where $I_i$ is the total current injection to bus $i$, $I_{\text{br},i}$ is the injection from all connected branches, $I_{\text{zip},i}$ is the injection due to the ZIP loads, and $I_{\text{gen},i}$
 which is zero, due to Kirchoff's current conservation law. Thus,
 \begin{align}
-I_i &= \frac{S^*_{ci} + S^*_{\text{bus}i}}{V^*_i} + I_{ci} - y_{ci}V_i - \sum_{k=0}^NY_{ik}V_k = 0
+I_i &= \frac{S^*_{ci} + S^*_{\text{gen},i}}{V^*_i} + I_{ci} - y_{ci}V_i - \sum_{k=0}^NY_{ik}V_k = 0
 \end{align}
-or, absorbing $y_c$ into $Y$ and $S_{\text{bus}}$ into $S_c$ we have
+or, absorbing $y_c$ into $Y$ and $S_{\text{gen}}$ into $S_c$ we have
 \begin{align}
 I_i &= \frac{S'^*_{ci}}{V^*_i} + I_{ci} - \sum_{k=0}^NY'_{ik}V_k = 0
 \end{align}
@@ -67,16 +101,16 @@ where
 \begin{align}
 	Y'_{ik} &= Y_{ik} + y_{ci}\delta_{ki}
 \end{align}
-and $S'_c = S_c + S_{\text{bus}}$.
+and $S'_c = S_c + S_{\text{gen}}$.
 
 Real and imaginary components are:
 \begin{align}
-\re{I}_i &= \frac{P'_{ci}\re{V}_{i} + Q'_{ci}\im{V}_{i}}{M^2_i} + \re{I_c}_{i} + \sum_{k=0}^N\left(-G'_{ik}\re{V}_k + B'_{ik}\im{V}_k\right) \\
-\im{I}_i &= \frac{P'_{ci}\im{V}_{i} - Q'_{ci}\re{V}_{i}}{M^2_i} + \im{I_c}_{i} + \sum_{k=0}^N\left(-G'_{ik}\im{V}_k - B'_{ik}\re{V}_k\right) = 0
+\Ir_i &= \frac{P'_{ci}\Vr_i + Q'_{ci}\Vi_i}{|V|^2_i} + \Ir_{ci} + \sum_{k=0}^N\left(-G'_{ik}\Vr_k + B'_{ik}\Vi_k\right) \\
+\Ii_i &= \frac{P'_{ci}\Vi_i - Q'_{ci}\Vr_i}{|V|^2_i} + \Ii_{ci} + \sum_{k=0}^N\left(-G'_{ik}\Vi_k - B'_{ik}\Vr_k\right) = 0
 \end{align}
 
 \subsection{Newton-Raphson equations}
-For PQ busses, the unknowns are the real and imaginary parts of $V$, so this equation can be solved using the Newton-Raphson method. Letting the function to which we want to find the zero be $f = \{\re{I}, \im{I}\}$, the unknows be $x = \{\re{V}, \im{V}\}$, we wish to solve $f(x) = 0$. Using the Jacobian
+For PQ busses, the unknowns are the real and imaginary parts of $V$, so this equation can be solved using the Newton-Raphson method. Letting the function to which we want to find the zero be $f = \{\Ir, \Ii\}$, the unknows be $x = \{\Vr, \Vi\}$, we wish to solve $f(x) = 0$. Using the Jacobian
 \begin{align}
 J_{ik}(x) = \frac{\partial f_i(x)}{\partial x_k}
 \end{align}
@@ -86,26 +120,26 @@ the NR method calculates the update to $x$ at each iteration as the solution to 
 \end{align}
 The Jacobian is given by:
 \begin{align}
-\frac{\partial \re{I}_i}{\partial \re{V}_{k}} &= \left[-\frac{2\re{V}_k(P'_{ck}\re{V}_k + Q'_{ck}\im{V}_k)}{M_k^4} + \frac{P'_{ck}}{M_k^2} \right]\delta_{ik} - G'_{ik} \\
-\frac{\partial \re{I}_i}{\partial \im{V}_{k}} &= \left[-\frac{2\im{V}_k(P'_{ck}\re{V}_k + Q'_{ck}\im{V}_k)}{M_k^4} + \frac{Q'_{ck}}{M_k^2} \right]\delta_{ik}  + B'_{ik} \\
-\frac{\partial \im{I}_i}{\partial \re{V}_{k}} &= \left[-\frac{2\re{V}_k(P'_{ck}\im{V}_k - Q'_{ck}\re{V}_k)}{M_k^4} - \frac{Q'_{ck}}{M_k^2} \right]\delta_{ik}  - B'_{ik} \\
-\frac{\partial \im{I}_i}{\partial \im{V}_{k}} &= \left[-\frac{2\im{V}_k(P'_{ck}\im{V}_k - Q'_{ck}\re{V}_k)}{M_k^4} + \frac{P'_{ck}}{M_k^2} \right] \delta_{ik} - G'_{ik} \\
+\frac{\partial \Ir_i}{\partial \Vr_{k}} &= \left[-\frac{2\Vr_k(P'_{ck}\Vr_k + Q'_{ck}\Vi_k)}{|V|_k^4} + \frac{P'_{ck}}{|V|_k^2} \right]\delta_{ik} - G'_{ik} \\
+\frac{\partial \Ir_i}{\partial \Vi_{k}} &= \left[-\frac{2\Vi_k(P'_{ck}\Vr_k + Q'_{ck}\Vi_k)}{|V|_k^4} + \frac{Q'_{ck}}{|V|_k^2} \right]\delta_{ik}  + B'_{ik} \\
+\frac{\partial \Ii_i}{\partial \Vr_{k}} &= \left[-\frac{2\Vr_k(P'_{ck}\Vi_k - Q'_{ck}\Vr_k)}{|V|_k^4} - \frac{Q'_{ck}}{|V|_k^2} \right]\delta_{ik}  - B'_{ik} \\
+\frac{\partial \Ii_i}{\partial \Vi_{k}} &= \left[-\frac{2\Vi_k(P'_{ck}\Vi_k - Q'_{ck}\Vr_k)}{|V|_k^4} + \frac{P'_{ck}}{|V|_k^2} \right] \delta_{ik} - G'_{ik} \\
 \end{align}
 
 \subsection{PV busses}
-For a PV bus $k$, the power flow equations also hold, but with $Q_{\text{bus}}$ being considered as a variable rather than a constant, and an extra constraint:
+For a PV bus $k$, the power flow equations also hold, but with $Q_{\text{gen}}$ being considered as a variable rather than a constant, and an extra constraint:
 \begin{align}
-\Delta M^2_k = \re{V}_{k}^2 + \im{V}_k^2 - M^2_{\text{PV}k} = 0
+\Delta |V|^2_k = \Vr_{k}^2 + \Vi_k^2 - |V|^2_{\text{PV},k} = 0
 \end{align}
 
 The corresponding rows in the NR equation may be solved by hand, with the following update:
 \begin{align}
-\re{\Delta V}_k &= \frac{M^2_{\text{PV}k} - \re{V}_k^2 - \im{V}_k^2- 2\im{V}_k\im{\Delta V}_k}{2\re{V}_k}
+\Delta \Vr_k &= \frac{|V|^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2- 2\Vi_k\Delta \Vi_k}{2\Vr_k}
 \end{align}
-Thus, $\re{\Delta V}$ may be eliminated from the NR equations.  First write the Jacobian as if all busses were PQ. Let $k$ be a PV bus. Take the column corresponding to $\re{\Delta V}_k$, and add its product with $-\im{V}_k/\re{V}_k$ to the matching column for  $\im{\Delta V}_k$. Add its product with $(M^2_{\text{PV}k} - \re{V}_k^2 - \im{V}_k^2)/(2\re{V}_k)$ to $f$. The column and the corresponding element of $x$ will now be replaced to correspond to $Q_k$. Set the column to zero, and set the block diagonal elements, using:
+Thus, $\Delta \Vr$ may be eliminated from the NR equations.  First write the Jacobian as if all busses were PQ. Let $k$ be a PV bus. Take the column corresponding to $\Delta \Vr_k$, and add its product with $-\Vi_k/\Vr_k$ to the matching column for  $\Delta \Vi_k$. Add its product with $(|V|^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2)/(2\Vr_k)$ to $f$. The column and the corresponding element of $x$ will now be replaced to correspond to $Q_k$. Set the column to zero, and set the block diagonal elements, using:
 \begin{align}
-\frac{\partial \re{I}_k}{\partial Q_{\text{bus}k}} &= \frac{\im{V}_k}{M_k^2} \\
-\frac{\partial \im{I}_k}{\partial Q_{\text{bus}k}} &= -\frac{\re{V}_k}{M_k^2}
+\frac{\partial \Ir_k}{\partial Q_{\text{gen},k}} &= \frac{\Vi_k}{|V|_k^2} \\
+\frac{\partial \Ii_k}{\partial Q_{\text{gen},k}} &= -\frac{\Vr_k}{|V|_k^2}
 \end{align}
 \section{Multi phase lines}
 Lines are typically handled in terms of $a$, $b$, $c$ and $d$ matrices. Assume for discussion that there are three phases, so these are $3 \times 3$ matrices, and $V$ and $I$ are assumed to be 3-vectors.
@@ -122,9 +156,9 @@ These equations can be transformed to the following:
 \end{align}
 which defines the nodal admittance matrix $Y$.
 
-What is the interpretation of $a$, $b$, $c$, $d$? From Kersting \cite{KerstingXXXXa}, using a pi-model of a transmission line, $Z$ being the matrix of self and cross impedances of the line, $U$ being the identity matrix and $Y_s/2$ being the shunt admittance matrix for each of the two legs of the pi, we have
+What is the interpretation of $a$, $b$, $c$, $d$? From Kersting \cite{KerstingXXXXa}, using a pi-model of a transmission line, $Z$ being the matrix of self and cross impedances of the line, $\Id$ being the identity matrix and $Y_s/2$ being the shunt admittance matrix for each of the two legs of the pi, we have
 \begin{align}
-a = d &= U + \frac{1}{2}ZY_s \\
+a = d &= \Id + \frac{1}{2}ZY_s \\
 b &= Z \\
 c &= Y_s + \frac{1}{4}Y_s Z Y_s
 \end{align}
