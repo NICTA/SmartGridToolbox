@@ -77,9 +77,7 @@ Generators may apply some kind of additional voltage control on the bus. Normall
 In summary, all busses may have a constant ZIP load associated with them. In theory, this ZIP load can correspond to generation, if the total $P$ injection from the ZIP is positive. There are three types of busses. For PQ busses, the power/current injection is just that of the ZIP, and $V$ is free to vary. For SL (slack/swing/infinite) busses, there is additional current injected to keep the complex voltage constant. For PV busses, there is additional current applied to keep the bus at a constant voltage magnitude $|V|$ and constant real power $P$.
 
 \section{Power flow equations in current form}
-As mentioned before, we write all bus quantities as injections \emph{into} the bus. Thus a normal load will use quantities expressed as negative injections, while a generator will have positive injections.
-
-Each bus has an associated ZIP load. As well as receiving injections from branches and loads, busses may provide their own injections according to their bus type. PQ busses just apply the ZIP load while letting $V$ vary freely. PV busses instead keep the voltage magnitude of the bus constant while providing a specified real power injection. Slack busses keep the complex voltage of the bus constant.
+Recall in what follows that we write all bus quantities as injections \emph{into} the bus. Thus a normal load will use quantities expressed as negative injections, while a generator will have positive injections.
 
 The total current injection into bus $i$ is:
 \begin{align}
