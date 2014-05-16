@@ -48,7 +48,7 @@ namespace SmartGridToolbox
       /// @}
 
       /// @name Real generated power setpoints.
-      ///< Equality for SL, PV, bounds for PQ.
+      /// For PV busses.
       /// @{
          
          ublas::vector<double> PgSetpoint() const
@@ -60,21 +60,8 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Reactive generated power setpoints.
-      ///< Equality for SL, PV, bounds for PQ.
-      /// @{
-         
-         ublas::vector<double> QgSetpoint() const
-         {
-            return QgSetpoint_;
-         }
-
-         void setQgSetpoint(const ublas::vector<double>& QgSetpoint);
-
-      /// @}
-
       /// @name Voltage magnitude setpoints.
-      ///< Equality for SL, PV, bounds for PQ.
+      /// For SL, PV busses.
       /// @{
          
          ublas::vector<double> VMagSetpoint() const
@@ -87,7 +74,7 @@ namespace SmartGridToolbox
       /// @}
 
       /// @name Voltage angle (radians) setpoints.
-      ///< Equality for SL, PV, bounds for PQ.
+      /// For SL busses.
       /// @{
          
          ublas::vector<double> VAngSetpoint() const
@@ -159,10 +146,8 @@ namespace SmartGridToolbox
          Phases phases_;                               ///< Phases.
          ublas::vector<Complex> nominalV_;             ///< Nominal/base voltage.
 
-         ublas::vector<double> PgSetpoint_;            ///< For PQ or PV bus.
-         ublas::vector<double> QgSetpoint_;            ///< For PQ bus.
+         ublas::vector<double> PgSetpoint_;            ///< For PV bus.
          ublas::vector<double> VMagSetpoint_;          ///< For PV or SL bus.
-
          ublas::vector<double> VAngSetpoint_;          ///< For SL bus only.
 
          std::vector<ZipToGroundBase*> zipsToGround_;  ///< ZIP loads of generation.

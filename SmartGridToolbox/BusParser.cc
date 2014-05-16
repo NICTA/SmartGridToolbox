@@ -30,9 +30,6 @@ namespace SmartGridToolbox
       auto ndPg = nd["P_gen_setpoint"];
       if (ndPg) bus.setPgSetpoint(ndPg.as<ublas::vector<double>>());
 
-      auto ndQg = nd["Q_gen_setpoint"];
-      if (ndQg) bus.setQgSetpoint(ndQg.as<ublas::vector<double>>());
-
       auto ndVMag = nd["V_mag_setpoint"];
       if (ndVMag) bus.setVMagSetpoint(ndVMag.as<ublas::vector<double>>());
 

@@ -39,7 +39,6 @@ namespace SmartGridToolbox
       phases_(phases),
       nominalV_(nominalV),
       PgSetpoint_(ublas::vector<double>(phases.size(), 0.0)),
-      QgSetpoint_(ublas::vector<double>(phases.size(), 0.0)),
       VMagSetpoint_(ublas::vector<double>(phases.size(), 0.0)),
       VAngSetpoint_(ublas::vector<double>(phases.size(), 0.0)),
       V_(nominalV),
@@ -64,16 +63,6 @@ namespace SmartGridToolbox
          error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       PgSetpoint_ = PgSetpoint;
-      changed().trigger();
-   }
-
-   void Bus::setQgSetpoint(const ublas::vector<double>& QgSetpoint)
-   {
-      if (QgSetpoint.size() != phases_.size())
-      {
-         error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
-      }
-      QgSetpoint_ = QgSetpoint;
       changed().trigger();
    }
 
@@ -109,16 +98,6 @@ namespace SmartGridToolbox
                   newV(i) = polar(VMagSetpoint()(i), VAngSetpoint()(i));
                }
                setV(newV);
-            }
-            break;
-         case BusType::PQ :
-            {
-               ublas::vector<Complex> newSg(phases().size());
-               for (int i = 0; i < phases().size(); ++i)
-               {
-                  newSg(i) = {PgSetpoint()(i), QgSetpoint()(i)};
-               }
-               setSg(newSg);
             }
             break;
          case BusType::PV :
