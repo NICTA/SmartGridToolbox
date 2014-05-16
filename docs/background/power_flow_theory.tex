@@ -37,25 +37,25 @@
 V &= \Vr + jW = \text{complex voltage.} \\
 I &= \Ir + j\Ii = \text{complex current.} \\
 S &= P + jQ = \text{complex power.} \\
-y &= g + jb = \text{a complex admittance.} \\
-Z &= R + jX = \text{a complex impedance.} \\
+y &= g + jb = \text{complex admittance.} \\
+Z &= R + jX = \text{complex impedance.} \\
 Y &= G + jB = \text{nodal admittance matrix.} \\
 y_{ik} &= \text{complex admittance along branch $ik$.} \\
 Y_{ik} &= G_{ik} + jB_{ik} = \text{nodal admittance matrix element $i, k$.} \\
 &= 
 	\begin{cases}
 		-y_{ik}&\text{if $i \ne k$} \\
-		y_i + \sum_l y_{il}& \text{if $i = k$}
+		\sum_l y_{il}& \text{if $i = k$}
 	\end{cases} \\
-I_{\text{br},i} &= \text{complex current injection from branches at bus $i$.} \\
-I_{\text{zip},i} &= \text{total complex current injection from load at bus $i$.} \\
-I_{\text{gen},i} &= \text{complex current injection due to the voltage controlled generation at bus $i$.} \\
-S_{\text{gen},i} &= \text{complex power injection due to the voltage controlled generation at bus $i$.} \\
-S_{ci} &= \text{constant power component of load at bus $i$.} \\
-I_{ci} &= \text{constant current injection component of load.} \\
-y_{ci} &= \text{constant impedance component of load.} \\
 \theta_{i} &= \text{the voltage angle of bus $i$.} \\
 \theta_{ik} &= \theta_i - \theta_k = \text{the voltage angle difference between busses $i$ and $k$.} \\
+I_{\text{br},i} &= \text{complex current injection from branches at bus $i$.} \\
+I_{\text{zip},i} &= \text{total complex current injection from load at bus $i$.} \\
+I_{\text{gen},i} &= \text{complex current non-ZIP injection due to the voltage controlled generation at bus $i$.} \\
+S_{\text{gen},i} &= \text{complex power non-ZIP injection due to the voltage controlled generation at bus $i$.} \\
+S_{ci} &= \text{constant power injection ZIP component of load at bus $i$.} \\
+I_{ci} &= \text{constant current injection ZIP component of load.} \\
+y_{ci} &= \text{constant impedance ZIP component of load.} \\
 \delta_{ik} &= \text{the Kronecker delta, $\delta_{ik} = 1$ if $i = k$, 0 otherwise.}
 \end{align*}
 
@@ -86,59 +86,92 @@ I_{\text{br},i} &= -\sum_{k=0}^NY_{ik}V_k \\
 I_{\text{zip},i} &= \frac{S^*_{ci}}{V^*_i} + I_{ci} - y_{ci}V_i \\
 I_{\text{gen},i} &= \frac{S^*_{\text{gen},i}}{V^*_i}
 \end{align}
-where $I_i$ is the total current injection to bus $i$, $I_{\text{br},i}$ is the injection from all connected branches, $I_{\text{zip},i}$ is the injection due to the ZIP loads, and $I_{\text{gen},i}$
-which is zero, due to Kirchoff's current conservation law. Thus,
+where $I_i$ is the total current injection to bus $i$, $I_{\text{br},i}$ is the injection from all connected branches, $I_{\text{zip},i}$ is the injection due to the ZIP loads, and $I_{\text{gen},i}$ is the non-ZIP injection due to the generators.
+The total current is zero, due to Kirchoff's current conservation law. Thus,
 \begin{align}
 I_i &= \frac{S^*_{ci} + S^*_{\text{gen},i}}{V^*_i} + I_{ci} - y_{ci}V_i - \sum_{k=0}^NY_{ik}V_k = 0
 \end{align}
-or, absorbing $y_c$ into $Y$ and $S_{\text{gen}}$ into $S_c$ we have
-\begin{align}
-I_i &= \frac{S'^*_{ci}}{V^*_i} + I_{ci} - \sum_{k=0}^NY'_{ik}V_k = 0
-\end{align}
-where
-\begin{align}
-	Y'_{ik} &= Y_{ik} + y_{ci}\delta_{ki}
-\end{align}
-and $S'_c = S_c + S_{\text{gen}}$.
 
 Real and imaginary components are:
 \begin{align}
-\Ir_i &= \frac{P'_{ci}\Vr_i + Q'_{ci}\Vi_i}{|V|^2_i} + \Ir_{ci} + \sum_{k=0}^N\left(-G'_{ik}\Vr_k + B'_{ik}\Vi_k\right) \\
-\Ii_i &= \frac{P'_{ci}\Vi_i - Q'_{ci}\Vr_i}{|V|^2_i} + \Ii_{ci} + \sum_{k=0}^N\left(-G'_{ik}\Vi_k - B'_{ik}\Vr_k\right) = 0
+	\Ir_i &= \frac{(P_{ci} + P_{\text{gen},i})\Vr_i + (Q_{ci} + Q_{\text{gen},i})\Vi_i}{|V|^2_i} + \Ir_{ci} -g_{ci}\Vr_i + b_{ci}\Vi_i \notag \\
+	&+ \sum_{k=0}^N\left(-G_{ik}\Vr_k + B_{ik}\Vi_k\right) = 0\\
+	\Ii_i &= \frac{(P_{ci} + P_{\text{gen},i})\Vi_i - (Q_{ci} + Q_{\text{gen},i})\Vr_i}{|V|^2_i} + \Ii_{ci} -g_{ci}\Vi_i + b_{ci}\Vr_i \notag \\
+	&+ \sum_{k=0}^N\left(-G_{ik}\Vi_k - B_{ik}\Vr_k\right) = 0
 \end{align}
+Note that in practice the $y_c$ dependent zip load is often absorbed into the diagonal elements of $Y$.
+
+The possible unknowns are the generator power $S_{\text{gen}}$ and the voltages $V$.
+
+\subsection{PQ busses}
+For PQ busses, there is no additional (non-ZIP) generation, and hence $S_{\text{gen}}$ can be set to zero. The unknown variables are the components of $V$.
+\subsection{Slack busses}
+For SL busses, $V$ is constant and the power flow equations give an explicit expression for $S$. Thus, all quantities at slack busses can immediately be found and thus they are considered constants in any solver equations.
+\subsection{PV busses}
+For PV busses, the power flow equations also hold, with both components of $V$ being unknown as was the case for PQ busses. $Q_{\text{gen}}$ is an additional variable, and an extra constraint also applies:
+\begin{align}
+\Delta |V|^2 = \Vr^2 + \Vi^2 - V_\text{PV}^2 = 0
+\label{EQ_POWERFLOW_PV_CONSTRAINT}
+\end{align}
+where $V_{\text{PV}}$ is the voltage magnitude setpoint for the PV bus.
 
 \subsection{Newton-Raphson equations}
-For PQ busses, the unknowns are the real and imaginary parts of $V$, so this equation can be solved using the Newton-Raphson method. Letting the function to which we want to find the zero be $f = \{\Ir, \Ii\}$, the unknows be $x = \{\Vr, \Vi\}$, we wish to solve $f(x) = 0$. Using the Jacobian
+Considering PQ busses only for the moment, the unknowns are the real and imaginary parts of $V$, and these equations can be solved using the Newton-Raphson method. Letting the function to which we want to find the zero be $f = \{\Ir, \Ii\}$, the unknows be $x = \{\Vr, \Vi\}$, we wish to solve $f(x) = 0$. Using the Jacobian
 \begin{align}
 J_{ik}(x) = \frac{\partial f_i(x)}{\partial x_k}
 \end{align}
 the NR method calculates the update to $x$ at each iteration as the solution to the linear equations
 \begin{align}
 -f_{(n)} &= J(x_{(n)})(x_{(n+1)}-x_{(n)}) = J(x_{(n)})\Delta x_{(n,n+1)}
+\label{EQ_NR}
 \end{align}
-The Jacobian is given by:
+The Jacobian elements for variables $V$ are given by:
 \begin{align}
-\frac{\partial \Ir_i}{\partial \Vr_{k}} &= \left[-\frac{2\Vr_k(P'_{ck}\Vr_k + Q'_{ck}\Vi_k)}{|V|_k^4} + \frac{P'_{ck}}{|V|_k^2} \right]\delta_{ik} - G'_{ik} \\
-\frac{\partial \Ir_i}{\partial \Vi_{k}} &= \left[-\frac{2\Vi_k(P'_{ck}\Vr_k + Q'_{ck}\Vi_k)}{|V|_k^4} + \frac{Q'_{ck}}{|V|_k^2} \right]\delta_{ik}  + B'_{ik} \\
-\frac{\partial \Ii_i}{\partial \Vr_{k}} &= \left[-\frac{2\Vr_k(P'_{ck}\Vi_k - Q'_{ck}\Vr_k)}{|V|_k^4} - \frac{Q'_{ck}}{|V|_k^2} \right]\delta_{ik}  - B'_{ik} \\
-\frac{\partial \Ii_i}{\partial \Vi_{k}} &= \left[-\frac{2\Vi_k(P'_{ck}\Vi_k - Q'_{ck}\Vr_k)}{|V|_k^4} + \frac{P'_{ck}}{|V|_k^2} \right] \delta_{ik} - G'_{ik} \\
+	\frac{\partial \Ir_i}{\partial \Vr_{k}} 
+		&= \left[-\frac{2\Vr_k((P_{ck} + P_{\text{gen},k})\Vr_k + (Q_{ck} + Q_{\text{gen},k})\Vi_k)}{|V|_k^4} + \frac{(P_{ck} + P_{\text{gen},k})}{|V|_k^2} \right]\delta_{ik} \notag \\
+		&- (G_{ik} + g_{ci}\delta_{ik}) \\
+	\frac{\partial \Ir_i}{\partial \Vi_{k}} 
+		&= \left[-\frac{2\Vi_k((P_{ck} + P_{\text{gen},k})\Vr_k + (Q_{ck} + Q_{\text{gen},k})\Vi_k)}{|V|_k^4} + \frac{(Q_{ck} + Q_{\text{gen},k})}{|V|_k^2} \right]\delta_{ik} \notag \\
+		&+ (B_{ik} + b_{ci}\delta_{ik}) \\
+	\frac{\partial \Ii_i}{\partial \Vr_{k}}
+		&= \left[-\frac{2\Vr_k((P_{ck} + P_{\text{gen},k})\Vi_k - (Q_{ck} + Q_{\text{gen},k})\Vr_k)}{|V|_k^4} - \frac{(Q_{ck} + Q_{\text{gen},k})}{|V|_k^2} \right]\delta_{ik} \notag \\
+		&- (B_{ik} + b_{ci}\delta_{ik}) \\
+	\frac{\partial \Ii_i}{\partial \Vi_{k}}
+		&= \left[-\frac{2\Vi_k((P_{ck} + P_{\text{gen},k})\Vi_k - (Q_{ck} + Q_{\text{gen},k})\Vr_k)}{|V|_k^4} + \frac{(P_{ck} + P_{\text{gen},k})}{|V|_k^2} \right] \delta_{ik} \notag \\
+		&- (G_{ik} + g_{ci}\delta_{ik}) \\
 \end{align}
 
-\subsection{PV busses}
-For a PV bus $k$, the power flow equations also hold, but with $Q_{\text{gen}}$ being considered as a variable rather than a constant, and an extra constraint:
-\begin{align}
-\Delta |V|^2_k = \Vr_{k}^2 + \Vi_k^2 - |V|^2_{\text{PV},k} = 0
-\end{align}
+\subsubsection{Treatment of the slack bus}
+There are no variables associated with the slack bus. The voltage is constant, and the power can be found after the rest of the busses are solved.
 
-The corresponding rows in the NR equation may be solved by hand, with the following update:
-\begin{align}
-\Delta \Vr_k &= \frac{|V|^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2- 2\Vi_k\Delta \Vi_k}{2\Vr_k}
-\end{align}
-Thus, $\Delta \Vr$ may be eliminated from the NR equations.  First write the Jacobian as if all busses were PQ. Let $k$ be a PV bus. Take the column corresponding to $\Delta \Vr_k$, and add its product with $-\Vi_k/\Vr_k$ to the matching column for  $\Delta \Vi_k$. Add its product with $(|V|^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2)/(2\Vr_k)$ to $f$. The column and the corresponding element of $x$ will now be replaced to correspond to $Q_k$. Set the column to zero, and set the block diagonal elements, using:
+\subsubsection{PV busses}
+As explained earlier, $PV$ busses add an extra variable, $Q$. This adds the following non-zero elements to the Jacobian:
 \begin{align}
 \frac{\partial \Ir_k}{\partial Q_{\text{gen},k}} &= \frac{\Vi_k}{|V|_k^2} \\
 \frac{\partial \Ii_k}{\partial Q_{\text{gen},k}} &= -\frac{\Vr_k}{|V|_k^2}
 \end{align}
+They also add an extra constraint, Eq. (\ref{EQ_POWERFLOW_PV_CONSTRAINT}), reproduced here:
+\begin{align}
+\Delta |V|^2 = \Vr^2 + \Vi^2 - V_\text{PV}^2 = 0
+\label{EQ_POWERFLOW_PV_CONSTRAINT_AGAIN}
+\end{align}
+with corresponding elements in the Jacobian being:
+\begin{align}
+\frac{\partial \Delta|V|^2_k}{\partial \Vr_k} &= 2 \Vr_k \notag
+\frac{\partial \Delta|V|^2_k}{\partial \Vi_k} &= 2 \Vi_k
+\label{EQ_PV_JAC_Q}
+\end{align}
+The NR update corresponding to this constraint row is:
+\begin{align}
+	-\Vr_k^2 - \Vi_k^2 + V_{\text{PV},k}^2 &= 2\Vr_k\Delta\Vr_k + 2\Vi_k\Delta\Vi_k
+\end{align}
+which gives
+\begin{align}
+\Delta \Vr_k &= \frac{V^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2- 2\Vi_k\Delta \Vi_k}{2\Vr_k}
+\end{align}
+
+Using these expressions, $\Delta \Vr$ may be eliminated from the NR equations for the PV bus. First write the Jacobian as if all busses were PQ. Let $k$ be any PV bus. Take the column corresponding to $\Delta \Vr_k$, and add its product with $-\Vi_k/\Vr_k$ to the matching column for  $\Delta \Vi_k$. Add its product with $(|V|^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2)/(2\Vr_k)$ to $f$ in Eq. (\ref{EQ_NR}). The column and the corresponding element of $x$ for $\Delta \Vr_k$ will now be replaced with a column and elment for $\Delta Q_{\text{gen},k}$. Set the column to zero, and then set the block diagonal elements, using Eq. (\ref{PV_JAC_Q}). Reinterpret the corresponding element of $\Delta x$ in Eq. (\ref{EQ_NR}) as now corresponding to $\Delta Q_{\text{gen},k}$ instead of $\Delta \Vr_k$.
+ 
 \section{Multi phase lines}
 Lines are typically handled in terms of $a$, $b$, $c$ and $d$ matrices. Assume for discussion that there are three phases, so these are $3 \times 3$ matrices, and $V$ and $I$ are assumed to be 3-vectors.
 \begin{align}
