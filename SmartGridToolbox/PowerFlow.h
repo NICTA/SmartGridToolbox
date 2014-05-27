@@ -92,54 +92,6 @@ namespace SmartGridToolbox
    inline Phases operator|(Phase a, Phase b) {return {static_cast<unsigned int>(a) | static_cast<unsigned int>(b)};}
    inline Phases operator&(Phase a, Phase b) {return {static_cast<unsigned int>(a) & static_cast<unsigned int>(b)};}
 
-   // Below, all units are in SI (V, A, W, Ohms etc.) unless indicated (e.g. by "Pu" for per-unit).
-   // All angles are in radians unless indicated by "Deg" for degrees.
-
-   struct Zip1P
-   {
-      std::string id_;
-      bool inService_;
-
-      std::string busId_;
-      Complex y_;
-      Complex IInj_;
-      Complex SInj_;
-   };
-
-   struct Gen1P
-   {
-      std::string id_;
-      bool inService_;
-      
-      std::string busId_;
-      BusType type_;
-      float VMagSetpoint_;
-      float VAngSetpoint_; // Slack only.
-      float PSetpoint_; // PV only.
-   };
-
-   struct Bus1P
-   {
-      std::string id_;
-      bool inService_;
-      
-      BusType type_;
-      float VBase_;
-      
-      float VMagMin_; // OPF only.
-      float VMagMax_; // OPF only.
-   };
-
-   struct Branch1P
-   {
-      std::string id_;
-      bool inService_;
-      
-      std::string busAId_;
-      std::string busBId_;
-      ublas::matrix<Complex> YBus_;
-   }
-
    /// @}
 }
 
