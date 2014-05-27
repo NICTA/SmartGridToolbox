@@ -35,8 +35,8 @@ pkginclude_HEADERS = \
 	Units.h \
 	Weather.h \
 	YyTransformer.h \
-	ZipToGround.h \
-	ZipToGroundBase.h
+	Zip.h \
+	ZipBase.h
 
 libSmartGridToolbox_a_SOURCES = \
 	Bus.h \
@@ -122,9 +122,9 @@ libSmartGridToolbox_a_SOURCES = \
 	YyTransformer.cc \
 	YyTransformerParser.h \
 	YyTransformerParser.cc \
-	ZipToGround.h \
-	ZipToGround.cc \
-	ZipToGroundParser.h \
-	ZipToGroundParser.cc
+	Zip.h \
+	Zip.cc \
+	ZipParser.h \
+	ZipParser.cc
 
 EXTRA_DIST = mainpage.dox
