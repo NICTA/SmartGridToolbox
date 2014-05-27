@@ -10,7 +10,7 @@
 
 namespace SmartGridToolbox
 {
-   class ZipToGroundBase;
+   class ZipBase;
 
    /// @brief A Bus component of a Network.
    /// @ingroup PowerFlowCore
@@ -98,9 +98,9 @@ namespace SmartGridToolbox
       /// ZIP = constant Z, I, P (or Y, I, S).
       /// @{
          
-         const std::vector<ZipToGroundBase*>& zipsToGround() const {return zipsToGround_;}
+         const std::vector<ZipBase*>& zips() const {return zips_;}
 
-         void addZipToGround(ZipToGroundBase& zipToGround);
+         void addZip(ZipBase& zip);
 
          /// @brief Total shunt admittance (sum of ZIPs).
          const ublas::vector<Complex>& Ys() const {return Ys_;}
@@ -150,7 +150,7 @@ namespace SmartGridToolbox
          ublas::vector<double> VMagSetpoint_;          ///< For PV or SL bus.
          ublas::vector<double> VAngSetpoint_;          ///< For SL bus only.
 
-         std::vector<ZipToGroundBase*> zipsToGround_;  ///< ZIP loads of generation.
+         std::vector<ZipBase*> zips_;  ///< ZIP loads of generation.
 
       /// @name Bus Quantities
       /// @brief Quantities due to operation of bus.

@@ -50,7 +50,7 @@ namespace SmartGridToolbox
       Bus* busComp = mod.component<Bus>(busStr);
       if (busComp != nullptr)
       {
-         busComp->addZipToGround(comp);
+         busComp->addZip(comp);
       }
       else
       {

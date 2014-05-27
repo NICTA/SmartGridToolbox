@@ -70,7 +70,7 @@ namespace SmartGridToolbox
                  << " was not found in the model." << std::endl;
          abort();
       }
-      bus->addZipToGround(*build);
+      bus->addZip(*build);
 
       const auto& weatherNd = nd["weather"];
       if (weatherNd)

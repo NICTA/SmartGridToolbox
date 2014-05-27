@@ -15,7 +15,7 @@
 #include "SolarPvParser.h"
 #include "WeatherParser.h"
 #include "YyTransformerParser.h"
-#include "ZipToGroundParser.h"
+#include "ZipParser.h"
 
 namespace SmartGridToolbox
 {
@@ -36,6 +36,6 @@ namespace SmartGridToolbox
       p.registerParserPlugin<SolarPvParser>();
       p.registerParserPlugin<WeatherParser>();
       p.registerParserPlugin<YyTransformerParser>();
-      p.registerParserPlugin<ZipToGroundParser>();
+      p.registerParserPlugin<ZipParser>();
    }
 }

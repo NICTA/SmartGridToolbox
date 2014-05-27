@@ -3,7 +3,7 @@
 
 #include <SmartGridToolbox/Common.h>
 #include <SmartGridToolbox/PowerFlow.h>
-#include <SmartGridToolbox/ZipToGroundBase.h>
+#include <SmartGridToolbox/ZipBase.h>
 
 namespace SmartGridToolbox
 {
@@ -11,7 +11,7 @@ namespace SmartGridToolbox
 
    /// @brief DC power to n-phase AC converter.
    /// @ingroup PowerFlowCore
-   class InverterBase : public ZipToGroundBase
+   class InverterBase : public ZipBase
    {
       /// @name Overridden member functions from Component.
       /// @{
@@ -29,7 +29,7 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
          
-         InverterBase(const std::string& name, const Phases& phases) : ZipToGroundBase(name, phases), PDc_(0.0)
+         InverterBase(const std::string& name, const Phases& phases) : ZipBase(name, phases), PDc_(0.0)
          {
             // Empty.
          }

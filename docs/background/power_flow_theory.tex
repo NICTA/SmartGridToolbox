@@ -45,7 +45,7 @@ Y_{ik} &= G_{ik} + jB_{ik} = \text{nodal admittance matrix element $i, k$.} \\
 &= 
 	\begin{cases}
 		-y_{ik}&\text{if $i \ne k$} \\
-		\sum_l y_{il}& \text{if $i = k$}
+		\sum_{l \ne k} y_{il}& \text{if $i = k$}
 	\end{cases} \\
 \theta_{i} &= \text{the voltage angle of bus $i$.} \\
 \theta_{ik} &= \theta_i - \theta_k = \text{the voltage angle difference between busses $i$ and $k$.} \\
@@ -90,7 +90,17 @@ where $I_i$ is the total current injection to bus $i$, $I_{\text{br},i}$ is the 
 The total current is zero, due to Kirchoff's current conservation law. Thus,
 \begin{align}
 I_i &= \frac{S^*_{ci} + S^*_{\text{gen},i}}{V^*_i} + I_{ci} - y_{ci}V_i - \sum_{k=0}^NY_{ik}V_k = 0
+\label{EQ_POWERFLOW_COMPLEX}
 \end{align}
+where, as before,
+\begin{align}
+	Y_{ik} &=
+		\begin{cases}
+			-y_{ik}&\text{if $i \ne k$} \\
+			\sum_{l \ne k} y_{il}& \text{if $i = k$}
+		\end{cases} \\
+\end{align}
+
 
 Real and imaginary components are:
 \begin{align}
@@ -171,7 +181,57 @@ which gives
 \end{align}
 
 Using these expressions, $\Delta \Vr$ may be eliminated from the NR equations for the PV bus. First write the Jacobian as if all busses were PQ. Let $k$ be any PV bus. Take the column corresponding to $\Delta \Vr_k$, and add its product with $-\Vi_k/\Vr_k$ to the matching column for  $\Delta \Vi_k$. Add its product with $(|V|^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2)/(2\Vr_k)$ to $f$ in Eq. (\ref{EQ_NR}). The column and the corresponding element of $x$ for $\Delta \Vr_k$ will now be replaced with a column and elment for $\Delta Q_{\text{gen},k}$. Set the column to zero, and then set the block diagonal elements, using Eq. (\ref{PV_JAC_Q}). Reinterpret the corresponding element of $\Delta x$ in Eq. (\ref{EQ_NR}) as now corresponding to $\Delta Q_{\text{gen},k}$ instead of $\Delta \Vr_k$.
- 
+
+\section{Formalism for modelling branches}
+We have seen that branches can be modelled in the nodal admittance matrix formalism. For a network of lines of fixed impedance between the nodes, the  $2 \times 2$ nodal admittance matrix elements connecting any two nodes have the following form:
+\begin{align}
+	Y_{ik} &= 
+		\begin{cases}
+			-y_{ik}&\text{if $i \ne k$} \\
+			\sum_{l \ne k} y_{il}& \text{if $i = k$}
+		\end{cases}
+\end{align}
+where $y_{ik}$ describes a symmetric matrix with zeros on the diagonal.
+
+What about a more general $Y$? If we make no assumptions about the elements of $Y$, then $I = -YV$ simply expresses the most general linear relationship between the voltage at a series of nodes and the current flowing into those nodes, assuming that all lines through which current can flow are passive (constant admittances).
+
+How can we parse this relationship in terms of equivalent circuits? There is no single way. Note, however, that we can write, for a single phase branch, the following general decomposition of $Y$:
+\begin{align}
+	Y &= \left[
+		\begin{array}{ll}
+			a + b & -a \\
+			-a + c & a + d
+		\end{array}
+	\right] \notag \\
+	&= \left[
+		\begin{array}{cc}
+			a + b & -a \\
+			-a & a + d
+		\end{array}
+	\right] +
+	\left[
+		\begin{array}{cc}
+			0 & - \\
+			- & a
+		\end{array}
+	\right]
+\end{align}
+
+wher
+\begin{align}
+Y_{s,ii} &= Y_{ii} + \sum_{k \ne i} Y_{ik} \notag \\
+Y_{+,ij} &= \frac{1}{2}(Y_{ij} + Y_{ji}) \notag \\
+Y_{-,ij} &= \frac{1}{2}(Y_{ij} - Y_{ji}) \\
+\end{align}
+
+Firstly, suppose that
+\begin{align}
+	Y_{ii} = \sum_{l \ne i} y_{il} + c, \hspace{3em} c \ne 0.
+\end{align}
+Then we see, from Eq. (\ref{EQ_POWERFLOW_COMPLEX}), that c is just the constant admittance component of a ZIP load, or, in other words, the shunt admittance to earth.
+
+Secondly, suppose $Y$ is not symmetric. Then, effectively, there will be extra current flowing into one node that does not come from the other node. Let's split 
+
 \section{Multi phase lines}
 Lines are typically handled in terms of $a$, $b$, $c$ and $d$ matrices. Assume for discussion that there are three phases, so these are $3 \times 3$ matrices, and $V$ and $I$ are assumed to be 3-vectors.
 \begin{align}
@@ -209,9 +269,19 @@ which is very reminiscent of the expression used in the single wire definition o
 \subsection{Single phase transformers}
 For an ideal transformer with a single turns ratio $r = n_0/n_1$, we have
 \begin{align}
-\begin{bmatrix}V_0 \\ I_0\end{bmatrix} &= \begin{bmatrix}n & 0 \\ 0 & -1/n\end{bmatrix}\begin{bmatrix}V_1 \\ I_1 \end{bmatrix}
+\begin{bmatrix}V_0 \\ I_0\end{bmatrix} &= \begin{bmatrix}n & 0 \\ 0 & 1/n\end{bmatrix}\begin{bmatrix}V_1 \\ I_1 \end{bmatrix}
 \end{align}
-This can't be modelled correctly in the formalism of nodal admittance.
+This can't be modelled correctly in the formalism of nodal admittance\footnote{in the same way that constant current and constant power injections can't be included in the nodal admittance matrix: they require separate terms in the powerflow equations.}: it does not describe a linear relationship between nodal currents and voltages, but rather a constraint between the voltages and a constraint between the currents. Two equaivalent circuits for an ideal transformer are shown in Fig. \ref{FIG_IDEAL_TRANS_EQUIV}.
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=(\textwidth-2cm)]{ideal_transformer_equiv.png}
+	\end{center}
+	\caption{
+		Two equivalent circuits for an ideal transformer.
+	}
+	\label{FIG_IDEAL_TRANS_EQUIV}
+\end{figure}
+The relationships can be included in the powerflow equations specially, but more commonly real transformers are used, as described below; these may be expressed in the nodal admittance formalism.
 
 A real transformer includes a leakage impedance (due to finite resistance of copper windings and core losses) and a shunt magnetising impedance. The latter is often large and may often be ignored. The nodal admittance matrix may be then derived:
 \begin{align}
@@ -263,4 +333,10 @@ y_l \begin{bmatrix}
 \begin{bmatrix}V_A \\ V_B \\ V_C \\ V_a \\ V_b \\ V_c\end{bmatrix}
 \end{align}
 with the nodal admittance matrix being specified by the matrix on the right, including the factor of $y_l$.
+\section{The per-unit system}
+Each bus has its own base voltage (usually expressed as Kv base). Bus voltages are then expressed in units of this voltage.
+
+There is a single MVA base power defined for the entire network. Power is expressed in units of this power.
+
+Current is expressed in units of $I_\text{base} = 
 \end{document}

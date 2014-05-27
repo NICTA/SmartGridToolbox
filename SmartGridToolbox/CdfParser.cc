@@ -3,7 +3,7 @@
 #include <SmartGridToolbox/Bus.h>
 #include <SmartGridToolbox/Network.h>
 #include <SmartGridToolbox/PowerFlow.h>
-#include <SmartGridToolbox/ZipToGround.h>
+#include <SmartGridToolbox/Zip.h>
 
 #include <fstream>
 #include <list>
@@ -268,10 +268,10 @@ namespace SmartGridToolbox
             bus.setV(VVec);
             bus.setSg(SgVec);
 
-            ZipToGround& zip = mod.newComponent<ZipToGround>(zipName(networkName, busId), phases);
+            Zip& zip = mod.newComponent<Zip>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;
             zip.Y() = YsVec;
-            bus.addZipToGround(zip);
+            bus.addZip(zip);
 
             netw.addBus(bus);
          }

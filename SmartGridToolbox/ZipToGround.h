@@ -1,13 +1,13 @@
 #ifndef ZIP_TO_GROUND_DOT_H
 #define ZIP_TO_GROUND_DOT_H
 
-#include <SmartGridToolbox/ZipToGroundBase.h>
+#include <SmartGridToolbox/ZipBase.h>
 
 namespace SmartGridToolbox
 {
    /// @brief A load (or sometimes generator) with constant Z, I, P components.
    /// @ingroup PowerFlowCore
-   class ZipToGround : public ZipToGroundBase
+   class Zip : public ZipBase
    {
       /// @name Overridden member functions from Component.
       /// @{
@@ -21,7 +21,7 @@ namespace SmartGridToolbox
       
       /// @}
 
-      /// @name Overridden member functions from ZipToGroundBase.
+      /// @name Overridden member functions from ZipBase.
       /// @{
       
       public:
@@ -35,7 +35,7 @@ namespace SmartGridToolbox
       /// @{
 
       public:
-         ZipToGround(const std::string& name, const Phases& phases);
+         Zip(const std::string& name, const Phases& phases);
 
          // Add non-const reference accessors:
          virtual ublas::vector<Complex>& Y() {return Y_;}

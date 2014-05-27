@@ -9,7 +9,7 @@ namespace SmartGridToolbox
 {
    /// @brief A load (or sometimes generator) with constant Z, I, P components.
    /// @ingroup PowerFlowCore
-   class ZipToGroundBase : public Component
+   class ZipBase : public Component
    {
       /// @name Overridden member functions from Component.
       /// @{
@@ -27,12 +27,12 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         ZipToGroundBase(const std::string& name, const Phases& phases) : Component(name), phases_(phases)
+         ZipBase(const std::string& name, const Phases& phases) : Component(name), phases_(phases)
          {
             // Empty.
          }
 
-         virtual ~ZipToGroundBase() {}
+         virtual ~ZipBase() {}
 
          virtual const Phases& phases() const {return phases_;}
 

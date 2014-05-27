@@ -5,7 +5,7 @@
 #include <SmartGridToolbox/Component.h>
 #include <SmartGridToolbox/TimeSeries.h>
 #include <SmartGridToolbox/Weather.h>
-#include <SmartGridToolbox/ZipToGroundBase.h>
+#include <SmartGridToolbox/ZipBase.h>
 #include<string>
 
 namespace SmartGridToolbox
@@ -17,7 +17,7 @@ namespace SmartGridToolbox
       OFF
    };
 
-   class SimpleBuilding : public ZipToGroundBase
+   class SimpleBuilding : public ZipBase
    {
       /// @name Overridden member functions from Component.
       /// @{
@@ -31,7 +31,7 @@ namespace SmartGridToolbox
       
       /// @}
       
-      /// @name Overridden member functions from ZipToGroundBase.
+      /// @name Overridden member functions from ZipBase.
       /// @{
       
       public:
@@ -46,7 +46,7 @@ namespace SmartGridToolbox
       
       public:
          SimpleBuilding(const std::string& name) :
-            ZipToGroundBase(name, Phase::BAL),
+            ZipBase(name, Phase::BAL),
             dt_(posix_time::minutes(5)),
             kb_(5*kW/K),
             Cb_(1.0e5*kJ/K),

@@ -28,5 +28,5 @@
 #include <SmartGridToolbox/Units.h>
 #include <SmartGridToolbox/Weather.h>
 #include <SmartGridToolbox/YyTransformer.h>
-#include <SmartGridToolbox/ZipToGround.h>
-#include <SmartGridToolbox/ZipToGroundBase.h>
+#include <SmartGridToolbox/Zip.h>
+#include <SmartGridToolbox/ZipBase.h>

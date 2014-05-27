@@ -1,7 +1,7 @@
 #include <SmartGridToolbox/Bus.h>
 #include <SmartGridToolbox/Model.h>
 #include <SmartGridToolbox/Network.h>
-#include <SmartGridToolbox/ZipToGroundBase.h>
+#include <SmartGridToolbox/ZipBase.h>
 
 namespace SmartGridToolbox
 {
@@ -10,7 +10,7 @@ namespace SmartGridToolbox
       Ys_ = ublas::vector<Complex>(phases_.size(), czero);
       Ic_ = ublas::vector<Complex>(phases_.size(), czero);
       Sc_ = ublas::vector<Complex>(phases_.size(), czero);
-      for (const ZipToGroundBase* zip : zipsToGround_)
+      for (const ZipBase* zip : zips_)
       {
          Ys_ += zip->Y();
          Ic_ += zip->I(); // Injection.
@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       {
          Ys_(i) = Ic_(i) = Sc_(i) = {0.0, 0.0};
       }
-      for (const ZipToGroundBase* zip : zipsToGround_)
+      for (const ZipBase* zip : zips_)
       {
          Ys_ += zip->Y();
          Ic_ += zip->I(); // Injection.
@@ -118,13 +118,13 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus::addZipToGround(ZipToGroundBase& zipToGround)
+   void Bus::addZip(ZipBase& zip)
    {
-      dependsOn(zipToGround);
-      zipsToGround_.push_back(&zipToGround);
-      zipToGround.didUpdate().addAction([this](){needsUpdate().trigger();},
+      dependsOn(zip);
+      zips_.push_back(&zip);
+      zip.didUpdate().addAction([this](){needsUpdate().trigger();},
             "Trigger Bus " + name() + " needsUpdate.");
-      zipToGround.didUpdate().addAction([this](){changed().trigger();},
+      zip.didUpdate().addAction([this](){changed().trigger();},
             "Trigger Bus " + name() + " changed.");
       // TODO: this will recalculate all zips. Efficiency?
       changed().trigger();
