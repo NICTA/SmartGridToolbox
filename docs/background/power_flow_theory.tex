@@ -296,6 +296,17 @@ The main point of the ABCD representation is that branches may be ``cascaded'' t
 \end{align}
 This defines a composition law for $ABCD$ parameters.
 \section{Transmission Lines}
+\subsection{Single phase transmission lines}
+Short transmission lines (below 80 km in length) can be modelled as a single admittance $y$ (or equivalently an impedance $z = 1/y$) between two busses:
+\begin{align}
+	Y = \begin{bmatrix}
+		y & -y \\ -y & y
+	\end{bmatrix}
+\end{align}
+The real part of $z$ is positive and corresponds to a resistance, and the imaginary part is also positive and corresponds to an inductance. Both the inductance and impedance are proportional to the length of the line.
+
+Longer transmission lines ($> 80$ km) also develop a capacitance between the line and ground. This is usually modelled using the $\pi$-model. 
+
 \section{Transformers}
 \subsection{Single phase transformers}
 For an ideal transformer with a single (possibly complex) turns ratio $n = n_1/n_0$, we have, using the ABCD parameters:
@@ -314,16 +325,8 @@ This can't be modelled correctly in the formalism of nodal admittance matrices, 
 \end{figure}
 The relationships could be included in the powerflow equations specially, but more commonly real transformers are used, as described below; these may be expressed in the nodal admittance formalism.
 
-A real transformer includes a leakage impedance (due to finite resistance of copper windings and core losses) and a shunt magnetising impedance. There are various ways of drawing an equivalent circuit; the one used by matpower is shown in Fig. \ref{FIG_MATPOWER_BRANCH_MODEL}.
-\begin{figure}[!h]
-	\begin{center}
-		\includegraphics[width=(\textwidth-2cm)]{fig_matpower_branch_model}
-	\end{center}
-	\caption{
-		The branch model used by matpower: removing the transformer (setting $N$ to 1) results in a $\pi$ model of a transmission line, while including the transformer results in a model for a real transformer, with $y_s$ being the leakage impedance and $jb_c$ being the magnetising impedance.
-	}
-	\label{FIG_MATPOWER_BRANCH_MODEL}
-\end{figure}
+A real transformer includes a leakage impedance (due to finite resistance of copper windings and core losses) and a shunt magnetising impedance. There are various ways of drawing an equivalent circuit. We use the general branch model described in Section \ref{SEC_GEN_BRANCH_MODEL}, see Fig. \ref{FIG_GEN_BRANCH_MODEL}.
+
 The nodal admittance matrix is:
 \begin{align}
 \begin{bmatrix}I_0 \\ I_1 \end{bmatrix} &= 
@@ -344,9 +347,9 @@ The nodal admittance matrices of three-phase transformers may be derived from th
 \end{figure}
 Considering Fig. \ref{FIG_DELTA_GWYE} and neglecting the magnetising impedance, we have,
 \begin{align}
-I_{AB} &= \frac{y_l}{|a|^2}(V_A - V_B) - \frac{y_l}{a^*}V_a \\
-I_{BC} &= \frac{y_l}{|a|^2}(V_B - V_C) - \frac{y_l}{a^*}V_b \\
-I_{CA} &= \frac{y_l}{|a|^2}(V_C - V_A) - \frac{y_l}{a^*}V_c \\
+I_{AB} &= \frac{y_l}{|n|^2}(V_A - V_B) - \frac{y_l}{a^*}V_a \\
+I_{BC} &= \frac{y_l}{|n|^2}(V_B - V_C) - \frac{y_l}{a^*}V_b \\
+I_{CA} &= \frac{y_l}{|n|^2}(V_C - V_A) - \frac{y_l}{a^*}V_c \\
 I_a &= -\frac{y_l}{a}(V_A - V_B) + y_l V_a \\
 I_b &= -\frac{y_l}{a}(V_B - V_C) + y_l V_b \\
 I_c &= -\frac{y_l}{a}(V_C - V_A) + y_l V_c \\
@@ -354,26 +357,47 @@ I_c &= -\frac{y_l}{a}(V_C - V_A) + y_l V_c \\
 Also, by the KCL, we have
 \begin{align}
 I_A &= I_{AB} - I_{CA} \\
-&= \frac{y_l}{|a|^2}(2V_A - V_B - V_C) + \frac{y_l}{a^*}(V_c - V_a) \\
+&= \frac{y_l}{|n|^2}(2V_A - V_B - V_C) + \frac{y_l}{a^*}(V_c - V_a) \\
 I_B &= I_{BC} - I_{AB} \\
-&= \frac{y_l}{|a|^2}(2V_B - V_C - V_A) + \frac{y_l}{a^*}(V_a - V_b) \\
+&= \frac{y_l}{|n|^2}(2V_B - V_C - V_A) + \frac{y_l}{a^*}(V_a - V_b) \\
 I_C &= I_{CA} - I_{BC} \\
-&= \frac{y_l}{|a|^2}(2V_C - V_A - V_B) + \frac{y_l}{a^*}(V_b - V_c)
+&= \frac{y_l}{|n|^2}(2V_C - V_A - V_B) + \frac{y_l}{a^*}(V_b - V_c)
 \end{align}
 So we can immediately write down the nodal admittance relationship:
 \begin{align}
 \begin{bmatrix}I_A \\ I_B \\ I_C \\ I_a \\ I_b \\ I_c\end{bmatrix} &=
 y_l \begin{bmatrix}
-	2/|a|^2 & -1/|a|^2 & -1/|a|^2 & -1/a^* & 0 & 1/a^* \\
-	-1/|a|^2 & 2/|a|^2 &  -1/|a|^2 & 1/a^*  & -1/a^* & 0 \\
-	-1/|a|^2 &  -1/|a|^2 & 2/|a|^2 & 0 & 1/a^*  & -1/a^* \\
-	-1/a & 1/a & 0 & 1 & 0 & 0 \\
-	0 & -1/a & 1/a & 0 & 1 & 0 \\
-	1/a & 0 & -1/a & 0 & 0 & 1
+	2/|n|^2 & -1/|n|^2 & -1/|n|^2 & -1/a^* & 0 & 1/a^* \\
+	-1/|n|^2 & 2/|n|^2 &  -1/|n|^2 & 1/a^*  & -1/a^* & 0 \\
+	-1/|n|^2 &  -1/|n|^2 & 2/|n|^2 & 0 & 1/n^*  & -1/n^* \\
+	-1/n & 1/n & 0 & 1 & 0 & 0 \\
+	0 & -1/n & 1/n & 0 & 1 & 0 \\
+	1/n & 0 & -1/n & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}V_A \\ V_B \\ V_C \\ V_a \\ V_b \\ V_c\end{bmatrix}
 \end{align}
 with the nodal admittance matrix being specified by the matrix on the right, including the factor of $y_l$.
+
+\section{General single phase branch model}
+\label{SEC_GEN_BRANCH_MODEL}
+Single phase transformers and transmission lines can both be incorporated within a single general branch model, shown in Fig. \ref{FIG_GEN_BRANCH_MODEL}.
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=(\textwidth-2cm)]{branch.png}
+	\end{center}
+	\caption{
+		A general branch model, similar but more general than that used by {\sc Matpower}.
+	}
+	\label{FIG_GEN_BRANCH_MODEL}
+\end{figure}
+The $Y$ matrix for this model is defined by the following equation:
+\begin{align}
+	\begin{bmatrix}I_0 \\ I_1\end{bmatrix} &=
+	\begin{bmatrix}\frac{y_a + y_b}{|n|^2} & -\frac{y_a}{n^*} \\ -\frac{y_a}{n} & y_a + y_c \end{bmatrix}
+	\begin{bmatrix}V_0 \\ V_1\end{bmatrix}
+\end{align}
+Normally, $y_b = y_c$ for both transformers and transmission lines. For a transmission line, $y_b = y_c = jb_c/2$, where $b_c$ is the branch charging capacitance, as defined in the {\sc Matpower} manual. For a transformer, $b_c$ is negative, i.e. it is an inductance rather than a capacitance. For both transformers and lines, $y_a$ has a real positive part (corresponding to the resistance) and a negative imaginary part (an inductance).
+
 \section{The per-unit system}
 There is a single MVA base power defined for the entire network. Power is expressed in units of this power.
 
