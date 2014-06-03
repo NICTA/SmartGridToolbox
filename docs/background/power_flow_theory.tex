@@ -16,10 +16,17 @@
 \newcommand{\re}[1]{\ensuremath{\operatorname{Re}(#1)}}
 \newcommand{\im}[1]{\ensuremath{\operatorname{Im}(#1)}}
 
-\newcommand{\Vr}{\ensuremath{U}}
-\newcommand{\Vi}{\ensuremath{W}}
-\newcommand{\Ir}{\ensuremath{H}}
-\newcommand{\Ii}{\ensuremath{K}}
+%\newcommand{\Vr}{\re{V}}
+%\newcommand{\Vi}{\im{V}}
+%\newcommand{\Ir}{\re{I}}
+%\newcommand{\Ii}{\im{I}}
+%\newcommand{\Sr}{\ensuremath{P}}
+%\newcommand{\Si}{\ensuremath{Q}}
+
+\newcommand{\Vr}{{V_R}}
+\newcommand{\Vi}{{V_I}}
+\newcommand{\Ir}{{I_R}}
+\newcommand{\Ii}{{I_I}}
 \newcommand{\Sr}{\ensuremath{P}}
 \newcommand{\Si}{\ensuremath{Q}}
 
@@ -54,19 +61,19 @@ y_{ci} &= \text{constant impedance ZIP component of load.} \\
 \end{align*}
 
 \section{The powerflow problem}
-We start with a collection \emph{busses} -- terminal-like conductors that have a single associated voltage, $V_i$, where $i$ is the bus index. We can consider \emph{ground} to be a special bus, at which $V$ is always zero.
+We start with a collection \emph{busses} -- terminal-like conductors that have a single associated voltage, $V_i$, where $i$ is the bus index. We can consider \emph{ground} to be a special bus (to which we assign index 0), at which $V$ is always zero.
 
-Current can flow between busses, via the network. The current flowing from bus $i$ to $k$ is $I_{ik}$. Due to the basic relation $S = I^*V$, the power flowing from bus $i$ to $k$ is $S_{ik} = I_{ik}^*(V_i - V_k)$.
+Current can flow between busses, via the network. The current flowing from bus $i$ to $k$ is $I_{ik}$. 
 
-Current that flows \emph{into} a bus is an \emph{injection} into the bus. We use the notation $I_i$ to denote a current injection from ground to bus $i$. The associated power injection from ground is $S_{i} = I_{i}^*V_i$.
+Current that flows \emph{into} a bus from ground is an \emph{injection} into the bus. We use the notation $I_{\text{inj},i} := I_{0i} = -I_{i0}$ to denote a current injection from ground to bus $i$. The power consumed as a result is $S_{0i} = I_{0i}^*(V_0 - V_i) = -I_{i}^*V_i$. The generated power -- that is, the power \emph{injection} into the bus -- is the negative of this: $S_{\text{inj},i} := I_{\text{inj},i}^*V_i$.
 
-\emph{Kirchoff's current law} states that the total current flowing into a bus (from other busses and injections from ground) is zero -- in other words, current in equals current out; electrical charges don't accumulate at busses. Thus
+\emph{Kirchoff's current law} states that the total current flowing into a bus (from other busses and ground) is zero -- in other words, current in equals current out; electrical charges don't accumulate at busses. Thus
 \begin{align}
-	I_{\text{inj},i} - \sum_{k \ne i}{I_{ik}} &= 0
+	I_{i} - \sum_{k \ne i}{I_{ik}} &= 0
 	\label{EQ_KCL}
 \end{align}
 
-The aim of the powerflow problem is to find all bus voltages and currents. This will also trivially allow us to calculate all power flows\footnote{In fact, normally we talk about power flows rather than currents, but if we know the voltage, then the two are interchangeable.}, via $S = I^*V$. To do so, we need to define the properties of the network to provide a functional relationship between current and voltage at the busses. We start with a simple formulation, where the current flow between any two busses is ohmic: it is defined by a fixed impedance between them. This describes a network of passive \emph{lines}. Later we will generalise this relationship, so that, for example, we can include transformers.
+The aim of the powerflow problem is, essentially, to find all bus voltages and currents\footnote{This will also trivially allow us to calculate power flows in the system -- we will discuss this later.}. To do so, we need to define the properties of the network to provide a functional relationship between current and voltage at the busses. We start with a simple formulation, where the current flow between any two busses is ohmic: it is defined by a fixed impedance between them. This describes a network of passive \emph{lines}. Later we will generalise this relationship, so that, for example, we can include transformers.
 
 Suppose that $y_{ik} = y_{ki}$ is a fixed impedance between busses $i$ and $k$. Then Ohm's law states that
 \begin{align}
@@ -92,13 +99,15 @@ where
 \end{align}
 However, in what follows, we do not make further use of the particular form of $Y$ expressed in Eq. (\ref{EQ_YNODE_OHMIC}) above. We simply require that $Y$ be a constant matrix, so that there is a linear relationship between $I$ and $V$. We shall see later that including components such as shunts and transformers allows us to retain the linear relationship while modifying the particular form of $Y$.
 
-The one piece of the puzzle that we haven't yet dealt with is the current injections $I_{inj}$ into the busses. If the current injections were all constant, then the powerflow equations could be immediately solved by standard linear algebra. However, typically, the current injections will depend on the bus voltage, and it is here that the real complexity of powerflow modelling comes into play.
+Due to the basic relation $S = I^*V$, the power loss between bus $i$ and $k$ is $S_{ik} = I_{ik}^*(V_i - V_k)$. Note that power is a scalar: if we reverse the order of the busses, then the power loss is unchanged, in contrast to, say, a current, where reversing the order of the busses will negate the current. However, a power injection into a bus can be defined as the bus voltage times the current injection, so in that sense, power can be considered as a proxy for current -- and, indeed, you will usually read about power flows rather than current flows.
+
+The one piece of the puzzle we haven't yet dealt with is the current injections $I_\text{inj}$ into the busses. If the current injections were all constant, then the powerflow equations could be immediately solved by standard linear algebra. However, typically, the current injections will depend on the bus voltage, and it is here that the real complexity of powerflow modelling comes into play.
 
 Current injections take the form of \emph{loads} or \emph{generation}. Load currents can often be modeled using the \emph{ZIP} model:
 \begin{align}
-	I_\text{ZIP} = I_c + \frac{S^*_c}{V^*}  + y_cV
+	I_\text{ZIP} = I_c + \frac{S^*_c}{V^*} - y_cV
 \end{align}
-Where $I_c$, $S_c$ and $y_c$ are constant current, complex power and impedance components. The ZIP model is a good model for many types of load, but could also be used for certain types of generation - e.g. fixed power generation. If the real power injection $P = \re{I^*V}$ is negative, then we have a load; if it is positive, then we have a generator.
+Where $I_\text{ZIP}$ is the total current injection of the ZIP, $I_c$ and $S_c$ are constant current and power injections and $y_c$ is a constant impedance. The ZIP model is a good model for many types of load, but could also be used for certain types of generation - e.g. fixed power generation. If the real power injection $P = \re{I_\text{ZIP}^*V}$ is negative, then we have a load; if it is positive, then we have a generator.
 
 In addition to the ZIP loads at a bus, we may include generators that apply some kind of extra voltage control on the bus to maintain power stability in the system. A bus that only has a ZIP load is termed a PQ bus. The term PQ means constant P, constant Q.\footnote{Confusingly, though, the presence of fixed current and fixed impedance components of the ZIP means that the power injection may not be constant. This confusion arises because ZIP loads provide a generalisation to the original concept of PQ busses.}
 
@@ -110,7 +119,7 @@ Note that SL and PV busses may also have ZIP loads attached.
 
 We now write the final form of the powerflow equations:
 \begin{align}
-I_i &= \frac{S^*_{ci} + S^*_{\text{gen},i}}{V^*_i} + I_{ci} - y_{ci}V_i - \sum_{k=0}^NY_{ik}V_k = 0
+I_{\text{inj},i} &= \frac{S^*_{ci} + S^*_{\text{gen},i}}{V^*_i} + I_{ci} - y_{ci}V_i - \sum_{k=0}^NY_{ik}V_k = 0
 \label{EQ_POWERFLOW_COMPLEX}
 \end{align}
 where, as before,
@@ -123,16 +132,17 @@ where, as before,
 \end{align}
 The term $-y_{ci}V_i$ may in practice be absorbed into $Y$ by adding $y_{ci}$ to $Y_{ii}$; we retain it here as an explicit bus shunt for bookkeeping purposes.
 
-
 Real and imaginary components are:
 \begin{align}
-	\Ir_i &= \frac{(P_{ci} + P_{\text{gen},i})\Vr_i + (Q_{ci} + Q_{\text{gen},i})\Vi_i}{|V|^2_i} + \Ir_{ci} -g_{ci}\Vr_i + b_{ci}\Vi_i \notag \\
-	&+ \sum_{k=0}^N\left(-G_{ik}\Vr_k + B_{ik}\Vi_k\right) = 0\\
-	\Ii_i &= \frac{(P_{ci} + P_{\text{gen},i})\Vi_i - (Q_{ci} + Q_{\text{gen},i})\Vr_i}{|V|^2_i} + \Ii_{ci} -g_{ci}\Vi_i - b_{ci}\Vr_i \notag \\
+	\Ir_i &= \frac{(P_{ci} + P_{\text{gen},i})\Vr_i + (Q_{ci} + Q_{\text{gen},i})\Vi_i}{|V|^2_i} \notag \\
+	      &+ \Ir_{ci} -g_{ci}\Vr_i + b_{ci}\Vi_i \notag \\
+	      &+ \sum_{k=0}^N\left(-G_{ik}\Vr_k + B_{ik}\Vi_k\right) = 0\\
+	\Ii_i &= \frac{(P_{ci} + P_{\text{gen},i})\Vi_i - (Q_{ci} + Q_{\text{gen},i})\Vr_i}{|V|^2_i} \notag \\
+	      &+ \Ii_{ci} -g_{ci}\Vi_i - b_{ci}\Vr_i \notag \\
 	&+ \sum_{k=0}^N\left(-G_{ik}\Vi_k - B_{ik}\Vr_k\right) = 0
 \end{align}
 
-The possible unknowns are the generator power $P_\text{gen}, Q_\text{gen}$ and the voltages $U, W$.
+The possible unknowns are the generator power $P_\text{gen}, Q_\text{gen}$ and the voltages $\Vr, \Vi$.
 
 \subsection{PQ busses}
 For PQ busses, there is no additional (non-ZIP) generation, and hence $S_{\text{gen}}$ can be set to zero. The unknown variables are the components of $V$.
@@ -216,7 +226,7 @@ Consider a network consisting of three nodes, $a$, $b$ and $c$. Due to the linea
 	\end{bmatrix}
 	\label{EQ_BRANCH_DECOMP}
 \end{align}
-where for example $Y^{ab}$, is the nodal admittance matrix for busses $a$ and $b$ in isolation from the rest of the network. If, for example, nodes $a$ and $b$ were connected by a line with admittance $y_{ab}$, then we would have
+where, e.g., $Y^{ab}$, is the nodal admittance matrix for busses $a$ and $b$ in isolation from the rest of the network. If nodes $a$ and $b$ were connected by a line with admittance $y_{ab}$, then we would have
 \begin{align}
 	Y^{ab} &= 
 	\begin{bmatrix}
@@ -224,7 +234,7 @@ where for example $Y^{ab}$, is the nodal admittance matrix for busses $a$ and $b
 		-y_{ab} & y_{ab}
 	\end{bmatrix}
 \end{align}
-and, for example, we could recover Eq. (\ref{EQ_YNODE_OHMIC}) using the decomposition Eq. (\ref{EQ_BRANCH_DECOMP}). In this kind of decomposition, the matrix $Y^{ab}$ represents the properties of the \emph{branch} between nodes $a$ and $b$ and is termed the \emph{branch admittance matrix}. The global properties of the full $Y$ matrix are reduced to the elements of the $2 \times 2$ branch admittance matrices, which can be derived in isolation from each other.
+In this kind of decomposition, the matrix $Y^{ab}$ represents the properties of the \emph{branch} between nodes $a$ and $b$ and is termed the \emph{branch admittance matrix}. The global properties of the full $Y$ matrix are reduced to the elements of the $2 \times 2$ branch admittance matrices, which can be derived in isolation from each other.
 
 For three phase systems, we should instead consider $6 \times 6$ branch admittance matrices, using the same kind of decomposition. A three-phase bus can be represented as a set of three single phase busses. A three phase branch links two three phase busses, and thus involves six single phase busses. Considering the network for these six busses in isolation from all other busses allows us to derive the elements of the $6 \times 6$ branch admittance matrix, which could, for example, represent the properties of a three-wire overhead transmission line.
 
@@ -288,11 +298,11 @@ This defines a composition law for $ABCD$ parameters.
 \section{Transmission Lines}
 \section{Transformers}
 \subsection{Single phase transformers}
-For an ideal transformer with a single turns ratio $r = n_0/n_1$, we have
+For an ideal transformer with a single (possibly complex) turns ratio $n = n_1/n_0$, we have, using the ABCD parameters:
 \begin{align}
-\begin{bmatrix}V_0 \\ I_0\end{bmatrix} &= \begin{bmatrix}n & 0 \\ 0 & 1/n\end{bmatrix}\begin{bmatrix}V_1 \\ I_1 \end{bmatrix}
+\begin{bmatrix}V_1 \\ I_1\end{bmatrix} &= \begin{bmatrix}n & 0 \\ 0 & 1/n^*\end{bmatrix}\begin{bmatrix}V_0 \\ I_0 \end{bmatrix}
 \end{align}
-This can't be modelled correctly in the formalism of nodal admittance matrix, in the same way that a line with zero impedance can't. Two equaivalent circuits for an ideal transformer are shown in Fig. \ref{FIG_IDEAL_TRANS_EQUIV}.
+This can't be modelled correctly in the formalism of nodal admittance matrices, in the same way that a line with zero impedance can't. Two equivalent circuits for an ideal transformer are shown in Fig. \ref{FIG_IDEAL_TRANS_EQUIV}.
 \begin{figure}[!h]
 	\begin{center}
 		\includegraphics[width=(\textwidth-2cm)]{ideal_transformer_equiv.png}
@@ -304,13 +314,23 @@ This can't be modelled correctly in the formalism of nodal admittance matrix, in
 \end{figure}
 The relationships could be included in the powerflow equations specially, but more commonly real transformers are used, as described below; these may be expressed in the nodal admittance formalism.
 
-A real transformer includes a leakage impedance (due to finite resistance of copper windings and core losses) and a shunt magnetising impedance. The latter is often large and may often be ignored. The nodal admittance matrix may be then derived:
+A real transformer includes a leakage impedance (due to finite resistance of copper windings and core losses) and a shunt magnetising impedance. There are various ways of drawing an equivalent circuit; the one used by matpower is shown in Fig. \ref{FIG_MATPOWER_BRANCH_MODEL}.
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=(\textwidth-2cm)]{fig_matpower_branch_model}
+	\end{center}
+	\caption{
+		The branch model used by matpower: removing the transformer (setting $N$ to 1) results in a $\pi$ model of a transmission line, while including the transformer results in a model for a real transformer, with $y_s$ being the leakage impedance and $jb_c$ being the magnetising impedance.
+	}
+	\label{FIG_MATPOWER_BRANCH_MODEL}
+\end{figure}
+The nodal admittance matrix is:
 \begin{align}
-\begin{bmatrix}I_A \\ I_B \end{bmatrix} &= 
-\begin{bmatrix}y_l/|a|^2 & -y_l/a^* \\ -y_l/a & y_l\end{bmatrix}
-\begin{bmatrix}V_P \\ V_S \end{bmatrix}
+\begin{bmatrix}I_0 \\ I_1 \end{bmatrix} &= 
+\begin{bmatrix}\frac{y_l + \frac{1}{2}y_m}{|n|^2} & -\frac{y_l}{n^*} \\ -\frac{y_l}{n} & y_l + \frac{1}{2}y_m\end{bmatrix}
+\begin{bmatrix}V_0 \\ V_1 \end{bmatrix}
 \end{align}
-where $a = V_P / V_S = N_P / N_S$ for an ideal transformer.
+where $n = n_1/n_0$ is the ideal turns ratio, $y_l$ is the leakage impedance and $y_m$ is the magnetising admittance. Often, the magnetising admittance is very small and is neglected. $y_l$ can be found by short circuiting the secondary, while $y_m$ can be found using an open circuit test.
 
 \subsection{Three-phase transformers}
 The nodal admittance matrices of three-phase transformers may be derived from the single-phase expression, above, combined with information about the connections between phases.
@@ -322,7 +342,7 @@ The nodal admittance matrices of three-phase transformers may be derived from th
 \label{FIG_DELTA_GWYE}
 \end{center}
 \end{figure}
-Considering Fig. \ref{FIG_DELTA_GWYE}, we have,
+Considering Fig. \ref{FIG_DELTA_GWYE} and neglecting the magnetising impedance, we have,
 \begin{align}
 I_{AB} &= \frac{y_l}{|a|^2}(V_A - V_B) - \frac{y_l}{a^*}V_a \\
 I_{BC} &= \frac{y_l}{|a|^2}(V_B - V_C) - \frac{y_l}{a^*}V_b \\
