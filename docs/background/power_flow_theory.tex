@@ -44,14 +44,13 @@
 V &= \Vr + jW = \text{complex voltage.} \\
 I &= \Ir + j\Ii = \text{complex current.} \\
 S &= P + jQ = \text{complex power.} \\
-y &= g + jb = \text{complex admittance.} \\
-Z &= R + jX = \text{complex impedance.} \\
-Y &= G + jB = \text{nodal admittance matrix.} \\
+y &= g + jb = \text{complex admittance} \\
+Z &= R + jX = \text{complex impedance} \\
 y_{ik} &= \text{complex admittance between busses $i$ and $k$.} \\
 Y_{ik} &= G_{ik} + jB_{ik} = \text{nodal admittance matrix element $i, k$.} \\
 \theta_{i} &= \text{the voltage angle of bus $i$.} \\
 \theta_{ik} &= \theta_i - \theta_k = \text{the voltage angle difference between busses $i$ and $k$.} \\
-I_{\text{zip},i} &= \text{total complex current injection from load at bus $i$.} \\
+I_{\text{ZIP},i} &= \text{total complex current injection from load at bus $i$.} \\
 I_{\text{gen},i} &= \text{complex current injection due to the voltage controlled generation at bus $i$.} \\
 S_{\text{gen},i} &= \text{complex power injection due to the voltage controlled generation at bus $i$.} \\
 S_{ci} &= \text{constant power injection ZIP component of load at bus $i$.} \\
@@ -65,7 +64,7 @@ We start with a collection \emph{busses} -- terminal-like conductors that have a
 
 Current can flow between busses, via the network. The current flowing from bus $i$ to $k$ is $I_{ik}$. 
 
-Current that flows \emph{into} a bus from ground is an \emph{injection} into the bus. We use the notation $I_{\text{inj},i} := I_{0i} = -I_{i0}$ to denote a current injection from ground to bus $i$. The power consumed as a result is $S_{0i} = I_{0i}^*(V_0 - V_i) = -I_{i}^*V_i$. The generated power -- that is, the power \emph{injection} into the bus -- is the negative of this: $S_{\text{inj},i} := I_{\text{inj},i}^*V_i$.
+Current that flows into a bus from ground is an \emph{injection} into the bus. We use the notation $I_{\text{inj},i} := I_{0i} = -I_{i0}$ to denote a current injection from ground to bus $i$. The power consumed as a result is $S_{0i} = I_{0i}^*(V_0 - V_i) = -I_{i}^*V_i$. The generated power -- that is, the power \emph{injection} into the bus -- is the negative of this: $S_{\text{inj},i} := I_{\text{inj},i}^*V_i$.
 
 \emph{Kirchoff's current law} states that the total current flowing into a bus (from other busses and ground) is zero -- in other words, current in equals current out; electrical charges don't accumulate at busses. Thus
 \begin{align}
@@ -75,7 +74,7 @@ Current that flows \emph{into} a bus from ground is an \emph{injection} into the
 
 The aim of the powerflow problem is, essentially, to find all bus voltages and currents\footnote{This will also trivially allow us to calculate power flows in the system -- we will discuss this later.}. To do so, we need to define the properties of the network to provide a functional relationship between current and voltage at the busses. We start with a simple formulation, where the current flow between any two busses is ohmic: it is defined by a fixed impedance between them. This describes a network of passive \emph{lines}. Later we will generalise this relationship, so that, for example, we can include transformers.
 
-Suppose that $y_{ik} = y_{ki}$ is a fixed impedance between busses $i$ and $k$. Then Ohm's law states that
+Suppose that $y_{ik} = y_{ki}$ is an impedance between busses $i$ and $k$. Then Ohm's law states that
 \begin{align}
 	I_{ik} &= y_{ik}(V_i - V_k)
 \end{align}
@@ -101,7 +100,7 @@ However, in what follows, we do not make further use of the particular form of $
 
 Due to the basic relation $S = I^*V$, the power loss between bus $i$ and $k$ is $S_{ik} = I_{ik}^*(V_i - V_k)$. Note that power is a scalar: if we reverse the order of the busses, then the power loss is unchanged, in contrast to, say, a current, where reversing the order of the busses will negate the current. However, a power injection into a bus can be defined as the bus voltage times the current injection, so in that sense, power can be considered as a proxy for current -- and, indeed, you will usually read about power flows rather than current flows.
 
-The one piece of the puzzle we haven't yet dealt with is the current injections $I_\text{inj}$ into the busses. If the current injections were all constant, then the powerflow equations could be immediately solved by standard linear algebra. However, typically, the current injections will depend on the bus voltage, and it is here that the real complexity of powerflow modelling comes into play.
+The one piece of the puzzle we haven't yet dealt with is the current injections $I_\text{inj}$ into the busses. If the current injections were all constant, then the powerflow equations could be immediately solved by standard linear algebra. However, typically, the current injections from ground will depend on the bus voltage, and it is here that the real complexity of powerflow modelling comes into play.
 
 Current injections take the form of \emph{loads} or \emph{generation}. Load currents can often be modeled using the \emph{ZIP} model:
 \begin{align}
@@ -109,7 +108,7 @@ Current injections take the form of \emph{loads} or \emph{generation}. Load curr
 \end{align}
 Where $I_\text{ZIP}$ is the total current injection of the ZIP, $I_c$ and $S_c$ are constant current and power injections and $y_c$ is a constant impedance. The ZIP model is a good model for many types of load, but could also be used for certain types of generation - e.g. fixed power generation. If the real power injection $P = \re{I_\text{ZIP}^*V}$ is negative, then we have a load; if it is positive, then we have a generator.
 
-In addition to the ZIP loads at a bus, we may include generators that apply some kind of extra voltage control on the bus to maintain power stability in the system. A bus that only has a ZIP load is termed a PQ bus. The term PQ means constant P, constant Q.\footnote{Confusingly, though, the presence of fixed current and fixed impedance components of the ZIP means that the power injection may not be constant. This confusion arises because ZIP loads provide a generalisation to the original concept of PQ busses.}
+In addition to the ZIP loads at a bus, we may include generators that apply some kind of extra voltage control on the bus to maintain power stability in the system. A bus that only has a ZIP load is termed a PQ bus. The term PQ means constant P, constant Q.\footnote{Confusingly, though, the presence of fixed current and fixed impedance components of the ZIP means that the total power injection may not be constant. This confusion arises because ZIP loads provide a generalisation to the original concept of PQ busses.}
 
 We consider two other types of generator bus: SL (slack/swing/infinite/reference) busses, and PV busses. SL generators keep the total complex voltage of the bus fixed by injecting variable $P$ and $Q$. $PV$ busses keep the voltage magnitude $V$ and power $P$ fixed, while injecting a variable current\footnote{Note that the voltage angle is relative to the slack bus, and so is a non-local property of the network, hence it usually does not make sense to control it anywhere except at the slack bus.}. We write the additional generator current as a power $S_{gen}$ to simplify the later analysis.
 \begin{align}
@@ -121,14 +120,6 @@ We now write the final form of the powerflow equations:
 \begin{align}
 I_{\text{inj},i} &= \frac{S^*_{ci} + S^*_{\text{gen},i}}{V^*_i} + I_{ci} - y_{ci}V_i - \sum_{k=0}^NY_{ik}V_k = 0
 \label{EQ_POWERFLOW_COMPLEX}
-\end{align}
-where, as before,
-\begin{align}
-	Y_{ik} &=
-		\begin{cases}
-			-y_{ik}&\text{if $i \ne k$} \\
-			\sum_{l \ne k} y_{il}& \text{if $i = k$}
-		\end{cases} \\
 \end{align}
 The term $-y_{ci}V_i$ may in practice be absorbed into $Y$ by adding $y_{ci}$ to $Y_{ii}$; we retain it here as an explicit bus shunt for bookkeeping purposes.
 
@@ -147,7 +138,7 @@ The possible unknowns are the generator power $P_\text{gen}, Q_\text{gen}$ and t
 \subsection{PQ busses}
 For PQ busses, there is no additional (non-ZIP) generation, and hence $S_{\text{gen}}$ can be set to zero. The unknown variables are the components of $V$.
 \subsection{Slack busses}
-For SL busses, $V$ is constant and the power flow equations give an explicit expression for $S$. Thus, all quantities at slack busses can immediately be found and are therefore considered constants in the powerflow equations.
+For SL busses, $V$ is constant and the power flow equations give an explicit expression for $S$. All quantities at slack busses can immediately be found and are therefore considered constants in the powerflow equations.
 \subsection{PV busses}
 For PV busses, the power flow equations also hold, with both components of $V$ being unknown as was the case for PQ busses. $Q_{\text{gen}}$ is an additional variable, and an extra constraint also applies:
 \begin{align}
@@ -157,7 +148,7 @@ For PV busses, the power flow equations also hold, with both components of $V$ b
 where $V_{\text{PV}}$ is the voltage magnitude setpoint for the PV bus.
 
 \subsection{Newton-Raphson equations}
-Considering PQ busses only for the moment, the unknowns are the real and imaginary parts of $V$, and these equations can be solved using the Newton-Raphson method. Letting the function to which we want to find the zero be $f = \{\Ir, \Ii\}$, the unknows be $x = \{\Vr, \Vi\}$, we wish to solve $f(x) = 0$. Using the Jacobian
+Considering PQ busses only for the moment, the unknowns are the real and imaginary parts of $V$, and these equations can be solved using the Newton-Raphson method. Letting the function to which we want to find the zero be $f = [\Ir, \Ii]$, the unknows be $x = [\Vr, \Vi]$, we wish to solve $f(x) = 0$. Using the Jacobian
 \begin{align}
 J_{ik}(x) = \frac{\partial f_i(x)}{\partial x_k}
 \end{align}
@@ -191,7 +182,7 @@ As explained earlier, $PV$ busses add an extra variable, $Q$. This adds the foll
 \frac{\partial \Ir_k}{\partial Q_{\text{gen},k}} &= \frac{\Vi_k}{|V|_k^2} \\
 \frac{\partial \Ii_k}{\partial Q_{\text{gen},k}} &= -\frac{\Vr_k}{|V|_k^2}
 \end{align}
-They also add an extra constraint, Eq. (\ref{EQ_POWERFLOW_PV_CONSTRAINT}), reproduced here:
+There is also an extra constraint, Eq. (\ref{EQ_POWERFLOW_PV_CONSTRAINT}), reproduced here:
 \begin{align}
 \Delta |V|^2 = \Vr^2 + \Vi^2 - V_\text{PV}^2 = 0
 \label{EQ_POWERFLOW_PV_CONSTRAINT_AGAIN}
@@ -211,11 +202,11 @@ which gives
 \Delta \Vr_k &= \frac{V^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2- 2\Vi_k\Delta \Vi_k}{2\Vr_k}
 \end{align}
 
-Using these expressions, $\Delta \Vr$ may be eliminated from the NR equations for the PV bus. First write the Jacobian as if all busses were PQ. Let $k$ be any PV bus. Take the column corresponding to $\Delta \Vr_k$, and add its product with $-\Vi_k/\Vr_k$ to the matching column for  $\Delta \Vi_k$. Add its product with $(|V|^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2)/(2\Vr_k)$ to $f$ in Eq. (\ref{EQ_NR}). The column and the corresponding element of $x$ for $\Delta \Vr_k$ will now be replaced with a column and elment for $\Delta Q_{\text{gen},k}$. Set the column to zero, and then set the block diagonal elements, using Eq. (\ref{PV_JAC_Q}). Reinterpret the corresponding element of $\Delta x$ in Eq. (\ref{EQ_NR}) as now corresponding to $\Delta Q_{\text{gen},k}$ instead of $\Delta \Vr_k$.
+Using these expressions, $\Delta \Vr$ may be eliminated from the NR equations for the PV bus. First write the Jacobian as if all busses were PQ. Let $k$ be any PV bus. Take the column corresponding to $\Delta \Vr_k$, and add its product with $-\Vi_k/\Vr_k$ to the matching column for  $\Delta \Vi_k$. Add its product with $(|V|^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2)/(2\Vr_k)$ to $f$ in Eq. (\ref{EQ_NR}). The column and the corresponding element of $x$ for $\Delta \Vr_k$ will now be replaced with a column and elment for $\Delta Q_{\text{gen},k}$. Set the column to zero, and then set the block diagonal elements, using Eq. (\ref{EQ_PV_JAC_Q}). Reinterpret the corresponding element of $\Delta x$ in Eq. (\ref{EQ_NR}) as now corresponding to $\Delta Q_{\text{gen},k}$ instead of $\Delta \Vr_k$.
 
 \section{Formalism for modelling branches}
 \subsection{Branch admittance ($Y$) parameters}
-Consider a network consisting of three nodes, $a$, $b$ and $c$. Due to the linear nature of the nodal admittance relation, the nodal admittance matrix for the network $Y$, can be decomposed as follows:
+Consider a network consisting of three busses, $a$, $b$ and $c$. Due to the linear nature of the nodal admittance relation, the nodal admittance matrix for the network $Y$, can be decomposed as follows:
 \begin{align}
 	Y = \begin{bmatrix}
 		Y^{ab}_{00} & Y^{ab}_{01} & 0 \\ Y^{ab}_{10} & Y^{ab}_{11} & 0 \\ 0 & 0 & 0
@@ -236,11 +227,11 @@ where, e.g., $Y^{ab}$, is the nodal admittance matrix for busses $a$ and $b$ in 
 \end{align}
 In this kind of decomposition, the matrix $Y^{ab}$ represents the properties of the \emph{branch} between nodes $a$ and $b$ and is termed the \emph{branch admittance matrix}. The global properties of the full $Y$ matrix are reduced to the elements of the $2 \times 2$ branch admittance matrices, which can be derived in isolation from each other.
 
-For three phase systems, we should instead consider $6 \times 6$ branch admittance matrices, using the same kind of decomposition. A three-phase bus can be represented as a set of three single phase busses. A three phase branch links two three phase busses, and thus involves six single phase busses. Considering the network for these six busses in isolation from all other busses allows us to derive the elements of the $6 \times 6$ branch admittance matrix, which could, for example, represent the properties of a three-wire overhead transmission line.
+What about three phase systems? A three-phase bus can be represented as a set of three single phase busses. A three phase branch links two three phase busses, and thus involves six single phase busses; it is represented by a $6 \times 6$ branch admittance matrix. Considering the network for these six busses in isolation from all other busses allows us to derive its elements, which could, for example, represent the properties of a three-wire overhead transmission line.
 
 The modelling task is then to derive expressions for the branch admittance matrices of all the different kinds of lines and transformers. The full $Y$ matrix may then always be reconstructed from these components. 
 
-Although the linear properties of a branch is fully encoded in its admittance matrix, sometimes alternate expressions are used. Often, the inverse of the branch matrix, the $Z$ matrix, is used
+Sometimes, instead of using the branch admittance matrix representation, alternate expressions are used. Often, the inverse of the branch matrix, the $Z$ matrix, is used
 \begin{align}
 	Z = Y^{-1}
 \end{align}
@@ -303,9 +294,28 @@ Short transmission lines (below 80 km in length) can be modelled as a single adm
 		y & -y \\ -y & y
 	\end{bmatrix}
 \end{align}
-The real part of $z$ is positive and corresponds to a resistance, and the imaginary part is also positive and corresponds to an inductance. Both the inductance and impedance are proportional to the length of the line.
+The real part of $z$ is positive (a resistance), and the imaginary part is also positive (an inductive reactance). Both the resistance and the inductive reactance are proportional to the length of the line. The inductive reactance is usually larger than the resistance.
 
-Longer transmission lines ($> 80$ km) also develop a capacitance between the line and ground. This is usually modelled using the $\pi$-model. 
+Longer transmission lines ($> 80$ km) also develop a capacitance between the line and ground. If the length is less than about 240 km, then this is often modelled using the $\pi$-model, see Fig. \ref{FIG_PI_LINE}. The $Y$-matrix is:
+\begin{align}
+	Y = \begin{bmatrix}y_s + \frac{j b_c}{2} & -y_s \\ -y_s & y_s + \frac{j b_c}{2} \end{bmatrix}
+\end{align}
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=(5cm)]{pi_line}
+	\end{center}
+	\caption{
+		The $\pi$ model of a transmission line.
+	}
+	\label{FIG_PI_LINE}
+\end{figure}
+Very long lines require a more complex \emph{distributed model}.
+
+\subsection{Multi-phase transmission lines}
+The equations above apply also to multi-phase lines, except that the scalar elements become block submatrices whose size is the number of phases.
+
+\subsection{Line parameters}
+We have discussed above the structure of the $Y$ matrix for transmission lines -- but we still need to know how to find the values of the admittances in our equations. \emph{Carson's Equations} allow us to do this, for N-phase lines which may also contain one or more multi-grounded neutral wires. They take into account the geometry of the transmission line and the conductivity of the ground. We do not, however, go into these equations in this document.
 
 \section{Transformers}
 \subsection{Single phase transformers}
@@ -347,28 +357,28 @@ The nodal admittance matrices of three-phase transformers may be derived from th
 \end{figure}
 Considering Fig. \ref{FIG_DELTA_GWYE} and neglecting the magnetising impedance, we have,
 \begin{align}
-I_{AB} &= \frac{y_l}{|n|^2}(V_A - V_B) - \frac{y_l}{a^*}V_a \\
-I_{BC} &= \frac{y_l}{|n|^2}(V_B - V_C) - \frac{y_l}{a^*}V_b \\
-I_{CA} &= \frac{y_l}{|n|^2}(V_C - V_A) - \frac{y_l}{a^*}V_c \\
-I_a &= -\frac{y_l}{a}(V_A - V_B) + y_l V_a \\
-I_b &= -\frac{y_l}{a}(V_B - V_C) + y_l V_b \\
-I_c &= -\frac{y_l}{a}(V_C - V_A) + y_l V_c \\
+I_{AB} &= \frac{y_l}{|n|^2}(V_A - V_B) - \frac{y_l}{n^*}V_a \\
+I_{BC} &= \frac{y_l}{|n|^2}(V_B - V_C) - \frac{y_l}{n^*}V_b \\
+I_{CA} &= \frac{y_l}{|n|^2}(V_C - V_A) - \frac{y_l}{n^*}V_c \\
+I_a &= -\frac{y_l}{n}(V_A - V_B) + y_l V_a \\
+I_b &= -\frac{y_l}{n}(V_B - V_C) + y_l V_b \\
+I_c &= -\frac{y_l}{n}(V_C - V_A) + y_l V_c \\
 \end{align}
 Also, by the KCL, we have
 \begin{align}
 I_A &= I_{AB} - I_{CA} \\
-&= \frac{y_l}{|n|^2}(2V_A - V_B - V_C) + \frac{y_l}{a^*}(V_c - V_a) \\
+&= \frac{y_l}{|n|^2}(2V_A - V_B - V_C) + \frac{y_l}{n^*}(V_c - V_a) \\
 I_B &= I_{BC} - I_{AB} \\
-&= \frac{y_l}{|n|^2}(2V_B - V_C - V_A) + \frac{y_l}{a^*}(V_a - V_b) \\
+&= \frac{y_l}{|n|^2}(2V_B - V_C - V_A) + \frac{y_l}{n^*}(V_a - V_b) \\
 I_C &= I_{CA} - I_{BC} \\
-&= \frac{y_l}{|n|^2}(2V_C - V_A - V_B) + \frac{y_l}{a^*}(V_b - V_c)
+&= \frac{y_l}{|n|^2}(2V_C - V_A - V_B) + \frac{y_l}{n^*}(V_b - V_c)
 \end{align}
-So we can immediately write down the nodal admittance relationship:
+so we can immediately write down the nodal admittance relationship:
 \begin{align}
 \begin{bmatrix}I_A \\ I_B \\ I_C \\ I_a \\ I_b \\ I_c\end{bmatrix} &=
 y_l \begin{bmatrix}
-	2/|n|^2 & -1/|n|^2 & -1/|n|^2 & -1/a^* & 0 & 1/a^* \\
-	-1/|n|^2 & 2/|n|^2 &  -1/|n|^2 & 1/a^*  & -1/a^* & 0 \\
+	2/|n|^2 & -1/|n|^2 & -1/|n|^2 & -1/n^* & 0 & 1/n^* \\
+	-1/|n|^2 & 2/|n|^2 &  -1/|n|^2 & 1/n^*  & -1/n^* & 0 \\
 	-1/|n|^2 &  -1/|n|^2 & 2/|n|^2 & 0 & 1/n^*  & -1/n^* \\
 	-1/n & 1/n & 0 & 1 & 0 & 0 \\
 	0 & -1/n & 1/n & 0 & 1 & 0 \\
@@ -383,7 +393,7 @@ with the nodal admittance matrix being specified by the matrix on the right, inc
 Single phase transformers and transmission lines can both be incorporated within a single general branch model, shown in Fig. \ref{FIG_GEN_BRANCH_MODEL}.
 \begin{figure}[!h]
 	\begin{center}
-		\includegraphics[width=(\textwidth-2cm)]{branch.png}
+		\includegraphics[width=(9cm)]{branch.png}
 	\end{center}
 	\caption{
 		A general branch model, similar but more general than that used by {\sc Matpower}.
@@ -396,14 +406,5 @@ The $Y$ matrix for this model is defined by the following equation:
 	\begin{bmatrix}\frac{y_a + y_b}{|n|^2} & -\frac{y_a}{n^*} \\ -\frac{y_a}{n} & y_a + y_c \end{bmatrix}
 	\begin{bmatrix}V_0 \\ V_1\end{bmatrix}
 \end{align}
-Normally, $y_b = y_c$ for both transformers and transmission lines. For a transmission line, $y_b = y_c = jb_c/2$, where $b_c$ is the branch charging capacitance, as defined in the {\sc Matpower} manual. For a transformer, $b_c$ is negative, i.e. it is an inductance rather than a capacitance. For both transformers and lines, $y_a$ has a real positive part (corresponding to the resistance) and a negative imaginary part (an inductance).
-
-\section{The per-unit system}
-There is a single MVA base power defined for the entire network. Power is expressed in units of this power.
-
-Each bus has its own base voltage (usually expressed as Kv base). Bus voltages are then expressed in units of this voltage.
-
-Current injections at a bus $i$ are expressed in units of $I_\text{base} = P_{base}/V_{\text{base},i}$. Thus care needs to be taken when translating current from one end of a line to the other end.
-
-Impedances are expressed 
+Normally, $y_b = y_c = -jb_c/2$ for both transformers and transmission lines, as per the {\sc Matpower} manual. For a transmission line, $b_c$ is a capacitative admittance, and is positive, and for a transformer, $b_c$ is an inductive admittance and is negative. For both transformers and lines, $y_a$ has a real positive part (corresponding to the resistance) and a negative imaginary part (an inductive admittance).
 \end{document}
