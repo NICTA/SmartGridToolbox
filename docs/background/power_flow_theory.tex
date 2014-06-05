@@ -98,7 +98,15 @@ where
 \end{align}
 However, in what follows, we do not make further use of the particular form of $Y$ expressed in Eq. (\ref{EQ_YNODE_OHMIC}) above. We simply require that $Y$ be a constant matrix, so that there is a linear relationship between $I$ and $V$. We shall see later that including components such as shunts and transformers allows us to retain the linear relationship while modifying the particular form of $Y$.
 
-Due to the basic relation $S = I^*V$, the power loss between bus $i$ and $k$ is $S_{ik} = I_{ik}^*(V_i - V_k)$. Note that power is a scalar: if we reverse the order of the busses, then the power loss is unchanged, in contrast to, say, a current, where reversing the order of the busses will negate the current. However, a power injection into a bus can be defined as the bus voltage times the current injection, so in that sense, power can be considered as a proxy for current -- and, indeed, you will usually read about power flows rather than current flows.
+Due to the basic relation $S = I^*V$, the power loss between bus $i$ and $k$ is $S_{ik} = I_{ik}^*(V_i - V_k)$. Note that power is a scalar: if we reverse the order of the busses, then the power loss is unchanged, in contrast to, say, a current, where reversing the order of the busses will negate the current. More commonly, though, you will deal with the power entering or leaving a bus rather than the power lost in a line. Consider a current leaving a bus. If the current is a draw to ground, or if the system is radial and the current is in the direction of the downstream loads, all of this current will eventually end up at ground. The voltage drop in this process will just be the voltage of the bus. Thus, the power eventually transferred to ground will be 
+\begin{align}
+	S_\text{draw} = I_\text{draw}^*V_\text{bus}
+\end{align}
+or, equivalently, for injections
+\begin{align}
+	S_\text{inj} = I_\text{inj}^*V_\text{bus}
+\end{align}
+Note the way in which this concept of power is different to the concept of power loss in a line: the voltage in the equation is always the voltage of a bus relative to ground, and the current is always an injection or draw on a bus (rather than between two busses). There is an implied directionality: if the power draw from a bus is positive, then power is considered to be flowing from the bus to ground and we have a load.
 
 The one piece of the puzzle we haven't yet dealt with is the current injections $I_\text{inj}$ into the busses. If the current injections were all constant, then the powerflow equations could be immediately solved by standard linear algebra. However, typically, the current injections from ground will depend on the bus voltage, and it is here that the real complexity of powerflow modelling comes into play.
 
@@ -407,4 +415,62 @@ The $Y$ matrix for this model is defined by the following equation:
 	\begin{bmatrix}V_0 \\ V_1\end{bmatrix}
 \end{align}
 Normally, $y_b = y_c = -jb_c/2$ for both transformers and transmission lines, as per the {\sc Matpower} manual. For a transmission line, $b_c$ is a capacitative admittance, and is positive, and for a transformer, $b_c$ is an inductive admittance and is negative. For both transformers and lines, $y_a$ has a real positive part (corresponding to the resistance) and a negative imaginary part (an inductive admittance).
+
+\section{The per-unit system}
+Let $V$ be the vector of voltages at busses. We define the \emph{base voltage} and \emph{per-unit voltage} according to the following relation:
+\begin{align}
+	V_i = V_{\text{base},i}V_{\text{pu},i},
+\end{align} or, as a matrix equation,
+\begin{align}
+	V = V_\text{base}V_\text{pu}
+\end{align}
+where $V_\text{base}$ is the real, diagonal matrix of per-unit voltages at each bus\footnote{The discussion can trivially be generalised to the case where $V_\text{base}$ is not diagonal, although in normal practice it \emph{is} diagonal.}. $V_\text{base}$ is normally set according to the rated voltage of the bus, and $V_\text{pu}$ is the voltage relative to this base voltage. Within each voltage area of a network, $V_\text{base}$ is normally set to the same value for all busses. For example, the 11~kV parts of a network will have $V_\text{base} = 11$~kV for all busses, the 440~V parts will have $V_\text{base} = 440$~V etc.
+
+Let $S$ be any vector of power injections into the busses, with associated current injections $I$. Similar to the case for voltages, we define base and per-unit powers:
+\begin{align}
+	S = P_\text{base}S_\text{pu}
+\end{align}
+where $P_\text{base}$ is likewise a real, diagonal matrix of base powers. Normally, all the elements of $P_\text{base}$ are equal, and hence it can be considered to be a real scalar, typically 100~MW, but we stick with the generalized form here.
+
+We have
+\begin{align}
+	S = I_d^*V
+\end{align}
+where $I_d$ is here the diagonal matrix corresponding to the vector of current injections $I$.
+Hence
+\begin{align}
+	P_\text{base}S_\text{pu} &= I_d^*V_\text{base}V_\text{pu} \notag \\
+	\implies S_\text{pu} &= P_\text{base}^{-1}I_d^*V_\text{base}V_\text{pu} \notag \\
+	&= I_{d,\text{pu}}^*V_\text{pu} 
+\end{align}
+where we have defined
+\begin{align}
+	I_{d,\text{pu}} &= P_\text{base}^{-1}I_d^*V_\text{base}
+\end{align}
+Since all matrices on the RHS are (in normal usage) diagonal, we can then put
+\begin{align}
+	I_i &= I_{\text{base},i}I_{\text{pu},i}
+\end{align}
+where
+\begin{align}
+	I_{\text{base},i} &= \frac{P_{\text{base},i}}{V_{\text{base},i}}
+	\label{EQ_IBASE_DEFN}
+\end{align}
+
+Now consider the nodal admittance relation $I = YV$:
+\begin{align}
+	I &= YV \notag \\
+	I_\text{base}I_\text{pu} &= YV_\text{base}V_\text{pu} \notag \\
+	I_\text{pu} &= I_\text{base}^{-1}YV_\text{base}V_\text{pu}
+\end{align}
+where $I_\text{base}$ is a diagonal matrix with elements defined according to Eq. \ref{EQ_IBASE_DEFN}. Thus
+\begin{align}
+	Y_\text{pu} = I_\text{base}^{-1}YV_\text{base}
+\end{align}
+or, for the components (assuming the normal case where the base matrices are diagonal)
+\begin{align}
+	Y_{\text{pu},ik} &= Y_{ik}\frac{V_{\text{base},k}}{I_{\text{base},i}} \notag \\
+	&= Y_{ik}\frac{V_{\text{base},i}V_{\text{base},k}}{P_{\text{base},i}}
+\end{align}
+
 \end{document}
