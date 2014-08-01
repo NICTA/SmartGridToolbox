@@ -416,61 +416,34 @@ The $Y$ matrix for this model is defined by the following equation:
 \end{align}
 Normally, $y_b = y_c = -jb_c/2$ for both transformers and transmission lines, as per the {\sc Matpower} manual. For a transmission line, $b_c$ is a capacitative admittance, and is positive, and for a transformer, $b_c$ is an inductive admittance and is negative. For both transformers and lines, $y_a$ has a real positive part (corresponding to the resistance) and a negative imaginary part (an inductive admittance).
 
-\section{The per-unit system}
-Let $V$ be the vector of voltages at busses. We define the \emph{base voltage} and \emph{per-unit voltage} according to the following relation:
-\begin{align}
-	V_i = V_{\text{base},i}V_{\text{pu},i},
-\end{align} or, as a matrix equation,
-\begin{align}
-	V = V_\text{base}V_\text{pu}
-\end{align}
-where $V_\text{base}$ is the real, diagonal matrix of per-unit voltages at each bus\footnote{The discussion can trivially be generalised to the case where $V_\text{base}$ is not diagonal, although in normal practice it \emph{is} diagonal.}. $V_\text{base}$ is normally set according to the rated voltage of the bus, and $V_\text{pu}$ is the voltage relative to this base voltage. Within each voltage area of a network, $V_\text{base}$ is normally set to the same value for all busses. For example, the 11~kV parts of a network will have $V_\text{base} = 11$~kV for all busses, the 440~V parts will have $V_\text{base} = 440$~V etc.
+\section{Units and the per-unit system}
+The following self-consistent system of units is often used in modelling electricity networks:
+\begin{description}
+	\item[Voltage:]kV (kilovolts)
+	\item[Power:]MW/MVAR/MVA (megawatts etc.)
+	\item[Current:]kA (kiloamps)
+	\item[Resistance:]$\Omega$ (ohms)
+	\item[Admittance:]$S$ (siemens)
+\end{description}
+Under this system, relationships like Ohm's Law hold without the need to include any additional constants. The alternative is to use SI units ($V/W/A/\Omega/S$\ldots).
 
-Let $S$ be any vector of power injections into the busses, with associated current injections $I$. Similar to the case for voltages, we define base and per-unit powers:
+The \emph{per-unit} system is also often used. The idea is to express electrical quantities as a \emph{per-unit} dimensionless quantity times a \emph{base unit}, e.g.
 \begin{align}
-	S = P_\text{base}S_\text{pu}
-\end{align}
-where $P_\text{base}$ is likewise a real, diagonal matrix of base powers. Normally, all the elements of $P_\text{base}$ are equal, and hence it can be considered to be a real scalar, typically 100~MW, but we stick with the generalized form here.
-
-We have
-\begin{align}
-	S = I_d^*V
-\end{align}
-where $I_d$ is here the diagonal matrix corresponding to the vector of current injections $I$.
-Hence
-\begin{align}
-	P_\text{base}S_\text{pu} &= I_d^*V_\text{base}V_\text{pu} \notag \\
-	\implies S_\text{pu} &= P_\text{base}^{-1}I_d^*V_\text{base}V_\text{pu} \notag \\
-	&= I_{d,\text{pu}}^*V_\text{pu} 
-\end{align}
-where we have defined
-\begin{align}
-	I_{d,\text{pu}} &= P_\text{base}^{-1}I_d^*V_\text{base}
-\end{align}
-Since all matrices on the RHS are (in normal usage) diagonal, we can then put
-\begin{align}
-	I_i &= I_{\text{base},i}I_{\text{pu},i}
-\end{align}
-where
-\begin{align}
-	I_{\text{base},i} &= \frac{P_{\text{base},i}}{V_{\text{base},i}}
-	\label{EQ_IBASE_DEFN}
+V &= V_\text{pu}V_\text{base} \notag \\
+S &= S_\text{pu}P_\text{base} \notag \\
+I &= I_\text{pu}I_\text{base} \notag \\
+&\text{etc.}
 \end{align}
 
-Now consider the nodal admittance relation $I = YV$:
+Base units $V_\text{base}$ and $P_\text{base}$ are normally first defined for the network. $V_\text{base}$ is set to the nominal operating voltage of a bus (e.g. 11~kV), which means that $V_\text{base}$ may vary from bus to bus. On the other hand, a single network-wide value for $P_\text{base}$ is usually chosen to be a convenient value such as 100~MVA. Other base quantities may then be derived:
 \begin{align}
-	I &= YV \notag \\
-	I_\text{base}I_\text{pu} &= YV_\text{base}V_\text{pu} \notag \\
-	I_\text{pu} &= I_\text{base}^{-1}YV_\text{base}V_\text{pu}
+	I_\text{base} &= P_\text{base}/V_\text{base} \notag \\
+	Z_\text{base} &= V_\text{base}^2 / P_\text{base} \notag \\
+	Y_\text{base} &= P_\text{base} / V_\text{base}^2
 \end{align}
-where $I_\text{base}$ is a diagonal matrix with elements defined according to Eq. \ref{EQ_IBASE_DEFN}. Thus
-\begin{align}
-	Y_\text{pu} = I_\text{base}^{-1}YV_\text{base}
-\end{align}
-or, for the components (assuming the normal case where the base matrices are diagonal)
-\begin{align}
-	Y_{\text{pu},ik} &= Y_{ik}\frac{V_{\text{base},k}}{I_{\text{base},i}} \notag \\
-	&= Y_{ik}\frac{V_{\text{base},i}V_{\text{base},k}}{P_{\text{base},i}}
-\end{align}
-
+Note that there is some ambiguity about which bus $V_\text{base}$ is referenced to in the expressions above. Consider for example a line that runs between two busses: logically there could be several ways to define the per-unit current: using the voltage at the first bus, the voltage at the second bus, or the voltage drop on the line. Depending on how things are done, different equations will need to be used for the network. A set of conventions consistent with \textsc{Matpower} is given below:
+\begin{itemize}
+\item Per-unit quantities in lines are calculated using the base-voltage at the second (to) bus. This makes sense in Matpower, since a common branch model is used where all transformers occur at the first (from) bus, with the bulk of the line occurring between the transformer and the second (to) bus.
+\item Per-unit quantities associated with busses (such as bus shunt admittance, current loads etc. are calculated, naturally enough, using the base voltage of the bus.
+\end{itemize}
 \end{document}
