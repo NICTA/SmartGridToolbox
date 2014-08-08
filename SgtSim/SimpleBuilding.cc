@@ -1,4 +1,4 @@
-#include <SgtSim/SimpleBuilding.h>
+#include "SimpleBuilding.h"
 
 namespace {
    double propTbNorm(double dt, double Tb0, double Ts, double kb,

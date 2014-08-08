@@ -1,9 +1,11 @@
-#include <SgtSim/Parser.h>
+#include "Parser.h"
+
+#include "Model.h"
+#include "RegisterParserPlugins.h"
+#include "Simulation.h"
 
 #include <SgtCore/Common.h>
-#include <SgtSim/Model.h>
-#include "RegisterParserPlugins.h"
-#include <SgtSim/Simulation.h>
+
 #include <string>
 #include <boost/algorithm/string.hpp>
 

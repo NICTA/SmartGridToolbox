@@ -1,6 +1,7 @@
-#include <SgtSim/Weather.h>
-#include <SgtSim/Model.h>
-#include <SgtSim/TimeSeries.h>
+#include "Weather.h"
+
+#include "Model.h"
+#include "TimeSeries.h"
 
 namespace SmartGridToolbox
 {

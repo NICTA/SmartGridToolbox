@@ -1,8 +1,11 @@
-#include <SgtCore/Common.h>
 #include "WeakOrder.h"
+
+#include <SgtCore/Common.h>
+
 #include <iostream>
 #include <algorithm>
 #include <sstream>
+
 using namespace std;
 
 std::string prlevel(int level)

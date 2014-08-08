@@ -1,8 +1,8 @@
 #include "SolarPvParser.h"
 
-#include <SgtSim/InverterBase.h>
-#include <SgtSim/SolarPv.h>
-#include <SgtSim/Weather.h>
+#include "InverterBase.h"
+#include "SolarPv.h"
+#include "Weather.h"
 
 namespace SmartGridToolbox
 {

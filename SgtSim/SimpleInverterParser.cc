@@ -1,7 +1,7 @@
 #include "SimpleInverterParser.h"
 
-#include <SgtSim/BusComp.h>
-#include <SgtSim/SimpleInverter.h>
+#include "BusComp.h"
+#include "SimpleInverter.h"
 
 namespace SmartGridToolbox
 {

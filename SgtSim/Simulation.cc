@@ -1,6 +1,8 @@
-#include <SgtSim/Simulation.h>
-#include <SgtSim/Model.h>
-#include <SgtSim/Component.h>
+#include "Simulation.h"
+
+#include "Model.h"
+#include "Component.h"
+
 #include <algorithm>
 
 #define DEBUG 1

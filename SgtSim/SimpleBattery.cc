@@ -1,5 +1,7 @@
-#include <SgtSim/SimpleBattery.h>
-#include <SgtSim/InverterBase.h>
+#include "SimpleBattery.h"
+
+#include "InverterBase.h"
+
 #include <iostream>
 
 using namespace std;

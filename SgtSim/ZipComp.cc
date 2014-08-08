@@ -1,6 +1,7 @@
-#include <SgtSim/ZipComp.h>
-#include <SgtSim/BusComp.h>
-#include <SgtSim/Model.h>
+#include "ZipComp.h"
+
+#include "BusComp.h"
+#include "Model.h"
 
 namespace SmartGridToolbox
 {

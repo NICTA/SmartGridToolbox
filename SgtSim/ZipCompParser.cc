@@ -1,7 +1,7 @@
 #include "ZipCompParser.h"
 
-#include <SgtSim/BusComp.h>
-#include <SgtSim/ZipComp.h>
+#include "BusComp.h"
+#include "ZipComp.h"
 
 namespace SmartGridToolbox
 {

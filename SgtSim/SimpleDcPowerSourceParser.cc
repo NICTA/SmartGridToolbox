@@ -1,7 +1,7 @@
 #include "SimpleDcPowerSourceParser.h"
 
-#include <SgtSim/InverterBase.h>
-#include <SgtSim/SimpleDcPowerSource.h>
+#include "InverterBase.h"
+#include "SimpleDcPowerSource.h"
 
 namespace SmartGridToolbox
 {
