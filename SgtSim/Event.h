@@ -1,8 +1,11 @@
 #ifndef EVENT_DOT_H
 #define EVENT_DOT_H
 
+#include <SgtCore/Common.h>
+
 #include <functional>
 #include <list>
+#include <string>
 
 namespace SmartGridToolbox
 {
