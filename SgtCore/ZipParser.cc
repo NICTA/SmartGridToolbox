@@ -1,0 +1,34 @@
+#include "ZipParser.h"
+
+#include "Bus.h"
+#include "Network.h"
+#include "Zip.h"
+
+namespace LibPowerFlow
+{
+   void ZipParser::parse(const YAML::Node& nd, Network& netw) const
+   {
+      LPF_DEBUG(debug() << "Zip : parse." << std::endl);
+
+      assertFieldPresent(nd, "id");
+      assertFieldPresent(nd, "y_const");
+      assertFieldPresent(nd, "I_const");
+      assertFieldPresent(nd, "S_const");
+      assertFieldPresent(nd, "bus_id");
+
+      std::string id = nd["id"].as<std::string>();
+      ublas::vector<Complex> y = nd["y_const"].as<ublas::vector<Complex>>();
+      ublas::vector<Complex> I = nd["I_const"].as<ublas::vector<Complex>>();
+      ublas::vector<Complex> S = nd["S_const"].as<ublas::vector<Complex>>();
+      std::string busId = nd["bus_id"].as<std::string>();
+      
+      Bus* bus = netw.bus(busId);
+
+      std::unique_ptr<Zip> zip(new Zip(id, bus->phases()));
+      zip->set_yConst(y);
+      zip->setIConst(I);
+      zip->setSConst(S);
+
+      netw.addZip(std::move(zip), *bus);
+   }
+}

@@ -6,6 +6,8 @@
 #include <SmartGridToolbox/Event.h>
 #include <SmartGridToolbox/PowerFlow.h>
 
+#include <LibPowerFlow.h>
+
 #include <iostream>
 
 namespace SmartGridToolbox

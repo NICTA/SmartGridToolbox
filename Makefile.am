@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = SmartGridToolbox src docs tests
+SUBDIRS = SgtCore SgtSim src docs tests
 
 dist_doc_DATA = README
 

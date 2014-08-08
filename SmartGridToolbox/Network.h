@@ -5,6 +5,8 @@
 #include <SmartGridToolbox/Bus.h>
 #include <SmartGridToolbox/Branch.h>
 
+#include <LibPowerFlow.h>
+
 namespace SmartGridToolbox
 {
    class Bus;
