@@ -14,7 +14,7 @@ AC_LANG([Objective C++])
 AX_CHECK_COMPILE_FLAG(-std=c++11, [AC_SUBST(AM_OBJCXXFLAGS, ["-std=c++11"])])
 
 AC_LANG([C++])
-AX_CXX_COMPILE_STDCXX_11
+AX_CXX_COMPILE_STDCXX_11([noext])
 AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [AM_CXXFLAGS="$AM_CXXFLAGS -ftemplate-depth=160"])
 
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
