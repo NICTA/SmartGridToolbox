@@ -1,7 +1,7 @@
 #ifndef DGY_TRANSFORMER_PARSER
 #define DGY_TRANSFORMER_PARSER
 
-#include <SmartGridToolbox/Parser.h>
+#include <SgtSim/Parser.h>
 
 namespace SmartGridToolbox
 {

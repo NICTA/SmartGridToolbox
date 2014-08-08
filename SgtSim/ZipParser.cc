@@ -1,7 +1,7 @@
 #include "ZipParser.h"
 
-#include <SmartGridToolbox/Bus.h>
-#include <SmartGridToolbox/Zip.h>
+#include <SgtSim/Bus.h>
+#include <SgtSim/Zip.h>
 
 namespace SmartGridToolbox
 {

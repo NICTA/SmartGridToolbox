@@ -1,9 +1,9 @@
 #ifndef SOLAR_PV_DOT_H
 #define SOLAR_PV_DOT_H
 
-#include <SmartGridToolbox/Component.h>
-#include <SmartGridToolbox/DcPowerSourceBase.h>
-#include <SmartGridToolbox/Sun.h>
+#include <SgtSim/Component.h>
+#include <SgtSim/DcPowerSourceBase.h>
+#include <SgtSim/Sun.h>
 
 namespace SmartGridToolbox
 {

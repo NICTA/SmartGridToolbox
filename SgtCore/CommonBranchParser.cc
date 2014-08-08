@@ -4,11 +4,11 @@
 #include "Common.h"
 #include "Network.h"
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    void CommonBranchParser::parse(const YAML::Node& nd, Network& netw) const
    {
-      LPF_DEBUG(debug() << "CommonBranch : parse." << std::endl);
+      SGT_DEBUG(debug() << "CommonBranch : parse." << std::endl);
 
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "complex_tap_ratio");

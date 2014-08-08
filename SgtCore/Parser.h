@@ -1,20 +1,20 @@
 #ifndef PARSER_DOT_H
 #define PARSER_DOT_H
 
-#include <LibPowerFlow/Common.h>
-#include <LibPowerFlow/PowerFlow.h>
+#include <SgtCore/Common.h>
+#include <SgtCore/PowerFlow.h>
 
 #include <yaml-cpp/yaml.h>
 #include <map>
 
 namespace YAML
 {
-   using LibPowerFlow::BusType;
-   using LibPowerFlow::Complex;
-   using LibPowerFlow::Phase;
-   using LibPowerFlow::Phases;
-   using LibPowerFlow::ublas::matrix;
-   using LibPowerFlow::ublas::vector;
+   using SmartGridToolbox::BusType;
+   using SmartGridToolbox::Complex;
+   using SmartGridToolbox::Phase;
+   using SmartGridToolbox::Phases;
+   using SmartGridToolbox::ublas::matrix;
+   using SmartGridToolbox::ublas::vector;
 
    template<> struct convert<Complex>
    {
@@ -53,7 +53,7 @@ namespace YAML
    };
 }
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    class Network;
 

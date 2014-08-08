@@ -9,7 +9,7 @@
 
 namespace YAML
 {
-   using namespace LibPowerFlow;
+   using namespace SmartGridToolbox;
 
    Node convert<Complex>::encode(const Complex& from)
    {
@@ -166,7 +166,7 @@ namespace YAML
    template bool convert<ublas::matrix<Complex>>::decode(const Node& nd, ublas::matrix<Complex>& to);
 }
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    void assertFieldPresent(const YAML::Node& nd, const std::string& field)
    {

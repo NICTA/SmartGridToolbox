@@ -1,7 +1,7 @@
 #ifndef REGISTER_PARSER_PLUGINS_DOT_H
 #define REGISTER_PARSER_PLUGINS_DOT_H
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    class Parser;
    void registerParserPlugins(Parser& p);

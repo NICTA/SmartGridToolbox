@@ -12,7 +12,7 @@ namespace Qi = boost::spirit::qi;
 namespace Ascii = boost::spirit::ascii;
 namespace Phoenix = boost::phoenix;
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    struct CGram : Qi::grammar<std::string::const_iterator, Complex(), Ascii::space_type>
    {

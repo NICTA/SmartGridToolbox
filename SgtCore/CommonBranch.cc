@@ -1,6 +1,6 @@
 #include "CommonBranch.h"
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    const ublas::matrix<Complex> CommonBranch::Y()
    {

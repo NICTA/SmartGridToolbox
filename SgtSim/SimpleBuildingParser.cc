@@ -1,7 +1,7 @@
 #include "SimpleBuildingParser.h"
 
-#include <SmartGridToolbox/Bus.h>
-#include <SmartGridToolbox/SimpleBuilding.h>
+#include <SgtSim/Bus.h>
+#include <SgtSim/SimpleBuilding.h>
 
 namespace SmartGridToolbox
 {

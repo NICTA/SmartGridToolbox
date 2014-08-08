@@ -6,7 +6,8 @@ run_config_SOURCES = run_config.cc
 # Using LDADD for -l linker flags in this way avoids a potential
 # problem with link order.
 run_config_LDADD = \
-	../SmartGridToolbox/libSmartGridToolbox.a \
+	../SgtCore/libSgtCore.a \
+	../SgtSim/libSgtSim.a \
 	-lboost_date_time-mt \
 	-lblas \
 	-lyaml-cpp \

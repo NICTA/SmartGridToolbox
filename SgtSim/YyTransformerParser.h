@@ -1,7 +1,7 @@
 #ifndef YY_TRANSFORMER_PARSER
 #define YY_TRANSFORMER_PARSER
 
-#include <SmartGridToolbox/Parser.h>
+#include <SgtSim/Parser.h>
 
 namespace SmartGridToolbox
 {

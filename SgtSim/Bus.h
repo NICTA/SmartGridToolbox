@@ -1,10 +1,10 @@
 #ifndef BUS_DOT_H
 #define BUS_DOT_H
 
-#include <SmartGridToolbox/Common.h>
-#include <SmartGridToolbox/Component.h>
-#include <SmartGridToolbox/Event.h>
-#include <SmartGridToolbox/PowerFlow.h>
+#include <SgtCore/Common.h>
+#include <SgtSim/Component.h>
+#include <SgtSim/Event.h>
+#include <SgtSim/PowerFlow.h>
 
 #include <LibPowerFlow.h>
 

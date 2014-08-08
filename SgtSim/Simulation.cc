@@ -1,6 +1,6 @@
-#include <SmartGridToolbox/Simulation.h>
-#include <SmartGridToolbox/Model.h>
-#include <SmartGridToolbox/Component.h>
+#include <SgtSim/Simulation.h>
+#include <SgtSim/Model.h>
+#include <SgtSim/Component.h>
 #include <algorithm>
 
 #define DEBUG 1

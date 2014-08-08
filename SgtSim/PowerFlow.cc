@@ -1,4 +1,4 @@
-#include <SmartGridToolbox/PowerFlow.h>
+#include <SgtSim/PowerFlow.h>
 
 #include <iostream>
 #include <sstream>

@@ -1,7 +1,7 @@
 #ifndef YY_TRANSFORMER_DOT_H
 #define YY_TRANSFORMER_DOT_H
 
-#include <SmartGridToolbox/Branch.h>
+#include <SgtSim/Branch.h>
 
 namespace SmartGridToolbox
 {

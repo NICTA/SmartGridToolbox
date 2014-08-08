@@ -1,9 +1,9 @@
 #ifndef GEN_PARSER_DOT_H
 #define GEN_PARSER_DOT_H
 
-#include <LibPowerFlow/Parser.h>
+#include <SgtCore/Parser.h>
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    /// @brief ParserPlugin that parses Gen objects.
    class GenParser : public ParserPlugin

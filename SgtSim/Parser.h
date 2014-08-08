@@ -1,9 +1,9 @@
 #ifndef PARSER_DOT_H
 #define PARSER_DOT_H
 
-#include <SmartGridToolbox/Common.h>
-#include <SmartGridToolbox/Model.h>
-#include <SmartGridToolbox/PowerFlow.h>
+#include <SgtCore/Common.h>
+#include <SgtSim/Model.h>
+#include <SgtSim/PowerFlow.h>
 #include <yaml-cpp/yaml.h>
 #include <map>
 

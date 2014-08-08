@@ -1,11 +1,11 @@
 #ifndef ZIP_DOT_H
 #define ZIP_DOT_H
 
-#include <LibPowerFlow/PowerFlow.h>
+#include <SgtCore/PowerFlow.h>
 
 #include<string>
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    /// @brief A Zip is an injection into a bus with constant impedance / current / complex power components.
    class Zip

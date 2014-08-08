@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS = foreign
 
-lib_LIBRARIES = libSmartGridToolbox.a
+lib_LIBRARIES = libSgtSim.a
 
-include_HEADERS = SmartGridToolbox.h
+include_HEADERS = SgtSim.h
 
 pkginclude_HEADERS = \
 	Branch.h \
@@ -38,7 +38,7 @@ pkginclude_HEADERS = \
 	Zip.h \
 	ZipBase.h
 
-libSmartGridToolbox_a_SOURCES = \
+libSgtSim_a_SOURCES = \
 	Bus.h \
 	Bus.cc \
 	BusParser.h \
@@ -103,7 +103,7 @@ libSmartGridToolbox_a_SOURCES = \
 	SinglePhaseTransformer.cc \
 	SinglePhaseTransformerParser.h \
 	SinglePhaseTransformerParser.cc \
-	SmartGridToolbox.h \
+	SgtSim.h \
 	SolarPv.h \
 	SolarPv.cc \
 	SolarPvParser.h \

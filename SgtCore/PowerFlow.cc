@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    namespace
    {

@@ -1,5 +1,5 @@
-#include <SmartGridToolbox/SimpleBuilding.h>
-#include <SmartGridToolbox/Bus.h>
+#include <SgtSim/SimpleBuilding.h>
+#include <SgtSim/Bus.h>
 
 namespace {
    double propTbNorm(double dt, double Tb0, double Ts, double kb,

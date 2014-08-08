@@ -2,7 +2,7 @@
 
 #include <ostream>
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    std::ostream& Bus::print(std::ostream& os) const
    {

@@ -1,9 +1,9 @@
 #ifndef NETWORK_DOT_H
 #define NETWORK_DOT_H
 
-#include <SmartGridToolbox/Component.h>
-#include <SmartGridToolbox/Bus.h>
-#include <SmartGridToolbox/Branch.h>
+#include <SgtSim/Component.h>
+#include <SgtSim/Bus.h>
+#include <SgtSim/Branch.h>
 
 #include <LibPowerFlow.h>
 

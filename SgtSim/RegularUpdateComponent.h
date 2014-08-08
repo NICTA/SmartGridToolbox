@@ -1,7 +1,7 @@
 #ifndef REGULAR_UPDATE_COMPONENT_DOT_H
 #define REGULAR_UPDATE_COMPONENT_DOT_H
 
-#include <SmartGridToolbox/Component.h>
+#include <SgtSim/Component.h>
 
 namespace SmartGridToolbox
 {

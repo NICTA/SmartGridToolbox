@@ -1,7 +1,7 @@
 #ifndef SUN_DOT_H
 #define SUN_DOT_H
 
-#include <SmartGridToolbox/Common.h>
+#include <SgtCore/Common.h>
 
 namespace SmartGridToolbox
 {

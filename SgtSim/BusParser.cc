@@ -1,8 +1,8 @@
 #include "BusParser.h"
 
-#include <SmartGridToolbox/Bus.h>
-#include <SmartGridToolbox/Common.h>
-#include <SmartGridToolbox/Network.h>
+#include <SgtSim/Bus.h>
+#include <SgtCore/Common.h>
+#include <SgtSim/Network.h>
 
 namespace SmartGridToolbox
 {

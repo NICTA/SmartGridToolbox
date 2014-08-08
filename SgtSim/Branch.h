@@ -1,9 +1,9 @@
 #ifndef BRANCH_DOT_H
 #define BRANCH_DOT_H
 
-#include <SmartGridToolbox/Common.h>
-#include <SmartGridToolbox/Component.h>
-#include <SmartGridToolbox/PowerFlow.h>
+#include <SgtCore/Common.h>
+#include <SgtSim/Component.h>
+#include <SgtSim/PowerFlow.h>
 
 #include <iostream>
 

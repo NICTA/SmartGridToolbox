@@ -1,13 +1,13 @@
 #ifndef COMMON_BRANCH_DOT_H
 #define COMMON_BRANCH_DOT_H
 
-#include <LibPowerFlow/Common.h>
-#include <LibPowerFlow/Branch.h>
-#include <LibPowerFlow/PowerFlow.h>
+#include <SgtCore/Common.h>
+#include <SgtCore/Branch.h>
+#include <SgtCore/PowerFlow.h>
 
 #include <iostream>
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    class Bus;
 

@@ -2,8 +2,8 @@
 #include <ostream>
 #include <sstream>
 #include "PowerFlowNr.h"
-#include <SmartGridToolbox/SparseSolver.h>
-#include <SmartGridToolbox/Stopwatch.h>
+#include <SgtSim/SparseSolver.h>
+#include <SgtSim/Stopwatch.h>
 
 namespace SmartGridToolbox
 {

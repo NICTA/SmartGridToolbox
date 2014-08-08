@@ -1,7 +1,7 @@
 #ifndef DC_POWER_SOURCE_BASE_DOT_H
 #define DC_POWER_SOURCE_BASE_DOT_H
 
-#include <SmartGridToolbox/Component.h>
+#include <SgtSim/Component.h>
 
 namespace SmartGridToolbox
 {

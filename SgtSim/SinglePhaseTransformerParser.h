@@ -1,7 +1,7 @@
 #ifndef SINGLE_PHASE_TRANSFORMER_PARSER
 #define SINGLE_PHASE_TRANSFORMER_PARSER
 
-#include <SmartGridToolbox/Parser.h>
+#include <SgtSim/Parser.h>
 
 namespace SmartGridToolbox
 {

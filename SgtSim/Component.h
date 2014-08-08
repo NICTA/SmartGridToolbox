@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <SmartGridToolbox/Common.h>
-#include <SmartGridToolbox/Event.h>
+#include <SgtCore/Common.h>
+#include <SgtSim/Event.h>
 
 namespace SmartGridToolbox
 {

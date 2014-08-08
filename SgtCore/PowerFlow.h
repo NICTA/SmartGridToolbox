@@ -1,14 +1,14 @@
 #ifndef POWERFLOW_DOT_H
 #define POWERFLOW_DOT_H
 
-#include <LibPowerFlow/Common.h>
+#include <SgtCore/Common.h>
 
 #include <map>
 #include <ostream>
 #include <string>
 #include <vector>
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    enum class BusType
    {

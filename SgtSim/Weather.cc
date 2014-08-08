@@ -1,6 +1,6 @@
-#include <SmartGridToolbox/Weather.h>
-#include <SmartGridToolbox/Model.h>
-#include <SmartGridToolbox/TimeSeries.h>
+#include <SgtSim/Weather.h>
+#include <SgtSim/Model.h>
+#include <SgtSim/TimeSeries.h>
 
 namespace SmartGridToolbox
 {

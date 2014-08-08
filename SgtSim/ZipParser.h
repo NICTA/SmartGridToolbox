@@ -1,7 +1,7 @@
 #ifndef ZIP_TO_GROUND_PARSER_DOT_H
 #define ZIP_TO_GROUND_PARSER_DOT_H
 
-#include <SmartGridToolbox/Parser.h>
+#include <SgtSim/Parser.h>
 
 namespace SmartGridToolbox
 {

@@ -1,16 +1,16 @@
 #ifndef NETWORK_DOT_H
 #define NETWORK_DOT_H
 
-#include<LibPowerFlow/Branch.h>
-#include<LibPowerFlow/Bus.h>
-#include<LibPowerFlow/Gen.h>
-#include<LibPowerFlow/Zip.h>
+#include<SgtCore/Branch.h>
+#include<SgtCore/Bus.h>
+#include<SgtCore/Gen.h>
+#include<SgtCore/Zip.h>
 
 #include<iostream>
 #include<map>
 #include<vector>
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    class Network
    {

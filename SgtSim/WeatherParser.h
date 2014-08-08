@@ -1,7 +1,7 @@
 #ifndef WEATHER_PARSER_DOT_H
 #define WEATHER_PARSER_DOT_H
 
-#include <SmartGridToolbox/Parser.h>
+#include <SgtSim/Parser.h>
 
 namespace SmartGridToolbox
 {

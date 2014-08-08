@@ -1,4 +1,4 @@
-#include <SmartGridToolbox/Common.h>
+#include <SgtCore/Common.h>
 #include <sstream>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>

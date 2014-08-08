@@ -7,7 +7,7 @@
 #include "MatpowerParser.h"
 #include "ZipParser.h"
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    void registerParserPlugins(Parser& p)
    {

@@ -1,15 +1,15 @@
 #ifndef BUS_DOT_H
 #define BUS_DOT_H
 
-#include <LibPowerFlow/Gen.h>
-#include <LibPowerFlow/PowerFlow.h>
-#include <LibPowerFlow/Zip.h>
+#include <SgtCore/Gen.h>
+#include <SgtCore/PowerFlow.h>
+#include <SgtCore/Zip.h>
 
 #include<iostream>
 #include<map>
 #include<vector>
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    namespace ublas = boost::numeric::ublas;
 

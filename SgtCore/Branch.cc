@@ -3,7 +3,7 @@
 
 #include <ostream>
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    std::ostream& Branch::print(std::ostream& os) const
    {

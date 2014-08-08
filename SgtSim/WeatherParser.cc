@@ -1,6 +1,6 @@
 #include "WeatherParser.h"
 
-#include <SmartGridToolbox/Weather.h>
+#include <SgtSim/Weather.h>
 
 namespace SmartGridToolbox
 {

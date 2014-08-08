@@ -1,7 +1,7 @@
 #ifndef OVERHEAD_LINE_PARSER_DOT_H
 #define OVERHEAD_LINE_PARSER_DOT_H
 
-#include <SmartGridToolbox/Parser.h>
+#include <SgtSim/Parser.h>
 
 namespace SmartGridToolbox
 {

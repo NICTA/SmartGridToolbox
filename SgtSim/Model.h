@@ -4,9 +4,9 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <SmartGridToolbox/Common.h>
-#include <SmartGridToolbox/Component.h>
-#include <SmartGridToolbox/TimeSeries.h>
+#include <SgtCore/Common.h>
+#include <SgtSim/Component.h>
+#include <SgtSim/TimeSeries.h>
 
 using std::string;
 

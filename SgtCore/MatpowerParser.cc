@@ -23,7 +23,7 @@ namespace phoenix = boost::phoenix;
 typedef std::istreambuf_iterator<char> BaseIterator;
 typedef boost::spirit::multi_pass<BaseIterator> ForwardIterator;
 
-using namespace LibPowerFlow;
+using namespace SmartGridToolbox;
 
 namespace
 {
@@ -120,7 +120,7 @@ namespace
    }
 }
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
 
    struct MpBusInfo
@@ -220,7 +220,7 @@ namespace LibPowerFlow
 
    void MatpowerParser::parse(const YAML::Node& nd, Network& netw) const
    {
-      LPF_DEBUG(debug() << "Matpower : parse." << std::endl);
+      SGT_DEBUG(debug() << "Matpower : parse." << std::endl);
 
       assertFieldPresent(nd, "input_file");
       assertFieldPresent(nd, "default_kV_base");

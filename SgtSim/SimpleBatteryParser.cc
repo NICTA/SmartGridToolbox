@@ -1,7 +1,7 @@
 #include "SimpleBatteryParser.h"
 
-#include <SmartGridToolbox/InverterBase.h>
-#include <SmartGridToolbox/SimpleBattery.h>
+#include <SgtSim/InverterBase.h>
+#include <SgtSim/SimpleBattery.h>
 
 namespace SmartGridToolbox
 {

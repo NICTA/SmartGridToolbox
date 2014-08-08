@@ -1,9 +1,9 @@
 #include "MatpowerParser.h"
 
-#include <SmartGridToolbox/Bus.h>
-#include <SmartGridToolbox/Network.h>
-#include <SmartGridToolbox/PowerFlow.h>
-#include <SmartGridToolbox/Zip.h>
+#include <SgtSim/Bus.h>
+#include <SgtSim/Network.h>
+#include <SgtSim/PowerFlow.h>
+#include <SgtSim/Zip.h>
 
 #include <fstream>
 #include <map>

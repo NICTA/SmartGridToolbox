@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS = foreign
 
-lib_LIBRARIES = libPowerFlow.a
+lib_LIBRARIES = libSgtCore.a
 
-include_HEADERS = LibPowerFlow.h
+include_HEADERS = LibSgtCore.h
 
 pkginclude_HEADERS = \
 	Branch.h \
@@ -15,7 +15,7 @@ pkginclude_HEADERS = \
 	PowerFlow.h \
 	Zip.h
 
-libPowerFlow_a_SOURCES = \
+libSgtCore_a_SOURCES = \
 	Branch.h \
 	Branch.cc \
 	Bus.h \
@@ -32,7 +32,7 @@ libPowerFlow_a_SOURCES = \
 	Gen.cc \
 	GenParser.h \
 	GenParser.cc \
-	LibPowerFlow.h \
+	LibSgtCore.h \
 	MatpowerParser.h \
 	MatpowerParser.cc \
 	Network.h \
@@ -50,4 +50,4 @@ libPowerFlow_a_SOURCES = \
 noinst_PROGRAMS = helloworld
 
 helloworld_SOURCES = helloworld.cc
-helloworld_LDADD = libPowerFlow.a -lyaml-cpp
+helloworld_LDADD = libSgtCore.a -lyaml-cpp

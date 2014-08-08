@@ -1,7 +1,7 @@
 #ifndef SIMPLE_BATTERY_PARSER_DOT_H
 #define SIMPLE_BATTERY_PARSER_DOT_H
 
-#include <SmartGridToolbox/Parser.h>
+#include <SgtSim/Parser.h>
 
 namespace SmartGridToolbox
 {

@@ -1,8 +1,8 @@
-#include <SmartGridToolbox/Branch.h>
-#include <SmartGridToolbox/Bus.h>
-#include <SmartGridToolbox/Model.h>
-#include <SmartGridToolbox/Network.h>
-#include <SmartGridToolbox/PowerFlow.h>
+#include <SgtSim/Branch.h>
+#include <SgtSim/Bus.h>
+#include <SgtSim/Model.h>
+#include <SgtSim/Network.h>
+#include <SgtSim/PowerFlow.h>
 
 namespace SmartGridToolbox
 {

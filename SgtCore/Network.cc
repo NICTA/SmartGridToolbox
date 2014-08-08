@@ -1,6 +1,6 @@
 #include "Network.h"
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    std::ostream& Network::print(std::ostream& os) const
    {

@@ -4,11 +4,11 @@
 #include "Common.h"
 #include "Network.h"
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    void BusParser::parse(const YAML::Node& nd, Network& netw) const
    {
-      LPF_DEBUG(debug() << "Bus : parse." << std::endl);
+      SGT_DEBUG(debug() << "Bus : parse." << std::endl);
 
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases");

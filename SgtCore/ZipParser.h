@@ -1,9 +1,9 @@
 #ifndef ZIP_PARSER_DOT_H
 #define ZIP_PARSER_DOT_H
 
-#include <LibPowerFlow/Parser.h>
+#include <SgtCore/Parser.h>
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    /// @brief ParserPlugin that parses Zip objects.
    class ZipParser : public ParserPlugin

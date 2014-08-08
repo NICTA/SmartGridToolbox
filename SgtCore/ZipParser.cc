@@ -4,11 +4,11 @@
 #include "Network.h"
 #include "Zip.h"
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    void ZipParser::parse(const YAML::Node& nd, Network& netw) const
    {
-      LPF_DEBUG(debug() << "Zip : parse." << std::endl);
+      SGT_DEBUG(debug() << "Zip : parse." << std::endl);
 
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "y_const");

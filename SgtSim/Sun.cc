@@ -1,7 +1,7 @@
 // Much of this file is based on subpos.h and sunpos.cpp
 // http://www.psa.es/sdg/sunpos.htm
 
-#include <SmartGridToolbox/Sun.h>
+#include <SgtSim/Sun.h>
 
 namespace SmartGridToolbox
 {

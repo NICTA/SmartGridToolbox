@@ -1,9 +1,9 @@
 #ifndef SIMULTION_DOT_H
 #define SIMULTION_DOT_H
 
-#include <SmartGridToolbox/Common.h>
-#include <SmartGridToolbox/Component.h>
-#include <SmartGridToolbox/Event.h>
+#include <SgtCore/Common.h>
+#include <SgtSim/Component.h>
+#include <SgtSim/Event.h>
 #include <list>
 #include <set>
 

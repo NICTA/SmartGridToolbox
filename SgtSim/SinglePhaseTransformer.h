@@ -1,7 +1,7 @@
 #ifndef SINGLE_PHASE_TRANSFORMER_DOT_H
 #define SINGLE_PHASE_TRANSFORMER_DOT_H
 
-#include <SmartGridToolbox/Branch.h>
+#include <SgtSim/Branch.h>
 
 namespace SmartGridToolbox
 {

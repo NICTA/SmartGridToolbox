@@ -1,5 +1,5 @@
-#include <SmartGridToolbox/SimpleBattery.h>
-#include <SmartGridToolbox/InverterBase.h>
+#include <SgtSim/SimpleBattery.h>
+#include <SgtSim/InverterBase.h>
 #include <iostream>
 
 using namespace std;

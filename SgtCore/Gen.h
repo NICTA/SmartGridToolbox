@@ -1,10 +1,10 @@
 #ifndef GEN_DOT_H
 #define GEN_DOT_H
 
-#include <LibPowerFlow/Common.h>
-#include <LibPowerFlow/PowerFlow.h>
+#include <SgtCore/Common.h>
+#include <SgtCore/PowerFlow.h>
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    /// @brief A generation at a bus.
    class Gen

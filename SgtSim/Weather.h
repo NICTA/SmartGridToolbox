@@ -1,9 +1,9 @@
 #ifndef WEATHER_DOT_H
 #define WEATHER_DOT_H
 
-#include <SmartGridToolbox/RegularUpdateComponent.h>
-#include <SmartGridToolbox/Sun.h>
-#include <SmartGridToolbox/TimeSeries.h>
+#include <SgtSim/RegularUpdateComponent.h>
+#include <SgtSim/Sun.h>
+#include <SgtSim/TimeSeries.h>
 
 namespace SmartGridToolbox
 {

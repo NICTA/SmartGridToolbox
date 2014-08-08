@@ -5,7 +5,9 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/local_time/local_time.hpp>
 #include <boost/numeric/ublas/lu.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
@@ -16,19 +18,19 @@
 #include <boost/numeric/ublas/vector_sparse.hpp>
 
 #ifdef DEBUG
-#define LPF_DEBUG(x) x
+#define SGT_DEBUG(x) x
 #else
-#define LPF_DEBUG(x)
+#define SGT_DEBUG(x)
 #endif
 
-namespace LibPowerFlow
+namespace SmartGridToolbox
 {
    /// @addtogroup Common
    /// @{
 
    /// @name Reporting and errors.
    /// @{
-
+   
    class IndentingOStreamBuf : public std::streambuf
    {
       public:
@@ -166,13 +168,79 @@ namespace LibPowerFlow
 
    /// @}
 
+   /// @name Time
+   /// @{
+   
+   namespace posix_time = boost::posix_time;
+   namespace gregorian = boost::gregorian;
+   namespace local_time = boost::local_time;
+
+   using Time = posix_time::time_duration;
+
+   extern const posix_time::ptime epoch;
+
+   inline double dSeconds(const Time& d)
+   {
+      return double(d.ticks())/Time::ticks_per_second();
+   }
+
+   inline Time timeFromUtcTime(posix_time::ptime utcTime)
+   {
+      return (utcTime - epoch);
+   }
+
+   inline posix_time::ptime utcTime(Time t)
+   {
+      return (epoch + t);
+   }
+
+   posix_time::ptime utcTimeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz);
+
+   inline posix_time::ptime localTime(const Time& t, const local_time::time_zone_ptr localTz)
+   {
+      return boost::local_time::local_date_time(epoch + t, localTz).local_time();
+   }
+
+   inline Time timeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz)
+   {
+      return (utcTimeFromLocalTime(localTime, localTz) - epoch);
+   }
+
+   /// @}
+
+   /// @name LatLongs
+   /// @{
+   
+   class LatLong
+   {
+      public:
+         double lat_;
+         double long_;
+   };
+
+   /// @}
+
    /// @name Constants
    /// @{
    
    extern const double pi;
    extern const double negInfinity;
    extern const double infinity;
+   extern const double second;
+   extern const double minute;
+   extern const double hour;
+   extern const double day;
+   extern const double week;
+   extern const double J;
+   extern const double kJ;
+   extern const double W;
+   extern const double kW;
+   extern const double kWh;
+   extern const double A;
+   extern const double C;
+   extern const double K;
    extern const Complex czero;
+   extern const LatLong Greenwich;
    
    /// @}
 

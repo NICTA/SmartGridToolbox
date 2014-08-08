@@ -1,7 +1,7 @@
-#include <SmartGridToolbox/Bus.h>
-#include <SmartGridToolbox/Model.h>
-#include <SmartGridToolbox/Network.h>
-#include <SmartGridToolbox/ZipBase.h>
+#include <SgtSim/Bus.h>
+#include <SgtSim/Model.h>
+#include <SgtSim/Network.h>
+#include <SgtSim/ZipBase.h>
 
 namespace SmartGridToolbox
 {
