@@ -11,7 +11,6 @@
 #include <SgtSim/OverheadLine.h>
 #include <SgtSim/Parser.h>
 #include <SgtSim/PowerFlow.h>
-#include <SgtSim/Random.h>
 #include <SgtSim/RegularUpdateComponent.h>
 #include <SgtSim/SimpleBattery.h>
 #include <SgtSim/SimpleBuilding.h>
@@ -25,7 +24,6 @@
 #include <SgtSim/Stopwatch.h>
 #include <SgtSim/Sun.h>
 #include <SgtSim/TimeSeries.h>
-#include <SgtSim/Units.h>
 #include <SgtSim/Weather.h>
 #include <SgtSim/YyTransformer.h>
 #include <SgtSim/Zip.h>

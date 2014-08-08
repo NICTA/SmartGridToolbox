@@ -18,7 +18,6 @@ pkginclude_HEADERS = \
 	OverheadLine.h \
 	Parser.h \
 	PowerFlow.h \
-	Random.h \
 	RegularUpdateComponent.h \
 	SimpleBattery.h \
 	SimpleBuilding.h \
@@ -32,7 +31,6 @@ pkginclude_HEADERS = \
 	Stopwatch.h \
 	Sun.h \
 	TimeSeries.h \
-	Units.h \
 	Weather.h \
 	YyTransformer.h \
 	Zip.h \
@@ -79,8 +77,6 @@ libSgtSim_a_SOURCES = \
 	PowerFlow.cc \
 	PowerFlowNr.h \
 	PowerFlowNr.cc \
-	Random.h \
-	Random.cc \
 	RegisterParserPlugins.h \
 	RegisterParserPlugins.cc \
 	SimpleBattery.h \

@@ -13,6 +13,8 @@ pkginclude_HEADERS = \
 	Network.h \
 	Parser.h \
 	PowerFlow.h \
+	Random.h \
+	Units.h \
 	Zip.h
 
 libSgtCore_a_SOURCES = \
@@ -41,9 +43,12 @@ libSgtCore_a_SOURCES = \
 	Parser.cc \
 	PowerFlow.h \
 	PowerFlow.cc \
+	Random.h \
+	Random.cc \
 	RegisterParserPlugins.cc \
 	Zip.h \
 	Zip.cc \
+	Units.h \
 	ZipParser.h \
 	ZipParser.cc
 

@@ -9,6 +9,8 @@
 #include <SgtCore/Network.h>
 #include <SgtCore/Parser.h>
 #include <SgtCore/PowerFlow.h>
+#include <SgtCore/Random.h>
+#include <SgtCore/Units.h>
 #include <SgtCore/Zip.h>
 
 #endif // LIB_POWER_FLOW_DOT_H
