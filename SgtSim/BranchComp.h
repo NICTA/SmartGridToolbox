@@ -1,19 +1,20 @@
 #ifndef BRANCH_DOT_H
 #define BRANCH_DOT_H
 
-#include <SgtCore/Common.h>
 #include <SgtSim/Component.h>
-#include <SgtSim/PowerFlow.h>
+
+#include <SgtCore/Common.h>
+#include <SgtCore/PowerFlow.h>
 
 #include <iostream>
 
 namespace SmartGridToolbox
 {
-   class Bus;
+   class BusComp;
 
-   /// @brief A Branch connects two Busses in a Network.
+   /// @brief A BranchComp connects two Busses in a Network.
    /// @ingroup PowerFlowCore
-   class Branch : public Component
+   class BranchComp : public Component
    {
       /// @name Public overridden member functions from Component.
       /// @{
@@ -32,18 +33,18 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
 
-         Branch(const std::string& name, const Phases& phases0, const Phases& phases1);
+         BranchComp(const std::string& name, const Phases& phases0, const Phases& phases1);
       
       /// @}
 
-      /// @name Bus accessors:
+      /// @name BusComp accessors:
       /// @{
          
-         const Bus& bus0() const {return *bus0_;}
-         void setBus0(Bus& bus0);
+         const BusComp& bus0() const {return *bus0_;}
+         void setBus0(BusComp& bus0);
 
-         const Bus& bus1() const {return *bus1_;}
-         void setBus1(Bus& bus1);
+         const BusComp& bus1() const {return *bus1_;}
+         void setBus1(BusComp& bus1);
       
       /// @}
 
@@ -72,8 +73,8 @@ namespace SmartGridToolbox
       /// @}
 
       private:
-         Bus* bus0_;                      ///< My bus 0.
-         Bus* bus1_;                      ///< My bus 1.
+         BusComp* bus0_;                  ///< My bus 0.
+         BusComp* bus1_;                  ///< My bus 1.
          Phases phases0_;                 ///< Phases on bus 0.
          Phases phases1_;                 ///< Phases on bus 1.
          ublas::matrix<Complex> Y_;       ///< Complex value of elements in bus admittance matrix in NR solver.

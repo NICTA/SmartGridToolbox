@@ -1,17 +1,17 @@
-#ifndef BRANCH_PARSER_DOT_H
-#define BRANCH_PARSER_DOT_H
+#ifndef BUS_PARSER_DOT_H
+#define BUS_PARSER_DOT_H
 
 #include <SgtSim/Parser.h>
 
 namespace SmartGridToolbox
 {
-   /// @brief ParserPlugin that parses Branch objects.
-   class BranchParser : public ParserPlugin
+   /// @brief ParserPlugin that parses BusComp objects.
+   class BusCompParser : public ParserPlugin
    {
       public:
          static constexpr const char* pluginKey()
          {
-            return "branch";
+            return "bus";
          }
 
       public:
@@ -20,4 +20,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // BRANCH_PARSER_DOT_H
+#endif // BUS_PARSER_DOT_H

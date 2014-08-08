@@ -115,6 +115,18 @@ namespace SmartGridToolbox
       return ss.str();
    }
 
+   const posix_time::ptime epoch(gregorian::date(1970,1,1));
+
+   posix_time::ptime utcTimeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz)
+   {
+      using namespace boost::local_time;
+      if (localTime.is_not_a_date_time())
+      {
+         return localTime;
+      }
+      local_date_time ldt(localTime.date(), localTime.time_of_day(), localTz, local_date_time::NOT_DATE_TIME_ON_ERROR);
+      return ldt.utc_time();
+   }
    const double pi = 3.141592653589793238462643383279502884;
    const double negInfinity = -std::numeric_limits<double>::infinity(); // No guarantee, but no better option?
    const double infinity = std::numeric_limits<double>::infinity();
@@ -132,4 +144,5 @@ namespace SmartGridToolbox
    const double C = A/second;
    const double K = 1.0;
    const Complex czero{0.0, 0.0};
+   const LatLong Greenwich{51.4791, 0.0};
 }

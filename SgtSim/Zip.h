@@ -7,7 +7,7 @@ namespace SmartGridToolbox
 {
    /// @brief A load (or sometimes generator) with constant Z, I, P components.
    /// @ingroup PowerFlowCore
-   class Zip : public ZipBase
+   class ZipComp : public ZipBase
    {
       /// @name Overridden member functions from Component.
       /// @{
@@ -35,7 +35,7 @@ namespace SmartGridToolbox
       /// @{
 
       public:
-         Zip(const std::string& name, const Phases& phases);
+         ZipComp(const std::string& name, const Phases& phases);
 
          // Add non-const reference accessors:
          virtual ublas::vector<Complex>& Y() {return Y_;}

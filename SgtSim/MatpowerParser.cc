@@ -1,9 +1,9 @@
 #include "MatpowerParser.h"
 
-#include <SgtSim/Bus.h>
-#include <SgtSim/Network.h>
+#include <SgtSim/BusComp.h>
+#include <SgtSim/NetworkComp.h>
 #include <SgtSim/PowerFlow.h>
-#include <SgtSim/Zip.h>
+#include <SgtSim/ZipComp.h>
 
 #include <fstream>
 #include <map>
@@ -253,7 +253,7 @@ namespace SmartGridToolbox
 
       // Add new components.
       {
-         Network& netw = mod.newComponent<Network>(networkName, freq);
+         NetworkComp& netw = mod.newComponent<NetworkComp>(networkName, freq);
          for (const auto pair : busMap)
          {
             const int& busId = pair.first;
@@ -302,7 +302,7 @@ namespace SmartGridToolbox
 
             // TODO: bounds on values.
 
-            Bus& bus = mod.newComponent<Bus>(busName(networkName, busId), type, phases, VNomVec);
+            BusComp& bus = mod.newComponent<BusComp>(busName(networkName, busId), type, phases, VNomVec);
 
             bus.setPgSetpoint(real(SgVec));
             bus.setQgSetpoint(imag(SgVec));
@@ -312,7 +312,7 @@ namespace SmartGridToolbox
             bus.setV(VVec);
             bus.setSg(SgVec);
 
-            Zip& zip = mod.newComponent<Zip>(zipName(networkName, busId), phases);
+            ZipComp& zip = mod.newComponent<ZipComp>(zipName(networkName, busId), phases);
             zip.S() = SLoadVec;
             zip.Y() = YsVec;
             bus.addZip(zip);
@@ -344,13 +344,13 @@ namespace SmartGridToolbox
 
             Complex cTap = polar(tap, theta*pi/180);
 
-            Bus* bus0 = mod.component<Bus>(busName(networkName, bus0Id));
+            BusComp* bus0 = mod.component<BusComp>(busName(networkName, bus0Id));
             if (bus0 == nullptr)
             {
                error() << "Matpower: for branch " << i << ", from bus " << bus0Id << " was not found." << std::endl;
                abort();
             }
-            Bus* bus1 = mod.component<Bus>(busName(networkName, bus1Id));
+            BusComp* bus1 = mod.component<BusComp>(busName(networkName, bus1Id));
             if (bus1 == nullptr)
             {
                error() << "Matpower: for branch " << i << ", to bus " << bus1Id << " was not found." << std::endl;
@@ -372,7 +372,7 @@ namespace SmartGridToolbox
                Y11 *= SBase/(VBase1*VBase1);
             }
 
-            Branch& branch = mod.newComponent<Branch>(branchName(networkName, i, bus0Id, bus1Id), phases, phases);
+            BranchComp& branch = mod.newComponent<BranchComp>(branchName(networkName, i, bus0Id, bus1Id), phases, phases);
 
             branch.setBus0(*bus0);
             branch.setBus1(*bus1);

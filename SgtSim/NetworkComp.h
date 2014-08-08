@@ -2,24 +2,24 @@
 #define NETWORK_DOT_H
 
 #include <SgtSim/Component.h>
-#include <SgtSim/Bus.h>
-#include <SgtSim/Branch.h>
+#include <SgtSim/BusComp.h>
+#include <SgtSim/BranchComp.h>
 
-#include <LibSgtCore.h>
+#include <SgtCore/Network.h>
 
 namespace SmartGridToolbox
 {
-   class Bus;
+   class BusComp;
 
    /// @ingroup PowerFlowCore
-   class Network : public Component
+   class NetworkComp : public Component
    {
       public:
-         typedef std::vector<Bus*> BusVec;
-         typedef std::vector<Branch*> BranchVec;
+         typedef std::vector<BusComp*> BusVec;
+         typedef std::vector<BranchComp*> BranchVec;
 
       private:
-         typedef std::map<std::string, Bus*> BusMap;
+         typedef std::map<std::string, BusComp*> BusMap;
 
       /// @name Overridden member functions from Component.
       /// @{
@@ -37,31 +37,31 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
          
-         Network(const std::string& name, double freq) : Component(name), freq_(freq) {}
+         NetworkComp(const std::string& name, double freq) : Component(name), freq_(freq) {}
 
          double freq() const {return freq_;}
 
-         void addBus(Bus& bus);
+         void addBus(BusComp& bus);
 
          const BusVec& busVec() const {return busVec_;}
 
-         const Bus* findBus(const std::string& name) const
+         const BusComp* findBus(const std::string& name) const
          {
             BusMap::const_iterator it = busMap_.find(name);
             return (it == busMap_.end()) ? 0 : it->second;
          }
-         Bus* findBus(const std::string& name)
+         BusComp* findBus(const std::string& name)
          {
-            return const_cast<Bus*>((const_cast<const Network*>(this))->findBus(name));
+            return const_cast<BusComp*>((const_cast<const NetworkComp*>(this))->findBus(name));
          }
 
-         void addBranch(Branch& branch);
+         void addBranch(BranchComp& branch);
 
          const BranchVec& branchVec() const {return branchVec_;}
 
          virtual void solvePowerFlow();
 
-         friend std::ostream& operator<<(std::ostream& os, const Network& nw);
+         friend std::ostream& operator<<(std::ostream& os, const NetworkComp& nw);
 
       /// @}
       

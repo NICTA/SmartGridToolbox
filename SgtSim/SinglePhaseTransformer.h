@@ -1,12 +1,12 @@
 #ifndef SINGLE_PHASE_TRANSFORMER_DOT_H
 #define SINGLE_PHASE_TRANSFORMER_DOT_H
 
-#include <SgtSim/Branch.h>
+#include <SgtSim/BranchComp.h>
 
 namespace SmartGridToolbox
 {
    /// @brief Single phase transformer.
-   class SinglePhaseTransformer : public Branch
+   class SinglePhaseTransformer : public BranchComp
    {
       /// @name Overridden member functions from Component.
       /// @{

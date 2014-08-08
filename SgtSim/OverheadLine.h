@@ -1,7 +1,7 @@
 #ifndef OVERHEAD_LINE_DOT_H
 #define OVERHEAD_LINE_DOT_H
 
-#include <SgtSim/Branch.h>
+#include <SgtSim/BranchComp.h>
 
 namespace SmartGridToolbox
 {
@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    ///
    /// Consists of N + M wires, where N is the number of phases and M is the number of phases, and M is the number of
    /// extra grounded neutral wires that will be eliminated via the Kron reduction.
-   class OverheadLine : public Branch
+   class OverheadLine : public BranchComp
    {
       /// @name Overridden member functions from Component.
       /// @{

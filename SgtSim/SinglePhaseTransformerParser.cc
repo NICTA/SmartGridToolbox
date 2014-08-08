@@ -1,6 +1,6 @@
 #include "SinglePhaseTransformerParser.h"
 
-#include "Network.h"
+#include "NetworkComp.h"
 #include "SinglePhaseTransformer.h"
 
 namespace SmartGridToolbox
@@ -35,7 +35,7 @@ namespace SmartGridToolbox
       SinglePhaseTransformer* comp = mod.component<SinglePhaseTransformer>(name);
 
       const std::string networkStr = state.expandName(nd["network"].as<std::string>());
-      Network* networkComp = mod.component<Network>(networkStr);
+      NetworkComp* networkComp = mod.component<NetworkComp>(networkStr);
       if (networkComp != nullptr)
       {
          networkComp->addBranch(*comp);
@@ -48,7 +48,7 @@ namespace SmartGridToolbox
       }
 
       const std::string bus0Str = state.expandName(nd["bus_0"].as<std::string>());
-      Bus* bus0Comp = mod.component<Bus>(bus0Str);
+      BusComp* bus0Comp = mod.component<BusComp>(bus0Str);
       if (networkComp != nullptr)
       {
          comp->setBus0(*bus0Comp);
@@ -61,7 +61,7 @@ namespace SmartGridToolbox
       }
 
       const std::string bus1Str = state.expandName(nd["bus_1"].as<std::string>());
-      Bus* bus1Comp = mod.component<Bus>(bus1Str);
+      BusComp* bus1Comp = mod.component<BusComp>(bus1Str);
       if (networkComp != nullptr)
       {
          comp->setBus1(*bus1Comp);

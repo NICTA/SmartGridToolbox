@@ -1,8 +1,8 @@
-#include "BranchParser.h"
+#include "BranchCompParser.h"
 
-#include <SgtSim/Branch.h>
+#include <SgtSim/BranchComp.h>
 #include <SgtCore/Common.h>
-#include <SgtSim/Network.h>
+#include <SgtSim/NetworkComp.h>
 
 namespace SmartGridToolbox
 {
@@ -24,9 +24,9 @@ namespace SmartGridToolbox
       }
    }
 
-   void BranchParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void BranchCompParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
-      SGT_DEBUG(debug() << "Branch : parse." << std::endl);
+      SGT_DEBUG(debug() << "BranchComp : parse." << std::endl);
 
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
@@ -54,19 +54,19 @@ namespace SmartGridToolbox
          Y = YSimpleLine(YLine);
       }
 
-      Branch& comp = mod.newComponent<Branch>(name, phases0, phases1);
+      BranchComp& comp = mod.newComponent<BranchComp>(name, phases0, phases1);
       comp.setY(Y);
    }
 
-   void BranchParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void BranchCompParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
-      SGT_DEBUG(debug() << "Branch : postParse." << std::endl);
+      SGT_DEBUG(debug() << "BranchComp : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      Branch* comp = mod.component<Branch>(name);
+      BranchComp* comp = mod.component<BranchComp>(name);
 
       const std::string networkStr = state.expandName(nd["network"].as<std::string>());
-      Network* networkComp = mod.component<Network>(networkStr);
+      NetworkComp* networkComp = mod.component<NetworkComp>(networkStr);
       if (networkComp != nullptr)
       {
          networkComp->addBranch(*comp);
@@ -82,7 +82,7 @@ namespace SmartGridToolbox
       const YAML::Node& ndY = nd["Y"];
 
       const std::string bus0Str = state.expandName(nd["bus_0"].as<std::string>());
-      Bus* bus0Comp = mod.component<Bus>(bus0Str);
+      BusComp* bus0Comp = mod.component<BusComp>(bus0Str);
       if (networkComp != nullptr)
       {
          comp->setBus0(*bus0Comp);
@@ -95,7 +95,7 @@ namespace SmartGridToolbox
       }
 
       const std::string bus1Str = state.expandName(nd["bus_1"].as<std::string>());
-      Bus* bus1Comp = mod.component<Bus>(bus1Str);
+      BusComp* bus1Comp = mod.component<BusComp>(bus1Str);
       if (networkComp != nullptr)
       {
          comp->setBus1(*bus1Comp);

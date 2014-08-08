@@ -1,13 +1,13 @@
-#include "ZipParser.h"
+#include "ZipCompParser.h"
 
-#include <SgtSim/Bus.h>
-#include <SgtSim/Zip.h>
+#include <SgtSim/BusComp.h>
+#include <SgtSim/ZipComp.h>
 
 namespace SmartGridToolbox
 {
-   void ZipParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void ZipCompParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
-      SGT_DEBUG(debug() << "Zip : parse." << std::endl);
+      SGT_DEBUG(debug() << "ZipComp : parse." << std::endl);
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "bus");
       assertFieldPresent(nd, "phases");
@@ -15,7 +15,7 @@ namespace SmartGridToolbox
       string name = state.expandName(nd["name"].as<std::string>());
       Phases phases = nd["phases"].as<Phases>();
 
-      Zip& comp = mod.newComponent<Zip>(name, phases);
+      ZipComp& comp = mod.newComponent<ZipComp>(name, phases);
 
       auto ndAdmit = nd["admittance"];
       auto ndCurLoad = nd["complex_current_load"];
@@ -61,15 +61,15 @@ namespace SmartGridToolbox
       }
    }
 
-   void ZipParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void ZipCompParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
-      SGT_DEBUG(debug() << "Zip : postParse." << std::endl);
+      SGT_DEBUG(debug() << "ZipComp : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      Zip* zip = mod.component<Zip>(name);
+      ZipComp* zip = mod.component<ZipComp>(name);
 
       std::string busStr = state.expandName(nd["bus"].as<std::string>());
-      Bus* bus = mod.component<Bus>(busStr);
+      BusComp* bus = mod.component<BusComp>(busStr);
       if (bus == nullptr)
       {
          error() << "For component " << name << ", bus " << busStr

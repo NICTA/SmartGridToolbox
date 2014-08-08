@@ -1,11 +1,11 @@
-#include <SgtSim/Bus.h>
+#include <SgtSim/BusComp.h>
 #include <SgtSim/Model.h>
-#include <SgtSim/Network.h>
+#include <SgtSim/NetworkComp.h>
 #include <SgtSim/ZipBase.h>
 
 namespace SmartGridToolbox
 {
-   void Bus::initializeState()
+   void BusComp::initializeState()
    {
       Ys_ = ublas::vector<Complex>(phases_.size(), czero);
       Ic_ = ublas::vector<Complex>(phases_.size(), czero);
@@ -18,7 +18,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus::updateState(Time t)
+   void BusComp::updateState(Time t)
    {
       applySetpoints();
       for (int i = 0; i < phases_.size(); ++i)
@@ -33,8 +33,8 @@ namespace SmartGridToolbox
       }
    }
    
-   Bus::Bus(const std::string& name, BusType type, const Phases& phases, const ublas::vector<Complex>& nominalV) :
-      Component(name),
+   BusComp::BusComp(const std::string& name, BusType type, const Phases& phases,
+         const ublas::vector<Complex>& nominalV) : Component(name),
       type_(type),
       phases_(phases),
       nominalV_(nominalV),
@@ -46,7 +46,7 @@ namespace SmartGridToolbox
       Ys_(ublas::vector<Complex>(phases.size(), czero)),
       Ic_(ublas::vector<Complex>(phases.size(), czero)),
       Sc_(ublas::vector<Complex>(phases.size(), czero)),
-      changed_("Bus " + name + " setpoint changed")
+      changed_("BusComp " + name + " setpoint changed")
    {
       assert(nominalV_.size() == phases_.size());
       for (int i = 0; i < phases_.size(); ++i)
@@ -56,37 +56,37 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus::setPgSetpoint(const ublas::vector<double>& PgSetpoint)
+   void BusComp::setPgSetpoint(const ublas::vector<double>& PgSetpoint)
    {
       if (PgSetpoint.size() != phases_.size())
       {
-         error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
+         error() << "BusComp::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       PgSetpoint_ = PgSetpoint;
       changed().trigger();
    }
 
-   void Bus::setVMagSetpoint(const ublas::vector<double>& VMagSetpoint)
+   void BusComp::setVMagSetpoint(const ublas::vector<double>& VMagSetpoint)
    {
       if (VMagSetpoint.size() != phases_.size())
       {
-         error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
+         error() << "BusComp::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       VMagSetpoint_ = VMagSetpoint;
       changed().trigger();
    }
 
-   void Bus::setVAngSetpoint(const ublas::vector<double>& VAngSetpoint)
+   void BusComp::setVAngSetpoint(const ublas::vector<double>& VAngSetpoint)
    {
       if (VAngSetpoint.size() != phases_.size())
       {
-         error() << "Bus::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
+         error() << "BusComp::setPgSetpoint : setpoint should have same size as the number of phases." << std::endl;
       }
       VAngSetpoint_ = VAngSetpoint;
       changed().trigger();
    }
 
-   void Bus::applySetpoints()
+   void BusComp::applySetpoints()
    {
       switch (type())
       {
@@ -118,14 +118,14 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus::addZip(ZipBase& zip)
+   void BusComp::addZip(ZipBase& zip)
    {
       dependsOn(zip);
       zips_.push_back(&zip);
       zip.didUpdate().addAction([this](){needsUpdate().trigger();},
-            "Trigger Bus " + name() + " needsUpdate.");
+            "Trigger BusComp " + name() + " needsUpdate.");
       zip.didUpdate().addAction([this](){changed().trigger();},
-            "Trigger Bus " + name() + " changed.");
+            "Trigger BusComp " + name() + " changed.");
       // TODO: this will recalculate all zips. Efficiency?
       changed().trigger();
    }

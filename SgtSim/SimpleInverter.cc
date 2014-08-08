@@ -1,7 +1,7 @@
 #include <SgtSim/SimpleInverter.h>
 
 #include <SgtSim/Model.h>
-#include <SgtSim/Bus.h>
+#include <SgtSim/BusComp.h>
 
 namespace SmartGridToolbox
 {

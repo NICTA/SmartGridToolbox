@@ -6,7 +6,7 @@
 #include <SgtSim/Event.h>
 #include <SgtSim/PowerFlow.h>
 
-#include <LibSgtCore.h>
+#include <SgtCore/Branch.h>
 
 #include <iostream>
 
@@ -16,9 +16,9 @@ namespace SmartGridToolbox
 
    /// @brief A Bus component of a Network.
    /// @ingroup PowerFlowCore
-   class Bus : public Component
+   class BusComp : public Component
    {
-      friend class BusParser;
+      friend class BusCompParser;
 
       /// @name Overridden member functions from Component.
       /// @{
@@ -36,7 +36,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle.
       /// @{
          
-         Bus(const std::string& name, BusType type, const Phases& phases, const ublas::vector<Complex>& nominalV);
+         BusComp(const std::string& name, BusType type, const Phases& phases, const ublas::vector<Complex>& nominalV);
       
       /// @}
 

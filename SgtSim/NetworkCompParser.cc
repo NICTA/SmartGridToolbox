@@ -1,12 +1,12 @@
 #include "NetworkParser.h"
 
-#include <SgtSim/Network.h>
+#include <SgtSim/NetworkComp.h>
 
 namespace SmartGridToolbox
 {
    void NetworkParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
-      SGT_DEBUG(debug() << "Network : parse." << std::endl);
+      SGT_DEBUG(debug() << "NetworkComp : parse." << std::endl);
 
       assertFieldPresent(nd, "name");
 
@@ -15,6 +15,6 @@ namespace SmartGridToolbox
       auto ndFreq = nd["freq_Hz"];
       double freq = ndFreq ? ndFreq.as<double>() : 50.0;
 
-      Network& comp = mod.newComponent<Network>(name, freq);
+      NetworkComp& comp = mod.newComponent<NetworkComp>(name, freq);
    }
 }

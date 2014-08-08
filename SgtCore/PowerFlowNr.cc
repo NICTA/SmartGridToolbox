@@ -195,14 +195,14 @@ namespace SmartGridToolbox
          auto it0 = busses_.find(branch->ids_[0]);
          if (it0 == busses_.end())
          {
-            error() << "Branch " << branch->ids_[0] << " " << branch->ids_[1] << " contains a non-existent bus "
+            error() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] << " contains a non-existent bus "
                     << branch->ids_[0] << std::endl;
             abort();
          }
          auto it1 = busses_.find(branch->ids_[1]);
          if (it1 == busses_.end())
          {
-            error() << "Branch " << branch->ids_[0] << " " << branch->ids_[1] << " contains a non-existent bus "
+            error() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] << " contains a non-existent bus "
                     << branch->ids_[1] << std::endl;
             abort();
          }

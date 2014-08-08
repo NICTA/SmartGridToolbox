@@ -5,19 +5,17 @@ lib_LIBRARIES = libSgtSim.a
 include_HEADERS = SgtSim.h
 
 pkginclude_HEADERS = \
-	Branch.h \
-	Bus.h \
-	Common.h \
+	BranchComp.h \
+	BusComp.h \
 	Component.h \
 	DcPowerSourceBase.h \
 	DgyTransformer.h \
 	Event.h \
 	InverterBase.h \
 	Model.h \
-	Network.h \
+	NetworkComp.h \
 	OverheadLine.h \
 	Parser.h \
-	PowerFlow.h \
 	RegularUpdateComponent.h \
 	SimpleBattery.h \
 	SimpleBuilding.h \
@@ -33,22 +31,20 @@ pkginclude_HEADERS = \
 	TimeSeries.h \
 	Weather.h \
 	YyTransformer.h \
-	Zip.h \
-	ZipBase.h
+	ZipBase.h \
+	ZipComp.h
 
 libSgtSim_a_SOURCES = \
-	Bus.h \
-	Bus.cc \
-	BusParser.h \
-	BusParser.cc \
-	Branch.h \
-	Branch.cc \
-	BranchParser.h \
-	BranchParser.cc \
+	BranchComp.h \
+	BranchComp.cc \
+	BranchCompParser.h \
+	BranchCompParser.cc \
 	CdfParser.h \
+	BusComp.h \
+	BusComp.cc \
+	BusCompParser.h \
+	BusCompParser.cc \
 	CdfParser.cc \
-	Common.h \
-	Common.cc \
 	Component.h \
 	Component.cc \
 	DgyTransformer.h \
@@ -63,20 +59,16 @@ libSgtSim_a_SOURCES = \
 	MatpowerParser.cc \
 	Model.h \
 	Model.cc \
-	Network.h \
-	Network.cc \
-	NetworkParser.h \
-	NetworkParser.cc \
+	NetworkComp.h \
+	NetworkComp.cc \
+	NetworkCompParser.h \
+	NetworkCompParser.cc \
 	OverheadLine.h \
 	OverheadLine.cc \
 	OverheadLineParser.h \
 	OverheadLineParser.cc \
 	Parser.h \
 	Parser.cc \
-	PowerFlow.h \
-	PowerFlow.cc \
-	PowerFlowNr.h \
-	PowerFlowNr.cc \
 	RegisterParserPlugins.h \
 	RegisterParserPlugins.cc \
 	SimpleBattery.h \
@@ -118,9 +110,9 @@ libSgtSim_a_SOURCES = \
 	YyTransformer.cc \
 	YyTransformerParser.h \
 	YyTransformerParser.cc \
-	Zip.h \
-	Zip.cc \
-	ZipParser.h \
-	ZipParser.cc
+	ZipComp.h \
+	ZipComp.cc \
+	ZipCompParser.h \
+	ZipCompParser.cc
 
 EXTRA_DIST = mainpage.dox

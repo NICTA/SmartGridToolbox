@@ -1,14 +1,14 @@
-#include "BusParser.h"
+#include "BusCompParser.h"
 
-#include <SgtSim/Bus.h>
+#include <SgtSim/BusComp.h>
 #include <SgtCore/Common.h>
-#include <SgtSim/Network.h>
+#include <SgtSim/NetworkComp.h>
 
 namespace SmartGridToolbox
 {
-   void BusParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void BusCompParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
-      SGT_DEBUG(debug() << "Bus : parse." << std::endl);
+      SGT_DEBUG(debug() << "BusComp : parse." << std::endl);
 
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "network");
@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       ublas::vector<Complex> nominalV = ndNominal ? ndNominal.as<ublas::vector<Complex>>()
                                                   : ublas::vector<Complex>(nPhase, czero);
 
-      Bus& bus = mod.newComponent<Bus>(name, type, phases, nominalV);
+      BusComp& bus = mod.newComponent<BusComp>(name, type, phases, nominalV);
 
       auto ndPg = nd["P_gen_setpoint"];
       if (ndPg) bus.setPgSetpoint(ndPg.as<ublas::vector<double>>());
@@ -37,15 +37,15 @@ namespace SmartGridToolbox
       if (ndVAng) bus.setVAngSetpoint(ndVAng.as<ublas::vector<double>>()*pi/180.0);
    }
 
-   void BusParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void BusCompParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
-      SGT_DEBUG(debug() << "Bus : postParse." << std::endl);
+      SGT_DEBUG(debug() << "BusComp : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      Bus* comp = mod.component<Bus>(name);
+      BusComp* comp = mod.component<BusComp>(name);
 
       const std::string networkStr = state.expandName(nd["network"].as<std::string>());
-      Network* networkComp = mod.component<Network>(networkStr);
+      NetworkComp* networkComp = mod.component<NetworkComp>(networkStr);
       if (networkComp != nullptr)
       {
          networkComp->addBus(*comp);

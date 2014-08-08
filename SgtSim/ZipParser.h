@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   class ZipParser : public ParserPlugin
+   class ZipCompParser : public ParserPlugin
    {
       public:
          static constexpr const char* pluginKey()
