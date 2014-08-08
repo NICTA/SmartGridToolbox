@@ -1,12 +1,12 @@
-#ifndef NETWORK_PARSER_DOT_H
-#define NETWORK_PARSER_DOT_H
+#ifndef NETWORK_COMP_PARSER_DOT_H
+#define NETWORK_COMP_PARSER_DOT_H
 
 #include <SgtSim/Parser.h>
 
 namespace SmartGridToolbox
 {
    /// @brief ParserPlugin that parses the network keyword, adding a new NetworkComp to the model.
-   class NetworkParser : public ParserPlugin
+   class NetworkCompParser : public ParserPlugin
    {
       public:
          static constexpr const char* pluginKey()
@@ -19,4 +19,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // NETWORK_PARSER_DOT_H
+#endif // NETWORK_COMP_PARSER_DOT_H

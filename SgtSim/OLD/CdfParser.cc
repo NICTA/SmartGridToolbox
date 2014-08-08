@@ -1,5 +1,6 @@
 #include "CdfParser.h"
 
+#include <SgtSim/BranchComp.h>
 #include <SgtSim/BusComp.h>
 #include <SgtSim/NetworkComp.h>
 #include <SgtSim/PowerFlow.h>

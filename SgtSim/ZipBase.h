@@ -1,9 +1,10 @@
 #ifndef ZIP_TO_GROUND_BASE_DOT_H
 #define ZIP_TO_GROUND_BASE_DOT_H
 
-#include <SgtCore/Common.h>
 #include <SgtSim/Component.h>
-#include <SgtSim/PowerFlow.h>
+
+#include <SgtCore/Common.h>
+#include <SgtCore/PowerFlow.h>
 
 namespace SmartGridToolbox
 {

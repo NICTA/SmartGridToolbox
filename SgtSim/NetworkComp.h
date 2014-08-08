@@ -1,14 +1,13 @@
-#ifndef NETWORK_DOT_H
-#define NETWORK_DOT_H
+#ifndef NETWORK_COMP_DOT_H
+#define NETWORK_COMP_DOT_H
 
 #include <SgtSim/Component.h>
-#include <SgtSim/BusComp.h>
-#include <SgtSim/BranchComp.h>
 
 #include <SgtCore/Network.h>
 
 namespace SmartGridToolbox
 {
+   class BranchComp;
    class BusComp;
 
    /// @ingroup PowerFlowCore
@@ -73,5 +72,5 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // NETWORK_DOT_H
+#endif // NETWORK_COMP_DOT_H
 

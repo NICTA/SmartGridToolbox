@@ -2,7 +2,7 @@
 #define INVERTER_BASE_DOT_H
 
 #include <SgtCore/Common.h>
-#include <SgtSim/PowerFlow.h>
+#include <SgtCore/PowerFlow.h>
 #include <SgtSim/ZipBase.h>
 
 namespace SmartGridToolbox

@@ -1,4 +1,4 @@
-#include <SgtSim/PowerFlow.h>
+#include <SgtCore/PowerFlow.h>
 
 #include <iostream>
 #include <sstream>

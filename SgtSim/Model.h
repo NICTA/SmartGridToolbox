@@ -1,12 +1,14 @@
 #ifndef MODEL_DOT_H
 #define MODEL_DOT_H
 
+#include <SgtSim/Component.h>
+#include <SgtSim/TimeSeries.h>
+
+#include <SgtCore/Common.h>
+
 #include <map>
 #include <vector>
 #include <string>
-#include <SgtCore/Common.h>
-#include <SgtSim/Component.h>
-#include <SgtSim/TimeSeries.h>
 
 using std::string;
 

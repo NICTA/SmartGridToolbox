@@ -1,10 +1,10 @@
-#include "NetworkParser.h"
+#include "NetworkCompParser.h"
 
 #include <SgtSim/NetworkComp.h>
 
 namespace SmartGridToolbox
 {
-   void NetworkParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void NetworkCompParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "NetworkComp : parse." << std::endl);
 

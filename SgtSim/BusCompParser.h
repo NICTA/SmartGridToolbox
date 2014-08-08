@@ -1,5 +1,5 @@
-#ifndef BUS_PARSER_DOT_H
-#define BUS_PARSER_DOT_H
+#ifndef BUS_COMP_PARSER_DOT_H
+#define BUS_COMP_PARSER_DOT_H
 
 #include <SgtSim/Parser.h>
 
@@ -20,4 +20,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // BUS_PARSER_DOT_H
+#endif // BUS_COMP_PARSER_DOT_H

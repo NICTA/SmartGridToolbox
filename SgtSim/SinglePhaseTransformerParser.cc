@@ -1,5 +1,6 @@
 #include "SinglePhaseTransformerParser.h"
 
+#include "BusComp.h"
 #include "NetworkComp.h"
 #include "SinglePhaseTransformer.h"
 

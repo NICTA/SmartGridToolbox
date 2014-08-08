@@ -1,10 +1,13 @@
 #ifndef PARSER_DOT_H
 #define PARSER_DOT_H
 
-#include <SgtCore/Common.h>
 #include <SgtSim/Model.h>
-#include <SgtSim/PowerFlow.h>
+
+#include <SgtCore/Common.h>
+#include <SgtCore/PowerFlow.h>
+
 #include <yaml-cpp/yaml.h>
+
 #include <map>
 
 namespace YAML

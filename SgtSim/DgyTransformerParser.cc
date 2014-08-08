@@ -1,7 +1,8 @@
 #include "DgyTransformerParser.h"
 
-#include "NetworkComp.h"
+#include "BusComp.h"
 #include "DgyTransformer.h"
+#include "NetworkComp.h"
 
 namespace SmartGridToolbox
 {

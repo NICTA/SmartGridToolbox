@@ -1,7 +1,8 @@
 #include "OverheadLineParser.h"
 
-#include "NetworkComp.h"
+#include "BusComp.h"
 #include "OverheadLine.h"
+#include "NetworkComp.h"
 
 namespace SmartGridToolbox
 {

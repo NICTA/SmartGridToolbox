@@ -1,5 +1,5 @@
-#ifndef BRANCH_DOT_H
-#define BRANCH_DOT_H
+#ifndef BRANCH_COMP_DOT_H
+#define BRANCH_COMP_DOT_H
 
 #include <SgtSim/Component.h>
 
@@ -82,4 +82,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // BRANCH_DOT_H
+#endif // BRANCH_COMP_DOT_H

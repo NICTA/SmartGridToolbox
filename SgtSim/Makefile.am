@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 lib_LIBRARIES = libSgtSim.a
 
-include_HEADERS = SgtSim.h
+include_HEADERS = LibSgtSim.h
 
 pkginclude_HEADERS = \
 	BranchComp.h \
@@ -39,12 +39,10 @@ libSgtSim_a_SOURCES = \
 	BranchComp.cc \
 	BranchCompParser.h \
 	BranchCompParser.cc \
-	CdfParser.h \
 	BusComp.h \
 	BusComp.cc \
 	BusCompParser.h \
 	BusCompParser.cc \
-	CdfParser.cc \
 	Component.h \
 	Component.cc \
 	DgyTransformer.h \
@@ -55,8 +53,7 @@ libSgtSim_a_SOURCES = \
 	Event.cc \
 	InverterBase.h \
 	InverterBase.cc \
-	MatpowerParser.h \
-	MatpowerParser.cc \
+	LibSgtSim.h \
 	Model.h \
 	Model.cc \
 	NetworkComp.h \
@@ -91,7 +88,6 @@ libSgtSim_a_SOURCES = \
 	SinglePhaseTransformer.cc \
 	SinglePhaseTransformerParser.h \
 	SinglePhaseTransformerParser.cc \
-	SgtSim.h \
 	SolarPv.h \
 	SolarPv.cc \
 	SolarPvParser.h \

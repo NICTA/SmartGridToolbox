@@ -1,5 +1,6 @@
 #include "YyTransformerParser.h"
 
+#include "BusComp.h"
 #include "NetworkComp.h"
 #include "YyTransformer.h"
 

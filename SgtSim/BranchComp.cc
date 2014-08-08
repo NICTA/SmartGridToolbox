@@ -2,7 +2,6 @@
 #include <SgtSim/BusComp.h>
 #include <SgtSim/Model.h>
 #include <SgtSim/NetworkComp.h>
-#include <SgtSim/PowerFlow.h>
 
 namespace SmartGridToolbox
 {

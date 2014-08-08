@@ -10,7 +10,6 @@
 #include <SgtSim/NetworkComp.h>
 #include <SgtSim/OverheadLine.h>
 #include <SgtSim/Parser.h>
-#include <SgtSim/PowerFlow.h>
 #include <SgtSim/RegularUpdateComponent.h>
 #include <SgtSim/SimpleBattery.h>
 #include <SgtSim/SimpleBuilding.h>

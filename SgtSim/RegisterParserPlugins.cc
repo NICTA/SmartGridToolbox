@@ -2,10 +2,8 @@
 
 #include "BranchCompParser.h"
 #include "BusCompParser.h"
-#include "CdfParser.h"
 #include "DgyTransformerParser.h"
-#include "MatpowerParser.h"
-#include "NetworkParser.h"
+#include "NetworkCompParser.h"
 #include "OverheadLineParser.h"
 #include "SimpleBatteryParser.h"
 #include "SimpleBuildingParser.h"
@@ -23,10 +21,8 @@ namespace SmartGridToolbox
    {
       p.registerParserPlugin<BranchCompParser>();
       p.registerParserPlugin<BusCompParser>();
-      p.registerParserPlugin<CdfParser>();
       p.registerParserPlugin<DgyTransformerParser>();
-      p.registerParserPlugin<MatpowerParser>();
-      p.registerParserPlugin<NetworkParser>();
+      p.registerParserPlugin<NetworkCompParser>();
       p.registerParserPlugin<OverheadLineParser>();
       p.registerParserPlugin<SimpleBatteryParser>();
       p.registerParserPlugin<SimpleBuildingParser>();

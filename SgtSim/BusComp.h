@@ -1,12 +1,12 @@
-#ifndef BUS_DOT_H
-#define BUS_DOT_H
+#ifndef BUS_COMP_DOT_H
+#define BUS_COMP_DOT_H
 
-#include <SgtCore/Common.h>
 #include <SgtSim/Component.h>
 #include <SgtSim/Event.h>
-#include <SgtSim/PowerFlow.h>
 
 #include <SgtCore/Branch.h>
+#include <SgtCore/Common.h>
+#include <SgtCore/PowerFlow.h>
 
 #include <iostream>
 
@@ -181,4 +181,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // BUS_DOT_H
+#endif // BUS_COMP_DOT_H

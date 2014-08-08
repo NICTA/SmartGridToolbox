@@ -1,5 +1,5 @@
-#ifndef ZIP_TO_GROUND_PARSER_DOT_H
-#define ZIP_TO_GROUND_PARSER_DOT_H
+#ifndef ZIP_COMP_PARSER_DOT_H
+#define ZIP_COMP_PARSER_DOT_H
 
 #include <SgtSim/Parser.h>
 
@@ -18,4 +18,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // ZIP_TO_GROUND_PARSER_DOT_H
+#endif // ZIP_COMP_PARSER_DOT_H

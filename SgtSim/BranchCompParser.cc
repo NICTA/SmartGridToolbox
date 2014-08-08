@@ -1,8 +1,10 @@
 #include "BranchCompParser.h"
 
 #include <SgtSim/BranchComp.h>
-#include <SgtCore/Common.h>
+#include <SgtSim/BusComp.h>
 #include <SgtSim/NetworkComp.h>
+
+#include <SgtCore/Common.h>
 
 namespace SmartGridToolbox
 {
