@@ -1,5 +1,6 @@
+#include "Event.h"
+
 #include <SgtCore/Common.h>
-#include <SgtSim/Event.h>
 
 namespace SmartGridToolbox
 {

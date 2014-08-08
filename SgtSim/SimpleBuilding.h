@@ -1,11 +1,13 @@
 #ifndef SIMPLE_BUILDING_DOT_H
 #define SIMPLE_BUILDING_DOT_H
 
-#include <SgtCore/Common.h>
 #include <SgtSim/Component.h>
 #include <SgtSim/TimeSeries.h>
 #include <SgtSim/Weather.h>
 #include <SgtSim/ZipBase.h>
+
+#include <SgtCore/Common.h>
+
 #include<string>
 
 namespace SmartGridToolbox

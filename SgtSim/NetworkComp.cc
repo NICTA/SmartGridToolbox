@@ -1,7 +1,8 @@
-#include <SgtSim/NetworkComp.h>
-#include <SgtSim/BusComp.h>
-#include <SgtSim/BranchComp.h>
-#include <SgtSim/Model.h>
+#include "NetworkComp.h"
+
+#include "BusComp.h"
+#include "BranchComp.h"
+#include "Model.h"
 
 #include <SgtCore/PowerFlowNr.h>
 

@@ -1,3 +1,6 @@
+#ifndef WEAK_ORDER_DOT_H
+#define WEAK_ORDER_DOT_H
+
 #include <vector>
 #include <list>
 #include <set>
@@ -91,3 +94,5 @@ namespace SmartGridToolbox
          std::vector<std::unique_ptr<WoNode>> nodes_;
    };
 }
+
+#endif // WEAK_ORDER_DOT_H

@@ -1,4 +1,4 @@
-#include <SgtSim/Component.h>
+#include "Component.h"
 
 namespace SmartGridToolbox
 {

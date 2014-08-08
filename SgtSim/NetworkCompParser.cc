@@ -1,6 +1,6 @@
 #include "NetworkCompParser.h"
 
-#include <SgtSim/NetworkComp.h>
+#include "NetworkComp.h"
 
 namespace SmartGridToolbox
 {

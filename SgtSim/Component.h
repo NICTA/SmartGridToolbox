@@ -1,11 +1,13 @@
 #ifndef COMPONENT_DOT_H
 #define COMPONENT_DOT_H
 
+#include <SgtSim/Event.h>
+
+#include <SgtCore/Common.h>
+
 #include <string>
 #include <vector>
 #include <map>
-#include <SgtCore/Common.h>
-#include <SgtSim/Event.h>
 
 namespace SmartGridToolbox
 {

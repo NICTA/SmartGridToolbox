@@ -1,9 +1,11 @@
 #ifndef SIMULTION_DOT_H
 #define SIMULTION_DOT_H
 
-#include <SgtCore/Common.h>
 #include <SgtSim/Component.h>
 #include <SgtSim/Event.h>
+
+#include <SgtCore/Common.h>
+
 #include <list>
 #include <set>
 

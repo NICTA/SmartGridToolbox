@@ -1,6 +1,8 @@
-#include <SgtSim/Model.h>
-#include <SgtSim/Component.h>
+#include "Model.h"
+
+#include "Component.h"
 #include "WeakOrder.h"
+
 #include <algorithm>
 #include <string>
 

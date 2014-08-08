@@ -1,7 +1,8 @@
-#include <SgtSim/BranchComp.h>
-#include <SgtSim/BusComp.h>
-#include <SgtSim/Model.h>
-#include <SgtSim/NetworkComp.h>
+#include "BranchComp.h"
+
+#include "BusComp.h"
+#include "Model.h"
+#include "NetworkComp.h"
 
 namespace SmartGridToolbox
 {

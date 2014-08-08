@@ -1,8 +1,8 @@
 #include "BranchCompParser.h"
 
-#include <SgtSim/BranchComp.h>
-#include <SgtSim/BusComp.h>
-#include <SgtSim/NetworkComp.h>
+#include "BranchComp.h"
+#include "BusComp.h"
+#include "NetworkComp.h"
 
 #include <SgtCore/Common.h>
 

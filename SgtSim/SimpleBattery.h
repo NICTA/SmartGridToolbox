@@ -1,10 +1,11 @@
 #ifndef SIMPLE_BATTERY_DOT_H
 #define SIMPLE_BATTERY_DOT_H
 
-#include <SgtSim/SimpleBattery.h>
-#include <SgtCore/Common.h>
 #include <SgtSim/Component.h>
 #include <SgtSim/DcPowerSourceBase.h>
+
+#include <SgtCore/Common.h>
+
 #include<string>
 
 namespace SmartGridToolbox
