@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "LibPowerFlow.h"
+#include "LibSgtCore.h"
 
 int main(int argc, char** argv)
 {

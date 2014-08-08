@@ -6,7 +6,7 @@
 #include <SgtSim/Event.h>
 #include <SgtSim/PowerFlow.h>
 
-#include <LibPowerFlow.h>
+#include <LibSgtCore.h>
 
 #include <iostream>
 

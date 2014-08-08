@@ -5,7 +5,7 @@
 #include <SgtSim/Bus.h>
 #include <SgtSim/Branch.h>
 
-#include <LibPowerFlow.h>
+#include <LibSgtCore.h>
 
 namespace SmartGridToolbox
 {
