@@ -370,7 +370,8 @@ namespace SmartGridToolbox
       for (auto busInfo : busVec)
       {
          std::string busId = getBusId(busInfo.id);
-         std::unique_ptr<Bus> bus(new Bus(busId, Phase::BAL));
+         std::unique_ptr<Bus> bus(
+               new Bus(busId, Phase::BAL, VComplex(1, Complex(busInfo.kVBase, 0.0)), busInfo.kVBase));
          BusType type = BusType::BAD;
          switch (busInfo.type)
          {
@@ -388,10 +389,6 @@ namespace SmartGridToolbox
          }
          bus->setType(type);
          
-         bus->setVBase(busInfo.kVBase);
-         
-         bus->setVNom(VComplex(1, Complex(bus->VBase(), 0.0)));
-
          Complex SZip = -Complex(busInfo.Pd, busInfo.Qd); // Already in MW.
          Complex yZip = yBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
          std::string zipId = getZipId(nZip++, busInfo.id);

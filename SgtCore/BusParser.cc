@@ -22,10 +22,9 @@ namespace SmartGridToolbox
       double VBase = nd["V_base"].as<double>();
       ublas::vector<Complex> VNom = nd["V_nom"].as<ublas::vector<Complex>>();
 
-      std::unique_ptr<Bus> bus(new Bus(id, phases));
+      std::unique_ptr<Bus> bus(new Bus(id, phases, VNom, VBase));
+
       bus->setType(type);
-      bus->setVBase(VBase);
-      bus->setVNom(VNom);
 
       netw.addBus(std::move(bus));
    }
