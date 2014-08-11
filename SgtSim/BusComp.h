@@ -37,30 +37,76 @@ namespace SmartGridToolbox
       /// @{
          
          BusComp(const std::string& id, Phases phases, const ublas::vector<Complex> & VNom, double VBase);
+
+         virtual ~BusComp()
+         {
+            // Empty.
+         }
       
       /// @}
 
       /// @name Base class setters trigger changed().
       /// @{
          
-         void setType(const BusType type)
+         virtual void setType(const BusType type)
          {
             Bus::setType(type);
             changed_.trigger();
          }
           
+         virtual void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint)
+         {
+            Bus::setVMagSetpoint(VMagSetpoint);
+            changed_.trigger();
+         }
+
+         virtual void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint)
+         {
+            Bus::setVAngSetpoint(VAngSetpoint);
+            changed_.trigger();
+         }
+
+         virtual void setVMagMin(double VMagMin)
+         {
+            Bus::setVMagMin(VMagMin);
+            changed_.trigger();
+         }
+         
+         virtual void setVMagMax(double VMagMax)
+         {
+            Bus::setVMagMax(VMagMax);
+            changed_.trigger();
+         }
+         
+         virtual void setIsInService(bool isInService)
+         {
+            Bus::setIsInService(isInService);
+            changed_.trigger();
+         }
+
+         virtual void setV(const ublas::vector<Complex>& V)
+         {
+            Bus::setV(V);
+            changed_.trigger();
+         }
+
       /// @}
       
       /// @name Events.
       /// @{
          
          /// @brief Event triggered when bus (e.g. setpoint) has changed.
-         Event& changed() {return changed_;}
+         virtual Event& changed() {return changed_;}
       
       /// @}
 
       private:
 
+      /// @name PowerFlowBus:
+      /// @{
+
+      /// @}
+      
       /// @name Events:
       /// @{
          

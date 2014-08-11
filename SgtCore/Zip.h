@@ -22,10 +22,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual ~Zip()
-         {
-            // Empty.
-         }
+         virtual ~Zip() = default;
       
       /// @}
 
@@ -37,7 +34,7 @@ namespace SmartGridToolbox
             return id_;
          }
          
-         void setId(const std::string& id)
+         virtual void setId(const std::string& id)
          {
             id_ = id;
          }
@@ -47,7 +44,7 @@ namespace SmartGridToolbox
             return phases_;
          }
          
-         void setPhases(const Phases& phases) 
+         virtual void setPhases(const Phases& phases) 
          {
             phases_ = phases;
          }
@@ -61,7 +58,7 @@ namespace SmartGridToolbox
             return YConst_;
          }
          
-         void setYConst(const ublas::vector<Complex>& YConst)
+         virtual void setYConst(const ublas::vector<Complex>& YConst)
          {
             YConst_ = YConst;
          }
@@ -71,7 +68,7 @@ namespace SmartGridToolbox
             return IConst_;
          }
          
-         void setIConst(const ublas::vector<Complex>& IConst)
+         virtual void setIConst(const ublas::vector<Complex>& IConst)
          {
             IConst_ = IConst;
          }
@@ -81,7 +78,7 @@ namespace SmartGridToolbox
             return SConst_;
          }
          
-         void setSConst(const ublas::vector<Complex>& SConst)
+         virtual void setSConst(const ublas::vector<Complex>& SConst)
          {
             SConst_ = SConst;
          }

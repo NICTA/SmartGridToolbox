@@ -24,10 +24,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual ~Branch()
-         {
-            // Empty.
-         }
+         virtual ~Branch() = default;
       
       /// @}
  
@@ -54,7 +51,7 @@ namespace SmartGridToolbox
             return phases0_;
          }
          
-         void setPhases0(Phases& phases0)
+         virtual void setPhases0(Phases& phases0)
          {
             phases0_ = phases0;
          }
@@ -64,7 +61,7 @@ namespace SmartGridToolbox
             return phases1_;
          }
          
-         void setPhases1(Phases& phases1)
+         virtual void setPhases1(Phases& phases1)
          {
             phases1_ = phases1;
          }
@@ -79,7 +76,7 @@ namespace SmartGridToolbox
             return status_;
          }
 
-         void setStatus(bool status)
+         virtual void setStatus(bool status)
          {
             status_ = status;
          }
@@ -94,7 +91,7 @@ namespace SmartGridToolbox
             return *bus0_;
          }
 
-         void setBus0(Bus& bus0)
+         virtual void setBus0(Bus& bus0)
          {
             bus0_ = &bus0;
          }
@@ -104,7 +101,7 @@ namespace SmartGridToolbox
             return *bus1_;
          }
 
-         void setBus1(Bus& bus1)
+         virtual void setBus1(Bus& bus1)
          {
             bus1_ = &bus1;
          }

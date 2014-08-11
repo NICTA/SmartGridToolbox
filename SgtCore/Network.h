@@ -31,17 +31,14 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual ~Network()
-         {
-            // Empty.
-         }
+         virtual ~Network() = default;
 
          double PBase() const
          {
             return PBase_;
          }
          
-         void setPBase(double PBase)
+         virtual void setPBase(double PBase)
          {
             PBase_ = PBase;
          }
@@ -55,11 +52,11 @@ namespace SmartGridToolbox
             auto it = busMap_.find(id);
             return it == busMap_.end() ? 0 : it->second;
          } 
-         Bus* bus(const std::string& id)
+         virtual Bus* bus(const std::string& id)
          {
             return const_cast<Bus*>((const_cast<const Network*>(this))->bus(id));
          } 
-         void addBus(std::unique_ptr<Bus> bus)
+         virtual void addBus(std::unique_ptr<Bus> bus)
          {
             busMap_[bus->id()] = bus.get();
             busVec_.push_back(std::move(bus));
@@ -74,11 +71,11 @@ namespace SmartGridToolbox
             auto it = branchMap_.find(id);
             return it == branchMap_.end() ? 0 : it->second;
          } 
-         Branch* branch(const std::string& id)
+         virtual Branch* branch(const std::string& id)
          {
             return const_cast<Branch*>((const_cast<const Network*>(this))->branch(id));
          } 
-         void addBranch(std::unique_ptr<Branch> branch)
+         virtual void addBranch(std::unique_ptr<Branch> branch)
          {
             branchMap_[branch->id()] = branch.get();
             branchVec_.push_back(std::move(branch));
@@ -93,11 +90,11 @@ namespace SmartGridToolbox
             auto it = genMap_.find(id);
             return it == genMap_.end() ? 0 : it->second;
          } 
-         Gen* gen(const std::string& id)
+         virtual Gen* gen(const std::string& id)
          {
             return const_cast<Gen*>((const_cast<const Network*>(this))->gen(id));
          } 
-         void addGen(std::unique_ptr<Gen> gen, Bus& toBus)
+         virtual void addGen(std::unique_ptr<Gen> gen, Bus& toBus)
          {
             toBus.addGen(*gen);
             genMap_[gen->id()] = gen.get();
@@ -113,11 +110,11 @@ namespace SmartGridToolbox
             auto it = zipMap_.find(id);
             return it == zipMap_.end() ? 0 : it->second;
          } 
-         Zip* zip(const std::string& id)
+         virtual Zip* zip(const std::string& id)
          {
             return const_cast<Zip*>((const_cast<const Network*>(this))->zip(id));
          } 
-         void addZip(std::unique_ptr<Zip> zip, Bus& toBus)
+         virtual void addZip(std::unique_ptr<Zip> zip, Bus& toBus)
          {
             toBus.addZip(*zip);
             zipMap_[zip->id()] = zip.get();

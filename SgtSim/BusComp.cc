@@ -6,44 +6,12 @@
 
 namespace SmartGridToolbox
 {
-   BusComp::BusComp(const std::string& id, Phases phases, const ublas::vector<Complex> & VNom, double VBase) :
+   BusComp::BusComp(const std::string& name, Phases phases, const ublas::vector<Complex> & VNom, double VBase) :
       Component(name),
       Bus(name, phases, VNom, VBase),
       changed_("BusComp " + name + " setpoint changed")
    {
       // Empty.
-   }
-
-   void BusComp::applySetpoints()
-   {
-      switch (type())
-      {
-         case BusType::SL :
-            {
-               ublas::vector<Complex> newV(phases().size());
-               for (int i = 0; i < phases().size(); ++i)
-               {
-                  newV(i) = polar(VMagSetpoint()(i), VAngSetpoint()(i));
-               }
-               setV(newV);
-            }
-            break;
-         case BusType::PV :
-            {
-               ublas::vector<Complex> newSg(phases().size());
-               ublas::vector<Complex> newV(phases().size());
-               for (int i = 0; i < phases().size(); ++i)
-               {
-                  newSg(i) = {PgSetpoint()(i), Sg()(i).imag()};
-                  newV(i) = VMagSetpoint()(i)*V()(i)/abs(V()(i));
-               }
-               setSg(newSg);
-               setV(newV);
-            }
-            break;
-         default :
-            ;
-      }
    }
 
    void BusComp::addZip(ZipBase& zip)

@@ -27,10 +27,7 @@ namespace SmartGridToolbox
 
          Bus(const std::string& id, Phases phases, const ublas::vector<Complex>& VNom, double VBase);
 
-         virtual ~Bus()
-         {
-            // Empty.
-         }
+         virtual ~Bus() = default;
 
       /// @}
 
@@ -42,7 +39,7 @@ namespace SmartGridToolbox
             return id_;
          }
 
-         void setId(const std::string& id)
+         virtual void setId(const std::string& id)
          {
             id_ = id;
          }
@@ -52,7 +49,7 @@ namespace SmartGridToolbox
             return phases_;
          }
 
-         void setPhases(const Phases& phases)
+         virtual void setPhases(const Phases& phases)
          {
             phases_ = phases;
          }
@@ -62,7 +59,7 @@ namespace SmartGridToolbox
             return VNom_;
          }
 
-         void setVNom(const ublas::vector<Complex>& VNom)
+         virtual void setVNom(const ublas::vector<Complex>& VNom)
          {
             VNom_ = VNom;
          }
@@ -72,7 +69,7 @@ namespace SmartGridToolbox
             return VBase_;
          }
 
-         void setVBase(double VBase)
+         virtual void setVBase(double VBase)
          {
             VBase_ = VBase;
          }
@@ -87,7 +84,7 @@ namespace SmartGridToolbox
             return type_;
          }
 
-         void setType(const BusType type)
+         virtual void setType(const BusType type)
          {
             type_ = type;
          }
@@ -97,7 +94,7 @@ namespace SmartGridToolbox
             return VMagSetpoint_;
          }
 
-         void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint)
+         virtual void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint)
          {
             VMagSetpoint_ = VMagSetpoint;
          }
@@ -107,7 +104,7 @@ namespace SmartGridToolbox
             return VAngSetpoint_;
          }
 
-         void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint)
+         virtual void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint)
          {
             VAngSetpoint_ = VAngSetpoint;
          }
@@ -117,7 +114,7 @@ namespace SmartGridToolbox
             return VMagMin_;
          }
 
-         void setVMagMin(double VMagMin)
+         virtual void setVMagMin(double VMagMin)
          {
             VMagMin_ = VMagMin;
          }
@@ -127,7 +124,7 @@ namespace SmartGridToolbox
             return VMagMax_;
          }
 
-         void setVMagMax(double VMagMax)
+         virtual void setVMagMax(double VMagMax)
          {
             VMagMax_ = VMagMax;
          }
@@ -175,14 +172,14 @@ namespace SmartGridToolbox
             return isInService_;
          }
 
-         void setIsInService(bool isInService)
+         virtual void setIsInService(bool isInService)
          {
             isInService_ = isInService;
          }
 
          const ublas::vector<Complex>& V() const {return V_;}
 
-         void setV(const ublas::vector<Complex>& V) {V_ = V;}
+         virtual void setV(const ublas::vector<Complex>& V) {V_ = V;}
 
       /// @}
 
@@ -198,12 +195,12 @@ namespace SmartGridToolbox
 
       protected:
 
-         void addZip(Zip& zip)
+         virtual void addZip(Zip& zip)
          {
             zips_.push_back(&zip);
          }
 
-         void addGen(Gen& gen)
+         virtual void addGen(Gen& gen)
          {
             gens_.push_back(&gen);
          }

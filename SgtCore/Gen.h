@@ -20,10 +20,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual ~Gen()
-         {
-            // Empty.
-         }
+         virtual ~Gen() = default;
       
       /// @}
 
@@ -35,7 +32,7 @@ namespace SmartGridToolbox
             return id_;
          }
 
-         void setId(const std::string& id)
+         virtual void setId(const std::string& id)
          {
             id_ = id;
          }
@@ -50,7 +47,7 @@ namespace SmartGridToolbox
             return phases_;
          }
          
-         void setPhases(const Phases& phases) 
+         virtual void setPhases(const Phases& phases) 
          {
             phases_ = phases;
          }
@@ -65,7 +62,7 @@ namespace SmartGridToolbox
             return status_;
          }
 
-         void setStatus(bool status)
+         virtual void setStatus(bool status)
          {
             status_ = status;
          }
@@ -80,7 +77,7 @@ namespace SmartGridToolbox
             return S_;
          }
 
-         void setS(const ublas::vector<Complex>& S)
+         virtual void setS(const ublas::vector<Complex>& S)
          {
             S_ = S;
          }
@@ -95,7 +92,7 @@ namespace SmartGridToolbox
             return PMin_;
          }
 
-         void setPMin(double PMin)
+         virtual void setPMin(double PMin)
          {
             PMin_ = PMin;
          }
@@ -105,7 +102,7 @@ namespace SmartGridToolbox
             return PMax_;
          }
 
-         void setPMax(double PMax)
+         virtual void setPMax(double PMax)
          {
             PMax_ = PMax;
          }
@@ -115,7 +112,7 @@ namespace SmartGridToolbox
             return QMin_;
          }
 
-         void setQMin(double QMin)
+         virtual void setQMin(double QMin)
          {
             QMin_ = QMin;
          }
@@ -125,7 +122,7 @@ namespace SmartGridToolbox
             return QMax_;
          }
 
-         void setQMax(double QMax)
+         virtual void setQMax(double QMax)
          {
             QMax_ = QMax;
          }
@@ -140,12 +137,12 @@ namespace SmartGridToolbox
             return cStartup_;
          }
 
-         void setCStartup(double cStartup)
+         virtual void setCStartup(double cStartup)
          {
             cStartup_ = cStartup;
          }
          
-         double cShutdown() const
+         virtual double cShutdown() const
          {
             return cShutdown_;
          }
@@ -160,7 +157,7 @@ namespace SmartGridToolbox
             return c0_;
          }
 
-         void setC0(double c0)
+         virtual void setC0(double c0)
          {
             c0_ = c0;
          }
@@ -170,7 +167,7 @@ namespace SmartGridToolbox
             return c1_;
          }
 
-         void setC1(double c1)
+         virtual void setC1(double c1)
          {
             c1_ = c1;
          }
@@ -180,7 +177,7 @@ namespace SmartGridToolbox
             return c2_;
          }
 
-         void setC2(double c2)
+         virtual void setC2(double c2)
          {
             c2_ = c2;
          }

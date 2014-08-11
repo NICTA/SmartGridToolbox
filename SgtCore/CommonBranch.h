@@ -25,6 +25,8 @@ namespace SmartGridToolbox
             // Empty.
          }
 
+         virtual ~CommonBranch() = default;
+
       /// @}
       
       /// @name Line parameters:
@@ -35,7 +37,7 @@ namespace SmartGridToolbox
             return tapRatio_;
          }
 
-         void setTapRatio(Complex tapRatio)
+         virtual void setTapRatio(Complex tapRatio)
          {
             tapRatio_ = tapRatio;
          }
@@ -45,7 +47,7 @@ namespace SmartGridToolbox
             return YSeries_;
          }
 
-         void setYSeries(Complex YSeries)
+         virtual void setYSeries(Complex YSeries)
          {
             YSeries_ = YSeries;
          }
@@ -55,7 +57,7 @@ namespace SmartGridToolbox
             return YShunt_;
          }
 
-         void setYShunt(Complex YShunt)
+         virtual void setYShunt(Complex YShunt)
          {
             YShunt_ = YShunt;
          }
@@ -65,7 +67,7 @@ namespace SmartGridToolbox
             return rateA_;
          }
 
-         void setRateA(double rateA)
+         virtual void setRateA(double rateA)
          {
             rateA_ = rateA;
          }
@@ -75,7 +77,7 @@ namespace SmartGridToolbox
             return rateB_;
          }
 
-         void setRateB(double rateB)
+         virtual void setRateB(double rateB)
          {
             rateB_ = rateB;
          }
@@ -85,7 +87,7 @@ namespace SmartGridToolbox
             return rateC_;
          }
 
-         void setRateC(double rateC)
+         virtual void setRateC(double rateC)
          {
             rateC_ = rateC;
          }
