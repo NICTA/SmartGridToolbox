@@ -17,7 +17,7 @@ namespace SmartGridToolbox
 
          Zip(const std::string& id, Phases phases) :
             id_(id), phases_(phases), 
-            yConst_(phases.size(), czero), IConst_(phases.size(), czero), SConst_(phases.size(), czero)
+            YConst_(phases.size(), czero), IConst_(phases.size(), czero), SConst_(phases.size(), czero)
          {
             // Empty.
          }
@@ -56,14 +56,14 @@ namespace SmartGridToolbox
       /// @name ZIP parameters:
       /// @{
       
-         const ublas::vector<Complex> yConst() const
+         const ublas::vector<Complex> YConst() const
          {
-            return yConst_;
+            return YConst_;
          }
          
-         void set_yConst(const ublas::vector<Complex>& yConst)
+         void setYConst(const ublas::vector<Complex>& YConst)
          {
-            yConst_ = yConst;
+            YConst_ = YConst;
          }
       
          const ublas::vector<Complex> IConst() const
@@ -107,7 +107,7 @@ namespace SmartGridToolbox
          std::string id_;
          Phases phases_;
 
-         ublas::vector<Complex> yConst_;
+         ublas::vector<Complex> YConst_;
          ublas::vector<Complex> IConst_;
          ublas::vector<Complex> SConst_;
    };

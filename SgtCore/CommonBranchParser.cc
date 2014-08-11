@@ -12,8 +12,8 @@ namespace SmartGridToolbox
 
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "complex_tap_ratio");
-      assertFieldPresent(nd, "y_series");
-      assertFieldPresent(nd, "y_shunt");
+      assertFieldPresent(nd, "Y_series");
+      assertFieldPresent(nd, "Y_shunt");
       assertFieldPresent(nd, "bus_0_id");
       assertFieldPresent(nd, "bus_1_id");
 
@@ -22,8 +22,8 @@ namespace SmartGridToolbox
       std::unique_ptr<CommonBranch> cBranch(new CommonBranch(id));
 
       cBranch->setTapRatio(nd["complex_tap_ratio"].as<Complex>());
-      cBranch->set_ySeries(nd["y_series"].as<Complex>());
-      cBranch->set_yShunt(nd["y_shunt"].as<Complex>());
+      cBranch->setYSeries(nd["Y_series"].as<Complex>());
+      cBranch->setYShunt(nd["Y_shunt"].as<Complex>());
 
       auto ndRateA =  nd["rate_A"];
       auto ndRateB =  nd["rate_B"];

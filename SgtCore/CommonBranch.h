@@ -40,24 +40,24 @@ namespace SmartGridToolbox
             tapRatio_ = tapRatio;
          }
          
-         Complex ySeries() const
+         Complex YSeries() const
          {
-            return ySeries_;
+            return YSeries_;
          }
 
-         void set_ySeries(Complex ySeries)
+         void setYSeries(Complex YSeries)
          {
-            ySeries_ = ySeries;
+            YSeries_ = YSeries;
          }
          
-         Complex yShunt() const
+         Complex YShunt() const
          {
-            return yShunt_;
+            return YShunt_;
          }
 
-         void set_yShunt(Complex yShunt)
+         void setYShunt(Complex YShunt)
          {
-            yShunt_ = yShunt;
+            YShunt_ = YShunt;
          }
 
          double rateA() const
@@ -106,8 +106,8 @@ namespace SmartGridToolbox
       private:
 
          Complex tapRatio_{1.0}; // Complex tap ratio, exp(i theta) (n_s / n_p).
-         Complex ySeries_{czero}; // Series admittance for top of pi.
-         Complex yShunt_{czero}; // Total shunt admittance for both legs of pi - each leg is half of this.
+         Complex YSeries_{czero}; // Series admittance for top of pi.
+         Complex YShunt_{czero}; // Total shunt admittance for both legs of pi - each leg is half of this.
 
          // The following power ratings are rated to the voltage of the to bus, bus1. They are really current ratings
          // that are multiplied by this voltage.

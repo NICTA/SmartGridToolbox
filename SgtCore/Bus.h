@@ -1,6 +1,7 @@
 #ifndef BUS_DOT_H
 #define BUS_DOT_H
 
+#include <SgtCore/Common.h>
 #include <SgtCore/Gen.h>
 #include <SgtCore/PowerFlow.h>
 #include <SgtCore/Zip.h>
@@ -11,8 +12,6 @@
 
 namespace SmartGridToolbox
 {
-   namespace ublas = boost::numeric::ublas;
-
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
    class Bus
    {
@@ -131,15 +130,27 @@ namespace SmartGridToolbox
             return zips_;
          }
 
+         /// @brief Total ZIP admittance.
+         ublas::vector<Complex> YZip() const;
+
+         /// @brief Total ZIP current injection into bus.
+         ublas::vector<Complex> IZip() const;
+
+         /// @brief Total ZIP power injection into bus.
+         ublas::vector<Complex> SZip() const;
+
       /// @}
 
       /// @name Generation
       /// @{
-
+         
          const GenVec& gens() const
          {
             return gens_;
          }
+         
+         /// @brief Total generated power injection (-ve of generated power).
+         ublas::vector<Complex> SGen() const;
 
       /// @}
 
