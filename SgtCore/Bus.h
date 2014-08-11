@@ -25,11 +25,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
 
-         Bus(const std::string& id, Phases phases, const ublas::vector<Complex> & VNom, double VBase) :
-            id_(id), phases_(phases), VNom_(VNom), VBase_(VBase), V_(phases.size(), czero)
-         {
-            // Empty.
-         }
+         Bus(const std::string& id, Phases phases, const ublas::vector<Complex>& VNom, double VBase);
 
          virtual ~Bus()
          {
@@ -83,7 +79,7 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Control:
+      /// @name Control and limits:
       /// @{
 
          BusType type() const
@@ -96,8 +92,25 @@ namespace SmartGridToolbox
             type_ = type;
          }
 
-      /// @name Voltage magnitude limits
-      /// @{
+         ublas::vector<double> VMagSetpoint() const
+         {
+            return VMagSetpoint_;
+         }
+
+         void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint)
+         {
+            VMagSetpoint_ = VMagSetpoint;
+         }
+
+         ublas::vector<double> VAngSetpoint() const
+         {
+            return VAngSetpoint_;
+         }
+
+         void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint)
+         {
+            VAngSetpoint_ = VAngSetpoint;
+         }
 
          double VMagMin() const
          {
@@ -199,13 +212,14 @@ namespace SmartGridToolbox
 
       private:
 
-         std::string id_;
-         Phases phases_;
-         ublas::vector<Complex> VNom_;
+         std::string id_{"UNDEFINED"};
+         Phases phases_{Phase::BAL};
+         ublas::vector<Complex> VNom_{phases_.size()};
          double VBase_{1.0};
 
          BusType type_{BusType::NA};
-
+         ublas::vector<double> VMagSetpoint_{phases_.size()};
+         ublas::vector<double> VAngSetpoint_{phases_.size()};
          double VMagMin_{-infinity};
          double VMagMax_{infinity};
 
@@ -213,7 +227,7 @@ namespace SmartGridToolbox
          GenVec gens_;
 
          bool isInService_{true};
-         ublas::vector<Complex> V_;
+         ublas::vector<Complex> V_{phases_.size(), czero};
    };
 }
 

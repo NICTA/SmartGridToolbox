@@ -5,6 +5,20 @@
 
 namespace SmartGridToolbox
 {
+   Bus::Bus(const std::string& id, Phases phases, const ublas::vector<Complex>& VNom, double VBase) :
+      id_(id),
+      phases_(phases),
+      VNom_(VNom),
+      VBase_(VBase)
+   {
+      double dtheta = -2.0*pi/phases.size();
+      for (int i = 0; i < phases_.size(); ++i)
+      {
+         VMagSetpoint_(i) = std::abs(VNom_(i));
+         VAngSetpoint_(i) = std::arg(VNom_(i));
+      }
+   }
+
    ublas::vector<Complex> Bus::YZip() const
    {
       return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(phases_.size(), czero),
