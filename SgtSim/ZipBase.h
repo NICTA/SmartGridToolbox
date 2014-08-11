@@ -33,8 +33,6 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual ~ZipBase() {}
-
          virtual const Phases& phases() const {return phases_;}
 
          virtual ublas::vector<Complex> Y() const = 0;

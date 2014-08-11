@@ -24,7 +24,6 @@ namespace SmartGridToolbox
          
       public:
          SynchronousMachine(std::string name);
-         virtual ~SynchronousMachine();
 
          void addToNetwork(NetworkComp& nw);
 

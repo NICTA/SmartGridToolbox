@@ -38,11 +38,6 @@ namespace SmartGridToolbox
          
          BusComp(const std::string& id, Phases phases, const ublas::vector<Complex> & VNom, double VBase);
 
-         virtual ~BusComp()
-         {
-            // Empty.
-         }
-      
       /// @}
 
       /// @name Base class setters trigger changed().
