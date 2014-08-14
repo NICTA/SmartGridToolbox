@@ -191,19 +191,9 @@ namespace SmartGridToolbox
          
       /// @}
          
-      /// @name Output 
-      /// @{
-         
-         friend std::ostream& operator<<(std::ostream& os, const Network& netw)
-         {
-            return netw.print(os);
-         }
-      
-      /// @}
-      
       protected:
 
-         virtual std::ostream& print(std::ostream& os) const;
+         virtual void print(std::ostream& os) const override;
       
       private:
          Model* model_;

@@ -110,7 +110,7 @@ namespace SmartGridToolbox
 
       protected:
 
-         virtual std::ostream& print(std::ostream& os) const;
+         virtual void print(std::ostream& os) const override;
 
       private:
 

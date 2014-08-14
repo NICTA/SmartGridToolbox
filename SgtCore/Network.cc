@@ -10,9 +10,9 @@ namespace SmartGridToolbox
       // Empty.
    }
 
-   std::ostream& Network::print(std::ostream& os) const
+   void Network::print(std::ostream& os) const
    {
-      os << "network:" << std::endl;
+      Component::print(os);
       IndentingOStreamBuf _(os);
       os << "P_base: " << PBase_ << std::endl;
       for (auto& bus : busVec_)
@@ -23,6 +23,5 @@ namespace SmartGridToolbox
       {
          os << *branch << std::endl;
       }
-      return os;
    }
 }

@@ -34,19 +34,9 @@ namespace SmartGridToolbox
 
       /// @}
          
-      /// @name Output
-      /// @{
-         
-         friend std::ostream& operator<<(std::ostream& os, const Component& comp)
-         {
-            return comp.print(os);
-         }
-      
-      /// @}
-
       protected:
 
-         virtual std::ostream& print(std::ostream& os) const;
+         virtual void print(std::ostream& os) const;
 
       private:
 

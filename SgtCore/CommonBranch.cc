@@ -15,11 +15,10 @@ namespace SmartGridToolbox
       return result;
    }
 
-   std::ostream& CommonBranch::print(std::ostream& os) const
+   void CommonBranch::print(std::ostream& os) const
    {
-      os << "common_branch:" << std::endl;
-      IndentingOStreamBuf _(os);
       Branch::print(os);
+      IndentingOStreamBuf _(os);
       os << "tap_ratio_magnitude: " << std::abs(tapRatio_) << std::endl;
       os << "tap_ratio_angle_deg: " << std::arg(tapRatio_)*180/pi << std::endl;
       os << "Y_series: " << YSeries_ << std::endl;
@@ -27,6 +26,5 @@ namespace SmartGridToolbox
       os << "rate_A: " << rateA_ << std::endl;
       os << "rate_B: " << rateB_ << std::endl;
       os << "rate_C: " << rateC_ << std::endl;
-      return os;
    }
 }

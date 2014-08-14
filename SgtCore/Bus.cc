@@ -43,11 +43,10 @@ namespace SmartGridToolbox
             [] (ublas::vector<Complex> & tot, const Gen* gen) {return tot + gen->S();});
    }
 
-   std::ostream& Bus::print(std::ostream& os) const
+   void Bus::print(std::ostream& os) const
    {
-      os << "bus:" << std::endl;
+      Component::print(os);
       IndentingOStreamBuf _(os);
-      os << "id: " << id() << std::endl;
       os << "phases: " << phases_ << std::endl;
       os << "type: " << type_ << std::endl;
       os << "V_base: " << VBase_ << std::endl;
@@ -71,6 +70,5 @@ namespace SmartGridToolbox
             os << *gen << std::endl;
          }
       }
-      return os;
    }
 }

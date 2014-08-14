@@ -14,11 +14,10 @@ namespace SmartGridToolbox
       // Empty.
    }
 
-   std::ostream& Gen::print(std::ostream& os) const
+   void Gen::print(std::ostream& os) const
    {
-      os << "gen:" << std::endl;
+      Component::print(os);
       IndentingOStreamBuf _(os);
-      os << "id: " << id() << std::endl;
       os << "phases: " << phases_ << std::endl;
       os << "S: " << S_ << std::endl;
       os << "PMin: " << PMin_ << std::endl;
@@ -30,6 +29,5 @@ namespace SmartGridToolbox
       os << "c0: " << c0_ << std::endl;
       os << "c1: " << c1_ << std::endl;
       os << "c2: " << c2_ << std::endl;
-      return os;
    }
 }

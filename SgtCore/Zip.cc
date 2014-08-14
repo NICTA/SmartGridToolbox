@@ -11,16 +11,4 @@ namespace SmartGridToolbox
    {
       // Empty.
    }
-
-   std::ostream& Zip::print(std::ostream& os) const
-   {
-      os << "zip:" << std::endl;
-      IndentingOStreamBuf _(os);
-      os << "id: " << id() << std::endl;
-      os << "phases: " << phases_ << std::endl;
-      os << "YConst: " << YConst_ << std::endl;
-      os << "IConst: " << IConst_ << std::endl;
-      os << "SConst: " << SConst_ << std::endl;
-      return os;
-   }
 }

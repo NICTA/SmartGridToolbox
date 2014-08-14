@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
          
-         virtual const char* componentTypeStr() const {return "zip";}
+         virtual const char* componentType() const {return "Zip";}
 
       /// @}
 
@@ -78,20 +78,6 @@ namespace SmartGridToolbox
 
       /// @}
          
-      /// @name Output
-      /// @{
-         
-         friend std::ostream& operator<<(std::ostream& os, const Zip& zip)
-         {
-            return zip.print(os);
-         }
-      
-      /// @}
-      
-      protected:
-
-         virtual std::ostream& print(std::ostream& os) const;
-      
       private:
 
          Phases phases_;

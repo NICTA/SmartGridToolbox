@@ -181,16 +181,6 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Output
-      /// @{
-
-         friend std::ostream& operator<<(std::ostream& os, const Bus& bus)
-         {
-            return bus.print(os);
-         }
-
-      /// @}
-
       protected:
 
          virtual void addZip(Zip& zip)
@@ -203,7 +193,7 @@ namespace SmartGridToolbox
             gens_.push_back(&gen);
          }
 
-         virtual std::ostream& print(std::ostream& os) const;
+         virtual void print(std::ostream& os) const override;
 
       private:
 
