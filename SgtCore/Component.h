@@ -22,7 +22,7 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
          
-         virtual const char* componentType() const {return "Component";}
+         virtual const char* componentTypeStr() const {return "component";}
 
       /// @}
          
@@ -33,6 +33,20 @@ namespace SmartGridToolbox
          const void setId(const std::string& id) {id_ = id;}
 
       /// @}
+         
+      /// @name Output
+      /// @{
+         
+         friend std::ostream& operator<<(std::ostream& os, const Component& comp)
+         {
+            return comp.print(os);
+         }
+      
+      /// @}
+
+      protected:
+
+         virtual std::ostream& print(std::ostream& os) const;
 
       private:
 

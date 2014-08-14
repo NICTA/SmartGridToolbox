@@ -18,7 +18,7 @@ namespace SmartGridToolbox
       Component& ref = *comp;
 
       message() << "Adding component " << ref.id() << " of type " 
-         << ref.componentType() << " to model." << std::endl;
+         << ref.componentTypeStr() << " to model." << std::endl;
       IndentingOStreamBuf _(messageStream());
 
       ComponentMap::iterator it1 = compMap_.find(ref.id());

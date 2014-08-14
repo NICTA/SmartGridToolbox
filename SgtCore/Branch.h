@@ -28,7 +28,7 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
          
-         virtual const char* componentType() const {return "Branch";}
+         virtual const char* componentTypeStr() const {return "branch";}
 
       /// @}
  
