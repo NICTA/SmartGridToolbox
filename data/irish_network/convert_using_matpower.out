@@ -1,0 +1,84 @@
+input_file = SummerNightValley2013.raw
+output_file = SummerNightValley2013_mp_converted.m
+warnings = 
+{
+  [1,1] = Using default voltage magnitude limits: VMIN = 0.9 p.u., VMAX = 1.1 p.u.
+  [1,2] = Added buses 100001-100088 as star-points for 3-winding transformers.
+}
+input_file = SummerNightValley2016.raw
+output_file = SummerNightValley2016_mp_converted.m
+warnings = 
+{
+  [1,1] = Using default voltage magnitude limits: VMIN = 0.9 p.u., VMAX = 1.1 p.u.
+  [1,2] = Added buses 100001-100094 as star-points for 3-winding transformers.
+}
+input_file = SummerNightValley2019.raw
+output_file = SummerNightValley2019_mp_converted.m
+warnings = 
+{
+  [1,1] = Using default voltage magnitude limits: VMIN = 0.9 p.u., VMAX = 1.1 p.u.
+  [1,2] = Added buses 100001-100103 as star-points for 3-winding transformers.
+}
+input_file = SummerNightValley2022.raw
+output_file = SummerNightValley2022_mp_converted.m
+warnings = 
+{
+  [1,1] = Using default voltage magnitude limits: VMIN = 0.9 p.u., VMAX = 1.1 p.u.
+  [1,2] = Added buses 100001-100110 as star-points for 3-winding transformers.
+}
+input_file = SummerPeak2013.raw
+output_file = SummerPeak2013_mp_converted.m
+warnings = 
+{
+  [1,1] = Using default voltage magnitude limits: VMIN = 0.9 p.u., VMAX = 1.1 p.u.
+  [1,2] = Added buses 100001-100088 as star-points for 3-winding transformers.
+}
+input_file = SummerPeak2016.raw
+output_file = SummerPeak2016_mp_converted.m
+warnings = 
+{
+  [1,1] = Using default voltage magnitude limits: VMIN = 0.9 p.u., VMAX = 1.1 p.u.
+  [1,2] = Added buses 100001-100094 as star-points for 3-winding transformers.
+}
+input_file = SummerPeak2019.raw
+output_file = SummerPeak2019_mp_converted.m
+warnings = 
+{
+  [1,1] = Using default voltage magnitude limits: VMIN = 0.9 p.u., VMAX = 1.1 p.u.
+  [1,2] = Added buses 100001-100103 as star-points for 3-winding transformers.
+}
+input_file = SummerPeak2022.raw
+output_file = SummerPeak2022_mp_converted.m
+warnings = 
+{
+  [1,1] = Using default voltage magnitude limits: VMIN = 0.9 p.u., VMAX = 1.1 p.u.
+  [1,2] = Added buses 100001-100110 as star-points for 3-winding transformers.
+}
+input_file = WinterPeak2013.raw
+output_file = WinterPeak2013_mp_converted.m
+warnings = 
+{
+  [1,1] = Using default voltage magnitude limits: VMIN = 0.9 p.u., VMAX = 1.1 p.u.
+  [1,2] = Added buses 100001-100089 as star-points for 3-winding transformers.
+}
+input_file = WinterPeak2016.raw
+output_file = WinterPeak2016_mp_converted.m
+warnings = 
+{
+  [1,1] = Using default voltage magnitude limits: VMIN = 0.9 p.u., VMAX = 1.1 p.u.
+  [1,2] = Added buses 100001-100098 as star-points for 3-winding transformers.
+}
+input_file = WinterPeak2019.raw
+output_file = WinterPeak2019_mp_converted.m
+warnings = 
+{
+  [1,1] = Using default voltage magnitude limits: VMIN = 0.9 p.u., VMAX = 1.1 p.u.
+  [1,2] = Added buses 100001-100107 as star-points for 3-winding transformers.
+}
+input_file = WinterPeak2022.raw
+output_file = WinterPeak2022_mp_converted.m
+warnings = 
+{
+  [1,1] = Using default voltage magnitude limits: VMIN = 0.9 p.u., VMAX = 1.1 p.u.
+  [1,2] = Added buses 100001-100110 as star-points for 3-winding transformers.
+}
