@@ -4,10 +4,10 @@
 #include<SgtCore/Branch.h>
 #include<SgtCore/Bus.h>
 #include<SgtCore/Gen.h>
+#include<SgtCore/Model.h>
 #include<SgtCore/Zip.h>
 
 #include<iostream>
-#include<map>
 #include<vector>
 
 namespace SmartGridToolbox
@@ -16,17 +16,12 @@ namespace SmartGridToolbox
    {
       public:
 
-         typedef std::vector<std::unique_ptr<Bus>> BusVec;
-         typedef std::vector<std::unique_ptr<Branch>> BranchVec;
-         typedef std::vector<std::unique_ptr<Gen>> GenVec;
-         typedef std::vector<std::unique_ptr<Zip>> ZipVec;
+         typedef std::vector<Bus*> BusVec;
+         typedef std::vector<Branch*> BranchVec;
+         typedef std::vector<Gen*> GenVec;
+         typedef std::vector<Zip*> ZipVec;
 
-         typedef std::map<std::string, Bus*> BusMap;
-         typedef std::map<std::string, Branch*> BranchMap;
-         typedef std::map<std::string, Gen*> GenMap;
-         typedef std::map<std::string, Zip*> ZipMap;
-
-         Network(double PBase) : PBase_(PBase)
+         Network(Model& model, double PBase) : model_(&model), PBase_(PBase)
          {
             // Empty.
          }
@@ -59,8 +54,7 @@ namespace SmartGridToolbox
          }
          const Bus* bus(const std::string& id) const
          {
-            auto it = busMap_.find(id);
-            return it == busMap_.end() ? 0 : it->second;
+            return model_->component<Bus>(id);
          } 
          virtual Bus* bus(const std::string& id)
          {
@@ -68,8 +62,8 @@ namespace SmartGridToolbox
          } 
          virtual void addBus(std::unique_ptr<Bus> bus)
          {
-            busMap_[bus->id()] = bus.get();
-            busVec_.push_back(std::move(bus));
+            busVec_.push_back(bus.get());
+            model_->acquireComponent(std::move(bus));
          }
 
          const BranchVec& branches() const
@@ -78,8 +72,7 @@ namespace SmartGridToolbox
          }
          const Branch* branch(const std::string& id) const
          {
-            auto it = branchMap_.find(id);
-            return it == branchMap_.end() ? 0 : it->second;
+            return model_->component<Branch>(id);
          } 
          virtual Branch* branch(const std::string& id)
          {
@@ -87,8 +80,8 @@ namespace SmartGridToolbox
          } 
          virtual void addBranch(std::unique_ptr<Branch> branch)
          {
-            branchMap_[branch->id()] = branch.get();
-            branchVec_.push_back(std::move(branch));
+            branchVec_.push_back(branch.get());
+            model_->acquireComponent(std::move(branch));
          }
 
          const GenVec& gens() const
@@ -97,8 +90,7 @@ namespace SmartGridToolbox
          }
          const Gen* gen(const std::string& id) const
          {
-            auto it = genMap_.find(id);
-            return it == genMap_.end() ? 0 : it->second;
+            return model_->component<Gen>(id);
          } 
          virtual Gen* gen(const std::string& id)
          {
@@ -107,8 +99,8 @@ namespace SmartGridToolbox
          virtual void addGen(std::unique_ptr<Gen> gen, Bus& toBus)
          {
             toBus.addGen(*gen);
-            genMap_[gen->id()] = gen.get();
-            genVec_.push_back(std::move(gen));
+            genVec_.push_back(gen.get());
+            model_->acquireComponent(std::move(gen));
          }
 
          const ZipVec& zips() const
@@ -117,8 +109,7 @@ namespace SmartGridToolbox
          }
          const Zip* zip(const std::string& id) const
          {
-            auto it = zipMap_.find(id);
-            return it == zipMap_.end() ? 0 : it->second;
+            return model_->component<Zip>(id);
          } 
          virtual Zip* zip(const std::string& id)
          {
@@ -127,8 +118,8 @@ namespace SmartGridToolbox
          virtual void addZip(std::unique_ptr<Zip> zip, Bus& toBus)
          {
             toBus.addZip(*zip);
-            zipMap_[zip->id()] = zip.get();
-            zipVec_.push_back(std::move(zip));
+            zipVec_.push_back(zip.get());
+            model_->acquireComponent(std::move(zip));
          }
 
          template<typename T> T V2Pu(const T& V, double VBase) const
@@ -186,20 +177,15 @@ namespace SmartGridToolbox
          virtual std::ostream& print(std::ostream& os) const;
       
       private:
+         Model* model_;
+
          double PBase_ = 1.0;
          double freq_ = 50.0;
 
          BusVec busVec_;
-         BusMap busMap_;
-
          BranchVec branchVec_;
-         BranchMap branchMap_;
-         
          GenVec genVec_;
-         GenMap genMap_;
-         
          ZipVec zipVec_;
-         ZipMap zipMap_;
    };
 }
 

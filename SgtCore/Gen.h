@@ -2,12 +2,13 @@
 #define GEN_DOT_H
 
 #include <SgtCore/Common.h>
+#include <SgtCore/ComponentAbc.h>
 #include <SgtCore/PowerFlow.h>
 
 namespace SmartGridToolbox
 {
    /// @brief A generation at a bus.
-   class Gen
+   class Gen : public ComponentAbc
    {
       public:
       

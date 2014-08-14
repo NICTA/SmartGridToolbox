@@ -2,6 +2,7 @@
 #define BRANCH_DOT_H
 
 #include <SgtCore/Common.h>
+#include <SgtCore/ComponentAbc.h>
 #include <SgtCore/PowerFlow.h>
 
 #include <iostream>
@@ -11,7 +12,7 @@ namespace SmartGridToolbox
    class Bus;
 
    /// @brief A Branch connects two Busses in a Network.
-   class Branch
+   class Branch : public ComponentAbc
    {
       public:
       

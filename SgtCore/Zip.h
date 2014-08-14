@@ -1,6 +1,7 @@
 #ifndef ZIP_DOT_H
 #define ZIP_DOT_H
 
+#include <SgtCore/ComponentAbc.h>
 #include <SgtCore/PowerFlow.h>
 
 #include<string>
@@ -8,7 +9,7 @@
 namespace SmartGridToolbox
 {
    /// @brief A Zip is an injection into a bus with constant impedance / current / complex power components.
-   class Zip
+   class Zip : public ComponentAbc
    {
       public:
       

@@ -2,6 +2,7 @@
 #define BUS_DOT_H
 
 #include <SgtCore/Common.h>
+#include <SgtCore/ComponentAbc.h>
 #include <SgtCore/Gen.h>
 #include <SgtCore/PowerFlow.h>
 #include <SgtCore/Zip.h>
@@ -13,7 +14,7 @@
 namespace SmartGridToolbox
 {
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
-   class Bus
+   class Bus : public ComponentAbc
    {
       friend class Network;
 
@@ -34,7 +35,7 @@ namespace SmartGridToolbox
       /// @name Basic identity and type:
       /// @{
 
-         const std::string& id() const
+         virtual const std::string& id() const
          {
             return id_;
          }
