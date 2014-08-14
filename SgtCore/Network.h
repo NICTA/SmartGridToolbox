@@ -12,7 +12,7 @@
 
 namespace SmartGridToolbox
 {
-   class Network
+   class Network : public Component
    {
       public:
 
@@ -21,13 +21,25 @@ namespace SmartGridToolbox
          typedef std::vector<Gen*> GenVec;
          typedef std::vector<Zip*> ZipVec;
 
-         Network(Model& model, double PBase) : model_(&model), PBase_(PBase)
-         {
-            // Empty.
-         }
+      /// @name Lifecycle:
+      /// @{
+         
+         Network(const std::string& id, Model& model, double PBase);
 
          virtual ~Network() = default;
 
+      /// @}
+      
+      /// @name Component Type:
+      /// @{
+         
+         virtual const char* componentType() const {return "Component";}
+
+      /// @}
+
+      /// @name Network Attributes:
+      /// @{
+         
          double PBase() const
          {
             return PBase_;
@@ -48,6 +60,11 @@ namespace SmartGridToolbox
             freq_ = freq;
          }
 
+      /// @}
+         
+      /// @name Network Components:
+      /// @{
+         
          const BusVec& busses() const
          {
             return busVec_;
@@ -122,6 +139,11 @@ namespace SmartGridToolbox
             model_->acquireComponent(std::move(zip));
          }
 
+      /// @}
+         
+      /// @name Per-Unit Conversions:
+      /// @{
+         
          template<typename T> T V2Pu(const T& V, double VBase) const
          {
             return V/VBase;
@@ -167,10 +189,17 @@ namespace SmartGridToolbox
             return pu*PBase_/VBase;
          }
          
+      /// @}
+         
+      /// @name Output 
+      /// @{
+         
          friend std::ostream& operator<<(std::ostream& os, const Network& netw)
          {
             return netw.print(os);
          }
+      
+      /// @}
       
       protected:
 

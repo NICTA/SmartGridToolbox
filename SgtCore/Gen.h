@@ -2,44 +2,32 @@
 #define GEN_DOT_H
 
 #include <SgtCore/Common.h>
-#include <SgtCore/ComponentAbc.h>
+#include <SgtCore/Component.h>
 #include <SgtCore/PowerFlow.h>
 
 namespace SmartGridToolbox
 {
    /// @brief A generation at a bus.
-   class Gen : public ComponentAbc
+   class Gen : public Component
    {
       public:
-      
+
       /// @name Lifecycle:
       /// @{
          
-         Gen(const std::string& id, Phases phases) :
-            id_(id), phases_(phases), status_(true), S_(phases.size(), czero)
-         {
-            // Empty.
-         }
+         Gen(const std::string& id, Phases phases);
 
          virtual ~Gen() = default;
       
       /// @}
 
-      /// @name Id:
+      /// @name Component Type:
       /// @{
- 
-         const std::string& id() const
-         {
-            return id_;
-         }
-
-         virtual void setId(const std::string& id)
-         {
-            id_ = id;
-         }
+         
+         virtual const char* componentType() const {return "Gen";}
 
       /// @}
- 
+
       /// @name Phase accessors:
       /// @{
          
@@ -201,7 +189,6 @@ namespace SmartGridToolbox
       
       private:
 
-         std::string id_;
          Phases phases_;
          bool status_;
          

@@ -1,7 +1,7 @@
 #ifndef ZIP_DOT_H
 #define ZIP_DOT_H
 
-#include <SgtCore/ComponentAbc.h>
+#include <SgtCore/Component.h>
 #include <SgtCore/PowerFlow.h>
 
 #include<string>
@@ -9,37 +9,29 @@
 namespace SmartGridToolbox
 {
    /// @brief A Zip is an injection into a bus with constant impedance / current / complex power components.
-   class Zip : public ComponentAbc
+   class Zip : public Component
    {
       public:
       
       /// @name Lifecycle:
       /// @{
 
-         Zip(const std::string& id, Phases phases) :
-            id_(id), phases_(phases), 
-            YConst_(phases.size(), czero), IConst_(phases.size(), czero), SConst_(phases.size(), czero)
-         {
-            // Empty.
-         }
+         Zip(const std::string& id, Phases phases);
 
          virtual ~Zip() = default;
       
       /// @}
 
+      /// @name Component Type:
+      /// @{
+         
+         virtual const char* componentType() const {return "Zip";}
+
+      /// @}
+
       /// @name Basic identity and type:
       /// @{
  
-         const std::string& id() const
-         {
-            return id_;
-         }
-         
-         virtual void setId(const std::string& id)
-         {
-            id_ = id;
-         }
-
          const Phases& phases() const
          {
             return phases_;
@@ -102,7 +94,6 @@ namespace SmartGridToolbox
       
       private:
 
-         std::string id_;
          Phases phases_;
 
          ublas::vector<Complex> YConst_;

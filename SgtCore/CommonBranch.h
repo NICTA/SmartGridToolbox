@@ -15,10 +15,10 @@ namespace SmartGridToolbox
    class CommonBranch : public Branch
    {
       public:
-      
+
       /// @name Lifecycle:
       /// @{
-         
+
          CommonBranch(const std::string& id) :
             Branch(id, Phase::BAL, Phase::BAL)
          {
@@ -28,10 +28,17 @@ namespace SmartGridToolbox
          virtual ~CommonBranch() = default;
 
       /// @}
-      
+
+      /// @name Component Type:
+      /// @{
+
+         virtual const char* componentType() const {return "CommonBranch";}
+
+      /// @}
+
       /// @name Line parameters:
       /// @{
-         
+
          Complex tapRatio() const
          {
             return tapRatio_;
@@ -41,7 +48,7 @@ namespace SmartGridToolbox
          {
             tapRatio_ = tapRatio;
          }
-         
+
          Complex YSeries() const
          {
             return YSeries_;
@@ -51,7 +58,7 @@ namespace SmartGridToolbox
          {
             YSeries_ = YSeries;
          }
-         
+
          Complex YShunt() const
          {
             return YShunt_;
@@ -93,18 +100,18 @@ namespace SmartGridToolbox
          }
 
       /// @}
-      
+
       /// @name Overridden from Branch:
       /// @{
-         
+
          virtual const ublas::matrix<Complex> Y();
 
       /// @}
-         
+
       protected:
 
          virtual std::ostream& print(std::ostream& os) const;
-      
+
       private:
 
          Complex tapRatio_{1.0}; // Complex tap ratio, exp(i theta) (n_s / n_p).

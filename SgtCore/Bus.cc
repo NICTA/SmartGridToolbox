@@ -6,7 +6,7 @@
 namespace SmartGridToolbox
 {
    Bus::Bus(const std::string& id, Phases phases, const ublas::vector<Complex>& VNom, double VBase) :
-      id_(id),
+      Component(id),
       phases_(phases),
       VNom_(VNom),
       VBase_(VBase)
@@ -45,10 +45,9 @@ namespace SmartGridToolbox
 
    std::ostream& Bus::print(std::ostream& os) const
    {
-      IndentingOStreamBuf ind(os, "");
       os << "bus:" << std::endl;
-      ind.setInd("    ");
-      os << "id: " << id_ << std::endl;
+      IndentingOStreamBuf _(os);
+      os << "id: " << id() << std::endl;
       os << "phases: " << phases_ << std::endl;
       os << "type: " << type_ << std::endl;
       os << "V_base: " << VBase_ << std::endl;
@@ -57,17 +56,20 @@ namespace SmartGridToolbox
       os << "V_mag_max: " << VMagMax_ << std::endl;
       os << "V: " << V_ << std::endl;
       os << "zips:" << std::endl;
-      ind.setInd("        ");
-      for (auto& zip : zips_)
       {
-         os << *zip << std::endl;
+         IndentingOStreamBuf _(os);
+         for (auto& zip : zips_)
+         {
+            os << *zip << std::endl;
+         }
       }
-      ind.setInd("    ");
       os << "gens:" << std::endl;
-      ind.setInd("        ");
-      for (auto& gen : gens_)
       {
-         os << *gen << std::endl;
+         IndentingOStreamBuf _(os);
+         for (auto& gen : gens_)
+         {
+            os << *gen << std::endl;
+         }
       }
       return os;
    }

@@ -2,7 +2,7 @@
 #define BRANCH_DOT_H
 
 #include <SgtCore/Common.h>
-#include <SgtCore/ComponentAbc.h>
+#include <SgtCore/Component.h>
 #include <SgtCore/PowerFlow.h>
 
 #include <iostream>
@@ -12,38 +12,26 @@ namespace SmartGridToolbox
    class Bus;
 
    /// @brief A Branch connects two Busses in a Network.
-   class Branch : public ComponentAbc
+   class Branch : public Component
    {
       public:
-      
+
       /// @name Lifecycle:
       /// @{
          
-         Branch(const std::string& id, Phases phases0, Phases phases1) :
-            id_(id), phases0_(phases0), phases1_(phases1), status_(true)
-         {
-            // Empty.
-         }
+         Branch(const std::string& id, Phases phases0, Phases phases1);
 
          virtual ~Branch() = default;
       
       /// @}
- 
-      /// @name Id:
+
+      /// @name Component Type:
       /// @{
          
-         const std::string& id() const
-         {
-            return id_;
-         }
-
-         void setId(const std::string& id)
-         {
-            id_ = id;
-         }
+         virtual const char* componentType() const {return "Branch";}
 
       /// @}
-
+ 
       /// @name Phase accessors:
       /// @{
          
@@ -132,7 +120,6 @@ namespace SmartGridToolbox
       
       private:
 
-         std::string id_;
          Phases phases0_; ///< Phases on bus 0.
          Phases phases1_; ///< Phases on bus 1.
          bool status_;

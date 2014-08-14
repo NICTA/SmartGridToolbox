@@ -194,27 +194,23 @@ namespace SmartGridToolbox
 
       std::string getBusId(int id)
       {
-         // return "bus_" + num2PaddedString(id);
-         return std::to_string(id);
+         return "bus_" + num2PaddedString(id);
       }
 
       std::string getZipId(int iZip, int iBus)
       {
-         // return "zip_" + num2PaddedString(iZip) + "_" + num2PaddedString(iBus);
-         return std::to_string(iZip);
+         return "zip_" + num2PaddedString(iZip) + "_" + num2PaddedString(iBus);
       }
       
       std::string getGenId(int iGen, int iBus)
       {
-         // return "gen_" + num2PaddedString(iGen) + "_" + num2PaddedString(iBus);
-         return std::to_string(iGen);
+         return "gen_" + num2PaddedString(iGen) + "_" + num2PaddedString(iBus);
       }
 
       std::string getBranchId(int iBranch, int iBus0, int iBus1)
       {
-         // return "branch_" + num2PaddedString(iBranch) + "_" + num2PaddedString(iBus0)
-         //    + "_" + num2PaddedString(iBus1);
-         return std::to_string(iBranch);
+         return "branch_" + num2PaddedString(iBranch) + "_" + num2PaddedString(iBus0)
+            + "_" + num2PaddedString(iBus1);
       }
    }
 
