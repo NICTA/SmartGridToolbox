@@ -1,5 +1,5 @@
-#include <SgtSim/BranchComp.h>
-#include <SgtSim/BusComp.h>
+#include <SgtSim/SimBranch.h>
+#include <SgtSim/SimBus.h>
 #include <SgtCore/Common.h>
 #include <SgtSim/Component.h>
 #include <SgtSim/DcPowerSourceBase.h>
@@ -7,7 +7,7 @@
 #include <SgtSim/Event.h>
 #include <SgtSim/InverterBase.h>
 #include <SgtSim/Model.h>
-#include <SgtSim/NetworkComp.h>
+#include <SgtSim/SimNetwork.h>
 #include <SgtSim/OverheadLine.h>
 #include <SgtSim/Parser.h>
 #include <SgtSim/RegularUpdateComponent.h>

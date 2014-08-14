@@ -1,6 +1,6 @@
 #include "SimpleInverterParser.h"
 
-#include "BusComp.h"
+#include "SimBus.h"
 #include "SimpleInverter.h"
 
 namespace SmartGridToolbox
@@ -47,7 +47,7 @@ namespace SmartGridToolbox
       SimpleInverter& comp = *mod.component<SimpleInverter>(name);
 
       const std::string busStr = state.expandName(nd["bus"].as<std::string>());
-      BusComp* busComp = mod.component<BusComp>(busStr);
+      SimBus* busComp = mod.component<SimBus>(busStr);
       if (busComp != nullptr)
       {
          busComp->addZip(comp);

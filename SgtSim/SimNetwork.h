@@ -7,18 +7,18 @@
 
 namespace SmartGridToolbox
 {
-   class BranchComp;
-   class BusComp;
+   class SimBranch;
+   class SimBus;
 
    /// @ingroup PowerFlowCore
-   class NetworkComp : public Component
+   class SimNetwork : public Component
    {
       public:
-         typedef std::vector<BusComp*> BusVec;
-         typedef std::vector<BranchComp*> BranchVec;
+         typedef std::vector<SimBus*> BusVec;
+         typedef std::vector<SimBranch*> BranchVec;
 
       private:
-         typedef std::map<std::string, BusComp*> BusMap;
+         typedef std::map<std::string, SimBus*> BusMap;
 
       /// @name Overridden member functions from Component.
       /// @{
@@ -36,31 +36,31 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
          
-         NetworkComp(const std::string& name, double freq) : Component(name), freq_(freq) {}
+         SimNetwork(const std::string& name, double freq) : Component(name), freq_(freq) {}
 
          double freq() const {return freq_;}
 
-         void addBus(BusComp& bus);
+         void addBus(SimBus& bus);
 
          const BusVec& busVec() const {return busVec_;}
 
-         const BusComp* findBus(const std::string& name) const
+         const SimBus* findBus(const std::string& name) const
          {
             BusMap::const_iterator it = busMap_.find(name);
             return (it == busMap_.end()) ? 0 : it->second;
          }
-         BusComp* findBus(const std::string& name)
+         SimBus* findBus(const std::string& name)
          {
-            return const_cast<BusComp*>((const_cast<const NetworkComp*>(this))->findBus(name));
+            return const_cast<SimBus*>((const_cast<const SimNetwork*>(this))->findBus(name));
          }
 
-         void addBranch(BranchComp& branch);
+         void addBranch(SimBranch& branch);
 
          const BranchVec& branchVec() const {return branchVec_;}
 
          virtual void solvePowerFlow();
 
-         friend std::ostream& operator<<(std::ostream& os, const NetworkComp& nw);
+         friend std::ostream& operator<<(std::ostream& os, const SimNetwork& nw);
 
       /// @}
       

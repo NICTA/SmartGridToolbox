@@ -1,7 +1,7 @@
-#include "NetworkComp.h"
+#include "SimNetwork.h"
 
-#include "BusComp.h"
-#include "BranchComp.h"
+#include "SimBus.h"
+#include "SimBranch.h"
 #include "Model.h"
 
 #include <SgtCore/PowerFlowNr.h>
@@ -10,40 +10,40 @@
 
 namespace SmartGridToolbox
 {
-   void NetworkComp::updateState(Time t)
+   void SimNetwork::updateState(Time t)
    {
-      SGT_DEBUG(debug() << "NetworkComp : update state." << std::endl);
+      SGT_DEBUG(debug() << "SimNetwork : update state." << std::endl);
       solvePowerFlow(); // TODO: inefficient to rebuild even if not needed.
    }
 
-   void NetworkComp::addBus(BusComp& bus)
+   void SimNetwork::addBus(SimBus& bus)
    {
       dependsOn(bus);
       busVec_.push_back(&bus);
       busMap_[bus.name()] = &bus;
       bus.changed().addAction([this](){needsUpdate().trigger();},
-            "Trigger NetworkComp " + name() + " needs update");
+            "Trigger SimNetwork " + name() + " needs update");
    }
 
-   void NetworkComp::addBranch(BranchComp& branch)
+   void SimNetwork::addBranch(SimBranch& branch)
    {
       dependsOn(branch);
       branchVec_.push_back(&branch);
       branch.changed().addAction([this](){needsUpdate().trigger();},
-            "Trigger NetworkComp " + name() + " needs update");
+            "Trigger SimNetwork " + name() + " needs update");
    }
 
-   void NetworkComp::solvePowerFlow()
+   void SimNetwork::solvePowerFlow()
    {
-      SGT_DEBUG(debug() << "NetworkComp : solving power flow." << std::endl);
+      SGT_DEBUG(debug() << "SimNetwork : solving power flow." << std::endl);
       SGT_DEBUG(debug() << *this);
       PowerFlowNr solver;
       solver.reset();
-      for (const BusComp* bus : busVec_)
+      for (const SimBus* bus : busVec_)
       {
          solver.addBus(bus->name(), bus->type(), bus->phases(), bus->V(), bus->Ys(), bus->Ic(), bus->STot());
       }
-      for (const BranchComp* branch : branchVec_)
+      for (const SimBranch* branch : branchVec_)
       {
          solver.addBranch(branch->bus0().name(), branch->bus1().name(), branch->phases0(),
                           branch->phases1(), branch->Y());
@@ -57,7 +57,7 @@ namespace SmartGridToolbox
       {
          for (const auto& busPair: solver.busses())
          {
-            BusComp* bus = findBus(busPair.second->id_);
+            SimBus* bus = findBus(busPair.second->id_);
 
             // Push the state back onto bus. We don't want to trigger any events.
             bus->setV(busPair.second->V_);
@@ -66,11 +66,11 @@ namespace SmartGridToolbox
       }
    }
 
-   std::ostream& operator<<(std::ostream& os, const NetworkComp& nw)
+   std::ostream& operator<<(std::ostream& os, const SimNetwork& nw)
    {
-      os << "NetworkComp: " << nw.name() << std::endl;
+      os << "SimNetwork: " << nw.name() << std::endl;
       os << "\tBusses:" << std::endl;
-      for (const BusComp* bus : nw.busVec_)
+      for (const SimBus* bus : nw.busVec_)
       {
          ublas::vector<double> VMag(bus->V().size());
          for (int i = 0; i < bus->V().size(); ++i) VMag(i) = abs(bus->V()(i));
@@ -88,7 +88,7 @@ namespace SmartGridToolbox
          os << "\t\t\tSTot   : " << bus->STot() << std::endl;
       }
       os << "\tBranches:" << std::endl;
-      for (const BranchComp* branch : nw.branchVec_)
+      for (const SimBranch* branch : nw.branchVec_)
       {
          os << "\t\tBranch:" << std::endl;
          os << "\t\t\tBus names  : "

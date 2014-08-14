@@ -1,6 +1,6 @@
 #include "ZipCompParser.h"
 
-#include "BusComp.h"
+#include "SimBus.h"
 #include "ZipComp.h"
 
 namespace SmartGridToolbox
@@ -69,7 +69,7 @@ namespace SmartGridToolbox
       ZipComp* zip = mod.component<ZipComp>(name);
 
       std::string busStr = state.expandName(nd["bus"].as<std::string>());
-      BusComp* bus = mod.component<BusComp>(busStr);
+      SimBus* bus = mod.component<SimBus>(busStr);
       if (bus == nullptr)
       {
          error() << "For component " << name << ", bus " << busStr

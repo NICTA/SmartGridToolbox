@@ -1,28 +1,28 @@
-#include "BranchComp.h"
+#include "SimBranch.h"
 
-#include "BusComp.h"
+#include "SimBus.h"
 #include "Model.h"
-#include "NetworkComp.h"
+#include "SimNetwork.h"
 
 namespace SmartGridToolbox
 {
-   BranchComp::BranchComp(const std::string& name, const Phases& phases0, const Phases& phases1) :
+   SimBranch::SimBranch(const std::string& name, const Phases& phases0, const Phases& phases1) :
       Component(name),
       bus0_(nullptr),
       bus1_(nullptr),
       phases0_(phases0),
       phases1_(phases1),
       Y_(2*phases0.size(), 2*phases0.size(), czero),
-      changed_("BranchComp " + name + " setpoint changed")
+      changed_("SimBranch " + name + " setpoint changed")
    {
       if (phases0.size() != phases1.size())
       {
-         error() << "BranchComp must have equal number of phases for both sides." << std::endl;
+         error() << "SimBranch must have equal number of phases for both sides." << std::endl;
          abort();
       }
    }
 
-   void BranchComp::setBus0(BusComp& bus0)
+   void SimBranch::setBus0(SimBus& bus0)
    {
       if (!phases0_.isSubsetOf(bus0.phases()))
       {
@@ -33,7 +33,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void BranchComp::setBus1(BusComp& bus1)
+   void SimBranch::setBus1(SimBus& bus1)
    {
       if (!phases1_.isSubsetOf(bus1.phases()))
       {
@@ -44,7 +44,7 @@ namespace SmartGridToolbox
       changed().trigger();
    }
 
-   void BranchComp::setY(const ublas::matrix<Complex>& Y)
+   void SimBranch::setY(const ublas::matrix<Complex>& Y)
    {
       if (Y.size1() != 2*phases0_.size() && Y.size2() != 2*phases0_.size())
       {

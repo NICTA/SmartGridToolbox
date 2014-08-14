@@ -25,13 +25,13 @@ namespace SmartGridToolbox
       public:
          SynchronousMachine(std::string name);
 
-         void addToNetwork(NetworkComp& nw);
+         void addToNetwork(SimNetwork& nw);
 
       /// @}
 
       private:
-         BusComp bus_;
-         BranchComp branch_;
+         SimBus bus_;
+         SimBranch branch_;
    }
 }
 

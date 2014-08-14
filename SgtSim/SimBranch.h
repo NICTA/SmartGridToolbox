@@ -10,11 +10,11 @@
 
 namespace SmartGridToolbox
 {
-   class BusComp;
+   class SimBus;
 
-   /// @brief A BranchComp connects two Busses in a Network.
+   /// @brief A SimBranch connects two Busses in a Network.
    /// @ingroup PowerFlowCore
-   class BranchComp : public Component
+   class SimBranch : public SimComponent
    {
       /// @name Public overridden member functions from Component.
       /// @{
@@ -33,18 +33,18 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
 
-         BranchComp(const std::string& name, const Phases& phases0, const Phases& phases1);
+         SimBranch(const std::string& name, const Phases& phases0, const Phases& phases1);
       
       /// @}
 
-      /// @name BusComp accessors:
+      /// @name SimBus accessors:
       /// @{
          
-         const BusComp& bus0() const {return *bus0_;}
-         void setBus0(BusComp& bus0);
+         const SimBus& bus0() const {return *bus0_;}
+         void setBus0(SimBus& bus0);
 
-         const BusComp& bus1() const {return *bus1_;}
-         void setBus1(BusComp& bus1);
+         const SimBus& bus1() const {return *bus1_;}
+         void setBus1(SimBus& bus1);
       
       /// @}
 
@@ -73,8 +73,8 @@ namespace SmartGridToolbox
       /// @}
 
       private:
-         BusComp* bus0_;                  ///< My bus 0.
-         BusComp* bus1_;                  ///< My bus 1.
+         SimBus* bus0_;                  ///< My bus 0.
+         SimBus* bus1_;                  ///< My bus 1.
          Phases phases0_;                 ///< Phases on bus 0.
          Phases phases1_;                 ///< Phases on bus 1.
          ublas::matrix<Complex> Y_;       ///< Complex value of elements in bus admittance matrix in NR solver.

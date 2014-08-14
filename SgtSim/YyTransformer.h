@@ -1,14 +1,14 @@
 #ifndef YY_TRANSFORMER_DOT_H
 #define YY_TRANSFORMER_DOT_H
 
-#include <SgtSim/BranchComp.h>
+#include <SgtSim/SimBranch.h>
 
 namespace SmartGridToolbox
 {
    /// @brief Wye-wye transformer.
    ///
    /// Equivalent to a single phase transformer on each phase.
-   class YyTransformer : public BranchComp
+   class YyTransformer : public SimBranch
    {
       /// @name Overridden member functions from Component.
       /// @{

@@ -4,10 +4,11 @@
 #include <SgtSim/Event.h>
 
 #include <SgtCore/Common.h>
+#include <SgtCore/Component.h>
 
 namespace SmartGridToolbox
 {
-   class SimComponent
+   class SimComponent : public Component
    {
       public:
 

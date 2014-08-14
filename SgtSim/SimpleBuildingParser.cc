@@ -1,6 +1,6 @@
 #include "SimpleBuildingParser.h"
 
-#include "BusComp.h"
+#include "SimBus.h"
 #include "SimpleBuilding.h"
 
 namespace SmartGridToolbox
@@ -63,7 +63,7 @@ namespace SmartGridToolbox
       SimpleBuilding* build = mod.component<SimpleBuilding>(name);
 
       std::string busStr = state.expandName(nd["bus"].as<std::string>());
-      BusComp* bus = mod.component<BusComp>(busStr);
+      SimBus* bus = mod.component<SimBus>(busStr);
       if (bus == nullptr)
       {
          error() << "For component " << name << ", bus " << busStr

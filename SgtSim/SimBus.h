@@ -17,9 +17,9 @@ namespace SmartGridToolbox
 
    /// @brief A Bus component of a Network.
    /// @ingroup PowerFlowCore
-   class BusComp : public Component, public Bus
+   class SimBus : public Component, public Bus
    {
-      friend class BusCompParser;
+      friend class SimBusParser;
 
       /// @name Overridden member functions from Component.
       /// @{
@@ -37,7 +37,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle.
       /// @{
          
-         BusComp(const std::string& id, Phases phases, const ublas::vector<Complex> & VNom, double VBase);
+         SimBus(const std::string& id, Phases phases, const ublas::vector<Complex> & VNom, double VBase);
 
       /// @}
 

@@ -1,7 +1,7 @@
 #ifndef DGY_TRANSFORMER_DOT_H
 #define DGY_TRANSFORMER_DOT_H
 
-#include <SgtSim/BranchComp.h>
+#include <SgtSim/SimBranch.h>
 
 namespace SmartGridToolbox
 {
@@ -11,7 +11,7 @@ namespace SmartGridToolbox
    /// This is because the voltage across the windings on the primary (Delta) side is the phase-phase voltage, so
    /// a 1:1 turns ratio will result in a @f$1:\sqrt(3)@f$ voltage ratio, where all voltages are line-ground. It is
    /// therefore important that the parameter to the constructor is the turns ratio, not the voltage ratio.
-   class DgyTransformer : public BranchComp
+   class DgyTransformer : public SimBranch
    {
       /// @name Overridden member functions from Component.
       /// @{

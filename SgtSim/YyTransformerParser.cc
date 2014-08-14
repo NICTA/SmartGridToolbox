@@ -1,7 +1,7 @@
 #include "YyTransformerParser.h"
 
-#include "BusComp.h"
-#include "NetworkComp.h"
+#include "SimBus.h"
+#include "SimNetwork.h"
 #include "YyTransformer.h"
 
 namespace SmartGridToolbox
@@ -38,7 +38,7 @@ namespace SmartGridToolbox
       YyTransformer* comp = mod.component<YyTransformer>(name);
 
       const std::string networkStr = state.expandName(nd["network"].as<std::string>());
-      NetworkComp* networkComp = mod.component<NetworkComp>(networkStr);
+      SimNetwork* networkComp = mod.component<SimNetwork>(networkStr);
       if (networkComp != nullptr)
       {
          networkComp->addBranch(*comp);
@@ -51,7 +51,7 @@ namespace SmartGridToolbox
       }
 
       const std::string bus0Str = state.expandName(nd["bus_0"].as<std::string>());
-      BusComp* bus0Comp = mod.component<BusComp>(bus0Str);
+      SimBus* bus0Comp = mod.component<SimBus>(bus0Str);
       if (networkComp != nullptr)
       {
          comp->setBus0(*bus0Comp);
@@ -64,7 +64,7 @@ namespace SmartGridToolbox
       }
 
       const std::string bus1Str = state.expandName(nd["bus_1"].as<std::string>());
-      BusComp* bus1Comp = mod.component<BusComp>(bus1Str);
+      SimBus* bus1Comp = mod.component<SimBus>(bus1Str);
       if (networkComp != nullptr)
       {
          comp->setBus1(*bus1Comp);
