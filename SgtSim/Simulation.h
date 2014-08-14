@@ -1,5 +1,5 @@
-#ifndef SIMULTION_DOT_H
-#define SIMULTION_DOT_H
+#ifndef SIMULATION_DOT_H
+#define SIMULATION_DOT_H
 
 #include <SgtSim/Component.h>
 #include <SgtSim/Event.h>
@@ -121,4 +121,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // SIMULTION_DOT_H
+#endif // SIMULATION_DOT_H

@@ -13,6 +13,7 @@
 namespace SmartGridToolbox
 {
    class ZipBase;
+   class GenBase;
 
    /// @brief A Bus component of a Network.
    /// @ingroup PowerFlowCore
