@@ -26,7 +26,7 @@ namespace SmartGridToolbox
          typedef std::map<std::string, Gen*> GenMap;
          typedef std::map<std::string, Zip*> ZipMap;
 
-         Network()
+         Network(double PBase) : PBase_(PBase)
          {
             // Empty.
          }
@@ -41,6 +41,16 @@ namespace SmartGridToolbox
          virtual void setPBase(double PBase)
          {
             PBase_ = PBase;
+         }
+
+         double freq() const
+         {
+            return freq_;
+         }
+
+         virtual void setFreq(double freq)
+         {
+            freq_ = freq;
          }
 
          const BusVec& busses() const
@@ -177,6 +187,7 @@ namespace SmartGridToolbox
       
       private:
          double PBase_ = 1.0;
+         double freq_ = 50.0;
 
          BusVec busVec_;
          BusMap busMap_;
