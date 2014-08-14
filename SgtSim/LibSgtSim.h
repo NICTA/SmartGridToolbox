@@ -25,5 +25,5 @@
 #include <SgtSim/TimeSeries.h>
 #include <SgtSim/Weather.h>
 #include <SgtSim/YyTransformer.h>
-#include <SgtSim/ZipComp.h>
+#include <SgtSim/SimZip.h>
 #include <SgtSim/ZipBase.h>

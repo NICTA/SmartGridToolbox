@@ -5,7 +5,6 @@ lib_LIBRARIES = libSgtSim.a
 include_HEADERS = LibSgtSim.h
 
 pkginclude_HEADERS = \
-	BranchComp.h \
 	DcPowerSourceBase.h \
 	DgyTransformer.h \
 	Event.h \
@@ -13,9 +12,11 @@ pkginclude_HEADERS = \
 	OverheadLine.h \
 	Parser.h \
 	RegularUpdateComponent.h \
+	SimBranch.h \
 	SimBus.h \
 	SimComponent.h \
 	SimNetwork.h \
+	SimZip.h \
 	SimpleBattery.h \
 	SimpleBuilding.h \
 	SimpleDcPowerSource.h \
@@ -30,8 +31,7 @@ pkginclude_HEADERS = \
 	TimeSeries.h \
 	Weather.h \
 	YyTransformer.h \
-	ZipBase.h \
-	ZipComp.h
+	ZipBase.h
 
 libSgtSim_a_SOURCES = \
 	DgyTransformer.h \
@@ -65,6 +65,10 @@ libSgtSim_a_SOURCES = \
 	SimNetwork.cc \
 	SimNetworkParser.h \
 	SimNetworkParser.cc \
+	SimZip.h \
+	SimZip.cc \
+	SimZipParser.h \
+	SimZipParser.cc \
 	SimpleBattery.h \
 	SimpleBattery.cc \
 	SimpleBatteryParser.h \
@@ -102,10 +106,6 @@ libSgtSim_a_SOURCES = \
 	YyTransformer.h \
 	YyTransformer.cc \
 	YyTransformerParser.h \
-	YyTransformerParser.cc \
-	ZipComp.h \
-	ZipComp.cc \
-	ZipCompParser.h \
-	ZipCompParser.cc
+	YyTransformerParser.cc
 
 EXTRA_DIST = mainpage.dox

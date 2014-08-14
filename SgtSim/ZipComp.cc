@@ -1,11 +1,11 @@
-#include "ZipComp.h"
+#include "SimZip.h"
 
 #include "SimBus.h"
 #include "Model.h"
 
 namespace SmartGridToolbox
 {
-   ZipComp::ZipComp(const std::string& name, const Phases& phases) :
+   SimZip::SimZip(const std::string& name, const Phases& phases) :
       ZipBase(name, phases),
       Y_(phases.size(), 0.0),
       I_(phases.size(), 0.0),
