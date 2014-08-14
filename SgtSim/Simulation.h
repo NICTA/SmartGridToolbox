@@ -110,6 +110,7 @@ namespace SmartGridToolbox
          typedef std::set<Component*, ContingentUpdatesCompare> ContingentUpdates;
 
       private:
+
          Model* mod_;
          Time startTime_;
          Time endTime_;
