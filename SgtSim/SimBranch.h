@@ -1,7 +1,7 @@
 #ifndef BRANCH_COMP_DOT_H
 #define BRANCH_COMP_DOT_H
 
-#include <SgtSim/Component.h>
+#include <SgtSim/SimComponent.h>
 
 #include <SgtCore/Common.h>
 #include <SgtCore/PowerFlow.h>
@@ -16,7 +16,7 @@ namespace SmartGridToolbox
    /// @ingroup PowerFlowCore
    class SimBranch : public SimComponent
    {
-      /// @name Public overridden member functions from Component.
+      /// @name Public overridden member functions from SimComponent.
       /// @{
       
       public:
