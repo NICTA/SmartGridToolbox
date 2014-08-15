@@ -3,12 +3,13 @@
 
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
+#include <SgtCore/GenAbc.h>
 #include <SgtCore/PowerFlow.h>
 
 namespace SmartGridToolbox
 {
    /// @brief A generation at a bus.
-   class Gen : public Component
+   class Gen : public GenAbc
    {
       public:
 
@@ -46,7 +47,7 @@ namespace SmartGridToolbox
       /// @name Status:
       /// @{
          
-         bool status() const
+         virtual bool status() const override
          {
             return status_;
          }
@@ -61,7 +62,7 @@ namespace SmartGridToolbox
       /// @name Power injection:
       /// @{
 
-         const ublas::vector<Complex>& S() const
+         virtual const ublas::vector<Complex>& S() const override
          {
             return S_;
          }
@@ -76,7 +77,7 @@ namespace SmartGridToolbox
       /// @name Generation bounds:
       /// @{
 
-         double PMin() const
+         virtual double PMin() const override
          {
             return PMin_;
          }
@@ -86,7 +87,7 @@ namespace SmartGridToolbox
             PMin_ = PMin;
          }
  
-         double PMax() const
+         virtual double PMax() const override
          {
             return PMax_;
          }
@@ -96,7 +97,7 @@ namespace SmartGridToolbox
             PMax_ = PMax;
          }
 
-         double QMin() const
+         virtual double QMin() const override
          {
             return QMin_;
          }
@@ -106,7 +107,7 @@ namespace SmartGridToolbox
             QMin_ = QMin;
          }
  
-         double QMax() const
+         virtual double QMax() const override
          {
             return QMax_;
          }
@@ -121,7 +122,7 @@ namespace SmartGridToolbox
       /// @name Generation costs:
       /// @{
           
-         double cStartup() const
+         virtual double cStartup() const override
          {
             return cStartup_;
          }
@@ -131,17 +132,17 @@ namespace SmartGridToolbox
             cStartup_ = cStartup;
          }
          
-         virtual double cShutdown() const
+         virtual double cShutdown() const override
          {
             return cShutdown_;
          }
 
-         void setCShutdown(double cShutdown)
+         virtual void setCShutdown(double cShutdown)
          {
             cShutdown_ = cShutdown;
          }
        
-         double c0() const
+         virtual double c0() const override
          {
             return c0_;
          }
@@ -151,7 +152,7 @@ namespace SmartGridToolbox
             c0_ = c0;
          }
          
-         double c1() const
+         virtual double c1() const override
          {
             return c1_;
          }
@@ -161,7 +162,7 @@ namespace SmartGridToolbox
             c1_ = c1;
          }
          
-         double c2() const
+         virtual double c2() const override
          {
             return c2_;
          }
@@ -172,10 +173,6 @@ namespace SmartGridToolbox
          }
    
       /// @}
-      
-      protected:
-
-         virtual void print(std::ostream& os) const override;
       
       private:
 
