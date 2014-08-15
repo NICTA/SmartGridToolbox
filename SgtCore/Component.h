@@ -1,5 +1,5 @@
-#ifndef COMPONENT_ABC_DOT_H
-#define COMPONENT_ABC_DOT_H
+#ifndef COMPONENT_DOT_H
+#define COMPONENT_DOT_H
 
 #include <string>
 
@@ -7,15 +7,15 @@ using std::string;
 
 namespace SmartGridToolbox
 {
-   class Component
+   class ComponentVirtualBase
    {
       public:
 
       /// @name Lifecycle:
       /// @{
          
-         Component(const std::string& id) : id_(id) {}
-         virtual ~Component() = default;
+         ComponentVirtualBase(const std::string& id) : id_(id) {}
+         virtual ~ComponentVirtualBase() = default;
 
       /// @}
 
@@ -37,7 +37,7 @@ namespace SmartGridToolbox
       /// @name Stream output:
       /// @{
          
-         friend std::ostream& operator<<(std::ostream& os, const Component& comp)
+         friend std::ostream& operator<<(std::ostream& os, const ComponentVirtualBase& comp)
          {
             comp.print(os);
             return os;
@@ -53,6 +53,9 @@ namespace SmartGridToolbox
 
          std::string id_ = "UNDEFINED";
    };
+
+   // Ensure that all Component base classes are, essentially, virtual.
+   class Component : public ComponentVirtualBase {};
 }
 
-#endif // COMPONENT_ABC_DOT_H
+#endif // COMPONENT_DOT_H

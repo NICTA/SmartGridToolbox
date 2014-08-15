@@ -1,5 +1,5 @@
-#ifndef SIM_COMPONENT_DOT_H
-#define SIM_COMPONENT_DOT_H
+#ifndef SIMULATED_DOT_H
+#define SIMULATED_DOT_H
 
 #include <SgtSim/Event.h>
 
@@ -8,8 +8,34 @@
 
 namespace SmartGridToolbox
 {
-   class SimComponent : public Component
+   class Simulated : public Component
    {
+      /// @name Member functions which derived classes may override.
+      /// @{
+      
+      public:
+
+         /// @brief What is the latest time that I should update?
+         virtual Time validUntil() const
+         {
+            return posix_time::pos_infin;
+         }
+
+      protected:
+
+         /// @brief Reset state of the object, time will be at negative infinity.
+         virtual void initializeState()
+         {
+            // Empty.
+         }
+
+         /// @brief Bring state up to time current time.
+         virtual void updateState(Time t)
+         {
+            // Empty.
+         }
+      /// @}
+      
       public:
 
       /// @name Timestepping
@@ -44,13 +70,13 @@ namespace SmartGridToolbox
       /// @name Dependencies.
       /// @{
 
-         const std::vector<const SimComponent*>& dependencies() const
+         const std::vector<const Simulated*>& dependencies() const
          {
             return dependencies_;
          }
 
          /// @brief Components on which I depend will update first.
-         void dependsOn(const SimComponent& b)
+         void dependsOn(const Simulated& b)
          {
             dependencies_.push_back(&b);
          }
@@ -95,7 +121,7 @@ namespace SmartGridToolbox
       private:
 
          Time time_;                                     ///< The time to which I am up to date
-         std::vector<const SimComponent*> dependencies_; ///< I depend on these.
+         std::vector<const Simulated*> dependencies_; ///< I depend on these.
          int rank_;                                      ///< Evaluation rank, based on weak ordering.
          Event willUpdate_;                              ///< Triggered immediately prior to upddate. 
          Event didUpdate_;                               ///< Triggered immediately post update.
@@ -105,4 +131,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // SIM_COMPONENT_DOT_H
+#endif // SIMULATED_DOT_H

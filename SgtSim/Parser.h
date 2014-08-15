@@ -1,9 +1,10 @@
 #ifndef PARSER_DOT_H
 #define PARSER_DOT_H
 
-#include <SgtSim/Model.h>
+#include <SgtSim/Simulation.h>
 
 #include <SgtCore/Common.h>
+#include <SgtCore/Model.h>
 #include <SgtCore/PowerFlow.h>
 
 #include <yaml-cpp/yaml.h>
@@ -166,9 +167,9 @@ namespace SmartGridToolbox
             return ((it == compParsers_.end()) ? nullptr : it->second);
          }
 
-         Time parseTime(const YAML::Node& nd, const Model& model)
+         Time parseTime(const YAML::Node& nd, const Simulation& sim)
          {
-            return timeFromLocalTime(nd.as<posix_time::ptime>(), model.timezone());
+            return timeFromLocalTime(nd.as<posix_time::ptime>(), sim.timezone());
          }
 
       private:

@@ -14,8 +14,8 @@ pkginclude_HEADERS = \
 	RegularUpdateComponent.h \
 	SimBranch.h \
 	SimBus.h \
-	SimComponent.h \
 	SimNetwork.h \
+	Simulated.h \
 	SimZip.h \
 	SimpleBattery.h \
 	SimpleBuilding.h \
@@ -59,12 +59,12 @@ libSgtSim_a_SOURCES = \
 	SimBus.cc \
 	SimBusParser.h \
 	SimBusParser.cc \
-	SimComponent.h \
-	SimComponent.cc \
 	SimNetwork.h \
 	SimNetwork.cc \
 	SimNetworkParser.h \
 	SimNetworkParser.cc \
+	Simulated.h \
+	Simulated.cc \
 	SimZip.h \
 	SimZip.cc \
 	SimZipParser.h \

@@ -3,7 +3,7 @@
 
 #include <SgtSim/Event.h>
 #include <SgtSim/TimeSeries.h>
-#include <SgtSim/SimComponent.h>
+#include <SgtSim/Simulated.h>
 
 #include <SgtCore/Common.h>
 
@@ -21,7 +21,7 @@ namespace SmartGridToolbox
       private:
 
          typedef std::map<std::string, std::unique_ptr<TimeSeriesBase>> TimeSeriesMap;
-         typedef std::vector<SimComponent*> ComponentVec;
+         typedef std::vector<Simulated*> SimObjVec;
 
       public:
          /// @brief Default constructor.
@@ -128,8 +128,8 @@ namespace SmartGridToolbox
          class ScheduledUpdatesCompare
          {
             public:
-               bool operator()(const std::pair<SimComponent*, Time>& lhs,
-                     const std::pair<SimComponent*, Time>& rhs)
+               bool operator()(const std::pair<Simulated*, Time>& lhs,
+                     const std::pair<Simulated*, Time>& rhs)
                {
                   return ((lhs.second < rhs.second) ||
                         (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
@@ -142,15 +142,15 @@ namespace SmartGridToolbox
          class ContingentUpdatesCompare
          {
             public:
-               bool operator()(const SimComponent* lhs, const SimComponent* rhs)
+               bool operator()(const Simulated* lhs, const Simulated* rhs)
                {
                   return ((lhs->rank() < rhs->rank()) ||
                         ((lhs->rank() == rhs->rank()) && (lhs->name() < rhs->name())));
                }
          };
 
-         typedef std::set<std::pair<SimComponent*, Time>, ScheduledUpdatesCompare> ScheduledUpdates;
-         typedef std::set<SimComponent*, ContingentUpdatesCompare> ContingentUpdates;
+         typedef std::set<std::pair<Simulated*, Time>, ScheduledUpdatesCompare> ScheduledUpdates;
+         typedef std::set<Simulated*, ContingentUpdatesCompare> ContingentUpdates;
 
       private:
 
@@ -163,7 +163,7 @@ namespace SmartGridToolbox
          LatLong latLong_;
          local_time::time_zone_ptr timezone_;
          
-         SimComponentVec compVec_; // Encoding order of evaluation/rank.
+         SimObjVec simObjVec_; // Encoding order of evaluation/rank.
          TimeSeriesMap timeSeriesMap_; // Contains TimeSeries objects for Simulation.
 
          Time currentTime_;
