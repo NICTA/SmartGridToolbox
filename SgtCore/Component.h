@@ -33,7 +33,18 @@ namespace SmartGridToolbox
          const void setId(const std::string& id) {id_ = id;}
 
       /// @}
+
+      /// @name Stream output:
+      /// @{
          
+         friend std::ostream& operator<<(std::ostream& os, const Component& comp)
+         {
+            comp.print(os);
+            return os;
+         }
+
+      /// @}
+      
       protected:
 
          virtual void print(std::ostream& os) const;

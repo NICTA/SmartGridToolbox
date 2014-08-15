@@ -9,6 +9,7 @@ pkginclude_HEADERS = \
 	Bus.h \
 	Common.h \
 	CommonBranch.h \
+	Component.h \
 	Gen.h \
 	Model.h \
 	Network.h \
@@ -31,6 +32,8 @@ libSgtCore_a_SOURCES = \
 	CommonBranch.cc \
 	CommonBranchParser.h \
 	CommonBranchParser.cc \
+	Component.h \
+	Component.cc \
 	Gen.h \
 	Gen.cc \
 	GenParser.h \
