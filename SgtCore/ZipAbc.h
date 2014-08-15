@@ -46,9 +46,9 @@ namespace SmartGridToolbox
       /// @name ZIP parameters:
       /// @{
       
-         const ublas::vector<Complex> YConst() const = 0;
-         const ublas::vector<Complex> IConst() const = 0;
-         const ublas::vector<Complex> SConst() const = 0;
+         virtual const ublas::vector<Complex> YConst() const = 0;
+         virtual const ublas::vector<Complex> IConst() const = 0;
+         virtual const ublas::vector<Complex> SConst() const = 0;
 
       /// @}
       

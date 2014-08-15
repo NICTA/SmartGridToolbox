@@ -3,13 +3,14 @@
 
 #include <SgtCore/Component.h>
 #include <SgtCore/PowerFlow.h>
+#include <SgtCore/ZipAbc.h>
 
 #include<string>
 
 namespace SmartGridToolbox
 {
    /// @brief A Zip is an injection into a bus with constant impedance / current / complex power components.
-   class Zip : public Component
+   class Zip : public ZipAbc
    {
       public:
       
@@ -25,7 +26,7 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
          
-         virtual const char* componentType() const {return "Zip";}
+         virtual const char* componentType() const {return "zip";}
 
       /// @}
 
@@ -46,7 +47,7 @@ namespace SmartGridToolbox
       /// @name ZIP parameters:
       /// @{
       
-         const ublas::vector<Complex> YConst() const
+         virtual const ublas::vector<Complex> YConst() const override
          {
             return YConst_;
          }
@@ -56,7 +57,7 @@ namespace SmartGridToolbox
             YConst_ = YConst;
          }
       
-         const ublas::vector<Complex> IConst() const
+         virtual const ublas::vector<Complex> IConst() const override
          {
             return IConst_;
          }
@@ -66,7 +67,7 @@ namespace SmartGridToolbox
             IConst_ = IConst;
          }
       
-         const ublas::vector<Complex> SConst() const
+         virtual const ublas::vector<Complex> SConst() const override
          {
             return SConst_;
          }

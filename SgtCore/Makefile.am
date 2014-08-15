@@ -17,6 +17,7 @@ pkginclude_HEADERS = \
 	PowerFlow.h \
 	Random.h \
 	Units.h \
+	ZipAbc.h \
 	Zip.h
 
 libSgtCore_a_SOURCES = \
@@ -54,9 +55,11 @@ libSgtCore_a_SOURCES = \
 	Random.h \
 	Random.cc \
 	RegisterParserPlugins.cc \
+	Units.h \
+	ZipAbc.h \
+	ZipAbc.cc \
 	Zip.h \
 	Zip.cc \
-	Units.h \
 	ZipParser.h \
 	ZipParser.cc
 
