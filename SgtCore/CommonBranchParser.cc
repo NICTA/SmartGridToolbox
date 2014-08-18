@@ -45,13 +45,13 @@ namespace SmartGridToolbox
       std::string bus0Id = nd["bus_0_id"].as<std::string>();
       std::string bus1Id = nd["bus_1_id"].as<std::string>();
       
-      Bus* bus0 = netw.bus(bus0Id);
+      std::shared_ptr<Bus> bus0 = netw.bus(bus0Id);
       assert(bus0 != nullptr);
-      Bus* bus1 = netw.bus(bus1Id);
+      std::shared_ptr<Bus> bus1 = netw.bus(bus1Id);
       assert(bus1 != nullptr);
 
-      cBranch->setBus0(*bus0);
-      cBranch->setBus1(*bus1);
+      cBranch->setBus0(bus0);
+      cBranch->setBus1(bus1);
       
       netw.addBranch(std::move(cBranch));
    }

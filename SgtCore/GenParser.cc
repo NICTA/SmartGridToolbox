@@ -17,7 +17,7 @@ namespace SmartGridToolbox
       std::string busId = nd["bus_id"].as<std::string>();
       Phases phases = nd["phases"].as<Phases>();
 
-      Bus* bus = netw.bus(busId);
+      std::shared_ptr<Bus> bus = netw.bus(busId);
 
       std::unique_ptr<Gen> gen(new Gen(id, bus->phases()));
 

@@ -80,9 +80,9 @@ namespace SmartGridToolbox
             return *bus0_;
          }
 
-         virtual void setBus0(Bus& bus0)
+         virtual void setBus0(const std::shared_ptr<Bus>& bus0)
          {
-            bus0_ = &bus0;
+            bus0_ = bus0;
          }
           
          const Bus& bus1() const
@@ -90,9 +90,9 @@ namespace SmartGridToolbox
             return *bus1_;
          }
 
-         virtual void setBus1(Bus& bus1)
+         virtual void setBus1(const std::shared_ptr<Bus>& bus1)
          {
-            bus1_ = &bus1;
+            bus1_ = bus1;
          }
      
       /// @}
@@ -113,8 +113,8 @@ namespace SmartGridToolbox
          Phases phases0_; ///< Phases on bus 0.
          Phases phases1_; ///< Phases on bus 1.
          bool status_;
-         Bus* bus0_{nullptr}; ///< My bus 0.
-         Bus* bus1_{nullptr}; ///< My bus 1.
+         std::shared_ptr<Bus> bus0_{nullptr}; ///< My bus 0.
+         std::shared_ptr<Bus> bus1_{nullptr}; ///< My bus 0.
    };
 }
 

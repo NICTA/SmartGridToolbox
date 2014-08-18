@@ -415,7 +415,7 @@ namespace SmartGridToolbox
          genCompVec.push_back(gen.get());
          
          std::string busId = getBusId(genInfo.busId);
-         Bus* bus = netw.bus(busId);
+         std::shared_ptr<Bus> bus = netw.bus(busId);
 
          gen->setStatus(genInfo.status);
 
@@ -444,13 +444,13 @@ namespace SmartGridToolbox
          branch->setStatus(branchInfo.status);
 
          std::string bus0Id = getBusId(branchInfo.busIdF);
-         Bus* bus0 = netw.bus(bus0Id);
+         std::shared_ptr<Bus> bus0 = netw.bus(bus0Id);
          assert(bus0 != nullptr);
          std::string bus1Id = getBusId(branchInfo.busIdT);
-         Bus* bus1 = netw.bus(bus1Id);
+         std::shared_ptr<Bus> bus1 = netw.bus(bus1Id);
          assert(bus1 != nullptr);
-         branch->setBus0(*bus0);
-         branch->setBus1(*bus1);
+         branch->setBus0(bus0);
+         branch->setBus1(bus1);
 
          double tap = (std::abs(branchInfo.tap) < 1e-6 ? 1.0 : branchInfo.tap)*bus0->VBase()/bus1->VBase();
          branch->setTapRatio(std::polar(tap, deg2Rad(branchInfo.shiftDeg)));

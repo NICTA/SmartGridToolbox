@@ -20,8 +20,8 @@ namespace SmartGridToolbox
 
       public:
 
-         typedef std::vector<Zip*> ZipVec;
-         typedef std::vector<Gen*> GenVec;
+         typedef std::vector<std::shared_ptr<Zip>> ZipVec;
+         typedef std::vector<std::shared_ptr<Gen>> GenVec;
 
       /// @name Lifecycle:
       /// @{
@@ -183,14 +183,14 @@ namespace SmartGridToolbox
 
       protected:
 
-         virtual void addZip(Zip& zip)
+         virtual void addZip(const std::shared_ptr<Zip>& zip)
          {
-            zips_.push_back(&zip);
+            zips_.push_back(zip);
          }
 
-         virtual void addGen(Gen& gen)
+         virtual void addGen(const std::shared_ptr<Gen>& gen)
          {
-            gens_.push_back(&gen);
+            gens_.push_back(gen);
          }
 
          virtual void print(std::ostream& os) const override;

@@ -22,7 +22,7 @@ namespace SmartGridToolbox
       ublas::vector<Complex> S = nd["S_const"].as<ublas::vector<Complex>>();
       std::string busId = nd["bus_id"].as<std::string>();
       
-      Bus* bus = netw.bus(busId);
+      const std::shared_ptr<Bus>& bus = netw.bus(busId);
 
       std::unique_ptr<Zip> zip(new Zip(id, bus->phases()));
       zip->setYConst(Y);

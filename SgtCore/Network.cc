@@ -4,9 +4,8 @@
 
 namespace SmartGridToolbox
 {
-   Network::Network(const std::string& id, Model& model, double PBase) :
+   Network::Network(const std::string& id, double PBase) :
       Component(id),
-      model_(&model),
       PBase_(PBase)
    {
       // Empty.
@@ -33,14 +32,15 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << *this);
       PowerFlowNr solver;
       solver.reset();
-      for (const SimBus* bus : busVec_)
+      for (const std::shared_ptr<Bus>& bus : busVec_)
       {
-         solver.addBus(bus->name(), bus->type(), bus->phases(), bus->V(), bus->Ys(), bus->Ic(), bus->STot());
+         solver.addBus(bus->id(), bus->type(), bus->phases(), bus->V(), bus->YZip(), bus->IZip(), 
+               bus->SZip() + bus->SGen());
       }
-      for (const SimBranch* branch : branchVec_)
+      for (const std::shared_ptr<Branch>& branch : branchVec_)
       {
-         solver.addBranch(branch->bus0().name(), branch->bus1().name(), branch->phases0(),
-                          branch->phases1(), branch->Y());
+         solver.addBranch(branch->bus0().id(), branch->bus1().id(), branch->phases0(), branch->phases1(),
+               branch->Y());
       }
 
       solver.validate();
@@ -51,11 +51,15 @@ namespace SmartGridToolbox
       {
          for (const auto& busPair: solver.busses())
          {
-            SimBus* bus = findBus(busPair.second->id_);
-
+            const std::shared_ptr<Bus>& bus = this->bus(busPair.second->id_);
             // Push the state back onto bus. We don't want to trigger any events.
             bus->setV(busPair.second->V_);
-            bus->setSg(busPair.second->S_ - bus->Sc());
+            auto SGen = busPair.second->S_ - bus->SZip();
+            // TODO propagate back to the bus.
+            // switch (bus->busType())
+            // {
+               // case BusType::PV:
+            // }
          }
       }
    }
