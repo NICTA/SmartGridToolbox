@@ -57,6 +57,9 @@ libSgtCore_a_SOURCES = \
 	PowerFlowNr.cc \
 	Random.h \
 	Random.cc \
+	SparseSolver.h \
+	SparseSolver.cc \
+	Stopwatch.h \
 	RegisterParserPlugins.cc \
 	Units.h \
 	ZipAbc.h \
@@ -69,4 +72,12 @@ libSgtCore_a_SOURCES = \
 noinst_PROGRAMS = helloworld
 
 helloworld_SOURCES = helloworld.cc
-helloworld_LDADD = libSgtCore.a -lyaml-cpp
+helloworld_LDADD = \
+	libSgtCore.a \
+	-lyaml-cpp \
+	-lboost_date_time-mt \
+	-lblas \
+	-lklu \
+	-lamd \
+	-lcolamd \
+	-lbtf

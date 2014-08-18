@@ -24,9 +24,7 @@ pkginclude_HEADERS = \
 	Simulation.h \
 	SinglePhaseTransformer.h \
 	SolarPv.h \
-	SparseSolver.h \
 	Spline.h \
-	Stopwatch.h \
 	Sun.h \
 	TimeSeries.h \
 	Weather.h \
@@ -92,8 +90,6 @@ libSgtSim_a_SOURCES = \
 	SolarPv.cc \
 	SolarPvParser.h \
 	SolarPvParser.cc \
-	SparseSolver.h \
-	SparseSolver.cc \
 	Sun.h \
 	Sun.cc \
 	WeakOrder.h \
