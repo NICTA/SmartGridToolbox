@@ -2,8 +2,8 @@
 #define SIMULATION_DOT_H
 
 #include <SgtSim/Event.h>
-#include <SgtSim/TimeSeries.h>
 #include <SgtSim/Simulated.h>
+#include <SgtSim/TimeSeries.h>
 
 #include <SgtCore/Common.h>
 
@@ -105,26 +105,26 @@ namespace SmartGridToolbox
          /// @brief Get the timestep did complete event.
          Event& timestepDidComplete() {return timestepDidComplete_;}
 
-         template<typename T> const T* timeSeries(const std::string& name) const
+         template<typename T> const T* timeSeries(const std::string& id) const
          {
-            TimeSeriesMap::const_iterator it = timeSeriesMap_.find(name);
+            TimeSeriesMap::const_iterator it = timeSeriesMap_.find(id);
             return (it == timeSeriesMap_.end()) ? 0 : dynamic_cast<const T*>(it->second.get());
          }
-         template<typename T> T* timeSeries(const std::string& name)
+         template<typename T> T* timeSeries(const std::string& id)
          {
-            return const_cast<T*>((const_cast<const Simulation*>(this))-> timeSeries<T>(name));
+            return const_cast<T*>((const_cast<const Simulation*>(this))-> timeSeries<T>(id));
          }
 
-         void acquireTimeSeries (const std::string& name, std::unique_ptr<TimeSeriesBase> timeSeries)
+         void acquireTimeSeries (const std::string& id, std::unique_ptr<TimeSeriesBase> timeSeries)
          {
-            timeSeriesMap_[name] = std::move(timeSeries);
+            timeSeriesMap_[id] = std::move(timeSeries);
          }
 
          void validate();
 
       private:
 
-         /// @brief Soonest/smallest rank goes first. If equal rank and time, then sort on the name.
+         /// @brief Soonest/smallest rank goes first. If equal rank and time, then sort on the id.
          class ScheduledUpdatesCompare
          {
             public:
@@ -134,18 +134,18 @@ namespace SmartGridToolbox
                   return ((lhs.second < rhs.second) ||
                         (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
                         (lhs.second == rhs.second && lhs.first->rank() == rhs.first->rank() &&
-                         (lhs.first->name() < rhs.first->name())));
+                         (lhs.first->id() < rhs.first->id())));
                }
          };
 
-         // Smallest rank goes first. If equal rank, then sort on the name.
+         // Smallest rank goes first. If equal rank, then sort on the id.
          class ContingentUpdatesCompare
          {
             public:
                bool operator()(const Simulated* lhs, const Simulated* rhs)
                {
                   return ((lhs->rank() < rhs->rank()) ||
-                        ((lhs->rank() == rhs->rank()) && (lhs->name() < rhs->name())));
+                        ((lhs->rank() == rhs->rank()) && (lhs->id() < rhs->id())));
                }
          };
 

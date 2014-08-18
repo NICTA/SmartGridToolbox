@@ -7,7 +7,7 @@ namespace SmartGridToolbox
 {
    class ComponentTemplate : public Component
    {
-      /// @name Overridden member functions from Component.
+      /// @name Overridden member functions from Simulated.
       /// @{
       
       public:

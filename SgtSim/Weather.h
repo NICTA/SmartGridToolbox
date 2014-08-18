@@ -15,7 +15,7 @@ namespace SmartGridToolbox
 
    class Weather : public RegularUpdateComponent
    {
-      /// @name Overridden member functions from Component.
+      /// @name Overridden member functions from Simulated.
       /// @{
       
       public:

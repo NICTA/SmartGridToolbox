@@ -7,7 +7,7 @@ namespace SmartGridToolbox
 {
    class SimpleDcPowerSource : public DcPowerSourceBase
    {
-      /// @name Overridden member functions from Component.
+      /// @name Overridden member functions from Simulated.
       /// @{
       
       public:

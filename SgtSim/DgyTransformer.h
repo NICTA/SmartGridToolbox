@@ -13,7 +13,7 @@ namespace SmartGridToolbox
    /// therefore important that the parameter to the constructor is the turns ratio, not the voltage ratio.
    class DgyTransformer : public SimBranch
    {
-      /// @name Overridden member functions from Component.
+      /// @name Overridden member functions from Simulated.
       /// @{
       
       public:
@@ -25,7 +25,15 @@ namespace SmartGridToolbox
 
       /// @}
       
+      /// @name Overridden member functions from Branch.
+      /// @{
+         
+         virtual const ublas::matrix<Complex> Y();
+      
+      /// @}
+      
       public:
+
       /// @name My public member functions.
       /// @{
          
@@ -34,17 +42,32 @@ namespace SmartGridToolbox
          /// @param ZL The leakage impedance, must be > 0.
          DgyTransformer(const std::string& name, Complex a, Complex ZL);
 
-         /// @}
-      
-      private:
-         /// @name My private member functions.
-         /// @{
+         Complex a()
+         {
+            return a_;
+         }
          
-         void recalcY();
+         void set_a(Complex a)
+         {
+            a_ = a;
+            changed().trigger();
+         }
 
-      /// @}
+         Complex YL()
+         {
+            return YL_;
+         }
+         
+         void set_YL(Complex YL)
+         {
+            YL_ = YL;
+            changed().trigger();
+         }
 
+         /// @}
+         
       private:
+
          Complex a_;  ///< Complex turns ratio, n0/n1 where 0 is primary and 1 is secondary.
          Complex YL_; ///< Series leakage impedance.
    };

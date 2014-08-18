@@ -29,13 +29,13 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "DgyTransformer : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      DgyTransformer* comp = mod.component<DgyTransformer>(name);
+      DgyTransformer* dgyTrans = mod.component<DgyTransformer>(name);
 
       const std::string networkStr = state.expandName(nd["network"].as<std::string>());
       SimNetwork* networkComp = mod.component<SimNetwork>(networkStr);
       if (networkComp != nullptr)
       {
-         networkComp->addBranch(*comp);
+         networkComp->addBranch(std::move(dgyTrans));
       }
       else
       {

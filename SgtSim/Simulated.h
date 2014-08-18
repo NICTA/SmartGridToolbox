@@ -8,8 +8,17 @@
 
 namespace SmartGridToolbox
 {
-   class Simulated : public Component
+   class Simulated : public HasId
    {
+      /// @name Overridden from HasId (normally via sister class delegation).
+      /// @{
+      
+      public:
+
+         virtual const std::string& id() const;
+
+      /// @}
+      
       /// @name Member functions which derived classes may override.
       /// @{
       
@@ -34,9 +43,17 @@ namespace SmartGridToolbox
          {
             // Empty.
          }
+
       /// @}
       
       public:
+      
+      /// @name Lifecycle
+      /// @{
+     
+         virtual ~Simulated() = default;
+
+      /// @}
 
       /// @name Timestepping
       /// @{

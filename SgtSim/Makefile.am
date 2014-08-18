@@ -52,7 +52,6 @@ libSgtSim_a_SOURCES = \
 	RegisterParserPlugins.h \
 	RegisterParserPlugins.cc \
 	SimBranch.h \
-	SimBranch.cc \
 	SimBranchParser.h \
 	SimBranchParser.cc \
 	SimBus.h \

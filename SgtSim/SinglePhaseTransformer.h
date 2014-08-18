@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    /// @brief Single phase transformer.
    class SinglePhaseTransformer : public SimBranch
    {
-      /// @name Overridden member functions from Component.
+      /// @name Overridden member functions from Simulated.
       /// @{
       
       public:

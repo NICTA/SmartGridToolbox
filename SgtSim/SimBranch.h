@@ -1,8 +1,10 @@
 #ifndef BRANCH_COMP_DOT_H
 #define BRANCH_COMP_DOT_H
 
+#include <SgtSim/SimBus.h>
 #include <SgtSim/Simulated.h>
 
+#include <SgtCore/Branch.h>
 #include <SgtCore/Common.h>
 #include <SgtCore/PowerFlow.h>
 
@@ -10,11 +12,9 @@
 
 namespace SmartGridToolbox
 {
-   class SimBus;
-
    /// @brief A SimBranch connects two Busses in a Network.
    /// @ingroup PowerFlowCore
-   class SimBranch : public Simulated
+   class SimBranch : public Branch, public Simulated
    {
       /// @name Public overridden member functions from Simulated.
       /// @{
@@ -23,8 +23,8 @@ namespace SmartGridToolbox
          // virtual Time validUntil() const override;
 
       protected:
-         virtual void initializeState() override;
-         virtual void updateState(Time t) override;
+         // virtual void initializeState() override;
+         // virtual void updateState(Time t) override;
       
       /// @}
 
@@ -40,29 +40,25 @@ namespace SmartGridToolbox
       /// @name SimBus accessors:
       /// @{
          
-         const SimBus& bus0() const {return *bus0_;}
-         void setBus0(SimBus& bus0);
-
-         const SimBus& bus1() const {return *bus1_;}
-         void setBus1(SimBus& bus1);
+         const SimBus& bus0() const {return dynamic_cast<const SimBus&>(Branch::bus0());}
+         const SimBus& bus1() const {return dynamic_cast<const SimBus&>(Branch::bus1());}
       
       /// @}
-
-      /// @name Phase accessors:
+      
+      /// @name Bus accessors:
       /// @{
-         
-         const Phases& phases0() const {return phases0_;}
-         const Phases& phases1() const {return phases1_;}
-      
-      /// @}
 
-      /// @name Nodal admittance matrix (Y) accessors:
-      /// @{
-         
-         const ublas::matrix<Complex>& Y() const {return Y_;}
-         void setY(const ublas::matrix<Complex>& Y);
-      
-      /// @}
+         virtual void setBus0(Bus& bus0)
+         {
+            Branch::setBus0(bus0);
+            changed_.trigger();
+         }
+          
+         virtual void setBus1(Bus& bus1)
+         {
+            Branch::setBus1(bus1);
+            changed_.trigger();
+         }
 
       /// @name Custom events:
       /// @{
@@ -73,11 +69,6 @@ namespace SmartGridToolbox
       /// @}
 
       private:
-         SimBus* bus0_;                  ///< My bus 0.
-         SimBus* bus1_;                  ///< My bus 1.
-         Phases phases0_;                 ///< Phases on bus 0.
-         Phases phases1_;                 ///< Phases on bus 1.
-         ublas::matrix<Complex> Y_;       ///< Complex value of elements in bus admittance matrix in NR solver.
          Event changed_;                  ///< Updates when a setpoint property of the branch changes.
    };
 }

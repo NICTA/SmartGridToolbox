@@ -191,6 +191,13 @@ namespace SmartGridToolbox
          
       /// @}
          
+      /// @name Power-Flow problem:
+      /// @{
+         
+         virtual void solvePowerFlow();
+         
+      /// @}
+      
       protected:
 
          virtual void print(std::ostream& os) const override;

@@ -11,7 +11,7 @@ namespace SmartGridToolbox
    /// @ingroup PowerFlowCore
    class DcPowerSourceBase : public Component
    {
-      /// @name Overridden member functions from Component.
+      /// @name Overridden member functions from Simulated.
       /// @{
       
       public:
