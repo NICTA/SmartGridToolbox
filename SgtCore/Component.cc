@@ -4,7 +4,7 @@
 
 namespace SmartGridToolbox
 {
-   void Component::print(std::ostream& os) const
+   void ComponentVirtualBase::print(std::ostream& os) const
    {
       os << componentTypeStr() << ": " << id_ << ":" << std::endl;
    }

@@ -55,7 +55,11 @@ namespace SmartGridToolbox
    };
 
    // Ensure that all Component base classes are, essentially, virtual.
-   class Component : public ComponentVirtualBase {};
+   class Component : public ComponentVirtualBase
+   {
+      public:
+         Component(const std::string& id): ComponentVirtualBase(id) {}
+   };
 }
 
 #endif // COMPONENT_DOT_H
