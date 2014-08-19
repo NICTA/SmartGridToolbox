@@ -51,15 +51,29 @@ namespace SmartGridToolbox
       {
          for (const auto& busPair: solver.busses())
          {
-            const std::shared_ptr<Bus>& bus = this->bus(busPair.second->id_);
-            // Push the state back onto bus. We don't want to trigger any events.
-            bus->setV(busPair.second->V_);
-            auto SGen = busPair.second->S_ - bus->SZip();
-            // TODO propagate back to the bus.
-            // switch (bus->busType())
-            // {
-               // case BusType::PV:
-            // }
+            auto& busNr = *busPair.second;
+            const std::shared_ptr<Bus>& bus = this->bus(busNr.id_);
+            auto SGen = (busNr.S_ - bus->SZip())/bus->gens().size();
+            // Note: we've already taken YZip and IZip explicitly into account, so this is correct.
+            
+            bus->setV(busNr.V_);
+            switch (bus->type())
+            {
+               case BusType::SL:
+                  for (auto gen : bus->gens())
+                  {
+                     gen->setS(SGen);
+                  }
+                  break;
+               case BusType::PQ:
+                  break;
+               case BusType::PV:
+                  for (auto gen : bus->gens())
+                  {
+                     auto SNew
+                     gen->setS(SGen);
+                  }
+            }
          }
       }
    }
