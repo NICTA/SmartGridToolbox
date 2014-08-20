@@ -53,7 +53,7 @@ namespace SmartGridToolbox
          {
             auto& busNr = *busPair.second;
             const std::shared_ptr<Bus>& bus = this->bus(busNr.id_);
-            auto SGen = (busNr.S_ - bus->SZip()) / bus->gens().size();
+            auto SGen = (busNr.S_ - bus->SZip()) / double(bus->gens().size());
             // Note: we've already taken YZip and IZip explicitly into account, so this is correct.
             
             bus->setV(busNr.V_);
@@ -70,9 +70,18 @@ namespace SmartGridToolbox
                case BusType::PV:
                   for (auto gen : bus->gens())
                   {
-                     auto SNew
-                     gen->setS(SGen);
+                     // Keep P for gens, distribute Q amongst all gens.
+                     ublas::vector<Complex> SNew(gen->S().size());
+                     for (int i = 0; i < SNew.size(); ++i)
+                     {
+                        SNew[i] = Complex(gen->S()[i].real(), SGen[i].imag());
+                     }
+                     gen->setS(SNew);
                   }
+                  break;
+               default:
+                  error() << "Bad bus type." << std::endl;
+                  abort();
             }
          }
       }
