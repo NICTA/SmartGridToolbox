@@ -24,6 +24,6 @@ namespace SmartGridToolbox
 
    double InverterBase::PPerPhase() const
    {
-      return PDc_*efficiency(PDc_)/phases().size();
+      return PDc_ * efficiency(PDc_)/phases().size();
    }
 }

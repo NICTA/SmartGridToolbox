@@ -23,8 +23,8 @@ namespace SmartGridToolbox
    {
       using std::cos;
       using std::sin;
-      return {mag*cos(angs.azimuth)*sin(angs.zenith), mag*sin(angs.azimuth)*sin(angs.zenith),
-              mag*cos(angs.zenith)};
+      return {mag * cos(angs.azimuth) * sin(angs.zenith), mag * sin(angs.azimuth) * sin(angs.zenith),
+              mag * cos(angs.zenith)};
    }
 
    /// @brief Convert spherical angles and projection to a vector.
@@ -56,7 +56,7 @@ namespace SmartGridToolbox
    inline double horizontalSolarIrradiance(const SphericalAngles& angs)
    {
       double cosZen = cos(angs.zenith);
-      return (cosZen > 0.0 ? solarIrradianceMag()*cosZen : 0.0);
+      return (cosZen > 0.0 ? solarIrradianceMag() * cosZen : 0.0);
    }
 
    /// @brief Solar irradiance vector, W/m^2.

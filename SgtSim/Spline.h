@@ -120,7 +120,7 @@ class Spline : private std::vector<std::pair<double, double> >
       inline double splineCalc(std::vector<SplineData>::const_iterator i, double xval)
       {
          const double lx = xval - i->x;
-         return ((i->a*lx + i->b)*lx + i->c)*lx + i->d;
+         return ((i->a * lx + i->b) * lx + i->c) * lx + i->d;
       }
 
       inline double lowCalc(double xval)
@@ -128,18 +128,18 @@ class Spline : private std::vector<std::pair<double, double> >
          const double lx = xval - x(0);
 
          if (_type == LINEAR)
-            return lx*_BCHighVal + y(0);
+            return lx * _BCHighVal + y(0);
 
-         const double firstDeriv = (y(1) - y(0))/h(0) - 2*h(0)*(_data[0].b + 2*_data[1].b)/6;
+         const double firstDeriv = (y(1) - y(0))/h(0) - 2 * h(0) * (_data[0].b + 2 * _data[1].b)/6;
 
          switch(_BCLow)
          {
             case FIXED_1ST_DERIV_BC:
-               return lx*_BCLowVal + y(0);
+               return lx * _BCLowVal + y(0);
             case FIXED_2ND_DERIV_BC:
-               return lx*lx*_BCLowVal + firstDeriv*lx + y(0);
+               return lx * lx * _BCLowVal + firstDeriv * lx + y(0);
             case PARABOLIC_RUNOUT_BC:
-               return lx*lx*_ddy[0] + lx*firstDeriv  + y(0);
+               return lx * lx * _ddy[0] + lx * firstDeriv  + y(0);
          }
          throw std::runtime_error("Unknown BC");
       }
@@ -149,18 +149,18 @@ class Spline : private std::vector<std::pair<double, double> >
          const double lx = xval - x(size() - 1);
 
          if (_type == LINEAR)
-            return lx*_BCHighVal + y(size() - 1);
+            return lx * _BCHighVal + y(size() - 1);
 
-         const double firstDeriv = 2*h(size() - 2)*(_ddy[size() - 2] + 2*_ddy[size() - 1])/6 + (y(size() - 1) - y(size() - 2))/h(size() - 2);
+         const double firstDeriv = 2 * h(size() - 2) * (_ddy[size() - 2] + 2 * _ddy[size() - 1])/6 + (y(size() - 1) - y(size() - 2))/h(size() - 2);
 
          switch(_BCHigh)
          {
             case FIXED_1ST_DERIV_BC:
-               return lx*_BCHighVal + y(size() - 1);
+               return lx * _BCHighVal + y(size() - 1);
             case FIXED_2ND_DERIV_BC:
-               return lx*lx*_BCHighVal + firstDeriv*lx + y(size() - 1);
+               return lx * lx * _BCHighVal + firstDeriv * lx + y(size() - 1);
             case PARABOLIC_RUNOUT_BC:
-               return lx*lx*_ddy[size()-1] + lx*firstDeriv  + y(size() - 1);
+               return lx * lx * _ddy[size()-1] + lx * firstDeriv  + y(size() - 1);
          }
          throw std::runtime_error("Unknown BC");
       }
@@ -213,9 +213,9 @@ class Spline : private std::vector<std::pair<double, double> >
                   if (iPtr->first == (iPtr+1)->first)
                   {
                      if ((iPtr+1)->first != 0)
-                        (iPtr+1)->first += (iPtr+1)->first*std::numeric_limits<double>::epsilon()*10;
+                        (iPtr+1)->first += (iPtr+1)->first * std::numeric_limits<double>::epsilon() * 10;
                      else
-                        (iPtr+1)->first = std::numeric_limits<double>::epsilon()*10;
+                        (iPtr+1)->first = std::numeric_limits<double>::epsilon() * 10;
                      testPassed = false;
                      break;
                   }
@@ -249,7 +249,7 @@ class Spline : private std::vector<std::pair<double, double> >
                   for (size_t i(1); i < e; ++i)
                   {
                      A(i-1,i) = h(i-1);
-                     A(i,i) = 2*(h(i-1) + h(i));
+                     A(i,i) = 2 * (h(i-1) + h(i));
                      A(i+1,i) = h(i);
                   }
 
@@ -258,15 +258,15 @@ class Spline : private std::vector<std::pair<double, double> >
                      C(xv) = 0;
 
                   for (size_t i(1); i < e; ++i)
-                     C(i) = 6*((y(i+1) - y(i))/h(i)
+                     C(i) = 6 * ((y(i+1) - y(i))/h(i)
                          - (y(i) - y(i-1))/h(i-1));
 
                   //Boundary conditions
                   switch(_BCLow)
                   {
                      case FIXED_1ST_DERIV_BC:
-                        C(0) = 6*((y(1) - y(0))/h(0) - _BCLowVal);
-                        A(0,0) = 2*h(0);
+                        C(0) = 6 * ((y(1) - y(0))/h(0) - _BCLowVal);
+                        A(0,0) = 2 * h(0);
                         A(1,0) = h(0);
                         break;
                      case FIXED_2ND_DERIV_BC:
@@ -281,8 +281,8 @@ class Spline : private std::vector<std::pair<double, double> >
                   switch(_BCHigh)
                   {
                      case FIXED_1ST_DERIV_BC:
-                        C(e) = 6*(_BCHighVal - (y(e) - y(e-1))/h(e-1));
-                        A(e,e) = 2*h(e - 1);
+                        C(e) = 6 * (_BCHighVal - (y(e) - y(e-1))/h(e-1));
+                        A(e,e) = 2 * h(e - 1);
                         A(e-1,e) = h(e - 1);
                         break;
                      case FIXED_2ND_DERIV_BC:
@@ -303,9 +303,9 @@ class Spline : private std::vector<std::pair<double, double> >
                   for (size_t i(0); i < e; ++i)
                   {
                      _data[i].x = x(i);
-                     _data[i].a = (_ddy(i+1) - _ddy(i))/(6*h(i));
+                     _data[i].a = (_ddy(i+1) - _ddy(i))/(6 * h(i));
                      _data[i].b = _ddy(i)/2;
-                     _data[i].c = (y(i+1) - y(i))/h(i) - _ddy(i+1)*h(i)/6 - _ddy(i)*h(i)/3;
+                     _data[i].c = (y(i+1) - y(i))/h(i) - _ddy(i+1) * h(i)/6 - _ddy(i) * h(i)/3;
                      _data[i].d = y(i);
                   }
                }

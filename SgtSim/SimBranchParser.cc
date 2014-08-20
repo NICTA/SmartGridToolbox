@@ -13,7 +13,7 @@ namespace SmartGridToolbox
       const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex>& Y)
       {
          int nPhase = Y.size();
-         int nTerm = 2*nPhase;
+         int nTerm = 2 * nPhase;
          ublas::matrix<Complex> YNode(nTerm, nTerm, czero);
          for (int i = 0; i < nPhase; ++i)
          {
@@ -45,7 +45,7 @@ namespace SmartGridToolbox
       const YAML::Node& ndY = nd["Y"];
       const YAML::Node& ndYMatrix = ndY["matrix"];
       const YAML::Node& ndYSimpleLine = ndY["simple_line"];
-      ublas::matrix<Complex> Y(2*phases0.size(), 2*phases1.size(), czero);
+      ublas::matrix<Complex> Y(2 * phases0.size(), 2 * phases1.size(), czero);
       if (ndYMatrix)
       {
          Y = ndYMatrix.as<ublas::matrix<Complex>>();

@@ -19,7 +19,7 @@ namespace SmartGridToolbox
       if (temperatureNd)
       {
          std::string name = temperatureNd.as<std::string>();
-         const TimeSeries<Time, double>*series = mod.timeSeries<TimeSeries<Time, double>>(name);
+         const TimeSeries<Time, double> * series = mod.timeSeries<TimeSeries<Time, double>>(name);
          if (series == nullptr)
          {
             error() << "Parsing weather: couldn't find time series " << name << std::endl;
@@ -32,7 +32,7 @@ namespace SmartGridToolbox
       if (cloudNd)
       {
          std::string name = cloudNd.as<std::string>();
-         const TimeSeries<Time, double>*series = mod.timeSeries<TimeSeries<Time, double>>(name);
+         const TimeSeries<Time, double> * series = mod.timeSeries<TimeSeries<Time, double>>(name);
          if (series == nullptr)
          {
             error() << "Parsing weather: couldn't find time series " << name << std::endl;

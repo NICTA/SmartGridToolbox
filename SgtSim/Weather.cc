@@ -12,9 +12,9 @@ namespace SmartGridToolbox
       double prevFrac = exp(-dSeconds(t - time())/tConst);
       double curFrac = 1.0 - prevFrac;
       SolarIrradiance newUnav = unaveragedIrradiance(t);
-      irradiance_.direct = prevFrac*prevIrradiance_.direct + curFrac*newUnav.direct;
-      irradiance_.horizontalDiffuse = prevFrac*prevIrradiance_.horizontalDiffuse
-                                    + curFrac*newUnav.horizontalDiffuse;
+      irradiance_.direct = prevFrac * prevIrradiance_.direct + curFrac * newUnav.direct;
+      irradiance_.horizontalDiffuse = prevFrac * prevIrradiance_.horizontalDiffuse
+                                    + curFrac * newUnav.horizontalDiffuse;
    }
    
    double Weather::solarPower(SphericalAngles planeNormal, double planeArea) const
@@ -24,7 +24,7 @@ namespace SmartGridToolbox
       Array<double, 3> planeVec = angsAndMagToVec(planeNormal, planeArea);
       double direct = dot<double, 3>(planeVec, irradiance_.direct);
       if (direct < 0) direct = 0;
-      double diffuse = planeArea*irradiance_.horizontalDiffuse*(pi - planeNormal.zenith)/pi;
+      double diffuse = planeArea * irradiance_.horizontalDiffuse * (pi - planeNormal.zenith)/pi;
       return direct + diffuse;
    }
 
@@ -43,8 +43,8 @@ namespace SmartGridToolbox
       double cloudCover = cloudCoverSeries_->value(tm);
       assert(cloudCover >= 0 && cloudCover <= 1);
 
-      double directFrac = maxTransmit - cloudCover*(maxTransmit - minTransmit);
-      double diffuseFrac = minDiffuse + cloudCover*(maxDiffuse - minDiffuse);
+      double directFrac = maxTransmit - cloudCover * (maxTransmit - minTransmit);
+      double diffuseFrac = minDiffuse + cloudCover * (maxDiffuse - minDiffuse);
 
       SphericalAngles sunAngs = sunPos(utcTime(tm), latLong_);
 
@@ -52,8 +52,8 @@ namespace SmartGridToolbox
 
       if (sunAngs.zenith < pi/2)
       {
-         result.direct = directFrac*solarIrradianceVec(sunAngs);
-         result.horizontalDiffuse = diffuseFrac*solarIrradianceMag();
+         result.direct = directFrac * solarIrradianceVec(sunAngs);
+         result.horizontalDiffuse = diffuseFrac * solarIrradianceMag();
       }
       else
       {

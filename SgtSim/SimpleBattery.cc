@@ -13,7 +13,7 @@ namespace SmartGridToolbox
       double dt = time() == posix_time::neg_infin ? 0 : dSeconds(t - time());
       if (dt > 0)
       {
-         charge_ += internalPower()*dSeconds(t - time());
+         charge_ += internalPower() * dSeconds(t - time());
          if (charge_ < 0.0) charge_ = 0.0;
       }
    }
@@ -33,6 +33,6 @@ namespace SmartGridToolbox
    double SimpleBattery::internalPower()
    {
       double P = PDc();
-      return (P > 0 ? P*chargeEfficiency_ : P/dischargeEfficiency_);
+      return (P > 0 ? P * chargeEfficiency_ : P/dischargeEfficiency_);
    }
 }

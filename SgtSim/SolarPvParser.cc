@@ -28,8 +28,8 @@ namespace SmartGridToolbox
          comp.setEfficiency(1.0);
       }
       comp.setPlaneArea(nd["area_m2"].as<double>());
-      double zen = nd["zenith_degrees"].as<double>()*pi/180;
-      double azi = nd["azimuth_degrees"].as<double>()*pi/180;
+      double zen = nd["zenith_degrees"].as<double>() * pi/180;
+      double azi = nd["azimuth_degrees"].as<double>() * pi/180;
       comp.setPlaneNormal({zen, azi});
    }
 
