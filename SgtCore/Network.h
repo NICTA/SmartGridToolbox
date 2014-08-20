@@ -157,7 +157,7 @@ namespace SmartGridToolbox
          
          template<typename T> T V2Pu(const T& V, double VBase) const
          {
-            return V/VBase;
+            return V / VBase;
          }
          template<typename T> T pu2V(const T& pu, double VBase) const
          {
@@ -166,7 +166,7 @@ namespace SmartGridToolbox
          
          template<typename T> T S2Pu(const T& S) const
          {
-            return S/PBase_;
+            return S / PBase_;
          }
          template<typename T> T pu2S(const T& pu) const
          {
@@ -175,29 +175,29 @@ namespace SmartGridToolbox
  
          template<typename T> T Y2Pu(const T& Y, double VBase) const
          {
-            return Y * VBase * VBase/PBase_;
+            return Y * VBase * VBase / PBase_;
          }
          template<typename T> T pu2Y(const T& pu, double VBase) const
          {
-            return pu * PBase_/(VBase * VBase);
+            return pu * PBase_ / (VBase * VBase);
          }
   
          template<typename T> T Z2Pu(const T& Z, double VBase) const
          {
-            return Z * PBase_/(VBase * VBase);
+            return Z * PBase_ / (VBase * VBase);
          }
          template<typename T> T pu2Z(const T& pu, double VBase) const
          {
-            return pu * VBase * VBase/PBase_;
+            return pu * VBase * VBase / PBase_;
          }
   
          template<typename T> T I2Pu(const T& I, double VBase) const
          {
-            return I * VBase/PBase_;
+            return I * VBase / PBase_;
          }
          template<typename T> T pu2I(const T& pu, double VBase) const
          {
-            return pu * PBase_/VBase;
+            return pu * PBase_ / VBase;
          }
          
       /// @}

@@ -35,7 +35,7 @@ namespace SmartGridToolbox
       if (ndVMag) bus.setVMagSetpoint(ndVMag.as<ublas::vector<double>>());
 
       auto ndVAng = nd["V_ang_setpoint_deg"];
-      if (ndVAng) bus.setVAngSetpoint(ndVAng.as<ublas::vector<double>>() * pi/180.0);
+      if (ndVAng) bus.setVAngSetpoint(ndVAng.as<ublas::vector<double>>() * pi / 180.0);
    }
 
    void SimBusParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const

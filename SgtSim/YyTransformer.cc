@@ -4,7 +4,7 @@ namespace SmartGridToolbox
 {
    YyTransformer::YyTransformer(const std::string& name, Phases phases0, Phases phases1,
                                 Complex a, Complex ZL, Complex YM)
-      : SimBranch(name, phases0, phases1), a_(a), YL_(1.0/ZL), YM_(YM)
+      : SimBranch(name, phases0, phases1), a_(a), YL_(1.0 / ZL), YM_(YM)
    {
       if (phases0.size() != phases1.size())
       {
@@ -21,9 +21,9 @@ namespace SmartGridToolbox
       ublas::matrix<Complex> YNode(2 * n, 2 * n, czero);
       for (int i = 0; i < n; ++i)
       {
-         YNode(i, i) = (YL_ + YM_)/(a_ * conj(a_));
-         YNode(i, i + n) = -YL_/conj(a_);
-         YNode(i + n, i) = -YL_/a_;
+         YNode(i, i) = (YL_ + YM_) / (a_ * conj(a_));
+         YNode(i, i + n) = -YL_ / conj(a_);
+         YNode(i + n, i) = -YL_ / a_;
          YNode(i + n, i + n) = YL_;
       }
       setY(YNode);

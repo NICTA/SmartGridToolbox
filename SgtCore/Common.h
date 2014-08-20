@@ -181,7 +181,7 @@ namespace SmartGridToolbox
 
    inline double dSeconds(const Time& d)
    {
-      return double(d.ticks())/Time::ticks_per_second();
+      return double(d.ticks()) / Time::ticks_per_second();
    }
 
    inline Time timeFromUtcTime(posix_time::ptime utcTime)

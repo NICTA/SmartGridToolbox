@@ -50,10 +50,10 @@ namespace SmartGridToolbox
          SimpleBuilding(const std::string& name) :
             ZipBase(name, Phase::BAL),
             dt_(posix_time::minutes(5)),
-            kb_(5 * kW/K),
-            Cb_(1.0e5 * kJ/K),
+            kb_(5 * kW / K),
+            Cb_(1.0e5 * kJ / K),
             TbInit_(20.0 * K),
-            kh_(10.0 * kW/K),
+            kh_(10.0 * kW / K),
             copCool_(3.0),
             copHeat_(4.0),
             PMax_(20.0 * kW),

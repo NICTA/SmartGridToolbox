@@ -182,11 +182,11 @@ BOOST_AUTO_TEST_CASE (test_spline)
   //Add points to the spline in any order, they're sorted in ascending
   //x later. (If you want to spline a circle you'll need to change the class)
   spline.addPoint(0,        0.0);
-  spline.addPoint(40.0/255, 0.0);
-  spline.addPoint(60.0/255, 0.2);
-  spline.addPoint(63.0/255, 0.05);
-  spline.addPoint(80.0/255, 0.0);
-  spline.addPoint(82.0/255, 0.9);
+  spline.addPoint(40.0 / 255, 0.0);
+  spline.addPoint(60.0 / 255, 0.2);
+  spline.addPoint(63.0 / 255, 0.05);
+  spline.addPoint(80.0 / 255, 0.0);
+  spline.addPoint(82.0 / 255, 0.9);
   spline.addPoint(1.0, 1.0);
 
   { //We can extract the original data points by treating the spline as
@@ -221,17 +221,17 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
    using namespace boost::gregorian;
    Time base = timeFromLocalTime(posix_time::ptime(gregorian::date(2013, Apr, 26), posix_time::hours(0)), tz);
    SplineTimeSeries<Time> sts;
-   sts.addPoint(base + posix_time::hours(0), sin(0*pi/12));
-   sts.addPoint(base + posix_time::hours(4), sin(4*pi/12));
-   sts.addPoint(base + posix_time::hours(8), sin(8*pi/12));
-   sts.addPoint(base + posix_time::hours(12), sin(12*pi/12));
-   sts.addPoint(base + posix_time::hours(16), sin(16*pi/12));
-   sts.addPoint(base + posix_time::hours(20), sin(20*pi/12));
-   sts.addPoint(base + posix_time::hours(24), sin(24*pi/12));
+   sts.addPoint(base + posix_time::hours(0), sin(0 * pi / 12));
+   sts.addPoint(base + posix_time::hours(4), sin(4 * pi / 12));
+   sts.addPoint(base + posix_time::hours(8), sin(8 * pi / 12));
+   sts.addPoint(base + posix_time::hours(12), sin(12 * pi / 12));
+   sts.addPoint(base + posix_time::hours(16), sin(16 * pi / 12));
+   sts.addPoint(base + posix_time::hours(20), sin(20 * pi / 12));
+   sts.addPoint(base + posix_time::hours(24), sin(24 * pi / 12));
    for (int i = -1; i <= 25; ++i)
    {
       double val = sts.value(base + posix_time::hours(i));
-      double err = std::abs(val - sin(i*pi/12));
+      double err = std::abs(val - sin(i * pi / 12));
       message() << i << " " << val << " " << err << endl; 
       if (i > -1 && i < 25)
       {
@@ -334,7 +334,7 @@ class TestEventA : public Component
       {
          message() << "Update state of " << name() << " from time " 
               << time() << " to " << t << "." << endl;
-         state_ = (t - startTime_).ticks()*ctrl_;
+         state_ = (t - startTime_).ticks() * ctrl_;
          nextUpdate_ = t + dt_;
       }
 
@@ -432,18 +432,18 @@ class TestLoad : public ZipToGroundBase
 
       virtual ublas::vector<Complex> Y() const override 
       {
-         return ublas::vector<Complex>(phases().size(), sin(dSeconds(time())/123.0));
+         return ublas::vector<Complex>(phases().size(), sin(dSeconds(time()) / 123.0));
       }
 
       virtual ublas::vector<Complex> I() const override 
       {
          return ublas::vector<Complex>(phases().size(), 
-               sin(dSeconds(time())/300.0) * exp(Complex(0.0, dSeconds(time())/713.0)));
+               sin(dSeconds(time()) / 300.0) * exp(Complex(0.0, dSeconds(time()) / 713.0)));
       }
 
       virtual ublas::vector<Complex> S() const override 
       {
-         return ublas::vector<Complex>(phases().size(), sin(dSeconds(time())/60.0));
+         return ublas::vector<Complex>(phases().size(), sin(dSeconds(time()) / 60.0));
       }
 
       time_duration dt() const
@@ -615,7 +615,7 @@ class TestDc : public DcPowerSourceBase
 
       virtual double PDc() const override
       {
-         return sin(dSeconds(time())/60.0);
+         return sin(dSeconds(time()) / 60.0);
       }
 
    private:
@@ -658,7 +658,7 @@ BOOST_AUTO_TEST_CASE (test_sun)
    clock1.didCompleteTimestep().addAction([&]() 
          {
             SphericalAngles sunCoords = sunPos(utcTime(clock1.time()), mod.latLong());
-            outfile << dSeconds(clock1.time() - sim.startTime())/(24 * 3600) << " " << sunCoords.zenith << " "
+            outfile << dSeconds(clock1.time() - sim.startTime()) / (24 * 3600) << " " << sunCoords.zenith << " "
                     << solarPower(sunCoords, {0.0, 0.0}, 1.0) << std::endl;
          }, "clock1 update");
 
@@ -687,7 +687,7 @@ BOOST_AUTO_TEST_CASE (test_solar_pv)
 
    network->didCompleteTimestep().addAction([&]()
          {
-            outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " << spv2->PDc() << " " << inv2->S()(0)
+            outfile << dSeconds(sim.currentTime()-sim.startTime()) / 3600 << " " << spv2->PDc() << " " << inv2->S()(0)
                     << " " << bus2->V()(0) << std::endl;
          }, "Network updated.");
    mod.validate();
@@ -716,7 +716,7 @@ BOOST_AUTO_TEST_CASE (test_loops)
 
    network->didCompleteTimestep().addAction([&]()
          {
-            outfile << dSeconds(sim.currentTime()-sim.startTime())/3600 << " " << spv2->PDc() << " " << inv2->S()(0)
+            outfile << dSeconds(sim.currentTime()-sim.startTime()) / 3600 << " " << spv2->PDc() << " " << inv2->S()(0)
                     << " " << bus2->V()(0) << std::endl;
             std::cout << "timestep " << sim.currentTime()-sim.startTime() << std::endl;
          }, "Network updated.");
@@ -1136,12 +1136,12 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
    }
 
    Complex cmp;
-   cmp = {1.3369, 1.3331}; double err00 = abs(ZPhase(0,0) - cmp)/abs(cmp);
-   cmp = {0.2102, 0.5778}; double err01 = abs(ZPhase(0, 1) - cmp)/abs(cmp);
-   cmp = {0.2132, 0.5014}; double err02 = abs(ZPhase(0, 2) - cmp)/abs(cmp);
-   cmp = {1.3239, 1.3557}; double err11 = abs(ZPhase(1, 1) - cmp)/abs(cmp);
-   cmp = {0.2067, 0.4591}; double err12 = abs(ZPhase(1, 2) - cmp)/abs(cmp);
-   cmp = {1.3295, 1.3459}; double err22 = abs(ZPhase(2, 2) - cmp)/abs(cmp);
+   cmp = {1.3369, 1.3331}; double err00 = abs(ZPhase(0,0) - cmp) / abs(cmp);
+   cmp = {0.2102, 0.5778}; double err01 = abs(ZPhase(0, 1) - cmp) / abs(cmp);
+   cmp = {0.2132, 0.5014}; double err02 = abs(ZPhase(0, 2) - cmp) / abs(cmp);
+   cmp = {1.3239, 1.3557}; double err11 = abs(ZPhase(1, 1) - cmp) / abs(cmp);
+   cmp = {0.2067, 0.4591}; double err12 = abs(ZPhase(1, 2) - cmp) / abs(cmp);
+   cmp = {1.3295, 1.3459}; double err22 = abs(ZPhase(2, 2) - cmp) / abs(cmp);
    message() << "Err = " 
              << err00 << " " << err01 << " " << err02 << " " << err11 << " " << err12 << " " << err22 << std::endl;
 
@@ -1173,17 +1173,17 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
    Bus * bus1 = mod.component<Bus>("bus_1");
    Bus * bus2 = mod.component<Bus>("bus_2");
 
-   message() << "Bus 1 voltages: " << abs(bus1->V()(0)) << "@" << arg(bus1->V()(0))*180/pi << std::endl;
-   message() << "Bus 1 voltages: " << abs(bus1->V()(1)) << "@" << arg(bus1->V()(1))*180/pi << std::endl;
-   message() << "Bus 1 voltages: " << abs(bus1->V()(2)) << "@" << arg(bus1->V()(2))*180/pi << std::endl;
-   message() << "Bus 2 voltages: " << abs(bus2->V()(0)) << "@" << arg(bus2->V()(0))*180/pi << std::endl;
-   message() << "Bus 2 voltages: " << abs(bus2->V()(1)) << "@" << arg(bus2->V()(1))*180/pi << std::endl;
-   message() << "Bus 2 voltages: " << abs(bus2->V()(2)) << "@" << arg(bus2->V()(2))*180/pi << std::endl;
+   message() << "Bus 1 voltages: " << abs(bus1->V()(0)) << "@" << arg(bus1->V()(0)) * 180 / pi << std::endl;
+   message() << "Bus 1 voltages: " << abs(bus1->V()(1)) << "@" << arg(bus1->V()(1)) * 180 / pi << std::endl;
+   message() << "Bus 1 voltages: " << abs(bus1->V()(2)) << "@" << arg(bus1->V()(2)) * 180 / pi << std::endl;
+   message() << "Bus 2 voltages: " << abs(bus2->V()(0)) << "@" << arg(bus2->V()(0)) * 180 / pi << std::endl;
+   message() << "Bus 2 voltages: " << abs(bus2->V()(1)) << "@" << arg(bus2->V()(1)) * 180 / pi << std::endl;
+   message() << "Bus 2 voltages: " << abs(bus2->V()(2)) << "@" << arg(bus2->V()(2)) * 180 / pi << std::endl;
 
    Complex cmp;
-   cmp = polar(14606.60, -0.62 * pi / 180.0); double err0 = abs(bus2->V()(0) - cmp)/abs(cmp);
-   cmp = polar(14726.69, -121.0 * pi / 180.0); double err1 = abs(bus2->V()(1) - cmp)/abs(cmp);
-   cmp = polar(14801.37, 119.2 * pi / 180.0); double err2 = abs(bus2->V()(2) - cmp)/abs(cmp);
+   cmp = polar(14606.60, -0.62 * pi / 180.0); double err0 = abs(bus2->V()(0) - cmp) / abs(cmp);
+   cmp = polar(14726.69, -121.0 * pi / 180.0); double err1 = abs(bus2->V()(1) - cmp) / abs(cmp);
+   cmp = polar(14801.37, 119.2 * pi / 180.0); double err2 = abs(bus2->V()(2) - cmp) / abs(cmp);
    message() << "Err = " << err0 << " " << err1 << " " << err2 << std::endl;
 
    BOOST_CHECK(err0 < 0.001);

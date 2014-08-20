@@ -5,7 +5,7 @@ namespace {
          double kh, double Cb)
    {
       // Solve dTb = a(Ts - T), with a defined below.
-      double a = (kb + kh)/Cb;
+      double a = (kb + kh) / Cb;
       double Tb1 = Ts + exp(-a * dt) * (Tb0 - Ts);
       return Tb1;
    }
@@ -21,12 +21,12 @@ namespace {
       }
       else
       {
-         double a = -kb/Cb;
+         double a = -kb / Cb;
          double a2 = a * a;
-         double b = ((dQg1 - dQg0)/dt + kb * (Te1-Te0)/dt)/Cb;
-         double c = (dQg0 + kb * Te0 + dQh)/Cb;
+         double b = ((dQg1 - dQg0) / dt + kb * (Te1-Te0) / dt) / Cb;
+         double c = (dQg0 + kb * Te0 + dQh) / Cb;
          double eadt = exp(a * dt);
-         Tb1 = (b * (-a * dt + eadt - 1) + a * (c * (eadt - 1) + a * Tb0 * eadt))/a2;
+         Tb1 = (b * (-a * dt + eadt - 1) + a * (c * (eadt - 1) + a * Tb0 * eadt)) / a2;
       }
       return Tb1;
    }
@@ -65,7 +65,7 @@ namespace SmartGridToolbox
            + kh_ * (Ts_ - Tb_); // Heat ADDED.
       mode_ = dQh_ > 0 ? HvacMode::HEATING : HvacMode::COOLING;
       cop_ = mode_ == HvacMode::HEATING ? copHeat_ : copCool_;
-      Ph_ = abs(dQh_)/cop_;
+      Ph_ = abs(dQh_) / cop_;
       if (Ph_ > PMax_)
       {
          Ph_ = PMax_;

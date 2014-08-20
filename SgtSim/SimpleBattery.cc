@@ -33,6 +33,6 @@ namespace SmartGridToolbox
    double SimpleBattery::internalPower()
    {
       double P = PDc();
-      return (P > 0 ? P * chargeEfficiency_ : P/dischargeEfficiency_);
+      return (P > 0 ? P * chargeEfficiency_ : P / dischargeEfficiency_);
    }
 }

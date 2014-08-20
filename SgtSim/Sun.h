@@ -40,7 +40,7 @@ namespace SmartGridToolbox
       using std::cos;
       using std::sin;
 
-      return angsAndMagToVec(angs, proj/cos(angs.zenith));
+      return angsAndMagToVec(angs, proj / cos(angs.zenith));
    }
 
    /// @brief Spherical angles of the sun at a given time and location.

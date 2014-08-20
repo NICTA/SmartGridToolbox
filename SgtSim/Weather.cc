@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    {
       const double tConst = 900.0; // 15 minute smoothing constant.
       prevIrradiance_ = irradiance_;
-      double prevFrac = exp(-dSeconds(t - time())/tConst);
+      double prevFrac = exp(-dSeconds(t - time()) / tConst);
       double curFrac = 1.0 - prevFrac;
       SolarIrradiance newUnav = unaveragedIrradiance(t);
       irradiance_.direct = prevFrac * prevIrradiance_.direct + curFrac * newUnav.direct;
@@ -24,7 +24,7 @@ namespace SmartGridToolbox
       Array<double, 3> planeVec = angsAndMagToVec(planeNormal, planeArea);
       double direct = dot<double, 3>(planeVec, irradiance_.direct);
       if (direct < 0) direct = 0;
-      double diffuse = planeArea * irradiance_.horizontalDiffuse * (pi - planeNormal.zenith)/pi;
+      double diffuse = planeArea * irradiance_.horizontalDiffuse * (pi - planeNormal.zenith) / pi;
       return direct + diffuse;
    }
 
@@ -50,7 +50,7 @@ namespace SmartGridToolbox
 
       SolarIrradiance result;
 
-      if (sunAngs.zenith < pi/2)
+      if (sunAngs.zenith < pi / 2)
       {
          result.direct = directFrac * solarIrradianceVec(sunAngs);
          result.horizontalDiffuse = diffuseFrac * solarIrradianceMag();

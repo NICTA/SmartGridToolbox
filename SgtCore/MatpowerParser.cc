@@ -104,19 +104,19 @@ namespace
    // Shunt admittance is in MW @ 1 p.u. voltage.
    template<typename T> T YBusShunt2Siemens(T Y, double kVBase)
    {
-      return Y/(kVBase * kVBase); 
+      return Y / (kVBase * kVBase); 
    }
    
    // Branch admittance is in p.u., that is, KVBase^2/MVABase.
    // KVBase is referenced to the "from" bus, the second bus, bus1.
    template<typename T> T YBranch2Siemens(T Y, double kVBase, double MVABase)
    {
-      return Y * MVABase/(kVBase * kVBase); 
+      return Y * MVABase / (kVBase * kVBase); 
    }
   
    double deg2Rad(double deg)
    {
-      return pi * deg/180.0;
+      return pi * deg / 180.0;
    }
 }
 
@@ -452,9 +452,9 @@ namespace SmartGridToolbox
          branch->setBus0(bus0);
          branch->setBus1(bus1);
 
-         double tap = (std::abs(branchInfo.tap) < 1e-6 ? 1.0 : branchInfo.tap) * bus0->VBase()/bus1->VBase();
+         double tap = (std::abs(branchInfo.tap) < 1e-6 ? 1.0 : branchInfo.tap) * bus0->VBase() / bus1->VBase();
          branch->setTapRatio(std::polar(tap, deg2Rad(branchInfo.shiftDeg)));
-         branch->setYSeries(YBranch2Siemens(1.0/Complex(branchInfo.R, branchInfo.X), bus1->VBase(), data.MVABase));
+         branch->setYSeries(YBranch2Siemens(1.0 / Complex(branchInfo.R, branchInfo.X), bus1->VBase(), data.MVABase));
          branch->setYShunt(YBranch2Siemens(Complex(0.0, branchInfo.b), bus1->VBase(), data.MVABase));
          branch->setRateA(branchInfo.rateA);
          branch->setRateB(branchInfo.rateB);

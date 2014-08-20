@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    {
       // Declaration of some constants
       const double twopi = 2 * pi;
-      const double rad = pi/180;
+      const double rad = pi / 180;
       const double dEarthMeanRadius = 6371.01; // km.
       const double dAstronomicalUnit = 149597890.0; // km.
    }
@@ -41,15 +41,15 @@ namespace SmartGridToolbox
          // Defer this until testing can be done.
 
          // Calculate time of the day in UT decimal hours
-         dHours = dSeconds(utcTime.time_of_day())/3600.0;
+         dHours = dSeconds(utcTime.time_of_day()) / 3600.0;
 
          // Calculate current Julian Day
-         long int liAux1 = (utcTime.date().month() - 14)/12;
-         long int liAux2 = (1461 * (utcTime.date().year() + 4800 + liAux1))/4
-            + (367 * (utcTime.date().month() - 2 - 12 * liAux1))/12
-            - (3 * ((utcTime.date().year() + 4900 + liAux1)/100))/4
+         long int liAux1 = (utcTime.date().month() - 14) / 12;
+         long int liAux2 = (1461 * (utcTime.date().year() + 4800 + liAux1)) / 4
+            + (367 * (utcTime.date().month() - 2 - 12 * liAux1)) / 12
+            - (3 * ((utcTime.date().year() + 4900 + liAux1) / 100)) / 4
             + utcTime.date().day() - 32075;
-         double dJulianDate = (double)(liAux2) - 0.5 + dHours/24.0;
+         double dJulianDate = (double)(liAux2) - 0.5 + dHours / 24.0;
 
          // Calculate difference between current Julian Day and JD 2451545.0
          dElapsedJulianDays = dJulianDate - 2451545.0;
@@ -104,7 +104,7 @@ namespace SmartGridToolbox
          if (result.azimuth < 0.0) result.azimuth = result.azimuth + twopi;
          result.azimuth = result.azimuth;
          // Parallax Correction
-         dParallax = (dEarthMeanRadius/dAstronomicalUnit) * sin(result.zenith);
+         dParallax = (dEarthMeanRadius / dAstronomicalUnit) * sin(result.zenith);
          result.zenith = (result.zenith + dParallax);
       }
 

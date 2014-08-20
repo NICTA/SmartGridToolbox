@@ -53,7 +53,7 @@ namespace SmartGridToolbox
          {
             auto& busNr = *busPair.second;
             const std::shared_ptr<Bus>& bus = this->bus(busNr.id_);
-            auto SGen = (busNr.S_ - bus->SZip())/bus->gens().size();
+            auto SGen = (busNr.S_ - bus->SZip()) / bus->gens().size();
             // Note: we've already taken YZip and IZip explicitly into account, so this is correct.
             
             bus->setV(busNr.V_);

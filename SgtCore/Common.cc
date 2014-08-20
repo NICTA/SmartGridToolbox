@@ -56,7 +56,7 @@ namespace SmartGridToolbox
       }
       void setAngDeg(double ang)
       {
-         result_ *= polar(1.0, ang * pi/180.0);
+         result_ *= polar(1.0, ang * pi / 180.0);
       }
       Complex result()
       {
@@ -137,11 +137,11 @@ namespace SmartGridToolbox
    const double week = 7 * day;
    const double J = 1.0;
    const double kJ = 1000.0 * J;
-   const double W = J/second;
+   const double W = J / second;
    const double kW = 1000.0 * W;
    const double kWh = kW * hour;
    const double A = 1.0;
-   const double C = A/second;
+   const double C = A / second;
    const double K = 1.0;
    const Complex czero{0.0, 0.0};
    const LatLong Greenwich{51.4791, 0.0};

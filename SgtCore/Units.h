@@ -55,14 +55,14 @@ namespace Units
    constexpr Dimensions<0, 0, 0, 0, 1> ThDim() {return decltype(ThDim())();}
 
    // Derived dimensions.
-   constexpr decltype(LDim()/TDim()) vDim() {return decltype(vDim())();}
-   constexpr decltype(LDim()/TDim().pow<2>()) aDim() {return decltype(aDim())();}
+   constexpr decltype(LDim() / TDim()) vDim() {return decltype(vDim())();}
+   constexpr decltype(LDim() / TDim().pow<2>()) aDim() {return decltype(aDim())();}
    constexpr decltype(MDim() * vDim()) pDim() {return decltype(pDim())();}
    constexpr decltype(MDim() * aDim()) fDim() {return decltype(fDim())();}
    constexpr decltype(fDim() * LDim()) EDim() {return decltype(EDim())();}
-   constexpr decltype(EDim()/TDim()) PDim() {return decltype(PDim())();}
+   constexpr decltype(EDim() / TDim()) PDim() {return decltype(PDim())();}
    constexpr decltype(IDim() * TDim()) QDim() {return decltype(QDim())();}
-   constexpr decltype(QDim()/LDim()) VDim() {return decltype(VDim())();}
+   constexpr decltype(QDim() / LDim()) VDim() {return decltype(VDim())();}
 
    template<typename D, typename V = double>
    class DimensionalQuantity : public D
@@ -139,9 +139,9 @@ namespace Units
                                         D1::TDim() - D2::TDim(),
                                         D1::IDim() - D2::IDim(),
                                         D1::ThDim() - D2::ThDim()>,
-                             decltype(lhs.stdVal()/rhs.stdVal())>
+                             decltype(lhs.stdVal() / rhs.stdVal())>
    {
-      return {lhs.stdVal()/rhs.stdVal()};
+      return {lhs.stdVal() / rhs.stdVal()};
    }
 
    template<typename V = double> using Length = DimensionalQuantity<decltype(LDim()), V>;
@@ -187,7 +187,7 @@ namespace Units
 
          friend std::ostream& operator<<(std::ostream& os, const UnitQuantity& uq)
          {
-            return os << (uq.q_/uq.u_) << " " << uq.u_.name();
+            return os << (uq.q_ / uq.u_) << " " << uq.u_.name();
          }
       private:
          const DimensionalQuantity<D, V>& q_;

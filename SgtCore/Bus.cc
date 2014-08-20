@@ -11,7 +11,7 @@ namespace SmartGridToolbox
       VNom_(VNom),
       VBase_(VBase)
    {
-      double dtheta = -2.0 * pi/phases.size();
+      double dtheta = -2.0 * pi / phases.size();
       for (int i = 0; i < phases_.size(); ++i)
       {
          VMagSetpoint_(i) = std::abs(VNom_(i));
