@@ -57,11 +57,11 @@ namespace Units
    // Derived dimensions.
    constexpr decltype(LDim()/TDim()) vDim() {return decltype(vDim())();}
    constexpr decltype(LDim()/TDim().pow<2>()) aDim() {return decltype(aDim())();}
-   constexpr decltype(MDim()*vDim()) pDim() {return decltype(pDim())();}
-   constexpr decltype(MDim()*aDim()) fDim() {return decltype(fDim())();}
-   constexpr decltype(fDim()*LDim()) EDim() {return decltype(EDim())();}
+   constexpr decltype(MDim() * vDim()) pDim() {return decltype(pDim())();}
+   constexpr decltype(MDim() * aDim()) fDim() {return decltype(fDim())();}
+   constexpr decltype(fDim() * LDim()) EDim() {return decltype(EDim())();}
    constexpr decltype(EDim()/TDim()) PDim() {return decltype(PDim())();}
-   constexpr decltype(IDim()*TDim()) QDim() {return decltype(QDim())();}
+   constexpr decltype(IDim() * TDim()) QDim() {return decltype(QDim())();}
    constexpr decltype(QDim()/LDim()) VDim() {return decltype(VDim())();}
 
    template<typename D, typename V = double>
@@ -101,21 +101,21 @@ namespace Units
 
    template<typename D, typename V, typename V2>
    auto operator*(const DimensionalQuantity<D, V>& q, const V2& val)
-      -> DimensionalQuantity<D, decltype(q.stdVal()*val)>
+      -> DimensionalQuantity<D, decltype(q.stdVal() * val)>
    {
-      return {q.stdVal()*val};
+      return {q.stdVal() * val};
    };
 
    template<typename D, typename V, typename V2>
    auto operator*(const V2& scalar, const DimensionalQuantity<D, V>& q)
-      -> DimensionalQuantity<D, decltype(q.stdVal()*scalar)>
+      -> DimensionalQuantity<D, decltype(q.stdVal() * scalar)>
    {
-      return {q.stdVal()*scalar};
+      return {q.stdVal() * scalar};
    };
 
    template<typename D, typename V1, typename V2>
    auto operator+(const DimensionalQuantity<D, V1>& lhs, const DimensionalQuantity<D, V2>& rhs)
-      -> DimensionalQuantity<D, decltype(lhs.stdVal()*rhs.stdVal())>
+      -> DimensionalQuantity<D, decltype(lhs.stdVal() * rhs.stdVal())>
    {
       return {lhs.stdVal() + rhs.stdVal()};
    };
@@ -127,9 +127,9 @@ namespace Units
                                         D1::TDim() + D2::TDim(),
                                         D1::IDim() + D2::IDim(),
                                         D1::ThDim() + D2::ThDim()>,
-                             decltype(lhs.stdVal()*rhs.stdVal())>
+                             decltype(lhs.stdVal() * rhs.stdVal())>
    {
-      return {lhs.stdVal()*rhs.stdVal()};
+      return {lhs.stdVal() * rhs.stdVal()};
    }
 
    template<typename V1, typename D1, typename V2, typename D2>
@@ -176,7 +176,7 @@ namespace Units
       extern const Unit<decltype(IDim())> A = {{IDim(), 1.0}, "A"};
       extern const Unit<decltype(ThDim())> K = {{ThDim(), 1.0}, "K"};
 
-      extern const Unit<decltype(QDim())> C = {{IDim()*TDim(), 1.0}, "C"};
+      extern const Unit<decltype(QDim())> C = {{IDim() * TDim(), 1.0}, "C"};
    }
 
    template<typename D, typename V = double, typename V2 = double>

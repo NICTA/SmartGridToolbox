@@ -111,17 +111,17 @@ namespace SmartGridToolbox
    inline Complex polar(double m, double theta) // theta is radians.
    {
       // Note the following will use RVO in C++11, no unneeded temporaries.
-      return Complex(m*cos(theta), m*sin(theta));
+      return Complex(m * cos(theta), m * sin(theta));
    }
 
    inline Complex operator*(int i, const Complex& c)
    {
-      return Complex(i*c.real(), i*c.imag());
+      return Complex(i * c.real(), i * c.imag());
    }
 
    inline Complex operator*(const Complex& c, int i)
    {
-      return Complex(i*c.real(), i*c.imag());
+      return Complex(i * c.real(), i * c.imag());
    }
 
    std::ostream& operator<<(std::ostream& os, const Complex& c);
@@ -250,7 +250,7 @@ namespace SmartGridToolbox
    template<typename T, std::size_t d> double dot(const Array<T, d>& v1, const Array<T, d>& v2)
    {
       T result(0.0);
-      for (std::size_t i = 0; i < d; ++i) result += v1[i]*v2[i];
+      for (std::size_t i = 0; i < d; ++i) result += v1[i] * v2[i];
       return result;
    }
 

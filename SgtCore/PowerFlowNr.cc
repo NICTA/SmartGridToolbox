@@ -19,7 +19,7 @@ namespace SmartGridToolbox
             {
                int i = it2.index1();
                int k = it2.index2();
-               result(i) += A(i, k)*x(k);
+               result(i) += A(i, k) * x(k);
             }
          }
          return result;
@@ -82,7 +82,7 @@ namespace SmartGridToolbox
       Y_(Y)
    {
       assert(phases1.size() == nPhase_);
-      int nTerm = 2*nPhase_;
+      int nTerm = 2 * nPhase_;
       assert(Y.size1() == nTerm);
       assert(Y.size2() == nTerm);
    }
@@ -207,7 +207,7 @@ namespace SmartGridToolbox
             abort();
          }
          const BusNr* busses[] = {it0->second.get(), it1->second.get()};
-         int nTerm = 2*branch->nPhase_;
+         int nTerm = 2 * branch->nPhase_;
 
          // There is one link per distinct pair of bus/phase pairs.
          for (int i = 0; i < nTerm; ++i)
@@ -374,19 +374,19 @@ namespace SmartGridToolbox
       {
          int iPqi = iPq(i);
 
-         double Pvr_p_QVi = P(iPqi)*Vr(iPqi) + Q(iPqi)*Vi(iPqi);
-         double Pvi_m_QVr = P(iPqi)*Vi(iPqi) - Q(iPqi)*Vr(iPqi);
-         double M2 = Vr(iPqi)*Vr(iPqi) + Vi(iPqi)*Vi(iPqi);
-         double M4 = M2*M2;
+         double Pvr_p_QVi = P(iPqi) * Vr(iPqi) + Q(iPqi) * Vi(iPqi);
+         double Pvi_m_QVr = P(iPqi) * Vi(iPqi) - Q(iPqi) * Vr(iPqi);
+         double M2 = Vr(iPqi) * Vr(iPqi) + Vi(iPqi) * Vi(iPqi);
+         double M4 = M2 * M2;
          double VrdM4 = Vr(iPqi)/M4;
          double VidM4 = Vi(iPqi)/M4;
          double PdM2 = P(iPqi)/M2;
          double QdM2 = Q(iPqi)/M2;
 
-         J.IrPqVrPq()(i, i) = Jc.IrPqVrPq()(i, i) - (2*VrdM4*Pvr_p_QVi) + PdM2;
-         J.IrPqViPq()(i, i) = Jc.IrPqViPq()(i, i) - (2*VidM4*Pvr_p_QVi) + QdM2;
-         J.IiPqVrPq()(i, i) = Jc.IiPqVrPq()(i, i) - (2*VrdM4*Pvi_m_QVr) - QdM2;
-         J.IiPqViPq()(i, i) = Jc.IiPqViPq()(i, i) - (2*VidM4*Pvi_m_QVr) + PdM2;
+         J.IrPqVrPq()(i, i) = Jc.IrPqVrPq()(i, i) - (2 * VrdM4 * Pvr_p_QVi) + PdM2;
+         J.IrPqViPq()(i, i) = Jc.IrPqViPq()(i, i) - (2 * VidM4 * Pvr_p_QVi) + QdM2;
+         J.IiPqVrPq()(i, i) = Jc.IiPqVrPq()(i, i) - (2 * VrdM4 * Pvi_m_QVr) - QdM2;
+         J.IiPqViPq()(i, i) = Jc.IiPqViPq()(i, i) - (2 * VidM4 * Pvi_m_QVr) + PdM2;
       }
 
       // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
@@ -425,14 +425,14 @@ namespace SmartGridToolbox
          for (auto it = colVrPv.begin(); it != colVrPv.end(); ++it)
          {
             int idx = it.index();
-            fProj(idx) += colVrPv(idx)*fMult;
-            colViPv(idx) += colVrPv(idx)*colViPvMult;
+            fProj(idx) += colVrPv(idx) * fMult;
+            colViPv(idx) += colVrPv(idx) * colViPvMult;
          }
       };
 
       for (int k = 0; k < nPv_; ++k)
       {
-         double fMult = (0.5*(M2Pv(k) - VrPv(k)*VrPv(k) - ViPv(k)*ViPv(k))/VrPv(k));
+         double fMult = (0.5 * (M2Pv(k) - VrPv(k) * VrPv(k) - ViPv(k) * ViPv(k))/VrPv(k));
          double colViPvMult = -ViPv(k)/VrPv(k);
 
          mod(project(f, selIrPqFrom_f()), column(J.IrPqViPv(), k), column(J.IrPqVrPv(), k), fMult, colViPvMult);
@@ -599,7 +599,7 @@ namespace SmartGridToolbox
          auto ViPv = project(Vi, selPvFromAll());
          const auto DeltaViPv = project(x, selViPvFrom_x());
          VrPv += element_div(M2Pv - element_prod(VrPv, VrPv) - element_prod(ViPv, ViPv)
-                             - 2*element_prod(ViPv, DeltaViPv), 2*VrPv);
+                             - 2 * element_prod(ViPv, DeltaViPv), 2 * VrPv);
          ViPv += DeltaViPv;
 
          // Update Q for PV busses based on the solution.

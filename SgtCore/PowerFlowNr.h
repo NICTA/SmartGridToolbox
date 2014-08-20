@@ -147,7 +147,7 @@ namespace SmartGridToolbox
 
          unsigned int nPqPv() const {return nPq_ + nPv_;}
          unsigned int nNode() const {return nSl_ + nPq_ + nPv_;}
-         unsigned int nVar() const {return 2*(nPq_ + nPv_);}
+         unsigned int nVar() const {return 2 * (nPq_ + nPv_);}
 
          /// @name Ordering of variables etc.
          /// @{
@@ -169,13 +169,13 @@ namespace SmartGridToolbox
          // Note: see above: don't assign into a slice of a sparse matrix!
          ublas::slice selIrPqFrom_f() const {return {1, 2, nPq_};}
          ublas::slice selIiPqFrom_f() const {return {0, 2, nPq_};}
-         ublas::slice selIrPvFrom_f() const {return {2*nPq_ + 1, 2, nPv_};}
-         ublas::slice selIiPvFrom_f() const {return {2*nPq_, 2, nPv_};}
+         ublas::slice selIrPvFrom_f() const {return {2 * nPq_ + 1, 2, nPv_};}
+         ublas::slice selIiPvFrom_f() const {return {2 * nPq_, 2, nPv_};}
 
          ublas::slice selVrPqFrom_x() const {return {0, 2, nPq_};}
          ublas::slice selViPqFrom_x() const {return {1, 2, nPq_};}
-         ublas::slice selQPvFrom_x() const {return {2*nPq_, 2, nPv_};}
-         ublas::slice selViPvFrom_x() const {return {2*nPq_ + 1, 2, nPv_};}
+         ublas::slice selQPvFrom_x() const {return {2 * nPq_, 2, nPv_};}
+         ublas::slice selViPvFrom_x() const {return {2 * nPq_ + 1, 2, nPv_};}
          /// @}
 
          void initV(ublas::vector<double>& Vr, ublas::vector<double>& Vi) const;
