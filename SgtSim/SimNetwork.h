@@ -29,7 +29,7 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
          
-         SimNetwork(const std::string& id, Model& model, double PBase) : Network(id, model, PBase) {}
+         SimNetwork(const std::string& id, double PBase) : Network(id, PBase) {}
 
       /// @}
    };

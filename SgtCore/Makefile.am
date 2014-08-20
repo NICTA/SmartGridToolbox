@@ -12,7 +12,6 @@ pkginclude_HEADERS = \
 	Component.h \
 	Gen.h \
 	GenAbc.h \
-	Model.h \
 	Network.h \
 	Parser.h \
 	PowerFlow.h \
@@ -45,8 +44,6 @@ libSgtCore_a_SOURCES = \
 	LibSgtCore.h \
 	MatpowerParser.h \
 	MatpowerParser.cc \
-	Model.h \
-	Model.cc \
 	Network.h \
 	Network.cc \
 	Parser.h \

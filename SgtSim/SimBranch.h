@@ -48,13 +48,13 @@ namespace SmartGridToolbox
       /// @name Bus accessors:
       /// @{
 
-         virtual void setBus0(Bus& bus0)
+         virtual void setBus0(const std::shared_ptr<Bus>& bus0)
          {
             Branch::setBus0(bus0);
             changed_.trigger();
          }
           
-         virtual void setBus1(Bus& bus1)
+         virtual void setBus1(const std::shared_ptr<Bus>& bus1)
          {
             Branch::setBus1(bus1);
             changed_.trigger();
