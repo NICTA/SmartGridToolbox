@@ -1,15 +1,20 @@
 #ifndef COMPONENT_DOT_H
 #define COMPONENT_DOT_H
 
-#include <SgtCore/HasId.h>
-
 #include <string>
 
 using std::string;
 
 namespace SmartGridToolbox
 {
-   class Component : public HasId
+   class ComponentAbc
+   {
+      public:
+         virtual const std::string& id() const = 0;
+         virtual const char* componentTypeStr() const = 0;
+   };
+
+   class Component : public ComponentAbc
    {
       public:
 
@@ -24,7 +29,7 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
          
-         virtual const char* componentTypeStr() const {return "component";}
+         virtual const char* componentTypeStr() const override {return "component";}
 
       /// @}
          

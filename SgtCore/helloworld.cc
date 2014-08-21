@@ -1,26 +1,45 @@
 #include <iostream>
-#include <cstdlib>
+#include <memory>
+#include <vector>
 
-#include "LibSgtCore.h"
+class A {};
+class B : public A {};
 
-int main(int argc, char** argv)
+class Parser
 {
-   using namespace SmartGridToolbox;
+   public:
+      virtual void parse();
+};
 
-   assert(argc == 2);
-   std::string fname = argv[1];
-   Network nw("hello_network", 100.0);
-   SmartGridToolbox::Parser::globalParser().parse(fname, nw);
-   auto print = [&](){
-      for (auto bus : nw.busses())
+class ParserA : public Parser
+{
+   public:
+      virtual void parse()
       {
-         auto V = nw.V2Pu(bus->V()[0], bus->VBase());
-         auto S = nw.S2Pu(bus->SGen()[0]);
-         printf("%12s : %9.4f %9.4f %9.4f %9.4f\n", bus->id().c_str(), std::abs(V), std::arg(V)*180.0/pi,
-               S.real(), S.imag());
+         a = std::make_shared<A>();
       }
-   };
-   print();
-   nw.solvePowerFlow();
-   print();
+      std::shared_ptr<A> a;
+};
+
+class ParserB : public ParserA
+{
+   public:
+      virtual void parse()
+      {
+         a = std::make_shared<B>();
+      }
+};
+
+void Parser::parse() {}
+
+int main()
+{
+   std::vector<std::shared_ptr<Parser>> pVec;
+   pVec.push_back(std::make_shared<ParserA>());
+   pVec.push_back(std::make_shared<ParserB>());
+
+   for (auto p : pVec)
+   {
+      p->parse();
+   }
 }

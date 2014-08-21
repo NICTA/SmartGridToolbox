@@ -97,7 +97,8 @@ namespace SmartGridToolbox
             return ((it == plugins_.end()) ? nullptr : it->second);
          }
 
-         void parse(const std::string& fname, Network& netw);
+         void parse(const std::string& fname);
+         void parse(const std::string& fname);
 
       private:
          Parser();

@@ -16,16 +16,16 @@ namespace SmartGridToolbox
    class Model
    {
       private:
-         typedef std::map<std::string, std::unique_ptr<Component>> CompMap;
-         typedef std::vector<Component*> CompVec;
-         typedef std::vector<const Component*> ConstCompVec;
+         typedef std::map<std::string, std::shared_ptr<ComponentAbc>> CompMap;
+         typedef std::vector<std::shared_ptr<ComponentAbc>> CompVec;
+         typedef std::vector<std::shared_ptr<const ComponentAbc>> ConstCompVec;
 
       public:
 
          /// @brief Factory method for ComponentAbcs.
          template<typename T, typename... Args> T& newComponentAbc(Args&&... args)
          {
-            std::shared_ptr<T> comp(new T(std::forward<Args>(args)...));
+            auto comp = std::make_shared<T>(std::forward<Args>(args)...);
             return acquireComponentAbc(comp);
          }
 
@@ -39,7 +39,7 @@ namespace SmartGridToolbox
          /// @brief Replace an existing ComponentAbc factory method.
          template<typename T, typename... Args> T& replaceComponentAbcWithNew(Args&&... args)
          {
-            std::shared_ptr<T> comp(new T(std::forward<Args>(args)...));
+            auto comp = std::make_shared<T>(std::forward<Args>(args)...);
             return replaceComponentAbc(comp);
          }
 
@@ -70,7 +70,7 @@ namespace SmartGridToolbox
          CompVec components() {return compVec_;}
 
       private:
-         void addOrReplaceGenericComponent(std::unique_ptr<Component>&& comp, bool allowReplace);
+         void addOrReplaceGenericComponent(std::unique_ptr<ComponentAbc>&& comp, bool allowReplace);
 
       private:
          CompMap compMap_;
