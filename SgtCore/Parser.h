@@ -62,7 +62,7 @@ namespace SmartGridToolbox
    class ParserPlugin
    {
       public:
-         template<typename T> static ParserPlugin& globalCompParser()
+         template<typename T> static ParserPlugin& globalParserPlugin()
          {
             static T t;
             return t;
@@ -88,7 +88,7 @@ namespace SmartGridToolbox
       public:
          template<typename T> void registerParserPlugin()
          {
-            plugins_[T::pluginKey()] = &ParserPlugin::globalCompParser<T>();
+            plugins_[T::pluginKey()] = &ParserPlugin::globalParserPlugin<T>();
          }
          
          const ParserPlugin* plugin(const std::string& name)
@@ -97,7 +97,6 @@ namespace SmartGridToolbox
             return ((it == plugins_.end()) ? nullptr : it->second);
          }
 
-         void parse(const std::string& fname);
          void parse(const std::string& fname);
 
       private:

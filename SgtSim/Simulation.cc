@@ -1,33 +1,66 @@
 #include "Simulation.h"
 
-#include "Model.h"
-#include "Component.h"
-
 #include <algorithm>
 
 #define DEBUG 1
 
 namespace SmartGridToolbox
 {
-   Simulation::Simulation(Model& mod) : mod_(&mod),
-                                         startTime_(posix_time::not_a_date_time),
-                                         endTime_(posix_time::not_a_date_time),
-                                         currentTime_(posix_time::neg_infin),
-                                         timestepWillStart_("Simulation timestep will start"),
-                                         timestepDidComplete_("Simulation timestep did complete")
+   Simulation::Simulation() : 
+      startTime_(posix_time::not_a_date_time),
+      endTime_(posix_time::not_a_date_time),
+      currentTime_(posix_time::neg_infin),
+      timestepWillStart_("Simulation timestep will start"),
+      timestepDidComplete_("Simulation timestep did complete")
    {
       // Empty.
+   }
+   
+   Simulation::ConstSimObjVec Simulation::simObjects() const
+   {
+      ConstSimObjVec result(simObjVec_.size());
+      std::copy(simObjVec_.begin(), simObjVec_.end(), result.begin());
+      return result;
+   }
+
+   void Simulation::addOrReplaceGeneric(std::unique_ptr<SimObject> && simObj, bool allowReplace)
+   {
+      SimObject& ref = *simObj;
+
+      message() << "Adding simObject " << ref.id() << " of type " 
+         << ref.componentTypeStr() << " to model." << std::endl;
+      IndentingOStreamBuf _(messageStream());
+
+      SimObjMap::iterator it1 = simObjMap_.find(ref.id());
+      if (it1 != simObjMap_.end())
+      {
+         if (allowReplace)
+         {
+            it1->second = std::move(comp);
+            message() << "SimObject " << ref.id() << " replaced in model." << std::endl;
+         }
+         else
+         {
+            error() << "SimObject " << ref.id() << " occurs more than once in the model!" << std::endl;
+            abort();
+         }
+      }
+      else
+      {
+         simObjVec_.push_back(comp.get());
+         simObjMap_[ref.id()] = std::move(comp);
+      }
    }
 
    void Simulation::initialize()
    {
       scheduledUpdates_.clear();
-      for (Component* comp : mod_->components())
+      for (SimObject* comp : mod_->simObjects())
       {
          comp->initialize();
          scheduledUpdates_.insert(std::make_pair(comp, startTime_));
          comp->needsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
-                                       "Simulation insert contingent update of component " + comp->name());
+                                       "Simulation insert contingent update of simObject " + comp->name());
       }
       currentTime_ = posix_time::neg_infin;
       // Contingent updates may have been inserted during initialization process e.g. when setting up setpoints etc.
@@ -45,7 +78,7 @@ namespace SmartGridToolbox
       bool result = false;
 
       Time nextSchedTime = posix_time::pos_infin;
-      Component* schedComp = 0;
+      SimObject* schedComp = 0;
       auto schedUpdateIt = scheduledUpdates_.begin();
 
       if (scheduledUpdates_.size() > 0)
@@ -53,7 +86,7 @@ namespace SmartGridToolbox
          schedComp = schedUpdateIt->first;
          nextSchedTime = schedUpdateIt->second;
 
-         SGT_DEBUG(debug() << "\tNext scheduled time = " << nextSchedTime << " for component "
+         SGT_DEBUG(debug() << "\tNext scheduled time = " << nextSchedTime << " for simObject "
                            << schedComp->name() << std::endl);
          SGT_DEBUG(debug() << "\t\t(Start, current, end time = " << startTime_ << " " << currentTime_
                            << " " << endTime_ << ")." << std::endl);
@@ -62,11 +95,11 @@ namespace SmartGridToolbox
       if (nextSchedTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ < endTime_)
       {
          // There are contingent updates pending.
-         Component* contComp = *contingentUpdates_.begin();
-         SGT_DEBUG(debug() << "\tContingent update component " << contComp->name() << " from "
+         SimObject* contComp = *contingentUpdates_.begin();
+         SGT_DEBUG(debug() << "\tContingent update simObject " << contComp->name() << " from "
                            << schedComp->time() << " to " << currentTime_ << std::endl);
          contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
-         // Before updating the component, we need to take it out of the scheduled updates set, because its
+         // Before updating the simObject, we need to take it out of the scheduled updates set, because its
          // sort key might change.
          for (auto it = scheduledUpdates_.begin(); it != scheduledUpdates_.end(); ++it)
          {
@@ -89,7 +122,7 @@ namespace SmartGridToolbox
             timestepWillStart_.trigger();
          }
          currentTime_ = nextSchedTime;
-         SGT_DEBUG(debug() << "\tScheduled update component " << schedComp->name() << " from "
+         SGT_DEBUG(debug() << "\tScheduled update simObject " << schedComp->name() << " from "
                            << schedComp->time() << " to " << currentTime_ << std::endl);
 
          // Remove the scheduled and possible contingent update. Note that if there is a contingent update, it was
@@ -112,11 +145,11 @@ namespace SmartGridToolbox
       {
          // We've reached the end of this step.
          SGT_DEBUG(debug() << "\tTimestep completed at " << currentTime_ << std::endl);
-         for (Component* comp : mod_->components())
+         for (SimObject* comp : mod_->simObjects())
          {
             if (comp->time() == currentTime_)
             {
-               SGT_DEBUG(debug() << "\tComponent " << comp->name() << " completed timestep." << std::endl);
+               SGT_DEBUG(debug() << "\tSimObject " << comp->name() << " completed timestep." << std::endl);
                comp->didCompleteTimestep().trigger();
             }
          }
@@ -142,7 +175,7 @@ namespace SmartGridToolbox
          result = result && doNextUpdate();
       }
 
-      // Now bring up all lagging components to the new time, if they have an update.
+      // Now bring up all lagging simObjects to the new time, if they have an update.
       Time time2 = currentTime_;
       while (result &&
              ((contingentUpdates_.size() > 0) ||

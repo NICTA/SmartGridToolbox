@@ -4,7 +4,6 @@
 #include <SgtSim/Simulation.h>
 
 #include <SgtCore/Common.h>
-#include <SgtCore/Model.h>
 #include <SgtCore/PowerFlow.h>
 
 #include <yaml-cpp/yaml.h>
@@ -75,7 +74,6 @@ namespace SmartGridToolbox
 {
    class Component;
    class ParserPlugin;
-   class Model;
    class Simulation;
 
    class ParserState
@@ -132,8 +130,8 @@ namespace SmartGridToolbox
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Model& mod, const ParserState& state) const {}
-         virtual void postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const {}
+         virtual void parse(const YAML::Node& nd, const ParserState& state) const {}
+         virtual void postParse(const YAML::Node& nd, const ParserState& state) const {}
    };
 
    /// @ingroup Core
@@ -149,7 +147,7 @@ namespace SmartGridToolbox
          };
 
       public:
-         void parse(const std::string& fname, Model& model, Simulation& simulation);
+         void parse(const std::string& fname, Simulation& simulation);
          void postParse();
 
          const YAML::Node top() {return top_;}
@@ -175,12 +173,11 @@ namespace SmartGridToolbox
       private:
          Parser();
 
-         void parseGlobal(Model& model, Simulation& simulation);
-         void parseTimeSeries(const std::string& type, const YAML::Node& node, Model& model);
-         void parseComponents(const YAML::Node& node, ParserState& state, Model& model, bool isPostParse);
+         void parseGlobal(Simulation& simulation);
+         void parseTimeSeries(const std::string& type, const YAML::Node& node);
+         void parseComponents(const YAML::Node& node, ParserState& state, bool isPostParse);
 
       private:
-         Model* mod_;
          Simulation* sim_;
          YAML::Node top_;
          std::map<std::string, const ParserPlugin*> compParsers_;

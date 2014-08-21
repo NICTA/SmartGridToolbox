@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    /// @brief SimpleInverter: DC power to n-phase AC converter.
    class SimpleInverter : public InverterBase
    {
-      /// @name Overridden member functions from Simulated.
+      /// @name Overridden member functions from SimObject.
       /// @{
       
       public:

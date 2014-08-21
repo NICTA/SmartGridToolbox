@@ -8,14 +8,15 @@
 
 namespace SmartGridToolbox
 {
-   class Simulated : public HasId
+   class SimObject : public ComponentAbc
    {
-      /// @name Overridden from HasId (normally via sister class delegation).
+      /// @name Overridden from ComponentAbc (normally via sister class delegation).
       /// @{
       
       public:
 
          virtual const std::string& id() const;
+         virtual const char* componentTypeStr() const;
 
       /// @}
       
@@ -51,7 +52,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle
       /// @{
      
-         virtual ~Simulated() = default;
+         virtual ~SimObject() = default;
 
       /// @}
 
@@ -87,13 +88,13 @@ namespace SmartGridToolbox
       /// @name Dependencies.
       /// @{
 
-         const std::vector<const Simulated*>& dependencies() const
+         const std::vector<const SimObject*>& dependencies() const
          {
             return dependencies_;
          }
 
          /// @brief Components on which I depend will update first.
-         void dependsOn(const Simulated& b)
+         void dependsOn(const SimObject& b)
          {
             dependencies_.push_back(&b);
          }
@@ -138,7 +139,7 @@ namespace SmartGridToolbox
       private:
 
          Time time_;                                     ///< The time to which I am up to date
-         std::vector<const Simulated*> dependencies_; ///< I depend on these.
+         std::vector<const SimObject*> dependencies_; ///< I depend on these.
          int rank_;                                      ///< Evaluation rank, based on weak ordering.
          Event willUpdate_;                              ///< Triggered immediately prior to upddate. 
          Event didUpdate_;                               ///< Triggered immediately post update.

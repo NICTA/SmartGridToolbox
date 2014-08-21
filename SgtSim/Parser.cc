@@ -1,6 +1,5 @@
 #include "Parser.h"
 
-#include "Model.h"
 #include "RegisterParserPlugins.h"
 #include "Simulation.h"
 
@@ -217,10 +216,9 @@ namespace SmartGridToolbox
       }
    };
 
-   void Parser::parse(const std::string& fname, Model& model, Simulation& simulation)
+   void Parser::parse(const std::string& fname, Simulation& simulation)
    {
       message() << "Started parsing file " << fname << "." << std::endl;
-      mod_ = &model;
       sim_ = &simulation;
       top_ = YAML::LoadFile(fname);
       if (top_.size() == 0)

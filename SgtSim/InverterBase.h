@@ -14,7 +14,7 @@ namespace SmartGridToolbox
    /// @ingroup PowerFlowCore
    class InverterBase : public ZipBase
    {
-      /// @name Overridden member functions from Simulated.
+      /// @name Overridden member functions from SimObject.
       /// @{
       
       public:

@@ -2,7 +2,7 @@
 #define SIMULATION_DOT_H
 
 #include <SgtSim/Event.h>
-#include <SgtSim/Simulated.h>
+#include <SgtSim/SimObject.h>
 #include <SgtSim/TimeSeries.h>
 
 #include <SgtCore/Common.h>
@@ -12,83 +12,121 @@
 
 namespace SmartGridToolbox
 {
-   class Model;
-
-   /// @brief Simulation: takes a Model, and steps time according to discrete event simulation principles.
+   /// @brief Simulation: steps time according to discrete event simulation principles.
    /// @ingroup Core
    class Simulation
    {
       private:
 
+         typedef std::vector<std::shared_ptr<SimObject>> SimObjVec;
+         typedef std::vector<std::shared_ptr<const SimObject>> ConstSimObjVec;
+         typedef std::map<std::string, std::shared_ptr<SimObject>> SimObjMap;
          typedef std::map<std::string, std::unique_ptr<TimeSeriesBase>> TimeSeriesMap;
-         typedef std::vector<Simulated*> SimObjVec;
 
       public:
-         /// @brief Default constructor.
-         Simulation(Model& mod);
+         /// @brief Constructor.
+         Simulation();
 
-         /// @brief Destructor.
-         ~Simulation()
-         {
-            // Empty.
-         }
-
-         /// @brief Model accessor.
-         const Model& model() const
-         {
-            return *mod_;
-         }
-
-         /// @brief Model accessor.
-         Model& model()
-         {
-            return const_cast<Model &>((const_cast<const Simulation*>(this))->model());
-         }
-
+         /// @brief Simulation start time.
          Time startTime() const
          {
             return startTime_;
          }
 
+         /// @brief Simulation start time.
          void setStartTime(Time time)
          {
             startTime_ = time;
          }
 
+         /// @brief Simulation end time.
          Time endTime() const
          {
             return endTime_;
          }
 
+         /// @brief Simulation end time.
          void setEndTime(Time time)
          {
             endTime_ = time;
          }
 
+         /// @brief Latitude/Longitude.
          LatLong latLong() const
          {
             return latLong_;
          }
 
+         /// @brief Latitude/Longitude.
          void setLatLong(const LatLong& latLong)
          {
             latLong_ = latLong;
          }
 
+         /// @brief Timezone.
          const local_time::time_zone_ptr timezone() const
          {
             return timezone_;
          }
 
+         /// @brief Timezone.
          void setTimezone(local_time::time_zone_ptr tz)
          {
             timezone_ = tz;
          }
 
+         /// @brief Timezone.
          Time currentTime() const
          {
             return currentTime_;
          }
+
+         /// @brief Factory method for SimObjects.
+         template<typename T, typename... Args> T& newSimObject(Args&&... args)
+         {
+            std::shared_ptr<T> comp(new T(std::forward<Args>(args)...));
+            return acquireSimObject(comp);
+         }
+
+         /// @brief Acquire an existing SimObject.
+         template<typename T> T& acquireSimObject(std::shared_ptr<T> comp)
+         {
+            addOrReplaceGenericSimObject(comp, false);
+            return *comp;
+         }
+
+         /// @brief Replace an existing SimObject factory method.
+         template<typename T, typename... Args> T& replaceSimObjectWithNew(Args&&... args)
+         {
+            std::shared_ptr<T> comp(new T(std::forward<Args>(args)...));
+            return replaceSimObject(comp);
+         }
+
+         /// @brief Replace an existing SimObject with an existing SimObject.
+         template<typename T> T& replaceSimObject(std::shared_ptr<T> comp)
+         {
+            addOrReplaceGenericSimObject(comp, true);
+            return *comp;
+         }
+
+         /// @brief Retrieve a const SimObject.
+         template<typename T> std::shared_ptr<T> simObject(const std::string& id) const
+         {
+            SimObjMap::const_iterator it = simObjMap_.find(id);
+            return (it == simObjMap_.end()) ? nullptr : std::dynamic_pointer_cast<const T>(it->second);
+         }
+
+         /// @brief Retrieve a SimObject.
+         template<typename T> T* simObject(const std::string& id)
+         {
+            return const_cast<T*>((const_cast<const Simulation*>(this))->simObject<T>(id));
+         }
+
+         /// @brief Copied vector of all const SimObjects.
+         ConstSimObjVec simObjects() const;
+
+         /// @brief Copied vector of all SimObjects.
+         SimObjVec simObjects() {return simObjVec_;}
 
          /// @brief Initialize to start time.
          void initialize();
@@ -105,21 +143,26 @@ namespace SmartGridToolbox
          /// @brief Get the timestep did complete event.
          Event& timestepDidComplete() {return timestepDidComplete_;}
 
+         /// @brief Get named TimeSeries.
          template<typename T> const T* timeSeries(const std::string& id) const
          {
             TimeSeriesMap::const_iterator it = timeSeriesMap_.find(id);
             return (it == timeSeriesMap_.end()) ? 0 : dynamic_cast<const T*>(it->second.get());
          }
+
+         /// @brief Get time series with given id.
          template<typename T> T* timeSeries(const std::string& id)
          {
             return const_cast<T*>((const_cast<const Simulation*>(this))-> timeSeries<T>(id));
          }
 
+         /// @brief Add a time series.
          void acquireTimeSeries (const std::string& id, std::unique_ptr<TimeSeriesBase> timeSeries)
          {
             timeSeriesMap_[id] = std::move(timeSeries);
          }
 
+         /// @brief Make ready to simulate!
          void validate();
 
       private:
@@ -128,8 +171,8 @@ namespace SmartGridToolbox
          class ScheduledUpdatesCompare
          {
             public:
-               bool operator()(const std::pair<Simulated*, Time>& lhs,
-                     const std::pair<Simulated*, Time>& rhs)
+               bool operator()(const std::pair<SimObject*, Time>& lhs,
+                     const std::pair<SimObject*, Time>& rhs)
                {
                   return ((lhs.second < rhs.second) ||
                         (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
@@ -142,28 +185,32 @@ namespace SmartGridToolbox
          class ContingentUpdatesCompare
          {
             public:
-               bool operator()(const Simulated* lhs, const Simulated* rhs)
+               bool operator()(const SimObject* lhs, const SimObject* rhs)
                {
                   return ((lhs->rank() < rhs->rank()) ||
                         ((lhs->rank() == rhs->rank()) && (lhs->id() < rhs->id())));
                }
          };
 
-         typedef std::set<std::pair<Simulated*, Time>, ScheduledUpdatesCompare> ScheduledUpdates;
-         typedef std::set<Simulated*, ContingentUpdatesCompare> ContingentUpdates;
+         typedef std::set<std::pair<SimObject*, Time>, ScheduledUpdatesCompare> ScheduledUpdates;
+         typedef std::set<SimObject*, ContingentUpdatesCompare> ContingentUpdates;
 
+      private:
+
+         void addOrReplaceGeneric(std::unique_ptr<SimObject>&& simObj, bool allowReplace);
+      
       private:
 
          bool isValid_;
          
-         Model* mod_;
-
          Time startTime_;
          Time endTime_;
          LatLong latLong_;
          local_time::time_zone_ptr timezone_;
          
+         SimObjMap simObjMap_;
          SimObjVec simObjVec_; // Encoding order of evaluation/rank.
+
          TimeSeriesMap timeSeriesMap_; // Contains TimeSeries objects for Simulation.
 
          Time currentTime_;

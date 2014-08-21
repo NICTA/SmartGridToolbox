@@ -11,7 +11,7 @@ namespace SmartGridToolbox
    /// extra grounded neutral wires that will be eliminated via the Kron reduction.
    class OverheadLine : public SimBranch
    {
-      /// @name Overridden member functions from Simulated.
+      /// @name Overridden member functions from SimObject.
       /// @{
       
       public:

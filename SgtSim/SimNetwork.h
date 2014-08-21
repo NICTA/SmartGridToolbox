@@ -1,7 +1,7 @@
 #ifndef NETWORK_COMP_DOT_H
 #define NETWORK_COMP_DOT_H
 
-#include <SgtSim/Simulated.h>
+#include <SgtSim/SimObject.h>
 
 #include <SgtCore/Network.h>
 
@@ -11,9 +11,9 @@ namespace SmartGridToolbox
    class SimBus;
 
    /// @ingroup PowerFlowCore
-   class SimNetwork : public Network, public Simulated
+   class SimNetwork : public Network, public SimObject
    {
-      /// @name Overridden member functions from Simulated.
+      /// @name Overridden member functions from SimObject.
       /// @{
       
       public:

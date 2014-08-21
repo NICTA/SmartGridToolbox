@@ -21,7 +21,7 @@ namespace SmartGridToolbox
 
    class SimpleBuilding : public ZipBase
    {
-      /// @name Overridden member functions from Simulated.
+      /// @name Overridden member functions from SimObject.
       /// @{
       
       public:

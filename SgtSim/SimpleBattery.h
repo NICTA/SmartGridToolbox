@@ -13,7 +13,7 @@ namespace SmartGridToolbox
    /// @brief Basic battery class, deriving from DCPowerSourceBase.
    class SimpleBattery : public DcPowerSourceBase
    {
-      /// @name Overridden member functions from Simulated.
+      /// @name Overridden member functions from SimObject.
       /// @{
       
       public:
