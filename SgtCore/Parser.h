@@ -13,6 +13,8 @@ namespace YAML
    using SmartGridToolbox::Complex;
    using SmartGridToolbox::Phase;
    using SmartGridToolbox::Phases;
+   using SmartGridToolbox::Time;
+   using SmartGridToolbox::posix_time::ptime;
    using SmartGridToolbox::ublas::matrix;
    using SmartGridToolbox::ublas::vector;
 
@@ -38,6 +40,18 @@ namespace YAML
    {
       static Node encode(const BusType& from);
       static bool decode(const Node& nd, BusType& to);
+   };
+
+   template<> struct convert<Time>
+   {
+      static Node encode(const Time& from);
+      static bool decode(const Node& nd, Time& to);
+   };
+
+   template<> struct convert<ptime>
+   {
+      static Node encode(const ptime& from);
+      static bool decode(const Node& nd, ptime& to);
    };
 
    template<typename T> struct convert<vector<T>>

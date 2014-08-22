@@ -77,6 +77,32 @@ namespace YAML
       return true;
    }
 
+   Node convert<Time>::encode(const Time& from)
+   {
+      Node nd;
+      nd.push_back(posix_time::to_simple_string(from));
+      return nd;
+   }
+
+   bool convert<Time>::decode(const Node& nd, Time& to)
+   {
+      to = posix_time::duration_from_string(nd.as<std::string>());
+      return true;
+   }
+
+   Node convert<posix_time::ptime>::encode(const posix_time::ptime& from)
+   {
+      Node nd;
+      nd.push_back(posix_time::to_simple_string(from));
+      return nd;
+   }
+
+   bool convert<posix_time::ptime>::decode(const Node& nd, posix_time::ptime& to)
+   {
+      to = posix_time::time_from_string(nd.as<std::string>());
+      return true;
+   }
+
    template<typename T> Node convert<ublas::vector<T>>::encode(const ublas::vector<T>& from)
    {
       Node nd;
