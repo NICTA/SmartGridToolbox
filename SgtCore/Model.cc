@@ -6,39 +6,29 @@
 
 namespace SmartGridToolbox
 {
-   Model::ConstCompVec Model::components() const
+   void Model::addOrReplaceGenericComponent(std::shared_ptr<ComponentAbc> comp, bool allowReplace)
    {
-      ConstCompVec result(compVec_.size());
-      std::copy(compVec_.begin(), compVec_.end(), result.begin());
-      return result;
-   }
-
-   void Model::addOrReplaceGenericComponent(std::unique_ptr<Component> && comp, bool allowReplace)
-   {
-      Component& ref = *comp;
-
-      message() << "Adding component " << ref.id() << " of type " 
-         << ref.componentTypeStr() << " to model." << std::endl;
+      message() << "Adding component " << comp->id() << " of type " 
+         << comp->componentTypeStr() << " to model." << std::endl;
       IndentingOStreamBuf _(messageStream());
 
-      CompMap::iterator it1 = compMap_.find(ref.id());
+      CompMap::iterator it1 = compMap_.find(comp->id());
       if (it1 != compMap_.end())
       {
          if (allowReplace)
          {
-            it1->second = std::move(comp);
-            message() << "Component " << ref.id() << " replaced in model." << std::endl;
+            it1->second = comp;
+            message() << "Component " << comp->id() << " replaced in model." << std::endl;
          }
          else
          {
-            error() << "Component " << ref.id() << " occurs more than once in the model!" << std::endl;
+            error() << "Component " << comp->id() << " occurs more than once in the model!" << std::endl;
             abort();
          }
       }
       else
       {
-         compVec_.push_back(comp.get());
-         compMap_[ref.id()] = std::move(comp);
+         compMap_[comp->id()] = comp;
       }
    }
 }

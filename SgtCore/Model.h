@@ -16,65 +16,65 @@ namespace SmartGridToolbox
    class Model
    {
       private:
+
          typedef std::map<std::string, std::shared_ptr<ComponentAbc>> CompMap;
-         typedef std::vector<std::shared_ptr<ComponentAbc>> CompVec;
-         typedef std::vector<std::shared_ptr<const ComponentAbc>> ConstCompVec;
 
       public:
 
-         /// @brief Factory method for ComponentAbcs.
-         template<typename T, typename... Args> T& newComponentAbc(Args&&... args)
+         /// @brief Factory method for Components.
+         template<typename T, typename... Args> T& newComponent(Args&&... args)
          {
             auto comp = std::make_shared<T>(std::forward<Args>(args)...);
-            return acquireComponentAbc(comp);
+            return acquireComponent(comp);
          }
 
-         /// @brief Acquire an existing ComponentAbc.
-         template<typename T> T& acquireComponentAbc(std::shared_ptr<T> comp)
+         /// @brief Acquire an existing Component.
+         template<typename T> T& acquireComponent(std::shared_ptr<T> comp)
          {
-            addOrReplaceGenericComponentAbc(comp, false);
+            addOrReplaceGenericComponent(comp, false);
             return *comp;
          }
 
-         /// @brief Replace an existing ComponentAbc factory method.
-         template<typename T, typename... Args> T& replaceComponentAbcWithNew(Args&&... args)
+         /// @brief Replace an existing Component factory method.
+         template<typename T, typename... Args> T& replaceComponentWithNew(Args&&... args)
          {
             auto comp = std::make_shared<T>(std::forward<Args>(args)...);
-            return replaceComponentAbc(comp);
+            return replaceComponent(comp);
          }
 
-         /// @brief Replace an existing ComponentAbc with an existing ComponentAbc.
-         template<typename T> T& replaceComponentAbc(std::shared_ptr<T> comp)
+         /// @brief Replace an existing Component with an existing Component.
+         template<typename T> T& replaceComponent(std::shared_ptr<T> comp)
          {
-            addOrReplaceGenericComponentAbc(comp, true);
+            addOrReplaceGenericComponent(comp, true);
             return *comp;
          }
 
-         /// @brief Retrieve a const ComponentAbc.
+         /// @brief Retrieve a const Component.
          template<typename T> std::shared_ptr<T> component(const std::string& id) const
          {
             CompMap::const_iterator it = compMap_.find(id);
             return (it == compMap_.end()) ? nullptr : std::dynamic_pointer_cast<const T>(it->second);
          }
 
-         /// @brief Retrieve a ComponentAbc.
+         /// @brief Retrieve a Component.
          template<typename T> T* component(const std::string& id)
          {
             return const_cast<T*>((const_cast<const Model*>(this))->component<T>(id));
          }
 
-         /// @brief Copied vector of all const ComponentAbcs.
-         ConstCompVec components() const;
-
-         /// @brief Copied vector of all ComponentAbcs.
-         CompVec components() {return compVec_;}
-
-      private:
-         void addOrReplaceGenericComponent(std::unique_ptr<ComponentAbc>&& comp, bool allowReplace);
+         /// @brief Access the components.
+         const CompMap& components()
+         {
+            return compMap_;
+         }
 
       private:
+
+         void addOrReplaceGenericComponent(std::shared_ptr<ComponentAbc> comp, bool allowReplace);
+
+      private:
+
          CompMap compMap_;
-         CompVec compVec_; // Secondary vector encoding order of evaluation/rank.
    };
 }
 
