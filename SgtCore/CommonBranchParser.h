@@ -6,15 +6,15 @@
 namespace SmartGridToolbox
 {
    /// @brief ParserPlugin that parses CommonBranch objects.
-   class CommonBranchParser : public ParserPlugin
+   class Network;
+   class CommonBranchParser : public ParserPlugin<Network>
    {
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key()
          {
             return "common_branch";
          }
 
-      public:
          virtual void parse(const YAML::Node& nd, Network& netw) const override;
    };
 }

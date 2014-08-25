@@ -5,16 +5,16 @@
 
 namespace SmartGridToolbox
 {
-   /// @brief ParserPlugin that parses Matpower data files.
-   class MatpowerParser : public ParserPlugin
+   /// @brief ParserPlugin that parses Matpower files.
+   class Network;
+   class MatpowerParser : public ParserPlugin<Network>
    {
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key()
          {
             return "matpower";
          }
 
-      public:
          virtual void parse(const YAML::Node& nd, Network& netw) const override;
    };
 }

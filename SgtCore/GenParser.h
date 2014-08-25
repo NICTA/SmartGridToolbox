@@ -6,15 +6,15 @@
 namespace SmartGridToolbox
 {
    /// @brief ParserPlugin that parses Gen objects.
-   class GenParser : public ParserPlugin
+   class Network;
+   class GenParser : public ParserPlugin<Network>
    {
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key()
          {
             return "gen";
          }
 
-      public:
          virtual void parse(const YAML::Node& nd, Network& netw) const override;
    };
 }

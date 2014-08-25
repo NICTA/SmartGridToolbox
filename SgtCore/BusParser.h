@@ -6,15 +6,15 @@
 namespace SmartGridToolbox
 {
    /// @brief ParserPlugin that parses Bus objects.
-   class BusParser : public ParserPlugin
+   class Network;
+   class BusParser : public ParserPlugin<Network>
    {
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key()
          {
             return "bus";
          }
 
-      public:
          virtual void parse(const YAML::Node& nd, Network& netw) const override;
    };
 }

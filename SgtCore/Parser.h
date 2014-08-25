@@ -69,55 +69,67 @@ namespace YAML
 
 namespace SmartGridToolbox
 {
-   class Network;
-
    void assertFieldPresent(const YAML::Node& nd, const std::string& field);
 
-   class ParserPlugin
+   template<typename DataType> class ParserPlugin
    {
       public:
-         template<typename T> static ParserPlugin& globalParserPlugin()
-         {
-            static T t;
-            return t;
-         }
 
-         static constexpr const char* pluginKey()
-         {
-            return "component";
-         }
-
-      public:
-         virtual void parse(const YAML::Node& nd, Network& netw) const {}
+         virtual const char* key() {return "ERROR";}
+         virtual void parse(const YAML::Node& nd, DataType& data) const {;}
    };
 
-   class Parser {
-      public:
-         static Parser& globalParser()
-         {
-            static Parser parser;
-            return parser;
-         };
+   YAML::Node getTopNode(const std::string& fname);
 
+   template<typename DataType> class Parser;
+   template<typename DataType> void registerParserPlugins(Parser<DataType>& parser);
+
+   template<typename DataType> class Parser {
       public:
-         template<typename T> void registerParserPlugin()
+         Parser()
          {
-            plugins_[T::pluginKey()] = &ParserPlugin::globalParserPlugin<T>();
+            registerParserPlugins(*this);
+         }
+
+         void registerParserPlugin(ParserPlugin<DataType> plugin)
+         {
+            plugins_[plugin.key()] = plugin;
          }
          
-         const ParserPlugin* plugin(const std::string& name)
+         void parse(const std::string& fname, DataType& into)
          {
-            auto it = plugins_.find(name);
-            return ((it == plugins_.end()) ? nullptr : it->second);
+            message() << "Parsing file " << fname << "." << std::endl;
+            {
+               IndentingOStreamBuf b(messageStream());
+               auto top = getTopNode(fname);
+               parse(top, into);
+            }
+            message() << "Finished parsing file " << fname << "." << std::endl;
          }
 
-         void parse(const std::string& fname);
+         void parse(const YAML::Node& node, DataType& into)
+         {
+            for (const auto& subnode : node)
+            {
+               std::string nodeType = subnode.first.as<std::string>();
+               const YAML::Node& nodeVal = subnode.second;
+               message() << "Parsing plugin " <<  nodeType << "." << std::endl;
+               auto it = plugins_.find(nodeType);
+               if (it == plugins_.end())
+               {
+                  warning() << "I don't know how to parse plugin " << nodeType << std::endl;
+               }
+               else
+               {
+                  IndentingOStreamBuf b(messageStream());
+                  it->second.parse(nodeVal, into);
+               }
+            }
+            message() << "Parsing plugins. Completed." << std::endl;
+         }
 
       private:
-         Parser();
-
-      private:
-         std::map<std::string, const ParserPlugin*> plugins_;
+         std::map<std::string, ParserPlugin<DataType>> plugins_;
    };
 }
 

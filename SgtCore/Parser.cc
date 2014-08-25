@@ -2,7 +2,6 @@
 
 #include "Common.h"
 #include "PowerFlow.h"
-#include "RegisterParserPlugins.h"
 
 #include <string>
 #include <boost/algorithm/string.hpp>
@@ -202,41 +201,16 @@ namespace SmartGridToolbox
          abort();
       }
    };
-
-   void Parser::parse(const std::string& fname, Network& netw)
+   
+   YAML::Node getTopNode(const std::string& fname)
    {
-      message() << "Started parsing file " << fname << "." << std::endl;
-
+      message() << "Opening file " << fname << " for parsing." << std::endl;
       auto top = YAML::LoadFile(fname);
       if (top.size() == 0)
       {
-         error() << "Parsing file " << fname << ". File is empty or doesn't exist." << std::endl;
+         error() << "File " << fname << " is empty or doesn't exist." << std::endl;
          abort();
       }
-      
-      message() << "Parsing plugins. Starting." << std::endl;
-      for (const auto& subnode : top)
-      {
-         std::string nodeType = subnode.first.as<std::string>();
-         const YAML::Node& nodeVal = subnode.second;;
-         message() << "Parsing plugin " <<  nodeType << "." << std::endl;
-         const ParserPlugin* plugin = plugins_[nodeType];
-         if (plugin == nullptr)
-         {
-            warning() << "I don't know how to parse plugin " << nodeType << std::endl;
-         }
-         else
-         {
-            plugin->parse(nodeVal, netw);
-         }
-      }
-      message() << "Parsing plugins. Completed." << std::endl;
-
-      message() << "Finished parsing file " << fname << "." << std::endl;
-   }
-
-   Parser::Parser()
-   {
-      registerParserPlugins(*this);
+      return top;
    }
 }

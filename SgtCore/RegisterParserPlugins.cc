@@ -1,5 +1,3 @@
-#include "RegisterParserPlugins.h"
-
 #include "Parser.h"
 #include "BusParser.h"
 #include "CommonBranchParser.h"
@@ -9,12 +7,13 @@
 
 namespace SmartGridToolbox
 {
-   void registerParserPlugins(Parser& p)
+   class Network;
+   template<> void registerParserPlugins<Network>(Parser<Network>& p)
    {
-      p.registerParserPlugin<BusParser>();
-      p.registerParserPlugin<CommonBranchParser>();
-      p.registerParserPlugin<GenParser>();
-      p.registerParserPlugin<MatpowerParser>();
-      p.registerParserPlugin<ZipParser>();
+      p.registerParserPlugin(BusParser());
+      p.registerParserPlugin(CommonBranchParser());
+      p.registerParserPlugin(GenParser());
+      p.registerParserPlugin(MatpowerParser());
+      p.registerParserPlugin(ZipParser());
    }
 }
