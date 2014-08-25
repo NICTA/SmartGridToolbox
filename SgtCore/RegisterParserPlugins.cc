@@ -10,10 +10,11 @@ namespace SmartGridToolbox
    class Network;
    template<> void registerParserPlugins<Network>(Parser<Network>& p)
    {
-      p.registerParserPlugin(BusParser());
-      p.registerParserPlugin(CommonBranchParser());
-      p.registerParserPlugin(GenParser());
-      p.registerParserPlugin(MatpowerParser());
-      p.registerParserPlugin(ZipParser());
+std::cout << "Register" << std::endl;
+      p.registerParserPlugin(std::unique_ptr<BusParser>(new BusParser()));
+      p.registerParserPlugin(std::unique_ptr<CommonBranchParser>(new CommonBranchParser()));
+      p.registerParserPlugin(std::unique_ptr<GenParser>(new GenParser()));
+      p.registerParserPlugin(std::unique_ptr<MatpowerParser>(new MatpowerParser()));
+      p.registerParserPlugin(std::unique_ptr<ZipParser>(new ZipParser()));
    }
 }

@@ -91,9 +91,9 @@ namespace SmartGridToolbox
             registerParserPlugins(*this);
          }
 
-         void registerParserPlugin(ParserPlugin<DataType> plugin)
+         void registerParserPlugin(std::unique_ptr<ParserPlugin<DataType>> plugin)
          {
-            plugins_[plugin.key()] = plugin;
+            plugins_[plugin->key()] = std::move(plugin);
          }
          
          void parse(const std::string& fname, DataType& into)
@@ -122,14 +122,14 @@ namespace SmartGridToolbox
                else
                {
                   IndentingOStreamBuf b(messageStream());
-                  it->second.parse(nodeVal, into);
+                  it->second->parse(nodeVal, into);
                }
             }
             message() << "Parsing plugins. Completed." << std::endl;
          }
 
       private:
-         std::map<std::string, ParserPlugin<DataType>> plugins_;
+         std::map<std::string, std::unique_ptr<ParserPlugin<DataType>>> plugins_;
    };
 }
 
