@@ -19,8 +19,6 @@ namespace SmartGridToolbox
 
          Zip(const std::string& id, Phases phases);
 
-         virtual ~Zip() = default;
-      
       /// @}
 
       /// @name Component Type:

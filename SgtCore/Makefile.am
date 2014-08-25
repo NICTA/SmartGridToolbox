@@ -36,6 +36,10 @@ libSgtCore_a_SOURCES = \
 	CommonBranchParser.cc \
 	Component.h \
 	Component.cc \
+	DgyTransformer.h \
+	DgyTransformer.cc \
+	DgyTransformerParser.h \
+	DgyTransformerParser.cc \
 	Gen.h \
 	Gen.cc \
 	GenAbc.h \

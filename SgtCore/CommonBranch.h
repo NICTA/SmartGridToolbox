@@ -25,8 +25,6 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual ~CommonBranch() = default;
-
       /// @}
 
       /// @name Component Type:

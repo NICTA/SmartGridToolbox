@@ -21,8 +21,6 @@ namespace SmartGridToolbox
          
          Branch(const std::string& id, Phases phases0, Phases phases1);
 
-         virtual ~Branch() = default;
-      
       /// @}
 
       /// @name Component Type:

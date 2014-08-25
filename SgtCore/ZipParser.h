@@ -5,8 +5,9 @@
 
 namespace SmartGridToolbox
 {
-   /// @brief ParserPlugin that parses Zip objects.
    class Network;
+
+   /// @brief ParserPlugin that parses Zip objects.
    class ZipParser : public ParserPlugin<Network>
    {
       public:

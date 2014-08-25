@@ -18,8 +18,6 @@ namespace SmartGridToolbox
          
          Gen(const std::string& id, Phases phases);
 
-         virtual ~Gen() = default;
-      
       /// @}
 
       /// @name Component Type:

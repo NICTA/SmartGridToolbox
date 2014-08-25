@@ -76,7 +76,14 @@ namespace SmartGridToolbox
       public:
 
          virtual const char* key() {return "ERROR";}
-         virtual void parse(const YAML::Node& nd, DataType& data) const {;}
+         virtual void parse(const YAML::Node& nd, DataType& data) const 
+         {
+            // Empty.
+         }
+         virtual void postParse(const YAML::Node& nd, DataType& data) const
+         {
+            // Empty.
+         }
    };
 
    YAML::Node getTopNode(const std::string& fname);

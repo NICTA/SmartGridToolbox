@@ -17,8 +17,6 @@ namespace SmartGridToolbox
          
          GenAbc(const std::string& id, Phases phases);
 
-         virtual ~GenAbc() = default;
-      
       /// @}
 
       /// @name Component Type:

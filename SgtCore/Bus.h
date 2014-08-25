@@ -28,8 +28,6 @@ namespace SmartGridToolbox
 
          Bus(const std::string& id, Phases phases, const ublas::vector<Complex>& VNom, double VBase);
 
-         virtual ~Bus() = default;
-
       /// @}
 
       /// @name Component Type:

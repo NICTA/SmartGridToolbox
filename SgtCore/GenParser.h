@@ -5,8 +5,9 @@
 
 namespace SmartGridToolbox
 {
-   /// @brief ParserPlugin that parses Gen objects.
    class Network;
+
+   /// @brief ParserPlugin that parses Gen objects.
    class GenParser : public ParserPlugin<Network>
    {
       public:

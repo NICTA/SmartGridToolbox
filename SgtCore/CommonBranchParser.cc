@@ -1,7 +1,6 @@
 #include "CommonBranchParser.h"
 
 #include "CommonBranch.h"
-#include "Common.h"
 #include "Network.h"
 
 namespace SmartGridToolbox
@@ -54,5 +53,6 @@ namespace SmartGridToolbox
       cBranch->setBus1(bus1);
       
       netw.addBranch(std::move(cBranch));
+
    }
 }

@@ -18,8 +18,6 @@ namespace SmartGridToolbox
 
          ZipAbc(const std::string& id, Phases phases);
 
-         virtual ~ZipAbc() = default;
-      
       /// @}
 
       /// @name Component Type:

@@ -5,8 +5,9 @@
 
 namespace SmartGridToolbox
 {
-   /// @brief ParserPlugin that parses Matpower files.
    class Network;
+
+   /// @brief ParserPlugin that parses Matpower files.
    class MatpowerParser : public ParserPlugin<Network>
    {
       public:

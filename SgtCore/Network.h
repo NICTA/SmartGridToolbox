@@ -33,8 +33,6 @@ namespace SmartGridToolbox
          
          Network(const std::string& id, double PBase);
 
-         virtual ~Network() = default;
-
       /// @}
       
       /// @name Component Type:

@@ -5,8 +5,9 @@
 
 namespace SmartGridToolbox
 {
-   /// @brief ParserPlugin that parses CommonBranch objects.
    class Network;
+
+   /// @brief ParserPlugin that parses CommonBranch objects.
    class CommonBranchParser : public ParserPlugin<Network>
    {
       public:
