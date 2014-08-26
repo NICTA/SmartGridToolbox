@@ -1,10 +1,9 @@
 #ifndef INVERTER_BASE_DOT_H
 #define INVERTER_BASE_DOT_H
 
-#include <SgtSim/ZipBase.h>
+#include <SgtSim/SimObject.h>
 
-#include <SgtCore/Common.h>
-#include <SgtCore/PowerFlow.h>
+#include <SgtCore/ZipAbc.h>
 
 namespace SmartGridToolbox
 {
@@ -12,7 +11,7 @@ namespace SmartGridToolbox
 
    /// @brief DC power to n-phase AC converter.
    /// @ingroup PowerFlowCore
-   class InverterBase : public ZipBase
+   class InverterBase : public ZipAbc, public SimObject
    {
       /// @name Overridden member functions from SimObject.
       /// @{
@@ -30,14 +29,20 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
          
-         InverterBase(const std::string& name, const Phases& phases) : ZipBase(name, phases), PDc_(0.0)
+         InverterBase(const std::string& name, const Phases& phases) : ZipAbc(name, phases), PDc_(0.0)
          {
             // Empty.
          }
          
-         virtual ublas::vector<Complex> Y() const override {return ublas::vector<Complex>(phases().size(), czero);}
-         virtual ublas::vector<Complex> I() const override {return ublas::vector<Complex>(phases().size(), czero);}
-         virtual ublas::vector<Complex> S() const override = 0;
+         virtual ublas::vector<Complex> YConst() const override
+         {
+            return ublas::vector<Complex>(phases().size(), czero);
+         }
+         virtual ublas::vector<Complex> IConst() const override
+         {
+            return ublas::vector<Complex>(phases().size(), czero);
+         }
+         virtual ublas::vector<Complex> SConst() const override = 0;
 
 
          void addDcPowerSource(DcPowerSourceBase& source);
@@ -50,8 +55,8 @@ namespace SmartGridToolbox
       /// @}
 
       private:
-         std::vector<const DcPowerSourceBase*> sources_;    ///< My DC power sources.
-         double PDc_;                                       ///< DC power = sum of all sources.
+         std::vector<std::shared_ptr<DcPowerSourceBase>> sources_;   ///< My DC power sources.
+         double PDc_;                                                ///< DC power = sum of all sources.
    };
 }
 
