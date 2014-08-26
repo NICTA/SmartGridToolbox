@@ -1,7 +1,7 @@
 #ifndef NETWORK_DOT_H
 #define NETWORK_DOT_H
 
-#include<SgtCore/Branch.h>
+#include<SgtCore/BranchAbc.h>
 #include<SgtCore/Bus.h>
 #include<SgtCore/Gen.h>
 #include<SgtCore/Zip.h>
@@ -18,8 +18,8 @@ namespace SmartGridToolbox
          typedef std::vector<std::shared_ptr<Bus>> BusVec;
          typedef std::map<std::string, std::shared_ptr<Bus>> BusMap;
 
-         typedef std::vector<std::shared_ptr<Branch>> BranchVec;
-         typedef std::map<std::string, std::shared_ptr<Branch>> BranchMap;
+         typedef std::vector<std::shared_ptr<BranchAbc>> BranchVec;
+         typedef std::map<std::string, std::shared_ptr<BranchAbc>> BranchMap;
 
          typedef std::vector<std::shared_ptr<Gen>> GenVec;
          typedef std::map<std::string, std::shared_ptr<Gen>> GenMap;
@@ -93,16 +93,16 @@ namespace SmartGridToolbox
          {
             return branchVec_;
          }
-         std::shared_ptr<const Branch> branch(const std::string& id) const
+         std::shared_ptr<const BranchAbc> branch(const std::string& id) const
          {
             BranchMap::const_iterator it = branchMap_.find(id);
             return (it == branchMap_.end()) ? nullptr : it->second;
          }
-         std::shared_ptr<Branch> branch(const std::string& id)
+         std::shared_ptr<BranchAbc> branch(const std::string& id)
          {
-            return std::const_pointer_cast<Branch>((const_cast<const Network*>(this))->branch(id));
+            return std::const_pointer_cast<BranchAbc>((const_cast<const Network*>(this))->branch(id));
          }
-         virtual void addBranch(std::shared_ptr<Branch> branch)
+         virtual void addBranch(std::shared_ptr<BranchAbc> branch)
          {
             branchMap_[branch->id()] = branch;
             branchVec_.push_back(branch);

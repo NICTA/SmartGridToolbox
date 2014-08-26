@@ -6,7 +6,6 @@ include_HEADERS = LibSgtSim.h
 
 pkginclude_HEADERS = \
 	DcPowerSourceBase.h \
-	DgyTransformer.h \
 	Event.h \
 	InverterBase.h \
 	OverheadLine.h \
@@ -14,6 +13,7 @@ pkginclude_HEADERS = \
 	RegularUpdateComponent.h \
 	SimBranch.h \
 	SimBus.h \
+	SimDgyTransformer.h \
 	SimNetwork.h \
 	SimObject.h \
 	SimZip.h \
@@ -28,14 +28,9 @@ pkginclude_HEADERS = \
 	Sun.h \
 	TimeSeries.h \
 	Weather.h \
-	YyTransformer.h \
-	ZipBase.h
+	YyTransformer.h
 
 libSgtSim_a_SOURCES = \
-	DgyTransformer.h \
-	DgyTransformer.cc \
-	DgyTransformerParser.h \
-	DgyTransformerParser.cc \
 	Event.h \
 	Event.cc \
 	InverterBase.h \
@@ -56,6 +51,10 @@ libSgtSim_a_SOURCES = \
 	SimBus.cc \
 	SimBusParser.h \
 	SimBusParser.cc \
+	SimDgyTransformer.h \
+	SimDgyTransformer.cc \
+	SimDgyTransformerParser.h \
+	SimDgyTransformerParser.cc \
 	SimNetwork.h \
 	SimNetwork.cc \
 	SimNetworkParser.h \

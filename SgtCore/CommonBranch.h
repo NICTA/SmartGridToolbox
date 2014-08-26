@@ -2,7 +2,7 @@
 #define COMMON_BRANCH_DOT_H
 
 #include <SgtCore/Common.h>
-#include <SgtCore/Branch.h>
+#include <SgtCore/BranchAbc.h>
 #include <SgtCore/PowerFlow.h>
 
 #include <iostream>
@@ -12,7 +12,7 @@ namespace SmartGridToolbox
    class Bus;
 
    /// @brief A single phase transmission line.
-   class CommonBranch : public Branch
+   class CommonBranch : public BranchAbc
    {
       public:
 
@@ -20,7 +20,7 @@ namespace SmartGridToolbox
       /// @{
 
          CommonBranch(const std::string& id) :
-            Branch(id, Phase::BAL, Phase::BAL)
+            BranchAbc(id, Phase::BAL, Phase::BAL)
          {
             // Empty.
          }
@@ -99,7 +99,7 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Overridden from Branch:
+      /// @name Overridden from BranchAbc:
       /// @{
 
          virtual const ublas::matrix<Complex> Y();

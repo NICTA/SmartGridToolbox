@@ -5,7 +5,7 @@ lib_LIBRARIES = libSgtCore.a
 include_HEADERS = LibSgtCore.h
 
 pkginclude_HEADERS = \
-	Branch.h \
+	BranchAbc.h \
 	Bus.h \
 	Common.h \
 	CommonBranch.h \
@@ -23,8 +23,8 @@ pkginclude_HEADERS = \
 	Zip.h
 
 libSgtCore_a_SOURCES = \
-	Branch.h \
-	Branch.cc \
+	BranchAbc.h \
+	BranchAbc.cc \
 	Bus.h \
 	Bus.cc \
 	BusParser.h \

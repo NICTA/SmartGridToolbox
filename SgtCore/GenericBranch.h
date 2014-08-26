@@ -1,11 +1,11 @@
 #ifndef GENERIC_BRANCH_DOT_H
 #define GENERIC_BRANCH_DOT_H
 
-#include <SgtCore/Branch.h>
+#include <SgtCore/BranchAbc.h>
 
 namespace SmartGridToolbox
 {
-   class GenericBranch : public Branch
+   class GenericBranch : public BranchAbc
    {
       public:
 
@@ -13,7 +13,7 @@ namespace SmartGridToolbox
       /// @{
 
          GenericBranch(const std::string& id, const Phases& phases0, const Phases& phases1) :
-            Branch(id, phases0, phases1), Y_(2*phases0.size(), 2*phases0.size(), czero)
+            BranchAbc(id, phases0, phases1), Y_(2*phases0.size(), 2*phases0.size(), czero)
          {
             // Empty.
          }
@@ -27,7 +27,7 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Overridden from Branch:
+      /// @name Overridden from BranchAbc:
       /// @{
 
          virtual const ublas::matrix<Complex> Y()

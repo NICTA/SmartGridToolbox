@@ -37,7 +37,7 @@ namespace SmartGridToolbox
          solver.addBus(bus->id(), bus->type(), bus->phases(), bus->VNom(), bus->YZip(), bus->IZip(), 
                bus->SZip() + bus->SGen());
       }
-      for (const std::shared_ptr<Branch>& branch : branchVec_)
+      for (const std::shared_ptr<BranchAbc>& branch : branchVec_)
       {
          solver.addBranch(branch->bus0().id(), branch->bus1().id(), branch->phases0(), branch->phases1(),
                branch->Y());

@@ -1,7 +1,7 @@
 #include "MatpowerParser.h"
 
 #include "Bus.h"
-#include "Branch.h"
+#include "BranchAbc.h"
 #include "CommonBranch.h"
 #include "Gen.h"
 #include "Network.h"

@@ -4,17 +4,16 @@
 #include <SgtSim/SimBus.h>
 #include <SgtSim/SimObject.h>
 
-#include <SgtCore/Branch.h>
-#include <SgtCore/Common.h>
+#include <SgtCore/CommonBranch.h>
 #include <SgtCore/PowerFlow.h>
 
 #include <iostream>
 
 namespace SmartGridToolbox
 {
-   /// @brief A SimBranch connects two Busses in a Network.
-   /// @ingroup PowerFlowCore
-   class SimBranch : public Branch, public SimObject
+/// @brief A SimBranch connects two Busses in a Network.
+/// @ingroup PowerFlowCore
+class SimBranch : public CommonBranch, public SimObject
    {
       /// @name Public overridden member functions from SimObject.
       /// @{
@@ -40,7 +39,7 @@ namespace SmartGridToolbox
       /// @name SimBus accessors:
       /// @{
          
-         const SimBus& bus0() const {return dynamic_cast<const SimBus&>(Branch::bus0());}
+         const SimBus& bus0() const {return dynamic_cast<const SimBus&>(CommonBranch::bus0());}
          const SimBus& bus1() const {return dynamic_cast<const SimBus&>(Branch::bus1());}
       
       /// @}

@@ -11,15 +11,15 @@ namespace SmartGridToolbox
 {
    class Bus;
 
-   /// @brief A Branch connects two Busses in a Network.
-   class Branch : public Component
+   /// @brief BranchAbc is an abstract base class for a branch which connects two Busses in a Network.
+   class BranchAbc : public Component
    {
       public:
 
       /// @name Lifecycle:
       /// @{
          
-         Branch(const std::string& id, Phases phases0, Phases phases1);
+         BranchAbc(const std::string& id, Phases phases0, Phases phases1);
 
       /// @}
 

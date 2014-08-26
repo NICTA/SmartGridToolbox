@@ -2,7 +2,7 @@
 #define LIB_POWER_FLOW_DOT_H
 
 #include <SgtCore/Bus.h>
-#include <SgtCore/Branch.h>
+#include <SgtCore/BranchAbc.h>
 #include <SgtCore/Common.h>
 #include <SgtCore/CommonBranch.h>
 #include <SgtCore/Gen.h>
