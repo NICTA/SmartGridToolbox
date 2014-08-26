@@ -12,8 +12,8 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "complex_turns_ratio_01");
       assertFieldPresent(nd, "leakage_impedance");
-      assertFieldPresent(nd, "bus_0");
-      assertFieldPresent(nd, "bus_1");
+      assertFieldPresent(nd, "bus_0_id");
+      assertFieldPresent(nd, "bus_1_id");
 
       const std::string id = nd["id"].as<std::string>();
       Complex a = nd["complex_turns_ratio_01"].as<Complex>();

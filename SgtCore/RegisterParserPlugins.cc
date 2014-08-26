@@ -1,6 +1,7 @@
 #include "Parser.h"
 #include "BusParser.h"
 #include "CommonBranchParser.h"
+#include "DgyTransformerParser.h"
 #include "GenericBranchParser.h"
 #include "GenParser.h"
 #include "MatpowerParser.h"
@@ -11,9 +12,9 @@ namespace SmartGridToolbox
    class Network;
    template<> void registerParserPlugins<Network>(Parser<Network>& p)
    {
-std::cout << "Register" << std::endl;
       p.registerParserPlugin<BusParser>();
       p.registerParserPlugin<CommonBranchParser>();
+      p.registerParserPlugin<DgyTransformerParser>();
       p.registerParserPlugin<GenericBranchParser>();
       p.registerParserPlugin<GenParser>();
       p.registerParserPlugin<MatpowerParser>();
