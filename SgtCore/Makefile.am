@@ -12,6 +12,7 @@ pkginclude_HEADERS = \
 	Component.h \
 	Gen.h \
 	GenAbc.h \
+	GenericBranch.h \
 	Model.h \
 	Network.h \
 	Parser.h \
@@ -44,6 +45,9 @@ libSgtCore_a_SOURCES = \
 	Gen.cc \
 	GenAbc.h \
 	GenAbc.cc \
+	GenericBranch.h \
+	GenericBranchParser.h \
+	GenericBranchParser.cc \
 	GenParser.h \
 	GenParser.cc \
 	LibSgtCore.h \

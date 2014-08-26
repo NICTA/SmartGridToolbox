@@ -98,8 +98,9 @@ namespace SmartGridToolbox
             registerParserPlugins(*this);
          }
 
-         void registerParserPlugin(std::unique_ptr<ParserPlugin<DataType>> plugin)
+         template<class PluginType> void registerParserPlugin()
          {
+            auto plugin = std::unique_ptr<PluginType>(new PluginType());
             plugins_[plugin->key()] = std::move(plugin);
          }
          
