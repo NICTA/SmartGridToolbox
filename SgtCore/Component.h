@@ -14,7 +14,7 @@ namespace SmartGridToolbox
          virtual const char* componentTypeStr() const = 0;
    };
 
-   class Component : public ComponentAbc
+   class Component : virtual public ComponentAbc
    {
       public:
 

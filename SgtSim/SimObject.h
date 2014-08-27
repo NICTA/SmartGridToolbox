@@ -8,21 +8,8 @@
 
 namespace SmartGridToolbox
 {
-   class SimObject : public ComponentAbc
+   class SimObject : virtual public ComponentAbc
    {
-      /// @name Overridden from ComponentAbc (normally via sister class delegation).
-      /// @{
-      
-      public:
-
-         virtual const std::string& id() const;
-         virtual const char* componentTypeStr() const;
-
-      /// @}
-      
-      /// @name Member functions which derived classes may override.
-      /// @{
-      
       public:
 
          /// @brief What is the latest time that I should update?
