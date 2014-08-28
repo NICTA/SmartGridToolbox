@@ -100,7 +100,7 @@ namespace SmartGridToolbox
       /// @name Nodal admittance matrix (Y):
       /// @{
          
-         virtual const ublas::matrix<Complex> Y() = 0;
+         virtual const ublas::matrix<Complex> Y() const = 0;
       
       /// @}
       

@@ -7,18 +7,18 @@ namespace SmartGridToolbox
    void InverterBase::updateState(Time t)
    {
       PDc_ = 0.0;
-      for (const DcPowerSourceBase* source : sources_)
+      for (auto source : sources_)
       {
          PDc_ += source->PDc();
       }
    }
 
-   void InverterBase::addDcPowerSource(DcPowerSourceBase& source)
+   void InverterBase::addDcPowerSource(std::shared_ptr<DcPowerSourceBase> source)
    {
       dependsOn(source);
-      sources_.push_back(&source);
-      source.didUpdate().addAction([this](){needsUpdate().trigger();},
-            "Trigger InverterBase " + name() + " needs update.");
+      sources_.push_back(source);
+      source->didUpdate().addAction([this](){needsUpdate().trigger();},
+            "Trigger InverterBase " + id() + " needs update.");
       // TODO: this will recalculate all zips. Efficiency?
    }
 

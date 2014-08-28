@@ -1,10 +1,9 @@
 #ifndef SIMULATED_DOT_H
 #define SIMULATED_DOT_H
 
-#include <SgtSim/Event.h>
-
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
+#include <SgtCore/Event.h>
 
 namespace SmartGridToolbox
 {

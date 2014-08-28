@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   const ublas::matrix<Complex> CommonBranch::Y()
+   const ublas::matrix<Complex> CommonBranch::Y() const
    {
       ublas::matrix<Complex> result(2, 2);
 

@@ -102,7 +102,7 @@ namespace SmartGridToolbox
       /// @name Overridden from BranchAbc:
       /// @{
 
-         virtual const ublas::matrix<Complex> Y();
+         virtual const ublas::matrix<Complex> Y() const override;
 
       /// @}
 

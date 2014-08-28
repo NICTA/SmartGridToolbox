@@ -10,7 +10,7 @@ pkginclude_HEADERS = \
 	OverheadLine.h \
 	Parser.h \
 	RegularUpdateComponent.h \
-	SimBranch.h \
+	SimGenericBranch.h \
 	SimBus.h \
 	SimDgyTransformer.h \
 	SimNetwork.h \
@@ -41,9 +41,9 @@ libSgtSim_a_SOURCES = \
 	Parser.cc \
 	RegisterParserPlugins.h \
 	RegisterParserPlugins.cc \
-	SimBranch.h \
-	SimBranchParser.h \
-	SimBranchParser.cc \
+	SimGenericBranch.h \
+	SimGenericBranchParser.h \
+	SimGenericBranchParser.cc \
 	SimBus.h \
 	SimBusParser.h \
 	SimBusParser.cc \

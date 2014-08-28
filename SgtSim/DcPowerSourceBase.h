@@ -1,7 +1,9 @@
 #ifndef DC_POWER_SOURCE_BASE_DOT_H
 #define DC_POWER_SOURCE_BASE_DOT_H
 
-#include <SgtSim/Component.h>
+#include <SgtSim/SimObject.h>
+
+#include <SgtCore/Component.h>
 
 namespace SmartGridToolbox
 {
@@ -9,7 +11,7 @@ namespace SmartGridToolbox
    ///
    /// Abstract base class for any object that can provide a source of DC power, i.e. a single real power.
    /// @ingroup PowerFlowCore
-   class DcPowerSourceBase : public Component
+   class DcPowerSourceBase : public Component, public SimObject
    {
       /// @name Overridden member functions from SimObject.
       /// @{

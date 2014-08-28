@@ -29,7 +29,6 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-
       /// @}
       
       /// @name Component Type:
@@ -38,7 +37,6 @@ namespace SmartGridToolbox
          virtual const char* componentTypeStr() const {return "DGY_transformer";}
 
       /// @}
-
       
       /// @name Parameters:
       /// @{
@@ -68,7 +66,7 @@ namespace SmartGridToolbox
       /// @name Overridden from BranchAbc:
       /// @{
          
-         virtual const ublas::matrix<Complex> Y();
+         virtual const ublas::matrix<Complex> Y() const override;
       
       /// @}
          

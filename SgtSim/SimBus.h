@@ -1,5 +1,5 @@
-#ifndef BUS_COMP_DOT_H
-#define BUS_COMP_DOT_H
+#ifndef SIM_BUS_DOT_H
+#define SIM_BUS_DOT_H
 
 #include <SgtSim/SimObject.h>
 
@@ -10,9 +10,6 @@
 
 namespace SmartGridToolbox
 {
-   class SimZip;
-   class SimGen;
-
    /// @brief A Bus component of a Network.
    /// @ingroup PowerFlowCore
    class SimBus : public Bus, public SimObject
@@ -36,21 +33,13 @@ namespace SmartGridToolbox
       /// @{
          
          SimBus(const std::string& id, Phases phases, const ublas::vector<Complex> & VNom, double VBase) :
-            Bus(id, phases, VNom, VBase),
-            changed_("SimBus " + id + " setpoint changed")
+            Bus(id, phases, VNom, VBase)
          {
             // Empty.
          }
 
       /// @}
-
-      private:
-
-      /// @name PowerFlowBus:
-      /// @{
-
-      /// @}
    };
 }
 
-#endif // BUS_COMP_DOT_H
+#endif // SIM_BUS_DOT_H

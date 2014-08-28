@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   const ublas::matrix<Complex> DgyTransformer::Y()
+   const ublas::matrix<Complex> DgyTransformer::Y() const
    {
       Complex ai = 1.0 / a_;
       Complex aci = 1.0 / conj(a_);

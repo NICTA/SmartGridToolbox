@@ -45,7 +45,7 @@ namespace SmartGridToolbox
          virtual ublas::vector<Complex> SConst() const override = 0;
 
 
-         void addDcPowerSource(DcPowerSourceBase& source);
+         void addDcPowerSource(std::shared_ptr<DcPowerSourceBase> source);
 
          virtual double efficiency(double powerDc) const = 0;
 
