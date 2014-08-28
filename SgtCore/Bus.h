@@ -181,12 +181,12 @@ namespace SmartGridToolbox
 
       protected:
 
-         virtual void addZip(const std::shared_ptr<Zip>& zip)
+         virtual void addZip(const std::shared_ptr<Zip> zip)
          {
             zips_.push_back(zip);
          }
 
-         virtual void addGen(const std::shared_ptr<Gen>& gen)
+         virtual void addGen(const std::shared_ptr<Gen> gen)
          {
             gens_.push_back(gen);
          }
