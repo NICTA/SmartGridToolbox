@@ -10,7 +10,7 @@ namespace SmartGridToolbox
    /// Equivalent to a single phase transformer on each phase.
    class YyTransformer : public SimBranch
    {
-      /// @name Overridden member functions from SimObject.
+      /// @name Overridden member functions from SimComponent.
       /// @{
       
       public:

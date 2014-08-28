@@ -11,7 +11,7 @@ namespace SmartGridToolbox
 
    class SolarPv : public DcPowerSourceBase
    {
-      /// @name Overridden member functions from SimObject.
+      /// @name Overridden member functions from SimComponent.
       /// @{
 
       public:

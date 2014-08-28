@@ -1,11 +1,11 @@
 #ifndef SIMULATION_DOT_H
 #define SIMULATION_DOT_H
 
-#include <SgtSim/Event.h>
-#include <SgtSim/SimObject.h>
+#include <SgtSim/SimComponent.h>
 #include <SgtSim/TimeSeries.h>
 
 #include <SgtCore/Common.h>
+#include <SgtCore/Event.h>
 
 #include <list>
 #include <set>
@@ -18,8 +18,8 @@ namespace SmartGridToolbox
    {
       private:
 
-         typedef std::shared_ptr<SimObject> SimObjPtr;
-         typedef std::shared_ptr<const SimObject> SimObjConstPtr;
+         typedef std::shared_ptr<SimComponent> SimObjPtr;
+         typedef std::shared_ptr<const SimComponent> SimObjConstPtr;
          typedef std::shared_ptr<TimeSeriesBase> TimeSeriesPtr;
          typedef std::shared_ptr<const TimeSeriesBase> TimeSeriesConstPtr;
 
@@ -86,52 +86,52 @@ namespace SmartGridToolbox
             return currentTime_;
          }
 
-         /// @brief Factory method for SimObjects.
-         template<typename T, typename... Args> T& newSimObject(Args&&... args)
+         /// @brief Factory method for SimComponents.
+         template<typename T, typename... Args> T& newSimComponent(Args&&... args)
          {
             std::shared_ptr<T> comp(new T(std::forward<Args>(args)...));
-            return acquireSimObject(comp);
+            return acquireSimComponent(comp);
          }
 
-         /// @brief Acquire an existing SimObject.
-         template<typename T> T& acquireSimObject(std::shared_ptr<T> comp)
+         /// @brief Acquire an existing SimComponent.
+         template<typename T> T& acquireSimComponent(std::shared_ptr<T> comp)
          {
-            addOrReplaceGenericSimObject(comp, false);
+            addOrReplaceGenericSimComponent(comp, false);
             return *comp;
          }
 
-         /// @brief Replace an existing SimObject factory method.
-         template<typename T, typename... Args> T& replaceSimObjectWithNew(Args&&... args)
+         /// @brief Replace an existing SimComponent factory method.
+         template<typename T, typename... Args> T& replaceSimComponentWithNew(Args&&... args)
          {
             std::shared_ptr<T> comp(new T(std::forward<Args>(args)...));
-            return replaceSimObject(comp);
+            return replaceSimComponent(comp);
          }
 
-         /// @brief Replace an existing SimObject with an existing SimObject.
-         template<typename T> T& replaceSimObject(std::shared_ptr<T> comp)
+         /// @brief Replace an existing SimComponent with an existing SimComponent.
+         template<typename T> T& replaceSimComponent(std::shared_ptr<T> comp)
          {
-            addOrReplaceGenericSimObject(comp, true);
+            addOrReplaceGenericSimComponent(comp, true);
             return *comp;
          }
 
-         /// @brief Retrieve a const SimObject.
-         template<typename T> std::shared_ptr<T> simObject(const std::string& id) const
+         /// @brief Retrieve a const SimComponent.
+         template<typename T> std::shared_ptr<T> simComponent(const std::string& id) const
          {
-            SimObjMap::const_iterator it = simObjMap_.find(id);
-            return (it == simObjMap_.end()) ? nullptr : std::dynamic_pointer_cast<const T>(it->second);
+            SimObjMap::const_iterator it = simCompMap_.find(id);
+            return (it == simCompMap_.end()) ? nullptr : std::dynamic_pointer_cast<const T>(it->second);
          }
 
-         /// @brief Retrieve a SimObject.
-         template<typename T> std::shared_ptr<T> simObject(const std::string& id)
+         /// @brief Retrieve a SimComponent.
+         template<typename T> std::shared_ptr<T> simComponent(const std::string& id)
          {
-            return std::const_pointer_cast<std::shared_ptr<T>>((const_cast<const Simulation*>(this))->simObject<T>(id));
+            return std::const_pointer_cast<std::shared_ptr<T>>((const_cast<const Simulation*>(this))->simComponent<T>(id));
          }
 
-         /// @brief Copied vector of all const SimObjects.
-         ConstSimObjVec simObjects() const;
+         /// @brief Copied vector of all const SimComponents.
+         ConstSimObjVec simComponents() const;
 
-         /// @brief Copied vector of all SimObjects.
-         SimObjVec simObjects() {return simObjVec_;}
+         /// @brief Copied vector of all SimComponents.
+         SimObjVec simComponents() {return simCompVec_;}
 
          /// @brief Initialize to start time.
          void initialize();
@@ -202,7 +202,7 @@ namespace SmartGridToolbox
 
       private:
 
-         void addOrReplaceGeneric(std::shared_ptr<SimObject> simObj, bool allowReplace);
+         void addOrReplaceGeneric(std::shared_ptr<SimComponent> simComp, bool allowReplace);
       
       private:
 
@@ -213,8 +213,8 @@ namespace SmartGridToolbox
          LatLong latLong_;
          local_time::time_zone_ptr timezone_;
          
-         SimObjMap simObjMap_;
-         SimObjVec simObjVec_; // Encoding order of evaluation/rank.
+         SimObjMap simCompMap_;
+         SimObjVec simCompVec_; // Encoding order of evaluation/rank.
 
          TimeSeriesMap timeSeriesMap_; // Contains TimeSeries objects for Simulation.
 

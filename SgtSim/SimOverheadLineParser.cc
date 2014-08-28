@@ -1,12 +1,12 @@
-#include "OverheadLineParser.h"
+#include "SimOverheadLineParser.h"
 
 #include "SimBus.h"
-#include "OverheadLine.h"
+#include "SimOverheadLine.h"
 #include "SimNetwork.h"
 
 namespace SmartGridToolbox
 {
-   void OverheadLineParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void SimOverheadLineParser::parse(const YAML::Node& nd, Simulation& data) const 
    {
       SGT_DEBUG(debug() << "OverheadLine : parse." << std::endl);
 
@@ -23,7 +23,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "distance_matrix");
       assertFieldPresent(nd, "freq");
 
-      string name = state.expandName(nd["name"].as<std::string>());
+      string name = nd["name"].as<std::string>();
       Phases phases0 = nd["phases_0"].as<Phases>();
       Phases phases1 = nd["phases_1"].as<Phases>();
       double length = nd["length"].as<double>();

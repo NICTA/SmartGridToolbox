@@ -7,7 +7,7 @@ namespace SmartGridToolbox
 {
    class SynchronousMachine : public Component
    {
-      /// @name Overridden member functions from SimObject.
+      /// @name Overridden member functions from SimComponent.
       /// @{
       
       public:

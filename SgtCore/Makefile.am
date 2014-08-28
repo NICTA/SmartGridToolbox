@@ -64,6 +64,8 @@ libSgtCore_a_SOURCES = \
 	Network.cc \
 	OverheadLine.h \
 	OverheadLine.cc \
+	OverheadLineParser.h \
+	OverheadLineParser.cc \
 	Parser.h \
 	Parser.cc \
 	PowerFlow.h \

@@ -1,8 +1,8 @@
-#include "SimObject.h"
+#include "SimComponent.h"
 
 namespace SmartGridToolbox
 {
-   SimObject::SimObject() :
+   SimComponent::SimComponent() :
       willUpdate_("Will update"),
       didUpdate_("Did update"),
       needsUpdate_("Needs update"),
@@ -12,16 +12,16 @@ namespace SmartGridToolbox
       // Empty.
    }
 
-   void SimObject::initialize()
+   void SimComponent::initialize()
    {
-      SGT_DEBUG(debug() << "SimObject " << name() << " initialize." << std::endl);
+      SGT_DEBUG(debug() << "SimComponent " << name() << " initialize." << std::endl);
       time_ = posix_time::neg_infin;
       initializeState();
    }
 
-   void SimObject::update(Time t)
+   void SimComponent::update(Time t)
    {
-      SGT_DEBUG(debug() << "SimObject " << name() << " update from " << time_ << " to " << t << std::endl);
+      SGT_DEBUG(debug() << "SimComponent " << name() << " update from " << time_ << " to " << t << std::endl);
       if (time_ < t)
       {
          willStartNewTimestep_.trigger();

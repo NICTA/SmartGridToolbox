@@ -1,5 +1,5 @@
-#ifndef SIMULATED_DOT_H
-#define SIMULATED_DOT_H
+#ifndef SIM_COMPONENT_DOT_H
+#define SIM_COMPONENT_DOT_H
 
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
@@ -7,7 +7,7 @@
 
 namespace SmartGridToolbox
 {
-   class SimObject : virtual public ComponentAbc
+   class SimComponent : virtual public ComponentAbc
    {
       /// @name Virtual methods to be overridden by derived classes.
       /// @{
@@ -41,9 +41,9 @@ namespace SmartGridToolbox
       /// @name Lifecycle
       /// @{
      
-         SimObject();
+         SimComponent();
 
-         virtual ~SimObject();
+         virtual ~SimComponent();
 
       /// @}
 
@@ -79,13 +79,13 @@ namespace SmartGridToolbox
       /// @name Dependencies.
       /// @{
 
-         const std::vector<std::weak_ptr<const SimObject>>& dependencies() const
+         const std::vector<std::weak_ptr<const SimComponent>>& dependencies() const
          {
             return dependencies_;
          }
 
          /// @brief Components on which I depend will update first.
-         void dependsOn(const std::shared_ptr<SimObject> b)
+         void dependsOn(const std::shared_ptr<SimComponent> b)
          {
             dependencies_.push_back(b);
          }
@@ -130,7 +130,7 @@ namespace SmartGridToolbox
       private:
 
          Time time_ = posix_time::not_a_date_time; ///< The time to which I am up to date
-         std::vector<std::weak_ptr<const SimObject>> dependencies_; ///< I depend on these.
+         std::vector<std::weak_ptr<const SimComponent>> dependencies_; ///< I depend on these.
          int rank_ = -1; ///< Evaluation rank, based on weak ordering.
          Event willUpdate_; ///< Triggered immediately prior to upddate. 
          Event didUpdate_; ///< Triggered immediately post update.
@@ -140,4 +140,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // SIMULATED_DOT_H
+#endif // SIM_COMPONENT_DOT_H

@@ -13,7 +13,7 @@ namespace SmartGridToolbox
    /// therefore important that the parameter to the constructor is the turns ratio, not the voltage ratio.
    class SimDgyTransformer : public SimBranch
    {
-      /// @name Overridden member functions from SimObject.
+      /// @name Overridden member functions from SimComponent.
       /// @{
       
       public:

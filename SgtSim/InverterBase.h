@@ -1,7 +1,7 @@
 #ifndef INVERTER_BASE_DOT_H
 #define INVERTER_BASE_DOT_H
 
-#include <SgtSim/SimObject.h>
+#include <SgtSim/SimComponent.h>
 
 #include <SgtCore/ZipAbc.h>
 
@@ -11,9 +11,9 @@ namespace SmartGridToolbox
 
    /// @brief DC power to n-phase AC converter.
    /// @ingroup PowerFlowCore
-   class InverterBase : public ZipAbc, public SimObject
+   class InverterBase : public ZipAbc, public SimComponent
    {
-      /// @name Overridden member functions from SimObject.
+      /// @name Overridden member functions from SimComponent.
       /// @{
       
       public:

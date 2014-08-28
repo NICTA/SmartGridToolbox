@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    /// @brief Utility base class for a component that updates with a regular "tick" dt.
    class RegularUpdateComponent : public Component
    {
-      /// @name Overridden member functions from SimObject.
+      /// @name Overridden member functions from SimComponent.
       /// @{
       
       public:

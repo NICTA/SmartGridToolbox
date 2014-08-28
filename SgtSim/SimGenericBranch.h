@@ -2,7 +2,7 @@
 #define BRANCH_COMP_DOT_H
 
 #include <SgtSim/SimBus.h>
-#include <SgtSim/SimObject.h>
+#include <SgtSim/SimComponent.h>
 
 #include <SgtCore/GenericBranch.h>
 #include <SgtCore/PowerFlow.h>
@@ -13,9 +13,9 @@ namespace SmartGridToolbox
 {
 /// @brief A SimGenericBranch connects two Busses in a Network.
 /// @ingroup PowerFlowCore
-   class SimGenericBranch : public GenericBranch, public SimObject
+   class SimGenericBranch : public GenericBranch, public SimComponent
    {
-      /// @name Public overridden member functions from SimObject.
+      /// @name Public overridden member functions from SimComponent.
       /// @{
       
       public:

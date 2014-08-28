@@ -1,7 +1,7 @@
 #ifndef SIM_BUS_DOT_H
 #define SIM_BUS_DOT_H
 
-#include <SgtSim/SimObject.h>
+#include <SgtSim/SimComponent.h>
 
 #include <SgtCore/Bus.h>
 #include <SgtCore/PowerFlow.h>
@@ -12,11 +12,11 @@ namespace SmartGridToolbox
 {
    /// @brief A Bus component of a Network.
    /// @ingroup PowerFlowCore
-   class SimBus : public Bus, public SimObject
+   class SimBus : public Bus, public SimComponent
    {
       friend class SimBusParser;
 
-      /// @name Overridden member functions from SimObject.
+      /// @name Overridden member functions from SimComponent.
       /// @{
 
       public:
