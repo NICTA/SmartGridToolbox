@@ -23,44 +23,42 @@ namespace SmartGridToolbox
       return result;
    }
 
-   void Simulation::addOrReplaceGeneric(std::unique_ptr<SimObject> && simObj, bool allowReplace)
+   void Simulation::addOrReplaceGeneric(std::shared_ptr<SimObject> simObj, bool allowReplace)
    {
-      SimObject& ref = *simObj;
-
-      message() << "Adding simObject " << ref.id() << " of type " 
-         << ref.componentTypeStr() << " to model." << std::endl;
+      message() << "Adding simObject " << simObj->id() << " of type " 
+         << simObj->componentTypeStr() << " to model." << std::endl;
       IndentingOStreamBuf _(messageStream());
 
-      SimObjMap::iterator it1 = simObjMap_.find(ref.id());
+      SimObjMap::iterator it1 = simObjMap_.find(simObj->id());
       if (it1 != simObjMap_.end())
       {
          if (allowReplace)
          {
-            it1->second = std::move(comp);
-            message() << "SimObject " << ref.id() << " replaced in model." << std::endl;
+            it1->second = simObj;
+            message() << "SimObject " << simObj->id() << " replaced in model." << std::endl;
          }
          else
          {
-            error() << "SimObject " << ref.id() << " occurs more than once in the model!" << std::endl;
+            error() << "SimObject " << simObj->id() << " occurs more than once in the model!" << std::endl;
             abort();
          }
       }
       else
       {
-         simObjVec_.push_back(comp.get());
-         simObjMap_[ref.id()] = std::move(comp);
+         simObjVec_.push_back(simObj);
+         simObjMap_[simObj->id()] = simObj;
       }
    }
 
    void Simulation::initialize()
    {
       scheduledUpdates_.clear();
-      for (SimObject* comp : mod_->simObjects())
+      for (auto comp : simObjVec_)
       {
          comp->initialize();
          scheduledUpdates_.insert(std::make_pair(comp, startTime_));
          comp->needsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
-                                       "Simulation insert contingent update of simObject " + comp->name());
+                                       "Simulation insert contingent update of simObject " + comp->id());
       }
       currentTime_ = posix_time::neg_infin;
       // Contingent updates may have been inserted during initialization process e.g. when setting up setpoints etc.
@@ -78,7 +76,7 @@ namespace SmartGridToolbox
       bool result = false;
 
       Time nextSchedTime = posix_time::pos_infin;
-      SimObject* schedComp = 0;
+      SimObjPtr schedComp(nullptr);
       auto schedUpdateIt = scheduledUpdates_.begin();
 
       if (scheduledUpdates_.size() > 0)
@@ -95,7 +93,7 @@ namespace SmartGridToolbox
       if (nextSchedTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ < endTime_)
       {
          // There are contingent updates pending.
-         SimObject* contComp = *contingentUpdates_.begin();
+         auto& contComp = *contingentUpdates_.begin();
          SGT_DEBUG(debug() << "\tContingent update simObject " << contComp->name() << " from "
                            << schedComp->time() << " to " << currentTime_ << std::endl);
          contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
@@ -145,7 +143,7 @@ namespace SmartGridToolbox
       {
          // We've reached the end of this step.
          SGT_DEBUG(debug() << "\tTimestep completed at " << currentTime_ << std::endl);
-         for (SimObject* comp : mod_->simObjects())
+         for (auto comp : simObjVec_)
          {
             if (comp->time() == currentTime_)
             {

@@ -2,15 +2,12 @@
 
 namespace SmartGridToolbox
 {
-   SimObject::SimObject(const std::string& name) :
-      name_(name),
-      time_(posix_time::not_a_date_time),
-      rank_(-1),
-      willUpdate_("SimObject " + name_ + " will update"),
-      didUpdate_("SimObject " + name_ + " did update"),
-      needsUpdate_("SimObject " + name_ + " needs update"),
-      willStartNewTimestep_("SimObject " + name_ + " will start new timestep"),
-      didCompleteTimestep_("SimObject " + name_ + " did complete timestep")
+   SimObject::SimObject() :
+      willUpdate_("SimObject " + id() + " will update"),
+      didUpdate_("SimObject " + id() + " did update"),
+      needsUpdate_("SimObject " + id() + " needs update"),
+      willStartNewTimestep_("SimObject " + id() + " will start new timestep"),
+      didCompleteTimestep_("SimObject " + id() + " did complete timestep")
    {
       // Empty.
    }

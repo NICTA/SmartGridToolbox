@@ -18,9 +18,14 @@ namespace SmartGridToolbox
    {
       private:
 
-         typedef std::vector<std::shared_ptr<SimObject>> SimObjVec;
-         typedef std::vector<std::shared_ptr<const SimObject>> ConstSimObjVec;
-         typedef std::map<std::string, std::shared_ptr<SimObject>> SimObjMap;
+         typedef std::shared_ptr<SimObject> SimObjPtr;
+         typedef std::shared_ptr<const SimObject> SimObjConstPtr;
+         typedef std::shared_ptr<TimeSeriesBase> TimeSeriesPtr;
+         typedef std::shared_ptr<const TimeSeriesBase> TimeSeriesConstPtr;
+
+         typedef std::vector<SimObjPtr> SimObjVec;
+         typedef std::vector<SimObjConstPtr> ConstSimObjVec;
+         typedef std::map<std::string, SimObjPtr> SimObjMap;
          typedef std::map<std::string, std::unique_ptr<TimeSeriesBase>> TimeSeriesMap;
 
       public:
@@ -117,9 +122,9 @@ namespace SmartGridToolbox
          }
 
          /// @brief Retrieve a SimObject.
-         template<typename T> T* simObject(const std::string& id)
+         template<typename T> std::shared_ptr<T> simObject(const std::string& id)
          {
-            return const_cast<T*>((const_cast<const Simulation*>(this))->simObject<T>(id));
+            return std::const_pointer_cast<std::shared_ptr<T>>((const_cast<const Simulation*>(this))->simObject<T>(id));
          }
 
          /// @brief Copied vector of all const SimObjects.
@@ -144,16 +149,16 @@ namespace SmartGridToolbox
          Event& timestepDidComplete() {return timestepDidComplete_;}
 
          /// @brief Get named TimeSeries.
-         template<typename T> const T* timeSeries(const std::string& id) const
+         template<typename T> std::shared_ptr<const T> timeSeries(const std::string& id) const
          {
             TimeSeriesMap::const_iterator it = timeSeriesMap_.find(id);
-            return (it == timeSeriesMap_.end()) ? 0 : dynamic_cast<const T*>(it->second.get());
+            return (it == timeSeriesMap_.end()) ? 0 : std::const_pointer_cast<std::shared_ptr<const T>>(it->second);
          }
 
          /// @brief Get time series with given id.
-         template<typename T> T* timeSeries(const std::string& id)
+         template<typename T> std::shared_ptr<T> timeSeries(const std::string& id)
          {
-            return const_cast<T*>((const_cast<const Simulation*>(this))-> timeSeries<T>(id));
+            return std::const_pointer_cast<T>((const_cast<const Simulation*>(this))-> timeSeries<T>(id));
          }
 
          /// @brief Add a time series.
@@ -171,8 +176,8 @@ namespace SmartGridToolbox
          class ScheduledUpdatesCompare
          {
             public:
-               bool operator()(const std::pair<SimObject*, Time>& lhs,
-                     const std::pair<SimObject*, Time>& rhs)
+               bool operator()(const std::pair<SimObjPtr, Time>& lhs,
+                     const std::pair<SimObjPtr, Time>& rhs)
                {
                   return ((lhs.second < rhs.second) ||
                         (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
@@ -185,19 +190,19 @@ namespace SmartGridToolbox
          class ContingentUpdatesCompare
          {
             public:
-               bool operator()(const SimObject* lhs, const SimObject* rhs)
+               bool operator()(const SimObjPtr lhs, const SimObjPtr rhs)
                {
                   return ((lhs->rank() < rhs->rank()) ||
                         ((lhs->rank() == rhs->rank()) && (lhs->id() < rhs->id())));
                }
          };
 
-         typedef std::set<std::pair<SimObject*, Time>, ScheduledUpdatesCompare> ScheduledUpdates;
-         typedef std::set<SimObject*, ContingentUpdatesCompare> ContingentUpdates;
+         typedef std::set<std::pair<SimObjPtr, Time>, ScheduledUpdatesCompare> ScheduledUpdates;
+         typedef std::set<SimObjPtr, ContingentUpdatesCompare> ContingentUpdates;
 
       private:
 
-         void addOrReplaceGeneric(std::unique_ptr<SimObject>&& simObj, bool allowReplace);
+         void addOrReplaceGeneric(std::shared_ptr<SimObject> simObj, bool allowReplace);
       
       private:
 

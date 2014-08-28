@@ -1,20 +1,17 @@
 #include "SimBus.h"
 
-#include "Model.h"
 #include "SimNetwork.h"
-#include "ZipBase.h"
 
 namespace SmartGridToolbox
 {
-   SimBus::SimBus(const std::string& name, Phases phases, const ublas::vector<Complex> & VNom, double VBase) :
-      Component(name),
-      Bus(name, phases, VNom, VBase),
-      changed_("SimBus " + name + " setpoint changed")
+   SimBus::SimBus(const std::string& id, Phases phases, const ublas::vector<Complex> & VNom, double VBase) :
+      Bus(id, phases, VNom, VBase),
+      changed_("SimBus " + id + " setpoint changed")
    {
       // Empty.
    }
 
-   void SimBus::addZip(ZipBase& zip)
+   void SimBus::addZip(const std::shared_ptr<Zip>& zip)
    {
       dependsOn(zip);
       zips_.push_back(&zip);

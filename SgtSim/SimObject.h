@@ -10,6 +10,9 @@ namespace SmartGridToolbox
 {
    class SimObject : virtual public ComponentAbc
    {
+      /// @name Virtual methods to be overridden by derived classes.
+      /// @{
+      
       public:
 
          /// @brief What is the latest time that I should update?
@@ -39,7 +42,18 @@ namespace SmartGridToolbox
       /// @name Lifecycle
       /// @{
      
-         virtual ~SimObject() = default;
+         SimObject();
+
+         virtual ~SimObject();
+
+      /// @}
+
+      /// @name Sister class delegation via ComponentAbc.
+      /// @{
+      
+         virtual const std::string& id() const {return ComponentAbc::id();}
+         
+         virtual const char* componentTypeStr() const {return ComponentAbc::componentTypeStr();}
 
       /// @}
 
@@ -75,15 +89,15 @@ namespace SmartGridToolbox
       /// @name Dependencies.
       /// @{
 
-         const std::vector<const SimObject*>& dependencies() const
+         const std::vector<std::weak_ptr<const SimObject>>& dependencies() const
          {
             return dependencies_;
          }
 
          /// @brief Components on which I depend will update first.
-         void dependsOn(const SimObject& b)
+         void dependsOn(const std::shared_ptr<SimObject> b)
          {
-            dependencies_.push_back(&b);
+            dependencies_.push_back(b);
          }
 
       /// @}
@@ -125,14 +139,14 @@ namespace SmartGridToolbox
 
       private:
 
-         Time time_;                                     ///< The time to which I am up to date
-         std::vector<const SimObject*> dependencies_; ///< I depend on these.
-         int rank_;                                      ///< Evaluation rank, based on weak ordering.
-         Event willUpdate_;                              ///< Triggered immediately prior to upddate. 
-         Event didUpdate_;                               ///< Triggered immediately post update.
-         Event needsUpdate_;                             ///< Triggered when I need to be updated.
-         Event willStartNewTimestep_;                    ///< Triggered immediately prior to time advancing.
-         Event didCompleteTimestep_;                     ///< Triggered immediately after fully completing a timestep.
+         Time time_ = posix_time::not_a_date_time; ///< The time to which I am up to date
+         std::vector<std::weak_ptr<const SimObject>> dependencies_; ///< I depend on these.
+         int rank_ = -1; ///< Evaluation rank, based on weak ordering.
+         Event willUpdate_; ///< Triggered immediately prior to upddate. 
+         Event didUpdate_; ///< Triggered immediately post update.
+         Event needsUpdate_; ///< Triggered when I need to be updated.
+         Event willStartNewTimestep_; ///< Triggered immediately prior to time advancing.
+         Event didCompleteTimestep_; ///< Triggered immediately after fully completing a timestep.
    };
 }
 

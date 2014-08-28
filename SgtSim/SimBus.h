@@ -5,16 +5,12 @@
 #include <SgtSim/SimObject.h>
 
 #include <SgtCore/Bus.h>
-#include <SgtCore/Common.h>
 #include <SgtCore/PowerFlow.h>
 
 #include <iostream>
 
 namespace SmartGridToolbox
 {
-   class ZipBase;
-   class GenBase;
-
    /// @brief A Bus component of a Network.
    /// @ingroup PowerFlowCore
    class SimBus : public Bus, public SimObject
