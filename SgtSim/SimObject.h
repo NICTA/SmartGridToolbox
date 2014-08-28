@@ -48,15 +48,6 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Sister class delegation via ComponentAbc.
-      /// @{
-      
-         virtual const std::string& id() const {return ComponentAbc::id();}
-         
-         virtual const char* componentTypeStr() const {return ComponentAbc::componentTypeStr();}
-
-      /// @}
-
       /// @name Timestepping
       /// @{
 

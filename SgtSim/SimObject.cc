@@ -3,11 +3,11 @@
 namespace SmartGridToolbox
 {
    SimObject::SimObject() :
-      willUpdate_("SimObject " + id() + " will update"),
-      didUpdate_("SimObject " + id() + " did update"),
-      needsUpdate_("SimObject " + id() + " needs update"),
-      willStartNewTimestep_("SimObject " + id() + " will start new timestep"),
-      didCompleteTimestep_("SimObject " + id() + " did complete timestep")
+      willUpdate_("Will update"),
+      didUpdate_("Did update"),
+      needsUpdate_("Needs update"),
+      willStartNewTimestep_("Will start new timestep"),
+      didCompleteTimestep_("Did complete timestep")
    {
       // Empty.
    }
