@@ -92,6 +92,12 @@ namespace SmartGridToolbox
       
       /// @}
 
+      protected:
+
+         virtual void addZip(const std::shared_ptr<Zip>& zip) override;
+
+         virtual void addGen(const std::shared_ptr<Gen>& gen) override;
+
       private:
 
       /// @name PowerFlowBus:

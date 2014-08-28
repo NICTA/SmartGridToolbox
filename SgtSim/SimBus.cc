@@ -13,8 +13,11 @@ namespace SmartGridToolbox
 
    void SimBus::addZip(const std::shared_ptr<Zip>& zip)
    {
-      dependsOn(zip);
-      zips_.push_back(&zip);
+      Bus::addZip(zip);
+
+      auto simObj = std::static_pointer_cast<const SimObject>(zip);
+
+      dependsOn(simObj);
       zip.didUpdate().addAction([this](){needsUpdate().trigger();},
             "Trigger SimBus " + name() + " needsUpdate.");
       zip.didUpdate().addAction([this](){changed().trigger();},
