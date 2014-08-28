@@ -1,7 +1,6 @@
 #ifndef BUS_COMP_DOT_H
 #define BUS_COMP_DOT_H
 
-#include <SgtSim/Event.h>
 #include <SgtSim/SimObject.h>
 
 #include <SgtCore/Bus.h>
@@ -11,6 +10,9 @@
 
 namespace SmartGridToolbox
 {
+   class SimZip;
+   class SimGen;
+
    /// @brief A Bus component of a Network.
    /// @ingroup PowerFlowCore
    class SimBus : public Bus, public SimObject
@@ -33,82 +35,19 @@ namespace SmartGridToolbox
       /// @name Lifecycle.
       /// @{
          
-         SimBus(const std::string& id, Phases phases, const ublas::vector<Complex> & VNom, double VBase);
-
-      /// @}
-
-      /// @name Base class setters trigger changed().
-      /// @{
-         
-         virtual void setType(const BusType type)
+         SimBus(const std::string& id, Phases phases, const ublas::vector<Complex> & VNom, double VBase) :
+            Bus(id, phases, VNom, VBase),
+            changed_("SimBus " + id + " setpoint changed")
          {
-            Bus::setType(type);
-            changed_.trigger();
-         }
-          
-         virtual void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint)
-         {
-            Bus::setVMagSetpoint(VMagSetpoint);
-            changed_.trigger();
-         }
-
-         virtual void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint)
-         {
-            Bus::setVAngSetpoint(VAngSetpoint);
-            changed_.trigger();
-         }
-
-         virtual void setVMagMin(double VMagMin)
-         {
-            Bus::setVMagMin(VMagMin);
-            changed_.trigger();
-         }
-         
-         virtual void setVMagMax(double VMagMax)
-         {
-            Bus::setVMagMax(VMagMax);
-            changed_.trigger();
-         }
-         
-         virtual void setIsInService(bool isInService)
-         {
-            Bus::setIsInService(isInService);
-            changed_.trigger();
-         }
-
-         virtual void setV(const ublas::vector<Complex>& V)
-         {
-            Bus::setV(V);
-            changed_.trigger();
+            // Empty.
          }
 
       /// @}
-      
-      /// @name Events.
-      /// @{
-         
-         /// @brief Event triggered when bus (e.g. setpoint) has changed.
-         virtual Event& changed() {return changed_;}
-      
-      /// @}
-
-      protected:
-
-         virtual void addZip(const std::shared_ptr<Zip>& zip) override;
-
-         virtual void addGen(const std::shared_ptr<Gen>& gen) override;
 
       private:
 
       /// @name PowerFlowBus:
       /// @{
-
-      /// @}
-      
-      /// @name Events:
-      /// @{
-         
-         Event changed_;
 
       /// @}
    };

@@ -6,7 +6,6 @@ include_HEADERS = LibSgtSim.h
 
 pkginclude_HEADERS = \
 	DcPowerSourceBase.h \
-	Event.h \
 	InverterBase.h \
 	OverheadLine.h \
 	Parser.h \
@@ -31,8 +30,6 @@ pkginclude_HEADERS = \
 	YyTransformer.h
 
 libSgtSim_a_SOURCES = \
-	Event.h \
-	Event.cc \
 	InverterBase.h \
 	InverterBase.cc \
 	LibSgtSim.h \
@@ -48,7 +45,6 @@ libSgtSim_a_SOURCES = \
 	SimBranchParser.h \
 	SimBranchParser.cc \
 	SimBus.h \
-	SimBus.cc \
 	SimBusParser.h \
 	SimBusParser.cc \
 	SimDgyTransformer.h \

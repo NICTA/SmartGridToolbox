@@ -10,7 +10,7 @@ namespace SmartGridToolbox
       Component(id),
       phases0_(phases0),
       phases1_(phases1),
-      status_(true)
+      isInService_(true)
    {
       // Empty.
    }

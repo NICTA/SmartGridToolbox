@@ -42,17 +42,17 @@ namespace SmartGridToolbox
         
       /// @}
  
-      /// @name Status:
+      /// @name In service:
       /// @{
          
-         virtual bool status() const override
+         virtual bool isInService() const override
          {
-            return status_;
+            return isInService_;
          }
 
-         virtual void setStatus(bool status)
+         virtual void setIsInService(bool isInService)
          {
-            status_ = status;
+            isInService_ = isInService;
          }
 
       /// @}
@@ -175,7 +175,7 @@ namespace SmartGridToolbox
       private:
 
          Phases phases_;
-         bool status_;
+         bool isInService_;
          
          ublas::vector<Complex> S_;
          

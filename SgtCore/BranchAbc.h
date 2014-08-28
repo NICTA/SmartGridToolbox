@@ -3,6 +3,7 @@
 
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
+#include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
 
 #include <iostream>
@@ -55,17 +56,18 @@ namespace SmartGridToolbox
       
       /// @}
  
-      /// @name Status:
+      /// @name In service:
       /// @{
          
-         bool status() const
+         bool isInService() const
          {
-            return status_;
+            return isInService_;
          }
 
-         virtual void setStatus(bool status)
+         virtual void setIsInService(bool isInService)
          {
-            status_ = status;
+            isInService_ = isInService;
+            isInServiceChanged_.trigger();
          }
 
       /// @}
@@ -102,6 +104,17 @@ namespace SmartGridToolbox
       
       /// @}
       
+      /// @name Events.
+      /// @{
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& isInServiceChanged() {return isInServiceChanged_;}
+
+         /// @brief Event triggered when my admittance changes.
+         virtual Event& admittanceChanged() {return admittanceChanged_;}
+         
+      /// @}
+      
       protected:
 
          virtual void print(std::ostream& os) const override;
@@ -110,9 +123,12 @@ namespace SmartGridToolbox
 
          Phases phases0_; ///< Phases on bus 0.
          Phases phases1_; ///< Phases on bus 1.
-         bool status_;
+         bool isInService_; ///< Am I in service?
          std::shared_ptr<Bus> bus0_{nullptr}; ///< My bus 0.
          std::shared_ptr<Bus> bus1_{nullptr}; ///< My bus 0.
+
+         Event isInServiceChanged_;
+         Event admittanceChanged_;
    };
 }
 

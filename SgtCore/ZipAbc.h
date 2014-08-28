@@ -2,6 +2,7 @@
 #define ZIP_ABC_DOT_H
 
 #include <SgtCore/Component.h>
+#include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
 
 #include<string>
@@ -40,7 +41,13 @@ namespace SmartGridToolbox
             phases_ = phases;
          }
         
+      /// @name In service:
+      /// @{
+         
+         virtual bool isInService() const = 0;
 
+      /// @}
+      
       /// @name ZIP parameters:
       /// @{
       
@@ -49,7 +56,21 @@ namespace SmartGridToolbox
          virtual ublas::vector<Complex> SConst() const = 0;
 
       /// @}
-      
+       
+      /// @name Events.
+      /// @{
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& isInServiceChanged() {return isInServiceChanged_;}
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& injectionChanged() {return injectionChanged_;}
+
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& setpointChanged() {return setpointChanged_;}
+
+      /// @}
+     
       protected:
 
          virtual void print(std::ostream& os) const override;
@@ -57,6 +78,10 @@ namespace SmartGridToolbox
       private:
 
          Phases phases_;
+         
+         Event isInServiceChanged_;
+         Event injectionChanged_;
+         Event setpointChanged_;
    };
 }
 

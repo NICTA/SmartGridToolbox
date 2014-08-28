@@ -6,7 +6,7 @@ namespace SmartGridToolbox
 {
    Gen::Gen(const std::string& id, Phases phases) :
       GenAbc(id, phases),
-      status_(true),
+      isInService_(true),
       S_(phases.size(), czero)
    {
       // Empty.

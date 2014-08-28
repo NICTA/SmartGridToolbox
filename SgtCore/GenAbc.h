@@ -3,6 +3,7 @@
 
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
+#include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
 
 namespace SmartGridToolbox
@@ -41,10 +42,10 @@ namespace SmartGridToolbox
         
       /// @}
  
-      /// @name Status:
+      /// @name In service:
       /// @{
          
-         virtual bool status() const = 0;
+         virtual bool isInService() const = 0;
 
       /// @}
       
@@ -76,6 +77,20 @@ namespace SmartGridToolbox
    
       /// @}
       
+      /// @name Events.
+      /// @{
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& isInServiceChanged() {return isInServiceChanged_;}
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& generationChanged() {return generationChanged_;}
+
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& setpointChanged() {return setpointChanged_;}
+
+      /// @}
+      
       protected:
 
          virtual void print(std::ostream& os) const override;
@@ -83,6 +98,10 @@ namespace SmartGridToolbox
       private:
 
          Phases phases_;
+
+         Event isInServiceChanged_;
+         Event generationChanged_;
+         Event setpointChanged_;
    };
 }
 

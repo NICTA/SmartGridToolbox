@@ -417,7 +417,7 @@ namespace SmartGridToolbox
          std::string busId = getBusId(genInfo.busId);
          std::shared_ptr<Bus> bus = netw.bus(busId);
 
-         gen->setStatus(genInfo.status);
+         gen->setIsInService(genInfo.status);
 
          gen->setS(VComplex(1, Complex{genInfo.Pg, genInfo.Qg}));
 
@@ -441,7 +441,7 @@ namespace SmartGridToolbox
          std::string branchId = getBranchId(i, branchInfo.busIdF, branchInfo.busIdT);
          std::unique_ptr<CommonBranch> branch(new CommonBranch(branchId));
 
-         branch->setStatus(branchInfo.status);
+         branch->setIsInService(branchInfo.status);
 
          std::string bus0Id = getBusId(branchInfo.busIdF);
          std::shared_ptr<Bus> bus0 = netw.bus(bus0Id);

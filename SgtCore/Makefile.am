@@ -10,6 +10,8 @@ pkginclude_HEADERS = \
 	Common.h \
 	CommonBranch.h \
 	Component.h \
+	DgyTransformer.h \
+	Event.h \
 	Gen.h \
 	GenAbc.h \
 	GenericBranch.h \
@@ -41,6 +43,8 @@ libSgtCore_a_SOURCES = \
 	DgyTransformer.cc \
 	DgyTransformerParser.h \
 	DgyTransformerParser.cc \
+	Event.h \
+	Event.cc \
 	Gen.h \
 	Gen.cc \
 	GenAbc.h \

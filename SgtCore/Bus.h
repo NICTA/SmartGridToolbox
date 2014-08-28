@@ -3,6 +3,7 @@
 
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
+#include <SgtCore/Event.h>
 #include <SgtCore/Gen.h>
 #include <SgtCore/PowerFlow.h>
 #include <SgtCore/Zip.h>
@@ -58,6 +59,7 @@ namespace SmartGridToolbox
          virtual void setVNom(const ublas::vector<Complex>& VNom)
          {
             VNom_ = VNom;
+            controlChanged_.trigger();
          }
 
          double VBase() const
@@ -83,6 +85,7 @@ namespace SmartGridToolbox
          virtual void setType(const BusType type)
          {
             type_ = type;
+            controlChanged_.trigger();
          }
 
          ublas::vector<double> VMagSetpoint() const
@@ -93,6 +96,7 @@ namespace SmartGridToolbox
          virtual void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint)
          {
             VMagSetpoint_ = VMagSetpoint;
+            controlChanged_.trigger();
          }
 
          ublas::vector<double> VAngSetpoint() const
@@ -103,6 +107,7 @@ namespace SmartGridToolbox
          virtual void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint)
          {
             VAngSetpoint_ = VAngSetpoint;
+            controlChanged_.trigger();
          }
 
          double VMagMin() const
@@ -113,6 +118,7 @@ namespace SmartGridToolbox
          virtual void setVMagMin(double VMagMin)
          {
             VMagMin_ = VMagMin;
+            controlChanged_.trigger();
          }
 
          double VMagMax() const
@@ -123,6 +129,7 @@ namespace SmartGridToolbox
          virtual void setVMagMax(double VMagMax)
          {
             VMagMax_ = VMagMax;
+            controlChanged_.trigger();
          }
 
       /// @}
@@ -171,12 +178,30 @@ namespace SmartGridToolbox
          virtual void setIsInService(bool isInService)
          {
             isInService_ = isInService;
+            isInServiceChanged_.trigger();
          }
 
          const ublas::vector<Complex>& V() const {return V_;}
 
          virtual void setV(const ublas::vector<Complex>& V) {V_ = V;}
 
+      /// @}
+      
+      /// @name Events.
+      /// @{
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& isInServiceChanged() {return isInServiceChanged_;}
+
+         /// @brief Event triggered when bus control (e.g. setpoint) has changed.
+         virtual Event& controlChanged() {return controlChanged_;}
+         
+         /// @brief Event triggered when one of my zips or gens has changed.
+         virtual Event& zipOrGenChanged() {return zipOrGenChanged_;}
+
+         /// @brief Event triggered when bus state (e.g. voltage) has been updated.
+         virtual Event& voltageUpdated() {return voltageUpdated_;}
+      
       /// @}
 
       protected:
@@ -210,6 +235,11 @@ namespace SmartGridToolbox
 
          bool isInService_{true};
          ublas::vector<Complex> V_{phases_.size(), czero};
+
+         Event isInServiceChanged_;
+         Event controlChanged_;
+         Event zipOrGenChanged_;
+         Event voltageUpdated_;
    };
 }
 
