@@ -17,6 +17,7 @@ pkginclude_HEADERS = \
 	GenericBranch.h \
 	Model.h \
 	Network.h \
+	OverheadLine.h \
 	Parser.h \
 	PowerFlow.h \
 	Random.h \
@@ -61,6 +62,8 @@ libSgtCore_a_SOURCES = \
 	Model.cc \
 	Network.h \
 	Network.cc \
+	OverheadLine.h \
+	OverheadLine.cc \
 	Parser.h \
 	Parser.cc \
 	PowerFlow.h \
