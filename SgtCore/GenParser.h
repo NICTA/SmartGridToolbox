@@ -5,6 +5,7 @@
 
 namespace SmartGridToolbox
 {
+   class Gen;
    class Network;
 
    /// @brief ParserPlugin that parses Gen objects.
@@ -17,6 +18,8 @@ namespace SmartGridToolbox
          }
 
          virtual void parse(const YAML::Node& nd, Network& netw) const override;
+         
+         std::unique_ptr<Gen> parseGen(const YAML::Node& nd) const;
    };
 }
 

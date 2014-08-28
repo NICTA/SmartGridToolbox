@@ -7,12 +7,19 @@
 
 namespace SmartGridToolbox
 {
-   class SimBranch;
-   class SimBus;
-
    /// @ingroup PowerFlowCore
    class SimNetwork : public Network, public SimComponent
    {
+      /// @name Overridden member functions from Network.
+      /// @{
+      
+      public:
+
+         virtual void addBus(std::shared_ptr<Bus> bus) override;
+         virtual void addBranch(std::shared_ptr<Branch> branch) override;
+         virtual void addGen(std::shared_ptr<Gen> gen) override;
+         virtual void addZip(std::shared_ptr<Zip> zip) override;
+
       /// @name Overridden member functions from SimComponent.
       /// @{
       
@@ -36,4 +43,3 @@ namespace SmartGridToolbox
 }
 
 #endif // NETWORK_COMP_DOT_H
-

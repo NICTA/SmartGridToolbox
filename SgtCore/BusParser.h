@@ -5,6 +5,7 @@
 
 namespace SmartGridToolbox
 {
+   class Bus;
    class Network;
 
    /// @brief ParserPlugin that parses Bus objects.
@@ -17,6 +18,8 @@ namespace SmartGridToolbox
          }
 
          virtual void parse(const YAML::Node& nd, Network& netw) const override;
+         
+         std::unique_ptr<Bus> parseBus(const YAML::Node& nd) const;
    };
 }
 

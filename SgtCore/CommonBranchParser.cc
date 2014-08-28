@@ -9,12 +9,33 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "CommonBranch : parse." << std::endl);
 
+      assertFieldPresent(nd, "bus_0_id");
+      assertFieldPresent(nd, "bus_1_id");
+
+      auto cBranch = parseCommonBranch(nd);
+
+      std::string bus0Id = nd["bus_0_id"].as<std::string>();
+      std::string bus1Id = nd["bus_1_id"].as<std::string>();
+      
+      std::shared_ptr<Bus> bus0 = netw.bus(bus0Id);
+      assert(bus0 != nullptr);
+      std::shared_ptr<Bus> bus1 = netw.bus(bus1Id);
+      assert(bus1 != nullptr);
+
+      cBranch->setBus0(bus0);
+      cBranch->setBus1(bus1);
+      
+      netw.addBranch(std::move(cBranch));
+   }
+   
+   std::unique_ptr<CommonBranch> CommonBranchParser::parseCommonBranch(const YAML::Node& nd) const
+   {
+      SGT_DEBUG(debug() << "CommonBranch : parse." << std::endl);
+
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "complex_tap_ratio");
       assertFieldPresent(nd, "Y_series");
       assertFieldPresent(nd, "Y_shunt");
-      assertFieldPresent(nd, "bus_0_id");
-      assertFieldPresent(nd, "bus_1_id");
 
       std::string id = nd["id"].as<std::string>();
 
@@ -43,16 +64,7 @@ namespace SmartGridToolbox
 
       std::string bus0Id = nd["bus_0_id"].as<std::string>();
       std::string bus1Id = nd["bus_1_id"].as<std::string>();
-      
-      std::shared_ptr<Bus> bus0 = netw.bus(bus0Id);
-      assert(bus0 != nullptr);
-      std::shared_ptr<Bus> bus1 = netw.bus(bus1Id);
-      assert(bus1 != nullptr);
 
-      cBranch->setBus0(bus0);
-      cBranch->setBus1(bus1);
-      
-      netw.addBranch(std::move(cBranch));
-
+      return cBranch; 
    }
 }

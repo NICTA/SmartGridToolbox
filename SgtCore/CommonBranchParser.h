@@ -5,6 +5,7 @@
 
 namespace SmartGridToolbox
 {
+   class CommonBranch;
    class Network;
 
    /// @brief ParserPlugin that parses CommonBranch objects.
@@ -17,6 +18,8 @@ namespace SmartGridToolbox
          }
 
          virtual void parse(const YAML::Node& nd, Network& netw) const override;
+         
+         std::unique_ptr<CommonBranch> parseCommonBranch(const YAML::Node& nd) const;
    };
 }
 

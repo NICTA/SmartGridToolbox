@@ -1,7 +1,7 @@
 #ifndef OVERHEAD_LINE_DOT_H
 #define OVERHEAD_LINE_DOT_H
 
-#include <SgtCore/BranchAbc.h>
+#include <SgtCore/Branch.h>
 
 namespace SmartGridToolbox
 {
@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    ///
    /// Consists of N + M wires, where N is the number of phases and M is the number of phases, and M is the number of
    /// extra grounded neutral wires that will be eliminated via the Kron reduction.
-   class OverheadLine : public BranchAbc
+   class OverheadLine : public Branch
    {
       public:
 
@@ -38,7 +38,7 @@ namespace SmartGridToolbox
 
       /// @}
      
-      /// @name Overridden from BranchAbc:
+      /// @name Overridden from Branch:
       /// @{
          
          virtual const ublas::matrix<Complex> Y() const override;

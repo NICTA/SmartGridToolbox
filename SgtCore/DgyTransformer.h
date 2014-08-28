@@ -2,7 +2,7 @@
 #define DGY_TRANSFORMER_DOT_H
 
 #include <SgtCore/Common.h>
-#include <SgtCore/BranchAbc.h>
+#include <SgtCore/Branch.h>
 #include <SgtCore/PowerFlow.h>
 
 namespace SmartGridToolbox
@@ -13,7 +13,7 @@ namespace SmartGridToolbox
    /// This is because the voltage across the windings on the primary (Delta) side is the phase-phase voltage, so
    /// a 1:1 turns ratio will result in a @f$1:\sqrt(3)@f$ voltage ratio, where all voltages are line-ground. It is
    /// therefore important that the parameter to the constructor is the turns ratio, not the voltage ratio.
-   class DgyTransformer : public BranchAbc
+   class DgyTransformer : public Branch
    {
       public:
 
@@ -24,7 +24,7 @@ namespace SmartGridToolbox
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
          DgyTransformer(const std::string & name, Complex a, Complex ZL) : 
-            BranchAbc(name, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C), a_(a), YL_(1.0/ZL)
+            Branch(name, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C), a_(a), YL_(1.0/ZL)
          {
             // Empty.
          }
@@ -63,7 +63,7 @@ namespace SmartGridToolbox
 
       /// @}
       
-      /// @name Overridden from BranchAbc:
+      /// @name Overridden from Branch:
       /// @{
          
          virtual const ublas::matrix<Complex> Y() const override;

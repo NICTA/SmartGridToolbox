@@ -5,6 +5,7 @@
 
 namespace SmartGridToolbox
 {
+   class DgyTransformer;
    class Network;
    
    /// @brief ParserPlugin that parses DgyTransformer objects.
@@ -17,6 +18,8 @@ namespace SmartGridToolbox
          }
 
          virtual void parse(const YAML::Node& nd, Network& netw) const override;
+         
+         std::unique_ptr<DgyTransformer> parseDgyTransformer(const YAML::Node& nd) const;
    };
 }
 

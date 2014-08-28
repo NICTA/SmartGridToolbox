@@ -6,6 +6,7 @@
 namespace SmartGridToolbox
 {
    class Network;
+   class OverheadLine;
    
    /// @brief ParserPlugin that parses OverheadLine objects.
    class OverheadLineParser : public ParserPlugin<Network>
@@ -17,6 +18,8 @@ namespace SmartGridToolbox
          }
 
          virtual void parse(const YAML::Node& nd, Network& netw) const override;
+
+         std::unique_ptr<OverheadLine> parseOverheadLine(const YAML::Node& nd) const;
    };
 }
 

@@ -1,4 +1,4 @@
-#include "BranchAbc.h"
+#include "Branch.h"
 #include "Bus.h"
 
 #include <ostream>
@@ -6,7 +6,7 @@
 namespace SmartGridToolbox
 {
          
-   BranchAbc::BranchAbc(const std::string& id, Phases phases0, Phases phases1) :
+   Branch::Branch(const std::string& id, Phases phases0, Phases phases1) :
       Component(id),
       phases0_(phases0),
       phases1_(phases1),
@@ -14,7 +14,7 @@ namespace SmartGridToolbox
    {
       // Empty.
    }
-   void BranchAbc::print(std::ostream& os) const
+   void Branch::print(std::ostream& os) const
    {
       Component::print(os);
       IndentingOStreamBuf _(os);

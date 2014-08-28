@@ -10,16 +10,23 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "Gen : parse." << std::endl);
 
-      assertFieldPresent(nd, "id");
+      auto gen = parseGen(nd);
+
       assertFieldPresent(nd, "bus_id");
+      std::string busId = nd["bus_id"].as<std::string>();
+      std::shared_ptr<Bus> bus = netw.bus(busId);
+      netw.addGen(std::move(gen), *bus);
+   }
+   
+   std::unique_ptr<Gen> GenParser::parseGen(const YAML::Node& nd) const
+   {
+      assertFieldPresent(nd, "id");
+      assertFieldPresent(nd, "phases");
 
       std::string id = nd["id"].as<std::string>();
-      std::string busId = nd["bus_id"].as<std::string>();
       Phases phases = nd["phases"].as<Phases>();
 
-      std::shared_ptr<Bus> bus = netw.bus(busId);
-
-      std::unique_ptr<Gen> gen(new Gen(id, bus->phases()));
+      std::unique_ptr<Gen> gen(new Gen(id, phases));
 
       if (const YAML::Node& subNd = nd["S"])
       {
@@ -60,7 +67,7 @@ namespace SmartGridToolbox
       {
          gen->setC2(subNd.as<double>());
       }
-      
-      netw.addGen(std::move(gen), *bus);
+
+      return gen;
    }
 }

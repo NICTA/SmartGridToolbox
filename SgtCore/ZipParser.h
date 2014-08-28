@@ -6,6 +6,7 @@
 namespace SmartGridToolbox
 {
    class Network;
+   class Zip;
 
    /// @brief ParserPlugin that parses Zip objects.
    class ZipParser : public ParserPlugin<Network>
@@ -17,6 +18,8 @@ namespace SmartGridToolbox
          }
 
          virtual void parse(const YAML::Node& nd, Network& netw) const override;
+         
+         std::unique_ptr<Zip> parseZip(const YAML::Node& nd) const;
    };
 }
 
