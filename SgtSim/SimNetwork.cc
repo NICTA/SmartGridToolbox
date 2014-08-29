@@ -1,12 +1,17 @@
 #include "SimNetwork.h"
 
+#include "SimBranch.h"
+#include "SimBus.h"
+#include "SimGen.h"
+#include "SimZip.h"
+
 #include <SgtCore/PowerFlowNr.h>
 
 #include <iostream>
 
 namespace SmartGridToolbox
 {
-   void SimNetwork::addNode(std::shared_ptr<Bus> bus)
+   void SimNetwork::addNode(std::shared_ptr<SimBus> bus)
    {
       Network::addNode(bus);
 
@@ -18,7 +23,7 @@ namespace SmartGridToolbox
             "Trigger Network " + id() + " needs update");
    }
 
-   void SimNetwork::addArc(std::shared_ptr<Branch> branch, const std::string& bus0Id,
+   void SimNetwork::addArc(std::shared_ptr<SimBranch> branch, const std::string& bus0Id,
          const std::string& bus1Id)
    {
       Network::addArc(branch, bus0Id, bus1Id);
@@ -31,7 +36,7 @@ namespace SmartGridToolbox
             "Trigger Network " + id() + " needs update");
    }
 
-   void SimNetwork::addGen(std::shared_ptr<Gen> gen, const std::string& busId)
+   void SimNetwork::addGen(std::shared_ptr<SimGen> gen, const std::string& busId)
    {
       Network::addGen(gen, busId);
 
@@ -45,7 +50,7 @@ namespace SmartGridToolbox
             "Trigger Network " + id() + " needs update");
    }
 
-   void SimNetwork::addZip(std::shared_ptr<Zip> zip, const std::string& busId)
+   void SimNetwork::addZip(std::shared_ptr<SimZip> zip, const std::string& busId)
    {
       Network::addZip(zip, busId);
 
