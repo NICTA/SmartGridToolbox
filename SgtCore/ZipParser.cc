@@ -15,8 +15,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "bus_id");
 
       std::string busId = nd["bus_id"].as<std::string>();
-      const std::shared_ptr<Bus>& bus = netw.bus(busId);
-      netw.addZip(std::move(zip), *bus);
+      netw.addZip(std::move(zip), busId);
    }
 
    std::unique_ptr<Zip> ZipParser::parseZip(const YAML::Node& nd) const

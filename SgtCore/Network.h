@@ -1,46 +1,88 @@
 #ifndef NETWORK_DOT_H
 #define NETWORK_DOT_H
 
-#include<SgtCore/Branch.h>
-#include<SgtCore/Bus.h>
-#include<SgtCore/Gen.h>
-#include<SgtCore/Zip.h>
+#include <SgtCore/Branch.h>
+#include <SgtCore/Bus.h>
+#include <SgtCore/Component.h>
+#include <SgtCore/PowerFlow.h>
 
 #include<iostream>
+#include<map>
+#include<memory>
 #include<vector>
 
 namespace SmartGridToolbox
 {
+   class Arc;
+   class Branch;
+   class Gen;
+   class Node;
+   class Zip;
+
+   typedef std::vector<std::shared_ptr<Bus>> BusVec;
+   typedef std::map<std::string, std::shared_ptr<Bus>> BusMap;
+
+   typedef std::vector<std::shared_ptr<Branch>> BranchVec;
+   typedef std::map<std::string, std::shared_ptr<Branch>> BranchMap;
+
+   typedef std::vector<std::shared_ptr<Gen>> GenVec;
+   typedef std::map<std::string, std::shared_ptr<Gen>> GenMap;
+
+   typedef std::vector<std::shared_ptr<Zip>> ZipVec;
+   typedef std::map<std::string, std::shared_ptr<Zip>> ZipMap;
+   
+   typedef std::vector<std::shared_ptr<Node>> NodeVec;
+   typedef std::map<std::string, std::shared_ptr<Node>> NodeMap;
+   
+   typedef std::vector<std::shared_ptr<Arc>> ArcVec;
+   typedef std::map<std::string, std::shared_ptr<Arc>> ArcMap;
+
+   class Node
+   {
+      friend class Network;
+
+      public:
+         const std::shared_ptr<Bus> bus() {return bus_;}
+
+         const GenVec gens() {return gens_;}
+         ublas::vector<Complex> SGen() const;
+
+         const ZipVec zips() {return zips_;}
+         ublas::vector<Complex> YZip() const;
+         ublas::vector<Complex> IZip() const;
+         ublas::vector<Complex> SZip() const;
+
+      private:
+         Node(std::shared_ptr<Bus> bus) : bus_{bus} {}
+
+      private:
+         std::shared_ptr<Bus> bus_;
+         GenVec gens_;
+         ZipVec zips_;
+   };
+
+   class Arc
+   {
+      friend class Network;
+
+      public:
+         const std::shared_ptr<Branch> branch() {return branch_;}
+         const std::shared_ptr<Node> node0() {return node0_;}
+         const std::shared_ptr<Node> node1() {return node1_;}
+
+      private:
+         Arc(std::shared_ptr<Branch> branch, std::shared_ptr<Node> node0, std::shared_ptr<Node> node1) :
+            branch_{branch}, node0_(node0), node1_(node1) {}
+
+      private:
+         std::shared_ptr<Branch> branch_;
+         std::shared_ptr<Node> node0_;
+         std::shared_ptr<Node> node1_;
+   };
 
    class Network : public Component
    {
       public:
-
-         typedef std::vector<std::shared_ptr<Bus>> BusVec;
-         typedef std::map<std::string, std::shared_ptr<Bus>> BusMap;
-
-         typedef std::vector<std::shared_ptr<Branch>> BranchVec;
-         typedef std::map<std::string, std::shared_ptr<Branch>> BranchMap;
-
-         typedef std::vector<std::shared_ptr<Gen>> GenVec;
-         typedef std::map<std::string, std::shared_ptr<Gen>> GenMap;
-
-         typedef std::vector<std::shared_ptr<Zip>> ZipVec;
-         typedef std::map<std::string, std::shared_ptr<Zip>> ZipMap;
-
-         struct Node
-         {
-            std::shared_ptr<Bus> bus;
-            GenVec gens;
-            ZipVec zips;
-         };
-
-         struct Arc
-         {
-            std::shared_ptr<Branch> branch;
-            std::shared_ptr<Bus> bus0;
-            std::shared_ptr<Bus> bus1;
-         };
 
       /// @name Lifecycle:
       /// @{
@@ -84,42 +126,46 @@ namespace SmartGridToolbox
       /// @name Network Components:
       /// @{
          
-         const BusVec& busses() const
+         const NodeVec& nodes() const
          {
-            return busVec_;
+            return nodeVec_;
          }
-         std::shared_ptr<const Bus> bus(const std::string& id) const
+         std::shared_ptr<const Node> node(const std::string& id) const
          {
-            BusMap::const_iterator it = busMap_.find(id);
-            return (it == busMap_.end()) ? nullptr : it->second;
+            NodeMap::const_iterator it = nodeMap_.find(id);
+            return (it == nodeMap_.end()) ? nullptr : it->second;
          }
-         std::shared_ptr<Bus> bus(const std::string& id)
+         std::shared_ptr<Node> node(const std::string& id)
          {
-            return std::const_pointer_cast<Bus>((const_cast<const Network*>(this))->bus(id));
+            return std::const_pointer_cast<Node>((const_cast<const Network*>(this))->node(id));
          }
-         virtual void addBus(std::shared_ptr<Bus> bus)
+         virtual void addNode(std::shared_ptr<Bus> bus)
          {
-            busMap_[bus->id()] = bus;
-            busVec_.push_back(bus);
+            auto nd = std::shared_ptr<Node>(new Node(bus)); 
+            nodeMap_[bus->id()] = nd;
+            nodeVec_.push_back(nd);
          }
 
-         const BranchVec& branches() const
+         const ArcVec& arcs() const
          {
-            return branchVec_;
+            return arcVec_;
          }
-         std::shared_ptr<const Branch> branch(const std::string& id) const
+         std::shared_ptr<const Arc> arc(const std::string& id) const
          {
-            BranchMap::const_iterator it = branchMap_.find(id);
-            return (it == branchMap_.end()) ? nullptr : it->second;
+            ArcMap::const_iterator it = arcMap_.find(id);
+            return (it == arcMap_.end()) ? nullptr : it->second;
          }
-         std::shared_ptr<Branch> branch(const std::string& id)
+         std::shared_ptr<Arc> arc(const std::string& id)
          {
-            return std::const_pointer_cast<Branch>((const_cast<const Network*>(this))->branch(id));
+            return std::const_pointer_cast<Arc>((const_cast<const Network*>(this))->arc(id));
          }
-         virtual void addBranch(std::shared_ptr<Branch> branch)
+         virtual void addArc(std::shared_ptr<Branch> branch, const std::string& bus0Id, const std::string& bus1Id)
          {
-            branchMap_[branch->id()] = branch;
-            branchVec_.push_back(branch);
+            auto nd0 = node(bus0Id); 
+            auto nd1 = node(bus1Id); 
+            auto arc = std::shared_ptr<Arc>(new Arc(branch, nd0, nd1));
+            arcMap_[branch->id()] = arc;
+            arcVec_.push_back(arc);
          }
 
          const GenVec& gens() const
@@ -135,11 +181,11 @@ namespace SmartGridToolbox
          {
             return std::const_pointer_cast<Gen>((const_cast<const Network*>(this))->gen(id));
          }
-         virtual void addGen(std::shared_ptr<Gen> gen, Bus& toBus)
+         virtual void addGen(std::shared_ptr<Gen> gen, const std::string& busId)
          {
             genMap_[gen->id()] = gen;
-            toBus.addGen(gen);
             genVec_.push_back(gen);
+            node(busId)->gens_.push_back(gen);
          }
 
          const ZipVec& zips() const
@@ -155,11 +201,11 @@ namespace SmartGridToolbox
          {
             return std::const_pointer_cast<Zip>((const_cast<const Network*>(this))->zip(id));
          }
-         virtual void addZip(std::shared_ptr<Zip> zip, Bus& toBus)
+         virtual void addZip(std::shared_ptr<Zip> zip, const std::string& busId)
          {
             zipMap_[zip->id()] = zip;
-            toBus.addZip(zip);
             zipVec_.push_back(zip);
+            node(busId)->zips_.push_back(zip);
          }
 
       /// @}
@@ -229,11 +275,11 @@ namespace SmartGridToolbox
          double PBase_ = 1.0;
          double freq_ = 50.0;
 
-         BusVec busVec_;
-         BusMap busMap_;
+         NodeVec nodeVec_;
+         NodeMap nodeMap_;
 
-         BranchVec branchVec_;
-         BranchMap branchMap_;
+         ArcVec arcVec_;
+         ArcMap arcMap_;
 
          GenVec genVec_;
          GenMap genMap_;

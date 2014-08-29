@@ -59,14 +59,6 @@ namespace SmartGridToolbox
 
       branch->setY(Y);
 
-      std::shared_ptr<Bus> bus0 = netw.bus(bus0Id);
-      assert(bus0 != nullptr);
-      std::shared_ptr<Bus> bus1 = netw.bus(bus1Id);
-      assert(bus1 != nullptr);
-
-      branch->setBus0(bus0);
-      branch->setBus1(bus1);
-
-      netw.addBranch(std::move(branch));
+      netw.addArc(std::move(branch), bus0Id, bus1Id);
    }
 }

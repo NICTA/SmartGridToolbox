@@ -17,14 +17,7 @@ namespace SmartGridToolbox
       std::string bus0Id = nd["bus_0_id"].as<std::string>();
       std::string bus1Id = nd["bus_1_id"].as<std::string>();
 
-      std::shared_ptr<Bus> bus0 = netw.bus(bus0Id);
-      assert(bus0 != nullptr);
-      std::shared_ptr<Bus> bus1 = netw.bus(bus1Id);
-      assert(bus1 != nullptr);
-      trans->setBus0(bus0);
-      trans->setBus1(bus1);
-      
-      netw.addBranch(std::move(trans));
+      netw.addArc(std::move(trans), bus0Id, bus1Id);
    }
 
    std::unique_ptr<DgyTransformer> DgyTransformerParser::parseDgyTransformer(const YAML::Node& nd) const

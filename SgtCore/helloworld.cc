@@ -13,10 +13,11 @@ int main(int argc, char** argv)
    SmartGridToolbox::Parser<Network> p;
    p.parse(fname, nw);
    auto print = [&](){
-      for (auto bus : nw.busses())
+      for (auto nd : nw.nodes())
       {
+         auto bus = nd->bus();
          auto V = nw.V2Pu(bus->V()[0], bus->VBase());
-         auto S = nw.S2Pu(bus->SGen()[0]);
+         auto S = nw.S2Pu(nd->SGen()[0]);
          printf("%12s : %9.4f %9.4f %9.4f %9.4f\n", bus->id().c_str(), std::abs(V), std::arg(V)*180.0/pi,
                S.real(), S.imag());
       }

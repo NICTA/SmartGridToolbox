@@ -1,7 +1,6 @@
 #ifndef BRANCH_DOT_H
 #define BRANCH_DOT_H
 
-#include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
 #include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
@@ -10,8 +9,6 @@
 
 namespace SmartGridToolbox
 {
-   class Bus;
-
    /// @brief Branch is an abstract base class for a branch which connects two Busses in a Network.
    class Branch : public Component
    {
@@ -71,31 +68,6 @@ namespace SmartGridToolbox
          }
 
       /// @}
-        
-      /// @name Bus accessors:
-      /// @{
-         
-         const Bus& bus0() const
-         {
-            return *bus0_;
-         }
-
-         virtual void setBus0(const std::shared_ptr<Bus>& bus0)
-         {
-            bus0_ = bus0;
-         }
-          
-         const Bus& bus1() const
-         {
-            return *bus1_;
-         }
-
-         virtual void setBus1(const std::shared_ptr<Bus>& bus1)
-         {
-            bus1_ = bus1;
-         }
-     
-      /// @}
 
       /// @name Nodal admittance matrix (Y):
       /// @{
@@ -124,8 +96,6 @@ namespace SmartGridToolbox
          Phases phases0_; ///< Phases on bus 0.
          Phases phases1_; ///< Phases on bus 1.
          bool isInService_; ///< Am I in service?
-         std::shared_ptr<Bus> bus0_{nullptr}; ///< My bus 0.
-         std::shared_ptr<Bus> bus1_{nullptr}; ///< My bus 0.
 
          Event isInServiceChanged_;
          Event admittanceChanged_;

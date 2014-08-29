@@ -391,7 +391,6 @@ namespace SmartGridToolbox
          std::unique_ptr<Zip> zip(new Zip(zipId, Phase::BAL));
          zip->setYConst(VComplex(1, YZip));
          zip->setSConst(VComplex(1, SZip));
-         netw.addZip(std::move(zip), *bus);
          bus->setVMagMin(busInfo.VMagMin == -infinity ? -infinity : pu2kV(busInfo.VMagMin, busInfo.kVBase));
          bus->setVMagMax(busInfo.VMagMax == infinity ? infinity : pu2kV(busInfo.VMagMax, busInfo.kVBase));
 
@@ -401,7 +400,8 @@ namespace SmartGridToolbox
          double vAng = deg2Rad(busInfo.vAngDeg);
          bus->setV(VComplex(1, std::polar(vMag, vAng)));
          
-         netw.addBus(std::move(bus));
+         netw.addNode(std::move(bus));
+         netw.addZip(std::move(zip), busId);
       } // Busses
 
       // Gens:
@@ -415,7 +415,6 @@ namespace SmartGridToolbox
          genCompVec.push_back(gen.get());
          
          std::string busId = getBusId(genInfo.busId);
-         std::shared_ptr<Bus> bus = netw.bus(busId);
 
          gen->setIsInService(genInfo.status);
 
@@ -430,7 +429,7 @@ namespace SmartGridToolbox
          gen->setC1(0.0);
          gen->setC2(0.0);
 
-         netw.addGen(std::move(gen), *bus);
+         netw.addGen(std::move(gen), busId);
       } // Gens
 
       // Branches:
@@ -444,13 +443,10 @@ namespace SmartGridToolbox
          branch->setIsInService(branchInfo.status);
 
          std::string bus0Id = getBusId(branchInfo.busIdF);
-         std::shared_ptr<Bus> bus0 = netw.bus(bus0Id);
-         assert(bus0 != nullptr);
          std::string bus1Id = getBusId(branchInfo.busIdT);
-         std::shared_ptr<Bus> bus1 = netw.bus(bus1Id);
-         assert(bus1 != nullptr);
-         branch->setBus0(bus0);
-         branch->setBus1(bus1);
+
+         auto bus0 = netw.node(bus0Id)->bus();
+         auto bus1 = netw.node(bus1Id)->bus();
 
          double tap = (std::abs(branchInfo.tap) < 1e-6 ? 1.0 : branchInfo.tap) * bus0->VBase() / bus1->VBase();
          branch->setTapRatio(std::polar(tap, deg2Rad(branchInfo.shiftDeg)));
@@ -460,7 +456,7 @@ namespace SmartGridToolbox
          branch->setRateB(branchInfo.rateB);
          branch->setRateC(branchInfo.rateC);
 
-         netw.addBranch(std::move(branch));
+         netw.addArc(std::move(branch), bus0Id, bus1Id);
       }
 
       // Add generator costs, if they exist.

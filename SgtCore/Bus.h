@@ -134,39 +134,6 @@ namespace SmartGridToolbox
 
       /// @}
 
-
-      /// @name ZIPs
-      /// @{
-
-         const ZipVec& zips() const
-         {
-            return zips_;
-         }
-
-         /// @brief Total ZIP admittance.
-         ublas::vector<Complex> YZip() const;
-
-         /// @brief Total ZIP current injection into bus.
-         ublas::vector<Complex> IZip() const;
-
-         /// @brief Total ZIP power injection into bus.
-         ublas::vector<Complex> SZip() const;
-
-      /// @}
-
-      /// @name Generation
-      /// @{
-         
-         const GenVec& gens() const
-         {
-            return gens_;
-         }
-         
-         /// @brief Total generated power injection (-ve of generated power).
-         ublas::vector<Complex> SGen() const;
-
-      /// @}
-
       /// @name State
       /// @{
 
@@ -196,25 +163,10 @@ namespace SmartGridToolbox
          /// @brief Event triggered when bus control (e.g. setpoint) has changed.
          virtual Event& controlChanged() {return controlChanged_;}
          
-         /// @brief Event triggered when one of my zips or gens has changed.
-         virtual Event& zipOrGenChanged() {return zipOrGenChanged_;}
-
          /// @brief Event triggered when bus state (e.g. voltage) has been updated.
          virtual Event& voltageUpdated() {return voltageUpdated_;}
       
       /// @}
-
-      protected:
-
-         virtual void addZip(const std::shared_ptr<Zip> zip)
-         {
-            zips_.push_back(zip);
-         }
-
-         virtual void addGen(const std::shared_ptr<Gen> gen)
-         {
-            gens_.push_back(gen);
-         }
 
          virtual void print(std::ostream& os) const override;
 
@@ -230,15 +182,11 @@ namespace SmartGridToolbox
          double VMagMin_{-infinity};
          double VMagMax_{infinity};
 
-         ZipVec zips_;
-         GenVec gens_;
-
          bool isInService_{true};
          ublas::vector<Complex> V_{phases_.size(), czero};
 
          Event isInServiceChanged_;
          Event controlChanged_;
-         Event zipOrGenChanged_;
          Event voltageUpdated_;
    };
 }

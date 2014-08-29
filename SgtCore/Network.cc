@@ -2,8 +2,34 @@
 
 #include "PowerFlowNr.h"
 
+#include <numeric>
+
 namespace SmartGridToolbox
 {
+   ublas::vector<Complex> Node::YZip() const
+   {
+      return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
+            [] (ublas::vector<Complex> & tot, const std::shared_ptr<Zip>& zip) {return tot + zip->YConst();});
+   }
+
+   ublas::vector<Complex> Node::IZip() const
+   {
+      return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
+            [] (ublas::vector<Complex> & tot, const std::shared_ptr<Zip>& zip) {return tot + zip->IConst();});
+   }
+
+   ublas::vector<Complex> Node::SZip() const
+   {
+      return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
+            [] (ublas::vector<Complex> & tot, const std::shared_ptr<Zip>& zip) {return tot + zip->SConst();});
+   }
+   
+   ublas::vector<Complex> Node::SGen() const
+   {
+      return std::accumulate(gens_.begin(), gens_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
+            [] (ublas::vector<Complex> & tot, const std::shared_ptr<Gen>& gen) {return tot + gen->S();});
+   }
+
    Network::Network(const std::string& id, double PBase) :
       Component(id),
       PBase_(PBase)
@@ -16,13 +42,31 @@ namespace SmartGridToolbox
       Component::print(os);
       IndentingOStreamBuf _(os);
       os << "P_base: " << PBase_ << std::endl;
-      for (auto& bus : busVec_)
+      for (auto nd : nodeVec_)
       {
-         os << *bus << std::endl;
+         os << nd->bus() << std::endl;
+         os << "Zips: " << std::endl;
+         {
+            IndentingOStreamBuf _(os);
+            for (auto zip : nd->zips())
+            {
+               os << *zip << std::endl;
+            }
+         }
+         os << "Gens: " << std::endl;
+         {
+            IndentingOStreamBuf _(os);
+            for (auto gen : nd->gens())
+            {
+               os << *gen << std::endl;
+            }
+         }
       }
-      for (auto& branch : branchVec_)
+      for (auto arc : arcVec_)
       {
-         os << *branch << std::endl;
+         os << arc->branch() << std::endl;
+         os << "Bus 0 = " << arc->node0()->bus()->id() << std::endl;
+         os << "Bus 1 = " << arc->node0()->bus()->id() << std::endl;
       }
    }
 
@@ -32,15 +76,17 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << *this);
       PowerFlowNr solver;
       solver.reset();
-      for (const std::shared_ptr<Bus>& bus : busVec_)
+      for (const auto nd : nodeVec_)
       {
-         solver.addBus(bus->id(), bus->type(), bus->phases(), bus->VNom(), bus->YZip(), bus->IZip(), 
-               bus->SZip() + bus->SGen());
+         auto bus = nd->bus();
+         solver.addBus(bus->id(), bus->type(), bus->phases(), bus->VNom(), nd->YZip(), nd->IZip(), 
+               nd->SZip() + nd->SGen());
       }
-      for (const std::shared_ptr<Branch>& branch : branchVec_)
+      for (const auto arc : arcVec_)
       {
-         solver.addBranch(branch->bus0().id(), branch->bus1().id(), branch->phases0(), branch->phases1(),
-               branch->Y());
+         auto branch = arc->branch();
+         solver.addBranch(arc->node0()->bus()->id(), arc->node1()->bus()->id(),
+               branch->phases0(), branch->phases1(), branch->Y());
       }
 
       solver.validate();
@@ -52,15 +98,16 @@ namespace SmartGridToolbox
          for (const auto& busPair: solver.busses())
          {
             auto& busNr = *busPair.second;
-            const std::shared_ptr<Bus>& bus = this->bus(busNr.id_);
-            auto SGen = (busNr.S_ - bus->SZip()) / double(bus->gens().size());
+            const auto nd = this->node(busNr.id_);
+            auto SGen = (busNr.S_ - nd->SZip()) / double(nd->gens().size());
             // Note: we've already taken YZip and IZip explicitly into account, so this is correct.
-            
+           
+            auto bus = nd->bus();
             bus->setV(busNr.V_);
             switch (bus->type())
             {
                case BusType::SL:
-                  for (auto gen : bus->gens())
+                  for (auto gen : nd->gens())
                   {
                      gen->setS(SGen);
                   }
@@ -68,7 +115,7 @@ namespace SmartGridToolbox
                case BusType::PQ:
                   break;
                case BusType::PV:
-                  for (auto gen : bus->gens())
+                  for (auto gen : nd->gens())
                   {
                      // Keep P for gens, distribute Q amongst all gens.
                      ublas::vector<Complex> SNew(gen->S().size());

@@ -14,8 +14,7 @@ namespace SmartGridToolbox
 
       assertFieldPresent(nd, "bus_id");
       std::string busId = nd["bus_id"].as<std::string>();
-      std::shared_ptr<Bus> bus = netw.bus(busId);
-      netw.addGen(std::move(gen), *bus);
+      netw.addGen(std::move(gen), busId);
    }
    
    std::unique_ptr<Gen> GenParser::parseGen(const YAML::Node& nd) const
