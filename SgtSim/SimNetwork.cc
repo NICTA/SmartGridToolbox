@@ -1,9 +1,5 @@
 #include "SimNetwork.h"
 
-#include "SimBus.h"
-#include "SimBranch.h"
-
-#include <SgtCore/Model.h>
 #include <SgtCore/PowerFlowNr.h>
 
 #include <iostream>
@@ -27,6 +23,8 @@ namespace SmartGridToolbox
    {
       Network::addArc(branch, bus0Id, bus1Id);
 
+      dependsOn(branch);
+
       branch->admittanceChanged().addAction([this](){needsUpdate().trigger();}, 
             "Trigger Network " + id() + " needs update");
       branch->isInServiceChanged().addAction([this](){needsUpdate().trigger();}, 
@@ -36,6 +34,8 @@ namespace SmartGridToolbox
    void SimNetwork::addGen(std::shared_ptr<Gen> gen, const std::string& busId)
    {
       Network::addGen(gen, busId);
+
+      dependsOn(gen);
 
       gen->setpointChanged().addAction([this](){needsUpdate().trigger();}, 
             "Trigger Network " + id() + " needs update");
@@ -63,22 +63,5 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "SimNetwork : update state." << std::endl);
       solvePowerFlow(); // TODO: inefficient to rebuild even if not needed.
-   }
-
-   void SimNetwork::addBus(SimBus& bus)
-   {
-      dependsOn(bus);
-      busVec_.push_back(&bus);
-      busMap_[bus.name()] = &bus;
-      bus.changed().addAction([this](){needsUpdate().trigger();},
-            "Trigger SimNetwork " + name() + " needs update");
-   }
-
-   void SimNetwork::addBranch(SimBranch& branch)
-   {
-      dependsOn(branch);
-      branchVec_.push_back(&branch);
-      branch.changed().addAction([this](){needsUpdate().trigger();},
-            "Trigger SimNetwork " + name() + " needs update");
    }
 }

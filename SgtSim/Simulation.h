@@ -18,14 +18,14 @@ namespace SmartGridToolbox
    {
       private:
 
-         typedef std::shared_ptr<SimComponent> SimObjPtr;
-         typedef std::shared_ptr<const SimComponent> SimObjConstPtr;
+         typedef std::shared_ptr<SimComponent> SimCompPtr;
+         typedef std::shared_ptr<const SimComponent> SimCompConstPtr;
          typedef std::shared_ptr<TimeSeriesBase> TimeSeriesPtr;
          typedef std::shared_ptr<const TimeSeriesBase> TimeSeriesConstPtr;
 
-         typedef std::vector<SimObjPtr> SimObjVec;
-         typedef std::vector<SimObjConstPtr> ConstSimObjVec;
-         typedef std::map<std::string, SimObjPtr> SimObjMap;
+         typedef std::vector<SimCompPtr> SimCompVec;
+         typedef std::vector<SimCompConstPtr> ConstSimCompVec;
+         typedef std::map<std::string, SimCompPtr> SimCompMap;
          typedef std::map<std::string, std::unique_ptr<TimeSeriesBase>> TimeSeriesMap;
 
       public:
@@ -117,21 +117,22 @@ namespace SmartGridToolbox
          /// @brief Retrieve a const SimComponent.
          template<typename T> std::shared_ptr<T> simComponent(const std::string& id) const
          {
-            SimObjMap::const_iterator it = simCompMap_.find(id);
+            SimCompMap::const_iterator it = simCompMap_.find(id);
             return (it == simCompMap_.end()) ? nullptr : std::dynamic_pointer_cast<const T>(it->second);
          }
 
          /// @brief Retrieve a SimComponent.
          template<typename T> std::shared_ptr<T> simComponent(const std::string& id)
          {
-            return std::const_pointer_cast<std::shared_ptr<T>>((const_cast<const Simulation*>(this))->simComponent<T>(id));
+            return std::const_pointer_cast<std::shared_ptr<T>>(
+                  (const_cast<const Simulation*>(this))->simComponent<T>(id));
          }
 
          /// @brief Copied vector of all const SimComponents.
-         ConstSimObjVec simComponents() const;
+         ConstSimCompVec simComponents() const;
 
          /// @brief Copied vector of all SimComponents.
-         SimObjVec simComponents() {return simCompVec_;}
+         SimCompVec simComponents() {return simCompVec_;}
 
          /// @brief Initialize to start time.
          void initialize();
@@ -176,8 +177,8 @@ namespace SmartGridToolbox
          class ScheduledUpdatesCompare
          {
             public:
-               bool operator()(const std::pair<SimObjPtr, Time>& lhs,
-                     const std::pair<SimObjPtr, Time>& rhs)
+               bool operator()(const std::pair<SimCompPtr, Time>& lhs,
+                     const std::pair<SimCompPtr, Time>& rhs)
                {
                   return ((lhs.second < rhs.second) ||
                         (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
@@ -190,15 +191,15 @@ namespace SmartGridToolbox
          class ContingentUpdatesCompare
          {
             public:
-               bool operator()(const SimObjPtr lhs, const SimObjPtr rhs)
+               bool operator()(const SimCompPtr lhs, const SimCompPtr rhs)
                {
                   return ((lhs->rank() < rhs->rank()) ||
                         ((lhs->rank() == rhs->rank()) && (lhs->id() < rhs->id())));
                }
          };
 
-         typedef std::set<std::pair<SimObjPtr, Time>, ScheduledUpdatesCompare> ScheduledUpdates;
-         typedef std::set<SimObjPtr, ContingentUpdatesCompare> ContingentUpdates;
+         typedef std::set<std::pair<SimCompPtr, Time>, ScheduledUpdatesCompare> ScheduledUpdates;
+         typedef std::set<SimCompPtr, ContingentUpdatesCompare> ContingentUpdates;
 
       private:
 
@@ -213,8 +214,8 @@ namespace SmartGridToolbox
          LatLong latLong_;
          local_time::time_zone_ptr timezone_;
          
-         SimObjMap simCompMap_;
-         SimObjVec simCompVec_; // Encoding order of evaluation/rank.
+         SimCompMap simCompMap_;
+         SimCompVec simCompVec_; // Encoding order of evaluation/rank.
 
          TimeSeriesMap timeSeriesMap_; // Contains TimeSeries objects for Simulation.
 
