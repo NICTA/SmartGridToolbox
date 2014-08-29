@@ -11,6 +11,7 @@
 
 namespace SmartGridToolbox
 {
+
    class Network : public Component
    {
       public:
@@ -26,7 +27,20 @@ namespace SmartGridToolbox
 
          typedef std::vector<std::shared_ptr<Zip>> ZipVec;
          typedef std::map<std::string, std::shared_ptr<Zip>> ZipMap;
-         
+
+         struct Node
+         {
+            std::shared_ptr<Bus> bus;
+            GenVec gens;
+            ZipVec zips;
+         };
+
+         struct Arc
+         {
+            std::shared_ptr<Branch> branch;
+            std::shared_ptr<Bus> bus0;
+            std::shared_ptr<Bus> bus1;
+         };
 
       /// @name Lifecycle:
       /// @{
