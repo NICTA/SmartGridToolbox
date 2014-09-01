@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   ublas::vector<Complex> Inverter::S() const
+   ublas::vector<Complex> Inverter::SConst() const
    {
       double PPerPh = PPerPhase();
       double P2PerPh = PPerPh * PPerPh; // Limited by maxSMagPerPhase_.

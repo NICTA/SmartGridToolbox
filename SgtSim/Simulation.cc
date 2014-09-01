@@ -23,7 +23,7 @@ namespace SmartGridToolbox
       return result;
    }
 
-   void Simulation::addOrReplaceGeneric(std::shared_ptr<SimComponent> simComp, bool allowReplace)
+   void Simulation::addOrReplaceGenericSimComponent(std::shared_ptr<SimComponent> simComp, bool allowReplace)
    {
       message() << "Adding simComponent " << simComp->id() << " of type " 
          << simComp->componentTypeStr() << " to model." << std::endl;

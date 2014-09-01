@@ -1,9 +1,7 @@
 #ifndef INVERTER_BASE_DOT_H
 #define INVERTER_BASE_DOT_H
 
-#include <SgtSim/SimComponent.h>
-
-#include <SgtCore/ZipAbc.h>
+#include <SgtSim/SimNetworkComponent.h>
 
 namespace SmartGridToolbox
 {
@@ -11,7 +9,7 @@ namespace SmartGridToolbox
 
    /// @brief DC power to n-phase AC converter.
    /// @ingroup PowerFlowCore
-   class InverterBase : public ZipAbc, public SimComponent
+   class InverterBase : public SimZip
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
@@ -29,7 +27,7 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
          
-         InverterBase(const std::string& id, const Phases& phases) : ZipAbc(id, phases), PDc_(0.0)
+         InverterBase(const std::string& id, const Phases& phases) : ZipAbc(id, phases)
          {
             // Empty.
          }
@@ -44,7 +42,6 @@ namespace SmartGridToolbox
          }
          virtual ublas::vector<Complex> SConst() const override = 0;
 
-
          void addDcPowerSource(std::shared_ptr<DcPowerSourceBase> source);
 
          virtual double efficiency(double powerDc) const = 0;
@@ -56,7 +53,6 @@ namespace SmartGridToolbox
 
       private:
          std::vector<std::shared_ptr<DcPowerSourceBase>> sources_;   ///< My DC power sources.
-         double PDc_;                                                ///< DC power = sum of all sources.
    };
 }
 

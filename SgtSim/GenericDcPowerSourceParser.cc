@@ -15,8 +15,8 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "dc_power");
 
       string id = nd["id"].as<std::string>();
-      auto& comp = into.newSimComponent<GenericDcPowerSource>(id);
-      comp.setPDc(nd["dc_power"].as<double>());
+      auto comp = into.newSimComponent<GenericDcPowerSource>(id);
+      comp->setPDc(nd["dc_power"].as<double>());
 
       const std::string inverterStr = nd["inverter"].as<std::string>();
       auto inverterComp = into.simComponent<InverterBase>(inverterStr);

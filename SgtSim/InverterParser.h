@@ -5,7 +5,9 @@
 
 namespace SmartGridToolbox
 {
-   class InverterParser : public ParserPlugin
+   class Simulation;
+
+   class InverterParser : public ParserPlugin<Simulation>
    {
       public:
          virtual const char* key() override

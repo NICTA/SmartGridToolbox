@@ -87,31 +87,31 @@ namespace SmartGridToolbox
          }
 
          /// @brief Factory method for SimComponents.
-         template<typename T, typename... Args> T& newSimComponent(Args&&... args)
+         template<typename T, typename... Args> std::shared_ptr<T> newSimComponent(Args&&... args)
          {
             std::shared_ptr<T> comp(new T(std::forward<Args>(args)...));
-            return acquireSimComponent(comp);
+            acquireSimComponent(comp);
+            return comp;
          }
 
          /// @brief Acquire an existing SimComponent.
-         template<typename T> T& acquireSimComponent(std::shared_ptr<T> comp)
+         template<typename T> void acquireSimComponent(std::shared_ptr<T> comp)
          {
             addOrReplaceGenericSimComponent(comp, false);
-            return *comp;
          }
 
          /// @brief Replace an existing SimComponent factory method.
-         template<typename T, typename... Args> T& replaceSimComponentWithNew(Args&&... args)
+         template<typename T, typename... Args> std::shared_ptr<T> replaceSimComponentWithNew(Args&&... args)
          {
             std::shared_ptr<T> comp(new T(std::forward<Args>(args)...));
-            return replaceSimComponent(comp);
+            replaceSimComponent(comp);
+            return comp;
          }
 
          /// @brief Replace an existing SimComponent with an existing SimComponent.
-         template<typename T> T& replaceSimComponent(std::shared_ptr<T> comp)
+         template<typename T> void replaceSimComponent(std::shared_ptr<T> comp)
          {
             addOrReplaceGenericSimComponent(comp, true);
-            return *comp;
          }
 
          /// @brief Retrieve a const SimComponent.
@@ -202,7 +202,7 @@ namespace SmartGridToolbox
 
       private:
 
-         void addOrReplaceGeneric(std::shared_ptr<SimComponent> simComp, bool allowReplace);
+         void addOrReplaceGenericSimComponent(std::shared_ptr<SimComponent> simComp, bool allowReplace);
       
       private:
 

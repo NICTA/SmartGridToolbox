@@ -1,62 +1,48 @@
 #include "InverterParser.h"
 
-#include "SimBus.h"
 #include "Inverter.h"
+#include "SimNetwork.h"
+#include "Simulation.h"
 
 namespace SmartGridToolbox
 {
-   void InverterParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void InverterParser::parse(const YAML::Node& nd, Simulation& into) const
    {
       SGT_DEBUG(debug() << "Inverter : parse." << std::endl);
 
       assertFieldPresent(nd, "id");
-      assertFieldPresent(nd, "bus");
       assertFieldPresent(nd, "phases");
+      assertFieldPresent(nd, "network");
+      assertFieldPresent(nd, "bus");
 
-      string id = state.expandName(nd["id"].as<std::string>());
+      string id = nd["id"].as<std::string>();
       Phases phases = nd["phases"].as<Phases>();
+      const std::string networkStr = nd["network"].as<std::string>();
+      const std::string busStr = nd["bus"].as<std::string>();
 
-      Inverter& comp = mod.newComponent<Inverter>(id, phases);
+      auto inverter = into.newSimComponent<Inverter>(id, phases);
 
       if (nd["efficiency"])
       {
-         comp.setEfficiency(nd["efficiency"].as<double>());
+         inverter->setEfficiency(nd["efficiency"].as<double>());
       }
 
       if (nd["max_S_mag_per_phase"])
       {
-         comp.setMaxSMagPerPhase(nd["max_S_mag_per_phase"].as<double>());
+         inverter->setMaxSMagPerPhase(nd["max_S_mag_per_phase"].as<double>());
       }
 
       if (nd["min_power_factor"])
       {
-         comp.setMinPowerFactor(nd["min_power_factor"].as<double>());
+         inverter->setMinPowerFactor(nd["min_power_factor"].as<double>());
       }
 
       if (nd["requested_Q_per_phase"])
       {
-         comp.setRequestedQPerPhase(nd["requested_Q_per_phase"].as<double>());
+         inverter->setRequestedQPerPhase(nd["requested_Q_per_phase"].as<double>());
       }
-   }
 
-   void InverterParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
-   {
-      SGT_DEBUG(debug() << "Inverter : postParse." << std::endl);
-
-      string id = state.expandName(nd["id"].as<std::string>());
-      Inverter& comp = *mod.component<Inverter>(id);
-
-      const std::string busStr = state.expandName(nd["bus"].as<std::string>());
-      SimBus* busComp = mod.component<SimBus>(busStr);
-      if (busComp != nullptr)
-      {
-         busComp->addZip(comp);
-      }
-      else
-      {
-         error() << "For component " << id << ", bus " << busStr
-                 << " was not found in the model." << std::endl;
-         abort();
-      }
+      auto network = into.simComponent<SimNetwork>(networkStr);
+      network->addZip(inverter,  
    }
 }

@@ -24,7 +24,7 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         virtual ublas::vector<Complex> S() const override;
+         virtual ublas::vector<Complex> SConst() const override;
          virtual double PPerPhase() const override;
 
       /// @}
