@@ -27,7 +27,7 @@ namespace SmartGridToolbox
       /// @{
      
       public:
-         SolarPv(const std::string& name);
+         SolarPv(const std::string& id);
 
          void setWeather(Weather& weather);
 

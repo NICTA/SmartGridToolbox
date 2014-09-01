@@ -1,7 +1,6 @@
 #ifndef BATTERY_DOT_H
 #define BATTERY_DOT_H
 
-#include <SgtSim/Component.h>
 #include <SgtSim/DcPowerSourceBase.h>
 
 #include <SgtCore/Common.h>
@@ -44,8 +43,8 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         Battery(const std::string& name) :
-            DcPowerSourceBase(name),
+         Battery(const std::string& id) :
+            DcPowerSourceBase(id),
             dt_(posix_time::minutes(5)),
             initCharge_(0.0),
             maxChargePower_(0.0),

@@ -2,9 +2,9 @@
 
 namespace SmartGridToolbox
 {
-   SinglePhaseTransformer::SinglePhaseTransformer(const std::string& name, Phase phase0, Phase phase1,
+   SinglePhaseTransformer::SinglePhaseTransformer(const std::string& id, Phase phase0, Phase phase1,
                                                   Complex alpha, Complex ZLeak)
-      : SimBranch(name, phase0, phase1),
+      : SimBranch(id, phase0, phase1),
         alpha_(alpha),
         ZLeak_(ZLeak)
    {

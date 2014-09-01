@@ -47,8 +47,8 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         SimpleBuilding(const std::string& name) :
-            ZipBase(name, Phase::BAL),
+         SimpleBuilding(const std::string& id) :
+            ZipBase(id, Phase::BAL),
             dt_(posix_time::minutes(5)),
             kb_(5 * kW / K),
             Cb_(1.0e5 * kJ / K),

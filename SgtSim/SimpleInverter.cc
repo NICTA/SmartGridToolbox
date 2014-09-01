@@ -27,8 +27,8 @@ namespace SmartGridToolbox
       return std::min(std::abs(P), maxSMagPerPhase_) * (P < 0 ? -1 : 1);
    }
 
-   SimpleInverter::SimpleInverter(const std::string& name, const Phases& phases) :
-      InverterBase(name, phases),
+   SimpleInverter::SimpleInverter(const std::string& id, const Phases& phases) :
+      InverterBase(id, phases),
       efficiency_(1.0),
       maxSMagPerPhase_(1e9),
       minPowerFactor_(0.0),

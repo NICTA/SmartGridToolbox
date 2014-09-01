@@ -6,8 +6,8 @@
 
 namespace SmartGridToolbox
 {
-   SolarPv::SolarPv(const std::string& name) :
-      DcPowerSourceBase(name),
+   SolarPv::SolarPv(const std::string& id) :
+      DcPowerSourceBase(id),
       weather_(nullptr),
       efficiency_(1.0),
       planeNormal_({0.0, 0.0}),
@@ -18,7 +18,7 @@ namespace SmartGridToolbox
    {
       weather_ = &weather;
       dependsOn(weather);
-      weather.didUpdate().addAction([this](){needsUpdate().trigger();}, "Trigger SolarPv " + name() + " needs update");
+      weather.didUpdate().addAction([this](){needsUpdate().trigger();}, "Trigger SolarPv " + id() + " needs update");
    }
 
    double SolarPv::PDc() const

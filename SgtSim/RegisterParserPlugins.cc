@@ -22,7 +22,7 @@ namespace SmartGridToolbox
    {
       p.registerParserPlugin<BatteryParser>();
       p.registerParserPlugin<SimBusParser>();
-      p.registerParserPlugin<DgyTransformerParser>();
+      p.registerParserPlugin<SimDgyTransformerParser>();
       p.registerParserPlugin<SimGenericBranchParser>();
       p.registerParserPlugin<SimNetworkParser>();
       p.registerParserPlugin<OverheadLineParser>();

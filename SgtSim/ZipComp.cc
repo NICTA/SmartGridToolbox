@@ -5,8 +5,8 @@
 
 namespace SmartGridToolbox
 {
-   SimZip::SimZip(const std::string& name, const Phases& phases) :
-      ZipBase(name, phases),
+   SimZip::SimZip(const std::string& id, const Phases& phases) :
+      ZipBase(id, phases),
       Y_(phases.size(), 0.0),
       I_(phases.size(), 0.0),
       S_(phases.size(), 0.0)

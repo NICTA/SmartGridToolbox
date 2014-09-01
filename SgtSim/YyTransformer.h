@@ -26,7 +26,7 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         YyTransformer(const std::string& name, Phases phases0, Phases phases1,
+         YyTransformer(const std::string& id, Phases phases0, Phases phases1,
                        Complex a, Complex ZL, Complex YM);
 
       private:

@@ -31,7 +31,7 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         SimpleDcPowerSource(const std::string& name) : DcPowerSourceBase(name), PDc_(0.0) {}
+         SimpleDcPowerSource(const std::string& id) : DcPowerSourceBase(id), PDc_(0.0) {}
 
          void setPDc(double PDc) {PDc_ = PDc; needsUpdate().trigger();}
 
