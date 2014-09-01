@@ -11,7 +11,7 @@
 #include <SgtSim/OverheadLine.h>
 #include <SgtSim/Parser.h>
 #include <SgtSim/RegularUpdateComponent.h>
-#include <SgtSim/SimpleBattery.h>
+#include <SgtSim/Battery.h>
 #include <SgtSim/SimpleBuilding.h>
 #include <SgtSim/SimpleDcPowerSource.h>
 #include <SgtSim/SimpleInverter.h>

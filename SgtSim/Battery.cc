@@ -1,4 +1,4 @@
-#include "SimpleBattery.h"
+#include "Battery.h"
 
 #include "InverterBase.h"
 
@@ -8,7 +8,7 @@ using namespace std;
 
 namespace SmartGridToolbox
 {
-   void SimpleBattery::updateState(Time t)
+   void Battery::updateState(Time t)
    {
       double dt = time() == posix_time::neg_infin ? 0 : dSeconds(t - time());
       if (dt > 0)
@@ -18,7 +18,7 @@ namespace SmartGridToolbox
       }
    }
 
-   double SimpleBattery::PDc() const
+   double Battery::PDc() const
    {
       double result = 0.0;
       if ((requestedPower_ > 0 && charge_ < maxCharge_) || (requestedPower_ < 0 && charge_ > 0))
@@ -30,7 +30,7 @@ namespace SmartGridToolbox
       return result;
    }
 
-   double SimpleBattery::internalPower()
+   double Battery::internalPower()
    {
       double P = PDc();
       return (P > 0 ? P * chargeEfficiency_ : P / dischargeEfficiency_);

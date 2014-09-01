@@ -1,19 +1,19 @@
-#include "SimpleBatteryParser.h"
+#include "BatteryParser.h"
 
 #include "InverterBase.h"
-#include "SimpleBattery.h"
+#include "Battery.h"
 
 namespace SmartGridToolbox
 {
-   void SimpleBatteryParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void BatteryParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
-      SGT_DEBUG(debug() << "SimpleBattery : parse." << std::endl);
+      SGT_DEBUG(debug() << "Battery : parse." << std::endl);
 
       assertFieldPresent(nd, "name");
       assertFieldPresent(nd, "inverter");
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SimpleBattery& batt = mod.newComponent<SimpleBattery>(name);
+      Battery& batt = mod.newComponent<Battery>(name);
 
       auto nd_dt = nd["dt"];
       if (nd_dt) batt.set_dt(nd_dt.as<Time>());
@@ -40,12 +40,12 @@ namespace SmartGridToolbox
       if (ndRequestedPower) batt.setRequestedPower(ndRequestedPower.as<double>());
    }
 
-   void SimpleBatteryParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void BatteryParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
-      SGT_DEBUG(debug() << "SimpleBattery : postParse." << std::endl);
+      SGT_DEBUG(debug() << "Battery : postParse." << std::endl);
 
       string name = state.expandName(nd["name"].as<std::string>());
-      SimpleBattery& batt = *mod.component<SimpleBattery>(name);
+      Battery& batt = *mod.component<Battery>(name);
 
       const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
       InverterBase* inverter = mod.component<InverterBase>(inverterStr);

@@ -1,25 +1,26 @@
-#ifndef SIMPLE_BATTERY_PARSER_DOT_H
-#define SIMPLE_BATTERY_PARSER_DOT_H
+#ifndef BATTERY_PARSER_DOT_H
+#define BATTERY_PARSER_DOT_H
 
 #include <SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
-   class SimpleBattery;
+   class Battery;
    class Simulation;
 
-   class SimpleBatteryParser : public ParserPlugin
+   class BatteryParser : public ParserPlugin<Simulation>
    {
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key()
          {
-            return "simple_battery";
+            return "battery";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
-         virtual void postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& data) const;
+         
+         std::unique_ptr<Battery> parseBattery(const YAML::Node& nd) const;
    };
 }
 
-#endif // SIMPLE_BATTERY_PARSER_DOT_H
+#endif // BATTERY_PARSER_DOT_H

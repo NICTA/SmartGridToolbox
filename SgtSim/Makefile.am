@@ -5,13 +5,13 @@ lib_LIBRARIES = libSgtSim.a
 include_HEADERS = LibSgtSim.h
 
 pkginclude_HEADERS = \
+	Battery.h \
 	DcPowerSourceBase.h \
 	InverterBase.h \
 	RegularUpdateComponent.h \
 	SimComponent.h \
 	SimNetwork.h \
 	SimNetworkComponent.h \
-	SimpleBattery.h \
 	SimpleBuilding.h \
 	SimpleDcPowerSource.h \
 	SimpleInverter.h \
@@ -25,6 +25,10 @@ pkginclude_HEADERS = \
 	YyTransformer.h
 
 libSgtSim_a_SOURCES = \
+	Battery.h \
+	Battery.cc \
+	Battery.h \
+	Battery.cc \
 	InverterBase.h \
 	InverterBase.cc \
 	LibSgtSim.h \
@@ -46,10 +50,6 @@ libSgtSim_a_SOURCES = \
 	SimNetworkParser.cc \
 	SimZipParser.h \
 	SimZipParser.cc \
-	SimpleBattery.h \
-	SimpleBattery.cc \
-	SimpleBatteryParser.h \
-	SimpleBatteryParser.cc \
 	SimpleBuilding.h \
 	SimpleBuilding.cc \
 	SimpleBuildingParser.h \
