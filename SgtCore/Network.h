@@ -42,7 +42,7 @@ namespace SmartGridToolbox
       friend class Network;
 
       public:
-         const std::shared_ptr<Bus> bus() {return bus_;}
+         std::shared_ptr<Bus> bus() {return bus_;}
 
          const GenVec gens() {return gens_;}
          ublas::vector<Complex> SGen() const;
@@ -66,9 +66,9 @@ namespace SmartGridToolbox
       friend class Network;
 
       public:
-         const std::shared_ptr<Branch> branch() {return branch_;}
-         const std::shared_ptr<Node> node0() {return node0_;}
-         const std::shared_ptr<Node> node1() {return node1_;}
+         std::shared_ptr<Branch> branch() {return branch_;}
+         std::shared_ptr<Node> node0() {return node0_;}
+         std::shared_ptr<Node> node1() {return node1_;}
 
       private:
          Arc(std::shared_ptr<Branch> branch, std::shared_ptr<Node> node0, std::shared_ptr<Node> node1) :

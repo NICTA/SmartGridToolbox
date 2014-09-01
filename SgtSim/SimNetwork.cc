@@ -13,7 +13,7 @@ namespace SmartGridToolbox
 {
    void SimNetwork::addNode(std::shared_ptr<SimBus> bus)
    {
-      Network::addNode(bus);
+      network_::addNode(bus);
 
       dependsOn(bus);
 

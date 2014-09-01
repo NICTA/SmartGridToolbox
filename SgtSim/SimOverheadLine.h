@@ -30,6 +30,11 @@ namespace SmartGridToolbox
             // Empty.
          }
 
+         SimOverheadLine(const OverheadLine& ohl) : OverheadLine(ohl)
+         {
+            // Empty.
+         }
+
       /// @}
    };
 }

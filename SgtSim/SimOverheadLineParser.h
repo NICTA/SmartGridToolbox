@@ -7,6 +7,8 @@
 
 namespace SmartGridToolbox
 {
+   class SimOverheadLine;
+
    /// @brief ParserPlugin that parses OverheadLine objects.
    class SimOverheadLineParser : public ParserPlugin<Simulation>
    {
@@ -18,6 +20,8 @@ namespace SmartGridToolbox
 
       public:
          virtual void parse(const YAML::Node& nd, Simulation& data) const;
+         
+         std::unique_ptr<SimOverheadLine> parseSimOverheadLine(const YAML::Node& nd) const;
    };
 }
 
