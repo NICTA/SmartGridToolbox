@@ -1,22 +1,28 @@
-#ifndef NETWORK_COMP_PARSER_DOT_H
-#define NETWORK_COMP_PARSER_DOT_H
+#ifndef SIM_NETWORK_PARSER_DOT_H
+#define SIM_NETWORK_PARSER_DOT_H
 
-#include <SgtSim/Parser.h>
+#include <SgtSim/SimNetwork.h>
+
+#include <SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
+   class Simulation;
+
    /// @brief ParserPlugin that parses the network keyword, adding a new SimNetwork to the model.
-   class SimNetworkParser : public ParserPlugin
+   class SimNetworkParser : public ParserPlugin<Simulation>
    {
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key()
          {
             return "network";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& data) const;
+         
+         std::unique_ptr<SimNetwork> parseSimNetwork(const YAML::Node& nd) const;
    };
 }
 
-#endif // NETWORK_COMP_PARSER_DOT_H
+#endif // SIM_NETWORK_PARSER_DOT_H

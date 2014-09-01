@@ -1,22 +1,27 @@
 #ifndef BUS_COMP_PARSER_DOT_H
 #define BUS_COMP_PARSER_DOT_H
 
-#include <SgtSim/Parser.h>
+#include <SgtSim/SimNetworkComponent.h>
+
+#include <SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
+   class Simulation;
+
    /// @brief ParserPlugin that parses SimBus objects.
-   class SimBusParser : public ParserPlugin
+   class SimBusParser : public ParserPlugin<Simulation>
    {
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key()
          {
-            return "bus";
+            return "sim_bus";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
-         virtual void postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& data) const;
+         
+         std::unique_ptr<SimBus> parseSimBus(const YAML::Node& nd) const;
    };
 }
 

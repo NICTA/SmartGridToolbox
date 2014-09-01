@@ -1,10 +1,13 @@
 #ifndef SIMPLE_BATTERY_PARSER_DOT_H
 #define SIMPLE_BATTERY_PARSER_DOT_H
 
-#include <SgtSim/Parser.h>
+#include <SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
+   class SimpleBattery;
+   class Simulation;
+
    class SimpleBatteryParser : public ParserPlugin
    {
       public:

@@ -1,22 +1,27 @@
 #ifndef DGY_TRANSFORMER_PARSER
 #define DGY_TRANSFORMER_PARSER
 
-#include <SgtSim/Parser.h>
+#include <SgtSim/SimNetworkComponent.h>
+
+#include <SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
+   class Simulation;
+
    /// @brief ParserPlugin that parses DgyTransformer objects.
-   class DgyTransformerParser : public ParserPlugin
+   class DgyTransformerParser : public ParserPlugin<Simulation>
    {
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key()
          {
             return "delta_g_wye_transformer";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
-         virtual void postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& data) const;
+         
+         std::unique_ptr<SimBranch> parseSimDgyTransformer(const YAML::Node& nd) const;
    };
 }
 

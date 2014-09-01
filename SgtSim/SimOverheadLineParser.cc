@@ -1,9 +1,9 @@
 #include "SimOverheadLineParser.h"
 
-#include "SimBus.h"
-#include "SimOverheadLine.h"
 #include "SimNetwork.h"
+#include "Simulation.h"
 
+#include <SgtCore/OverheadLine.h>
 #include <SgtCore/OverheadLineParser.h>
 
 #include <memory>
@@ -14,12 +14,11 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "OverheadLine : parse." << std::endl);
       
+      auto ohl = parseSimOverheadLine(nd);
+
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");
       assertFieldPresent(nd, "bus_1_id");
-
-      auto ohl = parseSimOverheadLine(nd);
-      std::shared_ptr<Branch>
 
       string netwId = nd["network_id"].as<std::string>();
       std::string bus0Id = nd["bus_0_id"].as<std::string>();
@@ -30,9 +29,9 @@ namespace SmartGridToolbox
       netw->addArc(std::move(ohl), bus0Id, bus1Id);
    }
 
-   std::unique_ptr<SimOverheadLine> SimOverheadLineParser::parseSimOverheadLine(const YAML::Node& nd) const
+   std::unique_ptr<SimBranch> SimOverheadLineParser::parseSimOverheadLine(const YAML::Node& nd) const
    {
-      static OverheadLineParser ohlParser; 
-      return std::unique_ptr<SimOverheadLine>(new SimOverheadLine(*ohlParser.parseOverheadLine(nd)));
+      static OverheadLineParser ohlParser;
+      return std::unique_ptr<SimBranch>(new SimBranch(ohlParser.parseOverheadLine(nd)));
    }
 }

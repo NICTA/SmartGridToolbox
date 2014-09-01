@@ -25,22 +25,32 @@ namespace SmartGridToolbox
 
    void GenericBranchParser::parse(const YAML::Node& nd, Network& netw) const
    {
+      SGT_DEBUG(debug() << "GenricBranch : parse." << std::endl);
+
+      auto gb = parseGenericBranch(nd);
+
+      assertFieldPresent(nd, "bus_0_id");
+      assertFieldPresent(nd, "bus_1_id");
+
+      std::string bus0Id = nd["bus_0_id"].as<std::string>();
+      std::string bus1Id = nd["bus_1_id"].as<std::string>();
+      
+      netw.addArc(std::move(gb), bus0Id, bus1Id);
+   }
+
+   std::unique_ptr<GenericBranch> GenericBranchParser::parseGenericBranch(const YAML::Node& nd) const
+   {
       SGT_DEBUG(debug() << "GenericBranch : parse." << std::endl);
 
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases_0");
       assertFieldPresent(nd, "phases_1");
-      assertFieldPresent(nd, "bus_0_id");
-      assertFieldPresent(nd, "bus_1_id");
       assertFieldPresent(nd, "Y");
 
       std::string id = nd["id"].as<std::string>();
       Phases phases0 = nd["phases_0"].as<Phases>();
       Phases phases1 = nd["phases_1"].as<Phases>();
       
-      std::string bus0Id = nd["bus_0_id"].as<std::string>();
-      std::string bus1Id = nd["bus_1_id"].as<std::string>();
-
       const YAML::Node& ndY = nd["Y"];
       const YAML::Node& ndYMatrix = ndY["matrix"];
       const YAML::Node& ndYSimpleLine = ndY["simple_line"];
@@ -59,6 +69,6 @@ namespace SmartGridToolbox
 
       branch->setY(Y);
 
-      netw.addArc(std::move(branch), bus0Id, bus1Id);
+      return branch;
    }
 }

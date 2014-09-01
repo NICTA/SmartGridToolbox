@@ -115,7 +115,7 @@ namespace SmartGridToolbox
          }
 
          /// @brief Retrieve a const SimComponent.
-         template<typename T> std::shared_ptr<T> simComponent(const std::string& id) const
+         template<typename T> std::shared_ptr<const T> simComponent(const std::string& id) const
          {
             SimCompMap::const_iterator it = simCompMap_.find(id);
             return (it == simCompMap_.end()) ? nullptr : std::dynamic_pointer_cast<const T>(it->second);
@@ -124,8 +124,7 @@ namespace SmartGridToolbox
          /// @brief Retrieve a SimComponent.
          template<typename T> std::shared_ptr<T> simComponent(const std::string& id)
          {
-            return std::const_pointer_cast<std::shared_ptr<T>>(
-                  (const_cast<const Simulation*>(this))->simComponent<T>(id));
+            return std::const_pointer_cast<T>((const_cast<const Simulation*>(this))->simComponent<T>(id));
          }
 
          /// @brief Copied vector of all const SimComponents.

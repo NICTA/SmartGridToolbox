@@ -1,57 +1,12 @@
 #ifndef NETWORK_COMP_DOT_H
 #define NETWORK_COMP_DOT_H
 
-#include <SgtSim/SimComponent.h>
+#include <SgtSim/SimNetworkComponent.h>
 
 #include <SgtCore/Network.h>
 
 namespace SmartGridToolbox
 {
-   template<typename T> class SimNetworkComponent : public SimComponent
-   {
-      public:
-      /// @name Lifecycle.
-      /// @{
-         
-         SimNetworkComponent(std::shared_ptr<T> component) : component_(component)
-         {
-            // Empty.
-         }
-
-      /// @}
- 
-      /// @name Component access.
-      /// @{
-         
-         std::shared_ptr<T> component()
-         {
-            return component_;
-         }
-
-      /// @}
-
-      /// @name Overridden member functions from SimComponent.
-      /// @{
-
-      public:
-         // virtual Time validUntil() const override;
-
-      protected:
-         // virtual void initializeState() override;
-         // virtual void updateState(Time t) override;
-      
-      /// @}
-      
-      private:
-
-         std::shared_ptr<T> component_;
-   };
-
-   typedef SimNetworkComponent<Branch> SimBus;
-   typedef SimNetworkComponent<Bus> SimBranch;
-   typedef SimNetworkComponent<Gen> SimGen;
-   typedef SimNetworkComponent<Zip> SimZip;
-
    /// @ingroup PowerFlowCore
    /// @brief SimNetwork : A SimComponent for an electrical network.
    class SimNetwork : public SimNetworkComponent<Network>

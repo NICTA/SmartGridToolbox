@@ -22,8 +22,6 @@ namespace SmartGridToolbox
 
    std::unique_ptr<OverheadLine> OverheadLineParser::parseOverheadLine(const YAML::Node& nd) const
    {
-      SGT_DEBUG(debug() << "OverheadLine : parse." << std::endl);
-
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases_0");
       assertFieldPresent(nd, "phases_1");
@@ -33,7 +31,6 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "earth_resistivity");
       assertFieldPresent(nd, "distance_matrix");
       assertFieldPresent(nd, "freq");
-
 
       string id = nd["id"].as<std::string>();
       Phases phases0 = nd["phases_0"].as<Phases>();

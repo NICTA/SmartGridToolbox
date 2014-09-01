@@ -7,14 +7,10 @@ include_HEADERS = LibSgtSim.h
 pkginclude_HEADERS = \
 	DcPowerSourceBase.h \
 	InverterBase.h \
-	SimOverheadLine.h \
-	Parser.h \
 	RegularUpdateComponent.h \
-	SimGenericBranch.h \
 	SimComponent.h \
-	SimDgyTransformer.h \
 	SimNetwork.h \
-	SimZip.h \
+	SimNetworkComponent.h \
 	SimpleBattery.h \
 	SimpleBuilding.h \
 	SimpleDcPowerSource.h \
@@ -32,30 +28,22 @@ libSgtSim_a_SOURCES = \
 	InverterBase.h \
 	InverterBase.cc \
 	LibSgtSim.h \
-	SimOverheadLine.h \
 	SimOverheadLineParser.h \
 	SimOverheadLineParser.cc \
-	Parser.h \
-	Parser.cc \
-	RegisterParserPlugins.h \
 	RegisterParserPlugins.cc \
-	SimGenericBranch.h \
 	SimGenericBranchParser.h \
 	SimGenericBranchParser.cc \
 	SimBusParser.h \
 	SimBusParser.cc \
 	SimComponent.h \
 	SimComponent.cc \
-	SimDgyTransformer.h \
-	SimDgyTransformer.cc \
 	SimDgyTransformerParser.h \
 	SimDgyTransformerParser.cc \
 	SimNetwork.h \
 	SimNetwork.cc \
+	SimNetworkComponent.h \
 	SimNetworkParser.h \
 	SimNetworkParser.cc \
-	SimZip.h \
-	SimZip.cc \
 	SimZipParser.h \
 	SimZipParser.cc \
 	SimpleBattery.h \

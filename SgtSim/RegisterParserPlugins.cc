@@ -1,10 +1,10 @@
-#include "RegisterParserPlugins.h"
+#include <SgtCore/Parser.h>
 
-#include "SimBranchParser.h"
 #include "SimBusParser.h"
-#include "DgyTransformerParser.h"
+#include "SimDgyTransformerParser.h"
+#include "SimGenericBranchParser.h"
 #include "SimNetworkParser.h"
-#include "OverheadLineParser.h"
+#include "SimOverheadLineParser.h"
 #include "SimpleBatteryParser.h"
 #include "SimpleBuildingParser.h"
 #include "SimpleDcPowerSourceParser.h"
@@ -19,7 +19,7 @@ namespace SmartGridToolbox
 {
    void registerParserPlugins(Parser& p)
    {
-      p.registerParserPlugin<SimBranchParser>();
+      p.registerParserPlugin<SimGenericBranchParser>();
       p.registerParserPlugin<SimBusParser>();
       p.registerParserPlugin<DgyTransformerParser>();
       p.registerParserPlugin<SimNetworkParser>();
