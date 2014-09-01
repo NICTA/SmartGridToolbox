@@ -5,6 +5,7 @@
 
 namespace SmartGridToolbox
 {
+   class GenericBranch;
    class Network;
 
    /// @brief ParserPlugin that parses GenericBranch objects.

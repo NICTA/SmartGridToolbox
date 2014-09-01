@@ -1,7 +1,7 @@
-#include "BatteryParser.h"
-
-#include "InverterBase.h"
 #include "Battery.h"
+#include "BatteryParser.h"
+#include "InverterBase.h"
+#include "Simulation.h"
 
 namespace SmartGridToolbox
 {
@@ -13,7 +13,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "inverter");
 
       string id = nd["id"].as<std::string>();
-      Battery& batt = into.newComponent<Battery>(id);
+      Battery& batt = into.newSimComponent<Battery>(id);
 
       auto nd_dt = nd["dt"];
       if (nd_dt) batt.set_dt(nd_dt.as<Time>());
