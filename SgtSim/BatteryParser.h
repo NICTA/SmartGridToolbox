@@ -5,7 +5,6 @@
 
 namespace SmartGridToolbox
 {
-   class Battery;
    class Simulation;
 
    class BatteryParser : public ParserPlugin<Simulation>

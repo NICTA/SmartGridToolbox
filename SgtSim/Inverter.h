@@ -1,12 +1,12 @@
-#ifndef SIMPLE_INVERTER_DOT_H
-#define SIMPLE_INVERTER_DOT_H
+#ifndef INVERTER_DOT_H
+#define INVERTER_DOT_H
 
 #include <SgtSim/InverterBase.h>
 
 namespace SmartGridToolbox
 {
-   /// @brief SimpleInverter: DC power to n-phase AC converter.
-   class SimpleInverter : public InverterBase
+   /// @brief Inverter: DC power to n-phase AC converter.
+   class Inverter : public InverterBase
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
@@ -33,7 +33,7 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         SimpleInverter(const std::string& id, const Phases& phases);
+         Inverter(const std::string& id, const Phases& phases);
 
          virtual double efficiency(double powerDc) const override
          {
@@ -97,4 +97,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // SIMPLE_INVERTER_DOT_H
+#endif // INVERTER_DOT_H

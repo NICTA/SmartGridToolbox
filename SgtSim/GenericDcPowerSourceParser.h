@@ -5,7 +5,6 @@
 
 namespace SmartGridToolbox
 {
-   class GenericDcPowerSource;
    class Simulation;
 
    class GenericDcPowerSourceParser : public ParserPlugin<Simulation>

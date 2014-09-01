@@ -1,11 +1,8 @@
-#include "SimpleInverter.h"
-
-#include "Model.h"
-#include "SimBus.h"
+#include "Inverter.h"
 
 namespace SmartGridToolbox
 {
-   ublas::vector<Complex> SimpleInverter::S() const
+   ublas::vector<Complex> Inverter::S() const
    {
       double PPerPh = PPerPhase();
       double P2PerPh = PPerPh * PPerPh; // Limited by maxSMagPerPhase_.
@@ -21,13 +18,13 @@ namespace SmartGridToolbox
       return ublas::vector<Complex>(phases().size(), SPerPh);
    }
 
-   double SimpleInverter::PPerPhase() const
+   double Inverter::PPerPhase() const
    {
       double P = InverterBase::PPerPhase();
       return std::min(std::abs(P), maxSMagPerPhase_) * (P < 0 ? -1 : 1);
    }
 
-   SimpleInverter::SimpleInverter(const std::string& id, const Phases& phases) :
+   Inverter::Inverter(const std::string& id, const Phases& phases) :
       InverterBase(id, phases),
       efficiency_(1.0),
       maxSMagPerPhase_(1e9),

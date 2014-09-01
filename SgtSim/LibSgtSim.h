@@ -14,7 +14,7 @@
 #include <SgtSim/Battery.h>
 #include <SgtSim/SimpleBuilding.h>
 #include <SgtSim/DcPowerSource.h>
-#include <SgtSim/SimpleInverter.h>
+#include <SgtSim/Inverter.h>
 #include <SgtSim/Simulation.h>
 #include <SgtSim/SinglePhaseTransformer.h>
 #include <SgtSim/SolarPv.h>

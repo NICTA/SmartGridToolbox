@@ -2,6 +2,7 @@
 
 #include "GenericDcPowerSource.h"
 #include "InverterBase.h"
+#include "Simulation.h"
 
 namespace SmartGridToolbox
 {
@@ -16,17 +17,9 @@ namespace SmartGridToolbox
       string id = nd["id"].as<std::string>();
       auto& comp = into.newSimComponent<GenericDcPowerSource>(id);
       comp.setPDc(nd["dc_power"].as<double>());
-   }
 
-   void GenericDcPowerSourceParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
-   {
-      SGT_DEBUG(debug() << "GenericDcPowerSource : postParse." << std::endl);
-
-      string id = state.expandName(nd["id"].as<std::string>());
-      GenericDcPowerSource& comp = *mod.component<GenericDcPowerSource>(id);
-
-      const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
-      InverterBase* inverterComp = mod.component<InverterBase>(inverterStr);
+      const std::string inverterStr = nd["inverter"].as<std::string>();
+      auto inverterComp = into.simComponent<InverterBase>(inverterStr);
       if (inverterComp != nullptr)
       {
          inverterComp->addDcPowerSource(comp);

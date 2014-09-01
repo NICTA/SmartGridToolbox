@@ -1,13 +1,13 @@
-#include "SimpleInverterParser.h"
+#include "InverterParser.h"
 
 #include "SimBus.h"
-#include "SimpleInverter.h"
+#include "Inverter.h"
 
 namespace SmartGridToolbox
 {
-   void SimpleInverterParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void InverterParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
-      SGT_DEBUG(debug() << "SimpleInverter : parse." << std::endl);
+      SGT_DEBUG(debug() << "Inverter : parse." << std::endl);
 
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "bus");
@@ -16,7 +16,7 @@ namespace SmartGridToolbox
       string id = state.expandName(nd["id"].as<std::string>());
       Phases phases = nd["phases"].as<Phases>();
 
-      SimpleInverter& comp = mod.newComponent<SimpleInverter>(id, phases);
+      Inverter& comp = mod.newComponent<Inverter>(id, phases);
 
       if (nd["efficiency"])
       {
@@ -39,12 +39,12 @@ namespace SmartGridToolbox
       }
    }
 
-   void SimpleInverterParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void InverterParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
-      SGT_DEBUG(debug() << "SimpleInverter : postParse." << std::endl);
+      SGT_DEBUG(debug() << "Inverter : postParse." << std::endl);
 
       string id = state.expandName(nd["id"].as<std::string>());
-      SimpleInverter& comp = *mod.component<SimpleInverter>(id);
+      Inverter& comp = *mod.component<Inverter>(id);
 
       const std::string busStr = state.expandName(nd["bus"].as<std::string>());
       SimBus* busComp = mod.component<SimBus>(busStr);

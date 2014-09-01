@@ -1,11 +1,11 @@
-#ifndef SIMPLE_INVERTER_PARSER_DOT_H
-#define SIMPLE_INVERTER_PARSER_DOT_H
+#ifndef INVERTER_PARSER_DOT_H
+#define INVERTER_PARSER_DOT_H
 
 #include <SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
-   class SimpleInverterParser : public ParserPlugin
+   class InverterParser : public ParserPlugin
    {
       public:
          virtual const char* key() override
@@ -18,4 +18,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // SIMPLE_INVERTER_PARSER_DOT_H
+#endif // INVERTER_PARSER_DOT_H
