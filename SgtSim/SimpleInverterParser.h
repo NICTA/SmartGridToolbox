@@ -1,21 +1,20 @@
 #ifndef SIMPLE_INVERTER_PARSER_DOT_H
 #define SIMPLE_INVERTER_PARSER_DOT_H
 
-#include <SgtSim/Parser.h>
+#include <SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
    class SimpleInverterParser : public ParserPlugin
    {
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key() override
          {
             return "inverter";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
-         virtual void postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& into) const override;
    };
 }
 

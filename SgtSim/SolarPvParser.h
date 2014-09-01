@@ -1,21 +1,22 @@
 #ifndef SOLAR_PV_PARSER_DOT_H
 #define SOLAR_PV_PARSER_DOT_H
 
-#include <SgtSim/Parser.h>
+#include <SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
-   class SolarPvParser : public ParserPlugin
+   class Simulation;
+
+   class SolarPvParser : public ParserPlugin<Simulation>
    {
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key() override
          {
             return "solar_pv";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
-         virtual void postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& into) const override;
    };
 }
 

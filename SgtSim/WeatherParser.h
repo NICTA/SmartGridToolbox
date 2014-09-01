@@ -1,20 +1,22 @@
 #ifndef WEATHER_PARSER_DOT_H
 #define WEATHER_PARSER_DOT_H
 
-#include <SgtSim/Parser.h>
+#include <SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
-   class WeatherParser : public ParserPlugin
+   class Simulation;
+
+   class WeatherParser : public ParserPlugin<Simulation>
    {
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key() override
          {
             return "weather";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& into) const override;
    };
 }
 

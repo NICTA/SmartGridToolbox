@@ -11,15 +11,13 @@ namespace SmartGridToolbox
    class SimpleBuildingParser : public ParserPlugin<Simulation>
    {
       public:
-         virtual const char* key()
+         virtual const char* key() override
          {
             return "simple_building";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Simulation& into) const;
-         
-         std::unique_ptr<SimpleBuilding> parseSimpleBuilding(const YAML::Node& nd) const;
+         virtual void parse(const YAML::Node& nd, Simulation& into) const override;
    };
 }
 

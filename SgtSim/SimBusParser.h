@@ -1,5 +1,5 @@
-#ifndef BUS_COMP_PARSER_DOT_H
-#define BUS_COMP_PARSER_DOT_H
+#ifndef SIM_BUS_PARSER_DOT_H
+#define SIM_BUS_PARSER_DOT_H
 
 #include <SgtSim/SimNetworkComponent.h>
 
@@ -13,16 +13,16 @@ namespace SmartGridToolbox
    class SimBusParser : public ParserPlugin<Simulation>
    {
       public:
-         virtual const char* key()
+         virtual const char* key() override
          {
             return "sim_bus";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Simulation& into) const;
+         virtual void parse(const YAML::Node& nd, Simulation& into) const override;
          
          std::unique_ptr<SimBus> parseSimBus(const YAML::Node& nd) const;
    };
 }
 
-#endif // BUS_COMP_PARSER_DOT_H
+#endif // SIM_BUS_PARSER_DOT_H

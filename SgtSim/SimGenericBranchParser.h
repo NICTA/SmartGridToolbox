@@ -13,13 +13,13 @@ namespace SmartGridToolbox
    class SimGenericBranchParser : public ParserPlugin<Simulation>
    {
       public:
-         virtual const char* key()
+         virtual const char* key() override
          {
             return "sim_generic_branch";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Simulation& into) const;
+         virtual void parse(const YAML::Node& nd, Simulation& into) const override;
          
          std::unique_ptr<SimBranch> parseSimGenericBranch(const YAML::Node& nd) const;
    };

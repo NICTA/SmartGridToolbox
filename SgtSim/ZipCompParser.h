@@ -1,20 +1,21 @@
 #ifndef ZIP_COMP_PARSER_DOT_H
 #define ZIP_COMP_PARSER_DOT_H
 
-#include <SgtSim/Parser.h>
+#include <SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
-   class SimZipParser : public ParserPlugin
+   class SimZipParser : public ParserPlugin<Simulation>
    {
+      class Simulation;
+
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key() override
          {
             return "zip_to_ground";
          }
       public:
-         virtual void parse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
-         virtual void postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& into) const override;
    };
 }
 

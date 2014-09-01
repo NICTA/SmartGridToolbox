@@ -11,13 +11,13 @@ namespace SmartGridToolbox
    class GenericDcPowerSourceParser : public ParserPlugin<Simulation>
    {
       public:
-         virtual const char* key()
+         virtual const char* key() override
          {
             return "generic_dc_power_source";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Simulation& into) const;
+         virtual void parse(const YAML::Node& nd, Simulation& into) const override;
    };
 }
 

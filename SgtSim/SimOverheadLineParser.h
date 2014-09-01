@@ -13,13 +13,13 @@ namespace SmartGridToolbox
    class SimOverheadLineParser : public ParserPlugin<Simulation>
    {
       public:
-         virtual const char* key()
+         virtual const char* key() override
          {
             return "overhead_line";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Simulation& into) const;
+         virtual void parse(const YAML::Node& nd, Simulation& into) const override;
          
          std::unique_ptr<SimBranch> parseSimOverheadLine(const YAML::Node& nd) const;
    };

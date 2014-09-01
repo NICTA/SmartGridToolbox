@@ -15,8 +15,8 @@ pkginclude_HEADERS = \
 	SimNetworkComponent.h \
 	SimpleBuilding.h \
 	SimpleInverter.h \
+	SimSinglePhaseTransformer.h \
 	Simulation.h \
-	SinglePhaseTransformer.h \
 	SolarPv.h \
 	Spline.h \
 	Sun.h \
@@ -62,12 +62,12 @@ libSgtSim_a_SOURCES = \
 	SimpleInverter.cc \
 	SimpleInverterParser.h \
 	SimpleInverterParser.cc \
+	SimSinglePhaseTransformer.h \
+	SimSinglePhaseTransformer.cc \
+	SimSinglePhaseTransformerParser.h \
+	SimSinglePhaseTransformerParser.cc \
 	Simulation.h \
 	Simulation.cc \
-	SinglePhaseTransformer.h \
-	SinglePhaseTransformer.cc \
-	SinglePhaseTransformerParser.h \
-	SinglePhaseTransformerParser.cc \
 	SolarPv.h \
 	SolarPv.cc \
 	SolarPvParser.h \
