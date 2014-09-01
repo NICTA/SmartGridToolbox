@@ -9,10 +9,10 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "SimpleBuilding : parse." << std::endl);
 
-      assertFieldPresent(nd, "name");
+      assertFieldPresent(nd, "id");
 
-      string name = state.expandName(nd["name"].as<std::string>());
-      SimpleBuilding& build = mod.newComponent<SimpleBuilding>(name);
+      std::string id = state.expandName(nd["id"].as<std::string>());
+      SimpleBuilding& build = mod.newComponent<SimpleBuilding>(id);
 
       auto nd_dt = nd["dt"];
       if (nd_dt) build.set_dt(nd_dt.as<Time>());
@@ -44,11 +44,11 @@ namespace SmartGridToolbox
       const auto& dQgNd = nd["internal_heat_power"];
       if (dQgNd)
       {
-         std::string name = dQgNd.as<std::string>();
-         const TimeSeries<Time, double> * series = mod.timeSeries<TimeSeries<Time, double>>(name);
+         std::string id = dQgNd.as<std::string>();
+         const TimeSeries<Time, double> * series = mod.timeSeries<TimeSeries<Time, double>>(id);
          if (series == nullptr)
          {
-            error() << "Parsing simple_building: couldn't find time series " << name << std::endl;
+            error() << "Parsing simple_building: couldn't find time series " << id << std::endl;
             abort();
          }
          build.set_dQgSeries(*series);
@@ -59,14 +59,14 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "SimpleBuilding : postParse." << std::endl);
 
-      string name = state.expandName(nd["name"].as<std::string>());
-      SimpleBuilding* build = mod.component<SimpleBuilding>(name);
+      string id = state.expandName(nd["id"].as<std::string>());
+      SimpleBuilding* build = mod.component<SimpleBuilding>(id);
 
       std::string busStr = state.expandName(nd["bus"].as<std::string>());
       SimBus* bus = mod.component<SimBus>(busStr);
       if (bus == nullptr)
       {
-         error() << "For component " << name << ", bus " << busStr
+         error() << "For component " << id << ", bus " << busStr
                  << " was not found in the model." << std::endl;
          abort();
       }

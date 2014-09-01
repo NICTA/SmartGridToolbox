@@ -7,13 +7,13 @@ include_HEADERS = LibSgtSim.h
 pkginclude_HEADERS = \
 	Battery.h \
 	DcPowerSourceBase.h \
+	GenericDcPowerSource.h \
 	InverterBase.h \
 	RegularUpdateComponent.h \
 	SimComponent.h \
 	SimNetwork.h \
 	SimNetworkComponent.h \
 	SimpleBuilding.h \
-	SimpleDcPowerSource.h \
 	SimpleInverter.h \
 	Simulation.h \
 	SinglePhaseTransformer.h \
@@ -29,6 +29,10 @@ libSgtSim_a_SOURCES = \
 	Battery.cc \
 	Battery.h \
 	Battery.cc \
+	DcPowerSourceBase.h \
+	GenericDcPowerSource.h \
+	GenericDcPowerSourceParser.h \
+	GenericDcPowerSourceParser.cc \
 	InverterBase.h \
 	InverterBase.cc \
 	LibSgtSim.h \
@@ -54,8 +58,6 @@ libSgtSim_a_SOURCES = \
 	SimpleBuilding.cc \
 	SimpleBuildingParser.h \
 	SimpleBuildingParser.cc \
-	SimpleDcPowerSourceParser.h \
-	SimpleDcPowerSourceParser.cc \
 	SimpleInverter.h \
 	SimpleInverter.cc \
 	SimpleInverterParser.h \

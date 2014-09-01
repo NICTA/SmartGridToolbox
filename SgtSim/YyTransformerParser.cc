@@ -10,7 +10,7 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "YyTransformer : parse." << std::endl);
 
-      assertFieldPresent(nd, "name");
+      assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "network");
       assertFieldPresent(nd, "bus_0");
       assertFieldPresent(nd, "bus_1");
@@ -19,7 +19,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "complex_turns_ratio_01");
       assertFieldPresent(nd, "leakage_impedance");
 
-      string name = state.expandName(nd["name"].as<std::string>());
+      string id = state.expandName(nd["id"].as<std::string>());
       Phases phases0 = nd["phases_0"].as<Phases>();
       Phases phases1 = nd["phases_1"].as<Phases>();
       Complex a = nd["complex_turns_ratio_01"].as<Complex>();
@@ -27,15 +27,15 @@ namespace SmartGridToolbox
       YAML::Node nd_mag_admit = nd["magnetising_admittance"];
       Complex YM = nd_mag_admit ? nd["magnetising_admittance"].as<Complex>() : czero;
 
-      mod.newComponent<YyTransformer>(name, phases0, phases1, a, ZL, YM);
+      mod.newComponent<YyTransformer>(id, phases0, phases1, a, ZL, YM);
    }
 
    void YyTransformerParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "YyTransformer : postParse." << std::endl);
 
-      string name = state.expandName(nd["name"].as<std::string>());
-      YyTransformer* comp = mod.component<YyTransformer>(name);
+      string id = state.expandName(nd["id"].as<std::string>());
+      YyTransformer* comp = mod.component<YyTransformer>(id);
 
       const std::string networkStr = state.expandName(nd["network"].as<std::string>());
       SimNetwork* networkComp = mod.component<SimNetwork>(networkStr);
@@ -45,7 +45,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", network " << networkStr
+         error() << "For component " << id <<  ", network " << networkStr
                  <<  " was not found in the model." << std::endl;
          abort();
       }
@@ -58,7 +58,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", bus " << bus0Str
+         error() << "For component " << id <<  ", bus " << bus0Str
                  <<  " was not found in the model." << std::endl;
          abort();
       }
@@ -71,7 +71,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name <<  ", bus " << bus1Str
+         error() << "For component " << id <<  ", bus " << bus1Str
                  <<  " was not found in the model." << std::endl;
          abort();
       }

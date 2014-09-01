@@ -9,14 +9,14 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "SimpleInverter : parse." << std::endl);
 
-      assertFieldPresent(nd, "name");
+      assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "bus");
       assertFieldPresent(nd, "phases");
 
-      string name = state.expandName(nd["name"].as<std::string>());
+      string id = state.expandName(nd["id"].as<std::string>());
       Phases phases = nd["phases"].as<Phases>();
 
-      SimpleInverter& comp = mod.newComponent<SimpleInverter>(name, phases);
+      SimpleInverter& comp = mod.newComponent<SimpleInverter>(id, phases);
 
       if (nd["efficiency"])
       {
@@ -43,8 +43,8 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "SimpleInverter : postParse." << std::endl);
 
-      string name = state.expandName(nd["name"].as<std::string>());
-      SimpleInverter& comp = *mod.component<SimpleInverter>(name);
+      string id = state.expandName(nd["id"].as<std::string>());
+      SimpleInverter& comp = *mod.component<SimpleInverter>(id);
 
       const std::string busStr = state.expandName(nd["bus"].as<std::string>());
       SimBus* busComp = mod.component<SimBus>(busStr);
@@ -54,7 +54,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name << ", bus " << busStr
+         error() << "For component " << id << ", bus " << busStr
                  << " was not found in the model." << std::endl;
          abort();
       }

@@ -1,11 +1,11 @@
-#ifndef SIMPLE_DC_POWER_SOURCE_DOT_H
-#define SIMPLE_DC_POWER_SOURCE_DOT_H
+#ifndef DC_POWER_SOURCE_DOT_H
+#define DC_POWER_SOURCE_DOT_H
 
 #include <SgtSim/DcPowerSourceBase.h>
 
 namespace SmartGridToolbox
 {
-   class SimpleDcPowerSource : public DcPowerSourceBase
+   class DcPowerSource : public DcPowerSourceBase
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
@@ -31,7 +31,7 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         SimpleDcPowerSource(const std::string& id) : DcPowerSourceBase(id), PDc_(0.0) {}
+         DcPowerSource(const std::string& id) : DcPowerSourceBase(id), PDc_(0.0) {}
 
          void setPDc(double PDc) {PDc_ = PDc; needsUpdate().trigger();}
 
@@ -42,4 +42,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // SIMPLE_DC_POWER_SOURCE_DOT_H
+#endif // DC_POWER_SOURCE_DOT_H

@@ -85,7 +85,7 @@ namespace SmartGridToolbox
          nextSchedTime = schedUpdateIt->second;
 
          SGT_DEBUG(debug() << "\tNext scheduled time = " << nextSchedTime << " for simComponent "
-                           << schedComp->name() << std::endl);
+                           << schedComp->id() << std::endl);
          SGT_DEBUG(debug() << "\t\t(Start, current, end time = " << startTime_ << " " << currentTime_
                            << " " << endTime_ << ")." << std::endl);
       }
@@ -94,7 +94,7 @@ namespace SmartGridToolbox
       {
          // There are contingent updates pending.
          auto& contComp = *contingentUpdates_.begin();
-         SGT_DEBUG(debug() << "\tContingent update simComponent " << contComp->name() << " from "
+         SGT_DEBUG(debug() << "\tContingent update simComponent " << contComp->id() << " from "
                            << schedComp->time() << " to " << currentTime_ << std::endl);
          contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
          // Before updating the simComponent, we need to take it out of the scheduled updates set, because its
@@ -120,7 +120,7 @@ namespace SmartGridToolbox
             timestepWillStart_.trigger();
          }
          currentTime_ = nextSchedTime;
-         SGT_DEBUG(debug() << "\tScheduled update simComponent " << schedComp->name() << " from "
+         SGT_DEBUG(debug() << "\tScheduled update simComponent " << schedComp->id() << " from "
                            << schedComp->time() << " to " << currentTime_ << std::endl);
 
          // Remove the scheduled and possible contingent update. Note that if there is a contingent update, it was
@@ -147,7 +147,7 @@ namespace SmartGridToolbox
          {
             if (comp->time() == currentTime_)
             {
-               SGT_DEBUG(debug() << "\tSimComponent " << comp->name() << " completed timestep." << std::endl);
+               SGT_DEBUG(debug() << "\tSimComponent " << comp->id() << " completed timestep." << std::endl);
                comp->didCompleteTimestep().trigger();
             }
          }

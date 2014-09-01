@@ -23,7 +23,7 @@ namespace SmartGridToolbox
       /// @{
          
       public:
-         SynchronousMachine(std::string name);
+         SynchronousMachine(const std::string& name);
 
          void addToNetwork(SimNetwork& nw);
 

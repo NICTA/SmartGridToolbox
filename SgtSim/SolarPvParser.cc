@@ -9,15 +9,15 @@ namespace SmartGridToolbox
    void SolarPvParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SolarPv : parse." << std::endl);
-      assertFieldPresent(nd, "name");
+      assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "weather");
       assertFieldPresent(nd, "inverter");
       assertFieldPresent(nd, "area_m2");
       assertFieldPresent(nd, "zenith_degrees");
       assertFieldPresent(nd, "azimuth_degrees");
 
-      string name = state.expandName(nd["name"].as<std::string>());
-      SolarPv& comp = mod.newComponent<SolarPv>(name);
+      string id = state.expandName(nd["id"].as<std::string>());
+      SolarPv& comp = mod.newComponent<SolarPv>(id);
 
       if (nd["efficiency"])
       {

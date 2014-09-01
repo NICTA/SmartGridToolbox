@@ -9,11 +9,11 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "Battery : parse." << std::endl);
 
-      assertFieldPresent(nd, "name");
+      assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "inverter");
 
-      string name = state.expandName(nd["name"].as<std::string>());
-      Battery& batt = mod.newComponent<Battery>(name);
+      string id = state.expandName(nd["id"].as<std::string>());
+      Battery& batt = mod.newComponent<Battery>(id);
 
       auto nd_dt = nd["dt"];
       if (nd_dt) batt.set_dt(nd_dt.as<Time>());
@@ -44,8 +44,8 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "Battery : postParse." << std::endl);
 
-      string name = state.expandName(nd["name"].as<std::string>());
-      Battery& batt = *mod.component<Battery>(name);
+      string id = state.expandName(nd["id"].as<std::string>());
+      Battery& batt = *mod.component<Battery>(id);
 
       const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
       InverterBase* inverter = mod.component<InverterBase>(inverterStr);
@@ -55,7 +55,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "For component " << name << ", inverter " << inverterStr
+         error() << "For component " << id << ", inverter " << inverterStr
                  << " was not found in the model." << std::endl;
          abort();
       }

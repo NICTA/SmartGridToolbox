@@ -7,7 +7,7 @@
 #include "SimNetworkParser.h"
 #include "SimOverheadLineParser.h"
 #include "SimpleBuildingParser.h"
-#include "SimpleDcPowerSourceParser.h"
+#include "DcPowerSourceParser.h"
 #include "SimpleInverterParser.h"
 #include "Simulation.h"
 #include "SimZipParser.h"
@@ -27,7 +27,7 @@ namespace SmartGridToolbox
       p.registerParserPlugin<SimNetworkParser>();
       p.registerParserPlugin<OverheadLineParser>();
       p.registerParserPlugin<SimpleBuildingParser>();
-      p.registerParserPlugin<SimpleDcPowerSourceParser>();
+      p.registerParserPlugin<DcPowerSourceParser>();
       p.registerParserPlugin<SimpleInverterParser>();
       p.registerParserPlugin<SinglePhaseTransformerParser>();
       p.registerParserPlugin<SolarPvParser>();

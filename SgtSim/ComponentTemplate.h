@@ -23,7 +23,7 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         ComponentTemplate(std::string name);
+         ComponentTemplate(const std::string& name);
          virtual ~ComponentTemplate();
 
       private:

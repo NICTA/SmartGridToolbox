@@ -8,13 +8,13 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "SimNetwork : parse." << std::endl);
 
-      assertFieldPresent(nd, "name");
+      assertFieldPresent(nd, "id");
 
-      string name = state.expandName(nd["name"].as<std::string>());
+      string id = state.expandName(nd["id"].as<std::string>());
 
       auto ndFreq = nd["freq_Hz"];
       double freq = ndFreq ? ndFreq.as<double>() : 50.0;
 
-      SimNetwork& comp = mod.newComponent<SimNetwork>(name, freq);
+      SimNetwork& comp = mod.newComponent<SimNetwork>(id, freq);
    }
 }

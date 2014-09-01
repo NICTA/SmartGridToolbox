@@ -1,21 +1,25 @@
 #ifndef SIMPLE_BUILDING_PARSER_DOT_H
 #define SIMPLE_BUILDING_PARSER_DOT_H
 
-#include <SgtSim/Parser.h>
+#include <SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
-   class SimpleBuildingParser : public ParserPlugin
+   class SimpleBuilding;
+   class Simulation;
+
+   class SimpleBuildingParser : public ParserPlugin<Simulation>
    {
       public:
-         static constexpr const char* pluginKey()
+         virtual const char* key()
          {
             return "simple_building";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
-         virtual void postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& data) const;
+         
+         std::unique_ptr<SimpleBuilding> parseSimpleBuilding(const YAML::Node& nd) const;
    };
 }
 

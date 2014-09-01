@@ -8,21 +8,21 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "Weather : parse." << std::endl);
 
-      assertFieldPresent(nd, "name");
+      assertFieldPresent(nd, "id");
 
-      string name = state.expandName(nd["name"].as<std::string>());
-      Weather& comp = mod.newComponent<Weather>(name);
+      string id = state.expandName(nd["id"].as<std::string>());
+      Weather& comp = mod.newComponent<Weather>(id);
 
       comp.setLatLong(mod.latLong());
 
       const auto& temperatureNd = nd["temperature"];
       if (temperatureNd)
       {
-         std::string name = temperatureNd.as<std::string>();
-         const TimeSeries<Time, double> * series = mod.timeSeries<TimeSeries<Time, double>>(name);
+         std::string id = temperatureNd.as<std::string>();
+         const TimeSeries<Time, double> * series = mod.timeSeries<TimeSeries<Time, double>>(id);
          if (series == nullptr)
          {
-            error() << "Parsing weather: couldn't find time series " << name << std::endl;
+            error() << "Parsing weather: couldn't find time series " << id << std::endl;
             abort();
          }
          comp.setTemperatureSeries(*series);
@@ -31,11 +31,11 @@ namespace SmartGridToolbox
       const auto& cloudNd = nd["cloud_cover"];
       if (cloudNd)
       {
-         std::string name = cloudNd.as<std::string>();
-         const TimeSeries<Time, double> * series = mod.timeSeries<TimeSeries<Time, double>>(name);
+         std::string id = cloudNd.as<std::string>();
+         const TimeSeries<Time, double> * series = mod.timeSeries<TimeSeries<Time, double>>(id);
          if (series == nullptr)
          {
-            error() << "Parsing weather: couldn't find time series " << name << std::endl;
+            error() << "Parsing weather: couldn't find time series " << id << std::endl;
             abort();
          }
          comp.setCloudCoverSeries(*series);

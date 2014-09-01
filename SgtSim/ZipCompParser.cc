@@ -8,14 +8,14 @@ namespace SmartGridToolbox
    void SimZipParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
    {
       SGT_DEBUG(debug() << "SimZip : parse." << std::endl);
-      assertFieldPresent(nd, "name");
+      assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "bus");
       assertFieldPresent(nd, "phases");
 
-      string name = state.expandName(nd["name"].as<std::string>());
+      string id = state.expandName(nd["id"].as<std::string>());
       Phases phases = nd["phases"].as<Phases>();
 
-      SimZip& comp = mod.newComponent<SimZip>(name, phases);
+      SimZip& comp = mod.newComponent<SimZip>(id, phases);
 
       auto ndAdmit = nd["admittance"];
       auto ndCurLoad = nd["complex_current_load"];
@@ -65,14 +65,14 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "SimZip : postParse." << std::endl);
 
-      string name = state.expandName(nd["name"].as<std::string>());
-      SimZip* zip = mod.component<SimZip>(name);
+      string id = state.expandName(nd["id"].as<std::string>());
+      SimZip* zip = mod.component<SimZip>(id);
 
       std::string busStr = state.expandName(nd["bus"].as<std::string>());
       SimBus* bus = mod.component<SimBus>(busStr);
       if (bus == nullptr)
       {
-         error() << "For component " << name << ", bus " << busStr
+         error() << "For component " << id << ", bus " << busStr
                  << " was not found in the model." << std::endl;
          abort();
       }

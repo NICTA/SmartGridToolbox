@@ -13,7 +13,7 @@
 #include <SgtSim/RegularUpdateComponent.h>
 #include <SgtSim/Battery.h>
 #include <SgtSim/SimpleBuilding.h>
-#include <SgtSim/SimpleDcPowerSource.h>
+#include <SgtSim/DcPowerSource.h>
 #include <SgtSim/SimpleInverter.h>
 #include <SgtSim/Simulation.h>
 #include <SgtSim/SinglePhaseTransformer.h>
