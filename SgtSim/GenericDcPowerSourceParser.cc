@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   void GenericDcPowerSourceParser::parse(const YAML::Node& nd, Simulation& data) const
+   void GenericDcPowerSourceParser::parse(const YAML::Node& nd, Simulation& into) const
    {
       SGT_DEBUG(debug() << "GenericDcPowerSource : parse." << std::endl);
 
@@ -14,7 +14,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "dc_power");
 
       string id = nd["id"].as<std::string>();
-      auto& comp = data.newSimComponent<GenericDcPowerSource>(id);
+      auto& comp = into.newSimComponent<GenericDcPowerSource>(id);
       comp.setPDc(nd["dc_power"].as<double>());
    }
 

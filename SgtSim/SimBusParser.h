@@ -19,7 +19,7 @@ namespace SmartGridToolbox
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Simulation& data) const;
+         virtual void parse(const YAML::Node& nd, Simulation& into) const;
          
          std::unique_ptr<SimBus> parseSimBus(const YAML::Node& nd) const;
    };

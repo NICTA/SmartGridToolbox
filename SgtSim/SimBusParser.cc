@@ -7,7 +7,7 @@
 
 namespace SmartGridToolbox
 {
-   void SimBusParser::parse(const YAML::Node& nd, Simulation& data) const
+   void SimBusParser::parse(const YAML::Node& nd, Simulation& into) const
    {
       SGT_DEBUG(debug() << "SimBus : parse." << std::endl);
       
