@@ -17,7 +17,7 @@ namespace SmartGridToolbox
             return "bus";
          }
 
-         virtual void parse(const YAML::Node& nd, Network& netw) const override;
+         virtual void parse(const YAML::Node& nd, Network& into) const override;
          
          std::unique_ptr<Bus> parseBus(const YAML::Node& nd) const;
    };

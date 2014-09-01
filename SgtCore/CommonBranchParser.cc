@@ -5,7 +5,7 @@
 
 namespace SmartGridToolbox
 {
-   void CommonBranchParser::parse(const YAML::Node& nd, Network& netw) const
+   void CommonBranchParser::parse(const YAML::Node& nd, Network& into) const
    {
       SGT_DEBUG(debug() << "CommonBranch : parse." << std::endl);
 
@@ -17,7 +17,7 @@ namespace SmartGridToolbox
       std::string bus0Id = nd["bus_0_id"].as<std::string>();
       std::string bus1Id = nd["bus_1_id"].as<std::string>();
       
-      netw.addArc(std::move(cBranch), bus0Id, bus1Id);
+      into.addArc(std::move(cBranch), bus0Id, bus1Id);
    }
    
    std::unique_ptr<CommonBranch> CommonBranchParser::parseCommonBranch(const YAML::Node& nd) const

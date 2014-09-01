@@ -14,9 +14,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "dc_power");
 
       string id = nd["id"].as<std::string>();
-
-      auto& comp = mod.newComponent<GenericDcPowerSource>(id);
-
+      auto& comp = data.newSimComponent<GenericDcPowerSource>(id);
       comp.setPDc(nd["dc_power"].as<double>());
    }
 

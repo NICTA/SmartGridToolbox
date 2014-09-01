@@ -5,15 +5,15 @@
 
 namespace SmartGridToolbox
 {
-   void BatteryParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void BatteryParser::parse(const YAML::Node& nd, Simulation& data) const
    {
       SGT_DEBUG(debug() << "Battery : parse." << std::endl);
 
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "inverter");
 
-      string id = state.expandName(nd["id"].as<std::string>());
-      Battery& batt = mod.newComponent<Battery>(id);
+      string id = nd["id"].as<std::string>();
+      Battery& batt = data.newComponent<Battery>(id);
 
       auto nd_dt = nd["dt"];
       if (nd_dt) batt.set_dt(nd_dt.as<Time>());

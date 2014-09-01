@@ -71,16 +71,16 @@ namespace SmartGridToolbox
 {
    void assertFieldPresent(const YAML::Node& nd, const std::string& field);
 
-   template<typename DataType> class ParserPlugin
+   template<typename T> class ParserPlugin
    {
       public:
 
          virtual const char* key() {return "ERROR";}
-         virtual void parse(const YAML::Node& nd, DataType& data) const 
+         virtual void parse(const YAML::Node& nd, T& into) const 
          {
             // Empty.
          }
-         virtual void postParse(const YAML::Node& nd, DataType& data) const
+         virtual void postParse(const YAML::Node& nd, T& into) const
          {
             // Empty.
          }
@@ -88,10 +88,10 @@ namespace SmartGridToolbox
 
    YAML::Node getTopNode(const std::string& fname);
 
-   template<typename DataType> class Parser;
-   template<typename DataType> void registerParserPlugins(Parser<DataType>& parser);
+   template<typename T> class Parser;
+   template<typename T> void registerParserPlugins(Parser<T>& parser);
 
-   template<typename DataType> class Parser {
+   template<typename T> class Parser {
       public:
          Parser()
          {
@@ -104,7 +104,7 @@ namespace SmartGridToolbox
             plugins_[plugin->key()] = std::move(plugin);
          }
          
-         void parse(const std::string& fname, DataType& into)
+         void parse(const std::string& fname, T& into)
          {
             message() << "Parsing file " << fname << "." << std::endl;
             {
@@ -115,7 +115,7 @@ namespace SmartGridToolbox
             message() << "Finished parsing file " << fname << "." << std::endl;
          }
 
-         void parse(const YAML::Node& node, DataType& into)
+         void parse(const YAML::Node& node, T& into)
          {
             for (const auto& subnode : node)
             {
@@ -137,7 +137,7 @@ namespace SmartGridToolbox
          }
 
       private:
-         std::map<std::string, std::unique_ptr<ParserPlugin<DataType>>> plugins_;
+         std::map<std::string, std::unique_ptr<ParserPlugin<T>>> plugins_;
    };
 }
 

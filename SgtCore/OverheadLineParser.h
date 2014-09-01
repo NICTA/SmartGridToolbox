@@ -17,7 +17,7 @@ namespace SmartGridToolbox
             return "overhead_line";
          }
 
-         virtual void parse(const YAML::Node& nd, Network& netw) const override;
+         virtual void parse(const YAML::Node& nd, Network& into) const override;
 
          std::unique_ptr<OverheadLine> parseOverheadLine(const YAML::Node& nd) const;
    };

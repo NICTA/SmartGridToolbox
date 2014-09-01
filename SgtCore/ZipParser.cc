@@ -6,7 +6,7 @@
 
 namespace SmartGridToolbox
 {
-   void ZipParser::parse(const YAML::Node& nd, Network& netw) const
+   void ZipParser::parse(const YAML::Node& nd, Network& into) const
    {
       SGT_DEBUG(debug() << "Zip : parse." << std::endl);
 
@@ -15,7 +15,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "bus_id");
 
       std::string busId = nd["bus_id"].as<std::string>();
-      netw.addZip(std::move(zip), busId);
+      into.addZip(std::move(zip), busId);
    }
 
    std::unique_ptr<Zip> ZipParser::parseZip(const YAML::Node& nd) const
