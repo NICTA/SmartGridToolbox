@@ -19,7 +19,6 @@ namespace SmartGridToolbox
       return std::accumulate(sources_.begin(), sources_.end(), 0.0,
             [] (double tot, const std::shared_ptr<DcPowerSourceInterface>& source) 
             {return tot + source->PDc();});
-         
    }
 
    ublas::vector<Complex> Inverter::SConst() const
