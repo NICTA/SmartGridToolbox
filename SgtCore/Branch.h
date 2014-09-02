@@ -10,28 +10,73 @@
 namespace SmartGridToolbox
 {
    /// @brief Branch is an abstract base class for a branch which connects two Busses in a Network.
-   class Branch : public Component
+   class BranchInterface : public Component
    {
       public:
 
       /// @name Lifecycle:
       /// @{
          
-         Branch(const std::string& id, Phases phases0, Phases phases1);
+         virtual ~BranchInterface() {}
 
       /// @}
 
-      /// @name Component Type:
-      /// @{
-         
-         virtual const char* componentTypeStr() const {return "branch";}
-
-      /// @}
- 
       /// @name Phase accessors:
       /// @{
          
-         const Phases& phases0() const
+         virtual const Phases& phases0() const = 0;
+         virtual const Phases& phases1() const = 0;
+      
+      /// @}
+ 
+      /// @name In service:
+      /// @{
+         
+         virtual bool isInService() const = 0;
+
+      /// @}
+
+      /// @name Nodal admittance matrix (Y):
+      /// @{
+         
+         virtual const ublas::matrix<Complex> Y() const = 0;
+      
+      /// @}
+      
+      /// @name Events.
+      /// @{
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& isInServiceChanged() = 0; 
+
+         /// @brief Event triggered when my admittance changes.
+         virtual Event& admittanceChanged()  = 0;
+         
+      /// @}
+      
+      protected:
+
+         virtual void print(std::ostream& os) const override;
+   };
+
+   /// @brief Common abstract base class for a branch.
+   ///
+   /// Implement some common functionality for convenience.
+   class BranchAbc : public Component
+   {
+      public:
+
+      /// @name Lifecycle:
+      /// @{
+         
+         BranchAbc(const std::string& id, Phases phases0, Phases phases1);
+
+      /// @}
+
+      /// @name Phase accessors:
+      /// @{
+         
+         virtual const Phases& phases0() const
          {
             return phases0_;
          }
@@ -41,7 +86,7 @@ namespace SmartGridToolbox
             phases0_ = phases0;
          }
       
-         const Phases& phases1() const
+         virtual const Phases& phases1() const
          {
             return phases1_;
          }
@@ -56,7 +101,7 @@ namespace SmartGridToolbox
       /// @name In service:
       /// @{
          
-         bool isInService() const
+         virtual bool isInService() const
          {
             return isInService_;
          }
@@ -99,6 +144,54 @@ namespace SmartGridToolbox
 
          Event isInServiceChanged_;
          Event admittanceChanged_;
+   };
+
+   /// @brief A concrete, generic branch.
+   class GenericBranch : public BranchAbc
+   {
+      public:
+
+      /// @name Lifecycle:
+      /// @{
+
+         GenericBranch(const std::string& id, const Phases& phases0, const Phases& phases1) :
+            BranchAbc(id, phases0, phases1), Y_(2*phases0.size(), 2*phases0.size(), czero)
+         {
+            // Empty.
+         }
+
+      /// @}
+      
+      /// @name Component Type:
+      /// @{
+
+         virtual const char* componentTypeStr() const {return "generic_branch";}
+
+      /// @}
+
+      /// @name Overridden from Branch:
+      /// @{
+
+         virtual const ublas::matrix<Complex> Y() const override
+         {
+            return Y_;
+         }
+
+      /// @}
+      
+      /// @name Setter for Y.
+      /// @{
+   
+         void setY(const ublas::matrix<Complex>& Y)
+         {
+            Y_ = Y;
+         }
+
+         /// @}
+
+      private:
+         
+         ublas::matrix<Complex> Y_;
    };
 }
 

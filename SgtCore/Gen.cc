@@ -1,15 +1,14 @@
-#include "GenAbc.h"
+#include "Gen.h"
 
 #include <ostream>
 
 namespace SmartGridToolbox
 {
-         
-   void GenAbc::print(std::ostream& os) const
+   void GenInterface::print(std::ostream& os) const
    {
-      Component::print(os);
+      ComponentInterface::print(os);
       IndentingOStreamBuf _(os);
-      os << "phases: " << phases_ << std::endl;
+      os << "phases: " << phases() << std::endl;
       os << "S: " << S() << std::endl;
       os << "PMin: " << PMin() << std::endl;
       os << "PMax: " << PMax() << std::endl;
@@ -20,5 +19,20 @@ namespace SmartGridToolbox
       os << "c0: " << c0() << std::endl;
       os << "c1: " << c1() << std::endl;
       os << "c2: " << c2() << std::endl;
+   }
+
+   GenAbc::GenAbc(const std::string& id, Phases phases) :
+      Component(id),
+      phases_(phases)
+   {
+      // Empty.
+   }
+
+   GenericGen::GenericGen(const std::string& id, Phases phases) :
+      GenAbc(id, phases),
+      isInService_(true),
+      S_(phases.size(), czero)
+   {
+      // Empty.
    }
 }

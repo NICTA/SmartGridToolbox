@@ -2,33 +2,87 @@
 #define ZIP_DOT_H
 
 #include <SgtCore/Component.h>
+#include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
-#include <SgtCore/ZipAbc.h>
 
 #include<string>
 
 namespace SmartGridToolbox
 {
    /// @brief A Zip is an injection into a bus with constant impedance / current / complex power components.
-   class Zip : public ZipAbc
+   class ZipInterface : virtual public ComponentInterface
    {
       public:
       
       /// @name Lifecycle:
       /// @{
 
-         Zip(const std::string& id, Phases phases);
+         virtual ~ZipInterface() {}
+
+      /// @}
+
+      /// @name Basic identity and type:
+      /// @{
+ 
+         virtual const Phases& phases() const = 0;
+         
+      /// @name In service:
+      /// @{
+         
+         virtual bool isInService() const = 0;
+
+      /// @}
+      
+      /// @name ZIP parameters:
+      /// @{
+      
+         virtual ublas::vector<Complex> YConst() const = 0;
+         virtual ublas::vector<Complex> IConst() const = 0;
+         virtual ublas::vector<Complex> SConst() const = 0;
+
+      /// @}
+       
+      /// @name Events.
+      /// @{
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& isInServiceChanged() = 0;
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& injectionChanged() = 0;
+
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& setpointChanged() = 0;
+
+      /// @}
+     
+      protected:
+
+         virtual void print(std::ostream& os) const override;
+   };
+   
+   /// @brief Common abstract base class for a ZIP at a bus.
+   ///
+   /// Implement some common functionality for convenience.
+   class ZipAbc : virtual public ZipInterface, public Component
+   {
+      public:
+      
+      /// @name Lifecycle:
+      /// @{
+
+         ZipAbc(const std::string& id, Phases phases) : Component(id), phases_(phases) {}
 
       /// @}
 
       /// @name Component Type:
       /// @{
          
-         virtual const char* componentType() const {return "zip";}
+         virtual const char* componentTypeStr() const {return "zip_abc";}
 
       /// @}
 
-      /// @name Phases:
+      /// @name Basic identity and type:
       /// @{
  
          const Phases& phases() const
@@ -40,9 +94,53 @@ namespace SmartGridToolbox
          {
             phases_ = phases;
          }
-      
+        
+      /// @name Events.
+      /// @{
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& isInServiceChanged() {return isInServiceChanged_;}
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& injectionChanged() {return injectionChanged_;}
+
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& setpointChanged() {return setpointChanged_;}
+
       /// @}
-  
+     
+      protected:
+
+         virtual void print(std::ostream& os) const override;
+      
+      private:
+
+         Phases phases_;
+         
+         Event isInServiceChanged_;
+         Event injectionChanged_;
+         Event setpointChanged_;
+   };
+
+   /// @brief A concrete, generic ZIP at a bus.
+   class GenericZip : public ZipAbc
+   {
+      public:
+      
+      /// @name Lifecycle:
+      /// @{
+
+         GenericZip(const std::string& id, Phases phases);
+
+      /// @}
+
+      /// @name Component Type:
+      /// @{
+         
+         virtual const char* componentType() const {return "generic_zip";}
+
+      /// @}
+
       /// @name In service:
       /// @{
          

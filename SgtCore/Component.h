@@ -1,6 +1,7 @@
 #ifndef COMPONENT_DOT_H
 #define COMPONENT_DOT_H
 
+#include <ostream>
 #include <string>
 
 using std::string;
@@ -10,8 +11,14 @@ namespace SmartGridToolbox
    class ComponentInterface
    {
       public:
+         virtual ~ComponentInterface() {}
          virtual const std::string& id() const = 0;
          virtual const char* componentTypeStr() const = 0;
+      protected:
+         virtual void print(std::ostream& os) const
+         {
+            os << componentTypeStr() << ": " << id() << ":" << std::endl;
+         }
    };
 
    class Component : virtual public ComponentInterface
@@ -51,10 +58,6 @@ namespace SmartGridToolbox
          }
 
       /// @}
-      
-      protected:
-
-         virtual void print(std::ostream& os) const;
 
       private:
 

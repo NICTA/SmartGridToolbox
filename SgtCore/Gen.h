@@ -12,6 +12,12 @@ namespace SmartGridToolbox
    class GenInterface : virtual public ComponentInterface
    {
       public:
+      /// @brief Lifecycle:
+      /// @{
+
+         virtual ~GenInterface() {}
+      
+      /// @}
 
       /// @brief Phase accessors:
       /// @{
@@ -68,11 +74,20 @@ namespace SmartGridToolbox
          virtual Event& setpointChanged() = 0;
 
       /// @}
+      
+      /// @name Printing.
+      /// @{
+      
+      protected:
+         
+         virtual void print(std::ostream& os) const;
+
+      /// @}
    };
 
    /// @brief Common abstract base class for a generation at a bus.
    ///
-   /// Implement some common functionality.
+   /// Implement some common functionality for convenience.
    class GenAbc : virtual public GenInterface, public Component
    {
       public:
@@ -80,12 +95,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
          
-         GenAbc(const std::string& id, Phases phases) :
-            Component(id),
-            phases_(phases)
-         {
-            // Empty.
-         }
+         GenAbc(const std::string& id, Phases phases);
 
       /// @}
 
@@ -118,9 +128,6 @@ namespace SmartGridToolbox
 
       /// @}
       
-      protected:
-
-         virtual void print(std::ostream& os) const override;
       
       private:
 

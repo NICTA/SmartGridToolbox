@@ -12,9 +12,7 @@ pkginclude_HEADERS = \
 	Component.h \
 	DgyTransformer.h \
 	Event.h \
-	GenericGen.h \
-	GenAbc.h \
-	GenericBranch.h \
+	Gen.h \
 	Model.h \
 	Network.h \
 	OverheadLine.h \
@@ -22,7 +20,6 @@ pkginclude_HEADERS = \
 	PowerFlow.h \
 	Random.h \
 	Units.h \
-	ZipAbc.h \
 	Zip.h
 
 libSgtCore_a_SOURCES = \
@@ -39,7 +36,6 @@ libSgtCore_a_SOURCES = \
 	CommonBranchParser.h \
 	CommonBranchParser.cc \
 	Component.h \
-	Component.cc \
 	DgyTransformer.h \
 	DgyTransformer.cc \
 	DgyTransformerParser.h \
@@ -48,11 +44,10 @@ libSgtCore_a_SOURCES = \
 	Event.cc \
 	Gen.h \
 	Gen.cc \
-	GenAbc.h \
-	GenAbc.cc \
-	GenericBranch.h \
 	GenericBranchParser.h \
 	GenericBranchParser.cc \
+	GenericZipParser.h \
+	GenericZipParser.cc \
 	GenParser.h \
 	GenParser.cc \
 	LibSgtCore.h \
@@ -80,12 +75,8 @@ libSgtCore_a_SOURCES = \
 	Stopwatch.h \
 	RegisterParserPlugins.cc \
 	Units.h \
-	ZipAbc.h \
-	ZipAbc.cc \
 	Zip.h \
-	Zip.cc \
-	ZipParser.h \
-	ZipParser.cc
+	Zip.cc
 
 noinst_PROGRAMS = helloworld
 
