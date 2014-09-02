@@ -53,16 +53,12 @@ namespace SmartGridToolbox
          virtual Event& admittanceChanged()  = 0;
          
       /// @}
-      
-      protected:
-
-         virtual void print(std::ostream& os) const override;
    };
 
    /// @brief Common abstract base class for a branch.
    ///
    /// Implement some common functionality for convenience.
-   class BranchAbc : public BranchInterface, public Component
+   class BranchAbc : public Component, virtual public BranchInterface
    {
       public:
 
@@ -131,6 +127,10 @@ namespace SmartGridToolbox
          virtual Event& admittanceChanged() {return admittanceChanged_;}
          
       /// @}
+      
+      protected:
+
+         virtual void print(std::ostream& os) const override;
       
       private:
 

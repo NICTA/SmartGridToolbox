@@ -79,13 +79,6 @@ namespace SmartGridToolbox
          virtual Event& voltageUpdated() = 0;
       
       /// @}
-
-      /// @name Printing.
-      /// @{
-         
-         virtual void print(std::ostream& os) const override;
-      
-      /// @}
    };
 
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
@@ -239,6 +232,13 @@ namespace SmartGridToolbox
          
          /// @brief Event triggered when bus state (e.g. voltage) has been updated.
          virtual Event& voltageUpdated() {return voltageUpdated_;}
+      
+      /// @}
+      
+      /// @name Printing.
+      /// @{
+         
+         virtual void print(std::ostream& os) const override;
       
       /// @}
 

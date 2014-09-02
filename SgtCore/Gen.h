@@ -85,15 +85,6 @@ namespace SmartGridToolbox
          virtual Event& setpointChanged() = 0;
 
       /// @}
-      
-      /// @name Printing.
-      /// @{
-      
-      protected:
-         
-         virtual void print(std::ostream& os) const;
-
-      /// @}
    };
 
    /// @brief Common abstract base class for a generation at a bus.
@@ -139,6 +130,14 @@ namespace SmartGridToolbox
 
       /// @}
       
+      /// @name Printing.
+      /// @{
+      
+      protected:
+         
+         virtual void print(std::ostream& os) const;
+
+      /// @}
       
       private:
 

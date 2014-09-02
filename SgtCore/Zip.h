@@ -56,10 +56,6 @@ namespace SmartGridToolbox
          virtual Event& setpointChanged() = 0;
 
       /// @}
-     
-      protected:
-
-         virtual void print(std::ostream& os) const override;
    };
    
    /// @brief Common abstract base class for a ZIP at a bus.
@@ -109,6 +105,10 @@ namespace SmartGridToolbox
          virtual Event& setpointChanged() {return setpointChanged_;}
 
       /// @}
+     
+      protected:
+
+         virtual void print(std::ostream& os) const override;
      
       private:
 

@@ -4,14 +4,6 @@
 
 namespace SmartGridToolbox
 {
-   void BranchInterface::print(std::ostream& os) const
-   {
-      ComponentInterface::print(os);
-      IndentingOStreamBuf _(os);
-      os << "phases0: " << phases0() << std::endl;
-      os << "phases1: " << phases1() << std::endl;
-   }
-         
    BranchAbc::BranchAbc(const std::string& id, Phases phases0, Phases phases1) :
       Component(id),
       phases0_(phases0),
@@ -19,5 +11,13 @@ namespace SmartGridToolbox
       isInService_(true)
    {
       // Empty.
+   }
+   
+   void BranchAbc::print(std::ostream& os) const
+   {
+      Component::print(os);
+      IndentingOStreamBuf _(os);
+      os << "phases0: " << phases0() << std::endl;
+      os << "phases1: " << phases1() << std::endl;
    }
 }

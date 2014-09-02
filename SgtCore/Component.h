@@ -17,10 +17,7 @@ namespace SmartGridToolbox
          virtual const std::string& id() const = 0;
          virtual const char* componentTypeStr() const = 0;
       protected:
-         virtual void print(std::ostream& os) const
-         {
-            os << componentTypeStr() << ": " << id() << ":" << std::endl;
-         }
+         virtual void print(std::ostream& os) const = 0;
    };
 
    inline std::ostream& operator<<(std::ostream& os, const ComponentInterface& comp)
@@ -53,6 +50,16 @@ namespace SmartGridToolbox
          
          virtual const std::string& id() const override {return id_;}
          const void setId(const std::string& id) {id_ = id;}
+
+      /// @}
+         
+      /// @name Printing:
+      /// @{
+         
+         virtual void print(std::ostream& os) const
+         {
+            os << componentTypeStr() << ": " << id() << ":" << std::endl;
+         }
 
       /// @}
 
