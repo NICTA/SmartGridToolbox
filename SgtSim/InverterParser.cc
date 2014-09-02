@@ -12,13 +12,13 @@ namespace SmartGridToolbox
 
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases");
-      assertFieldPresent(nd, "network");
-      assertFieldPresent(nd, "bus");
+      assertFieldPresent(nd, "network_id");
+      assertFieldPresent(nd, "bus_id");
 
       string id = nd["id"].as<std::string>();
       Phases phases = nd["phases"].as<Phases>();
-      const std::string networkStr = nd["network"].as<std::string>();
-      const std::string busStr = nd["bus"].as<std::string>();
+      const std::string networkId = nd["network_id"].as<std::string>();
+      const std::string busId = nd["bus_id"].as<std::string>();
 
       auto inverter = into.newSimComponent<Inverter>(id, phases);
 
@@ -42,7 +42,7 @@ namespace SmartGridToolbox
          inverter->setRequestedQPerPhase(nd["requested_Q_per_phase"].as<double>());
       }
 
-      auto network = into.simComponent<SimNetwork>(networkStr);
-      network->addZip(inverter,  
+      auto network = into.simComponent<SimNetwork>(networkId);
+      network->addZip(inverter, busId);
    }
 }

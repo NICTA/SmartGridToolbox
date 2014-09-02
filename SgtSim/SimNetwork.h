@@ -1,22 +1,37 @@
-#ifndef NETWORK_COMP_DOT_H
-#define NETWORK_COMP_DOT_H
+#ifndef SIM_NETWORK_DOT_H
+#define SIM_NETWORK_DOT_H
 
-#include <SgtSim/SimNetworkComponent.h>
+#include <SgtSim/SimComponent.h>
 
 #include <SgtCore/Network.h>
 
 namespace SmartGridToolbox
 {
+   class SimBranchInterface;
+   class SimBusInterface;
+   class SimGenInterface;
+   class SimZipInterface;
+
    /// @ingroup PowerFlowCore
    /// @brief SimNetwork : A SimComponent for an electrical network.
-   class SimNetwork : public SimNetworkComponent<Network>
+   class SimNetwork : public SimComponent
    {
       public:
 
       /// @name Lifecycle.
       /// @{
          
-         SimNetwork(std::shared_ptr<Network> network) : SimNetworkComponent<Network>(network) {}
+         SimNetwork(std::shared_ptr<Network> network) : network_(network) {}
+
+      /// @}
+
+      /// @name Network access.
+      /// @{
+         
+         std::shared_ptr<const Network> network()
+         {
+            return network_;
+         }
 
       /// @}
  
@@ -25,14 +40,14 @@ namespace SmartGridToolbox
       
       public:
 
-         virtual void addNode(std::shared_ptr<SimBus> bus);
+         virtual void addNode(std::shared_ptr<SimBusInterface> bus);
 
-         virtual void addArc(std::shared_ptr<SimBranch> branch, const std::string& bus0Id,
+         virtual void addArc(std::shared_ptr<SimBranchInterface> branch, const std::string& bus0Id,
                              const std::string& bus1Id);
 
-         virtual void addGen(std::shared_ptr<SimGen> gen, const std::string& busId);
+         virtual void addGen(std::shared_ptr<SimGenInterface> gen, const std::string& busId);
 
-         virtual void addZip(std::shared_ptr<SimZip> zip, const std::string& busId);
+         virtual void addZip(std::shared_ptr<SimZipInterface> zip, const std::string& busId);
       
       /// @}
 
@@ -56,4 +71,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // NETWORK_COMP_DOT_H
+#endif // SIM_NETWORK_DOT_H

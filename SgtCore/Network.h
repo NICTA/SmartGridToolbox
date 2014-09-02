@@ -18,8 +18,8 @@ namespace SmartGridToolbox
    class Node;
    class ZipInterface;
 
-   typedef std::vector<std::shared_ptr<Bus>> BusVec;
-   typedef std::map<std::string, std::shared_ptr<Bus>> BusMap;
+   typedef std::vector<std::shared_ptr<BusInterface>> BusVec;
+   typedef std::map<std::string, std::shared_ptr<BusInterface>> BusMap;
 
    typedef std::vector<std::shared_ptr<BranchInterface>> BranchVec;
    typedef std::map<std::string, std::shared_ptr<BranchInterface>> BranchMap;
@@ -41,7 +41,7 @@ namespace SmartGridToolbox
       friend class Network;
 
       public:
-         std::shared_ptr<Bus> bus() {return bus_;}
+         std::shared_ptr<BusInterface> bus() {return bus_;}
 
          const GenVec gens() {return gens_;}
          ublas::vector<Complex> SGen() const;
@@ -52,10 +52,10 @@ namespace SmartGridToolbox
          ublas::vector<Complex> SZip() const;
 
       private:
-         Node(std::shared_ptr<Bus> bus) : bus_{bus} {}
+         Node(std::shared_ptr<BusInterface> bus) : bus_{bus} {}
 
       private:
-         std::shared_ptr<Bus> bus_;
+         std::shared_ptr<BusInterface> bus_;
          GenVec gens_;
          ZipVec zips_;
    };
@@ -138,7 +138,7 @@ namespace SmartGridToolbox
          {
             return std::const_pointer_cast<Node>((const_cast<const Network*>(this))->node(id));
          }
-         virtual void addNode(std::shared_ptr<Bus> bus)
+         virtual void addNode(std::shared_ptr<BusInterface> bus)
          {
             auto nd = std::shared_ptr<Node>(new Node(bus)); 
             nodeMap_[bus->id()] = nd;

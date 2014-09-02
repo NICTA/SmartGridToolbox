@@ -2,10 +2,10 @@
 #include <SgtSim/SimBus.h>
 #include <SgtCore/Common.h>
 #include <SgtSim/Component.h>
-#include <SgtSim/DcPowerSourceBase.h>
+#include <SgtSim/DcPowerSourceAbc.h>
 #include <SgtSim/DgyTransformer.h>
 #include <SgtSim/Event.h>
-#include <SgtSim/InverterBase.h>
+#include <SgtSim/InverterAbc.h>
 #include <SgtSim/Model.h>
 #include <SgtSim/SimNetwork.h>
 #include <SgtSim/OverheadLine.h>

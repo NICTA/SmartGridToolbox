@@ -20,12 +20,12 @@ namespace SmartGridToolbox
 
    double Inverter::PPerPhase() const
    {
-      double P = InverterBase::PPerPhase();
+      double P = InverterAbc::PPerPhase();
       return std::min(std::abs(P), maxSMagPerPhase_) * (P < 0 ? -1 : 1);
    }
 
    Inverter::Inverter(const std::string& id, const Phases& phases) :
-      InverterBase(id, phases),
+      InverterAbc(id, phases),
       efficiency_(1.0),
       maxSMagPerPhase_(1e9),
       minPowerFactor_(0.0),

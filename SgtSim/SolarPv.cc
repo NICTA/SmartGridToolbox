@@ -1,13 +1,13 @@
 #include "SolarPv.h"
 
-#include "InverterBase.h"
+#include "InverterAbc.h"
 #include "Model.h"
 #include "Weather.h"
 
 namespace SmartGridToolbox
 {
    SolarPv::SolarPv(const std::string& id) :
-      DcPowerSourceBase(id),
+      DcPowerSourceAbc(id),
       weather_(nullptr),
       efficiency_(1.0),
       planeNormal_({0.0, 0.0}),

@@ -2,14 +2,14 @@
 #define SOLAR_PV_DOT_H
 
 #include <SgtSim/Component.h>
-#include <SgtSim/DcPowerSourceBase.h>
+#include <SgtSim/DcPowerSourceAbc.h>
 #include <SgtSim/Sun.h>
 
 namespace SmartGridToolbox
 {
    class Weather;
 
-   class SolarPv : public DcPowerSourceBase
+   class SolarPv : public DcPowerSourceAbc
    {
       /// @name Overridden member functions from SimComponent.
       /// @{

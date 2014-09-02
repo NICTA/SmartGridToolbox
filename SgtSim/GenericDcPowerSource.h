@@ -1,11 +1,11 @@
 #ifndef GENERIC_DC_POWER_SOURCE_DOT_H
 #define GENERIC_DC_POWER_SOURCE_DOT_H
 
-#include <SgtSim/DcPowerSourceBase.h>
+#include <SgtSim/DcPowerSourceAbc.h>
 
 namespace SmartGridToolbox
 {
-   class GenericDcPowerSource : public DcPowerSourceBase
+   class GenericDcPowerSource : public DcPowerSourceAbc
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
@@ -19,7 +19,7 @@ namespace SmartGridToolbox
       
       /// @}
       
-      /// @name Overridden member functions from DcPowerSourceBase.
+      /// @name Overridden member functions from DcPowerSourceAbc.
       /// @{
       
       public:
@@ -31,7 +31,7 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         GenericDcPowerSource(const std::string& id) : DcPowerSourceBase(id), PDc_(0.0) {}
+         GenericDcPowerSource(const std::string& id) : DcPowerSourceAbc(id), PDc_(0.0) {}
 
          void setPDc(double PDc) {PDc_ = PDc; needsUpdate().trigger();}
 

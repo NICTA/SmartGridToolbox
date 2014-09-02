@@ -1,6 +1,6 @@
 #include "Battery.h"
 #include "BatteryParser.h"
-#include "InverterBase.h"
+#include "InverterAbc.h"
 #include "Simulation.h"
 
 namespace SmartGridToolbox
@@ -48,7 +48,7 @@ namespace SmartGridToolbox
       Battery& batt = *mod.component<Battery>(id);
 
       const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
-      InverterBase* inverter = mod.component<InverterBase>(inverterStr);
+      InverterAbc* inverter = mod.component<InverterAbc>(inverterStr);
       if (inverter != nullptr)
       {
          inverter->addDcPowerSource(batt);

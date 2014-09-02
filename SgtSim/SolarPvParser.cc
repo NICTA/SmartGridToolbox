@@ -1,6 +1,6 @@
 #include "SolarPvParser.h"
 
-#include "InverterBase.h"
+#include "InverterAbc.h"
 #include "SolarPv.h"
 #include "Weather.h"
 
@@ -55,7 +55,7 @@ namespace SmartGridToolbox
       }
 
       const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
-      InverterBase* inverter = mod.component<InverterBase>(inverterStr);
+      InverterAbc* inverter = mod.component<InverterAbc>(inverterStr);
       if (inverter != nullptr)
       {
          inverter->addDcPowerSource(comp);

@@ -1,5 +1,5 @@
-#ifndef DC_POWER_SOURCE_BASE_DOT_H
-#define DC_POWER_SOURCE_BASE_DOT_H
+#ifndef DC_POWER_SOURCE_ABC_DOT_H
+#define DC_POWER_SOURCE_ABC_DOT_H
 
 #include <SgtSim/SimComponent.h>
 
@@ -11,12 +11,12 @@ namespace SmartGridToolbox
    ///
    /// Abstract base class for any object that can provide a source of DC power, i.e. a single real power.
    /// @ingroup PowerFlowCore
-   class DcPowerSourceBase : public SimComponent, public Component
+   class DcPowerSourceAbc : public SimComponent, public Component
    {
       public:
       /// @{
          
-         DcPowerSourceBase(const std::string& id) : Component(id) {}
+         DcPowerSourceAbc(const std::string& id) : Component(id) {}
 
       /// @}
          
@@ -41,4 +41,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // DC_POWER_SOURCE_BASE_DOT_H
+#endif // DC_POWER_SOURCE_ABC_DOT_H

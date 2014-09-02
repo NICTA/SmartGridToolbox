@@ -1,19 +1,19 @@
-#include "InverterBase.h"
+#include "InverterAbc.h"
 
-#include "DcPowerSourceBase.h"
+#include "DcPowerSourceAbc.h"
 
 namespace SmartGridToolbox
 {
-   void InverterBase::addDcPowerSource(std::shared_ptr<DcPowerSourceBase> source)
+   void InverterAbc::addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source)
    {
       dependsOn(source);
       sources_.push_back(source);
       source->didUpdate().addAction([this](){needsUpdate().trigger();},
-            "Trigger InverterBase " + id() + " needs update.");
+            "Trigger InverterAbc " + id() + " needs update.");
       // TODO: this will recalculate all zips. Efficiency?
    }
 
-   double InverterBase::PPerPhase() const
+   double InverterAbc::PPerPhase() const
    {
       return PDc_ * efficiency(PDc_) / phases().size();
    }

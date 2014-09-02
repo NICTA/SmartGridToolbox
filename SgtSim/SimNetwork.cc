@@ -1,19 +1,12 @@
 #include "SimNetwork.h"
+#include "SimNetworkComponent.h"
 
-#include "SimBranch.h"
-#include "SimBus.h"
-#include "SimGen.h"
-#include "SimZip.h"
-
-#include <SgtCore/PowerFlowNr.h>
-
-#include <iostream>
 
 namespace SmartGridToolbox
 {
-   void SimNetwork::addNode(std::shared_ptr<SimBus> bus)
+   void SimNetwork::addNode(std::shared_ptr<SimBusInterface> bus)
    {
-      network_::addNode(bus);
+      network_->addNode(bus);
 
       dependsOn(bus);
 
@@ -23,10 +16,10 @@ namespace SmartGridToolbox
             "Trigger Network " + id() + " needs update");
    }
 
-   void SimNetwork::addArc(std::shared_ptr<SimBranch> branch, const std::string& bus0Id,
+   void SimNetwork::addArc(std::shared_ptr<SimBranchInterface> branch, const std::string& bus0Id,
          const std::string& bus1Id)
    {
-      Network::addArc(branch, bus0Id, bus1Id);
+      network_->addArc(branch, bus0Id, bus1Id);
 
       dependsOn(branch);
 
@@ -36,9 +29,9 @@ namespace SmartGridToolbox
             "Trigger Network " + id() + " needs update");
    }
 
-   void SimNetwork::addGen(std::shared_ptr<SimGen> gen, const std::string& busId)
+   void SimNetwork::addGen(std::shared_ptr<SimGenInterface> gen, const std::string& busId)
    {
-      Network::addGen(gen, busId);
+      network_->addGen(gen, busId);
 
       dependsOn(gen);
 
@@ -50,9 +43,9 @@ namespace SmartGridToolbox
             "Trigger Network " + id() + " needs update");
    }
 
-   void SimNetwork::addZip(std::shared_ptr<SimZip> zip, const std::string& busId)
+   void SimNetwork::addZip(std::shared_ptr<SimZipInterface> zip, const std::string& busId)
    {
-      Network::addZip(zip, busId);
+      network_->addZip(zip, busId);
 
       dependsOn(zip);
 
@@ -67,6 +60,6 @@ namespace SmartGridToolbox
    void SimNetwork::updateState(Time t)
    {
       SGT_DEBUG(debug() << "SimNetwork : update state." << std::endl);
-      solvePowerFlow(); // TODO: inefficient to rebuild even if not needed.
+      network_->solvePowerFlow(); // TODO: inefficient to rebuild even if not needed.
    }
 }

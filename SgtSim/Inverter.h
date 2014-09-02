@@ -1,12 +1,12 @@
 #ifndef INVERTER_DOT_H
 #define INVERTER_DOT_H
 
-#include <SgtSim/InverterBase.h>
+#include <SgtSim/InverterAbc.h>
 
 namespace SmartGridToolbox
 {
    /// @brief Inverter: DC power to n-phase AC converter.
-   class Inverter : public InverterBase
+   class Inverter : public InverterAbc
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
@@ -20,7 +20,7 @@ namespace SmartGridToolbox
       
       /// @}
       
-      /// @name Overridden member functions from InverterBase.
+      /// @name Overridden member functions from InverterAbc.
       /// @{
       
       public:
