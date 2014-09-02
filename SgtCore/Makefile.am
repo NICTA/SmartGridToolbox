@@ -46,10 +46,10 @@ libSgtCore_a_SOURCES = \
 	Gen.cc \
 	GenericBranchParser.h \
 	GenericBranchParser.cc \
+	GenericGenParser.h \
+	GenericGenParser.cc \
 	GenericZipParser.h \
 	GenericZipParser.cc \
-	GenParser.h \
-	GenParser.cc \
 	LibSgtCore.h \
 	MatpowerParser.h \
 	MatpowerParser.cc \
