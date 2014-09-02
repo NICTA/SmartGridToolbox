@@ -50,6 +50,8 @@ namespace SmartGridToolbox
 
          /// @brief Real power output, per phase.
          virtual double PPerPhase() const;
+
+         virtual 
          
       /// @}
 

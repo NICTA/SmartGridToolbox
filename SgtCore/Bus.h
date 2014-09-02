@@ -61,8 +61,10 @@ namespace SmartGridToolbox
       /// @{
 
          virtual bool isInService() = 0;
+         virtual void setIsInService(bool isInService) = 0;
 
          virtual const ublas::vector<Complex>& V() const = 0;
+         virtual void setV(const ublas::vector<Complex>& V) = 0;
 
       /// @}
       

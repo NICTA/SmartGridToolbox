@@ -91,6 +91,23 @@ namespace SmartGridToolbox
          {
             phases_ = phases;
          }
+      
+      /// @}
+
+      /// @name In service:
+      /// @{
+         
+         virtual bool isInService() const override
+         {
+            return isInService_;
+         }
+
+         virtual void setIsInService(bool isInService)
+         {
+            isInService_ = isInService;
+         }
+
+      /// @}
         
       /// @name Events.
       /// @{
@@ -113,6 +130,8 @@ namespace SmartGridToolbox
       private:
 
          Phases phases_;
+
+         bool isInService_;
          
          Event isInServiceChanged_;
          Event injectionChanged_;
@@ -137,23 +156,7 @@ namespace SmartGridToolbox
          virtual const char* componentType() const {return "generic_zip";}
 
       /// @}
-
-      /// @name In service:
-      /// @{
-         
-         virtual bool isInService() const override
-         {
-            return isInService_;
-         }
-
-         virtual void setIsInService(bool isInService)
-         {
-            isInService_ = isInService;
-         }
-
-      /// @}
             
-
       /// @name ZIP parameters:
       /// @{
       
@@ -192,7 +195,6 @@ namespace SmartGridToolbox
       private:
 
          Phases phases_;
-         bool isInService_;
 
          ublas::vector<Complex> YConst_;
          ublas::vector<Complex> IConst_;
