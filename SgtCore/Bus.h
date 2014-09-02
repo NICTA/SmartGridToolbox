@@ -15,7 +15,7 @@
 namespace SmartGridToolbox
 {
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
-   class BusInterface : public ComponentInterface
+   class BusInterface : virtual public ComponentInterface
    {
       public:
 
@@ -89,7 +89,7 @@ namespace SmartGridToolbox
    };
 
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
-   class Bus : public BusInterface, public Component
+   class Bus : virtual public BusInterface, public Component
    {
       friend class Network;
 
@@ -115,7 +115,7 @@ namespace SmartGridToolbox
       /// @name Basic identity and type:
       /// @{
 
-         const Phases& phases() const
+         virtual const Phases& phases() const
          {
             return phases_;
          }
@@ -125,7 +125,7 @@ namespace SmartGridToolbox
             phases_ = phases;
          }
 
-         ublas::vector<Complex> VNom() const
+         virtual ublas::vector<Complex> VNom() const
          {
             return VNom_;
          }
@@ -136,7 +136,7 @@ namespace SmartGridToolbox
             controlChanged_.trigger();
          }
 
-         double VBase() const
+         virtual double VBase() const
          {
             return VBase_;
          }
@@ -151,7 +151,7 @@ namespace SmartGridToolbox
       /// @name Control and limits:
       /// @{
 
-         BusType type() const
+         virtual BusType type() const
          {
             return type_;
          }
@@ -162,7 +162,7 @@ namespace SmartGridToolbox
             controlChanged_.trigger();
          }
 
-         ublas::vector<double> VMagSetpoint() const
+         virtual ublas::vector<double> VMagSetpoint() const
          {
             return VMagSetpoint_;
          }
@@ -173,7 +173,7 @@ namespace SmartGridToolbox
             controlChanged_.trigger();
          }
 
-         ublas::vector<double> VAngSetpoint() const
+         virtual ublas::vector<double> VAngSetpoint() const
          {
             return VAngSetpoint_;
          }
@@ -184,7 +184,7 @@ namespace SmartGridToolbox
             controlChanged_.trigger();
          }
 
-         double VMagMin() const
+         virtual double VMagMin() const
          {
             return VMagMin_;
          }
@@ -195,7 +195,7 @@ namespace SmartGridToolbox
             controlChanged_.trigger();
          }
 
-         double VMagMax() const
+         virtual double VMagMax() const
          {
             return VMagMax_;
          }
@@ -211,7 +211,7 @@ namespace SmartGridToolbox
       /// @name State
       /// @{
 
-         bool isInService()
+         virtual bool isInService()
          {
             return isInService_;
          }
@@ -222,7 +222,7 @@ namespace SmartGridToolbox
             isInServiceChanged_.trigger();
          }
 
-         const ublas::vector<Complex>& V() const {return V_;}
+         virtual const ublas::vector<Complex>& V() const {return V_;}
 
          virtual void setV(const ublas::vector<Complex>& V) {V_ = V;}
 
@@ -241,8 +241,6 @@ namespace SmartGridToolbox
          virtual Event& voltageUpdated() {return voltageUpdated_;}
       
       /// @}
-
-         virtual void print(std::ostream& os) const override;
 
       private:
 

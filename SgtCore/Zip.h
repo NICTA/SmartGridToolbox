@@ -30,6 +30,7 @@ namespace SmartGridToolbox
       /// @{
          
          virtual bool isInService() const = 0;
+         virtual void setIsInService(bool isInService) = 0;
 
       /// @}
       
@@ -109,10 +110,6 @@ namespace SmartGridToolbox
 
       /// @}
      
-      protected:
-
-         virtual void print(std::ostream& os) const override;
-      
       private:
 
          Phases phases_;

@@ -1,4 +1,4 @@
-#include "ZipParser.h"
+#include "GenericZipParser.h"
 
 #include "Bus.h"
 #include "Network.h"
@@ -6,11 +6,11 @@
 
 namespace SmartGridToolbox
 {
-   void ZipParser::parse(const YAML::Node& nd, Network& into) const
+   void GenericZipParser::parse(const YAML::Node& nd, Network& into) const
    {
-      SGT_DEBUG(debug() << "Zip : parse." << std::endl);
+      SGT_DEBUG(debug() << "GenericZip : parse." << std::endl);
 
-      auto zip = parseZip(nd);
+      auto zip = parseGenericZip(nd);
 
       assertFieldPresent(nd, "bus_id");
 
@@ -18,7 +18,7 @@ namespace SmartGridToolbox
       into.addZip(std::move(zip), busId);
    }
 
-   std::unique_ptr<Zip> ZipParser::parseZip(const YAML::Node& nd) const
+   std::unique_ptr<GenericZip> GenericZipParser::parseGenericZip(const YAML::Node& nd) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases");
@@ -32,7 +32,7 @@ namespace SmartGridToolbox
       ublas::vector<Complex> I = nd["I_const"].as<ublas::vector<Complex>>();
       ublas::vector<Complex> S = nd["S_const"].as<ublas::vector<Complex>>();
       
-      std::unique_ptr<Zip> zip(new Zip(id, phases));
+      std::unique_ptr<GenericZip> zip(new GenericZip(id, phases));
       zip->setYConst(Y);
       zip->setIConst(I);
       zip->setSConst(S);

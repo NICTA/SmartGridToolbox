@@ -6,20 +6,20 @@
 namespace SmartGridToolbox
 {
    class Network;
-   class Zip;
+   class GenericZip;
 
-   /// @brief ParserPlugin that parses Zip objects.
-   class ZipParser : public ParserPlugin<Network>
+   /// @brief ParserPlugin that parses GenericZip objects.
+   class GenericZipParser : public ParserPlugin<Network>
    {
       public:
          virtual const char* key()
          {
-            return "zip";
+            return "generic_zip";
          }
 
          virtual void parse(const YAML::Node& nd, Network& into) const override;
          
-         std::unique_ptr<Zip> parseZip(const YAML::Node& nd) const;
+         std::unique_ptr<GenericZip> parseGenericZip(const YAML::Node& nd) const;
    };
 }
 

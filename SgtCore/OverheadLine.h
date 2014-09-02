@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    ///
    /// Consists of N + M wires, where N is the number of phases and M is the number of phases, and M is the number of
    /// extra grounded neutral wires that will be eliminated via the Kron reduction.
-   class OverheadLine : public Branch
+   class OverheadLine : public BranchAbc
    {
       public:
 
@@ -38,7 +38,7 @@ namespace SmartGridToolbox
 
       /// @}
      
-      /// @name Overridden from Branch:
+      /// @name Overridden from BranchAbc:
       /// @{
          
          virtual const ublas::matrix<Complex> Y() const override;

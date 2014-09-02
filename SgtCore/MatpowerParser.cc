@@ -3,7 +3,7 @@
 #include "Bus.h"
 #include "Branch.h"
 #include "CommonBranch.h"
-#include "GenericGen.h"
+#include "Gen.h"
 #include "Network.h"
 #include "Zip.h"
 
@@ -388,7 +388,7 @@ namespace SmartGridToolbox
          Complex SZip = -Complex(busInfo.Pd, busInfo.Qd); // Already in MW.
          Complex YZip = YBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
          std::string zipId = getZipId(nZip++, busInfo.id);
-         std::unique_ptr<Zip> zip(new Zip(zipId, Phase::BAL));
+         std::unique_ptr<GenericZip> zip(new GenericZip(zipId, Phase::BAL));
          zip->setYConst(VComplex(1, YZip));
          zip->setSConst(VComplex(1, SZip));
          bus->setVMagMin(busInfo.VMagMin == -infinity ? -infinity : pu2kV(busInfo.VMagMin, busInfo.kVBase));
@@ -411,7 +411,7 @@ namespace SmartGridToolbox
       {
          MpGenInfo& genInfo = genVec[i];
          std::string genId = getGenId(i, genInfo.busId);
-         std::unique_ptr<Gen> gen(new Gen(genId, Phase::BAL));
+         std::unique_ptr<GenericGen> gen(new GenericGen(genId, Phase::BAL));
          genCompVec.push_back(gen.get());
          
          std::string busId = getBusId(genInfo.busId);

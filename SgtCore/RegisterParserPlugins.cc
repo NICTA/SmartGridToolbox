@@ -3,9 +3,10 @@
 #include "CommonBranchParser.h"
 #include "DgyTransformerParser.h"
 #include "GenericBranchParser.h"
-#include "GenParser.h"
+#include "GenericGenParser.h"
+#include "GenericZipParser.h"
 #include "MatpowerParser.h"
-#include "ZipParser.h"
+#include "OverheadLineParser.h"
 
 namespace SmartGridToolbox
 {
@@ -16,8 +17,9 @@ namespace SmartGridToolbox
       p.registerParserPlugin<CommonBranchParser>();
       p.registerParserPlugin<DgyTransformerParser>();
       p.registerParserPlugin<GenericBranchParser>();
-      p.registerParserPlugin<GenParser>();
+      p.registerParserPlugin<GenericGenParser>();
+      p.registerParserPlugin<GenericZipParser>();
       p.registerParserPlugin<MatpowerParser>();
-      p.registerParserPlugin<ZipParser>();
+      p.registerParserPlugin<OverheadLineParser>();
    }
 }

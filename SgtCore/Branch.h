@@ -10,7 +10,7 @@
 namespace SmartGridToolbox
 {
    /// @brief Branch is an abstract base class for a branch which connects two Busses in a Network.
-   class BranchInterface : public Component
+   class BranchInterface : virtual public ComponentInterface
    {
       public:
 
@@ -62,7 +62,7 @@ namespace SmartGridToolbox
    /// @brief Common abstract base class for a branch.
    ///
    /// Implement some common functionality for convenience.
-   class BranchAbc : public Component
+   class BranchAbc : public BranchInterface, public Component
    {
       public:
 
@@ -131,10 +131,6 @@ namespace SmartGridToolbox
          virtual Event& admittanceChanged() {return admittanceChanged_;}
          
       /// @}
-      
-      protected:
-
-         virtual void print(std::ostream& os) const override;
       
       private:
 

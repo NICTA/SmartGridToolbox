@@ -1,6 +1,6 @@
 #include "GenericBranchParser.h"
 
-#include "GenericBranch.h"
+#include "Branch.h"
 #include "Network.h"
 
 namespace SmartGridToolbox

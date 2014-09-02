@@ -14,7 +14,6 @@ namespace SmartGridToolbox
    class DcPowerSourceBase : public SimComponent, public Component
    {
       public:
-      /// @name Lifecycle.
       /// @{
          
          DcPowerSourceBase(const std::string& id) : Component(id) {}

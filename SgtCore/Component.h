@@ -10,6 +10,8 @@ namespace SmartGridToolbox
 {
    class ComponentInterface
    {
+      friend std::ostream& operator<<(std::ostream& os, const ComponentInterface& comp);
+
       public:
          virtual ~ComponentInterface() {}
          virtual const std::string& id() const = 0;
@@ -20,6 +22,12 @@ namespace SmartGridToolbox
             os << componentTypeStr() << ": " << id() << ":" << std::endl;
          }
    };
+
+   inline std::ostream& operator<<(std::ostream& os, const ComponentInterface& comp)
+   {
+      comp.print(os);
+      return os;
+   }
 
    class Component : virtual public ComponentInterface
    {
@@ -45,17 +53,6 @@ namespace SmartGridToolbox
          
          virtual const std::string& id() const override {return id_;}
          const void setId(const std::string& id) {id_ = id;}
-
-      /// @}
-
-      /// @name Stream output:
-      /// @{
-         
-         friend std::ostream& operator<<(std::ostream& os, const Component& comp)
-         {
-            comp.print(os);
-            return os;
-         }
 
       /// @}
 

@@ -30,6 +30,7 @@ namespace SmartGridToolbox
       /// @{
          
          virtual bool isInService() const = 0;
+         virtual void setIsInService(bool isInService) = 0;
 
       /// @}
       
@@ -37,6 +38,7 @@ namespace SmartGridToolbox
       /// @{
 
          virtual const ublas::vector<Complex>& S() const = 0;
+         virtual void setS(const ublas::vector<Complex>& S) = 0;
 
       /// @}
       
@@ -44,9 +46,13 @@ namespace SmartGridToolbox
       /// @{
 
          virtual double PMin() const = 0;
+         virtual void setPMin(double PMin) = 0;
          virtual double PMax() const = 0;
+         virtual void setPMax(double PMax) = 0;
          virtual double QMin() const = 0;
+         virtual void setQMin(double QMin) = 0;
          virtual double QMax() const = 0;
+         virtual void setQMax(double QMax) = 0;
 
       /// @}
       
@@ -54,10 +60,15 @@ namespace SmartGridToolbox
       /// @{
           
          virtual double cStartup() const = 0;
+         virtual void setCStartup(double cStartup) = 0;
          virtual double cShutdown() const = 0;
+         virtual void setCShutdown(double cShutdown) = 0;
          virtual double c0() const = 0;
+         virtual void setC0(double c0) = 0;
          virtual double c1() const = 0;
+         virtual void setC1(double c1) = 0;
          virtual double c2() const = 0;
+         virtual void setC2(double c2) = 0;
    
       /// @}
       
@@ -102,7 +113,7 @@ namespace SmartGridToolbox
       /// @name Phase accessors:
       /// @{
          
-         const Phases& phases() const
+         virtual const Phases& phases() const
          {
             return phases_;
          }

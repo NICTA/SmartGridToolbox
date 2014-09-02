@@ -1,12 +1,12 @@
-#include "GenParser.h"
+#include "GenericGenParser.h"
 
 #include "Bus.h"
-#include "GenericGen.h"
+#include "Gen.h"
 #include "Network.h"
 
 namespace SmartGridToolbox
 {
-   void GenParser::parse(const YAML::Node& nd, Network& into) const
+   void GenericGenParser::parse(const YAML::Node& nd, Network& into) const
    {
       SGT_DEBUG(debug() << "GenericGen : parse." << std::endl);
 
@@ -17,7 +17,7 @@ namespace SmartGridToolbox
       into.addGen(std::move(gen), busId);
    }
    
-   std::unique_ptr<GenericGen> GenParser::parseGenericGen(const YAML::Node& nd) const
+   std::unique_ptr<GenericGen> GenericGenParser::parseGenericGen(const YAML::Node& nd) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases");
