@@ -1,7 +1,7 @@
 #ifndef BATTERY_DOT_H
 #define BATTERY_DOT_H
 
-#include <SgtSim/DcPowerSourceAbc.h>
+#include <SgtSim/DcPowerSource.h>
 
 #include <SgtCore/Common.h>
 
@@ -10,7 +10,7 @@
 namespace SmartGridToolbox
 {
    /// @brief Basic battery class, deriving from DCPowerSourceBase.
-   class Battery : public DcPowerSourceAbc
+   class Battery : public DcPowerSourceInterface
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
@@ -31,7 +31,7 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Overridden member functions from DcPowerSourceAbc.
+      /// @name Overridden member functions from DcPowerSourceInterface.
       /// @{
       
       public:
@@ -44,7 +44,6 @@ namespace SmartGridToolbox
       
       public:
          Battery(const std::string& id) :
-            DcPowerSourceAbc(id),
             dt_(posix_time::minutes(5)),
             initCharge_(0.0),
             maxChargePower_(0.0),

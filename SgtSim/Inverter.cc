@@ -1,7 +1,27 @@
+#include "DcPowerSource.h"
 #include "Inverter.h"
+
+#include <numeric>
 
 namespace SmartGridToolbox
 {
+   void InverterAbc::addDcPowerSource(std::shared_ptr<DcPowerSourceInterface> source)
+   {
+      dependsOn(source);
+      sources_.push_back(source);
+      source->didUpdate().addAction([this](){needsUpdate().trigger();},
+            "Trigger InverterInterface " + id() + " needs update.");
+      // TODO: this will recalculate all zips. Efficiency?
+   }
+
+   double InverterAbc::PDc() const
+   {
+      return std::accumulate(sources_.begin(), sources_.end(), 0.0,
+            [] (double tot, const std::shared_ptr<DcPowerSourceInterface>& source) 
+            {return tot + source->PDc();});
+         
+   }
+
    ublas::vector<Complex> Inverter::SConst() const
    {
       double PPerPh = PPerPhase();
@@ -18,12 +38,6 @@ namespace SmartGridToolbox
       return ublas::vector<Complex>(phases().size(), SPerPh);
    }
 
-   double Inverter::PPerPhase() const
-   {
-      double P = InverterAbc::PPerPhase();
-      return std::min(std::abs(P), maxSMagPerPhase_) * (P < 0 ? -1 : 1);
-   }
-
    Inverter::Inverter(const std::string& id, const Phases& phases) :
       InverterAbc(id, phases),
       efficiency_(1.0),
@@ -35,4 +49,11 @@ namespace SmartGridToolbox
    {
       // Empty.
    }
+
+   double Inverter::PPerPhase() const
+   {
+      double P = InverterAbc::PPerPhase();
+      return std::min(std::abs(P), maxSMagPerPhase_) * (P < 0 ? -1 : 1);
+   }
+
 }

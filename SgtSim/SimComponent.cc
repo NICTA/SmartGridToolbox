@@ -2,7 +2,8 @@
 
 namespace SmartGridToolbox
 {
-   SimComponent::SimComponent() :
+   SimComponent::SimComponent(const std::string& id) :
+      Component(id),
       willUpdate_("Will update"),
       didUpdate_("Did update"),
       needsUpdate_("Needs update"),

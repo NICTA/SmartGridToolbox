@@ -1,39 +1,83 @@
 #ifndef INVERTER_DOT_H
 #define INVERTER_DOT_H
 
-#include <SgtSim/InverterAbc.h>
+#include <SgtSim/SimNetworkComponent.h>
 
 namespace SmartGridToolbox
 {
-   /// @brief Inverter: DC power to n-phase AC converter.
-   class Inverter : public InverterAbc
+   class DcPowerSourceInterface;
+
+   /// @brief DC power to n-phase AC converter.
+   /// @ingroup PowerFlowCore
+   class InverterInterface : virtual public SimZipInterface
    {
+      public:
+         virtual double PPerPhase() const = 0;
+         virtual double efficiency(double powerDc) const = 0; 
+         virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceInterface> source) = 0;
+   };
+
+   /// @brief DC power to n-phase AC converter.
+   /// @ingroup PowerFlowCore
+   class InverterAbc : public ZipAbc, virtual public SimZipInterface
+   {
+      public:
+         
+         InverterAbc(const std::string& id, const Phases& phases) : ZipAbc(id, phases)
+         {
+            // Empty.
+         }
+         
+         virtual ublas::vector<Complex> YConst() const override
+         {
+            return ublas::vector<Complex>(phases().size(), czero);
+         }
+         virtual ublas::vector<Complex> IConst() const override
+         {
+            return ublas::vector<Complex>(phases().size(), czero);
+         }
+         virtual ublas::vector<Complex> SConst() const override = 0;
+
+         virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceInterface> source);
+
+         virtual double efficiency(double powerDc) const = 0;
+
+         /// @brief Real power output, per phase.
+         virtual double PPerPhase() const
+         {
+            double PDcA = PDc();
+            return PDcA * efficiency(PDcA) / phases().size();
+         }
+
+      /// @}
+      
       /// @name Overridden member functions from SimComponent.
       /// @{
       
       public:
-         // virtual Time validUntil() const override;
+         virtual Time validUntil() const override;
 
       protected:
-         // virtual void initializeState() override;
-         // virtual void updateState(Time t) override;
-      
-      /// @}
-      
-      /// @name Overridden member functions from InverterAbc.
-      /// @{
-      
-      public:
-         virtual ublas::vector<Complex> SConst() const override;
-         virtual double PPerPhase() const override;
+         virtual void initializeState() override;
+         virtual void updateState(Time t) override;
+
+         virtual double PDc() const;
 
       /// @}
-      
-      /// @name My public member functions.
-      /// @{
-      
+
+      private:
+         std::vector<std::shared_ptr<DcPowerSourceInterface>> sources_;   ///< My DC power sources.
+   };
+
+   /// @brief Inverter: DC power to n-phase AC converter.
+   class Inverter : public InverterAbc
+   {
       public:
          Inverter(const std::string& id, const Phases& phases);
+
+         virtual ublas::vector<Complex> SConst() const override;
+
+         virtual double PPerPhase() const override;
 
          virtual double efficiency(double powerDc) const override
          {

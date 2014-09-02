@@ -6,10 +6,8 @@ include_HEADERS = LibSgtSim.h
 
 pkginclude_HEADERS = \
 	Battery.h \
-	DcPowerSourceAbc.h \
-	GenericDcPowerSource.h \
+	DcPowerSource.h \
 	Inverter.h \
-	InverterAbc.h \
 	RegularUpdateComponent.h \
 	SimComponent.h \
 	SimNetwork.h \
@@ -29,16 +27,13 @@ libSgtSim_a_SOURCES = \
 	Battery.cc \
 	Battery.h \
 	Battery.cc \
-	DcPowerSourceAbc.h \
-	GenericDcPowerSource.h \
+	DcPowerSource.h \
 	GenericDcPowerSourceParser.h \
 	GenericDcPowerSourceParser.cc \
 	Inverter.h \
 	Inverter.cc \
 	InverterParser.h \
 	InverterParser.cc \
-	InverterAbc.h \
-	InverterAbc.cc \
 	LibSgtSim.h \
 	SimOverheadLineParser.h \
 	SimOverheadLineParser.cc \

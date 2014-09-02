@@ -1,7 +1,7 @@
 #include "GenericDcPowerSourceParser.h"
 
-#include "GenericDcPowerSource.h"
-#include "InverterAbc.h"
+#include "DcPowerSource.h"
+#include "Inverter.h"
 #include "Simulation.h"
 
 namespace SmartGridToolbox
@@ -19,7 +19,7 @@ namespace SmartGridToolbox
       comp->setPDc(nd["dc_power"].as<double>());
 
       const std::string inverterStr = nd["inverter"].as<std::string>();
-      auto inverterComp = into.simComponent<InverterAbc>(inverterStr);
+      auto inverterComp = into.simComponent<InverterInterface>(inverterStr);
       if (inverterComp != nullptr)
       {
          inverterComp->addDcPowerSource(comp);

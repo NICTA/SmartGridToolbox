@@ -36,6 +36,7 @@ namespace SmartGridToolbox
 
       /// @}
       
+      public:
 
       /// @name Timestepping
       /// @{
@@ -103,7 +104,7 @@ namespace SmartGridToolbox
       /// @}
    };
 
-   class SimComponent : virtual public SimComponentInterface
+   class SimComponent : public Component, virtual public SimComponentInterface
    {
       /// @name Virtual methods to be overridden by derived classes.
       /// @{
@@ -137,7 +138,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle
       /// @{
      
-         SimComponent();
+         SimComponent(const std::string& id);
 
       /// @}
 

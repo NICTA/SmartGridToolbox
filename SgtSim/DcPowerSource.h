@@ -1,11 +1,29 @@
-#ifndef GENERIC_DC_POWER_SOURCE_DOT_H
-#define GENERIC_DC_POWER_SOURCE_DOT_H
+#ifndef DC_POWER_SOURCE_DOT_H
+#define DC_POWER_SOURCE_DOT_H
 
-#include <SgtSim/DcPowerSourceAbc.h>
+#include <SgtSim/SimComponent.h>
+
+#include <SgtCore/Component.h>
 
 namespace SmartGridToolbox
 {
-   class GenericDcPowerSource : public DcPowerSourceAbc
+   /// @brief DC power source.
+   ///
+   /// Abstract base class for any object that can provide a source of DC power, i.e. a single real power.
+   /// @ingroup PowerFlowCore
+   class DcPowerSourceInterface : virtual public SimComponentInterface
+   {
+      public:
+         
+      /// @name DC Power.
+      /// @{
+         
+         virtual double PDc() const = 0;
+
+      /// @}
+   };
+
+   class GenericDcPowerSource : public SimComponent, virtual public DcPowerSourceInterface
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
@@ -31,7 +49,7 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         GenericDcPowerSource(const std::string& id) : DcPowerSourceAbc(id), PDc_(0.0) {}
+         GenericDcPowerSource(const std::string& id) : SimComponent(id), PDc_(0.0) {}
 
          void setPDc(double PDc) {PDc_ = PDc; needsUpdate().trigger();}
 
@@ -42,4 +60,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // GENERIC_DC_POWER_SOURCE_DOT_H
+#endif // DC_POWER_SOURCE_DOT_H
