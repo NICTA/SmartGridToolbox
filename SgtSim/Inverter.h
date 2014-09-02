@@ -7,6 +7,8 @@ namespace SmartGridToolbox
 {
    class DcPowerSourceInterface;
 
+   class SimZipInterface : virtual public SimComponentInterface, virtual public ZipInterface {};
+
    /// @brief DC power to n-phase AC converter.
    /// @ingroup PowerFlowCore
    class InverterInterface : virtual public SimZipInterface

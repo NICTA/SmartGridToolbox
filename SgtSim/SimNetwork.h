@@ -21,7 +21,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle.
       /// @{
          
-         SimNetwork(std::shared_ptr<Network> network) : network_(network) {}
+         SimNetwork(std::shared_ptr<Network> network) : SimComponent(network->id()), network_(network) {}
 
       /// @}
 
