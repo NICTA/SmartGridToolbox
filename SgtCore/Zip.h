@@ -65,7 +65,7 @@ namespace SmartGridToolbox
    /// @brief Common abstract base class for a ZIP at a bus.
    ///
    /// Implement some common functionality for convenience.
-   class ZipAbc : virtual public ZipInterface, public Component
+   class ZipAbc : public Component, virtual public ZipInterface
    {
       public:
       

@@ -99,7 +99,7 @@ namespace SmartGridToolbox
    /// @brief Common abstract base class for a generation at a bus.
    ///
    /// Implement some common functionality for convenience.
-   class GenAbc : virtual public GenInterface, public Component
+   class GenAbc : public Component, virtual public GenInterface
    {
       public:
 

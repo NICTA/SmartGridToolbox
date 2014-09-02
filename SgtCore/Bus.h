@@ -89,7 +89,7 @@ namespace SmartGridToolbox
    };
 
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
-   class Bus : virtual public BusInterface, public Component
+   class Bus : public Component, virtual public BusInterface
    {
       friend class Network;
 
