@@ -21,8 +21,8 @@ namespace SmartGridToolbox
 
       public:
 
-         typedef std::vector<std::shared_ptr<Zip>> ZipVec;
-         typedef std::vector<std::shared_ptr<Gen>> GenVec;
+         typedef std::vector<std::shared_ptr<ZipInterface>> ZipVec;
+         typedef std::vector<std::shared_ptr<GenInterface>> GenVec;
 
       /// @name Lifecycle:
       /// @{

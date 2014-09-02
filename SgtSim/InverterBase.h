@@ -27,7 +27,7 @@ namespace SmartGridToolbox
       /// @name My public member functions.
       /// @{
          
-         InverterBase(const std::string& id, const Phases& phases) : ZipAbc(id, phases)
+         InverterBase(const std::string& id, const Phases& phases) : SimZip(id, phases)
          {
             // Empty.
          }

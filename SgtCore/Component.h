@@ -7,14 +7,14 @@ using std::string;
 
 namespace SmartGridToolbox
 {
-   class ComponentAbc
+   class ComponentInterface
    {
       public:
          virtual const std::string& id() const = 0;
          virtual const char* componentTypeStr() const = 0;
    };
 
-   class Component : virtual public ComponentAbc
+   class Component : virtual public ComponentInterface
    {
       public:
 

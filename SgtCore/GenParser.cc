@@ -1,23 +1,23 @@
 #include "GenParser.h"
 
 #include "Bus.h"
-#include "Gen.h"
+#include "GenericGen.h"
 #include "Network.h"
 
 namespace SmartGridToolbox
 {
    void GenParser::parse(const YAML::Node& nd, Network& into) const
    {
-      SGT_DEBUG(debug() << "Gen : parse." << std::endl);
+      SGT_DEBUG(debug() << "GenericGen : parse." << std::endl);
 
-      auto gen = parseGen(nd);
+      auto gen = parseGenericGen(nd);
 
       assertFieldPresent(nd, "bus_id");
       std::string busId = nd["bus_id"].as<std::string>();
       into.addGen(std::move(gen), busId);
    }
    
-   std::unique_ptr<Gen> GenParser::parseGen(const YAML::Node& nd) const
+   std::unique_ptr<GenericGen> GenParser::parseGenericGen(const YAML::Node& nd) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases");
@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       std::string id = nd["id"].as<std::string>();
       Phases phases = nd["phases"].as<Phases>();
 
-      std::unique_ptr<Gen> gen(new Gen(id, phases));
+      std::unique_ptr<GenericGen> gen(new GenericGen(id, phases));
 
       if (const YAML::Node& subNd = nd["S"])
       {

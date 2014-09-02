@@ -3,7 +3,7 @@
 #include "Bus.h"
 #include "Branch.h"
 #include "CommonBranch.h"
-#include "Gen.h"
+#include "GenericGen.h"
 #include "Network.h"
 #include "Zip.h"
 
@@ -405,7 +405,7 @@ namespace SmartGridToolbox
       } // Busses
 
       // Gens:
-      std::vector<Gen*> genCompVec;
+      std::vector<GenericGen*> genCompVec;
       genCompVec.reserve(genVec.size());
       for (int i = 0; i < genVec.size(); ++i) 
       {
@@ -477,7 +477,7 @@ namespace SmartGridToolbox
          }
 
          MpGenInfo& genInfo = genVec[i];
-         Gen& gen = *genCompVec[i];
+         GenericGen& gen = *genCompVec[i];
 
          gen.setCStartup(genCostInfo.startup);
          gen.setCShutdown(genCostInfo.shutdown);

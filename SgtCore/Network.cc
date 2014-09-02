@@ -27,7 +27,7 @@ namespace SmartGridToolbox
    ublas::vector<Complex> Node::SGen() const
    {
       return std::accumulate(gens_.begin(), gens_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const std::shared_ptr<Gen>& gen) {return tot + gen->S();});
+            [] (ublas::vector<Complex> & tot, const std::shared_ptr<GenInterface>& gen) {return tot + gen->S();});
    }
 
    Network::Network(const std::string& id, double PBase) :

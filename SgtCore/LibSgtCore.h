@@ -6,6 +6,7 @@
 #include <SgtCore/Common.h>
 #include <SgtCore/CommonBranch.h>
 #include <SgtCore/Gen.h>
+#include <SgtCore/GenericGen.h>
 #include <SgtCore/Network.h>
 #include <SgtCore/Parser.h>
 #include <SgtCore/PowerFlow.h>

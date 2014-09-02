@@ -66,8 +66,8 @@ namespace SmartGridToolbox
 
    using SimBranch = SimNetworkComponent<Branch>;
    using SimBus = SimNetworkComponent<Bus>;
-   using SimGen = SimNetworkComponent<Gen>;
-   using SimZip = SimNetworkComponent<Zip>;
+   using SimGen = SimNetworkComponent<GenAbc>;
+   using SimZip = SimNetworkComponent<ZipAbc>;
 }
 
 #endif // SIM_NETWORK_COMPONENT_DOT_H

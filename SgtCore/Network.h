@@ -25,8 +25,8 @@ namespace SmartGridToolbox
    typedef std::vector<std::shared_ptr<Branch>> BranchVec;
    typedef std::map<std::string, std::shared_ptr<Branch>> BranchMap;
 
-   typedef std::vector<std::shared_ptr<Gen>> GenVec;
-   typedef std::map<std::string, std::shared_ptr<Gen>> GenMap;
+   typedef std::vector<std::shared_ptr<GenInterface>> GenVec;
+   typedef std::map<std::string, std::shared_ptr<GenInterface>> GenMap;
 
    typedef std::vector<std::shared_ptr<Zip>> ZipVec;
    typedef std::map<std::string, std::shared_ptr<Zip>> ZipMap;
@@ -172,16 +172,16 @@ namespace SmartGridToolbox
          {
             return genVec_;
          }
-         std::shared_ptr<const Gen> gen(const std::string& id) const
+         std::shared_ptr<const GenInterface> gen(const std::string& id) const
          {
             GenMap::const_iterator it = genMap_.find(id);
             return (it == genMap_.end()) ? nullptr : it->second;
          }
-         std::shared_ptr<Gen> gen(const std::string& id)
+         std::shared_ptr<GenInterface> gen(const std::string& id)
          {
-            return std::const_pointer_cast<Gen>((const_cast<const Network*>(this))->gen(id));
+            return std::const_pointer_cast<GenInterface>((const_cast<const Network*>(this))->gen(id));
          }
-         virtual void addGen(std::shared_ptr<Gen> gen, const std::string& busId)
+         virtual void addGen(std::shared_ptr<GenInterface> gen, const std::string& busId)
          {
             genMap_[gen->id()] = gen;
             genVec_.push_back(gen);

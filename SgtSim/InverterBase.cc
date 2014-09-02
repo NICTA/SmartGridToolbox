@@ -4,15 +4,6 @@
 
 namespace SmartGridToolbox
 {
-   void InverterBase::updateState(Time t)
-   {
-      PDc_ = 0.0;
-      for (auto source : sources_)
-      {
-         PDc_ += source->PDc();
-      }
-   }
-
    void InverterBase::addDcPowerSource(std::shared_ptr<DcPowerSourceBase> source)
    {
       dependsOn(source);

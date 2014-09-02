@@ -17,7 +17,7 @@ namespace SmartGridToolbox
    {
       private:
 
-         typedef std::map<std::string, std::shared_ptr<ComponentAbc>> CompMap;
+         typedef std::map<std::string, std::shared_ptr<ComponentInterface>> CompMap;
 
       public:
 
@@ -70,7 +70,7 @@ namespace SmartGridToolbox
 
       private:
 
-         void addOrReplaceGenericComponent(std::shared_ptr<ComponentAbc> comp, bool allowReplace);
+         void addOrReplaceGenericComponent(std::shared_ptr<ComponentInterface> comp, bool allowReplace);
 
       private:
 

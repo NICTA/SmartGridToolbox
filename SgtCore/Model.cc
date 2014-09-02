@@ -6,7 +6,7 @@
 
 namespace SmartGridToolbox
 {
-   void Model::addOrReplaceGenericComponent(std::shared_ptr<ComponentAbc> comp, bool allowReplace)
+   void Model::addOrReplaceGenericComponent(std::shared_ptr<ComponentInterface> comp, bool allowReplace)
    {
       message() << "Adding component " << comp->id() << " of type " 
          << comp->componentTypeStr() << " to model." << std::endl;

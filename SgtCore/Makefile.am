@@ -12,7 +12,7 @@ pkginclude_HEADERS = \
 	Component.h \
 	DgyTransformer.h \
 	Event.h \
-	Gen.h \
+	GenericGen.h \
 	GenAbc.h \
 	GenericBranch.h \
 	Model.h \

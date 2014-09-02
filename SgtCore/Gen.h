@@ -3,27 +3,89 @@
 
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
-#include <SgtCore/GenAbc.h>
+#include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
 
 namespace SmartGridToolbox
 {
-   /// @brief A generation at a bus.
-   class Gen : public GenAbc
+   /// @brief Abstract interface for a generation at a bus.
+   class GenInterface : virtual public ComponentInterface
+   {
+      public:
+
+      /// @brief Phase accessors:
+      /// @{
+         
+         virtual const Phases& phases() const = 0;
+        
+      /// @}
+ 
+      /// @name In service:
+      /// @{
+         
+         virtual bool isInService() const = 0;
+
+      /// @}
+      
+      /// @name Power injection:
+      /// @{
+
+         virtual const ublas::vector<Complex>& S() const = 0;
+
+      /// @}
+      
+      /// @name Generation bounds:
+      /// @{
+
+         virtual double PMin() const = 0;
+         virtual double PMax() const = 0;
+         virtual double QMin() const = 0;
+         virtual double QMax() const = 0;
+
+      /// @}
+      
+      /// @name Generation costs:
+      /// @{
+          
+         virtual double cStartup() const = 0;
+         virtual double cShutdown() const = 0;
+         virtual double c0() const = 0;
+         virtual double c1() const = 0;
+         virtual double c2() const = 0;
+   
+      /// @}
+      
+      /// @name Events.
+      /// @{
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& isInServiceChanged() = 0;
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& generationChanged() = 0;
+
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& setpointChanged() = 0;
+
+      /// @}
+   };
+
+   /// @brief Common abstract base class for a generation at a bus.
+   ///
+   /// Implement some common functionality.
+   class GenAbc : virtual public GenInterface, public Component
    {
       public:
 
       /// @name Lifecycle:
       /// @{
          
-         Gen(const std::string& id, Phases phases);
-
-      /// @}
-
-      /// @name Component Type:
-      /// @{
-         
-         virtual const char* componentTypeStr() const {return "gen";}
+         GenAbc(const std::string& id, Phases phases) :
+            Component(id),
+            phases_(phases)
+         {
+            // Empty.
+         }
 
       /// @}
 
@@ -42,6 +104,51 @@ namespace SmartGridToolbox
         
       /// @}
  
+      /// @name Events.
+      /// @{
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& isInServiceChanged() override {return isInServiceChanged_;}
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& generationChanged() override {return generationChanged_;}
+
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& setpointChanged() override {return setpointChanged_;}
+
+      /// @}
+      
+      protected:
+
+         virtual void print(std::ostream& os) const override;
+      
+      private:
+
+         Phases phases_;
+
+         Event isInServiceChanged_;
+         Event generationChanged_;
+         Event setpointChanged_;
+   };
+   
+   /// @brief A concrete, generic generation at a bus.
+   class GenericGen : public GenAbc
+   {
+      public:
+
+      /// @name Lifecycle:
+      /// @{
+         
+         GenericGen(const std::string& id, Phases phases);
+
+      /// @}
+
+      /// @{
+         
+         virtual const char* componentTypeStr() const {return "generic_gen";}
+
+      /// @}
+
       /// @name In service:
       /// @{
          
@@ -174,7 +281,6 @@ namespace SmartGridToolbox
       
       private:
 
-         Phases phases_;
          bool isInService_;
          
          ublas::vector<Complex> S_;
