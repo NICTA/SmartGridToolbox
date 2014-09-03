@@ -1,7 +1,7 @@
 #ifndef INVERTER_DOT_H
 #define INVERTER_DOT_H
 
-#include <SgtSim/SimZip.h>
+#include <SgtSim/SimNetworkComponent.h>
 
 namespace SmartGridToolbox
 {
