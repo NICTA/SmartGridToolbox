@@ -104,7 +104,7 @@ namespace SmartGridToolbox
       /// @}
    };
 
-   class SimComponent : public Component, virtual public SimComponentInterface
+   class SimComponentAbc : virtual public SimComponentInterface
    {
       /// @name Virtual methods to be overridden by derived classes.
       /// @{
@@ -138,7 +138,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle
       /// @{
      
-         SimComponent(const std::string& id);
+         SimComponentAbc();
 
       /// @}
 
@@ -219,6 +219,11 @@ namespace SmartGridToolbox
          Event didCompleteTimestep_; ///< Triggered immediately after fully completing a timestep.
    };
 
+   class SimComponent : public SimComponentAbc, public Component
+   {
+      public:
+         SimComponent(const std::string& id) : Component(id) {}
+   };
 }
 
 #endif // SIM_COMPONENT_DOT_H

@@ -15,8 +15,8 @@ namespace SmartGridToolbox
    class SimGenInterface : virtual public SimComponentInterface, virtual public GenInterface {};
    class SimZipInterface : virtual public SimComponentInterface, virtual public ZipInterface {};
 
-   class SimGenAbc : public GenAbc, public SimComponent, virtual public SimGenInterface {};
-   class SimZipAbc : public ZipAbc, public SimComponent, virtual public SimZipInterface {};
+   class SimGenAbc : public GenAbc, public SimComponentAbc, virtual public SimGenInterface {};
+   class SimZipAbc : public ZipAbc, public SimComponentAbc, virtual public SimZipInterface {};
 }
 
 #endif // SIM_NETWORK_COMPONENT_DOT_H
