@@ -14,6 +14,7 @@ pkginclude_HEADERS = \
 	SimBus.h \
 	SimGen.h \
 	SimNetwork.h \
+	SimOverheadLine.h \
 	SimpleBuilding.h \
 	SimSinglePhaseTransformer.h \
 	Simulation.h \
@@ -56,6 +57,7 @@ libSgtSim_a_SOURCES = \
 	SimNetwork.cc \
 	SimNetworkParser.h \
 	SimNetworkParser.cc \
+	SimOverheadLine.h \
 	SimpleBuilding.h \
 	SimpleBuilding.cc \
 	SimpleBuildingParser.h \

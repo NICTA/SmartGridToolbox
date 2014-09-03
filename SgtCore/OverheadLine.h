@@ -25,7 +25,7 @@ namespace SmartGridToolbox
          /// @param earthResistivity The effective resistivity of the earth (typically 100 Ohm-meters).
          /// @param distMat Offdiagonal = distances between wires, diagonal = wire GMR.
          /// @param freq = the network frequency.
-         OverheadLine(const std::string& name, const Phases& phases0, const Phases& phases1, double length,
+         OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double length,
                       int nNeutral, ublas::vector<double> lineResistivity, double earthResistivity,
                       ublas::matrix<double> distMat, double freq);
  

@@ -9,6 +9,52 @@
 
 namespace SmartGridToolbox
 {
+   /// @brief Branch is an abstract base class for a branch which connects two Busses in a Network.
+   class BranchInterface : virtual public ComponentInterface
+   {
+      public:
+
+      /// @name Lifecycle:
+      /// @{
+         
+         virtual ~BranchInterface() {}
+
+      /// @}
+
+      /// @name Phase accessors:
+      /// @{
+         
+         virtual const Phases& phases0() const = 0;
+         virtual const Phases& phases1() const = 0;
+      
+      /// @}
+ 
+      /// @name In service:
+      /// @{
+         
+         virtual bool isInService() const = 0;
+
+      /// @}
+
+      /// @name Nodal admittance matrix (Y):
+      /// @{
+         
+         virtual const ublas::matrix<Complex> Y() const = 0;
+      
+      /// @}
+      
+      /// @name Events.
+      /// @{
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& isInServiceChanged() = 0; 
+
+         /// @brief Event triggered when my admittance changes.
+         virtual Event& admittanceChanged()  = 0;
+         
+      /// @}
+   };
+
    /// @brief Common abstract base class for a branch.
    ///
    /// Implement some common functionality for convenience.

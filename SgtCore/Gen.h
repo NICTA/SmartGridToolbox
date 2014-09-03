@@ -8,35 +8,24 @@
 
 namespace SmartGridToolbox
 {
-   /// @brief Common abstract base class for a generation at a bus.
-   ///
-   /// Implement some common functionality for convenience.
-   class GenAbc : public Component
+   /// @brief Abstract interface for a generation at a bus.
+   class GenInterface : virtual public ComponentInterface
    {
       public:
-
-      /// @name Lifecycle:
+      /// @brief Lifecycle:
       /// @{
-         
-         GenAbc(const std::string& id, Phases phases);
 
+         virtual ~GenInterface() {}
+      
       /// @}
 
-      /// @name Phase accessors:
+      /// @brief Phase accessors:
       /// @{
          
-         virtual const Phases& phases() const
-         {
-            return phases_;
-         }
-         
-         virtual void setPhases(const Phases& phases) 
-         {
-            phases_ = phases;
-         }
+         virtual const Phases& phases() const = 0;
         
-      /// @} 
-      
+      /// @}
+ 
       /// @name In service:
       /// @{
          
@@ -82,19 +71,62 @@ namespace SmartGridToolbox
          virtual void setC2(double c2) = 0;
    
       /// @}
-     
+      
+      /// @name Events.
+      /// @{
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& isInServiceChanged() = 0;
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& generationChanged() = 0;
+
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& setpointChanged() = 0;
+
+      /// @}
+   };
+
+   /// @brief Common abstract base class for a generation at a bus.
+   ///
+   /// Implement some common functionality for convenience.
+   class GenAbc : public Component, virtual public GenInterface
+   {
+      public:
+
+      /// @name Lifecycle:
+      /// @{
+         
+         GenAbc(const std::string& id, Phases phases);
+
+      /// @}
+
+      /// @name Phase accessors:
+      /// @{
+         
+         virtual const Phases& phases() const
+         {
+            return phases_;
+         }
+         
+         virtual void setPhases(const Phases& phases) 
+         {
+            phases_ = phases;
+         }
+        
+      /// @}
  
       /// @name Events.
       /// @{
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() {return isInServiceChanged_;}
+         virtual Event& isInServiceChanged() override {return isInServiceChanged_;}
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& generationChanged() {return generationChanged_;}
+         virtual Event& generationChanged() override {return generationChanged_;}
 
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& setpointChanged() {return setpointChanged_;}
+         virtual Event& setpointChanged() override {return setpointChanged_;}
 
       /// @}
       
@@ -137,7 +169,7 @@ namespace SmartGridToolbox
       /// @name In service:
       /// @{
          
-         virtual bool isInService() const
+         virtual bool isInService() const override
          {
             return isInService_;
          }
@@ -152,7 +184,7 @@ namespace SmartGridToolbox
       /// @name Power injection:
       /// @{
 
-         virtual const ublas::vector<Complex>& S() const
+         virtual const ublas::vector<Complex>& S() const override
          {
             return S_;
          }
@@ -167,7 +199,7 @@ namespace SmartGridToolbox
       /// @name Generation bounds:
       /// @{
 
-         virtual double PMin() const
+         virtual double PMin() const override
          {
             return PMin_;
          }
@@ -177,7 +209,7 @@ namespace SmartGridToolbox
             PMin_ = PMin;
          }
  
-         virtual double PMax() const
+         virtual double PMax() const override
          {
             return PMax_;
          }
@@ -187,7 +219,7 @@ namespace SmartGridToolbox
             PMax_ = PMax;
          }
 
-         virtual double QMin() const
+         virtual double QMin() const override
          {
             return QMin_;
          }
@@ -197,7 +229,7 @@ namespace SmartGridToolbox
             QMin_ = QMin;
          }
  
-         virtual double QMax() const
+         virtual double QMax() const override
          {
             return QMax_;
          }
@@ -212,7 +244,7 @@ namespace SmartGridToolbox
       /// @name Generation costs:
       /// @{
           
-         virtual double cStartup() const
+         virtual double cStartup() const override
          {
             return cStartup_;
          }
@@ -222,7 +254,7 @@ namespace SmartGridToolbox
             cStartup_ = cStartup;
          }
          
-         virtual double cShutdown() const
+         virtual double cShutdown() const override
          {
             return cShutdown_;
          }
@@ -232,7 +264,7 @@ namespace SmartGridToolbox
             cShutdown_ = cShutdown;
          }
        
-         virtual double c0() const
+         virtual double c0() const override
          {
             return c0_;
          }
@@ -242,7 +274,7 @@ namespace SmartGridToolbox
             c0_ = c0;
          }
          
-         virtual double c1() const
+         virtual double c1() const override
          {
             return c1_;
          }
@@ -252,7 +284,7 @@ namespace SmartGridToolbox
             c1_ = c1;
          }
          
-         virtual double c2() const
+         virtual double c2() const override
          {
             return c2_;
          }
