@@ -10,7 +10,7 @@
 namespace SmartGridToolbox
 {
    /// @brief Basic battery class, deriving from DCPowerSourceBase.
-   class Battery : public DcPowerSourceInterface
+   class Battery : public DcPowerSourceAbc
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
@@ -31,7 +31,7 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Overridden member functions from DcPowerSourceInterface.
+      /// @name Overridden member functions from DcPowerSourceAbc.
       /// @{
       
       public:
@@ -44,6 +44,7 @@ namespace SmartGridToolbox
       
       public:
          Battery(const std::string& id) :
+            DcPowerSourceAbc(id),
             dt_(posix_time::minutes(5)),
             initCharge_(0.0),
             maxChargePower_(0.0),

@@ -11,10 +11,17 @@ namespace SmartGridToolbox
    ///
    /// Abstract base class for any object that can provide a source of DC power, i.e. a single real power.
    /// @ingroup PowerFlowCore
-   class DcPowerSourceInterface : virtual public SimComponentInterface
+   class DcPowerSourceAbc : public SimComponent
    {
       public:
-         
+      
+      /// @name Lifecycle.
+      /// @{
+     
+         DcPowerSourceAbc(const std::string& id) : SimComponent(id) {}
+
+      /// @}
+      
       /// @name DC Power.
       /// @{
          
@@ -23,39 +30,26 @@ namespace SmartGridToolbox
       /// @}
    };
 
-   class GenericDcPowerSource : public SimComponent, virtual public DcPowerSourceInterface
+   class GenericDcPowerSource : virtual public DcPowerSourceAbc
    {
-      /// @name Overridden member functions from SimComponent.
+      public:
+
+      /// @name Lifecycle
       /// @{
       
-      public:
-         // virtual Time validUntil() const override;
-
-      protected:
-         // virtual void initializeState() override;
-         // virtual void updateState(Time t) override;
+         GenericDcPowerSource(const std::string& id) : DcPowerSourceAbc(id), PDc_(0.0) {}
       
       /// @}
-      
-      /// @name Overridden member functions from DcPowerSourceAbc.
+
+      /// @name DC Power.
       /// @{
       
-      public:
          virtual double PDc() const {return PDc_;}
-      
-      /// @}
-      
-      /// @name My public member functions.
-      /// @{
-      
-      public:
-         GenericDcPowerSource(const std::string& id) : SimComponent(id), PDc_(0.0) {}
-
          void setPDc(double PDc) {PDc_ = PDc; needsUpdate().trigger();}
-
+      
       /// @}
 
-      public:
+      private:
          double PDc_;
    };
 }

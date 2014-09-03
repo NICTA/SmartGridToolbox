@@ -10,28 +10,28 @@ namespace SmartGridToolbox
    ublas::vector<Complex> Node::YZip() const
    {
       return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const std::shared_ptr<ZipInterface>& zip) 
+            [] (ublas::vector<Complex> & tot, const std::shared_ptr<ZipAbc>& zip) 
             {return tot + zip->YConst();});
    }
 
    ublas::vector<Complex> Node::IZip() const
    {
       return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const std::shared_ptr<ZipInterface>& zip)
+            [] (ublas::vector<Complex> & tot, const std::shared_ptr<ZipAbc>& zip)
             {return tot + zip->IConst();});
    }
 
    ublas::vector<Complex> Node::SZip() const
    {
       return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const std::shared_ptr<ZipInterface>& zip)
+            [] (ublas::vector<Complex> & tot, const std::shared_ptr<ZipAbc>& zip)
             {return tot + zip->SConst();});
    }
    
    ublas::vector<Complex> Node::SGen() const
    {
       return std::accumulate(gens_.begin(), gens_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const std::shared_ptr<GenInterface>& gen) {return tot + gen->S();});
+            [] (ublas::vector<Complex> & tot, const std::shared_ptr<GenAbc>& gen) {return tot + gen->S();});
    }
 
    Network::Network(const std::string& id, double PBase) :

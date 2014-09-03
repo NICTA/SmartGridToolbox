@@ -4,9 +4,7 @@
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
 #include <SgtCore/Event.h>
-#include <SgtCore/Gen.h>
 #include <SgtCore/PowerFlow.h>
-#include <SgtCore/Zip.h>
 
 #include<iostream>
 #include<map>
@@ -15,83 +13,11 @@
 namespace SmartGridToolbox
 {
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
-   class BusInterface : virtual public ComponentInterface
-   {
-      public:
-
-         typedef std::vector<std::shared_ptr<ZipInterface>> ZipVec;
-         typedef std::vector<std::shared_ptr<GenInterface>> GenVec;
-
-      /// @name Lifecycle:
-      /// @{
-
-         virtual ~BusInterface() {}
-
-      /// @}
-
-      /// @name Basic identity and type:
-      /// @{
-
-         virtual const Phases& phases() const = 0;
-         virtual ublas::vector<Complex> VNom() const = 0;
-         virtual double VBase() const = 0;
-
-      /// @}
-
-      /// @name Control and limits:
-      /// @{
-
-         virtual BusType type() const = 0;
-
-         virtual ublas::vector<double> VMagSetpoint() const = 0;
-         virtual void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint) = 0;
-
-         virtual ublas::vector<double> VAngSetpoint() const = 0;
-         virtual void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint) = 0;
-
-         virtual double VMagMin() const = 0;
-         virtual void setVMagMin(double VMagMin) = 0;
-
-         virtual double VMagMax() const = 0;
-         virtual void setVMagMax(double VMagMax) = 0;
-
-      /// @}
-
-      /// @name State
-      /// @{
-
-         virtual bool isInService() = 0;
-         virtual void setIsInService(bool isInService) = 0;
-
-         virtual const ublas::vector<Complex>& V() const = 0;
-         virtual void setV(const ublas::vector<Complex>& V) = 0;
-
-      /// @}
-      
-      /// @name Events.
-      /// @{
-         
-         /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() = 0;
-
-         /// @brief Event triggered when bus control (e.g. setpoint) has changed.
-         virtual Event& controlChanged() = 0;
-         
-         /// @brief Event triggered when bus state (e.g. voltage) has been updated.
-         virtual Event& voltageUpdated() = 0;
-      
-      /// @}
-   };
-
-   /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
-   class Bus : public Component, virtual public BusInterface
+   class Bus : public Component
    {
       friend class Network;
 
       public:
-
-         typedef std::vector<std::shared_ptr<ZipInterface>> ZipVec;
-         typedef std::vector<std::shared_ptr<GenInterface>> GenVec;
 
       /// @name Lifecycle:
       /// @{

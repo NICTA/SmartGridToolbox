@@ -18,8 +18,8 @@ namespace SmartGridToolbox
    {
       private:
 
-         typedef std::shared_ptr<SimComponent> SimCompPtr;
-         typedef std::shared_ptr<const SimComponent> SimCompConstPtr;
+         typedef std::shared_ptr<SimComponentAbc> SimCompPtr;
+         typedef std::shared_ptr<const SimComponentAbc> SimCompConstPtr;
          typedef std::shared_ptr<TimeSeriesBase> TimeSeriesPtr;
          typedef std::shared_ptr<const TimeSeriesBase> TimeSeriesConstPtr;
 
@@ -202,7 +202,7 @@ namespace SmartGridToolbox
 
       private:
 
-         void addOrReplaceGenericSimComponent(std::shared_ptr<SimComponent> simComp, bool allowReplace);
+         void addOrReplaceGenericSimComponent(std::shared_ptr<SimComponentAbc> simComp, bool allowReplace);
       
       private:
 

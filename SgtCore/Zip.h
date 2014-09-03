@@ -9,59 +9,10 @@
 
 namespace SmartGridToolbox
 {
-   /// @brief A Zip is an injection into a bus with constant impedance / current / complex power components.
-   class ZipInterface : virtual public ComponentInterface
-   {
-      public:
-      
-      /// @name Lifecycle:
-      /// @{
-
-         virtual ~ZipInterface() {}
-
-      /// @}
-
-      /// @name Basic identity and type:
-      /// @{
- 
-         virtual const Phases& phases() const = 0;
-         
-      /// @name In service:
-      /// @{
-         
-         virtual bool isInService() const = 0;
-         virtual void setIsInService(bool isInService) = 0;
-
-      /// @}
-      
-      /// @name ZIP parameters:
-      /// @{
-      
-         virtual ublas::vector<Complex> YConst() const = 0;
-         virtual ublas::vector<Complex> IConst() const = 0;
-         virtual ublas::vector<Complex> SConst() const = 0;
-
-      /// @}
-       
-      /// @name Events.
-      /// @{
-         
-         /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() = 0;
-         
-         /// @brief Event triggered when I go in or out of service.
-         virtual Event& injectionChanged() = 0;
-
-         /// @brief Event triggered when I go in or out of service.
-         virtual Event& setpointChanged() = 0;
-
-      /// @}
-   };
-   
    /// @brief Common abstract base class for a ZIP at a bus.
    ///
    /// Implement some common functionality for convenience.
-   class ZipAbc : public Component, virtual public ZipInterface
+   class ZipAbc : public Component
    {
       public:
       
@@ -97,7 +48,7 @@ namespace SmartGridToolbox
       /// @name In service:
       /// @{
          
-         virtual bool isInService() const override
+         virtual bool isInService() const
          {
             return isInService_;
          }
@@ -107,7 +58,17 @@ namespace SmartGridToolbox
             isInService_ = isInService;
          }
 
+      /// @} 
+      
+      /// @name ZIP parameters:
+      /// @{
+      
+         virtual ublas::vector<Complex> YConst() const = 0;
+         virtual ublas::vector<Complex> IConst() const = 0;
+         virtual ublas::vector<Complex> SConst() const = 0;
+
       /// @}
+      
         
       /// @name Events.
       /// @{
@@ -160,7 +121,7 @@ namespace SmartGridToolbox
       /// @name ZIP parameters:
       /// @{
       
-         virtual ublas::vector<Complex> YConst() const override
+         virtual ublas::vector<Complex> YConst() const
          {
             return YConst_;
          }
@@ -170,7 +131,7 @@ namespace SmartGridToolbox
             YConst_ = YConst;
          }
       
-         virtual ublas::vector<Complex> IConst() const override
+         virtual ublas::vector<Complex> IConst() const
          {
             return IConst_;
          }
@@ -180,7 +141,7 @@ namespace SmartGridToolbox
             IConst_ = IConst;
          }
       
-         virtual ublas::vector<Complex> SConst() const override
+         virtual ublas::vector<Complex> SConst() const
          {
             return SConst_;
          }

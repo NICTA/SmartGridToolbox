@@ -1,29 +1,19 @@
 #ifndef INVERTER_DOT_H
 #define INVERTER_DOT_H
 
-#include <SgtSim/SimNetworkComponent.h>
+#include <SgtSim/SimZip.h>
 
 namespace SmartGridToolbox
 {
-   class DcPowerSourceInterface;
+   class DcPowerSourceAbc;
 
    /// @brief DC power to n-phase AC converter.
    /// @ingroup PowerFlowCore
-   class InverterAbc : virtual public SimZipInterface
-   {
-      public:
-         virtual double PPerPhase() const = 0;
-         virtual double efficiency(double powerDc) const = 0; 
-         virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceInterface> source) = 0;
-   };
-
-   /// @brief DC power to n-phase AC converter.
-   /// @ingroup PowerFlowCore
-   class InverterAbc : public ZipAbc, virtual public SimZipInterface
+   class InverterAbc : public SimZipAbc
    {
       public:
          
-         InverterAbc(const std::string& id, const Phases& phases) : ZipAbc(id, phases)
+         InverterAbc(const std::string& id, const Phases& phases) : SimZipAbc(id, phases)
          {
             // Empty.
          }
@@ -38,7 +28,7 @@ namespace SmartGridToolbox
          }
          virtual ublas::vector<Complex> SConst() const override = 0;
 
-         virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceInterface> source);
+         virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source);
 
          virtual double efficiency(double powerDc) const = 0;
 
@@ -66,7 +56,7 @@ namespace SmartGridToolbox
       /// @}
 
       private:
-         std::vector<std::shared_ptr<DcPowerSourceInterface>> sources_;   ///< My DC power sources.
+         std::vector<std::shared_ptr<DcPowerSourceAbc>> sources_;   ///< My DC power sources.
    };
 
    /// @brief Inverter: DC power to n-phase AC converter.

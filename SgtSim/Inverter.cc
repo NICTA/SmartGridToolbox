@@ -5,19 +5,19 @@
 
 namespace SmartGridToolbox
 {
-   void InverterAbc::addDcPowerSource(std::shared_ptr<DcPowerSourceInterface> source)
+   void InverterAbc::addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source)
    {
       dependsOn(source);
       sources_.push_back(source);
       source->didUpdate().addAction([this](){needsUpdate().trigger();},
-            "Trigger InverterInterface " + id() + " needs update.");
+            "Trigger InverterAbc " + id() + " needs update.");
       // TODO: this will recalculate all zips. Efficiency?
    }
 
    double InverterAbc::PDc() const
    {
       return std::accumulate(sources_.begin(), sources_.end(), 0.0,
-            [] (double tot, const std::shared_ptr<DcPowerSourceInterface>& source) 
+            [] (double tot, const std::shared_ptr<DcPowerSourceAbc>& source) 
             {return tot + source->PDc();});
    }
 
