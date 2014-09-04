@@ -18,17 +18,17 @@ namespace SmartGridToolbox
    class Arc;
    class Node;
 
-   typedef std::vector<std::shared_ptr<Bus>> BusVec;
-   typedef std::map<std::string, std::shared_ptr<Bus>> BusMap;
+   typedef std::vector<std::shared_ptr<BusInterface>> BusVec;
+   typedef std::map<std::string, std::shared_ptr<BusInterface>> BusMap;
 
-   typedef std::vector<std::shared_ptr<BranchAbc>> BranchVec;
-   typedef std::map<std::string, std::shared_ptr<BranchAbc>> BranchMap;
+   typedef std::vector<std::shared_ptr<BranchInterface>> BranchVec;
+   typedef std::map<std::string, std::shared_ptr<BranchInterface>> BranchMap;
 
-   typedef std::vector<std::shared_ptr<GenAbc>> GenVec;
-   typedef std::map<std::string, std::shared_ptr<GenAbc>> GenMap;
+   typedef std::vector<std::shared_ptr<GenInterface>> GenVec;
+   typedef std::map<std::string, std::shared_ptr<GenInterface>> GenMap;
 
-   typedef std::vector<std::shared_ptr<ZipAbc>> ZipVec;
-   typedef std::map<std::string, std::shared_ptr<ZipAbc>> ZipMap;
+   typedef std::vector<std::shared_ptr<ZipInterface>> ZipVec;
+   typedef std::map<std::string, std::shared_ptr<ZipInterface>> ZipMap;
    
    typedef std::vector<std::shared_ptr<Node>> NodeVec;
    typedef std::map<std::string, std::shared_ptr<Node>> NodeMap;
@@ -41,7 +41,7 @@ namespace SmartGridToolbox
       friend class Network;
 
       public:
-         std::shared_ptr<Bus> bus() {return bus_;}
+         std::shared_ptr<BusInterface> bus() {return bus_;}
 
          const GenVec gens() {return gens_;}
          ublas::vector<Complex> SGen() const;
@@ -52,10 +52,10 @@ namespace SmartGridToolbox
          ublas::vector<Complex> SZip() const;
 
       private:
-         Node(std::shared_ptr<Bus> bus) : bus_{bus} {}
+         Node(std::shared_ptr<BusInterface> bus) : bus_{bus} {}
 
       private:
-         std::shared_ptr<Bus> bus_;
+         std::shared_ptr<BusInterface> bus_;
          GenVec gens_;
          ZipVec zips_;
    };
@@ -65,16 +65,16 @@ namespace SmartGridToolbox
       friend class Network;
 
       public:
-         std::shared_ptr<BranchAbc> branch() {return branch_;}
+         std::shared_ptr<BranchInterface> branch() {return branch_;}
          std::shared_ptr<Node> node0() {return node0_;}
          std::shared_ptr<Node> node1() {return node1_;}
 
       private:
-         Arc(std::shared_ptr<BranchAbc> branch, std::shared_ptr<Node> node0, std::shared_ptr<Node> node1) :
+         Arc(std::shared_ptr<BranchInterface> branch, std::shared_ptr<Node> node0, std::shared_ptr<Node> node1) :
             branch_{branch}, node0_(node0), node1_(node1) {}
 
       private:
-         std::shared_ptr<BranchAbc> branch_;
+         std::shared_ptr<BranchInterface> branch_;
          std::shared_ptr<Node> node0_;
          std::shared_ptr<Node> node1_;
    };
@@ -138,7 +138,7 @@ namespace SmartGridToolbox
          {
             return std::const_pointer_cast<Node>((const_cast<const Network*>(this))->node(id));
          }
-         virtual void addNode(std::shared_ptr<Bus> bus)
+         virtual void addNode(std::shared_ptr<BusInterface> bus)
          {
             auto nd = std::shared_ptr<Node>(new Node(bus)); 
             nodeMap_[bus->id()] = nd;
@@ -158,7 +158,7 @@ namespace SmartGridToolbox
          {
             return std::const_pointer_cast<Arc>((const_cast<const Network*>(this))->arc(id));
          }
-         virtual void addArc(std::shared_ptr<BranchAbc> branch, const std::string& bus0Id, 
+         virtual void addArc(std::shared_ptr<BranchInterface> branch, const std::string& bus0Id, 
                const std::string& bus1Id)
          {
             auto nd0 = node(bus0Id); 
@@ -172,16 +172,16 @@ namespace SmartGridToolbox
          {
             return genVec_;
          }
-         std::shared_ptr<const GenAbc> gen(const std::string& id) const
+         std::shared_ptr<const GenInterface> gen(const std::string& id) const
          {
             GenMap::const_iterator it = genMap_.find(id);
             return (it == genMap_.end()) ? nullptr : it->second;
          }
-         std::shared_ptr<GenAbc> gen(const std::string& id)
+         std::shared_ptr<GenInterface> gen(const std::string& id)
          {
-            return std::const_pointer_cast<GenAbc>((const_cast<const Network*>(this))->gen(id));
+            return std::const_pointer_cast<GenInterface>((const_cast<const Network*>(this))->gen(id));
          }
-         virtual void addGen(std::shared_ptr<GenAbc> gen, const std::string& busId)
+         virtual void addGen(std::shared_ptr<GenInterface> gen, const std::string& busId)
          {
             genMap_[gen->id()] = gen;
             genVec_.push_back(gen);
@@ -192,16 +192,16 @@ namespace SmartGridToolbox
          {
             return zipVec_;
          }
-         std::shared_ptr<const ZipAbc> zip(const std::string& id) const
+         std::shared_ptr<const ZipInterface> zip(const std::string& id) const
          {
             ZipMap::const_iterator it = zipMap_.find(id);
             return (it == zipMap_.end()) ? nullptr : it->second;
          }
-         std::shared_ptr<ZipAbc> zip(const std::string& id)
+         std::shared_ptr<ZipInterface> zip(const std::string& id)
          {
-            return std::const_pointer_cast<ZipAbc>((const_cast<const Network*>(this))->zip(id));
+            return std::const_pointer_cast<ZipInterface>((const_cast<const Network*>(this))->zip(id));
          }
-         virtual void addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId)
+         virtual void addZip(std::shared_ptr<ZipInterface> zip, const std::string& busId)
          {
             zipMap_[zip->id()] = zip;
             zipVec_.push_back(zip);

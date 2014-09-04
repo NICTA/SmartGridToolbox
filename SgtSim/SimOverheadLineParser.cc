@@ -29,9 +29,9 @@ namespace SmartGridToolbox
       netw->addArc(std::move(ohl), bus0Id, bus1Id);
    }
 
-   std::unique_ptr<SimBranch> SimOverheadLineParser::parseSimOverheadLine(const YAML::Node& nd) const
+   std::unique_ptr<SimOverheadLine> SimOverheadLineParser::parseSimOverheadLine(const YAML::Node& nd) const
    {
       static OverheadLineParser ohlParser;
-      return std::unique_ptr<SimBranch>(new SimBranch(ohlParser.parseOverheadLine(nd)));
+      return std::unique_ptr<SimOverheadLine>(new SimOverheadLine(ohlParser.parseOverheadLine(nd)));
    }
 }
