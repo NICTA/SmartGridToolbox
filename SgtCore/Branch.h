@@ -17,7 +17,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
          
-         virtual ~BranchInterface() {}
+         virtual ~BranchInterface() = default;
 
       /// @}
 
@@ -33,6 +33,7 @@ namespace SmartGridToolbox
       /// @{
          
          virtual bool isInService() const = 0;
+         virtual void setIsInService(bool isInService) = 0;
 
       /// @}
 
@@ -58,7 +59,7 @@ namespace SmartGridToolbox
    /// @brief Common abstract base class for a branch.
    ///
    /// Implement some common functionality for convenience.
-   class BranchAbc : public Component
+   class BranchAbc : public Component, virtual public BranchInterface
    {
       public:
 
@@ -72,37 +73,27 @@ namespace SmartGridToolbox
       /// @name Phase accessors:
       /// @{
          
-         virtual const Phases& phases0() const
+         virtual const Phases& phases0() const override
          {
             return phases0_;
          }
          
-         virtual void setPhases0(Phases& phases0)
-         {
-            phases0_ = phases0;
-         }
-      
-         virtual const Phases& phases1() const
+         virtual const Phases& phases1() const override
          {
             return phases1_;
          }
          
-         virtual void setPhases1(Phases& phases1)
-         {
-            phases1_ = phases1;
-         }
-      
       /// @}
  
       /// @name In service:
       /// @{
          
-         virtual bool isInService() const
+         virtual bool isInService() const override
          {
             return isInService_;
          }
 
-         virtual void setIsInService(bool isInService)
+         virtual void setIsInService(bool isInService) override
          {
             isInService_ = isInService;
             isInServiceChanged_.trigger();
@@ -110,21 +101,20 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Nodal admittance matrix (Y):
-      /// @{
-         
-         virtual const ublas::matrix<Complex> Y() const = 0;
-      
-      /// @}
-      
       /// @name Events.
       /// @{
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() {return isInServiceChanged_;}
+         virtual Event& isInServiceChanged() override
+         {
+            return isInServiceChanged_;
+         }
 
          /// @brief Event triggered when my admittance changes.
-         virtual Event& admittanceChanged() {return admittanceChanged_;}
+         virtual Event& admittanceChanged() override
+         {
+            return admittanceChanged_;
+         }
          
       /// @}
       
@@ -161,7 +151,10 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
 
-         virtual const char* componentTypeStr() const {return "generic_branch";}
+         virtual const char* componentTypeStr() const override
+         {
+            return "generic_branch";
+         }
 
       /// @}
 

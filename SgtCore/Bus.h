@@ -17,13 +17,10 @@ namespace SmartGridToolbox
    {
       public:
 
-         typedef std::vector<std::shared_ptr<ZipInterface>> ZipVec;
-         typedef std::vector<std::shared_ptr<GenInterface>> GenVec;
-
       /// @name Lifecycle:
       /// @{
 
-         virtual ~BusInterface() {}
+         virtual ~BusInterface() = default;
 
       /// @}
 
@@ -40,6 +37,7 @@ namespace SmartGridToolbox
       /// @{
 
          virtual BusType type() const = 0;
+         virtual void setType(const BusType type) = 0;
 
          virtual ublas::vector<double> VMagSetpoint() const = 0;
          virtual void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint) = 0;
@@ -98,42 +96,29 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
          
-         virtual const char* componentTypeStr() const {return "bus";}
+         virtual const char* componentTypeStr() const override
+         {
+            return "bus";
+         }
 
       /// @}
 
       /// @name Basic identity and type:
       /// @{
 
-         virtual const Phases& phases() const
+         virtual const Phases& phases() const override
          {
             return phases_;
          }
 
-         virtual void setPhases(const Phases& phases)
-         {
-            phases_ = phases;
-         }
-
-         virtual ublas::vector<Complex> VNom() const
+         virtual ublas::vector<Complex> VNom() const override
          {
             return VNom_;
          }
 
-         virtual void setVNom(const ublas::vector<Complex>& VNom)
-         {
-            VNom_ = VNom;
-            controlChanged_.trigger();
-         }
-
-         virtual double VBase() const
+         virtual double VBase() const override
          {
             return VBase_;
-         }
-
-         virtual void setVBase(double VBase)
-         {
-            VBase_ = VBase;
          }
 
       /// @}
@@ -141,56 +126,56 @@ namespace SmartGridToolbox
       /// @name Control and limits:
       /// @{
 
-         virtual BusType type() const
+         virtual BusType type() const override
          {
             return type_;
          }
 
-         virtual void setType(const BusType type)
+         virtual void setType(const BusType type) override
          {
             type_ = type;
             controlChanged_.trigger();
          }
 
-         virtual ublas::vector<double> VMagSetpoint() const
+         virtual ublas::vector<double> VMagSetpoint() const override
          {
             return VMagSetpoint_;
          }
 
-         virtual void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint)
+         virtual void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint) override
          {
             VMagSetpoint_ = VMagSetpoint;
             controlChanged_.trigger();
          }
 
-         virtual ublas::vector<double> VAngSetpoint() const
+         virtual ublas::vector<double> VAngSetpoint() const override
          {
             return VAngSetpoint_;
          }
 
-         virtual void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint)
+         virtual void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint) override
          {
             VAngSetpoint_ = VAngSetpoint;
             controlChanged_.trigger();
          }
 
-         virtual double VMagMin() const
+         virtual double VMagMin() const override
          {
             return VMagMin_;
          }
 
-         virtual void setVMagMin(double VMagMin)
+         virtual void setVMagMin(double VMagMin) override
          {
             VMagMin_ = VMagMin;
             controlChanged_.trigger();
          }
 
-         virtual double VMagMax() const
+         virtual double VMagMax() const override
          {
             return VMagMax_;
          }
 
-         virtual void setVMagMax(double VMagMax)
+         virtual void setVMagMax(double VMagMax) override
          {
             VMagMax_ = VMagMax;
             controlChanged_.trigger();
@@ -201,20 +186,26 @@ namespace SmartGridToolbox
       /// @name State
       /// @{
 
-         virtual bool isInService()
+         virtual bool isInService() override
          {
             return isInService_;
          }
 
-         virtual void setIsInService(bool isInService)
+         virtual void setIsInService(bool isInService) override
          {
             isInService_ = isInService;
             isInServiceChanged_.trigger();
          }
 
-         virtual const ublas::vector<Complex>& V() const {return V_;}
+         virtual const ublas::vector<Complex>& V() const override
+         {
+            return V_;
+         }
 
-         virtual void setV(const ublas::vector<Complex>& V) {V_ = V;}
+         virtual void setV(const ublas::vector<Complex>& V) override
+         {
+            V_ = V;
+         }
 
       /// @}
       
@@ -222,13 +213,22 @@ namespace SmartGridToolbox
       /// @{
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() {return isInServiceChanged_;}
+         virtual Event& isInServiceChanged() override
+         {
+            return isInServiceChanged_;
+         }
 
          /// @brief Event triggered when bus control (e.g. setpoint) has changed.
-         virtual Event& controlChanged() {return controlChanged_;}
+         virtual Event& controlChanged() override
+         {
+            return controlChanged_;
+         }
          
          /// @brief Event triggered when bus state (e.g. voltage) has been updated.
-         virtual Event& voltageUpdated() {return voltageUpdated_;}
+         virtual Event& voltageUpdated() override
+         {
+            return voltageUpdated_;
+         }
       
       /// @}
       

@@ -15,7 +15,7 @@ namespace SmartGridToolbox
       /// @brief Lifecycle:
       /// @{
 
-         virtual ~GenInterface() {}
+         virtual ~GenInterface() = default;
       
       /// @}
 
@@ -104,29 +104,33 @@ namespace SmartGridToolbox
       /// @name Phase accessors:
       /// @{
          
-         virtual const Phases& phases() const
+         virtual const Phases& phases() const override
          {
             return phases_;
          }
          
-         virtual void setPhases(const Phases& phases) 
-         {
-            phases_ = phases;
-         }
-        
       /// @}
  
       /// @name Events.
       /// @{
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() override {return isInServiceChanged_;}
+         virtual Event& isInServiceChanged() override
+         {
+            return isInServiceChanged_;
+         }
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& generationChanged() override {return generationChanged_;}
+         virtual Event& generationChanged() override
+         {
+            return generationChanged_;
+         }
 
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& setpointChanged() override {return setpointChanged_;}
+         virtual Event& setpointChanged() override
+         {
+            return setpointChanged_;
+         }
 
       /// @}
       
@@ -135,7 +139,7 @@ namespace SmartGridToolbox
       
       protected:
          
-         virtual void print(std::ostream& os) const;
+         virtual void print(std::ostream& os) const override;
 
       /// @}
       
@@ -162,7 +166,9 @@ namespace SmartGridToolbox
 
       /// @{
          
-         virtual const char* componentTypeStr() const {return "generic_gen";}
+         virtual const char* componentTypeStr() const override
+         {
+            return "generic_gen";}
 
       /// @}
 
@@ -174,7 +180,7 @@ namespace SmartGridToolbox
             return isInService_;
          }
 
-         virtual void setIsInService(bool isInService)
+         virtual void setIsInService(bool isInService) override
          {
             isInService_ = isInService;
          }
@@ -189,7 +195,7 @@ namespace SmartGridToolbox
             return S_;
          }
 
-         virtual void setS(const ublas::vector<Complex>& S)
+         virtual void setS(const ublas::vector<Complex>& S) override
          {
             S_ = S;
          }
@@ -204,7 +210,7 @@ namespace SmartGridToolbox
             return PMin_;
          }
 
-         virtual void setPMin(double PMin)
+         virtual void setPMin(double PMin) override
          {
             PMin_ = PMin;
          }
@@ -214,7 +220,7 @@ namespace SmartGridToolbox
             return PMax_;
          }
 
-         virtual void setPMax(double PMax)
+         virtual void setPMax(double PMax) override
          {
             PMax_ = PMax;
          }
@@ -224,7 +230,7 @@ namespace SmartGridToolbox
             return QMin_;
          }
 
-         virtual void setQMin(double QMin)
+         virtual void setQMin(double QMin) override
          {
             QMin_ = QMin;
          }
@@ -234,7 +240,7 @@ namespace SmartGridToolbox
             return QMax_;
          }
 
-         virtual void setQMax(double QMax)
+         virtual void setQMax(double QMax) override
          {
             QMax_ = QMax;
          }
@@ -249,7 +255,7 @@ namespace SmartGridToolbox
             return cStartup_;
          }
 
-         virtual void setCStartup(double cStartup)
+         virtual void setCStartup(double cStartup) override
          {
             cStartup_ = cStartup;
          }
@@ -259,7 +265,7 @@ namespace SmartGridToolbox
             return cShutdown_;
          }
 
-         virtual void setCShutdown(double cShutdown)
+         virtual void setCShutdown(double cShutdown) override
          {
             cShutdown_ = cShutdown;
          }
@@ -269,7 +275,7 @@ namespace SmartGridToolbox
             return c0_;
          }
 
-         virtual void setC0(double c0)
+         virtual void setC0(double c0) override
          {
             c0_ = c0;
          }
@@ -279,7 +285,7 @@ namespace SmartGridToolbox
             return c1_;
          }
 
-         virtual void setC1(double c1)
+         virtual void setC1(double c1) override
          {
             c1_ = c1;
          }
@@ -289,7 +295,7 @@ namespace SmartGridToolbox
             return c2_;
          }
 
-         virtual void setC2(double c2)
+         virtual void setC2(double c2) override
          {
             c2_ = c2;
          }

@@ -75,23 +75,21 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
          
-         virtual const char* componentTypeStr() const {return "zip_abc";}
+         virtual const char* componentTypeStr() const override
+         {
+            return "zip_abc";
+         }
 
       /// @}
 
       /// @name Basic identity and type:
       /// @{
  
-         const Phases& phases() const
+         virtual const Phases& phases() const override
          {
             return phases_;
          }
          
-         virtual void setPhases(const Phases& phases) 
-         {
-            phases_ = phases;
-         }
-      
       /// @}
 
       /// @name In service:
@@ -102,7 +100,7 @@ namespace SmartGridToolbox
             return isInService_;
          }
 
-         virtual void setIsInService(bool isInService)
+         virtual void setIsInService(bool isInService) override
          {
             isInService_ = isInService;
          }
@@ -113,13 +111,22 @@ namespace SmartGridToolbox
       /// @{
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() {return isInServiceChanged_;}
+         virtual Event& isInServiceChanged() override
+         {
+            return isInServiceChanged_;
+         }
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& injectionChanged() {return injectionChanged_;}
+         virtual Event& injectionChanged() override
+         {
+            return injectionChanged_;
+         }
 
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& setpointChanged() {return setpointChanged_;}
+         virtual Event& setpointChanged() override
+         {
+            return setpointChanged_;
+         }
 
       /// @}
      
