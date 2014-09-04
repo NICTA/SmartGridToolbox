@@ -5,7 +5,10 @@
 
 #include <SgtCore/Branch.h>
 #include <SgtCore/Bus.h>
+#include <SgtCore/CommonBranch.h>
+#include <SgtCore/DgyTransformer.h>
 #include <SgtCore/Gen.h>
+#include <SgtCore/OverheadLine.h>
 #include <SgtCore/Zip.h>
 
 #include <memory>
@@ -76,6 +79,11 @@ namespace SmartGridToolbox
          std::shared_ptr<T> component_;
    };
    
+   extern template class SimNetworkComponent<BranchAbc>;
+   extern template class SimNetworkComponent<Bus>;
+   extern template class SimNetworkComponent<GenAbc>;
+   extern template class SimNetworkComponent<ZipAbc>;
+
    using SimBranchAbc = SimNetworkComponent<BranchAbc>;
    using SimBus = SimNetworkComponent<Bus>;
    using SimGenAbc = SimNetworkComponent<GenAbc>;
@@ -118,10 +126,24 @@ namespace SmartGridToolbox
       /// @}
    };
 
+   extern template class SimNetworkComponentDerived<SimBranchAbc, CommonBranch>;
+   extern template class SimNetworkComponentDerived<SimBranchAbc, GenericBranch>;
+   extern template class SimNetworkComponentDerived<SimBranchAbc, DgyTransformer>;
+   extern template class SimNetworkComponentDerived<SimBranchAbc, OverheadLine>;
+   extern template class SimNetworkComponentDerived<SimGenAbc, GenericGen>;
+   extern template class SimNetworkComponentDerived<SimZipAbc, GenericZip>;
+
    template<typename T> using SimBranchDerived = SimNetworkComponentDerived<SimBranchAbc, T>;
    template<typename T> using SimBusDerived = SimNetworkComponentDerived<SimBus, T>;
    template<typename T> using SimGenDerived = SimNetworkComponentDerived<SimGenAbc, T>;
    template<typename T> using SimZipDerived = SimNetworkComponentDerived<SimZipAbc, T>;
+
+   using SimCommonBranch = SimBranchDerived<CommonBranch>;
+   using SimGenericBranch = SimBranchDerived<GenericBranch>;
+   using SimDgyTransformer = SimBranchDerived<DgyTransformer>;
+   using SimOverheadLine = SimBranchDerived<OverheadLine>;
+   using SimGenericGen = SimZipDerived<GenericGen>;
+   using SimGenericZip = SimZipDerived<GenericZip>;
 }
 
 #endif // SIM_NETWORK_COMPONENT_DOT_H

@@ -11,9 +11,8 @@ pkginclude_HEADERS = \
 	RegularUpdateComponent.h \
 	SimComponent.h \
 	SimNetwork.h \
-	SimOverheadLine.h \
+	SimNetworkComponent.h \
 	SimpleBuilding.h \
-	SimSinglePhaseTransformer.h \
 	Simulation.h \
 	SolarPv.h \
 	Spline.h \
@@ -48,17 +47,14 @@ libSgtSim_a_SOURCES = \
 	SimDgyTransformerParser.cc \
 	SimNetwork.h \
 	SimNetwork.cc \
+	SimNetworkComponent.h \
+	SimNetworkComponent.cc \
 	SimNetworkParser.h \
 	SimNetworkParser.cc \
-	SimOverheadLine.h \
 	SimpleBuilding.h \
 	SimpleBuilding.cc \
 	SimpleBuildingParser.h \
 	SimpleBuildingParser.cc \
-	SimSinglePhaseTransformer.h \
-	SimSinglePhaseTransformer.cc \
-	SimSinglePhaseTransformerParser.h \
-	SimSinglePhaseTransformerParser.cc \
 	Simulation.h \
 	Simulation.cc \
 	SimZipParser.h \

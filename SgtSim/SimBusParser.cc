@@ -1,6 +1,7 @@
 #include "SimBusParser.h"
 
 #include "SimNetwork.h"
+#include "Simulation.h"
 
 #include <SgtCore/Bus.h>
 #include <SgtCore/BusParser.h>
@@ -11,11 +12,12 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "SimBus : parse." << std::endl);
       
-      auto bus = parseSimBus(nd);
+      BusParser busParser;
+      auto bus = std::unique_ptr<SimBus>(new SimBus(busParser.parseBus(nd)));
 
       assertFieldPresent(nd, "network_id");
       string netwId = nd["network_id"].as<std::string>();
-      auto netw = sim.simComponent<SimNetwork>(netwId);
+      auto netw = into.simComponent<SimNetwork>(netwId);
       netw->addNode(std::move(bus));
    }
 }

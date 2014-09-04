@@ -1,5 +1,5 @@
-#ifndef DGY_TRANSFORMER_PARSER
-#define DGY_TRANSFORMER_PARSER
+#ifndef SIM_GENERIC_BRANCH_PARSER_DOT_H
+#define SIM_GENERIC_BRANCH_PARSER_DOT_H
 
 #include <SgtSim/SimNetworkComponent.h>
 
@@ -9,13 +9,13 @@ namespace SmartGridToolbox
 {
    class Simulation;
 
-   /// @brief ParserPlugin that parses DgyTransformer objects.
-   class SimDgyTransformerParser : public ParserPlugin<Simulation>
+   /// @brief ParserPlugin that parses generic zip objects.
+   class SimGenericZipParser : public ParserPlugin<Simulation>
    {
       public:
          virtual const char* key() override
          {
-            return "sim_delta_g_wye_transformer";
+            return "sim_generic_zip";
          }
 
       public:
@@ -23,4 +23,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // DGY_TRANSFORMER_PARSER
+#endif // SIM_GENERIC_BRANCH_PARSER_DOT_H

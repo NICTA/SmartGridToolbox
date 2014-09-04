@@ -3,7 +3,7 @@
 #include "SimNetwork.h"
 #include "Simulation.h"
 
-#include <SgtCore/GenericBranch.h>
+#include <SgtCore/Branch.h>
 #include <SgtCore/GenericBranchParser.h>
 
 #include <memory>
@@ -14,7 +14,8 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG(debug() << "SimGenericBranch : parse." << std::endl);
 
-      auto gBranch = parseSimGenericBranch(nd);
+      GenericBranchParser gbParser;
+      auto gb = std::unique_ptr<SimGenericBranch>(new SimGenericBranch(gbParser.parseGenericBranch(nd)));
 
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");
@@ -26,12 +27,6 @@ namespace SmartGridToolbox
       
       auto netw = sim.simComponent<SimNetwork>(netwId);
 
-      netw->addArc(std::move(gBranch), bus0Id, bus1Id);
-   }
-   
-   std::unique_ptr<SimBranch> SimGenericBranchParser::parseSimGenericBranch(const YAML::Node& nd) const
-   {
-      static GenericBranchParser gbParser;
-      return std::unique_ptr<SimBranch>(new SimBranch(gbParser.parseGenericBranch(nd)));
+      netw->addArc(std::move(gb), bus0Id, bus1Id);
    }
 }
