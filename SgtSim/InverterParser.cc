@@ -17,10 +17,8 @@ namespace SmartGridToolbox
 
       string id = nd["id"].as<std::string>();
       Phases phases = nd["phases"].as<Phases>();
-      const std::string networkId = nd["network_id"].as<std::string>();
-      const std::string busId = nd["bus_id"].as<std::string>();
 
-      auto inverter = into.newSimComponent<Inverter>(id, phases);
+      auto inverter = std::make_shared<Inverter>(id, phases);
 
       if (nd["efficiency"])
       {
@@ -42,7 +40,12 @@ namespace SmartGridToolbox
          inverter->setRequestedQPerPhase(nd["requested_Q_per_phase"].as<double>());
       }
 
+      const std::string networkId = nd["network_id"].as<std::string>();
+      const std::string busId = nd["bus_id"].as<std::string>();
+
+      auto simInverter = into.newSimComponent<SimInverter>(inverter);
+
       auto network = into.simComponent<SimNetwork>(networkId);
-      network->addZip(inverter, busId);
+      network->addZip(simInverter, busId);
    }
 }

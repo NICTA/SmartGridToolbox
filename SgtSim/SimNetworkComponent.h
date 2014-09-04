@@ -59,6 +59,18 @@ namespace SmartGridToolbox
 
       /// @}
       
+      /// @name Printing:
+      /// @{
+         
+         virtual void print(std::ostream& os) const override
+         {
+            os << "sim_network_component:" << std::endl;
+            IndentingOStreamBuf _(os);
+            os << component_;
+         }
+
+      /// @}
+      
       private:
 
          std::shared_ptr<T> component_;
@@ -74,9 +86,11 @@ namespace SmartGridToolbox
    /// For example, if OverheadLine is a child class of BranchAbc, then 
    /// SimNetworkComponentDerived<SimBranchAbc, OverheadLine> is a SimBranchAbc derived class that models an
    /// OverheadLine.
-   template<typename ParentType, typename T> class SimNetworkComponentDerived : public ParentType
+   template<typename P, typename T> class SimNetworkComponentDerived : public P
    {
       public:
+
+         typedef P ParentType;
 
       /// @name Lifecycle.
       /// @{
