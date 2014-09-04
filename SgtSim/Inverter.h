@@ -1,19 +1,20 @@
 #ifndef INVERTER_DOT_H
 #define INVERTER_DOT_H
 
+#include <SgtSim/DcPowerSource.h>
 #include <SgtSim/SimNetworkComponent.h>
+
+#include <numeric>
 
 namespace SmartGridToolbox
 {
-   class DcPowerSourceAbc;
-
    /// @brief DC power to n-phase AC converter.
    /// @ingroup PowerFlowCore
-   class InverterAbc : public SimZipAbc
+   class InverterAbc : public ZipAbc
    {
       public:
          
-         InverterAbc(const std::string& id, const Phases& phases) : SimZipAbc(id, phases)
+         InverterAbc(const std::string& id, const Phases& phases) : ZipAbc(id, phases)
          {
             // Empty.
          }
@@ -28,34 +29,28 @@ namespace SmartGridToolbox
          }
          virtual ublas::vector<Complex> SConst() const override = 0;
 
-         virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source);
+         void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source)
+         {
+            sources_.push_back(source);
+         }
 
          virtual double efficiency(double powerDc) const = 0;
 
-         /// @brief Real power output, per phase.
-         virtual double PPerPhase() const
+         /// @brief Total DC power from all sources.
+         double PDc() const
          {
-            double PDcA = PDc();
-            return PDcA * efficiency(PDcA) / phases().size();
+            return std::accumulate(sources_.begin(), sources_.end(), 0.0,
+                  [] (double tot, const std::shared_ptr<DcPowerSourceAbc>& source) 
+                  {return tot + source->PDc();});
          }
 
-      /// @}
-      
-      /// @name Overridden member functions from SimComponent.
-      /// @{
-      
-      public:
-         virtual Time validUntil() const override;
-
-      protected:
-         virtual void initializeState() override;
-         virtual void updateState(Time t) override;
-
-         virtual double PDc() const;
+         /// @brief Real power output, per phase.
+         virtual double PPerPhase() const;
 
       /// @}
-
+      
       private:
+
          std::vector<std::shared_ptr<DcPowerSourceAbc>> sources_;   ///< My DC power sources.
    };
 
@@ -63,25 +58,27 @@ namespace SmartGridToolbox
    class Inverter : public InverterAbc
    {
       public:
-         Inverter(const std::string& id, const Phases& phases);
+         Inverter(const std::string& id, const Phases& phases) : InverterAbc(id, phases) {}
 
          virtual ublas::vector<Complex> SConst() const override;
-
-         virtual double PPerPhase() const override;
 
          virtual double efficiency(double powerDc) const override
          {
             return efficiency_;
          }
+
          void setEfficiency(double efficiency)
          {
             efficiency_ = efficiency;
          }
+   
+         virtual double PPerPhase() const;
 
          double maxSMagPerPhase() const
          {
             return maxSMagPerPhase_;
          }
+
          void setMaxSMagPerPhase(double maxSMagPerPhase)
          {
             maxSMagPerPhase_ = maxSMagPerPhase;
@@ -91,6 +88,7 @@ namespace SmartGridToolbox
          {
             return minPowerFactor_;
          }
+
          void setMinPowerFactor(double minPowerFactor)
          {
             minPowerFactor_ = minPowerFactor;
@@ -100,6 +98,7 @@ namespace SmartGridToolbox
          {
             return requestedQPerPhase_;
          }
+
          void setRequestedQPerPhase(double requestedQPerPhase)
          {
             requestedQPerPhase_ = requestedQPerPhase;
@@ -109,6 +108,7 @@ namespace SmartGridToolbox
          {
             return inService_;
          }
+
          void setInService(bool inService)
          {
             inService_ = inService;
@@ -118,16 +118,23 @@ namespace SmartGridToolbox
       
       public:
          // Operating parameters:
-         double efficiency_;
-         double maxSMagPerPhase_;
-         double minPowerFactor_;
+         double efficiency_{1.0};
+         double maxSMagPerPhase_{1e9};
+         double minPowerFactor_{0.0};
 
          // Settings:
-         double requestedQPerPhase_;
-         bool inService_;
+         double requestedQPerPhase_{0.0};
+         bool inService_{true};
 
          // State:
-         ublas::vector<Complex> S_;
+         ublas::vector<Complex> S_{ublas::vector<Complex>(phases().size(), czero)};
+   };
+
+   class SimInverter : public SimZipDerived<InverterAbc>
+   {
+      public:
+         SimInverter(std::shared_ptr<InverterAbc> inverter) : SimZipDerived<InverterAbc>(inverter) {}
+         void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source);
    };
 }
 

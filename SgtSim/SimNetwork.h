@@ -2,16 +2,12 @@
 #define SIM_NETWORK_DOT_H
 
 #include <SgtSim/SimComponent.h>
+#include <SgtSim/SimNetworkComponent.h>
 
 #include <SgtCore/Network.h>
 
 namespace SmartGridToolbox
 {
-   class SimBranchAbc;
-   class SimBus;
-   class SimGenAbc;
-   class SimZipAbc;
-
    /// @ingroup PowerFlowCore
    /// @brief SimNetwork : A SimComponent for an electrical network.
    class SimNetwork : public SimComponent
