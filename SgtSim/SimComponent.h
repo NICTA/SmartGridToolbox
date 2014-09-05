@@ -20,6 +20,21 @@ namespace SmartGridToolbox
 
       /// @}
       
+      /// @name Simulation flow
+      /// @{
+      
+         /// @brief Initialize state of the object.
+         ///
+         /// This simply does the initial work needed to set the object up, prior to simulation. The time following
+         /// initialization will be set to negative infinity, and the object will not be considered to be in an
+         /// invalid state. To progress to a valid state, the object will need to undergo an update().
+         void initialize();
+         
+         /// @brief Bring state up to time t.
+         void update(Time t);
+      
+      /// @}
+      
       /// @name Virtual methods to be overridden by derived classes.
       /// @{
       

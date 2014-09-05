@@ -1,20 +1,27 @@
 #include "SimNetworkParser.h"
 
 #include "SimNetwork.h"
+#include "Simulation.h"
 
 namespace SmartGridToolbox
 {
-   void SimNetworkParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void SimNetworkParser::parse(const YAML::Node& nd, Simulation& into) const
    {
       SGT_DEBUG(debug() << "SimNetwork : parse." << std::endl);
 
       assertFieldPresent(nd, "id");
+      assertFieldPresent(nd, "P_base");
 
-      string id = state.expandName(nd["id"].as<std::string>());
+      string id = nd["id"].as<std::string>();
+      double PBase = nd["P_base"].as<double>();
 
       auto ndFreq = nd["freq_Hz"];
-      double freq = ndFreq ? ndFreq.as<double>() : 50.0;
 
-      SimNetwork& comp = mod.newComponent<SimNetwork>(id, freq);
+      std::unique_ptr<Network> nw = std::unique_ptr<Network>(new Network(id, PBase));
+      if (ndFreq)
+      {
+         nw->setFreq(ndFreq.as<double>());
+      }
+      into.newSimComponent<SimNetwork>(std::move(nw));
    }
 }

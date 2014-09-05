@@ -55,6 +55,8 @@ libSgtSim_a_SOURCES = \
 	SimpleBuilding.cc \
 	SimpleBuildingParser.h \
 	SimpleBuildingParser.cc \
+	SimSinglePhaseTransformerParser.h \
+	SimSinglePhaseTransformerParser.cc \
 	Simulation.h \
 	Simulation.cc \
 	SimZipParser.h \

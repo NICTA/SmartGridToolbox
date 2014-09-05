@@ -9,6 +9,7 @@
 #include <SgtCore/DgyTransformer.h>
 #include <SgtCore/Gen.h>
 #include <SgtCore/OverheadLine.h>
+#include <SgtCore/SinglePhaseTransformer.h>
 #include <SgtCore/Zip.h>
 
 #include <memory>
@@ -18,7 +19,7 @@ namespace SmartGridToolbox
    /// @brief Base type for simulated network components.
    /// 
    /// This class will not normally be extended by the client. It should only be used through the four
-   /// typedefs: SimBranchAbc, SimBus, SimGen, SimZip.
+   /// typedefs: SimBranchAbc, SimBus, SimGenAbc, SimZipAbc.
    template<typename T> class SimNetworkComponent : public SimComponentAbc
    {
       public:
@@ -130,6 +131,7 @@ namespace SmartGridToolbox
    extern template class SimNetworkComponentDerived<SimBranchAbc, GenericBranch>;
    extern template class SimNetworkComponentDerived<SimBranchAbc, DgyTransformer>;
    extern template class SimNetworkComponentDerived<SimBranchAbc, OverheadLine>;
+   extern template class SimNetworkComponentDerived<SimBranchAbc, SinglePhaseTransformer>;
    extern template class SimNetworkComponentDerived<SimGenAbc, GenericGen>;
    extern template class SimNetworkComponentDerived<SimZipAbc, GenericZip>;
 
@@ -142,6 +144,7 @@ namespace SmartGridToolbox
    using SimGenericBranch = SimBranchDerived<GenericBranch>;
    using SimDgyTransformer = SimBranchDerived<DgyTransformer>;
    using SimOverheadLine = SimBranchDerived<OverheadLine>;
+   using SimSinglePhaseTransformer = SimBranchDerived<SinglePhaseTransformer>;
    using SimGenericGen = SimZipDerived<GenericGen>;
    using SimGenericZip = SimZipDerived<GenericZip>;
 }

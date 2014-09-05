@@ -1,7 +1,7 @@
 #ifndef SIMPLE_BUILDING_DOT_H
 #define SIMPLE_BUILDING_DOT_H
 
-#include <SgtSim/Component.h>
+#include <SgtSim/SimComponent.h>
 #include <SgtSim/TimeSeries.h>
 #include <SgtSim/Weather.h>
 #include <SgtSim/ZipBase.h>
@@ -19,7 +19,7 @@ namespace SmartGridToolbox
       OFF
    };
 
-   class SimpleBuilding : public ZipBase
+   class SimpleBuilding : public SimZipDerived
    {
       /// @name Overridden member functions from SimComponent.
       /// @{

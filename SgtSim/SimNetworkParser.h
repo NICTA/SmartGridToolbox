@@ -15,7 +15,7 @@ namespace SmartGridToolbox
       public:
          virtual const char* key() override
          {
-            return "network";
+            return "sim_network";
          }
 
       public:

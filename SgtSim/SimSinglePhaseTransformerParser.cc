@@ -1,21 +1,21 @@
-#include "SimDgyTransformerParser.h"
+#include "SimSinglePhaseTransformerParser.h"
 
 #include "SimNetwork.h"
-#include "Simulation.h"
 
-#include <SgtCore/DgyTransformer.h>
-#include <SgtCore/DgyTransformerParser.h>
+#include <SgtCore/SinglePhaseTransformer.h>
+#include <SgtCore/SinglePhaseTransformerParser.h>
 
 #include <memory>
 
 namespace SmartGridToolbox
 {
-   void SimDgyTransformerParser::parse(const YAML::Node& nd, Simulation& sim) const
+   void SimSinglePhaseTransformerParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
-      SGT_DEBUG(debug() << "DgyTransformer : parse." << std::endl);
+      SGT_DEBUG(debug() << "SinglePhaseTransformer : parse." << std::endl);
 
-      DgyTransformerParser transParser;
-      auto trans = std::unique_ptr<SimDgyTransformer>(new SimDgyTransformer(transParser.parseDgyTransformer(nd)));
+      SinglePhaseTransformerParser transParser;
+      auto trans = std::unique_ptr<SimSinglePhaseTransformer>(
+            new SimSinglePhaseTransformer(transParser.parseSinglePhaseTransformer(nd)));
       
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");

@@ -36,14 +36,14 @@ namespace SmartGridToolbox
       
       public:
 
-         virtual void addNode(std::shared_ptr<SimBus> bus);
+         virtual void addNode(std::shared_ptr<SimBus> simBus);
 
-         virtual void addArc(std::shared_ptr<SimBranchAbc> branch, const std::string& bus0Id,
+         virtual void addArc(std::shared_ptr<SimBranchAbc> simBranch, const std::string& bus0Id,
                              const std::string& bus1Id);
 
-         virtual void addGen(std::shared_ptr<SimGenAbc> gen, const std::string& busId);
+         virtual void addGen(std::shared_ptr<SimGenAbc> simGen, const std::string& busId);
 
-         virtual void addZip(std::shared_ptr<SimZipAbc> zip, const std::string& busId);
+         virtual void addZip(std::shared_ptr<SimZipAbc> simZip, const std::string& busId);
       
       /// @}
 
