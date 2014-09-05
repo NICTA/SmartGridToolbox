@@ -22,8 +22,6 @@ namespace SmartGridToolbox
 
    std::unique_ptr<DgyTransformer> DgyTransformerParser::parseDgyTransformer(const YAML::Node& nd) const
    {
-      SGT_DEBUG(debug() << "DgyTransformer : parse." << std::endl);
-
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "complex_turns_ratio_01");
       assertFieldPresent(nd, "leakage_impedance");

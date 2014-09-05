@@ -1,9 +1,7 @@
 #ifndef DGY_TRANSFORMER_DOT_H
 #define DGY_TRANSFORMER_DOT_H
 
-#include <SgtCore/Common.h>
 #include <SgtCore/Branch.h>
-#include <SgtCore/PowerFlow.h>
 
 namespace SmartGridToolbox
 {
@@ -17,35 +15,35 @@ namespace SmartGridToolbox
    {
       public:
 
-      /// @name Lifecycle:
+      /// @name Lifecycle
       /// @{
-         
+
          /// @brief Constructor
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
-         DgyTransformer(const std::string & name, Complex a, Complex ZL) : 
-            BranchAbc(name, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C), a_(a), YL_(1.0/ZL)
+         DgyTransformer(const std::string& id, Complex a, Complex ZL) :
+            BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C), a_(a), YL_(1.0/ZL)
          {
             // Empty.
          }
 
       /// @}
-      
+
       /// @name Component Type:
       /// @{
 
          virtual const char* componentTypeStr() const {return "DGY_transformer";}
 
       /// @}
-      
+
       /// @name Parameters:
       /// @{
-         
+
          Complex a()
          {
             return a_;
          }
-         
+
          void set_a(Complex a)
          {
             a_ = a;
@@ -55,26 +53,26 @@ namespace SmartGridToolbox
          {
             return YL_;
          }
-         
+
          void set_YL(Complex YL)
          {
             YL_ = YL;
          }
 
       /// @}
-      
+
       /// @name Overridden from BranchAbc:
       /// @{
-         
+
          virtual const ublas::matrix<Complex> Y() const override;
-      
+
       /// @}
-         
+
       private:
 
          Complex a_;  ///< Complex turns ratio, n0/n1 where 0 is primary and 1 is secondary.
-         Complex YL_; ///< Series leakage impedance.
+         Complex YL_; ///< Series leakage admittance.
    };
 }
 
-#endif // D_GY_TRANSFORMER_DOT_H
+#endif // DGY_TRANSFORMER_DOT_H

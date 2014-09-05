@@ -19,6 +19,7 @@ pkginclude_HEADERS = \
 	Parser.h \
 	PowerFlow.h \
 	Random.h \
+	SinglePhaseTransformer.h \
 	Units.h \
 	Zip.h
 
@@ -74,6 +75,8 @@ libSgtCore_a_SOURCES = \
 	SparseSolver.cc \
 	Stopwatch.h \
 	RegisterParserPlugins.cc \
+	SinglePhaseTransformer.h \
+	SinglePhaseTransformer.cc \
 	Units.h \
 	Zip.h \
 	Zip.cc

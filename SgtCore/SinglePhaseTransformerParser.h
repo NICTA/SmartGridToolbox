@@ -1,26 +1,26 @@
-#ifndef SIM_SINGLE_PHASE_TRANSFORMER_PARSER
-#define SIM_SINGLE_PHASE_TRANSFORMER_PARSER
-
-#include <SgtSim/SimNetworkComponent.h>
+#ifndef SINGLE_PHASE_TRANSFORMER_PARSER
+#define SINGLE_PHASE_TRANSFORMER_PARSER
 
 #include <SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
-   class Simulation;
-
-   /// @brief ParserPlugin that parses SimSinglePhaseTransformer objects.
-   class SimSinglePhaseTransformerParser : public ParserPlugin<Simulation>
+   class SinglePhaseTransformer;
+   class Network;
+   
+   /// @brief ParserPlugin that parses SinglePhaseTransformer objects.
+   class SinglePhaseTransformerParser : public ParserPlugin<Network>
    {
       public:
-         virtual const char* key() override
+         virtual const char* key()
          {
-            return "sim_single_phase_transformer";
+            return "single_phase_transformer";
          }
 
-      public:
-         virtual void parse(const YAML::Node& nd, Simulation& into) const override;
+         virtual void parse(const YAML::Node& nd, Network& into) const override;
+         
+         std::unique_ptr<SinglePhaseTransformer> parseSinglePhaseTransformer(const YAML::Node& nd) const;
    };
 }
 
-#endif // SIM_SINGLE_PHASE_TRANSFORMER_PARSER
+#endif // SINGLE_PHASE_TRANSFORMER_PARSER

@@ -1,44 +1,72 @@
 #ifndef SINGLE_PHASE_TRANSFORMER_DOT_H
 #define SINGLE_PHASE_TRANSFORMER_DOT_H
 
-#include <SgtSim/SimBranch.h>
+#include <SgtCore/Branch.h>
 
 namespace SmartGridToolbox
 {
    /// @brief Single phase transformer.
-   class SinglePhaseTransformer : public SimBranch
+   class SinglePhaseTransformer : public BranchAbc
    {
-      /// @name Overridden member functions from SimComponent.
-      /// @{
-      
       public:
-         // virtual Time validUntil() const override;
 
-      protected:
-         // virtual void initializeState() override;
-         // virtual void updateState(Time t) override;
-      
-      /// @}
-
-      /// @name My public member functions.
+      /// @name Lifecycle
       /// @{
-      
-      public:
-         SinglePhaseTransformer(const std::string& id, Phase phase0, Phase phase1, Complex alpha, Complex ZLeak);
+
+         /// @brief Constructor
+         /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
+         /// @param ZL The leakage impedance, must be > 0.
+         SinglePhaseTransformer(const std::string& id, Complex a, Complex ZL) :
+            BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C), a_(a), YL_(1.0/ZL)
+         {
+            // Empty.
+         }
 
       /// @}
-      
-      /// @name My private member functions.
+
+      /// @name Component Type:
       /// @{
-      
-      private:
-         void recalcY();
+
+         virtual const char* componentTypeStr() const {return "DGY_transformer";}
 
       /// @}
-      
+
+      /// @name Parameters:
+      /// @{
+
+         Complex a()
+         {
+            return a_;
+         }
+
+         void set_a(Complex a)
+         {
+            a_ = a;
+         }
+
+         Complex YL()
+         {
+            return YL_;
+         }
+
+         void set_YL(Complex YL)
+         {
+            YL_ = YL;
+         }
+
+      /// @}
+
+      /// @name Overridden from BranchAbc:
+      /// @{
+
+         virtual const ublas::matrix<Complex> Y() const override;
+
+      /// @}
+
       private:
-         Complex alpha_; ///< Complex turns ratio, n0/n1.
-         Complex ZLeak_; ///< Leakage impedance.
+
+         Complex a_;  ///< Complex turns ratio, n0/n1 where 0 is primary and 1 is secondary.
+         Complex YL_; ///< Series leakage admittance.
    };
 }
 
