@@ -106,7 +106,27 @@ namespace SmartGridToolbox
          }
 
       /// @}
-        
+              
+      /// @name ZIP parameters:
+      /// @{
+         
+         virtual ublas::vector<Complex> YConst() const
+         {
+            return ublas::vector<Complex>(phases_.size(), czero);
+         }
+
+         virtual ublas::vector<Complex> IConst() const
+         {
+            return ublas::vector<Complex>(phases_.size(), czero);
+         }
+
+         virtual ublas::vector<Complex> SConst() const
+         {
+            return ublas::vector<Complex>(phases_.size(), czero);
+         }
+
+      /// @}
+
       /// @name Events.
       /// @{
          

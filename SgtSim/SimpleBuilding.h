@@ -19,8 +19,12 @@ namespace SmartGridToolbox
       OFF
    };
 
-   class SimpleBuilding : public SimZipDerived
+   class SimpleBuildingZip;
+
+   class SimpleBuilding : public SimZipDerived<SimpleBuildingZip>
    {
+      friend class SimpleBuildingZip;
+
       /// @name Overridden member functions from SimComponent.
       /// @{
       
@@ -48,7 +52,6 @@ namespace SmartGridToolbox
       
       public:
          SimpleBuilding(const std::string& id) :
-            ZipBase(id, Phase::BAL),
             dt_(posix_time::minutes(5)),
             kb_(5 * kW / K),
             Cb_(1.0e5 * kJ / K),
@@ -150,6 +153,30 @@ namespace SmartGridToolbox
          bool isMaxed_;                         // On maximum power?
          double Ph_;                            // Power drawn from grid by HVAC.
          double dQh_;                           // Thermal output, +ve = heating.
+         
+         // Zip.
+         SimpleBuildingZip zip_;
+   };
+
+   class SimpleBuildingZip : public ZipAbc
+   {
+      friend class SimpleBuilding;
+
+      public:
+
+         virtual ublas::vector<Complex> SConst() const override 
+         {
+            return {1, Complex(-building_.Ph_, 0.0)};
+         }
+
+      private:
+
+         SimpleBuildingZip(SimpleBuilding& building) :
+            ZipAbc(building.id, phases), building_(building) {}
+
+      private:
+
+         SimpleBuilding& building_;
    };
 }
 #endif // SIMPLE_BUILDING_DOT_H
