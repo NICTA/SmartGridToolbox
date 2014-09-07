@@ -2,11 +2,12 @@
 #define SIMPLE_BUILDING_DOT_H
 
 #include <SgtSim/SimComponent.h>
+#include <SgtSim/SimNetworkComponent.h>
 #include <SgtSim/TimeSeries.h>
 #include <SgtSim/Weather.h>
-#include <SgtSim/ZipBase.h>
 
 #include <SgtCore/Common.h>
+#include <SgtCore/Zip.h>
 
 #include<string>
 
@@ -19,12 +20,8 @@ namespace SmartGridToolbox
       OFF
    };
 
-   class SimpleBuildingZip;
-
-   class SimpleBuilding : public SimZipDerived<SimpleBuildingZip>
+   class SimpleBuilding : public SimZipDerived<GenericZip>
    {
-      friend class SimpleBuildingZip;
-
       /// @name Overridden member functions from SimComponent.
       /// @{
       
@@ -37,21 +34,12 @@ namespace SmartGridToolbox
       
       /// @}
       
-      /// @name Overridden member functions from ZipBase.
-      /// @{
-      
-      public:
-         virtual ublas::vector<Complex> Y() const override {return {1, czero};}
-         virtual ublas::vector<Complex> I() const override {return {1, czero};}
-         virtual ublas::vector<Complex> S() const override {return {1, Complex(-Ph_, 0.0)};}
-
-      /// @}
-      
       /// @name My public member functions.
       /// @{
       
       public:
          SimpleBuilding(const std::string& id) :
+            SimZipDerived<GenericZip>(std::make_shared<SimGenericZip>()),
             dt_(posix_time::minutes(5)),
             kb_(5 * kW / K),
             Cb_(1.0e5 * kJ / K),
@@ -153,30 +141,7 @@ namespace SmartGridToolbox
          bool isMaxed_;                         // On maximum power?
          double Ph_;                            // Power drawn from grid by HVAC.
          double dQh_;                           // Thermal output, +ve = heating.
-         
-         // Zip.
-         SimpleBuildingZip zip_;
    };
 
-   class SimpleBuildingZip : public ZipAbc
-   {
-      friend class SimpleBuilding;
-
-      public:
-
-         virtual ublas::vector<Complex> SConst() const override 
-         {
-            return {1, Complex(-building_.Ph_, 0.0)};
-         }
-
-      private:
-
-         SimpleBuildingZip(SimpleBuilding& building) :
-            ZipAbc(building.id, phases), building_(building) {}
-
-      private:
-
-         SimpleBuilding& building_;
-   };
 }
 #endif // SIMPLE_BUILDING_DOT_H

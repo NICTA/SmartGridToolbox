@@ -1,12 +1,12 @@
 #ifndef REGULAR_UPDATE_COMPONENT_DOT_H
 #define REGULAR_UPDATE_COMPONENT_DOT_H
 
-#include <SgtSim/Component.h>
+#include <SgtSim/SimComponent.h>
 
 namespace SmartGridToolbox
 {
    /// @brief Utility base class for a component that updates with a regular "tick" dt.
-   class RegularUpdateComponent : public Component
+   class RegularUpdateComponent : public SimComponent
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
@@ -27,7 +27,7 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         RegularUpdateComponent(const std::string& id) : Component(id), dt_(posix_time::seconds(0))
+         RegularUpdateComponent(const std::string& id) : SimComponent(id), dt_(posix_time::seconds(0))
          {
             // Empty.
          }
