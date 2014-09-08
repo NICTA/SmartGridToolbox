@@ -18,10 +18,10 @@ namespace SmartGridToolbox
 {
    /// @brief Base type for simulated network components.
    /// 
-   /// A SimNetworkComponent<T> is a SimComponent that has a network component (BranchAbc/Bus/GenAbc/ZipAbc) of type T.
-   /// This class will not normally be extended by the client. There are four template instantiations provided, with
-   /// the typedefs SimBranchAbc, SimBus, SimGenAbc, SimZipAbc. To use derived network component classes, see
-   /// the SimNetworkDerivedComponent<P, T> template class.
+   /// A SimNetworkComponent<T> is a SimComponent that has a network component (BranchAbc/Bus/GenAbc/ZipAbc) of 
+   /// type T. This class will not normally be extended by the client. There are four template instantiations
+   /// provided, with the typedefs SimBranchAbc, SimBus, SimGenAbc, SimZipAbc. To use derived network component
+   /// classes, see the SimNetworkDerivedComponent<P, T> template class.
    template<typename T> class SimNetworkComponent : public SimComponentAbc
    {
       public:
