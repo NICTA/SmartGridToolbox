@@ -42,26 +42,26 @@ namespace SmartGridToolbox
 
          void setLatLong(const LatLong& latLong) {latLong_ = latLong; needsUpdate().trigger();}
 
-         const TimeSeries<Time, double>* temperatureSeries() const
+         std::shared_ptr<const TimeSeries<Time, double>> temperatureSeries() const
          {
             return temperatureSeries_;
          }
-         void setTemperatureSeries(const TimeSeries<Time, double>& series)
+         void setTemperatureSeries(std::shared_ptr<const TimeSeries<Time, double>> series)
          {
-            temperatureSeries_ = &series; needsUpdate().trigger();
+            temperatureSeries_ = series; needsUpdate().trigger();
          }
          double temperature() const
          {
             return temperatureSeries_->value(time());
          }
 
-         const TimeSeries<Time, double>* cloudCoverSeries() const
+         std::shared_ptr<const TimeSeries<Time, double>> cloudCoverSeries() const
          {
             return cloudCoverSeries_;
          }
-         void setCloudCoverSeries(const TimeSeries<Time, double>& series)
+         void setCloudCoverSeries(std::shared_ptr<const TimeSeries<Time, double>> series)
          {
-            cloudCoverSeries_ = &series; needsUpdate().trigger();
+            cloudCoverSeries_ = series; needsUpdate().trigger();
          }
          double cloudCover() const
          {
@@ -82,8 +82,8 @@ namespace SmartGridToolbox
       
       private:
          LatLong latLong_;
-         const TimeSeries<Time, double>* temperatureSeries_;
-         const TimeSeries<Time, double>* cloudCoverSeries_;
+         std::shared_ptr<const TimeSeries<Time, double>> temperatureSeries_;
+         std::shared_ptr<const TimeSeries<Time, double>> cloudCoverSeries_;
 
          SolarIrradiance prevIrradiance_;
          SolarIrradiance irradiance_;

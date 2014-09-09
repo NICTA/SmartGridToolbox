@@ -55,7 +55,7 @@ namespace SmartGridToolbox
             error() << "Parsing simple_building: couldn't find time series " << id << std::endl;
             abort();
          }
-         build->set_dQgSeries(*series);
+         build->set_dQgSeries(series);
       }
 
       std::string netwId = nd["network_id"].as<std::string>();
@@ -73,7 +73,7 @@ namespace SmartGridToolbox
             error() << "Parsing simple_building: couldn't find weather " << weatherStr << std::endl;
             abort();
          }
-         build->setWeather(*weather);
+         build->setWeather(weather);
       }
    }
 }

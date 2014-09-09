@@ -26,7 +26,7 @@ namespace SmartGridToolbox
             error() << "Parsing weather: couldn't find time series " << id << std::endl;
             abort();
          }
-         weather->setTemperatureSeries(*series);
+         weather->setTemperatureSeries(series);
       }
 
       const auto& cloudNd = nd["cloud_cover"];
@@ -39,7 +39,7 @@ namespace SmartGridToolbox
             error() << "Parsing weather: couldn't find time series " << id << std::endl;
             abort();
          }
-         weather->setCloudCoverSeries(*series);
+         weather->setCloudCoverSeries(series);
       }
 
       if (nd["dt"])

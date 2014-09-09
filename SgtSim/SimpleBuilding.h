@@ -88,9 +88,9 @@ namespace SmartGridToolbox
          double Ts() {return Ts_;}
          void setTs(double val) {Ts_ = val;}
 
-         void setWeather(const Weather& weather) {weather_ = &weather; needsUpdate().trigger();}
+         void setWeather(std::shared_ptr<Weather> weather) {weather_ = weather; needsUpdate().trigger();}
 
-         void set_dQgSeries(const TimeSeries<Time, double>& dQg) {dQg_ = &dQg; needsUpdate().trigger();}
+         void set_dQgSeries(std::shared_ptr<TimeSeries<Time, double>> dQg) {dQg_ = dQg; needsUpdate().trigger();}
 
          double Tb() {return Tb_;}
 
@@ -120,27 +120,27 @@ namespace SmartGridToolbox
       
       private:
          // Parameters and controls.
-         Time dt_;                              // Timestep.
-         double kb_;                            // Thermal conductivity, W/K.
-         double Cb_;                            // Heat capacity of building, J/K.
-         double TbInit_;                        // Initial temp of building.
-         double kh_;                            // HVAC PID parameter, W/K.
-         double copCool_;                       // HVAC cooling coeff. of perf.
-         double copHeat_;                       // HVAC heating coeff. of perf.
-         double PMax_;                          // HVAC max power, W.
-         double Ts_;                            // HVAC set_point, C.
+         Time dt_;                                       // Timestep.
+         double kb_;                                     // Thermal conductivity, W/K.
+         double Cb_;                                     // Heat capacity of building, J/K.
+         double TbInit_;                                 // Initial temp of building.
+         double kh_;                                     // HVAC PID parameter, W/K.
+         double copCool_;                                // HVAC cooling coeff. of perf.
+         double copHeat_;                                // HVAC heating coeff. of perf.
+         double PMax_;                                   // HVAC max power, W.
+         double Ts_;                                     // HVAC set_point, C.
 
-         const Weather* weather_;               // For external temperature.
-         const TimeSeries<Time, double>* dQg_;  // Extra heat -> building.
+         std::shared_ptr<Weather> weather_;              // For external temperature.
+         std::shared_ptr<TimeSeries<Time, double>> dQg_; // Extra heat -> building.
 
          // State.
-         double Tb_;                            // Building temperature, C.
-                                                // Operating parameters.
-         HvacMode mode_;                        // Cooling or heating?
-         double cop_;                           // Depends on mode.
-         bool isMaxed_;                         // On maximum power?
-         double Ph_;                            // Power drawn from grid by HVAC.
-         double dQh_;                           // Thermal output, +ve = heating.
+         double Tb_;                                     // Building temperature, C.
+                                                         // Operating parameters.
+         HvacMode mode_;                                 // Cooling or heating?
+         double cop_;                                    // Depends on mode.
+         bool isMaxed_;                                  // On maximum power?
+         double Ph_;                                     // Power drawn from grid by HVAC.
+         double dQh_;                                    // Thermal output, +ve = heating.
    };
 
 }
