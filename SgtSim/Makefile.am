@@ -60,6 +60,8 @@ libSgtSim_a_SOURCES = \
 	SimSinglePhaseTransformerParser.cc \
 	Simulation.h \
 	Simulation.cc \
+	SimYyTransformerParser.h \
+	SimYyTransformerParser.cc \
 	SolarPv.h \
 	SolarPv.cc \
 	SolarPvParser.h \
@@ -71,8 +73,6 @@ libSgtSim_a_SOURCES = \
 	Weather.h \
 	Weather.cc \
 	WeatherParser.h \
-	WeatherParser.cc \
-	YyTransformerParser.h \
-	YyTransformerParser.cc
+	WeatherParser.cc
 
 EXTRA_DIST = mainpage.dox
