@@ -83,6 +83,8 @@ libSgtCore_a_SOURCES = \
 	Units.h \
 	YyTransformer.h \
 	YyTransformer.cc \
+	YyTransformerParser.h \
+	YyTransformerParser.cc \
 	Zip.h \
 	Zip.cc
 

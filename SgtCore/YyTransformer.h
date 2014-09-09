@@ -18,11 +18,11 @@ namespace SmartGridToolbox
          /// @brief Constructor
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
-         YyTransformer(const std::string& id, Complex a, Complex ZL, Complex ZM) :
+         YyTransformer(const std::string& id, Complex a, Complex ZL, Complex YM) :
             BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
             a_(a),
             YL_(1.0 / ZL),
-            YM_(1.0 / ZM)
+            YM_(YM)
          {
             // Empty.
          }
@@ -59,14 +59,14 @@ namespace SmartGridToolbox
             YL_ = 1.0 / ZL;
          }
 
-         Complex ZM()
+         Complex YM()
          {
-            return 1.0 / YM_;
+            return YM_;
          }
 
-         void setZM(Complex ZM)
+         void setYM(Complex YM)
          {
-            YM_ = 1.0 / ZM;
+            YM_ = YM;
          }
 
       /// @}

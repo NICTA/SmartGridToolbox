@@ -25,14 +25,14 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "complex_turns_ratio_01");
       assertFieldPresent(nd, "leakage_impedance");
-      assertFieldPresent(nd, "magnetizing_impedance");
 
       const std::string id = nd["id"].as<std::string>();
       Complex a = nd["complex_turns_ratio_01"].as<Complex>();
       Complex ZL = nd["leakage_impedance"].as<Complex>();
-      Complex ZM = nd["magnetizing_impedance"].as<Complex>();
+      auto ndYm = nd["magnetizing_admittance"];
+      Complex YM = ndYm ? ndYm.as<Complex>() : czero;
 
-      std::unique_ptr<YyTransformer> trans(new YyTransformer(id, a, ZL, ZM));
+      std::unique_ptr<YyTransformer> trans(new YyTransformer(id, a, ZL, YM));
 
       return trans;
    }
