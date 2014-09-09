@@ -23,8 +23,8 @@ pkginclude_HEADERS = \
 libSgtSim_a_SOURCES = \
 	Battery.h \
 	Battery.cc \
-	Battery.h \
-	Battery.cc \
+	BatteryParser.h \
+	BatteryParser.cc \
 	DcPowerSource.h \
 	GenericDcPowerSourceParser.h \
 	GenericDcPowerSourceParser.cc \

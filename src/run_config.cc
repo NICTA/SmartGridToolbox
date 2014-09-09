@@ -1,5 +1,3 @@
-#include <SmartGridToolbox/Common.h>
-#include <SmartGridToolbox/Model.h>
 #include <SmartGridToolbox/Parser.h>
 #include <SmartGridToolbox/Simulation.h>
 
@@ -15,11 +13,9 @@ int main(int argc, const char** argv)
 
    const char* configName = argv[1];
 
-   Model mod;
-   Simulation sim(mod);
-   Parser & p = Parser::globalParser();
-   p.parse(configName, mod, sim); p.postParse();
-   mod.validate();
+   Simulation sim;
+   SmartGridToolbox::Parser<Simulation> p;
+   p.parse(configName, sim);
    sim.initialize();
    while (sim.doNextUpdate());
 }

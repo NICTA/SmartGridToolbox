@@ -17,7 +17,8 @@
 
 namespace SmartGridToolbox
 {
-   void registerParserPlugins(Parser<Simulation>& p)
+   class Simulation;
+   template<> void registerParserPlugins<Simulation>(Parser<Simulation>& p)
    {
       p.registerParserPlugin<BatteryParser>();
       p.registerParserPlugin<SimBusParser>();

@@ -1,6 +1,6 @@
 #include "Battery.h"
 #include "BatteryParser.h"
-#include "InverterAbc.h"
+#include "Inverter.h"
 #include "Simulation.h"
 
 namespace SmartGridToolbox
@@ -13,42 +13,34 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "inverter");
 
       string id = nd["id"].as<std::string>();
-      Battery& batt = into.newSimComponent<Battery>(id);
+      auto batt = into.newSimComponent<Battery>(id);
 
       auto nd_dt = nd["dt"];
-      if (nd_dt) batt.set_dt(nd_dt.as<Time>());
+      if (nd_dt) batt->set_dt(nd_dt.as<Time>());
 
       auto ndInitCharge = nd["init_charge"];
-      if (ndInitCharge) batt.setInitCharge(ndInitCharge.as<double>());
+      if (ndInitCharge) batt->setInitCharge(ndInitCharge.as<double>());
 
       auto ndMaxCharge = nd["max_charge"];
-      if (ndMaxCharge) batt.setMaxCharge(ndMaxCharge.as<double>());
+      if (ndMaxCharge) batt->setMaxCharge(ndMaxCharge.as<double>());
 
       auto ndMaxChargePower = nd["max_charge_power"];
-      if (ndMaxChargePower) batt.setMaxChargePower(ndMaxChargePower.as<double>());
+      if (ndMaxChargePower) batt->setMaxChargePower(ndMaxChargePower.as<double>());
 
       auto ndMaxDischargePower = nd["max_discharge_power"];
-      if (ndMaxDischargePower) batt.setMaxDischargePower(ndMaxDischargePower.as<double>());
+      if (ndMaxDischargePower) batt->setMaxDischargePower(ndMaxDischargePower.as<double>());
 
       auto ndChargeEfficiency = nd["charge_efficiency"];
-      if (ndChargeEfficiency) batt.setChargeEfficiency(ndChargeEfficiency.as<double>());
+      if (ndChargeEfficiency) batt->setChargeEfficiency(ndChargeEfficiency.as<double>());
 
       auto ndDischargeEfficiency = nd["discharge_efficiency"];
-      if (ndDischargeEfficiency) batt.setDischargeEfficiency(ndDischargeEfficiency.as<double>());
+      if (ndDischargeEfficiency) batt->setDischargeEfficiency(ndDischargeEfficiency.as<double>());
 
       auto ndRequestedPower = nd["requested_power"];
-      if (ndRequestedPower) batt.setRequestedPower(ndRequestedPower.as<double>());
-   }
+      if (ndRequestedPower) batt->setRequestedPower(ndRequestedPower.as<double>());
 
-   void BatteryParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
-   {
-      SGT_DEBUG(debug() << "Battery : postParse." << std::endl);
-
-      string id = state.expandName(nd["id"].as<std::string>());
-      Battery& batt = *mod.component<Battery>(id);
-
-      const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
-      InverterAbc* inverter = mod.component<InverterAbc>(inverterStr);
+      const std::string inverterStr = nd["inverter"].as<std::string>();
+      auto inverter = into.simComponent<InverterAbc>(inverterStr);
       if (inverter != nullptr)
       {
          inverter->addDcPowerSource(batt);
