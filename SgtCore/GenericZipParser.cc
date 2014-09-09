@@ -22,20 +22,28 @@ namespace SmartGridToolbox
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases");
-      assertFieldPresent(nd, "Y_const");
-      assertFieldPresent(nd, "I_const");
-      assertFieldPresent(nd, "S_const");
 
       std::string id = nd["id"].as<std::string>();
       Phases phases = nd["phases"].as<Phases>();
-      ublas::vector<Complex> Y = nd["Y_const"].as<ublas::vector<Complex>>();
-      ublas::vector<Complex> I = nd["I_const"].as<ublas::vector<Complex>>();
-      ublas::vector<Complex> S = nd["S_const"].as<ublas::vector<Complex>>();
-      
+
       std::unique_ptr<GenericZip> zip(new GenericZip(id, phases));
-      zip->setYConst(Y);
-      zip->setIConst(I);
-      zip->setSConst(S);
+
+      auto ndYConst = nd["Y_const"];
+      auto ndIConst = nd["I_const"];
+      auto ndSConst = nd["S_const"];
+
+      if (ndYConst)
+      {
+         zip->setYConst(nd["Y_const"].as<ublas::vector<Complex>>());
+      }
+      if (ndIConst)
+      {
+         zip->setIConst(nd["I_const"].as<ublas::vector<Complex>>());
+      }
+      if (ndSConst)
+      {
+         zip->setSConst(nd["S_const"].as<ublas::vector<Complex>>());
+      }
 
       return zip;
    }
