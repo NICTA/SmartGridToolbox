@@ -1,38 +1,38 @@
-#ifndef DGY_TRANSFORMER_DOT_H
-#define DGY_TRANSFORMER_DOT_H
+#ifndef YY_TRANSFORMER_DOT_H
+#define YY_TRANSFORMER_DOT_H
 
 #include <SgtCore/Branch.h>
 
 namespace SmartGridToolbox
 {
-   /// @brief Delta-grounded wye transformer.
+   /// @brief Wye-wye transformer.
    ///
-   /// Note that a 1:1 turns ratio will not result in a 1:1 voltage ratio for this transformer connection.
-   /// This is because the voltage across the windings on the primary (Delta) side is the phase-phase voltage, so
-   /// a 1:1 turns ratio will result in a @f$1:\sqrt(3)@f$ voltage ratio, where all voltages are line-ground. It is
-   /// therefore important that the parameter to the constructor is the turns ratio, not the voltage ratio.
-   class DgyTransformer : public BranchAbc
+   /// Equivalent to a single phase transformer on each phase.
+   class YyTransformer : public BranchAbc
    {
       public:
 
       /// @name Lifecycle
       /// @{
-
+      
          /// @brief Constructor
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
-         DgyTransformer(const std::string& id, Complex a, Complex ZL) :
-            BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C), a_(a), YL_(1.0/ZL)
+         YyTransformer(const std::string& id, Complex a, Complex ZL, Complex ZM) :
+            BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
+            a_(a),
+            YL_(1.0 / ZL),
+            YM_(1.0 / ZM)
          {
             // Empty.
          }
 
       /// @}
-
+      
       /// @name Component Type:
       /// @{
 
-         virtual const char* componentTypeStr() const {return "DGY_transformer";}
+         virtual const char* componentTypeStr() const {return "YY_transformer";}
 
       /// @}
 
@@ -59,6 +59,16 @@ namespace SmartGridToolbox
             YL_ = 1.0 / ZL;
          }
 
+         Complex ZM()
+         {
+            return 1.0 / YM_;
+         }
+
+         void setZM(Complex ZM)
+         {
+            YM_ = 1.0 / ZM;
+         }
+
       /// @}
 
       /// @name Overridden from BranchAbc:
@@ -67,12 +77,17 @@ namespace SmartGridToolbox
          virtual const ublas::matrix<Complex> Y() const override;
 
       /// @}
-
+      
       private:
+         void recalcY();
 
-         Complex a_;  ///< Complex turns ratio, n0/n1 where 0 is primary and 1 is secondary.
+      /// @}
+      
+      private:
+         Complex a_;  ///< Complex turns ratio, n0/n1.
          Complex YL_; ///< Series leakage admittance.
+         Complex YM_; ///< Shunt magnetising impedance.
    };
 }
 
-#endif // DGY_TRANSFORMER_DOT_H
+#endif // YY_TRANSFORMER_DOT_H

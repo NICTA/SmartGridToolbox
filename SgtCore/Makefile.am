@@ -21,6 +21,7 @@ pkginclude_HEADERS = \
 	Random.h \
 	SinglePhaseTransformer.h \
 	Units.h \
+	YyTransformer.h \
 	Zip.h
 
 libSgtCore_a_SOURCES = \
@@ -78,6 +79,8 @@ libSgtCore_a_SOURCES = \
 	SinglePhaseTransformer.h \
 	SinglePhaseTransformer.cc \
 	Units.h \
+	YyTransformer.h \
+	YyTransformer.cc \
 	Zip.h \
 	Zip.cc
 

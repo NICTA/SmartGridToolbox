@@ -1,12 +1,13 @@
 #include "SolarPvParser.h"
 
 #include "Inverter.h"
+#include "Simulation.h"
 #include "SolarPv.h"
 #include "Weather.h"
 
 namespace SmartGridToolbox
 {
-   void SolarPvParser::parse(const YAML::Node& nd, Model& mod, const ParserState& state) const
+   void SolarPvParser::parse(const YAML::Node& nd, Simulation& into) const
    {
       SGT_DEBUG(debug() << "SolarPv : parse." << std::endl);
       assertFieldPresent(nd, "id");
@@ -16,53 +17,44 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "zenith_degrees");
       assertFieldPresent(nd, "azimuth_degrees");
 
-      string id = state.expandName(nd["id"].as<std::string>());
-      SolarPv& comp = mod.newComponent<SolarPv>(id);
+      string id = nd["id"].as<std::string>();
+      auto spv = into.newSimComponent<SolarPv>(id);
 
       if (nd["efficiency"])
       {
-         comp.setEfficiency(nd["efficiency"].as<double>());
+         spv->setEfficiency(nd["efficiency"].as<double>());
       }
       else
       {
-         comp.setEfficiency(1.0);
+         spv->setEfficiency(1.0);
       }
-      comp.setPlaneArea(nd["area_m2"].as<double>());
+      spv->setPlaneArea(nd["area_m2"].as<double>());
       double zen = nd["zenith_degrees"].as<double>() * pi / 180;
       double azi = nd["azimuth_degrees"].as<double>() * pi / 180;
-      comp.setPlaneNormal({zen, azi});
-   }
+      spv->setPlaneNormal({zen, azi});
 
-   void SolarPvParser::postParse(const YAML::Node& nd, Model& mod, const ParserState& state) const
-   {
-      SGT_DEBUG(debug() << "SolarPv : postParse." << std::endl);
-
-      string name = state.expandName(nd["name"].as<std::string>());
-      SolarPv& comp = *mod.component<SolarPv>(name);
-
-      const std::string weatherStr = state.expandName(nd["weather"].as<std::string>());
-      Weather* weather = mod.component<Weather>(weatherStr);
+      const std::string weatherStr = nd["weather"].as<std::string>();
+      auto weather = into.simComponent<Weather>(weatherStr);
       if (weather != nullptr)
       {
-         comp.setWeather(*weather);
+         spv->setWeather(weather);
       }
       else
       {
-         error() << "For component " << name << ", weather " << weatherStr
-                 << " was not found in the model."
-                 << std::endl;
+         error() << "For component " << id << ", weather " << weatherStr
+                 << " was not found in the model." << std::endl;
          abort();
       }
 
-      const std::string inverterStr = state.expandName(nd["inverter"].as<std::string>());
-      InverterAbc* inverter = mod.component<InverterAbc>(inverterStr);
+      const std::string inverterStr = nd["inverter"].as<std::string>();
+      auto inverter = into.simComponent<InverterAbc>(inverterStr);
       if (inverter != nullptr)
       {
-         inverter->addDcPowerSource(comp);
+         inverter->addDcPowerSource(spv);
       }
       else
       {
-         error() << "For component " << name << ", inverter " << inverterStr
+         error() << "For component " << id << ", inverter " << inverterStr
                  << " was not found in the model." << std::endl;
          abort();
       }

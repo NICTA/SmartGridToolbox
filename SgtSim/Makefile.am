@@ -18,8 +18,7 @@ pkginclude_HEADERS = \
 	Spline.h \
 	Sun.h \
 	TimeSeries.h \
-	Weather.h \
-	YyTransformer.h
+	Weather.h
 
 libSgtSim_a_SOURCES = \
 	Battery.h \
@@ -73,8 +72,6 @@ libSgtSim_a_SOURCES = \
 	Weather.cc \
 	WeatherParser.h \
 	WeatherParser.cc \
-	YyTransformer.h \
-	YyTransformer.cc \
 	YyTransformerParser.h \
 	YyTransformerParser.cc
 

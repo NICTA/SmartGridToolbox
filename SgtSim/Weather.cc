@@ -1,6 +1,5 @@
 #include "Weather.h"
 
-#include "Model.h"
 #include "TimeSeries.h"
 
 namespace SmartGridToolbox
