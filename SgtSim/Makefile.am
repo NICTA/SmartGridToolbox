@@ -41,6 +41,8 @@ libSgtSim_a_SOURCES = \
 	SimBusParser.cc \
 	SimGenericBranchParser.h \
 	SimGenericBranchParser.cc \
+	SimGenericZipParser.h \
+	SimGenericZipParser.cc \
 	SimComponent.h \
 	SimComponent.cc \
 	SimDgyTransformerParser.h \
@@ -59,8 +61,6 @@ libSgtSim_a_SOURCES = \
 	SimSinglePhaseTransformerParser.cc \
 	Simulation.h \
 	Simulation.cc \
-	SimZipParser.h \
-	SimZipParser.cc \
 	SolarPv.h \
 	SolarPv.cc \
 	SolarPvParser.h \

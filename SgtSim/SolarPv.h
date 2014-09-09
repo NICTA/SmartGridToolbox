@@ -1,8 +1,7 @@
 #ifndef SOLAR_PV_DOT_H
 #define SOLAR_PV_DOT_H
 
-#include <SgtSim/Component.h>
-#include <SgtSim/DcPowerSourceAbc.h>
+#include <SgtSim/DcPowerSource.h>
 #include <SgtSim/Sun.h>
 
 namespace SmartGridToolbox
@@ -29,7 +28,7 @@ namespace SmartGridToolbox
       public:
          SolarPv(const std::string& id);
 
-         void setWeather(Weather& weather);
+         void setWeather(std::shared_ptr<Weather> weather);
 
          void setEfficiency(double efficiency) {efficiency_ = efficiency; needsUpdate().trigger();}
 
@@ -42,7 +41,7 @@ namespace SmartGridToolbox
       /// @}
       
       private:
-         const Weather* weather_;
+         std::shared_ptr<const Weather> weather_;
          double efficiency_;
          SphericalAngles planeNormal_; // TODO : more than one plane?
          double planeArea_; // TODO : more than one plane?

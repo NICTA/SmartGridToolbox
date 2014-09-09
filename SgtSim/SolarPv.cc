@@ -1,7 +1,6 @@
 #include "SolarPv.h"
 
-#include "InverterAbc.h"
-#include "Model.h"
+#include "Inverter.h"
 #include "Weather.h"
 
 namespace SmartGridToolbox
@@ -14,11 +13,11 @@ namespace SmartGridToolbox
       planeArea_(0.0)
    {}
 
-   void SolarPv::setWeather(Weather& weather)
+   void SolarPv::setWeather(std::shared_ptr<Weather> weather)
    {
-      weather_ = &weather;
+      weather_ = weather;
       dependsOn(weather);
-      weather.didUpdate().addAction([this](){needsUpdate().trigger();}, "Trigger SolarPv " + id() + " needs update");
+      weather->didUpdate().addAction([this](){needsUpdate().trigger();}, "Trigger SolarPv " + id() + " needs update");
    }
 
    double SolarPv::PDc() const

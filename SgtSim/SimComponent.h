@@ -102,7 +102,7 @@ namespace SmartGridToolbox
          }
 
          /// @brief Components on which I depend will update first.
-         void dependsOn(const std::shared_ptr<SimComponentAbc> b)
+         void dependsOn(std::shared_ptr<const SimComponentAbc> b)
          {
             dependencies_.push_back(b);
          }
