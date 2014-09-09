@@ -5,6 +5,7 @@
 #include "SimDgyTransformerParser.h"
 #include "SimGenericBranchParser.h"
 #include "SimGenericZipParser.h"
+#include "SimGlobalParser.h"
 #include "SimNetworkParser.h"
 #include "SimOverheadLineParser.h"
 #include "SimSinglePhaseTransformerParser.h"
@@ -25,6 +26,7 @@ namespace SmartGridToolbox
       p.registerParserPlugin<SimDgyTransformerParser>();
       p.registerParserPlugin<SimGenericBranchParser>();
       p.registerParserPlugin<SimGenericZipParser>();
+      p.registerParserPlugin<SimGlobalParser>();
       p.registerParserPlugin<SimNetworkParser>();
       p.registerParserPlugin<SimOverheadLineParser>();
       p.registerParserPlugin<SimpleBuildingParser>();
