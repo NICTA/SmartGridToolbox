@@ -1,6 +1,7 @@
 #include "SimSinglePhaseTransformerParser.h"
 
 #include "SimNetwork.h"
+#include "Simulation.h"
 
 #include <SgtCore/SinglePhaseTransformer.h>
 #include <SgtCore/SinglePhaseTransformerParser.h>
@@ -14,8 +15,7 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "SinglePhaseTransformer : parse." << std::endl);
 
       SinglePhaseTransformerParser transParser;
-      auto trans = std::unique_ptr<SimSinglePhaseTransformer>(
-            new SimSinglePhaseTransformer(transParser.parseSinglePhaseTransformer(nd)));
+      auto trans = std::make_shared<SimBranch<SinglePhaseTransformer>>(transParser.parseSinglePhaseTransformer(nd));
       
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");

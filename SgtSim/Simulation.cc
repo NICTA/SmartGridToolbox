@@ -16,20 +16,20 @@ namespace SmartGridToolbox
       // Empty.
    }
    
-   Simulation::ConstSimObjVec Simulation::simComponents() const
+   Simulation::ConstSimCompVec Simulation::simComponents() const
    {
-      ConstSimObjVec result(simCompVec_.size());
+      ConstSimCompVec result(simCompVec_.size());
       std::copy(simCompVec_.begin(), simCompVec_.end(), result.begin());
       return result;
    }
 
-   void Simulation::addOrReplaceGenericSimComponent(std::shared_ptr<SimComponent> simComp, bool allowReplace)
+   void Simulation::addOrReplaceGenericSimComponent(std::shared_ptr<SimComponentAbc> simComp, bool allowReplace)
    {
       message() << "Adding simComponent " << simComp->id() << " of type " 
          << simComp->componentTypeStr() << " to model." << std::endl;
       IndentingOStreamBuf _(messageStream());
 
-      SimObjMap::iterator it1 = simCompMap_.find(simComp->id());
+      SimCompMap::iterator it1 = simCompMap_.find(simComp->id());
       if (it1 != simCompMap_.end())
       {
          if (allowReplace)
@@ -76,7 +76,7 @@ namespace SmartGridToolbox
       bool result = false;
 
       Time nextSchedTime = posix_time::pos_infin;
-      SimObjPtr schedComp(nullptr);
+      SimCompPtr schedComp(nullptr);
       auto schedUpdateIt = scheduledUpdates_.begin();
 
       if (scheduledUpdates_.size() > 0)
