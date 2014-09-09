@@ -15,7 +15,7 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "SimGenericBranch : parse." << std::endl);
 
       GenericBranchParser gbParser;
-      auto gb = std::unique_ptr<SimGenericBranch>(new SimGenericBranch(gbParser.parseGenericBranch(nd)));
+      auto gb = std::make_shared<SimBranch<GenericBranch>>(gbParser.parseGenericBranch(nd));
 
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");
@@ -27,6 +27,6 @@ namespace SmartGridToolbox
       
       auto netw = sim.simComponent<SimNetwork>(netwId);
 
-      netw->addArc(std::move(gb), bus0Id, bus1Id);
+      netw->addArc(gb, bus0Id, bus1Id);
    }
 }

@@ -33,7 +33,7 @@ namespace SmartGridToolbox
 
    void SimInverter::addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source)
    {
-      component()->addDcPowerSource(source);
+      zip()->addDcPowerSource(source);
       dependsOn(source);
       source->didUpdate().addAction([this](){needsUpdate().trigger();},
             "Trigger InverterAbc " + id() + " needs update.");

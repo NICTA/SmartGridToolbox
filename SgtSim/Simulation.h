@@ -26,7 +26,7 @@ namespace SmartGridToolbox
          typedef std::vector<SimCompPtr> SimCompVec;
          typedef std::vector<SimCompConstPtr> ConstSimCompVec;
          typedef std::map<std::string, SimCompPtr> SimCompMap;
-         typedef std::map<std::string, std::unique_ptr<TimeSeriesBase>> TimeSeriesMap;
+         typedef std::map<std::string, std::shared_ptr<TimeSeriesBase>> TimeSeriesMap;
 
       public:
          /// @brief Constructor.
@@ -152,17 +152,17 @@ namespace SmartGridToolbox
          template<typename T> std::shared_ptr<const T> timeSeries(const std::string& id) const
          {
             TimeSeriesMap::const_iterator it = timeSeriesMap_.find(id);
-            return (it == timeSeriesMap_.end()) ? 0 : std::const_pointer_cast<std::shared_ptr<const T>>(it->second);
+            return (it == timeSeriesMap_.end()) ? 0 : std::const_pointer_cast<const T>(it->second);
          }
 
          /// @brief Get time series with given id.
          template<typename T> std::shared_ptr<T> timeSeries(const std::string& id)
          {
-            return std::const_pointer_cast<T>((const_cast<const Simulation*>(this))-> timeSeries<T>(id));
+            return std::const_pointer_cast<T>((const_cast<const Simulation*>(this))->timeSeries<T>(id));
          }
 
          /// @brief Add a time series.
-         void acquireTimeSeries (const std::string& id, std::unique_ptr<TimeSeriesBase> timeSeries)
+         void acquireTimeSeries (const std::string& id, std::shared_ptr<TimeSeriesBase> timeSeries)
          {
             timeSeriesMap_[id] = std::move(timeSeries);
          }

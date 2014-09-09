@@ -13,11 +13,11 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "SimBus : parse." << std::endl);
       
       BusParser busParser;
-      auto bus = std::unique_ptr<SimBus>(new SimBus(busParser.parseBus(nd)));
+      auto bus = std::make_shared<SimBus<Bus>>(busParser.parseBus(nd));
 
       assertFieldPresent(nd, "network_id");
       string netwId = nd["network_id"].as<std::string>();
       auto netw = into.simComponent<SimNetwork>(netwId);
-      netw->addNode(std::move(bus));
+      netw->addNode(bus);
    }
 }

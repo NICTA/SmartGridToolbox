@@ -20,7 +20,7 @@ namespace SmartGridToolbox
       OFF
    };
 
-   class SimpleBuilding : public SimZipDerived<GenericZip>
+   class SimpleBuilding : public SimZip<GenericZip>
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
@@ -39,7 +39,7 @@ namespace SmartGridToolbox
       
       public:
          SimpleBuilding(const std::string& id) :
-            SimZipDerived<GenericZip>(std::make_shared<SimGenericZip>()),
+            SimZip<GenericZip>(std::make_shared<GenericZip>(id, Phase::BAL)),
             dt_(posix_time::minutes(5)),
             kb_(5 * kW / K),
             Cb_(1.0e5 * kJ / K),

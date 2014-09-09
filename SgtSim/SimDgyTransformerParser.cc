@@ -15,7 +15,7 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "DgyTransformer : parse." << std::endl);
 
       DgyTransformerParser transParser;
-      auto trans = std::unique_ptr<SimDgyTransformer>(new SimDgyTransformer(transParser.parseDgyTransformer(nd)));
+      auto trans = std::make_shared<SimBranch<DgyTransformer>>(transParser.parseDgyTransformer(nd));
       
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");
@@ -27,6 +27,6 @@ namespace SmartGridToolbox
 
       auto netw = sim.simComponent<SimNetwork>(netwId);
 
-      netw->addArc(std::move(trans), bus0Id, bus1Id);
+      netw->addArc(trans, bus0Id, bus1Id);
    }
 }

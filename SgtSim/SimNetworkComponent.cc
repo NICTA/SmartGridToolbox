@@ -2,16 +2,18 @@
 
 namespace SmartGridToolbox
 {
-   template class SimNetworkComponent<BranchAbc>;
-   template class SimNetworkComponent<Bus>;
-   template class SimNetworkComponent<GenAbc>;
-   template class SimNetworkComponent<ZipAbc>;
-   
-   template class SimNetworkComponentDerived<SimBranchAbc, CommonBranch>;
-   template class SimNetworkComponentDerived<SimBranchAbc, GenericBranch>;
-   template class SimNetworkComponentDerived<SimBranchAbc, DgyTransformer>;
-   template class SimNetworkComponentDerived<SimBranchAbc, OverheadLine>;
-   template class SimNetworkComponentDerived<SimBranchAbc, SinglePhaseTransformer>;
-   template class SimNetworkComponentDerived<SimGenAbc, GenericGen>;
-   template class SimNetworkComponentDerived<SimZipAbc, GenericZip>;
+   template class SimBranch<BranchAbc>;
+   template class SimBus<Bus>;
+   template class SimGen<GenAbc>;
+   template class SimZip<ZipAbc>;
+  
+   template class SimBranch<CommonBranch>;
+   template class SimBranch<GenericBranch>;
+   template class SimBranch<DgyTransformer>;
+   template class SimBranch<OverheadLine>;
+   template class SimBranch<SinglePhaseTransformer>;
+
+   template class SimGen<GenericGen>;
+
+   template class SimZip<GenericZip>;
 }

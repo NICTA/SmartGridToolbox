@@ -37,7 +37,6 @@ namespace SmartGridToolbox
    void SimpleBuilding::initializeState()
    {
       Tb_ = TbInit_;
-      Ph_ = TbInit_;
       setOperatingParams(time());
    }
 
@@ -76,5 +75,6 @@ namespace SmartGridToolbox
       {
          isMaxed_ = false;
       }
+      zip()->setSConst(ublas::vector<Complex>(1, Complex(-Ph_, 0.0)));
    }
 }

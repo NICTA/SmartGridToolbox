@@ -130,10 +130,10 @@ namespace SmartGridToolbox
          ublas::vector<Complex> S_{ublas::vector<Complex>(phases().size(), czero)};
    };
 
-   class SimInverter : public SimZipDerived<InverterAbc>
+   class SimInverter : public SimZip<InverterAbc>
    {
       public:
-         SimInverter(std::shared_ptr<InverterAbc> inverter) : SimZipDerived<InverterAbc>(inverter) {}
+         SimInverter(std::shared_ptr<InverterAbc> inverter) : SimZip<InverterAbc>(inverter) {}
          void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source);
    };
 }

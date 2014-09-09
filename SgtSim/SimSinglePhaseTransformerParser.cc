@@ -27,6 +27,6 @@ namespace SmartGridToolbox
 
       auto netw = sim.simComponent<SimNetwork>(netwId);
 
-      netw->addArc(std::move(trans), bus0Id, bus1Id);
+      netw->addArc(trans, bus0Id, bus1Id);
    }
 }

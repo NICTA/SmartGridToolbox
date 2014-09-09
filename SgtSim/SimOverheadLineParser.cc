@@ -15,7 +15,7 @@ namespace SmartGridToolbox
       SGT_DEBUG(debug() << "OverheadLine : parse." << std::endl);
       
       OverheadLineParser ohlParser;
-      auto ohl = std::unique_ptr<SimOverheadLine>(new SimOverheadLine(ohlParser.parseOverheadLine(nd)));
+      auto ohl = std::make_shared<SimBranch<OverheadLine>>(ohlParser.parseOverheadLine(nd));
 
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");
@@ -27,6 +27,6 @@ namespace SmartGridToolbox
 
       auto netw = sim.simComponent<SimNetwork>(netwId);
 
-      netw->addArc(std::move(ohl), bus0Id, bus1Id);
+      netw->addArc(ohl, bus0Id, bus1Id);
    }
 }
