@@ -136,7 +136,11 @@ namespace SmartGridToolbox
          contingentUpdates_.erase(schedComp);
 
          // Now perform the update.
+         SGT_DEBUG(debug() << "About to perform update..." << std::endl);
+         SGT_DEBUG({Indent _;)
          schedComp->update(currentTime_);
+         SGT_DEBUG(})
+         SGT_DEBUG(debug() << "... Done" << std::endl);
          scheduledUpdates_.insert(std::make_pair(schedComp, schedComp->validUntil())); // and reinsert it.
          result = true;
       }
