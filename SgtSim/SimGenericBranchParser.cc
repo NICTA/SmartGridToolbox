@@ -12,10 +12,8 @@ namespace SmartGridToolbox
 {
    void SimGenericBranchParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
-      SGT_DEBUG(debug() << "SimGenericBranch : parse." << std::endl);
-
       GenericBranchParser gbParser;
-      auto gb = std::make_shared<SimBranch<GenericBranch>>(gbParser.parseGenericBranch(nd));
+      auto gb = sim.newSimComponent<SimBranch<GenericBranch>>(gbParser.parseGenericBranch(nd));
 
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");

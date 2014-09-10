@@ -17,7 +17,7 @@ namespace SmartGridToolbox
             return "yy_transformer";
          }
 
-         virtual void parse(const YAML::Node& nd, Network& into) const override;
+         virtual void parse(const YAML::Node& nd, Network& netw) const override;
          
          std::unique_ptr<YyTransformer> parseYyTransformer(const YAML::Node& nd) const;
    };

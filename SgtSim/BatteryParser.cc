@@ -5,15 +5,13 @@
 
 namespace SmartGridToolbox
 {
-   void BatteryParser::parse(const YAML::Node& nd, Simulation& into) const
+   void BatteryParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
-      SGT_DEBUG(debug() << "Battery : parse." << std::endl);
-
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "inverter");
 
       string id = nd["id"].as<std::string>();
-      auto batt = into.newSimComponent<Battery>(id);
+      auto batt = sim.newSimComponent<Battery>(id);
 
       auto nd_dt = nd["dt"];
       if (nd_dt) batt->set_dt(nd_dt.as<Time>());
@@ -40,7 +38,7 @@ namespace SmartGridToolbox
       if (ndRequestedPower) batt->setRequestedPower(ndRequestedPower.as<double>());
 
       const std::string inverterStr = nd["inverter"].as<std::string>();
-      auto inverter = into.simComponent<InverterAbc>(inverterStr);
+      auto inverter = sim.simComponent<InverterAbc>(inverterStr);
       if (inverter != nullptr)
       {
          inverter->addDcPowerSource(batt);

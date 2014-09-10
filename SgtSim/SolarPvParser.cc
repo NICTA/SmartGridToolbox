@@ -7,9 +7,8 @@
 
 namespace SmartGridToolbox
 {
-   void SolarPvParser::parse(const YAML::Node& nd, Simulation& into) const
+   void SolarPvParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
-      SGT_DEBUG(debug() << "SolarPv : parse." << std::endl);
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "weather");
       assertFieldPresent(nd, "inverter");
@@ -18,7 +17,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "azimuth_degrees");
 
       string id = nd["id"].as<std::string>();
-      auto spv = into.newSimComponent<SolarPv>(id);
+      auto spv = sim.newSimComponent<SolarPv>(id);
 
       if (nd["efficiency"])
       {
@@ -34,7 +33,7 @@ namespace SmartGridToolbox
       spv->setPlaneNormal({zen, azi});
 
       const std::string weatherStr = nd["weather"].as<std::string>();
-      auto weather = into.simComponent<Weather>(weatherStr);
+      auto weather = sim.simComponent<Weather>(weatherStr);
       if (weather != nullptr)
       {
          spv->setWeather(weather);
@@ -47,7 +46,7 @@ namespace SmartGridToolbox
       }
 
       const std::string inverterStr = nd["inverter"].as<std::string>();
-      auto inverter = into.simComponent<InverterAbc>(inverterStr);
+      auto inverter = sim.simComponent<SimInverter>(inverterStr);
       if (inverter != nullptr)
       {
          inverter->addDcPowerSource(spv);

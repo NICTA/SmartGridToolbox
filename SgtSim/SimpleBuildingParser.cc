@@ -7,16 +7,14 @@
 
 namespace SmartGridToolbox
 {
-   void SimpleBuildingParser::parse(const YAML::Node& nd, Simulation& into) const
+   void SimpleBuildingParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
-      SGT_DEBUG(debug() << "SimpleBuilding : parse." << std::endl);
-
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_id");
 
       std::string id = nd["id"].as<std::string>();
-      auto build = into.newSimComponent<SimpleBuilding>(id);
+      auto build = sim.newSimComponent<SimpleBuilding>(id);
 
       auto nd_dt = nd["dt"];
       if (nd_dt) build->set_dt(nd_dt.as<Time>());
@@ -49,7 +47,7 @@ namespace SmartGridToolbox
       if (dQgNd)
       {
          std::string id = dQgNd.as<std::string>();
-         auto series = into.timeSeries<TimeSeries<Time, double>>(id);
+         auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
          if (series == nullptr)
          {
             error() << "Parsing simple_building: couldn't find time series " << id << std::endl;
@@ -60,14 +58,14 @@ namespace SmartGridToolbox
 
       std::string netwId = nd["network_id"].as<std::string>();
       std::string busId = nd["bus_id"].as<std::string>();
-      auto netw = into.simComponent<SimNetwork>(netwId);
+      auto netw = sim.simComponent<SimNetwork>(netwId);
       netw->addZip(build, busId);
 
       const auto& weatherNd = nd["weather"];
       if (weatherNd)
       {
          std::string weatherStr = weatherNd.as<std::string>();
-         auto weather = into.simComponent<Weather>(weatherStr);
+         auto weather = sim.simComponent<Weather>(weatherStr);
          if (weather == nullptr)
          {
             error() << "Parsing simple_building: couldn't find weather " << weatherStr << std::endl;

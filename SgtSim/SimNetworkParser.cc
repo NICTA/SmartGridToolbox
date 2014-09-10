@@ -5,10 +5,8 @@
 
 namespace SmartGridToolbox
 {
-   void SimNetworkParser::parse(const YAML::Node& nd, Simulation& into) const
+   void SimNetworkParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
-      SGT_DEBUG(debug() << "SimNetwork : parse." << std::endl);
-
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "P_base");
 
@@ -22,6 +20,6 @@ namespace SmartGridToolbox
       {
          nw->setFreq(ndFreq.as<double>());
       }
-      into.newSimComponent<SimNetwork>(std::move(nw));
+      sim.newSimComponent<SimNetwork>(std::move(nw));
    }
 }

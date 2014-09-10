@@ -214,10 +214,8 @@ namespace SmartGridToolbox
       }
    }
 
-   void MatpowerParser::parse(const YAML::Node& nd, Network& into) const
+   void MatpowerParser::parse(const YAML::Node& nd, Network& netw) const
    {
-      SGT_DEBUG(debug() << "Matpower : parse." << std::endl);
-
       assertFieldPresent(nd, "input_file");
       assertFieldPresent(nd, "default_kV_base");
 
@@ -359,7 +357,7 @@ namespace SmartGridToolbox
       }
       
       // Network:
-      into.setPBase(data.MVABase);
+      netw.setPBase(data.MVABase);
 
       // Busses:
       int nZip = 0;
@@ -400,8 +398,8 @@ namespace SmartGridToolbox
          double vAng = deg2Rad(busInfo.vAngDeg);
          bus->setV(VComplex(1, std::polar(vMag, vAng)));
          
-         into.addNode(std::move(bus));
-         into.addZip(std::move(zip), busId);
+         netw.addNode(std::move(bus));
+         netw.addZip(std::move(zip), busId);
       } // Busses
 
       // Gens:
@@ -429,7 +427,7 @@ namespace SmartGridToolbox
          gen->setC1(0.0);
          gen->setC2(0.0);
 
-         into.addGen(std::move(gen), busId);
+         netw.addGen(std::move(gen), busId);
       } // Gens
 
       // Branches:
@@ -445,8 +443,8 @@ namespace SmartGridToolbox
          std::string bus0Id = getBusId(branchInfo.busIdF);
          std::string bus1Id = getBusId(branchInfo.busIdT);
 
-         auto bus0 = into.node(bus0Id)->bus();
-         auto bus1 = into.node(bus1Id)->bus();
+         auto bus0 = netw.node(bus0Id)->bus();
+         auto bus1 = netw.node(bus1Id)->bus();
 
          double tap = (std::abs(branchInfo.tap) < 1e-6 ? 1.0 : branchInfo.tap) * bus0->VBase() / bus1->VBase();
          branch->setTapRatio(std::polar(tap, deg2Rad(branchInfo.shiftDeg)));
@@ -456,7 +454,7 @@ namespace SmartGridToolbox
          branch->setRateB(branchInfo.rateB);
          branch->setRateC(branchInfo.rateC);
 
-         into.addArc(std::move(branch), bus0Id, bus1Id);
+         netw.addArc(std::move(branch), bus0Id, bus1Id);
       }
 
       // Add generator costs, if they exist.

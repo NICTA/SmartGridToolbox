@@ -17,7 +17,7 @@ namespace SmartGridToolbox
             return "generic_branch";
          }
 
-         virtual void parse(const YAML::Node& nd, Network& into) const override;
+         virtual void parse(const YAML::Node& nd, Network& netw) const override;
          
          std::unique_ptr<GenericBranch> parseGenericBranch(const YAML::Node& nd) const;
    };

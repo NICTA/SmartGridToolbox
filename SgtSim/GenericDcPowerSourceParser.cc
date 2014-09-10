@@ -6,20 +6,18 @@
 
 namespace SmartGridToolbox
 {
-   void GenericDcPowerSourceParser::parse(const YAML::Node& nd, Simulation& into) const
+   void GenericDcPowerSourceParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
-      SGT_DEBUG(debug() << "GenericDcPowerSource : parse." << std::endl);
-
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "inverter");
       assertFieldPresent(nd, "dc_power");
 
       string id = nd["id"].as<std::string>();
-      auto comp = into.newSimComponent<GenericDcPowerSource>(id);
+      auto comp = sim.newSimComponent<GenericDcPowerSource>(id);
       comp->setPDc(nd["dc_power"].as<double>());
 
       const std::string inverterStr = nd["inverter"].as<std::string>();
-      auto inverterComp = into.simComponent<InverterAbc>(inverterStr);
+      auto inverterComp = sim.simComponent<InverterAbc>(inverterStr);
       if (inverterComp != nullptr)
       {
          inverterComp->addDcPowerSource(comp);

@@ -12,10 +12,8 @@ namespace SmartGridToolbox
 {
    void SimOverheadLineParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
-      SGT_DEBUG(debug() << "OverheadLine : parse." << std::endl);
-      
       OverheadLineParser ohlParser;
-      auto ohl = std::make_shared<SimBranch<OverheadLine>>(ohlParser.parseOverheadLine(nd));
+      auto ohl = sim.newSimComponent<SimBranch<OverheadLine>>(ohlParser.parseOverheadLine(nd));
 
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");

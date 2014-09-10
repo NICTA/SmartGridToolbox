@@ -5,22 +5,20 @@
 
 namespace SmartGridToolbox
 {
-   void WeatherParser::parse(const YAML::Node& nd, Simulation& into) const
+   void WeatherParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
-      SGT_DEBUG(debug() << "Weather : parse." << std::endl);
-
       assertFieldPresent(nd, "id");
 
       string id = nd["id"].as<std::string>();
-      auto weather = into.newSimComponent<Weather>(id);
+      auto weather = sim.newSimComponent<Weather>(id);
 
-      weather->setLatLong(into.latLong());
+      weather->setLatLong(sim.latLong());
 
       const auto& temperatureNd = nd["temperature"];
       if (temperatureNd)
       {
          std::string id = temperatureNd.as<std::string>();
-         auto series = into.timeSeries<TimeSeries<Time, double>>(id);
+         auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
          if (series == nullptr)
          {
             error() << "Parsing weather: couldn't find time series " << id << std::endl;
@@ -33,7 +31,7 @@ namespace SmartGridToolbox
       if (cloudNd)
       {
          std::string id = cloudNd.as<std::string>();
-         auto series = into.timeSeries<TimeSeries<Time, double>>(id);
+         auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
          if (series == nullptr)
          {
             error() << "Parsing weather: couldn't find time series " << id << std::endl;

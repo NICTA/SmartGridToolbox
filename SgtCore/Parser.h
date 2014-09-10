@@ -76,11 +76,11 @@ namespace SmartGridToolbox
       public:
 
          virtual const char* key() {return "ERROR";}
-         virtual void parse(const YAML::Node& nd, T& into) const 
+         virtual void parse(const YAML::Node& nd, T& netw) const 
          {
             // Empty.
          }
-         virtual void postParse(const YAML::Node& nd, T& into) const
+         virtual void postParse(const YAML::Node& nd, T& netw) const
          {
             // Empty.
          }
@@ -104,18 +104,18 @@ namespace SmartGridToolbox
             plugins_[plugin->key()] = std::move(plugin);
          }
          
-         void parse(const std::string& fname, T& into)
+         void parse(const std::string& fname, T& netw)
          {
             message() << "Parsing file " << fname << "." << std::endl;
             {
                Indent _;
                auto top = getTopNode(fname);
-               parse(top, into);
+               parse(top, netw);
             }
             message() << "Finished parsing file " << fname << "." << std::endl;
          }
 
-         void parse(const YAML::Node& node, T& into)
+         void parse(const YAML::Node& node, T& netw)
          {
             for (const auto& subnode : node)
             {
@@ -130,7 +130,7 @@ namespace SmartGridToolbox
                else
                {
                   Indent _;
-                  it->second->parse(nodeVal, into);
+                  it->second->parse(nodeVal, netw);
                }
             }
             message() << "Parsing plugins. Completed." << std::endl;

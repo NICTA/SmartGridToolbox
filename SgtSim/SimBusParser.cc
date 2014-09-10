@@ -8,16 +8,14 @@
 
 namespace SmartGridToolbox
 {
-   void SimBusParser::parse(const YAML::Node& nd, Simulation& into) const
+   void SimBusParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
-      SGT_DEBUG(debug() << "SimBus : parse." << std::endl);
-      
       BusParser busParser;
-      auto bus = std::make_shared<SimBus<Bus>>(busParser.parseBus(nd));
+      auto bus = sim.newSimComponent<SimBus<Bus>>(busParser.parseBus(nd));
 
       assertFieldPresent(nd, "network_id");
       string netwId = nd["network_id"].as<std::string>();
-      auto netw = into.simComponent<SimNetwork>(netwId);
+      auto netw = sim.simComponent<SimNetwork>(netwId);
       netw->addNode(bus);
    }
 }

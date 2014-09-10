@@ -17,7 +17,7 @@ namespace SmartGridToolbox
             return "delta_g_wye_transformer";
          }
 
-         virtual void parse(const YAML::Node& nd, Network& into) const override;
+         virtual void parse(const YAML::Node& nd, Network& netw) const override;
          
          std::unique_ptr<DgyTransformer> parseDgyTransformer(const YAML::Node& nd) const;
    };

@@ -12,10 +12,8 @@ namespace SmartGridToolbox
 {
    void SimYyTransformerParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
-      SGT_DEBUG(debug() << "YyTransformer : parse." << std::endl);
-
       YyTransformerParser transParser;
-      auto trans = std::make_shared<SimBranch<YyTransformer>>(transParser.parseYyTransformer(nd));
+      auto trans = sim.newSimComponent<SimBranch<YyTransformer>>(transParser.parseYyTransformer(nd));
       
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");

@@ -5,10 +5,8 @@
 
 namespace SmartGridToolbox
 {
-   void OverheadLineParser::parse(const YAML::Node& nd, Network& into) const
+   void OverheadLineParser::parse(const YAML::Node& nd, Network& netw) const
    {
-      SGT_DEBUG(debug() << "OverheadLine : parse." << std::endl);
-
       auto ohl = parseOverheadLine(nd);
 
       assertFieldPresent(nd, "bus_0_id");
@@ -17,7 +15,7 @@ namespace SmartGridToolbox
       std::string bus0Id = nd["bus_0_id"].as<std::string>();
       std::string bus1Id = nd["bus_1_id"].as<std::string>();
       
-      into.addArc(std::move(ohl), bus0Id, bus1Id);
+      netw.addArc(std::move(ohl), bus0Id, bus1Id);
    }
 
    std::unique_ptr<OverheadLine> OverheadLineParser::parseOverheadLine(const YAML::Node& nd) const

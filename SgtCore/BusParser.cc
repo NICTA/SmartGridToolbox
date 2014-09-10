@@ -6,11 +6,10 @@
 
 namespace SmartGridToolbox
 {
-   void BusParser::parse(const YAML::Node& nd, Network& into) const
+   void BusParser::parse(const YAML::Node& nd, Network& netw) const
    {
-      SGT_DEBUG(debug() << "Bus : parse." << std::endl);
       auto bus = parseBus(nd);
-      into.addNode(std::move(bus));
+      netw.addNode(std::move(bus));
    }
    
    std::unique_ptr<Bus> BusParser::parseBus(const YAML::Node& nd) const

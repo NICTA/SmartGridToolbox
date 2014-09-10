@@ -17,7 +17,7 @@ namespace SmartGridToolbox
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Simulation& into) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& sim) const override;
    };
 }
 

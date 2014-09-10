@@ -6,15 +6,13 @@
 
 namespace SmartGridToolbox
 {
-   void GenericGenParser::parse(const YAML::Node& nd, Network& into) const
+   void GenericGenParser::parse(const YAML::Node& nd, Network& netw) const
    {
-      SGT_DEBUG(debug() << "GenericGen : parse." << std::endl);
-
       auto gen = parseGenericGen(nd);
 
       assertFieldPresent(nd, "bus_id");
       std::string busId = nd["bus_id"].as<std::string>();
-      into.addGen(std::move(gen), busId);
+      netw.addGen(std::move(gen), busId);
    }
    
    std::unique_ptr<GenericGen> GenericGenParser::parseGenericGen(const YAML::Node& nd) const

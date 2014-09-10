@@ -17,7 +17,7 @@ namespace SmartGridToolbox
             return "generic_gen";
          }
 
-         virtual void parse(const YAML::Node& nd, Network& into) const override;
+         virtual void parse(const YAML::Node& nd, Network& netw) const override;
          
          std::unique_ptr<GenericGen> parseGenericGen(const YAML::Node& nd) const;
    };

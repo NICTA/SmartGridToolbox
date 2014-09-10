@@ -7,7 +7,7 @@ namespace SmartGridToolbox
       return timeFromLocalTime(nd.as<posix_time::ptime>(), timezone);
    }
 
-   static void parseTimeSeries(const YAML::Node& nd, Simulation& into)
+   static void parseTimeSeries(const YAML::Node& nd, Simulation& sim)
    {
       message() << "Parsing time series." << std::endl;
       Indent _;
@@ -86,7 +86,7 @@ namespace SmartGridToolbox
          std::string relto = nd["relative_to_time"].as<std::string>();
 
          posix_time::ptime pt = posix_time::time_from_string(relto);
-         Time t0 = timeFromLocalTime(pt, into.timezone());
+         Time t0 = timeFromLocalTime(pt, sim.timezone());
 
          std::string time_unit = nd["time_unit"].as<std::string>();
          double to_secs = 1.0;
@@ -155,10 +155,10 @@ namespace SmartGridToolbox
          error() << "Bad time series type " << type << "." << std::endl;
          abort();
       }
-      into.acquireTimeSeries(id, std::move(ts));
+      sim.acquireTimeSeries(id, std::move(ts));
    }
 
-   void SimGlobalParser::parse(const YAML::Node& nd, Simulation& into) const
+   void SimGlobalParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
       assertFieldPresent(nd, "start_time");
       assertFieldPresent(nd, "end_time");
@@ -167,7 +167,7 @@ namespace SmartGridToolbox
       {
          try 
          {
-            into.setTimezone(local_time::time_zone_ptr(new local_time::posix_time_zone(nodeTz.as<std::string>())));
+            sim.setTimezone(local_time::time_zone_ptr(new local_time::posix_time_zone(nodeTz.as<std::string>())));
          }
          catch (...)
          {
@@ -179,7 +179,7 @@ namespace SmartGridToolbox
       const YAML::Node& nodeStart = nd["start_time"];
       try 
       {
-         into.setStartTime(parseTime(nodeStart, into.timezone()));
+         sim.setStartTime(parseTime(nodeStart, sim.timezone()));
       }
       catch (...)
       {
@@ -190,7 +190,7 @@ namespace SmartGridToolbox
       const YAML::Node& nodeEnd = nd["end_time"];
       try 
       {
-         into.setStartTime(parseTime(nodeStart, into.timezone()));
+         sim.setStartTime(parseTime(nodeStart, sim.timezone()));
       }
       catch (...)
       {
@@ -207,7 +207,7 @@ namespace SmartGridToolbox
             {
                throw;
             };
-            into.setLatLong({llvec[0], llvec[1]});
+            sim.setLatLong({llvec[0], llvec[1]});
          }
          catch (...)
          {
@@ -218,7 +218,7 @@ namespace SmartGridToolbox
 
       if (const YAML::Node& ndTs = nd["time_series"])
       {
-         parseTimeSeries(ndTs, into); 
+         parseTimeSeries(ndTs, sim); 
       }
    }
 

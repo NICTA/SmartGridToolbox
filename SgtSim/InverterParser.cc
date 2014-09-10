@@ -6,10 +6,8 @@
 
 namespace SmartGridToolbox
 {
-   void InverterParser::parse(const YAML::Node& nd, Simulation& into) const
+   void InverterParser::parse(const YAML::Node& nd, Simulation& sim) const
    {
-      SGT_DEBUG(debug() << "Inverter : parse." << std::endl);
-
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases");
       assertFieldPresent(nd, "network_id");
@@ -43,9 +41,9 @@ namespace SmartGridToolbox
       const std::string networkId = nd["network_id"].as<std::string>();
       const std::string busId = nd["bus_id"].as<std::string>();
 
-      auto simInverter = into.newSimComponent<SimInverter>(inverter);
+      auto simInverter = sim.newSimComponent<SimInverter>(inverter);
 
-      auto network = into.simComponent<SimNetwork>(networkId);
+      auto network = sim.simComponent<SimNetwork>(networkId);
       network->addZip(simInverter, busId);
    }
 }

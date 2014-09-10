@@ -5,10 +5,8 @@
 
 namespace SmartGridToolbox
 {
-   void DgyTransformerParser::parse(const YAML::Node& nd, Network& into) const
+   void DgyTransformerParser::parse(const YAML::Node& nd, Network& netw) const
    {
-      SGT_DEBUG(debug() << "DgyTransformer : parse." << std::endl);
-
       auto trans = parseDgyTransformer(nd);
 
       assertFieldPresent(nd, "bus_0_id");
@@ -17,7 +15,7 @@ namespace SmartGridToolbox
       std::string bus0Id = nd["bus_0_id"].as<std::string>();
       std::string bus1Id = nd["bus_1_id"].as<std::string>();
 
-      into.addArc(std::move(trans), bus0Id, bus1Id);
+      netw.addArc(std::move(trans), bus0Id, bus1Id);
    }
 
    std::unique_ptr<DgyTransformer> DgyTransformerParser::parseDgyTransformer(const YAML::Node& nd) const

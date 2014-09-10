@@ -15,11 +15,11 @@ namespace SmartGridToolbox
       public:
          virtual const char* key() override
          {
-            return "sim_yy_transformer";
+            return "yy_transformer";
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Simulation& into) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& sim) const override;
    };
 }
 
