@@ -58,7 +58,7 @@ namespace SmartGridToolbox
          comp->initialize();
          scheduledUpdates_.insert(std::make_pair(comp, startTime_));
          comp->needsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
-               std::string("Simulation insert contingent update of ") + comp->componentType() + comp->id());
+               std::string("Simulation insert contingent update of ") + comp->componentType() + " " + comp->id());
       }
       currentTime_ = posix_time::neg_infin;
       // Contingent updates may have been inserted during initialization process e.g. when setting up setpoints etc.
