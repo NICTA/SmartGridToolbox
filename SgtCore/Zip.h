@@ -72,16 +72,6 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Component Type:
-      /// @{
-         
-         virtual const char* componentTypeStr() const override
-         {
-            return "zip_abc";
-         }
-
-      /// @}
-
       /// @name Basic identity and type:
       /// @{
  
@@ -180,7 +170,15 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
          
-         virtual const char* componentType() const {return "generic_zip";}
+         static constexpr const char* sComponentType()
+         {
+            return "generic_zip";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
 
       /// @}
             

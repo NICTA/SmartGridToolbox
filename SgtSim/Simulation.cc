@@ -26,7 +26,7 @@ namespace SmartGridToolbox
    void Simulation::addOrReplaceGenericSimComponent(std::shared_ptr<SimComponentAbc> simComp, bool allowReplace)
    {
       message() << "Adding simComponent " << simComp->id() << " of type " 
-         << simComp->componentTypeStr() << " to model." << std::endl;
+         << simComp->componentType() << " to model." << std::endl;
       Indent _;
 
       SimCompMap::iterator it1 = simCompMap_.find(simComp->id());
@@ -58,7 +58,7 @@ namespace SmartGridToolbox
          comp->initialize();
          scheduledUpdates_.insert(std::make_pair(comp, startTime_));
          comp->needsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
-                                       "Simulation insert contingent update of simComponent " + comp->id());
+               std::string("Simulation insert contingent update of ") + comp->componentType() + comp->id());
       }
       currentTime_ = posix_time::neg_infin;
       // Contingent updates may have been inserted during initialization process e.g. when setting up setpoints etc.

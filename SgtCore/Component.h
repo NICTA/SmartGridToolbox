@@ -15,7 +15,7 @@ namespace SmartGridToolbox
       public:
          virtual ~ComponentInterface() {}
          virtual const std::string& id() const = 0;
-         virtual const char* componentTypeStr() const = 0;
+         virtual const char* componentType() const = 0;
       protected:
          virtual void print(std::ostream& os) const = 0;
    };
@@ -41,7 +41,7 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
          
-         virtual const char* componentTypeStr() const override {return "component";}
+         virtual const char* componentType() const override {return "component";}
 
       /// @}
          
@@ -58,7 +58,7 @@ namespace SmartGridToolbox
          
          virtual void print(std::ostream& os) const
          {
-            os << componentTypeStr() << ": " << id() << ":" << std::endl;
+            os << componentType() << ": " << id() << ":" << std::endl;
          }
 
       /// @}

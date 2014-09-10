@@ -27,7 +27,15 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
 
-         virtual const char* componentTypeStr() const {return "DGY_transformer";}
+         static constexpr const char* sComponentType()
+         {
+            return "single_phase_transformer";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
 
       /// @}
 

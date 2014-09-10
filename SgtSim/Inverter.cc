@@ -36,7 +36,7 @@ namespace SmartGridToolbox
       zip()->addDcPowerSource(source);
       dependsOn(source);
       source->didUpdate().addAction([this](){needsUpdate().trigger();},
-            "Trigger InverterAbc " + id() + " needs update.");
+            "Trigger SimInverter " + id() + " needs update.");
       // TODO: this will recalculate all zips. Efficiency?
    }
 }

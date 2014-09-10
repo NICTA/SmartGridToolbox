@@ -54,7 +54,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         Event() : description_("N/A")
+         Event() : description_("UNDEFINED")
          {
             // Empty.
          }

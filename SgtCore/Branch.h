@@ -150,10 +150,15 @@ namespace SmartGridToolbox
       
       /// @name Component Type:
       /// @{
-
-         virtual const char* componentTypeStr() const override
+         
+         static constexpr const char* sComponentType()
          {
             return "generic_branch";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
          }
 
       /// @}
