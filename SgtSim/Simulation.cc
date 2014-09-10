@@ -123,6 +123,7 @@ namespace SmartGridToolbox
          // There is a scheduled update to do next.
          if (nextSchedTime > currentTime_)
          {
+            SGT_DEBUG(debug() << "Timestep " << currentTime_ << " -> " << nextSchedTime << " will start" << std::endl);
             timestepWillStart_.trigger();
          }
          currentTime_ = nextSchedTime;
