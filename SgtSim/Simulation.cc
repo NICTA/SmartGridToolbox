@@ -27,7 +27,7 @@ namespace SmartGridToolbox
    {
       message() << "Adding simComponent " << simComp->id() << " of type " 
          << simComp->componentTypeStr() << " to model." << std::endl;
-      IndentingOStreamBuf _(messageStream());
+      Indent _;
 
       SimCompMap::iterator it1 = simCompMap_.find(simComp->id());
       if (it1 != simCompMap_.end())

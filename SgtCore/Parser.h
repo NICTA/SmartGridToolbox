@@ -108,7 +108,7 @@ namespace SmartGridToolbox
          {
             message() << "Parsing file " << fname << "." << std::endl;
             {
-               IndentingOStreamBuf b(messageStream());
+               Indent _;
                auto top = getTopNode(fname);
                parse(top, into);
             }
@@ -129,7 +129,7 @@ namespace SmartGridToolbox
                }
                else
                {
-                  IndentingOStreamBuf b(messageStream());
+                  Indent _;
                   it->second->parse(nodeVal, into);
                }
             }

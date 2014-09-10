@@ -35,7 +35,7 @@ namespace SmartGridToolbox
    {
       public:
 
-         explicit IndentingOStreamBuf(std::ostream& dest, const std::string& ind = std::string("\t")) :
+         explicit IndentingOStreamBuf(std::ostream& dest, const std::string& ind = std::string("    ")) :
             dest_(dest.rdbuf()),
             isAtStartOfLine_(true),
             ind_(ind),
@@ -74,15 +74,21 @@ namespace SmartGridToolbox
          std::ostream* owner_;
    };
 
+   class Indent
+   {
+      IndentingOStreamBuf coutIndent{std::cout};
+      IndentingOStreamBuf cerrIndent{std::cerr};
+   };
+
    inline std::ostream& messageStream() {return std::cout;}
    inline std::ostream& warningStream() {return std::cerr;}
    inline std::ostream& errorStream() {return std::cerr;}
    inline std::ostream& debugStream() {return std::cout;}
 
-   inline std::ostream& message() {return messageStream()  <<  "MESSAGE:\t";}
-   inline std::ostream& warning() {return warningStream()  <<  "WARNING:\t";}
-   inline std::ostream& error() {return errorStream()      <<  "ERROR:  \t";}
-   inline std::ostream& debug() {return debugStream()      <<  "DEBUG:  \t";}
+   inline std::ostream& message() {return messageStream()  <<  "MESSAGE:    ";}
+   inline std::ostream& warning() {return warningStream()  <<  "WARNING:    ";}
+   inline std::ostream& error() {return errorStream()      <<  "ERROR:      ";}
+   inline std::ostream& debug() {return debugStream()      <<  "DEBUG:      ";}
 
    inline void abort() {std::cerr << "ABORTING." << std::endl; ::abort();}
 

@@ -44,14 +44,14 @@ namespace SmartGridToolbox
    void Network::print(std::ostream& os) const
    {
       Component::print(os);
-      IndentingOStreamBuf _(os);
+      Indent _;
       os << "P_base: " << PBase_ << std::endl;
       for (auto nd : nodeVec_)
       {
          os << nd->bus() << std::endl;
          os << "Zips: " << std::endl;
          {
-            IndentingOStreamBuf _(os);
+            Indent _;
             for (auto zip : nd->zips())
             {
                os << *zip << std::endl;
@@ -59,7 +59,7 @@ namespace SmartGridToolbox
          }
          os << "Gens: " << std::endl;
          {
-            IndentingOStreamBuf _(os);
+            Indent _;
             for (auto gen : nd->gens())
             {
                os << *gen << std::endl;

@@ -49,14 +49,12 @@ namespace SmartGridToolbox
    class Event
    {
       public:
-         Event(const std::string& description)
-            : description_(description)
+         Event(const std::string& description) : description_(description)
          {
             // Empty.
          }
 
-         Event()
-            : description_("N/A")
+         Event() : description_("N/A")
          {
             // Empty.
          }

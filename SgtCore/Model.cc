@@ -10,7 +10,7 @@ namespace SmartGridToolbox
    {
       message() << "Adding component " << comp->id() << " of type " 
          << comp->componentTypeStr() << " to model." << std::endl;
-      IndentingOStreamBuf _(messageStream());
+      Indent _;
 
       CompMap::iterator it1 = compMap_.find(comp->id());
       if (it1 != compMap_.end())
