@@ -190,7 +190,7 @@ namespace SmartGridToolbox
       const YAML::Node& nodeEnd = nd["end_time"];
       try 
       {
-         sim.setStartTime(parseTime(nodeStart, sim.timezone()));
+         sim.setEndTime(parseTime(nodeEnd, sim.timezone()));
       }
       catch (...)
       {

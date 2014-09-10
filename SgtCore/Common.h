@@ -85,10 +85,10 @@ namespace SmartGridToolbox
    inline std::ostream& errorStream() {return std::cerr;}
    inline std::ostream& debugStream() {return std::cout;}
 
-   inline std::ostream& message() {return messageStream()  <<  "MESSAGE:    ";}
-   inline std::ostream& warning() {return warningStream()  <<  "WARNING:    ";}
-   inline std::ostream& error() {return errorStream()      <<  "ERROR:      ";}
-   inline std::ostream& debug() {return debugStream()      <<  "DEBUG:      ";}
+   inline std::ostream& message() {return messageStream()  <<  "MESSAGE: ";}
+   inline std::ostream& warning() {return warningStream()  <<  "WARNING: ";}
+   inline std::ostream& error() {return errorStream()      <<  "ERROR: ";}
+   inline std::ostream& debug() {return debugStream()      <<  "DEBUG: ";}
 
    inline void abort() {std::cerr << "ABORTING." << std::endl; ::abort();}
 
