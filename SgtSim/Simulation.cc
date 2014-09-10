@@ -94,7 +94,7 @@ namespace SmartGridToolbox
       if (nextSchedTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ < endTime_)
       {
          // There are contingent updates pending.
-         auto& contComp = *contingentUpdates_.begin();
+         auto contComp = *contingentUpdates_.begin();
          SGT_DEBUG(debug() << "Contingent update simComponent " << contComp->id() << " from "
                            << schedComp->time() << " to " << currentTime_ << std::endl);
          SGT_DEBUG(Indent _);
