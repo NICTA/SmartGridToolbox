@@ -9,17 +9,20 @@ namespace SmartGridToolbox
 
    static void parseTimeSeries(const YAML::Node& nd, Simulation& into)
    {
+      message() << "Parsing time series." << std::endl;
+      Indent _;
+
       std::unique_ptr<TimeSeriesBase> ts;
 
       assertFieldPresent(nd, "id"); // data
       assertFieldPresent(nd, "type"); // data
       assertFieldPresent(nd, "value_type"); // real_scalar/complex_scalar/real_vector/complex_vector
-
+      
       std::string id = nd["id"].as<std::string>();
       std::string type = nd["type"].as<std::string>();
       std::string valType = nd["value_type"].as<std::string>();
 
-      message() << "Parsing time series " << id << std::endl;
+      message() << "id = " << id << std::endl;
 
       bool isComplex = false;
       bool isVector = false;
@@ -213,9 +216,9 @@ namespace SmartGridToolbox
          }
       }
 
-      if (const YAML::Node& nodeTs = nd["time_series"])
+      if (const YAML::Node& ndTs = nd["time_series"])
       {
-         parseTimeSeries(nd, into); 
+         parseTimeSeries(ndTs, into); 
       }
    }
 
