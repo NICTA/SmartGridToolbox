@@ -1,4 +1,5 @@
 #include "Simulation.h"
+#include "WeakOrder.h"
 
 #include <algorithm>
 
@@ -194,5 +195,62 @@ namespace SmartGridToolbox
       }
 
       return result;
+   }
+
+   void Simulation::validate()
+   {
+      SGT_DEBUG
+      (
+         Log().debug() << "Model before validation:" << std::endl;
+         for (auto comp : simCompVec_)
+         {
+            Log().debug() << "\t" << comp->name() << " " << comp->rank() << std::endl;
+            for (auto dep : comp->dependencies())
+            {
+               Log().debug() << "\t\t" << dep->name() << " " << dep->rank() << std::endl;
+            }
+         }
+      )
+
+      for (int i = 0; i < simCompVec_.size(); ++i)
+      {
+         simCompVec_[i]->setRank(i);
+      }
+
+      WoGraph g(simCompVec_.size());
+      for (int i = 0; i < simCompVec_.size(); ++i)
+      {
+         // At this point, rank of component i is i.
+         for (auto dep : simCompVec_[i]->dependencies())
+         {
+            // i depends on dep->rank().
+            g.link(dep.lock()->rank(), i);
+         }
+      }
+      g.weakOrder();
+      int newRank = 0;
+      for (int i = 0; i < g.size(); ++i)
+      {
+         if (i > 0 && g.nodes()[i-1]->dominates(*g.nodes()[i]))
+         {
+            ++newRank;
+         }
+         int idx_i = g.nodes()[i]->index();
+         simCompVec_[idx_i]->setRank(newRank);
+      }
+      std::sort(simCompVec_.begin(), simCompVec_.end(), [](SimCompConstPtr lhs, SimCompConstPtr rhs) -> bool 
+            {
+               return ((lhs->rank() < rhs->rank()) || ((lhs->rank() == rhs->rank()) && (lhs->id() < rhs->id())));
+            });
+      isValid_ = true;
+      Log().message() << "Model after validation:" << std::endl;
+      for (auto comp : simCompVec_)
+      {
+         Log().message() << "\t" << comp->id() << " " << comp->rank() << std::endl;
+         for (auto dep : comp->dependencies())
+         {
+            Log().message() << "\t\t" << dep.lock()->id() << " " << dep.lock()->rank() << std::endl;
+         }
+      }
    }
 }

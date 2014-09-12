@@ -1,61 +1,18 @@
 #define BOOST_TEST_MODULE test_template
 
-#include <cmath>
-#include <ostream>
-#include <fstream>
+#include <LibSgtCore.h>
+#include <LibSgtSim.h>
 
 #include <boost/test/included/unit_test.hpp>
 
-#include <SmartGridToolbox/Branch.h>
-#include <SmartGridToolbox/Bus.h>
-#include <SmartGridToolbox/Component.h>
-#include <SmartGridToolbox/DcPowerSourceBase.h>
-#include <SmartGridToolbox/Event.h>
-#include <SmartGridToolbox/InverterBase.h>
-#include <SmartGridToolbox/Model.h>
-#include <SmartGridToolbox/Network.h>
-#include <SmartGridToolbox/OverheadLine.h>
-#include <SmartGridToolbox/Parser.h>
-#include <SmartGridToolbox/PowerFlow.h>
-#include <SmartGridToolbox/RegularUpdateComponent.h>
-#include <SmartGridToolbox/SimpleBattery.h>
-#include <SmartGridToolbox/SimpleBuilding.h>
-#include <SmartGridToolbox/Simulation.h>
-#include <SmartGridToolbox/SparseSolver.h>
-#include <SmartGridToolbox/SolarPv.h>
-#include <SmartGridToolbox/Sun.h>
-#include <SmartGridToolbox/Spline.h>
-#include <SmartGridToolbox/TimeSeries.h>
-#include <SmartGridToolbox/WeakOrder.h>
-#include <SmartGridToolbox/ZipToGround.h>
+#include <cmath>
+#include <ostream>
+#include <fstream>
 
 using namespace SmartGridToolbox;
 using namespace std;
 using namespace boost::posix_time;
 using namespace boost::unit_test;
-
-class TestCompA : public Component
-{
-   public:
-      TestCompA(const std::string & name, int x, double y) : 
-         Component(name),
-         x_(x),
-         y_(y)
-      {
-      }
-
-      int x() {return x_;}
-      void setX(int x) {x_ = x;}
-
-      double Y() {return y_;}
-      void setY(double y) {y_ = y;}
-
-   private:
-      int x_;
-      double y_;
-};
-
-BOOST_AUTO_TEST_SUITE (tests) // Name of test suite is test_template.
 
 BOOST_AUTO_TEST_CASE (test_weak_order)
 {
@@ -100,16 +57,16 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    BOOST_CHECK(g.nodes()[5]->index() == 2);
 }
 
-BOOST_AUTO_TEST_CASE (test_model_dependencies)
+BOOST_AUTO_TEST_CASE (test_dependencies)
 {
-   Model mod;
+   Simulation sim;
 
-   TestCompA & a0 = mod.newComponent<TestCompA>("tca0", 0, 0.1);
-   TestCompA & a1 = mod.newComponent<TestCompA>("tca1", 1, 0.1);
-   TestCompA & a2 = mod.newComponent<TestCompA>("tca2", 2, 0.1);
-   TestCompA & a3 = mod.newComponent<TestCompA>("tca3", 3, 0.1);
-   TestCompA & a4 = mod.newComponent<TestCompA>("tca4", 4, 0.1);
-   TestCompA & a5 = mod.newComponent<TestCompA>("tca5", 5, 0.1);
+   SimBus<Bus> & a0 = mod.newComponent<SimBus<Bus>>("bus0", 0, 0.1);
+   SimBus<Bus> & a1 = mod.newComponent<SimBus<Bus>>("bus1", 1, 0.1);
+   SimBus<Bus> & a2 = mod.newComponent<SimBus<Bus>>("bus2", 2, 0.1);
+   SimBus<Bus> & a3 = mod.newComponent<SimBus<Bus>>("bus3", 3, 0.1);
+   SimBus<Bus> & a4 = mod.newComponent<SimBus<Bus>>("bus4", 4, 0.1);
+   SimBus<Bus> & a5 = mod.newComponent<SimBus<Bus>>("bus5", 5, 0.1);
 
    a4.dependsOn(a0);
    a5.dependsOn(a0);
@@ -1190,5 +1147,3 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
    BOOST_CHECK(err1 < 0.001);
    BOOST_CHECK(err2 < 0.001);
 }
-
-BOOST_AUTO_TEST_SUITE_END( )

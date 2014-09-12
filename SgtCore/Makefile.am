@@ -13,7 +13,6 @@ pkginclude_HEADERS = \
 	DgyTransformer.h \
 	Event.h \
 	Gen.h \
-	Model.h \
 	Network.h \
 	OverheadLine.h \
 	Parser.h \
@@ -55,8 +54,6 @@ libSgtCore_a_SOURCES = \
 	LibSgtCore.h \
 	MatpowerParser.h \
 	MatpowerParser.cc \
-	Model.h \
-	Model.cc \
 	Network.h \
 	Network.cc \
 	OverheadLine.h \
