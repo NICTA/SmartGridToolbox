@@ -167,9 +167,6 @@ namespace SmartGridToolbox
             timeSeriesMap_[id] = std::move(timeSeries);
          }
 
-         /// @brief Make ready to simulate!
-         void validate();
-
       private:
 
          /// @brief Soonest/smallest rank goes first. If equal rank and time, then sort on the id.
