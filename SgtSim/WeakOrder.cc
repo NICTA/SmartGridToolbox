@@ -11,7 +11,7 @@ using namespace std;
 std::string prlevel(int level)
 {
    std::stringstream ss;
-   for (int i = 0; i < level; ++i) {ss << "\t";}
+   for (int i = 0; i < level; ++i) {ss << "    ";}
    return ss.str();
 }
 

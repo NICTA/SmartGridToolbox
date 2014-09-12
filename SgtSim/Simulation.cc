@@ -54,13 +54,15 @@ namespace SmartGridToolbox
    {
       SGT_DEBUG
       (
-         Log().debug() << "Component list before validation:" << std::endl;
+         Log().debug() << "Components before initialize:" << std::endl;
+         Indent _;
          for (auto comp : simCompVec_)
          {
-            Log().debug() << "\t" << comp->name() << " " << comp->rank() << std::endl;
+            Log().debug() << comp->name() << " " << comp->rank() << std::endl;
+            Indent _;
             for (auto dep : comp->dependencies())
             {
-               Log().debug() << "\t\t" << dep->name() << " " << dep->rank() << std::endl;
+               Log().debug() << dep->name() << " " << dep->rank() << std::endl;
             }
          }
       )
@@ -96,13 +98,15 @@ namespace SmartGridToolbox
                return ((lhs->rank() < rhs->rank()) || ((lhs->rank() == rhs->rank()) && (lhs->id() < rhs->id())));
             });
       isValid_ = true;
-      Log().message() << "Model after validation:" << std::endl;
+      Log().message() << "Components after initialize:" << std::endl;
+      Indent _;
       for (auto comp : simCompVec_)
       {
-         Log().message() << "\t" << comp->id() << " " << comp->rank() << std::endl;
+         Log().message() << comp->id() << " " << comp->rank() << std::endl;
+         Indent _;
          for (auto dep : comp->dependencies())
          {
-            Log().message() << "\t\t" << dep.lock()->id() << " " << dep.lock()->rank() << std::endl;
+            Log().message() << dep.lock()->id() << " " << dep.lock()->rank() << std::endl;
          }
       }
 
