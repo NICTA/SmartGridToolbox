@@ -30,67 +30,139 @@ namespace SmartGridToolbox
 
    /// @name Reporting and errors.
    /// @{
-
-   class IndentingOStreamBuf : public std::streambuf
+   
+   class Log
    {
+      friend class Indent;
+
+      private:
+
+         class LogBuf : public std::streambuf
+         {
+            public:
+
+               explicit LogBuf(std::ostream& strm) :
+                  strm_(&strm),
+                  destBuf_(strm.rdbuf()),
+                  isFirst_(true),
+                  isNewline_(true)
+               {
+                  strm_->rdbuf(this);
+               }
+
+               virtual ~LogBuf()
+               {
+                  if (strm_ != NULL)
+                  {
+                     strm_->rdbuf(destBuf_);
+                  }
+               }
+
+               void reset(const std::string& ind1, const std::string& ind2)
+               {
+                  ind1_ = ind1;
+                  ind2_ = ind2;
+                  isFirst_ = true;
+               }
+
+            protected:
+
+               virtual int overflow(int ch)
+               {
+                  if (isNewline_ && ch != '\n')
+                  {
+                     if (isFirst_)
+                     {
+                        destBuf_->sputn(ind1_.c_str(), ind1_.size());
+                     }
+                     else
+                     {
+                        destBuf_->sputn(ind2_.c_str(), ind2_.size());
+                     }
+                  }
+                  isNewline_ = ch == '\n';
+                  isFirst_ = false;
+                  return destBuf_->sputc(ch);
+               }
+
+            private:
+
+               std::ostream* strm_;
+               std::streambuf* destBuf_;
+               bool isFirst_;
+               bool isNewline_;
+               std::string ind1_;
+               std::string ind2_;
+
+         };
+
       public:
 
-         explicit IndentingOStreamBuf(std::ostream& dest, const std::string& ind = std::string("    ")) :
-            dest_(dest.rdbuf()),
-            isAtStartOfLine_(true),
-            ind_(ind),
-            owner_(&dest)
+         ~Log()
          {
-            owner_->rdbuf(this);
-         }
-
-         virtual ~IndentingOStreamBuf()
-         {
-            if (owner_ != NULL) {
-               owner_->rdbuf(dest_);
+            if (isFatal_)
+            {
+               cerrBuf_.reset("", "");
+               std::cerr << "ABORTING." << std::endl;
+               abort();
             }
          }
 
-         void setInd(const std::string& ind) {
-            ind_ = ind;
+         std::ostream& message()
+         {
+            coutBuf_.reset(
+                  std::string("MESSAGE: ") + std::string(indentLevel_, ' '),
+                  std::string("         ") + std::string(indentLevel_, ' '));
+            return std::cout;
          }
 
-      protected:
-
-         virtual int overflow(int ch)
+         std::ostream& warning()
          {
-            if (isAtStartOfLine_ && ch != '\n') {
-               dest_->sputn(ind_.data(), ind_.size());
-            }
-            isAtStartOfLine_ = ch == '\n';
-            return dest_->sputc(ch);
+            cerrBuf_.reset(
+                  std::string("WARNING: ") + std::string(indentLevel_, ' '),
+                  std::string("         ") + std::string(indentLevel_, ' '));
+            return std::cerr;
+         }
+
+         std::ostream& error()
+         {
+            cerrBuf_.reset(
+                  std::string("ERROR  : ") + std::string(indentLevel_, ' '),
+                  std::string("         ") + std::string(indentLevel_, ' '));
+            return std::cerr;
+         }
+
+         std::ostream& fatal()
+         {
+            isFatal_ = true;
+            cerrBuf_.reset(
+                  std::string("FATAL  : ") + std::string(indentLevel_, ' '),
+                  std::string("         ") + std::string(indentLevel_, ' '));
+            return std::cerr;
          }
 
       private:
 
-         std::streambuf* dest_;
-         bool isAtStartOfLine_;
-         std::string ind_;
-         std::ostream* owner_;
+         static int indentLevel_;
+
+         LogBuf coutBuf_{std::cout};
+         LogBuf cerrBuf_{std::cerr};
+         bool isFatal_{false};
    };
+   int Log::indentLevel_ = 0;
 
    class Indent
    {
-      IndentingOStreamBuf coutIndent{std::cout};
-      IndentingOStreamBuf cerrIndent{std::cerr};
+      public:
+         Indent()
+         {
+            Log::indentLevel_ += 4;
+         }
+         ~Indent()
+         {
+            Log::indentLevel_ -= 4;
+         }
    };
-
-   inline std::ostream& messageStream() {return std::cout;}
-   inline std::ostream& warningStream() {return std::cerr;}
-   inline std::ostream& errorStream() {return std::cerr;}
-   inline std::ostream& debugStream() {return std::cout;}
-
-   inline std::ostream& message() {return messageStream()  <<  "MESSAGE: ";}
-   inline std::ostream& warning() {return warningStream()  <<  "WARNING: ";}
-   inline std::ostream& error() {return errorStream()      <<  "ERROR: ";}
-   inline std::ostream& debug() {return debugStream()      <<  "DEBUG: ";}
-
-   inline void abort() {std::cerr << "ABORTING." << std::endl; ::abort();}
 
    /// @}
 
