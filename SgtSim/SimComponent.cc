@@ -14,14 +14,14 @@ namespace SmartGridToolbox
 
    void SimComponentAbc::initialize()
    {
-      SGT_DEBUG(debug() << "SimComponent " << id() << " initialize." << std::endl);
+      SGT_DEBUG(Log().debug() << "SimComponent " << id() << " initialize." << std::endl);
       time_ = posix_time::neg_infin;
       initializeState();
    }
 
    void SimComponentAbc::update(Time t)
    {
-      SGT_DEBUG(debug() << "SimComponent " << id() << " update from " << time_ << " to " << t << std::endl);
+      SGT_DEBUG(Log().debug() << "SimComponent " << id() << " update from " << time_ << " to " << t << std::endl);
       if (time_ < t)
       {
          willStartNewTimestep_.trigger();

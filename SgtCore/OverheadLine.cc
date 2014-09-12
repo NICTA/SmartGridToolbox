@@ -15,14 +15,12 @@ namespace SmartGridToolbox
    {
       if (nNeutral > 1)
       {
-         error() << "OverheadLine : currently there must be either zero or one neutral wires." << std::endl;
-         abort();
+         Log().fatal() << "OverheadLine : currently there must be either zero or one neutral wires." << std::endl;
       }
       int n = phases0.size() + nNeutral;
       if (lineResistivity.size() != n || distMat.size1() != n || distMat.size2() != n)
       {
-         error() << "OverheadLine : wrong number of internal phases." << std::endl;
-         abort();
+         Log().fatal() << "OverheadLine : wrong number of internal phases." << std::endl;
       }
    }
 
@@ -47,11 +45,11 @@ namespace SmartGridToolbox
       }
       ZWire *= L_; // Z has been checked against example in Kersting and found to be OK.
       SGT_DEBUG(
-            message() << "Before Kron:" << std::endl;
+            Log().message() << "Before Kron:" << std::endl;
             for (int i = 0; i < ZWire.size1(); ++i)
             {
-               message() << "Z(" << i << ", :) = " << row(ZWire, i) << std::endl;
-               message() << std::endl;
+               Log().message() << "Z(" << i << ", :) = " << row(ZWire, i) << std::endl;
+               Log().message() << std::endl;
             });
 
       ublas::matrix<Complex> ZPhase = project(ZWire, ublas::range(0, nPhase), ublas::range(0, nPhase));
@@ -71,11 +69,11 @@ namespace SmartGridToolbox
       }
 
       SGT_DEBUG(
-            message() << "After Kron:" << std::endl;
+            Log().message() << "After Kron:" << std::endl;
             for (int i = 0; i < ZPhase.size1(); ++i)
             {
-               message() << "Z(" << i << ", :) = " << row(ZPhase, i) << std::endl;
-               message() << std::endl;
+               Log().message() << "Z(" << i << ", :) = " << row(ZPhase, i) << std::endl;
+               Log().message() << std::endl;
             });
 
       ublas::matrix<Complex> Y(nPhase, nPhase);
@@ -83,8 +81,8 @@ namespace SmartGridToolbox
       SGT_DEBUG(
             for (int i = 0; i < Y.size1(); ++i)
             {
-               message() << "Y(" << i << ", :) = " << row(Y, i) << std::endl;
-               message() << std::endl;
+               Log().message() << "Y(" << i << ", :) = " << row(Y, i) << std::endl;
+               Log().message() << std::endl;
             });
 
       ublas::matrix<Complex> YNode(2 * nPhase, 2 * nPhase, czero);
@@ -101,8 +99,8 @@ namespace SmartGridToolbox
       SGT_DEBUG(
             for (int i = 0; i < YNode.size1(); ++i)
             {
-               message() << "YNode(" << i << ", :) = " << row(YNode, i) << std::endl;
-               message() << std::endl;
+               Log().message() << "YNode(" << i << ", :) = " << row(YNode, i) << std::endl;
+               Log().message() << std::endl;
             });
 
       return YNode;

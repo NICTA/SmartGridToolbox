@@ -197,19 +197,17 @@ namespace SmartGridToolbox
    {
       if (!(nd[field]))
       {
-         error() << "Parsing: " << field << " field not present." << std::endl;
-         abort();
+         Log().fatal() << "Parsing: " << field << " field not present." << std::endl;
       }
    };
    
    YAML::Node getTopNode(const std::string& fname)
    {
-      message() << "Opening file " << fname << " for parsing." << std::endl;
+      Log().message() << "Opening file " << fname << " for parsing." << std::endl;
       auto top = YAML::LoadFile(fname);
       if (top.size() == 0)
       {
-         error() << "File " << fname << " is empty or doesn't exist." << std::endl;
-         abort();
+         Log().fatal() << "File " << fname << " is empty or doesn't exist." << std::endl;
       }
       return top;
    }

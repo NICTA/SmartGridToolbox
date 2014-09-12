@@ -76,8 +76,8 @@ namespace SmartGridToolbox
 
    void Network::solvePowerFlow()
    {
-      SGT_DEBUG(debug() << "Network : solving power flow." << std::endl);
-      SGT_DEBUG(debug() << *this);
+      SGT_DEBUG(Log().debug() << "Network : solving power flow." << std::endl);
+      SGT_DEBUG(Log().debug() << *this);
       PowerFlowNr solver;
       solver.reset();
       for (const auto nd : nodeVec_)
@@ -131,8 +131,7 @@ namespace SmartGridToolbox
                   }
                   break;
                default:
-                  error() << "Bad bus type." << std::endl;
-                  abort();
+                  Log().fatal() << "Bad bus type." << std::endl;
             }
          }
       }

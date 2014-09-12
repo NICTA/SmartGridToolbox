@@ -14,6 +14,8 @@ namespace Phoenix = boost::phoenix;
 
 namespace SmartGridToolbox
 {
+   int Log::indentLevel_ = 0;
+
    struct CGram : Qi::grammar<std::string::const_iterator, Complex(), Ascii::space_type>
    {
       CGram() : CGram::base_type(start_)
@@ -90,9 +92,8 @@ namespace SmartGridToolbox
       bool ok = Qi::phrase_parse(iter, end, CGram(), Ascii::space, c);
       if (!ok)
       {
-         error() << "Bad complex number string: " << c << std::endl;
-         error() << "Came unstuck at substring: " << *iter << std::endl;
-         abort();
+         Log().fatal() << "Bad complex number string: " << c << std::endl 
+            << "Came unstuck at substring: " << *iter << std::endl;
       }
       return c;
    }

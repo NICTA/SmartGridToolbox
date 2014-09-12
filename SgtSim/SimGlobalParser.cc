@@ -9,7 +9,7 @@ namespace SmartGridToolbox
 
    static void parseTimeSeries(const YAML::Node& nd, Simulation& sim)
    {
-      message() << "Parsing time series." << std::endl;
+      Log().message() << "Parsing time series." << std::endl;
       Indent _;
 
       std::unique_ptr<TimeSeriesBase> ts;
@@ -22,7 +22,7 @@ namespace SmartGridToolbox
       std::string type = nd["type"].as<std::string>();
       std::string valType = nd["value_type"].as<std::string>();
 
-      message() << "id = " << id << std::endl;
+      Log().message() << "id = " << id << std::endl;
 
       bool isComplex = false;
       bool isVector = false;
@@ -48,8 +48,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         error() << "Bad data_type for time series." << std::endl;
-         abort();
+         Log().fatal() << "Bad data_type for time series." << std::endl;
       }
 
       if (type == "const_time_series")
@@ -62,8 +61,7 @@ namespace SmartGridToolbox
          }
          else
          {
-            error() << "Time series not yet supported." << std::endl;
-            abort();
+            Log().fatal() << "Time series not yet supported." << std::endl;
          }
       }
       else if (type == "data_time_series")
@@ -77,8 +75,7 @@ namespace SmartGridToolbox
          std::ifstream infile(dataFName);
          if (!infile.is_open())
          {
-            error() << "Could not open the timeseries input file " << dataFName << "." << std::endl;
-            abort();
+            Log().fatal() << "Could not open the timeseries input file " << dataFName << "." << std::endl;
          }
 
          std::string interpType = nd["interp_type"].as<std::string>();
@@ -108,8 +105,7 @@ namespace SmartGridToolbox
          }
          else
          {
-            error() << "Invalid time unit in data_time_series. Aborting." << std::endl;
-            abort();
+            Log().fatal() << "Invalid time unit in data_time_series. Aborting." << std::endl;
          }
 
          if (!isComplex && !isVector)
@@ -146,14 +142,12 @@ namespace SmartGridToolbox
          }
          else
          {
-            error() << "Time series not yet supported." << std::endl;
-            abort();
+            Log().fatal() << "Time series not yet supported." << std::endl;
          }
       }
       else
       {
-         error() << "Bad time series type " << type << "." << std::endl;
-         abort();
+         Log().fatal() << "Bad time series type " << type << "." << std::endl;
       }
       sim.acquireTimeSeries(id, std::move(ts));
    }
@@ -171,8 +165,7 @@ namespace SmartGridToolbox
          }
          catch (...)
          {
-            error() << "Couldn't parse timezone " << nodeTz.as<std::string>() << "." << std::endl;
-            abort();
+            Log().fatal() << "Couldn't parse timezone " << nodeTz.as<std::string>() << "." << std::endl;
          }
       }
 
@@ -183,8 +176,7 @@ namespace SmartGridToolbox
       }
       catch (...)
       {
-         error() << "Couldn't parse start date " << nodeStart.as<std::string>() << "." << std::endl;
-         abort();
+         Log().fatal() << "Couldn't parse start date " << nodeStart.as<std::string>() << "." << std::endl;
       }
 
       const YAML::Node& nodeEnd = nd["end_time"];
@@ -194,8 +186,7 @@ namespace SmartGridToolbox
       }
       catch (...)
       {
-         error() << "Couldn't parse end date " << nodeEnd.as<std::string>() << "." << std::endl;
-         abort();
+         Log().fatal() << "Couldn't parse end date " << nodeEnd.as<std::string>() << "." << std::endl;
       }
 
       if (const YAML::Node& nodeLatLong = nd["lat_long"])
@@ -211,8 +202,7 @@ namespace SmartGridToolbox
          }
          catch (...)
          {
-            error() << "Couldn't parse lat_long " << nodeLatLong.as<std::string>() << "." << std::endl;
-            abort();
+            Log().fatal() << "Couldn't parse lat_long " << nodeLatLong.as<std::string>() << "." << std::endl;
          }
       }
 

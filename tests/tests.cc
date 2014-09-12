@@ -71,11 +71,11 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    g.weakOrder();
    for (int i = 0; i < g.size(); ++i)
    {
-      message() << " " << g.nodes()[i]->index() << endl;
+      Log().message() << " " << g.nodes()[i]->index() << endl;
    }
-   message() << endl;
+   Log().message() << endl;
 
-   message() << "   ";
+   Log().message() << "   ";
    for (int i = 0; i < g.size(); ++i)
    {
       std::cout << " " << g.nodes()[i]->index(); 
@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    
    for (const std::unique_ptr<WoNode> & nd1 : g.nodes())
    {
-      message() << nd1->index() << "   ";
+      Log().message() << nd1->index() << "   ";
       for (const std::unique_ptr<WoNode> & nd2 : g.nodes())
       {
          std::cout << nd1->dominates(*nd2) << " ";
@@ -144,35 +144,35 @@ BOOST_AUTO_TEST_CASE (test_simple_battery)
    bat1.setRequestedPower(-0.4 * kW);
    bat1.initialize();
    bat1.update(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
-   message() << "1 Battery charge = " << bat1.charge() / kWh << endl;
+   Log().message() << "1 Battery charge = " << bat1.charge() / kWh << endl;
    bat1.update(bat1.time() + posix_time::hours(3));
-   message() << "2 Battery charge = " << bat1.charge() / kWh << endl;
+   Log().message() << "2 Battery charge = " << bat1.charge() / kWh << endl;
    double comp = bat1.initCharge() + 
       dSeconds(posix_time::hours(3)) * bat1.requestedPower() /
       bat1.dischargeEfficiency();
-   message() << "comp = " << comp / kWh << endl;
+   Log().message() << "comp = " << comp / kWh << endl;
    BOOST_CHECK(bat1.charge() == comp);
 
    bat1.setRequestedPower(1.3 * kW);
    bat1.initialize();
    bat1.update(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
-   message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
+   Log().message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
    bat1.update(bat1.time() + posix_time::hours(3));
-   message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
+   Log().message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
    comp = bat1.initCharge() + 
       dSeconds(posix_time::hours(3)) * bat1.maxChargePower() *
       bat1.chargeEfficiency();
-   message() << "comp = " << comp / kWh << endl;
+   Log().message() << "comp = " << comp / kWh << endl;
    BOOST_CHECK(bat1.charge() == comp);
 
    bat1.setRequestedPower(-1 * kW);
    bat1.initialize();
    bat1.update(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
-   message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
+   Log().message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
    bat1.update(bat1.time() + posix_time::hours(5) + posix_time::minutes(30));
-   message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
+   Log().message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
    comp = 0.0;
-   message() << "comp = " << comp / kWh << endl;
+   Log().message() << "comp = " << comp / kWh << endl;
    BOOST_CHECK(bat1.charge() == comp);
 }
 
@@ -232,7 +232,7 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
    {
       double val = sts.value(base + posix_time::hours(i));
       double err = std::abs(val - sin(i * pi / 12));
-      message() << i << " " << val << " " << err << endl; 
+      Log().message() << i << " " << val << " " << err << endl; 
       if (i > -1 && i < 25)
       {
          BOOST_CHECK(err < 0.005);
@@ -252,7 +252,7 @@ BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
    for (int i = -1; i <= 4; ++i)
    {
       Complex val = lts.value(base + posix_time::hours(i));
-      message() << i << " " << val << endl; 
+      Log().message() << i << " " << val << endl; 
    }
    BOOST_CHECK(lts.value(base + posix_time::hours(-1)) == Complex(0, 0));
    BOOST_CHECK(lts.value(base + posix_time::hours(0)) == Complex(0, 0));
@@ -273,13 +273,13 @@ BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
    for (int i = -1; i <= 4; ++i)
    {
       double val = sts.value(base + posix_time::hours(i));
-      message() << i << " " << val << endl; 
+      Log().message() << i << " " << val << endl; 
    }
-   message() << endl;
+   Log().message() << endl;
    for (int i = -1; i <= 4; ++i)
    {
       double val = sts.value(base + posix_time::hours(i) + posix_time::seconds(1));
-      message() << i << " " << val << endl; 
+      Log().message() << i << " " << val << endl; 
    }
    BOOST_CHECK(sts.value(base + posix_time::seconds(-1)) == 1.5);
    BOOST_CHECK(sts.value(base + posix_time::seconds(1)) == 1.5);
@@ -292,7 +292,7 @@ BOOST_AUTO_TEST_CASE (test_function_timeseries)
 {
    FunctionTimeSeries <time_duration, double> 
       fts([] (time_duration td) {return 2 * dSeconds(td);});
-   message() << fts.value(posix_time::seconds(10)+milliseconds(3)) << endl;
+   Log().message() << fts.value(posix_time::seconds(10)+milliseconds(3)) << endl;
    BOOST_CHECK(fts.value(posix_time::seconds(-1)) == -2.0);
    BOOST_CHECK(fts.value(posix_time::seconds(3)) == 6.0);
 }
@@ -332,7 +332,7 @@ class TestEventA : public Component
       // Bring state up to time t_.
       virtual void updateState(Time t) override
       {
-         message() << "Update state of " << name() << " from time " 
+         Log().message() << "Update state of " << name() << " from time " 
               << time() << " to " << t << "." << endl;
          state_ = (t - startTime_).ticks() * ctrl_;
          nextUpdate_ = t + dt_;
@@ -359,7 +359,7 @@ BOOST_AUTO_TEST_CASE (test_events_and_sync)
    sim.initialize();
 
    a0.didCompleteTimestep().addAction(
-         [&]() {message() << a1.name() << " received did update from " << a0.name() << std::endl;},
+         [&]() {Log().message() << a1.name() << " received did update from " << a0.name() << std::endl;},
          "Test action.");
 
    sim.doNextUpdate();
@@ -405,7 +405,7 @@ BOOST_AUTO_TEST_CASE (test_sparse_solver)
 
    ublas::vector<double> x(n);
    kluSolve(a, b, x);
-   message(); for (int i = 0; i < n; ++i) std::cout << x(i) << " ";
+   Log().message(); for (int i = 0; i < n; ++i) std::cout << x(i) << " ";
    std::cout << endl;
    BOOST_CHECK(std::abs(x(0) - 1.0) < 1e-4);
    BOOST_CHECK(std::abs(x(1) - 2.0) < 1e-4);
@@ -636,10 +636,10 @@ BOOST_AUTO_TEST_CASE (test_sun)
 
    SphericalAngles sunCoords = sunPos(utcTimeFromLocalTime(posix_time::ptime(gregorian::date(2013, Jan, 26), posix_time::hours(8) + posix_time::minutes(30)), tz), 
          {-35.0, 149.0});
-   message() << "UTC time:  " << utcTimeFromLocalTime(posix_time::ptime(gregorian::date(2013, Jan, 26), posix_time::hours(8) + posix_time::minutes(30)), tz) 
+   Log().message() << "UTC time:  " << utcTimeFromLocalTime(posix_time::ptime(gregorian::date(2013, Jan, 26), posix_time::hours(8) + posix_time::minutes(30)), tz) 
              << std::endl;
-   message() << "Zenith:    " << sunCoords.zenith * 180 / pi << " expected: " << 64.47 << std::endl;
-   message() << "Azimuth:   " << sunCoords.azimuth * 180 / pi << " expected: " << 96.12 << std::endl;
+   Log().message() << "Zenith:    " << sunCoords.zenith * 180 / pi << " expected: " << 64.47 << std::endl;
+   Log().message() << "Azimuth:   " << sunCoords.azimuth * 180 / pi << " expected: " << 96.12 << std::endl;
 
    BOOST_CHECK(std::abs(sunCoords.zenith * 180 / pi - 64.47) < 1.25); // 5 minutes error.
    BOOST_CHECK(std::abs(sunCoords.azimuth * 180 / pi - 96.12) < 1.25); // 5 minutes error.
@@ -734,7 +734,7 @@ static void prepareMPInput(const std::string & yamlName, const std::string & cas
    std::fstream yamlFile(yamlName, ios_base::out);
    if (!yamlFile.is_open())
    {
-      error() << "Could not open the yaml output file " << yamlName << "." << std::endl;
+      Log().error() << "Could not open the yaml output file " << yamlName << "." << std::endl;
       SmartGridToolbox::abort();
    }
 
@@ -764,13 +764,13 @@ static void readMPOutput(const std::string & fileName, bool usePerUnit,
    std::fstream infile(fileName);
    if (!infile.is_open())
    {
-      error() << "Could not open the matpower compare file " << fileName << "." << std::endl;
+      Log().error() << "Could not open the matpower compare file " << fileName << "." << std::endl;
       SmartGridToolbox::abort();
    }
    infile >> SBase;
    int nBus;
    infile >> nBus;
-   message() << "Matpower output: nBus = " << nBus << std::endl;
+   Log().message() << "Matpower output: nBus = " << nBus << std::endl;
    iBus.resize(nBus, false);
    VBase.resize(nBus, false);
    V.resize(nBus, false);
@@ -842,26 +842,26 @@ static void testMatpower(const std::string & baseName, bool usePerUnit)
       assert(bus != nullptr);
       double VTol = usePerUnit ? 1e-4 : VBase(i) * 1e-4;
 
-      message() << "V tolerance = " << VTol << std::endl;
-      message() << "S tolerance = " << STol << std::endl;
-      message() << std::endl;
+      Log().message() << "V tolerance = " << VTol << std::endl;
+      Log().message() << "S tolerance = " << STol << std::endl;
+      Log().message() << std::endl;
 
-      message() << setw(24) << std::left << busName
+      Log().message() << setw(24) << std::left << busName
                 << setw(24) << std::left << "V"
                 << setw(24) << std::left << "Sc"
                 << setw(24) << std::left << "Sg"
                 << std::endl;
-      message() << setw(24) << left << "SGT"
+      Log().message() << setw(24) << left << "SGT"
                 << setw(24) << left << bus->V()(0)
                 << setw(24) << left << bus->Sc()(0)
                 << setw(24) << left << bus->Sg()(0)
                 << std::endl;
-      message() << setw(24) << left << "Matpower"
+      Log().message() << setw(24) << left << "Matpower"
                 << setw(24) << left << V(i) 
                 << setw(24) << left << Sc(i)
                 << setw(24) << left << Sg(i)
                 << std::endl; 
-      message() << std::endl;
+      Log().message() << std::endl;
 
       BOOST_CHECK(abs(bus->V()(0) - V(i)) < VTol);
       BOOST_CHECK(abs(bus->Sc()(0) - Sc(i)) < STol);
@@ -957,17 +957,17 @@ BOOST_AUTO_TEST_CASE (test_network_overhead)
    Network * network = mod.component<Network>("network_1");
    network->solvePowerFlow();
 
-   message() << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << std::endl;
-   message() << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) <<  std::endl;
-   message() << std::endl;
+   Log().message() << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << std::endl;
+   Log().message() << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) <<  std::endl;
+   Log().message() << std::endl;
 
-   message() << abs(bus1->V()(0)) << " " << abs(bus1->V()(1)) << " " << abs(bus1->V()(2)) <<  std::endl;
-   message() << abs(bus2->V()(0)) << " " << abs(bus2->V()(1)) << " " << abs(bus2->V()(2)) <<  std::endl;
-   message() << std::endl;
+   Log().message() << abs(bus1->V()(0)) << " " << abs(bus1->V()(1)) << " " << abs(bus1->V()(2)) <<  std::endl;
+   Log().message() << abs(bus2->V()(0)) << " " << abs(bus2->V()(1)) << " " << abs(bus2->V()(2)) <<  std::endl;
+   Log().message() << std::endl;
 
-   message() << bus1->STot()(0) << " " << bus1->STot()(1) << " " << bus1->STot()(2) << std::endl;
-   message() << bus2->STot()(0) << " " << bus2->STot()(1) << " " << bus2->STot()(2) <<  std::endl;
-   message() << std::endl;
+   Log().message() << bus1->STot()(0) << " " << bus1->STot()(1) << " " << bus1->STot()(2) << std::endl;
+   Log().message() << bus2->STot()(0) << " " << bus2->STot()(1) << " " << bus2->STot()(2) <<  std::endl;
+   Log().message() << std::endl;
 }
 
 static void prepareCDFInput(const std::string & yamlName, const std::string & caseName, bool usePerUnit)
@@ -975,7 +975,7 @@ static void prepareCDFInput(const std::string & yamlName, const std::string & ca
    std::fstream yamlFile(yamlName, ios_base::out);
    if (!yamlFile.is_open())
    {
-      error() << "Could not open the yaml output file " << yamlName << "." << std::endl;
+      Log().error() << "Could not open the yaml output file " << yamlName << "." << std::endl;
       SmartGridToolbox::abort();
    }
 
@@ -1034,26 +1034,26 @@ static void testCDF(const std::string & baseName, bool usePerUnit)
       assert(bus != nullptr);
       double VTol = usePerUnit ? 1e-4 : VBase(i) * 1e-4;
 
-      message() << "V tolerance = " << VTol << std::endl;
-      message() << "S tolerance = " << STol << std::endl;
-      message() << std::endl;
+      Log().message() << "V tolerance = " << VTol << std::endl;
+      Log().message() << "S tolerance = " << STol << std::endl;
+      Log().message() << std::endl;
 
-      message() << setw(24) << std::left << busName
+      Log().message() << setw(24) << std::left << busName
                 << setw(24) << std::left << "V"
                 << setw(24) << std::left << "Sc"
                 << setw(24) << std::left << "Sg"
                 << std::endl;
-      message() << setw(24) << left << "SGT"
+      Log().message() << setw(24) << left << "SGT"
                 << setw(24) << left << bus->V()(0)
                 << setw(24) << left << bus->Sc()(0)
                 << setw(24) << left << bus->Sg()(0)
                 << std::endl;
-      message() << setw(24) << left << "Matpower"
+      Log().message() << setw(24) << left << "Matpower"
                 << setw(24) << left << V(i) 
                 << setw(24) << left << Sc(i)
                 << setw(24) << left << Sg(i)
                 << std::endl; 
-      message() << std::endl;
+      Log().message() << std::endl;
 
       BOOST_CHECK(abs(bus->V()(0) - V(i)) < VTol);
       BOOST_CHECK(abs(bus->Sc()(0) - Sc(i)) < STol);
@@ -1083,23 +1083,23 @@ BOOST_AUTO_TEST_CASE (test_transformers)
    Bus * bus3 = mod.component<Bus>("bus_3");
 
    Network * network = mod.component<Network>("network_1");
-   message() << *network << std::endl;
+   Log().message() << *network << std::endl;
    network->solvePowerFlow();
 
-   message() << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << std::endl;
-   message() << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) <<  std::endl;
-   message() << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2) <<  std::endl;
-   message() << std::endl;
+   Log().message() << bus1->V()(0) << " " << bus1->V()(1) << " " << bus1->V()(2) << std::endl;
+   Log().message() << bus2->V()(0) << " " << bus2->V()(1) << " " << bus2->V()(2) <<  std::endl;
+   Log().message() << bus3->V()(0) << " " << bus3->V()(1) << " " << bus3->V()(2) <<  std::endl;
+   Log().message() << std::endl;
 
-   message() << abs(bus1->V()(0)) << " " << abs(bus1->V()(1)) << " " << abs(bus1->V()(2)) <<  std::endl;
-   message() << abs(bus2->V()(0)) << " " << abs(bus2->V()(1)) << " " << abs(bus2->V()(2)) <<  std::endl;
-   message() << abs(bus3->V()(0)) << " " << abs(bus3->V()(1)) << " " << abs(bus3->V()(2)) <<  std::endl;
-   message() << std::endl;
+   Log().message() << abs(bus1->V()(0)) << " " << abs(bus1->V()(1)) << " " << abs(bus1->V()(2)) <<  std::endl;
+   Log().message() << abs(bus2->V()(0)) << " " << abs(bus2->V()(1)) << " " << abs(bus2->V()(2)) <<  std::endl;
+   Log().message() << abs(bus3->V()(0)) << " " << abs(bus3->V()(1)) << " " << abs(bus3->V()(2)) <<  std::endl;
+   Log().message() << std::endl;
 
-   message() << bus1->STot()(0) << " " << bus1->STot()(1) << " " << bus1->STot()(2) << std::endl;
-   message() << bus2->STot()(0) << " " << bus2->STot()(1) << " " << bus2->STot()(2) <<  std::endl;
-   message() << bus3->STot()(0) << " " << bus3->STot()(1) << " " << bus3->STot()(2) <<  std::endl;
-   message() << std::endl;
+   Log().message() << bus1->STot()(0) << " " << bus1->STot()(1) << " " << bus1->STot()(2) << std::endl;
+   Log().message() << bus2->STot()(0) << " " << bus2->STot()(1) << " " << bus2->STot()(2) <<  std::endl;
+   Log().message() << bus3->STot()(0) << " " << bus3->STot()(1) << " " << bus3->STot()(2) <<  std::endl;
+   Log().message() << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
@@ -1119,17 +1119,17 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
 
    ublas::matrix<Complex> ZWire = oh->ZWire();
    ublas::matrix<Complex> ZPhase = oh->ZPhase();
-   message() << "ZWire = " << std::endl;
+   Log().message() << "ZWire = " << std::endl;
    for (int i = 0; i < ZWire.size1(); ++i)
    {
       messageStream() << row(ZWire, i) << std::endl;
    }
-   message() << "ZPhase = " << std::endl;
+   Log().message() << "ZPhase = " << std::endl;
    for (int i = 0; i < ZPhase.size1(); ++i)
    {
       messageStream() << row(ZPhase, i) << std::endl;
    }
-   message() << "YNode = " << std::endl;
+   Log().message() << "YNode = " << std::endl;
    for (int i = 0; i < oh->Y().size1(); ++i)
    {
       messageStream() << row(oh->Y(), i) << std::endl;
@@ -1142,7 +1142,7 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
    cmp = {1.3239, 1.3557}; double err11 = abs(ZPhase(1, 1) - cmp) / abs(cmp);
    cmp = {0.2067, 0.4591}; double err12 = abs(ZPhase(1, 2) - cmp) / abs(cmp);
    cmp = {1.3295, 1.3459}; double err22 = abs(ZPhase(2, 2) - cmp) / abs(cmp);
-   message() << "Err = " 
+   Log().message() << "Err = " 
              << err00 << " " << err01 << " " << err02 << " " << err11 << " " << err12 << " " << err22 << std::endl;
 
    BOOST_CHECK(err00 < 0.001);
@@ -1173,18 +1173,18 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
    Bus * bus1 = mod.component<Bus>("bus_1");
    Bus * bus2 = mod.component<Bus>("bus_2");
 
-   message() << "Bus 1 voltages: " << abs(bus1->V()(0)) << "@" << arg(bus1->V()(0)) * 180 / pi << std::endl;
-   message() << "Bus 1 voltages: " << abs(bus1->V()(1)) << "@" << arg(bus1->V()(1)) * 180 / pi << std::endl;
-   message() << "Bus 1 voltages: " << abs(bus1->V()(2)) << "@" << arg(bus1->V()(2)) * 180 / pi << std::endl;
-   message() << "Bus 2 voltages: " << abs(bus2->V()(0)) << "@" << arg(bus2->V()(0)) * 180 / pi << std::endl;
-   message() << "Bus 2 voltages: " << abs(bus2->V()(1)) << "@" << arg(bus2->V()(1)) * 180 / pi << std::endl;
-   message() << "Bus 2 voltages: " << abs(bus2->V()(2)) << "@" << arg(bus2->V()(2)) * 180 / pi << std::endl;
+   Log().message() << "Bus 1 voltages: " << abs(bus1->V()(0)) << "@" << arg(bus1->V()(0)) * 180 / pi << std::endl;
+   Log().message() << "Bus 1 voltages: " << abs(bus1->V()(1)) << "@" << arg(bus1->V()(1)) * 180 / pi << std::endl;
+   Log().message() << "Bus 1 voltages: " << abs(bus1->V()(2)) << "@" << arg(bus1->V()(2)) * 180 / pi << std::endl;
+   Log().message() << "Bus 2 voltages: " << abs(bus2->V()(0)) << "@" << arg(bus2->V()(0)) * 180 / pi << std::endl;
+   Log().message() << "Bus 2 voltages: " << abs(bus2->V()(1)) << "@" << arg(bus2->V()(1)) * 180 / pi << std::endl;
+   Log().message() << "Bus 2 voltages: " << abs(bus2->V()(2)) << "@" << arg(bus2->V()(2)) * 180 / pi << std::endl;
 
    Complex cmp;
    cmp = polar(14606.60, -0.62 * pi / 180.0); double err0 = abs(bus2->V()(0) - cmp) / abs(cmp);
    cmp = polar(14726.69, -121.0 * pi / 180.0); double err1 = abs(bus2->V()(1) - cmp) / abs(cmp);
    cmp = polar(14801.37, 119.2 * pi / 180.0); double err2 = abs(bus2->V()(2) - cmp) / abs(cmp);
-   message() << "Err = " << err0 << " " << err1 << " " << err2 << std::endl;
+   Log().message() << "Err = " << err0 << " " << err1 << " " << err2 << std::endl;
 
    BOOST_CHECK(err0 < 0.001);
    BOOST_CHECK(err1 < 0.001);

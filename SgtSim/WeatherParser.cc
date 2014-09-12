@@ -21,8 +21,7 @@ namespace SmartGridToolbox
          auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
          if (series == nullptr)
          {
-            error() << "Parsing weather: couldn't find time series " << id << std::endl;
-            abort();
+            Log().fatal() << "Parsing weather: couldn't find time series " << id << std::endl;
          }
          weather->setTemperatureSeries(series);
       }
@@ -34,8 +33,7 @@ namespace SmartGridToolbox
          auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
          if (series == nullptr)
          {
-            error() << "Parsing weather: couldn't find time series " << id << std::endl;
-            abort();
+            Log().fatal() << "Parsing weather: couldn't find time series " << id << std::endl;
          }
          weather->setCloudCoverSeries(series);
       }

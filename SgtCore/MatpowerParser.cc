@@ -232,12 +232,11 @@ namespace SmartGridToolbox
          std::fstream infile(inputName);
          if (!infile.is_open())
          {
-            error() << "Could not open the matpower input file " << inputName << "." << std::endl;
-            abort();
+            Log().fatal() << "Could not open the matpower input file " << inputName << "." << std::endl;
          }
          else
          {
-            message() << "Parsing matpower input file " << inputName << "." << std::endl;
+            Log().message() << "Parsing matpower input file " << inputName << "." << std::endl;
          }
 
          // Iterate over stream input:
@@ -252,7 +251,7 @@ namespace SmartGridToolbox
          }
       }
 
-      message() << "Parsed " << data.bus.size() << " busses, " << data.gen.size() << " generators and "
+      Log().message() << "Parsed " << data.bus.size() << " busses, " << data.gen.size() << " generators and "
          << data.branch.size() << " branches." << std::endl;
 
       // Extract the bus data.
@@ -464,14 +463,12 @@ namespace SmartGridToolbox
 
          if (genCostInfo.model != 2)
          {
-            error() << "Can only use model 2 for generator costs." << std::endl;
-            abort();
+            Log().fatal() << "Can only use model 2 for generator costs." << std::endl;
          }
          
          if (genCostInfo.costs.size() > 3)
          {
-            error() << "Can't have more than three costs for generator.." << std::endl;
-            abort();
+            Log().fatal() << "Can't have more than three costs for generator.." << std::endl;
          }
 
          MpGenInfo& genInfo = genVec[i];

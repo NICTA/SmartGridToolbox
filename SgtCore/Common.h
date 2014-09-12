@@ -124,6 +124,14 @@ namespace SmartGridToolbox
             return std::cerr;
          }
 
+         std::ostream& debug()
+         {
+            cerrBuf_.reset(
+                  std::string("DEBUG  : ") + std::string(indentLevel_, ' '),
+                  std::string("         ") + std::string(indentLevel_, ' '));
+            return std::cerr;
+         }
+
          std::ostream& error()
          {
             cerrBuf_.reset(
@@ -149,7 +157,6 @@ namespace SmartGridToolbox
          LogBuf cerrBuf_{std::cerr};
          bool isFatal_{false};
    };
-   int Log::indentLevel_ = 0;
 
    class Indent
    {

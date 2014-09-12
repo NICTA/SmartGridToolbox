@@ -8,7 +8,7 @@ namespace SmartGridToolbox
 {
    void Model::addOrReplaceGenericComponent(std::shared_ptr<ComponentInterface> comp, bool allowReplace)
    {
-      message() << "Adding component " << comp->id() << " of type " 
+      Log().message() << "Adding component " << comp->id() << " of type " 
          << comp->componentType() << " to model." << std::endl;
       Indent _;
 
@@ -18,12 +18,11 @@ namespace SmartGridToolbox
          if (allowReplace)
          {
             it1->second = comp;
-            message() << "Component " << comp->id() << " replaced in model." << std::endl;
+            Log().message() << "Component " << comp->id() << " replaced in model." << std::endl;
          }
          else
          {
-            error() << "Component " << comp->id() << " occurs more than once in the model!" << std::endl;
-            abort();
+            Log().fatal() << "Component " << comp->id() << " occurs more than once in the model!" << std::endl;
          }
       }
       else

@@ -50,8 +50,7 @@ namespace SmartGridToolbox
          auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
          if (series == nullptr)
          {
-            error() << "Parsing simple_building: couldn't find time series " << id << std::endl;
-            abort();
+            Log().fatal() << "Parsing simple_building: couldn't find time series " << id << std::endl;
          }
          build->set_dQgSeries(series);
       }
@@ -68,8 +67,7 @@ namespace SmartGridToolbox
          auto weather = sim.simComponent<Weather>(weatherStr);
          if (weather == nullptr)
          {
-            error() << "Parsing simple_building: couldn't find weather " << weatherStr << std::endl;
-            abort();
+            Log().fatal() << "Parsing simple_building: couldn't find weather " << weatherStr << std::endl;
          }
          build->setWeather(weather);
       }

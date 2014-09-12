@@ -116,27 +116,27 @@ namespace SmartGridToolbox
    void PowerFlowNr::addBus(const std::string& id, BusType type, Phases phases, const ublas::vector<Complex>& V,
          const ublas::vector<Complex>& Y, const ublas::vector<Complex>& I, const ublas::vector<Complex>& S)
    {
-      SGT_DEBUG(debug() << "PowerFlowNr : add bus " << id << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr : add bus " << id << std::endl);
       busses_[id].reset(new BusNr(id, type, phases, V, Y, I, S));
    }
 
    void PowerFlowNr::addBranch(const std::string& idBus0, const std::string& idBus1, Phases phases0, Phases phases1,
                                const ublas::matrix<Complex>& Y)
    {
-      SGT_DEBUG(debug() << "PowerFlowNr : addBranch " << idBus0 << " " << idBus1 << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr : addBranch " << idBus0 << " " << idBus1 << std::endl);
       branches_.push_back(std::unique_ptr<BranchNr>(new BranchNr(idBus0, idBus1, phases0, phases1, Y)));
    }
 
    void PowerFlowNr::reset()
    {
-      SGT_DEBUG(debug() << "PowerFlowNr : reset." << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr : reset." << std::endl);
       busses_ = BusMap();
       branches_ = BranchVec();
    }
 
    void PowerFlowNr::validate()
    {
-      SGT_DEBUG(debug() << "PowerFlowNr : validate." << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr : validate." << std::endl);
 
       // Make Nodes:
       NodeVec PqNodes = NodeVec();
@@ -160,8 +160,7 @@ namespace SmartGridToolbox
          }
          else
          {
-            error() << "Unsupported bus type " << busType2Str(bus.type_) << std::endl;
-            abort();
+            Log().fatal() << "Unsupported bus type " << busType2Str(bus.type_) << std::endl;
          }
          for (const std::unique_ptr<NodeNr>& node : bus.nodes_)
          {
@@ -195,16 +194,14 @@ namespace SmartGridToolbox
          auto it0 = busses_.find(branch->ids_[0]);
          if (it0 == busses_.end())
          {
-            error() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] << " contains a non-existent bus "
-                    << branch->ids_[0] << std::endl;
-            abort();
+            Log().fatal() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
+               << " contains a non-existent bus " << branch->ids_[0] << std::endl;
          }
          auto it1 = busses_.find(branch->ids_[1]);
          if (it1 == busses_.end())
          {
-            error() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] << " contains a non-existent bus "
-                    << branch->ids_[1] << std::endl;
-            abort();
+            Log().fatal() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
+               << " contains a non-existent bus " << branch->ids_[1] << std::endl;
          }
          const BusNr* busses[] = {it0->second.get(), it1->second.get()};
          int nTerm = 2 * branch->nPhase_;
@@ -245,7 +242,7 @@ namespace SmartGridToolbox
 
       G_ = real(Y_);
       B_ = imag(Y_);
-      SGT_DEBUG(debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
+      SGT_DEBUG(Log().debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
 
       // Load quantities.
       Ic_.resize(nNode(), false);
@@ -254,7 +251,7 @@ namespace SmartGridToolbox
          Ic_(i) = nodes_[i]->Ic_;
       }
 
-      SGT_DEBUG(debug() << "PowerFlowNr : validate complete." << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr : validate complete." << std::endl);
       SGT_DEBUG(printProblem());
    }
 
@@ -483,7 +480,7 @@ namespace SmartGridToolbox
 
    bool PowerFlowNr::solve()
    {
-      SGT_DEBUG(debug() << "PowerFlowNr : solve." << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr : solve." << std::endl);
 
       Stopwatch stopwatch;
       Stopwatch stopwatchTot;
@@ -531,17 +528,17 @@ namespace SmartGridToolbox
 
       for (niter = 0; niter < maxiter; ++niter)
       {
-         SGT_DEBUG(debug() << "\tIteration = " << niter << std::endl);
+         SGT_DEBUG(Log().debug() << "\tIteration = " << niter << std::endl);
 
          stopwatch.reset(); stopwatch.start();
          calcf(f, Vr, Vi, P, Q, M2Pv);
 
          err = norm_inf(f);
-         SGT_DEBUG(debug() << "\tf  = " << std::setprecision(5) << std::setw(9) << f << std::endl);
-         SGT_DEBUG(debug() << "\tError = " << err << std::endl);
+         SGT_DEBUG(Log().debug() << "\tf  = " << std::setprecision(5) << std::setw(9) << f << std::endl);
+         SGT_DEBUG(Log().debug() << "\tError = " << err << std::endl);
          if (err <= tol)
          {
-            SGT_DEBUG(debug() << "\tSuccess at iteration " << niter << "." << std::endl);
+            SGT_DEBUG(Log().debug() << "\tSuccess at iteration " << niter << "." << std::endl);
             wasSuccessful = true;
             break;
          }
@@ -562,17 +559,17 @@ namespace SmartGridToolbox
 
          SGT_DEBUG
          (
-            debug() << "\tBefore kluSolve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
-            debug() << "\tBefore kluSolve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
-            debug() << "\tBefore kluSolve: M^2 = " << std::setprecision(5) << std::setw(9)
+            Log().debug() << "\tBefore kluSolve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
+            Log().debug() << "\tBefore kluSolve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
+            Log().debug() << "\tBefore kluSolve: M^2 = " << std::setprecision(5) << std::setw(9)
                     << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl;
-            debug() << "\tBefore kluSolve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
-            debug() << "\tBefore kluSolve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
-            debug() << "\tBefore kluSolve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
-            debug() << "\tBefore kluSolve: J   = " << std::endl;
+            Log().debug() << "\tBefore kluSolve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
+            Log().debug() << "\tBefore kluSolve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
+            Log().debug() << "\tBefore kluSolve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
+            Log().debug() << "\tBefore kluSolve: J   = " << std::endl;
             for (int i = 0; i < nVar(); ++i)
             {
-               debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JMat, i) << std::endl;
+               Log().debug() << "\t\t" << std::setprecision(5) << std::setw(9) << row(JMat, i) << std::endl;
             }
          );
 
@@ -581,12 +578,12 @@ namespace SmartGridToolbox
          bool ok = kluSolve(JMat, -f, x);
          stopwatch.stop(); durationSolve += stopwatch.seconds();
 
-         SGT_DEBUG(debug() << "\tAfter kluSolve: ok = " << ok << std::endl);
-         SGT_DEBUG(debug() << "\tAfter kluSolve: x  = " << std::setprecision(5) << std::setw(9) << x << std::endl);
+         SGT_DEBUG(Log().debug() << "\tAfter kluSolve: ok = " << ok << std::endl);
+         SGT_DEBUG(Log().debug() << "\tAfter kluSolve: x  = " << std::setprecision(5) << std::setw(9) << x 
+               << std::endl);
          if (!ok)
          {
-            error() << "kluSolve failed." << std::endl;
-            abort();
+            Log().fatal() << "kluSolve failed." << std::endl;
          }
 
          stopwatch.reset(); stopwatch.start();
@@ -605,12 +602,12 @@ namespace SmartGridToolbox
          // Update Q for PV busses based on the solution.
          project(Q, selPvFromAll()) += project(x, selQPvFrom_x());
 
-         SGT_DEBUG(debug() << "\tUpdated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated M^2 = " << std::setprecision(5) << std::setw(9)
+         SGT_DEBUG(Log().debug() << "\tUpdated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl);
+         SGT_DEBUG(Log().debug() << "\tUpdated Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl);
+         SGT_DEBUG(Log().debug() << "\tUpdated M^2 = " << std::setprecision(5) << std::setw(9)
                            << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated P   = " << std::setprecision(5) << std::setw(9) << P << std::endl);
-         SGT_DEBUG(debug() << "\tUpdated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl);
+         SGT_DEBUG(Log().debug() << "\tUpdated P   = " << std::setprecision(5) << std::setw(9) << P << std::endl);
+         SGT_DEBUG(Log().debug() << "\tUpdated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl);
          stopwatch.stop(); durationUpdateIter += stopwatch.seconds();
       }
 
@@ -649,57 +646,57 @@ namespace SmartGridToolbox
       }
       else
       {
-         warning() << "PowerFlowNr: Newton-Raphson method failed to converge." << std::endl;
+         Log().warning() << "PowerFlowNr: Newton-Raphson method failed to converge." << std::endl;
       }
 
       stopwatchTot.stop(); durationTot = stopwatchTot.seconds();
 
-      message() << "PowerFlowNr: successful = " << wasSuccessful << ", error = " << err
+      Log().message() << "PowerFlowNr: successful = " << wasSuccessful << ", error = " << err
                 << ", iterations = " << niter << ", total time = " << durationTot << "." << std::endl;
-      SGT_DEBUG(debug() << "PowerFlowNr: -----------------------   " << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNr: init setup time         = " << durationInitSetup << " s." << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNr: time in calcf           = " << durationCalcf << " s." << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNr: time in updateJ         = " << durationUpdateJ << " s." << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNr: time in modifyForPv     = " << durationModifyForPv << " s." << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNr: time to construct JMat  = " << durationConstructJMat << " s." << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNr: solve time              = " << durationSolve << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNr: time to update iter     = " << durationUpdateIter << std::endl);
-      SGT_DEBUG(debug() << "PowerFlowNr: -----------------------   " << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr: -----------------------   " << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr: init setup time         = " << durationInitSetup << " s." << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr: time in calcf           = " << durationCalcf << " s." << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr: time in updateJ         = " << durationUpdateJ << " s." << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr: time in modifyForPv     = " << durationModifyForPv << " s." << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr: time to construct JMat  = " << durationConstructJMat << " s." << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr: solve time              = " << durationSolve << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr: time to update iter     = " << durationUpdateIter << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr: -----------------------   " << std::endl);
 
       return wasSuccessful;
    }
 
    void PowerFlowNr::printProblem()
    {
-      debug() << "PowerFlowNr::printProblem()" << std::endl;
-      debug() << "\tNodes:" << std::endl;
+      Log().debug() << "PowerFlowNr::printProblem()" << std::endl;
+      Log().debug() << "\tNodes:" << std::endl;
       for (const NodeNr* nd : nodes_)
       {
-         debug() << "\t\tNode:" << std::endl;
-         debug() << "\t\t\tId    : " << nd->bus_->id_ << std::endl;
-         debug() << "\t\t\tType  : " << nd->bus_->type_ << std::endl;
-         debug() << "\t\t\tPhase : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
-         debug() << "\t\t\tV     : " << nd->V_ << std::endl;
-         debug() << "\t\t\tS     : " << nd->S_ << std::endl;
-         debug() << "\t\t\tYs    : " << nd->Ys_ << std::endl;
-         debug() << "\t\t\tIc    : " << nd->Ic_ << std::endl;
+         Log().debug() << "\t\tNode:" << std::endl;
+         Log().debug() << "\t\t\tId    : " << nd->bus_->id_ << std::endl;
+         Log().debug() << "\t\t\tType  : " << nd->bus_->type_ << std::endl;
+         Log().debug() << "\t\t\tPhase : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
+         Log().debug() << "\t\t\tV     : " << nd->V_ << std::endl;
+         Log().debug() << "\t\t\tS     : " << nd->S_ << std::endl;
+         Log().debug() << "\t\t\tYs    : " << nd->Ys_ << std::endl;
+         Log().debug() << "\t\t\tIc    : " << nd->Ic_ << std::endl;
       }
-      debug() << "\tBranches:" << std::endl;
+      Log().debug() << "\tBranches:" << std::endl;
       for (const std::unique_ptr<BranchNr>& branch : branches_)
       {
-         debug() << "\t\tBranch:" << std::endl;
-         debug() << "\t\t\tBusses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;
-         debug() << "\t\t\tPhases : " << branch->phases_[0] << ", " << branch->phases_[1] << std::endl;
-         debug() << "\t\t\tY      :" << std::endl;
+         Log().debug() << "\t\tBranch:" << std::endl;
+         Log().debug() << "\t\t\tBusses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;
+         Log().debug() << "\t\t\tPhases : " << branch->phases_[0] << ", " << branch->phases_[1] << std::endl;
+         Log().debug() << "\t\t\tY      :" << std::endl;
          for (int i = 0; i < branch->Y_.size1(); ++i)
          {
-            debug() << "\t\t\t\t" << std::setprecision(14) << std::setw(18) << row(branch->Y_, i) << std::endl;
+            Log().debug() << "\t\t\t\t" << std::setprecision(14) << std::setw(18) << row(branch->Y_, i) << std::endl;
          }
       }
-      debug() << "\tY:" << std::endl;
+      Log().debug() << "\tY:" << std::endl;
       for (int i = 0; i < Y_.size1(); ++i)
       {
-         debug() << "\t\t\t\t" << std::setprecision(14) << std::setw(18) << row(Y_, i) << std::endl;
+         Log().debug() << "\t\t\t\t" << std::setprecision(14) << std::setw(18) << row(Y_, i) << std::endl;
       }
    }
 }

@@ -106,13 +106,13 @@ namespace SmartGridToolbox
          
          void parse(const std::string& fname, T& netw)
          {
-            message() << "Parsing file " << fname << "." << std::endl;
+            Log().message() << "Parsing file " << fname << "." << std::endl;
             {
                Indent _;
                auto top = getTopNode(fname);
                parse(top, netw);
             }
-            message() << "Finished parsing file " << fname << "." << std::endl;
+            Log().message() << "Finished parsing file " << fname << "." << std::endl;
          }
 
          void parse(const YAML::Node& node, T& netw)
@@ -121,11 +121,11 @@ namespace SmartGridToolbox
             {
                std::string nodeType = subnode.first.as<std::string>();
                const YAML::Node& nodeVal = subnode.second;
-               message() << "Parsing plugin " <<  nodeType << "." << std::endl;
+               Log().message() << "Parsing plugin " <<  nodeType << "." << std::endl;
                auto it = plugins_.find(nodeType);
                if (it == plugins_.end())
                {
-                  warning() << "I don't know how to parse plugin " << nodeType << std::endl;
+                  Log().warning() << "I don't know how to parse plugin " << nodeType << std::endl;
                }
                else
                {
@@ -133,7 +133,7 @@ namespace SmartGridToolbox
                   it->second->parse(nodeVal, netw);
                }
             }
-            message() << "Parsing plugins. Completed." << std::endl;
+            Log().message() << "Parsing plugins. Completed." << std::endl;
          }
 
       private:

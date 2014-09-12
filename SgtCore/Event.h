@@ -61,7 +61,7 @@ namespace SmartGridToolbox
 
          void addAction(const std::function<void ()>& action, const std::string& description)
          {
-            SGT_DEBUG(debug() << "Event: " << description_ << ": addAction: " << description << std::endl);
+            SGT_DEBUG(Log().debug() << "Event: " << description_ << ": addAction: " << description << std::endl);
             actions_.emplace_back(action, description);
          }
 

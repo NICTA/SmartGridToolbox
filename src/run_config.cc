@@ -7,8 +7,7 @@ int main(int argc, const char** argv)
 {
    if (argc != 2)
    {
-      error() << "Usage: " << argv[0] << " config_name" << std::endl;
-      SmartGridToolbox::abort();
+      Log().fatal() << "Usage: " << argv[0] << " config_name" << std::endl;
    }
 
    const char* configName = argv[1];
