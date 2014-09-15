@@ -36,7 +36,7 @@ namespace SmartGridToolbox
       zip()->addDcPowerSource(source);
       dependsOn(source);
       source->didUpdate().addAction([this](){needsUpdate().trigger();},
-            "Trigger SimInverter " + id() + " needs update.");
+            std::string("Trigger ") + sComponentType() + " " + id() + " needs update.");
       // TODO: this will recalculate all zips. Efficiency?
    }
 }

@@ -57,9 +57,9 @@ namespace SmartGridToolbox
             network_->addNode(bus);
             dependsOn(simBus);
             bus->controlChanged().addAction([this](){needsUpdate().trigger();}, 
-                  "Trigger SimNetwork " + id() + " needs update");
+                  std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
             bus->isInServiceChanged().addAction([this](){needsUpdate().trigger();}, 
-                  "Trigger SimNetwork " + id() + " needs update");
+                  std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
          }
 
          template<typename T> void addArc(std::shared_ptr<T> simBranch, const std::string& bus0Id,
@@ -69,9 +69,9 @@ namespace SmartGridToolbox
             network_->addArc(branch, bus0Id, bus1Id);
             dependsOn(simBranch);
             branch->admittanceChanged().addAction([this](){needsUpdate().trigger();}, 
-                  "Trigger SimNetwork " + id() + " needs update");
+                  std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
             branch->isInServiceChanged().addAction([this](){needsUpdate().trigger();}, 
-                  "Trigger SimNetwork " + id() + " needs update");
+                  std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
          }
 
          template<typename T> void addGen(std::shared_ptr<T> simGen, const std::string& busId)
@@ -80,11 +80,11 @@ namespace SmartGridToolbox
             network_->addGen(gen, busId);
             dependsOn(simGen);
             gen->setpointChanged().addAction([this](){needsUpdate().trigger();}, 
-                  "Trigger SimNetwork " + id() + " needs update");
+                  std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
             gen->generationChanged().addAction([this](){needsUpdate().trigger();}, 
-                  "Trigger SimNetwork " + id() + " needs update");
+                  std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
             gen->isInServiceChanged().addAction([this](){needsUpdate().trigger();}, 
-                  "Trigger SimNetwork " + id() + " needs update");
+                  std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
          }
 
          template<typename T> void addZip(std::shared_ptr<T> simZip, const std::string& busId)
@@ -93,11 +93,11 @@ namespace SmartGridToolbox
             network_->addZip(zip, busId);
             dependsOn(simZip);
             zip->injectionChanged().addAction([this](){needsUpdate().trigger();}, 
-                  "Trigger SimNetwork " + id() + " needs update");
+                  std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
             zip->setpointChanged().addAction([this](){needsUpdate().trigger();}, 
-                  "Trigger SimNetwork " + id() + " needs update");
+                  std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
             zip->isInServiceChanged().addAction([this](){needsUpdate().trigger();}, 
-                  "Trigger SimNetwork " + id() + " needs update");
+                  std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
          }
 
          /// @}
