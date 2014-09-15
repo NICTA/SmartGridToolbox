@@ -35,8 +35,8 @@ namespace SmartGridToolbox
    {
       zip()->addDcPowerSource(source);
       dependsOn(source);
-      source->didUpdate().addAction([this](){needsUpdate().trigger();},
-            std::string("Trigger ") + sComponentType() + " " + id() + " needs update.");
+      source->dcPowerChanged().addAction([this](){zip_->injectionChanged().trigger();},
+            std::string("Trigger ") + sComponentType() + " " + id() + " injection changed.");
       // TODO: this will recalculate all zips. Efficiency?
    }
 }

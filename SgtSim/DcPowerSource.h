@@ -43,8 +43,21 @@ namespace SmartGridToolbox
          virtual double PDc() const = 0;
 
       /// @}
+      
+      /// @name Events.
+      /// @{
+         
+         /// @brief Event triggered when I go in or out of service.
+         virtual Event& dcPowerChanged()
+         {
+            return dcPowerChanged_;
+         }
 
-         Event dcPowerChanged_{std::string(sComponentType()) + "DC power changed"};
+      /// @}
+
+      private:
+
+         Event dcPowerChanged_{std::string(sComponentType()) + ": DC power changed"};
    };
 
    class GenericDcPowerSource : virtual public DcPowerSourceAbc
@@ -77,7 +90,7 @@ namespace SmartGridToolbox
       /// @{
       
          virtual double PDc() const {return PDc_;}
-         void setPDc(double PDc) {PDc_ = PDc; needsUpdate().trigger();}
+         void setPDc(double PDc) {PDc_ = PDc; dcPowerChanged().trigger();}
       
       /// @}
 

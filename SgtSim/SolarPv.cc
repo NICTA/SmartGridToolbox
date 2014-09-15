@@ -17,8 +17,8 @@ namespace SmartGridToolbox
    {
       weather_ = weather;
       dependsOn(weather);
-      weather->didUpdate().addAction([this](){needsUpdate().trigger();},
-            std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
+      weather->didUpdate().addAction([this](){dcPowerChanged().trigger();},
+            std::string("Trigger ") + sComponentType() + " " + id() + " DC power changed");
    }
 
    double SolarPv::PDc() const

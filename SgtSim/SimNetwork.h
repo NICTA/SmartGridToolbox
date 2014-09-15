@@ -56,7 +56,7 @@ namespace SmartGridToolbox
             auto bus = simBus->bus();
             network_->addNode(bus);
             dependsOn(simBus);
-            bus->controlChanged().addAction([this](){needsUpdate().trigger();}, 
+            bus->setpointChanged().addAction([this](){needsUpdate().trigger();}, 
                   std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
             bus->isInServiceChanged().addAction([this](){needsUpdate().trigger();}, 
                   std::string("Trigger ") + sComponentType() + " " + id() + " needs update");

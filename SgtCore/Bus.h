@@ -80,8 +80,8 @@ namespace SmartGridToolbox
          /// @brief Event triggered when I go in or out of service.
          virtual Event& isInServiceChanged() = 0;
 
-         /// @brief Event triggered when bus control (e.g. setpoint) has changed.
-         virtual Event& controlChanged() = 0;
+         /// @brief Event triggered when bus setpoint has changed.
+         virtual Event& setpointChanged() = 0;
          
          /// @brief Event triggered when bus state (e.g. voltage) has been updated.
          virtual Event& voltageUpdated() = 0;
@@ -144,7 +144,7 @@ namespace SmartGridToolbox
          virtual void setType(const BusType type) override
          {
             type_ = type;
-            controlChanged_.trigger();
+            setpointChanged_.trigger();
          }
 
          virtual ublas::vector<double> VMagSetpoint() const override
@@ -155,7 +155,7 @@ namespace SmartGridToolbox
          virtual void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint) override
          {
             VMagSetpoint_ = VMagSetpoint;
-            controlChanged_.trigger();
+            setpointChanged_.trigger();
          }
 
          virtual ublas::vector<double> VAngSetpoint() const override
@@ -166,7 +166,7 @@ namespace SmartGridToolbox
          virtual void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint) override
          {
             VAngSetpoint_ = VAngSetpoint;
-            controlChanged_.trigger();
+            setpointChanged_.trigger();
          }
 
          virtual double VMagMin() const override
@@ -177,7 +177,7 @@ namespace SmartGridToolbox
          virtual void setVMagMin(double VMagMin) override
          {
             VMagMin_ = VMagMin;
-            controlChanged_.trigger();
+            setpointChanged_.trigger();
          }
 
          virtual double VMagMax() const override
@@ -188,7 +188,7 @@ namespace SmartGridToolbox
          virtual void setVMagMax(double VMagMax) override
          {
             VMagMax_ = VMagMax;
-            controlChanged_.trigger();
+            setpointChanged_.trigger();
          }
 
       /// @}
@@ -228,10 +228,10 @@ namespace SmartGridToolbox
             return isInServiceChanged_;
          }
 
-         /// @brief Event triggered when bus control (e.g. setpoint) has changed.
-         virtual Event& controlChanged() override
+         /// @brief Event triggered when bus setpoint has changed.
+         virtual Event& setpointChanged() override
          {
-            return controlChanged_;
+            return setpointChanged_;
          }
          
          /// @brief Event triggered when bus state (e.g. voltage) has been updated.
@@ -265,7 +265,7 @@ namespace SmartGridToolbox
          ublas::vector<Complex> V_{phases_.size(), czero};
 
          Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
-         Event controlChanged_{std::string(sComponentType()) + " : Control changed"};
+         Event setpointChanged_{std::string(sComponentType()) + " : Control changed"};
          Event voltageUpdated_{std::string(sComponentType()) + " : Voltage updated"};
    };
 }
