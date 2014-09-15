@@ -1,15 +1,15 @@
 ---
 simulation:
-   start_time:             2013-01-23 13:13:00
-   end_time:               2013-01-23 15:13:00
    lat_long:               [-35.3075, 149.1244] # Canberra, Australia.
+   start_time:             2013-01-23 06:00:00
+   end_time:               2013-01-25 06:00:00
    timezone:               AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
    time_series:
       id:                  cloud_cover_series
       value_type:          real_scalar
       type:                data_time_series
       data_file:           cloud_cover.txt
-      relative_to_time:    2013-01-23 13:13:00
+      relative_to_time:    2013-01-23 06:00:00
       time_unit:           m
       interp_type:         lerp
 weather:
@@ -52,8 +52,8 @@ inverter:
    network_id:             network
    bus_id:                 bus_2
    phases:                 [A, B, C]
-   requested_Q_per_phase:  3e-3
-   max_S_mag_per_phase:    1e-3
+   requested_Q_per_phase:  3e-4
+   max_S_mag_per_phase:    1e-2
    min_power_factor:       0.9
    efficiency:             0.86
 solar_pv:

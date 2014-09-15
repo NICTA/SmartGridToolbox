@@ -14,7 +14,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle
       /// @{
      
-         SimComponentAbc();
+         SimComponentAbc() = default;
 
          virtual ~SimComponentAbc() = default;
 
@@ -131,14 +131,14 @@ namespace SmartGridToolbox
 
       private:
 
-         Time time_ = posix_time::not_a_date_time; ///< The time to which I am up to date
+         Time time_{posix_time::not_a_date_time}; ///< The time to which I am up to date
          std::vector<std::weak_ptr<const SimComponentAbc>> dependencies_; ///< I depend on these.
-         int rank_ = -1; ///< Evaluation rank, based on weak ordering.
-         Event willUpdate_; ///< Triggered immediately prior to upddate. 
-         Event didUpdate_; ///< Triggered immediately post update.
-         Event needsUpdate_; ///< Triggered when I need to be updated.
-         Event willStartNewTimestep_; ///< Triggered immediately prior to time advancing.
-         Event didCompleteTimestep_; ///< Triggered immediately after fully completing a timestep.
+         int rank_{-1}; ///< Evaluation rank, based on weak ordering.
+         Event willUpdate_{"Will update"}; ///< Triggered immediately prior to upddate. 
+         Event didUpdate_{"Did update"}; ///< Triggered immediately post update.
+         Event needsUpdate_{"Needs update"}; ///< Triggered when I need to be updated.
+         Event willStartNewTimestep_{"Will start new timestep"}; ///< Triggered immediately prior to time advancing.
+         Event didCompleteTimestep_{"Did complete timestep"}; ///< Triggered just after fully completing a timestep.
    };
 
    class SimComponent : public SimComponentAbc, public Component

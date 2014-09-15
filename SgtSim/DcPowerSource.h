@@ -28,6 +28,8 @@ namespace SmartGridToolbox
          virtual double PDc() const = 0;
 
       /// @}
+
+         Event dcPowerChanged_{"DC power changed"};
    };
 
    class GenericDcPowerSource : virtual public DcPowerSourceAbc

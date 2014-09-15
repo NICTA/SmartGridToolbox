@@ -31,8 +31,15 @@ namespace SmartGridToolbox
             // Empty.
          }
 
+         const std::string& description() const
+         {
+            return description_;
+         }
 
-         const std::string& description() const {return description_;}
+         void setDescription(const std::string& description)
+         {
+            description_ = description;
+         }
 
          void perform() const {function_();}
 
@@ -75,6 +82,11 @@ namespace SmartGridToolbox
          const std::string& description() const
          {
             return description_;
+         }
+
+         void setDescription(const std::string& description) 
+         {
+            description_ = description;
          }
 
       private:

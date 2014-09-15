@@ -69,6 +69,23 @@ namespace SmartGridToolbox
          BranchAbc(const std::string& id, Phases phases0, Phases phases1);
 
       /// @}
+         
+      /// @name Component Type:
+      /// @{
+         
+         static constexpr const char* sComponentType()
+         {
+            return "branch";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+      
+      /// @}
+
+      /// @}
 
       /// @name Phase accessors:
       /// @{
@@ -128,8 +145,8 @@ namespace SmartGridToolbox
          Phases phases1_; ///< Phases on bus 1.
          bool isInService_; ///< Am I in service?
 
-         Event isInServiceChanged_;
-         Event admittanceChanged_;
+         Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
+         Event admittanceChanged_{std::string(sComponentType()) + " : Admittance changed"};
    };
 
    /// @brief A concrete, generic branch.

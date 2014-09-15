@@ -259,9 +259,9 @@ namespace SmartGridToolbox
          bool isInService_{true};
          ublas::vector<Complex> V_{phases_.size(), czero};
 
-         Event isInServiceChanged_;
-         Event controlChanged_;
-         Event voltageUpdated_;
+         Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
+         Event controlChanged_{std::string(sComponentType()) + " : Control changed"};
+         Event voltageUpdated_{std::string(sComponentType()) + " : Voltage updated"};
    };
 }
 

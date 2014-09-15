@@ -24,10 +24,8 @@ int main(int argc, const char** argv)
 
    while (ok)
    {
-      Log().message() << "Doing timestep at " << sim.currentTime() << std::endl;
       Indent _;
       ok = sim.doTimestep();
-      Log().message() << "Now at " << sim.currentTime() << std::endl;
-      Log().message() << std::norm(bus->V()[0]) << " " << spv->PDc() << " " << inv->PDc() << " " << inv->SConst() << std::endl;
+      Log().message() << spv->PDc() << " " << inv->PDc() << " " << std::abs(inv->SConst()[0]) << std::endl;
    }
 }
