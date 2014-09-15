@@ -7,16 +7,6 @@
 
 namespace SmartGridToolbox
 {
-   Simulation::Simulation() : 
-      startTime_(posix_time::not_a_date_time),
-      endTime_(posix_time::not_a_date_time),
-      currentTime_(posix_time::neg_infin),
-      timestepWillStart_("Simulation timestep will start"),
-      timestepDidComplete_("Simulation timestep did complete")
-   {
-      // Empty.
-   }
-   
    Simulation::ConstSimCompVec Simulation::simComponents() const
    {
       ConstSimCompVec result(simCompVec_.size());
@@ -58,11 +48,11 @@ namespace SmartGridToolbox
          Indent _;
          for (auto comp : simCompVec_)
          {
-            Log().debug() << comp->name() << " " << comp->rank() << std::endl;
+            Log().debug() << comp->id() << " " << comp->rank() << std::endl;
             Indent _;
             for (auto dep : comp->dependencies())
             {
-               Log().debug() << dep->name() << " " << dep->rank() << std::endl;
+               Log().debug() << dep.lock()->id() << dep.lock()->rank() << std::endl;
             }
          }
       )
@@ -71,11 +61,10 @@ namespace SmartGridToolbox
       {
          simCompVec_[i]->setRank(i);
       }
-
+      
       WoGraph g(simCompVec_.size());
       for (int i = 0; i < simCompVec_.size(); ++i)
       {
-         // At this point, rank of component i is i.
          for (auto dep : simCompVec_[i]->dependencies())
          {
             // i depends on dep->rank().
@@ -83,30 +72,33 @@ namespace SmartGridToolbox
          }
       }
       g.weakOrder();
-      int newRank = 0;
-      for (int i = 0; i < g.size(); ++i)
+
+      // g.nodes() now specifies a permutation to be applied to simCompVec_.
+      SimCompVec perm; 
+      perm.reserve(simCompVec_.size());
+      for (auto& nd : g.nodes())
       {
-         if (i > 0 && g.nodes()[i-1]->dominates(*g.nodes()[i]))
-         {
-            ++newRank;
-         }
-         int idx_i = g.nodes()[i]->index();
-         simCompVec_[idx_i]->setRank(newRank);
+         perm.push_back(simCompVec_[nd->index()]);
       }
-      std::sort(simCompVec_.begin(), simCompVec_.end(), [](SimCompConstPtr lhs, SimCompConstPtr rhs) -> bool 
-            {
-               return ((lhs->rank() < rhs->rank()) || ((lhs->rank() == rhs->rank()) && (lhs->id() < rhs->id())));
-            });
-      isValid_ = true;
-      Log().message() << "Components after initialize:" << std::endl;
-      Indent _;
-      for (auto comp : simCompVec_)
+      simCompVec_ = perm;
+     
+      // Reset the evaluation rank.
+      for (int i = 0; i < simCompVec_.size(); ++i)
       {
-         Log().message() << comp->id() << " " << comp->rank() << std::endl;
+         simCompVec_[i]->setRank(i);
+      }
+
+      Log().message() << "Components after initialize:" << std::endl;
+      {
          Indent _;
-         for (auto dep : comp->dependencies())
+         for (auto comp : simCompVec_)
          {
-            Log().message() << dep.lock()->id() << " " << dep.lock()->rank() << std::endl;
+            Log().message() << comp->id() << " " << comp->rank() << std::endl;
+            Indent _;
+            for (auto dep : comp->dependencies())
+            {
+               Log().message() << dep.lock()->id() << " " << dep.lock()->rank() << std::endl;
+            }
          }
       }
 
@@ -122,6 +114,8 @@ namespace SmartGridToolbox
       // Contingent updates may have been inserted during initialization process e.g. when setting up setpoints etc.
       contingentUpdates_.clear();
       doTimestep(); // Do the first timestep, to advance the start time for -infinity to startTime_.
+      
+      isValid_ = true;
    }
 
    // TODO: can we tidy up the logic in this function?

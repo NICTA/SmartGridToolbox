@@ -52,7 +52,12 @@ namespace SmartGridToolbox
 
    void WoGraph::weakOrder()
    {
-      SGT_DEBUG(Log().debug() << "Weak order graph: initial:" << std::endl; debugPrint());
+      SGT_DEBUG(Log().debug() << std::endl);
+      SGT_DEBUG(
+            Log().debug() << "Weak order graph: initial:" << std::endl;
+            debugPrint();
+            Log().debug() << std::endl;
+            );
 
       std::vector<WoNode*> stack;
       // First do a DFS to induce an order on the nodes.
@@ -84,22 +89,20 @@ namespace SmartGridToolbox
 
       // Sort the nodes, based on <. Note that it isn't a strict weak ordering, so can't use stl sort.
       // TODO: This is probably a very dumb kind of sort!
+      // Also note that this sort will, as far as possible, preserve features of the original ordering, 
+      // so if we want e.g. a secondary alphabetical ordering then we should first pass in an alphabetically ordered
+      // vector.
 
-      SGT_DEBUG (Log().debug() << "Weak order graph: pre-sort:" << std::endl; debugPrint());
+      SGT_DEBUG(
+            Log().debug() << "Weak order graph: pre-sort:" << std::endl;
+            debugPrint();
+            Log().debug() << std::endl;
+            );
 
       for (auto it1 = nodes_.begin(); it1 != nodes_.end(); ++it1)
       {
          for (auto it2 = it1 + 1; it2 != nodes_.end(); ++it2)
          {
-            SGT_DEBUG(
-                  auto log = Log();
-                  log.debug() << std::setw(3) << (**it1).index() << " " << std::setw(3) << (**it2).index() << " A ";
-                  for (auto it4 = nodes_.begin(); it4 != nodes_.end(); ++it4)
-                  {
-                     log.debug() << std::setw(3) << (**it4).index() << " ";
-                  }
-                  log.debug() << std::endl;);
-
             if ((**it2).dominates(**it1))
             {
                auto it3 = it2;
@@ -107,21 +110,12 @@ namespace SmartGridToolbox
                {
                   std::swap(*it3, *(it3 - 1));
                   --it3;
-                  SGT_DEBUG(
-                        auto log = Log();
-                        log.debug() << std::setw(3) << (**it1).index() << " " << std::setw(3)
-                              << (**it2).index() << " A ";
-                        for (auto it4 = nodes_.begin(); it4 != nodes_.end(); ++it4)
-                        {
-                           log << std::setw(3) << (**it4).index() << " ";
-                        }
-                        log << std::endl;);
                }
             }
          }
       }
 
-      SGT_DEBUG (Log().debug() << "Weak order graph: final:" << std::endl; debugPrint());
+      SGT_DEBUG(Log().debug() << "Weak order graph: final:" << std::endl; debugPrint());
    }
 
    void WoGraph::debugPrint()

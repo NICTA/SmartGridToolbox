@@ -30,7 +30,7 @@ namespace SmartGridToolbox
 
       public:
          /// @brief Constructor.
-         Simulation();
+         Simulation() = default;
 
          /// @brief Simulation start time.
          Time startTime() const
@@ -203,10 +203,10 @@ namespace SmartGridToolbox
       
       private:
 
-         bool isValid_;
+         bool isValid_ = false;
          
-         Time startTime_;
-         Time endTime_;
+         Time startTime_{posix_time::not_a_date_time};
+         Time endTime_{posix_time::not_a_date_time};
          LatLong latLong_;
          local_time::time_zone_ptr timezone_;
          
@@ -215,11 +215,11 @@ namespace SmartGridToolbox
 
          TimeSeriesMap timeSeriesMap_; // Contains TimeSeries objects for Simulation.
 
-         Time currentTime_;
+         Time currentTime_{posix_time::neg_infin};
          ScheduledUpdates scheduledUpdates_;
          ContingentUpdates contingentUpdates_;
-         Event timestepWillStart_;
-         Event timestepDidComplete_;
+         Event timestepWillStart_{"Simulation timestep will start"};
+         Event timestepDidComplete_{"Simulation timestep did complete"};
    };
 }
 
