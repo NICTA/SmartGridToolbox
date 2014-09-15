@@ -22,6 +22,7 @@ namespace SmartGridToolbox
 
    double SolarPv::PDc() const
    {
-      return weather_->solarPower(planeNormal_, planeArea_) * efficiency_;
+      // Note: convert from SI to MW.
+      return 1e-6*weather_->solarPower(planeNormal_, planeArea_) * efficiency_;
    }
 };

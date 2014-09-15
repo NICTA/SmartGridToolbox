@@ -52,8 +52,8 @@ inverter:
    network_id:             network
    bus_id:                 bus_2
    phases:                 [A, B, C]
-   requested_Q_per_phase:  1
-   max_S_mag_per_phase:    1
+   requested_Q_per_phase:  3e-3
+   max_S_mag_per_phase:    1e-3
    min_power_factor:       0.9
    efficiency:             0.86
 solar_pv:
@@ -61,7 +61,7 @@ solar_pv:
    weather:                weather
    inverter:               inverter
    efficiency:             0.75
-   area_m2:                6.45
+   area_m2:                15.0 
    zenith_degrees:         64.6
    azimuth_degrees:        95.8 # Should point right at sun on Jan 26, 2013, 0830.
 generic_zip:
