@@ -32,6 +32,16 @@ namespace SmartGridToolbox
             // Empty.
          }
 
+         static constexpr const char* sComponentType()
+         {
+            return "regular_update_component";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+
          Time dt() const
          {
             return dt_;

@@ -40,6 +40,16 @@ namespace SmartGridToolbox
             setDt(posix_time::minutes(5));
          }
 
+         static constexpr const char* sComponentType()
+         {
+            return "weather";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+
          void setLatLong(const LatLong& latLong) {latLong_ = latLong; needsUpdate().trigger();}
 
          std::shared_ptr<const TimeSeries<Time, double>> temperatureSeries() const

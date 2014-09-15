@@ -28,7 +28,7 @@ namespace SmartGridToolbox
          
          static constexpr const char* sComponentType()
          {
-            return "branch";
+            return "sim_branch";
          }
 
          virtual const char* componentType() const override
@@ -51,13 +51,14 @@ namespace SmartGridToolbox
          
          static constexpr const char* sComponentType()
          {
-            return "bus";
+            return "sim_bus";
          }
 
          virtual const char* componentType() const override
          {
             return sComponentType();
          }
+
       protected:
          std::shared_ptr<T> bus_;
    };
@@ -73,7 +74,7 @@ namespace SmartGridToolbox
          
          static constexpr const char* sComponentType()
          {
-            return "gen";
+            return "sim_gen";
          }
 
          virtual const char* componentType() const override
@@ -96,7 +97,7 @@ namespace SmartGridToolbox
          
          static constexpr const char* sComponentType()
          {
-            return "zip";
+            return "sim_zip";
          }
 
          virtual const char* componentType() const override

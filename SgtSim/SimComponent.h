@@ -19,6 +19,16 @@ namespace SmartGridToolbox
          virtual ~SimComponentAbc() = default;
 
       /// @}
+
+      /// @name Component Type:
+      /// @{
+         
+         static constexpr const char* sComponentType()
+         {
+            return "sim_component";
+         }
+
+      /// @}
       
       /// @name Simulation flow
       /// @{
@@ -134,17 +144,22 @@ namespace SmartGridToolbox
          Time time_{posix_time::not_a_date_time}; ///< The time to which I am up to date
          std::vector<std::weak_ptr<const SimComponentAbc>> dependencies_; ///< I depend on these.
          int rank_{-1}; ///< Evaluation rank, based on weak ordering.
-         Event willUpdate_{"Will update"}; ///< Triggered immediately prior to upddate. 
-         Event didUpdate_{"Did update"}; ///< Triggered immediately post update.
-         Event needsUpdate_{"Needs update"}; ///< Triggered when I need to be updated.
-         Event willStartNewTimestep_{"Will start new timestep"}; ///< Triggered immediately prior to time advancing.
-         Event didCompleteTimestep_{"Did complete timestep"}; ///< Triggered just after fully completing a timestep.
+         Event willUpdate_{std::string(sComponentType()) + "Will update"}; ///< Triggered immediately prior to upddate. 
+         Event didUpdate_{std::string(sComponentType()) + "Did update"}; ///< Triggered immediately post update.
+         Event needsUpdate_{std::string(sComponentType()) + "Needs update"}; ///< Triggered when I need to be updated.
+         Event willStartNewTimestep_{std::string(sComponentType()) + "Will start new timestep"};
+            ///< Triggered immediately prior to time advancing.
+         Event didCompleteTimestep_{std::string(sComponentType()) + "Did complete timestep"}; ///< Triggered just after fully completing a timestep.
    };
 
    class SimComponent : public SimComponentAbc, public Component
    {
       public:
          SimComponent(const std::string& id) : Component(id) {}
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
    };
 }
 

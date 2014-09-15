@@ -21,6 +21,21 @@ namespace SmartGridToolbox
          DcPowerSourceAbc(const std::string& id) : SimComponent(id) {}
 
       /// @}
+
+      /// @name Component Type:
+      /// @{
+         
+         static constexpr const char* sComponentType()
+         {
+            return "dc_power_source";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+
+      /// @}
       
       /// @name DC Power.
       /// @{
@@ -29,7 +44,7 @@ namespace SmartGridToolbox
 
       /// @}
 
-         Event dcPowerChanged_{"DC power changed"};
+         Event dcPowerChanged_{std::string(sComponentType()) + "DC power changed"};
    };
 
    class GenericDcPowerSource : virtual public DcPowerSourceAbc
@@ -41,6 +56,21 @@ namespace SmartGridToolbox
       
          GenericDcPowerSource(const std::string& id) : DcPowerSourceAbc(id), PDc_(0.0) {}
       
+      /// @}
+
+      /// @name Component Type:
+      /// @{
+         
+         static constexpr const char* sComponentType()
+         {
+            return "generic_dc_power_source";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+
       /// @}
 
       /// @name DC Power.

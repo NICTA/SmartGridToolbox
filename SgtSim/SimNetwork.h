@@ -21,6 +21,21 @@ namespace SmartGridToolbox
 
       /// @}
 
+      /// @name Component Type:
+      /// @{
+         
+         static constexpr const char* sComponentType()
+         {
+            return "sim_network";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+
+      /// @}
+
       /// @name Network access.
       /// @{
          

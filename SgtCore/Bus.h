@@ -23,7 +23,17 @@ namespace SmartGridToolbox
          virtual ~BusInterface() = default;
 
       /// @}
+         
+      /// @name Component Type:
+      /// @{
+         
+         static constexpr const char* sComponentType()
+         {
+            return "bus";
+         }
 
+      /// @}
+     
       /// @name Basic identity and type:
       /// @{
 
@@ -96,11 +106,6 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
          
-         static constexpr const char* sComponentType()
-         {
-            return "bus";
-         }
-
          virtual const char* componentType() const override
          {
             return sComponentType();

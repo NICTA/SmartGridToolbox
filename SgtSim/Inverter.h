@@ -18,7 +18,17 @@ namespace SmartGridToolbox
          {
             // Empty.
          }
-         
+
+         static constexpr const char* sComponentType()
+         {
+            return "inverter";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+
          virtual ublas::vector<Complex> YConst() const override
          {
             return ublas::vector<Complex>(phases().size(), czero);
@@ -133,8 +143,36 @@ namespace SmartGridToolbox
    class SimInverter : public SimZip<InverterAbc>
    {
       public:
+
+      /// @name Lifecycle:
+      /// @{
+         
          SimInverter(std::shared_ptr<InverterAbc> inverter) : SimZip<InverterAbc>(inverter) {}
+      
+      /// @}
+
+      /// @name Component Type:
+      /// @{
+         
+         static constexpr const char* sComponentType()
+         {
+            return "sim_inverter";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+
+      /// @}
+      
+      /// @name Power sources:
+      /// @{
+      
+         
          void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source);
+
+      /// @}
    };
 }
 

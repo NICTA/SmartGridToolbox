@@ -18,7 +18,17 @@ namespace SmartGridToolbox
          virtual ~GenInterface() = default;
       
       /// @}
+         
+      /// @name Component Type:
+      /// @{
+         
+         static constexpr const char* sComponentType()
+         {
+            return "gen";
+         }
 
+      /// @}
+      
       /// @brief Phase accessors:
       /// @{
          
@@ -100,6 +110,16 @@ namespace SmartGridToolbox
          GenAbc(const std::string& id, Phases phases);
 
       /// @}
+         
+      /// @name Component Type:
+      /// @{
+         
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+      
+      /// @}
 
       /// @name Phase accessors:
       /// @{
@@ -147,9 +167,9 @@ namespace SmartGridToolbox
 
          Phases phases_;
 
-         Event isInServiceChanged_;
-         Event generationChanged_;
-         Event setpointChanged_;
+         Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
+         Event generationChanged_{std::string(sComponentType()) + " : Generation changed"};
+         Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
    };
    
    /// @brief A concrete, generic generation at a bus.
@@ -164,6 +184,7 @@ namespace SmartGridToolbox
 
       /// @}
 
+      /// @name Component Type:
       /// @{
          
          static constexpr const char* sComponentType()

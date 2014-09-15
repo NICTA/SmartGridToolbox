@@ -57,6 +57,16 @@ namespace SmartGridToolbox
             // Empty.
          }
 
+         static constexpr const char* sComponentType()
+         {
+            return "battery";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+
          Time dt() {return dt_;}
          void set_dt(Time val) {dt_ = val; needsUpdate().trigger();}
 

@@ -28,6 +28,16 @@ namespace SmartGridToolbox
       public:
          SolarPv(const std::string& id);
 
+         static constexpr const char* sComponentType()
+         {
+            return "solar_pv";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+
          void setWeather(std::shared_ptr<Weather> weather);
 
          void setEfficiency(double efficiency) {efficiency_ = efficiency; needsUpdate().trigger();}

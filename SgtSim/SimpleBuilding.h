@@ -60,6 +60,16 @@ namespace SmartGridToolbox
          {
          }
 
+         static constexpr const char* sComponentType()
+         {
+            return "simple_building";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+
          // Parameters:
          Time dt() {return dt_;}
          void set_dt(Time val) {dt_ = val; needsUpdate().trigger();}

@@ -20,11 +20,23 @@ namespace SmartGridToolbox
          virtual ~ZipInterface() {}
 
       /// @}
+         
+      /// @name Component Type:
+      /// @{
+         
+         static constexpr const char* sComponentType()
+         {
+            return "zip";
+         }
 
-      /// @name Basic identity and type:
+      /// @}
+
+      /// @name Phases:
       /// @{
  
          virtual const Phases& phases() const = 0;
+      
+      /// @}
          
       /// @name In service:
       /// @{
@@ -70,6 +82,16 @@ namespace SmartGridToolbox
 
          ZipAbc(const std::string& id, Phases phases) : Component(id), phases_(phases) {}
 
+      /// @}
+         
+      /// @name Component Type:
+      /// @{
+         
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
+      
       /// @}
 
       /// @name Basic identity and type:
@@ -150,9 +172,9 @@ namespace SmartGridToolbox
 
          bool isInService_;
          
-         Event isInServiceChanged_;
-         Event injectionChanged_;
-         Event setpointChanged_;
+         Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
+         Event injectionChanged_{std::string(sComponentType()) + " : Injection changed"};
+         Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
    };
 
    /// @brief A concrete, generic ZIP at a bus.

@@ -20,7 +20,17 @@ namespace SmartGridToolbox
          virtual ~BranchInterface() = default;
 
       /// @}
+         
+      /// @name Component Type:
+      /// @{
+         
+         static constexpr const char* sComponentType()
+         {
+            return "branch";
+         }
 
+      /// @}
+      
       /// @name Phase accessors:
       /// @{
          
@@ -73,18 +83,11 @@ namespace SmartGridToolbox
       /// @name Component Type:
       /// @{
          
-         static constexpr const char* sComponentType()
-         {
-            return "branch";
-         }
-
          virtual const char* componentType() const override
          {
             return sComponentType();
          }
       
-      /// @}
-
       /// @}
 
       /// @name Phase accessors:
