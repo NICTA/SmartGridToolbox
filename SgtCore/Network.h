@@ -41,6 +41,7 @@ namespace SmartGridToolbox
       friend class Network;
 
       public:
+         std::shared_ptr<const BusInterface> bus() const {return bus_;}
          std::shared_ptr<BusInterface> bus() {return bus_;}
 
          const GenVec gens() {return gens_;}

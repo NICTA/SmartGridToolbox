@@ -39,7 +39,12 @@ namespace SmartGridToolbox
       /// @name Network access.
       /// @{
          
-         std::shared_ptr<const Network> network()
+         std::shared_ptr<const Network> network() const
+         {
+            return network_;
+         }
+         
+         std::shared_ptr<Network> network()
          {
             return network_;
          }

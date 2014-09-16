@@ -115,16 +115,24 @@ namespace SmartGridToolbox
          }
 
          /// @brief Retrieve a const SimComponent.
-         template<typename T> std::shared_ptr<const T> simComponent(const std::string& id) const
+         template<typename T> std::shared_ptr<const T> simComponent(const std::string& id,
+               bool crashOnFail = true) const
          {
-            SimCompMap::const_iterator it = simCompMap_.find(id);
-            return (it == simCompMap_.end()) ? nullptr : std::dynamic_pointer_cast<const T>(it->second);
+            std::shared_ptr<const SimComponentAbc> simComp = genericSimComponent(id, crashOnFail);
+            auto result = std::dynamic_pointer_cast<const T>(simComp);
+            if (result == nullptr && crashOnFail)
+            {
+               Log().fatal() << "Component " << id
+                  << " was requested and exists in the simulation, but is of the wrong type" << std::endl;
+            }
+            return result;
          }
 
          /// @brief Retrieve a SimComponent.
-         template<typename T> std::shared_ptr<T> simComponent(const std::string& id)
+         template<typename T> std::shared_ptr<T> simComponent(const std::string& id, bool crashOnFail = true)
          {
-            return std::const_pointer_cast<T>((const_cast<const Simulation*>(this))->simComponent<T>(id));
+            return std::const_pointer_cast<T>((const_cast<const Simulation*>(this))->simComponent<T>(id,
+                     crashOnFail));
          }
 
          /// @brief Copied vector of all const SimComponents.
@@ -199,6 +207,8 @@ namespace SmartGridToolbox
 
       private:
 
+         std::shared_ptr<const SimComponentAbc> genericSimComponent(const std::string& id,
+               bool crashOnFail = true) const;
          void addOrReplaceGenericSimComponent(std::shared_ptr<SimComponentAbc> simComp, bool allowReplace);
       
       private:

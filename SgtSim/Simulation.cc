@@ -7,6 +7,22 @@
 
 namespace SmartGridToolbox
 {
+   std::shared_ptr<const SimComponentAbc> Simulation::genericSimComponent(const std::string& id,
+         bool crashOnFail) const
+   {
+      std::shared_ptr<const SimComponentAbc> result = nullptr;
+      SimCompMap::const_iterator it = simCompMap_.find(id);
+      if (it != simCompMap_.end())
+      {
+         result = it->second;
+      }
+      else if (crashOnFail)
+      {
+         Log().fatal() << "Component " << id << " was requested but was not found in the simulation.";
+      }
+      return result;
+   }
+
    Simulation::ConstSimCompVec Simulation::simComponents() const
    {
       ConstSimCompVec result(simCompVec_.size());
