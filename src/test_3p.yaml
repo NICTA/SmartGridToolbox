@@ -44,7 +44,7 @@ generic_zip:
    network_id:             network
    bus_id:                 bus_2
    phases:                 [A, B, C]
-   S_const:                [-10e-3, -10e-3, -10e-3]
+   S_const:                [-5e-3, -5e-3, -5e-3]
 bus:
    id:                     bus_3
    network_id:             network
@@ -57,7 +57,7 @@ generic_zip:
    network_id:             network
    bus_id:                 bus_3
    phases:                 [A, B, C]
-   S_const:                [-10e-3, -10e-3, -10e-3]
+   S_const:                [-5e-3, -5e-3, -5e-3]
 bus:
    id:                     bus_4
    network_id:             network
@@ -70,7 +70,7 @@ generic_zip:
    network_id:             network
    bus_id:                 bus_4
    phases:                 [A, B, C]
-   S_const:                [-5e-3, -5e-3, -5e-3]
+   S_const:                [-3e-3, -3e-3, -3e-3]
 inverter:
    id:                     inverter_4
    network_id:             network
@@ -94,7 +94,7 @@ overhead_line:
    bus_1_id:               bus_2
    phases_0:               [A, B, C]
    phases_1:               [A, B, C]
-   length:                 5e5
+   length:                 1e5
    n_neutral:              1
    conductor_R_per_L:      [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
    earth_resistivity:      100.0
@@ -112,7 +112,7 @@ overhead_line:
    bus_1_id:               bus_3
    phases_0:               [A, B, C]
    phases_1:               [A, B, C]
-   length:                 5e5
+   length:                 1e5
    n_neutral:              1
    conductor_R_per_L:      [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
    earth_resistivity:      100.0
@@ -130,7 +130,7 @@ overhead_line:
    bus_1_id:               bus_4
    phases_0:               [A, B, C]
    phases_1:               [A, B, C]
-   length:                 5e5
+   length:                 1e5
    n_neutral:              1
    conductor_R_per_L:      [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
    earth_resistivity:      100.0
