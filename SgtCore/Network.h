@@ -66,8 +66,11 @@ namespace SmartGridToolbox
       friend class Network;
 
       public:
+         std::shared_ptr<const BranchInterface> branch() const {return branch_;}
          std::shared_ptr<BranchInterface> branch() {return branch_;}
+         std::shared_ptr<const Node> node0() const {return node0_;}
          std::shared_ptr<Node> node0() {return node0_;}
+         std::shared_ptr<const Node> node1() const {return node1_;}
          std::shared_ptr<Node> node1() {return node1_;}
 
       private:

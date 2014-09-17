@@ -1,0 +1,144 @@
+---
+simulation:
+   lat_long:               [-35.3075, 149.1244] # Canberra, Australia.
+   start_time:             2013-01-23 06:00:00
+   end_time:               2013-01-25 06:00:00
+   timezone:               AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
+   time_series:
+      id:                  cloud_cover_series
+      value_type:          real_scalar
+      type:                data_time_series
+      data_file:           cloud_cover.txt
+      relative_to_time:    2013-01-23 06:00:00
+      time_unit:           m
+      interp_type:         lerp
+weather:
+   id:                     weather
+   cloud_cover:            cloud_cover_series
+   dt:                     00:05:00
+network:
+   id:                     network
+   P_base:                 1e8
+   freq_Hz:                60
+bus:
+   id:                     bus_1
+   network_id:             network
+   phases:                 [A, B, C]
+   V_base:                 240
+   V_nom:                  [240, 240D-240, 240D240]
+   type:                   SL
+generic_gen:
+   id:                     gen_1
+   network_id:             network
+   bus_id:                 bus_1
+   phases:                 [A, B, C]
+bus:
+   id:                     bus_2
+   network_id:             network
+   phases:                 [A, B, C]
+   V_base:                 240
+   V_nom:                  [240, 240D-240, 240D240]
+   type:                   PQ
+generic_zip:
+   id:                     zip_2
+   network_id:             network
+   bus_id:                 bus_2
+   phases:                 [A, B, C]
+   S_const:                [-0.25, -0.25, -0.25]
+bus:
+   id:                     bus_3
+   network_id:             network
+   phases:                 [A, B, C]
+   V_base:                 240
+   V_nom:                  [240, 240D-240, 240D240]
+   type:                   PQ
+generic_zip:
+   id:                     zip_3
+   network_id:             network
+   bus_id:                 bus_3
+   phases:                 [A, B, C]
+   S_const:                [-0.25, -0.25, -0.25]
+bus:
+   id:                     bus_4
+   network_id:             network
+   phases:                 [A, B, C]
+   V_base:                 240
+   V_nom:                  [240, 240D-240, 240D240]
+   type:                   PQ
+generic_zip:
+   id:                     zip_4
+   network_id:             network
+   bus_id:                 bus_4
+   phases:                 [A, B, C]
+   S_const:                [-0.02, -0.02, -0.02]
+inverter:
+   id:                     inverter_4
+   network_id:             network
+   bus_id:                 bus_4
+   phases:                 [A, B, C]
+   requested_Q_per_phase:  0
+   max_S_mag_per_phase:    100.0 
+   min_power_factor:       0.9
+   efficiency:             0.86
+solar_pv:
+   id:                     solar_pv_4
+   weather:                weather
+   inverter:               inverter_4
+   efficiency:             0.75
+   area_m2:                500.0 
+   zenith_degrees:         64.6
+   azimuth_degrees:        95.8 # Should point right at sun on Jan 26, 2013, 0830.
+overhead_line:
+   id:                     line_1_2
+   network_id:             network
+   bus_0_id:               bus_1
+   bus_1_id:               bus_2
+   phases_0:               [A, B, C]
+   phases_1:               [A, B, C]
+   length:                 5e5
+   n_neutral:              1
+   line_resistivity:       [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
+   earth_resistivity:      100.0
+   distance_matrix:        [  
+      [1.37160e-3    , 0.7620       , 1.37160      , 1.30211      ],
+      [0.7620        , 1.3716e-3    , 2.13360      , 1.72421      ],
+      [1.37160       , 2.13360      , 1.3716e-3    , 1.5240       ],
+      [1.30211       , 1.72421      , 1.5240       , 1.3716e-3    ]
+      ]
+   freq:                   60.0
+overhead_line:
+   id:                     line_2_3
+   network_id:             network
+   bus_0_id:               bus_2
+   bus_1_id:               bus_3
+   phases_0:               [A, B, C]
+   phases_1:               [A, B, C]
+   length:                 5e5
+   n_neutral:              1
+   line_resistivity:       [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
+   earth_resistivity:      100.0
+   distance_matrix:        [  
+      [1.37160e-3    , 0.7620       , 1.37160      , 1.30211      ],
+      [0.7620        , 1.3716e-3    , 2.13360      , 1.72421      ],
+      [1.37160       , 2.13360      , 1.3716e-3    , 1.5240       ],
+      [1.30211       , 1.72421      , 1.5240       , 1.3716e-3    ]
+      ]
+   freq:                   60.0
+overhead_line:
+   id:                     line_3_4
+   network_id:             network
+   bus_0_id:               bus_3
+   bus_1_id:               bus_4
+   phases_0:               [A, B, C]
+   phases_1:               [A, B, C]
+   length:                 5e5
+   n_neutral:              1
+   line_resistivity:       [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
+   earth_resistivity:      100.0
+   distance_matrix:        [  
+      [1.37160e-3    , 0.7620       , 1.37160      , 1.30211      ],
+      [0.7620        , 1.3716e-3    , 2.13360      , 1.72421      ],
+      [1.37160       , 2.13360      , 1.3716e-3    , 1.5240       ],
+      [1.30211       , 1.72421      , 1.5240       , 1.3716e-3    ]
+      ]
+   freq:                   60.0

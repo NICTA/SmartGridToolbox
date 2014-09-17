@@ -40,6 +40,8 @@ libSgtSim_a_SOURCES = \
 	SimBusParser.cc \
 	SimGenericBranchParser.h \
 	SimGenericBranchParser.cc \
+	SimGenericGenParser.h \
+	SimGenericGenParser.cc \
 	SimGenericZipParser.h \
 	SimGenericZipParser.cc \
 	SimComponent.h \

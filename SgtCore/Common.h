@@ -103,7 +103,7 @@ namespace SmartGridToolbox
             if (isFatal_)
             {
                cerrBuf_.reset("", "");
-               std::cerr << "ABORTING." << std::endl;
+               std::cerr << std::endl << "ABORTING." << std::endl;
                abort();
             }
          }
@@ -248,6 +248,29 @@ namespace SmartGridToolbox
       ss << "[" << std::setw(w) << std::left << v()(0);
       for (int i = 1; i < size; ++i) ss << " " << std::setw(w) << std::left << v()(i);
       ss << "]";
+      return os << ss.str();
+   }
+
+   template<typename ME> std::ostream& operator<<(std::ostream& os, const ublas::matrix_expression<ME>& m)
+   {
+      unsigned int size1 = m().size1();
+      unsigned int size2 = m().size2();
+      unsigned int w = os.width();
+      std::ostringstream ss;
+      ss.flags(os.flags());
+      ss.imbue(os.getloc());
+      ss.precision(os.precision());
+      ss << std::endl << "[" << std::endl;
+      for (int i = 0; i < size1; ++i)
+      {
+         ss << "    [" << std::setw(w) << std::left << m()(i, 0);
+         for (int j = 1; j < size2; ++j)
+         {
+            ss << " " << std::setw(w) << std::left << m()(i, j);
+         }
+         ss << "]" << std::endl;
+      }
+      ss << "]" << std::endl;
       return os << ss.str();
    }
 

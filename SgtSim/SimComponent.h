@@ -141,17 +141,30 @@ namespace SmartGridToolbox
 
       private:
 
-         Time time_{posix_time::not_a_date_time}; ///< The time to which I am up to date
-         std::vector<std::weak_ptr<const SimComponentAbc>> dependencies_; ///< I depend on these.
-         int rank_{-1}; ///< Evaluation rank, based on weak ordering.
-         Event willUpdate_{std::string(sComponentType()) + "Will update"}; ///< Triggered immediately prior to upddate. 
-         Event didUpdate_{std::string(sComponentType()) + "Did update"}; ///< Triggered immediately post update.
-         Event needsUpdate_{std::string(sComponentType()) + "Needs update"}; ///< Triggered when I need to be updated.
+         Time time_{posix_time::not_a_date_time};
+            ///< The time to which I am up to date
+         std::vector<std::weak_ptr<const SimComponentAbc>> dependencies_;
+            ///< I depend on these.
+         int rank_{-1};
+            ///< Evaluation rank, based on weak ordering.
+         Event willUpdate_{std::string(sComponentType()) + "Will update"};
+            ///< Triggered immediately prior to upddate. 
+         Event didUpdate_{std::string(sComponentType()) + "Did update"};
+            ///< Triggered immediately post update.
+         Event needsUpdate_{std::string(sComponentType()) + "Needs update"};
+            ///< Triggered when I need to be updated.
          Event willStartNewTimestep_{std::string(sComponentType()) + "Will start new timestep"};
             ///< Triggered immediately prior to time advancing.
-         Event didCompleteTimestep_{std::string(sComponentType()) + "Did complete timestep"}; ///< Triggered just after fully completing a timestep.
+         Event didCompleteTimestep_{std::string(sComponentType()) + "Did complete timestep"};
+            ///< Triggered just after fully completing a timestep.
    };
 
+   /// @brief A base class for SimComponents.
+   ///
+   /// Although most SimComponents will derive from this base class, some may not, due to multiple inheritance.
+   /// For example, we could in theory have class SimBus : public SimComponentAbc, public Bus which takes it's
+   /// ComponentInterface from Bus rather than Component. In actual fact, we prefer not to do this, so network
+   /// components such as SimBus are modelled using composition rather than multiple inheritance. 
    class SimComponent : public SimComponentAbc, public Component
    {
       public:
