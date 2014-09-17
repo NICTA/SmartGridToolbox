@@ -97,7 +97,7 @@ overhead_line:
    phases_1:               [BAL]
    length:                 5e5
    n_neutral:              0
-   line_resistivity:       [6.959357e-4]
+   conductor_R_per_L:      [6.959357e-4]
    earth_resistivity:      100.0
    distance_matrix:        [[1.37160e-3]]
    freq:                   60.0
@@ -110,7 +110,7 @@ overhead_line:
    phases_1:               [BAL]
    length:                 5e5
    n_neutral:              0
-   line_resistivity:       [6.959357e-4]
+   conductor_R_per_L:      [6.959357e-4]
    earth_resistivity:      100.0
    distance_matrix:        [[1.37160e-3]]
    freq:                   60.0
@@ -123,7 +123,7 @@ overhead_line:
    phases_1:               [BAL]
    length:                 5e5
    n_neutral:              0
-   line_resistivity:       [6.959357e-4]
+   conductor_R_per_L:      [6.959357e-4]
    earth_resistivity:      100.0
    distance_matrix:        [[1.37160e-3]]
    freq:                   60.0

@@ -25,7 +25,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "phases_1");
       assertFieldPresent(nd, "length");
       assertFieldPresent(nd, "n_neutral");
-      assertFieldPresent(nd, "line_resistivity");
+      assertFieldPresent(nd, "conductor_R_per_L");
       assertFieldPresent(nd, "earth_resistivity");
       assertFieldPresent(nd, "distance_matrix");
       assertFieldPresent(nd, "freq");
@@ -35,7 +35,7 @@ namespace SmartGridToolbox
       Phases phases1 = nd["phases_1"].as<Phases>();
       double length = nd["length"].as<double>();
       int nNeutral = nd["n_neutral"].as<int>();
-      ublas::vector<double> lineResistivity = nd["line_resistivity"].as<ublas::vector<double>>();
+      ublas::vector<double> lineResistivity = nd["conductor_R_per_L"].as<ublas::vector<double>>();
       double earthResistivity = nd["earth_resistivity"].as<double>();
       ublas::matrix<double> distMatrix = nd["distance_matrix"].as<ublas::matrix<double>>();
       double freq = nd["freq"].as<double>();
