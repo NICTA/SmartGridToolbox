@@ -24,8 +24,8 @@ bus:
    id:                     bus_1
    network_id:             network
    phases:                 [BAL]
-   V_base:                 240
-   V_nom:                  [240]
+   V_base:                 11
+   V_nom:                  [11]
    type:                   SL
 generic_gen:
    id:                     gen_1
@@ -36,41 +36,41 @@ bus:
    id:                     bus_2
    network_id:             network
    phases:                 [BAL]
-   V_base:                 240
-   V_nom:                  [240]
+   V_base:                 11
+   V_nom:                  [11]
    type:                   PQ
 generic_zip:
    id:                     zip_2
    network_id:             network
    bus_id:                 bus_2
    phases:                 [BAL]
-   S_const:                [-0.25]
+   S_const:                [-40e-3]
 bus:
    id:                     bus_3
    network_id:             network
    phases:                 [BAL]
-   V_base:                 240
-   V_nom:                  [240]
+   V_base:                 11
+   V_nom:                  [11]
    type:                   PQ
 generic_zip:
    id:                     zip_3
    network_id:             network
    bus_id:                 bus_3
    phases:                 [BAL]
-   S_const:                [-0.25]
+   S_const:                [-40e-3]
 bus:
    id:                     bus_4
    network_id:             network
    phases:                 [BAL]
-   V_base:                 240
-   V_nom:                  [240]
+   V_base:                 11
+   V_nom:                  [11]
    type:                   PQ
 generic_zip:
    id:                     zip_4
    network_id:             network
    bus_id:                 bus_4
    phases:                 [BAL]
-   S_const:                [-0.02]
+   S_const:                [-10e-3]
 inverter:
    id:                     inverter_4
    network_id:             network
@@ -95,7 +95,7 @@ overhead_line:
    bus_1_id:               bus_2
    phases_0:               [BAL]
    phases_1:               [BAL]
-   length:                 5e5
+   length:                 5e4
    n_neutral:              0
    conductor_R_per_L:      [6.959357e-4]
    earth_resistivity:      100.0
@@ -108,7 +108,7 @@ overhead_line:
    bus_1_id:               bus_3
    phases_0:               [BAL]
    phases_1:               [BAL]
-   length:                 5e5
+   length:                 5e4
    n_neutral:              0
    conductor_R_per_L:      [6.959357e-4]
    earth_resistivity:      100.0
