@@ -78,7 +78,6 @@ inverter:
    phases:                 [BAL]
    requested_Q_per_phase:  0
    max_S_mag_per_phase:    100.0 
-   min_power_factor:       0.9
    efficiency:             0.86
 solar_pv:
    id:                     solar_pv_4

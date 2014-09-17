@@ -24,8 +24,8 @@ bus:
    id:                     bus_1
    network_id:             network
    phases:                 [A, B, C]
-   V_base:                 240
-   V_nom:                  [240, 240D-240, 240D240]
+   V_base:                 6.35085
+   V_nom:                  [6.35085, 6.35085D-240, 6.35085D240]
    type:                   SL
 generic_gen:
    id:                     gen_1
@@ -36,56 +36,55 @@ bus:
    id:                     bus_2
    network_id:             network
    phases:                 [A, B, C]
-   V_base:                 240
-   V_nom:                  [240, 240D-240, 240D240]
+   V_base:                 6.35085
+   V_nom:                  [6.35085, 6.35085D-240, 6.35085D240]
    type:                   PQ
 generic_zip:
    id:                     zip_2
    network_id:             network
    bus_id:                 bus_2
    phases:                 [A, B, C]
-   S_const:                [-0.25, -0.25, -0.25]
+   S_const:                [-10e-3, -10e-3, -10e-3]
 bus:
    id:                     bus_3
    network_id:             network
    phases:                 [A, B, C]
-   V_base:                 240
-   V_nom:                  [240, 240D-240, 240D240]
+   V_base:                 6.35085
+   V_nom:                  [6.35085, 6.35085D-240, 6.35085D240]
    type:                   PQ
 generic_zip:
    id:                     zip_3
    network_id:             network
    bus_id:                 bus_3
    phases:                 [A, B, C]
-   S_const:                [-0.25, -0.25, -0.25]
+   S_const:                [-10e-3, -10e-3, -10e-3]
 bus:
    id:                     bus_4
    network_id:             network
    phases:                 [A, B, C]
-   V_base:                 240
-   V_nom:                  [240, 240D-240, 240D240]
+   V_base:                 6.35085
+   V_nom:                  [6.35085, 6.35085D-240, 6.35085D240]
    type:                   PQ
 generic_zip:
    id:                     zip_4
    network_id:             network
    bus_id:                 bus_4
    phases:                 [A, B, C]
-   S_const:                [-0.02, -0.02, -0.02]
+   S_const:                [-5e-3, -5e-3, -5e-3]
 inverter:
    id:                     inverter_4
    network_id:             network
    bus_id:                 bus_4
    phases:                 [A, B, C]
    requested_Q_per_phase:  0
-   max_S_mag_per_phase:    100.0 
-   min_power_factor:       0.9
+   max_S_mag_per_phase:    100.0
    efficiency:             0.86
 solar_pv:
    id:                     solar_pv_4
    weather:                weather
    inverter:               inverter_4
    efficiency:             0.75
-   area_m2:                500.0 
+   area_m2:                50.0 
    zenith_degrees:         64.6
    azimuth_degrees:        95.8 # Should point right at sun on Jan 26, 2013, 0830.
 overhead_line:
@@ -97,7 +96,7 @@ overhead_line:
    phases_1:               [A, B, C]
    length:                 5e5
    n_neutral:              1
-   line_resistivity:       [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
+   conductor_R_per_L:      [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
    earth_resistivity:      100.0
    distance_matrix:        [  
       [1.37160e-3    , 0.7620       , 1.37160      , 1.30211      ],
@@ -115,7 +114,7 @@ overhead_line:
    phases_1:               [A, B, C]
    length:                 5e5
    n_neutral:              1
-   line_resistivity:       [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
+   conductor_R_per_L:      [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
    earth_resistivity:      100.0
    distance_matrix:        [  
       [1.37160e-3    , 0.7620       , 1.37160      , 1.30211      ],
@@ -133,7 +132,7 @@ overhead_line:
    phases_1:               [A, B, C]
    length:                 5e5
    n_neutral:              1
-   line_resistivity:       [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
+   conductor_R_per_L:      [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
    earth_resistivity:      100.0
    distance_matrix:        [  
       [1.37160e-3    , 0.7620       , 1.37160      , 1.30211      ],

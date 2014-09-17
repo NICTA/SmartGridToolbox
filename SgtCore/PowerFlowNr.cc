@@ -647,7 +647,7 @@ namespace SmartGridToolbox
       }
       else
       {
-         Log().warning() << "PowerFlowNr: Newton-Raphson method failed to converge." << std::endl;
+         Log().fatal() << "PowerFlowNr: Newton-Raphson method failed to converge." << std::endl;
       }
 
       stopwatchTot.stop(); durationTot = stopwatchTot.seconds();
