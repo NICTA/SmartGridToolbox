@@ -14,6 +14,7 @@ pkginclude_HEADERS = \
 	Event.h \
 	Gen.h \
 	Network.h \
+	NetworkParser.h \
 	OverheadLine.h \
 	Parser.h \
 	PowerFlow.h \
@@ -56,6 +57,8 @@ libSgtCore_a_SOURCES = \
 	MatpowerParser.cc \
 	Network.h \
 	Network.cc \
+	NetworkParser.h \
+	NetworkParser.cc \
 	OverheadLine.h \
 	OverheadLine.cc \
 	OverheadLineParser.h \

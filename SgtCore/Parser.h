@@ -69,6 +69,43 @@ namespace YAML
 
 namespace SmartGridToolbox
 {
+   class ParserState
+   {
+      public:
+
+         std::string expandName(const std::string & target) const;
+
+         void pushLoop(const std::string & name)
+         {
+            loops_.push_back({name, 0});
+         }
+
+         int topLoopVal()
+         {
+            return loops_.back().i_;
+         }
+
+         void incrTopLoop()
+         {
+            ++loops_.back().i_;
+         }
+
+         void popLoop()
+         {
+            loops_.pop_back();
+         }
+
+      private:
+
+         struct ParserLoop
+         {
+            std::string name_;
+            int i_;
+         };
+
+      private:
+         std::vector<ParserLoop> loops_;
+   };
    void assertFieldPresent(const YAML::Node& nd, const std::string& field);
 
    template<typename T> class ParserPlugin
@@ -76,11 +113,11 @@ namespace SmartGridToolbox
       public:
 
          virtual const char* key() {return "ERROR";}
-         virtual void parse(const YAML::Node& nd, T& netw) const 
+         virtual void parse(const YAML::Node& nd, T& into, const ParserState& state) const 
          {
             // Empty.
          }
-         virtual void postParse(const YAML::Node& nd, T& netw) const
+         virtual void postParse(const YAML::Node& nd, T& into, const ParserState& state) const
          {
             // Empty.
          }
@@ -104,41 +141,60 @@ namespace SmartGridToolbox
             plugins_[plugin->key()] = std::move(plugin);
          }
          
-         void parse(const std::string& fname, T& netw)
+         void parse(const std::string& fname, T& into)
          {
             Log().message() << "Parsing file " << fname << "." << std::endl;
             {
                Indent _;
                auto top = getTopNode(fname);
-               parse(top, netw);
+               ParserState state;
+               parse(top, into, state);
             }
             Log().message() << "Finished parsing file " << fname << "." << std::endl;
          }
 
-         void parse(const YAML::Node& node, T& netw)
+         void parse(const YAML::Node& node, T& into, ParserState& state)
          {
             for (const auto& subnode : node)
             {
                std::string nodeType = subnode.first.as<std::string>();
                const YAML::Node& nodeVal = subnode.second;
-               Log().message() << "Parsing plugin " <<  nodeType << "." << std::endl;
-               auto it = plugins_.find(nodeType);
-               if (it == plugins_.end())
+               if (nodeType == "loop")
                {
-                  Log().warning() << "I don't know how to parse plugin " << nodeType << std::endl;
+                  std::string name = nodeVal["name"].as<std::string>();
+                  int count = nodeVal["count"].as<int>();
+                  const YAML::Node & body = nodeVal["body"];
+                  for (state.pushLoop(name); state.topLoopVal() < count; state.incrTopLoop())
+                  {
+                     parse(body, into, state);
+                  }
+                  state.popLoop();
                }
                else
                {
-                  Indent _;
-                  it->second->parse(nodeVal, netw);
+                  Log().message() << "Parsing plugin " <<  nodeType << "." << std::endl;
+                  auto it = plugins_.find(nodeType);
+                  if (it == plugins_.end())
+                  {
+                     Log().warning() << "I don't know how to parse plugin " << nodeType << std::endl;
+                  }
+                  else
+                  {
+                     Indent _;
+                     it->second->parse(nodeVal, into);
+                  }
                }
+               Log().message() << "Parsing completed." << std::endl;
             }
-            Log().message() << "Parsing plugins. Completed." << std::endl;
          }
 
       private:
          std::map<std::string, std::unique_ptr<ParserPlugin<T>>> plugins_;
    };
+
+   class Network;
+   extern template class Parser<Network>;
+   extern template class ParserPlugin<Network>;
 }
 
 #endif // PARSER_DOT_H

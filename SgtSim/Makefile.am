@@ -14,6 +14,7 @@ pkginclude_HEADERS = \
 	SimNetworkComponent.h \
 	SimpleBuilding.h \
 	Simulation.h \
+	SimParser.h \
 	SolarPv.h \
 	Spline.h \
 	Sun.h \
@@ -54,6 +55,8 @@ libSgtSim_a_SOURCES = \
 	SimNetworkComponent.cc \
 	SimNetworkParser.h \
 	SimNetworkParser.cc \
+	SimParser.h \
+	SimParser.cc \
 	SimpleBuilding.h \
 	SimpleBuilding.cc \
 	SimpleBuildingParser.h \

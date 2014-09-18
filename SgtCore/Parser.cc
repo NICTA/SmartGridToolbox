@@ -193,6 +193,18 @@ namespace YAML
 
 namespace SmartGridToolbox
 {
+   std::string ParserState::expandName(const std::string & target) const
+   {
+      std::string result(target);
+      for (const ParserLoop & loop : loops_)
+      {
+         std::string search = "${" + loop.name_ + "}";
+         std::string replace = std::to_string(loop.i_);
+         boost::replace_all(result, search, replace);
+      }
+      return result;
+   }
+
    void assertFieldPresent(const YAML::Node& nd, const std::string& field)
    {
       if (!(nd[field]))
