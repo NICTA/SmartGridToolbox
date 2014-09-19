@@ -21,68 +21,58 @@ network:
    P_base:                 1e8
    freq_Hz:                60
 bus:
-   id:                     bus_1
+   id:                     bus_a
    network_id:             network
    phases:                 [A, B, C]
    V_base:                 6.35085
    V_nom:                  [6.35085, 6.35085D-240, 6.35085D240]
    type:                   SL
 generic_gen:
-   id:                     gen_1
+   id:                     gen_a
    network_id:             network
-   bus_id:                 bus_1
+   bus_id:                 bus_a
    phases:                 [A, B, C]
+loop: 
+   spec:                   [i, 0, 20, 1]
+   body:
+      bus:
+         id:               bus_${i}
+         network_id:       network
+         phases:           [A, B, C]
+         V_base:           6.35085
+         V_nom:            [6.35085, 6.35085D-240, 6.35085D240]
+         type:             PQ
+      generic_zip:
+         id:               zip_${i}
+         network_id:       network
+         bus_id:           bus_${i}
+         phases:           [A, B, C]
+         S_const:          [-5e-3, -5e-3, -5e-3]
 bus:
-   id:                     bus_2
+   id:                     bus_b
    network_id:             network
    phases:                 [A, B, C]
    V_base:                 6.35085
    V_nom:                  [6.35085, 6.35085D-240, 6.35085D240]
    type:                   PQ
 generic_zip:
-   id:                     zip_2
+   id:                     zip_b
    network_id:             network
-   bus_id:                 bus_2
-   phases:                 [A, B, C]
-   S_const:                [-5e-3, -5e-3, -5e-3]
-bus:
-   id:                     bus_3
-   network_id:             network
-   phases:                 [A, B, C]
-   V_base:                 6.35085
-   V_nom:                  [6.35085, 6.35085D-240, 6.35085D240]
-   type:                   PQ
-generic_zip:
-   id:                     zip_3
-   network_id:             network
-   bus_id:                 bus_3
-   phases:                 [A, B, C]
-   S_const:                [-5e-3, -5e-3, -5e-3]
-bus:
-   id:                     bus_4
-   network_id:             network
-   phases:                 [A, B, C]
-   V_base:                 6.35085
-   V_nom:                  [6.35085, 6.35085D-240, 6.35085D240]
-   type:                   PQ
-generic_zip:
-   id:                     zip_4
-   network_id:             network
-   bus_id:                 bus_4
+   bus_id:                 bus_b
    phases:                 [A, B, C]
    S_const:                [-3e-3, -3e-3, -3e-3]
 inverter:
-   id:                     inverter_4
+   id:                     inverter_b
    network_id:             network
-   bus_id:                 bus_4
+   bus_id:                 bus_b
    phases:                 [A, B, C]
    requested_Q_per_phase:  0
    max_S_mag_per_phase:    100.0
    efficiency:             0.86
 solar_pv:
-   id:                     solar_pv_4
+   id:                     solar_pv_b
    weather:                weather
-   inverter:               inverter_4
+   inverter:               inverter_b
    efficiency:             0.75
    area_m2:                50.0 
    zenith_degrees:         64.6

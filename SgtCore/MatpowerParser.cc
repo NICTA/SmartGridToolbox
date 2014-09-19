@@ -214,7 +214,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void MatpowerParser::parse(const YAML::Node& nd, Network& netw) const
+   void MatpowerParser::parse(const YAML::Node& nd, Network& netw, const ParserState& state) const
    {
       assertFieldPresent(nd, "input_file");
       assertFieldPresent(nd, "default_kV_base");

@@ -6,14 +6,14 @@
 
 namespace SmartGridToolbox
 {
-   void InverterParser::parse(const YAML::Node& nd, Simulation& sim) const
+   void InverterParser::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases");
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_id");
 
-      string id = nd["id"].as<std::string>();
+      string id = state.expandName(nd["id"].as<std::string>());
       Phases phases = nd["phases"].as<Phases>();
 
       auto inverter = std::make_shared<Inverter>(id, phases);
@@ -38,8 +38,8 @@ namespace SmartGridToolbox
          inverter->setRequestedQPerPhase(nd["requested_Q_per_phase"].as<double>());
       }
 
-      const std::string networkId = nd["network_id"].as<std::string>();
-      const std::string busId = nd["bus_id"].as<std::string>();
+      const std::string networkId = state.expandName(nd["network_id"].as<std::string>());
+      const std::string busId = state.expandName(nd["bus_id"].as<std::string>());
 
       auto simInverter = sim.newSimComponent<SimInverter>(inverter);
 

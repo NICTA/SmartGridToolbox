@@ -1,13 +1,13 @@
 #ifndef DC_POWER_SOURCE_PARSER_DOT_H
 #define DC_POWER_SOURCE_PARSER_DOT_H
 
-#include <SgtCore/Parser.h>
+#include <SgtSim/SimParser.h>
 
 namespace SmartGridToolbox
 {
    class Simulation;
 
-   class GenericDcPowerSourceParser : public ParserPlugin<Simulation>
+   class GenericDcPowerSourceParser : public SimParserPlugin
    {
       public:
          virtual const char* key() override
@@ -16,7 +16,7 @@ namespace SmartGridToolbox
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Simulation& sim) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const override;
    };
 }
 

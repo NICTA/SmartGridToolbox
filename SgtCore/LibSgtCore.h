@@ -10,6 +10,7 @@
 #include <SgtCore/Event.h>
 #include <SgtCore/Gen.h>
 #include <SgtCore/Network.h>
+#include <SgtCore/NetworkParser.h>
 #include <SgtCore/OverheadLine.h>
 #include <SgtCore/Parser.h>
 #include <SgtCore/PowerFlow.h>

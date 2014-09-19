@@ -1,7 +1,7 @@
 #ifndef COMMON_BRANCH_PARSER_DOT_H
 #define COMMON_BRANCH_PARSER_DOT_H
 
-#include <SgtCore/Parser.h>
+#include <SgtCore/NetworkParser.h>
 
 namespace SmartGridToolbox
 {
@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    class Network;
 
    /// @brief ParserPlugin that parses CommonBranch objects.
-   class CommonBranchParser : public ParserPlugin<Network>
+   class CommonBranchParser : public NetworkParserPlugin
    {
       public:
          virtual const char* key()
@@ -17,9 +17,9 @@ namespace SmartGridToolbox
             return "common_branch";
          }
 
-         virtual void parse(const YAML::Node& nd, Network& netw) const override;
+         virtual void parse(const YAML::Node& nd, Network& netw, const ParserState& state) const override;
          
-         std::unique_ptr<CommonBranch> parseCommonBranch(const YAML::Node& nd) const;
+         std::unique_ptr<CommonBranch> parseCommonBranch(const YAML::Node& nd, const ParserState& state) const;
    };
 }
 

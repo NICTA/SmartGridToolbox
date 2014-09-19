@@ -1,7 +1,7 @@
 #ifndef YY_TRANSFORMER_PARSER
 #define YY_TRANSFORMER_PARSER
 
-#include <SgtCore/Parser.h>
+#include <SgtCore/NetworkParser.h>
 
 namespace SmartGridToolbox
 {
@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    class Network;
    
    /// @brief ParserPlugin that parses YyTransformer objects.
-   class YyTransformerParser : public ParserPlugin<Network>
+   class YyTransformerParser : public NetworkParserPlugin
    {
       public:
          virtual const char* key()
@@ -17,9 +17,9 @@ namespace SmartGridToolbox
             return "yy_transformer";
          }
 
-         virtual void parse(const YAML::Node& nd, Network& netw) const override;
+         virtual void parse(const YAML::Node& nd, Network& netw, const ParserState& state) const override;
          
-         std::unique_ptr<YyTransformer> parseYyTransformer(const YAML::Node& nd) const;
+         std::unique_ptr<YyTransformer> parseYyTransformer(const YAML::Node& nd, const ParserState& state) const;
    };
 }
 

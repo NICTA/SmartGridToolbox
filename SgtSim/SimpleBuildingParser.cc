@@ -7,13 +7,13 @@
 
 namespace SmartGridToolbox
 {
-   void SimpleBuildingParser::parse(const YAML::Node& nd, Simulation& sim) const
+   void SimpleBuildingParser::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_id");
 
-      std::string id = nd["id"].as<std::string>();
+      std::string id = state.expandName(nd["id"].as<std::string>());
       auto build = sim.newSimComponent<SimpleBuilding>(id);
 
       auto nd_dt = nd["dt"];
@@ -55,8 +55,8 @@ namespace SmartGridToolbox
          build->set_dQgSeries(series);
       }
 
-      std::string netwId = nd["network_id"].as<std::string>();
-      std::string busId = nd["bus_id"].as<std::string>();
+      std::string netwId = state.expandName(nd["network_id"].as<std::string>());
+      std::string busId = state.expandName(nd["bus_id"].as<std::string>());
       auto netw = sim.simComponent<SimNetwork>(netwId);
       netw->addZip(build, busId);
 

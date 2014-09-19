@@ -1,7 +1,7 @@
 #ifndef BUS_PARSER_DOT_H
 #define BUS_PARSER_DOT_H
 
-#include <SgtCore/Parser.h>
+#include <SgtCore/NetworkParser.h>
 
 namespace SmartGridToolbox
 {
@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    class Network;
 
    /// @brief ParserPlugin that parses Bus objects.
-   class BusParser : public ParserPlugin<Network>
+   class BusParser : public NetworkParserPlugin
    {
       public:
          virtual const char* key()
@@ -17,9 +17,9 @@ namespace SmartGridToolbox
             return "bus";
          }
 
-         virtual void parse(const YAML::Node& nd, Network& netw) const override;
+         virtual void parse(const YAML::Node& nd, Network& netw, const ParserState& state) const override;
          
-         std::unique_ptr<Bus> parseBus(const YAML::Node& nd) const;
+         std::unique_ptr<Bus> parseBus(const YAML::Node& nd, const ParserState& state) const;
    };
 }
 

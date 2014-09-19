@@ -1,14 +1,14 @@
 #ifndef MATPOWER_PARSER_DOT_H
 #define MATPOWER_PARSER_DOT_H
 
-#include <SgtCore/Parser.h>
+#include <SgtCore/NetworkParser.h>
 
 namespace SmartGridToolbox
 {
    class Network;
 
    /// @brief ParserPlugin that parses Matpower files.
-   class MatpowerParser : public ParserPlugin<Network>
+   class MatpowerParser : public NetworkParserPlugin
    {
       public:
          virtual const char* key()
@@ -16,7 +16,7 @@ namespace SmartGridToolbox
             return "matpower";
          }
 
-         virtual void parse(const YAML::Node& nd, Network& netw) const override;
+         virtual void parse(const YAML::Node& nd, Network& netw, const ParserState& state) const override;
    };
 }
 

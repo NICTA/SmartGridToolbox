@@ -7,7 +7,7 @@ namespace SmartGridToolbox
       return timeFromLocalTime(nd.as<posix_time::ptime>(), timezone);
    }
 
-   static void parseTimeSeries(const YAML::Node& nd, Simulation& sim)
+   static void parseTimeSeries(const YAML::Node& nd, Simulation& sim, const ParserState& state)
    {
       Log().message() << "Parsing time series." << std::endl;
       Indent _;
@@ -18,7 +18,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "type"); // data
       assertFieldPresent(nd, "value_type"); // real_scalar/complex_scalar/real_vector/complex_vector
       
-      std::string id = nd["id"].as<std::string>();
+      std::string id = state.expandName(nd["id"].as<std::string>());
       std::string type = nd["type"].as<std::string>();
       std::string valType = nd["value_type"].as<std::string>();
 
@@ -152,7 +152,7 @@ namespace SmartGridToolbox
       sim.acquireTimeSeries(id, std::move(ts));
    }
 
-   void SimGlobalParser::parse(const YAML::Node& nd, Simulation& sim) const
+   void SimGlobalParser::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
    {
       assertFieldPresent(nd, "start_time");
       assertFieldPresent(nd, "end_time");
@@ -208,7 +208,7 @@ namespace SmartGridToolbox
 
       if (const YAML::Node& ndTs = nd["time_series"])
       {
-         parseTimeSeries(ndTs, sim); 
+         parseTimeSeries(ndTs, sim, state);
       }
    }
 

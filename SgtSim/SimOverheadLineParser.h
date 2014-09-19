@@ -3,14 +3,14 @@
 
 #include "SimNetworkComponent.h"
 
-#include <SgtCore/Parser.h>
+#include <SgtSim/SimParser.h>
 
 namespace SmartGridToolbox
 {
    class Simulation;
 
    /// @brief ParserPlugin that parses OverheadLine objects.
-   class SimOverheadLineParser : public ParserPlugin<Simulation>
+   class SimOverheadLineParser : public SimParserPlugin
    {
       public:
          virtual const char* key() override
@@ -19,7 +19,7 @@ namespace SmartGridToolbox
          }
 
       public:
-         virtual void parse(const YAML::Node& nd, Simulation& sim) const override;
+         virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const override;
    };
 }
 

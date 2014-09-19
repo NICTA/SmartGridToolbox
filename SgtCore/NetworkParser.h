@@ -1,15 +1,15 @@
-#ifndef SIM_PARSER_DOT_H
-#define SIM_PARSER_DOT_H
+#ifndef NETWORK_PARSER_DOT_H
+#define NETWORK_PARSER_DOT_H
 
 #include<SgtCore/Parser.h>
 
 namespace SmartGridToolbox
 {
-   class Simulation;
-   extern template class Parser<Simulation>;
-   extern template class ParserPlugin<Simulation>;
-   using SimParser = Parser<Simulation>;
-   using SimParserPlugin = ParserPlugin<Simulation>;
+   class Network;
+   extern template class Parser<Network>;
+   extern template class ParserPlugin<Network>;
+   using NetworkParser = Parser<Network>;
+   using NetworkParserPlugin = ParserPlugin<Network>;
 }
 
-#endif // SIM_PARSER_DOT_H
+#endif // NETWORK_PARSER_DOT_H

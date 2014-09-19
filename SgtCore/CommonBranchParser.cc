@@ -5,27 +5,28 @@
 
 namespace SmartGridToolbox
 {
-   void CommonBranchParser::parse(const YAML::Node& nd, Network& netw) const
+   void CommonBranchParser::parse(const YAML::Node& nd, Network& netw, const ParserState& state) const
    {
       assertFieldPresent(nd, "bus_0_id");
       assertFieldPresent(nd, "bus_1_id");
 
-      auto cBranch = parseCommonBranch(nd);
+      auto cBranch = parseCommonBranch(nd, state);
 
-      std::string bus0Id = nd["bus_0_id"].as<std::string>();
-      std::string bus1Id = nd["bus_1_id"].as<std::string>();
+      std::string bus0Id = state.expandName(nd["bus_0_id"].as<std::string>());
+      std::string bus1Id = state.expandName(nd["bus_1_id"].as<std::string>());
       
       netw.addArc(std::move(cBranch), bus0Id, bus1Id);
    }
    
-   std::unique_ptr<CommonBranch> CommonBranchParser::parseCommonBranch(const YAML::Node& nd) const
+   std::unique_ptr<CommonBranch> CommonBranchParser::parseCommonBranch(const YAML::Node& nd,
+         const ParserState& state) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "complex_tap_ratio");
       assertFieldPresent(nd, "Y_series");
       assertFieldPresent(nd, "Y_shunt");
 
-      std::string id = nd["id"].as<std::string>();
+      std::string id = state.expandName(nd["id"].as<std::string>());
 
       std::unique_ptr<CommonBranch> cBranch(new CommonBranch(id));
 
@@ -50,8 +51,8 @@ namespace SmartGridToolbox
          cBranch->setRateC(nd["rate_C"].as<double>());
       }
 
-      std::string bus0Id = nd["bus_0_id"].as<std::string>();
-      std::string bus1Id = nd["bus_1_id"].as<std::string>();
+      std::string bus0Id = state.expandName(nd["bus_0_id"].as<std::string>());
+      std::string bus1Id = state.expandName(nd["bus_1_id"].as<std::string>());
 
       return cBranch; 
    }

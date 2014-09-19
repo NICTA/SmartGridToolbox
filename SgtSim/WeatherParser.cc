@@ -5,11 +5,11 @@
 
 namespace SmartGridToolbox
 {
-   void WeatherParser::parse(const YAML::Node& nd, Simulation& sim) const
+   void WeatherParser::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
    {
       assertFieldPresent(nd, "id");
 
-      string id = nd["id"].as<std::string>();
+      string id = state.expandName(nd["id"].as<std::string>());
       auto weather = sim.newSimComponent<Weather>(id);
 
       weather->setLatLong(sim.latLong());

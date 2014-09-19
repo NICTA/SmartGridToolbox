@@ -1,4 +1,7 @@
-#include "SimParser.h"
+#include "NetworkParser.h"
 
-template class Parser<Simulation>;
-template class ParserPlugin<Simulation>;
+namespace SmartGridToolbox
+{
+   template class Parser<Network>;
+   template class ParserPlugin<Network>;
+}

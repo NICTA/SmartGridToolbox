@@ -5,12 +5,12 @@
 
 namespace SmartGridToolbox
 {
-   void BatteryParser::parse(const YAML::Node& nd, Simulation& sim) const
+   void BatteryParser::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "inverter");
 
-      string id = nd["id"].as<std::string>();
+      string id = state.expandName(nd["id"].as<std::string>());
       auto batt = sim.newSimComponent<Battery>(id);
 
       auto nd_dt = nd["dt"];

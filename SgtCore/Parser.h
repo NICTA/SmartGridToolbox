@@ -73,11 +73,11 @@ namespace SmartGridToolbox
    {
       public:
 
-         std::string expandName(const std::string & target) const;
+         std::string expandName(const std::string& target) const;
 
-         void pushLoop(const std::string & name)
+         void pushLoop(const std::string& name, int first)
          {
-            loops_.push_back({name, 0});
+            loops_.push_back({name, first});
          }
 
          int topLoopVal()
@@ -85,9 +85,9 @@ namespace SmartGridToolbox
             return loops_.back().i_;
          }
 
-         void incrTopLoop()
+         void incrTopLoop(int i)
          {
-            ++loops_.back().i_;
+            loops_.back().i_ += i;
          }
 
          void popLoop()
@@ -161,10 +161,13 @@ namespace SmartGridToolbox
                const YAML::Node& nodeVal = subnode.second;
                if (nodeType == "loop")
                {
-                  std::string name = nodeVal["name"].as<std::string>();
-                  int count = nodeVal["count"].as<int>();
-                  const YAML::Node & body = nodeVal["body"];
-                  for (state.pushLoop(name); state.topLoopVal() < count; state.incrTopLoop())
+                  const YAML::Node& spec = nodeVal["spec"];
+                  const YAML::Node& body = nodeVal["body"];
+                  std::string name = spec[0].as<std::string>();
+                  int first = spec[1].as<int>();
+                  int upper = spec[2].as<int>();
+                  int stride = spec[3].as<int>();
+                  for (state.pushLoop(name, first); state.topLoopVal() < upper; state.incrTopLoop(stride))
                   {
                      parse(body, into, state);
                   }
@@ -181,10 +184,9 @@ namespace SmartGridToolbox
                   else
                   {
                      Indent _;
-                     it->second->parse(nodeVal, into);
+                     it->second->parse(nodeVal, into, state);
                   }
                }
-               Log().message() << "Parsing completed." << std::endl;
             }
          }
 
