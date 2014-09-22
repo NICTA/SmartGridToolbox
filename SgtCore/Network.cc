@@ -10,28 +10,28 @@ namespace SmartGridToolbox
    ublas::vector<Complex> Node::YZip() const
    {
       return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const std::shared_ptr<ZipInterface>& zip) 
+            [] (ublas::vector<Complex> & tot, const ZipPtr& zip) 
             {return tot + zip->YConst();});
    }
 
    ublas::vector<Complex> Node::IZip() const
    {
       return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const std::shared_ptr<ZipInterface>& zip)
+            [] (ublas::vector<Complex> & tot, const ZipPtr& zip)
             {return tot + zip->IConst();});
    }
 
    ublas::vector<Complex> Node::SZip() const
    {
       return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const std::shared_ptr<ZipInterface>& zip)
+            [] (ublas::vector<Complex> & tot, const ZipPtr& zip)
             {return tot + zip->SConst();});
    }
    
    ublas::vector<Complex> Node::SGen() const
    {
       return std::accumulate(gens_.begin(), gens_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const std::shared_ptr<GenInterface>& gen) {return tot + gen->S();});
+            [] (ublas::vector<Complex> & tot, const GenPtr& gen) {return tot + gen->S();});
    }
 
    Network::Network(const std::string& id, double PBase) :
@@ -40,38 +40,43 @@ namespace SmartGridToolbox
    {
       // Empty.
    }
-
-   void Network::print(std::ostream& os) const
+         
+   void Network::addNode(BusPtr bus)
    {
-      Component::print(os);
-      Indent _;
-      os << "P_base: " << PBase_ << std::endl;
-      for (auto nd : nodeVec_)
+      auto nd = NodePtr(new Node(bus)); 
+      nodeMap_[bus->id()] = nd;
+      nodeVec_.push_back(nd);
+   }
+
+   void Network::addArc(BranchPtr branch, const std::string& bus0Id, const std::string& bus1Id)
+   {
+      auto nd0 = node(bus0Id); 
+      auto nd1 = node(bus1Id); 
+      if (nd0 == nullptr)
       {
-         os << nd->bus() << std::endl;
-         os << "Zips: " << std::endl;
-         {
-            Indent _;
-            for (auto zip : nd->zips())
-            {
-               os << *zip << std::endl;
-            }
-         }
-         os << "Gens: " << std::endl;
-         {
-            Indent _;
-            for (auto gen : nd->gens())
-            {
-               os << *gen << std::endl;
-            }
-         }
+         Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << bus0Id << " was not found in the network." << std::endl;
       }
-      for (auto arc : arcVec_)
+      if (nd1 == nullptr)
       {
-         os << arc->branch() << std::endl;
-         os << "Bus 0 = " << arc->node0()->bus()->id() << std::endl;
-         os << "Bus 1 = " << arc->node0()->bus()->id() << std::endl;
+         Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << bus1Id << " was not found in the network." << std::endl;
       }
+      auto arc = ArcPtr(new Arc(branch, nd0, nd1));
+      arcMap_[branch->id()] = arc;
+      arcVec_.push_back(arc);
+   }
+         
+   void Network::addGen(GenPtr gen, const std::string& busId)
+   {
+      genMap_[gen->id()] = gen;
+      genVec_.push_back(gen);
+      node(busId)->gens_.push_back(gen);
+   }
+         
+   void Network::addZip(ZipPtr zip, const std::string& busId)
+   {
+      zipMap_[zip->id()] = zip;
+      zipVec_.push_back(zip);
+      node(busId)->zips_.push_back(zip);
    }
 
    void Network::solvePowerFlow()
@@ -134,6 +139,39 @@ namespace SmartGridToolbox
                   Log().fatal() << "Bad bus type." << std::endl;
             }
          }
+      }
+   }
+
+   void Network::print(std::ostream& os) const
+   {
+      Component::print(os);
+      Indent _;
+      os << "P_base: " << PBase_ << std::endl;
+      for (auto nd : nodeVec_)
+      {
+         os << nd->bus() << std::endl;
+         os << "Zips: " << std::endl;
+         {
+            Indent _;
+            for (auto zip : nd->zips())
+            {
+               os << *zip << std::endl;
+            }
+         }
+         os << "Gens: " << std::endl;
+         {
+            Indent _;
+            for (auto gen : nd->gens())
+            {
+               os << *gen << std::endl;
+            }
+         }
+      }
+      for (auto arc : arcVec_)
+      {
+         os << arc->branch() << std::endl;
+         os << "Bus 0 = " << arc->node0()->bus()->id() << std::endl;
+         os << "Bus 1 = " << arc->node0()->bus()->id() << std::endl;
       }
    }
 }

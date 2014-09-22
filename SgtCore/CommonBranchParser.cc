@@ -51,9 +51,6 @@ namespace SmartGridToolbox
          cBranch->setRateC(nd["rate_C"].as<double>());
       }
 
-      std::string bus0Id = state.expandName(nd["bus_0_id"].as<std::string>());
-      std::string bus1Id = state.expandName(nd["bus_1_id"].as<std::string>());
-
       return cBranch; 
    }
 }
