@@ -24,62 +24,62 @@ pkginclude_HEADERS = \
 libSgtSim_a_SOURCES = \
 	Battery.h \
 	Battery.cc \
-	BatteryParser.h \
-	BatteryParser.cc \
+	BatteryParserPlugin.h \
+	BatteryParserPlugin.cc \
 	DcPowerSource.h \
-	GenericDcPowerSourceParser.h \
-	GenericDcPowerSourceParser.cc \
+	GenericDcPowerSourceParserPlugin.h \
+	GenericDcPowerSourceParserPlugin.cc \
 	Inverter.h \
 	Inverter.cc \
-	InverterParser.h \
-	InverterParser.cc \
+	InverterParserPlugin.h \
+	InverterParserPlugin.cc \
 	LibSgtSim.h \
-	SimOverheadLineParser.h \
-	SimOverheadLineParser.cc \
+	SimOverheadLineParserPlugin.h \
+	SimOverheadLineParserPlugin.cc \
 	RegisterParserPlugins.cc \
-	SimBusParser.h \
-	SimBusParser.cc \
-	SimGenericBranchParser.h \
-	SimGenericBranchParser.cc \
+	SimBusParserPlugin.h \
+	SimBusParserPlugin.cc \
+	SimGenericBranchParserPlugin.h \
+	SimGenericBranchParserPlugin.cc \
 	SimGenericGenParser.h \
 	SimGenericGenParser.cc \
-	SimGenericZipParser.h \
-	SimGenericZipParser.cc \
+	SimGenericZipParserPlugin.h \
+	SimGenericZipParserPlugin.cc \
 	SimComponent.h \
 	SimComponent.cc \
-	SimDgyTransformerParser.h \
-	SimDgyTransformerParser.cc \
+	SimDgyTransformerParserPlugin.h \
+	SimDgyTransformerParserPlugin.cc \
 	SimNetwork.h \
 	SimNetwork.cc \
 	SimNetworkComponent.h \
 	SimNetworkComponent.cc \
-	SimNetworkParser.h \
-	SimNetworkParser.cc \
+	SimNetworkParserPlugin.h \
+	SimNetworkParserPlugin.cc \
 	SimParser.h \
 	SimParser.cc \
 	SimpleBuilding.h \
 	SimpleBuilding.cc \
-	SimpleBuildingParser.h \
-	SimpleBuildingParser.cc \
-	SimGlobalParser.h \
-	SimGlobalParser.cc \
-	SimSinglePhaseTransformerParser.h \
-	SimSinglePhaseTransformerParser.cc \
+	SimpleBuildingParserPlugin.h \
+	SimpleBuildingParserPlugin.cc \
+	SimGlobalParserPlugin.h \
+	SimGlobalParserPlugin.cc \
+	SimSinglePhaseTransformerParserPlugin.h \
+	SimSinglePhaseTransformerParserPlugin.cc \
 	Simulation.h \
 	Simulation.cc \
-	SimYyTransformerParser.h \
-	SimYyTransformerParser.cc \
+	SimYyTransformerParserPlugin.h \
+	SimYyTransformerParserPlugin.cc \
 	SolarPv.h \
 	SolarPv.cc \
-	SolarPvParser.h \
-	SolarPvParser.cc \
+	SolarPvParserPlugin.h \
+	SolarPvParserPlugin.cc \
 	Sun.h \
 	Sun.cc \
 	WeakOrder.h \
 	WeakOrder.cc \
 	Weather.h \
 	Weather.cc \
-	WeatherParser.h \
-	WeatherParser.cc
+	WeatherParserPlugin.h \
+	WeatherParserPlugin.cc
 
 EXTRA_DIST = mainpage.dox

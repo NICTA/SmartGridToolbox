@@ -1,42 +1,42 @@
 #include <SgtCore/Parser.h>
 
-#include "BatteryParser.h"
-#include "SimBusParser.h"
-#include "SimDgyTransformerParser.h"
-#include "SimGenericBranchParser.h"
+#include "BatteryParserPlugin.h"
+#include "SimBusParserPlugin.h"
+#include "SimDgyTransformerParserPlugin.h"
+#include "SimGenericBranchParserPlugin.h"
 #include "SimGenericGenParser.h"
-#include "SimGenericZipParser.h"
-#include "SimGlobalParser.h"
-#include "SimNetworkParser.h"
-#include "SimOverheadLineParser.h"
-#include "SimSinglePhaseTransformerParser.h"
-#include "SimpleBuildingParser.h"
-#include "SimYyTransformerParser.h"
-#include "InverterParser.h"
+#include "SimGenericZipParserPlugin.h"
+#include "SimGlobalParserPlugin.h"
+#include "SimNetworkParserPlugin.h"
+#include "SimOverheadLineParserPlugin.h"
+#include "SimSinglePhaseTransformerParserPlugin.h"
+#include "SimpleBuildingParserPlugin.h"
+#include "SimYyTransformerParserPlugin.h"
+#include "InverterParserPlugin.h"
 #include "Simulation.h"
-#include "SimSinglePhaseTransformerParser.h"
-#include "SolarPvParser.h"
-#include "WeatherParser.h"
+#include "SimSinglePhaseTransformerParserPlugin.h"
+#include "SolarPvParserPlugin.h"
+#include "WeatherParserPlugin.h"
 
 namespace SmartGridToolbox
 {
    class Simulation;
    template<> void registerParserPlugins<Simulation>(Parser<Simulation>& p)
    {
-      p.registerParserPlugin<BatteryParser>();
-      p.registerParserPlugin<SimBusParser>();
-      p.registerParserPlugin<SimDgyTransformerParser>();
-      p.registerParserPlugin<SimGenericBranchParser>();
+      p.registerParserPlugin<BatteryParserPlugin>();
+      p.registerParserPlugin<SimBusParserPlugin>();
+      p.registerParserPlugin<SimDgyTransformerParserPlugin>();
+      p.registerParserPlugin<SimGenericBranchParserPlugin>();
       p.registerParserPlugin<SimGenericGenParser>();
-      p.registerParserPlugin<SimGenericZipParser>();
-      p.registerParserPlugin<SimGlobalParser>();
-      p.registerParserPlugin<SimNetworkParser>();
-      p.registerParserPlugin<SimOverheadLineParser>();
-      p.registerParserPlugin<SimpleBuildingParser>();
-      p.registerParserPlugin<SimYyTransformerParser>();
-      p.registerParserPlugin<InverterParser>();
-      p.registerParserPlugin<SimSinglePhaseTransformerParser>();
-      p.registerParserPlugin<SolarPvParser>();
-      p.registerParserPlugin<WeatherParser>();
+      p.registerParserPlugin<SimGenericZipParserPlugin>();
+      p.registerParserPlugin<SimGlobalParserPlugin>();
+      p.registerParserPlugin<SimNetworkParserPlugin>();
+      p.registerParserPlugin<SimOverheadLineParserPlugin>();
+      p.registerParserPlugin<SimpleBuildingParserPlugin>();
+      p.registerParserPlugin<SimYyTransformerParserPlugin>();
+      p.registerParserPlugin<InverterParserPlugin>();
+      p.registerParserPlugin<SimSinglePhaseTransformerParserPlugin>();
+      p.registerParserPlugin<SolarPvParserPlugin>();
+      p.registerParserPlugin<WeatherParserPlugin>();
    }
 }

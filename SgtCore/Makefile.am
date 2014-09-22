@@ -29,40 +29,40 @@ libSgtCore_a_SOURCES = \
 	Branch.cc \
 	Bus.h \
 	Bus.cc \
-	BusParser.h \
-	BusParser.cc \
+	BusParserPlugin.h \
+	BusParserPlugin.cc \
 	Common.h \
 	Common.cc \
 	CommonBranch.h \
 	CommonBranch.cc \
-	CommonBranchParser.h \
-	CommonBranchParser.cc \
+	CommonBranchParserPlugin.h \
+	CommonBranchParserPlugin.cc \
 	Component.h \
 	DgyTransformer.h \
 	DgyTransformer.cc \
-	DgyTransformerParser.h \
-	DgyTransformerParser.cc \
+	DgyTransformerParserPlugin.h \
+	DgyTransformerParserPlugin.cc \
 	Event.h \
 	Event.cc \
 	Gen.h \
 	Gen.cc \
-	GenericBranchParser.h \
-	GenericBranchParser.cc \
-	GenericGenParser.h \
-	GenericGenParser.cc \
-	GenericZipParser.h \
-	GenericZipParser.cc \
+	GenericBranchParserPlugin.h \
+	GenericBranchParserPlugin.cc \
+	GenericGenParserPlugin.h \
+	GenericGenParserPlugin.cc \
+	GenericZipParserPlugin.h \
+	GenericZipParserPlugin.cc \
 	LibSgtCore.h \
-	MatpowerParser.h \
-	MatpowerParser.cc \
+	MatpowerParserPlugin.h \
+	MatpowerParserPlugin.cc \
 	Network.h \
 	Network.cc \
 	NetworkParser.h \
 	NetworkParser.cc \
 	OverheadLine.h \
 	OverheadLine.cc \
-	OverheadLineParser.h \
-	OverheadLineParser.cc \
+	OverheadLineParserPlugin.h \
+	OverheadLineParserPlugin.cc \
 	Parser.h \
 	Parser.cc \
 	PowerFlow.h \
@@ -78,13 +78,13 @@ libSgtCore_a_SOURCES = \
 	RegisterParserPlugins.cc \
 	SinglePhaseTransformer.h \
 	SinglePhaseTransformer.cc \
-	SinglePhaseTransformerParser.h \
-	SinglePhaseTransformerParser.cc \
+	SinglePhaseTransformerParserPlugin.h \
+	SinglePhaseTransformerParserPlugin.cc \
 	Units.h \
 	YyTransformer.h \
 	YyTransformer.cc \
-	YyTransformerParser.h \
-	YyTransformerParser.cc \
+	YyTransformerParserPlugin.h \
+	YyTransformerParserPlugin.cc \
 	Zip.h \
 	Zip.cc
 
