@@ -1,10 +1,12 @@
 AUTOMAKE_OPTIONS = foreign
 
+libincludedir=$(includedir)/SgtCore
+
 lib_LIBRARIES = libSgtSim.a
 
-include_HEADERS = LibSgtSim.h
+include_HEADERS = SgtSim.h
 
-pkginclude_HEADERS = \
+libinclude_HEADERS = \
 	Battery.h \
 	DcPowerSource.h \
 	Inverter.h \
@@ -33,7 +35,7 @@ libSgtSim_a_SOURCES = \
 	Inverter.cc \
 	InverterParserPlugin.h \
 	InverterParserPlugin.cc \
-	LibSgtSim.h \
+	SgtSim.h \
 	SimOverheadLineParserPlugin.h \
 	SimOverheadLineParserPlugin.cc \
 	RegisterParserPlugins.cc \

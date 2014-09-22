@@ -1,10 +1,12 @@
 AUTOMAKE_OPTIONS = foreign
 
+libincludedir=$(includedir)/SgtCore
+
 lib_LIBRARIES = libSgtCore.a
 
-include_HEADERS = LibSgtCore.h
+include_HEADERS = SgtCore.h
 
-pkginclude_HEADERS = \
+libinclude_HEADERS = \
 	Branch.h \
 	Bus.h \
 	Common.h \

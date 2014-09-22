@@ -29,6 +29,7 @@ namespace SmartGridToolbox
          typedef std::map<std::string, TimeSeriesPtr> TimeSeriesMap;
 
       public:
+
          /// @brief Constructor.
          Simulation() = default;
 

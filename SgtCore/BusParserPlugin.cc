@@ -1,7 +1,6 @@
 #include "BusParserPlugin.h"
 
 #include "Bus.h"
-#include "Common.h"
 #include "Network.h"
 
 namespace SmartGridToolbox
