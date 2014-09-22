@@ -1,6 +1,6 @@
 tvec = 0:5:24*60*7;
 Tvec = 60:120:60*24;
-xvec = rand(size(Tvec)).*exp(-((Tvec-18*60)/(12*60)).^2);
+xvec = rand(size(Tvec)).*exp(-((Tvec-18*60)/(24*60)).^2);
 pvec = rand(size(Tvec))*2*pi;
 cvec = zeros(size(tvec));
 for i = 1:length(Tvec)
