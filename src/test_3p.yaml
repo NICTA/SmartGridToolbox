@@ -48,6 +48,27 @@ loop:
          bus_id:           bus_${i}
          phases:           [A, B, C]
          S_const:          [-5e-3, -5e-3, -5e-3]
+loop: 
+   spec:                   [i, 0, 19, 1]
+   body:
+   overhead_line:
+      id:                     line_${i}_${i+1}
+      network_id:             network
+      bus_0_id:               bus_1
+      bus_1_id:               bus_2
+      phases_0:               [A, B, C]
+      phases_1:               [A, B, C]
+      length:                 1e5
+      n_neutral:              1
+      conductor_R_per_L:      [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
+      earth_resistivity:      100.0
+      distance_matrix:        [  
+         [1.37160e-3    , 0.7620       , 1.37160      , 1.30211      ],
+         [0.7620        , 1.3716e-3    , 2.13360      , 1.72421      ],
+         [1.37160       , 2.13360      , 1.3716e-3    , 1.5240       ],
+         [1.30211       , 1.72421      , 1.5240       , 1.3716e-3    ]
+      ]
+      freq:                   60.0
 bus:
    id:                     bus_b
    network_id:             network
@@ -95,6 +116,7 @@ overhead_line:
       [1.30211       , 1.72421      , 1.5240       , 1.3716e-3    ]
       ]
    freq:                   60.0
+
 overhead_line:
    id:                     line_2_3
    network_id:             network

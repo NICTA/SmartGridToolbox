@@ -3,8 +3,56 @@
 #include "Common.h"
 #include "PowerFlow.h"
 
+#include <boost/config/warning_disable.hpp>
+#include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/spirit/include/phoenix_object.hpp>
+
+#include <regex>
 #include <string>
-#include <boost/algorithm/string.hpp>
+
+namespace qi = boost::spirit::qi;
+namespace ascii = boost::spirit::ascii;
+
+namespace
+{
+   using boost::spirit::ascii::space;
+
+   template <typename Iterator> struct Calculator : qi::grammar<Iterator, int(), ascii::space_type>
+   {
+      Calculator() : Calculator::base_type(expression)
+      {
+         qi::_val_type _val;
+         qi::_1_type _1;
+         qi::uint_type uint_;
+
+         expression =
+            term                            [_val = _1]
+            >> *(   ('+' >> term            [_val += _1])
+                  |   ('-' >> term            [_val -= _1])
+                )
+            ;
+
+         term =
+            factor                          [_val = _1]
+            >> *(   ('*' >> factor          [_val *= _1])
+                  |   ('/' >> factor          [_val /= _1])
+                )
+            ;
+
+         factor =
+            uint_                           [_val = _1]
+            |   '(' >> expression           [_val = _1] >> ')'
+            |   ('-' >> factor              [_val = -_1])
+            |   ('+' >> factor              [_val = _1])
+            ;
+      }
+
+      qi::rule<Iterator, int(), ascii::space_type> expression, term, factor;
+   };
+
+   Calculator<std::string::const_iterator> calc;
+}
 
 namespace YAML
 {
@@ -195,12 +243,37 @@ namespace SmartGridToolbox
 {
    std::string ParserState::expandName(const std::string & target) const
    {
-      std::string result(target);
-      for (const ParserLoop & loop : loops_)
+      std::string result;
+
+      std::regex r("\\$\\{.*?\\}");
+
+      std::sregex_iterator begin(target.begin(), target.end(), r);
+      std::sregex_iterator end;
+
+      if (begin == end)
       {
-         std::string search = "${" + loop.name_ + "}";
-         std::string replace = std::to_string(loop.i_);
-         boost::replace_all(result, search, replace);
+         result = target;
+      }
+      else
+      {
+         for (auto it = begin; it != end; ++it)
+         {
+            result += it->prefix();
+            std::string substr = it->str().substr(2, it->str().size()-3);
+            for (const ParserLoop & loop : loops_)
+            {
+               substr = std::regex_replace(substr, std::regex(loop.name_), std::to_string(loop.i_));
+               int calcResult;
+               std::string::const_iterator i1 = substr.begin();
+               std::string::const_iterator i2 = substr.end();
+               bool ok = phrase_parse(i1, i2, calc, space, calcResult);
+               if (!ok)
+               {
+                  Log().fatal() << "Ill-formed expression " << target << " for variables" << std::endl;
+               }
+               result += std::to_string(calcResult); 
+            }
+         }
       }
       return result;
    }

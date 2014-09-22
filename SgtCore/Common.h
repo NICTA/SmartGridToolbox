@@ -93,7 +93,6 @@ namespace SmartGridToolbox
                bool isNewline_;
                std::string ind1_;
                std::string ind2_;
-
          };
 
       public:
