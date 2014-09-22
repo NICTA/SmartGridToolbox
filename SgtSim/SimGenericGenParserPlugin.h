@@ -1,5 +1,5 @@
-#ifndef SIM_DGY_TRANSFORMER_PARSER_PLUGIN
-#define SIM_DGY_TRANSFORMER_PARSER_PLUGIN
+#ifndef SIM_GENERIC_GEN_PARSER_DOT_H
+#define SIM_GENERIC_GEN_PARSER_DOT_H
 
 #include <SgtSim/SimNetworkComponent.h>
 
@@ -9,13 +9,13 @@ namespace SmartGridToolbox
 {
    class Simulation;
 
-   /// @brief ParserPlugin that parses DgyTransformer objects.
-   class SimDgyTransformerParserPlugin : public SimParserPlugin
+   /// @brief ParserPlugin that parses generic gen objects.
+   class SimGenericGenParserPlugin : public SimParserPlugin
    {
       public:
          virtual const char* key() override
          {
-            return "delta_g_wye_transformer";
+            return "generic_gen";
          }
 
       public:
@@ -23,4 +23,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // SIM_DGY_TRANSFORMER_PARSER_PLUGIN
+#endif // SIM_GENERIC_GEN_PARSER_DOT_H

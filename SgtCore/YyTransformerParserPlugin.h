@@ -1,5 +1,5 @@
-#ifndef YY_TRANSFORMER_PARSER
-#define YY_TRANSFORMER_PARSER
+#ifndef YY_TRANSFORMER_PARSER_PLUGIN
+#define YY_TRANSFORMER_PARSER_PLUGIN
 
 #include <SgtCore/NetworkParser.h>
 
@@ -23,4 +23,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // YY_TRANSFORMER_PARSER
+#endif // YY_TRANSFORMER_PARSER_PLUGIN

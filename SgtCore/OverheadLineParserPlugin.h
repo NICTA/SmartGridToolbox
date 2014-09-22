@@ -1,5 +1,5 @@
-#ifndef OVERHEAD_LINE_PARSER
-#define OVERHEAD_LINE_PARSER
+#ifndef OVERHEAD_LINE_PARSER_PLUGIN
+#define OVERHEAD_LINE_PARSER_PLUGIN
 
 #include <SgtCore/NetworkParser.h>
 
@@ -23,4 +23,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // OVERHEAD_LINE_PARSER
+#endif // OVERHEAD_LINE_PARSER_PLUGIN

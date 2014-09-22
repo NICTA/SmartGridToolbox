@@ -1,5 +1,5 @@
-#ifndef SIM_YY_TRANSFORMER_PARSER
-#define SIM_YY_TRANSFORMER_PARSER
+#ifndef SIM_YY_TRANSFORMER_PARSER_PLUGIN
+#define SIM_YY_TRANSFORMER_PARSER_PLUGIN
 
 #include <SgtSim/SimNetworkComponent.h>
 
@@ -23,4 +23,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // SIM_YY_TRANSFORMER_PARSER
+#endif // SIM_YY_TRANSFORMER_PARSER_PLUGIN

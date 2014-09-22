@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    extern template class Parser<Network>;
    extern template class ParserPlugin<Network>;
    using NetworkParser = Parser<Network>;
-   using NetworkParser = ParserPlugin<Network>;
+   using NetworkParserPlugin = ParserPlugin<Network>;
 }
 
 #endif // NETWORK_PARSER_DOT_H

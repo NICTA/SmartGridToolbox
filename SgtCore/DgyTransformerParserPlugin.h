@@ -1,5 +1,5 @@
-#ifndef DGY_TRANSFORMER_PARSER
-#define DGY_TRANSFORMER_PARSER
+#ifndef DGY_TRANSFORMER_PARSER_PLUGIN
+#define DGY_TRANSFORMER_PARSER_PLUGIN
 
 #include <SgtCore/NetworkParser.h>
 
@@ -23,4 +23,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // DGY_TRANSFORMER_PARSER
+#endif // DGY_TRANSFORMER_PARSER_PLUGIN

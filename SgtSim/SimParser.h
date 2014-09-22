@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    extern template class Parser<Simulation>;
    extern template class ParserPlugin<Simulation>;
    using SimParser = Parser<Simulation>;
-   using SimParser = ParserPlugin<Simulation>;
+   using SimParserPlugin = ParserPlugin<Simulation>;
 }
 
 #endif // SIM_PARSER_DOT_H
