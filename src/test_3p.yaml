@@ -2,7 +2,7 @@
 simulation:
    lat_long:               [-35.3075, 149.1244] # Canberra, Australia.
    start_time:             2013-01-23 06:00:00
-   end_time:               2013-01-25 06:00:00
+   end_time:               2013-01-28 06:00:00
    timezone:               AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
    time_series:
       id:                  cloud_cover_series
