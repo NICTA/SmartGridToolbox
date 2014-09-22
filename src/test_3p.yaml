@@ -18,14 +18,14 @@ weather:
    dt:                     00:05:00
 network:
    id:                     network
-   P_base:                 1e8
+   P_base:                 1e6
    freq_Hz:                60
 bus:
    id:                     bus_0
    network_id:             network
    phases:                 [A, B, C]
-   V_base:                 6.35085
-   V_nom:                  [6.35085, 6.35085D-240, 6.35085D240]
+   V_base:                 0.240
+   V_nom:                  [0.240, 0.240D-240, 0.240D240]
    type:                   SL
 generic_gen:
    id:                     gen_0
@@ -33,69 +33,68 @@ generic_gen:
    bus_id:                 bus_0
    phases:                 [A, B, C]
 loop: 
-   spec:                   [i, 1, 20, 1]
+   spec:                   [i, 1, 10, 1]
    body:
       bus:
          id:               bus_${i}
          network_id:       network
          phases:           [A, B, C]
-         V_base:           6.35085
-         V_nom:            [6.35085, 6.35085D-240, 6.35085D240]
+         V_base:           0.240
+         V_nom:            [0.240, 0.240D-240, 0.240D240]
          type:             PQ
       generic_zip:
          id:               zip_${i}
          network_id:       network
          bus_id:           bus_${i}
          phases:           [A, B, C]
-         S_const:          [-5e-3, -5e-3, -5e-3]
+         S_const:          [-1e-3, -1e-3, -1e-3]
 
 bus:
-   id:                     bus_20
+   id:                     bus_10
    network_id:             network
    phases:                 [A, B, C]
-   V_base:                 6.35085
-   V_nom:                  [6.35085, 6.35085D-240, 6.35085D240]
+   V_base:                 0.240
+   V_nom:                  [0.240, 0.240D-240, 0.240D240]
    type:                   PQ
 generic_zip:
-   id:                     zip_20
+   id:                     zip_10
    network_id:             network
-   bus_id:                 bus_20
+   bus_id:                 bus_10
    phases:                 [A, B, C]
-   S_const:                [-3e-3, -3e-3, -3e-3]
+   S_const:                [-2e-3, -2e-3, -2e-3]
 inverter:
-   id:                     inverter_20
+   id:                     inverter_10
    network_id:             network
-   bus_id:                 bus_20
+   bus_id:                 bus_10
    phases:                 [A, B, C]
    requested_Q_per_phase:  0
    max_S_mag_per_phase:    100.0
    efficiency:             0.86
 solar_pv:
-   id:                     solar_pv_20
+   id:                     solar_pv_10
    weather:                weather
-   inverter:               inverter_20
+   inverter:               inverter_10
    efficiency:             0.75
-   area_m2:                50.0 
+   area_m2:                20.0 
    zenith_degrees:         64.6
    azimuth_degrees:        95.8 # Should point right at sun on Jan 26, 2013, 0830.
 loop: 
-   spec:                   [i, 0, 20, 1]
+   spec:                   [i, 0, 10, 1]
    body:
       overhead_line:
          id:                     line_${i}_${i+1}
          network_id:             network
-         bus_0_id:               bus_1
-         bus_1_id:               bus_2
+         bus_0_id:               bus_${i}
+         bus_1_id:               bus_${i+1}
          phases_0:               [A, B, C]
          phases_1:               [A, B, C]
-         length:                 1e5
-         n_neutral:              1
-         conductor_R_per_L:      [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
+         length:                 100
+         n_neutral:              0
+         conductor_R_per_L:      [1e-4, 1e-4, 1e-4]
          earth_resistivity:      100.0
-         distance_matrix:        [  
-            [1.37160e-3    , 0.7620       , 1.37160      , 1.30211      ],
-            [0.7620        , 1.3716e-3    , 2.13360      , 1.72421      ],
-            [1.37160       , 2.13360      , 1.3716e-3    , 1.5240       ],
-            [1.30211       , 1.72421      , 1.5240       , 1.3716e-3    ]
+         distance_matrix:        [
+            [0.01 , 1.00 , 2.00],
+            [1.00 , 0.01 , 1.00],
+            [2.00 , 1.00 , 0.01]
          ]
          freq:                   60.0

@@ -18,112 +18,78 @@ weather:
    dt:                     00:05:00
 network:
    id:                     network
-   P_base:                 1e8
+   P_base:                 1e6
    freq_Hz:                60
 bus:
-   id:                     bus_1
+   id:                     bus_0
    network_id:             network
    phases:                 [BAL]
-   V_base:                 11
-   V_nom:                  [11]
+   V_base:                 0.240
+   V_nom:                  [0.240]
    type:                   SL
 generic_gen:
-   id:                     gen_1
+   id:                     gen_0
    network_id:             network
-   bus_id:                 bus_1
+   bus_id:                 bus_0
    phases:                 [BAL]
+loop: 
+   spec:                   [i, 1, 10, 1]
+   body:
+      bus:
+         id:               bus_${i}
+         network_id:       network
+         phases:           [BAL]
+         V_base:           0.240
+         V_nom:            [0.240]
+         type:             PQ
+      generic_zip:
+         id:               zip_${i}
+         network_id:       network
+         bus_id:           bus_${i}
+         phases:           [BAL]
+         S_const:          [-1e-3]
 bus:
-   id:                     bus_2
+   id:                     bus_10
    network_id:             network
    phases:                 [BAL]
-   V_base:                 11
-   V_nom:                  [11]
+   V_base:                 0.240
+   V_nom:                  [0.240]
    type:                   PQ
 generic_zip:
-   id:                     zip_2
+   id:                     zip_10
    network_id:             network
-   bus_id:                 bus_2
+   bus_id:                 bus_10
    phases:                 [BAL]
-   S_const:                [-40e-3]
-bus:
-   id:                     bus_3
-   network_id:             network
-   phases:                 [BAL]
-   V_base:                 11
-   V_nom:                  [11]
-   type:                   PQ
-generic_zip:
-   id:                     zip_3
-   network_id:             network
-   bus_id:                 bus_3
-   phases:                 [BAL]
-   S_const:                [-40e-3]
-bus:
-   id:                     bus_4
-   network_id:             network
-   phases:                 [BAL]
-   V_base:                 11
-   V_nom:                  [11]
-   type:                   PQ
-generic_zip:
-   id:                     zip_4
-   network_id:             network
-   bus_id:                 bus_4
-   phases:                 [BAL]
-   S_const:                [-10e-3]
+   S_const:                [-2e-3]
 inverter:
-   id:                     inverter_4
+   id:                     inverter_10
    network_id:             network
-   bus_id:                 bus_4
+   bus_id:                 bus_10
    phases:                 [BAL]
    requested_Q_per_phase:  0
-   max_S_mag_per_phase:    100.0 
+   max_S_mag_per_phase:    100.0
    efficiency:             0.86
 solar_pv:
-   id:                     solar_pv_4
+   id:                     solar_pv_10
    weather:                weather
-   inverter:               inverter_4
+   inverter:               inverter_10
    efficiency:             0.75
-   area_m2:                100.0 
+   area_m2:                20.0 
    zenith_degrees:         64.6
    azimuth_degrees:        95.8 # Should point right at sun on Jan 26, 2013, 0830.
-overhead_line:
-   id:                     line_1_2
-   network_id:             network
-   bus_0_id:               bus_1
-   bus_1_id:               bus_2
-   phases_0:               [BAL]
-   phases_1:               [BAL]
-   length:                 5e4
-   n_neutral:              0
-   conductor_R_per_L:      [6.959357e-4]
-   earth_resistivity:      100.0
-   distance_matrix:        [[1.37160e-3]]
-   freq:                   60.0
-overhead_line:
-   id:                     line_2_3
-   network_id:             network
-   bus_0_id:               bus_2
-   bus_1_id:               bus_3
-   phases_0:               [BAL]
-   phases_1:               [BAL]
-   length:                 5e4
-   n_neutral:              0
-   conductor_R_per_L:      [6.959357e-4]
-   earth_resistivity:      100.0
-   distance_matrix:        [[1.37160e-3]]
-   freq:                   60.0
-overhead_line:
-   id:                     line_3_4
-   network_id:             network
-   bus_0_id:               bus_3
-   bus_1_id:               bus_4
-   phases_0:               [BAL]
-   phases_1:               [BAL]
-   length:                 5e5
-   n_neutral:              0
-   conductor_R_per_L:      [6.959357e-4]
-   earth_resistivity:      100.0
-   distance_matrix:        [[1.37160e-3]]
-   freq:                   60.0
----
+loop: 
+   spec:                   [i, 0, 10, 1]
+   body:
+      overhead_line:
+         id:                     line_${i}_${i+1}
+         network_id:             network
+         bus_0_id:               bus_${i}
+         bus_1_id:               bus_${i+1}
+         phases_0:               [BAL]
+         phases_1:               [BAL]
+         length:                 100
+         n_neutral:              0
+         conductor_R_per_L:      [1e-4]
+         earth_resistivity:      100.0
+         distance_matrix:        [[0.001]]
+         freq:                   60.0

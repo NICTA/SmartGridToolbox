@@ -25,14 +25,19 @@ int main(int argc, const char** argv)
    bool ok = true;
 
    std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
-   std::shared_ptr<Node> bus0Nd = netw->node("bus_0");
-   std::shared_ptr<Node> bus20Nd = netw->node("bus_20");
+   std::shared_ptr<Node> busANd = netw->node("bus_0");
+   std::shared_ptr<Node> busBNd = netw->node("bus_10");
+   std::shared_ptr<BranchInterface> branch01 = netw->arc("line_0_1")->branch();
+
+   Log().message() << "Y = " << branch01->Y() << std::endl;
    
    while (ok)
    {
       Indent _;
       ok = sim.doTimestep();
-      Log().message() << "OUTPUT_BUS_0  : " << norm(bus0Nd->SGen()) << " " << norm(bus0Nd->SZip()) << " " 
-      Log().message() << "OUTPUT_BUS_20 : " << norm(bus20Nd->SGen()) << " " << norm(bus20Nd->SZip()) << " " 
+      Log().message() << "OUTPUT_BUS_A : " << norm(busANd->SGen()) << " " << norm(busANd->SZip()) << " " <<
+         norm(busANd->bus()->V()) << std::endl;
+      Log().message() << "OUTPUT_BUS_B : " << norm(busBNd->SGen()) << " " << norm(busBNd->SZip()) << " " <<
+         norm(busBNd->bus()->V()) << std::endl;
    }
 }
