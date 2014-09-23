@@ -16,8 +16,8 @@ namespace SmartGridToolbox
       string id = state.expandName(nd["id"].as<std::string>());
       Phases phases = nd["phases"].as<Phases>();
 
-      auto inverter = std::make_shared<Inverter>(id, phases);
-
+      auto inverter = sim.newSimComponent<Inverter>(id, phases);
+         
       if (nd["efficiency"])
       {
          inverter->setEfficiency(nd["efficiency"].as<double>());

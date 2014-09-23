@@ -13,7 +13,6 @@ namespace SmartGridToolbox
    void SimOverheadLineParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
    {
       OverheadLineParserPlugin ohlParser;
-      auto ohl = ohlParser.parseOverheadLine(nd, state);
       auto simOhl = sim.newSimComponent<SimOverheadLine>(*ohlParser.parseOverheadLine(nd, state));
 
       assertFieldPresent(nd, "network_id");
