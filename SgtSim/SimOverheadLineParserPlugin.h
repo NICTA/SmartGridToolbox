@@ -1,8 +1,7 @@
 #ifndef SIM_OVERHEAD_LINE_PARSER_PLUGIN_DOT_H
 #define SIM_OVERHEAD_LINE_PARSER_PLUGIN_DOT_H
 
-#include "SimNetworkComponent.h"
-
+#include <SgtSim/SimNetworkComponent.h>
 #include <SgtSim/SimParser.h>
 
 namespace SmartGridToolbox

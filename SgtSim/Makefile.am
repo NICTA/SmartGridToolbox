@@ -80,6 +80,8 @@ libSgtSim_a_SOURCES = \
 	Sun.h \
 	Sun.cc \
 	TimeSeries.h \
+	TimeSeriesParserPlugin.h \
+	TimeSeriesParserPlugin.cc \
 	TimeSeriesZip.h \
 	TimeSeriesZipParserPlugin.h \
 	TimeSeriesZipParserPlugin.cc \

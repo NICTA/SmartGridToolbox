@@ -2,7 +2,6 @@
 #define SIM_GENERIC_BRANCH_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimNetworkComponent.h>
-
 #include <SgtSim/SimParser.h>
 
 namespace SmartGridToolbox
