@@ -1,17 +1,16 @@
----
 simulation:
    lat_long:               [-35.3075, 149.1244] # Canberra, Australia.
    start_time:             2013-01-23 06:00:00
    end_time:               2013-01-28 06:00:00
    timezone:               AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
-   time_series:
-      id:                  cloud_cover_series
-      value_type:          real_scalar
-      type:                data_time_series
-      data_file:           cloud_cover.txt
-      relative_to_time:    2013-01-23 06:00:00
-      time_unit:           m
-      interp_type:         lerp
+time_series:
+   id:                     cloud_cover_series
+   value_type:             real_scalar
+   type:                   data_time_series
+   data_file:              cloud_cover.txt
+   relative_to_time:       2013-01-23 06:00:00
+   time_unit:              m
+   interp_type:            lerp
 weather:
    id:                     weather
    cloud_cover:            cloud_cover_series
@@ -48,7 +47,6 @@ loop:
          bus_id:           bus_${i}
          phases:           [A, B, C]
          S_const:          [-1e-3, -1e-3, -1e-3]
-
 bus:
    id:                     bus_10
    network_id:             network
@@ -82,19 +80,19 @@ loop:
    spec:                   [i, 0, 10, 1]
    body:
       overhead_line:
-         id:                     line_${i}_${i+1}
-         network_id:             network
-         bus_0_id:               bus_${i}
-         bus_1_id:               bus_${i+1}
-         phases_0:               [A, B, C]
-         phases_1:               [A, B, C]
-         length:                 100
-         n_neutral:              0
-         conductor_R_per_L:      [1e-4, 1e-4, 1e-4]
-         earth_resistivity:      100.0
-         distance_matrix:        [
-            [0.01 , 1.00 , 2.00],
-            [1.00 , 0.01 , 1.00],
-            [2.00 , 1.00 , 0.01]
-         ]
-         freq:                   60.0
+         id:               line_${i}_${i+1}
+         network_id:       network
+         bus_0_id:         bus_${i}
+         bus_1_id:         bus_${i+1}
+         phases_0:         [A, B, C]
+         phases_1:         [A, B, C]
+         length:           100
+         n_neutral:        0
+         conductor_R_per_L:   [1e-4, 1e-4, 1e-4]
+         earth_resistivity:   100.0
+         distance_matrix:     [
+                                 [0.01 , 1.00 , 2.00],
+                                 [1.00 , 0.01 , 1.00],
+                                 [2.00 , 1.00 , 0.01]
+                              ]
+         freq:             60.0
