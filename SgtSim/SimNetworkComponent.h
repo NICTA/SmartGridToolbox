@@ -3,126 +3,100 @@
 
 #include <SgtSim/SimComponent.h>
 
-#include <SgtCore/Branch.h>
 #include <SgtCore/Bus.h>
 #include <SgtCore/CommonBranch.h>
 #include <SgtCore/DgyTransformer.h>
 #include <SgtCore/Gen.h>
 #include <SgtCore/OverheadLine.h>
 #include <SgtCore/SinglePhaseTransformer.h>
+#include <SgtCore/YyTransformer.h>
 #include <SgtCore/Zip.h>
 
 #include <memory>
 
 namespace SmartGridToolbox
 {
-   template<typename T> class SimBranch : public SimComponent
+   class SimBus : public SimComponentAbc, public Bus 
    {
       public:
-
-         SimBranch(std::shared_ptr<T> branch) : SimComponent(branch->id()), branch_(branch) {}
-
-         std::shared_ptr<T> branch() {return branch_;}
-
-         std::shared_ptr<const T> branch() const {return std::const_pointer_cast<const T>(branch_);}
-         
-         static constexpr const char* sComponentType()
+         SimBus(const Bus& bus) :
+            Bus(bus)
          {
-            return "sim_branch";
+            // Empty.
          }
-
-         virtual const char* componentType() const override
-         {
-            return sComponentType();
-         }
-
-      protected:
-         std::shared_ptr<T> branch_;
    };
-
-   template<typename T> class SimBus : public SimComponent
+   class SimCommonBranch : public SimComponentAbc, public CommonBranch
    {
       public:
-         SimBus(std::shared_ptr<T> bus) : SimComponent(bus->id()), bus_(bus) {}
-
-         std::shared_ptr<T> bus() {return bus_;}
-
-         std::shared_ptr<const T> bus() const {return std::const_pointer_cast<const T>(bus_);}
-         
-         static constexpr const char* sComponentType()
+         SimCommonBranch(const CommonBranch& branch) :
+            CommonBranch(branch)
          {
-            return "sim_bus";
+            // Empty.
          }
-
-         virtual const char* componentType() const override
-         {
-            return sComponentType();
-         }
-
-      protected:
-         std::shared_ptr<T> bus_;
    };
-
-   template<typename T> class SimGen : public SimComponent
+   class SimDgyTransformer : public SimComponentAbc, public DgyTransformer
    {
       public:
-         SimGen(std::shared_ptr<T> gen) : SimComponent(gen->id()), gen_(gen) {}
-
-         std::shared_ptr<T> gen() {return gen_;}
-
-         std::shared_ptr<const T> gen() const {return std::const_pointer_cast<const T>(gen_);}
-         
-         static constexpr const char* sComponentType()
+         SimDgyTransformer(const DgyTransformer& dgy) :
+            DgyTransformer(dgy)
          {
-            return "sim_gen";
+            // Empty.
          }
-
-         virtual const char* componentType() const override
-         {
-            return sComponentType();
-         }
-
-      protected:
-         std::shared_ptr<T> gen_;
    };
-
-   template<typename T> class SimZip : public SimComponent
+   class SimGenericBranch : public SimComponentAbc, public GenericBranch
    {
       public:
-         SimZip(std::shared_ptr<T> zip) : SimComponent(zip->id()), zip_(zip) {}
-
-         std::shared_ptr<T> zip() {return zip_;}
-
-         std::shared_ptr<const T> zip() const {return std::const_pointer_cast<const T>(zip_);}
-         
-         static constexpr const char* sComponentType()
+         SimGenericBranch(const GenericBranch& branch) :
+            GenericBranch(branch)
          {
-            return "sim_zip";
+            // Empty.
          }
-
-         virtual const char* componentType() const override
-         {
-            return sComponentType();
-         }
-
-      protected:
-         std::shared_ptr<T> zip_;
    };
-
-   extern template class SimBranch<BranchAbc>;
-   extern template class SimBus<Bus>;
-   extern template class SimGen<GenAbc>;
-   extern template class SimZip<ZipAbc>;
-   
-   extern template class SimBranch<CommonBranch>;
-   extern template class SimBranch<GenericBranch>;
-   extern template class SimBranch<DgyTransformer>;
-   extern template class SimBranch<OverheadLine>;
-   extern template class SimBranch<SinglePhaseTransformer>;
-
-   extern template class SimGen<GenericGen>;
-
-   extern template class SimZip<GenericZip>;
+   class SimGenericGen : public SimComponentAbc, public GenericGen
+   {
+      public:
+         SimGenericGen(const GenericGen& gen) :
+            GenericGen(gen)
+         {
+            // Empty.
+         }
+   };
+   class SimGenericZip : public SimComponentAbc, public GenericZip
+   {
+      public:
+         SimGenericZip(const GenericZip& zip) :
+            GenericZip(zip)
+         {
+            // Empty.
+         }
+   };
+   class SimOverheadLine : public SimComponentAbc, public OverheadLine
+   {
+      public:
+         SimOverheadLine(const OverheadLine& ohl) :
+            OverheadLine(ohl)
+         {
+            // Empty.
+         }
+   };
+   class SimSinglePhaseTransformer : public SimComponentAbc, public SinglePhaseTransformer
+   {
+      public:
+         SimSinglePhaseTransformer(const SinglePhaseTransformer& trans) :
+            SinglePhaseTransformer(trans)
+         {
+            // Empty.
+         }
+   };
+   class SimYyTransformer : public SimComponentAbc, public YyTransformer
+   {
+      public:
+         SimYyTransformer(const YyTransformer& trans) :
+            YyTransformer(trans)
+         {
+            // Empty.
+         }
+   };
 }
 
 #endif // SIM_NETWORK_COMPONENT_DOT_H

@@ -3,6 +3,14 @@
 
 namespace SmartGridToolbox
 {
+   void InverterAbc::addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source)
+   {
+      sources_.push_back(source);
+      dependsOn(source);
+      source->dcPowerChanged().addAction([this](){injectionChanged().trigger();},
+            std::string("Trigger ") + sComponentType() + " " + id() + " injection changed.");
+   }
+   
    double InverterAbc::PPerPhase() const
    {
       double PDcA = PDc();
@@ -29,14 +37,5 @@ namespace SmartGridToolbox
    {
       double P = InverterAbc::PPerPhase();
       return std::min(std::abs(P), maxSMagPerPhase_) * (P < 0 ? -1 : 1);
-   }
-
-   void SimInverter::addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source)
-   {
-      zip()->addDcPowerSource(source);
-      dependsOn(source);
-      source->dcPowerChanged().addAction([this](){zip_->injectionChanged().trigger();},
-            std::string("Trigger ") + sComponentType() + " " + id() + " injection changed.");
-      // TODO: this will recalculate all zips. Efficiency?
    }
 }

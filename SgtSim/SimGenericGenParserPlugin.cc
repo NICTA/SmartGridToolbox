@@ -13,7 +13,7 @@ namespace SmartGridToolbox
    void SimGenericGenParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
    {
       GenericGenParserPlugin ggParser;
-      auto gg = sim.newSimComponent<SimGen<GenericGen>>(ggParser.parseGenericGen(nd, state));
+      auto gg = sim.newSimComponent<SimGenericGen>(*ggParser.parseGenericGen(nd, state));
 
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_id");

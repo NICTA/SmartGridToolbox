@@ -13,7 +13,7 @@ namespace SmartGridToolbox
    void SimDgyTransformerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
    {
       DgyTransformerParserPlugin transParser;
-      auto trans = sim.newSimComponent<SimBranch<DgyTransformer>>(transParser.parseDgyTransformer(nd, state));
+      auto trans = sim.newSimComponent<SimDgyTransformer>(*transParser.parseDgyTransformer(nd, state));
       
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");

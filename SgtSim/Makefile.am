@@ -54,7 +54,6 @@ libSgtSim_a_SOURCES = \
 	SimNetwork.h \
 	SimNetwork.cc \
 	SimNetworkComponent.h \
-	SimNetworkComponent.cc \
 	SimNetworkParserPlugin.h \
 	SimNetworkParserPlugin.cc \
 	SimParser.h \

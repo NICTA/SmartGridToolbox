@@ -41,9 +41,7 @@ namespace SmartGridToolbox
       const std::string networkId = state.expandName(nd["network_id"].as<std::string>());
       const std::string busId = state.expandName(nd["bus_id"].as<std::string>());
 
-      auto simInverter = sim.newSimComponent<SimInverter>(inverter);
-
       auto network = sim.simComponent<SimNetwork>(networkId);
-      network->addZip(simInverter, busId);
+      network->addZip(inverter, busId);
    }
 }

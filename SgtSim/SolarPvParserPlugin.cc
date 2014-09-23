@@ -45,7 +45,7 @@ namespace SmartGridToolbox
       }
 
       const std::string inverterStr = nd["inverter"].as<std::string>();
-      auto inverter = sim.simComponent<SimInverter>(inverterStr);
+      auto inverter = sim.simComponent<Inverter>(inverterStr);
       if (inverter != nullptr)
       {
          inverter->addDcPowerSource(spv);

@@ -10,11 +10,11 @@
 
 namespace SmartGridToolbox
 {
-   void SimSinglePhaseTransformerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
+   void SimSinglePhaseTransformerParserPlugin::parse(const YAML::Node& nd, Simulation& sim,
+         const ParserState& state) const
    {
       SinglePhaseTransformerParserPlugin transParser;
-      auto trans = sim.newSimComponent<SimBranch<SinglePhaseTransformer>>(transParser.parseSinglePhaseTransformer(nd,
-               state));
+      auto trans = sim.newSimComponent<SimSinglePhaseTransformer>(*transParser.parseSinglePhaseTransformer(nd, state));
       
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");

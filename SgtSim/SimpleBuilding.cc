@@ -75,6 +75,5 @@ namespace SmartGridToolbox
       {
          isMaxed_ = false;
       }
-      zip()->setSConst(ublas::vector<Complex>(1, Complex(-Ph_, 0.0)));
    }
 }

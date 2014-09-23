@@ -13,7 +13,7 @@ namespace SmartGridToolbox
    void SimGenericZipParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
    {
       GenericZipParserPlugin gzParser;
-      auto gz = sim.newSimComponent<SimZip<GenericZip>>(gzParser.parseGenericZip(nd, state));
+      auto gz = sim.newSimComponent<SimGenericZip>(*gzParser.parseGenericZip(nd, state));
 
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_id");

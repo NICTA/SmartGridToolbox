@@ -10,7 +10,7 @@ namespace SmartGridToolbox
 {
    /// @brief DC power to n-phase AC converter.
    /// @ingroup PowerFlowCore
-   class InverterAbc : public ZipAbc
+   class InverterAbc : public SimComponentAbc, public ZipAbc
    {
       public:
          
@@ -39,10 +39,7 @@ namespace SmartGridToolbox
          }
          virtual ublas::vector<Complex> SConst() const override = 0;
 
-         void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source)
-         {
-            sources_.push_back(source);
-         }
+         void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source);
 
          virtual double efficiency(double powerDc) const = 0;
 
@@ -68,7 +65,18 @@ namespace SmartGridToolbox
    class Inverter : public InverterAbc
    {
       public:
+
          Inverter(const std::string& id, const Phases& phases) : InverterAbc(id, phases) {}
+
+         static constexpr const char* sComponentType()
+         {
+            return "sim_inverter";
+         }
+
+         virtual const char* componentType() const override
+         {
+            return sComponentType();
+         }
 
          virtual ublas::vector<Complex> SConst() const override;
 
@@ -138,41 +146,6 @@ namespace SmartGridToolbox
 
          // State:
          ublas::vector<Complex> S_{ublas::vector<Complex>(phases().size(), czero)};
-   };
-
-   class SimInverter : public SimZip<InverterAbc>
-   {
-      public:
-
-      /// @name Lifecycle:
-      /// @{
-         
-         SimInverter(std::shared_ptr<InverterAbc> inverter) : SimZip<InverterAbc>(inverter) {}
-      
-      /// @}
-
-      /// @name Component Type:
-      /// @{
-         
-         static constexpr const char* sComponentType()
-         {
-            return "sim_inverter";
-         }
-
-         virtual const char* componentType() const override
-         {
-            return sComponentType();
-         }
-
-      /// @}
-      
-      /// @name Power sources:
-      /// @{
-      
-         
-         void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source);
-
-      /// @}
    };
 }
 

@@ -20,7 +20,7 @@ namespace SmartGridToolbox
       OFF
    };
 
-   class SimpleBuilding : public SimZip<GenericZip>
+   class SimpleBuilding : public SimComponentAbc, public ZipAbc
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
@@ -39,7 +39,7 @@ namespace SmartGridToolbox
       
       public:
          SimpleBuilding(const std::string& id) :
-            SimZip<GenericZip>(std::make_shared<GenericZip>(id, Phase::BAL)),
+            ZipAbc(id, Phase::BAL),
             dt_(posix_time::minutes(5)),
             kb_(5 * kW / K),
             Cb_(1.0e5 * kJ / K),
@@ -68,6 +68,11 @@ namespace SmartGridToolbox
          virtual const char* componentType() const override
          {
             return sComponentType();
+         }
+
+         virtual ublas::vector<Complex> SConst() const
+         {
+            return ublas::vector<Complex>(1, Complex(-Ph_, 0.0));
          }
 
          // Parameters:
@@ -152,6 +157,5 @@ namespace SmartGridToolbox
          double Ph_;                                     // Power drawn from grid by HVAC.
          double dQh_;                                    // Thermal output, +ve = heating.
    };
-
 }
 #endif // SIMPLE_BUILDING_DOT_H
