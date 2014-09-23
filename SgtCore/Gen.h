@@ -107,7 +107,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
          
-         GenAbc(const std::string& id, Phases phases);
+         GenAbc(const std::string& id, const Phases& phases);
 
       /// @}
          
@@ -180,7 +180,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
          
-         GenericGen(const std::string& id, Phases phases);
+         GenericGen(const std::string& id, const Phases& phases);
 
       /// @}
 

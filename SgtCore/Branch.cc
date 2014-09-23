@@ -4,7 +4,7 @@
 
 namespace SmartGridToolbox
 {
-   BranchAbc::BranchAbc(const std::string& id, Phases phases0, Phases phases1) :
+   BranchAbc::BranchAbc(const std::string& id, const Phases& phases0, const Phases& phases1) :
       Component(id),
       phases0_(phases0),
       phases1_(phases1),

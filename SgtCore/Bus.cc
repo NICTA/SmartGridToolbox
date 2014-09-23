@@ -4,7 +4,7 @@
 
 namespace SmartGridToolbox
 {
-   Bus::Bus(const std::string& id, Phases phases, const ublas::vector<Complex>& VNom, double VBase) :
+   Bus::Bus(const std::string& id, const Phases& phases, const ublas::vector<Complex>& VNom, double VBase) :
       Component(id),
       phases_(phases),
       VNom_(VNom),

@@ -81,6 +81,8 @@ libSgtSim_a_SOURCES = \
 	Sun.cc \
 	TimeSeries.h \
 	TimeSeriesZip.h \
+	TimeSeriesZipParserPlugin.h \
+	TimeSeriesZipParserPlugin.cc \
 	WeakOrder.h \
 	WeakOrder.cc \
 	Weather.h \

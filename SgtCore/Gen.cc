@@ -4,7 +4,7 @@
 
 namespace SmartGridToolbox
 {
-   GenAbc::GenAbc(const std::string& id, Phases phases) :
+   GenAbc::GenAbc(const std::string& id, const Phases& phases) :
       Component(id),
       phases_(phases)
    {
@@ -28,7 +28,7 @@ namespace SmartGridToolbox
       os << "c2: " << c2() << std::endl;
    }
 
-   GenericGen::GenericGen(const std::string& id, Phases phases) :
+   GenericGen::GenericGen(const std::string& id, const Phases& phases) :
       GenAbc(id, phases),
       isInService_(true),
       S_(phases.size(), czero)

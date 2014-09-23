@@ -10,7 +10,9 @@ namespace SmartGridToolbox
    {
       public:
 
-         TimeSeriesZip(std::shared_ptr<const TimeSeries<Time, ublas::vector<Complex>>> series) :
+         TimeSeriesZip(const std::string& id, const Phases& phases,
+               std::shared_ptr<const TimeSeries<Time, ublas::vector<Complex>>> series) :
+            ZipAbc(id, phases),
             series_(series)
          {
             // Empty.
@@ -18,22 +20,22 @@ namespace SmartGridToolbox
 
          virtual ublas::vector<Complex> YConst() const
          {
-            return series_->value(time())(0);
+            return ublas::project(series_->value(time()), ublas::range(0, phases().size()));
          }
 
-         virtual ublas::vector<Complex> IConst() const;
+         virtual ublas::vector<Complex> IConst() const
          {
-            return series_->value(time())(1);
+            return ublas::project(series_->value(time()), ublas::range(phases().size(), 2*phases().size()));
          }
 
-         virtual ublas::vector<Complex> SConst() const;
+         virtual ublas::vector<Complex> SConst() const
          {
-            return series_->value(time())(2);
+            return ublas::project(series_->value(time()), ublas::range(2*phases().size(), 3*phases().size()));
          }
 
       private:
          
-         std::shared_ptr<TimeSeries<Time, ublas::vector<Complex>>> series_;
+         std::shared_ptr<const TimeSeries<Time, ublas::vector<Complex>>> series_;
    };
 }
 

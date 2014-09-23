@@ -21,7 +21,7 @@ namespace SmartGridToolbox
    {
       typedef std::vector<std::unique_ptr<NodeNr>> NodeVec; ///< Nodes, one per phase, owned by me.
 
-      BusNr(const std::string& id, BusType type, Phases phases, const ublas::vector<Complex>& V,
+      BusNr(const std::string& id, BusType type, const Phases& phases, const ublas::vector<Complex>& V,
             const ublas::vector<Complex>& Ys, const ublas::vector<Complex>& Ic,
             const ublas::vector<Complex>& S);
 
@@ -38,7 +38,7 @@ namespace SmartGridToolbox
 
    struct BranchNr
    {
-      BranchNr(const std::string& id0, const std::string& id1, Phases phases0, Phases phases1,
+      BranchNr(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
             const ublas::matrix<Complex>& Y);
 
       int nPhase_;                ///< Number of phases.
@@ -122,7 +122,7 @@ namespace SmartGridToolbox
          typedef std::vector<NodeNr*> NodeVec;
 
       public:
-         void addBus(const std::string& id, BusType type, Phases phases, const ublas::vector<Complex>& V,
+         void addBus(const std::string& id, BusType type, const Phases& phases, const ublas::vector<Complex>& V,
                const ublas::vector<Complex>& Y, const ublas::vector<Complex>& I, const ublas::vector<Complex>& S);
 
          const BusMap& busses() const
@@ -130,8 +130,8 @@ namespace SmartGridToolbox
             return busses_;
          }
 
-         void addBranch(const std::string& idBus0, const std::string& idBus1, Phases phases0, Phases phases1,
-                        const ublas::matrix<Complex>& Y);
+         void addBranch(const std::string& idBus0, const std::string& idBus1,
+               const Phases& phases0, const Phases& phases1, const ublas::matrix<Complex>& Y);
 
          const BranchVec& branches() const
          {

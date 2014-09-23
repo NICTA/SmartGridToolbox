@@ -40,7 +40,7 @@ namespace SmartGridToolbox
       }
    }
 
-   BusNr::BusNr(const std::string& id, BusType type, Phases phases, const ublas::vector<Complex>& V,
+   BusNr::BusNr(const std::string& id, BusType type, const Phases& phases, const ublas::vector<Complex>& V,
          const ublas::vector<Complex>& Ys, const ublas::vector<Complex>& Ic,
          const ublas::vector<Complex>& S) :
       id_(id),
@@ -74,7 +74,7 @@ namespace SmartGridToolbox
       // Empty.
    }
 
-   BranchNr::BranchNr(const std::string& id0, const std::string& id1, Phases phases0, Phases phases1,
+   BranchNr::BranchNr(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
                       const ublas::matrix<Complex>& Y) :
       nPhase_(phases0.size()),
       ids_{{id0, id1}},
@@ -113,15 +113,15 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowNr::addBus(const std::string& id, BusType type, Phases phases, const ublas::vector<Complex>& V,
+   void PowerFlowNr::addBus(const std::string& id, BusType type, const Phases& phases, const ublas::vector<Complex>& V,
          const ublas::vector<Complex>& Y, const ublas::vector<Complex>& I, const ublas::vector<Complex>& S)
    {
       SGT_DEBUG(Log().debug() << "PowerFlowNr : add bus " << id << std::endl);
       busses_[id].reset(new BusNr(id, type, phases, V, Y, I, S));
    }
 
-   void PowerFlowNr::addBranch(const std::string& idBus0, const std::string& idBus1, Phases phases0, Phases phases1,
-                               const ublas::matrix<Complex>& Y)
+   void PowerFlowNr::addBranch(const std::string& idBus0, const std::string& idBus1,
+         const Phases& phases0, const Phases& phases1, const ublas::matrix<Complex>& Y)
    {
       SGT_DEBUG(Log().debug() << "PowerFlowNr : addBranch " << idBus0 << " " << idBus1 << std::endl);
       branches_.push_back(std::unique_ptr<BranchNr>(new BranchNr(idBus0, idBus1, phases0, phases1, Y)));

@@ -99,7 +99,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
 
-         Bus(const std::string& id, Phases phases, const ublas::vector<Complex>& VNom, double VBase);
+         Bus(const std::string& id, const Phases& phases, const ublas::vector<Complex>& VNom, double VBase);
 
       /// @}
 

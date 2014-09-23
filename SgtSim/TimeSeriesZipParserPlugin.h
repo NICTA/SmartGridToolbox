@@ -1,5 +1,5 @@
-#ifndef INVERTER_ZIP_PARSER_PLUGIN_DOT_H
-#define INVERTER_ZIP_PARSER_PLUGIN_DOT_H
+#ifndef TIME_SERIES_PARSER_PLUGIN_DOT_H
+#define TIME_SERIES_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimParser.h>
 
@@ -7,12 +7,12 @@ namespace SmartGridToolbox
 {
    class Simulation;
 
-   class InverterParserPlugin : public SimParserPlugin
+   class TimeSeriesZipParserPlugin : public SimParserPlugin
    {
       public:
          virtual const char* key() override
          {
-            return "inverter";
+            return "time_series_zip";
          }
 
       public:
@@ -20,4 +20,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // INVERTER_ZIP_PARSER_PLUGIN_DOT_H
+#endif // TIME_SERIES_PARSER_PLUGIN_DOT_H

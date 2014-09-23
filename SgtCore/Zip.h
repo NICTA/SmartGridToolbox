@@ -80,7 +80,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
 
-         ZipAbc(const std::string& id, Phases phases) : Component(id), phases_(phases) {}
+         ZipAbc(const std::string& id, const Phases& phases) : Component(id), phases_(phases) {}
 
       /// @}
          
@@ -185,7 +185,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
 
-         GenericZip(const std::string& id, Phases phases);
+         GenericZip(const std::string& id, const Phases& phases);
 
       /// @}
 

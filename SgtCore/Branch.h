@@ -76,7 +76,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
          
-         BranchAbc(const std::string& id, Phases phases0, Phases phases1);
+         BranchAbc(const std::string& id, const Phases& phases0, const Phases& phases1);
 
       /// @}
          
