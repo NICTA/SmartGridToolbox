@@ -15,12 +15,13 @@ libinclude_HEADERS = \
 	SimNetwork.h \
 	SimNetworkComponent.h \
 	SimpleBuilding.h \
-	Simulation.h \
 	SimParser.h \
+	Simulation.h \
 	SolarPv.h \
 	Spline.h \
 	Sun.h \
 	TimeSeries.h \
+	TimeSeriesZip.h \
 	Weather.h
 
 libSgtSim_a_SOURCES = \
@@ -35,35 +36,36 @@ libSgtSim_a_SOURCES = \
 	Inverter.cc \
 	InverterParserPlugin.h \
 	InverterParserPlugin.cc \
-	SgtSim.h \
-	SimOverheadLineParserPlugin.h \
-	SimOverheadLineParserPlugin.cc \
 	RegisterParserPlugins.cc \
+	RegularUpdateComponent.h \
+	SgtSim.h \
 	SimBusParserPlugin.h \
 	SimBusParserPlugin.cc \
+	SimComponent.h \
+	SimComponent.cc \
+	SimDgyTransformerParserPlugin.h \
+	SimDgyTransformerParserPlugin.cc \
 	SimGenericBranchParserPlugin.h \
 	SimGenericBranchParserPlugin.cc \
 	SimGenericGenParserPlugin.h \
 	SimGenericGenParserPlugin.cc \
 	SimGenericZipParserPlugin.h \
 	SimGenericZipParserPlugin.cc \
-	SimComponent.h \
-	SimComponent.cc \
-	SimDgyTransformerParserPlugin.h \
-	SimDgyTransformerParserPlugin.cc \
+	SimGlobalParserPlugin.h \
+	SimGlobalParserPlugin.cc \
 	SimNetwork.h \
 	SimNetwork.cc \
 	SimNetworkComponent.h \
 	SimNetworkParserPlugin.h \
 	SimNetworkParserPlugin.cc \
+	SimOverheadLineParserPlugin.h \
+	SimOverheadLineParserPlugin.cc \
 	SimParser.h \
 	SimParser.cc \
 	SimpleBuilding.h \
 	SimpleBuilding.cc \
 	SimpleBuildingParserPlugin.h \
 	SimpleBuildingParserPlugin.cc \
-	SimGlobalParserPlugin.h \
-	SimGlobalParserPlugin.cc \
 	SimSinglePhaseTransformerParserPlugin.h \
 	SimSinglePhaseTransformerParserPlugin.cc \
 	Simulation.h \
@@ -74,8 +76,11 @@ libSgtSim_a_SOURCES = \
 	SolarPv.cc \
 	SolarPvParserPlugin.h \
 	SolarPvParserPlugin.cc \
+	Spline.h \
 	Sun.h \
 	Sun.cc \
+	TimeSeries.h \
+	TimeSeriesZip.h \
 	WeakOrder.h \
 	WeakOrder.cc \
 	Weather.h \
