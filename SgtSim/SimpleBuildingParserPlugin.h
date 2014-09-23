@@ -1,5 +1,5 @@
-#ifndef SIMPLE_BUILDING_PARSER_DOT_H
-#define SIMPLE_BUILDING_PARSER_DOT_H
+#ifndef SIMPLE_BUILDING_PARSER_PLUGIN_DOT_H
+#define SIMPLE_BUILDING_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimParser.h>
 
@@ -21,4 +21,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // SIMPLE_BUILDING_PARSER_DOT_H
+#endif // SIMPLE_BUILDING_PARSER_PLUGIN_DOT_H

@@ -1,5 +1,5 @@
-#ifndef DC_POWER_SOURCE_PARSER_DOT_H
-#define DC_POWER_SOURCE_PARSER_DOT_H
+#ifndef DC_POWER_SOURCE_PARSER_PLUGIN_DOT_H
+#define DC_POWER_SOURCE_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimParser.h>
 
@@ -20,4 +20,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // DC_POWER_SOURCE_PARSER_DOT_H
+#endif // DC_POWER_SOURCE_PARSER_PLUGIN_DOT_H

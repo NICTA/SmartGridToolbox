@@ -1,5 +1,5 @@
-#ifndef WEATHER_PARSER_DOT_H
-#define WEATHER_PARSER_DOT_H
+#ifndef WEATHER_PARSER_PLUGIN_DOT_H
+#define WEATHER_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimParser.h>
 
@@ -20,4 +20,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // WEATHER_PARSER_DOT_H
+#endif // WEATHER_PARSER_PLUGIN_DOT_H

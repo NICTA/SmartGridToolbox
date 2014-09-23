@@ -1,5 +1,5 @@
-#ifndef COMMON_BRANCH_PARSER_DOT_H
-#define COMMON_BRANCH_PARSER_DOT_H
+#ifndef COMMON_BRANCH_PARSER_PLUGIN_DOT_H
+#define COMMON_BRANCH_PARSER_PLUGIN_DOT_H
 
 #include <SgtCore/NetworkParser.h>
 
@@ -23,4 +23,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // COMMON_BRANCH_PARSER_DOT_H
+#endif // COMMON_BRANCH_PARSER_PLUGIN_DOT_H

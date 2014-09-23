@@ -1,5 +1,5 @@
-#ifndef BUS_PARSER_DOT_H
-#define BUS_PARSER_DOT_H
+#ifndef BUS_PARSER_PLUGIN_DOT_H
+#define BUS_PARSER_PLUGIN_DOT_H
 
 #include <SgtCore/NetworkParser.h>
 
@@ -23,4 +23,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // BUS_PARSER_DOT_H
+#endif // BUS_PARSER_PLUGIN_DOT_H

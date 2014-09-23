@@ -1,5 +1,5 @@
-#ifndef BATTERY_PARSER_DOT_H
-#define BATTERY_PARSER_DOT_H
+#ifndef BATTERY_PARSER_PLUGIN_DOT_H
+#define BATTERY_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimParser.h>
 
@@ -20,4 +20,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // BATTERY_PARSER_DOT_H
+#endif // BATTERY_PARSER_PLUGIN_DOT_H

@@ -1,5 +1,5 @@
-#ifndef INVERTER_PARSER_DOT_H
-#define INVERTER_PARSER_DOT_H
+#ifndef TIME_SERIES_ZIP_PARSER_PLUGIN_DOT_H
+#define TIME_SERIES_ZIP_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimParser.h>
 
@@ -20,4 +20,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // INVERTER_PARSER_DOT_H
+#endif // TIME_SERIES_ZIP_PARSER_PLUGIN_DOT_H

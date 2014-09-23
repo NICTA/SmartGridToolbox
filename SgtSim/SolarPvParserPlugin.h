@@ -1,5 +1,5 @@
-#ifndef SOLAR_PV_PARSER_DOT_H
-#define SOLAR_PV_PARSER_DOT_H
+#ifndef SOLAR_PV_PARSER_PLUGIN_DOT_H
+#define SOLAR_PV_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimParser.h>
 
@@ -20,4 +20,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // SOLAR_PV_PARSER_DOT_H
+#endif // SOLAR_PV_PARSER_PLUGIN_DOT_H

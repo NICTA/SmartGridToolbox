@@ -1,5 +1,5 @@
-#ifndef MATPOWER_PARSER_DOT_H
-#define MATPOWER_PARSER_DOT_H
+#ifndef MATPOWER_PARSER_PLUGIN_DOT_H
+#define MATPOWER_PARSER_PLUGIN_DOT_H
 
 #include <SgtCore/NetworkParser.h>
 
@@ -20,4 +20,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // MATPOWER_PARSER_DOT_H
+#endif // MATPOWER_PARSER_PLUGIN_DOT_H

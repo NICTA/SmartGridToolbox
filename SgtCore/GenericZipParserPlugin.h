@@ -1,5 +1,5 @@
-#ifndef ZIP_PARSER_DOT_H
-#define ZIP_PARSER_DOT_H
+#ifndef ZIP_PARSER_PLUGIN_DOT_H
+#define ZIP_PARSER_PLUGIN_DOT_H
 
 #include <SgtCore/NetworkParser.h>
 
@@ -23,4 +23,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // ZIP_PARSER_DOT_H
+#endif // ZIP_PARSER_PLUGIN_DOT_H

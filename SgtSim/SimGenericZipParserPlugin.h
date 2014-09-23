@@ -1,5 +1,5 @@
-#ifndef SIM_GENERIC_ZIP_PARSER_DOT_H
-#define SIM_GENERIC_ZIP_PARSER_DOT_H
+#ifndef SIM_GENERIC_ZIP_PARSER_PLUGIN_DOT_H
+#define SIM_GENERIC_ZIP_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimNetworkComponent.h>
 
@@ -23,4 +23,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // SIM_GENERIC_ZIP_PARSER_DOT_H
+#endif // SIM_GENERIC_ZIP_PARSER_PLUGIN_DOT_H

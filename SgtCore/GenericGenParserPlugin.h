@@ -1,5 +1,5 @@
-#ifndef GEN_PARSER_DOT_H
-#define GEN_PARSER_DOT_H
+#ifndef GEN_PARSER_PLUGIN_DOT_H
+#define GEN_PARSER_PLUGIN_DOT_H
 
 #include <SgtCore/NetworkParser.h>
 
@@ -23,4 +23,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // GEN_PARSER_DOT_H
+#endif // GEN_PARSER_PLUGIN_DOT_H

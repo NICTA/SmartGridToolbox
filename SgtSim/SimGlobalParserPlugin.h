@@ -1,5 +1,5 @@
-#ifndef SIM_GLOBAL_PARSER_DOT_H
-#define SIM_GLOBAL_PARSER_DOT_H
+#ifndef SIM_GLOBAL_PARSER_PLUGIN_DOT_H
+#define SIM_GLOBAL_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/Simulation.h>
 
@@ -23,4 +23,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // SIM_GLOBAL_PARSER_DOT_H
+#endif // SIM_GLOBAL_PARSER_PLUGIN_DOT_H
