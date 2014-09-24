@@ -96,6 +96,7 @@ namespace SmartGridToolbox
          }
 
       private:
+
          struct ParserLoop
          {
             std::string name_;
@@ -177,7 +178,7 @@ namespace SmartGridToolbox
                      {
                         std::string id = nd.first.as<std::string>();
                         auto vec = nd.second.as<std::vector<std::string>>();
-                        Log().message() << "phase list " << id << " : " << vec[0] << "..." << std::endl;
+                        Log().message() << "phase list " << id << " : " << vec[0] << " ..." << std::endl;
                      }
                   }
                   for (state.pushLoop(name, first, lists); state.topLoopVal() < upper; state.incrTopLoop(stride))
