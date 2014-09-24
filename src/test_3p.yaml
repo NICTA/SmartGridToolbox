@@ -52,12 +52,12 @@ loop:
          V_base:           0.240
          V_nom:            [0.240, 0.240D-240, 0.240D240]
          type:             PQ
-      #time_series_zip:
-      #   id:               zip_${i}
-      #   network_id:       network
-      #   bus_id:           bus_${i}
-      #   phases:           [A, B, C]
-      #   time_series_id:   load_${i}_series
+      time_series_zip:
+         id:               zip_${i}
+         network_id:       network
+         bus_id:           bus_${i}
+         phases:           [A, B, C]
+         time_series_id:   load_${i}_series
 bus:
    id:                     bus_10
    network_id:             network
