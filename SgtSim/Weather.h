@@ -62,7 +62,7 @@ namespace SmartGridToolbox
          }
          double temperature() const
          {
-            return temperatureSeries_->value(time());
+            return temperatureSeries_->value(lastUpdated());
          }
 
          std::shared_ptr<const TimeSeries<Time, double>> cloudCoverSeries() const
@@ -75,7 +75,7 @@ namespace SmartGridToolbox
          }
          double cloudCover() const
          {
-            return cloudCoverSeries_->value(time());
+            return cloudCoverSeries_->value(lastUpdated());
          }
 
          double solarPower(SphericalAngles planeNormal, double planeArea) const;

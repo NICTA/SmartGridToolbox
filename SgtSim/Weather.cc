@@ -8,7 +8,7 @@ namespace SmartGridToolbox
    {
       const double tConst = 900.0; // 15 minute smoothing constant.
       prevIrradiance_ = irradiance_;
-      double prevFrac = exp(-dSeconds(t - time()) / tConst);
+      double prevFrac = exp(-dSeconds(t - lastUpdated()) / tConst);
       double curFrac = 1.0 - prevFrac;
       SolarIrradiance newUnav = unaveragedIrradiance(t);
       irradiance_.direct = prevFrac * prevIrradiance_.direct + curFrac * newUnav.direct;

@@ -22,17 +22,17 @@ namespace SmartGridToolbox
 
          virtual ublas::vector<Complex> YConst() const
          {
-            return ublas::project(series_->value(time()), ublas::range(0, phases().size()));
+            return ublas::project(series_->value(lastUpdated()), ublas::range(0, phases().size()));
          }
 
          virtual ublas::vector<Complex> IConst() const
          {
-            return ublas::project(series_->value(time()), ublas::range(phases().size(), 2*phases().size()));
+            return ublas::project(series_->value(lastUpdated()), ublas::range(phases().size(), 2*phases().size()));
          }
 
          virtual ublas::vector<Complex> SConst() const
          {
-            return ublas::project(series_->value(time()), ublas::range(2*phases().size(), 3*phases().size()));
+            return ublas::project(series_->value(lastUpdated()), ublas::range(2*phases().size(), 3*phases().size()));
          }
 
       private:

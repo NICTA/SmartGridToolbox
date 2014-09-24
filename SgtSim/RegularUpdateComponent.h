@@ -14,7 +14,7 @@ namespace SmartGridToolbox
       public:
          virtual Time validUntil() const override
          {
-            return time() + dt_;
+            return lastUpdated() + dt_; // TODO: what if an update happened that wasn't a "tick"?
          }
 
       protected:

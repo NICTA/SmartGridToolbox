@@ -78,9 +78,9 @@ namespace SmartGridToolbox
       /// @{
 
          /// @brief Get the current step for the object.
-         Time time() const
+         Time lastUpdated() const
          {
-            return time_;
+            return lastUpdated_;
          }
 
       /// @}
@@ -141,7 +141,7 @@ namespace SmartGridToolbox
 
       private:
 
-         Time time_{posix_time::not_a_date_time};
+         Time lastUpdated_{posix_time::not_a_date_time};
             ///< The time to which I am up to date
          std::vector<std::weak_ptr<const SimComponentAbc>> dependencies_;
             ///< I depend on these.

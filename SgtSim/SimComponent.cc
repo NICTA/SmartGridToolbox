@@ -10,20 +10,21 @@ namespace SmartGridToolbox
       needsUpdate_.setDescription(id() + ": Needs update");
       willStartNewTimestep_.setDescription(id() + ": Will start new timestep");
       didCompleteTimestep_.setDescription(id() + ": Did complete timestep");
-      time_ = posix_time::neg_infin;
+      lastUpdated_ = posix_time::neg_infin;
       initializeState();
    }
 
    void SimComponentAbc::update(Time t)
    {
-      SGT_DEBUG(Log().debug() << "SimComponent " << id() << " update from " << time_ << " to " << t << std::endl);
-      if (time_ < t)
+      SGT_DEBUG(Log().debug() << "SimComponent " << id() << " update from " << lastUpdated_ << " to " << t 
+            << std::endl);
+      if (lastUpdated_ < t)
       {
          willStartNewTimestep_.trigger();
       }
       willUpdate_.trigger();
       updateState(t);
-      time_ = t;
+      lastUpdated_ = t;
       didUpdate_.trigger();
    }
 }

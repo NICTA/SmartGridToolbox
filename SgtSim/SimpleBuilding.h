@@ -26,7 +26,7 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         virtual Time validUntil() const override {return time() + dt_;}
+         virtual Time validUntil() const override {return lastUpdated() + dt_;}
 
       protected:
          virtual void initializeState() override;
@@ -109,9 +109,9 @@ namespace SmartGridToolbox
 
          double Tb() {return Tb_;}
 
-         const double Te() {return weather_->temperatureSeries()->value(time());}
+         const double Te() {return weather_->temperatureSeries()->value(lastUpdated());}
 
-         const double dQg() {return dQg_->value(time());}
+         const double dQg() {return dQg_->value(lastUpdated());}
 
          HvacMode mode() {return mode_;}
 

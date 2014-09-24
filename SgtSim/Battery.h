@@ -18,7 +18,7 @@ namespace SmartGridToolbox
       public:
          virtual Time validUntil() const override
          {
-            return time() + dt_;
+            return lastUpdated() + dt_;
          }
 
       protected:

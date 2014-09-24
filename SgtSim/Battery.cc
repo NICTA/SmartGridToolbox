@@ -8,10 +8,10 @@ namespace SmartGridToolbox
 {
    void Battery::updateState(Time t)
    {
-      double dt = time() == posix_time::neg_infin ? 0 : dSeconds(t - time());
+      double dt = lastUpdated() == posix_time::neg_infin ? 0 : dSeconds(t - lastUpdated());
       if (dt > 0)
       {
-         charge_ += internalPower() * dSeconds(t - time());
+         charge_ += internalPower() * dSeconds(t - lastUpdated());
          if (charge_ < 0.0) charge_ = 0.0;
       }
    }
