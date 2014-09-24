@@ -12,7 +12,7 @@ time_series:
    time_unit:              m
    interp_type:            lerp
 loop: 
-   spec:                   [i, 1, 10, 1]
+   spec:                   [i, 1, 11, 1]
    body:
       time_series:
          id:               load_${i}_series
@@ -43,7 +43,7 @@ generic_gen:
    bus_id:                 bus_0
    phases:                 [A, B, C]
 loop: 
-   spec:                   [i, 1, 10, 1]
+   spec:                   [i, 1, 11, 1]
    body:
       bus:
          id:               bus_${i}
@@ -59,19 +59,6 @@ loop:
          phases:           [A, B, C]
          time_series_id:   load_${i}_series
          dt:               00:05:00
-bus:
-   id:                     bus_10
-   network_id:             network
-   phases:                 [A, B, C]
-   V_base:                 0.240
-   V_nom:                  [0.240, 0.240D-240, 0.240D240]
-   type:                   PQ
-generic_zip:
-   id:                     zip_10
-   network_id:             network
-   bus_id:                 bus_10
-   phases:                 [A, B, C]
-   S_const:                [-2e-3, -2e-3, -2e-3]
 inverter:
    id:                     inverter_10
    network_id:             network
