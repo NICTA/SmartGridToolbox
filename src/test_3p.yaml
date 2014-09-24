@@ -58,6 +58,7 @@ loop:
          bus_id:           bus_${i}
          phases:           [A, B, C]
          time_series_id:   load_${i}_series
+         dt:               00:05:00
 bus:
    id:                     bus_10
    network_id:             network
@@ -84,7 +85,7 @@ solar_pv:
    weather:                weather
    inverter:               inverter_10
    efficiency:             0.75
-   area_m2:                20.0 
+   area_m2:                10.0 
    zenith_degrees:         64.6
    azimuth_degrees:        95.8 # Should point right at sun on Jan 26, 2013, 0830.
 loop: 

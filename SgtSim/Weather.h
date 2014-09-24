@@ -32,12 +32,12 @@ namespace SmartGridToolbox
      
       public:
          Weather(const std::string& id) :
-            RegularUpdateComponent(id),
+            RegularUpdateComponent(id, posix_time::minutes(5)),
             latLong_(Greenwich),
             cloudCoverSeries_(nullptr),
             temperatureSeries_(nullptr)
          {
-            setDt(posix_time::minutes(5));
+            // Empty.
          }
 
          static constexpr const char* sComponentType()

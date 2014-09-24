@@ -1,18 +1,20 @@
 #ifndef TIME_SERIES_ZIP_DOT_H
 #define TIME_SERIES_ZIP_DOT_H
 
+#include "RegularUpdateComponent.h"
 #include "SimNetworkComponent.h"
 #include "TimeSeries.h"
 
 namespace SmartGridToolbox
 {
-   class TimeSeriesZip : public SimComponentAbc, public ZipAbc
+   class TimeSeriesZip : public ZipAbc, public RegularUpdateComponentAbc 
    {
       public:
 
          TimeSeriesZip(const std::string& id, const Phases& phases,
-               std::shared_ptr<const TimeSeries<Time, ublas::vector<Complex>>> series) :
+               std::shared_ptr<const TimeSeries<Time, ublas::vector<Complex>>> series, const Time& dt) :
             ZipAbc(id, phases),
+            RegularUpdateComponentAbc(dt),
             series_(series)
          {
             // Empty.
