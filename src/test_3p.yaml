@@ -90,9 +90,9 @@ loop:
          conductor_R_per_L:   [1e-4, 1e-4, 1e-4]
          earth_resistivity:   100.0
          distance_matrix:     [
-                                 [0.01 , 1.00 , 1.00],
+                                 [0.01 , 1.00 , 2.00],
                                  [1.00 , 0.01 , 1.00],
-                                 [1.00 , 1.00 , 0.01]
+                                 [2.00 , 1.00 , 0.01]
                               ]
                               # Note - at moment, configured in an equilateral triangle.
          freq:             60.0
