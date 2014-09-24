@@ -20,7 +20,7 @@ namespace SmartGridToolbox
       string busId = state.expandName(nd["bus_id"].as<std::string>());
       string tsId = state.expandName(nd["time_series_id"].as<std::string>());
       
-      auto series = sim.timeSeries<const TimeSeries<Time, ublas::vector<Complex>>>(id);
+      auto series = sim.timeSeries<const TimeSeries<Time, ublas::vector<Complex>>>(tsId);
       auto network = sim.simComponent<SimNetwork>(networkId);
       auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, phases, series);
       network->addZip(tsZip, busId);

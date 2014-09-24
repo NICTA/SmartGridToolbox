@@ -7,22 +7,6 @@
 
 namespace SmartGridToolbox
 {
-   std::shared_ptr<const SimComponentAbc> Simulation::genericSimComponent(const std::string& id,
-         bool crashOnFail) const
-   {
-      std::shared_ptr<const SimComponentAbc> result = nullptr;
-      SimCompMap::const_iterator it = simCompMap_.find(id);
-      if (it != simCompMap_.end())
-      {
-         result = it->second;
-      }
-      else if (crashOnFail)
-      {
-         Log().fatal() << "Component " << id << " was requested but was not found in the simulation.";
-      }
-      return result;
-   }
-
    Simulation::ConstSimCompVec Simulation::simComponents() const
    {
       ConstSimCompVec result(simCompVec_.size());
@@ -32,8 +16,8 @@ namespace SmartGridToolbox
 
    void Simulation::addOrReplaceGenericSimComponent(std::shared_ptr<SimComponentAbc> simComp, bool allowReplace)
    {
-      Log().message() << "Adding simComponent " << simComp->id() << " of type " 
-         << simComp->componentType() << " to model." << std::endl;
+      Log().message() << "Adding SimComponent " << simComp->id() << " of type " 
+         << simComp->componentType() << " to the simulation." << std::endl;
       Indent _;
 
       SimCompMap::iterator it1 = simCompMap_.find(simComp->id());
@@ -262,6 +246,37 @@ namespace SmartGridToolbox
          result = result && doNextUpdate();
       }
 
+      return result;
+   }
+
+   std::shared_ptr<const SimComponentAbc> Simulation::genericSimComponent(const std::string& id,
+         bool crashOnFail) const
+   {
+      std::shared_ptr<const SimComponentAbc> result = nullptr;
+      SimCompMap::const_iterator it = simCompMap_.find(id);
+      if (it != simCompMap_.end())
+      {
+         result = it->second;
+      }
+      else if (crashOnFail)
+      {
+         Log().fatal() << "Component " << id << " was requested but was not found in the simulation.";
+      }
+      return result;
+   }
+
+   std::shared_ptr<const TimeSeriesBase> Simulation::genericTimeSeries(const std::string& id, bool crashOnFail) const
+   {
+      std::shared_ptr<const TimeSeriesBase> result = nullptr;
+      TimeSeriesMap::const_iterator it = timeSeriesMap_.find(id);
+      if (it != timeSeriesMap_.end())
+      {
+         result = it->second;
+      }
+      else if (crashOnFail)
+      {
+         Log().fatal() << "Time series " << id << " was requested but was not found in the simulation.";
+      }
       return result;
    }
 }

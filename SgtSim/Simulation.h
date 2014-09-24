@@ -157,22 +157,29 @@ namespace SmartGridToolbox
          /// @brief Get the timestep did complete event.
          Event& timestepDidComplete() {return timestepDidComplete_;}
 
-         /// @brief Get named TimeSeries.
-         template<typename T> std::shared_ptr<const T> timeSeries(const std::string& id) const
+         /// @brief Retrieve a const TimeSeries.
+         template<typename T> std::shared_ptr<const T> timeSeries(const std::string& id, bool crashOnFail = true) const
          {
-            TimeSeriesMap::const_iterator it = timeSeriesMap_.find(id);
-            return (it == timeSeriesMap_.end()) ? 0 : std::dynamic_pointer_cast<const T>(it->second);
+            std::shared_ptr<const TimeSeriesBase> ts = genericTimeSeries(id, crashOnFail);
+            auto result = std::dynamic_pointer_cast<const T>(ts);
+            if (result == nullptr && crashOnFail)
+            {
+               Log().fatal() << "Time series " << id
+                  << " was requested and exists in the simulation, but is of the wrong type" << std::endl;
+            }
+            return result;
          }
 
-         /// @brief Get time series with given id.
-         template<typename T> std::shared_ptr<T> timeSeries(const std::string& id)
+         /// @brief Retrieve a TimeSeries.
+         template<typename T> std::shared_ptr<T> timeSeries(const std::string& id, bool crashOnFail = true)
          {
-            return std::const_pointer_cast<T>((const_cast<const Simulation*>(this))->timeSeries<T>(id));
+            return std::const_pointer_cast<T>((const_cast<const Simulation*>(this))->timeSeries<T>(id, crashOnFail));
          }
 
          /// @brief Add a time series.
          void acquireTimeSeries (const std::string& id, std::shared_ptr<TimeSeriesBase> timeSeries)
          {
+            Log().message() << "Adding TimeSeries " << id << " to the simulation." << std::endl;
             timeSeriesMap_[id] = std::move(timeSeries);
          }
 
@@ -210,7 +217,11 @@ namespace SmartGridToolbox
 
          std::shared_ptr<const SimComponentAbc> genericSimComponent(const std::string& id,
                bool crashOnFail = true) const;
+
          void addOrReplaceGenericSimComponent(std::shared_ptr<SimComponentAbc> simComp, bool allowReplace);
+
+         std::shared_ptr<const TimeSeriesBase> genericTimeSeries(const std::string& id,
+               bool crashOnFail = true) const;
       
       private:
 

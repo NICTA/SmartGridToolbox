@@ -11,7 +11,7 @@ namespace SmartGridToolbox
    class TimeSeriesBase
    {
       public:
-         virtual ~TimeSeriesBase() {}
+         virtual ~TimeSeriesBase() = default; 
    };
 
    template<typename T, typename V>
