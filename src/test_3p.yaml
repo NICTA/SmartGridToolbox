@@ -72,7 +72,7 @@ solar_pv:
    weather:                weather
    inverter:               inverter_10
    efficiency:             0.75
-   area_m2:                10.0 
+   area_m2:                12.0 
    zenith_degrees:         64.6
    azimuth_degrees:        95.8 # Should point right at sun on Jan 26, 2013, 0830.
 loop: 
@@ -90,8 +90,9 @@ loop:
          conductor_R_per_L:   [1e-4, 1e-4, 1e-4]
          earth_resistivity:   100.0
          distance_matrix:     [
-                                 [0.01 , 1.00 , 2.00],
+                                 [0.01 , 1.00 , 1.00],
                                  [1.00 , 0.01 , 1.00],
-                                 [2.00 , 1.00 , 0.01]
+                                 [1.00 , 1.00 , 0.01]
                               ]
+                              # Note - at moment, configured in an equilateral triangle.
          freq:             60.0

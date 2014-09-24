@@ -9,6 +9,23 @@ double norm(ublas::vector<Complex> v)
             [](double d, const Complex& c)->double{return d + std::norm(c);}));
 }
 
+ublas::vector<Complex> symComps(ublas::vector<Complex> v)
+{
+   static const Complex alpha = std::polar(1.0, 2.0*pi/3.0);
+   static const Complex alpha2 = alpha * alpha;
+   static const Array2D<Complex, 3, 3> a = {{{1, 1, 1}, {1, alpha, alpha2}, {1, alpha2, alpha}}};
+
+   ublas::vector<Complex> result(3, czero);
+   for (int i = 0; i < 3; ++i)
+   {
+      for (int j = 0; j < 3; ++j)
+      {
+         result(i) = result(i) + a[i][j] * v(j);
+      }
+   }
+   return result;
+}
+
 int main(int argc, const char** argv)
 {
    if (argc != 2)
@@ -25,19 +42,14 @@ int main(int argc, const char** argv)
    bool ok = true;
 
    std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
-   std::shared_ptr<Node> busANd = netw->node("bus_0");
-   std::shared_ptr<Node> busBNd = netw->node("bus_10");
-   std::shared_ptr<BranchInterface> branch01 = netw->arc("line_0_1")->branch();
+   std::shared_ptr<Node> busNd = netw->node("bus_10");
 
-   Log().message() << "Y = " << branch01->Y() << std::endl;
-   
    while (ok)
    {
       Indent _;
       ok = sim.doTimestep();
-      Log().message() << "OUTPUT_BUS_A : " << norm(busANd->SGen()) << " " << norm(busANd->SZip()) << " " <<
-         norm(busANd->bus()->V()) << std::endl;
-      Log().message() << "OUTPUT_BUS_B : " << norm(busBNd->SGen()) << " " << norm(busBNd->SZip()) << " " <<
-         norm(busBNd->bus()->V()) << std::endl;
+      double t = dSeconds(sim.currentTime() - sim.startTime())/3600;
+      auto V = busNd->bus()->V();
+      Log().message() << "OUTPUT: " << t << " " << V(0) << " " << V(1) << " " << V(2) << std::endl;
    }
 }
