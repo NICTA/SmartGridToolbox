@@ -177,6 +177,10 @@ namespace SmartGridToolbox
                      for (auto nd : ndLists)
                      {
                         std::string id = nd.first.as<std::string>();
+                        if (!nd.second.IsSequence())
+                        {
+                           Log().fatal() << "Lists entries must be a YAML sequence." << std::endl;
+                        }
                         auto vec = nd.second.as<std::vector<std::string>>();
                         Log().message() << "phase list " << id << " : " << vec[0] << " ..." << std::endl;
                      }
