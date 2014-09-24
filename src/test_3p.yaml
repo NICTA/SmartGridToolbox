@@ -11,6 +11,17 @@ time_series:
    relative_to_time:       2013-01-23 06:00:00
    time_unit:              m
    interp_type:            lerp
+loop: 
+   spec:                   [i, 1, 10, 1]
+   body:
+      time_series:
+         id:               load_${i}_series
+         value_type:       complex_vector
+         type:             data_time_series
+         data_file:        loads/load_${i}.txt
+         relative_to_time: 2013-01-23 06:00:00
+         time_unit:        m
+         interp_type:      lerp
 weather:
    id:                     weather
    cloud_cover:            cloud_cover_series
@@ -41,12 +52,11 @@ loop:
          V_base:           0.240
          V_nom:            [0.240, 0.240D-240, 0.240D240]
          type:             PQ
-      generic_zip:
+      time_series_zip:
          id:               zip_${i}
          network_id:       network
          bus_id:           bus_${i}
-         phases:           [A, B, C]
-         S_const:          [-1e-3, -1e-3, -1e-3]
+         time_series_id:   load_${i}_series
 bus:
    id:                     bus_10
    network_id:             network

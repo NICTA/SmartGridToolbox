@@ -109,7 +109,7 @@ namespace SmartGridToolbox
          {
             result = LERP;
          }
-         if (interpTypeStr == "spline")
+         else if (interpTypeStr == "spline")
          {
             result = SPLINE;
          }
@@ -226,7 +226,7 @@ namespace SmartGridToolbox
                assertFieldPresent(nd, "relative_to_time");
                assertFieldPresent(nd, "time_unit");
 
-               std::string dataFName = nd["data_file"].as<std::string>();
+               std::string dataFName = state.expandName(nd["data_file"].as<std::string>());
                std::ifstream infile(dataFName);
                if (!infile.is_open())
                {

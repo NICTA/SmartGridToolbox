@@ -256,6 +256,7 @@ namespace SmartGridToolbox
       }
       else
       {
+         std::string suffix;
          for (auto it = begin; it != end; ++it)
          {
             result += it->prefix();
@@ -273,7 +274,9 @@ namespace SmartGridToolbox
                }
                result += std::to_string(calcResult); 
             }
+            suffix = it->suffix(); // TODO - only need the last one, how to do this...
          }
+         result += suffix;
       }
       return result;
    }

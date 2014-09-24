@@ -1,22 +1,25 @@
-tvec = (0:5:24*60*7)';
-Tvec = 60*24*1./(1:8);
+tVec = (0:5:24*60*7)';
+TVec = 60*24*1./(1:8);
 
+cVeci = [];
 for i = 1:10
-   xvec = rand(size(Tvec));
-   pvec = rand(size(Tvec))*2*pi;
-   cvec = zeros(size(tvec));
-   for j = 1:length(Tvec)
-      cvec += xvec(j)*cos(pvec(j) + 2*pi*tvec/Tvec(j));
+   SMax = rand*5e-3;
+   xVec = rand(size(TVec));
+   pVec = rand(size(TVec))*2*pi;
+   cVec = zeros(size(tVec));
+   for j = 1:length(TVec)
+      cVec += xVec(j)*cos(pVec(j) + 2*pi*tVec/TVec(j));
    end
-   cvec -= min(cvec);
-   cvec /= max(cvec);
+   cVec -= min(cVec);
+   cVec *= -SMax/max(cVec);
 
    phase = randi(3);
-   z = zeros(size(tvec));
-   dat = [tvec, z, z, z, z, z, z, z, z, z];
-   dat(:, phase + 7) = cvec;
+   z = zeros(size(tVec));
+   dat = [tVec, z, z, z, z, z, z, z, z, z];
+   dat(:, phase + 7) = cVec;
 
-   fp = fopen(['load_' num2str(i) '.txt'], 'w');
-   fprintf(fp, '%6d %5.3f %5.3f %5.3f %5.3f %5.3f %5.3f %5.3f %5.3f %5.3f\n', dat');
+   fp = fopen(['loads/load_' num2str(i) '.txt'], 'w');
+   fprintf(fp, '%6d %10.3e %10.3e %10.3e %10.3e %10.3e %10.3e %10.3e %10.3e %10.3e\n', dat');
    fclose(fp);
+   cVeci = [cVeci, cVec];
 end
