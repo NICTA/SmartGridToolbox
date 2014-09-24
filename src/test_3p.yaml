@@ -44,6 +44,8 @@ generic_gen:
    phases:                 [A, B, C]
 loop: 
    spec:                   [i, 1, 11, 1]
+   lists:
+      phase:               [A, B, A, C, C, B, A, B, B]
    body:
       bus:
          id:               bus_${i}

@@ -75,9 +75,9 @@ namespace SmartGridToolbox
 
          std::string expandName(const std::string& target) const;
 
-         void pushLoop(const std::string& name, int first)
+         void pushLoop(const std::string& name, int first, const std::map<std::string, const YAML::Node*>& lists)
          {
-            loops_.push_back({name, first});
+            loops_.push_back({name, first, lists});
          }
 
          int topLoopVal()
@@ -96,16 +96,16 @@ namespace SmartGridToolbox
          }
 
       private:
-
          struct ParserLoop
          {
             std::string name_;
             int i_;
+            std::map<std::string, const YAML::Node*> lists_;
          };
 
-      private:
          std::vector<ParserLoop> loops_;
    };
+
    void assertFieldPresent(const YAML::Node& nd, const std::string& field);
 
    template<typename T> class ParserPlugin
@@ -161,15 +161,28 @@ namespace SmartGridToolbox
                const YAML::Node& nodeVal = subnode.second;
                if (nodeType == "loop")
                {
-                  const YAML::Node& spec = nodeVal["spec"];
-                  const YAML::Node& body = nodeVal["body"];
-                  std::string name = spec[0].as<std::string>();
-                  int first = spec[1].as<int>();
-                  int upper = spec[2].as<int>();
-                  int stride = spec[3].as<int>();
-                  for (state.pushLoop(name, first); state.topLoopVal() < upper; state.incrTopLoop(stride))
+                  const YAML::Node& ndSpec = nodeVal["spec"];
+                  const YAML::Node& ndLists = nodeVal["lists"];
+                  const YAML::Node& ndBody = nodeVal["body"];
+                  std::string name = ndSpec[0].as<std::string>();
+
+                  int first = ndSpec[1].as<int>();
+                  int upper = ndSpec[2].as<int>();
+                  int stride = ndSpec[3].as<int>();
+
+                  std::map<std::string, const YAML::Node*> lists;
+                  if (ndLists)
                   {
-                     parse(body, into, state);
+                     for (auto nd : ndLists)
+                     {
+                        std::string id = nd.first.as<std::string>();
+                        auto vec = nd.second.as<std::vector<std::string>>();
+                        Log().message() << "phase list " << id << " : " << vec[0] << "..." << std::endl;
+                     }
+                  }
+                  for (state.pushLoop(name, first, lists); state.topLoopVal() < upper; state.incrTopLoop(stride))
+                  {
+                     parse(ndBody, into, state);
                   }
                   state.popLoop();
                }
