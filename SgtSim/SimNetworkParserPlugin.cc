@@ -11,7 +11,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "P_base");
 
       string id = parser.expand<std::string>(nd["id"]);
-      double PBase = nd["P_base"].as<double>();
+      double PBase = parser.expand<double>(nd["P_base"]);
 
       auto ndFreq = nd["freq_Hz"];
 

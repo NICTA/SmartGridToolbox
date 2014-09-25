@@ -30,9 +30,9 @@ namespace SmartGridToolbox
 
       std::unique_ptr<CommonBranch> cBranch(new CommonBranch(id));
 
-      cBranch->setTapRatio(nd["complex_tap_ratio"].as<Complex>());
-      cBranch->setYSeries(nd["Y_series"].as<Complex>());
-      cBranch->setYShunt(nd["Y_shunt"].as<Complex>());
+      cBranch->setTapRatio(parser.expand<Complex>(nd["complex_tap_ratio"]));
+      cBranch->setYSeries(parser.expand<Complex>(nd["Y_series"]));
+      cBranch->setYShunt(parser.expand<Complex>(nd["Y_shunt"]));
 
       auto ndRateA =  nd["rate_A"];
       auto ndRateB =  nd["rate_B"];
@@ -40,15 +40,15 @@ namespace SmartGridToolbox
 
       if (ndRateA)
       {
-         cBranch->setRateA(nd["rate_A"].as<double>());
+         cBranch->setRateA(parser.expand<double>(nd["rate_A"]));
       }
       if (ndRateB)
       {
-         cBranch->setRateB(nd["rate_B"].as<double>());
+         cBranch->setRateB(parser.expand<double>(nd["rate_B"]));
       }
       if (ndRateC)
       {
-         cBranch->setRateC(nd["rate_C"].as<double>());
+         cBranch->setRateC(parser.expand<double>(nd["rate_C"]));
       }
 
       return cBranch; 

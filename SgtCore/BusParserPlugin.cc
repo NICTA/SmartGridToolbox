@@ -20,10 +20,10 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "V_nom");
 
       std::string id = parser.expand<std::string>(nd["id"]);
-      Phases phases = nd["phases"].as<Phases>();
-      BusType type = nd["type"].as<BusType>();
-      double VBase = nd["V_base"].as<double>();
-      ublas::vector<Complex> VNom = nd["V_nom"].as<ublas::vector<Complex>>();
+      Phases phases = parser.expand<Phases>(nd["phases"]);
+      BusType type = parser.expand<BusType>(nd["type"]);
+      double VBase = parser.expand<double>(nd["V_base"]);
+      ublas::vector<Complex> VNom = parser.expand<ublas::vector<Complex>>(nd["V_nom"]);
 
       std::unique_ptr<Bus> bus(new Bus(id, phases, VNom, VBase));
       bus->setType(type);

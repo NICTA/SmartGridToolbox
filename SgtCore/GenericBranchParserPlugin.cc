@@ -45,8 +45,8 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "Y");
 
       std::string id = parser.expand<std::string>(nd["id"]);
-      Phases phases0 = nd["phases_0"].as<Phases>();
-      Phases phases1 = nd["phases_1"].as<Phases>();
+      Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
+      Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
       
       const YAML::Node& ndY = nd["Y"];
       const YAML::Node& ndYMatrix = ndY["matrix"];

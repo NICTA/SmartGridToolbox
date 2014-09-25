@@ -14,9 +14,9 @@ namespace SmartGridToolbox
 
       string id = parser.expand<std::string>(nd["id"]);
       auto comp = sim.newSimComponent<GenericDcPowerSource>(id);
-      comp->setPDc(nd["dc_power"].as<double>());
+      comp->setPDc(parser.expand<double>(nd["dc_power"]));
 
-      const std::string inverterStr = nd["inverter"].as<std::string>();
+      const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
       auto inverterComp = sim.simComponent<InverterAbc>(inverterStr);
       if (inverterComp != nullptr)
       {

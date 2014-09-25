@@ -32,14 +32,14 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "freq");
 
       string id = parser.expand<std::string>(nd["id"]);
-      Phases phases0 = nd["phases_0"].as<Phases>();
-      Phases phases1 = nd["phases_1"].as<Phases>();
-      double length = nd["length"].as<double>();
-      int nNeutral = nd["n_neutral"].as<int>();
-      ublas::vector<double> lineResistivity = nd["conductor_R_per_L"].as<ublas::vector<double>>();
-      double earthResistivity = nd["earth_resistivity"].as<double>();
-      ublas::matrix<double> distMatrix = nd["distance_matrix"].as<ublas::matrix<double>>();
-      double freq = nd["freq"].as<double>();
+      Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
+      Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
+      double length = parser.expand<double>(nd["length"]);
+      int nNeutral = parser.expand<int>(nd["n_neutral"]);
+      ublas::vector<double> lineResistivity = parser.expand<ublas::vector<double>>(nd["conductor_R_per_L"]);
+      double earthResistivity = parser.expand<double>(nd["earth_resistivity"]);
+      ublas::matrix<double> distMatrix = parser.expand<ublas::matrix<double>>(nd["distance_matrix"]);
+      double freq = parser.expand<double>(nd["freq"]);
 
       std::unique_ptr<OverheadLine> ohl(new OverheadLine(id, phases0, phases1, length, nNeutral, lineResistivity,
                earthResistivity, distMatrix, freq));

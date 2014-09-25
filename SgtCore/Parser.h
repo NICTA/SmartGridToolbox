@@ -82,7 +82,7 @@ namespace SmartGridToolbox
 
          template<typename T> T expand(const YAML::Node& nd) const
          {
-            return YAML::Node(expandAsString(nd)).as<T>();
+            return YAML::Load(expandAsString(nd)).as<T>();
          }
 
       protected:

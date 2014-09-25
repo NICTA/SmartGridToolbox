@@ -262,8 +262,21 @@ namespace SmartGridToolbox
          
    std::string ParserBase::expandAsString(const YAML::Node& nd) const
    {
+      std::string target;
+      if (!nd.IsScalar())
+      {
+         std::ostringstream oss;
+         oss << nd << std::endl;
+         target = oss.str();
+      }
+      else
+      {
+         target = nd.as<std::string>();
+         // This way prevents extra newlines, etc. being inserted by the stream insertion operator above.
+      }
+
       std::string result;
-      auto target = nd.as<std::string>();
+
 
       std::regex r("\\$\\{.*?\\}"); // Like e.g. ${i + 2} or ${i.phase}, ? = Non-greedy match.
 

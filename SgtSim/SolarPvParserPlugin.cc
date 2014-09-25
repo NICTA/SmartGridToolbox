@@ -21,18 +21,18 @@ namespace SmartGridToolbox
 
       if (nd["efficiency"])
       {
-         spv->setEfficiency(nd["efficiency"].as<double>());
+         spv->setEfficiency(parser.expand<double>(nd["efficiency"]));
       }
       else
       {
          spv->setEfficiency(1.0);
       }
-      spv->setPlaneArea(nd["area_m2"].as<double>());
-      double zen = nd["zenith_degrees"].as<double>() * pi / 180;
-      double azi = nd["azimuth_degrees"].as<double>() * pi / 180;
+      spv->setPlaneArea(parser.expand<double>(nd["area_m2"]));
+      double zen = parser.expand<double>(nd["zenith_degrees"]) * pi / 180;
+      double azi = parser.expand<double>(nd["azimuth_degrees"]) * pi / 180;
       spv->setPlaneNormal({zen, azi});
 
-      const std::string weatherStr = nd["weather"].as<std::string>();
+      const std::string weatherStr = parser.expand<std::string>(nd["weather"]);
       auto weather = sim.simComponent<Weather>(weatherStr);
       if (weather != nullptr)
       {
@@ -44,7 +44,7 @@ namespace SmartGridToolbox
                  << " was not found in the model." << std::endl;
       }
 
-      const std::string inverterStr = nd["inverter"].as<std::string>();
+      const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
       auto inverter = sim.simComponent<Inverter>(inverterStr);
       if (inverter != nullptr)
       {

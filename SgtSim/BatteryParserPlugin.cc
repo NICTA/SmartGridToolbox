@@ -37,7 +37,7 @@ namespace SmartGridToolbox
       auto ndRequestedPower = nd["requested_power"];
       if (ndRequestedPower) batt->setRequestedPower(ndRequestedPower.as<double>());
 
-      const std::string inverterStr = nd["inverter"].as<std::string>();
+      const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
       auto inverter = sim.simComponent<InverterAbc>(inverterStr);
       if (inverter != nullptr)
       {

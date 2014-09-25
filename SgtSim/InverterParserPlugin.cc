@@ -14,28 +14,28 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "bus_id");
 
       string id = parser.expand<std::string>(nd["id"]);
-      Phases phases = nd["phases"].as<Phases>();
+      Phases phases = parser.expand<Phases>(nd["phases"]);
 
       auto inverter = sim.newSimComponent<Inverter>(id, phases);
          
       if (nd["efficiency"])
       {
-         inverter->setEfficiency(nd["efficiency"].as<double>());
+         inverter->setEfficiency(parser.expand<double>(nd["efficiency"]));
       }
 
       if (nd["max_S_mag_per_phase"])
       {
-         inverter->setMaxSMagPerPhase(nd["max_S_mag_per_phase"].as<double>());
+         inverter->setMaxSMagPerPhase(parser.expand<double>(nd["max_S_mag_per_phase"]));
       }
 
       if (nd["min_power_factor"])
       {
-         inverter->setMinPowerFactor(nd["min_power_factor"].as<double>());
+         inverter->setMinPowerFactor(parser.expand<double>(nd["min_power_factor"]));
       }
 
       if (nd["requested_Q_per_phase"])
       {
-         inverter->setRequestedQPerPhase(nd["requested_Q_per_phase"].as<double>());
+         inverter->setRequestedQPerPhase(parser.expand<double>(nd["requested_Q_per_phase"]));
       }
 
       const std::string networkId = parser.expand<std::string>(nd["network_id"]);

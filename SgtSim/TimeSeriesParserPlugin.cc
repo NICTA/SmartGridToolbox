@@ -179,8 +179,8 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "value_type"); // real_scalar/complex_scalar/real_vector/complex_vector
       
       std::string id = parser.expand<std::string>(nd["id"]);
-      auto tsType = getTsType(nd["type"].as<std::string>());
-      auto valType = getValType(nd["value_type"].as<std::string>());
+      auto tsType = getTsType(parser.expand<std::string>(nd["type"]));
+      auto valType = getValType(parser.expand<std::string>(nd["value_type"]));
 
       Log().message() << "id = " << id << std::endl;
 
@@ -233,14 +233,14 @@ namespace SmartGridToolbox
                   Log().fatal() << "Could not open the timeseries input file " << dataFName << "." << std::endl;
                }
 
-               auto interpType = getInterpType(nd["interp_type"].as<std::string>());
+               auto interpType = getInterpType(parser.expand<std::string>(nd["interp_type"]));
 
-               std::string relto = nd["relative_to_time"].as<std::string>();
+               std::string relto = parser.expand<std::string>(nd["relative_to_time"]);
 
                posix_time::ptime pt = posix_time::time_from_string(relto);
                Time t0 = timeFromLocalTime(pt, sim.timezone());
 
-               double toSecs = getToSecsFactor(nd["time_unit"].as<std::string>());
+               double toSecs = getToSecsFactor(parser.expand<std::string>(nd["time_unit"]));
 
                std::string line;
                switch(valType)

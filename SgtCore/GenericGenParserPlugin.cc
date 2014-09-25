@@ -22,7 +22,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "phases");
 
       std::string id = parser.expand<std::string>(nd["id"]);
-      Phases phases = nd["phases"].as<Phases>();
+      Phases phases = parser.expand<Phases>(nd["phases"]);
 
       std::unique_ptr<GenericGen> gen(new GenericGen(id, phases));
 

@@ -22,7 +22,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "phases");
 
       std::string id = parser.expand<std::string>(nd["id"]);
-      Phases phases = nd["phases"].as<Phases>();
+      Phases phases = parser.expand<Phases>(nd["phases"]);
 
       std::unique_ptr<GenericZip> zip(new GenericZip(id, phases));
 
@@ -32,15 +32,15 @@ namespace SmartGridToolbox
 
       if (ndYConst)
       {
-         zip->setYConst(nd["Y_const"].as<ublas::vector<Complex>>());
+         zip->setYConst(parser.expand<ublas::vector<Complex>>(nd["Y_const"]));
       }
       if (ndIConst)
       {
-         zip->setIConst(nd["I_const"].as<ublas::vector<Complex>>());
+         zip->setIConst(parser.expand<ublas::vector<Complex>>(nd["I_const"]));
       }
       if (ndSConst)
       {
-         zip->setSConst(nd["S_const"].as<ublas::vector<Complex>>());
+         zip->setSConst(parser.expand<ublas::vector<Complex>>(nd["S_const"]));
       }
 
       return zip;

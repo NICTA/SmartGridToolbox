@@ -26,8 +26,8 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "leakage_impedance");
 
       const std::string id = parser.expand<std::string>(nd["id"]);
-      Complex a = nd["complex_turns_ratio_01"].as<Complex>();
-      Complex ZL = nd["leakage_impedance"].as<Complex>();
+      Complex a = parser.expand<Complex>(nd["complex_turns_ratio_01"]);
+      Complex ZL = parser.expand<Complex>(nd["leakage_impedance"]);
 
       std::unique_ptr<SinglePhaseTransformer> trans(new SinglePhaseTransformer(id, a, ZL));
 

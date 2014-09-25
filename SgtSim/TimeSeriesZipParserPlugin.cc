@@ -16,11 +16,11 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "dt");
 
       string id = parser.expand<std::string>(nd["id"]);
-      Phases phases = nd["phases"].as<Phases>();
+      Phases phases = parser.expand<Phases>(nd["phases"]);
       string networkId = parser.expand<std::string>(nd["network_id"]);
       string busId = parser.expand<std::string>(nd["bus_id"]);
       string tsId = parser.expand<std::string>(nd["time_series_id"]);
-      Time dt = nd["dt"].as<Time>();
+      Time dt = parser.expand<Time>(nd["dt"]);
       
       auto series = sim.timeSeries<const TimeSeries<Time, ublas::vector<Complex>>>(tsId);
       auto network = sim.simComponent<SimNetwork>(networkId);

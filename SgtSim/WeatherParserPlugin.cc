@@ -40,7 +40,7 @@ namespace SmartGridToolbox
 
       if (nd["dt"])
       {
-         weather->setDt(nd["dt"].as<Time>());
+         weather->setDt(parser.expand<Time>(nd["dt"]));
       }
       else
       {

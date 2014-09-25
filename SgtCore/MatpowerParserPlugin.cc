@@ -219,9 +219,9 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "input_file");
       assertFieldPresent(nd, "default_kV_base");
 
-      std::string inputName = nd["input_file"].as<std::string>();
+      std::string inputName = parser.expand<std::string>(nd["input_file"]);
 
-      double default_kVBase = nd["default_kV_base"].as<double>();
+      double default_kVBase = parser.expand<double>(nd["default_kV_base"]);
 
       // Parse in the raw matpower data.
       MpData data;
