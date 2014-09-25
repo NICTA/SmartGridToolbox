@@ -344,6 +344,9 @@ namespace SmartGridToolbox
 
    ParserBase::ParserLoop& ParserBase::parseLoop(const YAML::Node& nd)
    {
+      assertFieldPresent(nd, "loop_variable");
+      assertFieldPresent(nd, "loop_body");
+
       const YAML::Node& ndLoopVar = nd["loop_variable"];
       const YAML::Node& ndLoopProps = nd["loop_properties"];
 

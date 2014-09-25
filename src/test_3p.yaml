@@ -12,8 +12,8 @@ time_series:
    time_unit:              m
    interp_type:            lerp
 loop: 
-   spec:                   [i, 1, 11, 1]
-   body:
+   loop_variable:          [i, 1, 11, 1]
+   loop_body:
       time_series:
          id:               load_${i}_series
          value_type:       complex_vector
@@ -78,8 +78,8 @@ solar_pv:
    zenith_degrees:         64.6
    azimuth_degrees:        95.8 # Should point right at sun on Jan 26, 2013, 0830.
 loop: 
-   spec:                   [i, 0, 10, 1]
-   body:
+   loop_variable:          [i, 0, 10, 1]
+   loop_body:
       overhead_line:
          id:               line_${i}_${i+1}
          network_id:       network
