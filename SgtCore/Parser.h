@@ -87,14 +87,22 @@ namespace SmartGridToolbox
 
       protected:
 
-         std::string expandAsString(const YAML::Node& nd) const;
-
          struct ParserLoop
          {
             std::string name_;
             int i_;
+            int upper_;
+            int stride_;
             std::map<std::string, const YAML::Node*> props_;
          };
+         
+      protected:
+
+         std::string expandAsString(const YAML::Node& nd) const;
+
+         ParserLoop& parseLoop(const YAML::Node& nd);
+
+      protected:
 
          std::vector<ParserLoop> loops_;
    };
@@ -148,34 +156,12 @@ namespace SmartGridToolbox
             {
                std::string nodeType = subnode.first.as<std::string>();
                const YAML::Node& nodeVal = subnode.second;
+
                if (nodeType == "loop")
                {
-                  const YAML::Node& ndLoopVar = nodeVal["loop_variable"];
-                  const YAML::Node& ndLoopProps = nodeVal["loop_properties"];
-                  const YAML::Node& ndLoopBody = nodeVal["loop_body"];
-
-                  std::string name = ndLoopVar[0].as<std::string>();
-                  int first = ndLoopVar[1].as<int>();
-                  int upper = ndLoopVar[2].as<int>();
-                  int stride = ndLoopVar[3].as<int>();
-
-                  std::map<std::string, const YAML::Node*> loopProps;
-                  if (ndLoopProps)
+                  for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_)
                   {
-                     for (auto nd : ndLoopProps)
-                     {
-                        std::string id = nd.first.as<std::string>();
-                        if (!nd.second.IsSequence())
-                        {
-                           Log().fatal() << "Lists entries must be a YAML sequence." << std::endl;
-                        }
-                        auto vec = nd.second.as<std::vector<std::string>>();
-                        Log().message() << "phase list " << id << " : " << vec[0] << " ..." << std::endl;
-                     }
-                  }
-
-                  for (loops_.push_back({name, first, loopProps}); loops_.back().i_ < upper; loops_.back().i_ += stride)
-                  {
+                     const YAML::Node& ndLoopBody = nodeVal["loop_body"];
                      parse(ndLoopBody, into);
                   }
                   loops_.pop_back();

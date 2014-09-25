@@ -341,4 +341,34 @@ namespace SmartGridToolbox
       }
       return result;
    }
+
+   ParserBase::ParserLoop& ParserBase::parseLoop(const YAML::Node& nd)
+   {
+      const YAML::Node& ndLoopVar = nd["loop_variable"];
+      const YAML::Node& ndLoopProps = nd["loop_properties"];
+
+      std::string name = ndLoopVar[0].as<std::string>();
+      int first = ndLoopVar[1].as<int>();
+      int upper = ndLoopVar[2].as<int>();
+      int stride = ndLoopVar[3].as<int>();
+
+      std::map<std::string, const YAML::Node*> loopProps;
+      if (ndLoopProps)
+      {
+         for (auto nd : ndLoopProps)
+         {
+            std::string id = nd.first.as<std::string>();
+            if (!nd.second.IsSequence())
+            {
+               Log().fatal() << "Lists entries must be a YAML sequence." << std::endl;
+            }
+            auto vec = nd.second.as<std::vector<std::string>>();
+            Log().message() << "phase list " << id << " : " << vec[0] << " ..." << std::endl;
+         }
+      }
+
+      loops_.push_back({name, first, upper, stride, loopProps});
+
+      return loops_.back();
+   }
 }
