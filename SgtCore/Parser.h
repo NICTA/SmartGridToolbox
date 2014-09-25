@@ -5,7 +5,9 @@
 #include <SgtCore/PowerFlow.h>
 
 #include <yaml-cpp/yaml.h>
+
 #include <map>
+#include <regex>
 
 namespace YAML
 {
@@ -69,56 +71,42 @@ namespace YAML
 
 namespace SmartGridToolbox
 {
-   class ParserState
-   {
+   void assertFieldPresent(const YAML::Node& nd, const std::string& field);
+
+   // Some no-templated functionality in the base class.
+   class ParserBase {
       public:
 
-         std::string expandName(const std::string& target) const;
-
-         void pushLoop(const std::string& name, int first, const std::map<std::string, const YAML::Node*>& lists)
+         template<typename T> T expand(const YAML::Node& nd) const
          {
-            loops_.push_back({name, first, lists});
+            return YAML::Node(expandAsString(nd)).as<T>();
          }
 
-         int topLoopVal()
-         {
-            return loops_.back().i_;
-         }
+      protected:
 
-         void incrTopLoop(int i)
-         {
-            loops_.back().i_ += i;
-         }
-
-         void popLoop()
-         {
-            loops_.pop_back();
-         }
-
-      private:
+         std::string expandAsString(const YAML::Node& nd) const;
 
          struct ParserLoop
          {
             std::string name_;
             int i_;
-            std::map<std::string, const YAML::Node*> lists_;
+            std::map<std::string, const YAML::Node*> props_;
          };
 
          std::vector<ParserLoop> loops_;
    };
 
-   void assertFieldPresent(const YAML::Node& nd, const std::string& field);
+   template<typename T> class Parser;
 
    template<typename T> class ParserPlugin
    {
       public:
-
          virtual const char* key() {return "ERROR";}
-         virtual void parse(const YAML::Node& nd, T& into, const ParserState& state) const 
+         virtual void parse(const YAML::Node& nd, T& into, const Parser<T>& parser) const 
          {
             // Empty.
          }
-         virtual void postParse(const YAML::Node& nd, T& into, const ParserState& state) const
+         virtual void postParse(const YAML::Node& nd, T& into, const Parser<T>& parser) const
          {
             // Empty.
          }
@@ -129,32 +117,31 @@ namespace SmartGridToolbox
    template<typename T> class Parser;
    template<typename T> void registerParserPlugins(Parser<T>& parser);
 
-   template<typename T> class Parser {
+   template<typename T> class Parser : private ParserBase {
       public:
          Parser()
          {
             registerParserPlugins(*this);
          }
 
-         template<class PluginType> void registerParserPlugin()
+         template<typename PluginType> void registerParserPlugin()
          {
             auto plugin = std::unique_ptr<PluginType>(new PluginType());
             plugins_[plugin->key()] = std::move(plugin);
          }
-         
+
          void parse(const std::string& fname, T& into)
          {
             Log().message() << "Parsing file " << fname << "." << std::endl;
             {
                Indent _;
                auto top = getTopNode(fname);
-               ParserState state;
-               parse(top, into, state);
+               parse(top, into);
             }
             Log().message() << "Finished parsing file " << fname << "." << std::endl;
          }
 
-         void parse(const YAML::Node& node, T& into, ParserState& state)
+         void parse(const YAML::Node& node, T& into)
          {
             for (const auto& subnode : node)
             {
@@ -162,19 +149,19 @@ namespace SmartGridToolbox
                const YAML::Node& nodeVal = subnode.second;
                if (nodeType == "loop")
                {
-                  const YAML::Node& ndSpec = nodeVal["spec"];
-                  const YAML::Node& ndLists = nodeVal["lists"];
-                  const YAML::Node& ndBody = nodeVal["body"];
-                  std::string name = ndSpec[0].as<std::string>();
+                  const YAML::Node& ndLoopVar = nodeVal["loop_variable"];
+                  const YAML::Node& ndLoopProps = nodeVal["loop_properties"];
+                  const YAML::Node& ndLoopBody = nodeVal["loop_body"];
 
-                  int first = ndSpec[1].as<int>();
-                  int upper = ndSpec[2].as<int>();
-                  int stride = ndSpec[3].as<int>();
+                  std::string name = ndLoopVar[0].as<std::string>();
+                  int first = ndLoopVar[1].as<int>();
+                  int upper = ndLoopVar[2].as<int>();
+                  int stride = ndLoopVar[3].as<int>();
 
-                  std::map<std::string, const YAML::Node*> lists;
-                  if (ndLists)
+                  std::map<std::string, const YAML::Node*> loopProps;
+                  if (ndLoopProps)
                   {
-                     for (auto nd : ndLists)
+                     for (auto nd : ndLoopProps)
                      {
                         std::string id = nd.first.as<std::string>();
                         if (!nd.second.IsSequence())
@@ -185,11 +172,12 @@ namespace SmartGridToolbox
                         Log().message() << "phase list " << id << " : " << vec[0] << " ..." << std::endl;
                      }
                   }
-                  for (state.pushLoop(name, first, lists); state.topLoopVal() < upper; state.incrTopLoop(stride))
+
+                  for (loops_.push_back({name, first, loopProps}); loops_.back().i_ < upper; loops_.back().i_ += stride)
                   {
-                     parse(ndBody, into, state);
+                     parse(ndLoopBody, into);
                   }
-                  state.popLoop();
+                  loops_.pop_back();
                }
                else
                {
@@ -202,13 +190,14 @@ namespace SmartGridToolbox
                   else
                   {
                      Indent _;
-                     it->second->parse(nodeVal, into, state);
+                     it->second->parse(nodeVal, into, *this);
                   }
                }
             }
          }
 
       private:
+
          std::map<std::string, std::unique_ptr<ParserPlugin<T>>> plugins_;
    };
 

@@ -43,10 +43,10 @@ generic_gen:
    bus_id:                 bus_0
    phases:                 [A, B, C]
 loop: 
-   spec:                   [i, 1, 11, 1]
-   lists:
+   loop_variable:          [i, 1, 11, 1]
+   loop_properties:
       phase:               [A, B, A, C, C, B, A, B, B]
-   body:
+   loop_body:
       bus:
          id:               bus_${i}
          network_id:       network

@@ -8,7 +8,6 @@
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_object.hpp>
 
-#include <regex>
 #include <string>
 
 namespace qi = boost::spirit::qi;
@@ -241,45 +240,6 @@ namespace YAML
 
 namespace SmartGridToolbox
 {
-   std::string ParserState::expandName(const std::string & target) const
-   {
-      std::string result;
-
-      std::regex r("\\$\\{.*?\\}");
-
-      std::sregex_iterator begin(target.begin(), target.end(), r);
-      std::sregex_iterator end;
-
-      if (begin == end)
-      {
-         result = target;
-      }
-      else
-      {
-         std::string suffix;
-         for (auto it = begin; it != end; ++it)
-         {
-            result += it->prefix();
-            std::string substr = it->str().substr(2, it->str().size()-3);
-            for (const ParserLoop & loop : loops_)
-            {
-               substr = std::regex_replace(substr, std::regex(loop.name_), std::to_string(loop.i_));
-               int calcResult;
-               std::string::const_iterator i1 = substr.begin();
-               std::string::const_iterator i2 = substr.end();
-               bool ok = phrase_parse(i1, i2, calc, space, calcResult);
-               if (!ok)
-               {
-                  Log().fatal() << "Ill-formed expression " << target << " for variables" << std::endl;
-               }
-               result += std::to_string(calcResult); 
-            }
-            suffix = it->suffix(); // TODO - only need the last one, how to do this...
-         }
-         result += suffix;
-      }
-      return result;
-   }
 
    void assertFieldPresent(const YAML::Node& nd, const std::string& field)
    {
@@ -298,5 +258,86 @@ namespace SmartGridToolbox
          Log().fatal() << "File " << fname << " is empty or doesn't exist." << std::endl;
       }
       return top;
+   }
+         
+   std::string ParserBase::expandAsString(const YAML::Node& nd) const
+   {
+      std::string result;
+      auto target = nd.as<std::string>();
+
+      std::regex r("\\$\\{.*?\\}"); // Like e.g. ${i + 2} or ${i.phase}, ? = Non-greedy match.
+
+      std::sregex_iterator begin(target.begin(), target.end(), r);
+      std::sregex_iterator end;
+
+      if (begin == end)
+      {
+         // There were no expansion expressions.
+         result = target;
+      }
+      else
+      {
+         std::string exprSuffix;
+         for (auto it = begin; it != end; ++it) // Loop over all expansion expressions.
+         {
+            std::string exprPrefix = it->prefix();
+            std::string exprMatch = it->str();
+            exprSuffix = it->suffix();
+
+            result += exprPrefix; // Put the prefix on the result.
+
+            std::string exprExpansion = exprMatch.substr(2, exprMatch.size()-3); // Strip off the "${" and "}".
+
+            // Now match against all parser loops.
+            // There are two possibilities: 
+            // (1) e.g. ${i + j + 3} which returns an integer, or
+            // (2) e.g. ${i.phase} which returns a string representing a phase in this case.
+
+            std::smatch match;
+            if (std::regex_search(exprExpansion, match, std::regex("\\.")))
+            {
+               // Case (2) above.
+               std::string loopName = match.prefix();
+               for (const ParserLoop & loop : loops_)
+               {
+                  if (loop.name_ == loopName)
+                  {
+                     std::string propName = match.suffix();
+                     try
+                     {
+                        YAML::Node nd = loop.props_[propName][loop.i_];
+                        result += nd.as<std::string>();
+                        break;
+                     }
+                     catch (std::exception e)
+                     {
+                        Log().fatal() << "In parser expression " << it->str() << ", property " 
+                           << propName << " was not found." << std::endl;
+                     }
+                  }
+               }
+            }
+            else
+            {
+               // Case (1) above.
+               for (const ParserLoop & loop : loops_)
+               {
+                  exprExpansion = std::regex_replace(exprExpansion, std::regex(loop.name_),
+                        std::to_string(loop.i_)); // Substitute in the loop name with its value.
+               }
+
+               int calcResult;
+               std::string::const_iterator i1 = exprExpansion.begin();
+               std::string::const_iterator i2 = exprExpansion.end();
+               bool ok = phrase_parse(i1, i2, calc, space, calcResult); // And do the math...
+               if (!ok)
+               {
+                  Log().fatal() << "Ill-formed expression " << target << " for variables" << std::endl;
+               }
+               result += std::to_string(calcResult); 
+            }
+         }
+         result += exprSuffix;
+      }
    }
 }
