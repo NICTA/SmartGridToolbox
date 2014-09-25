@@ -73,8 +73,11 @@ namespace SmartGridToolbox
 {
    void assertFieldPresent(const YAML::Node& nd, const std::string& field);
 
+   YAML::Node getTopNode(const std::string& fname);
+
    // Some no-templated functionality in the base class.
    class ParserBase {
+
       public:
 
          template<typename T> T expand(const YAML::Node& nd) const
@@ -102,22 +105,20 @@ namespace SmartGridToolbox
    {
       public:
          virtual const char* key() {return "ERROR";}
-         virtual void parse(const YAML::Node& nd, T& into, const Parser<T>& parser) const 
+         virtual void parse(const YAML::Node& nd, T& into, const ParserBase& parser) const 
          {
             // Empty.
          }
-         virtual void postParse(const YAML::Node& nd, T& into, const Parser<T>& parser) const
+         virtual void postParse(const YAML::Node& nd, T& into, const ParserBase& parser) const
          {
             // Empty.
          }
    };
 
-   YAML::Node getTopNode(const std::string& fname);
-
    template<typename T> class Parser;
    template<typename T> void registerParserPlugins(Parser<T>& parser);
 
-   template<typename T> class Parser : private ParserBase {
+   template<typename T> class Parser : public ParserBase {
       public:
          Parser()
          {

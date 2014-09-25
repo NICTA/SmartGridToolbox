@@ -6,7 +6,7 @@
 
 namespace SmartGridToolbox
 {
-   void TimeSeriesZipParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
+   void TimeSeriesZipParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases");
@@ -15,11 +15,11 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "time_series_id");
       assertFieldPresent(nd, "dt");
 
-      string id = state.expandName(nd["id"].as<std::string>());
+      string id = parser.expand<std::string>(nd["id"]);
       Phases phases = nd["phases"].as<Phases>();
-      string networkId = state.expandName(nd["network_id"].as<std::string>());
-      string busId = state.expandName(nd["bus_id"].as<std::string>());
-      string tsId = state.expandName(nd["time_series_id"].as<std::string>());
+      string networkId = parser.expand<std::string>(nd["network_id"]);
+      string busId = parser.expand<std::string>(nd["bus_id"]);
+      string tsId = parser.expand<std::string>(nd["time_series_id"]);
       Time dt = nd["dt"].as<Time>();
       
       auto series = sim.timeSeries<const TimeSeries<Time, ublas::vector<Complex>>>(tsId);

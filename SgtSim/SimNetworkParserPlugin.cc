@@ -5,12 +5,12 @@
 
 namespace SmartGridToolbox
 {
-   void SimNetworkParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
+   void SimNetworkParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "P_base");
 
-      string id = state.expandName(nd["id"].as<std::string>());
+      string id = parser.expand<std::string>(nd["id"]);
       double PBase = nd["P_base"].as<double>();
 
       auto ndFreq = nd["freq_Hz"];

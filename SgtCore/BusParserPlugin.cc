@@ -5,13 +5,13 @@
 
 namespace SmartGridToolbox
 {
-   void BusParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserState& state) const
+   void BusParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
    {
-      auto bus = parseBus(nd, state);
+      auto bus = parseBus(nd, parser);
       netw.addNode(std::move(bus));
    }
    
-   std::unique_ptr<Bus> BusParserPlugin::parseBus(const YAML::Node& nd, const ParserState& state) const
+   std::unique_ptr<Bus> BusParserPlugin::parseBus(const YAML::Node& nd, const ParserBase& parser) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases");
@@ -19,7 +19,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "V_base");
       assertFieldPresent(nd, "V_nom");
 
-      std::string id = state.expandName(nd["id"].as<std::string>());
+      std::string id = parser.expand<std::string>(nd["id"]);
       Phases phases = nd["phases"].as<Phases>();
       BusType type = nd["type"].as<BusType>();
       double VBase = nd["V_base"].as<double>();

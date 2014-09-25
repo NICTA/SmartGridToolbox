@@ -6,22 +6,22 @@
 
 namespace SmartGridToolbox
 {
-   void GenericZipParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserState& state) const
+   void GenericZipParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
    {
-      auto zip = parseGenericZip(nd, state);
+      auto zip = parseGenericZip(nd, parser);
 
       assertFieldPresent(nd, "bus_id");
 
-      std::string busId = state.expandName(nd["bus_id"].as<std::string>());
+      std::string busId = parser.expand<std::string>(nd["bus_id"]);
       netw.addZip(std::move(zip), busId);
    }
 
-   std::unique_ptr<GenericZip> GenericZipParserPlugin::parseGenericZip(const YAML::Node& nd, const ParserState& state) const
+   std::unique_ptr<GenericZip> GenericZipParserPlugin::parseGenericZip(const YAML::Node& nd, const ParserBase& parser) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases");
 
-      std::string id = state.expandName(nd["id"].as<std::string>());
+      std::string id = parser.expand<std::string>(nd["id"]);
       Phases phases = nd["phases"].as<Phases>();
 
       std::unique_ptr<GenericZip> zip(new GenericZip(id, phases));

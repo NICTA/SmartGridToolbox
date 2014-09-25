@@ -305,11 +305,11 @@ namespace SmartGridToolbox
                      std::string propName = match.suffix();
                      try
                      {
-                        YAML::Node nd = loop.props_[propName][loop.i_];
+                        YAML::Node nd = (*loop.props_.at(propName))[loop.i_];
                         result += nd.as<std::string>();
                         break;
                      }
-                     catch (std::exception e)
+                     catch (std::out_of_range e)
                      {
                         Log().fatal() << "In parser expression " << it->str() << ", property " 
                            << propName << " was not found." << std::endl;
@@ -339,5 +339,6 @@ namespace SmartGridToolbox
          }
          result += exprSuffix;
       }
+      return result;
    }
 }

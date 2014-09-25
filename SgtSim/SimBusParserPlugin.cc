@@ -8,13 +8,13 @@
 
 namespace SmartGridToolbox
 {
-   void SimBusParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
+   void SimBusParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {
       BusParserPlugin busParser;
-      auto bus = sim.newSimComponent<SimBus>(*busParser.parseBus(nd, state));
+      auto bus = sim.newSimComponent<SimBus>(*busParser.parseBus(nd, parser));
 
       assertFieldPresent(nd, "network_id");
-      string netwId = state.expandName(nd["network_id"].as<std::string>());
+      string netwId = parser.expand<std::string>(nd["network_id"]);
       auto netw = sim.simComponent<SimNetwork>(netwId);
       netw->addNode(bus);
    }

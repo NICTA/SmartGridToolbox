@@ -16,7 +16,7 @@ namespace SmartGridToolbox
             return "matpower";
          }
 
-         virtual void parse(const YAML::Node& nd, Network& netw, const ParserState& state) const override;
+         virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
    };
 }
 

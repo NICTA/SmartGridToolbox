@@ -7,7 +7,7 @@
 
 namespace SmartGridToolbox
 {
-   void SolarPvParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
+   void SolarPvParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "weather");
@@ -16,7 +16,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "zenith_degrees");
       assertFieldPresent(nd, "azimuth_degrees");
 
-      string id = state.expandName(nd["id"].as<std::string>());
+      string id = parser.expand<std::string>(nd["id"]);
       auto spv = sim.newSimComponent<SolarPv>(id);
 
       if (nd["efficiency"])

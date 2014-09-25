@@ -5,21 +5,21 @@
 
 namespace SmartGridToolbox
 {
-   void OverheadLineParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserState& state) const
+   void OverheadLineParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
    {
-      auto ohl = parseOverheadLine(nd, state);
+      auto ohl = parseOverheadLine(nd, parser);
 
       assertFieldPresent(nd, "bus_0_id");
       assertFieldPresent(nd, "bus_1_id");
 
-      std::string bus0Id = state.expandName(nd["bus_0_id"].as<std::string>());
-      std::string bus1Id = state.expandName(nd["bus_1_id"].as<std::string>());
+      std::string bus0Id = parser.expand<std::string>(nd["bus_0_id"]);
+      std::string bus1Id = parser.expand<std::string>(nd["bus_1_id"]);
       
       netw.addArc(std::move(ohl), bus0Id, bus1Id);
    }
 
    std::unique_ptr<OverheadLine> OverheadLineParserPlugin::parseOverheadLine(const YAML::Node& nd,
-         const ParserState& state) const
+         const ParserBase& parser) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases_0");
@@ -31,7 +31,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "distance_matrix");
       assertFieldPresent(nd, "freq");
 
-      string id = state.expandName(nd["id"].as<std::string>());
+      string id = parser.expand<std::string>(nd["id"]);
       Phases phases0 = nd["phases_0"].as<Phases>();
       Phases phases1 = nd["phases_1"].as<Phases>();
       double length = nd["length"].as<double>();

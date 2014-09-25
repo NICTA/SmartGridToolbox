@@ -23,28 +23,28 @@ namespace SmartGridToolbox
       }
    }
 
-   void GenericBranchParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserState& state) const
+   void GenericBranchParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
    {
-      auto gb = parseGenericBranch(nd, state);
+      auto gb = parseGenericBranch(nd, parser);
 
       assertFieldPresent(nd, "bus_0_id");
       assertFieldPresent(nd, "bus_1_id");
 
-      std::string bus0Id = state.expandName(nd["bus_0_id"].as<std::string>());
-      std::string bus1Id = state.expandName(nd["bus_1_id"].as<std::string>());
+      std::string bus0Id = parser.expand<std::string>(nd["bus_0_id"]);
+      std::string bus1Id = parser.expand<std::string>(nd["bus_1_id"]);
       
       netw.addArc(std::move(gb), bus0Id, bus1Id);
    }
 
    std::unique_ptr<GenericBranch> GenericBranchParserPlugin::parseGenericBranch(const YAML::Node& nd,
-         const ParserState& state) const
+         const ParserBase& parser) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases_0");
       assertFieldPresent(nd, "phases_1");
       assertFieldPresent(nd, "Y");
 
-      std::string id = state.expandName(nd["id"].as<std::string>());
+      std::string id = parser.expand<std::string>(nd["id"]);
       Phases phases0 = nd["phases_0"].as<Phases>();
       Phases phases1 = nd["phases_1"].as<Phases>();
       

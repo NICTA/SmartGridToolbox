@@ -10,18 +10,18 @@
 
 namespace SmartGridToolbox
 {
-   void SimYyTransformerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
+   void SimYyTransformerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {
       YyTransformerParserPlugin transParser;
-      auto trans = sim.newSimComponent<SimYyTransformer>(*transParser.parseYyTransformer(nd, state));
+      auto trans = sim.newSimComponent<SimYyTransformer>(*transParser.parseYyTransformer(nd, parser));
       
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");
       assertFieldPresent(nd, "bus_1_id");
 
-      string netwId = state.expandName(nd["network_id"].as<std::string>());
-      std::string bus0Id = state.expandName(nd["bus_0_id"].as<std::string>());
-      std::string bus1Id = state.expandName(nd["bus_1_id"].as<std::string>());
+      string netwId = parser.expand<std::string>(nd["network_id"]);
+      std::string bus0Id = parser.expand<std::string>(nd["bus_0_id"]);
+      std::string bus1Id = parser.expand<std::string>(nd["bus_1_id"]);
 
       auto netw = sim.simComponent<SimNetwork>(netwId);
 

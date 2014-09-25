@@ -10,7 +10,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void SimGlobalParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
+   void SimGlobalParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {
       assertFieldPresent(nd, "start_time");
       assertFieldPresent(nd, "end_time");

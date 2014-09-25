@@ -167,7 +167,7 @@ namespace SmartGridToolbox
 
    } // Anon. namespace.
 
-   void TimeSeriesParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserState& state) const
+   void TimeSeriesParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {
       Log().message() << "Parsing time series." << std::endl;
       Indent _;
@@ -178,7 +178,7 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "type"); // data
       assertFieldPresent(nd, "value_type"); // real_scalar/complex_scalar/real_vector/complex_vector
       
-      std::string id = state.expandName(nd["id"].as<std::string>());
+      std::string id = parser.expand<std::string>(nd["id"]);
       auto tsType = getTsType(nd["type"].as<std::string>());
       auto valType = getValType(nd["value_type"].as<std::string>());
 
@@ -226,7 +226,7 @@ namespace SmartGridToolbox
                assertFieldPresent(nd, "relative_to_time");
                assertFieldPresent(nd, "time_unit");
 
-               std::string dataFName = state.expandName(nd["data_file"].as<std::string>());
+               std::string dataFName = parser.expand<std::string>(nd["data_file"]);
                std::ifstream infile(dataFName);
                if (!infile.is_open())
                {
