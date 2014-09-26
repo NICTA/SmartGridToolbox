@@ -104,6 +104,7 @@ namespace SmartGridToolbox
 
       protected:
 
+         std::map<std::string, const YAML::Node*> variables_;
          std::vector<ParserLoop> loops_;
    };
 
@@ -157,7 +158,16 @@ namespace SmartGridToolbox
                std::string nodeType = subnode.first.as<std::string>();
                const YAML::Node& nodeVal = subnode.second;
 
-               if (nodeType == "loop")
+               if (nodeType == "variables")
+               {
+                  for (auto nd : nodeVal)
+                  {
+                     std::string key = nd.first.as<std::string>();
+                     const YAML::Node& val = nd.second;
+                     variables_[key] = &val;
+                  }
+               }
+               else if (nodeType == "loop")
                {
                   for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_, ++l.iter_)
                   {
