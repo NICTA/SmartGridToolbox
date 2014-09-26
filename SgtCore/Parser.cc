@@ -11,6 +11,11 @@
 #include <regex>
 #include <string>
 
+namespace 
+{
+   const std::regex expressionRegex("[\\$%]\\(.*?\\)"); // Like e.g. $(i + 2) or %(phases), ? = Non-greedy.
+}
+
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
@@ -277,71 +282,49 @@ namespace SmartGridToolbox
       return loops_.back();
    }
          
-   YAML::Node ParserBase::expandNode(const YAML::Node& nd) const
+   std::string ParserBase::expandString(const std::string& str) const
    {
-      static const std::regex expressionRegex("[\\$%]\\(.*?\\)"); // Like e.g. $(i + 2) or %(phases), ? = Non-greedy.
-
-      YAML::Node result;
-
-      std::string target = nd2Str(nd);
+      std::string result;
 
       // Iterator over expansion expressions in the target.
-      std::sregex_iterator it(target.begin(), target.end(), expressionRegex);
-      std::sregex_iterator end;
+      const std::sregex_iterator begin(str.begin(), str.end(), expressionRegex);
+      const std::sregex_iterator end;
 
-      if (it == end)
+      if (begin == end)
       {
-         // There were no expansion expressions in the target, just return a copy of the original node.
-         result = nd;
+         // No expressions, just return the string.
+         result = str;   
       }
       else
       {
-         // There was at least one expansion expression.
-         std::string resultStr; // Will contain the expanded expression.
-         resultStr += it->prefix();
-         std::string exprSuffix;
-         for (; it != end; ++it) // Loop over all expansion expressions.
+         result = begin->prefix();
+         for (auto it = begin; it != end; ++it) // Loop over all expansion expressions.
          {
-            std::string exprMatch = it->str();
-            exprSuffix = it->suffix();
+            std::string exprSuffix = it->suffix();
             std::string exprExpansion = expandExpression(it->str());
-            resultStr += exprExpansion + exprSuffix; // Put the prefix on the result.
+            result += exprExpansion + exprSuffix; // Put the prefix on the result.
          }
-         result = YAML::Load(resultStr);
       }
       return result;
    }
 
    std::string ParserBase::expandExpression(const std::string& str) const
    {
-      if (str[0] == '%')
+      // Strip off e.g. the "$(" and ")" and recursively expand.
+      std::string s = expandString(str.substr(2, str.size()-3));
+      if (str[0] == '$')
       {
-         return expandVariableExpression(str);
+         return expandLoopExpressionBody(str);
       }
       else
       {
-         return expandLoopExpression(str);
+         return expandVariableExpressionBody(str);
       }
    }
 
-   std::string ParserBase::expandVariableExpression(const std::string& str) const
+   std::string ParserBase::expandLoopExpressionBody(const std::string& str) const
    {
-      std::string key = str.substr(2, str.size()-3); // Strip off the "$(" and ")".
-      const YAML::Node* nd = nullptr;
-      try
-      {
-         nd = variables_.at(key);
-      }
-      catch (std::out_of_range e)
-      {
-         Log().fatal() << "The definition of variable expression " << str << " was not found." << std::endl;
-      }
-      return nd2Str(*nd);
-   }
-
-   std::string ParserBase::expandLoopExpression(const std::string& str) const
-   {
-      std::string result = str.substr(2, str.size()-3); // Strip off the "$(" and ")".
+      std::string result = str;
 
       // Substitute the values of all loops...
       for (const ParserLoop & loop : loops_)
@@ -361,6 +344,21 @@ namespace SmartGridToolbox
       result = std::to_string(calcResult); 
 
       return result;
+   }
+
+   std::string ParserBase::expandVariableExpressionBody(const std::string& str) const
+   {
+      std::string key = str;
+      const YAML::Node* nd = nullptr;
+      try
+      {
+         nd = variables_.at(key);
+      }
+      catch (std::out_of_range e)
+      {
+         Log().fatal() << "The definition of variable expression " << str << " was not found." << std::endl;
+      }
+      return nd2Str(*nd);
    }
 
    std::string ParserBase::nd2Str(const YAML::Node& nd) const

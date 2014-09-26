@@ -81,7 +81,7 @@ namespace SmartGridToolbox
 
          template<typename T> T expand(const YAML::Node& nd) const
          {
-            return expandNode(nd).as<T>();
+            return YAML::Load(expandString(nd2Str(nd))).as<T>();
          }
 
       protected:
@@ -100,10 +100,10 @@ namespace SmartGridToolbox
 
       private:
 
-         YAML::Node expandNode(const YAML::Node& nd) const;
+         std::string expandString(const std::string& str) const;
          std::string expandExpression(const std::string& str) const;
-         std::string expandVariableExpression(const std::string& str) const;
-         std::string expandLoopExpression(const std::string& str) const;
+         std::string expandLoopExpressionBody(const std::string& str) const;
+         std::string expandVariableExpressionBody(const std::string& str) const;
          std::string nd2Str(const YAML::Node& nd) const;
 
       protected:
