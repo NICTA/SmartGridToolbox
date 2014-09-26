@@ -39,8 +39,8 @@ bus:
    id:                     bus_0
    network_id:             network
    phases:                 [A, B, C]
-   V_base:                 %(V_base)
-   V_nom:                  %(V_nom_vec)
+   V_base:                 $<V_base>
+   V_nom:                  $<V_nom_vec>
    type:                   SL
 generic_gen:
    id:                     gen_0
@@ -55,20 +55,20 @@ loop:
          network_id:       network
          phases:           [A, B, C]
          V_base:           0.240
-         V_nom:            %(V_nom_vec)
+         V_nom:            $<V_nom_vec>
          type:             PQ
       bus:
          id:               house_$(i+1)
          network_id:       network
-         phases:           [%(house_phases, $(i))]
+         phases:           [$<house_phases, $(i)>]
          V_base:           0.240
-         V_nom:            [%(V_nom_map, %(house_phases($(i)))]
+         V_nom:            [$<V_nom_map, $<house_phases($(i)>>]
          type:             PQ
       time_series_zip:
          id:               zip_$(i+1)
          network_id:       network
          bus_id:           bus_$(i+1)
-         phases:           [%(house_phases, $(i))]
+         phases:           [$<house_phases, $(i)>]
          time_series_id:   load_$(i+1)_series
          dt:               00:05:00
       overhead_line:
@@ -76,8 +76,8 @@ loop:
          network_id:       network
          bus_0_id:         bus_$(i+1)
          bus_1_id:         house_$(i+1)
-         phases_0:         [%(house_phases, $(i))]
-         phases_1:         [%(house_phases, $(i))]
+         phases_0:         [$<house_phases, $(i)>]
+         phases_1:         [$<house_phases, $(i)>]
          length:           100
          n_neutral:        0
          conductor_R_per_L:   [1e-4]
@@ -88,7 +88,7 @@ inverter:
    id:                     inverter_10
    network_id:             network
    bus_id:                 house_10
-   phases:                 [%(house_phases, 9)]
+   phases:                 [$<house_phases, 9>]
    requested_Q_per_phase:  0
    max_S_mag_per_phase:    100.0
    efficiency:             0.86

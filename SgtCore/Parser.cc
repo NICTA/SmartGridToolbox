@@ -13,7 +13,7 @@
 
 namespace 
 {
-   const std::regex expressionRegex("[\\$%]\\(.*?\\)"); // Like e.g. $(i + 2) or %(phases), ? = Non-greedy.
+   const std::regex expressionRegex("$[(<].*?[)>])"); // Like e.g. $(i + 2) or $<phases>, ? = Non-greedy.
 }
 
 namespace qi = boost::spirit::qi;
@@ -34,14 +34,14 @@ namespace
          expression =
             term                            [_val = _1]
             >> *(   ('+' >> term            [_val += _1])
-                  |   ('-' >> term            [_val -= _1])
+                |   ('-' >> term            [_val -= _1])
                 )
             ;
 
          term =
             factor                          [_val = _1]
             >> *(   ('*' >> factor          [_val *= _1])
-                  |   ('/' >> factor          [_val /= _1])
+                |   ('/' >> factor          [_val /= _1])
                 )
             ;
 
@@ -312,7 +312,7 @@ namespace SmartGridToolbox
    {
       // Strip off e.g. the "$(" and ")" and recursively expand.
       std::string s = expandString(str.substr(2, str.size()-3));
-      if (str[0] == '$')
+      if (str[1] == '(')
       {
          return expandLoopExpressionBody(str);
       }
