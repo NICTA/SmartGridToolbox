@@ -8,6 +8,7 @@
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_object.hpp>
 
+#include <regex>
 #include <string>
 
 namespace qi = boost::spirit::qi;
@@ -274,11 +275,9 @@ namespace SmartGridToolbox
          target = nd.as<std::string>();
          // This way prevents extra newlines, etc. being inserted by the stream insertion operator above.
       }
-
       std::string result;
 
-
-      std::regex r("\\$\\{.*?\\}"); // Like e.g. ${i + 2} or ${i.phase}, ? = Non-greedy match.
+      std::regex r("\\$\\(.*?\\)"); // Like e.g. $(i + 2) or $(i.phase), ? = Non-greedy match.
 
       std::sregex_iterator begin(target.begin(), target.end(), r);
       std::sregex_iterator end;
@@ -299,13 +298,12 @@ namespace SmartGridToolbox
 
             result += exprPrefix; // Put the prefix on the result.
 
-            std::string exprExpansion = exprMatch.substr(2, exprMatch.size()-3); // Strip off the "${" and "}".
+            std::string exprExpansion = exprMatch.substr(2, exprMatch.size()-3); // Strip off the "$(" and ")".
 
             // Now match against all parser loops.
             // There are two possibilities: 
-            // (1) e.g. ${i + j + 3} which returns an integer, or
-            // (2) e.g. ${i.phase} which returns a string representing a phase in this case.
-
+            // (1) e.g. $(i + j + 3) which returns an integer, or
+            // (2) e.g. $(i.phase) which returns a string representing a phase in this case.
             std::smatch match;
             if (std::regex_search(exprExpansion, match, std::regex("\\.")))
             {
@@ -318,13 +316,13 @@ namespace SmartGridToolbox
                      std::string propName = match.suffix();
                      try
                      {
-                        YAML::Node nd = (*loop.props_.at(propName))[loop.i_];
+                        YAML::Node nd = (*loop.props_.at(propName))[loop.iter_];
                         result += nd.as<std::string>();
                         break;
                      }
                      catch (std::out_of_range e)
                      {
-                        Log().fatal() << "In parser expression " << it->str() << ", property " 
+                        Log().error() << "In parser expression " << it->str() << ", property " 
                            << propName << " was not found." << std::endl;
                      }
                   }
@@ -373,17 +371,15 @@ namespace SmartGridToolbox
       {
          for (auto nd : ndLoopProps)
          {
-            std::string id = nd.first.as<std::string>();
             if (!nd.second.IsSequence())
             {
-               Log().fatal() << "Lists entries must be a YAML sequence." << std::endl;
+               Log().fatal() << "loop_properties entries must be a YAML sequence." << std::endl;
             }
-            auto vec = nd.second.as<std::vector<std::string>>();
-            Log().message() << "phase list " << id << " : " << vec[0] << " ..." << std::endl;
+            loopProps[nd.first.as<std::string>()] = &nd.second;
          }
       }
 
-      loops_.push_back({name, first, upper, stride, loopProps});
+      loops_.push_back({name, first, upper, stride, 0, std::move(loopProps)});
 
       return loops_.back();
    }

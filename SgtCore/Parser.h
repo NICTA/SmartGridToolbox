@@ -7,7 +7,6 @@
 #include <yaml-cpp/yaml.h>
 
 #include <map>
-#include <regex>
 
 namespace YAML
 {
@@ -90,9 +89,10 @@ namespace SmartGridToolbox
          struct ParserLoop
          {
             std::string name_;
-            int i_;
+            int i_; // The number associated with the current iteration, starts are init and increments by stride.
             int upper_;
             int stride_;
+            int iter_; // The current iteration, starts at zero and increments by 1. 
             std::map<std::string, const YAML::Node*> props_;
          };
          
@@ -159,7 +159,7 @@ namespace SmartGridToolbox
 
                if (nodeType == "loop")
                {
-                  for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_)
+                  for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_, ++l.iter_)
                   {
                      const YAML::Node& ndLoopBody = nodeVal["loop_body"];
                      parse(ndLoopBody, into);

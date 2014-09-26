@@ -15,10 +15,10 @@ loop:
    loop_variable:          [i, 1, 11, 1]
    loop_body:
       time_series:
-         id:               load_${i}_series
+         id:               load_$(i)_series
          value_type:       complex_vector
          type:             data_time_series
-         data_file:        loads/load_${i}.txt
+         data_file:        loads/load_$(i).txt
          relative_to_time: 2013-01-23 06:00:00
          time_unit:        m
          interp_type:      lerp
@@ -45,21 +45,29 @@ generic_gen:
 loop: 
    loop_variable:          [i, 1, 11, 1]
    loop_properties:
-      phase:               [A, B, A, C, C, B, A, B, B]
+      phase:               [A, B, A, C, C, B, A, B, B, C]
+      phase_nom: [0.240, 0.240D-240, 0.240, 0.240D240, 0.240D240, 0.240D-240, 0.240, 0.240D-240, 0.240D-240, 0.240D240]
    loop_body:
       bus:
-         id:               bus_${i}
+         id:               bus_$(i)
          network_id:       network
          phases:           [A, B, C]
          V_base:           0.240
          V_nom:            [0.240, 0.240D-240, 0.240D240]
          type:             PQ
-      time_series_zip:
-         id:               zip_${i}
+      bus:
+         id:               house_$(i)
          network_id:       network
-         bus_id:           bus_${i}
+         phases:           [$(i.phase)]
+         V_base:           0.240
+         V_nom:            [$(i.phase_nom)]
+         type:             PQ
+      time_series_zip:
+         id:               zip_$(i)
+         network_id:       network
+         bus_id:           bus_$(i)
          phases:           [A, B, C]
-         time_series_id:   load_${i}_series
+         time_series_id:   load_$(i)_series
          dt:               00:05:00
 inverter:
    id:                     inverter_10
@@ -81,10 +89,10 @@ loop:
    loop_variable:          [i, 0, 10, 1]
    loop_body:
       overhead_line:
-         id:               line_${i}_${i+1}
+         id:               line_$(i)_$(i+1)
          network_id:       network
-         bus_0_id:         bus_${i}
-         bus_1_id:         bus_${i+1}
+         bus_0_id:         bus_$(i)
+         bus_1_id:         bus_$(i+1)
          phases_0:         [A, B, C]
          phases_1:         [A, B, C]
          length:           100
