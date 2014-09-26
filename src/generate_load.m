@@ -13,13 +13,11 @@ for i = 1:10
    cVec -= min(cVec);
    cVec *= -SMax/max(cVec);
 
-   phase = randi(3);
-   z = zeros(size(tVec));
-   dat = [tVec, z, z, z, z, z, z, z, z, z];
-   dat(:, phase + 7) = cVec;
+   z = zeros(size(cvec));
+   dat = [tVec, z, z, cvec];
 
    fp = fopen(['loads/load_' num2str(i) '.txt'], 'w');
-   fprintf(fp, '%6d %10.3e %10.3e %10.3e %10.3e %10.3e %10.3e %10.3e %10.3e %10.3e\n', dat');
+   fprintf(fp, '%6d %10.3e %10.3e %10.3e\n', dat');
    fclose(fp);
    cVeci = [cVeci, cVec];
 end

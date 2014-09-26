@@ -66,14 +66,27 @@ loop:
          id:               zip_$(i)
          network_id:       network
          bus_id:           bus_$(i)
-         phases:           [A, B, C]
+         phases:           [$(i.phase)]
          time_series_id:   load_$(i)_series
          dt:               00:05:00
+      overhead_line:
+         id:               drop_$(i)
+         network_id:       network
+         bus_0_id:         bus_$(i)
+         bus_1_id:         house_$(i)
+         phases_0:         [$(i.phase)]
+         phases_1:         [$(i.phase)]
+         length:           100
+         n_neutral:        0
+         conductor_R_per_L:   [1e-4]
+         earth_resistivity:   100.0
+         distance_matrix:     [[0.01]]
+         freq:             60.0
 inverter:
    id:                     inverter_10
    network_id:             network
-   bus_id:                 bus_10
-   phases:                 [A, B, C]
+   bus_id:                 house_10
+   phases:                 [C]
    requested_Q_per_phase:  0
    max_S_mag_per_phase:    100.0
    efficiency:             0.86
