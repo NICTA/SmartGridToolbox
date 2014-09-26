@@ -81,7 +81,7 @@ namespace SmartGridToolbox
 
          template<typename T> T expand(const YAML::Node& nd) const
          {
-            return YAML::Load(expandAsString(nd)).as<T>();
+            return expandNode(nd).as<T>();
          }
 
       protected:
@@ -92,15 +92,19 @@ namespace SmartGridToolbox
             int i_; // The number associated with the current iteration, starts are init and increments by stride.
             int upper_;
             int stride_;
-            int iter_; // The current iteration, starts at zero and increments by 1. 
-            std::map<std::string, const YAML::Node*> props_;
          };
          
       protected:
 
-         std::string expandAsString(const YAML::Node& nd) const;
-
          ParserLoop& parseLoop(const YAML::Node& nd);
+
+      private:
+
+         YAML::Node expandNode(const YAML::Node& nd) const;
+         std::string expandExpression(const std::string& str) const;
+         std::string expandVariableExpression(const std::string& str) const;
+         std::string expandLoopExpression(const std::string& str) const;
+         std::string nd2Str(const YAML::Node& nd) const;
 
       protected:
 
@@ -169,7 +173,7 @@ namespace SmartGridToolbox
                }
                else if (nodeType == "loop")
                {
-                  for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_, ++l.iter_)
+                  for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_)
                   {
                      const YAML::Node& ndLoopBody = nodeVal["loop_body"];
                      parse(ndLoopBody, into);

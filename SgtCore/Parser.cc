@@ -260,98 +260,6 @@ namespace SmartGridToolbox
       }
       return top;
    }
-         
-   std::string ParserBase::expandAsString(const YAML::Node& nd) const
-   {
-      std::string target;
-      if (!nd.IsScalar())
-      {
-         std::ostringstream oss;
-         oss << nd << std::endl;
-         target = oss.str();
-      }
-      else
-      {
-         target = nd.as<std::string>();
-         // This way prevents extra newlines, etc. being inserted by the stream insertion operator above.
-      }
-      std::string result;
-
-      std::regex r("\\$\\(.*?\\)"); // Like e.g. $(i + 2) or $(i.phase), ? = Non-greedy match.
-
-      std::sregex_iterator begin(target.begin(), target.end(), r);
-      std::sregex_iterator end;
-
-      if (begin == end)
-      {
-         // There were no expansion expressions.
-         result = target;
-      }
-      else
-      {
-         std::string exprSuffix;
-         for (auto it = begin; it != end; ++it) // Loop over all expansion expressions.
-         {
-            std::string exprPrefix = it->prefix();
-            std::string exprMatch = it->str();
-            exprSuffix = it->suffix();
-
-            result += exprPrefix; // Put the prefix on the result.
-
-            std::string exprExpansion = exprMatch.substr(2, exprMatch.size()-3); // Strip off the "$(" and ")".
-
-            // Now match against all parser loops.
-            // There are two possibilities: 
-            // (1) e.g. $(i + j + 3) which returns an integer, or
-            // (2) e.g. $(i.phase) which returns a string representing a phase in this case.
-            std::smatch match;
-            if (std::regex_search(exprExpansion, match, std::regex("\\.")))
-            {
-               // Case (2) above.
-               std::string loopName = match.prefix();
-               for (const ParserLoop & loop : loops_)
-               {
-                  if (loop.name_ == loopName)
-                  {
-                     std::string propName = match.suffix();
-                     try
-                     {
-                        YAML::Node nd = (*loop.props_.at(propName))[loop.iter_];
-                        result += nd.as<std::string>();
-                        break;
-                     }
-                     catch (std::out_of_range e)
-                     {
-                        Log().error() << "In parser expression " << it->str() << ", property " 
-                           << propName << " was not found." << std::endl;
-                     }
-                  }
-               }
-            }
-            else
-            {
-               // Case (1) above.
-               for (const ParserLoop & loop : loops_)
-               {
-                  exprExpansion = std::regex_replace(exprExpansion, std::regex(loop.name_),
-                        std::to_string(loop.i_)); // Substitute in the loop name with its value.
-               }
-
-               int calcResult;
-               std::string::const_iterator i1 = exprExpansion.begin();
-               std::string::const_iterator i2 = exprExpansion.end();
-               bool ok = phrase_parse(i1, i2, calc, space, calcResult); // And do the math...
-               if (!ok)
-               {
-                  Log().fatal() << "Ill-formed expression " << target << " for variables" << std::endl;
-               }
-               result += std::to_string(calcResult); 
-            }
-         }
-         result += exprSuffix;
-      }
-      return result;
-   }
 
    ParserBase::ParserLoop& ParserBase::parseLoop(const YAML::Node& nd)
    {
@@ -359,28 +267,117 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "loop_body");
 
       const YAML::Node& ndLoopVar = nd["loop_variable"];
-      const YAML::Node& ndLoopProps = nd["loop_properties"];
 
       std::string name = ndLoopVar[0].as<std::string>();
-      int first = ndLoopVar[1].as<int>();
+      int start = ndLoopVar[1].as<int>();
       int upper = ndLoopVar[2].as<int>();
       int stride = ndLoopVar[3].as<int>();
-
-      std::map<std::string, const YAML::Node*> loopProps;
-      if (ndLoopProps)
-      {
-         for (auto nd : ndLoopProps)
-         {
-            if (!nd.second.IsSequence())
-            {
-               Log().fatal() << "loop_properties entries must be a YAML sequence." << std::endl;
-            }
-            loopProps[nd.first.as<std::string>()] = &nd.second;
-         }
-      }
-
-      loops_.push_back({name, first, upper, stride, 0, std::move(loopProps)});
+      loops_.push_back({name, start, upper, stride});
 
       return loops_.back();
+   }
+         
+   YAML::Node ParserBase::expandNode(const YAML::Node& nd) const
+   {
+      static const std::regex expressionRegex("[\\$%]\\(.*?\\)"); // Like e.g. $(i + 2) or %(phases), ? = Non-greedy.
+
+      YAML::Node result;
+
+      std::string target = nd2Str(nd);
+
+      // Iterator over expansion expressions in the target.
+      std::sregex_iterator it(target.begin(), target.end(), expressionRegex);
+      std::sregex_iterator end;
+
+      if (it == end)
+      {
+         // There were no expansion expressions in the target, just return a copy of the original node.
+         result = nd;
+      }
+      else
+      {
+         // There was at least one expansion expression.
+         std::string resultStr; // Will contain the expanded expression.
+         resultStr += it->prefix();
+         std::string exprSuffix;
+         for (; it != end; ++it) // Loop over all expansion expressions.
+         {
+            std::string exprMatch = it->str();
+            exprSuffix = it->suffix();
+            std::string exprExpansion = expandExpression(it->str());
+            resultStr += exprExpansion + exprSuffix; // Put the prefix on the result.
+         }
+         result = YAML::Load(resultStr);
+      }
+      return result;
+   }
+
+   std::string ParserBase::expandExpression(const std::string& str) const
+   {
+      if (str[0] == '%')
+      {
+         return expandVariableExpression(str);
+      }
+      else
+      {
+         return expandLoopExpression(str);
+      }
+   }
+
+   std::string ParserBase::expandVariableExpression(const std::string& str) const
+   {
+      std::string key = str.substr(2, str.size()-3); // Strip off the "$(" and ")".
+      const YAML::Node* nd = nullptr;
+      try
+      {
+         nd = variables_.at(key);
+      }
+      catch (std::out_of_range e)
+      {
+         Log().fatal() << "The definition of variable expression " << str << " was not found." << std::endl;
+      }
+      return nd2Str(*nd);
+   }
+
+   std::string ParserBase::expandLoopExpression(const std::string& str) const
+   {
+      std::string result = str.substr(2, str.size()-3); // Strip off the "$(" and ")".
+
+      // Substitute the values of all loops...
+      for (const ParserLoop & loop : loops_)
+      {
+         result = std::regex_replace(result, std::regex(loop.name_), std::to_string(loop.i_));
+      }
+
+      // ... and do any remaining maths:
+      int calcResult;
+      std::string::const_iterator i1 = result.begin();
+      std::string::const_iterator i2 = result.end();
+      bool ok = phrase_parse(i1, i2, calc, space, calcResult); // And do the math...
+      if (!ok)
+      {
+         Log().fatal() << "Ill-formed expression " << str << std::endl;
+      }
+      result = std::to_string(calcResult); 
+
+      return result;
+   }
+
+   std::string ParserBase::nd2Str(const YAML::Node& nd) const
+   {
+      std::string result;
+      if (!nd.IsScalar())
+      {
+         // Have to coerce List and Map nodes into the form of a string.
+         std::ostringstream oss;
+         oss << nd << std::endl;
+         result = oss.str();
+      }
+      else
+      {
+         // For scalars, this way prevents extra newlines, etc. being inserted, which matters for strings.
+         result = nd.as<std::string>();
+      }
+      return result;
    }
 }
