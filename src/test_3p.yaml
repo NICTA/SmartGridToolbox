@@ -17,13 +17,13 @@ time_series:
    time_unit:              m
    interp_type:            lerp
 loop: 
-   loop_variable:          [i, 10]
+   loop_variable:          [i, 1, 11, 1]
    loop_body:
       time_series:
-         id:               load_$(i+1)_series
+         id:               load_$(i)_series
          value_type:       complex_vector
          type:             data_time_series
-         data_file:        loads/load_$(i+1).txt
+         data_file:        loads/load_$(i).txt
          relative_to_time: 2013-01-23 06:00:00
          time_unit:        m
          interp_type:      lerp
@@ -39,8 +39,8 @@ bus:
    id:                     bus_0
    network_id:             network
    phases:                 [A, B, C]
-   V_base:                 $<V_base>
-   V_nom:                  $<V_nom_vec>
+   V_base:                 $(V_base)
+   V_nom:                  $(V_nom_vec)
    type:                   SL
 generic_gen:
    id:                     gen_0
@@ -48,34 +48,34 @@ generic_gen:
    bus_id:                 bus_0
    phases:                 [A, B, C]
 loop: 
-   loop_variable:          [i, 10]
+   loop_variable:          [i, 1, 11, 1]
    loop_body:
       bus:
-         id:               bus_$(i+1)
+         id:               bus_$(i)
          network_id:       network
          phases:           [A, B, C]
          V_base:           0.240
-         V_nom:            $<V_nom_vec>
+         V_nom:            <V_nom_vec>
          type:             PQ
       bus:
-         id:               house_$(i+1)
+         id:               house_$(i)
          network_id:       network
-         phases:           [$<house_phases, $(i)>]
+         phases:           [$<house_phases,$(i)>)]
          V_base:           0.240
-         V_nom:            [$<V_nom_map, $<house_phases($(i)>>]
+         V_nom:            [$<V_nom_map.$<house_phases.$(i)>>]
          type:             PQ
       time_series_zip:
-         id:               zip_$(i+1)
+         id:               zip_$(i)
          network_id:       network
-         bus_id:           bus_$(i+1)
-         phases:           [$<house_phases, $(i)>]
-         time_series_id:   load_$(i+1)_series
+         bus_id:           bus_$(i)
+         phases:           [$<house_phases($(i))>]
+         time_series_id:   load_$(i)_series
          dt:               00:05:00
       overhead_line:
-         id:               drop_$(i+1)
+         id:               drop_$(i)
          network_id:       network
-         bus_0_id:         bus_$(i+1)
-         bus_1_id:         house_$(i+1)
+         bus_0_id:         bus_$(i)
+         bus_1_id:         house_$(i)
          phases_0:         [$<house_phases, $(i)>]
          phases_1:         [$<house_phases, $(i)>]
          length:           100
@@ -104,10 +104,10 @@ loop:
    loop_variable:          [i, 11]
    loop_body:
       overhead_line:
-         id:               line_$(i)_$(i+1)
+         id:               line_$(i)_$(i)
          network_id:       network
          bus_0_id:         bus_$(i)
-         bus_1_id:         bus_$(i+1)
+         bus_1_id:         bus_$(i)
          phases_0:         [A, B, C]
          phases_1:         [A, B, C]
          length:           100

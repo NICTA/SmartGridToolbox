@@ -11,11 +11,6 @@
 #include <regex>
 #include <string>
 
-namespace 
-{
-   const std::regex expressionRegex("$[(<].*?[)>])"); // Like e.g. $(i + 2) or $<phases>, ? = Non-greedy.
-}
-
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
@@ -282,12 +277,24 @@ namespace SmartGridToolbox
       return loops_.back();
    }
          
+
+   namespace 
+   {
+      const std::string loopExprStr("\\$([^\\$()<>]\\+)");
+      const std::string varExprStr("\\(\\$<[^\\$()<>,]\\+\\)\\(,[^\\$()<>,]\\+\\)?>");
+      const std::string exprStr = std::string("\\(") + loopExprStr + "\\)\\|\\(" + varExprStr + "\\)";
+
+      const std::regex loopExpr(loopExprStr, std::regex::grep);
+      const std::regex varExpr(varExprStr, std::regex::grep);
+      const std::regex expr(exprStr, std::regex::grep);
+   }
+
    std::string ParserBase::expandString(const std::string& str) const
    {
       std::string result;
 
       // Iterator over expansion expressions in the target.
-      const std::sregex_iterator begin(str.begin(), str.end(), expressionRegex);
+      const std::sregex_iterator begin(str.begin(), str.end(), expr);
       const std::sregex_iterator end;
 
       if (begin == end)
@@ -304,6 +311,8 @@ namespace SmartGridToolbox
             std::string exprExpansion = expandExpression(it->str());
             result += exprExpansion + exprSuffix; // Put the prefix on the result.
          }
+         // Now recursively check if the expansion of this expression has created any more expressions to expand.
+         result = expandString(result);
       }
       return result;
    }
@@ -348,6 +357,8 @@ namespace SmartGridToolbox
 
    std::string ParserBase::expandVariableExpressionBody(const std::string& str) const
    {
+      std::smatch match;
+      std::regex::regex_match(str, match, std::regex)
       std::string key = str;
       const YAML::Node* nd = nullptr;
       try
