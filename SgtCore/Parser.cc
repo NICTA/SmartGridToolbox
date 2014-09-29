@@ -8,9 +8,6 @@
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_object.hpp>
 
-#include <regex>
-#include <string>
-
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
@@ -280,13 +277,7 @@ namespace SmartGridToolbox
 
    namespace 
    {
-      const std::string loopExprStr("\\$([^\\$()<>]\\+)");
-      const std::string varExprStr("\\(\\$<[^\\$()<>,]\\+\\)\\(,[^\\$()<>,]\\+\\)?>");
-      const std::string exprStr = std::string("\\(") + loopExprStr + "\\)\\|\\(" + varExprStr + "\\)";
-
-      const std::regex loopExpr(loopExprStr, std::regex::grep);
-      const std::regex varExpr(varExprStr, std::regex::grep);
-      const std::regex expr(exprStr, std::regex::grep);
+      const std::regex expr("(\\$\\(([^()<>]+)\\))|(\\$<([A-Za-z_]+[A-Za-z0-9_]*)(,([^>]+))?>)");
    }
 
    std::string ParserBase::expandString(const std::string& str) const
@@ -308,7 +299,7 @@ namespace SmartGridToolbox
          for (auto it = begin; it != end; ++it) // Loop over all expansion expressions.
          {
             std::string exprSuffix = it->suffix();
-            std::string exprExpansion = expandExpression(it->str());
+            std::string exprExpansion = expandExpression(*it);
             result += exprExpansion + exprSuffix; // Put the prefix on the result.
          }
          // Now recursively check if the expansion of this expression has created any more expressions to expand.
@@ -317,18 +308,20 @@ namespace SmartGridToolbox
       return result;
    }
 
-   std::string ParserBase::expandExpression(const std::string& str) const
+   std::string ParserBase::expandExpression(const std::smatch& m) const
    {
-      // Strip off e.g. the "$(" and ")" and recursively expand.
-      std::string s = expandString(str.substr(2, str.size()-3));
-      if (str[1] == '(')
+      std::string result;
+      if (m[1] != "")
       {
-         return expandLoopExpressionBody(str);
+         // loop expression, e.g. $(i + j + 1).
+         result = expandLoopExpressionBody(m[2]); 
       }
       else
       {
-         return expandVariableExpressionBody(str);
+         // variable expression, e.g. $<phase> or $<V,3>.
+         result = expandVariableExpressionBody(m[4], m[6]);
       }
+      return result;
    }
 
    std::string ParserBase::expandLoopExpressionBody(const std::string& str) const
@@ -355,21 +348,23 @@ namespace SmartGridToolbox
       return result;
    }
 
-   std::string ParserBase::expandVariableExpressionBody(const std::string& str) const
+   std::string ParserBase::expandVariableExpressionBody(const std::string& s1, const std::string& s2) const
    {
-      std::smatch match;
-      std::regex::regex_match(str, match, std::regex)
-      std::string key = str;
-      const YAML::Node* nd = nullptr;
+      std::string result;
+      YAML::Node nd;
       try
       {
-         nd = variables_.at(key);
+         nd = *variables_.at(s1);
       }
       catch (std::out_of_range e)
       {
-         Log().fatal() << "The definition of variable expression " << str << " was not found." << std::endl;
+         Log().fatal() << "The definition of variable expression " << s1 << " was not found." << std::endl;
       }
-      return nd2Str(*nd);
+      if (s2 != "")
+      {
+         nd = nd[s2];
+      }
+      return nd2Str(nd);
    }
 
    std::string ParserBase::nd2Str(const YAML::Node& nd) const

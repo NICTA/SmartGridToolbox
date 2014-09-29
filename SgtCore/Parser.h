@@ -7,6 +7,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include <map>
+#include <regex>
 
 namespace YAML
 {
@@ -101,9 +102,9 @@ namespace SmartGridToolbox
       private:
 
          std::string expandString(const std::string& str) const;
-         std::string expandExpression(const std::string& str) const;
+         std::string expandExpression(const std::smatch& m) const;
          std::string expandLoopExpressionBody(const std::string& str) const;
-         std::string expandVariableExpressionBody(const std::string& str) const;
+         std::string expandVariableExpressionBody(const std::string& str1, const std::string& str2) const;
          std::string nd2Str(const YAML::Node& nd) const;
 
       protected:
