@@ -110,7 +110,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
          
-         Network(const std::string& id, double PBase);
+         Network(const std::string& id, double PBase = 1.0);
 
       /// @}
       
