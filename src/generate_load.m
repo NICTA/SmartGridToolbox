@@ -3,7 +3,7 @@ TVec = 60*24*1./(1:8);
 
 cVeci = [];
 for i = 1:10
-   SMax = rand*3000e-6;
+   SMax = rand*1000e-6;
    xVec = rand(size(TVec));
    pVec = rand(size(TVec))*2*pi;
    cVec = zeros(size(tVec));
