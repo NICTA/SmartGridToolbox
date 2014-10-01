@@ -1,9 +1,10 @@
-variables:
-   n_houses:                  1
+parameters:
+   n_houses:                  1 
    V_base:                    0.240
    V_nom_vec:                 [0.240, 0.240D-240, 0.240D240]
    V_nom_map:                 {A: 0.240, B: 0.240D-240, C: 0.240D240}
    house_phases:              [A, B, B, A, B, C, A, C, B, C]
+   simple_line_Y:             5-15j
 simulation:
    lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
    start_time:                2013-01-23 06:00:00
@@ -65,6 +66,12 @@ loop:
          V_base:              $<V_base>
          V_nom:               [$<V_nom_map.$<house_phases.$(i-1)>>]
          type:                PQ
+      #generic_zip:
+      #   id:                  zip_$(i)
+      #   network_id:          network
+      #   bus_id:              house_$(i)
+      #   phases:              [$<house_phases.$(i-1)>]
+      #   S_const:             [-1000e-6]
       time_series_zip:
          id:                  zip_$(i)
          network_id:          network
@@ -72,19 +79,28 @@ loop:
          phases:              [$<house_phases.$(i-1)>]
          time_series_id:      load_$(i)_series
          dt:                  00:05:00
-      overhead_line:
+      generic_branch:
          id:                  drop_$(i)
          network_id:          network
          bus_0_id:            bus_$(i)
          bus_1_id:            house_$(i)
          phases_0:            [$<house_phases.$(i-1)>]
          phases_1:            [$<house_phases.$(i-1)>]
-         length:              10
-         n_neutral:           0
-         conductor_R_per_L:   [1e-4]
-         earth_resistivity:   100.0
-         distance_matrix:     [[0.01]]
-         freq:                60.0
+         Y:                   
+            simple_line:      [$<simple_line_Y>]
+      #overhead_line:
+      #   id:                  drop_$(i)
+      #   network_id:          network
+      #   bus_0_id:            bus_$(i)
+      #   bus_1_id:            house_$(i)
+      #   phases_0:            [$<house_phases.$(i-1)>]
+      #   phases_1:            [$<house_phases.$(i-1)>]
+      #   length:              10
+      #   n_neutral:           0
+      #   conductor_R_per_L:   [1e-4]
+      #   earth_resistivity:   100.0
+      #   distance_matrix:     [[0.01]]
+      #   freq:                60.0
 #inverter:
 #   id:                        inverter_$<n_houses>
 #   network_id:                network
@@ -104,20 +120,29 @@ loop:
 loop: 
    loop_variable:             [i, 1, $($<n_houses>+1), 1]
    loop_body:
-      overhead_line:
+      generic_branch:
          id:                  line_$(i-1)_$(i)
          network_id:          network
          bus_0_id:            bus_$(i-1)
          bus_1_id:            bus_$(i)
          phases_0:            [A, B, C]
          phases_1:            [A, B, C]
-         length:              10
-         n_neutral:           0
-         conductor_R_per_L:   [1e-4, 1e-4, 1e-4]
-         earth_resistivity:   100.0
-         distance_matrix:     [
-                                 [0.01 , 1.00 , 2.00],
-                                 [1.00 , 0.01 , 1.00],
-                                 [2.00 , 1.00 , 0.01]
-                              ]
-         freq:                60.0
+         Y:                   
+            simple_line:      [$<simple_line_Y>, $<simple_line_Y>, $<simple_line_Y>]
+      #overhead_line:
+      #   id:                  line_$(i-1)_$(i)
+      #   network_id:          network
+      #   bus_0_id:            bus_$(i-1)
+      #   bus_1_id:            bus_$(i)
+      #   phases_0:            [A, B, C]
+      #   phases_1:            [A, B, C]
+      #   length:              10
+      #   n_neutral:           0
+      #   conductor_R_per_L:   [1e-4, 1e-4, 1e-4]
+      #   earth_resistivity:   100.0
+      #   distance_matrix:     [
+      #                           [0.01 , 1.00 , 2.00],
+      #                           [1.00 , 0.01 , 1.00],
+      #                           [2.00 , 1.00 , 0.01]
+      #                        ]
+      #   freq:                60.0

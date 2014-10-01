@@ -17,7 +17,7 @@ namespace SmartGridToolbox
       const auto& temperatureNd = nd["temperature"];
       if (temperatureNd)
       {
-         std::string id = temperatureNd.as<std::string>();
+         std::string id = parser.expand<std::string>(temperatureNd);
          auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
          if (series == nullptr)
          {
@@ -29,7 +29,7 @@ namespace SmartGridToolbox
       const auto& cloudNd = nd["cloud_cover"];
       if (cloudNd)
       {
-         std::string id = cloudNd.as<std::string>();
+         std::string id = parser.expand<std::string>(cloudNd);
          auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
          if (series == nullptr)
          {

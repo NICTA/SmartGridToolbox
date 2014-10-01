@@ -194,25 +194,25 @@ namespace SmartGridToolbox
                {
                   case REAL_SCALAR:
                      {
-                        double v = ndVal.as<double>();
+                        double v = parser.expand<double>(ndVal);
                         ts.reset(new ConstTimeSeries<Time, double>(v));
                         break;
                      }
                   case COMPLEX_SCALAR:
                      {
-                        Complex v = ndVal.as<Complex>();
+                        Complex v = parser.expand<Complex>(ndVal);
                         ts.reset(new ConstTimeSeries<Time, Complex>(v));
                         break;
                      }
                   case REAL_VECTOR:
                      {
-                        ublas::vector<double> v = ndVal.as<ublas::vector<double>>();
+                        ublas::vector<double> v = parser.expand<ublas::vector<double>>(ndVal);
                         ts.reset(new ConstTimeSeries<Time, ublas::vector<double>>(v));
                         break;
                      }
                   case COMPLEX_VECTOR:
                      {
-                        ublas::vector<Complex> v = ndVal.as<ublas::vector<Complex>>();
+                        ublas::vector<Complex> v = parser.expand<ublas::vector<Complex>>(ndVal);
                         ts.reset(new ConstTimeSeries<Time, ublas::vector<Complex>>(v));
                         break;
                      }

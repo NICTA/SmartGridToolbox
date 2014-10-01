@@ -54,11 +54,11 @@ namespace SmartGridToolbox
       ublas::matrix<Complex> Y(2 * phases0.size(), 2 * phases1.size(), czero);
       if (ndYMatrix)
       {
-         Y = ndYMatrix.as<ublas::matrix<Complex>>();
+         Y = parser.expand<ublas::matrix<Complex>>(ndYMatrix);
       }
       else if (ndYSimpleLine)
       {
-         ublas::vector<Complex> YLine = ndYSimpleLine.as<ublas::vector<Complex>>();
+         ublas::vector<Complex> YLine = parser.expand<ublas::vector<Complex>>(ndYSimpleLine);
          Y = YSimpleLine(YLine);
       }
 

@@ -17,36 +17,36 @@ namespace SmartGridToolbox
       auto build = sim.newSimComponent<SimpleBuilding>(id);
 
       auto nd_dt = nd["dt"];
-      if (nd_dt) build->set_dt(nd_dt.as<Time>());
+      if (nd_dt) build->set_dt(parser.expand<Time>(nd_dt));
 
       auto nd_kb = nd["kb"];
-      if (nd_kb) build->set_kb(nd_kb.as<double>());
+      if (nd_kb) build->set_kb(parser.expand<double>(nd_kb));
 
       auto ndCb = nd["Cb"];
-      if (ndCb) build->setCb(ndCb.as<double>());
+      if (ndCb) build->setCb(parser.expand<double>(ndCb));
 
       auto ndTbInit = nd["Tb_init"];
-      if (ndTbInit) build->setTbInit(ndTbInit.as<double>());
+      if (ndTbInit) build->setTbInit(parser.expand<double>(ndTbInit));
 
       auto nd_kh = nd["kh"];
-      if (nd_kh) build->set_kh(nd_kh.as<double>());
+      if (nd_kh) build->set_kh(parser.expand<double>(nd_kh));
 
       auto ndCopCool = nd["COP_cool"];
-      if (ndCopCool) build->setCopCool(ndCopCool.as<double>());
+      if (ndCopCool) build->setCopCool(parser.expand<double>(ndCopCool));
 
       auto ndCopHeat = nd["COP_heat"];
-      if (ndCopHeat) build->setCopHeat(ndCopHeat.as<double>());
+      if (ndCopHeat) build->setCopHeat(parser.expand<double>(ndCopHeat));
 
       auto ndPMax = nd["P_max"];
-      if (ndPMax) build->setPMax(ndPMax.as<double>());
+      if (ndPMax) build->setPMax(parser.expand<double>(ndPMax));
 
       auto ndTs = nd["Ts"];
-      if (ndTs) build->setTs(ndTs.as<double>());
+      if (ndTs) build->setTs(parser.expand<double>(ndTs));
 
       const auto& dQgNd = nd["internal_heat_power"];
       if (dQgNd)
       {
-         std::string id = dQgNd.as<std::string>();
+         std::string id = parser.expand<std::string>(dQgNd);
          auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
          if (series == nullptr)
          {
@@ -63,7 +63,7 @@ namespace SmartGridToolbox
       const auto& weatherNd = nd["weather"];
       if (weatherNd)
       {
-         std::string weatherStr = weatherNd.as<std::string>();
+         std::string weatherStr = parser.expand<std::string>(weatherNd);
          auto weather = sim.simComponent<Weather>(weatherStr);
          if (weather == nullptr)
          {

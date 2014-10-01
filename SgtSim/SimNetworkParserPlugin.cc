@@ -18,7 +18,7 @@ namespace SmartGridToolbox
       std::unique_ptr<Network> nw = std::unique_ptr<Network>(new Network(id, PBase));
       if (ndFreq)
       {
-         nw->setFreq(ndFreq.as<double>());
+         nw->setFreq(parser.expand<double>(ndFreq));
       }
       sim.newSimComponent<SimNetwork>(std::move(nw));
    }

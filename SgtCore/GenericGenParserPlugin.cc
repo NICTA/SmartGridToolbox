@@ -28,42 +28,42 @@ namespace SmartGridToolbox
 
       if (const YAML::Node& subNd = nd["S"])
       {
-         gen->setS(subNd.as<ublas::vector<Complex>>());
+         gen->setS(parser.expand<ublas::vector<Complex>>(subNd));
       }
       
       if (const YAML::Node& subNd = nd["P_min"])
       {
-         gen->setPMin(subNd.as<double>());
+         gen->setPMin(parser.expand<double>(subNd));
       }
 
       if (const YAML::Node& subNd = nd["P_max"])
       {
-         gen->setPMax(subNd.as<double>());
+         gen->setPMax(parser.expand<double>(subNd));
       }
       
       if (const YAML::Node& subNd = nd["Q_min"])
       {
-         gen->setQMin(subNd.as<double>());
+         gen->setQMin(parser.expand<double>(subNd));
       }
 
       if (const YAML::Node& subNd = nd["Q_max"])
       {
-         gen->setQMax(subNd.as<double>());
+         gen->setQMax(parser.expand<double>(subNd));
       }
       
       if (const YAML::Node& subNd = nd["C0"])
       {
-         gen->setC0(subNd.as<double>());
+         gen->setC0(parser.expand<double>(subNd));
       }
       
       if (const YAML::Node& subNd = nd["C1"])
       {
-         gen->setC1(subNd.as<double>());
+         gen->setC1(parser.expand<double>(subNd));
       }
       
       if (const YAML::Node& subNd = nd["C2"])
       {
-         gen->setC2(subNd.as<double>());
+         gen->setC2(parser.expand<double>(subNd));
       }
 
       return gen;

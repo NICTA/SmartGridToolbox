@@ -4,9 +4,9 @@ namespace SmartGridToolbox
 {
    namespace
    {
-      Time parseTime(const YAML::Node& nd, local_time::time_zone_ptr timezone)
+      Time parseTime(const YAML::Node& nd, local_time::time_zone_ptr timezone, const ParserBase& parser)
       {
-         return timeFromLocalTime(nd.as<posix_time::ptime>(), timezone);
+         return timeFromLocalTime(parser.expand<posix_time::ptime>(nd), timezone);
       }
    }
 
@@ -19,39 +19,40 @@ namespace SmartGridToolbox
       {
          try 
          {
-            sim.setTimezone(local_time::time_zone_ptr(new local_time::posix_time_zone(nodeTz.as<std::string>())));
+            sim.setTimezone(
+                  local_time::time_zone_ptr(new local_time::posix_time_zone(parser.expand<std::string>(nodeTz))));
          }
          catch (...)
          {
-            Log().fatal() << "Couldn't parse timezone " << nodeTz.as<std::string>() << "." << std::endl;
+            Log().fatal() << "Couldn't parse timezone " << parser.expand<std::string>(nodeTz) << "." << std::endl;
          }
       }
 
       const YAML::Node& nodeStart = nd["start_time"];
       try 
       {
-         sim.setStartTime(parseTime(nodeStart, sim.timezone()));
+         sim.setStartTime(parseTime(nodeStart, sim.timezone(), parser));
       }
       catch (...)
       {
-         Log().fatal() << "Couldn't parse start date " << nodeStart.as<std::string>() << "." << std::endl;
+         Log().fatal() << "Couldn't parse start date " << parser.expand<std::string>(nodeStart) << "." << std::endl;
       }
 
       const YAML::Node& nodeEnd = nd["end_time"];
       try 
       {
-         sim.setEndTime(parseTime(nodeEnd, sim.timezone()));
+         sim.setEndTime(parseTime(nodeEnd, sim.timezone(), parser));
       }
       catch (...)
       {
-         Log().fatal() << "Couldn't parse end date " << nodeEnd.as<std::string>() << "." << std::endl;
+         Log().fatal() << "Couldn't parse end date " << parser.expand<std::string>(nodeEnd) << "." << std::endl;
       }
 
       if (const YAML::Node& nodeLatLong = nd["lat_long"])
       {
          try 
          {
-            std::vector<double> llvec = nodeLatLong.as<std::vector<double>>();
+            std::vector<double> llvec = parser.expand<std::vector<double>>(nodeLatLong);
             if (llvec.size() != 2)
             {
                throw;
@@ -60,7 +61,7 @@ namespace SmartGridToolbox
          }
          catch (...)
          {
-            Log().fatal() << "Couldn't parse lat_long " << nodeLatLong.as<std::string>() << "." << std::endl;
+            Log().fatal() << "Couldn't parse lat_long " << parser.expand<std::string>(nodeLatLong) << "." << std::endl;
          }
       }
    }
