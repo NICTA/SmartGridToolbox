@@ -5,6 +5,8 @@ parameters:
    V_nom_map:                 {A: 0.240, B: 0.240D-240, C: 0.240D240}
    house_phases:              [A, B, B, A, B, C, A, C, B, C]
    simple_line_Y:             5-15j
+   overhead_R_per_L:          1e-4
+   earth_resistivity:         100
 simulation:
    lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
    start_time:                2013-01-23 06:00:00
@@ -97,8 +99,8 @@ loop:
          phases_1:            [$<house_phases.$(i-1)>]
          length:              20
          n_neutral:           0
-         conductor_R_per_L:   [1e-4]
-         earth_resistivity:   100.0
+         conductor_R_per_L:   [$<overhead_R_per_L>]
+         earth_resistivity:   $<earth_resistivity>
          distance_matrix:     [[0.01]]
          freq:                60.0
 inverter:
@@ -138,8 +140,8 @@ loop:
          phases_1:            [A, B, C]
          length:              100
          n_neutral:           0
-         conductor_R_per_L:   [1e-4, 1e-4, 1e-4]
-         earth_resistivity:   100.0
+         conductor_R_per_L:   [$<overhead_R_per_L>, $<overhead_R_per_L>, $<overhead_R_per_L>]
+         earth_resistivity:   $<earth_resistivity>
          distance_matrix:     [
                                  [0.01 , 1.00 , 2.00],
                                  [1.00 , 0.01 , 1.00],
