@@ -35,6 +35,14 @@ namespace SmartGridToolbox
             return ublas::project(series_->value(lastUpdated()), ublas::range(2*phases().size(), 3*phases().size()));
          }
 
+      protected:
+
+         virtual void updateState(Time t)
+         {
+            RegularUpdateComponentAbc::updateState(t);
+            injectionChanged().trigger(); 
+         }
+
       private:
          
          std::shared_ptr<const TimeSeries<Time, ublas::vector<Complex>>> series_;

@@ -1,5 +1,5 @@
 variables:
-   n_houses:                  10
+   n_houses:                  1
    V_base:                    0.240
    V_nom_vec:                 [0.240, 0.240D-240, 0.240D240]
    V_nom_map:                 {A: 0.240, B: 0.240D-240, C: 0.240D240}
@@ -85,22 +85,22 @@ loop:
          earth_resistivity:   100.0
          distance_matrix:     [[0.01]]
          freq:                60.0
-inverter:
-   id:                        inverter_$<n_houses>
-   network_id:                network
-   bus_id:                    house_$<n_houses>
-   phases:                    [$<house_phases.$($<n_houses>-1)>]
-   requested_Q_per_phase:     0
-   max_S_mag_per_phase:       100.0
-   efficiency:                0.86
-solar_pv:
-   id:                        solar_pv_$<n_houses>
-   weather:                   weather
-   inverter:                  inverter_$<n_houses>
-   efficiency:                0.75
-   area_m2:                   12.0 
-   zenith_degrees:            64.6
-   azimuth_degrees:           95.8 # Should point right at sun on Jan 26, 2013, 0830.
+#inverter:
+#   id:                        inverter_$<n_houses>
+#   network_id:                network
+#   bus_id:                    house_$<n_houses>
+#   phases:                    [$<house_phases.$($<n_houses>-1)>]
+#   requested_Q_per_phase:     0
+#   max_S_mag_per_phase:       100.0
+#   efficiency:                0.86
+#solar_pv:
+#   id:                        solar_pv_$<n_houses>
+#   weather:                   weather
+#   inverter:                  inverter_$<n_houses>
+#   efficiency:                0.75
+#   area_m2:                   12.0 
+#   zenith_degrees:            64.6
+#   azimuth_degrees:           95.8 # Should point right at sun on Jan 26, 2013, 0830.
 loop: 
    loop_variable:             [i, 1, $($<n_houses>+1), 1]
    loop_body:

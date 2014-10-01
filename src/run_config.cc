@@ -28,12 +28,13 @@ ublas::vector<Complex> symComps(ublas::vector<Complex> v)
 
 int main(int argc, const char** argv)
 {
-   if (argc != 2)
+   if (argc != 3)
    {
-      Log().fatal() << "Usage: " << argv[0] << " config_name" << std::endl;
+      Log().fatal() << "Usage: " << argv[0] << " config_name bus_id" << std::endl;
    }
 
    const char* configName = argv[1];
+   const char* busId = argv[2];
 
    Simulation sim;
    Parser<Simulation> p;
@@ -42,7 +43,7 @@ int main(int argc, const char** argv)
    bool ok = true;
 
    std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
-   std::shared_ptr<Node> busNd = netw->node("bus_10");
+   std::shared_ptr<Node> busNd = netw->node(busId);
 
    while (ok)
    {
@@ -51,7 +52,17 @@ int main(int argc, const char** argv)
       double t = dSeconds(sim.currentTime() - sim.startTime())/3600;
       auto V = busNd->bus()->V();
       auto S = busNd->SZip();
-      Log().message() << "V: " << t << " " << V(0) << " " << V(1) << " " << V(2) << std::endl;
-      Log().message() << "S: " << t << " " << S(0) << " " << S(1) << " " << S(2) << std::endl;
+      {
+         {
+            auto& msg = Log().message() << "V: " << t;
+            for (auto Vi : V) msg << " " << Vi; 
+            msg << std::endl;
+         }
+         {
+            auto& msg = Log().message() << "S: " << t;
+            for (auto Si : S) msg << " " << Si; 
+            msg << std::endl;
+         }
+      }
    }
 }
