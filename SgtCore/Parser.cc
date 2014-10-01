@@ -299,13 +299,15 @@ namespace SmartGridToolbox
       }
       else
       {
-         result = begin->prefix();
+         std::string exprSuffix;
          for (auto it = begin; it != end; ++it) // Loop over all expansion expressions.
          {
-            std::string exprSuffix = it->suffix();
+            result += it->prefix();
+            exprSuffix = it->suffix();
             std::string exprExpansion = expandExpression(*it);
-            result += exprExpansion + exprSuffix; // Put the prefix on the result.
+            result += exprExpansion; // Put the prefix on the result.
          }
+         result += exprSuffix;
          // Now recursively check if the expansion of this expression has created any more expressions to expand.
          result = expandString(result);
       }
