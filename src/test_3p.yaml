@@ -39,8 +39,8 @@ bus:
    id:                     bus_0
    network_id:             network
    phases:                 [A, B, C]
-   V_base:                 $(V_base)
-   V_nom:                  $(V_nom_vec)
+   V_base:                 $<V_base>
+   V_nom:                  $<V_nom_vec>
    type:                   SL
 generic_gen:
    id:                     gen_0
@@ -54,15 +54,15 @@ loop:
          id:               bus_$(i)
          network_id:       network
          phases:           [A, B, C]
-         V_base:           0.240
-         V_nom:            <V_nom_vec>
+         V_base:           $<V_base>
+         V_nom:            $<V_nom_vec>
          type:             PQ
       bus:
          id:               house_$(i)
          network_id:       network
          phases:           [$<house_phases,$(i)>)]
-         V_base:           0.240
-         V_nom:            [$<V_nom_map.$<house_phases.$(i)>>]
+         V_base:           $<V_base>
+         V_nom:            [$<V_nom_map,$<house_phases,$(i)>>]
          type:             PQ
       time_series_zip:
          id:               zip_$(i)

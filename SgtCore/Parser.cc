@@ -354,7 +354,7 @@ namespace SmartGridToolbox
       YAML::Node nd;
       try
       {
-         nd = *variables_.at(s1);
+         nd = variables_.at(s1);
       }
       catch (std::out_of_range e)
       {
