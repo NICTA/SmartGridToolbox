@@ -50,6 +50,8 @@ int main(int argc, const char** argv)
       ok = sim.doTimestep();
       double t = dSeconds(sim.currentTime() - sim.startTime())/3600;
       auto V = busNd->bus()->V();
-      Log().message() << "OUTPUT: " << t << " " << V(0) << " " << V(1) << " " << V(2) << std::endl;
+      auto S = busNd->SZip();
+      Log().message() << "V: " << t << " " << V(0) << " " << V(1) << " " << V(2) << std::endl;
+      Log().message() << "S: " << t << " " << S(0) << " " << S(1) << " " << S(2) << std::endl;
    }
 }

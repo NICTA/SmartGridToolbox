@@ -16,7 +16,8 @@ namespace SmartGridToolbox
       netw.addZip(std::move(zip), busId);
    }
 
-   std::unique_ptr<GenericZip> GenericZipParserPlugin::parseGenericZip(const YAML::Node& nd, const ParserBase& parser) const
+   std::unique_ptr<GenericZip> GenericZipParserPlugin::parseGenericZip(const YAML::Node& nd, 
+         const ParserBase& parser) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "phases");

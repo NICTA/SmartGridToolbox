@@ -270,9 +270,9 @@ namespace SmartGridToolbox
       {
          Log().fatal() << "loop_variable expression is invalid. Format is [name, start, upper, stride]." << std::endl;
       }
-      int start = ndLoopVar[1].as<int>();
-      int upper = ndLoopVar[2].as<int>();
-      int stride = ndLoopVar[3].as<int>();
+      int start = expand<int>(ndLoopVar[1]);
+      int upper = expand<int>(ndLoopVar[2]);
+      int stride = expand<int>(ndLoopVar[3]);
       loops_.push_back({name, start, upper, stride});
 
       return loops_.back();
