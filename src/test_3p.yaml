@@ -79,7 +79,7 @@ loop:
          bus_1_id:            house_$(i)
          phases_0:            [$<house_phases.$(i-1)>]
          phases_1:            [$<house_phases.$(i-1)>]
-         length:              20
+         length:              10
          n_neutral:           0
          conductor_R_per_L:   [1e-4]
          earth_resistivity:   100.0
@@ -111,11 +111,11 @@ loop:
          bus_1_id:            bus_$(i)
          phases_0:            [A, B, C]
          phases_1:            [A, B, C]
-         length:              100
+         length:              10
          n_neutral:           0
          conductor_R_per_L:   [1e-4, 1e-4, 1e-4]
          earth_resistivity:   100.0
-         distance_matrix:     [ # Note - at moment, configured in an equilateral triangle.
+         distance_matrix:     [
                                  [0.01 , 1.00 , 2.00],
                                  [1.00 , 0.01 , 1.00],
                                  [2.00 , 1.00 , 0.01]

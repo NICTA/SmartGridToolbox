@@ -54,13 +54,23 @@ int main(int argc, const char** argv)
       auto S = busNd->SZip();
       {
          {
-            auto& msg = Log().message() << "V: " << t;
-            for (auto Vi : V) msg << " " << Vi; 
+            auto& msg = Log().message() << "V_MAG : " << t;
+            for (auto x : V) msg << " " << std::abs(x); 
             msg << std::endl;
          }
          {
-            auto& msg = Log().message() << "S: " << t;
-            for (auto Si : S) msg << " " << Si; 
+            auto& msg = Log().message() << "V_ANG : " << t;
+            for (auto x : V) msg << " " << std::arg(x); 
+            msg << std::endl;
+         }
+         {
+            auto& msg = Log().message() << "P     : " << t;
+            for (auto x : S) msg << " " << std::real(x); 
+            msg << std::endl;
+         }
+         {
+            auto& msg = Log().message() << "Q     : " << t;
+            for (auto x : S) msg << " " << std::imag(x); 
             msg << std::endl;
          }
       }
