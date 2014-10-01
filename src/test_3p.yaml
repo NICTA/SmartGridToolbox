@@ -2,7 +2,7 @@ variables:
    V_base:                 0.240
    V_nom_vec:              [0.240, 0.240D-240, 0.240D240]
    V_nom_map:              {A: 0.240, B: 0.240D-240, C: 0.240D240}
-   house_phases:           {1: A, 2: B, 3: B, 4: A, 5: B, 6: C, 7: A, 8: C, 9: B, 10: C}
+   house_phases:           [A, B, B, A, B, C, A, C, B, C]
 simulation:
    lat_long:               [-35.3075, 149.1244] # Canberra, Australia.
    start_time:             2013-01-23 06:00:00
@@ -60,15 +60,15 @@ loop:
       bus:
          id:               house_$(i)
          network_id:       network
-         phases:           [$<house_phases.$(i)>]
+         phases:           [$<house_phases.$(i-1)>]
          V_base:           $<V_base>
-         V_nom:            [$<V_nom_map.$<house_phases.$(i)>>]
+         V_nom:            [$<V_nom_map.$<house_phases.$(i-1)>>]
          type:             PQ
       time_series_zip:
          id:               zip_$(i)
          network_id:       network
-         bus_id:           bus_$(i)
-         phases:           [$<house_phases($(i))>]
+         bus_id:           house_$(i)
+         phases:           [$<house_phases.$(i-1)>]
          time_series_id:   load_$(i)_series
          dt:               00:05:00
       overhead_line:
@@ -76,8 +76,8 @@ loop:
          network_id:       network
          bus_0_id:         bus_$(i)
          bus_1_id:         house_$(i)
-         phases_0:         [$<house_phases.$(i)>]
-         phases_1:         [$<house_phases.$(i)>]
+         phases_0:         [$<house_phases.$(i-1)>]
+         phases_1:         [$<house_phases.$(i-1)>]
          length:           100
          n_neutral:        0
          conductor_R_per_L:   [1e-4]

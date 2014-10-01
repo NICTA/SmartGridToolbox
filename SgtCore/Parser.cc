@@ -366,13 +366,30 @@ namespace SmartGridToolbox
       {
          Log().fatal() << "The definition of variable expression " << s1 << " was not found." << std::endl;
       }
+      if (!nd)
+      {
+         Log().fatal() << "In variable expression " << s1 << ", index " << s2 << " was not found." << std::endl;
+      }
+
       YAML::Node nd2;
       if (s2 != "")
       {
-         nd2 = nd[s2];
-         if (!nd)
+         if (nd.IsSequence())
          {
-            Log().fatal() << "In variable expression " << s1 << ", index " << s2 << " was not found." << std::endl;
+            nd2 = nd[std::stoi(s2)];
+         }
+         else if (nd.IsMap())
+         {
+            nd2 = nd[s2];
+         }
+         else
+         {
+            Log().fatal() << "Can't index variable " << s1 << "." << std::endl;
+         }
+
+         if (!nd2)
+         {
+            Log().fatal() << "For variable " << s1 << ", index " << s2 << " doesn't exist." << std::endl;
          }
       }
       else
