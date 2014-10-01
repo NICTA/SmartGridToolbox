@@ -266,6 +266,10 @@ namespace SmartGridToolbox
       const YAML::Node& ndLoopVar = nd["loop_variable"];
 
       std::string name = ndLoopVar[0].as<std::string>();
+      if (ndLoopVar.size() != 4)
+      {
+         Log().fatal() << "loop_variable expression is invalid. Format is [name, start, upper, stride]." << std::endl;
+      }
       int start = ndLoopVar[1].as<int>();
       int upper = ndLoopVar[2].as<int>();
       int stride = ndLoopVar[3].as<int>();
@@ -277,7 +281,7 @@ namespace SmartGridToolbox
 
    namespace 
    {
-      const std::regex expr("(\\$\\(([^()<>]+)\\))|(\\$<([A-Za-z_]+[A-Za-z0-9_]*)(,([^>]+))?>)");
+      const std::regex expr("(\\$\\(([^\\$()<>.]+)\\))|(\\$<([^\\$()<>.]+)(\\.([^\\$()<>.]+))?>)");
    }
 
    std::string ParserBase::expandString(const std::string& str) const
@@ -360,11 +364,20 @@ namespace SmartGridToolbox
       {
          Log().fatal() << "The definition of variable expression " << s1 << " was not found." << std::endl;
       }
+      YAML::Node nd2;
       if (s2 != "")
       {
-         nd = nd[s2];
+         nd2 = nd[s2];
+         if (!nd)
+         {
+            Log().fatal() << "In variable expression " << s1 << ", index " << s2 << " was not found." << std::endl;
+         }
       }
-      return nd2Str(nd);
+      else
+      {
+         nd2 = nd;
+      }
+      return nd2Str(nd2);
    }
 
    std::string ParserBase::nd2Str(const YAML::Node& nd) const

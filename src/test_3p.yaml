@@ -1,8 +1,8 @@
 variables:
    V_base:                 0.240
    V_nom_vec:              [0.240, 0.240D-240, 0.240D240]
-   V_nom_map:              {A:0.240, B:0.240D-240, C:0.240D240}
-   house_phases:           {1:A, 2:B, 3:B, 4:A, 5:B, 6:C, 7:A, 8:C, 9:B, 10:C}
+   V_nom_map:              {A: 0.240, B: 0.240D-240, C: 0.240D240}
+   house_phases:           {1: A, 2: B, 3: B, 4: A, 5: B, 6: C, 7: A, 8: C, 9: B, 10: C}
 simulation:
    lat_long:               [-35.3075, 149.1244] # Canberra, Australia.
    start_time:             2013-01-23 06:00:00
@@ -60,9 +60,9 @@ loop:
       bus:
          id:               house_$(i)
          network_id:       network
-         phases:           [$<house_phases,$(i)>)]
+         phases:           [$<house_phases.$(i)>]
          V_base:           $<V_base>
-         V_nom:            [$<V_nom_map,$<house_phases,$(i)>>]
+         V_nom:            [$<V_nom_map.$<house_phases.$(i)>>]
          type:             PQ
       time_series_zip:
          id:               zip_$(i)
@@ -76,8 +76,8 @@ loop:
          network_id:       network
          bus_0_id:         bus_$(i)
          bus_1_id:         house_$(i)
-         phases_0:         [$<house_phases, $(i)>]
-         phases_1:         [$<house_phases, $(i)>]
+         phases_0:         [$<house_phases.$(i)>]
+         phases_1:         [$<house_phases.$(i)>]
          length:           100
          n_neutral:        0
          conductor_R_per_L:   [1e-4]
@@ -88,7 +88,7 @@ inverter:
    id:                     inverter_10
    network_id:             network
    bus_id:                 house_10
-   phases:                 [$<house_phases, 9>]
+   phases:                 [$<house_phases.9>]
    requested_Q_per_phase:  0
    max_S_mag_per_phase:    100.0
    efficiency:             0.86
@@ -101,7 +101,7 @@ solar_pv:
    zenith_degrees:         64.6
    azimuth_degrees:        95.8 # Should point right at sun on Jan 26, 2013, 0830.
 loop: 
-   loop_variable:          [i, 11]
+   loop_variable:          [i, 0, 11, 1]
    loop_body:
       overhead_line:
          id:               line_$(i)_$(i)
