@@ -187,7 +187,6 @@ namespace SmartGridToolbox
          }
          virtual void addArc(BranchPtr branch, const std::string& bus0Id, const std::string& bus1Id);
          
-         
          const GenVec& gens() const
          {
             return genVec_;

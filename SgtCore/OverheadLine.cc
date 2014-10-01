@@ -27,63 +27,12 @@ namespace SmartGridToolbox
    const ublas::matrix<Complex> OverheadLine::Y() const
    {
       int nPhase = phases0().size();
-      int nWire = nPhase + nNeutral_;
 
-		double freqCoeffReal = 9.869611e-7 * f_;
-		double freqCoeffImag = 1.256642e-6 * f_;
-		double freqAdditiveTerm = 0.5 * log(rhoEarth_ / f_) + 6.490501;
-
-      auto ZWire = ublas::matrix<Complex>(nWire, nWire, czero);
-      for (int i = 0; i < nWire; ++i)
-      {
-         ZWire(i, i) = {rhoLine_(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij_(i, i)) + freqAdditiveTerm)};
-         for (int k = i + 1; k < nWire; ++k)
-         {
-				ZWire(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / Dij_(i, k)) + freqAdditiveTerm)};
-				ZWire(k, i) = ZWire(i, k);
-         }
-      }
-      ZWire *= L_; // Z has been checked against example in Kersting and found to be OK.
-      SGT_DEBUG(
-            Log().message() << "Before Kron:" << std::endl;
-            for (int i = 0; i < ZWire.size1(); ++i)
-            {
-               Log().message() << "Z(" << i << ", :) = " << row(ZWire, i) << std::endl;
-               Log().message() << std::endl;
-            });
-
-      ublas::matrix<Complex> ZPhase = project(ZWire, ublas::range(0, nPhase), ublas::range(0, nPhase));
-
-      // Apply Kron reduction to eliminate neutral.
-      if (nNeutral_ == 1)
-      {
-         int iNeutral = nPhase;
-         Complex ZnnInv = 1.0 / ZWire(iNeutral, iNeutral); // Assuming only one neutral!
-         for (int i = 0; i < nPhase; ++i)
-         {
-            for (int j = 0; j < nPhase; ++j)
-            {
-               ZPhase(i, j) -= ZWire(i, iNeutral) * ZWire(iNeutral, j) * ZnnInv;
-            }
-         }
-      }
-
-      SGT_DEBUG(
-            Log().message() << "After Kron:" << std::endl;
-            for (int i = 0; i < ZPhase.size1(); ++i)
-            {
-               Log().message() << "Z(" << i << ", :) = " << row(ZPhase, i) << std::endl;
-               Log().message() << std::endl;
-            });
+      ublas::matrix<Complex> ZWire = this->ZWire();
+      ublas::matrix<Complex> ZPhase = this->ZPhase(ZWire);
 
       ublas::matrix<Complex> Y(nPhase, nPhase);
       bool ok = invertMatrix(ZPhase, Y); assert(ok);
-      SGT_DEBUG(
-            for (int i = 0; i < Y.size1(); ++i)
-            {
-               Log().message() << "Y(" << i << ", :) = " << row(Y, i) << std::endl;
-               Log().message() << std::endl;
-            });
 
       ublas::matrix<Complex> YNode(2 * nPhase, 2 * nPhase, czero);
       for (int i = 0; i < nPhase; ++i)
@@ -96,13 +45,55 @@ namespace SmartGridToolbox
             YNode(i + nPhase, j + nPhase) = Y(i, j);
          }
       }
-      SGT_DEBUG(
-            for (int i = 0; i < YNode.size1(); ++i)
-            {
-               Log().message() << "YNode(" << i << ", :) = " << row(YNode, i) << std::endl;
-               Log().message() << std::endl;
-            });
 
       return YNode;
+   }
+
+   ublas::matrix<Complex> OverheadLine::ZWire() const
+   {
+      int nPhase = phases0().size();
+      int nWire = nPhase + nNeutral_;
+
+      double freqCoeffReal = 9.869611e-7 * f_;
+      double freqCoeffImag = 1.256642e-6 * f_;
+      double freqAdditiveTerm = 0.5 * log(rhoEarth_ / f_) + 6.490501;
+
+      auto result = ublas::matrix<Complex>(nWire, nWire, czero);
+      for (int i = 0; i < nWire; ++i)
+      {
+         result(i, i) = {rhoLine_(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij_(i, i)) + freqAdditiveTerm)};
+         for (int k = i + 1; k < nWire; ++k)
+         {
+				result(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / Dij_(i, k)) + freqAdditiveTerm)};
+				result(k, i) = result(i, k);
+         }
+      }
+      result *= L_; // Z has been checked against example in Kersting and found to be OK.
+
+      return result;
+   }
+
+   ublas::matrix<Complex> OverheadLine::ZPhase(const ublas::matrix<Complex>& ZWire) const
+   {
+      int nPhase = phases0().size();
+      int nWire = nPhase + nNeutral_;
+
+      ublas::matrix<Complex> result = project(ZWire, ublas::range(0, nPhase), ublas::range(0, nPhase));
+
+      // Apply Kron reduction to eliminate neutral.
+      if (nNeutral_ == 1)
+      {
+         int iNeutral = nPhase;
+         Complex ZnnInv = 1.0 / ZWire(iNeutral, iNeutral); // Assuming only one neutral!
+         for (int i = 0; i < nPhase; ++i)
+         {
+            for (int j = 0; j < nPhase; ++j)
+            {
+               result(i, j) -= ZWire(i, iNeutral) * ZWire(iNeutral, j) * ZnnInv;
+            }
+         }
+      }
+
+      return result;
    }
 }

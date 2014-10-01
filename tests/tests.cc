@@ -57,16 +57,101 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
    BOOST_CHECK(g.nodes()[5]->index() == 2);
 }
 
+BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
+{
+   // For this test, we compare values for an overhead line examined in one of Kersting's papers:
+   // docs/background/Kersting_Carson.pdf.
+   Network netw("network");
+   Parser<Network> p;
+   p.parse("test_overhead_compare_carson_1.yaml", netw);
+
+   auto oh = std::dynamic_pointer_cast<OverheadLine>(netw.arc("line_1_2")->branch());
+
+   ublas::matrix<Complex> ZWire = oh->ZWire();
+   ublas::matrix<Complex> ZPhase = oh->ZPhase();
+   Log().message() << "ZWire = " << std::endl;
+   for (int i = 0; i < ZWire.size1(); ++i)
+   {
+      messageStream() << row(ZWire, i) << std::endl;
+   }
+   Log().message() << "ZPhase = " << std::endl;
+   for (int i = 0; i < ZPhase.size1(); ++i)
+   {
+      messageStream() << row(ZPhase, i) << std::endl;
+   }
+   Log().message() << "YNode = " << std::endl;
+   for (int i = 0; i < oh->Y().size1(); ++i)
+   {
+      messageStream() << row(oh->Y(), i) << std::endl;
+   }
+
+   Complex cmp;
+   cmp = {1.3369, 1.3331}; double err00 = abs(ZPhase(0,0) - cmp) / abs(cmp);
+   cmp = {0.2102, 0.5778}; double err01 = abs(ZPhase(0, 1) - cmp) / abs(cmp);
+   cmp = {0.2132, 0.5014}; double err02 = abs(ZPhase(0, 2) - cmp) / abs(cmp);
+   cmp = {1.3239, 1.3557}; double err11 = abs(ZPhase(1, 1) - cmp) / abs(cmp);
+   cmp = {0.2067, 0.4591}; double err12 = abs(ZPhase(1, 2) - cmp) / abs(cmp);
+   cmp = {1.3295, 1.3459}; double err22 = abs(ZPhase(2, 2) - cmp) / abs(cmp);
+   Log().message() << "Err = " 
+             << err00 << " " << err01 << " " << err02 << " " << err11 << " " << err12 << " " << err22 << std::endl;
+
+   BOOST_CHECK(err00 < 0.001);
+   BOOST_CHECK(err01 < 0.001);
+   BOOST_CHECK(err02 < 0.001);
+   BOOST_CHECK(err11 < 0.001);
+   BOOST_CHECK(err12 < 0.001);
+   BOOST_CHECK(err22 < 0.001);
+
+   BOOST_CHECK_EQUAL(ZPhase(0,1), ZPhase(1,0));
+   BOOST_CHECK_EQUAL(ZPhase(0,2), ZPhase(2,0));
+   BOOST_CHECK_EQUAL(ZPhase(1,2), ZPhase(2,1));
+}
+
+BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
+{
+   // For this test, we compare values for an overhead line examined in one of Kersting's papers:
+   // docs/background/Kersting_Carson.pdf.
+   Model mod;
+   Simulation sim(mod);
+
+   Parser & p = Parser::globalParser();
+   p.parse("test_overhead_compare_carson_2.yaml", mod, sim); p.postParse();
+
+   mod.validate();
+   sim.initialize();
+
+   Bus * bus1 = mod.component<Bus>("bus_1");
+   Bus * bus2 = mod.component<Bus>("bus_2");
+
+   Log().message() << "Bus 1 voltages: " << abs(bus1->V()(0)) << "@" << arg(bus1->V()(0)) * 180 / pi << std::endl;
+   Log().message() << "Bus 1 voltages: " << abs(bus1->V()(1)) << "@" << arg(bus1->V()(1)) * 180 / pi << std::endl;
+   Log().message() << "Bus 1 voltages: " << abs(bus1->V()(2)) << "@" << arg(bus1->V()(2)) * 180 / pi << std::endl;
+   Log().message() << "Bus 2 voltages: " << abs(bus2->V()(0)) << "@" << arg(bus2->V()(0)) * 180 / pi << std::endl;
+   Log().message() << "Bus 2 voltages: " << abs(bus2->V()(1)) << "@" << arg(bus2->V()(1)) * 180 / pi << std::endl;
+   Log().message() << "Bus 2 voltages: " << abs(bus2->V()(2)) << "@" << arg(bus2->V()(2)) * 180 / pi << std::endl;
+
+   Complex cmp;
+   cmp = polar(14606.60, -0.62 * pi / 180.0); double err0 = abs(bus2->V()(0) - cmp) / abs(cmp);
+   cmp = polar(14726.69, -121.0 * pi / 180.0); double err1 = abs(bus2->V()(1) - cmp) / abs(cmp);
+   cmp = polar(14801.37, 119.2 * pi / 180.0); double err2 = abs(bus2->V()(2) - cmp) / abs(cmp);
+   Log().message() << "Err = " << err0 << " " << err1 << " " << err2 << std::endl;
+
+   BOOST_CHECK(err0 < 0.001);
+   BOOST_CHECK(err1 < 0.001);
+   BOOST_CHECK(err2 < 0.001);
+}
+
+#if 0
 BOOST_AUTO_TEST_CASE (test_dependencies)
 {
    Simulation sim;
 
-   SimBus<Bus> & a0 = mod.newComponent<SimBus<Bus>>("bus0", 0, 0.1);
-   SimBus<Bus> & a1 = mod.newComponent<SimBus<Bus>>("bus1", 1, 0.1);
-   SimBus<Bus> & a2 = mod.newComponent<SimBus<Bus>>("bus2", 2, 0.1);
-   SimBus<Bus> & a3 = mod.newComponent<SimBus<Bus>>("bus3", 3, 0.1);
-   SimBus<Bus> & a4 = mod.newComponent<SimBus<Bus>>("bus4", 4, 0.1);
-   SimBus<Bus> & a5 = mod.newComponent<SimBus<Bus>>("bus5", 5, 0.1);
+   SimBus & a0 = sim.newComponent<SimBus>("bus0", 0, 0.1);
+   SimBus & a1 = sim.newComponent<SimBus>("bus1", 1, 0.1);
+   SimBus & a2 = sim.newComponent<SimBus>("bus2", 2, 0.1);
+   SimBus & a3 = sim.newComponent<SimBus>("bus3", 3, 0.1);
+   SimBus & a4 = sim.newComponent<SimBus>("bus4", 4, 0.1);
+   SimBus & a5 = sim.newComponent<SimBus>("bus5", 5, 0.1);
 
    a4.dependsOn(a0);
    a5.dependsOn(a0);
@@ -1059,91 +1144,4 @@ BOOST_AUTO_TEST_CASE (test_transformers)
    Log().message() << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
-{
-   // For this test, we compare values for an overhead line examined in one of Kersting's papers:
-   // docs/background/Kersting_Carson.pdf.
-   Model mod;
-   Simulation sim(mod);
-
-   Parser & p = Parser::globalParser();
-   p.parse("test_overhead_compare_carson_1.yaml", mod, sim); p.postParse();
-
-   mod.validate();
-   sim.initialize();
-
-   OverheadLine * oh = mod.component<OverheadLine>("line_1_2");
-
-   ublas::matrix<Complex> ZWire = oh->ZWire();
-   ublas::matrix<Complex> ZPhase = oh->ZPhase();
-   Log().message() << "ZWire = " << std::endl;
-   for (int i = 0; i < ZWire.size1(); ++i)
-   {
-      messageStream() << row(ZWire, i) << std::endl;
-   }
-   Log().message() << "ZPhase = " << std::endl;
-   for (int i = 0; i < ZPhase.size1(); ++i)
-   {
-      messageStream() << row(ZPhase, i) << std::endl;
-   }
-   Log().message() << "YNode = " << std::endl;
-   for (int i = 0; i < oh->Y().size1(); ++i)
-   {
-      messageStream() << row(oh->Y(), i) << std::endl;
-   }
-
-   Complex cmp;
-   cmp = {1.3369, 1.3331}; double err00 = abs(ZPhase(0,0) - cmp) / abs(cmp);
-   cmp = {0.2102, 0.5778}; double err01 = abs(ZPhase(0, 1) - cmp) / abs(cmp);
-   cmp = {0.2132, 0.5014}; double err02 = abs(ZPhase(0, 2) - cmp) / abs(cmp);
-   cmp = {1.3239, 1.3557}; double err11 = abs(ZPhase(1, 1) - cmp) / abs(cmp);
-   cmp = {0.2067, 0.4591}; double err12 = abs(ZPhase(1, 2) - cmp) / abs(cmp);
-   cmp = {1.3295, 1.3459}; double err22 = abs(ZPhase(2, 2) - cmp) / abs(cmp);
-   Log().message() << "Err = " 
-             << err00 << " " << err01 << " " << err02 << " " << err11 << " " << err12 << " " << err22 << std::endl;
-
-   BOOST_CHECK(err00 < 0.001);
-   BOOST_CHECK(err01 < 0.001);
-   BOOST_CHECK(err02 < 0.001);
-   BOOST_CHECK(err11 < 0.001);
-   BOOST_CHECK(err12 < 0.001);
-   BOOST_CHECK(err22 < 0.001);
-
-   BOOST_CHECK_EQUAL(ZPhase(0,1), ZPhase(1,0));
-   BOOST_CHECK_EQUAL(ZPhase(0,2), ZPhase(2,0));
-   BOOST_CHECK_EQUAL(ZPhase(1,2), ZPhase(2,1));
-}
-
-BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
-{
-   // For this test, we compare values for an overhead line examined in one of Kersting's papers:
-   // docs/background/Kersting_Carson.pdf.
-   Model mod;
-   Simulation sim(mod);
-
-   Parser & p = Parser::globalParser();
-   p.parse("test_overhead_compare_carson_2.yaml", mod, sim); p.postParse();
-
-   mod.validate();
-   sim.initialize();
-
-   Bus * bus1 = mod.component<Bus>("bus_1");
-   Bus * bus2 = mod.component<Bus>("bus_2");
-
-   Log().message() << "Bus 1 voltages: " << abs(bus1->V()(0)) << "@" << arg(bus1->V()(0)) * 180 / pi << std::endl;
-   Log().message() << "Bus 1 voltages: " << abs(bus1->V()(1)) << "@" << arg(bus1->V()(1)) * 180 / pi << std::endl;
-   Log().message() << "Bus 1 voltages: " << abs(bus1->V()(2)) << "@" << arg(bus1->V()(2)) * 180 / pi << std::endl;
-   Log().message() << "Bus 2 voltages: " << abs(bus2->V()(0)) << "@" << arg(bus2->V()(0)) * 180 / pi << std::endl;
-   Log().message() << "Bus 2 voltages: " << abs(bus2->V()(1)) << "@" << arg(bus2->V()(1)) * 180 / pi << std::endl;
-   Log().message() << "Bus 2 voltages: " << abs(bus2->V()(2)) << "@" << arg(bus2->V()(2)) * 180 / pi << std::endl;
-
-   Complex cmp;
-   cmp = polar(14606.60, -0.62 * pi / 180.0); double err0 = abs(bus2->V()(0) - cmp) / abs(cmp);
-   cmp = polar(14726.69, -121.0 * pi / 180.0); double err1 = abs(bus2->V()(1) - cmp) / abs(cmp);
-   cmp = polar(14801.37, 119.2 * pi / 180.0); double err2 = abs(bus2->V()(2) - cmp) / abs(cmp);
-   Log().message() << "Err = " << err0 << " " << err1 << " " << err2 << std::endl;
-
-   BOOST_CHECK(err0 < 0.001);
-   BOOST_CHECK(err1 < 0.001);
-   BOOST_CHECK(err2 < 0.001);
-}
+#endif

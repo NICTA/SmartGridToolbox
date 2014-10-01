@@ -53,6 +53,15 @@ namespace SmartGridToolbox
       
       /// @}
       
+      /// @name Wire and phase impedance:
+      /// @{
+         
+         ublas::matrix<Complex> ZWire() const;
+
+         ublas::matrix<Complex> ZPhase(const ublas::matrix<Complex>& ZWire) const;
+         
+      /// @}
+      
       private:
          double L_;                      ///< Length.
          int nNeutral_;                  ///< Internal multigrounded neutral lines.
