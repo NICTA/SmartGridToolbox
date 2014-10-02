@@ -68,21 +68,21 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
    auto oh = std::dynamic_pointer_cast<OverheadLine>(netw.arc("line_1_2")->branch());
 
    ublas::matrix<Complex> ZWire = oh->ZWire();
-   ublas::matrix<Complex> ZPhase = oh->ZPhase();
+   ublas::matrix<Complex> ZPhase = oh->ZPhase(ZWire);
    Log().message() << "ZWire = " << std::endl;
    for (int i = 0; i < ZWire.size1(); ++i)
    {
-      messageStream() << row(ZWire, i) << std::endl;
+      Log().message() << row(ZWire, i) << std::endl;
    }
    Log().message() << "ZPhase = " << std::endl;
    for (int i = 0; i < ZPhase.size1(); ++i)
    {
-      messageStream() << row(ZPhase, i) << std::endl;
+      Log().message() << row(ZPhase, i) << std::endl;
    }
    Log().message() << "YNode = " << std::endl;
    for (int i = 0; i < oh->Y().size1(); ++i)
    {
-      messageStream() << row(oh->Y(), i) << std::endl;
+      Log().message() << row(oh->Y(), i) << std::endl;
    }
 
    Complex cmp;
@@ -111,17 +111,16 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
 {
    // For this test, we compare values for an overhead line examined in one of Kersting's papers:
    // docs/background/Kersting_Carson.pdf.
-   Model mod;
-   Simulation sim(mod);
+   Network netw("network");
+   Parser<Network> p;
+   p.parse("test_overhead_compare_carson_2.yaml", netw);
 
-   Parser & p = Parser::globalParser();
-   p.parse("test_overhead_compare_carson_2.yaml", mod, sim); p.postParse();
+   netw.solvePowerFlow();
 
-   mod.validate();
-   sim.initialize();
+   auto oh = std::dynamic_pointer_cast<OverheadLine>(netw.arc("line_1_2")->branch());
 
-   Bus * bus1 = mod.component<Bus>("bus_1");
-   Bus * bus2 = mod.component<Bus>("bus_2");
+   auto bus1 = netw.node("bus_1")->bus();
+   auto bus2 = netw.node("bus_2")->bus();
 
    Log().message() << "Bus 1 voltages: " << abs(bus1->V()(0)) << "@" << arg(bus1->V()(0)) * 180 / pi << std::endl;
    Log().message() << "Bus 1 voltages: " << abs(bus1->V()(1)) << "@" << arg(bus1->V()(1)) * 180 / pi << std::endl;
@@ -131,9 +130,9 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
    Log().message() << "Bus 2 voltages: " << abs(bus2->V()(2)) << "@" << arg(bus2->V()(2)) * 180 / pi << std::endl;
 
    Complex cmp;
-   cmp = polar(14606.60, -0.62 * pi / 180.0); double err0 = abs(bus2->V()(0) - cmp) / abs(cmp);
-   cmp = polar(14726.69, -121.0 * pi / 180.0); double err1 = abs(bus2->V()(1) - cmp) / abs(cmp);
-   cmp = polar(14801.37, 119.2 * pi / 180.0); double err2 = abs(bus2->V()(2) - cmp) / abs(cmp);
+   cmp = polar(14.60660, -0.62 * pi / 180.0); double err0 = abs(bus2->V()(0) - cmp) / abs(cmp);
+   cmp = polar(14.72669, -121.0 * pi / 180.0); double err1 = abs(bus2->V()(1) - cmp) / abs(cmp);
+   cmp = polar(14.80137, 119.2 * pi / 180.0); double err2 = abs(bus2->V()(2) - cmp) / abs(cmp);
    Log().message() << "Err = " << err0 << " " << err1 << " " << err2 << std::endl;
 
    BOOST_CHECK(err0 < 0.001);
