@@ -140,83 +140,6 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
    BOOST_CHECK(err2 < 0.001);
 }
 
-#if 0
-BOOST_AUTO_TEST_CASE (test_dependencies)
-{
-   Simulation sim;
-
-   SimBus & a0 = sim.newComponent<SimBus>("bus0", 0, 0.1);
-   SimBus & a1 = sim.newComponent<SimBus>("bus1", 1, 0.1);
-   SimBus & a2 = sim.newComponent<SimBus>("bus2", 2, 0.1);
-   SimBus & a3 = sim.newComponent<SimBus>("bus3", 3, 0.1);
-   SimBus & a4 = sim.newComponent<SimBus>("bus4", 4, 0.1);
-   SimBus & a5 = sim.newComponent<SimBus>("bus5", 5, 0.1);
-
-   a4.dependsOn(a0);
-   a5.dependsOn(a0);
-   a0.dependsOn(a1);
-   a2.dependsOn(a1);
-   a1.dependsOn(a3);
-   a1.dependsOn(a4);
-   a2.dependsOn(a5);
-
-   mod.validate();
-
-   BOOST_CHECK(mod.components()[0] == &a3);
-   BOOST_CHECK(mod.components()[1] == &a0);
-   BOOST_CHECK(mod.components()[2] == &a1);
-   BOOST_CHECK(mod.components()[3] == &a4);
-   BOOST_CHECK(mod.components()[4] == &a5);
-   BOOST_CHECK(mod.components()[5] == &a2);
-}
-
-BOOST_AUTO_TEST_CASE (test_simple_battery)
-{
-   local_time::time_zone_ptr tz(new local_time::posix_time_zone("UTC0"));
-   using namespace boost::gregorian;
-   SimpleBattery bat1("sb0");
-   bat1.setName("bat1");
-   bat1.setInitCharge(5.0 * kWh);
-   bat1.setMaxCharge(8.0 * kWh);
-   bat1.setMaxChargePower(1.0 * kW);
-   bat1.setMaxDischargePower(2.1 * kW);
-   bat1.setChargeEfficiency(0.9);
-   bat1.setDischargeEfficiency(0.8);
-   bat1.setRequestedPower(-0.4 * kW);
-   bat1.initialize();
-   bat1.update(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
-   Log().message() << "1 Battery charge = " << bat1.charge() / kWh << endl;
-   bat1.update(bat1.time() + posix_time::hours(3));
-   Log().message() << "2 Battery charge = " << bat1.charge() / kWh << endl;
-   double comp = bat1.initCharge() + 
-      dSeconds(posix_time::hours(3)) * bat1.requestedPower() /
-      bat1.dischargeEfficiency();
-   Log().message() << "comp = " << comp / kWh << endl;
-   BOOST_CHECK(bat1.charge() == comp);
-
-   bat1.setRequestedPower(1.3 * kW);
-   bat1.initialize();
-   bat1.update(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
-   Log().message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
-   bat1.update(bat1.time() + posix_time::hours(3));
-   Log().message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
-   comp = bat1.initCharge() + 
-      dSeconds(posix_time::hours(3)) * bat1.maxChargePower() *
-      bat1.chargeEfficiency();
-   Log().message() << "comp = " << comp / kWh << endl;
-   BOOST_CHECK(bat1.charge() == comp);
-
-   bat1.setRequestedPower(-1 * kW);
-   bat1.initialize();
-   bat1.update(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
-   Log().message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
-   bat1.update(bat1.time() + posix_time::hours(5) + posix_time::minutes(30));
-   Log().message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
-   comp = 0.0;
-   Log().message() << "comp = " << comp / kWh << endl;
-   BOOST_CHECK(bat1.charge() == comp);
-}
-
 BOOST_AUTO_TEST_CASE (test_spline)
 {
   Spline spline;
@@ -336,6 +259,83 @@ BOOST_AUTO_TEST_CASE (test_function_timeseries)
    Log().message() << fts.value(posix_time::seconds(10)+milliseconds(3)) << endl;
    BOOST_CHECK(fts.value(posix_time::seconds(-1)) == -2.0);
    BOOST_CHECK(fts.value(posix_time::seconds(3)) == 6.0);
+}
+
+#if 0
+BOOST_AUTO_TEST_CASE (test_dependencies)
+{
+   Simulation sim;
+
+   SimBus & a0 = sim.newComponent<SimBus>("bus0", 0, 0.1);
+   SimBus & a1 = sim.newComponent<SimBus>("bus1", 1, 0.1);
+   SimBus & a2 = sim.newComponent<SimBus>("bus2", 2, 0.1);
+   SimBus & a3 = sim.newComponent<SimBus>("bus3", 3, 0.1);
+   SimBus & a4 = sim.newComponent<SimBus>("bus4", 4, 0.1);
+   SimBus & a5 = sim.newComponent<SimBus>("bus5", 5, 0.1);
+
+   a4.dependsOn(a0);
+   a5.dependsOn(a0);
+   a0.dependsOn(a1);
+   a2.dependsOn(a1);
+   a1.dependsOn(a3);
+   a1.dependsOn(a4);
+   a2.dependsOn(a5);
+
+   mod.validate();
+
+   BOOST_CHECK(mod.components()[0] == &a3);
+   BOOST_CHECK(mod.components()[1] == &a0);
+   BOOST_CHECK(mod.components()[2] == &a1);
+   BOOST_CHECK(mod.components()[3] == &a4);
+   BOOST_CHECK(mod.components()[4] == &a5);
+   BOOST_CHECK(mod.components()[5] == &a2);
+}
+
+BOOST_AUTO_TEST_CASE (test_simple_battery)
+{
+   local_time::time_zone_ptr tz(new local_time::posix_time_zone("UTC0"));
+   using namespace boost::gregorian;
+   SimpleBattery bat1("sb0");
+   bat1.setName("bat1");
+   bat1.setInitCharge(5.0 * kWh);
+   bat1.setMaxCharge(8.0 * kWh);
+   bat1.setMaxChargePower(1.0 * kW);
+   bat1.setMaxDischargePower(2.1 * kW);
+   bat1.setChargeEfficiency(0.9);
+   bat1.setDischargeEfficiency(0.8);
+   bat1.setRequestedPower(-0.4 * kW);
+   bat1.initialize();
+   bat1.update(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
+   Log().message() << "1 Battery charge = " << bat1.charge() / kWh << endl;
+   bat1.update(bat1.time() + posix_time::hours(3));
+   Log().message() << "2 Battery charge = " << bat1.charge() / kWh << endl;
+   double comp = bat1.initCharge() + 
+      dSeconds(posix_time::hours(3)) * bat1.requestedPower() /
+      bat1.dischargeEfficiency();
+   Log().message() << "comp = " << comp / kWh << endl;
+   BOOST_CHECK(bat1.charge() == comp);
+
+   bat1.setRequestedPower(1.3 * kW);
+   bat1.initialize();
+   bat1.update(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
+   Log().message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
+   bat1.update(bat1.time() + posix_time::hours(3));
+   Log().message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
+   comp = bat1.initCharge() + 
+      dSeconds(posix_time::hours(3)) * bat1.maxChargePower() *
+      bat1.chargeEfficiency();
+   Log().message() << "comp = " << comp / kWh << endl;
+   BOOST_CHECK(bat1.charge() == comp);
+
+   bat1.setRequestedPower(-1 * kW);
+   bat1.initialize();
+   bat1.update(timeFromLocalTime(posix_time::ptime(gregorian::date(2012, Feb, 11), posix_time::hours(2)), tz));
+   Log().message() << "3 Battery charge = " << bat1.charge() / kWh << endl;
+   bat1.update(bat1.time() + posix_time::hours(5) + posix_time::minutes(30));
+   Log().message() << "4 Battery charge = " << bat1.charge() / kWh << endl;
+   comp = 0.0;
+   Log().message() << "comp = " << comp / kWh << endl;
+   BOOST_CHECK(bat1.charge() == comp);
 }
 
 enum class Event : int
