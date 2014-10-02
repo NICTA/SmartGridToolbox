@@ -1,93 +1,83 @@
-# Sample SmartGridToolbox configuration file.
-# File format is YAML.
-
---- # Marks the start of each configuration document.
-
-configuration_name:                 test_loops
-timezone:                           AEST10AEDT,M10.5.0/02,M3.5.0/03  # Timezone info for Canberra, Australia.
-lat_long:                           [-35.3075, 149.1244]             # Canberra, Australia.
-start_time:                         2013-01-01 00:00:00
-end_time:                           2013-01-02 00:00:00
-
-time_series_list:
-   const_time_series:
-      name:                         cloud_cover_series
-      value_type:                   real_scalar
-      const_value:                  0.3
-
-components:
-   weather:      
-      name:                         weather_1
-      cloud_cover:                  cloud_cover_series
-      dt:                           00:30:00
-   network:      
-      name:                         network_1
-   bus:      
-      name:                         bus_sl
-      network:                      network_1
-      type:                         SL
-      phases:                       [A, B, C]
-      nominal_voltage:              [240, 240D120, 240D240]
-   loop:
-      name:                         i
-      count:                        200
-      body:
-         bus:      
-            name:                   bus_1_${i}
-            network:                network_1
-            type:                   PQ
-            phases:                 [A, B, C]
-            nominal_voltage:        [240, 240D120, 240D240]
-         bus:      
-            name:                   bus_2_${i}
-            network:                network_1
-            type:                   PQ
-            phases:                 [A, B, C]
-            nominal_voltage:        [240, 240D120, 240D240]
-         branch:      
-            name:                   branch_1_2_${i}
-            network:                network_1
-            phases_0:               [A, B, C]
-            phases_1:               [A, B, C]
-            bus_0:                  bus_1_${i}
-            bus_1:                  bus_2_${i}
-            Y:      
-               simple_line:         [4.5-0.15j, 4.5-0.15j, 4.5-0.15j]
-         branch:      
-            name:                   branch_1_sl_${i}
-            network:                network_1
-            phases_0:               [A, B, C]
-            phases_1:               [A, B, C]
-            bus_0:                  bus_1_${i}
-            bus_1:                  bus_sl
-            Y:      
-               simple_line:         [1.3-0.9j, 1.3-0.9j, 1.3-0.9j]
-         zip_to_ground:      
-            name:                   zip_bus_1_${i}
-            phases:                 [A, B, C]
-            bus:                    bus_1_${i}
-            complex_power_load:     [240+120j, 240+120j, 240+120j]
-         inverter:      
-            name:                   inverter_bus_2_${i}
-            bus:                    bus_2_${i}
-            phases:                 [A, B, C]
-            requested_Q_per_phase:  100
-            max_S_mag_per_phase:    1200
-            min_power_factor:       0.9
-            efficiency:             0.86
-      # Should point right at sun on Jan 26, 2013, 0830. 
-         zip_to_ground:      
-            name:                   zip_bus_2_${i}
-            phases:                 [A, B, C]
-            bus:                    bus_2_${i}
-            admittance:             [0.5j, 0.5j, 0.5j]
-            complex_power_load:     [100, 100, 100]
-   solar_pv:      
-      name:                   solar_pv_bus_2
-      weather:                weather_1
-      inverter:               inverter_bus_2_0
-      efficiency:             0.75
-      area_m2:                6.45
-      zenith_degrees:         64.6
-      azimuth_degrees:        95.8
---- # Marks the end of each configuration document.
+-  simulation:
+      timezone:                         AEST10AEDT,M10.5.0/02,M3.5.0/03  # Timezone info for Canberra, Australia.
+      lat_long:                         [-35.3075, 149.1244]             # Canberra, Australia.
+      start_time:                       2013-01-01 00:00:00
+      end_time:                         2013-01-02 00:00:00
+-  time_series:
+      id:                               cloud_cover_series
+      value_type:                       real_scalar
+      type:                             const_time_series
+      const_value:                      0.3
+-  weather:
+      name:                             weather_1
+      cloud_cover:                      cloud_cover_series
+      dt:                               00:30:00
+-  network:
+      name:                             network_1
+-  bus:
+      name:                             bus_sl
+      network:                          network_1
+      type:                             SL
+      phases:                           [A, B, C]
+      nominal_voltage:                  [240, 240D120, 240D240]
+-  loop:
+      loop_variable:                    [i, 1, 200, 1]
+      loop_body:
+         -  bus:
+               name:                       bus_1_${i}
+               network:                    network_1
+               type:                       PQ
+               phases:                     [A, B, C]
+               nominal_voltage:            [240, 240D120, 240D240]
+         -  bus:
+               name:                       bus_2_${i}
+               network:                    network_1
+               type:                       PQ
+               phases:                     [A, B, C]
+               nominal_voltage:            [240, 240D120, 240D240]
+         -  branch:
+               name:                       branch_1_2_${i}
+               network:                    network_1
+               phases_0:                   [A, B, C]
+               phases_1:                   [A, B, C]
+               bus_0:                      bus_1_${i}
+               bus_1:                      bus_2_${i}
+               Y:
+                  simple_line:             [4.5-0.15j, 4.5-0.15j, 4.5-0.15j]
+         -  branch:
+               name:                       branch_1_sl_${i}
+               network:                    network_1
+               phases_0:                   [A, B, C]
+               phases_1:                   [A, B, C]
+               bus_0:                      bus_1_${i}
+               bus_1:                      bus_sl
+               Y:
+                  simple_line:             [1.3-0.9j, 1.3-0.9j, 1.3-0.9j]
+         -  zip_to_ground:
+               name:                       zip_bus_1_${i}
+               phases:                     [A, B, C]
+               bus:                        bus_1_${i}
+               complex_power_load:         [240+120j, 240+120j, 240+120j]
+         -  inverter:
+               name:                       inverter_bus_2_${i}
+               bus:                        bus_2_${i}
+               phases:                     [A, B, C]
+               requested_Q_per_phase:      100
+               max_S_mag_per_phase:        1200
+               min_power_factor:           0.9
+               efficiency:                 0.86
+      # Should point right at sun on Jan 26, 2013, 0830.
+         -  zip_to_ground:
+               name:                       zip_bus_2_${i}
+               phases:                     [A, B, C]
+               bus:                        bus_2_${i}
+               admittance:                 [0.5j, 0.5j, 0.5j]
+               complex_power_load:         [100, 100, 100]
+-  solar_pv:
+      name:                             solar_pv_bus_2
+      weather:                          weather_1
+      inverter:                         inverter_bus_2_0
+      efficiency:                       0.75
+      area_m2:                          6.45
+      zenith_degrees:                   64.6
+      azimuth_degrees:                  95.8

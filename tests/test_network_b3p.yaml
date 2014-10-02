@@ -1,62 +1,48 @@
-# Sample SmartGridToolbox configuration file.
-# File format is YAML.
-
---- # Marks the start of each configuration document.
-
-configuration_name:        test_network_b3p
-start_time:                2013-01-23 13:13:00
-end_time:                  2013-01-23 15:13:00
-lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
-timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
-
-components:
-   network:
-      name:                   network_1
-   bus:
-      name:                   bus_1
-      network:                network_1
-      type:                   PQ
-      phases:                 [A, B, C]
-      nominal_voltage:        [1, 1D120, 1D240]
-   zip_to_ground:
-      name:                   zip_load_1
-      phases:                 [A, B, C]
-      bus:                    bus_1
-      complex_power_load:     [0.0240+0.0120j, 0.0240+0.0120j, 0.0240+0.0120j]
-   bus:
-      name:                   bus_2
-      network:                network_1
-      type:                   PQ
-      phases:                 [A, B, C]
-      nominal_voltage:        [1, 1D120, 1D240]
-   zip_to_ground:
-      name:                   zip_load_2
-      phases:                 [A, B, C]
-      bus:                    bus_2
-      complex_power_load:     [0.0840-0.0520j, 0.0840-0.0520j, 0.0840-0.0520j]
-   bus:
-      name:                   bus_3
-      network:                network_1
-      type:                   SL
-      phases:                 [A, B, C]
-      nominal_voltage:        [1, 1D120, 1D240]
-   branch:
-      name:                   branch_1_2
-      network:                network_1
-      phases_0:               [A, B, C]
-      phases_1:               [A, B, C]
-      bus_0:                  bus_1
-      bus_1:                  bus_2
+-  network:
+      name:                             network_1
+-  bus:
+      name:                             bus_1
+      network:                          network_1
+      type:                             PQ
+      phases:                           [A, B, C]
+      nominal_voltage:                  [1, 1D120, 1D240]
+-  zip_to_ground:
+      name:                             zip_load_1
+      phases:                           [A, B, C]
+      bus:                              bus_1
+      complex_power_load:               [0.0240+0.0120j, 0.0240+0.0120j, 0.0240+0.0120j]
+-  bus:
+      name:                             bus_2
+      network:                          network_1
+      type:                             PQ
+      phases:                           [A, B, C]
+      nominal_voltage:                  [1, 1D120, 1D240]
+-  zip_to_ground:
+      name:                             zip_load_2
+      phases:                           [A, B, C]
+      bus:                              bus_2
+      complex_power_load:               [0.0840-0.0520j, 0.0840-0.0520j, 0.0840-0.0520j]
+-  bus:
+      name:                             bus_3
+      network:                          network_1
+      type:                             SL
+      phases:                           [A, B, C]
+      nominal_voltage:                  [1, 1D120, 1D240]
+-  branch:
+      name:                             branch_1_2
+      network:                          network_1
+      phases_0:                         [A, B, C]
+      phases_1:                         [A, B, C]
+      bus_0:                            bus_1
+      bus_1:                            bus_2
       Y:
-         simple_line:         [5-15j, 5-15j, 5-15j]
-   branch:
-      name:                   branch_1_3
-      network:                network_1
-      phases_0:               [A, B, C]
-      phases_1:               [A, B, C]
-      bus_0:                  bus_1
-      bus_1:                  bus_3
+         simple_line:                   [5-15j, 5-15j, 5-15j]
+-  branch:
+      name:                             branch_1_3
+      network:                          network_1
+      phases_0:                         [A, B, C]
+      phases_1:                         [A, B, C]
+      bus_0:                            bus_1
+      bus_1:                            bus_3
       Y:
-         simple_line:         [3-9j, 3-9j, 3-9j]
-
---- # Marks the end of each configuration document.
+         simple_line:                   [3-9j, 3-9j, 3-9j]

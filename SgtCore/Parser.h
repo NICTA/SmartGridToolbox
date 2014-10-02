@@ -158,41 +158,46 @@ namespace SmartGridToolbox
 
          void parse(const YAML::Node& node, T& into)
          {
-            for (const auto& subnode : node)
+            for (const auto& subnode1 : node)
             {
-               std::string nodeType = subnode.first.as<std::string>();
-               const YAML::Node& nodeVal = subnode.second;
+               for (const auto& subnode : subnode1)
+               {
+                  // Normally, there will be only one map per list item, but it is OK to have more.
+                  // The issue is that maps have no implied ordering.
+                  std::string nodeType = subnode.first.as<std::string>();
+                  const YAML::Node& nodeVal = subnode.second;
 
-               if (nodeType == "parameters")
-               {
-                  for (auto& nd : nodeVal)
+                  if (nodeType == "parameters")
                   {
-                     std::string key = nd.first.as<std::string>();
-                     auto val = nd.second;
-                     parameters_[key] = val;
+                     for (auto& nd : nodeVal)
+                     {
+                        std::string key = nd.first.as<std::string>();
+                        auto val = nd.second;
+                        parameters_[key] = val;
+                     }
                   }
-               }
-               else if (nodeType == "loop")
-               {
-                  for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_)
+                  else if (nodeType == "loop")
                   {
-                     const YAML::Node& ndLoopBody = nodeVal["loop_body"];
-                     parse(ndLoopBody, into);
-                  }
-                  loops_.pop_back();
-               }
-               else
-               {
-                  Log().message() << "Parsing plugin " <<  nodeType << "." << std::endl;
-                  auto it = plugins_.find(nodeType);
-                  if (it == plugins_.end())
-                  {
-                     Log().warning() << "I don't know how to parse plugin " << nodeType << std::endl;
+                     for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_)
+                     {
+                        const YAML::Node& ndLoopBody = nodeVal["loop_body"];
+                        parse(ndLoopBody, into);
+                     }
+                     loops_.pop_back();
                   }
                   else
                   {
-                     Indent _;
-                     it->second->parse(nodeVal, into, *this);
+                     Log().message() << "Parsing plugin " <<  nodeType << "." << std::endl;
+                     auto it = plugins_.find(nodeType);
+                     if (it == plugins_.end())
+                     {
+                        Log().warning() << "I don't know how to parse plugin " << nodeType << std::endl;
+                     }
+                     else
+                     {
+                        Indent _;
+                        it->second->parse(nodeVal, into, *this);
+                     }
                   }
                }
             }

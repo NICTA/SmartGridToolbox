@@ -1,14 +1,5 @@
-# Sample SmartGridToolbox configuration file.
-# File format is YAML.
-
---- # Marks the start of each configuration document.
-
-configuration_name:        config_1
-timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
-lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
-start_time:                2013-01-01 00:00:00
-end_time:                  2014-01-01 00:00:00
-
-components:
-
---- # Marks the end of each configuration document.
+simulation:
+   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
+   lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
+   start_time:                2013-01-01 00:00:00
+   end_time:                  2014-01-01 00:00:00

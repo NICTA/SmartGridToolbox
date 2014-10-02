@@ -69,14 +69,30 @@ namespace SmartGridToolbox
    {
       genMap_[gen->id()] = gen;
       genVec_.push_back(gen);
-      node(busId)->gens_.push_back(gen);
+      auto busNd = node(busId);
+      if (busNd != nullptr)
+      {
+         busNd->gens_.push_back(gen);
+      }
+      else
+      {
+         Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network." << std::endl;
+      }
    }
          
    void Network::addZip(ZipPtr zip, const std::string& busId)
    {
       zipMap_[zip->id()] = zip;
       zipVec_.push_back(zip);
-      node(busId)->zips_.push_back(zip);
+      auto busNd = node(busId);
+      if (busNd != nullptr)
+      {
+         busNd->zips_.push_back(zip);
+      }
+      else
+      {
+         Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network." << std::endl;
+      }
    }
 
    void Network::solvePowerFlow()
