@@ -16,7 +16,7 @@ for i = 1:10
    z = zeros(size(cVec));
    dat = [tVec, z, z, cVec];
 
-   fp = fopen(['loads/load_' num2str(i) '.txt'], 'w+');
+   fp = fopen(['loads/load_' num2str(i-1) '.txt'], 'w+');
    fprintf(fp, '%6d %10.3e %10.3e %10.3e\n', dat');
    fclose(fp);
    cVeci = [cVeci, cVec];
