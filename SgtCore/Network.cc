@@ -161,22 +161,26 @@ namespace SmartGridToolbox
    void Network::print(std::ostream& os) const
    {
       Component::print(os);
-      Indent _;
+      StreamIndent _(os);
       os << "P_base: " << PBase_ << std::endl;
       for (auto nd : nodeVec_)
       {
-         os << nd->bus() << std::endl;
-         os << "Zips: " << std::endl;
          {
-            Indent _;
+            os << "Bus: " << std::endl;
+            StreamIndent _(os);
+            os << *nd->bus() << std::endl;
+         }
+         {
+            os << "Zips: " << std::endl;
+            StreamIndent _(os);
             for (auto zip : nd->zips())
             {
                os << *zip << std::endl;
             }
          }
-         os << "Gens: " << std::endl;
          {
-            Indent _;
+            os << "Gens: " << std::endl;
+            StreamIndent _(os);
             for (auto gen : nd->gens())
             {
                os << *gen << std::endl;
@@ -185,7 +189,10 @@ namespace SmartGridToolbox
       }
       for (auto arc : arcVec_)
       {
-         os << arc->branch() << std::endl;
+         os << "Branch: " << std::endl;
+         StreamIndent _1(os);
+         os << *arc->branch() << std::endl;
+         StreamIndent _2(os);
          os << "Bus 0 = " << arc->node0()->bus()->id() << std::endl;
          os << "Bus 1 = " << arc->node0()->bus()->id() << std::endl;
       }

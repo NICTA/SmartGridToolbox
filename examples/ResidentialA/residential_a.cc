@@ -45,9 +45,11 @@ int main(int argc, const char** argv)
    std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
    std::shared_ptr<Node> busNd = netw->node(busId);
 
+   Log().message() << *netw << std::endl;
+
    while (ok)
    {
-      Indent _;
+      LogIndent _;
       ok = sim.doTimestep();
       double t = dSeconds(sim.currentTime() - sim.startTime())/3600;
       auto V = busNd->bus()->V();
@@ -60,7 +62,7 @@ int main(int argc, const char** argv)
          }
          {
             auto& msg = Log().message() << "V_ANG : " << t;
-            for (auto x : V) msg << " " << std::arg(x); 
+            for (auto x : V) msg << " " << std::arg(x)*180/pi; 
             msg << std::endl;
          }
          {

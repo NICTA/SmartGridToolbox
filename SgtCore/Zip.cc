@@ -14,7 +14,7 @@ namespace SmartGridToolbox
    void ZipAbc::print(std::ostream& os) const
    {
       Component::print(os);
-      Indent _;
+      StreamIndent _(os);
       os << "id: " << id() << std::endl;
       os << "phases: " << phases() << std::endl;
       os << "YConst: " << YConst() << std::endl;

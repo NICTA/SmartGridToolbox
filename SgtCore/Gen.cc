@@ -14,7 +14,7 @@ namespace SmartGridToolbox
    void GenAbc::print(std::ostream& os) const
    {
       Component::print(os);
-      Indent _;
+      StreamIndent _(os);
       os << "phases: " << phases() << std::endl;
       os << "S: " << S() << std::endl;
       os << "PMin: " << PMin() << std::endl;

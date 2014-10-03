@@ -103,8 +103,8 @@ namespace SmartGridToolbox
 
          std::string expandString(const std::string& str) const;
          std::string expandExpression(const std::smatch& m) const;
-         std::string expandLoopExpressionBody(const std::string& str) const;
-         std::string expandVariableExpressionBody(const std::string& str1, const std::string& str2) const;
+         std::string expandMathExpressionBody(const std::string& str) const;
+         std::string expandLoopOrParameterExpressionBody(const std::string& str1, const std::string& str2) const;
          std::string nd2Str(const YAML::Node& nd) const;
 
       protected:
@@ -149,7 +149,7 @@ namespace SmartGridToolbox
          {
             Log().message() << "Parsing file " << fname << "." << std::endl;
             {
-               Indent _;
+               LogIndent _;
                auto top = getTopNode(fname);
                parse(top, into);
             }
@@ -195,7 +195,7 @@ namespace SmartGridToolbox
                      }
                      else
                      {
-                        Indent _;
+                        LogIndent _;
                         it->second->parse(nodeVal, into, *this);
                      }
                   }

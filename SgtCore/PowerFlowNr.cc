@@ -480,7 +480,7 @@ namespace SmartGridToolbox
 
    bool PowerFlowNr::solve()
    {
-      SGT_DEBUG(Log().debug() << "PowerFlowNr : solve." << std::endl; Indent _;);
+      SGT_DEBUG(Log().debug() << "PowerFlowNr : solve." << std::endl; LogIndent _;);
 
       Stopwatch stopwatch;
       Stopwatch stopwatchTot;
@@ -567,7 +567,7 @@ namespace SmartGridToolbox
             Log().debug() << "Before kluSolve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
             Log().debug() << "Before kluSolve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
             Log().debug() << "Before kluSolve: J   = " << std::endl;
-            Indent _;
+            LogIndent _;
             for (int i = 0; i < nVar(); ++i)
             {
                Log().debug() << std::setprecision(5) << std::setw(9) << row(JMat, i) << std::endl;
@@ -672,15 +672,15 @@ namespace SmartGridToolbox
    void PowerFlowNr::printProblem()
    {
       Log().debug() << "PowerFlowNr::printProblem()" << std::endl;
-      Indent _;
+      LogIndent _;
       Log().debug() << "Nodes:" << std::endl;
       {
-         Indent _;
+         LogIndent _;
          for (const NodeNr* nd : nodes_)
          {
             Log().debug() << "Node:" << std::endl;
             {
-               Indent _;
+               LogIndent _;
                Log().debug() << "Id    : " << nd->bus_->id_ << std::endl;
                Log().debug() << "Type  : " << nd->bus_->type_ << std::endl;
                Log().debug() << "Phase : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
@@ -693,17 +693,17 @@ namespace SmartGridToolbox
       }
       Log().debug() << "Branches:" << std::endl;
       {
-         Indent _;
+         LogIndent _;
          for (const std::unique_ptr<BranchNr>& branch : branches_)
          {
             Log().debug() << "Branch:" << std::endl;
             {
-               Indent _;
+               LogIndent _;
                Log().debug() << "Busses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;
                Log().debug() << "Phases : " << branch->phases_[0] << ", " << branch->phases_[1] << std::endl;
                Log().debug() << "Y      :" << std::endl;
                {
-                  Indent _;
+                  LogIndent _;
                   for (int i = 0; i < branch->Y_.size1(); ++i)
                   {
                      Log().debug() << std::setprecision(14) << std::setw(18) << row(branch->Y_, i) << std::endl;
@@ -714,7 +714,7 @@ namespace SmartGridToolbox
       }
       Log().debug() << "Y:" << std::endl;
       {
-         Indent _;
+         LogIndent _;
          for (int i = 0; i < Y_.size1(); ++i)
          {
             Log().debug() << std::setprecision(14) << std::setw(18) << row(Y_, i) << std::endl;

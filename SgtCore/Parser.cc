@@ -282,7 +282,27 @@ namespace SmartGridToolbox
 
    namespace 
    {
-      const std::regex expr("(\\$\\(([^\\$()<>.]+)\\))|(\\$<([^\\$()<>.]+)(\\.([^\\$()<>.]+))?>)");
+      const std::regex expr(                 // Submatch 0: whole expr, with <>.
+               "<"
+               "("                           // Submatch 1: whole expr body, without <>.
+                  "("                        // Submatch 2: whole math expr body.
+                     "[0-9+\\-*/%() \t]+"
+                  ")|"
+                  "("                        // Submatch 3: whole var/loop expr body.
+                     "("                     // Submatch 4: non-index part of var/loop expr body.
+                        "[a-zA-Z_][\\w]*"
+                     ")+"
+                     "("                     // Submatch 5: index part of var/loop expr body, with ().
+                        "\\("
+                        "("                  // Submatch 6: index part of var/loop expr, without ().
+                           "[a-zA-Z0-9_]*"
+                        ")"
+                        "\\)"
+                     ")?"
+                  ")"
+               ")"
+               ">"
+            );
    }
 
    std::string ParserBase::expandString(const std::string& str) const
@@ -318,86 +338,91 @@ namespace SmartGridToolbox
    std::string ParserBase::expandExpression(const std::smatch& m) const
    {
       std::string result;
-      if (m[1] != "")
+      if (m[2] != "")
       {
-         // loop expression, e.g. $(i + j + 1).
-         result = expandLoopExpressionBody(m[2]); 
+         // Math expression, e.g. ${2 + 3/2}.
+         result = expandMathExpressionBody(m[1]); 
       }
       else
       {
-         // variable expression, e.g. $<phase> or $<V,3>.
-         result = expandVariableExpressionBody(m[4], m[6]);
+         // Loop or parameter expression, e.g. $idx or $phases[3].
+         result = expandLoopOrParameterExpressionBody(m[4], m[6]);
       }
       return result;
    }
 
-   std::string ParserBase::expandLoopExpressionBody(const std::string& str) const
+   std::string ParserBase::expandMathExpressionBody(const std::string& str) const
    {
-      std::string result = str;
-
-      // Substitute the values of all loops...
-      for (const ParserLoop & loop : loops_)
-      {
-         result = std::regex_replace(result, std::regex(loop.name_), std::to_string(loop.i_));
-      }
-
-      // ... and do any remaining maths:
       int calcResult;
-      std::string::const_iterator i1 = result.begin();
-      std::string::const_iterator i2 = result.end();
+      std::string::const_iterator i1 = str.begin();
+      std::string::const_iterator i2 = str.end();
       bool ok = phrase_parse(i1, i2, calc, space, calcResult); // And do the math...
       if (!ok)
       {
          Log().fatal() << "Ill-formed expression " << str << std::endl;
       }
-      result = std::to_string(calcResult); 
+
+      std::string result = std::to_string(calcResult); 
 
       return result;
    }
 
-   std::string ParserBase::expandVariableExpressionBody(const std::string& s1, const std::string& s2) const
+   std::string ParserBase::expandLoopOrParameterExpressionBody(const std::string& s1, const std::string& s2) const
    {
       std::string result;
-      YAML::Node nd;
-      try
-      {
-         nd = parameters_.at(s1);
-      }
-      catch (std::out_of_range e)
-      {
-         Log().fatal() << "The definition of variable expression " << s1 << " was not found." << std::endl;
-      }
-      if (!nd)
-      {
-         Log().fatal() << "In variable expression " << s1 << ", index " << s2 << " was not found." << std::endl;
-      }
 
-      YAML::Node nd2;
-      if (s2 != "")
+      auto it = std::find_if(loops_.begin(), loops_.end(), [&s1](const ParserLoop& l){return l.name_ == s1;});
+      if (it != loops_.end())
       {
-         if (nd.IsSequence())
+         // We matched a loop variable. Make sure there is no index!
+         if (s2 != "")
          {
-            nd2 = nd[std::stoi(s2)];
+            Log().fatal() << "Loop variable " << s1 << " can not be indexed with " << s2 << "." << std::endl;
          }
-         else if (nd.IsMap())
-         {
-            nd2 = nd[s2];
-         }
-         else
-         {
-            Log().fatal() << "Can't index variable " << s1 << "." << std::endl;
-         }
-
-         if (!nd2)
-         {
-            Log().fatal() << "For variable " << s1 << ", index " << s2 << " doesn't exist." << std::endl;
-         }
+         result = std::regex_replace(s1, std::regex(it->name_), std::to_string(it->i_));
       }
       else
       {
-         nd2 = nd;
+         // No matching loop, try parameters.
+         YAML::Node nd;
+         try
+         {
+            nd = parameters_.at(s1);
+         }
+         catch (std::out_of_range e)
+         {
+            Log().fatal() << "Parameter or loop " << s1 << " was not found." << std::endl;
+         }
+
+         YAML::Node nd2;
+         if (s2 != "")
+         {
+            if (nd.IsSequence())
+            {
+               nd2 = nd[std::stoi(s2)];
+            }
+            else if (nd.IsMap())
+            {
+               nd2 = nd[s2];
+            }
+            else
+            {
+               Log().fatal() << "Can't index parameter " << s1 << "." << std::endl;
+            }
+
+            if (!nd2)
+            {
+               Log().fatal() << "For parameter " << s1 << ", index " << s2 << " doesn't exist." << std::endl;
+            }
+         }
+         else
+         {
+            nd2 = nd;
+         }
+         result = nd2Str(nd2);
       }
-      return nd2Str(nd2);
+
+      return result;
    }
 
    std::string ParserBase::nd2Str(const YAML::Node& nd) const

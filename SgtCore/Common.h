@@ -30,70 +30,70 @@ namespace SmartGridToolbox
 
    /// @name Reporting and errors.
    /// @{
-   
-   class Log
+
+   class StreamIndent : public std::streambuf
    {
-      friend class Indent;
+      public:
+
+         explicit StreamIndent(std::ostream& strm) :
+            strm_(&strm),
+            destBuf_(strm.rdbuf()),
+            isFirst_(true),
+            isNewline_(true),
+            ind1_("    "),
+            ind2_("    ")
+            {
+               strm_->rdbuf(this);
+            }
+
+         virtual ~StreamIndent()
+         {
+            if (strm_ != NULL)
+            {
+               strm_->rdbuf(destBuf_);
+            }
+         }
+
+         void reset(const std::string& ind1, const std::string& ind2)
+         {
+            ind1_ = ind1;
+            ind2_ = ind2;
+            isFirst_ = true;
+         }
+
+      protected:
+
+         virtual int overflow(int ch)
+         {
+            if (isNewline_ && ch != '\n')
+            {
+               if (isFirst_)
+               {
+                  destBuf_->sputn(ind1_.c_str(), ind1_.size());
+               }
+               else
+               {
+                  destBuf_->sputn(ind2_.c_str(), ind2_.size());
+               }
+            }
+            isNewline_ = ch == '\n';
+            isFirst_ = false;
+            return destBuf_->sputc(ch);
+         }
 
       private:
 
-         class LogBuf : public std::streambuf
-         {
-            public:
-
-               explicit LogBuf(std::ostream& strm) :
-                  strm_(&strm),
-                  destBuf_(strm.rdbuf()),
-                  isFirst_(true),
-                  isNewline_(true)
-               {
-                  strm_->rdbuf(this);
-               }
-
-               virtual ~LogBuf()
-               {
-                  if (strm_ != NULL)
-                  {
-                     strm_->rdbuf(destBuf_);
-                  }
-               }
-
-               void reset(const std::string& ind1, const std::string& ind2)
-               {
-                  ind1_ = ind1;
-                  ind2_ = ind2;
-                  isFirst_ = true;
-               }
-
-            protected:
-
-               virtual int overflow(int ch)
-               {
-                  if (isNewline_ && ch != '\n')
-                  {
-                     if (isFirst_)
-                     {
-                        destBuf_->sputn(ind1_.c_str(), ind1_.size());
-                     }
-                     else
-                     {
-                        destBuf_->sputn(ind2_.c_str(), ind2_.size());
-                     }
-                  }
-                  isNewline_ = ch == '\n';
-                  isFirst_ = false;
-                  return destBuf_->sputc(ch);
-               }
-
-            private:
-
-               std::ostream* strm_;
-               std::streambuf* destBuf_;
-               bool isFirst_;
-               bool isNewline_;
-               std::string ind1_;
-               std::string ind2_;
-         };
+         std::ostream* strm_;
+         std::streambuf* destBuf_;
+         bool isFirst_;
+         bool isNewline_;
+         std::string ind1_;
+         std::string ind2_;
+   };
+   
+   class Log
+   {
+      friend class LogIndent;
 
       public:
 
@@ -152,19 +152,19 @@ namespace SmartGridToolbox
 
          static int indentLevel_;
 
-         LogBuf coutBuf_{std::cout};
-         LogBuf cerrBuf_{std::cerr};
+         StreamIndent coutBuf_{std::cout};
+         StreamIndent cerrBuf_{std::cerr};
          bool isFatal_{false};
    };
 
-   class Indent
+   class LogIndent
    {
       public:
-         Indent()
+         LogIndent()
          {
             Log::indentLevel_ += 4;
          }
-         ~Indent()
+         ~LogIndent()
          {
             Log::indentLevel_ -= 4;
          }

@@ -18,7 +18,7 @@ namespace SmartGridToolbox
    void CommonBranch::print(std::ostream& os) const
    {
       BranchAbc::print(os);
-      Indent _;
+      StreamIndent _(os);
       os << "tap_ratio_magnitude: " << std::abs(tapRatio_) << std::endl;
       os << "tap_ratio_angle_deg: " << std::arg(tapRatio_) * 180 / pi << std::endl;
       os << "Y_series: " << YSeries_ << std::endl;

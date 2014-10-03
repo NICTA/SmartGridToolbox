@@ -21,7 +21,7 @@ namespace SmartGridToolbox
    void Bus::print(std::ostream& os) const
    {
       Component::print(os);
-      Indent _;
+      StreamIndent _(os);
       os << "phases: " << phases() << std::endl;
       os << "type: " << type() << std::endl;
       os << "V_base: " << VBase() << std::endl;

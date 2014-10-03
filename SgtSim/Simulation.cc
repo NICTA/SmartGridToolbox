@@ -18,7 +18,7 @@ namespace SmartGridToolbox
    {
       Log().message() << "Adding SimComponent " << simComp->id() << " of type " 
          << simComp->componentType() << " to the simulation." << std::endl;
-      Indent _;
+      LogIndent _;
 
       SimCompMap::iterator it1 = simCompMap_.find(simComp->id());
       if (it1 != simCompMap_.end())
@@ -45,11 +45,11 @@ namespace SmartGridToolbox
       SGT_DEBUG
       (
          Log().debug() << "Components before initialize:" << std::endl;
-         Indent _;
+         LogIndent _;
          for (auto comp : simCompVec_)
          {
             Log().debug() << comp->id() << " " << comp->rank() << std::endl;
-            Indent _;
+            LogIndent _;
             for (auto dep : comp->dependencies())
             {
                Log().debug() << dep.lock()->id() << dep.lock()->rank() << std::endl;
@@ -90,11 +90,11 @@ namespace SmartGridToolbox
 
       Log().message() << "Components after initialize:" << std::endl;
       {
-         Indent _;
+         LogIndent _;
          for (auto comp : simCompVec_)
          {
             Log().message() << comp->id() << " " << comp->rank() << std::endl;
-            Indent _;
+            LogIndent _;
             for (auto dep : comp->dependencies())
             {
                Log().message() << dep.lock()->id() << " " << dep.lock()->rank() << std::endl;
@@ -124,7 +124,7 @@ namespace SmartGridToolbox
       SGT_DEBUG(Log().debug() << "Simulation doNextUpdate(): " << std::endl);
       SGT_DEBUG(Log().debug() << "Number of scheduled = " << scheduledUpdates_.size() << std::endl);
       SGT_DEBUG(Log().debug() << "Number of contingent = " << contingentUpdates_.size() << std::endl);
-      SGT_DEBUG(Indent _);
+      SGT_DEBUG(LogIndent _);
 
       bool result = false;
 
@@ -149,7 +149,7 @@ namespace SmartGridToolbox
          auto contComp = *contingentUpdates_.begin();
          SGT_DEBUG(Log().debug() << "Contingent update simComponent " << contComp->id() << " from "
                            << schedComp->lastUpdated() << " to " << currentTime_ << std::endl);
-         SGT_DEBUG(Indent _);
+         SGT_DEBUG(LogIndent _);
          contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
          // Before updating the simComponent, we need to take it out of the scheduled updates set, because its
          // sort key might change.
@@ -162,7 +162,7 @@ namespace SmartGridToolbox
             }
          }
          SGT_DEBUG(Log().debug() << "About to perform update..." << std::endl);
-         SGT_DEBUG({Indent _;)
+         SGT_DEBUG({LogIndent _;)
          contComp->update(currentTime_); // Now do the update
          SGT_DEBUG(})
          SGT_DEBUG(Log().debug() << "... Done" << std::endl);
@@ -191,7 +191,7 @@ namespace SmartGridToolbox
 
          // Now perform the update.
          SGT_DEBUG(Log().debug() << "About to perform update..." << std::endl);
-         SGT_DEBUG({Indent _;)
+         SGT_DEBUG({LogIndent _;)
          schedComp->update(currentTime_);
          SGT_DEBUG(})
          SGT_DEBUG(Log().debug() << "... Done" << std::endl);

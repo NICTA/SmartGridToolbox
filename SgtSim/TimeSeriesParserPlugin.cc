@@ -170,7 +170,7 @@ namespace SmartGridToolbox
    void TimeSeriesParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {
       Log().message() << "Parsing time series." << std::endl;
-      Indent _;
+      LogIndent _;
 
       std::unique_ptr<TimeSeriesBase> ts;
 
