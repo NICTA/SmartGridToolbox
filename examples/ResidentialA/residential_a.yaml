@@ -1,0 +1,151 @@
+-  parameters:                            
+      n_houses:                           10
+      V_base:                             0.240
+      V_nom_vec:                          [0.240, 0.240D-240, 0.240D240]
+      V_nom_map:                          {A: 0.240, B: 0.240D-240, C: 0.240D240}
+      house_phases:                       [A, B, B, A, B, C, A, C, B, C]
+      simple_line_Y:                      5-15j
+      overhead_R_per_L:                   1e-4
+      earth_resistivity:                  100
+-  simulation:                            
+      lat_long:                           [-35.3075, 149.1244] # Canberra, Australia.
+      start_time:                         2013-01-23 06:00:00
+      end_time:                           2013-01-28 06:00:00
+      timezone:                           AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
+-  time_series:                           
+      id:                                 cloud_cover_series
+      value_type:                         real_scalar
+      type:                               data_time_series
+      data_file:                          cloud_cover.txt
+      relative_to_time:                   2013-01-23 06:00:00
+      time_unit:                          m
+      interp_type:                        lerp
+-  loop:                                  
+      loop_variable:                      [i, 1, $($<n_houses>+1), 1]
+      loop_body:                          
+         -  time_series:                     
+               id:                        load_$(i)_series
+               value_type:                complex_vector
+               type:                      data_time_series
+               data_file:                 loads/load_$(i).txt
+               relative_to_time:          2013-01-23 06:00:00
+               time_unit:                 m
+               interp_type:               lerp
+-  weather:                               
+      id:                                 weather
+      cloud_cover:                        cloud_cover_series
+      dt:                                 00:05:00
+-  network:                               
+      id:                                 network
+      P_base:                             1e6
+      freq_Hz:                            60
+-  bus:                                   
+      id:                                 bus_0
+      network_id:                         network
+      phases:                             [A, B, C]
+      V_base:                             $<V_base>
+      V_nom:                              $<V_nom_vec>
+      type:                               SL
+-  generic_gen:                           
+      id:                                 gen_0
+      network_id:                         network
+      bus_id:                             bus_0
+      phases:                             [A, B, C]
+-  loop:                                  
+      loop_variable:                      [i, 1, $($<n_houses>+1), 1]
+      loop_body:                          
+         -  bus:                             
+               id:                        bus_$(i)
+               network_id:                network
+               phases:                    [A, B, C]
+               V_base:                    $<V_base>
+               V_nom:                     $<V_nom_vec>
+               type:                      PQ
+         -  bus:                             
+               id:                        house_$(i)
+               network_id:                network
+               phases:                    [$<house_phases.$(i-1)>]
+               V_base:                    $<V_base>
+               V_nom:                     [$<V_nom_map.$<house_phases.$(i-1)>>]
+               type:                      PQ
+#        -  generic_zip:                    
+#              id:                        zip_$(i)
+#              network_id:                network
+#              bus_id:                    house_$(i)
+#              phases:                    [$<house_phases.$(i-1)>]
+#              S_const:                   [-1000e-6]
+         -  time_series_zip:                 
+               id:                        zip_$(i)
+               network_id:                network
+               bus_id:                    house_$(i)
+               phases:                    [$<house_phases.$(i-1)>]
+               time_series_id:            load_$(i)_series
+               dt:                        00:05:00
+#        -  generic_branch:                 
+#              id:                        drop_$(i)
+#              network_id:                network
+#              bus_0_id:                  bus_$(i)
+#              bus_1_id:                  house_$(i)
+#              phases_0:                  [$<house_phases.$(i-1)>]
+#              phases_1:                  [$<house_phases.$(i-1)>]
+#              Y:                           
+#                 simple_line:            [$<simple_line_Y>]
+         -  overhead_line:                   
+               id:                        drop_$(i)
+               network_id:                network
+               bus_0_id:                  bus_$(i)
+               bus_1_id:                  house_$(i)
+               phases_0:                  [$<house_phases.$(i-1)>]
+               phases_1:                  [$<house_phases.$(i-1)>]
+               length:                    20
+               n_neutral:                 0
+               conductor_R_per_L:         [$<overhead_R_per_L>]
+               earth_resistivity:         $<earth_resistivity>
+               distance_matrix:           [[0.01]]
+               freq:                      60.0
+-  inverter:                              
+      id:                                 inverter_$<n_houses>
+      network_id:                         network
+      bus_id:                             house_$<n_houses>
+      phases:                             [$<house_phases.$($<n_houses>-1)>]
+      requested_Q_per_phase:              0
+      max_S_mag_per_phase:                100.0
+      efficiency:                         0.86
+-  solar_pv:                              
+      id:                                 solar_pv_$<n_houses>
+      weather:                            weather
+      inverter:                           inverter_$<n_houses>
+      efficiency:                         0.75
+      area_m2:                            6.0
+      zenith_degrees:                     64.6
+      azimuth_degrees:                    95.8 # Should point right at sun on Jan 26, 2013, 0830.
+-  loop:                                  
+      loop_variable:                      [i, 1, $($<n_houses>+1), 1]
+      loop_body:                          
+#        -  generic_branch:                 
+#              id:                        line_$(i-1)_$(i)
+#              network_id:                network
+#              bus_0_id:                  bus_$(i-1)
+#              bus_1_id:                  bus_$(i)
+#              phases_0:                  [A, B, C]
+#              phases_1:                  [A, B, C]
+#              Y:                           
+#                 simple_line:            [$<simple_line_Y>, $<simple_line_Y>, $<simple_line_Y>]
+         -  overhead_line:                   
+               id:                        line_$(i-1)_$(i)
+               network_id:                network
+               bus_0_id:                  bus_$(i-1)
+               bus_1_id:                  bus_$(i)
+               phases_0:                  [A, B, C]
+               phases_1:                  [A, B, C]
+               length:                    100
+               n_neutral:                 0
+               conductor_R_per_L:         [$<overhead_R_per_L>, $<overhead_R_per_L>, $<overhead_R_per_L>]
+               earth_resistivity:         $<earth_resistivity>
+               distance_matrix:
+                  [
+                     [0.01 , 1.00 , 2.00],
+                     [1.00 , 0.01 , 1.00],
+                     [2.00 , 1.00 , 0.01]
+                  ]
+               freq:                      60.0
