@@ -12,4 +12,3 @@
 #include <SgtSim/Sun.h>
 #include <SgtSim/TimeSeries.h>
 #include <SgtSim/Weather.h>
-#include <SgtSim/WeakOrder.h>

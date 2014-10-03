@@ -5,8 +5,8 @@ bin_PROGRAMS = residential_a
 residential_a_SOURCES = residential_a.cc
 
 residential_a_LDFLAGS = \
-	-lSgtCore.a \
-	-lSgtSim.a \
+	-lSgtCore \
+	-lSgtSim \
 	-lboost_date_time-mt \
 	-lblas \
 	-lyaml-cpp \

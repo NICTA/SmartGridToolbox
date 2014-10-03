@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-libincludedir=$(includedir)/SgtCore
+libincludedir=$(includedir)/SgtSim
 
 lib_LIBRARIES = libSgtSim.a
 

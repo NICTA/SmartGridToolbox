@@ -1,5 +1,5 @@
-#include "LibSgtCore.h"
-#include "LibSgtSim.h"
+#include "SgtCore.h"
+#include "SgtSim.h"
 
 using namespace SmartGridToolbox;
 
