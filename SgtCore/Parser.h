@@ -93,6 +93,7 @@ namespace SmartGridToolbox
             int i_; // The number associated with the current iteration, starts are init and increments by stride.
             int upper_;
             int stride_;
+            YAML::Node body_;
          };
          
       protected:
@@ -110,7 +111,7 @@ namespace SmartGridToolbox
       protected:
 
          std::map<std::string, YAML::Node> parameters_;
-         std::vector<ParserLoop> loops_;
+         std::vector<std::unique_ptr<ParserLoop>> loops_;
    };
 
    template<typename T> class Parser;
@@ -180,8 +181,8 @@ namespace SmartGridToolbox
                   {
                      for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_)
                      {
-                        const YAML::Node& ndLoopBody = nodeVal["loop_body"];
-                        parse(ndLoopBody, into);
+                        Log().message() << "LOOP: " << l.name_ << " : " << l.i_ << std::endl; LogIndent _;
+                        parse(l.body_, into);
                      }
                      loops_.pop_back();
                   }
