@@ -1,7 +1,16 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = SgtCore SgtSim src docs tests
+bin_PROGRAMS = residential_a
 
-dist_doc_DATA = README
+residential_a_SOURCES = residential_a.cc
 
-EXTRA_DIST = docs/background examples third_party tutorials 
+residential_a_LDFLAGS = \
+	-lSgtCore.a \
+	-lSgtSim.a \
+	-lboost_date_time-mt \
+	-lblas \
+	-lyaml-cpp \
+	-lklu \
+	-lamd \
+	-lcolamd \
+	-lbtf
