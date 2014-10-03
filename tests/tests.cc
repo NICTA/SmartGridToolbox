@@ -1,7 +1,8 @@
 #define BOOST_TEST_MODULE test_template
 
-#include <LibSgtCore.h>
-#include <LibSgtSim.h>
+#include <SgtCore/SgtCore.h>
+#include <SgtSim/SgtSim.h>
+#include <SgtSim/WeakOrder.h>
 
 #include <boost/test/included/unit_test.hpp>
 
