@@ -46,6 +46,10 @@
       id: network
       P_base: 1e6
       freq_Hz: 60
+-  matpower:
+      network_id: network
+      input_file: ../../data/matpower_cases/case30.m
+      default_kV_base: 11
 -  bus: 
       id: bus_substation_11k
       network_id: network

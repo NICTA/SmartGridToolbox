@@ -33,6 +33,7 @@ namespace SmartGridToolbox
       p.registerParserPlugin<SimGenericGenParserPlugin>();
       p.registerParserPlugin<SimGenericZipParserPlugin>();
       p.registerParserPlugin<SimGlobalParserPlugin>();
+      p.registerParserPlugin<SimMatpowerParserPlugin>();
       p.registerParserPlugin<SimNetworkParserPlugin>();
       p.registerParserPlugin<SimOverheadLineParserPlugin>();
       p.registerParserPlugin<SimpleBuildingParserPlugin>();
