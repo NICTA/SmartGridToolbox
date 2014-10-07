@@ -1,6 +1,6 @@
 -  parameters: 
-      n_streets: 6
-      n_houses: 10
+      n_streets: 1
+      n_houses: 5 
       V_base_240: 0.240
       V_nom_vec_240: [0.240]
       V_nom_map_240: {BAL: 0.240}
@@ -27,8 +27,6 @@
       relative_to_time: 2013-01-23 06:00:00
       time_unit: m
       interp_type: lerp
--  matpower:
-      
 -  loop: 
       loop_variable: [j, 0, 10, 1]
       loop_body: 
@@ -67,12 +65,12 @@
       V_base: <V_base_240>
       V_nom: <V_nom_vec_240>
       type: PQ
--  delta_g_wye_transformer:
+-  single_phase_transformer:
       id: trans_substation
       network_id: network
       bus_0_id: bus_substation_11k
       bus_1_id: bus_substation_240
-      complex_turns_ratio_01: 45.834 # 11000/240, delta side use p-p V, y side use p-g V.
+      complex_turns_ratio_01: 26.462 # (11000/sqrt(3))/240, delta side use p-g V, y side use p-g V.
       leakage_impedance: 0.1 # TODO
 -  loop: 
       loop_variable: [i, 0, <n_streets>, 1]

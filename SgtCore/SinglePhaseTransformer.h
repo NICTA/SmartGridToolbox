@@ -17,7 +17,7 @@ namespace SmartGridToolbox
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
          SinglePhaseTransformer(const std::string& id, Complex a, Complex ZL) :
-            BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C), a_(a), YL_(1.0/ZL)
+            BranchAbc(id, Phase::BAL, Phase::BAL), a_(a), YL_(1.0/ZL)
          {
             // Empty.
          }
