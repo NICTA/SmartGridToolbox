@@ -1,9 +1,12 @@
 -  parameters: 
-      n_streets: 10
+      n_streets: 1
       n_houses: 10
-      V_base: 0.240
-      V_nom_vec: [0.240, 0.240D-120, 0.240D120]
-      V_nom_map: {A: 0.240, B: 0.240D-120, C: 0.240D120}
+      V_base_240: 0.240
+      V_nom_vec_240: [0.240, 0.240D-120, 0.240D120]
+      V_nom_map_240: {A: 0.240, B: 0.240D-120, C: 0.240D120}
+      V_base_11k: 6.3509
+      V_nom_vec_11k: [6.3509, 6.3509D-120, 6.3509D120]
+      V_nom_map_11k: {A: 6.3509, B: 6.3509D-120, C: 6.3509D120}
       house_phases: [A, B, B, A, B, C, A, C, B, C]
       simple_line_Y: 5-15j
       overhead_R_per_L: 1e-4
@@ -49,17 +52,31 @@
       P_base: 1e6
       freq_Hz: 60
 -  bus: 
-      id: bus_substation
+      id: bus_substation_11k
       network_id: network
       phases: [A, B, C]
-      V_base: <V_base>
-      V_nom: <V_nom_vec>
+      V_base: <V_base_11k>
+      V_nom: <V_nom_vec_11k>
       type: SL
 -  generic_gen: 
       id: gen_substation
       network_id: network
-      bus_id: bus_substation
+      bus_id: bus_substation_11k
       phases: [A, B, C]
+-  bus: 
+      id: bus_substation_240
+      network_id: network
+      phases: [A, B, C]
+      V_base: <V_base_240>
+      V_nom: <V_nom_vec_240>
+      type: PQ
+-  delta_g_wye_transformer:
+      id: trans_substation
+      network_id: network
+      bus_0_id: bus_substation_11k
+      bus_1_id: bus_substation_240
+      complex_turns_ratio_01: 45.834 # 11000/240, delta side use p-p, y side use p-g.
+      leakage_impedance: 0.1 # TODO
 -  loop: 
       loop_variable: [i, 0, <n_streets>, 1]
       loop_body: 
@@ -70,15 +87,15 @@
                         id: bus_<i>_<j>
                         network_id: network
                         phases: [A, B, C]
-                        V_base: <V_base>
-                        V_nom: <V_nom_vec>
+                        V_base: <V_base_240>
+                        V_nom: <V_nom_vec_240>
                         type: PQ
                   -  bus: 
                         id: house_<i>_<j>
                         network_id: network
                         phases: [<house_phases(<(<i>+<j>)%10>)>]
-                        V_base: <V_base>
-                        V_nom: [<V_nom_map(<house_phases(<(<i>+<j>)%10>)>)>]
+                        V_base: <V_base_240>
+                        V_nom: [<V_nom_map_240(<house_phases(<(<i>+<j>)%10>)>)>]
                         type: PQ
                   -  time_series_zip: 
                         id: zip_<i>_<j>
@@ -140,7 +157,7 @@
          -  overhead_line: 
                id: line_<i>_substation_0
                network_id: network
-               bus_0_id: bus_substation
+               bus_0_id: bus_substation_240
                bus_1_id: bus_<i>_0
                phases_0: [A, B, C]
                phases_1: [A, B, C]
