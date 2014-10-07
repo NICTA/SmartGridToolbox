@@ -7,6 +7,7 @@
 #include "SimGenericGenParserPlugin.h"
 #include "SimGenericZipParserPlugin.h"
 #include "SimGlobalParserPlugin.h"
+#include "SimMatpowerParserPlugin.h"
 #include "SimNetworkParserPlugin.h"
 #include "SimOverheadLineParserPlugin.h"
 #include "SimSinglePhaseTransformerParserPlugin.h"

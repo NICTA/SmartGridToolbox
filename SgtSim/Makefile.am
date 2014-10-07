@@ -53,6 +53,8 @@ libSgtSim_a_SOURCES = \
 	SimGenericZipParserPlugin.cc \
 	SimGlobalParserPlugin.h \
 	SimGlobalParserPlugin.cc \
+	SimMatpowerParserPlugin.h \
+	SimMatpowerParserPlugin.cc \
 	SimNetwork.h \
 	SimNetwork.cc \
 	SimNetworkComponent.h \
