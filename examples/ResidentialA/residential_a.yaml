@@ -8,6 +8,14 @@
       simple_line_Y: 5-15j
       overhead_R_per_L: 1e-4
       earth_resistivity: 100
+      dab11k: 2.5
+      dac11k: 5
+      dbc11k: 2.5
+      gmr11k: 0.015
+      dab240: 1.5
+      dac240: 3
+      dbc240: 1.5
+      gmr240: 0.015
 -  simulation: 
       lat_long: [-35.3075, 149.1244] # Canberra, Australia.
       start_time: 2013-01-23 06:00:00
@@ -124,9 +132,9 @@
                         earth_resistivity: <earth_resistivity>
                         distance_matrix:
                            [
-                              [0.01 , 1.00 , 2.00],
-                              [1.00 , 0.01 , 1.00],
-                              [2.00 , 1.00 , 0.01]
+                              [<gmr240>, <dab240>, <dac240>],
+                              [<dab240>, <gmr240>, <dbc240>],
+                              [<dac240>, <dbc240>, <gmr240>]
                            ]
                         freq: 60.0
          -  overhead_line: 
@@ -142,8 +150,8 @@
                earth_resistivity: <earth_resistivity>
                distance_matrix:
                   [
-                     [0.01 , 1.00 , 2.00],
-                     [1.00 , 0.01 , 1.00],
-                     [2.00 , 1.00 , 0.01]
+                     [<gmr11k>, <dab11k>, <dac11k>],
+                     [<dab11k>, <gmr11k>, <dbc11k>],
+                     [<dac11k>, <dbc11k>, <gmr11k>]
                   ]
                freq: 60.0
