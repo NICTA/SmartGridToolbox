@@ -1,5 +1,5 @@
-#include "LibSgtCore.h"
-#include "LibSgtSim.h"
+#include <SgtCore.h>
+#include <SgtSim.h>
 
 using namespace SmartGridToolbox;
 
@@ -47,7 +47,7 @@ int main(int argc, const char** argv)
 
    while (ok)
    {
-      Indent _;
+      LogIndent _;
       ok = sim.doTimestep();
       double t = dSeconds(sim.currentTime() - sim.startTime())/3600;
       auto V = busNd->bus()->V();
