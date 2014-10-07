@@ -1,5 +1,5 @@
 -  parameters: 
-      n_streets: 1
+      n_streets: 6
       n_houses: 10
       V_base_240: 0.240
       V_nom_vec_240: [0.240, 0.240D-120, 0.240D120]
