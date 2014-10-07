@@ -2,23 +2,17 @@
       n_streets: 6
       n_houses: 10
       V_base_240: 0.240
-      V_nom_vec_240: [0.240, 0.240D-120, 0.240D120]
-      V_nom_map_240: {A: 0.240, B: 0.240D-120, C: 0.240D120}
+      V_nom_vec_240: [0.240]
+      V_nom_map_240: {BAL: 0.240}
       V_base_11k: 6.3509
-      V_nom_vec_11k: [6.3509, 6.3509D-120, 6.3509D120]
-      V_nom_map_11k: {A: 6.3509, B: 6.3509D-120, C: 6.3509D120}
-      netw_phases: [A, B, C]
-      house_phases: [A, B, B, A, B, C, A, C, B, C]
+      V_nom_vec_11k: [6.3509]
+      V_nom_map_11k: {BAL: 6.3509}
+      netw_phases: [BAL]
+      house_phases: [BAL, BAL, BAL, BAL, BAL, BAL, BAL, BAL, BAL, BAL]
       simple_line_Y: 5-15j
       overhead_R_per_L: 1e-4
       earth_resistivity: 100
-      dab11k: 2.5
-      dac11k: 5
-      dbc11k: 2.5
       gmr11k: 0.015
-      dab240: 1.5
-      dac240: 3
-      dbc240: 1.5
       gmr240: 0.007
 -  simulation: 
       lat_long: [-35.3075, 149.1244] # Canberra, Australia.
@@ -148,14 +142,9 @@
                         phases_1: <netw_phases>
                         length: 100
                         n_neutral: 0
-                        conductor_R_per_L: [<overhead_R_per_L>, <overhead_R_per_L>, <overhead_R_per_L>]
+                        conductor_R_per_L: [<overhead_R_per_L>]
                         earth_resistivity: <earth_resistivity>
-                        distance_matrix:
-                           [
-                              [<gmr240>, <dab240>, <dac240>],
-                              [<dab240>, <gmr240>, <dbc240>],
-                              [<dac240>, <dbc240>, <gmr240>]
-                           ]
+                        distance_matrix: [[<gmr240>]]
                         freq: 60.0
          -  overhead_line: 
                id: line_<i>_substation_0
@@ -166,12 +155,7 @@
                phases_1: <netw_phases>
                length: 100
                n_neutral: 0
-               conductor_R_per_L: [<overhead_R_per_L>, <overhead_R_per_L>, <overhead_R_per_L>]
+               conductor_R_per_L: [<overhead_R_per_L>]
                earth_resistivity: <earth_resistivity>
-               distance_matrix:
-                  [
-                     [<gmr11k>, <dab11k>, <dac11k>],
-                     [<dab11k>, <gmr11k>, <dbc11k>],
-                     [<dac11k>, <dbc11k>, <gmr11k>]
-                  ]
+               distance_matrix: [[<gmr11k>]]
                freq: 60.0
