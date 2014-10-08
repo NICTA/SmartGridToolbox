@@ -1,5 +1,4 @@
 -  parameters: 
-      n_streets: 1
       n_houses: 5 
       V_base_240: 0.240
       V_nom_vec_240: [0.240]
@@ -49,36 +48,24 @@
 -  matpower:
       network_id: network
       input_file: ../../data/matpower_cases/case9.m
-      default_kV_base: 11
--  bus: 
-      id: bus_substation_11k
-      network_id: network
-      phases: <netw_phases>
-      V_base: <V_base_11k>
-      V_nom: <V_nom_vec_11k>
-      type: SL
--  generic_gen: 
-      id: gen_substation
-      network_id: network
-      bus_id: bus_substation_11k
-      phases: <netw_phases>
--  bus: 
-      id: bus_substation_240
-      network_id: network
-      phases: <netw_phases>
-      V_base: <V_base_240>
-      V_nom: <V_nom_vec_240>
-      type: PQ
--  single_phase_transformer:
-      id: trans_substation
-      network_id: network
-      bus_0_id: bus_substation_11k
-      bus_1_id: bus_substation_240
-      complex_turns_ratio_01: 26.462 # (11000/sqrt(3))/240, delta side use p-g V, y side use p-g V.
-      leakage_impedance: 0.1 # TODO
+      default_kV_base: 11 
 -  loop: 
-      loop_variable: [i, 0, <n_streets>, 1]
+      loop_variable: [i, 4, 10, 1] # Over matpower busses 4-9
       loop_body: 
+         -  bus: 
+               id: bus_substation_240_<i>
+               network_id: network
+               phases: <netw_phases>
+               V_base: <V_base_240>
+               V_nom: <V_nom_vec_240>
+               type: PQ
+         -  single_phase_transformer:
+               id: trans_substation_<i>
+               network_id: network
+               bus_0_id: bus_<i>
+               bus_1_id: bus_substation_240_<i>
+               complex_turns_ratio_01: 26.462 # (11000/sqrt(3))/240, delta side use p-g V, y side use p-g V.
+               leakage_impedance: 0.1 # TODO
          -  loop: 
                loop_variable: [j, 0, <n_houses>, 1]
                loop_body: 
@@ -149,9 +136,9 @@
                         distance_matrix: [[<gmr240>]]
                         freq: 60.0
          -  overhead_line: 
-               id: line_<i>_substation_0
+               id: line_substation_240_<i>
                network_id: network
-               bus_0_id: bus_substation_240
+               bus_0_id: bus_substation_240_<i>
                bus_1_id: bus_<i>_0
                phases_0: <netw_phases>
                phases_1: <netw_phases>
