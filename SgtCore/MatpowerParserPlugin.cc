@@ -227,6 +227,21 @@ namespace SmartGridToolbox
       std::string inputName = parser.expand<std::string>(nd["input_file"]);
 
       double default_kVBase = parser.expand<double>(nd["default_kV_base"]);
+     
+      double VScale = 1.0; 
+      auto ndVScale = nd["scale_V_by"];
+      if (ndVScale)
+      {
+         VScale = ndVScale.as<double>();
+      }
+      double PScale = 1.0; 
+      auto ndPScale = nd["scale_P_by"];
+      if (ndPScale)
+      {
+         PScale = ndPScale.as<double>();
+      }
+      double RScale = VScale * VScale / PScale;
+      double GScale = 1.0 / RScale;
 
       // Parse in the raw matpower data.
       MpData data;
@@ -369,7 +384,7 @@ namespace SmartGridToolbox
       {
          std::string busId = getBusId(busInfo.id);
          std::unique_ptr<Bus> bus(
-               new Bus(busId, Phase::BAL, VComplex(1, Complex(busInfo.kVBase, 0.0)), busInfo.kVBase));
+               new Bus(busId, Phase::BAL, VScale * VComplex(1, Complex(busInfo.kVBase, 0.0)), PScale * busInfo.kVBase));
          BusType type = BusType::BAD;
          switch (busInfo.type)
          {
@@ -391,16 +406,16 @@ namespace SmartGridToolbox
          Complex YZip = YBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
          std::string zipId = getZipId(nZip++, busInfo.id);
          std::unique_ptr<GenericZip> zip(new GenericZip(zipId, Phase::BAL));
-         zip->setYConst(VComplex(1, YZip));
-         zip->setSConst(VComplex(1, SZip));
-         bus->setVMagMin(busInfo.VMagMin == -infinity ? -infinity : pu2kV(busInfo.VMagMin, busInfo.kVBase));
-         bus->setVMagMax(busInfo.VMagMax == infinity ? infinity : pu2kV(busInfo.VMagMax, busInfo.kVBase));
+         zip->setYConst(GScale * VComplex(1, YZip));
+         zip->setSConst(PScale * VComplex(1, SZip));
+         bus->setVMagMin(busInfo.VMagMin == -infinity ? -infinity : VScale * pu2kV(busInfo.VMagMin, busInfo.kVBase));
+         bus->setVMagMax(busInfo.VMagMax == infinity ? infinity : VScale * pu2kV(busInfo.VMagMax, busInfo.kVBase));
 
          bus->setIsInService(true);
 
          double vMag = pu2kV(busInfo.vMag, busInfo.kVBase);
          double vAng = deg2Rad(busInfo.vAngDeg);
-         bus->setV(VComplex(1, std::polar(vMag, vAng)));
+         bus->setV(VScale * VComplex(1, std::polar(vMag, vAng)));
          
          netw.addNode(std::move(bus));
          netw.addZip(std::move(zip), busId);
@@ -420,12 +435,12 @@ namespace SmartGridToolbox
 
          gen->setIsInService(genInfo.status);
 
-         gen->setS(VComplex(1, Complex{genInfo.Pg, genInfo.Qg}));
+         gen->setS(PScale * VComplex(1, Complex{genInfo.Pg, genInfo.Qg}));
 
-         gen->setPMin(genInfo.PMin == -infinity ? -infinity : genInfo.PMin);
-         gen->setPMax(genInfo.PMax == infinity ? infinity : genInfo.PMax);
-         gen->setQMin(genInfo.QMin == -infinity ? -infinity : genInfo.QMin);
-         gen->setQMax(genInfo.QMax == infinity ? infinity : genInfo.QMax);
+         gen->setPMin(genInfo.PMin == -infinity ? -infinity : PScale * genInfo.PMin);
+         gen->setPMax(genInfo.PMax == infinity ? infinity : PScale * genInfo.PMax);
+         gen->setQMin(genInfo.QMin == -infinity ? -infinity : PScale * genInfo.QMin);
+         gen->setQMax(genInfo.QMax == infinity ? infinity : PScale * genInfo.QMax);
 
          gen->setC0(0.0);
          gen->setC1(0.0);
@@ -452,11 +467,12 @@ namespace SmartGridToolbox
 
          double tap = (std::abs(branchInfo.tap) < 1e-6 ? 1.0 : branchInfo.tap) * bus0->VBase() / bus1->VBase();
          branch->setTapRatio(std::polar(tap, deg2Rad(branchInfo.shiftDeg)));
-         branch->setYSeries(YBranch2Siemens(1.0 / Complex(branchInfo.R, branchInfo.X), bus1->VBase(), data.MVABase));
-         branch->setYShunt(YBranch2Siemens(Complex(0.0, branchInfo.b), bus1->VBase(), data.MVABase));
-         branch->setRateA(branchInfo.rateA);
-         branch->setRateB(branchInfo.rateB);
-         branch->setRateC(branchInfo.rateC);
+         branch->setYSeries(GScale * YBranch2Siemens(1.0 / Complex(branchInfo.R, branchInfo.X), bus1->VBase(),
+                  data.MVABase));
+         branch->setYShunt(GScale * YBranch2Siemens(Complex(0.0, branchInfo.b), bus1->VBase(), data.MVABase));
+         branch->setRateA(PScale * branchInfo.rateA);
+         branch->setRateB(PScale * branchInfo.rateB);
+         branch->setRateC(PScale * branchInfo.rateC);
 
          netw.addArc(std::move(branch), bus0Id, bus1Id);
       }

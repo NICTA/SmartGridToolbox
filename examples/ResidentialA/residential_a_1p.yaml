@@ -1,5 +1,6 @@
 -  parameters: 
-      n_houses: 5 
+      n_streets: 10
+      n_houses: 10 
       V_base_240: 0.240
       V_nom_vec_240: [0.240]
       V_nom_map_240: {BAL: 0.240}
@@ -27,13 +28,13 @@
       time_unit: m
       interp_type: lerp
 -  loop: 
-      loop_variable: [j, 0, 10, 1]
+      loop_variable: [i, 0, 10, 1]
       loop_body: 
          -  time_series: 
-               id: load_<j>_series
+               id: load_<i>_series
                value_type: complex_vector
                type: data_time_series
-               data_file: loads/load_<j>.txt
+               data_file: loads/load_<i>.txt
                relative_to_time: 2013-01-23 06:00:00
                time_unit: m
                interp_type: lerp
@@ -67,84 +68,89 @@
                complex_turns_ratio_01: 45.834 # (11000/sqrt(3))/240, delta side use p-g V, y side use p-g V.
                leakage_impedance: 0.1 # TODO
          -  loop: 
-               loop_variable: [j, 0, <n_houses>, 1]
+               loop_variable: [j, 0, <n_streets>, 1] # over streets
                loop_body: 
-                  -  bus: 
-                        id: bus_<i>_<j>
+                  -  loop: # over houses 
+                        loop_variable: [k, 0, <n_houses>, 1]
+                        loop_body: 
+                           -  bus: 
+                                 id: bus_<i>_<j>_<k>
+                                 network_id: network
+                                 phases: <netw_phases>
+                                 V_base: <V_base_240>
+                                 V_nom: <V_nom_vec_240>
+                                 type: PQ
+                           -  bus: 
+                                 id: house_<i>_<j>_<k>
+                                 network_id: network
+                                 phases: [<house_phases(<(<i>+<j>+<k>)%10>)>]
+                                 V_base: <V_base_240>
+                                 V_nom: [<V_nom_map_240(<house_phases(<(<i>+<j>+<k>)%10>)>)>]
+                                 type: PQ
+                           -  time_series_zip: 
+                                 id: house_zip_<i>_<j>_<k>
+                                 network_id: network
+                                 bus_id: house_<i>_<j>_<k>
+                                 phases: [<house_phases(<(<i>+<j>+<k>)%10>)>]
+                                 time_series_id: load_<(<i>+<j>+<k>)%10>_series
+                                 dt: 00:05:00
+                           -  overhead_line: 
+                                 id: drop_<i>_<j>_<k>
+                                 network_id: network
+                                 bus_0_id: bus_<i>_<j>_<k>
+                                 bus_1_id: house_<i>_<j>_<k>
+                                 phases_0: [<house_phases(<(<i>+<j>+<k>)%10>)>]
+                                 phases_1: [<house_phases(<(<i>+<j>+<k>)%10>)>]
+                                 length: 20
+                                 n_neutral: 0
+                                 conductor_R_per_L: [<overhead_R_per_L>]
+                                 earth_resistivity: <earth_resistivity>
+                                 distance_matrix: [[0.01]]
+                                 freq: 60.0
+                  # End loop over houses.
+                  -  inverter: 
+                        id: inverter_<i>_<j>_<<n_houses>-1>
                         network_id: network
-                        phases: <netw_phases>
-                        V_base: <V_base_240>
-                        V_nom: <V_nom_vec_240>
-                        type: PQ
-                  -  bus: 
-                        id: house_<i>_<j>
+                        bus_id: house_<i>_<j>_<<n_houses>-1>
+                        phases: [<house_phases(<(<i>+<<n_houses>-1>)%10>)>]
+                        requested_Q_per_phase: 0
+                        max_S_mag_per_phase: 100.0
+                        efficiency: 0.86
+                  -  solar_pv: 
+                        id: solar_pv_<i>_<j>_<<n_houses>-1>
+                        weather: weather
+                        inverter: inverter_<i>_<j>_<<n_houses>-1>
+                        efficiency: 0.75
+                        area_m2: 6.0
+                        zenith_degrees: 64.6
+                        azimuth_degrees: 95.8 # Should point right at sun on Jan 26, 2013, 0830.
+                  -  loop: # Over all but the last house.
+                        loop_variable: [k, 0, <<n_houses>-1>, 1]
+                        loop_body: 
+                           -  overhead_line: 
+                                 id: line_<i>_<j>_<k>_<<k>+1>
+                                 network_id: network
+                                 bus_0_id: bus_<i>_<j>_<k>
+                                 bus_1_id: bus_<i>_<j>_<<k>+1>
+                                 phases_0: <netw_phases>
+                                 phases_1: <netw_phases>
+                                 length: 100
+                                 n_neutral: 0
+                                 conductor_R_per_L: [<overhead_R_per_L>]
+                                 earth_resistivity: <earth_resistivity>
+                                 distance_matrix: [[<gmr240>]]
+                                 freq: 60.0
+                  # End loop over all but the last house 
+                  -  overhead_line: # From substation to first house.
+                        id: line_substation_240_<i>_<j>
                         network_id: network
-                        phases: [<house_phases(<(<i>+<j>)%10>)>]
-                        V_base: <V_base_240>
-                        V_nom: [<V_nom_map_240(<house_phases(<(<i>+<j>)%10>)>)>]
-                        type: PQ
-                  -  time_series_zip: 
-                        id: house_zip_<i>_<j>
-                        network_id: network
-                        bus_id: house_<i>_<j>
-                        phases: [<house_phases(<(<i>+<j>)%10>)>]
-                        time_series_id: load_<(<i>+<j>)%10>_series
-                        dt: 00:05:00
-                  -  overhead_line: 
-                        id: drop_<i>_<j>
-                        network_id: network
-                        bus_0_id: bus_<i>_<j>
-                        bus_1_id: house_<i>_<j>
-                        phases_0: [<house_phases(<(<i>+<j>)%10>)>]
-                        phases_1: [<house_phases(<(<i>+<j>)%10>)>]
-                        length: 20
-                        n_neutral: 0
-                        conductor_R_per_L: [<overhead_R_per_L>]
-                        earth_resistivity: <earth_resistivity>
-                        distance_matrix: [[0.01]]
-                        freq: 60.0
-         -  inverter: 
-               id: inverter_<i>_<<n_houses>-1>
-               network_id: network
-               bus_id: house_<i>_<<n_houses>-1>
-               phases: [<house_phases(<(<i>+<<n_houses>-1>)%10>)>]
-               requested_Q_per_phase: 0
-               max_S_mag_per_phase: 100.0
-               efficiency: 0.86
-         -  solar_pv: 
-               id: solar_pv_<i>_<<n_houses>-1>
-               weather: weather
-               inverter: inverter_<i>_<<n_houses>-1>
-               efficiency: 0.75
-               area_m2: 6.0
-               zenith_degrees: 64.6
-               azimuth_degrees: 95.8 # Should point right at sun on Jan 26, 2013, 0830.
-         -  loop: 
-               loop_variable: [j, 0, <<n_houses>-1>, 1]
-               loop_body: 
-                  -  overhead_line: 
-                        id: line_<i>_<j>_<<j>+1>
-                        network_id: network
-                        bus_0_id: bus_<i>_<j>
-                        bus_1_id: bus_<i>_<<j>+1>
+                        bus_0_id: bus_substation_240_<i>
+                        bus_1_id: bus_<i>_<j>_0
                         phases_0: <netw_phases>
                         phases_1: <netw_phases>
                         length: 100
                         n_neutral: 0
                         conductor_R_per_L: [<overhead_R_per_L>]
                         earth_resistivity: <earth_resistivity>
-                        distance_matrix: [[<gmr240>]]
+                        distance_matrix: [[<gmr11k>]]
                         freq: 60.0
-         -  overhead_line: 
-               id: line_substation_240_<i>
-               network_id: network
-               bus_0_id: bus_substation_240_<i>
-               bus_1_id: bus_<i>_0
-               phases_0: <netw_phases>
-               phases_1: <netw_phases>
-               length: 100
-               n_neutral: 0
-               conductor_R_per_L: [<overhead_R_per_L>]
-               earth_resistivity: <earth_resistivity>
-               distance_matrix: [[<gmr11k>]]
-               freq: 60.0
