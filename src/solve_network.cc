@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 
    assert(argc == 2);
    std::string fname = argv[1];
-   Network nw("hello_network", 100.0);
+   Network nw("network", 100.0);
    SmartGridToolbox::Parser<Network> p;
    p.parse(fname, nw);
    auto print = [&](){
