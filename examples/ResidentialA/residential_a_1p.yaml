@@ -48,7 +48,7 @@
 -  matpower:
       network_id: network
       input_file: ../../data/matpower_cases/case14.m
-      default_kV_base: 6.3509 
+      default_kV_base: 11 
 -  loop: 
       loop_variable: [i, 4, 10, 1] # Over matpower busses 4-9
       loop_body: 
