@@ -64,7 +64,7 @@
                network_id: network
                bus_0_id: bus_<i>
                bus_1_id: bus_substation_240_<i>
-               complex_turns_ratio_01: 26.462 # (11000/sqrt(3))/240, delta side use p-g V, y side use p-g V.
+               complex_turns_ratio_01: 45.834 # (11000/sqrt(3))/240, delta side use p-g V, y side use p-g V.
                leakage_impedance: 0.1 # TODO
          -  loop: 
                loop_variable: [j, 0, <n_houses>, 1]
