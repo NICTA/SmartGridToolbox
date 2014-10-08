@@ -27,21 +27,56 @@ int main(int argc, const char** argv)
 
    std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
 
-   out << "graph G {" << std::endl;
+   out << "digraph G {" << std::endl;
    {
       StreamIndent _(out);
+      out << "layout=neato;" << std::endl;
+      out << "mode=ipsep;" << std::endl;
+      out << "overlap=ipsep;" << std::endl;
+      out << "sep=0.5;" << std::endl;
+      out << "node [shape=circle, width=1, fixedsize=true, style=filled];" << std::endl;
+      out << "edge [len=2.5];" << std::endl;
       for (int i = 0; i < nOpt; ++i)
       {
-         out << opts[i] << std::endl;
+         out << opts[i] << ";" << std::endl;
       }
       for (auto& nd : netw->nodes())
       {
-         out << nd->bus()->id() << std::endl;
+         const auto& bus = *nd->bus();
+         std::string col;
+         switch (bus.type())
+         {
+            case BusType::SL:
+               col = "deeppink";
+               break;
+            case BusType::PV:
+               col = "orange";
+               break;
+            case BusType::PQ:
+               col = "lightblue";
+               break;
+            default:
+               col = "black";
+               break;
+         }
+         out << bus.id() << " [" << "color=" << col << "];" << std::endl;
+         for (auto& gen : nd->gens())
+         {
+            out << gen->id() << " [shape=point, width=0.1, color=orange" << "];" << std::endl;
+            out << gen->id() << " -> " << bus.id() << " [len=1, color=orange];" << std::endl;
+         }
+         for (auto& zip : nd->zips())
+         {
+            out << zip->id() << " [shape=point, width=0.1, color=lightblue];" << std::endl;
+            out << bus.id() << " -> " << zip->id() << " [len=1, color=lightblue];" << std::endl;
+         }
       }
       for (auto& arc : netw->arcs())
       {
-         out << arc->node0()->bus()->id() << " -- " << arc->node1()->bus()->id() 
-            << " [label=" << arc->branch()->id() << "]" << std::endl;
+         // out << arc->node0()->bus()->id() << " -> " << arc->node1()->bus()->id() 
+         //   << " [label=" << arc->branch()->id() << ", dir=none];" << std::endl;
+         out << arc->node0()->bus()->id() << " -> " << arc->node1()->bus()->id() 
+            << " [tooltip=" << arc->branch()->id() << ", dir=none];" << std::endl;
       }
    }
    out << "}" << std::endl;

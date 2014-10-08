@@ -48,7 +48,7 @@
       freq_Hz: 60
 -  matpower:
       network_id: network
-      input_file: ../../data/matpower_cases/case30.m
+      input_file: ../../data/matpower_cases/case9.m
       default_kV_base: 11
 -  bus: 
       id: bus_substation_11k
@@ -97,7 +97,7 @@
                         V_nom: [<V_nom_map_240(<house_phases(<(<i>+<j>)%10>)>)>]
                         type: PQ
                   -  time_series_zip: 
-                        id: zip_<i>_<j>
+                        id: house_zip_<i>_<j>
                         network_id: network
                         bus_id: house_<i>_<j>
                         phases: [<house_phases(<(<i>+<j>)%10>)>]

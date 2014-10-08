@@ -194,23 +194,28 @@ namespace SmartGridToolbox
 
       std::string getBusId(int id)
       {
-         return "bus_" + num2PaddedString(id);
+         // return "bus_" + num2PaddedString(id);
+         return "bus_" + std::to_string(id);
       }
 
       std::string getZipId(int iZip, int iBus)
       {
-         return "zip_" + num2PaddedString(iZip) + "_" + num2PaddedString(iBus);
+         // return "zip_" + num2PaddedString(iZip) + "_" + num2PaddedString(iBus);
+         return "zip_" + std::to_string(iZip) + "_" + std::to_string(iBus);
       }
       
       std::string getGenId(int iGen, int iBus)
       {
-         return "gen_" + num2PaddedString(iGen) + "_" + num2PaddedString(iBus);
+         // return "gen_" + num2PaddedString(iGen) + "_" + num2PaddedString(iBus);
+         return "gen_" + std::to_string(iGen) + "_" + std::to_string(iBus);
       }
 
       std::string getBranchId(int iBranch, int iBus0, int iBus1)
       {
-         return "branch_" + num2PaddedString(iBranch) + "_" + num2PaddedString(iBus0)
-            + "_" + num2PaddedString(iBus1);
+         // return "branch_" + num2PaddedString(iBranch) + "_" + num2PaddedString(iBus0)
+         //   + "_" + num2PaddedString(iBus1);
+         return "branch_" + std::to_string(iBranch) + "_" + std::to_string(iBus0)
+            + "_" + std::to_string(iBus1);
       }
    }
 

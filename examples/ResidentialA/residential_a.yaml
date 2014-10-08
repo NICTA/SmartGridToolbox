@@ -33,8 +33,6 @@
       relative_to_time: 2013-01-23 06:00:00
       time_unit: m
       interp_type: lerp
--  matpower:
-      
 -  loop: 
       loop_variable: [j, 0, 10, 1]
       loop_body: 
