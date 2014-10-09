@@ -30,10 +30,6 @@ int main(int argc, const char** argv)
    out << "digraph G {" << std::endl;
    {
       StreamIndent _(out);
-      out << "layout=neato;" << std::endl;
-      out << "mode=ipsep;" << std::endl;
-      out << "overlap=ipsep;" << std::endl;
-      out << "sep=0.5;" << std::endl;
       out << "node [shape=circle, width=1, fixedsize=true, style=filled];" << std::endl;
       out << "edge [len=2.5];" << std::endl;
       for (int i = 0; i < nOpt; ++i)
