@@ -185,12 +185,14 @@ namespace SmartGridToolbox
 
    namespace
    {
+      /*
       std::string num2PaddedString(int num)
       {
          std::ostringstream ss;
          ss << std::setfill('0') << std::setw(5) << num;
          return ss.str();
       }
+      */
 
       std::string getBusId(int id)
       {
@@ -267,7 +269,7 @@ namespace SmartGridToolbox
 
          while (fwdBegin != fwdEnd)
          {
-            bool ok = qi::phrase_parse(fwdBegin, fwdEnd, gram, ascii::blank);
+            qi::phrase_parse(fwdBegin, fwdEnd, gram, ascii::blank);
          }
       }
 
@@ -492,7 +494,6 @@ namespace SmartGridToolbox
             Log().fatal() << "Can't have more than three costs for generator.." << std::endl;
          }
 
-         MpGenInfo& genInfo = genVec[i];
          GenericGen& gen = *genCompVec[i];
 
          gen.setCStartup(genCostInfo.startup);

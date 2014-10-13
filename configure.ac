@@ -1,5 +1,5 @@
 AC_INIT([SmartGridToolbox], [v2.0.0], [dan.gordon@nicta.com.au], [SmartGridToolbox])
-AC_CONFIG_SRCDIR([src/helloworld.cc])
+AC_CONFIG_SRCDIR([src/run_config.cc])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 m4_include([./m4_ax_cxx_compile_stdcxx_11.m4])
@@ -16,6 +16,7 @@ AX_CHECK_COMPILE_FLAG(-std=c++11, [AC_SUBST(AM_OBJCXXFLAGS, ["-std=c++11"])])
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11([noext])
 AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [AM_CXXFLAGS="$AM_CXXFLAGS -ftemplate-depth=160"])
+AC_SUBST([AM_CXXFLAGS], ["$AM_CXXFLAGS -Wall"])
 
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
 AC_CHECK_PROGS([PDFLATEX], [pdflatex])

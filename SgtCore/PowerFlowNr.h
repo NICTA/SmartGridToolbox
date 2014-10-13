@@ -15,7 +15,7 @@
 
 namespace SmartGridToolbox
 {
-   class NodeNr;
+   struct NodeNr;
 
    struct BusNr
    {

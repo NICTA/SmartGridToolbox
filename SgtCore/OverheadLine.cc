@@ -76,7 +76,6 @@ namespace SmartGridToolbox
    ublas::matrix<Complex> OverheadLine::ZPhase(const ublas::matrix<Complex>& ZWire) const
    {
       int nPhase = phases0().size();
-      int nWire = nPhase + nNeutral_;
 
       ublas::matrix<Complex> result = project(ZWire, ublas::range(0, nPhase), ublas::range(0, nPhase));
 
