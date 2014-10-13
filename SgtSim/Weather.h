@@ -34,8 +34,8 @@ namespace SmartGridToolbox
          Weather(const std::string& id) :
             RegularUpdateComponent(id, posix_time::minutes(5)),
             latLong_(Greenwich),
-            cloudCoverSeries_(nullptr),
-            temperatureSeries_(nullptr)
+            temperatureSeries_(nullptr),
+            cloudCoverSeries_(nullptr)
          {
             // Empty.
          }

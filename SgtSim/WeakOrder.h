@@ -90,7 +90,6 @@ namespace SmartGridToolbox
          void debugPrint();
 
       private:
-         int n_;
          std::vector<std::unique_ptr<WoNode>> nodes_;
    };
 }

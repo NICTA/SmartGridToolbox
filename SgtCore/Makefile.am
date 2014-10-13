@@ -89,16 +89,3 @@ libSgtCore_a_SOURCES = \
 	YyTransformerParserPlugin.cc \
 	Zip.h \
 	Zip.cc
-
-noinst_PROGRAMS = helloworld
-
-helloworld_SOURCES = helloworld.cc
-helloworld_LDADD = \
-	libSgtCore.a \
-	-lyaml-cpp \
-	-lboost_date_time-mt \
-	-lblas \
-	-lklu \
-	-lamd \
-	-lcolamd \
-	-lbtf

@@ -28,7 +28,6 @@ bool kluSolve(const boost::numeric::ublas::compressed_matrix<double>& a,
    klu_symbolic *Symbolic;
    klu_numeric *Numeric;
    klu_common Common;
-   int i;
 
    klu_defaults (&Common);
    Symbolic = klu_analyze (n, ap, ai, &Common);

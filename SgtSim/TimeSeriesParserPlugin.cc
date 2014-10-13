@@ -33,7 +33,8 @@ namespace SmartGridToolbox
       enum TsType
       {
          CONST_TS,
-         DATA_TS
+         DATA_TS,
+         BAD_TS_TYPE
       };
 
       enum ValType
@@ -41,19 +42,21 @@ namespace SmartGridToolbox
          REAL_SCALAR,
          COMPLEX_SCALAR,
          REAL_VECTOR,
-         COMPLEX_VECTOR
+         COMPLEX_VECTOR,
+         BAD_VAL_TYPE
       };
 
       enum InterpType
       {
          STEPWISE,
          LERP,
-         SPLINE
+         SPLINE,
+         BAD_INTERP_TYPE
       };
 
       TsType getTsType(const std::string& tsTypeStr)
       {
-         TsType result;
+         TsType result = BAD_TS_TYPE;
 
          if (tsTypeStr == "const_time_series")
          {
@@ -72,7 +75,7 @@ namespace SmartGridToolbox
 
       ValType getValType(const std::string& valTypeStr)
       {
-         ValType result;
+         ValType result = BAD_VAL_TYPE;
 
          if (valTypeStr == "real_scalar")
          {
@@ -99,7 +102,7 @@ namespace SmartGridToolbox
 
       InterpType getInterpType(const std::string& interpTypeStr)
       {
-         InterpType result;
+         InterpType result = BAD_INTERP_TYPE;
 
          if (interpTypeStr == "stepwise")
          {
@@ -133,6 +136,9 @@ namespace SmartGridToolbox
                break;
             case SPLINE:
                Log().fatal() << "Spline data time series can only be used with real data" << std::endl;
+               break;
+            default:
+               Log().fatal() << "Bad time series interpolation type." << std::endl;
                break;
          }
          return dts;
@@ -214,6 +220,11 @@ namespace SmartGridToolbox
                      {
                         ublas::vector<Complex> v = parser.expand<ublas::vector<Complex>>(ndVal);
                         ts.reset(new ConstTimeSeries<Time, ublas::vector<Complex>>(v));
+                        break;
+                     }
+                  default:
+                     {
+                        Log().fatal() << "Bad time series value type." << std::endl;
                         break;
                      }
                }
@@ -319,9 +330,19 @@ namespace SmartGridToolbox
                         ts = std::move(dts);
                         break;
                      }
+                  default:
+                     {
+                        Log().fatal() << "Bad time series value type." << std::endl;
+                        break;
+                     }
                }
                break;
             } // DATA_TS
+         default:
+            {
+               Log().fatal() << "Bad time series type." << std::endl;
+               break;
+            }
       }
       sim.acquireTimeSeries(id, std::move(ts));
    }

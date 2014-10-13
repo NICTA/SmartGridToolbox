@@ -441,10 +441,10 @@ namespace SmartGridToolbox
 
    void PowerFlowNr::calcJMatrix(ublas::compressed_matrix<double>& JMat, const Jacobian& J) const
    {
-      Array<int, 4> ibInd = {0, 1, 2, 3};
-      Array<int, 4> kbInd = {0, 1, 3, 4}; // Skip VrPv, since it doesn't appear as a variable.
-      Array<ublas::slice, 4> sl1Vec = {selIrPqFrom_f(), selIiPqFrom_f(), selIrPvFrom_f(), selIiPvFrom_f()};
-      Array<ublas::slice, 4> sl2Vec = {selVrPqFrom_x(), selViPqFrom_x(), selViPvFrom_x(), selQPvFrom_x()};
+      Array<int, 4> ibInd = {{0, 1, 2, 3}};
+      Array<int, 4> kbInd = {{0, 1, 3, 4}}; // Skip VrPv, since it doesn't appear as a variable.
+      Array<ublas::slice, 4> sl1Vec = {{selIrPqFrom_f(), selIiPqFrom_f(), selIrPvFrom_f(), selIiPvFrom_f()}};
+      Array<ublas::slice, 4> sl2Vec = {{selVrPqFrom_x(), selViPqFrom_x(), selViPvFrom_x(), selQPvFrom_x()}};
 
       JMat = ublas::compressed_matrix<double>(nVar(), nVar());
 
@@ -485,14 +485,14 @@ namespace SmartGridToolbox
       Stopwatch stopwatch;
       Stopwatch stopwatchTot;
 
-      double durationInitSetup;
-      double durationCalcf;
-      double durationUpdateJ;
-      double durationModifyForPv;
-      double durationConstructJMat;
-      double durationSolve;
-      double durationUpdateIter;
-      double durationTot;
+      double durationInitSetup = 0;
+      double durationCalcf = 0;
+      double durationUpdateJ = 0;
+      double durationModifyForPv = 0;
+      double durationConstructJMat = 0;
+      double durationSolve = 0;
+      double durationUpdateIter = 0;
+      double durationTot = 0;
 
       stopwatchTot.reset(); stopwatchTot.start();
 

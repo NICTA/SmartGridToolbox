@@ -49,7 +49,7 @@ namespace SmartGridToolbox
       /// @{
          
          virtual const std::string& id() const override {return id_;}
-         const void setId(const std::string& id) {id_ = id;}
+         void setId(const std::string& id) {id_ = id;}
 
       /// @}
          

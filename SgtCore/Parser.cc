@@ -34,7 +34,7 @@ namespace
             factor                          [_val = _1]
             >> *(   ('*' >> factor          [_val *= _1])
                 |   ('/' >> factor          [_val /= _1])
-                |   ('%' >> factor          [_val %= _1])
+                |   ('%' >> factor          [_val = _val % _1])
                 )
             ;
 

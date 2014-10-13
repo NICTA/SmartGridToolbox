@@ -51,8 +51,8 @@ namespace SmartGridToolbox
             maxDischargePower_(0.0),
             chargeEfficiency_(0.0),
             dischargeEfficiency_(0.0),
-            charge_(0.0),
-            requestedPower_(0.0)
+            requestedPower_(0.0),
+            charge_(0.0)
          {
             // Empty.
          }

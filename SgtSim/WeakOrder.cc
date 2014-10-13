@@ -42,7 +42,7 @@ namespace SmartGridToolbox
       --level;
    }
 
-   WoGraph::WoGraph(int n) : n_(n), nodes_(n)
+   WoGraph::WoGraph(int n) : nodes_(n)
    {
       for (int i = 0; i < n; ++i)
       {
