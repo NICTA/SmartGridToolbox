@@ -170,13 +170,13 @@ namespace Units
    namespace SI
    {
       // Base SI units.
-      extern const Unit<decltype(LDim())> m = {{LDim(), 1.0}, "m"};
-      extern const Unit<decltype(MDim())> kg = {{MDim(), 1.0}, "kg"};
-      extern const Unit<decltype(TDim())> s = {{TDim(), 1.0}, "s"};
-      extern const Unit<decltype(IDim())> A = {{IDim(), 1.0}, "A"};
-      extern const Unit<decltype(ThDim())> K = {{ThDim(), 1.0}, "K"};
+      extern const Unit<decltype(LDim())> m;
+      extern const Unit<decltype(MDim())> kg;
+      extern const Unit<decltype(TDim())> s;
+      extern const Unit<decltype(IDim())> A;
+      extern const Unit<decltype(ThDim())> K;
 
-      extern const Unit<decltype(QDim())> C = {{IDim() * TDim(), 1.0}, "C"};
+      extern const Unit<decltype(QDim())> C;
    }
 
    template<typename D, typename V = double, typename V2 = double>

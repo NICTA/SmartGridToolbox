@@ -83,6 +83,7 @@ libSgtCore_a_SOURCES = \
 	SinglePhaseTransformerParserPlugin.h \
 	SinglePhaseTransformerParserPlugin.cc \
 	Units.h \
+	Units.cc \
 	YyTransformer.h \
 	YyTransformer.cc \
 	YyTransformerParserPlugin.h \
