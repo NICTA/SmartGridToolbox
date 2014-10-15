@@ -215,6 +215,7 @@ namespace SmartGridToolbox
          virtual void setV(const ublas::vector<Complex>& V) override
          {
             V_ = V;
+            voltageUpdated_.trigger();
          }
 
       /// @}
