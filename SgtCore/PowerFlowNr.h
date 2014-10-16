@@ -80,9 +80,8 @@ namespace SmartGridToolbox
       private:
          PowerFlowProblem* prob_;
 
-         unsigned int nPqPv() const {return nPq_ + nPv_;}
-         unsigned int nNode() const {return nSl_ + nPq_ + nPv_;}
-         unsigned int nVar() const {return 2 * (nPq_ + nPv_);}
+         unsigned int nPqPv() const {return prob_->nPq() + prob_->nPv();}
+         unsigned int nVar() const {return 2 * nPqPv();}
 
          /// @name Ordering of variables etc.
          /// @{
@@ -92,25 +91,25 @@ namespace SmartGridToolbox
          // element by element, using an indexing scheme.
 
          int iSl(int i) const {return i;}
-         int iPq(int i) const {return nSl_ + i;}
-         int iPv(int i) const {return nSl_ + nPq_ + i;}
+         int iPq(int i) const {return prob_->nSl() + i;}
+         int iPv(int i) const {return prob_->nSl() + prob_->nPq() + i;}
 
-         ublas::range selSlFromAll() const {return {0, nSl_};}
-         ublas::range selPqFromAll() const {return {nSl_, nSl_ + nPq_};}
-         ublas::range selPvFromAll() const {return {nSl_ + nPq_, nSl_ + nPq_ + nPv_};}
-         ublas::range selPqPvFromAll() const {return {nSl_, nSl_ + nPq_ + nPv_};}
-         ublas::range selAllFromAll() const {return {0, nSl_ + nPq_ + nPv_};}
+         ublas::range selSlFromAll() const {return {0, prob_->nSl()};}
+         ublas::range selPqFromAll() const {return {prob_->nSl(), prob_->nSl() + prob_->nPq()};}
+         ublas::range selPvFromAll() const {return {prob_->nSl() + prob_->nPq(), prob_->nSl() + prob_->nPq() + prob_->nPv()};}
+         ublas::range selPqPvFromAll() const {return {prob_->nSl(), prob_->nSl() + prob_->nPq() + prob_->nPv()};}
+         ublas::range selAllFromAll() const {return {0, prob_->nSl() + prob_->nPq() + prob_->nPv()};}
 
          // Note: see above: don't assign into a slice of a sparse matrix!
-         ublas::slice selIrPqFrom_f() const {return {1, 2, nPq_};}
-         ublas::slice selIiPqFrom_f() const {return {0, 2, nPq_};}
-         ublas::slice selIrPvFrom_f() const {return {2 * nPq_ + 1, 2, nPv_};}
-         ublas::slice selIiPvFrom_f() const {return {2 * nPq_, 2, nPv_};}
+         ublas::slice selIrPqFrom_f() const {return {1, 2, prob_->nPq()};}
+         ublas::slice selIiPqFrom_f() const {return {0, 2, prob_->nPq()};}
+         ublas::slice selIrPvFrom_f() const {return {2 * prob_->nPq() + 1, 2, prob_->nPv()};}
+         ublas::slice selIiPvFrom_f() const {return {2 * prob_->nPq(), 2, prob_->nPv()};}
 
-         ublas::slice selVrPqFrom_x() const {return {0, 2, nPq_};}
-         ublas::slice selViPqFrom_x() const {return {1, 2, nPq_};}
-         ublas::slice selQPvFrom_x() const {return {2 * nPq_, 2, nPv_};}
-         ublas::slice selViPvFrom_x() const {return {2 * nPq_ + 1, 2, nPv_};}
+         ublas::slice selVrPqFrom_x() const {return {0, 2, prob_->nPq()};}
+         ublas::slice selViPqFrom_x() const {return {1, 2, prob_->nPq()};}
+         ublas::slice selQPvFrom_x() const {return {2 * prob_->nPq(), 2, prob_->nPv()};}
+         ublas::slice selViPvFrom_x() const {return {2 * prob_->nPq() + 1, 2, prob_->nPv()};}
          /// @}
 
          void initV(ublas::vector<double>& Vr, ublas::vector<double>& Vi) const;
