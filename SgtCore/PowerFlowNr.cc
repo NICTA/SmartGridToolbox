@@ -171,8 +171,7 @@ namespace SmartGridToolbox
       // Determine sizes:
       nPq_ = PqNodes.size();
       nPv_ = PvNodes.size();
-      nSl_ = SlNodes.size();
-      assert(nSl_ > 0); // TODO: What is correct here?
+      nSl_ = SlNodes.size(); // Assuming the we can, if we want, have zero or multiple slack busses. Caveat emptor!
 
       // Insert nodes into ordered list of all nodes. Be careful of ordering!
       nodes_ = NodeVec();
