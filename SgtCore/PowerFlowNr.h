@@ -2,7 +2,7 @@
 #define POWER_FLOW_NR_DOT_H
 
 #include "Common.h"
-#include "PowerFlow.h"
+#include "PowerFlowModel.h"
 #include <vector>
 #include <map>
 
@@ -15,7 +15,6 @@
 
 namespace SmartGridToolbox
 {
-
    struct Jacobian
    {
       Jacobian(int nPq, int nPv);
@@ -68,8 +67,9 @@ namespace SmartGridToolbox
    class PowerFlowNr
    {
       public:
-         PowerFlowNr(PowerFlowProblem* prob) :
-            prob_(prob)
+
+         PowerFlowNr(PowerFlowModel* prob) :
+            mod_(prob)
          {
             // Empty.
          }
@@ -78,9 +78,8 @@ namespace SmartGridToolbox
          bool solve();
 
       private:
-         PowerFlowProblem* prob_;
 
-         unsigned int nPqPv() const {return prob_->nPq() + prob_->nPv();}
+         unsigned int nPqPv() const {return mod_->nPq() + mod_->nPv();}
          unsigned int nVar() const {return 2 * nPqPv();}
 
          /// @name Ordering of variables etc.
@@ -91,25 +90,25 @@ namespace SmartGridToolbox
          // element by element, using an indexing scheme.
 
          int iSl(int i) const {return i;}
-         int iPq(int i) const {return prob_->nSl() + i;}
-         int iPv(int i) const {return prob_->nSl() + prob_->nPq() + i;}
+         int iPq(int i) const {return mod_->nSl() + i;}
+         int iPv(int i) const {return mod_->nSl() + mod_->nPq() + i;}
 
-         ublas::range selSlFromAll() const {return {0, prob_->nSl()};}
-         ublas::range selPqFromAll() const {return {prob_->nSl(), prob_->nSl() + prob_->nPq()};}
-         ublas::range selPvFromAll() const {return {prob_->nSl() + prob_->nPq(), prob_->nSl() + prob_->nPq() + prob_->nPv()};}
-         ublas::range selPqPvFromAll() const {return {prob_->nSl(), prob_->nSl() + prob_->nPq() + prob_->nPv()};}
-         ublas::range selAllFromAll() const {return {0, prob_->nSl() + prob_->nPq() + prob_->nPv()};}
+         ublas::range selSlFromAll() const {return {0, mod_->nSl()};}
+         ublas::range selPqFromAll() const {return {mod_->nSl(), mod_->nSl() + mod_->nPq()};}
+         ublas::range selPvFromAll() const {return {mod_->nSl() + mod_->nPq(), mod_->nSl() + mod_->nPq() + mod_->nPv()};}
+         ublas::range selPqPvFromAll() const {return {mod_->nSl(), mod_->nSl() + mod_->nPq() + mod_->nPv()};}
+         ublas::range selAllFromAll() const {return {0, mod_->nSl() + mod_->nPq() + mod_->nPv()};}
 
          // Note: see above: don't assign into a slice of a sparse matrix!
-         ublas::slice selIrPqFrom_f() const {return {1, 2, prob_->nPq()};}
-         ublas::slice selIiPqFrom_f() const {return {0, 2, prob_->nPq()};}
-         ublas::slice selIrPvFrom_f() const {return {2 * prob_->nPq() + 1, 2, prob_->nPv()};}
-         ublas::slice selIiPvFrom_f() const {return {2 * prob_->nPq(), 2, prob_->nPv()};}
+         ublas::slice selIrPqFrom_f() const {return {1, 2, mod_->nPq()};}
+         ublas::slice selIiPqFrom_f() const {return {0, 2, mod_->nPq()};}
+         ublas::slice selIrPvFrom_f() const {return {2 * mod_->nPq() + 1, 2, mod_->nPv()};}
+         ublas::slice selIiPvFrom_f() const {return {2 * mod_->nPq(), 2, mod_->nPv()};}
 
-         ublas::slice selVrPqFrom_x() const {return {0, 2, prob_->nPq()};}
-         ublas::slice selViPqFrom_x() const {return {1, 2, prob_->nPq()};}
-         ublas::slice selQPvFrom_x() const {return {2 * prob_->nPq(), 2, prob_->nPv()};}
-         ublas::slice selViPvFrom_x() const {return {2 * prob_->nPq() + 1, 2, prob_->nPv()};}
+         ublas::slice selVrPqFrom_x() const {return {0, 2, mod_->nPq()};}
+         ublas::slice selViPqFrom_x() const {return {1, 2, mod_->nPq()};}
+         ublas::slice selQPvFrom_x() const {return {2 * mod_->nPq(), 2, mod_->nPv()};}
+         ublas::slice selViPvFrom_x() const {return {2 * mod_->nPq() + 1, 2, mod_->nPv()};}
          /// @}
 
          void initV(ublas::vector<double>& Vr, ublas::vector<double>& Vi) const;
@@ -128,7 +127,10 @@ namespace SmartGridToolbox
                           const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
                           const ublas::vector<double>& M2Pv);
          void calcJMatrix(ublas::compressed_matrix<double>& JMat, const Jacobian& J) const;
+
       private:
+
+         PowerFlowModel* mod_;
 
          /// @name Y matrix.
          /// @{

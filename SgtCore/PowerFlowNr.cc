@@ -68,31 +68,19 @@ namespace SmartGridToolbox
 
    void PowerFlowNr::validate()
    {
-      // Insert nodes into ordered list of all nodes. Be careful of ordering!
-      nodes_ = PfNodeVec();
-      nodes_.reserve(nNode());
-      nodes_.insert(nodes_.end(), SlNodes.begin(), SlNodes.end());
-      nodes_.insert(nodes_.end(), PqNodes.begin(), PqNodes.end());
-      nodes_.insert(nodes_.end(), PvNodes.begin(), PvNodes.end());
-      // Index all nodes:
-      for (int i = 0; i < nNode(); ++i)
-      {
-         nodes_[i]->idx_ = i;
-      }
-
-      Y_.resize(nNode(), nNode(), false);
+      Y_.resize(mod_->nNode(), mod_->nNode(), false);
 
       // Branch admittances:
-      for (const std::unique_ptr<PfBranch>& branch : branches_)
+      for (const std::unique_ptr<PfBranch>& branch : mod_->branches())
       {
-         auto it0 = prob_->busses().find(branch->ids_[0]);
-         if (it0 == prob_->busses().end())
+         auto it0 = mod_->busses().find(branch->ids_[0]);
+         if (it0 == mod_->busses().end())
          {
             Log().fatal() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
                << " contains a non-existent bus " << branch->ids_[0] << std::endl;
          }
-         auto it1 = prob_->busses().find(branch->ids_[1]);
-         if (it1 == prob_->busses().end())
+         auto it1 = mod_->busses().find(branch->ids_[1]);
+         if (it1 == mod_->busses().end())
          {
             Log().fatal() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
                << " contains a non-existent bus " << branch->ids_[1] << std::endl;
@@ -129,9 +117,9 @@ namespace SmartGridToolbox
       } // Loop over branches.
 
       // Add shunt terms:
-      for (int i = 0; i < nNode(); ++i)
+      for (int i = 0; i < mod_->nNode(); ++i)
       {
-         Y_(i, i) += nodes_[i]->Ys_;
+         Y_(i, i) += mod_->nodes()[i]->Ys_;
       }
 
       G_ = real(Y_);
@@ -139,10 +127,10 @@ namespace SmartGridToolbox
       SGT_DEBUG(Log().debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
 
       // Load quantities.
-      Ic_.resize(nNode(), false);
-      for (int i = 0; i < nNode(); ++i)
+      Ic_.resize(mod_->nNode(), false);
+      for (int i = 0; i < mod_->nNode(); ++i)
       {
-         Ic_(i) = nodes_[i]->Ic_;
+         Ic_(i) = mod_->nodes()[i]->Ic_;
       }
 
       SGT_DEBUG(Log().debug() << "PowerFlowNr : validate complete." << std::endl);
@@ -152,9 +140,9 @@ namespace SmartGridToolbox
    /// Initialize voltages:
    void PowerFlowNr::initV(ublas::vector<double>& Vr, ublas::vector<double>& Vi) const
    {
-      for (int i = 0; i < nNode(); ++i)
+      for (int i = 0; i < mod_->nNode(); ++i)
       {
-         const PfNode& node = *nodes_[i];
+         const PfNode& node = *mod_->nodes()[i];
          Vr(i) = node.V_.real();
          Vi(i) = node.V_.imag();
       }
@@ -162,9 +150,9 @@ namespace SmartGridToolbox
 
    void PowerFlowNr::initS(ublas::vector<double>& P, ublas::vector<double>& Q) const
    {
-      for (int i = 0; i < nNode(); ++i)
+      for (int i = 0; i < mod_->nNode(); ++i)
       {
-         const PfNode& node = *nodes_[i];
+         const PfNode& node = *mod_->nodes()[i];
          P(i) = node.S_.real();
          Q(i) = node.S_.imag();
       }
@@ -261,7 +249,7 @@ namespace SmartGridToolbox
       J.IiPvViPv() = Jc.IiPvViPv();
 
       // Block diagonal:
-      for (int i = 0; i < nPq_; ++i)
+      for (int i = 0; i < mod_->nPq(); ++i)
       {
          int iPqi = iPq(i);
 
@@ -281,7 +269,7 @@ namespace SmartGridToolbox
       }
 
       // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
-      for (int i = 0; i < nPv_; ++i)
+      for (int i = 0; i < mod_->nPv(); ++i)
       {
          int iPvi = iPv(i);
 
@@ -294,7 +282,7 @@ namespace SmartGridToolbox
       // Set the PV Q columns in the Jacobian. They are diagonal.
       const auto VrPv = project(Vr, selPvFromAll());
       const auto ViPv = project(Vi, selPvFromAll());
-      for (int i = 0; i < nPv_; ++i)
+      for (int i = 0; i < mod_->nPv(); ++i)
       {
          J.IrPvQPv()(i, i) = ViPv(i) / M2Pv(i);
          J.IiPvQPv()(i, i) = -VrPv(i) / M2Pv(i);
@@ -321,7 +309,7 @@ namespace SmartGridToolbox
          }
       };
 
-      for (int k = 0; k < nPv_; ++k)
+      for (int k = 0; k < mod_->nPv(); ++k)
       {
          double fMult = (0.5 * (M2Pv(k) - VrPv(k) * VrPv(k) - ViPv(k) * ViPv(k)) / VrPv(k));
          double colViPvMult = -ViPv(k) / VrPv(k);
@@ -396,18 +384,18 @@ namespace SmartGridToolbox
       const double tol = 1e-8;
       const int maxiter = 20;
 
-      ublas::vector<double> Vr(nNode());
-      ublas::vector<double> Vi(nNode());
+      ublas::vector<double> Vr(mod_->nNode());
+      ublas::vector<double> Vi(mod_->nNode());
       initV(Vr, Vi);
 
       ublas::vector<double> M2Pv = element_prod(project(Vr, selPvFromAll()), project(Vr, selPvFromAll()))
                                  + element_prod(project(Vi, selPvFromAll()), project(Vi, selPvFromAll()));
 
-      ublas::vector<double> P(nNode());
-      ublas::vector<double> Q(nNode());
+      ublas::vector<double> P(mod_->nNode());
+      ublas::vector<double> Q(mod_->nNode());
       initS(P, Q);
 
-      Jacobian Jc(nPq_, nPv_); ///< The part of J that doesn't update at each iteration.
+      Jacobian Jc(mod_->nPq(), mod_->nPv()); ///< The part of J that doesn't update at each iteration.
       initJc(Jc);
 
       ublas::vector<double> f(nVar()); ///< Current mismatch function.
@@ -508,10 +496,10 @@ namespace SmartGridToolbox
 
       if (wasSuccessful)
       {
-         ublas::vector<Complex> V(nNode());
-         ublas::vector<Complex> S(nNode());
+         ublas::vector<Complex> V(mod_->nNode());
+         ublas::vector<Complex> S(mod_->nNode());
 
-         for (int i = 0; i < nNode(); ++i)
+         for (int i = 0; i < mod_->nNode(); ++i)
          {
             V(i) = {Vr(i), Vi(i)};
             S(i) = {P(i), Q(i)};
@@ -530,9 +518,9 @@ namespace SmartGridToolbox
          SSl = element_prod(VSl, prod(YStar, VStar)) - element_prod(VSl, IcStar);
 
          // Update nodes and busses.
-         for (int i = 0; i < nNode(); ++i)
+         for (int i = 0; i < mod_->nNode(); ++i)
          {
-            PfNode* node = nodes_[i];
+            auto node = mod_->nodes()[i];
             node->V_ = V(i);
             node->S_ = S(i);
             node->bus_->V_[node->phaseIdx_] = node->V_;

@@ -12,13 +12,14 @@
 namespace SmartGridToolbox
 {
    struct PfNode;
-   typedef std::vector<std::unique_ptr<PfNode>> PfNodeVec;
 
    // The following structures etc. are designed to present a general framework for solving power flow problems,
    // e.g. using Newton-Raphson or the swing equations.
 
    struct PfBus
    {
+      typedef std::vector<std::unique_ptr<PfNode>> PfNodeVec;
+
       PfBus(const std::string& id, BusType type, const Phases& phases,
             const ublas::vector<Complex>& Ys, const ublas::vector<Complex>& Ic,
             const ublas::vector<Complex>& V, const ublas::vector<Complex>& S);
@@ -106,6 +107,10 @@ namespace SmartGridToolbox
          }
 
          // The following are for indexing nodes. Nodes are ordered as: SL first, then PQ, then PV. 
+         size_t nNode()
+         {
+            return nodes_.size();
+         }
          size_t nPq()
          {
             return nPq_;

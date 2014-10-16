@@ -100,19 +100,21 @@ namespace SmartGridToolbox
       SGT_DEBUG(Log().debug() << "Network : solving power flow." << std::endl);
       SGT_DEBUG(Log().debug() << *this);
 
-      PowerFlowProblem prob;
+      PowerFlowModel mod;
       for (const auto nd : nodeVec_)
       {
          auto bus = nd->bus();
-         prob.addBus(bus->id(), bus->type(), bus->phases(), bus->VNom(), nd->YZip(), nd->IZip(), 
+         mod.addBus(bus->id(), bus->type(), bus->phases(), bus->VNom(), nd->YZip(), nd->IZip(), 
                nd->SZip() + nd->SGen());
       }
       for (const auto arc : arcVec_)
       {
          auto branch = arc->branch();
-         prob.addBranch(arc->node0()->bus()->id(), arc->node1()->bus()->id(),
+         mod.addBranch(arc->node0()->bus()->id(), arc->node1()->bus()->id(),
                branch->phases0(), branch->phases1(), branch->Y());
       }
+
+      PowerFlowNr solver(&mod);
 
       solver.validate();
 
@@ -120,7 +122,7 @@ namespace SmartGridToolbox
 
       if (ok)
       {
-         for (const auto& busPair: solver.busses())
+         for (const auto& busPair: mod.busses())
          {
             auto& busNr = *busPair.second;
             const auto nd = this->node(busNr.id_);
