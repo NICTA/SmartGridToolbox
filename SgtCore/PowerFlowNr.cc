@@ -40,53 +40,6 @@ namespace SmartGridToolbox
       }
    }
 
-   BusNr::BusNr(const std::string& id, BusType type, const Phases& phases, const ublas::vector<Complex>& V,
-         const ublas::vector<Complex>& Ys, const ublas::vector<Complex>& Ic,
-         const ublas::vector<Complex>& S) :
-      id_(id),
-      type_(type),
-      phases_(phases),
-      V_(V),
-      S_(S),
-      Ys_(Ys),
-      Ic_(Ic)
-   {
-      assert(V.size() == phases.size());
-      assert(Ys.size() == phases.size());
-      assert(Ic.size() == phases.size());
-      assert(S.size() == phases.size());
-
-      for (int i = 0; i < phases.size(); ++i)
-      {
-         nodes_.push_back(std::unique_ptr<NodeNr>(new NodeNr(*this, i)));
-      }
-   }
-
-   NodeNr::NodeNr(BusNr& bus, int phaseIdx) :
-      bus_(&bus),
-      phaseIdx_(phaseIdx),
-      V_(bus.V_(phaseIdx)),
-      S_(bus.S_(phaseIdx)),
-      Ys_(bus.Ys_(phaseIdx)),
-      Ic_(bus.Ic_(phaseIdx)),
-      idx_(-1)
-   {
-      // Empty.
-   }
-
-   BranchNr::BranchNr(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
-                      const ublas::matrix<Complex>& Y) :
-      nPhase_(phases0.size()),
-      ids_{{id0, id1}},
-      phases_{{phases0, phases1}},
-      Y_(Y)
-   {
-      assert(phases1.size() == nPhase_);
-      int nTerm = 2 * nPhase_;
-      assert(Y.size1() == nTerm);
-      assert(Y.size2() == nTerm);
-   }
-
    Jacobian::Jacobian(int nPq, int nPv)
    {
       for (int i = 0; i < 2; ++i)
@@ -113,68 +66,10 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowNr::addBus(const std::string& id, BusType type, const Phases& phases, const ublas::vector<Complex>& V,
-         const ublas::vector<Complex>& Y, const ublas::vector<Complex>& I, const ublas::vector<Complex>& S)
-   {
-      SGT_DEBUG(Log().debug() << "PowerFlowNr : add bus " << id << std::endl);
-      busses_[id].reset(new BusNr(id, type, phases, V, Y, I, S));
-   }
-
-   void PowerFlowNr::addBranch(const std::string& idBus0, const std::string& idBus1,
-         const Phases& phases0, const Phases& phases1, const ublas::matrix<Complex>& Y)
-   {
-      SGT_DEBUG(Log().debug() << "PowerFlowNr : addBranch " << idBus0 << " " << idBus1 << std::endl);
-      branches_.push_back(std::unique_ptr<BranchNr>(new BranchNr(idBus0, idBus1, phases0, phases1, Y)));
-   }
-
-   void PowerFlowNr::reset()
-   {
-      SGT_DEBUG(Log().debug() << "PowerFlowNr : reset." << std::endl);
-      busses_ = BusMap();
-      branches_ = BranchVec();
-   }
-
    void PowerFlowNr::validate()
    {
-      SGT_DEBUG(Log().debug() << "PowerFlowNr : validate." << std::endl);
-
-      // Make Nodes:
-      NodeVec PqNodes = NodeVec();
-      NodeVec PvNodes = NodeVec();
-      NodeVec SlNodes = NodeVec();
-      for (auto& busPair : busses_)
-      {
-         BusNr& bus = *busPair.second;
-         NodeVec* vec = nullptr;
-         if (bus.type_ == BusType::PQ)
-         {
-            vec = &PqNodes;
-         }
-         else if (bus.type_ == BusType::PV)
-         {
-            vec = &PvNodes;
-         }
-         else if (bus.type_ == BusType::SL)
-         {
-            vec = &SlNodes;
-         }
-         else
-         {
-            Log().fatal() << "Unsupported bus type " << busType2Str(bus.type_) << std::endl;
-         }
-         for (const std::unique_ptr<NodeNr>& node : bus.nodes_)
-         {
-            vec->push_back(node.get());
-         }
-      }
-
-      // Determine sizes:
-      nPq_ = PqNodes.size();
-      nPv_ = PvNodes.size();
-      nSl_ = SlNodes.size(); // Assuming the we can, if we want, have zero or multiple slack busses. Caveat emptor!
-
       // Insert nodes into ordered list of all nodes. Be careful of ordering!
-      nodes_ = NodeVec();
+      nodes_ = PfNodeVec();
       nodes_.reserve(nNode());
       nodes_.insert(nodes_.end(), SlNodes.begin(), SlNodes.end());
       nodes_.insert(nodes_.end(), PqNodes.begin(), PqNodes.end());
@@ -188,21 +83,21 @@ namespace SmartGridToolbox
       Y_.resize(nNode(), nNode(), false);
 
       // Branch admittances:
-      for (const std::unique_ptr<BranchNr>& branch : branches_)
+      for (const std::unique_ptr<PfBranch>& branch : branches_)
       {
-         auto it0 = busses_.find(branch->ids_[0]);
-         if (it0 == busses_.end())
+         auto it0 = prob_->busses().find(branch->ids_[0]);
+         if (it0 == prob_->busses().end())
          {
             Log().fatal() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
                << " contains a non-existent bus " << branch->ids_[0] << std::endl;
          }
-         auto it1 = busses_.find(branch->ids_[1]);
-         if (it1 == busses_.end())
+         auto it1 = prob_->busses().find(branch->ids_[1]);
+         if (it1 == prob_->busses().end())
          {
             Log().fatal() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
                << " contains a non-existent bus " << branch->ids_[1] << std::endl;
          }
-         const BusNr* busses[] = {it0->second.get(), it1->second.get()};
+         const PfBus* busses[] = {it0->second.get(), it1->second.get()};
          int nTerm = 2 * branch->nPhase_;
 
          // There is one link per distinct pair of bus/phase pairs.
@@ -210,9 +105,9 @@ namespace SmartGridToolbox
          {
             int busIdxI = i / branch->nPhase_; // 0 or 1
             int branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
-            const BusNr* busI = busses[busIdxI];
+            const PfBus* busI = busses[busIdxI];
             int busPhaseIdxI = busI->phases_.phaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
-            const NodeNr* nodeI = busI->nodes_[busPhaseIdxI].get();
+            const PfNode* nodeI = busI->nodes_[busPhaseIdxI].get();
             int idxNodeI = nodeI->idx_;
 
             // Only count each diagonal element in branch->Y_ once!
@@ -222,9 +117,9 @@ namespace SmartGridToolbox
             {
                int busIdxK = k / branch->nPhase_; // 0 or 1
                int branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
-               const BusNr* busK = busses[busIdxK];
+               const PfBus* busK = busses[busIdxK];
                int busPhaseIdxK = busK->phases_.phaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
-               const NodeNr* nodeK = busK->nodes_[busPhaseIdxK].get();
+               const PfNode* nodeK = busK->nodes_[busPhaseIdxK].get();
                int idxNodeK = nodeK->idx_;
 
                Y_(idxNodeI, idxNodeK) += branch->Y_(i, k);
@@ -259,7 +154,7 @@ namespace SmartGridToolbox
    {
       for (int i = 0; i < nNode(); ++i)
       {
-         const NodeNr& node = *nodes_[i];
+         const PfNode& node = *nodes_[i];
          Vr(i) = node.V_.real();
          Vi(i) = node.V_.imag();
       }
@@ -269,7 +164,7 @@ namespace SmartGridToolbox
    {
       for (int i = 0; i < nNode(); ++i)
       {
-         const NodeNr& node = *nodes_[i];
+         const PfNode& node = *nodes_[i];
          P(i) = node.S_.real();
          Q(i) = node.S_.imag();
       }
@@ -637,7 +532,7 @@ namespace SmartGridToolbox
          // Update nodes and busses.
          for (int i = 0; i < nNode(); ++i)
          {
-            NodeNr* node = nodes_[i];
+            PfNode* node = nodes_[i];
             node->V_ = V(i);
             node->S_ = S(i);
             node->bus_->V_[node->phaseIdx_] = node->V_;
@@ -668,56 +563,4 @@ namespace SmartGridToolbox
       return wasSuccessful;
    }
 
-   void PowerFlowNr::printProblem()
-   {
-      Log().debug() << "PowerFlowNr::printProblem()" << std::endl;
-      LogIndent _;
-      Log().debug() << "Nodes:" << std::endl;
-      {
-         LogIndent _;
-         for (const NodeNr* nd : nodes_)
-         {
-            Log().debug() << "Node:" << std::endl;
-            {
-               LogIndent _;
-               Log().debug() << "Id    : " << nd->bus_->id_ << std::endl;
-               Log().debug() << "Type  : " << nd->bus_->type_ << std::endl;
-               Log().debug() << "Phase : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
-               Log().debug() << "V     : " << nd->V_ << std::endl;
-               Log().debug() << "S     : " << nd->S_ << std::endl;
-               Log().debug() << "Ys    : " << nd->Ys_ << std::endl;
-               Log().debug() << "Ic    : " << nd->Ic_ << std::endl;
-            }
-         }
-      }
-      Log().debug() << "Branches:" << std::endl;
-      {
-         LogIndent _;
-         for (const std::unique_ptr<BranchNr>& branch : branches_)
-         {
-            Log().debug() << "Branch:" << std::endl;
-            {
-               LogIndent _;
-               Log().debug() << "Busses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;
-               Log().debug() << "Phases : " << branch->phases_[0] << ", " << branch->phases_[1] << std::endl;
-               Log().debug() << "Y      :" << std::endl;
-               {
-                  LogIndent _;
-                  for (int i = 0; i < branch->Y_.size1(); ++i)
-                  {
-                     Log().debug() << std::setprecision(14) << std::setw(18) << row(branch->Y_, i) << std::endl;
-                  }
-               }
-            }
-         }
-      }
-      Log().debug() << "Y:" << std::endl;
-      {
-         LogIndent _;
-         for (int i = 0; i < Y_.size1(); ++i)
-         {
-            Log().debug() << std::setprecision(14) << std::setw(18) << row(Y_, i) << std::endl;
-         }
-      }
-   }
 }

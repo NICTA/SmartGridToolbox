@@ -474,6 +474,8 @@ where $\Delta P$ is the input mechanical power minus the electrical power suppli
 \end{align}
 where $L_s = J \omega_s$ is the angular momentum of the rotor at the network frequency. This is the swing equation.
 
+A note about units: if, as is common, we measure power in $\mathrm{MVA}$, then $L$ will need to be measured in commensurate units of $\mathrm{Mkg\cdot m^{-2}}$, i.e. we will need to divide the SI value by $10^6$.
+
 \subsection{The Velocity Verlet algorithm}
 A good way of solving such kinds of equations of motion is the Velocity Verlet algorithm, often used in molecular dynamics simulation. Note that $\Delta P$ is normally dependent only on the instantaneous properties of the network including the voltage angle $\delta$. This algorithm has the advantage of being \emph{symplectic}, meaning effectively that it has the property of time reversibility, that spurious energies are not added to the system and therefore we do not see the kinds of instabilities that give rise to wild and spurious accelerations.
 
@@ -487,6 +489,5 @@ The steps in the algorithm are given below. We put $\omega_\delta := \partial \d
 \subsection{The swing equations and the power flow equations}
 In step 2 above, we derive the electrical power at all generators using the power flow equations. We need to specify the exact form of the equations used. The first observation is that the phase angle $\phi$ is fixed at the generator busses by the swing equations. The voltage magnitude $V$ could also be fixed (either to its fixed value, or scaled according to the current frequency), making all of the busses into effective swing busses. To ensure feasibility of the AC power flow equations, we could then convert all or some ZIP loads into constant impedance loads, or add a high constant impedance component to all loads to ensure feasibility.
 
-Note that for the purposes of the swing equations, we are only interested in the real power component of the power flow equations.
-
+Note that for the purposes of the swing equations, we are only interested in the real power component of the power flow equations. However, to find this, we need all components of the voltage at all other busses, so solving a general power flow problem is necessary.
 \end{document}
