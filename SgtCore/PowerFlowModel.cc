@@ -127,9 +127,9 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowModel::printModel()
+   void PowerFlowModel::print()
    {
-      Log().debug() << "PowerFlowNr::printModel()" << std::endl;
+      Log().debug() << "PowerFlowNr::print()" << std::endl;
       LogIndent _;
       Log().debug() << "Nodes:" << std::endl;
       {

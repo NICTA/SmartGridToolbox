@@ -134,7 +134,7 @@ namespace SmartGridToolbox
       }
 
       SGT_DEBUG(Log().debug() << "PowerFlowNr : validate complete." << std::endl);
-      SGT_DEBUG(printProblem());
+      SGT_DEBUG(mod_->print());
    }
 
    /// Initialize voltages:

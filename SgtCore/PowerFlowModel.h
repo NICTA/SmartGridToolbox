@@ -126,7 +126,7 @@ namespace SmartGridToolbox
 
          void reset();
          void validate();
-         void printModel();
+         void print();
 
       private:
 
