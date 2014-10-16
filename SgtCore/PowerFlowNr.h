@@ -45,8 +45,6 @@ namespace SmartGridToolbox
       Array<std::string, 2> ids_; ///< Id of bus 0/1
       Array<Phases, 2> phases_;   ///< phases of bus 0/1.
       ublas::matrix<Complex> Y_;  ///< Bus admittance matrix.
-      ublas::matrix<Complex> G_;  ///< Bus admittance matrix.
-      ublas::matrix<Complex> B_;  ///< Bus admittance matrix.
    };
 
    struct NodeNr
