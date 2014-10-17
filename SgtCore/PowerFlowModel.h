@@ -73,6 +73,10 @@ namespace SmartGridToolbox
          typedef std::vector<PfNode*> PfNodeVec;
 
       public:
+
+         /// @name Bus, branch and node accessors.
+         /// @{
+         
          void addBus(const std::string& id, BusType type, const Phases& phases, const ublas::vector<Complex>& V,
                const ublas::vector<Complex>& Y, const ublas::vector<Complex>& I, const ublas::vector<Complex>& S);
 
@@ -106,7 +110,73 @@ namespace SmartGridToolbox
             return nodes_;
          }
 
-         // The following are for indexing nodes. Nodes are ordered as: SL first, then PQ, then PV. 
+         /// @}
+
+         /// @name Setup etc.
+         /// @{
+         
+         void reset();
+         void validate();
+         void print();
+
+         /// @}
+         
+         /// @name Y matrix.
+         /// This absorbs any constant admittance ZIP components.
+         /// @{
+         
+         const ublas::compressed_matrix<Complex>& Y() const
+         {
+            return Y_;
+         }
+         ublas::compressed_matrix<Complex>& Y()
+         {
+            return Y_;
+         }
+         
+         /// @}
+         
+         /// @name Vectors.
+         /// SL node: V is a setpoint, S is a warm start.
+         /// PQ node: V is a warm start, S is a setpoint.
+         /// PV node: |V| is a setpoint, arg(V) is a warm start, P is a setpoint, Q is a warm start.
+         /// Note that P includes both load and generation and thus may include constant power components of ZIPs.
+         /// For example, for a slack bus with a constant S load, P represents the generated power minus the load draw.
+         /// @{
+         
+         const ublas::vector<Complex>& V() const   ///< Voltage.
+         {
+            return V_;
+         }
+         ublas::vector<Complex>& V()               ///< Voltage.
+         {
+            return V_;
+         }
+         
+         const ublas::vector<Complex>& S() const   ///< Generated power injection minus load draw.
+         {
+            return S_;
+         }
+         ublas::vector<Complex>& S()               ///< Generated power injection minus load draw.
+         {
+            return S_;
+         }
+         
+         const ublas::vector<Complex>& Ic() const  ///< Constant current component of ZIP.
+         {
+            return Ic_;
+         }
+         ublas::vector<Complex>& Ic()              ///< Constant current component of ZIP.
+         {
+            return Ic_;
+         }
+         
+         /// @}
+
+         /// @name Count nodes of different types.
+         /// Nodes are ordered as: SL first, then PQ, then PV. 
+         /// @{
+         
          size_t nNode()
          {
             return nodes_.size();
@@ -124,9 +194,51 @@ namespace SmartGridToolbox
             return nSl_;
          }
 
-         void reset();
-         void validate();
-         void print();
+         /// @}
+         
+         /// @name Ordering of variables etc.
+         /// @{
+
+         // Note: a more elegant general solution to ordering would be to use matrix_slice. But assigning into
+         // a matrix slice of a compressed_matrix appears to destroy the sparsity. MatrixRange works, but does not
+         // present a general solution to ordering. Thus, when assigning into a compressed_matrix, we need to work
+         // element by element, using an indexing scheme.
+
+         int iSl(int i) const 
+         {
+            return i;
+         }
+         int iPq(int i) const 
+         {
+            return nSl_ + i;
+         }
+         int iPv(int i) const 
+         {
+            return nSl_ + nPq_ + i;
+         }
+
+         ublas::range selSlFromAll() const 
+         {
+            return {0, nSl_};
+         }
+         ublas::range selPqFromAll() const 
+         {
+            return {nSl_, nSl_ + nPq_};
+         }
+         ublas::range selPvFromAll() const 
+         {
+            return {nSl_ + nPq_, nSl_ + nPq_ + nPv_};
+         }
+         ublas::range selPqPvFromAll() const 
+         {
+            return {nSl_, nSl_ + nPq_ + nPv_};
+         }
+         ublas::range selAllFromAll() const 
+         {
+            return {0, nSl_ + nPq_ + nPv_};
+         }
+
+         /// @}
 
       private:
 
@@ -145,6 +257,22 @@ namespace SmartGridToolbox
          size_t nSl_;   ///< Number of SL nodes.
          size_t nPq_;   ///< Number of PQ nodes.
          size_t nPv_;   ///< Number of PV nodes.
+         
+         /// @}
+
+         /// @name Y matrix.
+         /// @{
+         
+         ublas::compressed_matrix<Complex> Y_;  ///< Y matrix.
+
+         /// @}
+
+         /// @name Vectors per node.
+         /// @{
+
+         ublas::vector<Complex> V_;    ///< Complex voltage.
+         ublas::vector<Complex> S_;    ///< Complex power injection = S_zip + S_gen
+         ublas::vector<Complex> Ic_;   ///< Complex voltage.
          
          /// @}
    };

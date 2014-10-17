@@ -113,11 +113,9 @@ namespace SmartGridToolbox
          mod.addBranch(arc->node0()->bus()->id(), arc->node1()->bus()->id(),
                branch->phases0(), branch->phases1(), branch->Y());
       }
+      mod.validate();
 
       PowerFlowNr solver(&mod);
-
-      solver.validate();
-
       bool ok = solver.solve();
 
       if (ok)

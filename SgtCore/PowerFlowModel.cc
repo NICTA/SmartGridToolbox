@@ -125,11 +125,85 @@ namespace SmartGridToolbox
       {
          nodes_[i]->idx_ = i;
       }
+
+      int nNode = nodes_.size();
+
+      // Bus admittance matrix:
+      Y_.resize(nNode, nNode, false);
+
+      // Branch admittances:
+      for (const std::unique_ptr<PfBranch>& branch : branches_)
+      {
+         auto it0 = busses_.find(branch->ids_[0]);
+         if (it0 == busses_.end())
+         {
+            Log().fatal() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
+               << " contains a non-existent bus " << branch->ids_[0] << std::endl;
+         }
+         auto it1 = busses_.find(branch->ids_[1]);
+         if (it1 == busses_.end())
+         {
+            Log().fatal() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
+               << " contains a non-existent bus " << branch->ids_[1] << std::endl;
+         }
+         const PfBus* busses[] = {it0->second.get(), it1->second.get()};
+         int nTerm = 2 * branch->nPhase_;
+
+         // There is one link per distinct pair of bus/phase pairs.
+         for (int i = 0; i < nTerm; ++i)
+         {
+            int busIdxI = i / branch->nPhase_; // 0 or 1
+            int branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
+            const PfBus* busI = busses[busIdxI];
+            int busPhaseIdxI = busI->phases_.phaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
+            const PfNode* nodeI = busI->nodes_[busPhaseIdxI].get();
+            int idxNodeI = nodeI->idx_;
+
+            // Only count each diagonal element in branch->Y_ once!
+            Y_(idxNodeI, idxNodeI) += branch->Y_(i, i);
+
+            for (int k = i + 1; k < nTerm; ++k)
+            {
+               int busIdxK = k / branch->nPhase_; // 0 or 1
+               int branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
+               const PfBus* busK = busses[busIdxK];
+               int busPhaseIdxK = busK->phases_.phaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
+               const PfNode* nodeK = busK->nodes_[busPhaseIdxK].get();
+               int idxNodeK = nodeK->idx_;
+
+               Y_(idxNodeI, idxNodeK) += branch->Y_(i, k);
+               Y_(idxNodeK, idxNodeI) += branch->Y_(k, i);
+            }
+         }
+      } // Loop over branches.
+
+      // Add shunt terms:
+      for (int i = 0; i < nNode; ++i)
+      {
+         Y_(i, i) += nodes_[i]->Ys_;
+      }
+
+      SGT_DEBUG(Log().debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
+
+      // Vector quantities of problem:
+      V_.resize(nNode, false);
+      S_.resize(nNode, false);
+      Ic_.resize(nNode, false);
+      for (int i = 0; i < nNode; ++i)
+      {
+         const PfNode& node = *nodes_[i];
+         V_(i) = node.V_;
+         S_(i) = node.S_;
+         Ic_(i) = node.Ic_;
+      }
+
+      SGT_DEBUG(Log().debug() << "PowerFlowModel : validate complete." << std::endl);
+      SGT_DEBUG(mod_->print());
    }
 
    void PowerFlowModel::print()
    {
-      Log().debug() << "PowerFlowNr::print()" << std::endl;
+      Log().debug() << "PowerFlowModel::print()" << std::endl;
       LogIndent _;
       Log().debug() << "Nodes:" << std::endl;
       {

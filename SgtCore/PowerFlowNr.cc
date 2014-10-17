@@ -66,122 +66,30 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowNr::validate()
-   {
-      Y_.resize(mod_->nNode(), mod_->nNode(), false);
-
-      // Branch admittances:
-      for (const std::unique_ptr<PfBranch>& branch : mod_->branches())
-      {
-         auto it0 = mod_->busses().find(branch->ids_[0]);
-         if (it0 == mod_->busses().end())
-         {
-            Log().fatal() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
-               << " contains a non-existent bus " << branch->ids_[0] << std::endl;
-         }
-         auto it1 = mod_->busses().find(branch->ids_[1]);
-         if (it1 == mod_->busses().end())
-         {
-            Log().fatal() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
-               << " contains a non-existent bus " << branch->ids_[1] << std::endl;
-         }
-         const PfBus* busses[] = {it0->second.get(), it1->second.get()};
-         int nTerm = 2 * branch->nPhase_;
-
-         // There is one link per distinct pair of bus/phase pairs.
-         for (int i = 0; i < nTerm; ++i)
-         {
-            int busIdxI = i / branch->nPhase_; // 0 or 1
-            int branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
-            const PfBus* busI = busses[busIdxI];
-            int busPhaseIdxI = busI->phases_.phaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
-            const PfNode* nodeI = busI->nodes_[busPhaseIdxI].get();
-            int idxNodeI = nodeI->idx_;
-
-            // Only count each diagonal element in branch->Y_ once!
-            Y_(idxNodeI, idxNodeI) += branch->Y_(i, i);
-
-            for (int k = i + 1; k < nTerm; ++k)
-            {
-               int busIdxK = k / branch->nPhase_; // 0 or 1
-               int branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
-               const PfBus* busK = busses[busIdxK];
-               int busPhaseIdxK = busK->phases_.phaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
-               const PfNode* nodeK = busK->nodes_[busPhaseIdxK].get();
-               int idxNodeK = nodeK->idx_;
-
-               Y_(idxNodeI, idxNodeK) += branch->Y_(i, k);
-               Y_(idxNodeK, idxNodeI) += branch->Y_(k, i);
-            }
-         }
-      } // Loop over branches.
-
-      // Add shunt terms:
-      for (int i = 0; i < mod_->nNode(); ++i)
-      {
-         Y_(i, i) += mod_->nodes()[i]->Ys_;
-      }
-
-      G_ = real(Y_);
-      B_ = imag(Y_);
-      SGT_DEBUG(Log().debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
-
-      // Load quantities.
-      Ic_.resize(mod_->nNode(), false);
-      for (int i = 0; i < mod_->nNode(); ++i)
-      {
-         Ic_(i) = mod_->nodes()[i]->Ic_;
-      }
-
-      SGT_DEBUG(Log().debug() << "PowerFlowNr : validate complete." << std::endl);
-      SGT_DEBUG(mod_->print());
-   }
-
-   /// Initialize voltages:
-   void PowerFlowNr::initV(ublas::vector<double>& Vr, ublas::vector<double>& Vi) const
-   {
-      for (int i = 0; i < mod_->nNode(); ++i)
-      {
-         const PfNode& node = *mod_->nodes()[i];
-         Vr(i) = node.V_.real();
-         Vi(i) = node.V_.imag();
-      }
-   }
-
-   void PowerFlowNr::initS(ublas::vector<double>& P, ublas::vector<double>& Q) const
-   {
-      for (int i = 0; i < mod_->nNode(); ++i)
-      {
-         const PfNode& node = *mod_->nodes()[i];
-         P(i) = node.S_.real();
-         Q(i) = node.S_.imag();
-      }
-   }
-
    /// Set the part of J that doesn't update at each iteration.
    /** At this stage, we are treating J as if all busses were PQ. */
    void PowerFlowNr::initJc(Jacobian& Jc) const
    {
-      initJcBlock(project(G_, selPqFromAll(), selPqFromAll()),
-                  project(B_, selPqFromAll(), selPqFromAll()),
+      initJcBlock(project(G_, mod_->selPqFromAll(), mod_->selPqFromAll()),
+                  project(B_, mod_->selPqFromAll(), mod_->selPqFromAll()),
                   Jc.IrPqVrPq(),
                   Jc.IrPqViPq(),
                   Jc.IiPqVrPq(),
                   Jc.IiPqViPq());
-      initJcBlock(project(G_, selPqFromAll(), selPvFromAll()),
-                  project(B_, selPqFromAll(), selPvFromAll()),
+      initJcBlock(project(G_, mod_->selPqFromAll(), mod_->selPvFromAll()),
+                  project(B_, mod_->selPqFromAll(), mod_->selPvFromAll()),
                   Jc.IrPqVrPv(),
                   Jc.IrPqViPv(),
                   Jc.IiPqVrPv(),
                   Jc.IiPqViPv());
-      initJcBlock(project(G_, selPvFromAll(), selPqFromAll()),
-                  project(B_, selPvFromAll(), selPqFromAll()),
+      initJcBlock(project(G_, mod_->selPvFromAll(), mod_->selPqFromAll()),
+                  project(B_, mod_->selPvFromAll(), mod_->selPqFromAll()),
                   Jc.IrPvVrPq(),
                   Jc.IrPvViPq(),
                   Jc.IiPvVrPq(),
                   Jc.IiPvViPq());
-      initJcBlock(project(G_, selPvFromAll(), selPvFromAll()),
-                  project(B_, selPvFromAll(), selPvFromAll()),
+      initJcBlock(project(G_, mod_->selPvFromAll(), mod_->selPvFromAll()),
+                  project(B_, mod_->selPvFromAll(), mod_->selPvFromAll()),
                   Jc.IrPvVrPv(),
                   Jc.IrPvViPv(),
                   Jc.IiPvVrPv(),
@@ -195,17 +103,17 @@ namespace SmartGridToolbox
                            const ublas::vector<double>& M2Pv) const
    {
       // PQ busses:
-      const ublas::compressed_matrix<double> GPq = project(G_, selPqFromAll(), selAllFromAll());
-      const ublas::compressed_matrix<double> BPq = project(B_, selPqFromAll(), selAllFromAll());
+      const ublas::compressed_matrix<double> GPq = project(G_, mod_->selPqFromAll(), mod_->selAllFromAll());
+      const ublas::compressed_matrix<double> BPq = project(B_, mod_->selPqFromAll(), mod_->selAllFromAll());
 
-      const auto VrPq = project(Vr, selPqFromAll());
-      const auto ViPq = project(Vi, selPqFromAll());
+      const auto VrPq = project(Vr, mod_->selPqFromAll());
+      const auto ViPq = project(Vi, mod_->selPqFromAll());
 
-      const auto PPq = project(P, selPqFromAll());
-      const auto QPq = project(Q, selPqFromAll());
+      const auto PPq = project(P, mod_->selPqFromAll());
+      const auto QPq = project(Q, mod_->selPqFromAll());
 
-      const auto IcrPq = project(real(Ic_), selPqFromAll());
-      const auto IciPq = project(imag(Ic_), selPqFromAll());
+      const auto IcrPq = project(real(mod_->Ic()), mod_->selPqFromAll());
+      const auto IciPq = project(imag(mod_->Ic()), mod_->selPqFromAll());
 
       ublas::vector<double> M2Pq = element_prod(VrPq, VrPq) + element_prod(ViPq, ViPq);
 
@@ -215,17 +123,17 @@ namespace SmartGridToolbox
                                  + IciPq - myProd(GPq, Vi) - myProd(BPq, Vr);
 
       // PV busses. Note that these differ in that M2Pv is considered a constant.
-      const auto GPv = project(G_, selPvFromAll(), selAllFromAll());
-      const auto BPv = project(B_, selPvFromAll(), selAllFromAll());
+      const auto GPv = project(G_, mod_->selPvFromAll(), mod_->selAllFromAll());
+      const auto BPv = project(B_, mod_->selPvFromAll(), mod_->selAllFromAll());
 
-      const auto VrPv = project(Vr, selPvFromAll());
-      const auto ViPv = project(Vi, selPvFromAll());
+      const auto VrPv = project(Vr, mod_->selPvFromAll());
+      const auto ViPv = project(Vi, mod_->selPvFromAll());
 
-      const auto PPv = project(P, selPvFromAll());
-      const auto QPv = project(Q, selPvFromAll());
+      const auto PPv = project(P, mod_->selPvFromAll());
+      const auto QPv = project(Q, mod_->selPvFromAll());
 
-      const auto IcrPv = project(real(Ic_), selPvFromAll());
-      const auto IciPv = project(imag(Ic_), selPvFromAll());
+      const auto IcrPv = project(real(mod_->Ic()), mod_->selPvFromAll());
+      const auto IciPv = project(imag(mod_->Ic()), mod_->selPvFromAll());
 
       project(f, selIrPvFrom_f()) = element_div(element_prod(VrPv, PPv) + element_prod(ViPv, QPv), M2Pv)
                                  + IcrPv - myProd(GPv, Vr) + myProd(BPv, Vi);
@@ -251,7 +159,7 @@ namespace SmartGridToolbox
       // Block diagonal:
       for (int i = 0; i < mod_->nPq(); ++i)
       {
-         int iPqi = iPq(i);
+         int iPqi = mod_->iPq(i);
 
          double Pvr_p_QVi = P(iPqi) * Vr(iPqi) + Q(iPqi) * Vi(iPqi);
          double Pvi_m_QVr = P(iPqi) * Vi(iPqi) - Q(iPqi) * Vr(iPqi);
@@ -271,7 +179,7 @@ namespace SmartGridToolbox
       // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
       for (int i = 0; i < mod_->nPv(); ++i)
       {
-         int iPvi = iPv(i);
+         int iPvi = mod_->iPv(i);
 
          J.IrPvVrPv()(i, i) = Jc.IrPvVrPv()(i, i) + P(iPvi) / M2Pv(i); // Could -> Jc if we wanted.
          J.IrPvViPv()(i, i) = Jc.IrPvViPv()(i, i) + Q(iPvi) / M2Pv(i);
@@ -280,8 +188,8 @@ namespace SmartGridToolbox
       }
 
       // Set the PV Q columns in the Jacobian. They are diagonal.
-      const auto VrPv = project(Vr, selPvFromAll());
-      const auto ViPv = project(Vi, selPvFromAll());
+      const auto VrPv = project(Vr, mod_->selPvFromAll());
+      const auto ViPv = project(Vi, mod_->selPvFromAll());
       for (int i = 0; i < mod_->nPv(); ++i)
       {
          J.IrPvQPv()(i, i) = ViPv(i) / M2Pv(i);
@@ -294,8 +202,8 @@ namespace SmartGridToolbox
                                  const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
                                  const ublas::vector<double>& M2Pv)
    {
-      const auto VrPv = project(Vr, selPvFromAll());
-      const auto ViPv = project(Vi, selPvFromAll());
+      const auto VrPv = project(Vr, mod_->selPvFromAll());
+      const auto ViPv = project(Vi, mod_->selPvFromAll());
 
       typedef ublas::vector_slice<ublas::vector<double>> VecSel;
       typedef ublas::matrix_column<ublas::compressed_matrix<double>> Column;
@@ -384,16 +292,17 @@ namespace SmartGridToolbox
       const double tol = 1e-8;
       const int maxiter = 20;
 
-      ublas::vector<double> Vr(mod_->nNode());
-      ublas::vector<double> Vi(mod_->nNode());
-      initV(Vr, Vi);
+      G_ = real(mod_->Y());
+      B_ = imag(mod_->Y());
 
-      ublas::vector<double> M2Pv = element_prod(project(Vr, selPvFromAll()), project(Vr, selPvFromAll()))
-                                 + element_prod(project(Vi, selPvFromAll()), project(Vi, selPvFromAll()));
+      ublas::vector<double> Vr = real(mod_->V());
+      ublas::vector<double> Vi = imag(mod_->V());
 
-      ublas::vector<double> P(mod_->nNode());
-      ublas::vector<double> Q(mod_->nNode());
-      initS(P, Q);
+      ublas::vector<double> P = real(mod_->S());
+      ublas::vector<double> Q = imag(mod_->S());
+
+      ublas::vector<double> M2Pv = element_prod(project(Vr, mod_->selPvFromAll()), project(Vr, mod_->selPvFromAll()))
+                                 + element_prod(project(Vi, mod_->selPvFromAll()), project(Vi, mod_->selPvFromAll()));
 
       Jacobian Jc(mod_->nPq(), mod_->nPv()); ///< The part of J that doesn't update at each iteration.
       initJc(Jc);
@@ -471,19 +380,19 @@ namespace SmartGridToolbox
 
          stopwatch.reset(); stopwatch.start();
          // Update the current values of V from the solution:
-         project(Vr, selPqFromAll()) += project(x, selVrPqFrom_x());
-         project(Vi, selPqFromAll()) += project(x, selViPqFrom_x());
+         project(Vr, mod_->selPqFromAll()) += project(x, selVrPqFrom_x());
+         project(Vi, mod_->selPqFromAll()) += project(x, selViPqFrom_x());
 
          // Explicitly deal with the voltage magnitude constraint by updating VrPv by hand.
-         auto VrPv = project(Vr, selPvFromAll());
-         auto ViPv = project(Vi, selPvFromAll());
+         auto VrPv = project(Vr, mod_->selPvFromAll());
+         auto ViPv = project(Vi, mod_->selPvFromAll());
          const auto DeltaViPv = project(x, selViPvFrom_x());
          VrPv += element_div(M2Pv - element_prod(VrPv, VrPv) - element_prod(ViPv, ViPv)
                              - 2 * element_prod(ViPv, DeltaViPv), 2 * VrPv);
          ViPv += DeltaViPv;
 
          // Update Q for PV busses based on the solution.
-         project(Q, selPvFromAll()) += project(x, selQPvFrom_x());
+         project(Q, mod_->selPvFromAll()) += project(x, selQPvFrom_x());
 
          SGT_DEBUG(Log().debug() << "Updated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl);
          SGT_DEBUG(Log().debug() << "Updated Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl);
@@ -506,14 +415,14 @@ namespace SmartGridToolbox
          }
 
          // Set the slack power.
-         auto SSl = project(S, selSlFromAll());
+         auto SSl = project(S, mod_->selSlFromAll());
 
-         auto VSl = project(V, selSlFromAll());
-         auto IcSl = project(Ic_, selSlFromAll());
+         auto VSl = project(V, mod_->selSlFromAll());
+         auto IcSl = project(mod_->Ic(), mod_->selSlFromAll());
 
-         auto YStar = conj(project(Y_, selSlFromAll(), selAllFromAll()));
+         auto YStar = conj(project(mod_->Y(), mod_->selSlFromAll(), mod_->selAllFromAll()));
          auto VStar = conj(V);
-         auto IcStar = conj(project(Ic_, selSlFromAll()));
+         auto IcStar = conj(project(mod_->Ic(), mod_->selSlFromAll()));
 
          SSl = element_prod(VSl, prod(YStar, VStar)) - element_prod(VSl, IcStar);
 
@@ -550,5 +459,4 @@ namespace SmartGridToolbox
 
       return wasSuccessful;
    }
-
 }
