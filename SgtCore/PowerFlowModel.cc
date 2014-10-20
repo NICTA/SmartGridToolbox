@@ -6,19 +6,21 @@
 namespace SmartGridToolbox
 {
    PfBus::PfBus(const std::string& id, BusType type, const Phases& phases,
-         const ublas::vector<Complex>& Ys, const ublas::vector<Complex>& Ic,
+         const ublas::vector<Complex>& YZip, const ublas::vector<Complex>& IZip, const ublas::vector<Complex>& SZip,
          const ublas::vector<Complex>& V, const ublas::vector<Complex>& S) :
       id_(id),
       type_(type),
       phases_(phases),
-      Ys_(Ys),
-      Ic_(Ic),
+      YZip_(YZip),
+      IZip_(IZip),
+      SZip_(SZip),
       V_(V),
       S_(S)
    {
+      assert(YZip.size() == phases.size());
+      assert(IZip.size() == phases.size());
+      assert(SZip.size() == phases.size());
       assert(V.size() == phases.size());
-      assert(Ys.size() == phases.size());
-      assert(Ic.size() == phases.size());
       assert(S.size() == phases.size());
 
       for (int i = 0; i < phases.size(); ++i)
@@ -30,8 +32,9 @@ namespace SmartGridToolbox
    PfNode::PfNode(PfBus& bus, int phaseIdx) :
       bus_(&bus),
       phaseIdx_(phaseIdx),
-      Ys_(bus.Ys_(phaseIdx)),
-      Ic_(bus.Ic_(phaseIdx)),
+      YZip_(bus.YZip_(phaseIdx)),
+      IZip_(bus.IZip_(phaseIdx)),
+      SZip_(bus.SZip_(phaseIdx)),
       V_(bus.V_(phaseIdx)),
       S_(bus.S_(phaseIdx)),
       idx_(-1)
@@ -53,11 +56,11 @@ namespace SmartGridToolbox
    }
 
    void PowerFlowModel::addBus(const std::string& id, BusType type, const Phases& phases,
-         const ublas::vector<Complex>& V, const ublas::vector<Complex>& Y, const ublas::vector<Complex>& I,
-         const ublas::vector<Complex>& S)
+         const ublas::vector<Complex>& YZip, const ublas::vector<Complex>& IZip,
+         const ublas::vector<Complex>& SZip, const ublas::vector<Complex>& V, const ublas::vector<Complex>& S)
    {
       SGT_DEBUG(Log().debug() << "PowerFlowModel : add bus " << id << std::endl);
-      busses_[id].reset(new PfBus(id, type, phases, V, Y, I, S));
+      busses_[id].reset(new PfBus(id, type, phases, YZip, IZip, SZip, V, S));
    }
 
    void PowerFlowModel::addBranch(const std::string& idBus0, const std::string& idBus1,
@@ -180,7 +183,7 @@ namespace SmartGridToolbox
       // Add shunt terms:
       for (int i = 0; i < nNode; ++i)
       {
-         Y_(i, i) += nodes_[i]->Ys_;
+         Y_(i, i) += nodes_[i]->YZip_;
       }
 
       SGT_DEBUG(Log().debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
@@ -188,17 +191,18 @@ namespace SmartGridToolbox
       // Vector quantities of problem:
       V_.resize(nNode, false);
       S_.resize(nNode, false);
-      Ic_.resize(nNode, false);
+      IZip_.resize(nNode, false);
       for (int i = 0; i < nNode; ++i)
       {
          const PfNode& node = *nodes_[i];
          V_(i) = node.V_;
          S_(i) = node.S_;
-         Ic_(i) = node.Ic_;
+         IZip_(i) = node.IZip_;
       }
+std::cout << "D " << V_ << std::endl;
 
       SGT_DEBUG(Log().debug() << "PowerFlowModel : validate complete." << std::endl);
-      SGT_DEBUG(mod_->print());
+      SGT_DEBUG(print());
    }
 
    void PowerFlowModel::print()
@@ -218,8 +222,9 @@ namespace SmartGridToolbox
                Log().debug() << "Phase : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
                Log().debug() << "V     : " << nd->V_ << std::endl;
                Log().debug() << "S     : " << nd->S_ << std::endl;
-               Log().debug() << "Ys    : " << nd->Ys_ << std::endl;
-               Log().debug() << "Ic    : " << nd->Ic_ << std::endl;
+               Log().debug() << "YZip    : " << nd->YZip_ << std::endl;
+               Log().debug() << "IZip    : " << nd->IZip_ << std::endl;
+               Log().debug() << "SZip    : " << nd->SZip_ << std::endl;
             }
          }
       }

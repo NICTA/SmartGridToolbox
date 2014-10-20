@@ -21,15 +21,16 @@ namespace SmartGridToolbox
       typedef std::vector<std::unique_ptr<PfNode>> PfNodeVec;
 
       PfBus(const std::string& id, BusType type, const Phases& phases,
-            const ublas::vector<Complex>& Ys, const ublas::vector<Complex>& Ic,
+            const ublas::vector<Complex>& YZip, const ublas::vector<Complex>& IZip, const ublas::vector<Complex>& SZip,
             const ublas::vector<Complex>& V, const ublas::vector<Complex>& S);
 
       std::string id_;            ///< Externally relevant id.
       BusType type_;              ///< Bus type.
       Phases phases_;             ///< Bus phases.
 
-      ublas::vector<Complex> Ys_; ///< Constant admittance shunt, one per phase.
-      ublas::vector<Complex> Ic_; ///< Constant current injection, one per phase.
+      ublas::vector<Complex> YZip_; ///< Constant admittance shunt, one per phase.
+      ublas::vector<Complex> IZip_; ///< Constant current injection, one per phase.
+      ublas::vector<Complex> SZip_; ///< Constant power injection, one per phase.
 
       ublas::vector<Complex> V_;  ///< Voltage, one per phase. Setpoint/warm start on input.
       ublas::vector<Complex> S_;  ///< Total power injection, one per phase. Setpt/wm start on input.
@@ -45,8 +46,9 @@ namespace SmartGridToolbox
 
       int phaseIdx_;
       
-      Complex Ys_;
-      Complex Ic_;
+      Complex YZip_;
+      Complex IZip_;
+      Complex SZip_;
 
       Complex V_;
       Complex S_;
@@ -77,8 +79,9 @@ namespace SmartGridToolbox
          /// @name Bus, branch and node accessors.
          /// @{
          
-         void addBus(const std::string& id, BusType type, const Phases& phases, const ublas::vector<Complex>& V,
-               const ublas::vector<Complex>& Y, const ublas::vector<Complex>& I, const ublas::vector<Complex>& S);
+         void addBus(const std::string& id, BusType type, const Phases& phases,
+               const ublas::vector<Complex>& YZip, const ublas::vector<Complex>& IZip,
+               const ublas::vector<Complex>& SZip, const ublas::vector<Complex>& V, const ublas::vector<Complex>& S);
 
          const PfBusMap& busses() const
          {
@@ -162,13 +165,13 @@ namespace SmartGridToolbox
             return S_;
          }
          
-         const ublas::vector<Complex>& Ic() const  ///< Constant current component of ZIP.
+         const ublas::vector<Complex>& IZip() const  ///< Constant current component of ZIP.
          {
-            return Ic_;
+            return IZip_;
          }
-         ublas::vector<Complex>& Ic()              ///< Constant current component of ZIP.
+         ublas::vector<Complex>& IZip()              ///< Constant current component of ZIP.
          {
-            return Ic_;
+            return IZip_;
          }
          
          /// @}
@@ -272,7 +275,7 @@ namespace SmartGridToolbox
 
          ublas::vector<Complex> V_;    ///< Complex voltage.
          ublas::vector<Complex> S_;    ///< Complex power injection = S_zip + S_gen
-         ublas::vector<Complex> Ic_;   ///< Complex voltage.
+         ublas::vector<Complex> IZip_;   ///< Complex voltage.
          
          /// @}
    };

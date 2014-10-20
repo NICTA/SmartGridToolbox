@@ -8,7 +8,8 @@ namespace SmartGridToolbox
       Component(id),
       phases_(phases),
       VNom_(VNom),
-      VBase_(VBase)
+      VBase_(VBase),
+      V_(VNom)
    {
       for (int i = 0; i < phases_.size(); ++i)
       {

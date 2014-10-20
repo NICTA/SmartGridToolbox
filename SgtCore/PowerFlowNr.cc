@@ -112,15 +112,15 @@ namespace SmartGridToolbox
       const auto PPq = project(P, mod_->selPqFromAll());
       const auto QPq = project(Q, mod_->selPqFromAll());
 
-      const auto IcrPq = project(real(mod_->Ic()), mod_->selPqFromAll());
-      const auto IciPq = project(imag(mod_->Ic()), mod_->selPqFromAll());
+      const auto IZiprPq = project(real(mod_->IZip()), mod_->selPqFromAll());
+      const auto IZipiPq = project(imag(mod_->IZip()), mod_->selPqFromAll());
 
       ublas::vector<double> M2Pq = element_prod(VrPq, VrPq) + element_prod(ViPq, ViPq);
 
       project(f, selIrPqFrom_f()) = element_div(element_prod(VrPq, PPq) + element_prod(ViPq, QPq), M2Pq)
-                                 + IcrPq - myProd(GPq, Vr) + myProd(BPq, Vi);
+                                 + IZiprPq - myProd(GPq, Vr) + myProd(BPq, Vi);
       project(f, selIiPqFrom_f()) = element_div(element_prod(ViPq, PPq) - element_prod(VrPq, QPq), M2Pq)
-                                 + IciPq - myProd(GPq, Vi) - myProd(BPq, Vr);
+                                 + IZipiPq - myProd(GPq, Vi) - myProd(BPq, Vr);
 
       // PV busses. Note that these differ in that M2Pv is considered a constant.
       const auto GPv = project(G_, mod_->selPvFromAll(), mod_->selAllFromAll());
@@ -132,13 +132,13 @@ namespace SmartGridToolbox
       const auto PPv = project(P, mod_->selPvFromAll());
       const auto QPv = project(Q, mod_->selPvFromAll());
 
-      const auto IcrPv = project(real(mod_->Ic()), mod_->selPvFromAll());
-      const auto IciPv = project(imag(mod_->Ic()), mod_->selPvFromAll());
+      const auto IZiprPv = project(real(mod_->IZip()), mod_->selPvFromAll());
+      const auto IZipiPv = project(imag(mod_->IZip()), mod_->selPvFromAll());
 
       project(f, selIrPvFrom_f()) = element_div(element_prod(VrPv, PPv) + element_prod(ViPv, QPv), M2Pv)
-                                 + IcrPv - myProd(GPv, Vr) + myProd(BPv, Vi);
+                                 + IZiprPv - myProd(GPv, Vr) + myProd(BPv, Vi);
       project(f, selIiPvFrom_f()) = element_div(element_prod(ViPv, PPv) - element_prod(VrPv, QPv), M2Pv)
-                                 + IciPv - myProd(GPv, Vi) - myProd(BPv, Vr);
+                                 + IZipiPv - myProd(GPv, Vi) - myProd(BPv, Vr);
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
@@ -297,6 +297,8 @@ namespace SmartGridToolbox
 
       ublas::vector<double> Vr = real(mod_->V());
       ublas::vector<double> Vi = imag(mod_->V());
+std::cout << "B " << Vr << std::endl;
+std::cout << "C " << Vi << std::endl;
 
       ublas::vector<double> P = real(mod_->S());
       ublas::vector<double> Q = imag(mod_->S());
@@ -405,33 +407,32 @@ namespace SmartGridToolbox
 
       if (wasSuccessful)
       {
-         ublas::vector<Complex> V(mod_->nNode());
-         ublas::vector<Complex> S(mod_->nNode());
-
+         std::cout << "A" << std::endl;
          for (int i = 0; i < mod_->nNode(); ++i)
          {
-            V(i) = {Vr(i), Vi(i)};
-            S(i) = {P(i), Q(i)};
+            mod_->V()(i) = {Vr(i), Vi(i)};
+            mod_->S()(i) = {P(i), Q(i)};
+            std::cout << i << " " << mod_->V()(i) << " " << std::endl;
          }
 
          // Set the slack power.
-         auto SSl = project(S, mod_->selSlFromAll());
+         auto SSl = project(mod_->S(), mod_->selSlFromAll());
 
-         auto VSl = project(V, mod_->selSlFromAll());
-         auto IcSl = project(mod_->Ic(), mod_->selSlFromAll());
+         auto VSl = project(mod_->V(), mod_->selSlFromAll());
+         auto IZipSl = project(mod_->IZip(), mod_->selSlFromAll());
 
          auto YStar = conj(project(mod_->Y(), mod_->selSlFromAll(), mod_->selAllFromAll()));
-         auto VStar = conj(V);
-         auto IcStar = conj(project(mod_->Ic(), mod_->selSlFromAll()));
+         auto VStar = conj(mod_->V());
+         auto IZipStar = conj(project(mod_->IZip(), mod_->selSlFromAll()));
 
-         SSl = element_prod(VSl, prod(YStar, VStar)) - element_prod(VSl, IcStar);
+         SSl = element_prod(VSl, prod(YStar, VStar)) - element_prod(VSl, IZipStar);
 
          // Update nodes and busses.
          for (int i = 0; i < mod_->nNode(); ++i)
          {
             auto node = mod_->nodes()[i];
-            node->V_ = V(i);
-            node->S_ = S(i);
+            node->V_ = mod_->V()(i);
+            node->S_ = mod_->S()(i);
             node->bus_->V_[node->phaseIdx_] = node->V_;
             node->bus_->S_[node->phaseIdx_] = node->S_;
          }
