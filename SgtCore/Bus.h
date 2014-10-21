@@ -55,6 +55,8 @@ namespace SmartGridToolbox
          virtual ublas::vector<double> VAngSetpoint() const = 0;
          virtual void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint) = 0;
 
+         virtual void applyVSetpoints() = 0;
+
          virtual double VMagMin() const = 0;
          virtual void setVMagMin(double VMagMin) = 0;
 
@@ -157,7 +159,7 @@ namespace SmartGridToolbox
             VMagSetpoint_ = VMagSetpoint;
             setpointChanged_.trigger();
          }
-
+         
          virtual ublas::vector<double> VAngSetpoint() const override
          {
             return VAngSetpoint_;
@@ -168,6 +170,8 @@ namespace SmartGridToolbox
             VAngSetpoint_ = VAngSetpoint;
             setpointChanged_.trigger();
          }
+
+         virtual void applyVSetpoints();
 
          virtual double VMagMin() const override
          {

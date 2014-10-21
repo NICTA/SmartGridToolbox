@@ -18,6 +18,31 @@ namespace SmartGridToolbox
       }
    }
 
+   void Bus::applyVSetpoints()
+   {
+      ublas::vector<Complex> VNew(phases_.size());
+      switch (type_)
+      {
+         case BusType::SL:
+            for (int i = 0; i < phases_.size(); ++i)
+            {
+               VNew(i) = std::polar(VMagSetpoint_(i), VAngSetpoint_(i));
+            }
+            setV(VNew); // TODO: this triggers an event: is this desirable, or just set V_ directly?
+            break;
+         case BusType::PV:
+            VNew = V_;
+            for (int i = 0; i < phases_.size(); ++i)
+            {
+               VNew(i) *= VMagSetpoint_(i) / std::abs(V_(i));
+            }
+            setV(VNew);
+            break;
+         default:
+            break;
+      }
+   }
+
    void Bus::print(std::ostream& os) const
    {
       Component::print(os);
