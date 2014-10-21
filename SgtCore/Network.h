@@ -64,6 +64,7 @@ namespace SmartGridToolbox
 
          const GenVec gens() {return gens_;}
          ublas::vector<Complex> SGen() const;
+         double JGen() const;
 
          const ZipVec zips() {return zips_;}
          ublas::vector<Complex> YZip() const;
@@ -140,6 +141,16 @@ namespace SmartGridToolbox
          virtual void setPBase(double PBase)
          {
             PBase_ = PBase;
+         }
+
+         double nomFreq() const
+         {
+            return nomFreq_;
+         }
+
+         virtual void setNomFreq(double nomFreq)
+         {
+            nomFreq_ = nomFreq;
          }
 
          double freq() const
@@ -282,6 +293,7 @@ namespace SmartGridToolbox
       
       private:
          double PBase_ = 1.0;
+         double nomFreq_ = 50.0;
          double freq_ = 50.0;
 
          NodeVec nodeVec_;

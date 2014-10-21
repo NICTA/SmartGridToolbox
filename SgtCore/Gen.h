@@ -51,7 +51,15 @@ namespace SmartGridToolbox
          virtual void setS(const ublas::vector<Complex>& S) = 0;
 
       /// @}
-      
+       
+      /// @name Moment of inertia:
+      /// @{
+
+         virtual double J() const = 0;
+         virtual void setJ(double J) = 0;
+
+      /// @}
+     
       /// @name Generation bounds:
       /// @{
 
@@ -228,7 +236,22 @@ namespace SmartGridToolbox
          }
       
       /// @}
-      
+       
+      /// @name Moment of inertia:
+      /// @{
+
+         virtual double J() const
+         {
+            return J_;
+         }
+
+         virtual void setJ(double J)
+         {
+            J_ = J;
+         }
+
+      /// @}
+    
       /// @name Generation bounds:
       /// @{
 
@@ -334,6 +357,8 @@ namespace SmartGridToolbox
          bool isInService_;
          
          ublas::vector<Complex> S_;
+         
+         double J_;
          
          double PMin_{-infinity};
          double PMax_{infinity};

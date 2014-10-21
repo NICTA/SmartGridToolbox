@@ -33,6 +33,12 @@ namespace SmartGridToolbox
       return std::accumulate(gens_.begin(), gens_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
             [] (ublas::vector<Complex> & tot, const GenPtr& gen) {return tot + gen->S();});
    }
+   
+   double Node::JGen() const
+   {
+      return std::accumulate(gens_.begin(), gens_.end(), 0.0,
+            [] (double tot, const GenPtr& gen) {return tot + gen->J();});
+   }
 
    Network::Network(const std::string& id, double PBase) :
       Component(id),
