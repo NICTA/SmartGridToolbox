@@ -104,6 +104,7 @@ namespace SmartGridToolbox
       for (const auto nd : nodeVec_)
       {
          auto bus = nd->bus();
+         bus->applyVSetpoints();
          mod.addBus(bus->id(), bus->type(), bus->phases(), nd->YZip(), nd->IZip(), nd->SZip(), bus->V(),
                nd->SGen() + nd->SZip());
       }
