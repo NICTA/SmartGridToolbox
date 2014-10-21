@@ -32,13 +32,13 @@ namespace SmartGridToolbox
       ublas::vector<Complex> IZip_; ///< Constant current injection, one per phase.
       ublas::vector<Complex> SZip_; ///< Constant power injection, one per phase.
 
-      ublas::vector<Complex> V_;    ///< Voltage, one per phase. Setpoint/warm start on input.
-      ublas::vector<Complex> S_;    ///< Total power injection, one per phase. Setpt/wm start on input.
-
       // Regardless of numbers of poles, etc., the combined generation at a bus will have a certain
       // angular momentum for any given frequency of the network. Thus, we define an effective moment of inertia at the
-      // bus by L = J_eff omega_netw.
-      double J_;                    ///< Effective moment of inertia.
+      // bus by L = J omega_netw.
+      double J_;                    ///< Effective moment of inertia for all machines attached to bus.
+
+      ublas::vector<Complex> V_;    ///< Voltage, one per phase. Setpoint/warm start on input.
+      ublas::vector<Complex> S_;    ///< Total power injection, one per phase. Setpt/wm start on input.
 
       PfNodeVec nodes_;             ///< Nodes, one per phase.
    };
@@ -86,7 +86,8 @@ namespace SmartGridToolbox
          
          void addBus(const std::string& id, BusType type, const Phases& phases,
                const ublas::vector<Complex>& YZip, const ublas::vector<Complex>& IZip,
-               const ublas::vector<Complex>& SZip, const ublas::vector<Complex>& V, const ublas::vector<Complex>& S);
+               const ublas::vector<Complex>& SZip, double J, const ublas::vector<Complex>& V,
+               const ublas::vector<Complex>& S);
 
          const PfBusMap& busses() const
          {

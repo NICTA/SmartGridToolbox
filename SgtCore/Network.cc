@@ -111,8 +111,8 @@ namespace SmartGridToolbox
       {
          auto bus = nd->bus();
          bus->applyVSetpoints();
-         mod.addBus(bus->id(), bus->type(), bus->phases(), nd->YZip(), nd->IZip(), nd->SZip(), bus->V(),
-               nd->SGen() + nd->SZip());
+         mod.addBus(bus->id(), bus->type(), bus->phases(), nd->YZip(), nd->IZip(), nd->SZip(), nd->JGen(),
+               bus->V(), nd->SGen() + nd->SZip());
       }
       for (const auto arc : arcVec_)
       {

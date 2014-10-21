@@ -3,8 +3,6 @@
 
 #include "Common.h"
 #include "PowerFlowModel.h"
-#include <vector>
-#include <map>
 
 // Terminology:
 // "Bus" and "Branch" refer to n-phase objects i.e. they can contain several phases.
