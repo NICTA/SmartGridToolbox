@@ -51,6 +51,11 @@ namespace SmartGridToolbox
          gen->setQMax(parser.expand<double>(subNd));
       }
       
+      if (const YAML::Node& subNd = nd["J"])
+      {
+         gen->setJ(parser.expand<double>(subNd));
+      }
+      
       if (const YAML::Node& subNd = nd["C0"])
       {
          gen->setC0(parser.expand<double>(subNd));

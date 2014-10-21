@@ -7,13 +7,14 @@ namespace SmartGridToolbox
 {
    PfBus::PfBus(const std::string& id, BusType type, const Phases& phases,
          const ublas::vector<Complex>& YZip, const ublas::vector<Complex>& IZip, const ublas::vector<Complex>& SZip,
-         const ublas::vector<Complex>& V, const ublas::vector<Complex>& S) :
+         double J, const ublas::vector<Complex>& V, const ublas::vector<Complex>& S) :
       id_(id),
       type_(type),
       phases_(phases),
       YZip_(YZip),
       IZip_(IZip),
       SZip_(SZip),
+      J_(J),
       V_(V),
       S_(S)
    {

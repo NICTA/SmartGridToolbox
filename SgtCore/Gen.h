@@ -358,7 +358,7 @@ namespace SmartGridToolbox
          
          ublas::vector<Complex> S_;
          
-         double J_;
+         double J_{0.0};
          
          double PMin_{-infinity};
          double PMax_{infinity};

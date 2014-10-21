@@ -22,7 +22,7 @@ namespace SmartGridToolbox
 
       PfBus(const std::string& id, BusType type, const Phases& phases,
             const ublas::vector<Complex>& YZip, const ublas::vector<Complex>& IZip, const ublas::vector<Complex>& SZip,
-            const ublas::vector<Complex>& V, const ublas::vector<Complex>& S);
+            double J, const ublas::vector<Complex>& V, const ublas::vector<Complex>& S);
 
       std::string id_;              ///< Externally relevant id.
       BusType type_;                ///< Bus type.
