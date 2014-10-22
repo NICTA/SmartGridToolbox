@@ -12,12 +12,12 @@
       simple_line_Y: 5-15j
       earth_resistivity: 100
       dab11k: 2.5
-      dac11k: 5
+      dac11k: 2.5
       dbc11k: 2.5
       gmr11k: 0.015
       R_per_L_11k: 1e-4
       dab240: 1.5
-      dac240: 3
+      dac240: 1.5
       dbc240: 1.5
       gmr240: 0.007
       R_per_L_240: 4e-4
@@ -177,13 +177,13 @@
                            ]
                         freq: 60.0
          -  overhead_line: 
-               id: line_<i>_substation_0
+               id: line_240_up_<i>_0
                network_id: network
                bus_0_id: bus_240_up
                bus_1_id: bus_<i>_0
                phases_0: <netw_phases>
                phases_1: <netw_phases>
-               length: 100
+               length: 1000
                n_neutral: 0
                conductor_R_per_L: [<R_per_L_240>, <R_per_L_240>, <R_per_L_240>]
                earth_resistivity: <earth_resistivity>
