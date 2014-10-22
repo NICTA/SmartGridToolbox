@@ -193,6 +193,7 @@ namespace SmartGridToolbox
       V_.resize(nNode, false);
       S_.resize(nNode, false);
       IZip_.resize(nNode, false);
+
       for (int i = 0; i < nNode; ++i)
       {
          const PfNode& node = *nodes_[i];
@@ -200,7 +201,6 @@ namespace SmartGridToolbox
          S_(i) = node.S_;
          IZip_(i) = node.IZip_;
       }
-std::cout << "D " << V_ << std::endl;
 
       SGT_DEBUG(Log().debug() << "PowerFlowModel : validate complete." << std::endl);
       SGT_DEBUG(print());
