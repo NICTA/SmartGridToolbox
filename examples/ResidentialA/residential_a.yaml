@@ -23,7 +23,7 @@
       R_per_L_240: 4e-4
 -  simulation: 
       lat_long: [-35.3075, 149.1244] # Canberra, Australia.
-      start_time: 2013-01-23 06:00:00
+      start_time: 2013-01-01 06:00:00
       end_time: 2013-01-28 06:00:00
       timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
 -  time_series: 
@@ -31,7 +31,7 @@
       value_type: real_scalar
       type: data_time_series
       data_file: cloud_cover.txt
-      relative_to_time: 2013-01-23 06:00:00
+      relative_to_time: 2013-01-01 06:00:00
       time_unit: m
       interp_type: lerp
 -  loop: 
@@ -42,7 +42,7 @@
                value_type: complex_vector
                type: data_time_series
                data_file: loads/load_<j>.txt
-               relative_to_time: 2013-01-23 06:00:00
+               relative_to_time: 2013-01-01 06:00:00
                time_unit: m
                interp_type: lerp
 -  weather: 

@@ -1,4 +1,4 @@
-tvec = 0:5:24*60*7;
+tvec = 0:5:24*60*30;
 Tvec = 60:120:60*24;
 xvec = rand(size(Tvec)).*exp(-((Tvec-18*60)/(24*60)).^2);
 pvec = rand(size(Tvec))*2*pi;
