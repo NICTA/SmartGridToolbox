@@ -1,6 +1,8 @@
 #include "SgtCore.h"
 #include "SgtSim.h"
 
+#include <fstream>
+
 using namespace SmartGridToolbox;
 
 double norm(ublas::vector<Complex> v)
@@ -30,11 +32,14 @@ int main(int argc, const char** argv)
 {
    if (argc != 3)
    {
-      Log().fatal() << "Usage: " << argv[0] << " config_name bus_id" << std::endl;
+      Log().fatal() << "Usage: " << argv[0] << " config_name out_name" << std::endl;
    }
 
    const char* configName = argv[1];
-   const char* busId = argv[2];
+   const char* outName = argv[2];
+
+   std::ofstream out;
+   out.open(outName);
 
    Simulation sim;
    Parser<Simulation> p;
@@ -43,38 +48,27 @@ int main(int argc, const char** argv)
    bool ok = true;
 
    std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
-   std::shared_ptr<Node> busNd = netw->node(busId);
 
-   Log().message() << *netw << std::endl;
-
+   for (auto nd : netw->nodes())
+   {
+      Log().message() << nd->bus()->id() << std::endl;
+   }
+   
    while (ok)
    {
-      LogIndent _;
       ok = sim.doTimestep();
       double t = dSeconds(sim.currentTime() - sim.startTime())/3600;
-      auto V = busNd->bus()->V();
-      auto S = busNd->SZip();
+      out << t;
+      for (auto nd : netw->nodes())
       {
+         auto V = nd->bus()->V()/nd->bus()->VBase();
+         for (auto x : V)
          {
-            auto& msg = Log().message() << "V_MAG : " << t;
-            for (auto x : V) msg << " " << std::abs(x); 
-            msg << std::endl;
-         }
-         {
-            auto& msg = Log().message() << "V_ANG : " << t;
-            for (auto x : V) msg << " " << std::arg(x)*180/pi; 
-            msg << std::endl;
-         }
-         {
-            auto& msg = Log().message() << "P     : " << t;
-            for (auto x : S) msg << " " << std::real(x); 
-            msg << std::endl;
-         }
-         {
-            auto& msg = Log().message() << "Q     : " << t;
-            for (auto x : S) msg << " " << std::imag(x); 
-            msg << std::endl;
+            out << " " << std::abs(x);
          }
       }
+      out << std::endl;
    }
+
+   out.close();
 }

@@ -1,25 +1,26 @@
 -  parameters: 
-      n_streets: 6
+      n_streets: 1
       n_houses: 10
-      V_base_240: 0.240
-      V_nom_vec_240: [0.240, 0.240D-120, 0.240D120]
-      V_nom_map_240: {A: 0.240, B: 0.240D-120, C: 0.240D120}
       V_base_11k: 6.3509
       V_nom_vec_11k: [6.3509, 6.3509D-120, 6.3509D120]
       V_nom_map_11k: {A: 6.3509, B: 6.3509D-120, C: 6.3509D120}
+      V_base_240: 0.240
+      V_nom_vec_240: [0.240, 0.240D-120, 0.240D120]
+      V_nom_map_240: {A: 0.240, B: 0.240D-120, C: 0.240D120}
       netw_phases: [A, B, C]
       house_phases: [A, B, B, A, B, C, A, C, B, C]
       simple_line_Y: 5-15j
-      overhead_R_per_L: 1e-4
       earth_resistivity: 100
       dab11k: 2.5
       dac11k: 5
       dbc11k: 2.5
       gmr11k: 0.015
+      R_per_L_11k: 1e-4
       dab240: 1.5
       dac240: 3
       dbc240: 1.5
       gmr240: 0.007
+      R_per_L_240: 4e-4
 -  simulation: 
       lat_long: [-35.3075, 149.1244] # Canberra, Australia.
       start_time: 2013-01-23 06:00:00
@@ -53,19 +54,39 @@
       P_base: 1e6
       freq_Hz: 60
 -  bus: 
-      id: bus_substation_11k
+      id: bus_11k_up
       network_id: network
       phases: <netw_phases>
       V_base: <V_base_11k>
       V_nom: <V_nom_vec_11k>
       type: SL
--  generic_gen: 
-      id: gen_substation
-      network_id: network
-      bus_id: bus_substation_11k
-      phases: <netw_phases>
 -  bus: 
-      id: bus_substation_240
+      id: bus_11k_down
+      network_id: network
+      phases: <netw_phases>
+      V_base: <V_base_11k>
+      V_nom: <V_nom_vec_11k>
+      type: PQ
+-  overhead_line: 
+      id: line_11k
+      network_id: network
+      bus_0_id: bus_11k_up
+      bus_1_id: bus_11k_down
+      phases_0: <netw_phases>
+      phases_1: <netw_phases>
+      length: 7000
+      n_neutral: 0
+      conductor_R_per_L: [<R_per_L_11k>, <R_per_L_11k>, <R_per_L_11k>]
+      earth_resistivity: <earth_resistivity>
+      distance_matrix:
+         [
+            [<gmr11k>, <dab11k>, <dac11k>],
+            [<dab11k>, <gmr11k>, <dbc11k>],
+            [<dac11k>, <dbc11k>, <gmr11k>]
+         ]
+      freq: 60.0
+-  bus: 
+      id: bus_240_up
       network_id: network
       phases: <netw_phases>
       V_base: <V_base_240>
@@ -74,8 +95,8 @@
 -  delta_g_wye_transformer:
       id: trans_substation
       network_id: network
-      bus_0_id: bus_substation_11k
-      bus_1_id: bus_substation_240
+      bus_0_id: bus_11k_down
+      bus_1_id: bus_240_up
       complex_turns_ratio_01: 45.834 # 11000/240, delta side use p-p V, y side use p-g V.
       leakage_impedance: 0.1 # TODO
 -  loop: 
@@ -114,26 +135,26 @@
                         phases_1: [<house_phases(<(<i>+<j>)%10>)>]
                         length: 20
                         n_neutral: 0
-                        conductor_R_per_L: [<overhead_R_per_L>]
+                        conductor_R_per_L: [<R_per_L_240>]
                         earth_resistivity: <earth_resistivity>
                         distance_matrix: [[0.01]]
                         freq: 60.0
-         -  inverter: 
-               id: inverter_<i>_<<n_houses>-1>
-               network_id: network
-               bus_id: house_<i>_<<n_houses>-1>
-               phases: [<house_phases(<(<i>+<<n_houses>-1>)%10>)>]
-               requested_Q_per_phase: 0
-               max_S_mag_per_phase: 100.0
-               efficiency: 0.86
-         -  solar_pv: 
-               id: solar_pv_<i>_<<n_houses>-1>
-               weather: weather
-               inverter: inverter_<i>_<<n_houses>-1>
-               efficiency: 0.75
-               area_m2: 6.0
-               zenith_degrees: 64.6
-               azimuth_degrees: 95.8 # Should point right at sun on Jan 26, 2013, 0830.
+#         -  inverter: 
+#               id: inverter_<i>_<<n_houses>-1>
+#               network_id: network
+#               bus_id: house_<i>_<<n_houses>-1>
+#               phases: [<house_phases(<(<i>+<<n_houses>-1>)%10>)>]
+#               requested_Q_per_phase: 0
+#               max_S_mag_per_phase: 100.0
+#               efficiency: 0.86
+#         -  solar_pv: 
+#               id: solar_pv_<i>_<<n_houses>-1>
+#               weather: weather
+#               inverter: inverter_<i>_<<n_houses>-1>
+#               efficiency: 0.75
+#               area_m2: 6.0
+#               zenith_degrees: 64.6
+#               azimuth_degrees: 95.8 # Should point right at sun on Jan 26, 2013, 0830.
          -  loop: 
                loop_variable: [j, 0, <<n_houses>-1>, 1]
                loop_body: 
@@ -146,7 +167,7 @@
                         phases_1: <netw_phases>
                         length: 100
                         n_neutral: 0
-                        conductor_R_per_L: [<overhead_R_per_L>, <overhead_R_per_L>, <overhead_R_per_L>]
+                        conductor_R_per_L: [<R_per_L_240>, <R_per_L_240>, <R_per_L_240>]
                         earth_resistivity: <earth_resistivity>
                         distance_matrix:
                            [
@@ -158,13 +179,13 @@
          -  overhead_line: 
                id: line_<i>_substation_0
                network_id: network
-               bus_0_id: bus_substation_240
+               bus_0_id: bus_240_up
                bus_1_id: bus_<i>_0
                phases_0: <netw_phases>
                phases_1: <netw_phases>
                length: 100
                n_neutral: 0
-               conductor_R_per_L: [<overhead_R_per_L>, <overhead_R_per_L>, <overhead_R_per_L>]
+               conductor_R_per_L: [<R_per_L_240>, <R_per_L_240>, <R_per_L_240>]
                earth_resistivity: <earth_resistivity>
                distance_matrix:
                   [

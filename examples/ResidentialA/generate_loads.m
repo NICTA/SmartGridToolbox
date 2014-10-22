@@ -2,7 +2,7 @@ tVec = (0:5:24*60*7)';
 TVec = 60*24*1./(1:8);
 
 cVeci = [];
-for i = 1:10
+for i = 1:20
    SMax = rand*3000e-6;
    xVec = rand(size(TVec));
    pVec = rand(size(TVec))*2*pi;
