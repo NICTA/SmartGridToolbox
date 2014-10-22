@@ -297,8 +297,6 @@ namespace SmartGridToolbox
 
       ublas::vector<double> Vr = real(mod_->V());
       ublas::vector<double> Vi = imag(mod_->V());
-std::cout << "B " << Vr << std::endl;
-std::cout << "C " << Vi << std::endl;
 
       ublas::vector<double> P = real(mod_->S());
       ublas::vector<double> Q = imag(mod_->S());
@@ -407,12 +405,10 @@ std::cout << "C " << Vi << std::endl;
 
       if (wasSuccessful)
       {
-         std::cout << "A" << std::endl;
          for (int i = 0; i < mod_->nNode(); ++i)
          {
             mod_->V()(i) = {Vr(i), Vi(i)};
             mod_->S()(i) = {P(i), Q(i)};
-            std::cout << i << " " << mod_->V()(i) << " " << std::endl;
          }
 
          // Set the slack power.
