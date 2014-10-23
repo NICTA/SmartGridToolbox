@@ -49,10 +49,42 @@ int main(int argc, const char** argv)
 
    std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
 
+   out << "# t";
    for (auto nd : netw->nodes())
    {
-      Log().message() << nd->bus()->id() << std::endl;
+      const Phases& ps = nd->bus()->phases();
+      for (int i = 0; i < ps.size(); ++i)
+      {
+         Phase p = ps[i];
+         out << " " << nd->bus()->id() << ":" << p;
+      }
    }
+   out << std::endl;
+  
+   out << 0;
+   for (auto nd : netw->nodes())
+   {
+      const Phases& ps = nd->bus()->phases();
+      for (int i = 0; i < ps.size(); ++i)
+      {
+         Phase p = ps[i];
+         int iPhase = 0;
+         if (p == Phase::A)
+         {
+            iPhase = 1;
+         }
+         else if (p == Phase::B)
+         {
+            iPhase = 2;
+         }
+         else if (p == Phase::C)
+         {
+            iPhase = 3;
+         }
+         out << " " << iPhase;
+      }
+   }
+   out << std::endl;
    
    while (ok)
    {

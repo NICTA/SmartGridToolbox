@@ -9,7 +9,6 @@
       V_nom_map_240: {A: 0.240, B: 0.240D-120, C: 0.240D120}
       netw_phases: [A, B, C]
       house_phases: [C, C, A, B, C, A, A, C, B, C, B, B, C, B, B, A, B, A, B, C]
-      simple_line_Y: 5-15j
       earth_resistivity: 100
       dab11k: 2.5
       dac11k: 2.5
@@ -189,8 +188,8 @@
                earth_resistivity: <earth_resistivity>
                distance_matrix:
                   [
-                     [<gmr11k>, <dab11k>, <dac11k>],
-                     [<dab11k>, <gmr11k>, <dbc11k>],
-                     [<dac11k>, <dbc11k>, <gmr11k>]
+                     [<gmr240>, <dab240>, <dac240>],
+                     [<dab240>, <gmr240>, <dbc240>],
+                     [<dac240>, <dbc240>, <gmr240>]
                   ]
                freq: 60.0
