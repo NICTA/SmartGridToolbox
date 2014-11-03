@@ -9,35 +9,62 @@ namespace SmartGridToolbox
 {
    ublas::vector<Complex> Node::YZip() const
    {
-      return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const ZipPtr& zip) 
-            {return tot + zip->YConst();});
+      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
+      // Easier to just do this.
+      auto sum = ublas::vector<Complex>(bus_->phases().size(), czero);
+      for (const auto zip : zips_)
+      {
+         sum += zip->YConst();
+      }
+      return sum;
    }
 
    ublas::vector<Complex> Node::IZip() const
    {
-      return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const ZipPtr& zip)
-            {return tot + zip->IConst();});
+      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
+      // Easier to just do this.
+      auto sum = ublas::vector<Complex>(bus_->phases().size(), czero);
+      for (const auto zip : zips_)
+      {
+         sum += zip->IConst();
+      }
+      return sum;
    }
 
    ublas::vector<Complex> Node::SZip() const
    {
-      return std::accumulate(zips_.begin(), zips_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const ZipPtr& zip)
-            {return tot + zip->SConst();});
+      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
+      // Easier to just do this.
+      auto sum = ublas::vector<Complex>(bus_->phases().size(), czero);
+      for (const auto zip : zips_)
+      {
+         sum += zip->SConst();
+      }
+      return sum;
    }
-   
+
    ublas::vector<Complex> Node::SGen() const
    {
-      return std::accumulate(gens_.begin(), gens_.end(), ublas::vector<Complex>(bus_->phases().size(), czero),
-            [] (ublas::vector<Complex> & tot, const GenPtr& gen) {return tot + gen->S();});
+      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
+      // Easier to just do this.
+      auto sum = ublas::vector<Complex>(bus_->phases().size(), czero);
+      for (const auto gen : gens_)
+      {
+         sum += gen->S();
+      }
+      return sum;
    }
-   
+
    double Node::JGen() const
    {
-      return std::accumulate(gens_.begin(), gens_.end(), 0.0,
-            [] (double tot, const GenPtr& gen) {return tot + gen->J();});
+      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
+      // Easier to just do this.
+      double sum = 0;
+      for (const auto gen : gens_)
+      {
+         sum += gen->J();
+      }
+      return sum;
    }
 
    Network::Network(const std::string& id, double PBase) :
