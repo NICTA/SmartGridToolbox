@@ -57,12 +57,11 @@ namespace SmartGridToolbox
       public:
 
          template<typename GetterArg, typename SetterArg> Property(GetterArg&& getArg, SetterArg&& setArg) :
-            Property<T, G>(get_(std::forward<GetterArg>(getArg))),
+            Property<T, G>(std::forward<GetterArg>(getArg)),
             set_(std::forward<SetterArg>(setArg))
          {
             // Empty.
          }
-
          
          void set(const T& val)
          {
