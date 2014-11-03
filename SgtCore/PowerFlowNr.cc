@@ -440,8 +440,8 @@ namespace SmartGridToolbox
 
       stopwatchTot.stop(); durationTot = stopwatchTot.seconds();
 
-      Log().message() << "PowerFlowNr: successful = " << wasSuccessful << ", error = " << err
-                << ", iterations = " << niter << ", total time = " << durationTot << "." << std::endl;
+      SGT_DEBUG(Log().message() << "PowerFlowNr: successful = " << wasSuccessful << ", error = " << err
+            << ", iterations = " << niter << ", total time = " << durationTot << "." << std::endl);
       SGT_DEBUG(Log().debug() << "PowerFlowNr: -----------------------   " << std::endl);
       SGT_DEBUG(Log().debug() << "PowerFlowNr: init setup time         = " << durationInitSetup << " s." << std::endl);
       SGT_DEBUG(Log().debug() << "PowerFlowNr: time in calcf           = " << durationCalcf << " s." << std::endl);
