@@ -13,13 +13,10 @@ namespace SmartGridToolbox
          virtual ~PropertyBase() = default;
    };
 
-   template<class T> using Getter = const T& ();
-   template<class T> using Setter = void (const T&);
+   struct NoGetter {};
+   struct NoSetter {};
 
-   template<class T> struct NoGetter {};
-   template<class T> struct NoSetter {};
-
-   template<typename T, template<typename> class G = NoGetter, template<typename> class S = NoSetter> class Property;
+   template<typename T, typename G = NoGetter, typename S = NoSetter> class Property;
 
    template<typename T> class Property<T, NoGetter, NoSetter> : public PropertyBase
    {
@@ -39,7 +36,7 @@ namespace SmartGridToolbox
          T val_;
    };
 
-   template<typename T, template<typename> class G> class Property<T, G, NoSetter> : public PropertyBase
+   template<typename T, typename G> class Property<T, G, NoSetter> : public PropertyBase
    {
       public:
 
@@ -48,14 +45,14 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         const T& get() const {return get_();}
+         T get() const {return get_();}
 
       private:
 
-         std::function<Getter<T>> get_;
+         std::function<G> get_;
    };
 
-   template<typename T, template<typename> class G, template<typename> class S> class Property : public Property<T, G>
+   template<typename T, typename G, typename S> class Property : public Property<T, G>
    {
       public:
 
@@ -74,7 +71,7 @@ namespace SmartGridToolbox
 
       private:
 
-         std::function<Setter<T>> set_;
+         std::function<S> set_;
    };
 
    class Properties
