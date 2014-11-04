@@ -13,12 +13,25 @@ namespace SmartGridToolbox
          virtual ~PropertyBase() = default;
    };
 
+   template<typename T> class GettableProperty : virtual public PropertyBase
+   {
+      public:
+         template<typename U = T> U get() const;
+   };
+
+   template<typename T> class SettableProperty : virtual public PropertyBase
+   {
+      public:
+         virtual void set(const T& val) = 0;
+   };
+
    struct NoGetter {};
    struct NoSetter {};
 
    template<typename T, typename G = NoGetter, typename S = NoSetter> class Property;
 
-   template<typename T> class Property<T, NoGetter, NoSetter> : public PropertyBase
+   template<typename T> class Property<T, NoGetter, NoSetter> :
+      virtual public GettableProperty<T>, virtual public SettableProperty<T>
    {
       public:
 
@@ -27,16 +40,16 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         const T& get() const {return val_;}
+         template<typename U = T> U get() const {return val_;}
 
-         void set(const T& val) const {val_ = val;}
+         void set(const T& val) {val_ = val;}
 
       private:
 
          T val_;
    };
 
-   template<typename T, typename G> class Property<T, G, NoSetter> : public PropertyBase
+   template<typename T, typename G> class Property<T, G, NoSetter> : virtual public GettableProperty<T>
    {
       public:
 
@@ -45,14 +58,15 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         T get() const {return get_();}
+         template<typename U = T> U get() const {return get_();}
 
       private:
 
          std::function<G> get_;
    };
 
-   template<typename T, typename G, typename S> class Property : public Property<T, G>
+   template<typename T, typename G, typename S> class Property :
+      virtual public Property<T, G>, virtual public SettableProperty<T>
    {
       public:
 
@@ -79,6 +93,7 @@ namespace SmartGridToolbox
 
          typedef std::map<std::string, PropertyBase*> MapType;
          typedef MapType::const_iterator ConstIteratorType;
+         typedef MapType::iterator IteratorType;
 
          ~Properties()
          {
@@ -90,23 +105,37 @@ namespace SmartGridToolbox
 
          template<typename T, typename... Args> void add(const std::string& key, Args&&... args)
          {
-            properties_[key] = new Property<T>(std::forward<Args>(args)...);
+            properties_[key] = new T(std::forward<Args>(args)...);
          }
 
-         template<typename T> Property<T>* get(const std::string& key)
+         template<typename T> T get(const std::string& key) const
          {
-            auto it = properties_.find(key);
-            return it == properties_.end() ? nullptr : dynamic_cast<Property<T>*>(it->second);
+            return dynamic_cast<const GettableProperty<T>*>(properties_.at(key))->get();
+         }
+         
+         template<typename T> void set(const std::string& key, const T& val)
+         {
+            dynamic_cast<const SettableProperty<T>*>(properties_.at(key))->set(val);
          }
 
-         ConstIteratorType begin()
+         ConstIteratorType cbegin() const
          {
             return properties_.cbegin();
          }
 
-         ConstIteratorType end()
+         ConstIteratorType cend() const
          {
             return properties_.cend();
+         }
+
+         IteratorType begin()
+         {
+            return properties_.begin();
+         }
+
+         IteratorType end()
+         {
+            return properties_.end();
          }
 
       private:

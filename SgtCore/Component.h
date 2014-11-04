@@ -8,6 +8,8 @@ using std::string;
 
 namespace SmartGridToolbox
 {
+   class Property;
+
    class ComponentInterface
    {
       friend std::ostream& operator<<(std::ostream& os, const ComponentInterface& comp);
