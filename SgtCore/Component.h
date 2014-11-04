@@ -1,6 +1,8 @@
 #ifndef COMPONENT_DOT_H
 #define COMPONENT_DOT_H
 
+#include <SgtCore/Property.h>
+
 #include <ostream>
 #include <string>
 
@@ -8,8 +10,6 @@ using std::string;
 
 namespace SmartGridToolbox
 {
-   class Property;
-
    class ComponentInterface
    {
       friend std::ostream& operator<<(std::ostream& os, const ComponentInterface& comp);
@@ -18,6 +18,8 @@ namespace SmartGridToolbox
          virtual ~ComponentInterface() {}
          virtual const std::string& id() const = 0;
          virtual const char* componentType() const = 0;
+         virtual const Properties & properties() const = 0;
+         virtual Properties & properties() = 0;
       protected:
          virtual void print(std::ostream& os) const = 0;
    };
@@ -55,6 +57,23 @@ namespace SmartGridToolbox
 
       /// @}
          
+      /// @name Properties:
+      /// @{
+         
+         virtual const Properties& properties() const
+         {
+            return properties_;
+         }
+         
+         virtual Properties& properties()
+         {
+            return properties_;
+         }
+
+      /// @}
+         
+      protected:
+
       /// @name Printing:
       /// @{
          
@@ -68,6 +87,7 @@ namespace SmartGridToolbox
       private:
 
          std::string id_ = "UNDEFINED";
+         Properties properties_;
    };
 }
 

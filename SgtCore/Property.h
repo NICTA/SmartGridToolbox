@@ -103,9 +103,10 @@ namespace SmartGridToolbox
             }
          }
 
-         template<typename T, typename... Args> void add(const std::string& key, Args&&... args)
+         template<typename T, typename G = NoGetter, typename S = NoSetter, typename... Args>
+            void add(const std::string& key, Args&&... args)
          {
-            properties_[key] = new T(std::forward<Args>(args)...);
+            properties_[key] = new Property<T, G, S>(std::forward<Args>(args)...);
          }
 
          template<typename T> T get(const std::string& key) const
