@@ -1,9 +1,12 @@
 #ifndef PROPERTY_DOT_H
 #define PROPERTY_DOT_H
 
+#include <SgtCore/Common.h>
+
 #include<map>
-#include<vector>
+#include<stdexcept>
 #include<string>
+#include<vector>
 
 namespace SmartGridToolbox
 {
@@ -112,7 +115,12 @@ namespace SmartGridToolbox
 
          template<typename T> T get(const std::string& key) const
          {
-            return dynamic_cast<const Gettable<T>*>(properties_.at(key))->get();
+            auto p = dynamic_cast<const Gettable<T>*>(properties_.at(key));
+            if (p == nullptr)
+            {
+               throw std::out_of_range(std::string("Property ") + key + " not found.");
+            }
+            return p->get();
          }
          
          template<typename T> void set(const std::string& key, const T& val)

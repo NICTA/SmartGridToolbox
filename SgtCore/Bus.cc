@@ -16,9 +16,13 @@ namespace SmartGridToolbox
          VMagSetpoint_(i) = std::abs(VNom_(i));
          VAngSetpoint_(i) = std::arg(VNom_(i));
       }
-  
+ 
       typedef ublas::vector<Complex> VType;
-      properties().add<VType, const VType& ()>("V", [this](){return V_;});
+      properties().add<VType, const VType&, const VType&>(
+            "V", 
+            [this]()->const VType&{return V();}, 
+            [this](const VType& V)->void{setV(V);}
+            );
    }
 
    void Bus::applyVSetpoints()
