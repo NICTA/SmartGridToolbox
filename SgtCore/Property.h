@@ -13,25 +13,25 @@ namespace SmartGridToolbox
          virtual ~PropertyBase() = default;
    };
 
-   template<typename T> class GettableProperty : virtual public PropertyBase
+   template<typename ReturnType> class Gettable : virtual public PropertyBase
    {
       public:
-         template<typename U = T> U get() const;
+         virtual ReturnType get() const = 0;
    };
 
-   template<typename T> class SettableProperty : virtual public PropertyBase
+   template<typename ArgType> class Settable : virtual public PropertyBase
    {
       public:
-         virtual void set(const T& val) = 0;
+         virtual void set(ArgType val) = 0;
    };
 
    struct NoGetter {};
    struct NoSetter {};
 
-   template<typename T, typename G = NoGetter, typename S = NoSetter> class Property;
+   template<typename T, typename GetterReturnType = NoGetter, typename SetterArgType = NoSetter> class Property;
 
    template<typename T> class Property<T, NoGetter, NoSetter> :
-      virtual public GettableProperty<T>, virtual public SettableProperty<T>
+      virtual public Gettable<const T&>, virtual public Settable<const T&>
    {
       public:
 
@@ -40,16 +40,17 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         template<typename U = T> U get() const {return val_;}
+         virtual const T& get() const override {return val_;}
 
-         void set(const T& val) {val_ = val;}
+         virtual void set(const T& val) override {val_ = val;}
 
       private:
 
          T val_;
    };
 
-   template<typename T, typename G> class Property<T, G, NoSetter> : virtual public GettableProperty<T>
+   template<typename T, typename GetterReturnType> class Property<T, GetterReturnType, NoSetter> :
+      virtual public Gettable<GetterReturnType>
    {
       public:
 
@@ -58,33 +59,33 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         template<typename U = T> U get() const {return get_();}
+         virtual GetterReturnType get() const {return get_();}
 
       private:
 
-         std::function<G> get_;
+         std::function<GetterReturnType ()> get_;
    };
 
-   template<typename T, typename G, typename S> class Property :
-      virtual public Property<T, G>, virtual public SettableProperty<T>
+   template<typename T, typename GetterReturnType, typename SetterArgType> class Property :
+      virtual public Property<T, GetterReturnType>, virtual public Settable<SetterArgType>
    {
       public:
 
          template<typename GetterArg, typename SetterArg> Property(GetterArg&& getArg, SetterArg&& setArg) :
-            Property<T, G>(std::forward<GetterArg>(getArg)),
+            Property<T, GetterReturnType>(std::forward<GetterArg>(getArg)),
             set_(std::forward<SetterArg>(setArg))
          {
             // Empty.
          }
          
-         void set(const T& val)
+         void set(SetterArgType val)
          {
             set_(val);
          }
 
       private:
 
-         std::function<S> set_;
+         std::function<void (SetterArgType)> set_;
    };
 
    class Properties
@@ -111,12 +112,12 @@ namespace SmartGridToolbox
 
          template<typename T> T get(const std::string& key) const
          {
-            return dynamic_cast<const GettableProperty<T>*>(properties_.at(key))->get();
+            return dynamic_cast<const Gettable<T>*>(properties_.at(key))->get();
          }
          
          template<typename T> void set(const std::string& key, const T& val)
          {
-            dynamic_cast<const SettableProperty<T>*>(properties_.at(key))->set(val);
+            dynamic_cast<const Settable<T>*>(properties_.at(key))->set(val);
          }
 
          ConstIteratorType cbegin() const
