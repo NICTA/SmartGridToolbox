@@ -18,8 +18,8 @@ namespace SmartGridToolbox
          virtual ~ComponentInterface() {}
          virtual const std::string& id() const = 0;
          virtual const char* componentType() const = 0;
-         virtual const Properties & properties() const = 0;
-         virtual Properties & properties() = 0;
+         virtual const Properties& properties() const = 0;
+         virtual Properties& properties() = 0;
       protected:
          virtual void print(std::ostream& os) const = 0;
    };
