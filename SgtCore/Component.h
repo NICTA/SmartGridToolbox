@@ -38,6 +38,7 @@ namespace SmartGridToolbox
       /// @{
          
          Component(const std::string& id) : id_(id) {}
+         Component(const Component& from) = delete;
          virtual ~Component() = default;
 
       /// @}

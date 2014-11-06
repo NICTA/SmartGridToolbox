@@ -10,31 +10,41 @@
 
 namespace SmartGridToolbox
 {
+   struct PropertyNone {};
+   typedef PropertyNone NoTarget;
+   typedef PropertyNone NoGetter;
+   typedef PropertyNone NoSetter;
+
    class PropertyBase
    {
+
       public:
+
          virtual ~PropertyBase() = default;
    };
 
-   template<typename ReturnType> class Gettable : virtual public PropertyBase
+   template<typename TargetType_, typename GetterReturnType_> class Gettable
    {
       public:
-         virtual ReturnType get() const = 0;
+
+         virtual GetterReturnType_ get(const TargetType_& target) const = 0;
    };
 
-   template<typename ArgType> class Settable : virtual public PropertyBase
+   template<typename TargetType_, typename SetterArgType_> class Settable
    {
       public:
-         virtual void set(ArgType val) = 0;
+
+         virtual void set(TargetType_& target, SetterArgType_ val) = 0;
    };
 
-   struct NoGetter {};
-   struct NoSetter {};
+   template<typename BaseType_, typename TargetType_ = NoTarget, typename GetterReturnType_ = NoGetter, 
+      typename SetterArgType_ = NoSetter> class Property;
 
-   template<typename T, typename GetterReturnType = NoGetter, typename SetterArgType = NoSetter> class Property;
-
-   template<typename T> class Property<T, NoGetter, NoSetter> :
-      virtual public Gettable<const T&>, virtual public Settable<const T&>
+   template<typename BaseType_>
+      class Property<BaseType_, NoTarget, NoGetter, NoSetter> :
+      public PropertyBase,
+      public Gettable<NoTarget, const BaseType_&>,
+      public Settable<NoTarget, const BaseType_&>
    {
       public:
 
@@ -43,17 +53,18 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual const T& get() const override {return val_;}
+         virtual const BaseType_& get() const override {return val_;}
 
-         virtual void set(const T& val) override {val_ = val;}
+         virtual void set(const BaseType_& val) override {val_ = val;}
 
       private:
 
-         T val_;
+         BaseType_ val_;
    };
 
-   template<typename T, typename GetterReturnType> class Property<T, GetterReturnType, NoSetter> :
-      virtual public Gettable<GetterReturnType>
+   template<typename BaseType_, typename TargetType_, typename GetterReturnType_>
+      class Property<BaseType_, TargetType_, GetterReturnType_, NoSetter> :
+      public PropertyBase, public Gettable<TargetType_, const BaseType_&>
    {
       public:
 
@@ -62,44 +73,50 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         virtual GetterReturnType get() const {return get_();}
+         virtual GetterReturnType_ get(const TargetType_& target) const {return get_(target);}
 
       private:
 
-         std::function<GetterReturnType ()> get_;
+         std::function<GetterReturnType_ (const TargetType_&)> get_;
    };
 
-   template<typename T, typename GetterReturnType, typename SetterArgType> class Property :
-      virtual public Property<T, GetterReturnType>, virtual public Settable<SetterArgType>
+   template<typename BaseType_, typename TargetType_, typename GetterReturnType_, typename SetterArgType_>
+      class Property :
+      public Property<BaseType_, TargetType_, GetterReturnType_>, public Settable<TargetType_, SetterArgType_>
    {
       public:
 
          template<typename GetterArg, typename SetterArg> Property(GetterArg&& getArg, SetterArg&& setArg) :
-            Property<T, GetterReturnType>(std::forward<GetterArg>(getArg)),
+            Property<BaseType_, TargetType_, GetterReturnType_>(std::forward<GetterArg>(getArg)),
             set_(std::forward<SetterArg>(setArg))
          {
             // Empty.
          }
          
-         void set(SetterArgType val)
+         virtual void set(TargetType_& target, SetterArgType_ val)
          {
-            set_(val);
+            set_(target, val);
          }
 
       private:
 
-         std::function<void (SetterArgType)> set_;
+         std::function<void (TargetType_&, SetterArgType_)> set_;
    };
 
-   class Properties
+   class HasProperties
    {
-      public:
+      private:
 
          typedef std::map<std::string, PropertyBase*> MapType;
+
+      public:
+
          typedef MapType::const_iterator ConstIteratorType;
          typedef MapType::iterator IteratorType;
 
-         ~Properties()
+      public:
+
+         ~HasProperties()
          {
             for (auto pair : properties_)
             {
@@ -107,25 +124,33 @@ namespace SmartGridToolbox
             }
          }
 
-         template<typename T, typename G = NoGetter, typename S = NoSetter, typename... Args>
-            void add(const std::string& key, Args&&... args)
+         template<typename BaseType_, typename TargetType_ = NoTarget, typename GetterReturnType_ = NoGetter,
+            typename SetterArgType_ = NoSetter, typename... Args> void add(const std::string& key, Args&&... args)
          {
-            properties_[key] = new Property<T, G, S>(std::forward<Args>(args)...);
+            properties_[key] = new Property<BaseType_, TargetType_, GetterReturnType_, SetterArgType_>(
+                  std::forward<Args>(args)...);
          }
 
-         template<typename T> T get(const std::string& key) const
+         template<typename TargetType_, typename GetterReturnType_>
+            GetterReturnType_ get(const std::string& key) const
          {
-            auto p = dynamic_cast<const Gettable<T>*>(properties_.at(key));
+            auto p = dynamic_cast<const Gettable<TargetType_, GetterReturnType_>*>(properties_.at(key));
             if (p == nullptr)
             {
                throw std::out_of_range(std::string("Property ") + key + " not found.");
             }
-            return p->get();
+            return p->get(dynamic_cast<const TargetType_&>(*this));
          }
          
-         template<typename T> void set(const std::string& key, const T& val)
+         template<typename TargetType_, typename SetterArgType_>
+            void set(const std::string& key, const SetterArgType_& val)
          {
-            dynamic_cast<const Settable<T>*>(properties_.at(key))->set(val);
+            auto p = dynamic_cast<const Settable<TargetType_, SetterArgType_>*>(properties_.at(key));
+            if (p == nullptr)
+            {
+               throw std::out_of_range(std::string("Property ") + key + " not found.");
+            }
+            p->set(dynamic_cast<const TargetType_&>(*this), val);
          }
 
          ConstIteratorType cbegin() const
