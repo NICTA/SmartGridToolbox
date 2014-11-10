@@ -1,5 +1,5 @@
-#ifndef PROPERTY_DOTH
-#define PROPERTY_DOTH
+#ifndef PROPERTY_DOT_H
+#define PROPERTY_DOT_H
 
 #include<map>
 #include<stdexcept>
@@ -14,10 +14,10 @@ namespace SmartGridToolbox
    template<class T> using ByConstRef = const T&;
    
    template<typename T, template<typename> class PassByType, class TargType>
-   using Getter = PassByType<T> (const TargType&);
+   using Getter = PassByType<T> (const TargType*);
    
    template<typename T, template<typename> class PassByType, class TargType>
-   using Setter = void (TargType&, PassByType<T>);
+   using Setter = void (TargType*, PassByType<T>);
 
    // A property that is bound to a target. Designed to be created on the fly.
    class PropertyBase
@@ -50,11 +50,11 @@ namespace SmartGridToolbox
          T val_;
    };
 
-   template<typename T, template<typename> class PassByType, typename TargType> class PropertyWithGetter
+   template<typename T, template<typename> class PassByType, typename TargType> class ReadProperty
    {
       public:
 
-         PropertyWithGetter(Getter<T, PassByType, TargType> arg) : get_(arg)
+         ReadProperty(Getter<T, PassByType, TargType> arg) : get_(arg)
          {
             // Empty.
          }
@@ -66,12 +66,12 @@ namespace SmartGridToolbox
          std::function<Getter<T, PassByType, TargType>> get_;
    };
 
-   template<typename T, template<typename> class PassByType, typename TargType> class PropertyWithSetter
+   template<typename T, template<typename> class PassByType, typename TargType> class WriteProperty
    {
 
       public:
 
-         PropertyWithSetter(Setter<T, PassByType, TargType> arg) : set_(arg)
+         WriteProperty(Setter<T, PassByType, TargType> arg) : set_(arg)
          {
             // Empty.
          }
@@ -85,11 +85,11 @@ namespace SmartGridToolbox
 
    template<typename T, template<typename> class PassByType, typename TargType>
    class Property<T, PassByType, true, false, TargType> :
-      public PropertyWithGetter<T, PassByType, TargType>, public PropertyBase
+      public ReadProperty<T, PassByType, TargType>, public PropertyBase
    {
       public:
          template<typename GetterArg> Property(GetterArg getterArg) :
-         PropertyWithGetter<T, PassByType, TargType>(getterArg)
+         ReadProperty<T, PassByType, TargType>(getterArg)
          {
             // Empty.
          }
@@ -97,11 +97,11 @@ namespace SmartGridToolbox
    
    template<typename T, template<typename> class PassByType, typename TargType>
    class Property<T, PassByType, false, true, TargType> :
-      public PropertyWithSetter<T, PassByType, TargType>, public PropertyBase
+      public WriteProperty<T, PassByType, TargType>, public PropertyBase
    {
       public:
          template<typename SetterArg> Property(SetterArg setterArg) :
-         PropertyWithSetter<T, PassByType, TargType>(setterArg)
+         WriteProperty<T, PassByType, TargType>(setterArg)
          {
             // Empty.
          }
@@ -109,14 +109,14 @@ namespace SmartGridToolbox
    
    template<typename T, template<typename> class PassByType, typename TargType>
    class Property<T, PassByType, true, true, TargType> :
-      public PropertyWithGetter<T, PassByType, TargType>, public PropertyWithSetter<T, PassByType, TargType>,
+      public ReadProperty<T, PassByType, TargType>, public WriteProperty<T, PassByType, TargType>,
       public PropertyBase
    {
       public:
          template<typename GetterArg, typename SetterArg>
          Property(GetterArg getterArg, SetterArg setterArg) :
-            PropertyWithGetter<T, PassByType, TargType>(getterArg),
-            PropertyWithSetter<T, PassByType, TargType>(setterArg)
+            ReadProperty<T, PassByType, TargType>(getterArg),
+            WriteProperty<T, PassByType, TargType>(setterArg)
          {
             // Empty.
          }
@@ -134,14 +134,14 @@ namespace SmartGridToolbox
       friend void addStoredProperty(TargType& targ, const std::string& key, PassByType<T> val);
       
       template<typename T, template<typename> class PassByType, typename TargType, typename GetterType>
-      friend void addPropertyWithGetter(TargType& targ, const std::string& key, GetterType getter);
+      friend void addReadProperty(TargType& targ, const std::string& key, GetterType getter);
       
       template<typename T, template<typename> class PassByType, typename TargType, typename SetterType>
-      friend void addPropertyWithSetter(TargType& targ, const std::string& key, SetterType setter);
+      friend void addWriteProperty(TargType& targ, const std::string& key, SetterType setter);
       
       template<typename T, template<typename> class PassByType, typename TargType,
          typename GetterType, typename SetterType>
-      friend void addPropertyWithGetterAndSetter(TargType& targ, const std::string& key,
+      friend void addReadWriteProperty(TargType& targ, const std::string& key,
             GetterType getter, SetterType setter);
 
       private:
@@ -168,7 +168,7 @@ namespace SmartGridToolbox
    PassByType<T> getProperty(const TargType& targ, const std::string& key)
    {
       auto propBase = targ.properties().map_.at(key);
-      auto prop = dynamic_cast<const PropertyWithGetter<T, PassByType, TargType>*>(propBase);
+      auto prop = dynamic_cast<const ReadProperty<T, PassByType, TargType>*>(propBase);
       if (prop == nullptr)
       {
          auto propB = dynamic_cast<const Property<T, PassByType>*>(propBase);
@@ -185,7 +185,7 @@ namespace SmartGridToolbox
    void setProperty(TargType& targ, const std::string& key, PassByType<T> val)
    {
       auto propBase = targ.properties().map_.at(key);
-      auto prop = dynamic_cast<PropertyWithSetter<T, PassByType, TargType>*>(propBase);
+      auto prop = dynamic_cast<WriteProperty<T, PassByType, TargType>*>(propBase);
       if (prop == nullptr)
       {
          auto propB = dynamic_cast<Property<T, PassByType>*>(propBase);
@@ -205,23 +205,23 @@ namespace SmartGridToolbox
    }
       
    template<typename T, template<typename> class PassByType, typename TargType, typename GetterType>
-   void addPropertyWithGetter(TargType& targ, const std::string& key, GetterType getter)
+   void addReadProperty(TargType& targ, const std::string& key, GetterType getter)
    {
       targ.properties().map_[key] = new Property<T, PassByType, true, false, TargType>(getter);
    }
       
    template<typename T, template<typename> class PassByType, typename TargType, typename SetterType>
-   void addPropertyWithSetter(TargType& targ, const std::string& key, SetterType setter)
+   void addWriteProperty(TargType& targ, const std::string& key, SetterType setter)
    {
       targ.properties().map_[key] = new Property<T, PassByType, false, true, TargType>(setter);
    }
       
    template<typename T, template<typename> class PassByType, typename TargType,
       typename GetterType, typename SetterType>
-   void addPropertyWithGetterAndSetter(TargType& targ, const std::string& key, GetterType getter, SetterType setter)
+   void addReadWriteProperty(TargType& targ, const std::string& key, GetterType getter, SetterType setter)
    {
       targ.properties().map_[key] = new Property<T, PassByType, true, true, TargType>(getter, setter);
    }
 }
 
-#endif // PROPERTY_DOTH
+#endif // PROPERTY_DOT_H

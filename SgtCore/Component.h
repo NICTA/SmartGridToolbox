@@ -38,7 +38,6 @@ namespace SmartGridToolbox
       /// @{
          
          Component(const std::string& id) : id_(id) {}
-         Component(const Component& from) = delete;
          virtual ~Component() = default;
 
       /// @}
@@ -61,9 +60,9 @@ namespace SmartGridToolbox
       /// @name Properties:
       /// @{
          
-         virtual Properties properties()
+         virtual const Properties& properties() const
          {
-            return Properties(propertyMap_, this);
+            return properties_;
          }
          
          virtual Properties& properties()
@@ -88,7 +87,7 @@ namespace SmartGridToolbox
       private:
 
          std::string id_ = "UNDEFINED";
-         PropertyMap propertyMap_;
+         Properties properties_;
    };
 }
 
