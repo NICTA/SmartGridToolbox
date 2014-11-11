@@ -14,10 +14,10 @@ namespace SmartGridToolbox
    template<class T> using ByConstRef = const T&;
    
    template<typename T, template<typename> class PassByType, class TargType>
-   using Getter = PassByType<T> (const TargType*);
+   using Getter = PassByType<T> (const TargType&);
    
    template<typename T, template<typename> class PassByType, class TargType>
-   using Setter = void (TargType*, PassByType<T>);
+   using Setter = void (TargType&, PassByType<T>);
 
    // A property that is bound to a target. Designed to be created on the fly.
    class PropertyBase
