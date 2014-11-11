@@ -1,6 +1,7 @@
 #ifndef PROPERTY_DOT_H
 #define PROPERTY_DOT_H
 
+#include<iostream>
 #include<map>
 #include<stdexcept>
 #include<string>
@@ -11,45 +12,33 @@ namespace SmartGridToolbox
    template<class T> using ByValue = T;
    template<class T> using ByConstRef = const T&;
    
-   template<typename T, template<typename> class PassBy, class Targ>
-   using Getter = PassBy<T> (const Targ&);
+   template<typename T, template<typename> class PassBy, class Targ> using Getter = PassBy<T> (const Targ&);
+   template<typename T, template<typename> class PassBy, class Targ> using Setter = void (Targ&, PassBy<T>);
 
    class Properties;
 
-   class PropertyAbc
+   class PropertyBase
    {
       friend class Properties;
 
       protected:
-         virtual ~PropertyAbc() {};
-         virtual void retarget(Properties* targ) = 0;
-   };
-
-   template<typename Targ> class HasTarget : virtual public PropertyAbc
-   {
-      protected:
-         HasTarget() = default;
-
-         HasTarget(Properties* targ) : targ_(dynamic_cast<Targ*>(targ)) {}
-
-         virtual void retarget(Properties* targ) override
-         {
-            targ_ = dynamic_cast<Targ*>(targ);
-         }
+         PropertyBase() = default;
+         PropertyBase(Properties* targ) : targ_(targ) {}
+         virtual ~PropertyBase() {}
 
       protected:
-         Targ* targ_;
+         Properties* targ_{nullptr};
    };
 
-   template<typename T, template<typename> class PassBy>
-   class GettableAbc
+   template<typename T, template<typename> class PassBy> class GettableAbc : virtual public PropertyBase
    {
-      public:
+      friend class Properties;
+
+      protected:
          virtual PassBy<T> get() const = 0;
    };
 
-   template<typename T, template<typename> class PassBy, typename Targ>
-   class Gettable : public GettableAbc<T, PassBy>, virtual public HasTarget<Targ>
+   template<typename T, template<typename> class PassBy, typename Targ> class Gettable : public GettableAbc<T, PassBy>
    {
       protected:
          Gettable(Getter<T, PassBy, Targ> arg) : get_(arg)
@@ -60,23 +49,55 @@ namespace SmartGridToolbox
       public:
          virtual PassBy<T> get() const override
          {
-            return get_(*this->targ_);
+            std::cout << "B: " << this->targ_ << std::endl;
+            return get_(*dynamic_cast<const Targ*>(this->targ_));
          }
       
       private:
          std::function<Getter<T, PassBy, Targ>> get_;
    };
 
+   template<typename T, template<typename> class PassBy> class SettableAbc : virtual public PropertyBase
+   {
+      protected:
+         virtual void set(PassBy<T>) = 0;
+   };
+
+   template<typename T, template<typename> class PassBy, typename Targ> class Settable : public SettableAbc<T, PassBy>
+   {
+      protected:
+         Settable(Setter<T, PassBy, Targ> arg) : set_(arg)
+         {
+            // Empty.
+         }
+
+      public:
+         virtual void set(PassBy<T> val) override
+         {
+            set_(*this->targ_, val);
+         }
+      
+      private:
+         std::function<Setter<T, PassBy, Targ>> set_;
+   };
+
+   enum class PropType
+   {
+      GET_ONLY,
+      SET_ONLY,
+      GET_AND_SET
+   };
+
    // Full template declaration for a Property.
-   template<typename T, template<typename> class PassBy, typename Targ> class Property;
+   template<typename T, PropType, template<typename> class PassBy, typename Targ> class Property;
 
    template<typename T, template<typename> class PassBy, typename Targ>
-   class Property : public Gettable<T, PassBy, Targ>
+   class Property<T, PropType::GET_ONLY, PassBy, Targ> : public Gettable<T, PassBy, Targ>
    {
       public:
 
          template<typename GetterArg> Property(Properties* targ, GetterArg getterArg) :
-            HasTarget<Targ>(targ),
+            PropertyBase(targ),
             Gettable<T, PassBy, Targ>(getterArg)
          {
             // Empty.
@@ -86,7 +107,7 @@ namespace SmartGridToolbox
    class Properties
    {
       private:
-         typedef std::map<std::string, PropertyAbc*> Map;
+         typedef std::map<std::string, PropertyBase*> Map;
 
       public:
          typedef Map::const_iterator ConstIterator;
@@ -101,10 +122,10 @@ namespace SmartGridToolbox
             }
          }
 
-         template<typename T, template<typename> class PassBy, typename Targ, typename Arg>
+         template<typename T, PropType PT, template<typename> class PassBy, typename Targ, typename Arg>
          void addProperty(const std::string& key, Arg arg)
          {
-            map_[key] = new Property<T, PassBy, Targ>(this, arg);
+            map_[key] = new Property<T, PT, PassBy, Targ>(this, arg);
          }
 
          template<typename T, template<typename> class PassBy> PassBy<T> getProperty(const std::string& key)
@@ -113,6 +134,7 @@ namespace SmartGridToolbox
             try
             {
                gettable = dynamic_cast<GettableAbc<T, PassBy>*>(map_.at(key));
+               std::cout << "A: " << gettable << std::endl;
             }
             catch (std::out_of_range e)
             {
