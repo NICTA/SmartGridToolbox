@@ -1,7 +1,6 @@
 #ifndef PROPERTY_DOT_H
 #define PROPERTY_DOT_H
 
-#include<iostream>
 #include<map>
 #include<stdexcept>
 #include<string>
@@ -49,7 +48,6 @@ namespace SmartGridToolbox
       public:
          virtual PassBy<T> get() const override
          {
-            std::cout << "B: " << this->targ_ << std::endl;
             return get_(*dynamic_cast<const Targ*>(this->targ_));
          }
       
@@ -134,7 +132,6 @@ namespace SmartGridToolbox
             try
             {
                gettable = dynamic_cast<GettableAbc<T, PassBy>*>(map_.at(key));
-               std::cout << "A: " << gettable << std::endl;
             }
             catch (std::out_of_range e)
             {
