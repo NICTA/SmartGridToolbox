@@ -1,5 +1,5 @@
-#ifndef PROPERTY_DOT_H
-#define PROPERTY_DOT_H
+#ifndef PROPERTIES_DOT_H
+#define PROPERTIES_DOT_H
 
 #include<map>
 #include<stdexcept>
@@ -193,4 +193,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // PROPERTY_DOT_H
+#endif // PROPERTIES_DOT_H

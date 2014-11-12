@@ -1,7 +1,7 @@
 #ifndef COMPONENT_DOT_H
 #define COMPONENT_DOT_H
 
-#include <SgtCore/Property.h>
+#include <SgtCore/Properties.h>
 
 #include <ostream>
 #include <string>
@@ -18,8 +18,6 @@ namespace SmartGridToolbox
          virtual ~ComponentInterface() {}
          virtual const std::string& id() const = 0;
          virtual const char* componentType() const = 0;
-         virtual const Properties& properties() const = 0;
-         virtual Properties& properties() = 0;
       protected:
          virtual void print(std::ostream& os) const = 0;
    };
@@ -30,7 +28,7 @@ namespace SmartGridToolbox
       return os;
    }
 
-   class Component : virtual public ComponentInterface
+   class Component : virtual public ComponentInterface, virtual public Properties
    {
       public:
 
@@ -54,21 +52,6 @@ namespace SmartGridToolbox
          
          virtual const std::string& id() const override {return id_;}
          void setId(const std::string& id) {id_ = id;}
-
-      /// @}
-         
-      /// @name Properties:
-      /// @{
-         
-         virtual const Properties& properties() const
-         {
-            return properties_;
-         }
-         
-         virtual Properties& properties()
-         {
-            return properties_;
-         }
 
       /// @}
          

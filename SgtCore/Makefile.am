@@ -20,7 +20,7 @@ libinclude_HEADERS = \
 	OverheadLine.h \
 	Parser.h \
 	PowerFlow.h \
-	Property.h \
+	Properties.h \
 	Random.h \
 	SinglePhaseTransformer.h \
 	Units.h \
