@@ -8,11 +8,15 @@
 
 namespace SmartGridToolbox
 {
+   struct PropertyNone {};
+
    template<class T> using ByValue = T;
    template<class T> using ByConstRef = const T&;
+   template<class T> class NoGetter{};  
+   template<class T> using NoSetter = NoGetter<T>;  
    
-   template<typename T, template<typename> class PassBy, class Targ> using Getter = PassBy<T> (const Targ&);
-   template<typename T, template<typename> class PassBy, class Targ> using Setter = void (Targ&, PassBy<T>);
+   template<typename T, template<typename> class GetBy, class Targ> using Getter = GetBy<T> (const Targ&);
+   template<typename T, template<typename> class SetBy, class Targ> using Setter = void (Targ&, SetBy<T>);
 
    class Properties;
 
@@ -29,79 +33,100 @@ namespace SmartGridToolbox
          Properties* targ_{nullptr};
    };
 
-   template<typename T, template<typename> class PassBy> class GettableAbc : virtual public PropertyBase
+   template<typename T, template<typename> class GetBy> class GettableAbc : virtual public PropertyBase
    {
       friend class Properties;
 
       protected:
-         virtual PassBy<T> get() const = 0;
+         virtual GetBy<T> get() const = 0;
    };
 
-   template<typename T, template<typename> class PassBy, typename Targ> class Gettable : public GettableAbc<T, PassBy>
+   template<typename T, template<typename> class SetBy> class SettableAbc : virtual public PropertyBase
+   {
+      friend class Properties;
+
+      private:
+         virtual void set(SetBy<T>) = 0;
+   };
+
+   template<typename T, template<typename> class GetBy, typename Targ> class Gettable : public GettableAbc<T, GetBy>
    {
       protected:
-         Gettable(Getter<T, PassBy, Targ> arg) : get_(arg)
+         Gettable(Getter<T, GetBy, Targ> arg) : get_(arg)
          {
             // Empty.
          }
 
-      public:
-         virtual PassBy<T> get() const override
+         virtual GetBy<T> get() const override
          {
             return get_(*dynamic_cast<const Targ*>(this->targ_));
          }
       
       private:
-         std::function<Getter<T, PassBy, Targ>> get_;
+         std::function<Getter<T, GetBy, Targ>> get_;
    };
 
-   template<typename T, template<typename> class PassBy> class SettableAbc : virtual public PropertyBase
+   template<typename T, template<typename> class SetBy, typename Targ> class Settable : public SettableAbc<T, SetBy>
    {
       protected:
-         virtual void set(PassBy<T>) = 0;
-   };
-
-   template<typename T, template<typename> class PassBy, typename Targ> class Settable : public SettableAbc<T, PassBy>
-   {
-      protected:
-         Settable(Setter<T, PassBy, Targ> arg) : set_(arg)
+         Settable(Setter<T, SetBy, Targ> arg) : set_(arg)
          {
             // Empty.
          }
 
-      public:
-         virtual void set(PassBy<T> val) override
+         virtual void set(SetBy<T> val) override
          {
-            set_(*this->targ_, val);
+            set_(*dynamic_cast<Targ*>(this->targ_), val);
          }
       
       private:
-         std::function<Setter<T, PassBy, Targ>> set_;
-   };
-
-   enum class PropType
-   {
-      GET_ONLY,
-      SET_ONLY,
-      GET_AND_SET
+         std::function<Setter<T, SetBy, Targ>> set_;
    };
 
    // Full template declaration for a Property.
-   template<typename T, PropType, template<typename> class PassBy, typename Targ> class Property;
+   template<typename T, template<typename> class GetBy, template<typename> class SetBy, typename Targ> class Property;
 
-   template<typename T, template<typename> class PassBy, typename Targ>
-   class Property<T, PropType::GET_ONLY, PassBy, Targ> : public Gettable<T, PassBy, Targ>
+   template<typename T, template<typename> class GetBy, typename Targ>
+   class Property<T, GetBy, NoSetter, Targ> : public Gettable<T, GetBy, Targ>
    {
       public:
 
          template<typename GetterArg> Property(Properties* targ, GetterArg getterArg) :
             PropertyBase(targ),
-            Gettable<T, PassBy, Targ>(getterArg)
+            Gettable<T, GetBy, Targ>(getterArg)
          {
             // Empty.
          }
    };
-   
+
+   template<typename T, template<typename> class SetBy, typename Targ>
+   class Property<T, NoGetter, SetBy, Targ> : public Settable<T, SetBy, Targ>
+   {
+      public:
+
+         template<typename SetterArg> Property(Properties* targ, SetterArg setterArg) :
+            PropertyBase(targ),
+            Settable<T, SetBy, Targ>(setterArg)
+         {
+            // Empty.
+         }
+   };
+
+   template<typename T, template<typename> class GetBy, template<typename> class SetBy, typename Targ>
+   class Property : public Gettable<T, GetBy, Targ>, public Settable<T, SetBy, Targ>
+   {
+      public:
+
+         template<typename GetterArg, typename SetterArg>
+         Property(Properties* targ, GetterArg getterArg, SetterArg setterArg) :
+            PropertyBase(targ),
+            Gettable<T, GetBy, Targ>(getterArg),
+            Settable<T, SetBy, Targ>(setterArg)
+         {
+            // Empty.
+         }
+   };
+
    class Properties
    {
       private:
@@ -120,18 +145,19 @@ namespace SmartGridToolbox
             }
          }
 
-         template<typename T, PropType PT, template<typename> class PassBy, typename Targ, typename Arg>
-         void addProperty(const std::string& key, Arg arg)
+         template<typename T, template<typename> class GetBy, template<typename> class SetBy, 
+            typename Targ, typename... Arg>
+         void addProperty(const std::string& key, Arg... args)
          {
-            map_[key] = new Property<T, PT, PassBy, Targ>(this, arg);
+            map_[key] = new Property<T, GetBy, SetBy, Targ>(this, args...);
          }
 
-         template<typename T, template<typename> class PassBy> PassBy<T> getProperty(const std::string& key)
+         template<typename T, template<typename> class GetBy> GetBy<T> getProperty(const std::string& key)
          {
-            GettableAbc<T, PassBy>* gettable;
+            GettableAbc<T, GetBy>* gettable;
             try
             {
-               gettable = dynamic_cast<GettableAbc<T, PassBy>*>(map_.at(key));
+               gettable = dynamic_cast<GettableAbc<T, GetBy>*>(map_.at(key));
             }
             catch (std::out_of_range e)
             {
@@ -142,6 +168,24 @@ namespace SmartGridToolbox
                throw std::out_of_range(std::string("Property ") + key + " exists, but is not gettable.");
             }
             return gettable->get();
+         }
+
+         template<typename T, template<typename> class SetBy> void setProperty(const std::string& key, SetBy<T> val)
+         {
+            SettableAbc<T, SetBy>* settable;
+            try
+            {
+               settable = dynamic_cast<SettableAbc<T, SetBy>*>(map_.at(key));
+            }
+            catch (std::out_of_range e)
+            {
+               throw std::out_of_range(std::string("Property ") + key + " does not exist.");
+            }
+            if (settable == nullptr)
+            {
+               throw std::out_of_range(std::string("Property ") + key + " exists, but is not settable.");
+            }
+            settable->set(val);
          }
 
       private:
