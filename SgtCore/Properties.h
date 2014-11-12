@@ -4,6 +4,7 @@
 #include<map>
 #include<stdexcept>
 #include<string>
+#include<sstream>
 #include<vector>
 
 namespace SmartGridToolbox
@@ -17,6 +18,22 @@ namespace SmartGridToolbox
    
    template<typename T, template<typename> class GetBy, class Targ> using Getter = GetBy<T> (const Targ&);
    template<typename T, template<typename> class SetBy, class Targ> using Setter = void (Targ&, SetBy<T>);
+   
+   class FromString{
+      public:
+         FromString(const std::string& str) : str_(str) {} 
+
+         template<typename T> operator T()
+         {
+            T t;
+            std::stringstream ss(str_);
+            ss >> t;
+            return t;
+         }
+
+      private:
+         std::string str_;
+   };
 
    class Properties;
 
@@ -33,23 +50,53 @@ namespace SmartGridToolbox
          Properties* targ_{nullptr};
    };
 
-   template<typename T, template<typename> class GetBy> class GettableAbc : virtual public PropertyBase
+   class GettableBase : virtual public PropertyBase
+   {
+      friend class Properties;
+
+      protected:
+         virtual std::string getAsString() = 0;
+   };
+
+   class SettableBase : virtual public PropertyBase
+   {
+      friend class Properties;
+
+      protected:
+         virtual void setFromString(const std::string& str) = 0;
+   };
+
+   template<typename T, template<typename> class GetBy> class GettableTBase : public GettableBase
    {
       friend class Properties;
 
       protected:
          virtual GetBy<T> get() const = 0;
+
+         virtual std::string getAsString()
+         {
+            using namespace std;
+            return to_string(get());
+         }
+
+      private:
+         std::function<std::string (GetBy<T>)> stringGetter_;
    };
 
-   template<typename T, template<typename> class SetBy> class SettableAbc : virtual public PropertyBase
+   template<typename T, template<typename> class SetBy> class SettableTBase : virtual public SettableBase
    {
       friend class Properties;
 
       private:
          virtual void set(SetBy<T>) = 0;
+
+         virtual void setFromString(const std::string& str)
+         {
+            set(FromString(str)); 
+         }
    };
 
-   template<typename T, template<typename> class GetBy, typename Targ> class Gettable : public GettableAbc<T, GetBy>
+   template<typename T, template<typename> class GetBy, typename Targ> class Gettable : public GettableTBase<T, GetBy>
    {
       protected:
          Gettable(Getter<T, GetBy, Targ> arg) : get_(arg)
@@ -66,7 +113,7 @@ namespace SmartGridToolbox
          std::function<Getter<T, GetBy, Targ>> get_;
    };
 
-   template<typename T, template<typename> class SetBy, typename Targ> class Settable : public SettableAbc<T, SetBy>
+   template<typename T, template<typename> class SetBy, typename Targ> class Settable : public SettableTBase<T, SetBy>
    {
       protected:
          Settable(Setter<T, SetBy, Targ> arg) : set_(arg)
@@ -137,6 +184,24 @@ namespace SmartGridToolbox
          typedef Map::iterator Iterator;
       
       public:
+         Properties() = default;
+
+         Properties(const Properties&& from) : map_(from.map_)
+         {
+            for (auto pair : map_)
+            {
+               pair.second->targ_ = this;
+            }
+         };
+
+         Properties(const Properties& from) : map_(from.map_)
+         {
+            for (auto pair : map_)
+            {
+               pair.second->targ_ = this;
+            }
+         };
+
          virtual ~Properties()
          {
             for (auto& pair : map_)
@@ -152,12 +217,12 @@ namespace SmartGridToolbox
             map_[key] = new Property<T, GetBy, SetBy, Targ>(this, args...);
          }
 
-         template<typename T, template<typename> class GetBy> GetBy<T> getProperty(const std::string& key)
+         template<typename T, template<typename> class GetBy> GetBy<T> property(const std::string& key)
          {
-            GettableAbc<T, GetBy>* gettable;
+            GettableTBase<T, GetBy>* gettable;
             try
             {
-               gettable = dynamic_cast<GettableAbc<T, GetBy>*>(map_.at(key));
+               gettable = dynamic_cast<GettableTBase<T, GetBy>*>(map_.at(key));
             }
             catch (std::out_of_range e)
             {
@@ -170,12 +235,17 @@ namespace SmartGridToolbox
             return gettable->get();
          }
 
+         std::string propertyAsString(const std::string& key)
+         {
+            return dynamic_cast<GettableBase*>(map_.at(key))->getAsString();
+         }
+
          template<typename T, template<typename> class SetBy> void setProperty(const std::string& key, SetBy<T> val)
          {
-            SettableAbc<T, SetBy>* settable;
+            SettableTBase<T, SetBy>* settable;
             try
             {
-               settable = dynamic_cast<SettableAbc<T, SetBy>*>(map_.at(key));
+               settable = dynamic_cast<SettableTBase<T, SetBy>*>(map_.at(key));
             }
             catch (std::out_of_range e)
             {
@@ -186,6 +256,11 @@ namespace SmartGridToolbox
                throw std::out_of_range(std::string("Property ") + key + " exists, but is not settable.");
             }
             settable->set(val);
+         }
+         
+         void setPropertyFromString(const std::string& key, const std::string& str)
+         {
+            dynamic_cast<SettableBase*>(map_.at(key))->setFromString(str);
          }
 
       private:
