@@ -255,7 +255,7 @@ namespace SmartGridToolbox
          Property<T, GetBy, SetBy>* property(const std::string& key)
          {
             return const_cast<Property<T, GetBy, SetBy>*>(
-                  static_cast<const Properties*>(this)->property<Property<T, GetBy, SetBy>>(key));
+                  static_cast<const Properties*>(this)->property<T, GetBy, SetBy>(key));
          }
 
       private:
