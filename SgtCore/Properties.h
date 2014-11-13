@@ -237,20 +237,25 @@ namespace SmartGridToolbox
             return map_.at(key)->isSettable();
          }
 
-         template<typename PropType> const PropType* property(const std::string& key) const
+         template<typename T = NoType,
+            template<typename> class GetBy = NoGetter, template<typename> class SetBy = NoSetter>
+         const Property<T, GetBy, SetBy>* property(const std::string& key) const
          {
-            const PropType* prop = nullptr;
+            const Property<T, GetBy, SetBy>* prop = nullptr;
             auto it = map_.find(key);
             if (it != map_.end())
             {
-               prop = dynamic_cast<const PropType*>(it->second);
+               prop = dynamic_cast<const Property<T, GetBy, SetBy>*>(it->second);
             }
             return prop;
          }
 
-         template<typename PropType> PropType* property(const std::string& key)
+         template<typename T = NoType,
+            template<typename> class GetBy = NoGetter, template<typename> class SetBy = NoSetter>
+         Property<T, GetBy, SetBy>* property(const std::string& key)
          {
-            return const_cast<PropType*>(static_cast<const Properties*>(this)->property<PropType>(key));
+            return const_cast<Property<T, GetBy, SetBy>*>(
+                  static_cast<const Properties*>(this)->property<Property<T, GetBy, SetBy>>(key));
          }
 
       private:
