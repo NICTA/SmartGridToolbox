@@ -281,7 +281,7 @@ namespace SmartGridToolbox
                            std::string valStr;
                            ss >> valStr;
                            assert(ss.eof());
-                           dts->addPoint(t, string2Complex(valStr)); 
+                           dts->addPoint(t, from_string<Complex>(valStr)); 
                         }
                         ts = std::move(dts);
                         break;
@@ -321,7 +321,7 @@ namespace SmartGridToolbox
                            {
                               std::string valStr;
                               ss >> valStr;
-                              valVec.push_back(string2Complex(valStr));
+                              valVec.push_back(from_string<Complex>(valStr));
                            }
                            ublas::vector<Complex> val(valVec.size());
                            std::copy(valVec.begin(), valVec.end(), val.begin());
