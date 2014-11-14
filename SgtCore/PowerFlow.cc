@@ -23,7 +23,7 @@ namespace SmartGridToolbox
       };
    }
 
-   const char* busType2Str(BusType type)
+   std::string to_string(BusType type)
    {
       switch (type)
       {
@@ -35,13 +35,13 @@ namespace SmartGridToolbox
       }
    }
 
-   BusType str2BusType(const std::string& str)
+   template<> BusType from_string<BusType>(const std::string& str)
    {
       static BusType busTypes[] = {BusType::SL, BusType::PQ, BusType::PV, BusType::BAD};
       BusType result = BusType::BAD;
       for (BusType* test = &busTypes[0]; *test != BusType::BAD; ++test)
       {
-         if (str == busType2Str(*test))
+         if (str == to_string(*test))
          {
             result = *test;
          }
@@ -49,7 +49,7 @@ namespace SmartGridToolbox
       return result;
    }
 
-   const char* phase2Str(Phase phase)
+   std::string to_string(Phase phase)
    {
       switch (phase)
       {
@@ -66,14 +66,14 @@ namespace SmartGridToolbox
       }
    }
 
-   Phase str2Phase(const std::string& str)
+   template<> Phase from_string<Phase>(const std::string& str)
    {
       static Phase phases[] = {Phase::BAL, Phase::A, Phase::B, Phase::C, Phase::G, Phase::N, Phase::SP,
                                Phase::SM, Phase:: SN, Phase::BAD};
       Phase result = Phase::BAD;
       for (Phase* test = &phases[0]; *test != Phase::BAD; ++test)
       {
-         if (str == phase2Str(*test))
+         if (str == to_string(*test))
          {
             result = *test;
          }
@@ -112,7 +112,7 @@ namespace SmartGridToolbox
       return *this;
    }
 
-   std::string Phases::toStr() const
+   std::string Phases::to_string() const
    {
       std::ostringstream ss;
       ss << phaseVec_[0];

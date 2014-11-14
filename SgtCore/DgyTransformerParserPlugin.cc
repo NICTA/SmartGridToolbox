@@ -2,6 +2,7 @@
 
 #include "DgyTransformer.h"
 #include "Network.h"
+#include "YamlSupport.h"
 
 namespace SmartGridToolbox
 {

@@ -17,7 +17,6 @@ namespace SmartGridToolbox
    template<class T> using ByValue = T;
    template<class T> using ByConstRef = const T&;
    
-   
    class FromString{
       public:
          FromString(const std::string& str) : str_(str) {} 
@@ -33,6 +32,13 @@ namespace SmartGridToolbox
       private:
          std::string str_;
    };
+   
+   template<typename T> std::string toString(const T& val)
+   {
+      std::ostringstream ss;
+      ss >> val;
+      return ss.str();
+   }
 
    class Properties;
 
@@ -83,7 +89,7 @@ namespace SmartGridToolbox
          virtual std::string getAsString()
          {
             using namespace std;
-            return to_string(get());
+            return toString(get());
          }
    };
 

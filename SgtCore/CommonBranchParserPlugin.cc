@@ -2,6 +2,7 @@
 
 #include "CommonBranch.h"
 #include "Network.h"
+#include "YamlSupport.h"
 
 namespace SmartGridToolbox
 {

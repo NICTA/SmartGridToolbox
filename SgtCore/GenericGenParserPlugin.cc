@@ -3,6 +3,7 @@
 #include "Bus.h"
 #include "Gen.h"
 #include "Network.h"
+#include "YamlSupport.h"
 
 namespace SmartGridToolbox
 {

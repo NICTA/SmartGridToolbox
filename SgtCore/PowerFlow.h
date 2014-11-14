@@ -19,9 +19,9 @@ namespace SmartGridToolbox
       BAD
    };
 
-   const char* busType2Str(BusType type);
-   inline std::ostream& operator<<(std::ostream& os, BusType t) {return os << busType2Str(t);}
-   BusType str2BusType(const std::string& str);
+   std::string to_string(BusType type);
+   inline std::ostream& operator<<(std::ostream& os, BusType t) {return os << to_string(t);}
+   template<> BusType from_string<BusType>(const std::string& str);
 
    enum class Phase : unsigned int
    {
@@ -37,9 +37,9 @@ namespace SmartGridToolbox
       BAD = 0x200    // Not a phase.
    };
 
-   const char* phase2Str(Phase phase);
-   inline std::ostream& operator<<(std::ostream& os, Phase p) {return os << phase2Str(p);}
-   Phase str2Phase(const std::string& str);
+   std::string to_string(Phase phase);
+   inline std::ostream& operator<<(std::ostream& os, Phase p) {return os << to_string(p);}
+   template<> Phase from_string<Phase>(const std::string& str);
    const char* phaseDescr(Phase phase);
 
    class Phases
@@ -72,12 +72,12 @@ namespace SmartGridToolbox
          IdxMap::const_iterator begin() const {return idxMap_.begin();}
          IdxMap::const_iterator end() const {return idxMap_.end();}
 
-         std::string toStr() const;
+         std::string to_string() const;
 
          friend bool operator==(const Phases& a, const Phases& b) {return a.mask_ == b.mask_;}
          friend Phases operator&(const Phases& a, const Phases& b) {return {a.mask_& b.mask_};}
          friend Phases operator|(const Phases& a, const Phases& b) {return {a.mask_ | b.mask_};}
-         friend std::ostream& operator<<(std::ostream& os, const Phases& p) {return os << p.toStr();}
+         friend std::ostream& operator<<(std::ostream& os, const Phases& p) {return os << p.to_string();}
       private:
          void rebuild();
 

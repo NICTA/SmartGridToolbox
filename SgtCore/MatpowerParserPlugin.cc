@@ -6,6 +6,7 @@
 #include "Gen.h"
 #include "Network.h"
 #include "Zip.h"
+#include "YamlSupport.h"
 
 #include <fstream>
 #include <map>

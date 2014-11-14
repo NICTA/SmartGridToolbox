@@ -172,6 +172,13 @@ namespace SmartGridToolbox
 
    /// @}
 
+   /// @name String conversion.
+   /// @{
+   
+   template<typename T> T from_string(const std::string& s);
+
+   /// @}
+
    /// @name Constant dimension 1D array type.
    /// @{
 
@@ -210,9 +217,9 @@ namespace SmartGridToolbox
 
    std::ostream& operator<<(std::ostream& os, const Complex& c);
 
-   Complex string2Complex(const std::string& s);
+   template<> Complex from_string<Complex>(const std::string& s);
 
-   std::string complex2String(const Complex& c);
+   std::string to_string(const Complex& c);
 
    /// @}
 
