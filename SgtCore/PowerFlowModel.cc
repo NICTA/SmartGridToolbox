@@ -105,7 +105,7 @@ namespace SmartGridToolbox
          }
          else
          {
-            Log().fatal() << "Unsupported bus type " << busType2Str(bus.type_) << std::endl;
+            Log().fatal() << "Unsupported bus type " << to_string(bus.type_) << std::endl;
          }
          for (const std::unique_ptr<PfNode>& node : bus.nodes_)
          {

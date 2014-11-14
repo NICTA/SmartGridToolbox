@@ -1,6 +1,8 @@
 #ifndef PROPERTIES_DOT_H
 #define PROPERTIES_DOT_H
 
+#include <SgtCore/YamlSupport.h>
+
 #include<map>
 #include<stdexcept>
 #include<string>
@@ -17,29 +19,6 @@ namespace SmartGridToolbox
    template<class T> using ByValue = T;
    template<class T> using ByConstRef = const T&;
    
-   class FromString{
-      public:
-         FromString(const std::string& str) : str_(str) {} 
-
-         template<typename T> operator T()
-         {
-            T t;
-            std::stringstream ss(str_);
-            ss >> t;
-            return t;
-         }
-
-      private:
-         std::string str_;
-   };
-   
-   template<typename T> std::string toString(const T& val)
-   {
-      std::ostringstream ss;
-      ss >> val;
-      return ss.str();
-   }
-
    class Properties;
 
    template<typename T = NoType,
@@ -89,7 +68,7 @@ namespace SmartGridToolbox
          virtual std::string getAsString()
          {
             using namespace std;
-            return toString(get());
+            return toYamlString(get());
          }
    };
 
@@ -107,7 +86,7 @@ namespace SmartGridToolbox
 
          virtual void setFromString(const std::string& str) override
          {
-            set(FromString(str)); 
+            set(fromYamlString<T>(str)); 
          }
    };
    

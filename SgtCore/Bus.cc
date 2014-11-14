@@ -1,6 +1,16 @@
 #include "Bus.h"
 
 #include <ostream>
+#include <istream>
+
+namespace
+{
+   using namespace SmartGridToolbox;
+   template<typename T> std::istream& operator>>(std::istringstream& ss, const ublas::vector<T>& v)
+   {
+      return ss;
+   }
+}
 
 namespace SmartGridToolbox
 {
