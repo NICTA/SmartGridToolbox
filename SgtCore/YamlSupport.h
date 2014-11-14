@@ -6,6 +6,27 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <iostream>
+
+namespace SmartGridToolbox
+{
+   template<typename T> std::string toYamlString(const T& t)
+   {
+      YAML::Emitter e;
+      return (e << t).c_str();
+   }
+   
+   inline std::string toYamlString(const Complex& c)
+   {
+      return to_string(c);
+   }
+   
+   template<typename T> T fromYamlString(const std::string& s)
+   {
+      return YAML::Load(s).as<T>();
+   }
+}
+
 namespace YAML
 {
    using SmartGridToolbox::BusType;
@@ -15,7 +36,9 @@ namespace YAML
    using SmartGridToolbox::Time;
    using SmartGridToolbox::posix_time::ptime;
    using SmartGridToolbox::ublas::matrix;
+   using SmartGridToolbox::ublas::matrix_expression;
    using SmartGridToolbox::ublas::vector;
+   using SmartGridToolbox::ublas::vector_expression;
 
    template<> struct convert<Complex>
    {
@@ -65,37 +88,46 @@ namespace YAML
       static bool decode(const Node& nd, matrix<T>& to);
    };
 
-   Emitter& operator<<(YAML::Emitter& out, const Complex& c)
+   template<typename VE> struct convert<vector_expression<VE>>
    {
-      out << YAML::Flow << SmartGridToolbox::to_string(c);
-      return out;
-   }
+      static Node encode(const vector_expression<VE>& from)
+      {
+         Node nd;
+         for (const auto& x : from()) nd.push_back(x);
+         return nd;
+      }
+   };
 
-   template<typename T> YAML::Emitter& operator<<(YAML::Emitter& out, const boost::numeric::ublas::vector<T>& v) {
+   template<typename ME> struct convert<matrix_expression<ME>>
+   {
+      Node encode(const matrix_expression<ME>& from)
+      {
+         Node nd;
+         for (int i = 0; i < from().size1(); ++i)
+         {
+            Node nd1;
+            for (int k = 0; k < from().size2(); ++k)
+            {
+               nd1.push_back(from()(i, k));
+            }
+            nd.push_back(nd1);
+         }
+         return nd;
+      }
+   };
+
+   Emitter& operator<<(Emitter& out, const Complex& c);
+
+   template<typename VE> Emitter& operator<<(Emitter& out, const vector_expression<VE>& v) 
+   {
       out << YAML::Flow;
       out << YAML::BeginSeq;
-      for (auto x : v)
+      for (size_t i = 0; i < v().size(); ++i)
       {
-         out << x;
+         out << v()(i);
       }
       out << YAML::EndSeq;
       return out;
-   }
-}
-
-namespace SmartGridToolbox
-{
-   template<typename T> std::string to_string(const T& t)
-   {
-      YAML::Emitter e;
-      return (e << t).c_str();
-   }
-
-   template<typename T> (const T& t)
-
-   {
-      YAML::Emitter e;
-      return (e << t).c_str();
    }
 }
 

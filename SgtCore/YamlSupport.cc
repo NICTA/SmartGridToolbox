@@ -96,6 +96,12 @@ namespace YAML
       return true;
    }
 
+   YAML::Emitter& operator<<(YAML::Emitter& out, const Complex& c)
+   {
+      out << YAML::Flow << SmartGridToolbox::to_string(c);
+      return out;
+   }
+
    template<typename T> Node convert<ublas::vector<T>>::encode(const ublas::vector<T>& from)
    {
       Node nd;
