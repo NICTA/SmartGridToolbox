@@ -252,7 +252,7 @@ namespace SmartGridToolbox
       ss.imbue(os.getloc());
       ss.precision(os.precision());
       ss << "[" << std::setw(w) << std::left << v()(0);
-      for (int i = 1; i < size; ++i) ss << " " << std::setw(w) << std::left << v()(i);
+      for (int i = 1; i < size; ++i) ss << ", " << std::setw(w) << std::left << v()(i);
       ss << "]";
       return os << ss.str();
    }
@@ -267,12 +267,18 @@ namespace SmartGridToolbox
       ss.imbue(os.getloc());
       ss.precision(os.precision());
       ss << std::endl << "[" << std::endl;
-      for (int i = 0; i < size1; ++i)
+      ss << "    [" << std::setw(w) << std::left << m()(0, 0);
+      for (int j = 1; j < size2; ++j)
       {
-         ss << "    [" << std::setw(w) << std::left << m()(i, 0);
+         ss << ", " << std::setw(w) << std::left << m()(0, j);
+      }
+      ss << "]"; 
+      for (int i = 1; i < size1; ++i)
+      {
+         ss << "," << std::endl << "    [" << std::setw(w) << std::left << m()(i, 0);
          for (int j = 1; j < size2; ++j)
          {
-            ss << " " << std::setw(w) << std::left << m()(i, j);
+            ss << ", " << std::setw(w) << std::left << m()(i, j);
          }
          ss << "]" << std::endl;
       }
