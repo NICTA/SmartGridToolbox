@@ -24,6 +24,7 @@ libinclude_HEADERS = \
 	Random.h \
 	SinglePhaseTransformer.h \
 	Units.h \
+	YamlSupport.h \
 	YyTransformer.h \
 	Zip.h
 

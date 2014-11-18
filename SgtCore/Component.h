@@ -10,7 +10,7 @@ using std::string;
 
 namespace SmartGridToolbox
 {
-   class ComponentInterface
+   class ComponentInterface : virtual public HasPropertiesInterface
    {
       friend std::ostream& operator<<(std::ostream& os, const ComponentInterface& comp);
 
@@ -28,7 +28,7 @@ namespace SmartGridToolbox
       return os;
    }
 
-   class Component : virtual public ComponentInterface, virtual public Properties
+   class Component : virtual public ComponentInterface, virtual public HasProperties
    {
       public:
 
@@ -70,7 +70,6 @@ namespace SmartGridToolbox
       private:
 
          std::string id_ = "UNDEFINED";
-         Properties properties_;
    };
 }
 

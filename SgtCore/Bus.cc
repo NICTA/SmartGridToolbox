@@ -28,10 +28,10 @@ namespace SmartGridToolbox
       }
  
       typedef ublas::vector<Complex> VType;
-      this->addProperty<VType, ByConstRef, ByConstRef, Bus>(
+      properties().add<VType, ByConstRef, ByConstRef, Bus>(
             "V",
-            [](const Bus& bus)->const VType&{return bus.V();},
-            [](Bus& bus, const VType& V)->void{bus.setV(V);});
+            [] (const Bus& bus) -> const VType& {return bus.V();},
+            [] (Bus& bus, const VType& V) -> void {bus.setV(V);});
    }
 
    void Bus::applyVSetpoints()

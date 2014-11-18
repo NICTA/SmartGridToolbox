@@ -20,6 +20,7 @@ namespace SmartGridToolbox
    template<class T> using ByConstRef = const T&;
    
    class Properties;
+   class HasProperties;
 
    template<typename T = NoType,
       template<typename> class GetBy = NoGetter, template<typename> class SetBy = NoSetter>
@@ -34,7 +35,7 @@ namespace SmartGridToolbox
 
          virtual bool isSettable() {return false;}
 
-         virtual std::string getAsString()
+         virtual std::string string()
          {
             throw std::runtime_error("Property is not gettable");
          }
@@ -65,7 +66,7 @@ namespace SmartGridToolbox
 
          virtual GetBy<T> get() const = 0;
 
-         virtual std::string getAsString()
+         virtual std::string string()
          {
             using namespace std;
             return toYamlString(get());
@@ -118,6 +119,8 @@ namespace SmartGridToolbox
       public:
          virtual GetBy<T> get() const override
          {
+            std::cout << this->targ_ << std::endl;
+            std::cout << dynamic_cast<const Targ*>(this->targ_) << std::endl;
             return get_(*dynamic_cast<const Targ*>(this->targ_));
          }
       
@@ -200,31 +203,23 @@ namespace SmartGridToolbox
             }
          }
 
-         ConstIterator cbegin() const {return map_.cbegin();}
-         ConstIterator cend() const {return map_.cend();}
          Iterator begin() {return map_.begin();}
          Iterator end() {return map_.end();}
+         ConstIterator begin() const {return map_.begin();}
+         ConstIterator end() const {return map_.end();}
+         ConstIterator cbegin() const {return map_.cbegin();}
+         ConstIterator cend() const {return map_.cend();}
 
          template<typename T, template<typename> class GetBy, template<typename> class SetBy, 
             typename Targ, typename... Arg>
-         void addProperty(const std::string& key, Arg... args)
+         void add(const std::string& key, Arg... args)
          {
             map_[key] = new PropertyWithTarg<T, GetBy, SetBy, Targ>(this, args...);
          }
 
-         bool propertyIsGettable(const std::string& key)
-         {
-            return map_.at(key)->isGettable();
-         }
-         
-         bool propertyIsSettable(const std::string& key)
-         {
-            return map_.at(key)->isSettable();
-         }
-
          template<typename T = NoType,
             template<typename> class GetBy = NoGetter, template<typename> class SetBy = NoSetter>
-         const Property<T, GetBy, SetBy>* property(const std::string& key) const
+         const Property<T, GetBy, SetBy>* operator[](const std::string& key) const
          {
             const Property<T, GetBy, SetBy>* prop = nullptr;
             auto it = map_.find(key);
@@ -237,14 +232,34 @@ namespace SmartGridToolbox
 
          template<typename T = NoType,
             template<typename> class GetBy = NoGetter, template<typename> class SetBy = NoSetter>
-         Property<T, GetBy, SetBy>* property(const std::string& key)
+         Property<T, GetBy, SetBy>* operator[](const std::string& key)
          {
             return const_cast<Property<T, GetBy, SetBy>*>(
-                  static_cast<const Properties*>(this)->property<T, GetBy, SetBy>(key));
+                  static_cast<const Properties*>(this)->operator[]<T, GetBy, SetBy>(key));
          }
 
       private:
          Map map_;
+   };
+
+   class HasPropertiesInterface
+   {
+      public:
+         virtual const Properties& properties() const = 0;
+         virtual Properties& properties() = 0;
+   };
+
+   class HasProperties : virtual public HasPropertiesInterface, private Properties
+   {
+      public:
+         virtual const Properties& properties() const
+         {
+            return *this;
+         }
+         virtual Properties& properties()
+         {
+            return *this;
+         }
    };
 }
 

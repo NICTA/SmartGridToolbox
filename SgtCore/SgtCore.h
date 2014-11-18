@@ -14,7 +14,7 @@
 #include <SgtCore/OverheadLine.h>
 #include <SgtCore/Parser.h>
 #include <SgtCore/PowerFlow.h>
-#include <SgtCore/Property.h>
+#include <SgtCore/Properties.h>
 #include <SgtCore/Random.h>
 #include <SgtCore/SinglePhaseTransformer.h>
 #include <SgtCore/Units.h>
