@@ -28,7 +28,7 @@ namespace SmartGridToolbox
       return os;
    }
 
-   class Component : virtual public ComponentInterface, virtual public HasProperties
+   class Component : virtual public ComponentInterface, public HasProperties
    {
       public:
 

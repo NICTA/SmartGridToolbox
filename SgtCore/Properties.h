@@ -120,8 +120,6 @@ namespace SmartGridToolbox
       public:
          virtual GetBy<T> get() const override
          {
-            std::cout << this->targ_ << std::endl;
-            std::cout << dynamic_cast<const Targ*>(this->targ_) << std::endl;
             return get_(*dynamic_cast<const Targ*>(this->targ_));
          }
       
