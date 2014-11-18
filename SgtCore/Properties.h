@@ -29,6 +29,7 @@ namespace SmartGridToolbox
    template<> class Property<NoType, NoGetter, NoSetter>
    {
       friend class Properties;
+      friend class HasProperties;
 
       public:
          virtual bool isGettable() {return false;}
@@ -47,11 +48,11 @@ namespace SmartGridToolbox
 
       protected:
          Property() = default;
-         Property(Properties* targ) : targ_(targ) {}
+         Property(HasProperties* targ) : targ_(targ) {}
          virtual ~Property() {}
 
       protected:
-         Properties* targ_{nullptr};
+         HasProperties* targ_{nullptr};
    };
   
    using PropertyBase = Property<NoType, NoGetter, NoSetter>;
@@ -111,7 +112,7 @@ namespace SmartGridToolbox
       friend class Properties;
 
       protected:
-         PropertyWithTarg(Properties* targ, Getter<T, GetBy, Targ> getterArg) : PropertyBase(targ), get_(getterArg)
+         PropertyWithTarg(HasProperties* targ, Getter<T, GetBy, Targ> getterArg) : PropertyBase(targ), get_(getterArg)
          {
             // Empty.
          }
@@ -134,7 +135,7 @@ namespace SmartGridToolbox
       friend class Properties;
 
       protected:
-         PropertyWithTarg(Properties* targ, Setter<T, SetBy, Targ> setterArg) : PropertyBase(targ), set_(setterArg)
+         PropertyWithTarg(HasProperties* targ, Setter<T, SetBy, Targ> setterArg) : PropertyBase(targ), set_(setterArg)
          {
             // Empty.
          }
@@ -158,7 +159,7 @@ namespace SmartGridToolbox
       friend class Properties;
 
       protected:
-         PropertyWithTarg(Properties* targ, Getter<T, GetBy, Targ> getterArg, Setter<T, SetBy, Targ> setterArg) :
+         PropertyWithTarg(HasProperties* targ, Getter<T, GetBy, Targ> getterArg, Setter<T, SetBy, Targ> setterArg) :
             PropertyBase(targ),
             PropertyWithTarg<T, GetBy, NoSetter, Targ>(targ, getterArg),
             PropertyWithTarg<T, NoGetter, SetBy, Targ>(targ, setterArg)
@@ -169,6 +170,8 @@ namespace SmartGridToolbox
 
    class Properties
    {
+      friend class HasProperties;
+
       private:
          typedef std::map<std::string, PropertyBase*> Map;
 
@@ -177,31 +180,6 @@ namespace SmartGridToolbox
          typedef Map::iterator Iterator;
       
       public:
-         Properties() = default;
-
-         Properties(const Properties&& from) : map_(from.map_)
-         {
-            for (auto pair : map_)
-            {
-               pair.second->targ_ = this;
-            }
-         };
-
-         Properties(const Properties& from) : map_(from.map_)
-         {
-            for (auto pair : map_)
-            {
-               pair.second->targ_ = this;
-            }
-         };
-
-         virtual ~Properties()
-         {
-            for (auto& pair : map_)
-            {
-               delete pair.second;
-            }
-         }
 
          Iterator begin() {return map_.begin();}
          Iterator end() {return map_.end();}
@@ -214,7 +192,7 @@ namespace SmartGridToolbox
             typename Targ, typename... Arg>
          void add(const std::string& key, Arg... args)
          {
-            map_[key] = new PropertyWithTarg<T, GetBy, SetBy, Targ>(this, args...);
+            map_[key] = new PropertyWithTarg<T, GetBy, SetBy, Targ>(targ_, args...);
          }
 
          template<typename T = NoType,
@@ -239,6 +217,32 @@ namespace SmartGridToolbox
          }
 
       private:
+         Properties(HasProperties* targ) : targ_(targ) {}
+         
+         Properties(const Properties& from, HasProperties* targ) : map_(from.map_)
+         {
+            reTarget(targ);
+         }
+
+         virtual ~Properties()
+         {
+            for (auto& pair : map_)
+            {
+               delete pair.second;
+            }
+         }
+
+         void reTarget(HasProperties* newTarg)
+         {
+            targ_ = newTarg;
+            for (auto p : map_)
+            {
+               p.second->targ_ = newTarg;
+            }
+         }
+
+      private:
+         HasProperties* targ_;
          Map map_;
    };
 
@@ -249,17 +253,27 @@ namespace SmartGridToolbox
          virtual Properties& properties() = 0;
    };
 
-   class HasProperties : virtual public HasPropertiesInterface, private Properties
+   class HasProperties : virtual public HasPropertiesInterface
    {
       public:
+
+         HasProperties() : properties_(this) {}
+
+         HasProperties(const HasProperties& from) : properties_(from.properties_, this) {}
+
          virtual const Properties& properties() const
          {
-            return *this;
+            return properties_;
          }
+
          virtual Properties& properties()
          {
-            return *this;
+            return properties_;
          }
+
+      private:
+
+         Properties properties_;
    };
 }
 
