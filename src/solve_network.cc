@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "SgtCore.h"
+#include <SgtCore.h>
 
 int main(int argc, char** argv)
 {
