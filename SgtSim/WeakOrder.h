@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <list>
+#include <memory>
 #include <set>
 
 namespace SmartGridToolbox
