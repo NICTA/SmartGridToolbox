@@ -134,74 +134,68 @@ namespace SmartGridToolbox
       Log().debug() << endl;
       Log().debug() << "Weak order graph: Node i : indirect descendents" << std::endl;
       {
-         auto log = Log();
          for (const std::unique_ptr<WoNode>& nd1 : nodes())
          {
-            log.debug() << nd1->index() << "   ";
+            Log().debug() << nd1->index() << "   ";
             for (const WoNode* nd2 : nd1->descendents_)
             {
-               log.debug() << nd2->index() << " ";
+               Log().debug() << nd2->index() << " ";
             }
-            log.debug() << endl;
+            Log().debug() << endl;
          }
       }
       Log().debug() << endl;
       Log().debug() << "Weak order graph: Node i : dominated nodes" << std::endl;
       {
-         auto log = Log();
          for (const std::unique_ptr<WoNode>& nd1 : nodes())
          {
-            log.debug() << nd1->index() << "   ";
+            Log().debug() << nd1->index() << "   ";
             for (const WoNode* nd2 : nd1->dominated_)
             {
-               log.debug() << nd2->index() << " ";
+               Log().debug() << nd2->index() << " ";
             }
-            log.debug() << endl;
+            Log().debug() << endl;
          }
       }
       Log().debug() << endl;
       Log().debug() << "Weak order graph: (i, j) : i dominates j" << std::endl;
       {
-         auto log = Log();
-         log.debug() << "     ";
+         Log().debug() << "     ";
          for (const std::unique_ptr<WoNode>& nd2 : nodes())
          {
-            log.debug() << setw(3) << left << nd2->index();
+            Log().debug() << setw(3) << left << nd2->index();
          }
-         log.debug() << endl; 
+         Log().debug() << endl; 
       }
       Log().debug() << endl; 
       for (const std::unique_ptr<WoNode>& nd1 : nodes())
       {
-         auto log = Log();
-         log.debug() << setw(5) << left << nd1->index();
+         Log().debug() << setw(5) << left << nd1->index();
          for (const std::unique_ptr<WoNode>& nd2 : nodes())
          {
-            log.debug() << setw(3) << left << (nd1->dominates(*nd2));
+            Log().debug() << setw(3) << left << (nd1->dominates(*nd2));
          }
-         log.debug() << endl;
+         Log().debug() << endl;
       }
       Log().debug() << endl; 
       Log().debug() << "Weak order graph: (i, j) : i < j" << std::endl;
       {
-         auto log = Log();
-         log.debug() << "     ";
+         Log().debug() << "     ";
          for (const std::unique_ptr<WoNode>& nd2 : nodes())
          {
-            log.debug() << setw(3) << left << nd2->index();
+            Log().debug() << setw(3) << left << nd2->index();
          }
-         log.debug() << endl;
+         Log().debug() << endl;
       }
       Log().debug() << endl; 
       for (const std::unique_ptr<WoNode>& nd1 : nodes())
       {
-         auto log = Log();
          Log().debug() << setw(5) << left << nd1->index();
          for (const std::unique_ptr<WoNode>& nd2 : nodes())
          {
-            log.debug() << setw(3) << left << (*nd1 < *nd2);
+            Log().debug() << setw(3) << left << (*nd1 < *nd2);
          }
-         log.debug() << endl;
+         Log().debug() << endl;
       }
    }
 }
