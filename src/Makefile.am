@@ -31,15 +31,15 @@ solve_network_LDADD = \
 	-lcolamd \
 	-lbtf
 
-network_to_dot_SOURCES = network_to_dot.cc
-
-network_to_dot_LDADD = \
-	../SgtCore/libSgtCore.a \
-	../SgtSim/libSgtSim.a \
-	-lboost_date_time \
-	-lblas \
-	-lyaml-cpp \
-	-lklu \
-	-lamd \
-	-lcolamd \
-	-lbtf
+# network_to_dot_SOURCES = network_to_dot.cc
+# 
+# network_to_dot_LDADD = \
+#	../SgtCore/libSgtCore.a \
+#	../SgtSim/libSgtSim.a \
+#	-lboost_date_time \
+#	-lblas \
+#	-lyaml-cpp \
+#	-lklu \
+#	-lamd \
+#	-lcolamd \
+#	-lbtf
