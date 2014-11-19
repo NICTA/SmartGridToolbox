@@ -9,7 +9,7 @@ run_config_SOURCES = run_config.cc
 run_config_LDADD = \
 	../SgtCore/libSgtCore.a \
 	../SgtSim/libSgtSim.a \
-	-lboost_date_time-mt \
+	-lboost_date_time \
 	-lblas \
 	-lyaml-cpp \
 	-lklu \
@@ -23,7 +23,7 @@ solve_network_SOURCES = solve_network.cc
 # problem with link order.
 solve_network_LDADD = \
 	../SgtCore/libSgtCore.a \
-	-lboost_date_time-mt \
+	-lboost_date_time \
 	-lblas \
 	-lyaml-cpp \
 	-lklu \
@@ -36,7 +36,7 @@ network_to_dot_SOURCES = network_to_dot.cc
 network_to_dot_LDADD = \
 	../SgtCore/libSgtCore.a \
 	../SgtSim/libSgtSim.a \
-	-lboost_date_time-mt \
+	-lboost_date_time \
 	-lblas \
 	-lyaml-cpp \
 	-lklu \

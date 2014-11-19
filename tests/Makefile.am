@@ -5,7 +5,7 @@ tests_SOURCES = tests.cc
 tests_LDADD = \
 	../SgtCore/libSgtCore.a \
 	../SgtSim/libSgtSim.a \
-	-lboost_date_time-mt \
+	-lboost_date_time \
 	-lblas \
 	-lyaml-cpp \
 	-lklu \

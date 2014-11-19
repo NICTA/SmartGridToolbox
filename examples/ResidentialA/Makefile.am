@@ -7,7 +7,7 @@ residential_a_SOURCES = residential_a.cc
 residential_a_LDFLAGS = \
 	-lSgtCore \
 	-lSgtSim \
-	-lboost_date_time-mt \
+	-lboost_date_time \
 	-lblas \
 	-lyaml-cpp \
 	-lklu \
