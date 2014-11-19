@@ -47,7 +47,7 @@ namespace SmartGridToolbox
          }
 
       protected:
-         Property() = default;
+         Property() = delete;
          Property(HasProperties* targ) : targ_(targ) {}
          virtual ~Property() {}
 
@@ -95,7 +95,7 @@ namespace SmartGridToolbox
    template<typename T, template<typename> class SetBy> using SettableProperty = Property<T, NoGetter, SetBy>;
 
    template<typename T, template<typename> class GetBy, template<typename> class SetBy>
-   class Property : virtual public GettableProperty<T, GetBy>, virtual public SettableProperty<T, SetBy>
+   class Property : public GettableProperty<T, GetBy>, public SettableProperty<T, SetBy>
    {
       // Empty.
    };
@@ -107,7 +107,7 @@ namespace SmartGridToolbox
    class PropertyWithTarg;
 
    template<typename T, template<typename> class GetBy, typename Targ>
-   class PropertyWithTarg<T, GetBy, NoSetter, Targ> : virtual public GettableProperty<T, GetBy>
+   class PropertyWithTarg<T, GetBy, NoSetter, Targ> : public GettableProperty<T, GetBy>
    {
       friend class Properties;
 
@@ -128,7 +128,7 @@ namespace SmartGridToolbox
    };
 
    template<typename T, template<typename> class SetBy, typename Targ>
-   class PropertyWithTarg<T, NoGetter, SetBy, Targ> : virtual public SettableProperty<T, SetBy>
+   class PropertyWithTarg<T, NoGetter, SetBy, Targ> : public SettableProperty<T, SetBy>
    {
       friend class Properties;
 
@@ -150,9 +150,8 @@ namespace SmartGridToolbox
 
    template<typename T, template<typename> class GetBy, template<typename> class SetBy, typename Targ>
    class PropertyWithTarg :
-      virtual public PropertyWithTarg<T, GetBy, NoSetter, Targ>,
-      virtual public PropertyWithTarg<T, NoGetter, SetBy, Targ>,
-      virtual public Property<T, GetBy, SetBy>
+      public PropertyWithTarg<T, GetBy, NoSetter, Targ>,
+      public PropertyWithTarg<T, NoGetter, SetBy, Targ>
    {
       friend class Properties;
 
@@ -259,12 +258,12 @@ namespace SmartGridToolbox
 
          HasProperties(const HasProperties& from) : properties_(from.properties_, this) {}
 
-         virtual const Properties& properties() const
+         virtual const Properties& properties() const override
          {
             return properties_;
          }
 
-         virtual Properties& properties()
+         virtual Properties& properties() override
          {
             return properties_;
          }
