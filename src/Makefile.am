@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-bin_PROGRAMS = run_config solve_network network_to_dot
+bin_PROGRAMS = run_config solve_network # network_to_dot
 
 run_config_SOURCES = run_config.cc
 
