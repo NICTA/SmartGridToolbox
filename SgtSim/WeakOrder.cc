@@ -120,16 +120,16 @@ namespace SmartGridToolbox
 
    void WoGraph::debugPrint()
    {
+      // TODO: Indentation may be messed up here.
       Log().debug() << "Weak order graph: Node i : direct descendents" << std::endl;
       for (const std::unique_ptr<WoNode>& nd1 : nodes())
       {
-         auto log = Log();
-         log.debug() << nd1->index() << "   ";
+         Log().debug() << nd1->index() << "   ";
          for (const WoNode* nd2 : nd1->to_)
          {
-            log.debug() << nd2->index() << " ";
+            Log().debug() << nd2->index() << " ";
          }
-         log.debug() << endl;
+         Log().debug() << endl;
       }
       Log().debug() << endl;
       Log().debug() << "Weak order graph: Node i : indirect descendents" << std::endl;
