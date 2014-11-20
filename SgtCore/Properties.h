@@ -46,7 +46,6 @@ namespace SmartGridToolbox
             throw std::runtime_error("Property is not settable");
          }
 
-      protected:
          Property() = delete;
          Property(HasProperties* targ) : targ_(targ) {}
          virtual ~Property() {}
@@ -69,7 +68,6 @@ namespace SmartGridToolbox
 
          virtual std::string string()
          {
-            using namespace std;
             return toYamlString(get());
          }
    };
@@ -95,7 +93,7 @@ namespace SmartGridToolbox
    template<typename T, template<typename> class SetBy> using SettableProperty = Property<T, NoGetter, SetBy>;
 
    template<typename T, template<typename> class GetBy, template<typename> class SetBy>
-   class Property : public GettableProperty<T, GetBy>, public SettableProperty<T, SetBy>
+   class Property : virtual public GettableProperty<T, GetBy>, virtual public SettableProperty<T, SetBy>
    {
       // Empty.
    };
@@ -107,17 +105,16 @@ namespace SmartGridToolbox
    class PropertyWithTarg;
 
    template<typename T, template<typename> class GetBy, typename Targ>
-   class PropertyWithTarg<T, GetBy, NoSetter, Targ> : public GettableProperty<T, GetBy>
+   class PropertyWithTarg<T, GetBy, NoSetter, Targ> : virtual public GettableProperty<T, GetBy>
    {
       friend class Properties;
 
-      protected:
+      public:
          PropertyWithTarg(HasProperties* targ, Getter<T, GetBy, Targ> getterArg) : PropertyBase(targ), get_(getterArg)
          {
             // Empty.
          }
 
-      public:
          virtual GetBy<T> get() const override
          {
             return get_(*dynamic_cast<const Targ*>(this->targ_));
@@ -128,17 +125,16 @@ namespace SmartGridToolbox
    };
 
    template<typename T, template<typename> class SetBy, typename Targ>
-   class PropertyWithTarg<T, NoGetter, SetBy, Targ> : public SettableProperty<T, SetBy>
+   class PropertyWithTarg<T, NoGetter, SetBy, Targ> : virtual public SettableProperty<T, SetBy>
    {
       friend class Properties;
 
-      protected:
+      public:
          PropertyWithTarg(HasProperties* targ, Setter<T, SetBy, Targ> setterArg) : PropertyBase(targ), set_(setterArg)
          {
             // Empty.
          }
 
-      public:
          virtual void set(SetBy<T> val) override
          {
             set_(*dynamic_cast<Targ*>(this->targ_), val);
@@ -151,11 +147,12 @@ namespace SmartGridToolbox
    template<typename T, template<typename> class GetBy, template<typename> class SetBy, typename Targ>
    class PropertyWithTarg :
       public PropertyWithTarg<T, GetBy, NoSetter, Targ>,
-      public PropertyWithTarg<T, NoGetter, SetBy, Targ>
+      public PropertyWithTarg<T, NoGetter, SetBy, Targ>,
+      public Property<T, GetBy, SetBy>
    {
       friend class Properties;
 
-      protected:
+      public:
          PropertyWithTarg(HasProperties* targ, Getter<T, GetBy, Targ> getterArg, Setter<T, SetBy, Targ> setterArg) :
             PropertyBase(targ),
             PropertyWithTarg<T, GetBy, NoSetter, Targ>(targ, getterArg),
