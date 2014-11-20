@@ -41,6 +41,8 @@ namespace SmartGridToolbox
 
          virtual ~PropertyBase() {}
 
+         virtual PropertyBase* clone() = 0;
+
          virtual bool isGettable() {return false;}
 
          virtual bool isSettable() {return false;}
@@ -122,6 +124,11 @@ namespace SmartGridToolbox
          {
             // Empty.
          }
+         
+         virtual PropertyBase* clone() override
+         {
+            return new PropertyWithTarg(*this);
+         };
 
          virtual GetBy<T> get() const override
          {
@@ -142,6 +149,11 @@ namespace SmartGridToolbox
          {
             // Empty.
          }
+         
+         virtual PropertyBase* clone() override
+         {
+            return new PropertyWithTarg(*this);
+         };
 
          virtual void set(SetBy<T> val) override
          {
@@ -168,6 +180,11 @@ namespace SmartGridToolbox
          {
             // Empty.
          }
+         
+         virtual PropertyBase* clone() override
+         {
+            return new PropertyWithTarg(*this);
+         };
    };
 
    class Properties
@@ -221,17 +238,20 @@ namespace SmartGridToolbox
       private:
          Properties(HasProperties* targ) : targ_(targ) {}
 
-         Properties(Properties&& from, HasProperties* targ) : map_(from.map_)
+         Properties(const Properties& from, HasProperties* targ) : map_(from.map_)
          {
-            from.map_.clear();
+            for (auto p : from.map_)
+            {
+               map_[p.first] = p.second->clone(); 
+            }
             reTarget(targ);
          }
 
          virtual ~Properties()
          {
-            for (auto& pair : map_)
+            for (auto& p : map_)
             {
-               delete pair.second;
+               delete p.second;
             }
          }
 
@@ -263,7 +283,7 @@ namespace SmartGridToolbox
 
          HasProperties() : properties_(this) {}
 
-         HasProperties(HasProperties&& from) : properties_(std::move(from.properties_), this) {}
+         HasProperties(const HasProperties& from) : properties_(from.properties_, this) {}
 
          virtual const Properties& properties() const override
          {
