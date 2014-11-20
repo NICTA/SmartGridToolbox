@@ -13,11 +13,17 @@ namespace SmartGridToolbox
 {
    struct NoType {};
 
-   template<class T> class NoGetter{};  
-   template<class T> using NoSetter = NoGetter<T>;  
+   template<class T>
+   class NoGetter{};  
 
-   template<class T> using ByValue = T;
-   template<class T> using ByConstRef = const T&;
+   template<class T>
+   using NoSetter = NoGetter<T>;  
+
+   template<class T>
+   using ByValue = T;
+
+   template<class T>
+   using ByConstRef = const T&;
    
    class Properties;
    class HasProperties;
@@ -26,12 +32,13 @@ namespace SmartGridToolbox
       template<typename> class GetBy = NoGetter, template<typename> class SetBy = NoSetter>
    class Property;
 
-   template<> class Property<NoType, NoGetter, NoSetter>
+   class PropertyBase
    {
-      friend class Properties;
-      friend class HasProperties;
-
       public:
+         PropertyBase(HasProperties* targ) : targ_(targ) {}
+
+         virtual ~PropertyBase() {}
+
          virtual bool isGettable() {return false;}
 
          virtual bool isSettable() {return false;}
@@ -46,16 +53,20 @@ namespace SmartGridToolbox
             throw std::runtime_error("Property is not settable");
          }
 
-         Property() = delete;
-         Property(HasProperties* targ) : targ_(targ) {}
-         virtual ~Property() {}
+         const HasProperties* targ() const
+         {
+            return targ_;
+         }
+
+         HasProperties* targ()
+         {
+            return targ_;
+         }
 
       protected:
          HasProperties* targ_{nullptr};
    };
   
-   using PropertyBase = Property<NoType, NoGetter, NoSetter>;
-
    template<typename T, template<typename> class GetBy>
    class Property<T, GetBy, NoSetter> : virtual public PropertyBase
    {
@@ -72,7 +83,8 @@ namespace SmartGridToolbox
          }
    };
 
-   template<typename T, template<typename> class GetBy> using GettableProperty = Property<T, GetBy, NoSetter>;
+   template<typename T, template<typename> class GetBy>
+   using GettableProperty = Property<T, GetBy, NoSetter>;
 
    template<typename T, template<typename> class SetBy>
    class Property<T, NoGetter, SetBy> : virtual public PropertyBase
@@ -90,7 +102,8 @@ namespace SmartGridToolbox
          }
    };
    
-   template<typename T, template<typename> class SetBy> using SettableProperty = Property<T, NoGetter, SetBy>;
+   template<typename T, template<typename> class SetBy>
+   using SettableProperty = Property<T, NoGetter, SetBy>;
 
    template<typename T, template<typename> class GetBy, template<typename> class SetBy>
    class Property : virtual public GettableProperty<T, GetBy>, virtual public SettableProperty<T, SetBy>
@@ -98,8 +111,11 @@ namespace SmartGridToolbox
       // Empty.
    };
    
-   template<typename T, template<typename> class GetBy, class Targ> using Getter = GetBy<T> (const Targ&);
-   template<typename T, template<typename> class SetBy, class Targ> using Setter = void (Targ&, SetBy<T>);
+   template<typename T, template<typename> class GetBy, class Targ>
+   using Getter = GetBy<T> (const Targ&);
+
+   template<typename T, template<typename> class SetBy, class Targ>
+   using Setter = void (Targ&, SetBy<T>);
 
    template<typename T, template<typename> class GetBy, template<typename> class SetBy, typename Targ>
    class PropertyWithTarg;
