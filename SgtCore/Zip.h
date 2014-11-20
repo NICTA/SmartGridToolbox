@@ -49,9 +49,9 @@ namespace SmartGridToolbox
       /// @name ZIP parameters:
       /// @{
       
-         virtual ublas::vector<Complex> YConst() const = 0;
-         virtual ublas::vector<Complex> IConst() const = 0;
-         virtual ublas::vector<Complex> SConst() const = 0;
+         virtual arma::Col<Complex> YConst() const = 0;
+         virtual arma::Col<Complex> IConst() const = 0;
+         virtual arma::Col<Complex> SConst() const = 0;
 
       /// @}
        
@@ -122,19 +122,19 @@ namespace SmartGridToolbox
       /// @name ZIP parameters:
       /// @{
          
-         virtual ublas::vector<Complex> YConst() const
+         virtual arma::Col<Complex> YConst() const
          {
-            return ublas::vector<Complex>(phases_.size(), czero);
+            return arma::Col<Complex>(phases_.size(), czero);
          }
 
-         virtual ublas::vector<Complex> IConst() const
+         virtual arma::Col<Complex> IConst() const
          {
-            return ublas::vector<Complex>(phases_.size(), czero);
+            return arma::Col<Complex>(phases_.size(), czero);
          }
 
-         virtual ublas::vector<Complex> SConst() const
+         virtual arma::Col<Complex> SConst() const
          {
-            return ublas::vector<Complex>(phases_.size(), czero);
+            return arma::Col<Complex>(phases_.size(), czero);
          }
 
       /// @}
@@ -207,32 +207,32 @@ namespace SmartGridToolbox
       /// @name ZIP parameters:
       /// @{
       
-         virtual ublas::vector<Complex> YConst() const override
+         virtual arma::Col<Complex> YConst() const override
          {
             return YConst_;
          }
          
-         virtual void setYConst(const ublas::vector<Complex>& YConst)
+         virtual void setYConst(const arma::Col<Complex>& YConst)
          {
             YConst_ = YConst;
          }
       
-         virtual ublas::vector<Complex> IConst() const override
+         virtual arma::Col<Complex> IConst() const override
          {
             return IConst_;
          }
          
-         virtual void setIConst(const ublas::vector<Complex>& IConst)
+         virtual void setIConst(const arma::Col<Complex>& IConst)
          {
             IConst_ = IConst;
          }
       
-         virtual ublas::vector<Complex> SConst() const override
+         virtual arma::Col<Complex> SConst() const override
          {
             return SConst_;
          }
          
-         virtual void setSConst(const ublas::vector<Complex>& SConst)
+         virtual void setSConst(const arma::Col<Complex>& SConst)
          {
             SConst_ = SConst;
          }
@@ -243,9 +243,9 @@ namespace SmartGridToolbox
 
          Phases phases_;
 
-         ublas::vector<Complex> YConst_;
-         ublas::vector<Complex> IConst_;
-         ublas::vector<Complex> SConst_;
+         arma::Col<Complex> YConst_;
+         arma::Col<Complex> IConst_;
+         arma::Col<Complex> SConst_;
    };
 }
 

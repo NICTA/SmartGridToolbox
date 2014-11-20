@@ -6,7 +6,7 @@
 namespace
 {
    using namespace SmartGridToolbox;
-   template<typename T> std::istream& operator>>(std::istringstream& ss, const ublas::vector<T>& v)
+   template<typename T> std::istream& operator>>(std::istringstream& ss, const arma::Col<T>& v)
    {
       return ss;
    }
@@ -14,7 +14,7 @@ namespace
 
 namespace SmartGridToolbox
 {
-   Bus::Bus(const std::string& id, const Phases& phases, const ublas::vector<Complex>& VNom, double VBase) :
+   Bus::Bus(const std::string& id, const Phases& phases, const arma::Col<Complex>& VNom, double VBase) :
       Component(id),
       phases_(phases),
       VNom_(VNom),
@@ -27,7 +27,7 @@ namespace SmartGridToolbox
          VAngSetpoint_(i) = std::arg(VNom_(i));
       }
  
-      typedef ublas::vector<Complex> VType;
+      typedef arma::Col<Complex> VType;
       properties().add<VType, ByConstRef, ByConstRef, Bus>(
             "V",
             [] (const Bus& bus) -> const VType& {return bus.V();},
@@ -36,7 +36,7 @@ namespace SmartGridToolbox
 
    void Bus::applyVSetpoints()
    {
-      ublas::vector<Complex> VNew(phases_.size());
+      arma::Col<Complex> VNew(phases_.size());
       switch (type_)
       {
          case BusType::SL:

@@ -21,24 +21,24 @@ namespace SmartGridToolbox
       typedef std::vector<std::unique_ptr<PfNode>> PfNodeVec;
 
       PfBus(const std::string& id, BusType type, const Phases& phases,
-            const ublas::vector<Complex>& YZip, const ublas::vector<Complex>& IZip, const ublas::vector<Complex>& SZip,
-            double J, const ublas::vector<Complex>& V, const ublas::vector<Complex>& S);
+            const arma::Col<Complex>& YZip, const arma::Col<Complex>& IZip, const arma::Col<Complex>& SZip,
+            double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S);
 
       std::string id_;              ///< Externally relevant id.
       BusType type_;                ///< Bus type.
       Phases phases_;               ///< Bus phases.
 
-      ublas::vector<Complex> YZip_; ///< Constant admittance shunt, one per phase.
-      ublas::vector<Complex> IZip_; ///< Constant current injection, one per phase.
-      ublas::vector<Complex> SZip_; ///< Constant power injection, one per phase.
+      arma::Col<Complex> YZip_; ///< Constant admittance shunt, one per phase.
+      arma::Col<Complex> IZip_; ///< Constant current injection, one per phase.
+      arma::Col<Complex> SZip_; ///< Constant power injection, one per phase.
 
       // Regardless of numbers of poles, etc., the combined generation at a bus will have a certain
       // angular momentum for any given frequency of the network. Thus, we define an effective moment of inertia at the
       // bus by L = J omega_netw.
       double J_;                    ///< Effective moment of inertia for all machines attached to bus.
 
-      ublas::vector<Complex> V_;    ///< Voltage, one per phase. Setpoint/warm start on input.
-      ublas::vector<Complex> S_;    ///< Total power injection, one per phase. Setpt/wm start on input.
+      arma::Col<Complex> V_;    ///< Voltage, one per phase. Setpoint/warm start on input.
+      arma::Col<Complex> S_;    ///< Total power injection, one per phase. Setpt/wm start on input.
 
       PfNodeVec nodes_;             ///< Nodes, one per phase.
    };
@@ -85,9 +85,9 @@ namespace SmartGridToolbox
          /// @{
          
          void addBus(const std::string& id, BusType type, const Phases& phases,
-               const ublas::vector<Complex>& YZip, const ublas::vector<Complex>& IZip,
-               const ublas::vector<Complex>& SZip, double J, const ublas::vector<Complex>& V,
-               const ublas::vector<Complex>& S);
+               const arma::Col<Complex>& YZip, const arma::Col<Complex>& IZip,
+               const arma::Col<Complex>& SZip, double J, const arma::Col<Complex>& V,
+               const arma::Col<Complex>& S);
 
          const PfBusMap& busses() const
          {
@@ -153,29 +153,29 @@ namespace SmartGridToolbox
          /// For example, for a slack bus with a constant S load, P represents the generated power minus the load draw.
          /// @{
          
-         const ublas::vector<Complex>& V() const   ///< Voltage.
+         const arma::Col<Complex>& V() const   ///< Voltage.
          {
             return V_;
          }
-         ublas::vector<Complex>& V()               ///< Voltage.
+         arma::Col<Complex>& V()               ///< Voltage.
          {
             return V_;
          }
          
-         const ublas::vector<Complex>& S() const   ///< Generated power injection minus load draw.
+         const arma::Col<Complex>& S() const   ///< Generated power injection minus load draw.
          {
             return S_;
          }
-         ublas::vector<Complex>& S()               ///< Generated power injection minus load draw.
+         arma::Col<Complex>& S()               ///< Generated power injection minus load draw.
          {
             return S_;
          }
          
-         const ublas::vector<Complex>& IZip() const  ///< Constant current component of ZIP.
+         const arma::Col<Complex>& IZip() const  ///< Constant current component of ZIP.
          {
             return IZip_;
          }
-         ublas::vector<Complex>& IZip()              ///< Constant current component of ZIP.
+         arma::Col<Complex>& IZip()              ///< Constant current component of ZIP.
          {
             return IZip_;
          }
@@ -279,9 +279,9 @@ namespace SmartGridToolbox
          /// @name Vectors per node.
          /// @{
 
-         ublas::vector<Complex> V_;    ///< Complex voltage.
-         ublas::vector<Complex> S_;    ///< Complex power injection = S_zip + S_gen
-         ublas::vector<Complex> IZip_;   ///< Complex voltage.
+         arma::Col<Complex> V_;    ///< Complex voltage.
+         arma::Col<Complex> S_;    ///< Complex power injection = S_zip + S_gen
+         arma::Col<Complex> IZip_;   ///< Complex voltage.
          
          /// @}
    };

@@ -38,7 +38,7 @@ namespace SmartGridToolbox
       /// @{
 
          virtual const Phases& phases() const = 0;
-         virtual ublas::vector<Complex> VNom() const = 0;
+         virtual arma::Col<Complex> VNom() const = 0;
          virtual double VBase() const = 0;
 
       /// @}
@@ -49,11 +49,11 @@ namespace SmartGridToolbox
          virtual BusType type() const = 0;
          virtual void setType(const BusType type) = 0;
 
-         virtual ublas::vector<double> VMagSetpoint() const = 0;
-         virtual void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint) = 0;
+         virtual arma::Col<double> VMagSetpoint() const = 0;
+         virtual void setVMagSetpoint(const arma::Col<double>& VMagSetpoint) = 0;
 
-         virtual ublas::vector<double> VAngSetpoint() const = 0;
-         virtual void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint) = 0;
+         virtual arma::Col<double> VAngSetpoint() const = 0;
+         virtual void setVAngSetpoint(const arma::Col<double>& VAngSetpoint) = 0;
 
          virtual void applyVSetpoints() = 0;
 
@@ -71,8 +71,8 @@ namespace SmartGridToolbox
          virtual bool isInService() = 0;
          virtual void setIsInService(bool isInService) = 0;
 
-         virtual const ublas::vector<Complex>& V() const = 0;
-         virtual void setV(const ublas::vector<Complex>& V) = 0;
+         virtual const arma::Col<Complex>& V() const = 0;
+         virtual void setV(const arma::Col<Complex>& V) = 0;
 
       /// @}
       
@@ -101,7 +101,7 @@ namespace SmartGridToolbox
       /// @name Lifecycle:
       /// @{
 
-         Bus(const std::string& id, const Phases& phases, const ublas::vector<Complex>& VNom, double VBase);
+         Bus(const std::string& id, const Phases& phases, const arma::Col<Complex>& VNom, double VBase);
 
       /// @}
 
@@ -123,7 +123,7 @@ namespace SmartGridToolbox
             return phases_;
          }
 
-         virtual ublas::vector<Complex> VNom() const override
+         virtual arma::Col<Complex> VNom() const override
          {
             return VNom_;
          }
@@ -149,23 +149,23 @@ namespace SmartGridToolbox
             setpointChanged_.trigger();
          }
 
-         virtual ublas::vector<double> VMagSetpoint() const override
+         virtual arma::Col<double> VMagSetpoint() const override
          {
             return VMagSetpoint_;
          }
 
-         virtual void setVMagSetpoint(const ublas::vector<double>& VMagSetpoint) override
+         virtual void setVMagSetpoint(const arma::Col<double>& VMagSetpoint) override
          {
             VMagSetpoint_ = VMagSetpoint;
             setpointChanged_.trigger();
          }
          
-         virtual ublas::vector<double> VAngSetpoint() const override
+         virtual arma::Col<double> VAngSetpoint() const override
          {
             return VAngSetpoint_;
          }
 
-         virtual void setVAngSetpoint(const ublas::vector<double>& VAngSetpoint) override
+         virtual void setVAngSetpoint(const arma::Col<double>& VAngSetpoint) override
          {
             VAngSetpoint_ = VAngSetpoint;
             setpointChanged_.trigger();
@@ -211,12 +211,12 @@ namespace SmartGridToolbox
             isInServiceChanged_.trigger();
          }
 
-         virtual const ublas::vector<Complex>& V() const override
+         virtual const arma::Col<Complex>& V() const override
          {
             return V_;
          }
 
-         virtual void setV(const ublas::vector<Complex>& V) override
+         virtual void setV(const arma::Col<Complex>& V) override
          {
             V_ = V;
             voltageUpdated_.trigger();
@@ -257,17 +257,17 @@ namespace SmartGridToolbox
       private:
 
          Phases phases_{Phase::BAL};
-         ublas::vector<Complex> VNom_{phases_.size()};
+         arma::Col<Complex> VNom_{phases_.size()};
          double VBase_{1.0};
 
          BusType type_{BusType::NA};
-         ublas::vector<double> VMagSetpoint_{phases_.size()};
-         ublas::vector<double> VAngSetpoint_{phases_.size()};
+         arma::Col<double> VMagSetpoint_{phases_.size()};
+         arma::Col<double> VAngSetpoint_{phases_.size()};
          double VMagMin_{-infinity};
          double VMagMax_{infinity};
 
          bool isInService_{true};
-         ublas::vector<Complex> V_{phases_.size(), czero};
+         arma::Col<Complex> V_{phases_.size(), czero};
 
          Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
          Event setpointChanged_{std::string(sComponentType()) + " : Control changed"};

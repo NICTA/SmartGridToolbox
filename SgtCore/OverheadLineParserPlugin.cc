@@ -37,7 +37,7 @@ namespace SmartGridToolbox
       Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
       double length = parser.expand<double>(nd["length"]);
       int nNeutral = parser.expand<int>(nd["n_neutral"]);
-      ublas::vector<double> lineResistivity = parser.expand<ublas::vector<double>>(nd["conductor_R_per_L"]);
+      arma::Col<double> lineResistivity = parser.expand<arma::Col<double>>(nd["conductor_R_per_L"]);
       double earthResistivity = parser.expand<double>(nd["earth_resistivity"]);
       ublas::matrix<double> distMatrix = parser.expand<ublas::matrix<double>>(nd["distance_matrix"]);
       double freq = parser.expand<double>(nd["freq"]);

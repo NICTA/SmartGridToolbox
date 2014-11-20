@@ -10,9 +10,9 @@ namespace SmartGridToolbox
    namespace
    {
       // For some reason, even ublas::axpy_prod is much slower than this!
-      ublas::vector<double> myProd(const ublas::compressed_matrix<double>& A, const ublas::vector<double>& x)
+      arma::Col<double> myProd(const ublas::compressed_matrix<double>& A, const arma::Col<double>& x)
       {
-         ublas::vector<double> result(A.size1(), 0.0);
+         arma::Col<double> result(A.size1(), 0.0);
          for (auto it1 = A.begin1(); it1 != A.end1(); ++it1)
          {
             for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
@@ -97,10 +97,10 @@ namespace SmartGridToolbox
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-   void PowerFlowNr::calcf(ublas::vector<double>& f,
-                           const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
-                           const ublas::vector<double>& P, const ublas::vector<double>& Q,
-                           const ublas::vector<double>& M2Pv) const
+   void PowerFlowNr::calcf(arma::Col<double>& f,
+                           const arma::Col<double>& Vr, const arma::Col<double>& Vi,
+                           const arma::Col<double>& P, const arma::Col<double>& Q,
+                           const arma::Col<double>& M2Pv) const
    {
       // PQ busses:
       const ublas::compressed_matrix<double> GPq = project(G_, mod_->selPqFromAll(), mod_->selAllFromAll());
@@ -115,7 +115,7 @@ namespace SmartGridToolbox
       const auto IZiprPq = project(real(mod_->IZip()), mod_->selPqFromAll());
       const auto IZipiPq = project(imag(mod_->IZip()), mod_->selPqFromAll());
 
-      ublas::vector<double> M2Pq = element_prod(VrPq, VrPq) + element_prod(ViPq, ViPq);
+      arma::Col<double> M2Pq = element_prod(VrPq, VrPq) + element_prod(ViPq, ViPq);
 
       project(f, selIrPqFrom_f()) = element_div(element_prod(VrPq, PPq) + element_prod(ViPq, QPq), M2Pq)
                                  + IZiprPq - myProd(GPq, Vr) + myProd(BPq, Vi);
@@ -143,9 +143,9 @@ namespace SmartGridToolbox
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
    void PowerFlowNr::updateJ(Jacobian& J, const Jacobian& Jc,
-                             const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
-                             const ublas::vector<double>& P, const ublas::vector <double>& Q,
-                             const ublas::vector<double>& M2Pv) const
+                             const arma::Col<double>& Vr, const arma::Col<double>& Vi,
+                             const arma::Col<double>& P, const ublas::vector <double>& Q,
+                             const arma::Col<double>& M2Pv) const
    {
       // Elements in J that have no non-constant part will be initialized to the corresponding term in Jc at the
       // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
@@ -198,14 +198,14 @@ namespace SmartGridToolbox
    }
 
    // Modify J and f to take into account PV busses.
-   void PowerFlowNr::modifyForPv(Jacobian& J, ublas::vector<double>& f,
-                                 const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
-                                 const ublas::vector<double>& M2Pv)
+   void PowerFlowNr::modifyForPv(Jacobian& J, arma::Col<double>& f,
+                                 const arma::Col<double>& Vr, const arma::Col<double>& Vi,
+                                 const arma::Col<double>& M2Pv)
    {
       const auto VrPv = project(Vr, mod_->selPvFromAll());
       const auto ViPv = project(Vi, mod_->selPvFromAll());
 
-      typedef ublas::vector_slice<ublas::vector<double>> VecSel;
+      typedef ublas::vector_slice<arma::Col<double>> VecSel;
       typedef ublas::matrix_column<ublas::compressed_matrix<double>> Column;
       auto mod = [](VecSel fProj, Column colViPv, const Column colVrPv, double fMult, double colViPvMult)
       {
@@ -295,19 +295,19 @@ namespace SmartGridToolbox
       G_ = real(mod_->Y());
       B_ = imag(mod_->Y());
 
-      ublas::vector<double> Vr = real(mod_->V());
-      ublas::vector<double> Vi = imag(mod_->V());
+      arma::Col<double> Vr = real(mod_->V());
+      arma::Col<double> Vi = imag(mod_->V());
 
-      ublas::vector<double> P = real(mod_->S());
-      ublas::vector<double> Q = imag(mod_->S());
+      arma::Col<double> P = real(mod_->S());
+      arma::Col<double> Q = imag(mod_->S());
 
-      ublas::vector<double> M2Pv = element_prod(project(Vr, mod_->selPvFromAll()), project(Vr, mod_->selPvFromAll()))
+      arma::Col<double> M2Pv = element_prod(project(Vr, mod_->selPvFromAll()), project(Vr, mod_->selPvFromAll()))
                                  + element_prod(project(Vi, mod_->selPvFromAll()), project(Vi, mod_->selPvFromAll()));
 
       Jacobian Jc(mod_->nPq(), mod_->nPv()); ///< The part of J that doesn't update at each iteration.
       initJc(Jc);
 
-      ublas::vector<double> f(nVar()); ///< Current mismatch function.
+      arma::Col<double> f(nVar()); ///< Current mismatch function.
 
       Jacobian J = Jc; ///< Jacobian, d f_i/d x_i.
 
@@ -366,7 +366,7 @@ namespace SmartGridToolbox
          );
 
          stopwatch.reset(); stopwatch.start();
-         ublas::vector<double> x;
+         arma::Col<double> x;
          bool ok = kluSolve(JMat, -f, x);
          stopwatch.stop(); durationSolve += stopwatch.seconds();
 

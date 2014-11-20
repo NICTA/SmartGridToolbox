@@ -102,16 +102,16 @@ namespace YAML
       return out;
    }
 
-   template<typename T> Node convert<ublas::vector<T>>::encode(const ublas::vector<T>& from)
+   template<typename T> Node convert<arma::Col<T>>::encode(const arma::Col<T>& from)
    {
       Node nd;
       for (const T& val : from) nd.push_back(val);
       return nd;
    }
-   template Node convert<ublas::vector<double>>::encode(const ublas::vector<double>& from);
-   template Node convert<ublas::vector<Complex>>::encode(const ublas::vector<Complex>& from);
+   template Node convert<arma::Col<double>>::encode(const arma::Col<double>& from);
+   template Node convert<arma::Col<Complex>>::encode(const arma::Col<Complex>& from);
 
-   template<typename T> bool convert<ublas::vector<T>>::decode(const Node& nd, ublas::vector<T>& to)
+   template<typename T> bool convert<arma::Col<T>>::decode(const Node& nd, arma::Col<T>& to)
    {
       if(!nd.IsSequence())
       {
@@ -120,7 +120,7 @@ namespace YAML
       else
       {
          int sz = nd.size();
-         to = ublas::vector<T>(sz);
+         to = arma::Col<T>(sz);
          for (int i = 0; i < sz; ++i)
          {
             to(i) = nd[i].as<T>();
@@ -128,8 +128,8 @@ namespace YAML
       }
       return true;
    }
-   template bool convert<ublas::vector<double>>::decode(const Node& nd, ublas::vector<double>& to);
-   template bool convert<ublas::vector<Complex>>::decode(const Node& nd, ublas::vector<Complex>& to);
+   template bool convert<arma::Col<double>>::decode(const Node& nd, arma::Col<double>& to);
+   template bool convert<arma::Col<Complex>>::decode(const Node& nd, arma::Col<Complex>& to);
 
    template<typename T> Node convert<ublas::matrix<T>>::encode(const ublas::matrix<T>& from)
    {

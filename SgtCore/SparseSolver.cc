@@ -4,8 +4,8 @@
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 
 bool kluSolve(const boost::numeric::ublas::compressed_matrix<double>& a,
-              const boost::numeric::ublas::vector<double>& b,
-              boost::numeric::ublas::vector<double>& result)
+              const boost::numeric::arma::Col<double>& b,
+              boost::numeric::arma::Col<double>& result)
 {
    boost::numeric::ublas::compressed_matrix<double, boost::numeric::ublas::column_major> ac = a;
    ac.complete_index1_data();
@@ -43,7 +43,7 @@ bool kluSolve(const boost::numeric::ublas::compressed_matrix<double>& a,
    klu_free_symbolic (&Symbolic, &Common);
    klu_free_numeric (&Numeric, &Common);
 
-   result = boost::numeric::ublas::vector<double>(n);
+   result = boost::numeric::arma::Col<double>(n);
    for (int i = 0; i < n; ++i)
    {
       result(i) = b1[i];

@@ -30,7 +30,7 @@ namespace
 {
    typedef ForwardIterator Iterator;
    typedef decltype(ascii::blank) SpaceType;
-   typedef ublas::vector<Complex> VComplex;
+   typedef arma::Col<Complex> VComplex;
    typedef std::vector<std::vector<double>> Matrix;
    typedef Matrix::value_type Row;
 

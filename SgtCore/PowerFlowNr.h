@@ -242,17 +242,17 @@ namespace SmartGridToolbox
 
          void initJc(Jacobian& Jc) const;
 
-         void calcf(ublas::vector<double>& f,
-               const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
-               const ublas::vector<double>& P, const ublas::vector<double>& Q,
-               const ublas::vector<double>& M2Pv) const;
+         void calcf(arma::Col<double>& f,
+               const arma::Col<double>& Vr, const arma::Col<double>& Vi,
+               const arma::Col<double>& P, const arma::Col<double>& Q,
+               const arma::Col<double>& M2Pv) const;
          void updateJ(Jacobian& J, const Jacobian& Jc,
-               const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
-               const ublas::vector<double>& P, const ublas::vector<double>& Q,
-               const ublas::vector<double>& M2Pv) const;
-         void modifyForPv(Jacobian& J, ublas::vector<double>& f,
-               const ublas::vector<double>& Vr, const ublas::vector<double>& Vi,
-               const ublas::vector<double>& M2Pv);
+               const arma::Col<double>& Vr, const arma::Col<double>& Vi,
+               const arma::Col<double>& P, const arma::Col<double>& Q,
+               const arma::Col<double>& M2Pv) const;
+         void modifyForPv(Jacobian& J, arma::Col<double>& f,
+               const arma::Col<double>& Vr, const arma::Col<double>& Vi,
+               const arma::Col<double>& M2Pv);
          void calcJMatrix(ublas::compressed_matrix<double>& JMat, const Jacobian& J) const;
 
       private:

@@ -29,7 +29,7 @@ namespace SmartGridToolbox
 
       if (const YAML::Node& subNd = nd["S"])
       {
-         gen->setS(parser.expand<ublas::vector<Complex>>(subNd));
+         gen->setS(parser.expand<arma::Col<Complex>>(subNd));
       }
       
       if (const YAML::Node& subNd = nd["P_min"])

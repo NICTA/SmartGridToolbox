@@ -8,7 +8,7 @@ namespace SmartGridToolbox
 {
    // No cross terms, just nPhase lines with single admittances.
    namespace {
-      const ublas::matrix<Complex> YSimpleLine(const ublas::vector<Complex>& Y)
+      const ublas::matrix<Complex> YSimpleLine(const arma::Col<Complex>& Y)
       {
          int nPhase = Y.size();
          int nTerm = 2 * nPhase;
@@ -59,7 +59,7 @@ namespace SmartGridToolbox
       }
       else if (ndYSimpleLine)
       {
-         ublas::vector<Complex> YLine = parser.expand<ublas::vector<Complex>>(ndYSimpleLine);
+         arma::Col<Complex> YLine = parser.expand<arma::Col<Complex>>(ndYSimpleLine);
          Y = YSimpleLine(YLine);
       }
 

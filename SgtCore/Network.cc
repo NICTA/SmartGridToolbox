@@ -7,11 +7,11 @@
 
 namespace SmartGridToolbox
 {
-   ublas::vector<Complex> Node::YZip() const
+   arma::Col<Complex> Node::YZip() const
    {
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
-      auto sum = ublas::vector<Complex>(bus_->phases().size(), czero);
+      auto sum = arma::Col<Complex>(bus_->phases().size(), czero);
       for (const auto zip : zips_)
       {
          sum += zip->YConst();
@@ -19,11 +19,11 @@ namespace SmartGridToolbox
       return sum;
    }
 
-   ublas::vector<Complex> Node::IZip() const
+   arma::Col<Complex> Node::IZip() const
    {
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
-      auto sum = ublas::vector<Complex>(bus_->phases().size(), czero);
+      auto sum = arma::Col<Complex>(bus_->phases().size(), czero);
       for (const auto zip : zips_)
       {
          sum += zip->IConst();
@@ -31,11 +31,11 @@ namespace SmartGridToolbox
       return sum;
    }
 
-   ublas::vector<Complex> Node::SZip() const
+   arma::Col<Complex> Node::SZip() const
    {
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
-      auto sum = ublas::vector<Complex>(bus_->phases().size(), czero);
+      auto sum = arma::Col<Complex>(bus_->phases().size(), czero);
       for (const auto zip : zips_)
       {
          sum += zip->SConst();
@@ -43,11 +43,11 @@ namespace SmartGridToolbox
       return sum;
    }
 
-   ublas::vector<Complex> Node::SGen() const
+   arma::Col<Complex> Node::SGen() const
    {
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
-      auto sum = ublas::vector<Complex>(bus_->phases().size(), czero);
+      auto sum = arma::Col<Complex>(bus_->phases().size(), czero);
       for (const auto gen : gens_)
       {
          sum += gen->S();
@@ -177,7 +177,7 @@ namespace SmartGridToolbox
                   for (auto gen : nd->gens())
                   {
                      // Keep P for gens, distribute Q amongst all gens.
-                     ublas::vector<Complex> SNew(gen->S().size());
+                     arma::Col<Complex> SNew(gen->S().size());
                      for (int i = 0; i < SNew.size(); ++i)
                      {
                         SNew[i] = Complex(gen->S()[i].real(), SGen[i].imag());

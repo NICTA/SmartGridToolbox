@@ -8,14 +8,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/local_time/local_time.hpp>
-#include <boost/numeric/ublas/lu.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
-#include <boost/numeric/ublas/matrix_sparse.hpp>
-#include <boost/numeric/ublas/operation.hpp>
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/vector_proxy.hpp>
-#include <boost/numeric/ublas/vector_sparse.hpp>
+#include <armadillo>
 
 #ifdef DEBUG
 #define SGT_DEBUG(x) x
@@ -226,24 +219,24 @@ namespace SmartGridToolbox
    /// @name Linear algebra
    /// @{
 
-   namespace ublas = boost::numeric::ublas;
+   namespace  = boost::numeric::ublas;
 
    template<class T>
-   bool invertMatrix(const ublas::matrix<T>& input, ublas::matrix<T>& inverse)
+   bool invertMatrix(const ::matrix<T>& input, ublas::matrix<T>& inverse)
    {
-      ublas::matrix<T> A(input);
-      ublas::permutation_matrix<std::size_t> pm(A.size1());
-      int res = ublas::lu_factorize(A, pm);
+      ::matrix<T> A(input);
+      ::permutation_matrix<std::size_t> pm(A.size1());
+      int res = ::lu_factorize(A, pm);
       if (res != 0)
       {
          return false;
       }
-      inverse.assign(ublas::identity_matrix<T>(A.size1()));
-      ublas::lu_substitute(A, pm, inverse);
+      inverse.assign(::identity_matrix<T>(A.size1()));
+      ::lu_substitute(A, pm, inverse);
       return true;
    }
 
-   template<typename VE> std::ostream& operator<<(std::ostream& os, const ublas::vector_expression<VE>& v)
+   template<typename VE> std::ostream& operator<<(std::ostream& os, const ::vector_expression<VE>& v)
    {
       unsigned int size = v().size();
       unsigned int w = os.width();
@@ -257,7 +250,7 @@ namespace SmartGridToolbox
       return os << ss.str();
    }
 
-   template<typename ME> std::ostream& operator<<(std::ostream& os, const ublas::matrix_expression<ME>& m)
+   template<typename ME> std::ostream& operator<<(std::ostream& os, const ::matrix_expression<ME>& m)
    {
       unsigned int size1 = m().size1();
       unsigned int size2 = m().size2();

@@ -47,8 +47,8 @@ namespace SmartGridToolbox
       /// @name Power injection:
       /// @{
 
-         virtual const ublas::vector<Complex>& S() const = 0;
-         virtual void setS(const ublas::vector<Complex>& S) = 0;
+         virtual const arma::Col<Complex>& S() const = 0;
+         virtual void setS(const arma::Col<Complex>& S) = 0;
 
       /// @}
        
@@ -225,12 +225,12 @@ namespace SmartGridToolbox
       /// @name Power injection:
       /// @{
 
-         virtual const ublas::vector<Complex>& S() const override
+         virtual const arma::Col<Complex>& S() const override
          {
             return S_;
          }
 
-         virtual void setS(const ublas::vector<Complex>& S) override
+         virtual void setS(const arma::Col<Complex>& S) override
          {
             S_ = S;
          }
@@ -356,7 +356,7 @@ namespace SmartGridToolbox
 
          bool isInService_;
          
-         ublas::vector<Complex> S_;
+         arma::Col<Complex> S_;
          
          double J_{0.0};
          

@@ -63,13 +63,13 @@ namespace SmartGridToolbox
          BusPtr bus() {return bus_;}
 
          const GenVec gens() {return gens_;}
-         ublas::vector<Complex> SGen() const;
+         arma::Col<Complex> SGen() const;
          double JGen() const;
 
          const ZipVec zips() {return zips_;}
-         ublas::vector<Complex> YZip() const;
-         ublas::vector<Complex> IZip() const;
-         ublas::vector<Complex> SZip() const;
+         arma::Col<Complex> YZip() const;
+         arma::Col<Complex> IZip() const;
+         arma::Col<Complex> SZip() const;
 
       private:
          Node(BusPtr bus) : bus_{bus} {}
