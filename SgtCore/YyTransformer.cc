@@ -2,10 +2,10 @@
 
 namespace SmartGridToolbox
 {
-   const ublas::matrix<Complex> YyTransformer::Y() const
+   const arma::Mat<Complex> YyTransformer::Y() const
    {
       int n = phases0().size();
-      ublas::matrix<Complex> Y(2 * n, 2 * n, czero);
+      arma::Mat<Complex> Y(2 * n, 2 * n, czero);
       for (int i = 0; i < n; ++i)
       {
          Y(i, i) = (YL_ + YM_) / (a_ * conj(a_));

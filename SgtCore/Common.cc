@@ -116,6 +116,16 @@ namespace SmartGridToolbox
       return ss.str();
    }
 
+   template std::ostream& operator<< <double>(std::ostream& os, const arma::Col<double>& v);
+   template std::ostream& operator<< <float>(std::ostream& os, const arma::Col<float>& v);
+   template std::ostream& operator<< <int>(std::ostream& os, const arma::Col<int>& v);
+   template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Col<Complex>& v);
+   
+   template std::ostream& operator<< <double>(std::ostream& os, const arma::Mat<double>& v);
+   template std::ostream& operator<< <float>(std::ostream& os, const arma::Mat<float>& v);
+   template std::ostream& operator<< <int>(std::ostream& os, const arma::Mat<int>& v);
+   template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Mat<Complex>& v);
+
    const posix_time::ptime epoch(gregorian::date(1970,1,1));
 
    posix_time::ptime utcTimeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz)

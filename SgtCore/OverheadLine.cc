@@ -4,7 +4,7 @@ namespace SmartGridToolbox
 {
    OverheadLine::OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double length,
                               int nNeutral, arma::Col<double> lineResistivity, double earthResistivity,
-                              ublas::matrix<double> distMat, double freq) :
+                              arma::Mat<double> distMat, double freq) :
       BranchAbc(id, phases0, phases1),
       L_(length),
       nNeutral_(nNeutral),
@@ -24,17 +24,17 @@ namespace SmartGridToolbox
       }
    }
 
-   const ublas::matrix<Complex> OverheadLine::Y() const
+   const arma::Mat<Complex> OverheadLine::Y() const
    {
       int nPhase = phases0().size();
 
-      ublas::matrix<Complex> ZWire = this->ZWire();
-      ublas::matrix<Complex> ZPhase = this->ZPhase(ZWire);
+      arma::Mat<Complex> ZWire = this->ZWire();
+      arma::Mat<Complex> ZPhase = this->ZPhase(ZWire);
 
-      ublas::matrix<Complex> Y(nPhase, nPhase);
+      arma::Mat<Complex> Y(nPhase, nPhase);
       bool ok = invertMatrix(ZPhase, Y); assert(ok);
 
-      ublas::matrix<Complex> YNode(2 * nPhase, 2 * nPhase, czero);
+      arma::Mat<Complex> YNode(2 * nPhase, 2 * nPhase, czero);
       for (int i = 0; i < nPhase; ++i)
       {
          for (int j = 0; j < nPhase; ++j)
@@ -49,7 +49,7 @@ namespace SmartGridToolbox
       return YNode;
    }
 
-   ublas::matrix<Complex> OverheadLine::ZWire() const
+   arma::Mat<Complex> OverheadLine::ZWire() const
    {
       int nPhase = phases0().size();
       int nWire = nPhase + nNeutral_;
@@ -58,7 +58,7 @@ namespace SmartGridToolbox
       double freqCoeffImag = 1.256642e-6 * f_;
       double freqAdditiveTerm = 0.5 * log(rhoEarth_ / f_) + 6.490501;
 
-      auto result = ublas::matrix<Complex>(nWire, nWire, czero);
+      auto result = arma::Mat<Complex>(nWire, nWire, czero);
       for (int i = 0; i < nWire; ++i)
       {
          result(i, i) = {rhoLine_(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij_(i, i)) + freqAdditiveTerm)};
@@ -73,11 +73,11 @@ namespace SmartGridToolbox
       return result;
    }
 
-   ublas::matrix<Complex> OverheadLine::ZPhase(const ublas::matrix<Complex>& ZWire) const
+   arma::Mat<Complex> OverheadLine::ZPhase(const arma::Mat<Complex>& ZWire) const
    {
       int nPhase = phases0().size();
 
-      ublas::matrix<Complex> result = project(ZWire, ublas::range(0, nPhase), ublas::range(0, nPhase));
+      arma::Mat<Complex> result = ZWire.submat(0, nPhase, 0, nPhase);
 
       // Apply Kron reduction to eliminate neutral.
       if (nNeutral_ == 1)

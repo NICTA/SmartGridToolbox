@@ -219,24 +219,7 @@ namespace SmartGridToolbox
    /// @name Linear algebra
    /// @{
 
-   namespace  = boost::numeric::ublas;
-
-   template<class T>
-   bool invertMatrix(const ::matrix<T>& input, ublas::matrix<T>& inverse)
-   {
-      ::matrix<T> A(input);
-      ::permutation_matrix<std::size_t> pm(A.size1());
-      int res = ::lu_factorize(A, pm);
-      if (res != 0)
-      {
-         return false;
-      }
-      inverse.assign(::identity_matrix<T>(A.size1()));
-      ::lu_substitute(A, pm, inverse);
-      return true;
-   }
-
-   template<typename VE> std::ostream& operator<<(std::ostream& os, const ::vector_expression<VE>& v)
+   template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Col<T>& v)
    {
       unsigned int size = v().size();
       unsigned int w = os.width();
@@ -249,8 +232,12 @@ namespace SmartGridToolbox
       ss << "]";
       return os << ss.str();
    }
+   extern template std::ostream& operator<< <double>(std::ostream& os, const arma::Col<double>& v);
+   extern template std::ostream& operator<< <float>(std::ostream& os, const arma::Col<float>& v);
+   extern template std::ostream& operator<< <int>(std::ostream& os, const arma::Col<int>& v);
+   extern template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Col<Complex>& v);
 
-   template<typename ME> std::ostream& operator<<(std::ostream& os, const ::matrix_expression<ME>& m)
+   template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Mat<T>& m)
    {
       unsigned int size1 = m().size1();
       unsigned int size2 = m().size2();
@@ -278,6 +265,8 @@ namespace SmartGridToolbox
       ss << "]" << std::endl;
       return os << ss.str();
    }
+   extern template std::ostream& operator<< <double>(std::ostream& os, const arma::Mat<double>& v);
+   extern template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Mat<Complex>& v);
 
    /// @}
 

@@ -3,7 +3,7 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix_sparse.hpp>
 
-bool kluSolve(const boost::numeric::ublas::compressed_matrix<double>& a,
+bool kluSolve(const boost::numeric::arma::SpMat<double>& a,
               const boost::numeric::arma::Col<double>& b,
               boost::numeric::arma::Col<double>& result)
 {

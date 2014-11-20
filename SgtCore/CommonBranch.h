@@ -107,7 +107,7 @@ namespace SmartGridToolbox
       /// @name Overridden from BranchInterface:
       /// @{
 
-         virtual const ublas::matrix<Complex> Y() const override;
+         virtual const arma::Mat<Complex> Y() const override;
 
       /// @}
 

@@ -27,7 +27,7 @@ namespace SmartGridToolbox
          /// @param freq = the network frequency.
          OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double length,
                       int nNeutral, arma::Col<double> lineResistivity, double earthResistivity,
-                      ublas::matrix<double> distMat, double freq);
+                      arma::Mat<double> distMat, double freq);
  
       /// @}
       
@@ -49,16 +49,16 @@ namespace SmartGridToolbox
       /// @name Overridden from BranchAbc:
       /// @{
          
-         virtual const ublas::matrix<Complex> Y() const override;
+         virtual const arma::Mat<Complex> Y() const override;
       
       /// @}
       
       /// @name Wire and phase impedance:
       /// @{
          
-         ublas::matrix<Complex> ZWire() const;
+         arma::Mat<Complex> ZWire() const;
 
-         ublas::matrix<Complex> ZPhase(const ublas::matrix<Complex>& ZWire) const;
+         arma::Mat<Complex> ZPhase(const arma::Mat<Complex>& ZWire) const;
          
       /// @}
       
@@ -67,7 +67,7 @@ namespace SmartGridToolbox
          int nNeutral_;                  ///< Internal multigrounded neutral lines.
          arma::Col<double> rhoLine_; ///< Line resistivity.
          double rhoEarth_;               ///< Earth resistivity.
-         ublas::matrix<double> Dij_;     ///< Distance between lines, diagonal = GMR.
+         arma::Mat<double> Dij_;     ///< Distance between lines, diagonal = GMR.
          double f_;                      ///< Frequency : TODO : link to network frequency.
    };
 }

@@ -64,12 +64,12 @@ namespace SmartGridToolbox
    struct PfBranch
    {
       PfBranch(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
-            const ublas::matrix<Complex>& Y);
+            const arma::Mat<Complex>& Y);
 
       int nPhase_;                ///< Number of phases.
       Array<std::string, 2> ids_; ///< Id of bus 0/1
       Array<Phases, 2> phases_;   ///< phases of bus 0/1.
-      ublas::matrix<Complex> Y_;  ///< Bus admittance matrix.
+      arma::Mat<Complex> Y_;  ///< Bus admittance matrix.
    };
 
    class PowerFlowModel
@@ -99,7 +99,7 @@ namespace SmartGridToolbox
          }
 
          void addBranch(const std::string& idBus0, const std::string& idBus1,
-               const Phases& phases0, const Phases& phases1, const ublas::matrix<Complex>& Y);
+               const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& Y);
 
          const PfBranchVec& branches() const
          {
@@ -134,11 +134,11 @@ namespace SmartGridToolbox
          /// This absorbs any constant admittance ZIP components.
          /// @{
          
-         const ublas::compressed_matrix<Complex>& Y() const
+         const arma::SpMat<Complex>& Y() const
          {
             return Y_;
          }
-         ublas::compressed_matrix<Complex>& Y()
+         arma::SpMat<Complex>& Y()
          {
             return Y_;
          }
@@ -226,32 +226,32 @@ namespace SmartGridToolbox
             return nSl_ + nPq_ + i;
          }
 
-         ublas::range selSlFromAll() const 
+         arma::span selSlFromAll() const 
          {
-            return {0, nSl_};
+            return {0, arma::uword(nSl_)};
          }
-         ublas::range selPqFromAll() const 
+         arma::span selPqFromAll() const 
          {
-            return {nSl_, nSl_ + nPq_};
+            return {arma::uword(nSl_), arma::uword(nSl_ + nPq_)};
          }
-         ublas::range selPvFromAll() const 
+         arma::span selPvFromAll() const 
          {
-            return {nSl_ + nPq_, nSl_ + nPq_ + nPv_};
+            return {arma::uword(nSl_ + nPq_), arma::uword(nSl_ + nPq_ + nPv_)};
          }
-         ublas::range selPqPvFromAll() const 
+         arma::span selPqPvFromAll() const 
          {
-            return {nSl_, nSl_ + nPq_ + nPv_};
+            return {arma::uword(nSl_), arma::uword(nSl_ + nPq_ + nPv_)};
          }
-         ublas::range selAllFromAll() const 
+         arma::span selAllFromAll() const 
          {
-            return {0, nSl_ + nPq_ + nPv_};
+            return {0, arma::uword(nSl_ + nPq_ + nPv_)};
          }
 
          /// @}
 
       private:
 
-         /// @name ublas::vector of busses and branches.
+         /// @name vector of busses and branches.
          /// @{
          
          PfBusMap busses_;
@@ -272,7 +272,7 @@ namespace SmartGridToolbox
          /// @name Y matrix.
          /// @{
          
-         ublas::compressed_matrix<Complex> Y_;  ///< Y matrix.
+         arma::SpMat<Complex> Y_;  ///< Y matrix.
 
          /// @}
 

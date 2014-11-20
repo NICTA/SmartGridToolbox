@@ -2,9 +2,9 @@
 
 namespace SmartGridToolbox
 {
-   const ublas::matrix<Complex> CommonBranch::Y() const
+   const arma::Mat<Complex> CommonBranch::Y() const
    {
-      ublas::matrix<Complex> result(2, 2);
+      arma::Mat<Complex> result(2, 2);
 
       Complex c1 = YSeries_ + 0.5 * YShunt_;
       result(0, 0) = c1 / norm(tapRatio_); // Yes, C++ does define norm(c) as |c|^2 - field norm?

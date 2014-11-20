@@ -44,7 +44,7 @@ namespace SmartGridToolbox
    }
 
    PfBranch::PfBranch(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
-                      const ublas::matrix<Complex>& Y) :
+                      const arma::Mat<Complex>& Y) :
       nPhase_(phases0.size()),
       ids_{{id0, id1}},
       phases_{{phases0, phases1}},
@@ -65,7 +65,7 @@ namespace SmartGridToolbox
    }
 
    void PowerFlowModel::addBranch(const std::string& idBus0, const std::string& idBus1,
-         const Phases& phases0, const Phases& phases1, const ublas::matrix<Complex>& Y)
+         const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& Y)
    {
       SGT_DEBUG(Log().debug() << "PowerFlowModel : addBranch " << idBus0 << " " << idBus1 << std::endl);
       branches_.push_back(std::unique_ptr<PfBranch>(new PfBranch(idBus0, idBus1, phases0, phases1, Y)));

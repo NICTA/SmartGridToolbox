@@ -39,7 +39,7 @@ namespace SmartGridToolbox
       int nNeutral = parser.expand<int>(nd["n_neutral"]);
       arma::Col<double> lineResistivity = parser.expand<arma::Col<double>>(nd["conductor_R_per_L"]);
       double earthResistivity = parser.expand<double>(nd["earth_resistivity"]);
-      ublas::matrix<double> distMatrix = parser.expand<ublas::matrix<double>>(nd["distance_matrix"]);
+      arma::Mat<double> distMatrix = parser.expand<arma::Mat<double>>(nd["distance_matrix"]);
       double freq = parser.expand<double>(nd["freq"]);
 
       std::unique_ptr<OverheadLine> ohl(new OverheadLine(id, phases0, phases1, length, nNeutral, lineResistivity,

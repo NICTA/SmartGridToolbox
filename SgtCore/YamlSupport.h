@@ -33,10 +33,6 @@ namespace YAML
    using SmartGridToolbox::Phases;
    using SmartGridToolbox::Time;
    using SmartGridToolbox::posix_time::ptime;
-   using SmartGridToolbox::ublas::matrix;
-   using SmartGridToolbox::ublas::matrix_expression;
-   using SmartGridToolbox::ublas::vector;
-   using SmartGridToolbox::ublas::vector_expression;
 
    template<> struct convert<Complex>
    {
@@ -74,49 +70,21 @@ namespace YAML
       static bool decode(const Node& nd, ptime& to);
    };
 
-   template<typename T> struct convert<vector<T>>
+   template<typename T> struct convert<arma::Col<T>>
    {
-      static Node encode(const vector<T>& from);
-      static bool decode(const Node& nd, vector<T>& to);
+      static Node encode(const arma::Col<T>& from);
+      static bool decode(const Node& nd, arma::Col<T>& to);
    };
 
-   template<typename T> struct convert<matrix<T>>
+   template<typename T> struct convert<arma::Mat<T>>
    {
-      static Node encode(const matrix<T>& from);
-      static bool decode(const Node& nd, matrix<T>& to);
-   };
-
-   template<typename VE> struct convert<vector_expression<VE>>
-   {
-      static Node encode(const vector_expression<VE>& from)
-      {
-         Node nd;
-         for (const auto& x : from()) nd.push_back(x);
-         return nd;
-      }
-   };
-
-   template<typename ME> struct convert<matrix_expression<ME>>
-   {
-      Node encode(const matrix_expression<ME>& from)
-      {
-         Node nd;
-         for (int i = 0; i < from().size1(); ++i)
-         {
-            Node nd1;
-            for (int k = 0; k < from().size2(); ++k)
-            {
-               nd1.push_back(from()(i, k));
-            }
-            nd.push_back(nd1);
-         }
-         return nd;
-      }
+      static Node encode(const arma::Mat<T>& from);
+      static bool decode(const Node& nd, arma::Mat<T>& to);
    };
 
    Emitter& operator<<(Emitter& out, const Complex& c);
 
-   template<typename VE> Emitter& operator<<(Emitter& out, const vector_expression<VE>& v) 
+   template<typename T> Emitter& operator<<(Emitter& out, const arma::Col<T>& v) 
    {
       out << YAML::Flow;
       out << YAML::BeginSeq;

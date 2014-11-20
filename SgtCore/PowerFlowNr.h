@@ -17,180 +17,176 @@ namespace SmartGridToolbox
    {
       Jacobian(int nPq, int nPv);
 
-      ublas::compressed_matrix<double>& IrPqVrPq() 
+      arma::SpMat<double>& IrPqVrPq() 
       {
          return blocks_[0][0];
       }
-      ublas::compressed_matrix<double>& IiPqVrPq() 
+      arma::SpMat<double>& IiPqVrPq() 
       {
          return blocks_[1][0];
       }
-      ublas::compressed_matrix<double>& IrPvVrPq() 
+      arma::SpMat<double>& IrPvVrPq() 
       {
          return blocks_[2][0];
       }
-      ublas::compressed_matrix<double>& IiPvVrPq() 
+      arma::SpMat<double>& IiPvVrPq() 
       {
          return blocks_[3][0];
       }
-      ublas::compressed_matrix<double>& IrPqViPq() 
+      arma::SpMat<double>& IrPqViPq() 
       {
          return blocks_[0][1];
       }
-      ublas::compressed_matrix<double>& IiPqViPq() 
+      arma::SpMat<double>& IiPqViPq() 
       {
          return blocks_[1][1];
       }
-      ublas::compressed_matrix<double>& IrPvViPq() 
+      arma::SpMat<double>& IrPvViPq() 
       {
          return blocks_[2][1];
       }
-      ublas::compressed_matrix<double>& IiPvViPq() 
+      arma::SpMat<double>& IiPvViPq() 
       {
          return blocks_[3][1];
       }
-      ublas::compressed_matrix<double>& IrPqVrPv() 
+      arma::SpMat<double>& IrPqVrPv() 
       {
          return blocks_[0][2];
       }
-      ublas::compressed_matrix<double>& IiPqVrPv() 
+      arma::SpMat<double>& IiPqVrPv() 
       {
          return blocks_[1][2];
       }
-      ublas::compressed_matrix<double>& IrPvVrPv() 
+      arma::SpMat<double>& IrPvVrPv() 
       {
          return blocks_[2][2];
       }
-      ublas::compressed_matrix<double>& IiPvVrPv() 
+      arma::SpMat<double>& IiPvVrPv() 
       {
          return blocks_[3][2];
       }
-      ublas::compressed_matrix<double>& IrPqViPv() 
+      arma::SpMat<double>& IrPqViPv() 
       {
          return blocks_[0][3];
       }
-      ublas::compressed_matrix<double>& IiPqViPv() 
+      arma::SpMat<double>& IiPqViPv() 
       {
          return blocks_[1][3];
       }
-      ublas::compressed_matrix<double>& IrPvViPv() 
+      arma::SpMat<double>& IrPvViPv() 
       {
          return blocks_[2][3];
       }
-      ublas::compressed_matrix<double>& IiPvViPv() 
+      arma::SpMat<double>& IiPvViPv() 
       {
          return blocks_[3][3];
       }
-      ublas::compressed_matrix<double>& IrPqQPv()  
+      arma::SpMat<double>& IrPqQPv()  
       {
          return blocks_[0][4];
       }
-      ublas::compressed_matrix<double>& IiPqQPv()  
+      arma::SpMat<double>& IiPqQPv()  
       {
          return blocks_[1][4];
       }
-      ublas::compressed_matrix<double>& IrPvQPv()  
+      arma::SpMat<double>& IrPvQPv()  
       {
          return blocks_[2][4];
       }
-      ublas::compressed_matrix<double>& IiPvQPv()  
+      arma::SpMat<double>& IiPvQPv()  
       {
          return blocks_[3][4];
       }
 
-      const ublas::compressed_matrix<double>& IrPqVrPq() const 
+      const arma::SpMat<double>& IrPqVrPq() const 
       {
          return blocks_[0][0];
       }
-      const ublas::compressed_matrix<double>& IiPqVrPq() const 
+      const arma::SpMat<double>& IiPqVrPq() const 
       {
          return blocks_[1][0];
       }
-      const ublas::compressed_matrix<double>& IrPvVrPq() const 
+      const arma::SpMat<double>& IrPvVrPq() const 
       {
          return blocks_[2][0];
       }
-      const ublas::compressed_matrix<double>& IiPvVrPq() const 
+      const arma::SpMat<double>& IiPvVrPq() const 
       {
          return blocks_[3][0];
       }
-      const ublas::compressed_matrix<double>& IrPqViPq() const 
+      const arma::SpMat<double>& IrPqViPq() const 
       {
          return blocks_[0][1];
       }
-      const ublas::compressed_matrix<double>& IiPqViPq() const 
+      const arma::SpMat<double>& IiPqViPq() const 
       {
          return blocks_[1][1];
       }
-      const ublas::compressed_matrix<double>& IrPvViPq() const 
+      const arma::SpMat<double>& IrPvViPq() const 
       {
          return blocks_[2][1];
       }
-      const ublas::compressed_matrix<double>& IiPvViPq() const 
+      const arma::SpMat<double>& IiPvViPq() const 
       {
          return blocks_[3][1];
       }
-      const ublas::compressed_matrix<double>& IrPqVrPv() const 
+      const arma::SpMat<double>& IrPqVrPv() const 
       {
          return blocks_[0][2];
       }
-      const ublas::compressed_matrix<double>& IiPqVrPv() const 
+      const arma::SpMat<double>& IiPqVrPv() const 
       {
          return blocks_[1][2];
       }
-      const ublas::compressed_matrix<double>& IrPvVrPv() const 
+      const arma::SpMat<double>& IrPvVrPv() const 
       {
          return blocks_[2][2];
       }
-      const ublas::compressed_matrix<double>& IiPvVrPv() const 
+      const arma::SpMat<double>& IiPvVrPv() const 
       {
          return blocks_[3][2];
       }
-      const ublas::compressed_matrix<double>& IrPqViPv() const 
+      const arma::SpMat<double>& IrPqViPv() const 
       {
          return blocks_[0][3];
       }
-      const ublas::compressed_matrix<double>& IiPqViPv() const 
+      const arma::SpMat<double>& IiPqViPv() const 
       {
          return blocks_[1][3];
       }
-      const ublas::compressed_matrix<double>& IrPvViPv() const 
+      const arma::SpMat<double>& IrPvViPv() const 
       {
          return blocks_[2][3];
       }
-      const ublas::compressed_matrix<double>& IiPvViPv() const 
+      const arma::SpMat<double>& IiPvViPv() const 
       {
          return blocks_[3][3];
       }
-      const ublas::compressed_matrix<double>& IrPqQPv()  const 
+      const arma::SpMat<double>& IrPqQPv()  const 
       {
          return blocks_[0][4];
       }
-      const ublas::compressed_matrix<double>& IiPqQPv()  const 
+      const arma::SpMat<double>& IiPqQPv()  const 
       {
          return blocks_[1][4];
       }
-      const ublas::compressed_matrix<double>& IrPvQPv()  const 
+      const arma::SpMat<double>& IrPvQPv()  const 
       {
          return blocks_[2][4];
       }
-      const ublas::compressed_matrix<double>& IiPvQPv()  const 
+      const arma::SpMat<double>& IiPvQPv()  const 
       {
          return blocks_[3][4];
       }
 
-      Array2D<ublas::compressed_matrix<double>, 4, 5> blocks_;
+      Array2D<arma::SpMat<double>, 4, 5> blocks_;
    };
 
    class PowerFlowNr
    {
       public:
-
-         PowerFlowNr(PowerFlowModel* prob) :
-            mod_(prob)
-         {
-            // Empty.
-         }
+   
+         PowerFlowNr(PowerFlowModel* prob);
 
          bool solve();
 
@@ -205,40 +201,7 @@ namespace SmartGridToolbox
             return 2 * nPqPv();
          }
 
-         // Note: see above: don't assign into a slice of a sparse matrix!
-         ublas::slice selIrPqFrom_f() const 
-         {
-            return {1, 2, mod_->nPq()};
-         }
-         ublas::slice selIiPqFrom_f() const 
-         {
-            return {0, 2, mod_->nPq()};
-         }
-         ublas::slice selIrPvFrom_f() const 
-         {
-            return {2 * mod_->nPq() + 1, 2, mod_->nPv()};
-         }
-         ublas::slice selIiPvFrom_f() const 
-         {
-            return {2 * mod_->nPq(), 2, mod_->nPv()};
-         }
-
-         ublas::slice selVrPqFrom_x() const 
-         {
-            return {0, 2, mod_->nPq()};
-         }
-         ublas::slice selViPqFrom_x() const 
-         {
-            return {1, 2, mod_->nPq()};
-         }
-         ublas::slice selQPvFrom_x() const 
-         {
-            return {2 * mod_->nPq(), 2, mod_->nPv()};
-         }
-         ublas::slice selViPvFrom_x() const 
-         {
-            return {2 * mod_->nPq() + 1, 2, mod_->nPv()};
-         }
+         void initSubmatrixRanges();
 
          void initJc(Jacobian& Jc) const;
 
@@ -246,21 +209,33 @@ namespace SmartGridToolbox
                const arma::Col<double>& Vr, const arma::Col<double>& Vi,
                const arma::Col<double>& P, const arma::Col<double>& Q,
                const arma::Col<double>& M2Pv) const;
+
          void updateJ(Jacobian& J, const Jacobian& Jc,
                const arma::Col<double>& Vr, const arma::Col<double>& Vi,
                const arma::Col<double>& P, const arma::Col<double>& Q,
                const arma::Col<double>& M2Pv) const;
+
          void modifyForPv(Jacobian& J, arma::Col<double>& f,
                const arma::Col<double>& Vr, const arma::Col<double>& Vi,
                const arma::Col<double>& M2Pv);
-         void calcJMatrix(ublas::compressed_matrix<double>& JMat, const Jacobian& J) const;
+
+         void calcJMatrix(arma::SpMat<double>& JMat, const Jacobian& J) const;
 
       private:
 
          PowerFlowModel* mod_;
+      
+         arma::Col<int> selIrPqFrom_f_;
+         arma::Col<int> selIiPqFrom_f_;
+         arma::Col<int> selIrPvFrom_f_;
+         arma::Col<int> selIiPvFrom_f_;
+         arma::Col<int> selVrPqFrom_x_;
+         arma::Col<int> selViPqFrom_x_;
+         arma::Col<int> selQPvFrom_x_;
+         arma::Col<int> selViPvFrom_x_;
 
-         ublas::compressed_matrix<double> G_;   ///< Real part of Y matrix.
-         ublas::compressed_matrix<double> B_;   ///< Imag part of Y matrix.
+         arma::SpMat<double> G_;   ///< Real part of Y matrix.
+         arma::SpMat<double> B_;   ///< Imag part of Y matrix.
    };
 }
 

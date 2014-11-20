@@ -50,7 +50,7 @@ namespace SmartGridToolbox
       /// @name Nodal admittance matrix (Y):
       /// @{
          
-         virtual const ublas::matrix<Complex> Y() const = 0;
+         virtual const arma::Mat<Complex> Y() const = 0;
       
       /// @}
       
@@ -186,7 +186,7 @@ namespace SmartGridToolbox
       /// @name Overridden from Branch:
       /// @{
 
-         virtual const ublas::matrix<Complex> Y() const override
+         virtual const arma::Mat<Complex> Y() const override
          {
             return Y_;
          }
@@ -196,7 +196,7 @@ namespace SmartGridToolbox
       /// @name Setter for Y.
       /// @{
    
-         void setY(const ublas::matrix<Complex>& Y)
+         void setY(const arma::Mat<Complex>& Y)
          {
             Y_ = Y;
          }
@@ -205,7 +205,7 @@ namespace SmartGridToolbox
 
       private:
          
-         ublas::matrix<Complex> Y_;
+         arma::Mat<Complex> Y_;
    };
 }
 
