@@ -6,20 +6,16 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <iostream>
-
 namespace SmartGridToolbox
 {
    template<typename T> std::string toYamlString(const T& t)
    {
-      std::cout << "toYamlString" << std::endl;
       YAML::Emitter e;
       return (e << t).c_str();
    }
    
    inline std::string toYamlString(const Complex& c)
    {
-      std::cout << "toYamlString c" << std::endl;
       return to_string(c);
    }
    

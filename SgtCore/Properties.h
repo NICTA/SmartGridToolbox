@@ -24,7 +24,7 @@ namespace SmartGridToolbox
 
    template<class T>
    using ByConstRef = const T&;
-   
+
    class Properties;
    class HasProperties;
 
@@ -34,6 +34,8 @@ namespace SmartGridToolbox
 
    class PropertyBase
    {
+      friend class Properties;
+
       public:
          PropertyBase(HasProperties* targ) : targ_(targ) {}
 
@@ -53,20 +55,10 @@ namespace SmartGridToolbox
             throw std::runtime_error("Property is not settable");
          }
 
-         const HasProperties* targ() const
-         {
-            return targ_;
-         }
-
-         HasProperties* targ()
-         {
-            return targ_;
-         }
-
       protected:
          HasProperties* targ_{nullptr};
    };
-  
+
    template<typename T, template<typename> class GetBy>
    class Property<T, GetBy, NoSetter> : virtual public PropertyBase
    {
@@ -101,7 +93,7 @@ namespace SmartGridToolbox
             set(fromYamlString<T>(str)); 
          }
    };
-   
+
    template<typename T, template<typename> class SetBy>
    using SettableProperty = Property<T, NoGetter, SetBy>;
 
@@ -110,7 +102,7 @@ namespace SmartGridToolbox
    {
       // Empty.
    };
-   
+
    template<typename T, template<typename> class GetBy, class Targ>
    using Getter = GetBy<T> (const Targ&);
 
@@ -135,7 +127,7 @@ namespace SmartGridToolbox
          {
             return get_(*dynamic_cast<const Targ*>(this->targ_));
          }
-      
+
       private:
          std::function<Getter<T, GetBy, Targ>> get_;
    };
@@ -155,7 +147,7 @@ namespace SmartGridToolbox
          {
             set_(*dynamic_cast<Targ*>(this->targ_), val);
          }
-      
+
       private:
          std::function<Setter<T, SetBy, Targ>> set_;
    };
@@ -188,7 +180,7 @@ namespace SmartGridToolbox
       public:
          typedef Map::const_iterator ConstIterator;
          typedef Map::iterator Iterator;
-      
+
       public:
 
          Iterator begin() {return map_.begin();}
@@ -228,9 +220,10 @@ namespace SmartGridToolbox
 
       private:
          Properties(HasProperties* targ) : targ_(targ) {}
-         
-         Properties(const Properties& from, HasProperties* targ) : map_(from.map_)
+
+         Properties(Properties&& from, HasProperties* targ) : map_(from.map_)
          {
+            from.map_.clear();
             reTarget(targ);
          }
 
@@ -259,6 +252,7 @@ namespace SmartGridToolbox
    class HasPropertiesInterface
    {
       public:
+         virtual ~HasPropertiesInterface() {}
          virtual const Properties& properties() const = 0;
          virtual Properties& properties() = 0;
    };
@@ -269,7 +263,7 @@ namespace SmartGridToolbox
 
          HasProperties() : properties_(this) {}
 
-         HasProperties(const HasProperties& from) : properties_(from.properties_, this) {}
+         HasProperties(HasProperties&& from) : properties_(std::move(from.properties_), this) {}
 
          virtual const Properties& properties() const override
          {
