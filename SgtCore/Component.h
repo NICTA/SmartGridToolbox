@@ -15,7 +15,7 @@ namespace SmartGridToolbox
       friend std::ostream& operator<<(std::ostream& os, const ComponentInterface& comp);
 
       public:
-         virtual ~ComponentInterface() {}
+         virtual ~ComponentInterface() = default;
          virtual const std::string& id() const = 0;
          virtual const char* componentType() const = 0;
       protected:
@@ -36,6 +36,7 @@ namespace SmartGridToolbox
       /// @{
          
          Component(const std::string& id) : id_(id) {}
+         Component(Component&& from) = default;
          virtual ~Component() = default;
 
       /// @}
