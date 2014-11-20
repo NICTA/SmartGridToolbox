@@ -6,7 +6,9 @@ namespace SmartGridToolbox
 {
    GenericZip::GenericZip(const std::string& id, const Phases& phases) :
       ZipAbc(id, phases),
-      YConst_(phases.size(), czero), IConst_(phases.size(), czero), SConst_(phases.size(), czero)
+      YConst_(phases.size(), arma::fill::zeros),
+      IConst_(phases.size(), arma::fill::zeros),
+      SConst_(phases.size(), arma::fill::zeros)
    {
       // Empty.
    }

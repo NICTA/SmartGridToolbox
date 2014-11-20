@@ -134,10 +134,10 @@ namespace YAML
    template<typename T> Node convert<arma::Mat<T>>::encode(const arma::Mat<T>& from)
    {
       Node nd;
-      for (int i = 0; i < from.size1(); ++i)
+      for (int i = 0; i < from.n_rows; ++i)
       {
          Node nd1;
-         for (int k = 0; k < from.size2(); ++k)
+         for (int k = 0; k < from.n_cols; ++k)
          {
             nd1.push_back(from(i, k));
          }

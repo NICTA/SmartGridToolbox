@@ -88,14 +88,14 @@ namespace SmartGridToolbox
       const double tol = 1e-8;
       const int maxiter = 20;
 
-      G_ = real(mod_->Y());
-      B_ = imag(mod_->Y());
+      G_ = arma::real(mod_->Y());
+      B_ = arma::imag(mod_->Y());
 
-      arma::Col<double> Vr = real(mod_->V());
-      arma::Col<double> Vi = imag(mod_->V());
+      arma::Col<double> Vr = arma::real(mod_->V());
+      arma::Col<double> Vi = arma::imag(mod_->V());
 
-      arma::Col<double> P = real(mod_->S());
-      arma::Col<double> Q = imag(mod_->S());
+      arma::Col<double> P = arma::real(mod_->S());
+      arma::Col<double> Q = arma::imag(mod_->S());
 
       arma::Col<double> M2Pv = element_prod(project(Vr, mod_->selPvFromAll()), project(Vr, mod_->selPvFromAll()))
                                  + element_prod(project(Vi, mod_->selPvFromAll()), project(Vi, mod_->selPvFromAll()));
@@ -326,8 +326,8 @@ namespace SmartGridToolbox
       const auto PPq = project(P, mod_->selPqFromAll());
       const auto QPq = project(Q, mod_->selPqFromAll());
 
-      const auto IZiprPq = project(real(mod_->IZip()), mod_->selPqFromAll());
-      const auto IZipiPq = project(imag(mod_->IZip()), mod_->selPqFromAll());
+      const auto IZiprPq = project(arma::real(mod_->IZip()), mod_->selPqFromAll());
+      const auto IZipiPq = project(arma::imag(mod_->IZip()), mod_->selPqFromAll());
 
       arma::Col<double> M2Pq = element_prod(VrPq, VrPq) + element_prod(ViPq, ViPq);
 
@@ -346,7 +346,7 @@ namespace SmartGridToolbox
       const auto PPv = project(P, mod_->selPvFromAll());
       const auto QPv = project(Q, mod_->selPvFromAll());
 
-      const auto IZiprPv = project(real(mod_->IZip()), mod_->selPvFromAll());
+      const auto IZiprPv = project(arma::real(mod_->IZip()), mod_->selPvFromAll());
       const auto IZipiPv = project(imag(mod_->IZip()), mod_->selPvFromAll());
 
       project(f, selIrPvFrom_f_) = element_div(element_prod(VrPv, PPv) + element_prod(ViPv, QPv), M2Pv)

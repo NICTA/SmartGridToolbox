@@ -18,7 +18,7 @@ namespace SmartGridToolbox
          Log().fatal() << "OverheadLine : currently there must be either zero or one neutral wires." << std::endl;
       }
       int n = phases0.size() + nNeutral;
-      if (lineResistivity.size() != n || distMat.size1() != n || distMat.size2() != n)
+      if (lineResistivity.size() != n || distMat.n_rows != n || distMat.n_cols != n)
       {
          Log().fatal() << "OverheadLine : wrong number of internal phases." << std::endl;
       }
@@ -31,10 +31,9 @@ namespace SmartGridToolbox
       arma::Mat<Complex> ZWire = this->ZWire();
       arma::Mat<Complex> ZPhase = this->ZPhase(ZWire);
 
-      arma::Mat<Complex> Y(nPhase, nPhase);
-      bool ok = invertMatrix(ZPhase, Y); assert(ok);
+      arma::Mat<Complex> Y = arma::inv(ZPhase);
 
-      arma::Mat<Complex> YNode(2 * nPhase, 2 * nPhase, czero);
+      arma::Mat<Complex> YNode(2 * nPhase, 2 * nPhase, arma::fill::zeros);
       for (int i = 0; i < nPhase; ++i)
       {
          for (int j = 0; j < nPhase; ++j)
@@ -58,7 +57,7 @@ namespace SmartGridToolbox
       double freqCoeffImag = 1.256642e-6 * f_;
       double freqAdditiveTerm = 0.5 * log(rhoEarth_ / f_) + 6.490501;
 
-      auto result = arma::Mat<Complex>(nWire, nWire, czero);
+      auto result = arma::Mat<Complex>(nWire, nWire, arma::fill::zeros);
       for (int i = 0; i < nWire; ++i)
       {
          result(i, i) = {rhoLine_(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij_(i, i)) + freqAdditiveTerm)};

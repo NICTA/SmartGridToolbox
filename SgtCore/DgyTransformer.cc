@@ -15,7 +15,7 @@ namespace SmartGridToolbox
                            0.0,   -ai,    ai,  0.0,  1.0,  0.0,
                             ai,   0.0,   -ai,  0.0,  0.0,  1.0};
 
-      arma::Mat<Complex> Y(6, 6, czero);
+      arma::Mat<Complex> Y(6, 6, arma::fill::zeros);
       for (int i = 0; i < 6; ++i)
       {
          for (int j = 0; j < 6; ++j)

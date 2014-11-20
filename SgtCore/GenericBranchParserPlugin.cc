@@ -12,7 +12,7 @@ namespace SmartGridToolbox
       {
          int nPhase = Y.size();
          int nTerm = 2 * nPhase;
-         arma::Mat<Complex> YNode(nTerm, nTerm, czero);
+         arma::Mat<Complex> YNode(nTerm, nTerm, arma::fill::zeros);
          for (int i = 0; i < nPhase; ++i)
          {
             YNode(i, i) = Y(i);
@@ -52,7 +52,7 @@ namespace SmartGridToolbox
       const YAML::Node& ndY = nd["Y"];
       const YAML::Node& ndYMatrix = ndY["matrix"];
       const YAML::Node& ndYSimpleLine = ndY["simple_line"];
-      arma::Mat<Complex> Y(2 * phases0.size(), 2 * phases1.size(), czero);
+      arma::Mat<Complex> Y(2 * phases0.size(), 2 * phases1.size(), arma::fill::zeros);
       if (ndYMatrix)
       {
          Y = parser.expand<arma::Mat<Complex>>(ndYMatrix);

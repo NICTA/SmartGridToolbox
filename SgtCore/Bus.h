@@ -257,17 +257,17 @@ namespace SmartGridToolbox
       private:
 
          Phases phases_{Phase::BAL};
-         arma::Col<Complex> VNom_{phases_.size()};
+         arma::Col<Complex> VNom_;
          double VBase_{1.0};
 
          BusType type_{BusType::NA};
-         arma::Col<double> VMagSetpoint_{phases_.size()};
-         arma::Col<double> VAngSetpoint_{phases_.size()};
+         arma::Col<double> VMagSetpoint_;
+         arma::Col<double> VAngSetpoint_;
          double VMagMin_{-infinity};
          double VMagMax_{infinity};
 
          bool isInService_{true};
-         arma::Col<Complex> V_{phases_.size(), czero};
+         arma::Col<Complex> V_;
 
          Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
          Event setpointChanged_{std::string(sComponentType()) + " : Control changed"};

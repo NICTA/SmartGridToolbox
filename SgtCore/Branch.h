@@ -161,7 +161,7 @@ namespace SmartGridToolbox
       /// @{
 
          GenericBranch(const std::string& id, const Phases& phases0, const Phases& phases1) :
-            BranchAbc(id, phases0, phases1), Y_(2*phases0.size(), 2*phases0.size(), czero)
+            BranchAbc(id, phases0, phases1), Y_(2*phases0.size(), 2*phases0.size(), arma::fill::zeros)
          {
             // Empty.
          }

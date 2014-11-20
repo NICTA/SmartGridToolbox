@@ -52,8 +52,8 @@ namespace SmartGridToolbox
    {
       assert(phases1.size() == nPhase_);
       int nTerm = 2 * nPhase_;
-      assert(Y.size1() == nTerm);
-      assert(Y.size2() == nTerm);
+      assert(Y.n_rows == nTerm);
+      assert(Y.n_cols == nTerm);
    }
 
    void PowerFlowModel::addBus(const std::string& id, BusType type, const Phases& phases,
@@ -133,7 +133,7 @@ namespace SmartGridToolbox
       int nNode = nodes_.size();
 
       // Bus admittance matrix:
-      Y_.resize(nNode, nNode, false);
+      Y_ = arma::SpMat<Complex>(nNode, nNode);
 
       // Branch admittances:
       for (const std::unique_ptr<PfBranch>& branch : branches_)
@@ -242,9 +242,9 @@ namespace SmartGridToolbox
                Log().debug() << "Y      :" << std::endl;
                {
                   LogIndent _;
-                  for (int i = 0; i < branch->Y_.size1(); ++i)
+                  for (int i = 0; i < branch->Y_.n_rows; ++i)
                   {
-                     Log().debug() << std::setprecision(14) << std::setw(18) << row(branch->Y_, i) << std::endl;
+                     Log().debug() << std::setprecision(14) << std::setw(18) << branch->Y_.row(i) << std::endl;
                   }
                }
             }

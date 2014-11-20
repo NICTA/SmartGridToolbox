@@ -88,9 +88,9 @@ namespace YAML
    {
       out << YAML::Flow;
       out << YAML::BeginSeq;
-      for (size_t i = 0; i < v().size(); ++i)
+      for (size_t i = 0; i < v.size(); ++i)
       {
-         out << v()(i);
+         out << v(i);
       }
       out << YAML::EndSeq;
       return out;

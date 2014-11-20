@@ -221,14 +221,14 @@ namespace SmartGridToolbox
 
    template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Col<T>& v)
    {
-      unsigned int size = v().size();
+      unsigned int size = v.size();
       unsigned int w = os.width();
       std::ostringstream ss;
       ss.flags(os.flags());
       ss.imbue(os.getloc());
       ss.precision(os.precision());
-      ss << "[" << std::setw(w) << std::left << v()(0);
-      for (int i = 1; i < size; ++i) ss << ", " << std::setw(w) << std::left << v()(i);
+      ss << "[" << std::setw(w) << std::left << v(0);
+      for (int i = 1; i < size; ++i) ss << ", " << std::setw(w) << std::left << v(i);
       ss << "]";
       return os << ss.str();
    }
@@ -239,26 +239,26 @@ namespace SmartGridToolbox
 
    template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Mat<T>& m)
    {
-      unsigned int size1 = m().size1();
-      unsigned int size2 = m().size2();
+      unsigned int size1 = m.n_rows;
+      unsigned int size2 = m.n_cols;
       unsigned int w = os.width();
       std::ostringstream ss;
       ss.flags(os.flags());
       ss.imbue(os.getloc());
       ss.precision(os.precision());
       ss << std::endl << "[" << std::endl;
-      ss << "    [" << std::setw(w) << std::left << m()(0, 0);
+      ss << "    [" << std::setw(w) << std::left << m(0, 0);
       for (int j = 1; j < size2; ++j)
       {
-         ss << ", " << std::setw(w) << std::left << m()(0, j);
+         ss << ", " << std::setw(w) << std::left << m(0, j);
       }
       ss << "]"; 
       for (int i = 1; i < size1; ++i)
       {
-         ss << "," << std::endl << "    [" << std::setw(w) << std::left << m()(i, 0);
+         ss << "," << std::endl << "    [" << std::setw(w) << std::left << m(i, 0);
          for (int j = 1; j < size2; ++j)
          {
-            ss << ", " << std::setw(w) << std::left << m()(i, j);
+            ss << ", " << std::setw(w) << std::left << m(i, j);
          }
          ss << "]" << std::endl;
       }
@@ -266,6 +266,8 @@ namespace SmartGridToolbox
       return os << ss.str();
    }
    extern template std::ostream& operator<< <double>(std::ostream& os, const arma::Mat<double>& v);
+   extern template std::ostream& operator<< <float>(std::ostream& os, const arma::Mat<float>& v);
+   extern template std::ostream& operator<< <int>(std::ostream& os, const arma::Mat<int>& v);
    extern template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Mat<Complex>& v);
 
    /// @}

@@ -19,6 +19,8 @@ namespace SmartGridToolbox
       phases_(phases),
       VNom_(VNom),
       VBase_(VBase),
+      VMagSetpoint_(phases.size()),
+      VAngSetpoint_(phases.size()),
       V_(VNom)
    {
       for (int i = 0; i < phases_.size(); ++i)

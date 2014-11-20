@@ -1,11 +1,8 @@
 #include <klu.h>
 
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix_sparse.hpp>
+#include <armadillo>
 
-bool kluSolve(const boost::numeric::arma::SpMat<double>& a,
-              const boost::numeric::arma::Col<double>& b,
-              boost::numeric::arma::Col<double>& result)
+bool kluSolve(const arma::SpMat<double>& a, const arma::Col<double>& b, arma::Col<double>& result)
 {
    boost::numeric::ublas::compressed_matrix<double, boost::numeric::ublas::column_major> ac = a;
    ac.complete_index1_data();

@@ -11,7 +11,7 @@ namespace SmartGridToolbox
    {
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
-      auto sum = arma::Col<Complex>(bus_->phases().size(), czero);
+      auto sum = arma::Col<Complex>(bus_->phases().size(), arma::fill::zeros);
       for (const auto zip : zips_)
       {
          sum += zip->YConst();
@@ -23,7 +23,7 @@ namespace SmartGridToolbox
    {
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
-      auto sum = arma::Col<Complex>(bus_->phases().size(), czero);
+      auto sum = arma::Col<Complex>(bus_->phases().size(), arma::fill::zeros);
       for (const auto zip : zips_)
       {
          sum += zip->IConst();
@@ -35,7 +35,7 @@ namespace SmartGridToolbox
    {
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
-      auto sum = arma::Col<Complex>(bus_->phases().size(), czero);
+      auto sum = arma::Col<Complex>(bus_->phases().size(), arma::fill::zeros);
       for (const auto zip : zips_)
       {
          sum += zip->SConst();
@@ -47,7 +47,7 @@ namespace SmartGridToolbox
    {
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
-      auto sum = arma::Col<Complex>(bus_->phases().size(), czero);
+      auto sum = arma::Col<Complex>(bus_->phases().size(), arma::fill::zeros);
       for (const auto gen : gens_)
       {
          sum += gen->S();

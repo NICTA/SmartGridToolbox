@@ -124,17 +124,17 @@ namespace SmartGridToolbox
          
          virtual arma::Col<Complex> YConst() const
          {
-            return arma::Col<Complex>(phases_.size(), czero);
+            return arma::Col<Complex>(phases_.size(), arma::fill::zeros);
          }
 
          virtual arma::Col<Complex> IConst() const
          {
-            return arma::Col<Complex>(phases_.size(), czero);
+            return arma::Col<Complex>(phases_.size(), arma::fill::zeros);
          }
 
          virtual arma::Col<Complex> SConst() const
          {
-            return arma::Col<Complex>(phases_.size(), czero);
+            return arma::Col<Complex>(phases_.size(), arma::fill::zeros);
          }
 
       /// @}

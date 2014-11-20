@@ -387,7 +387,7 @@ namespace SmartGridToolbox
       {
          std::string busId = getBusId(busInfo.id);
          std::unique_ptr<Bus> bus(
-               new Bus(busId, Phase::BAL, VScale * VComplex(1, Complex(busInfo.kVBase, 0.0)), PScale * busInfo.kVBase));
+               new Bus(busId, Phase::BAL, VScale * VComplex{Complex(busInfo.kVBase, 0.0)}, PScale * busInfo.kVBase));
          BusType type = BusType::BAD;
          switch (busInfo.type)
          {
@@ -409,8 +409,8 @@ namespace SmartGridToolbox
          Complex YZip = YBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
          std::string zipId = getZipId(nZip++, busInfo.id);
          std::unique_ptr<GenericZip> zip(new GenericZip(zipId, Phase::BAL));
-         zip->setYConst(GScale * VComplex(1, YZip));
-         zip->setSConst(PScale * VComplex(1, SZip));
+         zip->setYConst(GScale * VComplex{YZip});
+         zip->setSConst(PScale * VComplex{SZip});
          bus->setVMagMin(busInfo.VMagMin == -infinity ? -infinity : VScale * pu2kV(busInfo.VMagMin, busInfo.kVBase));
          bus->setVMagMax(busInfo.VMagMax == infinity ? infinity : VScale * pu2kV(busInfo.VMagMax, busInfo.kVBase));
 
@@ -418,7 +418,7 @@ namespace SmartGridToolbox
 
          double vMag = pu2kV(busInfo.vMag, busInfo.kVBase);
          double vAng = deg2Rad(busInfo.vAngDeg);
-         bus->setV(VScale * VComplex(1, std::polar(vMag, vAng)));
+         bus->setV(VScale * VComplex{std::polar(vMag, vAng)});
          
          netw.addNode(std::move(bus));
          netw.addZip(std::move(zip), busId);
@@ -438,7 +438,7 @@ namespace SmartGridToolbox
 
          gen->setIsInService(genInfo.status);
 
-         gen->setS(PScale * VComplex(1, Complex{genInfo.Pg, genInfo.Qg}));
+         gen->setS(PScale * VComplex{Complex{genInfo.Pg, genInfo.Qg}});
 
          gen->setPMin(genInfo.PMin == -infinity ? -infinity : PScale * genInfo.PMin);
          gen->setPMax(genInfo.PMax == infinity ? infinity : PScale * genInfo.PMax);
