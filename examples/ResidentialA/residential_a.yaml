@@ -1,9 +1,15 @@
 -  parameters: 
-      n_streets: 5
-      n_houses: 5
+      n_neigbourhoods: 5
+      n_streets: [5, 6, 3, 8, 2]
+      n_houses_0: [5, 3, 8, 8, 2]
+      n_houses_1: [4, 7, 7, 5, 9, 4]
+      n_houses_2: [7, 10, 5]
+      n_houses_3: [4, 4, 7, 7, 9, 9, 6,3]
+      n_houses_4: [12, 11]
       V_base_11k: 6.3509
       V_nom_vec_11k: [6.3509, 6.3509D-120, 6.3509D120]
       V_nom_map_11k: {A: 6.3509, B: 6.3509D-120, C: 6.3509D120}
+      length_11k: [13000, 4000, 300, 600, 856]
       V_base_240: 0.240
       V_nom_vec_240: [0.240, 0.240D-120, 0.240D120]
       V_nom_map_240: {A: 0.240, B: 0.240D-120, C: 0.240D120}
@@ -34,13 +40,13 @@
       time_unit: m
       interp_type: lerp
 -  loop: 
-      loop_variable: [j, 0, 10, 1]
+      loop_variable: [i, 0, 20, 1]
       loop_body: 
          -  time_series: 
-               id: load_<j>_series
+               id: load_<i>_series
                value_type: complex_vector
                type: data_time_series
-               data_file: loads/load_<j>.txt
+               data_file: loads/load_<i>.txt
                relative_to_time: 2013-01-01 06:00:00
                time_unit: m
                interp_type: lerp
@@ -59,112 +65,117 @@
       V_base: <V_base_11k>
       V_nom: <V_nom_vec_11k>
       type: SL
--  bus: 
-      id: bus_11k_down
-      network_id: network
-      phases: <netw_phases>
-      V_base: <V_base_11k>
-      V_nom: <V_nom_vec_11k>
-      type: PQ
--  overhead_line: 
-      id: line_11k
-      network_id: network
-      bus_0_id: bus_11k_up
-      bus_1_id: bus_11k_down
-      phases_0: <netw_phases>
-      phases_1: <netw_phases>
-      length: 7000
-      n_neutral: 0
-      conductor_R_per_L: [<R_per_L_11k>, <R_per_L_11k>, <R_per_L_11k>]
-      earth_resistivity: <earth_resistivity>
-      distance_matrix:
-         [
-            [<gmr11k>, <dab11k>, <dac11k>],
-            [<dab11k>, <gmr11k>, <dbc11k>],
-            [<dac11k>, <dbc11k>, <gmr11k>]
-         ]
-      freq: 60.0
--  bus: 
-      id: bus_240_up
-      network_id: network
-      phases: <netw_phases>
-      V_base: <V_base_240>
-      V_nom: <V_nom_vec_240>
-      type: PQ
--  delta_g_wye_transformer:
-      id: trans_substation
-      network_id: network
-      bus_0_id: bus_11k_down
-      bus_1_id: bus_240_up
-      complex_turns_ratio_01: 45.834 # 11000/240, delta side use p-p V, y side use p-g V.
-      leakage_impedance: 0.1 # TODO
--  loop: 
-      loop_variable: [i, 0, <n_streets>, 1]
-      loop_body: 
+-  loop:
+      loop_variable: [i, 0, <n_neigbourhoods>, 1]
+      loop_body:
+         -  bus: 
+               id: bus_11k_down_<i>
+               network_id: network
+               phases: <netw_phases>
+               V_base: <V_base_11k>
+               V_nom: <V_nom_vec_11k>
+               type: PQ
+         -  overhead_line: 
+               id: line_11k_<i>
+               network_id: network
+               bus_0_id: bus_11k_up
+               bus_1_id: bus_11k_down_<i>
+               phases_0: <netw_phases>
+               phases_1: <netw_phases>
+               length: <length_11k(<i>)>
+               n_neutral: 0
+               conductor_R_per_L: [<R_per_L_11k>, <R_per_L_11k>, <R_per_L_11k>]
+               earth_resistivity: <earth_resistivity>
+               distance_matrix:
+                  [
+                     [<gmr11k>, <dab11k>, <dac11k>],
+                     [<dab11k>, <gmr11k>, <dbc11k>],
+                     [<dac11k>, <dbc11k>, <gmr11k>]
+                  ]
+               freq: 60.0
+         -  bus: 
+               id: bus_240_up_<i>
+               network_id: network
+               phases: <netw_phases>
+               V_base: <V_base_240>
+               V_nom: <V_nom_vec_240>
+               type: PQ
+         -  delta_g_wye_transformer:
+               id: trans_substation_<i>
+               network_id: network
+               bus_0_id: bus_11k_down_<i>
+               bus_1_id: bus_240_up_<i>
+               complex_turns_ratio_01: 45.834 # 11000/240, delta side use p-p V, y side use p-g V.
+               leakage_impedance: 0.1 # TODO
          -  loop: 
-               loop_variable: [j, 0, <n_houses>, 1]
+               loop_variable: [j, 0, <n_streets(<i>)>, 1]
                loop_body: 
-                  -  bus: 
-                        id: bus_<i>_<j>
-                        network_id: network
-                        phases: <netw_phases>
-                        V_base: <V_base_240>
-                        V_nom: <V_nom_vec_240>
-                        type: PQ
-                  -  bus: 
-                        id: house_<i>_<j>
-                        network_id: network
-                        phases: [<house_phases(<(<i>+<j>)%20>)>]
-                        V_base: <V_base_240>
-                        V_nom: [<V_nom_map_240(<house_phases(<(<i>+<j>)%20>)>)>]
-                        type: PQ
-                  -  time_series_zip: 
-                        id: zip_<i>_<j>
-                        network_id: network
-                        bus_id: house_<i>_<j>
-                        phases: [<house_phases(<(<i>+<j>)%20>)>]
-                        time_series_id: load_<(<i>+<j>)%20>_series
-                        dt: 00:05:00
+                  -  loop: 
+                        loop_variable: [k, 0, <n_houses_<i>(<j>)>, 1]
+                        loop_body: 
+                           -  bus: 
+                                 id: bus_<i>_<j>_<k>
+                                 network_id: network
+                                 phases: <netw_phases>
+                                 V_base: <V_base_240>
+                                 V_nom: <V_nom_vec_240>
+                                 type: PQ
+                           -  bus: 
+                                 id: house_<i>_<j>_<k>
+                                 network_id: network
+                                 phases: [<house_phases(<(<i>+<j>+<k>)%20>)>]
+                                 V_base: <V_base_240>
+                                 V_nom: [<V_nom_map_240(<house_phases(<(<i>+<j>+<k>)%20>)>)>]
+                                 type: PQ
+                           -  time_series_zip: 
+                                 id: zip_<i>_<j>_<k>
+                                 network_id: network
+                                 bus_id: house_<i>_<j>_<k>
+                                 phases: [<house_phases(<(<i>+<j>+<k>)%20>)>]
+                                 time_series_id: load_<(<i>+<j>+<k>)%20>_series
+                                 dt: 00:05:00
+                           -  overhead_line: 
+                                 id: drop_<i>_<j>_<k>
+                                 network_id: network
+                                 bus_0_id: bus_<i>_<j>_<k>
+                                 bus_1_id: house_<i>_<j>_<k>
+                                 phases_0: [<house_phases(<(<i>+<j>+<k>)%20>)>]
+                                 phases_1: [<house_phases(<(<i>+<j>+<k>)%20>)>]
+                                 length: 20
+                                 n_neutral: 0
+                                 conductor_R_per_L: [<R_per_L_240>]
+                                 earth_resistivity: <earth_resistivity>
+                                 distance_matrix: [[0.01]]
+                                 freq: 60.0
+                  -  loop: 
+                        loop_variable: [k, 0, <<n_houses_<i>(<j>)>-1>, 1]
+                        loop_body: 
+                           -  overhead_line: 
+                                 id: line_<i>_<j>_<k>_<<k>+1>
+                                 network_id: network
+                                 bus_0_id: bus_<i>_<j>_<k>
+                                 bus_1_id: bus_<i>_<j>_<<k>+1>
+                                 phases_0: <netw_phases>
+                                 phases_1: <netw_phases>
+                                 length: 100
+                                 n_neutral: 0
+                                 conductor_R_per_L: [<R_per_L_240>, <R_per_L_240>, <R_per_L_240>]
+                                 earth_resistivity: <earth_resistivity>
+                                 distance_matrix:
+                                    [
+                                       [<gmr240>, <dab240>, <dac240>],
+                                       [<dab240>, <gmr240>, <dbc240>],
+                                       [<dac240>, <dbc240>, <gmr240>]
+                                    ]
+                                 freq: 60.0
                   -  overhead_line: 
-                        id: drop_<i>_<j>
+                        id: line_240_up_<i>_<j>_0
                         network_id: network
-                        bus_0_id: bus_<i>_<j>
-                        bus_1_id: house_<i>_<j>
-                        phases_0: [<house_phases(<(<i>+<j>)%20>)>]
-                        phases_1: [<house_phases(<(<i>+<j>)%20>)>]
-                        length: 20
-                        n_neutral: 0
-                        conductor_R_per_L: [<R_per_L_240>]
-                        earth_resistivity: <earth_resistivity>
-                        distance_matrix: [[0.01]]
-                        freq: 60.0
-#         -  inverter: 
-#               id: inverter_<i>_<<n_houses>-1>
-#               network_id: network
-#               bus_id: house_<i>_<<n_houses>-1>
-#               phases: [<house_phases(<(<i>+<<n_houses>-1>)%20>)>]
-#               requested_Q_per_phase: 0
-#               max_S_mag_per_phase: 100.0
-#               efficiency: 0.86
-#         -  solar_pv: 
-#               id: solar_pv_<i>_<<n_houses>-1>
-#               weather: weather
-#               inverter: inverter_<i>_<<n_houses>-1>
-#               efficiency: 0.75
-#               area_m2: 6.0
-#               zenith_degrees: 64.6
-#               azimuth_degrees: 95.8 # Should point right at sun on Jan 26, 2013, 0830.
-         -  loop: 
-               loop_variable: [j, 0, <<n_houses>-1>, 1]
-               loop_body: 
-                  -  overhead_line: 
-                        id: line_<i>_<j>_<<j>+1>
-                        network_id: network
-                        bus_0_id: bus_<i>_<j>
-                        bus_1_id: bus_<i>_<<j>+1>
+                        bus_0_id: bus_240_up_<i>
+                        bus_1_id: bus_<i>_<j>_0
                         phases_0: <netw_phases>
                         phases_1: <netw_phases>
-                        length: 100
+                        length: 1000
                         n_neutral: 0
                         conductor_R_per_L: [<R_per_L_240>, <R_per_L_240>, <R_per_L_240>]
                         earth_resistivity: <earth_resistivity>
@@ -175,21 +186,3 @@
                               [<dac240>, <dbc240>, <gmr240>]
                            ]
                         freq: 60.0
-         -  overhead_line: 
-               id: line_240_up_<i>_0
-               network_id: network
-               bus_0_id: bus_240_up
-               bus_1_id: bus_<i>_0
-               phases_0: <netw_phases>
-               phases_1: <netw_phases>
-               length: 1000
-               n_neutral: 0
-               conductor_R_per_L: [<R_per_L_240>, <R_per_L_240>, <R_per_L_240>]
-               earth_resistivity: <earth_resistivity>
-               distance_matrix:
-                  [
-                     [<gmr240>, <dab240>, <dac240>],
-                     [<dab240>, <gmr240>, <dbc240>],
-                     [<dac240>, <dbc240>, <gmr240>]
-                  ]
-               freq: 60.0
