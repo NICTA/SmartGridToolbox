@@ -6,7 +6,7 @@ TVec = 60:60:7*day;
 lVeci = [];
 
 for i = 1:20
-   SMax = rand*3000e-6;          % Maximum value for this particular load.
+   SMax = rand*5e-3;              % Maximum value for this particular load.
    xVec = rand(size(TVec));      % Random frequency magnitude.
    pVec = rand(size(TVec))*2*pi; % Phase offset.
    lVec = zeros(size(tVec));     % The load.
