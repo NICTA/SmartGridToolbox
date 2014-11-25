@@ -1,4 +1,6 @@
 -  parameters: 
+      netw_phases: [A, B, C]
+
       n_neigbourhoods: 5
       n_streets: [5, 6, 3, 8, 2]
       n_houses_0: [5, 3, 8, 8, 2]
@@ -6,26 +8,49 @@
       n_houses_2: [7, 10, 5]
       n_houses_3: [4, 4, 7, 7, 9, 9, 6,3]
       n_houses_4: [12, 11]
+
+      V_base_330k: 190.526
+      V_nom_vec_330k: [190.526, 190.526D-120, 190.526D120]
+      V_nom_map_330k: {A: 190.526, B: 190.526D-120, C: 190.526D120}
+
       V_base_11k: 6.3509
       V_nom_vec_11k: [6.3509, 6.3509D-120, 6.3509D120]
       V_nom_map_11k: {A: 6.3509, B: 6.3509D-120, C: 6.3509D120}
-      length_11k: [13000, 4000, 300, 600, 856]
+
       V_base_240: 0.240
       V_nom_vec_240: [0.240, 0.240D-120, 0.240D120]
       V_nom_map_240: {A: 0.240, B: 0.240D-120, C: 0.240D120}
-      netw_phases: [A, B, C]
+
       house_phases: [C, C, A, B, C, A, A, C, B, C, B, B, C, B, B, A, B, A, B, C]
+
       earth_resistivity: 100
+
+      R_per_L_330k: 0.3e-4
+      dab330k_1: 3.0
+      dac330k_1: 6.0
+      dbc330k_1: 3.0
+      dab330k_2: 6.0
+      dac330k_2: 3.0
+      dbc330k_2: 3.0
+      dab330k_3: 3.0
+      dac330k_3: 3.0
+      dbc330k_3: 6.0
+      gmr330k: 0.020
+      length_330k: 50000
+
+      R_per_L_11k: 1e-4
       dab11k: 2.5
       dac11k: 2.5
       dbc11k: 2.5
       gmr11k: 0.015
-      R_per_L_11k: 1e-4
+      length_11k: [13000, 4000, 300, 600, 856]
+
       dab240: 1.5
       dac240: 1.5
       dbc240: 1.5
       gmr240: 0.007
       R_per_L_240: 4e-4
+
 -  simulation: 
       lat_long: [-35.3075, 149.1244] # Canberra, Australia.
       start_time: 2013-01-01 06:00:00
@@ -59,12 +84,101 @@
       P_base: 1e6
       freq_Hz: 60
 -  bus: 
+      id: bus_330k_up
+      network_id: network
+      phases: [A, B, C]
+      V_base: <V_base_330k>
+      V_nom: <V_nom_vec_330k>
+      type: SL
+-  bus: 
+      id: bus_330k_mid_1
+      network_id: network
+      phases: [A, B, C]
+      V_base: <V_base_330k>
+      V_nom: <V_nom_vec_330k>
+      type: PQ
+-  overhead_line: 
+      id: line_330k_up_mid_1
+      network_id: network
+      bus_0_id: bus_330k_up
+      bus_1_id: bus_330k_mid_1
+      phases_0: <netw_phases>
+      phases_1: <netw_phases>
+      length: <length_330k>
+      n_neutral: 0
+      conductor_R_per_L: [<R_per_L_330k>, <R_per_L_330k>, <R_per_L_330k>]
+      earth_resistivity: <earth_resistivity>
+      distance_matrix:
+         [
+            [<gmr330k>, <dab330k_1>, <dac330k_1>],
+            [<dab330k_1>, <gmr330k>, <dbc330k_1>],
+            [<dac330k_1>, <dbc330k_1>, <gmr330k>]
+         ]
+      freq: 60.0
+-  bus: 
+      id: bus_330k_mid_2
+      network_id: network
+      phases: [A, B, C]
+      V_base: <V_base_330k>
+      V_nom: <V_nom_vec_330k>
+      type: PQ
+-  overhead_line: 
+      id: line_330k_mid_1_mid_2
+      network_id: network
+      bus_0_id: bus_330k_mid_1
+      bus_1_id: bus_330k_mid_2
+      phases_0: <netw_phases>
+      phases_1: <netw_phases>
+      length: <length_330k>
+      n_neutral: 0
+      conductor_R_per_L: [<R_per_L_330k>, <R_per_L_330k>, <R_per_L_330k>]
+      earth_resistivity: <earth_resistivity>
+      distance_matrix:
+         [
+            [<gmr330k>, <dab330k_2>, <dac330k_2>],
+            [<dab330k_2>, <gmr330k>, <dbc330k_2>],
+            [<dac330k_2>, <dbc330k_2>, <gmr330k>]
+         ]
+      freq: 60.0
+-  bus: 
+      id: bus_330k_down
+      network_id: network
+      phases: <netw_phases>
+      V_base: <V_base_330k>
+      V_nom: <V_nom_vec_330k>
+      type: PQ
+-  overhead_line: 
+      id: line_330k_mid_2_down
+      network_id: network
+      bus_0_id: bus_330k_mid_2
+      bus_1_id: bus_330k_down
+      phases_0: <netw_phases>
+      phases_1: <netw_phases>
+      length: <length_330k>
+      n_neutral: 0
+      conductor_R_per_L: [<R_per_L_330k>, <R_per_L_330k>, <R_per_L_330k>]
+      earth_resistivity: <earth_resistivity>
+      distance_matrix:
+         [
+            [<gmr330k>, <dab330k_3>, <dac330k_3>],
+            [<dab330k_3>, <gmr330k>, <dbc330k_3>],
+            [<dac330k_3>, <dbc330k_3>, <gmr330k>]
+         ]
+      freq: 60.0
+-  bus: 
       id: bus_11k_up
       network_id: network
       phases: <netw_phases>
       V_base: <V_base_11k>
       V_nom: <V_nom_vec_11k>
-      type: SL
+      type: PQ
+-  delta_g_wye_transformer:
+      id: trans_330k_11k
+      network_id: network
+      bus_0_id: bus_330k_down
+      bus_1_id: bus_11k_up
+      complex_turns_ratio_01: 51.9615 # 330/11, delta side use p-p V, y side use p-g V.
+      leakage_impedance: 0.1 # TODO
 -  loop:
       loop_variable: [i, 0, <n_neigbourhoods>, 1]
       loop_body:
