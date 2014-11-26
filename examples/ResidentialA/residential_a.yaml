@@ -2,18 +2,22 @@
       netw_phases: [A, B, C]
 
       n_neigbourhoods: 5
-      n_streets: [5, 6, 3, 8, 2]
-      n_houses_0: [5, 3, 8, 8, 2]
-      n_houses_1: [4, 7, 7, 5, 9, 4]
-      n_houses_2: [7, 10, 5]
-      n_houses_3: [4, 4, 7, 7, 9, 9, 6,3]
-      n_houses_4: [12, 11]
+      n_streets: [4, 5, 2, 6, 2]
+      n_houses_0: [5, 3, 8, 8]
+      n_houses_1: [4, 7, 7, 5, 9]
+      n_houses_2: [7, 10]
+      n_houses_3: [4, 4, 7, 7, 9, 9]
+      n_houses_4: [10, 9]
 
       turns_ratio: [44.4, 43.3, 43.6, 43.05, 43.0]
 
-      V_base_330k: 190.526
-      V_nom_vec_330k: [190.526, 190.526D-120, 190.526D120]
-      V_nom_map_330k: {A: 190.526, B: 190.526D-120, C: 190.526D120}
+      #V_base_330k: 190.526
+      #V_nom_vec_330k: [190.526, 190.526D-120, 190.526D120]
+      #V_nom_map_330k: {A: 190.526, B: 190.526D-120, C: 190.526D120}
+     
+      V_base_330k: 12.7018
+      V_nom_vec_330k: [12.7018, 12.7018D-120, 12.7018D120]
+      V_nom_map_330k: {A: 12.7018, B: 12.7018D-120, C: 12.7018D120}
 
       V_base_11k: 6.3509
       V_nom_vec_11k: [6.3509, 6.3509D-120, 6.3509D120]
@@ -23,7 +27,7 @@
       V_nom_vec_240: [0.240, 0.240D-120, 0.240D120]
       V_nom_map_240: {A: 0.240, B: 0.240D-120, C: 0.240D120}
 
-      house_phases: [C, C, A, B, C, A, A, C, B, C, B, B, C, B, B, A, B, A, B, C]
+      house_phases: [C, A, A, B, C, A, A, C, B, C, B, B, C, B, B, A, B, A, B, C]
 
       earth_resistivity: 100
 
@@ -38,7 +42,7 @@
       dac330k_3: 3.0
       dbc330k_3: 6.0
       gmr330k: 0.020
-      length_330k: 10000
+      length_330k: 20000
 
       R_per_L_11k: 1e-4
       dab11k: 2.5
@@ -179,7 +183,8 @@
       network_id: network
       bus_0_id: bus_330k_down
       bus_1_id: bus_11k_up
-      complex_turns_ratio_01: 51.9615 # 330/11, delta side use p-p V, y side use p-g V.
+      #complex_turns_ratio_01: 51.9615 # 330/11, delta side use p-p V, y side use p-g V.
+      complex_turns_ratio_01: 
       leakage_impedance: 0.1 # TODO
 -  loop:
       loop_variable: [i, 0, <n_neigbourhoods>, 1]
