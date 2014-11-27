@@ -260,7 +260,6 @@ namespace SmartGridToolbox
          auto colIt = rowIt->begin();
          for (int j = 0; j < nCols; ++j)
          {
-            std::cout << i << " " << j << " " << *colIt << std::endl;
             result(i, j) = *colIt; 
             ++colIt;
          }
