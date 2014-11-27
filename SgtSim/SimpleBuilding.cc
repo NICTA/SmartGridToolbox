@@ -65,7 +65,7 @@ namespace SmartGridToolbox
            + kh_ * (Ts_ - Tb_); // Heat ADDED.
       mode_ = dQh_ > 0 ? HvacMode::HEATING : HvacMode::COOLING;
       cop_ = mode_ == HvacMode::HEATING ? copHeat_ : copCool_;
-      Ph_ = abs(dQh_) / cop_;
+      Ph_ = std::abs(dQh_) / cop_;
       if (Ph_ > PMax_)
       {
          Ph_ = PMax_;
