@@ -5,47 +5,96 @@
 #include "SparseSolver.h"
 #include "Stopwatch.h"
 
-namespace SmartGridToolbox
+using namespace SmartGridToolbox;
+using namespace arma;
+
+namespace
 {
-   namespace
+   SpMat<double> real(const SpMat<Complex>& cMat)
    {
-      void initJcBlock(
-            const arma::Mat<double>& G,
-            const arma::Mat<double>& B,
-            arma::SpMat<double>& Jrr,
-            arma::SpMat<double>& Jri,
-            arma::SpMat<double>& Jir,
-            arma::SpMat<double>& Jii)
+      Col<uword> rowInd(cMat.n_nonzero + 1, fill::none);
+      for (int i = 0; i < cMat.n_nonzero + 1; ++i)
       {
-         Jrr = -G;
-         Jri =  B;
-         Jir = -B;
-         Jii = -G;
+         rowInd(i) = cMat.row_indices[i];
       }
+      Col<uword> colPtr(cMat.n_cols + 2, fill::none);
+      for (int i = 0; i < cMat.n_cols + 2; ++i)
+      {
+         colPtr(i) = cMat.col_ptrs[i];
+      }
+      Col<double> values(cMat.n_nonzero + 1, fill::none);
+      for (int i = 0; i < cMat.n_nonzero + 1; ++i)
+      {
+         values(i) = cMat.values[i].real();
+      }
+      SpMat<double> result(rowInd, colPtr, values, cMat.n_rows, cMat.n_cols);
+      return result;
    }
 
+   SpMat<double> imag(const SpMat<Complex>& cMat)
+   {
+      Col<uword> rowInd(cMat.n_nonzero + 1, fill::none);
+      for (int i = 0; i < cMat.n_nonzero + 1; ++i)
+      {
+         rowInd(i) = cMat.row_indices[i];
+      }
+      Col<uword> colPtr(cMat.n_cols + 2, fill::none);
+      for (int i = 0; i < cMat.n_cols + 2; ++i)
+      {
+         colPtr(i) = cMat.col_ptrs[i];
+      }
+      Col<double> values(cMat.n_nonzero + 1, fill::none);
+      for (int i = 0; i < cMat.n_nonzero + 1; ++i)
+      {
+         values(i) = cMat.values[i].imag();
+      }
+      SpMat<double> result(rowInd, colPtr, values, cMat.n_rows, cMat.n_cols);
+      return result;
+   }
+   
+   template<typename T> Col<Complex> conj(const T& from)
+   {
+      Col<Complex> result(from.n_elem, fill::none);
+      for (int i = 0; i < from.n_elem; ++i)
+      {
+         result[i] = std::conj(from[i]);
+      }
+      return result;
+   }
+
+   template<typename T, typename U> void initJcBlock(const T& G, const T& B, U& Jrr, U& Jri, U& Jir, U& Jii)
+   {
+      Jrr = -G;
+      Jri =  B;
+      Jir = -B;
+      Jii = -G;
+   }
+}
+
+namespace SmartGridToolbox
+{
    Jacobian::Jacobian(int nPq, int nPv)
    {
       for (int i = 0; i < 2; ++i)
       {
          for (int k = 0; k < 2; ++k)
          {
-            blocks_[i][k] = arma::SpMat<double>(nPq, nPq);
+            blocks_[i][k] = SpMat<double>(nPq, nPq);
          }
          for (int k = 2; k < 5; ++k)
          {
-            blocks_[i][k] = arma::SpMat<double>(nPq, nPv);
+            blocks_[i][k] = SpMat<double>(nPq, nPv);
          }
       }
       for (int i = 2; i < 4; ++i)
       {
          for (int k = 0; k < 2; ++k)
          {
-            blocks_[i][k] = arma::SpMat<double>(nPv, nPq);
+            blocks_[i][k] = SpMat<double>(nPv, nPq);
          }
          for (int k = 2; k < 5; ++k)
          {
-            blocks_[i][k] = arma::SpMat<double>(nPv, nPv);
+            blocks_[i][k] = SpMat<double>(nPv, nPv);
          }
       }
    }
@@ -88,22 +137,22 @@ namespace SmartGridToolbox
       const double tol = 1e-8;
       const int maxiter = 20;
 
-      G_ = arma::real(mod_->Y());
-      B_ = arma::imag(mod_->Y());
+      G_ = real(mod_->Y());
+      B_ = imag(mod_->Y());
 
-      arma::Col<double> Vr = arma::real(mod_->V());
-      arma::Col<double> Vi = arma::imag(mod_->V());
+      Col<double> Vr = real(mod_->V());
+      Col<double> Vi = imag(mod_->V());
 
-      arma::Col<double> P = arma::real(mod_->S());
-      arma::Col<double> Q = arma::imag(mod_->S());
+      Col<double> P = real(mod_->S());
+      Col<double> Q = imag(mod_->S());
 
-      arma::Col<double> M2Pv = element_prod(project(Vr, mod_->selPvFromAll()), project(Vr, mod_->selPvFromAll()))
-                                 + element_prod(project(Vi, mod_->selPvFromAll()), project(Vi, mod_->selPvFromAll()));
+      Col<double> M2Pv = Vr(mod_->selPvFromAll()) % Vr(mod_->selPvFromAll())
+                             + Vi(mod_->selPvFromAll()) % Vi(mod_->selPvFromAll());
 
       Jacobian Jc(mod_->nPq(), mod_->nPv()); ///< The part of J that doesn't update at each iteration.
       initJc(Jc);
 
-      arma::Col<double> f(nVar()); ///< Current mismatch function.
+      Col<double> f(nVar()); ///< Current mismatch function.
 
       Jacobian J = Jc; ///< Jacobian, d f_i/d x_i.
 
@@ -120,7 +169,7 @@ namespace SmartGridToolbox
          stopwatch.reset(); stopwatch.start();
          calcf(f, Vr, Vi, P, Q, M2Pv);
 
-         err = norm_inf(f);
+         err = norm(f);
          SGT_DEBUG(Log().debug() << "f  = " << std::setprecision(5) << std::setw(9) << f << std::endl);
          SGT_DEBUG(Log().debug() << "Error = " << err << std::endl);
          if (err <= tol)
@@ -141,7 +190,7 @@ namespace SmartGridToolbox
 
          // Construct the full Jacobian from J, which contains the block structure.
          stopwatch.reset(); stopwatch.start();
-         arma::SpMat<double> JMat; calcJMatrix(JMat, J);
+         SpMat<double> JMat; calcJMatrix(JMat, J);
          stopwatch.stop(); durationConstructJMat += stopwatch.seconds();
 
          SGT_DEBUG
@@ -149,7 +198,7 @@ namespace SmartGridToolbox
             Log().debug() << "Before kluSolve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
             Log().debug() << "Before kluSolve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
             Log().debug() << "Before kluSolve: M^2 = " << std::setprecision(5) << std::setw(9)
-                    << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl;
+                    << (Vr % Vr + Vi % Vi) << std::endl;
             Log().debug() << "Before kluSolve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
             Log().debug() << "Before kluSolve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
             Log().debug() << "Before kluSolve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
@@ -162,7 +211,7 @@ namespace SmartGridToolbox
          );
 
          stopwatch.reset(); stopwatch.start();
-         arma::Col<double> x;
+         Col<double> x;
          bool ok = kluSolve(JMat, -f, x);
          stopwatch.stop(); durationSolve += stopwatch.seconds();
 
@@ -176,24 +225,23 @@ namespace SmartGridToolbox
 
          stopwatch.reset(); stopwatch.start();
          // Update the current values of V from the solution:
-         project(Vr, mod_->selPqFromAll()) += project(x, selVrPqFrom_x_);
-         project(Vi, mod_->selPqFromAll()) += project(x, selViPqFrom_x_);
+         Vr(mod_->selPqFromAll()) += x(selVrPqFrom_x_);
+         Vi(mod_->selPqFromAll()) += x(selViPqFrom_x_);
 
          // Explicitly deal with the voltage magnitude constraint by updating VrPv by hand.
-         auto VrPv = project(Vr, mod_->selPvFromAll());
-         auto ViPv = project(Vi, mod_->selPvFromAll());
-         const auto DeltaViPv = project(x, selViPvFrom_x_);
-         VrPv += element_div(M2Pv - element_prod(VrPv, VrPv) - element_prod(ViPv, ViPv)
-                             - 2 * element_prod(ViPv, DeltaViPv), 2 * VrPv);
+         auto VrPv = Vr(mod_->selPvFromAll());
+         auto ViPv = Vi(mod_->selPvFromAll());
+         const auto DeltaViPv = x(selViPvFrom_x_);
+         VrPv += (M2Pv - VrPv % VrPv - ViPv % ViPv - 2 * ViPv % DeltaViPv) / (2 * VrPv);
          ViPv += DeltaViPv;
 
          // Update Q for PV busses based on the solution.
-         project(Q, mod_->selPvFromAll()) += project(x, selQPvFrom_x_);
+         Q(mod_->selPvFromAll()) += x(selQPvFrom_x_);
 
          SGT_DEBUG(Log().debug() << "Updated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl);
          SGT_DEBUG(Log().debug() << "Updated Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl);
          SGT_DEBUG(Log().debug() << "Updated M^2 = " << std::setprecision(5) << std::setw(9)
-                           << (element_prod(Vr, Vr) + element_prod(Vi, Vi)) << std::endl);
+                           << Vr % Vr + Vi % Vi << std::endl);
          SGT_DEBUG(Log().debug() << "Updated P   = " << std::setprecision(5) << std::setw(9) << P << std::endl);
          SGT_DEBUG(Log().debug() << "Updated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl);
          stopwatch.stop(); durationUpdateIter += stopwatch.seconds();
@@ -208,16 +256,16 @@ namespace SmartGridToolbox
          }
 
          // Set the slack power.
-         auto SSl = project(mod_->S(), mod_->selSlFromAll());
+         auto SSl = mod_->S()(mod_->selSlFromAll());
 
-         auto VSl = project(mod_->V(), mod_->selSlFromAll());
-         auto IZipSl = project(mod_->IZip(), mod_->selSlFromAll());
+         auto VSl = mod_->V()(mod_->selSlFromAll());
+         auto IZipSl = mod_->IZip()(mod_->selSlFromAll());
 
-         auto YStar = conj(project(mod_->Y(), mod_->selSlFromAll(), mod_->selAllFromAll()));
+         auto YStar = conj(mod_->Y()(mod_->selSlFromAll(), mod_->selAllFromAll()));
          auto VStar = conj(mod_->V());
-         auto IZipStar = conj(project(mod_->IZip(), mod_->selSlFromAll()));
+         auto IZipStar = conj(mod_->IZip()(mod_->selSlFromAll()));
 
-         SSl = element_prod(VSl, prod(YStar, VStar)) - element_prod(VSl, IZipStar);
+         SSl = VSl % (YStar * VStar) - VSl % IZipStar;
 
          // Update nodes and busses.
          for (int i = 0; i < mod_->nNode(); ++i)
@@ -255,25 +303,25 @@ namespace SmartGridToolbox
 
    void PowerFlowNr::initSubmatrixRanges()
    {
-      for (int i = 0; i < mod_->nPq(); ++i)
+      for (uword i = 0; i < mod_->nPq(); ++i)
       {
          selIrPqFrom_f_[i] = 2 * i + 1;
          selIiPqFrom_f_[i] = 2 * i;
       }
 
-      for (int i = 0; i < mod_->nPv(); ++i)
+      for (uword i = 0; i < mod_->nPv(); ++i)
       {
          selIrPvFrom_f_[i] = 2 * mod_->nPq() + 2 * i + 1;
          selIiPvFrom_f_[i] = 2 * mod_->nPq() + 2 * i;
       }
 
-      for (int i = 0; i < mod_->nPq(); ++i)
+      for (uword i = 0; i < mod_->nPq(); ++i)
       {
          selVrPqFrom_x_[i] = 2 * i;
          selViPqFrom_x_[i] = 2 * i + 1;
       }
 
-      for (int i = 0; i < mod_->nPv(); ++i)
+      for (uword i = 0; i < mod_->nPv(); ++i)
       {
          selQPvFrom_x_[i] = 2 * mod_->nPq() + 2 * i;
          selViPvFrom_x_[i] = 2 * mod_->nPq() + 2 * i + 1;
@@ -284,26 +332,25 @@ namespace SmartGridToolbox
    /** At this stage, we are treating J as if all busses were PQ. */
    void PowerFlowNr::initJc(Jacobian& Jc) const
    {
-      initJcBlock(project(G_, mod_->selPqFromAll(), mod_->selPqFromAll()),
-                  project(B_, mod_->selPqFromAll(), mod_->selPqFromAll()),
+      initJcBlock(G_(mod_->selPqFromAll(), mod_->selPqFromAll()), B_(mod_->selPqFromAll(), mod_->selPqFromAll()),
                   Jc.IrPqVrPq(),
                   Jc.IrPqViPq(),
                   Jc.IiPqVrPq(),
                   Jc.IiPqViPq());
-      initJcBlock(project(G_, mod_->selPqFromAll(), mod_->selPvFromAll()),
-                  project(B_, mod_->selPqFromAll(), mod_->selPvFromAll()),
+      initJcBlock(G_(mod_->selPqFromAll(), mod_->selPvFromAll()),
+                  B_(mod_->selPqFromAll(), mod_->selPvFromAll()),
                   Jc.IrPqVrPv(),
                   Jc.IrPqViPv(),
                   Jc.IiPqVrPv(),
                   Jc.IiPqViPv());
-      initJcBlock(project(G_, mod_->selPvFromAll(), mod_->selPqFromAll()),
-                  project(B_, mod_->selPvFromAll(), mod_->selPqFromAll()),
+      initJcBlock(G_(mod_->selPvFromAll(), mod_->selPqFromAll()),
+                  B_(mod_->selPvFromAll(), mod_->selPqFromAll()),
                   Jc.IrPvVrPq(),
                   Jc.IrPvViPq(),
                   Jc.IiPvVrPq(),
                   Jc.IiPvViPq());
-      initJcBlock(project(G_, mod_->selPvFromAll(), mod_->selPvFromAll()),
-                  project(B_, mod_->selPvFromAll(), mod_->selPvFromAll()),
+      initJcBlock(G_(mod_->selPvFromAll(), mod_->selPvFromAll()),
+                  B_(mod_->selPvFromAll(), mod_->selPvFromAll()),
                   Jc.IrPvVrPv(),
                   Jc.IrPvViPv(),
                   Jc.IiPvVrPv(),
@@ -311,55 +358,55 @@ namespace SmartGridToolbox
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-   void PowerFlowNr::calcf(arma::Col<double>& f,
-                           const arma::Col<double>& Vr, const arma::Col<double>& Vi,
-                           const arma::Col<double>& P, const arma::Col<double>& Q,
-                           const arma::Col<double>& M2Pv) const
+   void PowerFlowNr::calcf(Col<double>& f,
+                           const Col<double>& Vr, const Col<double>& Vi,
+                           const Col<double>& P, const Col<double>& Q,
+                           const Col<double>& M2Pv) const
    {
       // PQ busses:
-      const arma::SpMat<double> GPq = project(G_, mod_->selPqFromAll(), mod_->selAllFromAll());
-      const arma::SpMat<double> BPq = project(B_, mod_->selPqFromAll(), mod_->selAllFromAll());
+      const SpMat<double> GPq = G_(mod_->selPqFromAll(), mod_->selAllFromAll());
+      const SpMat<double> BPq = B_(mod_->selPqFromAll(), mod_->selAllFromAll());
 
-      const auto VrPq = project(Vr, mod_->selPqFromAll());
-      const auto ViPq = project(Vi, mod_->selPqFromAll());
+      const auto VrPq = Vr(mod_->selPqFromAll());
+      const auto ViPq = Vi(mod_->selPqFromAll());
 
-      const auto PPq = project(P, mod_->selPqFromAll());
-      const auto QPq = project(Q, mod_->selPqFromAll());
+      const auto PPq = P(mod_->selPqFromAll());
+      const auto QPq = Q(mod_->selPqFromAll());
 
-      const auto IZiprPq = project(arma::real(mod_->IZip()), mod_->selPqFromAll());
-      const auto IZipiPq = project(arma::imag(mod_->IZip()), mod_->selPqFromAll());
+      const auto IZiprPq = real(mod_->IZip()(mod_->selPqFromAll()));
+      const auto IZipiPq = imag(mod_->IZip()(mod_->selPqFromAll()));
 
-      arma::Col<double> M2Pq = element_prod(VrPq, VrPq) + element_prod(ViPq, ViPq);
+      Col<double> M2Pq = VrPq % VrPq + ViPq % ViPq;
 
-      project(f, selIrPqFrom_f_) = element_div(element_prod(VrPq, PPq) + element_prod(ViPq, QPq), M2Pq)
-                                 + IZiprPq - myProd(GPq, Vr) + myProd(BPq, Vi);
-      project(f, selIiPqFrom_f_) = element_div(element_prod(ViPq, PPq) - element_prod(VrPq, QPq), M2Pq)
-                                 + IZipiPq - myProd(GPq, Vi) - myProd(BPq, Vr);
+      f(selIrPqFrom_f_) = (VrPq % PPq + ViPq % QPq) / M2Pq
+                                 + IZiprPq - GPq * Vr + BPq * Vi;
+      f(selIiPqFrom_f_) = (ViPq % PPq - VrPq % QPq) / M2Pq
+                                 + IZipiPq - GPq * Vi - BPq * Vr;
 
       // PV busses. Note that these differ in that M2Pv is considered a constant.
-      const auto GPv = project(G_, mod_->selPvFromAll(), mod_->selAllFromAll());
-      const auto BPv = project(B_, mod_->selPvFromAll(), mod_->selAllFromAll());
+      const auto GPv = G_(mod_->selPvFromAll(), mod_->selAllFromAll());
+      const auto BPv = B_(mod_->selPvFromAll(), mod_->selAllFromAll());
 
-      const auto VrPv = project(Vr, mod_->selPvFromAll());
-      const auto ViPv = project(Vi, mod_->selPvFromAll());
+      const auto VrPv = Vr(mod_->selPvFromAll());
+      const auto ViPv = Vi(mod_->selPvFromAll());
 
-      const auto PPv = project(P, mod_->selPvFromAll());
-      const auto QPv = project(Q, mod_->selPvFromAll());
+      const auto PPv = P(mod_->selPvFromAll());
+      const auto QPv = Q(mod_->selPvFromAll());
 
-      const auto IZiprPv = project(arma::real(mod_->IZip()), mod_->selPvFromAll());
-      const auto IZipiPv = project(imag(mod_->IZip()), mod_->selPvFromAll());
+      const auto IZiprPv = real(mod_->IZip()(mod_->selPvFromAll()));
+      const auto IZipiPv = imag(mod_->IZip()(mod_->selPvFromAll()));
 
-      project(f, selIrPvFrom_f_) = element_div(element_prod(VrPv, PPv) + element_prod(ViPv, QPv), M2Pv)
-                                 + IZiprPv - myProd(GPv, Vr) + myProd(BPv, Vi);
-      project(f, selIiPvFrom_f_) = element_div(element_prod(ViPv, PPv) - element_prod(VrPv, QPv), M2Pv)
-                                 + IZipiPv - myProd(GPv, Vi) - myProd(BPv, Vr);
+      f(selIrPvFrom_f_) = (VrPv % PPv + ViPv % QPv) / M2Pv
+                                 + IZiprPv - GPv * Vr + BPv * Vi;
+      f(selIiPvFrom_f_) = (ViPv % PPv - VrPv % QPv) / M2Pv
+                                 + IZipiPv - GPv * Vi - BPv * Vr;
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
    void PowerFlowNr::updateJ(Jacobian& J, const Jacobian& Jc,
-                             const arma::Col<double>& Vr, const arma::Col<double>& Vi,
-                             const arma::Col<double>& P, const ublas::vector <double>& Q,
-                             const arma::Col<double>& M2Pv) const
+                             const Col<double>& Vr, const Col<double>& Vi,
+                             const Col<double>& P, const Col<double>& Q,
+                             const Col<double>& M2Pv) const
    {
       // Elements in J that have no non-constant part will be initialized to the corresponding term in Jc at the
       // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
@@ -402,8 +449,8 @@ namespace SmartGridToolbox
       }
 
       // Set the PV Q columns in the Jacobian. They are diagonal.
-      const auto VrPv = project(Vr, mod_->selPvFromAll());
-      const auto ViPv = project(Vi, mod_->selPvFromAll());
+      const auto VrPv = Vr(mod_->selPvFromAll());
+      const auto ViPv = Vi(mod_->selPvFromAll());
       for (int i = 0; i < mod_->nPv(); ++i)
       {
          J.IrPvQPv()(i, i) = ViPv(i) / M2Pv(i);
@@ -412,71 +459,68 @@ namespace SmartGridToolbox
    }
 
    // Modify J and f to take into account PV busses.
-   void PowerFlowNr::modifyForPv(Jacobian& J, arma::Col<double>& f,
-                                 const arma::Col<double>& Vr, const arma::Col<double>& Vi,
-                                 const arma::Col<double>& M2Pv)
+   void PowerFlowNr::modifyForPv(Jacobian& J, Col<double>& f,
+                                 const Col<double>& Vr, const Col<double>& Vi,
+                                 const Col<double>& M2Pv)
    {
-      const auto VrPv = project(Vr, mod_->selPvFromAll());
-      const auto ViPv = project(Vi, mod_->selPvFromAll());
+      const auto VrPv = Vr(mod_->selPvFromAll());
+      const auto ViPv = Vi(mod_->selPvFromAll());
 
-      typedef ublas::vector_slice<arma::Col<double>> VecSel;
-      typedef ublas::matrix_column<arma::SpMat<double>> Column;
-      auto mod = [](VecSel fProj, Column colViPv, const Column colVrPv, double fMult, double colViPvMult)
+      typedef subview_elem1<double, Mat<uword>> VecSel;
+      auto mod = [&f](uword k, const Col<uword>& idx, SpMat<double>& JViPv, const SpMat<double>& JVrPv,
+                      double fMult, double JMult)
       {
-         for (auto it = colVrPv.begin(); it != colVrPv.end(); ++it)
+         for (auto it = JVrPv.begin(); it != JVrPv.end(); ++it)
          {
-            int idx = it.index();
-            fProj(idx) += colVrPv(idx) * fMult;
-            colViPv(idx) += colVrPv(idx) * colViPvMult;
+            uword iRow = it.row();
+            f(iRow) += JVrPv(idx(iRow), k) * fMult;
+            JViPv(idx(iRow), k) += JVrPv(idx(iRow), k) * JMult;
          }
       };
 
-      for (int k = 0; k < mod_->nPv(); ++k)
+      for (uword k = 0; k < mod_->nPv(); ++k)
       {
          double fMult = (0.5 * (M2Pv(k) - VrPv(k) * VrPv(k) - ViPv(k) * ViPv(k)) / VrPv(k));
          double colViPvMult = -ViPv(k) / VrPv(k);
 
-         mod(project(f, selIrPqFrom_f_), column(J.IrPqViPv(), k), column(J.IrPqVrPv(), k), fMult, colViPvMult);
-         mod(project(f, selIiPqFrom_f_), column(J.IiPqViPv(), k), column(J.IiPqVrPv(), k), fMult, colViPvMult);
-         mod(project(f, selIrPvFrom_f_), column(J.IrPvViPv(), k), column(J.IrPvVrPv(), k), fMult, colViPvMult);
-         mod(project(f, selIiPvFrom_f_), column(J.IiPvViPv(), k), column(J.IiPvVrPv(), k), fMult, colViPvMult);
+         mod(k, selIrPqFrom_f_, J.IrPqViPv(), J.IrPqVrPv(), fMult, colViPvMult);
+         mod(k, selIiPqFrom_f_, J.IiPqViPv(), J.IiPqVrPv(), fMult, colViPvMult);
+         mod(k, selIrPvFrom_f_, J.IrPvViPv(), J.IrPvVrPv(), fMult, colViPvMult);
+         mod(k, selIiPvFrom_f_, J.IiPvViPv(), J.IiPvVrPv(), fMult, colViPvMult);
       }
    }
 
-   void PowerFlowNr::calcJMatrix(arma::SpMat<double>& JMat, const Jacobian& J) const
+   void PowerFlowNr::calcJMatrix(SpMat<double>& JMat, const Jacobian& J) const
    {
       Array<int, 4> ibInd = {{0, 1, 2, 3}};
       Array<int, 4> kbInd = {{0, 1, 3, 4}}; // Skip VrPv, since it doesn't appear as a variable.
-      Array<ublas::slice, 4> sl1Vec = {{selIrPqFrom_f_, selIiPqFrom_f_, selIrPvFrom_f_, selIiPvFrom_f_}};
-      Array<ublas::slice, 4> sl2Vec = {{selVrPqFrom_x_, selViPqFrom_x_, selViPvFrom_x_, selQPvFrom_x_}};
+      Array<Col<uword>, 4> sl1Vec = {{selIrPqFrom_f_, selIiPqFrom_f_, selIrPvFrom_f_, selIiPvFrom_f_}};
+      Array<Col<uword>, 4> sl2Vec = {{selVrPqFrom_x_, selViPqFrom_x_, selViPvFrom_x_, selQPvFrom_x_}};
 
-      JMat = arma::SpMat<double>(nVar(), nVar());
+      JMat = SpMat<double>(nVar(), nVar());
 
       // Loop over all blocks in J.
       for (int ib = 0; ib < 4; ++ib)
       {
-         ublas::slice sl1 = sl1Vec[ib];
+         Col<uword>& sl1 = sl1Vec[ib];
          for (int kb = 0; kb < 4; ++kb)
          {
-            ublas::slice sl2 = sl2Vec[kb];
-            const arma::SpMat<double>& block = J.blocks_[ibInd[ib]][kbInd[kb]];
+            Col<uword>& sl2 = sl2Vec[kb];
+            const SpMat<double>& block = J.blocks_[ibInd[ib]][kbInd[kb]];
 
             // Loop over all non-zero elements in the block.
-            for (auto it1 = block.begin1(); it1 != block.end1(); ++it1)
+            for (auto it = block.begin(); it != block.end(); ++it)
             {
-               for (auto it2 = it1.begin(); it2 != it1.end(); ++it2)
-               {
-                  // Get the indices into the block.
-                  int iBlock = it2.index1();
-                  int kBlock = it2.index2();
+               // Get the indices into the block.
+               int iBlock = it.row();
+               int kBlock = it.col();
 
-                  // Get the indices into JMat.
-                  int iRes = sl1(iBlock);
-                  int kRes = sl2(kBlock);
+               // Get the indices into JMat.
+               int iRes = sl1(iBlock);
+               int kRes = sl2(kBlock);
 
-                  // Assign the element.
-                  JMat(iRes, kRes) = block(iBlock, kBlock);
-               }
+               // Assign the element.
+               JMat(iRes, kRes) = block(iBlock, kBlock);
             }
          }
       }

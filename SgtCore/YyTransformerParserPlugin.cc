@@ -30,7 +30,7 @@ namespace SmartGridToolbox
       Complex a = parser.expand<Complex>(nd["complex_turns_ratio_01"]);
       Complex ZL = parser.expand<Complex>(nd["leakage_impedance"]);
       auto ndYm = nd["magnetizing_admittance"];
-      Complex YM = ndYm ? parser.expand<Complex>(ndYm) : arma::fill::zeros;
+      Complex YM = ndYm ? parser.expand<Complex>(ndYm) : czero;
 
       std::unique_ptr<YyTransformer> trans(new YyTransformer(id, a, ZL, YM));
 

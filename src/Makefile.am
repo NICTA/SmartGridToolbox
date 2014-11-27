@@ -10,6 +10,7 @@ run_config_LDADD = \
 	../SgtCore/libSgtCore.a \
 	../SgtSim/libSgtSim.a \
 	-lboost_date_time \
+	-larmadillo \
 	-lblas \
 	-lyaml-cpp \
 	-lklu \
@@ -24,6 +25,7 @@ solve_network_SOURCES = solve_network.cc
 solve_network_LDADD = \
 	../SgtCore/libSgtCore.a \
 	-lboost_date_time \
+	-larmadillo \
 	-lblas \
 	-lyaml-cpp \
 	-lklu \

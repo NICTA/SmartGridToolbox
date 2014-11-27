@@ -225,14 +225,14 @@ namespace SmartGridToolbox
 
          PowerFlowModel* mod_;
       
-         arma::Col<int> selIrPqFrom_f_;
-         arma::Col<int> selIiPqFrom_f_;
-         arma::Col<int> selIrPvFrom_f_;
-         arma::Col<int> selIiPvFrom_f_;
-         arma::Col<int> selVrPqFrom_x_;
-         arma::Col<int> selViPqFrom_x_;
-         arma::Col<int> selQPvFrom_x_;
-         arma::Col<int> selViPvFrom_x_;
+         arma::Col<arma::uword> selIrPqFrom_f_;
+         arma::Col<arma::uword> selIiPqFrom_f_;
+         arma::Col<arma::uword> selIrPvFrom_f_;
+         arma::Col<arma::uword> selIiPvFrom_f_;
+         arma::Col<arma::uword> selVrPqFrom_x_;
+         arma::Col<arma::uword> selViPqFrom_x_;
+         arma::Col<arma::uword> selQPvFrom_x_;
+         arma::Col<arma::uword> selViPvFrom_x_;
 
          arma::SpMat<double> G_;   ///< Real part of Y matrix.
          arma::SpMat<double> B_;   ///< Imag part of Y matrix.

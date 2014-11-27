@@ -2,22 +2,21 @@
 
 #include <armadillo>
 
+using namespace arma;
+
 bool kluSolve(const arma::SpMat<double>& a, const arma::Col<double>& b, arma::Col<double>& result)
 {
-   boost::numeric::ublas::compressed_matrix<double, boost::numeric::ublas::column_major> ac = a;
-   ac.complete_index1_data();
-
    int n = b.size();
-   int nnz = ac.nnz();
+   uword nnz = a.n_nonzero;
 
    int* ap = new int[n + 1];
-   for (int i = 0; i <= n; ++i) ap[i] = ac.index1_data()[i];
+   for (int i = 0; i <= n; ++i) ap[i] = a.row_indices[i];
 
    int* ai = new int[nnz];
-   for (int i = 0; i < nnz; ++i) ai[i] = ac.index2_data()[i];
+   for (int i = 0; i < nnz; ++i) ai[i] = a.col_ptrs[i];
 
    double* ax = new double[nnz];
-   for (int i = 0; i < nnz; ++i) ax[i] = ac.value_data()[i];
+   for (int i = 0; i < nnz; ++i) ax[i] = a.values[i];
 
    double* b1 = new double[n];
    for (int i = 0; i < n; ++i) b1[i] = b(i);
@@ -40,7 +39,7 @@ bool kluSolve(const arma::SpMat<double>& a, const arma::Col<double>& b, arma::Co
    klu_free_symbolic (&Symbolic, &Common);
    klu_free_numeric (&Numeric, &Common);
 
-   result = boost::numeric::arma::Col<double>(n);
+   result = arma::Col<double>(n, fill::none);
    for (int i = 0; i < n; ++i)
    {
       result(i) = b1[i];
