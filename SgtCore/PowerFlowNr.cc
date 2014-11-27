@@ -52,7 +52,7 @@ namespace
       return result;
    }
    
-   template<typename T> Col<Complex> conj(const T& from)
+   template<typename T> Col<Complex> colConj(const T& from)
    {
       Col<Complex> result(from.n_elem, fill::none);
       for (int i = 0; i < from.n_elem; ++i)
@@ -273,9 +273,10 @@ namespace SmartGridToolbox
             auto VSl = mod_->V()(mod_->selSlFromAll());
             auto IZipSl = mod_->IZip()(mod_->selSlFromAll());
 
-            auto YStar = conj(mod_->Y()(mod_->selSlFromAll(), mod_->selAllFromAll()));
-            auto VStar = conj(mod_->V());
-            auto IZipStar = conj(mod_->IZip()(mod_->selSlFromAll()));
+            SpMat<Complex> YStar = mod_->Y()(mod_->selSlFromAll(), mod_->selAllFromAll());
+            for (auto elem : YStar) elem = std::conj(Complex(elem));
+            auto VStar = colConj(mod_->V());
+            auto IZipStar = colConj(mod_->IZip()(mod_->selSlFromAll()));
 
             SSl = VSl % (YStar * VStar) - VSl % IZipStar;
          }

@@ -158,7 +158,7 @@ namespace SmartGridToolbox
          {
             auto& busNr = *busPair.second;
             const auto nd = this->node(busNr.id_);
-            auto SGen = (busNr.S_ - nd->SZip()) / double(nd->gens().size());
+            arma::Col<Complex> SGen = (busNr.S_ - nd->SZip()) / double(nd->gens().size());
             // Note: we've already taken YZip and IZip explicitly into account, so this is correct.
            
             auto bus = nd->bus();
