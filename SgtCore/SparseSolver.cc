@@ -10,10 +10,10 @@ bool kluSolve(const arma::SpMat<double>& a, const arma::Col<double>& b, arma::Co
    uword nnz = a.n_nonzero;
 
    int* ap = new int[n + 1];
-   for (int i = 0; i <= n; ++i) ap[i] = a.row_indices[i];
+   for (int i = 0; i <= n; ++i) ap[i] = a.col_ptrs[i];
 
    int* ai = new int[nnz];
-   for (int i = 0; i < nnz; ++i) ai[i] = a.col_ptrs[i];
+   for (int i = 0; i < nnz; ++i) ai[i] = a.row_indices[i];
 
    double* ax = new double[nnz];
    for (int i = 0; i < nnz; ++i) ax[i] = a.values[i];
