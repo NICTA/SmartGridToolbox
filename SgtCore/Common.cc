@@ -116,6 +116,22 @@ namespace SmartGridToolbox
       return ss.str();
    }
 
+   template ublas::vector<double> makeVec(std::initializer_list<double> il);
+   template ublas::vector<float> makeVec(std::initializer_list<float> il);
+   template ublas::vector<int> makeVec(std::initializer_list<int> il);
+   template ublas::vector<unsigned int> makeVec(std::initializer_list<unsigned int> il);
+   template ublas::vector<long> makeVec(std::initializer_list<long> il);
+   template ublas::vector<unsigned long> makeVec(std::initializer_list<unsigned long> il);
+   template ublas::vector<Complex> makeVec(std::initializer_list<Complex> il);
+
+   template ublas::matrix<double> makeMat(std::initializer_list<std::initializer_list<double>> il);
+   template ublas::matrix<float> makeMat(std::initializer_list<std::initializer_list<float>> il);
+   template ublas::matrix<int> makeMat(std::initializer_list<std::initializer_list<int>> il);
+   template ublas::matrix<unsigned int> makeMat(std::initializer_list<std::initializer_list<unsigned int>> il);
+   template ublas::matrix<long> makeMat(std::initializer_list<std::initializer_list<long>> il);
+   template ublas::matrix<unsigned long> makeMat(std::initializer_list<std::initializer_list<unsigned long>> il);
+   template ublas::matrix<Complex> makeMat(std::initializer_list<std::initializer_list<Complex>> il);
+
    const posix_time::ptime epoch(gregorian::date(1970,1,1));
 
    posix_time::ptime utcTimeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz)

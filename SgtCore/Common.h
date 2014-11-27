@@ -1,10 +1,6 @@
 #ifndef COMMON_DOT_H
 #define COMMON_DOT_H
 
-#include <complex>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/local_time/local_time.hpp>
@@ -16,6 +12,12 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
 #include <boost/numeric/ublas/vector_sparse.hpp>
+
+#include <complex>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <stdexcept>
 
 #ifdef DEBUG
 #define SGT_DEBUG(x) x
@@ -228,7 +230,53 @@ namespace SmartGridToolbox
 
    namespace ublas = boost::numeric::ublas;
 
-   template<class T>
+   template<typename T> ublas::vector<T> makeVec(std::initializer_list<T> il)
+   {
+      ublas::vector<T> result(il.size());
+      auto iIn = il.begin();
+      auto iOut = result.begin();
+      for (; iIn != il.end(); ++iIn, ++iOut)
+      {
+         *iOut = *iIn;
+      }
+      return result;
+   }
+   extern template ublas::vector<double> makeVec(std::initializer_list<double> il);
+   extern template ublas::vector<float> makeVec(std::initializer_list<float> il);
+   extern template ublas::vector<int> makeVec(std::initializer_list<int> il);
+   extern template ublas::vector<unsigned int> makeVec(std::initializer_list<unsigned int> il);
+   extern template ublas::vector<long> makeVec(std::initializer_list<long> il);
+   extern template ublas::vector<unsigned long> makeVec(std::initializer_list<unsigned long> il);
+   extern template ublas::vector<Complex> makeVec(std::initializer_list<Complex> il);
+
+   template<typename T> ublas::matrix<T> makeMat(std::initializer_list<std::initializer_list<T>> il)
+   {
+      int nRows = il.size();
+      int nCols = il.begin()->size();
+      ublas::matrix<T> result(nRows, nCols);
+      auto rowIt = il.begin();
+      for (int i = 0; i < nRows; ++i)
+      {
+         auto colIt = rowIt->begin();
+         for (int j = 0; j < nCols; ++j)
+         {
+            std::cout << i << " " << j << " " << *colIt << std::endl;
+            result(i, j) = *colIt; 
+            ++colIt;
+         }
+         ++rowIt;
+      }
+      return result;
+   }
+   extern template ublas::matrix<double> makeMat(std::initializer_list<std::initializer_list<double>> il);
+   extern template ublas::matrix<float> makeMat(std::initializer_list<std::initializer_list<float>> il);
+   extern template ublas::matrix<int> makeMat(std::initializer_list<std::initializer_list<int>> il);
+   extern template ublas::matrix<unsigned int> makeMat(std::initializer_list<std::initializer_list<unsigned int>> il);
+   extern template ublas::matrix<long> makeMat(std::initializer_list<std::initializer_list<long>> il);
+   extern template ublas::matrix<unsigned long> makeMat(std::initializer_list<std::initializer_list<unsigned long>> il);
+   extern template ublas::matrix<Complex> makeMat(std::initializer_list<std::initializer_list<Complex>> il);
+
+   template<typename T>
    bool invertMatrix(const ublas::matrix<T>& input, ublas::matrix<T>& inverse)
    {
       ublas::matrix<T> A(input);
@@ -251,8 +299,12 @@ namespace SmartGridToolbox
       ss.flags(os.flags());
       ss.imbue(os.getloc());
       ss.precision(os.precision());
-      ss << "[" << std::setw(w) << std::left << v()(0);
-      for (int i = 1; i < size; ++i) ss << ", " << std::setw(w) << std::left << v()(i);
+      ss << "[";
+      if (v().size() > 0)
+      {
+         ss << std::setw(w) << std::left << v()(0);
+         for (int i = 1; i < size; ++i) ss << ", " << std::setw(w) << std::left << v()(i);
+      }
       ss << "]";
       return os << ss.str();
    }
