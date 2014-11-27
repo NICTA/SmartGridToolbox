@@ -17,8 +17,8 @@ namespace
       {
          rowInd(i) = cMat.row_indices[i];
       }
-      Col<uword> colPtr(cMat.n_cols + 2, fill::none);
-      for (int i = 0; i < cMat.n_cols + 2; ++i)
+      Col<uword> colPtr(cMat.n_cols + 1, fill::none);
+      for (int i = 0; i < cMat.n_cols + 1; ++i)
       {
          colPtr(i) = cMat.col_ptrs[i];
       }
@@ -38,8 +38,8 @@ namespace
       {
          rowInd(i) = cMat.row_indices[i];
       }
-      Col<uword> colPtr(cMat.n_cols + 2, fill::none);
-      for (int i = 0; i < cMat.n_cols + 2; ++i)
+      Col<uword> colPtr(cMat.n_cols + 1, fill::none);
+      for (int i = 0; i < cMat.n_cols + 1; ++i)
       {
          colPtr(i) = cMat.col_ptrs[i];
       }

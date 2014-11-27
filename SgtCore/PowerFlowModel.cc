@@ -190,9 +190,9 @@ namespace SmartGridToolbox
       SGT_DEBUG(Log().debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
 
       // Vector quantities of problem:
-      V_.resize(nNode, false);
-      S_.resize(nNode, false);
-      IZip_.resize(nNode, false);
+      V_.set_size(nNode);
+      S_.set_size(nNode);
+      IZip_.set_size(nNode);
 
       for (int i = 0; i < nNode; ++i)
       {
