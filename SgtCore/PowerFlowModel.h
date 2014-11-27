@@ -228,23 +228,23 @@ namespace SmartGridToolbox
 
          arma::span selSlFromAll() const 
          {
-            return {0, arma::uword(nSl_)};
+            return {0, arma::uword(nSl_ - 1)};
          }
          arma::span selPqFromAll() const 
          {
-            return {arma::uword(nSl_), arma::uword(nSl_ + nPq_)};
+            return {arma::uword(nSl_), arma::uword(nSl_ + nPq_ - 1)};
          }
          arma::span selPvFromAll() const 
          {
-            return {arma::uword(nSl_ + nPq_), arma::uword(nSl_ + nPq_ + nPv_)};
+            return {arma::uword(nSl_ + nPq_), arma::uword(nSl_ + nPq_ + nPv_ - 1)};
          }
          arma::span selPqPvFromAll() const 
          {
-            return {arma::uword(nSl_), arma::uword(nSl_ + nPq_ + nPv_)};
+            return {arma::uword(nSl_), arma::uword(nSl_ + nPq_ + nPv_ - 1)};
          }
          arma::span selAllFromAll() const 
          {
-            return {0, arma::uword(nSl_ + nPq_ + nPv_)};
+            return {0, arma::uword(nSl_ + nPq_ + nPv_ - 1)};
          }
 
          /// @}

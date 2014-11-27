@@ -146,8 +146,9 @@ namespace SmartGridToolbox
       Col<double> P = real(mod_->S());
       Col<double> Q = imag(mod_->S());
 
-      Col<double> M2Pv = Vr(mod_->selPvFromAll()) % Vr(mod_->selPvFromAll())
-                             + Vi(mod_->selPvFromAll()) % Vi(mod_->selPvFromAll());
+      Col<double> M2Pv = mod_->nPv() > 0
+         ? Vr(mod_->selPvFromAll()) % Vr(mod_->selPvFromAll()) + Vi(mod_->selPvFromAll()) % Vi(mod_->selPvFromAll())
+         : Col<double>();
 
       Jacobian Jc(mod_->nPq(), mod_->nPv()); ///< The part of J that doesn't update at each iteration.
       initJc(Jc);
@@ -185,7 +186,10 @@ namespace SmartGridToolbox
          stopwatch.stop(); durationUpdateJ += stopwatch.seconds();
 
          stopwatch.reset(); stopwatch.start();
-         modifyForPv(J, f, Vr, Vi, M2Pv);
+         if (mod_->nPv() > 0)
+         {
+            modifyForPv(J, f, Vr, Vi, M2Pv);
+         }
          stopwatch.stop(); durationModifyForPv += stopwatch.seconds();
 
          // Construct the full Jacobian from J, which contains the block structure.
@@ -225,18 +229,24 @@ namespace SmartGridToolbox
 
          stopwatch.reset(); stopwatch.start();
          // Update the current values of V from the solution:
-         Vr(mod_->selPqFromAll()) += x(selVrPqFrom_x_);
-         Vi(mod_->selPqFromAll()) += x(selViPqFrom_x_);
+         if (mod_->nPq() > 0)
+         {
+            Vr(mod_->selPqFromAll()) += x(selVrPqFrom_x_);
+            Vi(mod_->selPqFromAll()) += x(selViPqFrom_x_);
+         }
 
          // Explicitly deal with the voltage magnitude constraint by updating VrPv by hand.
-         auto VrPv = Vr(mod_->selPvFromAll());
-         auto ViPv = Vi(mod_->selPvFromAll());
-         const auto DeltaViPv = x(selViPvFrom_x_);
-         VrPv += (M2Pv - VrPv % VrPv - ViPv % ViPv - 2 * ViPv % DeltaViPv) / (2 * VrPv);
-         ViPv += DeltaViPv;
+         if (mod_->nPv() > 0)
+         {
+            auto VrPv = Vr(mod_->selPvFromAll());
+            auto ViPv = Vi(mod_->selPvFromAll());
+            const auto DeltaViPv = x(selViPvFrom_x_);
+            VrPv += (M2Pv - VrPv % VrPv - ViPv % ViPv - 2 * ViPv % DeltaViPv) / (2 * VrPv);
+            ViPv += DeltaViPv;
 
-         // Update Q for PV busses based on the solution.
-         Q(mod_->selPvFromAll()) += x(selQPvFrom_x_);
+            // Update Q for PV busses based on the solution.
+            Q(mod_->selPvFromAll()) += x(selQPvFrom_x_);
+         }
 
          SGT_DEBUG(Log().debug() << "Updated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl);
          SGT_DEBUG(Log().debug() << "Updated Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl);
@@ -256,16 +266,19 @@ namespace SmartGridToolbox
          }
 
          // Set the slack power.
-         auto SSl = mod_->S()(mod_->selSlFromAll());
+         if (mod_->nSl() > 0)
+         {
+            auto SSl = mod_->S()(mod_->selSlFromAll());
 
-         auto VSl = mod_->V()(mod_->selSlFromAll());
-         auto IZipSl = mod_->IZip()(mod_->selSlFromAll());
+            auto VSl = mod_->V()(mod_->selSlFromAll());
+            auto IZipSl = mod_->IZip()(mod_->selSlFromAll());
 
-         auto YStar = conj(mod_->Y()(mod_->selSlFromAll(), mod_->selAllFromAll()));
-         auto VStar = conj(mod_->V());
-         auto IZipStar = conj(mod_->IZip()(mod_->selSlFromAll()));
+            auto YStar = conj(mod_->Y()(mod_->selSlFromAll(), mod_->selAllFromAll()));
+            auto VStar = conj(mod_->V());
+            auto IZipStar = conj(mod_->IZip()(mod_->selSlFromAll()));
 
-         SSl = VSl % (YStar * VStar) - VSl % IZipStar;
+            SSl = VSl % (YStar * VStar) - VSl % IZipStar;
+         }
 
          // Update nodes and busses.
          for (int i = 0; i < mod_->nNode(); ++i)
@@ -332,29 +345,62 @@ namespace SmartGridToolbox
    /** At this stage, we are treating J as if all busses were PQ. */
    void PowerFlowNr::initJc(Jacobian& Jc) const
    {
-      initJcBlock(G_(mod_->selPqFromAll(), mod_->selPqFromAll()), B_(mod_->selPqFromAll(), mod_->selPqFromAll()),
-                  Jc.IrPqVrPq(),
-                  Jc.IrPqViPq(),
-                  Jc.IiPqVrPq(),
-                  Jc.IiPqViPq());
-      initJcBlock(G_(mod_->selPqFromAll(), mod_->selPvFromAll()),
-                  B_(mod_->selPqFromAll(), mod_->selPvFromAll()),
-                  Jc.IrPqVrPv(),
-                  Jc.IrPqViPv(),
-                  Jc.IiPqVrPv(),
-                  Jc.IiPqViPv());
-      initJcBlock(G_(mod_->selPvFromAll(), mod_->selPqFromAll()),
-                  B_(mod_->selPvFromAll(), mod_->selPqFromAll()),
-                  Jc.IrPvVrPq(),
-                  Jc.IrPvViPq(),
-                  Jc.IiPvVrPq(),
-                  Jc.IiPvViPq());
-      initJcBlock(G_(mod_->selPvFromAll(), mod_->selPvFromAll()),
-                  B_(mod_->selPvFromAll(), mod_->selPvFromAll()),
-                  Jc.IrPvVrPv(),
-                  Jc.IrPvViPv(),
-                  Jc.IiPvVrPv(),
-                  Jc.IiPvViPv());
+      if (mod_->nPq() > 0)
+      {
+         initJcBlock(G_(mod_->selPqFromAll(), mod_->selPqFromAll()), B_(mod_->selPqFromAll(), mod_->selPqFromAll()),
+                     Jc.IrPqVrPq(),
+                     Jc.IrPqViPq(),
+                     Jc.IiPqVrPq(),
+                     Jc.IiPqViPq());
+      }
+      else
+      {
+         Jc.IrPqVrPq().reset();
+         Jc.IrPqViPq().reset();
+         Jc.IiPqVrPq().reset();
+         Jc.IiPqViPq().reset();
+      }
+
+      if (mod_->nPv() > 0)
+      {
+         initJcBlock(G_(mod_->selPvFromAll(), mod_->selPvFromAll()), B_(mod_->selPvFromAll(), mod_->selPvFromAll()),
+                     Jc.IrPvVrPv(),
+                     Jc.IrPvViPv(),
+                     Jc.IiPvVrPv(),
+                     Jc.IiPvViPv());
+      }
+      else
+      {
+         Jc.IrPvVrPv().reset();
+         Jc.IrPvViPv().reset();
+         Jc.IiPvVrPv().reset();
+         Jc.IiPvViPv().reset();
+      }
+
+      if (mod_->nPv() > 0 && mod_->nPq() > 0)
+      {
+         initJcBlock(G_(mod_->selPqFromAll(), mod_->selPvFromAll()), B_(mod_->selPqFromAll(), mod_->selPvFromAll()),
+                     Jc.IrPqVrPv(),
+                     Jc.IrPqViPv(),
+                     Jc.IiPqVrPv(),
+                     Jc.IiPqViPv());
+         initJcBlock(G_(mod_->selPvFromAll(), mod_->selPqFromAll()), B_(mod_->selPvFromAll(), mod_->selPqFromAll()),
+                     Jc.IrPvVrPq(),
+                     Jc.IrPvViPq(),
+                     Jc.IiPvVrPq(),
+                     Jc.IiPvViPq());
+      }
+      else
+      {
+         Jc.IrPqVrPv().reset();
+         Jc.IrPqViPv().reset();
+         Jc.IiPqVrPv().reset();
+         Jc.IiPqViPv().reset();
+         Jc.IrPvVrPq().reset();
+         Jc.IrPvViPq().reset();
+         Jc.IiPvVrPq().reset();
+         Jc.IiPvViPq().reset();
+      }
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
@@ -363,43 +409,49 @@ namespace SmartGridToolbox
                            const Col<double>& P, const Col<double>& Q,
                            const Col<double>& M2Pv) const
    {
-      // PQ busses:
-      const SpMat<double> GPq = G_(mod_->selPqFromAll(), mod_->selAllFromAll());
-      const SpMat<double> BPq = B_(mod_->selPqFromAll(), mod_->selAllFromAll());
+      if (mod_->nPq() > 0)
+      {
+         // PQ busses:
+         const SpMat<double> GPq = G_(mod_->selPqFromAll(), mod_->selAllFromAll());
+         const SpMat<double> BPq = B_(mod_->selPqFromAll(), mod_->selAllFromAll());
 
-      const auto VrPq = Vr(mod_->selPqFromAll());
-      const auto ViPq = Vi(mod_->selPqFromAll());
+         const auto VrPq = Vr(mod_->selPqFromAll());
+         const auto ViPq = Vi(mod_->selPqFromAll());
 
-      const auto PPq = P(mod_->selPqFromAll());
-      const auto QPq = Q(mod_->selPqFromAll());
+         const auto PPq = P(mod_->selPqFromAll());
+         const auto QPq = Q(mod_->selPqFromAll());
 
-      const auto IZiprPq = real(mod_->IZip()(mod_->selPqFromAll()));
-      const auto IZipiPq = imag(mod_->IZip()(mod_->selPqFromAll()));
+         const auto IZiprPq = real(mod_->IZip()(mod_->selPqFromAll()));
+         const auto IZipiPq = imag(mod_->IZip()(mod_->selPqFromAll()));
 
-      Col<double> M2Pq = VrPq % VrPq + ViPq % ViPq;
+         Col<double> M2Pq = VrPq % VrPq + ViPq % ViPq;
 
-      f(selIrPqFrom_f_) = (VrPq % PPq + ViPq % QPq) / M2Pq
-                                 + IZiprPq - GPq * Vr + BPq * Vi;
-      f(selIiPqFrom_f_) = (ViPq % PPq - VrPq % QPq) / M2Pq
-                                 + IZipiPq - GPq * Vi - BPq * Vr;
+         f(selIrPqFrom_f_) = (VrPq % PPq + ViPq % QPq) / M2Pq
+            + IZiprPq - GPq * Vr + BPq * Vi;
+         f(selIiPqFrom_f_) = (ViPq % PPq - VrPq % QPq) / M2Pq
+            + IZipiPq - GPq * Vi - BPq * Vr;
+      }
 
-      // PV busses. Note that these differ in that M2Pv is considered a constant.
-      const auto GPv = G_(mod_->selPvFromAll(), mod_->selAllFromAll());
-      const auto BPv = B_(mod_->selPvFromAll(), mod_->selAllFromAll());
+      if (mod_->nPv() > 0)
+      {
+         // PV busses. Note that these differ in that M2Pv is considered a constant.
+         const auto GPv = G_(mod_->selPvFromAll(), mod_->selAllFromAll());
+         const auto BPv = B_(mod_->selPvFromAll(), mod_->selAllFromAll());
 
-      const auto VrPv = Vr(mod_->selPvFromAll());
-      const auto ViPv = Vi(mod_->selPvFromAll());
+         const auto VrPv = Vr(mod_->selPvFromAll());
+         const auto ViPv = Vi(mod_->selPvFromAll());
 
-      const auto PPv = P(mod_->selPvFromAll());
-      const auto QPv = Q(mod_->selPvFromAll());
+         const auto PPv = P(mod_->selPvFromAll());
+         const auto QPv = Q(mod_->selPvFromAll());
 
-      const auto IZiprPv = real(mod_->IZip()(mod_->selPvFromAll()));
-      const auto IZipiPv = imag(mod_->IZip()(mod_->selPvFromAll()));
+         const auto IZiprPv = real(mod_->IZip()(mod_->selPvFromAll()));
+         const auto IZipiPv = imag(mod_->IZip()(mod_->selPvFromAll()));
 
-      f(selIrPvFrom_f_) = (VrPv % PPv + ViPv % QPv) / M2Pv
-                                 + IZiprPv - GPv * Vr + BPv * Vi;
-      f(selIiPvFrom_f_) = (ViPv % PPv - VrPv % QPv) / M2Pv
-                                 + IZipiPv - GPv * Vi - BPv * Vr;
+         f(selIrPvFrom_f_) = (VrPv % PPv + ViPv % QPv) / M2Pv
+            + IZiprPv - GPv * Vr + BPv * Vi;
+         f(selIiPvFrom_f_) = (ViPv % PPv - VrPv % QPv) / M2Pv
+            + IZipiPv - GPv * Vi - BPv * Vr;
+      }
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
@@ -411,19 +463,22 @@ namespace SmartGridToolbox
       // Elements in J that have no non-constant part will be initialized to the corresponding term in Jc at the
       // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
 
-      // Reset PV Vi columns, since these get messed with:
-      J.IrPqViPv() = Jc.IrPqViPv();
-      J.IiPqViPv() = Jc.IiPqViPv();
-      J.IrPvViPv() = Jc.IrPvViPv();
-      J.IiPvViPv() = Jc.IiPvViPv();
+      if (mod_->nPv() > 0)
+      {
+         // Reset PV Vi columns, since these get messed with:
+         J.IrPqViPv() = Jc.IrPqViPv();
+         J.IiPqViPv() = Jc.IiPqViPv();
+         J.IrPvViPv() = Jc.IrPvViPv();
+         J.IiPvViPv() = Jc.IiPvViPv();
+      }
 
       // Block diagonal:
       for (int i = 0; i < mod_->nPq(); ++i)
       {
          int iPqi = mod_->iPq(i);
 
-         double Pvr_p_QVi = P(iPqi) * Vr(iPqi) + Q(iPqi) * Vi(iPqi);
-         double Pvi_m_QVr = P(iPqi) * Vi(iPqi) - Q(iPqi) * Vr(iPqi);
+         double PVr_p_QVi = P(iPqi) * Vr(iPqi) + Q(iPqi) * Vi(iPqi);
+         double PVi_m_QVr = P(iPqi) * Vi(iPqi) - Q(iPqi) * Vr(iPqi);
          double M2 = Vr(iPqi) * Vr(iPqi) + Vi(iPqi) * Vi(iPqi);
          double M4 = M2 * M2;
          double VrdM4 = Vr(iPqi) / M4;
@@ -431,10 +486,10 @@ namespace SmartGridToolbox
          double PdM2 = P(iPqi) / M2;
          double QdM2 = Q(iPqi) / M2;
 
-         J.IrPqVrPq()(i, i) = Jc.IrPqVrPq()(i, i) - (2 * VrdM4 * Pvr_p_QVi) + PdM2;
-         J.IrPqViPq()(i, i) = Jc.IrPqViPq()(i, i) - (2 * VidM4 * Pvr_p_QVi) + QdM2;
-         J.IiPqVrPq()(i, i) = Jc.IiPqVrPq()(i, i) - (2 * VrdM4 * Pvi_m_QVr) - QdM2;
-         J.IiPqViPq()(i, i) = Jc.IiPqViPq()(i, i) - (2 * VidM4 * Pvi_m_QVr) + PdM2;
+         J.IrPqVrPq()(i, i) = Jc.IrPqVrPq()(i, i) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
+         J.IrPqViPq()(i, i) = Jc.IrPqViPq()(i, i) - (2 * VidM4 * PVr_p_QVi) + QdM2;
+         J.IiPqVrPq()(i, i) = Jc.IiPqVrPq()(i, i) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
+         J.IiPqViPq()(i, i) = Jc.IiPqViPq()(i, i) - (2 * VidM4 * PVi_m_QVr) + PdM2;
       }
 
       // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
@@ -448,13 +503,16 @@ namespace SmartGridToolbox
          J.IiPvViPv()(i, i) = Jc.IiPvViPv()(i, i) + P(iPvi) / M2Pv(i);
       }
 
-      // Set the PV Q columns in the Jacobian. They are diagonal.
-      const auto VrPv = Vr(mod_->selPvFromAll());
-      const auto ViPv = Vi(mod_->selPvFromAll());
-      for (int i = 0; i < mod_->nPv(); ++i)
+      if (mod_->nPv() > 0)
       {
-         J.IrPvQPv()(i, i) = ViPv(i) / M2Pv(i);
-         J.IiPvQPv()(i, i) = -VrPv(i) / M2Pv(i);
+         // Set the PV Q columns in the Jacobian. They are diagonal.
+         const auto VrPv = Vr(mod_->selPvFromAll());
+         const auto ViPv = Vi(mod_->selPvFromAll());
+         for (int i = 0; i < mod_->nPv(); ++i)
+         {
+            J.IrPvQPv()(i, i) = ViPv(i) / M2Pv(i);
+            J.IiPvQPv()(i, i) = -VrPv(i) / M2Pv(i);
+         }
       }
    }
 
@@ -463,10 +521,6 @@ namespace SmartGridToolbox
                                  const Col<double>& Vr, const Col<double>& Vi,
                                  const Col<double>& M2Pv)
    {
-      const auto VrPv = Vr(mod_->selPvFromAll());
-      const auto ViPv = Vi(mod_->selPvFromAll());
-
-      typedef subview_elem1<double, Mat<uword>> VecSel;
       auto mod = [&f](uword k, const Col<uword>& idx, SpMat<double>& JViPv, const SpMat<double>& JVrPv,
                       double fMult, double JMult)
       {
@@ -478,11 +532,13 @@ namespace SmartGridToolbox
          }
       };
 
+      const auto VrPv = Vr(mod_->selPvFromAll());
+      const auto ViPv = Vi(mod_->selPvFromAll());
+
       for (uword k = 0; k < mod_->nPv(); ++k)
       {
          double fMult = (0.5 * (M2Pv(k) - VrPv(k) * VrPv(k) - ViPv(k) * ViPv(k)) / VrPv(k));
          double colViPvMult = -ViPv(k) / VrPv(k);
-
          mod(k, selIrPqFrom_f_, J.IrPqViPv(), J.IrPqVrPv(), fMult, colViPvMult);
          mod(k, selIiPqFrom_f_, J.IiPqViPv(), J.IiPqVrPv(), fMult, colViPvMult);
          mod(k, selIrPvFrom_f_, J.IrPvViPv(), J.IrPvVrPv(), fMult, colViPvMult);
