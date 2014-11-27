@@ -527,8 +527,8 @@ namespace SmartGridToolbox
          for (auto it = JVrPv.begin(); it != JVrPv.end(); ++it)
          {
             uword iRow = it.row();
-            f(iRow) += JVrPv(idx(iRow), k) * fMult;
-            JViPv(idx(iRow), k) += JVrPv(idx(iRow), k) * JMult;
+            f(idx(iRow)) += JVrPv(iRow, k) * fMult;
+            JViPv(iRow, k) += JVrPv(iRow, k) * JMult;
          }
       };
 
