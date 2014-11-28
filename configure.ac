@@ -2,7 +2,7 @@ AC_INIT([SmartGridToolbox], [v2.0.0], [dan.gordon@nicta.com.au], [SmartGridToolb
 AC_CONFIG_SRCDIR([src/run_config.cc])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
-LT_INIT
+LT_INIT([disable-shared])
 
 #m4_include([m4/m4_ax_cxx_compile_stdcxx_11.m4])
 #m4_include([m4/m4_ax_check_compile_flag.m4])
