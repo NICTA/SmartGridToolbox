@@ -11,14 +11,10 @@
 
       turns_ratio: [44.4, 43.3, 43.6, 43.05, 43.0]
 
-      #V_base_330k: 190.526
-      #V_nom_vec_330k: [190.526, 190.526D-120, 190.526D120]
-      #V_nom_map_330k: {A: 190.526, B: 190.526D-120, C: 190.526D120}
+      V_base_330k: 190.526
+      V_nom_vec_330k: [190.526, 190.526D-120, 190.526D120]
+      V_nom_map_330k: {A: 190.526, B: 190.526D-120, C: 190.526D120}
      
-      V_base_330k: 12.7018
-      V_nom_vec_330k: [12.7018, 12.7018D-120, 12.7018D120]
-      V_nom_map_330k: {A: 12.7018, B: 12.7018D-120, C: 12.7018D120}
-
       V_base_11k: 6.3509
       V_nom_vec_11k: [6.3509, 6.3509D-120, 6.3509D120]
       V_nom_map_11k: {A: 6.3509, B: 6.3509D-120, C: 6.3509D120}
@@ -183,8 +179,7 @@
       network_id: network
       bus_0_id: bus_330k_down
       bus_1_id: bus_11k_up
-      #complex_turns_ratio_01: 51.9615 # 330/11, delta side use p-p V, y side use p-g V.
-      complex_turns_ratio_01: 
+      complex_turns_ratio_01: 51.9615 # 330/11, delta side use p-p V, y side use p-g V.
       leakage_impedance: 0.1 # TODO
 -  loop:
       loop_variable: [i, 0, <n_neigbourhoods>, 1]

@@ -76,7 +76,7 @@ namespace SmartGridToolbox
    {
       int nPhase = phases0().size();
 
-      arma::Mat<Complex> result = ZWire.submat(0, nPhase, 0, nPhase);
+      arma::Mat<Complex> result = ZWire.submat(0, 0, nPhase - 1, nPhase - 1);
 
       // Apply Kron reduction to eliminate neutral.
       if (nNeutral_ == 1)
