@@ -1,14 +1,16 @@
 #ifndef COMMON_DOT_H
 #define COMMON_DOT_H
 
-#include <complex>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/local_time/local_time.hpp>
 #include <armadillo>
+
+#include <complex>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <stdexcept>
 
 #ifdef DEBUG
 #define SGT_DEBUG(x) x
@@ -227,8 +229,12 @@ namespace SmartGridToolbox
       ss.flags(os.flags());
       ss.imbue(os.getloc());
       ss.precision(os.precision());
-      ss << "[" << std::setw(w) << std::left << v(0);
-      for (int i = 1; i < size; ++i) ss << ", " << std::setw(w) << std::left << v(i);
+      ss << "[";
+      if (v.size() > 0)
+      {
+         ss << std::setw(w) << std::left << v(0);
+         for (int i = 1; i < size; ++i) ss << ", " << std::setw(w) << std::left << v(i);
+      }
       ss << "]";
       return os << ss.str();
    }

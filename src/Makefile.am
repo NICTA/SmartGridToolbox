@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+AM_CPPFLAGS = -I../SgtCore -I../SgtSim
+
 bin_PROGRAMS = run_config solve_network # network_to_dot
 
 run_config_SOURCES = run_config.cc
@@ -7,8 +9,8 @@ run_config_SOURCES = run_config.cc
 # Using LDADD for -l linker flags in this way avoids a potential
 # problem with link order.
 run_config_LDADD = \
-	../SgtCore/libSgtCore.a \
 	../SgtSim/libSgtSim.a \
+	../SgtCore/libSgtCore.a \
 	-lboost_date_time \
 	-larmadillo \
 	-lblas \
@@ -36,8 +38,8 @@ solve_network_LDADD = \
 # network_to_dot_SOURCES = network_to_dot.cc
 # 
 # network_to_dot_LDADD = \
-#	../SgtCore/libSgtCore.a \
 #	../SgtSim/libSgtSim.a \
+#	../SgtCore/libSgtCore.a \
 #	-lboost_date_time \
 #	-lblas \
 #	-lyaml-cpp \
