@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 libincludedir=$(includedir)/SgtSim
 
-lib_LIBRARIES = libSgtSim.a
+lib_LTLIBRARIES = libSgtSim.la
 
 include_HEADERS = SgtSim.h
 
@@ -24,7 +24,9 @@ libinclude_HEADERS = \
 	TimeSeriesZip.h \
 	Weather.h
 
-libSgtSim_a_SOURCES = \
+libSgtSim_la_LDFLAGS = -all-static
+
+libSgtSim_la_SOURCES = \
 	Battery.h \
 	Battery.cc \
 	BatteryParserPlugin.h \

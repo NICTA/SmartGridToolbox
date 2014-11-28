@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 libincludedir=$(includedir)/SgtCore
 
-lib_LIBRARIES = libSgtCore.a
+lib_LTLIBRARIES = libSgtCore.la
 
 include_HEADERS = SgtCore.h
 
@@ -28,7 +28,19 @@ libinclude_HEADERS = \
 	YyTransformer.h \
 	Zip.h
 
-libSgtCore_a_SOURCES = \
+libSgtCore_la_LDFLAGS = -static-only
+
+libSgtCore_la_LIBADD = \
+	-lboost_date_time \
+	-larmadillo \
+	-lblas \
+	-lyaml-cpp \
+	-lklu \
+	-lamd \
+	-lcolamd \
+	-lbtf
+
+libSgtCore_la_SOURCES = \
 	Branch.h \
 	Branch.cc \
 	Bus.h \
@@ -81,7 +93,6 @@ libSgtCore_a_SOURCES = \
 	SparseSolver.h \
 	SparseSolver.cc \
 	Stopwatch.h \
-	RegisterParserPlugins.cc \
 	SinglePhaseTransformer.h \
 	SinglePhaseTransformer.cc \
 	SinglePhaseTransformerParserPlugin.h \

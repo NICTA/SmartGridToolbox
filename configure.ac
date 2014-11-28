@@ -1,14 +1,15 @@
 AC_INIT([SmartGridToolbox], [v2.0.0], [dan.gordon@nicta.com.au], [SmartGridToolbox])
 AC_CONFIG_SRCDIR([src/run_config.cc])
+AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+LT_INIT
 
-m4_include([./m4_ax_cxx_compile_stdcxx_11.m4])
-m4_include([./m4_ax_check_compile_flag.m4])
+#m4_include([m4/m4_ax_cxx_compile_stdcxx_11.m4])
+#m4_include([m4/m4_ax_check_compile_flag.m4])
 
 AC_PROG_CC
 AC_PROG_CXX([clang++ g++])
 AC_PROG_OBJCXX([clang])
-AC_PROG_RANLIB
 
 AC_LANG([Objective C++])
 AX_CHECK_COMPILE_FLAG(-std=c++11, [AC_SUBST(AM_OBJCXXFLAGS, ["-std=c++11"])])
