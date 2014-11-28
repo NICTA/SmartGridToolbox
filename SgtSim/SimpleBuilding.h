@@ -72,7 +72,7 @@ namespace SmartGridToolbox
 
          virtual ublas::vector<Complex> SConst() const
          {
-            return ublas::vector<Complex>(1, Complex(-Ph_, 0.0));
+            return makeVec({Complex(-Ph_, 0.0)});
          }
 
          // Parameters:

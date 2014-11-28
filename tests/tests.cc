@@ -438,12 +438,7 @@ BOOST_AUTO_TEST_CASE (test_sparse_solver)
    a(4, 2) = 2.0;
    a(4, 4) = 1.0;
 
-   ublas::vector<double> b(n);
-   b(0) = 8.0;
-   b(1) = 45.0;
-   b(2) = -3.0;
-   b(3) = 3.0;
-   b(4) = 19.0;
+   ublas::vector<double> b = makeVec({8.0, 45.0, -3.0, 3.0, 19.0});
 
    ublas::vector<double> x(n);
    kluSolve(a, b, x);
