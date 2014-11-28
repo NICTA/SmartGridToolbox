@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 libincludedir=$(includedir)/SgtCore
 
-lib_LTLIBRARIES = libSgtCore.la
+lib_LIBRARIES = libSgtCore.a
 
 include_HEADERS = SgtCore.h
 
@@ -28,19 +28,7 @@ libinclude_HEADERS = \
 	YyTransformer.h \
 	Zip.h
 
-libSgtCore_la_LDFLAGS = -static-only
-
-libSgtCore_la_LIBADD = \
-	-lboost_date_time \
-	-larmadillo \
-	-lblas \
-	-lyaml-cpp \
-	-lklu \
-	-lamd \
-	-lcolamd \
-	-lbtf
-
-libSgtCore_la_SOURCES = \
+libSgtCore_a_SOURCES = \
 	Branch.h \
 	Branch.cc \
 	Bus.h \
