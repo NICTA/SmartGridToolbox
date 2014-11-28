@@ -29,15 +29,15 @@ namespace SmartGridToolbox
             return sComponentType();
          }
 
-         virtual ublas::vector<Complex> YConst() const override
+         virtual arma::Col<Complex> YConst() const override
          {
-            return ublas::vector<Complex>(phases().size(), czero);
+            return arma::Col<Complex>(phases().size(), arma::fill::zeros);
          }
-         virtual ublas::vector<Complex> IConst() const override
+         virtual arma::Col<Complex> IConst() const override
          {
-            return ublas::vector<Complex>(phases().size(), czero);
+            return arma::Col<Complex>(phases().size(), arma::fill::zeros);
          }
-         virtual ublas::vector<Complex> SConst() const override = 0;
+         virtual arma::Col<Complex> SConst() const override = 0;
 
          void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source);
 
@@ -66,7 +66,12 @@ namespace SmartGridToolbox
    {
       public:
 
-         Inverter(const std::string& id, const Phases& phases) : InverterAbc(id, phases) {}
+         Inverter(const std::string& id, const Phases& phases) :
+            InverterAbc(id, phases),
+            S_(phases.size(), arma::fill::zeros)
+         {
+            // Empty.
+         }
 
          static constexpr const char* sComponentType()
          {
@@ -78,7 +83,7 @@ namespace SmartGridToolbox
             return sComponentType();
          }
 
-         virtual ublas::vector<Complex> SConst() const override;
+         virtual arma::Col<Complex> SConst() const override;
 
          virtual double efficiency(double powerDc) const override
          {
@@ -145,7 +150,7 @@ namespace SmartGridToolbox
          bool inService_{true};
 
          // State:
-         ublas::vector<Complex> S_{ublas::vector<Complex>(phases().size(), czero)};
+         arma::Col<Complex> S_;
    };
 }
 

@@ -212,14 +212,14 @@ namespace SmartGridToolbox
                      }
                   case REAL_VECTOR:
                      {
-                        ublas::vector<double> v = parser.expand<ublas::vector<double>>(ndVal);
-                        ts.reset(new ConstTimeSeries<Time, ublas::vector<double>>(v));
+                        arma::Col<double> v = parser.expand<arma::Col<double>>(ndVal);
+                        ts.reset(new ConstTimeSeries<Time, arma::Col<double>>(v));
                         break;
                      }
                   case COMPLEX_VECTOR:
                      {
-                        ublas::vector<Complex> v = parser.expand<ublas::vector<Complex>>(ndVal);
-                        ts.reset(new ConstTimeSeries<Time, ublas::vector<Complex>>(v));
+                        arma::Col<Complex> v = parser.expand<arma::Col<Complex>>(ndVal);
+                        ts.reset(new ConstTimeSeries<Time, arma::Col<Complex>>(v));
                         break;
                      }
                   default:
@@ -288,8 +288,8 @@ namespace SmartGridToolbox
                      }
                   case REAL_VECTOR:
                      {
-                        std::unique_ptr<DataTimeSeries<Time, ublas::vector<double>>> dts = 
-                           initDataTimeSeries<ublas::vector<double>>(interpType);
+                        std::unique_ptr<DataTimeSeries<Time, arma::Col<double>>> dts = 
+                           initDataTimeSeries<arma::Col<double>>(interpType);
                         while (std::getline(infile, line))
                         {
                            std::istringstream ss(line);
@@ -301,7 +301,7 @@ namespace SmartGridToolbox
                               ss >> val;
                               valVec.push_back(val);
                            }
-                           ublas::vector<double> val(valVec.size());
+                           arma::Col<double> val(valVec.size());
                            std::copy(valVec.begin(), valVec.end(), val.begin());
                            dts->addPoint(t, val); 
                         }
@@ -310,8 +310,8 @@ namespace SmartGridToolbox
                      }
                   case COMPLEX_VECTOR:
                      {
-                        std::unique_ptr<DataTimeSeries<Time, ublas::vector<Complex>>> dts = 
-                           initDataTimeSeries<ublas::vector<Complex>>(interpType);
+                        std::unique_ptr<DataTimeSeries<Time, arma::Col<Complex>>> dts = 
+                           initDataTimeSeries<arma::Col<Complex>>(interpType);
                         while (std::getline(infile, line))
                         {
                            std::istringstream ss(line);
@@ -323,7 +323,7 @@ namespace SmartGridToolbox
                               ss >> valStr;
                               valVec.push_back(from_string<Complex>(valStr));
                            }
-                           ublas::vector<Complex> val(valVec.size());
+                           arma::Col<Complex> val(valVec.size());
                            std::copy(valVec.begin(), valVec.end(), val.begin());
                            dts->addPoint(t, val); 
                         }

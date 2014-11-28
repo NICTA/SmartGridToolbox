@@ -17,7 +17,7 @@ namespace SmartGridToolbox
       return PDcA * efficiency(PDcA) / phases().size();
    }
 
-   ublas::vector<Complex> Inverter::SConst() const
+   arma::Col<Complex> Inverter::SConst() const
    {
       double PPerPh = PPerPhase();
       double P2PerPh = PPerPh * PPerPh; // Limited by maxSMagPerPhase_.
@@ -30,7 +30,7 @@ namespace SmartGridToolbox
          QPerPh *= -1;
       }
       Complex SPerPh{PPerPhase(), QPerPh};
-      return ublas::vector<Complex>(phases().size(), SPerPh);
+      return arma::Col<Complex>(phases().size(), arma::fill::none).fill(SPerPh);
    }
 
    double Inverter::PPerPhase() const

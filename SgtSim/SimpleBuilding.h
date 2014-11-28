@@ -70,9 +70,9 @@ namespace SmartGridToolbox
             return sComponentType();
          }
 
-         virtual ublas::vector<Complex> SConst() const
+         virtual arma::Col<Complex> SConst() const
          {
-            return ublas::vector<Complex>(1, Complex(-Ph_, 0.0));
+            return {Complex(-Ph_, 0.0)};
          }
 
          // Parameters:

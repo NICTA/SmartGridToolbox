@@ -160,7 +160,7 @@ namespace SmartGridToolbox
             const auto nd = this->node(busNr.id_);
             arma::Col<Complex> SGen = (busNr.S_ - nd->SZip()) / double(nd->gens().size());
             // Note: we've already taken YZip and IZip explicitly into account, so this is correct.
-            // KLUDGE: We're using a vector above, rather than "auto" (which gives ublas::vector_expression(...)).
+            // KLUDGE: We're using a vector above, rather than "auto" (which gives some kind of expression type).
             // This is less efficient, but the latter gives errors in valgrind.
            
             auto bus = nd->bus();
