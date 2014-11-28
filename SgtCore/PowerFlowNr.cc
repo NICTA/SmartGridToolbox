@@ -170,7 +170,7 @@ namespace SmartGridToolbox
          stopwatch.reset(); stopwatch.start();
          calcf(f, Vr, Vi, P, Q, M2Pv);
 
-         err = norm(f);
+         err = norm(f, "inf");
          SGT_DEBUG(Log().debug() << "f  = " << std::setprecision(5) << std::setw(9) << f << std::endl);
          SGT_DEBUG(Log().debug() << "Error = " << err << std::endl);
          if (err <= tol)
@@ -525,7 +525,8 @@ namespace SmartGridToolbox
       auto mod = [&f](uword k, const Col<uword>& idx, SpMat<double>& JViPv, const SpMat<double>& JVrPv,
                       double fMult, double JMult)
       {
-         for (auto it = JVrPv.begin(); it != JVrPv.end(); ++it)
+         auto colVrPv = JVrPv.col(k);
+         for (auto it = colVrPv.begin(); it != colVrPv.end(); ++it)
          {
             uword iRow = it.row();
             f(idx(iRow)) += JVrPv(iRow, k) * fMult;
@@ -540,6 +541,7 @@ namespace SmartGridToolbox
       {
          double fMult = (0.5 * (M2Pv(k) - VrPv(k) * VrPv(k) - ViPv(k) * ViPv(k)) / VrPv(k));
          double colViPvMult = -ViPv(k) / VrPv(k);
+
          mod(k, selIrPqFrom_f_, J.IrPqViPv(), J.IrPqVrPv(), fMult, colViPvMult);
          mod(k, selIiPqFrom_f_, J.IiPqViPv(), J.IiPqVrPv(), fMult, colViPvMult);
          mod(k, selIrPvFrom_f_, J.IrPvViPv(), J.IrPvVrPv(), fMult, colViPvMult);
