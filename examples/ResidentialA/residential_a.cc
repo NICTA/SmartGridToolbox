@@ -5,19 +5,19 @@
 
 using namespace SmartGridToolbox;
 
-double norm(ublas::vector<Complex> v)
+double norm(arma::Col<Complex> v)
 {
    return std::sqrt(std::accumulate(v.begin(), v.end(), 0.0,
             [](double d, const Complex& c)->double{return d + std::norm(c);}));
 }
 
-ublas::vector<Complex> symComps(ublas::vector<Complex> v)
+arma::Col<Complex> symComps(arma::Col<Complex> v)
 {
    static const Complex alpha = std::polar(1.0, 2.0*pi/3.0);
    static const Complex alpha2 = alpha * alpha;
    static const Array2D<Complex, 3, 3> a = {{{1, 1, 1}, {1, alpha, alpha2}, {1, alpha2, alpha}}};
 
-   ublas::vector<Complex> result(3, czero);
+   arma::Col<Complex> result(3, arma::fill::zeros);
    for (int i = 0; i < 3; ++i)
    {
       for (int j = 0; j < 3; ++j)
@@ -93,7 +93,7 @@ int main(int argc, const char** argv)
       out << t;
       for (auto nd : netw->nodes())
       {
-         auto V = nd->bus()->V()/nd->bus()->VBase();
+         arma::Col<Complex> V = nd->bus()->V()/nd->bus()->VBase();
          for (auto x : V)
          {
             out << " " << std::abs(x);

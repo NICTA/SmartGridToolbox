@@ -3,7 +3,6 @@ AUTOMAKE_OPTIONS = foreign
 LDADD = \
 	-lSmartGridToolbox \
 	-lboost_date_time \
-	-lblas \
 	-lyaml-cpp \
 	-lklu \
 	-lamd \
