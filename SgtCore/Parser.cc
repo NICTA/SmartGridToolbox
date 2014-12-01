@@ -102,7 +102,7 @@ namespace SmartGridToolbox
                "<"
                "("                           // Submatch 1: whole expr body, without <>.
                   "("                        // Submatch 2: whole math expr body.
-                     "[0-9+\\-*/%() \t]+"
+                     "[0-9+.eEfFlL\\-*/%() \t]+"
                   ")|"
                   "("                        // Submatch 3: whole var/loop expr body.
                      "("                     // Submatch 4: non-index part of var/loop expr body.

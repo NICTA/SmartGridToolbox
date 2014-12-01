@@ -92,7 +92,7 @@ namespace SmartGridToolbox
       bool ok = Qi::phrase_parse(iter, end, CGram(), Ascii::space, c);
       if (!ok)
       {
-         Log().fatal() << "Bad complex number string: " << c << std::endl 
+         Log().fatal() << "Bad complex number string: " << s << std::endl 
             << "Came unstuck at substring: " << *iter << std::endl;
       }
       return c;
