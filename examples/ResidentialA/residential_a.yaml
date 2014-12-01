@@ -69,13 +69,13 @@
       time_unit: m
       interp_type: lerp
 -  loop: 
-      loop_variable: [i, 0, 20, 1]
+      loop_variable: [i, 0, 49, 1]
       loop_body: 
          -  time_series: 
                id: load_<i>_series
                value_type: complex_vector
                type: data_time_series
-               data_file: loads/load_<i>.txt
+               data_file: loads/load_<i+1>.txt
                relative_to_time: 2013-01-01 06:00:00
                time_unit: m
                interp_type: lerp

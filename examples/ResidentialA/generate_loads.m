@@ -19,7 +19,7 @@ for i = 1:n_data_sets
    ld_i = dat(irow:irow+96, icol); % Keep the next point for interpolation.
    ld_i_b= interp1(t_vec, ld_i, t_vec_b, 'spline');
    dat_i = [t_vec_b z_vec, z_vec, ld_i_b];
-   fname = ['loads/load_', num2str(i), '.txt'];
+   fname = ['loads/load_', num2str(i-1), '.txt'];
    fp = fopen(fname, 'w+');
    fprintf(fp, '%d %d %d %f\n', dat_i');
    fclose(fp);
