@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE test_template
 
-#include <SgtCore/SgtCore.h>
-#include <SgtSim/SgtSim.h>
+#include <SgtCore.h>
+#include <SgtSim.h>
 #include <SgtSim/WeakOrder.h>
 
 #include <boost/test/included/unit_test.hpp>
@@ -68,22 +68,22 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
 
    auto oh = std::dynamic_pointer_cast<OverheadLine>(netw.arc("line_1_2")->branch());
 
-   ublas::matrix<Complex> ZWire = oh->ZWire();
-   ublas::matrix<Complex> ZPhase = oh->ZPhase(ZWire);
+   arma::Mat<Complex> ZWire = oh->ZWire();
+   arma::Mat<Complex> ZPhase = oh->ZPhase(ZWire);
    Log().message() << "ZWire = " << std::endl;
-   for (int i = 0; i < ZWire.size1(); ++i)
+   for (int i = 0; i < ZWire.n_rows; ++i)
    {
-      Log().message() << row(ZWire, i) << std::endl;
+      Log().message() << ZWire.row(i) << std::endl;
    }
    Log().message() << "ZPhase = " << std::endl;
-   for (int i = 0; i < ZPhase.size1(); ++i)
+   for (int i = 0; i < ZPhase.n_rows; ++i)
    {
-      Log().message() << row(ZPhase, i) << std::endl;
+      Log().message() << ZPhase.row(i) << std::endl;
    }
    Log().message() << "YNode = " << std::endl;
-   for (int i = 0; i < oh->Y().size1(); ++i)
+   for (int i = 0; i < oh->Y().n_rows; ++i)
    {
-      Log().message() << row(oh->Y(), i) << std::endl;
+      Log().message() << oh->Y().row(i) << std::endl;
    }
 
    Complex cmp;
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE (test_spline)
   Spline spline;
   //Add points to the spline in any order, they're sorted in ascending
   //x later. (If you want to spline a circle you'll need to change the class)
-  spline.addPoint(0,        0.0);
+  spline.addPoint(0, 0.0);
   spline.addPoint(40.0 / 255, 0.0);
   spline.addPoint(60.0 / 255, 0.2);
   spline.addPoint(63.0 / 255, 0.05);

@@ -100,7 +100,7 @@ class Spline : private std::vector<std::pair<double, double> >
       //vector of calculated spline data
       std::vector<SplineData> _data;
       //Second derivative at each point
-      arma::Col<double> _ddy;
+      arma::Row<double> _ddy;
       //Tracks whether the spline parameters have been calculated for
       //the current set of points
       bool _valid;
@@ -226,7 +226,7 @@ class Spline : private std::vector<std::pair<double, double> >
                      A(i+1,i) = h(i);
                   }
 
-                  arma::Col<double> C(size());
+                  arma::Row<double> C(size());
                   for (size_t xv(0); xv <= e; ++xv)
                      C(xv) = 0;
 
