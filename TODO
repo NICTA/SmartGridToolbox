@@ -1,0 +1,16 @@
+When solve_powerflow is run, some matpower cases differ from matpower itself.
+One particular example is case57 - for which even the reactive power of the
+slack bus differs from Matpower.
+
+TODO: The plan is to output both matpower and my solver and feed them into an
+independent octave verification of the powerflow equations, thereby seeing
+where things are going wrong.
+
+Note also that the "prior_to_armadillo" tag has a different result again - but
+this is clearly wrong as the generator power is actually the generator power
+plus the zip power. If the zip power is subtracted off, the result in HEAD is
+recovered. TODO: create a branch at this tag, and fix the problem - so that we
+have a working ublas version available.
+
+Note also that the voltages and zips appear to be correct and agreeing in all
+versions.
