@@ -9,10 +9,8 @@
       n_houses_3: [4, 4, 7, 7, 9, 9]
       n_houses_4: [10, 9]
 
-      turns_ratio: [44.4, 43.3, 43.6, 43.05, 43.0]
-
       # Use an arbitrary value of 20 so we can see a reasonable voltage drop for the small currents modelled here.
-      # 320 kV would be phase-ground V = 20.0, but this is too high.
+      # 320 kV would be phase-ground V = 184.75, but this is too high.
       V_base_hv: 20.0
       V_nom_vec_hv: [20.0, 20.0D-120, 20.0D120]
       V_nom_map_hv: {A: 20.0, B: 20.0D-120, C: 20.0D120}
@@ -21,9 +19,14 @@
       V_nom_vec_mv: [6.3509, 6.3509D-120, 6.3509D120]
       V_nom_map_mv: {A: 6.3509, B: 6.3509D-120, C: 6.3509D120}
 
-      V_base_lv: 0.120
-      V_nom_vec_lv: [0.120, 0.120D-120, 0.120D120]
-      V_nom_map_lv: {A: 0.120, B: 0.120D-120, C: 0.120D120}
+
+      V_base_lv: 0.240
+      V_nom_vec_lv: [0.240, 0.240D-120, 0.240D120]
+      V_nom_map_lv: {A: 0.240, B: 0.240D-120, C: 0.240D120}
+      
+      turns_ratio_hv_mv: 5.4545 # sqrt(3) * 20 / 6.3509 
+      # turns_ratio_mv_lv: 45.834 # sqrt(3) * 6.3509 / .240
+      turns_ratio_mv_lv: [45.834, 45.834, 45.834, 45.834, 45.834]
 
       house_phases: [C, A, A, B, C, A, A, C, B, C, B, B, C, B, B, A, B, A, B, C]
 
@@ -40,14 +43,14 @@
       dachv_3: 3.0
       dbchv_3: 6.0
       gmrhv: 0.020
-      length_hv: 20000
+      length_hv: 15000
 
       R_per_L_mv: 1e-4
       dabmv: 2.5
       dacmv: 2.5
       dbcmv: 2.5
       gmrmv: 0.015
-      length_mv: [7000, 4000, 300, 600, 856]
+      length_mv: [2000, 4000, 300, 600, 856]
 
       dablv: 1.5
       daclv: 1.5
@@ -75,7 +78,7 @@
                id: load_<i>_series
                value_type: complex_vector
                type: data_time_series
-               data_file: loads/load_<i+1>.txt
+               data_file: loads/load_<i>.txt
                relative_to_time: 2013-01-01 06:00:00
                time_unit: m
                interp_type: lerp
@@ -181,7 +184,7 @@
       network_id: network
       bus_0_id: bus_hv_down
       bus_1_id: bus_mv_up
-      complex_turns_ratio_01: <1.7321 * <V_base_hv> / <V_base_mv>>
+      complex_turns_ratio_01: <turns_ratio_hv_mv>
       leakage_impedance: 0.1 # TODO
 -  loop:
       loop_variable: [i, 0, <n_neigbourhoods>, 1]
@@ -223,7 +226,7 @@
                network_id: network
                bus_0_id: bus_mv_down_<i>
                bus_1_id: bus_lv_up_<i>
-               complex_turns_ratio_01: <1.7321 * <V_base_mv> / <V_base_lv>>
+               complex_turns_ratio_01: 45.834
                leakage_impedance: 0.1 # TODO
          -  loop: 
                loop_variable: [j, 0, <n_streets(<i>)>, 1]
@@ -250,7 +253,7 @@
                                  network_id: network
                                  bus_id: house_<i>_<j>_<k>
                                  phases: [<house_phases(<(<i>+<j>+<k>)%20>)>]
-                                 time_series_id: load_<(<i>+<j>+<k>)%20>_series
+                                 time_series_id: load_<(<i>+<j>+<k>)%50>_series
                                  dt: 00:05:00
                            -  overhead_line: 
                                  id: drop_<i>_<j>_<k>
