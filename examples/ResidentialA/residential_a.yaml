@@ -11,47 +11,49 @@
 
       turns_ratio: [44.4, 43.3, 43.6, 43.05, 43.0]
 
-      V_base_330k: 190.526
-      V_nom_vec_330k: [190.526, 190.526D-120, 190.526D120]
-      V_nom_map_330k: {A: 190.526, B: 190.526D-120, C: 190.526D120}
+      # Use an arbitrary value of 20 so we can see a reasonable voltage drop for the small currents modelled here.
+      # 320 kV would be phase-ground V = 20.0, but this is too high.
+      V_base_hv: 20.0
+      V_nom_vec_hv: [20.0, 20.0D-120, 20.0D120]
+      V_nom_map_hv: {A: 20.0, B: 20.0D-120, C: 20.0D120}
      
-      V_base_11k: 6.3509
-      V_nom_vec_11k: [6.3509, 6.3509D-120, 6.3509D120]
-      V_nom_map_11k: {A: 6.3509, B: 6.3509D-120, C: 6.3509D120}
+      V_base_mv: 6.3509
+      V_nom_vec_mv: [6.3509, 6.3509D-120, 6.3509D120]
+      V_nom_map_mv: {A: 6.3509, B: 6.3509D-120, C: 6.3509D120}
 
-      V_base_240: 0.240
-      V_nom_vec_240: [0.240, 0.240D-120, 0.240D120]
-      V_nom_map_240: {A: 0.240, B: 0.240D-120, C: 0.240D120}
+      V_base_lv: 0.120
+      V_nom_vec_lv: [0.120, 0.120D-120, 0.120D120]
+      V_nom_map_lv: {A: 0.120, B: 0.120D-120, C: 0.120D120}
 
       house_phases: [C, A, A, B, C, A, A, C, B, C, B, B, C, B, B, A, B, A, B, C]
 
       earth_resistivity: 100
 
-      R_per_L_330k: 0.3e-4
-      dab330k_1: 3.0
-      dac330k_1: 6.0
-      dbc330k_1: 3.0
-      dab330k_2: 6.0
-      dac330k_2: 3.0
-      dbc330k_2: 3.0
-      dab330k_3: 3.0
-      dac330k_3: 3.0
-      dbc330k_3: 6.0
-      gmr330k: 0.020
-      length_330k: 20000
+      R_per_L_hv: 0.3e-4
+      dabhv_1: 3.0
+      dachv_1: 6.0
+      dbchv_1: 3.0
+      dabhv_2: 6.0
+      dachv_2: 3.0
+      dbchv_2: 3.0
+      dabhv_3: 3.0
+      dachv_3: 3.0
+      dbchv_3: 6.0
+      gmrhv: 0.020
+      length_hv: 20000
 
-      R_per_L_11k: 1e-4
-      dab11k: 2.5
-      dac11k: 2.5
-      dbc11k: 2.5
-      gmr11k: 0.015
-      length_11k: [7000, 4000, 300, 600, 856]
+      R_per_L_mv: 1e-4
+      dabmv: 2.5
+      dacmv: 2.5
+      dbcmv: 2.5
+      gmrmv: 0.015
+      length_mv: [7000, 4000, 300, 600, 856]
 
-      dab240: 1.5
-      dac240: 1.5
-      dbc240: 1.5
-      gmr240: 0.007
-      R_per_L_240: 4e-4
+      dablv: 1.5
+      daclv: 1.5
+      dbclv: 1.5
+      gmrlv: 0.007
+      R_per_L_lv: 4e-4
 
 -  simulation: 
       lat_long: [-35.3075, 149.1244] # Canberra, Australia.
@@ -86,142 +88,142 @@
       P_base: 1e6
       freq_Hz: 60
 -  bus: 
-      id: bus_330k_up
+      id: bus_hv_up
       network_id: network
       phases: [A, B, C]
-      V_base: <V_base_330k>
-      V_nom: <V_nom_vec_330k>
+      V_base: <V_base_hv>
+      V_nom: <V_nom_vec_hv>
       type: SL
 -  bus: 
-      id: bus_330k_mid_1
+      id: bus_hv_mid_1
       network_id: network
       phases: [A, B, C]
-      V_base: <V_base_330k>
-      V_nom: <V_nom_vec_330k>
+      V_base: <V_base_hv>
+      V_nom: <V_nom_vec_hv>
       type: PQ
 -  overhead_line: 
-      id: line_330k_up_mid_1
+      id: line_hv_up_mid_1
       network_id: network
-      bus_0_id: bus_330k_up
-      bus_1_id: bus_330k_mid_1
+      bus_0_id: bus_hv_up
+      bus_1_id: bus_hv_mid_1
       phases_0: <netw_phases>
       phases_1: <netw_phases>
-      length: <length_330k>
+      length: <length_hv>
       n_neutral: 0
-      conductor_R_per_L: [<R_per_L_330k>, <R_per_L_330k>, <R_per_L_330k>]
+      conductor_R_per_L: [<R_per_L_hv>, <R_per_L_hv>, <R_per_L_hv>]
       earth_resistivity: <earth_resistivity>
       distance_matrix:
          [
-            [<gmr330k>, <dab330k_1>, <dac330k_1>],
-            [<dab330k_1>, <gmr330k>, <dbc330k_1>],
-            [<dac330k_1>, <dbc330k_1>, <gmr330k>]
+            [<gmrhv>, <dabhv_1>, <dachv_1>],
+            [<dabhv_1>, <gmrhv>, <dbchv_1>],
+            [<dachv_1>, <dbchv_1>, <gmrhv>]
          ]
       freq: 60.0
 -  bus: 
-      id: bus_330k_mid_2
+      id: bus_hv_mid_2
       network_id: network
       phases: [A, B, C]
-      V_base: <V_base_330k>
-      V_nom: <V_nom_vec_330k>
+      V_base: <V_base_hv>
+      V_nom: <V_nom_vec_hv>
       type: PQ
 -  overhead_line: 
-      id: line_330k_mid_1_mid_2
+      id: line_hv_mid_1_mid_2
       network_id: network
-      bus_0_id: bus_330k_mid_1
-      bus_1_id: bus_330k_mid_2
+      bus_0_id: bus_hv_mid_1
+      bus_1_id: bus_hv_mid_2
       phases_0: <netw_phases>
       phases_1: <netw_phases>
-      length: <length_330k>
+      length: <length_hv>
       n_neutral: 0
-      conductor_R_per_L: [<R_per_L_330k>, <R_per_L_330k>, <R_per_L_330k>]
+      conductor_R_per_L: [<R_per_L_hv>, <R_per_L_hv>, <R_per_L_hv>]
       earth_resistivity: <earth_resistivity>
       distance_matrix:
          [
-            [<gmr330k>, <dab330k_2>, <dac330k_2>],
-            [<dab330k_2>, <gmr330k>, <dbc330k_2>],
-            [<dac330k_2>, <dbc330k_2>, <gmr330k>]
+            [<gmrhv>, <dabhv_2>, <dachv_2>],
+            [<dabhv_2>, <gmrhv>, <dbchv_2>],
+            [<dachv_2>, <dbchv_2>, <gmrhv>]
          ]
       freq: 60.0
 -  bus: 
-      id: bus_330k_down
+      id: bus_hv_down
       network_id: network
       phases: <netw_phases>
-      V_base: <V_base_330k>
-      V_nom: <V_nom_vec_330k>
+      V_base: <V_base_hv>
+      V_nom: <V_nom_vec_hv>
       type: PQ
 -  overhead_line: 
-      id: line_330k_mid_2_down
+      id: line_hv_mid_2_down
       network_id: network
-      bus_0_id: bus_330k_mid_2
-      bus_1_id: bus_330k_down
+      bus_0_id: bus_hv_mid_2
+      bus_1_id: bus_hv_down
       phases_0: <netw_phases>
       phases_1: <netw_phases>
-      length: <length_330k>
+      length: <length_hv>
       n_neutral: 0
-      conductor_R_per_L: [<R_per_L_330k>, <R_per_L_330k>, <R_per_L_330k>]
+      conductor_R_per_L: [<R_per_L_hv>, <R_per_L_hv>, <R_per_L_hv>]
       earth_resistivity: <earth_resistivity>
       distance_matrix:
          [
-            [<gmr330k>, <dab330k_3>, <dac330k_3>],
-            [<dab330k_3>, <gmr330k>, <dbc330k_3>],
-            [<dac330k_3>, <dbc330k_3>, <gmr330k>]
+            [<gmrhv>, <dabhv_3>, <dachv_3>],
+            [<dabhv_3>, <gmrhv>, <dbchv_3>],
+            [<dachv_3>, <dbchv_3>, <gmrhv>]
          ]
       freq: 60.0
 -  bus: 
-      id: bus_11k_up
+      id: bus_mv_up
       network_id: network
       phases: <netw_phases>
-      V_base: <V_base_11k>
-      V_nom: <V_nom_vec_11k>
+      V_base: <V_base_mv>
+      V_nom: <V_nom_vec_mv>
       type: PQ
 -  delta_g_wye_transformer:
-      id: trans_330k_11k
+      id: trans_hv_mv
       network_id: network
-      bus_0_id: bus_330k_down
-      bus_1_id: bus_11k_up
-      complex_turns_ratio_01: 51.9615 # 330/11, delta side use p-p V, y side use p-g V.
+      bus_0_id: bus_hv_down
+      bus_1_id: bus_mv_up
+      complex_turns_ratio_01: <1.7321 * <V_base_hv> / <V_base_mv>>
       leakage_impedance: 0.1 # TODO
 -  loop:
       loop_variable: [i, 0, <n_neigbourhoods>, 1]
       loop_body:
          -  bus: 
-               id: bus_11k_down_<i>
+               id: bus_mv_down_<i>
                network_id: network
                phases: <netw_phases>
-               V_base: <V_base_11k>
-               V_nom: <V_nom_vec_11k>
+               V_base: <V_base_mv>
+               V_nom: <V_nom_vec_mv>
                type: PQ
          -  overhead_line: 
-               id: line_11k_<i>
+               id: line_mv_<i>
                network_id: network
-               bus_0_id: bus_11k_up
-               bus_1_id: bus_11k_down_<i>
+               bus_0_id: bus_mv_up
+               bus_1_id: bus_mv_down_<i>
                phases_0: <netw_phases>
                phases_1: <netw_phases>
-               length: <length_11k(<i>)>
+               length: <length_mv(<i>)>
                n_neutral: 0
-               conductor_R_per_L: [<R_per_L_11k>, <R_per_L_11k>, <R_per_L_11k>]
+               conductor_R_per_L: [<R_per_L_mv>, <R_per_L_mv>, <R_per_L_mv>]
                earth_resistivity: <earth_resistivity>
                distance_matrix:
                   [
-                     [<gmr11k>, <dab11k>, <dac11k>],
-                     [<dab11k>, <gmr11k>, <dbc11k>],
-                     [<dac11k>, <dbc11k>, <gmr11k>]
+                     [<gmrmv>, <dabmv>, <dacmv>],
+                     [<dabmv>, <gmrmv>, <dbcmv>],
+                     [<dacmv>, <dbcmv>, <gmrmv>]
                   ]
                freq: 60.0
          -  bus: 
-               id: bus_240_up_<i>
+               id: bus_lv_up_<i>
                network_id: network
                phases: <netw_phases>
-               V_base: <V_base_240>
-               V_nom: <V_nom_vec_240>
+               V_base: <V_base_lv>
+               V_nom: <V_nom_vec_lv>
                type: PQ
          -  delta_g_wye_transformer:
-               id: trans_substation_<i>
+               id: trans_mv_lv_<i>
                network_id: network
-               bus_0_id: bus_11k_down_<i>
-               bus_1_id: bus_240_up_<i>
-               complex_turns_ratio_01: <turns_ratio(<i>)> # 11000/240 = 45.834, delta side use p-p V, y side use p-g V.
+               bus_0_id: bus_mv_down_<i>
+               bus_1_id: bus_lv_up_<i>
+               complex_turns_ratio_01: <1.7321 * <V_base_mv> / <V_base_lv>>
                leakage_impedance: 0.1 # TODO
          -  loop: 
                loop_variable: [j, 0, <n_streets(<i>)>, 1]
@@ -233,15 +235,15 @@
                                  id: bus_<i>_<j>_<k>
                                  network_id: network
                                  phases: <netw_phases>
-                                 V_base: <V_base_240>
-                                 V_nom: <V_nom_vec_240>
+                                 V_base: <V_base_lv>
+                                 V_nom: <V_nom_vec_lv>
                                  type: PQ
                            -  bus: 
                                  id: house_<i>_<j>_<k>
                                  network_id: network
                                  phases: [<house_phases(<(<i>+<j>+<k>)%20>)>]
-                                 V_base: <V_base_240>
-                                 V_nom: [<V_nom_map_240(<house_phases(<(<i>+<j>+<k>)%20>)>)>]
+                                 V_base: <V_base_lv>
+                                 V_nom: [<V_nom_map_lv(<house_phases(<(<i>+<j>+<k>)%20>)>)>]
                                  type: PQ
                            -  time_series_zip: 
                                  id: zip_<i>_<j>_<k>
@@ -259,7 +261,7 @@
                                  phases_1: [<house_phases(<(<i>+<j>+<k>)%20>)>]
                                  length: 20
                                  n_neutral: 0
-                                 conductor_R_per_L: [<R_per_L_240>]
+                                 conductor_R_per_L: [<R_per_L_lv>]
                                  earth_resistivity: <earth_resistivity>
                                  distance_matrix: [[0.01]]
                                  freq: 60.0
@@ -275,30 +277,30 @@
                                  phases_1: <netw_phases>
                                  length: 100
                                  n_neutral: 0
-                                 conductor_R_per_L: [<R_per_L_240>, <R_per_L_240>, <R_per_L_240>]
+                                 conductor_R_per_L: [<R_per_L_lv>, <R_per_L_lv>, <R_per_L_lv>]
                                  earth_resistivity: <earth_resistivity>
                                  distance_matrix:
                                     [
-                                       [<gmr240>, <dab240>, <dac240>],
-                                       [<dab240>, <gmr240>, <dbc240>],
-                                       [<dac240>, <dbc240>, <gmr240>]
+                                       [<gmrlv>, <dablv>, <daclv>],
+                                       [<dablv>, <gmrlv>, <dbclv>],
+                                       [<daclv>, <dbclv>, <gmrlv>]
                                     ]
                                  freq: 60.0
                   -  overhead_line: 
-                        id: line_240_up_<i>_<j>_0
+                        id: line_lv_up_<i>_<j>_0
                         network_id: network
-                        bus_0_id: bus_240_up_<i>
+                        bus_0_id: bus_lv_up_<i>
                         bus_1_id: bus_<i>_<j>_0
                         phases_0: <netw_phases>
                         phases_1: <netw_phases>
                         length: 1000
                         n_neutral: 0
-                        conductor_R_per_L: [<R_per_L_240>, <R_per_L_240>, <R_per_L_240>]
+                        conductor_R_per_L: [<R_per_L_lv>, <R_per_L_lv>, <R_per_L_lv>]
                         earth_resistivity: <earth_resistivity>
                         distance_matrix:
                            [
-                              [<gmr240>, <dab240>, <dac240>],
-                              [<dab240>, <gmr240>, <dbc240>],
-                              [<dac240>, <dbc240>, <gmr240>]
+                              [<gmrlv>, <dablv>, <daclv>],
+                              [<dablv>, <gmrlv>, <dbclv>],
+                              [<daclv>, <dbclv>, <gmrlv>]
                            ]
                         freq: 60.0

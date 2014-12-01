@@ -1,26 +1,26 @@
-day = 60*24;
+dt = 15;
+n_in_day = 24 * 60 / dt;
+ndays_in_dataset = 28;
 
-tVec = (0:5:30*day)';
-TVec = 60:60:7*day;
+dat = load('loads.txt');
+dat = dat(:, randperm(6)); % To randomize house sizes.
+dat /= 1000; % From W to kW.
 
-lVeci = [];
+% n_data_sets = floor(6 * 365 / ndays_in_dataset);
+n_data_sets = 50;
 
-for i = 1:20
-   SMax = rand*5e-3;              % Maximum value for this particular load.
-   xVec = rand(size(TVec));      % Random frequency magnitude.
-   pVec = rand(size(TVec))*2*pi; % Phase offset.
-   lVec = zeros(size(tVec));     % The load.
-   for j = 1:length(TVec)
-      lVec += xVec(j)*exp(-(TVec(j)-day)^2/(day)^2)*cos(pVec(j) + 2*pi*tVec/TVec(j));
-   end
-   lVec -= min(lVec);
-   lVec *= -SMax/max(lVec);
+t_vec = (0:15:24*60)'; % Note keep the next point for interpolation.
+t_vec_b = (0:5:24*60-5)';
+z_vec = zeros(size(t_vec_b));
 
-   z = zeros(size(lVec));
-   dat = [tVec, z, z, lVec];
-
-   fp = fopen(['loads/load_' num2str(i-1) '.txt'], 'w+');
-   fprintf(fp, '%6d %10.3e %10.3e %10.3e\n', dat');
+for i = 1:n_data_sets
+   irow = 1 + 96 * floor((i - 1) / 6);
+   icol = mod(i - 1, 6) + 1;
+   ld_i = dat(irow:irow+96, icol); % Keep the next point for interpolation.
+   ld_i_b= interp1(t_vec, ld_i, t_vec_b, 'spline');
+   dat_i = [t_vec_b z_vec, z_vec, ld_i_b];
+   fname = ['loads/load_', num2str(i), '.txt'];
+   fp = fopen(fname, 'w+');
+   fprintf(fp, '%d %d %d %f\n', dat_i');
    fclose(fp);
-   lVeci = [lVeci, lVec];
 end
