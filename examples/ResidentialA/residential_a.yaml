@@ -28,7 +28,7 @@
       nom_V_ratio_mv_lv: 45.834 # sqrt(3) * 6.3509 / .240
 
       off_nom_ratio_hv_mv: 0.95
-      off_nom_ratio_mv_lv: [1.0, 1.0, 1.0, 1.0, 1.0]
+      off_nom_ratio_mv_lv: [0.98, 0.99, 0.985, 0.98, 0.995]
 
       house_phases: [C, A, A, B, C, A, A, C, B, C, B, B, C, B, B, A, B, A, B, C]
 
