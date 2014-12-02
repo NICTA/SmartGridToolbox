@@ -24,9 +24,11 @@
       V_nom_vec_lv: [0.240, 0.240D-120, 0.240D120]
       V_nom_map_lv: {A: 0.240, B: 0.240D-120, C: 0.240D120}
       
-      turns_ratio_hv_mv: 5.4545 # sqrt(3) * 20 / 6.3509 
-      # turns_ratio_mv_lv: 45.834 # sqrt(3) * 6.3509 / .240
-      turns_ratio_mv_lv: [45.834, 45.834, 45.834, 45.834, 45.834]
+      nom_V_ratio_hv_mv: 5.4545 # sqrt(3) * 20 / 6.3509 
+      nom_V_ratio_mv_lv: 45.834 # sqrt(3) * 6.3509 / .240
+
+      off_nom_ratio_hv_mv: 0.95
+      off_nom_ratio_mv_lv: [1.0, 1.0, 1.0, 1.0, 1.0]
 
       house_phases: [C, A, A, B, C, A, A, C, B, C, B, B, C, B, B, A, B, A, B, C]
 
@@ -184,7 +186,8 @@
       network_id: network
       bus_0_id: bus_hv_down
       bus_1_id: bus_mv_up
-      complex_turns_ratio_01: <turns_ratio_hv_mv>
+      nom_V_ratio_DY: <nom_V_ratio_hv_mv>
+      off_nom_ratio_DY: <off_nom_ratio_hv_mv>
       leakage_impedance: 0.1 # TODO
 -  loop:
       loop_variable: [i, 0, <n_neigbourhoods>, 1]
@@ -226,7 +229,8 @@
                network_id: network
                bus_0_id: bus_mv_down_<i>
                bus_1_id: bus_lv_up_<i>
-               complex_turns_ratio_01: 45.834
+               nom_V_ratio_DY: <nom_V_ratio_mv_lv>
+               off_nom_ratio_DY: <off_nom_ratio_mv_lv(<i>)>
                leakage_impedance: 0.1 # TODO
          -  loop: 
                loop_variable: [j, 0, <n_streets(<i>)>, 1]

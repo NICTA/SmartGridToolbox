@@ -4,8 +4,8 @@ namespace SmartGridToolbox
 {
    const arma::Mat<Complex> DgyTransformer::Y() const
    {
-      Complex ai = 1.0 / a_;
-      Complex aci = 1.0 / conj(a_);
+      Complex ai = 1.0 / a();
+      Complex aci = conj(ai);
       Complex a2i = ai * aci;
 
       Complex data[] =  {2 * a2i,  -a2i,  -a2i, -aci,  0.0,  aci,

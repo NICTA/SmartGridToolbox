@@ -21,8 +21,9 @@ namespace SmartGridToolbox
          /// @brief Constructor
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
-         DgyTransformer(const std::string& id, Complex a, Complex ZL) :
-            BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C), a_(a), YL_(1.0/ZL)
+         DgyTransformer(const std::string& id, Complex nomVRatioDY, Complex offNomRatioDY, Complex ZL) :
+            BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
+            nomVRatioDY_(nomVRatioDY), offNomRatioDY_(offNomRatioDY), YL_(1.0/ZL)
          {
             // Empty.
          }
@@ -47,17 +48,32 @@ namespace SmartGridToolbox
       /// @name Parameters:
       /// @{
 
-         Complex a()
+         Complex nomVRatioDY() const
          {
-            return a_;
+            return nomVRatioDY_;
+         }
+         
+         void setNomVRatioDY(Complex nomVRatioDY)
+         {
+            nomVRatioDY_ = nomVRatioDY;
          }
 
-         void set_a(Complex a)
+         Complex offNomRatioDY() const
          {
-            a_ = a;
+            return offNomRatioDY_;
+         }
+ 
+         void setOffNomRatioDY(Complex offNomRatioDY)
+         {
+            offNomRatioDY_ = offNomRatioDY;
+         }
+ 
+         Complex a() const
+         {
+            return offNomRatioDY_ * nomVRatioDY_;  
          }
 
-         Complex ZL()
+         Complex ZL() const
          {
             return 1.0 / YL_;
          }
@@ -78,7 +94,8 @@ namespace SmartGridToolbox
 
       private:
 
-         Complex a_;  ///< Complex turns ratio, n0/n1 where 0 is primary and 1 is secondary.
+         Complex nomVRatioDY_; ///< Nominal voltage ratio, V_D / V_Y where V_D is phase-phase and V_Y is phase-ground.
+         Complex offNomRatioDY_; ///< Off nominal complex turns ratio.
          Complex YL_; ///< Series leakage admittance.
    };
 }
