@@ -1,3 +1,6 @@
+Powerflow testing:
+------------------
+
 When solve_powerflow is run, some matpower cases differ from matpower itself.
 One particular example is case57 - for which even the reactive power of the
 slack bus differs from Matpower.
@@ -15,6 +18,14 @@ have a working ublas version available.
 Note also that the voltages and zips appear to be correct and agreeing in all
 versions.
 
--------------------------------------------------------------------------------
-
+Parser issue:
+-------------
 In Parser.cc, make math work on things other than integers.
+
+Documentation (gh-pages):
+-------------------------
+The gh-pages documentation is out of date.
+
+Doxygen API documentation:
+--------------------------
+This is out of date, e.g. wrt. modules etc.
