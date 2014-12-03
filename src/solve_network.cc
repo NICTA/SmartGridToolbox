@@ -17,8 +17,8 @@ int main(int argc, char** argv)
       {
          auto bus = nd->bus();
          auto V = nw.V2Pu(bus->V()[0], bus->VBase());
-         auto SGen = nw.S2Pu(nd->SGen()[0]);
-         auto SZip = nw.S2Pu(nd->SZip()[0]);
+         auto SGen = nd->SGen()[0];
+         auto SZip = nd->SZip()[0];
          printf("%12s : %9.4f %9.4f %9.4f %9.4f %9.4f %9.4f\n", bus->id().c_str(), std::abs(V), std::arg(V)*180.0/pi,
                SGen.real(), SGen.imag(), SZip.real(), SZip.imag());
       }
