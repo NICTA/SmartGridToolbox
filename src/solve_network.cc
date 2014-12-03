@@ -20,7 +20,7 @@ int main(int argc, char** argv)
          auto SGen = nw.S2Pu(nd->SGen()[0]);
          auto SZip = nw.S2Pu(nd->SZip()[0]);
          printf("%12s : %9.4f %9.4f %9.4f %9.4f %9.4f %9.4f\n", bus->id().c_str(), std::abs(V), std::arg(V)*180.0/pi,
-               SZip.real(), SZip.imag(), SGen.real(), SGen.imag());
+               SGen.real(), SGen.imag(), SZip.real(), SZip.imag());
       }
    };
    print();
