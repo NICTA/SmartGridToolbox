@@ -27,7 +27,7 @@ int main(int argc, char** argv)
                SGen.real(), SGen.imag(), SLoad.real(), SLoad.imag());
       }
    };
-   print();
+   // print();
    nw.solvePowerFlow();
    print();
 }
