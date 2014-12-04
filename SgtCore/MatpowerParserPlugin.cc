@@ -30,7 +30,6 @@ namespace
 {
    typedef ForwardIterator Iterator;
    typedef decltype(ascii::blank) SpaceType;
-   typedef arma::Col<Complex> VComplex;
    typedef std::vector<std::vector<double>> Matrix;
    typedef Matrix::value_type Row;
 
@@ -133,8 +132,8 @@ namespace SmartGridToolbox
       double Gs; // C5, MW demand @ V = 1 pu
       double Bs; // C6, MVAr demand @ V = 1 pu
       int busArea; // C7
-      double vMag; // C8, pu
-      double vAngDeg; // C9, pu
+      double VMag; // C8, pu
+      double VAngDeg; // C9, pu
       double kVBase; // C10, kV
       int zone; // C11
       double VMagMax; // C12, pu
@@ -293,8 +292,8 @@ namespace SmartGridToolbox
             busInfo.Gs = row[4];
             busInfo.Bs = row[5];
             busInfo.busArea = row[6];
-            busInfo.vMag = row[7];
-            busInfo.vAngDeg = row[8];
+            busInfo.VMag = row[7];
+            busInfo.VAngDeg = row[8];
             busInfo.kVBase = row[9] > 1e-6 ? row[9] : default_kVBase;
             busInfo.zone = row[10];
             busInfo.VMagMax = row[11];
@@ -387,7 +386,7 @@ namespace SmartGridToolbox
       {
          std::string busId = getBusId(busInfo.id);
          std::unique_ptr<Bus> bus(
-               new Bus(busId, Phase::BAL, VScale * VComplex{Complex(busInfo.kVBase, 0.0)}, PScale * busInfo.kVBase));
+               new Bus(busId, Phase::BAL, {VScale * Complex(busInfo.kVBase, 0.0)}, PScale * busInfo.kVBase));
          BusType type = BusType::BAD;
          switch (busInfo.type)
          {
@@ -409,16 +408,16 @@ namespace SmartGridToolbox
          Complex YZip = YBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
          std::string zipId = getZipId(nZip++, busInfo.id);
          std::unique_ptr<GenericZip> zip(new GenericZip(zipId, Phase::BAL));
-         zip->setYConst(GScale * VComplex{YZip});
-         zip->setSConst(PScale * VComplex{SZip});
+         zip->setYConst({GScale * YZip});
+         zip->setSConst({PScale * SZip});
          bus->setVMagMin(busInfo.VMagMin == -infinity ? -infinity : VScale * pu2kV(busInfo.VMagMin, busInfo.kVBase));
          bus->setVMagMax(busInfo.VMagMax == infinity ? infinity : VScale * pu2kV(busInfo.VMagMax, busInfo.kVBase));
 
          bus->setIsInService(true);
 
-         double vMag = pu2kV(busInfo.vMag, busInfo.kVBase);
-         double vAng = deg2Rad(busInfo.vAngDeg);
-         bus->setV(VScale * VComplex{std::polar(vMag, vAng)});
+         double VMag = pu2kV(busInfo.VMag, busInfo.kVBase);
+         double VAng = deg2Rad(busInfo.VAngDeg);
+         bus->setV({VScale * std::polar(VMag, VAng)});
          
          netw.addNode(std::move(bus));
          netw.addZip(std::move(zip), busId);
@@ -438,7 +437,7 @@ namespace SmartGridToolbox
 
          gen->setIsInService(genInfo.status);
 
-         gen->setS(PScale * VComplex{Complex{genInfo.Pg, genInfo.Qg}});
+         gen->setS({PScale * Complex(genInfo.Pg, genInfo.Qg)});
 
          gen->setPMin(genInfo.PMin == -infinity ? -infinity : PScale * genInfo.PMin);
          gen->setPMax(genInfo.PMax == infinity ? infinity : PScale * genInfo.PMax);
@@ -448,6 +447,9 @@ namespace SmartGridToolbox
          gen->setC0(0.0);
          gen->setC1(0.0);
          gen->setC2(0.0);
+
+         auto bus = netw.node(busId)->bus();
+         bus->setVMagSetpoint({genInfo.Vg});
 
          netw.addGen(std::move(gen), busId);
       } // Gens
