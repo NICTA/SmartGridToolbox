@@ -449,7 +449,7 @@ namespace SmartGridToolbox
          gen->setC2(0.0);
 
          auto bus = netw.node(busId)->bus();
-         bus->setVMagSetpoint({VScale * pu2kV(genInfo.Vg, bus->VBase())}); std::cout << "setpoint = " << bus->VMagSetpoint() << std::endl;
+         bus->setVMagSetpoint({VScale * pu2kV(genInfo.Vg, bus->VBase())});
 
          netw.addGen(std::move(gen), busId);
       } // Gens
