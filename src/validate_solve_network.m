@@ -20,13 +20,15 @@ function [V, S, err] = validate_solve_network(filename)
       Y([ibus, jbus], [ibus, jbus]) += YRow;
    end
    for i = 1:rows(yShunt)
-       Y(i, i) += yShunt(i);
+      Y(i, i) += yShunt(i);
    end
+   Y
 
    SSgt = Sg - Sl;
-   errSgt = SSgt - VSgt .* conj(Y * VSgt);
-
+   errSgt = validate(VSgt, SSgt, yShunt, IZip, Y);
+   
    result = runpf(filename);
+
    busMp = result.bus;
    genMp = result.gen;
    VMp = bus(:, 1) .* busMp(:, 8) .* exp(I * busMp(:, 9) * pi / 180);
@@ -36,9 +38,13 @@ function [V, S, err] = validate_solve_network(filename)
       SMp(row(1)) += row(2) + I * row(3);
    end
    
-   errMp = SMp - VMp .* conj(Y * VMp);
+   errMp = validate(VMp, SMp, yShunt, IZip, Y);
 
    V = [VSgt, VMp];
    S = [SSgt, SMp];
    err = [errSgt, errMp];
+end
+
+function err = validate(V, S, yShunt, IConst, Y)
+   err = S - V .* conj(Y * V);
 end
