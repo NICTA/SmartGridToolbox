@@ -1,5 +1,10 @@
 function [V, S, err] = validate_solve_network(filename)
-   system(['./solve_network ', filename, ' solve_network']);
+   filename = make_absolute_filename(filename)
+   status = system(['./solve_network ', filename, ' solve_network >/dev/null']);
+   if (status != 0)
+      printf('Could not solve %s; status = %d\n', filename, status);
+      return
+   end
 
    bus = load('solve_network.bus');
    branch = load('solve_network.branch');
@@ -22,12 +27,11 @@ function [V, S, err] = validate_solve_network(filename)
    for i = 1:rows(yShunt)
       Y(i, i) += yShunt(i);
    end
-   Y
 
    SSgt = Sg - Sl;
    errSgt = validate(VSgt, SSgt, yShunt, IZip, Y);
    
-   result = runpf(filename);
+   result = runpf(filename, mpoption('out.all', 0));
 
    busMp = result.bus;
    genMp = result.gen;
@@ -35,7 +39,8 @@ function [V, S, err] = validate_solve_network(filename)
    SMp = - busMp(:, 3) - I * busMp(:, 4);
 
    for (row = genMp')
-      SMp(row(1)) += row(2) + I * row(3);
+      busIdx = find(busMp(:, 1) == row(1));
+      SMp(busIdx) += row(2) + I * row(3);
    end
    
    errMp = validate(VMp, SMp, yShunt, IZip, Y);
