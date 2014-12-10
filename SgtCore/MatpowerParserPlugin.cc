@@ -48,12 +48,12 @@ namespace
       {
          statementTerm_ = (qi::eol | qi::lit(';'));
 
-         ignore_ =   (qi::eol) | (qi::lit('%') >> *(qi::char_-qi::eol) >> qi::eol);
+         eol_ = -(qi::lit('%') >> *(qi::char_-qi::eol)) >> qi::eol;
          other_ = (*(qi::char_-statementTerm_) >> statementTerm_);
       
-         rowSep_ = (qi::lit(';') >> qi::lit('\n')) | qi::lit(';') >> qi::lit('\n');
+         rowSep_ = (qi::lit(';') >> -eol_) | eol_;
          row_ = +(qi::double_ >> -qi::lit(','));
-         matrix_ = "[" >> -qi::eol >> (row_ % rowSep_) >> -(qi::lit(';') ^ qi::eol) >> "]";
+         matrix_ = "[" >> -eol_ >> (row_ % rowSep_) >> -(eol_ ^ qi::lit(';')) >> "]";
 
          topFunction_ = qi::lit("function") >> qi::lit("mpc") >> qi::lit("=") >> *(qi::char_-statementTerm_)
             >> statementTerm_;
@@ -77,6 +77,7 @@ namespace
 
       qi::rule<Iterator, SpaceType> statementTerm_;
 
+      qi::rule<Iterator, SpaceType> eol_;
       qi::rule<Iterator, SpaceType> ignore_;
       qi::rule<Iterator, SpaceType> other_;
 
