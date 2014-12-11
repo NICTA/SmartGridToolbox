@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   const arma::Mat<Complex> DgyTransformer::Y() const
+   arma::Mat<Complex> DgyTransformer::inServiceY() const
    {
       Complex ai = 1.0 / a();
       Complex aci = conj(ai);

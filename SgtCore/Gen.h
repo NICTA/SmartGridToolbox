@@ -47,8 +47,9 @@ namespace SmartGridToolbox
       /// @name Power injection:
       /// @{
 
-         virtual const arma::Col<Complex>& S() const = 0;
-         virtual void setS(const arma::Col<Complex>& S) = 0;
+         virtual arma::Col<Complex> S() const = 0;
+         virtual arma::Col<Complex> inServiceS() const = 0;
+         virtual void setInServiceS(const arma::Col<Complex>& S) = 0; 
 
       /// @}
        
@@ -56,7 +57,7 @@ namespace SmartGridToolbox
       /// @{
 
          virtual double J() const = 0;
-         virtual void setJ(double J) = 0;
+         virtual double inServiceJ() const = 0;
 
       /// @}
      
@@ -138,7 +139,42 @@ namespace SmartGridToolbox
          }
          
       /// @}
- 
+      
+      /// @name In service:
+      /// @{
+         
+         virtual bool isInService() const override
+         {
+            return isInService_;
+         }
+
+         virtual void setIsInService(bool isInService) override
+         {
+            isInService_ = isInService;
+         }
+
+      /// @}
+  
+      /// @name Power injection:
+      /// @{
+
+         virtual arma::Col<Complex> S() const final override
+         {
+            return isInService_ ? inServiceS() : arma::Col<Complex>(phases_.size());
+         }
+
+      /// @}
+       
+      /// @name Moment of inertia:
+      /// @{
+
+         virtual double J() const final override
+         {
+            return isInService_ ? inServiceJ() : 0.0;
+         }
+
+      /// @}
+    
       /// @name Events.
       /// @{
          
@@ -174,6 +210,7 @@ namespace SmartGridToolbox
       private:
 
          Phases phases_;
+         bool isInService_;
 
          Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
          Event generationChanged_{std::string(sComponentType()) + " : Generation changed"};
@@ -207,30 +244,15 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name In service:
-      /// @{
-         
-         virtual bool isInService() const override
-         {
-            return isInService_;
-         }
-
-         virtual void setIsInService(bool isInService) override
-         {
-            isInService_ = isInService;
-         }
-
-      /// @}
-      
       /// @name Power injection:
       /// @{
 
-         virtual const arma::Col<Complex>& S() const override
+         virtual arma::Col<Complex> inServiceS() const override
          {
             return S_;
          }
 
-         virtual void setS(const arma::Col<Complex>& S) override
+         virtual void setInServiceS(const arma::Col<Complex>& S) override
          {
             S_ = S;
          }
@@ -240,12 +262,12 @@ namespace SmartGridToolbox
       /// @name Moment of inertia:
       /// @{
 
-         virtual double J() const
+         virtual double inServiceJ() const override
          {
             return J_;
          }
 
-         virtual void setJ(double J)
+         virtual void setInServiceJ(double J)
          {
             J_ = J;
          }
@@ -354,8 +376,6 @@ namespace SmartGridToolbox
       
       private:
 
-         bool isInService_;
-         
          arma::Col<Complex> S_;
          
          double J_{0.0};

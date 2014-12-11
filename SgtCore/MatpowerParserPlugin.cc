@@ -358,6 +358,10 @@ namespace SmartGridToolbox
       }
       
       // Extract the genCost data.
+      if (data.genCost.size() > 0 && data.genCost.size() != data.gen.size())
+      {
+         Log().fatal() << "There are a different number of generators to generator costs." << std::endl;
+      }
       std::vector<MpGenCostInfo> genCostVec;
       {
          genCostVec.reserve(data.genCost.size());
@@ -438,7 +442,7 @@ namespace SmartGridToolbox
 
          gen->setIsInService(genInfo.status);
 
-         gen->setS({PScale * Complex(genInfo.Pg, genInfo.Qg)});
+         gen->setInServiceS({PScale * Complex(genInfo.Pg, genInfo.Qg)});
 
          gen->setPMin(genInfo.PMin == -infinity ? -infinity : PScale * genInfo.PMin);
          gen->setPMax(genInfo.PMax == infinity ? infinity : PScale * genInfo.PMax);
@@ -499,7 +503,6 @@ namespace SmartGridToolbox
          }
 
          GenericGen& gen = *genCompVec[i];
-
          gen.setCStartup(genCostInfo.startup);
          gen.setCShutdown(genCostInfo.shutdown);
          int nCost = genCostInfo.costs.size();

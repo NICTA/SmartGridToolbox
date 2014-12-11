@@ -65,7 +65,7 @@ namespace SmartGridToolbox
 
       std::unique_ptr<GenericBranch> branch(new GenericBranch(id, phases0, phases1));
 
-      branch->setY(Y);
+      branch->setInServiceY(Y);
 
       return branch;
    }

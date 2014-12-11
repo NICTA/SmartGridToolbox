@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   const arma::Mat<Complex> YyTransformer::Y() const
+   arma::Mat<Complex> YyTransformer::inServiceY() const
    {
       int n = phases0().size();
       arma::Mat<Complex> Y(2 * n, 2 * n, arma::fill::zeros);

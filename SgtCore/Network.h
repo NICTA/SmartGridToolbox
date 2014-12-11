@@ -91,7 +91,7 @@ namespace SmartGridToolbox
          NodePtr node0() {return node0_;}
          ConstNodePtr node1() const {return node1_;}
          NodePtr node1() {return node1_;}
-
+         
       private:
          Arc(BranchPtr branch, NodePtr node0, NodePtr node1) : branch_{branch}, node0_(node0), node1_(node1)
          {

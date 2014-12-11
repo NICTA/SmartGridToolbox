@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   const arma::Mat<Complex> SinglePhaseTransformer::Y() const
+   arma::Mat<Complex> SinglePhaseTransformer::inServiceY() const
    {
       arma::Mat<Complex> Y(2, 2, arma::fill::zeros);
       Y(0, 0) = YL_ / (a_ * conj(a_));

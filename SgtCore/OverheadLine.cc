@@ -24,7 +24,7 @@ namespace SmartGridToolbox
       }
    }
 
-   const arma::Mat<Complex> OverheadLine::Y() const
+   arma::Mat<Complex> OverheadLine::inServiceY() const
    {
       int nPhase = phases0().size();
 

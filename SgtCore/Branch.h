@@ -50,7 +50,8 @@ namespace SmartGridToolbox
       /// @name Nodal admittance matrix (Y):
       /// @{
          
-         virtual const arma::Mat<Complex> Y() const = 0;
+         virtual arma::Mat<Complex> Y() const = 0;
+         virtual arma::Mat<Complex> inServiceY() const = 0;
       
       /// @}
       
@@ -121,6 +122,17 @@ namespace SmartGridToolbox
 
       /// @}
 
+      /// @name Nodal admittance matrix (Y):
+      /// @{
+         
+         virtual arma::Mat<Complex> Y() const final override
+         {
+            return isInService_ ? inServiceY() : arma::Mat<Complex>(
+                  2 * phases0_.size(), 2 * phases1_.size(), arma::fill::zeros);
+         }
+
+      /// @}
+      
       /// @name Events.
       /// @{
          
@@ -186,7 +198,7 @@ namespace SmartGridToolbox
       /// @name Overridden from Branch:
       /// @{
 
-         virtual const arma::Mat<Complex> Y() const override
+         virtual arma::Mat<Complex> inServiceY() const override
          {
             return Y_;
          }
@@ -196,7 +208,7 @@ namespace SmartGridToolbox
       /// @name Setter for Y.
       /// @{
    
-         void setY(const arma::Mat<Complex>& Y)
+         void setInServiceY(const arma::Mat<Complex>& Y)
          {
             Y_ = Y;
          }

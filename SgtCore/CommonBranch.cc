@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   const arma::Mat<Complex> CommonBranch::Y() const
+   arma::Mat<Complex> CommonBranch::inServiceY() const
    {
       arma::Mat<Complex> result(2, 2);
 

@@ -6,7 +6,8 @@ namespace SmartGridToolbox
 {
    GenAbc::GenAbc(const std::string& id, const Phases& phases) :
       Component(id),
-      phases_(phases)
+      phases_(phases),
+      isInService_(true)
    {
       // Empty.
    }
@@ -30,7 +31,6 @@ namespace SmartGridToolbox
 
    GenericGen::GenericGen(const std::string& id, const Phases& phases) :
       GenAbc(id, phases),
-      isInService_(true),
       S_(phases.size(), arma::fill::zeros)
    {
       // Empty.

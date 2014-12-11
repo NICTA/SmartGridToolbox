@@ -15,7 +15,6 @@ int main(int argc, char** argv)
    Network nw("network", 100.0);
 
    std::string yamlStr =  std::string("--- [{matpower : {input_file : ") + inFName + ", default_kV_base : 11}}]";
-   std::cout << yamlStr << std::endl;
    YAML::Node n = YAML::Load(yamlStr);
 
    SmartGridToolbox::Parser<Network> p;

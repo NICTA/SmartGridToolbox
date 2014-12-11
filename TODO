@@ -18,6 +18,17 @@ have a working ublas version available.
 Note also that the voltages and zips appear to be correct and agreeing in all
 versions.
 
+UPDATE:
+
+This is in progress, and an issue has been identified where if there is a
+single generator on a PV (or presumably slack) bus, and the generator is out of
+service, then the bus should be treated as a PQ bus but isn't.
+
+Need to think about how best to handle this. Thoughs:
+
+1. Bus type really belongs to the "node", which knows about generators.
+2. Just silently handle this when constructing the PowerFlow problem.
+
 Parser issue:
 -------------
 In Parser.cc, make math work on things other than integers.

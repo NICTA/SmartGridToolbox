@@ -29,7 +29,7 @@ namespace SmartGridToolbox
 
       if (const YAML::Node& subNd = nd["S"])
       {
-         gen->setS(parser.expand<arma::Col<Complex>>(subNd));
+         gen->setInServiceS(parser.expand<arma::Col<Complex>>(subNd));
       }
       
       if (const YAML::Node& subNd = nd["P_min"])
@@ -54,7 +54,7 @@ namespace SmartGridToolbox
       
       if (const YAML::Node& subNd = nd["J"])
       {
-         gen->setJ(parser.expand<double>(subNd));
+         gen->setInServiceJ(parser.expand<double>(subNd));
       }
       
       if (const YAML::Node& subNd = nd["C0"])

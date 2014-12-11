@@ -50,7 +50,10 @@ namespace SmartGridToolbox
       auto sum = arma::Col<Complex>(bus_->phases().size(), arma::fill::zeros);
       for (const auto gen : gens_)
       {
-         sum += gen->S();
+         if (gen->isInService())
+         {
+            sum += gen->S();
+         }
       }
       return sum;
    }
@@ -62,7 +65,10 @@ namespace SmartGridToolbox
       double sum = 0;
       for (const auto gen : gens_)
       {
-         sum += gen->J();
+         if (gen->isInService())
+         {
+            sum += gen->J();
+         }
       }
       return sum;
    }
@@ -138,14 +144,28 @@ namespace SmartGridToolbox
       {
          auto bus = nd->bus();
          bus->applyVSetpoints();
-         mod.addBus(bus->id(), bus->type(), bus->phases(), nd->YZip(), nd->IZip(), nd->SZip(), nd->JGen(),
+         bool hasInServiceGen = false;
+         for (int i = 0; i < nd->gens().size(); ++i)
+         {
+            if (nd->gens()[i]->isInService())
+            {
+               hasInServiceGen = true;
+               break;
+            }
+         }
+         BusType type = hasInServiceGen ? bus->type() : BusType::PQ; 
+         mod.addBus(bus->id(), type, bus->phases(), nd->YZip(), nd->IZip(), nd->SZip(), nd->JGen(),
                bus->V(), nd->SGen() + nd->SZip());
       }
       for (const auto arc : arcVec_)
       {
          auto branch = arc->branch();
-         mod.addBranch(arc->node0()->bus()->id(), arc->node1()->bus()->id(),
-               branch->phases0(), branch->phases1(), branch->Y());
+         if (branch->isInService())
+         {
+            // TODO: ignore like this, or add the branch with zero admittance?
+            mod.addBranch(arc->node0()->bus()->id(), arc->node1()->bus()->id(),
+                  branch->phases0(), branch->phases1(), branch->Y());
+         }
       }
       mod.validate();
 
@@ -170,7 +190,7 @@ namespace SmartGridToolbox
                case BusType::SL:
                   for (auto gen : nd->gens())
                   {
-                     gen->setS(SGen);
+                     gen->setInServiceS(SGen);
                   }
                   break;
                case BusType::PQ:
@@ -184,7 +204,7 @@ namespace SmartGridToolbox
                      {
                         SNew[i] = Complex(gen->S()[i].real(), SGen[i].imag());
                      }
-                     gen->setS(SNew);
+                     gen->setInServiceS(SNew);
                   }
                   break;
                default:
