@@ -18,6 +18,12 @@ namespace SmartGridToolbox
          virtual ~ComponentInterface() = default;
          virtual const std::string& id() const = 0;
          virtual const char* componentType() const = 0;
+
+         template<typename T> T& as()
+         {
+            return dynamic_cast<T&>(*this);
+         }
+
       protected:
          virtual void print(std::ostream& os) const = 0;
    };
