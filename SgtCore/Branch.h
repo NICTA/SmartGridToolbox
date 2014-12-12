@@ -49,8 +49,11 @@ namespace SmartGridToolbox
 
       /// @name Nodal admittance matrix (Y):
       /// @{
-         
+        
+         /// @brief The actual admittance, inServiceY if isInService, else zero.
          virtual arma::Mat<Complex> Y() const = 0;
+         
+         /// @brief The admittance whenever isInService.
          virtual arma::Mat<Complex> inServiceY() const = 0;
       
       /// @}
