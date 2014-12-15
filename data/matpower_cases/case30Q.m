@@ -6,7 +6,7 @@ function mpc = case30Q
 %   reactive power.
 
 %   MATPOWER
-%   $Id: case30Q.m,v 1.11 2010/03/10 18:08:15 ray Exp $
+%   $Id: case30Q.m 1559 2010-03-10 18:08:32Z ray $
 
 %% MATPOWER Case Format : Version 2
 mpc.version = '2';
@@ -126,4 +126,10 @@ mpc.gencost = [
 	2	0	0	3	0.00834	3.25	0;
 	2	0	0	3	0.025	3	0;
 	2	0	0	3	0.025	3	0;
+	2	0	0	3	0.02	0	0;
+	2	0	0	3	0.0175	0	0;
+	2	0	0	3	0.0625	0	0;
+	2	0	0	3	0.00834	0	0;
+	2	0	0	3	0.025	0	0;
+	2	0	0	3	0.025	0	0;
 ];

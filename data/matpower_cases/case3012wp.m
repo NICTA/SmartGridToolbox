@@ -9,7 +9,7 @@ function mpc = case3012wp
 %   permission of, Roman Korab <roman.korab@polsl.pl>.
 
 %   MATPOWER
-%   $Id: case3012wp.m,v 1.1 2011/10/31 14:14:35 cvs Exp $
+%   $Id: case3012wp.m 1900 2011-10-31 14:14:35Z cvs $
 
 %% MATPOWER Case Format : Version 2
 mpc.version = '2';
