@@ -1,10 +1,11 @@
-function [ok, V, S, err] = validate_solve_network(filename)
-   ok = true;
+function [okSgt, VSESgt, okMp, VSEMp] = validate_solve_network(filename)
+   okSgt = true;
+   okMp = true;
    filename = make_absolute_filename(filename)
    status = system(['./solve_network ', filename, ' solve_network >/dev/null']);
    if (status != 0)
       printf('Could not solve %s; status = %d\n', filename, status);
-      ok = false;
+      okSgt = false;
       return;
    end
 
@@ -41,9 +42,14 @@ function [ok, V, S, err] = validate_solve_network(filename)
    end
    errMp = validate(VMp, SMp, yShunt, IZip, Y);
 
-   V = [VSgt, VMp];
-   S = [SSgt, SMp];
-   err = abs([errSgt, errMp]);
+   VSESgt = [VSgt, SSgt, errSgt];
+   VSEMp = [VMp, SMp, errMp];
+   if (any(abs(VSESgt(:,3)) > 0.01))
+      okSgt = false;
+   end
+   if (any(abs(VSEMp(:,3)) > 0.01))
+      okMp = false;
+   end
 end
 
 function err = validate(V, S, yShunt, IConst, Y)
