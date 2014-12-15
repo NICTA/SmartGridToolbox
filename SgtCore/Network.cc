@@ -199,7 +199,15 @@ namespace SmartGridToolbox
          {
             auto& busNr = *busPair.second;
             const auto nd = this->node(busNr.id_);
-            arma::Col<Complex> SGen = (busNr.S_ - nd->SZip()) / double(nd->gens().size());
+            int nInService = 0; 
+            for (auto gen : nd->gens())
+            {
+               if (gen->isInService())
+               {
+                  nInService += 1;
+               }
+            }
+            arma::Col<Complex> SGen = (busNr.S_ - nd->SZip()) / nInService;
             // Note: we've already taken YZip and IZip explicitly into account, so this is correct.
             // KLUDGE: We're using a vector above, rather than "auto" (which gives some kind of expression type).
             // This is less efficient, but the latter gives errors in valgrind.
@@ -211,7 +219,10 @@ namespace SmartGridToolbox
                case BusType::SL:
                   for (auto gen : nd->gens())
                   {
-                     gen->setInServiceS(SGen);
+                     if (gen->isInService())
+                     {
+                        gen->setInServiceS(SGen);
+                     }
                   }
                   break;
                case BusType::PQ:
@@ -219,13 +230,16 @@ namespace SmartGridToolbox
                case BusType::PV:
                   for (auto gen : nd->gens())
                   {
-                     // Keep P for gens, distribute Q amongst all gens.
-                     arma::Col<Complex> SNew(gen->S().size());
-                     for (int i = 0; i < SNew.size(); ++i)
+                     if (gen->isInService())
                      {
-                        SNew[i] = Complex(gen->S()[i].real(), SGen[i].imag());
+                        // Keep P for gens, distribute Q amongst all gens.
+                        arma::Col<Complex> SNew(gen->S().size());
+                        for (int i = 0; i < SNew.size(); ++i)
+                        {
+                           SNew[i] = Complex(gen->S()[i].real(), SGen[i].imag());
+                        }
+                        gen->setInServiceS(SNew);
                      }
-                     gen->setInServiceS(SNew);
                   }
                   break;
                default:
