@@ -134,6 +134,23 @@ namespace SmartGridToolbox
       }
    }
 
+   namespace
+   {
+      bool hasInServiceGen(const Node& nd)
+      {
+         bool result = false;
+         for (int i = 0; i < nd.gens().size(); ++i)
+         {
+            if (nd.gens()[i]->isInService())
+            {
+               result = true;
+               break;
+            }
+         }
+         return result;
+      }
+   }
+
    void Network::solvePowerFlow()
    {
       SGT_DEBUG(Log().debug() << "Network : solving power flow." << std::endl);
@@ -143,19 +160,23 @@ namespace SmartGridToolbox
       for (const auto nd : nodeVec_)
       {
          auto bus = nd->bus();
-         bus->applyVSetpoints();
-         bool hasInServiceGen = false;
-         for (int i = 0; i < nd->gens().size(); ++i)
+
+         BusType busTypeSv = bus->type();
+         if (bus->type() != BusType::PQ)
          {
-            if (nd->gens()[i]->isInService())
+            if (!hasInServiceGen(*nd))
             {
-               hasInServiceGen = true;
-               break;
+               Log().warning() << "Bus " << bus->id() << " has type " << bus->type()
+                               << ", but does not have any in service generators. Setting type to PQ." << std::endl;
+               bus->setType(BusType::PQ);
             }
          }
-         BusType type = hasInServiceGen ? bus->type() : BusType::PQ; 
-         mod.addBus(bus->id(), type, bus->phases(), nd->YZip(), nd->IZip(), nd->SZip(), nd->JGen(),
+
+         bus->applyVSetpoints();
+         mod.addBus(bus->id(), bus->type(), bus->phases(), nd->YZip(), nd->IZip(), nd->SZip(), nd->JGen(),
                bus->V(), nd->SGen() + nd->SZip());
+
+         bus->setType(busTypeSv);
       }
       for (const auto arc : arcVec_)
       {

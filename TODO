@@ -26,8 +26,12 @@ service, then the bus should be treated as a PQ bus but isn't.
 
 Need to think about how best to handle this. Thoughs:
 
-1. Bus type really belongs to the "node", which knows about generators.
+1. Bus type really belongs to the "node", which knows about generators?
 2. Just silently handle this when constructing the PowerFlow problem.
+
+UPDATE:
+
+Have fixed this, to some extent?
 
 Parser issue:
 -------------

@@ -62,11 +62,11 @@ namespace SmartGridToolbox
          ConstBusPtr bus() const {return bus_;}
          BusPtr bus() {return bus_;}
 
-         const GenVec gens() {return gens_;}
+         const GenVec gens() const {return gens_;}
          arma::Col<Complex> SGen() const;
          double JGen() const;
 
-         const ZipVec zips() {return zips_;}
+         const ZipVec zips() const {return zips_;}
          arma::Col<Complex> YZip() const;
          arma::Col<Complex> IZip() const;
          arma::Col<Complex> SZip() const;
