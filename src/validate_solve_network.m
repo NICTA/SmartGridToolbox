@@ -1,9 +1,11 @@
-function [V, S, err] = validate_solve_network(filename)
+function [ok, V, S, err] = validate_solve_network(filename)
+   ok = true;
    filename = make_absolute_filename(filename)
    status = system(['./solve_network ', filename, ' solve_network >/dev/null']);
    if (status != 0)
       printf('Could not solve %s; status = %d\n', filename, status);
-      return
+      ok = false;
+      return;
    end
 
    bus = load('solve_network.bus');
@@ -41,45 +43,7 @@ function [V, S, err] = validate_solve_network(filename)
 
    V = [VSgt, VMp];
    S = [SSgt, SMp];
-   err = [errSgt, errMp];
-   iCheck = find(abs(err(:, 1)) > 100)(1)
-   err(iCheck, :)
-
-   busI = zeros(size(bus(:,1)), 2);
-   for (branch_row = branch')
-      ibus = branch_row(1); 
-      jbus = branch_row(2);
-      if (ibus == iCheck || jbus == iCheck)
-         ibus, jbus
-         Y_ = [branch_row(3) + I * branch_row(4), branch_row(5) + I * branch_row(6); 
-               branch_row(7) + I * branch_row(8), branch_row(9) + I * branch_row(10)];
-
-         VSgt_ = [VSgt(ibus); VSgt(jbus)];
-         VMp_ = [VMp(ibus); VMp(jbus)];
-
-         ISgt_ = -Y_ * VSgt_
-         IMp_ = -Y_ * VMp_
-
-         busI(ibus, 1) += ISgt_(1);
-         busI(ibus, 2) += IMp_(1);
-         busI(jbus, 1) += ISgt_(2);
-         busI(jbus, 2) += IMp_(2);
-      end
-   end
-   yShunt_ = yShunt(iCheck);
-
-   VSgt_ = VSgt(iCheck);
-   SSgt_ = SSgt(iCheck);
-   VMp_ = VMp(iCheck);
-   SMp_ = SMp(iCheck);
-
-   ISgt_ = conj(SSgt_) ./ conj(VSgt_) - yShunt(iCheck) .* VSgt_;
-   IMp_ = conj(SMp_) ./ conj(VMp_) - yShunt(iCheck) .* VMp_;
-
-   busI(iCheck, 1) += ISgt_;
-   busI(iCheck, 2) += IMp_;
-
-   busI(iCheck, :)
+   err = abs([errSgt, errMp]);
 end
 
 function err = validate(V, S, yShunt, IConst, Y)

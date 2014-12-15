@@ -492,31 +492,38 @@ namespace SmartGridToolbox
       {
          const MpGenCostInfo& genCostInfo = genCostVec[i];
 
-         if (genCostInfo.model != 2)
-         {
-            Log().fatal() << "Can only use model 2 for generator costs." << std::endl;
-         }
-         
+         bool isBad = false;
+
          if (genCostInfo.costs.size() > 3)
          {
-            Log().fatal() << "Can't have more than three costs for generator.." << std::endl;
+            Log().warning() << "Can't have more than three costs for generator. Ignoring costs." << std::endl;
+            isBad = true;
          }
 
-         GenericGen& gen = *genCompVec[i];
-         gen.setCStartup(genCostInfo.startup);
-         gen.setCShutdown(genCostInfo.shutdown);
-         int nCost = genCostInfo.costs.size();
-         if (nCost >= 1)
+         if (genCostInfo.model != 2)
          {
-            gen.setC0(genCostInfo.costs[2]);
+            Log().warning() << "Can only use model 2 for generator costs. Ignoring costs." << std::endl;
+            isBad = true;
          }
-         if (nCost >= 2)
+
+         if (!isBad)
          {
-            gen.setC1(genCostInfo.costs[1]);
-         }
-         if (nCost >= 3)
-         {
-            gen.setC2(genCostInfo.costs[0]);
+            GenericGen& gen = *genCompVec[i];
+            gen.setCStartup(genCostInfo.startup);
+            gen.setCShutdown(genCostInfo.shutdown);
+            int nCost = genCostInfo.costs.size();
+            if (nCost >= 1)
+            {
+               gen.setC0(genCostInfo.costs[2]);
+            }
+            if (nCost >= 2)
+            {
+               gen.setC1(genCostInfo.costs[1]);
+            }
+            if (nCost >= 3)
+            {
+               gen.setC2(genCostInfo.costs[0]);
+            }
          }
       }
    } // parse(...)
