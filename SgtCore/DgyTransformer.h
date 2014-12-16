@@ -6,11 +6,6 @@
 namespace SmartGridToolbox
 {
    /// @brief Delta-grounded wye transformer.
-   ///
-   /// Note that a 1:1 turns ratio will not result in a 1:1 voltage ratio for this transformer connection.
-   /// This is because the voltage across the windings on the primary (Delta) side is the phase-phase voltage, so
-   /// a 1:1 turns ratio will result in a @f$1:\sqrt(3)@f$ voltage ratio, where all voltages are line-ground. It is
-   /// therefore important that the parameter to the constructor is the turns ratio, not the voltage ratio.
    class DgyTransformer : public BranchAbc
    {
       public:

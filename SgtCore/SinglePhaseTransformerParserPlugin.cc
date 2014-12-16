@@ -23,14 +23,17 @@ namespace SmartGridToolbox
          const YAML::Node& nd, const ParserBase& parser) const
    {
       assertFieldPresent(nd, "id");
-      assertFieldPresent(nd, "complex_turns_ratio_01");
+      assertFieldPresent(nd, "nom_V_ratio");
       assertFieldPresent(nd, "leakage_impedance");
 
       const std::string id = parser.expand<std::string>(nd["id"]);
-      Complex a = parser.expand<Complex>(nd["complex_turns_ratio_01"]);
+      Complex nomVRatio = parser.expand<Complex>(nd["nom_V_ratio"]);
+      auto ndOffNomRatio = nd["off_nom_ratio"];
+      Complex offNomRatio = ndOffNomRatio ? parser.expand<Complex>(nd["off_nom_ratio"]) : 1.0;
+
       Complex ZL = parser.expand<Complex>(nd["leakage_impedance"]);
 
-      std::unique_ptr<SinglePhaseTransformer> trans(new SinglePhaseTransformer(id, a, ZL));
+      std::unique_ptr<SinglePhaseTransformer> trans(new SinglePhaseTransformer(id, nomVRatio, offNomRatio, ZL));
 
       return trans;
    }

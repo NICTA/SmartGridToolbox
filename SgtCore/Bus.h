@@ -270,7 +270,7 @@ namespace SmartGridToolbox
          arma::Col<Complex> V_;
 
          Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
-         Event setpointChanged_{std::string(sComponentType()) + " : Control changed"};
+         Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
          Event voltageUpdated_{std::string(sComponentType()) + " : Voltage updated"};
    };
 }

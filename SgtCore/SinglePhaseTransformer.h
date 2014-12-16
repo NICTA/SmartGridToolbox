@@ -16,8 +16,8 @@ namespace SmartGridToolbox
          /// @brief Constructor
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
-         SinglePhaseTransformer(const std::string& id, Complex a, Complex ZL) :
-            BranchAbc(id, Phase::BAL, Phase::BAL), a_(a), YL_(1.0/ZL)
+         SinglePhaseTransformer(const std::string& id, Complex nomVRatio, Complex offNomRatio, Complex ZL) :
+            BranchAbc(id, Phase::BAL, Phase::BAL), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
          {
             // Empty.
          }
@@ -42,26 +42,41 @@ namespace SmartGridToolbox
       /// @name Parameters:
       /// @{
 
-         Complex a()
+         Complex nomVRatio() const
          {
-            return a_;
+            return nomVRatio_;
+         }
+         
+         void setNomVRatio(Complex nomVRatio)
+         {
+            nomVRatio_ = nomVRatio;
          }
 
-         void set_a(Complex a)
+         Complex offNomRatio() const
          {
-            a_ = a;
+            return offNomRatio_;
+         }
+ 
+         void setOffNomRatio(Complex offNomRatio)
+         {
+            offNomRatio_ = offNomRatio;
+         }
+ 
+         Complex a() const
+         {
+            return offNomRatio_ * nomVRatio_;  
          }
 
-         Complex YL()
+         Complex ZL() const
          {
-            return YL_;
+            return 1.0 / YL_;
          }
 
-         void set_YL(Complex YL)
+         void setZL(Complex ZL)
          {
-            YL_ = YL;
+            YL_ = 1.0 / ZL;
          }
-
+ 
       /// @}
 
       /// @name Overridden from BranchAbc:
@@ -73,7 +88,8 @@ namespace SmartGridToolbox
 
       private:
 
-         Complex a_;  ///< Complex turns ratio, n0/n1 where 0 is primary and 1 is secondary.
+         Complex nomVRatio_; ///< Nominal voltage ratio.
+         Complex offNomRatio_; ///< Off nominal complex turns ratio.
          Complex YL_; ///< Series leakage admittance.
    };
 }

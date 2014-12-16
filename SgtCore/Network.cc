@@ -161,6 +161,8 @@ namespace SmartGridToolbox
       {
          auto bus = nd->bus();
 
+         bool isActiveSv = bus->setpointChanged().isActive();
+         bus->setpointChanged().setIsActive(false);
          BusType busTypeSv = bus->type();
          if (bus->type() != BusType::PQ)
          {
@@ -177,6 +179,7 @@ namespace SmartGridToolbox
                bus->V(), nd->SGen() + nd->SZip());
 
          bus->setType(busTypeSv);
+         bus->setpointChanged().setIsActive(isActiveSv);
       }
       for (const auto arc : arcVec_)
       {
@@ -246,6 +249,10 @@ namespace SmartGridToolbox
                   Log().fatal() << "Bad bus type." << std::endl;
             }
          }
+      }
+      else
+      {
+         Log().fatal() << "Couldn't solve power flow problem." << std::endl;
       }
    }
 
