@@ -358,26 +358,38 @@ namespace SmartGridToolbox
       }
       
       // Extract the genCost data.
-      if (data.genCost.size() > 0 && data.genCost.size() != data.gen.size())
+      if (data.genCost.size() > 0)
       {
-         Log().fatal() << "There are a different number of generators to generator costs." << std::endl;
+         if (data.genCost.size() == 2 * data.gen.size())
+         {
+            Log().warning() << "Reactive generator costs not yet implemented. Ignoring them." << std::endl;
+         }
+         else if (data.genCost.size() != data.gen.size())
+         {
+            Log().fatal() << "There are a different number of generators to generator costs." << std::endl;
+         }
       }
+
       std::vector<MpGenCostInfo> genCostVec;
       {
-         genCostVec.reserve(data.genCost.size());
-         for (const auto& row : data.genCost)
+         genCostVec.reserve(data.gen.size());
+         if (data.genCost.size() > 0)
          {
-            genCostVec.push_back(MpGenCostInfo{});
-            MpGenCostInfo& genCostInfo = genCostVec.back();
-         
-            genCostInfo.model = row[0];
-            genCostInfo.startup = row[1];
-            genCostInfo.shutdown = row[2];
-            int nCost = row[3];
-            genCostInfo.costs.reserve(nCost);
-            for (int i = 0; i < nCost; ++i)
+            for (int i = 0; i < data.gen.size(); ++i)
             {
-               genCostInfo.costs.push_back(row[4 + i]);
+               auto row = data.genCost[i];
+               genCostVec.push_back(MpGenCostInfo{});
+               MpGenCostInfo& genCostInfo = genCostVec.back();
+
+               genCostInfo.model = row[0];
+               genCostInfo.startup = row[1];
+               genCostInfo.shutdown = row[2];
+               int nCost = row[3];
+               genCostInfo.costs.reserve(nCost);
+               for (int i = 0; i < nCost; ++i)
+               {
+                  genCostInfo.costs.push_back(row[4 + i]);
+               }
             }
          }
       }
