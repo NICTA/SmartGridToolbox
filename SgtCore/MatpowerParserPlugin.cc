@@ -399,7 +399,7 @@ namespace SmartGridToolbox
 
       // Busses:
       int nZip = 0;
-      for (auto busInfo : busVec)
+      for (const auto& busInfo : busVec)
       {
          std::string busId = getBusId(busInfo.id);
          std::unique_ptr<Bus> bus(
@@ -439,6 +439,24 @@ namespace SmartGridToolbox
          netw.addNode(std::move(bus));
          netw.addZip(std::move(zip), busId);
       } // Busses
+
+      // If there is no slack bus, Matpower assigns the first PV bus as slack. We need to do the same.
+      auto it = std::find_if(netw.nodes().cbegin(), netw.nodes().cend(), 
+            [](const NodePtr& nd)->bool{return nd->bus()->type() == BusType::SL;});
+      if (it == netw.nodes().cend())
+      {
+         Log().warning() 
+            << "There is no slack bus defined on the network. Setting the type of the first PV bus to SL." 
+            << std::endl;
+         auto itb = std::find_if(netw.nodes().cbegin(), netw.nodes().cend(), 
+               [](const NodePtr& nd)->bool{return nd->bus()->type() == BusType::PV;});
+         assert(itb != netw.nodes().cend());
+         (**itb).bus()->setType(BusType::SL);
+      }
+      else
+      {
+         Log().message() << "The slack bus is " << (**it).bus()->id() << std::endl;
+      }
 
       // Gens:
       std::vector<GenericGen*> genCompVec;

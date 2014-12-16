@@ -34,12 +34,20 @@ function [okSgt, VSESgt, okMp, VSEMp] = validate_solve_network(filename)
    result = runpf(filename, mpoption('out.all', 0));
    busMp = result.bus;
    genMp = result.gen;
+
+   % Sometimes, Matpower has a non-zero angle for the slack voltage, I guess due to transformer phase shift.
+   % Adjust this.
+   iSlack = find(busMp(:, 2) == 3);
+   angOff = busMp(iSlack, 9);
+   busMp(:, 9) -= angOff;
+
    VMp = bus(:, 1) .* busMp(:, 8) .* exp(I * busMp(:, 9) * pi / 180);
    SMp = - busMp(:, 3) - I * busMp(:, 4);
    for (row = genMp')
       busIdx = find(busMp(:, 1) == row(1));
       SMp(busIdx) += row(2) + I * row(3);
    end
+
    errMp = validate(VMp, SMp, yShunt, IZip, Y);
 
    VSESgt = [VSgt, SSgt, errSgt];
