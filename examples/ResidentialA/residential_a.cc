@@ -69,6 +69,10 @@ int main(int argc, const char** argv)
       {
          Phase p = ps[i];
          int iPhase = 0;
+         if (p == Phase::BAL)
+         {
+            iPhase = 0;
+         }
          if (p == Phase::A)
          {
             iPhase = 1;
