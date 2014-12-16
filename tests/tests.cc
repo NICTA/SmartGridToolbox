@@ -29,7 +29,7 @@ struct Init
    }
 };
  
-BOOST_FIXTURE_TEST_SUITE(test_core, Init)
+BOOST_FIXTURE_TEST_SUITE(tests, Init)
 
 BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
 {
@@ -259,10 +259,6 @@ BOOST_AUTO_TEST_CASE (test_matpower)
       }
    }
 }
-
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_FIXTURE_TEST_SUITE(test_sim, Init)
 
 BOOST_AUTO_TEST_CASE (test_weak_order)
 {
