@@ -1,5 +1,5 @@
-#include "SgtCore.h"
-#include "SgtSim.h"
+#include <SgtCore.h>
+#include <SgtSim.h>
 
 #include <fstream>
 
@@ -89,7 +89,9 @@ int main(int argc, const char** argv)
       }
    }
    out << std::endl;
-   
+
+   Stopwatch swTot;
+   swTot.start();
    while (ok)
    {
       ok = sim.doTimestep();
@@ -105,6 +107,8 @@ int main(int argc, const char** argv)
       }
       out << std::endl;
    }
+   swTot.stop();
+   Log().message() << "Total time = " << swTot.seconds() << std::endl;
 
    out.close();
 }

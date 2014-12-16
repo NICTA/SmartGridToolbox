@@ -23,6 +23,7 @@ libinclude_HEADERS = \
 	Properties.h \
 	Random.h \
 	SinglePhaseTransformer.h \
+	Stopwatch.h \
 	Units.h \
 	YamlSupport.h \
 	YyTransformer.h \

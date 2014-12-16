@@ -1,14 +1,11 @@
 -  parameters: 
-#     n_neigbourhoods: 5
-#     n_streets: [4, 5, 2, 6, 2]
-#     n_houses_0: [5, 3, 8, 8]
-#     n_houses_1: [4, 7, 7, 5, 9]
-#     n_houses_2: [7, 10]
-#     n_houses_3: [4, 4, 7, 7, 9, 9]
-#     n_houses_4: [10, 9]
-      n_neigbourhoods: 1
-      n_streets: [1]
-      n_houses_0: [1]
+      n_neigbourhoods: 5
+      n_streets: [4, 5, 2, 6, 2]
+      n_houses_0: [5, 3, 8, 8]
+      n_houses_1: [4, 7, 7, 5, 9]
+      n_houses_2: [7, 10]
+      n_houses_3: [4, 4, 7, 7, 9, 9]
+      n_houses_4: [10, 9]
 
       V_base_hv: 184.75
       V_base_mv: 6.3509
@@ -32,8 +29,8 @@
 
 -  simulation: 
       lat_long: [-35.3075, 149.1244] # Canberra, Australia.
-      start_time: 2013-01-01 06:00:00
-      end_time: 2013-01-07 06:00:00
+      start_time: 2013-01-01 00:00:00
+      end_time: 2013-01-02 00:00:00
       timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
 -  network: 
       id: network

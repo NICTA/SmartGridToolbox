@@ -17,6 +17,7 @@
 #include <SgtCore/Properties.h>
 #include <SgtCore/Random.h>
 #include <SgtCore/SinglePhaseTransformer.h>
+#include <SgtCore/Stopwatch.h>
 #include <SgtCore/Units.h>
 #include <SgtCore/YyTransformer.h>
 #include <SgtCore/Zip.h>

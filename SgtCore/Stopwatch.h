@@ -1,3 +1,6 @@
+#ifndef STOPWATCH_DOT_H
+#define STOPWATCH_DOT_H
+
 #include <chrono>
 
 class Stopwatch
@@ -13,3 +16,5 @@ class Stopwatch
       std::chrono::time_point<std::chrono::system_clock> start_;
       std::chrono::duration<double> dur_;
 };
+
+#endif // STOPWATCH_DOT_H
