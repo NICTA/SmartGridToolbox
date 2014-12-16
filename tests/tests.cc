@@ -29,29 +29,7 @@ struct Init
    }
 };
  
-BOOST_FIXTURE_TEST_SUITE(tests, Init)
-
-BOOST_AUTO_TEST_CASE (test_weak_order)
-{
-   WoGraph g(6);
-   g.link(3, 1);
-   g.link(4, 1);
-   g.link(0, 4);
-   g.link(1, 0);
-   g.link(1, 2);
-   g.link(0, 5);
-   g.link(5, 2);
-   // Order should be 3, (0, 1, 4), 5, 2.
-   
-   g.weakOrder();
-
-   BOOST_CHECK(g.nodes()[0]->index() == 3);
-   BOOST_CHECK(g.nodes()[1]->index() == 0);
-   BOOST_CHECK(g.nodes()[2]->index() == 1);
-   BOOST_CHECK(g.nodes()[3]->index() == 4);
-   BOOST_CHECK(g.nodes()[4]->index() == 5);
-   BOOST_CHECK(g.nodes()[5]->index() == 2);
-}
+BOOST_FIXTURE_TEST_SUITE(test_core, Init)
 
 BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
 {
@@ -280,6 +258,32 @@ BOOST_AUTO_TEST_CASE (test_matpower)
                << "    " << (nd->SGen()(0) + nd->SZip()(0)) << " : " << S);
       }
    }
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_FIXTURE_TEST_SUITE(test_sim, Init)
+
+BOOST_AUTO_TEST_CASE (test_weak_order)
+{
+   WoGraph g(6);
+   g.link(3, 1);
+   g.link(4, 1);
+   g.link(0, 4);
+   g.link(1, 0);
+   g.link(1, 2);
+   g.link(0, 5);
+   g.link(5, 2);
+   // Order should be 3, (0, 1, 4), 5, 2.
+   
+   g.weakOrder();
+
+   BOOST_CHECK(g.nodes()[0]->index() == 3);
+   BOOST_CHECK(g.nodes()[1]->index() == 0);
+   BOOST_CHECK(g.nodes()[2]->index() == 1);
+   BOOST_CHECK(g.nodes()[3]->index() == 4);
+   BOOST_CHECK(g.nodes()[4]->index() == 5);
+   BOOST_CHECK(g.nodes()[5]->index() == 2);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
