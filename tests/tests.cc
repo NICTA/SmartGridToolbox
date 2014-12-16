@@ -1,19 +1,35 @@
 #define BOOST_TEST_MODULE test_template
 
-#include <SgtCore.h>
-#include <SgtSim.h>
-#include <SgtSim/WeakOrder.h>
+#include "../SgtCore/SgtCore.h"
+#include "../SgtSim/SgtSim.h"
+#include "../SgtSim/WeakOrder.h"
 
 #include <boost/test/included/unit_test.hpp>
 
 #include <cmath>
 #include <ostream>
 #include <fstream>
+#include <strstream>
 
 using namespace SmartGridToolbox;
 using namespace std;
 using namespace boost::posix_time;
 using namespace boost::unit_test;
+
+struct Init
+{
+   Init()
+   {
+      unit_test_log.set_threshold_level(boost::unit_test::log_messages);
+      BOOST_MESSAGE("\nTesting " << framework::current_test_case().p_name);
+   }
+   ~Init()
+   {
+      BOOST_MESSAGE("Finished " << framework::current_test_case().p_name << "\n");
+   }
+};
+ 
+BOOST_FIXTURE_TEST_SUITE(tests, Init)
 
 BOOST_AUTO_TEST_CASE (test_weak_order)
 {
@@ -261,6 +277,72 @@ BOOST_AUTO_TEST_CASE (test_function_timeseries)
    BOOST_CHECK(fts.value(posix_time::seconds(-1)) == -2.0);
    BOOST_CHECK(fts.value(posix_time::seconds(3)) == 6.0);
 }
+
+BOOST_AUTO_TEST_CASE (test_matpower)
+{
+   BOOST_MESSAGE("Starting matpower tests");
+   using namespace SmartGridToolbox;
+
+   std::vector<std::string> cases = {
+      "case118",
+      "case14",
+      "case14_shift",
+      "case2383wp",
+      "case24_ieee_rts",
+      "case2736sp",
+      "case2737sop",
+      "case2746wop",
+      "case2746wp",
+      "case30",
+      "case300",
+      "case3012wp",
+      "case30Q",
+      "case30_all",
+      "case30pwl",
+      "case3120sp",
+      // "case3375wp", // Can't solve correctly, but then neither can Matpower... 
+      "case39",
+      "case4gs",
+      "case5",
+      "case57",
+      "case6ww",
+      "case9",
+      "case9Q",
+      "case9target",
+      "caseSLPQ",
+      "caseSLPQPV",
+      "caseSLPV",
+      "case_ieee30"
+   };
+
+   for (auto c : cases)
+   {
+      BOOST_MESSAGE("Case " << c);
+
+      std::string yamlStr = 
+         std::string("--- [{matpower : {input_file : ../data/matpower_cases/") + c + ".m, default_kV_base : 11}}]";
+      Network nw("network", 100.0);
+      YAML::Node n = YAML::Load(yamlStr);
+      SmartGridToolbox::Parser<Network> p;
+      p.parse(n, nw);
+      nw.solvePowerFlow();
+
+      ifstream compareName(std::string("mp_compare/") + c + ".compare");
+
+      for (auto nd : nw.nodes()) {
+         double Vr, Vi, P, Q;
+         compareName >> Vr >> Vi >> P >> Q;
+         Complex V = {Vr, Vi};
+         Complex S = {P, Q};
+         BOOST_ASSERT(!compareName.eof());
+         BOOST_CHECK_MESSAGE(std::abs(V - nd->bus()->V()(0) / nd->bus()->VBase()) < 1e-3,
+               "V doesn't agree with matpower: " << V << " : " << nd->bus()->V()(0) / nd->bus()->VBase());
+         BOOST_CHECK_MESSAGE(std::abs(S - nd->SGen()(0) - nd->SZip()(0)) / nw.PBase() < 1e-3, "S doesn't agree with Matpower: " << S << " : " << (nd->SGen()(0) + nd->SZip()(0)) / nw.PBase());
+      }
+   }
+}
+
+BOOST_AUTO_TEST_SUITE_END()
 
 #if 0
 BOOST_AUTO_TEST_CASE (test_dependencies)
@@ -764,217 +846,6 @@ BOOST_AUTO_TEST_CASE (test_loops)
    {
    }
    outfile.close();
-}
-
-static void prepareMPInput(const std::string & yamlName, const std::string & caseName, bool usePerUnit)
-{
-   std::fstream yamlFile(yamlName, ios_base::out);
-   if (!yamlFile.is_open())
-   {
-      Log().error() << "Could not open the yaml output file " << yamlName << "." << std::endl;
-      SmartGridToolbox::abort();
-   }
-
-   yamlFile << "configuration_name:           config_1" << std::endl;
-   yamlFile << "start_time:                   2013-01-23 13:13:00" << std::endl;
-   yamlFile << "end_time:                     2013-01-23 15:13:00" << std::endl;
-   yamlFile << "lat_long:                     [-35.3075, 149.1244] # Canberra, Australia." << std::endl;
-   yamlFile << "timezone:                     AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia."
-            << std::endl;
-   yamlFile << "components:" << std::endl;
-   yamlFile << "   matpower:" << std::endl;
-   yamlFile << "      input_file:             " << caseName << std::endl;
-   yamlFile << "      network_name:           matpower" << std::endl;
-   yamlFile << "      default_V_base:         1000 # 1 KV default." << std::endl;
-   if (usePerUnit)
-   {
-      yamlFile << "      use_per_unit:           Y" << std::endl;
-   }
-
-   yamlFile.close();
-}
-
-static void readMPOutput(const std::string & fileName, bool usePerUnit, 
-                         double & SBase, ublas::vector<int> & iBus, ublas::vector<double> & VBase, 
-                         ublas::vector<Complex> & V, ublas::vector<Complex> & Sc, ublas::vector<Complex> & Sg)
-{
-   std::fstream infile(fileName);
-   if (!infile.is_open())
-   {
-      Log().error() << "Could not open the matpower compare file " << fileName << "." << std::endl;
-      SmartGridToolbox::abort();
-   }
-   infile >> SBase;
-   int nBus;
-   infile >> nBus;
-   Log().message() << "Matpower output: nBus = " << nBus << std::endl;
-   iBus.resize(nBus, false);
-   VBase.resize(nBus, false);
-   V.resize(nBus, false);
-   Sc.resize(nBus, false);
-   Sg.resize(nBus, false);
-   for (int i = 0; i < nBus; ++i)
-   {
-      int ib;
-      double Vb;
-      double Vr; double Vi;
-      double Scr; double Sci;
-      double Sgr; double Sgi;
-      infile >> ib >> Vb >> Vr >> Vi >> Scr >> Sci >> Sgr >> Sgi;
-      iBus(i) = ib;
-      VBase(i) = Vb;
-      V(i) = Complex(Vr, Vi);
-      Sc(i) = Complex(Scr, Sci);
-      Sg(i) = Complex(Sgr, Sgi);
-   }
-
-   if (!usePerUnit)
-   {
-      V = element_prod(VBase, V);
-      Sc *= SBase;
-      Sg *= SBase;
-   }
-}
-
-static std::string num2PaddedString5(int num)
-{
-   std::ostringstream ss;
-   ss << std::setfill('0') << std::setw(5) << num;
-   return ss.str();
-}
-
-static void testMatpower(const std::string & baseName, bool usePerUnit)
-{
-   std::string caseName = baseName + ".m";
-   std::string yamlName = "test_mp_" + baseName + ".yaml";
-   std::string compareName = "test_mp_" + baseName + ".compare";
-
-   Model mod;
-   Simulation sim(mod);
-   Parser & p = Parser::globalParser();
-   
-   prepareMPInput(yamlName, caseName, usePerUnit);
-
-   p.parse(yamlName.c_str(), mod, sim); p.postParse();
-   mod.validate();
-   sim.initialize();
-   Network * network = mod.component<Network>("matpower");
-   network->solvePowerFlow();
-
-   double SBase;
-   ublas::vector<int> iBus;
-   ublas::vector<double> VBase;
-   ublas::vector<Complex> V;
-   ublas::vector<Complex> Sc;
-   ublas::vector<Complex> Sg;
-   readMPOutput(compareName, usePerUnit, SBase, iBus, VBase, V, Sc, Sg);
-
-   double STol = usePerUnit ? 1e-4 : SBase * 1e-4;
-
-   for (int i = 0; i < iBus.size(); ++i)
-   {
-      int ib = iBus(i);
-      std::string busName = "matpower_bus_" + num2PaddedString5(ib);
-      Bus * bus = mod.component<Bus>(busName);
-      assert(bus != nullptr);
-      double VTol = usePerUnit ? 1e-4 : VBase(i) * 1e-4;
-
-      Log().message() << "V tolerance = " << VTol << std::endl;
-      Log().message() << "S tolerance = " << STol << std::endl;
-      Log().message() << std::endl;
-
-      Log().message() << setw(24) << std::left << busName
-                << setw(24) << std::left << "V"
-                << setw(24) << std::left << "Sc"
-                << setw(24) << std::left << "Sg"
-                << std::endl;
-      Log().message() << setw(24) << left << "SGT"
-                << setw(24) << left << bus->V()(0)
-                << setw(24) << left << bus->Sc()(0)
-                << setw(24) << left << bus->Sg()(0)
-                << std::endl;
-      Log().message() << setw(24) << left << "Matpower"
-                << setw(24) << left << V(i) 
-                << setw(24) << left << Sc(i)
-                << setw(24) << left << Sg(i)
-                << std::endl; 
-      Log().message() << std::endl;
-
-      BOOST_CHECK(abs(bus->V()(0) - V(i)) < VTol);
-      BOOST_CHECK(abs(bus->Sc()(0) - Sc(i)) < STol);
-      BOOST_CHECK(abs(bus->Sg()(0) - Sg(i)) < STol);
-   }
-}
-
-BOOST_AUTO_TEST_CASE (test_mp_SLPQ)
-{
-   testMatpower("caseSLPQ", true);
-   testMatpower("caseSLPQ", false);
-}
-
-BOOST_AUTO_TEST_CASE (test_mp_SLPV)
-{
-   testMatpower("caseSLPV", true);
-   testMatpower("caseSLPV", false);
-}
-
-BOOST_AUTO_TEST_CASE (test_mp_SLPQPV)
-{
-   testMatpower("caseSLPQPV", true);
-   testMatpower("caseSLPQPV", false);
-}
-
-BOOST_AUTO_TEST_CASE (test_mp_4gs)
-{
-   testMatpower("case4gs", true);
-   testMatpower("case4gs", false);
-}
-
-BOOST_AUTO_TEST_CASE (test_mp_6ww)
-{
-   testMatpower("case6ww", true);
-   testMatpower("case6ww", false);
-}
-
-BOOST_AUTO_TEST_CASE (test_mp_9)
-{
-   testMatpower("case9", true);
-   testMatpower("case9", false);
-}
-
-BOOST_AUTO_TEST_CASE (test_mp_trans3)
-{
-   testMatpower("case_trans3", true);
-   testMatpower("case_trans3", false);
-}
-
-BOOST_AUTO_TEST_CASE (test_mp_trans3_shift)
-{
-   testMatpower("case_trans3_shift", true);
-   testMatpower("case_trans3_shift", false);
-}
-
-BOOST_AUTO_TEST_CASE (test_mp_14)
-{
-   testMatpower("case14", true);
-   testMatpower("case14", false);
-}
-
-BOOST_AUTO_TEST_CASE (test_mp_debug)
-{
-   testMatpower("case_debug", true);
-}
-
-BOOST_AUTO_TEST_CASE (test_mp_14_shift)
-{
-   testMatpower("case14_shift", true);
-   testMatpower("case14_shift", false);
-}
-
-BOOST_AUTO_TEST_CASE (test_mp_57)
-{
-   testMatpower("case57", true);
-   testMatpower("case57", false);
 }
 
 BOOST_AUTO_TEST_CASE (test_network_overhead)
