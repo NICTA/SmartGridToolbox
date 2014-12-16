@@ -273,9 +273,11 @@ BOOST_AUTO_TEST_CASE (test_matpower)
          Complex S = {P, Q};
          BOOST_ASSERT(!compareName.eof());
          BOOST_CHECK_MESSAGE(std::abs(V - nd->bus()->V()(0) / nd->bus()->VBase()) < 1e-3,
-               "V doesn't agree with matpower: " << nd->bus()->V()(0) / nd->bus()->VBase() << " : " << V);
+               "V doesn't agree with matpower at bus " << nd->bus()->id() 
+               << " : " << nd->bus()->V()(0) / nd->bus()->VBase() << " : " << V);
          BOOST_CHECK_MESSAGE(std::abs(S - nd->SGen()(0) - nd->SZip()(0)) / nw.PBase() < 1e-3,
-               "S doesn't agree with Matpower: " << (nd->SGen()(0) + nd->SZip()(0)) / nw.PBase() << " : " << S);
+               "S doesn't agree with Matpower at bus " << nd->bus()->id()
+               << " : " << (nd->SGen()(0) + nd->SZip()(0)) << " : " << S);
       }
    }
 }
