@@ -35,7 +35,7 @@ namespace SmartGridToolbox
       {
          delete n.second;
       }
-      for (auto e : edgeMap_)
+      for (auto e : arcMap_)
       {
          delete e.second;
       }
@@ -46,12 +46,12 @@ namespace SmartGridToolbox
       nodeMap_[id] = new NetworkNode{id, x, y, w, h};
    }
 
-   void NetworkGraph::addEdge(const std::string& id, double l, const std::string& id0, const std::string& id1)
+   void NetworkGraph::addArc(const std::string& id, double l, const std::string& id0, const std::string& id1)
    {
       auto n0 = nodeMap_.at(id0);
       auto n1 = nodeMap_.at(id1);
-      auto e = edgeMap_[id] = new NetworkEdge{id, l, n0,  n1};
-      n0->adjacentEdges.push_back(e);
+      auto e = arcMap_[id] = new NetworkArc{id, l, n0,  n1};
+      n0->adjacentArcs.push_back(e);
    }
 
    void NetworkGraph::layout()
@@ -69,7 +69,7 @@ namespace SmartGridToolbox
          nodeVec[ogdfNd->index()] = n.second;
       }
 
-      for (auto& e : edgeMap_)
+      for (auto& e : arcMap_)
       {
          const std::string& id0 = e.second->n0->id;
          const std::string& id1 = e.second->n1->id;

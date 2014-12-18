@@ -7,7 +7,7 @@
 
 namespace SmartGridToolbox
 {
-   struct NetworkEdge;
+   struct NetworkArc;
 
    struct NetworkNode
    {
@@ -16,12 +16,12 @@ namespace SmartGridToolbox
       double y{0.0};
       double w{0.0};
       double h{0.0};
-      std::vector<NetworkEdge*> adjacentEdges;
+      std::vector<NetworkArc*> adjacentArcs;
 
       NetworkNode(const std::string& id, double x, double y, double w, double h);
    };
 
-   struct NetworkEdge
+   struct NetworkArc
    {
       std::string id;
       double l;
@@ -36,12 +36,12 @@ namespace SmartGridToolbox
          ~NetworkGraph();
 
          void addNode(const std::string& id, double x, double y, double w, double h);
-         void addEdge(const std::string& id, double l, const std::string& id0, const std::string& id1);
+         void addArc(const std::string& id, double l, const std::string& id0, const std::string& id1);
 
          void layout();
 
          const std::map<std::string, NetworkNode*>& nodes() const {return nodeMap_;}
-         const std::map<std::string, NetworkEdge*>& edges() const {return edgeMap_;}
+         const std::map<std::string, NetworkArc*>& arcs() const {return arcMap_;}
 
       private:
 
@@ -50,7 +50,7 @@ namespace SmartGridToolbox
       private:
 
          std::map<std::string, NetworkNode*> nodeMap_;
-         std::map<std::string, NetworkEdge*> edgeMap_;
+         std::map<std::string, NetworkArc*> arcMap_;
    };
 } // namespace SmartGridToolbox
 
