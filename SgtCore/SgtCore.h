@@ -1,5 +1,7 @@
-#ifndef LIB_POWER_FLOW_DOT_H
-#define LIB_POWER_FLOW_DOT_H
+#ifndef SGT_CORE_DOT_H
+#define SGT_CORE_DOT_H
+
+#include <SgtCore/config.h>
 
 #include <SgtCore/Branch.h>
 #include <SgtCore/Bus.h>
@@ -22,4 +24,8 @@
 #include <SgtCore/YyTransformer.h>
 #include <SgtCore/Zip.h>
 
-#endif // LIB_POWER_FLOW_DOT_H
+#ifdef ENABLE_LAYOUT 
+#include <SgtCore/NetworkGraph.h>
+#endif
+
+#endif // SGT_CORE_DOT_H

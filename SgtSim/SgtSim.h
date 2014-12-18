@@ -1,3 +1,8 @@
+#ifndef SGT_SIM_DOT_H
+#define SGT_SIM_DOT_H
+
+#include <SgtCore/config.h>
+
 #include <SgtSim/Battery.h>
 #include <SgtSim/DcPowerSource.h>
 #include <SgtSim/Inverter.h>
@@ -12,3 +17,5 @@
 #include <SgtSim/Sun.h>
 #include <SgtSim/TimeSeries.h>
 #include <SgtSim/Weather.h>
+
+#endif // SGT_SIM_DOT_H

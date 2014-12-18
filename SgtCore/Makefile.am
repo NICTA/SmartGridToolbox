@@ -7,6 +7,7 @@ lib_LIBRARIES = libSgtCore.a
 include_HEADERS = SgtCore.h
 
 libinclude_HEADERS = \
+	../config.h
 	Branch.h \
 	Bus.h \
 	Common.h \
@@ -28,6 +29,10 @@ libinclude_HEADERS = \
 	YamlSupport.h \
 	YyTransformer.h \
 	Zip.h
+
+if ENABLE_LAYOUT
+libinclude_HEADERS += NetworkGraph.h
+endif
 
 libSgtCore_a_SOURCES = \
 	Branch.h \
@@ -96,3 +101,7 @@ libSgtCore_a_SOURCES = \
 	YyTransformerParserPlugin.cc \
 	Zip.h \
 	Zip.cc
+
+if ENABLE_LAYOUT
+libSgtCore_a_SOURCES += NetworkGraph.h NetworkGraph.cc
+endif
