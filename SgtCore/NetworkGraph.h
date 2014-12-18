@@ -5,50 +5,53 @@
 #include <string>
 #include <vector>
 
-struct NetworkEdge;
-
-struct NetworkNode
+namespace SmartGridToolbox
 {
-   std::string id;
-   double x{0.0};
-   double y{0.0};
-   double w{0.0};
-   double h{0.0};
-   std::vector<NetworkEdge*> adjacentEdges;
+   struct NetworkEdge;
 
-   NetworkNode(const std::string& id, double x, double y, double w, double h);
-};
+   struct NetworkNode
+   {
+      std::string id;
+      double x{0.0};
+      double y{0.0};
+      double w{0.0};
+      double h{0.0};
+      std::vector<NetworkEdge*> adjacentEdges;
 
-struct NetworkEdge
-{
-   std::string id;
-   double l;
-   NetworkNode* n0;
-   NetworkNode* n1;
-};
+      NetworkNode(const std::string& id, double x, double y, double w, double h);
+   };
 
-class NetworkGraph
-{
-   public:
+   struct NetworkEdge
+   {
+      std::string id;
+      double l;
+      NetworkNode* n0;
+      NetworkNode* n1;
+   };
 
-      ~NetworkGraph();
+   class NetworkGraph
+   {
+      public:
 
-      void addNode(const std::string& id, double x, double y, double w, double h);
-      void addEdge(const std::string& id, double l, const std::string& id0, const std::string& id1);
+         ~NetworkGraph();
 
-      void layout();
-      
-      const std::map<std::string, NetworkNode*>& nodes() const {return nodeMap_;}
-      const std::map<std::string, NetworkEdge*>& edges() const {return edgeMap_;}
+         void addNode(const std::string& id, double x, double y, double w, double h);
+         void addEdge(const std::string& id, double l, const std::string& id0, const std::string& id1);
 
-   private:
+         void layout();
 
-      void validate();
+         const std::map<std::string, NetworkNode*>& nodes() const {return nodeMap_;}
+         const std::map<std::string, NetworkEdge*>& edges() const {return edgeMap_;}
 
-   private:
+      private:
 
-      std::map<std::string, NetworkNode*> nodeMap_;
-      std::map<std::string, NetworkEdge*> edgeMap_;
-};
+         void validate();
+
+      private:
+
+         std::map<std::string, NetworkNode*> nodeMap_;
+         std::map<std::string, NetworkEdge*> edgeMap_;
+   };
+} // namespace SmartGridToolbox
 
 #endif // NETWORKGRAPH_H
