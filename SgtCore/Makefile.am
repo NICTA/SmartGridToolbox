@@ -7,7 +7,7 @@ lib_LIBRARIES = libSgtCore.a
 include_HEADERS = SgtCore.h
 
 libinclude_HEADERS = \
-	../config.h
+	../config.h \
 	Branch.h \
 	Bus.h \
 	Common.h \
