@@ -26,6 +26,7 @@
 
 #ifdef ENABLE_LAYOUT 
 #include <SgtCore/NetworkGraph.h>
+#include <SgtCore/SgtNetworkGraph.h>
 #endif
 
 #endif // SGT_CORE_DOT_H

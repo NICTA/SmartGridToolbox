@@ -28,25 +28,18 @@ namespace SmartGridToolbox
    {
       // Empty.
    }
-
-   NetworkGraph::~NetworkGraph()
+      
+   NetworkArc::NetworkArc(const std::string& id, double l, 
+         std::unique_ptr<NetworkNode> n0, std::unique_ptr<NetworkNode> n1) :
+      id(id),
+      l(l),
+      n0(n0),
+      n1(n1)
    {
-      for (auto n : nodeMap_)
-      {
-         delete n.second;
-      }
-      for (auto e : arcMap_)
-      {
-         delete e.second;
-      }
+      // Empty.
    }
 
-   void NetworkGraph::addNode(const std::string& id, double x, double y, double w, double h)
-   {
-      nodeMap_[id] = new NetworkNode{id, x, y, w, h};
-   }
-
-   void NetworkGraph::addArc(const std::string& id, double l, const std::string& id0, const std::string& id1)
+   void addArc(std::unique_ptr<NetworkArc> a, std::string )
    {
       auto n0 = nodeMap_.at(id0);
       auto n1 = nodeMap_.at(id1);
