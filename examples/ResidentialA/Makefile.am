@@ -4,11 +4,11 @@ bin_PROGRAMS = residential_a
 
 residential_a_SOURCES = residential_a.cc
 
-residential_a_LDFLAGS = \
-	-lSgtCore \
+residential_a_LDADD = \
 	-lSgtSim \
-	-larmadillo \
+	-lSgtCore \
 	-lboost_date_time \
+	-larmadillo \
 	-lyaml-cpp \
 	-lklu \
 	-lamd \
