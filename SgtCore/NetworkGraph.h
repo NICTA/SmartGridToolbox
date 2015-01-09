@@ -52,13 +52,18 @@ namespace SmartGridToolbox
 
          void addNode(const std::string& id, std::unique_ptr<NetworkNodeInfo> info)
          {
-            nodeMap_.emplace(std::piecewise_construct, std::forward_as_tuple(id)
-                  
-                  std::make_pair(id, NetworkNode{id, std::move(info)}));
+            nodeMap_.emplace(std::make_pair(id, NetworkNode{id, std::move(info)}));
          }
 
          void addArc(const std::string& id, const std::string& id0, const std::string& id1,
-               std::unique_ptr<NetworkArc> info);
+               std::unique_ptr<NetworkArcInfo> info)
+         {
+            auto& n0 = nodeMap_.at(id0);
+            auto& n1 = nodeMap_.at(id1);
+            auto a = NetworkArc(id, &n0, &n1, std::move(info));
+            n0.adjacentArcs.push_back(&a);
+            arcMap_.emplace(std::make_pair(id, std::move(a)));
+         }
 
          void layout();
 
