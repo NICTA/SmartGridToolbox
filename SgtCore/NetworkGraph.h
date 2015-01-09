@@ -13,21 +13,21 @@ namespace SmartGridToolbox
 {
    struct BasicGraphNodeInfo
    {
-      double x{0.0};
-      double y{0.0};
-      double w{0.0};
-      double h{0.0};
+      double x;
+      double y;
+      double w;
+      double h;
    };
    
    struct BasicGraphArcInfo
    {
-      double l{0.0};
+      double l;
    };
 
    template<typename NI = BasicGraphNodeInfo, typename AI = BasicGraphArcInfo> struct GraphTraits
    {
-      typedef NI GraphNodeInfo; 
-      typedef AI GraphArcInfo; 
+      using GraphNodeInfo = NI; 
+      using GraphArcInfo = AI; 
    };
 
    using BasicGraphTraits = GraphTraits<BasicGraphNodeInfo, BasicGraphArcInfo>; 
@@ -38,10 +38,10 @@ namespace SmartGridToolbox
    {
       std::string id;
       std::vector<GraphArc<GT>*> adjacentArcs;
-      std::unique_ptr<typename GT::GraphNodeInfo> info;
+      typename GT::GraphNodeInfo info;
 
-      GraphNode(const std::string& id, std::unique_ptr<typename GT::GraphNodeInfo> info) : 
-         id(id), info(std::move(info))
+      GraphNode(const std::string& id, const typename GT::GraphNodeInfo& info) : 
+         id(id), info(info)
       {
          // Empty.
       }
@@ -52,11 +52,11 @@ namespace SmartGridToolbox
       std::string id;
       const GraphNode<GT>* n0;
       const GraphNode<GT>* n1;
-      std::unique_ptr<typename GT::GraphArcInfo> info;
+      typename GT::GraphArcInfo info;
       
       GraphArc(const std::string& id, const GraphNode<GT>* n0, const GraphNode<GT>* n1,
-            std::unique_ptr<typename GT::GraphArcInfo> info) :
-         id(id), n0(n0), n1(n1), info(std::move(info)) 
+            const typename GT::GraphArcInfo& info) :
+         id(id), n0(n0), n1(n1), info(info) 
       {
          // Empty.
       }
@@ -68,21 +68,19 @@ namespace SmartGridToolbox
    {
       public:
 
-         ~NetworkGraph();
-
-         void addNode(const std::string& id, std::unique_ptr<typename GT::GraphNodeInfo> info)
+         void addNode(const std::string& id, const typename GT::GraphNodeInfo& info)
          {
-            nodeMap_.emplace(std::make_pair(id, GraphNode<GT>{id, std::move(info)}));
+            nodeMap_.emplace(std::make_pair(id, GraphNode<GT>{id, info}));
          }
 
          void addArc(const std::string& id, const std::string& id0, const std::string& id1,
-               std::unique_ptr<typename GT::GraphArcInfo> info)
+               const typename GT::GraphArcInfo& info)
          {
             auto& n0 = nodeMap_.at(id0);
             auto& n1 = nodeMap_.at(id1);
-            auto a = GraphArc<GT>(id, &n0, &n1, std::move(info));
+            auto a = GraphArc<GT>(id, &n0, &n1, info);
             n0.adjacentArcs.push_back(&a);
-            arcMap_.emplace(std::make_pair(id, std::move(a)));
+            arcMap_.emplace(std::make_pair(id, a));
          }
 
          void layout()

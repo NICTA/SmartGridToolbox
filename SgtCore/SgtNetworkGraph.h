@@ -21,10 +21,14 @@ namespace SmartGridToolbox
       Arc* arc;
    };
 
+   using SgtGraphTraits = GraphTraits<SgtGraphNodeInfo, SgtGraphArcInfo>;
+   using SgtGraphNode = GraphNode<SgtGraphTraits>;
+   using SgtGraphArc = GraphArc<SgtGraphTraits>;
+
    class SgtNetworkGraph : public NetworkGraph<GraphTraits<SgtGraphNodeInfo, SgtGraphArcInfo>>
    {
       public:
-         SgtNetworkGraph(const Network& nw);
+         void create(const Network& nw);
    };
 }
 
