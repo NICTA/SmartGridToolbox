@@ -1,8 +1,6 @@
 #include "NetworkGraph.h"
 
 #include <ogdf/misclayout/BalloonLayout.h>
-#include <ogdf/basic/Graph.h>
-#include <ogdf/basic/GraphAttributes.h>
 #include <ogdf/energybased/FMMMLayout.h>
 #include <ogdf/energybased/SpringEmbedderFR.h>
 #include <ogdf/planarity/PlanarizationLayout.h>
@@ -18,47 +16,8 @@
 
 namespace SmartGridToolbox
 {
-   void NetworkGraph::addArc(const std::string& id, const std::string& id0, const std::string& id1,
-         std::unique_ptr<NetworkArcInfo> info)
+   void layoutOgdf(ogdf::Graph& g, ogdf::GraphAttributes ga, int layoutType)
    {
-      auto& n0 = nodeMap_.at(id0);
-      auto& n1 = nodeMap_.at(id1);
-      auto a = NetworkArc(id, &n0, &n1, std::move(info));
-      n0.adjacentArcs.push_back(&a);
-      arcMap_.emplace(std::make_pair(id, std::move(a)));
-   }
-
-   void NetworkGraph::layout()
-   {
-      ogdf::Graph g;
-      ogdf::GraphAttributes ga(g, ogdf::GraphAttributes::nodeGraphics | ogdf::GraphAttributes::edgeGraphics);
-
-      std::map<std::string, ogdf::node> ogdfNdMap;
-      std::vector<NetworkNode*> nodeVec(nodeMap_.size());
-
-      for (auto& n : nodeMap_)
-      {
-         ogdf::node ogdfNd = g.newNode();
-         ogdfNdMap.at(n.second.id) = ogdfNd;
-         nodeVec[ogdfNd->index()] = &n.second;
-      }
-
-      for (auto& a : arcMap_)
-      {
-         const std::string& id0 = a.second.n0->id;
-         const std::string& id1 = a.second.n1->id;
-         g.newEdge(ogdfNdMap[id0], ogdfNdMap[id1]);
-      }
-
-      ogdf::node n;
-      forall_nodes(n, g)
-      {
-         ga.width(n) = nodeVec[n->index()]->info->w;
-         ga.height(n) = nodeVec[n->index()]->info->h;
-      }
-
-      int layoutType = 0;
-
       if (layoutType == 0)
       {
          ogdf::FMMMLayout fmmm;
@@ -112,6 +71,8 @@ namespace SmartGridToolbox
       double ymin = std::numeric_limits<double>::max();
       double xmax = std::numeric_limits<double>::min();
       double ymax = std::numeric_limits<double>::min();
+
+      ogdf::node n;
       forall_nodes(n, g)
       {
          if (ga.x(n) < xmin) xmin = ga.x(n);
@@ -124,9 +85,8 @@ namespace SmartGridToolbox
 
       forall_nodes(n, g)
       {
-         int idx = n->index();
-         nodeVec[idx]->info->x = ga.x(n) - xCenter;
-         nodeVec[idx]->info->y = ga.y(n) - yCenter;
+         ga.x(n) -= xCenter;
+         ga.y(n) -= yCenter;
       }
    }
 }
