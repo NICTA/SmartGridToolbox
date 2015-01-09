@@ -16,7 +16,9 @@
 
 namespace SmartGridToolbox
 {
-   void layoutOgdf(ogdf::Graph& g, ogdf::GraphAttributes ga, int layoutType)
+   template class NetworkGraph<>;
+
+   void layoutOgdf(ogdf::Graph& g, ogdf::GraphAttributes& ga, int layoutType)
    {
       if (layoutType == 0)
       {

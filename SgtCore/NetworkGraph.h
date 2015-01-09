@@ -62,7 +62,7 @@ namespace SmartGridToolbox
       }
    };
    
-   void layoutOgdf(ogdf::Graph& g, ogdf::GraphAttributes ga, int layoutType);
+   void layoutOgdf(ogdf::Graph& g, ogdf::GraphAttributes& ga, int layoutType);
 
    template<typename GT = BasicGraphTraits> class NetworkGraph
    {
@@ -94,7 +94,7 @@ namespace SmartGridToolbox
             for (auto& n : nodeMap_)
             {
                ogdf::node ogdfNd = g.newNode();
-               ogdfNdMap.at(n.second.id) = ogdfNd;
+               ogdfNdMap[n.second.id] = ogdfNd;
                nodeVec[ogdfNd->index()] = &n.second;
             }
 
@@ -108,8 +108,8 @@ namespace SmartGridToolbox
             ogdf::node n;
             forall_nodes(n, g)
             {
-               ga.width(n) = nodeVec[n->index()]->info->w;
-               ga.height(n) = nodeVec[n->index()]->info->h;
+               ga.width(n) = nodeVec[n->index()]->info.w;
+               ga.height(n) = nodeVec[n->index()]->info.h;
             }
 
             layoutOgdf(g, ga, 0);
@@ -117,8 +117,8 @@ namespace SmartGridToolbox
             forall_nodes(n, g)
             {
                int idx = n->index();
-               nodeVec[idx]->info->x = ga.x(n);
-               nodeVec[idx]->info->y = ga.y(n);
+               nodeVec[idx]->info.x = ga.x(n);
+               nodeVec[idx]->info.y = ga.y(n);
             }
          }
 
@@ -141,6 +141,8 @@ namespace SmartGridToolbox
          std::map<std::string, GraphNode<GT>> nodeMap_;
          std::map<std::string, GraphArc<GT>> arcMap_;
    };
+
+   extern template class NetworkGraph<>;
 
 } // namespace SmartGridToolbox
 

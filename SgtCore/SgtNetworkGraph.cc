@@ -7,7 +7,7 @@ namespace SmartGridToolbox
       for (auto nd : nw.nodes())
       {
          auto bus = nd->bus();
-         this->addNode(bus->id(), SgtGraphNodeInfo{0.0, 0.0, 0.0, 0.0, nd.get()});
+         this->addNode(bus->id(), SgtGraphNodeInfo{0.0, 0.0, 10.0, 10.0, nd.get()});
       }
       for (auto arc : nw.arcs())
       {
