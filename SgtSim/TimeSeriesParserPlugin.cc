@@ -175,9 +175,6 @@ namespace SmartGridToolbox
 
    void TimeSeriesParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {
-      Log().message() << "Parsing time series." << std::endl;
-      LogIndent _;
-
       std::unique_ptr<TimeSeriesBase> ts;
 
       assertFieldPresent(nd, "id"); // data
@@ -187,8 +184,6 @@ namespace SmartGridToolbox
       std::string id = parser.expand<std::string>(nd["id"]);
       auto tsType = getTsType(parser.expand<std::string>(nd["type"]));
       auto valType = getValType(parser.expand<std::string>(nd["value_type"]));
-
-      Log().message() << "id = " << id << std::endl;
 
       switch (tsType)
       {

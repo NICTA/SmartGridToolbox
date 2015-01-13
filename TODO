@@ -33,9 +33,16 @@ UPDATE:
 
 Have fixed this, to some extent?
 
+UPDATE:
+
+I believe most of the powerflow cases agree with Matpower - a couple are simply
+infeasible. Tests have been implemented in the tests directory.
+
 Parser issue:
 -------------
 In Parser.cc, make math work on things other than integers.
+
+UPDATE: this is currently low priority.
 
 Documentation (gh-pages):
 -------------------------
@@ -44,3 +51,13 @@ The gh-pages documentation is out of date.
 Doxygen API documentation:
 --------------------------
 This is out of date, e.g. wrt. modules etc.
+
+Simulation Architecture:
+------------------------
+It would be better if objects didn't store pointers to each other - instead,
+they stored iterators into the component map or alternatively pointers to the
+smart pointer in the map. I think an iterator into the map is the best idea.
+
+The idea here is that we can set up references etc. during the first pass of
+parsing without needing to use a particular evalutation order, and we can
+replace components etc.
