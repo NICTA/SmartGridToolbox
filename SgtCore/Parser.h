@@ -120,14 +120,14 @@ namespace SmartGridToolbox
                   {
                      for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_)
                      {
-                        Log().message() << "LOOP: " << l.name_ << " : " << l.i_ << std::endl; LogIndent _;
+                        SGT_DEBUG(Log().message() << "LOOP: " << l.name_ << " : " << l.i_ << std::endl; LogIndent _);
                         parse(l.body_, into);
                      }
                      loops_.pop_back();
                   }
                   else
                   {
-                     Log().message() << "Parsing plugin " <<  nodeType << "." << std::endl;
+                     SGT_DEBUG(Log().message() << "Parsing plugin " <<  nodeType << "." << std::endl);
                      auto it = plugins_.find(nodeType);
                      if (it == plugins_.end())
                      {
@@ -135,9 +135,10 @@ namespace SmartGridToolbox
                      }
                      else
                      {
-                        LogIndent _;
+                        SGT_DEBUG(LogIndent _);
                         it->second->parse(nodeVal, into, *this);
                      }
+                     SGT_DEBUG(Log().message() << "Finished parsing plugin " <<  nodeType << "." << std::endl);
                   }
                }
             }
