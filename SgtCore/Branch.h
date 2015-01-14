@@ -65,7 +65,7 @@ namespace SmartGridToolbox
          virtual Event& isInServiceChanged() = 0; 
 
          /// @brief Event triggered when my admittance changes.
-         virtual Event& admittanceChanged()  = 0;
+         virtual Event& admittanceChanged() = 0;
          
       /// @}
    };
