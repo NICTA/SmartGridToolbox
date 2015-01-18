@@ -11,15 +11,74 @@
 
 namespace SmartGridToolbox
 {
-   template<typename Targ, typename T, bool isGettable, bool isSettable> class Property;
+   template<typename Targ, typename T> using Get = T (const Targ&);
+   template<typename Targ, typename T> using Set = void (const Targ&, const T&);
 
-   template<typename Targ> class PropertyBase
+   template<typename Targ, typename T, bool hasGetter, bool hasSetter> class Property;
+
+   template<typename Targ, typename T, bool hasGetter, bool hasSetter> class PropTemplate;
+
+   class PropTemplateBase
    {
-      public:
-         virtual ~PropertyBase()
+      // Empty.
+   };
+
+   template<typename Targ, typename T> class PropTemplate<Targ, T, true, false> : virtual public PropTemplateBase
+   {
+      friend class Property<Targ, T, true, false>;
+
+      protected:
+         PropTemplate(Get<Targ, T> getArg) : get_(getArg)
          {
             // Empty.
          }
+
+         virtual ~PropTemplate() = default;
+
+         std::function<Get<Targ, T>> get_;
+   };
+   template<typename Targ, typename T> using GetPropTemplate = PropTemplate<Targ, T, true, false>;
+   
+   template<typename Targ, typename T> class PropTemplate<Targ, T, false, true> : virtual public PropTemplateBase 
+   {
+      friend class Property<Targ, T, false, true>;
+
+      protected:
+         PropTemplate(Set<Targ, T> setArg) : set_(setArg)
+         {
+            // Empty.
+         }
+
+         virtual ~PropTemplate() = default;
+
+         std::function<Set<Targ, T>> set_;
+   };
+   template<typename Targ, typename T> using SetPropTemplate = PropTemplate<Targ, T, false, true>;
+   
+   template<typename Targ, typename T> class PropTemplate<Targ, T, true, true> : 
+      virtual public GetPropTemplate<Targ, T>, virtual public SetPropTemplate<Targ, T>
+   {
+      protected:
+         PropTemplate(Get<Targ, T> getArg, Set<Targ, T> setArg) :
+            GetPropTemplate<Targ, T>(getArg),
+            SetPropTemplate<Targ, T>(setArg)
+         {
+            // Empty.
+         }
+   };
+   template<typename Targ, typename T> using GetSetPropTemplate = PropTemplate<Targ, T, true, true>;
+
+   template<typename Targ, typename T, bool isGettable, bool isSettable> class Property;
+
+   template<typename Targ> class PropBase
+   {
+      public:
+         PropBase(Targ* targ)
+         {
+            targ_(targ);
+         }
+
+         virtual ~PropBase() = default;
 
          virtual bool isGettable()
          {
@@ -31,38 +90,29 @@ namespace SmartGridToolbox
             return false;
          }
 
-         virtual std::string string(const Targ& targ)
+         virtual std::string string()
          {
             throw std::runtime_error("Property is not gettable");
          }
 
-         virtual void setFromString(Targ& targ, const std::string& str)
+         virtual void setFromString(const std::string& str)
          {
             throw std::runtime_error("Property is not settable");
          }
 
-         template<typename T, bool isGettable, bool isSettable> Property<Targ, T, isGettable, isSettable>* ofType()
+         template<typename T, bool isGettable, bool isSettable>
+         Property<Targ, T, isGettable, isSettable>* ofType()
          {
             return dynamic_cast<Property<Targ, T, isGettable, isSettable>>(this);
          }
+
+      protected:
+         Targ* targ_;
    };
 
-   template<typename Targ, typename T> using Getter = T (const Targ&);
-   template<typename Targ, typename T> using Setter = void (const Targ&, const T&);
-
-   template<typename Targ, typename T> class Gettable : virtual public PropertyBase<Targ>
+   template<typename Targ, typename T> class GettableBase : virtual public PropBase<const Targ>
    {
       public:
-         Gettable(Getter<Targ, T> getterArg) : get_(getterArg)
-         {
-            // Empty.
-         }
-
-         virtual ~Gettable()
-         {
-            // Empty.
-         };
-
          virtual bool isGettable() override
          {
             return true;
@@ -73,125 +123,110 @@ namespace SmartGridToolbox
             return toYamlString(get());
          }
 
-         T get(const Targ& targ)
-         {
-            return get_(targ);
-         }
-
-      private:
-         std::function<Getter<Targ, T>> get_;
+         virtual T get() = 0;
    };
 
-   template<typename Targ, typename T> class Settable : virtual public PropertyBase<Targ>
+   template<typename Targ, typename T> class SettableBase : virtual public PropBase<const Targ>
    {
       public:
-         Settable(Setter<Targ, T> setterArg) : set_(setterArg)
-         {
-            // Empty.
-         }
-
-         virtual ~Settable()
-         {
-            // Empty.
-         };
-
          virtual bool isSettable() override
          {
             return true;
          }
 
-         virtual void setFromString(const Targ& targ, const std::string& str) override
+         virtual std::string setFromString(const std::string& string) override
          {
-            set(fromYamlString<T>(targ, str));
+            set(fromYamlString<T>(string));
          }
 
-         void set(Targ& targ, const T& val)
+         virtual void set(const T& val) = 0;
+   };
+
+   template<typename Targ, typename T> class Property<Targ, T, true, false> : virtual public GettableBase<Targ, T>
+   {
+      public:
+         Property(Targ* targ, PropTemplate<Targ, T, true, false>* propTemplate) : 
+            targ_(targ), propTemplate_(propTemplate)
          {
-            return set_(targ, val);
+            // Empty.
+         }
+
+         virtual T get()
+         {
+            return this->propTemplate_->get(*targ_);
          }
 
       private:
-         std::function<Setter<Targ, T>> set_;
+         Targ* targ_;
+         PropTemplate<Targ, T, true, false>* propTemplate_;
    };
 
-   template<typename Targ, typename T, bool isGettable, bool isSettable> class Property;
-
-   template<typename Targ, typename T> class Property<Targ, T, true, false> : public Gettable<Targ, T>
+   template<typename Targ, typename T> class Property<Targ, T, false, true> :
+      virtual public SettableBase<Targ, T>
    {
       public:
-         Property(Getter<Targ, T> getterArg) : Gettable<Targ, T>(getterArg)
-         {
-            // Empty.
-         }
-   };
-
-   template<typename Targ, typename T> class Property<Targ, T, false, true> : public Settable<Targ, T>
-   {
-      public:
-         Property(Getter<Targ, T> getterArg) : Gettable<Targ, T>(getterArg)
+         Property(Targ* targ, PropTemplate<Targ, T, false, true>* propTemplate) : 
+            targ_(targ), propTemplate_(propTemplate)
          {
             // Empty.
          }
 
-         virtual bool isSettable()
+         virtual void set(const T& val)
          {
-            return false;
+            propTemplate_->set(*targ_, val);
          }
+
+      private:
+         Targ* targ_;
+         PropTemplate<Targ, T, true, false>* propTemplate_;
    };
 
-   template<typename Targ, typename T>
-   class Property<Targ, T, true, true> : public Gettable<Targ, T>, public Settable<Targ, T>
+   template<typename Targ, typename T> class Property<Targ, T, true, true> :
+      virtual public GettableBase<Targ, T>,
+      virtual public SettableBase<Targ, T>
    {
       public:
-         Property(Getter<Targ, T> getterArg, Setter<Targ, T> setterArg) :
-            Gettable<Targ, T>(getterArg),
-            Settable<Targ, T>(setterArg)
+         Property(Targ* targ, PropTemplate<Targ, T, true, true>* propTemplate) : 
+            targ_(targ), propTemplate_(propTemplate)
          {
             // Empty.
          }
+
+         virtual T get()
+         {
+            return this->propTemplate_->get(*targ_);
+         }
+
+         virtual void set(const T& val)
+         {
+            propTemplate_->set(*targ_, val);
+         }
+
+      private:
+         Targ* targ_;
+         PropTemplate<Targ, T, true, true>* propTemplate_;
    };
 
    template<typename Targ> class Properties
    {
       private:
-         typedef std::map<std::string, PropertyBase<Targ>*> Map;
-
-      public:
-         typedef typename Map::const_iterator ConstIterator;
-         typedef typename Map::iterator Iterator;
+         typedef std::map<std::string, PropTemplateBase*> Map;
 
       public:
 
-         Iterator begin()
+         template<typename T> void add(const std::string& key, Get<Targ, T> getArg)
          {
-            return map_.begin();
-         }
-         Iterator end()
-         {
-            return map_.end();
-         }
-         ConstIterator begin() const
-         {
-            return map_.begin();
-         }
-         ConstIterator end() const
-         {
-            return map_.end();
-         }
-         ConstIterator cbegin() const
-         {
-            return map_.cbegin();
-         }
-         ConstIterator cend() const
-         {
-            return map_.cend();
+            map_[key] = new PropTemplate<Targ, T, true, false>(getArg);
          }
 
-         template<typename T, template<typename> class GetBy, template<typename> class SetBy,
-            typename Targ, typename... Arg>
-         void add(const std::string& key, Arg... args)
+         template<typename T> void add(const std::string& key, Set<Targ, T> setArg)
          {
-            map_[key] = new PropertyWithTarg<T, GetBy, SetBy, Targ>(targ_, args...);
+            map_[key] = new PropTemplate<Targ, T, false, true>(setArg);
+         }
+         
+         template<typename T> void add(const std::string& key, Get<Targ, T> getArg, Set<Targ, T> setArg)
+         {
+            map_[key] = new PropTemplate<Targ, T, true, true>(getArg, setArg);
          }
 
          template<typename T = NoType,
