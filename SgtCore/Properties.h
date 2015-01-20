@@ -4,6 +4,7 @@
 #include <SgtCore/YamlSupport.h>
 
 #include<map>
+#include<memory>
 #include<stdexcept>
 #include<string>
 #include<sstream>
@@ -98,20 +99,19 @@ namespace SmartGridToolbox
       // Empty.
    };
 
-   template<typename Targ, typename T, bool hasGetter, bool hasSetter> class PropTemplate;
+   template<typename Targ, typename T, bool hasGetter, bool hasSetter> class PropertyTemplate;
 
-   class PropTemplateBase
+   class PropertyTemplateBase
    {
       public:
-         virtual ~PropTemplateBase() = default;
+         virtual ~PropertyTemplateBase() = default;
    };
 
-   template<typename Targ, typename T> class PropTemplate<Targ, T, true, false> : virtual public PropTemplateBase
+   template<typename Targ, typename T>
+   class PropertyTemplate<Targ, T, true, false> : virtual public PropertyTemplateBase
    {
-      friend class Properties;
-
       protected:
-         PropTemplate(Get<Targ, T> getArg) : get_(getArg)
+         PropertyTemplate(Get<Targ, T> getArg) : get_(getArg)
          {
             // Empty.
          }
@@ -119,12 +119,13 @@ namespace SmartGridToolbox
          std::function<Get<Targ, T>> get_;
    };
    
-   template<typename Targ, typename T> class PropTemplate<Targ, T, false, true> : virtual public PropTemplateBase 
+   template<typename Targ, typename T>
+   class PropertyTemplate<Targ, T, false, true> : virtual public PropertyTemplateBase 
    {
       friend class Property<T, false, true>;
 
       protected:
-         PropTemplate(Set<Targ, T> setArg) : set_(setArg)
+         PropertyTemplate(Set<Targ, T> setArg) : set_(setArg)
          {
             // Empty.
          }
@@ -132,25 +133,25 @@ namespace SmartGridToolbox
          std::function<Set<Targ, T>> set_;
    };
    
-   template<typename Targ, typename T> class PropTemplate<Targ, T, true, true> : 
-      virtual public PropTemplate<Targ, T, true, false>, virtual public PropTemplate<Targ, T, false, true>
+   template<typename Targ, typename T> class PropertyTemplate<Targ, T, true, true> : 
+   virtual public PropertyTemplate<Targ, T, true, false>, virtual public PropertyTemplate<Targ, T, false, true>
    {
       protected:
-         PropTemplate(Get<Targ, T> getArg, Set<Targ, T> setArg) :
-            PropTemplate<Targ, T, true, false>(getArg),
-            PropTemplate<Targ, T, false, true>(setArg)
+         PropertyTemplate(Get<Targ, T> getArg, Set<Targ, T> setArg) :
+            PropertyTemplate<Targ, T, true, false>(getArg),
+            PropertyTemplate<Targ, T, false, true>(setArg)
          {
             // Empty.
          }
    };
 
-   template<typename Targ, typename T, bool isGettable, bool isSettable> class TargProperty;
+   template<typename Targ, typename T, bool isGettable, bool isSettable> class TargetProperty;
 
    template<typename Targ, typename T>
-   class TargProperty<Targ, T, true, false> : virtual public Property<T, true, false>
+   class TargetProperty<Targ, T, true, false> : virtual public Property<T, true, false>
    {
       public:
-         TargProperty(const Targ* targ, const PropTemplate<Targ, T, true, false>* propTemplate) : 
+         TargetProperty(const Targ* targ, const PropertyTemplate<Targ, T, true, false>* propTemplate) : 
             targ_(targ), propTemplate_(propTemplate)
          {
             // Empty.
@@ -163,14 +164,14 @@ namespace SmartGridToolbox
 
       private:
          const Targ* targ_;
-         const PropTemplate<Targ, T, true, false>* propTemplate_;
+         const PropertyTemplate<Targ, T, true, false>* propTemplate_;
    };
 
    template<typename Targ, typename T>
-   class TargProperty<Targ, T, false, true> : virtual public Property<T, false, true>
+   class TargetProperty<Targ, T, false, true> : virtual public Property<T, false, true>
    {
       public:
-         TargProperty(Targ* targ, const PropTemplate<Targ, T, true, false>* propTemplate) : 
+         TargetProperty(Targ* targ, const PropertyTemplate<Targ, T, true, false>* propTemplate) : 
             targ_(targ), propTemplate_(propTemplate)
          {
             // Empty.
@@ -183,14 +184,14 @@ namespace SmartGridToolbox
 
       private:
          Targ* targ_;
-         const PropTemplate<Targ, T, true, false>* propTemplate_;
+         const PropertyTemplate<Targ, T, true, false>* propTemplate_;
    };
 
    template<typename Targ, typename T>
-   class TargProperty<Targ, T, true, true> : virtual public Property<T, true, true>
+   class TargetProperty<Targ, T, true, true> : virtual public Property<T, true, true>
    {
       public:
-         TargProperty(Targ* targ, const PropTemplate<Targ, T, true, true>* propTemplate) : 
+         TargetProperty(Targ* targ, const PropertyTemplate<Targ, T, true, true>* propTemplate) : 
             targ_(targ), propTemplate_(propTemplate)
          {
             // Empty.
@@ -208,71 +209,69 @@ namespace SmartGridToolbox
          
       private:
          Targ* targ_;
-         const PropTemplate<Targ, T, true, false>* propTemplate_;
+         const PropertyTemplate<Targ, T, true, false>* propTemplate_;
    };
 
    template<typename Targ> class HasProperties
    {
-      friend class HasPropertiesBase;
-
       public:
 
-         template<typename Targ, typename T> void add(const std::string& key, Get<Targ, T> getArg)
+         template<typename T> static void addProperty(const std::string& key, Get<Targ, T> getArg)
          {
-            map_[key] = new PropTemplate<Targ, T, true, false>(getArg);
+            map_[key] = new PropertyTemplate<Targ, T, true, false>(getArg);
          }
 
-         template<typename Targ, typename T> void add(const std::string& key, Set<Targ, T> setArg)
+         template<typename T> static void addProperty(const std::string& key, Set<Targ, T> setArg)
          {
-            map_[key] = new PropTemplate<Targ, T, false, true>(setArg);
-         }
-         
-         template<typename Targ, typename T>
-         void add( const std::string& key, Get<Targ, T> getArg, Set<Targ, T> setArg)
-         {
-            map_[key] = new PropTemplate<Targ, T, true, true>(getArg, setArg);
+            map_[key] = new PropertyTemplate<Targ, T, false, true>(setArg);
          }
 
-         template<typename T, bool isGettable, bool isSettable>
-         const Property<T, isGettable, isSettable> property(const std::string& key) const
+         template<typename T>
+         static void addProperty(const std::string& key, Get<Targ, T> getArg, Set<Targ, T> setArg)
          {
-            const Property<T, isGettable, isSettable>* prop = nullptr;
+            map_[key] = new PropertyTemplate<Targ, T, true, true>(getArg, setArg);
+         }
+
+         std::unique_ptr<PropertyBase> property(const std::string& key)
+         {
             auto it = map_.find(key);
-            if (it != map_.end())
-            {
-               prop = dynamic_cast<const Property<T, isGettable, isSettable>*>(it->second);
-            }
-            return prop;
+            return (it != map_.end())
+               ? std::unique_ptr<PropertyBase>(
+                     new TargetProperty<Targ, T, isGettable, isSettable>(
+                        dynamic_cast<const Targ*>(this),
+                        dynamic_cast<const PropertyTemplate<Targ, T, isGettable, isSettable>*>(it->second)))
+               : std::unique_ptr<Property<T, isGettable, isSettable>>(nullptr);
          }
 
          template<typename T, bool isGettable, bool isSettable>
-         const std::map<std::String, Property<T, isGettable, isSettable>* property(const std::string& key) const
+         std::unique_ptr<const Property<T, isGettable, isSettable>> property(const std::string& key) const
          {
-            const Property<T, isGettable, isSettable>* prop = nullptr;
             auto it = map_.find(key);
-            if (it != map_.end())
-            {
-               prop = 
-            }
-            else
-            {
-               return PropertyBase;
-            }
-            return prop;
+            return (it != map_.end())
+               ? std::unique_ptr<Property<T, isGettable, isSettable>>(
+                     new TargetProperty<Targ, T, isGettable, isSettable>(
+                        dynamic_cast<const Targ*>(this),
+                        dynamic_cast<const PropertyTemplate<Targ, T, isGettable, isSettable>*>(it->second)))
+               : std::unique_ptr<Property<T, isGettable, isSettable>>(nullptr);
          }
 
          template<typename T, bool isGettable, bool isSettable>
-         Property<T, isGettable, isSettable>* operator[](const std::string& key)
+         std::unique_ptr<Property<T, isGettable, isSettable>> property(const std::string& key)
          {
-            return const_cast<Property<T, isGettable, isSettable>*>(
-                  static_cast<const Properties*>(this)->operator[]<T, isGettable, isSettable>(key));
+            auto it = map_.find(key);
+            return (it != map_.end())
+               ? std::unique_ptr<Property<T, isGettable, isSettable>>(
+                     new TargetProperty<Targ, T, isGettable, isSettable>(
+                        dynamic_cast<const Targ*>(this),
+                        dynamic_cast<const PropertyTemplate<Targ, T, isGettable, isSettable>*>(it->second)))
+               : std::unique_ptr<Property<T, isGettable, isSettable>>(nullptr);
          }
 
       private:
 
-         Properties();
+         HasProperties();
 
-         ~Properties()
+         ~HasProperties()
          {
             for (auto& p : map_)
             {
@@ -281,7 +280,7 @@ namespace SmartGridToolbox
          }
 
       private:
-         std::map<std::string, PropTemplateBase*> map_;
+         static std::map<std::string, PropertyTemplateBase*> map_;
    };
 
    template<typename Targ> class HasProperties
