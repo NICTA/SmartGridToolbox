@@ -203,7 +203,6 @@ namespace SmartGridToolbox
             getterTemplate_(new GetterTemplate<Targ, T>(getArg)),
             setterTemplate_(new SetterTemplate<Targ, T>(setArg))
          {
-            std::cout << "new PropTemplate with getter and setter " << this << std::endl;
             // Empty.
          }
 
@@ -239,7 +238,6 @@ namespace SmartGridToolbox
          
          std::unique_ptr<Property<Targ, T>> bind(const Targ* targ) const
          {
-            std::cout << "bind to const targ" << std::endl;
             return std::unique_ptr<Property<Targ, T>>(new Property<Targ, T>(
                      new Getter<Targ, T>(getterTemplate_, targ),
                      nullptr));
@@ -247,7 +245,6 @@ namespace SmartGridToolbox
          
          std::unique_ptr<Property<Targ, T>> bind(Targ* targ) const
          {
-            std::cout << "bind to targ" << std::endl;
             return std::unique_ptr<Property<Targ, T>>(new Property<Targ, T>(
                      new Getter<Targ, T>(getterTemplate_, targ),
                      new Setter<Targ, T>(setterTemplate_, targ)));
@@ -285,7 +282,6 @@ namespace SmartGridToolbox
                typename GetterTemplate<Targ, T>::Get getArg, typename SetterTemplate<Targ, T>::Set setArg)
          {
             map[key] = new PropTemplate<Targ, T>(getArg, setArg);
-            std::cout << "Yo " << map[key] << std::endl;
          }
 
          std::map<std::string, const PropTemplateBase<Targ>*> map;
@@ -317,21 +313,18 @@ namespace SmartGridToolbox
 
          std::unique_ptr<const PropBase<Targ>> property(const std::string& key) const
          {
-            std::cout << "A property(" << key << ")" << std::endl;
             auto it = props().map.find(key);
             return (it != props().map.end()) ? it->second->baseBind(constTarg()) : nullptr;
          }
          
          std::unique_ptr<PropBase<Targ>> property(const std::string& key)
          {
-            std::cout << "B property(" << key << ")" << std::endl;
             auto it = props().map.find(key);
             return (it != props().map.end()) ? it->second->baseBind(targ()) : nullptr;
          }
 
          template<typename T> std::unique_ptr<const Property<Targ, T>> property(const std::string& key) const
          {
-            std::cout << "C property(" << key << ")" << std::endl;
             auto it = props().map.find(key);
             return (it != props().map.end())
                ? (dynamic_cast<const PropTemplate<Targ, T>&>(*it->second)).bind(constTarg())
@@ -340,7 +333,6 @@ namespace SmartGridToolbox
 
          template<typename T> std::unique_ptr<Property<Targ, T>> property(const std::string& key)
          {
-            std::cout << "D property(" << key << ")" << std::endl;
             auto it = props().map.find(key);
             return (it != props().map.end())
                ? (dynamic_cast<const PropTemplate<Targ, T>&>(*it->second)).bind(targ())
