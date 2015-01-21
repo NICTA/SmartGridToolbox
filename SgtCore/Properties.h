@@ -48,14 +48,14 @@ namespace SmartGridToolbox
    template<typename Targ, typename T> class Setter
    {
       public:
-         using Set = void (const Targ&, const T&);
+         using Set = void (Targ&, const T&);
 
          Setter(Set setArg) : set_(setArg)
          {
             // Empty.
          }
 
-         void set(Targ* targ, const T& val)
+         void set(Targ& targ, const T& val) const
          {
             set_(targ, val);
          }
@@ -69,8 +69,25 @@ namespace SmartGridToolbox
    template<typename Targ> class PropBase
    {
       public:
-         template<typename T> T get() {return dynamic_cast<Property<Targ, T>>(this)->get();}
-         template<typename T> void set(const T& val) {dynamic_cast<Property<Targ, T>>(this)->set(val);}
+         template<typename T> T get() const
+         {
+            auto derived = dynamic_cast<const Property<Targ, T>>(this);
+            if (derived == nullptr)
+            {
+               throw NoGetterException();
+            }
+            return derived->get();
+         }
+
+         template<typename T> void set(const T& val)
+         {
+            auto derived = dynamic_cast<Property<Targ, T>>(this);
+            if (derived == nullptr)
+            {
+               throw NoSetterException();
+            }
+            return derived->set(val);
+         }
    };
    
    template<typename Targ, typename T> class Property : public PropBase<Targ>
@@ -82,7 +99,7 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         T get();
+         T get() const;
 
          void set(const T& val);
 
@@ -129,7 +146,7 @@ namespace SmartGridToolbox
             return getter_->get(targ);
          }
          
-         void set(Targ& targ, const T& val)
+         void set(Targ& targ, const T& val) const
          {
             setter_->set(targ, val);
          }
@@ -149,7 +166,7 @@ namespace SmartGridToolbox
          std::unique_ptr<Setter<Targ, T>> setter_{nullptr};
    };
 
-   template<typename Targ, typename T> T Property<Targ, T>::get()
+   template<typename Targ, typename T> T Property<Targ, T>::get() const
    {
       return propTemplate_->get(*targ_);
    }
@@ -214,6 +231,14 @@ namespace SmartGridToolbox
          }
 
          template<typename T> std::unique_ptr<Property<Targ, T>> property(const std::string& key)
+         {
+            auto it = props().map.find(key);
+            return (it != props().map.end())
+               ? (dynamic_cast<const PropTemplate<Targ, T>&>(*it->second)).bind(targ())
+               : nullptr;
+         }
+         
+         template<typename T> std::unique_ptr<const Property<Targ, T>> property(const std::string& key) const
          {
             auto it = props().map.find(key);
             return (it != props().map.end())
