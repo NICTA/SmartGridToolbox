@@ -12,287 +12,239 @@
 
 namespace SmartGridToolbox
 {
-   template<typename Targ, typename T> using Get = T (const Targ&);
-   template<typename Targ, typename T> using Set = void (const Targ&, const T&);
-
-   template<typename T, bool hasGetter, bool hasSetter> class Property;
-
-   template<typename T, bool isGettable, bool isSettable> class Property;
-
-   class PropertyBase
+   class NoGetterException : public std::domain_error
    {
       public:
-         virtual ~PropertyBase() = default;
-
-         virtual operator bool()
-         {
-            return false;
-         }
-
-         virtual bool isGettable()
-         {
-            return false;
-         }
-
-         virtual bool isSettable()
-         {
-            return false;
-         }
-
-         template<typename T, bool isGettable, bool isSettable>
-         const Property<T, isGettable, isSettable> ofType() const
-         {
-            return dynamic_cast<const Property<T, isGettable, isSettable>>(this);
-         }
-
-         template<typename T, bool isGettable, bool isSettable> Property<T, isGettable, isSettable> ofType()
-         {
-            return dynamic_cast<Property<T, isGettable, isSettable>>(this);
-         }
-
-         virtual std::string string()
-         {
-            throw std::runtime_error("Property is not gettable");
-         }
-
-         virtual void setFromString(const std::string& str)
-         {
-            throw std::runtime_error("Property is not settable");
-         }
-   };
-  
-   template<typename T> class Property<T, true, false> : virtual public PropertyBase
-   {
-      public:
-         virtual bool isGettable() override
-         {
-            return true;
-         }
-
-         virtual std::string string() override
-         {
-            return toYamlString(get());
-         }
-
-         virtual T get() const = 0;
-   };
-
-   template<typename T> class Property<T, false, true> : virtual public PropertyBase
-   {
-      public:
-         virtual bool isSettable() override
-         {
-            return true;
-         }
-
-         virtual void setFromString(const std::string& string) override
-         {
-            set(fromYamlString<T>(string));
-         }
-
-         virtual void set(const T& val) = 0;
-   };
-
-   template<typename T>
-   class Property<T, true, true> : virtual public Property<T, true, false>, virtual public Property<T, false, true>
-   {
-      // Empty.
-   };
-
-   template<typename Targ, typename T, bool hasGetter, bool hasSetter> class PropertyTemplate;
-
-   class PropertyTemplateBase
-   {
-      public:
-         virtual ~PropertyTemplateBase() = default;
-   };
-
-   template<typename Targ, typename T>
-   class PropertyTemplate<Targ, T, true, false> : virtual public PropertyTemplateBase
-   {
-      protected:
-         PropertyTemplate(Get<Targ, T> getArg) : get_(getArg)
-         {
-            // Empty.
-         }
-
-         std::function<Get<Targ, T>> get_;
+         NoGetterException() : std::domain_error("Property does not have a getter") {};
    };
    
-   template<typename Targ, typename T>
-   class PropertyTemplate<Targ, T, false, true> : virtual public PropertyTemplateBase 
-   {
-      friend class Property<T, false, true>;
-
-      protected:
-         PropertyTemplate(Set<Targ, T> setArg) : set_(setArg)
-         {
-            // Empty.
-         }
-
-         std::function<Set<Targ, T>> set_;
-   };
-   
-   template<typename Targ, typename T> class PropertyTemplate<Targ, T, true, true> : 
-   virtual public PropertyTemplate<Targ, T, true, false>, virtual public PropertyTemplate<Targ, T, false, true>
-   {
-      protected:
-         PropertyTemplate(Get<Targ, T> getArg, Set<Targ, T> setArg) :
-            PropertyTemplate<Targ, T, true, false>(getArg),
-            PropertyTemplate<Targ, T, false, true>(setArg)
-         {
-            // Empty.
-         }
-   };
-
-   template<typename Targ, typename T, bool isGettable, bool isSettable> class TargetProperty;
-
-   template<typename Targ, typename T>
-   class TargetProperty<Targ, T, true, false> : virtual public Property<T, true, false>
+   class NoSetterException : public std::domain_error
    {
       public:
-         TargetProperty(const Targ* targ, const PropertyTemplate<Targ, T, true, false>* propTemplate) : 
-            targ_(targ), propTemplate_(propTemplate)
+         NoSetterException() : std::domain_error("Property does not have a setter") {};
+   };
+   
+   template<typename Targ, typename T> class PropTemplate;
+
+   template<typename Targ, typename T> class Getter
+   {
+      public:
+         using Get = T (const Targ&);
+
+         Getter(Get getArg) : get_(getArg)
          {
             // Empty.
          }
 
-         virtual T get() const override
+         T get(const Targ& targ) const
          {
-            return this->propTemplate_->get(*targ_);
+            return get_(targ);
          }
 
       private:
-         const Targ* targ_;
-         const PropertyTemplate<Targ, T, true, false>* propTemplate_;
+         std::function<Get> get_;
    };
 
-   template<typename Targ, typename T>
-   class TargetProperty<Targ, T, false, true> : virtual public Property<T, false, true>
+   template<typename Targ, typename T> class Setter
    {
       public:
-         TargetProperty(Targ* targ, const PropertyTemplate<Targ, T, true, false>* propTemplate) : 
-            targ_(targ), propTemplate_(propTemplate)
+         using Set = void (const Targ&, const T&);
+
+         Setter(Set setArg) : set_(setArg)
          {
             // Empty.
          }
 
-         virtual void set(const T& val) override
+         void set(Targ* targ, const T& val)
          {
-            this->propTemplate_->set(*targ_, val);
+            set_(targ, val);
          }
 
       private:
+         std::function<Set> set_;
+   };
+   
+   template<typename Targ, typename T> class Property;
+
+   template<typename Targ> class PropBase
+   {
+      public:
+         template<typename T> T get() {return dynamic_cast<Property<Targ, T>>(this)->get();}
+         template<typename T> void set(const T& val) {dynamic_cast<Property<Targ, T>>(this)->set(val);}
+   };
+   
+   template<typename Targ, typename T> class Property : public PropBase<Targ>
+   {
+      public:
+         Property(const PropTemplate<Targ, T>* propTemplate, Targ* targ) :
+            propTemplate_(propTemplate), targ_(targ)
+         {
+            // Empty.
+         }
+
+         T get();
+
+         void set(const T& val);
+
+      private:
+         const PropTemplate<Targ, T>* propTemplate_;
          Targ* targ_;
-         const PropertyTemplate<Targ, T, true, false>* propTemplate_;
    };
 
-   template<typename Targ, typename T>
-   class TargetProperty<Targ, T, true, true> : virtual public Property<T, true, true>
+   template<typename Targ> class HasProperties;
+
+   template<typename Targ> class PropTemplateBase
    {
       public:
-         TargetProperty(Targ* targ, const PropertyTemplate<Targ, T, true, true>* propTemplate) : 
-            targ_(targ), propTemplate_(propTemplate)
+         virtual std::unique_ptr<PropBase<Targ>> baseBind(const Targ* targ)
+         {
+            return nullptr;
+         }
+   };
+
+   template<typename Targ, typename T> class PropTemplate : public PropTemplateBase<Targ>
+   {
+      public:
+         PropTemplate(typename Getter<Targ, T>::Get getArg) :
+            getter_(new Getter<Targ, T>(getArg))
          {
             // Empty.
          }
 
-         virtual T get() const override
+         PropTemplate(typename Setter<Targ, T>::Set setArg) :
+            setter_(new Setter<Targ, T>(setArg))
          {
-            return this->propTemplate_->get(*targ_);
-         }
-
-         virtual void set(const T& val) override
-         {
-            this->propTemplate_->set(*targ_, val);
+            // Empty.
          }
          
+         PropTemplate(typename Getter<Targ, T>::Get getArg, typename Setter<Targ, T>::Set setArg) :
+            getter_(new Getter<Targ, T>(getArg)),
+            setter_(new Setter<Targ, T>(setArg))
+         {
+            // Empty.
+         }
+
+         T get(const Targ& targ) const
+         {
+            return getter_->get(targ);
+         }
+         
+         void set(Targ& targ, const T& val)
+         {
+            setter_->set(targ, val);
+         }
+         
+         virtual std::unique_ptr<PropBase<Targ>> baseBind(Targ* targ) const
+         {
+            return std::unique_ptr<Property<Targ, T>>(new Property<Targ, T>(this, targ));
+         }
+
+         std::unique_ptr<Property<Targ, T>> bind(Targ* targ) const
+         {
+            return std::unique_ptr<Property<Targ, T>>(new Property<Targ, T>(this, targ));
+         }
+
       private:
-         Targ* targ_;
-         const PropertyTemplate<Targ, T, true, false>* propTemplate_;
+         std::unique_ptr<Getter<Targ, T>> getter_{nullptr};
+         std::unique_ptr<Setter<Targ, T>> setter_{nullptr};
+   };
+
+   template<typename Targ, typename T> T Property<Targ, T>::get()
+   {
+      return propTemplate_->get(*targ_);
+   }
+   
+   template<typename Targ, typename T> void Property<Targ, T>::set(const T& val)
+   {
+      propTemplate_->set(*targ_, val);
+   }
+   
+   template<typename Targ> class Properties
+   {
+      public:
+         Properties();
+
+         template<typename T> void add(const std::string& key, typename Getter<Targ, T>::Get getArg)
+         {
+            map[key] = std::unique_ptr<const PropTemplate<Targ, T>>(new const PropTemplate<Targ, T>(getArg));
+         }
+
+         template<typename T> void add(const std::string& key, typename Setter<Targ, T>::Set setArg)
+         {
+            map[key] = std::unique_ptr<const PropTemplate<Targ, T>>(new const PropTemplate<Targ, T>(setArg));
+         }
+
+         template<typename T> void add(const std::string& key, 
+               typename Getter<Targ, T>::Get getArg, typename Setter<Targ, T>::Set setArg)
+         {
+            map[key] = std::unique_ptr<const PropTemplate<Targ, T>>(new const PropTemplate<Targ, T>(getArg, setArg));
+         }
+
+         std::map<std::string, std::unique_ptr<const PropTemplateBase<Targ>>> map;
    };
 
    template<typename Targ> class HasProperties
    {
       public:
+         virtual ~HasProperties() = default;
 
-         template<typename T> static void addProperty(const std::string& key, Get<Targ, T> getArg)
+         template<typename T>
+         static void addProperty(const std::string& key, typename PropTemplate<Targ, T>::Get getArg)
          {
-            map_[key] = new PropertyTemplate<Targ, T, true, false>(getArg);
-         }
-
-         template<typename T> static void addProperty(const std::string& key, Set<Targ, T> setArg)
-         {
-            map_[key] = new PropertyTemplate<Targ, T, false, true>(setArg);
+            props().add(key, getArg);
          }
 
          template<typename T>
-         static void addProperty(const std::string& key, Get<Targ, T> getArg, Set<Targ, T> setArg)
+         static void addProperty(const std::string& key, typename PropTemplate<Targ, T>::Set setArg)
          {
-            map_[key] = new PropertyTemplate<Targ, T, true, true>(getArg, setArg);
+            props().add(key, setArg);
          }
 
-         std::unique_ptr<PropertyBase> property(const std::string& key)
+         template<typename T>
+         static void addProperty(const std::string& key, 
+               typename PropTemplate<Targ, T>::Get getArg, typename PropTemplate<Targ, T>::Set setArg)
          {
-            auto it = map_.find(key);
-            return (it != map_.end())
-               ? std::unique_ptr<PropertyBase>(
-                     new TargetProperty<Targ, T, isGettable, isSettable>(
-                        dynamic_cast<const Targ*>(this),
-                        dynamic_cast<const PropertyTemplate<Targ, T, isGettable, isSettable>*>(it->second)))
-               : std::unique_ptr<Property<T, isGettable, isSettable>>(nullptr);
+            props().add(key, getArg, setArg);
          }
 
-         template<typename T, bool isGettable, bool isSettable>
-         std::unique_ptr<const Property<T, isGettable, isSettable>> property(const std::string& key) const
+         std::unique_ptr<PropBase<Targ>> property(const std::string& key)
          {
-            auto it = map_.find(key);
-            return (it != map_.end())
-               ? std::unique_ptr<Property<T, isGettable, isSettable>>(
-                     new TargetProperty<Targ, T, isGettable, isSettable>(
-                        dynamic_cast<const Targ*>(this),
-                        dynamic_cast<const PropertyTemplate<Targ, T, isGettable, isSettable>*>(it->second)))
-               : std::unique_ptr<Property<T, isGettable, isSettable>>(nullptr);
+            auto it = props().map.find(key);
+            return (it != props().map.end()) ? it->second->baseBind(targ()) : nullptr;
          }
 
-         template<typename T, bool isGettable, bool isSettable>
-         std::unique_ptr<Property<T, isGettable, isSettable>> property(const std::string& key)
+         template<typename T> std::unique_ptr<Property<Targ, T>> property(const std::string& key)
          {
-            auto it = map_.find(key);
-            return (it != map_.end())
-               ? std::unique_ptr<Property<T, isGettable, isSettable>>(
-                     new TargetProperty<Targ, T, isGettable, isSettable>(
-                        dynamic_cast<const Targ*>(this),
-                        dynamic_cast<const PropertyTemplate<Targ, T, isGettable, isSettable>*>(it->second)))
-               : std::unique_ptr<Property<T, isGettable, isSettable>>(nullptr);
+            auto it = props().map.find(key);
+            return (it != props().map.end())
+               ? (dynamic_cast<const PropTemplate<Targ, T>&>(*it->second)).bind(targ())
+               : nullptr;
          }
 
-      private:
-
-         HasProperties();
-
-         ~HasProperties()
+         template<typename PropType = PropBase<Targ>>
+         std::map<std::string, std::unique_ptr<PropType>> properties()
          {
-            for (auto& p : map_)
+            for (auto it : props().map)
             {
-               delete p.second;
+               auto prop = it->second->bind(targ());
+               if (prop != nullptr)
+               {
+                  props().map[it->first] = std::move(prop);
+               }
             }
          }
 
       private:
-         static std::map<std::string, PropertyTemplateBase*> map_;
-   };
-
-   template<typename Targ> class HasProperties
-   {
-      public:
-         static Properties& properties()
+         static Properties<Targ>& props()
          {
-            static Properties sProperties;
-            return sProperties;
+            static Properties<Targ> sProps;
+            return sProps;
          }
 
-         virtual ~HasProperties() = default;
+         Targ* targ()
+         {
+            return dynamic_cast<Targ*>(this);
+         }
    };
 }
 
