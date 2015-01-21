@@ -19,18 +19,6 @@
       
       nom_V_ratio_mv_lv: 26.506 # Transformer ratio from medium to low voltage.
 
-      start_times: [ #<i> neighborhood
-         [ #<j> street
-            [ #<k> house
-               14:00:00,
-               12:00:00
-            ],
-            [],
-            [],
-            []
-         ]
-      ]
-
       # Parameters for overhead lines:
       earth_resistivity: 100
 
@@ -153,20 +141,6 @@
                                     # The time series that determines what
                                     # the load is at different times.
                                  dt: 00:05:00 # 5 minutes between updates.
-                           - appliance:
-                                 id: washing_machine_<i>_<j>_<k>
-                                 network_id: network
-                                 bus_id: house_<i>_<j>_<k>
-                                 phases: [BAL]
-                                 load_profile: washing_machine_profile # This identifies a time series.
-                                 start_time: start_times_<(<i>+<j>+<k>)>
-                           - appliance:
-                                 id: dishwasher_<i>_<j>_<k>
-                                 network_id: network
-                                 bus_id: house_<i>_<j>_<k>
-                                 phases: [BAL]
-                                 load_profile: washing_machine_profile # This identifies a time series.
-                                 start_time: start_times_<(<i>+<j>+<k>)>
                            -  overhead_line: 
                                  id: drop_<i>_<j>_<k>
                                  network_id: network
