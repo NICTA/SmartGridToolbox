@@ -113,7 +113,12 @@ namespace SmartGridToolbox
    template<typename Targ> class PropTemplateBase
    {
       public:
-         virtual std::unique_ptr<PropBase<Targ>> baseBind(const Targ* targ)
+         virtual std::unique_ptr<PropBase<const Targ>> baseBind(const Targ* targ)
+         {
+            return nullptr;
+         }
+
+         virtual std::unique_ptr<PropBase<Targ>> baseBind(Targ* targ)
          {
             return nullptr;
          }
@@ -151,11 +156,21 @@ namespace SmartGridToolbox
             setter_->set(targ, val);
          }
          
+         virtual std::unique_ptr<PropBase<const Targ>> baseBind(const Targ* targ) const
+         {
+            return std::unique_ptr<Property<const Targ, T>>(new Property<const Targ, T>(this, targ));
+         }
+         
          virtual std::unique_ptr<PropBase<Targ>> baseBind(Targ* targ) const
          {
             return std::unique_ptr<Property<Targ, T>>(new Property<Targ, T>(this, targ));
          }
 
+         std::unique_ptr<Property<const Targ, T>> bind(const Targ* targ) const
+         {
+            return std::unique_ptr<Property<const Targ, T>>(new Property<const Targ, T>(this, targ));
+         }
+         
          std::unique_ptr<Property<Targ, T>> bind(Targ* targ) const
          {
             return std::unique_ptr<Property<Targ, T>>(new Property<Targ, T>(this, targ));
@@ -242,7 +257,7 @@ namespace SmartGridToolbox
          {
             auto it = props().map.find(key);
             return (it != props().map.end())
-               ? (dynamic_cast<const PropTemplate<Targ, T>&>(*it->second)).bind(targ())
+               ? (dynamic_cast<const PropTemplate<Targ, T>&>(*it->second)).bind(constTarg())
                : nullptr;
          }
 
@@ -264,6 +279,11 @@ namespace SmartGridToolbox
          {
             static Properties<Targ> sProps;
             return sProps;
+         }
+
+         const Targ* constTarg() const
+         {
+            return dynamic_cast<const Targ*>(this);
          }
 
          Targ* targ()
