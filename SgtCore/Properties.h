@@ -173,12 +173,12 @@ namespace SmartGridToolbox
    template<typename Targ> class PropTemplateBase
    {
       public:
-         virtual std::unique_ptr<const PropBase<Targ>> baseBind(const Targ* targ)
+         virtual std::unique_ptr<const PropBase<Targ>> baseBind(const Targ* targ) const
          {
             return nullptr;
          }
 
-         virtual std::unique_ptr<PropBase<Targ>> baseBind(Targ* targ)
+         virtual std::unique_ptr<PropBase<Targ>> baseBind(Targ* targ) const
          {
             return nullptr;
          }
@@ -222,14 +222,14 @@ namespace SmartGridToolbox
             setterTemplate_->set(targ, val);
          }
          
-         virtual std::unique_ptr<PropBase<Targ>> baseBind(const Targ* targ) const
+         virtual std::unique_ptr<const PropBase<Targ>> baseBind(const Targ* targ) const override
          {
             return std::unique_ptr<Property<Targ, T>>(new Property<Targ, T>(
                      new Getter<Targ, T>(getterTemplate_, targ),
                      nullptr));
          }
          
-         virtual std::unique_ptr<PropBase<Targ>> baseBind(Targ* targ) const
+         virtual std::unique_ptr<PropBase<Targ>> baseBind(Targ* targ) const override
          {
             return std::unique_ptr<Property<Targ, T>>(new Property<Targ, T>(
                      new Getter<Targ, T>(getterTemplate_, targ),
