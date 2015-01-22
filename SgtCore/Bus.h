@@ -5,6 +5,7 @@
 #include <SgtCore/Component.h>
 #include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
+#include <SgtCore/Properties.h>
 
 #include<iostream>
 #include<map>
@@ -92,7 +93,7 @@ namespace SmartGridToolbox
    };
 
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
-   class Bus : public Component, virtual public BusInterface
+   class Bus : public Component, virtual public BusInterface, public HasProperties<Bus>
    {
       friend class Network;
 

@@ -28,12 +28,6 @@ namespace SmartGridToolbox
          VMagSetpoint_(i) = std::abs(VNom_(i));
          VAngSetpoint_(i) = std::arg(VNom_(i));
       }
- 
-      typedef arma::Col<Complex> VType;
-      properties().add<VType, ByConstRef, ByConstRef, Bus>(
-            "V",
-            [] (const Bus& bus) -> const VType& {return bus.V();},
-            [] (Bus& bus, const VType& V) -> void {bus.setV(V);});
    }
 
    void Bus::applyVSetpoints()
@@ -72,5 +66,13 @@ namespace SmartGridToolbox
       os << "V_mag_min: " << VMagMin() << std::endl;
       os << "V_mag_max: " << VMagMax() << std::endl;
       os << "V: " << V() << std::endl;
+   }
+      
+   template<> Properties<Bus>::Properties()
+   {
+      typedef arma::Col<Complex> VType;
+      add<const VType&>("V",
+            [] (const Bus& bus) -> const VType& {return bus.V();},
+            [] (Bus& bus, const VType& V) -> void {bus.setV(V);});
    }
 }
