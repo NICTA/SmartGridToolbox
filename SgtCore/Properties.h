@@ -267,71 +267,28 @@ namespace SmartGridToolbox
          SetterTemplate<Targ, T>* setterTemplate_{nullptr};
    };
 
-   class PropertiesBase
-   {
-      public:
-         ~PropertyTemplates()
-         {
-            for (auto item : map)
-            {
-               delete item.second;
-            }
-         }
-
-         static std::map<std::string, const PropTemplateBase*> sMap;
-   };
-
-   template<typename Targ> class Properties : private PropertiesBase
-   {
-      public:
-
-         /// Constructor for static initialization.
-         /// 
-         /// Meant to be implemented with Targ implementation, used to add properties to a class.
-         Properties();
-
-         template<typename T>
-         void add(const std::string& key, typename GetterTemplate<Targ, T>::Get getArg)
-         {
-            PropertiesBase::sMap[key] = new PropTemplate<Targ, T>(getArg);
-         }
-
-         template<typename T>
-         void add(const std::string& key, typename SetterTemplate<Targ, T>::Set setArg)
-         {
-            PropertiesBase::sMap[key] = new PropTemplate<Targ, T>(setArg);
-         }
-
-         template<typename T>
-         void add(const std::string& key, 
-                  typename GetterTemplate<Targ, T>::Get getArg, typename SetterTemplate<Targ, T>::Set setArg)
-         {
-            PropertiesBase::sMap[key] = new PropTemplate<Targ, T>(getArg, setArg);
-         }
-   };
-
    class HasProperties
    {
       public:
          virtual ~HasProperties() = default;
 
          template<typename Targ, typename T>
-         static void addProperty(const std::string& key, typename GetterTemplate<Targ, T>::Get getArg)
+         void addProperty(const std::string& key, typename GetterTemplate<Targ, T>::Get getArg)
          {
-            props().add<Targ, T>(key, getArg);
+            map[key] = new PropTemplate<Targ, T>(getArg);
          }
 
          template<typename Targ, typename T>
-         static void addProperty(const std::string& key, typename SetterTemplate<Targ, T>::Set setArg)
+         void addProperty(const std::string& key, typename SetterTemplate<Targ, T>::Set setArg)
          {
-            props().add<Targ, T>(key, setArg);
+            map[key] = new PropTemplate<Targ, T>(setArg);
          }
 
          template<typename Targ, typename T>
-         static void addProperty(const std::string& key, 
+         void addProperty(const std::string& key, 
                typename GetterTemplate<Targ, T>::Get getArg, typename SetterTemplate<Targ, T>::Set setArg)
          {
-            props().add<Targ, T>(key, getArg, setArg);
+            map[key] = new PropTemplate<Targ, T>(getArg, setArg);
          }
          
          std::unique_ptr<const PropBase> property(const std::string& key) const
@@ -376,22 +333,12 @@ namespace SmartGridToolbox
          
       private:
 
-         virtual void initProperties()
-         {
-            // Empty.
-         };
-
-         static PropertyTemplates& props()
-         {
-            static PropertyTemplates sProps;
-            return sProps;
-         }
 
          template<typename PropType> std::unique_ptr<const PropType> property_(const std::string& key) const
          {
             std::unique_ptr<const PropType> result = nullptr;
-            auto it = props().map.find(key);
-            if (it != props().map.end())
+            auto it = map.find(key);
+            if (it != map.end())
             {
                auto prop = it->second->baseBind(this);
                result.reset(dynamic_cast<const PropType*>(prop.release()));
@@ -402,8 +349,8 @@ namespace SmartGridToolbox
          template<typename PropType> std::unique_ptr<PropType> property_(const std::string& key)
          {
             std::unique_ptr<PropType> result = nullptr;
-            auto it = props().map.find(key);
-            if (it != props().map.end())
+            auto it = map.find(key);
+            if (it != map.end())
             {
                auto prop = it->second->baseBind(this);
                result.reset(dynamic_cast<PropType*>(prop.release()));
@@ -415,7 +362,7 @@ namespace SmartGridToolbox
          std::map<std::string, std::unique_ptr<const PropType>> properties_() const
          {
             std::map<std::string, std::unique_ptr<const PropType>> result;
-            for (auto& elem : props().map)
+            for (auto& elem : map)
             {
                auto prop = elem.second->baseBind(this);
                if (prop != nullptr)
@@ -430,7 +377,7 @@ namespace SmartGridToolbox
          std::map<std::string, std::unique_ptr<PropType>> properties_()
          {
             std::map<std::string, std::unique_ptr<PropType>> result;
-            for (auto& elem : props().map)
+            for (auto& elem : map)
             {
                auto prop = elem.second->baseBind(this);
                if (prop != nullptr)
@@ -440,6 +387,9 @@ namespace SmartGridToolbox
             }
             return result;
          }
+
+      private:
+         std::map<std::string, const PropTemplateBase*> map;
    };
 }
 
