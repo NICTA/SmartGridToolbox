@@ -179,7 +179,7 @@ namespace SmartGridToolbox
          }
          NodePtr node(const std::string& id)
          {
-            return std::const_pointer_cast<Node>((const_cast<const Network*>(this))->node(id));
+            return std::const_pointer_cast<Node>((static_cast<const Network*>(this))->node(id));
          }
          virtual void addNode(BusPtr bus);
 
@@ -194,7 +194,7 @@ namespace SmartGridToolbox
          }
          ArcPtr arc(const std::string& id)
          {
-            return std::const_pointer_cast<Arc>((const_cast<const Network*>(this))->arc(id));
+            return std::const_pointer_cast<Arc>((static_cast<const Network*>(this))->arc(id));
          }
          virtual void addArc(BranchPtr branch, const std::string& bus0Id, const std::string& bus1Id);
          
@@ -209,7 +209,7 @@ namespace SmartGridToolbox
          }
          GenPtr gen(const std::string& id)
          {
-            return std::const_pointer_cast<GenInterface>((const_cast<const Network*>(this))->gen(id));
+            return std::const_pointer_cast<GenInterface>((static_cast<const Network*>(this))->gen(id));
          }
          virtual void addGen(GenPtr gen, const std::string& busId);
 
@@ -224,7 +224,7 @@ namespace SmartGridToolbox
          }
          ZipPtr zip(const std::string& id)
          {
-            return std::const_pointer_cast<ZipInterface>((const_cast<const Network*>(this))->zip(id));
+            return std::const_pointer_cast<ZipInterface>((static_cast<const Network*>(this))->zip(id));
          }
          virtual void addZip(ZipPtr zip, const std::string& busId);
 

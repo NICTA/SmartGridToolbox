@@ -323,8 +323,55 @@ namespace SmartGridToolbox
          {
             props().add<Targ, T>(key, getArg, setArg);
          }
+         
+         std::unique_ptr<const PropBase> property(const std::string& key) const
+         {
+            return property_<PropBase>(key);
+         }
 
-         template<typename PropType = PropBase> std::unique_ptr<const PropType> property(const std::string& key) const
+         std::unique_ptr<PropBase> property(const std::string& key)
+         {
+            return property_<PropBase>(key);
+         }
+
+         template<typename T> std::unique_ptr<const Property<T>> property(const std::string& key) const
+         {
+            return property_<Property<T>>(key);
+         };
+
+         template<typename T> std::unique_ptr<Property<T>> property(const std::string& key)
+         {
+            return property_<Property<T>>(key);
+         };
+         
+         std::map<std::string, std::unique_ptr<const PropBase>> properties() const
+         {
+            return properties_<PropBase>();
+         }
+
+         std::map<std::string, std::unique_ptr<PropBase>> properties()
+         {
+            return properties_<PropBase>();
+         }
+         
+         template<typename T> std::map<std::string, std::unique_ptr<const Property<T>>> properties() const
+         {
+            return properties_<Property<T>>();
+         }
+         
+         template<typename T> std::map<std::string, std::unique_ptr<Property<T>>> properties()
+         {
+            return properties_<Property<T>>();
+         }
+         
+      private:
+         static Properties& props()
+         {
+            static Properties sProps;
+            return sProps;
+         }
+
+         template<typename PropType> std::unique_ptr<const PropType> property_(const std::string& key) const
          {
             std::unique_ptr<const PropType> result = nullptr;
             auto it = props().map.find(key);
@@ -336,7 +383,7 @@ namespace SmartGridToolbox
             return result;
          }
 
-         template<typename PropType> std::unique_ptr<PropType> property(const std::string& key)
+         template<typename PropType> std::unique_ptr<PropType> property_(const std::string& key)
          {
             std::unique_ptr<PropType> result = nullptr;
             auto it = props().map.find(key);
@@ -348,8 +395,8 @@ namespace SmartGridToolbox
             return result;
          }
 
-         template<typename PropType = PropBase>
-         std::map<std::string, std::unique_ptr<const PropType>> properties() const
+         template<typename PropType>
+         std::map<std::string, std::unique_ptr<const PropType>> properties_() const
          {
             std::map<std::string, std::unique_ptr<const PropType>> result;
             for (auto& elem : props().map)
@@ -363,8 +410,8 @@ namespace SmartGridToolbox
             return result;
          }
 
-         template<typename PropType = PropBase>
-         std::map<std::string, std::unique_ptr<PropType>> properties()
+         template<typename PropType>
+         std::map<std::string, std::unique_ptr<PropType>> properties_()
          {
             std::map<std::string, std::unique_ptr<PropType>> result;
             for (auto& elem : props().map)
@@ -376,13 +423,6 @@ namespace SmartGridToolbox
                }
             }
             return result;
-         }
-
-      private:
-         static Properties& props()
-         {
-            static Properties sProps;
-            return sProps;
          }
    };
 }

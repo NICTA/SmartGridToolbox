@@ -132,7 +132,7 @@ namespace SmartGridToolbox
          /// @brief Retrieve a SimComponent.
          template<typename T> std::shared_ptr<T> simComponent(const std::string& id, bool crashOnFail = true)
          {
-            return std::const_pointer_cast<T>((const_cast<const Simulation*>(this))->simComponent<T>(id,
+            return std::const_pointer_cast<T>((static_cast<const Simulation*>(this))->simComponent<T>(id,
                      crashOnFail));
          }
 
@@ -173,7 +173,7 @@ namespace SmartGridToolbox
          /// @brief Retrieve a TimeSeries.
          template<typename T> std::shared_ptr<T> timeSeries(const std::string& id, bool crashOnFail = true)
          {
-            return std::const_pointer_cast<T>((const_cast<const Simulation*>(this))->timeSeries<T>(id, crashOnFail));
+            return std::const_pointer_cast<T>((static_cast<const Simulation*>(this))->timeSeries<T>(id, crashOnFail));
          }
 
          /// @brief Add a time series.
