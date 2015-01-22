@@ -267,10 +267,10 @@ namespace SmartGridToolbox
          SetterTemplate<Targ, T>* setterTemplate_{nullptr};
    };
 
-   class Properties
+   class PropertiesBase
    {
       public:
-         ~Properties()
+         ~PropertyTemplates()
          {
             for (auto item : map)
             {
@@ -278,26 +278,36 @@ namespace SmartGridToolbox
             }
          }
 
-         template<typename Targ, typename T>
+         static std::map<std::string, const PropTemplateBase*> sMap;
+   };
+
+   template<typename Targ> class Properties : private PropertiesBase
+   {
+      public:
+
+         /// Constructor for static initialization.
+         /// 
+         /// Meant to be implemented with Targ implementation, used to add properties to a class.
+         Properties();
+
+         template<typename T>
          void add(const std::string& key, typename GetterTemplate<Targ, T>::Get getArg)
          {
-            map[key] = new PropTemplate<Targ, T>(getArg);
+            PropertiesBase::sMap[key] = new PropTemplate<Targ, T>(getArg);
          }
 
-         template<typename Targ, typename T>
+         template<typename T>
          void add(const std::string& key, typename SetterTemplate<Targ, T>::Set setArg)
          {
-            map[key] = new PropTemplate<Targ, T>(setArg);
+            PropertiesBase::sMap[key] = new PropTemplate<Targ, T>(setArg);
          }
 
-         template<typename Targ, typename T>
+         template<typename T>
          void add(const std::string& key, 
                   typename GetterTemplate<Targ, T>::Get getArg, typename SetterTemplate<Targ, T>::Set setArg)
          {
-            map[key] = new PropTemplate<Targ, T>(getArg, setArg);
+            PropertiesBase::sMap[key] = new PropTemplate<Targ, T>(getArg, setArg);
          }
-
-         std::map<std::string, const PropTemplateBase*> map;
    };
 
    class HasProperties
@@ -365,9 +375,15 @@ namespace SmartGridToolbox
          }
          
       private:
-         static Properties& props()
+
+         virtual void initProperties()
          {
-            static Properties sProps;
+            // Empty.
+         };
+
+         static PropertyTemplates& props()
+         {
+            static PropertyTemplates sProps;
             return sProps;
          }
 
