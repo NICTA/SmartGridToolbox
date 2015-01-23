@@ -23,13 +23,19 @@ namespace SmartGridToolbox
       public:
          NoSetterException() : std::domain_error("Property does not have a setter") {};
    };
+
+   class BadTargetException : public std::domain_error
+   {
+      public:
+         BadTargetException() : std::domain_error("Property has the wrong target type for its target object") {};
+   };
    
-   template<typename Targ, typename T> class GetterTemplate
+   template<typename Targ, typename T> class Getter
    {
       public:
          using Get = T (const Targ&);
 
-         GetterTemplate(Get getArg) : get_(getArg)
+         Getter(Get getArg) : get_(getArg)
          {
             // Empty.
          }
@@ -43,33 +49,12 @@ namespace SmartGridToolbox
          std::function<Get> get_;
    };
    
-   template<typename Targ, typename T> class Getter
-   {
-      public:
-         using Get = T ();
-
-         Getter(const GetterTemplate<Targ, T>* getterTemplate, const Targ* targ) :
-            getterTemplate_(getterTemplate), targ_(targ)
-         {
-            // Empty.
-         }
-
-         T get() const
-         {
-            return getterTemplate_->get(*targ_);
-         }
-
-      private:
-         const GetterTemplate<Targ, T>* getterTemplate_;
-         const Targ* targ_;
-   };
-   
-   template<typename Targ, typename T> class SetterTemplate
+   template<typename Targ, typename T> class Setter
    {
       public:
          using Set = void (Targ&, const T&);
 
-         SetterTemplate(Set setArg) : set_(setArg)
+         Setter(Set setArg) : set_(setArg)
          {
             // Empty.
          }
@@ -83,43 +68,22 @@ namespace SmartGridToolbox
          std::function<Set> set_;
    };
    
-   template<typename Targ, typename T> class Setter
+   template<typename T> class PropertyInterface
    {
       public:
-         using Set = void (const T&);
-
-         Setter(const SetterTemplate<Targ, T>* setterTemplate, Targ* targ) :
-            setterTemplate_(setterTemplate), targ_(targ)
-         {
-            // Empty.
-         }
-
-         void set(const T& val)
-         {
-            setterTemplate_->set(*targ_, val);
-         }
-
-      private:
-         const SetterTemplate<Targ, T>* setterTemplate_;
-         Targ* targ_;
-   };
-
-   template<typename T> class Property
-   {
-      public:
-         virtual ~Property() = default;
+         virtual ~PropertyInterface() = default;
          virtual T get() const = 0;
          virtual void set(const T& val) = 0;
    };
   
-   class PropBase
+   class PropCommon
    {
       public:
-         virtual ~PropBase() = default;
+         virtual ~PropCommon() = default;
 
          template<typename T> T get() const
          {
-            auto propT = dynamic_cast<const Property<T>>(this);
+            auto propT = dynamic_cast<const PropertyInterface<T>>(this);
             if (propT == nullptr)
             {
                throw NoGetterException();
@@ -129,7 +93,7 @@ namespace SmartGridToolbox
 
          template<typename T> void set(const T& val)
          {
-            auto propT = dynamic_cast<Property<T>>(this);
+            auto propT = dynamic_cast<PropertyInterface<T>>(this);
             if (propT == nullptr)
             {
                throw NoSetterException();
@@ -138,16 +102,33 @@ namespace SmartGridToolbox
          }
    };
    
-   template<typename Targ, typename T> class TargProp : public Property<T>, public PropBase
+   template<typename Targ, typename T> class Property : public PropertyInterface<T>, public PropCommon
    {
       public:
-         TargProp(const Getter<Targ, T>* getter, Setter<Targ, T>* setter) :
-            getter_(getter), setter_(setter)
+         Property(const std::string& key, Targ* targ, typename Getter<Targ, T>::Get getArg) :
+            targ_(targ),
+            getter_(new Getter<Targ, T>(getArg))
          {
-            // Empty.
+            targ->addProperty(key, this);
+         }
+         
+         Property(const std::string& key, Targ* targ, typename Setter<Targ, T>::Set setArg) :
+            targ_(targ),
+            setter_(new Setter<Targ, T>(setArg))
+         {
+            targ->addProperty(key, this);
+         }
+         
+         Property(const std::string& key, Targ* targ,
+               typename Getter<Targ, T>::Get getArg, typename Setter<Targ, T>::Set setArg) :
+            targ_(targ),
+            getter_(new Getter<Targ, T>(getArg)),
+            setter_(new Setter<Targ, T>(setArg))
+         {
+            targ->addProperty(key, this);
          }
 
-         virtual ~TargProp()
+         virtual ~Property()
          {
             delete getter_;
             delete setter_;
@@ -159,7 +140,7 @@ namespace SmartGridToolbox
             {
                throw NoGetterException();
             }
-            return getter_->get();
+            return getter_->get(*targ_);
          }
 
          virtual void set(const T& val) override
@@ -168,228 +149,99 @@ namespace SmartGridToolbox
             {
                throw NoSetterException();
             }
-            setter_->set(val);
+            setter_->set(*targ_, val);
          }
 
       private:
-         const Getter<Targ, T>* getter_;
-         Setter<Targ, T>* setter_;
-   };
-
-   class HasProperties;
-
-   class PropTemplateBase
-   {
-      public:
-         virtual ~PropTemplateBase() = default;
-
-         virtual std::unique_ptr<const PropBase> baseBind(const HasProperties* targ) const
-         {
-            return nullptr;
-         }
-
-         virtual std::unique_ptr<PropBase> baseBind(HasProperties* targ) const
-         {
-            return nullptr;
-         }
-   };
-
-   template<typename Targ, typename T> class PropTemplate : public PropTemplateBase
-   {
-      public:
-         PropTemplate(typename GetterTemplate<Targ, T>::Get getArg) :
-            getterTemplate_(new GetterTemplate<Targ, T>(getArg))
-         {
-            // Empty.
-         }
-
-         PropTemplate(typename SetterTemplate<Targ, T>::Set setArg) :
-            setterTemplate_(new SetterTemplate<Targ, T>(setArg))
-         {
-            // Empty.
-         }
-         
-         PropTemplate(typename GetterTemplate<Targ, T>::Get getArg, typename SetterTemplate<Targ, T>::Set setArg) :
-            getterTemplate_(new GetterTemplate<Targ, T>(getArg)),
-            setterTemplate_(new SetterTemplate<Targ, T>(setArg))
-         {
-            // Empty.
-         }
-
-         virtual ~PropTemplate()
-         {
-            delete getterTemplate_;
-            delete setterTemplate_;
-         }
-
-         T get(const Targ& targ) const
-         {
-            return getterTemplate_->get(targ);
-         }
-         
-         void set(Targ& targ, const T& val) const
-         {
-            setterTemplate_->set(targ, val);
-         }
-         
-         virtual std::unique_ptr<const PropBase> baseBind(const HasProperties* targ) const override
-         {
-            const Targ* derived = dynamic_cast<const Targ*>(targ);
-            return std::unique_ptr<TargProp<Targ, T>>(new TargProp<Targ, T>(
-                     new Getter<Targ, T>(getterTemplate_, derived),
-                     nullptr));
-         }
-         
-         virtual std::unique_ptr<PropBase> baseBind(HasProperties* targ) const override
-         {
-            Targ* derived = dynamic_cast<Targ*>(targ);
-            return std::unique_ptr<TargProp<Targ, T>>(new TargProp<Targ, T>(
-                     new Getter<Targ, T>(getterTemplate_, derived),
-                     new Setter<Targ, T>(setterTemplate_, derived)));
-         }
-         
-         std::unique_ptr<Property<T>> bind(const Targ* targ) const
-         {
-            return std::unique_ptr<TargProp<Targ, T>>(new TargProp<Targ, T>(
-                     new Getter<Targ, T>(getterTemplate_, targ),
-                     nullptr));
-         }
-         
-         std::unique_ptr<TargProp<Targ, T>> bind(Targ* targ) const
-         {
-            return std::unique_ptr<TargProp<Targ, T>>(new TargProp<Targ, T>(
-                     new Getter<Targ, T>(getterTemplate_, targ),
-                     new Setter<Targ, T>(setterTemplate_, targ)));
-         }
-
-      private:
-         GetterTemplate<Targ, T>* getterTemplate_{nullptr};
-         SetterTemplate<Targ, T>* setterTemplate_{nullptr};
+         Targ* targ_;
+         Getter<Targ, T>* getter_{nullptr};
+         Setter<Targ, T>* setter_{nullptr};
    };
 
    class HasProperties
    {
+      template<typename Targ, typename T> friend class Property;
+
       public:
+
+         using PropMap = std::map<std::string, PropCommon*>;
+
          virtual ~HasProperties() = default;
 
-         template<typename Targ, typename T>
-         void addProperty(const std::string& key, typename GetterTemplate<Targ, T>::Get getArg)
+         const PropCommon* property(const std::string& key) const
          {
-            map[key] = new PropTemplate<Targ, T>(getArg);
+            return property_<PropCommon>(key);
          }
 
-         template<typename Targ, typename T>
-         void addProperty(const std::string& key, typename SetterTemplate<Targ, T>::Set setArg)
+         PropCommon* property(const std::string& key)
          {
-            map[key] = new PropTemplate<Targ, T>(setArg);
+            return property_<PropCommon>(key);
          }
 
-         template<typename Targ, typename T>
-         void addProperty(const std::string& key, 
-               typename GetterTemplate<Targ, T>::Get getArg, typename SetterTemplate<Targ, T>::Set setArg)
+         template<typename T> const PropertyInterface<T>* property(const std::string& key) const
          {
-            map[key] = new PropTemplate<Targ, T>(getArg, setArg);
-         }
-         
-         std::unique_ptr<const PropBase> property(const std::string& key) const
-         {
-            return property_<PropBase>(key);
-         }
-
-         std::unique_ptr<PropBase> property(const std::string& key)
-         {
-            return property_<PropBase>(key);
-         }
-
-         template<typename T> std::unique_ptr<const Property<T>> property(const std::string& key) const
-         {
-            return property_<Property<T>>(key);
+            return property_<PropertyInterface<T>>(key);
          };
 
-         template<typename T> std::unique_ptr<Property<T>> property(const std::string& key)
+         template<typename T> PropertyInterface<T>* property(const std::string& key)
          {
-            return property_<Property<T>>(key);
+            return property_<PropertyInterface<T>>(key);
          };
-         
-         std::map<std::string, std::unique_ptr<const PropBase>> properties() const
+
+         PropMap::iterator propertiesBegin()
          {
-            return properties_<PropBase>();
+            return map_.begin();
+         }
+         
+         PropMap::iterator propertiesEnd()
+         {
+            return map_.end();
          }
 
-         std::map<std::string, std::unique_ptr<PropBase>> properties()
+         PropMap::const_iterator propertiesBegin() const
          {
-            return properties_<PropBase>();
+            return map_.cbegin();
          }
          
-         template<typename T> std::map<std::string, std::unique_ptr<const Property<T>>> properties() const
+         PropMap::const_iterator propertiesEnd() const
          {
-            return properties_<Property<T>>();
-         }
-         
-         template<typename T> std::map<std::string, std::unique_ptr<Property<T>>> properties()
-         {
-            return properties_<Property<T>>();
+            return map_.cend();
          }
          
       private:
 
-
-         template<typename PropType> std::unique_ptr<const PropType> property_(const std::string& key) const
+         template<typename Targ, typename T>
+         void addProperty(const std::string& key, Property<Targ, T>* prop)
          {
-            std::unique_ptr<const PropType> result = nullptr;
-            auto it = map.find(key);
-            if (it != map.end())
+            map_[key] = prop;
+         }
+
+         template<typename PropType> const PropType* property_(const std::string& key) const
+         {
+            const PropType* result = nullptr;
+            auto it = map_.find(key);
+            if (it != map_.end())
             {
-               auto prop = it->second->baseBind(this);
-               result.reset(dynamic_cast<const PropType*>(prop.release()));
+               auto prop = it->second;
+               result = dynamic_cast<const PropType*>(prop);
             }
             return result;
          }
 
-         template<typename PropType> std::unique_ptr<PropType> property_(const std::string& key)
+         template<typename PropType> PropType* property_(const std::string& key)
          {
-            std::unique_ptr<PropType> result = nullptr;
-            auto it = map.find(key);
-            if (it != map.end())
+            PropType* result = nullptr;
+            auto it = map_.find(key);
+            if (it != map_.end())
             {
-               auto prop = it->second->baseBind(this);
-               result.reset(dynamic_cast<PropType*>(prop.release()));
-            }
-            return result;
-         }
-
-         template<typename PropType>
-         std::map<std::string, std::unique_ptr<const PropType>> properties_() const
-         {
-            std::map<std::string, std::unique_ptr<const PropType>> result;
-            for (auto& elem : map)
-            {
-               auto prop = elem.second->baseBind(this);
-               if (prop != nullptr)
-               {
-                  result[elem.first] = std::move(prop);
-               }
-            }
-            return result;
-         }
-
-         template<typename PropType>
-         std::map<std::string, std::unique_ptr<PropType>> properties_()
-         {
-            std::map<std::string, std::unique_ptr<PropType>> result;
-            for (auto& elem : map)
-            {
-               auto prop = elem.second->baseBind(this);
-               if (prop != nullptr)
-               {
-                  result[elem.first] = std::move(prop);
-               }
+               auto prop = it->second;
+               result = dynamic_cast<PropType*>(prop);
             }
             return result;
          }
 
       private:
-         std::map<std::string, const PropTemplateBase*> map;
+         std::map<std::string, PropCommon*> map_;
    };
 }
 
