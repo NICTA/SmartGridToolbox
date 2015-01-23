@@ -2,6 +2,7 @@
 #define PARSER_DOT_H
 
 #include <SgtCore/Common.h>
+#include <SgtCore/YamlSupport.h>
 
 #include <yaml-cpp/yaml.h>
 

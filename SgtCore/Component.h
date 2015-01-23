@@ -1,8 +1,6 @@
 #ifndef COMPONENT_DOT_H
 #define COMPONENT_DOT_H
 
-#include <SgtCore/Properties.h>
-
 #include <ostream>
 #include <string>
 
@@ -10,7 +8,7 @@ using std::string;
 
 namespace SmartGridToolbox
 {
-   class ComponentInterface : virtual public HasPropertiesInterface
+   class ComponentInterface
    {
       friend std::ostream& operator<<(std::ostream& os, const ComponentInterface& comp);
 
@@ -34,7 +32,7 @@ namespace SmartGridToolbox
       return os;
    }
 
-   class Component : virtual public ComponentInterface, public HasProperties
+   class Component : virtual public ComponentInterface
    {
       public:
 

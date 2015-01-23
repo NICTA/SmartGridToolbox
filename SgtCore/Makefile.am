@@ -61,6 +61,7 @@ libSgtCore_a_SOURCES = \
 	PowerFlow.h PowerFlow.cc \
 	PowerFlowModel.h PowerFlowModel.cc \
 	PowerFlowNr.h PowerFlowNr.cc \
+	Properties.h \
 	Random.h Random.cc \
 	RegisterParserPlugins.cc \
 	SparseSolver.h SparseSolver.cc \

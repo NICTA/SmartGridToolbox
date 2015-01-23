@@ -4,300 +4,248 @@
 #include <SgtCore/YamlSupport.h>
 
 #include<map>
+#include<memory>
 #include<stdexcept>
 #include<string>
 #include<sstream>
 #include<vector>
 
+#define SGT_PROP_GET(name, Targ, T, get) Property<Targ, T> name##_Prop{#name, this, [](const Targ& targ){return targ.get();}};
+#define SGT_PROP_SET(name, Targ, T, set) Property<Targ, T> name##_Prop{#name, this, [](Targ& targ, const T& val){targ.set(val);}};
+#define SGT_PROP_GET_SET(name, Targ, T, get, set) Property<Targ, T> name##_Prop{#name, this, [](const Targ& targ){return targ.get();}, [](Targ& targ, const T& val){targ.set(val);}};
+
 namespace SmartGridToolbox
 {
-   struct NoType {};
-
-   template<class T>
-   class NoGetter{};  
-
-   template<class T>
-   using NoSetter = NoGetter<T>;  
-
-   template<class T>
-   using ByValue = T;
-
-   template<class T>
-   using ByConstRef = const T&;
-
-   class Properties;
-   class HasProperties;
-
-   template<typename T = NoType,
-      template<typename> class GetBy = NoGetter, template<typename> class SetBy = NoSetter>
-   class Property;
-
-   class PropertyBase
+   class NoGetterException : public std::domain_error
    {
-      friend class Properties;
-
       public:
-         PropertyBase(HasProperties* targ) : targ_(targ) {}
-
-         virtual ~PropertyBase() {}
-
-         virtual PropertyBase* clone() = 0;
-
-         virtual bool isGettable() {return false;}
-
-         virtual bool isSettable() {return false;}
-
-         virtual std::string string()
-         {
-            throw std::runtime_error("Property is not gettable");
-         }
-
-         virtual void setFromString(const std::string& str)
-         {
-            throw std::runtime_error("Property is not settable");
-         }
-
-      protected:
-         HasProperties* targ_{nullptr};
+         NoGetterException() : std::domain_error("Property does not have a getter") {};
+   };
+   
+   class NoSetterException : public std::domain_error
+   {
+      public:
+         NoSetterException() : std::domain_error("Property does not have a setter") {};
    };
 
-   template<typename T, template<typename> class GetBy>
-   class Property<T, GetBy, NoSetter> : virtual public PropertyBase
+   class BadTargetException : public std::domain_error
    {
-      friend class Properties;
-
       public:
-         virtual bool isGettable() {return true;}
-
-         virtual GetBy<T> get() const = 0;
-
-         virtual std::string string()
-         {
-            return toYamlString(get());
-         }
+         BadTargetException() : std::domain_error("Property has the wrong target type for its target object") {};
    };
-
-   template<typename T, template<typename> class GetBy>
-   using GettableProperty = Property<T, GetBy, NoSetter>;
-
-   template<typename T, template<typename> class SetBy>
-   class Property<T, NoGetter, SetBy> : virtual public PropertyBase
+   
+   template<typename Targ, typename T> class Getter
    {
-      friend class Properties;
-
       public:
-         virtual bool isSettable() {return true;}
+         using Get = T (const Targ&);
 
-         virtual void set(SetBy<T>) = 0;
-
-         virtual void setFromString(const std::string& str) override
-         {
-            set(fromYamlString<T>(str)); 
-         }
-   };
-
-   template<typename T, template<typename> class SetBy>
-   using SettableProperty = Property<T, NoGetter, SetBy>;
-
-   template<typename T, template<typename> class GetBy, template<typename> class SetBy>
-   class Property : virtual public GettableProperty<T, GetBy>, virtual public SettableProperty<T, SetBy>
-   {
-      // Empty.
-   };
-
-   template<typename T, template<typename> class GetBy, class Targ>
-   using Getter = GetBy<T> (const Targ&);
-
-   template<typename T, template<typename> class SetBy, class Targ>
-   using Setter = void (Targ&, SetBy<T>);
-
-   template<typename T, template<typename> class GetBy, template<typename> class SetBy, typename Targ>
-   class PropertyWithTarg;
-
-   template<typename T, template<typename> class GetBy, typename Targ>
-   class PropertyWithTarg<T, GetBy, NoSetter, Targ> : virtual public GettableProperty<T, GetBy>
-   {
-      friend class Properties;
-
-      public:
-         PropertyWithTarg(HasProperties* targ, Getter<T, GetBy, Targ> getterArg) : PropertyBase(targ), get_(getterArg)
+         Getter(Get getArg) : get_(getArg)
          {
             // Empty.
          }
-         
-         virtual PropertyBase* clone() override
-         {
-            return new PropertyWithTarg(*this);
-         };
 
-         virtual GetBy<T> get() const override
+         T get(const Targ& targ) const
          {
-            return get_(*dynamic_cast<const Targ*>(this->targ_));
+            return get_(targ);
          }
 
       private:
-         std::function<Getter<T, GetBy, Targ>> get_;
+         std::function<Get> get_;
    };
-
-   template<typename T, template<typename> class SetBy, typename Targ>
-   class PropertyWithTarg<T, NoGetter, SetBy, Targ> : virtual public SettableProperty<T, SetBy>
+   
+   template<typename Targ, typename T> class Setter
    {
-      friend class Properties;
-
       public:
-         PropertyWithTarg(HasProperties* targ, Setter<T, SetBy, Targ> setterArg) : PropertyBase(targ), set_(setterArg)
+         using Set = void (Targ&, const T&);
+
+         Setter(Set setArg) : set_(setArg)
          {
             // Empty.
          }
-         
-         virtual PropertyBase* clone() override
-         {
-            return new PropertyWithTarg(*this);
-         };
 
-         virtual void set(SetBy<T> val) override
+         void set(Targ& targ, const T& val) const
          {
-            set_(*dynamic_cast<Targ*>(this->targ_), val);
+            set_(targ, val);
          }
 
       private:
-         std::function<Setter<T, SetBy, Targ>> set_;
+         std::function<Set> set_;
    };
-
-   template<typename T, template<typename> class GetBy, template<typename> class SetBy, typename Targ>
-   class PropertyWithTarg :
-      public PropertyWithTarg<T, GetBy, NoSetter, Targ>,
-      public PropertyWithTarg<T, NoGetter, SetBy, Targ>,
-      public Property<T, GetBy, SetBy>
+   
+   template<typename T> class PropertyInterface
    {
-      friend class Properties;
-
       public:
-         PropertyWithTarg(HasProperties* targ, Getter<T, GetBy, Targ> getterArg, Setter<T, SetBy, Targ> setterArg) :
-            PropertyBase(targ),
-            PropertyWithTarg<T, GetBy, NoSetter, Targ>(targ, getterArg),
-            PropertyWithTarg<T, NoGetter, SetBy, Targ>(targ, setterArg)
+         virtual ~PropertyInterface() = default;
+         virtual T get() const = 0;
+         virtual void set(const T& val) = 0;
+   };
+  
+   class PropCommon
+   {
+      public:
+         virtual ~PropCommon() = default;
+
+         template<typename T> T get() const
          {
-            // Empty.
+            auto propT = dynamic_cast<const PropertyInterface<T>>(this);
+            if (propT == nullptr)
+            {
+               throw NoGetterException();
+            }
+            return propT->get();
+         }
+
+         template<typename T> void set(const T& val)
+         {
+            auto propT = dynamic_cast<PropertyInterface<T>>(this);
+            if (propT == nullptr)
+            {
+               throw NoSetterException();
+            }
+            propT->set(val);
+         }
+   };
+   
+   template<typename Targ, typename T> class Property : public PropertyInterface<T>, public PropCommon
+   {
+      public:
+         Property(const std::string& key, Targ* targ, typename Getter<Targ, T>::Get getArg) :
+            targ_(targ),
+            getter_(new Getter<Targ, T>(getArg))
+         {
+            targ->addProperty(key, this);
          }
          
-         virtual PropertyBase* clone() override
+         Property(const std::string& key, Targ* targ, typename Setter<Targ, T>::Set setArg) :
+            targ_(targ),
+            setter_(new Setter<Targ, T>(setArg))
          {
-            return new PropertyWithTarg(*this);
-         };
-   };
-
-   class Properties
-   {
-      friend class HasProperties;
-
-      private:
-         typedef std::map<std::string, PropertyBase*> Map;
-
-      public:
-         typedef Map::const_iterator ConstIterator;
-         typedef Map::iterator Iterator;
-
-      public:
-
-         Iterator begin() {return map_.begin();}
-         Iterator end() {return map_.end();}
-         ConstIterator begin() const {return map_.begin();}
-         ConstIterator end() const {return map_.end();}
-         ConstIterator cbegin() const {return map_.cbegin();}
-         ConstIterator cend() const {return map_.cend();}
-
-         template<typename T, template<typename> class GetBy, template<typename> class SetBy, 
-            typename Targ, typename... Arg>
-         void add(const std::string& key, Arg... args)
+            targ->addProperty(key, this);
+         }
+         
+         Property(const std::string& key, Targ* targ,
+               typename Getter<Targ, T>::Get getArg, typename Setter<Targ, T>::Set setArg) :
+            targ_(targ),
+            getter_(new Getter<Targ, T>(getArg)),
+            setter_(new Setter<Targ, T>(setArg))
          {
-            map_[key] = new PropertyWithTarg<T, GetBy, SetBy, Targ>(targ_, args...);
+            targ->addProperty(key, this);
          }
 
-         template<typename T = NoType,
-            template<typename> class GetBy = NoGetter, template<typename> class SetBy = NoSetter>
-         const Property<T, GetBy, SetBy>* operator[](const std::string& key) const
+         virtual ~Property()
          {
-            const Property<T, GetBy, SetBy>* prop = nullptr;
+            delete getter_;
+            delete setter_;
+         }
+
+         virtual T get() const override
+         {
+            if (getter_ == nullptr)
+            {
+               throw NoGetterException();
+            }
+            return getter_->get(*targ_);
+         }
+
+         virtual void set(const T& val) override
+         {
+            if (setter_ == nullptr)
+            {
+               throw NoSetterException();
+            }
+            setter_->set(*targ_, val);
+         }
+
+      private:
+         Targ* targ_;
+         Getter<Targ, T>* getter_{nullptr};
+         Setter<Targ, T>* setter_{nullptr};
+   };
+
+   class HasProperties
+   {
+      template<typename Targ, typename T> friend class Property;
+
+      public:
+
+         using PropMap = std::map<std::string, PropCommon*>;
+
+         virtual ~HasProperties() = default;
+
+         const PropCommon* property(const std::string& key) const
+         {
+            return property_<PropCommon>(key);
+         }
+
+         PropCommon* property(const std::string& key)
+         {
+            return property_<PropCommon>(key);
+         }
+
+         template<typename T> const PropertyInterface<T>* property(const std::string& key) const
+         {
+            return property_<PropertyInterface<T>>(key);
+         };
+
+         template<typename T> PropertyInterface<T>* property(const std::string& key)
+         {
+            return property_<PropertyInterface<T>>(key);
+         };
+
+         PropMap::iterator propertiesBegin()
+         {
+            return map_.begin();
+         }
+         
+         PropMap::iterator propertiesEnd()
+         {
+            return map_.end();
+         }
+
+         PropMap::const_iterator propertiesBegin() const
+         {
+            return map_.cbegin();
+         }
+         
+         PropMap::const_iterator propertiesEnd() const
+         {
+            return map_.cend();
+         }
+         
+      private:
+
+         template<typename Targ, typename T>
+         void addProperty(const std::string& key, Property<Targ, T>* prop)
+         {
+            map_[key] = prop;
+         }
+
+         template<typename PropType> const PropType* property_(const std::string& key) const
+         {
+            const PropType* result = nullptr;
             auto it = map_.find(key);
             if (it != map_.end())
             {
-               prop = dynamic_cast<const Property<T, GetBy, SetBy>*>(it->second);
+               auto prop = it->second;
+               result = dynamic_cast<const PropType*>(prop);
             }
-            return prop;
+            return result;
          }
 
-         template<typename T = NoType,
-            template<typename> class GetBy = NoGetter, template<typename> class SetBy = NoSetter>
-         Property<T, GetBy, SetBy>* operator[](const std::string& key)
+         template<typename PropType> PropType* property_(const std::string& key)
          {
-            return const_cast<Property<T, GetBy, SetBy>*>(
-                  static_cast<const Properties*>(this)->operator[]<T, GetBy, SetBy>(key));
+            PropType* result = nullptr;
+            auto it = map_.find(key);
+            if (it != map_.end())
+            {
+               auto prop = it->second;
+               result = dynamic_cast<PropType*>(prop);
+            }
+            return result;
          }
 
       private:
-         Properties(HasProperties* targ) : targ_(targ) {}
-
-         Properties(const Properties& from, HasProperties* targ) : map_(from.map_)
-         {
-            for (auto p : from.map_)
-            {
-               map_[p.first] = p.second->clone(); 
-            }
-            reTarget(targ);
-         }
-
-         virtual ~Properties()
-         {
-            for (auto& p : map_)
-            {
-               delete p.second;
-            }
-         }
-
-         void reTarget(HasProperties* newTarg)
-         {
-            targ_ = newTarg;
-            for (auto p : map_)
-            {
-               p.second->targ_ = newTarg;
-            }
-         }
-
-      private:
-         HasProperties* targ_;
-         Map map_;
-   };
-
-   class HasPropertiesInterface
-   {
-      public:
-         virtual ~HasPropertiesInterface() {}
-         virtual const Properties& properties() const = 0;
-         virtual Properties& properties() = 0;
-   };
-
-   class HasProperties : virtual public HasPropertiesInterface
-   {
-      public:
-
-         HasProperties() : properties_(this) {}
-
-         HasProperties(const HasProperties& from) : properties_(from.properties_, this) {}
-
-         virtual const Properties& properties() const override
-         {
-            return properties_;
-         }
-
-         virtual Properties& properties() override
-         {
-            return properties_;
-         }
-
-      private:
-
-         Properties properties_;
+         std::map<std::string, PropCommon*> map_;
    };
 }
 
