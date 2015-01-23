@@ -10,6 +10,10 @@
 #include<sstream>
 #include<vector>
 
+#define SGT_PROP_GET(name, Targ, T, get) Property<Targ, T> name##_Prop{#name, this, [](const Targ& targ){return targ.get();}};
+#define SGT_PROP_SET(name, Targ, T, set) Property<Targ, T> name##_Prop{#name, this, [](Targ& targ, const T& val){targ.set(val);}};
+#define SGT_PROP_GET_SET(name, Targ, T, get, set) Property<Targ, T> name##_Prop{#name, this, [](const Targ& targ){return targ.get();}, [](Targ& targ, const T& val){targ.set(val);}};
+
 namespace SmartGridToolbox
 {
    class NoGetterException : public std::domain_error
