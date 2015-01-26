@@ -5,7 +5,6 @@
 #include <SgtCore/Component.h>
 #include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
-#include <SgtCore/Properties.h>
 
 #include<iostream>
 #include<map>
@@ -93,7 +92,7 @@ namespace SmartGridToolbox
    };
 
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
-   class Bus : public Component, virtual public BusInterface, public HasProperties<Bus>
+   class Bus : public Component, virtual public BusInterface
    {
       friend class Network;
 
@@ -123,6 +122,7 @@ namespace SmartGridToolbox
          {
             return phases_;
          }
+         SGT_PROP_GET(phases, Bus, (const Phases&), phases);
 
          virtual arma::Col<Complex> VNom() const override
          {

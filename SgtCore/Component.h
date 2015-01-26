@@ -1,6 +1,8 @@
 #ifndef COMPONENT_DOT_H
 #define COMPONENT_DOT_H
 
+#include <SgtCore/Properties.h>
+
 #include <ostream>
 #include <string>
 
@@ -8,7 +10,7 @@ using std::string;
 
 namespace SmartGridToolbox
 {
-   class ComponentInterface
+   class ComponentInterface : virtual public HasPropertiesInterface
    {
       friend std::ostream& operator<<(std::ostream& os, const ComponentInterface& comp);
 
@@ -16,12 +18,6 @@ namespace SmartGridToolbox
          virtual ~ComponentInterface() = default;
          virtual const std::string& id() const = 0;
          virtual const char* componentType() const = 0;
-
-         template<typename T> T& as()
-         {
-            return dynamic_cast<T&>(*this);
-         }
-
       protected:
          virtual void print(std::ostream& os) const = 0;
    };
@@ -32,7 +28,7 @@ namespace SmartGridToolbox
       return os;
    }
 
-   class Component : virtual public ComponentInterface
+   class Component : virtual public ComponentInterface, public HasProperties
    {
       public:
 
@@ -56,6 +52,7 @@ namespace SmartGridToolbox
          
          virtual const std::string& id() const override {return id_;}
          void setId(const std::string& id) {id_ = id;}
+         SGT_PROP_GET_SET(id, Component, const std::string&, id, setId);
 
       /// @}
          

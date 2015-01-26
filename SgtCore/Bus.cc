@@ -67,12 +67,4 @@ namespace SmartGridToolbox
       os << "V_mag_max: " << VMagMax() << std::endl;
       os << "V: " << V() << std::endl;
    }
-      
-   template<> Properties<Bus>::Properties()
-   {
-      typedef arma::Col<Complex> VType;
-      add<const VType&>("V",
-            [] (const Bus& bus) -> const VType& {return bus.V();},
-            [] (Bus& bus, const VType& V) -> void {bus.setV(V);});
-   }
 }
