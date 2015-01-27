@@ -120,6 +120,16 @@ namespace SmartGridToolbox
             }
             propT->set(val);
          }
+
+         virtual std::string string()
+         {
+            throw NoGetterException();
+         }
+
+         virtual void setFromString(const std::string& str)
+         {
+            throw NoSetterException();
+         }
    };
    
    template<typename Targ, typename T, template<typename> class GetBy>
@@ -176,6 +186,16 @@ namespace SmartGridToolbox
                throw NoSetterException();
             }
             setter_->set(*targ_, val);
+         }
+
+         virtual std::string string()
+         {
+            return toYamlString(get());
+         }
+         
+         virtual void setFromString(const std::string& str) override
+         {
+            set(fromYamlString<T>(str)); 
          }
 
       private:
