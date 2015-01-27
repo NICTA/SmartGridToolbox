@@ -10,9 +10,9 @@
 #include<sstream>
 #include<vector>
 
-#define SGT_PROP_GET(name, Targ, T, GetBy, get) Property<Targ, T, GetBy> name##_Prop_{#name, this, [](const Targ& targ)->GetBy<T>{return targ.get();}}
-#define SGT_PROP_SET(name, Targ, T, set) Property<Targ, T, GetByNone> name##_Prop_{#name, this, [](Targ& targ, const T& val){targ.set(val);}}
-#define SGT_PROP_GET_SET(name, Targ, T, GetBy, get, set) Property<Targ, T, GetBy> name##_Prop_{#name, this, [](const Targ& targ)->GetBy<T>{return targ.get();}, [](Targ& targ, const T& val){targ.set(val);}}
+#define SGT_PROP_GET(name, Targ, T, GetBy, get) Property<Targ, T, GetBy> name##Prop{#name, this, [](const Targ& targ)->GetBy<T>{return targ.get();}}
+#define SGT_PROP_SET(name, Targ, T, set) Property<Targ, T, GetByNone> name##Prop{#name, this, [](Targ& targ, const T& val){targ.set(val);}}
+#define SGT_PROP_GET_SET(name, Targ, T, GetBy, get, set) Property<Targ, T, GetBy> name##Prop{#name, this, [](const Targ& targ)->GetBy<T>{return targ.get();}, [](Targ& targ, const T& val){targ.set(val);}}
 
 namespace SmartGridToolbox
 {
@@ -151,7 +151,6 @@ namespace SmartGridToolbox
             {
                throw BadGetByException();
             };
-
             targ->addProperty(key, this);
          }
          
@@ -208,13 +207,12 @@ namespace SmartGridToolbox
    {
       public:
          using PropMap = std::map<std::string, PropCommon*>;
+         using ConstPropMap = std::map<std::string, const PropCommon*>;
          virtual ~HasPropertiesInterface() = default;
          virtual const PropCommon* property(const std::string& key) const = 0;
          virtual PropCommon* property(const std::string& key) = 0;
-         virtual PropMap::iterator propertiesBegin() = 0;
-         virtual PropMap::iterator propertiesEnd() = 0;
-         virtual PropMap::const_iterator propertiesBegin() const = 0;
-         virtual PropMap::const_iterator propertiesEnd() const = 0;
+         virtual const PropMap& properties() = 0;
+         virtual ConstPropMap properties() const = 0;
    };
 
    class HasProperties : virtual public HasPropertiesInterface
@@ -222,6 +220,13 @@ namespace SmartGridToolbox
       template<typename Targ, typename T, template<typename> class GetBy> friend class Property;
 
       public:
+         HasProperties() = default;
+
+         HasProperties(const HasProperties& from)
+         {
+            // Take no action, because properties are designed to auto-add during creation of the derived class.
+         }
+
          virtual ~HasProperties() = default;
 
          virtual const PropCommon* property(const std::string& key) const override
@@ -234,26 +239,21 @@ namespace SmartGridToolbox
             return property_<PropCommon>(key);
          }
 
-         virtual PropMap::iterator propertiesBegin() override
+         virtual const PropMap& properties() override
          {
-            return map_.begin();
+            return map_;
          }
          
-         virtual PropMap::iterator propertiesEnd() override
+         virtual ConstPropMap properties() const override
          {
-            return map_.end();
+            ConstPropMap result;
+            for (auto p : map_)
+            {
+               result[p.first] = p.second;
+            }
+            return result;
          }
 
-         virtual PropMap::const_iterator propertiesBegin() const override
-         {
-            return map_.cbegin();
-         }
-         
-         virtual PropMap::const_iterator propertiesEnd() const override
-         {
-            return map_.cend();
-         }
-         
       private:
          template<typename Targ, typename T, template<typename> class GetBy>
          void addProperty(const std::string& key, Property<Targ, T, GetBy>* prop)
