@@ -3,6 +3,8 @@
 
 #include <SgtSim/Spline.h>
 
+#include <map>
+
 namespace SmartGridToolbox
 {
    /// @addtogroup Core

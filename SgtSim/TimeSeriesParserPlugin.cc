@@ -229,7 +229,6 @@ namespace SmartGridToolbox
             {
                assertFieldPresent(nd, "data_file");
                assertFieldPresent(nd, "interp_type");
-               assertFieldPresent(nd, "relative_to_time");
                assertFieldPresent(nd, "time_unit");
 
                std::string dataFName = parser.expand<std::string>(nd["data_file"]);
@@ -241,10 +240,14 @@ namespace SmartGridToolbox
 
                auto interpType = getInterpType(parser.expand<std::string>(nd["interp_type"]));
 
-               std::string relto = parser.expand<std::string>(nd["relative_to_time"]);
-
-               posix_time::ptime pt = posix_time::time_from_string(relto);
-               Time t0 = timeFromLocalTime(pt, sim.timezone());
+               Time t0 = posix_time::seconds(0);
+               auto ndRelto = nd["relative_to_time"];
+               if (ndRelto)
+               {
+                  std::string relto = parser.expand<std::string>(nd["relative_to_time"]);
+                  posix_time::ptime pt = posix_time::time_from_string(relto);
+                  t0 = timeFromLocalTime(pt, sim.timezone());
+               }
 
                double toSecs = getToSecsFactor(parser.expand<std::string>(nd["time_unit"]));
 
