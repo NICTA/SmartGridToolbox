@@ -10,41 +10,51 @@
 #include<sstream>
 #include<vector>
 
-#define SGT_PROP_GET(name, Targ, T, get) Property<Targ, T> name##_Prop{#name, this, [](const Targ& targ){return targ.get();}};
-#define SGT_PROP_SET(name, Targ, T, set) Property<Targ, T> name##_Prop{#name, this, [](Targ& targ, const T& val){targ.set(val);}};
-#define SGT_PROP_GET_SET(name, Targ, T, get, set) Property<Targ, T> name##_Prop{#name, this, [](const Targ& targ){return targ.get();}, [](Targ& targ, const T& val){targ.set(val);}};
+#define SGT_PROP_GET(name, Targ, T, GetBy, get) Property<Targ, T, GetBy> name##_Prop_{#name, this, [](const Targ& targ)->GetBy<T>{return targ.get();}}
+#define SGT_PROP_SET(name, Targ, T, set) Property<Targ, T, GetByNone> name##_Prop_{#name, this, [](Targ& targ, const T& val){targ.set(val);}}
+#define SGT_PROP_GET_SET(name, Targ, T, GetBy, get, set) Property<Targ, T, GetBy> name##_Prop_{#name, this, [](const Targ& targ)->GetBy<T>{return targ.get();}, [](Targ& targ, const T& val){targ.set(val);}}
 
 namespace SmartGridToolbox
 {
-   class NoGetterException : public std::domain_error
+   class NoGetterException : public std::logic_error
    {
       public:
-         NoGetterException() : std::domain_error("Property does not have a getter") {};
+         NoGetterException() : std::logic_error("Property does not have a getter") {};
    };
    
-   class NoSetterException : public std::domain_error
+   class NoSetterException : public std::logic_error
    {
       public:
-         NoSetterException() : std::domain_error("Property does not have a setter") {};
+         NoSetterException() : std::logic_error("Property does not have a setter") {};
+   };
+   
+   class BadTargetException : public std::logic_error
+   {
+      public:
+         BadTargetException() : std::logic_error("Property has the wrong target type for its target object") {};
+   };
+   
+   class BadGetByException : public std::logic_error
+   {
+      public:
+         BadGetByException() : std::logic_error("Property has the wrong get by type") {};
    };
 
-   class BadTargetException : public std::domain_error
+   template<class T> using GetByConstRef = const T&;
+   template<class T> using GetByVal = T;
+   template<class T> struct GetByNone {}; // Used if there is no getter. 
+
+   template<typename Targ, typename T, template<typename> class GetBy> class Getter
    {
       public:
-         BadTargetException() : std::domain_error("Property has the wrong target type for its target object") {};
-   };
-   
-   template<typename Targ, typename T> class Getter
-   {
-      public:
-         using Get = T (const Targ&);
+         using Get = GetBy<T> (const Targ&);
 
          Getter(Get getArg) : get_(getArg)
          {
             // Empty.
          }
 
-         T get(const Targ& targ) const
+         GetBy<T> get(const Targ& targ) const
          {
             return get_(targ);
          }
@@ -72,22 +82,28 @@ namespace SmartGridToolbox
          std::function<Set> set_;
    };
    
-   template<typename T> class PropertyInterface
+   template<typename T, template<typename> class GetBy> class PropertyGetterInterface
    {
       public:
-         virtual ~PropertyInterface() = default;
-         virtual T get() const = 0;
+         virtual ~PropertyGetterInterface() = default;
+         virtual GetBy<T> get() const = 0;
+   };
+   
+   template<typename T> class PropertySetterInterface
+   {
+      public:
+         virtual ~PropertySetterInterface() = default;
          virtual void set(const T& val) = 0;
    };
-  
+
    class PropCommon
    {
       public:
          virtual ~PropCommon() = default;
 
-         template<typename T> T get() const
+         template<typename T, template<typename> class GetBy> GetBy<T> get() const
          {
-            auto propT = dynamic_cast<const PropertyInterface<T>>(this);
+            auto propT = dynamic_cast<const PropertyGetterInterface<T, GetBy>>(this);
             if (propT == nullptr)
             {
                throw NoGetterException();
@@ -97,7 +113,7 @@ namespace SmartGridToolbox
 
          template<typename T> void set(const T& val)
          {
-            auto propT = dynamic_cast<PropertyInterface<T>>(this);
+            auto propT = dynamic_cast<PropertySetterInterface<T>>(this);
             if (propT == nullptr)
             {
                throw NoSetterException();
@@ -106,12 +122,13 @@ namespace SmartGridToolbox
          }
    };
    
-   template<typename Targ, typename T> class Property : public PropertyInterface<T>, public PropCommon
+   template<typename Targ, typename T, template<typename> class GetBy>
+   class Property : public PropCommon, public PropertyGetterInterface<T, GetBy>, public PropertySetterInterface<T>
    {
       public:
-         Property(const std::string& key, Targ* targ, typename Getter<Targ, T>::Get getArg) :
+         Property(const std::string& key, Targ* targ, typename Getter<Targ, T, GetBy>::Get getArg) :
             targ_(targ),
-            getter_(new Getter<Targ, T>(getArg))
+            getter_(new Getter<Targ, T, GetBy>(getArg))
          {
             targ->addProperty(key, this);
          }
@@ -120,13 +137,18 @@ namespace SmartGridToolbox
             targ_(targ),
             setter_(new Setter<Targ, T>(setArg))
          {
+            if (!std::is_same<GetBy<T>, GetByNone<T>>())
+            {
+               throw BadGetByException();
+            };
+
             targ->addProperty(key, this);
          }
          
          Property(const std::string& key, Targ* targ,
-               typename Getter<Targ, T>::Get getArg, typename Setter<Targ, T>::Set setArg) :
+               typename Getter<Targ, T, GetBy>::Get getArg, typename Setter<Targ, T>::Set setArg) :
             targ_(targ),
-            getter_(new Getter<Targ, T>(getArg)),
+            getter_(new Getter<Targ, T, GetBy>(getArg)),
             setter_(new Setter<Targ, T>(setArg))
          {
             targ->addProperty(key, this);
@@ -138,7 +160,7 @@ namespace SmartGridToolbox
             delete setter_;
          }
 
-         virtual T get() const override
+         virtual GetBy<T> get() const override
          {
             if (getter_ == nullptr)
             {
@@ -158,64 +180,63 @@ namespace SmartGridToolbox
 
       private:
          Targ* targ_;
-         Getter<Targ, T>* getter_{nullptr};
+         Getter<Targ, T, GetBy>* getter_{nullptr};
          Setter<Targ, T>* setter_{nullptr};
    };
 
-   class HasProperties
+   class HasPropertiesInterface
    {
-      template<typename Targ, typename T> friend class Property;
+      public:
+         using PropMap = std::map<std::string, PropCommon*>;
+         virtual ~HasPropertiesInterface() = default;
+         virtual const PropCommon* property(const std::string& key) const = 0;
+         virtual PropCommon* property(const std::string& key) = 0;
+         virtual PropMap::iterator propertiesBegin() = 0;
+         virtual PropMap::iterator propertiesEnd() = 0;
+         virtual PropMap::const_iterator propertiesBegin() const = 0;
+         virtual PropMap::const_iterator propertiesEnd() const = 0;
+   };
+
+   class HasProperties : virtual public HasPropertiesInterface
+   {
+      template<typename Targ, typename T, template<typename> class GetBy> friend class Property;
 
       public:
-
-         using PropMap = std::map<std::string, PropCommon*>;
-
          virtual ~HasProperties() = default;
 
-         const PropCommon* property(const std::string& key) const
+         virtual const PropCommon* property(const std::string& key) const override
          {
             return property_<PropCommon>(key);
          }
 
-         PropCommon* property(const std::string& key)
+         virtual PropCommon* property(const std::string& key) override
          {
             return property_<PropCommon>(key);
          }
 
-         template<typename T> const PropertyInterface<T>* property(const std::string& key) const
-         {
-            return property_<PropertyInterface<T>>(key);
-         };
-
-         template<typename T> PropertyInterface<T>* property(const std::string& key)
-         {
-            return property_<PropertyInterface<T>>(key);
-         };
-
-         PropMap::iterator propertiesBegin()
+         virtual PropMap::iterator propertiesBegin() override
          {
             return map_.begin();
          }
          
-         PropMap::iterator propertiesEnd()
+         virtual PropMap::iterator propertiesEnd() override
          {
             return map_.end();
          }
 
-         PropMap::const_iterator propertiesBegin() const
+         virtual PropMap::const_iterator propertiesBegin() const override
          {
             return map_.cbegin();
          }
          
-         PropMap::const_iterator propertiesEnd() const
+         virtual PropMap::const_iterator propertiesEnd() const override
          {
             return map_.cend();
          }
          
       private:
-
-         template<typename Targ, typename T>
-         void addProperty(const std::string& key, Property<Targ, T>* prop)
+         template<typename Targ, typename T, template<typename> class GetBy>
+         void addProperty(const std::string& key, Property<Targ, T, GetBy>* prop)
          {
             map_[key] = prop;
          }

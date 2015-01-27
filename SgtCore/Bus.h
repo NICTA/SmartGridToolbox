@@ -122,7 +122,7 @@ namespace SmartGridToolbox
          {
             return phases_;
          }
-         SGT_PROP_GET(phases, Bus, (const Phases&), phases);
+         SGT_PROP_GET(phases, Bus, Phases, GetByConstRef, phases);
 
          virtual arma::Col<Complex> VNom() const override
          {
