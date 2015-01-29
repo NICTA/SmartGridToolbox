@@ -10,15 +10,19 @@
 namespace SmartGridToolbox
 {
    /// @brief A single phase transmission line or transformer.
-   class CommonBranch : public BranchAbc
+   class CommonBranch : public Component, public BranchAbc
    {
       public:
+
+         SGT_PROPS_INIT(CommonBranch);
+         SGT_PROPS_INHERIT(CommonBranch, Component);
+         SGT_PROPS_INHERIT(CommonBranch, BranchAbc);
 
       /// @name Lifecycle:
       /// @{
 
          CommonBranch(const std::string& id) :
-            BranchAbc(id, Phase::BAL, Phase::BAL)
+            Component(id), BranchAbc(Phase::BAL, Phase::BAL)
          {
             // Empty.
          }
@@ -104,7 +108,7 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Overridden from BranchInterface:
+      /// @name Overridden from BranchAbc:
       /// @{
 
          virtual arma::Mat<Complex> inServiceY() const override;
@@ -113,7 +117,12 @@ namespace SmartGridToolbox
 
       protected:
 
+      /// @name Printing:
+      /// @{
+         
          virtual void print(std::ostream& os) const override;
+
+      /// @}
 
       private:
 

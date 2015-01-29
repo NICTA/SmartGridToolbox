@@ -8,9 +8,13 @@ namespace SmartGridToolbox
    /// @brief Wye-wye transformer.
    ///
    /// Equivalent to a single phase transformer on each phase.
-   class YyTransformer : public BranchAbc
+   class YyTransformer : public Component, public BranchAbc
    {
       public:
+
+         SGT_PROPS_INIT(YyTransformer);
+         SGT_PROPS_INHERIT(YyTransformer, Component);
+         SGT_PROPS_INHERIT(YyTransformer, BranchAbc);
 
       /// @name Lifecycle
       /// @{
@@ -19,7 +23,8 @@ namespace SmartGridToolbox
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
          YyTransformer(const std::string& id, Complex a, Complex ZL, Complex YM) :
-            BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
+            Component(id),
+            BranchAbc(Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
             a_(a),
             YL_(1.0 / ZL),
             YM_(YM)
@@ -83,6 +88,17 @@ namespace SmartGridToolbox
       /// @{
 
          virtual arma::Mat<Complex> inServiceY() const override;
+
+      /// @}
+
+      /// @name Printing:
+      /// @{
+         
+         virtual void print(std::ostream& os) const
+         {
+            // TODO: proper printing.
+            BranchAbc::print(os);
+         }
 
       /// @}
       

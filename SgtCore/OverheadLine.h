@@ -9,9 +9,13 @@ namespace SmartGridToolbox
    ///
    /// Consists of N + M wires, where N is the number of phases and M is the number of phases, and M is the number of
    /// extra grounded neutral wires that will be eliminated via the Kron reduction.
-   class OverheadLine : public BranchAbc
+   class OverheadLine : public Component, public BranchAbc
    {
       public:
+
+      SGT_PROPS_INIT(OverheadLine);
+      SGT_PROPS_INHERIT(OverheadLine, Component);
+      SGT_PROPS_INHERIT(OverheadLine, BranchAbc);
 
       /// @name Lifecycle:
       /// @{
@@ -60,6 +64,17 @@ namespace SmartGridToolbox
 
          arma::Mat<Complex> ZPhase(const arma::Mat<Complex>& ZWire) const;
          
+      /// @}
+
+      /// @name Printing:
+      /// @{
+         
+         virtual void print(std::ostream& os) const
+         {
+            // TODO: proper printing.
+            BranchAbc::print(os);
+         }
+
       /// @}
       
       private:

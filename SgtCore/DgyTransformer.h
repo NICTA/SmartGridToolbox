@@ -6,9 +6,13 @@
 namespace SmartGridToolbox
 {
    /// @brief Delta-grounded wye transformer.
-   class DgyTransformer : public BranchAbc
+   class DgyTransformer : public Component, public BranchAbc
    {
       public:
+
+         SGT_PROPS_INIT(DgyTransformer);
+         SGT_PROPS_INHERIT(DgyTransformer, Component);
+         SGT_PROPS_INHERIT(DgyTransformer, BranchAbc);
 
       /// @name Lifecycle
       /// @{
@@ -17,7 +21,7 @@ namespace SmartGridToolbox
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
          DgyTransformer(const std::string& id, Complex nomVRatioDY, Complex offNomRatioDY, Complex ZL) :
-            BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
+            Component(id), BranchAbc(Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
             nomVRatioDY_(nomVRatioDY), offNomRatioDY_(offNomRatioDY), YL_(1.0/ZL)
          {
             // Empty.
@@ -84,6 +88,19 @@ namespace SmartGridToolbox
       /// @{
 
          virtual arma::Mat<Complex> inServiceY() const override;
+
+      /// @}
+         
+      protected:
+
+      /// @name Printing:
+      /// @{
+         
+         virtual void print(std::ostream& os) const
+         {
+            // TODO: proper printing.
+            BranchAbc::print(os);
+         }
 
       /// @}
 

@@ -6,9 +6,13 @@
 namespace SmartGridToolbox
 {
    /// @brief Single phase transformer.
-   class SinglePhaseTransformer : public BranchAbc
+   class SinglePhaseTransformer : public Component, public BranchAbc
    {
       public:
+
+         SGT_PROPS_INIT(SinglePhaseTransformer);
+         SGT_PROPS_INHERIT(SinglePhaseTransformer, Component);
+         SGT_PROPS_INHERIT(SinglePhaseTransformer, BranchAbc);
 
       /// @name Lifecycle
       /// @{
@@ -17,7 +21,7 @@ namespace SmartGridToolbox
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
          SinglePhaseTransformer(const std::string& id, Complex nomVRatio, Complex offNomRatio, Complex ZL) :
-            BranchAbc(id, Phase::BAL, Phase::BAL), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
+            Component(id), BranchAbc(Phase::BAL, Phase::BAL), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
          {
             // Empty.
          }
@@ -83,6 +87,17 @@ namespace SmartGridToolbox
       /// @{
 
          virtual arma::Mat<Complex> inServiceY() const override;
+
+      /// @}
+
+      /// @name Printing:
+      /// @{
+         
+         virtual void print(std::ostream& os) const
+         {
+            // TODO: proper printing.
+            BranchAbc::print(os);
+         }
 
       /// @}
 

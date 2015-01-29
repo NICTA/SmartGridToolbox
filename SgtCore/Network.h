@@ -18,8 +18,8 @@ namespace SmartGridToolbox
    class Arc;
    class Node;
 
-   typedef std::shared_ptr<const BranchInterface> ConstBranchPtr;
-   typedef std::shared_ptr<BranchInterface> BranchPtr;
+   typedef std::shared_ptr<const BranchAbc> ConstBranchPtr;
+   typedef std::shared_ptr<BranchAbc> BranchPtr;
    
    typedef std::shared_ptr<const BusInterface> ConstBusPtr;
    typedef std::shared_ptr<BusInterface> BusPtr;
