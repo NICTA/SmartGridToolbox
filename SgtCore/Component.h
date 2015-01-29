@@ -52,6 +52,7 @@ namespace SmartGridToolbox
       /// @{
          
          virtual const char* componentType() const override {return "component";}
+         SGT_PROP_GET(componentType, Component, const char*, GetByVal, componentType);
 
       /// @}
          

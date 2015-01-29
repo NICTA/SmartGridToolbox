@@ -11,12 +11,17 @@ namespace SmartGridToolbox
    template<typename T> std::string toYamlString(const T& t)
    {
       YAML::Emitter e;
-      return (e << YAML::Node(t)).c_str();
+      return (e << YAML::Flow << YAML::Node(t)).c_str();
    }
-   
+
    template<typename T> T fromYamlString(const std::string& s)
    {
       return YAML::Load(s).as<T>();
+   }
+   
+   template<> inline const char* fromYamlString(const std::string& s)
+   {
+      return YAML::Load(s).as<std::string>().c_str();
    }
 }
 
