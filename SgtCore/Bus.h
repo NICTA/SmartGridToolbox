@@ -98,6 +98,7 @@ namespace SmartGridToolbox
 
       public:
 
+         SGT_PROPS_INIT(Bus);
          SGT_PROPS_INHERIT(Bus, Component);
 
       /// @name Lifecycle:
