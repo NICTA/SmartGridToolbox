@@ -11,12 +11,7 @@ namespace SmartGridToolbox
    template<typename T> std::string toYamlString(const T& t)
    {
       YAML::Emitter e;
-      return (e << t).c_str();
-   }
-   
-   inline std::string toYamlString(const Complex& c)
-   {
-      return to_string(c);
+      return (e << YAML::Node(t)).c_str();
    }
    
    template<typename T> T fromYamlString(const std::string& s)
@@ -81,20 +76,6 @@ namespace YAML
       static Node encode(const arma::Mat<T>& from);
       static bool decode(const Node& nd, arma::Mat<T>& to);
    };
-
-   Emitter& operator<<(Emitter& out, const Complex& c);
-
-   template<typename T> Emitter& operator<<(Emitter& out, const arma::Col<T>& v) 
-   {
-      out << YAML::Flow;
-      out << YAML::BeginSeq;
-      for (size_t i = 0; i < v.size(); ++i)
-      {
-         out << v(i);
-      }
-      out << YAML::EndSeq;
-      return out;
-   }
 }
 
 #endif // YAML_SUPPORT_DOT_H

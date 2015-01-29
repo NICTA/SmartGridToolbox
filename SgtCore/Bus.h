@@ -94,11 +94,11 @@ namespace SmartGridToolbox
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
    class Bus : public Component, virtual public BusInterface, public HasProperties<Bus>
    {
-      SGT_PROPS_INHERIT(Bus, Component);
-
       friend class Network;
 
       public:
+
+         SGT_PROPS_INHERIT(Bus, Component);
 
       /// @name Lifecycle:
       /// @{

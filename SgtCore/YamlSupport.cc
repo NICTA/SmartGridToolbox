@@ -6,8 +6,7 @@ namespace YAML
 
    Node convert<Complex>::encode(const Complex& from)
    {
-      Node nd;
-      nd.push_back(to_string(from));
+      Node nd(to_string(from));
       return nd;
    }
 
@@ -19,8 +18,7 @@ namespace YAML
 
    Node convert<Phase>::encode(const Phase& from)
    {
-      Node nd;
-      nd.push_back(to_string(from));
+      Node nd(to_string(from));
       return nd;
    }
 
@@ -39,6 +37,7 @@ namespace YAML
       }
       return nd;
    }
+
    bool convert<Phases>::decode(const Node& nd, Phases& to)
    {
       if(!nd.IsSequence())
@@ -59,8 +58,7 @@ namespace YAML
 
    Node convert<BusType>::encode(const BusType& from)
    {
-      Node nd;
-      nd.push_back(to_string(from));
+      Node nd(to_string(from));
       return nd;
    }
 
@@ -72,8 +70,7 @@ namespace YAML
 
    Node convert<Time>::encode(const Time& from)
    {
-      Node nd;
-      nd.push_back(posix_time::to_simple_string(from));
+      Node nd(posix_time::to_simple_string(from));
       return nd;
    }
 
@@ -85,8 +82,7 @@ namespace YAML
 
    Node convert<posix_time::ptime>::encode(const posix_time::ptime& from)
    {
-      Node nd;
-      nd.push_back(posix_time::to_simple_string(from));
+      Node nd(posix_time::to_simple_string(from));
       return nd;
    }
 
@@ -94,12 +90,6 @@ namespace YAML
    {
       to = posix_time::time_from_string(nd.as<std::string>());
       return true;
-   }
-
-   YAML::Emitter& operator<<(YAML::Emitter& out, const Complex& c)
-   {
-      out << YAML::Flow << SmartGridToolbox::to_string(c);
-      return out;
    }
 
    template<typename T> Node convert<arma::Col<T>>::encode(const arma::Col<T>& from)
@@ -159,13 +149,13 @@ namespace YAML
          int nrows = nd.size();
          if (nrows == 0)
          {
-            std::cerr << "Matrix has zero rows in yaml." << std::endl;
+            std::cerr << "Matrix has no rows in yaml." << std::endl;
             return false;
          }
          int ncols = nd[0].size();
          if (ncols == 0)
          {
-            std::cerr << "Matrix has zero columns in yaml." << std::endl;
+            std::cerr << "Matrix has no columns in yaml." << std::endl;
             return false;
          }
          for (int i = 1; i < nrows; ++i)
