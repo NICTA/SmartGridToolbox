@@ -92,8 +92,10 @@ namespace SmartGridToolbox
    };
 
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
-   class Bus : public Component, virtual public BusInterface
+   class Bus : public Component, virtual public BusInterface, public HasProperties<Bus>
    {
+      SGT_PROPS_INHERIT(Bus, Component);
+
       friend class Network;
 
       public:
@@ -129,10 +131,14 @@ namespace SmartGridToolbox
             return VNom_;
          }
 
+         SGT_PROP_GET(VNom, Bus, arma::Col<Complex>, GetByVal, VNom);
+
          virtual double VBase() const override
          {
             return VBase_;
          }
+
+         SGT_PROP_GET(VBase, Bus, double, GetByVal, VBase);
 
       /// @}
 
@@ -149,6 +155,8 @@ namespace SmartGridToolbox
             type_ = type;
             setpointChanged_.trigger();
          }
+
+         SGT_PROP_GET_SET(type, Bus, BusType, GetByVal, type, setType);
 
          virtual arma::Col<double> VMagSetpoint() const override
          {

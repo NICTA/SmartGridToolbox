@@ -34,8 +34,10 @@ namespace SmartGridToolbox
       return os;
    }
 
-   class Component : virtual public ComponentInterface, public HasProperties
+   class Component : virtual public ComponentInterface, public HasProperties<Component>
    {
+      SGT_PROPS_INIT(Component);
+
       public:
 
       /// @name Lifecycle:
