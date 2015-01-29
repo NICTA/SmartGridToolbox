@@ -10,15 +10,15 @@
 #include<sstream>
 #include<vector>
 
-#define SGT_INIT_PROPERTIES(Targ) virtual std::map<std::string, std::shared_ptr<PropertyBase>>& map() override {return HasProperties<Targ>::sMap();}
+#define SGT_PROPS_INIT(Targ) virtual const std::map<std::string, std::shared_ptr<PropertyBase>>& properties() const override {return HasProperties<Targ>::sMap();}; virtual std::map<std::string, std::shared_ptr<PropertyBase>>& properties() override {return HasProperties<Targ>::sMap();}
 
-#define SGT_INHERIT_PROPERTIES(Targ, Base) SGT_INIT_PROPERTIES(Targ); struct Inherit {Inherit(){auto& targMap = HasProperties<Targ>::sMap(); auto& baseMap = HasProperties<Base>::sMap(); for (auto& elem : baseMap) {targMap[elem.first] = elem.second;}}}; struct DoInherit {DoInherit(){static Inherit _;}} inherit
+#define SGT_PROPS_INHERIT(Targ, Base) SGT_PROPS_INIT(Targ); struct Inherit {Inherit(){auto& targMap = HasProperties<Targ>::sMap(); auto& baseMap = HasProperties<Base>::sMap(); for (auto& elem : baseMap) {targMap[elem.first] = elem.second;}}}; struct DoInherit {DoInherit(){static Inherit _;}} inherit
 
-#define SGT_PROPERTY_GET(name, Targ, T, GetBy, getter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T, GetBy>>(std::unique_ptr<Getter<Targ, T, GetBy>>(new Getter<Targ, T, GetBy>([](const Targ& targ)->T{return targ.getter();})), nullptr);}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name;
+#define SGT_PROP_GET(name, Targ, T, GetBy, getter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T, GetBy>>(std::unique_ptr<Getter<Targ, T, GetBy>>(new Getter<Targ, T, GetBy>([](const Targ& targ)->GetBy<T>{return targ.getter();})), nullptr);}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name;
 
-#define SGT_PROPERTY_SET(name, Targ, T, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T, GetByNone>>(std::unique_ptr<Setter<Targ, T>>(nullptr, new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter();})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
+#define SGT_PROP_SET(name, Targ, T, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T, GetByNone>>(std::unique_ptr<Setter<Targ, T>>(nullptr, new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
 
-#define SGT_PROPERTY_GET_SET(name, Targ, T, GetBy, getter, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<<T, GetBy>>(std::unique_ptr<Getter<Targ, T, GetBy>>(new Getter<Targ, T, GetBy>([](const Targ& targ)->T{return targ.name();})), std::unique_ptr<Setter<Targ, T>>(new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter();})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
+#define SGT_PROP_GET_SET(name, Targ, T, GetBy, getter, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T, GetBy>>(std::unique_ptr<Getter<Targ, T, GetBy>>(new Getter<Targ, T, GetBy>([](const Targ& targ)->GetBy<T>{return targ.name();})), std::unique_ptr<Setter<Targ, T>>(new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
 
 namespace SmartGridToolbox
 {
@@ -26,7 +26,9 @@ namespace SmartGridToolbox
 
    class HasPropertiesInterface
    {
-      virtual std::map<std::string, std::shared_ptr<PropertyBase>>& map() = 0;
+      public:
+         virtual const std::map<std::string, std::shared_ptr<PropertyBase>>& properties() const = 0;
+         virtual std::map<std::string, std::shared_ptr<PropertyBase>>& properties() = 0;
    };
 
    template<typename Targ> class HasProperties : virtual public HasPropertiesInterface
@@ -117,12 +119,12 @@ namespace SmartGridToolbox
 
          virtual void set(HasPropertiesInterface& targ, const T& val) const override
          {
-            auto derived = dynamic_cast<Targ&>(targ);
+            auto derived = dynamic_cast<Targ*>(&targ);
             if (derived == nullptr)
             {
                throw BadTargException();
             }
-            set_(derived, val);
+            set_(*derived, val);
          }
 
          void set(Targ& targ, const T& val) const
