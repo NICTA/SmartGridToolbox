@@ -10,15 +10,15 @@
 #include<sstream>
 #include<vector>
 
-#define SGT_INIT_PROPERTIES(Targ) virtual std::map<std::string, std::unique_ptr<PropertyBase>>& map() override {return HasProperties<Targ>::sMap();}
+#define SGT_INIT_PROPERTIES(Targ) virtual std::map<std::string, std::shared_ptr<PropertyBase>>& map() override {return HasProperties<Targ>::sMap();}
 
-#define SGT_INHERIT_PROPERTIES(Targ, Base) SGT_INIT_PROPERTIES(Targ); struct Inherit {Inherit(){auto& targMap = HasProperties<Targ>::sMap(); auto& baseMap = HasProperties<Base>::sMap(); for (auto elem : baseMap) {targMap[elem.first] = elem.second;}}}; struct DoInherit {DoInherit(){static Inherit _;}} inherit
+#define SGT_INHERIT_PROPERTIES(Targ, Base) SGT_INIT_PROPERTIES(Targ); struct Inherit {Inherit(){auto& targMap = HasProperties<Targ>::sMap(); auto& baseMap = HasProperties<Base>::sMap(); for (auto& elem : baseMap) {targMap[elem.first] = elem.second;}}}; struct DoInherit {DoInherit(){static Inherit _;}} inherit
 
-#define SGT_PROPERTY_GET(name, Targ, T, GetBy, getter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::unique_ptr<Property<T, GetBy>>(new Property<T, GetBy>(std::unique_ptr<Getter<Targ, T, GetBy>>(new Getter<Targ, T, GetBy>([](const Targ& targ)->T{return targ.getter();})), nullptr));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name;
+#define SGT_PROPERTY_GET(name, Targ, T, GetBy, getter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T, GetBy>>(std::unique_ptr<Getter<Targ, T, GetBy>>(new Getter<Targ, T, GetBy>([](const Targ& targ)->T{return targ.getter();})), nullptr);}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name;
 
-#define SGT_PROPERTY_SET(name, Targ, T, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::unique_ptr<Property<T, GetByNone>>(new Property<T, GetByNone>(std::unique_ptr<Setter<Targ, T>>(nullptr, new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter();}))));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
+#define SGT_PROPERTY_SET(name, Targ, T, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T, GetByNone>>(std::unique_ptr<Setter<Targ, T>>(nullptr, new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter();})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
 
-#define SGT_PROPERTY_GET_SET(name, Targ, T, GetBy, getter, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::unique_ptr<Property<T, GetBy>>(new Property<T, GetBy>(std::unique_ptr<Getter<Targ, T, GetBy>>(new Getter<Targ, T, GetBy>([](const Targ& targ)->T{return targ.name();})), std::unique_ptr<Setter<Targ, T>>(new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter();}))));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
+#define SGT_PROPERTY_GET_SET(name, Targ, T, GetBy, getter, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<<T, GetBy>>(std::unique_ptr<Getter<Targ, T, GetBy>>(new Getter<Targ, T, GetBy>([](const Targ& targ)->T{return targ.name();})), std::unique_ptr<Setter<Targ, T>>(new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter();})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
 
 namespace SmartGridToolbox
 {
@@ -26,15 +26,15 @@ namespace SmartGridToolbox
 
    class HasPropertiesInterface
    {
-      virtual std::map<std::string, std::unique_ptr<PropertyBase>>& map() = 0;
+      virtual std::map<std::string, std::shared_ptr<PropertyBase>>& map() = 0;
    };
 
    template<typename Targ> class HasProperties : virtual public HasPropertiesInterface
    {
       public:
-         static std::map<std::string, std::unique_ptr<PropertyBase>>& sMap()
+         static std::map<std::string, std::shared_ptr<PropertyBase>>& sMap()
          {
-            static std::map<std::string, std::unique_ptr<PropertyBase>> map;
+            static std::map<std::string, std::shared_ptr<PropertyBase>> map;
             return map;
          }
    };
