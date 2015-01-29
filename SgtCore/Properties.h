@@ -12,7 +12,7 @@
 
 #define SGT_PROPS_INIT(Targ) virtual const std::map<std::string, std::shared_ptr<PropertyBase>>& properties() const override {return HasProperties<Targ>::sMap();}; virtual std::map<std::string, std::shared_ptr<PropertyBase>>& properties() override {return HasProperties<Targ>::sMap();}
 
-#define SGT_PROPS_INHERIT(Targ, Base) SGT_PROPS_INIT(Targ); struct Inherit {Inherit(){auto& targMap = HasProperties<Targ>::sMap(); auto& baseMap = HasProperties<Base>::sMap(); for (auto& elem : baseMap) {targMap[elem.first] = elem.second;}}}; struct DoInherit {DoInherit(){static Inherit _;}} inherit
+#define SGT_PROPS_INHERIT(Targ, Base) struct Inherit ## Base {Inherit ## Base (){auto& targMap = HasProperties<Targ>::sMap(); auto& baseMap = HasProperties<Base>::sMap(); for (auto& elem : baseMap) {targMap[elem.first] = elem.second;}}}; struct DoInherit ## Base {DoInherit ## Base(){static Inherit ## Base inherit ## Base;}} doinherit ## Base
 
 #define SGT_PROP_GET(name, Targ, T, GetBy, getter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T, GetBy>>(std::unique_ptr<Getter<Targ, T, GetBy>>(new Getter<Targ, T, GetBy>([](const Targ& targ)->GetBy<T>{return targ.getter();})), nullptr);}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name;
 
