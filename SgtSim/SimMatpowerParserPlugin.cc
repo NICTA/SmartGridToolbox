@@ -19,18 +19,18 @@ namespace SmartGridToolbox
 
       for (auto& node : tempNetw.nodes())
       {
-         const Bus& bus = node->bus()->as<const Bus&>();
+         auto bus = dynamic_cast<const Bus&>(*node->bus());
          auto simBus = sim.newSimComponent<SimBus>(bus);
          simNetw->addNode(simBus);
          for (auto& gen : node->gens())
          {
-            const GenericGen& gGen = gen->as<const GenericGen&>();
+            auto gGen = dynamic_cast<const GenericGen&>(*gen);
             auto simGen = sim.newSimComponent<SimGenericGen>(gGen);
             simNetw->addGen(simGen, bus.id());
          }
          for (auto& zip : node->zips())
          {
-            const GenericZip& gZip = zip->as<const GenericZip&>();
+            auto gZip = dynamic_cast<const GenericZip&>(*zip);
             auto simZip = sim.newSimComponent<SimGenericZip>(gZip);
             simNetw->addZip(simZip, bus.id());
          }
@@ -38,7 +38,7 @@ namespace SmartGridToolbox
       
       for (auto& arc : tempNetw.arcs())
       {
-         const CommonBranch& cBranch = arc->branch()->as<const CommonBranch&>();
+         auto cBranch = dynamic_cast<const CommonBranch&>(*arc->branch());
          auto branch = sim.newSimComponent<SimCommonBranch>(cBranch);
          simNetw->addArc(branch, arc->node0()->bus()->id(), arc->node1()->bus()->id());
       }

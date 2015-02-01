@@ -20,21 +20,22 @@ namespace SmartGridToolbox
       OFF
    };
 
-   class SimpleBuilding : public SimComponentAbc, public ZipAbc
+   class SimpleBuilding : public SimComponentAdaptor, public ZipAbc
    {
-      /// @name Overridden member functions from SimComponent.
+      /// @name Static member functions:
       /// @{
-      
+         
       public:
-         virtual Time validUntil() const override {return lastUpdated() + dt_;}
 
-      protected:
-         virtual void initializeState() override;
-         virtual void updateState(Time t) override;
+         static const std::string& sComponentType()
+         {
+            static std::string result("simple_building");
+            return result;
+         }
       
       /// @}
       
-      /// @name My public member functions.
+      /// @name Lifecycle:
       /// @{
       
       public:
@@ -60,16 +61,41 @@ namespace SmartGridToolbox
          {
          }
 
-         static constexpr const char* sComponentType()
-         {
-            return "simple_building";
-         }
+      /// @}
+      
+      /// @name ComponentInterface virtual overridden functions.
+      /// @{
+        
+      public:
 
-         virtual const char* componentType() const override
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
 
+         // virtual void print(std::ostream& os) const override; TODO
+
+      /// @}
+      
+      /// @name Overridden member functions from SimComponent.
+      /// @{
+      
+      public:
+
+         virtual Time validUntil() const override {return lastUpdated() + dt_;}
+
+      protected:
+
+         virtual void initializeState() override;
+         virtual void updateState(Time t) override;
+      
+      /// @}
+      
+      /// @name SimpleBuilding specific member functions.
+      /// @{
+
+      public:
+         
          virtual arma::Col<Complex> SConst() const
          {
             return {Complex(-Ph_, 0.0)};

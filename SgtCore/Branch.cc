@@ -4,7 +4,8 @@
 
 namespace SmartGridToolbox
 {
-   BranchAbc::BranchAbc(const Phases& phases0, const Phases& phases1) :
+   BranchAbc::BranchAbc(const std::string & id, const Phases& phases0, const Phases& phases1) :
+      Component(id),
       phases0_(phases0),
       phases1_(phases1),
       isInService_(true)
@@ -14,7 +15,7 @@ namespace SmartGridToolbox
    
    void BranchAbc::print(std::ostream& os) const
    {
-      ComponentInterface::print(os);
+      Component::print(os);
       StreamIndent _(os);
       os << "phases0: " << phases0() << std::endl;
       os << "phases1: " << phases1() << std::endl;

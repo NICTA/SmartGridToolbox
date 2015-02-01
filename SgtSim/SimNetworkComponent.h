@@ -16,7 +16,7 @@
 
 namespace SmartGridToolbox
 {
-   class SimBus : public SimComponentAbc, public Bus 
+   class SimBus : public SimComponentAdaptor, public Bus 
    {
       public:
          SimBus(const Bus& bus) :
@@ -25,7 +25,7 @@ namespace SmartGridToolbox
             // Empty.
          }
    };
-   class SimCommonBranch : public SimComponentAbc, public CommonBranch
+   class SimCommonBranch : public SimComponentAdaptor, public CommonBranch
    {
       public:
          SimCommonBranch(const CommonBranch& branch) :
@@ -34,7 +34,7 @@ namespace SmartGridToolbox
             // Empty.
          }
    };
-   class SimDgyTransformer : public SimComponentAbc, public DgyTransformer
+   class SimDgyTransformer : public SimComponentAdaptor, public DgyTransformer
    {
       public:
          SimDgyTransformer(const DgyTransformer& dgy) :
@@ -43,7 +43,7 @@ namespace SmartGridToolbox
             // Empty.
          }
    };
-   class SimGenericBranch : public SimComponentAbc, public GenericBranch
+   class SimGenericBranch : public SimComponentAdaptor, public GenericBranch
    {
       public:
          SimGenericBranch(const GenericBranch& branch) :
@@ -52,7 +52,7 @@ namespace SmartGridToolbox
             // Empty.
          }
    };
-   class SimGenericGen : public SimComponentAbc, public GenericGen
+   class SimGenericGen : public SimComponentAdaptor, public GenericGen
    {
       public:
          SimGenericGen(const GenericGen& gen) :
@@ -61,7 +61,7 @@ namespace SmartGridToolbox
             // Empty.
          }
    };
-   class SimGenericZip : public SimComponentAbc, public GenericZip
+   class SimGenericZip : public SimComponentAdaptor, public GenericZip
    {
       public:
          SimGenericZip(const GenericZip& zip) :
@@ -70,7 +70,7 @@ namespace SmartGridToolbox
             // Empty.
          }
    };
-   class SimOverheadLine : public SimComponentAbc, public OverheadLine
+   class SimOverheadLine : public SimComponentAdaptor, public OverheadLine
    {
       public:
          SimOverheadLine(const OverheadLine& ohl) :
@@ -79,7 +79,7 @@ namespace SmartGridToolbox
             // Empty.
          }
    };
-   class SimSinglePhaseTransformer : public SimComponentAbc, public SinglePhaseTransformer
+   class SimSinglePhaseTransformer : public SimComponentAdaptor, public SinglePhaseTransformer
    {
       public:
          SimSinglePhaseTransformer(const SinglePhaseTransformer& trans) :
@@ -88,7 +88,7 @@ namespace SmartGridToolbox
             // Empty.
          }
    };
-   class SimYyTransformer : public SimComponentAbc, public YyTransformer
+   class SimYyTransformer : public SimComponentAdaptor, public YyTransformer
    {
       public:
          SimYyTransformer(const YyTransformer& trans) :

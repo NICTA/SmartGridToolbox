@@ -12,20 +12,25 @@ namespace SmartGridToolbox
 {
    class ComponentInterface : virtual public HasPropertiesInterface
    {
-      friend std::ostream& operator<<(std::ostream& os, const ComponentInterface& comp);
-
       public:
+
+      /// @name Lifecycle:
+      /// @{
+         
          virtual ~ComponentInterface() = default;
+
+      /// @}
+        
+      /// @name Pure virtual fuctions (to be overridden):
+      /// @{
+         
          virtual const std::string& id() const = 0;
-         virtual const char* componentType() const = 0;
 
-         template<typename T> T& as()
-         {
-            return dynamic_cast<T&>(*this);
-         }
+         virtual const std::string& componentType() const = 0;
 
-      protected:
          virtual void print(std::ostream& os) const = 0;
+
+      /// @}
    };
 
    inline std::ostream& operator<<(std::ostream& os, const ComponentInterface& comp)
@@ -34,43 +39,52 @@ namespace SmartGridToolbox
       return os;
    }
 
-   class Component : virtual public ComponentInterface, public HasProperties<Component>
+   class Component : virtual public ComponentInterface
    {
-      SGT_PROPS_INIT(Component);
-
       public:
+
+         SGT_PROPS_INIT(Component);
+
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("component");
+            return result;
+         }
+      
+      /// @}
 
       /// @name Lifecycle:
       /// @{
          
-         Component(const std::string& id) : id_(id) {}
-         virtual ~Component() = default;
+         Component(const std::string& id) :
+            id_(id)
+         {
+            // Empty.
+         }
+
+         SGT_PROP_GET(id, Component, std::string, GetByConstRef, id);
 
       /// @}
 
-      /// @name Component Type:
+      /// @name ComponentInterface virtual overridden functions.
       /// @{
-         
-         virtual const char* componentType() const override {return "component";}
-         SGT_PROP_GET(componentType, Component, const char*, GetByVal, componentType);
+        
+         virtual const std::string& id() const
+         {
+            return id_;
+         }
 
-      /// @}
-         
-      /// @name Id:
-      /// @{
-         
-         virtual const std::string& id() const override {return id_;}
-         void setId(const std::string& id) {id_ = id;}
-         SGT_PROP_GET_SET(id, Component, std::string, GetByConstRef, id, setId);
+         virtual const std::string& componentType() const override
+         {
+            return sComponentType();
+         }
 
-      /// @}
-         
-      protected:
+         SGT_PROP_GET(componentType, Component, std::string, GetByConstRef, componentType);
 
-      /// @name Printing:
-      /// @{
-         
-         virtual void print(std::ostream& os) const
+         virtual void print(std::ostream& os) const override
          {
             os << componentType() << ": " << id() << ":" << std::endl;
          }
@@ -78,8 +92,7 @@ namespace SmartGridToolbox
       /// @}
 
       private:
-
-         std::string id_ = "UNDEFINED";
+         std::string id_;
    };
 }
 

@@ -15,22 +15,22 @@ namespace SmartGridToolbox
 
    class Weather : public RegularUpdateComponent
    {
-      /// @name Overridden member functions from SimComponent.
+      /// @name Static member functions:
       /// @{
-      
+         
       public:
-         // virtual Time validUntil() const override;
 
-      protected:
-         // virtual void initializeState() override;
-         virtual void updateState(Time t) override;
+         static const std::string& sComponentType()
+         {
+            static std::string result("weather");
+            return result;
+         }
       
       /// @}
 
-      /// @name My member functions.
+      /// @name Lifecycle:
       /// @{
-     
-      public:
+         
          Weather(const std::string& id) :
             RegularUpdateComponent(id, posix_time::minutes(5)),
             latLong_(Greenwich),
@@ -40,15 +40,38 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         static constexpr const char* sComponentType()
-         {
-            return "weather";
-         }
+      /// @name ComponentInterface virtual overridden functions.
+      /// @{
+        
+      public:
 
-         virtual const char* componentType() const override
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
+
+         // virtual void print(std::ostream& os) const override; TODO
+
+      /// @}
+
+      /// @name Overridden member functions from SimComponent.
+      /// @{
+      
+      public:
+
+         // virtual Time validUntil() const override;
+
+      protected:
+
+         // virtual void initializeState() override;
+         virtual void updateState(Time t) override;
+      
+      /// @}
+
+      /// @name Weather specific member functions.
+      /// @{
+     
+      public:
 
          void setLatLong(const LatLong& latLong) {latLong_ = latLong; needsUpdate().trigger();}
 

@@ -7,29 +7,30 @@
 
 namespace SmartGridToolbox
 {
-   class SimComponentAbc : virtual public ComponentInterface
+   class SimComponentAdaptor : virtual public ComponentInterface
    {
       public:
 
-      /// @name Lifecycle
-      /// @{
-     
-         SimComponentAbc() = default;
-
-         virtual ~SimComponentAbc() = default;
-
-      /// @}
-
-      /// @name Component Type:
+      /// @name Static member functions:
       /// @{
          
-         static constexpr const char* sComponentType()
+         static const std::string& sComponentType()
          {
-            return "sim_component";
+            static std::string result("sim_component");
+            return result;
          }
+      
+      /// @}
+
+      /// @name Lifecycle:
+      /// @{
+       
+         SimComponentAdaptor() = default;
+
+         virtual ~SimComponentAdaptor() = default;
 
       /// @}
-      
+
       /// @name Simulation flow
       /// @{
       
@@ -106,13 +107,13 @@ namespace SmartGridToolbox
       /// @name Dependencies.
       /// @{
 
-         const std::vector<std::weak_ptr<const SimComponentAbc>>& dependencies() const
+         const std::vector<std::weak_ptr<const SimComponentAdaptor>>& dependencies() const
          {
             return dependencies_;
          }
 
          /// @brief Components on which I depend will update first.
-         void dependsOn(std::shared_ptr<const SimComponentAbc> b)
+         void dependsOn(std::shared_ptr<const SimComponentAdaptor> b)
          {
             dependencies_.push_back(b);
          }
@@ -143,7 +144,7 @@ namespace SmartGridToolbox
 
          Time lastUpdated_{posix_time::not_a_date_time};
             ///< The time to which I am up to date
-         std::vector<std::weak_ptr<const SimComponentAbc>> dependencies_;
+         std::vector<std::weak_ptr<const SimComponentAdaptor>> dependencies_;
             ///< I depend on these.
          int rank_{-1};
             ///< Evaluation rank, based on weak ordering.
@@ -162,17 +163,26 @@ namespace SmartGridToolbox
    /// @brief A base class for SimComponents.
    ///
    /// Although most SimComponents will derive from this base class, some may not, due to multiple inheritance.
-   /// For example, we could in theory have class SimBus : public SimComponentAbc, public Bus which takes it's
+   /// For example, we could in theory have class SimBus : public SimComponentAdaptor, public Bus which takes it's
    /// ComponentInterface from Bus rather than Component. In actual fact, we prefer not to do this, so network
    /// components such as SimBus are modelled using composition rather than multiple inheritance. 
-   class SimComponent : public SimComponentAbc, public Component
+   class SimComponent : public SimComponentAdaptor, public Component
    {
       public:
+
          SimComponent(const std::string& id) : Component(id) {}
-         virtual const char* componentType() const override
+
+      /// @name ComponentInterface virtual overridden functions.
+      /// @{
+
+         virtual const std::string& componentType() const override
          {
-            return sComponentType();
+            return SimComponentAdaptor::sComponentType();
          }
+
+         // virtual void print(std::ostream& os) const override; // TODO
+      
+      /// @}
    };
 }
 

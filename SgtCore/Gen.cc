@@ -4,14 +4,6 @@
 
 namespace SmartGridToolbox
 {
-   GenAbc::GenAbc(const std::string& id, const Phases& phases) :
-      Component(id),
-      phases_(phases),
-      isInService_(true)
-   {
-      // Empty.
-   }
-
    void GenAbc::print(std::ostream& os) const
    {
       Component::print(os);
@@ -27,12 +19,5 @@ namespace SmartGridToolbox
       os << "c0: " << c0() << std::endl;
       os << "c1: " << c1() << std::endl;
       os << "c2: " << c2() << std::endl;
-   }
-
-   GenericGen::GenericGen(const std::string& id, const Phases& phases) :
-      GenAbc(id, phases),
-      S_(phases.size(), arma::fill::zeros)
-   {
-      // Empty.
    }
 }

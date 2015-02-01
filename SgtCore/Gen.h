@@ -8,47 +8,84 @@
 
 namespace SmartGridToolbox
 {
-   /// @brief Abstract interface for a generation at a bus.
-   class GenInterface : virtual public ComponentInterface
+   /// @brief Common abstract base class for a generation at a bus.
+   ///
+   /// Implement some common functionality for convenience.
+   class GenAbc : public Component
    {
       public:
-      /// @brief Lifecycle:
-      /// @{
 
-         virtual ~GenInterface() = default;
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("gen");
+            return result;
+         }
       
       /// @}
-         
-      /// @name Component Type:
+
+      /// @name Lifecycle:
       /// @{
          
-         static constexpr const char* sComponentType()
+         GenAbc(const std::string& id, const Phases& phases) :
+            Component(id),
+            phases_(phases),
+            isInService_(true)
          {
-            return "gen";
+            // Empty.
          }
 
       /// @}
-      
-      /// @brief Phase accessors:
+
+      /// @name ComponentInterface virtual overridden functions.
       /// @{
          
-         virtual const Phases& phases() const = 0;
-        
+         virtual const std::string& componentType() const override
+         {
+            return sComponentType();
+         }
+
+         virtual void print(std::ostream& os) const override;
+
       /// @}
- 
+         
+      /// @name Phase accessors:
+      /// @{
+         
+         virtual const Phases& phases() const
+         {
+            return phases_;
+         }
+         
+      /// @}
+      
       /// @name In service:
       /// @{
          
-         virtual bool isInService() const = 0;
-         virtual void setIsInService(bool isInService) = 0;
+         virtual bool isInService() const
+         {
+            return isInService_;
+         }
+
+         virtual void setIsInService(bool isInService)
+         {
+            isInService_ = isInService;
+         }
 
       /// @}
-      
+  
       /// @name Power injection:
       /// @{
 
-         virtual arma::Col<Complex> S() const = 0;
+         virtual arma::Col<Complex> S() const final
+         {
+            return isInService_ ? inServiceS() : arma::Col<Complex>(phases_.size());
+         }
+
          virtual arma::Col<Complex> inServiceS() const = 0;
+
          virtual void setInServiceS(const arma::Col<Complex>& S) = 0; 
 
       /// @}
@@ -56,7 +93,11 @@ namespace SmartGridToolbox
       /// @name Moment of inertia:
       /// @{
 
-         virtual double J() const = 0;
+         virtual double J() const final
+         {
+            return isInService_ ? inServiceJ() : 0.0;
+         }
+
          virtual double inServiceJ() const = 0;
 
       /// @}
@@ -90,120 +131,27 @@ namespace SmartGridToolbox
          virtual void setC2(double c2) = 0;
    
       /// @}
-      
-      /// @name Events.
-      /// @{
-         
-         /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() = 0;
-         
-         /// @brief Event triggered when I go in or out of service.
-         virtual Event& generationChanged() = 0;
-
-         /// @brief Event triggered when I go in or out of service.
-         virtual Event& setpointChanged() = 0;
-
-      /// @}
-   };
-
-   /// @brief Common abstract base class for a generation at a bus.
-   ///
-   /// Implement some common functionality for convenience.
-   class GenAbc : public Component, virtual public GenInterface
-   {
-      public:
-
-      /// @name Lifecycle:
-      /// @{
-         
-         GenAbc(const std::string& id, const Phases& phases);
-
-      /// @}
-         
-      /// @name Component Type:
-      /// @{
-         
-         virtual const char* componentType() const override
-         {
-            return sComponentType();
-         }
-      
-      /// @}
-
-      /// @name Phase accessors:
-      /// @{
-         
-         virtual const Phases& phases() const override
-         {
-            return phases_;
-         }
-         
-      /// @}
-      
-      /// @name In service:
-      /// @{
-         
-         virtual bool isInService() const override
-         {
-            return isInService_;
-         }
-
-         virtual void setIsInService(bool isInService) override
-         {
-            isInService_ = isInService;
-         }
-
-      /// @}
-  
-      /// @name Power injection:
-      /// @{
-
-         virtual arma::Col<Complex> S() const final override
-         {
-            return isInService_ ? inServiceS() : arma::Col<Complex>(phases_.size());
-         }
-
-      /// @}
-       
-      /// @name Moment of inertia:
-      /// @{
-
-         virtual double J() const final override
-         {
-            return isInService_ ? inServiceJ() : 0.0;
-         }
-
-      /// @}
     
       /// @name Events.
       /// @{
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() override
+         virtual Event& isInServiceChanged()
          {
             return isInServiceChanged_;
          }
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& generationChanged() override
+         virtual Event& generationChanged()
          {
             return generationChanged_;
          }
 
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& setpointChanged() override
+         virtual Event& setpointChanged()
          {
             return setpointChanged_;
          }
-
-      /// @}
-      
-      /// @name Printing.
-      /// @{
-      
-      protected:
-         
-         virtual void print(std::ostream& os) const override;
 
       /// @}
       
@@ -222,25 +170,38 @@ namespace SmartGridToolbox
    {
       public:
 
-      /// @name Lifecycle:
+      /// @name Static member functions:
       /// @{
          
-         GenericGen(const std::string& id, const Phases& phases);
+         static const std::string& sComponentType()
+         {
+            static std::string result("generic_gen");
+            return result;
+         }
+      
+      /// @}
+
+      /// @name Lifecycle:
+      /// @{
+
+         GenericGen(const std::string& id, const Phases& phases) :
+            GenAbc(id, phases),
+            S_(phases.size(), arma::fill::zeros)
+         {
+            // Empty.
+         }
 
       /// @}
 
-      /// @name Component Type:
+      /// @name ComponentInterface virtual overridden functions.
       /// @{
-         
-         static constexpr const char* sComponentType()
-         {
-            return "generic_gen";
-         }
 
-         virtual const char* componentType() const override
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
+
+         // virtual void print(std::ostream& os) const override; // TODO
 
       /// @}
 
@@ -371,9 +332,7 @@ namespace SmartGridToolbox
          {
             c2_ = c2;
          }
-   
-      /// @}
-      
+  
       private:
 
          arma::Col<Complex> S_;

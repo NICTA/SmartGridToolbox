@@ -21,14 +21,14 @@ namespace SmartGridToolbox
    typedef std::shared_ptr<const BranchAbc> ConstBranchPtr;
    typedef std::shared_ptr<BranchAbc> BranchPtr;
    
-   typedef std::shared_ptr<const BusInterface> ConstBusPtr;
-   typedef std::shared_ptr<BusInterface> BusPtr;
+   typedef std::shared_ptr<const Bus> ConstBusPtr;
+   typedef std::shared_ptr<Bus> BusPtr;
 
-   typedef std::shared_ptr<const GenInterface> ConstGenPtr;
-   typedef std::shared_ptr<GenInterface> GenPtr;
+   typedef std::shared_ptr<const GenAbc> ConstGenPtr;
+   typedef std::shared_ptr<GenAbc> GenPtr;
 
-   typedef std::shared_ptr<const ZipInterface> ConstZipPtr;
-   typedef std::shared_ptr<ZipInterface> ZipPtr;
+   typedef std::shared_ptr<const ZipAbc> ConstZipPtr;
+   typedef std::shared_ptr<ZipAbc> ZipPtr;
    
    typedef std::shared_ptr<const Node> ConstNodePtr;
    typedef std::shared_ptr<Node> NodePtr;
@@ -108,6 +108,17 @@ namespace SmartGridToolbox
    {
       public:
 
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("network");
+            return result;
+         }
+      
+      /// @}
+
       /// @name Lifecycle:
       /// @{
          
@@ -115,18 +126,15 @@ namespace SmartGridToolbox
 
       /// @}
       
-      /// @name Component Type:
+      /// @name ComponentInterface virtual overridden functions.
       /// @{
-         
-         static constexpr const char* sComponentType()
-         {
-            return "network";
-         }
 
-         virtual const char* componentType() const override
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
+
+         virtual void print(std::ostream& os) const override;
 
       /// @}
 
@@ -209,7 +217,7 @@ namespace SmartGridToolbox
          }
          GenPtr gen(const std::string& id)
          {
-            return std::const_pointer_cast<GenInterface>((static_cast<const Network*>(this))->gen(id));
+            return std::const_pointer_cast<GenAbc>((static_cast<const Network*>(this))->gen(id));
          }
          virtual void addGen(GenPtr gen, const std::string& busId);
 
@@ -224,7 +232,7 @@ namespace SmartGridToolbox
          }
          ZipPtr zip(const std::string& id)
          {
-            return std::const_pointer_cast<ZipInterface>((static_cast<const Network*>(this))->zip(id));
+            return std::const_pointer_cast<ZipAbc>((static_cast<const Network*>(this))->zip(id));
          }
          virtual void addZip(ZipPtr zip, const std::string& busId);
 
@@ -286,10 +294,6 @@ namespace SmartGridToolbox
          virtual void solvePowerFlow();
          
       /// @}
-      
-      protected:
-
-         virtual void print(std::ostream& os) const override;
       
       private:
          double PBase_ = 1.0;

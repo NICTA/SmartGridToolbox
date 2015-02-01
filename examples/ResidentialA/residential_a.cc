@@ -1,3 +1,6 @@
+#include "Appliance.h"
+#include "ApplianceParserPlugin.h"
+
 #include <SgtCore.h>
 #include <SgtSim.h>
 
@@ -26,6 +29,15 @@ arma::Col<Complex> symComps(arma::Col<Complex> v)
       }
    }
    return result;
+}
+
+namespace SmartGridToolbox
+{
+   class Simulation;
+   template<> void registerParserPlugins<Simulation>(Parser<Simulation>& p)
+   {
+      p.registerParserPlugin<ApplianceParserPlugin>();
+   }
 }
 
 int main(int argc, const char** argv)

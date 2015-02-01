@@ -6,7 +6,7 @@
 namespace SmartGridToolbox
 {
    /// @brief Utility base class for a component that updates with a regular "tick" dt.
-   class RegularUpdateComponentAbc : public SimComponentAbc
+   class RegularUpdateComponentAdaptor : public SimComponentAdaptor
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
@@ -27,14 +27,9 @@ namespace SmartGridToolbox
       /// @{
       
       public:
-         RegularUpdateComponentAbc(const Time& dt) : dt_(dt)
+         RegularUpdateComponentAdaptor(const Time& dt) : dt_(dt)
          {
             needsUpdate().trigger(); // First update is at the start.
-         }
-
-         static constexpr const char* sComponentType()
-         {
-            return "regular_update_component";
          }
 
          Time dt() const
@@ -53,20 +48,39 @@ namespace SmartGridToolbox
          Time dt_;
    };
 
-   class RegularUpdateComponent : public RegularUpdateComponentAbc, public Component
+   class RegularUpdateComponent : public RegularUpdateComponentAdaptor, public Component
    {
       public:
+
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("component");
+            return result;
+         }
+      
+      /// @}
+         
          RegularUpdateComponent(const std::string& id, const Time& dt) : 
-            RegularUpdateComponentAbc(dt),
+            RegularUpdateComponentAdaptor(dt),
             Component(id)
          {
             // Empty.
          }
-         
-         virtual const char* componentType() const override
+
+      /// @name ComponentInterface virtual overridden functions.
+      /// @{
+        
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
+
+         // virtual void print(std::ostream& os) const override; TODO
+
+      /// @}
    };
 }
 

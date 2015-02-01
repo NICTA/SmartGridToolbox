@@ -10,72 +10,22 @@
 namespace SmartGridToolbox
 {
    /// @brief A Zip is an injection into a bus with constant impedance / current / complex power components.
-   class ZipInterface : virtual public ComponentInterface
-   {
-      public:
-      
-      /// @name Lifecycle:
-      /// @{
-
-         virtual ~ZipInterface() {}
-
-      /// @}
-         
-      /// @name Component Type:
-      /// @{
-         
-         static constexpr const char* sComponentType()
-         {
-            return "zip";
-         }
-
-      /// @}
-
-      /// @name Phases:
-      /// @{
- 
-         virtual const Phases& phases() const = 0;
-      
-      /// @}
-         
-      /// @name In service:
-      /// @{
-         
-         virtual bool isInService() const = 0;
-         virtual void setIsInService(bool isInService) = 0;
-
-      /// @}
-      
-      /// @name ZIP parameters:
-      /// @{
-      
-         virtual arma::Col<Complex> YConst() const = 0;
-         virtual arma::Col<Complex> IConst() const = 0;
-         virtual arma::Col<Complex> SConst() const = 0;
-
-      /// @}
-       
-      /// @name Events.
-      /// @{
-         
-         /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() = 0;
-         
-         /// @brief Event triggered when I go in or out of service.
-         virtual Event& injectionChanged() = 0;
-
-         /// @brief Event triggered when I go in or out of service.
-         virtual Event& setpointChanged() = 0;
-
-      /// @}
-   };
-
-   /// @brief Common abstract base class for a ZIP at a bus.
    ///
    /// Implement some common functionality for convenience.
-   class ZipAbc : public Component, virtual public ZipInterface
+   class ZipAbc : public Component
    {
       public:
+
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("zip");
+            return result;
+         }
+      
+      /// @}
       
       /// @name Lifecycle:
       /// @{
@@ -83,21 +33,23 @@ namespace SmartGridToolbox
          ZipAbc(const std::string& id, const Phases& phases) : Component(id), phases_(phases) {}
 
       /// @}
-         
-      /// @name Component Type:
+            
+      /// @name ComponentInterface virtual overridden functions.
       /// @{
-         
-         virtual const char* componentType() const override
+        
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
-      
-      /// @}
 
-      /// @name Basic identity and type:
+         virtual void print(std::ostream& os) const override;
+
+      /// @}
+         
+      /// @name Phases
       /// @{
  
-         virtual const Phases& phases() const override
+         virtual const Phases& phases() const
          {
             return phases_;
          }
@@ -107,12 +59,12 @@ namespace SmartGridToolbox
       /// @name In service:
       /// @{
          
-         virtual bool isInService() const override
+         virtual bool isInService() const
          {
             return isInService_;
          }
 
-         virtual void setIsInService(bool isInService) override
+         virtual void setIsInService(bool isInService)
          {
             isInService_ = isInService;
          }
@@ -120,6 +72,9 @@ namespace SmartGridToolbox
       /// @}
               
       /// @name ZIP parameters:
+      ///
+      /// These are implemented for convenience, so subclasses don't have to reimplement them unless they have
+      /// a non-zero value.
       /// @{
          
          virtual arma::Col<Complex> YConst() const
@@ -143,28 +98,24 @@ namespace SmartGridToolbox
       /// @{
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() override
+         virtual Event& isInServiceChanged()
          {
             return isInServiceChanged_;
          }
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& injectionChanged() override
+         virtual Event& injectionChanged()
          {
             return injectionChanged_;
          }
 
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& setpointChanged() override
+         virtual Event& setpointChanged()
          {
             return setpointChanged_;
          }
 
       /// @}
-     
-      protected:
-
-         virtual void print(std::ostream& os) const override;
      
       private:
 
@@ -181,6 +132,17 @@ namespace SmartGridToolbox
    class GenericZip : public ZipAbc
    {
       public:
+
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("generic_zip");
+            return result;
+         }
+      
+      /// @}
       
       /// @name Lifecycle:
       /// @{
@@ -188,22 +150,19 @@ namespace SmartGridToolbox
          GenericZip(const std::string& id, const Phases& phases);
 
       /// @}
-
-      /// @name Component Type:
+ 
+      /// @name ComponentInterface virtual overridden functions.
       /// @{
-         
-         static constexpr const char* sComponentType()
-         {
-            return "generic_zip";
-         }
-
-         virtual const char* componentType() const override
+        
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
 
+         // virtual void print(std::ostream& os) const override; TODO
+
       /// @}
-            
+        
       /// @name ZIP parameters:
       /// @{
       
@@ -238,7 +197,7 @@ namespace SmartGridToolbox
          }
 
       /// @}
-         
+ 
       private:
 
          Phases phases_;

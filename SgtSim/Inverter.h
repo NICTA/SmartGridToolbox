@@ -10,24 +10,37 @@ namespace SmartGridToolbox
 {
    /// @brief DC power to n-phase AC converter.
    /// @ingroup PowerFlowCore
-   class InverterAbc : public SimComponentAbc, public ZipAbc
+   class InverterAbc : public SimComponentAdaptor, public ZipAbc
    {
       public:
+
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("inverter");
+            return result;
+         }
+      
+      /// @}
          
          InverterAbc(const std::string& id, const Phases& phases) : ZipAbc(id, phases)
          {
             // Empty.
          }
 
-         static constexpr const char* sComponentType()
-         {
-            return "inverter";
-         }
-
-         virtual const char* componentType() const override
+      /// @name ComponentInterface virtual overridden functions.
+      /// @{
+        
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
+
+         // virtual void print(std::ostream& os) const override; TODO
+
+      /// @}
 
          virtual arma::Col<Complex> YConst() const override
          {
@@ -66,6 +79,17 @@ namespace SmartGridToolbox
    {
       public:
 
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("inverter");
+            return result;
+         }
+      
+      /// @}
+
          Inverter(const std::string& id, const Phases& phases) :
             InverterAbc(id, phases),
             S_(phases.size(), arma::fill::zeros)
@@ -73,15 +97,17 @@ namespace SmartGridToolbox
             // Empty.
          }
 
-         static constexpr const char* sComponentType()
-         {
-            return "sim_inverter";
-         }
-
-         virtual const char* componentType() const override
+      /// @name ComponentInterface virtual overridden functions.
+      /// @{
+        
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
+
+         // virtual void print(std::ostream& os) const override; TODO
+
+      /// @}
 
          virtual arma::Col<Complex> SConst() const override;
 

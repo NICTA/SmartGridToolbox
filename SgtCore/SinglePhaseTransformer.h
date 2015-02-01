@@ -6,9 +6,20 @@
 namespace SmartGridToolbox
 {
    /// @brief Single phase transformer.
-   class SinglePhaseTransformer : public Component, public BranchAbc
+   class SinglePhaseTransformer : public BranchAbc
    {
       public:
+
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("single_phase_transformer");
+            return result;
+         }
+      
+      /// @}
 
          SGT_PROPS_INIT(SinglePhaseTransformer);
          SGT_PROPS_INHERIT(SinglePhaseTransformer, Component);
@@ -21,25 +32,29 @@ namespace SmartGridToolbox
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
          SinglePhaseTransformer(const std::string& id, Complex nomVRatio, Complex offNomRatio, Complex ZL) :
-            Component(id), BranchAbc(Phase::BAL, Phase::BAL), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
+            BranchAbc(id, Phase::BAL, Phase::BAL), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
          {
             // Empty.
          }
 
       /// @}
 
-      /// @name Component Type:
+      /// @name ComponentInterface virtual overridden functions.
       /// @{
-
-         static constexpr const char* sComponentType()
-         {
-            return "single_phase_transformer";
-         }
-
-         virtual const char* componentType() const override
+         
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
+         
+         // virtual void print(std::ostream& os) const override; // TODO
+
+      /// @}
+
+      /// @name Overridden from BranchAbc:
+      /// @{
+
+         virtual arma::Mat<Complex> inServiceY() const override;
 
       /// @}
 
@@ -81,24 +96,6 @@ namespace SmartGridToolbox
             YL_ = 1.0 / ZL;
          }
  
-      /// @}
-
-      /// @name Overridden from BranchAbc:
-      /// @{
-
-         virtual arma::Mat<Complex> inServiceY() const override;
-
-      /// @}
-
-      /// @name Printing:
-      /// @{
-         
-         virtual void print(std::ostream& os) const
-         {
-            // TODO: proper printing.
-            BranchAbc::print(os);
-         }
-
       /// @}
 
       private:

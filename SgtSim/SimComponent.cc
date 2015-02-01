@@ -2,7 +2,7 @@
 
 namespace SmartGridToolbox
 {
-   void SimComponentAbc::initialize()
+   void SimComponentAdaptor::initialize()
    {
       SGT_DEBUG(Log().debug() << "SimComponent " << id() << " initialize." << std::endl);
       willUpdate_.setDescription(id() + ": Will update");
@@ -14,7 +14,7 @@ namespace SmartGridToolbox
       initializeState();
    }
 
-   void SimComponentAbc::update(Time t)
+   void SimComponentAdaptor::update(Time t)
    {
       SGT_DEBUG(Log().debug() << "SimComponent " << id() << " update from " << lastUpdated_ << " to " << t 
             << std::endl);

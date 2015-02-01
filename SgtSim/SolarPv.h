@@ -10,6 +10,43 @@ namespace SmartGridToolbox
 
    class SolarPv : public DcPowerSourceAbc
    {
+
+      /// @name Static member functions:
+      /// @{
+
+      public:
+
+         static const std::string& sComponentType()
+         {
+            static std::string result("component");
+            return result;
+         }
+      
+      /// @}
+      
+      /// @name Lifecycle:
+      /// @{
+      
+      public:
+
+         SolarPv(const std::string& id);
+      
+      /// @}
+
+      /// @name ComponentInterface virtual overridden functions.
+      /// @{
+        
+      public:
+
+         virtual const std::string& componentType() const override
+         {
+            return sComponentType();
+         }
+
+         // virtual void print(std::ostream& os) const override; TODO
+
+      /// @}
+
       /// @name Overridden member functions from SimComponent.
       /// @{
 
@@ -26,17 +63,6 @@ namespace SmartGridToolbox
       /// @{
      
       public:
-         SolarPv(const std::string& id);
-
-         static constexpr const char* sComponentType()
-         {
-            return "solar_pv";
-         }
-
-         virtual const char* componentType() const override
-         {
-            return sComponentType();
-         }
 
          void setWeather(std::shared_ptr<Weather> weather);
 

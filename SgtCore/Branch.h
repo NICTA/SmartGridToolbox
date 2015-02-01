@@ -12,20 +12,43 @@ namespace SmartGridToolbox
    /// @brief Common abstract base class for a branch.
    ///
    /// Implement some common functionality for convenience.
-   class BranchAbc : virtual public ComponentInterface
+   class BranchAbc : public Component
    {
       public:
 
          SGT_PROPS_INIT(BranchAbc);
          SGT_PROPS_INHERIT(BranchAbc, Component);
 
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("branch");
+            return result;
+         }
+      
+      /// @}
+
       /// @name Lifecycle:
       /// @{
          
-         BranchAbc(const Phases& phases0, const Phases& phases1);
+         BranchAbc(const std::string& id, const Phases& phases0, const Phases& phases1);
 
       /// @}
-         
+            
+      /// @name ComponentInterface virtual overridden functions.
+      /// @{
+
+         virtual const std::string& componentType() const override
+         {
+            return sComponentType();
+         }
+
+         virtual void print(std::ostream& os) const override;
+
+      /// @}
+     
       /// @name Phase accessors:
       /// @{
          
@@ -98,55 +121,59 @@ namespace SmartGridToolbox
          
       /// @}
       
-      protected:
-
-         virtual void print(std::ostream& os) const override;
-      
       private:
 
          Phases phases0_; ///< Phases on bus 0.
          Phases phases1_; ///< Phases on bus 1.
          bool isInService_; ///< Am I in service?
 
-         Event isInServiceChanged_{std::string(componentType()) + " : Is in service changed"};
-         Event admittanceChanged_{std::string(componentType()) + " : Admittance changed"};
+         Event isInServiceChanged_{sComponentType() + " : Is in service changed"};
+         Event admittanceChanged_{sComponentType() + " : Admittance changed"};
    };
 
    /// @brief A concrete, generic branch.
-   class GenericBranch : public Component, public BranchAbc
+   class GenericBranch : public BranchAbc
    {
       public:
          
          SGT_PROPS_INIT(GenericBranch);
          SGT_PROPS_INHERIT(GenericBranch, Component);
 
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("generic_branch");
+            return result;
+         }
+      
+      /// @}
+      
       /// @name Lifecycle:
       /// @{
 
          GenericBranch(const std::string& id, const Phases& phases0, const Phases& phases1) :
-            Component(id), BranchAbc(phases0, phases1), Y_(2*phases0.size(), 2*phases0.size(), arma::fill::zeros)
+            BranchAbc(id, phases0, phases1), Y_(2*phases0.size(), 2*phases0.size(), arma::fill::zeros)
          {
             // Empty.
          }
 
       /// @}
-      
-      /// @name Component Type:
+       
+      /// @name ComponentInterface virtual overridden functions.
       /// @{
-         
-         static constexpr const char* sComponentType()
-         {
-            return "generic_branch";
-         }
 
-         virtual const char* componentType() const override
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
 
-      /// @}
+         // virtual void print(std::ostream& os) const override; // TODO
 
-      /// @name Overridden from BranchAbc:
+      /// @}
+         
+      /// @name BranchAbc virtual overridden functions.
       /// @{
 
          virtual arma::Mat<Complex> inServiceY() const override
@@ -167,11 +194,6 @@ namespace SmartGridToolbox
          /// @}
       
       protected:
-
-         virtual void print(std::ostream& os) const override
-         {
-            BranchAbc::print(os);
-         }
 
       private:
          

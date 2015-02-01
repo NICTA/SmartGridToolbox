@@ -18,8 +18,8 @@ namespace SmartGridToolbox
    {
       private:
 
-         typedef std::shared_ptr<SimComponentAbc> SimCompPtr;
-         typedef std::shared_ptr<const SimComponentAbc> SimCompConstPtr;
+         typedef std::shared_ptr<SimComponentAdaptor> SimCompPtr;
+         typedef std::shared_ptr<const SimComponentAdaptor> SimCompConstPtr;
          typedef std::shared_ptr<TimeSeriesBase> TimeSeriesPtr;
          typedef std::shared_ptr<const TimeSeriesBase> TimeSeriesConstPtr;
 
@@ -119,7 +119,7 @@ namespace SmartGridToolbox
          template<typename T> std::shared_ptr<const T> simComponent(const std::string& id,
                bool crashOnFail = true) const
          {
-            std::shared_ptr<const SimComponentAbc> simComp = genericSimComponent(id, crashOnFail);
+            std::shared_ptr<const SimComponentAdaptor> simComp = genericSimComponent(id, crashOnFail);
             auto result = std::dynamic_pointer_cast<const T>(simComp);
             if (result == nullptr && crashOnFail)
             {
@@ -215,10 +215,10 @@ namespace SmartGridToolbox
 
       private:
 
-         std::shared_ptr<const SimComponentAbc> genericSimComponent(const std::string& id,
+         std::shared_ptr<const SimComponentAdaptor> genericSimComponent(const std::string& id,
                bool crashOnFail = true) const;
 
-         void addOrReplaceGenericSimComponent(std::shared_ptr<SimComponentAbc> simComp, bool allowReplace);
+         void addOrReplaceGenericSimComponent(std::shared_ptr<SimComponentAdaptor> simComp, bool allowReplace);
 
          std::shared_ptr<const TimeSeriesBase> genericTimeSeries(const std::string& id,
                bool crashOnFail = true) const;

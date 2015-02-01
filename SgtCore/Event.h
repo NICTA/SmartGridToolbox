@@ -9,8 +9,6 @@
 
 namespace SmartGridToolbox
 {
-   class Component;
-
    /// @brief An action that gets performed when an event is triggered.
    ///
    /// Actions are stored as a list in the event in question. Anyone may register an action. Deregistration is

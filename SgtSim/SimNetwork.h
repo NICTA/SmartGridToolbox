@@ -14,6 +14,17 @@ namespace SmartGridToolbox
    {
       public:
 
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("sim_network");
+            return result;
+         }
+      
+      /// @}
+
       /// @name Lifecycle.
       /// @{
          
@@ -21,18 +32,15 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Component Type:
+      /// @name ComponentInterface virtual overridden functions.
       /// @{
-         
-         static constexpr const char* sComponentType()
-         {
-            return "sim_network";
-         }
-
-         virtual const char* componentType() const override
+        
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
+
+         // virtual void print(std::ostream& os) const override; TODO
 
       /// @}
 

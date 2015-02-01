@@ -5,8 +5,7 @@ namespace SmartGridToolbox
    OverheadLine::OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double length,
                               int nNeutral, arma::Col<double> lineResistivity, double earthResistivity,
                               arma::Mat<double> distMat, double freq) :
-      Component(id),
-      BranchAbc(phases0, phases1),
+      BranchAbc(id, phases0, phases1),
       L_(length),
       nNeutral_(nNeutral),
       rhoLine_(lineResistivity),

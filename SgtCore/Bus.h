@@ -13,86 +13,7 @@
 namespace SmartGridToolbox
 {
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
-   class BusInterface : virtual public ComponentInterface
-   {
-      public:
-
-      /// @name Lifecycle:
-      /// @{
-
-         virtual ~BusInterface() = default;
-
-      /// @}
-         
-      /// @name Component Type:
-      /// @{
-         
-         static constexpr const char* sComponentType()
-         {
-            return "bus";
-         }
-
-      /// @}
-     
-      /// @name Basic identity and type:
-      /// @{
-
-         virtual const Phases& phases() const = 0;
-         virtual arma::Col<Complex> VNom() const = 0;
-         virtual double VBase() const = 0;
-
-      /// @}
-
-      /// @name Control and limits:
-      /// @{
-
-         virtual BusType type() const = 0;
-         virtual void setType(const BusType type) = 0;
-
-         virtual arma::Col<double> VMagSetpoint() const = 0;
-         virtual void setVMagSetpoint(const arma::Col<double>& VMagSetpoint) = 0;
-
-         virtual arma::Col<double> VAngSetpoint() const = 0;
-         virtual void setVAngSetpoint(const arma::Col<double>& VAngSetpoint) = 0;
-
-         virtual void applyVSetpoints() = 0;
-
-         virtual double VMagMin() const = 0;
-         virtual void setVMagMin(double VMagMin) = 0;
-
-         virtual double VMagMax() const = 0;
-         virtual void setVMagMax(double VMagMax) = 0;
-
-      /// @}
-
-      /// @name State
-      /// @{
-
-         virtual bool isInService() = 0;
-         virtual void setIsInService(bool isInService) = 0;
-
-         virtual const arma::Col<Complex>& V() const = 0;
-         virtual void setV(const arma::Col<Complex>& V) = 0;
-
-      /// @}
-      
-      /// @name Events.
-      /// @{
-         
-         /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() = 0;
-
-         /// @brief Event triggered when bus setpoint has changed.
-         virtual Event& setpointChanged() = 0;
-         
-         /// @brief Event triggered when bus state (e.g. voltage) has been updated.
-         virtual Event& voltageUpdated() = 0;
-      
-      /// @}
-   };
-
-   /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
-   class Bus : public Component, virtual public BusInterface, public HasProperties<Bus>
+   class Bus : public Component, public HasProperties<Bus>
    {
       friend class Network;
 
@@ -101,6 +22,17 @@ namespace SmartGridToolbox
          SGT_PROPS_INIT(Bus);
          SGT_PROPS_INHERIT(Bus, Component);
 
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("bus");
+            return result;
+         }
+      
+      /// @}
+
       /// @name Lifecycle:
       /// @{
 
@@ -108,33 +40,35 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Component Type:
+      /// @name ComponentInterface virtual overridden functions.
       /// @{
-         
-         virtual const char* componentType() const override
+        
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
+
+         virtual void print(std::ostream& os) const override;
 
       /// @}
 
       /// @name Basic identity and type:
       /// @{
 
-         virtual const Phases& phases() const override
+         virtual const Phases& phases() const
          {
             return phases_;
          }
          SGT_PROP_GET(phases, Bus, Phases, GetByConstRef, phases);
 
-         virtual arma::Col<Complex> VNom() const override
+         virtual arma::Col<Complex> VNom() const
          {
             return VNom_;
          }
 
          SGT_PROP_GET(VNom, Bus, arma::Col<Complex>, GetByVal, VNom);
 
-         virtual double VBase() const override
+         virtual double VBase() const
          {
             return VBase_;
          }
@@ -146,12 +80,12 @@ namespace SmartGridToolbox
       /// @name Control and limits:
       /// @{
 
-         virtual BusType type() const override
+         virtual BusType type() const
          {
             return type_;
          }
 
-         virtual void setType(const BusType type) override
+         virtual void setType(const BusType type)
          {
             type_ = type;
             setpointChanged_.trigger();
@@ -159,23 +93,23 @@ namespace SmartGridToolbox
 
          SGT_PROP_GET_SET(type, Bus, BusType, GetByVal, type, setType);
 
-         virtual arma::Col<double> VMagSetpoint() const override
+         virtual arma::Col<double> VMagSetpoint() const
          {
             return VMagSetpoint_;
          }
 
-         virtual void setVMagSetpoint(const arma::Col<double>& VMagSetpoint) override
+         virtual void setVMagSetpoint(const arma::Col<double>& VMagSetpoint)
          {
             VMagSetpoint_ = VMagSetpoint;
             setpointChanged_.trigger();
          }
          
-         virtual arma::Col<double> VAngSetpoint() const override
+         virtual arma::Col<double> VAngSetpoint() const
          {
             return VAngSetpoint_;
          }
 
-         virtual void setVAngSetpoint(const arma::Col<double>& VAngSetpoint) override
+         virtual void setVAngSetpoint(const arma::Col<double>& VAngSetpoint)
          {
             VAngSetpoint_ = VAngSetpoint;
             setpointChanged_.trigger();
@@ -183,23 +117,23 @@ namespace SmartGridToolbox
 
          virtual void applyVSetpoints();
 
-         virtual double VMagMin() const override
+         virtual double VMagMin() const
          {
             return VMagMin_;
          }
 
-         virtual void setVMagMin(double VMagMin) override
+         virtual void setVMagMin(double VMagMin)
          {
             VMagMin_ = VMagMin;
             setpointChanged_.trigger();
          }
 
-         virtual double VMagMax() const override
+         virtual double VMagMax() const
          {
             return VMagMax_;
          }
 
-         virtual void setVMagMax(double VMagMax) override
+         virtual void setVMagMax(double VMagMax)
          {
             VMagMax_ = VMagMax;
             setpointChanged_.trigger();
@@ -210,23 +144,23 @@ namespace SmartGridToolbox
       /// @name State
       /// @{
 
-         virtual bool isInService() override
+         virtual bool isInService()
          {
             return isInService_;
          }
 
-         virtual void setIsInService(bool isInService) override
+         virtual void setIsInService(bool isInService)
          {
             isInService_ = isInService;
             isInServiceChanged_.trigger();
          }
 
-         virtual const arma::Col<Complex>& V() const override
+         virtual const arma::Col<Complex>& V() const
          {
             return V_;
          }
 
-         virtual void setV(const arma::Col<Complex>& V) override
+         virtual void setV(const arma::Col<Complex>& V)
          {
             V_ = V;
             voltageUpdated_.trigger();
@@ -238,32 +172,25 @@ namespace SmartGridToolbox
       /// @{
          
          /// @brief Event triggered when I go in or out of service.
-         virtual Event& isInServiceChanged() override
+         virtual Event& isInServiceChanged()
          {
             return isInServiceChanged_;
          }
 
          /// @brief Event triggered when bus setpoint has changed.
-         virtual Event& setpointChanged() override
+         virtual Event& setpointChanged()
          {
             return setpointChanged_;
          }
          
          /// @brief Event triggered when bus state (e.g. voltage) has been updated.
-         virtual Event& voltageUpdated() override
+         virtual Event& voltageUpdated()
          {
             return voltageUpdated_;
          }
       
       /// @}
-      
-      /// @name Printing.
-      /// @{
-         
-         virtual void print(std::ostream& os) const override;
-      
-      /// @}
-
+     
       private:
 
          Phases phases_{Phase::BAL};

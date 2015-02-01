@@ -6,13 +6,24 @@
 namespace SmartGridToolbox
 {
    /// @brief Delta-grounded wye transformer.
-   class DgyTransformer : public Component, public BranchAbc
+   class DgyTransformer : public BranchAbc
    {
       public:
 
          SGT_PROPS_INIT(DgyTransformer);
          SGT_PROPS_INHERIT(DgyTransformer, Component);
          SGT_PROPS_INHERIT(DgyTransformer, BranchAbc);
+
+      /// @name Static member functions:
+      /// @{
+         
+         static const std::string& sComponentType()
+         {
+            static std::string result("dgy_transformer");
+            return result;
+         }
+      
+      /// @}
 
       /// @name Lifecycle
       /// @{
@@ -21,7 +32,7 @@ namespace SmartGridToolbox
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
          DgyTransformer(const std::string& id, Complex nomVRatioDY, Complex offNomRatioDY, Complex ZL) :
-            Component(id), BranchAbc(Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
+            BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
             nomVRatioDY_(nomVRatioDY), offNomRatioDY_(offNomRatioDY), YL_(1.0/ZL)
          {
             // Empty.
@@ -29,18 +40,15 @@ namespace SmartGridToolbox
 
       /// @}
 
-      /// @name Component Type:
+      /// @name ComponentInterface virtual overridden functions.
       /// @{
 
-         static constexpr const char* sComponentType()
-         {
-            return "dgy_transformer";
-         }
-
-         virtual const char* componentType() const override
+         virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
+
+         // virtual void print(std::ostream& os) const override // TODO
 
       /// @}
 
@@ -91,19 +99,6 @@ namespace SmartGridToolbox
 
       /// @}
          
-      protected:
-
-      /// @name Printing:
-      /// @{
-         
-         virtual void print(std::ostream& os) const
-         {
-            // TODO: proper printing.
-            BranchAbc::print(os);
-         }
-
-      /// @}
-
       private:
 
          Complex nomVRatioDY_; ///< Nominal voltage ratio, V_D / V_Y where V_D is phase-phase and V_Y is phase-ground.

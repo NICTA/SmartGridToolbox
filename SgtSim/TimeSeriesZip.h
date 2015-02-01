@@ -7,14 +7,14 @@
 
 namespace SmartGridToolbox
 {
-   class TimeSeriesZip : public ZipAbc, public RegularUpdateComponentAbc 
+   class TimeSeriesZip : public ZipAbc, public RegularUpdateComponentAdaptor 
    {
       public:
 
          TimeSeriesZip(const std::string& id, const Phases& phases,
                std::shared_ptr<const TimeSeries<Time, arma::Col<Complex>>> series, const Time& dt) :
             ZipAbc(id, phases),
-            RegularUpdateComponentAbc(dt),
+            RegularUpdateComponentAdaptor(dt),
             series_(series)
          {
             // Empty.
@@ -39,7 +39,7 @@ namespace SmartGridToolbox
 
          virtual void updateState(Time t)
          {
-            RegularUpdateComponentAbc::updateState(t);
+            RegularUpdateComponentAdaptor::updateState(t);
             injectionChanged().trigger(); 
          }
 
