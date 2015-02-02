@@ -6,7 +6,7 @@
 #include <SgtSim/Battery.h>
 #include <SgtSim/DcPowerSource.h>
 #include <SgtSim/Inverter.h>
-#include <SgtSim/RegularUpdateComponent.h>
+#include <SgtSim/Heartbeat.h>
 #include <SgtSim/SimComponent.h>
 #include <SgtSim/SimNetwork.h>
 #include <SgtSim/SimNetworkComponent.h>

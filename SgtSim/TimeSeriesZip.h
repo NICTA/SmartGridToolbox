@@ -1,20 +1,20 @@
 #ifndef TIME_SERIES_ZIP_DOT_H
 #define TIME_SERIES_ZIP_DOT_H
 
-#include "RegularUpdateComponent.h"
+#include "Heartbeat.h"
 #include "SimNetworkComponent.h"
 #include "TimeSeries.h"
 
 namespace SmartGridToolbox
 {
-   class TimeSeriesZip : public ZipAbc, public RegularUpdateComponentAdaptor 
+   class TimeSeriesZip : public ZipAbc, public HeartbeatAdaptor 
    {
       public:
 
          TimeSeriesZip(const std::string& id, const Phases& phases,
                std::shared_ptr<const TimeSeries<Time, arma::Col<Complex>>> series, const Time& dt) :
             ZipAbc(id, phases),
-            RegularUpdateComponentAdaptor(dt),
+            HeartbeatAdaptor(dt),
             series_(series)
          {
             // Empty.
@@ -39,7 +39,7 @@ namespace SmartGridToolbox
 
          virtual void updateState(Time t)
          {
-            RegularUpdateComponentAdaptor::updateState(t);
+            HeartbeatAdaptor::updateState(t);
             injectionChanged().trigger(); 
          }
 

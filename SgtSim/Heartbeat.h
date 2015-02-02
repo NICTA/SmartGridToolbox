@@ -6,49 +6,78 @@
 namespace SmartGridToolbox
 {
    /// @brief Utility base class for a component that updates with a regular "tick" dt.
-   class RegularUpdateComponentAdaptor : public SimComponentAdaptor
+   class HeartbeatAdaptor : public SimComponentAdaptor
    {
+      /// @name Lifecycle:
+      /// @{
+      
+      public:
+
+         HeartbeatAdaptor(const Time& dt) :
+            dt_(dt)
+         {
+            // Empty.
+         }
+
+      /// @}
+      
       /// @name Overridden member functions from SimComponent.
       /// @{
       
       public:
+
          virtual Time validUntil() const override
          {
-            return lastUpdated() + dt_; // TODO: what if an update happened that wasn't a "tick"?
+            return nextBeat_;
          }
 
       protected:
-         // virtual void initializeState() override;
-         // virtual void updateState(Time t) override;
 
-      /// @}
-
-      /// @name My public member functions.
-      /// @{
-      
-      public:
-         RegularUpdateComponentAdaptor(const Time& dt) : dt_(dt)
+         virtual void initializeState() override
          {
-            needsUpdate().trigger(); // First update is at the start.
+            nextBeat_ = posix_time::not_a_date_time;
+            needsUpdate().trigger(); // Update on the first timestep.
          }
 
+         virtual void updateState(Time t) override
+         {
+            if (nextBeat_ == posix_time::not_a_date_time)
+            {
+               nextBeat_ = t; // OK because I'm guaranteed to update on first timestep.
+            }
+
+            if (t == nextBeat_)
+            {
+               nextBeat_ += dt_;
+            };
+         }
+
+      /// @}
+      
+      /// @name Heartbeat specific member functions.
+      /// @{
+
+      public:
+         
          Time dt() const
          {
             return dt_;
          }
+
          void setDt(Time dt)
          {
             dt_ = dt;
-            needsUpdate().trigger();
          }
-
-      /// @}
       
+      /// @}
+
       private:
          Time dt_;
+
+         Time nextBeat_{posix_time::not_a_date_time};
    };
 
-   class RegularUpdateComponent : public RegularUpdateComponentAdaptor, public Component
+   class Heartbeat : public HeartbeatAdaptor, public Component
    {
       public:
 
@@ -57,19 +86,24 @@ namespace SmartGridToolbox
          
          static const std::string& sComponentType()
          {
-            static std::string result("component");
+            static std::string result("heartbeat");
             return result;
          }
       
       /// @}
          
-         RegularUpdateComponent(const std::string& id, const Time& dt) : 
-            RegularUpdateComponentAdaptor(dt),
+      /// @name Lifecycle:
+      /// @{
+      
+         Heartbeat(const std::string& id, const Time& dt) : 
+            HeartbeatAdaptor(dt),
             Component(id)
          {
             // Empty.
          }
 
+      /// @}
+      
       /// @name ComponentInterface virtual overridden functions.
       /// @{
         

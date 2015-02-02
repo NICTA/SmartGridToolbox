@@ -1,6 +1,7 @@
 #include <SgtCore/Parser.h>
 
 #include "BatteryParserPlugin.h"
+#include "HeartbeatParserPlugin.h"
 #include "SimBusParserPlugin.h"
 #include "SimDgyTransformerParserPlugin.h"
 #include "SimGenericBranchParserPlugin.h"
@@ -27,6 +28,7 @@ namespace SmartGridToolbox
    template<> void registerParserPlugins<Simulation>(Parser<Simulation>& p)
    {
       p.registerParserPlugin<BatteryParserPlugin>();
+      p.registerParserPlugin<HeartbeatParserPlugin>();
       p.registerParserPlugin<SimBusParserPlugin>();
       p.registerParserPlugin<SimDgyTransformerParserPlugin>();
       p.registerParserPlugin<SimGenericBranchParserPlugin>();

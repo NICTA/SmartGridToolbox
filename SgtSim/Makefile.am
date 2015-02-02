@@ -9,8 +9,8 @@ include_HEADERS = SgtSim.h
 libinclude_HEADERS = \
 	Battery.h \
 	DcPowerSource.h \
+	Heartbeat.h \
 	Inverter.h \
-	RegularUpdateComponent.h \
 	SimComponent.h \
 	SimNetwork.h \
 	SimNetworkComponent.h \
@@ -29,10 +29,11 @@ libSgtSim_a_SOURCES = \
 	BatteryParserPlugin.h BatteryParserPlugin.cc \
 	DcPowerSource.h \
 	GenericDcPowerSourceParserPlugin.h GenericDcPowerSourceParserPlugin.cc \
+	Heartbeat.h \
+	HeartbeatParserPlugin.h HeartbeatParserPlugin.cc \
 	Inverter.h Inverter.cc \
 	InverterParserPlugin.h InverterParserPlugin.cc \
 	RegisterParserPlugins.cc \
-	RegularUpdateComponent.h \
 	SgtSim.h \
 	SimBusParserPlugin.h SimBusParserPlugin.cc \
 	SimComponent.h SimComponent.cc \

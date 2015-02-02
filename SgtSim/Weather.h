@@ -1,7 +1,7 @@
 #ifndef WEATHER_DOT_H
 #define WEATHER_DOT_H
 
-#include <SgtSim/RegularUpdateComponent.h>
+#include <SgtSim/Heartbeat.h>
 #include <SgtSim/Sun.h>
 #include <SgtSim/TimeSeries.h>
 
@@ -13,7 +13,7 @@ namespace SmartGridToolbox
       double horizontalDiffuse;
    };
 
-   class Weather : public RegularUpdateComponent
+   class Weather : public Heartbeat
    {
       /// @name Static member functions:
       /// @{
@@ -32,7 +32,7 @@ namespace SmartGridToolbox
       /// @{
          
          Weather(const std::string& id) :
-            RegularUpdateComponent(id, posix_time::minutes(5)),
+            Heartbeat(id, posix_time::minutes(5)),
             latLong_(Greenwich),
             temperatureSeries_(nullptr),
             cloudCoverSeries_(nullptr)
