@@ -195,64 +195,70 @@ namespace SmartGridToolbox
 
       PowerFlowNr solver(&mod);
       bool ok = solver.solve();
-
-      if (ok)
+      if (!ok)
       {
-         for (const auto& busPair: mod.busses())
+         Log().warning() << "Couldn't solve power flow model" << std::endl;
+      }
+
+      for (const auto& busPair: mod.busses())
+      {
+         auto& busNr = *busPair.second;
+         const auto nd = this->node(busNr.id_);
+         auto bus = nd->bus();
+
+         int nInService = 0; 
+         for (auto gen : nd->gens())
          {
-            auto& busNr = *busPair.second;
-            const auto nd = this->node(busNr.id_);
-            int nInService = 0; 
-            for (auto gen : nd->gens())
+            if (gen->isInService())
             {
-               if (gen->isInService())
-               {
-                  nInService += 1;
-               }
-            }
-            arma::Col<Complex> SGen = (busNr.S_ - nd->SZip()) / nInService;
-            // Note: we've already taken YZip and IZip explicitly into account, so this is correct.
-            // KLUDGE: We're using a vector above, rather than "auto" (which gives some kind of expression type).
-            // This is less efficient, but the latter gives errors in valgrind.
-           
-            auto bus = nd->bus();
-            bus->setV(busNr.V_);
-            switch (bus->type())
-            {
-               case BusType::SL:
-                  for (auto gen : nd->gens())
-                  {
-                     if (gen->isInService())
-                     {
-                        gen->setInServiceS(SGen);
-                     }
-                  }
-                  break;
-               case BusType::PQ:
-                  break;
-               case BusType::PV:
-                  for (auto gen : nd->gens())
-                  {
-                     if (gen->isInService())
-                     {
-                        // Keep P for gens, distribute Q amongst all gens.
-                        arma::Col<Complex> SNew(gen->S().size());
-                        for (int i = 0; i < SNew.size(); ++i)
-                        {
-                           SNew[i] = Complex(gen->S()[i].real(), SGen[i].imag());
-                        }
-                        gen->setInServiceS(SNew);
-                     }
-                  }
-                  break;
-               default:
-                  Log().fatal() << "Bad bus type." << std::endl;
+               nInService += 1;
             }
          }
-      }
-      else
-      {
-         Log().fatal() << "Couldn't solve power flow problem." << std::endl;
+
+         arma::Col<Complex> SGen = nInService > 0 
+            ? (busNr.S_ - nd->SZip()) / nInService
+            : arma::Col<Complex>(bus->phases().size(), arma::fill::zeros);
+         // Note: we've already taken YZip and IZip explicitly into account, so this is correct.
+         // KLUDGE: We're using a vector above, rather than "auto" (which gives some kind of expression type).
+         // This is less efficient, but the latter gives errors in valgrind.
+         // Also: regarding the nInService check, recall that if nInService = 0, the bus is treated as PQ for
+         // the purpose of the solver.
+         // TODO: it would be nicer if we delegated the BusType to the Node, and then dynamically checked the
+         // generators. If there are in service generators, return either SL (if one of them is a slack generator)
+         // or PV, otherwise return PQ.
+
+         bus->setV(busNr.V_);
+         switch (bus->type())
+         {
+            case BusType::SL:
+               for (auto gen : nd->gens())
+               {
+                  if (gen->isInService())
+                  {
+                     gen->setInServiceS(SGen);
+                  }
+               }
+               break;
+            case BusType::PQ:
+               break;
+            case BusType::PV:
+               for (auto gen : nd->gens())
+               {
+                  if (gen->isInService())
+                  {
+                     // Keep P for gens, distribute Q amongst all gens.
+                     arma::Col<Complex> SNew(gen->S().size());
+                     for (int i = 0; i < SNew.size(); ++i)
+                     {
+                        SNew[i] = Complex(gen->S()[i].real(), SGen[i].imag());
+                     }
+                     gen->setInServiceS(SNew);
+                  }
+               }
+               break;
+            default:
+               Log().fatal() << "Bad bus type." << std::endl;
+         }
       }
    }
 

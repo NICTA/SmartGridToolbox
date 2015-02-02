@@ -224,7 +224,8 @@ namespace SmartGridToolbox
                << std::endl);
          if (!ok)
          {
-            Log().fatal() << "kluSolve failed." << std::endl;
+            Log().warning() << "kluSolve failed." << std::endl;
+            break;
          }
 
          stopwatch.reset(); stopwatch.start();
@@ -293,7 +294,15 @@ namespace SmartGridToolbox
       }
       else
       {
-         Log().fatal() << "PowerFlowNr: Newton-Raphson method failed to converge." << std::endl;
+         Log().warning() << "PowerFlowNr: Newton-Raphson method failed to converge." << std::endl;
+         for (int i = 0; i < mod_->nNode(); ++i)
+         {
+            auto node = mod_->nodes()[i];
+            node->V_ = 0;
+            node->S_ = 0;
+            node->bus_->V_[node->phaseIdx_] = node->V_;
+            node->bus_->S_[node->phaseIdx_] = node->S_;
+         }
       }
 
       stopwatchTot.stop(); durationTot = stopwatchTot.seconds();

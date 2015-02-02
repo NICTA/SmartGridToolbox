@@ -59,6 +59,7 @@ namespace SmartGridToolbox
          {
             return phases_;
          }
+
          SGT_PROP_GET(phases, Bus, Phases, GetByConstRef, phases);
 
          virtual arma::Col<Complex> VNom() const
@@ -144,7 +145,7 @@ namespace SmartGridToolbox
       /// @name State
       /// @{
 
-         virtual bool isInService()
+         virtual bool isInService() const
          {
             return isInService_;
          }
@@ -154,6 +155,8 @@ namespace SmartGridToolbox
             isInService_ = isInService;
             isInServiceChanged_.trigger();
          }
+
+         SGT_PROP_GET_SET(isInService, Bus, bool, GetByVal, isInService, setIsInService);
 
          virtual const arma::Col<Complex>& V() const
          {
