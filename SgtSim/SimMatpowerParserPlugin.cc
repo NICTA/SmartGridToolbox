@@ -17,30 +17,29 @@ namespace SmartGridToolbox
       Network tempNetw("temp", 100.0);
       mpParser.parse(nd, tempNetw, parser);
 
-      for (auto& node : tempNetw.nodes())
+      for (auto& bus : tempNetw.busses())
       {
-         auto bus = dynamic_cast<const Bus&>(*node->bus());
-         auto simBus = sim.newSimComponent<SimBus>(bus);
-         simNetw->addNode(simBus);
-         for (auto& gen : node->gens())
+         auto simBus = sim.newSimComponent<SimBus>(*bus);
+         simNetw->addBus(simBus);
+         for (auto& gen : bus->gens())
          {
             auto gGen = dynamic_cast<const GenericGen&>(*gen);
             auto simGen = sim.newSimComponent<SimGenericGen>(gGen);
-            simNetw->addGen(simGen, bus.id());
+            simNetw->addGen(simGen, bus->id());
          }
-         for (auto& zip : node->zips())
+         for (auto& zip : bus->zips())
          {
             auto gZip = dynamic_cast<const GenericZip&>(*zip);
             auto simZip = sim.newSimComponent<SimGenericZip>(gZip);
-            simNetw->addZip(simZip, bus.id());
+            simNetw->addZip(simZip, bus->id());
          }
       }
       
-      for (auto& arc : tempNetw.arcs())
+      for (auto& branch : tempNetw.branches())
       {
-         auto cBranch = dynamic_cast<const CommonBranch&>(*arc->branch());
-         auto branch = sim.newSimComponent<SimCommonBranch>(cBranch);
-         simNetw->addArc(branch, arc->node0()->bus()->id(), arc->node1()->bus()->id());
+         auto cBranch = dynamic_cast<const CommonBranch&>(*branch);
+         auto simCBranch = sim.newSimComponent<SimCommonBranch>(cBranch);
+         simNetw->addBranch(simCBranch, branch->bus0()->id(), branch->bus1()->id());
       }
    }
 }

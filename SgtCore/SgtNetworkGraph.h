@@ -12,13 +12,13 @@ namespace SmartGridToolbox
       double y;
       double w;
       double h;
-      Node* node;
+      Bus* bus;
    };
    
    struct SgtGraphArcInfo
    {
       double l;
-      Arc* arc;
+      BranchAbc* branch;
    };
 
    using SgtGraphTraits = GraphTraits<SgtGraphNodeInfo, SgtGraphArcInfo>;

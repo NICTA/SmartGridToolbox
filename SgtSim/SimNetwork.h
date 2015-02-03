@@ -64,9 +64,9 @@ namespace SmartGridToolbox
       
       public:
 
-         template<typename T> void addNode(std::shared_ptr<T> simBus)
+         template<typename T> void addBus(std::shared_ptr<T> simBus)
          {
-            network_->addNode(simBus);
+            network_->addBus(simBus);
             dependsOn(simBus);
             simBus->setpointChanged().addAction([this](){needsUpdate().trigger();}, 
                   std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
@@ -74,10 +74,10 @@ namespace SmartGridToolbox
                   std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
          }
 
-         template<typename T> void addArc(std::shared_ptr<T> simBranch, const std::string& bus0Id,
+         template<typename T> void addBranch(std::shared_ptr<T> simBranch, const std::string& bus0Id,
                              const std::string& bus1Id)
          {
-            network_->addArc(simBranch, bus0Id, bus1Id);
+            network_->addBranch(simBranch, bus0Id, bus1Id);
             dependsOn(simBranch);
             simBranch->admittanceChanged().addAction([this](){needsUpdate().trigger();}, 
                   std::string("Trigger ") + sComponentType() + " " + id() + " needs update");

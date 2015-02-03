@@ -29,15 +29,14 @@ int main(int argc, char** argv)
             "y_shunt_r", "y_shunt_i", "I_zip_r", "I_zip_i");
       printf("--------------------------------------------------------------------------\n");
       int iBus = 1;
-      for (auto nd : nw.nodes())
+      for (auto bus : nw.busses())
       {
-         auto bus = nd->bus();
          busMap[bus->id()] = iBus;
          auto V = nw.V2Pu(bus->V()[0], bus->VBase());
-         auto SGen = nd->SGen()[0];
-         auto SLoad = -nd->SZip()[0];
-         auto yZip = nd->YZip()[0];
-         auto IZip = nd->IZip()[0];
+         auto SGen = bus->SGen()[0];
+         auto SLoad = -bus->SZip()[0];
+         auto yZip = bus->YZip()[0];
+         auto IZip = bus->IZip()[0];
          printf("%18s : %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n",
                bus->id().c_str(), bus->VBase(), std::abs(V), std::arg(V)*180.0/pi,
                SGen.real(), SGen.imag(), SLoad.real(), SLoad.imag(),
@@ -48,11 +47,10 @@ int main(int argc, char** argv)
                yZip.real(), yZip.imag(), IZip.real(), IZip.imag());
          ++iBus;
       }
-      for (auto arc : nw.arcs())
+      for (auto branch : nw.branches())
       {
-         auto branch = std::dynamic_pointer_cast<CommonBranch>(arc->branch());
-         auto bus0 = arc->node0()->bus();
-         auto bus1 = arc->node1()->bus();
+         auto bus0 = branch->bus0();
+         auto bus1 = branch->bus1();
          int iBus0 = busMap[bus0->id()];
          int iBus1 = busMap[bus1->id()];
          fprintf(outFBranch, "%5d %5d %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n", iBus0, iBus1, branch->Y()(0, 0).real(), branch->Y()(0, 0).imag(), branch->Y()(0, 1).real(), branch->Y()(0, 1).imag(), branch->Y()(1, 0).real(), branch->Y()(1, 0).imag(), branch->Y()(1, 1).real(), branch->Y()(1, 1).imag());

@@ -40,12 +40,10 @@ namespace SmartGridToolbox
          
    void Network::addGen(GenPtr gen, const std::string& busId)
    {
-      genMap_[gen->id()] = gen;
-      genVec_.push_back(gen);
       auto bus = this->bus(busId);
       if (bus != nullptr)
       {
-         bus->genMap_[gen->id()] = gen;
+         bus->addGen(gen);
       }
       else
       {
@@ -55,12 +53,11 @@ namespace SmartGridToolbox
          
    void Network::addZip(ZipPtr zip, const std::string& busId)
    {
-      zipMap_[zip->id()] = zip;
       zipVec_.push_back(zip);
       auto bus = this->bus(busId);
       if (bus != nullptr)
       {
-         bus->zipMap_[zip->id()] = zip;
+         bus->addZip(zip);
       }
       else
       {
@@ -136,9 +133,9 @@ namespace SmartGridToolbox
             case BusType::SL:
                for (const auto& gen : bus->gens())
                {
-                  if (gen.second->isInService())
+                  if (gen->isInService())
                   {
-                     gen.second->setInServiceS(SGen);
+                     gen->setInServiceS(SGen);
                   }
                }
                break;
@@ -147,15 +144,15 @@ namespace SmartGridToolbox
             case BusType::PV:
                for (const auto& gen : bus->gens())
                {
-                  if (gen.second->isInService())
+                  if (gen->isInService())
                   {
                      // Keep P for gens, distribute Q amongst all gens.
-                     arma::Col<Complex> SNew(gen.second->S().size());
+                     arma::Col<Complex> SNew(gen->S().size());
                      for (int i = 0; i < SNew.size(); ++i)
                      {
-                        SNew[i] = Complex(gen.second->S()[i].real(), SGen[i].imag());
+                        SNew[i] = Complex(gen->S()[i].real(), SGen[i].imag());
                      }
-                     gen.second->setInServiceS(SNew);
+                     gen->setInServiceS(SNew);
                   }
                }
                break;
@@ -182,7 +179,7 @@ namespace SmartGridToolbox
             StreamIndent _(os);
             for (auto zip : bus->zips())
             {
-               os << *zip.second << std::endl;
+               os << *zip << std::endl;
             }
          }
          {
@@ -190,7 +187,7 @@ namespace SmartGridToolbox
             StreamIndent _(os);
             for (auto gen : bus->gens())
             {
-               os << *gen.second << std::endl;
+               os << *gen << std::endl;
             }
          }
       }
@@ -205,12 +202,12 @@ namespace SmartGridToolbox
       }
    }
 
-   bool hasInServiceGen(const Bus& bus)
+   bool Network::hasInServiceGen(const Bus& bus)
    {
       bool result = false;
-      for (auto elem : bus.gens())
+      for (auto gen : bus.gens())
       {
-         if (elem.second->isInService())
+         if (gen->isInService())
          {
             result = true;
             break;

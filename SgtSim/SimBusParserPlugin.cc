@@ -16,6 +16,6 @@ namespace SmartGridToolbox
       assertFieldPresent(nd, "network_id");
       string netwId = parser.expand<std::string>(nd["network_id"]);
       auto netw = sim.simComponent<SimNetwork>(netwId);
-      netw->addNode(bus);
+      netw->addBus(bus);
    }
 }

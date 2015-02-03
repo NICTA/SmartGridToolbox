@@ -436,26 +436,26 @@ namespace SmartGridToolbox
          double VAng = deg2Rad(busInfo.VAngDeg);
          bus->setV({VScale * std::polar(VMag, VAng)});
          
-         netw.addNode(std::move(bus));
+         netw.addBus(std::move(bus));
          netw.addZip(std::move(zip), busId);
       } // Busses
 
       // If there is no slack bus, Matpower assigns the first PV bus as slack. We need to do the same.
-      auto it = std::find_if(netw.nodes().cbegin(), netw.nodes().cend(), 
-            [](const NodePtr& nd)->bool{return nd->bus()->type() == BusType::SL;});
-      if (it == netw.nodes().cend())
+      auto it = std::find_if(netw.busses().cbegin(), netw.busses().cend(), 
+            [](const BusPtr& bus)->bool{return bus->type() == BusType::SL;});
+      if (it == netw.busses().cend())
       {
          Log().warning() 
             << "There is no slack bus defined on the network. Setting the type of the first PV bus to SL." 
             << std::endl;
-         auto itb = std::find_if(netw.nodes().cbegin(), netw.nodes().cend(), 
-               [](const NodePtr& nd)->bool{return nd->bus()->type() == BusType::PV;});
-         assert(itb != netw.nodes().cend());
-         (**itb).bus()->setType(BusType::SL);
+         auto itb = std::find_if(netw.busses().cbegin(), netw.busses().cend(), 
+               [](const BusPtr& bus)->bool{return bus->type() == BusType::PV;});
+         assert(itb != netw.busses().cend());
+         (**itb).setType(BusType::SL);
       }
       else
       {
-         Log().message() << "The slack bus is " << (**it).bus()->id() << std::endl;
+         Log().message() << "The slack bus is " << (**it).id() << std::endl;
       }
 
       // Gens:
@@ -483,7 +483,7 @@ namespace SmartGridToolbox
          gen->setC1(0.0);
          gen->setC2(0.0);
 
-         auto bus = netw.node(busId)->bus();
+         auto bus = netw.bus(busId);
          bus->setVMagSetpoint({VScale * pu2kV(genInfo.Vg, bus->VBase())});
 
          netw.addGen(std::move(gen), busId);
@@ -502,8 +502,8 @@ namespace SmartGridToolbox
          std::string bus0Id = getBusId(branchInfo.busIdF);
          std::string bus1Id = getBusId(branchInfo.busIdT);
 
-         auto bus0 = netw.node(bus0Id)->bus();
-         auto bus1 = netw.node(bus1Id)->bus();
+         auto bus0 = netw.bus(bus0Id);
+         auto bus1 = netw.bus(bus1Id);
 
          double tap = (std::abs(branchInfo.tap) < 1e-6 ? 1.0 : branchInfo.tap) * bus0->VBase() / bus1->VBase();
          branch->setTapRatio(std::polar(tap, deg2Rad(branchInfo.shiftDeg)));
@@ -514,7 +514,7 @@ namespace SmartGridToolbox
          branch->setRateB(PScale * branchInfo.rateB);
          branch->setRateC(PScale * branchInfo.rateC);
 
-         netw.addArc(std::move(branch), bus0Id, bus1Id);
+         netw.addBranch(std::move(branch), bus0Id, bus1Id);
       }
 
       // Add generator costs, if they exist.

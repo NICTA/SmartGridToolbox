@@ -4,16 +4,13 @@ namespace SmartGridToolbox
 {
    void SgtNetworkGraph::create(const Network& nw)
    {
-      for (auto nd : nw.nodes())
+      for (auto bus : nw.busses())
       {
-         auto bus = nd->bus();
-         this->addNode(bus->id(), SgtGraphNodeInfo{0.0, 0.0, 10.0, 10.0, nd.get()});
+         this->addNode(bus->id(), SgtGraphNodeInfo{0.0, 0.0, 10.0, 10.0, bus.get()});
       }
-      for (auto arc : nw.arcs())
+      for (auto branch : nw.branches())
       {
-         auto branch = arc->branch();
-         this->addArc(branch->id(), arc->node0()->bus()->id(), arc->node1()->bus()->id(), 
-               SgtGraphArcInfo{0.0, arc.get()});
+         this->addArc(branch->id(), branch->bus0()->id(), branch->bus1()->id(), SgtGraphArcInfo{0.0, branch.get()});
       }
    };
 };

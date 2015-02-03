@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
    Parser<Network> p;
    p.parse("test_overhead_compare_carson_1.yaml", netw);
 
-   auto oh = std::dynamic_pointer_cast<OverheadLine>(netw.arc("line_1_2")->branch());
+   auto oh = std::dynamic_pointer_cast<OverheadLine>(netw.branch("line_1_2"));
 
    arma::Mat<Complex> ZWire = oh->ZWire();
    arma::Mat<Complex> ZPhase = oh->ZPhase(ZWire);
@@ -74,10 +74,10 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
 
    netw.solvePowerFlow();
 
-   auto oh = std::dynamic_pointer_cast<OverheadLine>(netw.arc("line_1_2")->branch());
+   auto oh = std::dynamic_pointer_cast<OverheadLine>(netw.branch("line_1_2"));
 
-   auto bus1 = netw.node("bus_1")->bus();
-   auto bus2 = netw.node("bus_2")->bus();
+   auto bus1 = netw.bus("bus_1");
+   auto bus2 = netw.bus("bus_2");
 
    Complex cmp;
    cmp = polar(14.60660, -0.62 * pi / 180.0); double err0 = abs(bus2->V()(0) - cmp) / abs(cmp);
@@ -244,18 +244,18 @@ BOOST_AUTO_TEST_CASE (test_matpower)
 
       ifstream compareName(std::string("mp_compare/") + c + ".compare");
 
-      for (auto nd : nw.nodes()) {
+      for (auto bus : nw.busses()) {
          double Vr, Vi, P, Q;
          compareName >> Vr >> Vi >> P >> Q;
          Complex V = {Vr, Vi};
          Complex S = {P, Q};
          BOOST_ASSERT(!compareName.eof());
-         BOOST_CHECK_MESSAGE(std::abs(V - nd->bus()->V()(0) / nd->bus()->VBase()) < 1e-3,
-               "V doesn't agree with Matpower at " << nd->bus()->type() << " bus " << nd->bus()->id() << "\n"
-               << "    " << nd->bus()->V()(0) / nd->bus()->VBase() << " : " << V);
-         BOOST_CHECK_MESSAGE(std::abs(S - nd->SGen()(0) - nd->SZip()(0)) / nw.PBase() < 1e-3,
-               "S doesn't agree with Matpower at " << nd->bus()->type() << " bus " << nd->bus()->id() << "\n"
-               << "    " << (nd->SGen()(0) + nd->SZip()(0)) << " : " << S);
+         BOOST_CHECK_MESSAGE(std::abs(V - bus->V()(0) / bus->VBase()) < 1e-3,
+               "V doesn't agree with Matpower at " << bus->type() << " bus " << bus->id() << "\n"
+               << "    " << bus->V()(0) / bus->VBase() << " : " << V);
+         BOOST_CHECK_MESSAGE(std::abs(S - bus->SGen()(0) - bus->SZip()(0)) / nw.PBase() < 1e-3,
+               "S doesn't agree with Matpower at " << bus->type() << " bus " << bus->id() << "\n"
+               << "    " << (bus->SGen()(0) + bus->SZip()(0)) << " : " << S);
       }
    }
 }

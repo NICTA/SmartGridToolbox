@@ -23,11 +23,9 @@ namespace SmartGridToolbox
       public:
 
          typedef std::shared_ptr<GenAbc> GenPtr;
-         typedef std::map<std::string, GenPtr> GenMap;
          typedef std::vector<GenPtr> GenVec;
 
          typedef std::shared_ptr<ZipAbc> ZipPtr;
-         typedef std::map<std::string, ZipPtr> ZipMap;
          typedef std::vector<ZipPtr> ZipVec;
 
          SGT_PROPS_INIT(Bus);
@@ -93,6 +91,7 @@ namespace SmartGridToolbox
       /// @{
          
          const GenVec gens() const {return genVec_;}
+         void addGen(GenPtr gen) {genVec_.push_back(gen);}
          int nInServiceGens() const;
          arma::Col<Complex> SGen() const;
          double JGen() const;
@@ -102,7 +101,8 @@ namespace SmartGridToolbox
       /// @name Zips
       /// @{
          
-         const ZipMap zips() const {return zipMap_;}
+         const ZipVec zips() const {return zipVec_;}
+         void addZip(ZipPtr zip) {zipVec_.push_back(zip);}
          int nInServiceZips() const;
          arma::Col<Complex> YZip() const;
          arma::Col<Complex> IZip() const;
@@ -232,10 +232,8 @@ namespace SmartGridToolbox
          arma::Col<Complex> VNom_;
          double VBase_{1.0};
 
-         GenMap genMap_;
          GenVec genVec_;
 
-         ZipMap zipMap_;
          ZipVec zipVec_;
 
          BusType type_{BusType::NA};

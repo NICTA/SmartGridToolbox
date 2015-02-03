@@ -34,7 +34,7 @@ namespace SmartGridToolbox
       std::string bus0Id = parser.expand<std::string>(nd["bus_0_id"]);
       std::string bus1Id = parser.expand<std::string>(nd["bus_1_id"]);
       
-      netw.addArc(std::move(gb), bus0Id, bus1Id);
+      netw.addBranch(std::move(gb), bus0Id, bus1Id);
    }
 
    std::unique_ptr<GenericBranch> GenericBranchParserPlugin::parseGenericBranch(const YAML::Node& nd,

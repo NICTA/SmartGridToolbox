@@ -36,9 +36,8 @@ namespace SmartGridToolbox
    int Bus::nInServiceGens() const
    {
       int sum = 0;
-      for (const auto& elem : genMap_)
+      for (auto gen : genVec_)
       {
-         const auto gen = elem.second;
          if (gen->isInService())
          {
             ++sum;
@@ -52,9 +51,8 @@ namespace SmartGridToolbox
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
       auto sum = arma::Col<Complex>(phases().size(), arma::fill::zeros);
-      for (const auto& elem : genMap_)
+      for (auto gen : genVec_)
       {
-         const auto gen = elem.second;
          if (gen->isInService())
          {
             sum += gen->S();
@@ -68,9 +66,8 @@ namespace SmartGridToolbox
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
       double sum = 0;
-      for (const auto& elem : genMap_)
+      for (auto gen : genVec_)
       {
-         const auto gen = elem.second;
          if (gen->isInService())
          {
             sum += gen->J();
@@ -82,9 +79,8 @@ namespace SmartGridToolbox
    int Bus::nInServiceZips() const
    {
       int sum = 0;
-      for (const auto& elem : zipMap_)
+      for (auto zip : zipVec_)
       {
-         const auto zip = elem.second;
          if (zip->isInService())
          {
             ++sum;
@@ -98,9 +94,8 @@ namespace SmartGridToolbox
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
       auto sum = arma::Col<Complex>(phases().size(), arma::fill::zeros);
-      for (const auto& elem : zipMap_)
+      for (auto zip : zipVec_)
       {
-         const auto zip = elem.second;
          sum += zip->YConst();
       }
       return sum;
@@ -111,9 +106,8 @@ namespace SmartGridToolbox
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
       auto sum = arma::Col<Complex>(phases().size(), arma::fill::zeros);
-      for (const auto& elem : zipMap_)
+      for (auto zip : zipVec_)
       {
-         const auto zip = elem.second;
          sum += zip->IConst();
       }
       return sum;
@@ -124,12 +118,36 @@ namespace SmartGridToolbox
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
       auto sum = arma::Col<Complex>(phases().size(), arma::fill::zeros);
-      for (const auto& elem : zipMap_)
+      for (auto zip : zipVec_)
       {
-         const auto zip = elem.second;
          sum += zip->SConst();
       }
       return sum;
+   }
+
+   void Bus::applyVSetpoints()
+   {
+      arma::Col<Complex> VNew(phases_.size());
+      switch (type_)
+      {
+         case BusType::SL:
+            for (int i = 0; i < phases_.size(); ++i)
+            {
+               VNew(i) = std::polar(VMagSetpoint_(i), VAngSetpoint_(i));
+            }
+            setV(VNew); // TODO: this triggers an event: is this desirable, or just set V_ directly?
+            break;
+         case BusType::PV:
+            VNew = V_;
+            for (int i = 0; i < phases_.size(); ++i)
+            {
+               VNew(i) *= VMagSetpoint_(i) / std::abs(V_(i));
+            }
+            setV(VNew);
+            break;
+         default:
+            break;
+      }
    }
 
    void Bus::print(std::ostream& os) const
