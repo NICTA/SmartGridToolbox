@@ -24,6 +24,15 @@ namespace SmartGridToolbox
          {
             // Empty.
          }
+
+      protected:
+         virtual void initializeState() override
+         {
+            bool sv = voltageUpdated().isEnabled(); 
+            voltageUpdated().setIsEnabled(false);
+            setV(VNom());
+            voltageUpdated().setIsEnabled(sv);
+         }
    };
    class SimCommonBranch : public SimComponentAdaptor, public CommonBranch
    {

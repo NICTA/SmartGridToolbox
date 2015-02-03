@@ -1,44 +1,3 @@
-Powerflow testing:
-------------------
-
-When solve_powerflow is run, some matpower cases differ from matpower itself.
-One particular example is case57 - for which even the reactive power of the
-slack bus differs from Matpower.
-
-TODO: The plan is to output both matpower and my solver and feed them into an
-independent octave verification of the powerflow equations, thereby seeing
-where things are going wrong.
-
-Note also that the "prior_to_armadillo" tag has a different result again - but
-this is clearly wrong as the generator power is actually the generator power
-plus the zip power. If the zip power is subtracted off, the result in HEAD is
-recovered. TODO: create a branch at this tag, and fix the problem - so that we
-have a working ublas version available.
-
-Note also that the voltages and zips appear to be correct and agreeing in all
-versions.
-
-UPDATE:
-
-This is in progress, and an issue has been identified where if there is a
-single generator on a PV (or presumably slack) bus, and the generator is out of
-service, then the bus should be treated as a PQ bus but isn't.
-
-Need to think about how best to handle this. Thoughs:
-
-1. Bus type really belongs to the "node", which knows about generators?
-2. Just silently handle this when constructing the PowerFlow problem.
-
-UPDATE:
-
-Have fixed this, to some extent?
-
-UPDATE:
-
-I believe most of the powerflow cases agree with Matpower - a couple are simply
-infeasible. Tests have been implemented in the tests directory. The disagreeing
-cases are documented in tests.cc. Thus this issue can be considered closed.
-
 Parser issue:
 -------------
 In Parser.cc, make math work on things other than integers.
@@ -87,6 +46,9 @@ The point of this change is to make a more direct connection with parsed files
 etc. i.e. don't have to convert parsed times to UTC to match with Simulation
 times.
 
-Misc:
+State:
 -----
-Event -> isActive -> enable/disable
+Components should normally store a structure called State, and they should store
+their initial state so that they can be reset. State should also ideally be
+serializable. There are two types of member data in a component: configuration,
+and state.

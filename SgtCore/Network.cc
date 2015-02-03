@@ -73,8 +73,8 @@ namespace SmartGridToolbox
       PowerFlowModel mod;
       for (const auto bus : busVec_)
       {
-         bool enabledSv = bus->setpointChanged().enabled();
-         bus->setpointChanged().setEnabled(false);
+         bool isEnabledSv = bus->setpointChanged().isEnabled();
+         bus->setpointChanged().setIsEnabled(false);
          BusType busTypeSv = bus->type();
          if (bus->type() != BusType::PQ)
          {
@@ -91,7 +91,7 @@ namespace SmartGridToolbox
                     bus->V(), bus->SGen() + bus->SZip());
 
          bus->setType(busTypeSv);
-         bus->setpointChanged().setEnabled(enabledSv);
+         bus->setpointChanged().setIsEnabled(isEnabledSv);
       }
       for (const auto branch : branchVec_)
       {
