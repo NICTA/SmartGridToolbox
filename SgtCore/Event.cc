@@ -6,7 +6,7 @@ namespace SmartGridToolbox
 {
    void Event::trigger()
    {
-      if (isActive_)
+      if (enabled_)
       {
          SGT_DEBUG(Log().debug() << "Event was triggered: " << description_ << std::endl; {LogIndent _);
          for (const Action& action : actions_)

@@ -31,15 +31,6 @@ arma::Col<Complex> symComps(arma::Col<Complex> v)
    return result;
 }
 
-namespace SmartGridToolbox
-{
-   class Simulation;
-   template<> void registerParserPlugins<Simulation>(Parser<Simulation>& p)
-   {
-      p.registerParserPlugin<ApplianceParserPlugin>();
-   }
-}
-
 int main(int argc, const char** argv)
 {
    if (argc != 3)
@@ -55,6 +46,7 @@ int main(int argc, const char** argv)
 
    Simulation sim;
    Parser<Simulation> p;
+   p.registerParserPlugin<ApplianceParserPlugin>();
    p.parse(configName, sim);
    sim.initialize();
    bool ok = true;
@@ -64,44 +56,10 @@ int main(int argc, const char** argv)
    out << "# t";
    for (auto nd : netw->nodes())
    {
-      const Phases& ps = nd->bus()->phases();
-      for (int i = 0; i < ps.size(); ++i)
-      {
-         Phase p = ps[i];
-         out << " " << nd->bus()->id() << ":" << p;
-      }
+      out << " " << nd->bus()->id();
    }
    out << std::endl;
   
-   out << 0;
-   for (auto nd : netw->nodes())
-   {
-      const Phases& ps = nd->bus()->phases();
-      for (int i = 0; i < ps.size(); ++i)
-      {
-         Phase p = ps[i];
-         int iPhase = 0;
-         if (p == Phase::BAL)
-         {
-            iPhase = 0;
-         }
-         if (p == Phase::A)
-         {
-            iPhase = 1;
-         }
-         else if (p == Phase::B)
-         {
-            iPhase = 2;
-         }
-         else if (p == Phase::C)
-         {
-            iPhase = 3;
-         }
-         out << " " << iPhase;
-      }
-   }
-   out << std::endl;
-
    Stopwatch swTot;
    swTot.start();
    while (ok)
@@ -109,13 +67,16 @@ int main(int argc, const char** argv)
       ok = sim.doTimestep();
       double t = dSeconds(sim.currentTime() - sim.startTime())/3600;
       out << t;
-      for (auto nd : netw->nodes())
+      for (ConstNodePtr nd : netw->nodes())
       {
-         arma::Col<Complex> V = nd->bus()->V()/nd->bus()->VBase();
-         for (auto x : V)
+         auto S = nd->SZip();
+         double P = 0;
+         for (auto& Si : S)
          {
-            out << " " << std::abs(x);
+            P += Si.real();
          }
+         out << " " << P;
+         
       }
       out << std::endl;
    }

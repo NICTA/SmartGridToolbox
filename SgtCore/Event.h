@@ -87,20 +87,20 @@ namespace SmartGridToolbox
             description_ = description;
          }
 
-         bool isActive() const
+         bool enabled() const
          {
-            return isActive_;
+            return enabled_;
          }
 
-         void setIsActive(bool isActive)
+         void setEnabled(bool enabled)
          {
-            isActive_ = isActive;
+            enabled_ = enabled;
          }
 
       private:
          std::list<Action> actions_;
          std::string description_;
-         bool isActive_{true};
+         bool enabled_{true};
    };
 }
 

@@ -9,11 +9,15 @@
 
 namespace SmartGridToolbox
 {
+   class Bus;
+
    /// @brief Common abstract base class for a branch.
    ///
    /// Implement some common functionality for convenience.
    class BranchAbc : public Component
    {
+      friend class Network;
+
       public:
 
          SGT_PROPS_INIT(BranchAbc);
@@ -67,7 +71,42 @@ namespace SmartGridToolbox
          SGT_PROP_GET(phases1, BranchAbc, Phases, GetByConstRef, phases1);
 
       /// @}
- 
+        
+      /// @name attached busses:
+      /// @{
+         
+         std::shared_ptr<const Bus> bus0() const
+         {
+            return bus0_;
+         }
+
+         std::shared_ptr<Bus> bus0()
+         {
+            return bus0_;
+         }
+
+         void setBus0(std::shared_ptr<Bus> bus0)
+         {
+            bus0_ = bus0;
+         }
+
+         std::shared_ptr<const Bus> bus1() const
+         {
+            return bus1_;
+         }
+
+         std::shared_ptr<Bus> bus1()
+         {
+            return bus1_;
+         }
+
+         void setBus1(std::shared_ptr<Bus> bus1)
+         {
+            bus1_ = bus1;
+         }
+
+      /// @}
+      
       /// @name In service:
       /// @{
          
@@ -125,6 +164,10 @@ namespace SmartGridToolbox
 
          Phases phases0_; ///< Phases on bus 0.
          Phases phases1_; ///< Phases on bus 1.
+
+         std::shared_ptr<Bus> bus0_;
+         std::shared_ptr<Bus> bus1_;
+
          bool isInService_; ///< Am I in service?
 
          Event isInServiceChanged_{sComponentType() + " : Is in service changed"};

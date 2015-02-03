@@ -12,12 +12,23 @@
 
 namespace SmartGridToolbox
 {
+   class GenAbc;
+   class ZipAbc;
+
    /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
    class Bus : public Component, public HasProperties<Bus>
    {
       friend class Network;
 
       public:
+
+         typedef std::shared_ptr<GenAbc> GenPtr;
+         typedef std::map<std::string, GenPtr> GenMap;
+         typedef std::vector<GenPtr> GenVec;
+
+         typedef std::shared_ptr<ZipAbc> ZipPtr;
+         typedef std::map<std::string, ZipPtr> ZipMap;
+         typedef std::vector<ZipPtr> ZipVec;
 
          SGT_PROPS_INIT(Bus);
          SGT_PROPS_INHERIT(Bus, Component);
@@ -78,6 +89,27 @@ namespace SmartGridToolbox
 
       /// @}
 
+      /// @name Generators
+      /// @{
+         
+         const GenVec gens() const {return genVec_;}
+         int nInServiceGens() const;
+         arma::Col<Complex> SGen() const;
+         double JGen() const;
+
+      /// @}
+
+      /// @name Zips
+      /// @{
+         
+         const ZipMap zips() const {return zipMap_;}
+         int nInServiceZips() const;
+         arma::Col<Complex> YZip() const;
+         arma::Col<Complex> IZip() const;
+         arma::Col<Complex> SZip() const;
+
+      /// @}
+      
       /// @name Control and limits:
       /// @{
 
@@ -199,6 +231,12 @@ namespace SmartGridToolbox
          Phases phases_{Phase::BAL};
          arma::Col<Complex> VNom_;
          double VBase_{1.0};
+
+         GenMap genMap_;
+         GenVec genVec_;
+
+         ZipMap zipMap_;
+         ZipVec zipVec_;
 
          BusType type_{BusType::NA};
          arma::Col<double> VMagSetpoint_;

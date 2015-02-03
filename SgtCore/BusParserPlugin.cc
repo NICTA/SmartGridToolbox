@@ -9,7 +9,7 @@ namespace SmartGridToolbox
    void BusParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
    {
       auto bus = parseBus(nd, parser);
-      netw.addNode(std::move(bus));
+      netw.addBus(std::move(bus));
    }
    
    std::unique_ptr<Bus> BusParserPlugin::parseBus(const YAML::Node& nd, const ParserBase& parser) const

@@ -7,111 +7,45 @@
 
 namespace SmartGridToolbox
 {
-   arma::Col<Complex> Node::YZip() const
-   {
-      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
-      // Easier to just do this.
-      auto sum = arma::Col<Complex>(bus_->phases().size(), arma::fill::zeros);
-      for (const auto zip : zips_)
-      {
-         sum += zip->YConst();
-      }
-      return sum;
-   }
-
-   arma::Col<Complex> Node::IZip() const
-   {
-      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
-      // Easier to just do this.
-      auto sum = arma::Col<Complex>(bus_->phases().size(), arma::fill::zeros);
-      for (const auto zip : zips_)
-      {
-         sum += zip->IConst();
-      }
-      return sum;
-   }
-
-   arma::Col<Complex> Node::SZip() const
-   {
-      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
-      // Easier to just do this.
-      auto sum = arma::Col<Complex>(bus_->phases().size(), arma::fill::zeros);
-      for (const auto zip : zips_)
-      {
-         sum += zip->SConst();
-      }
-      return sum;
-   }
-
-   arma::Col<Complex> Node::SGen() const
-   {
-      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
-      // Easier to just do this.
-      auto sum = arma::Col<Complex>(bus_->phases().size(), arma::fill::zeros);
-      for (const auto gen : gens_)
-      {
-         if (gen->isInService())
-         {
-            sum += gen->S();
-         }
-      }
-      return sum;
-   }
-
-   double Node::JGen() const
-   {
-      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
-      // Easier to just do this.
-      double sum = 0;
-      for (const auto gen : gens_)
-      {
-         if (gen->isInService())
-         {
-            sum += gen->J();
-         }
-      }
-      return sum;
-   }
-
    Network::Network(const std::string& id, double PBase) :
       Component(id),
       PBase_(PBase)
    {
       // Empty.
    }
-         
-   void Network::addNode(BusPtr bus)
+
+   void Network::addBus(BusPtr bus)
    {
-      auto nd = NodePtr(new Node(bus)); 
-      nodeMap_[bus->id()] = nd;
-      nodeVec_.push_back(nd);
+      busMap_[bus->id()] = bus;
+      busVec_.push_back(bus);
    }
 
-   void Network::addArc(BranchPtr branch, const std::string& bus0Id, const std::string& bus1Id)
+   void Network::addBranch(BranchPtr branch, const std::string& bus0Id, const std::string& bus1Id)
    {
-      auto nd0 = node(bus0Id); 
-      auto nd1 = node(bus1Id); 
-      if (nd0 == nullptr)
+      auto bus0 = bus(bus0Id); 
+      auto bus1 = bus(bus1Id); 
+      if (bus0 == nullptr)
       {
          Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << bus0Id << " was not found in the network." << std::endl;
       }
-      if (nd1 == nullptr)
+      if (bus1 == nullptr)
       {
          Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << bus1Id << " was not found in the network." << std::endl;
       }
-      auto arc = ArcPtr(new Arc(branch, nd0, nd1));
-      arcMap_[branch->id()] = arc;
-      arcVec_.push_back(arc);
+      branch->setBus0(bus0);
+      branch->setBus1(bus1);
+      branchMap_[branch->id()] = branch;
+      branchVec_.push_back(branch);
    }
          
    void Network::addGen(GenPtr gen, const std::string& busId)
    {
       genMap_[gen->id()] = gen;
       genVec_.push_back(gen);
-      auto busNd = node(busId);
-      if (busNd != nullptr)
+      auto bus = this->bus(busId);
+      if (bus != nullptr)
       {
-         busNd->gens_.push_back(gen);
+         bus->genMap_[gen->id()] = gen;
       }
       else
       {
@@ -123,31 +57,14 @@ namespace SmartGridToolbox
    {
       zipMap_[zip->id()] = zip;
       zipVec_.push_back(zip);
-      auto busNd = node(busId);
-      if (busNd != nullptr)
+      auto bus = this->bus(busId);
+      if (bus != nullptr)
       {
-         busNd->zips_.push_back(zip);
+         bus->zipMap_[zip->id()] = zip;
       }
       else
       {
          Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network." << std::endl;
-      }
-   }
-
-   namespace
-   {
-      bool hasInServiceGen(const Node& nd)
-      {
-         bool result = false;
-         for (int i = 0; i < nd.gens().size(); ++i)
-         {
-            if (nd.gens()[i]->isInService())
-            {
-               result = true;
-               break;
-            }
-         }
-         return result;
       }
    }
 
@@ -157,16 +74,14 @@ namespace SmartGridToolbox
       SGT_DEBUG(Log().debug() << *this);
 
       PowerFlowModel mod;
-      for (const auto nd : nodeVec_)
+      for (const auto bus : busVec_)
       {
-         auto bus = nd->bus();
-
-         bool isActiveSv = bus->setpointChanged().isActive();
-         bus->setpointChanged().setIsActive(false);
+         bool enabledSv = bus->setpointChanged().enabled();
+         bus->setpointChanged().setEnabled(false);
          BusType busTypeSv = bus->type();
          if (bus->type() != BusType::PQ)
          {
-            if (!hasInServiceGen(*nd))
+            if (!hasInServiceGen(*bus))
             {
                Log().warning() << "Bus " << bus->id() << " has type " << bus->type()
                                << ", but does not have any in service generators. Setting type to PQ." << std::endl;
@@ -175,20 +90,19 @@ namespace SmartGridToolbox
          }
 
          bus->applyVSetpoints();
-         mod.addBus(bus->id(), bus->type(), bus->phases(), nd->YZip(), nd->IZip(), nd->SZip(), nd->JGen(),
-               bus->V(), nd->SGen() + nd->SZip());
+         mod.addBus(bus->id(), bus->type(), bus->phases(), bus->YZip(), bus->IZip(), bus->SZip(), bus->JGen(),
+                    bus->V(), bus->SGen() + bus->SZip());
 
          bus->setType(busTypeSv);
-         bus->setpointChanged().setIsActive(isActiveSv);
+         bus->setpointChanged().setEnabled(enabledSv);
       }
-      for (const auto arc : arcVec_)
+      for (const auto branch : branchVec_)
       {
-         auto branch = arc->branch();
          if (branch->isInService())
          {
             // TODO: ignore like this, or add the branch with zero admittance?
-            mod.addBranch(arc->node0()->bus()->id(), arc->node1()->bus()->id(),
-                  branch->phases0(), branch->phases1(), branch->Y());
+            mod.addBranch(branch->bus0()->id(), branch->bus1()->id(),
+                          branch->phases0(), branch->phases1(), branch->Y());
          }
       }
       mod.validate();
@@ -203,56 +117,45 @@ namespace SmartGridToolbox
       for (const auto& busPair: mod.busses())
       {
          auto& busNr = *busPair.second;
-         const auto nd = this->node(busNr.id_);
-         auto bus = nd->bus();
+         const auto bus = this->bus(busNr.id_);
 
-         int nInService = 0; 
-         for (auto gen : nd->gens())
-         {
-            if (gen->isInService())
-            {
-               nInService += 1;
-            }
-         }
+         int nInService = bus->nInServiceGens(); 
 
          arma::Col<Complex> SGen = nInService > 0 
-            ? (busNr.S_ - nd->SZip()) / nInService
+            ? (busNr.S_ - bus->SZip()) / nInService
             : arma::Col<Complex>(bus->phases().size(), arma::fill::zeros);
          // Note: we've already taken YZip and IZip explicitly into account, so this is correct.
          // KLUDGE: We're using a vector above, rather than "auto" (which gives some kind of expression type).
          // This is less efficient, but the latter gives errors in valgrind.
          // Also: regarding the nInService check, recall that if nInService = 0, the bus is treated as PQ for
          // the purpose of the solver.
-         // TODO: it would be nicer if we delegated the BusType to the Node, and then dynamically checked the
-         // generators. If there are in service generators, return either SL (if one of them is a slack generator)
-         // or PV, otherwise return PQ.
 
          bus->setV(busNr.V_);
          switch (bus->type())
          {
             case BusType::SL:
-               for (auto gen : nd->gens())
+               for (const auto& gen : bus->gens())
                {
-                  if (gen->isInService())
+                  if (gen.second->isInService())
                   {
-                     gen->setInServiceS(SGen);
+                     gen.second->setInServiceS(SGen);
                   }
                }
                break;
             case BusType::PQ:
                break;
             case BusType::PV:
-               for (auto gen : nd->gens())
+               for (const auto& gen : bus->gens())
                {
-                  if (gen->isInService())
+                  if (gen.second->isInService())
                   {
                      // Keep P for gens, distribute Q amongst all gens.
-                     arma::Col<Complex> SNew(gen->S().size());
+                     arma::Col<Complex> SNew(gen.second->S().size());
                      for (int i = 0; i < SNew.size(); ++i)
                      {
-                        SNew[i] = Complex(gen->S()[i].real(), SGen[i].imag());
+                        SNew[i] = Complex(gen.second->S()[i].real(), SGen[i].imag());
                      }
-                     gen->setInServiceS(SNew);
+                     gen.second->setInServiceS(SNew);
                   }
                }
                break;
@@ -267,38 +170,72 @@ namespace SmartGridToolbox
       Component::print(os);
       StreamIndent _(os);
       os << "P_base: " << PBase_ << std::endl;
-      for (auto nd : nodeVec_)
+      for (auto bus : busVec_)
       {
          {
             os << "Bus: " << std::endl;
             StreamIndent _(os);
-            os << *nd->bus() << std::endl;
+            os << *bus << std::endl;
          }
          {
             os << "Zips: " << std::endl;
             StreamIndent _(os);
-            for (auto zip : nd->zips())
+            for (auto zip : bus->zips())
             {
-               os << *zip << std::endl;
+               os << *zip.second << std::endl;
             }
          }
          {
             os << "Gens: " << std::endl;
             StreamIndent _(os);
-            for (auto gen : nd->gens())
+            for (auto gen : bus->gens())
             {
-               os << *gen << std::endl;
+               os << *gen.second << std::endl;
             }
          }
       }
-      for (auto arc : arcVec_)
+      for (auto branch : branchVec_)
       {
          os << "Branch: " << std::endl;
          StreamIndent _1(os);
-         os << *arc->branch() << std::endl;
+         os << *branch << std::endl;
          StreamIndent _2(os);
-         os << "Bus 0 = " << arc->node0()->bus()->id() << std::endl;
-         os << "Bus 1 = " << arc->node0()->bus()->id() << std::endl;
+         os << "Bus 0 = " << branch->bus0()->id() << std::endl;
+         os << "Bus 1 = " << branch->bus1()->id() << std::endl;
       }
+   }
+
+   bool hasInServiceGen(const Bus& bus)
+   {
+      bool result = false;
+      for (auto elem : bus.gens())
+      {
+         if (elem.second->isInService())
+         {
+            result = true;
+            break;
+         }
+      }
+      return result;
+   }
+
+   void Network::applySLSetpoints(Bus& bus)
+   {
+      arma::Col<Complex> VNew(bus.phases().size());
+      for (int i = 0; i < bus.phases().size(); ++i)
+      {
+         VNew(i) = std::polar(bus.VMagSetpoint_(i), bus.VAngSetpoint_(i));
+      }
+      bus.setV(VNew);
+   }
+
+   void Network::applyPVSetpoints(Bus& bus)
+   {
+      arma::Col<Complex> VNew = bus.V();
+      for (int i = 0; i < bus.phases().size(); ++i)
+      {
+         VNew(i) *= bus.VMagSetpoint_(i) / std::abs(bus.V_(i));
+      }
+      bus.setV(VNew);
    }
 }

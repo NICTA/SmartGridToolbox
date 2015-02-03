@@ -86,3 +86,7 @@ in code (e.g. Sun) that requires it.
 The point of this change is to make a more direct connection with parsed files
 etc. i.e. don't have to convert parsed times to UTC to match with Simulation
 times.
+
+Misc:
+-----
+Event -> isActive -> enable/disable

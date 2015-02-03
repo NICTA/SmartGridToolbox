@@ -1,5 +1,8 @@
 #include "Bus.h"
 
+#include "Gen.h"
+#include "Zip.h"
+
 #include <ostream>
 #include <istream>
 
@@ -30,29 +33,103 @@ namespace SmartGridToolbox
       }
    }
 
-   void Bus::applyVSetpoints()
+   int Bus::nInServiceGens() const
    {
-      arma::Col<Complex> VNew(phases_.size());
-      switch (type_)
+      int sum = 0;
+      for (const auto& elem : genMap_)
       {
-         case BusType::SL:
-            for (int i = 0; i < phases_.size(); ++i)
-            {
-               VNew(i) = std::polar(VMagSetpoint_(i), VAngSetpoint_(i));
-            }
-            setV(VNew); // TODO: this triggers an event: is this desirable, or just set V_ directly?
-            break;
-         case BusType::PV:
-            VNew = V_;
-            for (int i = 0; i < phases_.size(); ++i)
-            {
-               VNew(i) *= VMagSetpoint_(i) / std::abs(V_(i));
-            }
-            setV(VNew);
-            break;
-         default:
-            break;
+         const auto gen = elem.second;
+         if (gen->isInService())
+         {
+            ++sum;
+         }
       }
+      return sum;
+   }
+
+   arma::Col<Complex> Bus::SGen() const
+   {
+      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
+      // Easier to just do this.
+      auto sum = arma::Col<Complex>(phases().size(), arma::fill::zeros);
+      for (const auto& elem : genMap_)
+      {
+         const auto gen = elem.second;
+         if (gen->isInService())
+         {
+            sum += gen->S();
+         }
+      }
+      return sum;
+   }
+
+   double Bus::JGen() const
+   {
+      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
+      // Easier to just do this.
+      double sum = 0;
+      for (const auto& elem : genMap_)
+      {
+         const auto gen = elem.second;
+         if (gen->isInService())
+         {
+            sum += gen->J();
+         }
+      }
+      return sum;
+   }
+
+   int Bus::nInServiceZips() const
+   {
+      int sum = 0;
+      for (const auto& elem : zipMap_)
+      {
+         const auto zip = elem.second;
+         if (zip->isInService())
+         {
+            ++sum;
+         }
+      }
+      return sum;
+   }
+
+   arma::Col<Complex> Bus::YZip() const
+   {
+      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
+      // Easier to just do this.
+      auto sum = arma::Col<Complex>(phases().size(), arma::fill::zeros);
+      for (const auto& elem : zipMap_)
+      {
+         const auto zip = elem.second;
+         sum += zip->YConst();
+      }
+      return sum;
+   }
+
+   arma::Col<Complex> Bus::IZip() const
+   {
+      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
+      // Easier to just do this.
+      auto sum = arma::Col<Complex>(phases().size(), arma::fill::zeros);
+      for (const auto& elem : zipMap_)
+      {
+         const auto zip = elem.second;
+         sum += zip->IConst();
+      }
+      return sum;
+   }
+
+   arma::Col<Complex> Bus::SZip() const
+   {
+      // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
+      // Easier to just do this.
+      auto sum = arma::Col<Complex>(phases().size(), arma::fill::zeros);
+      for (const auto& elem : zipMap_)
+      {
+         const auto zip = elem.second;
+         sum += zip->SConst();
+      }
+      return sum;
    }
 
    void Bus::print(std::ostream& os) const
