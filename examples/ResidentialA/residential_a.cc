@@ -54,9 +54,9 @@ int main(int argc, const char** argv)
    std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
 
    out << "# t";
-   for (auto nd : netw->nodes())
+   for (auto nd : netw->busses())
    {
-      out << " " << nd->bus()->id();
+      out << " " << bus()->id();
    }
    out << std::endl;
   
@@ -67,9 +67,9 @@ int main(int argc, const char** argv)
       ok = sim.doTimestep();
       double t = dSeconds(sim.currentTime() - sim.startTime())/3600;
       out << t;
-      for (ConstNodePtr nd : netw->nodes())
+      for (ConstBusPtr bus : netw->busses())
       {
-         auto S = nd->SZip();
+         auto S = bus->SZip();
          double P = 0;
          for (auto& Si : S)
          {
