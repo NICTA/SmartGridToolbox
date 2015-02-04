@@ -6,6 +6,7 @@
 #include <SgtCore/Component.h>
 #include <SgtCore/Gen.h>
 #include <SgtCore/PowerFlow.h>
+#include <SgtCore/PowerFlowSolver.h>
 #include <SgtCore/Zip.h>
 
 #include<iostream>
@@ -38,6 +39,8 @@ namespace SmartGridToolbox
    
    typedef std::vector<ZipPtr> ZipVec;
    typedef std::map<std::string, ZipPtr> ZipMap;
+
+   class PowerFlowModel;
 
    class Network : public Component
    {
@@ -173,7 +176,7 @@ namespace SmartGridToolbox
          virtual void addZip(ZipPtr zip, const std::string& busId);
 
       /// @}
-      
+
       /// @name Per-Unit Conversions:
       /// @{
          
@@ -227,6 +230,11 @@ namespace SmartGridToolbox
       /// @name Power-Flow problem:
       /// @{
          
+         void setSolver(std::unique_ptr<PowerFlowSolverInterface> solver)
+         {
+            solver_ = std::move(solver);
+         }
+         
          virtual bool solvePowerFlow();
 
          bool isValidSolution() const
@@ -260,6 +268,8 @@ namespace SmartGridToolbox
 
          ZipVec zipVec_;
          ZipMap zipMap_;
+
+         std::unique_ptr<PowerFlowSolverInterface> solver_;
 
          bool isValidSolution_{false};
    };

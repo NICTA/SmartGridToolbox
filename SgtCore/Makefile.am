@@ -21,7 +21,7 @@ libinclude_HEADERS = \
 	OverheadLine.h \
 	Parser.h \
 	PowerFlow.h \
-	PowerFlowSolverAbc.h \
+	PowerFlowSolver.h \
 	Properties.h \
 	Random.h \
 	SinglePhaseTransformer.h \
@@ -61,8 +61,8 @@ libSgtCore_a_SOURCES = \
 	Parser.h Parser.cc \
 	PowerFlow.h PowerFlow.cc \
 	PowerFlowModel.h PowerFlowModel.cc \
-	PowerFlowNr.h PowerFlowNr.cc \
-	PowerFlowSolverAbc.h \
+	PowerFlowNrSolver.h PowerFlowNrSolver.cc \
+	PowerFlowSolver.h \
 	Properties.h \
 	Random.h Random.cc \
 	RegisterParserPlugins.cc \

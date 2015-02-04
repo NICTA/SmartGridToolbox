@@ -1,6 +1,6 @@
 #include "Network.h"
 
-#include "PowerFlowNr.h"
+#include "PowerFlowNrSolver.h"
 #include "Zip.h"
 
 #include <numeric>
@@ -72,8 +72,8 @@ namespace SmartGridToolbox
 
       std::unique_ptr<PowerFlowModel> mod = buildModel();
 
-      PowerFlowNr solver(mod.get());
-      isValidSolution_ = solver.solve();
+      solver_->init(mod.get());
+      isValidSolution_ = solver_->solve();
       if (!isValidSolution_)
       {
          Log().warning() << "Couldn't solve power flow model" << std::endl;

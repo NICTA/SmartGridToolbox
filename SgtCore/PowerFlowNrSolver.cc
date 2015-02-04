@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <ostream>
 #include <sstream>
-#include "PowerFlowNr.h"
+#include "PowerFlowNrSolver.h"
 #include "SparseSolver.h"
 #include "Stopwatch.h"
 
@@ -99,23 +99,49 @@ namespace SmartGridToolbox
       }
    }
 
-   PowerFlowNr::PowerFlowNr(PowerFlowModel* mod) :
-      mod_(mod),
-      selIrPqFrom_f_(mod->nPq()),
-      selIiPqFrom_f_(mod->nPq()),
-      selIrPvFrom_f_(mod->nPv()),
-      selIiPvFrom_f_(mod->nPv()),
-      selVrPqFrom_x_(mod->nPq()),
-      selViPqFrom_x_(mod->nPq()),
-      selQPvFrom_x_(mod->nPv()),
-      selViPvFrom_x_(mod->nPv())
+   void PowerFlowNrSolver::init(PowerFlowModel* mod)
    {
-      initSubmatrixRanges();
+      selIrPqFrom_f_.set_size(mod->nPq());
+      selIiPqFrom_f_.set_size(mod->nPq());
+      selIrPvFrom_f_.set_size(mod->nPv());
+      selIiPvFrom_f_.set_size(mod->nPv());
+      selVrPqFrom_x_.set_size(mod->nPq());
+      selViPqFrom_x_.set_size(mod->nPq());
+      selQPvFrom_x_.set_size(mod->nPv());
+      selViPvFrom_x_.set_size(mod->nPv());
+
+      for (uword i = 0; i < mod_->nPq(); ++i)
+      {
+         selIrPqFrom_f_[i] = 2 * i + 1;
+         selIiPqFrom_f_[i] = 2 * i;
+      }
+
+      for (uword i = 0; i < mod_->nPv(); ++i)
+      {
+         selIrPvFrom_f_[i] = 2 * mod_->nPq() + 2 * i + 1;
+         selIiPvFrom_f_[i] = 2 * mod_->nPq() + 2 * i;
+      }
+
+      for (uword i = 0; i < mod_->nPq(); ++i)
+      {
+         selVrPqFrom_x_[i] = 2 * i;
+         selViPqFrom_x_[i] = 2 * i + 1;
+      }
+
+      for (uword i = 0; i < mod_->nPv(); ++i)
+      {
+         selQPvFrom_x_[i] = 2 * mod_->nPq() + 2 * i;
+         selViPvFrom_x_[i] = 2 * mod_->nPq() + 2 * i + 1;
+      }
+
+      // Just in case...
+      G_.reset();
+      B_.reset();
    }
 
-   bool PowerFlowNr::solve()
+   bool PowerFlowNrSolver::solve()
    {
-      SGT_DEBUG(Log().debug() << "PowerFlowNr : solve." << std::endl; LogIndent _;);
+      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver : solve." << std::endl; LogIndent _;);
 
       Stopwatch stopwatch;
       Stopwatch stopwatchTot;
@@ -260,7 +286,7 @@ namespace SmartGridToolbox
 
       if (!wasSuccessful)
       {
-         Log().warning() << "PowerFlowNr: Newton-Raphson method failed to converge." << std::endl;
+         Log().warning() << "PowerFlowNrSolver: Newton-Raphson method failed to converge." << std::endl;
          for (int i = 0; i < mod_->nNode(); ++i)
          {
             auto node = mod_->nodes()[i];
@@ -305,53 +331,26 @@ namespace SmartGridToolbox
 
       stopwatchTot.stop(); durationTot = stopwatchTot.seconds();
 
-      SGT_DEBUG(Log().message() << "PowerFlowNr: successful = " << wasSuccessful << ", error = " << err
+      SGT_DEBUG(Log().message() << "PowerFlowNrSolver: successful = " << wasSuccessful << ", error = " << err
             << ", iterations = " << niter << ", total time = " << durationTot << "." << std::endl);
-      SGT_DEBUG(Log().debug() << "PowerFlowNr: -----------------------   " << std::endl);
-      SGT_DEBUG(Log().debug() << "PowerFlowNr: init setup time         = " << durationInitSetup << " s." << std::endl);
-      SGT_DEBUG(Log().debug() << "PowerFlowNr: time in calcf           = " << durationCalcf << " s." << std::endl);
-      SGT_DEBUG(Log().debug() << "PowerFlowNr: time in updateJ         = " << durationUpdateJ << " s." << std::endl);
-      SGT_DEBUG(Log().debug() << "PowerFlowNr: time in modifyForPv     = " << durationModifyForPv << " s." 
+      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: -----------------------   " << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: init setup time         = " << durationInitSetup << " s." << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in calcf           = " << durationCalcf << " s." << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in updateJ         = " << durationUpdateJ << " s." << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in modifyForPv     = " << durationModifyForPv << " s." 
             << std::endl);
-      SGT_DEBUG(Log().debug() << "PowerFlowNr: time to construct JMat  = " << durationConstructJMat << " s." 
+      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time to construct JMat  = " << durationConstructJMat << " s." 
             << std::endl);
-      SGT_DEBUG(Log().debug() << "PowerFlowNr: solve time              = " << durationSolve << std::endl);
-      SGT_DEBUG(Log().debug() << "PowerFlowNr: time to update iter     = " << durationUpdateIter << std::endl);
-      SGT_DEBUG(Log().debug() << "PowerFlowNr: -----------------------   " << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: solve time              = " << durationSolve << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time to update iter     = " << durationUpdateIter << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: -----------------------   " << std::endl);
 
       return wasSuccessful;
    }
 
-   void PowerFlowNr::initSubmatrixRanges()
-   {
-      for (uword i = 0; i < mod_->nPq(); ++i)
-      {
-         selIrPqFrom_f_[i] = 2 * i + 1;
-         selIiPqFrom_f_[i] = 2 * i;
-      }
-
-      for (uword i = 0; i < mod_->nPv(); ++i)
-      {
-         selIrPvFrom_f_[i] = 2 * mod_->nPq() + 2 * i + 1;
-         selIiPvFrom_f_[i] = 2 * mod_->nPq() + 2 * i;
-      }
-
-      for (uword i = 0; i < mod_->nPq(); ++i)
-      {
-         selVrPqFrom_x_[i] = 2 * i;
-         selViPqFrom_x_[i] = 2 * i + 1;
-      }
-
-      for (uword i = 0; i < mod_->nPv(); ++i)
-      {
-         selQPvFrom_x_[i] = 2 * mod_->nPq() + 2 * i;
-         selViPvFrom_x_[i] = 2 * mod_->nPq() + 2 * i + 1;
-      }
-   }
-
    /// Set the part of J that doesn't update at each iteration.
    /** At this stage, we are treating J as if all busses were PQ. */
-   void PowerFlowNr::initJc(Jacobian& Jc) const
+   void PowerFlowNrSolver::initJc(Jacobian& Jc) const
    {
       if (mod_->nPq() > 0)
       {
@@ -412,7 +411,7 @@ namespace SmartGridToolbox
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-   void PowerFlowNr::calcf(Col<double>& f,
+   void PowerFlowNrSolver::calcf(Col<double>& f,
                            const Col<double>& Vr, const Col<double>& Vi,
                            const Col<double>& P, const Col<double>& Q,
                            const Col<double>& M2Pv) const
@@ -463,7 +462,7 @@ namespace SmartGridToolbox
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-   void PowerFlowNr::updateJ(Jacobian& J, const Jacobian& Jc,
+   void PowerFlowNrSolver::updateJ(Jacobian& J, const Jacobian& Jc,
                              const Col<double>& Vr, const Col<double>& Vi,
                              const Col<double>& P, const Col<double>& Q,
                              const Col<double>& M2Pv) const
@@ -525,7 +524,7 @@ namespace SmartGridToolbox
    }
 
    // Modify J and f to take into account PV busses.
-   void PowerFlowNr::modifyForPv(Jacobian& J, Col<double>& f,
+   void PowerFlowNrSolver::modifyForPv(Jacobian& J, Col<double>& f,
                                  const Col<double>& Vr, const Col<double>& Vi,
                                  const Col<double>& M2Pv)
    {
@@ -559,7 +558,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowNr::calcJMatrix(SpMat<double>& JMat, const Jacobian& J) const
+   void PowerFlowNrSolver::calcJMatrix(SpMat<double>& JMat, const Jacobian& J) const
    {
       Array<int, 4> ibInd = {{0, 1, 2, 3}};
       Array<int, 4> kbInd = {{0, 1, 3, 4}}; // Skip VrPv, since it doesn't appear as a variable.

@@ -3,6 +3,7 @@
 
 #include "Common.h"
 #include "PowerFlowModel.h"
+#include "PowerFlowSolver.h"
 
 // Terminology:
 // "Bus" and "Branch" refer to n-phase objects i.e. they can contain several phases.
@@ -182,10 +183,11 @@ namespace SmartGridToolbox
       Array2D<arma::SpMat<double>, 4, 5> blocks_;
    };
 
-   class PowerFlowNr : public PowerFlowSolverInterface
+   class PowerFlowNrSolver : public PowerFlowSolverInterface
    {
       public:
-   
+  
+         virtual void init(PowerFlowModel* mod) override;
          virtual bool solve() override;
 
       private:
