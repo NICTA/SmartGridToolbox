@@ -258,41 +258,7 @@ namespace SmartGridToolbox
          stopwatch.stop(); durationUpdateIter += stopwatch.seconds();
       }
 
-      if (wasSuccessful)
-      {
-         for (int i = 0; i < mod_->nNode(); ++i)
-         {
-            mod_->V()(i) = {Vr(i), Vi(i)};
-            mod_->S()(i) = {P(i), Q(i)};
-         }
-
-         // Set the slack power.
-         if (mod_->nSl() > 0)
-         {
-            auto SSl = mod_->S()(mod_->selSlFromAll());
-
-            auto VSl = mod_->V()(mod_->selSlFromAll());
-            auto IZipSl = mod_->IZip()(mod_->selSlFromAll());
-
-            SpMat<Complex> YStar = mod_->Y()(mod_->selSlFromAll(), mod_->selAllFromAll());
-            for (auto elem : YStar) elem = std::conj(Complex(elem));
-            auto VStar = colConj(mod_->V());
-            auto IZipStar = colConj(mod_->IZip()(mod_->selSlFromAll()));
-
-            SSl = VSl % (YStar * VStar) - VSl % IZipStar;
-         }
-
-         // Update nodes and busses.
-         for (int i = 0; i < mod_->nNode(); ++i)
-         {
-            auto node = mod_->nodes()[i];
-            node->V_ = mod_->V()(i);
-            node->S_ = mod_->S()(i);
-            node->bus_->V_[node->phaseIdx_] = node->V_;
-            node->bus_->S_[node->phaseIdx_] = node->S_;
-         }
-      }
-      else
+      if (!wasSuccessful)
       {
          Log().warning() << "PowerFlowNr: Newton-Raphson method failed to converge." << std::endl;
          for (int i = 0; i < mod_->nNode(); ++i)
@@ -303,6 +269,38 @@ namespace SmartGridToolbox
             node->bus_->V_[node->phaseIdx_] = node->V_;
             node->bus_->S_[node->phaseIdx_] = node->S_;
          }
+      }
+
+      for (int i = 0; i < mod_->nNode(); ++i)
+      {
+         mod_->V()(i) = {Vr(i), Vi(i)};
+         mod_->S()(i) = {P(i), Q(i)};
+      }
+
+      // Set the slack power.
+      if (mod_->nSl() > 0)
+      {
+         auto SSl = mod_->S()(mod_->selSlFromAll());
+
+         auto VSl = mod_->V()(mod_->selSlFromAll());
+         auto IZipSl = mod_->IZip()(mod_->selSlFromAll());
+
+         SpMat<Complex> YStar = mod_->Y()(mod_->selSlFromAll(), mod_->selAllFromAll());
+         for (auto elem : YStar) elem = std::conj(Complex(elem));
+         auto VStar = colConj(mod_->V());
+         auto IZipStar = colConj(mod_->IZip()(mod_->selSlFromAll()));
+
+         SSl = VSl % (YStar * VStar) - VSl % IZipStar;
+      }
+
+      // Update nodes and busses.
+      for (int i = 0; i < mod_->nNode(); ++i)
+      {
+         auto node = mod_->nodes()[i];
+         node->V_ = mod_->V()(i);
+         node->S_ = mod_->S()(i);
+         node->bus_->V_[node->phaseIdx_] = node->V_;
+         node->bus_->S_[node->phaseIdx_] = node->S_;
       }
 
       stopwatchTot.stop(); durationTot = stopwatchTot.seconds();
