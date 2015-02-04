@@ -8,21 +8,20 @@ extern "C" {
 #include <gurobi_c.h>
 }
 
-#include <map>
+#include <vector>
 
 namespace SmartGridToolbox
 {
-   class BranchAbc;
-   class Bus;
+   class PfNode;
    class PowerFlowModel;
 
    struct OpfBranch;
 
    struct OpfBus
    {
-      SmartGridToolbox::Bus* bus_;
+      PfNode* node_;
       
-      std::map<std::string, const OpfBranch*> opfBranches_; // Branches connected to this bus.
+      std::vector<const OpfBranch*> opfBranches_; // Branches connected to this bus.
       
       Complex SLoad_;
       Complex SGen_;
@@ -40,12 +39,10 @@ namespace SmartGridToolbox
 
    struct OpfBranch
    {
-      SmartGridToolbox::BranchAbc* branch_;
-
       OpfBus* opfBus0_; // From bus.
       OpfBus* opfBus1_; // To bus.
 
-      SmartGridToolbox::Complex y_; // Complex admittance.
+      Complex y_; // Complex admittance.
 
       int aFlowFIdx_; // Map from branch name to active forward flow constraint gurobi idx.
       int aFlowRIdx_; // Map from branch name to active backward flow constraint gurobi idx.
@@ -60,8 +57,6 @@ namespace SmartGridToolbox
          virtual void init(PowerFlowModel* mod) override;
          virtual bool solve() override;
       private:
-         void addBus(SmartGridToolbox::Bus& bus);
-         void addBranch(SmartGridToolbox::BranchAbc& branch);
          void linkBussesAndBranches();
          void recreateBusData();
          void recreateBranchData();
@@ -75,8 +70,12 @@ namespace SmartGridToolbox
       private:
          double voltageLb_;
          double voltageUb_;
-         std::map<std::string, OpfBus> busses_;
-         std::map<std::string, OpfBranch> branches_;
+
+         PowerFlowModel* mod_;
+
+         std::vector<OpfBus> busses_;
+         std::vector<OpfBranch> branches_;
+
          GRBenv * grbEnv_;
          GRBmodel * grbMod_;
          int nVars_;

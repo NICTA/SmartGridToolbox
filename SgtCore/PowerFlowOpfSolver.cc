@@ -1,19 +1,19 @@
 #include "PowerFlowOpfSolver.h"
 
-#include "Branch.h"
-#include "Bus.h"
-#include "Gen.h"
-
 extern "C" {
 #include <gurobi_c.h>
 }
 
 namespace SmartGridToolbox
 {
-   void PowerFlowOpfSolver::addBus(Bus& bus)
+   void PowerFlowOpfSolver::init(PowerFlowModel* mod)
    {
-      OpfBus& opfBus = busses_[bus.id()];
-      opfBus.bus_ = &bus;
+      mod_ = mod;
+      busses_.
+      for (auto nd : mod_->nodes())
+      {
+         OpfBus& opfBus = busses_[nd.idx_];
+      opfBus.node_ = &bus;
    }
 
    void PowerFlowOpfSolver::addBranch(BranchAbc& branch)
@@ -41,32 +41,32 @@ namespace SmartGridToolbox
       for (auto& pair : busses_)
       {
          OpfBus& opfBus = pair.second;
-         opfBus.SLoad_ = opfBus.bus_->SZip()(0);
-         opfBus.SGen_ = opfBus.bus_->SGen()(0);
+         opfBus.SLoad_ = opfBus.node_->SZip()(0);
+         opfBus.SGen_ = opfBus.node_->SGen()(0);
          opfBus.SMagMax_ = 0.0;
 
-         SGT_DEBUG(debug() << "Add Bus: " << opfBus.bus_->id() << " " << opfBus.SLoad_ << " "
+         SGT_DEBUG(debug() << "Add Bus: " << opfBus.node_->id() << " " << opfBus.SLoad_ << " "
                            << opfBus.SGen_ << std::endl);
 
-         opfBus.thetaIdx_ = addVar(opfBus.bus_->id() + "_theta", -GRB_INFINITY, GRB_INFINITY, 0.0);
-         opfBus.phiIdx_ = addVar(opfBus.bus_->id() + "_phi", -1.0, GRB_INFINITY, 0.0);
-         opfBus.phiSlackLbIdx_ = addVar(opfBus.bus_->id() + "_phi_slack_lb", 0.0, GRB_INFINITY, 1e6);
-         opfBus.phiSlackUbIdx_ = addVar(opfBus.bus_->id() + "_phi_slack_ub", 0.0, GRB_INFINITY, 1e6);
+         opfBus.thetaIdx_ = addVar(opfBus.node_->id() + "_theta", -GRB_INFINITY, GRB_INFINITY, 0.0);
+         opfBus.phiIdx_ = addVar(opfBus.node_->id() + "_phi", -1.0, GRB_INFINITY, 0.0);
+         opfBus.phiSlackLbIdx_ = addVar(opfBus.node_->id() + "_phi_slack_lb", 0.0, GRB_INFINITY, 1e6);
+         opfBus.phiSlackUbIdx_ = addVar(opfBus.node_->id() + "_phi_slack_ub", 0.0, GRB_INFINITY, 1e6);
 
-         if (opfBus.bus_->type() == BusType::SL)
+         if (opfBus.node_->type() == BusType::SL)
          {
-            opfBus.aGenIdx_ = addVar(opfBus.bus_->id() + "_active", 0.0, GRB_INFINITY, 1.0e4);
-            opfBus.rGenIdx_ = addVar(opfBus.bus_->id() + "_reactive", -GRB_INFINITY, GRB_INFINITY, 0.0);
+            opfBus.aGenIdx_ = addVar(opfBus.node_->id() + "_active", 0.0, GRB_INFINITY, 1.0e4);
+            opfBus.rGenIdx_ = addVar(opfBus.node_->id() + "_reactive", -GRB_INFINITY, GRB_INFINITY, 0.0);
          }
-         else if (opfBus.bus_->type() == BusType::PV)
+         else if (opfBus.node_->type() == BusType::PV)
          {
-            opfBus.aGenIdx_ = addVar(opfBus.bus_->id() + "_active", 0.0, opfBus.SGen_.real(), 1.0e4);
-            opfBus.rGenIdx_ = addVar(opfBus.bus_->id() + "_reactive", -GRB_INFINITY, GRB_INFINITY, 0.0);
+            opfBus.aGenIdx_ = addVar(opfBus.node_->id() + "_active", 0.0, opfBus.SGen_.real(), 1.0e4);
+            opfBus.rGenIdx_ = addVar(opfBus.node_->id() + "_reactive", -GRB_INFINITY, GRB_INFINITY, 0.0);
          }
-         else if (opfBus.bus_->type() == BusType::PQ)
+         else if (opfBus.node_->type() == BusType::PQ)
          {
-            opfBus.aGenIdx_ = addVar(opfBus.bus_->id() + "_active", 0.0, opfBus.SGen_.real(), 1.0e4);
-            opfBus.rGenIdx_ = addVar(opfBus.bus_->id() + "_reactive", 0.0, 0.0, 0.0);
+            opfBus.aGenIdx_ = addVar(opfBus.node_->id() + "_active", 0.0, opfBus.SGen_.real(), 1.0e4);
+            opfBus.rGenIdx_ = addVar(opfBus.node_->id() + "_reactive", 0.0, 0.0, 0.0);
          }
       }
    }
@@ -179,7 +179,7 @@ namespace SmartGridToolbox
          addConstr(nLines+1, cinda.data(), cvala.data(), GRB_EQUAL, opfBus.SLoad_.real());
          addConstr(nLines+1, cindr.data(), cvalr.data(), GRB_EQUAL, opfBus.SLoad_.imag());
 
-         if (opfBus.bus_->type() == BusType::SL)
+         if (opfBus.node_->type() == BusType::SL)
          {
             // Slack bus, theta = 0.
             int cind[] = {opfBus.thetaIdx_};
@@ -187,12 +187,12 @@ namespace SmartGridToolbox
             addConstr(1, cind, cval, GRB_EQUAL, 0);
          }
 
-         if (opfBus.bus_->type() == BusType::SL || opfBus.bus_->type() == BusType::PV)
+         if (opfBus.node_->type() == BusType::SL || opfBus.node_->type() == BusType::PV)
          {
             // Slack or PV bus, phi = |V| - 1.0.
             int cind[] = {opfBus.phiIdx_};
             double cval[] = {1.0};
-            addConstr(1, cind, cval, GRB_EQUAL, abs(opfBus.bus_->V()(0)) - 1.0);
+            addConstr(1, cind, cval, GRB_EQUAL, abs(opfBus.node_->V()(0)) - 1.0);
          } 
          else
          {
@@ -222,7 +222,7 @@ namespace SmartGridToolbox
       {
          OpfBus& opfBus = pair.second;
 
-         Bus& bus = *opfBus.bus_;
+         Bus& bus = *opfBus.node_;
 
          double activeVal;
          double reactiveVal;
@@ -240,8 +240,8 @@ namespace SmartGridToolbox
          Complex V = SmartGridToolbox::polar(voltageVal, thetaVal);
         
          SGT_DEBUG(
-               debug() << "SGT name = " << opfBus.bus_->id() << std::endl;
-               debug() << "SGT type = " << opfBus.bus_->type() << std::endl;
+               debug() << "SGT name = " << opfBus.node_->id() << std::endl;
+               debug() << "SGT type = " << opfBus.node_->type() << std::endl;
                debug() << "SLoad    = " << opfBus.SLoad_ << std::endl;
                debug() << "SGen     = " << opfBus.SGen_ << std::endl;
                debug() << "SOL S    = " << S << std::endl;
@@ -249,17 +249,17 @@ namespace SmartGridToolbox
                debug() << "SOL |V|  = " << abs(V) << std::endl;
          );
 
-         switch (opfBus.bus_->type())
+         switch (opfBus.node_->type())
          {
             case BusType::SL:
-               opfBus.bus_->gens()[0]->setSg({S}); // Warm start.
+               opfBus.node_->gens()[0]->setSg({S}); // Warm start.
                break;
             case BusType::PQ:
-               opfBus.bus_->setV({V}); // Warm start.
+               opfBus.node_->setV({V}); // Warm start.
                break;
             case BusType::PV:
-               opfBus.bus_->setSg({Complex(opfBus.SGen_.real(), S.imag())}); // Warm start.
-               opfBus.bus_->setV({V * abs(opfBus.bus_->V()(0)) / abs(V)}); // Warm start.
+               opfBus.node_->setSg({Complex(opfBus.SGen_.real(), S.imag())}); // Warm start.
+               opfBus.node_->setV({V * abs(opfBus.node_->V()(0)) / abs(V)}); // Warm start.
                break;
             default:
                error() << "Bad bus type." << std::endl;
@@ -267,7 +267,7 @@ namespace SmartGridToolbox
                break;
          }
          
-         opfBus.SSol_ = opfBus.bus_->STot()(0);
+         opfBus.SSol_ = opfBus.node_->STot()(0);
          opfBus.VSol_ = V;
       }
    }
