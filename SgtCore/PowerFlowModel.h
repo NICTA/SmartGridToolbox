@@ -24,9 +24,9 @@ namespace SmartGridToolbox
             const arma::Col<Complex>& YZip, const arma::Col<Complex>& IZip, const arma::Col<Complex>& SZip,
             double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S);
 
-      std::string id_;              ///< Externally relevant id.
-      BusType type_;                ///< Bus type.
-      Phases phases_;               ///< Bus phases.
+      std::string id_; ///< Externally relevant id.
+      BusType type_; ///< Bus type.
+      Phases phases_; ///< Bus phases.
 
       arma::Col<Complex> YZip_; ///< Constant admittance shunt, one per phase.
       arma::Col<Complex> IZip_; ///< Constant current injection, one per phase.
@@ -35,12 +35,12 @@ namespace SmartGridToolbox
       // Regardless of numbers of poles, etc., the combined generation at a bus will have a certain
       // angular momentum for any given frequency of the network. Thus, we define an effective moment of inertia at the
       // bus by L = J omega_netw.
-      double J_;                    ///< Effective moment of inertia for all machines attached to bus.
+      double J_; ///< Effective moment of inertia for all machines attached to bus.
 
-      arma::Col<Complex> V_;    ///< Voltage, one per phase. Setpoint/warm start on input.
-      arma::Col<Complex> S_;    ///< Total power injection, one per phase. Setpt/wm start on input.
+      arma::Col<Complex> V_; ///< Voltage, one per phase. Setpoint/warm start on input.
+      arma::Col<Complex> S_; ///< Total power injection, one per phase. Setpt/wm start on input.
 
-      PfNodeVec nodes_;             ///< Nodes, one per phase.
+      PfNodeVec nodes_; ///< Nodes, one per phase.
    };
 
    struct PfNode
@@ -66,10 +66,10 @@ namespace SmartGridToolbox
       PfBranch(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
             const arma::Mat<Complex>& Y);
 
-      int nPhase_;                ///< Number of phases.
+      int nPhase_; ///< Number of phases.
       Array<std::string, 2> ids_; ///< Id of bus 0/1
-      Array<Phases, 2> phases_;   ///< phases of bus 0/1.
-      arma::Mat<Complex> Y_;  ///< Bus admittance matrix.
+      Array<Phases, 2> phases_; ///< phases of bus 0/1.
+      arma::Mat<Complex> Y_; ///< Bus admittance matrix.
    };
 
    class PowerFlowModel
@@ -153,29 +153,29 @@ namespace SmartGridToolbox
          /// For example, for a slack bus with a constant S load, P represents the generated power minus the load draw.
          /// @{
          
-         const arma::Col<Complex>& V() const   ///< Voltage.
+         const arma::Col<Complex>& V() const ///< Voltage.
          {
             return V_;
          }
-         arma::Col<Complex>& V()               ///< Voltage.
+         arma::Col<Complex>& V() ///< Voltage.
          {
             return V_;
          }
          
-         const arma::Col<Complex>& S() const   ///< Generated power injection minus load draw.
+         const arma::Col<Complex>& S() const ///< Generated power injection minus load draw.
          {
             return S_;
          }
-         arma::Col<Complex>& S()               ///< Generated power injection minus load draw.
+         arma::Col<Complex>& S() ///< Generated power injection minus load draw.
          {
             return S_;
          }
          
-         const arma::Col<Complex>& IZip() const  ///< Constant current component of ZIP.
+         const arma::Col<Complex>& IZip() const ///< Constant current component of ZIP.
          {
             return IZip_;
          }
-         arma::Col<Complex>& IZip()              ///< Constant current component of ZIP.
+         arma::Col<Complex>& IZip() ///< Constant current component of ZIP.
          {
             return IZip_;
          }
@@ -263,25 +263,25 @@ namespace SmartGridToolbox
          /// @name Array bounds.
          /// @{
          
-         size_t nSl_;   ///< Number of SL nodes.
-         size_t nPq_;   ///< Number of PQ nodes.
-         size_t nPv_;   ///< Number of PV nodes.
+         size_t nSl_; ///< Number of SL nodes.
+         size_t nPq_; ///< Number of PQ nodes.
+         size_t nPv_; ///< Number of PV nodes.
          
          /// @}
 
          /// @name Y matrix.
          /// @{
          
-         arma::SpMat<Complex> Y_;  ///< Y matrix.
+         arma::SpMat<Complex> Y_; ///< Y matrix.
 
          /// @}
 
          /// @name Vectors per node.
          /// @{
 
-         arma::Col<Complex> V_;    ///< Complex voltage.
-         arma::Col<Complex> S_;    ///< Complex power injection = S_zip + S_gen
-         arma::Col<Complex> IZip_;   ///< Complex voltage.
+         arma::Col<Complex> V_; ///< Complex voltage.
+         arma::Col<Complex> S_; ///< Complex power injection = S_zip + S_gen
+         arma::Col<Complex> IZip_; ///< Complex voltage.
          
          /// @}
    };
