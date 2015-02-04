@@ -182,13 +182,11 @@ namespace SmartGridToolbox
       Array2D<arma::SpMat<double>, 4, 5> blocks_;
    };
 
-   class PowerFlowNr
+   class PowerFlowNr : public PowerFlowSolverInterface
    {
       public:
    
-         PowerFlowNr(PowerFlowModel* prob);
-
-         bool solve();
+         virtual bool solve() override;
 
       private:
 

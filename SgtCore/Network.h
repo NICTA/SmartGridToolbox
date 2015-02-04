@@ -227,7 +227,12 @@ namespace SmartGridToolbox
       /// @name Power-Flow problem:
       /// @{
          
-         virtual void solvePowerFlow();
+         virtual bool solvePowerFlow();
+
+         bool isValidSolution() const
+         {
+            return isValidSolution_;
+         }
          
       /// @}
       
@@ -235,9 +240,7 @@ namespace SmartGridToolbox
       /// @{
          
       private:
-         bool hasInServiceGen(const Bus& bus);
-         void applySLSetpoints(Bus& bus);
-         void applyPVSetpoints(Bus& bus);
+         std::unique_ptr<PowerFlowModel> buildModel();
 
       /// @}
       
@@ -257,6 +260,8 @@ namespace SmartGridToolbox
 
          ZipVec zipVec_;
          ZipMap zipMap_;
+
+         bool isValidSolution_{false};
    };
 }
 

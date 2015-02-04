@@ -99,16 +99,16 @@ namespace SmartGridToolbox
       }
    }
 
-   PowerFlowNr::PowerFlowNr(PowerFlowModel* prob) :
-      mod_(prob),
-      selIrPqFrom_f_(prob->nPq()),
-      selIiPqFrom_f_(prob->nPq()),
-      selIrPvFrom_f_(prob->nPv()),
-      selIiPvFrom_f_(prob->nPv()),
-      selVrPqFrom_x_(prob->nPq()),
-      selViPqFrom_x_(prob->nPq()),
-      selQPvFrom_x_(prob->nPv()),
-      selViPvFrom_x_(prob->nPv())
+   PowerFlowNr::PowerFlowNr(PowerFlowModel* mod) :
+      mod_(mod),
+      selIrPqFrom_f_(mod->nPq()),
+      selIiPqFrom_f_(mod->nPq()),
+      selIrPvFrom_f_(mod->nPv()),
+      selIiPvFrom_f_(mod->nPv()),
+      selVrPqFrom_x_(mod->nPq()),
+      selViPqFrom_x_(mod->nPq()),
+      selQPvFrom_x_(mod->nPv()),
+      selViPvFrom_x_(mod->nPv())
    {
       initSubmatrixRanges();
    }

@@ -65,53 +65,21 @@ namespace SmartGridToolbox
       }
    }
 
-   void Network::solvePowerFlow()
+   bool Network::solvePowerFlow()
    {
       SGT_DEBUG(Log().debug() << "Network : solving power flow." << std::endl);
       SGT_DEBUG(Log().debug() << *this);
 
-      PowerFlowModel mod;
-      for (const auto bus : busVec_)
-      {
-         bool isEnabledSv = bus->setpointChanged().isEnabled();
-         bus->setpointChanged().setIsEnabled(false);
-         BusType busTypeSv = bus->type();
-         if (bus->type() != BusType::PQ)
-         {
-            if (!hasInServiceGen(*bus))
-            {
-               Log().warning() << "Bus " << bus->id() << " has type " << bus->type()
-                               << ", but does not have any in service generators. Setting type to PQ." << std::endl;
-               bus->setType(BusType::PQ);
-            }
-         }
+      std::unique_ptr<PowerFlowModel> mod = buildModel();
 
-         bus->applyVSetpoints();
-         mod.addBus(bus->id(), bus->type(), bus->phases(), bus->YZip(), bus->IZip(), bus->SZip(), bus->JGen(),
-                    bus->V(), bus->SGen() + bus->SZip());
-
-         bus->setType(busTypeSv);
-         bus->setpointChanged().setIsEnabled(isEnabledSv);
-      }
-      for (const auto branch : branchVec_)
-      {
-         if (branch->isInService())
-         {
-            // TODO: ignore like this, or add the branch with zero admittance?
-            mod.addBranch(branch->bus0()->id(), branch->bus1()->id(),
-                          branch->phases0(), branch->phases1(), branch->Y());
-         }
-      }
-      mod.validate();
-
-      PowerFlowNr solver(&mod);
-      bool ok = solver.solve();
-      if (!ok)
+      PowerFlowNr solver(mod.get());
+      isValidSolution_ = solver.solve();
+      if (!isValidSolution_)
       {
          Log().warning() << "Couldn't solve power flow model" << std::endl;
       }
 
-      for (const auto& busPair: mod.busses())
+      for (const auto& busPair: mod->busses())
       {
          auto& busNr = *busPair.second;
          const auto bus = this->bus(busNr.id_);
@@ -160,6 +128,7 @@ namespace SmartGridToolbox
                Log().fatal() << "Bad bus type." << std::endl;
          }
       }
+      return isValidSolution_;
    }
 
    void Network::print(std::ostream& os) const
@@ -202,37 +171,41 @@ namespace SmartGridToolbox
       }
    }
 
-   bool Network::hasInServiceGen(const Bus& bus)
-   {
-      bool result = false;
-      for (auto gen : bus.gens())
+   std::unique_ptr<PowerFlowModel> Network::buildModel()
+   { 
+      std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel);
+      for (const auto bus : busVec_)
       {
-         if (gen->isInService())
+         bool isEnabledSv = bus->setpointChanged().isEnabled();
+         bus->setpointChanged().setIsEnabled(false);
+         BusType busTypeSv = bus->type();
+         if (bus->type() != BusType::PQ)
          {
-            result = true;
-            break;
+            if (bus->nInServiceGens() == 0)
+            {
+               Log().warning() << "Bus " << bus->id() << " has type " << bus->type()
+                  << ", but does not have any in service generators. Temporarily setting type to PQ." << std::endl;
+               bus->setType(BusType::PQ);
+            }
+         }
+
+         bus->applyVSetpoints();
+         mod->addBus(bus->id(), bus->type(), bus->phases(), bus->YZip(), bus->IZip(), bus->SZip(), bus->JGen(),
+               bus->V(), bus->SGen() + bus->SZip());
+
+         bus->setType(busTypeSv);
+         bus->setpointChanged().setIsEnabled(isEnabledSv);
+      }
+      for (const auto branch : branchVec_)
+      {
+         if (branch->isInService())
+         {
+            // TODO: ignore like this, or add the branch with zero admittance?
+            mod->addBranch(branch->bus0()->id(), branch->bus1()->id(),
+                          branch->phases0(), branch->phases1(), branch->Y());
          }
       }
-      return result;
-   }
-
-   void Network::applySLSetpoints(Bus& bus)
-   {
-      arma::Col<Complex> VNew(bus.phases().size());
-      for (int i = 0; i < bus.phases().size(); ++i)
-      {
-         VNew(i) = std::polar(bus.VMagSetpoint_(i), bus.VAngSetpoint_(i));
-      }
-      bus.setV(VNew);
-   }
-
-   void Network::applyPVSetpoints(Bus& bus)
-   {
-      arma::Col<Complex> VNew = bus.V();
-      for (int i = 0; i < bus.phases().size(); ++i)
-      {
-         VNew(i) *= bus.VMagSetpoint_(i) / std::abs(bus.V_(i));
-      }
-      bus.setV(VNew);
+      mod->validate();
+      return mod;
    }
 }
