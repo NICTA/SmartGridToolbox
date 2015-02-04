@@ -7,6 +7,7 @@
 #include "GenericZipParserPlugin.h"
 #include "MatpowerParserPlugin.h"
 #include "OverheadLineParserPlugin.h"
+#include "PowerFlowSolverParserPlugin.h"
 
 namespace SmartGridToolbox
 {
@@ -21,5 +22,6 @@ namespace SmartGridToolbox
       p.registerParserPlugin<GenericZipParserPlugin>();
       p.registerParserPlugin<MatpowerParserPlugin>();
       p.registerParserPlugin<OverheadLineParserPlugin>();
+      p.registerParserPlugin<PowerFlowSolverParserPlugin>();
    }
 }

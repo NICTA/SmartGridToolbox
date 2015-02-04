@@ -6,10 +6,6 @@
 #include <SmartGridToolbox/InverterBase.h>
 #include <SmartGridToolbox/Network.h>
 
-extern "C" {
-#include <gurobi_c.h>
-}
-
 namespace PVDemo
 {
    struct PVDemoBus;
