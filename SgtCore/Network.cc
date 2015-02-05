@@ -9,7 +9,8 @@ namespace SmartGridToolbox
 {
    Network::Network(const std::string& id, double PBase) :
       Component(id),
-      PBase_(PBase)
+      PBase_(PBase),
+      solver_(new PowerFlowNrSolver)
    {
       // Empty.
    }

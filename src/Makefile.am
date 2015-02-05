@@ -1,18 +1,26 @@
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I../SgtCore -I../SgtSim
-
 if ENABLE_POWER_TOOLS
-AM_LDFLAGS = \
-	-framework Foundation \
-	-framework PowerTools \
-	-lipopt \
-	-lcoinhsl
+FRAMEWORK_FOUNDATION = -framework Foundation 
+FRAMEWORK_POWER_TOOLS = -framework PowerTools 
+L_IPOPT = -lipopt
+L_COIN_HSL = -lcoinhsl
+else
+FRAMEWORK_FOUNDATION =
+FRAMEWORK_POWER_TOOLS =
+L_IPOPT =
+L_COIN_HSL =
 endif
+
+AM_CPPFLAGS = -I../SgtCore -I../SgtSim
 
 bin_PROGRAMS = run_config solve_network # network_to_dot
 
 run_config_SOURCES = run_config.cc
+
+run_config_LDFLAGS = \
+	$(FRAMEWORK_FOUNDATION) \
+	$(FRAMEWORK_POWER_TOOLS)
 
 # Using LDADD for -l linker flags in this way avoids a potential
 # problem with link order.
@@ -25,9 +33,15 @@ run_config_LDADD = \
 	-lklu \
 	-lamd \
 	-lcolamd \
-	-lbtf
+	-lbtf \
+	$(L_IPOPT) \
+	$(L_COIN_HSL)
 
 solve_network_SOURCES = solve_network.cc
+
+solve_network_LDFLAGS = \
+	$(FRAMEWORK_FOUNDATION) \
+	$(FRAMEWORK_POWER_TOOLS)
 
 # Using LDADD for -l linker flags in this way avoids a potential
 # problem with link order.
@@ -39,7 +53,9 @@ solve_network_LDADD = \
 	-lklu \
 	-lamd \
 	-lcolamd \
-	-lbtf
+	-lbtf \
+	$(L_IPOPT) \
+	$(L_COIN_HSL)
 
 # network_to_dot_SOURCES = network_to_dot.cc
 # 

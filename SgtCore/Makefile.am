@@ -1,5 +1,28 @@
 AUTOMAKE_OPTIONS = foreign
 
+if ENABLE_LAYOUT
+NETWORK_GRAPH_H = NetworkGraph.h  
+NETWORK_GRAPH_CC = NetworkGraph.cc
+SGT_NETWORK_GRAPH_H = SgtNetworkGraph.h  
+SGT_NETWORK_GRAPH_CC = SgtNetworkGraph.cc
+else
+NETWORK_GRAPH_H =
+NETWORK_GRAPH_CC =
+SGT_NETWORK_GRAPH_H =
+SGT_NETWORK_GRAPH_CC =
+endif
+
+# Note: ENABLE_POWER_TOOLS needs LD_FLAGS: -framework Foundation -framework PowerTools -lipopt -lcoinhsl  
+if ENABLE_POWER_TOOLS
+POWER_TOOLS_CPP_H = PowerToolsCpp.h
+POWER_TOOLS_CPP_MM = PowerToolsCpp.mm
+POWER_FLOW_OPF_SOLVER_H = PowerFlowOpfSolver.h
+else
+POWER_TOOLS_CPP_H =
+POWER_TOOLS_CPP_MM =
+POWER_FLOW_OPF_SOLVER_H =
+endif
+
 libincludedir=$(includedir)/SgtCore
 
 lib_LIBRARIES = libSgtCore.a
@@ -17,25 +40,22 @@ libinclude_HEADERS = \
 	Event.h \
 	Gen.h \
 	Network.h \
+	$(NETWORK_GRAPH_H) \
 	NetworkParser.h \
 	OverheadLine.h \
 	Parser.h \
 	PowerFlow.h \
 	PowerFlowSolver.h \
+	$(POWER_TOOLS_CPP_H) \
 	Properties.h \
 	Random.h \
+	$(SGT_NETWORK_GRAPH_H) \
 	SinglePhaseTransformer.h \
 	Stopwatch.h \
 	Units.h \
 	YamlSupport.h \
 	YyTransformer.h \
 	Zip.h
-
-if ENABLE_LAYOUT
-libinclude_HEADERS += \
-	NetworkGraph.h \
-	SgtNetworkGraph.h
-endif
 
 libSgtCore_a_SOURCES = \
 	Branch.h Branch.cc \
@@ -55,6 +75,7 @@ libSgtCore_a_SOURCES = \
 	LibSgtCore.h \
 	MatpowerParserPlugin.h MatpowerParserPlugin.cc \
 	Network.h Network.cc \
+	$(NETWORK_GRAPH_H) $(NETWORK_GRAPH_CC) \
 	NetworkParser.h NetworkParser.cc \
 	OverheadLine.h OverheadLine.cc \
 	OverheadLineParserPlugin.h OverheadLineParserPlugin.cc \
@@ -62,11 +83,14 @@ libSgtCore_a_SOURCES = \
 	PowerFlow.h PowerFlow.cc \
 	PowerFlowModel.h PowerFlowModel.cc \
 	PowerFlowNrSolver.h PowerFlowNrSolver.cc \
+	$(POWER_FLOW_OPF_SOLVER_H) \
 	PowerFlowSolver.h \
 	PowerFlowSolverParserPlugin.h PowerFlowSolverParserPlugin.cc \
+	$(POWER_TOOLS_CPP_H) $(POWER_TOOLS_CPP_MM) \
 	Properties.h \
 	Random.h Random.cc \
 	RegisterParserPlugins.cc \
+	$(SGT_NETWORK_GRAPH_H) $(SGT_NETWORK_GRAPH_CC) \
 	SparseSolver.h SparseSolver.cc \
 	Stopwatch.h \
 	SinglePhaseTransformer.h SinglePhaseTransformer.cc \
@@ -76,16 +100,3 @@ libSgtCore_a_SOURCES = \
 	YyTransformer.h YyTransformer.cc \
 	YyTransformerParserPlugin.h YyTransformerParserPlugin.cc \
 	Zip.h Zip.cc
-
-if ENABLE_LAYOUT
-libSgtCore_a_SOURCES += \
-	NetworkGraph.h NetworkGraph.cc \
-	SgtNetworkGraph.h SgtNetworkGraph.cc
-endif
-
-if ENABLE_POWER_TOOLS
-# Needs LD_FLAGS: -framework Foundation -framework PowerTools -lipopt -lcoinhsl  
-libSgtCore_a_SOURCES += \
-	PowerToolsCpp.h PowerToolsCpp.mm \
-	PowerFlowOpfSolver.h
-endif
