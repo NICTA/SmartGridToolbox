@@ -1,14 +1,18 @@
 #include <iostream>
 
-#include "PowerToolsCpp/PowerToolsCpp.h"
+#include "PowerToolsCpp.h"
+#include "SgtPowerTools.h"
 
-#include "SgtOpf.h"
+#include <SgtCore.h>
 
 int main(int argc, char** argv)
 {
+   using namespace SmartGridToolbox;
+
    assert(argc == 2);
    std::string fname = argv[1];
-   Sgt::Network nw;
-   Sgt::Parser::globalParser().parse(fname, nw);
+   Network nw("network");
+   Parser<Network> p;
+   p.parse(fname, nw);
    runOpf(nw);
 }

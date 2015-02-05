@@ -1,11 +1,14 @@
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -F . -I /Library/gurobi563/mac64/include
-AM_LDFLAGS = -F . -framework Foundation -framework PowerTools
+AM_LDFLAGS = \
+	-framework Foundation \
+	-framework PowerTools \
+	-lipopt \
+	-lcoinhsl
 
 lib_LIBRARIES = libSgtPowerTools.a
 
-include_HEADERS = LibSgtPowerTools.h
+include_HEADERS = SgtPowerTools.h
 
 pkginclude_HEADERS =
 

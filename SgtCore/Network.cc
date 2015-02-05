@@ -40,6 +40,8 @@ namespace SmartGridToolbox
          
    void Network::addGen(GenPtr gen, const std::string& busId)
    {
+      genMap_[gen->id()] = gen;
+      genVec_.push_back(gen);
       auto bus = this->bus(busId);
       if (bus != nullptr)
       {
@@ -53,6 +55,7 @@ namespace SmartGridToolbox
          
    void Network::addZip(ZipPtr zip, const std::string& busId)
    {
+      zipMap_[zip->id()] = zip;
       zipVec_.push_back(zip);
       auto bus = this->bus(busId);
       if (bus != nullptr)
