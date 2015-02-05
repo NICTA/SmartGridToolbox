@@ -73,19 +73,100 @@ namespace SmartGridToolbox
       SGT_DEBUG(Log().debug() << "Network : solving power flow." << std::endl);
       SGT_DEBUG(Log().debug() << *this);
 
-      std::unique_ptr<PowerFlowModel> mod = buildModel();
-
-      solver_->init(mod.get());
+      solver_->bindNetwork(this);
       isValidSolution_ = solver_->solve();
       if (!isValidSolution_)
       {
          Log().warning() << "Couldn't solve power flow model" << std::endl;
       }
 
-      for (const auto& busPair: mod->busses())
+      return isValidSolution_;
+   }
+
+   void Network::print(std::ostream& os) const
+   {
+      Component::print(os);
+      StreamIndent _(os);
+      os << "P_base: " << PBase_ << std::endl;
+      for (auto bus : busVec_)
+      {
+         {
+            os << "Bus: " << std::endl;
+            StreamIndent _(os);
+            os << *bus << std::endl;
+         }
+         {
+            os << "Zips: " << std::endl;
+            StreamIndent _(os);
+            for (auto zip : bus->zips())
+            {
+               os << *zip << std::endl;
+            }
+         }
+         {
+            os << "Gens: " << std::endl;
+            StreamIndent _(os);
+            for (auto gen : bus->gens())
+            {
+               os << *gen << std::endl;
+            }
+         }
+      }
+      for (auto branch : branchVec_)
+      {
+         os << "Branch: " << std::endl;
+         StreamIndent _1(os);
+         os << *branch << std::endl;
+         StreamIndent _2(os);
+         os << "Bus 0 = " << branch->bus0()->id() << std::endl;
+         os << "Bus 1 = " << branch->bus1()->id() << std::endl;
+      }
+   }
+
+   std::unique_ptr<PowerFlowModel> buildModel(const Network& netw)
+   { 
+      std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel);
+      for (const auto bus : netw.busses())
+      {
+         bool isEnabledSv = bus->setpointChanged().isEnabled();
+         bus->setpointChanged().setIsEnabled(false);
+         BusType busTypeSv = bus->type();
+         if (bus->type() != BusType::PQ)
+         {
+            if (bus->nInServiceGens() == 0)
+            {
+               Log().warning() << "Bus " << bus->id() << " has type " << bus->type()
+                  << ", but does not have any in service generators. Temporarily setting type to PQ." << std::endl;
+               bus->setType(BusType::PQ);
+            }
+         }
+
+         bus->applyVSetpoints();
+         mod->addBus(bus->id(), bus->type(), bus->phases(), bus->YZip(), bus->IZip(), bus->SZip(), bus->JGen(),
+               bus->V(), bus->SGen() + bus->SZip());
+
+         bus->setType(busTypeSv);
+         bus->setpointChanged().setIsEnabled(isEnabledSv);
+      }
+      for (const auto branch : netw.branches())
+      {
+         if (branch->isInService())
+         {
+            // TODO: ignore like this, or add the branch with zero admittance?
+            mod->addBranch(branch->bus0()->id(), branch->bus1()->id(),
+                          branch->phases0(), branch->phases1(), branch->Y());
+         }
+      }
+      mod->validate();
+      return mod;
+   }
+
+   void applyModel(const PowerFlowModel& mod, Network& netw)
+   {
+      for (const auto& busPair: mod.busses())
       {
          auto& busNr = *busPair.second;
-         const auto bus = this->bus(busNr.id_);
+         const auto bus = netw.bus(busNr.id_);
 
          int nInService = bus->nInServiceGens(); 
 
@@ -131,84 +212,5 @@ namespace SmartGridToolbox
                Log().fatal() << "Bad bus type." << std::endl;
          }
       }
-      return isValidSolution_;
-   }
-
-   void Network::print(std::ostream& os) const
-   {
-      Component::print(os);
-      StreamIndent _(os);
-      os << "P_base: " << PBase_ << std::endl;
-      for (auto bus : busVec_)
-      {
-         {
-            os << "Bus: " << std::endl;
-            StreamIndent _(os);
-            os << *bus << std::endl;
-         }
-         {
-            os << "Zips: " << std::endl;
-            StreamIndent _(os);
-            for (auto zip : bus->zips())
-            {
-               os << *zip << std::endl;
-            }
-         }
-         {
-            os << "Gens: " << std::endl;
-            StreamIndent _(os);
-            for (auto gen : bus->gens())
-            {
-               os << *gen << std::endl;
-            }
-         }
-      }
-      for (auto branch : branchVec_)
-      {
-         os << "Branch: " << std::endl;
-         StreamIndent _1(os);
-         os << *branch << std::endl;
-         StreamIndent _2(os);
-         os << "Bus 0 = " << branch->bus0()->id() << std::endl;
-         os << "Bus 1 = " << branch->bus1()->id() << std::endl;
-      }
-   }
-
-   std::unique_ptr<PowerFlowModel> Network::buildModel()
-   { 
-      std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel);
-      for (const auto bus : busVec_)
-      {
-         bool isEnabledSv = bus->setpointChanged().isEnabled();
-         bus->setpointChanged().setIsEnabled(false);
-         BusType busTypeSv = bus->type();
-         if (bus->type() != BusType::PQ)
-         {
-            if (bus->nInServiceGens() == 0)
-            {
-               Log().warning() << "Bus " << bus->id() << " has type " << bus->type()
-                  << ", but does not have any in service generators. Temporarily setting type to PQ." << std::endl;
-               bus->setType(BusType::PQ);
-            }
-         }
-
-         bus->applyVSetpoints();
-         mod->addBus(bus->id(), bus->type(), bus->phases(), bus->YZip(), bus->IZip(), bus->SZip(), bus->JGen(),
-               bus->V(), bus->SGen() + bus->SZip());
-
-         bus->setType(busTypeSv);
-         bus->setpointChanged().setIsEnabled(isEnabledSv);
-      }
-      for (const auto branch : branchVec_)
-      {
-         if (branch->isInService())
-         {
-            // TODO: ignore like this, or add the branch with zero admittance?
-            mod->addBranch(branch->bus0()->id(), branch->bus1()->id(),
-                          branch->phases0(), branch->phases1(), branch->Y());
-         }
-      }
-      mod->validate();
-      return mod;
    }
 }

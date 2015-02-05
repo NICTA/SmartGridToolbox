@@ -187,7 +187,7 @@ namespace SmartGridToolbox
    {
       public:
   
-         virtual void init(PowerFlowModel* mod) override;
+         virtual void bindNetwork(Network* netw) override;
          virtual bool solve() override;
 
       private:
@@ -223,7 +223,8 @@ namespace SmartGridToolbox
 
       private:
 
-         PowerFlowModel* mod_;
+         Network* netw_;
+         std::unique_ptr<PowerFlowModel> mod_;
       
          arma::Col<arma::uword> selIrPqFrom_f_;
          arma::Col<arma::uword> selIiPqFrom_f_;

@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <ostream>
 #include <sstream>
+#include "Network.h"
 #include "PowerFlowNrSolver.h"
 #include "SparseSolver.h"
 #include "Stopwatch.h"
@@ -99,16 +100,19 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowNrSolver::init(PowerFlowModel* mod)
+   void PowerFlowNrSolver::bindNetwork(Network* netw)
    {
-      selIrPqFrom_f_.set_size(mod->nPq());
-      selIiPqFrom_f_.set_size(mod->nPq());
-      selIrPvFrom_f_.set_size(mod->nPv());
-      selIiPvFrom_f_.set_size(mod->nPv());
-      selVrPqFrom_x_.set_size(mod->nPq());
-      selViPqFrom_x_.set_size(mod->nPq());
-      selQPvFrom_x_.set_size(mod->nPv());
-      selViPvFrom_x_.set_size(mod->nPv());
+      netw_ = netw;
+      mod_ = buildModel(*netw);
+
+      selIrPqFrom_f_.set_size(mod_->nPq());
+      selIiPqFrom_f_.set_size(mod_->nPq());
+      selIrPvFrom_f_.set_size(mod_->nPv());
+      selIiPvFrom_f_.set_size(mod_->nPv());
+      selVrPqFrom_x_.set_size(mod_->nPq());
+      selViPqFrom_x_.set_size(mod_->nPq());
+      selQPvFrom_x_.set_size(mod_->nPv());
+      selViPvFrom_x_.set_size(mod_->nPv());
 
       for (uword i = 0; i < mod_->nPq(); ++i)
       {
@@ -344,6 +348,8 @@ namespace SmartGridToolbox
       SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: solve time              = " << durationSolve << std::endl);
       SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time to update iter     = " << durationUpdateIter << std::endl);
       SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: -----------------------   " << std::endl);
+      
+      applyModel(*mod_, *netw_);
 
       return wasSuccessful;
    }

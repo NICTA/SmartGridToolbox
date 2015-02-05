@@ -62,7 +62,6 @@ libSgtCore_a_SOURCES = \
 	PowerFlow.h PowerFlow.cc \
 	PowerFlowModel.h PowerFlowModel.cc \
 	PowerFlowNrSolver.h PowerFlowNrSolver.cc \
-	#PowerFlowOpfSolver.h PowerFlowOpfSolver.cc \
 	PowerFlowSolver.h \
 	PowerFlowSolverParserPlugin.h PowerFlowSolverParserPlugin.cc \
 	Properties.h \
@@ -82,4 +81,11 @@ if ENABLE_LAYOUT
 libSgtCore_a_SOURCES += \
 	NetworkGraph.h NetworkGraph.cc \
 	SgtNetworkGraph.h SgtNetworkGraph.cc
+endif
+
+if ENABLE_POWER_TOOLS
+# Needs LD_FLAGS: -framework Foundation -framework PowerTools -lipopt -lcoinhsl  
+libSgtCore_a_SOURCES += \
+	PowerToolsCpp.h PowerToolsCpp.mm \
+	PowerFlowOpfSolver.h
 endif

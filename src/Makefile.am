@@ -2,6 +2,14 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I../SgtCore -I../SgtSim
 
+if ENABLE_POWER_TOOLS
+AM_LDFLAGS = \
+	-framework Foundation \
+	-framework PowerTools \
+	-lipopt \
+	-lcoinhsl
+endif
+
 bin_PROGRAMS = run_config solve_network # network_to_dot
 
 run_config_SOURCES = run_config.cc

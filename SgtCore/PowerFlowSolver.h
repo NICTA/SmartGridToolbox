@@ -3,12 +3,12 @@
 
 namespace SmartGridToolbox
 {
-   class PowerFlowModel;
+   class Network;
 
    class PowerFlowSolverInterface
    {
       public:
-         virtual void init(PowerFlowModel* mod) = 0;
+         virtual void bindNetwork(Network* netw) = 0;
          virtual bool solve() = 0;
    };
 };

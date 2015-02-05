@@ -241,17 +241,9 @@ namespace SmartGridToolbox
          {
             return isValidSolution_;
          }
-         
-      /// @}
-      
-      /// @name Private member functions:
-      /// @{
-         
-      private:
-         std::unique_ptr<PowerFlowModel> buildModel();
 
       /// @}
-      
+         
       private:
          double PBase_ = 1.0;
          double nomFreq_ = 50.0;
@@ -273,6 +265,9 @@ namespace SmartGridToolbox
 
          bool isValidSolution_{false};
    };
+
+   std::unique_ptr<PowerFlowModel> buildModel(const Network& netw);
+   void applyModel(const PowerFlowModel& mod, Network& netw);
 }
 
 #endif // NETWORK_DOT_H
