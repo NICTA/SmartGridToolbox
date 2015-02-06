@@ -47,8 +47,14 @@ etc. i.e. don't have to convert parsed times to UTC to match with Simulation
 times.
 
 State:
------
+------
 Components should normally store a structure called State, and they should store
 their initial state so that they can be reset. State should also ideally be
 serializable. There are two types of member data in a component: configuration,
 and state.
+
+PowerTools:
+-----------
+There is duplicated sgt2PowerTools / smartGridToolbox2PowerTools code between
+SGT and PT. Need to be careful about dependencies, but could do something about
+this.

@@ -12,7 +12,7 @@ using SmartGridToolbox::Complex;
 #import <SgtCore.h>
 #import "Network.h"
 
-Network* smartGridToolbox2PowerTools(const SmartGridToolbox::Network& sgtNw)
+Network* sgt2PowerTools(const SmartGridToolbox::Network& sgtNw)
 {
    Network* nw = [[Network alloc] init]; // Network
 
@@ -109,7 +109,7 @@ Network* smartGridToolbox2PowerTools(const SmartGridToolbox::Network& sgtNw)
 void runOpf(SmartGridToolbox::Network& sgtNw)
 {
    // std::cout << sgtNw << std::endl;
-   Network* nw = smartGridToolbox2PowerTools(sgtNw);
+   Network* nw = sgt2PowerTools(sgtNw);
    OcpModel* m = [[OcpModel alloc] initWithNet:nw];
    [m createRectACOPF];
    [m optimize];
