@@ -45,7 +45,10 @@ libinclude_HEADERS = \
 	OverheadLine.h \
 	Parser.h \
 	PowerFlow.h \
+	PowerFlowModel.h \
 	PowerFlowSolver.h \
+	PowerFlowNrSolver.h \
+	$(POWER_FLOW_OPF_SOLVER_H) \
 	$(SGT_POWER_TOOLS_H) \
 	Properties.h \
 	Random.h \

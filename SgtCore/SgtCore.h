@@ -16,6 +16,9 @@
 #include <SgtCore/OverheadLine.h>
 #include <SgtCore/Parser.h>
 #include <SgtCore/PowerFlow.h>
+#include <SgtCore/PowerFlowSolver.h>
+#include <SgtCore/PowerFlowNrSolver.h>
+#include <SgtCore/PowerFlowOpfSolver.h>
 #include <SgtCore/Properties.h>
 #include <SgtCore/Random.h>
 #include <SgtCore/SinglePhaseTransformer.h>

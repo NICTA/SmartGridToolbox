@@ -100,50 +100,7 @@ namespace SmartGridToolbox
       }
    }
 
-   void PowerFlowNrSolver::bindNetwork(Network* netw)
-   {
-      netw_ = netw;
-      mod_ = buildModel(*netw);
-
-      selIrPqFrom_f_.set_size(mod_->nPq());
-      selIiPqFrom_f_.set_size(mod_->nPq());
-      selIrPvFrom_f_.set_size(mod_->nPv());
-      selIiPvFrom_f_.set_size(mod_->nPv());
-      selVrPqFrom_x_.set_size(mod_->nPq());
-      selViPqFrom_x_.set_size(mod_->nPq());
-      selQPvFrom_x_.set_size(mod_->nPv());
-      selViPvFrom_x_.set_size(mod_->nPv());
-
-      for (uword i = 0; i < mod_->nPq(); ++i)
-      {
-         selIrPqFrom_f_[i] = 2 * i + 1;
-         selIiPqFrom_f_[i] = 2 * i;
-      }
-
-      for (uword i = 0; i < mod_->nPv(); ++i)
-      {
-         selIrPvFrom_f_[i] = 2 * mod_->nPq() + 2 * i + 1;
-         selIiPvFrom_f_[i] = 2 * mod_->nPq() + 2 * i;
-      }
-
-      for (uword i = 0; i < mod_->nPq(); ++i)
-      {
-         selVrPqFrom_x_[i] = 2 * i;
-         selViPqFrom_x_[i] = 2 * i + 1;
-      }
-
-      for (uword i = 0; i < mod_->nPv(); ++i)
-      {
-         selQPvFrom_x_[i] = 2 * mod_->nPq() + 2 * i;
-         selViPvFrom_x_[i] = 2 * mod_->nPq() + 2 * i + 1;
-      }
-
-      // Just in case...
-      G_.reset();
-      B_.reset();
-   }
-
-   bool PowerFlowNrSolver::solve()
+   bool PowerFlowNrSolver::solve(Network* netw)
    {
       SGT_DEBUG(Log().debug() << "PowerFlowNrSolver : solve." << std::endl; LogIndent _;);
 
@@ -164,8 +121,7 @@ namespace SmartGridToolbox
       // Do the initial setup.
       stopwatch.reset(); stopwatch.start();
 
-      const double tol = 1e-8;
-      const int maxiter = 20;
+      init(netw);
 
       G_ = real(mod_->Y());
       B_ = imag(mod_->Y());
@@ -192,6 +148,9 @@ namespace SmartGridToolbox
       int niter;
 
       stopwatch.stop(); durationInitSetup = stopwatch.seconds();
+
+      const double tol = 1e-8;
+      const int maxiter = 20;
 
       for (niter = 0; niter < maxiter; ++niter)
       {
@@ -352,6 +311,49 @@ namespace SmartGridToolbox
       applyModel(*mod_, *netw_);
 
       return wasSuccessful;
+   }
+
+   void PowerFlowNrSolver::init(Network* netw)
+   {
+      netw_ = netw;
+      mod_ = buildModel(*netw);
+
+      selIrPqFrom_f_.set_size(mod_->nPq());
+      selIiPqFrom_f_.set_size(mod_->nPq());
+      selIrPvFrom_f_.set_size(mod_->nPv());
+      selIiPvFrom_f_.set_size(mod_->nPv());
+      selVrPqFrom_x_.set_size(mod_->nPq());
+      selViPqFrom_x_.set_size(mod_->nPq());
+      selQPvFrom_x_.set_size(mod_->nPv());
+      selViPvFrom_x_.set_size(mod_->nPv());
+
+      for (uword i = 0; i < mod_->nPq(); ++i)
+      {
+         selIrPqFrom_f_[i] = 2 * i + 1;
+         selIiPqFrom_f_[i] = 2 * i;
+      }
+
+      for (uword i = 0; i < mod_->nPv(); ++i)
+      {
+         selIrPvFrom_f_[i] = 2 * mod_->nPq() + 2 * i + 1;
+         selIiPvFrom_f_[i] = 2 * mod_->nPq() + 2 * i;
+      }
+
+      for (uword i = 0; i < mod_->nPq(); ++i)
+      {
+         selVrPqFrom_x_[i] = 2 * i;
+         selViPqFrom_x_[i] = 2 * i + 1;
+      }
+
+      for (uword i = 0; i < mod_->nPv(); ++i)
+      {
+         selQPvFrom_x_[i] = 2 * mod_->nPq() + 2 * i;
+         selViPvFrom_x_[i] = 2 * mod_->nPq() + 2 * i + 1;
+      }
+
+      // Just in case...
+      G_.reset();
+      B_.reset();
    }
 
    /// Set the part of J that doesn't update at each iteration.

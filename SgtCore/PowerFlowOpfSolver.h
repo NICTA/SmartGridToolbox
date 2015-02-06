@@ -11,18 +11,11 @@ namespace SmartGridToolbox
    class PowerFlowOpfSolver : public PowerFlowSolverInterface
    {
       public:
-         virtual void bindNetwork(Network* netw)
+         virtual bool solve(Network* netw) override
          {
-            netw_ = netw;
-         }
-
-         virtual bool solve()
-         {
-            runOpf(*netw_);
+            runOpf(*netw);
             return true;
          }
-      private:
-         Network* netw_;
    };
 }
 

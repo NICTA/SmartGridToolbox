@@ -187,10 +187,11 @@ namespace SmartGridToolbox
    {
       public:
   
-         virtual void bindNetwork(Network* netw) override;
-         virtual bool solve() override;
+         virtual bool solve(Network* netw) override;
 
       private:
+
+         void init(Network* netw);
 
          unsigned int nPqPv() const 
          {

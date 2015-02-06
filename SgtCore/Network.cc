@@ -74,8 +74,7 @@ namespace SmartGridToolbox
       SGT_DEBUG(Log().debug() << "Network : solving power flow." << std::endl);
       SGT_DEBUG(Log().debug() << *this);
 
-      solver_->bindNetwork(this);
-      isValidSolution_ = solver_->solve();
+      isValidSolution_ = solver_->solve(this);
       if (!isValidSolution_)
       {
          Log().warning() << "Couldn't solve power flow model" << std::endl;

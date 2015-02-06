@@ -13,6 +13,7 @@ int main(int argc, char** argv)
    std::string inFName = argv[1];
    std::string outPrefix = argv[2];
    Network nw("network", 100.0);
+   nw.setSolver(std::unique_ptr<PowerFlowOpfSolver>(new PowerFlowOpfSolver));
 
    std::string yamlStr =  std::string("--- [{matpower : {input_file : ") + inFName + ", default_kV_base : 11}}]";
    YAML::Node n = YAML::Load(yamlStr);

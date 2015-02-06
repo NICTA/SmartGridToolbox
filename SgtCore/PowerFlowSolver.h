@@ -8,8 +8,7 @@ namespace SmartGridToolbox
    class PowerFlowSolverInterface
    {
       public:
-         virtual void bindNetwork(Network* netw) = 0;
-         virtual bool solve() = 0;
+         virtual bool solve(Network* netw) = 0;
    };
 };
 
