@@ -1,11 +1,11 @@
-//
-//  LibPowerToolsCpp.h
-//  LibPowerToolsCpp
-//
-//  Created by Dan Gordon on 30/07/2014.
-//  Copyright (c) 2014 NICTA. All rights reserved.
-//
+#ifndef POWERT_TOOLS_CPP_DOT_H
+#define POWERT_TOOLS_CPP_DOT_H
 
-#import <SgtCore.h>
+namespace SmartGridToolbox
+{
+   class Network;
+}
 
 void runOpf(SmartGridToolbox::Network& network);
+
+#endif // POWERT_TOOLS_CPP_DOT_H

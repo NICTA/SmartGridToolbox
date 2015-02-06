@@ -1,6 +1,7 @@
 #import "PowerToolsCpp.h"
 
-#import <SgtCore/Common.h>
+#import "Common.h"
+#import "Network.h"
 
 #import <Foundation/Foundation.h>
 

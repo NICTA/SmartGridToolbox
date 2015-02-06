@@ -10,8 +10,7 @@ AC_ARG_ENABLE([layout],
 AC_SUBST([enable_layout])
 AM_CONDITIONAL([ENABLE_LAYOUT], [test x$enable_layout = xyes])
 AS_IF([test x$enable_layout == xyes],
-   [AC_DEFINE([ENABLE_LAYOUT], [], [enable layout support])]
-)
+      [AC_DEFINE([ENABLE_LAYOUT], [], [enable layout support])])
 
 AC_ARG_ENABLE([power_tools],
               [AS_HELP_STRING([--enable-power_tools], [enable PowerTools specific features @<:@no@:>@])],
@@ -20,25 +19,21 @@ AC_ARG_ENABLE([power_tools],
 AC_SUBST([enable_power_tools])
 AM_CONDITIONAL([ENABLE_POWER_TOOLS], [test x$enable_power_tools = xyes])
 AS_IF([test x$enable_power_tools == xyes],
-   [AC_DEFINE([ENABLE_POWER_TOOLS], [], [enable PowerTools support])]
-)
+      [AC_DEFINE([ENABLE_POWER_TOOLS], [], [enable PowerTools support])])
 
 AC_PROG_CC
 AC_PROG_CXX([clang++ g++])
 AC_PROG_RANLIB
-AM_COND_IF([ENABLE_POWER_TOOLS], [AC_PROG_OBJCXX([clang])])
+AC_PROG_OBJCXX([clang]) # Unfortunately it is an autoconf error to make this macro conditional.
 
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11([noext])
 AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [AM_CXXFLAGS="$AM_CXXFLAGS -ftemplate-depth=160"])
 AC_SUBST([AM_CXXFLAGS], ["$AM_CXXFLAGS -Wall"])
 
-AM_COND_IF([ENABLE_POWER_TOOLS],
-           [
-            AC_LANG([Objective C++])
-            AX_CHECK_COMPILE_FLAG(-std=c++11, [AC_SUBST(AM_OBJCXXFLAGS, ["-std=c++11"])])
-            ]
-)
+# See above comments for AC_PROG_OBJCXX
+AC_LANG([Objective C++])
+AX_CHECK_COMPILE_FLAG([-std=c++11], [AC_SUBST([AM_OBJCXXFLAGS], ["-std=c++11"])])
 
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
 AC_CHECK_PROGS([PDFLATEX], [pdflatex])
@@ -56,6 +51,9 @@ AM_CONDITIONAL([HAVE_PDFLATEX], [test -n "$PDFLATEX" && test -n "$MAKEINDEX"])
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile SgtCore/Makefile SgtSim/Makefile src/Makefile tests/Makefile docs/Makefile])
-AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([docs/Doxyfile])])
+AM_COND_IF(
+   [HAVE_DOXYGEN],
+   [AC_CONFIG_FILES([docs/Doxyfile])]
+)
 
 AC_OUTPUT

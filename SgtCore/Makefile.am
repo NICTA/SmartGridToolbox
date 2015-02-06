@@ -13,15 +13,15 @@ SGT_NETWORK_GRAPH_CC =
 endif
 
 # Note: ENABLE_POWER_TOOLS needs LD_FLAGS: -framework Foundation -framework PowerTools -lipopt -lcoinhsl  
-if ENABLE_POWER_TOOLS
-POWER_TOOLS_CPP_H = PowerToolsCpp.h
-POWER_TOOLS_CPP_MM = PowerToolsCpp.mm
-POWER_FLOW_OPF_SOLVER_H = PowerFlowOpfSolver.h
-else
+#if ENABLE_POWER_TOOLS
+#POWER_TOOLS_CPP_H = PowerToolsCpp.h
+#POWER_TOOLS_CPP_MM = PowerToolsCpp.mm
+#POWER_FLOW_OPF_SOLVER_H = PowerFlowOpfSolver.h
+#else
 POWER_TOOLS_CPP_H =
 POWER_TOOLS_CPP_MM =
 POWER_FLOW_OPF_SOLVER_H =
-endif
+#endif
 
 libincludedir=$(includedir)/SgtCore
 
