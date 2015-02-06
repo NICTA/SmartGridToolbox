@@ -13,15 +13,15 @@ SGT_NETWORK_GRAPH_CC =
 endif
 
 # Note: ENABLE_POWER_TOOLS needs LD_FLAGS: -framework Foundation -framework PowerTools -lipopt -lcoinhsl  
-#if ENABLE_POWER_TOOLS
-#POWER_TOOLS_CPP_H = PowerToolsCpp.h
-#POWER_TOOLS_CPP_MM = PowerToolsCpp.mm
-#POWER_FLOW_OPF_SOLVER_H = PowerFlowOpfSolver.h
-#else
-POWER_TOOLS_CPP_H =
-POWER_TOOLS_CPP_MM =
+if ENABLE_POWER_TOOLS
+SGT_POWER_TOOLS_H = SgtPowerTools.h
+SGT_POWER_TOOLS_MM = SgtPowerTools.mm
+POWER_FLOW_OPF_SOLVER_H = PowerFlowOpfSolver.h
+else
+SGT_POWER_TOOLS_H =
+SGT_POWER_TOOLS_MM =
 POWER_FLOW_OPF_SOLVER_H =
-#endif
+endif
 
 libincludedir=$(includedir)/SgtCore
 
@@ -46,7 +46,7 @@ libinclude_HEADERS = \
 	Parser.h \
 	PowerFlow.h \
 	PowerFlowSolver.h \
-	$(POWER_TOOLS_CPP_H) \
+	$(SGT_POWER_TOOLS_H) \
 	Properties.h \
 	Random.h \
 	$(SGT_NETWORK_GRAPH_H) \
@@ -86,7 +86,7 @@ libSgtCore_a_SOURCES = \
 	$(POWER_FLOW_OPF_SOLVER_H) \
 	PowerFlowSolver.h \
 	PowerFlowSolverParserPlugin.h PowerFlowSolverParserPlugin.cc \
-	$(POWER_TOOLS_CPP_H) $(POWER_TOOLS_CPP_MM) \
+	$(SGT_POWER_TOOLS_H) $(SGT_POWER_TOOLS_MM) \
 	Properties.h \
 	Random.h Random.cc \
 	RegisterParserPlugins.cc \

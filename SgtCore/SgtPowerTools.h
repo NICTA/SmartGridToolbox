@@ -1,5 +1,5 @@
-#ifndef POWERT_TOOLS_CPP_DOT_H
-#define POWERT_TOOLS_CPP_DOT_H
+#ifndef SGT_POWER_TOOLS_DOT_H
+#define SGT_POWER_TOOLS_DOT_H
 
 namespace SmartGridToolbox
 {
@@ -8,4 +8,4 @@ namespace SmartGridToolbox
 
 void runOpf(SmartGridToolbox::Network& network);
 
-#endif // POWERT_TOOLS_CPP_DOT_H
+#endif // SGT_POWER_TOOLS_DOT_H

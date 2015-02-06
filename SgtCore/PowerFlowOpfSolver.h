@@ -2,7 +2,7 @@
 #define POWER_FLOW_OPF_SOLVER_DOT_H
 
 #include <SgtCore/PowerFlowSolver.h>
-#include <SgtCore/PowerToolsCpp.h>
+#include <SgtCore/SgtPowerTools.h>
 
 namespace SmartGridToolbox
 {
