@@ -16,21 +16,19 @@ endif
 if ENABLE_POWER_TOOLS
 SGT_POWER_TOOLS_H = SgtPowerTools.h
 SGT_POWER_TOOLS_MM = SgtPowerTools.mm
-POWER_FLOW_OPF_SOLVER_H = PowerFlowPtSolver.h
+POWER_FLOW_PT_SOLVER_H = PowerFlowPtSolver.h
 else
 SGT_POWER_TOOLS_H =
 SGT_POWER_TOOLS_MM =
-POWER_FLOW_OPF_SOLVER_H =
+POWER_FLOW_PT_SOLVER_H =
 endif
 
 if ENABLE_POWER_TOOLS_PP
-SGT_POWER_TOOLS_H = SgtPowerTools.h
-SGT_POWER_TOOLS_MM = SgtPowerTools.mm
-POWER_FLOW_OPF_SOLVER_H = PowerFlowPtSolver.h
+POWER_FLOW_PT_PP_SOLVER_H = PowerFlowPtPpSolver.h
+POWER_FLOW_PT_PP_SOLVER_CC = PowerFlowPtPpSolver.cc
 else
-SGT_POWER_TOOLS_H =
-SGT_POWER_TOOLS_MM =
-POWER_FLOW_OPF_SOLVER_H =
+POWER_FLOW_PT_PP_SOLVER_H =
+POWER_FLOW_PT_PP_SOLVER_CC =
 endif
 
 libincludedir=$(includedir)/SgtCore
@@ -58,11 +56,12 @@ libinclude_HEADERS = \
 	PowerFlowModel.h \
 	PowerFlowSolver.h \
 	PowerFlowNrSolver.h \
-	$(POWER_FLOW_OPF_SOLVER_H) \
-	$(SGT_POWER_TOOLS_H) \
+	$(POWER_FLOW_PT_SOLVER_H) \
+	$(POWER_FLOW_PT_PP_SOLVER_H) \
 	Properties.h \
 	Random.h \
 	$(SGT_NETWORK_GRAPH_H) \
+	$(SGT_POWER_TOOLS_H) \
 	SinglePhaseTransformer.h \
 	Stopwatch.h \
 	Units.h \
@@ -96,14 +95,15 @@ libSgtCore_a_SOURCES = \
 	PowerFlow.h PowerFlow.cc \
 	PowerFlowModel.h PowerFlowModel.cc \
 	PowerFlowNrSolver.h PowerFlowNrSolver.cc \
-	$(POWER_FLOW_OPF_SOLVER_H) \
+	$(POWER_FLOW_PT_SOLVER_H) \
+	$(POWER_FLOW_PT_PP_SOLVER_H) $(POWER_FLOW_PT_PP_SOLVER_CC)\
 	PowerFlowSolver.h \
 	PowerFlowSolverParserPlugin.h PowerFlowSolverParserPlugin.cc \
-	$(SGT_POWER_TOOLS_H) $(SGT_POWER_TOOLS_MM) \
 	Properties.h \
 	Random.h Random.cc \
 	RegisterParserPlugins.cc \
 	$(SGT_NETWORK_GRAPH_H) $(SGT_NETWORK_GRAPH_CC) \
+	$(SGT_POWER_TOOLS_H) $(SGT_POWER_TOOLS_MM) \
 	SparseSolver.h SparseSolver.cc \
 	Stopwatch.h \
 	SinglePhaseTransformer.h SinglePhaseTransformer.cc \
