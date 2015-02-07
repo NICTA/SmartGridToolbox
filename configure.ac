@@ -21,6 +21,15 @@ AM_CONDITIONAL([ENABLE_POWER_TOOLS], [test x$enable_power_tools = xyes])
 AS_IF([test x$enable_power_tools == xyes],
       [AC_DEFINE([ENABLE_POWER_TOOLS], [], [enable PowerTools support])])
 
+AC_ARG_ENABLE([power_tools_pp],
+              [AS_HELP_STRING([--enable-power_tools++], [enable PowerTools++ specific features @<:@no@:>@])],
+              [],
+              [enable_power_tools_pp=no])
+AC_SUBST([enable_power_tools_pp])
+AM_CONDITIONAL([ENABLE_POWER_TOOLS_PP], [test x$enable_power_tools_pp = xyes])
+AS_IF([test x$enable_power_tools_pp == xyes],
+      [AC_DEFINE([ENABLE_POWER_TOOLS_PP], [], [enable PowerTools++ support])])
+
 AC_PROG_CC
 AC_PROG_CXX([clang++ g++])
 AC_PROG_RANLIB

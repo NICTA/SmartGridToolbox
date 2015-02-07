@@ -12,6 +12,16 @@ L_IPOPT =
 L_COIN_HSL =
 endif
 
+if ENABLE_POWER_TOOLS_PP
+L_POWER_TOOLS_PP = -lPowerTools++
+L_IPOPT = -lipopt
+L_COIN_HSL = -lcoinhsl
+else
+L_POWER_TOOLS_PP =
+L_IPOPT =
+L_COIN_HSL =
+endif
+
 TESTS = tests
 
 check_PROGRAMS = tests
@@ -32,6 +42,7 @@ tests_LDADD = \
 	-lamd \
 	-lcolamd \
 	-lbtf \
+	$(L_POWER_TOOLS_PP) \
 	$(L_IPOPT) \
 	$(L_COIN_HSL)
 

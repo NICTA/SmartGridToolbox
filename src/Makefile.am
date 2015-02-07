@@ -12,6 +12,16 @@ L_IPOPT =
 L_COIN_HSL =
 endif
 
+if ENABLE_POWER_TOOLS_PP
+L_POWER_TOOLS_PP = -lPowerTools++
+L_IPOPT = -lipopt
+L_COIN_HSL = -lcoinhsl
+else
+L_POWER_TOOLS_PP =
+L_IPOPT =
+L_COIN_HSL =
+endif
+
 AM_CPPFLAGS = -I../SgtCore -I../SgtSim
 
 bin_PROGRAMS = run_config solve_network # network_to_dot
@@ -34,6 +44,7 @@ run_config_LDADD = \
 	-lamd \
 	-lcolamd \
 	-lbtf \
+	$(L_POWER_TOOLS_PP) \
 	$(L_IPOPT) \
 	$(L_COIN_HSL)
 
@@ -54,6 +65,7 @@ solve_network_LDADD = \
 	-lamd \
 	-lcolamd \
 	-lbtf \
+	$(L_POWER_TOOLS_PP) \
 	$(L_IPOPT) \
 	$(L_COIN_HSL)
 

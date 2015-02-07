@@ -8,7 +8,7 @@ namespace SmartGridToolbox
 {
    class Network;
 
-   class PowerFlowOpfSolver : public PowerFlowSolverInterface
+   class PowerFlowPtSolver : public PowerFlowSolverInterface
    {
       public:
          virtual bool solve(Network* netw) override

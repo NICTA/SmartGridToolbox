@@ -18,7 +18,7 @@
 #include <SgtCore/PowerFlow.h>
 #include <SgtCore/PowerFlowSolver.h>
 #include <SgtCore/PowerFlowNrSolver.h>
-#include <SgtCore/PowerFlowOpfSolver.h>
+#include <SgtCore/PowerFlowPtSolver.h>
 #include <SgtCore/Properties.h>
 #include <SgtCore/Random.h>
 #include <SgtCore/SinglePhaseTransformer.h>
