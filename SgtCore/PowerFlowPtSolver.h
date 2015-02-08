@@ -1,5 +1,5 @@
-#ifndef POWER_FLOW_OPF_SOLVER_DOT_H
-#define POWER_FLOW_OPF_SOLVER_DOT_H
+#ifndef POWER_FLOW_PT_SOLVER_DOT_H
+#define POWER_FLOW_PT_SOLVER_DOT_H
 
 #include <SgtCore/PowerFlowSolver.h>
 #include <SgtCore/SgtPowerTools.h>
@@ -19,4 +19,4 @@ namespace SmartGridToolbox
    };
 }
 
-#endif // POWER_FLOW_OPF_SOLVER_DOT_H
+#endif // POWER_FLOW_PT_SOLVER_DOT_H
