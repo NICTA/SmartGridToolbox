@@ -38,12 +38,12 @@ lib_LIBRARIES = libSgtCore.a
 include_HEADERS = SgtCore.h
 
 libinclude_HEADERS = \
-	../config.h \
 	Branch.h \
 	Bus.h \
 	Common.h \
 	CommonBranch.h \
 	Component.h \
+	config.h \
 	DgyTransformer.h \
 	Event.h \
 	Gen.h \

@@ -58,11 +58,13 @@ if test -z "$PDFLATEX" || test -z "$MAKEINDEX";
 fi
 AM_CONDITIONAL([HAVE_PDFLATEX], [test -n "$PDFLATEX" && test -n "$MAKEINDEX"])
 
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([SgtCore/config.h])
 AC_CONFIG_FILES([Makefile SgtCore/Makefile SgtSim/Makefile src/Makefile tests/Makefile docs/Makefile])
 AM_COND_IF(
    [HAVE_DOXYGEN],
    [AC_CONFIG_FILES([docs/Doxyfile])]
 )
+
+AC_SUBST([AM_CPPFLAGS], ["$AM_CPPFLAGS -I.."])
 
 AC_OUTPUT
