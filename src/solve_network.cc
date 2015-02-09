@@ -15,7 +15,7 @@ int main(int argc, char** argv)
    std::string outPrefix = argv[3];
    Network nw("network", 100.0);
 
-   std::string yamlStr =  std::string("--- [{power_flow_solver : " + solver + "}, {matpower : {input_file : ") + inFName + ", default_kV_base : 11}}]";
+   std::string yamlStr = std::string("--- [{power_flow_solver : " + solver + "}, {matpower : {input_file : ") + inFName + ", default_kV_base : 11}}]";
    YAML::Node n = YAML::Load(yamlStr);
 
    SmartGridToolbox::Parser<Network> p;

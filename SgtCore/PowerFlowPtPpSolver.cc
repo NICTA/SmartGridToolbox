@@ -17,11 +17,15 @@ namespace SmartGridToolbox
       net->bMVA = sgtNw.PBase();
       for (auto& bus : sgtNw.busses())
       {
-         const auto& zip = *bus->zips().begin();
-
          std::string busId = bus->id();
-         Complex PLoad = -sgtNw.S2Pu(zip->SConst()[0]);
-         Complex yShunt = sgtNw.Y2Pu(zip->YConst()[0], bus->VBase());
+
+         Complex PLoad = 0;
+         Complex yShunt = 0;
+         for (auto zip : bus->zips())
+         {
+            PLoad += -sgtNw.S2Pu(zip->SConst()[0]);
+            yShunt += sgtNw.Y2Pu(zip->YConst()[0], bus->VBase());
+         }
          double VMin = sgtNw.V2Pu(bus->VMagMin(), bus->VBase());
          double VMax = sgtNw.V2Pu(bus->VMagMax(), bus->VBase());
          double kVBase = bus->VBase();
