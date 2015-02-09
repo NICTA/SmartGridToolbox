@@ -49,6 +49,7 @@ namespace
          statementTerm_ = (qi::eol | qi::lit(';'));
 
          eol_ = -(qi::lit('%') >> *(qi::char_-qi::eol)) >> qi::eol;
+         ignore_ = -(qi::lit('%') >> *(qi::char_-qi::eol)) >> qi::eol;
          other_ = (*(qi::char_-statementTerm_) >> statementTerm_);
       
          rowSep_ = (qi::lit(';') >> -eol_) | eol_;
@@ -72,7 +73,12 @@ namespace
                genCostMatrix_ | other_);
 
          // To debug: e.g.
-         // BOOST_SPIRIT_DEBUG_NODE(MVABase_); debug(MVABase_);
+         BOOST_SPIRIT_DEBUG_NODE(topFunction_); debug(topFunction_);
+         BOOST_SPIRIT_DEBUG_NODE(MVABase_); debug(MVABase_);
+         BOOST_SPIRIT_DEBUG_NODE(busMatrix_); debug(busMatrix_);
+         BOOST_SPIRIT_DEBUG_NODE(genMatrix_); debug(genMatrix_);
+         BOOST_SPIRIT_DEBUG_NODE(branchMatrix_); debug(branchMatrix_);
+         BOOST_SPIRIT_DEBUG_NODE(genCostMatrix_); debug(genCostMatrix_);
       }
 
       qi::rule<Iterator, SpaceType> statementTerm_;
