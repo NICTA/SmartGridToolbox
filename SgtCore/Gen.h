@@ -129,6 +129,8 @@ namespace SmartGridToolbox
          virtual void setC1(double c1) = 0;
          virtual double c2() const = 0;
          virtual void setC2(double c2) = 0;
+
+         double cost() const;
    
       /// @}
     

@@ -23,15 +23,19 @@ int main(int argc, char** argv)
    auto outFBus = std::fopen((outPrefix + ".bus").c_str(), "w+");
    auto outFBranch = std::fopen((outPrefix + ".branch").c_str(), "w+");
    std::map<std::string, int> busMap;
+
    auto print = [&](){
       printf("--------------------------------------------------------------------------\n");
       printf("%18s : %15s %15s %15s %15s %15s %15s %15s %15s %15s %15s %15s\n",
             "bus", "V_base", "|V|", "theta", "P_gen", "Q_gen", "P_load", "Q_load",
             "y_shunt_r", "y_shunt_i", "I_zip_r", "I_zip_i");
       printf("--------------------------------------------------------------------------\n");
+      
       int iBus = 1;
       Complex SGenTot = 0;
       Complex SLoadTot = 0;
+      double costTot = 0;
+
       for (auto bus : nw.busses())
       {
          busMap[bus->id()] = iBus;
@@ -52,18 +56,30 @@ int main(int argc, char** argv)
                yZip.real(), yZip.imag(), IZip.real(), IZip.imag());
          ++iBus;
       }
+
       for (auto branch : nw.branches())
       {
          auto bus0 = branch->bus0();
          auto bus1 = branch->bus1();
          int iBus0 = busMap[bus0->id()];
          int iBus1 = busMap[bus1->id()];
-         fprintf(outFBranch, "%5d %5d %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n", iBus0, iBus1, branch->Y()(0, 0).real(), branch->Y()(0, 0).imag(), branch->Y()(0, 1).real(), branch->Y()(0, 1).imag(), branch->Y()(1, 0).real(), branch->Y()(1, 0).imag(), branch->Y()(1, 1).real(), branch->Y()(1, 1).imag());
+         fprintf(outFBranch, "%5d %5d %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n",
+               iBus0, iBus1, branch->Y()(0, 0).real(), branch->Y()(0, 0).imag(), branch->Y()(0, 1).real(),
+               branch->Y()(0, 1).imag(), branch->Y()(1, 0).real(), branch->Y()(1, 0).imag(),
+               branch->Y()(1, 1).real(), branch->Y()(1, 1).imag());
       }
+
+      for (auto gen : nw.gens())
+      {
+         costTot += gen->cost();
+      }
+
       std::cout << std::endl;
       std::cout << "Total Generation = " << SGenTot << std::endl;
       std::cout << "Total Load = " << SLoadTot << std::endl;
+      std::cout << "Total Cost = " << costTot << std::endl;
    };
+
    std::cout << "Before:" << std::endl;
    print();
    nw.solvePowerFlow();

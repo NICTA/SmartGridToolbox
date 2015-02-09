@@ -20,4 +20,14 @@ namespace SmartGridToolbox
       os << "c1: " << c1() << std::endl;
       os << "c2: " << c2() << std::endl;
    }
+
+   double GenAbc::cost() const
+   {
+      double P = 0;
+      for (const auto& Pi : S())
+      {
+         P += Pi.real();
+      }
+      return c0() + c1() * P + c2() * P * P;
+   }
 }
