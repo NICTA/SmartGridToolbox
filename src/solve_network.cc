@@ -30,12 +30,16 @@ int main(int argc, char** argv)
             "y_shunt_r", "y_shunt_i", "I_zip_r", "I_zip_i");
       printf("--------------------------------------------------------------------------\n");
       int iBus = 1;
+      Complex SGenTot = 0;
+      Complex SLoadTot = 0;
       for (auto bus : nw.busses())
       {
          busMap[bus->id()] = iBus;
          auto V = nw.V2Pu(bus->V()[0], bus->VBase());
          auto SGen = bus->SGen()[0];
+         SGenTot += SGen;
          auto SLoad = -bus->SZip()[0];
+         SLoadTot += SLoad;
          auto yZip = bus->YZip()[0];
          auto IZip = bus->IZip()[0];
          printf("%18s : %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n",
@@ -56,9 +60,14 @@ int main(int argc, char** argv)
          int iBus1 = busMap[bus1->id()];
          fprintf(outFBranch, "%5d %5d %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n", iBus0, iBus1, branch->Y()(0, 0).real(), branch->Y()(0, 0).imag(), branch->Y()(0, 1).real(), branch->Y()(0, 1).imag(), branch->Y()(1, 0).real(), branch->Y()(1, 0).imag(), branch->Y()(1, 1).real(), branch->Y()(1, 1).imag());
       }
+      std::cout << std::endl;
+      std::cout << "Total Generation = " << SGenTot << std::endl;
+      std::cout << "Total Load = " << SLoadTot << std::endl;
    };
-   // print();
+   std::cout << "Before:" << std::endl;
+   print();
    nw.solvePowerFlow();
+   std::cout << "After:" << std::endl;
    print();
    fclose(outFBus);
    fclose(outFBranch);
