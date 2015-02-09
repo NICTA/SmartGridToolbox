@@ -129,10 +129,10 @@ namespace SmartGridToolbox
    bool PowerFlowPtPpSolver::solve(Network* netw)
    {
       auto net = sgt2PowerTools(*netw);
-      printNetw(*net);
+      // printNetw(*net);
       PowerModel pModel(ACRECT, net.get());
       pModel.min_cost();
-      printNetw(*net);
+      // printNetw(*net);
       powerTools2Sgt(*net, *netw);
       return true;
    }
