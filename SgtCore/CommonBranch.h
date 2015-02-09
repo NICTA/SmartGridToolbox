@@ -54,7 +54,11 @@ namespace SmartGridToolbox
 
       /// @name Line parameters:
       /// @{
-
+ 
+         /// Complex tap ratio. 
+         ///
+         /// tap = V1 / V0 = exp(i theta) (n1 / n0) (where 0 = primary, 1 = secondary).
+         /// tap_off_nom = tap * VBase1 / VBase0
          Complex tapRatio() const
          {
             return tapRatio_;

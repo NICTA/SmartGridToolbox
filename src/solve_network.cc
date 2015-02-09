@@ -9,13 +9,13 @@ int main(int argc, char** argv)
 {
    using namespace SmartGridToolbox;
 
-   assert(argc == 3);
-   std::string inFName = argv[1];
-   std::string outPrefix = argv[2];
+   assert(argc == 4);
+   std::string solver = argv[1];
+   std::string inFName = argv[2];
+   std::string outPrefix = argv[3];
    Network nw("network", 100.0);
-   nw.setSolver(std::unique_ptr<PowerFlowOpfSolver>(new PowerFlowOpfSolver));
 
-   std::string yamlStr =  std::string("--- [{matpower : {input_file : ") + inFName + ", default_kV_base : 11}}]";
+   std::string yamlStr =  std::string("--- [{power_flow_solver : " + solver + "}, {matpower : {input_file : ") + inFName + ", default_kV_base : 11}}]";
    YAML::Node n = YAML::Load(yamlStr);
 
    SmartGridToolbox::Parser<Network> p;

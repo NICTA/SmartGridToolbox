@@ -4,35 +4,22 @@
 #include "CommonBranch.h"
 
 #include <PowerTools++/Net.h>
+#include <PowerTools++/PowerModel.h>
 
 #include <set>
 
 namespace SmartGridToolbox
 {
-   std::string ptBusId(const std::string& sgtBusId)
-   {
-      // TODO: KLUDGE: strip of the initial "bus_" as libPowerTools++ only accepts ids that are integer strings.
-      // The fix, of course, is to fix up this behaviour in libPowerTools.
-      // Until then, this KLUDGE will remain.
-      return sgtBusId.substr(4); 
-   }
-
-   std::string sgtBusId(const std::string& ptBusId)
-   {
-      return std::string("bus_") + ptBusId; 
-   }
-
    std::unique_ptr<Net> sgt2PowerTools(const SmartGridToolbox::Network& sgtNw)
    {
       std::unique_ptr<Net> net(new Net);
 
-      const int phase = 1;
       net->bMVA = sgtNw.PBase();
       for (auto& bus : sgtNw.busses())
       {
          const auto& zip = *bus->zips().begin();
 
-         std::string busId = ptBusId(bus->id());
+         std::string busId = bus->id();
          Complex PLoad = -sgtNw.S2Pu(zip->SConst()[0]);
          Complex yShunt = sgtNw.Y2Pu(zip->YConst()[0], bus->VBase());
          double VMin = sgtNw.V2Pu(bus->VMagMin(), bus->VBase());
@@ -71,12 +58,12 @@ namespace SmartGridToolbox
          auto bus1 = branch->bus1();
 
          std::string id = cBranch->id();
-         std::string bus0Id = ptBusId(bus0->id());
-         std::string bus1Id = ptBusId(bus1->id());
+         std::string bus0Id = bus0->id();
+         std::string bus1Id = bus1->id();
 
          auto arc = new Arc(id);
-         arc->src = net->get_node(std::stoi(bus0Id));
-         arc->dest = net->get_node(std::stoi(bus1Id));
+         arc->src = net->get_node(bus0Id);
+         arc->dest = net->get_node(bus1Id);
          arc->connect();
 
          Complex YSeries = sgtNw.Y2Pu(cBranch->YSeries(), bus1->VBase());
@@ -104,23 +91,30 @@ namespace SmartGridToolbox
 
          arc->limit = lim;
 
-         std::set<Arc*>* s = NULL;
-         std::string key = bus0Id + "," + bus1Id; 
-         if(net->lineID.find(key)==net->lineID.end()){
-            s = new std::set<Arc*>;
-            s->insert(arc);
-            net->lineID.insert(std::pair<std::string, std::set<Arc*>*>(key,s));
-         }
-         else {
-            s = net->lineID[key];
-            s->insert(arc);
-            std::cout << "WARNING: adding another line between same nodes!" << std::endl;
-         }
+         net->add_arc(arc);
       }
       return net;
    }
+
+   void printNetw(const Net& net)
+   {
+      for (const auto node : net.nodes)
+      {
+         std::cout << "Nodes:" << std::endl;
+         std::cout 
+            << node->_name << ": " << node->v.get_value() << " " 
+            << node->vr.get_value() << " " << node->vi.get_value() << " " << std::endl;
+         std::cout << "Arcs:" << std::endl;
+      }
+   }
+
    bool PowerFlowPtPpSolver::solve(Network* netw)
    {
+      auto net = sgt2PowerTools(*netw);
+      printNetw(*net);
+      PowerModel pModel(ACRECT, net.get());
+      pModel.min_cost();
+      printNetw(*net);
       return true;
    }
 }
