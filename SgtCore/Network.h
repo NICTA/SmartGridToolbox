@@ -130,6 +130,19 @@ namespace SmartGridToolbox
          }
          void addBus(BusPtr bus);
 
+         ConstBusPtr referenceBus() const
+         {
+            return referenceBus_;
+         }
+         BusPtr referenceBus()
+         {
+            return referenceBus_;
+         }
+         void setReferenceBus(const std::string& id)
+         {
+            referenceBus_ = bus(id); 
+         }
+
          const BranchVec& branches() const
          {
             return branchVec_;
@@ -245,12 +258,13 @@ namespace SmartGridToolbox
       /// @}
          
       private:
-         double PBase_ = 1.0;
-         double nomFreq_ = 50.0;
-         double freq_ = 50.0;
+         double PBase_{1.0};
+         double nomFreq_{50.0};
+         double freq_{50.0};
 
          BusVec busVec_;
          BusMap busMap_;
+         BusPtr referenceBus_{nullptr};
 
          BranchVec branchVec_;
          BranchMap branchMap_;
@@ -261,7 +275,7 @@ namespace SmartGridToolbox
          ZipVec zipVec_;
          ZipMap zipMap_;
 
-         std::unique_ptr<PowerFlowSolverInterface> solver_;
+         std::unique_ptr<PowerFlowSolverInterface> solver_{nullptr};
 
          bool isValidSolution_{false};
    };

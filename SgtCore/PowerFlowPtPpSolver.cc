@@ -96,6 +96,24 @@ namespace SmartGridToolbox
       return net;
    }
 
+   void powerTools2Sgt(const Net& ptNetw, SmartGridToolbox::Network& sgtNetw)
+   {
+      for (auto node: ptNetw.nodes)
+      {
+         auto sgtBus = sgtNetw.bus(node->_name);
+         sgtBus->setV({sgtNetw.pu2V<Complex>({node->vr.get_value(), node->vi.get_value()}, sgtBus->VBase())});
+         assert(sgtBus->gens().size() == node->_gen.size()); // TODO: remove restriction.
+         int nGen = node->_gen.size();
+         assert(nGen <= 1); // TODO: remove restriction.
+         if (nGen == 1)
+         {
+            auto gen = node->_gen[0];
+            auto sgtGen = std::dynamic_pointer_cast<SmartGridToolbox::GenericGen>(sgtBus->gens()[0]);
+            sgtGen->setInServiceS({sgtNetw.pu2S<Complex>({gen->pg.get_value(), gen->qg.get_value()})});
+         }
+      }
+   }
+
    void printNetw(const Net& net)
    {
       for (const auto node : net.nodes)
@@ -115,6 +133,7 @@ namespace SmartGridToolbox
       PowerModel pModel(ACRECT, net.get());
       pModel.min_cost();
       printNetw(*net);
+      powerTools2Sgt(*net, *netw);
       return true;
    }
 }

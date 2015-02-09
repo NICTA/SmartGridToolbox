@@ -58,3 +58,7 @@ PowerTools:
 There is duplicated sgt2PowerTools / smartGridToolbox2PowerTools code between
 SGT and PT. Need to be careful about dependencies, but could do something about
 this.
+
+Casting:
+--------
+dynamic_pointer_casts are annoying, write a decent casting function.
