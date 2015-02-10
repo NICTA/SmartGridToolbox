@@ -2,11 +2,11 @@
 
 namespace SmartGridToolbox
 {
-   void SgtNetworkGraph::create(const Network& nw)
+   void SgtNetworkGraph::create(const Network& nw, double nodeSz)
    {
       for (auto bus : nw.busses())
       {
-         this->addNode(bus->id(), SgtGraphNodeInfo{0.0, 0.0, 10.0, 10.0, bus.get()});
+         this->addNode(bus->id(), SgtGraphNodeInfo{0.0, 0.0, nodeSz, nodeSz, bus.get()});
       }
       for (auto branch : nw.branches())
       {

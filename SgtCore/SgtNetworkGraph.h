@@ -28,7 +28,7 @@ namespace SmartGridToolbox
    class SgtNetworkGraph : public NetworkGraph<GraphTraits<SgtGraphNodeInfo, SgtGraphArcInfo>>
    {
       public:
-         void create(const Network& nw);
+         void create(const Network& nw, double nodeSz);
    };
 }
 
