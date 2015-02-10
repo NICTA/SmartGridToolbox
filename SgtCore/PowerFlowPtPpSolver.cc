@@ -120,14 +120,22 @@ namespace SmartGridToolbox
 
    void printNetw(const Net& net)
    {
+      std::cout << "Nodes-----------------" << std::endl;
       for (const auto node : net.nodes)
       {
-         std::cout << "Nodes:" << std::endl;
-         std::cout 
-            << node->_name << ": " << node->v.get_value() << " " 
-            << node->vr.get_value() << " " << node->vi.get_value() << " " << std::endl;
-         std::cout << "Arcs:" << std::endl;
+         node->print();
       }
+      std::cout << "Arcs------------------" << std::endl;
+      for (const auto arc : net.arcs)
+      {
+         arc->print();
+      }
+      std::cout << "Gens------------------" << std::endl;
+      for (const auto gen : net.gens)
+      {
+         gen->print();
+      }
+      std::cout << "Done------------------" << std::endl;
    }
 
    bool PowerFlowPtPpSolver::solve(Network* netw)

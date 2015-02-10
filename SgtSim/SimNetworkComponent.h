@@ -19,10 +19,14 @@ namespace SmartGridToolbox
    class SimBus : public SimComponentAdaptor, public Bus 
    {
       public:
+         /// Construct a SimBus from a bus.
+         /// Note that the list of gens and zips will not be copied; the new SimBus will not be linked to
+         /// any gens or zips.
          SimBus(const Bus& bus) :
             Bus(bus)
          {
-            // Empty.
+            removeAllGens();
+            removeAllZips();
          }
 
       protected:

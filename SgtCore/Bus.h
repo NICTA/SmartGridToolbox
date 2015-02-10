@@ -92,6 +92,7 @@ namespace SmartGridToolbox
          
          const GenVec gens() const {return genVec_;}
          void addGen(GenPtr gen) {genVec_.push_back(gen);}
+         void removeAllGens() {genVec_.clear();}
          int nInServiceGens() const;
          arma::Col<Complex> SGen() const;
          double JGen() const;
@@ -103,6 +104,7 @@ namespace SmartGridToolbox
          
          const ZipVec zips() const {return zipVec_;}
          void addZip(ZipPtr zip) {zipVec_.push_back(zip);}
+         void removeAllZips() {zipVec_.clear();}
          int nInServiceZips() const;
          arma::Col<Complex> YZip() const;
          arma::Col<Complex> IZip() const;

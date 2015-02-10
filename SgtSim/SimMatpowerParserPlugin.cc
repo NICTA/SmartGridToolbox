@@ -17,16 +17,19 @@ namespace SmartGridToolbox
       Network tempNetw("temp", 100.0);
       mpParser.parse(nd, tempNetw, parser);
 
+      // Now recreate the SimNetwork from the Network.
       for (auto& bus : tempNetw.busses())
       {
          auto simBus = sim.newSimComponent<SimBus>(*bus);
          simNetw->addBus(simBus);
+
          for (auto& gen : bus->gens())
          {
             auto gGen = dynamic_cast<const GenericGen&>(*gen);
             auto simGen = sim.newSimComponent<SimGenericGen>(gGen);
             simNetw->addGen(simGen, bus->id());
          }
+
          for (auto& zip : bus->zips())
          {
             auto gZip = dynamic_cast<const GenericZip&>(*zip);
