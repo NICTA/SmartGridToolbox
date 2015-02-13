@@ -514,6 +514,8 @@ namespace SmartGridToolbox
          branch->setRateA(PScale * branchInfo.rateA);
          branch->setRateB(PScale * branchInfo.rateB);
          branch->setRateC(PScale * branchInfo.rateC);
+         branch->setAngMin(branchInfo.angMinDeg * pi / 180.0);
+         branch->setAngMax(branchInfo.angMaxDeg * pi / 180.0);
 
          netw.addBranch(std::move(branch), bus0Id, bus1Id);
       }

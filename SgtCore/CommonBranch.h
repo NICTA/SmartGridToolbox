@@ -119,6 +119,26 @@ namespace SmartGridToolbox
             rateC_ = rateC;
          }
 
+         double angMin() const
+         {
+            return angMin_;
+         }
+         
+         virtual void setAngMin(double angMin)
+         {
+            angMin_ = angMin;
+         }
+
+         double angMax() const
+         {
+            return angMax_;
+         }
+         
+         virtual void setAngMax(double angMax)
+         {
+            angMax_ = angMax;
+         }
+
       /// @}
 
       /// @name Overridden from BranchAbc:
@@ -139,6 +159,9 @@ namespace SmartGridToolbox
          double rateA_{infinity};
          double rateB_{infinity};
          double rateC_{infinity};
+
+         double angMin_{-pi};
+         double angMax_{pi};
    };
 }
 

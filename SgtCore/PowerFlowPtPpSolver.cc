@@ -2,6 +2,7 @@
 
 #include "Network.h"
 #include "CommonBranch.h"
+#include "Stopwatch.h"
 
 #include <PowerTools++/Net.h>
 #include <PowerTools++/PowerModel.h>
@@ -91,7 +92,8 @@ namespace SmartGridToolbox
          arc->cc = arc->tr*cos(arc->as);
          arc->dd = arc->tr*sin(arc->as);
 
-         // TODO arc->tbound
+         arc->tbound.min = cBranch->angMin();
+         arc->tbound.max = cBranch->angMax();
 
          arc->limit = lim;
 
@@ -140,12 +142,16 @@ namespace SmartGridToolbox
 
    bool PowerFlowPtPpSolver::solve(Network* netw)
    {
+      Stopwatch stopwatch;
+      stopwatch.start();
       auto net = sgt2PowerTools(*netw);
       // printNetw(*net);
       PowerModel pModel(ACRECT, net.get());
       pModel.min_cost();
       // printNetw(*net);
       powerTools2Sgt(*net, *netw);
+      stopwatch.stop();
+      std::cout << "PowerFlowPtPpSolver: solve time = " << stopwatch.seconds() << std::endl;
       return true;
    }
 }
