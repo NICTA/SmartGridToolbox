@@ -81,7 +81,7 @@ namespace SmartGridToolbox
             timezone_ = tz;
          }
 
-         /// @brief Timezone.
+         /// @brief Current time.
          Time currentTime() const
          {
             return currentTime_;
