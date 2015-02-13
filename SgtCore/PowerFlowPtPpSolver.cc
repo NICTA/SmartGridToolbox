@@ -142,16 +142,30 @@ namespace SmartGridToolbox
 
    bool PowerFlowPtPpSolver::solve(Network* netw)
    {
-      Stopwatch stopwatch;
-      stopwatch.start();
+      Stopwatch stopwatchPre;
+      Stopwatch stopwatchSolve;
+      Stopwatch stopwatchPost;
+      stopwatchPre.start();
       auto net = sgt2PowerTools(*netw);
+      stopwatchPre.stop();
       // printNetw(*net);
+      stopwatchSolve.start();
       PowerModel pModel(ACRECT, net.get());
       pModel.min_cost();
+      stopwatchSolve.stop();
+      stopwatchPost.start();
       // printNetw(*net);
       powerTools2Sgt(*net, *netw);
-      stopwatch.stop();
-      std::cout << "PowerFlowPtPpSolver: solve time = " << stopwatch.seconds() << std::endl;
+      stopwatchPost.stop();
+      Log().message() << "PowerFlowPtPpSolver:" << std::endl;
+      {
+         LogIndent _;
+         std::cout << "Preprocessing time  = " << stopwatchPre.seconds() << std::endl;
+         std::cout << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
+         std::cout << "Postprocessing time = " << stopwatchPost.seconds() << std::endl;
+         std::cout << "Total time          = " 
+                   << stopwatchPre.seconds() + stopwatchSolve.seconds() + stopwatchPost.seconds() << std::endl;
+      }
       return true;
    }
 }
