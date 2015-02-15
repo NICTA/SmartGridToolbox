@@ -117,19 +117,16 @@ namespace SmartGridToolbox
             auto sgtGen = std::dynamic_pointer_cast<SmartGridToolbox::GenericGen>(sgtBus->gens()[0]);
             sgtGen->setInServiceS({sgtNetw.pu2S<Complex>({gen->pg.get_value(), gen->qg.get_value()})});
          }
-         Complex SSol(-node->pl(), -node->ql());
+         Complex SSol = sgtNetw.pu2S(Complex(-node->pl(), -node->ql()));
          if (SSol != czero)
          {
-            assert(sgtBus->zips().size() == 1);
-            auto SBus = sgtBus->SZip();
-            std::cout << SBus << " : " << SSol << std::endl; 
-            if (arma::norm(SSol - SBus) > 1e-4)
+            auto SBus = sgtBus->SZip()[0];
+            std::cout << sgtBus->id() << " : SSol = " << SSol << " SBus = " << SBus;
+            if (std::abs(SSol - SBus) > 1e-4)
             {
-               std::cout << "UNSERVED LOAD!" << std::endl;
-               std::cout << SBus << std::endl;
-               std::cout << SSol << std::endl;
+               std::cout << " : UNSERVED LOAD!";
             }
-            auto sgtZip = sgtBus->zips()[0];
+            std::cout << std::endl;
          }
       }
    }
