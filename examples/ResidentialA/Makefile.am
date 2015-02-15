@@ -13,4 +13,7 @@ residential_a_LDADD = \
 	-lklu \
 	-lamd \
 	-lcolamd \
-	-lbtf
+	-lbtf \
+	-lipopt \
+	-lcoinhsl \
+	-lPowerTools++

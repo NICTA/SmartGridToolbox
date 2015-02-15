@@ -54,9 +54,9 @@ int main(int argc, const char** argv)
    std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
 
    out << "# t";
-   for (auto nd : netw->busses())
+   for (auto bus : netw->busses())
    {
-      out << " " << bus()->id();
+      out << " " << bus->id();
    }
    out << std::endl;
   

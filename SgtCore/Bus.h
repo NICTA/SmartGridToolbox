@@ -106,8 +106,10 @@ namespace SmartGridToolbox
          void addZip(ZipPtr zip) {zipVec_.push_back(zip);}
          void removeAllZips() {zipVec_.clear();}
          int nInServiceZips() const;
-         arma::Col<Complex> YZip() const;
-         arma::Col<Complex> IZip() const;
+         arma::Col<Complex> YConst() const;
+         arma::Col<Complex> IConst() const;
+         arma::Col<Complex> SConst() const;
+         /// The total power from the zips including all three components.
          arma::Col<Complex> SZip() const;
 
       /// @}

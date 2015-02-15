@@ -253,9 +253,9 @@ BOOST_AUTO_TEST_CASE (test_matpower)
          BOOST_CHECK_MESSAGE(std::abs(V - bus->V()(0) / bus->VBase()) < 1e-3,
                "V doesn't agree with Matpower at " << bus->type() << " bus " << bus->id() << "\n"
                << "    " << bus->V()(0) / bus->VBase() << " : " << V);
-         BOOST_CHECK_MESSAGE(std::abs(S - bus->SGen()(0) - bus->SZip()(0)) / nw.PBase() < 1e-3,
+         BOOST_CHECK_MESSAGE(std::abs(S - bus->SGen()(0) - bus->SConst()(0)) / nw.PBase() < 1e-3,
                "S doesn't agree with Matpower at " << bus->type() << " bus " << bus->id() << "\n"
-               << "    " << (bus->SGen()(0) + bus->SZip()(0)) << " : " << S);
+               << "    " << (bus->SGen()(0) + bus->SConst()(0)) << " : " << S);
       }
    }
 }

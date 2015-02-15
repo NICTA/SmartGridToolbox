@@ -422,12 +422,12 @@ namespace SmartGridToolbox
          }
          bus->setType(type);
          
-         Complex SZip = -Complex(busInfo.Pd, busInfo.Qd); // Already in MW.
-         Complex YZip = YBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
+         Complex SConst = -Complex(busInfo.Pd, busInfo.Qd); // Already in MW.
+         Complex YConst = YBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
          std::string zipId = getZipId(nZip++, busInfo.id);
          std::unique_ptr<GenericZip> zip(new GenericZip(zipId, Phase::BAL));
-         zip->setYConst({GScale * YZip});
-         zip->setSConst({PScale * SZip});
+         zip->setYConst({GScale * YConst});
+         zip->setSConst({PScale * SConst});
          bus->setVMagMin(busInfo.VMagMin == -infinity ? -infinity : VScale * pu2kV(busInfo.VMagMin, busInfo.kVBase));
          bus->setVMagMax(busInfo.VMagMax == infinity ? infinity : VScale * pu2kV(busInfo.VMagMax, busInfo.kVBase));
 

@@ -21,16 +21,16 @@ namespace SmartGridToolbox
       typedef std::vector<std::unique_ptr<PfNode>> PfNodeVec;
 
       PfBus(const std::string& id, BusType type, const Phases& phases,
-            const arma::Col<Complex>& YZip, const arma::Col<Complex>& IZip, const arma::Col<Complex>& SZip,
+            const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
             double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S);
 
       std::string id_; ///< Externally relevant id.
       BusType type_; ///< Bus type.
       Phases phases_; ///< Bus phases.
 
-      arma::Col<Complex> YZip_; ///< Constant admittance shunt, one per phase.
-      arma::Col<Complex> IZip_; ///< Constant current injection, one per phase.
-      arma::Col<Complex> SZip_; ///< Constant power injection, one per phase.
+      arma::Col<Complex> YConst_; ///< Constant admittance shunt, one per phase.
+      arma::Col<Complex> IConst_; ///< Constant current injection, one per phase.
+      arma::Col<Complex> SConst_; ///< Constant power injection, one per phase.
 
       // Regardless of numbers of poles, etc., the combined generation at a bus will have a certain
       // angular momentum for any given frequency of the network. Thus, we define an effective moment of inertia at the
@@ -51,9 +51,9 @@ namespace SmartGridToolbox
 
       int phaseIdx_;
       
-      Complex YZip_;
-      Complex IZip_;
-      Complex SZip_;
+      Complex YConst_;
+      Complex IConst_;
+      Complex SConst_;
 
       Complex V_;
       Complex S_;
@@ -85,8 +85,8 @@ namespace SmartGridToolbox
          /// @{
          
          void addBus(const std::string& id, BusType type, const Phases& phases,
-               const arma::Col<Complex>& YZip, const arma::Col<Complex>& IZip,
-               const arma::Col<Complex>& SZip, double J, const arma::Col<Complex>& V,
+               const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst,
+               const arma::Col<Complex>& SConst, double J, const arma::Col<Complex>& V,
                const arma::Col<Complex>& S);
 
          const PfBusMap& busses() const
@@ -171,13 +171,13 @@ namespace SmartGridToolbox
             return S_;
          }
          
-         const arma::Col<Complex>& IZip() const ///< Constant current component of ZIP.
+         const arma::Col<Complex>& IConst() const ///< Constant current component of ZIP.
          {
-            return IZip_;
+            return IConst_;
          }
-         arma::Col<Complex>& IZip() ///< Constant current component of ZIP.
+         arma::Col<Complex>& IConst() ///< Constant current component of ZIP.
          {
-            return IZip_;
+            return IConst_;
          }
          
          /// @}
@@ -281,7 +281,7 @@ namespace SmartGridToolbox
 
          arma::Col<Complex> V_; ///< Complex voltage.
          arma::Col<Complex> S_; ///< Complex power injection = S_zip + S_gen
-         arma::Col<Complex> IZip_; ///< Complex voltage.
+         arma::Col<Complex> IConst_; ///< Complex current.
          
          /// @}
    };

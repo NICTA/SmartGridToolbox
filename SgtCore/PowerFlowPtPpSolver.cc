@@ -57,7 +57,7 @@ namespace SmartGridToolbox
 
       for (const auto& branch : sgtNw.branches())
       {
-         // if (!branch->status()) continue;
+         // if (!branch->isInService()) continue;
          auto cBranch = std::dynamic_pointer_cast<CommonBranch>(branch);
          auto bus0 = branch->bus0();
          auto bus1 = branch->bus1();
@@ -116,6 +116,20 @@ namespace SmartGridToolbox
             auto gen = node->_gen[0];
             auto sgtGen = std::dynamic_pointer_cast<SmartGridToolbox::GenericGen>(sgtBus->gens()[0]);
             sgtGen->setInServiceS({sgtNetw.pu2S<Complex>({gen->pg.get_value(), gen->qg.get_value()})});
+         }
+         Complex SSol(-node->pl(), -node->ql());
+         if (SSol != czero)
+         {
+            assert(sgtBus->zips().size() == 1);
+            auto SBus = sgtBus->SZip();
+            std::cout << SBus << " : " << SSol << std::endl; 
+            if (arma::norm(SSol - SBus) > 1e-4)
+            {
+               std::cout << "UNSERVED LOAD!" << std::endl;
+               std::cout << SBus << std::endl;
+               std::cout << SSol << std::endl;
+            }
+            auto sgtZip = sgtBus->zips()[0];
          }
       }
    }

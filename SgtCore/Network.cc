@@ -142,8 +142,8 @@ namespace SmartGridToolbox
          }
 
          bus->applyVSetpoints();
-         mod->addBus(bus->id(), bus->type(), bus->phases(), bus->YZip(), bus->IZip(), bus->SZip(), bus->JGen(),
-               bus->V(), bus->SGen() + bus->SZip());
+         mod->addBus(bus->id(), bus->type(), bus->phases(), bus->YConst(), bus->IConst(), bus->SConst(), bus->JGen(),
+               bus->V(), bus->SGen() + bus->SConst());
 
          bus->setType(busTypeSv);
          bus->setpointChanged().setIsEnabled(isEnabledSv);
@@ -171,9 +171,9 @@ namespace SmartGridToolbox
          int nInService = bus->nInServiceGens(); 
 
          arma::Col<Complex> SGen = nInService > 0 
-            ? (busNr.S_ - bus->SZip()) / nInService
+            ? (busNr.S_ - bus->SConst()) / nInService
             : arma::Col<Complex>(bus->phases().size(), arma::fill::zeros);
-         // Note: we've already taken YZip and IZip explicitly into account, so this is correct.
+         // Note: we've already taken YConst and IConst explicitly into account, so this is correct.
          // KLUDGE: We're using a vector above, rather than "auto" (which gives some kind of expression type).
          // This is less efficient, but the latter gives errors in valgrind.
          // Also: regarding the nInService check, recall that if nInService = 0, the bus is treated as PQ for

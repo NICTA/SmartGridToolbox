@@ -89,7 +89,7 @@ namespace SmartGridToolbox
       return sum;
    }
 
-   arma::Col<Complex> Bus::YZip() const
+   arma::Col<Complex> Bus::YConst() const
    {
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
@@ -101,7 +101,7 @@ namespace SmartGridToolbox
       return sum;
    }
 
-   arma::Col<Complex> Bus::IZip() const
+   arma::Col<Complex> Bus::IConst() const
    {
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
@@ -113,7 +113,7 @@ namespace SmartGridToolbox
       return sum;
    }
 
-   arma::Col<Complex> Bus::SZip() const
+   arma::Col<Complex> Bus::SConst() const
    {
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
@@ -123,6 +123,11 @@ namespace SmartGridToolbox
          sum += zip->SConst();
       }
       return sum;
+   }
+
+   arma::Col<Complex> Bus::SZip() const
+   {
+      return SConst() + arma::conj(IConst()) % V() + arma::conj(YConst()) * arma::conj(V()) * V(); 
    }
 
    void Bus::applyVSetpoints()

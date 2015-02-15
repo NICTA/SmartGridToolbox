@@ -6,21 +6,21 @@
 namespace SmartGridToolbox
 {
    PfBus::PfBus(const std::string& id, BusType type, const Phases& phases,
-         const arma::Col<Complex>& YZip, const arma::Col<Complex>& IZip, const arma::Col<Complex>& SZip,
+         const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
          double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S) :
       id_(id),
       type_(type),
       phases_(phases),
-      YZip_(YZip),
-      IZip_(IZip),
-      SZip_(SZip),
+      YConst_(YConst),
+      IConst_(IConst),
+      SConst_(SConst),
       J_(J),
       V_(V),
       S_(S)
    {
-      assert(YZip.size() == phases.size());
-      assert(IZip.size() == phases.size());
-      assert(SZip.size() == phases.size());
+      assert(YConst.size() == phases.size());
+      assert(IConst.size() == phases.size());
+      assert(SConst.size() == phases.size());
       assert(V.size() == phases.size());
       assert(S.size() == phases.size());
 
@@ -33,9 +33,9 @@ namespace SmartGridToolbox
    PfNode::PfNode(PfBus& bus, int phaseIdx) :
       bus_(&bus),
       phaseIdx_(phaseIdx),
-      YZip_(bus.YZip_(phaseIdx)),
-      IZip_(bus.IZip_(phaseIdx)),
-      SZip_(bus.SZip_(phaseIdx)),
+      YConst_(bus.YConst_(phaseIdx)),
+      IConst_(bus.IConst_(phaseIdx)),
+      SConst_(bus.SConst_(phaseIdx)),
       V_(bus.V_(phaseIdx)),
       S_(bus.S_(phaseIdx)),
       idx_(-1)
@@ -57,11 +57,11 @@ namespace SmartGridToolbox
    }
 
    void PowerFlowModel::addBus(const std::string& id, BusType type, const Phases& phases,
-         const arma::Col<Complex>& YZip, const arma::Col<Complex>& IZip, const arma::Col<Complex>& SZip,
+         const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
          double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S)
    {
       SGT_DEBUG(Log().debug() << "PowerFlowModel : add bus " << id << std::endl);
-      busses_[id].reset(new PfBus(id, type, phases, YZip, IZip, SZip, J, V, S));
+      busses_[id].reset(new PfBus(id, type, phases, YConst, IConst, SConst, J, V, S));
    }
 
    void PowerFlowModel::addBranch(const std::string& idBus0, const std::string& idBus1,
@@ -184,7 +184,7 @@ namespace SmartGridToolbox
       // Add shunt terms:
       for (int i = 0; i < nNode; ++i)
       {
-         Y_(i, i) += nodes_[i]->YZip_;
+         Y_(i, i) += nodes_[i]->YConst_;
       }
 
       SGT_DEBUG(Log().debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
@@ -192,14 +192,14 @@ namespace SmartGridToolbox
       // Vector quantities of problem:
       V_.set_size(nNode);
       S_.set_size(nNode);
-      IZip_.set_size(nNode);
+      IConst_.set_size(nNode);
 
       for (int i = 0; i < nNode; ++i)
       {
          const PfNode& node = *nodes_[i];
          V_(i) = node.V_;
          S_(i) = node.S_;
-         IZip_(i) = node.IZip_;
+         IConst_(i) = node.IConst_;
       }
 
       SGT_DEBUG(Log().debug() << "PowerFlowModel : validate complete." << std::endl);
@@ -218,14 +218,14 @@ namespace SmartGridToolbox
             Log().debug() << "Node:" << std::endl;
             {
                LogIndent _;
-               Log().debug() << "Id    : " << nd->bus_->id_ << std::endl;
-               Log().debug() << "Type  : " << nd->bus_->type_ << std::endl;
-               Log().debug() << "Phase : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
-               Log().debug() << "V     : " << nd->V_ << std::endl;
-               Log().debug() << "S     : " << nd->S_ << std::endl;
-               Log().debug() << "YZip    : " << nd->YZip_ << std::endl;
-               Log().debug() << "IZip    : " << nd->IZip_ << std::endl;
-               Log().debug() << "SZip    : " << nd->SZip_ << std::endl;
+               Log().debug() << "Id     : " << nd->bus_->id_ << std::endl;
+               Log().debug() << "Type   : " << nd->bus_->type_ << std::endl;
+               Log().debug() << "Phase  : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
+               Log().debug() << "V      : " << nd->V_ << std::endl;
+               Log().debug() << "S      : " << nd->S_ << std::endl;
+               Log().debug() << "YConst : " << nd->YConst_ << std::endl;
+               Log().debug() << "IConst : " << nd->IConst_ << std::endl;
+               Log().debug() << "SConst : " << nd->SConst_ << std::endl;
             }
          }
       }

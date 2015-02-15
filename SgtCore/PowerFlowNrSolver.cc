@@ -272,14 +272,14 @@ namespace SmartGridToolbox
          auto SSl = mod_->S()(mod_->selSlFromAll());
 
          auto VSl = mod_->V()(mod_->selSlFromAll());
-         auto IZipSl = mod_->IZip()(mod_->selSlFromAll());
+         auto IConstSl = mod_->IConst()(mod_->selSlFromAll());
 
          SpMat<Complex> YStar = mod_->Y()(mod_->selSlFromAll(), mod_->selAllFromAll());
          for (auto elem : YStar) elem = std::conj(Complex(elem));
          auto VStar = colConj(mod_->V());
-         auto IZipStar = colConj(mod_->IZip()(mod_->selSlFromAll()));
+         auto IConstStar = colConj(mod_->IConst()(mod_->selSlFromAll()));
 
-         SSl = VSl % (YStar * VStar) - VSl % IZipStar;
+         SSl = VSl % (YStar * VStar) - VSl % IConstStar;
       }
 
       // Update nodes and busses.
@@ -436,15 +436,15 @@ namespace SmartGridToolbox
          const auto PPq = P(mod_->selPqFromAll());
          const auto QPq = Q(mod_->selPqFromAll());
 
-         const auto IZiprPq = real(mod_->IZip()(mod_->selPqFromAll()));
-         const auto IZipiPq = imag(mod_->IZip()(mod_->selPqFromAll()));
+         const auto IConstrPq = real(mod_->IConst()(mod_->selPqFromAll()));
+         const auto IConstiPq = imag(mod_->IConst()(mod_->selPqFromAll()));
 
          Col<double> M2Pq = VrPq % VrPq + ViPq % ViPq;
 
          f(selIrPqFrom_f_) = (VrPq % PPq + ViPq % QPq) / M2Pq
-            + IZiprPq - GPq * Vr + BPq * Vi;
+            + IConstrPq - GPq * Vr + BPq * Vi;
          f(selIiPqFrom_f_) = (ViPq % PPq - VrPq % QPq) / M2Pq
-            + IZipiPq - GPq * Vi - BPq * Vr;
+            + IConstiPq - GPq * Vi - BPq * Vr;
       }
 
       if (mod_->nPv() > 0)
@@ -459,13 +459,13 @@ namespace SmartGridToolbox
          const auto PPv = P(mod_->selPvFromAll());
          const auto QPv = Q(mod_->selPvFromAll());
 
-         const auto IZiprPv = real(mod_->IZip()(mod_->selPvFromAll()));
-         const auto IZipiPv = imag(mod_->IZip()(mod_->selPvFromAll()));
+         const auto IConstrPv = real(mod_->IConst()(mod_->selPvFromAll()));
+         const auto IConstiPv = imag(mod_->IConst()(mod_->selPvFromAll()));
 
          f(selIrPvFrom_f_) = (VrPv % PPv + ViPv % QPv) / M2Pv
-            + IZiprPv - GPv * Vr + BPv * Vi;
+            + IConstrPv - GPv * Vr + BPv * Vi;
          f(selIiPvFrom_f_) = (ViPv % PPv - VrPv % QPv) / M2Pv
-            + IZipiPv - GPv * Vi - BPv * Vr;
+            + IConstiPv - GPv * Vi - BPv * Vr;
       }
    }
 

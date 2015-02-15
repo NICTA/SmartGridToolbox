@@ -42,18 +42,18 @@ int main(int argc, char** argv)
          auto V = nw.V2Pu(bus->V()[0], bus->VBase());
          auto SGen = bus->SGen()[0];
          SGenTot += SGen;
-         auto SLoad = -bus->SZip()[0];
+         auto SLoad = -bus->SConst()[0];
          SLoadTot += SLoad;
-         auto yZip = bus->YZip()[0];
-         auto IZip = bus->IZip()[0];
+         auto yZip = bus->YConst()[0];
+         auto IConst = bus->IConst()[0];
          printf("%18s : %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n",
                bus->id().c_str(), bus->VBase(), std::abs(V), std::arg(V)*180.0/pi,
                SGen.real(), SGen.imag(), SLoad.real(), SLoad.imag(),
-               yZip.real(), yZip.imag(), IZip.real(), IZip.imag());
+               yZip.real(), yZip.imag(), IConst.real(), IConst.imag());
          fprintf(outFBus, "%15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n",
                bus->VBase(), std::abs(V), std::arg(V)*180.0/pi,
                SGen.real(), SGen.imag(), SLoad.real(), SLoad.imag(),
-               yZip.real(), yZip.imag(), IZip.real(), IZip.imag());
+               yZip.real(), yZip.imag(), IConst.real(), IConst.imag());
          ++iBus;
       }
 
