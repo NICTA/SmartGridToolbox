@@ -24,7 +24,9 @@ namespace SmartGridToolbox
       VBase_(VBase),
       VMagSetpoint_(phases.size()),
       VAngSetpoint_(phases.size()),
-      V_(VNom)
+      V_(VNom),
+      SGenViolation_(phases.size(), arma::fill::zeros),
+      SZipViolation_(phases.size(), arma::fill::zeros)
    {
       for (int i = 0; i < phases_.size(); ++i)
       {
@@ -46,7 +48,7 @@ namespace SmartGridToolbox
       return sum;
    }
 
-   arma::Col<Complex> Bus::SGen() const
+   arma::Col<Complex> Bus::SGenRequested() const
    {
       // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
       // Easier to just do this.
@@ -59,6 +61,11 @@ namespace SmartGridToolbox
          }
       }
       return sum;
+   }
+
+   arma::Col<Complex> Bus::SGen() const
+   {
+      return SGenRequested() + SGenViolation_;
    }
 
    double Bus::JGen() const
@@ -135,9 +142,14 @@ namespace SmartGridToolbox
       return sum;
    }
 
-   arma::Col<Complex> Bus::STotZip() const
+   arma::Col<Complex> Bus::SZipRequested() const
    {
       return SYConst() + SIConst() + SConst();
+   }
+   
+   arma::Col<Complex> Bus::SZip() const
+   {
+      return SZipRequested() + SZipViolation_;
    }
 
    void Bus::applyVSetpoints()

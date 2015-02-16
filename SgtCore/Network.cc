@@ -143,7 +143,7 @@ namespace SmartGridToolbox
 
          bus->applyVSetpoints();
          mod->addBus(bus->id(), bus->type(), bus->phases(), bus->YConst(), bus->IConst(), bus->SConst(), bus->JGen(),
-               bus->V(), bus->SGen() + bus->SConst());
+               bus->V(), bus->SGenRequested() + bus->SConst());
 
          bus->setType(busTypeSv);
          bus->setpointChanged().setIsEnabled(isEnabledSv);
@@ -165,13 +165,13 @@ namespace SmartGridToolbox
    {
       for (const auto& busPair: mod.busses())
       {
-         auto& busNr = *busPair.second;
-         const auto bus = netw.bus(busNr.id_);
+         auto& modBus = *busPair.second;
+         const auto bus = netw.bus(modBus.id_);
 
          int nInService = bus->nInServiceGens(); 
 
          arma::Col<Complex> SGen = nInService > 0 
-            ? (busNr.S_ - bus->SConst()) / nInService
+            ? (modBus.S_ - bus->SConst()) / nInService
             : arma::Col<Complex>(bus->phases().size(), arma::fill::zeros);
          // Note: we've already taken YConst and IConst explicitly into account, so this is correct.
          // KLUDGE: We're using a vector above, rather than "auto" (which gives some kind of expression type).
@@ -179,7 +179,9 @@ namespace SmartGridToolbox
          // Also: regarding the nInService check, recall that if nInService = 0, the bus is treated as PQ for
          // the purpose of the solver.
 
-         bus->setV(busNr.V_);
+         bus->setV(modBus.V_);
+         bus->setSGenViolation(arma::Col<Complex>(bus->phases().size(), arma::fill::zeros)); // TODO: allow violations.
+         bus->setSZipViolation(arma::Col<Complex>(bus->phases().size(), arma::fill::zeros)); // TODO: allow violations.
          switch (bus->type())
          {
             case BusType::SL:

@@ -217,6 +217,8 @@ void runOpf(SmartGridToolbox::Network& sgtNw)
       auto sgtBus = sgtNw.bus(nd.b_id.UTF8String);
       V(0) = sgtNw.pu2V(std::polar(nd.voltage.mag.floatValue, nd.voltage.theta.floatValue), sgtBus->VBase());
       sgtBus->setV(V);
+      bus->setSGenViolation(arma::Col<Complex>(bus->phases().size(), arma::fill::zeros)); // TODO: allow violations.
+      bus->setSZipViolation(arma::Col<Complex>(bus->phases().size(), arma::fill::zeros)); // TODO: allow violations.
       std::cout << *sgtBus << std::endl;
    }
    for (Gen* gen in nw.gens) {

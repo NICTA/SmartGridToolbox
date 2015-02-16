@@ -94,7 +94,8 @@ namespace SmartGridToolbox
          void addGen(GenPtr gen) {genVec_.push_back(gen);}
          void removeAllGens() {genVec_.clear();}
          int nInServiceGens() const;
-         arma::Col<Complex> SGen() const;
+         arma::Col<Complex> SGenRequested() const; ///< Requested power of gens.
+         arma::Col<Complex> SGen() const;  ///< Actual power of gens, including possible violation from requested.
          double JGen() const;
 
       /// @}
@@ -114,8 +115,9 @@ namespace SmartGridToolbox
          arma::Col<Complex> SIConst() const; ///< Complex power from constant current component of zip.
 
          arma::Col<Complex> SConst() const; ///< Complex power component of zip.
-
-         arma::Col<Complex> STotZip() const; ///< Total power of zip.
+         
+         arma::Col<Complex> SZipRequested() const; ///< Requested power of zips.
+         arma::Col<Complex> SZip() const; ///< Actual power of zips, including possible violation from requested.
 
       /// @}
       
@@ -210,6 +212,26 @@ namespace SmartGridToolbox
             voltageUpdated_.trigger();
          }
 
+         virtual const arma::Col<Complex>& SGenViolation() const
+         {
+            return SGenViolation_;
+         }
+
+         virtual void setSGenViolation(const arma::Col<Complex>& SGenViolation)
+         {
+            SGenViolation_ = SGenViolation;
+         }
+
+         virtual const arma::Col<Complex>& SZipViolation() const
+         {
+            return SZipViolation_;
+         }
+
+         virtual void setSZipViolation(const arma::Col<Complex>& SZipViolation)
+         {
+            SZipViolation_ = SZipViolation;
+         }
+
       /// @}
       
       /// @name Events.
@@ -252,7 +274,10 @@ namespace SmartGridToolbox
          double VMagMax_{infinity};
 
          bool isInService_{true};
+
          arma::Col<Complex> V_;
+         arma::Col<Complex> SGenViolation_; // SGen = SGenRequested + SGenViolation
+         arma::Col<Complex> SZipViolation_; // SZip = SZipRequested + SZipViolation
 
          Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
          Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};

@@ -123,13 +123,16 @@ namespace SmartGridToolbox
          {
             std::cout << "Load violation at bus " << sgtBus->id() << " is " << SLoadViolSol << std::endl;
          }
+         
+         sgtBus->setSZipViolation({-SLoadViolSol});
+         sgtBus->setSGenViolation(arma::Col<Complex>(sgtBus->phases().size(), arma::fill::zeros));
 
          Complex YShuntSolPu(node->gs(), node->bs());
          // Complex YShuntSol = sgtNw.pu2Y(YShuntSolPu, sgtBus->VBase());
          Complex SShuntSolPu = -conj(YShuntSolPu) * conj(VSolPu) * VSolPu;
          Complex SShuntSol = sgtNw.pu2S(SShuntSolPu); 
 
-         Complex STotZipSol = SLoadSol + SShuntSol;
+         Complex SZipTotSol = SLoadSol + SShuntSol;
 
          int nGen = node->_gen.size();
          int nSgtGen = sgtBus->gens().size();
@@ -143,10 +146,10 @@ namespace SmartGridToolbox
             sgtGen->setInServiceS({sgtNw.pu2S<Complex>({gen->pg.get_value(), gen->qg.get_value()})});
          }
 
-         if (STotZipSol != czero)
+         if (SZipTotSol != czero)
          {
-            auto STotZipBus = sgtBus->STotZip()[0];
-            if (std::abs(STotZipSol - STotZipBus) > 1e-4)
+            auto SZipTotBus = sgtBus->SZip()[0];
+            if (std::abs(SZipTotSol - SZipTotBus) > 1e-4)
             {
                std::cout << "Unserved load for bus " << sgtBus->id() << std::endl;
             }
