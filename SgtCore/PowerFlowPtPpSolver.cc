@@ -116,6 +116,13 @@ namespace SmartGridToolbox
 
          Complex SLoadSolPu(-node->pl(), -node->ql());
          Complex SLoadSol = sgtNw.pu2S(SLoadSolPu); 
+         
+         Complex SLoadViolSolPu(-node->plv.get_value(), -node->qlv.get_value());
+         Complex SLoadViolSol = sgtNw.pu2S(SLoadViolSolPu);
+         if (std::abs(SLoadViolSol) > 1e-6)
+         {
+            std::cout << "Load violation at bus " << sgtBus->id() << " is " << SLoadViolSol << std::endl;
+         }
 
          Complex YShuntSolPu(node->gs(), node->bs());
          // Complex YShuntSol = sgtNw.pu2Y(YShuntSolPu, sgtBus->VBase());
@@ -123,8 +130,6 @@ namespace SmartGridToolbox
          Complex SShuntSol = sgtNw.pu2S(SShuntSolPu); 
 
          Complex STotZipSol = SLoadSol + SShuntSol;
-
-         std::cout << sgtBus->id() << std::endl;
 
          int nGen = node->_gen.size();
          int nSgtGen = sgtBus->gens().size();
@@ -143,7 +148,7 @@ namespace SmartGridToolbox
             auto STotZipBus = sgtBus->STotZip()[0];
             if (std::abs(STotZipSol - STotZipBus) > 1e-4)
             {
-               std::cout << "Unserved load for bus" << sgtBus->id() << std::endl;
+               std::cout << "Unserved load for bus " << sgtBus->id() << std::endl;
             }
          }
       }
