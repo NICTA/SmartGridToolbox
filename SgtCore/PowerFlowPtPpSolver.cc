@@ -37,13 +37,13 @@ namespace SmartGridToolbox
          
          for (const auto& gen : bus->gens())
          {
-            // if (!gen->status()) continue;
             double PMin = sgtNw.S2Pu(gen->PMin());
             double PMax = sgtNw.S2Pu(gen->PMax());
             double QMin = sgtNw.S2Pu(gen->QMin());
             double QMax = sgtNw.S2Pu(gen->QMax());
 
             Gen* g = new Gen(node, to_string(node->_gen.size()), PMin, PMax, QMin, QMax);
+            g->_active = gen->isInService();
 
             double c0 = gen->c0();
             double c1 = gen->c1();
@@ -57,7 +57,6 @@ namespace SmartGridToolbox
 
       for (const auto& branch : sgtNw.branches())
       {
-         // if (!branch->isInService()) continue;
          auto cBranch = std::dynamic_pointer_cast<CommonBranch>(branch);
          auto bus0 = branch->bus0();
          auto bus1 = branch->bus1();
@@ -96,6 +95,8 @@ namespace SmartGridToolbox
          arc->tbound.max = cBranch->angMax();
 
          arc->limit = lim;
+            
+         arc->status = branch->isInService() ? 1 : 0;
 
          net->add_arc(arc);
       }
@@ -114,25 +115,15 @@ namespace SmartGridToolbox
 
          sgtBus->setV({VSol});
 
-         Complex SLoadSolPu(-node->pl(), -node->ql());
-         Complex SLoadSol = sgtNw.pu2S(SLoadSolPu); 
-         
-         Complex SLoadViolSolPu(-node->plv.get_value(), -node->qlv.get_value());
-         Complex SLoadViolSol = sgtNw.pu2S(SLoadViolSolPu);
-         if (std::abs(SLoadViolSol) > 1e-6)
+         Complex SLoadUnservedSolPu(-node->plv.get_value(), -node->qlv.get_value());
+         Complex SLoadUnservedSol = sgtNw.pu2S(SLoadUnservedSolPu);
+         if (std::abs(SLoadUnservedSol) > 1e-6)
          {
-            std::cout << "Load violation at bus " << sgtBus->id() << " is " << SLoadViolSol << std::endl;
+            Log().warning() << "Unserved load at bus " << sgtBus->id() << " is " << SLoadUnservedSol << std::endl;
          }
          
-         sgtBus->setSZipViolation({-SLoadViolSol});
-         sgtBus->setSGenViolation(arma::Col<Complex>(sgtBus->phases().size(), arma::fill::zeros));
-
-         Complex YShuntSolPu(node->gs(), node->bs());
-         // Complex YShuntSol = sgtNw.pu2Y(YShuntSolPu, sgtBus->VBase());
-         Complex SShuntSolPu = -conj(YShuntSolPu) * conj(VSolPu) * VSolPu;
-         Complex SShuntSol = sgtNw.pu2S(SShuntSolPu); 
-
-         Complex SZipTotSol = SLoadSol + SShuntSol;
+         sgtBus->setSZipUnserved({SLoadUnservedSol});
+         sgtBus->setSGenUnserved(arma::Col<Complex>(sgtBus->phases().size(), arma::fill::zeros));
 
          int nGen = node->_gen.size();
          int nSgtGen = sgtBus->gens().size();
@@ -143,38 +134,30 @@ namespace SmartGridToolbox
             auto gen = node->_gen[i];
             auto sgtGen = std::dynamic_pointer_cast<SmartGridToolbox::GenericGen>(sgtBus->gens()[i]);
             Complex SGenSolPu(gen->pg.get_value(), gen->qg.get_value());
-            sgtGen->setInServiceS({sgtNw.pu2S<Complex>({gen->pg.get_value(), gen->qg.get_value()})});
-         }
-
-         if (SZipTotSol != czero)
-         {
-            auto SZipTotBus = sgtBus->SZip()[0];
-            if (std::abs(SZipTotSol - SZipTotBus) > 1e-4)
-            {
-               std::cout << "Unserved load for bus " << sgtBus->id() << std::endl;
-            }
+            Complex SGenSol = sgtNw.pu2S(SGenSolPu);
+            sgtGen->setInServiceS({SGenSol});
          }
       }
    }
 
    void printNetw(const Net& net)
    {
-      std::cout << "Nodes-----------------" << std::endl;
+      Log().message() << "Nodes-----------------" << std::endl;
       for (const auto node : net.nodes)
       {
          node->print();
       }
-      std::cout << "Arcs------------------" << std::endl;
+      Log().message() << "Arcs------------------" << std::endl;
       for (const auto arc : net.arcs)
       {
          arc->print();
       }
-      std::cout << "Gens------------------" << std::endl;
+      Log().message() << "Gens------------------" << std::endl;
       for (const auto gen : net.gens)
       {
          gen->print();
       }
-      std::cout << "Done------------------" << std::endl;
+      Log().message() << "Done------------------" << std::endl;
    }
 
    bool PowerFlowPtPpSolver::solve(Network* netw)
@@ -197,10 +180,10 @@ namespace SmartGridToolbox
       Log().message() << "PowerFlowPtPpSolver:" << std::endl;
       {
          LogIndent _;
-         std::cout << "Preprocessing time  = " << stopwatchPre.seconds() << std::endl;
-         std::cout << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
-         std::cout << "Postprocessing time = " << stopwatchPost.seconds() << std::endl;
-         std::cout << "Total time          = " 
+         Log().message() << "Preprocessing time  = " << stopwatchPre.seconds() << std::endl;
+         Log().message() << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
+         Log().message() << "Postprocessing time = " << stopwatchPost.seconds() << std::endl;
+         Log().message() << "Total time          = " 
                    << stopwatchPre.seconds() + stopwatchSolve.seconds() + stopwatchPost.seconds() << std::endl;
       }
       return true;

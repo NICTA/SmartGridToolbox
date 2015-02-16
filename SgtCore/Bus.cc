@@ -25,8 +25,8 @@ namespace SmartGridToolbox
       VMagSetpoint_(phases.size()),
       VAngSetpoint_(phases.size()),
       V_(VNom),
-      SGenViolation_(phases.size(), arma::fill::zeros),
-      SZipViolation_(phases.size(), arma::fill::zeros)
+      SGenUnserved_(phases.size(), arma::fill::zeros),
+      SZipUnserved_(phases.size(), arma::fill::zeros)
    {
       for (int i = 0; i < phases_.size(); ++i)
       {
@@ -65,7 +65,7 @@ namespace SmartGridToolbox
 
    arma::Col<Complex> Bus::SGen() const
    {
-      return SGenRequested() + SGenViolation_;
+      return SGenRequested() - SGenUnserved_;
    }
 
    double Bus::JGen() const
@@ -149,7 +149,7 @@ namespace SmartGridToolbox
    
    arma::Col<Complex> Bus::SZip() const
    {
-      return SZipRequested() + SZipViolation_;
+      return SZipRequested() - SZipUnserved_;
    }
 
    void Bus::applyVSetpoints()

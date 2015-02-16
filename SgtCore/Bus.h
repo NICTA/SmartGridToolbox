@@ -95,7 +95,7 @@ namespace SmartGridToolbox
          void removeAllGens() {genVec_.clear();}
          int nInServiceGens() const;
          arma::Col<Complex> SGenRequested() const; ///< Requested power of gens.
-         arma::Col<Complex> SGen() const;  ///< Actual power of gens, including possible violation from requested.
+         arma::Col<Complex> SGen() const;  ///< Actual power of gens, including possible unserved generation.
          double JGen() const;
 
       /// @}
@@ -117,7 +117,7 @@ namespace SmartGridToolbox
          arma::Col<Complex> SConst() const; ///< Complex power component of zip.
          
          arma::Col<Complex> SZipRequested() const; ///< Requested power of zips.
-         arma::Col<Complex> SZip() const; ///< Actual power of zips, including possible violation from requested.
+         arma::Col<Complex> SZip() const; ///< Actual power of zips, including possible unserved load.
 
       /// @}
       
@@ -212,24 +212,24 @@ namespace SmartGridToolbox
             voltageUpdated_.trigger();
          }
 
-         virtual const arma::Col<Complex>& SGenViolation() const
+         virtual const arma::Col<Complex>& SGenUnserved() const
          {
-            return SGenViolation_;
+            return SGenUnserved_;
          }
 
-         virtual void setSGenViolation(const arma::Col<Complex>& SGenViolation)
+         virtual void setSGenUnserved(const arma::Col<Complex>& SGenUnserved)
          {
-            SGenViolation_ = SGenViolation;
+            SGenUnserved_ = SGenUnserved;
          }
 
-         virtual const arma::Col<Complex>& SZipViolation() const
+         virtual const arma::Col<Complex>& SZipUnserved() const
          {
-            return SZipViolation_;
+            return SZipUnserved_;
          }
 
-         virtual void setSZipViolation(const arma::Col<Complex>& SZipViolation)
+         virtual void setSZipUnserved(const arma::Col<Complex>& SZipUnserved)
          {
-            SZipViolation_ = SZipViolation;
+            SZipUnserved_ = SZipUnserved;
          }
 
       /// @}
@@ -276,8 +276,8 @@ namespace SmartGridToolbox
          bool isInService_{true};
 
          arma::Col<Complex> V_;
-         arma::Col<Complex> SGenViolation_; // SGen = SGenRequested + SGenViolation
-         arma::Col<Complex> SZipViolation_; // SZip = SZipRequested + SZipViolation
+         arma::Col<Complex> SGenUnserved_; // SGen + SGenUnserved = SGenRequested
+         arma::Col<Complex> SZipUnserved_; // SZip + SZipUnserved = SZipRequested
 
          Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
          Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};

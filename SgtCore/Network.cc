@@ -180,8 +180,8 @@ namespace SmartGridToolbox
          // the purpose of the solver.
 
          bus->setV(modBus.V_);
-         bus->setSGenViolation(arma::Col<Complex>(bus->phases().size(), arma::fill::zeros)); // TODO: allow violations.
-         bus->setSZipViolation(arma::Col<Complex>(bus->phases().size(), arma::fill::zeros)); // TODO: allow violations.
+         bus->setSGenUnserved(arma::Col<Complex>(bus->phases().size(), arma::fill::zeros)); // TODO: allow unserved.
+         bus->setSZipUnserved(arma::Col<Complex>(bus->phases().size(), arma::fill::zeros)); // TODO: allow unserved.
          switch (bus->type())
          {
             case BusType::SL:
