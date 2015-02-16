@@ -102,31 +102,49 @@ namespace SmartGridToolbox
       return net;
    }
 
-   void powerTools2Sgt(const Net& ptNetw, SmartGridToolbox::Network& sgtNetw)
+   void powerTools2Sgt(const Net& ptNetw, SmartGridToolbox::Network& sgtNw)
    {
       for (auto node: ptNetw.nodes)
       {
-         auto sgtBus = sgtNetw.bus(node->_name);
-         sgtBus->setV({sgtNetw.pu2V<Complex>({node->vr.get_value(), node->vi.get_value()}, sgtBus->VBase())});
-         assert(sgtBus->gens().size() == node->_gen.size()); // TODO: remove restriction.
+         auto sgtBus = sgtNw.bus(node->_name);
+         assert(sgtBus->gens().size() == node->_gen.size());
+
+         Complex VSolPu(node->vr.get_value(), node->vi.get_value());
+         Complex VSol = sgtNw.pu2V<Complex>(VSolPu, sgtBus->VBase());
+
+         sgtBus->setV({VSol});
+
+         Complex SLoadSolPu(-node->pl(), -node->ql());
+         Complex SLoadSol = sgtNw.pu2S(SLoadSolPu); 
+
+         Complex YShuntSolPu(node->gs(), node->bs());
+         // Complex YShuntSol = sgtNw.pu2Y(YShuntSolPu, sgtBus->VBase());
+         Complex SShuntSolPu = -conj(YShuntSolPu) * conj(VSolPu) * VSolPu;
+         Complex SShuntSol = sgtNw.pu2S(SShuntSolPu); 
+
+         Complex STotZipSol = SLoadSol + SShuntSol;
+
+         std::cout << sgtBus->id() << std::endl;
+
          int nGen = node->_gen.size();
-         assert(nGen <= 1); // TODO: remove restriction.
-         if (nGen == 1)
+         int nSgtGen = sgtBus->gens().size();
+         assert(nGen == nSgtGen);
+         for (int i = 0; i < nGen; ++i)
          {
-            auto gen = node->_gen[0];
-            auto sgtGen = std::dynamic_pointer_cast<SmartGridToolbox::GenericGen>(sgtBus->gens()[0]);
-            sgtGen->setInServiceS({sgtNetw.pu2S<Complex>({gen->pg.get_value(), gen->qg.get_value()})});
+            // Order of gens should be same in Sgt and Pt.
+            auto gen = node->_gen[i];
+            auto sgtGen = std::dynamic_pointer_cast<SmartGridToolbox::GenericGen>(sgtBus->gens()[i]);
+            Complex SGenSolPu(gen->pg.get_value(), gen->qg.get_value());
+            sgtGen->setInServiceS({sgtNw.pu2S<Complex>({gen->pg.get_value(), gen->qg.get_value()})});
          }
-         Complex SSol = sgtNetw.pu2S(Complex(-node->pl(), -node->ql()));
-         if (SSol != czero)
+
+         if (STotZipSol != czero)
          {
-            auto SBus = sgtBus->SZip()[0];
-            std::cout << sgtBus->id() << " : SSol = " << SSol << " SBus = " << SBus;
-            if (std::abs(SSol - SBus) > 1e-4)
+            auto STotZipBus = sgtBus->STotZip()[0];
+            if (std::abs(STotZipSol - STotZipBus) > 1e-4)
             {
-               std::cout << " : UNSERVED LOAD!";
+               std::cout << "Unserved load for bus" << sgtBus->id() << std::endl;
             }
-            std::cout << std::endl;
          }
       }
    }
@@ -161,8 +179,8 @@ namespace SmartGridToolbox
       stopwatchPre.stop();
       // printNetw(*net);
       stopwatchSolve.start();
-      PowerModel pModel(ACRECT, net.get());
-      pModel.min_cost();
+      PowerModel pModel(ACRECT_, net.get());
+      pModel.min_cost_load();
       stopwatchSolve.stop();
       stopwatchPost.start();
       // printNetw(*net);

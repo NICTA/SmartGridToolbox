@@ -100,6 +100,11 @@ namespace SmartGridToolbox
       }
       return sum;
    }
+   
+   arma::Col<Complex> Bus::SYConst() const
+   {
+      return -arma::conj(YConst()) % arma::conj(V()) % V(); 
+   }
 
    arma::Col<Complex> Bus::IConst() const
    {
@@ -111,6 +116,11 @@ namespace SmartGridToolbox
          sum += zip->IConst();
       }
       return sum;
+   }
+   
+   arma::Col<Complex> Bus::SIConst() const
+   {
+      return arma::conj(IConst()) % V(); 
    }
 
    arma::Col<Complex> Bus::SConst() const
@@ -125,9 +135,9 @@ namespace SmartGridToolbox
       return sum;
    }
 
-   arma::Col<Complex> Bus::SZip() const
+   arma::Col<Complex> Bus::STotZip() const
    {
-      return SConst() + arma::conj(IConst()) % V() + arma::conj(YConst()) * arma::conj(V()) * V(); 
+      return SYConst() + SIConst() + SConst();
    }
 
    void Bus::applyVSetpoints()
