@@ -23,6 +23,7 @@ namespace SmartGridToolbox
    struct BasicGraphArcInfo
    {
       double l;
+      bool ignore;
    };
 
    template<typename NI = BasicGraphNodeInfo, typename AI = BasicGraphArcInfo> struct GraphTraits
@@ -102,10 +103,13 @@ namespace SmartGridToolbox
             std::vector<std::pair<ogdf::edge, GraphArc<GT>*>> edges;
             for (auto& a : arcMap_)
             {
-               const std::string& id0 = a.second.n0->id;
-               const std::string& id1 = a.second.n1->id;
-               ogdf::edge e = g.newEdge(ogdfNdMap[id0], ogdfNdMap[id1]);
-               edges.push_back(std::make_pair(e, &(a.second)));
+               if (!a.second.info.ignore)
+               {
+                  const std::string& id0 = a.second.n0->id;
+                  const std::string& id1 = a.second.n1->id;
+                  ogdf::edge e = g.newEdge(ogdfNdMap[id0], ogdfNdMap[id1]);
+                  edges.push_back(std::make_pair(e, &(a.second)));
+               }
             }
 
             ogdf::EdgeArray<double> ea(g);

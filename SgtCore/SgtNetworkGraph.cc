@@ -55,7 +55,7 @@ namespace SmartGridToolbox
       {
          double l = std::max(lMin, lMax * elem.r / rMax);
          this->addArc(elem.branch->id(), elem.branch->bus0()->id(), elem.branch->bus1()->id(),
-                      SgtGraphArcInfo{l, elem.branch});
+                      SgtGraphArcInfo{l, !elem.branch->isInService(), elem.branch});
       }
    };
 };

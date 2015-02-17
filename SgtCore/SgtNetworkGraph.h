@@ -18,6 +18,7 @@ namespace SmartGridToolbox
    struct SgtGraphArcInfo
    {
       double l;
+      bool ignore;
       BranchAbc* branch;
    };
 
