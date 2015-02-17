@@ -18,17 +18,17 @@ namespace SmartGridToolbox
 {
    template class NetworkGraph<>;
 
-   void layoutOgdf(ogdf::Graph& g, ogdf::GraphAttributes& ga, int layoutType)
+   void layoutOgdf(ogdf::Graph& g, ogdf::GraphAttributes& ga, ogdf::EdgeArray<double>& edgeLengths, int layoutType)
    {
       if (layoutType == 0)
       {
          ogdf::FMMMLayout fmmm;
-         fmmm.repulsiveForcesCalculation(ogdf::FMMMLayout::rfcNMM);
+
          fmmm.useHighLevelOptions(true);
-         fmmm.unitEdgeLength(15.0);
          fmmm.newInitialPlacement(true);
          fmmm.qualityVersusSpeed(ogdf::FMMMLayout::qvsGorgeousAndEfficient);
-         fmmm.call(ga);
+
+         fmmm.call(ga, edgeLengths);
       }
       else if (layoutType == 1)
       {

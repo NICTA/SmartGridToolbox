@@ -1,6 +1,7 @@
 #ifndef NETWORKGRAPH_H
 #define NETWORKGRAPH_H
 
+#include <ogdf/basic/EdgeArray.h>
 #include <ogdf/basic/Graph.h>
 #include <ogdf/basic/GraphAttributes.h>
 
@@ -62,7 +63,7 @@ namespace SmartGridToolbox
       }
    };
    
-   void layoutOgdf(ogdf::Graph& g, ogdf::GraphAttributes& ga, int layoutType);
+   void layoutOgdf(ogdf::Graph& g, ogdf::GraphAttributes& ga, ogdf::EdgeArray<double>& edgeLengths, int layoutType);
 
    template<typename GT = BasicGraphTraits> class NetworkGraph
    {
@@ -98,11 +99,19 @@ namespace SmartGridToolbox
                nodeVec[ogdfNd->index()] = &n.second;
             }
 
+            std::vector<std::pair<ogdf::edge, GraphArc<GT>*>> edges;
             for (auto& a : arcMap_)
             {
                const std::string& id0 = a.second.n0->id;
                const std::string& id1 = a.second.n1->id;
-               g.newEdge(ogdfNdMap[id0], ogdfNdMap[id1]);
+               ogdf::edge e = g.newEdge(ogdfNdMap[id0], ogdfNdMap[id1]);
+               edges.push_back(std::make_pair(e, &(a.second)));
+            }
+
+            ogdf::EdgeArray<double> ea(g);
+            for (auto& elem : edges)
+            {
+               ea[elem.first] = elem.second->info.l;
             }
 
             ogdf::node n;
@@ -112,7 +121,7 @@ namespace SmartGridToolbox
                ga.height(n) = nodeVec[n->index()]->info.h;
             }
 
-            layoutOgdf(g, ga, 0);
+            layoutOgdf(g, ga, ea, 0);
 
             forall_nodes(n, g)
             {
