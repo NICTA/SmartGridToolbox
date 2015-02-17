@@ -28,6 +28,9 @@ namespace SmartGridToolbox
          fmmm.newInitialPlacement(true);
          fmmm.qualityVersusSpeed(ogdf::FMMMLayout::qvsGorgeousAndEfficient);
 
+         fmmm.springStrength(0.0);
+         fmmm.repForcesStrength(0.0);
+
          fmmm.call(ga, edgeLengths);
       }
       else if (layoutType == 1)
@@ -89,6 +92,9 @@ namespace SmartGridToolbox
       {
          ga.x(n) -= xCenter;
          ga.y(n) -= yCenter;
+         // TODO: KLUDGE: I have no idea why I need to rescale - something to do with  
+         ga.x(n) *= 0.015;
+         ga.y(n) *= 0.015;
       }
    }
 }
