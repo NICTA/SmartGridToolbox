@@ -119,14 +119,12 @@ namespace SmartGridToolbox
    }
 
    // TODO: can we tidy up the logic in this function?
-   bool Simulation::doNextUpdate()
+   void Simulation::doNextUpdate()
    {
       SGT_DEBUG(Log().debug() << "Simulation doNextUpdate(): " << std::endl);
       SGT_DEBUG(Log().debug() << "Number of scheduled = " << scheduledUpdates_.size() << std::endl);
       SGT_DEBUG(Log().debug() << "Number of contingent = " << contingentUpdates_.size() << std::endl);
       SGT_DEBUG(LogIndent _);
-
-      bool result = false;
 
       Time nextSchedTime = posix_time::pos_infin;
       SimCompPtr schedComp(nullptr);
@@ -163,12 +161,13 @@ namespace SmartGridToolbox
          }
          SGT_DEBUG(Log().debug() << "About to perform update..." << std::endl);
          SGT_DEBUG({LogIndent _;)
-         contComp->update(currentTime_); // Now do the update
+         // Now perform the update...
+         contComp->update(currentTime_);
          SGT_DEBUG(})
          SGT_DEBUG(Log().debug() << "... Done" << std::endl);
-         scheduledUpdates_.insert(std::make_pair(contComp, contComp->validUntil()));
-            // ... and reinsert it in the scheduled updates set.
-         result = true;
+
+         // ... and try to reinsert component in scheduled updates.
+         tryInsertScheduledUpdate(contComp);
       }
       else if (scheduledUpdates_.size() > 0 && nextSchedTime < endTime_)
       {
@@ -189,14 +188,15 @@ namespace SmartGridToolbox
          scheduledUpdates_.erase(schedUpdateIt);
          contingentUpdates_.erase(schedComp);
 
-         // Now perform the update.
+         // Now perform the update...
          SGT_DEBUG(Log().debug() << "About to perform update..." << std::endl);
          SGT_DEBUG({LogIndent _;)
          schedComp->update(currentTime_);
          SGT_DEBUG(})
          SGT_DEBUG(Log().debug() << "... Done" << std::endl);
-         scheduledUpdates_.insert(std::make_pair(schedComp, schedComp->validUntil())); // and reinsert it.
-         result = true;
+
+         // ... and try to reinsert it.
+         tryInsertScheduledUpdate(schedComp);
       }
       else
       {
@@ -217,36 +217,30 @@ namespace SmartGridToolbox
          }
          timestepDidComplete_.trigger();
       }
-
-      return result;
    }
 
-   bool Simulation::doTimestep()
+   void Simulation::doTimestep()
    {
       Time time1 = currentTime_;
       // Do at least one step. This may push us over into the next timestep, in which case we should stop, unless
       // this was the very first timestep.
-      bool result = doNextUpdate();
+      doNextUpdate();
       Time timeToComplete = (time1 == posix_time::neg_infin) ? currentTime_ : time1;
 
       // Now finish off all contingent and scheduled updates in this step.
-      while (result &&
-             ((contingentUpdates_.size() > 0) ||
-              (scheduledUpdates_.size() > 0 && (scheduledUpdates_.begin()->second == timeToComplete))))
+      while ((contingentUpdates_.size() > 0) ||
+             (scheduledUpdates_.size() > 0 && (scheduledUpdates_.begin()->second == timeToComplete)))
       {
-         result = result && doNextUpdate();
+         doNextUpdate();
       }
 
       // Now bring up all lagging simComponents to the new time, if they have an update.
       Time time2 = currentTime_;
-      while (result &&
-             ((contingentUpdates_.size() > 0) ||
-              (scheduledUpdates_.size() > 0 && (scheduledUpdates_.begin()->second == time2))))
+      while ((contingentUpdates_.size() > 0) ||
+             (scheduledUpdates_.size() > 0 && (scheduledUpdates_.begin()->second == time2)))
       {
-         result = result && doNextUpdate();
+         doNextUpdate();
       }
-
-      return result;
    }
 
    std::shared_ptr<const SimComponentAdaptor> Simulation::genericSimComponent(const std::string& id,
@@ -279,4 +273,13 @@ namespace SmartGridToolbox
       }
       return result;
    }
+
+   void Simulation::tryInsertScheduledUpdate(SimCompPtr schedComp)
+   {
+      Time nextUpdate = schedComp->validUntil();
+      if (nextUpdate < endTime_)
+      {
+         scheduledUpdates_.insert(std::make_pair(schedComp, schedComp->validUntil()));
+      }
+   };
 }

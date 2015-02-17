@@ -16,11 +16,10 @@ int main(int argc, const char** argv)
    Parser<Simulation> p;
    p.parse(configName, sim);
    sim.initialize();
-   bool ok = true;
 
-   while (ok)
+   while (!sim.isFinished())
    {
       LogIndent _;
-      ok = sim.doTimestep();
+      sim.doTimestep();
    }
 }

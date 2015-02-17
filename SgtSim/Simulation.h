@@ -146,10 +146,12 @@ namespace SmartGridToolbox
          void initialize();
 
          /// @brief Do the next update.
-         bool doNextUpdate();
+         void doNextUpdate();
 
          /// @brief Complete the pending timestep.
-         bool doTimestep();
+         void doTimestep();
+
+         bool isFinished() {return (scheduledUpdates_.size() == 0) && (contingentUpdates_.size() == 0);}
 
          /// @brief Get the timestep will start event.
          Event& timestepWillStart() {return timestepWillStart_;}
@@ -210,7 +212,8 @@ namespace SmartGridToolbox
                }
          };
 
-         typedef std::set<std::pair<SimCompPtr, Time>, ScheduledUpdatesCompare> ScheduledUpdates;
+         typedef std::pair<SimCompPtr, Time> ScheduledUpdate;
+         typedef std::set<ScheduledUpdate, ScheduledUpdatesCompare> ScheduledUpdates;
          typedef std::set<SimCompPtr, ContingentUpdatesCompare> ContingentUpdates;
 
       private:
@@ -222,7 +225,9 @@ namespace SmartGridToolbox
 
          std::shared_ptr<const TimeSeriesBase> genericTimeSeries(const std::string& id,
                bool crashOnFail = true) const;
-      
+     
+         void tryInsertScheduledUpdate(SimCompPtr schedComp);
+
       private:
 
          bool isValid_ = false;
