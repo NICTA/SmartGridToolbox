@@ -95,8 +95,8 @@ namespace SmartGridToolbox
          ga.x(n) -= xCenter;
          ga.y(n) -= yCenter;
          // TODO: KLUDGE: I have no idea why I need to rescale - something to do with  
-         ga.x(n) *= 0.04;
-         ga.y(n) *= 0.04;
+         ga.x(n) *= 0.03;
+         ga.y(n) *= 0.03;
       }
    }
 }
