@@ -49,7 +49,6 @@ int main(int argc, const char** argv)
    p.registerParserPlugin<ApplianceParserPlugin>();
    p.parse(configName, sim);
    sim.initialize();
-   bool ok = true;
 
    std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
 
@@ -62,9 +61,9 @@ int main(int argc, const char** argv)
   
    Stopwatch swTot;
    swTot.start();
-   while (ok)
+   while (!sim.isFinished())
    {
-      ok = sim.doTimestep();
+      sim.doTimestep();
       double t = dSeconds(sim.currentTime() - sim.startTime())/3600;
       out << t;
       for (ConstBusPtr bus : netw->busses())
