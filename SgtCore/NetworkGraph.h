@@ -82,49 +82,13 @@ namespace SmartGridToolbox
             n0.adjacentArcs.push_back(&a);
             arcMap_.emplace(std::make_pair(id, a));
          }
-
-         void layout()
+         
+         void randomize(double width, double height)
          {
-            double width = 100.0;
-            double height = 100.0;
-
-            std::vector<vpsc::Rectangle*> rs;
-            std::vector<cola::Edge> es;
-            std::vector<double> eLens;
-            int i = 0;
             for (auto& n : nodeMap_)
             {
-               double x = myRand(width);
-               double y = myRand(height);
-               rs.push_back(new vpsc::Rectangle(x - n.second.info.w, x + n.second.info.w,
-                                                y - n.second.info.h, y + n.second.info.h));
-               n.second.info.idx = i++;
-            }
-            for (auto& a : arcMap_)
-            {
-               if (!a.second.info.ignore)
-               {
-                  auto i0 = a.second.n0->info.idx;
-                  auto i1 = a.second.n1->info.idx;
-                  es.push_back(std::make_pair(i0, i1));
-                  eLens.push_back(a.second.info.l);
-               }
-            }
-
-            cola::ConstrainedFDLayout fd(rs, es, 1, true, eLens);
-            fd.run();
-
-            i = 0;
-            for (auto& n : nodeMap_)
-            {
-               n.second.info.x = rs[i]->getCentreX();
-               n.second.info.y = rs[i]->getCentreY();
-               ++i;
-            }
-
-            for (auto r : rs)
-            {
-               delete r;
+               n.second.info.x = myRand(width);
+               n.second.info.y = myRand(height);
             }
          }
 
@@ -148,9 +112,67 @@ namespace SmartGridToolbox
             return arcMap_;
          }
 
+         void layout()
+         {
+            doLayout();
+         }
+         
+         double stepLayout()
+         {
+            return doLayout(true);
+         }
+
       private:
 
-         void validate();
+         double doLayout(bool step = false)
+         {
+            std::vector<vpsc::Rectangle*> rs;
+            std::vector<cola::Edge> es;
+            std::vector<double> eLens;
+            int i = 0;
+            for (auto& n : nodeMap_)
+            {
+               rs.push_back(new vpsc::Rectangle(
+                        n.second.info.x - 0.5 * n.second.info.w, n.second.info.x + 0.5 * n.second.info.w,
+                        n.second.info.y - 0.5 * n.second.info.h, n.second.info.y + 0.5 * n.second.info.h));
+               n.second.info.idx = i++;
+            }
+            for (auto& a : arcMap_)
+            {
+               if (!a.second.info.ignore)
+               {
+                  auto i0 = a.second.n0->info.idx;
+                  auto i1 = a.second.n1->info.idx;
+                  es.push_back(std::make_pair(i0, i1));
+                  eLens.push_back(a.second.info.l);
+               }
+            }
+
+            cola::ConstrainedFDLayout fd(rs, es, 1, true, eLens);
+            if (step)
+            {
+               fd.runOnce();
+            }
+            else
+            {
+               fd.run();
+            }
+
+            i = 0;
+            for (auto& n : nodeMap_)
+            {
+               n.second.info.x = rs[i]->getCentreX();
+               n.second.info.y = rs[i]->getCentreY();
+               ++i;
+            }
+
+            for (auto r : rs)
+            {
+               delete r;
+            }
+
+            return fd.computeStress();
+         }
 
       private:
 
