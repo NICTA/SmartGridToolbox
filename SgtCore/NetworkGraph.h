@@ -112,7 +112,7 @@ namespace SmartGridToolbox
             }
 
             cola::ConstrainedFDLayout fd(rs, es, 1, true, eLens);
-            fd.run(true, true);
+            fd.run();
 
             i = 0;
             for (auto& n : nodeMap_)
@@ -120,6 +120,11 @@ namespace SmartGridToolbox
                n.second.info.x = rs[i]->getCentreX();
                n.second.info.y = rs[i]->getCentreY();
                ++i;
+            }
+
+            for (auto r : rs)
+            {
+               delete r;
             }
          }
 
