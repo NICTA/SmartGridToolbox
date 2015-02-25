@@ -8,23 +8,24 @@ namespace SmartGridToolbox
 {
    namespace
    {
-      double getRAvg(const BranchAbc& branch)
+      double getXAvg(const BranchAbc& branch)
       {
          int nPhase = branch.phases0().size();
-         auto Y = branch.Y();
-         double rAvg = 0.0;
+         auto Y = branch.inServiceY();
+         double XAvg = 0.0;
          for (int i = 0; i < nPhase; ++i)
          {
-            rAvg -= Y(nPhase + i, i).real(); 
+            double Xi = -(1.0 / Y(nPhase + i, i)).imag(); 
+            XAvg += Xi;
          }
-         rAvg /= nPhase;
-         return rAvg;
+         XAvg /= nPhase;
+         return XAvg;
       }
 
-      struct BranchR
+      struct BranchX
       {
          BranchAbc* branch;
-         double r;
+         double X;
       };
    }
 
@@ -32,30 +33,34 @@ namespace SmartGridToolbox
    {
       for (auto bus : nw.busses())
       {
-         this->addNode(bus->id(), SgtGraphNodeInfo{0.0, 0.0, 1.0, 1.0, bus.get()});
+         this->addNode(bus->id(), SgtGraphNodeInfo{0.0, 0.0, 1.0, 1.0, 0, bus.get()});
       }
 
-      std::vector<BranchR> branchR; branchR.reserve(nw.branches().size());
+      std::vector<BranchX> branchX; branchX.reserve(nw.branches().size());
       for (auto branch : nw.branches())
       {
-         double rAvg = getRAvg(*branch);
-         branchR.push_back(BranchR{branch.get(), rAvg});
+         double XAvg = getXAvg(*branch);
+         branchX.push_back(BranchX{branch.get(), XAvg});
       }
-      double rMax = 0.0;
-      for (auto& elem : branchR)
+
+      double XMax = 0.0;
+      for (auto& elem : branchX)
       {
-         if (elem.r > rMax)
+         if (elem.X > XMax)
          {
-            rMax = elem.r;
+            XMax = elem.X;
          }
       }
-      const double lMin = 2;
-      const double lMax = 10;
-      for (auto& elem : branchR)
+      if (XMax == 0.0)
       {
-         double l = std::max(lMin, lMax * elem.r / rMax);
+         XMax = 1.0;
+      }
+
+      for (auto& elem : branchX)
+      {
+         double scaledX = elem.X / XMax;
          this->addArc(elem.branch->id(), elem.branch->bus0()->id(), elem.branch->bus1()->id(),
-                      SgtGraphArcInfo{l, !elem.branch->isInService(), elem.branch});
+                      SgtGraphArcInfo{1.0, scaledX, !elem.branch->isInService(), elem.branch});
       }
    };
 };

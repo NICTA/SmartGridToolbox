@@ -2,12 +2,10 @@ AUTOMAKE_OPTIONS = foreign
 
 if ENABLE_LAYOUT
 NETWORK_GRAPH_H = NetworkGraph.h  
-NETWORK_GRAPH_CC = NetworkGraph.cc
 SGT_NETWORK_GRAPH_H = SgtNetworkGraph.h  
 SGT_NETWORK_GRAPH_CC = SgtNetworkGraph.cc
 else
 NETWORK_GRAPH_H =
-NETWORK_GRAPH_CC =
 SGT_NETWORK_GRAPH_H =
 SGT_NETWORK_GRAPH_CC =
 endif
@@ -87,7 +85,7 @@ libSgtCore_a_SOURCES = \
 	LibSgtCore.h \
 	MatpowerParserPlugin.h MatpowerParserPlugin.cc \
 	Network.h Network.cc \
-	$(NETWORK_GRAPH_H) $(NETWORK_GRAPH_CC) \
+	$(NETWORK_GRAPH_H) \
 	NetworkParser.h NetworkParser.cc \
 	OverheadLine.h OverheadLine.cc \
 	OverheadLineParserPlugin.h OverheadLineParserPlugin.cc \

@@ -1,14 +1,23 @@
 #ifndef NETWORKGRAPH_H
 #define NETWORKGRAPH_H
 
-#include <ogdf/basic/EdgeArray.h>
-#include <ogdf/basic/Graph.h>
-#include <ogdf/basic/GraphAttributes.h>
+#include <libcola/cola.h>
 
 #include <map>
 #include <memory>
+#include <random>
 #include <string>
 #include <vector>
+
+namespace
+{
+   inline double myRand(double l)
+   {
+      static std::default_random_engine re;      
+      std::uniform_real_distribution<double> unif(-0.5 * l, 0.5 * l);
+      return unif(re);
+   }
+}
 
 namespace SmartGridToolbox
 {
@@ -18,6 +27,7 @@ namespace SmartGridToolbox
       double y;
       double w;
       double h;
+      int idx; // Convenience, may not be used... 
    };
    
    struct BasicGraphArcInfo
@@ -26,121 +36,109 @@ namespace SmartGridToolbox
       bool ignore;
    };
 
-   template<typename NI = BasicGraphNodeInfo, typename AI = BasicGraphArcInfo> struct GraphTraits
-   {
-      using GraphNodeInfo = NI; 
-      using GraphArcInfo = AI; 
-   };
+   template<typename NI = BasicGraphNodeInfo, typename AI = BasicGraphArcInfo> struct GraphArc;
 
-   using BasicGraphTraits = GraphTraits<BasicGraphNodeInfo, BasicGraphArcInfo>; 
-
-   template<typename GT> struct GraphArc;
-
-   template<typename GT = BasicGraphTraits> struct GraphNode
+   template<typename NI = BasicGraphNodeInfo, typename AI = BasicGraphArcInfo> struct GraphNode
    {
       std::string id;
-      std::vector<GraphArc<GT>*> adjacentArcs;
-      typename GT::GraphNodeInfo info;
+      std::vector<GraphArc<NI, AI>*> adjacentArcs;
+      NI info;
 
-      GraphNode(const std::string& id, const typename GT::GraphNodeInfo& info) : 
+      GraphNode(const std::string& id, const NI& info) : 
          id(id), info(info)
       {
          // Empty.
       }
    };
 
-   template<typename GT = BasicGraphTraits> struct GraphArc
+   template<typename NI, typename AI> struct GraphArc
    {
       std::string id;
-      const GraphNode<GT>* n0;
-      const GraphNode<GT>* n1;
-      typename GT::GraphArcInfo info;
+      const GraphNode<NI, AI>* n0;
+      const GraphNode<NI, AI>* n1;
+      AI info;
       
-      GraphArc(const std::string& id, const GraphNode<GT>* n0, const GraphNode<GT>* n1,
-            const typename GT::GraphArcInfo& info) :
+      GraphArc(const std::string& id, const GraphNode<NI, AI>* n0, const GraphNode<NI, AI>* n1, const AI& info) :
          id(id), n0(n0), n1(n1), info(info) 
       {
          // Empty.
       }
    };
    
-   void layoutOgdf(ogdf::Graph& g, ogdf::GraphAttributes& ga, ogdf::EdgeArray<double>& edgeLengths, int layoutType);
-
-   template<typename GT = BasicGraphTraits> class NetworkGraph
+   template<typename NI = BasicGraphNodeInfo, typename AI = BasicGraphArcInfo> class NetworkGraph
    {
       public:
 
-         void addNode(const std::string& id, const typename GT::GraphNodeInfo& info)
+         void addNode(const std::string& id, const NI& info)
          {
-            nodeMap_.emplace(std::make_pair(id, GraphNode<GT>{id, info}));
+            nodeMap_.emplace(std::make_pair(id, GraphNode<NI, AI>{id, info}));
          }
 
-         void addArc(const std::string& id, const std::string& id0, const std::string& id1,
-               const typename GT::GraphArcInfo& info)
+         void addArc(const std::string& id, const std::string& id0, const std::string& id1, const AI& info)
          {
             auto& n0 = nodeMap_.at(id0);
             auto& n1 = nodeMap_.at(id1);
-            auto a = GraphArc<GT>(id, &n0, &n1, info);
+            auto a = GraphArc<NI, AI>(id, &n0, &n1, info);
             n0.adjacentArcs.push_back(&a);
             arcMap_.emplace(std::make_pair(id, a));
          }
 
          void layout()
          {
-            ogdf::Graph g;
-            ogdf::GraphAttributes ga(g, ogdf::GraphAttributes::nodeGraphics | ogdf::GraphAttributes::edgeGraphics);
+            double width = 100.0;
+            double height = 100.0;
 
-            std::map<std::string, ogdf::node> ogdfNdMap;
-            std::vector<GraphNode<GT>*> nodeVec(nodeMap_.size());
-
+            std::vector<vpsc::Rectangle*> rs;
+            std::vector<cola::Edge> es;
+            std::vector<double> eLens;
+            int i = 0;
             for (auto& n : nodeMap_)
             {
-               ogdf::node ogdfNd = g.newNode();
-               ogdfNdMap[n.second.id] = ogdfNd;
-               nodeVec[ogdfNd->index()] = &n.second;
+               double x = myRand(width);
+               double y = myRand(height);
+               rs.push_back(new vpsc::Rectangle(x - n.second.info.w, x + n.second.info.w,
+                                                y - n.second.info.h, y + n.second.info.h));
+               n.second.info.idx = i++;
             }
-
-            std::vector<std::pair<ogdf::edge, GraphArc<GT>*>> edges;
             for (auto& a : arcMap_)
             {
                if (!a.second.info.ignore)
                {
-                  const std::string& id0 = a.second.n0->id;
-                  const std::string& id1 = a.second.n1->id;
-                  ogdf::edge e = g.newEdge(ogdfNdMap[id0], ogdfNdMap[id1]);
-                  edges.push_back(std::make_pair(e, &(a.second)));
+                  auto i0 = a.second.n0->info.idx;
+                  auto i1 = a.second.n1->info.idx;
+                  es.push_back(std::make_pair(i0, i1));
+                  eLens.push_back(a.second.info.l);
                }
             }
 
-            ogdf::EdgeArray<double> ea(g);
-            for (auto& elem : edges)
-            {
-               ea[elem.first] = elem.second->info.l;
-            }
+            cola::ConstrainedFDLayout fd(rs, es, 1, true, eLens);
+            fd.run(true, true);
 
-            ogdf::node n;
-            forall_nodes(n, g)
+            i = 0;
+            for (auto& n : nodeMap_)
             {
-               ga.width(n) = nodeVec[n->index()]->info.w;
-               ga.height(n) = nodeVec[n->index()]->info.h;
-            }
-
-            layoutOgdf(g, ga, ea, 0);
-
-            forall_nodes(n, g)
-            {
-               int idx = n->index();
-               nodeVec[idx]->info.x = ga.x(n);
-               nodeVec[idx]->info.y = ga.y(n);
+               n.second.info.x = rs[i]->getCentreX();
+               n.second.info.y = rs[i]->getCentreY();
+               ++i;
             }
          }
 
-         const std::map<std::string, GraphNode<GT>>& nodes() const
+         const std::map<std::string, GraphNode<NI, AI>>& nodes() const
+         {
+            return nodeMap_;
+         }
+         
+         std::map<std::string, GraphNode<NI, AI>>& nodes()
          {
             return nodeMap_;
          }
 
-         const std::map<std::string, GraphArc<GT>>& arcs() const
+         const std::map<std::string, GraphArc<NI, AI>>& arcs() const
+         {
+            return arcMap_;
+         }
+         
+         std::map<std::string, GraphArc<NI, AI>>& arcs()
          {
             return arcMap_;
          }
@@ -151,8 +149,8 @@ namespace SmartGridToolbox
 
       private:
 
-         std::map<std::string, GraphNode<GT>> nodeMap_;
-         std::map<std::string, GraphArc<GT>> arcMap_;
+         std::map<std::string, GraphNode<NI, AI>> nodeMap_;
+         std::map<std::string, GraphArc<NI, AI>> arcMap_;
    };
 
    extern template class NetworkGraph<>;

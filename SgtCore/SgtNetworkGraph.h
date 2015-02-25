@@ -12,21 +12,24 @@ namespace SmartGridToolbox
       double y;
       double w;
       double h;
+      int idx;
+
       Bus* bus;
    };
    
    struct SgtGraphArcInfo
    {
       double l;
+
+      double scaledX; // Useful for scaling line lengths.
       bool ignore;
       BranchAbc* branch;
    };
 
-   using SgtGraphTraits = GraphTraits<SgtGraphNodeInfo, SgtGraphArcInfo>;
-   using SgtGraphNode = GraphNode<SgtGraphTraits>;
-   using SgtGraphArc = GraphArc<SgtGraphTraits>;
+   using SgtGraphNode = GraphNode<SgtGraphNodeInfo, SgtGraphArcInfo>;
+   using SgtGraphArc = GraphArc<SgtGraphNodeInfo, SgtGraphArcInfo>;
 
-   class SgtNetworkGraph : public NetworkGraph<GraphTraits<SgtGraphNodeInfo, SgtGraphArcInfo>>
+   class SgtNetworkGraph : public NetworkGraph<SgtGraphNodeInfo, SgtGraphArcInfo>
    {
       public:
          void create(const Network& nw);
