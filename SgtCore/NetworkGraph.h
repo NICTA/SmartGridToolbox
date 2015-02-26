@@ -114,21 +114,14 @@ namespace SmartGridToolbox
 
          void layout()
          {
-            doLayout();
-         }
-         
-         double stepLayout()
-         {
-            return doLayout(true);
-         }
-
-      private:
-
-         double doLayout(bool step = false)
-         {
+            // TODO: It would be nice to have a "step layout" function, but for some reason this appears to
+            // not satisfy node separation constraints for the rectangles. Maybe there is some way to do e.g. using
+            // the makeFeasible member function? If so, we should return a double (the stress) from this function and
+            // add a bool argument saying whether we want only one or many steps.
             std::vector<vpsc::Rectangle*> rs;
             std::vector<cola::Edge> es;
-            std::vector<double> eLens;
+            std::vector<double> ls;
+
             int i = 0;
             for (auto& n : nodeMap_)
             {
@@ -137,6 +130,7 @@ namespace SmartGridToolbox
                         n.second.info.y - 0.5 * n.second.info.h, n.second.info.y + 0.5 * n.second.info.h));
                n.second.info.idx = i++;
             }
+
             for (auto& a : arcMap_)
             {
                if (!a.second.info.ignore)
@@ -144,18 +138,21 @@ namespace SmartGridToolbox
                   auto i0 = a.second.n0->info.idx;
                   auto i1 = a.second.n1->info.idx;
                   es.push_back(std::make_pair(i0, i1));
-                  eLens.push_back(a.second.info.l);
+                  ls.push_back(a.second.info.l);
                }
             }
 
-            cola::ConstrainedFDLayout fd(rs, es, 1, true, eLens);
-            if (step)
-            {
-               fd.runOnce();
-            }
-            else
-            {
-               fd.run();
+            cola::ConstrainedFDLayout fd(rs, es, 1, true, ls);
+
+            fd.run();
+
+            for(unsigned i=0; i < rs.size(); i++) {
+               for(unsigned j=0; j < i; j++) {
+                  double dxij = rs[i]->getCentreX() - rs[j]->getCentreX();
+                  double dyij = rs[i]->getCentreY() - rs[j]->getCentreY();
+                  double dij = sqrt(dxij * dxij + dyij * dyij);
+                  std::cout << i << " " << j << " " << dij << std::endl;
+               }
             }
 
             i = 0;
@@ -170,8 +167,6 @@ namespace SmartGridToolbox
             {
                delete r;
             }
-
-            return fd.computeStress();
          }
 
       private:
@@ -179,9 +174,6 @@ namespace SmartGridToolbox
          std::map<std::string, GraphNode<NI, AI>> nodeMap_;
          std::map<std::string, GraphArc<NI, AI>> arcMap_;
    };
-
-   extern template class NetworkGraph<>;
-
 } // namespace SmartGridToolbox
 
 #endif // NETWORKGRAPH_H
