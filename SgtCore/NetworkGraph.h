@@ -156,15 +156,6 @@ namespace SmartGridToolbox
             cola::ConstrainedFDLayout fd(rs, es, 1, true, ls, &testConv, &preIter);
             fd.run();
 
-            for(unsigned i=0; i < rs.size(); i++) {
-               for(unsigned j=0; j < i; j++) {
-                  double dxij = rs[i]->getCentreX() - rs[j]->getCentreX();
-                  double dyij = rs[i]->getCentreY() - rs[j]->getCentreY();
-                  double dij = sqrt(dxij * dxij + dyij * dyij);
-                  std::cout << i << " " << j << " " << dij << std::endl;
-               }
-            }
-
             i = 0;
             for (auto& n : nodeMap_)
             {
