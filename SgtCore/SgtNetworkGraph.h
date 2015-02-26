@@ -12,6 +12,7 @@ namespace SmartGridToolbox
       double y;
       double w;
       double h;
+      bool locked;
       int idx;
 
       Bus* bus;

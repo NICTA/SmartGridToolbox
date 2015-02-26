@@ -27,6 +27,7 @@ namespace SmartGridToolbox
       double y;
       double w;
       double h;
+      bool locked;
       int idx; // Convenience, may not be used... 
    };
    
@@ -112,7 +113,7 @@ namespace SmartGridToolbox
             return arcMap_;
          }
 
-         void layout()
+         void layout(int maxIter = 100)
          {
             // TODO: It would be nice to have a "step layout" function, but for some reason this appears to
             // not satisfy node separation constraints for the rectangles. Maybe there is some way to do e.g. using
@@ -142,8 +143,17 @@ namespace SmartGridToolbox
                }
             }
 
-            cola::ConstrainedFDLayout fd(rs, es, 1, true, ls);
-
+            cola::Locks locks;
+            for (auto& n : nodeMap_)
+            {
+               if (n.second.info.locked)
+               {
+                  locks.push_back(cola::Lock(n.second.info.locked, n.second.info.x, n.second.info.y));
+               }
+            }
+            cola::TestConvergence testConv(1e-4, maxIter);
+            cola::PreIteration preIter(locks);
+            cola::ConstrainedFDLayout fd(rs, es, 1, true, ls, &testConv, &preIter);
             fd.run();
 
             for(unsigned i=0; i < rs.size(); i++) {

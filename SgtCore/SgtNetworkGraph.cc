@@ -33,7 +33,7 @@ namespace SmartGridToolbox
    {
       for (auto bus : nw.busses())
       {
-         this->addNode(bus->id(), SgtGraphNodeInfo{0.0, 0.0, 1.0, 1.0, 0, bus.get()});
+         this->addNode(bus->id(), SgtGraphNodeInfo{0.0, 0.0, 1.0, 1.0, false, 0, bus.get()});
       }
 
       std::vector<BranchX> branchX; branchX.reserve(nw.branches().size());
