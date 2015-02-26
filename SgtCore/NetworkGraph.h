@@ -148,7 +148,7 @@ namespace SmartGridToolbox
             {
                if (n.second.info.locked)
                {
-                  locks.push_back(cola::Lock(n.second.info.locked, n.second.info.x, n.second.info.y));
+                  locks.push_back(cola::Lock(n.second.info.idx, n.second.info.x, n.second.info.y));
                }
             }
             cola::TestConvergence testConv(1e-4, maxIter);
