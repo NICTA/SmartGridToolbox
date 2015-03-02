@@ -23,6 +23,7 @@ namespace SmartGridToolbox
       double l;
 
       double scaledX; // Useful for scaling line lengths.
+      bool hasTrans; // Useful for calculating line lengths.
       bool ignore;
       BranchAbc* branch;
    };
