@@ -2,12 +2,8 @@ AUTOMAKE_OPTIONS = foreign
 
 if ENABLE_LAYOUT
 NETWORK_GRAPH_H = NetworkGraph.h  
-SGT_NETWORK_GRAPH_H = SgtNetworkGraph.h  
-SGT_NETWORK_GRAPH_CC = SgtNetworkGraph.cc
 else
 NETWORK_GRAPH_H =
-SGT_NETWORK_GRAPH_H =
-SGT_NETWORK_GRAPH_CC =
 endif
 
 # Note: ENABLE_POWER_TOOLS needs LD_FLAGS: -framework Foundation -framework PowerTools -lipopt -lcoinhsl  
@@ -58,7 +54,6 @@ libinclude_HEADERS = \
 	$(POWER_FLOW_PT_PP_SOLVER_H) \
 	Properties.h \
 	Random.h \
-	$(SGT_NETWORK_GRAPH_H) \
 	$(SGT_POWER_TOOLS_H) \
 	SinglePhaseTransformer.h \
 	Stopwatch.h \
@@ -100,7 +95,6 @@ libSgtCore_a_SOURCES = \
 	Properties.h \
 	Random.h Random.cc \
 	RegisterParserPlugins.cc \
-	$(SGT_NETWORK_GRAPH_H) $(SGT_NETWORK_GRAPH_CC) \
 	$(SGT_POWER_TOOLS_H) $(SGT_POWER_TOOLS_MM) \
 	SparseSolver.h SparseSolver.cc \
 	Stopwatch.h \
