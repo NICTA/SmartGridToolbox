@@ -4,7 +4,7 @@
 #include <SgtSim/DcPowerSource.h>
 #include <SgtSim/Sun.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class Weather;
 

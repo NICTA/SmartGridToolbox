@@ -3,7 +3,7 @@
 
 #include<SgtCore/Parser.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class Network;
    extern template class Parser<Network>;

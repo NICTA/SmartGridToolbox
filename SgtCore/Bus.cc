@@ -8,14 +8,14 @@
 
 namespace
 {
-   using namespace SmartGridToolbox;
+   using namespace Sgt;
    template<typename T> std::istream& operator>>(std::istringstream& ss, const arma::Col<T>& v)
    {
       return ss;
    }
 }
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    Bus::Bus(const std::string& id, const Phases& phases, const arma::Col<Complex>& VNom, double VBase) :
       Component(id),

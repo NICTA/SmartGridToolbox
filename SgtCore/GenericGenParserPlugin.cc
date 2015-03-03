@@ -5,7 +5,7 @@
 #include "Network.h"
 #include "YamlSupport.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void GenericGenParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
    {

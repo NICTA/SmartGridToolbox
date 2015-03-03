@@ -5,7 +5,7 @@
 #include <SgtSim/SimNetwork.h>
 #include <SgtSim/Simulation.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void HeartbeatParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {

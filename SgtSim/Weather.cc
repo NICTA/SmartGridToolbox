@@ -2,7 +2,7 @@
 
 #include "TimeSeries.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void Weather::updateState(Time t)
    {

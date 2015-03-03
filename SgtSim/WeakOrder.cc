@@ -15,7 +15,7 @@ std::string prlevel(int level)
    return ss.str();
 }
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void WoNode::dfs(std::vector<WoNode*>& stack)
    {

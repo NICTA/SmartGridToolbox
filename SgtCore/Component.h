@@ -8,7 +8,7 @@
 
 using std::string;
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class ComponentInterface : virtual public HasPropertiesInterface
    {

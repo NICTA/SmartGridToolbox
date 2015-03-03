@@ -22,7 +22,7 @@
 #include "SolarPvParserPlugin.h"
 #include "WeatherParserPlugin.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class Simulation;
    template<> void registerParserPlugins<Simulation>(Parser<Simulation>& p)

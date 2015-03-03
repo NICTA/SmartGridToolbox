@@ -1,7 +1,7 @@
 #include "DcPowerSource.h"
 #include "Inverter.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void InverterAbc::addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source)
    {

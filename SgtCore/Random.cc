@@ -5,7 +5,7 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/weibull_distribution.hpp>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    namespace
    {

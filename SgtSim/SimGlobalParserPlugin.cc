@@ -1,6 +1,6 @@
 #include "SimGlobalParserPlugin.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    namespace
    {

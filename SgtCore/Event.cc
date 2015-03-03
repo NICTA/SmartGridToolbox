@@ -2,7 +2,7 @@
 
 #include <SgtCore/Common.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void Event::trigger()
    {

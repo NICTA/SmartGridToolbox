@@ -3,7 +3,7 @@
 
 #include <SgtCore/Branch.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @brief Single phase transformer.
    class SinglePhaseTransformer : public BranchAbc

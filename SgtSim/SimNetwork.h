@@ -6,7 +6,7 @@
 
 #include <SgtCore/Network.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @ingroup PowerFlowCore
    /// @brief SimNetwork : A SimComponent for an electrical network.

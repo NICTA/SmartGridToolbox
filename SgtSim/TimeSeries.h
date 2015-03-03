@@ -5,7 +5,7 @@
 
 #include <map>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @addtogroup Core
    /// @{

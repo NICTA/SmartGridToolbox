@@ -5,7 +5,7 @@
 #include "SimNetworkComponent.h"
 #include "TimeSeries.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class TimeSeriesZip : public ZipAbc, public HeartbeatAdaptor 
    {

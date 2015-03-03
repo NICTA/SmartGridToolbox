@@ -7,7 +7,7 @@
 
 #include<string>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @brief A Zip is an injection into a bus with constant impedance / current / complex power components.
    ///

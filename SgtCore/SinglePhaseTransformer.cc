@@ -1,6 +1,6 @@
 #include "SinglePhaseTransformer.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    arma::Mat<Complex> SinglePhaseTransformer::inServiceY() const
    {

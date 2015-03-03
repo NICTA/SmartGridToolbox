@@ -1,7 +1,7 @@
 #ifndef POWER_FLOW_SOLVER_INTERFACE_DOT_H
 #define POWER_FLOW_SOLVER_INTERFACE_DOT_H
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class Network;
 

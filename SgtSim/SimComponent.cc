@@ -1,6 +1,6 @@
 #include "SimComponent.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void SimComponentAdaptor::initialize()
    {

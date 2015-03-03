@@ -3,7 +3,7 @@
 #include "Inverter.h"
 #include "Weather.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    SolarPv::SolarPv(const std::string& id) :
       DcPowerSourceAbc(id),

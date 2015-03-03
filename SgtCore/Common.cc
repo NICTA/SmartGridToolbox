@@ -12,7 +12,7 @@ namespace Qi = boost::spirit::qi;
 namespace Ascii = boost::spirit::ascii;
 namespace Phoenix = boost::phoenix;
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    int Log::indentLevel_ = 0;
 

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    namespace
    {

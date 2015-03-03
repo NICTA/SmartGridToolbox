@@ -2,7 +2,7 @@
 
 #include <ostream>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    GenericZip::GenericZip(const std::string& id, const Phases& phases) :
       ZipAbc(id, phases),

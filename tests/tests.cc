@@ -11,7 +11,7 @@
 #include <fstream>
 #include <strstream>
 
-using namespace SmartGridToolbox;
+using namespace Sgt;
 using namespace std;
 using namespace boost::posix_time;
 using namespace boost::unit_test;
@@ -196,7 +196,7 @@ BOOST_AUTO_TEST_CASE (test_function_timeseries)
 BOOST_AUTO_TEST_CASE (test_matpower)
 {
    BOOST_MESSAGE("Starting matpower tests");
-   using namespace SmartGridToolbox;
+   using namespace Sgt;
 
    std::vector<std::string> cases = {
       "caseSLPQ",
@@ -238,7 +238,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
          std::string("--- [{matpower : {input_file : ../data/matpower_cases/") + c + ".m, default_kV_base : 11}}]";
       Network nw("network", 100.0);
       YAML::Node n = YAML::Load(yamlStr);
-      SmartGridToolbox::Parser<Network> p;
+      Sgt::Parser<Network> p;
       p.parse(n, nw);
       nw.solvePowerFlow();
 

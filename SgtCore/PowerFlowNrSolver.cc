@@ -6,7 +6,7 @@
 #include "SparseSolver.h"
 #include "Stopwatch.h"
 
-using namespace SmartGridToolbox;
+using namespace Sgt;
 using namespace arma;
 
 namespace
@@ -72,7 +72,7 @@ namespace
    }
 }
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    Jacobian::Jacobian(int nPq, int nPv)
    {

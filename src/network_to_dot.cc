@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-using namespace SmartGridToolbox;
+using namespace Sgt;
 
 int main(int argc, const char** argv)
 {

@@ -12,7 +12,7 @@
 #endif
 #include "YamlSupport.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void PowerFlowSolverParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
    {

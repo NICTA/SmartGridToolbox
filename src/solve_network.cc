@@ -7,7 +7,7 @@
 
 int main(int argc, char** argv)
 {
-   using namespace SmartGridToolbox;
+   using namespace Sgt;
 
    assert(argc == 4);
    std::string solver = argv[1];
@@ -18,7 +18,7 @@ int main(int argc, char** argv)
    std::string yamlStr = std::string("--- [{power_flow_solver : " + solver + "}, {matpower : {input_file : ") + inFName + ", default_kV_base : 11}}]";
    YAML::Node n = YAML::Load(yamlStr);
 
-   SmartGridToolbox::Parser<Network> p;
+   Sgt::Parser<Network> p;
    p.parse(n, nw);
    auto outFBus = std::fopen((outPrefix + ".bus").c_str(), "w+");
    auto outFBranch = std::fopen((outPrefix + ".branch").c_str(), "w+");

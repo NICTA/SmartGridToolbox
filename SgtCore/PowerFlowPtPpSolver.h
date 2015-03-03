@@ -4,7 +4,7 @@
 #include <SgtCore/PowerFlowSolver.h>
 #include <SgtCore/SgtPowerTools.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class Network;
 

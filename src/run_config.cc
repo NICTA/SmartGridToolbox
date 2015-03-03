@@ -1,7 +1,7 @@
 #include <SgtCore.h>
 #include <SgtSim.h>
 
-using namespace SmartGridToolbox;
+using namespace Sgt;
 
 int main(int argc, const char** argv)
 {

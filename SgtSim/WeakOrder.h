@@ -6,7 +6,7 @@
 #include <memory>
 #include <set>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class WoNode
    {

@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-using namespace SmartGridToolbox;
+using namespace Sgt;
 
 double norm(arma::Col<Complex> v)
 {

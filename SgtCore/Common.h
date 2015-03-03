@@ -18,7 +18,7 @@
 #define SGT_DEBUG(x)
 #endif
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @addtogroup Common
    /// @{

@@ -14,7 +14,7 @@
 
 #include <memory>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class SimBus : public SimComponentAdaptor, public Bus 
    {

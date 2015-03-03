@@ -4,7 +4,7 @@
 #include <SgtSim/SimNetworkComponent.h>
 #include <SgtSim/SimParser.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class Simulation;
 

@@ -24,7 +24,7 @@ namespace phoenix = boost::phoenix;
 typedef std::istreambuf_iterator<char> BaseIterator;
 typedef boost::spirit::multi_pass<BaseIterator> ForwardIterator;
 
-using namespace SmartGridToolbox;
+using namespace Sgt;
 
 namespace
 {
@@ -122,7 +122,7 @@ namespace
    }
 }
 
-namespace SmartGridToolbox
+namespace Sgt
 {
 
    struct MpBusInfo

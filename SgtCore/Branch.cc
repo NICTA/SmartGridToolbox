@@ -2,7 +2,7 @@
 
 #include <ostream>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    BranchAbc::BranchAbc(const std::string & id, const Phases& phases0, const Phases& phases1) :
       Component(id),

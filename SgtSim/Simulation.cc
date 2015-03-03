@@ -5,7 +5,7 @@
 
 #define DEBUG 1
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    Simulation::ConstSimCompVec Simulation::simComponents() const
    {

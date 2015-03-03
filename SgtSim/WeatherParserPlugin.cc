@@ -3,7 +3,7 @@
 #include "Simulation.h"
 #include "Weather.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void WeatherParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {

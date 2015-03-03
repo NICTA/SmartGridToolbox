@@ -5,7 +5,7 @@
 #include "Zip.h"
 #include "YamlSupport.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void GenericZipParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
    {

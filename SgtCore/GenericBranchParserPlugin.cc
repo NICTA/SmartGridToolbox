@@ -4,7 +4,7 @@
 #include "Network.h"
 #include "YamlSupport.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    // No cross terms, just nPhase lines with single admittances.
    namespace {

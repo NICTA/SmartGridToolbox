@@ -1,6 +1,6 @@
 #include "DgyTransformer.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    arma::Mat<Complex> DgyTransformer::inServiceY() const
    {

@@ -9,9 +9,9 @@
 
 #include <set>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
-   std::unique_ptr<Net> sgt2PowerTools(const SmartGridToolbox::Network& sgtNw)
+   std::unique_ptr<Net> sgt2PowerTools(const Sgt::Network& sgtNw)
    {
       std::unique_ptr<Net> net(new Net);
 
@@ -103,7 +103,7 @@ namespace SmartGridToolbox
       return net;
    }
 
-   void powerTools2Sgt(const Net& ptNetw, SmartGridToolbox::Network& sgtNw)
+   void powerTools2Sgt(const Net& ptNetw, Sgt::Network& sgtNw)
    {
       for (auto node: ptNetw.nodes)
       {
@@ -132,7 +132,7 @@ namespace SmartGridToolbox
          {
             // Order of gens should be same in Sgt and Pt.
             auto gen = node->_gen[i];
-            auto sgtGen = std::dynamic_pointer_cast<SmartGridToolbox::GenericGen>(sgtBus->gens()[i]);
+            auto sgtGen = std::dynamic_pointer_cast<Sgt::GenericGen>(sgtBus->gens()[i]);
             Complex SGenSolPu(gen->pg.get_value(), gen->qg.get_value());
             Complex SGenSol = sgtNw.pu2S(SGenSolPu);
             sgtGen->setInServiceS({SGenSol});

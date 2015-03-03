@@ -1,6 +1,6 @@
 #include "OverheadLine.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    OverheadLine::OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double length,
                               int nNeutral, arma::Col<double> lineResistivity, double earthResistivity,

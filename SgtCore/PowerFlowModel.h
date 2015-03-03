@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    struct PfNode;
 

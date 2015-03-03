@@ -6,7 +6,7 @@
 
 #include <yaml-cpp/yaml.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    template<typename T> std::string toYamlString(const T& t)
    {
@@ -27,12 +27,12 @@ namespace SmartGridToolbox
 
 namespace YAML
 {
-   using SmartGridToolbox::BusType;
-   using SmartGridToolbox::Complex;
-   using SmartGridToolbox::Phase;
-   using SmartGridToolbox::Phases;
-   using SmartGridToolbox::Time;
-   using SmartGridToolbox::posix_time::ptime;
+   using Sgt::BusType;
+   using Sgt::Complex;
+   using Sgt::Phase;
+   using Sgt::Phases;
+   using Sgt::Time;
+   using Sgt::posix_time::ptime;
 
    template<> struct convert<Complex>
    {

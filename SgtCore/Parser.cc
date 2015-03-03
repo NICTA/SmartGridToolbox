@@ -52,7 +52,7 @@ namespace
    Calculator<std::string::const_iterator> calc;
 }
 
-namespace SmartGridToolbox
+namespace Sgt
 {
 
    void assertFieldPresent(const YAML::Node& nd, const std::string& field)

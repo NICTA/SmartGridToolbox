@@ -2,7 +2,7 @@
 
 namespace YAML
 {
-   using namespace SmartGridToolbox;
+   using namespace Sgt;
 
    Node convert<Complex>::encode(const Complex& from)
    {

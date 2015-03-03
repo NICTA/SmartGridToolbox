@@ -14,7 +14,7 @@
 #include<memory>
 #include<vector>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    typedef std::shared_ptr<const Bus> ConstBusPtr;
    typedef std::shared_ptr<Bus> BusPtr;

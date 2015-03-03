@@ -6,7 +6,7 @@
 
 #include <numeric>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @brief DC power to n-phase AC converter.
    /// @ingroup PowerFlowCore

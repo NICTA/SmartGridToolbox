@@ -4,7 +4,7 @@
 #include "Network.h"
 #include "YamlSupport.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void CommonBranchParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
    {

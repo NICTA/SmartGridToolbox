@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class Bus;
 

@@ -1,6 +1,6 @@
 #include "SimParser.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    template class Parser<Simulation>;
    template class ParserPlugin<Simulation>;

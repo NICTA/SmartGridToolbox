@@ -10,7 +10,7 @@
 #include <list>
 #include <set>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @brief Simulation: steps time according to discrete event simulation principles.
    /// @ingroup Core

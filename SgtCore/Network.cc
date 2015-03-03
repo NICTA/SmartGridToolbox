@@ -5,7 +5,7 @@
 
 #include <numeric>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    Network::Network(const std::string& id, double PBase) :
       Component(id),

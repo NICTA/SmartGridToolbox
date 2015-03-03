@@ -1,6 +1,6 @@
 #include "NetworkParser.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    template class Parser<Network>;
    template class ParserPlugin<Network>;

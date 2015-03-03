@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    enum class BusType
    {

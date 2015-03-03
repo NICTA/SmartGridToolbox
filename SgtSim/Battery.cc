@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void Battery::updateState(Time t)
    {

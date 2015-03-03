@@ -3,7 +3,7 @@
 
 #include <SgtSim/SimComponent.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @brief Utility base class for a component that updates with a regular "tick" dt.
    class HeartbeatAdaptor : public SimComponentAdaptor

@@ -6,7 +6,7 @@
 #include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @brief Common abstract base class for a generation at a bus.
    ///

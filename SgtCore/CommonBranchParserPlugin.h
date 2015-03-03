@@ -3,7 +3,7 @@
 
 #include <SgtCore/NetworkParser.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class CommonBranch;
    class Network;

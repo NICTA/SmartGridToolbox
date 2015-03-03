@@ -4,7 +4,7 @@
 #include "SimNetwork.h"
 #include "Simulation.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void InverterParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {

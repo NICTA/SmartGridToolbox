@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class SynchronousMachine : public Component
    {

@@ -3,7 +3,7 @@
 
 #include <SgtCore/Branch.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @brief Delta-grounded wye transformer.
    class DgyTransformer : public BranchAbc

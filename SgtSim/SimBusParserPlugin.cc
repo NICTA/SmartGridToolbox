@@ -6,7 +6,7 @@
 #include <SgtCore/Bus.h>
 #include <SgtCore/BusParserPlugin.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void SimBusParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {

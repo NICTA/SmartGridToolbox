@@ -1,6 +1,6 @@
 #include "CommonBranch.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    arma::Mat<Complex> CommonBranch::inServiceY() const
    {

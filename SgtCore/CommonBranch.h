@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @brief A single phase transmission line or transformer.
    class CommonBranch : public BranchAbc

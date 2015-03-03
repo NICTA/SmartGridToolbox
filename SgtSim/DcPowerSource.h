@@ -5,7 +5,7 @@
 
 #include <SgtCore/Component.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @brief DC power source.
    ///

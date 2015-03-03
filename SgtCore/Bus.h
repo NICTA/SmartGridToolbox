@@ -10,7 +10,7 @@
 #include<map>
 #include<vector>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class GenAbc;
    class ZipAbc;

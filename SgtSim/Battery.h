@@ -7,7 +7,7 @@
 
 #include<string>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @brief Basic battery class, deriving from DCPowerSourceBase.
    class Battery : public DcPowerSourceAbc

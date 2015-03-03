@@ -5,7 +5,7 @@
 
 #include "../SgtCore/PowerFlowSolverParserPlugin.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void SimNetworkParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {

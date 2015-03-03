@@ -3,7 +3,7 @@
 
 #include <SgtCore/Common.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    constexpr double solarIrradianceMag() {return 1367;} // W/m^2, atmospheric absorbance not taken into account.
 

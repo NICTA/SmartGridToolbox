@@ -12,7 +12,7 @@
 // involving nodes and links. Thus use of busses and branches is simply a convenience that lumps together nodes and
 // links.
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    struct Jacobian
    {

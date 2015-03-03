@@ -3,7 +3,7 @@
 
 #include "Sun.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    namespace
    {

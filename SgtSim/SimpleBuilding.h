@@ -11,7 +11,7 @@
 
 #include<string>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    enum class HvacMode
    {

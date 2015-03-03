@@ -2,7 +2,7 @@
 #include "SimNetworkComponent.h"
 
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void SimNetwork::updateState(Time t)
    {

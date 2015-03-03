@@ -20,7 +20,7 @@
 
 #define SGT_PROP_GET_SET(name, Targ, T, GetBy, getter, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T, GetBy>>(std::unique_ptr<Getter<Targ, T, GetBy>>(new Getter<Targ, T, GetBy>([](const Targ& targ)->GetBy<T>{return targ.name();})), std::unique_ptr<Setter<Targ, T>>(new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class PropertyBase;
 

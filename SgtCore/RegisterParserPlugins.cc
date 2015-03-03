@@ -9,7 +9,7 @@
 #include "OverheadLineParserPlugin.h"
 #include "PowerFlowSolverParserPlugin.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class Network;
    template<> void registerParserPlugins<Network>(Parser<Network>& p)

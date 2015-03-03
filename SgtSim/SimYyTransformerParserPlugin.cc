@@ -8,7 +8,7 @@
 
 #include <memory>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void SimYyTransformerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {

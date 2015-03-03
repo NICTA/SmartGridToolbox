@@ -4,7 +4,7 @@
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/discrete_distribution.hpp>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @addtogroup Common
    /// @{

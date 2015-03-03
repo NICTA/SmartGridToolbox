@@ -2,7 +2,7 @@
 
 #include <ostream>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void GenAbc::print(std::ostream& os) const
    {

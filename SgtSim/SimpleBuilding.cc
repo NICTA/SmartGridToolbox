@@ -32,7 +32,7 @@ namespace {
    }
 }
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void SimpleBuilding::initializeState()
    {

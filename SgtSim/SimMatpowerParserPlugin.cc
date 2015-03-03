@@ -5,7 +5,7 @@
 
 #include <SgtCore/MatpowerParserPlugin.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void SimMatpowerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
    {

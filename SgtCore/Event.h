@@ -7,7 +7,7 @@
 #include <list>
 #include <string>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    /// @brief An action that gets performed when an event is triggered.
    ///

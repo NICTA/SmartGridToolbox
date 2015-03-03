@@ -5,7 +5,7 @@
 #include <SgtSim/Sun.h>
 #include <SgtSim/TimeSeries.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    struct SolarIrradiance
    {

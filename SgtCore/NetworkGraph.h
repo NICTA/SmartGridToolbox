@@ -19,7 +19,7 @@ namespace
    }
 }
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    struct BasicGraphNodeInfo
    {
@@ -175,6 +175,6 @@ namespace SmartGridToolbox
          std::map<std::string, GraphNode<NI, AI>> nodeMap_;
          std::map<std::string, GraphArc<NI, AI>> arcMap_;
    };
-} // namespace SmartGridToolbox
+} // namespace Sgt
 
 #endif // NETWORKGRAPH_H

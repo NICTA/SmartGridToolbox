@@ -5,7 +5,7 @@
 #include <SgtCore/Component.h>
 #include <SgtCore/Event.h>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    class SimComponentAdaptor : virtual public ComponentInterface
    {

@@ -1,6 +1,6 @@
 #include "TimeSeriesParserPlugin.h"
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    namespace
    {

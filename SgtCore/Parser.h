@@ -9,7 +9,7 @@
 #include <map>
 #include <regex>
 
-namespace SmartGridToolbox
+namespace Sgt
 {
    void assertFieldPresent(const YAML::Node& nd, const std::string& field);
 
