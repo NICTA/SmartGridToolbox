@@ -22,7 +22,7 @@ AS_IF([test x$enable_power_tools == xyes],
       [AC_DEFINE([ENABLE_POWER_TOOLS], [], [enable PowerTools support])])
 
 AC_ARG_ENABLE([power_tools_pp],
-              [AS_HELP_STRING([--enable-power_tools++], [enable PowerTools++ specific features @<:@no@:>@])],
+              [AS_HELP_STRING([--enable-power_tools_pp], [enable PowerTools++ specific features @<:@no@:>@])],
               [],
               [enable_power_tools_pp=no])
 AC_SUBST([enable_power_tools_pp])
