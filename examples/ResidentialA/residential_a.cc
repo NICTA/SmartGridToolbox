@@ -6,81 +6,68 @@
 
 #include <fstream>
 
-using namespace Sgt;
+using namespace SmartGridToolbox;
 
-double norm(arma::Col<Complex> v)
+void print(std::ostream& out, std::ostream& outV, double t, const Network& netw)
 {
-   return std::sqrt(std::accumulate(v.begin(), v.end(), 0.0,
-            [](double d, const Complex& c)->double{return d + std::norm(c);}));
-}
-
-arma::Col<Complex> symComps(arma::Col<Complex> v)
-{
-   static const Complex alpha = std::polar(1.0, 2.0*pi/3.0);
-   static const Complex alpha2 = alpha * alpha;
-   static const Array2D<Complex, 3, 3> a = {{{1, 1, 1}, {1, alpha, alpha2}, {1, alpha2, alpha}}};
-
-   arma::Col<Complex> result(3, arma::fill::zeros);
-   for (int i = 0; i < 3; ++i)
-   {
-      for (int j = 0; j < 3; ++j)
-      {
-         result(i) = result(i) + a[i][j] * v(j);
-      }
-   }
-   return result;
+	out << t;
+	outV << t;
+	for (ConstBusPtr bus : netw.busses())
+	{
+      int nPhase = bus->phases().size();
+      double P = arma::accu(arma::real(bus->SZip()));
+      double VRms = std::sqrt(arma::accu(arma::real(bus->V() * arma::conj(bus->V()))) / nPhase) / bus->VBase();
+		out << " " << P;
+		outV << " " << VRms;
+	}
+	out << std::endl;
+	outV << std::endl;
 }
 
 int main(int argc, const char** argv)
 {
-   if (argc != 3)
-   {
-      Log().fatal() << "Usage: " << argv[0] << " config_name out_name" << std::endl;
-   }
+	if (argc != 3)
+	{
+		Log().fatal() << "Usage: " << argv[0] << " config_name out_name" << std::endl;
+	}
 
-   const char* configName = argv[1];
-   const char* outName = argv[2];
+	const char* configName = argv[1];
+	const char* outName = argv[2];
+	std::string outVName = std::string(outName) + ".V";
 
-   std::ofstream out;
-   out.open(outName);
+	std::ofstream out;
+	out.open(outName);
+	
+	std::ofstream outV;
+	outV.open(outVName);
 
-   Simulation sim;
-   Parser<Simulation> p;
-   p.registerParserPlugin<ApplianceParserPlugin>();
-   p.parse(configName, sim);
-   sim.initialize();
+	Simulation sim;
+	Parser<Simulation> p;
+	p.registerParserPlugin<ApplianceParserPlugin>();
+	p.parse(configName, sim);
+	sim.initialize();
 
-   std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
+	std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
 
-   out << "# t";
-   for (auto bus : netw->busses())
-   {
-      out << " " << bus->id();
-   }
-   out << std::endl;
-  
-   Stopwatch swTot;
-   swTot.start();
-   while (!sim.isFinished())
-   {
-      sim.doTimestep();
-      double t = dSeconds(sim.currentTime() - sim.startTime())/3600;
-      out << t;
-      for (ConstBusPtr bus : netw->busses())
-      {
-         auto S = bus->SZip();
-         double P = 0;
-         for (auto& Si : S)
-         {
-            P += Si.real();
-         }
-         out << " " << P;
-         
-      }
-      out << std::endl;
-   }
-   swTot.stop();
-   Log().message() << "Total time = " << swTot.seconds() << std::endl;
+	out << "% t";
+	for (auto bus : netw->busses())
+	{
+		out << " " << bus->id();
+	}
+	out << std::endl;
 
-   out.close();
+	Stopwatch swTot;
+	swTot.start();
+	double t = dSeconds(sim.currentTime() - sim.startTime())/3600;
+	print(out, outV, t, *netw);
+	while (!sim.isFinished())
+	{
+		sim.doTimestep();
+		t = dSeconds(sim.currentTime() - sim.startTime())/3600;
+		print(out, outV, t, *netw);
+	}
+	swTot.stop();
+	Log().message() << "Total time = " << swTot.seconds() << std::endl;
+
+	out.close();
 }
