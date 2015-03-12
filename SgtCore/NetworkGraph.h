@@ -113,12 +113,8 @@ namespace Sgt
             return arcMap_;
          }
 
-         void layout(int maxIter = 100)
+         void layout(double scaleSz = 1.0, double tol = 1e-4, int maxIter = 100)
          {
-            // TODO: It would be nice to have a "step layout" function, but for some reason this appears to
-            // not satisfy node separation constraints for the rectangles. Maybe there is some way to do e.g. using
-            // the makeFeasible member function? If so, we should return a double (the stress) from this function and
-            // add a bool argument saying whether we want only one or many steps.
             std::vector<vpsc::Rectangle*> rs;
             std::vector<cola::Edge> es;
             std::vector<double> ls;
@@ -126,10 +122,16 @@ namespace Sgt
             int i = 0;
             for (auto& n : nodeMap_)
             {
-               rs.push_back(new vpsc::Rectangle(
-                        n.second.info.x - 0.5 * n.second.info.w, n.second.info.x + 0.5 * n.second.info.w,
-                        n.second.info.y - 0.5 * n.second.info.h, n.second.info.y + 0.5 * n.second.info.h));
                n.second.info.idx = i++;
+            }
+
+            for (auto& n : nodeMap_)
+            {
+               double w = n.second.info.w * scaleSz;
+               double h = n.second.info.h * scaleSz;
+               rs.push_back(new vpsc::Rectangle(
+                        n.second.info.x - 0.5 * w, n.second.info.x + 0.5 * w,
+                        n.second.info.y - 0.5 * h, n.second.info.y + 0.5 * h));
             }
 
             for (auto& a : arcMap_)
@@ -143,6 +145,8 @@ namespace Sgt
                }
             }
 
+            cola::TestConvergence testConv(tol, maxIter);
+
             cola::Locks locks;
             for (auto& n : nodeMap_)
             {
@@ -151,9 +155,10 @@ namespace Sgt
                   locks.push_back(cola::Lock(n.second.info.idx, n.second.info.x, n.second.info.y));
                }
             }
-            cola::TestConvergence testConv(1e-4, maxIter);
             cola::PreIteration preIter(locks);
+            
             cola::ConstrainedFDLayout fd(rs, es, 1, true, ls, &testConv, &preIter);
+
             fd.run();
 
             i = 0;
