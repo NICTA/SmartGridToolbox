@@ -105,3 +105,6 @@ libSgtCore_a_SOURCES = \
 	YyTransformer.h YyTransformer.cc \
 	YyTransformerParserPlugin.h YyTransformerParserPlugin.cc \
 	Zip.h Zip.cc
+
+noinst_PROGRAMS = helloworld
+helloworld_SOURCES = helloworld.cc
