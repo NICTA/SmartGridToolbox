@@ -41,7 +41,7 @@
 
 \section{Nomenclature}
 \begin{align*}
-V &= \Vr + jW = \text{complex voltage.} \\
+V &= \Vr + \Vi = \text{complex voltage.} \\
 I &= \Ir + j\Ii = \text{complex current.} \\
 S &= P + jQ = \text{complex power.} \\
 y &= g + jb = \text{complex admittance} \\
@@ -59,12 +59,69 @@ y_{ci} &= \text{constant impedance ZIP component of load.} \\
 \delta_{ik} &= \text{the Kronecker delta, $\delta_{ik} = 1$ if $i = k$, 0 otherwise.}
 \end{align*}
 
+\section{AC power}
+For AC power, we can write $V(t) = V_\text{max} \cos(\theta_V + \omega t)$ and $I(t) = I_\text{max} \cos(\theta_I + \omega t)$, where $V_\text{max}$ and $I_\text{max}$ are the maximum power and voltage over a cycle. However, it is more usual to use RMS quantities $V_\text{RMS} = V_\text{max}/\sqrt{2}$ and $I_\text{RMS} = I_\text{max}/\sqrt{2}$, because the average power over a cycle then mimics the usual relationships such as $P = V^2/R$\footnote{For a resistive load, the average power over a cycle works out to be $P_\text{avg} = I_\text{RMS}V_\text{RMS}$, replicating the usual relationship for DC power. If we used the maximum rather than RMS values of $V$ and $I$, then this relationship would have an extra factor of 1/2. All the other usual DC relationships also hold for the RMS values, such as $V_\text{RMS} = I_\text{RMS}R$. We are not often concerned with knowing the instantaneous voltage and current, so the factors of $\sqrt{2}$ in Eq. \ref{EQ_V_I_RMS} are not too inconvenient.}, so,
+\begin{align}
+	V(t) &= \sqrt{2}V_\text{RMS} \cos(\theta_V + \omega t), \notag \\
+	I(t) &= \sqrt{2}I_\text{RMS} \cos(\theta_I + \omega t)
+	\label{EQ_V_I_RMS}
+\end{align}
+
+It is convenient to use the complex phasor notation $V := V_\text{RMS} \exp(j\theta_V), \, I := I_\text{RMS} \exp(j\theta_I)$, which allows us to unambiguously code the voltage magnitude and phase shift in a single complex number. If we ever need to recover, for example, the instantaneous voltage, we can use
+\begin{align}
+	V(t) = \sqrt{2}\re{V \exp(j\omega t)}
+\end{align}
+
+The instantaneous power is
+\begin{align}
+	P(t) &= 2I_\text{RMS}V_\text{RMS}\cos(\theta_I + \omega t)\cos(\theta_V + \omega t) \notag \\
+	     &= I_\text{RMS}V_\text{RMS}\left[\cos(\theta_V - \theta_I) + \cos(\theta_V + \theta_I + 2 \omega t)\right] \notag \\
+		 &= \re{I^*V + IV\exp(2j \omega t)}
+\end{align}
+This inspires us to define the instantaneous complex power,
+\begin{align}
+	S(t) &= I^*V + IV\exp(2j \omega t)
+\end{align}
+whose average over a cycle is
+\begin{align}
+	S &= I^*V,
+\end{align}
+We define the real power and reactive power phasors to be 
+\begin{align}
+	P := \re{S} = I_\text{RMS}V_\text{RMS}\cos(\theta_V - \theta_I), \notag \\
+	Q := \im{S} = I_\text{RMS}V_\text{RMS}\sin(\theta_V - \theta_I)
+\end{align}
+which shows that $P$ and $Q$ are ``in phase'' and ``out of phase'' components of the product of $I$ and $V$. $P$ is just the average power dissipated by the resistive component of the load, while $Q$ is the magnitude of the instantaneous power absorbed by the reactive part of the load.
+
+\section{Three phase balanced power}
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=(8cm)]{DeltaY}
+	\end{center}
+	\caption{
+		Delta and Y circuits for balanced three phase power.
+	}
+	\label{FIG_PI_LINE}
+\end{figure}
+In balanced positive sequence three-phase systems, the voltages are $V_A = V$, $V_B = V\exp(-2\pi/3)$ and $V_C = V\exp(2\pi / 3)$, and the currents have the same phase relationship. For balanced loads, we can model the system by considering only one of the phases (e.g. A, or A-B), knowing that all the currents and voltages will be duplicated for the other two with the appropriate phase shifts. 
+
+Delta-connected loads are mathematically equivalent to Y-connected loads, with the following relationships holding if the total power is the same in both cases
+\begin{align}
+	V_{AB} &= \sqrt{3}\exp\left(j\frac{\pi}{6}\right)V_A \notag \\
+	V_{BC} &= \sqrt{3}\exp\left(j\frac{\pi}{6}\right)V_B \notag \\
+	V_{CA} &= \sqrt{3}\exp\left(j\frac{\pi}{6}\right)V_C \notag \\
+	I_{AB} &= \frac{1}{\sqrt{3}}\exp\left(j\frac{\pi}{6}\right)I_A \notag \\
+	I_{BC} &= \frac{1}{\sqrt{3}}\exp\left(j\frac{\pi}{6}\right)I_B \notag \\
+	I_{CA} &= \frac{1}{\sqrt{3}}\exp\left(j\frac{\pi}{6}\right)I_C \notag \\
+	Z_\Delta &= 3 Z_Y
+\end{align}
+
 \section{The powerflow problem}
 We start with a collection \emph{busses} -- terminal-like conductors that have a single associated voltage, $V_i$, where $i$ is the bus index. We can consider \emph{ground} to be a special bus (to which we assign index 0), at which $V$ is always zero.
 
 Current can flow between busses, via the network. The current flowing from bus $i$ to $k$ is $I_{ik}$. 
 
-Current that flows into a bus from ground is an \emph{injection} into the bus. We use the notation $I_{\text{inj},i} := I_{0i} = -I_{i0}$ to denote a current injection from ground to bus $i$. The power consumed as a result is $S_{0i} = I_{0i}^*(V_0 - V_i) = -I_{i}^*V_i$. The generated power -- that is, the power \emph{injection} into the bus -- is the negative of this: $S_{\text{inj},i} := I_{\text{inj},i}^*V_i$.
+Current that flows into a bus from ground is an \emph{injection} into the bus. We use the notation $I_{\text{inj},i}$ to denote a current injection from ground to bus $i$. The generated power is $S_{\text{inj}, i} = I_{\text{inj}, i}^*(V_i - V_i)$. The generated power -- that is, the power \emph{injection} into the bus -- is the negative of this: $S_{\text{inj},i} := I_{\text{inj},i}^*V_i$.
 
 \emph{Kirchoff's current law} states that the total current flowing into a bus (from other busses and ground) is zero -- in other words, current in equals current out; electrical charges don't accumulate at busses. Thus
 \begin{align}
