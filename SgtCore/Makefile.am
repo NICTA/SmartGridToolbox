@@ -56,6 +56,7 @@ libinclude_HEADERS = \
 	Random.h \
 	$(SGT_POWER_TOOLS_H) \
 	SinglePhaseTransformer.h \
+	Spline.h \
 	Stopwatch.h \
 	Units.h \
 	YamlSupport.h \
@@ -97,6 +98,7 @@ libSgtCore_a_SOURCES = \
 	RegisterParserPlugins.cc \
 	$(SGT_POWER_TOOLS_H) $(SGT_POWER_TOOLS_MM) \
 	SparseSolver.h SparseSolver.cc \
+	Spline.h \
 	Stopwatch.h \
 	SinglePhaseTransformer.h SinglePhaseTransformer.cc \
 	SinglePhaseTransformerParserPlugin.h SinglePhaseTransformerParserPlugin.cc \

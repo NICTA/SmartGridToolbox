@@ -18,7 +18,6 @@ libinclude_HEADERS = \
 	SimParser.h \
 	Simulation.h \
 	SolarPv.h \
-	Spline.h \
 	Sun.h \
 	TimeSeries.h \
 	TimeSeriesZip.h \
@@ -55,7 +54,6 @@ libSgtSim_a_SOURCES = \
 	SimYyTransformerParserPlugin.h SimYyTransformerParserPlugin.cc \
 	SolarPv.h SolarPv.cc \
 	SolarPvParserPlugin.h SolarPvParserPlugin.cc \
-	Spline.h \
 	Sun.h Sun.cc \
 	TimeSeries.h \
 	TimeSeriesParserPlugin.h TimeSeriesParserPlugin.cc \

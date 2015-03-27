@@ -1,3 +1,6 @@
+#ifndef SPLINE_DOT_H
+#define SPLINE_DOT_H
+
 /*  dynamo:- Event driven molecular dynamics simulator
 http://www.dynamomd.org
 Copyright (C) 2011  Marcus N Campbell Bannerman <m.bannerman@gmail.com>
@@ -15,7 +18,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+// Code modified by Dan Gordon.
+// TODO: check on licence conditions, supply our own if needed.
 
 #include <armadillo>
 #include <exception>
@@ -43,7 +47,7 @@ class Spline : private std::vector<std::pair<double, double> >
          _BCLow(FIXED_2ND_DERIV_BC), _BCHigh(FIXED_2ND_DERIV_BC),
          _BCLowVal(0), _BCHighVal(0),
          _type(CUBIC)
-      {}
+   {}
 
       typedef std::vector<std::pair<double, double> > base;
       typedef base::const_iterator const_iterator;
@@ -147,7 +151,9 @@ class Spline : private std::vector<std::pair<double, double> >
          if (_type == LINEAR)
             return lx * _BCHighVal + y(size() - 1);
 
-         const double firstDeriv = 2 * h(size() - 2) * (_ddy[size() - 2] + 2 * _ddy[size() - 1]) / 6 + (y(size() - 1) - y(size() - 2)) / h(size() - 2);
+         const double firstDeriv = 2 * h(size() - 2) * (_ddy[size() - 2]
+                                 + 2 * _ddy[size() - 1]) / 6 
+                                 + (y(size() - 1) - y(size() - 2)) / h(size() - 2);
 
          switch(_BCHigh)
          {
@@ -232,7 +238,7 @@ class Spline : private std::vector<std::pair<double, double> >
 
                   for (size_t i(1); i < e; ++i)
                      C(i) = 6 * ((y(i+1) - y(i)) / h(i)
-                         - (y(i) - y(i-1)) / h(i-1));
+                           - (y(i) - y(i-1)) / h(i-1));
 
                   //Boundary conditions
                   switch(_BCLow)
@@ -285,3 +291,5 @@ class Spline : private std::vector<std::pair<double, double> >
          _valid = true;
       }
 };
+
+#endif // SPLINE_DOT_H
