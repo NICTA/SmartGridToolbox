@@ -205,6 +205,8 @@ namespace Sgt
          {
             return V_;
          }
+         
+         SGT_PROP_GET(V, Bus, arma::Col<Complex>, GetByConstRef, V);
 
          virtual void setV(const arma::Col<Complex>& V)
          {
@@ -216,6 +218,8 @@ namespace Sgt
          {
             return SGenUnserved_;
          }
+         
+         SGT_PROP_GET(SGenUnserved, Bus, arma::Col<Complex>, GetByConstRef, SGenUnserved);
 
          virtual void setSGenUnserved(const arma::Col<Complex>& SGenUnserved)
          {
@@ -231,6 +235,8 @@ namespace Sgt
          {
             SZipUnserved_ = SZipUnserved;
          }
+         
+         SGT_PROP_GET(SZipUnserved, Bus, arma::Col<Complex>, GetByConstRef, SZipUnserved);
 
       /// @}
       
