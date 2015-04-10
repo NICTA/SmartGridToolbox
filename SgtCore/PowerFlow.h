@@ -89,6 +89,8 @@ namespace Sgt
 
    inline Phases operator|(Phase a, Phase b) {return {static_cast<unsigned int>(a) | static_cast<unsigned int>(b)};}
    inline Phases operator&(Phase a, Phase b) {return {static_cast<unsigned int>(a) & static_cast<unsigned int>(b)};}
+
+   arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, int nPhase);
 }
 
 #endif // POWERFLOW_DOT_H

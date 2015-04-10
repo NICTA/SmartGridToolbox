@@ -41,8 +41,8 @@ namespace Sgt
          /// @param distMat Offdiagonal = distances between wires, diagonal = wire GMR.
          /// @param freq = the network frequency.
          OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double length,
-                      int nNeutral, arma::Col<double> lineResistivity, double earthResistivity,
-                      arma::Mat<double> distMat, double freq);
+                      int nNeutral, const arma::Col<double>& lineResistivity, double earthResistivity,
+                      const arma::Mat<double>& distMat, double freq);
  
       /// @}
       

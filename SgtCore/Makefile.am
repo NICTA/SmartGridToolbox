@@ -58,6 +58,7 @@ libinclude_HEADERS = \
 	SinglePhaseTransformer.h \
 	Spline.h \
 	Stopwatch.h \
+	UndergroundLine.h \
 	Units.h \
 	YamlSupport.h \
 	YyTransformer.h \
@@ -102,6 +103,7 @@ libSgtCore_a_SOURCES = \
 	Stopwatch.h \
 	SinglePhaseTransformer.h SinglePhaseTransformer.cc \
 	SinglePhaseTransformerParserPlugin.h SinglePhaseTransformerParserPlugin.cc \
+	UndergroundLine.h UndergroundLine.cc \
 	Units.h Units.cc \
 	YamlSupport.h YamlSupport.cc \
 	YyTransformer.h YyTransformer.cc \

@@ -138,4 +138,15 @@ namespace Sgt
       }
       phaseVec_.shrink_to_fit();
    }
+   
+   arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, int nPhase)
+   {
+      int n = Z.n_rows;
+      auto Za = Z.submat(0, 0, nPhase - 1, nPhase - 1);
+      auto ZaInv = arma::inv(Za);
+      auto Ze1 = Z.submat(0, nPhase, nPhase - 1, n - 1);
+      auto Ze2 = Z.submat(nPhase, 0, n - 1, nPhase - 1);
+      auto Zee = Z.submat(nPhase, nPhase, n - 1, n - 1);
+      return (Za - Ze1 * ZaInv * Ze2);
+   }
 }
