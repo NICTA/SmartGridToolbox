@@ -104,6 +104,7 @@ libSgtCore_a_SOURCES = \
 	SinglePhaseTransformer.h SinglePhaseTransformer.cc \
 	SinglePhaseTransformerParserPlugin.h SinglePhaseTransformerParserPlugin.cc \
 	UndergroundLine.h UndergroundLine.cc \
+	UndergroundLineParserPlugin.h UndergroundLineParserPlugin.cc \
 	Units.h Units.cc \
 	YamlSupport.h YamlSupport.cc \
 	YyTransformer.h YyTransformer.cc \

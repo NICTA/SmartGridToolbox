@@ -8,6 +8,7 @@
 #include "MatpowerParserPlugin.h"
 #include "OverheadLineParserPlugin.h"
 #include "PowerFlowSolverParserPlugin.h"
+#include "UndergroundLineParserPlugin.h"
 
 namespace Sgt
 {
@@ -23,5 +24,6 @@ namespace Sgt
       p.registerParserPlugin<MatpowerParserPlugin>();
       p.registerParserPlugin<OverheadLineParserPlugin>();
       p.registerParserPlugin<PowerFlowSolverParserPlugin>();
+      p.registerParserPlugin<UndergroundLineParserPlugin>();
    }
 }
