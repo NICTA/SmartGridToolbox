@@ -95,23 +95,11 @@ BOOST_AUTO_TEST_CASE (test_underground_compare_carson)
    // docs/background/Kersting_Carson.pdf.
    Network netw("network");
    Parser<Network> p;
-   p.parse("test_overhead_compare_carson_2.yaml", netw);
+   p.parse("test_underground_compare_carson.yaml", netw);
 
    netw.solvePowerFlow();
 
-   auto oh = std::dynamic_pointer_cast<OverheadLine>(netw.branch("line_1_2"));
-
-   auto bus1 = netw.bus("bus_1");
-   auto bus2 = netw.bus("bus_2");
-
-   Complex cmp;
-   cmp = polar(14.60660, -0.62 * pi / 180.0); double err0 = abs(bus2->V()(0) - cmp) / abs(cmp);
-   cmp = polar(14.72669, -121.0 * pi / 180.0); double err1 = abs(bus2->V()(1) - cmp) / abs(cmp);
-   cmp = polar(14.80137, 119.2 * pi / 180.0); double err2 = abs(bus2->V()(2) - cmp) / abs(cmp);
-
-   BOOST_CHECK(err0 < 0.001);
-   BOOST_CHECK(err1 < 0.001);
-   BOOST_CHECK(err2 < 0.001);
+   auto ug = std::dynamic_pointer_cast<UndergroundLine>(netw.branch("line_1_2"));
 }
 
 BOOST_AUTO_TEST_CASE (test_spline)

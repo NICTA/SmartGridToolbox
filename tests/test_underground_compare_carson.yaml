@@ -1,0 +1,45 @@
+-  bus:
+      id:                    bus_1
+      network_id:            network_1
+      phases:                [A, B, C]
+      V_base:                15.0948
+      V_nom:                 [15.0948D0, 15.0948D-120, 15.0948D120] # 24.9 kV L-L nominal @ 1.05 p.u, convert L-G.
+      type:                  SL
+-  generic_gen:
+      id:                    gen_1
+      network_id:            network_1
+      bus_id:                bus_1
+      phases:                [A, B, C]
+-  bus:
+      id:                    bus_2
+      network_id:            network_1
+      phases:                [A, B, C]
+      V_base:                15.0948
+      V_nom:                 [15.0948D0, 15.0948D-120, 15.0948D120] # 24.9 kV L-L nominal @ 1.05 p.u, convert L-G.
+      type:                  PQ
+-  generic_zip:
+      id:                    zip_load_2
+      network_id:            network_1
+      bus_id:                bus_2
+      phases:                [A, B, C]
+      S_const:               [-6.99e-1 - 1.43e-1j, -6.90e-1 - 1.03e-1j, -5.91e-1 - 1.60e-2j]
+-  underground_line:
+      id:                    line_1_2
+      network_id:            network_1
+      bus_0_id:              bus_1
+      bus_1_id:              bus_2
+      length:                1
+      has_neutral:           false
+      distance_matrix:       [
+                                    [0.0           , 0.1524       , 0.3048       ],
+                                    [0.1524        , 0.0          , 0.1524       ],
+                                    [0.3048        , 0.1524       , 0.0          ]
+                             ]
+      gmr_phase:             0.00521208
+      R_per_L_phase:         2.5476e-04
+      gmr_conc_strand:       0.000633984
+      R_per_L_conc_strand:   0.0092412
+      radius_conc:           0.01557528
+      n_conc_strands:        13
+      earth_resistivity:     100.0
+      freq:                  60.0

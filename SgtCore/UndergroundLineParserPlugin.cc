@@ -30,7 +30,7 @@ namespace Sgt
       assertFieldPresent(nd, "R_per_L_phase");
       assertFieldPresent(nd, "gmr_conc_strand");
       assertFieldPresent(nd, "R_per_L_conc_strand");
-      assertFieldPresent(nd, "n_conc_strand");
+      assertFieldPresent(nd, "n_conc_strands");
       assertFieldPresent(nd, "radius_conc");
       assertFieldPresent(nd, "earth_resistivity");
       assertFieldPresent(nd, "freq");
@@ -43,14 +43,14 @@ namespace Sgt
       double RPerLPhase = parser.expand<double>(nd["R_per_L_phase"]);
       double gmrConcStrand = parser.expand<double>(nd["gmr_conc_strand"]);
       double RPerLConcStrand = parser.expand<double>(nd["R_per_L_conc_strand"]);
-      int nConcStrand = parser.expand<int>(nd["n_conc_strand"]);
+      int nConcStrands = parser.expand<int>(nd["n_conc_strands"]);
       double rConc = parser.expand<double>(nd["radius_conc"]);
       double earthResistivity = parser.expand<double>(nd["earth_resistivity"]);
       double freq = parser.expand<double>(nd["freq"]);
 
       std::unique_ptr<UndergroundLine> ugl(new UndergroundLine(id, length, hasNeutral, distMatrix,
                                            gmrPhase, RPerLPhase, gmrConcStrand, RPerLConcStrand,
-                                           nConcStrand, rConc, earthResistivity, freq));
+                                           nConcStrands, rConc, earthResistivity, freq));
       return ugl;
    }
 }
