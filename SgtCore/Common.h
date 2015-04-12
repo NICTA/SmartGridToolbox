@@ -266,9 +266,9 @@ namespace Sgt
          {
             ss << ", " << std::setw(w) << std::left << m(i, j);
          }
-         ss << "]" << std::endl;
+         ss << "]";
       }
-      ss << "]" << std::endl;
+      ss << std::endl << "]" << std::endl;
       return os << ss.str();
    }
    extern template std::ostream& operator<< <double>(std::ostream& os, const arma::Mat<double>& v);

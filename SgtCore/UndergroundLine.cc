@@ -7,7 +7,7 @@ namespace Sgt
    UndergroundLine::UndergroundLine(
          const std::string& id, double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
          double gmrPhase, double resPerLPhase,
-         double gmrConcStrand, double resPerLConcStrand, int nConcStrand, 
+         double gmrConcStrand, double resPerLConcStrand, int nConcStrands, 
          double rConc, double rhoEarth, double freq) :
       BranchAbc(id, Phase::A|Phase::B|Phase::C, Phase::A|Phase::B|Phase::C),
       L_(L),
@@ -17,6 +17,8 @@ namespace Sgt
       resPerLPhase_(resPerLPhase),
       gmrConcStrand_(gmrConcStrand),
       resPerLConcStrand_(resPerLConcStrand),
+      nConcStrands_(nConcStrands),
+      rConc_(rConc),
       rhoEarth_(rhoEarth),
       freq_(freq)
    {
@@ -47,15 +49,15 @@ namespace Sgt
          if (hasNeutral_)
          {
             Dij(7, i) = Dij(i, 7) = phaseDist_(4, i); // phase_i - neutral
-            Dij(7, i + 3) = Dij(i + 3, 7) = pow(pow(Dij(4, i), nConcStrands_) - pow(rConc_, nConcStrands_),
-                                                  nConcStrInv); // conc_i - neutral
+            Dij(7, i + 3) = Dij(i + 3, 7) = 
+               pow(pow(Dij(4, i), nConcStrands_) - pow(rConc_, nConcStrands_), nConcStrInv); // conc_i - neutral
          }
          for (int j = 0; j < i; ++j)
          {
             Dij(i, j) = Dij(j, i) = phaseDist_(i, j); // phase_i - phase_j
             Dij(i + 3, j + 3) = Dij(j + 3, i + 3) = phaseDist_(i, j); // conc_i - conc_j
-            Dij(i, j + 3) = Dij(j + 3, i) = pow(pow(Dij(i, j), nConcStrands_) - pow(rConc_, nConcStrands_),
-                                                  nConcStrInv); // phase_i - conc_j
+            Dij(i, j + 3) = Dij(j, i + 3) = Dij(i + 3, j) = Dij(j + 3, i) = 
+               pow(pow(Dij(i, j), nConcStrands_) - pow(rConc_, nConcStrands_), nConcStrInv); // phase_i - conc_j
          }
       }
       if (hasNeutral_)
@@ -76,27 +78,27 @@ namespace Sgt
          resPerL(7) = resPerLPhase_;
       }
 
-      // Calculate the internal Z matrix (i.e. before Kron)
-      arma::Mat<Complex> ZInternal(nCond, nCond, arma::fill::zeros);
+      // Calculate the primative Z matrix (i.e. before Kron)
+      ZPrim_ = arma::Mat<Complex>(nCond, nCond, arma::fill::zeros);
       double freqCoeffReal = 9.869611e-7 * freq_;
       double freqCoeffImag = 1.256642e-6 * freq_;
       double freqAdditiveTerm = 0.5 * log(rhoEarth_ / freq_) + 6.490501;
       for (int i = 0; i < nCond; ++i)
       {
-         ZInternal(i, i) = {resPerL(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij(i, i)) + freqAdditiveTerm)};
+         ZPrim_(i, i) = {resPerL(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij(i, i)) + freqAdditiveTerm)};
          for (int k = i + 1; k < nCond; ++k)
          {
-				ZInternal(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / Dij(i, k)) + freqAdditiveTerm)};
-				ZInternal(k, i) = ZInternal(i, k);
+				ZPrim_(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / Dij(i, k)) + freqAdditiveTerm)};
+				ZPrim_(k, i) = ZPrim_(i, k);
          }
       }
-      ZInternal *= L_; // Z has been checked against example in Kersting and found to be OK.
+      ZPrim_ *= L_; // Z has been checked against example in Kersting and found to be OK.
       
       // Calculate the external Z matrix (i.e. after Kron)
-      arma::Mat<Complex> ZExternal = kron(ZInternal, nPhase);
+      ZPhase_ = kron(ZPrim_, nPhase);
 
       // And the line admittance matrix
-      arma::Mat<Complex> YLine = arma::inv(ZExternal);
+      arma::Mat<Complex> YLine = arma::inv(ZPhase_);
 
       // And the nodal admittance matrix
       YNode_ = arma::Mat<Complex>(2 * nPhase, 2 * nPhase, arma::fill::zeros);

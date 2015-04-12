@@ -68,15 +68,27 @@ namespace Sgt
       
       /// @}
 
+      /// @name UndergroundLine specific member functions
+      /// @{
+
+         /// Primative line impedance matrix (before Kron).
+         const arma::Mat<Complex>& ZPrim() const
+         {
+            return ZPrim_;
+         }
+
+         /// Phase line impedance matrix (after Kron).
+         const arma::Mat<Complex>& ZPhase() const
+         {
+            return ZPhase_;
+         }
+         
+      /// @}
+      
       private:
       
       /// @name Private member functions
       /// @{
-         
-         arma::Mat<Complex> ZInternal() const; ///< Internal Z matrix (before Kron).
-
-         arma::Mat<Complex> ZPort(const arma::Mat<Complex>& ZInternal) const; ///< Z for port phases (after Kron).
-         
          void validate(); ///< Calcuate all cached quantities.
 
       /// @}
@@ -102,8 +114,9 @@ namespace Sgt
 
          // Cached quantities:
         
-         bool isValid_{false};
-         arma::Mat<Complex> YNode_; ///< Nodal admittance matrix when in service.
+         arma::Mat<Complex> ZPrim_; ///< Primative line impedance matrix.
+         arma::Mat<Complex> ZPhase_; ///< Phase line impedance matrix.
+         arma::Mat<Complex> YNode_; ///< Nodal admittance matrix.
    };
 }
 
