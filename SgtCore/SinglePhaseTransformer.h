@@ -69,6 +69,7 @@ namespace Sgt
          void setNomVRatio(Complex nomVRatio)
          {
             nomVRatio_ = nomVRatio;
+            isValid_ = false;
          }
 
          Complex offNomRatio() const
@@ -79,6 +80,7 @@ namespace Sgt
          void setOffNomRatio(Complex offNomRatio)
          {
             offNomRatio_ = offNomRatio;
+            isValid_ = false;
          }
  
          Complex a() const
@@ -94,8 +96,18 @@ namespace Sgt
          void setZL(Complex ZL)
          {
             YL_ = 1.0 / ZL;
+            isValid_ = false;
          }
  
+      /// @}
+
+      /// @name Private member functions
+      /// @{
+         
+      private:
+
+         void validate() const;
+
       /// @}
 
       private:
@@ -103,6 +115,9 @@ namespace Sgt
          Complex nomVRatio_; ///< Nominal voltage ratio.
          Complex offNomRatio_; ///< Off nominal complex turns ratio.
          Complex YL_; ///< Series leakage admittance.
+
+         mutable bool isValid_{false};
+         mutable arma::Mat<Complex> Y_;
    };
 }
 

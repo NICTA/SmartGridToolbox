@@ -4,6 +4,15 @@ namespace Sgt
 {
    arma::Mat<Complex> DgyTransformer::inServiceY() const
    {
+      if (!isValid_)
+      {
+         validate();
+      }
+      return Y_;
+   }
+
+   void DgyTransformer::validate() const
+   {
       Complex ai = 1.0 / a();
       Complex aci = conj(ai);
       Complex a2i = ai * aci;
@@ -15,14 +24,13 @@ namespace Sgt
                            0.0,   -ai,    ai,  0.0,  1.0,  0.0,
                             ai,   0.0,   -ai,  0.0,  0.0,  1.0};
 
-      arma::Mat<Complex> Y(6, 6, arma::fill::zeros);
+      Y_ = arma::Mat<Complex>(6, 6, arma::fill::none);
       for (int i = 0; i < 6; ++i)
       {
          for (int j = 0; j < 6; ++j)
          {
-            Y(i, j) = YL_ * data[6 * i + j];
+            Y_(i, j) = YL_ * data[6 * i + j];
          }
       }
-      return Y;
    }
 };

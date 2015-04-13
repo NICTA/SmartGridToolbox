@@ -67,6 +67,7 @@ namespace Sgt
          virtual void setTapRatio(Complex tapRatio)
          {
             tapRatio_ = tapRatio;
+            isValid_ = false;
          }
 
          Complex YSeries() const
@@ -77,6 +78,7 @@ namespace Sgt
          virtual void setYSeries(Complex YSeries)
          {
             YSeries_ = YSeries;
+            isValid_ = false;
          }
 
          Complex YShunt() const
@@ -87,6 +89,7 @@ namespace Sgt
          virtual void setYShunt(Complex YShunt)
          {
             YShunt_ = YShunt;
+            isValid_ = false;
          }
 
          double rateA() const

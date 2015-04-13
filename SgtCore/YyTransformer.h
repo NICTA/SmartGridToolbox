@@ -74,6 +74,7 @@ namespace Sgt
          void set_a(Complex a)
          {
             a_ = a;
+            isValid_ = false;
          }
 
          Complex ZL()
@@ -84,6 +85,7 @@ namespace Sgt
          void setZL(Complex ZL)
          {
             YL_ = 1.0 / ZL;
+            isValid_ = false;
          }
 
          Complex YM()
@@ -94,7 +96,17 @@ namespace Sgt
          void setYM(Complex YM)
          {
             YM_ = YM;
+            isValid_ = false;
          }
+
+      /// @}
+
+      /// @name Private member functions
+      /// @{
+         
+      private:
+
+         void validate() const;
 
       /// @}
 
@@ -102,6 +114,9 @@ namespace Sgt
          Complex a_;  ///< Complex turns ratio, n0/n1.
          Complex YL_; ///< Series leakage admittance.
          Complex YM_; ///< Shunt magnetising impedance.
+
+         mutable bool isValid_{false};
+         mutable arma::Mat<Complex> Y_;
    };
 }
 
