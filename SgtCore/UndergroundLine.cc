@@ -34,6 +34,7 @@ namespace Sgt
 
    void UndergroundLine::validate()
    {
+
       int nPhase = phases0().size();
       int nCond = hasNeutral_ ? 7 : 6;
 
@@ -77,40 +78,14 @@ namespace Sgt
       {
          resPerL(7) = resPerLPhase_;
       }
+     
+      // Calculate the primative impedance matrix, using Carson's equations.
+      ZPrim_ = carson(nCond, Dij, resPerL, L_, freq_, rhoEarth_);
 
-      // Calculate the primative Z matrix (i.e. before Kron)
-      ZPrim_ = arma::Mat<Complex>(nCond, nCond, arma::fill::zeros);
-      double freqCoeffReal = 9.869611e-7 * freq_;
-      double freqCoeffImag = 1.256642e-6 * freq_;
-      double freqAdditiveTerm = 0.5 * log(rhoEarth_ / freq_) + 6.490501;
-      for (int i = 0; i < nCond; ++i)
-      {
-         ZPrim_(i, i) = {resPerL(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij(i, i)) + freqAdditiveTerm)};
-         for (int k = i + 1; k < nCond; ++k)
-         {
-				ZPrim_(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / Dij(i, k)) + freqAdditiveTerm)};
-				ZPrim_(k, i) = ZPrim_(i, k);
-         }
-      }
-      ZPrim_ *= L_; // Z has been checked against example in Kersting and found to be OK.
-      
-      // Calculate the external Z matrix (i.e. after Kron)
+      // Calculate the external Z matrix (i.e. after Kron).
       ZPhase_ = kron(ZPrim_, nPhase);
 
-      // And the line admittance matrix
-      arma::Mat<Complex> YLine = arma::inv(ZPhase_);
-
       // And the nodal admittance matrix
-      YNode_ = arma::Mat<Complex>(2 * nPhase, 2 * nPhase, arma::fill::zeros);
-      for (int i = 0; i < nPhase; ++i)
-      {
-         for (int j = 0; j < nPhase; ++j)
-         {
-            YNode_(i, j) = YLine(i, j);
-            YNode_(i, j + nPhase) = -YLine(i, j);
-            YNode_(i + nPhase, j) = -YLine(i, j);
-            YNode_(i + nPhase, j + nPhase) = YLine(i, j);
-         }
-      }
+      YNode_ = ZLine2YNode(ZPhase_);
    }
 }

@@ -138,6 +138,28 @@ namespace Sgt
       }
       phaseVec_.shrink_to_fit();
    }
+
+   arma::Mat<Complex> carson(int nWire, const arma::Mat<double>& Dij, const arma::Col<double> resPerL,
+                             double L, double freq, double rhoEarth)
+   {
+      // Calculate the primative Z matrix (i.e. before Kron)
+      arma::Mat<Complex> Z(nWire, nWire, arma::fill::zeros);
+      double freqCoeffReal = 9.869611e-7 * freq;
+      double freqCoeffImag = 1.256642e-6 * freq;
+      double freqAdditiveTerm = 0.5 * log(rhoEarth / freq) + 6.490501;
+      for (int i = 0; i < nWire; ++i)
+      {
+         Z(i, i) = {resPerL(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij(i, i)) + freqAdditiveTerm)};
+         for (int k = i + 1; k < nWire; ++k)
+         {
+				Z(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / Dij(i, k)) + freqAdditiveTerm)};
+				Z(k, i) = Z(i, k);
+         }
+      }
+      Z *= L; // Z has been checked against example in Kersting and found to be OK.
+   
+      return Z;
+   }
    
    arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, int nPhase)
    {
@@ -147,6 +169,29 @@ namespace Sgt
       auto Znp = Z.submat(nPhase, 0, n - 1, nPhase - 1);
       auto Znn = Z.submat(nPhase, nPhase, n - 1, n - 1);
       auto ZnnInv = arma::inv(Znn);
+
       return (Zpp - Zpn * ZnnInv * Znp);
+   }
+
+   arma::Mat<Complex> ZLine2YNode(const arma::Mat<Complex>& ZLine)
+   {
+      int n = ZLine.n_rows;
+
+      // The line admittance matrix
+      arma::Mat<Complex> YLine = arma::inv(ZLine);
+
+      arma::Mat<Complex>YNode(2 * n, 2 * n, arma::fill::zeros);
+      for (int i = 0; i < n; ++i)
+      {
+         for (int j = 0; j < n; ++j)
+         {
+            YNode(i, j) = YLine(i, j);
+            YNode(i, j + n) = -YLine(i, j);
+            YNode(i + n, j) = -YLine(i, j);
+            YNode(i + n, j + n) = YLine(i, j);
+         }
+      }
+
+      return YNode;
    }
 }

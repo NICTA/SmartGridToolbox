@@ -90,7 +90,27 @@ namespace Sgt
    inline Phases operator|(Phase a, Phase b) {return {static_cast<unsigned int>(a) | static_cast<unsigned int>(b)};}
    inline Phases operator&(Phase a, Phase b) {return {static_cast<unsigned int>(a) & static_cast<unsigned int>(b)};}
 
+   /// @brief Apply Carson's equations.
+   /// @param nWire The number of wires.
+   /// @param Dij Distance between wires on off diagonal, GMR of wires on diagonal. Units: m.
+   /// @param resPerL resistance per unit length, in ohms per metre. 
+   /// @param L The line length, in m.
+   /// @param freq The system frequency.
+   /// @param rhoEarth The conductivity of the earth, ohm metres.
+   /// @return Line impedance matrix Z, s.t. I_phase = Z \Delta V_phase.
+   arma::Mat<Complex> carson(int nWire, const arma::Mat<double>& Dij, const arma::Col<double> resPerL,
+                             double L, double freq, double rhoEarth);
+
+   /// @brief Apply the kron reduction to line impedance matrix Z.
+   /// @param Z The primitive nWire x nWire line impedance matrix
+   /// @param nPhase The number of phases, not including nWire grounded neutral wires that will be eliminated
+   /// @return The impedance nPhase x nPhase matrix ZPhase, having eliminated nWire grounded neutrals.
    arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, int nPhase);
+   
+   /// @brief Calculate the nodal admittance matrix YNode from the line impedance ZLine.
+   /// @param ZLine The line impedance matrix.
+   /// @return The nodal admittance matrix YNode.
+   arma::Mat<Complex> ZLine2YNode(const arma::Mat<Complex>& ZLine);
 }
 
 #endif // POWERFLOW_DOT_H
