@@ -41,8 +41,8 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
 
    auto oh = std::dynamic_pointer_cast<OverheadLine>(netw.branch("line_1_2"));
 
-   arma::Mat<Complex> ZWire = oh->ZWire();
-   arma::Mat<Complex> ZPhase = oh->ZPhase(ZWire);
+   arma::Mat<Complex> ZPrim = oh->ZPrim();
+   arma::Mat<Complex> ZPhase = oh->ZPhase();
 
    Complex cmp;
    cmp = {1.3369, 1.3331}; double err00 = abs(ZPhase(0,0) - cmp) / abs(cmp);

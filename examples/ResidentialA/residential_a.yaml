@@ -114,7 +114,6 @@
       phases_0: <netw_phases>
       phases_1: <netw_phases>
       length: <length_hv>
-      n_neutral: 0
       conductor_R_per_L: [<R_per_L_hv>, <R_per_L_hv>, <R_per_L_hv>]
       earth_resistivity: <earth_resistivity>
       distance_matrix:
@@ -139,7 +138,6 @@
       phases_0: <netw_phases>
       phases_1: <netw_phases>
       length: <length_hv>
-      n_neutral: 0
       conductor_R_per_L: [<R_per_L_hv>, <R_per_L_hv>, <R_per_L_hv>]
       earth_resistivity: <earth_resistivity>
       distance_matrix:
@@ -164,7 +162,6 @@
       phases_0: <netw_phases>
       phases_1: <netw_phases>
       length: <length_hv>
-      n_neutral: 0
       conductor_R_per_L: [<R_per_L_hv>, <R_per_L_hv>, <R_per_L_hv>]
       earth_resistivity: <earth_resistivity>
       distance_matrix:
@@ -207,7 +204,6 @@
                phases_0: <netw_phases>
                phases_1: <netw_phases>
                length: <length_mv(<i>)>
-               n_neutral: 0
                conductor_R_per_L: [<R_per_L_mv>, <R_per_L_mv>, <R_per_L_mv>]
                earth_resistivity: <earth_resistivity>
                distance_matrix:
@@ -267,7 +263,6 @@
                                  phases_0: [<house_phases(<(<i>+<j>+<k>)%20>)>]
                                  phases_1: [<house_phases(<(<i>+<j>+<k>)%20>)>]
                                  length: 20
-                                 n_neutral: 0
                                  conductor_R_per_L: [<R_per_L_lv>]
                                  earth_resistivity: <earth_resistivity>
                                  distance_matrix: [[0.01]]
@@ -283,7 +278,6 @@
                                  phases_0: <netw_phases>
                                  phases_1: <netw_phases>
                                  length: 100
-                                 n_neutral: 0
                                  conductor_R_per_L: [<R_per_L_lv>, <R_per_L_lv>, <R_per_L_lv>]
                                  earth_resistivity: <earth_resistivity>
                                  distance_matrix:
@@ -301,7 +295,6 @@
                         phases_0: <netw_phases>
                         phases_1: <netw_phases>
                         length: 1000
-                        n_neutral: 0
                         conductor_R_per_L: [<R_per_L_lv>, <R_per_L_lv>, <R_per_L_lv>]
                         earth_resistivity: <earth_resistivity>
                         distance_matrix:

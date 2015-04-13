@@ -77,7 +77,6 @@ components:
       bus_0:                  bus_trans                     # Bus connected to end 0 (phases must match).
       bus_1:                  bus_pv                        # Bus connected to end 1 (phases must match).
       length:                 20                            # Line length in meters.
-      n_neutral:              0                             # Number of internal multigrounded neutral wires.
       line_resistivity:       [1.9014e-04]                  # SI, Ohms/m.
       earth_resistivity:      100                           # SI, Ohm m.
       distance_matrix:        [[0.00743712]]                # Diag = geom mean radius, off diag = wire-wire dist.
@@ -90,7 +89,6 @@ components:
       bus_0:                  bus_trans
       bus_1:                  bus_batt
       length:                 20
-      n_neutral:              0
       line_resistivity:       [1.9014e-04]
       distance_matrix:        [[0.00743712]]
       earth_resistivity:      100
@@ -103,7 +101,6 @@ components:
       bus_0:                  bus_trans
       bus_1:                  bus_build
       length:                 100
-      n_neutral:              0
       line_resistivity:       [1.9014e-04]
       distance_matrix:        [[0.00743712]]
       earth_resistivity:      100

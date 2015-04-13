@@ -89,7 +89,6 @@
                phases_0: [BAL]
                phases_1: [BAL]
                length: <length_mv(<i>)>
-               n_neutral: 0
                conductor_R_per_L: [<R_per_L_mv>]
                earth_resistivity: <earth_resistivity>
                distance_matrix: [[<gmrmv>]]
@@ -149,7 +148,6 @@
                                  phases_0: [BAL]
                                  phases_1: [BAL]
                                  length: 20
-                                 n_neutral: 0
                                  conductor_R_per_L: [<R_per_L_lv>]
                                  earth_resistivity: <earth_resistivity>
                                  distance_matrix: [[0.01]]
@@ -165,7 +163,6 @@
                                  phases_0: [BAL]
                                  phases_1: [BAL]
                                  length: 100
-                                 n_neutral: 0
                                  conductor_R_per_L: [<R_per_L_lv>]
                                  earth_resistivity: <earth_resistivity>
                                  distance_matrix: [[<gmrlv>]]
@@ -178,7 +175,6 @@
                         phases_0: [BAL]
                         phases_1: [BAL]
                         length: 1000
-                        n_neutral: 0
                         conductor_R_per_L: [<R_per_L_lv>]
                         earth_resistivity: <earth_resistivity>
                         distance_matrix: [[<gmrlv>]]

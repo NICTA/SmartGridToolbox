@@ -34,7 +34,6 @@ namespace Sgt
 
    void UndergroundLine::validate()
    {
-
       int nPhase = phases0().size();
       int nCond = hasNeutral_ ? 7 : 6;
 

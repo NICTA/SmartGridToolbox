@@ -7,8 +7,14 @@ namespace Sgt
 {
    /// @brief An overhead power line.
    ///
-   /// Consists of N + M wires, where N is the number of phases and M is the number of phases, and M is the number of
-   /// extra grounded neutral wires that will be eliminated via the Kron reduction.
+   /// As in Gridlab-D, we take direction from Kersting: Distribution System Modelling and Analysis.
+   /// 
+   /// Phases A, B, and C are individually surrounded by *either* a concentric stranded neutral, or a neutral 
+   /// tape shield. In addition, there may be a separate neutral wire, which does not have its own shielding as it is
+   /// not expected to carry (much) current.
+   /// Thus, there are either 6 or 7 conductors to consider, depending on whether there is a separate neutral wire.
+   /// Conductors 1-3 and 7 are the usual type of conductor with their own particular GMR specified, etc.
+   /// Conductors 4-6 represent either the concentric neutrals or the tape. 
    class OverheadLine : public BranchAbc
    {
       public:
@@ -32,18 +38,9 @@ namespace Sgt
       /// @{
          
          /// @brief Constructor.
-         /// @param phases0 The phases on side A of the line.
-         /// @param phases1 The phases on side B of the line.
-         /// @param length The length in meters.
-         /// @param nNeutral The number of extra neutral lines not explicitly included in the phases.
-         /// @param lineResistivity The resistivity of each wire.
-         /// @param earthResistivity The effective resistivity of the earth (typically 100 Ohm-meters).
-         /// @param distMat Offdiagonal = distances between wires, diagonal = wire GMR.
-         /// @param freq = the network frequency.
-         OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double length,
-                      int nNeutral, const arma::Col<double>& lineResistivity, double earthResistivity,
-                      const arma::Mat<double>& distMat, double freq);
- 
+         OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double L,
+                      const arma::Mat<double>& Dij, const arma::Col<double>& resPerL,
+                      double rhoEarth, double freq);
       /// @}
       
       /// @name ComponentInterface virtual overridden functions.
@@ -61,26 +58,53 @@ namespace Sgt
       /// @name Overridden from BranchAbc:
       /// @{
          
-         virtual arma::Mat<Complex> inServiceY() const override;
+         virtual arma::Mat<Complex> inServiceY() const override
+         {
+            return YNode_;
+         }
       
       /// @}
-      
-      /// @name Wire and phase impedance:
+
+      /// @name OverheadLine specific member functions
       /// @{
-         
-         arma::Mat<Complex> ZWire() const;
 
-         arma::Mat<Complex> ZPhase(const arma::Mat<Complex>& ZWire) const;
+         /// Primative line impedance matrix (before Kron).
+         const arma::Mat<Complex>& ZPrim() const
+         {
+            return ZPrim_;
+         }
+
+         /// Phase line impedance matrix (after Kron).
+         const arma::Mat<Complex>& ZPhase() const
+         {
+            return ZPhase_;
+         }
          
       /// @}
-
+      
       private:
-         double L_;                      ///< Length.
-         int nNeutral_;                  ///< Internal multigrounded neutral lines.
-         arma::Col<double> rhoLine_; ///< Line resistivity.
-         double rhoEarth_;               ///< Earth resistivity.
-         arma::Mat<double> Dij_;     ///< Distance between lines, diagonal = GMR.
-         double f_;                      ///< Frequency : TODO : link to network frequency.
+      
+      /// @name Private member functions
+      /// @{
+         void validate(); ///< Calcuate all cached quantities.
+
+      /// @}
+      
+      private:
+
+         // Line Parameters:
+         
+         double L_; ///< Line length.
+         arma::Mat<double> Dij_; ///< Distance between wires on off diag, GMR of wides on diag.
+         arma::Col<double> resPerL_; ///< resistance/length of each wire.
+         double rhoEarth_{100.0}; ///< Earth resistivity.
+         double freq_; ///< Frequency : TODO : link to network frequency.
+
+         // Cached quantities:
+        
+         arma::Mat<Complex> ZPrim_; ///< Primative line impedance matrix.
+         arma::Mat<Complex> ZPhase_; ///< Phase line impedance matrix.
+         arma::Mat<Complex> YNode_; ///< Nodal admittance matrix.
    };
 }
 

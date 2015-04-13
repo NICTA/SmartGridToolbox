@@ -31,7 +31,6 @@
       phases_0:              [A, B, C]
       phases_1:              [A, B, C]
       length:                11137.392 # 36,540'.
-      n_neutral:             1
       conductor_R_per_L:     [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
       earth_resistivity:     100.0
       distance_matrix:       [

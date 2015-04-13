@@ -26,24 +26,22 @@ namespace Sgt
       assertFieldPresent(nd, "phases_0");
       assertFieldPresent(nd, "phases_1");
       assertFieldPresent(nd, "length");
-      assertFieldPresent(nd, "n_neutral");
+      assertFieldPresent(nd, "distance_matrix");
       assertFieldPresent(nd, "conductor_R_per_L");
       assertFieldPresent(nd, "earth_resistivity");
-      assertFieldPresent(nd, "distance_matrix");
       assertFieldPresent(nd, "freq");
 
       string id = parser.expand<std::string>(nd["id"]);
       Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
       Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
       double length = parser.expand<double>(nd["length"]);
-      int nNeutral = parser.expand<int>(nd["n_neutral"]);
-      arma::Col<double> lineResistivity = parser.expand<arma::Col<double>>(nd["conductor_R_per_L"]);
-      double earthResistivity = parser.expand<double>(nd["earth_resistivity"]);
       arma::Mat<double> distMatrix = parser.expand<arma::Mat<double>>(nd["distance_matrix"]);
+      arma::Col<double> resPerL = parser.expand<arma::Col<double>>(nd["conductor_R_per_L"]);
+      double earthResistivity = parser.expand<double>(nd["earth_resistivity"]);
       double freq = parser.expand<double>(nd["freq"]);
 
-      std::unique_ptr<OverheadLine> ohl(new OverheadLine(id, phases0, phases1, length, nNeutral, lineResistivity,
-               earthResistivity, distMatrix, freq));
+      std::unique_ptr<OverheadLine> ohl(new OverheadLine(id, phases0, phases1, length, distMatrix, resPerL,
+                                                         earthResistivity, freq));
 
       return ohl;
    }

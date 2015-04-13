@@ -21,7 +21,6 @@
       bus_0:                            bus_1
       bus_1:                            bus_2
       length:                           1609.34
-      n_neutral:                        1
       line_resistivity:                 [1.9014e-04, 1.9014e-4, 1.9014e-4, 1.9014e-4]
       earth_resistivity:                100
       distance_matrix:                  [
