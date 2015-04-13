@@ -148,8 +148,18 @@ namespace Sgt
 
       /// @}
 
+      /// @name Private member functions
+      /// @{
+         
       private:
 
+         void validate() const;
+
+      /// @}
+      
+      private:
+
+         // Parameters:
          Complex tapRatio_{1.0}; // Complex tap ratio, exp(i theta) (n_s / n_p).
          Complex YSeries_{czero}; // Series admittance for top of pi.
          Complex YShunt_{czero}; // Total shunt admittance for both legs of pi - each leg is half of this.
@@ -162,6 +172,10 @@ namespace Sgt
 
          double angMin_{-pi};
          double angMax_{pi};
+
+         // Calculated quantities:
+         mutable bool isValid_{false};
+         mutable arma::Mat<Complex> Y_;
    };
 }
 

@@ -4,15 +4,11 @@ namespace Sgt
 {
    arma::Mat<Complex> CommonBranch::inServiceY() const
    {
-      arma::Mat<Complex> result(2, 2);
-
-      Complex c1 = YSeries_ + 0.5 * YShunt_;
-      result(0, 0) = c1 / norm(tapRatio_); // Yes, C++ does define norm(c) as |c|^2 - field norm?
-      result(0, 1) = -YSeries_ / conj(tapRatio_);
-      result(1, 0) = -YSeries_ / tapRatio_;
-      result(1, 1) = c1;
-
-      return result;
+      if (!isValid_)
+      {
+         validate();
+      }
+      return Y_;
    }
 
    void CommonBranch::print(std::ostream& os) const
@@ -26,5 +22,20 @@ namespace Sgt
       os << "rate_A: " << rateA_ << std::endl;
       os << "rate_B: " << rateB_ << std::endl;
       os << "rate_C: " << rateC_ << std::endl;
+   }
+
+   void CommonBranch::validate() const
+   {
+      if (!isValid_)
+      {
+         Y_ = arma::Mat<Complex>(2, 2, arma::fill::none);
+         Complex c1 = YSeries_ + 0.5 * YShunt_;
+         Y_(0, 0) = c1 / norm(tapRatio_); // Yes, C++ does define norm(c) as |c|^2 - field norm?
+         Y_(0, 1) = -YSeries_ / conj(tapRatio_);
+         Y_(1, 0) = -YSeries_ / tapRatio_;
+         Y_(1, 1) = c1;
+
+         isValid_ = true; 
+      }
    }
 }

@@ -86,6 +86,7 @@ namespace Sgt
       
       /// @name Private member functions
       /// @{
+         
          void validate(); ///< Calcuate all cached quantities.
 
       /// @}
