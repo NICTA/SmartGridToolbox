@@ -143,21 +143,21 @@ namespace Sgt
         private:
 
             Time lastUpdated_{posix_time::not_a_date_time};
-            ///< The time to which I am up to date
+                ///< The time to which I am up to date
             std::vector<std::weak_ptr<const SimComponentAdaptor>> dependencies_;
-            ///< I depend on these.
+                ///< I depend on these.
             int rank_{-1};
-            ///< Evaluation rank, based on weak ordering.
+                ///< Evaluation rank, based on weak ordering.
             Event willUpdate_{std::string(sComponentType()) + "Will update"};
-            ///< Triggered immediately prior to upddate.
+                ///< Triggered immediately prior to upddate.
             Event didUpdate_{std::string(sComponentType()) + "Did update"};
-            ///< Triggered immediately post update.
+                ///< Triggered immediately post update.
             Event needsUpdate_{std::string(sComponentType()) + "Needs update"};
-            ///< Triggered when I need to be updated.
+                ///< Triggered when I need to be updated.
             Event willStartNewTimestep_{std::string(sComponentType()) + "Will start new timestep"};
-            ///< Triggered immediately prior to time advancing.
+                ///< Triggered immediately prior to time advancing.
             Event didCompleteTimestep_{std::string(sComponentType()) + "Did complete timestep"};
-            ///< Triggered just after fully completing a timestep.
+                ///< Triggered just after fully completing a timestep.
     };
 
     /// @brief A base class for SimComponents.

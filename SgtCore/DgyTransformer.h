@@ -113,7 +113,7 @@ namespace Sgt
 
         private:
 
-            Complex nomVRatioDY_; ///< Nominal voltage ratio, V_D / V_Y where V_D is phase-phase and V_Y is phase-ground.
+            Complex nomVRatioDY_; ///< Nominal voltage ratio, V_D / V_Y where V_D is phase-phase & V_Y is phase-ground.
             Complex offNomRatioDY_; ///< Off nominal complex turns ratio.
             Complex YL_; ///< Series leakage admittance.
 
