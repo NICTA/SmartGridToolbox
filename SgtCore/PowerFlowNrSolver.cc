@@ -198,22 +198,22 @@ namespace Sgt
             stopwatch.stop();
             durationConstructJMat += stopwatch.seconds();
 
-            SGT_DEBUG
-            (
-                Log().debug() << "Before kluSolve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
-                Log().debug() << "Before kluSolve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
-                Log().debug() << "Before kluSolve: M^2 = " << std::setprecision(5) << std::setw(9)
-                << (Vr % Vr + Vi % Vi) << std::endl;
-                Log().debug() << "Before kluSolve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
-                Log().debug() << "Before kluSolve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
-                Log().debug() << "Before kluSolve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
-                Log().debug() << "Before kluSolve: J   = " << std::endl;
-                LogIndent _;
-                for (int i = 0; i < nVar(); ++i)
-        {
-            Log().debug() << std::setprecision(5) << std::setw(9) << row(JMat, i) << std::endl;
+SGT_DEBUG
+(
+            Log().debug() << "Before kluSolve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
+            Log().debug() << "Before kluSolve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
+            Log().debug() << "Before kluSolve: M^2 = " << std::setprecision(5) << std::setw(9)
+            << (Vr % Vr + Vi % Vi) << std::endl;
+            Log().debug() << "Before kluSolve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
+            Log().debug() << "Before kluSolve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
+            Log().debug() << "Before kluSolve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
+            Log().debug() << "Before kluSolve: J   = " << std::endl;
+            LogIndent _;
+            for (int i = 0; i < nVar(); ++i)
+            {
+                Log().debug() << std::setprecision(5) << std::setw(9) << row(JMat, i) << std::endl;
             }
-            );
+);
 
             stopwatch.reset();
             stopwatch.start();

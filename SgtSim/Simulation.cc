@@ -42,20 +42,20 @@ namespace Sgt
 
     void Simulation::initialize()
     {
-        SGT_DEBUG
-        (
-            Log().debug() << "Components before initialize:" << std::endl;
-            LogIndent _;
-            for (auto comp : simCompVec_)
-    {
-        Log().debug() << comp->id() << " " << comp->rank() << std::endl;
+SGT_DEBUG
+(
+        Log().debug() << "Components before initialize:" << std::endl;
+        LogIndent _;
+        for (auto comp : simCompVec_)
+        {
+            Log().debug() << comp->id() << " " << comp->rank() << std::endl;
             LogIndent _;
             for (auto dep : comp->dependencies())
             {
                 Log().debug() << dep.lock()->id() << dep.lock()->rank() << std::endl;
             }
         }
-        )
+)
 
         for (int i = 0; i < simCompVec_.size(); ++i)
         {

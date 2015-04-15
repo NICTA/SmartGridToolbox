@@ -131,7 +131,7 @@ namespace Sgt
         /// @}
 
         /// @name Y matrix.
-            /// This absorbs any constant admittance ZIP components.
+        /// This absorbs any constant admittance ZIP components.
         /// @{
 
             const arma::SpMat<Complex>& Y() const
@@ -146,11 +146,11 @@ namespace Sgt
         /// @}
 
         /// @name Vectors.
-            /// SL node: V is a setpoint, S is a warm start.
-            /// PQ node: V is a warm start, S is a setpoint.
-            /// PV node: |V| is a setpoint, arg(V) is a warm start, P is a setpoint, Q is a warm start.
-            /// Note that P includes both load and generation and thus may include constant power components of ZIPs.
-            /// For example, for a slack bus with a constant S load, P represents the generated power minus the load draw.
+        /// SL node: V is a setpoint, S is a warm start.
+        /// PQ node: V is a warm start, S is a setpoint.
+        /// PV node: |V| is a setpoint, arg(V) is a warm start, P is a setpoint, Q is a warm start.
+        /// Note that P includes both load and generation and thus may include constant power components of ZIPs.
+        /// For example, for a slack bus with a constant S load, P represents the generated power minus the load draw.
         /// @{
 
             const arma::Col<Complex>& V() const ///< Voltage.
@@ -183,7 +183,7 @@ namespace Sgt
         /// @}
 
         /// @name Count nodes of different types.
-            /// Nodes are ordered as: SL first, then PQ, then PV.
+        /// Nodes are ordered as: SL first, then PQ, then PV.
         /// @{
 
             size_t nNode()
