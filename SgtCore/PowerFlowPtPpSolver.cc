@@ -85,7 +85,7 @@ namespace Sgt
             arc->tr = std::abs(tap);
             arc->as = std::arg(tap);
 
-            assert(abs(yShunt.real()) < 1e-9);
+            assert(std::abs(yShunt.real()) < 1e-9);
             arc->ch = yShunt.imag();
 
             arc->cc = arc->tr*cos(arc->as);
