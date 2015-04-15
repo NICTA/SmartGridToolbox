@@ -1,37 +1,37 @@
 -  bus:
-      id:                       bus_1
-      network_id:               network_1
-      phases:                   [A, B, C]
-      V_base:                   1
-      V_nom:                    [1, 1D-240, 1D240]
-      type:                     SL
+        id: bus_1
+        network_id: network_1
+        phases: [A, B, C]
+        V_base: 1
+        V_nom: [1, 1D-240, 1D240]
+        type: SL
 -  generic_gen:
-      id:                       gen_1
-      network_id:               network_1
-      bus_id:                   bus_1
-      phases:                   [A, B, C]
+        id: gen_1
+        network_id: network_1
+        bus_id: bus_1
+        phases: [A, B, C]
 -  bus:
-      id:                       bus_2
-      network_id:               network_1
-      phases:                   [A, B, C]
-      V_base:                   1
-      V_nom:                    [1, 1D-120, 1D120]
-      type:                     PQ
+        id: bus_2
+        network_id: network_1
+        phases: [A, B, C]
+        V_base: 1
+        V_nom: [1, 1D-120, 1D120]
+        type: PQ
 -  overhead_line:
-      id:                       line_1_2
-      network_id:               network_1
-      bus_0_id:                 bus_1
-      bus_1_id:                 bus_2
-      phases_0:                 [A, B, C]
-      phases_1:                 [A, B, C]
-      length:                   1609.34 # 1 mile
-      conductor_R_per_L:        [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
-      earth_resistivity:        100.0
-      distance_matrix:
-         [
-            [1.37160e-3    , 0.7620       , 1.37160      , 1.30211      ],
-            [0.7620        , 1.3716e-3    , 2.13360      , 1.72421      ],
-            [1.37160       , 2.13360      , 1.3716e-3    , 1.5240       ],
-            [1.30211       , 1.72421      , 1.5240       , 1.3716e-3    ]
-         ]
-      freq:                     60.0
+        id: line_1_2
+        network_id: network_1
+        bus_0_id: bus_1
+        bus_1_id: bus_2
+        phases_0: [A, B, C]
+        phases_1: [A, B, C]
+        length: 1609.34 # 1 mile
+        conductor_R_per_L: [6.959357e-04, 6.959357e-4, 6.959357e-4, 6.959357e-4]
+        earth_resistivity: 100.0
+        distance_matrix:
+            [
+                [1.37160e-3     , 0.7620         , 1.37160        , 1.30211        ],
+                [0.7620          , 1.3716e-3     , 2.13360        , 1.72421        ],
+                [1.37160         , 2.13360        , 1.3716e-3     , 1.5240         ],
+                [1.30211         , 1.72421        , 1.5240         , 1.3716e-3     ]
+            ]
+        freq: 60.0

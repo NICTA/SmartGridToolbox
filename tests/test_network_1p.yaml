@@ -1,46 +1,46 @@
 -  bus:
-      name:                             bus_1
-      phases:                           [BAL]
-      network:                          network_1
-      type:                             PQ
-      nominal_voltage:                  [1]
+        name: bus_1
+        phases: [BAL]
+        network: network_1
+        type: PQ
+        nominal_voltage: [1]
 -  zip_to_ground:
-      name:                             zip_load_1
-      phases:                           [BAL]
-      bus:                              bus_1
-      complex_power_load:               [0.0240 + 0.0120j]
+        name: zip_load_1
+        phases: [BAL]
+        bus: bus_1
+        complex_power_load: [0.0240 + 0.0120j]
 -  bus:
-      name:                             bus_2
-      phases:                           [BAL]
-      network:                          network_1
-      type:                             PQ
-      nominal_voltage:                  [1]
+        name: bus_2
+        phases: [BAL]
+        network: network_1
+        type: PQ
+        nominal_voltage: [1]
 -  zip_to_ground:
-      name:                             zip_load_2
-      phases:                           [BAL]
-      bus:                              bus_2
-      complex_power_load:               [0.0840 - 0.0520j]
+        name: zip_load_2
+        phases: [BAL]
+        bus: bus_2
+        complex_power_load: [0.0840 - 0.0520j]
 -  bus:
-      name:                             bus_3
-      phases:                           [BAL]
-      network:                          network_1
-      type:                             SL
-      nominal_voltage:                  [1]
+        name: bus_3
+        phases: [BAL]
+        network: network_1
+        type: SL
+        nominal_voltage: [1]
 -  branch:
-      name:                             branch_1_2
-      phases_0:                         [BAL]
-      phases_1:                         [BAL]
-      network:                          network_1
-      bus_0:                            bus_1
-      bus_1:                            bus_2
-      Y:
-         simple_line:                   [5 - 15j]
+        name: branch_1_2
+        phases_0: [BAL]
+        phases_1: [BAL]
+        network: network_1
+        bus_0: bus_1
+        bus_1: bus_2
+        Y:
+            simple_line: [5 - 15j]
 -  branch:
-      name:                             branch_1_3
-      phases_0:                         [BAL]
-      phases_1:                         [BAL]
-      network:                          network_1
-      bus_0:                            bus_1
-      bus_1:                            bus_3
-      Y:
-         simple_line:                   [3 - 9j]
+        name: branch_1_3
+        phases_0: [BAL]
+        phases_1: [BAL]
+        network: network_1
+        bus_0: bus_1
+        bus_1: bus_3
+        Y:
+            simple_line: [3 - 9j]

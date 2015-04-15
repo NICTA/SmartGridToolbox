@@ -1,121 +1,121 @@
 global:
-   configuration_name:        config_1
-   start_time:                2013-01-23 00:00:00
-   end_time:                  2013-01-24 00:00:00
-   lat_long:                  [-35.3075, 149.1244] # Canberra, Australia.
-   timezone:                  AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
+    configuration_name: config_1
+    start_time: 2013-01-23 00:00:00
+    end_time: 2013-01-24 00:00:00
+    lat_long: [-35.3075, 149.1244] # Canberra, Australia.
+    timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra, Australia.
 objects: # And these are the actual objects.
-   weather:
-      name:                   weather_1
-      cloud_cover:
-         constant:            0.3
-      dt:                     00:10:00
-   cdf:
-      input_file:             pvdemo_ieee57_solar.cdf
-      network_name:           cdf
-      default_V_base:         1 # 1 KV default.
-      use_per_unit:           Y
-   inverter:
-      name:                   inverter_cdf_bus_00020
-      bus:                    cdf_bus_00020
-      phases:                 [BAL]
-      requested_Q_per_phase:  0
-      max_S_mag_per_phase:    0.1
-      min_power_factor:       0.9
-      efficiency:             0.86
-   solar_pv:                  # Should point right at sun on Jan 26, 2013, 0830. 
-      name:                   solar_pv_cdf_bus_00020
-      weather:                weather_1
-      inverter:               inverter_cdf_bus_00020
-      efficiency:             0.75
-      area_m2:                0.00025
-      zenith_degrees:         64.6
-      azimuth_degrees:        95.8
-   inverter:
-      name:                   inverter_cdf_bus_00030
-      bus:                    cdf_bus_00030
-      phases:                 [BAL]
-      requested_Q_per_phase:  0
-      max_S_mag_per_phase:    0.1
-      min_power_factor:       0.9
-      efficiency:             0.86
-   solar_pv:                  # Should point right at sun on Jan 26, 2013, 0830. 
-      name:                   solar_pv_cdf_bus_00030
-      weather:                weather_1
-      inverter:               inverter_cdf_bus_00030
-      efficiency:             0.75
-      area_m2:                0.00027
-      zenith_degrees:         64.6
-      azimuth_degrees:        95.8
-   inverter:
-      name:                   inverter_cdf_bus_00035
-      bus:                    cdf_bus_00035
-      phases:                 [BAL]
-      requested_Q_per_phase:  0
-      max_S_mag_per_phase:    0.1
-      min_power_factor:       0.9
-      efficiency:             0.86
-   solar_pv:                  # Should point right at sun on Jan 26, 2013, 0830. 
-      name:                   solar_pv_cdf_bus_00035
-      weather:                weather_1
-      inverter:               inverter_cdf_bus_00035
-      efficiency:             0.75
-      area_m2:                0.00013
-      zenith_degrees:         64.6
-      azimuth_degrees:        95.8
-   inverter:
-      name:                   inverter_cdf_bus_00050
-      bus:                    cdf_bus_00050
-      phases:                 [BAL]
-      requested_Q_per_phase:  0
-      max_S_mag_per_phase:    0.1
-      min_power_factor:       0.9
-      efficiency:             0.86
-   solar_pv:                  # Should point right at sun on Jan 26, 2013, 0830. 
-      name:                   solar_pv_cdf_bus_00050
-      weather:                weather_1
-      inverter:               inverter_cdf_bus_00050
-      efficiency:             0.75
-      area_m2:                0.00023
-      zenith_degrees:         64.6
-      azimuth_degrees:        95.8
-   inverter:
-      name:                   inverter_cdf_bus_00053
-      bus:                    cdf_bus_00053
-      phases:                 [BAL]
-      requested_Q_per_phase:  0
-      max_S_mag_per_phase:    0.1
-      min_power_factor:       0.9
-      efficiency:             0.86
-   solar_pv:                  # Should point right at sun on Jan 26, 2013, 0830. 
-      name:                   solar_pv_cdf_bus_00053
-      weather:                weather_1
-      inverter:               inverter_cdf_bus_00053
-      efficiency:             0.75
-      area_m2:                0.00017
-      zenith_degrees:         64.6
-      azimuth_degrees:        95.8
-   inverter:
-      name:                   inverter_cdf_bus_00056
-      bus:                    cdf_bus_00056
-      phases:                 [BAL]
-      requested_Q_per_phase:  0
-      max_S_mag_per_phase:    0.1
-      min_power_factor:       0.9
-      efficiency:             0.86
-   solar_pv:                  # Should point right at sun on Jan 26, 2013, 0830. 
-      name:                   solar_pv_cdf_bus_00056
-      weather:                weather_1
-      inverter:               inverter_cdf_bus_00056
-      efficiency:             0.75
-      area_m2:                0.00015
-      zenith_degrees:         64.6
-      azimuth_degrees:        95.8
-special_inverters:            [  
-                                 inverter_cdf_bus_00020,
-                                 inverter_cdf_bus_00030,
-                                 inverter_cdf_bus_00035,
-                                 inverter_cdf_bus_00050,
-                                 inverter_cdf_bus_00053,
-                                 inverter_cdf_bus_00056
-                              ]
+    weather:
+        name: weather_1
+        cloud_cover:
+            constant: 0.3
+        dt: 00:10:00
+    cdf:
+        input_file: pvdemo_ieee57_solar.cdf
+        network_name: cdf
+        default_V_base: 1 # 1 KV default.
+        use_per_unit: Y
+    inverter:
+        name: inverter_cdf_bus_00020
+        bus: cdf_bus_00020
+        phases: [BAL]
+        requested_Q_per_phase: 0
+        max_S_mag_per_phase: 0.1
+        min_power_factor: 0.9
+        efficiency: 0.86
+    solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
+        name: solar_pv_cdf_bus_00020
+        weather: weather_1
+        inverter: inverter_cdf_bus_00020
+        efficiency: 0.75
+        area_m2: 0.00025
+        zenith_degrees: 64.6
+        azimuth_degrees: 95.8
+    inverter:
+        name: inverter_cdf_bus_00030
+        bus: cdf_bus_00030
+        phases: [BAL]
+        requested_Q_per_phase: 0
+        max_S_mag_per_phase: 0.1
+        min_power_factor: 0.9
+        efficiency: 0.86
+    solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
+        name: solar_pv_cdf_bus_00030
+        weather: weather_1
+        inverter: inverter_cdf_bus_00030
+        efficiency: 0.75
+        area_m2: 0.00027
+        zenith_degrees: 64.6
+        azimuth_degrees: 95.8
+    inverter:
+        name: inverter_cdf_bus_00035
+        bus: cdf_bus_00035
+        phases: [BAL]
+        requested_Q_per_phase: 0
+        max_S_mag_per_phase: 0.1
+        min_power_factor: 0.9
+        efficiency: 0.86
+    solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
+        name: solar_pv_cdf_bus_00035
+        weather: weather_1
+        inverter: inverter_cdf_bus_00035
+        efficiency: 0.75
+        area_m2: 0.00013
+        zenith_degrees: 64.6
+        azimuth_degrees: 95.8
+    inverter:
+        name: inverter_cdf_bus_00050
+        bus: cdf_bus_00050
+        phases: [BAL]
+        requested_Q_per_phase: 0
+        max_S_mag_per_phase: 0.1
+        min_power_factor: 0.9
+        efficiency: 0.86
+    solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
+        name: solar_pv_cdf_bus_00050
+        weather: weather_1
+        inverter: inverter_cdf_bus_00050
+        efficiency: 0.75
+        area_m2: 0.00023
+        zenith_degrees: 64.6
+        azimuth_degrees: 95.8
+    inverter:
+        name: inverter_cdf_bus_00053
+        bus: cdf_bus_00053
+        phases: [BAL]
+        requested_Q_per_phase: 0
+        max_S_mag_per_phase: 0.1
+        min_power_factor: 0.9
+        efficiency: 0.86
+    solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
+        name: solar_pv_cdf_bus_00053
+        weather: weather_1
+        inverter: inverter_cdf_bus_00053
+        efficiency: 0.75
+        area_m2: 0.00017
+        zenith_degrees: 64.6
+        azimuth_degrees: 95.8
+    inverter:
+        name: inverter_cdf_bus_00056
+        bus: cdf_bus_00056
+        phases: [BAL]
+        requested_Q_per_phase: 0
+        max_S_mag_per_phase: 0.1
+        min_power_factor: 0.9
+        efficiency: 0.86
+    solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
+        name: solar_pv_cdf_bus_00056
+        weather: weather_1
+        inverter: inverter_cdf_bus_00056
+        efficiency: 0.75
+        area_m2: 0.00015
+        zenith_degrees: 64.6
+        azimuth_degrees: 95.8
+special_inverters: [  
+                                            inverter_cdf_bus_00020,
+                                            inverter_cdf_bus_00030,
+                                            inverter_cdf_bus_00035,
+                                            inverter_cdf_bus_00050,
+                                            inverter_cdf_bus_00053,
+                                            inverter_cdf_bus_00056
+                                        ]
