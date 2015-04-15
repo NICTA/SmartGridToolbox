@@ -88,7 +88,7 @@ namespace Sgt
 
     class Log
     {
-            friend class LogIndent;
+        friend class LogIndent;
 
         public:
 

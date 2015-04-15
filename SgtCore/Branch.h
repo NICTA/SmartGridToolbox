@@ -16,7 +16,7 @@ namespace Sgt
     /// Implement some common functionality for convenience.
     class BranchAbc : public Component
     {
-            friend class Network;
+        friend class Network;
 
         public:
 

@@ -10,7 +10,7 @@ namespace Sgt
 {
     class WoNode
     {
-            friend class WoGraph;
+        friend class WoGraph;
 
         public:
             WoNode(int idx) : idx_(idx), visited_(false)
