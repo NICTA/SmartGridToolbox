@@ -15,7 +15,7 @@ namespace Sgt
 
       /// @name Lifecycle
       /// @{
-      
+
       public:
          Battery(const std::string& id) :
             DcPowerSourceAbc(id),
@@ -32,10 +32,10 @@ namespace Sgt
          }
 
       /// @}
-      
+
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-        
+
       public:
          static const std::string& sComponentType()
          {
@@ -51,10 +51,10 @@ namespace Sgt
          // virtual void print(std::ostream& os) const override; // TODO
 
       /// @}
-      
+
       /// @name Overridden member functions from SimComponent.
       /// @{
-      
+
       public:
          virtual Time validUntil() const override
          {
@@ -73,7 +73,7 @@ namespace Sgt
 
       /// @name Overridden member functions from DcPowerSourceAbc.
       /// @{
-      
+
       public:
          virtual double PDc() const override; ///< Positive = charging.
 
@@ -81,7 +81,7 @@ namespace Sgt
 
       /// @name Battery specific member functions.
       /// @{
-         
+
          Time dt() {return dt_;}
          void set_dt(Time val) {dt_ = val; needsUpdate().trigger();}
 

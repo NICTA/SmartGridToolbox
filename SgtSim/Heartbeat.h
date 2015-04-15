@@ -10,7 +10,7 @@ namespace Sgt
    {
       /// @name Lifecycle:
       /// @{
-      
+
       public:
 
          HeartbeatAdaptor(const Time& dt) :
@@ -20,10 +20,10 @@ namespace Sgt
          }
 
       /// @}
-      
+
       /// @name Overridden member functions from SimComponent.
       /// @{
-      
+
       public:
 
          virtual Time validUntil() const override
@@ -53,12 +53,12 @@ namespace Sgt
          }
 
       /// @}
-      
+
       /// @name Heartbeat specific member functions.
       /// @{
 
       public:
-         
+
          Time dt() const
          {
             return dt_;
@@ -68,7 +68,7 @@ namespace Sgt
          {
             dt_ = dt;
          }
-      
+
       /// @}
 
       private:
@@ -83,19 +83,19 @@ namespace Sgt
 
       /// @name Static member functions:
       /// @{
-         
+
          static const std::string& sComponentType()
          {
             static std::string result("heartbeat");
             return result;
          }
-      
+
       /// @}
-         
+
       /// @name Lifecycle:
       /// @{
-      
-         Heartbeat(const std::string& id, const Time& dt) : 
+
+         Heartbeat(const std::string& id, const Time& dt) :
             HeartbeatAdaptor(dt),
             Component(id)
          {
@@ -103,10 +103,10 @@ namespace Sgt
          }
 
       /// @}
-      
+
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-        
+
          virtual const std::string& componentType() const override
          {
             return sComponentType();

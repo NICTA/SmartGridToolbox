@@ -14,7 +14,7 @@ namespace Sgt
    {
       YyTransformerParserPlugin transParser;
       auto trans = sim.newSimComponent<SimYyTransformer>(*transParser.parseYyTransformer(nd, parser));
-      
+
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_0_id");
       assertFieldPresent(nd, "bus_1_id");

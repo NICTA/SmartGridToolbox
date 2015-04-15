@@ -17,7 +17,7 @@ namespace Sgt
       Phases phases = parser.expand<Phases>(nd["phases"]);
 
       auto inverter = sim.newSimComponent<Inverter>(id, phases);
-         
+
       if (nd["efficiency"])
       {
          inverter->setEfficiency(parser.expand<double>(nd["efficiency"]));

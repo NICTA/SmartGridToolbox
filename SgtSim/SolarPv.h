@@ -21,21 +21,21 @@ namespace Sgt
             static std::string result("component");
             return result;
          }
-      
+
       /// @}
-      
+
       /// @name Lifecycle:
       /// @{
-      
+
       public:
 
          SolarPv(const std::string& id);
-      
+
       /// @}
 
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-        
+
       public:
 
          virtual const std::string& componentType() const override
@@ -56,12 +56,12 @@ namespace Sgt
       protected:
          // virtual void initializeState() override;
          // virtual void updateState(Time t) override;
-      
+
       /// @}
 
       /// @name My public member functions.
       /// @{
-     
+
       public:
 
          void setWeather(std::shared_ptr<Weather> weather);
@@ -75,7 +75,7 @@ namespace Sgt
          virtual double PDc() const override;
 
       /// @}
-      
+
       private:
          std::shared_ptr<const Weather> weather_;
          double efficiency_;

@@ -16,7 +16,7 @@
 
 namespace Sgt
 {
-   class SimBus : public SimComponentAdaptor, public Bus 
+   class SimBus : public SimComponentAdaptor, public Bus
    {
       public:
          /// Construct a SimBus from a bus.
@@ -32,7 +32,7 @@ namespace Sgt
       protected:
          virtual void initializeState() override
          {
-            bool sv = voltageUpdated().isEnabled(); 
+            bool sv = voltageUpdated().isEnabled();
             voltageUpdated().setIsEnabled(false);
             setV(VNom());
             voltageUpdated().setIsEnabled(sv);

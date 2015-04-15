@@ -17,10 +17,10 @@ namespace Sgt
 
       assertFieldPresent(nd, "network_id");
       assertFieldPresent(nd, "bus_id");
-      
+
       string netwId = parser.expand<std::string>(nd["network_id"]);
       std::string busId = parser.expand<std::string>(nd["bus_id"]);
-      
+
       auto netw = sim.simComponent<SimNetwork>(netwId);
 
       netw->addZip(gz, busId);

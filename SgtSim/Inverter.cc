@@ -7,10 +7,10 @@ namespace Sgt
    {
       sources_.push_back(source);
       dependsOn(source);
-      source->dcPowerChanged().addAction([this](){injectionChanged().trigger();},
-            std::string("Trigger ") + sComponentType() + " " + id() + " injection changed.");
+      source->dcPowerChanged().addAction([this]() {injectionChanged().trigger();},
+      std::string("Trigger ") + sComponentType() + " " + id() + " injection changed.");
    }
-   
+
    double InverterAbc::PPerPhase() const
    {
       double PDcA = PDc();

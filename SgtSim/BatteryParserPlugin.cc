@@ -46,7 +46,7 @@ namespace Sgt
       else
       {
          Log().fatal() << "For component " << id << ", inverter " << inverterStr
-                 << " was not found in the model." << std::endl;
+                       << " was not found in the model." << std::endl;
       }
    }
 }

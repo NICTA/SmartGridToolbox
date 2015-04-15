@@ -24,7 +24,7 @@ namespace Sgt
    {
       /// @name Static member functions:
       /// @{
-         
+
       public:
 
          static const std::string& sComponentType()
@@ -32,12 +32,12 @@ namespace Sgt
             static std::string result("simple_building");
             return result;
          }
-      
+
       /// @}
-      
+
       /// @name Lifecycle:
       /// @{
-      
+
       public:
          SimpleBuilding(const std::string& id) :
             ZipAbc(id, Phase::BAL),
@@ -62,10 +62,10 @@ namespace Sgt
          }
 
       /// @}
-      
+
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-        
+
       public:
 
          virtual const std::string& componentType() const override
@@ -76,10 +76,10 @@ namespace Sgt
          // virtual void print(std::ostream& os) const override; TODO
 
       /// @}
-      
+
       /// @name Overridden member functions from SimComponent.
       /// @{
-      
+
       public:
 
          virtual Time validUntil() const override {return lastUpdated() + dt_;}
@@ -88,14 +88,14 @@ namespace Sgt
 
          virtual void initializeState() override;
          virtual void updateState(Time t) override;
-      
+
       /// @}
-      
+
       /// @name SimpleBuilding specific member functions.
       /// @{
 
       public:
-         
+
          virtual arma::Col<Complex> SConst() const
          {
             return {Complex(-Ph_, 0.0)};
@@ -148,17 +148,17 @@ namespace Sgt
          double Ph() {return Ph_;}
 
          double dQh() {return dQh_;}
-      
+
       /// @}
 
       /// @name My private member functions.
       /// @{
-      
+
       private:
          void setOperatingParams(Time t);
 
       /// @}
-      
+
       private:
          // Parameters and controls.
          Time dt_;                                       // Timestep.
@@ -176,7 +176,7 @@ namespace Sgt
 
          // State.
          double Tb_;                                     // Building temperature, C.
-                                                         // Operating parameters.
+         // Operating parameters.
          HvacMode mode_;                                 // Cooling or heating?
          double cop_;                                    // Depends on mode.
          bool isMaxed_;                                  // On maximum power?

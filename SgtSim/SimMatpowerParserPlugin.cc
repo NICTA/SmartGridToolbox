@@ -37,7 +37,7 @@ namespace Sgt
             simNetw->addZip(simZip, bus->id());
          }
       }
-      
+
       for (auto& branch : tempNetw.branches())
       {
          auto cBranch = dynamic_cast<const CommonBranch&>(*branch);

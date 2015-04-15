@@ -7,12 +7,12 @@
 
 namespace Sgt
 {
-   class TimeSeriesZip : public ZipAbc, public HeartbeatAdaptor 
+   class TimeSeriesZip : public ZipAbc, public HeartbeatAdaptor
    {
       public:
 
          TimeSeriesZip(const std::string& id, const Phases& phases,
-               std::shared_ptr<const TimeSeries<Time, arma::Col<Complex>>> series, const Time& dt) :
+                       std::shared_ptr<const TimeSeries<Time, arma::Col<Complex>>> series, const Time& dt) :
             ZipAbc(id, phases),
             HeartbeatAdaptor(dt),
             series_(series)
@@ -40,11 +40,11 @@ namespace Sgt
          virtual void updateState(Time t)
          {
             HeartbeatAdaptor::updateState(t);
-            injectionChanged().trigger(); 
+            injectionChanged().trigger();
          }
 
       private:
-         
+
          std::shared_ptr<const TimeSeries<Time, arma::Col<Complex>>> series_;
    };
 }

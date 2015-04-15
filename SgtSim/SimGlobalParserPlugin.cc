@@ -17,10 +17,10 @@ namespace Sgt
 
       if (const YAML::Node& nodeTz = nd["timezone"])
       {
-         try 
+         try
          {
             sim.setTimezone(
-                  local_time::time_zone_ptr(new local_time::posix_time_zone(parser.expand<std::string>(nodeTz))));
+               local_time::time_zone_ptr(new local_time::posix_time_zone(parser.expand<std::string>(nodeTz))));
          }
          catch (...)
          {
@@ -29,7 +29,7 @@ namespace Sgt
       }
 
       const YAML::Node& nodeStart = nd["start_time"];
-      try 
+      try
       {
          sim.setStartTime(parseTime(nodeStart, sim.timezone(), parser));
       }
@@ -39,7 +39,7 @@ namespace Sgt
       }
 
       const YAML::Node& nodeEnd = nd["end_time"];
-      try 
+      try
       {
          sim.setEndTime(parseTime(nodeEnd, sim.timezone(), parser));
       }
@@ -50,7 +50,7 @@ namespace Sgt
 
       if (const YAML::Node& nodeLatLong = nd["lat_long"])
       {
-         try 
+         try
          {
             std::vector<double> llvec = parser.expand<std::vector<double>>(nodeLatLong);
             if (llvec.size() != 2)

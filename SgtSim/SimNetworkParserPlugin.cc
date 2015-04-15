@@ -16,7 +16,7 @@ namespace Sgt
       double PBase = parser.expand<double>(nd["P_base"]);
 
       auto ndFreq = nd["freq_Hz"];
-      
+
       auto ndSolver = nd["solver"];
 
       std::unique_ptr<Network> nw = std::unique_ptr<Network>(new Network(id, PBase));
@@ -26,7 +26,7 @@ namespace Sgt
          nw->setNomFreq(parser.expand<double>(ndFreq));
          nw->setFreq(nw->nomFreq());
       }
-      
+
       if (ndSolver)
       {
          PowerFlowSolverParserPlugin pfSolverParser;

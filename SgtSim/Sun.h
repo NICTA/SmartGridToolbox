@@ -23,8 +23,10 @@ namespace Sgt
    {
       using std::cos;
       using std::sin;
-      return {{mag * cos(angs.azimuth) * sin(angs.zenith), mag * sin(angs.azimuth) * sin(angs.zenith),
-              mag * cos(angs.zenith)}};
+      return {{
+            mag * cos(angs.azimuth) * sin(angs.zenith), mag * sin(angs.azimuth) * sin(angs.zenith),
+            mag * cos(angs.zenith)
+         }};
    }
 
    /// @brief Convert spherical angles and projection to a vector.

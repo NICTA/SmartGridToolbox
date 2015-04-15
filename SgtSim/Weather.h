@@ -17,7 +17,7 @@ namespace Sgt
    {
       /// @name Static member functions:
       /// @{
-         
+
       public:
 
          static const std::string& sComponentType()
@@ -25,12 +25,12 @@ namespace Sgt
             static std::string result("weather");
             return result;
          }
-      
+
       /// @}
 
       /// @name Lifecycle:
       /// @{
-         
+
          Weather(const std::string& id) :
             Heartbeat(id, posix_time::minutes(5)),
             latLong_(Greenwich),
@@ -42,7 +42,7 @@ namespace Sgt
 
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-        
+
       public:
 
          virtual const std::string& componentType() const override
@@ -56,7 +56,7 @@ namespace Sgt
 
       /// @name Overridden member functions from SimComponent.
       /// @{
-      
+
       public:
 
          // virtual Time validUntil() const override;
@@ -65,12 +65,12 @@ namespace Sgt
 
          // virtual void initializeState() override;
          virtual void updateState(Time t) override;
-      
+
       /// @}
 
       /// @name Weather specific member functions.
       /// @{
-     
+
       public:
 
          void setLatLong(const LatLong& latLong) {latLong_ = latLong; needsUpdate().trigger();}
@@ -81,7 +81,8 @@ namespace Sgt
          }
          void setTemperatureSeries(std::shared_ptr<const TimeSeries<Time, double>> series)
          {
-            temperatureSeries_ = series; needsUpdate().trigger();
+            temperatureSeries_ = series;
+            needsUpdate().trigger();
          }
          double temperature() const
          {
@@ -94,7 +95,8 @@ namespace Sgt
          }
          void setCloudCoverSeries(std::shared_ptr<const TimeSeries<Time, double>> series)
          {
-            cloudCoverSeries_ = series; needsUpdate().trigger();
+            cloudCoverSeries_ = series;
+            needsUpdate().trigger();
          }
          double cloudCover() const
          {
@@ -112,7 +114,7 @@ namespace Sgt
          SolarIrradiance unaveragedIrradiance(const Time& tm) const;
 
       /// @}
-      
+
       private:
          LatLong latLong_;
          std::shared_ptr<const TimeSeries<Time, double>> temperatureSeries_;

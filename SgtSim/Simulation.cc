@@ -16,8 +16,8 @@ namespace Sgt
 
    void Simulation::addOrReplaceGenericSimComponent(std::shared_ptr<SimComponentAdaptor> simComp, bool allowReplace)
    {
-      Log().message() << "Adding SimComponent " << simComp->id() << " of type " 
-         << simComp->componentType() << " to the simulation." << std::endl;
+      Log().message() << "Adding SimComponent " << simComp->id() << " of type "
+                      << simComp->componentType() << " to the simulation." << std::endl;
       LogIndent _;
 
       SimCompMap::iterator it1 = simCompMap_.find(simComp->id());
@@ -47,21 +47,21 @@ namespace Sgt
          Log().debug() << "Components before initialize:" << std::endl;
          LogIndent _;
          for (auto comp : simCompVec_)
+   {
+      Log().debug() << comp->id() << " " << comp->rank() << std::endl;
+         LogIndent _;
+         for (auto dep : comp->dependencies())
          {
-            Log().debug() << comp->id() << " " << comp->rank() << std::endl;
-            LogIndent _;
-            for (auto dep : comp->dependencies())
-            {
-               Log().debug() << dep.lock()->id() << dep.lock()->rank() << std::endl;
-            }
+            Log().debug() << dep.lock()->id() << dep.lock()->rank() << std::endl;
          }
+      }
       )
 
       for (int i = 0; i < simCompVec_.size(); ++i)
       {
          simCompVec_[i]->setRank(i);
       }
-      
+
       WoGraph g(simCompVec_.size());
       for (int i = 0; i < simCompVec_.size(); ++i)
       {
@@ -74,14 +74,14 @@ namespace Sgt
       g.weakOrder();
 
       // g.nodes() now specifies a permutation to be applied to simCompVec_.
-      SimCompVec perm; 
+      SimCompVec perm;
       perm.reserve(simCompVec_.size());
       for (auto& nd : g.nodes())
       {
          perm.push_back(simCompVec_[nd->index()]);
       }
       simCompVec_ = perm;
-     
+
       // Reset the evaluation rank.
       for (int i = 0; i < simCompVec_.size(); ++i)
       {
@@ -107,14 +107,14 @@ namespace Sgt
       {
          comp->initialize();
          scheduledUpdates_.insert(std::make_pair(comp, startTime_));
-         comp->needsUpdate().addAction([this, comp](){contingentUpdates_.insert(comp);},
-               std::string("Simulation insert contingent update of ") + comp->componentType() + " " + comp->id());
+         comp->needsUpdate().addAction([this, comp]() {contingentUpdates_.insert(comp);},
+         std::string("Simulation insert contingent update of ") + comp->componentType() + " " + comp->id());
       }
       currentTime_ = posix_time::neg_infin;
       // Contingent updates may have been inserted during initialization process e.g. when setting up setpoints etc.
       contingentUpdates_.clear();
       doTimestep(); // Do the first timestep, to advance the start time for -infinity to startTime_.
-      
+
       isValid_ = true;
    }
 
@@ -136,9 +136,9 @@ namespace Sgt
          nextSchedTime = schedUpdateIt->second;
 
          SGT_DEBUG(Log().debug() << "Next scheduled time = " << nextSchedTime << " for simComponent "
-                           << schedComp->id() << std::endl);
+                   << schedComp->id() << std::endl);
          SGT_DEBUG(Log().debug() << "(Start, current, end time = " << startTime_ << " " << currentTime_
-                           << " " << endTime_ << ")." << std::endl);
+                   << " " << endTime_ << ")." << std::endl);
       }
 
       if (nextSchedTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ < endTime_)
@@ -146,7 +146,7 @@ namespace Sgt
          // There are contingent updates pending.
          auto contComp = *contingentUpdates_.begin();
          SGT_DEBUG(Log().debug() << "Contingent update simComponent " << contComp->id() << " from "
-                           << schedComp->lastUpdated() << " to " << currentTime_ << std::endl);
+                   << schedComp->lastUpdated() << " to " << currentTime_ << std::endl);
          SGT_DEBUG(LogIndent _);
          contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
          // Before updating the simComponent, we need to take it out of the scheduled updates set, because its
@@ -161,9 +161,10 @@ namespace Sgt
          }
          SGT_DEBUG(Log().debug() << "About to perform update..." << std::endl);
          SGT_DEBUG({LogIndent _;)
-         // Now perform the update...
-         contComp->update(currentTime_);
-         SGT_DEBUG(})
+                   // Now perform the update...
+                   contComp->update(currentTime_);
+                   SGT_DEBUG(
+                   })
          SGT_DEBUG(Log().debug() << "... Done" << std::endl);
 
          // ... and try to reinsert component in scheduled updates.
@@ -175,12 +176,12 @@ namespace Sgt
          if (nextSchedTime > currentTime_)
          {
             SGT_DEBUG(Log().debug() << "Timestep " << currentTime_ << " -> " << nextSchedTime
-                  << " will start" << std::endl);
+                      << " will start" << std::endl);
             timestepWillStart_.trigger();
          }
          currentTime_ = nextSchedTime;
          SGT_DEBUG(Log().debug() << "Scheduled update simComponent " << schedComp->id() << " from "
-                           << schedComp->lastUpdated() << " to " << currentTime_ << std::endl);
+                   << schedComp->lastUpdated() << " to " << currentTime_ << std::endl);
 
          // Remove the scheduled and possible contingent update. Note that if there is a contingent update, it was
          // inserted by an element that has already updated, and so it is safe to do the scheduled update in place of
@@ -191,8 +192,9 @@ namespace Sgt
          // Now perform the update...
          SGT_DEBUG(Log().debug() << "About to perform update..." << std::endl);
          SGT_DEBUG({LogIndent _;)
-         schedComp->update(currentTime_);
-         SGT_DEBUG(})
+                   schedComp->update(currentTime_);
+                   SGT_DEBUG(
+                   })
          SGT_DEBUG(Log().debug() << "... Done" << std::endl);
 
          // ... and try to reinsert it.

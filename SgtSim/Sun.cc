@@ -46,9 +46,9 @@ namespace Sgt
          // Calculate current Julian Day
          long int liAux1 = (utcTime.date().month() - 14) / 12;
          long int liAux2 = (1461 * (utcTime.date().year() + 4800 + liAux1)) / 4
-            + (367 * (utcTime.date().month() - 2 - 12 * liAux1)) / 12
-            - (3 * ((utcTime.date().year() + 4900 + liAux1) / 100)) / 4
-            + utcTime.date().day() - 32075;
+                           + (367 * (utcTime.date().month() - 2 - 12 * liAux1)) / 12
+                           - (3 * ((utcTime.date().year() + 4900 + liAux1) / 100)) / 4
+                           + utcTime.date().day() - 32075;
          double dJulianDate = (double)(liAux2) - 0.5 + dHours / 24.0;
 
          // Calculate difference between current Julian Day and JD 2451545.0
@@ -62,9 +62,9 @@ namespace Sgt
          double dMeanLongitude = 4.8950630 + 0.017202791698 * dElapsedJulianDays; // Radians
          double dMeanAnomaly = 6.2400600 + 0.0172019699 * dElapsedJulianDays;
          dEclipticLongitude = dMeanLongitude + 0.03341607 * sin(dMeanAnomaly)
-            + 0.00034894 * sin(2 * dMeanAnomaly) - 0.0001134 - 0.0000203 * sin(dOmega);
+                              + 0.00034894 * sin(2 * dMeanAnomaly) - 0.0001134 - 0.0000203 * sin(dOmega);
          dEclipticObliquity = 0.4090928 - 6.2140e-9 * dElapsedJulianDays
-            + 0.0000396 * cos(dOmega);
+                              + 0.0000396 * cos(dOmega);
       }
 
       // Calculate celestial coordinates (right ascension and declination) in radians but without limiting the angle
@@ -97,7 +97,7 @@ namespace Sgt
          dSin_Latitude = sin(dLatitudeInRadians);
          dCos_HourAngle = cos(dHourAngle);
          result.zenith = (acos(dCos_Latitude * dCos_HourAngle * cos(dDeclination)
-                  + sin(dDeclination) * dSin_Latitude));
+                               + sin(dDeclination) * dSin_Latitude));
          dY = - sin(dHourAngle);
          dX = tan(dDeclination) * dCos_Latitude - dSin_Latitude * dCos_HourAngle;
          result.azimuth = atan2(dY, dX);

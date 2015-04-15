@@ -1,8 +1,9 @@
 #include "SimpleBuilding.h"
 
-namespace {
+namespace
+{
    double propTbNorm(double dt, double Tb0, double Ts, double kb,
-         double kh, double Cb)
+                     double kh, double Cb)
    {
       // Solve dTb = a(Ts - T), with a defined below.
       double a = (kb + kh) / Cb;
@@ -11,7 +12,7 @@ namespace {
    }
 
    double propTbMaxed(double dt, double Tb0, double dQg0, double dQg1,
-         double Te0, double Te1, double kb, double dQh, double Cb)
+                      double Te0, double Te1, double kb, double dQh, double Cb)
    {
       // Solve dTb = a * T + b * t + c, with a, b, c defined below.
       double Tb1;
@@ -53,8 +54,8 @@ namespace Sgt
       {
          // Power is constrained by maximum.
          Tb_ = propTbMaxed(dt, Tb_, dQg_->value(lastUpdated()), dQg_->value(t),
-               weather_->temperatureSeries()->value(lastUpdated()), 
-               weather_->temperatureSeries()->value(t), kb_, dQh_, Cb_);
+                           weather_->temperatureSeries()->value(lastUpdated()),
+                           weather_->temperatureSeries()->value(t), kb_, dQh_, Cb_);
       }
       setOperatingParams(t);
    }
@@ -62,7 +63,7 @@ namespace Sgt
    void SimpleBuilding::setOperatingParams(Time t)
    {
       dQh_ = -dQg_->value(t) + kb_ * (Ts_ - weather_->temperatureSeries()->value(t))
-           + kh_ * (Ts_ - Tb_); // Heat ADDED.
+             + kh_ * (Ts_ - Tb_); // Heat ADDED.
       mode_ = dQh_ > 0 ? HvacMode::HEATING : HvacMode::COOLING;
       cop_ = mode_ == HvacMode::HEATING ? copHeat_ : copCool_;
       Ph_ = std::abs(dQh_) / cop_;

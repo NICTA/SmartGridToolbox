@@ -8,12 +8,12 @@
 namespace Sgt
 {
    /// @addtogroup Core
-   /// @{
+/// @{
 
    class TimeSeriesBase
    {
       public:
-         virtual ~TimeSeriesBase() = default; 
+         virtual ~TimeSeriesBase() = default;
    };
 
    template<typename T, typename V>
@@ -84,7 +84,8 @@ namespace Sgt
             }
             else
             {
-               auto pos1 = pos2; --pos1;
+               auto pos1 = pos2;
+               --pos1;
                return pos1->second + (pos2->second - pos1->second) * (td - pos1->first) / (pos2->first - pos1->first);
             }
          }
@@ -137,7 +138,7 @@ namespace Sgt
          std::function<V (T)> func_;
    };
 
-   /// @}
+/// @}
 }
 
 #endif // TIME_SERIES_DOT_H

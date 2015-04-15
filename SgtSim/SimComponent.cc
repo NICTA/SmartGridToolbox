@@ -16,8 +16,8 @@ namespace Sgt
 
    void SimComponentAdaptor::update(Time t)
    {
-      SGT_DEBUG(Log().debug() << "SimComponent " << id() << " update from " << lastUpdated_ << " to " << t 
-            << std::endl);
+      SGT_DEBUG(Log().debug() << "SimComponent " << id() << " update from " << lastUpdated_ << " to " << t
+                << std::endl);
       if (lastUpdated_ < t)
       {
          willStartNewTimestep_.trigger();

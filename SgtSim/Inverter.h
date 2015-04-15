@@ -16,15 +16,15 @@ namespace Sgt
 
       /// @name Static member functions:
       /// @{
-         
+
          static const std::string& sComponentType()
          {
             static std::string result("inverter");
             return result;
          }
-      
+
       /// @}
-         
+
          InverterAbc(const std::string& id, const Phases& phases) : ZipAbc(id, phases)
          {
             // Empty.
@@ -32,7 +32,7 @@ namespace Sgt
 
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-        
+
          virtual const std::string& componentType() const override
          {
             return sComponentType();
@@ -60,15 +60,15 @@ namespace Sgt
          double PDc() const
          {
             return std::accumulate(sources_.begin(), sources_.end(), 0.0,
-                  [] (double tot, const std::shared_ptr<DcPowerSourceAbc>& source) 
-                  {return tot + source->PDc();});
+                                   [] (double tot, const std::shared_ptr<DcPowerSourceAbc>& source)
+            {return tot + source->PDc();});
          }
 
          /// @brief Real power output, per phase.
          virtual double PPerPhase() const;
 
       /// @}
-      
+
       private:
 
          std::vector<std::shared_ptr<DcPowerSourceAbc>> sources_;   ///< My DC power sources.
@@ -81,13 +81,13 @@ namespace Sgt
 
       /// @name Static member functions:
       /// @{
-         
+
          static const std::string& sComponentType()
          {
             static std::string result("inverter");
             return result;
          }
-      
+
       /// @}
 
          Inverter(const std::string& id, const Phases& phases) :
@@ -99,7 +99,7 @@ namespace Sgt
 
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-        
+
          virtual const std::string& componentType() const override
          {
             return sComponentType();
@@ -120,7 +120,7 @@ namespace Sgt
          {
             efficiency_ = efficiency;
          }
-   
+
          virtual double PPerPhase() const;
 
          double maxSMagPerPhase() const
@@ -164,7 +164,7 @@ namespace Sgt
          }
 
       /// @}
-      
+
       public:
          // Operating parameters:
          double efficiency_{1.0};

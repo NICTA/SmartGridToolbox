@@ -9,16 +9,16 @@ namespace Sgt
       DcPowerSourceAbc(id),
       weather_(nullptr),
       efficiency_(1.0),
-      planeNormal_({0.0, 0.0}),
-      planeArea_(0.0)
+      planeNormal_( {0.0, 0.0}),
+                 planeArea_(0.0)
    {}
 
    void SolarPv::setWeather(std::shared_ptr<Weather> weather)
    {
       weather_ = weather;
       dependsOn(weather);
-      weather->didUpdate().addAction([this](){dcPowerChanged().trigger();},
-            std::string("Trigger ") + sComponentType() + " " + id() + " DC power changed");
+      weather->didUpdate().addAction([this]() {dcPowerChanged().trigger();},
+      std::string("Trigger ") + sComponentType() + " " + id() + " DC power changed");
    }
 
    double SolarPv::PDc() const

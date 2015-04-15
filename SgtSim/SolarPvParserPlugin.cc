@@ -41,7 +41,7 @@ namespace Sgt
       else
       {
          Log().fatal() << "For component " << id << ", weather " << weatherStr
-                 << " was not found in the model." << std::endl;
+                       << " was not found in the model." << std::endl;
       }
 
       const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
@@ -53,7 +53,7 @@ namespace Sgt
       else
       {
          Log().fatal() << "For component " << id << ", inverter " << inverterStr
-                 << " was not found in the model." << std::endl;
+                       << " was not found in the model." << std::endl;
       }
    }
 }

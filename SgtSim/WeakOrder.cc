@@ -54,10 +54,10 @@ namespace Sgt
    {
       SGT_DEBUG(Log().debug() << std::endl);
       SGT_DEBUG(
-            Log().debug() << "Weak order graph: initial:" << std::endl;
-            debugPrint();
-            Log().debug() << std::endl;
-            );
+         Log().debug() << "Weak order graph: initial:" << std::endl;
+         debugPrint();
+         Log().debug() << std::endl;
+      );
 
       std::vector<WoNode*> stack;
       // First do a DFS to induce an order on the nodes.
@@ -89,15 +89,15 @@ namespace Sgt
 
       // Sort the nodes, based on <. Note that it isn't a strict weak ordering, so can't use stl sort.
       // TODO: This is probably a very dumb kind of sort!
-      // Also note that this sort will, as far as possible, preserve features of the original ordering, 
+      // Also note that this sort will, as far as possible, preserve features of the original ordering,
       // so if we want e.g. a secondary alphabetical ordering then we should first pass in an alphabetically ordered
       // vector.
 
       SGT_DEBUG(
-            Log().debug() << "Weak order graph: pre-sort:" << std::endl;
-            debugPrint();
-            Log().debug() << std::endl;
-            );
+         Log().debug() << "Weak order graph: pre-sort:" << std::endl;
+         debugPrint();
+         Log().debug() << std::endl;
+      );
 
       for (auto it1 = nodes_.begin(); it1 != nodes_.end(); ++it1)
       {
@@ -165,9 +165,9 @@ namespace Sgt
          {
             Log().debug() << setw(3) << left << nd2->index();
          }
-         Log().debug() << endl; 
+         Log().debug() << endl;
       }
-      Log().debug() << endl; 
+      Log().debug() << endl;
       for (const std::unique_ptr<WoNode>& nd1 : nodes())
       {
          Log().debug() << setw(5) << left << nd1->index();
@@ -177,7 +177,7 @@ namespace Sgt
          }
          Log().debug() << endl;
       }
-      Log().debug() << endl; 
+      Log().debug() << endl;
       Log().debug() << "Weak order graph: (i, j) : i < j" << std::endl;
       {
          Log().debug() << "     ";
@@ -187,7 +187,7 @@ namespace Sgt
          }
          Log().debug() << endl;
       }
-      Log().debug() << endl; 
+      Log().debug() << endl;
       for (const std::unique_ptr<WoNode>& nd1 : nodes())
       {
          Log().debug() << setw(5) << left << nd1->index();

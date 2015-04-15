@@ -124,7 +124,7 @@ namespace Sgt
             if (result == nullptr && crashOnFail)
             {
                Log().fatal() << "Component " << id
-                  << " was requested and exists in the simulation, but is of the wrong type" << std::endl;
+                             << " was requested and exists in the simulation, but is of the wrong type" << std::endl;
             }
             return result;
          }
@@ -133,7 +133,7 @@ namespace Sgt
          template<typename T> std::shared_ptr<T> simComponent(const std::string& id, bool crashOnFail = true)
          {
             return std::const_pointer_cast<T>((static_cast<const Simulation*>(this))->simComponent<T>(id,
-                     crashOnFail));
+                                              crashOnFail));
          }
 
          /// @brief Copied vector of all const SimComponents.
@@ -167,7 +167,7 @@ namespace Sgt
             if (result == nullptr && crashOnFail)
             {
                Log().fatal() << "Time series " << id
-                  << " was requested and exists in the simulation, but is of the wrong type" << std::endl;
+                             << " was requested and exists in the simulation, but is of the wrong type" << std::endl;
             }
             return result;
          }
@@ -192,12 +192,12 @@ namespace Sgt
          {
             public:
                bool operator()(const std::pair<SimCompPtr, Time>& lhs,
-                     const std::pair<SimCompPtr, Time>& rhs)
+                               const std::pair<SimCompPtr, Time>& rhs)
                {
                   return ((lhs.second < rhs.second) ||
-                        (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
-                        (lhs.second == rhs.second && lhs.first->rank() == rhs.first->rank() &&
-                         (lhs.first->id() < rhs.first->id())));
+                          (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
+                          (lhs.second == rhs.second && lhs.first->rank() == rhs.first->rank() &&
+                           (lhs.first->id() < rhs.first->id())));
                }
          };
 
@@ -208,7 +208,7 @@ namespace Sgt
                bool operator()(const SimCompPtr lhs, const SimCompPtr rhs)
                {
                   return ((lhs->rank() < rhs->rank()) ||
-                        ((lhs->rank() == rhs->rank()) && (lhs->id() < rhs->id())));
+                          ((lhs->rank() == rhs->rank()) && (lhs->id() < rhs->id())));
                }
          };
 
@@ -225,18 +225,18 @@ namespace Sgt
 
          std::shared_ptr<const TimeSeriesBase> genericTimeSeries(const std::string& id,
                bool crashOnFail = true) const;
-     
+
          void tryInsertScheduledUpdate(SimCompPtr schedComp);
 
       private:
 
          bool isValid_ = false;
-         
+
          Time startTime_{posix_time::not_a_date_time};
          Time endTime_{posix_time::not_a_date_time};
          LatLong latLong_;
          local_time::time_zone_ptr timezone_;
-         
+
          SimCompMap simCompMap_;
          SimCompVec simCompVec_; // Encoding order of evaluation/rank.
 

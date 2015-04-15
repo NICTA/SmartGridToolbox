@@ -9,10 +9,10 @@ namespace Sgt
    {
       /// @name Overridden member functions from SimComponent.
       /// @{
-      
+
       public:
          // virtual Time validUntil() const override;
-         
+
       protected:
          virtual void initializeState() override;
          virtual void updateState(Time t) override;
@@ -21,7 +21,7 @@ namespace Sgt
 
       /// @name My member functions.
       /// @{
-         
+
       public:
          SynchronousMachine(const std::string& name);
 

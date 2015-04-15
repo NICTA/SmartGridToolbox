@@ -143,7 +143,7 @@ namespace Sgt
          }
          return dts;
       }
-      
+
       template<typename T> std::unique_ptr<DataTimeSeries<Time, T>> initDataTimeSeries(InterpType interpType)
       {
          return initDataTimeSeries_<T>(interpType);
@@ -180,7 +180,7 @@ namespace Sgt
       assertFieldPresent(nd, "id"); // data
       assertFieldPresent(nd, "type"); // data
       assertFieldPresent(nd, "value_type"); // real_scalar/complex_scalar/real_vector/complex_vector
-      
+
       std::string id = parser.expand<std::string>(nd["id"]);
       auto tsType = getTsType(parser.expand<std::string>(nd["type"]));
       auto valType = getValType(parser.expand<std::string>(nd["value_type"]));
@@ -188,159 +188,159 @@ namespace Sgt
       switch (tsType)
       {
          case CONST_TS:
+         {
+            assertFieldPresent(nd, "const_value");
+            auto ndVal = nd["const_value"];
+            switch(valType)
             {
-               assertFieldPresent(nd, "const_value");
-               auto ndVal = nd["const_value"];
-               switch(valType)
+               case REAL_SCALAR:
                {
-                  case REAL_SCALAR:
-                     {
-                        double v = parser.expand<double>(ndVal);
-                        ts.reset(new ConstTimeSeries<Time, double>(v));
-                        break;
-                     }
-                  case COMPLEX_SCALAR:
-                     {
-                        Complex v = parser.expand<Complex>(ndVal);
-                        ts.reset(new ConstTimeSeries<Time, Complex>(v));
-                        break;
-                     }
-                  case REAL_VECTOR:
-                     {
-                        arma::Col<double> v = parser.expand<arma::Col<double>>(ndVal);
-                        ts.reset(new ConstTimeSeries<Time, arma::Col<double>>(v));
-                        break;
-                     }
-                  case COMPLEX_VECTOR:
-                     {
-                        arma::Col<Complex> v = parser.expand<arma::Col<Complex>>(ndVal);
-                        ts.reset(new ConstTimeSeries<Time, arma::Col<Complex>>(v));
-                        break;
-                     }
-                  default:
-                     {
-                        Log().fatal() << "Bad time series value type." << std::endl;
-                        break;
-                     }
+                  double v = parser.expand<double>(ndVal);
+                  ts.reset(new ConstTimeSeries<Time, double>(v));
+                  break;
                }
-               break;
-            } // CONST_TS
-         case DATA_TS:
-            {
-               assertFieldPresent(nd, "data_file");
-               assertFieldPresent(nd, "interp_type");
-               assertFieldPresent(nd, "time_unit");
-
-               std::string dataFName = parser.expand<std::string>(nd["data_file"]);
-               std::ifstream infile(dataFName);
-               if (!infile.is_open())
+               case COMPLEX_SCALAR:
                {
-                  Log().fatal() << "Could not open the timeseries input file " << dataFName << "." << std::endl;
+                  Complex v = parser.expand<Complex>(ndVal);
+                  ts.reset(new ConstTimeSeries<Time, Complex>(v));
+                  break;
                }
-
-               auto interpType = getInterpType(parser.expand<std::string>(nd["interp_type"]));
-
-               Time t0 = posix_time::seconds(0);
-               auto ndRelto = nd["relative_to_time"];
-               if (ndRelto)
+               case REAL_VECTOR:
                {
-                  std::string relto = parser.expand<std::string>(nd["relative_to_time"]);
-                  posix_time::ptime pt = posix_time::time_from_string(relto);
-                  t0 = timeFromLocalTime(pt, sim.timezone());
+                  arma::Col<double> v = parser.expand<arma::Col<double>>(ndVal);
+                  ts.reset(new ConstTimeSeries<Time, arma::Col<double>>(v));
+                  break;
                }
-
-               double toSecs = getToSecsFactor(parser.expand<std::string>(nd["time_unit"]));
-
-               std::string line;
-               switch(valType)
+               case COMPLEX_VECTOR:
                {
-                  case REAL_SCALAR:
-                     {
-                        std::unique_ptr<DataTimeSeries<Time, double>> dts = initDataTimeSeries<double>(interpType);
-                        while (std::getline(infile, line))
-                        {
-                           std::istringstream ss(line);
-                           Time t = readTime(ss, t0, toSecs);
-                           double val;
-                           ss >> val;
-                           assert(ss.eof());
-                           dts->addPoint(t, val); 
-                        }
-                        ts = std::move(dts);
-                        break;
-                     }
-                  case COMPLEX_SCALAR:
-                     {
-                        std::unique_ptr<DataTimeSeries<Time, Complex>> dts = initDataTimeSeries<Complex>(interpType);
-                        while (std::getline(infile, line))
-                        {
-                           std::istringstream ss(line);
-                           Time t = readTime(ss, t0, toSecs);
-                           std::string valStr;
-                           ss >> valStr;
-                           assert(ss.eof());
-                           dts->addPoint(t, from_string<Complex>(valStr)); 
-                        }
-                        ts = std::move(dts);
-                        break;
-                     }
-                  case REAL_VECTOR:
-                     {
-                        std::unique_ptr<DataTimeSeries<Time, arma::Col<double>>> dts = 
-                           initDataTimeSeries<arma::Col<double>>(interpType);
-                        while (std::getline(infile, line))
-                        {
-                           std::istringstream ss(line);
-                           Time t = readTime(ss, t0, toSecs);
-                           std::vector<double> valVec;
-                           while (!ss.eof())
-                           {
-                              double val;
-                              ss >> val;
-                              valVec.push_back(val);
-                           }
-                           arma::Col<double> val(valVec.size());
-                           std::copy(valVec.begin(), valVec.end(), val.begin());
-                           dts->addPoint(t, val); 
-                        }
-                        ts = std::move(dts);
-                        break;
-                     }
-                  case COMPLEX_VECTOR:
-                     {
-                        std::unique_ptr<DataTimeSeries<Time, arma::Col<Complex>>> dts = 
-                           initDataTimeSeries<arma::Col<Complex>>(interpType);
-                        while (std::getline(infile, line))
-                        {
-                           std::istringstream ss(line);
-                           Time t = readTime(ss, t0, toSecs);
-                           std::vector<Complex> valVec;
-                           while (!ss.eof())
-                           {
-                              std::string valStr;
-                              ss >> valStr;
-                              valVec.push_back(from_string<Complex>(valStr));
-                           }
-                           arma::Col<Complex> val(valVec.size());
-                           std::copy(valVec.begin(), valVec.end(), val.begin());
-                           dts->addPoint(t, val); 
-                        }
-                        ts = std::move(dts);
-                        break;
-                     }
-                  default:
-                     {
-                        Log().fatal() << "Bad time series value type." << std::endl;
-                        break;
-                     }
+                  arma::Col<Complex> v = parser.expand<arma::Col<Complex>>(ndVal);
+                  ts.reset(new ConstTimeSeries<Time, arma::Col<Complex>>(v));
+                  break;
                }
-               break;
-            } // DATA_TS
-         default:
-            {
-               Log().fatal() << "Bad time series type." << std::endl;
-               break;
+               default:
+               {
+                  Log().fatal() << "Bad time series value type." << std::endl;
+                  break;
+               }
             }
+            break;
+         } // CONST_TS
+         case DATA_TS:
+         {
+            assertFieldPresent(nd, "data_file");
+            assertFieldPresent(nd, "interp_type");
+            assertFieldPresent(nd, "time_unit");
+
+            std::string dataFName = parser.expand<std::string>(nd["data_file"]);
+            std::ifstream infile(dataFName);
+            if (!infile.is_open())
+            {
+               Log().fatal() << "Could not open the timeseries input file " << dataFName << "." << std::endl;
+            }
+
+            auto interpType = getInterpType(parser.expand<std::string>(nd["interp_type"]));
+
+            Time t0 = posix_time::seconds(0);
+            auto ndRelto = nd["relative_to_time"];
+            if (ndRelto)
+            {
+               std::string relto = parser.expand<std::string>(nd["relative_to_time"]);
+               posix_time::ptime pt = posix_time::time_from_string(relto);
+               t0 = timeFromLocalTime(pt, sim.timezone());
+            }
+
+            double toSecs = getToSecsFactor(parser.expand<std::string>(nd["time_unit"]));
+
+            std::string line;
+            switch(valType)
+            {
+               case REAL_SCALAR:
+               {
+                  std::unique_ptr<DataTimeSeries<Time, double>> dts = initDataTimeSeries<double>(interpType);
+                  while (std::getline(infile, line))
+                  {
+                     std::istringstream ss(line);
+                     Time t = readTime(ss, t0, toSecs);
+                     double val;
+                     ss >> val;
+                     assert(ss.eof());
+                     dts->addPoint(t, val);
+                  }
+                  ts = std::move(dts);
+                  break;
+               }
+               case COMPLEX_SCALAR:
+               {
+                  std::unique_ptr<DataTimeSeries<Time, Complex>> dts = initDataTimeSeries<Complex>(interpType);
+                  while (std::getline(infile, line))
+                  {
+                     std::istringstream ss(line);
+                     Time t = readTime(ss, t0, toSecs);
+                     std::string valStr;
+                     ss >> valStr;
+                     assert(ss.eof());
+                     dts->addPoint(t, from_string<Complex>(valStr));
+                  }
+                  ts = std::move(dts);
+                  break;
+               }
+               case REAL_VECTOR:
+               {
+                  std::unique_ptr<DataTimeSeries<Time, arma::Col<double>>> dts =
+                     initDataTimeSeries<arma::Col<double>>(interpType);
+                  while (std::getline(infile, line))
+                  {
+                     std::istringstream ss(line);
+                     Time t = readTime(ss, t0, toSecs);
+                     std::vector<double> valVec;
+                     while (!ss.eof())
+                     {
+                        double val;
+                        ss >> val;
+                        valVec.push_back(val);
+                     }
+                     arma::Col<double> val(valVec.size());
+                     std::copy(valVec.begin(), valVec.end(), val.begin());
+                     dts->addPoint(t, val);
+                  }
+                  ts = std::move(dts);
+                  break;
+               }
+               case COMPLEX_VECTOR:
+               {
+                  std::unique_ptr<DataTimeSeries<Time, arma::Col<Complex>>> dts =
+                     initDataTimeSeries<arma::Col<Complex>>(interpType);
+                  while (std::getline(infile, line))
+                  {
+                     std::istringstream ss(line);
+                     Time t = readTime(ss, t0, toSecs);
+                     std::vector<Complex> valVec;
+                     while (!ss.eof())
+                     {
+                        std::string valStr;
+                        ss >> valStr;
+                        valVec.push_back(from_string<Complex>(valStr));
+                     }
+                     arma::Col<Complex> val(valVec.size());
+                     std::copy(valVec.begin(), valVec.end(), val.begin());
+                     dts->addPoint(t, val);
+                  }
+                  ts = std::move(dts);
+                  break;
+               }
+               default:
+               {
+                  Log().fatal() << "Bad time series value type." << std::endl;
+                  break;
+               }
+            }
+            break;
+         } // DATA_TS
+         default:
+         {
+            Log().fatal() << "Bad time series type." << std::endl;
+            break;
+         }
       }
       sim.acquireTimeSeries(id, std::move(ts));
    }

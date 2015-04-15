@@ -13,9 +13,9 @@ namespace Sgt
       SolarIrradiance newUnav = unaveragedIrradiance(t);
       irradiance_.direct = prevFrac * prevIrradiance_.direct + curFrac * newUnav.direct;
       irradiance_.horizontalDiffuse = prevFrac * prevIrradiance_.horizontalDiffuse
-                                    + curFrac * newUnav.horizontalDiffuse;
+                                      + curFrac * newUnav.horizontalDiffuse;
    }
-   
+
    double Weather::solarPower(SphericalAngles planeNormal, double planeArea) const
    {
       // Neglect ground reflected radiation. This is reasonable, because typically a solar collector etc would
@@ -56,7 +56,7 @@ namespace Sgt
       }
       else
       {
-         result.direct = Array<double, 3>{{0.0, 0.0, 0.0}};
+         result.direct = Array<double, 3> {{0.0, 0.0, 0.0}};
          result.horizontalDiffuse = 0.0;
       }
 

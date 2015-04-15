@@ -21,7 +21,7 @@ namespace Sgt
       string busId = parser.expand<std::string>(nd["bus_id"]);
       string tsId = parser.expand<std::string>(nd["time_series_id"]);
       Time dt = parser.expand<Time>(nd["dt"]);
-      
+
       auto series = sim.timeSeries<const TimeSeries<Time, arma::Col<Complex>>>(tsId);
       auto network = sim.simComponent<SimNetwork>(networkId);
       auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, phases, series, dt);
