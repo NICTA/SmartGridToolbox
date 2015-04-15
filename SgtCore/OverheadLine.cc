@@ -28,7 +28,7 @@ namespace Sgt
       if (Dij_.n_rows != nWire || Dij_.n_cols != nWire)
       {
          Log().fatal() << "OverheadLine: The distance matrix must be a square matrix of size nWire x nWire.\n"
-                          "              The wire resistivity vector must be a vector of size nWire." << std::endl; 
+                       "              The wire resistivity vector must be a vector of size nWire." << std::endl;
       }
 
       // Calculate the primative impedance matrix, using Carson's equations.

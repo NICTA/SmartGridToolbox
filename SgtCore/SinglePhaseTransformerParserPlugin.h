@@ -7,7 +7,7 @@ namespace Sgt
 {
    class SinglePhaseTransformer;
    class Network;
-   
+
    /// @brief ParserPlugin that parses SinglePhaseTransformer objects.
    class SinglePhaseTransformerParserPlugin : public NetworkParserPlugin
    {
@@ -18,7 +18,7 @@ namespace Sgt
          }
 
          virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
-         
+
          std::unique_ptr<SinglePhaseTransformer> parseSinglePhaseTransformer(const YAML::Node& nd,
                const ParserBase& parser) const;
    };

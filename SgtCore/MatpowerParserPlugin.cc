@@ -51,26 +51,26 @@ namespace
          eol_ = -(qi::lit('%') >> *(qi::char_-qi::eol)) >> qi::eol;
          ignore_ = -(qi::lit('%') >> *(qi::char_-qi::eol)) >> qi::eol;
          other_ = (*(qi::char_-statementTerm_) >> statementTerm_);
-      
+
          rowSep_ = (qi::lit(';') >> -eol_) | eol_;
          row_ = +(qi::double_ >> -qi::lit(','));
          matrix_ = "[" >> -eol_ >> (row_ % rowSep_) >> -(eol_ ^ qi::lit(';')) >> "]";
 
          topFunction_ = qi::lit("function") >> qi::lit("mpc") >> qi::lit("=") >> *(qi::char_-statementTerm_)
-            >> statementTerm_;
+                        >> statementTerm_;
          MVABase_ = (qi::lit("mpc.baseMVA") >> qi::lit('=') >> qi::double_ >> statementTerm_)
-            [phoenix::ref(data.MVABase) = qi::_1];
+                    [phoenix::ref(data.MVABase) = qi::_1];
          busMatrix_ = (qi::lit("mpc.bus") >> qi::lit('=') >> matrix_ >> statementTerm_)
-            [phoenix::ref(data.bus) = qi::_1];
+                      [phoenix::ref(data.bus) = qi::_1];
          genMatrix_ = (qi::lit("mpc.gen") >> qi::lit('=') >> matrix_ >> statementTerm_)
-            [phoenix::ref(data.gen) = qi::_1];
+                      [phoenix::ref(data.gen) = qi::_1];
          branchMatrix_ = (qi::lit("mpc.branch") >> qi::lit('=') >> matrix_ >> statementTerm_)
-            [phoenix::ref(data.branch) = qi::_1];
+                         [phoenix::ref(data.branch) = qi::_1];
          genCostMatrix_ = (qi::lit("mpc.gencost") >> qi::lit('=') >> matrix_ >> statementTerm_)
-            [phoenix::ref(data.genCost) = qi::_1];
+                          [phoenix::ref(data.genCost) = qi::_1];
 
          start_ = *ignore_ >> topFunction_ >> *(ignore_ | MVABase_ | busMatrix_ | genMatrix_ | branchMatrix_ |
-               genCostMatrix_ | other_);
+                                                genCostMatrix_ | other_);
 
          // To debug: e.g.
          // BOOST_SPIRIT_DEBUG_NODE(busMatrix_); debug(busMatrix_);
@@ -96,26 +96,26 @@ namespace
 
       qi::rule<Iterator, SpaceType> start_;
    };
-   
+
    // Voltage is in p.u., with the base being specified in KV by the KVBase field.
    template<typename T> T pu2kV(T V, double kVBase)
    {
       return V * kVBase;
    }
-   
+
    // Shunt admittance is in MW @ 1 p.u. voltage.
    template<typename T> T YBusShunt2Siemens(T Y, double kVBase)
    {
-      return Y / (kVBase * kVBase); 
+      return Y / (kVBase * kVBase);
    }
-   
+
    // Branch admittance is in p.u., that is, KVBase^2/MVABase.
    // KVBase is referenced to the "from" bus, the second bus, bus1.
    template<typename T> T YBranch2Siemens(T Y, double kVBase, double MVABase)
    {
-      return Y * MVABase / (kVBase * kVBase); 
+      return Y * MVABase / (kVBase * kVBase);
    }
-  
+
    double deg2Rad(double deg)
    {
       return pi * deg / 180.0;
@@ -207,7 +207,7 @@ namespace Sgt
          // return "zip_" + num2PaddedString(iZip) + "_" + num2PaddedString(iBus);
          return "zip_" + std::to_string(iZip) + "_" + std::to_string(iBus);
       }
-      
+
       std::string getGenId(int iGen, int iBus)
       {
          // return "gen_" + num2PaddedString(iGen) + "_" + num2PaddedString(iBus);
@@ -219,7 +219,7 @@ namespace Sgt
          // return "branch_" + num2PaddedString(iBranch) + "_" + num2PaddedString(iBus0)
          //   + "_" + num2PaddedString(iBus1);
          return "branch_" + std::to_string(iBranch) + "_" + std::to_string(iBus0)
-            + "_" + std::to_string(iBus1);
+                + "_" + std::to_string(iBus1);
       }
    }
 
@@ -231,14 +231,14 @@ namespace Sgt
       std::string inputName = parser.expand<std::string>(nd["input_file"]);
 
       double default_kVBase = parser.expand<double>(nd["default_kV_base"]);
-     
-      double VScale = 1.0; 
+
+      double VScale = 1.0;
       auto ndVScale = nd["scale_V_by"];
       if (ndVScale)
       {
          VScale = ndVScale.as<double>();
       }
-      double PScale = 1.0; 
+      double PScale = 1.0;
       auto ndPScale = nd["scale_P_by"];
       if (ndPScale)
       {
@@ -249,7 +249,7 @@ namespace Sgt
 
       // Parse in the raw matpower data.
       MpData data;
-      
+
       {
          Gram gram(data);
 
@@ -276,7 +276,7 @@ namespace Sgt
       }
 
       Log().message() << "Parsed " << data.bus.size() << " busses, " << data.gen.size() << " generators and "
-         << data.branch.size() << " branches." << std::endl;
+                      << data.branch.size() << " branches." << std::endl;
 
       // Extract the bus data.
       std::vector<MpBusInfo> busVec;
@@ -332,7 +332,7 @@ namespace Sgt
             // There are other fields, but at present we are ignoring them.
          }
       }
-      
+
       // Extract the branch data.
       std::vector<MpBranchInfo> branchVec;
       {
@@ -357,7 +357,7 @@ namespace Sgt
             branchInfo.angMaxDeg = row[12];
          }
       }
-      
+
       // Extract the genCost data.
       if (data.genCost.size() > 0)
       {
@@ -394,7 +394,7 @@ namespace Sgt
             }
          }
       }
-      
+
       // Network:
       netw.setPBase(data.MVABase);
 
@@ -404,7 +404,7 @@ namespace Sgt
       {
          std::string busId = getBusId(busInfo.id);
          std::unique_ptr<Bus> bus(
-               new Bus(busId, Phase::BAL, {VScale * Complex(busInfo.kVBase, 0.0)}, PScale * busInfo.kVBase));
+            new Bus(busId, Phase::BAL, {VScale * Complex(busInfo.kVBase, 0.0)}, PScale * busInfo.kVBase));
          BusType type = BusType::BAD;
          switch (busInfo.type)
          {
@@ -421,7 +421,7 @@ namespace Sgt
                break;
          }
          bus->setType(type);
-         
+
          Complex SConst = -Complex(busInfo.Pd, busInfo.Qd); // Already in MW.
          Complex YConst = YBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
          std::string zipId = getZipId(nZip++, busInfo.id);
@@ -436,21 +436,21 @@ namespace Sgt
          double VMag = pu2kV(busInfo.VMag, busInfo.kVBase);
          double VAng = deg2Rad(busInfo.VAngDeg);
          bus->setV({VScale * std::polar(VMag, VAng)});
-         
+
          netw.addBus(std::move(bus));
          netw.addZip(std::move(zip), busId);
       } // Busses
 
       // If there is no slack bus, Matpower assigns the first PV bus as slack. We need to do the same.
-      auto it = std::find_if(netw.busses().cbegin(), netw.busses().cend(), 
-            [](const BusPtr& bus)->bool{return bus->type() == BusType::SL;});
+      auto it = std::find_if(netw.busses().cbegin(), netw.busses().cend(),
+                             [](const BusPtr& bus)->bool{return bus->type() == BusType::SL;});
       if (it == netw.busses().cend())
       {
-         Log().warning() 
-            << "There is no slack bus defined on the network. Setting the type of the first PV bus to SL." 
-            << std::endl;
-         auto itb = std::find_if(netw.busses().cbegin(), netw.busses().cend(), 
-               [](const BusPtr& bus)->bool{return bus->type() == BusType::PV;});
+         Log().warning()
+               << "There is no slack bus defined on the network. Setting the type of the first PV bus to SL."
+               << std::endl;
+         auto itb = std::find_if(netw.busses().cbegin(), netw.busses().cend(),
+                                 [](const BusPtr& bus)->bool{return bus->type() == BusType::PV;});
          assert(itb != netw.busses().cend());
          (**itb).setType(BusType::SL);
       }
@@ -462,13 +462,13 @@ namespace Sgt
       // Gens:
       std::vector<GenericGen*> genCompVec;
       genCompVec.reserve(genVec.size());
-      for (int i = 0; i < genVec.size(); ++i) 
+      for (int i = 0; i < genVec.size(); ++i)
       {
          MpGenInfo& genInfo = genVec[i];
          std::string genId = getGenId(i, genInfo.busId);
          std::unique_ptr<GenericGen> gen(new GenericGen(genId, Phase::BAL));
          genCompVec.push_back(gen.get());
-         
+
          std::string busId = getBusId(genInfo.busId);
 
          gen->setIsInService(genInfo.status);
@@ -509,7 +509,7 @@ namespace Sgt
          double tap = (std::abs(branchInfo.tap) < 1e-6 ? 1.0 : branchInfo.tap) * bus0->VBase() / bus1->VBase();
          branch->setTapRatio(std::polar(tap, deg2Rad(branchInfo.shiftDeg)));
          branch->setYSeries(GScale * YBranch2Siemens(1.0 / Complex(branchInfo.R, branchInfo.X), bus1->VBase(),
-                  data.MVABase));
+                            data.MVABase));
          branch->setYShunt(GScale * YBranch2Siemens(Complex(0.0, branchInfo.b), bus1->VBase(), data.MVABase));
          branch->setRateA(PScale * branchInfo.rateA);
          branch->setRateB(PScale * branchInfo.rateB);

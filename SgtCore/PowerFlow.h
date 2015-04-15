@@ -93,7 +93,7 @@ namespace Sgt
    /// @brief Apply Carson's equations.
    /// @param nWire The number of wires.
    /// @param Dij Distance between wires on off diagonal, GMR of wires on diagonal. Units: m.
-   /// @param resPerL resistance per unit length, in ohms per metre. 
+   /// @param resPerL resistance per unit length, in ohms per metre.
    /// @param L The line length, in m.
    /// @param freq The system frequency.
    /// @param rhoEarth The conductivity of the earth, ohm metres.
@@ -106,7 +106,7 @@ namespace Sgt
    /// @param nPhase The number of phases, not including nWire grounded neutral wires that will be eliminated
    /// @return The impedance nPhase x nPhase matrix ZPhase, having eliminated nWire grounded neutrals.
    arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, int nPhase);
-   
+
    /// @brief Calculate the nodal admittance matrix YNode from the line impedance ZLine.
    /// @param ZLine The line impedance matrix.
    /// @return The nodal admittance matrix YNode.

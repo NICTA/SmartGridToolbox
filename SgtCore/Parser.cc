@@ -18,35 +18,35 @@ namespace
    template <typename Iterator> struct Calculator : qi::grammar<Iterator, int(), ascii::space_type>
    {
       Calculator() : Calculator::base_type(expression)
-      {
-         qi::_val_type _val;
-         qi::_1_type _1;
-         qi::uint_type uint_;
+   {
+      qi::_val_type _val;
+      qi::_1_type _1;
+      qi::uint_type uint_;
 
-         expression =
-            term                            [_val = _1]
-            >> *(   ('+' >> term            [_val += _1])
-                |   ('-' >> term            [_val -= _1])
-                )
-            ;
+      expression =
+         term                            [_val = _1]
+         >> *(   ('+' >> term            [_val += _1])
+                 |   ('-' >> term            [_val -= _1])
+             )
+         ;
 
-         term =
-            factor                          [_val = _1]
-            >> *(   ('*' >> factor          [_val *= _1])
-                |   ('/' >> factor          [_val /= _1])
-                |   ('%' >> factor          [_val = _val % _1])
-                )
-            ;
+      term =
+         factor                          [_val = _1]
+         >> *(   ('*' >> factor          [_val *= _1])
+                 |   ('/' >> factor          [_val /= _1])
+                 |   ('%' >> factor          [_val = _val % _1])
+             )
+         ;
 
-         factor =
-            uint_                           [_val = _1]
-            |   '(' >> expression           [_val = _1] >> ')'
-            |   ('-' >> factor              [_val = -_1])
-            |   ('+' >> factor              [_val = _1])
-            ;
-      }
+      factor =
+         uint_                           [_val = _1]
+         |   '(' >> expression           [_val = _1] >> ')'
+         |   ('-' >> factor              [_val = -_1])
+         |   ('+' >> factor              [_val = _1])
+         ;
+   }
 
-      qi::rule<Iterator, int(), ascii::space_type> expression, term, factor;
+   qi::rule<Iterator, int(), ascii::space_type> expression, term, factor;
    };
 
    Calculator<std::string::const_iterator> calc;
@@ -62,7 +62,7 @@ namespace Sgt
          Log().fatal() << "Parsing: " << field << " field not present." << std::endl;
       }
    };
-   
+
    YAML::Node getTopNode(const std::string& fname)
    {
       Log().message() << "Opening file " << fname << " for parsing." << std::endl;
@@ -94,31 +94,31 @@ namespace Sgt
 
       return *loops_.back();
    }
-         
 
-   namespace 
+
+   namespace
    {
       const std::regex expr(                 // Submatch 0: whole expr, with <>.
-               "<"
-               "("                           // Submatch 1: whole expr body, without <>.
-                  "("                        // Submatch 2: whole math expr body.
-                     "[0-9+.eEfFlL\\-*/%() \t]+"
-                  ")|"
-                  "("                        // Submatch 3: whole var/loop expr body.
-                     "("                     // Submatch 4: non-index part of var/loop expr body.
-                        "[a-zA-Z_][\\w]*"
-                     ")+"
-                     "("                     // Submatch 5: index part of var/loop expr body, with ().
-                        "\\("
-                        "("                  // Submatch 6: index part of var/loop expr, without ().
-                           "[a-zA-Z0-9_]*"
-                        ")"
-                        "\\)"
-                     ")?"
-                  ")"
-               ")"
-               ">"
-            );
+         "<"
+         "("                           // Submatch 1: whole expr body, without <>.
+         "("                        // Submatch 2: whole math expr body.
+         "[0-9+.eEfFlL\\-*/%() \t]+"
+         ")|"
+         "("                        // Submatch 3: whole var/loop expr body.
+         "("                     // Submatch 4: non-index part of var/loop expr body.
+         "[a-zA-Z_][\\w]*"
+         ")+"
+         "("                     // Submatch 5: index part of var/loop expr body, with ().
+         "\\("
+         "("                  // Submatch 6: index part of var/loop expr, without ().
+         "[a-zA-Z0-9_]*"
+         ")"
+         "\\)"
+         ")?"
+         ")"
+         ")"
+         ">"
+      );
    }
 
    std::string ParserBase::expandString(const std::string& str) const
@@ -132,7 +132,7 @@ namespace Sgt
       if (begin == end)
       {
          // No expressions, just return the string.
-         result = str;   
+         result = str;
       }
       else
       {
@@ -157,7 +157,7 @@ namespace Sgt
       if (m[2] != "")
       {
          // Math expression, e.g. ${2 + 3/2}.
-         result = expandMathExpressionBody(m[1]); 
+         result = expandMathExpressionBody(m[1]);
       }
       else
       {
@@ -178,7 +178,7 @@ namespace Sgt
          Log().fatal() << "Ill-formed expression " << str << std::endl;
       }
 
-      std::string result = std::to_string(calcResult); 
+      std::string result = std::to_string(calcResult);
 
       return result;
    }
@@ -188,7 +188,7 @@ namespace Sgt
       std::string result;
 
       auto it = std::find_if(loops_.begin(), loops_.end(),
-            [&s1](const std::unique_ptr<ParserLoop>& l){return l->name_ == s1;});
+      [&s1](const std::unique_ptr<ParserLoop>& l) {return l->name_ == s1;});
       if (it != loops_.end())
       {
          // We matched a loop variable. Make sure there is no index!

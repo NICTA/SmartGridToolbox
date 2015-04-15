@@ -16,14 +16,14 @@ namespace Sgt
 
       /// @name Lifecycle:
       /// @{
-         
+
          virtual ~ComponentInterface() = default;
 
       /// @}
-        
+
       /// @name Pure virtual fuctions (to be overridden):
       /// @{
-         
+
          virtual const std::string& id() const = 0;
 
          virtual const std::string& componentType() const = 0;
@@ -47,18 +47,18 @@ namespace Sgt
 
       /// @name Static member functions:
       /// @{
-         
+
          static const std::string& sComponentType()
          {
             static std::string result("component");
             return result;
          }
-      
+
       /// @}
 
       /// @name Lifecycle:
       /// @{
-         
+
          Component(const std::string& id) :
             id_(id)
          {
@@ -71,7 +71,7 @@ namespace Sgt
 
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-        
+
          virtual const std::string& id() const
          {
             return id_;

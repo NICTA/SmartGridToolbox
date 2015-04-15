@@ -32,9 +32,9 @@ namespace Sgt
          double kVBase = bus->VBase();
 
          Node* node = new Node(busId, PLoad.real(), PLoad.imag(), yShunt.real(), yShunt.imag(),
-               VMin, VMax, kVBase, 1);
+                               VMin, VMax, kVBase, 1);
          net->add_node(node);
-         
+
          for (const auto& gen : bus->gens())
          {
             double PMin = sgtNw.S2Pu(gen->PMin());
@@ -49,7 +49,7 @@ namespace Sgt
             double c1 = gen->c1();
             double c2 = gen->c2();
             g->set_costs(c0, c1, c2);
-            
+
             net->gens.push_back(g);
             node->_gen.push_back(g);
          }
@@ -75,7 +75,7 @@ namespace Sgt
          Complex yShunt = sgtNw.Y2Pu(cBranch->YShunt(), bus1->VBase());
          double lim = sgtNw.S2Pu(cBranch->rateA());
          Complex tap = cBranch->tapRatio()*bus1->VBase()/bus0->VBase(); // Off nominal tap ratio.
-         
+
          arc->g = YSeries.real();
          arc->b = YSeries.imag();
 
@@ -95,7 +95,7 @@ namespace Sgt
          arc->tbound.max = cBranch->angMax();
 
          arc->limit = lim;
-            
+
          arc->status = branch->isInService() ? 1 : 0;
 
          net->add_arc(arc);
@@ -121,7 +121,7 @@ namespace Sgt
          {
             Log().warning() << "Unserved load at bus " << sgtBus->id() << " is " << SLoadUnservedSol << std::endl;
          }
-         
+
          sgtBus->setSZipUnserved({SLoadUnservedSol});
          sgtBus->setSGenUnserved(arma::Col<Complex>(sgtBus->phases().size(), arma::fill::zeros));
 
@@ -183,8 +183,8 @@ namespace Sgt
          Log().message() << "Preprocessing time  = " << stopwatchPre.seconds() << std::endl;
          Log().message() << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
          Log().message() << "Postprocessing time = " << stopwatchPost.seconds() << std::endl;
-         Log().message() << "Total time          = " 
-                   << stopwatchPre.seconds() + stopwatchSolve.seconds() + stopwatchPost.seconds() << std::endl;
+         Log().message() << "Total time          = "
+                         << stopwatchPre.seconds() + stopwatchSolve.seconds() + stopwatchPost.seconds() << std::endl;
       }
       return true;
    }

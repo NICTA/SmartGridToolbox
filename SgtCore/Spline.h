@@ -28,13 +28,15 @@ class Spline : private std::vector<std::pair<double, double> >
 {
    public:
       //The boundary conditions available
-      enum BC_type {
+      enum BC_type
+      {
          FIXED_1ST_DERIV_BC,
          FIXED_2ND_DERIV_BC,
          PARABOLIC_RUNOUT_BC
       };
 
-      enum Spline_type {
+      enum Spline_type
+      {
          LINEAR,
          CUBIC
       };
@@ -47,7 +49,7 @@ class Spline : private std::vector<std::pair<double, double> >
          _BCLow(FIXED_2ND_DERIV_BC), _BCHigh(FIXED_2ND_DERIV_BC),
          _BCLowVal(0), _BCHighVal(0),
          _type(CUBIC)
-   {}
+      {}
 
       typedef std::vector<std::pair<double, double> > base;
       typedef base::const_iterator const_iterator;
@@ -152,8 +154,8 @@ class Spline : private std::vector<std::pair<double, double> >
             return lx * _BCHighVal + y(size() - 1);
 
          const double firstDeriv = 2 * h(size() - 2) * (_ddy[size() - 2]
-                                 + 2 * _ddy[size() - 1]) / 6 
-                                 + (y(size() - 1) - y(size() - 2)) / h(size() - 2);
+                                   + 2 * _ddy[size() - 1]) / 6
+                                   + (y(size() - 1) - y(size() - 2)) / h(size() - 2);
 
          switch(_BCHigh)
          {
@@ -206,87 +208,91 @@ class Spline : private std::vector<std::pair<double, double> >
          switch (_type)
          {
             case LINEAR:
+            {
+               _data.resize(e);
+               for (size_t i(0); i < e; ++i)
                {
-                  _data.resize(e);
-                  for (size_t i(0); i < e; ++i)
-                  {
-                     _data[i].x = x(i);
-                     _data[i].a = 0;
-                     _data[i].b = 0;
-                     _data[i].c = (y(i+1) - y(i)) / (x(i+1) - x(i));
-                     _data[i].d = y(i);
-                  }
-                  break;
+                  _data[i].x = x(i);
+                  _data[i].a = 0;
+                  _data[i].b = 0;
+                  _data[i].c = (y(i+1) - y(i)) / (x(i+1) - x(i));
+                  _data[i].d = y(i);
                }
+               break;
+            }
             case CUBIC:
-               {
-                  arma::Mat<double> A(size(), size());
-                  for (size_t yv(0); yv <= e; ++yv)
-                     for (size_t xv(0); xv <= e; ++xv)
-                        A(xv,yv) = 0;
-
-                  for (size_t i(1); i < e; ++i)
-                  {
-                     A(i-1,i) = h(i-1);
-                     A(i,i) = 2 * (h(i-1) + h(i));
-                     A(i+1,i) = h(i);
-                  }
-
-                  arma::Row<double> C(size());
+            {
+               arma::Mat<double> A(size(), size());
+               for (size_t yv(0); yv <= e; ++yv)
                   for (size_t xv(0); xv <= e; ++xv)
-                     C(xv) = 0;
+                     A(xv,yv) = 0;
 
-                  for (size_t i(1); i < e; ++i)
-                     C(i) = 6 * ((y(i+1) - y(i)) / h(i)
-                           - (y(i) - y(i-1)) / h(i-1));
-
-                  //Boundary conditions
-                  switch(_BCLow)
-                  {
-                     case FIXED_1ST_DERIV_BC:
-                        C(0) = 6 * ((y(1) - y(0)) / h(0) - _BCLowVal);
-                        A(0,0) = 2 * h(0);
-                        A(1,0) = h(0);
-                        break;
-                     case FIXED_2ND_DERIV_BC:
-                        C(0) = _BCLowVal;
-                        A(0,0) = 1;
-                        break;
-                     case PARABOLIC_RUNOUT_BC:
-                        C(0) = 0; A(0,0) = 1; A(1,0) = -1;
-                        break;
-                  }
-
-                  switch(_BCHigh)
-                  {
-                     case FIXED_1ST_DERIV_BC:
-                        C(e) = 6 * (_BCHighVal - (y(e) - y(e-1)) / h(e-1));
-                        A(e,e) = 2 * h(e - 1);
-                        A(e-1,e) = h(e - 1);
-                        break;
-                     case FIXED_2ND_DERIV_BC:
-                        C(e) = _BCHighVal;
-                        A(e,e) = 1;
-                        break;
-                     case PARABOLIC_RUNOUT_BC:
-                        C(e) = 0; A(e,e) = 1; A(e-1,e) = -1;
-                        break;
-                  }
-
-                  arma::Mat<double> AInv = arma::inv(A);
-
-                  _ddy = C * AInv;
-
-                  _data.resize(size()-1);
-                  for (size_t i(0); i < e; ++i)
-                  {
-                     _data[i].x = x(i);
-                     _data[i].a = (_ddy(i+1) - _ddy(i)) / (6 * h(i));
-                     _data[i].b = _ddy(i) / 2;
-                     _data[i].c = (y(i+1) - y(i)) / h(i) - _ddy(i+1) * h(i) / 6 - _ddy(i) * h(i) / 3;
-                     _data[i].d = y(i);
-                  }
+               for (size_t i(1); i < e; ++i)
+               {
+                  A(i-1,i) = h(i-1);
+                  A(i,i) = 2 * (h(i-1) + h(i));
+                  A(i+1,i) = h(i);
                }
+
+               arma::Row<double> C(size());
+               for (size_t xv(0); xv <= e; ++xv)
+                  C(xv) = 0;
+
+               for (size_t i(1); i < e; ++i)
+                  C(i) = 6 * ((y(i+1) - y(i)) / h(i)
+                              - (y(i) - y(i-1)) / h(i-1));
+
+               //Boundary conditions
+               switch(_BCLow)
+               {
+                  case FIXED_1ST_DERIV_BC:
+                     C(0) = 6 * ((y(1) - y(0)) / h(0) - _BCLowVal);
+                     A(0,0) = 2 * h(0);
+                     A(1,0) = h(0);
+                     break;
+                  case FIXED_2ND_DERIV_BC:
+                     C(0) = _BCLowVal;
+                     A(0,0) = 1;
+                     break;
+                  case PARABOLIC_RUNOUT_BC:
+                     C(0) = 0;
+                     A(0,0) = 1;
+                     A(1,0) = -1;
+                     break;
+               }
+
+               switch(_BCHigh)
+               {
+                  case FIXED_1ST_DERIV_BC:
+                     C(e) = 6 * (_BCHighVal - (y(e) - y(e-1)) / h(e-1));
+                     A(e,e) = 2 * h(e - 1);
+                     A(e-1,e) = h(e - 1);
+                     break;
+                  case FIXED_2ND_DERIV_BC:
+                     C(e) = _BCHighVal;
+                     A(e,e) = 1;
+                     break;
+                  case PARABOLIC_RUNOUT_BC:
+                     C(e) = 0;
+                     A(e,e) = 1;
+                     A(e-1,e) = -1;
+                     break;
+               }
+
+               arma::Mat<double> AInv = arma::inv(A);
+
+               _ddy = C * AInv;
+
+               _data.resize(size()-1);
+               for (size_t i(0); i < e; ++i)
+               {
+                  _data[i].x = x(i);
+                  _data[i].a = (_ddy(i+1) - _ddy(i)) / (6 * h(i));
+                  _data[i].b = _ddy(i) / 2;
+                  _data[i].c = (y(i+1) - y(i)) / h(i) - _ddy(i+1) * h(i) / 6 - _ddy(i) * h(i) / 3;
+                  _data[i].d = y(i);
+               }
+            }
          }
          _valid = true;
       }

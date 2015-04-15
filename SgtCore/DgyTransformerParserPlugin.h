@@ -7,7 +7,7 @@ namespace Sgt
 {
    class DgyTransformer;
    class Network;
-   
+
    /// @brief ParserPlugin that parses DgyTransformer objects.
    class DgyTransformerParserPlugin : public NetworkParserPlugin
    {
@@ -18,7 +18,7 @@ namespace Sgt
          }
 
          virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
-         
+
          std::unique_ptr<DgyTransformer> parseDgyTransformer(const YAML::Node& nd, const ParserBase& parser) const;
    };
 }

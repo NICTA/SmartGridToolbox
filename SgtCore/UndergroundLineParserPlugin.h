@@ -7,7 +7,7 @@ namespace Sgt
 {
    class Network;
    class UndergroundLine;
-   
+
    /// @brief ParserPlugin that parses UndergroundLine objects.
    class UndergroundLineParserPlugin : public NetworkParserPlugin
    {

@@ -18,7 +18,7 @@ namespace Sgt
          }
 
          virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
-         
+
          std::unique_ptr<CommonBranch> parseCommonBranch(const YAML::Node& nd, const ParserBase& parser) const;
    };
 }

@@ -17,7 +17,7 @@ namespace Sgt
       netw.addZip(std::move(zip), busId);
    }
 
-   std::unique_ptr<GenericZip> GenericZipParserPlugin::parseGenericZip(const YAML::Node& nd, 
+   std::unique_ptr<GenericZip> GenericZipParserPlugin::parseGenericZip(const YAML::Node& nd,
          const ParserBase& parser) const
    {
       assertFieldPresent(nd, "id");

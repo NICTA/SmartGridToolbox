@@ -12,7 +12,7 @@ namespace Sgt
    {
       // Empty.
    }
-   
+
    void BranchAbc::print(std::ostream& os) const
    {
       Component::print(os);

@@ -16,13 +16,13 @@ namespace Sgt
 
       /// @name Static member functions:
       /// @{
-         
+
          static const std::string& sComponentType()
          {
             static std::string result("dgy_transformer");
             return result;
          }
-      
+
       /// @}
 
       /// @name Lifecycle
@@ -59,7 +59,7 @@ namespace Sgt
          {
             return nomVRatioDY_;
          }
-         
+
          void setNomVRatioDY(Complex nomVRatioDY)
          {
             nomVRatioDY_ = nomVRatioDY;
@@ -70,16 +70,16 @@ namespace Sgt
          {
             return offNomRatioDY_;
          }
- 
+
          void setOffNomRatioDY(Complex offNomRatioDY)
          {
             offNomRatioDY_ = offNomRatioDY;
             isValid_ = false;
          }
- 
+
          Complex a() const
          {
-            return offNomRatioDY_ * nomVRatioDY_;  
+            return offNomRatioDY_ * nomVRatioDY_;
          }
 
          Complex ZL() const
@@ -104,13 +104,13 @@ namespace Sgt
 
       /// @name Private member functions
       /// @{
-         
+
       private:
 
          void validate() const;
 
       /// @}
-         
+
       private:
 
          Complex nomVRatioDY_; ///< Nominal voltage ratio, V_D / V_Y where V_D is phase-phase and V_Y is phase-ground.

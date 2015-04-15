@@ -52,16 +52,16 @@ namespace Sgt
       public:
          NotSettableException() : std::logic_error("Property is not settable") {};
    };
-   
+
    class BadTargException : public std::logic_error
    {
       public:
          BadTargException() : std::logic_error("Target supplied to property has the wrong type") {};
    };
-   
+
    template<class T> using GetByConstRef = const T&;
    template<class T> using GetByVal = T;
-   template<class T> struct GetByNone {}; // Used if there is no getter. 
+   template<class T> struct GetByNone {}; // Used if there is no getter.
 
    template<typename T, template<typename> class GetBy> class GetterInterface
    {
@@ -98,7 +98,7 @@ namespace Sgt
       private:
          std::function<Get> get_;
    };
-    
+
    template<typename T> class SetterInterface
    {
       public:
@@ -153,13 +153,13 @@ namespace Sgt
             auto derived = dynamic_cast<const Property<T, GetBy>*>(this);
             return derived.template get<GetBy>(targ);
          }
-         
+
          template<typename T> void set(HasPropertiesInterface& targ, const T& val) const
          {
             auto derived = dynamic_cast<const PropertyBase1<T>*>(this);
             derived.set(targ, val);
          }
-         
+
          virtual std::string string(const HasPropertiesInterface& targ) = 0;
 
          virtual void setFromString(HasPropertiesInterface& targ, const std::string& str) = 0;
@@ -169,7 +169,7 @@ namespace Sgt
    {
       public:
 
-         PropertyBase1(std::unique_ptr<SetterInterface<T>> setter) : 
+         PropertyBase1(std::unique_ptr<SetterInterface<T>> setter) :
             setter_(std::move(setter))
          {
             // Empty.
@@ -188,16 +188,16 @@ namespace Sgt
             }
             setter_->set(targ, val);
          }
-         
+
          virtual void setFromString(HasPropertiesInterface& targ, const std::string& str) override
          {
-            set(targ, fromYamlString<T>(str)); 
+            set(targ, fromYamlString<T>(str));
          }
 
       private:
          std::unique_ptr<SetterInterface<T>> setter_;
    };
-   
+
    template<typename T, template<typename> class GetBy> class Property : public PropertyBase1<T>
    {
       public:
@@ -207,12 +207,12 @@ namespace Sgt
          {
             // Empty.
          }
-         
+
          virtual bool isGettable() override
          {
             return getter_ != nullptr;
          }
-         
+
          GetBy<T> get(const HasPropertiesInterface& targ) const
          {
             if (getter_ == nullptr)
@@ -226,7 +226,7 @@ namespace Sgt
          {
             return toYamlString(get(targ));
          }
-         
+
       private:
          std::unique_ptr<GetterInterface<T, GetBy>> getter_;
    };

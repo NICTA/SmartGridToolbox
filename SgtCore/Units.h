@@ -34,7 +34,7 @@ namespace Units
    template<int LL, int ML, int TL, int IL, int ThL, int LR, int MR, int TR, int IR, int ThR>
    static constexpr auto operator*(const Dimensions<LL, ML, TL, IL, ThL>& lhs,
                                    const Dimensions<LR, MR, TR, IR, ThR>& rhs)
-      -> Dimensions<LL + LR, ML + MR, TL + TR, IL + IR, ThL + ThR>
+   -> Dimensions<LL + LR, ML + MR, TL + TR, IL + IR, ThL + ThR>
    {
       return Dimensions<LL + LR, ML + MR, TL + TR, IL + IR, ThL + ThR>();
    }
@@ -42,7 +42,7 @@ namespace Units
    template<int LL, int ML, int TL, int IL, int ThL, int LR, int MR, int TR, int IR, int ThR>
    static constexpr auto operator/(const Dimensions<LL, ML, TL, IL, ThL>& lhs,
                                    const Dimensions<LR, MR, TR, IR, ThR>& rhs)
-      -> Dimensions<LL - LR, ML - MR, TL - TR, IL - IR, ThL - ThR>
+   -> Dimensions<LL - LR, ML - MR, TL - TR, IL - IR, ThL - ThR>
    {
       return Dimensions<LL - LR, ML - MR, TL - TR, IL - IR, ThL - ThR>();
    }
@@ -101,45 +101,45 @@ namespace Units
 
    template<typename D, typename V, typename V2>
    auto operator*(const DimensionalQuantity<D, V>& q, const V2& val)
-      -> DimensionalQuantity<D, decltype(q.stdVal() * val)>
+   -> DimensionalQuantity<D, decltype(q.stdVal() * val)>
    {
       return {q.stdVal() * val};
    };
 
    template<typename D, typename V, typename V2>
    auto operator*(const V2& scalar, const DimensionalQuantity<D, V>& q)
-      -> DimensionalQuantity<D, decltype(q.stdVal() * scalar)>
+   -> DimensionalQuantity<D, decltype(q.stdVal() * scalar)>
    {
       return {q.stdVal() * scalar};
    };
 
    template<typename D, typename V1, typename V2>
    auto operator+(const DimensionalQuantity<D, V1>& lhs, const DimensionalQuantity<D, V2>& rhs)
-      -> DimensionalQuantity<D, decltype(lhs.stdVal() * rhs.stdVal())>
+   -> DimensionalQuantity<D, decltype(lhs.stdVal() * rhs.stdVal())>
    {
       return {lhs.stdVal() + rhs.stdVal()};
    };
 
    template<typename D1, typename D2, typename V1, typename V2>
    auto operator*(const DimensionalQuantity<D1, V1>& lhs, const DimensionalQuantity<D2, V2>& rhs)
-      -> DimensionalQuantity<Dimensions<D1::LDim() + D2::LDim(),
-                                        D1::MDim() + D2::MDim(),
-                                        D1::TDim() + D2::TDim(),
-                                        D1::IDim() + D2::IDim(),
-                                        D1::ThDim() + D2::ThDim()>,
-                             decltype(lhs.stdVal() * rhs.stdVal())>
+   -> DimensionalQuantity<Dimensions<D1::LDim() + D2::LDim(),
+   D1::MDim() + D2::MDim(),
+   D1::TDim() + D2::TDim(),
+   D1::IDim() + D2::IDim(),
+   D1::ThDim() + D2::ThDim()>,
+   decltype(lhs.stdVal() * rhs.stdVal())>
    {
       return {lhs.stdVal() * rhs.stdVal()};
    }
 
    template<typename V1, typename D1, typename V2, typename D2>
    auto operator/(const DimensionalQuantity<D1, V1>& lhs, const DimensionalQuantity<D2, V2>& rhs)
-      -> DimensionalQuantity<Dimensions<D1::LDim() - D2::LDim(),
-                                        D1::MDim() - D2::MDim(),
-                                        D1::TDim() - D2::TDim(),
-                                        D1::IDim() - D2::IDim(),
-                                        D1::ThDim() - D2::ThDim()>,
-                             decltype(lhs.stdVal() / rhs.stdVal())>
+   -> DimensionalQuantity<Dimensions<D1::LDim() - D2::LDim(),
+   D1::MDim() - D2::MDim(),
+   D1::TDim() - D2::TDim(),
+   D1::IDim() - D2::IDim(),
+   D1::ThDim() - D2::ThDim()>,
+   decltype(lhs.stdVal() / rhs.stdVal())>
    {
       return {lhs.stdVal() / rhs.stdVal()};
    }

@@ -92,8 +92,8 @@ namespace Sgt
       bool ok = Qi::phrase_parse(iter, end, CGram(), Ascii::space, c);
       if (!ok)
       {
-         Log().fatal() << "Bad complex number string: " << s << std::endl 
-            << "Came unstuck at substring: " << *iter << std::endl;
+         Log().fatal() << "Bad complex number string: " << s << std::endl
+                       << "Came unstuck at substring: " << *iter << std::endl;
       }
       return c;
    }
@@ -120,7 +120,7 @@ namespace Sgt
    template std::ostream& operator<< <float>(std::ostream& os, const arma::Col<float>& v);
    template std::ostream& operator<< <int>(std::ostream& os, const arma::Col<int>& v);
    template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Col<Complex>& v);
-   
+
    template std::ostream& operator<< <double>(std::ostream& os, const arma::Mat<double>& v);
    template std::ostream& operator<< <float>(std::ostream& os, const arma::Mat<float>& v);
    template std::ostream& operator<< <int>(std::ostream& os, const arma::Mat<int>& v);

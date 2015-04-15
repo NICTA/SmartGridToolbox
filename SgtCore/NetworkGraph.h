@@ -13,7 +13,7 @@ namespace
 {
    inline double myRand(double l)
    {
-      static std::default_random_engine re;      
+      static std::default_random_engine re;
       std::uniform_real_distribution<double> unif(-0.5 * l, 0.5 * l);
       return unif(re);
    }
@@ -28,9 +28,9 @@ namespace Sgt
       double w;
       double h;
       bool locked;
-      int idx; // Convenience, may not be used... 
+      int idx; // Convenience, may not be used...
    };
-   
+
    struct BasicGraphArcInfo
    {
       double l;
@@ -45,7 +45,7 @@ namespace Sgt
       std::vector<GraphArc<NI, AI>*> adjacentArcs;
       NI info;
 
-      GraphNode(const std::string& id, const NI& info) : 
+      GraphNode(const std::string& id, const NI& info) :
          id(id), info(info)
       {
          // Empty.
@@ -58,21 +58,21 @@ namespace Sgt
       const GraphNode<NI, AI>* n0;
       const GraphNode<NI, AI>* n1;
       AI info;
-      
+
       GraphArc(const std::string& id, const GraphNode<NI, AI>* n0, const GraphNode<NI, AI>* n1, const AI& info) :
-         id(id), n0(n0), n1(n1), info(info) 
+         id(id), n0(n0), n1(n1), info(info)
       {
          // Empty.
       }
    };
-   
+
    template<typename NI = BasicGraphNodeInfo, typename AI = BasicGraphArcInfo> class NetworkGraph
    {
       public:
 
          void addNode(const std::string& id, const NI& info)
          {
-            nodeMap_.emplace(std::make_pair(id, GraphNode<NI, AI>{id, info}));
+            nodeMap_.emplace(std::make_pair(id, GraphNode<NI, AI> {id, info}));
          }
 
          void addArc(const std::string& id, const std::string& id0, const std::string& id1, const AI& info)
@@ -83,7 +83,7 @@ namespace Sgt
             n0.adjacentArcs.push_back(&a);
             arcMap_.emplace(std::make_pair(id, a));
          }
-         
+
          void randomize(double width, double height)
          {
             for (auto& n : nodeMap_)
@@ -97,7 +97,7 @@ namespace Sgt
          {
             return nodeMap_;
          }
-         
+
          std::map<std::string, GraphNode<NI, AI>>& nodes()
          {
             return nodeMap_;
@@ -107,7 +107,7 @@ namespace Sgt
          {
             return arcMap_;
          }
-         
+
          std::map<std::string, GraphArc<NI, AI>>& arcs()
          {
             return arcMap_;
@@ -130,8 +130,8 @@ namespace Sgt
                double w = n.second.info.w * scaleSz;
                double h = n.second.info.h * scaleSz;
                rs.push_back(new vpsc::Rectangle(
-                        n.second.info.x - 0.5 * w, n.second.info.x + 0.5 * w,
-                        n.second.info.y - 0.5 * h, n.second.info.y + 0.5 * h));
+                               n.second.info.x - 0.5 * w, n.second.info.x + 0.5 * w,
+                               n.second.info.y - 0.5 * h, n.second.info.y + 0.5 * h));
             }
 
             for (auto& a : arcMap_)
@@ -156,7 +156,7 @@ namespace Sgt
                }
             }
             cola::PreIteration preIter(locks);
-            
+
             cola::ConstrainedFDLayout fd(rs, es, 1, true, ls, &testConv, &preIter);
 
             fd.run();

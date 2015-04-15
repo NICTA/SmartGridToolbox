@@ -15,7 +15,7 @@ namespace Sgt
 
       std::string bus0Id = parser.expand<std::string>(nd["bus_0_id"]);
       std::string bus1Id = parser.expand<std::string>(nd["bus_1_id"]);
-      
+
       netw.addBranch(std::move(ohl), bus0Id, bus1Id);
    }
 
@@ -41,7 +41,7 @@ namespace Sgt
       double freq = parser.expand<double>(nd["freq"]);
 
       std::unique_ptr<OverheadLine> ohl(new OverheadLine(id, phases0, phases1, length, distMatrix, resPerL,
-                                                         earthResistivity, freq));
+                                        earthResistivity, freq));
 
       return ohl;
    }

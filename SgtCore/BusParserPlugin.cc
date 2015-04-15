@@ -11,7 +11,7 @@ namespace Sgt
       auto bus = parseBus(nd, parser);
       netw.addBus(std::move(bus));
    }
-   
+
    std::unique_ptr<Bus> BusParserPlugin::parseBus(const YAML::Node& nd, const ParserBase& parser) const
    {
       assertFieldPresent(nd, "id");

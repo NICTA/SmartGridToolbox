@@ -7,7 +7,7 @@ namespace Sgt
 {
    class Network;
    class OverheadLine;
-   
+
    /// @brief ParserPlugin that parses OverheadLine objects.
    class OverheadLineParserPlugin : public NetworkParserPlugin
    {

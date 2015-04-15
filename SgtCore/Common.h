@@ -21,10 +21,10 @@
 namespace Sgt
 {
    /// @addtogroup Common
-   /// @{
+/// @{
 
-   /// @name Reporting and errors.
-   /// @{
+/// @name Reporting and errors.
+/// @{
 
    class StreamIndent : public std::streambuf
    {
@@ -37,9 +37,9 @@ namespace Sgt
             isNewline_(true),
             ind1_("    "),
             ind2_("    ")
-            {
-               strm_->rdbuf(this);
-            }
+         {
+            strm_->rdbuf(this);
+         }
 
          virtual ~StreamIndent()
          {
@@ -85,7 +85,7 @@ namespace Sgt
          std::string ind1_;
          std::string ind2_;
    };
-   
+
    class Log
    {
       friend class LogIndent;
@@ -105,32 +105,32 @@ namespace Sgt
          std::ostream& message()
          {
             coutBuf_.reset(
-                  std::string("MESSAGE: ") + std::string(indentLevel_, ' '),
-                  std::string("         ") + std::string(indentLevel_, ' '));
+               std::string("MESSAGE: ") + std::string(indentLevel_, ' '),
+               std::string("         ") + std::string(indentLevel_, ' '));
             return std::cout;
          }
 
          std::ostream& warning()
          {
             cerrBuf_.reset(
-                  std::string("WARNING: ") + std::string(indentLevel_, ' '),
-                  std::string("         ") + std::string(indentLevel_, ' '));
+               std::string("WARNING: ") + std::string(indentLevel_, ' '),
+               std::string("         ") + std::string(indentLevel_, ' '));
             return std::cerr;
          }
 
          std::ostream& debug()
          {
             cerrBuf_.reset(
-                  std::string("DEBUG  : ") + std::string(indentLevel_, ' '),
-                  std::string("         ") + std::string(indentLevel_, ' '));
+               std::string("DEBUG  : ") + std::string(indentLevel_, ' '),
+               std::string("         ") + std::string(indentLevel_, ' '));
             return std::cerr;
          }
 
          std::ostream& error()
          {
             cerrBuf_.reset(
-                  std::string("ERROR  : ") + std::string(indentLevel_, ' '),
-                  std::string("         ") + std::string(indentLevel_, ' '));
+               std::string("ERROR  : ") + std::string(indentLevel_, ' '),
+               std::string("         ") + std::string(indentLevel_, ' '));
             return std::cerr;
          }
 
@@ -138,8 +138,8 @@ namespace Sgt
          {
             isFatal_ = true;
             cerrBuf_.reset(
-                  std::string("FATAL  : ") + std::string(indentLevel_, ' '),
-                  std::string("         ") + std::string(indentLevel_, ' '));
+               std::string("FATAL  : ") + std::string(indentLevel_, ' '),
+               std::string("         ") + std::string(indentLevel_, ' '));
             return std::cerr;
          }
 
@@ -165,32 +165,32 @@ namespace Sgt
          }
    };
 
-   /// @}
+/// @}
 
-   /// @name String conversion.
-   /// @{
-   
+/// @name String conversion.
+/// @{
+
    template<typename T> T from_string(const std::string& s);
 
-   /// @}
+/// @}
 
-   /// @name Constant dimension 1D array type.
-   /// @{
+/// @name Constant dimension 1D array type.
+/// @{
 
    template <class T, size_t N> using Array = std::array<T, N>; // Just std::array but rename for nice consistency.
 
-   /// @}
+/// @}
 
-   /// @name Constant dimension 2D array type.
-   /// @{
+/// @name Constant dimension 2D array type.
+/// @{
 
    // Note transposition of NR and NC to obey standard matrix index order.
    template <class T, size_t NR, size_t NC> using Array2D = std::array<std::array<T, NC>, NR>;
 
-   /// @}
+/// @}
 
-   /// @name Complex numbers
-   /// @{
+/// @name Complex numbers
+/// @{
 
    typedef std::complex<double> Complex;
 
@@ -216,10 +216,10 @@ namespace Sgt
 
    std::string to_string(const Complex& c);
 
-   /// @}
+/// @}
 
-   /// @name Linear algebra
-   /// @{
+/// @name Linear algebra
+/// @{
 
    template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Col<T>& v)
    {
@@ -253,43 +253,43 @@ namespace Sgt
       ss.imbue(os.getloc());
       ss.precision(os.precision());
       ss << std::endl << "[" << std::endl;
-      ss << "    [" << std::setw(w) << std::left << m(0, 0);
-      for (int j = 1; j < size2; ++j)
+                       ss << "    [" << std::setw(w) << std::left << m(0, 0);
+                                      for (int j = 1; j < size2; ++j)
       {
          ss << ", " << std::setw(w) << std::left << m(0, j);
       }
-      ss << "]"; 
-      for (int i = 1; i < size1; ++i)
+                                  ss << "]";
+                                  for (int i = 1; i < size1; ++i)
       {
          ss << "," << std::endl << "    [" << std::setw(w) << std::left << m(i, 0);
-         for (int j = 1; j < size2; ++j)
+                                            for (int j = 1; j < size2; ++j)
          {
             ss << ", " << std::setw(w) << std::left << m(i, j);
          }
-         ss << "]";
+                                     ss << "]";
       }
-      ss << std::endl << "]" << std::endl;
-      return os << ss.str();
+                                  ss << std::endl << "]" << std::endl;
+                                        return os << ss.str();
    }
-   extern template std::ostream& operator<< <double>(std::ostream& os, const arma::Mat<double>& v);
-   extern template std::ostream& operator<< <float>(std::ostream& os, const arma::Mat<float>& v);
-   extern template std::ostream& operator<< <int>(std::ostream& os, const arma::Mat<int>& v);
-   extern template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Mat<Complex>& v);
+                                     extern template std::ostream& operator<< <double>(std::ostream& os, const arma::Mat<double>& v);
+                                     extern template std::ostream& operator<< <float>(std::ostream& os, const arma::Mat<float>& v);
+                                     extern template std::ostream& operator<< <int>(std::ostream& os, const arma::Mat<int>& v);
+                                     extern template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Mat<Complex>& v);
 
-   /// @}
+                                  /// @}
 
-   /// @name Time
-   /// @{
+                                  /// @name Time
+                                  /// @{
 
-   namespace posix_time = boost::posix_time;
-   namespace gregorian = boost::gregorian;
-   namespace local_time = boost::local_time;
+                                     namespace posix_time = boost::posix_time;
+                                     namespace gregorian = boost::gregorian;
+                                     namespace local_time = boost::local_time;
 
-   using Time = posix_time::time_duration;
+                                     using Time = posix_time::time_duration;
 
-   extern const posix_time::ptime epoch;
+                                     extern const posix_time::ptime epoch;
 
-   inline double dSeconds(const Time& d)
+                                     inline double dSeconds(const Time& d)
    {
       return double(d.ticks()) / Time::ticks_per_second();
    }
@@ -316,22 +316,22 @@ namespace Sgt
       return (utcTimeFromLocalTime(localTime, localTz) - epoch);
    }
 
-   /// @}
+/// @}
 
-   /// @name LatLongs
-   /// @{
+/// @name LatLongs
+/// @{
 
    class LatLong
    {
       public:
-         double lat_;
-         double long_;
+      double lat_;
+      double long_;
    };
 
-   /// @}
+/// @}
 
-   /// @name Constants
-   /// @{
+/// @name Constants
+/// @{
 
    extern const double pi;
    extern const double negInfinity;
@@ -352,10 +352,10 @@ namespace Sgt
    extern const Complex czero;
    extern const LatLong Greenwich;
 
-   /// @}
+/// @}
 
-   /// @name Basic vector algebra in n dimensions.
-   /// @{
+/// @name Basic vector algebra in n dimensions.
+/// @{
 
    template<typename T, std::size_t d> double dot(const Array<T, d>& v1, const Array<T, d>& v2)
    {
@@ -390,9 +390,9 @@ namespace Sgt
       return result;
    }
 
-   /// @}
+/// @}
 
-   /// @}
+/// @}
 }
 
 #endif // COMMON_DOT_H

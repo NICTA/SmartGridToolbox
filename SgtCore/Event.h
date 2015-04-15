@@ -82,7 +82,7 @@ namespace Sgt
             return description_;
          }
 
-         void setDescription(const std::string& description) 
+         void setDescription(const std::string& description)
          {
             description_ = description;
          }

@@ -5,10 +5,10 @@
 namespace Sgt
 {
    UndergroundLine::UndergroundLine(
-         const std::string& id, double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
-         double gmrPhase, double resPerLPhase,
-         double gmrConcStrand, double resPerLConcStrand, int nConcStrands, 
-         double rConc, double rhoEarth, double freq) :
+      const std::string& id, double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
+      double gmrPhase, double resPerLPhase,
+      double gmrConcStrand, double resPerLConcStrand, int nConcStrands,
+      double rConc, double rhoEarth, double freq) :
       BranchAbc(id, Phase::A|Phase::B|Phase::C, Phase::A|Phase::B|Phase::C),
       L_(L),
       hasNeutral_(hasNeutral),
@@ -25,7 +25,7 @@ namespace Sgt
       int nPhase = hasNeutral ? 4 : 3; // Not including shielding layers.
       if (phaseDist.n_rows != nPhase || phaseDist.n_cols != nPhase)
       {
-         Log().fatal() << "UndergroundLine : distance matrix must be size " << std::to_string(nPhase) << " x " 
+         Log().fatal() << "UndergroundLine : distance matrix must be size " << std::to_string(nPhase) << " x "
                        << std::to_string(nPhase) << "." << std::endl;
       }
 
@@ -45,19 +45,19 @@ namespace Sgt
       {
          Dij(i, i) = gmrPhase_; // phase_i - phase_i
          Dij(i + 3, i + 3) = gmrConc; // conc_i - conc_i
-         Dij(i, i + 3) = Dij(i + 3, i) = rConc_; // phase_i - conc_i 
+         Dij(i, i + 3) = Dij(i + 3, i) = rConc_; // phase_i - conc_i
          if (hasNeutral_)
          {
             Dij(7, i) = Dij(i, 7) = phaseDist_(4, i); // phase_i - neutral
-            Dij(7, i + 3) = Dij(i + 3, 7) = 
-               pow(pow(Dij(4, i), nConcStrands_) - pow(rConc_, nConcStrands_), nConcStrInv); // conc_i - neutral
+            Dij(7, i + 3) = Dij(i + 3, 7) =
+                               pow(pow(Dij(4, i), nConcStrands_) - pow(rConc_, nConcStrands_), nConcStrInv); // conc_i - neutral
          }
          for (int j = 0; j < i; ++j)
          {
             Dij(i, j) = Dij(j, i) = phaseDist_(i, j); // phase_i - phase_j
             Dij(i + 3, j + 3) = Dij(j + 3, i + 3) = phaseDist_(i, j); // conc_i - conc_j
-            Dij(i, j + 3) = Dij(j, i + 3) = Dij(i + 3, j) = Dij(j + 3, i) = 
-               pow(pow(Dij(i, j), nConcStrands_) - pow(rConc_, nConcStrands_), nConcStrInv); // phase_i - conc_j
+            Dij(i, j + 3) = Dij(j, i + 3) = Dij(i + 3, j) = Dij(j + 3, i) =
+                                               pow(pow(Dij(i, j), nConcStrands_) - pow(rConc_, nConcStrands_), nConcStrInv); // phase_i - conc_j
          }
       }
       if (hasNeutral_)
@@ -77,7 +77,7 @@ namespace Sgt
       {
          resPerL(7) = resPerLPhase_;
       }
-     
+
       // Calculate the primative impedance matrix, using Carson's equations.
       ZPrim_ = carson(nCond, Dij, resPerL, L_, freq_, rhoEarth_);
 

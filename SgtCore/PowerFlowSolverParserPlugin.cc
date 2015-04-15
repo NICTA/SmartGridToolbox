@@ -4,7 +4,7 @@
 
 #include "Network.h"
 #include "PowerFlowNrSolver.h"
-#ifdef ENABLE_POWER_TOOLS 
+#ifdef ENABLE_POWER_TOOLS
 #include "PowerFlowPtSolver.h"
 #endif
 #ifdef ENABLE_POWER_TOOLS_PP
@@ -24,13 +24,13 @@ namespace Sgt
       }
       else if (key == "opf_pt")
       {
-#ifdef ENABLE_POWER_TOOLS 
+#ifdef ENABLE_POWER_TOOLS
          Log().message() << "Using OPF (PowerTools) solver." << std::endl;
          netw.setSolver(std::unique_ptr<PowerFlowPtSolver>(new PowerFlowPtSolver));
 #else // ENABLE_POWER_TOOLS 
-         Log().fatal() 
-            << "OPF solver is not available, since SmartGridToolbox was not compiled with --enable-power-tools."
-            << std::endl;
+         Log().fatal()
+               << "OPF solver is not available, since SmartGridToolbox was not compiled with --enable-power-tools."
+               << std::endl;
 #endif // ENABLE_POWER_TOOLS
       }
       else if (key == "opf_pt_pp")
@@ -39,9 +39,9 @@ namespace Sgt
          Log().message() << "Using OPF (PowerTools++) solver." << std::endl;
          netw.setSolver(std::unique_ptr<PowerFlowPtPpSolver>(new PowerFlowPtPpSolver));
 #else // ENABLE_POWER_TOOLS_PP
-         Log().fatal() 
-            << "OPF solver is not available, since SmartGridToolbox was not compiled with --enable-power-tools++."
-            << std::endl;
+         Log().fatal()
+               << "OPF solver is not available, since SmartGridToolbox was not compiled with --enable-power-tools++."
+               << std::endl;
 #endif // ENABLE_POWER_TOOLS_PP
       }
    }

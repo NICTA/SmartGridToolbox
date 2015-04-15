@@ -20,7 +20,7 @@ namespace Sgt
    }
 
    std::unique_ptr<SinglePhaseTransformer> SinglePhaseTransformerParserPlugin::parseSinglePhaseTransformer(
-         const YAML::Node& nd, const ParserBase& parser) const
+      const YAML::Node& nd, const ParserBase& parser) const
    {
       assertFieldPresent(nd, "id");
       assertFieldPresent(nd, "nom_V_ratio");

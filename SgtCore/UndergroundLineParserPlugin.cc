@@ -15,7 +15,7 @@ namespace Sgt
 
       std::string bus0Id = parser.expand<std::string>(nd["bus_0_id"]);
       std::string bus1Id = parser.expand<std::string>(nd["bus_1_id"]);
-      
+
       netw.addBranch(std::move(ugl), bus0Id, bus1Id);
    }
 

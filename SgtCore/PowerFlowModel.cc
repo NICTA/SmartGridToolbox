@@ -6,8 +6,8 @@
 namespace Sgt
 {
    PfBus::PfBus(const std::string& id, BusType type, const Phases& phases,
-         const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
-         double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S) :
+                const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
+                double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S) :
       id_(id),
       type_(type),
       phases_(phases),
@@ -47,8 +47,8 @@ namespace Sgt
                       const arma::Mat<Complex>& Y) :
       nPhase_(phases0.size()),
       ids_{{id0, id1}},
-      phases_{{phases0, phases1}},
-      Y_(Y)
+   phases_{{phases0, phases1}},
+   Y_(Y)
    {
       assert(phases1.size() == nPhase_);
       int nTerm = 2 * nPhase_;
@@ -57,15 +57,15 @@ namespace Sgt
    }
 
    void PowerFlowModel::addBus(const std::string& id, BusType type, const Phases& phases,
-         const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
-         double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S)
+                               const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
+                               double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S)
    {
       SGT_DEBUG(Log().debug() << "PowerFlowModel : add bus " << id << std::endl);
       busses_[id].reset(new PfBus(id, type, phases, YConst, IConst, SConst, J, V, S));
    }
 
    void PowerFlowModel::addBranch(const std::string& idBus0, const std::string& idBus1,
-         const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& Y)
+                                  const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& Y)
    {
       SGT_DEBUG(Log().debug() << "PowerFlowModel : addBranch " << idBus0 << " " << idBus1 << std::endl);
       branches_.push_back(std::unique_ptr<PfBranch>(new PfBranch(idBus0, idBus1, phases0, phases1, Y)));
@@ -142,13 +142,13 @@ namespace Sgt
          if (it0 == busses_.end())
          {
             Log().fatal() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
-               << " contains a non-existent bus " << branch->ids_[0] << std::endl;
+                          << " contains a non-existent bus " << branch->ids_[0] << std::endl;
          }
          auto it1 = busses_.find(branch->ids_[1]);
          if (it1 == busses_.end())
          {
             Log().fatal() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
-               << " contains a non-existent bus " << branch->ids_[1] << std::endl;
+                          << " contains a non-existent bus " << branch->ids_[1] << std::endl;
          }
          const PfBus* busses[] = {it0->second.get(), it1->second.get()};
          int nTerm = 2 * branch->nPhase_;

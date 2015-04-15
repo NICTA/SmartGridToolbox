@@ -33,13 +33,13 @@ namespace Sgt
 
       /// @name Static member functions:
       /// @{
-         
+
          static const std::string& sComponentType()
          {
             static std::string result("bus");
             return result;
          }
-      
+
       /// @}
 
       /// @name Lifecycle:
@@ -51,7 +51,7 @@ namespace Sgt
 
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-        
+
          virtual const std::string& componentType() const override
          {
             return sComponentType();
@@ -89,7 +89,7 @@ namespace Sgt
 
       /// @name Generators
       /// @{
-         
+
          const GenVec gens() const {return genVec_;}
          void addGen(GenPtr gen) {genVec_.push_back(gen);}
          void removeAllGens() {genVec_.clear();}
@@ -102,7 +102,7 @@ namespace Sgt
 
       /// @name Zips
       /// @{
-         
+
          const ZipVec zips() const {return zipVec_;}
          void addZip(ZipPtr zip) {zipVec_.push_back(zip);}
          void removeAllZips() {zipVec_.clear();}
@@ -115,12 +115,12 @@ namespace Sgt
          arma::Col<Complex> SIConst() const; ///< Complex power from constant current component of zip.
 
          arma::Col<Complex> SConst() const; ///< Complex power component of zip.
-         
+
          arma::Col<Complex> SZipRequested() const; ///< Requested power of zips.
          arma::Col<Complex> SZip() const; ///< Actual power of zips, including possible unserved load.
 
       /// @}
-      
+
       /// @name Control and limits:
       /// @{
 
@@ -147,7 +147,7 @@ namespace Sgt
             VMagSetpoint_ = VMagSetpoint;
             setpointChanged_.trigger();
          }
-         
+
          virtual arma::Col<double> VAngSetpoint() const
          {
             return VAngSetpoint_;
@@ -205,7 +205,7 @@ namespace Sgt
          {
             return V_;
          }
-         
+
          SGT_PROP_GET(V, Bus, arma::Col<Complex>, GetByConstRef, V);
 
          virtual void setV(const arma::Col<Complex>& V)
@@ -218,7 +218,7 @@ namespace Sgt
          {
             return SGenUnserved_;
          }
-         
+
          SGT_PROP_GET(SGenUnserved, Bus, arma::Col<Complex>, GetByConstRef, SGenUnserved);
 
          virtual void setSGenUnserved(const arma::Col<Complex>& SGenUnserved)
@@ -235,14 +235,14 @@ namespace Sgt
          {
             SZipUnserved_ = SZipUnserved;
          }
-         
+
          SGT_PROP_GET(SZipUnserved, Bus, arma::Col<Complex>, GetByConstRef, SZipUnserved);
 
       /// @}
-      
+
       /// @name Events.
       /// @{
-         
+
          /// @brief Event triggered when I go in or out of service.
          virtual Event& isInServiceChanged()
          {
@@ -254,15 +254,15 @@ namespace Sgt
          {
             return setpointChanged_;
          }
-         
+
          /// @brief Event triggered when bus state (e.g. voltage) has been updated.
          virtual Event& voltageUpdated()
          {
             return voltageUpdated_;
          }
-      
+
       /// @}
-     
+
       private:
 
          Phases phases_{Phase::BAL};

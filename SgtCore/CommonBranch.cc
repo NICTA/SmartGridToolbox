@@ -35,7 +35,7 @@ namespace Sgt
          Y_(1, 0) = -YSeries_ / tapRatio_;
          Y_(1, 1) = c1;
 
-         isValid_ = true; 
+         isValid_ = true;
       }
    }
 }

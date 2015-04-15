@@ -15,10 +15,10 @@ namespace Sgt
 
       std::string bus0Id = parser.expand<std::string>(nd["bus_0_id"]);
       std::string bus1Id = parser.expand<std::string>(nd["bus_1_id"]);
-      
+
       netw.addBranch(std::move(cBranch), bus0Id, bus1Id);
    }
-   
+
    std::unique_ptr<CommonBranch> CommonBranchParserPlugin::parseCommonBranch(const YAML::Node& nd,
          const ParserBase& parser) const
    {
@@ -52,6 +52,6 @@ namespace Sgt
          cBranch->setRateC(parser.expand<double>(nd["rate_C"]));
       }
 
-      return cBranch; 
+      return cBranch;
    }
 }

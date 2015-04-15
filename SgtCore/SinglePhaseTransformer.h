@@ -12,13 +12,13 @@ namespace Sgt
 
       /// @name Static member functions:
       /// @{
-         
+
          static const std::string& sComponentType()
          {
             static std::string result("single_phase_transformer");
             return result;
          }
-      
+
       /// @}
 
          SGT_PROPS_INIT(SinglePhaseTransformer);
@@ -41,12 +41,12 @@ namespace Sgt
 
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-         
+
          virtual const std::string& componentType() const override
          {
             return sComponentType();
          }
-         
+
          // virtual void print(std::ostream& os) const override; // TODO
 
       /// @}
@@ -65,7 +65,7 @@ namespace Sgt
          {
             return nomVRatio_;
          }
-         
+
          void setNomVRatio(Complex nomVRatio)
          {
             nomVRatio_ = nomVRatio;
@@ -76,16 +76,16 @@ namespace Sgt
          {
             return offNomRatio_;
          }
- 
+
          void setOffNomRatio(Complex offNomRatio)
          {
             offNomRatio_ = offNomRatio;
             isValid_ = false;
          }
- 
+
          Complex a() const
          {
-            return offNomRatio_ * nomVRatio_;  
+            return offNomRatio_ * nomVRatio_;
          }
 
          Complex ZL() const
@@ -98,12 +98,12 @@ namespace Sgt
             YL_ = 1.0 / ZL;
             isValid_ = false;
          }
- 
+
       /// @}
 
       /// @name Private member functions
       /// @{
-         
+
       private:
 
          void validate() const;

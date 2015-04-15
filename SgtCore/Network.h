@@ -18,25 +18,25 @@ namespace Sgt
 {
    typedef std::shared_ptr<const Bus> ConstBusPtr;
    typedef std::shared_ptr<Bus> BusPtr;
-   
+
    typedef std::shared_ptr<const BranchAbc> ConstBranchPtr;
    typedef std::shared_ptr<BranchAbc> BranchPtr;
 
    typedef std::shared_ptr<const GenAbc> ConstGenPtr;
    typedef std::shared_ptr<GenAbc> GenPtr;
-   
+
    typedef std::shared_ptr<const ZipAbc> ConstZipPtr;
    typedef std::shared_ptr<ZipAbc> ZipPtr;
-   
+
    typedef std::vector<BusPtr> BusVec;
    typedef std::map<std::string, BusPtr> BusMap;
 
    typedef std::vector<BranchPtr> BranchVec;
    typedef std::map<std::string, BranchPtr> BranchMap;
-   
+
    typedef std::vector<GenPtr> GenVec;
    typedef std::map<std::string, GenPtr> GenMap;
-   
+
    typedef std::vector<ZipPtr> ZipVec;
    typedef std::map<std::string, ZipPtr> ZipMap;
 
@@ -48,22 +48,22 @@ namespace Sgt
 
       /// @name Static member functions:
       /// @{
-         
+
          static const std::string& sComponentType()
          {
             static std::string result("network");
             return result;
          }
-      
+
       /// @}
 
       /// @name Lifecycle:
       /// @{
-         
+
          Network(const std::string& id, double PBase = 1.0);
 
       /// @}
-      
+
       /// @name ComponentInterface virtual overridden functions.
       /// @{
 
@@ -78,12 +78,12 @@ namespace Sgt
 
       /// @name Network Attributes:
       /// @{
-   
+
          double PBase() const
          {
             return PBase_;
          }
-         
+
          virtual void setPBase(double PBase)
          {
             PBase_ = PBase;
@@ -110,10 +110,10 @@ namespace Sgt
          }
 
       /// @}
-         
+
       /// @name Network Components:
       /// @{
-         
+
          const BusVec& busses() const
          {
             return busVec_;
@@ -140,7 +140,7 @@ namespace Sgt
          }
          void setReferenceBus(const std::string& id)
          {
-            referenceBus_ = bus(id); 
+            referenceBus_ = bus(id);
          }
 
          const BranchVec& branches() const
@@ -157,7 +157,7 @@ namespace Sgt
             return std::const_pointer_cast<BranchAbc>((static_cast<const Network*>(this))->branch(id));
          }
          virtual void addBranch(BranchPtr branch, const std::string& bus0Id, const std::string& bus1Id);
-         
+
          const GenVec& gens() const
          {
             return genVec_;
@@ -192,7 +192,7 @@ namespace Sgt
 
       /// @name Per-Unit Conversions:
       /// @{
-         
+
          template<typename T> T V2Pu(const T& V, double VBase) const
          {
             return V / VBase;
@@ -201,7 +201,7 @@ namespace Sgt
          {
             return pu * VBase;
          }
-         
+
          template<typename T> T S2Pu(const T& S) const
          {
             return S / PBase_;
@@ -210,7 +210,7 @@ namespace Sgt
          {
             return pu * PBase_;
          }
- 
+
          template<typename T> T Y2Pu(const T& Y, double VBase) const
          {
             return Y * VBase * VBase / PBase_;
@@ -219,7 +219,7 @@ namespace Sgt
          {
             return pu * PBase_ / (VBase * VBase);
          }
-  
+
          template<typename T> T Z2Pu(const T& Z, double VBase) const
          {
             return Z * PBase_ / (VBase * VBase);
@@ -228,7 +228,7 @@ namespace Sgt
          {
             return pu * VBase * VBase / PBase_;
          }
-  
+
          template<typename T> T I2Pu(const T& I, double VBase) const
          {
             return I * VBase / PBase_;
@@ -237,17 +237,17 @@ namespace Sgt
          {
             return pu * PBase_ / VBase;
          }
-         
+
       /// @}
-         
+
       /// @name Power-Flow problem:
       /// @{
-         
+
          void setSolver(std::unique_ptr<PowerFlowSolverInterface> solver)
          {
             solver_ = std::move(solver);
          }
-         
+
          virtual bool solvePowerFlow();
 
          bool isValidSolution() const
@@ -256,7 +256,7 @@ namespace Sgt
          }
 
       /// @}
-         
+
       private:
          double PBase_{1.0};
          double nomFreq_{50.0};

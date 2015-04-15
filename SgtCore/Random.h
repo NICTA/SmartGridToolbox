@@ -7,10 +7,10 @@
 namespace Sgt
 {
    /// @addtogroup Common
-   /// @{
+/// @{
 
-   /// @name Random number generation.
-   /// @{
+/// @name Random number generation.
+/// @{
 
    /// @brief Sample from discrete distribution with nProbs given probabilities.
    double randDiscrete(const double* probs, int nProbs);
@@ -23,9 +23,9 @@ namespace Sgt
    /// @brief Sample from Weibull distribution with given a and b parameters.
    double randWeibull(double a, double b);
 
-   /// @}
+/// @}
 
-   /// @}
+/// @}
 }
 
 #endif // RANDOM_DOT_H

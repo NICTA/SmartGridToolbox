@@ -7,7 +7,8 @@
 namespace Sgt
 {
    // No cross terms, just nPhase lines with single admittances.
-   namespace {
+   namespace
+   {
       const arma::Mat<Complex> YSimpleLine(const arma::Col<Complex>& Y)
       {
          int nPhase = Y.size();
@@ -33,7 +34,7 @@ namespace Sgt
 
       std::string bus0Id = parser.expand<std::string>(nd["bus_0_id"]);
       std::string bus1Id = parser.expand<std::string>(nd["bus_1_id"]);
-      
+
       netw.addBranch(std::move(gb), bus0Id, bus1Id);
    }
 
@@ -48,7 +49,7 @@ namespace Sgt
       std::string id = parser.expand<std::string>(nd["id"]);
       Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
       Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
-      
+
       const YAML::Node& ndY = nd["Y"];
       const YAML::Node& ndYMatrix = ndY["matrix"];
       const YAML::Node& ndYSimpleLine = ndY["simple_line"];

@@ -16,7 +16,8 @@ namespace Sgt
    YAML::Node getTopNode(const std::string& fname);
 
    // Some no-templated functionality in the base class.
-   class ParserBase {
+   class ParserBase
+   {
 
       public:
 
@@ -35,7 +36,7 @@ namespace Sgt
             int stride_;
             YAML::Node body_;
          };
-         
+
       protected:
 
          ParserLoop& parseLoop(const YAML::Node& nd);
@@ -60,7 +61,7 @@ namespace Sgt
    {
       public:
          virtual const char* key() {return "ERROR";}
-         virtual void parse(const YAML::Node& nd, T& into, const ParserBase& parser) const 
+         virtual void parse(const YAML::Node& nd, T& into, const ParserBase& parser) const
          {
             // Empty.
          }
@@ -73,7 +74,8 @@ namespace Sgt
    template<typename T> class Parser;
    template<typename T> void registerParserPlugins(Parser<T>& parser);
 
-   template<typename T> class Parser : public ParserBase {
+   template<typename T> class Parser : public ParserBase
+   {
       public:
          Parser()
          {

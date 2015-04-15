@@ -17,18 +17,18 @@ namespace Sgt
 
       /// @name Static member functions:
       /// @{
-         
+
          static const std::string& sComponentType()
          {
             static std::string result("gen");
             return result;
          }
-      
+
       /// @}
 
       /// @name Lifecycle:
       /// @{
-         
+
          GenAbc(const std::string& id, const Phases& phases) :
             Component(id),
             phases_(phases),
@@ -41,7 +41,7 @@ namespace Sgt
 
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-         
+
          virtual const std::string& componentType() const override
          {
             return sComponentType();
@@ -50,20 +50,20 @@ namespace Sgt
          virtual void print(std::ostream& os) const override;
 
       /// @}
-         
+
       /// @name Phase accessors:
       /// @{
-         
+
          virtual const Phases& phases() const
          {
             return phases_;
          }
-         
+
       /// @}
-      
+
       /// @name In service:
       /// @{
-         
+
          virtual bool isInService() const
          {
             return isInService_;
@@ -75,7 +75,7 @@ namespace Sgt
          }
 
       /// @}
-  
+
       /// @name Power injection:
       /// @{
 
@@ -86,10 +86,10 @@ namespace Sgt
 
          virtual arma::Col<Complex> inServiceS() const = 0;
 
-         virtual void setInServiceS(const arma::Col<Complex>& S) = 0; 
+         virtual void setInServiceS(const arma::Col<Complex>& S) = 0;
 
       /// @}
-       
+
       /// @name Moment of inertia:
       /// @{
 
@@ -101,7 +101,7 @@ namespace Sgt
          virtual double inServiceJ() const = 0;
 
       /// @}
-     
+
       /// @name Generation bounds:
       /// @{
 
@@ -115,10 +115,10 @@ namespace Sgt
          virtual void setQMax(double QMax) = 0;
 
       /// @}
-      
+
       /// @name Generation costs:
       /// @{
-          
+
          virtual double cStartup() const = 0;
          virtual void setCStartup(double cStartup) = 0;
          virtual double cShutdown() const = 0;
@@ -131,18 +131,18 @@ namespace Sgt
          virtual void setC2(double c2) = 0;
 
          double cost() const;
-   
+
       /// @}
-    
+
       /// @name Events.
       /// @{
-         
+
          /// @brief Event triggered when I go in or out of service.
          virtual Event& isInServiceChanged()
          {
             return isInServiceChanged_;
          }
-         
+
          /// @brief Event triggered when I go in or out of service.
          virtual Event& generationChanged()
          {
@@ -156,7 +156,7 @@ namespace Sgt
          }
 
       /// @}
-      
+
       private:
 
          Phases phases_;
@@ -166,7 +166,7 @@ namespace Sgt
          Event generationChanged_{std::string(sComponentType()) + " : Generation changed"};
          Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
    };
-   
+
    /// @brief A concrete, generic generation at a bus.
    class GenericGen : public GenAbc
    {
@@ -174,13 +174,13 @@ namespace Sgt
 
       /// @name Static member functions:
       /// @{
-         
+
          static const std::string& sComponentType()
          {
             static std::string result("generic_gen");
             return result;
          }
-      
+
       /// @}
 
       /// @name Lifecycle:
@@ -219,9 +219,9 @@ namespace Sgt
          {
             S_ = S;
          }
-      
+
       /// @}
-       
+
       /// @name Moment of inertia:
       /// @{
 
@@ -236,7 +236,7 @@ namespace Sgt
          }
 
       /// @}
-    
+
       /// @name Generation bounds:
       /// @{
 
@@ -249,7 +249,7 @@ namespace Sgt
          {
             PMin_ = PMin;
          }
- 
+
          virtual double PMax() const override
          {
             return PMax_;
@@ -269,7 +269,7 @@ namespace Sgt
          {
             QMin_ = QMin;
          }
- 
+
          virtual double QMax() const override
          {
             return QMax_;
@@ -279,12 +279,12 @@ namespace Sgt
          {
             QMax_ = QMax;
          }
-          
+
       /// @}
-      
+
       /// @name Generation costs:
       /// @{
-          
+
          virtual double cStartup() const override
          {
             return cStartup_;
@@ -294,7 +294,7 @@ namespace Sgt
          {
             cStartup_ = cStartup;
          }
-         
+
          virtual double cShutdown() const override
          {
             return cShutdown_;
@@ -304,7 +304,7 @@ namespace Sgt
          {
             cShutdown_ = cShutdown;
          }
-       
+
          virtual double c0() const override
          {
             return c0_;
@@ -314,7 +314,7 @@ namespace Sgt
          {
             c0_ = c0;
          }
-         
+
          virtual double c1() const override
          {
             return c1_;
@@ -324,7 +324,7 @@ namespace Sgt
          {
             c1_ = c1;
          }
-         
+
          virtual double c2() const override
          {
             return c2_;
@@ -334,13 +334,13 @@ namespace Sgt
          {
             c2_ = c2;
          }
-  
+
       private:
 
          arma::Col<Complex> S_;
-         
+
          double J_{0.0};
-         
+
          double PMin_{-infinity};
          double PMax_{infinity};
          double QMin_{-infinity};

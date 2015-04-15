@@ -18,18 +18,18 @@ namespace Sgt
 
       /// @name Static member functions:
       /// @{
-         
+
          static const std::string& sComponentType()
          {
             static std::string result("yy_transformer");
             return result;
          }
-      
+
       /// @}
 
       /// @name Lifecycle
       /// @{
-      
+
          /// @brief Constructor
          /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
          /// @param ZL The leakage impedance, must be > 0.
@@ -50,10 +50,10 @@ namespace Sgt
          virtual arma::Mat<Complex> inServiceY() const override;
 
       /// @}
-      
+
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-        
+
          virtual const std::string& componentType() const override
          {
             return sComponentType();
@@ -103,7 +103,7 @@ namespace Sgt
 
       /// @name Private member functions
       /// @{
-         
+
       private:
 
          void validate() const;

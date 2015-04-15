@@ -18,7 +18,7 @@ namespace Sgt
    {
       return YAML::Load(s).as<T>();
    }
-   
+
    template<> inline const char* fromYamlString(const std::string& s)
    {
       return YAML::Load(s).as<std::string>().c_str();

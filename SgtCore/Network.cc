@@ -23,8 +23,8 @@ namespace Sgt
 
    void Network::addBranch(BranchPtr branch, const std::string& bus0Id, const std::string& bus1Id)
    {
-      auto bus0 = bus(bus0Id); 
-      auto bus1 = bus(bus1Id); 
+      auto bus0 = bus(bus0Id);
+      auto bus1 = bus(bus1Id);
       if (bus0 == nullptr)
       {
          Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << bus0Id << " was not found in the network." << std::endl;
@@ -38,7 +38,7 @@ namespace Sgt
       branchMap_[branch->id()] = branch;
       branchVec_.push_back(branch);
    }
-         
+
    void Network::addGen(GenPtr gen, const std::string& busId)
    {
       genMap_[gen->id()] = gen;
@@ -53,7 +53,7 @@ namespace Sgt
          Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network." << std::endl;
       }
    }
-         
+
    void Network::addZip(ZipPtr zip, const std::string& busId)
    {
       zipMap_[zip->id()] = zip;
@@ -124,7 +124,7 @@ namespace Sgt
    }
 
    std::unique_ptr<PowerFlowModel> buildModel(const Network& netw)
-   { 
+   {
       std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel);
       for (const auto bus : netw.busses())
       {
@@ -136,14 +136,14 @@ namespace Sgt
             if (bus->nInServiceGens() == 0)
             {
                Log().warning() << "Bus " << bus->id() << " has type " << bus->type()
-                  << ", but does not have any in service generators. Temporarily setting type to PQ." << std::endl;
+                               << ", but does not have any in service generators. Temporarily setting type to PQ." << std::endl;
                bus->setType(BusType::PQ);
             }
          }
 
          bus->applyVSetpoints();
          mod->addBus(bus->id(), bus->type(), bus->phases(), bus->YConst(), bus->IConst(), bus->SConst(), bus->JGen(),
-               bus->V(), bus->SGenRequested() + bus->SConst());
+                     bus->V(), bus->SGenRequested() + bus->SConst());
 
          bus->setType(busTypeSv);
          bus->setpointChanged().setIsEnabled(isEnabledSv);
@@ -154,7 +154,7 @@ namespace Sgt
          {
             // TODO: ignore like this, or add the branch with zero admittance?
             mod->addBranch(branch->bus0()->id(), branch->bus1()->id(),
-                          branch->phases0(), branch->phases1(), branch->Y());
+                           branch->phases0(), branch->phases1(), branch->Y());
          }
       }
       mod->validate();
@@ -168,11 +168,11 @@ namespace Sgt
          auto& modBus = *busPair.second;
          const auto bus = netw.bus(modBus.id_);
 
-         int nInService = bus->nInServiceGens(); 
+         int nInService = bus->nInServiceGens();
 
-         arma::Col<Complex> SGen = nInService > 0 
-            ? (modBus.S_ - bus->SConst()) / nInService
-            : arma::Col<Complex>(bus->phases().size(), arma::fill::zeros);
+         arma::Col<Complex> SGen = nInService > 0
+                                   ? (modBus.S_ - bus->SConst()) / nInService
+                                   : arma::Col<Complex>(bus->phases().size(), arma::fill::zeros);
          // Note: we've already taken YConst and IConst explicitly into account, so this is correct.
          // KLUDGE: We're using a vector above, rather than "auto" (which gives some kind of expression type).
          // This is less efficient, but the latter gives errors in valgrind.

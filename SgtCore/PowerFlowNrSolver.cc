@@ -52,7 +52,7 @@ namespace
       SpMat<double> result(rowInd, colPtr, values, cMat.n_rows, cMat.n_cols);
       return result;
    }
-   
+
    template<typename T> Col<Complex> colConj(const T& from)
    {
       Col<Complex> result(from.n_elem, fill::none);
@@ -116,10 +116,12 @@ namespace Sgt
       double durationUpdateIter = 0;
       double durationTot = 0;
 
-      stopwatchTot.reset(); stopwatchTot.start();
+      stopwatchTot.reset();
+      stopwatchTot.start();
 
       // Do the initial setup.
-      stopwatch.reset(); stopwatch.start();
+      stopwatch.reset();
+      stopwatch.start();
 
       init(netw);
 
@@ -133,8 +135,8 @@ namespace Sgt
       Col<double> Q = imag(mod_->S());
 
       Col<double> M2Pv = mod_->nPv() > 0
-         ? Vr(mod_->selPvFromAll()) % Vr(mod_->selPvFromAll()) + Vi(mod_->selPvFromAll()) % Vi(mod_->selPvFromAll())
-         : Col<double>();
+                         ? Vr(mod_->selPvFromAll()) % Vr(mod_->selPvFromAll()) + Vi(mod_->selPvFromAll()) % Vi(mod_->selPvFromAll())
+                         : Col<double>();
 
       Jacobian Jc(mod_->nPq(), mod_->nPv()); ///< The part of J that doesn't update at each iteration.
       initJc(Jc);
@@ -147,7 +149,8 @@ namespace Sgt
       double err = 0;
       int niter;
 
-      stopwatch.stop(); durationInitSetup = stopwatch.seconds();
+      stopwatch.stop();
+      durationInitSetup = stopwatch.seconds();
 
       const double tol = 1e-8;
       const int maxiter = 20;
@@ -156,7 +159,8 @@ namespace Sgt
       {
          SGT_DEBUG(Log().debug() << "Iteration = " << niter << std::endl);
 
-         stopwatch.reset(); stopwatch.start();
+         stopwatch.reset();
+         stopwatch.start();
          calcf(f, Vr, Vi, P, Q, M2Pv);
 
          err = norm(f, "inf");
@@ -168,56 +172,67 @@ namespace Sgt
             wasSuccessful = true;
             break;
          }
-         stopwatch.stop(); durationCalcf += stopwatch.seconds();
+         stopwatch.stop();
+         durationCalcf += stopwatch.seconds();
 
-         stopwatch.reset(); stopwatch.start();
+         stopwatch.reset();
+         stopwatch.start();
          updateJ(J, Jc, Vr, Vi, P, Q, M2Pv);
-         stopwatch.stop(); durationUpdateJ += stopwatch.seconds();
+         stopwatch.stop();
+         durationUpdateJ += stopwatch.seconds();
 
-         stopwatch.reset(); stopwatch.start();
+         stopwatch.reset();
+         stopwatch.start();
          if (mod_->nPv() > 0)
          {
             modifyForPv(J, f, Vr, Vi, M2Pv);
          }
-         stopwatch.stop(); durationModifyForPv += stopwatch.seconds();
+         stopwatch.stop();
+         durationModifyForPv += stopwatch.seconds();
 
          // Construct the full Jacobian from J, which contains the block structure.
-         stopwatch.reset(); stopwatch.start();
-         SpMat<double> JMat; calcJMatrix(JMat, J);
-         stopwatch.stop(); durationConstructJMat += stopwatch.seconds();
+         stopwatch.reset();
+         stopwatch.start();
+         SpMat<double> JMat;
+         calcJMatrix(JMat, J);
+         stopwatch.stop();
+         durationConstructJMat += stopwatch.seconds();
 
          SGT_DEBUG
          (
             Log().debug() << "Before kluSolve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
             Log().debug() << "Before kluSolve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
             Log().debug() << "Before kluSolve: M^2 = " << std::setprecision(5) << std::setw(9)
-                    << (Vr % Vr + Vi % Vi) << std::endl;
+            << (Vr % Vr + Vi % Vi) << std::endl;
             Log().debug() << "Before kluSolve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
             Log().debug() << "Before kluSolve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
             Log().debug() << "Before kluSolve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
             Log().debug() << "Before kluSolve: J   = " << std::endl;
             LogIndent _;
             for (int i = 0; i < nVar(); ++i)
-            {
-               Log().debug() << std::setprecision(5) << std::setw(9) << row(JMat, i) << std::endl;
-            }
+      {
+         Log().debug() << std::setprecision(5) << std::setw(9) << row(JMat, i) << std::endl;
+         }
          );
 
-         stopwatch.reset(); stopwatch.start();
+         stopwatch.reset();
+         stopwatch.start();
          Col<double> x;
          bool ok = kluSolve(JMat, -f, x);
-         stopwatch.stop(); durationSolve += stopwatch.seconds();
+         stopwatch.stop();
+         durationSolve += stopwatch.seconds();
 
          SGT_DEBUG(Log().debug() << "After kluSolve: ok = " << ok << std::endl);
-         SGT_DEBUG(Log().debug() << "After kluSolve: x  = " << std::setprecision(5) << std::setw(9) << x 
-               << std::endl);
+         SGT_DEBUG(Log().debug() << "After kluSolve: x  = " << std::setprecision(5) << std::setw(9) << x
+                   << std::endl);
          if (!ok)
          {
             Log().warning() << "kluSolve failed." << std::endl;
             break;
          }
 
-         stopwatch.reset(); stopwatch.start();
+         stopwatch.reset();
+         stopwatch.start();
          // Update the current values of V from the solution:
          if (mod_->nPq() > 0)
          {
@@ -241,10 +256,11 @@ namespace Sgt
          SGT_DEBUG(Log().debug() << "Updated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl);
          SGT_DEBUG(Log().debug() << "Updated Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl);
          SGT_DEBUG(Log().debug() << "Updated M^2 = " << std::setprecision(5) << std::setw(9)
-                           << Vr % Vr + Vi % Vi << std::endl);
+                   << Vr % Vr + Vi % Vi << std::endl);
          SGT_DEBUG(Log().debug() << "Updated P   = " << std::setprecision(5) << std::setw(9) << P << std::endl);
          SGT_DEBUG(Log().debug() << "Updated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl);
-         stopwatch.stop(); durationUpdateIter += stopwatch.seconds();
+         stopwatch.stop();
+         durationUpdateIter += stopwatch.seconds();
       }
 
       if (!wasSuccessful)
@@ -292,22 +308,23 @@ namespace Sgt
          node->bus_->S_[node->phaseIdx_] = node->S_;
       }
 
-      stopwatchTot.stop(); durationTot = stopwatchTot.seconds();
+      stopwatchTot.stop();
+      durationTot = stopwatchTot.seconds();
 
       SGT_DEBUG(Log().message() << "PowerFlowNrSolver: successful = " << wasSuccessful << ", error = " << err
-            << ", iterations = " << niter << ", total time = " << durationTot << "." << std::endl);
+                << ", iterations = " << niter << ", total time = " << durationTot << "." << std::endl);
       SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: -----------------------   " << std::endl);
       SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: init setup time         = " << durationInitSetup << " s." << std::endl);
       SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in calcf           = " << durationCalcf << " s." << std::endl);
       SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in updateJ         = " << durationUpdateJ << " s." << std::endl);
-      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in modifyForPv     = " << durationModifyForPv << " s." 
-            << std::endl);
-      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time to construct JMat  = " << durationConstructJMat << " s." 
-            << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in modifyForPv     = " << durationModifyForPv << " s."
+                << std::endl);
+      SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time to construct JMat  = " << durationConstructJMat << " s."
+                << std::endl);
       SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: solve time              = " << durationSolve << std::endl);
       SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time to update iter     = " << durationUpdateIter << std::endl);
       SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: -----------------------   " << std::endl);
-      
+
       applyModel(*mod_, *netw_);
 
       return wasSuccessful;
@@ -420,9 +437,9 @@ namespace Sgt
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
    void PowerFlowNrSolver::calcf(Col<double>& f,
-                           const Col<double>& Vr, const Col<double>& Vi,
-                           const Col<double>& P, const Col<double>& Q,
-                           const Col<double>& M2Pv) const
+                                 const Col<double>& Vr, const Col<double>& Vi,
+                                 const Col<double>& P, const Col<double>& Q,
+                                 const Col<double>& M2Pv) const
    {
       if (mod_->nPq() > 0)
       {
@@ -442,9 +459,9 @@ namespace Sgt
          Col<double> M2Pq = VrPq % VrPq + ViPq % ViPq;
 
          f(selIrPqFrom_f_) = (VrPq % PPq + ViPq % QPq) / M2Pq
-            + IConstrPq - GPq * Vr + BPq * Vi;
+                             + IConstrPq - GPq * Vr + BPq * Vi;
          f(selIiPqFrom_f_) = (ViPq % PPq - VrPq % QPq) / M2Pq
-            + IConstiPq - GPq * Vi - BPq * Vr;
+                             + IConstiPq - GPq * Vi - BPq * Vr;
       }
 
       if (mod_->nPv() > 0)
@@ -463,17 +480,17 @@ namespace Sgt
          const auto IConstiPv = imag(mod_->IConst()(mod_->selPvFromAll()));
 
          f(selIrPvFrom_f_) = (VrPv % PPv + ViPv % QPv) / M2Pv
-            + IConstrPv - GPv * Vr + BPv * Vi;
+                             + IConstrPv - GPv * Vr + BPv * Vi;
          f(selIiPvFrom_f_) = (ViPv % PPv - VrPv % QPv) / M2Pv
-            + IConstiPv - GPv * Vi - BPv * Vr;
+                             + IConstiPv - GPv * Vi - BPv * Vr;
       }
    }
 
    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
    void PowerFlowNrSolver::updateJ(Jacobian& J, const Jacobian& Jc,
-                             const Col<double>& Vr, const Col<double>& Vi,
-                             const Col<double>& P, const Col<double>& Q,
-                             const Col<double>& M2Pv) const
+                                   const Col<double>& Vr, const Col<double>& Vi,
+                                   const Col<double>& P, const Col<double>& Q,
+                                   const Col<double>& M2Pv) const
    {
       // Elements in J that have no non-constant part will be initialized to the corresponding term in Jc at the
       // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
@@ -533,8 +550,8 @@ namespace Sgt
 
    // Modify J and f to take into account PV busses.
    void PowerFlowNrSolver::modifyForPv(Jacobian& J, Col<double>& f,
-                                 const Col<double>& Vr, const Col<double>& Vi,
-                                 const Col<double>& M2Pv)
+                                       const Col<double>& Vr, const Col<double>& Vi,
+                                       const Col<double>& M2Pv)
    {
       auto mod = [&f](uword k, const Col<uword>& idx, SpMat<double>& JViPv, const SpMat<double>& JVrPv,
                       double fMult, double JMult)

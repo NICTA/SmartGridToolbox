@@ -20,13 +20,13 @@ namespace Sgt
 
       /// @name Static member functions:
       /// @{
-         
+
          static const std::string& sComponentType()
          {
             static std::string result("common_branch");
             return result;
          }
-      
+
       /// @}
 
       /// @name Lifecycle:
@@ -42,7 +42,7 @@ namespace Sgt
 
       /// @name ComponentInterface virtual overridden functions.
       /// @{
-        
+
          virtual const std::string& componentType() const override
          {
             return sComponentType();
@@ -54,8 +54,8 @@ namespace Sgt
 
       /// @name Line parameters:
       /// @{
- 
-         /// Complex tap ratio. 
+
+         /// Complex tap ratio.
          ///
          /// tap = V1 / V0 = exp(i theta) (n1 / n0) (where 0 = primary, 1 = secondary).
          /// tap_off_nom = tap * VBase1 / VBase0
@@ -126,7 +126,7 @@ namespace Sgt
          {
             return angMin_;
          }
-         
+
          virtual void setAngMin(double angMin)
          {
             angMin_ = angMin;
@@ -136,7 +136,7 @@ namespace Sgt
          {
             return angMax_;
          }
-         
+
          virtual void setAngMax(double angMax)
          {
             angMax_ = angMax;
@@ -153,13 +153,13 @@ namespace Sgt
 
       /// @name Private member functions
       /// @{
-         
+
       private:
 
          void validate() const;
 
       /// @}
-      
+
       private:
 
          // Parameters:

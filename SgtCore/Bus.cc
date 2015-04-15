@@ -107,10 +107,10 @@ namespace Sgt
       }
       return sum;
    }
-   
+
    arma::Col<Complex> Bus::SYConst() const
    {
-      return -arma::conj(YConst()) % arma::conj(V()) % V(); 
+      return -arma::conj(YConst()) % arma::conj(V()) % V();
    }
 
    arma::Col<Complex> Bus::IConst() const
@@ -124,10 +124,10 @@ namespace Sgt
       }
       return sum;
    }
-   
+
    arma::Col<Complex> Bus::SIConst() const
    {
-      return arma::conj(IConst()) % V(); 
+      return arma::conj(IConst()) % V();
    }
 
    arma::Col<Complex> Bus::SConst() const
@@ -146,7 +146,7 @@ namespace Sgt
    {
       return SYConst() + SIConst() + SConst();
    }
-   
+
    arma::Col<Complex> Bus::SZip() const
    {
       return SZipRequested() - SZipUnserved_;

@@ -15,7 +15,7 @@ namespace Sgt
       std::string busId = parser.expand<std::string>(nd["bus_id"]);
       netw.addGen(std::move(gen), busId);
    }
-   
+
    std::unique_ptr<GenericGen> GenericGenParserPlugin::parseGenericGen(const YAML::Node& nd,
          const ParserBase& parser) const
    {
@@ -31,7 +31,7 @@ namespace Sgt
       {
          gen->setInServiceS(parser.expand<arma::Col<Complex>>(subNd));
       }
-      
+
       if (const YAML::Node& subNd = nd["P_min"])
       {
          gen->setPMin(parser.expand<double>(subNd));
@@ -41,7 +41,7 @@ namespace Sgt
       {
          gen->setPMax(parser.expand<double>(subNd));
       }
-      
+
       if (const YAML::Node& subNd = nd["Q_min"])
       {
          gen->setQMin(parser.expand<double>(subNd));
@@ -51,22 +51,22 @@ namespace Sgt
       {
          gen->setQMax(parser.expand<double>(subNd));
       }
-      
+
       if (const YAML::Node& subNd = nd["J"])
       {
          gen->setInServiceJ(parser.expand<double>(subNd));
       }
-      
+
       if (const YAML::Node& subNd = nd["C0"])
       {
          gen->setC0(parser.expand<double>(subNd));
       }
-      
+
       if (const YAML::Node& subNd = nd["C1"])
       {
          gen->setC1(parser.expand<double>(subNd));
       }
-      
+
       if (const YAML::Node& subNd = nd["C2"])
       {
          gen->setC2(parser.expand<double>(subNd));
