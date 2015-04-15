@@ -30,7 +30,8 @@ namespace Sgt
             }
             else
             {
-                Log().fatal() << "SimComponent " << simComp->id() << " occurs more than once in the model!" << std::endl;
+                Log().fatal() << "SimComponent " << simComp->id() << " occurs more than once in the model!"
+                              << std::endl;
             }
         }
         else
@@ -184,8 +185,8 @@ SGT_DEBUG
                       << schedComp->lastUpdated() << " to " << currentTime_ << std::endl);
 
             // Remove the scheduled and possible contingent update. Note that if there is a contingent update, it was
-            // inserted by an element that has already updated, and so it is safe to do the scheduled update in place of
-            // the contingent update.
+            // inserted by an element that has already updated, and so it is safe to do the scheduled update in place
+            // of the contingent update.
             scheduledUpdates_.erase(schedUpdateIt);
             contingentUpdates_.erase(schedComp);
 

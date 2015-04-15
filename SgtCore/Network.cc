@@ -27,11 +27,13 @@ namespace Sgt
         auto bus1 = bus(bus1Id);
         if (bus0 == nullptr)
         {
-            Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << bus0Id << " was not found in the network." << std::endl;
+            Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << bus0Id << " was not found in the network."
+                          << std::endl;
         }
         if (bus1 == nullptr)
         {
-            Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << bus1Id << " was not found in the network." << std::endl;
+            Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << bus1Id << " was not found in the network."
+                          << std::endl;
         }
         branch->setBus0(bus0);
         branch->setBus1(bus1);
@@ -50,7 +52,8 @@ namespace Sgt
         }
         else
         {
-            Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network." << std::endl;
+            Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network."
+                          << std::endl;
         }
     }
 
@@ -65,7 +68,8 @@ namespace Sgt
         }
         else
         {
-            Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network." << std::endl;
+            Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network."
+                          << std::endl;
         }
     }
 
@@ -136,14 +140,15 @@ namespace Sgt
                 if (bus->nInServiceGens() == 0)
                 {
                     Log().warning() << "Bus " << bus->id() << " has type " << bus->type()
-                                    << ", but does not have any in service generators. Temporarily setting type to PQ." << std::endl;
+                                    << ", but does not have any in service generators. Temporarily setting type to PQ."
+                                    << std::endl;
                     bus->setType(BusType::PQ);
                 }
             }
 
             bus->applyVSetpoints();
-            mod->addBus(bus->id(), bus->type(), bus->phases(), bus->YConst(), bus->IConst(), bus->SConst(), bus->JGen(),
-                        bus->V(), bus->SGenRequested() + bus->SConst());
+            mod->addBus(bus->id(), bus->type(), bus->phases(), bus->YConst(), bus->IConst(), bus->SConst(),
+                    bus->JGen(), bus->V(), bus->SGenRequested() + bus->SConst());
 
             bus->setType(busTypeSv);
             bus->setpointChanged().setIsEnabled(isEnabledSv);

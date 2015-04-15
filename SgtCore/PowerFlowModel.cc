@@ -57,8 +57,8 @@ namespace Sgt
     }
 
     void PowerFlowModel::addBus(const std::string& id, BusType type, const Phases& phases,
-                                const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
-                                double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S)
+            const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
+            double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S)
     {
         SGT_DEBUG(Log().debug() << "PowerFlowModel : add bus " << id << std::endl);
         busses_[id].reset(new PfBus(id, type, phases, YConst, IConst, SConst, J, V, S));

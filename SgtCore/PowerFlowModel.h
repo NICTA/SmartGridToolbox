@@ -32,8 +32,8 @@ namespace Sgt
         arma::Col<Complex> IConst_; ///< Constant current injection, one per phase.
         arma::Col<Complex> SConst_; ///< Constant power injection, one per phase.
 
-        // Regardless of numbers of poles, etc., the combined generation at a bus will have a certain
-        // angular momentum for any given frequency of the network. Thus, we define an effective moment of inertia at the
+        // Regardless of numbers of poles, etc., the combined generation at a bus will have a certain angular
+        // momentum for any given frequency of the network. Thus, we define an effective moment of inertia at the
         // bus by L = J omega_netw.
         double J_; ///< Effective moment of inertia for all machines attached to bus.
 

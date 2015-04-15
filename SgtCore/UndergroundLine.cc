@@ -50,14 +50,14 @@ namespace Sgt
             {
                 Dij(7, i) = Dij(i, 7) = phaseDist_(4, i); // phase_i - neutral
                 Dij(7, i + 3) = Dij(i + 3, 7) =
-                                    pow(pow(Dij(4, i), nConcStrands_) - pow(rConc_, nConcStrands_), nConcStrInv); // conc_i - neutral
+                    pow(pow(Dij(4, i), nConcStrands_) - pow(rConc_, nConcStrands_), nConcStrInv); // conc_i - neutral
             }
             for (int j = 0; j < i; ++j)
             {
                 Dij(i, j) = Dij(j, i) = phaseDist_(i, j); // phase_i - phase_j
                 Dij(i + 3, j + 3) = Dij(j + 3, i + 3) = phaseDist_(i, j); // conc_i - conc_j
                 Dij(i, j + 3) = Dij(j, i + 3) = Dij(i + 3, j) = Dij(j + 3, i) =
-                                                    pow(pow(Dij(i, j), nConcStrands_) - pow(rConc_, nConcStrands_), nConcStrInv); // phase_i - conc_j
+                    pow(pow(Dij(i, j), nConcStrands_) - pow(rConc_, nConcStrands_), nConcStrInv); // phase_i - conc_j
             }
         }
         if (hasNeutral_)

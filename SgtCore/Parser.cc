@@ -85,7 +85,8 @@ namespace Sgt
         std::string name = ndLoopVar[0].as<std::string>();
         if (ndLoopVar.size() != 4)
         {
-            Log().fatal() << "loop_variable expression is invalid. Format is [name, start, upper, stride]." << std::endl;
+            Log().fatal() << "loop_variable expression is invalid. Format is [name, start, upper, stride]."
+                          << std::endl;
         }
         int start = expand<int>(ndLoopVar[1]);
         int upper = expand<int>(ndLoopVar[2]);

@@ -135,8 +135,8 @@ namespace Sgt
         Col<double> Q = imag(mod_->S());
 
         Col<double> M2Pv = mod_->nPv() > 0
-                           ? Vr(mod_->selPvFromAll()) % Vr(mod_->selPvFromAll()) + Vi(mod_->selPvFromAll()) % Vi(mod_->selPvFromAll())
-                           : Col<double>();
+            ? Vr(mod_->selPvFromAll()) % Vr(mod_->selPvFromAll()) + Vi(mod_->selPvFromAll()) % Vi(mod_->selPvFromAll())
+            : Col<double>();
 
         Jacobian Jc(mod_->nPq(), mod_->nPv()); ///< The part of J that doesn't update at each iteration.
         initJc(Jc);
@@ -314,9 +314,12 @@ SGT_DEBUG
         SGT_DEBUG(Log().message() << "PowerFlowNrSolver: successful = " << wasSuccessful << ", error = " << err
                   << ", iterations = " << niter << ", total time = " << durationTot << "." << std::endl);
         SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: -----------------------   " << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: init setup time         = " << durationInitSetup << " s." << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in calcf           = " << durationCalcf << " s." << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in updateJ         = " << durationUpdateJ << " s." << std::endl);
+        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: init setup time         = "
+                                << durationInitSetup << " s." << std::endl);
+        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in calcf           = "
+                                << durationCalcf << " s." << std::endl);
+        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in updateJ         = "
+                                << durationUpdateJ << " s." << std::endl);
         SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in modifyForPv     = " << durationModifyForPv << " s."
                   << std::endl);
         SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time to construct JMat  = " << durationConstructJMat << " s."

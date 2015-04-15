@@ -135,7 +135,8 @@ namespace Sgt
         {
             return localTime;
         }
-        local_date_time ldt(localTime.date(), localTime.time_of_day(), localTz, local_date_time::NOT_DATE_TIME_ON_ERROR);
+        local_date_time ldt(localTime.date(), localTime.time_of_day(), localTz,
+                local_date_time::NOT_DATE_TIME_ON_ERROR);
         return ldt.utc_time();
     }
     const double pi = 3.141592653589793238462643383279502884;

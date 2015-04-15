@@ -167,8 +167,8 @@ namespace Sgt
             Complex YSeries_{czero}; // Series admittance for top of pi.
             Complex YShunt_{czero}; // Total shunt admittance for both legs of pi - each leg is half of this.
 
-            // The following power ratings are rated to the voltage of the to bus, bus1. They are really current ratings
-            // that are multiplied by this voltage.
+            // The following power ratings are rated to the voltage of the to bus, bus1.
+            // They are really current ratings that are multiplied by this voltage.
             double rateA_{infinity};
             double rateB_{infinity};
             double rateC_{infinity};

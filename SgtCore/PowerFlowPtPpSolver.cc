@@ -184,7 +184,8 @@ namespace Sgt
             Log().message() << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
             Log().message() << "Postprocessing time = " << stopwatchPost.seconds() << std::endl;
             Log().message() << "Total time          = "
-                            << stopwatchPre.seconds() + stopwatchSolve.seconds() + stopwatchPost.seconds() << std::endl;
+                            << stopwatchPre.seconds() + stopwatchSolve.seconds() + stopwatchPost.seconds()
+                            << std::endl;
         }
         return true;
     }

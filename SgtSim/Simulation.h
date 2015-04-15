@@ -124,7 +124,8 @@ namespace Sgt
                 if (result == nullptr && crashOnFail)
                 {
                     Log().fatal() << "Component " << id
-                                  << " was requested and exists in the simulation, but is of the wrong type" << std::endl;
+                                  << " was requested and exists in the simulation, but is of the wrong type"
+                                  << std::endl;
                 }
                 return result;
             }
@@ -160,14 +161,16 @@ namespace Sgt
             Event& timestepDidComplete() {return timestepDidComplete_;}
 
             /// @brief Retrieve a const TimeSeries.
-            template<typename T> std::shared_ptr<const T> timeSeries(const std::string& id, bool crashOnFail = true) const
+            template<typename T> std::shared_ptr<const T> timeSeries(const std::string& id, 
+                    bool crashOnFail = true) const
             {
                 std::shared_ptr<const TimeSeriesBase> ts = genericTimeSeries(id, crashOnFail);
                 auto result = std::dynamic_pointer_cast<const T>(ts);
                 if (result == nullptr && crashOnFail)
                 {
                     Log().fatal() << "Time series " << id
-                                  << " was requested and exists in the simulation, but is of the wrong type" << std::endl;
+                                  << " was requested and exists in the simulation, but is of the wrong type"
+                                  << std::endl;
                 }
                 return result;
             }
@@ -175,7 +178,8 @@ namespace Sgt
             /// @brief Retrieve a TimeSeries.
             template<typename T> std::shared_ptr<T> timeSeries(const std::string& id, bool crashOnFail = true)
             {
-                return std::const_pointer_cast<T>((static_cast<const Simulation*>(this))->timeSeries<T>(id, crashOnFail));
+                return std::const_pointer_cast<T>(
+                        (static_cast<const Simulation*>(this))->timeSeries<T>(id, crashOnFail));
             }
 
             /// @brief Add a time series.

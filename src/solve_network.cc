@@ -15,7 +15,8 @@ int main(int argc, char** argv)
     std::string outPrefix = argv[3];
     Network nw("network", 100.0);
 
-    std::string yamlStr = std::string("--- [{power_flow_solver : " + solver + "}, {matpower : {input_file : ") + inFName + ", default_kV_base : 11}}]";
+    std::string yamlStr = std::string("--- [{power_flow_solver : " + solver + "}, {matpower : {input_file : ") +
+        inFName + ", default_kV_base : 11}}]";
     YAML::Node n = YAML::Load(yamlStr);
 
     Sgt::Parser<Network> p;
@@ -51,7 +52,8 @@ int main(int argc, char** argv)
                    bus->id().c_str(), bus->VBase(), std::abs(V), std::arg(V)*180.0/pi,
                    SGen.real(), SGen.imag(), SLoad.real(), SLoad.imag(),
                    yZip.real(), yZip.imag(), IConst.real(), IConst.imag());
-            fprintf(outFBus, "%15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n",
+            fprintf(outFBus,
+                    "%15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n",
                     bus->VBase(), std::abs(V), std::arg(V)*180.0/pi,
                     SGen.real(), SGen.imag(), SLoad.real(), SLoad.imag(),
                     yZip.real(), yZip.imag(), IConst.real(), IConst.imag());

@@ -14,7 +14,8 @@ namespace Sgt
             const ParserBase& parser) const
     {
         SinglePhaseTransformerParserPlugin transParser;
-        auto trans = sim.newSimComponent<SimSinglePhaseTransformer>(*transParser.parseSinglePhaseTransformer(nd, parser));
+        auto trans = sim.newSimComponent<SimSinglePhaseTransformer>(
+                *transParser.parseSinglePhaseTransformer(nd, parser));
 
         assertFieldPresent(nd, "network_id");
         assertFieldPresent(nd, "bus_0_id");

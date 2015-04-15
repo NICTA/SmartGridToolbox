@@ -86,7 +86,8 @@ namespace Sgt
                 {
                     auto pos1 = pos2;
                     --pos1;
-                    return pos1->second + (pos2->second - pos1->second) * (td - pos1->first) / (pos2->first - pos1->first);
+                    return pos1->second + (pos2->second - pos1->second) * (td - pos1->first) /
+                        (pos2->first - pos1->first);
                 }
             }
 

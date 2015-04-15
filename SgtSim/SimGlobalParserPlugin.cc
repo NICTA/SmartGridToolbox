@@ -61,7 +61,8 @@ namespace Sgt
             }
             catch (...)
             {
-                Log().fatal() << "Couldn't parse lat_long " << parser.expand<std::string>(nodeLatLong) << "." << std::endl;
+                Log().fatal() << "Couldn't parse lat_long " << parser.expand<std::string>(nodeLatLong) << "."
+                              << std::endl;
             }
         }
     }
