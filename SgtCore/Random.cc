@@ -7,42 +7,42 @@
 
 namespace Sgt
 {
-   namespace
-   {
-      boost::random::mt19937 sRng; // Random number generator.
-   }
+    namespace
+    {
+        boost::random::mt19937 sRng; // Random number generator.
+    }
 
-   double randDiscrete(const double* probs, int nProbs)
-   {
-      boost::random::discrete_distribution<> dist(&probs[0], &probs[nProbs]);
-      return dist(sRng);
-   }
+    double randDiscrete(const double* probs, int nProbs)
+    {
+        boost::random::discrete_distribution<> dist(&probs[0], &probs[nProbs]);
+        return dist(sRng);
+    }
 
-   double randNormal(double mu, double sig)
-   {
-      typedef boost::random::normal_distribution<> DistType;
-      static DistType dist(0.0, 1.0);
-      return dist(sRng, DistType::param_type(mu, sig));
-   }
+    double randNormal(double mu, double sig)
+    {
+        typedef boost::random::normal_distribution<> DistType;
+        static DistType dist(0.0, 1.0);
+        return dist(sRng, DistType::param_type(mu, sig));
+    }
 
-   double randUniform(double lower, double upper)
-   {
-      typedef boost::random::uniform_real_distribution<> DistType;
-      static DistType dist(0.0, 1.0);
-      return dist(sRng,  DistType::param_type(lower, upper));
-   }
+    double randUniform(double lower, double upper)
+    {
+        typedef boost::random::uniform_real_distribution<> DistType;
+        static DistType dist(0.0, 1.0);
+        return dist(sRng,  DistType::param_type(lower, upper));
+    }
 
-   double randUniformInt(int lower, int upper)
-   {
-      typedef boost::random::uniform_int_distribution<> DistType;
-      static DistType dist(0, 1);
-      return dist(sRng,  DistType::param_type(lower, upper));
-   }
+    double randUniformInt(int lower, int upper)
+    {
+        typedef boost::random::uniform_int_distribution<> DistType;
+        static DistType dist(0, 1);
+        return dist(sRng,  DistType::param_type(lower, upper));
+    }
 
-   double randWeibull(double a, double b)
-   {
-      typedef boost::random::weibull_distribution<> DistType;
-      static DistType dist(0.0, 1.0);
-      return dist(sRng,  DistType::param_type(a, b));
-   }
+    double randWeibull(double a, double b)
+    {
+        typedef boost::random::weibull_distribution<> DistType;
+        static DistType dist(0.0, 1.0);
+        return dist(sRng,  DistType::param_type(a, b));
+    }
 }

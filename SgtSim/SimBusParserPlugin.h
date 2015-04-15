@@ -6,20 +6,20 @@
 
 namespace Sgt
 {
-   class Simulation;
+    class Simulation;
 
-   /// @brief ParserPlugin that parses SimBus objects.
-   class SimBusParserPlugin : public SimParserPlugin
-   {
-      public:
-         virtual const char* key() override
-         {
-            return "bus";
-         }
+    /// @brief ParserPlugin that parses SimBus objects.
+    class SimBusParserPlugin : public SimParserPlugin
+    {
+        public:
+            virtual const char* key() override
+            {
+                return "bus";
+            }
 
-      public:
-         virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
-   };
+        public:
+            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+    };
 }
 
 #endif // SIM_BUS_PARSER_PLUGIN_DOT_H

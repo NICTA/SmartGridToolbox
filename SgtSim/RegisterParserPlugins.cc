@@ -24,27 +24,27 @@
 
 namespace Sgt
 {
-   class Simulation;
-   template<> void registerParserPlugins<Simulation>(Parser<Simulation>& p)
-   {
-      p.registerParserPlugin<BatteryParserPlugin>();
-      p.registerParserPlugin<HeartbeatParserPlugin>();
-      p.registerParserPlugin<SimBusParserPlugin>();
-      p.registerParserPlugin<SimDgyTransformerParserPlugin>();
-      p.registerParserPlugin<SimGenericBranchParserPlugin>();
-      p.registerParserPlugin<SimGenericGenParserPlugin>();
-      p.registerParserPlugin<SimGenericZipParserPlugin>();
-      p.registerParserPlugin<SimGlobalParserPlugin>();
-      p.registerParserPlugin<SimMatpowerParserPlugin>();
-      p.registerParserPlugin<SimNetworkParserPlugin>();
-      p.registerParserPlugin<SimOverheadLineParserPlugin>();
-      p.registerParserPlugin<SimpleBuildingParserPlugin>();
-      p.registerParserPlugin<SimYyTransformerParserPlugin>();
-      p.registerParserPlugin<TimeSeriesParserPlugin>();
-      p.registerParserPlugin<TimeSeriesZipParserPlugin>();
-      p.registerParserPlugin<InverterParserPlugin>();
-      p.registerParserPlugin<SimSinglePhaseTransformerParserPlugin>();
-      p.registerParserPlugin<SolarPvParserPlugin>();
-      p.registerParserPlugin<WeatherParserPlugin>();
-   }
+    class Simulation;
+    template<> void registerParserPlugins<Simulation>(Parser<Simulation>& p)
+    {
+        p.registerParserPlugin<BatteryParserPlugin>();
+        p.registerParserPlugin<HeartbeatParserPlugin>();
+        p.registerParserPlugin<SimBusParserPlugin>();
+        p.registerParserPlugin<SimDgyTransformerParserPlugin>();
+        p.registerParserPlugin<SimGenericBranchParserPlugin>();
+        p.registerParserPlugin<SimGenericGenParserPlugin>();
+        p.registerParserPlugin<SimGenericZipParserPlugin>();
+        p.registerParserPlugin<SimGlobalParserPlugin>();
+        p.registerParserPlugin<SimMatpowerParserPlugin>();
+        p.registerParserPlugin<SimNetworkParserPlugin>();
+        p.registerParserPlugin<SimOverheadLineParserPlugin>();
+        p.registerParserPlugin<SimpleBuildingParserPlugin>();
+        p.registerParserPlugin<SimYyTransformerParserPlugin>();
+        p.registerParserPlugin<TimeSeriesParserPlugin>();
+        p.registerParserPlugin<TimeSeriesZipParserPlugin>();
+        p.registerParserPlugin<InverterParserPlugin>();
+        p.registerParserPlugin<SimSinglePhaseTransformerParserPlugin>();
+        p.registerParserPlugin<SolarPvParserPlugin>();
+        p.registerParserPlugin<WeatherParserPlugin>();
+    }
 }

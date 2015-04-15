@@ -2,6 +2,6 @@
 
 namespace Sgt
 {
-   template class Parser<Simulation>;
-   template class ParserPlugin<Simulation>;
+    template class Parser<Simulation>;
+    template class ParserPlugin<Simulation>;
 }

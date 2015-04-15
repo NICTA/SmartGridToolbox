@@ -5,120 +5,120 @@
 
 namespace Sgt
 {
-   /// @brief Single phase transformer.
-   class SinglePhaseTransformer : public BranchAbc
-   {
-      public:
+    /// @brief Single phase transformer.
+    class SinglePhaseTransformer : public BranchAbc
+    {
+        public:
 
-      /// @name Static member functions:
-      /// @{
+        /// @name Static member functions:
+        /// @{
 
-         static const std::string& sComponentType()
-         {
-            static std::string result("single_phase_transformer");
-            return result;
-         }
+            static const std::string& sComponentType()
+            {
+                static std::string result("single_phase_transformer");
+                return result;
+            }
 
-      /// @}
+        /// @}
 
-         SGT_PROPS_INIT(SinglePhaseTransformer);
-         SGT_PROPS_INHERIT(SinglePhaseTransformer, Component);
-         SGT_PROPS_INHERIT(SinglePhaseTransformer, BranchAbc);
+            SGT_PROPS_INIT(SinglePhaseTransformer);
+            SGT_PROPS_INHERIT(SinglePhaseTransformer, Component);
+            SGT_PROPS_INHERIT(SinglePhaseTransformer, BranchAbc);
 
-      /// @name Lifecycle
-      /// @{
+        /// @name Lifecycle
+        /// @{
 
-         /// @brief Constructor
-         /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
-         /// @param ZL The leakage impedance, must be > 0.
-         SinglePhaseTransformer(const std::string& id, Complex nomVRatio, Complex offNomRatio, Complex ZL) :
-            BranchAbc(id, Phase::BAL, Phase::BAL), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
-         {
-            // Empty.
-         }
+            /// @brief Constructor
+            /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
+            /// @param ZL The leakage impedance, must be > 0.
+            SinglePhaseTransformer(const std::string& id, Complex nomVRatio, Complex offNomRatio, Complex ZL) :
+                BranchAbc(id, Phase::BAL, Phase::BAL), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
+            {
+                // Empty.
+            }
 
-      /// @}
+        /// @}
 
-      /// @name ComponentInterface virtual overridden functions.
-      /// @{
+        /// @name ComponentInterface virtual overridden functions.
+        /// @{
 
-         virtual const std::string& componentType() const override
-         {
-            return sComponentType();
-         }
+            virtual const std::string& componentType() const override
+            {
+                return sComponentType();
+            }
 
-         // virtual void print(std::ostream& os) const override; // TODO
+            // virtual void print(std::ostream& os) const override; // TODO
 
-      /// @}
+        /// @}
 
-      /// @name Overridden from BranchAbc:
-      /// @{
+        /// @name Overridden from BranchAbc:
+        /// @{
 
-         virtual arma::Mat<Complex> inServiceY() const override;
+            virtual arma::Mat<Complex> inServiceY() const override;
 
-      /// @}
+        /// @}
 
-      /// @name Parameters:
-      /// @{
+        /// @name Parameters:
+        /// @{
 
-         Complex nomVRatio() const
-         {
-            return nomVRatio_;
-         }
+            Complex nomVRatio() const
+            {
+                return nomVRatio_;
+            }
 
-         void setNomVRatio(Complex nomVRatio)
-         {
-            nomVRatio_ = nomVRatio;
-            isValid_ = false;
-         }
+            void setNomVRatio(Complex nomVRatio)
+            {
+                nomVRatio_ = nomVRatio;
+                isValid_ = false;
+            }
 
-         Complex offNomRatio() const
-         {
-            return offNomRatio_;
-         }
+            Complex offNomRatio() const
+            {
+                return offNomRatio_;
+            }
 
-         void setOffNomRatio(Complex offNomRatio)
-         {
-            offNomRatio_ = offNomRatio;
-            isValid_ = false;
-         }
+            void setOffNomRatio(Complex offNomRatio)
+            {
+                offNomRatio_ = offNomRatio;
+                isValid_ = false;
+            }
 
-         Complex a() const
-         {
-            return offNomRatio_ * nomVRatio_;
-         }
+            Complex a() const
+            {
+                return offNomRatio_ * nomVRatio_;
+            }
 
-         Complex ZL() const
-         {
-            return 1.0 / YL_;
-         }
+            Complex ZL() const
+            {
+                return 1.0 / YL_;
+            }
 
-         void setZL(Complex ZL)
-         {
-            YL_ = 1.0 / ZL;
-            isValid_ = false;
-         }
+            void setZL(Complex ZL)
+            {
+                YL_ = 1.0 / ZL;
+                isValid_ = false;
+            }
 
-      /// @}
+        /// @}
 
-      /// @name Private member functions
-      /// @{
+        /// @name Private member functions
+        /// @{
 
-      private:
+        private:
 
-         void validate() const;
+            void validate() const;
 
-      /// @}
+        /// @}
 
-      private:
+        private:
 
-         Complex nomVRatio_; ///< Nominal voltage ratio.
-         Complex offNomRatio_; ///< Off nominal complex turns ratio.
-         Complex YL_; ///< Series leakage admittance.
+            Complex nomVRatio_; ///< Nominal voltage ratio.
+            Complex offNomRatio_; ///< Off nominal complex turns ratio.
+            Complex YL_; ///< Series leakage admittance.
 
-         mutable bool isValid_{false};
-         mutable arma::Mat<Complex> Y_;
-   };
+            mutable bool isValid_{false};
+            mutable arma::Mat<Complex> Y_;
+    };
 }
 
 #endif // SINGLE_PHASE_TRANSFORMER_DOT_H

@@ -6,20 +6,20 @@
 
 namespace Sgt
 {
-   class Simulation;
+    class Simulation;
 
-   /// @brief ParserPlugin that parses the network keyword, adding a new SimNetwork to the model.
-   class SimNetworkParserPlugin : public SimParserPlugin
-   {
-      public:
-         virtual const char* key() override
-         {
-            return "network";
-         }
+    /// @brief ParserPlugin that parses the network keyword, adding a new SimNetwork to the model.
+    class SimNetworkParserPlugin : public SimParserPlugin
+    {
+        public:
+            virtual const char* key() override
+            {
+                return "network";
+            }
 
-      public:
-         virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
-   };
+        public:
+            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+    };
 }
 
 #endif // SIM_NETWORK_PARSER_PLUGIN_DOT_H

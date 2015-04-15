@@ -5,34 +5,34 @@
 
 namespace Sgt
 {
-   class SynchronousMachine : public Component
-   {
-      /// @name Overridden member functions from SimComponent.
-      /// @{
+    class SynchronousMachine : public Component
+    {
+        /// @name Overridden member functions from SimComponent.
+        /// @{
 
-      public:
-         // virtual Time validUntil() const override;
+        public:
+            // virtual Time validUntil() const override;
 
-      protected:
-         virtual void initializeState() override;
-         virtual void updateState(Time t) override;
+        protected:
+            virtual void initializeState() override;
+            virtual void updateState(Time t) override;
 
-      /// @}
+        /// @}
 
-      /// @name My member functions.
-      /// @{
+        /// @name My member functions.
+        /// @{
 
-      public:
-         SynchronousMachine(const std::string& name);
+        public:
+            SynchronousMachine(const std::string& name);
 
-         void addToNetwork(SimNetwork& nw);
+            void addToNetwork(SimNetwork& nw);
 
-      /// @}
+        /// @}
 
-      private:
-         SimBus bus_;
-         SimBranch branch_;
-   }
+        private:
+            SimBus bus_;
+            SimBranch branch_;
+    }
 }
 
 #endif // SYNCHRONOUS_MACHINE_DOT_H

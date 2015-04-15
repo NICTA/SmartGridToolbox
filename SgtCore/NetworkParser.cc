@@ -2,6 +2,6 @@
 
 namespace Sgt
 {
-   template class Parser<Network>;
-   template class ParserPlugin<Network>;
+    template class Parser<Network>;
+    template class ParserPlugin<Network>;
 }

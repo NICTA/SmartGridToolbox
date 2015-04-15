@@ -5,21 +5,21 @@ using namespace Sgt;
 
 int main(int argc, const char** argv)
 {
-   if (argc != 2)
-   {
-      Log().fatal() << "Usage: " << argv[0] << " config_name" << std::endl;
-   }
+    if (argc != 2)
+    {
+        Log().fatal() << "Usage: " << argv[0] << " config_name" << std::endl;
+    }
 
-   const char* configName = argv[1];
+    const char* configName = argv[1];
 
-   Simulation sim;
-   Parser<Simulation> p;
-   p.parse(configName, sim);
-   sim.initialize();
+    Simulation sim;
+    Parser<Simulation> p;
+    p.parse(configName, sim);
+    sim.initialize();
 
-   while (!sim.isFinished())
-   {
-      LogIndent _;
-      sim.doTimestep();
-   }
+    while (!sim.isFinished())
+    {
+        LogIndent _;
+        sim.doTimestep();
+    }
 }

@@ -3,7 +3,7 @@
 
 namespace Sgt
 {
-   class Network;
+    class Network;
 }
 
 void runOpf(Sgt::Network& network);

@@ -6,20 +6,20 @@
 
 namespace Sgt
 {
-   class Simulation;
+    class Simulation;
 
-   /// @brief ParserPlugin that parses generic branch objects.
-   class SimGlobalParserPlugin : public SimParserPlugin
-   {
-      public:
-         virtual const char* key() override
-         {
-            return "simulation";
-         }
+    /// @brief ParserPlugin that parses generic branch objects.
+    class SimGlobalParserPlugin : public SimParserPlugin
+    {
+        public:
+            virtual const char* key() override
+            {
+                return "simulation";
+            }
 
-      public:
-         virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
-   };
+        public:
+            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+    };
 }
 
 #endif // SIM_GLOBAL_PARSER_PLUGIN_DOT_H

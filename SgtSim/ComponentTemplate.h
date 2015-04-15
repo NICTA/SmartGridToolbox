@@ -5,33 +5,33 @@
 
 namespace Sgt
 {
-   class ComponentTemplate : public Component
-   {
-      /// @name Overridden member functions from SimComponent.
-      /// @{
+    class ComponentTemplate : public Component
+    {
+        /// @name Overridden member functions from SimComponent.
+        /// @{
 
-      public:
-         virtual Time validUntil() const override;
+        public:
+            virtual Time validUntil() const override;
 
-      protected:
-         virtual void initializeState() override;
-         virtual void updateState(Time t) override;
+        protected:
+            virtual void initializeState() override;
+            virtual void updateState(Time t) override;
 
-      /// @}
+        /// @}
 
-      /// @name My member functions.
-      /// @{
+        /// @name My member functions.
+        /// @{
 
-      public:
-         ComponentTemplate(const std::string& name);
-         virtual ~ComponentTemplate();
+        public:
+            ComponentTemplate(const std::string& name);
+            virtual ~ComponentTemplate();
 
-      private:
+        private:
 
-      /// @}
+        /// @}
 
-      private:
-   }
+        private:
+    }
 }
 
 #endif // COMPONENT_TEMPLATE_DOT_H

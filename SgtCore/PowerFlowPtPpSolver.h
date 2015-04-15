@@ -6,13 +6,13 @@
 
 namespace Sgt
 {
-   class Network;
+    class Network;
 
-   class PowerFlowPtPpSolver : public PowerFlowSolverInterface
-   {
-      public:
-         virtual bool solve(Network* netw) override;
-   };
+    class PowerFlowPtPpSolver : public PowerFlowSolverInterface
+    {
+        public:
+            virtual bool solve(Network* netw) override;
+    };
 }
 
 #endif // POWER_FLOW_PT_PP_SOLVER_DOT_H

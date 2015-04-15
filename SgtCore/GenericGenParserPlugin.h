@@ -5,22 +5,22 @@
 
 namespace Sgt
 {
-   class GenericGen;
-   class Network;
+    class GenericGen;
+    class Network;
 
-   /// @brief ParserPlugin that parses GenericGen objects.
-   class GenericGenParserPlugin : public NetworkParserPlugin
-   {
-      public:
-         virtual const char* key()
-         {
-            return "generic_gen";
-         }
+    /// @brief ParserPlugin that parses GenericGen objects.
+    class GenericGenParserPlugin : public NetworkParserPlugin
+    {
+        public:
+            virtual const char* key()
+            {
+                return "generic_gen";
+            }
 
-         virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
+            virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
 
-         std::unique_ptr<GenericGen> parseGenericGen(const YAML::Node& nd, const ParserBase& parser) const;
-   };
+            std::unique_ptr<GenericGen> parseGenericGen(const YAML::Node& nd, const ParserBase& parser) const;
+    };
 }
 
 #endif // GEN_PARSER_PLUGIN_DOT_H

@@ -5,19 +5,19 @@
 
 namespace Sgt
 {
-   class Simulation;
+    class Simulation;
 
-   class SolarPvParserPlugin : public SimParserPlugin
-   {
-      public:
-         virtual const char* key() override
-         {
-            return "solar_pv";
-         }
+    class SolarPvParserPlugin : public SimParserPlugin
+    {
+        public:
+            virtual const char* key() override
+            {
+                return "solar_pv";
+            }
 
-      public:
-         virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
-   };
+        public:
+            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+    };
 }
 
 #endif // SOLAR_PV_PARSER_PLUGIN_DOT_H

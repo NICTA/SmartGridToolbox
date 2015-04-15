@@ -5,11 +5,11 @@
 
 namespace Sgt
 {
-   class Simulation;
-   extern template class Parser<Simulation>;
-   extern template class ParserPlugin<Simulation>;
-   using SimParser = Parser<Simulation>;
-   using SimParserPlugin = ParserPlugin<Simulation>;
+    class Simulation;
+    extern template class Parser<Simulation>;
+    extern template class ParserPlugin<Simulation>;
+    using SimParser = Parser<Simulation>;
+    using SimParserPlugin = ParserPlugin<Simulation>;
 }
 
 #endif // SIM_PARSER_DOT_H

@@ -5,22 +5,22 @@
 
 namespace Sgt
 {
-   class Network;
-   class UndergroundLine;
+    class Network;
+    class UndergroundLine;
 
-   /// @brief ParserPlugin that parses UndergroundLine objects.
-   class UndergroundLineParserPlugin : public NetworkParserPlugin
-   {
-      public:
-         virtual const char* key()
-         {
-            return "underground_line";
-         }
+    /// @brief ParserPlugin that parses UndergroundLine objects.
+    class UndergroundLineParserPlugin : public NetworkParserPlugin
+    {
+        public:
+            virtual const char* key()
+            {
+                return "underground_line";
+            }
 
-         virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
+            virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
 
-         std::unique_ptr<UndergroundLine> parseUndergroundLine(const YAML::Node& nd, const ParserBase& parser) const;
-   };
+            std::unique_ptr<UndergroundLine> parseUndergroundLine(const YAML::Node& nd, const ParserBase& parser) const;
+    };
 }
 
 #endif // UNDERGROUND_LINE_PARSER_PLUGIN

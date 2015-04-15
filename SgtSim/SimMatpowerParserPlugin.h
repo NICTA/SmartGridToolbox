@@ -6,20 +6,20 @@
 
 namespace Sgt
 {
-   class Simulation;
+    class Simulation;
 
-   /// @brief ParserPlugin that parses matpower networks.
-   class SimMatpowerParserPlugin : public SimParserPlugin
-   {
-      public:
-         virtual const char* key() override
-         {
-            return "matpower";
-         }
+    /// @brief ParserPlugin that parses matpower networks.
+    class SimMatpowerParserPlugin : public SimParserPlugin
+    {
+        public:
+            virtual const char* key() override
+            {
+                return "matpower";
+            }
 
-      public:
-         virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
-   };
+        public:
+            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+    };
 }
 
 #endif // SIM_MATPOWER_PARSER_PLUGIN_DOT_H

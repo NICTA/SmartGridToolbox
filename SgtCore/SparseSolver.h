@@ -3,8 +3,8 @@
 
 namespace arma
 {
-   template<typename T> class SpMat;
-   template<typename T> class Col;
+    template<typename T> class SpMat;
+    template<typename T> class Col;
 }
 
 bool kluSolve(const arma::SpMat<double>& a, const arma::Col<double>& b, arma::Col<double>& result);

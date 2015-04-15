@@ -5,19 +5,19 @@
 
 namespace Sgt
 {
-   class Simulation;
+    class Simulation;
 
-   class WeatherParserPlugin : public SimParserPlugin
-   {
-      public:
-         virtual const char* key() override
-         {
-            return "weather";
-         }
+    class WeatherParserPlugin : public SimParserPlugin
+    {
+        public:
+            virtual const char* key() override
+            {
+                return "weather";
+            }
 
-      public:
-         virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
-   };
+        public:
+            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+    };
 }
 
 #endif // WEATHER_PARSER_PLUGIN_DOT_H

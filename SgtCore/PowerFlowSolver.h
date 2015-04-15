@@ -3,13 +3,13 @@
 
 namespace Sgt
 {
-   class Network;
+    class Network;
 
-   class PowerFlowSolverInterface
-   {
-      public:
-         virtual bool solve(Network* netw) = 0;
-   };
+    class PowerFlowSolverInterface
+    {
+        public:
+            virtual bool solve(Network* netw) = 0;
+    };
 };
 
 #endif // POWER_FLOW_SOLVER_INTERFACE_DOT_H

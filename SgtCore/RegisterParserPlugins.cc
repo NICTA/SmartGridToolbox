@@ -12,18 +12,18 @@
 
 namespace Sgt
 {
-   class Network;
-   template<> void registerParserPlugins<Network>(Parser<Network>& p)
-   {
-      p.registerParserPlugin<BusParserPlugin>();
-      p.registerParserPlugin<CommonBranchParserPlugin>();
-      p.registerParserPlugin<DgyTransformerParserPlugin>();
-      p.registerParserPlugin<GenericBranchParserPlugin>();
-      p.registerParserPlugin<GenericGenParserPlugin>();
-      p.registerParserPlugin<GenericZipParserPlugin>();
-      p.registerParserPlugin<MatpowerParserPlugin>();
-      p.registerParserPlugin<OverheadLineParserPlugin>();
-      p.registerParserPlugin<PowerFlowSolverParserPlugin>();
-      p.registerParserPlugin<UndergroundLineParserPlugin>();
-   }
+    class Network;
+    template<> void registerParserPlugins<Network>(Parser<Network>& p)
+    {
+        p.registerParserPlugin<BusParserPlugin>();
+        p.registerParserPlugin<CommonBranchParserPlugin>();
+        p.registerParserPlugin<DgyTransformerParserPlugin>();
+        p.registerParserPlugin<GenericBranchParserPlugin>();
+        p.registerParserPlugin<GenericGenParserPlugin>();
+        p.registerParserPlugin<GenericZipParserPlugin>();
+        p.registerParserPlugin<MatpowerParserPlugin>();
+        p.registerParserPlugin<OverheadLineParserPlugin>();
+        p.registerParserPlugin<PowerFlowSolverParserPlugin>();
+        p.registerParserPlugin<UndergroundLineParserPlugin>();
+    }
 }

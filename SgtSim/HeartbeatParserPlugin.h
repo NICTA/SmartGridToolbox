@@ -5,19 +5,19 @@
 
 namespace Sgt
 {
-   class Simulation;
+    class Simulation;
 
-   class HeartbeatParserPlugin : public SimParserPlugin
-   {
-      public:
-         virtual const char* key() override
-         {
-            return "heartbeat";
-         }
+    class HeartbeatParserPlugin : public SimParserPlugin
+    {
+        public:
+            virtual const char* key() override
+            {
+                return "heartbeat";
+            }
 
-      public:
-         virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
-   };
+        public:
+            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+    };
 }
 
 #endif // HEARTBEAT_PARSER_PLUGIN_DOT_H
