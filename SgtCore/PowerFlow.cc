@@ -249,7 +249,16 @@ namespace Sgt
 
     double bundleGmr(int n, double gmr1, double d)
     {
-        double rConc = d / (2 * std::sin(pi / n));
-        return std::pow(gmr1 * n * std::pow(rConc, n - 1), 1.0 / n);
+        double result;
+        if (n == 1)
+        {
+            return gmr1;
+        }
+        else
+        {
+            double rConc = d / (2 * std::sin(pi / n));
+            result = std::pow(gmr1 * n * std::pow(rConc, n - 1), 1.0 / n);
+        }
+        return result;
     }
 }

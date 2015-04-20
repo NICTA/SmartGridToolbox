@@ -55,15 +55,9 @@ namespace Sgt
         arma::Mat<double> Dij = condDist_;
         for (int i = 0; i < Dij.n_rows; ++i)
         {
-            if (nInBundle_(i) > 1)
-            {
-                // TODO: only bother to do one calculation of adjSubcondDist_ doesn't change.
-                Dij(i, i) = bundleGmr(nInBundle_(i), subcondGmr_(i), adjSubcondDist_(i));
-            }
-            else
-            {
-                Dij(i, i) = subcondGmr_(i);
-            }
+            // TODO: only bother to do one calculation of adjSubcondDist_ doesn't change.
+            // Note: handles the unbundled case fine, returning subcondGmr_.
+            Dij(i, i) = bundleGmr(nInBundle_(i), subcondGmr_(i), adjSubcondDist_(i));
         }
 
         arma::Col<double> condRPerL = subcondRPerL_;
