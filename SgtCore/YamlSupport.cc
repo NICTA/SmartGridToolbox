@@ -100,6 +100,7 @@ namespace YAML
     }
     template Node convert<arma::Col<double>>::encode(const arma::Col<double>& from);
     template Node convert<arma::Col<Complex>>::encode(const arma::Col<Complex>& from);
+    template Node convert<arma::Col<int>>::encode(const arma::Col<int>& from);
 
     template<typename T> bool convert<arma::Col<T>>::decode(const Node& nd, arma::Col<T>& to)
     {
@@ -120,6 +121,7 @@ namespace YAML
     }
     template bool convert<arma::Col<double>>::decode(const Node& nd, arma::Col<double>& to);
     template bool convert<arma::Col<Complex>>::decode(const Node& nd, arma::Col<Complex>& to);
+    template bool convert<arma::Col<int>>::decode(const Node& nd, arma::Col<int>& to);
 
     template<typename T> Node convert<arma::Mat<T>>::encode(const arma::Mat<T>& from)
     {
@@ -137,6 +139,7 @@ namespace YAML
     }
     template Node convert<arma::Mat<double>>::encode(const arma::Mat<double>& from);
     template Node convert<arma::Mat<Complex>>::encode(const arma::Mat<Complex>& from);
+    template Node convert<arma::Mat<int>>::encode(const arma::Mat<int>& from);
 
     template<typename T> bool convert<arma::Mat<T>>::decode(const Node& nd, arma::Mat<T>& to)
     {
@@ -179,4 +182,5 @@ namespace YAML
     }
     template bool convert<arma::Mat<double>>::decode(const Node& nd, arma::Mat<double>& to);
     template bool convert<arma::Mat<Complex>>::decode(const Node& nd, arma::Mat<Complex>& to);
+    template bool convert<arma::Mat<int>>::decode(const Node& nd, arma::Mat<int>& to);
 }

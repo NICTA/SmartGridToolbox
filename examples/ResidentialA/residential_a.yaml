@@ -32,7 +32,7 @@
 
         house_phases: [C, A, A, B, C, A, A, C, B, C, B, B, C, B, B, A, B, A, B, C]
 
-        earth_resistivity: 100
+        earth_resist: 100
 
         R_per_L_hv: 0.3e-4
         dabhv_1: 3.0
@@ -114,9 +114,9 @@
         phases_0: <netw_phases>
         phases_1: <netw_phases>
         length: <length_hv>
-        conductor_R_per_L: [<R_per_L_hv>, <R_per_L_hv>, <R_per_L_hv>]
-        earth_resistivity: <earth_resistivity>
-        distance_matrix:
+        subcond_R_per_L: [<R_per_L_hv>, <R_per_L_hv>, <R_per_L_hv>]
+        earth_resist: <earth_resist>
+        cond_dist:
             [
                 [<gmrhv>, <dabhv_1>, <dachv_1>],
                 [<dabhv_1>, <gmrhv>, <dbchv_1>],
@@ -138,9 +138,9 @@
         phases_0: <netw_phases>
         phases_1: <netw_phases>
         length: <length_hv>
-        conductor_R_per_L: [<R_per_L_hv>, <R_per_L_hv>, <R_per_L_hv>]
-        earth_resistivity: <earth_resistivity>
-        distance_matrix:
+        subcond_R_per_L: [<R_per_L_hv>, <R_per_L_hv>, <R_per_L_hv>]
+        earth_resist: <earth_resist>
+        cond_dist:
             [
                 [<gmrhv>, <dabhv_2>, <dachv_2>],
                 [<dabhv_2>, <gmrhv>, <dbchv_2>],
@@ -162,9 +162,9 @@
         phases_0: <netw_phases>
         phases_1: <netw_phases>
         length: <length_hv>
-        conductor_R_per_L: [<R_per_L_hv>, <R_per_L_hv>, <R_per_L_hv>]
-        earth_resistivity: <earth_resistivity>
-        distance_matrix:
+        subcond_R_per_L: [<R_per_L_hv>, <R_per_L_hv>, <R_per_L_hv>]
+        earth_resist: <earth_resist>
+        cond_dist:
             [
                 [<gmrhv>, <dabhv_3>, <dachv_3>],
                 [<dabhv_3>, <gmrhv>, <dbchv_3>],
@@ -204,9 +204,9 @@
                     phases_0: <netw_phases>
                     phases_1: <netw_phases>
                     length: <length_mv(<i>)>
-                    conductor_R_per_L: [<R_per_L_mv>, <R_per_L_mv>, <R_per_L_mv>]
-                    earth_resistivity: <earth_resistivity>
-                    distance_matrix:
+                    subcond_R_per_L: [<R_per_L_mv>, <R_per_L_mv>, <R_per_L_mv>]
+                    earth_resist: <earth_resist>
+                    cond_dist:
                         [
                             [<gmrmv>, <dabmv>, <dacmv>],
                             [<dabmv>, <gmrmv>, <dbcmv>],
@@ -263,9 +263,9 @@
                                             phases_0: [<house_phases(<(<i>+<j>+<k>)%20>)>]
                                             phases_1: [<house_phases(<(<i>+<j>+<k>)%20>)>]
                                             length: 20
-                                            conductor_R_per_L: [<R_per_L_lv>]
-                                            earth_resistivity: <earth_resistivity>
-                                            distance_matrix: [[0.01]]
+                                            subcond_R_per_L: [<R_per_L_lv>]
+                                            earth_resist: <earth_resist>
+                                            cond_dist: [[0.01]]
                                             freq: 60.0
                         -  loop: 
                                 loop_variable: [k, 0, <<n_houses_<i>(<j>)>-1>, 1]
@@ -278,9 +278,9 @@
                                             phases_0: <netw_phases>
                                             phases_1: <netw_phases>
                                             length: 100
-                                            conductor_R_per_L: [<R_per_L_lv>, <R_per_L_lv>, <R_per_L_lv>]
-                                            earth_resistivity: <earth_resistivity>
-                                            distance_matrix:
+                                            subcond_R_per_L: [<R_per_L_lv>, <R_per_L_lv>, <R_per_L_lv>]
+                                            earth_resist: <earth_resist>
+                                            cond_dist:
                                                 [
                                                     [<gmrlv>, <dablv>, <daclv>],
                                                     [<dablv>, <gmrlv>, <dbclv>],
@@ -295,9 +295,9 @@
                                 phases_0: <netw_phases>
                                 phases_1: <netw_phases>
                                 length: 1000
-                                conductor_R_per_L: [<R_per_L_lv>, <R_per_L_lv>, <R_per_L_lv>]
-                                earth_resistivity: <earth_resistivity>
-                                distance_matrix:
+                                subcond_R_per_L: [<R_per_L_lv>, <R_per_L_lv>, <R_per_L_lv>]
+                                earth_resist: <earth_resist>
+                                cond_dist:
                                     [
                                         [<gmrlv>, <dablv>, <daclv>],
                                         [<dablv>, <gmrlv>, <dbclv>],

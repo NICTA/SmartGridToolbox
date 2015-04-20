@@ -20,7 +20,7 @@
         nom_V_ratio_mv_lv: 26.506 # Transformer ratio from medium to low voltage.
 
         # Parameters for overhead lines:
-        earth_resistivity: 100
+        earth_resist: 100
 
         R_per_L_mv: 1e-4
         gmrmv: 0.015
@@ -89,9 +89,9 @@
                     phases_0: [BAL]
                     phases_1: [BAL]
                     length: <length_mv(<i>)>
-                    conductor_R_per_L: [<R_per_L_mv>]
-                    earth_resistivity: <earth_resistivity>
-                    distance_matrix: [[<gmrmv>]]
+                    subcond_R_per_L: [<R_per_L_mv>]
+                    earth_resist: <earth_resist>
+                    cond_dist: [[<gmrmv>]]
                     freq: 60.0
             -  bus: 
                     id: bus_lv_up_<i> # The other, LV side of the transformer.
@@ -148,9 +148,9 @@
                                             phases_0: [BAL]
                                             phases_1: [BAL]
                                             length: 20
-                                            conductor_R_per_L: [<R_per_L_lv>]
-                                            earth_resistivity: <earth_resistivity>
-                                            distance_matrix: [[0.01]]
+                                            subcond_R_per_L: [<R_per_L_lv>]
+                                            earth_resist: <earth_resist>
+                                            cond_dist: [[0.01]]
                                             freq: 60.0
                         -  loop: 
                                 loop_variable: [k, 0, <<n_houses_<i>(<j>)>-1>, 1]
@@ -163,9 +163,9 @@
                                             phases_0: [BAL]
                                             phases_1: [BAL]
                                             length: 100
-                                            conductor_R_per_L: [<R_per_L_lv>]
-                                            earth_resistivity: <earth_resistivity>
-                                            distance_matrix: [[<gmrlv>]]
+                                            subcond_R_per_L: [<R_per_L_lv>]
+                                            earth_resist: <earth_resist>
+                                            cond_dist: [[<gmrlv>]]
                                             freq: 60.0
                         -  overhead_line: 
                                 id: line_lv_up_<i>_<j>_0
@@ -175,7 +175,7 @@
                                 phases_0: [BAL]
                                 phases_1: [BAL]
                                 length: 1000
-                                conductor_R_per_L: [<R_per_L_lv>]
-                                earth_resistivity: <earth_resistivity>
-                                distance_matrix: [[<gmrlv>]]
+                                subcond_R_per_L: [<R_per_L_lv>]
+                                earth_resist: <earth_resist>
+                                cond_dist: [[<gmrlv>]]
                                 freq: 60.0

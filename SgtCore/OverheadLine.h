@@ -7,14 +7,15 @@ namespace Sgt
 {
     /// @brief An overhead power line.
     ///
+    /// An overhead line with nCond conductors, with nPhase of the conductors corresponding to
+    /// explicitly modelled phases (possibly including an explicit neutral phase), and the remaining
+    /// (nCond - nPhase) conductors being grounded neutral wires that influence the inductance of the line
+    /// but are not explicitly modelled as phases in the network. The conductors themselves may (or may not)
+    /// consist of bundles of two, three or four single wires, usually separated by a small air gap. 
+    /// For bundled wires, a bundling distance is defined which is the distance between the wires
+    /// for two or three bundle wires (assumed to be in equilateral triangle in the latter case), or
+    /// the side length of a square configuration for four bundled wires.
     /// As in Gridlab-D, we take direction from Kersting: Distribution System Modelling and Analysis.
-    ///
-    /// Phases A, B, and C are individually surrounded by *either* a concentric stranded neutral, or a neutral
-    /// tape shield. In addition, there may be a separate neutral wire, which does not have its own shielding as it is
-    /// not expected to carry (much) current.
-    /// Thus, there are either 6 or 7 conductors to consider, depending on whether there is a separate neutral wire.
-    /// Conductors 1-3 and 7 are the usual type of conductor with their own particular GMR specified, etc.
-    /// Conductors 4-6 represent either the concentric neutrals or the tape.
     class OverheadLine : public BranchAbc
     {
         public:
@@ -38,9 +39,22 @@ namespace Sgt
         /// @{
 
             /// @brief Constructor.
+            /// @param id The line id. 
+            /// @param phases0 The phases on the '0' (from) end.
+            /// @param phases1 The phases on the '1' (to) end.
+            /// @param L The line length in m.
+            /// @param condDist Matrix with conductor spacing. Symmetric / zero diagonal.
+            /// @param subcondGmr Matrix with conductor spacing on off diagonal, subconductor GMR on diagonal.
+            /// @param subcondRPerL resistance per unit length of each subconductor.
+            /// @param freq The nominal frequency of the system.
+            /// @param rhoEarth The earth resistivity.
+            /// @param nInBundle The number of bundled subconductors for each conductor (optional).
+            /// @param adjSubcondDist The distance between adjacent bundled subconductors for each conductor (optional).
             OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double L,
-                         const arma::Mat<double>& Dij, const arma::Col<double>& resPerL,
-                         double rhoEarth, double freq);
+                    const arma::Mat<double>& condDist, const arma::Mat<double> subcondGmr,
+                    const arma::Col<double>& subcondRPerL, double freq = 50.0, double rhoEarth = 100.0,
+                    const arma::Col<int>& nInBundle = arma::Col<int>(),
+                    const arma::Col<double>& adjSubcondDist = arma::Col<double>());
         /// @}
 
         /// @name ComponentInterface virtual overridden functions.
@@ -96,10 +110,13 @@ namespace Sgt
             // Line Parameters:
 
             double L_; ///< Line length.
-            arma::Mat<double> Dij_; ///< Distance between wires on off diag, GMR of wides on diag.
-            arma::Col<double> resPerL_; ///< resistance/length of each wire.
+            arma::Mat<double> condDist_; ///< Distance between conductors on off diag.
+            arma::Col<double> subcondGmr_; ///< GMR of conductor, or each subconductor if bundled.
+            arma::Col<double> subcondRPerL_; ///< resistance/length of each subconductor.
+            double freq_{50.0}; ///< Frequency (Hz) : TODO : link to network frequency.
             double rhoEarth_{100.0}; ///< Earth resistivity.
-            double freq_; ///< Frequency : TODO : link to network frequency.
+            arma::Col<int> nInBundle_; ///< Number of bundled subconductors on each conductor.
+            arma::Col<double> adjSubcondDist_; ///< Bundling distance (equilateral triangle for 3, square for 4).
 
             // Cached quantities:
 

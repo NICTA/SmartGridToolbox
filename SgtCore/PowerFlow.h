@@ -111,6 +111,14 @@ namespace Sgt
     /// @param ZLine The line impedance matrix.
     /// @return The nodal admittance matrix YNode.
     arma::Mat<Complex> ZLine2YNode(const arma::Mat<Complex>& ZLine);
+    
+    /// @brief Calculate the GMR of a bundled conductor.
+    ///
+    /// @param n The number of single conductors.
+    /// @param gmr1 The GMR of a single conductor.
+    /// @param d The side length of a regular polygon on whose vertices the single conductors lie.
+    /// @return The GMR of the bundle.
+    double bundleGmr(int n, double gmr1, double d);
 }
 
 #endif // POWERFLOW_DOT_H

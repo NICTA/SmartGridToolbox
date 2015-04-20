@@ -77,9 +77,9 @@ components:
         bus_0: bus_trans # Bus connected to end 0 (phases must match).
         bus_1: bus_pv # Bus connected to end 1 (phases must match).
         length: 20 # Line length in meters.
-        line_resistivity: [1.9014e-04] # SI, Ohms/m.
-        earth_resistivity: 100 # SI, Ohm m.
-        distance_matrix: [[0.00743712]] # Diag = geom mean radius, off diag = wire-wire dist.
+        subcond_R_per_L: [1.9014e-04] # SI, Ohms/m.
+        earth_resist: 100 # SI, Ohm m.
+        cond_dist: [[0.00743712]] # Diag = geom mean radius, off diag = wire-wire dist.
         freq: 50 # Frequency on line.
     overhead_line:
         name: branch_trans_batt
@@ -89,9 +89,9 @@ components:
         bus_0: bus_trans
         bus_1: bus_batt
         length: 20
-        line_resistivity: [1.9014e-04]
-        distance_matrix: [[0.00743712]]
-        earth_resistivity: 100
+        subcond_R_per_L: [1.9014e-04]
+        cond_dist: [[0.00743712]]
+        earth_resist: 100
         freq: 50
     overhead_line:
         name: branch_trans_build
@@ -101,9 +101,9 @@ components:
         bus_0: bus_trans
         bus_1: bus_build
         length: 100
-        line_resistivity: [1.9014e-04]
-        distance_matrix: [[0.00743712]]
-        earth_resistivity: 100
+        subcond_R_per_L: [1.9014e-04]
+        cond_dist: [[0.00743712]]
+        earth_resist: 100
         freq: 50
     inverter:
         name: inverter_batt

@@ -246,4 +246,10 @@ namespace Sgt
 
         return YNode;
     }
+
+    double bundleGmr(int n, double gmr1, double d)
+    {
+        double rConc = d / (2 * std::sin(pi / n));
+        return std::pow(gmr1 * n * std::pow(rConc, n - 1), 1.0 / n);
+    }
 }

@@ -26,22 +26,33 @@ namespace Sgt
         assertFieldPresent(nd, "phases_0");
         assertFieldPresent(nd, "phases_1");
         assertFieldPresent(nd, "length");
-        assertFieldPresent(nd, "distance_matrix");
-        assertFieldPresent(nd, "conductor_R_per_L");
-        assertFieldPresent(nd, "earth_resistivity");
+        assertFieldPresent(nd, "cond_dist");
+        assertFieldPresent(nd, "subcond_gmr");
+        assertFieldPresent(nd, "subcond_R_per_L");
         assertFieldPresent(nd, "freq");
+        assertFieldPresent(nd, "earth_resist");
 
         string id = parser.expand<std::string>(nd["id"]);
         Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
         Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
-        double length = parser.expand<double>(nd["length"]);
-        arma::Mat<double> distMatrix = parser.expand<arma::Mat<double>>(nd["distance_matrix"]);
-        arma::Col<double> resPerL = parser.expand<arma::Col<double>>(nd["conductor_R_per_L"]);
-        double earthResistivity = parser.expand<double>(nd["earth_resistivity"]);
+        double L = parser.expand<double>(nd["length"]);
+        arma::Mat<double> condDist = parser.expand<arma::Mat<double>>(nd["cond_dist"]);
+        arma::Col<double> subcondGmr = parser.expand<arma::Col<double>>(nd["subcond_gmr"]);
+        arma::Col<double> subcondRPerL = parser.expand<arma::Col<double>>(nd["subcond_R_per_L"]);
         double freq = parser.expand<double>(nd["freq"]);
+        double earthResist = parser.expand<double>(nd["earth_resist"]);
 
-        std::unique_ptr<OverheadLine> ohl(new OverheadLine(id, phases0, phases1, length, distMatrix, resPerL,
-                                          earthResistivity, freq));
+        arma::Col<int> nInBundle;
+        arma::Col<double> adjSubcondDist;
+        auto ndNInBundle = nd["n_in_bundle"];
+        if (ndNInBundle)
+        {
+            nInBundle = parser.expand<arma::Col<int>>(ndNInBundle);
+            adjSubcondDist = parser.expand<arma::Col<double>>(nd["adj_subcond_dist"]);
+        }
+
+        std::unique_ptr<OverheadLine> ohl(new OverheadLine(id, phases0, phases1, L, condDist, subcondGmr,
+                    subcondRPerL, freq, earthResist));
 
         return ohl;
     }
