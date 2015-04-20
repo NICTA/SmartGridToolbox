@@ -46,17 +46,28 @@ namespace Sgt
                    "the bundle distance vector." << std::endl;
         }
 
-        arma::Mat<double> Dij = condDist_;
-        arma::Col<double> condRPerL = subcondRPerL_;
-        if (nInBundle_.size() > 0)
+        if (nInBundle_.size() == 0)
         {
-            for (int i = 0; i < Dij.n_rows; ++i)
+            nInBundle_ = arma::Col<int>(nCond, arma::fill::ones);
+            adjSubcondDist_ = arma::Col<double>(nCond, arma::fill::zeros);
+        }
+
+        arma::Mat<double> Dij = condDist_;
+        for (int i = 0; i < Dij.n_rows; ++i)
+        {
+            if (nInBundle_(i) > 1)
             {
                 // TODO: only bother to do one calculation of adjSubcondDist_ doesn't change.
                 Dij(i, i) = bundleGmr(nInBundle_(i), subcondGmr_(i), adjSubcondDist_(i));
             }
-            condRPerL = subcondRPerL_ % nInBundle_; // Elementwise mult.
+            else
+            {
+                Dij(i, i) = subcondGmr_(i);
+            }
         }
+
+        arma::Col<double> condRPerL = subcondRPerL_;
+        condRPerL = subcondRPerL_ / nInBundle_; // Elementwise division.
 
         // Calculate the primative impedance matrix, using Carson's equations.
         ZPrim_ = carson(nCond, Dij, subcondRPerL_, L_, freq_, rhoEarth_);
