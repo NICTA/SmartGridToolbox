@@ -31,15 +31,16 @@
         length: 1
         has_neutral: false
         distance_matrix: [
-                                                [0.0              , 0.1524         , 0.3048         ],
-                                                [0.1524          , 0.0             , 0.1524         ],
-                                                [0.3048          , 0.1524         , 0.0             ]
-                                      ]
+            [0.0             , 0.1524         , 0.3048         ],
+            [0.1524          , 0.0            , 0.1524         ],
+            [0.3048          , 0.1524         , 0.0            ]
+            ]
         gmr_phase: 0.00521208
         R_per_L_phase: 2.5476e-04
+        earth_resistivity: 100.0
+        freq: 60.0
+        shielding_type: concentric_stranded
         gmr_conc_strand: 0.000633984
         R_per_L_conc_strand: 0.0092412
         radius_conc: 0.01557528
         n_conc_strands: 13
-        earth_resistivity: 100.0
-        freq: 60.0

@@ -6,21 +6,15 @@ namespace Sgt
 {
     UndergroundLine::UndergroundLine(
         const std::string& id, double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
-        double gmrPhase, double resPerLPhase,
-        double gmrConcStrand, double resPerLConcStrand, int nConcStrands,
-        double rConc, double rhoEarth, double freq) :
+        double gmrPhase, double resPerLPhase, double freq, double rhoEarth) :
         BranchAbc(id, Phase::A|Phase::B|Phase::C, Phase::A|Phase::B|Phase::C),
         L_(L),
         hasNeutral_(hasNeutral),
         phaseDist_(phaseDist),
         gmrPhase_(gmrPhase),
         resPerLPhase_(resPerLPhase),
-        gmrConcStrand_(gmrConcStrand),
-        resPerLConcStrand_(resPerLConcStrand),
-        nConcStrands_(nConcStrands),
-        rConc_(rConc),
-        rhoEarth_(rhoEarth),
-        freq_(freq)
+        freq_(freq),
+        rhoEarth_(rhoEarth)
     {
         int nPhase = hasNeutral ? 4 : 3; // Not including shielding layers.
         if (phaseDist.n_rows != nPhase || phaseDist.n_cols != nPhase)
@@ -28,11 +22,22 @@ namespace Sgt
             Log().fatal() << "UndergroundLine : distance matrix must be size " << std::to_string(nPhase) << " x "
                           << std::to_string(nPhase) << "." << std::endl;
         }
-
-        validate(); // TODO: currently, can't adjust any parameters.
     }
 
-    void UndergroundLine::validate()
+    UndergroundLineStrandedShield::UndergroundLineStrandedShield(
+            const std::string& id, double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
+            double gmrPhase, double resPerLPhase, double freq, double rhoEarth,
+            double gmrConcStrand, double resPerLConcStrand, int nConcStrands, double rConc) :
+        UndergroundLine(id, L, hasNeutral, phaseDist, gmrPhase, resPerLPhase, freq, rhoEarth),
+        gmrConcStrand_(gmrConcStrand),
+        resPerLConcStrand_(resPerLConcStrand),
+        nConcStrands_(nConcStrands),
+        rConc_(rConc)
+    {
+        // Empty.
+    }
+
+    void UndergroundLineStrandedShield::validate()
     {
         int nPhase = phases0().size();
         int nCond = hasNeutral_ ? 7 : 6;

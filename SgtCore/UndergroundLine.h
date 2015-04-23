@@ -38,11 +38,10 @@ namespace Sgt
         /// @{
 
             /// @brief Constructor.
-            UndergroundLine(
-                const std::string& id, double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
-                double gmrPhase, double resPerLPhase,
-                double gmrConcStrand, double resPerLConcStrand, int nConcStrands,
-                double rConc, double rhoEarth, double freq);
+            UndergroundLine(const std::string& id, double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
+                            double gmrPhase, double resPerLPhase, double freq, double rhoEarth);
+
+            virtual void validate() = 0; ///< Calcuate all cached quantities.
 
         /// @}
 
@@ -85,15 +84,7 @@ namespace Sgt
 
         /// @}
 
-        private:
-
-        /// @name Private member functions
-        /// @{
-            void validate(); ///< Calcuate all cached quantities.
-
-        /// @}
-
-        private:
+        protected:
 
             // Line Parameters:
 
@@ -104,19 +95,33 @@ namespace Sgt
             double gmrPhase_; ///< GMR of phase conductor, GMR_c in Kersting.
             double resPerLPhase_; ///< resistance/length of phase conductor, r_c in Kersting.
 
-            double gmrConcStrand_; ///< GMR of concentric neutral strand, GMR_s in Kersting.
-            double resPerLConcStrand_; ///< resistance/length of concentric neutral strand, r_s in Kersting.
-            int nConcStrands_; ///< Number of concentric neutral strands, k in Kersting.
-            double rConc_; ///< Radius center of phase conductor to center of shield strands, R in Kersting.
-
-            double rhoEarth_{100.0}; ///< Earth resistivity.
             double freq_; ///< Frequency : TODO : link to network frequency.
+            double rhoEarth_{100.0}; ///< Earth resistivity.
 
             // Cached quantities:
 
             arma::Mat<Complex> ZPrim_; ///< Primative line impedance matrix.
             arma::Mat<Complex> ZPhase_; ///< Phase line impedance matrix.
             arma::Mat<Complex> YNode_; ///< Nodal admittance matrix.
+    };
+
+    class UndergroundLineStrandedShield : public UndergroundLine
+    {
+        public:
+            
+            UndergroundLineStrandedShield(
+                    const std::string& id, double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
+                    double gmrPhase, double resPerLPhase, double freq, double rhoEarth,
+                    double gmrConcStrand, double resPerLConcStrand, int nConcStrands, double rConc);
+            
+            virtual void validate() override; ///< Calcuate all cached quantities.
+
+        private:
+
+            double gmrConcStrand_; ///< GMR of concentric neutral strand, GMR_s in Kersting.
+            double resPerLConcStrand_; ///< resistance/length of concentric neutral strand, r_s in Kersting.
+            int nConcStrands_; ///< Number of concentric neutral strands, k in Kersting.
+            double rConc_; ///< Radius center of phase conductor to center of shield strands, R in Kersting.
     };
 }
 

@@ -25,32 +25,42 @@ namespace Sgt
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "length");
         assertFieldPresent(nd, "has_neutral");
+        assertFieldPresent(nd, "shielding_type");
         assertFieldPresent(nd, "distance_matrix");
         assertFieldPresent(nd, "gmr_phase");
         assertFieldPresent(nd, "R_per_L_phase");
-        assertFieldPresent(nd, "gmr_conc_strand");
-        assertFieldPresent(nd, "R_per_L_conc_strand");
-        assertFieldPresent(nd, "n_conc_strands");
-        assertFieldPresent(nd, "radius_conc");
-        assertFieldPresent(nd, "earth_resistivity");
         assertFieldPresent(nd, "freq");
+        assertFieldPresent(nd, "earth_resistivity");
 
         string id = parser.expand<std::string>(nd["id"]);
         double length = parser.expand<double>(nd["length"]);
         bool hasNeutral = parser.expand<bool>(nd["has_neutral"]);
+        std::string shieldingType = parser.expand<std::string>(nd["shielding_type"]);
         arma::Mat<double> distMatrix = parser.expand<arma::Mat<double>>(nd["distance_matrix"]);
         double gmrPhase = parser.expand<double>(nd["gmr_phase"]);
         double RPerLPhase = parser.expand<double>(nd["R_per_L_phase"]);
-        double gmrConcStrand = parser.expand<double>(nd["gmr_conc_strand"]);
-        double RPerLConcStrand = parser.expand<double>(nd["R_per_L_conc_strand"]);
-        int nConcStrands = parser.expand<int>(nd["n_conc_strands"]);
-        double rConc = parser.expand<double>(nd["radius_conc"]);
-        double earthResistivity = parser.expand<double>(nd["earth_resistivity"]);
         double freq = parser.expand<double>(nd["freq"]);
+        double earthResistivity = parser.expand<double>(nd["earth_resistivity"]);
 
-        std::unique_ptr<UndergroundLine> ugl(new UndergroundLine(id, length, hasNeutral, distMatrix,
-                                             gmrPhase, RPerLPhase, gmrConcStrand, RPerLConcStrand,
-                                             nConcStrands, rConc, earthResistivity, freq));
+        std::unique_ptr<UndergroundLine> ugl;
+
+        if (shieldingType == "concentric_stranded")
+        {
+            assertFieldPresent(nd, "gmr_conc_strand");
+            assertFieldPresent(nd, "R_per_L_conc_strand");
+            assertFieldPresent(nd, "n_conc_strands");
+            assertFieldPresent(nd, "radius_conc");
+
+            double gmrConcStrand = parser.expand<double>(nd["gmr_conc_strand"]);
+            double RPerLConcStrand = parser.expand<double>(nd["R_per_L_conc_strand"]);
+            int nConcStrands = parser.expand<int>(nd["n_conc_strands"]);
+            double rConc = parser.expand<double>(nd["radius_conc"]);
+
+            ugl.reset(new UndergroundLineStrandedShield(id, length, hasNeutral, distMatrix, gmrPhase,
+                        RPerLPhase, freq, earthResistivity, gmrConcStrand, RPerLConcStrand, nConcStrands, rConc));
+            ugl->validate();
+        }
+
         return ugl;
     }
 }
