@@ -91,12 +91,26 @@ namespace Sgt
         /// @{
 
             const GenVec gens() const {return genVec_;}
+
             void addGen(GenPtr gen) {genVec_.push_back(gen);}
+
             void removeAllGens() {genVec_.clear();}
+
             int nInServiceGens() const;
+
+            SGT_PROP_GET(nInServiceGens, Bus, int, GetByVal, nInServiceGens);
+
             arma::Col<Complex> SGenRequested() const; ///< Requested power of gens.
+
+            SGT_PROP_GET(SGenRequested, Bus, arma::Col<Complex>, GetByVal, SGenRequested);
+
             arma::Col<Complex> SGen() const;  ///< Actual power of gens, including possible unserved generation.
+
+            SGT_PROP_GET(SGen, Bus, arma::Col<Complex>, GetByVal, SGen);
+
             double JGen() const;
+            
+            SGT_PROP_GET(JGen, Bus, double, GetByVal, JGen);
 
         /// @}
 
@@ -104,20 +118,42 @@ namespace Sgt
         /// @{
 
             const ZipVec zips() const {return zipVec_;}
+
             void addZip(ZipPtr zip) {zipVec_.push_back(zip);}
+
             void removeAllZips() {zipVec_.clear();}
+
             int nInServiceZips() const;
 
+            SGT_PROP_GET(nInServiceZips, Bus, int, GetByVal, nInServiceZips);
+
             arma::Col<Complex> YConst() const; ///< Constant impedance component of zip.
+
+            SGT_PROP_GET(YConst, Bus, arma::Col<Complex>, GetByVal, YConst);
+
             arma::Col<Complex> SYConst() const; ///< Complex power from constant impedance component.
+            
+            SGT_PROP_GET(SYConst, Bus, arma::Col<Complex>, GetByVal, SYConst);
 
             arma::Col<Complex> IConst() const; ///< Constant current component of zip.
+            
+            SGT_PROP_GET(IConst, Bus, arma::Col<Complex>, GetByVal, IConst);
+            
             arma::Col<Complex> SIConst() const; ///< Complex power from constant current component of zip.
+            
+            SGT_PROP_GET(SIConst, Bus, arma::Col<Complex>, GetByVal, SIConst);
 
             arma::Col<Complex> SConst() const; ///< Complex power component of zip.
+            
+            SGT_PROP_GET(SConst, Bus, arma::Col<Complex>, GetByVal, SConst);
 
             arma::Col<Complex> SZipRequested() const; ///< Requested power of zips.
+            
+            SGT_PROP_GET(SZipRequested, Bus, arma::Col<Complex>, GetByVal, SZipRequested);
+            
             arma::Col<Complex> SZip() const; ///< Actual power of zips, including possible unserved load.
+            
+            SGT_PROP_GET(SZip, Bus, arma::Col<Complex>, GetByVal, SZip);
 
         /// @}
 
@@ -148,6 +184,8 @@ namespace Sgt
                 setpointChanged_.trigger();
             }
 
+            SGT_PROP_GET_SET(VMagSetpoint, Bus, arma::Col<double>, GetByVal, VMagSetpoint, setVMagSetpoint);
+
             virtual arma::Col<double> VAngSetpoint() const
             {
                 return VAngSetpoint_;
@@ -158,6 +196,8 @@ namespace Sgt
                 VAngSetpoint_ = VAngSetpoint;
                 setpointChanged_.trigger();
             }
+
+            SGT_PROP_GET_SET(VAngSetpoint, Bus, arma::Col<double>, GetByVal, VAngSetpoint, setVAngSetpoint);
 
             virtual void applyVSetpoints();
 
@@ -172,6 +212,8 @@ namespace Sgt
                 setpointChanged_.trigger();
             }
 
+            SGT_PROP_GET_SET(VMagMin, Bus, double, GetByVal, VMagMin, setVMagMin);
+            
             virtual double VMagMax() const
             {
                 return VMagMax_;
@@ -182,6 +224,8 @@ namespace Sgt
                 VMagMax_ = VMagMax;
                 setpointChanged_.trigger();
             }
+
+            SGT_PROP_GET_SET(VMagMax, Bus, double, GetByVal, VMagMax, setVMagMax);
 
         /// @}
 
