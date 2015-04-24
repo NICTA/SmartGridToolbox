@@ -243,6 +243,16 @@ namespace Sgt
         /// @name Power-Flow problem:
         /// @{
 
+            const PowerFlowSolverInterface* solver() const
+            {
+                return solver_.get();
+            }
+            
+            PowerFlowSolverInterface* solver()
+            {
+                return solver_.get();
+            }
+            
             void setSolver(std::unique_ptr<PowerFlowSolverInterface> solver)
             {
                 solver_ = std::move(solver);
