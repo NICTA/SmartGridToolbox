@@ -72,6 +72,7 @@ namespace Sgt
             virtual void setIsInService(bool isInService)
             {
                 isInService_ = isInService;
+                isInServiceChanged_.trigger();
             }
 
         /// @}
@@ -143,13 +144,19 @@ namespace Sgt
                 return isInServiceChanged_;
             }
 
-            /// @brief Event triggered when I go in or out of service.
+            /// @brief Event triggered when the amount of generated power changes.
             virtual Event& generationChanged()
             {
                 return generationChanged_;
             }
+            
+            /// @brief Event triggered when the angular momentum changes.
+            virtual Event& JChanged()
+            {
+                return JChanged_;
+            }
 
-            /// @brief Event triggered when I go in or out of service.
+            /// @brief Event triggered when a setpoint is changed.
             virtual Event& setpointChanged()
             {
                 return setpointChanged_;
@@ -164,6 +171,7 @@ namespace Sgt
 
             Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
             Event generationChanged_{std::string(sComponentType()) + " : Generation changed"};
+            Event JChanged_{std::string(sComponentType()) + " : Angular momentum changed"};
             Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
     };
 
@@ -218,6 +226,7 @@ namespace Sgt
             virtual void setInServiceS(const arma::Col<Complex>& S) override
             {
                 S_ = S;
+                generationChanged().trigger();
             }
 
         /// @}
@@ -248,6 +257,7 @@ namespace Sgt
             virtual void setPMin(double PMin) override
             {
                 PMin_ = PMin;
+                setpointChanged().trigger();
             }
 
             virtual double PMax() const override
@@ -258,6 +268,7 @@ namespace Sgt
             virtual void setPMax(double PMax) override
             {
                 PMax_ = PMax;
+                setpointChanged().trigger();
             }
 
             virtual double QMin() const override
@@ -268,6 +279,7 @@ namespace Sgt
             virtual void setQMin(double QMin) override
             {
                 QMin_ = QMin;
+                setpointChanged().trigger();
             }
 
             virtual double QMax() const override
@@ -278,6 +290,7 @@ namespace Sgt
             virtual void setQMax(double QMax) override
             {
                 QMax_ = QMax;
+                setpointChanged().trigger();
             }
 
         /// @}
@@ -293,6 +306,7 @@ namespace Sgt
             virtual void setCStartup(double cStartup) override
             {
                 cStartup_ = cStartup;
+                setpointChanged().trigger();
             }
 
             virtual double cShutdown() const override
@@ -303,6 +317,7 @@ namespace Sgt
             virtual void setCShutdown(double cShutdown) override
             {
                 cShutdown_ = cShutdown;
+                setpointChanged().trigger();
             }
 
             virtual double c0() const override
@@ -313,6 +328,7 @@ namespace Sgt
             virtual void setC0(double c0) override
             {
                 c0_ = c0;
+                setpointChanged().trigger();
             }
 
             virtual double c1() const override
@@ -323,6 +339,7 @@ namespace Sgt
             virtual void setC1(double c1) override
             {
                 c1_ = c1;
+                setpointChanged().trigger();
             }
 
             virtual double c2() const override
@@ -333,6 +350,7 @@ namespace Sgt
             virtual void setC2(double c2) override
             {
                 c2_ = c2;
+                setpointChanged().trigger();
             }
 
         private:

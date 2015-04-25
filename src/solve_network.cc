@@ -8,6 +8,7 @@
 int main(int argc, char** argv)
 {
     using namespace Sgt;
+    using Complex = Sgt::Complex;
 
     assert(argc == 4);
     std::string solver = argv[1];

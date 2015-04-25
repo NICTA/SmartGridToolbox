@@ -1,27 +1,54 @@
-#include "PVDemoController.h"
-#include "PVDemoInverter.h"
-#include <fstream>
-#include <SmartGridToolbox/Common.h>
-#include <SmartGridToolbox/Model.h>
-#include <SmartGridToolbox/Network.h>
-#include <SmartGridToolbox/Parser.h>
-#include <SmartGridToolbox/Simulation.h>
-extern "C" {
-#include <gurobi_c.h>
-}
+#include <SgtCore/Gen.h>
+#include <SgtCore/Network.h>
+#include <SgtCore/PowerFlowPtPpSolver.h>
+#include <SgtSim/Inverter.h>
 
-using namespace SmartGridToolbox;
-using namespace PVDemo;
+class PVDemoInverter : public Sgt::Inverter
+{
+    PVDemoInverter(const std::string& id, std::shared_ptr<Sgt::GenAbc> gen) :
+        Sgt::Inverter(id, Sgt::Phase::BAL),
+        gen_(gen)
+    {
+        // Empty.
+    }
+    public:
+        std::shared_ptr<const Sgt::GenAbc> gen() const
+        {
+            return gen_;
+        }
+    public:
+        std::shared_ptr<Sgt::GenAbc> gen_;
+};
+
+class PVDemoSolver : public Sgt::PowerFlowPtPpSolver
+{
+    protected:
+        virtual std::unique_ptr<PowerModel> getModel(const Sgt::Network& sgtNetw, Net& ptNetw) override
+        {
+            auto mod = Sgt::PowerFlowPtPpSolver::getModel(sgtNetw, ptNetw);
+            for (auto zip : sgtNetw.zips())
+            {
+                auto inverter = std::dynamic_pointer_cast<PVDemoInverter>(zip);
+                if (inverter != nullptr)
+                {
+                    // Add an extra constraint for max apparent power.
+                    auto busId = inverter->bus()->id();
+                    auto bus = ptNetw.busId(busId);
+                    auto genId = inverter->gen()->id();
+                    auto gen = 
+                        std::find_if(bus->_gen.begin(), bus->_gen.end(), [](Gen* gen){return gen->id() == genId;});
+                    assert(gen != nullptr);
+                    auto c = new Constraint("PVD_S2");
+                    *c += gen->pg^2 + gen->qg^2;
+                    *c = inverter->maxSMagPerPhase();
+                    mod->addConstraint(c);
+                }
+            }
+        }
+};
 
 int main(int argc, const char ** argv)
 {
-   if (argc != 5)
-   {
-      error() << "Usage: " << argv[0] << " config_name output_name voltage_lower_bound voltage_upper_bound" 
-              << std::endl;
-      SmartGridToolbox::abort();
-   }
-   
    const char * configName = argv[1];
    const char * outputName = argv[2];
    double vlb = atof(argv[3]);
@@ -33,69 +60,4 @@ int main(int argc, const char ** argv)
    std::cout << "Voltage upper bound    = " << vub << std::endl;
 
    std::ofstream outFile(outputName);
-
-   Model mod;
-   Simulation sim(mod);
-   Parser & p = Parser::globalParser();
-   p.parse(configName, mod, sim);
-
-   auto top = p.top();
-   std::vector<std::string> special = top["special_inverters"].as<std::vector<std::string>>();
-
-   std::cout << "special inverters " << std::endl;
-   for (std::string name : special)
-   {
-      std::cout << "\t" << name << std::endl;
-      SimpleInverter * inv = mod.componentNamed<SimpleInverter>(name);
-      assert(inv);
-      mod.replaceComponentWithNew<PVDemoInverter>(*inv);
-   }
-   
-   Network * netw = mod.componentNamed<Network>("cdf");
-   PVDemoController & pvdc = mod.newComponent<PVDemoController>("pvdc", *netw, vlb, vub);
-   
-   p.postParse();
-
-   mod.validate();
-   sim.initialize();
-
-   netw->solvePowerFlow();
-
-   auto busses = pvdc.busses();
-   while (sim.doTimestep())
-   {
-      outFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
-      for (auto & pvdBus : busses)
-      {
-         Bus * sgtBus = pvdBus->sgtBus_;
-         outFile <<  sgtBus->V()(0)  << " ";
-      }
-      outFile << std::endl;
-
-      outFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
-      for (auto & pvdBus : busses)
-      {
-         Bus * sgtBus = pvdBus->sgtBus_;
-         outFile <<  pvdBus->VSol_  << " ";
-      }
-      outFile << std::endl;
-
-      outFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
-      for (auto & pvdBus : busses)
-      {
-         Bus * sgtBus = pvdBus->sgtBus_;
-         outFile <<  sgtBus->STot()(0)  << " ";
-      }
-      outFile << std::endl;
-
-      outFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
-      for (auto & pvdBus : busses)
-      {
-         Bus * sgtBus = pvdBus->sgtBus_;
-         outFile <<  pvdBus->SSol_  << " ";
-      }
-      outFile << std::endl;
-   }
-
-   outFile.close();
 }
