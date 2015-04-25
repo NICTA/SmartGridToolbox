@@ -3,8 +3,6 @@
 
 #include <algorithm>
 
-#define DEBUG 1
-
 namespace Sgt
 {
     Simulation::ConstSimCompVec Simulation::simComponents() const
