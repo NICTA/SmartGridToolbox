@@ -170,7 +170,7 @@ namespace Sgt
         stopwatchPre.stop();
         // printNetw(*net);
         stopwatchSolve.start();
-        auto pModel(getModel(*netw, *net));
+        auto pModel(makeModel(*netw, *net));
         pModel->min_cost_load();
         stopwatchSolve.stop();
         stopwatchPost.start();
@@ -190,7 +190,7 @@ namespace Sgt
         return true;
     }
 
-    std::unique_ptr<PowerModel> PowerFlowPtPpSolver::getModel(const Network& sgtNetw, Net& ptNetw)
+    std::unique_ptr<PowerModel> PowerFlowPtPpSolver::makeModel(const Network& sgtNetw, Net& ptNetw)
     {
         return std::unique_ptr<PowerModel>(new PowerModel(ACRECT_, &ptNetw));
     }

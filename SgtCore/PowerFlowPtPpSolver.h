@@ -19,7 +19,7 @@ namespace Sgt
         public:
             virtual bool solve(Network* netw) override;
         protected:
-            std::unique_ptr<PowerModel> getModel(const Network& sgtNetw, Net& ptNetw);
+            virtual std::unique_ptr<PowerModel> makeModel(const Network& sgtNetw, Net& ptNetw);
     };
 }
 
