@@ -60,8 +60,8 @@ namespace Sgt
             double PDc() const
             {
                 return std::accumulate(sources_.begin(), sources_.end(), 0.0,
-                                       [] (double tot, const std::shared_ptr<DcPowerSourceAbc>& source)
-                {return tot + source->PDc();});
+                        [] (double tot, const std::shared_ptr<DcPowerSourceAbc>& source)
+                        {return tot + source->PDc();});
             }
 
             /// @brief Real power output, per phase.

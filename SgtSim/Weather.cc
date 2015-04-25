@@ -14,6 +14,7 @@ namespace Sgt
         irradiance_.direct = prevFrac * prevIrradiance_.direct + curFrac * newUnav.direct;
         irradiance_.horizontalDiffuse = prevFrac * prevIrradiance_.horizontalDiffuse
                                         + curFrac * newUnav.horizontalDiffuse;
+        Heartbeat::updateState(t);
     }
 
     double Weather::solarPower(SphericalAngles planeNormal, double planeArea) const

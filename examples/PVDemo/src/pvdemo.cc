@@ -80,11 +80,6 @@ class PvInverterParserPlugin : public SimParserPlugin
                 inverter->setMinPowerFactor(parser.expand<double>(nd["min_power_factor"]));
             }
 
-            if (nd["requested_Q"])
-            {
-                inverter->setRequestedQ(parser.expand<double>(nd["requested_Q"]));
-            }
-
             const std::string networkId = parser.expand<std::string>(nd["network_id"]);
 
             auto network = sim.simComponent<SimNetwork>(networkId);
@@ -144,7 +139,7 @@ int main(int argc, const char ** argv)
 
     SimNetwork& simNetwork = *sim.simComponent<SimNetwork>("network");
     simNetwork.network()->setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
-
+    
     while (!sim.isFinished())
     {
         LogIndent _;

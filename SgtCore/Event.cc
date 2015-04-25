@@ -36,9 +36,7 @@ SGT_DEBUG(
 SGT_DEBUG(
             Log().debug() << "Event not triggered because it is not enabled: "
                           << description_ << std::endl;
-            {
-                LogIndent _
 );
-            }
         }
     }
+}
