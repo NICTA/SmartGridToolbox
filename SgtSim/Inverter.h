@@ -65,7 +65,7 @@ namespace Sgt
             }
 
             /// @brief Real power output, per phase.
-            virtual double PPerPhase() const;
+            virtual double P() const;
 
         /// @}
 
@@ -121,16 +121,16 @@ namespace Sgt
                 efficiency_ = efficiency;
             }
 
-            virtual double PPerPhase() const;
+            virtual double P() const;
 
-            double maxSMagPerPhase() const
+            double maxSMag() const
             {
-                return maxSMagPerPhase_;
+                return maxSMag_;
             }
 
-            void setMaxSMagPerPhase(double maxSMagPerPhase)
+            void setMaxSMag(double maxSMag)
             {
-                maxSMagPerPhase_ = maxSMagPerPhase;
+                maxSMag_ = maxSMag;
             }
 
             double minPowerFactor() const
@@ -143,14 +143,14 @@ namespace Sgt
                 minPowerFactor_ = minPowerFactor;
             }
 
-            double requestedQPerPhase() const
+            double requestedQ() const
             {
-                return requestedQPerPhase_;
+                return requestedQ_;
             }
 
-            void setRequestedQPerPhase(double requestedQPerPhase)
+            void setRequestedQ(double requestedQ)
             {
-                requestedQPerPhase_ = requestedQPerPhase;
+                requestedQ_ = requestedQ;
             }
 
             bool inService() const
@@ -168,11 +168,11 @@ namespace Sgt
         public:
             // Operating parameters:
             double efficiency_{1.0};
-            double maxSMagPerPhase_{1e9};
+            double maxSMag_{1e9};
             double minPowerFactor_{0.0};
 
             // Settings:
-            double requestedQPerPhase_{0.0};
+            double requestedQ_{0.0};
             bool inService_{true};
 
             // State:

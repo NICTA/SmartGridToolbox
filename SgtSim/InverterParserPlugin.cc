@@ -23,9 +23,9 @@ namespace Sgt
             inverter->setEfficiency(parser.expand<double>(nd["efficiency"]));
         }
 
-        if (nd["max_S_mag_per_phase"])
+        if (nd["max_S_mag"])
         {
-            inverter->setMaxSMagPerPhase(parser.expand<double>(nd["max_S_mag_per_phase"]));
+            inverter->setMaxSMag(parser.expand<double>(nd["max_S_mag"]));
         }
 
         if (nd["min_power_factor"])
@@ -33,9 +33,9 @@ namespace Sgt
             inverter->setMinPowerFactor(parser.expand<double>(nd["min_power_factor"]));
         }
 
-        if (nd["requested_Q_per_phase"])
+        if (nd["requested_Q"])
         {
-            inverter->setRequestedQPerPhase(parser.expand<double>(nd["requested_Q_per_phase"]));
+            inverter->setRequestedQ(parser.expand<double>(nd["requested_Q"]));
         }
 
         const std::string networkId = parser.expand<std::string>(nd["network_id"]);

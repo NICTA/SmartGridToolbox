@@ -62,3 +62,11 @@ this.
 Casting:
 --------
 dynamic_pointer_casts are annoying, write a decent casting function.
+
+Indentation of YAML files
+-------------------------
+Still need to fix e.g. '-  bus' to either '-   bus' or '- bus'. Latter is good.
+
+Parser:
+-------
+Need more info on what we're parsing.

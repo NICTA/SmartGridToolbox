@@ -13,12 +13,12 @@
 
 using namespace Sgt;
 
-class PVDemoInverter : public Inverter
+class PvInverter : public Inverter
 {
     public:
-        PVDemoInverter(const std::string& id, std::shared_ptr<GenAbc> gen, const std::string& busId) :
+        PvInverter(const std::string& id, const std::string& busId) :
             Inverter(id, Phase::BAL),
-            gen_(gen),
+            gen_(new GenericGen(id + "_gen", Phase::BAL)),
             busId_(busId)
         {
             // Empty.
@@ -27,7 +27,7 @@ class PVDemoInverter : public Inverter
         virtual arma::Col<Sgt::Complex> SConst() const override
         {
             // All reactive power to be handled by the gen.
-            return arma::Col<Sgt::Complex>(phases().size(), arma::fill::none).fill(PPerPhase());
+            return arma::Col<Sgt::Complex>(phases().size(), arma::fill::none).fill(P());
         }
 
         std::shared_ptr<const GenAbc> gen() const
@@ -35,9 +35,9 @@ class PVDemoInverter : public Inverter
             return gen_;
         }
 
-        void setMaxSMagPerPhase(double maxSMagPerPhase)
+        void setMaxSMag(double maxSMag)
         {
-            gen_->setQMax(maxSMagPerPhase);
+            gen_->setQMax(maxSMag);
         }
 
     public:
@@ -45,7 +45,7 @@ class PVDemoInverter : public Inverter
         std::string busId_;
 };
 
-class PVDemoInverterParserPlugin : public SimParserPlugin
+class PvInverterParserPlugin : public SimParserPlugin
 {
     public:
         virtual const char* key() override
@@ -57,23 +57,22 @@ class PVDemoInverterParserPlugin : public SimParserPlugin
         virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override
         {
             assertFieldPresent(nd, "id");
-            assertFieldPresent(nd, "phases");
             assertFieldPresent(nd, "network_id");
             assertFieldPresent(nd, "bus_id");
 
             string id = parser.expand<std::string>(nd["id"]);
-            Phases phases = parser.expand<Phases>(nd["phases"]);
+            const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
-            auto inverter = sim.newSimComponent<PVDemoInverter>(id, phases);
+            auto inverter = sim.newSimComponent<PvInverter>(id, busId);
 
             if (nd["efficiency"])
             {
                 inverter->setEfficiency(parser.expand<double>(nd["efficiency"]));
             }
 
-            if (nd["max_S_mag_per_phase"])
+            if (nd["max_S_mag"])
             {
-                inverter->setMaxSMagPerPhase(parser.expand<double>(nd["max_S_mag_per_phase"]));
+                inverter->setMaxSMag(parser.expand<double>(nd["max_S_mag"]));
             }
 
             if (nd["min_power_factor"])
@@ -81,20 +80,19 @@ class PVDemoInverterParserPlugin : public SimParserPlugin
                 inverter->setMinPowerFactor(parser.expand<double>(nd["min_power_factor"]));
             }
 
-            if (nd["requested_Q_per_phase"])
+            if (nd["requested_Q"])
             {
-                inverter->setRequestedQPerPhase(parser.expand<double>(nd["requested_Q_per_phase"]));
+                inverter->setRequestedQ(parser.expand<double>(nd["requested_Q"]));
             }
 
             const std::string networkId = parser.expand<std::string>(nd["network_id"]);
-            const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
             auto network = sim.simComponent<SimNetwork>(networkId);
             network->addZip(inverter, busId);
         }
 };
 
-class PVDemoSolver : public PowerFlowPtPpSolver
+class PvDemoSolver : public PowerFlowPtPpSolver
 {
     protected:
         virtual std::unique_ptr<PowerModel> makeModel(const Network& sgtNetw, Net& ptNetw) override
@@ -102,7 +100,7 @@ class PVDemoSolver : public PowerFlowPtPpSolver
             auto mod = PowerFlowPtPpSolver::makeModel(sgtNetw, ptNetw);
             for (auto zip : sgtNetw.zips())
             {
-                auto inverter = std::dynamic_pointer_cast<PVDemoInverter>(zip);
+                auto inverter = std::dynamic_pointer_cast<PvInverter>(zip);
                 if (inverter != nullptr)
                 {
                     // Add an extra constraint for max apparent power.
@@ -114,7 +112,7 @@ class PVDemoSolver : public PowerFlowPtPpSolver
                     auto c = new Constraint("PVD_S2");
                     *c += ((**gen).pg)^2;
                     *c += ((**gen).qg)^2;
-                    *c = inverter->maxSMagPerPhase();
+                    *c = inverter->maxSMag();
                     mod->_model->addConstraint(c);
                 }
             }
@@ -140,8 +138,12 @@ int main(int argc, const char ** argv)
 
     Simulation sim;
     Parser<Simulation> p;
+    p.registerParserPlugin<PvInverterParserPlugin>();
     p.parse(configName, sim);
     sim.initialize();
+
+    SimNetwork& simNetwork = *sim.simComponent<SimNetwork>("network");
+    simNetwork.network()->setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
 
     while (!sim.isFinished())
     {

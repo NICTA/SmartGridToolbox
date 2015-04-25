@@ -11,31 +11,33 @@ namespace Sgt
         std::string("Trigger ") + sComponentType() + " " + id() + " injection changed.");
     }
 
-    double InverterAbc::PPerPhase() const
+    double InverterAbc::P() const
     {
         double PDcA = PDc();
-        return PDcA * efficiency(PDcA) / phases().size();
+        return PDcA * efficiency(PDcA);
     }
 
     arma::Col<Complex> Inverter::SConst() const
     {
-        double PPerPh = PPerPhase();
-        double P2PerPh = PPerPh * PPerPh; // Limited by maxSMagPerPhase_.
-        double Q2PerPh = requestedQPerPhase_ * requestedQPerPhase_;
-        double maxSMag2PerPh =  maxSMagPerPhase_ * maxSMagPerPhase_;
-        double SMag2PerPh = std::min(P2PerPh + Q2PerPh, maxSMag2PerPh);
+        double PPerPh = P() / phases().size();
+        double P2PerPh = PPerPh * PPerPh;
+        double reqQPerPh = requestedQ_ / phases().size();
+        double reqQ2PerPh = reqQPerPh * reqQPerPh;
+        double maxSMagPerPh =  maxSMag_ / phases().size();
+        double maxSMag2PerPh = maxSMagPerPh * maxSMagPerPh;
+        double SMag2PerPh = std::min(P2PerPh + reqQ2PerPh, maxSMag2PerPh);
         double QPerPh = sqrt(SMag2PerPh - P2PerPh);
-        if (requestedQPerPhase() < 0.0)
+        if (requestedQ_ < 0.0)
         {
             QPerPh *= -1;
         }
-        Complex SPerPh{PPerPhase(), QPerPh};
+        Complex SPerPh{PPerPh, QPerPh};
         return arma::Col<Complex>(phases().size(), arma::fill::none).fill(SPerPh);
     }
 
-    double Inverter::PPerPhase() const
+    double Inverter::P() const
     {
-        double P = InverterAbc::PPerPhase();
-        return std::min(std::abs(P), maxSMagPerPhase_) * (P < 0 ? -1 : 1);
+        double P = InverterAbc::P();
+        return std::min(std::abs(P), maxSMag_) * (P < 0 ? -1 : 1);
     }
 }
