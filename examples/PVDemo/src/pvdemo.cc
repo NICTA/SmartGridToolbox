@@ -16,12 +16,16 @@ using namespace Sgt;
 class PvInverter : public Inverter
 {
     public:
-        PvInverter(const std::string& id, const std::string& busId) :
+        PvInverter(const std::string& id, const std::string& busId, Network& netw) :
             Inverter(id, Phase::BAL),
             gen_(new GenericGen(id + "_gen", Phase::BAL)),
             busId_(busId)
         {
-            // Empty.
+            netw.addGen(gen_, busId);
+            gen_->setPMax(0.0);
+            gen_->setPMin(0.0);
+            gen_->setQMax(Sgt::infinity);
+            gen_->setQMin(Sgt::negInfinity);
         }
 
         virtual arma::Col<Sgt::Complex> SConst() const override
@@ -37,6 +41,7 @@ class PvInverter : public Inverter
 
         void setMaxSMag(double maxSMag)
         {
+            Inverter::setMaxSMag(maxSMag);
             gen_->setQMax(maxSMag);
         }
 
@@ -63,7 +68,8 @@ class PvInverterParserPlugin : public SimParserPlugin
             string id = parser.expand<std::string>(nd["id"]);
             const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
-            auto inverter = sim.newSimComponent<PvInverter>(id, busId);
+            auto& netw = *sim.simComponent<SimNetwork>("network")->network();
+            auto inverter = sim.newSimComponent<PvInverter>(id, busId, netw);
 
             if (nd["efficiency"])
             {
@@ -104,13 +110,16 @@ class PvDemoSolver : public PowerFlowPtPpSolver
                     auto gen = std::find_if(bus->_gen.begin(), bus->_gen.end(), 
                             [genId](Gen* gen){return gen->_name == genId;});
                     assert(gen != bus->_gen.end());
-                    auto c = new Constraint("PVD_S2");
-                    *c += ((**gen).pg)^2;
+                    auto c = new Constraint("PVD_SPECIAL");
                     *c += ((**gen).qg)^2;
-                    *c = inverter->maxSMag();
+                    *c <= inverter->maxSMag() * inverter->maxSMag() - pow(inverter->SConst()(0).real(), 2);
+                    std::cout << "A: " << inverter->maxSMag() << std::endl;
+                    std::cout << "B: " << inverter->SConst() << std::endl;
+                    c->print(); std::cout << std::endl;
                     mod->_model->addConstraint(c);
                 }
             }
+            // mod->_model->print();
             return mod;
         }
 };
@@ -138,10 +147,25 @@ int main(int argc, const char ** argv)
     sim.initialize();
 
     SimNetwork& simNetwork = *sim.simComponent<SimNetwork>("network");
+    Network& network = *simNetwork.network();
+    for (auto bus : network.busses())
+    {
+        bus->setVMagMin(vlb * bus->VBase());
+        bus->setVMagMax(vub * bus->VBase());
+    }
+    auto& bus = *sim.simComponent<Sgt::Bus>("bus_6");
+    auto& inv = *sim.simComponent<PvInverter>("pv_inverter_6");
     simNetwork.network()->setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
     
     while (!sim.isFinished())
     {
+        std::cout 
+            << "OUTPUT"
+            << " " << dSeconds(sim.currentTime() - sim.startTime()) / 60
+            << " " << inv.SConst()(0).real()
+            << " " << inv.gen_->S()(0).imag()
+            << " " << std::abs(bus.V()(0))/bus.VBase()
+            << std::endl;
         LogIndent _;
         sim.doTimestep();
     }

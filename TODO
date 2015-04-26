@@ -70,3 +70,7 @@ Still need to fix e.g. '-  bus' to either '-   bus' or '- bus'. Latter is good.
 Parser:
 -------
 Need more info on what we're parsing.
+
+Formatting:
+-----------
+Search and format on lambdas as automatic tool messed these up.

@@ -42,7 +42,7 @@ namespace Sgt
                 double QMin = sgtNw.S2Pu(gen->QMin());
                 double QMax = sgtNw.S2Pu(gen->QMax());
 
-                Gen* g = new Gen(node, to_string(node->_gen.size()), PMin, PMax, QMin, QMax);
+                Gen* g = new Gen(node, gen->id(), PMin, PMax, QMin, QMax);
                 g->_active = gen->isInService();
 
                 double c0 = gen->c0();
