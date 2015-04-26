@@ -18,7 +18,7 @@ namespace Sgt
 
             static const std::string& sComponentType()
             {
-                static std::string result("component");
+                static std::string result("solar_pv");
                 return result;
             }
 

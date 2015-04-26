@@ -42,7 +42,6 @@ class PvInverter : public Inverter
         void setMaxSMag(double maxSMag)
         {
             Inverter::setMaxSMag(maxSMag);
-            gen_->setQMax(maxSMag);
         }
 
     public:
@@ -119,7 +118,7 @@ class PvDemoSolver : public PowerFlowPtPpSolver
                     mod->_model->addConstraint(c);
                 }
             }
-            // mod->_model->print();
+            mod->_model->print();
             return mod;
         }
 };
@@ -159,6 +158,7 @@ int main(int argc, const char ** argv)
     
     while (!sim.isFinished())
     {
+        std::cout << "TIME " << sim.currentTime() << std::endl;
         std::cout 
             << "OUTPUT"
             << " " << dSeconds(sim.currentTime() - sim.startTime()) / 60

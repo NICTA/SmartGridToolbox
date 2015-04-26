@@ -4,31 +4,19 @@
 
 namespace Sgt
 {
-    void Weather::updateState(Time t)
-    {
-        const double tConst = 900.0; // 15 minute smoothing constant.
-        prevIrradiance_ = irradiance_;
-        double prevFrac = exp(-dSeconds(t - lastUpdated()) / tConst);
-        double curFrac = 1.0 - prevFrac;
-        SolarIrradiance newUnav = unaveragedIrradiance(t);
-        irradiance_.direct = prevFrac * prevIrradiance_.direct + curFrac * newUnav.direct;
-        irradiance_.horizontalDiffuse = prevFrac * prevIrradiance_.horizontalDiffuse
-                                        + curFrac * newUnav.horizontalDiffuse;
-        Heartbeat::updateState(t);
-    }
-
     double Weather::solarPower(SphericalAngles planeNormal, double planeArea) const
     {
         // Neglect ground reflected radiation. This is reasonable, because typically a solar collector etc would
         // be pointing at a zenith angle of less than 90 degrees, so would not get a ground component.
         Array<double, 3> planeVec = angsAndMagToVec(planeNormal, planeArea);
-        double direct = dot<double, 3>(planeVec, irradiance_.direct);
+        auto irr = irradiance(lastUpdated());
+        double direct = dot<double, 3>(planeVec, irr.direct);
         if (direct < 0) direct = 0;
-        double diffuse = planeArea * irradiance_.horizontalDiffuse * (pi - planeNormal.zenith) / pi;
+        double diffuse = planeArea * irr.horizontalDiffuse * (pi - planeNormal.zenith) / pi;
         return direct + diffuse;
     }
 
-    SolarIrradiance Weather::unaveragedIrradiance(const Time& tm) const
+    SolarIrradiance Weather::irradiance(const Time& tm) const
     {
         // Possibly dodgy model.
         // Assume transmitted and diffuse components vary linearly with the cloud cover coefficient.

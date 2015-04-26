@@ -45,7 +45,7 @@ namespace Sgt
         }
 
         const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
-        auto inverter = sim.simComponent<Inverter>(inverterStr);
+        auto inverter = sim.simComponent<InverterAbc>(inverterStr);
         if (inverter != nullptr)
         {
             inverter->addDcPowerSource(spv);

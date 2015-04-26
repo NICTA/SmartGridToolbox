@@ -16,7 +16,7 @@ namespace Sgt
         string id = parser.expand<std::string>(nd["id"]);
         Phases phases = parser.expand<Phases>(nd["phases"]);
 
-        auto inverter = sim.newSimComponent<Inverter>(id, phases);
+        auto inverter = sim.newSimComponent<SimpleZipInverter>(id, phases);
 
         if (nd["efficiency"])
         {

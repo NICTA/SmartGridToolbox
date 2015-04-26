@@ -7,19 +7,25 @@ namespace Sgt
     {
         sources_.push_back(source);
         dependsOn(source);
-        source->dcPowerChanged().addAction([this]() {injectionChanged().trigger();},
-        std::string("Trigger ") + sComponentType() + " " + id() + " injection changed.");
     }
 
-    double InverterAbc::P() const
+    double InverterAbc::availableP() const
     {
         double PDcA = PDc();
         return PDcA * efficiency(PDcA);
     }
-
-    arma::Col<Complex> Inverter::SConst() const
+        
+    void SimpleZipInverter::addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source)
     {
-        double PPerPh = P() / phases().size();
+        InverterAbc::addDcPowerSource(source);
+        source->dcPowerChanged().addAction([this]() {injectionChanged().trigger();},
+                std::string("Trigger ") + sComponentType() + " " + id() + " injection changed.");
+    }
+
+
+    arma::Col<Complex> SimpleZipInverter::SConst() const
+    {
+        double PPerPh = availableP() / phases().size();
         double P2PerPh = PPerPh * PPerPh;
         double reqQPerPh = requestedQ_ / phases().size();
         double reqQ2PerPh = reqQPerPh * reqQPerPh;
@@ -35,9 +41,5 @@ namespace Sgt
         return arma::Col<Complex>(phases().size(), arma::fill::none).fill(SPerPh);
     }
 
-    double Inverter::P() const
-    {
-        double P = InverterAbc::P();
-        return std::min(std::abs(P), maxSMag_) * (P < 0 ? -1 : 1);
-    }
+        
 }

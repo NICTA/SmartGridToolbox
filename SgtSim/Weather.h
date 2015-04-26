@@ -50,22 +50,6 @@ namespace Sgt
                 return sComponentType();
             }
 
-            // virtual void print(std::ostream& os) const override; TODO
-
-        /// @}
-
-        /// @name Overridden member functions from SimComponent.
-        /// @{
-
-        public:
-
-            // virtual Time validUntil() const override;
-
-        protected:
-
-            // virtual void initializeState() override;
-            virtual void updateState(Time t) override;
-
         /// @}
 
         /// @name Weather specific member functions.
@@ -105,13 +89,7 @@ namespace Sgt
 
             double solarPower(SphericalAngles planeNormal, double planeArea) const;
 
-            const SolarIrradiance& irradiance()
-            {
-                return irradiance_;
-            }
-
-        protected:
-            SolarIrradiance unaveragedIrradiance(const Time& tm) const;
+            SolarIrradiance irradiance(const Time& tm) const;
 
         /// @}
 
@@ -119,9 +97,6 @@ namespace Sgt
             LatLong latLong_;
             std::shared_ptr<const TimeSeries<Time, double>> temperatureSeries_;
             std::shared_ptr<const TimeSeries<Time, double>> cloudCoverSeries_;
-
-            SolarIrradiance prevIrradiance_;
-            SolarIrradiance irradiance_;
     };
 }
 
