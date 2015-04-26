@@ -134,7 +134,9 @@ namespace Sgt
                 auto gen = node->_gen[i];
                 auto sgtGen = std::dynamic_pointer_cast<Sgt::GenericGen>(sgtBus->gens()[i]);
                 Complex SGenSolPu(gen->pg.get_value(), gen->qg.get_value());
+std::cout << "SGENSOLPU " << SGenSolPu << " " << sgtNw.PBase() << std::endl;
                 Complex SGenSol = sgtNw.pu2S(SGenSolPu);
+std::cout << "SGENSOL " << SGenSol << std::endl;
                 sgtGen->setInServiceS({SGenSol});
             }
         }

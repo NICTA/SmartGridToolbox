@@ -166,6 +166,8 @@ namespace Sgt
                 requestedQ_ = requestedQ;
             }
 
+        /// @}
+        
         private:
             
             double maxSMag_{1e9};

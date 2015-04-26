@@ -28,11 +28,6 @@ namespace Sgt
             inverter->setMaxSMag(parser.expand<double>(nd["max_S_mag"]));
         }
 
-        if (nd["min_power_factor"])
-        {
-            inverter->setMinPowerFactor(parser.expand<double>(nd["min_power_factor"]));
-        }
-
         if (nd["requested_Q"])
         {
             inverter->setRequestedQ(parser.expand<double>(nd["requested_Q"]));
