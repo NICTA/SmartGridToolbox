@@ -117,7 +117,7 @@ namespace Sgt
 
             Complex SLoadUnservedSolPu(-node->plv.get_value(), -node->qlv.get_value());
             Complex SLoadUnservedSol = sgtNw.pu2S(SLoadUnservedSolPu);
-            if (std::abs(SLoadUnservedSol) > 1e-6)
+            if (std::abs(SLoadUnservedSol) > 1e-3)
             {
                 Log().warning() << "Unserved load at bus " << sgtBus->id() << " is " << SLoadUnservedSol << std::endl;
             }
