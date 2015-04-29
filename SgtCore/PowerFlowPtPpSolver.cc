@@ -179,7 +179,7 @@ namespace Sgt
         
         Stopwatch stopwatchSolve;
         stopwatchSolve.start();
-        auto pModel(makeModel());
+        auto pModel = makeModel();
         pModel->solve();
         stopwatchSolve.stop();
         

@@ -29,24 +29,25 @@ int main(int argc, const char ** argv)
     Network& network = *simNetwork.network();
     for (auto bus : network.busses())
     {
-        bus->setVMagMin(vlb * bus->VBase());
-        bus->setVMagMax(vub * bus->VBase());
+        if (vlb > 0)
+        {
+            bus->setVMagMin(vlb * bus->VBase());
+        }
+        if (vub > 0)
+        {
+            bus->setVMagMax(vub * bus->VBase());
+        }
     }
-    auto& bus = *sim.simComponent<Sgt::Bus>("bus_6");
-    auto& inv = *sim.simComponent<PvInverter>("pv_inverter_6");
-    simNetwork.network()->setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
 
+    network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
+    network.solvePowerFlow();
+    network.solvePowerFlow();
+
+    /*
     while (!sim.isFinished())
     {
         std::cout << "TIME " << sim.currentTime() << std::endl;
-        std::cout 
-            << "OUTPUT"
-            << " " << dSeconds(sim.currentTime() - sim.startTime()) / 60
-            << " " << inv.S()(0).real()
-            << " " << inv.S()(0).imag()
-            << " " << std::abs(bus.V()(0))/bus.VBase()
-            << std::endl;
-        LogIndent _;
         sim.doTimestep();
     }
+    */
 }
