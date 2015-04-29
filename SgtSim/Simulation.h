@@ -152,6 +152,10 @@ namespace Sgt
             /// @brief Complete the pending timestep.
             void doTimestep();
 
+            /// @brief Print components and their dependencies to log.
+            void logComponents();
+
+            /// @brief Have we reached the end of the simulation?
             bool isFinished() {return (scheduledUpdates_.size() == 0) && (contingentUpdates_.size() == 0);}
 
             /// @brief Get the timestep will start event.
@@ -185,7 +189,6 @@ namespace Sgt
             /// @brief Add a time series.
             void acquireTimeSeries (const std::string& id, std::shared_ptr<TimeSeriesBase> timeSeries)
             {
-                Log().message() << "Adding TimeSeries " << id << " to the simulation." << std::endl;
                 timeSeriesMap_[id] = std::move(timeSeries);
             }
 

@@ -7,6 +7,8 @@
 #include <SgtSim/Inverter.h>
 #include <SgtSim/SimParser.h>
 
+#include <PowerTools++/var.h>
+
 class Net;
 class PowerModel;
 
@@ -55,7 +57,7 @@ namespace Sgt
             virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source) override
             {
                 InverterAbc::addDcPowerSource(source);
-                source->dcPowerChanged().addAction([this]() {setPMax(availableP());}, "Update max power");
+                source->dcPowerChanged().addAction([this]() {PChanged();}, "Update max power");
             }
 
             /// @}
@@ -80,6 +82,16 @@ namespace Sgt
             double maxSMag_{1e9};
             double requestedQ_{0.0};
             std::string busId_;
+        
+        private:
+
+            void PChanged()
+            {
+                double Pmax = availableP();
+                setPMax(Pmax);
+                setQMax(Pmax);
+                setQMin(-Pmax);
+            }
     };
 
     class PvInverterParserPlugin : public SimParserPlugin
@@ -97,7 +109,10 @@ namespace Sgt
     class PvDemoSolver : public PowerFlowPtPpSolver
     {
         protected:
-            virtual std::unique_ptr<PowerModel> makeModel(const Network& sgtNetw, Net& ptNetw) override;
+            virtual std::unique_ptr<PowerModel> makeModel() override;
+
+        private:
+            var<double> VBoundViol_;
     };
 }
 

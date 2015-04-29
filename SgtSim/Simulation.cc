@@ -14,17 +14,12 @@ namespace Sgt
 
     void Simulation::addOrReplaceGenericSimComponent(std::shared_ptr<SimComponentAdaptor> simComp, bool allowReplace)
     {
-        Log().message() << "Adding SimComponent " << simComp->id() << " of type "
-                        << simComp->componentType() << " to the simulation." << std::endl;
-        LogIndent _;
-
         SimCompMap::iterator it1 = simCompMap_.find(simComp->id());
         if (it1 != simCompMap_.end())
         {
             if (allowReplace)
             {
                 it1->second = simComp;
-                Log().message() << "SimComponent " << simComp->id() << " replaced in model." << std::endl;
             }
             else
             {
@@ -41,20 +36,9 @@ namespace Sgt
 
     void Simulation::initialize()
     {
-SGT_DEBUG
-(
-        Log().debug() << "Components before initialize:" << std::endl;
-        LogIndent _;
-        for (auto comp : simCompVec_)
-        {
-            Log().debug() << comp->id() << " " << comp->rank() << std::endl;
-            LogIndent _;
-            for (auto dep : comp->dependencies())
-            {
-                Log().debug() << dep.lock()->id() << dep.lock()->rank() << std::endl;
-            }
-        }
-)
+        SGT_DEBUG(Log().debug() << "Components before initialize:" << std::endl);
+        SGT_DEBUG(LogIndent _);
+        SGT_DEBUG(logComponents());
 
         for (int i = 0; i < simCompVec_.size(); ++i)
         {
@@ -85,20 +69,6 @@ SGT_DEBUG
         for (int i = 0; i < simCompVec_.size(); ++i)
         {
             simCompVec_[i]->setRank(i);
-        }
-
-        Log().message() << "Components after initialize:" << std::endl;
-        {
-            LogIndent _;
-            for (auto comp : simCompVec_)
-            {
-                Log().message() << comp->id() << " " << comp->rank() << std::endl;
-                LogIndent _;
-                for (auto dep : comp->dependencies())
-                {
-                    Log().message() << dep.lock()->id() << " " << dep.lock()->rank() << std::endl;
-                }
-            }
         }
 
         scheduledUpdates_.clear();
@@ -159,11 +129,11 @@ SGT_DEBUG
                 }
             }
             SGT_DEBUG(Log().debug() << "About to perform update..." << std::endl);
-            SGT_DEBUG({LogIndent _;)
-                      // Now perform the update...
-                      contComp->update(currentTime_);
-                      SGT_DEBUG(
-                      })
+            SGT_DEBUG({);
+                SGT_DEBUG(LogIndent _);
+                // Now perform the update...
+                contComp->update(currentTime_);
+            SGT_DEBUG(})
             SGT_DEBUG(Log().debug() << "... Done" << std::endl);
 
             // ... and try to reinsert component in scheduled updates.
@@ -241,6 +211,23 @@ SGT_DEBUG
                 (scheduledUpdates_.size() > 0 && (scheduledUpdates_.begin()->second == time2)))
         {
             doNextUpdate();
+        }
+    }
+
+    void Simulation::logComponents()
+    {
+        Log().message() << "Components after initialize:" << std::endl;
+        {
+            LogIndent _;
+            for (auto comp : simCompVec_)
+            {
+                Log().message() << comp->id() << " " << comp->rank() << std::endl;
+                LogIndent _;
+                for (auto dep : comp->dependencies())
+                {
+                    Log().message() << dep.lock()->id() << " " << dep.lock()->rank() << std::endl;
+                }
+            }
         }
     }
 

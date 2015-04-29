@@ -41,13 +41,10 @@ int main(int argc, const char ** argv)
 
     network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
     network.solvePowerFlow();
-    network.solvePowerFlow();
 
-    /*
     while (!sim.isFinished())
     {
         std::cout << "TIME " << sim.currentTime() << std::endl;
         sim.doTimestep();
     }
-    */
 }
