@@ -187,7 +187,17 @@ namespace Sgt
     {
         public:
 
-            virtual bool solve(Network* netw) override;
+            virtual void setNetwork(Network* netw) override
+            {
+                netw_ = netw;
+            }
+
+            virtual bool solveProblem() override;
+
+            virtual void updateNetwork() override
+            {
+                applyModel(*mod_, *netw_);
+            }
 
         private:
 

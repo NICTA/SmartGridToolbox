@@ -5,8 +5,8 @@
 #include <SgtCore/PowerFlowSolver.h>
 #include <SgtCore/SgtPowerTools.h>
 
-class Net;
 class PowerModel;
+class Net;
 
 #include <memory>
 
@@ -17,9 +17,22 @@ namespace Sgt
     class PowerFlowPtPpSolver : public PowerFlowSolverInterface
     {
         public:
-            virtual bool solve(Network* netw) override;
+
+            virtual ~PowerFlowPtPpSolver();
+
+            virtual void setNetwork(Network* netw) override;
+
+            virtual bool solveProblem() override;
+
+            virtual void updateNetwork() override;
+
+        
         protected:
-            virtual std::unique_ptr<PowerModel> makeModel(const Network& sgtNetw, Net& ptNetw);
+            virtual std::unique_ptr<PowerModel> makeModel();
+        
+        protected:
+            Network * sgtNetw_{nullptr};
+            Net* ptNetw_{nullptr};
     };
 }
 

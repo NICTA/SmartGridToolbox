@@ -100,7 +100,7 @@ namespace Sgt
         }
     }
 
-    bool PowerFlowNrSolver::solve(Network* netw)
+    bool PowerFlowNrSolver::solveProblem()
     {
         SGT_DEBUG(Log().debug() << "PowerFlowNrSolver : solve." << std::endl; LogIndent _;);
 
@@ -123,7 +123,7 @@ namespace Sgt
         stopwatch.reset();
         stopwatch.start();
 
-        init(netw);
+        init(netw_);
 
         G_ = real(mod_->Y());
         B_ = imag(mod_->Y());
@@ -325,18 +325,16 @@ SGT_DEBUG
         SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time to construct JMat  = " << durationConstructJMat << " s."
                   << std::endl);
         SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: solve time              = " << durationSolve << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time to update iter     = " << durationUpdateIter << std::endl);
+        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time to update iter     = " << durationUpdateIter 
+                << std::endl);
         SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: -----------------------   " << std::endl);
-
-        applyModel(*mod_, *netw_);
 
         return wasSuccessful;
     }
 
     void PowerFlowNrSolver::init(Network* netw)
     {
-        netw_ = netw;
-        mod_ = buildModel(*netw);
+        mod_ = buildModel(*netw_);
 
         selIrPqFrom_f_.set_size(mod_->nPq());
         selIiPqFrom_f_.set_size(mod_->nPq());

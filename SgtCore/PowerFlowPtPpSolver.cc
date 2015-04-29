@@ -11,9 +11,9 @@
 
 namespace Sgt
 {
-    std::unique_ptr<Net> sgt2PowerTools(const Sgt::Network& sgtNw)
+    Net* sgt2PowerTools(const Sgt::Network& sgtNw)
     {
-        std::unique_ptr<Net> net(new Net);
+        Net* net(new Net);
 
         net->bMVA = sgtNw.PBase();
         for (auto& bus : sgtNw.busses())
@@ -115,6 +115,7 @@ namespace Sgt
 
             sgtBus->setV({VSol});
 
+            /*
             Complex SLoadUnservedSolPu(-node->plv.get_value(), -node->qlv.get_value());
             Complex SLoadUnservedSol = sgtNw.pu2S(SLoadUnservedSolPu);
             if (std::abs(SLoadUnservedSol) > 1e-3)
@@ -124,6 +125,7 @@ namespace Sgt
 
             sgtBus->setSZipUnserved({SLoadUnservedSol});
             sgtBus->setSGenUnserved(arma::Col<Complex>(sgtBus->phases().size(), arma::fill::zeros));
+            */
 
             int nGen = node->_gen.size();
             int nSgtGen = sgtBus->gens().size();
@@ -160,38 +162,44 @@ namespace Sgt
         Log().message() << "Done------------------" << std::endl;
     }
 
-    bool PowerFlowPtPpSolver::solve(Network* netw)
+    void PowerFlowPtPpSolver::setNetwork(Network* netw) 
     {
-        Stopwatch stopwatchPre;
+        sgtNetw_ = netw;
+    }
+            
+    PowerFlowPtPpSolver::~PowerFlowPtPpSolver()
+    {
+        delete ptNetw_;
+    }
+
+    bool PowerFlowPtPpSolver::solveProblem()
+    {
+        ptNetw_ = sgt2PowerTools(*sgtNetw_);
+        // printNetw(*ptNetw_);
+        
         Stopwatch stopwatchSolve;
-        Stopwatch stopwatchPost;
-        stopwatchPre.start();
-        auto net = sgt2PowerTools(*netw);
-        stopwatchPre.stop();
-        // printNetw(*net);
         stopwatchSolve.start();
-        auto pModel(makeModel(*netw, *net));
-        pModel->min_cost_load();
+        auto pModel(makeModel());
+        // pModel->min_cost_load();
+        pModel->min_cost();
         stopwatchSolve.stop();
-        stopwatchPost.start();
-        // printNetw(*net);
-        powerTools2Sgt(*net, *netw);
-        stopwatchPost.stop();
+        
+        // printNetw(*ptNetw_);
         Log().message() << "PowerFlowPtPpSolver:" << std::endl;
         {
             LogIndent _;
-            Log().message() << "Preprocessing time  = " << stopwatchPre.seconds() << std::endl;
             Log().message() << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
-            Log().message() << "Postprocessing time = " << stopwatchPost.seconds() << std::endl;
-            Log().message() << "Total time          = "
-                            << stopwatchPre.seconds() + stopwatchSolve.seconds() + stopwatchPost.seconds()
-                            << std::endl;
         }
         return true;
     }
-
-    std::unique_ptr<PowerModel> PowerFlowPtPpSolver::makeModel(const Network& sgtNetw, Net& ptNetw)
+    
+    void PowerFlowPtPpSolver::updateNetwork()
     {
-        return std::unique_ptr<PowerModel>(new PowerModel(ACRECT_, &ptNetw));
+        powerTools2Sgt(*ptNetw_, *sgtNetw_);
+    }
+
+    std::unique_ptr<PowerModel> PowerFlowPtPpSolver::makeModel()
+    {
+        return std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_));
     }
 }
