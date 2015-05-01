@@ -1,4 +1,5 @@
-#include "PvDemo.h"
+#include "PvDemoSolver.h"
+#include "PvInverter.h"
 
 #include <SgtSim/Simulation.h>
 #include <SgtSim/SimNetwork.h>

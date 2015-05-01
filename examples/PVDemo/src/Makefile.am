@@ -6,5 +6,5 @@ lib_LIBRARIES =
 
 bin_PROGRAMS = pvdemo
 
-pvdemo_SOURCES = PvDemo.h PvDemo.cc pvdemo_main.cc
+pvdemo_SOURCES = PvInverter.h PvInverter.cc PvDemoSolver.h PvDemoSolver.cc pvdemo.cc
 pvdemo_LDFLAGS = -lSgtCore -lSgtSim -larmadillo -lyaml-cpp -lPowerTools -lipopt -lcoinhsl -lboost_date_time -lklu -lamd -lbtf -lcolamd
