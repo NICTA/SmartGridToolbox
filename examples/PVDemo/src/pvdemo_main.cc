@@ -24,9 +24,10 @@ int main(int argc, const char ** argv)
     p.registerParserPlugin<PvInverterParserPlugin>();
     p.parse(configName, sim);
     sim.initialize();
-
     SimNetwork& simNetwork = *sim.simComponent<SimNetwork>("network");
     Network& network = *simNetwork.network();
+    // network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
+
     for (auto bus : network.busses())
     {
         if (vlb > 0)
@@ -39,12 +40,25 @@ int main(int argc, const char ** argv)
         }
     }
 
-    network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
-    network.solvePowerFlow();
 
+    std::vector<PvInverter*> invs;
+    for (auto gen : network.gens())
+    {
+        auto inv = std::dynamic_pointer_cast<PvInverter>(gen);
+        if (inv)
+        {
+            invs.push_back(inv.get());
+            std::cerr << "Inverter " << inv->id() << std::endl;
+        }
+    }
+
+    auto sumInv = [&invs]()->Complex {Complex s = 0; for (auto inv : invs) s += inv->S()(0); return s;};
     while (!sim.isFinished())
     {
-        std::cout << "TIME " << sim.currentTime() << std::endl;
+        Complex S = sumInv();
+        double h = dSeconds(sim.currentTime() - sim.startTime()) / 3600.0;
+        std::cerr << h << " " << S << std::endl;
+        outFile << h << " " << S << std::endl;
         sim.doTimestep();
     }
 }

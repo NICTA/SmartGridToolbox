@@ -45,6 +45,7 @@ namespace Sgt
 
         for (auto nd : ptNetw_->nodes)
         {
+            if (true)
             {
                 Constraint c(std::string("V_ub_") + nd->_name);
                 c += (nd->vr^2) + (nd->vi^2) - VBoundViol_;
@@ -52,6 +53,7 @@ namespace Sgt
                 mod->_model->addConstraint(c);                                                                    
             }
            
+            if (true)
             {
                 Constraint c(std::string("V_lb_") + nd->_name);
                 c += (nd->vr^2) + (nd->vi^2) + VBoundViol_;                                                       
@@ -60,7 +62,7 @@ namespace Sgt
             }
         }
 
-        *mod->objective() += 10000 * VBoundViol_;
+        *mod->objective() += 100 * VBoundViol_;
 
         for (auto gen : sgtNetw_->gens())
         {
@@ -74,6 +76,7 @@ namespace Sgt
                         [genId](Gen* gen){return gen->_name == genId;});
                 assert(gen != bus->_gen.end());
 
+                if (true)
                 {
                     Constraint c("PVD_SPECIAL_A");
                     c += ((**gen).pg)^2;
@@ -84,6 +87,7 @@ namespace Sgt
                     mod->_model->addConstraint(c);
                 }
 
+                if (true)
                 {
                     Constraint c("PVD_SPECIAL_B");
                     c += ((**gen).pg)^2;
