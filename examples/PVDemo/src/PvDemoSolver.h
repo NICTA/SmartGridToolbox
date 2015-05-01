@@ -1,5 +1,5 @@
-#ifndef PV_DEMO_DOT_H
-#define PV_DEMO_DOT_H
+#ifndef PV_DEMO_SOLVER_DOT_H
+#define PV_DEMO_SOLVER_DOT_H
 
 #include <SgtCore/PowerFlowPtPpSolver.h>
 
@@ -22,4 +22,4 @@ namespace Sgt
     };
 }
 
-#endif // PV_DEMO_DOT_H
+#endif // PV_DEMO_SOLVER_DOT_H
