@@ -22,9 +22,29 @@ namespace Sgt
         string tsId = parser.expand<std::string>(nd["time_series_id"]);
         Time dt = parser.expand<Time>(nd["dt"]);
 
+        auto ndScaleFactorY = nd["scale_factor_Y"];
+        auto ndScaleFactorI = nd["scale_factor_I"];
+        auto ndScaleFactorS = nd["scale_factor_S"];
+
         auto series = sim.timeSeries<const TimeSeries<Time, arma::Col<Complex>>>(tsId);
         auto network = sim.simComponent<SimNetwork>(networkId);
         auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, phases, series, dt);
+        if (ndScaleFactorY)
+        {
+            double scaleFactorY = parser.expand<double>(ndScaleFactorY);
+            tsZip->setScaleFactorY(scaleFactorY);
+        }
+        if (ndScaleFactorI)
+        {
+            double scaleFactorI = parser.expand<double>(ndScaleFactorI);
+            tsZip->setScaleFactorI(scaleFactorI);
+        }
+        if (ndScaleFactorS)
+        {
+            double scaleFactorS = parser.expand<double>(ndScaleFactorS);
+            tsZip->setScaleFactorS(scaleFactorS);
+        }
+
         network->addZip(tsZip, busId);
     }
 }

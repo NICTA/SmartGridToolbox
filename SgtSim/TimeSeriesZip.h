@@ -22,17 +22,50 @@ namespace Sgt
 
             virtual arma::Col<Complex> YConst() const
             {
-                return series_->value(lastUpdated())(arma::span(0, phases().size() - 1));
+                return scaleFactorY_ * series_->value(lastUpdated())(
+                        arma::span(0, phases().size() - 1));
             }
 
             virtual arma::Col<Complex> IConst() const
             {
-                return series_->value(lastUpdated())(arma::span(phases().size(), 2 * phases().size() - 1));
+                return scaleFactorI_ * series_->value(lastUpdated())(
+                        arma::span(phases().size(), 2 * phases().size() - 1));
             }
 
             virtual arma::Col<Complex> SConst() const
             {
-                return series_->value(lastUpdated())(arma::span(2 * phases().size(), 3 * phases().size() - 1));
+                return scaleFactorS_ * series_->value(lastUpdated())(
+                        arma::span(2 * phases().size(), 3 * phases().size() - 1));
+            }
+
+            double scaleFactorY() const
+            {
+                return scaleFactorY_;
+            }
+            
+            void setScaleFactorY(double scaleFactorY)
+            {
+                scaleFactorY_ = scaleFactorY;
+            }
+
+            double scaleFactorI() const
+            {
+                return scaleFactorI_;
+            }
+            
+            void setScaleFactorI(double scaleFactorI)
+            {
+                scaleFactorI_ = scaleFactorI;
+            }
+
+            double scaleFactorS() const
+            {
+                return scaleFactorS_;
+            }
+            
+            void setScaleFactorS(double scaleFactorS)
+            {
+                scaleFactorS_ = scaleFactorS;
             }
 
         protected:
@@ -46,6 +79,9 @@ namespace Sgt
         private:
 
             std::shared_ptr<const TimeSeries<Time, arma::Col<Complex>>> series_;
+            double scaleFactorY_{1.0};
+            double scaleFactorI_{1.0};
+            double scaleFactorS_{1.0};
     };
 }
 
