@@ -1,119 +1,51 @@
-#ifndef PV_DEMO_DOT_H
-#define PV_DEMO_DOT_H
+function aggregate_loads(case_rel_path)
 
-#include <SgtCore/Gen.h>
-#include <SgtCore/Parser.h>
-#include <SgtCore/PowerFlowPtPpSolver.h>
-#include <SgtSim/Inverter.h>
-#include <SgtSim/SimParser.h>
+    poiss_lambda = 5;
+    sdev_factor = 0.1; % 1 -> stddev = mean
+    mpc = loadcase([pwd(), '/', case_rel_path]);
 
-#include <PowerTools++/var.h>
+    nbus = rows(mpc.bus);
 
-class Net;
-class PowerModel;
+    SStatic = -mpc.bus(:, 3) - I * mpc.bus(:, 4);
 
-namespace Sgt
-{
-    class Network;
-    class Simulation;
+    for i = 1:rows(SStatic)
+        n_load = poissrnd(poiss_lambda);
+        for j = 1:n_load
+            lij = load(['loads/load_', num2str(randi([0, 49])), '.txt'])(:, [1, 4]);
+            if (j == 1)
+                li = lij;
+            else
+                li(:, 2) += lij(:, 2);
+            end
+        end
+        ti = li(:, 1);
+        Si = li(:, 2);
 
-    class PvInverter : public SimpleInverterAbc, public GenericGen
-    {
-        public:
+        Si = Si - mean(Si);
+        Si = Si / std(Si);
+        Si = Si - max(Si);
+        Si = SStatic(i) * sdev_factor * Si;
+        SiTot = SStatic(i) + Si;
 
-            /// @name Static member functions:
-            /// @{
+        fname = ['aggregate_loads/load_', num2str(i), '.txt'];                                                    
+        fp = fopen(fname, 'w+');
+        z = zeros(size(ti));
+        printArg = [ ...
+            ti, ...
+            z, z, ...
+            z, z, ...
+            real(Si), imag(Si)];
+        fprintf(fp, '%d %f+%fj %f+%fj %f+%fj\n', printArg');                                                             
+        fclose(fp);                                
 
-        public:
-
-            static const std::string& sComponentType()
-            {
-                static std::string result("pv_inverter");
-                return result;
-            }
-
-            /// @}
-
-            PvInverter(const std::string& id, std::string busId) :
-                GenericGen(id, Phase::BAL),
-                busId_(busId)
-            {
-                // Empty.
-            }
-
-            /// @name ComponentInterface virtual overridden functions.
-            /// @{
-
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
-
-            /// @}
-
-            /// @name InverterAbc virtual overridden functions.
-            /// @{
-
-            virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source) override
-            {
-                InverterAbc::addDcPowerSource(source);
-                source->dcPowerChanged().addAction([this]() {PChanged();}, "Update max power");
-            }
-
-            /// @}
-
-            /// @name SimpleZipInverter specific member functions.
-            /// @{
-
-            double maxSMag() const
-            {
-                return maxSMag_;
-            }
-
-            void setMaxSMag(double maxSMag)
-            {
-                maxSMag_ = maxSMag;
-            }
-
-            /// @}
-
-        public:
-
-            double maxSMag_{1e9};
-            double requestedQ_{0.0};
-            std::string busId_;
-        
-        private:
-
-            void PChanged()
-            {
-                double Pmax = availableP();
-                setPMax(Pmax);
-                setQMax(Pmax);
-                setQMin(-Pmax);
-            }
-    };
-
-    class PvInverterParserPlugin : public SimParserPlugin
-    {
-        public:
-            virtual const char* key() override
-            {
-                return "pv_inverter";
-            }
-
-        public:
-            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
-    };
-
-    class PvDemoSolver : public PowerFlowPtPpSolver
-    {
-        protected:
-            virtual std::unique_ptr<PowerModel> makeModel() override;
-
-        private:
-            var<double> VBoundViol_;
-    };
-}
-
-#endif // PV_DEMO_DOT_H
+        fname = ['aggregate_loads/tot_load_', num2str(i), '.txt'];                                                    
+        fp = fopen(fname, 'w+');
+        z = zeros(size(ti));
+        printArg = [ ...
+            ti, ...
+            z, z, ...
+            z, z, ...
+            real(SiTot), imag(SiTot)];
+        fprintf(fp, '%d %f+%fj %f+%fj %f+%fj\n', printArg');                                                             
+        fclose(fp);                                
+    end
