@@ -1,13 +1,12 @@
-function aggregate_loads(case_rel_path)
+function aggregate_loads(case_rel_path, poiss_lambda, fluct_factor)
 
-    poiss_lambda = 5;
-    sdev_factor = 0.1; % 1 -> stddev = mean
     mpc = loadcase([pwd(), '/', case_rel_path]);
 
     nbus = rows(mpc.bus);
 
     SStatic = -mpc.bus(:, 3) - I * mpc.bus(:, 4);
 
+    mkdir('aggregate_loads');
     for i = 1:rows(SStatic)
         n_load = poissrnd(poiss_lambda);
         for j = 1:n_load
@@ -18,14 +17,17 @@ function aggregate_loads(case_rel_path)
                 li(:, 2) += lij(:, 2);
             end
         end
-        ti = li(:, 1);
-        Si = li(:, 2);
 
-        Si = Si - mean(Si);
-        Si = Si / std(Si);
-        Si = Si - max(Si);
-        Si = SStatic(i) * sdev_factor * Si;
-        SiTot = SStatic(i) + Si;
+        ti = li(:, 1);
+
+        Si = -li(:, 2); % Now +ve draw rather than -ve injection.
+        Si /= max(Si); % Scale so max load is 1
+        Si = SStatic(i) * (1 + fluct_factor * (Si - 1));
+        SiFluct = Si - SStatic(i);
+
+        printf('static = %f, mean = %f, min = %f, max = %f, sdev = %f\n', ...
+               SStatic(i), mean(real(Si)), min(real(Si)), max(real(Si)), std(real(Si)));
+        fflush(stdout);
 
         fname = ['aggregate_loads/load_', num2str(i), '.txt'];                                                    
         fp = fopen(fname, 'w+');
@@ -34,7 +36,7 @@ function aggregate_loads(case_rel_path)
             ti, ...
             z, z, ...
             z, z, ...
-            real(Si), imag(Si)];
+            real(SiFluct), imag(SiFluct)];
         fprintf(fp, '%d %f+%fj %f+%fj %f+%fj\n', printArg');                                                             
         fclose(fp);                                
 
@@ -45,7 +47,7 @@ function aggregate_loads(case_rel_path)
             ti, ...
             z, z, ...
             z, z, ...
-            real(SiTot), imag(SiTot)];
+            real(Si), imag(Si)];
         fprintf(fp, '%d %f+%fj %f+%fj %f+%fj\n', printArg');                                                             
         fclose(fp);                                
     end

@@ -24,10 +24,10 @@ int main(int argc, const char ** argv)
     Parser<Simulation> p;
     p.registerParserPlugin<PvInverterParserPlugin>();
     p.parse(configName, sim);
-    sim.initialize();
     SimNetwork& simNetwork = *sim.simComponent<SimNetwork>("network");
     Network& network = *simNetwork.network();
-    // network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
+    network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
+    sim.initialize();
 
     for (auto bus : network.busses())
     {
