@@ -34,7 +34,7 @@ namespace Sgt
             }
         }
 
-        *mod->objective() += 100 * VBoundViol_;
+        *mod->objective() += 10000 * VBoundViol_;
 
         for (auto gen : sgtNetw_->gens())
         {
@@ -51,21 +51,20 @@ namespace Sgt
                 if (true)
                 {
                     Constraint c("PVD_SPECIAL_A");
-                    c += ((**gen).pg)^2;
-                    c += ((**gen).qg)^2;
+                    c += (((**gen).pg)^2) + (((**gen).qg)^2);
                     double maxSMag = sgtNetw_->S2Pu(inverter->maxSMag());
                     c <= pow(maxSMag, 2);
-                    // c.print(); std::cout << std::endl;
+                    c.print(); std::cout << std::endl;
                     mod->_model->addConstraint(c);
                 }
 
-                if (true)
+                if (false)
                 {
                     Constraint c("PVD_SPECIAL_B");
                     c += ((**gen).pg)^2;
                     c -= ((**gen).qg)^2;
                     c >= 0;
-                    // c->print(); std::cout << std::endl;
+                    c.print(); std::cout << std::endl;
                     mod->_model->addConstraint(c);
                 }
             }

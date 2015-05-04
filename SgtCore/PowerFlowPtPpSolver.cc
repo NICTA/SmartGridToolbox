@@ -20,19 +20,16 @@ namespace Sgt
         {
             std::string busId = bus->id();
 
-            Complex PLoad = 0;
-            Complex yShunt = 0;
-            for (auto zip : bus->zips())
-            {
-                PLoad += -sgtNw.S2Pu(zip->SConst()[0]);
-                yShunt += sgtNw.Y2Pu(zip->YConst()[0], bus->VBase());
-            }
+            Complex PLoad = -sgtNw.S2Pu(bus->SConst()(0));
+            Complex yShunt = sgtNw.Y2Pu(bus->YConst()(0), bus->VBase());
+            Complex V = sgtNw.V2Pu(bus->V()(0), bus->VBase());
             double VMin = sgtNw.V2Pu(bus->VMagMin(), bus->VBase());
             double VMax = sgtNw.V2Pu(bus->VMagMax(), bus->VBase());
             double kVBase = bus->VBase();
 
             Node* node = new Node(busId, PLoad.real(), PLoad.imag(), yShunt.real(), yShunt.imag(),
                                   VMin, VMax, kVBase, 1);
+            node->vs = std::abs(V);
             net->add_node(node);
 
             for (const auto& gen : bus->gens())
