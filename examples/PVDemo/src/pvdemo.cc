@@ -41,25 +41,38 @@ int main(int argc, const char ** argv)
         }
     }
 
-
     std::vector<PvInverter*> invs;
+    std::vector<GenAbc*> otherGens;
     for (auto gen : network.gens())
     {
         auto inv = std::dynamic_pointer_cast<PvInverter>(gen);
-        if (inv)
+        if (inv != nullptr)
         {
             invs.push_back(inv.get());
-            std::cerr << "Inverter " << inv->id() << std::endl;
+        }
+        else
+        {
+            otherGens.push_back(gen.get());
         }
     }
 
-    auto sumInv = [&invs]()->Complex {Complex s = 0; for (auto inv : invs) s += inv->S()(0); return s;};
+    auto sumLoad = [&]()->Complex {Complex x = 0; for (auto bus : network.busses()) x -= bus->SZip()(0); return x;};
+    auto sumGen = [&]()->Complex {Complex x = 0; for (auto gen : otherGens) x += gen->S()(0); return x;};
+    auto sumInv = [&]()->Complex {Complex x = 0; for (auto inv : invs) x += inv->S()(0); return x;};
+
+    auto print = [&]() {
+        Complex SLoad = sumLoad();
+        Complex SGen = sumGen();
+        Complex SInv = sumInv();
+        double h = dSeconds(sim.currentTime() - sim.startTime()) / 3600.0;
+        std::cerr << h << " " << SLoad << " " << SGen << " " << SInv << std::endl;
+        outFile << h << " " << SLoad << " " << SGen << " " << SInv << std::endl;
+    };
+
     while (!sim.isFinished())
     {
-        Complex S = sumInv();
-        double h = dSeconds(sim.currentTime() - sim.startTime()) / 3600.0;
-        std::cerr << h << " " << S << std::endl;
-        outFile << h << " " << S << std::endl;
+        print();
         sim.doTimestep();
     }
+    print();
 }
