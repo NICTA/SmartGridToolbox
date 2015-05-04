@@ -54,7 +54,7 @@ namespace Sgt
                     c += (((**gen).pg)^2) + (((**gen).qg)^2);
                     double maxSMag = sgtNetw_->S2Pu(inverter->maxSMag());
                     c <= pow(maxSMag, 2);
-                    c.print(); std::cout << std::endl;
+                    // c.print(); std::cout << std::endl;
                     mod->_model->addConstraint(c);
                 }
 
@@ -64,7 +64,7 @@ namespace Sgt
                     c += ((**gen).pg)^2;
                     c -= ((**gen).qg)^2;
                     c >= 0;
-                    c.print(); std::cout << std::endl;
+                    // c.print(); std::cout << std::endl;
                     mod->_model->addConstraint(c);
                 }
             }
