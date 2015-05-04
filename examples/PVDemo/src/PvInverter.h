@@ -82,7 +82,6 @@ namespace Sgt
                 setPMax(Pmax);
                 setQMax(Pmax);
                 setQMin(-Pmax);
-                std::cout << "PMAX = " << Pmax << std::endl;
             }
     };
 
