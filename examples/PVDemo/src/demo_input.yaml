@@ -3,8 +3,8 @@
     V_mag_min: 0.95
     V_mag_max: 1.05
 - parameters:
-    start_time: 2013-01-02 00:00:00
-    end_time: 2013-01-04 00:00:00
+    start_time: 2013-01-02 06:00:00
+    end_time: 2013-01-04 06:00:00
     loads_start_time: 2013-01-01 20:00:00
     input_file: demo_input.m
     n_series_load: 189 

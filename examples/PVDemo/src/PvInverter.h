@@ -29,7 +29,7 @@ namespace Sgt
                 GenericGen(id, Phase::BAL),
                 busId_(busId)
             {
-                // Empty.
+                setPMin(0.0);
             }
 
             /// @name ComponentInterface virtual overridden functions.

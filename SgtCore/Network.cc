@@ -86,6 +86,12 @@ namespace Sgt
 
         return isValidSolution_;
     }
+            
+    double Network::genCostPerUnitTime()
+    {
+        return std::accumulate(genVec_.begin(), genVec_.end(), 0.0, 
+                [](double d, GenPtr g)->double{return d + g->cost();});
+    }
 
     void Network::print(std::ostream& os) const
     {

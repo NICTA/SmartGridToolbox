@@ -56,17 +56,31 @@ int main(int argc, const char ** argv)
         }
     }
 
-    auto sumLoad = [&]()->Complex {Complex x = 0; for (auto bus : network.busses()) x -= bus->SZip()(0); return x;};
-    auto sumGen = [&]()->Complex {Complex x = 0; for (auto gen : otherGens) x += gen->S()(0); return x;};
-    auto sumInv = [&]()->Complex {Complex x = 0; for (auto inv : invs) x += inv->S()(0); return x;};
+    auto sumLoad = [&] () -> Complex {Complex x = 0; for (auto bus : network.busses()) x -= bus->SZip()(0); return x;};
+    auto sumGen = [&] () -> Complex {Complex x = 0; for (auto gen : otherGens) x += gen->S()(0); return x;};
+    auto sumInv = [&] () -> Complex {Complex x = 0; for (auto inv : invs) x += inv->S()(0); return x;};
+    auto minV = [&] () -> double {
+        double minV = 100;
+        for (auto bus : network.busses())
+        {
+            double V = network.V2Pu(std::abs(bus->V()(0)), bus->VBase());
+            if (V < minV)
+            {
+                minV = V;
+            }
+        }
+        return minV;
+    };
 
-    auto print = [&]() {
+    auto print = [&] () {
         Complex SLoad = sumLoad();
         Complex SGen = sumGen();
         Complex SInv = sumInv();
+        Complex VMin = minV();
         double h = dSeconds(sim.currentTime() - sim.startTime()) / 3600.0;
         std::cerr << h << " " << SLoad << " " << SGen << " " << SInv << std::endl;
-        outFile << h << " " << SLoad << " " << SGen << " " << SInv << std::endl;
+        outFile << h << " " << SLoad << " " << SGen << " " << SInv << " " << VMin
+                << " " << network.genCostPerUnitTime() << std::endl;
     };
 
     while (!sim.isFinished())

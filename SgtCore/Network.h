@@ -266,8 +266,16 @@ namespace Sgt
             }
 
         /// @}
+        
+        /// @name Generation cost:
+        /// @{
+            
+            double genCostPerUnitTime();
+
+        /// @}
 
         private:
+
             double PBase_{1.0};
             double nomFreq_{50.0};
             double freq_{50.0};
