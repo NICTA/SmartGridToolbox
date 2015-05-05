@@ -76,10 +76,10 @@ int main(int argc, const char ** argv)
         Complex SLoad = sumLoad();
         Complex SGen = sumGen();
         Complex SInv = sumInv();
+        Complex STot = SGen + SInv;
         Complex VMin = minV();
         double h = dSeconds(sim.currentTime() - sim.startTime()) / 3600.0;
-        std::cerr << h << " " << SLoad << " " << SGen << " " << SInv << std::endl;
-        outFile << h << " " << SLoad << " " << SGen << " " << SInv << " " << VMin
+        outFile << h << " " << SLoad << " " << SGen << " " << SInv << " " << STot << " " << VMin
                 << " " << network.genCostPerUnitTime() << std::endl;
     };
 

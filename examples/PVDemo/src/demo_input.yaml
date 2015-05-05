@@ -6,10 +6,10 @@
     start_time: 2013-01-02 06:00:00
     end_time: 2013-01-04 06:00:00
     loads_start_time: 2013-01-01 20:00:00
-    input_file: demo_input.m
-    n_series_load: 189 
-    n_solar_busses: 50
-    solar_busses: [38, 108, 27, 55, 100, 172, 148, 58, 2, 132, 68, 66, 183, 12, 1, 146, 165, 121, 174, 89, 106, 24, 74, 18, 42, 98, 6, 156, 17, 149, 86, 130, 83, 67, 46, 64, 163, 73, 53, 87, 150, 151, 122, 25, 96, 49, 79, 80, 30, 187, 97, 129, 116, 84, 10, 157, 158, 170, 113, 142, 138, 155, 166, 182, 50, 111, 125, 101, 188, 112, 41, 77, 36, 173, 153, 92, 176, 47, 76, 144, 105, 35, 141, 91, 21, 168, 102, 29, 124, 184, 126, 90, 179, 171, 133, 159, 28, 110, 118, 119, 94, 52, 4, 59, 143, 145, 169, 137, 11, 3, 135, 162, 78, 31, 134, 57, 123, 81, 19, 127, 128, 34, 33, 177, 39, 8, 71, 175, 136, 189, 32, 14, 147, 109, 16, 185, 154, 139, 114, 61, 107, 75, 60, 56, 103, 45, 48, 70, 131, 13, 161, 152, 23, 63, 167, 178, 51, 85, 22, 72, 117, 160, 44, 95, 20, 5, 69, 54, 93, 140, 186, 88, 26, 7, 65, 37, 164, 43, 40, 99, 62, 120, 15, 104, 82, 9, 181, 180, 115]
+    input_file: ieee57_1.m
+    n_series_load: 57 
+    n_solar_busses: 6
+    solar_busses: [20, 30, 35, 50, 53, 56]
 - simulation: 
     start_time: <start_time>
     end_time: <end_time>
@@ -46,14 +46,15 @@
             id: pv_inverter_<solar_busses(<i>)>
             network_id: network
             bus_id: bus_<solar_busses(<i>)>
-            max_S_mag: 10
+            max_S_mag: 60
             efficiency: 0.86
         - solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
             id: solar_pv_<solar_busses(<i>)>
             weather: weather
             inverter: pv_inverter_<solar_busses(<i>)>
             efficiency: 0.75
-            area_m2: 5000
+            #area_m2: 90000
+            area_m2: 0
             zenith_degrees: 40 
             azimuth_degrees: 290
 - loop:
