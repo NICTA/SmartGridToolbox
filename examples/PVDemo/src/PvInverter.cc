@@ -25,6 +25,11 @@ namespace Sgt
         {
             inverter->setMaxSMag(parser.expand<double>(nd["max_S_mag"]));
         }
+        
+        if (nd["max_Q"])
+        {
+            inverter->maxQ_ = parser.expand<double>(nd["max_Q"]);
+        }
 
         const std::string networkId = parser.expand<std::string>(nd["network_id"]);
         auto network = sim.simComponent<SimNetwork>(networkId);

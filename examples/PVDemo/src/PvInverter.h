@@ -70,9 +70,9 @@ namespace Sgt
 
         public:
 
-            double maxSMag_{1e9};
-            double requestedQ_{0.0};
             std::string busId_;
+            double maxSMag_{1e9};
+            double maxQ_{1e9};
         
         private:
 
@@ -80,8 +80,8 @@ namespace Sgt
             {
                 double Pmax = availableP();
                 setPMax(Pmax);
-                setQMax(Pmax);
-                setQMin(-Pmax);
+                setQMax(std::min(Pmax, maxQ_));
+                setQMin(-QMax());
             }
     };
 
