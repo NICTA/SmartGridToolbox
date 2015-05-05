@@ -12,29 +12,6 @@ namespace Sgt
     std::unique_ptr<PowerModel> PvDemoSolver::makeModel()
     {
         auto mod = PowerFlowPtPpSolver::makeModel();
-        VBoundViol_ = var<double>("V_bound_viol", 0.0, INFINITY);
-        mod->_model->addVar(VBoundViol_);
-
-        for (auto nd : ptNetw_->nodes)
-        {
-            if (true)
-            {
-                Constraint c(std::string("V_ub_") + nd->_name);
-                c += (nd->vr^2) + (nd->vi^2) - VBoundViol_;
-                c <= pow(nd->vbound.max,2);                                                                  
-                mod->_model->addConstraint(c);                                                                    
-            }
-           
-            if (true)
-            {
-                Constraint c(std::string("V_lb_") + nd->_name);
-                c += (nd->vr^2) + (nd->vi^2) + VBoundViol_;                                                       
-                c >= pow(nd->vbound.min,2);                                                                 
-                mod->_model->addConstraint(c);                                                                    
-            }
-        }
-
-        *mod->objective() += 10000 * VBoundViol_;
 
         for (auto gen : sgtNetw_->gens())
         {
@@ -58,11 +35,10 @@ namespace Sgt
                     mod->_model->addConstraint(c);
                 }
 
-                if (false)
+                if (true)
                 {
                     Constraint c("PVD_SPECIAL_B");
-                    c += ((**gen).pg)^2;
-                    c -= ((**gen).qg)^2;
+                    c += (((**gen).pg)^2) - (((**gen).qg)^2);
                     c >= 0;
                     // c.print(); std::cout << std::endl;
                     mod->_model->addConstraint(c);

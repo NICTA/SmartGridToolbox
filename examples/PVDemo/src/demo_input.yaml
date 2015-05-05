@@ -47,6 +47,7 @@
             network_id: network
             bus_id: bus_<solar_busses(<i>)>
             max_S_mag: 60
+            #max_Q: 0
             efficiency: 0.86
         - solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
             id: solar_pv_<solar_busses(<i>)>
@@ -54,7 +55,6 @@
             inverter: pv_inverter_<solar_busses(<i>)>
             efficiency: 0.75
             area_m2: 90000
-            area_m2: 0
             zenith_degrees: 40 
             azimuth_degrees: 290
 - loop:

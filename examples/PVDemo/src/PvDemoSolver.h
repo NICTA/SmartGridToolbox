@@ -16,9 +16,6 @@ namespace Sgt
     {
         protected:
             virtual std::unique_ptr<PowerModel> makeModel() override;
-
-        private:
-            var<double> VBoundViol_;
     };
 }
 

@@ -196,8 +196,8 @@ namespace Sgt
 
     std::unique_ptr<PowerModel> PowerFlowPtPpSolver::makeModel()
     {
-        auto mod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_));
-        mod->min_cost();
+        auto mod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT_, ptNetw_));
+        mod->min_cost_();
         return mod;
     }
 }
