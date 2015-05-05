@@ -53,7 +53,7 @@
             weather: weather
             inverter: pv_inverter_<solar_busses(<i>)>
             efficiency: 0.75
-            #area_m2: 90000
+            area_m2: 90000
             area_m2: 0
             zenith_degrees: 40 
             azimuth_degrees: 290
@@ -75,4 +75,4 @@
             phases: [BAL]
             time_series_id: load_<i>_series
             dt: 00:30:00
-            scaling_factor_S: 1.0
+            scale_factor_S: 0.7

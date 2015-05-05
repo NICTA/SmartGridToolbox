@@ -1,4 +1,4 @@
-function aggregate_loads(case_rel_path, poiss_lambda, fluct_factor)
+function aggregate_loads(case_rel_path, poiss_lambda, sd_factor, max_factor)
 
     mpc = loadcase([pwd(), '/', case_rel_path]);
 
@@ -21,8 +21,10 @@ function aggregate_loads(case_rel_path, poiss_lambda, fluct_factor)
         ti = li(:, 1);
 
         Si = -li(:, 2); % Now +ve draw rather than -ve injection.
-        Si /= max(Si); % Scale so max load is 1
-        Si = SStatic(i) * (1 + fluct_factor * (Si - 1));
+        Si /= max(Si); % Note: Si is real. Max is now 1.
+        Si = sd_factor * (Si - mean(Si)); % Reduce fluctuations if desired.
+        Si = Si + 1 - max(Si); % Max is now 1 again.
+        Si *= SStatic(i) * max_factor; % Scale so max load is max_factor * SStatic.
         SiFluct = Si - SStatic(i);
 
         printf('static = %f, mean = %f, min = %f, max = %f, sdev = %f\n', ...
