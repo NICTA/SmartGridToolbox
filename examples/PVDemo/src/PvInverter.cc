@@ -5,6 +5,14 @@
 
 namespace Sgt
 {
+    void PvInverter::PChanged()
+    {
+        double Pmax = availableP();
+        setPMax(Pmax);
+        setQMax(std::min(10 * Pmax, maxQ_));
+        setQMin(-QMax());
+    }
+
     void PvInverterParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");

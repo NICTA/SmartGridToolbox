@@ -35,7 +35,7 @@ namespace Sgt
                     mod->_model->addConstraint(c);
                 }
 
-                if (true)
+                if (false)
                 {
                     Constraint c("PVD_SPECIAL_B");
                     c += (((**gen).pg)^2) - (((**gen).qg)^2);

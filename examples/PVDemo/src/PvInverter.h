@@ -76,13 +76,7 @@ namespace Sgt
         
         private:
 
-            void PChanged()
-            {
-                double Pmax = availableP();
-                setPMax(Pmax);
-                setQMax(std::min(Pmax, maxQ_));
-                setQMin(-QMax());
-            }
+            void PChanged();
     };
 
     class PvInverterParserPlugin : public SimParserPlugin

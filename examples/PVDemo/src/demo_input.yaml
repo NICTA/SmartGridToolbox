@@ -54,7 +54,7 @@
             weather: weather
             inverter: pv_inverter_<solar_busses(<i>)>
             efficiency: 0.75
-            area_m2: 90000
+            area_m2: 9000
             zenith_degrees: 40 
             azimuth_degrees: 290
 - loop:
