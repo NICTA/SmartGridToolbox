@@ -6,7 +6,7 @@
     start_time: 2013-01-02 06:00:00
     end_time: 2013-01-04 06:00:00
     loads_start_time: 2013-01-01 20:00:00
-    input_file: ieee57_1.m
+    input_file: case57_1.m
     n_series_load: 57 
     n_solar_busses: 6
     solar_busses: [20, 30, 35, 50, 53, 56]
@@ -64,7 +64,7 @@
             id: load_<i>_series
             value_type: complex_vector
             type: data_time_series
-            data_file: ./loads_ieee57_1/load_<i>.txt
+            data_file: ./loads_case57_1/load_<i>.txt
             relative_to_time: <loads_start_time>
             time_unit: m
             interp_type: lerp
