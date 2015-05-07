@@ -1,4 +1,4 @@
-function aggregate_loads(case_rel_path, poiss_lambda, sd_factor, max_factor)
+function aggregate_loads(case_rel_path, out_dir, poiss_lambda, sd_factor, max_factor)
 
     mpc = loadcase([pwd(), '/', case_rel_path]);
 
@@ -6,7 +6,7 @@ function aggregate_loads(case_rel_path, poiss_lambda, sd_factor, max_factor)
 
     SStatic = -mpc.bus(:, 3) - I * mpc.bus(:, 4);
 
-    mkdir('aggregate_loads');
+    mkdir(out_dir);
     for i = 1:rows(SStatic)
         n_load = poissrnd(poiss_lambda);
         for j = 1:n_load
@@ -31,7 +31,7 @@ function aggregate_loads(case_rel_path, poiss_lambda, sd_factor, max_factor)
                SStatic(i), mean(real(Si)), min(real(Si)), max(real(Si)), std(real(Si)));
         fflush(stdout);
 
-        fname = ['aggregate_loads/load_', num2str(i), '.txt'];                                                    
+        fname = [out_dir, '/load_', num2str(i), '.txt'];                                                    
         fp = fopen(fname, 'w+');
         z = zeros(size(ti));
         printArg = [ ...
@@ -42,7 +42,7 @@ function aggregate_loads(case_rel_path, poiss_lambda, sd_factor, max_factor)
         fprintf(fp, '%d %f+%fj %f+%fj %f+%fj\n', printArg');                                                             
         fclose(fp);                                
 
-        fname = ['aggregate_loads/tot_load_', num2str(i), '.txt'];                                                    
+        fname = [out_dir, '/tot_load_', num2str(i), '.txt'];                                                    
         fp = fopen(fname, 'w+');
         z = zeros(size(ti));
         printArg = [ ...
