@@ -7,7 +7,6 @@
 #include <armadillo>
 
 #include <complex>
-#include <exception>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
