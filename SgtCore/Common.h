@@ -7,6 +7,7 @@
 #include <armadillo>
 
 #include <complex>
+#include <exception>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -98,7 +99,7 @@ namespace Sgt
                 {
                     cerrBuf_.reset("", "");
                     std::cerr << std::endl << "ABORTING." << std::endl;
-                    abort();
+                    throw(std::runtime_error("SmartGridToolbox runtime error."));
                 }
             }
 
