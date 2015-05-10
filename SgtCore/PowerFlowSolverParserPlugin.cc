@@ -28,9 +28,10 @@ namespace Sgt
             Log().message() << "Using OPF (PowerTools) solver." << std::endl;
             netw.setSolver(std::unique_ptr<PowerFlowPtSolver>(new PowerFlowPtSolver));
 #else // ENABLE_POWER_TOOLS 
-            Log().fatal()
+            Log().error()
                 << "OPF solver is not available, since SmartGridToolbox was not compiled with --enable-power-tools."
                 << std::endl;
+            error();
 #endif // ENABLE_POWER_TOOLS
         }
         else if (key == "opf_pt_pp")
@@ -39,9 +40,10 @@ namespace Sgt
             Log().message() << "Using OPF (PowerTools++) solver." << std::endl;
             netw.setSolver(std::unique_ptr<PowerFlowPtPpSolver>(new PowerFlowPtPpSolver));
 #else // ENABLE_POWER_TOOLS_PP
-            Log().fatal()
+            Log().error()
                 << "OPF solver is not available, since SmartGridToolbox was not compiled with --enable-power-tools++."
                 << std::endl;
+            error();
 #endif // ENABLE_POWER_TOOLS_PP
         }
     }

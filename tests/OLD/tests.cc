@@ -545,7 +545,7 @@ static void prepareCDFInput(const std::string & yamlName, const std::string & ca
     if (!yamlFile.is_open())
     {
         Log().error() << "Could not open the yaml output file " << yamlName << "." << std::endl;
-        Sgt::abort();
+        error();
     }
 
     yamlFile << "configuration_name:           config_1" << std::endl;

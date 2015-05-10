@@ -27,13 +27,15 @@ namespace Sgt
         auto bus1 = bus(bus1Id);
         if (bus0 == nullptr)
         {
-            Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << bus0Id << " was not found in the network."
+            Log().error() << __PRETTY_FUNCTION__ << " : Bus " << bus0Id << " was not found in the network."
                           << std::endl;
+            error();
         }
         if (bus1 == nullptr)
         {
-            Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << bus1Id << " was not found in the network."
+            Log().error() << __PRETTY_FUNCTION__ << " : Bus " << bus1Id << " was not found in the network."
                           << std::endl;
+            error();
         }
         branch->setBus0(bus0);
         branch->setBus1(bus1);
@@ -52,8 +54,9 @@ namespace Sgt
         }
         else
         {
-            Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network."
+            Log().error() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network."
                           << std::endl;
+            error();
         }
     }
 
@@ -68,8 +71,9 @@ namespace Sgt
         }
         else
         {
-            Log().fatal() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network."
+            Log().error() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network."
                           << std::endl;
+            error();
         }
     }
 
@@ -222,7 +226,8 @@ namespace Sgt
                     }
                     break;
                 default:
-                    Log().fatal() << "Bad bus type." << std::endl;
+                    Log().error() << "Bad bus type." << std::endl;
+                    error();
             }
         }
     }

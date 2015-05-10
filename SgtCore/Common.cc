@@ -58,16 +58,6 @@ namespace Sgt
         return destBuf_->sputc(ch);
     }
 
-    Log::~Log()
-    {
-        if (isFatal_)
-        {
-            cerrBuf_.reset("", "");
-            std::cerr << std::endl << "ABORTING." << std::endl;
-            throw(std::runtime_error("SmartGridToolbox runtime error."));
-        }
-    }
-
     std::ostream& Log::message()
     {
         coutBuf_.reset(
@@ -100,16 +90,12 @@ namespace Sgt
         return std::cerr;
     }
 
-    std::ostream& Log::fatal()
-    {
-        isFatal_ = true;
-        cerrBuf_.reset(
-                std::string("FATAL  : ") + std::string(indentLevel_, ' '),
-                std::string("         ") + std::string(indentLevel_, ' '));
-        return std::cerr;
-    }
-
     int Log::indentLevel_ = 0;
+
+    void error()
+    {
+        throw std::runtime_error("SmartGridToolbox: runtime error.");
+    }
 
     struct CGram : Qi::grammar<std::string::const_iterator, Complex(), Ascii::space_type>
     {
@@ -187,8 +173,9 @@ namespace Sgt
         bool ok = Qi::phrase_parse(iter, end, CGram(), Ascii::space, c);
         if (!ok)
         {
-            Log().fatal() << "Bad complex number string: " << s << std::endl
+            Log().error() << "Bad complex number string: " << s << std::endl
                           << "Came unstuck at substring: " << *iter << std::endl;
+            error();
         }
         return c;
     }

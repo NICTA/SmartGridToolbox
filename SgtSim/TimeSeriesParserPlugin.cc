@@ -25,7 +25,8 @@ namespace Sgt
             }
             else
             {
-                Log().fatal() << "Invalid time unit in data_time_series. Aborting." << std::endl;
+                Log().error() << "Invalid time unit in data_time_series. Aborting." << std::endl;
+                error();
             }
             return result;
         }
@@ -68,7 +69,8 @@ namespace Sgt
             }
             else
             {
-                Log().fatal() << "Bad time series type " << tsTypeStr << std::endl;
+                Log().error() << "Bad time series type " << tsTypeStr << std::endl;
+                error();
             }
             return result;
         }
@@ -95,7 +97,8 @@ namespace Sgt
             }
             else
             {
-                Log().fatal() << "Bad value_type " << valTypeStr << " for time series." << std::endl;
+                Log().error() << "Bad value_type " << valTypeStr << " for time series." << std::endl;
+                error();
             }
             return result;
         }
@@ -118,7 +121,8 @@ namespace Sgt
             }
             else
             {
-                Log().fatal() << "Bad interp_type " << interpTypeStr << " for time series." << std::endl;
+                Log().error() << "Bad interp_type " << interpTypeStr << " for time series." << std::endl;
+                error();
             }
             return result;
         }
@@ -135,10 +139,12 @@ namespace Sgt
                     dts.reset(new LerpTimeSeries<Time, T>());
                     break;
                 case SPLINE:
-                    Log().fatal() << "Spline data time series can only be used with real data" << std::endl;
+                    Log().error() << "Spline data time series can only be used with real data" << std::endl;
+                    error();
                     break;
                 default:
-                    Log().fatal() << "Bad time series interpolation type." << std::endl;
+                    Log().error() << "Bad time series interpolation type." << std::endl;
+                    error();
                     break;
             }
             return dts;
@@ -219,7 +225,8 @@ namespace Sgt
                     }
                     default:
                     {
-                        Log().fatal() << "Bad time series value type." << std::endl;
+                        Log().error() << "Bad time series value type." << std::endl;
+                        error();
                         break;
                     }
                 }
@@ -235,7 +242,8 @@ namespace Sgt
                 std::ifstream infile(dataFName);
                 if (!infile.is_open())
                 {
-                    Log().fatal() << "Could not open the timeseries input file " << dataFName << "." << std::endl;
+                    Log().error() << "Could not open the timeseries input file " << dataFName << "." << std::endl;
+                    error();
                 }
 
                 auto interpType = getInterpType(parser.expand<std::string>(nd["interp_type"]));
@@ -330,7 +338,8 @@ namespace Sgt
                     }
                     default:
                     {
-                        Log().fatal() << "Bad time series value type." << std::endl;
+                        Log().error() << "Bad time series value type." << std::endl;
+                        error();
                         break;
                     }
                 }
@@ -338,7 +347,8 @@ namespace Sgt
             } // DATA_TS
             default:
             {
-                Log().fatal() << "Bad time series type." << std::endl;
+                Log().error() << "Bad time series type." << std::endl;
+                error();
                 break;
             }
         }

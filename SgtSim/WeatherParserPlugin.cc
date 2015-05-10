@@ -21,7 +21,8 @@ namespace Sgt
             auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
             if (series == nullptr)
             {
-                Log().fatal() << "Parsing weather: couldn't find time series " << id << std::endl;
+                Log().error() << "Parsing weather: couldn't find time series " << id << std::endl;
+                error();
             }
             weather->setTemperatureSeries(series);
         }
@@ -33,7 +34,8 @@ namespace Sgt
             auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
             if (series == nullptr)
             {
-                Log().fatal() << "Parsing weather: couldn't find time series " << id << std::endl;
+                Log().error() << "Parsing weather: couldn't find time series " << id << std::endl;
+                error();
             }
             weather->setCloudCoverSeries(series);
         }

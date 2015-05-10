@@ -24,7 +24,8 @@ namespace Sgt
             }
             catch (...)
             {
-                Log().fatal() << "Couldn't parse timezone " << parser.expand<std::string>(nodeTz) << "." << std::endl;
+                Log().error() << "Couldn't parse timezone " << parser.expand<std::string>(nodeTz) << "." << std::endl;
+                error();
             }
         }
 
@@ -35,7 +36,8 @@ namespace Sgt
         }
         catch (...)
         {
-            Log().fatal() << "Couldn't parse start date " << parser.expand<std::string>(nodeStart) << "." << std::endl;
+            Log().error() << "Couldn't parse start date " << parser.expand<std::string>(nodeStart) << "." << std::endl;
+            error();
         }
 
         const YAML::Node& nodeEnd = nd["end_time"];
@@ -45,7 +47,8 @@ namespace Sgt
         }
         catch (...)
         {
-            Log().fatal() << "Couldn't parse end date " << parser.expand<std::string>(nodeEnd) << "." << std::endl;
+            Log().error() << "Couldn't parse end date " << parser.expand<std::string>(nodeEnd) << "." << std::endl;
+            error();
         }
 
         if (const YAML::Node& nodeLatLong = nd["lat_long"])
@@ -61,8 +64,9 @@ namespace Sgt
             }
             catch (...)
             {
-                Log().fatal() << "Couldn't parse lat_long " << parser.expand<std::string>(nodeLatLong) << "."
+                Log().error() << "Couldn't parse lat_long " << parser.expand<std::string>(nodeLatLong) << "."
                               << std::endl;
+                error();
             }
         }
     }

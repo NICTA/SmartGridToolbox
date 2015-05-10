@@ -28,7 +28,8 @@ int main(int argc, const char** argv)
 {
     if (argc != 3)
     {
-        Log().fatal() << "Usage: " << argv[0] << " config_name out_name" << std::endl;
+        Log().error() << "Usage: " << argv[0] << " config_name out_name" << std::endl;
+        error();
     }
 
     const char* configName = argv[1];

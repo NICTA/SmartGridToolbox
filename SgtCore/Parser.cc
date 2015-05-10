@@ -59,7 +59,8 @@ namespace Sgt
     {
         if (!(nd[field]))
         {
-            Log().fatal() << "Parsing: " << field << " field not present." << std::endl;
+            Log().error() << "Parsing: " << field << " field not present." << std::endl;
+            error();
         }
     };
 
@@ -69,7 +70,8 @@ namespace Sgt
         auto top = YAML::LoadFile(fname);
         if (top.size() == 0)
         {
-            Log().fatal() << "File " << fname << " is empty or doesn't exist." << std::endl;
+            Log().error() << "File " << fname << " is empty or doesn't exist." << std::endl;
+            error();
         }
         return top;
     }
@@ -85,8 +87,9 @@ namespace Sgt
         std::string name = ndLoopVar[0].as<std::string>();
         if (ndLoopVar.size() != 4)
         {
-            Log().fatal() << "loop_variable expression is invalid. Format is [name, start, upper, stride]."
+            Log().error() << "loop_variable expression is invalid. Format is [name, start, upper, stride]."
                           << std::endl;
+            error();
         }
         int start = expand<int>(ndLoopVar[1]);
         int upper = expand<int>(ndLoopVar[2]);
@@ -176,7 +179,8 @@ namespace Sgt
         bool ok = phrase_parse(i1, i2, calc, space, calcResult); // And do the math...
         if (!ok)
         {
-            Log().fatal() << "Ill-formed expression " << str << std::endl;
+            Log().error() << "Ill-formed expression " << str << std::endl;
+            error();
         }
 
         std::string result = std::to_string(calcResult);
@@ -195,7 +199,8 @@ namespace Sgt
             // We matched a loop variable. Make sure there is no index!
             if (s2 != "")
             {
-                Log().fatal() << "Loop variable " << s1 << " can not be indexed with " << s2 << "." << std::endl;
+                Log().error() << "Loop variable " << s1 << " can not be indexed with " << s2 << "." << std::endl;
+                error();
             }
             result = std::regex_replace(s1, std::regex((**it).name_), std::to_string((**it).i_));
         }
@@ -209,7 +214,8 @@ namespace Sgt
             }
             catch (std::out_of_range e)
             {
-                Log().fatal() << "Parameter or loop " << s1 << " was not found." << std::endl;
+                Log().error() << "Parameter or loop " << s1 << " was not found." << std::endl;
+                error();
             }
 
             YAML::Node nd2;
@@ -225,12 +231,14 @@ namespace Sgt
                 }
                 else
                 {
-                    Log().fatal() << "Can't index parameter " << s1 << "." << std::endl;
+                    Log().error() << "Can't index parameter " << s1 << "." << std::endl;
+                    error();
                 }
 
                 if (!nd2)
                 {
-                    Log().fatal() << "For parameter " << s1 << ", index " << s2 << " doesn't exist." << std::endl;
+                    Log().error() << "For parameter " << s1 << ", index " << s2 << " doesn't exist." << std::endl;
+                    error();
                 }
             }
             else

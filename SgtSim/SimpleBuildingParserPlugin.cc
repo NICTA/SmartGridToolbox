@@ -50,7 +50,8 @@ namespace Sgt
             auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
             if (series == nullptr)
             {
-                Log().fatal() << "Parsing simple_building: couldn't find time series " << id << std::endl;
+                Log().error() << "Parsing simple_building: couldn't find time series " << id << std::endl;
+                error();
             }
             build->set_dQgSeries(series);
         }
@@ -67,7 +68,8 @@ namespace Sgt
             auto weather = sim.simComponent<Weather>(weatherStr);
             if (weather == nullptr)
             {
-                Log().fatal() << "Parsing simple_building: couldn't find weather " << weatherStr << std::endl;
+                Log().error() << "Parsing simple_building: couldn't find weather " << weatherStr << std::endl;
+                error();
             }
             build->setWeather(weather);
         }

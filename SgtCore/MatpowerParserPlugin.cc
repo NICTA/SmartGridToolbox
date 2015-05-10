@@ -256,7 +256,8 @@ namespace Sgt
             std::fstream infile(inputName);
             if (!infile.is_open())
             {
-                Log().fatal() << "Could not open the matpower input file " << inputName << "." << std::endl;
+                Log().error() << "Could not open the matpower input file " << inputName << "." << std::endl;
+                error();
             }
             else
             {
@@ -367,7 +368,8 @@ namespace Sgt
             }
             else if (data.genCost.size() != data.gen.size())
             {
-                Log().fatal() << "There are a different number of generators to generator costs." << std::endl;
+                Log().error() << "There are a different number of generators to generator costs." << std::endl;
+                error();
             }
         }
 

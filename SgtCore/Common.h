@@ -57,8 +57,6 @@ namespace Sgt
 
         public:
 
-            ~Log();
-
             std::ostream& message();
 
             std::ostream& warning();
@@ -67,15 +65,12 @@ namespace Sgt
 
             std::ostream& error();
 
-            std::ostream& fatal();
-
         private:
 
             static int indentLevel_;
 
             StreamIndent coutBuf_{std::cout};
             StreamIndent cerrBuf_{std::cerr};
-            bool isFatal_{false};
     };
 
     class LogIndent
@@ -91,6 +86,8 @@ namespace Sgt
                 Log::indentLevel_ -= 4;
             }
     };
+
+    void error();
 
 /// @}
 

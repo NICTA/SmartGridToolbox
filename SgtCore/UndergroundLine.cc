@@ -19,8 +19,9 @@ namespace Sgt
         int nPhase = hasNeutral ? 4 : 3; // Not including shielding layers.
         if (phaseDist.n_rows != nPhase || phaseDist.n_cols != nPhase)
         {
-            Log().fatal() << "UndergroundLine : distance matrix must be size " << std::to_string(nPhase) << " x "
+            Log().error() << "UndergroundLine : distance matrix must be size " << std::to_string(nPhase) << " x "
                           << std::to_string(nPhase) << "." << std::endl;
+            error();
         }
     }
 

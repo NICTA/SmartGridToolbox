@@ -123,9 +123,10 @@ namespace Sgt
                 auto result = std::dynamic_pointer_cast<const T>(simComp);
                 if (result == nullptr && crashOnFail)
                 {
-                    Log().fatal() << "Component " << id
+                    Log().error() << "Component " << id
                                   << " was requested and exists in the simulation, but is of the wrong type"
                                   << std::endl;
+                    error();
                 }
                 return result;
             }
@@ -172,9 +173,10 @@ namespace Sgt
                 auto result = std::dynamic_pointer_cast<const T>(ts);
                 if (result == nullptr && crashOnFail)
                 {
-                    Log().fatal() << "Time series " << id
+                    Log().error() << "Time series " << id
                                   << " was requested and exists in the simulation, but is of the wrong type"
                                   << std::endl;
+                    error();
                 }
                 return result;
             }
