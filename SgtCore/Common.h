@@ -31,51 +31,15 @@ namespace Sgt
     {
         public:
 
-            explicit StreamIndent(std::ostream& strm) :
-                strm_(&strm),
-                destBuf_(strm.rdbuf()),
-                isFirst_(true),
-                isNewline_(true),
-                ind1_("    "),
-                ind2_("    ")
-            {
-                strm_->rdbuf(this);
-            }
+            explicit StreamIndent(std::ostream& strm);
 
-            virtual ~StreamIndent()
-            {
-                if (strm_ != NULL)
-                {
-                    strm_->rdbuf(destBuf_);
-                }
-            }
+            virtual ~StreamIndent();
 
-            void reset(const std::string& ind1, const std::string& ind2)
-            {
-                ind1_ = ind1;
-                ind2_ = ind2;
-                isFirst_ = true;
-            }
+            void reset(const std::string& ind1, const std::string& ind2);
 
         protected:
 
-            virtual int overflow(int ch)
-            {
-                if (isNewline_ && ch != '\n')
-                {
-                    if (isFirst_)
-                    {
-                        destBuf_->sputn(ind1_.c_str(), ind1_.size());
-                    }
-                    else
-                    {
-                        destBuf_->sputn(ind2_.c_str(), ind2_.size());
-                    }
-                }
-                isNewline_ = ch == '\n';
-                isFirst_ = false;
-                return destBuf_->sputc(ch);
-            }
+            virtual int overflow(int ch);
 
         private:
 
@@ -93,56 +57,17 @@ namespace Sgt
 
         public:
 
-            ~Log()
-            {
-                if (isFatal_)
-                {
-                    cerrBuf_.reset("", "");
-                    std::cerr << std::endl << "ABORTING." << std::endl;
-                    throw(std::runtime_error("SmartGridToolbox runtime error."));
-                }
-            }
+            ~Log();
 
-            std::ostream& message()
-            {
-                coutBuf_.reset(
-                    std::string("MESSAGE: ") + std::string(indentLevel_, ' '),
-                    std::string("         ") + std::string(indentLevel_, ' '));
-                return std::cout;
-            }
+            std::ostream& message();
 
-            std::ostream& warning()
-            {
-                cerrBuf_.reset(
-                    std::string("WARNING: ") + std::string(indentLevel_, ' '),
-                    std::string("         ") + std::string(indentLevel_, ' '));
-                return std::cerr;
-            }
+            std::ostream& warning();
 
-            std::ostream& debug()
-            {
-                cerrBuf_.reset(
-                    std::string("DEBUG  : ") + std::string(indentLevel_, ' '),
-                    std::string("         ") + std::string(indentLevel_, ' '));
-                return std::cerr;
-            }
+            std::ostream& debug();
 
-            std::ostream& error()
-            {
-                cerrBuf_.reset(
-                    std::string("ERROR  : ") + std::string(indentLevel_, ' '),
-                    std::string("         ") + std::string(indentLevel_, ' '));
-                return std::cerr;
-            }
+            std::ostream& error();
 
-            std::ostream& fatal()
-            {
-                isFatal_ = true;
-                cerrBuf_.reset(
-                    std::string("FATAL  : ") + std::string(indentLevel_, ' '),
-                    std::string("         ") + std::string(indentLevel_, ' '));
-                return std::cerr;
-            }
+            std::ostream& fatal();
 
         private:
 
@@ -160,6 +85,7 @@ namespace Sgt
             {
                 Log::indentLevel_ += 4;
             }
+
             ~LogIndent()
             {
                 Log::indentLevel_ -= 4;

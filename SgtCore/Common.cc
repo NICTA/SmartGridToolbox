@@ -14,6 +14,101 @@ namespace Phoenix = boost::phoenix;
 
 namespace Sgt
 {
+    StreamIndent::StreamIndent(std::ostream& strm) :
+        strm_(&strm),
+        destBuf_(strm.rdbuf()),
+        isFirst_(true),
+        isNewline_(true),
+        ind1_("    "),
+        ind2_("    ")
+    {
+        strm_->rdbuf(this);
+    }
+
+    StreamIndent::~StreamIndent()
+    {
+        if (strm_ != NULL)
+        {
+            strm_->rdbuf(destBuf_);
+        }
+    }
+
+    void StreamIndent::reset(const std::string& ind1, const std::string& ind2)
+    {
+        ind1_ = ind1;
+        ind2_ = ind2;
+        isFirst_ = true;
+    }
+
+    int StreamIndent::overflow(int ch)
+    {
+        if (isNewline_ && ch != '\n')
+        {
+            if (isFirst_)
+            {
+                destBuf_->sputn(ind1_.c_str(), ind1_.size());
+            }
+            else
+            {
+                destBuf_->sputn(ind2_.c_str(), ind2_.size());
+            }
+        }
+        isNewline_ = ch == '\n';
+        isFirst_ = false;
+        return destBuf_->sputc(ch);
+    }
+
+    Log::~Log()
+    {
+        if (isFatal_)
+        {
+            cerrBuf_.reset("", "");
+            std::cerr << std::endl << "ABORTING." << std::endl;
+            throw(std::runtime_error("SmartGridToolbox runtime error."));
+        }
+    }
+
+    std::ostream& Log::message()
+    {
+        coutBuf_.reset(
+                std::string("MESSAGE: ") + std::string(indentLevel_, ' '),
+                std::string("         ") + std::string(indentLevel_, ' '));
+        return std::cout;
+    }
+
+    std::ostream& Log::warning()
+    {
+        cerrBuf_.reset(
+                std::string("WARNING: ") + std::string(indentLevel_, ' '),
+                std::string("         ") + std::string(indentLevel_, ' '));
+        return std::cerr;
+    }
+
+    std::ostream& Log::debug()
+    {
+        cerrBuf_.reset(
+                std::string("DEBUG  : ") + std::string(indentLevel_, ' '),
+                std::string("         ") + std::string(indentLevel_, ' '));
+        return std::cerr;
+    }
+
+    std::ostream& Log::error()
+    {
+        cerrBuf_.reset(
+                std::string("ERROR  : ") + std::string(indentLevel_, ' '),
+                std::string("         ") + std::string(indentLevel_, ' '));
+        return std::cerr;
+    }
+
+    std::ostream& Log::fatal()
+    {
+        isFatal_ = true;
+        cerrBuf_.reset(
+                std::string("FATAL  : ") + std::string(indentLevel_, ' '),
+                std::string("         ") + std::string(indentLevel_, ' '));
+        return std::cerr;
+    }
+
     int Log::indentLevel_ = 0;
 
     struct CGram : Qi::grammar<std::string::const_iterator, Complex(), Ascii::space_type>
