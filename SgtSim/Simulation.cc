@@ -260,7 +260,7 @@ namespace Sgt
         }
         else if (crashOnFail)
         {
-            Log().error() << "Component " << id << " was requested but was not found in the simulation.";
+            Log().error() << "Component " << id << " was requested but was not found in the simulation." << std::endl;
             error();
         }
         return result;
@@ -276,7 +276,7 @@ namespace Sgt
         }
         else if (crashOnFail)
         {
-            Log().error() << "Time series " << id << " was requested but was not found in the simulation.";
+            Log().error() << "Time series " << id << " was requested but was not found in the simulation." << std::endl;
             error();
         }
         return result;
