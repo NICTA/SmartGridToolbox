@@ -115,9 +115,9 @@ namespace Sgt
 
             void layout(double scaleSz = 1.0, double tol = 1e-4, int maxIter = 100)
             {
-                std::vector<vpsc::Rectangle*> rs;
-                std::vector<cola::Edge> es;
-                std::vector<double> ls;
+                std::vector<vpsc::Rectangle*> rects;
+                std::vector<cola::Edge> edges;
+                std::vector<double> lengths;
 
                 int i = 0;
                 for (auto& n : nodeMap_)
@@ -129,7 +129,7 @@ namespace Sgt
                 {
                     double w = n.second.info.w * scaleSz;
                     double h = n.second.info.h * scaleSz;
-                    rs.push_back(new vpsc::Rectangle(
+                    rects.push_back(new vpsc::Rectangle(
                                      n.second.info.x - 0.5 * w, n.second.info.x + 0.5 * w,
                                      n.second.info.y - 0.5 * h, n.second.info.y + 0.5 * h));
                 }
@@ -140,8 +140,8 @@ namespace Sgt
                     {
                         auto i0 = a.second.n0->info.idx;
                         auto i1 = a.second.n1->info.idx;
-                        es.push_back(std::make_pair(i0, i1));
-                        ls.push_back(a.second.info.l);
+                        edges.push_back(std::make_pair(i0, i1));
+                        lengths.push_back(a.second.info.l);
                     }
                 }
 
@@ -157,19 +157,19 @@ namespace Sgt
                 }
                 cola::PreIteration preIter(locks);
 
-                cola::ConstrainedFDLayout fd(rs, es, 1, true, ls, &testConv, &preIter);
+                cola::ConstrainedFDLayout fd(rects, edges, 1, true, lengths, &testConv, &preIter);
 
                 fd.run();
 
                 i = 0;
                 for (auto& n : nodeMap_)
                 {
-                    n.second.info.x = rs[i]->getCentreX();
-                    n.second.info.y = rs[i]->getCentreY();
+                    n.second.info.x = rects[i]->getCentreX();
+                    n.second.info.y = rects[i]->getCentreY();
                     ++i;
                 }
 
-                for (auto r : rs)
+                for (auto r : rects)
                 {
                     delete r;
                 }
