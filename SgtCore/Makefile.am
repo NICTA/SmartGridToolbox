@@ -11,10 +11,16 @@ if ENABLE_POWER_TOOLS
 SGT_POWER_TOOLS_H = SgtPowerTools.h
 SGT_POWER_TOOLS_MM = SgtPowerTools.mm
 POWER_FLOW_PT_SOLVER_H = PowerFlowPtSolver.h
+L_POWER_TOOLS_PP = -lPowerTools++
+L_IPOPT = -lipopt
+L_COIN_HSL = -lcoinhsl
 else
 SGT_POWER_TOOLS_H =
 SGT_POWER_TOOLS_MM =
 POWER_FLOW_PT_SOLVER_H =
+L_POWER_TOOLS_PP =
+L_IPOPT =
+L_COIN_HSL =
 endif
 
 if ENABLE_POWER_TOOLS_PP
@@ -27,7 +33,7 @@ endif
 
 libincludedir=$(includedir)/SgtCore
 
-lib_LIBRARIES = libSgtCore.a
+lib_LTLIBRARIES = libSgtCore.la
 
 include_HEADERS = SgtCore.h
 
@@ -64,7 +70,7 @@ libinclude_HEADERS = \
 	YyTransformer.h \
 	Zip.h
 
-libSgtCore_a_SOURCES = \
+libSgtCore_la_SOURCES = \
 	Branch.h Branch.cc \
 	Bus.h Bus.cc \
 	BusParserPlugin.h BusParserPlugin.cc \
@@ -110,6 +116,18 @@ libSgtCore_a_SOURCES = \
 	YyTransformer.h YyTransformer.cc \
 	YyTransformerParserPlugin.h YyTransformerParserPlugin.cc \
 	Zip.h Zip.cc
+
+libSgtCore_la_LIBADD = \
+	-larmadillo \
+	-lboost_date_time \
+	-lyaml-cpp \
+	-lklu \
+	-lamd \
+	-lcolamd \
+	-lbtf \
+	$(L_POWER_TOOLS_PP) \
+	$(L_IPOPT) \
+	$(L_COIN_HSL)
 
 noinst_PROGRAMS = helloworld
 helloworld_SOURCES = helloworld.cc

@@ -30,9 +30,10 @@ AM_CONDITIONAL([ENABLE_POWER_TOOLS_PP], [test x$enable_power_tools_pp = xyes])
 AS_IF([test x$enable_power_tools_pp == xyes],
       [AC_DEFINE([ENABLE_POWER_TOOLS_PP], [], [enable PowerTools++ support])])
 
-AC_PROG_CC
+AC_PROG_CC([clang gcc])
 AC_PROG_CXX([clang++ g++])
-AC_PROG_RANLIB
+AC_PROG_LIBTOOL
+LT_INIT
 AC_PROG_OBJCXX([clang]) # Unfortunately it is an autoconf error to make this macro conditional.
 
 AC_LANG([C++])

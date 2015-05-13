@@ -35,18 +35,8 @@ run_config_LDFLAGS = \
 # Using LDADD for -l linker flags in this way avoids a potential
 # problem with link order.
 run_config_LDADD = \
-	../SgtSim/libSgtSim.a \
-	../SgtCore/libSgtCore.a \
-	-lboost_date_time \
-	-larmadillo \
-	-lyaml-cpp \
-	-lklu \
-	-lamd \
-	-lcolamd \
-	-lbtf \
-	$(L_POWER_TOOLS_PP) \
-	$(L_IPOPT) \
-	$(L_COIN_HSL)
+	../SgtSim/libSgtSim.la \
+	../SgtCore/libSgtCore.la
 
 solve_network_SOURCES = solve_network.cc
 
@@ -57,7 +47,7 @@ solve_network_LDFLAGS = \
 # Using LDADD for -l linker flags in this way avoids a potential
 # problem with link order.
 solve_network_LDADD = \
-	../SgtCore/libSgtCore.a \
+	../SgtCore/libSgtCore.la \
 	-lboost_date_time \
 	-larmadillo \
 	-lyaml-cpp \
@@ -72,8 +62,8 @@ solve_network_LDADD = \
 # network_to_dot_SOURCES = network_to_dot.cc
 # 
 # network_to_dot_LDADD = \
-#	../SgtSim/libSgtSim.a \
-#	../SgtCore/libSgtCore.a \
+#	../SgtSim/libSgtSim.la \
+#	../SgtCore/libSgtCore.la \
 #	-lboost_date_time \
 #	-lyaml-cpp \
 #	-lklu \
