@@ -5,19 +5,16 @@ Building and Installing SmartGridToolbox
 ----------------
 
 You need a compiler that will support modern C++. The clang compiler is
-recommended, although later versions of g++ (4.7(?), 4.8, 4.9) may also work
-well.
+recommended, although later versions of g++ (4.8, 4.9, ...) may also work.
 
 If building on a Mac, you should have a recent version of the OSX operating
-system (Mavericks and Yosemite work, Mountain Lion should also be OK). Install
-XCode, and you will have access to the clang compilers.
+system (Mavericks and Yosemite work). Install XCode, and you will have access
+to the clang compilers.
 
 If building on Ubuntu, you should ideally have Ubuntu 13 or later installed so
-as to be able to easily install a recent version of gcc (4.8+, 4.7 may also
-work) or clang. You can use, e.g.
+as to be able to easily install a recent version of gcc (e.g. 4.8+) or clang.
+You can use, e.g.
 > sudo apt-get install clang++
-It is possible to install clang 3.4 on Ubuntu 12, but this requires some extra
-work. 
 
 Install up to date versions of the following libraries:
 
@@ -32,7 +29,8 @@ a) Boost libraries:
 
 b) Armadillo linear algebra library:
 
-   This is available from http://arma.sourceforge.net.
+   This is available from http://arma.sourceforge.net. On a mac, you can also
+   use homebrew.
 
 b) SuiteSparse libraries:
 
@@ -64,6 +62,4 @@ up to date version of gnu autotools.
 
 4. To compile and link your program (e.g.):
 
-> clang++ {options} -o myprogram myprogram.cc \
-  -lSgtCore -lSgtSim -larmadillo -lboost_date_time-mt -lyaml-cpp -lklu -lamd \
-  -lcolamd -lbtf 
+> clang++ {options} -o myprogram myprogram.cc -lSgtCore -lSgtSim
