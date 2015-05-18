@@ -3,15 +3,6 @@ AC_CONFIG_SRCDIR([src/run_config.cc])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
-AC_ARG_ENABLE([layout],
-              [AS_HELP_STRING([--enable-layout], [enable layout support @<:@no@:>@])],
-              [],
-              [enable_layout=no])
-AC_SUBST([enable_layout])
-AM_CONDITIONAL([ENABLE_LAYOUT], [test x$enable_layout = xyes])
-AS_IF([test x$enable_layout == xyes],
-      [AC_DEFINE([ENABLE_LAYOUT], [], [enable layout support])])
-
 AC_ARG_ENABLE([power_tools],
               [AS_HELP_STRING([--enable-power_tools], [enable PowerTools specific features @<:@no@:>@])],
               [],

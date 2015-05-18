@@ -1,11 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
 
-if ENABLE_LAYOUT
-NETWORK_GRAPH_H = NetworkGraph.h  
-else
-NETWORK_GRAPH_H =
-endif
-
 if ENABLE_POWER_TOOLS
 SGT_POWER_TOOLS_H = SgtPowerTools.h
 SGT_POWER_TOOLS_MM = SgtPowerTools.mm
@@ -47,7 +41,6 @@ libinclude_HEADERS = \
 	Event.h \
 	Gen.h \
 	Network.h \
-	$(NETWORK_GRAPH_H) \
 	NetworkParser.h \
 	OverheadLine.h \
 	Parser.h \
@@ -87,7 +80,6 @@ libSgtCore_la_SOURCES = \
 	LibSgtCore.h \
 	MatpowerParserPlugin.h MatpowerParserPlugin.cc \
 	Network.h Network.cc \
-	$(NETWORK_GRAPH_H) \
 	NetworkParser.h NetworkParser.cc \
 	OverheadLine.h OverheadLine.cc \
 	OverheadLineParserPlugin.h OverheadLineParserPlugin.cc \
