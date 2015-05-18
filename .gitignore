@@ -5,8 +5,12 @@
 *.dll
 *.exe
 *.o
+*.lo
 *.so
 *.a
+*.la
+*.deps
+*.libs
 
 # Packages #
 ############
@@ -42,3 +46,25 @@ Thumbs.db
 ####################
 *.*~
 *.swp
+
+# GNU Autotools:
+###################
+aclocal.m4
+autom4te.cache
+compile
+configure
+config.h
+config.h.in
+config.guess
+config.status
+config.sub
+depcomp
+install-sh
+libtool
+ltmain.sh
+missing
+Makefile
+Makefile.in
+m4
+stamp-h1
+test-driver

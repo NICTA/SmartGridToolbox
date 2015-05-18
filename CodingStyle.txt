@@ -1,6 +1,6 @@
 Indentation
 ------------
-Three spaces, no tabs.
+Four spaces, no tabs.
 
 Line length
 -----------
@@ -26,11 +26,11 @@ Member variables are lowerCamelCase_. This makes them easily identifiable, as
 well as preventing typical naming conflicts e.g. in accessors.
 
 Static member variable names
----------------------
+----------------------------
 Static member variables are sVariableName_.
 
 Stack variable names
--------------------------
+--------------------
 Stack variables are lowerCamelCase.
 
 Static (file scope) variable names
@@ -89,7 +89,7 @@ without good reason.
 One style is to use swap semantics to acquire a new value. In such a case,
 the following style can be used:
 
-void acquireValue(Value * val) {std::swap(val_, val);}
+void acquireValue(Value* val) {std::swap(val_, val);}
 
 Brace style
 -----------
@@ -99,8 +99,8 @@ Function F()
    ...  
 }
 
-Pointer and reference grouping
-------------------------------
+Pointer and reference binding
+-----------------------------
 int* i;
 int& j = *i;
 int* k = &j;
