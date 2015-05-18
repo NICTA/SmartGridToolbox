@@ -22,7 +22,7 @@ function mpc = case24_ieee_rts
 %   MATPOWER case file data provided by Bruce Wollenberg.
 
 %   MATPOWER
-%   $Id: case24_ieee_rts.m 1559 2010-03-10 18:08:32Z ray $
+%   $Id: case24_ieee_rts.m 2408 2014-10-22 20:41:33Z ray $
 
 %% MATPOWER Case Format : Version 2
 mpc.version = '2';
@@ -142,15 +142,6 @@ mpc.branch = [
 ];
 
 %%-----  OPF Data  -----%%
-%% area data
-%	area	refbus
-mpc.areas = [
-	1	1;
-	2	3;
-	3	8;
-	4	6;
-];
-
 %% generator cost data
 %	1	startup	shutdown	n	x1	y1	...	xn	yn
 %	2	startup	shutdown	n	c(n-1)	...	c0

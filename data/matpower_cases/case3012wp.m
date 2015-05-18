@@ -9,7 +9,7 @@ function mpc = case3012wp
 %   permission of, Roman Korab <roman.korab@polsl.pl>.
 
 %   MATPOWER
-%   $Id: case3012wp.m 1900 2011-10-31 14:14:35Z cvs $
+%   $Id: case3012wp.m 2408 2014-10-22 20:41:33Z ray $
 
 %% MATPOWER Case Format : Version 2
 mpc.version = '2';
@@ -7120,12 +7120,6 @@ mpc.branch = [
 ];
 
 %%-----  OPF Data  -----%%
-%% area data
-%	area	refbus
-mpc.areas = [
-	1	1;
-];
-
 %% generator cost data
 %	1	startup	shutdown	n	x1	y1	...	xn	yn
 %	2	startup	shutdown	n	c(n-1)	...	c0

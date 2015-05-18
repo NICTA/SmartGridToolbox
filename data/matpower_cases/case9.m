@@ -5,7 +5,7 @@ function mpc = case9
 %   Based on data from Joe H. Chow's book, p. 70.
 
 %   MATPOWER
-%   $Id: case9.m 1559 2010-03-10 18:08:32Z ray $
+%   $Id: case9.m 2408 2014-10-22 20:41:33Z ray $
 
 %% MATPOWER Case Format : Version 2
 mpc.version = '2';
@@ -51,12 +51,6 @@ mpc.branch = [
 ];
 
 %%-----  OPF Data  -----%%
-%% area data
-%	area	refbus
-mpc.areas = [
-	1	5;
-];
-
 %% generator cost data
 %	1	startup	shutdown	n	x1	y1	...	xn	yn
 %	2	startup	shutdown	n	c(n-1)	...	c0
