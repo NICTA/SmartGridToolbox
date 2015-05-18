@@ -1,3 +1,6 @@
+// Much of this file is based on subpos.h and sunpos.cpp
+// http://www.psa.es/sdg/sunpos.htm
+
 #ifndef SUN_DOT_H
 #define SUN_DOT_H
 
