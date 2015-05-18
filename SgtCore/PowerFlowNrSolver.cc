@@ -135,7 +135,8 @@ namespace Sgt
         Col<double> Q = imag(mod_->S());
 
         Col<double> M2Pv = mod_->nPv() > 0
-            ? Vr(mod_->selPvFromAll()) % Vr(mod_->selPvFromAll()) + Vi(mod_->selPvFromAll()) % Vi(mod_->selPvFromAll())
+            ? Vr(mod_->selPvFromAll()) % Vr(mod_->selPvFromAll()) 
+              + Vi(mod_->selPvFromAll()) % Vi(mod_->selPvFromAll())
             : Col<double>();
 
         Jacobian Jc(mod_->nPq(), mod_->nPv()); ///< The part of J that doesn't update at each iteration.
@@ -211,7 +212,7 @@ SGT_DEBUG
             LogIndent _;
             for (int i = 0; i < nVar(); ++i)
             {
-                Log().debug() << std::setprecision(5) << std::setw(9) << row(JMat, i) << std::endl;
+                Log().debug() << std::setprecision(5) << std::setw(9) << JMat.row(i) << std::endl;
             }
 );
 
@@ -311,23 +312,22 @@ SGT_DEBUG
         stopwatchTot.stop();
         durationTot = stopwatchTot.seconds();
 
-        SGT_DEBUG(Log().message() << "PowerFlowNrSolver: successful = " << wasSuccessful << ", error = " << err
-                  << ", iterations = " << niter << ", total time = " << durationTot << "." << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: -----------------------   " << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: init setup time         = "
-                                << durationInitSetup << " s." << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in calcf           = "
-                                << durationCalcf << " s." << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in updateJ         = "
-                                << durationUpdateJ << " s." << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time in modifyForPv     = " << durationModifyForPv << " s."
-                  << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time to construct JMat  = " << durationConstructJMat << " s."
-                  << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: solve time              = " << durationSolve << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: time to update iter     = " << durationUpdateIter 
-                << std::endl);
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver: -----------------------   " << std::endl);
+        bool printStats = false;
+        SGT_DEBUG(printStats = true);
+        if (printStats)
+        {
+            Log().message() << "PowerFlowNrSolver: \n"
+                            << "    successful = " << wasSuccessful << "\n"
+                            << "    error = " << err << "\n" 
+                            << "    iterations = " << niter << "\n"
+                            << "    setup time = " << durationInitSetup << "\n"
+                            << "    calcf time = " << durationCalcf << "\n"
+                            << "    updateJ time = " << durationUpdateJ << "\n"
+                            << "    modifyForPv time = " << durationModifyForPv << "\n"
+                            << "    constructJMat time = " << durationConstructJMat << "\n"
+                            << "    solve time = " << durationSolve << "\n"
+                            << "    updateIter time = " << durationUpdateIter << std::endl;
+        }
 
         return wasSuccessful;
     }
@@ -380,7 +380,8 @@ SGT_DEBUG
     {
         if (mod_->nPq() > 0)
         {
-            initJcBlock(G_(mod_->selPqFromAll(), mod_->selPqFromAll()), B_(mod_->selPqFromAll(), mod_->selPqFromAll()),
+            initJcBlock(G_(mod_->selPqFromAll(), mod_->selPqFromAll()),
+                        B_(mod_->selPqFromAll(), mod_->selPqFromAll()),
                         Jc.IrPqVrPq(),
                         Jc.IrPqViPq(),
                         Jc.IiPqVrPq(),
@@ -396,7 +397,8 @@ SGT_DEBUG
 
         if (mod_->nPv() > 0)
         {
-            initJcBlock(G_(mod_->selPvFromAll(), mod_->selPvFromAll()), B_(mod_->selPvFromAll(), mod_->selPvFromAll()),
+            initJcBlock(G_(mod_->selPvFromAll(), mod_->selPvFromAll()),
+                        B_(mod_->selPvFromAll(), mod_->selPvFromAll()),
                         Jc.IrPvVrPv(),
                         Jc.IrPvViPv(),
                         Jc.IiPvVrPv(),
@@ -412,12 +414,14 @@ SGT_DEBUG
 
         if (mod_->nPv() > 0 && mod_->nPq() > 0)
         {
-            initJcBlock(G_(mod_->selPqFromAll(), mod_->selPvFromAll()), B_(mod_->selPqFromAll(), mod_->selPvFromAll()),
+            initJcBlock(G_(mod_->selPqFromAll(), mod_->selPvFromAll()),
+                        B_(mod_->selPqFromAll(), mod_->selPvFromAll()),
                         Jc.IrPqVrPv(),
                         Jc.IrPqViPv(),
                         Jc.IiPqVrPv(),
                         Jc.IiPqViPv());
-            initJcBlock(G_(mod_->selPvFromAll(), mod_->selPqFromAll()), B_(mod_->selPvFromAll(), mod_->selPqFromAll()),
+            initJcBlock(G_(mod_->selPvFromAll(), mod_->selPqFromAll()),
+                        B_(mod_->selPvFromAll(), mod_->selPqFromAll()),
                         Jc.IrPvVrPq(),
                         Jc.IrPvViPq(),
                         Jc.IiPvVrPq(),
@@ -602,20 +606,19 @@ SGT_DEBUG
                 Col<uword>& sl2 = sl2Vec[kb];
                 const SpMat<double>& block = J.blocks_[ibInd[ib]][kbInd[kb]];
 
-                // Loop over all non-zero elements in the block.
-                for (auto it = block.begin(); it != block.end(); ++it)
+                int nnz = block.n_nonzero;
+                arma::Mat<arma::uword> locs(2, nnz);
+                arma::Col<double> vals(nnz);
+                int i = 0;
+                for (auto it = block.begin(); it != block.end(); ++it, ++i)
                 {
-                    // Get the indices into the block.
-                    int iBlock = it.row();
-                    int kBlock = it.col();
-
-                    // Get the indices into JMat.
-                    int iRes = sl1(iBlock);
-                    int kRes = sl2(kBlock);
-
-                    // Assign the element.
-                    JMat(iRes, kRes) = block(iBlock, kBlock);
+                    int i1 = sl1(it.row());
+                    int k1 = sl2(it.col());
+                    locs(0, i) = i1; 
+                    locs(1, i) = k1; 
+                    vals(i) = *it;
                 }
+                JMat += SpMat<double>(locs, vals, nVar(), nVar(), false, false);
             }
         }
     }

@@ -6,29 +6,28 @@ else
 NETWORK_GRAPH_H =
 endif
 
-# Note: ENABLE_POWER_TOOLS needs LD_FLAGS: -framework Foundation -framework PowerTools -lipopt -lcoinhsl  
 if ENABLE_POWER_TOOLS
 SGT_POWER_TOOLS_H = SgtPowerTools.h
 SGT_POWER_TOOLS_MM = SgtPowerTools.mm
 POWER_FLOW_PT_SOLVER_H = PowerFlowPtSolver.h
-L_POWER_TOOLS_PP = -lPowerTools++
-L_IPOPT = -lipopt
-L_COIN_HSL = -lcoinhsl
+L_POWER_TOOLS = -lPowerTools -lipopt -lcoinhsl
 else
 SGT_POWER_TOOLS_H =
 SGT_POWER_TOOLS_MM =
 POWER_FLOW_PT_SOLVER_H =
-L_POWER_TOOLS_PP =
-L_IPOPT =
-L_COIN_HSL =
+L_POWER_TOOLS =
 endif
 
 if ENABLE_POWER_TOOLS_PP
 POWER_FLOW_PT_PP_SOLVER_H = PowerFlowPtPpSolver.h
 POWER_FLOW_PT_PP_SOLVER_CC = PowerFlowPtPpSolver.cc
+L_POWER_TOOLS_PP = -lPowerTools++ -lipopt -lcoinhsl
 else
 POWER_FLOW_PT_PP_SOLVER_H =
 POWER_FLOW_PT_PP_SOLVER_CC =
+L_POWER_TOOLS_PP =
+L_IPOPT =
+L_COIN_HSL =
 endif
 
 libincludedir=$(includedir)/SgtCore
@@ -125,9 +124,8 @@ libSgtCore_la_LIBADD = \
 	-lamd \
 	-lcolamd \
 	-lbtf \
-	$(L_POWER_TOOLS_PP) \
-	$(L_IPOPT) \
-	$(L_COIN_HSL)
+	$(L_POWER_TOOLS) \
+	$(L_POWER_TOOLS_PP)
 
 noinst_PROGRAMS = helloworld
 helloworld_SOURCES = helloworld.cc
