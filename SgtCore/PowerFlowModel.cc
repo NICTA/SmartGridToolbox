@@ -1,5 +1,7 @@
 #include "PowerFlowModel.h"
 
+#include "SparseHelper.h"
+
 #include <iostream>
 #include <sstream>
 
@@ -134,7 +136,8 @@ namespace Sgt
         int nNode = nodes_.size();
 
         // Bus admittance matrix:
-        Y_ = arma::SpMat<Complex>(nNode, nNode);
+        SparseHelper<Complex> YHelper(nNode, nNode, true, true, true);
+
 
         // Branch admittances:
         for (const std::unique_ptr<PfBranch>& branch : branches_)
@@ -167,7 +170,7 @@ namespace Sgt
                 int idxNodeI = nodeI->idx_;
 
                 // Only count each diagonal element in branch->Y_ once!
-                Y_(idxNodeI, idxNodeI) += branch->Y_(i, i);
+                YHelper.insert(idxNodeI, idxNodeI, branch->Y_(i, i));
 
                 for (int k = i + 1; k < nTerm; ++k)
                 {
@@ -178,8 +181,8 @@ namespace Sgt
                     const PfNode* nodeK = busK->nodes_[busPhaseIdxK].get();
                     int idxNodeK = nodeK->idx_;
 
-                    Y_(idxNodeI, idxNodeK) += branch->Y_(i, k);
-                    Y_(idxNodeK, idxNodeI) += branch->Y_(k, i);
+                    YHelper.insert(idxNodeI, idxNodeK, branch->Y_(i, k));
+                    YHelper.insert(idxNodeK, idxNodeI, branch->Y_(k, i));
                 }
             }
         } // Loop over branches.
@@ -187,8 +190,10 @@ namespace Sgt
         // Add shunt terms:
         for (int i = 0; i < nNode; ++i)
         {
-            Y_(i, i) += nodes_[i]->YConst_;
+            YHelper.insert(i, i, nodes_[i]->YConst_);
         }
+
+        Y_ = YHelper.get();
 
         SGT_DEBUG(Log().debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
 

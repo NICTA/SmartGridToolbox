@@ -3,6 +3,7 @@
 #include <sstream>
 #include "Network.h"
 #include "PowerFlowNrSolver.h"
+#include "SparseHelper.h"
 #include "SparseSolver.h"
 #include "Stopwatch.h"
 
@@ -107,6 +108,7 @@ namespace Sgt
         Stopwatch stopwatch;
         Stopwatch stopwatchTot;
 
+        double durationMakeModel = 0;
         double durationInitSetup = 0;
         double durationCalcf = 0;
         double durationUpdateJ = 0;
@@ -119,11 +121,20 @@ namespace Sgt
         stopwatchTot.reset();
         stopwatchTot.start();
 
-        // Do the initial setup.
+        // Construct the model from the network.
+        
         stopwatch.reset();
         stopwatch.start();
 
         init(netw_);
+
+        stopwatch.stop();
+        durationMakeModel = stopwatch.seconds();
+
+        // Set up data structures for the calculation.
+        
+        stopwatch.reset();
+        stopwatch.start();
 
         G_ = real(mod_->Y());
         B_ = imag(mod_->Y());
@@ -150,11 +161,11 @@ namespace Sgt
         double err = 0;
         int niter;
 
-        stopwatch.stop();
-        durationInitSetup = stopwatch.seconds();
-
         const double tol = 1e-8;
         const int maxiter = 20;
+
+        stopwatch.stop();
+        durationInitSetup += stopwatch.seconds();
 
         for (niter = 0; niter < maxiter; ++niter)
         {
@@ -320,7 +331,9 @@ SGT_DEBUG
                             << "    successful = " << wasSuccessful << "\n"
                             << "    error = " << err << "\n" 
                             << "    iterations = " << niter << "\n"
-                            << "    setup time = " << durationInitSetup << "\n"
+                            << "    total time = " << durationTot << "\n" 
+                            << "    time to create model = " << durationMakeModel << "\n"
+                            << "    time for setup = " << durationInitSetup << "\n"
                             << "    calcf time = " << durationCalcf << "\n"
                             << "    updateJ time = " << durationUpdateJ << "\n"
                             << "    modifyForPv time = " << durationModifyForPv << "\n"
@@ -603,22 +616,17 @@ SGT_DEBUG
             Col<uword>& sl1 = sl1Vec[ib];
             for (int kb = 0; kb < 4; ++kb)
             {
+                SparseHelper<double> helper(nVar(), nVar(), false, false, false);
                 Col<uword>& sl2 = sl2Vec[kb];
                 const SpMat<double>& block = J.blocks_[ibInd[ib]][kbInd[kb]];
 
-                int nnz = block.n_nonzero;
-                arma::Mat<arma::uword> locs(2, nnz);
-                arma::Col<double> vals(nnz);
-                int i = 0;
-                for (auto it = block.begin(); it != block.end(); ++it, ++i)
+                for (auto it = block.begin(); it != block.end(); ++it)
                 {
                     int i1 = sl1(it.row());
                     int k1 = sl2(it.col());
-                    locs(0, i) = i1; 
-                    locs(1, i) = k1; 
-                    vals(i) = *it;
+                    helper.insert(i1, k1, *it);
                 }
-                JMat += SpMat<double>(locs, vals, nVar(), nVar(), false, false);
+                JMat += helper.get();
             }
         }
     }

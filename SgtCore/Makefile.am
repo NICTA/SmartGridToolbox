@@ -95,6 +95,7 @@ libSgtCore_la_SOURCES = \
 	Random.h Random.cc \
 	RegisterParserPlugins.cc \
 	$(SGT_POWER_TOOLS_H) $(SGT_POWER_TOOLS_MM) \
+	SparseHelper.h \
 	SparseSolver.h SparseSolver.cc \
 	Spline.h \
 	Stopwatch.h \
