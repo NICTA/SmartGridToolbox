@@ -234,6 +234,72 @@ BOOST_AUTO_TEST_CASE (test_matpower)
 
     std::vector<std::string> cases =
     {
+        "case118.m"
+        "case14.m"
+        "case14_shift.m"
+        "case2383wp.m"
+        "case24_ieee_rts.m"
+        "case2736sp.m"
+        "case2737sop.m"
+        "case2746wop.m"
+        "case2746wp.m
+        "case30.m"
+        "case300.m"
+        "case3012wp.m"
+        "case30Q.m"
+        "case30_all.m"
+        "case30pwl.m"
+        "case3120sp.m"
+        "case3375wp.m"
+        "case39.m"
+        "case4gs.m"
+        "case5.m"
+        "case57.m"
+        "case6ww.m"
+        "case9.m"
+        "case9Q.m"
+        "case9target.m"
+        "caseSLPQ.m"
+        "caseSLPQPV.m"
+        "caseSLPV.m"
+        "case_ieee30.m"
+        "nesta_case118_ieee.m"
+        "nesta_case1394sop_eir.m"
+        "nesta_case1397sp_eir.m"
+        "nesta_case1460wp_eir.m"
+        "nesta_case14_ieee.m"
+        "nesta_case162_ieee_dtc.m"
+        "nesta_case189_edin.m"
+        "nesta_case2224_edin.m"
+        "nesta_case2383wp_mp.m"
+        "nesta_case24_ieee_rts.m"
+        "nesta_case2736sp_mp.m"
+        "nesta_case2737sop_mp.m"
+        "nesta_case2746wop_mp.m"
+        "nesta_case2746wp_mp.m"
+        "nesta_case29_edin.m"
+        "nesta_case300_ieee.m"
+        "nesta_case3012wp_mp.m"
+        "nesta_case30_as.m"
+        "nesta_case30_fsr.m"
+        "nesta_case30_ieee.m"
+        "nesta_case3120sp_mp.m"
+        "nesta_case3375wp_mp.m"
+        "nesta_case39_epri.m"
+        "nesta_case3_lmbd.m"
+        "nesta_case4_gs.m"
+        "nesta_case57_ieee.m"
+        "nesta_case5_pjm.m"
+        "nesta_case6_c.m"
+        "nesta_case6_ww.m"
+        "nesta_case73_ieee_rts.m"
+        "nesta_case9241_pegase.m"
+        "nesta_case9_wscc.m"
+
+
+
+
+
         "caseSLPQ",
         "caseSLPQPV",
         "caseSLPV",
@@ -261,8 +327,9 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         "case2746wop",
         "case2746wp",
         // "case3012wp", // TODO This fails, probably because SGT doesn't enforce reactive limits. See e.g. bus 70.
-        "case3120sp"
+        "case3120sp",
         // "case3375wp", // Can't solve correctly, but then neither can Matpower...
+        "nesta_case9241_pegase"
     };
 
     for (auto c : cases)
@@ -270,7 +337,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         BOOST_MESSAGE("Case " << c);
 
         std::string yamlStr =
-            std::string("--- [{matpower : {input_file : ../data/matpower_cases/") + c + ".m, default_kV_base : 11}}]";
+            std::string("--- [{matpower : {input_file : matpower_test_cases/") + c + ".m, default_kV_base : 11}}]";
         Network nw("network", 100.0);
         YAML::Node n = YAML::Load(yamlStr);
         Sgt::Parser<Network> p;

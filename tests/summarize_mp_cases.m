@@ -1,4 +1,4 @@
-files = glob('../data/matpower_cases/*.m')';
+files = glob('matpower_test_cases/*.m')';
 for file = files;
    file = make_absolute_filename(file{})
    [outDir, outName] = fileparts(file)
