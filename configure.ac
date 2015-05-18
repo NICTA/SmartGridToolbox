@@ -1,16 +1,7 @@
-AC_INIT([SmartGridToolbox], [v2.0.0], [dan.gordon@nicta.com.au], [SmartGridToolbox])
+AC_INIT([SmartGridToolbox], [v2.0.0b1], [dan.gordon@nicta.com.au], [SmartGridToolbox])
 AC_CONFIG_SRCDIR([src/run_config.cc])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
-
-AC_ARG_ENABLE([power_tools],
-              [AS_HELP_STRING([--enable-power_tools], [enable PowerTools specific features @<:@no@:>@])],
-              [],
-              [enable_power_tools=no])
-AC_SUBST([enable_power_tools])
-AM_CONDITIONAL([ENABLE_POWER_TOOLS], [test x$enable_power_tools = xyes])
-AS_IF([test x$enable_power_tools == xyes],
-      [AC_DEFINE([ENABLE_POWER_TOOLS], [], [enable PowerTools support])])
 
 AC_ARG_ENABLE([power_tools_pp],
               [AS_HELP_STRING([--enable-power_tools_pp], [enable PowerTools++ specific features @<:@no@:>@])],

@@ -1,17 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
 
-if ENABLE_POWER_TOOLS
-SGT_POWER_TOOLS_H = SgtPowerTools.h
-SGT_POWER_TOOLS_MM = SgtPowerTools.mm
-POWER_FLOW_PT_SOLVER_H = PowerFlowPtSolver.h
-L_POWER_TOOLS = -lPowerTools -lipopt -lcoinhsl
-else
-SGT_POWER_TOOLS_H =
-SGT_POWER_TOOLS_MM =
-POWER_FLOW_PT_SOLVER_H =
-L_POWER_TOOLS =
-endif
-
 if ENABLE_POWER_TOOLS_PP
 POWER_FLOW_PT_PP_SOLVER_H = PowerFlowPtPpSolver.h
 POWER_FLOW_PT_PP_SOLVER_CC = PowerFlowPtPpSolver.cc
@@ -48,11 +36,9 @@ libinclude_HEADERS = \
 	PowerFlowModel.h \
 	PowerFlowSolver.h \
 	PowerFlowNrSolver.h \
-	$(POWER_FLOW_PT_SOLVER_H) \
 	$(POWER_FLOW_PT_PP_SOLVER_H) \
 	Properties.h \
 	Random.h \
-	$(SGT_POWER_TOOLS_H) \
 	SinglePhaseTransformer.h \
 	Spline.h \
 	Stopwatch.h \
@@ -87,14 +73,12 @@ libSgtCore_la_SOURCES = \
 	PowerFlow.h PowerFlow.cc \
 	PowerFlowModel.h PowerFlowModel.cc \
 	PowerFlowNrSolver.h PowerFlowNrSolver.cc \
-	$(POWER_FLOW_PT_SOLVER_H) \
 	$(POWER_FLOW_PT_PP_SOLVER_H) $(POWER_FLOW_PT_PP_SOLVER_CC)\
 	PowerFlowSolver.h PowerFlowSolver.cc \
 	PowerFlowSolverParserPlugin.h PowerFlowSolverParserPlugin.cc \
 	Properties.h \
 	Random.h Random.cc \
 	RegisterParserPlugins.cc \
-	$(SGT_POWER_TOOLS_H) $(SGT_POWER_TOOLS_MM) \
 	SparseHelper.h \
 	SparseSolver.h SparseSolver.cc \
 	Spline.h \
@@ -117,7 +101,6 @@ libSgtCore_la_LIBADD = \
 	-lamd \
 	-lcolamd \
 	-lbtf \
-	$(L_POWER_TOOLS) \
 	$(L_POWER_TOOLS_PP)
 
 noinst_PROGRAMS = helloworld
