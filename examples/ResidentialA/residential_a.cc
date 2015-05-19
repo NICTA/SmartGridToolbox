@@ -12,15 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Appliance.h"
-#include "ApplianceParserPlugin.h"
-
 #include <SgtCore.h>
 #include <SgtSim.h>
 
 #include <fstream>
 
-using namespace SmartGridToolbox;
+using namespace Sgt;
 
 void print(std::ostream& out, std::ostream& outV, double t, const Network& netw)
 {
@@ -58,7 +55,6 @@ int main(int argc, const char** argv)
 
     Simulation sim;
     Parser<Simulation> p;
-    p.registerParserPlugin<ApplianceParserPlugin>();
     p.parse(configName, sim);
     sim.initialize();
 

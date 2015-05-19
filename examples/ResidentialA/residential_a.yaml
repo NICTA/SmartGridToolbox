@@ -59,6 +59,8 @@
         dbclv: 1.5
         gmrlv: 0.007
         R_per_L_lv: 4e-4
+        
+        gmrdrop: 0.002
 
 -  simulation: 
         lat_long: [-35.3075, 149.1244] # Canberra, Australia.
@@ -118,10 +120,11 @@
         earth_resist: <earth_resist>
         cond_dist:
             [
-                [<gmrhv>, <dabhv_1>, <dachv_1>],
-                [<dabhv_1>, <gmrhv>, <dbchv_1>],
-                [<dachv_1>, <dbchv_1>, <gmrhv>]
+                [        0, <dabhv_1>, <dachv_1>],
+                [<dabhv_1>,         0, <dbchv_1>],
+                [<dachv_1>, <dbchv_1>,         0]
             ]
+        subcond_gmr: [<gmrhv>, <gmrhv>, <gmrhv>]
         freq: 60.0
 -  bus: 
         id: bus_hv_mid_2
@@ -142,10 +145,11 @@
         earth_resist: <earth_resist>
         cond_dist:
             [
-                [<gmrhv>, <dabhv_2>, <dachv_2>],
-                [<dabhv_2>, <gmrhv>, <dbchv_2>],
-                [<dachv_2>, <dbchv_2>, <gmrhv>]
+                [        0, <dabhv_2>, <dachv_2>],
+                [<dabhv_2>,         0, <dbchv_2>],
+                [<dachv_2>, <dbchv_2>,         0]
             ]
+        subcond_gmr: [<gmrhv>, <gmrhv>, <gmrhv>]
         freq: 60.0
 -  bus: 
         id: bus_hv_down
@@ -166,10 +170,11 @@
         earth_resist: <earth_resist>
         cond_dist:
             [
-                [<gmrhv>, <dabhv_3>, <dachv_3>],
-                [<dabhv_3>, <gmrhv>, <dbchv_3>],
-                [<dachv_3>, <dbchv_3>, <gmrhv>]
+                [        0, <dabhv_3>, <dachv_3>],
+                [<dabhv_3>,         0, <dbchv_3>],
+                [<dachv_3>, <dbchv_3>,         0]
             ]
+        subcond_gmr: [<gmrhv>, <gmrhv>, <gmrhv>]
         freq: 60.0
 -  bus: 
         id: bus_mv_up
@@ -208,10 +213,11 @@
                     earth_resist: <earth_resist>
                     cond_dist:
                         [
-                            [<gmrmv>, <dabmv>, <dacmv>],
-                            [<dabmv>, <gmrmv>, <dbcmv>],
-                            [<dacmv>, <dbcmv>, <gmrmv>]
+                            [      0, <dabmv>, <dacmv>],
+                            [<dabmv>,       0, <dbcmv>],
+                            [<dacmv>, <dbcmv>,       0]
                         ]
+                    subcond_gmr: [<gmrmv>, <gmrmv>, <gmrmv>]
                     freq: 60.0
             -  bus: 
                     id: bus_lv_up_<i>
@@ -265,7 +271,8 @@
                                             length: 20
                                             subcond_R_per_L: [<R_per_L_lv>]
                                             earth_resist: <earth_resist>
-                                            cond_dist: [[0.01]]
+                                            cond_dist: [[0]]
+                                            subcond_gmr: [<gmrdrop>]
                                             freq: 60.0
                         -  loop: 
                                 loop_variable: [k, 0, <<n_houses_<i>(<j>)>-1>, 1]
@@ -282,10 +289,11 @@
                                             earth_resist: <earth_resist>
                                             cond_dist:
                                                 [
-                                                    [<gmrlv>, <dablv>, <daclv>],
-                                                    [<dablv>, <gmrlv>, <dbclv>],
-                                                    [<daclv>, <dbclv>, <gmrlv>]
+                                                    [      0, <dablv>, <daclv>],
+                                                    [<dablv>,       0, <dbclv>],
+                                                    [<daclv>, <dbclv>,       0]
                                                 ]
+                                            subcond_gmr: [<gmrlv>, <gmrlv>, <gmrlv>]
                                             freq: 60.0
                         -  overhead_line: 
                                 id: line_lv_up_<i>_<j>_0
@@ -299,8 +307,9 @@
                                 earth_resist: <earth_resist>
                                 cond_dist:
                                     [
-                                        [<gmrlv>, <dablv>, <daclv>],
-                                        [<dablv>, <gmrlv>, <dbclv>],
-                                        [<daclv>, <dbclv>, <gmrlv>]
-                                    ]
+                                        [      0, <dablv>, <daclv>],
+                                        [<dablv>,       0, <dbclv>],
+                                        [<daclv>, <dbclv>,       0]
+                                        ]
+                                subcond_gmr: [<gmrlv>, <gmrlv>, <gmrlv>]
                                 freq: 60.0

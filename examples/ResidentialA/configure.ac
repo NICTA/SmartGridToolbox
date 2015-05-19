@@ -1,12 +1,10 @@
 AC_INIT([residential_a], [v1.0], [dan.gordon@nicta.com.au])
 AC_CONFIG_SRCDIR([residential_a.cc])
+AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
-m4_include([./m4_ax_cxx_compile_stdcxx_11.m4])
-m4_include([./m4_ax_check_compile_flag.m4])
-
 AC_PROG_CXX([clang++ g++])
-AC_PROG_RANLIB
+AC_PROG_LIBTOOL
 
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11([noext])
