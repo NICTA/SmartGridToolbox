@@ -23,9 +23,9 @@ AS_IF([test x$with_klu == xyes],
 
 AC_PROG_CC([clang gcc])
 AC_PROG_CXX([clang++ g++])
-AC_PROG_LIBTOOL
-LT_INIT
 AC_PROG_OBJCXX([clang]) # Unfortunately it is an autoconf error to make this macro conditional.
+
+LT_INIT([disable-shared]) # disable-shared doesn't seem to be working: autoconf bug?
 
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11([noext])
