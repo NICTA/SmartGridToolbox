@@ -18,7 +18,9 @@
 #include "Network.h"
 #include "PowerFlowNrSolver.h"
 #include "SparseHelper.h"
+#ifdef WITH_KLU
 #include "SparseSolver.h"
+#endif
 #include "Stopwatch.h"
 
 using namespace Sgt;
@@ -244,7 +246,12 @@ SGT_DEBUG
             stopwatch.reset();
             stopwatch.start();
             Col<double> x;
-            bool ok = kluSolve(JMat, -f, x);
+            bool ok;
+#ifdef WITH_KLU
+            ok = kluSolve(JMat, -f, x);
+#else
+            ok = spsolve(x, JMat, -f, "superlu");
+#endif
             stopwatch.stop();
             durationSolve += stopwatch.seconds();
 

@@ -1,5 +1,7 @@
 AUTOMAKE_OPTIONS = foreign
 
+AM_LDFLAGS = -all-static
+
 TESTS = tests
 
 check_PROGRAMS = tests

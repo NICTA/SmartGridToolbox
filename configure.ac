@@ -12,6 +12,15 @@ AM_CONDITIONAL([ENABLE_POWER_TOOLS_PP], [test x$enable_power_tools_pp = xyes])
 AS_IF([test x$enable_power_tools_pp == xyes],
       [AC_DEFINE([ENABLE_POWER_TOOLS_PP], [], [enable PowerTools++ support])])
 
+AC_ARG_WITH([klu],
+              [AS_HELP_STRING([--with-klu], [use the KLU library as a sparse solver @<:@no@:>@])],
+              [],
+              [with_klu=no])
+AC_SUBST([with_klu])
+AM_CONDITIONAL([WITH_KLU], [test x$with_klu = xyes])
+AS_IF([test x$with_klu == xyes],
+      [AC_DEFINE([WITH_KLU], [], [use the KLU library as a sparse solver])])
+
 AC_PROG_CC([clang gcc])
 AC_PROG_CXX([clang++ g++])
 AC_PROG_LIBTOOL

@@ -19,6 +19,8 @@
 #include <iostream>
 #include <map>
 
+#define PRINT 0
+
 int main(int argc, char** argv)
 {
     using namespace Sgt;
@@ -39,6 +41,7 @@ int main(int argc, char** argv)
     auto outFBranch = std::fopen((outPrefix + ".branch").c_str(), "w+");
     std::map<std::string, int> busMap;
 
+#if PRINT
     auto print = [&]()
     {
         printf("--------------------------------------------------------------------------\n");
@@ -96,12 +99,21 @@ int main(int argc, char** argv)
         std::cout << "Total Load = " << SLoadTot << std::endl;
         std::cout << "Total Cost = " << costTot << std::endl;
     };
+#endif // PRINT
 
+#if PRINT
     std::cout << "Before:" << std::endl;
     print();
+#endif // PRINT
+    Stopwatch sw;
+    sw.start();
     nw.solvePowerFlow();
+    sw.stop();
+#if PRINT
     std::cout << "After:" << std::endl;
     print();
+#endif // PRINT
+    std::cout << "Elapsed time: " << sw.seconds() << std::endl;
     fclose(outFBus);
     fclose(outFBranch);
 }

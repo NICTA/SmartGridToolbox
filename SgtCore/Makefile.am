@@ -8,8 +8,16 @@ else
 POWER_FLOW_PT_PP_SOLVER_H =
 POWER_FLOW_PT_PP_SOLVER_CC =
 L_POWER_TOOLS_PP =
-L_IPOPT =
-L_COIN_HSL =
+endif
+
+if WITH_KLU
+KLU_SOLVER_H = KluSolver.h
+KLU_SOLVER_CC = KluSolver.cc
+L_KLU_SOLVER = -lklu -lamd -lcolamd -lbtf
+else
+KLU_SOLVER_H =
+KLU_SOLVER_CC =
+L_KLU_SOLVER =
 endif
 
 libincludedir=$(includedir)/SgtCore
@@ -73,14 +81,14 @@ libSgtCore_la_SOURCES = \
 	PowerFlow.h PowerFlow.cc \
 	PowerFlowModel.h PowerFlowModel.cc \
 	PowerFlowNrSolver.h PowerFlowNrSolver.cc \
-	$(POWER_FLOW_PT_PP_SOLVER_H) $(POWER_FLOW_PT_PP_SOLVER_CC)\
+	$(POWER_FLOW_PT_PP_SOLVER_H) $(POWER_FLOW_PT_PP_SOLVER_CC) \
 	PowerFlowSolver.h PowerFlowSolver.cc \
 	PowerFlowSolverParserPlugin.h PowerFlowSolverParserPlugin.cc \
 	Properties.h \
 	Random.h Random.cc \
 	RegisterParserPlugins.cc \
 	SparseHelper.h \
-	SparseSolver.h SparseSolver.cc \
+	$(KLU_SOLVER_H) $(KLU_SOLVER_CC) \
 	Spline.h \
 	Stopwatch.h \
 	SinglePhaseTransformer.h SinglePhaseTransformer.cc \
@@ -97,10 +105,7 @@ libSgtCore_la_LIBADD = \
 	-larmadillo \
 	-lboost_date_time \
 	-lyaml-cpp \
-	-lklu \
-	-lamd \
-	-lcolamd \
-	-lbtf \
+	$(L_KLU_SOLVER) \
 	$(L_POWER_TOOLS_PP)
 
 noinst_PROGRAMS = helloworld

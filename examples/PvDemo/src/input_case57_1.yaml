@@ -1,5 +1,5 @@
 - sgt_gui:
-    bar_power_scaling: 0.5
+    bar_power_scaling: 0.3
     V_mag_min: 0.95
     V_mag_max: 1.05
 - parameters:
