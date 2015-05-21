@@ -128,10 +128,10 @@ BOOST_AUTO_TEST_CASE (test_underground_compare_carson)
     ZPhaseKersting << Complex(0.7981, 0.4463) << Complex(0.3191, 0.0328) << Complex(0.2849, -0.0143) << arma::endr
                    << Complex(0.3191, 0.0328) << Complex(0.7891, 0.4041) << Complex(0.3191, 0.0328) << arma::endr
                    << Complex(0.2849, -0.0143) << Complex(0.3191, 0.0328) << Complex(0.7981, 0.4463) << arma::endr;
-    std::cout << ZPhase << std::endl;
-    std::cout << ZPhaseKersting << std::endl;
+    BOOST_MESSAGE(ZPhase);
+    BOOST_MESSAGE(ZPhaseKersting);
     double err = arma::norm(ZPhase - ZPhaseKersting, "inf");
-    std::cout << "err = " << err << std::endl;
+    BOOST_MESSAGE("Err = " << err);
     BOOST_CHECK(err < 0.0005);
 }
 
@@ -298,9 +298,9 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         "nesta_case189_edin",
         "nesta_case300_ieee",
         "nesta_case1354_pegase",
-        // "nesta_case1394sop_eir",
-        // "nesta_case1397sp_eir",
-        // "nesta_case1460wp_eir",
+        // "nesta_case1394sop_eir", // Needs investigation, see GitHub Issues.
+        // "nesta_case1397sp_eir", // Needs investigation, see GitHub Issues.
+        // "nesta_case1460wp_eir", // Needs investigation, see GitHub Issues.
         "nesta_case2224_edin",
         "nesta_case2383wp_mp",
         "nesta_case2736sp_mp",
@@ -328,7 +328,12 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         YAML::Node n = YAML::Load(yamlStr);
         Sgt::Parser<Network> p;
         p.parse(n, nw);
+
+        Stopwatch sw;
+        sw.start();
         nw.solvePowerFlow();
+        sw.stop();
+        BOOST_MESSAGE("Solve time = " << sw.seconds());
 
         ifstream compareName(std::string("mp_compare/") + c + ".compare");
 
