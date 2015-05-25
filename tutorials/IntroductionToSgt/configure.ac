@@ -1,19 +1,16 @@
-AC_INIT([Template], [v1.0.0], [dan.gordon@nicta.com.au], [Template])
-AC_CONFIG_SRCDIR([src/helloworld.cc])
+AC_INIT([tutorials], [v1.0.0], [dan.gordon@nicta.com.au], [Template])
+AC_CONFIG_SRCDIR([solve_network.cc])
+AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
-m4_include([./m4_ax_cxx_compile_stdcxx_11.m4])
-m4_include([./m4_ax_check_compile_flag.m4])
+AC_PROG_CXX([clang++ g++])
+AC_PROG_LIBTOOL
 
-AC_PROG_CC
-AC_PROG_CXX
-AC_PROG_CXX
-AC_PROG_RANLIB
 AC_LANG([C++])
-
-AX_CXX_COMPILE_STDCXX_11
+AX_CXX_COMPILE_STDCXX_11([noext])
+AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [AM_CXXFLAGS="$AM_CXXFLAGS -ftemplate-depth=160"])
 
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT

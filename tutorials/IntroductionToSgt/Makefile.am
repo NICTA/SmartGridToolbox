@@ -1,5 +1,9 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = src
+AM_CPPFLAGS = -I../SgtCore -I../SgtSim
 
-dist_doc_DATA = README
+bin_PROGRAMS = solve_network
+
+solve_network_SOURCES = solve_network.cc
+
+solve_network_LDADD = ../SgtCore/libSgtCore.la
