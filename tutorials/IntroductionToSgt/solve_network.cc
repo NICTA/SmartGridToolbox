@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 {
     using namespace Sgt;
     
-    Network nw("my_network", 100.0); // Create a network named "my_network".
+    Network nw("my_network"); // Create a network named "my_network".
         
     auto bus1 = std::make_shared<Bus>(
             "bus_1", Phase::BAL, arma::Col<Complex>{11}, 11);
@@ -41,8 +41,8 @@ int main(int argc, char** argv)
     bus2->setType(BusType::PQ); // Make it a PQ bus (load or fixed generation).
     nw.addBus(bus2); // Add it to the network.
     
-    auto load2 = std::make_shared<GenericZip>("zip_2", Phase::BAL);
-        // Create a generic "ZIP" load named zip_2.
+    auto load2 = std::make_shared<GenericZip>("load_2", Phase::BAL);
+        // Create a generic "ZIP" load named load_2.
     load2->setSConst({std::polar(0.1, -5.0 * pi / 180.0)}); 
         // The load consumes a constant S component of 0.1 MW = 100 kW, at a
         // phase angle of -5 degrees.
@@ -62,4 +62,7 @@ int main(int argc, char** argv)
     auto bus = nw.bus("bus_2");
     Log().message() << "Bus " << bus->id() << ": " << " voltage is "
                     << bus->V() << std::endl; // Note logging...
+
+    // Print the network:
+    Log().message() << "Network: " << nw << std::endl;
 }
