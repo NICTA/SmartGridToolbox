@@ -23,7 +23,8 @@ int main(int argc, char** argv)
     // Create a network named "my_network", using a base power of 100 MW.
     Network nw("my_network", 100.0);
         
-    auto bus1 = std::make_shared<Bus>("bus_1", Phase::BAL, {11}, 11);
+    auto bus1 = std::make_shared<Bus>(
+            "bus_1", Phase::BAL, arma::Col<Complex>{11}, 11);
         // Create a bus named "bus_1", with a single balanced (BAL) phase,
         // a nominal voltage vector of [11 kV] (with only 1 element because it
         // is single phase), and base voltage of 11 kV. 
@@ -37,9 +38,36 @@ int main(int argc, char** argv)
     nw.addGen(gen1, "bus_1");
         // Add it to the network, attaching it to bus_1.
    
-    // Create another bus...
-    auto bus2 = std::make_shared<Bus>("bus_2", Phase::BAL, {11}, 11);
+    auto bus2 = std::make_shared<Bus>(
+            "bus_2", Phase::BAL, arma::Col<Complex>{11}, 11);
+        // Create another bus...
     bus2->setType(BusType::PQ);
         // Make it a PQ bus (load or fixed generation).
-
+    nw.addBus(bus2);
+        // Add it to the network.
+    
+    auto load2 = std::make_shared<GenericZip>("zip_2", Phase::BAL);
+        // Create a generic "ZIP" load named zip_2.
+    load2->setSConst({std::polar(0.1, -5.0 * pi / 180.0)}); 
+        // The load consumes a constant S component of 0.1 MW = 100 kW, at a
+        // phase angle of -5 degrees.
+    nw.addZip(load2, "bus_2");
+        // Add it to the network and to bus_2.
+    
+    auto line = std::make_shared<CommonBranch>("line");
+        // Make a "CommonBranch" (Matpower style) line.
+    line->setYSeries({Complex(0.005, -0.05)});
+        // Set the series admittance of the line.
+    std::cout << "line Y = " << line->Y() << std::endl;
+    nw.addBranch(line, "bus_1", "bus_2");
+        // Add the line to the network, between the two busses.
+    
+    nw.solvePowerFlow();
+        // Solve the power flow problem, using the default Newton-Raphson
+        // solver.
+    
+    // Below, we show how to retrieve some information:
+    auto bus = nw.bus("bus_2");
+    Log().message() << "Bus " << bus->id() << ": " << " voltage is "
+                    << bus->V() << std::endl;
 }
