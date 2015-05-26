@@ -37,17 +37,25 @@ namespace Sgt
             const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "complex_tap_ratio");
         assertFieldPresent(nd, "Y_series");
-        assertFieldPresent(nd, "Y_shunt");
 
         std::string id = parser.expand<std::string>(nd["id"]);
 
         std::unique_ptr<CommonBranch> cBranch(new CommonBranch(id));
 
-        cBranch->setTapRatio(parser.expand<Complex>(nd["complex_tap_ratio"]));
         cBranch->setYSeries(parser.expand<Complex>(nd["Y_series"]));
-        cBranch->setYShunt(parser.expand<Complex>(nd["Y_shunt"]));
+        
+        auto ndShunt = nd["Y_shunt"];
+        if (ndShunt)
+        {
+            cBranch->setYShunt(parser.expand<Complex>(ndShunt));
+        }
+
+        auto ndTap = nd["complex_tap_ratio"];
+        if (ndTap)
+        {
+            cBranch->setTapRatio(parser.expand<Complex>(ndTap));
+        }
 
         auto ndRateA =  nd["rate_A"];
         auto ndRateB =  nd["rate_B"];
