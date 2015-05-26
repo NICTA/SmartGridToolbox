@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 
     Log().message() << *sim.simComponent<SimNetwork>("network") << std::endl;
 
-    auto bus10 = sim.simComponent<SimBus>("bus_10"); // Get bus by name.
+    auto bus2 = sim.simComponent<SimBus>("bus_2"); // Get bus by name.
 
     while (!sim.isFinished())
     {
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
             // will update one component at a time.
         {
             LogIndent _; // Indent within scope.
-            Log().message() << "bus_2 V = " << bus10->V() << std::endl;
+            Log().message() << "bus_2 V = " << bus2->V() << std::endl;
         }
     }
 }

@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 {
     using namespace Sgt;
     
-    Network nw("my_network"); // Create a network named "my_network".
+    Network nw("network"); // Create a network named "network".
         
     auto bus1 = std::make_shared<Bus>(
             "bus_1", Phase::BAL, arma::Col<Complex>{11}, 11);

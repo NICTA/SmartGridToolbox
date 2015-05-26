@@ -1,7 +1,7 @@
 - parameters:
     start_time: 2013-01-02 06:00:00
     end_time: 2013-01-04 06:00:00
-    input_file: case14.m
+    input_file: simulation.m
 - simulation:
     start_time: <start_time>
     end_time: <end_time>
@@ -27,10 +27,10 @@
     network_id: network
     input_file: <input_file>
     default_kV_base: 11
-- inverter: # Add an inverter to bus 6.
+- inverter: # Add an inverter.
     id: pv_inverter
     network_id: network
-    bus_id: bus_10
+    bus_id: bus_2
     phases: [BAL]
     max_S_mag: 60
     efficiency: 0.86
