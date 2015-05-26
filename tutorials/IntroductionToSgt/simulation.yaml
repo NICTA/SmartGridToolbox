@@ -1,0 +1,45 @@
+- parameters:
+    start_time: 2013-01-02 06:00:00
+    end_time: 2013-01-04 06:00:00
+    input_file: case14.m
+- simulation:
+    start_time: <start_time>
+    end_time: <end_time>
+    lat_long: [-35.3075, 149.1244]
+    timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra.
+- time_series:
+    id: cloud_cover_series
+    value_type: real_scalar
+    type: data_time_series
+    data_file: cloud.txt
+    relative_to_time: <start_time>
+    time_unit: m
+    interp_type: lerp
+- weather:
+    id: weather
+    cloud_cover: cloud_cover_series
+    dt: 00:30:00
+- network:
+    id: network
+    P_base: 1e6
+    freq_Hz: 60
+- matpower: # Use a matpower case for the network design.
+    network_id: network
+    input_file: <input_file>
+    default_kV_base: 11
+- inverter: # Add an inverter to bus 6.
+    id: pv_inverter_6
+    network_id: network
+    bus_id: bus_10
+    phases: [BAL]
+    max_S_mag: 60
+    efficiency: 0.86
+- solar_pv: # Add a solar farm to the inverter.
+    id: solar_pv_6
+    network_id: network
+    inverter: pv_inverter_6
+    weather: weather
+    efficiency: 0.75
+    area_m2: 1000
+    zenith_degrees: 40
+    azimuth_degrees: 290

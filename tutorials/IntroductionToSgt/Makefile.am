@@ -1,9 +1,12 @@
 AUTOMAKE_OPTIONS = foreign
 
-bin_PROGRAMS = solve_network solve_network_yaml
+bin_PROGRAMS = network network_yaml simulation
 
-solve_network_SOURCES = solve_network.cc
-solve_network_LDADD = -lSgtCore
+network_SOURCES = network.cc
+network_LDADD = -lSgtCore
 
-solve_network_yaml_SOURCES = solve_network_yaml.cc
-solve_network_yaml_LDADD = -lSgtCore
+network_yaml_SOURCES = network_yaml.cc
+network_yaml_LDADD = -lSgtCore
+
+simulation_SOURCES = simulation.cc
+simulation_LDADD = -lSgtCore -lSgtSim
