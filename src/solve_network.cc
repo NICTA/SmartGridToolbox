@@ -19,8 +19,6 @@
 #include <iostream>
 #include <map>
 
-#define PRINT 0
-
 int main(int argc, char** argv)
 {
     using namespace Sgt;
@@ -35,20 +33,26 @@ int main(int argc, char** argv)
         inFName + ", default_kV_base : 11}}]";
     YAML::Node n = YAML::Load(yamlStr);
 
-    Sgt::Parser<Network> p;
+    Parser<Network> p;
     p.parse(n, nw);
     auto outFBus = std::fopen((outPrefix + ".bus").c_str(), "w+");
     auto outFBranch = std::fopen((outPrefix + ".branch").c_str(), "w+");
     std::map<std::string, int> busMap;
 
-#if PRINT
     auto print = [&]()
     {
-        printf("--------------------------------------------------------------------------\n");
-        printf("%18s : %15s %15s %15s %15s %15s %15s %15s %15s %15s %15s %15s\n",
-               "bus", "V_base", "|V|", "theta", "P_gen", "Q_gen", "P_load", "Q_load",
-               "y_shunt_r", "y_shunt_i", "I_zip_r", "I_zip_i");
-        printf("--------------------------------------------------------------------------\n");
+        fprintf(outFBus, "# ------------------------------------------------------------------------\n");
+        fprintf(outFBus,
+                "# %14s %15s %15s %15s %15s %15s %15s %15s %15s %15s %15s %15s\n",
+                "bus", "V_base", "|V|", "theta", "P_gen", "Q_gen", "P_load", "Q_load",
+                "y_shunt_r", "y_shunt_i", "I_zip_r", "I_zip_i");
+        fprintf(outFBus, "# ------------------------------------------------------------------------\n");
+        
+        fprintf(outFBranch, "# ------------------------------------------------------------------------\n");
+        fprintf(outFBranch,
+                "# %3s %5s %15s %15s %15s %15s %15s %15s %15s %15s\n",
+                "b0", "b1", "Y00r", "Y00i", "Y01r", "Y01i", "Y10r", "Y10i", "Y11r", "Y11i");
+        fprintf(outFBranch, "# ------------------------------------------------------------------------\n");
 
         int iBus = 1;
         Complex SGenTot = 0;
@@ -65,13 +69,9 @@ int main(int argc, char** argv)
             SLoadTot += SLoad;
             auto yZip = bus->YConst()[0];
             auto IConst = bus->IConst()[0];
-            printf("%18s : %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n",
-                   bus->id().c_str(), bus->VBase(), std::abs(V), std::arg(V)*180.0/pi,
-                   SGen.real(), SGen.imag(), SLoad.real(), SLoad.imag(),
-                   yZip.real(), yZip.imag(), IConst.real(), IConst.imag());
             fprintf(outFBus,
-                    "%15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n",
-                    bus->VBase(), std::abs(V), std::arg(V)*180.0/pi,
+                    "%16s %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n",
+                    bus->id().c_str(), bus->VBase(), std::abs(V), std::arg(V)*180.0/pi,
                     SGen.real(), SGen.imag(), SLoad.real(), SLoad.imag(),
                     yZip.real(), yZip.imag(), IConst.real(), IConst.imag());
             ++iBus;
@@ -99,20 +99,12 @@ int main(int argc, char** argv)
         std::cout << "Total Load = " << SLoadTot << std::endl;
         std::cout << "Total Cost = " << costTot << std::endl;
     };
-#endif // PRINT
 
-#if PRINT
-    std::cout << "Before:" << std::endl;
-    print();
-#endif // PRINT
     Stopwatch sw;
     sw.start();
     nw.solvePowerFlow();
     sw.stop();
-#if PRINT
-    std::cout << "After:" << std::endl;
     print();
-#endif // PRINT
     std::cout << "Elapsed time: " << sw.seconds() << std::endl;
     fclose(outFBus);
     fclose(outFBranch);
