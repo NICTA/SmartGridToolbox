@@ -28,18 +28,18 @@
     input_file: <input_file>
     default_kV_base: 11
 - inverter: # Add an inverter to bus 6.
-    id: pv_inverter_6
+    id: pv_inverter
     network_id: network
     bus_id: bus_10
     phases: [BAL]
     max_S_mag: 60
     efficiency: 0.86
 - solar_pv: # Add a solar farm to the inverter.
-    id: solar_pv_6
+    id: solar_pv
     network_id: network
-    inverter: pv_inverter_6
+    inverter: pv_inverter
     weather: weather
     efficiency: 0.75
-    area_m2: 1000
+    area_m2: 10000
     zenith_degrees: 40
     azimuth_degrees: 290
