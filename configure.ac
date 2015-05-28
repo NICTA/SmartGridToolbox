@@ -23,7 +23,7 @@ AS_IF([test x$with_klu == xyes],
 
 AC_PROG_CC([clang gcc])
 AC_PROG_CXX([clang++ g++])
-AC_PROG_OBJCXX([clang]) # Unfortunately it is an autoconf error to make this macro conditional.
+#AC_PROG_OBJCXX([clang]) # Unfortunately it is an autoconf error to make this macro conditional.
 
 LT_INIT([disable-shared]) # disable-shared doesn't seem to be working: autoconf bug?
 
@@ -33,8 +33,8 @@ AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [AM_CXXFLAGS="$AM_CXXFLAGS -ftempl
 AC_SUBST([AM_CXXFLAGS], ["$AM_CXXFLAGS -Wall"])
 
 # See above comments for AC_PROG_OBJCXX
-AC_LANG([Objective C++])
-AX_CHECK_COMPILE_FLAG([-std=c++11], [AC_SUBST([AM_OBJCXXFLAGS], ["-std=c++11"])])
+#AC_LANG([Objective C++])
+#AX_CHECK_COMPILE_FLAG([-std=c++11], [AC_SUBST([AM_OBJCXXFLAGS], ["-std=c++11"])])
 
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
 AC_CHECK_PROGS([PDFLATEX], [pdflatex])
