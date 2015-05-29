@@ -200,19 +200,19 @@ namespace Sgt
         /// Nodes are ordered as: SL first, then PQ, then PV.
         /// @{
 
-            size_t nNode()
+            std::size_t nNode()
             {
                 return nodes_.size();
             }
-            size_t nPq()
+            std::size_t nPq()
             {
                 return nPq_;
             }
-            size_t nPv()
+            std::size_t nPv()
             {
                 return nPv_;
             }
-            size_t nSl()
+            std::size_t nSl()
             {
                 return nSl_;
             }
@@ -242,23 +242,23 @@ namespace Sgt
 
             arma::span selSlFromAll() const
             {
-                return {0, arma::uword(nSl_ - 1)};
+                return arma::span(0, arma::uword(nSl_ - 1));
             }
             arma::span selPqFromAll() const
             {
-                return {arma::uword(nSl_), arma::uword(nSl_ + nPq_ - 1)};
+                return arma::span(arma::uword(nSl_), arma::uword(nSl_ + nPq_ - 1));
             }
             arma::span selPvFromAll() const
             {
-                return {arma::uword(nSl_ + nPq_), arma::uword(nSl_ + nPq_ + nPv_ - 1)};
+                return arma::span(arma::uword(nSl_ + nPq_), arma::uword(nSl_ + nPq_ + nPv_ - 1));
             }
             arma::span selPqPvFromAll() const
             {
-                return {arma::uword(nSl_), arma::uword(nSl_ + nPq_ + nPv_ - 1)};
+                return arma::span(arma::uword(nSl_), arma::uword(nSl_ + nPq_ + nPv_ - 1));
             }
             arma::span selAllFromAll() const
             {
-                return {0, arma::uword(nSl_ + nPq_ + nPv_ - 1)};
+                return arma::span(0, arma::uword(nSl_ + nPq_ + nPv_ - 1));
             }
 
         /// @}
@@ -277,9 +277,9 @@ namespace Sgt
         /// @name Array bounds.
         /// @{
 
-            size_t nSl_; ///< Number of SL nodes.
-            size_t nPq_; ///< Number of PQ nodes.
-            size_t nPv_; ///< Number of PV nodes.
+            std::size_t nSl_; ///< Number of SL nodes.
+            std::size_t nPq_; ///< Number of PQ nodes.
+            std::size_t nPv_; ///< Number of PV nodes.
 
         /// @}
 
