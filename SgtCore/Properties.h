@@ -22,20 +22,23 @@
 #include<stdexcept>
 #include<string>
 #include<sstream>
+#include<type_traits>
 #include<vector>
 
 #define SGT_PROPS_INIT(Targ) virtual const std::map<std::string, std::shared_ptr<PropertyBase>>& properties() const override {return HasProperties<Targ>::sMap();}; virtual std::map<std::string, std::shared_ptr<PropertyBase>>& properties() override {return HasProperties<Targ>::sMap();}
 
 #define SGT_PROPS_INHERIT(Targ, Base) struct Inherit ## Base {Inherit ## Base (){auto& targMap = HasProperties<Targ>::sMap(); auto& baseMap = HasProperties<Base>::sMap(); for (auto& elem : baseMap) {targMap[elem.first] = elem.second;}}}; struct DoInherit ## Base {DoInherit ## Base(){static Inherit ## Base inherit ## Base;}} doinherit ## Base
 
-#define SGT_PROP_GET(name, Targ, T, GetBy, getter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T, GetBy>>(std::unique_ptr<Getter<Targ, T, GetBy>>(new Getter<Targ, T, GetBy>([](const Targ& targ)->GetBy<T>{return targ.getter();})), nullptr);}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name;
+#define SGT_PROP_GET(name, Targ, T, getter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T>>(std::unique_ptr<Getter<Targ, T>>(new Getter<Targ, T>([](const Targ& targ)->T{return targ.getter();})), nullptr);}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name;
 
-#define SGT_PROP_SET(name, Targ, T, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T, GetByNone>>(std::unique_ptr<Setter<Targ, T>>(nullptr, new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
+#define SGT_PROP_SET(name, Targ, T, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T>>(std::unique_ptr<Setter<Targ, T>>(nullptr, new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
 
-#define SGT_PROP_GET_SET(name, Targ, T, GetBy, getter, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T, GetBy>>(std::unique_ptr<Getter<Targ, T, GetBy>>(new Getter<Targ, T, GetBy>([](const Targ& targ)->GetBy<T>{return targ.name();})), std::unique_ptr<Setter<Targ, T>>(new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
+#define SGT_PROP_GET_SET(name, Targ, T, getter, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T>>(std::unique_ptr<Getter<Targ, T>>(new Getter<Targ, T>([](const Targ& targ)->T{return targ.name();})), std::unique_ptr<Setter<Targ, T>>(new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
 
 namespace Sgt
 {
+    template<typename T> using TypeByVal = typename std::remove_const<typename std::remove_reference<T>::type>::type;
+
     class PropertyBase;
 
     class HasPropertiesInterface
@@ -73,28 +76,23 @@ namespace Sgt
             BadTargException() : std::logic_error("Target supplied to property has the wrong type") {};
     };
 
-    template<class T> using GetByConstRef = const T&;
-    template<class T> using GetByVal = T;
-    template<class T> struct GetByNone {}; // Used if there is no getter.
-
-    template<typename T, template<typename> class GetBy> class GetterInterface
+    template<typename T> class GetterInterface
     {
         public:
-            virtual GetBy<T> get(const HasPropertiesInterface& targ) const = 0;
+            virtual T get(const HasPropertiesInterface& targ) const = 0;
     };
 
-    template<typename Targ, typename T, template<typename> class GetBy>
-    class Getter : public GetterInterface<T, GetBy>
+    template<typename Targ, typename T> class Getter : public GetterInterface<T>
     {
         public:
-            using Get = GetBy<T> (const Targ&);
+            using Get = T (const Targ&);
 
             Getter(Get getArg) : get_(getArg)
             {
                 // Empty.
             }
 
-            virtual GetBy<T> get(const HasPropertiesInterface& targ) const override
+            virtual T get(const HasPropertiesInterface& targ) const override
             {
                 auto derived = dynamic_cast<const Targ*>(&targ);
                 if (derived == nullptr)
@@ -104,7 +102,7 @@ namespace Sgt
                 return get_(*derived);
             }
 
-            GetBy<T> get(const Targ& targ) const
+            T get(const Targ& targ) const
             {
                 return get_(targ);
             }
@@ -151,7 +149,7 @@ namespace Sgt
     };
 
     template<typename T> class PropertyBase1;
-    template<typename T, template<typename> class GetBy> class Property;
+    template<typename T> class Property;
 
     class PropertyBase
     {
@@ -162,10 +160,10 @@ namespace Sgt
 
             virtual bool isSettable() = 0;
 
-            template<typename T, template<typename> class GetBy> GetBy<T> get(const HasPropertiesInterface& targ) const
+            template<typename T> T get(const HasPropertiesInterface& targ) const
             {
-                auto derived = dynamic_cast<const Property<T, GetBy>*>(this);
-                return derived.template get<GetBy>(targ);
+                auto derived = dynamic_cast<const Property<T>*>(this);
+                return derived.get(targ);
             }
 
             template<typename T> void set(HasPropertiesInterface& targ, const T& val) const
@@ -205,17 +203,17 @@ namespace Sgt
 
             virtual void setFromString(HasPropertiesInterface& targ, const std::string& str) override
             {
-                set(targ, fromYamlString<T>(str));
+                set(targ, fromYamlString<TypeByVal<T>>(str));
             }
 
         private:
             std::unique_ptr<SetterInterface<T>> setter_;
     };
 
-    template<typename T, template<typename> class GetBy> class Property : public PropertyBase1<T>
+    template<typename T> class Property : public PropertyBase1<T>
     {
         public:
-            Property(std::unique_ptr<GetterInterface<T, GetBy>> getter, std::unique_ptr<SetterInterface<T>> setter) :
+            Property(std::unique_ptr<GetterInterface<T>> getter, std::unique_ptr<SetterInterface<T>> setter) :
                 PropertyBase1<T>(std::move(setter)),
                 getter_(std::move(getter))
             {
@@ -227,7 +225,7 @@ namespace Sgt
                 return getter_ != nullptr;
             }
 
-            GetBy<T> get(const HasPropertiesInterface& targ) const
+            T get(const HasPropertiesInterface& targ) const
             {
                 if (getter_ == nullptr)
                 {
@@ -242,7 +240,7 @@ namespace Sgt
             }
 
         private:
-            std::unique_ptr<GetterInterface<T, GetBy>> getter_;
+            std::unique_ptr<GetterInterface<T>> getter_;
     };
 }
 

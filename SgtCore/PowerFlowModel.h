@@ -80,7 +80,7 @@ namespace Sgt
         PfBranch(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
                  const arma::Mat<Complex>& Y);
 
-        int nPhase_; ///< Number of phases.
+        std::size_t nPhase_; ///< Number of phases.
         Array<std::string, 2> ids_; ///< Id of bus 0/1
         Array<Phases, 2> phases_; ///< phases of bus 0/1.
         arma::Mat<Complex> Y_; ///< Bus admittance matrix.

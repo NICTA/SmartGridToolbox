@@ -30,7 +30,7 @@ namespace Sgt
         freq_(freq),
         rhoEarth_(rhoEarth)
     {
-        int nPhase = hasNeutral ? 4 : 3; // Not including shielding layers.
+        arma::uword nPhase = hasNeutral ? 4 : 3; // Not including shielding layers.
         if (phaseDist.n_rows != nPhase || phaseDist.n_cols != nPhase)
         {
             Log().error() << "UndergroundLine : distance matrix must be size " << std::to_string(nPhase) << " x "
@@ -61,7 +61,7 @@ namespace Sgt
         arma::Mat<double> Dij(nCond, nCond, arma::fill::zeros);
         double nConcStrInv = 1.0 / nConcStrands_;
         double gmrConc = std::pow(gmrConcStrand_ * nConcStrands_ * std::pow(rConc_, nConcStrands_ - 1), nConcStrInv);
-        for (int i = 0; i < 3; ++i)
+        for (arma::uword i = 0; i < 3; ++i)
         {
             Dij(i, i) = gmrPhase_; // phase_i - phase_i
             Dij(i + 3, i + 3) = gmrConc; // conc_i - conc_i
@@ -72,7 +72,7 @@ namespace Sgt
                 Dij(7, i + 3) = Dij(i + 3, 7) =
                     pow(pow(Dij(4, i), nConcStrands_) - pow(rConc_, nConcStrands_), nConcStrInv); // conc_i - neutral
             }
-            for (int j = 0; j < i; ++j)
+            for (arma::uword j = 0; j < i; ++j)
             {
                 Dij(i, j) = Dij(j, i) = phaseDist_(i, j); // phase_i - phase_j
                 Dij(i + 3, j + 3) = Dij(j + 3, i + 3) = phaseDist_(i, j); // conc_i - conc_j
@@ -88,7 +88,7 @@ namespace Sgt
         // Calculate the resistance per unit length.
         arma::Col<double> resPerL(nCond);
         double resPerLConc = resPerLConcStrand_ / nConcStrands_;
-        for (int i = 0; i < 3; ++i)
+        for (arma::uword i = 0; i < 3; ++i)
         {
             resPerL(i) = resPerLPhase_;
             resPerL(i + 3) = resPerLConc;

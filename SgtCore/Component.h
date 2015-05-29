@@ -79,8 +79,6 @@ namespace Sgt
                 // Empty.
             }
 
-            SGT_PROP_GET(id, Component, std::string, GetByConstRef, id);
-
         /// @}
 
         /// @name ComponentInterface virtual overridden functions.
@@ -90,13 +88,15 @@ namespace Sgt
             {
                 return id_;
             }
+            
+            SGT_PROP_GET(id, Component, const std::string&, id);
 
             virtual const std::string& componentType() const override
             {
                 return sComponentType();
             }
 
-            SGT_PROP_GET(componentType, Component, std::string, GetByConstRef, componentType);
+            SGT_PROP_GET(componentType, Component, const std::string&, componentType);
 
             virtual void print(std::ostream& os) const override
             {

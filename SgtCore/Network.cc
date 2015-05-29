@@ -231,9 +231,9 @@ namespace Sgt
                         {
                             // Keep P for gens, distribute Q amongst all gens.
                             arma::Col<Complex> SNew(gen->S().size());
-                            for (int i = 0; i < SNew.size(); ++i)
+                            for (arma::uword i = 0; i < SNew.size(); ++i)
                             {
-                                SNew[i] = Complex(gen->S()[i].real(), SGen[i].imag());
+                                SNew(i) = Complex(gen->S()(i).real(), SGen(i).imag());
                             }
                             gen->setInServiceS(SNew);
                         }

@@ -58,6 +58,7 @@ namespace Sgt
                 return "BAD";
                 break;
         }
+        return "ERROR";
     }
 
     template<> BusType from_string<BusType>(const std::string& str)
@@ -109,6 +110,7 @@ namespace Sgt
                 return "BAD";
                 break;
         }
+        return "ERROR";
     }
 
     template<> Phase from_string<Phase>(const std::string& str)
@@ -162,6 +164,7 @@ namespace Sgt
                 return "UNDEFINED";
                 break;
         }
+        return "ERROR";
     }
 
     Phases& Phases::operator&=(const Phases& other)
@@ -182,7 +185,7 @@ namespace Sgt
     {
         std::ostringstream ss;
         ss << phaseVec_[0];
-        for (int i = 1; i < phaseVec_.size(); ++i)
+        for (std::size_t i = 1; i < phaseVec_.size(); ++i)
         {
             ss << "|" << phaseVec_[i];
         }
@@ -205,7 +208,7 @@ namespace Sgt
         phaseVec_.shrink_to_fit();
     }
 
-    arma::Mat<Complex> carson(int nWire, const arma::Mat<double>& Dij, const arma::Col<double> resPerL,
+    arma::Mat<Complex> carson(arma::uword nWire, const arma::Mat<double>& Dij, const arma::Col<double> resPerL,
                               double L, double freq, double rhoEarth)
     {
         // Calculate the primative Z matrix (i.e. before Kron)
@@ -213,10 +216,10 @@ namespace Sgt
         double freqCoeffReal = 9.869611e-7 * freq;
         double freqCoeffImag = 1.256642e-6 * freq;
         double freqAdditiveTerm = 0.5 * log(rhoEarth / freq) + 6.490501;
-        for (int i = 0; i < nWire; ++i)
+        for (arma::uword i = 0; i < nWire; ++i)
         {
             Z(i, i) = {resPerL(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij(i, i)) + freqAdditiveTerm)};
-            for (int k = i + 1; k < nWire; ++k)
+            for (arma::uword k = i + 1; k < nWire; ++k)
             {
                 Z(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / Dij(i, k)) + freqAdditiveTerm)};
                 Z(k, i) = Z(i, k);
@@ -241,15 +244,15 @@ namespace Sgt
 
     arma::Mat<Complex> ZLine2YNode(const arma::Mat<Complex>& ZLine)
     {
-        int n = ZLine.n_rows;
+        auto n = ZLine.n_rows;
 
         // The line admittance matrix
         arma::Mat<Complex> YLine = arma::inv(ZLine);
 
         arma::Mat<Complex>YNode(2 * n, 2 * n, arma::fill::zeros);
-        for (int i = 0; i < n; ++i)
+        for (arma::uword i = 0; i < n; ++i)
         {
-            for (int j = 0; j < n; ++j)
+            for (arma::uword j = 0; j < n; ++j)
             {
                 YNode(i, j) = YLine(i, j);
                 YNode(i, j + n) = -YLine(i, j);

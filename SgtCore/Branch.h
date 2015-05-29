@@ -75,14 +75,14 @@ namespace Sgt
                 return phases0_;
             }
 
-            SGT_PROP_GET(phases0, BranchAbc, Phases, GetByConstRef, phases0);
+            SGT_PROP_GET(phases0, BranchAbc, const Phases&, phases0);
 
             virtual const Phases& phases1() const
             {
                 return phases1_;
             }
 
-            SGT_PROP_GET(phases1, BranchAbc, Phases, GetByConstRef, phases1);
+            SGT_PROP_GET(phases1, BranchAbc, const Phases&, phases1);
 
         /// @}
 
@@ -135,7 +135,7 @@ namespace Sgt
                 isInServiceChanged_.trigger();
             }
 
-            SGT_PROP_GET_SET(isInService, BranchAbc, bool, GetByVal, isInService, setIsInService);
+            SGT_PROP_GET_SET(isInService, BranchAbc, bool, isInService, setIsInService);
 
         /// @}
 
@@ -148,12 +148,12 @@ namespace Sgt
                            2 * phases0_.size(), 2 * phases1_.size(), arma::fill::zeros);
             }
 
-            SGT_PROP_GET(Y, BranchAbc, arma::Mat<Complex>, GetByVal, Y);
+            SGT_PROP_GET(Y, BranchAbc, arma::Mat<Complex>, Y);
 
             /// @brief The admittance whenever isInService.
             virtual arma::Mat<Complex> inServiceY() const = 0;
 
-            SGT_PROP_GET(inServiceY, BranchAbc, arma::Mat<Complex>, GetByVal, inServiceY);
+            SGT_PROP_GET(inServiceY, BranchAbc, arma::Mat<Complex>, inServiceY);
 
         /// @}
 

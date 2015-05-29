@@ -60,9 +60,9 @@ namespace YAML
         }
         else
         {
-            int sz = nd.size();
+            auto sz = nd.size();
             to = Phases();
-            for (int i = 0; i < sz; ++i)
+            for (std::size_t i = 0; i < sz; ++i)
             {
                 to |= nd[i].as<Phase>();
             }
@@ -124,9 +124,9 @@ namespace YAML
         }
         else
         {
-            int sz = nd.size();
+            auto sz = nd.size();
             to = arma::Col<T>(sz);
-            for (int i = 0; i < sz; ++i)
+            for (arma::uword i = 0; i < sz; ++i)
             {
                 to(i) = nd[i].as<T>();
             }
@@ -140,10 +140,10 @@ namespace YAML
     template<typename T> Node convert<arma::Mat<T>>::encode(const arma::Mat<T>& from)
     {
         Node nd;
-        for (int i = 0; i < from.n_rows; ++i)
+        for (arma::uword i = 0; i < from.n_rows; ++i)
         {
             Node nd1;
-            for (int k = 0; k < from.n_cols; ++k)
+            for (arma::uword k = 0; k < from.n_cols; ++k)
             {
                 nd1.push_back(from(i, k));
             }
@@ -163,19 +163,19 @@ namespace YAML
         }
         else
         {
-            int nrows = nd.size();
+            auto nrows = nd.size();
             if (nrows == 0)
             {
                 std::cerr << "Matrix has no rows in yaml." << std::endl;
                 return false;
             }
-            int ncols = nd[0].size();
+            auto ncols = nd[0].size();
             if (ncols == 0)
             {
                 std::cerr << "Matrix has no columns in yaml." << std::endl;
                 return false;
             }
-            for (int i = 1; i < nrows; ++i)
+            for (std::size_t i = 1; i < nrows; ++i)
             {
                 if (nd[i].size() != ncols)
                 {
@@ -184,9 +184,9 @@ namespace YAML
                 }
             }
             to = arma::Mat<T>(nrows, ncols);
-            for (int i = 0; i < nrows; ++i)
+            for (arma::uword i = 0; i < nrows; ++i)
             {
-                for (int k = 0; k < nrows; ++k)
+                for (arma::uword k = 0; k < nrows; ++k)
                 {
                     to(i, k) = nd[i][k].as<T>();
                 }

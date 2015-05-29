@@ -59,13 +59,13 @@ namespace Sgt
             SGT_DEBUG(logComponents());
         }
 
-        for (int i = 0; i < simCompVec_.size(); ++i)
+        for (std::size_t i = 0; i < simCompVec_.size(); ++i)
         {
             simCompVec_[i]->setRank(i);
         }
 
         WoGraph g(simCompVec_.size());
-        for (int i = 0; i < simCompVec_.size(); ++i)
+        for (std::size_t i = 0; i < simCompVec_.size(); ++i)
         {
             for (auto dep : simCompVec_[i]->dependencies())
             {
@@ -85,7 +85,7 @@ namespace Sgt
         simCompVec_ = perm;
 
         // Reset the evaluation rank.
-        for (int i = 0; i < simCompVec_.size(); ++i)
+        for (std::size_t i = 0; i < simCompVec_.size(); ++i)
         {
             simCompVec_[i]->setRank(i);
         }

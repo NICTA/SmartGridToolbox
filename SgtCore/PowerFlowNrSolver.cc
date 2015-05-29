@@ -31,17 +31,17 @@ namespace
     SpMat<double> real(const SpMat<Complex>& cMat)
     {
         Col<uword> rowInd(cMat.n_nonzero + 1, fill::none);
-        for (int i = 0; i < cMat.n_nonzero + 1; ++i)
+        for (arma::uword i = 0; i < cMat.n_nonzero + 1; ++i)
         {
             rowInd(i) = cMat.row_indices[i];
         }
         Col<uword> colPtr(cMat.n_cols + 1, fill::none);
-        for (int i = 0; i < cMat.n_cols + 1; ++i)
+        for (arma::uword i = 0; i < cMat.n_cols + 1; ++i)
         {
             colPtr(i) = cMat.col_ptrs[i];
         }
         Col<double> values(cMat.n_nonzero + 1, fill::none);
-        for (int i = 0; i < cMat.n_nonzero + 1; ++i)
+        for (arma::uword i = 0; i < cMat.n_nonzero + 1; ++i)
         {
             values(i) = cMat.values[i].real();
         }
@@ -52,17 +52,17 @@ namespace
     SpMat<double> imag(const SpMat<Complex>& cMat)
     {
         Col<uword> rowInd(cMat.n_nonzero + 1, fill::none);
-        for (int i = 0; i < cMat.n_nonzero + 1; ++i)
+        for (arma::uword i = 0; i < cMat.n_nonzero + 1; ++i)
         {
             rowInd(i) = cMat.row_indices[i];
         }
         Col<uword> colPtr(cMat.n_cols + 1, fill::none);
-        for (int i = 0; i < cMat.n_cols + 1; ++i)
+        for (arma::uword i = 0; i < cMat.n_cols + 1; ++i)
         {
             colPtr(i) = cMat.col_ptrs[i];
         }
         Col<double> values(cMat.n_nonzero + 1, fill::none);
-        for (int i = 0; i < cMat.n_nonzero + 1; ++i)
+        for (arma::uword i = 0; i < cMat.n_nonzero + 1; ++i)
         {
             values(i) = cMat.values[i].imag();
         }
@@ -73,9 +73,9 @@ namespace
     template<typename T> Col<Complex> colConj(const T& from)
     {
         Col<Complex> result(from.n_elem, fill::none);
-        for (int i = 0; i < from.n_elem; ++i)
+        for (arma::uword i = 0; i < from.n_elem; ++i)
         {
-            result[i] = std::conj(from[i]);
+            result(i) = std::conj(from(i));
         }
         return result;
     }
@@ -93,24 +93,24 @@ namespace Sgt
 {
     Jacobian::Jacobian(int nPq, int nPv)
     {
-        for (int i = 0; i < 2; ++i)
+        for (std::size_t i = 0; i < 2; ++i)
         {
-            for (int k = 0; k < 2; ++k)
+            for (std::size_t k = 0; k < 2; ++k)
             {
                 blocks_[i][k] = SpMat<double>(nPq, nPq);
             }
-            for (int k = 2; k < 5; ++k)
+            for (std::size_t k = 2; k < 5; ++k)
             {
                 blocks_[i][k] = SpMat<double>(nPq, nPv);
             }
         }
-        for (int i = 2; i < 4; ++i)
+        for (std::size_t i = 2; i < 4; ++i)
         {
-            for (int k = 0; k < 2; ++k)
+            for (std::size_t k = 0; k < 2; ++k)
             {
                 blocks_[i][k] = SpMat<double>(nPv, nPq);
             }
-            for (int k = 2; k < 5; ++k)
+            for (std::size_t k = 2; k < 5; ++k)
             {
                 blocks_[i][k] = SpMat<double>(nPv, nPv);
             }
@@ -237,7 +237,7 @@ SGT_DEBUG
             Log().debug() << "Before kluSolve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
             Log().debug() << "Before kluSolve: J   = " << std::endl;
             LogIndent _;
-            for (int i = 0; i < nVar(); ++i)
+            for (arma::uword i = 0; i < nVar(); ++i)
             {
                 Log().debug() << std::setprecision(5) << std::setw(9) << JMat.row(i) << std::endl;
             }
@@ -299,7 +299,7 @@ SGT_DEBUG
         if (!wasSuccessful)
         {
             Log().warning() << "PowerFlowNrSolver: Newton-Raphson method failed to converge." << std::endl;
-            for (int i = 0; i < mod_->nNode(); ++i)
+            for (std::size_t i = 0; i < mod_->nNode(); ++i)
             {
                 auto node = mod_->nodes()[i];
                 node->V_ = 0;
@@ -309,7 +309,7 @@ SGT_DEBUG
             }
         }
 
-        for (int i = 0; i < mod_->nNode(); ++i)
+        for (arma::uword i = 0; i < mod_->nNode(); ++i)
         {
             mod_->V()(i) = {Vr(i), Vi(i)};
             mod_->S()(i) = {P(i), Q(i)};
@@ -332,7 +332,7 @@ SGT_DEBUG
         }
 
         // Update nodes and busses.
-        for (int i = 0; i < mod_->nNode(); ++i)
+        for (arma::uword i = 0; i < mod_->nNode(); ++i)
         {
             auto node = mod_->nodes()[i];
             node->V_ = mod_->V()(i);
@@ -544,7 +544,7 @@ SGT_DEBUG
         }
 
         // Block diagonal:
-        for (int i = 0; i < mod_->nPq(); ++i)
+        for (arma::uword i = 0; i < mod_->nPq(); ++i)
         {
             int iPqi = mod_->iPq(i);
 
@@ -564,7 +564,7 @@ SGT_DEBUG
         }
 
         // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
-        for (int i = 0; i < mod_->nPv(); ++i)
+        for (arma::uword i = 0; i < mod_->nPv(); ++i)
         {
             int iPvi = mod_->iPv(i);
 
@@ -579,7 +579,7 @@ SGT_DEBUG
             // Set the PV Q columns in the Jacobian. They are diagonal.
             const auto VrPv = Vr(mod_->selPvFromAll());
             const auto ViPv = Vi(mod_->selPvFromAll());
-            for (int i = 0; i < mod_->nPv(); ++i)
+            for (arma::uword i = 0; i < mod_->nPv(); ++i)
             {
                 J.IrPvQPv()(i, i) = ViPv(i) / M2Pv(i);
                 J.IiPvQPv()(i, i) = -VrPv(i) / M2Pv(i);
@@ -632,10 +632,10 @@ SGT_DEBUG
         JMat = SpMat<double>(nVar(), nVar());
 
         // Loop over all blocks in J.
-        for (int ib = 0; ib < 4; ++ib)
+        for (std::size_t ib = 0; ib < 4; ++ib)
         {
             Col<uword>& sl1 = sl1Vec[ib];
-            for (int kb = 0; kb < 4; ++kb)
+            for (std::size_t kb = 0; kb < 4; ++kb)
             {
                 SparseHelper<double> helper(nVar(), nVar(), false, false, false);
                 Col<uword>& sl2 = sl2Vec[kb];

@@ -25,10 +25,10 @@ namespace Sgt
     {
         const arma::Mat<Complex> YSimpleLine(const arma::Col<Complex>& Y)
         {
-            int nPhase = Y.size();
-            int nTerm = 2 * nPhase;
+            auto nPhase = Y.size();
+            auto nTerm = 2 * nPhase;
             arma::Mat<Complex> YNode(nTerm, nTerm, arma::fill::zeros);
-            for (int i = 0; i < nPhase; ++i)
+            for (arma::uword i = 0; i < nPhase; ++i)
             {
                 YNode(i, i) = Y(i);
                 YNode(i + nPhase, i + nPhase) = Y(i);

@@ -138,10 +138,10 @@ namespace Sgt
             sgtBus->setSGenUnserved(arma::Col<Complex>(sgtBus->phases().size(), arma::fill::zeros));
             */
 
-            int nGen = node->_gen.size();
-            int nSgtGen = sgtBus->gens().size();
+            auto nGen = node->_gen.size();
+            auto nSgtGen = sgtBus->gens().size();
             assert(nGen == nSgtGen);
-            for (int i = 0; i < nGen; ++i)
+            for (std::size_t i = 0; i < nGen; ++i)
             {
                 // Order of gens should be same in Sgt and Pt.
                 auto gen = node->_gen[i];

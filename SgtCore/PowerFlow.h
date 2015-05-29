@@ -112,7 +112,7 @@ namespace Sgt
     /// @param freq The system frequency.
     /// @param rhoEarth The conductivity of the earth, ohm metres.
     /// @return Line impedance matrix Z, s.t. I_phase = Z \Delta V_phase.
-    arma::Mat<Complex> carson(int nWire, const arma::Mat<double>& Dij, const arma::Col<double> resPerL,
+    arma::Mat<Complex> carson(arma::uword nWire, const arma::Mat<double>& Dij, const arma::Col<double> resPerL,
                               double L, double freq, double rhoEarth);
 
     /// @brief Apply the kron reduction to line impedance matrix Z.

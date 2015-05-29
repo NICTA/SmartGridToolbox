@@ -42,7 +42,7 @@ namespace Sgt
         SGenUnserved_(phases.size(), arma::fill::zeros),
         SZipUnserved_(phases.size(), arma::fill::zeros)
     {
-        for (int i = 0; i < phases_.size(); ++i)
+        for (arma::uword i = 0; i < phases_.size(); ++i)
         {
             VMagSetpoint_(i) = std::abs(VNom_(i));
             VAngSetpoint_(i) = std::arg(VNom_(i));
@@ -172,7 +172,7 @@ namespace Sgt
         switch (type_)
         {
             case BusType::SL:
-                for (int i = 0; i < phases_.size(); ++i)
+                for (arma::uword i = 0; i < phases_.size(); ++i)
                 {
                     VNew(i) = std::polar(VMagSetpoint_(i), VAngSetpoint_(i));
                 }
@@ -180,7 +180,7 @@ namespace Sgt
                 break;
             case BusType::PV:
                 VNew = V_;
-                for (int i = 0; i < phases_.size(); ++i)
+                for (arma::uword i = 0; i < phases_.size(); ++i)
                 {
                     VNew(i) *= VMagSetpoint_(i) / std::abs(V_(i));
                 }

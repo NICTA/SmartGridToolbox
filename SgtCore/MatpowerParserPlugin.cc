@@ -392,7 +392,7 @@ namespace Sgt
             genCostVec.reserve(data.gen.size());
             if (data.genCost.size() > 0)
             {
-                for (int i = 0; i < data.gen.size(); ++i)
+                for (std::size_t i = 0; i < data.gen.size(); ++i)
                 {
                     auto row = data.genCost[i];
                     genCostVec.push_back(MpGenCostInfo{});
@@ -401,9 +401,9 @@ namespace Sgt
                     genCostInfo.model = row[0];
                     genCostInfo.startup = row[1];
                     genCostInfo.shutdown = row[2];
-                    int nCost = row[3];
+                    std::size_t nCost = row[3];
                     genCostInfo.costs.reserve(nCost);
-                    for (int i = 0; i < nCost; ++i)
+                    for (std::size_t i = 0; i < nCost; ++i)
                     {
                         genCostInfo.costs.push_back(row[4 + i]);
                     }
@@ -478,7 +478,7 @@ namespace Sgt
         // Gens:
         std::vector<GenericGen*> genCompVec;
         genCompVec.reserve(genVec.size());
-        for (int i = 0; i < genVec.size(); ++i)
+        for (std::size_t i = 0; i < genVec.size(); ++i)
         {
             MpGenInfo& genInfo = genVec[i];
             std::string genId = getGenId(i, genInfo.busId);
@@ -507,7 +507,7 @@ namespace Sgt
         } // Gens
 
         // Branches:
-        for (int i = 0; i < branchVec.size(); ++i)
+        for (std::size_t i = 0; i < branchVec.size(); ++i)
         {
             const MpBranchInfo& branchInfo = branchVec[i];
 
@@ -537,7 +537,7 @@ namespace Sgt
         }
 
         // Add generator costs, if they exist.
-        for (int i = 0; i < genCostVec.size(); ++i)
+        for (std::size_t i = 0; i < genCostVec.size(); ++i)
         {
             const MpGenCostInfo& genCostInfo = genCostVec[i];
 

@@ -40,9 +40,9 @@ namespace Sgt
                           };
 
         Y_ = arma::Mat<Complex>(6, 6, arma::fill::none);
-        for (int i = 0; i < 6; ++i)
+        for (arma::uword i = 0; i < 6; ++i)
         {
-            for (int j = 0; j < 6; ++j)
+            for (arma::uword j = 0; j < 6; ++j)
             {
                 Y_(i, j) = YL_ * data[6 * i + j];
             }

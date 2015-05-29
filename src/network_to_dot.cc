@@ -47,7 +47,7 @@ int main(int argc, const char** argv)
         StreamIndent _(out);
         out << "node [shape=circle, width=1, fixedsize=true, style=filled];" << std::endl;
         out << "edge [len=2.5];" << std::endl;
-        for (int i = 0; i < nOpt; ++i)
+        for (std::size_t i = 0; i < nOpt; ++i)
         {
             out << opts[i] << ";" << std::endl;
         }

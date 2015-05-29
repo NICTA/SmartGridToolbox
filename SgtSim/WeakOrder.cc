@@ -22,10 +22,10 @@
 
 using namespace std;
 
-std::string prlevel(int level)
+std::string prlevel(unsigned int level)
 {
     std::stringstream ss;
-    for (int i = 0; i < level; ++i) {ss << "    ";}
+    for (unsigned int i = 0; i < level; ++i) {ss << "    ";}
     return ss.str();
 }
 
@@ -33,7 +33,7 @@ namespace Sgt
 {
     void WoNode::dfs(std::vector<WoNode*>& stack)
     {
-        static int level = 0;
+        static unsigned int level = 0;
         ++level;
 
         if (!visited_)
@@ -56,9 +56,9 @@ namespace Sgt
         --level;
     }
 
-    WoGraph::WoGraph(int n) : nodes_(n)
+    WoGraph::WoGraph(std::size_t n) : nodes_(n)
     {
-        for (int i = 0; i < n; ++i)
+        for (std::size_t i = 0; i < n; ++i)
         {
             nodes_[i] = std::unique_ptr<WoNode>(new WoNode(i));
         }
@@ -75,8 +75,6 @@ namespace Sgt
 
         std::vector<WoNode*> stack;
         // First do a DFS to induce an order on the nodes.
-        bool done = false;
-        done = true;
         for (const std::unique_ptr<WoNode>& nd : nodes_)
         {
             nd->dfs(stack);

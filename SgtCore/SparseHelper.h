@@ -70,7 +70,7 @@ namespace Sgt
 
         private:
 
-            int nWaiting_{0};
+            arma::uword nWaiting_{0};
             arma::Mat<arma::uword> locs_;
             arma::Col<T> vals_;
             bool sort_;

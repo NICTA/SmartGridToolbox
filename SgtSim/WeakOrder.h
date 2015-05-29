@@ -27,12 +27,12 @@ namespace Sgt
         friend class WoGraph;
 
         public:
-            WoNode(int idx) : idx_(idx), visited_(false)
+            WoNode(std::size_t idx) : idx_(idx), visited_(false)
             {
                 // Empty.
             }
 
-            int index() const
+            std::size_t index() const
             {
                 return idx_;
             }
@@ -68,7 +68,7 @@ namespace Sgt
 
         private:
 
-            int idx_;
+            std::size_t idx_;
             bool visited_;
             std::list<WoNode*> to_;
             std::set<const WoNode*> descendents_; // Can be reached from here.
@@ -78,9 +78,9 @@ namespace Sgt
     class WoGraph
     {
         public:
-            WoGraph(int n);
+            WoGraph(std::size_t n);
 
-            void link(int from, int to)
+            void link(std::size_t from, std::size_t to)
             {
                 nodes_[from]->to_.push_back(nodes_[to].get());
             }
@@ -96,7 +96,7 @@ namespace Sgt
                 return nodes_;
             }
 
-            int size() const
+            std::size_t size() const
             {
                 return nodes_.size();
             }

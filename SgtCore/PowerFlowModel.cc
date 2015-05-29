@@ -40,7 +40,7 @@ namespace Sgt
         assert(V.size() == phases.size());
         assert(S.size() == phases.size());
 
-        for (int i = 0; i < phases.size(); ++i)
+        for (std::size_t i = 0; i < phases.size(); ++i)
         {
             nodes_.push_back(std::unique_ptr<PfNode>(new PfNode(*this, i)));
         }
@@ -63,11 +63,11 @@ namespace Sgt
                        const arma::Mat<Complex>& Y) :
         nPhase_(phases0.size()),
         ids_{{id0, id1}},
-    phases_{{phases0, phases1}},
-    Y_(Y)
+        phases_{{phases0, phases1}},
+        Y_(Y)
     {
         assert(phases1.size() == nPhase_);
-        int nTerm = 2 * nPhase_;
+        auto nTerm = 2 * nPhase_;
         assert(Y.n_rows == nTerm);
         assert(Y.n_cols == nTerm);
     }
@@ -142,12 +142,12 @@ namespace Sgt
         nodes_.insert(nodes_.end(), PvNodes.begin(), PvNodes.end());
 
         // Index all nodes:
-        for (int i = 0; i < nodes_.size(); ++i)
+        for (std::size_t i = 0; i < nodes_.size(); ++i)
         {
             nodes_[i]->idx_ = i;
         }
 
-        int nNode = nodes_.size();
+        auto nNode = nodes_.size();
 
         // Bus admittance matrix:
         SparseHelper<Complex> YHelper(nNode, nNode, true, true, true);
@@ -174,19 +174,19 @@ namespace Sgt
             int nTerm = 2 * branch->nPhase_;
 
             // There is one link per distinct pair of bus/phase pairs.
-            for (int i = 0; i < nTerm; ++i)
+            for (arma::uword i = 0; i < nTerm; ++i)
             {
-                int busIdxI = i / branch->nPhase_; // 0 or 1
-                int branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
+                auto busIdxI = i / branch->nPhase_; // 0 or 1
+                auto branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
                 const PfBus* busI = busses[busIdxI];
-                int busPhaseIdxI = busI->phases_.phaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
+                auto busPhaseIdxI = busI->phases_.phaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
                 const PfNode* nodeI = busI->nodes_[busPhaseIdxI].get();
-                int idxNodeI = nodeI->idx_;
+                auto idxNodeI = nodeI->idx_;
 
                 // Only count each diagonal element in branch->Y_ once!
                 YHelper.insert(idxNodeI, idxNodeI, branch->Y_(i, i));
 
-                for (int k = i + 1; k < nTerm; ++k)
+                for (arma::uword k = i + 1; k < nTerm; ++k)
                 {
                     int busIdxK = k / branch->nPhase_; // 0 or 1
                     int branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
@@ -202,7 +202,7 @@ namespace Sgt
         } // Loop over branches.
 
         // Add shunt terms:
-        for (int i = 0; i < nNode; ++i)
+        for (arma::uword i = 0; i < nNode; ++i)
         {
             YHelper.insert(i, i, nodes_[i]->YConst_);
         }
@@ -216,7 +216,7 @@ namespace Sgt
         S_.set_size(nNode);
         IConst_.set_size(nNode);
 
-        for (int i = 0; i < nNode; ++i)
+        for (arma::uword i = 0; i < nNode; ++i)
         {
             const PfNode& node = *nodes_[i];
             V_(i) = node.V_;
@@ -264,7 +264,7 @@ namespace Sgt
                     Log().debug() << "Y      :" << std::endl;
                     {
                         LogIndent _;
-                        for (int i = 0; i < branch->Y_.n_rows; ++i)
+                        for (arma::uword i = 0; i < branch->Y_.n_rows; ++i)
                         {
                             Log().debug() << std::setprecision(14) << std::setw(18) << branch->Y_.row(i) << std::endl;
                         }

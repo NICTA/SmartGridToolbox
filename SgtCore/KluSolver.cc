@@ -24,16 +24,16 @@ bool kluSolve(const arma::SpMat<double>& a, const arma::Col<double>& b, arma::Co
     uword nnz = a.n_nonzero;
 
     int* ap = new int[n + 1];
-    for (int i = 0; i <= n; ++i) ap[i] = a.col_ptrs[i];
+    for (std::size_t i = 0; i <= n; ++i) ap[i] = a.col_ptrs[i];
 
     int* ai = new int[nnz];
-    for (int i = 0; i < nnz; ++i) ai[i] = a.row_indices[i];
+    for (std::size_t i = 0; i < nnz; ++i) ai[i] = a.row_indices[i];
 
     double* ax = new double[nnz];
-    for (int i = 0; i < nnz; ++i) ax[i] = a.values[i];
+    for (std::size_t i = 0; i < nnz; ++i) ax[i] = a.values[i];
 
     double* b1 = new double[n];
-    for (int i = 0; i < n; ++i) b1[i] = b(i);
+    for (arma::uword i = 0; i < n; ++i) b1[i] = b(i);
 
     klu_symbolic *Symbolic;
     klu_numeric *Numeric;
@@ -54,7 +54,7 @@ bool kluSolve(const arma::SpMat<double>& a, const arma::Col<double>& b, arma::Co
     klu_free_numeric (&Numeric, &Common);
 
     result = arma::Col<double>(n, fill::none);
-    for (int i = 0; i < n; ++i)
+    for (arma::uword i = 0; i < n; ++i)
     {
         result(i) = b1[i];
     }

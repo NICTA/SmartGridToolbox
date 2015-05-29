@@ -38,8 +38,8 @@ namespace Sgt
 
     void OverheadLine::validate()
     {
-        int nPhase = phases0().size();
-        int nCond = subcondGmr_.size();
+        auto nPhase = phases0().size();
+        auto nCond = subcondGmr_.size();
         if (condDist_.n_rows != nCond || condDist_.n_cols != nCond || subcondRPerL_.size() != nCond)
         {
             Log().error()
@@ -70,7 +70,7 @@ namespace Sgt
         }
 
         arma::Mat<double> Dij = condDist_;
-        for (int i = 0; i < Dij.n_rows; ++i)
+        for (arma::uword i = 0; i < Dij.n_rows; ++i)
         {
             // TODO: only bother to do one calculation of adjSubcondDist_ doesn't change.
             // Note: handles the unbundled case fine, returning subcondGmr_.
