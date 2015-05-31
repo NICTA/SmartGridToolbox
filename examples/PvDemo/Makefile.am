@@ -1,6 +1,10 @@
 AUTOMAKE_OPTIONS = foreign
 
-ACLOCAL_AMFLAGS = -I m4
+AM_CPPFLAGS =
 
-SUBDIRS = src
-dist_doc_DATA = README
+lib_LIBRARIES = 
+
+bin_PROGRAMS = pvdemo
+
+pvdemo_SOURCES = PvInverter.h PvInverter.cc PvDemoSolver.h PvDemoSolver.cc pvdemo.cc
+pvdemo_LDADD = -lSgtCore -lSgtSim -larmadillo -lyaml-cpp -lPowerTools++ -lipopt -lcoinhsl -lboost_date_time -lklu -lamd -lbtf -lcolamd
