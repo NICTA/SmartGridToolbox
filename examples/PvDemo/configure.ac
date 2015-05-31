@@ -11,6 +11,6 @@ AX_CXX_COMPILE_STDCXX_11([noext])
 AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [AM_CXXFLAGS="$AM_CXXFLAGS -ftemplate-depth=160"])
 AC_SUBST([AM_CXXFLAGS], ["$AM_CXXFLAGS -Wall"])
 
-AC_CONFIG_FILES([Makefile Makefile])
+AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
