@@ -1,5 +1,5 @@
 AC_INIT([PVDemo], [0.1], [dan.gordon@nicta.com.au])
-AC_CONFIG_SRCDIR([src/pvdemo.cc])
+AC_CONFIG_SRCDIR([pvdemo.cc])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
@@ -11,6 +11,6 @@ AX_CXX_COMPILE_STDCXX_11([noext])
 AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [AM_CXXFLAGS="$AM_CXXFLAGS -ftemplate-depth=160"])
 AC_SUBST([AM_CXXFLAGS], ["$AM_CXXFLAGS -Wall"])
 
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile Makefile])
 
 AC_OUTPUT
