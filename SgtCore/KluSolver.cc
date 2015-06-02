@@ -20,7 +20,7 @@ using namespace arma;
 
 bool kluSolve(const arma::SpMat<double>& a, const arma::Col<double>& b, arma::Col<double>& result)
 {
-    int n = b.size();
+    auto n = b.size();
     uword nnz = a.n_nonzero;
 
     int* ap = new int[n + 1];

@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I../SgtCore -I../SgtSim
+AM_CPPFLAGS += -I../SgtCore -I../SgtSim
 
 bin_PROGRAMS = run_config solve_network
 
