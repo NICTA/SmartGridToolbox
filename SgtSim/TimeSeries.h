@@ -15,7 +15,7 @@
 #ifndef TIME_SERIES_DOT_H
 #define TIME_SERIES_DOT_H
 
-#include <SgtSim/Spline.h>
+#include <SgtCore/Spline.h>
 
 #include <map>
 
