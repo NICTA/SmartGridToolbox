@@ -33,17 +33,17 @@ namespace
     SpMat<double> real(const SpMat<Complex>& cMat)
     {
         Col<uword> rowInd(cMat.n_nonzero + 1, fill::none);
-        for (arma::uword i = 0; i < cMat.n_nonzero + 1; ++i)
+        for (uword i = 0; i < cMat.n_nonzero + 1; ++i)
         {
             rowInd(i) = cMat.row_indices[i];
         }
         Col<uword> colPtr(cMat.n_cols + 1, fill::none);
-        for (arma::uword i = 0; i < cMat.n_cols + 1; ++i)
+        for (uword i = 0; i < cMat.n_cols + 1; ++i)
         {
             colPtr(i) = cMat.col_ptrs[i];
         }
         Col<double> values(cMat.n_nonzero + 1, fill::none);
-        for (arma::uword i = 0; i < cMat.n_nonzero + 1; ++i)
+        for (uword i = 0; i < cMat.n_nonzero + 1; ++i)
         {
             values(i) = cMat.values[i].real();
         }
@@ -54,17 +54,17 @@ namespace
     SpMat<double> imag(const SpMat<Complex>& cMat)
     {
         Col<uword> rowInd(cMat.n_nonzero + 1, fill::none);
-        for (arma::uword i = 0; i < cMat.n_nonzero + 1; ++i)
+        for (uword i = 0; i < cMat.n_nonzero + 1; ++i)
         {
             rowInd(i) = cMat.row_indices[i];
         }
         Col<uword> colPtr(cMat.n_cols + 1, fill::none);
-        for (arma::uword i = 0; i < cMat.n_cols + 1; ++i)
+        for (uword i = 0; i < cMat.n_cols + 1; ++i)
         {
             colPtr(i) = cMat.col_ptrs[i];
         }
         Col<double> values(cMat.n_nonzero + 1, fill::none);
-        for (arma::uword i = 0; i < cMat.n_nonzero + 1; ++i)
+        for (uword i = 0; i < cMat.n_nonzero + 1; ++i)
         {
             values(i) = cMat.values[i].imag();
         }
@@ -75,7 +75,7 @@ namespace
     template<typename T> Col<Complex> colConj(const T& from)
     {
         Col<Complex> result(from.n_elem, fill::none);
-        for (arma::uword i = 0; i < from.n_elem; ++i)
+        for (uword i = 0; i < from.n_elem; ++i)
         {
             result(i) = std::conj(from(i));
         }
@@ -239,7 +239,7 @@ SGT_DEBUG
             Log().debug() << "Before kluSolve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
             Log().debug() << "Before kluSolve: J   = " << std::endl;
             LogIndent _;
-            for (arma::uword i = 0; i < nVar(); ++i)
+            for (uword i = 0; i < nVar(); ++i)
             {
                 Log().debug() << std::setprecision(5) << std::setw(9) << JMat.row(i) << std::endl;
             }
@@ -311,7 +311,7 @@ SGT_DEBUG
             }
         }
 
-        for (arma::uword i = 0; i < mod_->nNode(); ++i)
+        for (uword i = 0; i < mod_->nNode(); ++i)
         {
             mod_->V()(i) = {Vr(i), Vi(i)};
             mod_->S()(i) = {P(i), Q(i)};
@@ -334,7 +334,7 @@ SGT_DEBUG
         }
 
         // Update nodes and busses.
-        for (arma::uword i = 0; i < mod_->nNode(); ++i)
+        for (uword i = 0; i < mod_->nNode(); ++i)
         {
             auto node = mod_->nodes()[i];
             node->V_ = mod_->V()(i);
@@ -494,8 +494,9 @@ SGT_DEBUG
             const auto PPq = P(mod_->selPqFromAll());
             const auto QPq = Q(mod_->selPqFromAll());
 
-            const auto IConstrPq = real(mod_->IConst()(mod_->selPqFromAll()));
-            const auto IConstiPq = imag(mod_->IConst()(mod_->selPqFromAll()));
+            const auto IConstPq = mod_->IConst()(mod_->selPqFromAll());
+            const auto IConstrPq = real(IConstPq);
+            const auto IConstiPq = imag(IConstPq);
 
             Col<double> M2Pq = VrPq % VrPq + ViPq % ViPq;
 
@@ -546,7 +547,7 @@ SGT_DEBUG
         }
 
         // Block diagonal:
-        for (arma::uword i = 0; i < mod_->nPq(); ++i)
+        for (uword i = 0; i < mod_->nPq(); ++i)
         {
             int iPqi = mod_->iPq(i);
 
@@ -566,7 +567,7 @@ SGT_DEBUG
         }
 
         // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
-        for (arma::uword i = 0; i < mod_->nPv(); ++i)
+        for (uword i = 0; i < mod_->nPv(); ++i)
         {
             int iPvi = mod_->iPv(i);
 
@@ -581,7 +582,7 @@ SGT_DEBUG
             // Set the PV Q columns in the Jacobian. They are diagonal.
             const auto VrPv = Vr(mod_->selPvFromAll());
             const auto ViPv = Vi(mod_->selPvFromAll());
-            for (arma::uword i = 0; i < mod_->nPv(); ++i)
+            for (uword i = 0; i < mod_->nPv(); ++i)
             {
                 J.IrPvQPv()(i, i) = ViPv(i) / M2Pv(i);
                 J.IiPvQPv()(i, i) = -VrPv(i) / M2Pv(i);
