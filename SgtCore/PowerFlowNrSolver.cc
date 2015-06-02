@@ -12,16 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <algorithm>
-#include <ostream>
-#include <sstream>
+#include "config.h"
 #include "Network.h"
 #include "PowerFlowNrSolver.h"
 #include "SparseHelper.h"
 #ifdef WITH_KLU
-#include "SparseSolver.h"
+#include "KluSolver.h"
 #endif
 #include "Stopwatch.h"
+
+#include <algorithm>
+#include <ostream>
+#include <sstream>
 
 using namespace Sgt;
 using namespace arma;

@@ -5,14 +5,15 @@ Building and Installing SmartGridToolbox
 ----------------
 
 You need a compiler that will support modern C++. The clang compiler is
-recommended, although later versions of g++ (4.8, 4.9, ...) may also work.
+recommended, although later versions of g++ (we have tested gcc 4.9) may also
+work.
 
 If building on a Mac, you should have a recent version of the OSX operating
 system (Mavericks and Yosemite work). Install XCode, and you will have access
 to the clang compilers.
 
 If building on Ubuntu, you should ideally have Ubuntu 13 or later installed so
-as to be able to easily install a recent version of gcc (e.g. 4.8+) or clang.
+as to be able to easily install a recent version of gcc (e.g. 4.9+) or clang.
 You can use, e.g.
 > sudo apt-get install clang++
 
@@ -32,21 +33,32 @@ b) Armadillo linear algebra library:
    This is available from http://arma.sourceforge.net. On a mac, you can also
    use homebrew.
 
-b) SuiteSparse libraries:
+   If you intend to use Armadillo as a sparse solver (the default option), you
+   will need to make sure it has been built with SuperLU support enabled. 
+   This will require the SuperLU libraries to be installed. If using homebrew,
+   all of this is taken care of automatically when you install Armadillo.
+
+c) (Optional) SuiteSparse libraries:
 
    amd, colamd, btf, klu
 
+   These need only be installed if the default Armadillo sparse solve is not
+   used, which would imply that SmartGridToolbox is configured with the
+   --with-klu specified.
+   
    The source code for these is provided in the third_party/SuiteSparse
-   directory. The build is straightforward, but Makefiles may need to be
-   modified for your system. Alternatively, install using homebrew (OSX),
-   apt-get (Ubuntu) or similar.
+   directory. The build is straightforward, but depending on your system, you
+   may need to modify the file 
+   SuiteSparse/SuiteSparse_config/SuiteSparse_config.mk. For example, on a mac,
+   you will probably need to remove the "-lrt" link flag. Alternatively, 
+   install using homebrew (OSX), apt-get (Ubuntu) or similar.
 
 d) The yaml-cpp library:
 
    Source code is provided in third_party/yaml-cpp-0.5.0, or alternatively,
    install using homebrew, apt-get or the like.
 
-3. Build and install the library:
+2. Build and install the library:
 
 If installing from a tarball: simply run the usual configure/make/install
 procedure, using the desired options to configure (type "configure --help" for a
@@ -56,10 +68,24 @@ list).
 > make
 > sudo make install
 
-If running from e.g. a source distribution cloned from git, you should run
+If running from a source distribution cloned from git, you should run
 autogen.sh immediately after cloning the github repository. You will need an
 up to date version of gnu autotools.
 
-4. To compile and link your program (e.g.):
+> ./autogen.sh # Normally only need to do this once. 
+> ./configure
+> make
+> sudo make install
 
-> clang++ {options} -o myprogram myprogram.cc -lSgtCore -lSgtSim
+If running from a source distribution cloned from git, you should run
+
+3. To compile and link your program (e.g.):
+
+> clang++ {options} -o myprogram myprogram.cc -lSgtSim -lSgtCore \
+  -larmadillo -lboost_date_time -lyaml-cpp
+
+If you are using SuiteSparse for a sparse solver, you need to add extra link
+flags:
+
+> clang++ {options} -o myprogram myprogram.cc -lSgtSim -lSgtCore \
+  -larmadillo -lboost_date_time -lyaml-cpp -lklu -lamd -lcolamd -lbtf
