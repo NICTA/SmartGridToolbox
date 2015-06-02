@@ -41,6 +41,7 @@
 #include <SgtCore/Properties.h>
 #include <SgtCore/Random.h>
 #include <SgtCore/SinglePhaseTransformer.h>
+#include <SgtCore/Spline.h>
 #include <SgtCore/Stopwatch.h>
 #include <SgtCore/UndergroundLine.h>
 #include <SgtCore/Units.h>

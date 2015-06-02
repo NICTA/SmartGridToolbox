@@ -27,7 +27,6 @@
 #include <SgtSim/SimpleBuilding.h>
 #include <SgtSim/Simulation.h>
 #include <SgtSim/SolarPv.h>
-#include <SgtSim/Spline.h>
 #include <SgtSim/Sun.h>
 #include <SgtSim/TimeSeries.h>
 #include <SgtSim/Weather.h>
