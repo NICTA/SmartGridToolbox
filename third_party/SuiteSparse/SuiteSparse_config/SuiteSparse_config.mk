@@ -77,7 +77,7 @@ F77FLAGS = $(FFLAGS) -O
 F77LIB =
 
 # C and Fortran libraries.  Remove -lrt if you don't have it.
-  LIB = -lm
+  LIB = -lm -lrt
 # Using the following requires CF = ... -DNTIMER on POSIX C systems.
 # LIB = -lm
 
