@@ -116,31 +116,33 @@ namespace Sgt
 
     namespace
     {
-        const std::regex expr(                 // Submatch 0: whole expr, with <>.
+        const std::regex expr(                      // Submatch 0: whole expr, with <>.
             "<"
-            "("                           // Submatch 1: whole expr body, without <>.
-            "("                        // Submatch 2: whole math expr body.
-            "[0-9+.eEfFlL\\-*/%() \t]+"
-            ")|"
-            "("                        // Submatch 3: whole var/loop expr body.
-            "("                     // Submatch 4: non-index part of var/loop expr body.
-            "[a-zA-Z_][\\w]*"
-            ")+"
-            "("                     // Submatch 5: index part of var/loop expr body, with ().
-            "\\("
-            "("                  // Submatch 6: index part of var/loop expr, without ().
-            "[a-zA-Z0-9_]*"
-            ")"
-            "\\)"
-            ")?"
-            ")"
-            ")"
+            "("                                     // Submatch 1: whole expr body, without <>.
+                "("                                 // Submatch 2: whole math expr body.
+                    "[0-9+.eEfFlL\\-*/%() \t]+"
+                ")|"                                // End submatch 2.
+                "("                                 // Submatch 3: whole var/loop expr body.
+                    "("                             // Submatch 4: non-index part of var/loop expr body.
+                        "[a-zA-Z_][\\w]*"
+                    ")+"                            // End submatch 4.
+                    "("                             // Submatch 5: index part of var/loop expr body, with ().
+                        "\\("
+                        "("                         // Submatch 6: index part of var/loop expr, without ().
+                            "[a-zA-Z0-9_]*"
+                        ")"                         // End submatch 6.
+                        "\\)"
+                    ")?"                            // End submatch 5.
+                ")"                                 // End submatch 3.
+            ")"                                     // End submatch 1.
             ">"
-        );
+        );                                          // End submatch 0.
     }
 
     std::string ParserBase::expandString(const std::string& str) const
     {
+        SGT_DEBUG(Log().message() << "expand " << str << std::endl);
+        SGT_DEBUG(LogIndent _);
         std::string result;
 
         // Iterator over expansion expressions in the target.
@@ -166,6 +168,7 @@ namespace Sgt
             // Now recursively check if the expansion of this expression has created any more expressions to expand.
             result = expandString(result);
         }
+        SGT_DEBUG(Log().message() << "result = " << result << std::endl);
         return result;
     }
 

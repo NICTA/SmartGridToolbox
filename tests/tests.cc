@@ -376,4 +376,19 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
     BOOST_CHECK(g.nodes()[5]->index() == 2);
 }
 
+BOOST_AUTO_TEST_CASE (test_loops)
+{
+    Simulation sim;
+    Sgt::Parser<Simulation> p;
+    p.parse("test_loops.yaml", sim);
+    auto comps = sim.simComponents();
+    BOOST_CHECK(comps.size() == 6);
+    BOOST_CHECK(comps[0]->id() == "b");
+    BOOST_CHECK(comps[1]->id() == "ba");
+    BOOST_CHECK(comps[2]->id() == "bb");
+    BOOST_CHECK(comps[3]->id() == "c");
+    BOOST_CHECK(comps[4]->id() == "ca");
+    BOOST_CHECK(comps[5]->id() == "cb");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
