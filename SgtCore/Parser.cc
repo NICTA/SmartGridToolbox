@@ -124,7 +124,7 @@ namespace Sgt
                 ")|"                                // End submatch 2.
                 "("                                 // Submatch 3: whole var/loop expr body.
                     "("                             // Submatch 4: non-index part of var/loop expr body.
-                        "[a-zA-Z_][\\w]*"
+                        "[a-zA-Z_][a-zA-Z0-9_]*"
                     ")+"                            // End submatch 4.
                     "("                             // Submatch 5: index part of var/loop expr body, with ().
                         "\\("
