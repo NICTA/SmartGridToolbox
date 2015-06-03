@@ -230,14 +230,14 @@ namespace Sgt
 
 SGT_DEBUG
 (
-            Log().debug() << "Before kluSolve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
-            Log().debug() << "Before kluSolve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
-            Log().debug() << "Before kluSolve: M^2 = " << std::setprecision(5) << std::setw(9)
+            Log().debug() << "Before solve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
+            Log().debug() << "Before solve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
+            Log().debug() << "Before solve: M^2 = " << std::setprecision(5) << std::setw(9)
             << (Vr % Vr + Vi % Vi) << std::endl;
-            Log().debug() << "Before kluSolve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
-            Log().debug() << "Before kluSolve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
-            Log().debug() << "Before kluSolve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
-            Log().debug() << "Before kluSolve: J   = " << std::endl;
+            Log().debug() << "Before solve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
+            Log().debug() << "Before solve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
+            Log().debug() << "Before solve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
+            Log().debug() << "Before solve: J   = " << std::endl;
             LogIndent _;
             for (uword i = 0; i < nVar(); ++i)
             {
@@ -257,12 +257,12 @@ SGT_DEBUG
             stopwatch.stop();
             durationSolve += stopwatch.seconds();
 
-            SGT_DEBUG(Log().debug() << "After kluSolve: ok = " << ok << std::endl);
-            SGT_DEBUG(Log().debug() << "After kluSolve: x  = " << std::setprecision(5) << std::setw(9) << x
+            SGT_DEBUG(Log().debug() << "After solve: ok = " << ok << std::endl);
+            SGT_DEBUG(Log().debug() << "After solve: x  = " << std::setprecision(5) << std::setw(9) << x
                       << std::endl);
             if (!ok)
             {
-                Log().warning() << "kluSolve failed." << std::endl;
+                Log().warning() << "Solve failed." << std::endl;
                 break;
             }
 
