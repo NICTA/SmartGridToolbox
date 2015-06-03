@@ -171,7 +171,7 @@ namespace Sgt
                 error();
             }
             const PfBus* busses[] = {it0->second.get(), it1->second.get()};
-            int nTerm = 2 * branch->nPhase_;
+            auto nTerm = 2 * branch->nPhase_;
 
             // There is one link per distinct pair of bus/phase pairs.
             for (arma::uword i = 0; i < nTerm; ++i)
