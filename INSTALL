@@ -58,7 +58,8 @@ d) The yaml-cpp library:
    Source code is provided in third_party/yaml-cpp-0.5.0, or alternatively,
    install using homebrew, apt-get or the like.
 
-2. Build and install the library:
+2. Build and install the libraries:
+-----------------------------------
 
 If installing from a tarball: simply run the usual configure/make/install
 procedure, using the desired options to configure (type "configure --help" for a
@@ -78,6 +79,7 @@ up to date version of gnu autotools.
 > sudo make install
 
 3. To compile and link your program:
+------------------------------------
 
 If you wish to build using GNU autotools, have a look at
 examples/PvDemo/Makefile.am. You could copy examples/PvDemo to use as a
