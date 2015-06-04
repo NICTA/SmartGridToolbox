@@ -15,7 +15,9 @@
 #ifndef TIME_SERIES_DOT_H
 #define TIME_SERIES_DOT_H
 
+#if 0 // TODO: redo spline due to license issues.
 #include <SgtCore/Spline.h>
+#endif
 
 #include <map>
 
@@ -114,6 +116,7 @@ namespace Sgt
             std::map<double, V> points_;
     };
 
+#if 0 // TODO: redo spline due to license issues.
     template<typename T>
     class SplineTimeSeries : public DataTimeSeries<T, double>
     {
@@ -132,6 +135,7 @@ namespace Sgt
 
             mutable Spline spline_;
     };
+#endif
 
     template<typename T, typename V>
     class FunctionTimeSeries : public TimeSeries<T, V>

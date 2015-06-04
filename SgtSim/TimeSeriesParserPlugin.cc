@@ -65,7 +65,7 @@ namespace Sgt
         {
             STEPWISE,
             LERP,
-            SPLINE,
+            //SPLINE,
             BAD_INTERP_TYPE
         };
 
@@ -129,10 +129,10 @@ namespace Sgt
             {
                 result = LERP;
             }
-            else if (interpTypeStr == "spline")
-            {
-                result = SPLINE;
-            }
+            //else if (interpTypeStr == "spline")
+            //{
+            //    result = SPLINE;
+            //}
             else
             {
                 Log().error() << "Bad interp_type " << interpTypeStr << " for time series." << std::endl;
@@ -152,10 +152,10 @@ namespace Sgt
                 case LERP:
                     dts.reset(new LerpTimeSeries<Time, T>());
                     break;
-                case SPLINE:
-                    Log().error() << "Spline data time series can only be used with real data" << std::endl;
-                    error();
-                    break;
+                //case SPLINE:
+                //    Log().error() << "Spline data time series can only be used with real data" << std::endl;
+                //    error();
+                //    break;
                 default:
                     Log().error() << "Bad time series interpolation type." << std::endl;
                     error();
@@ -171,11 +171,11 @@ namespace Sgt
 
         template<> std::unique_ptr<DataTimeSeries<Time, double>> initDataTimeSeries<double>(InterpType interpType)
         {
-            if (interpType == SPLINE)
-            {
-                return std::unique_ptr<DataTimeSeries<Time, double>>(new SplineTimeSeries<Time>());
-            }
-            else
+            //if (interpType == SPLINE)
+            //{
+            //    return std::unique_ptr<DataTimeSeries<Time, double>>(new SplineTimeSeries<Time>());
+            //}
+            //else
             {
                 return initDataTimeSeries_<double>(interpType);
             }

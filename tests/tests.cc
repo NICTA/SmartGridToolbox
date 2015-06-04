@@ -135,6 +135,7 @@ BOOST_AUTO_TEST_CASE (test_underground_compare_carson)
     BOOST_CHECK(err < 0.0005);
 }
 
+#if 0 // TODO: Redo spline due to license issues
 BOOST_AUTO_TEST_CASE (test_spline)
 {
     Spline spline;
@@ -199,6 +200,7 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
         }
     }
 }
+#endif
 
 BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
 {
