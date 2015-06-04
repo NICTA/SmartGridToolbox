@@ -77,9 +77,14 @@ up to date version of gnu autotools.
 > make
 > sudo make install
 
-If running from a source distribution cloned from git, you should run
+3. To compile and link your program:
 
-3. To compile and link your program (e.g.):
+If you wish to build using GNU autotools, have a look at
+examples/PvDemo/Makefile.am. You could copy examples/PvDemo to use as a
+template for your project.
+
+Otherwise, the following compile command would apply if using clang++, for
+example:
 
 > clang++ {options} -o myprogram myprogram.cc -lSgtSim -lSgtCore \
   -larmadillo -lboost_date_time -lyaml-cpp
