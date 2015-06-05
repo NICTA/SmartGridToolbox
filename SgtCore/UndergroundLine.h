@@ -120,6 +120,7 @@ namespace Sgt
             arma::Mat<Complex> YNode_; ///< Nodal admittance matrix.
     };
 
+    /// @brief Underground line with stranded shielding.
     /// @ingroup PowerFlow
     class UndergroundLineStrandedShield : public UndergroundLine
     {

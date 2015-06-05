@@ -27,6 +27,9 @@ namespace Sgt
 {
     class Network;
 
+    /// @brief Optimal power flow (OPF) solver.
+    ///
+    /// Uses the external PowerTools++ library.
     /// @ingroup PowerFlow
     class PowerFlowPtPpSolver : public PowerFlowSolverInterface
     {

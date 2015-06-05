@@ -86,6 +86,7 @@ namespace Sgt
         arma::Mat<Complex> Y_; ///< Bus admittance matrix.
     };
 
+    /// @brief A mathematical model of a network, suitable for solving the AC power flow problem.
     /// @ingroup PowerFlow
     class PowerFlowModel
     {

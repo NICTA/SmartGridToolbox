@@ -197,6 +197,7 @@ namespace Sgt
         Array2D<arma::SpMat<double>, 4, 5> blocks_;
     };
 
+    /// @brief Newton-Raphson AC power flow solver.
     /// @ingroup PowerFlow
     class PowerFlowNrSolver : public PowerFlowSolverInterface
     {

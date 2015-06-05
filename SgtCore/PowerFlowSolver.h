@@ -19,6 +19,7 @@ namespace Sgt
 {
     class Network;
 
+    /// @brief Interface for power flow solvers operating on Network objects.
     /// @ingroup PowerFlow
     class PowerFlowSolverInterface
     {

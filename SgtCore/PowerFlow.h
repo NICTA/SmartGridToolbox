@@ -58,6 +58,7 @@ namespace Sgt
     template<> Phase from_string<Phase>(const std::string& str);
     const char* phaseDescr(Phase phase);
 
+    /// @brief A set of network phases, each specified by a Phase value. 
     /// @ingroup PowerFlow
     class Phases
     {
