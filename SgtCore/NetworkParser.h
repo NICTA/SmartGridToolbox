@@ -20,9 +20,7 @@
 namespace Sgt
 {
     class Network;
-    /// @ingroup PowerFlow
     extern template class Parser<Network>;
-    /// @ingroup PowerFlow
     extern template class ParserPlugin<Network>;
     using NetworkParser = Parser<Network>;
     using NetworkParserPlugin = ParserPlugin<Network>;

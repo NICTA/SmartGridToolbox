@@ -30,7 +30,6 @@ namespace Sgt
     YAML::Node getTopNode(const std::string& fname);
 
     // Some no-templated functionality in the base class.
-    /// @ingroup Core
     class ParserBase
     {
 

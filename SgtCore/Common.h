@@ -41,7 +41,6 @@ namespace Sgt
 /// @name Reporting and errors.
 /// @{
 
-    /// @ingroup Utilities
     class StreamIndent : public std::streambuf
     {
         public:
@@ -111,6 +110,7 @@ namespace Sgt
 /// @name String conversion.
 /// @{
 
+    /// @ingroup Utilities
     template<typename T> T from_string(const std::string& s);
 
 /// @}
@@ -137,26 +137,32 @@ namespace Sgt
 
     typedef std::complex<double> Complex;
 
+    /// @ingroup Utilities
     inline Complex polar(double m, double theta) // theta is radians.
     {
         // Note the following will use RVO in C++11, no unneeded temporaries.
         return Complex(m * cos(theta), m * sin(theta));
     }
 
+    /// @ingroup Utilities
     inline Complex operator*(int i, const Complex& c)
     {
         return Complex(i * c.real(), i * c.imag());
     }
 
+    /// @ingroup Utilities
     inline Complex operator*(const Complex& c, int i)
     {
         return Complex(i * c.real(), i * c.imag());
     }
 
+    /// @ingroup Utilities
     std::ostream& operator<<(std::ostream& os, const Complex& c);
 
+    /// @ingroup Utilities
     template<> Complex from_string<Complex>(const std::string& s);
 
+    /// @ingroup Utilities
     std::string to_string(const Complex& c);
 
 /// @}
@@ -164,6 +170,7 @@ namespace Sgt
 /// @name Linear algebra
 /// @{
 
+    /// @ingroup Utilities
     template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Col<T>& v)
     {
         auto size = v.size();
@@ -186,6 +193,7 @@ namespace Sgt
     extern template std::ostream& operator<< <int>(std::ostream& os, const arma::Col<int>& v);
     extern template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Col<Complex>& v);
 
+    /// @ingroup Utilities
     template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Mat<T>& m)
     {
         unsigned int size1 = m.n_rows;
@@ -232,28 +240,34 @@ namespace Sgt
 
     extern const posix_time::ptime epoch;
 
+    /// @ingroup Utilities
     inline double dSeconds(const Time& d)
     {
         return double(d.ticks()) / Time::ticks_per_second();
     }
 
+    /// @ingroup Utilities
     inline Time timeFromUtcTime(posix_time::ptime utcTime)
     {
         return (utcTime - epoch);
     }
 
+    /// @ingroup Utilities
     inline posix_time::ptime utcTime(Time t)
     {
         return (epoch + t);
     }
 
+    /// @ingroup Utilities
     posix_time::ptime utcTimeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz);
 
+    /// @ingroup Utilities
     inline posix_time::ptime localTime(const Time& t, const local_time::time_zone_ptr localTz)
     {
         return boost::local_time::local_date_time(epoch + t, localTz).local_time();
     }
 
+    /// @ingroup Utilities
     inline Time timeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz)
     {
         return (utcTimeFromLocalTime(localTime, localTz) - epoch);
@@ -264,7 +278,8 @@ namespace Sgt
     /// @name LatLongs
     /// @{
 
-    /// @ingroup Core
+    /// @ingroup Utilities
+    /// @brief Simple struct storing a latitude and longitude.
     class LatLong
     {
         public:
@@ -277,30 +292,31 @@ namespace Sgt
     /// @name Constants
     /// @{
 
-    extern const double pi;
-    extern const double negInfinity;
-    extern const double infinity;
-    extern const double second;
-    extern const double minute;
-    extern const double hour;
-    extern const double day;
-    extern const double week;
-    extern const double J;
-    extern const double kJ;
-    extern const double W;
-    extern const double kW;
-    extern const double kWh;
-    extern const double A;
-    extern const double C;
-    extern const double K;
-    extern const Complex czero;
-    extern const LatLong Greenwich;
+    extern const double pi; ///< @ingroup Utilities
+    extern const double negInfinity; ///< @ingroup Utilities
+    extern const double infinity; ///< @ingroup Utilities
+    extern const double second; ///< @ingroup Utilities
+    extern const double minute; ///< @ingroup Utilities
+    extern const double hour; ///< @ingroup Utilities
+    extern const double day; ///< @ingroup Utilities
+    extern const double week; ///< @ingroup Utilities
+    extern const double J; ///< @ingroup Utilities
+    extern const double kJ; ///< @ingroup Utilities
+    extern const double W; ///< @ingroup Utilities
+    extern const double kW; ///< @ingroup Utilities
+    extern const double kWh; ///< @ingroup Utilities
+    extern const double A; ///< @ingroup Utilities
+    extern const double C; ///< @ingroup Utilities
+    extern const double K; ///< @ingroup Utilities
+    extern const Complex czero; ///< @ingroup Utilities
+    extern const LatLong Greenwich; ///< @ingroup Utilities
 
     /// @}
 
     /// @name Basic vector algebra in n dimensions.
     /// @{
 
+    /// @ingroup Utilities
     template<typename T, std::size_t d> double dot(const Array<T, d>& v1, const Array<T, d>& v2)
     {
         T result(0.0);
@@ -308,6 +324,7 @@ namespace Sgt
         return result;
     }
 
+    /// @ingroup Utilities
     template<typename T, std::size_t d, typename S> Array<T, d> operator*(const Array<T, d>& v, const S& s)
     {
         Array<T, d> result = v;
@@ -315,11 +332,13 @@ namespace Sgt
         return result;
     }
 
+    /// @ingroup Utilities
     template<typename T, std::size_t d, typename S> Array<T, d> operator*(const S& s, const Array<T, d>& v)
     {
         return operator*(v, s);
     }
 
+    /// @ingroup Utilities
     template<typename T, std::size_t d> Array<T, d> operator+(const Array<T, d>& lhs, const Array<T, d>& rhs)
     {
         Array<T, d> result = lhs;
@@ -327,6 +346,7 @@ namespace Sgt
         return result;
     }
 
+    /// @ingroup Utilities
     template<typename T, std::size_t d> Array<T, d> operator-(const Array<T, d>& lhs, const Array<T, d>& rhs)
     {
         Array<T, d> result = lhs;

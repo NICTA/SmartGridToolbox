@@ -26,7 +26,6 @@ namespace Sgt
     /// @addtogroup Core
 /// @{
 
-    /// @ingroup Core
     class TimeSeriesBase
     {
         public:
