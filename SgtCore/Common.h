@@ -35,8 +35,8 @@
 
 namespace Sgt
 {
-/// @name Reporting and errors.
-/// @{
+    /// @name Reporting and errors.
+    /// @{
 
     class StreamIndent : public std::streambuf
     {
@@ -108,36 +108,36 @@ namespace Sgt
 
     void error();
 
-/// @}
+    /// @}
 
-/// @name String conversion.
-/// @{
+    /// @name String conversion.
+    /// @{
 
     /// @brief Create a value from a string.
     /// @ingroup Utilities
     template<typename T> T from_string(const std::string& s);
 
-/// @}
+    /// @}
 
-/// @name Constant dimension 1D array type.
-/// @{
+    /// @name Constant dimension 1D array type.
+    /// @{
 
     /// @ingroup Utilities
     template <class T, size_t N> using Array = std::array<T, N>; // Just std::array but rename for nice consistency.
 
-/// @}
+    /// @}
 
-/// @name Constant dimension 2D array type.
-/// @{
+    /// @name Constant dimension 2D array type.
+    /// @{
 
     // Note transposition of NR and NC to obey standard matrix index order.
     /// @ingroup Utilities
     template <class T, size_t NR, size_t NC> using Array2D = std::array<std::array<T, NC>, NR>;
 
-/// @}
+    /// @}
 
-/// @name Complex numbers
-/// @{
+    /// @name Complex numbers
+    /// @{
 
     typedef std::complex<double> Complex;
 
@@ -169,10 +169,10 @@ namespace Sgt
     /// @ingroup Utilities
     std::string to_string(const Complex& c);
 
-/// @}
+    /// @}
 
-/// @name Linear algebra
-/// @{
+    /// @name Linear algebra
+    /// @{
 
     /// @ingroup Utilities
     template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Col<T>& v)
@@ -295,7 +295,7 @@ namespace Sgt
 
     /// @addtogroup Utilities
     /// @{
-    
+
     /// @name Constants
     /// @{
 
@@ -317,14 +317,14 @@ namespace Sgt
     extern const double K;
     extern const Complex czero;
     extern const LatLong Greenwich;
-    
+
     /// @}
 
     /// @}
 
     /// @addtogroup Utilities
     /// @{
-    
+
     /// @name Basic vector algebra in n dimensions.
     /// @{
 
@@ -362,7 +362,7 @@ namespace Sgt
     }
 
     /// @}
-    
+
     /// @}
 }
 
