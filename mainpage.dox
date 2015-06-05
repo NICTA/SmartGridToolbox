@@ -1,7 +1,7 @@
 /** @mainpage
  *  This is the documentation for SmartGridToolbox. */
 
-/// @defgroup Core SmartGridToolbox Core
+/// @defgroup Core Core
 /// @brief Core classes of SmartGridToolbox.
 
 /// @defgroup Utilities Utilities
