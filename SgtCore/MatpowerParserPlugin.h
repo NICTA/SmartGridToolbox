@@ -22,6 +22,7 @@ namespace Sgt
     class Network;
 
     /// @brief ParserPlugin that parses Matpower files.
+    /// @ingroup PowerFlow
     class MatpowerParserPlugin : public NetworkParserPlugin
     {
         public:

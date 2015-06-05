@@ -14,7 +14,7 @@ CLEANFILES = doxyfile.stamp
 all-local: doxyfile.stamp
 
 clean-local:
-	rm -rf doxygen-doc
+	rm -rf doxygen-doc doxyfile.stamp
 
 if HAVE_PDFLATEX
 

@@ -22,7 +22,6 @@
 
 namespace Sgt
 {
-    /// @ingroup PowerFlowCore
     /// @brief SimNetwork : A SimComponent for an electrical network.
     class SimNetwork : public SimComponent
     {

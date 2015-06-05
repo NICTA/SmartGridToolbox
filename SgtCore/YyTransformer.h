@@ -22,6 +22,7 @@ namespace Sgt
     /// @brief Wye-wye transformer.
     ///
     /// Equivalent to a single phase transformer on each phase.
+    /// @ingroup PowerFlow
     class YyTransformer : public BranchAbc
     {
         public:

@@ -56,6 +56,7 @@ namespace Sgt
 
     class PowerFlowModel;
 
+    /// @ingroup PowerFlow
     class Network : public Component
     {
         public:

@@ -26,6 +26,7 @@ namespace Sgt
     /// @brief A Zip is an injection into a bus with constant impedance / current / complex power components.
     ///
     /// Implement some common functionality for convenience.
+    /// @ingroup PowerFlow
     class ZipAbc : public Component
     {
         public:
@@ -143,6 +144,7 @@ namespace Sgt
     };
 
     /// @brief A concrete, generic ZIP at a bus.
+    /// @ingroup PowerFlow
     class GenericZip : public ZipAbc
     {
         public:

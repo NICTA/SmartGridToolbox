@@ -19,6 +19,7 @@ namespace Sgt
 {
     class Network;
 
+    /// @ingroup PowerFlow
     class PowerFlowSolverInterface
     {
         public:

@@ -24,6 +24,7 @@
 
 namespace Sgt
 {
+    /// @ingroup PowerFlow
     enum class BusType
     {
         SL,
@@ -37,6 +38,7 @@ namespace Sgt
     inline std::ostream& operator<<(std::ostream& os, BusType t) {return os << to_string(t);}
     template<> BusType from_string<BusType>(const std::string& str);
 
+    /// @ingroup PowerFlow
     enum class Phase : unsigned int
     {
         BAL = 0x1,     // Balanced/one-phase.
@@ -56,6 +58,7 @@ namespace Sgt
     template<> Phase from_string<Phase>(const std::string& str);
     const char* phaseDescr(Phase phase);
 
+    /// @ingroup PowerFlow
     class Phases
     {
         private:

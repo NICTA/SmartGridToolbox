@@ -23,6 +23,7 @@ namespace Sgt
     class GenericZip;
 
     /// @brief ParserPlugin that parses GenericZip objects.
+    /// @ingroup PowerFlow
     class GenericZipParserPlugin : public NetworkParserPlugin
     {
         public:

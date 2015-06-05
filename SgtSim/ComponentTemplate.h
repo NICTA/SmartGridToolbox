@@ -19,6 +19,7 @@
 
 namespace Sgt
 {
+    /// @ingroup Core
     class ComponentTemplate : public Component
     {
         /// @name Overridden member functions from SimComponent.

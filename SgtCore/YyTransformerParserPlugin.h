@@ -23,6 +23,7 @@ namespace Sgt
     class Network;
 
     /// @brief ParserPlugin that parses YyTransformer objects.
+    /// @ingroup PowerFlow
     class YyTransformerParserPlugin : public NetworkParserPlugin
     {
         public:

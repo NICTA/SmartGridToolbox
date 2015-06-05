@@ -22,6 +22,7 @@ namespace Sgt
     class Network;
 
     /// @brief ParserPlugin that parses PowerFlowSolver objects.
+    /// @ingroup PowerFlow
     class PowerFlowSolverParserPlugin : public NetworkParserPlugin
     {
         public:

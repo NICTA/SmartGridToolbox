@@ -20,6 +20,7 @@
 namespace Sgt
 {
     /// @brief Delta-grounded wye transformer.
+    /// @ingroup PowerFlow
     class DgyTransformer : public BranchAbc
     {
         public:

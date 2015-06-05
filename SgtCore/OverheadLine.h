@@ -30,6 +30,7 @@ namespace Sgt
     /// for two or three bundle wires (assumed to be in equilateral triangle in the latter case), or
     /// the side length of a square configuration for four bundled wires.
     /// As in Gridlab-D, we take direction from Kersting: Distribution System Modelling and Analysis.
+    /// @ingroup PowerFlow
     class OverheadLine : public BranchAbc
     {
         public:

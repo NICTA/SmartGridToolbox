@@ -24,6 +24,7 @@ using std::string;
 
 namespace Sgt
 {
+    /// @ingroup Core
     class ComponentInterface : virtual public HasPropertiesInterface
     {
         public:
@@ -53,6 +54,7 @@ namespace Sgt
         return os;
     }
 
+    /// @ingroup Core
     class Component : virtual public ComponentInterface
     {
         public:

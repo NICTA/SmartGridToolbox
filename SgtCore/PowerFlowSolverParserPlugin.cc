@@ -18,9 +18,6 @@
 
 #include "Network.h"
 #include "PowerFlowNrSolver.h"
-#ifdef ENABLE_POWER_TOOLS
-#include "PowerFlowPtSolver.h"
-#endif
 #ifdef ENABLE_POWER_TOOLS_PP
 #include "PowerFlowPtPpSolver.h"
 #endif
@@ -35,18 +32,6 @@ namespace Sgt
         {
             Log().message() << "Using Newton-Raphson solver." << std::endl;
             netw.setSolver(std::unique_ptr<PowerFlowNrSolver>(new PowerFlowNrSolver));
-        }
-        else if (key == "opf_pt")
-        {
-#ifdef ENABLE_POWER_TOOLS
-            Log().message() << "Using OPF (PowerTools) solver." << std::endl;
-            netw.setSolver(std::unique_ptr<PowerFlowPtSolver>(new PowerFlowPtSolver));
-#else // ENABLE_POWER_TOOLS 
-            Log().error()
-                << "OPF solver is not available, since SmartGridToolbox was not compiled with --enable-power-tools."
-                << std::endl;
-            error();
-#endif // ENABLE_POWER_TOOLS
         }
         else if (key == "opf_pt_pp")
         {

@@ -32,9 +32,6 @@
 #include <SgtCore/PowerFlow.h>
 #include <SgtCore/PowerFlowSolver.h>
 #include <SgtCore/PowerFlowNrSolver.h>
-#ifdef ENABLE_POWER_TOOLS
-#include <SgtCore/PowerFlowPtSolver.h>
-#endif // ENABLE_POWER_TOOLS
 #ifdef ENABLE_POWER_TOOLS_PP
 #include <SgtCore/PowerFlowPtPpSolver.h>
 #endif // ENABLE_POWER_TOOLS_PP

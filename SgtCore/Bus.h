@@ -30,6 +30,7 @@ namespace Sgt
     class ZipAbc;
 
     /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
+    /// @ingroup PowerFlow
     class Bus : public Component, public HasProperties<Bus>
     {
         friend class Network;

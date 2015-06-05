@@ -29,6 +29,7 @@ namespace Sgt
     /// Thus, there are either 6 or 7 conductors to consider, depending on whether there is a separate neutral wire.
     /// Conductors 1-3 and 7 are the usual type of conductor with their own particular GMR specified, etc.
     /// Conductors 4-6 represent either the concentric neutrals or the tape.
+    /// @ingroup PowerFlow
     class UndergroundLine : public BranchAbc
     {
         public:
@@ -119,6 +120,7 @@ namespace Sgt
             arma::Mat<Complex> YNode_; ///< Nodal admittance matrix.
     };
 
+    /// @ingroup PowerFlow
     class UndergroundLineStrandedShield : public UndergroundLine
     {
         public:

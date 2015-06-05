@@ -20,6 +20,7 @@
 namespace Sgt
 {
     /// @brief Single phase transformer.
+    /// @ingroup PowerFlow
     class SinglePhaseTransformer : public BranchAbc
     {
         public:

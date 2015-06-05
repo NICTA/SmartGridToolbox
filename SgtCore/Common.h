@@ -41,6 +41,7 @@ namespace Sgt
 /// @name Reporting and errors.
 /// @{
 
+    /// @ingroup Utilities
     class StreamIndent : public std::streambuf
     {
         public:
@@ -65,6 +66,7 @@ namespace Sgt
             std::string ind2_;
     };
 
+    /// @ingroup Utilities
     class Log
     {
         friend class LogIndent;
@@ -87,6 +89,7 @@ namespace Sgt
             StreamIndent cerrBuf_{std::cerr};
     };
 
+    /// @ingroup Utilities
     class LogIndent
     {
         public:
@@ -115,6 +118,7 @@ namespace Sgt
 /// @name Constant dimension 1D array type.
 /// @{
 
+    /// @ingroup Utilities
     template <class T, size_t N> using Array = std::array<T, N>; // Just std::array but rename for nice consistency.
 
 /// @}
@@ -123,6 +127,7 @@ namespace Sgt
 /// @{
 
     // Note transposition of NR and NC to obey standard matrix index order.
+    /// @ingroup Utilities
     template <class T, size_t NR, size_t NC> using Array2D = std::array<std::array<T, NC>, NR>;
 
 /// @}
@@ -259,6 +264,7 @@ namespace Sgt
     /// @name LatLongs
     /// @{
 
+    /// @ingroup Core
     class LatLong
     {
         public:

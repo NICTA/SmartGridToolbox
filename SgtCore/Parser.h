@@ -30,6 +30,7 @@ namespace Sgt
     YAML::Node getTopNode(const std::string& fname);
 
     // Some no-templated functionality in the base class.
+    /// @ingroup Core
     class ParserBase
     {
 
@@ -71,6 +72,7 @@ namespace Sgt
 
     template<typename T> class Parser;
 
+    /// @ingroup Core
     template<typename T> class ParserPlugin
     {
         public:
@@ -88,6 +90,7 @@ namespace Sgt
     template<typename T> class Parser;
     template<typename T> void registerParserPlugins(Parser<T>& parser);
 
+    /// @ingroup Core
     template<typename T> class Parser : public ParserBase
     {
         public:

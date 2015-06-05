@@ -19,6 +19,7 @@
 
 namespace Sgt
 {
+    /// @ingroup Utilities
     template<typename T> class SparseHelper
     {
         public:

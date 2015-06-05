@@ -17,6 +17,7 @@
 
 #include <chrono>
 
+/// @ingroup Utilities
 class Stopwatch
 {
     public:

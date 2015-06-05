@@ -197,6 +197,7 @@ namespace Sgt
         Array2D<arma::SpMat<double>, 4, 5> blocks_;
     };
 
+    /// @ingroup PowerFlow
     class PowerFlowNrSolver : public PowerFlowSolverInterface
     {
         public:

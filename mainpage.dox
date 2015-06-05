@@ -1,19 +1,16 @@
 /** @mainpage
- *  This is the doxygen main page. */
+ *  This is the documentation for SmartGridToolbox. */
 
 /// @defgroup Core SmartGridToolbox Core
 /// @brief Core classes of SmartGridToolbox.
 
-/// @defgroup Common Common Utilities
+/// @defgroup Utilities Utilities
 /// @brief Utility classes, functions and constants.
 /// These will typically be included in most headers, and provide access to utility functions etc. for time,
 /// complex numbers, linear algebra, etc.
 
-/// @defgroup PowerFlowCore Power Flow Core
+/// @defgroup PowerFlow Power Flow
 /// @brief Core power flow classes of SmartGridToolbox.
-
-/// @defgroup PowerFlow Power Flow Utilities
-/// @brief Utility functions, classes and constants related to AC power flow.
 
 /// @namespace SmartGridToolbox
 /// @brief The primary namespace for SmartGridToolbox

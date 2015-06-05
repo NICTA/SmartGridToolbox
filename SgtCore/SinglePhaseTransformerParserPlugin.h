@@ -23,6 +23,7 @@ namespace Sgt
     class Network;
 
     /// @brief ParserPlugin that parses SinglePhaseTransformer objects.
+    /// @ingroup PowerFlow
     class SinglePhaseTransformerParserPlugin : public NetworkParserPlugin
     {
         public:

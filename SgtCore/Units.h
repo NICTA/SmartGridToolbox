@@ -25,6 +25,7 @@ namespace Units
 {
     constexpr const char* cdot = u8"\u00B7";
 
+    /// @ingroup Utilities
     template<int L, int M, int T, int I, int Th>
     class Dimensions
     {
@@ -78,6 +79,7 @@ namespace Units
     constexpr decltype(IDim() * TDim()) QDim() {return decltype(QDim())();}
     constexpr decltype(QDim() / LDim()) VDim() {return decltype(VDim())();}
 
+    /// @ingroup Utilities
     template<typename D, typename V = double>
     class DimensionalQuantity : public D
     {
@@ -94,6 +96,7 @@ namespace Units
             V stdVal_;
     };
 
+    /// @ingroup Utilities
     template<typename V>
     class DimensionalQuantity<Dimensions<0, 0, 0, 0, 0>, V>
     {
@@ -164,6 +167,7 @@ namespace Units
     template<typename V = double> using Current = DimensionalQuantity<decltype(IDim()), V>;
     template<typename V = double> using Temperature = DimensionalQuantity<decltype(ThDim()), V>;
 
+    /// @ingroup Utilities
     template<typename D, typename V = double>
     class Unit : public DimensionalQuantity<D, V>
     {
@@ -193,6 +197,7 @@ namespace Units
         extern const Unit<decltype(QDim())> C;
     }
 
+    /// @ingroup Utilities
     template<typename D, typename V = double, typename V2 = double>
     class UnitQuantity
     {

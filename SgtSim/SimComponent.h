@@ -21,6 +21,7 @@
 
 namespace Sgt
 {
+    /// @ingroup Core
     class SimComponentAdaptor : virtual public ComponentInterface
     {
         public:
@@ -180,6 +181,7 @@ namespace Sgt
     /// For example, we could in theory have class SimBus : public SimComponentAdaptor, public Bus which takes it's
     /// ComponentInterface from Bus rather than Component. In actual fact, we prefer not to do this, so network
     /// components such as SimBus are modelled using composition rather than multiple inheritance.
+    /// @ingroup Core
     class SimComponent : public SimComponentAdaptor, public Component
     {
         public:

@@ -26,12 +26,14 @@ namespace Sgt
     /// @addtogroup Core
 /// @{
 
+    /// @ingroup Core
     class TimeSeriesBase
     {
         public:
             virtual ~TimeSeriesBase() = default;
     };
 
+    /// @ingroup Core
     template<typename T, typename V>
     class TimeSeries : public TimeSeriesBase
     {
@@ -39,6 +41,7 @@ namespace Sgt
             virtual V value(const T& t) const = 0;
     };
 
+    /// @ingroup Core
     template<typename T, typename V>
     class ConstTimeSeries : public TimeSeries<T, V>
     {
@@ -51,6 +54,7 @@ namespace Sgt
             V val_;
     };
 
+    /// @ingroup Core
     template<typename T, typename V>
     class DataTimeSeries : public TimeSeries<T, V>
     {
@@ -58,6 +62,7 @@ namespace Sgt
             virtual void addPoint(const T& t, const V& v) = 0;
     };
 
+    /// @ingroup Core
     template<typename T, typename V>
     class StepwiseTimeSeries : public DataTimeSeries<T, V>
     {
@@ -82,6 +87,7 @@ namespace Sgt
             std::map<double, V> points_;
     };
 
+    /// @ingroup Core
     template<typename T, typename V>
     class LerpTimeSeries : public DataTimeSeries<T, V>
     {
@@ -117,6 +123,7 @@ namespace Sgt
     };
 
 #if 0 // TODO: redo spline due to license issues.
+    /// @ingroup Core
     template<typename T>
     class SplineTimeSeries : public DataTimeSeries<T, double>
     {
@@ -137,6 +144,7 @@ namespace Sgt
     };
 #endif
 
+    /// @ingroup Core
     template<typename T, typename V>
     class FunctionTimeSeries : public TimeSeries<T, V>
     {

@@ -23,7 +23,6 @@
 namespace Sgt
 {
     /// @brief DC power to n-phase AC converter.
-    /// @ingroup PowerFlowCore
     class InverterAbc : public SimComponentAdaptor
     {
         public:
@@ -98,7 +97,6 @@ namespace Sgt
     };
 
     /// @brief DC power to n-phase AC converter.
-    /// @ingroup PowerFlowCore
     class SimpleZipInverter : public SimpleInverterAbc, public ZipAbc
     {
         public:

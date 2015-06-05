@@ -210,6 +210,7 @@ namespace Sgt
             std::unique_ptr<SetterInterface<T>> setter_;
     };
 
+    /// @ingroup Core
     template<typename T> class Property : public PropertyBase1<T>
     {
         public:

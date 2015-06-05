@@ -30,6 +30,7 @@ namespace Sgt
     // The following structures etc. are designed to present a general framework for solving power flow problems,
     // e.g. using Newton-Raphson or the swing equations.
 
+    /// @ingroup PowerFlow
     struct PfBus
     {
         typedef std::vector<std::unique_ptr<PfNode>> PfNodeVec;
@@ -57,6 +58,7 @@ namespace Sgt
         PfNodeVec nodes_; ///< Nodes, one per phase.
     };
 
+    /// @ingroup PowerFlow
     struct PfNode
     {
         PfNode(PfBus& bus, int phaseIdx);
@@ -75,6 +77,7 @@ namespace Sgt
         int idx_;
     };
 
+    /// @ingroup PowerFlow
     struct PfBranch
     {
         PfBranch(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
@@ -86,6 +89,7 @@ namespace Sgt
         arma::Mat<Complex> Y_; ///< Bus admittance matrix.
     };
 
+    /// @ingroup PowerFlow
     class PowerFlowModel
     {
         public:

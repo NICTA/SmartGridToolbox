@@ -17,7 +17,6 @@
 
 #include <SgtCore/Network.h>
 #include <SgtCore/PowerFlowSolver.h>
-#include <SgtCore/SgtPowerTools.h>
 
 class PowerModel;
 class Net;
@@ -28,6 +27,7 @@ namespace Sgt
 {
     class Network;
 
+    /// @ingroup PowerFlow
     class PowerFlowPtPpSolver : public PowerFlowSolverInterface
     {
         public:
