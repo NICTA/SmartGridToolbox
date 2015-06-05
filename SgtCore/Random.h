@@ -20,11 +20,11 @@
 
 namespace Sgt
 {
-    /// @addtogroup Common
-/// @{
+    /// @addtogroup Utilities
+    /// @{
 
-/// @name Random number generation.
-/// @{
+    /// @name Random number generation.
+    /// @{
 
     /// @brief Sample from discrete distribution with nProbs given probabilities.
     /// @ingroup Utilities
@@ -42,9 +42,9 @@ namespace Sgt
     /// @ingroup Utilities
     double randWeibull(double a, double b);
 
-/// @}
+    /// @}
 
-/// @}
+    /// @}
 }
 
 #endif // RANDOM_DOT_H

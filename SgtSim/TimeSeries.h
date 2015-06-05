@@ -23,9 +23,6 @@
 
 namespace Sgt
 {
-    /// @addtogroup Core
-/// @{
-
     class TimeSeriesBase
     {
         public:
@@ -170,8 +167,6 @@ namespace Sgt
 
             std::function<V (T)> func_;
     };
-
-/// @}
 }
 
 #endif // TIME_SERIES_DOT_H

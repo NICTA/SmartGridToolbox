@@ -35,9 +35,6 @@
 
 namespace Sgt
 {
-/// @addtogroup Common
-/// @{
-
 /// @name Reporting and errors.
 /// @{
 
@@ -296,34 +293,41 @@ namespace Sgt
 
     /// @}
 
+    /// @addtogroup Utilities
+    /// @{
+    
     /// @name Constants
     /// @{
 
-    extern const double pi; ///< @ingroup Utilities
-    extern const double negInfinity; ///< @ingroup Utilities
-    extern const double infinity; ///< @ingroup Utilities
-    extern const double second; ///< @ingroup Utilities
-    extern const double minute; ///< @ingroup Utilities
-    extern const double hour; ///< @ingroup Utilities
-    extern const double day; ///< @ingroup Utilities
-    extern const double week; ///< @ingroup Utilities
-    extern const double J; ///< @ingroup Utilities
-    extern const double kJ; ///< @ingroup Utilities
-    extern const double W; ///< @ingroup Utilities
-    extern const double kW; ///< @ingroup Utilities
-    extern const double kWh; ///< @ingroup Utilities
-    extern const double A; ///< @ingroup Utilities
-    extern const double C; ///< @ingroup Utilities
-    extern const double K; ///< @ingroup Utilities
-    extern const Complex czero; ///< @ingroup Utilities
-    extern const LatLong Greenwich; ///< @ingroup Utilities
+    extern const double pi;
+    extern const double negInfinity;
+    extern const double infinity;
+    extern const double second;
+    extern const double minute;
+    extern const double hour;
+    extern const double day;
+    extern const double week;
+    extern const double J;
+    extern const double kJ;
+    extern const double W;
+    extern const double kW;
+    extern const double kWh;
+    extern const double A;
+    extern const double C;
+    extern const double K;
+    extern const Complex czero;
+    extern const LatLong Greenwich;
+    
+    /// @}
 
     /// @}
 
+    /// @addtogroup Utilities
+    /// @{
+    
     /// @name Basic vector algebra in n dimensions.
     /// @{
 
-    /// @ingroup Utilities
     template<typename T, std::size_t d> double dot(const Array<T, d>& v1, const Array<T, d>& v2)
     {
         T result(0.0);
@@ -331,7 +335,6 @@ namespace Sgt
         return result;
     }
 
-    /// @ingroup Utilities
     template<typename T, std::size_t d, typename S> Array<T, d> operator*(const Array<T, d>& v, const S& s)
     {
         Array<T, d> result = v;
@@ -339,13 +342,11 @@ namespace Sgt
         return result;
     }
 
-    /// @ingroup Utilities
     template<typename T, std::size_t d, typename S> Array<T, d> operator*(const S& s, const Array<T, d>& v)
     {
         return operator*(v, s);
     }
 
-    /// @ingroup Utilities
     template<typename T, std::size_t d> Array<T, d> operator+(const Array<T, d>& lhs, const Array<T, d>& rhs)
     {
         Array<T, d> result = lhs;
@@ -353,7 +354,6 @@ namespace Sgt
         return result;
     }
 
-    /// @ingroup Utilities
     template<typename T, std::size_t d> Array<T, d> operator-(const Array<T, d>& lhs, const Array<T, d>& rhs)
     {
         Array<T, d> result = lhs;
@@ -362,7 +362,7 @@ namespace Sgt
     }
 
     /// @}
-
+    
     /// @}
 }
 
