@@ -6,6 +6,7 @@
 
 /// @defgroup Utilities Utilities
 /// @brief Utility classes, functions and constants.
+///
 /// These will typically be included in most headers, and provide access to utility functions etc. for time,
 /// complex numbers, linear algebra, etc.
 
