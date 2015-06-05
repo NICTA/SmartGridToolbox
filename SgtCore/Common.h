@@ -65,6 +65,9 @@ namespace Sgt
             std::string ind2_;
     };
 
+    /// @brief Logging object.
+    ///
+    /// Use e.g. Log().message << "this is a message" << std::endl;
     /// @ingroup Utilities
     class Log
     {
@@ -88,6 +91,9 @@ namespace Sgt
             StreamIndent cerrBuf_{std::cerr};
     };
 
+    /// @brief Create a LogIndent on the stack to indent all logs.
+    ///
+    /// Indentation will persist while object is in scope.
     /// @ingroup Utilities
     class LogIndent
     {
@@ -110,6 +116,7 @@ namespace Sgt
 /// @name String conversion.
 /// @{
 
+    /// @brief Create a value from a string.
     /// @ingroup Utilities
     template<typename T> T from_string(const std::string& s);
 

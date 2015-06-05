@@ -24,6 +24,9 @@ using std::string;
 
 namespace Sgt
 {
+    /// @brief Base interface for all Components. 
+    ///
+    /// A Component is essentially an object with a unique key.
     /// @ingroup Core
     class ComponentInterface : virtual public HasPropertiesInterface
     {
@@ -54,6 +57,9 @@ namespace Sgt
         return os;
     }
 
+    /// @brief Base class for all Components. 
+    ///
+    /// A Component is essentially an object with a unique key.
     /// @ingroup Core
     class Component : virtual public ComponentInterface
     {

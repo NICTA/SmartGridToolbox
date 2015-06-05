@@ -19,6 +19,9 @@
 
 namespace Sgt
 {
+    /// @brief Object to efficiently construct large sparse matrices in an incremental manner.
+    ///
+    /// Use insert(...) to add elements, and when ready, get() to construct and return the sparse matrix.
     /// @ingroup Utilities
     template<typename T> class SparseHelper
     {

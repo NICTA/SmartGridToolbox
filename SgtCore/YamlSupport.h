@@ -22,6 +22,7 @@
 
 namespace Sgt
 {
+    /// @brief Convert a value to a YAML string.
     /// @ingroup Utilities
     template<typename T> std::string toYamlString(const T& t)
     {
@@ -29,13 +30,13 @@ namespace Sgt
         return (e << YAML::Flow << YAML::Node(t)).c_str();
     }
 
+    /// @brief Create a value from a YAML string.
     /// @ingroup Utilities
     template<typename T> T fromYamlString(const std::string& s)
     {
         return YAML::Load(s).as<T>();
     }
 
-    /// @ingroup Utilities
     template<> inline const char* fromYamlString(const std::string& s)
     {
         return YAML::Load(s).as<std::string>().c_str();

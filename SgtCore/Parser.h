@@ -71,6 +71,7 @@ namespace Sgt
 
     template<typename T> class Parser;
 
+    /// @brief A plugin to parse YAML into an object.
     /// @ingroup Core
     template<typename T> class ParserPlugin
     {
@@ -89,6 +90,7 @@ namespace Sgt
     template<typename T> class Parser;
     template<typename T> void registerParserPlugins(Parser<T>& parser);
 
+    /// @brief A Parser to parse YAML into an object.
     /// @ingroup Core
     template<typename T> class Parser : public ParserBase
     {

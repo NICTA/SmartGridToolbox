@@ -21,6 +21,10 @@
 
 namespace Sgt
 {
+    /// @brief Adaptor that can be used add SimComponent functionality.
+    ///
+    /// By deriving from this class and from an existing Component, we may extend that Component to include
+    /// SimComponent functionality via multiple inheritance. See comments for SimComponent for more details.
     /// @ingroup Core
     class SimComponentAdaptor : virtual public ComponentInterface
     {
@@ -178,9 +182,9 @@ namespace Sgt
     /// @brief A base class for SimComponents.
     ///
     /// Although most SimComponents will derive from this base class, some may not, due to multiple inheritance.
-    /// For example, we could in theory have class SimBus : public SimComponentAdaptor, public Bus which takes it's
-    /// ComponentInterface from Bus rather than Component. In actual fact, we prefer not to do this, so network
-    /// components such as SimBus are modelled using composition rather than multiple inheritance.
+    /// For example, we have SimBus : public SimComponentAdaptor, public Bus, which takes it's
+    /// ComponentInterface from Bus rather than Component. Depending on needs, this kind of thing may be done using
+    /// multiple inheritance, as just described, or using composition: both have advantages and disadvantages.
     /// @ingroup Core
     class SimComponent : public SimComponentAdaptor, public Component
     {

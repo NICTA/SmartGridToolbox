@@ -69,6 +69,7 @@ namespace Sgt
     SphericalAngles sunPos(posix_time::ptime utcTime, LatLong location);
 
     /// @brief Horizontal solar irradiance.
+    ///
     /// This quantity is often used as a proxy for the solar irradiance magnitude, as it is easier to measure.
     /// @parameter angs: spherical angles of the sun.
     /// @return Horizontal solar irradiance of the sun, in W/m^2.

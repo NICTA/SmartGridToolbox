@@ -22,7 +22,7 @@ namespace Sgt
 {
     class Simulation;
 
-    /// @brief ParserPlugin that parses generic branch objects.
+    /// @brief ParserPlugin that parses simulation information.
     /// @ingroup Core
     class SimGlobalParserPlugin : public SimParserPlugin
     {

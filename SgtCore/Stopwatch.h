@@ -17,6 +17,7 @@
 
 #include <chrono>
 
+/// @brief Simple stopwatch style timer, using std::chrono.
 /// @ingroup Utilities
 class Stopwatch
 {
