@@ -1,5 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
+AM_CPPFLAGS += -I../SgtSim
 AM_LDFLAGS = -static
 
 TESTS = tests
