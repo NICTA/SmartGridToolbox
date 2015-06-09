@@ -64,5 +64,3 @@ libSgtSim_la_SOURCES = \
 	WeatherParserPlugin.h WeatherParserPlugin.cc
 
 #libSgtSim_la_LIBADD = ../SgtCore/libSgtCore.la
-
-EXTRA_DIST = mainpage.dox

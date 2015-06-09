@@ -6,4 +6,4 @@ SUBDIRS = SgtCore SgtSim src docs tests
 
 dist_doc_DATA = README.md
 
-EXTRA_DIST = docs/background examples third_party tutorials 
+EXTRA_DIST = docs/background examples third_party tutorials mainpage.dox
