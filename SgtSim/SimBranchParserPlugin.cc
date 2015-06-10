@@ -12,31 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SimGenericGenParserPlugin.h"
+#include "SimBranchParserPlugin.h"
 
 #include "SimNetwork.h"
 #include "Simulation.h"
 
-#include <SgtCore/Gen.h>
-#include <SgtCore/GenericGenParserPlugin.h>
-
-#include <memory>
+#include <SgtCore/Branch.h>
 
 namespace Sgt
 {
-    void SimGenericGenParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
+    void SimBranchParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
-        GenericGenParserPlugin ggParser;
-        auto gg = sim.newSimComponent<SimGenericGen>(*ggParser.parseGenericGen(nd, parser));
-
+        assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "network_id");
-        assertFieldPresent(nd, "bus_id");
+        
+        string id = parser.expand<std::string>(nd["id"]);
 
         string netwId = parser.expand<std::string>(nd["network_id"]);
-        std::string busId = parser.expand<std::string>(nd["bus_id"]);
+        auto network = sim.simComponent<SimNetwork>(netwId)->network();
 
-        auto netw = sim.simComponent<SimNetwork>(netwId);
+        NetworkParser p;
+        p.parse(nd, *network);
+        auto branch = network->branch("id");
 
-        netw->addGen(gg, busId);
+        sim.newSimComponent<SimBranch>(branch);
     }
 }

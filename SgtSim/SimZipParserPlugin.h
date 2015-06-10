@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SIM_GENERIC_ZIP_PARSER_PLUGIN_DOT_H
-#define SIM_GENERIC_ZIP_PARSER_PLUGIN_DOT_H
+#ifndef SIM_ZIP_PARSER_PLUGIN_DOT_H
+#define SIM_ZIP_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimNetworkComponent.h>
 #include <SgtSim/SimParser.h>
@@ -22,13 +22,13 @@ namespace Sgt
 {
     class Simulation;
 
-    /// @brief ParserPlugin that parses generic zip objects.
-    class SimGenericZipParserPlugin : public SimParserPlugin
+    /// @brief ParserPlugin that parses SimZip objects.
+    class SimZipParserPlugin : public SimParserPlugin
     {
         public:
             virtual const char* key() override
             {
-                return "generic_zip";
+                return "zip";
             }
 
         public:
@@ -36,4 +36,4 @@ namespace Sgt
     };
 }
 
-#endif // SIM_GENERIC_ZIP_PARSER_PLUGIN_DOT_H
+#endif // SIM_ZIP_PARSER_PLUGIN_DOT_H

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SIM_OVERHEAD_LINE_PARSER_PLUGIN_DOT_H
-#define SIM_OVERHEAD_LINE_PARSER_PLUGIN_DOT_H
+#ifndef SIM_BRANCH_PARSER_PLUGIN_DOT_H
+#define SIM_BRANCH_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimNetworkComponent.h>
 #include <SgtSim/SimParser.h>
@@ -22,13 +22,13 @@ namespace Sgt
 {
     class Simulation;
 
-    /// @brief ParserPlugin that parses OverheadLine objects.
-    class SimOverheadLineParserPlugin : public SimParserPlugin
+    /// @brief ParserPlugin that parses SimBranch objects.
+    class SimBranchParserPlugin : public SimParserPlugin
     {
         public:
             virtual const char* key() override
             {
-                return "overhead_line";
+                return "branch";
             }
 
         public:
@@ -36,4 +36,4 @@ namespace Sgt
     };
 }
 
-#endif // OVERHEAD_LINE_PARSER_PLUGIN_DOT_H
+#endif // SIM_BRANCH_PARSER_PLUGIN_DOT_H

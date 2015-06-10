@@ -34,24 +34,20 @@ libSgtSim_la_SOURCES = \
 	InverterParserPlugin.h InverterParserPlugin.cc \
 	RegisterParserPlugins.cc \
 	SgtSim.h \
+	SimBranchParserPlugin.h SimBranchParserPlugin.cc \
 	SimBusParserPlugin.h SimBusParserPlugin.cc \
-	SimComponent.h SimComponent.cc \
-	SimDgyTransformerParserPlugin.h SimDgyTransformerParserPlugin.cc \
-	SimGenericBranchParserPlugin.h SimGenericBranchParserPlugin.cc \
-	SimGenericGenParserPlugin.h SimGenericGenParserPlugin.cc \
-	SimGenericZipParserPlugin.h SimGenericZipParserPlugin.cc \
+	SimGenParserPlugin.h SimGenParserPlugin.cc \
 	SimGlobalParserPlugin.h SimGlobalParserPlugin.cc \
 	SimMatpowerParserPlugin.h SimMatpowerParserPlugin.cc \
 	SimNetwork.h SimNetwork.cc \
 	SimNetworkComponent.h \
 	SimNetworkParserPlugin.h SimNetworkParserPlugin.cc \
-	SimOverheadLineParserPlugin.h SimOverheadLineParserPlugin.cc \
 	SimParser.h SimParser.cc \
 	SimpleBuilding.h SimpleBuilding.cc \
 	SimpleBuildingParserPlugin.h SimpleBuildingParserPlugin.cc \
 	SimSinglePhaseTransformerParserPlugin.h SimSinglePhaseTransformerParserPlugin.cc \
 	Simulation.h Simulation.cc \
-	SimYyTransformerParserPlugin.h SimYyTransformerParserPlugin.cc \
+	SimZipParserPlugin.h SimZipParserPlugin.cc \
 	SolarPv.h SolarPv.cc \
 	SolarPvParserPlugin.h SolarPvParserPlugin.cc \
 	Sun.h Sun.cc \

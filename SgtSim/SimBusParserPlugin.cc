@@ -18,18 +18,23 @@
 #include "Simulation.h"
 
 #include <SgtCore/Bus.h>
-#include <SgtCore/BusParserPlugin.h>
 
 namespace Sgt
 {
     void SimBusParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
-        BusParserPlugin busParser;
-        auto bus = sim.newSimComponent<SimBus>(*busParser.parseBus(nd, parser));
-
+        assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "network_id");
+        
+        string id = parser.expand<std::string>(nd["id"]);
+
         string netwId = parser.expand<std::string>(nd["network_id"]);
-        auto netw = sim.simComponent<SimNetwork>(netwId);
-        netw->addBus(bus);
+        auto network = sim.simComponent<SimNetwork>(netwId)->network();
+
+        NetworkParser p;
+        p.parse(nd, *network);
+        auto bus = network->bus("id");
+
+        sim.newSimComponent<SimBus>(bus);
     }
 }

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SIM_GENERIC_GEN_PARSER_PLUGIN_DOT_H
-#define SIM_GENERIC_GEN_PARSER_PLUGIN_DOT_H
+#ifndef SIM_GEN_PARSER_PLUGIN_DOT_H
+#define SIM_GEN_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimNetworkComponent.h>
 #include <SgtSim/SimParser.h>
@@ -22,13 +22,13 @@ namespace Sgt
 {
     class Simulation;
 
-    /// @brief ParserPlugin that parses generic gen objects.
-    class SimGenericGenParserPlugin : public SimParserPlugin
+    /// @brief ParserPlugin that parses SimGen objects.
+    class SimGenParserPlugin : public SimParserPlugin
     {
         public:
             virtual const char* key() override
             {
-                return "generic_gen";
+                return "gen";
             }
 
         public:
@@ -36,4 +36,4 @@ namespace Sgt
     };
 }
 
-#endif // SIM_GENERIC_GEN_PARSER_PLUGIN_DOT_H
+#endif // SIM_GEN_PARSER_PLUGIN_DOT_H

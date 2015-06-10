@@ -12,33 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SimDgyTransformerParserPlugin.h"
+#include "SimGenParserPlugin.h"
 
 #include "SimNetwork.h"
 #include "Simulation.h"
 
-#include <SgtCore/DgyTransformer.h>
-#include <SgtCore/DgyTransformerParserPlugin.h>
-
-#include <memory>
+#include <SgtCore/Gen.h>
 
 namespace Sgt
 {
-    void SimDgyTransformerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
+    void SimGenParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
-        DgyTransformerParserPlugin transParser;
-        auto trans = sim.newSimComponent<SimDgyTransformer>(*transParser.parseDgyTransformer(nd, parser));
-
+        assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "network_id");
-        assertFieldPresent(nd, "bus_0_id");
-        assertFieldPresent(nd, "bus_1_id");
+        
+        string id = parser.expand<std::string>(nd["id"]);
 
         string netwId = parser.expand<std::string>(nd["network_id"]);
-        std::string bus0Id = parser.expand<std::string>(nd["bus_0_id"]);
-        std::string bus1Id = parser.expand<std::string>(nd["bus_1_id"]);
+        auto network = sim.simComponent<SimNetwork>(netwId)->network();
 
-        auto netw = sim.simComponent<SimNetwork>(netwId);
+        NetworkParser p;
+        p.parse(nd, *network);
+        auto gen = network->gen("id");
 
-        netw->addBranch(trans, bus0Id, bus1Id);
+        sim.newSimComponent<SimGen>(gen);
     }
 }
