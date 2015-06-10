@@ -23,7 +23,7 @@
 namespace Sgt
 {
     /// @brief DC power to n-phase AC converter.
-    class InverterAbc : public SimComponentAdaptor
+    class InverterAbc
     {
         public:
 
@@ -97,7 +97,7 @@ namespace Sgt
     };
 
     /// @brief DC power to n-phase AC converter.
-    class SimpleZipInverter : public SimpleInverterAbc, public ZipAbc
+    class SimpleZipInverter : public SimpleInverterAbc, public SimZip
     {
         public:
 
@@ -114,9 +114,9 @@ namespace Sgt
 
         /// @}
 
-            SimpleZipInverter(const std::string& id, const Phases& phases, double efficiency = 1.0) :
+            SimpleZipInverter(std::shared_ptr<ZipAbc> zip, double efficiency = 1.0) :
                 SimpleInverterAbc(efficiency),
-                ZipAbc(id, phases)
+                SimZip(zip)
             {
                 // Empty.
             }

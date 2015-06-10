@@ -79,44 +79,40 @@ namespace Sgt
 
             template<typename T> void addBus(std::shared_ptr<T> simBus)
             {
-                network_->addBus(simBus);
                 dependsOn(simBus);
-                simBus->setpointChanged().addAction([this]() {needsUpdate().trigger();},
+                simBus->bus()->setpointChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
-                simBus->isInServiceChanged().addAction([this]() {needsUpdate().trigger();},
+                simBus->bus()->isInServiceChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
             }
 
             template<typename T> void addBranch(std::shared_ptr<T> simBranch, const std::string& bus0Id,
                                                 const std::string& bus1Id)
             {
-                network_->addBranch(simBranch, bus0Id, bus1Id);
                 dependsOn(simBranch);
-                simBranch->admittanceChanged().addAction([this]() {needsUpdate().trigger();},
+                simBranch->branch()->admittanceChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
-                simBranch->isInServiceChanged().addAction([this]() {needsUpdate().trigger();},
+                simBranch->branch()->isInServiceChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
             }
 
             template<typename T> void addGen(std::shared_ptr<T> simGen, const std::string& busId)
             {
-                network_->addGen(simGen, busId);
                 dependsOn(simGen);
-                simGen->setpointChanged().addAction([this]() {needsUpdate().trigger();},
+                simGen->gen()->setpointChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
-                simGen->isInServiceChanged().addAction([this]() {needsUpdate().trigger();},
+                simGen->gen()->isInServiceChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
             }
 
             template<typename T> void addZip(std::shared_ptr<T> simZip, const std::string& busId)
             {
-                network_->addZip(simZip, busId);
                 dependsOn(simZip);
-                simZip->injectionChanged().addAction([this]() {needsUpdate().trigger();},
+                simZip->zip()->injectionChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
-                simZip->setpointChanged().addAction([this]() {needsUpdate().trigger();},
+                simZip->zip()->setpointChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
-                simZip->isInServiceChanged().addAction([this]() {needsUpdate().trigger();},
+                simZip->zip()->isInServiceChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
             }
 

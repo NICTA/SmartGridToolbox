@@ -32,31 +32,28 @@ namespace Sgt
         mpParser.parse(nd, tempNetw, parser);
 
         // Now recreate the SimNetwork from the Network.
-        for (auto& bus : tempNetw.busses())
+        for (auto bus : tempNetw.busses())
         {
-            auto simBus = sim.newSimComponent<SimBus>(*bus);
+            auto simBus = sim.newSimComponent<SimBus>(bus);
             simNetw->addBus(simBus);
 
-            for (auto& gen : bus->gens())
+            for (auto gen : bus->gens())
             {
-                auto gGen = dynamic_cast<const GenericGen&>(*gen);
-                auto simGen = sim.newSimComponent<SimGenericGen>(gGen);
+                auto simGen = sim.newSimComponent<SimGen>(gen);
                 simNetw->addGen(simGen, bus->id());
             }
 
-            for (auto& zip : bus->zips())
+            for (auto zip : bus->zips())
             {
-                auto gZip = dynamic_cast<const GenericZip&>(*zip);
-                auto simZip = sim.newSimComponent<SimGenericZip>(gZip);
+                auto simZip = sim.newSimComponent<SimZip>(zip);
                 simNetw->addZip(simZip, bus->id());
             }
         }
 
-        for (auto& branch : tempNetw.branches())
+        for (auto branch : tempNetw.branches())
         {
-            auto cBranch = dynamic_cast<const CommonBranch&>(*branch);
-            auto simCBranch = sim.newSimComponent<SimCommonBranch>(cBranch);
-            simNetw->addBranch(simCBranch, branch->bus0()->id(), branch->bus1()->id());
+            auto simBranch = sim.newSimComponent<SimBranch>(branch);
+            simNetw->addBranch(simBranch, branch->bus0()->id(), branch->bus1()->id());
         }
     }
 }

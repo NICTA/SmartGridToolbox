@@ -18,6 +18,7 @@
 #include "Simulation.h"
 
 #include <SgtCore/Branch.h>
+#include <SgtCore/NetworkParser.h>
 
 namespace Sgt
 {
