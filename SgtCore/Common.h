@@ -177,8 +177,7 @@ namespace Sgt
     /// @ingroup Utilities
     template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Col<T>& v)
     {
-        auto size = v.size();
-        auto w = os.width(); 
+        auto w = static_cast<int>(os.width());
         std::ostringstream ss;
         ss.flags(os.flags());
         ss.imbue(os.getloc());
@@ -187,7 +186,7 @@ namespace Sgt
         if (v.size() > 0)
         {
             ss << std::setw(w) << std::left << v(0);
-            for (arma::uword i = 1; i < size; ++i) ss << ", " << std::setw(w) << std::left << v(i);
+            for (arma::uword i = 1; i < v.size(); ++i) ss << ", " << std::setw(w) << std::left << v(i);
         }
         ss << "]";
         return os << ss.str();
@@ -200,24 +199,22 @@ namespace Sgt
     /// @ingroup Utilities
     template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Mat<T>& m)
     {
-        auto size1 = m.n_rows;
-        auto size2 = m.n_cols;
-        auto w = os.width();
+        auto w = static_cast<int>(os.width());
         std::ostringstream ss;
         ss.flags(os.flags());
         ss.imbue(os.getloc());
         ss.precision(os.precision());
         ss << std::endl << "[" << std::endl;
         ss << "    [" << std::setw(w) << std::left << m(0, 0);
-        for (arma::uword j = 1; j < size2; ++j)
+        for (arma::uword j = 1; j < m.n_cols; ++j)
         {
             ss << ", " << std::setw(w) << std::left << m(0, j);
         }
         ss << "]";
-        for (arma::uword i = 1; i < size1; ++i)
+        for (arma::uword i = 1; i < m.n_rows; ++i)
         {
             ss << "," << std::endl << "    [" << std::setw(w) << std::left << m(i, 0);
-            for (arma::uword j = 1; j < size2; ++j)
+            for (arma::uword j = 1; j < m.n_cols; ++j)
             {
                 ss << ", " << std::setw(w) << std::left << m(i, j);
             }

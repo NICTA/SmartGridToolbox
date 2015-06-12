@@ -60,9 +60,8 @@ namespace YAML
         }
         else
         {
-            auto sz = nd.size();
             to = Phases();
-            for (std::size_t i = 0; i < sz; ++i)
+            for (std::size_t i = 0; i < nd.size(); ++i)
             {
                 to |= nd[i].as<Phase>();
             }
@@ -124,9 +123,8 @@ namespace YAML
         }
         else
         {
-            auto sz = nd.size();
-            to = arma::Col<T>(sz);
-            for (arma::uword i = 0; i < sz; ++i)
+            to = arma::Col<T>(nd.size());
+            for (arma::uword i = 0; i < nd.size(); ++i)
             {
                 to(i) = nd[i].as<T>();
             }

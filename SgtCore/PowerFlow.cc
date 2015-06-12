@@ -248,7 +248,7 @@ namespace Sgt
         return YNode;
     }
 
-    double bundleGmr(int n, double gmr1, double d)
+    double bundleGmr(unsigned int n, double gmr1, double d)
     {
         double result;
         if (n == 1)
