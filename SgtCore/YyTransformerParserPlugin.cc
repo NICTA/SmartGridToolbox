@@ -44,7 +44,7 @@ namespace Sgt
         Complex a = parser.expand<Complex>(nd["complex_turns_ratio_01"]);
         Complex ZL = parser.expand<Complex>(nd["leakage_impedance"]);
         auto ndYm = nd["magnetizing_admittance"];
-        Complex YM = ndYm ? parser.expand<Complex>(ndYm) : czero;
+        Complex YM = ndYm ? parser.expand<Complex>(ndYm) : Complex(0.0, 0.0);
 
         std::unique_ptr<YyTransformer> trans(new YyTransformer(id, a, ZL, YM));
 

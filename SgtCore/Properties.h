@@ -44,6 +44,7 @@ namespace Sgt
     class HasPropertiesInterface
     {
         public:
+            virtual ~HasPropertiesInterface() = default;
             virtual const std::map<std::string, std::shared_ptr<PropertyBase>>& properties() const = 0;
             virtual std::map<std::string, std::shared_ptr<PropertyBase>>& properties() = 0;
     };
@@ -61,24 +62,25 @@ namespace Sgt
     class NotGettableException : public std::logic_error
     {
         public:
-            NotGettableException() : std::logic_error("Property is not gettable") {};
+            NotGettableException() : std::logic_error("Property is not gettable") {}
     };
 
     class NotSettableException : public std::logic_error
     {
         public:
-            NotSettableException() : std::logic_error("Property is not settable") {};
+            NotSettableException() : std::logic_error("Property is not settable") {}
     };
 
     class BadTargException : public std::logic_error
     {
         public:
-            BadTargException() : std::logic_error("Target supplied to property has the wrong type") {};
+            BadTargException() : std::logic_error("Target supplied to property has the wrong type") {}
     };
 
     template<typename T> class GetterInterface
     {
         public:
+            virtual ~GetterInterface() = default;
             virtual T get(const HasPropertiesInterface& targ) const = 0;
     };
 
@@ -114,6 +116,7 @@ namespace Sgt
     template<typename T> class SetterInterface
     {
         public:
+            virtual ~SetterInterface() = default;
             using Set = void (HasPropertiesInterface&, const T&);
             virtual void set(HasPropertiesInterface& targ, const T& val) const = 0;
     };

@@ -50,7 +50,7 @@ namespace Sgt
 
         protected:
 
-            virtual int overflow(int ch);
+            virtual int overflow(int ch) override;
 
         private:
 
@@ -82,7 +82,7 @@ namespace Sgt
 
         private:
 
-            static int indentLevel_;
+            static unsigned int indentLevel_;
 
             StreamIndent coutBuf_{std::cout};
             StreamIndent cerrBuf_{std::cerr};
@@ -178,7 +178,7 @@ namespace Sgt
     template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Col<T>& v)
     {
         auto size = v.size();
-        auto w = os.width();
+        auto w = os.width(); 
         std::ostringstream ss;
         ss.flags(os.flags());
         ss.imbue(os.getloc());
@@ -200,9 +200,9 @@ namespace Sgt
     /// @ingroup Utilities
     template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Mat<T>& m)
     {
-        unsigned int size1 = m.n_rows;
-        unsigned int size2 = m.n_cols;
-        unsigned int w = os.width();
+        auto size1 = m.n_rows;
+        auto size2 = m.n_cols;
+        auto w = os.width();
         std::ostringstream ss;
         ss.flags(os.flags());
         ss.imbue(os.getloc());
@@ -307,16 +307,15 @@ namespace Sgt
     extern const double hour;
     extern const double day;
     extern const double week;
-    extern const double J;
-    extern const double kJ;
-    extern const double W;
-    extern const double kW;
-    extern const double kWh;
-    extern const double A;
-    extern const double C;
-    extern const double K;
-    extern const Complex czero;
-    extern const LatLong Greenwich;
+    extern const double joule;
+    extern const double kjoule;
+    extern const double watt;
+    extern const double kwatt;
+    extern const double kwattHour;
+    extern const double amp;
+    extern const double coulomb;
+    extern const double kelvin;
+    extern const LatLong greenwich;
 
     /// @}
 

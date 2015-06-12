@@ -44,7 +44,8 @@ namespace Sgt
         /// @{
 
             /// @brief Constructor
-            /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
+            /// @param nomVRatioDY Nominal complex voltage ratio (not turns ratio) for each pair of windings.
+            /// @param offNomRatioDY Off nominal complex ratio for each of the six windings.
             /// @param ZL The leakage impedance, must be > 0.
             DgyTransformer(const std::string& id, Complex nomVRatioDY, Complex offNomRatioDY, Complex ZL) :
                 BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),

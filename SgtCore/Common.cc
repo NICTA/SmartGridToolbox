@@ -60,16 +60,16 @@ namespace Sgt
         {
             if (isFirst_)
             {
-                destBuf_->sputn(ind1_.c_str(), ind1_.size());
+                destBuf_->sputn(ind1_.c_str(), static_cast<std::streamsize>(ind1_.size()));
             }
             else
             {
-                destBuf_->sputn(ind2_.c_str(), ind2_.size());
+                destBuf_->sputn(ind2_.c_str(), static_cast<std::streamsize>(ind2_.size()));
             }
         }
         isNewline_ = ch == '\n';
         isFirst_ = false;
-        return destBuf_->sputc(ch);
+        return destBuf_->sputc(static_cast<char_type>(ch));
     }
 
     std::ostream& Log::message()
@@ -104,7 +104,7 @@ namespace Sgt
         return std::cerr;
     }
 
-    int Log::indentLevel_ = 0;
+    unsigned int Log::indentLevel_ = 0;
 
     void error()
     {
@@ -141,7 +141,7 @@ namespace Sgt
 
         void init()
         {
-            result_ = czero;
+            result_ = {0.0, 0.0};
         }
         void setResult(double re, double im)
         {
@@ -243,14 +243,13 @@ namespace Sgt
     const double hour = 60.0 * minute;
     const double day = 24.0 * hour;
     const double week = 7 * day;
-    const double J = 1.0;
-    const double kJ = 1000.0 * J;
-    const double W = J / second;
-    const double kW = 1000.0 * W;
-    const double kWh = kW * hour;
-    const double A = 1.0;
-    const double C = A / second;
-    const double K = 1.0;
-    const Complex czero{0.0, 0.0};
-    const LatLong Greenwich{51.4791, 0.0};
+    const double joule = 1.0;
+    const double kjoule = 1000.0 * joule;
+    const double watt = joule / second;
+    const double kwatt = 1000.0 * watt;
+    const double kwattHour = kwatt * hour;
+    const double amp = 1.0;
+    const double coulomb = amp * second;
+    const double kelvin = 1.0;
+    const LatLong greenwich{51.4791, 0.0};
 }

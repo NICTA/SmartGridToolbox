@@ -54,8 +54,8 @@ namespace Sgt
 
     void UndergroundLineStrandedShield::validate()
     {
-        int nPhase = phases0().size();
-        int nCond = hasNeutral_ ? 7 : 6;
+        auto nPhase = phases0().size();
+        unsigned int nCond = hasNeutral_ ? 7 : 6;
 
         // Calculate the distance / GMR matrix Dij.
         arma::Mat<double> Dij(nCond, nCond, arma::fill::zeros);

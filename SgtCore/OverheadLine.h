@@ -68,7 +68,7 @@ namespace Sgt
             OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double L,
                     const arma::Mat<double>& condDist, const arma::Mat<double> subcondGmr,
                     const arma::Col<double>& subcondRPerL, double freq = 50.0, double rhoEarth = 100.0,
-                    const arma::Col<int>& nInBundle = arma::Col<int>(),
+                    const arma::Col<unsigned int>& nInBundle = arma::Col<unsigned int>(),
                     const arma::Col<double>& adjSubcondDist = arma::Col<double>());
         /// @}
 
@@ -130,7 +130,7 @@ namespace Sgt
             arma::Col<double> subcondRPerL_; ///< resistance/length of each subconductor.
             double freq_{50.0}; ///< Frequency (Hz) : TODO : link to network frequency.
             double rhoEarth_{100.0}; ///< Earth resistivity.
-            arma::Col<int> nInBundle_; ///< Number of bundled subconductors on each conductor.
+            arma::Col<unsigned int> nInBundle_; ///< Number of bundled subconductors on each conductor.
             arma::Col<double> adjSubcondDist_; ///< Bundling distance (equilateral triangle for 3, square for 4).
 
             // Cached quantities:

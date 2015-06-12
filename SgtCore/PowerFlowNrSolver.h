@@ -30,7 +30,7 @@ namespace Sgt
 {
     struct Jacobian
     {
-        Jacobian(int nPq, int nPv);
+        Jacobian(arma::uword nPq, arma::uword nPv);
 
         arma::SpMat<double>& IrPqVrPq()
         {
@@ -219,11 +219,11 @@ namespace Sgt
 
             void init(Network* netw);
 
-            unsigned int nPqPv() const
+            arma::uword nPqPv() const
             {
                 return mod_->nPq() + mod_->nPv();
             }
-            unsigned int nVar() const
+            arma::uword nVar() const
             {
                 return 2 * nPqPv();
             }

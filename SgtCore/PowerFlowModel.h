@@ -39,7 +39,7 @@ namespace Sgt
               double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S);
 
         std::string id_; ///< Externally relevant id.
-        BusType type_; ///< Bus type.
+        BusType type_{BusType::BAD}; ///< Bus type.
         Phases phases_; ///< Bus phases.
 
         arma::Col<Complex> YConst_; ///< Constant admittance shunt, one per phase.
@@ -49,7 +49,7 @@ namespace Sgt
         // Regardless of numbers of poles, etc., the combined generation at a bus will have a certain angular
         // momentum for any given frequency of the network. Thus, we define an effective moment of inertia at the
         // bus by L = J omega_netw.
-        double J_; ///< Effective moment of inertia for all machines attached to bus.
+        double J_{0.0}; ///< Effective moment of inertia for all machines attached to bus.
 
         arma::Col<Complex> V_; ///< Voltage, one per phase. Setpoint/warm start on input.
         arma::Col<Complex> S_; ///< Total power injection, one per phase. Setpt/wm start on input.
@@ -59,20 +59,20 @@ namespace Sgt
 
     struct PfNode
     {
-        PfNode(PfBus& bus, int phaseIdx);
+        PfNode(PfBus& bus, std::size_t phaseIdx);
 
-        PfBus* bus_;
+        PfBus* bus_{nullptr};
 
-        int phaseIdx_;
+        std::size_t phaseIdx_{0};
 
-        Complex YConst_;
-        Complex IConst_;
-        Complex SConst_;
+        Complex YConst_{0.0, 0.0};
+        Complex IConst_{0.0, 0.0};
+        Complex SConst_{0.0, 0.0};
 
-        Complex V_;
-        Complex S_;
+        Complex V_{0.0, 0.0};
+        Complex S_{0.0, 0.0};
 
-        int idx_;
+        std::size_t idx_{0};
     };
 
     struct PfBranch
@@ -80,7 +80,7 @@ namespace Sgt
         PfBranch(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
                  const arma::Mat<Complex>& Y);
 
-        std::size_t nPhase_; ///< Number of phases.
+        std::size_t nPhase_{0}; ///< Number of phases.
         Array<std::string, 2> ids_; ///< Id of bus 0/1
         Array<Phases, 2> phases_; ///< phases of bus 0/1.
         arma::Mat<Complex> Y_; ///< Bus admittance matrix.
@@ -229,15 +229,15 @@ namespace Sgt
             // present a general solution to ordering. Thus, when assigning into a compressed_matrix, we need to work
             // element by element, using an indexing scheme.
 
-            int iSl(int i) const
+            arma::uword iSl(arma::uword i) const
             {
                 return i;
             }
-            int iPq(int i) const
+            arma::uword iPq(arma::uword i) const
             {
                 return nSl_ + i;
             }
-            int iPv(int i) const
+            arma::uword iPv(arma::uword i) const
             {
                 return nSl_ + nPq_ + i;
             }

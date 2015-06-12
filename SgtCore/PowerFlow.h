@@ -82,9 +82,9 @@ namespace Sgt
             }
             bool isSubsetOf(const Phases& other) const {return (*this& other) == *this;}
 
-            size_t size() const {return phaseVec_.size();}
-            Phase operator[](int i) const {return phaseVec_[i];}
-            int phaseIndex(Phase p) const {return hasPhase(p) ? idxMap_.at(p) : -1;}
+            std::size_t size() const {return phaseVec_.size();}
+            Phase operator[](std::size_t i) const {return phaseVec_[i];}
+            std::size_t phaseIndex(Phase p) const;
             IdxMap::iterator begin() {return idxMap_.begin();}
             IdxMap::iterator end() {return idxMap_.end();}
             IdxMap::const_iterator begin() const {return idxMap_.begin();}
@@ -115,7 +115,7 @@ namespace Sgt
     /// @param L The line length, in m.
     /// @param freq The system frequency.
     /// @param rhoEarth The conductivity of the earth, ohm metres.
-    /// @return Line impedance matrix Z, s.t. I_phase = Z \Delta V_phase.
+    /// @return Line impedance matrix Z, s.t. I_phase = Z Delta V_phase.
     /// @ingroup PowerFlow
     arma::Mat<Complex> carson(arma::uword nWire, const arma::Mat<double>& Dij, const arma::Col<double> resPerL,
                               double L, double freq, double rhoEarth);
@@ -125,7 +125,7 @@ namespace Sgt
     /// @param nPhase The number of phases, not including nWire grounded neutral wires that will be eliminated
     /// @return The impedance nPhase x nPhase matrix ZPhase, having eliminated nWire grounded neutrals.
     /// @ingroup PowerFlow
-    arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, int nPhase);
+    arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, arma::uword nPhase);
 
     /// @brief Calculate the nodal admittance matrix YNode from the line impedance ZLine.
     /// @param ZLine The line impedance matrix.
@@ -140,7 +140,7 @@ namespace Sgt
     /// @param d The side length of a regular polygon on whose vertices the single conductors lie.
     /// @return The GMR of the bundle.
     /// @ingroup PowerFlow
-    double bundleGmr(int n, double gmr1, double d);
+    double bundleGmr(unsigned int n, double gmr1, double d);
 }
 
 #endif // POWERFLOW_DOT_H

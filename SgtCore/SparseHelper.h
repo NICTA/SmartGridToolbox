@@ -27,8 +27,8 @@ namespace Sgt
     {
         public:
 
-            SparseHelper(int nRow, int nCol, bool sort = true, bool add = true, bool checkZeros = false, 
-                         int nBatch = (1 << 16)) :
+            SparseHelper(arma::uword nRow, arma::uword nCol, bool sort = true, bool add = true, 
+                    bool checkZeros = false, unsigned int nBatch = (1 << 16)) :
                 locs_(2, nBatch, arma::fill::none),
                 vals_(nBatch, arma::fill::none),
                 sort_(sort),
@@ -39,7 +39,7 @@ namespace Sgt
                 // Empty.
             }
 
-            void insert(int iRow, int iCol, const T& x)
+            void insert(arma::uword iRow, arma::uword iCol, const T& x)
             {
                 if (nWaiting_ == vals_.size())
                 {

@@ -141,7 +141,7 @@ namespace Sgt
 
     struct MpBusInfo
     {
-        int id; // C1, Not nec. consecutive.
+        std::size_t id; // C1, Not nec. consecutive.
         int type; // C2, 1 = PQ, 2 = PV, 3 = SL, 4 = isolated.
         double Pd; // C3, MW
         double Qd; // C4, MVAr
@@ -162,8 +162,8 @@ namespace Sgt
 
     struct MpBranchInfo
     {
-        int busIdF;
-        int busIdT;
+        std::size_t busIdF;
+        std::size_t busIdT;
         double R;
         double X;
         double b;
@@ -179,7 +179,7 @@ namespace Sgt
 
     struct MpGenInfo
     {
-        int busId;
+        std::size_t busId;
         double Pg; // MW
         double Qg; // MVAr
         double QMax; // MVAr
@@ -210,25 +210,25 @@ namespace Sgt
         }
         */
 
-        std::string getBusId(int id)
+        std::string getBusId(std::size_t id)
         {
             // return "bus_" + num2PaddedString(id);
             return "bus_" + std::to_string(id);
         }
 
-        std::string getZipId(int iZip, int iBus)
+        std::string getZipId(std::size_t iZip, std::size_t iBus)
         {
             // return "zip_" + num2PaddedString(iZip) + "_" + num2PaddedString(iBus);
             return "zip_" + std::to_string(iZip) + "_" + std::to_string(iBus);
         }
 
-        std::string getGenId(int iGen, int iBus)
+        std::string getGenId(std::size_t iGen, std::size_t iBus)
         {
             // return "gen_" + num2PaddedString(iGen) + "_" + num2PaddedString(iBus);
             return "gen_" + std::to_string(iGen) + "_" + std::to_string(iBus);
         }
 
-        std::string getBranchId(int iBranch, int iBus0, int iBus1)
+        std::string getBranchId(std::size_t iBranch, std::size_t iBus0, std::size_t iBus1)
         {
             // return "branch_" + num2PaddedString(iBranch) + "_" + num2PaddedString(iBus0)
             //   + "_" + num2PaddedString(iBus1);
@@ -302,17 +302,17 @@ namespace Sgt
                 busVec.push_back(MpBusInfo{});
                 MpBusInfo& busInfo = busVec.back();
 
-                busInfo.id = row[0];
-                busInfo.type = row[1];
+                busInfo.id = static_cast<std::size_t>(row[0]);
+                busInfo.type = static_cast<int>(row[1]);
                 busInfo.Pd = row[2];
                 busInfo.Qd = row[3];
                 busInfo.Gs = row[4];
                 busInfo.Bs = row[5];
-                busInfo.busArea = row[6];
+                busInfo.busArea = static_cast<int>(row[6]);
                 busInfo.VMag = row[7];
                 busInfo.VAngDeg = row[8];
                 busInfo.kVBase = row[9] > 1e-6 ? row[9] : default_kVBase;
-                busInfo.zone = row[10];
+                busInfo.zone = static_cast<int>(row[10]);
                 busInfo.VMagMax = row[11];
                 busInfo.VMagMin = row[12];
                 if (data.bus[0].size() > 13)
@@ -334,14 +334,14 @@ namespace Sgt
                 genVec.push_back(MpGenInfo{});
                 MpGenInfo& genInfo = genVec.back();
 
-                genInfo.busId = row[0];
+                genInfo.busId = static_cast<std::size_t>(row[0]);
                 genInfo.Pg = row[1];
                 genInfo.Qg = row[2];
                 genInfo.QMax = row[3];
                 genInfo.QMin = row[4];
                 genInfo.Vg = row[5];
                 genInfo.MVABase = row[6];
-                genInfo.status = row[7];
+                genInfo.status = static_cast<int>(row[7]);
                 genInfo.PMax = row[8];
                 genInfo.PMin = row[9];
                 // There are other fields, but at present we are ignoring them.
@@ -357,8 +357,8 @@ namespace Sgt
                 branchVec.push_back(MpBranchInfo{});
                 MpBranchInfo& branchInfo = branchVec.back();
 
-                branchInfo.busIdF = row[0];
-                branchInfo.busIdT = row[1];
+                branchInfo.busIdF = static_cast<std::size_t>(row[0]);
+                branchInfo.busIdT = static_cast<std::size_t>(row[1]);
                 branchInfo.R = row[2];
                 branchInfo.X = row[3];
                 branchInfo.b = row[4];
@@ -367,7 +367,7 @@ namespace Sgt
                 branchInfo.rateC = row[7];
                 branchInfo.tap = row[8];
                 branchInfo.shiftDeg = row[9];
-                branchInfo.status = row[10];
+                branchInfo.status = static_cast<int>(row[10]);
                 branchInfo.angMinDeg = row[11];
                 branchInfo.angMaxDeg = row[12];
             }
@@ -398,14 +398,14 @@ namespace Sgt
                     genCostVec.push_back(MpGenCostInfo{});
                     MpGenCostInfo& genCostInfo = genCostVec.back();
 
-                    genCostInfo.model = row[0];
+                    genCostInfo.model = static_cast<int>(row[0]);
                     genCostInfo.startup = row[1];
                     genCostInfo.shutdown = row[2];
-                    std::size_t nCost = row[3];
+                    auto nCost = static_cast<size_t>(row[3]);
                     genCostInfo.costs.reserve(nCost);
-                    for (std::size_t i = 0; i < nCost; ++i)
+                    for (std::size_t j = 0; j < nCost; ++j)
                     {
-                        genCostInfo.costs.push_back(row[4 + i]);
+                        genCostInfo.costs.push_back(row[4 + j]);
                     }
                 }
             }
@@ -415,7 +415,7 @@ namespace Sgt
         netw.setPBase(data.MVABase);
 
         // Busses:
-        int nZip = 0;
+        std::size_t nZip = 0;
         for (const auto& busInfo : busVec)
         {
             std::string busId = getBusId(busInfo.id);
@@ -444,8 +444,8 @@ namespace Sgt
             std::unique_ptr<GenericZip> zip(new GenericZip(zipId, Phase::BAL));
             zip->setYConst({GScale * YConst});
             zip->setSConst({PScale * SConst});
-            bus->setVMagMin(busInfo.VMagMin == -infinity ? -infinity : VScale * pu2kV(busInfo.VMagMin, busInfo.kVBase));
-            bus->setVMagMax(busInfo.VMagMax == infinity ? infinity : VScale * pu2kV(busInfo.VMagMax, busInfo.kVBase));
+            bus->setVMagMin(busInfo.VMagMin <= -infinity ? -infinity : VScale * pu2kV(busInfo.VMagMin, busInfo.kVBase));
+            bus->setVMagMax(busInfo.VMagMax >= infinity ? infinity : VScale * pu2kV(busInfo.VMagMax, busInfo.kVBase));
 
             bus->setIsInService(true);
 
@@ -491,10 +491,10 @@ namespace Sgt
 
             gen->setInServiceS({PScale * Complex(genInfo.Pg, genInfo.Qg)});
 
-            gen->setPMin(genInfo.PMin == -infinity ? -infinity : PScale * genInfo.PMin);
-            gen->setPMax(genInfo.PMax == infinity ? infinity : PScale * genInfo.PMax);
-            gen->setQMin(genInfo.QMin == -infinity ? -infinity : PScale * genInfo.QMin);
-            gen->setQMax(genInfo.QMax == infinity ? infinity : PScale * genInfo.QMax);
+            gen->setPMin(genInfo.PMin <= -infinity ? -infinity : PScale * genInfo.PMin);
+            gen->setPMax(genInfo.PMax >= infinity ? infinity : PScale * genInfo.PMax);
+            gen->setQMin(genInfo.QMin <= -infinity ? -infinity : PScale * genInfo.QMin);
+            gen->setQMax(genInfo.QMax >= infinity ? infinity : PScale * genInfo.QMax);
 
             gen->setC0(0.0);
             gen->setC1(0.0);
@@ -560,7 +560,7 @@ namespace Sgt
                 GenericGen& gen = *genCompVec[i];
                 gen.setCStartup(genCostInfo.startup);
                 gen.setCShutdown(genCostInfo.shutdown);
-                int nCost = genCostInfo.costs.size();
+                auto nCost = genCostInfo.costs.size();
                 if (nCost >= 1)
                 {
                     gen.setC0(genCostInfo.costs[2]);

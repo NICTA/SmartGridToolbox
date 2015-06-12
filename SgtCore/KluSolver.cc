@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "KluSolver.h"
+
 #include <klu.h>
 
 #include <armadillo>
@@ -21,28 +23,28 @@ using namespace arma;
 bool kluSolve(const arma::SpMat<double>& a, const arma::Col<double>& b, arma::Col<double>& result)
 {
     auto n = b.size();
-    uword nnz = a.n_nonzero;
+    auto nnz = a.n_nonzero;
 
     int* ap = new int[n + 1];
-    for (std::size_t i = 0; i <= n; ++i) ap[i] = a.col_ptrs[i];
+    for (unsigned int i = 0; i <= n; ++i) ap[i] = static_cast<int>(a.col_ptrs[i]);
 
     int* ai = new int[nnz];
-    for (std::size_t i = 0; i < nnz; ++i) ai[i] = a.row_indices[i];
+    for (unsigned int i = 0; i < nnz; ++i) ai[i] = static_cast<int>(a.row_indices[i]);
 
     double* ax = new double[nnz];
-    for (std::size_t i = 0; i < nnz; ++i) ax[i] = a.values[i];
+    for (unsigned int i = 0; i < nnz; ++i) ax[i] = a.values[i];
 
     double* b1 = new double[n];
-    for (arma::uword i = 0; i < n; ++i) b1[i] = b(i);
+    for (unsigned int i = 0; i < n; ++i) b1[i] = b(i);
 
     klu_symbolic *Symbolic;
     klu_numeric *Numeric;
     klu_common Common;
 
     klu_defaults (&Common);
-    Symbolic = klu_analyze (n, ap, ai, &Common);
+    Symbolic = klu_analyze (static_cast<int>(n), ap, ai, &Common);
     Numeric = klu_factor (ap, ai, ax, Symbolic, &Common);
-    bool ok = klu_solve(Symbolic, Numeric, n, 1, b1, &Common) == 1;
+    bool ok = klu_solve(Symbolic, Numeric, static_cast<int>(n), 1, b1, &Common) == 1;
 
     if (!ok)
     {

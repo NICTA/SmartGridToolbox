@@ -93,7 +93,7 @@ namespace
 
 namespace Sgt
 {
-    Jacobian::Jacobian(int nPq, int nPv)
+    Jacobian::Jacobian(arma::uword nPq, arma::uword nPv)
     {
         for (std::size_t i = 0; i < 2; ++i)
         {
@@ -549,7 +549,7 @@ SGT_DEBUG
         // Block diagonal:
         for (uword i = 0; i < mod_->nPq(); ++i)
         {
-            int iPqi = mod_->iPq(i);
+            arma::uword iPqi = mod_->iPq(i);
 
             double PVr_p_QVi = P(iPqi) * Vr(iPqi) + Q(iPqi) * Vi(iPqi);
             double PVi_m_QVr = P(iPqi) * Vi(iPqi) - Q(iPqi) * Vr(iPqi);
@@ -569,7 +569,7 @@ SGT_DEBUG
         // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
         for (uword i = 0; i < mod_->nPv(); ++i)
         {
-            int iPvi = mod_->iPv(i);
+            arma::uword iPvi = mod_->iPv(i);
 
             J.IrPvVrPv()(i, i) = Jc.IrPvVrPv()(i, i) + P(iPvi) / M2Pv(i); // Could -> Jc if we wanted.
             J.IrPvViPv()(i, i) = Jc.IrPvViPv()(i, i) + Q(iPvi) / M2Pv(i);
@@ -627,8 +627,8 @@ SGT_DEBUG
 
     void PowerFlowNrSolver::calcJMatrix(SpMat<double>& JMat, const Jacobian& J) const
     {
-        Array<int, 4> ibInd = {{0, 1, 2, 3}};
-        Array<int, 4> kbInd = {{0, 1, 3, 4}}; // Skip VrPv, since it doesn't appear as a variable.
+        Array<unsigned int, 4> ibInd = {{0, 1, 2, 3}};
+        Array<unsigned int, 4> kbInd = {{0, 1, 3, 4}}; // Skip VrPv, since it doesn't appear as a variable.
         Array<Col<uword>, 4> sl1Vec = {{selIrPqFrom_f_, selIiPqFrom_f_, selIrPvFrom_f_, selIiPvFrom_f_}};
         Array<Col<uword>, 4> sl2Vec = {{selVrPqFrom_x_, selViPqFrom_x_, selViPvFrom_x_, selQPvFrom_x_}};
 
@@ -646,8 +646,8 @@ SGT_DEBUG
 
                 for (auto it = block.begin(); it != block.end(); ++it)
                 {
-                    int i1 = sl1(it.row());
-                    int k1 = sl2(it.col());
+                    arma::uword i1 = sl1(it.row());
+                    arma::uword k1 = sl2(it.col());
                     helper.insert(i1, k1, *it);
                 }
                 JMat += helper.get();

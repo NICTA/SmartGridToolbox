@@ -21,7 +21,7 @@ namespace Sgt
     OverheadLine::OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double L,
             const arma::Mat<double>& condDist, const arma::Mat<double> subcondGmr,
             const arma::Col<double>& subcondRPerL, double freq, double rhoEarth,
-            const arma::Col<int>& nInBundle,
+            const arma::Col<unsigned int>& nInBundle,
             const arma::Col<double>& adjSubcondDist) :
         BranchAbc(id, phases0, phases1),
         L_(L),
@@ -65,7 +65,7 @@ namespace Sgt
 
         if (nInBundle_.size() == 0)
         {
-            nInBundle_ = arma::Col<int>(nCond, arma::fill::ones);
+            nInBundle_ = arma::Col<unsigned int>(nCond, arma::fill::ones);
             adjSubcondDist_ = arma::Col<double>(nCond, arma::fill::zeros);
         }
 

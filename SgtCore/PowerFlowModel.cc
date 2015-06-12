@@ -46,15 +46,14 @@ namespace Sgt
         }
     }
 
-    PfNode::PfNode(PfBus& bus, int phaseIdx) :
+    PfNode::PfNode(PfBus& bus, std::size_t phaseIdx) :
         bus_(&bus),
         phaseIdx_(phaseIdx),
         YConst_(bus.YConst_(phaseIdx)),
         IConst_(bus.IConst_(phaseIdx)),
         SConst_(bus.SConst_(phaseIdx)),
         V_(bus.V_(phaseIdx)),
-        S_(bus.S_(phaseIdx)),
-        idx_(-1)
+        S_(bus.S_(phaseIdx))
     {
         // Empty.
     }
@@ -188,12 +187,12 @@ namespace Sgt
 
                 for (arma::uword k = i + 1; k < nTerm; ++k)
                 {
-                    int busIdxK = k / branch->nPhase_; // 0 or 1
-                    int branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
+                    auto busIdxK = k / branch->nPhase_; // 0 or 1
+                    auto branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
                     const PfBus* busK = busses[busIdxK];
-                    int busPhaseIdxK = busK->phases_.phaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
+                    auto busPhaseIdxK = busK->phases_.phaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
                     const PfNode* nodeK = busK->nodes_[busPhaseIdxK].get();
-                    int idxNodeK = nodeK->idx_;
+                    auto idxNodeK = nodeK->idx_;
 
                     YHelper.insert(idxNodeI, idxNodeK, branch->Y_(i, k));
                     YHelper.insert(idxNodeK, idxNodeI, branch->Y_(k, i));

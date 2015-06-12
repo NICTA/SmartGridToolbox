@@ -38,25 +38,29 @@ namespace Sgt
         };
     }
 
+    std::size_t Phases::phaseIndex(Phase p) const 
+    {
+        if (!hasPhase(p))
+        {
+            throw std::out_of_range("Requested phase does not exist.");
+        }
+        return static_cast<std::size_t>(idxMap_.at(p));
+    }
+
     std::string to_string(BusType type)
     {
         switch (type)
         {
             case BusType::SL:
                 return "SL";
-                break;
             case BusType::PQ:
                 return "PQ";
-                break;
             case BusType::PV:
                 return "PV";
-                break;
             case BusType::NA:
                 return "NA";
-                break;
             case BusType::BAD:
                 return "BAD";
-                break;
         }
         return "ERROR";
     }
@@ -81,34 +85,24 @@ namespace Sgt
         {
             case Phase::BAL:
                 return "BAL";
-                break;
             case Phase::A:
                 return "A";
-                break;
             case Phase::B:
                 return "B";
-                break;
             case Phase::C:
                 return "C";
-                break;
             case Phase::G:
                 return "G";
-                break;
             case Phase::N:
                 return "N";
-                break;
             case Phase::SP:
                 return "SP";
-                break;
             case Phase::SM:
                 return "SM";
-                break;
             case Phase::SN:
                 return "SN";
-                break;
             case Phase::BAD:
                 return "BAD";
-                break;
         }
         return "ERROR";
     }
@@ -135,34 +129,24 @@ namespace Sgt
         {
             case Phase::BAL:
                 return "balanced/1-phase";
-                break;
             case Phase::A:
                 return "3-phase A";
-                break;
             case Phase::B:
                 return "3-phase B";
-                break;
             case Phase::C:
                 return "3-phase C";
-                break;
             case Phase::G:
                 return "ground";
-                break;
             case Phase::N:
                 return "neutral";
-                break;
             case Phase::SP:
                 return "split-phase +ve";
-                break;
             case Phase::SM:
                 return "split-phase -ve";
-                break;
             case Phase::SN:
                 return "split-phase neutral";
-                break;
             case Phase::BAD:
                 return "UNDEFINED";
-                break;
         }
         return "ERROR";
     }
@@ -230,9 +214,9 @@ namespace Sgt
         return Z;
     }
 
-    arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, int nPhase)
+    arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, unsigned int nPhase)
     {
-        int n = Z.n_rows;
+        auto n = Z.n_rows;
         auto Zpp = Z.submat(0, 0, nPhase - 1, nPhase - 1);
         auto Zpn = Z.submat(0, nPhase, nPhase - 1, n - 1);
         auto Znp = Z.submat(nPhase, 0, n - 1, nPhase - 1);

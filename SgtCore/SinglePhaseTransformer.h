@@ -44,7 +44,8 @@ namespace Sgt
         /// @{
 
             /// @brief Constructor
-            /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
+            /// @param nomVRatio The complex voltage ratio for each of the six windings.
+            /// @param offNomRatio The off nominal ratio for each of the six windings.
             /// @param ZL The leakage impedance, must be > 0.
             SinglePhaseTransformer(const std::string& id, Complex nomVRatio, Complex offNomRatio, Complex ZL) :
                 BranchAbc(id, Phase::BAL, Phase::BAL), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)

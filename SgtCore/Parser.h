@@ -76,6 +76,7 @@ namespace Sgt
     template<typename T> class ParserPlugin
     {
         public:
+            virtual ~ParserPlugin() = default;
             virtual const char* key() {return "ERROR";}
             virtual void parse(const YAML::Node& nd, T& into, const ParserBase& parser) const
             {
@@ -170,10 +171,6 @@ namespace Sgt
 
             std::map<std::string, std::unique_ptr<ParserPlugin<T>>> plugins_;
     };
-
-    class Network;
-    extern template class Parser<Network>;
-    extern template class ParserPlugin<Network>;
 }
 
 #endif // PARSER_DOT_H
