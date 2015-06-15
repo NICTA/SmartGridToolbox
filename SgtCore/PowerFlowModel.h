@@ -87,7 +87,7 @@ namespace Sgt
     };
 
     /// @brief A mathematical model of a network, suitable for solving the AC power flow problem.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class PowerFlowModel
     {
         public:

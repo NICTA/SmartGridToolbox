@@ -1,8 +1,14 @@
 /** @mainpage
  *  This is the documentation for SmartGridToolbox. */
 
-/// @defgroup Core Core
-/// @brief Core classes of SmartGridToolbox.
+/// @defgroup Foundation Foundation
+/// @brief Foundation classes, functions etc. for the whole of SmartGridToolbox
+
+/// @defgroup PowerFlowCore Power Flow Core
+/// @brief Core power flow classes of SmartGridToolbox.
+
+/// @defgroup SimCore Simulation Core
+/// @brief Core simulation classes, functions etc. 
 
 /// @defgroup Utilities Utilities
 /// @brief Utility classes, functions and constants.
@@ -10,8 +16,8 @@
 /// These will typically be included in most headers, and provide access to utility functions etc. for time,
 /// complex numbers, linear algebra, etc.
 
-/// @defgroup PowerFlow Power Flow
-/// @brief Core power flow classes of SmartGridToolbox.
+/// @defgroup Parsing Parsing
+/// @brief Parsing classes, functions etc.
 
 /// @namespace SmartGridToolbox
 /// @brief The primary namespace for SmartGridToolbox

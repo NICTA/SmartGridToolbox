@@ -27,7 +27,7 @@
 namespace Sgt
 {
     /// @brief Simulation: steps time according to discrete event simulation principles.
-    /// @ingroup Core
+    /// @ingroup SimCore
     class Simulation
     {
         private:

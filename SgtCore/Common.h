@@ -106,6 +106,7 @@ namespace Sgt
             }
     };
 
+    /// @ingroup Utilities
     void error();
 
     /// @}
@@ -139,36 +140,35 @@ namespace Sgt
     /// @name Complex numbers
     /// @{
 
+    /// @addtogroup Utilities
+    /// @{
+    
     typedef std::complex<double> Complex;
 
-    /// @ingroup Utilities
     inline Complex polar(double m, double theta) // theta is radians.
     {
         // Note the following will use RVO in C++11, no unneeded temporaries.
         return Complex(m * cos(theta), m * sin(theta));
     }
 
-    /// @ingroup Utilities
     inline Complex operator*(int i, const Complex& c)
     {
         return Complex(i * c.real(), i * c.imag());
     }
 
-    /// @ingroup Utilities
     inline Complex operator*(const Complex& c, int i)
     {
         return Complex(i * c.real(), i * c.imag());
     }
 
-    /// @ingroup Utilities
     std::ostream& operator<<(std::ostream& os, const Complex& c);
 
-    /// @ingroup Utilities
     template<> Complex from_string<Complex>(const std::string& s);
 
-    /// @ingroup Utilities
     std::string to_string(const Complex& c);
 
+    /// @}
+    
     /// @}
 
     /// @name Linear algebra

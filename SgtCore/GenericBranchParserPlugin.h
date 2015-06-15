@@ -23,7 +23,7 @@ namespace Sgt
     class Network;
 
     /// @brief ParserPlugin that parses GenericBranch objects.
-    /// @ingroup PowerFlow
+    /// @ingroup Parsing
     class GenericBranchParserPlugin : public NetworkParserPlugin
     {
         public:

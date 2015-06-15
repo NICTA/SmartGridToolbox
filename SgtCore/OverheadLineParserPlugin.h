@@ -23,7 +23,7 @@ namespace Sgt
     class OverheadLine;
 
     /// @brief ParserPlugin that parses OverheadLine objects.
-    /// @ingroup PowerFlow
+    /// @ingroup Parsing
     class OverheadLineParserPlugin : public NetworkParserPlugin
     {
         public:

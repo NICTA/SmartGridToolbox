@@ -23,7 +23,7 @@ namespace Sgt
     class UndergroundLine;
 
     /// @brief ParserPlugin that parses UndergroundLine objects.
-    /// @ingroup PowerFlow
+    /// @ingroup Parsing
     class UndergroundLineParserPlugin : public NetworkParserPlugin
     {
         public:

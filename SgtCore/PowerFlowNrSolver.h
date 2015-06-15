@@ -198,7 +198,7 @@ namespace Sgt
     };
 
     /// @brief Newton-Raphson AC power flow solver.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class PowerFlowNrSolver : public PowerFlowSolverInterface
     {
         public:

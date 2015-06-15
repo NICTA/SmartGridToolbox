@@ -219,7 +219,7 @@ namespace Sgt
     ///
     /// A property can have a getter and a setter. It can generically get its value and set via strings,
     /// or can get and set its the particular template type, if we know what that is.
-    /// @ingroup Core
+    /// @ingroup Foundation
     template<typename T> class Property : public PropertyBase1<T>
     {
         public:

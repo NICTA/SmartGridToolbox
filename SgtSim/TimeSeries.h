@@ -30,7 +30,7 @@ namespace Sgt
     };
 
     /// @brief Base class for time series objects: functions of time.
-    /// @ingroup Core
+    /// @ingroup SimCore
     template<typename T, typename V>
     class TimeSeries : public TimeSeriesBase
     {
@@ -39,7 +39,7 @@ namespace Sgt
     };
 
     /// @brief Time series for a constant function of time. 
-    /// @ingroup Core
+    /// @ingroup SimCore
     template<typename T, typename V>
     class ConstTimeSeries : public TimeSeries<T, V>
     {
@@ -53,7 +53,7 @@ namespace Sgt
     };
 
     /// @brief Base class for TimeSeries object that stores a time/value table.  
-    /// @ingroup Core
+    /// @ingroup SimCore
     template<typename T, typename V>
     class DataTimeSeries : public TimeSeries<T, V>
     {
@@ -62,7 +62,7 @@ namespace Sgt
     };
 
     /// @brief TimeSeries that changes in a stepwise manner between tabulated times. 
-    /// @ingroup Core
+    /// @ingroup SimCore
     template<typename T, typename V>
     class StepwiseTimeSeries : public DataTimeSeries<T, V>
     {
@@ -88,7 +88,7 @@ namespace Sgt
     };
 
     /// @brief TimeSeries that uses linear interpolation between tabulated times.
-    /// @ingroup Core
+    /// @ingroup SimCore
     template<typename T, typename V>
     class LerpTimeSeries : public DataTimeSeries<T, V>
     {
@@ -125,7 +125,7 @@ namespace Sgt
 
 #if 0 // TODO: redo spline due to license issues.
     /// @brief TimeSeries that uses spline interpolation between tabulated times.
-    /// @ingroup Core
+    /// @ingroup SimCore
     template<typename T>
     class SplineTimeSeries : public DataTimeSeries<T, double>
     {
@@ -147,7 +147,7 @@ namespace Sgt
 #endif
 
     /// @brief TimeSeries that uses a std::function to calculate values.
-    /// @ingroup Core
+    /// @ingroup SimCore
     template<typename T, typename V>
     class FunctionTimeSeries : public TimeSeries<T, V>
     {

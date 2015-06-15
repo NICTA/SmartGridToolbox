@@ -25,7 +25,7 @@ namespace Sgt
     ///
     /// By deriving from this class and from an existing Component, we may extend that Component to include
     /// SimComponent functionality via multiple inheritance. See comments for SimComponent for more details.
-    /// @ingroup Core
+    /// @ingroup SimCore
     class SimComponentAdaptor : virtual public ComponentInterface
     {
         public:
@@ -185,7 +185,7 @@ namespace Sgt
     /// For example, we have SimBus : public SimComponentAdaptor, public Bus, which takes it's
     /// ComponentInterface from Bus rather than Component. Depending on needs, this kind of thing may be done using
     /// multiple inheritance, as just described, or using composition: both have advantages and disadvantages.
-    /// @ingroup Core
+    /// @ingroup SimCore
     class SimComponent : public SimComponentAdaptor, public Component
     {
         public:

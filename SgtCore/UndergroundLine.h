@@ -29,7 +29,7 @@ namespace Sgt
     /// Thus, there are either 6 or 7 conductors to consider, depending on whether there is a separate neutral wire.
     /// Conductors 1-3 and 7 are the usual type of conductor with their own particular GMR specified, etc.
     /// Conductors 4-6 represent either the concentric neutrals or the tape.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class UndergroundLine : public BranchAbc
     {
         public:
@@ -121,7 +121,7 @@ namespace Sgt
     };
 
     /// @brief Underground line with stranded shielding.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class UndergroundLineStrandedShield : public UndergroundLine
     {
         public:

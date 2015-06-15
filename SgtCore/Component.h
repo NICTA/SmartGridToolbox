@@ -27,7 +27,7 @@ namespace Sgt
     /// @brief Base interface for all Components. 
     ///
     /// A Component is essentially an object with a unique key.
-    /// @ingroup Core
+    /// @ingroup Foundation
     class ComponentInterface : virtual public HasPropertiesInterface
     {
         public:
@@ -64,7 +64,7 @@ namespace Sgt
     /// @brief Base class for all Components. 
     ///
     /// A Component is essentially an object with a unique key.
-    /// @ingroup Core
+    /// @ingroup Foundation
     class Component : virtual public ComponentInterface
     {
         public:

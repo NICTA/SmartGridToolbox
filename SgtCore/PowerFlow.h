@@ -24,7 +24,7 @@
 
 namespace Sgt
 {
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     enum class BusType
     {
         SL,
@@ -38,7 +38,7 @@ namespace Sgt
     inline std::ostream& operator<<(std::ostream& os, BusType t) {return os << to_string(t);}
     template<> BusType from_string<BusType>(const std::string& str);
 
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     enum class Phase : unsigned int
     {
         BAL = 0x1,     // Balanced/one-phase.
@@ -59,7 +59,7 @@ namespace Sgt
     const char* phaseDescr(Phase phase);
 
     /// @brief A set of network phases, each specified by a Phase value. 
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class Phases
     {
         private:
@@ -116,7 +116,7 @@ namespace Sgt
     /// @param freq The system frequency.
     /// @param rhoEarth The conductivity of the earth, ohm metres.
     /// @return Line impedance matrix Z, s.t. I_phase = Z Delta V_phase.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     arma::Mat<Complex> carson(arma::uword nWire, const arma::Mat<double>& Dij, const arma::Col<double> resPerL,
                               double L, double freq, double rhoEarth);
 
@@ -124,13 +124,13 @@ namespace Sgt
     /// @param Z The primitive nWire x nWire line impedance matrix
     /// @param nPhase The number of phases, not including nWire grounded neutral wires that will be eliminated
     /// @return The impedance nPhase x nPhase matrix ZPhase, having eliminated nWire grounded neutrals.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, arma::uword nPhase);
 
     /// @brief Calculate the nodal admittance matrix YNode from the line impedance ZLine.
     /// @param ZLine The line impedance matrix.
     /// @return The nodal admittance matrix YNode.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     arma::Mat<Complex> ZLine2YNode(const arma::Mat<Complex>& ZLine);
     
     /// @brief Calculate the GMR of a bundled conductor.
@@ -139,7 +139,7 @@ namespace Sgt
     /// @param gmr1 The GMR of a single conductor.
     /// @param d The side length of a regular polygon on whose vertices the single conductors lie.
     /// @return The GMR of the bundle.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     double bundleGmr(unsigned int n, double gmr1, double d);
 }
 

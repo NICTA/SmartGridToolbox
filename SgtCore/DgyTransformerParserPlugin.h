@@ -23,7 +23,7 @@ namespace Sgt
     class Network;
 
     /// @brief ParserPlugin that parses DgyTransformer objects.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class DgyTransformerParserPlugin : public NetworkParserPlugin
     {
         public:

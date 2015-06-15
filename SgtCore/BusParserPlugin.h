@@ -23,7 +23,7 @@ namespace Sgt
     class Network;
 
     /// @brief ParserPlugin that parses Bus objects.
-    /// @ingroup PowerFlow
+    /// @ingroup Parsing
     class BusParserPlugin : public NetworkParserPlugin
     {
         public:

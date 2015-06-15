@@ -57,7 +57,7 @@ namespace Sgt
     class PowerFlowModel;
 
     /// @brief Network component, describing an electricity network.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class Network : public Component
     {
         public:

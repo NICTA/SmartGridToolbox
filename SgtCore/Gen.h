@@ -25,7 +25,7 @@ namespace Sgt
     /// @brief Common abstract base class for a generation at a bus.
     ///
     /// Implement some common functionality for convenience.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class GenAbc : public Component
     {
         public:
@@ -191,7 +191,7 @@ namespace Sgt
     };
 
     /// @brief A concrete, generic generation at a bus.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class GenericGen : public GenAbc
     {
         public:

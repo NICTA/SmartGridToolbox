@@ -28,7 +28,7 @@ namespace Sgt
     /// @brief Common abstract base class for a branch.
     ///
     /// Implement some common functionality for convenience.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class BranchAbc : public Component
     {
         friend class Network;
@@ -190,7 +190,7 @@ namespace Sgt
     };
 
     /// @brief A concrete, generic branch.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class GenericBranch : public BranchAbc
     {
         public:

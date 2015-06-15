@@ -30,7 +30,7 @@ namespace Sgt
     /// @brief Optimal power flow (OPF) solver.
     ///
     /// Uses the external PowerTools++ library.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class PowerFlowPtPpSolver : public PowerFlowSolverInterface
     {
         public:

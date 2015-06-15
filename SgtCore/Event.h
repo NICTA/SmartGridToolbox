@@ -27,7 +27,7 @@ namespace Sgt
     ///
     /// Actions are stored as a list in the event in question. Anyone may register an action. Deregistration is
     /// not currently supported.
-    /// @ingroup Core
+    /// @ingroup Foundation
     class Action
     {
         public:
@@ -64,7 +64,7 @@ namespace Sgt
     ///
     /// Actions are stored as a list in the event in question. Anyone may register an action. Deregistration is
     /// not currently supported.
-    /// @ingroup Core
+    /// @ingroup Foundation
     class Event
     {
         public:

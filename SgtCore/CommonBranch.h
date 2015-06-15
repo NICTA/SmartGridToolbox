@@ -24,7 +24,7 @@
 namespace Sgt
 {
     /// @brief A single phase transmission line or transformer.
-    /// @ingroup PowerFlow
+    /// @ingroup PowerFlowCore
     class CommonBranch : public BranchAbc
     {
         public:

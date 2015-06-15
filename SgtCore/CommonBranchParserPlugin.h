@@ -23,11 +23,11 @@ namespace Sgt
     class Network;
 
     /// @brief ParserPlugin that parses CommonBranch objects.
-    /// @ingroup PowerFlow
+    /// @ingroup Parsing
     class CommonBranchParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key()
+            virtual const char* key() override
             {
                 return "common_branch";
             }
