@@ -63,7 +63,7 @@ namespace Sgt
                               + (367 * (utcTime.date().month() - 2 - 12 * liAux1)) / 12
                               - (3 * ((utcTime.date().year() + 4900 + liAux1) / 100)) / 4
                               + utcTime.date().day() - 32075;
-            double dJulianDate = (double)(liAux2) - 0.5 + dHours / 24.0;
+            double dJulianDate = double(liAux2) - 0.5 + dHours / 24.0;
 
             // Calculate difference between current Julian Day and JD 2451545.0
             dElapsedJulianDays = dJulianDate - 2451545.0;

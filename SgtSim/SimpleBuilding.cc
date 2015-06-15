@@ -30,7 +30,7 @@ namespace
     {
         // Solve dTb = a * T + b * t + c, with a, b, c defined below.
         double Tb1;
-        if (dt == 0)
+        if (std::abs(dt) < std::numeric_limits<double>::epsilon())
         {
             Tb1 = Tb0;
         }

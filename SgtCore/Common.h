@@ -246,6 +246,9 @@ namespace Sgt
     {
         return double(d.ticks()) / Time::ticks_per_second();
     }
+    
+    /// @ingroup Utilities
+    Time timeFromDSeconds(double dSeconds);
 
     /// @ingroup Utilities
     inline Time timeFromUtcTime(posix_time::ptime utcTime)

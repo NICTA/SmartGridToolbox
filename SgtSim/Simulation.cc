@@ -61,7 +61,7 @@ namespace Sgt
 
         for (std::size_t i = 0; i < simCompVec_.size(); ++i)
         {
-            simCompVec_[i]->setRank(i);
+            simCompVec_[i]->setRank(static_cast<int>(i));
         }
 
         WoGraph g(simCompVec_.size());
@@ -70,7 +70,7 @@ namespace Sgt
             for (auto dep : simCompVec_[i]->dependencies())
             {
                 // i depends on dep->rank().
-                g.link(dep.lock()->rank(), i);
+                g.link(static_cast<std::size_t>(dep.lock()->rank()), i);
             }
         }
         g.weakOrder();
@@ -87,7 +87,7 @@ namespace Sgt
         // Reset the evaluation rank.
         for (std::size_t i = 0; i < simCompVec_.size(); ++i)
         {
-            simCompVec_[i]->setRank(i);
+            simCompVec_[i]->setRank(static_cast<int>(i));
         }
 
         scheduledUpdates_.clear();

@@ -47,7 +47,7 @@ namespace Sgt
 
             Weather(const std::string& id) :
                 Heartbeat(id, posix_time::minutes(5)),
-                latLong_(Greenwich),
+                latLong_(greenwich),
                 temperatureSeries_(nullptr),
                 cloudCoverSeries_(nullptr)
             {

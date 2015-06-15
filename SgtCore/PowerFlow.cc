@@ -214,7 +214,7 @@ namespace Sgt
         return Z;
     }
 
-    arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, unsigned int nPhase)
+    arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, arma::uword nPhase)
     {
         auto n = Z.n_rows;
         auto Zpp = Z.submat(0, 0, nPhase - 1, nPhase - 1);

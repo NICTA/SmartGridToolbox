@@ -224,6 +224,14 @@ namespace Sgt
 
     const posix_time::ptime epoch(gregorian::date(1970,1,1));
 
+    Time timeFromDSeconds(double dSeconds)
+    {
+        long wholeSecs = long(dSeconds);
+        double fracSecs = dSeconds - wholeSecs;
+        return Time(0, 0, Time::sec_type(wholeSecs), 
+                    Time::fractional_seconds_type(fracSecs * Time::ticks_per_second()));
+    }
+
     posix_time::ptime utcTimeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz)
     {
         using namespace boost::local_time;

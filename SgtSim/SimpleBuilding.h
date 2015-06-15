@@ -56,14 +56,14 @@ namespace Sgt
             SimpleBuilding(const std::string& id) :
                 ZipAbc(id, Phase::BAL),
                 dt_(posix_time::minutes(5)),
-                kb_(5 * kW / K),
-                Cb_(1.0e5 * kJ / K),
-                TbInit_(20.0 * K),
-                kh_(10.0 * kW / K),
+                kb_(5 * kwatt / kelvin),
+                Cb_(1.0e5 * kjoule / kelvin),
+                TbInit_(20.0 * kelvin),
+                kh_(10.0 * kwatt / kelvin),
                 copCool_(3.0),
                 copHeat_(4.0),
-                PMax_(20.0 * kW),
-                Ts_(20.0 * K),
+                PMax_(20.0 * kwatt),
+                Ts_(20.0 * kelvin),
                 weather_(nullptr),
                 dQg_(nullptr),
                 Tb_(0.0),
@@ -149,9 +149,9 @@ namespace Sgt
 
             double Tb() {return Tb_;}
 
-            const double Te() {return weather_->temperatureSeries()->value(lastUpdated());}
+            double Te() {return weather_->temperatureSeries()->value(lastUpdated());}
 
-            const double dQg() {return dQg_->value(lastUpdated());}
+            double dQg() {return dQg_->value(lastUpdated());}
 
             HvacMode mode() {return mode_;}
 

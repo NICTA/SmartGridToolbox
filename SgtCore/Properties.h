@@ -44,6 +44,8 @@ namespace Sgt
     class HasPropertiesInterface
     {
         public:
+            HasPropertiesInterface() = default;
+            HasPropertiesInterface(const HasPropertiesInterface& from) = default;
             virtual ~HasPropertiesInterface() = default;
             virtual const std::map<std::string, std::shared_ptr<PropertyBase>>& properties() const = 0;
             virtual std::map<std::string, std::shared_ptr<PropertyBase>>& properties() = 0;

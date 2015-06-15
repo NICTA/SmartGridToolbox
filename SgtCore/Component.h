@@ -35,6 +35,10 @@ namespace Sgt
         /// @name Lifecycle:
         /// @{
 
+            ComponentInterface() = default;
+
+            ComponentInterface(const ComponentInterface& from) = default;
+
             virtual ~ComponentInterface() = default;
 
         /// @}

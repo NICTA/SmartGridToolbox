@@ -183,12 +183,10 @@ namespace Sgt
 
         Time readTime(std::istringstream& ss, const Time& t0, double toSecs)
         {
-            std::string dateStr;
-            std::string timeStr;
             double secs;
             ss >> secs;
             secs *= toSecs;
-            return t0 + posix_time::seconds(secs);
+            return t0 + timeFromDSeconds(secs);
         }
 
     } // Anon. namespace.

@@ -30,8 +30,8 @@ namespace Sgt
     {
         public:
 
-        /// @name Static member functions:
-        /// @{
+            /// @name Static member functions:
+            /// @{
 
             static const std::string& sComponentType()
             {
@@ -39,19 +39,19 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Lifecycle:
-        /// @{
+            /// @name Lifecycle:
+            /// @{
 
             SimComponentAdaptor() = default;
 
             virtual ~SimComponentAdaptor() = default;
 
-        /// @}
+            /// @}
 
-        /// @name Simulation flow
-        /// @{
+            /// @name Simulation flow
+            /// @{
 
             /// @brief Initialize state of the object.
             ///
@@ -63,10 +63,10 @@ namespace Sgt
             /// @brief Bring state up to time t.
             void update(Time t);
 
-        /// @}
+            /// @}
 
-        /// @name Virtual methods to be overridden by derived classes.
-        /// @{
+            /// @name Virtual methods to be overridden by derived classes.
+            /// @{
 
         public:
 
@@ -90,12 +90,12 @@ namespace Sgt
                 // Empty.
             }
 
-        /// @}
+            /// @}
 
         public:
 
-        /// @name Timestepping
-        /// @{
+            /// @name Timestepping
+            /// @{
 
             /// @brief Get the current step for the object.
             Time lastUpdated() const
@@ -103,11 +103,11 @@ namespace Sgt
                 return lastUpdated_;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Rank
+            /// @name Rank
             /// @brief Rank: A < B means B depends on A, not vice-versa, so A should go first.
-        /// @{
+            /// @{
 
             /// @brief Get the rank of the object.
             int rank() const
@@ -121,10 +121,10 @@ namespace Sgt
                 rank_ = rank;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Dependencies.
-        /// @{
+            /// @name Dependencies.
+            /// @{
 
             const std::vector<std::weak_ptr<const SimComponentAdaptor>>& dependencies() const
             {
@@ -137,10 +137,10 @@ namespace Sgt
                 dependencies_.push_back(b);
             }
 
-        /// @}
+            /// @}
 
-        /// @name Events
-        /// @{
+            /// @name Events
+            /// @{
 
             /// @brief Triggered just before my update.
             Event& willUpdate() {return willUpdate_;}
@@ -157,26 +157,26 @@ namespace Sgt
             /// @brief Triggered when I just updated, completing the current timestep.
             Event& didCompleteTimestep() {return didCompleteTimestep_;}
 
-        /// @}
+            /// @}
 
         private:
 
             Time lastUpdated_{posix_time::not_a_date_time};
-                ///< The time to which I am up to date
+            ///< The time to which I am up to date
             std::vector<std::weak_ptr<const SimComponentAdaptor>> dependencies_;
-                ///< I depend on these.
+            ///< I depend on these.
             int rank_{-1};
-                ///< Evaluation rank, based on weak ordering.
+            ///< Evaluation rank, based on weak ordering.
             Event willUpdate_{std::string(sComponentType()) + "Will update"};
-                ///< Triggered immediately prior to upddate.
+            ///< Triggered immediately prior to upddate.
             Event didUpdate_{std::string(sComponentType()) + "Did update"};
-                ///< Triggered immediately post update.
+            ///< Triggered immediately post update.
             Event needsUpdate_{std::string(sComponentType()) + "Needs update"};
-                ///< Triggered when I need to be updated.
+            ///< Triggered when I need to be updated.
             Event willStartNewTimestep_{std::string(sComponentType()) + "Will start new timestep"};
-                ///< Triggered immediately prior to time advancing.
+            ///< Triggered immediately prior to time advancing.
             Event didCompleteTimestep_{std::string(sComponentType()) + "Did complete timestep"};
-                ///< Triggered just after fully completing a timestep.
+            ///< Triggered just after fully completing a timestep.
     };
 
     /// @brief A base class for SimComponents.
@@ -192,8 +192,8 @@ namespace Sgt
 
             SimComponent(const std::string& id) : Component(id) {}
 
-        /// @name ComponentInterface virtual overridden functions.
-        /// @{
+            /// @name ComponentInterface virtual overridden functions.
+            /// @{
 
             virtual const std::string& componentType() const override
             {
@@ -202,7 +202,7 @@ namespace Sgt
 
             // virtual void print(std::ostream& os) const override; // TODO
 
-        /// @}
+            /// @}
     };
 }
 
