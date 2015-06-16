@@ -25,15 +25,15 @@
 #include<type_traits>
 #include<vector>
 
-#define SGT_PROPS_INIT(Targ) virtual const std::map<std::string, std::shared_ptr<PropertyBase>>& properties() const override {return HasProperties<Targ>::sMap();}; virtual std::map<std::string, std::shared_ptr<PropertyBase>>& properties() override {return HasProperties<Targ>::sMap();}
+#define SGT_PROPS_INIT(Targ) virtual const std::map<std::string, std::shared_ptr<Sgt::PropertyBase>>& properties() const override {return Sgt::HasProperties<Targ>::sMap();}; virtual std::map<std::string, std::shared_ptr<Sgt::PropertyBase>>& properties() override {return Sgt::HasProperties<Targ>::sMap();}
 
-#define SGT_PROPS_INHERIT(Targ, Base) struct Inherit ## Base {Inherit ## Base (){auto& targMap = HasProperties<Targ>::sMap(); auto& baseMap = HasProperties<Base>::sMap(); for (auto& elem : baseMap) {targMap[elem.first] = elem.second;}}}; struct DoInherit ## Base {DoInherit ## Base(){static Inherit ## Base inherit ## Base;}} doinherit ## Base
+#define SGT_PROPS_INHERIT(Targ, Base) struct Inherit ## Base {Inherit ## Base (){auto& targMap = Sgt::HasProperties<Targ>::sMap(); auto& baseMap = Sgt::HasProperties<Base>::sMap(); for (auto& elem : baseMap) {targMap[elem.first] = elem.second;}}}; struct DoInherit ## Base {DoInherit ## Base(){static Inherit ## Base inherit ## Base;}} doinherit ## Base
 
-#define SGT_PROP_GET(name, Targ, T, getter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T>>(std::unique_ptr<Getter<Targ, T>>(new Getter<Targ, T>([](const Targ& targ)->T{return targ.getter();})), nullptr);}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name;
+#define SGT_PROP_GET(name, Targ, T, getter) struct InitProp_ ## name {InitProp_ ## name(){Sgt::HasProperties<Targ>::sMap()[#name] = std::make_shared<Sgt::Property<T>>(std::unique_ptr<Sgt::Getter<Targ, T>>(new Sgt::Getter<Targ, T>([](const Targ& targ)->T{return targ.getter();})), nullptr);}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name;
 
-#define SGT_PROP_SET(name, Targ, T, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T>>(std::unique_ptr<Setter<Targ, T>>(nullptr, new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
+#define SGT_PROP_SET(name, Targ, T, setter) struct InitProp_ ## name {InitProp_ ## name(){Sgt::HasProperties<Targ>::sMap()[#name] = std::make_shared<Sgt::Property<T>>(std::unique_ptr<Sgt::Setter<Targ, T>>(nullptr, new Sgt::Setter<Targ, T>([](Targ& targ, std::add_lvalue_reference<std::add_const<T>::type>::type val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
 
-#define SGT_PROP_GET_SET(name, Targ, T, getter, setter) struct InitProp_ ## name {InitProp_ ## name(){HasProperties<Targ>::sMap()[#name] = std::make_shared<Property<T>>(std::unique_ptr<Getter<Targ, T>>(new Getter<Targ, T>([](const Targ& targ)->T{return targ.name();})), std::unique_ptr<Setter<Targ, T>>(new Setter<Targ, T>([](Targ& targ, const T& val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
+#define SGT_PROP_GET_SET(name, Targ, T, getter, setter) struct InitProp_ ## name {InitProp_ ## name(){Sgt::HasProperties<Targ>::sMap()[#name] = std::make_shared<Sgt::Property<T>>(std::unique_ptr<Sgt::Getter<Targ, T>>(new Sgt::Getter<Targ, T>([](const Targ& targ)->T{return targ.getter();})), std::unique_ptr<Sgt::Setter<Targ, T>>(new Sgt::Setter<Targ, T>([](Targ& targ, std::add_lvalue_reference<std::add_const<T>::type>::type val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
 
 namespace Sgt
 {
@@ -41,6 +41,7 @@ namespace Sgt
 
     class PropertyBase;
 
+    /// @ingroup Foundation
     class HasPropertiesInterface
     {
         public:
@@ -51,6 +52,7 @@ namespace Sgt
             virtual std::map<std::string, std::shared_ptr<PropertyBase>>& properties() = 0;
     };
 
+    /// @ingroup Foundation
     template<typename Targ> class HasProperties : virtual public HasPropertiesInterface
     {
         public:
@@ -156,6 +158,7 @@ namespace Sgt
     template<typename T> class PropertyBase1;
     template<typename T> class Property;
 
+    /// @ingroup Foundation
     class PropertyBase
     {
         public:
@@ -168,13 +171,13 @@ namespace Sgt
             template<typename T> T get(const HasPropertiesInterface& targ) const
             {
                 auto derived = dynamic_cast<const Property<T>*>(this);
-                return derived.get(targ);
+                return derived->get(targ);
             }
 
             template<typename T> void set(HasPropertiesInterface& targ, const T& val) const
             {
                 auto derived = dynamic_cast<const PropertyBase1<T>*>(this);
-                derived.set(targ, val);
+                derived->set(targ, val);
             }
 
             virtual std::string string(const HasPropertiesInterface& targ) = 0;

@@ -180,7 +180,7 @@ namespace Sgt
                 return type_;
             }
 
-            virtual void setType(const BusType type)
+            virtual void setType(BusType type)
             {
                 type_ = type;
                 setpointChanged_.trigger();

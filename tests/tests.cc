@@ -393,4 +393,42 @@ BOOST_AUTO_TEST_CASE (test_loops)
     BOOST_CHECK(comps[5]->id() == "cb");
 }
 
+BOOST_AUTO_TEST_CASE (test_properties)
+{
+    class Foo : public Sgt::HasProperties<Foo>
+    {
+        public:
+            SGT_PROPS_INIT(Foo);                                                               
+
+            int four() const {return 4;}
+            SGT_PROP_GET(fourProp, Foo, int, four);
+    };
+
+    class Bar : public Foo, public Sgt::HasProperties<Bar>
+    {
+        public:
+            SGT_PROPS_INIT(Bar);                                                               
+            SGT_PROPS_INHERIT(Bar, Foo);          
+
+            const int& x() const {return x_;}
+            void setX(const int& x) {x_ = x;}
+            SGT_PROP_GET_SET(xProp, Bar, const int&, x, setX);
+
+        public:
+            int x_{5};
+    };
+
+    Bar bar;
+    auto fourProp = bar.properties()["fourProp"].get();
+    auto xProp = bar.properties()["xProp"].get();
+    BOOST_CHECK_EQUAL(fourProp->string(bar), "4");
+    BOOST_CHECK_EQUAL(fourProp->get<int>(bar), 4);
+    BOOST_CHECK_EQUAL(xProp->string(bar), "5");
+    BOOST_CHECK_EQUAL(xProp->get<const int&>(bar), 5);
+    xProp->set<const int&>(bar, 345);
+    BOOST_CHECK_EQUAL(xProp->get<const int&>(bar), 345);
+    xProp->setFromString(bar, "678");
+    BOOST_CHECK_EQUAL(xProp->get<const int&>(bar), 678);
+};
+
 BOOST_AUTO_TEST_SUITE_END()

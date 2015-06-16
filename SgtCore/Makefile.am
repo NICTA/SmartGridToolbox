@@ -108,3 +108,4 @@ libSgtCore_la_LIBADD = \
 
 noinst_PROGRAMS = helloworld
 helloworld_SOURCES = helloworld.cc
+helloworld_LDADD = -lSgtCore
