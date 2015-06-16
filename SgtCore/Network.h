@@ -298,6 +298,12 @@ namespace Sgt
 
             bool isValidSolution_{false};
     };
+    
+    inline std::ostream& operator<<(std::ostream& os, const Network& netw)
+    {
+        netw.print(os);
+        return os;
+    }
 
     std::unique_ptr<PowerFlowModel> buildModel(const Network& netw);
     void applyModel(const PowerFlowModel& mod, Network& netw);

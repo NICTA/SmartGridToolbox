@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 {
     using namespace Sgt;
     
-    Network nw("network"); // Create a network named "network".
+    Network nw; // Create a network named "network".
     Parser<Network> p; 
         // Make a network parser to parse information into the network.
     p.parse("solve_network_yaml.yaml", nw);
