@@ -33,7 +33,7 @@ namespace Sgt
 
         auto ndSolver = nd["solver"];
 
-        std::unique_ptr<Network> nw = std::unique_ptr<Network>(new Network(id, PBase));
+        std::unique_ptr<Network> nw = std::unique_ptr<Network>(new Network(PBase));
 
         if (ndFreq)
         {
@@ -47,6 +47,6 @@ namespace Sgt
             pfSolverParser.parse(ndSolver, *nw, parser);
         }
 
-        sim.newSimComponent<SimNetwork>(std::move(nw));
+        sim.newSimComponent<SimNetwork>(id, std::move(nw));
     }
 }

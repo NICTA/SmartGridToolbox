@@ -41,7 +41,7 @@ namespace Sgt
         /// @name Lifecycle.
         /// @{
 
-            SimNetwork(std::shared_ptr<Network> network) : SimComponent(network->id()), network_(network) {}
+            SimNetwork(const std::string& id, std::shared_ptr<Network> network) : SimComponent(id), network_(network) {}
 
         /// @}
 

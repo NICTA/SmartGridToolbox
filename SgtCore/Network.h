@@ -17,7 +17,6 @@
 
 #include <SgtCore/Branch.h>
 #include <SgtCore/Bus.h>
-#include <SgtCore/Component.h>
 #include <SgtCore/Gen.h>
 #include <SgtCore/PowerFlow.h>
 #include <SgtCore/PowerFlowSolver.h>
@@ -58,42 +57,21 @@ namespace Sgt
 
     /// @brief Network component, describing an electricity network.
     /// @ingroup PowerFlowCore
-    class Network : public Component
+    class Network
     {
         public:
 
-        /// @name Static member functions:
-        /// @{
+            /// @name Lifecycle:
+            /// @{
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("network");
-                return result;
-            }
+            Network(double PBase = 1.0);
 
-        /// @}
+            virtual ~Network() = default;
 
-        /// @name Lifecycle:
-        /// @{
+            /// @}
 
-            Network(const std::string& id, double PBase = 1.0);
-
-        /// @}
-
-        /// @name ComponentInterface virtual overridden functions.
-        /// @{
-
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
-
-            virtual void print(std::ostream& os) const override;
-
-        /// @}
-
-        /// @name Network Attributes:
-        /// @{
+            /// @name Network Attributes:
+            /// @{
 
             double PBase() const
             {
@@ -125,10 +103,10 @@ namespace Sgt
                 freq_ = freq;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Network Components:
-        /// @{
+            /// @name Network Components:
+            /// @{
 
             const BusVec& busses() const
             {
@@ -204,10 +182,10 @@ namespace Sgt
             }
             virtual void addZip(ZipPtr zip, const std::string& busId);
 
-        /// @}
+            /// @}
 
-        /// @name Per-Unit Conversions:
-        /// @{
+            /// @name Per-Unit Conversions:
+            /// @{
 
             template<typename T> T V2Pu(const T& V, double VBase) const
             {
@@ -254,21 +232,21 @@ namespace Sgt
                 return pu * PBase_ / VBase;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Power-Flow problem:
-        /// @{
+            /// @name Power-Flow problem:
+            /// @{
 
             const PowerFlowSolverInterface* solver() const
             {
                 return solver_.get();
             }
-            
+
             PowerFlowSolverInterface* solver()
             {
                 return solver_.get();
             }
-            
+
             void setSolver(std::unique_ptr<PowerFlowSolverInterface> solver)
             {
                 solver_ = std::move(solver);
@@ -281,14 +259,21 @@ namespace Sgt
                 return isValidSolution_;
             }
 
-        /// @}
-        
-        /// @name Generation cost:
-        /// @{
-            
+            /// @}
+
+            /// @name Generation cost:
+            /// @{
+
             double genCostPerUnitTime();
 
-        /// @}
+            /// @}
+            
+            /// @name Printing:
+            /// @{
+           
+            virtual void print(std::ostream& os) const;
+
+            /// @}
 
         private:
 

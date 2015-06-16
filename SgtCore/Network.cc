@@ -21,10 +21,7 @@
 
 namespace Sgt
 {
-    Network::Network(const std::string& id, double PBase) :
-        Component(id),
-        PBase_(PBase),
-        solver_(new PowerFlowNrSolver)
+    Network::Network(double PBase) : PBase_(PBase), solver_(new PowerFlowNrSolver)
     {
         // Empty.
     }
@@ -113,19 +110,19 @@ namespace Sgt
 
     void Network::print(std::ostream& os) const
     {
-        Component::print(os);
+        os << "Network:" << std::endl;
         StreamIndent _(os);
         os << "P_base: " << PBase_ << std::endl;
         for (auto bus : busVec_)
         {
             {
                 os << "Bus: " << std::endl;
-                StreamIndent _(os);
+                StreamIndent _1(os);
                 os << *bus << std::endl;
             }
             {
                 os << "Zips: " << std::endl;
-                StreamIndent _(os);
+                StreamIndent _1(os);
                 for (auto zip : bus->zips())
                 {
                     os << *zip << std::endl;

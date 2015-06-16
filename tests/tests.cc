@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
 {
     // For this test, we compare values for an overhead line examined in one of Kersting's papers:
     // docs/background/Kersting_Carson.pdf.
-    Network netw("network");
+    Network netw;
     Parser<Network> p;
     p.parse("test_overhead_compare_carson_1.yaml", netw);
 
@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
 {
     // For this test, we compare values for an overhead line examined in one of Kersting's papers:
     // docs/background/Kersting_Carson.pdf.
-    Network netw("network");
+    Network netw;
     Parser<Network> p;
     p.parse("test_overhead_compare_carson_2.yaml", netw);
 
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE (test_underground_compare_carson)
 {
     // For this test, we compare values for an underground line examined in one of Kersting's papers:
     // docs/background/Kersting_Carson.pdf.
-    Network netw("network");
+    Network netw;
     Parser<Network> p;
     p.parse("test_underground_compare_carson.yaml", netw);
 
@@ -326,7 +326,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
 
         std::string yamlStr =
             std::string("--- [{matpower : {input_file : matpower_test_cases/") + c + ".m, default_kV_base : 11}}]";
-        Network nw("network", 100.0);
+        Network nw(100.0);
         YAML::Node n = YAML::Load(yamlStr);
         Sgt::Parser<Network> p;
         p.parse(n, nw);

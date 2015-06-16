@@ -28,7 +28,7 @@ namespace Sgt
         string netwId = parser.expand<std::string>(nd["network_id"]);
         auto simNetw = sim.simComponent<SimNetwork>(netwId);
 
-        Network tempNetw("temp", 100.0);
+        Network tempNetw(100.0);
         mpParser.parse(nd, tempNetw, parser);
 
         // Now recreate the SimNetwork from the Network.
