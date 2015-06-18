@@ -96,7 +96,7 @@ namespace Sgt
         /// @name ComponentInterface virtual overridden functions.
         /// @{
 
-            virtual const std::string& id() const
+            virtual const std::string& id() const override
             {
                 return id_;
             }
