@@ -32,15 +32,8 @@ namespace Sgt
 
         const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
         auto inverterComp = sim.simComponent<InverterAbc>(inverterStr);
-        if (inverterComp != nullptr)
-        {
-            inverterComp->addDcPowerSource(comp);
-        }
-        else
-        {
-            Log().error() << "For component " << id << ", inverter "
-                          << inverterStr << " was not found in the model." << std::endl;
-            error();
-        }
+        sgtAssert(inverterComp != nullptr,
+                "For component " << id << ", inverter " << inverterStr << " was not found in the simulation.");
+        inverterComp->addDcPowerSource(comp);
     }
 }

@@ -24,8 +24,7 @@ int main(int argc, const char** argv)
 {
     if (argc < 3)
     {
-        Log().error() << "Usage: " << argv[0] << " config_name output_name [option ...]" << std::endl;
-        error();
+        sgtError("Usage: " << argv[0] << " config_name output_name [option ...].");
     }
 
     const char* configName = argv[1];

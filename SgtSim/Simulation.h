@@ -135,13 +135,8 @@ namespace Sgt
             {
                 std::shared_ptr<const SimComponentAdaptor> simComp = genericSimComponent(id, crashOnFail);
                 auto result = std::dynamic_pointer_cast<const T>(simComp);
-                if (result == nullptr && crashOnFail)
-                {
-                    Log().error() << "Component " << id
-                                  << " was requested and exists in the simulation, but is of the wrong type"
-                                  << std::endl;
-                    error();
-                }
+                sgtAssert(!(result == nullptr && crashOnFail), "Component " << id 
+                        << " was requested and exists in the simulation, but is of the wrong type.");
                 return result;
             }
 
@@ -185,13 +180,8 @@ namespace Sgt
             {
                 std::shared_ptr<const TimeSeriesBase> ts = genericTimeSeries(id, crashOnFail);
                 auto result = std::dynamic_pointer_cast<const T>(ts);
-                if (result == nullptr && crashOnFail)
-                {
-                    Log().error() << "Time series " << id
-                                  << " was requested and exists in the simulation, but is of the wrong type"
-                                  << std::endl;
-                    error();
-                }
+                sgtAssert(!(result == nullptr && crashOnFail), "Time series " << id
+                        << " was requested and exists in the simulation, but is of the wrong type.");
                 return result;
             }
 

@@ -71,22 +71,14 @@ namespace Sgt
 
     void assertFieldPresent(const YAML::Node& nd, const std::string& field)
     {
-        if (!(nd[field]))
-        {
-            Log().error() << "Parsing: " << field << " field not present." << std::endl;
-            error();
-        }
+        sgtAssert(nd[field], "Parsing: " << field << " field not present.");
     };
 
     YAML::Node getTopNode(const std::string& fname)
     {
         Log().message() << "Opening file " << fname << " for parsing." << std::endl;
         auto top = YAML::LoadFile(fname);
-        if (top.size() == 0)
-        {
-            Log().error() << "File " << fname << " is empty or doesn't exist." << std::endl;
-            error();
-        }
+        sgtAssert(top.size() > 0, "File " << fname << " is empty or doesn't exist.");
         return top;
     }
 
@@ -99,12 +91,8 @@ namespace Sgt
         const YAML::Node& ndBody = nd["loop_body"];
 
         std::string name = ndLoopVar[0].as<std::string>();
-        if (ndLoopVar.size() != 4)
-        {
-            Log().error() << "loop_variable expression is invalid. Format is [name, start, upper, stride]."
-                          << std::endl;
-            error();
-        }
+        sgtAssert(ndLoopVar.size() == 4, 
+                "loop_variable expression is invalid. Format is [name, start, upper, stride].");
         int start = expand<int>(ndLoopVar[1]);
         int upper = expand<int>(ndLoopVar[2]);
         int stride = expand<int>(ndLoopVar[3]);
@@ -194,14 +182,8 @@ namespace Sgt
         std::string::const_iterator i1 = str.begin();
         std::string::const_iterator i2 = str.end();
         bool ok = phrase_parse(i1, i2, calc, space, calcResult); // And do the math...
-        if (!ok)
-        {
-            Log().error() << "Ill-formed expression " << str << std::endl;
-            error();
-        }
-
+        sgtAssert(ok, "Ill-formed expression " << str << ".");
         std::string result = std::to_string(calcResult);
-
         return result;
     }
 
@@ -214,11 +196,7 @@ namespace Sgt
         if (it != loops_.end())
         {
             // We matched a loop variable. Make sure there is no index!
-            if (s2 != "")
-            {
-                Log().error() << "Loop variable " << s1 << " can not be indexed with " << s2 << "." << std::endl;
-                error();
-            }
+            sgtAssert(s2 == "", "Loop variable " << s1 << " can not be indexed with " << s2 << ".");
             result = std::regex_replace(s1, std::regex((**it).name_), std::to_string((**it).i_));
         }
         else
@@ -231,8 +209,7 @@ namespace Sgt
             }
             catch (std::out_of_range e)
             {
-                Log().error() << "Parameter or loop " << s1 << " was not found." << std::endl;
-                error();
+                sgtError("Parameter or loop " << s1 << " was not found.")
             }
 
             YAML::Node nd2;
@@ -248,15 +225,10 @@ namespace Sgt
                 }
                 else
                 {
-                    Log().error() << "Can't index parameter " << s1 << "." << std::endl;
-                    error();
+                    sgtError("Can't index parameter " << s1 << ".");
                 }
 
-                if (!nd2)
-                {
-                    Log().error() << "For parameter " << s1 << ", index " << s2 << " doesn't exist." << std::endl;
-                    error();
-                }
+                sgtAssert(nd2, "For parameter " << s1 << ", index " << s2 << " doesn't exist.");
             }
             else
             {

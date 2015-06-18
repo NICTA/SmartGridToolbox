@@ -106,11 +106,6 @@ namespace Sgt
 
     unsigned int Log::indentLevel_ = 0;
 
-    void error()
-    {
-        throw std::runtime_error("SmartGridToolbox: runtime error.");
-    }
-
     struct CGram : Qi::grammar<std::string::const_iterator, Complex(), Ascii::space_type>
     {
         CGram() : CGram::base_type(start_)
@@ -185,12 +180,7 @@ namespace Sgt
         std::string::const_iterator iter = s.begin();
         std::string::const_iterator end = s.end();
         bool ok = Qi::phrase_parse(iter, end, CGram(), Ascii::space, c);
-        if (!ok)
-        {
-            Log().error() << "Bad complex number string: " << s << std::endl
-                          << "Came unstuck at substring: " << *iter << std::endl;
-            error();
-        }
+        sgtAssert(ok, "Bad complex number string: \"" << s << "\": came unstuck at substring: \"" << *iter << "\".");
         return c;
     }
 

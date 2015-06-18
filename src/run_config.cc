@@ -21,8 +21,7 @@ int main(int argc, const char** argv)
 {
     if (argc != 2)
     {
-        Log().error() << "Usage: " << argv[0] << " config_name" << std::endl;
-        error();
+        sgtError("Usage: " << argv[0] << " config_name.");
     }
 
     const char* configName = argv[1];

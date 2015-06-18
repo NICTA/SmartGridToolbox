@@ -268,15 +268,8 @@ namespace Sgt
             Gram gram(data);
 
             std::fstream infile(inputName);
-            if (!infile.is_open())
-            {
-                Log().error() << "Could not open the matpower input file " << inputName << "." << std::endl;
-                error();
-            }
-            else
-            {
-                Log().message() << "Parsing matpower input file " << inputName << "." << std::endl;
-            }
+            sgtAssert(infile.is_open(), "Could not open the matpower input file " << inputName << ".");
+            Log().message() << "Parsing matpower input file " << inputName << "." << std::endl;
 
             // Iterate over stream input:
             BaseIterator inBegin(infile);
@@ -380,10 +373,10 @@ namespace Sgt
             {
                 Log().warning() << "Reactive generator costs not yet implemented. Ignoring them." << std::endl;
             }
-            else if (data.genCost.size() != data.gen.size())
+            else 
             {
-                Log().error() << "There are a different number of generators to generator costs." << std::endl;
-                error();
+                sgtAssert(data.genCost.size() == data.gen.size(), 
+                        "There are a different number of generators to generator costs.");
             }
         }
 

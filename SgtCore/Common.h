@@ -27,12 +27,6 @@
 #include <sstream>
 #include <stdexcept>
 
-#ifdef DEBUG
-#define SGT_DEBUG(x) x
-#else
-#define SGT_DEBUG(x)
-#endif
-
 namespace Sgt
 {
     /// @name Reporting and errors.
@@ -107,7 +101,17 @@ namespace Sgt
     };
 
     /// @ingroup Utilities
-    void error();
+#define sgtError(msg) {std::ostringstream ss; ss << "SmartGridToolbox: " << __PRETTY_FUNCTION__ << ": " << msg; throw std::runtime_error(ss.str());}
+
+    /// @ingroup Utilities
+#define sgtAssert(cond, msg) if (!(cond)) sgtError(msg);
+
+    /// @ingroup Utilities
+#ifdef DEBUG
+#define SGT_DEBUG(x) x
+#else
+#define SGT_DEBUG(x)
+#endif
 
     /// @}
 

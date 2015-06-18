@@ -31,12 +31,9 @@ namespace Sgt
         rhoEarth_(rhoEarth)
     {
         arma::uword nPhase = hasNeutral ? 4 : 3; // Not including shielding layers.
-        if (phaseDist.n_rows != nPhase || phaseDist.n_cols != nPhase)
-        {
-            Log().error() << "UndergroundLine : distance matrix must be size " << std::to_string(nPhase) << " x "
-                          << std::to_string(nPhase) << "." << std::endl;
-            error();
-        }
+        sgtAssert(phaseDist.n_rows == nPhase && phaseDist.n_cols == nPhase,
+                "UndergroundLine : distance matrix must be size " << std::to_string(nPhase)
+                << " x " << std::to_string(nPhase) << ".");
     }
 
     UndergroundLineStrandedShield::UndergroundLineStrandedShield(

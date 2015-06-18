@@ -48,28 +48,14 @@ namespace Sgt
 
         const std::string weatherStr = parser.expand<std::string>(nd["weather"]);
         auto weather = sim.simComponent<Weather>(weatherStr);
-        if (weather != nullptr)
-        {
-            spv->setWeather(weather);
-        }
-        else
-        {
-            Log().error() << "For component " << id << ", weather " << weatherStr
-                          << " was not found in the model." << std::endl;
-            error();
-        }
+        sgtAssert(weather != nullptr, 
+                "For component " << id << ", weather " << weatherStr << " was not found in the simulation.");
+        spv->setWeather(weather);
 
         const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
         auto inverter = sim.simComponent<InverterAbc>(inverterStr);
-        if (inverter != nullptr)
-        {
-            inverter->addDcPowerSource(spv);
-        }
-        else
-        {
-            Log().error() << "For component " << id << ", inverter " << inverterStr
-                          << " was not found in the model." << std::endl;
-            error();
-        }
+        sgtAssert(inverter != nullptr,
+            "For component " << id << ", inverter " << inverterStr << " was not found in the simulation.");
+        inverter->addDcPowerSource(spv);
     }
 }

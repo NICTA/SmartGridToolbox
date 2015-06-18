@@ -33,11 +33,7 @@ namespace Sgt
         {
             std::string id = parser.expand<std::string>(temperatureNd);
             auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
-            if (series == nullptr)
-            {
-                Log().error() << "Parsing weather: couldn't find time series " << id << std::endl;
-                error();
-            }
+            sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
             weather->setTemperatureSeries(series);
         }
 
@@ -46,11 +42,7 @@ namespace Sgt
         {
             std::string id = parser.expand<std::string>(cloudNd);
             auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
-            if (series == nullptr)
-            {
-                Log().error() << "Parsing weather: couldn't find time series " << id << std::endl;
-                error();
-            }
+            sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
             weather->setCloudCoverSeries(series);
         }
 

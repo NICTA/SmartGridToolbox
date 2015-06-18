@@ -62,11 +62,7 @@ namespace Sgt
         {
             std::string id = parser.expand<std::string>(dQgNd);
             auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
-            if (series == nullptr)
-            {
-                Log().error() << "Parsing simple_building: couldn't find time series " << id << std::endl;
-                error();
-            }
+            sgtAssert(series != nullptr, "Parsing simple_building: couldn't find time series " << id << ".");
             build->set_dQgSeries(series);
         }
 
@@ -80,11 +76,7 @@ namespace Sgt
         {
             std::string weatherStr = parser.expand<std::string>(weatherNd);
             auto weather = sim.simComponent<Weather>(weatherStr);
-            if (weather == nullptr)
-            {
-                Log().error() << "Parsing simple_building: couldn't find weather " << weatherStr << std::endl;
-                error();
-            }
+            sgtAssert(weather != nullptr, "Parsing simple_building: couldn't find weather " << weatherStr << ".");
             build->setWeather(weather);
         }
     }

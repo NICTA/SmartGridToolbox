@@ -40,28 +40,15 @@ namespace Sgt
     {
         auto nPhase = phases0().size();
         auto nCond = subcondGmr_.size();
-        if (condDist_.n_rows != nCond || condDist_.n_cols != nCond || subcondRPerL_.size() != nCond)
-        {
-            Log().error()
-                << "OverheadLine: The conductor distance  matrix must be a square matrix of size nCond x nCond.\n"
-                   "              The wire resistivity vector must be a vector of size nCond.\n"
-                   "              The subconductor GMR must be a vector of size nCond."
-                << std::endl;
-            error();
-        }
-        if (nCond < nPhase)
-        {
-            Log().error() << "OverheadLine: The number of conductors must be at least the number of phases."
-                          << std::endl;
-            error();
-        }
-        if (nInBundle_.size() != adjSubcondDist_.size())
-        {
-            Log().error() 
-                << "OverheadLine: The bundle number vector must have the same number of elements as\n"
-                   "the bundle distance vector." << std::endl;
-            error();
-        }
+
+        sgtAssert(!(condDist_.n_rows != nCond || condDist_.n_cols != nCond || subcondRPerL_.size() != nCond),
+                "OverheadLine: The conductor distance  matrix must be a square matrix of size nCond x nCond.\n"
+                "              The wire resistivity vector must be a vector of size nCond.\n"
+                "              The subconductor GMR must be a vector of size nCond.");
+        sgtAssert(nCond >= nPhase, "OverheadLine: The number of conductors must be at least the number of phases.");
+        sgtAssert(nInBundle_.size() == adjSubcondDist_.size(),
+                "OverheadLine: The bundle number vector must have the same number of elements as\n"
+                "the bundle distance vector.");
 
         if (nInBundle_.size() == 0)
         {

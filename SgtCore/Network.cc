@@ -36,18 +36,8 @@ namespace Sgt
     {
         auto bus0 = bus(bus0Id);
         auto bus1 = bus(bus1Id);
-        if (bus0 == nullptr)
-        {
-            Log().error() << __PRETTY_FUNCTION__ << " : Bus " << bus0Id << " was not found in the network."
-                          << std::endl;
-            error();
-        }
-        if (bus1 == nullptr)
-        {
-            Log().error() << __PRETTY_FUNCTION__ << " : Bus " << bus1Id << " was not found in the network."
-                          << std::endl;
-            error();
-        }
+        sgtAssert(bus0 != nullptr, "Bus " << bus0Id << " was not found in the network.");
+        sgtAssert(bus1 != nullptr, "Bus " << bus1Id << " was not found in the network.");
         branch->setBus0(bus0);
         branch->setBus1(bus1);
         branchMap_[branch->id()] = branch;
@@ -59,16 +49,8 @@ namespace Sgt
         genMap_[gen->id()] = gen;
         genVec_.push_back(gen);
         auto bus = this->bus(busId);
-        if (bus != nullptr)
-        {
-            bus->addGen(gen);
-        }
-        else
-        {
-            Log().error() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network."
-                          << std::endl;
-            error();
-        }
+        sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
+        bus->addGen(gen);
     }
 
     void Network::addZip(ZipPtr zip, const std::string& busId)
@@ -76,16 +58,8 @@ namespace Sgt
         zipMap_[zip->id()] = zip;
         zipVec_.push_back(zip);
         auto bus = this->bus(busId);
-        if (bus != nullptr)
-        {
-            bus->addZip(zip);
-        }
-        else
-        {
-            Log().error() << __PRETTY_FUNCTION__ << " : Bus " << busId << " was not found in the network."
-                          << std::endl;
-            error();
-        }
+        sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
+        bus->addZip(zip);
     }
 
     bool Network::solvePowerFlow()
@@ -237,8 +211,7 @@ namespace Sgt
                     }
                     break;
                 default:
-                    Log().error() << "Bad bus type." << std::endl;
-                    error();
+                    sgtError("Bad bus type.");
             }
         }
     }

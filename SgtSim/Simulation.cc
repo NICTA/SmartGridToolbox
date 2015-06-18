@@ -37,9 +37,7 @@ namespace Sgt
             }
             else
             {
-                Log().error() << "SimComponent " << simComp->id() << " occurs more than once in the model!"
-                              << std::endl;
-                error();
+                sgtError("SimComponent " << simComp->id() << " occurs more than once in the model.");
             }
         }
         else
@@ -274,8 +272,7 @@ namespace Sgt
         }
         else if (crashOnFail)
         {
-            Log().error() << "Component " << id << " was requested but was not found in the simulation." << std::endl;
-            error();
+            sgtError("Component " << id << " was requested but was not found in the simulation.");
         }
         return result;
     }
@@ -290,8 +287,7 @@ namespace Sgt
         }
         else if (crashOnFail)
         {
-            Log().error() << "Time series " << id << " was requested but was not found in the simulation." << std::endl;
-            error();
+            sgtError("Time series " << id << " was requested but was not found in the simulation.");
         }
         return result;
     }

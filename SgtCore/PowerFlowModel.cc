@@ -120,8 +120,7 @@ namespace Sgt
             }
             else
             {
-                Log().error() << "Unsupported bus type " << to_string(bus.type_) << std::endl;
-                error();
+                sgtError("Unsupported bus type " << to_string(bus.type_) << ".");
             }
             for (const std::unique_ptr<PfNode>& node : bus.nodes_)
             {
@@ -156,19 +155,11 @@ namespace Sgt
         for (const std::unique_ptr<PfBranch>& branch : branches_)
         {
             auto it0 = busses_.find(branch->ids_[0]);
-            if (it0 == busses_.end())
-            {
-                Log().error() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
-                              << " contains a non-existent bus " << branch->ids_[0] << std::endl;
-                error();
-            }
+            sgtAssert(it0 != busses_.end(), "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] 
+                    << " contains a non-existent bus " << branch->ids_[0] << ".");
             auto it1 = busses_.find(branch->ids_[1]);
-            if (it1 == busses_.end())
-            {
-                Log().error() << "BranchComp " << branch->ids_[0] << " " << branch->ids_[1]
-                              << " contains a non-existent bus " << branch->ids_[1] << std::endl;
-                error();
-            }
+            sgtAssert(it1 != busses_.end(), "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] 
+                    << " contains a non-existent bus " << branch->ids_[1] << ".");
             const PfBus* busses[] = {it0->second.get(), it1->second.get()};
             auto nTerm = 2 * branch->nPhase_;
 
