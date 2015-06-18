@@ -247,7 +247,7 @@ namespace Sgt
                 return getter_->get(targ);
             }
 
-            virtual std::string string(const HasPropertiesInterface& targ)
+            virtual std::string string(const HasPropertiesInterface& targ) override
             {
                 return toYamlString(get(targ));
             }
