@@ -65,6 +65,5 @@ ltmain.sh
 missing
 Makefile
 Makefile.in
-m4
 stamp-h1
 test-driver
