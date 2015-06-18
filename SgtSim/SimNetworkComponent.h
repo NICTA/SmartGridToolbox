@@ -51,6 +51,15 @@ namespace Sgt
                 return bus_;
             }
 
+            void joinNetwork(SimNetwork& simNetwork)
+            {
+                simNetwork.dependsOn(this);
+                simBus->bus()->setpointChanged().addAction([this]() {needsUpdate().trigger();},
+                        std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
+                simBus->bus()->isInServiceChanged().addAction([this]() {needsUpdate().trigger();},
+                        std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
+            }
+
         protected:
 
             virtual void initializeState() override
