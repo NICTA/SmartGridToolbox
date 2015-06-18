@@ -31,8 +31,6 @@ namespace Sgt
     /// @ingroup PowerFlowCore
     class BranchAbc : public Component
     {
-        friend class Network;
-
         public:
 
             SGT_PROPS_INIT(BranchAbc);

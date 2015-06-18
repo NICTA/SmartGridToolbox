@@ -33,8 +33,6 @@ namespace Sgt
     /// @ingroup PowerFlowCore
     class Bus : public Component, public HasProperties<Bus>
     {
-        friend class Network;
-
         public:
 
             typedef std::shared_ptr<GenAbc> GenPtr;
