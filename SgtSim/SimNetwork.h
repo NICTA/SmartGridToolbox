@@ -79,6 +79,17 @@ namespace Sgt
 
             template<typename T> void addBus(std::shared_ptr<T> simBus)
             {
+                auto networkBus = network_->bus(simBus->bus()->id());
+                if (!networkBus)
+                {
+                    network_->addBus(simBus->bus());
+                }
+                else
+                {
+                    sgtAssert(networkBus == simBus, 
+                            "Bus " << networkBus->id() << " already exists in the network.");
+                }
+
                 dependsOn(simBus);
                 simBus->bus()->setpointChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
@@ -89,6 +100,17 @@ namespace Sgt
             template<typename T> void addBranch(std::shared_ptr<T> simBranch, const std::string& bus0Id,
                                                 const std::string& bus1Id)
             {
+                auto networkBranch = network_->branch(simBranch->branch()->id());
+                if (!networkBranch)
+                {
+                    network_->addBranch(simBranch->branch());
+                }
+                else
+                {
+                    sgtAssert(networkBranch == simBranch, 
+                            "Branch " << networkBranch->id() << " already exists in the network.");
+                }
+
                 dependsOn(simBranch);
                 simBranch->branch()->admittanceChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
@@ -98,6 +120,17 @@ namespace Sgt
 
             template<typename T> void addGen(std::shared_ptr<T> simGen, const std::string& busId)
             {
+                auto networkGen = network_->gen(simGen->gen()->id());
+                if (!networkGen)
+                {
+                    network_->addGen(simGen->gen());
+                }
+                else
+                {
+                    sgtAssert(networkGen == simGen, 
+                            "Gen " << networkGen->id() << " already exists in the network.");
+                }
+                
                 dependsOn(simGen);
                 simGen->gen()->setpointChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
@@ -107,6 +140,17 @@ namespace Sgt
 
             template<typename T> void addZip(std::shared_ptr<T> simZip, const std::string& busId)
             {
+                auto networkZip = network_->zip(simZip->zip()->id());
+                if (!networkZip)
+                {
+                    network_->addZip(simZip->zip());
+                }
+                else
+                {
+                    sgtAssert(networkZip == simZip, 
+                            "Zip " << networkZip->id() << " already exists in the network.");
+                }
+               
                 dependsOn(simZip);
                 simZip->zip()->injectionChanged().addAction([this]() {needsUpdate().trigger();},
                         std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
