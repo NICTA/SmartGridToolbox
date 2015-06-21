@@ -18,6 +18,7 @@
 #include <SgtSim/DcPowerSource.h>
 #include <SgtSim/SimNetworkComponent.h>
 
+#include <memory>
 #include <numeric>
 
 namespace Sgt
@@ -27,8 +28,15 @@ namespace Sgt
     {
         public:
 
-        /// @name Inverter specific member functions.
-        /// @{
+            /// @name Lifecycle
+            /// @{
+
+            virtual ~InverterAbc() = default;
+
+            /// @}
+
+            /// @name Inverter specific member functions.
+            /// @{
 
             virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source);
 
@@ -45,7 +53,7 @@ namespace Sgt
             /// @brief Real power output.
             virtual double availableP() const;
 
-        /// @}
+            /// @}
 
         private:
 
@@ -56,53 +64,53 @@ namespace Sgt
     {
         public:
 
-        /// @name Lifecycle
-        /// @{
-            
+            /// @name Lifecycle
+            /// @{
+
             SimpleInverterAbc(double efficiency = 1.0) : efficiency_(efficiency)
             {
                 // Empty.
             }
 
-        /// @}
-        
-        /// @name InverterAbc virtual overridden functions.
-        /// @{
+            /// @}
+
+            /// @name InverterAbc virtual overridden functions.
+            /// @{
 
             virtual double efficiency(double powerDc) const override
             {
                 return efficiency_;
             }
 
-        /// @{
-        
-        /// @name Efficiency.
-        /// @{
-     
+            /// @{
+
+            /// @name Efficiency.
+            /// @{
+
             double efficiency() const
             {
                 return efficiency_;
             }
-            
+
             void setEfficiency(double efficiency)
             {
                 efficiency_ = efficiency;
             }
 
-        /// @{
-        
+            /// @{
+
         private:
 
             double efficiency_;
     };
 
     /// @brief DC power to n-phase AC converter.
-    class SimpleZipInverter : public SimpleInverterAbc, public SimZip
+    class SimpleZipInverter : public SimpleInverterAbc, public SimZip, private ZipAbc
     {
         public:
 
-        /// @name Static member functions:
-        /// @{
+            /// @name Static member functions:
+            /// @{
 
         public:
 
@@ -112,7 +120,7 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
             SimpleZipInverter(std::shared_ptr<ZipAbc> zip, double efficiency = 1.0) :
                 SimpleInverterAbc(efficiency),
@@ -120,9 +128,9 @@ namespace Sgt
             {
                 // Empty.
             }
-        
-        /// @name ComponentInterface virtual overridden functions.
-        /// @{
+
+            /// @name ComponentInterface virtual overridden functions.
+            /// @{
 
             virtual const std::string& componentType() const override
             {
@@ -131,17 +139,17 @@ namespace Sgt
 
             // virtual void print(std::ostream& os) const override; TODO
 
-        /// @}
- 
-        /// @name InverterAbc virtual overridden functions.
-        /// @{
+            /// @}
+
+            /// @name InverterAbc virtual overridden functions.
+            /// @{
 
             virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source) override;
 
-        /// @}
-       
-        /// @name ZipAbc virtual overridden functions.
-        /// @{
+            /// @}
+
+            /// @name ZipAbc virtual overridden functions.
+            /// @{
 
             virtual arma::Col<Complex> YConst() const override
             {
@@ -153,11 +161,11 @@ namespace Sgt
             }
             virtual arma::Col<Complex> SConst() const override;
 
-        /// @}
-            
-        /// @name SimpleZipInverter specific member functions.
-        /// @{
-            
+            /// @}
+
+            /// @name SimpleZipInverter specific member functions.
+            /// @{
+
             double maxSMag() const
             {
                 return maxSMag_;
@@ -178,13 +186,13 @@ namespace Sgt
                 requestedQ_ = requestedQ;
             }
 
-        /// @}
-        
+            /// @}
+
         private:
-            
+
             double maxSMag_{1e9};
             double requestedQ_{0.0};
     };
-}
+    }
 
 #endif // INVERTER_DOT_H
