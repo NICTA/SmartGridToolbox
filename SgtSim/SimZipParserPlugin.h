@@ -15,7 +15,7 @@
 #ifndef SIM_ZIP_PARSER_PLUGIN_DOT_H
 #define SIM_ZIP_PARSER_PLUGIN_DOT_H
 
-#include <SgtSim/SimNetworkComponent.h>
+#include <SgtSim/SimZip.h>
 #include <SgtSim/SimParser.h>
 
 namespace Sgt

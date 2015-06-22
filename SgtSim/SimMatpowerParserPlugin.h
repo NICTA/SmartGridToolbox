@@ -15,8 +15,11 @@
 #ifndef SIM_MATPOWER_PARSER_PLUGIN_DOT_H
 #define SIM_MATPOWER_PARSER_PLUGIN_DOT_H
 
-#include <SgtSim/SimNetworkComponent.h>
+#include <SgtSim/SimBranch.h>
+#include <SgtSim/SimBus.h>
+#include <SgtSim/SimGen.h>
 #include <SgtSim/SimParser.h>
+#include <SgtSim/SimZip.h>
 
 namespace Sgt
 {

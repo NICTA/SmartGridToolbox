@@ -24,7 +24,7 @@
 
 namespace Sgt
 {
-    class SimBus : public SimComponent
+    class SimBus : virtual public SimComponent
     {
         public:
 

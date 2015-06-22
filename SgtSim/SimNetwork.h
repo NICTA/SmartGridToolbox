@@ -22,7 +22,7 @@
 namespace Sgt
 {
     /// @brief SimNetwork : A SimComponent for an electrical network.
-    class SimNetwork : public SimComponent
+    class SimNetwork : virtual public SimComponent
     {
         public:
 

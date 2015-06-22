@@ -24,7 +24,7 @@
 
 namespace Sgt
 {
-    class SimZip : public SimComponent
+    class SimZip : virtual public SimComponent
     {
         public:
 

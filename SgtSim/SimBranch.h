@@ -24,7 +24,7 @@
 
 namespace Sgt
 {
-    class SimBranch : public SimComponent
+    class SimBranch : virtual public SimComponent
     {
         public:
 

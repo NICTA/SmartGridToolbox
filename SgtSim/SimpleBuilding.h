@@ -16,12 +16,11 @@
 #define SIMPLE_BUILDING_DOT_H
 
 #include <SgtSim/SimComponent.h>
-#include <SgtSim/SimNetworkComponent.h>
+#include <SgtSim/SimZip.h>
 #include <SgtSim/TimeSeries.h>
 #include <SgtSim/Weather.h>
 
 #include <SgtCore/Common.h>
-#include <SgtCore/Zip.h>
 
 #include<string>
 
@@ -34,7 +33,7 @@ namespace Sgt
         OFF
     };
 
-    class SimpleBuilding : public SimComponentAdaptor, public ZipAbc
+    class SimpleBuilding : private ZipAbc, public SimZip
     {
         /// @name Static member functions:
         /// @{
@@ -54,7 +53,9 @@ namespace Sgt
 
         public:
             SimpleBuilding(const std::string& id) :
-                ZipAbc(id, Phase::BAL),
+                Component(id),
+                ZipAbc(Phase::BAL),
+                SimZip(std::dynamic_pointer_cast<ZipAbc>(shared_from_this())),
                 dt_(posix_time::minutes(5)),
                 kb_(5 * kwatt / kelvin),
                 Cb_(1.0e5 * kjoule / kelvin),

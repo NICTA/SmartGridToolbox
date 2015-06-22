@@ -15,7 +15,7 @@
 #ifndef SIM_GEN_PARSER_PLUGIN_DOT_H
 #define SIM_GEN_PARSER_PLUGIN_DOT_H
 
-#include <SgtSim/SimNetworkComponent.h>
+#include <SgtSim/SimGen.h>
 #include <SgtSim/SimParser.h>
 
 namespace Sgt

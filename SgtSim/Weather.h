@@ -46,6 +46,7 @@ namespace Sgt
         /// @{
 
             Weather(const std::string& id) :
+                Component(id),
                 Heartbeat(id, posix_time::minutes(5)),
                 latLong_(greenwich),
                 temperatureSeries_(nullptr),

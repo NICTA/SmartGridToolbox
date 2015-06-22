@@ -24,7 +24,7 @@ namespace Sgt
     /// @brief DC power source.
     ///
     /// Abstract base class for any object that can provide a source of DC power, i.e. a single real power.
-    class DcPowerSourceAbc : public SimComponent
+    class DcPowerSourceAbc : virtual public SimComponent
     {
         public:
 

@@ -15,7 +15,7 @@
 #ifndef SIM_BRANCH_PARSER_PLUGIN_DOT_H
 #define SIM_BRANCH_PARSER_PLUGIN_DOT_H
 
-#include <SgtSim/SimNetworkComponent.h>
+#include <SgtSim/SimBranch.h>
 #include <SgtSim/SimParser.h>
 
 namespace Sgt

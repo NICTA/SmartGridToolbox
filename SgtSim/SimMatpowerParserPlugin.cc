@@ -35,25 +35,25 @@ namespace Sgt
         for (auto bus : tempNetw.busses())
         {
             auto simBus = sim.newSimComponent<SimBus>(bus);
-            simNetw->addBus(simBus);
+            simBus->joinNetwork(*simNetw);
 
             for (auto gen : bus->gens())
             {
                 auto simGen = sim.newSimComponent<SimGen>(gen);
-                simNetw->addGen(simGen, bus->id());
+                simGen->joinNetwork(*simNetw, bus->id());
             }
 
             for (auto zip : bus->zips())
             {
                 auto simZip = sim.newSimComponent<SimZip>(zip);
-                simNetw->addZip(simZip, bus->id());
+                simZip->joinNetwork(*simNetw, bus->id());
             }
         }
 
         for (auto branch : tempNetw.branches())
         {
             auto simBranch = sim.newSimComponent<SimBranch>(branch);
-            simNetw->addBranch(simBranch, branch->bus0()->id(), branch->bus1()->id());
+            simBranch->joinNetwork(*simNetw, branch->bus0()->id(), branch->bus1()->id());
         }
     }
 }
