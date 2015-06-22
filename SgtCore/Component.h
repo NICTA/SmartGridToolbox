@@ -29,7 +29,7 @@ namespace Sgt
     /// A Component is essentially an object with a unique key.
     /// It is usually a good idea to use virtual inheritance to derive from component.
     /// @ingroup Foundation
-    class Component : public HasProperties<Component>
+    class Component : virtual public std::enable_shared_from_this<Component>, public HasProperties<Component>
     {
         public:
 
