@@ -48,14 +48,15 @@ namespace Sgt
         /// @{
 
             CommonBranch(const std::string& id) :
-                BranchAbc(id, Phase::BAL, Phase::BAL)
+                Component(id),
+                BranchAbc(Phase::BAL, Phase::BAL)
             {
                 // Empty.
             }
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override

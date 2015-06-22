@@ -25,7 +25,7 @@
 #include<type_traits>
 #include<vector>
 
-#define SGT_PROPS_INIT(Targ) virtual const std::map<std::string, std::shared_ptr<Sgt::PropertyBase>>& properties() const override {return Sgt::HasProperties<Targ>::sMap();}; virtual std::map<std::string, std::shared_ptr<Sgt::PropertyBase>>& properties() override {return Sgt::HasProperties<Targ>::sMap();}
+#define SGT_PROPS_INIT(Targ) virtual const std::map<std::string, std::shared_ptr<Sgt::PropertyAbc>>& properties() const override {return Sgt::HasProperties<Targ>::sMap();}; virtual std::map<std::string, std::shared_ptr<Sgt::PropertyAbc>>& properties() override {return Sgt::HasProperties<Targ>::sMap();}
 
 #define SGT_PROPS_INHERIT(Targ, Base) struct Inherit ## Base {Inherit ## Base (){auto& targMap = Sgt::HasProperties<Targ>::sMap(); auto& baseMap = Sgt::HasProperties<Base>::sMap(); for (auto& elem : baseMap) {targMap[elem.first] = elem.second;}}}; struct DoInherit ## Base {DoInherit ## Base(){static Inherit ## Base inherit ## Base;}} doinherit ## Base
 
@@ -39,26 +39,26 @@ namespace Sgt
 {
     template<typename T> using TypeByVal = typename std::remove_const<typename std::remove_reference<T>::type>::type;
 
-    class PropertyBase;
+    class PropertyAbc;
 
     /// @ingroup Foundation
-    class HasPropertiesInterface
+    class HasPropertiesAbc
     {
         public:
-            HasPropertiesInterface() = default;
-            HasPropertiesInterface(const HasPropertiesInterface& from) = default;
-            virtual ~HasPropertiesInterface() = default;
-            virtual const std::map<std::string, std::shared_ptr<PropertyBase>>& properties() const = 0;
-            virtual std::map<std::string, std::shared_ptr<PropertyBase>>& properties() = 0;
+            HasPropertiesAbc() = default;
+            HasPropertiesAbc(const HasPropertiesAbc& from) = default;
+            virtual ~HasPropertiesAbc() = default;
+            virtual const std::map<std::string, std::shared_ptr<PropertyAbc>>& properties() const = 0;
+            virtual std::map<std::string, std::shared_ptr<PropertyAbc>>& properties() = 0;
     };
-
+    
     /// @ingroup Foundation
-    template<typename Targ> class HasProperties : virtual public HasPropertiesInterface
+    template<typename Targ> class HasProperties : virtual public HasPropertiesAbc
     {
         public:
-            static std::map<std::string, std::shared_ptr<PropertyBase>>& sMap()
+            static std::map<std::string, std::shared_ptr<PropertyAbc>>& sMap()
             {
-                static std::map<std::string, std::shared_ptr<PropertyBase>> map;
+                static std::map<std::string, std::shared_ptr<PropertyAbc>> map;
                 return map;
             }
     };
@@ -81,14 +81,14 @@ namespace Sgt
             BadTargException() : std::logic_error("Target supplied to property has the wrong type") {}
     };
 
-    template<typename T> class GetterInterface
+    template<typename T> class GetterAbc
     {
         public:
-            virtual ~GetterInterface() = default;
-            virtual T get(const HasPropertiesInterface& targ) const = 0;
+            virtual ~GetterAbc() = default;
+            virtual T get(const HasPropertiesAbc& targ) const = 0;
     };
 
-    template<typename Targ, typename T> class Getter : public GetterInterface<T>
+    template<typename Targ, typename T> class Getter : public GetterAbc<T>
     {
         public:
             using Get = T (const Targ&);
@@ -98,7 +98,7 @@ namespace Sgt
                 // Empty.
             }
 
-            virtual T get(const HasPropertiesInterface& targ) const override
+            virtual T get(const HasPropertiesAbc& targ) const override
             {
                 auto derived = dynamic_cast<const Targ*>(&targ);
                 if (derived == nullptr)
@@ -117,16 +117,16 @@ namespace Sgt
             std::function<Get> get_;
     };
 
-    template<typename T> class SetterInterface
+    template<typename T> class SetterAbc
     {
         public:
-            virtual ~SetterInterface() = default;
-            using Set = void (HasPropertiesInterface&, const T&);
-            virtual void set(HasPropertiesInterface& targ, const T& val) const = 0;
+            virtual ~SetterAbc() = default;
+            using Set = void (HasPropertiesAbc&, const T&);
+            virtual void set(HasPropertiesAbc& targ, const T& val) const = 0;
     };
 
     template<typename Targ, typename T>
-    class Setter : public SetterInterface<T>
+    class Setter : public SetterAbc<T>
     {
         public:
             using Set = void (Targ&, const T&);
@@ -136,7 +136,7 @@ namespace Sgt
                 // Empty.
             }
 
-            virtual void set(HasPropertiesInterface& targ, const T& val) const override
+            virtual void set(HasPropertiesAbc& targ, const T& val) const override
             {
                 auto derived = dynamic_cast<Targ*>(&targ);
                 if (derived == nullptr)
@@ -155,67 +155,33 @@ namespace Sgt
             std::function<Set> set_;
     };
 
-    template<typename T> class PropertyBase1;
     template<typename T> class Property;
 
     /// @ingroup Foundation
-    class PropertyBase
+    class PropertyAbc
     {
         public:
-            virtual ~PropertyBase() = default;
+            virtual ~PropertyAbc() = default;
 
             virtual bool isGettable() = 0;
 
-            virtual bool isSettable() = 0;
-
-            template<typename T> T get(const HasPropertiesInterface& targ) const
+            template<typename T> T get(const HasPropertiesAbc& targ) const
             {
                 auto derived = dynamic_cast<const Property<T>*>(this);
                 return derived->get(targ);
             }
 
-            template<typename T> void set(HasPropertiesInterface& targ, const T& val) const
+            virtual bool isSettable() = 0;
+
+            template<typename T> void set(HasPropertiesAbc& targ, const T& val) const
             {
-                auto derived = dynamic_cast<const PropertyBase1<T>*>(this);
+                auto derived = dynamic_cast<const Property<T>*>(this);
                 derived->set(targ, val);
             }
 
-            virtual std::string string(const HasPropertiesInterface& targ) = 0;
+            virtual std::string string(const HasPropertiesAbc& targ) = 0;
 
-            virtual void setFromString(HasPropertiesInterface& targ, const std::string& str) = 0;
-    };
-
-    template<typename T> class PropertyBase1 : public PropertyBase
-    {
-        public:
-
-            PropertyBase1(std::unique_ptr<SetterInterface<T>> setter) :
-                setter_(std::move(setter))
-            {
-                // Empty.
-            }
-
-            virtual bool isSettable() override
-            {
-                return setter_ != nullptr;
-            }
-
-            void set(HasPropertiesInterface& targ, const T& val) const
-            {
-                if (setter_ == nullptr)
-                {
-                    throw NotSettableException();
-                }
-                setter_->set(targ, val);
-            }
-
-            virtual void setFromString(HasPropertiesInterface& targ, const std::string& str) override
-            {
-                set(targ, fromYamlString<TypeByVal<T>>(str));
-            }
-
-        private:
-            std::unique_ptr<SetterInterface<T>> setter_;
+            virtual void setFromString(HasPropertiesAbc& targ, const std::string& str) = 0;
     };
 
     /// @brief Dynamically discoverable property.
@@ -223,12 +189,12 @@ namespace Sgt
     /// A property can have a getter and a setter. It can generically get its value and set via strings,
     /// or can get and set its the particular template type, if we know what that is.
     /// @ingroup Foundation
-    template<typename T> class Property : public PropertyBase1<T>
+    template<typename T> class Property : public PropertyAbc
     {
         public:
-            Property(std::unique_ptr<GetterInterface<T>> getter, std::unique_ptr<SetterInterface<T>> setter) :
-                PropertyBase1<T>(std::move(setter)),
-                getter_(std::move(getter))
+            Property(std::unique_ptr<GetterAbc<T>> getter, std::unique_ptr<SetterAbc<T>> setter) :
+                getter_(std::move(getter)),
+                setter_(std::move(setter))
             {
                 // Empty.
             }
@@ -238,7 +204,7 @@ namespace Sgt
                 return getter_ != nullptr;
             }
 
-            T get(const HasPropertiesInterface& targ) const
+            T get(const HasPropertiesAbc& targ) const
             {
                 if (getter_ == nullptr)
                 {
@@ -247,13 +213,34 @@ namespace Sgt
                 return getter_->get(targ);
             }
 
-            virtual std::string string(const HasPropertiesInterface& targ) override
+            virtual bool isSettable() override
+            {
+                return setter_ != nullptr;
+            }
+
+            void set(HasPropertiesAbc& targ, const T& val) const
+            {
+                if (setter_ == nullptr)
+                {
+                    throw NotSettableException();
+                }
+                setter_->set(targ, val);
+            }
+
+            virtual void setFromString(HasPropertiesAbc& targ, const std::string& str) override
+            {
+                set(targ, fromYamlString<TypeByVal<T>>(str));
+            }
+
+            virtual std::string string(const HasPropertiesAbc& targ) override
             {
                 return toYamlString(get(targ));
             }
 
         private:
-            std::unique_ptr<GetterInterface<T>> getter_;
+
+            std::unique_ptr<GetterAbc<T>> getter_;
+            std::unique_ptr<SetterAbc<T>> setter_;
     };
 }
 

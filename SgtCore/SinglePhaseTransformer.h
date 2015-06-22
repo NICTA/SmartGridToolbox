@@ -48,14 +48,15 @@ namespace Sgt
             /// @param offNomRatio The off nominal ratio for each of the six windings.
             /// @param ZL The leakage impedance, must be > 0.
             SinglePhaseTransformer(const std::string& id, Complex nomVRatio, Complex offNomRatio, Complex ZL) :
-                BranchAbc(id, Phase::BAL, Phase::BAL), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
+                Component(id),
+                BranchAbc(Phase::BAL, Phase::BAL), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
             {
                 // Empty.
             }
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override

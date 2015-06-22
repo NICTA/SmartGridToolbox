@@ -23,7 +23,8 @@ namespace Sgt
             const arma::Col<double>& subcondRPerL, double freq, double rhoEarth,
             const arma::Col<unsigned int>& nInBundle,
             const arma::Col<double>& adjSubcondDist) :
-        BranchAbc(id, phases0, phases1),
+        Component(id),
+        BranchAbc(phases0, phases1),
         L_(L),
         condDist_(condDist),
         subcondGmr_(subcondGmr),

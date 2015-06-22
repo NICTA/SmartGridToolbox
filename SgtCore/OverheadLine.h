@@ -72,7 +72,7 @@ namespace Sgt
                     const arma::Col<double>& adjSubcondDist = arma::Col<double>());
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override

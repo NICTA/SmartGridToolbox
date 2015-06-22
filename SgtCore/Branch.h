@@ -29,7 +29,7 @@ namespace Sgt
     ///
     /// Implement some common functionality for convenience.
     /// @ingroup PowerFlowCore
-    class BranchAbc : public Component
+    class BranchAbc : virtual public Component
     {
         public:
 
@@ -50,11 +50,11 @@ namespace Sgt
         /// @name Lifecycle:
         /// @{
 
-            BranchAbc(const std::string& id, const Phases& phases0, const Phases& phases1);
+            BranchAbc(const Phases& phases0, const Phases& phases1);
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override
@@ -211,14 +211,14 @@ namespace Sgt
         /// @{
 
             GenericBranch(const std::string& id, const Phases& phases0, const Phases& phases1) :
-                BranchAbc(id, phases0, phases1), Y_(2*phases0.size(), 2*phases0.size(), arma::fill::zeros)
+                Component(id), BranchAbc(phases0, phases1), Y_(2*phases0.size(), 2*phases0.size(), arma::fill::zeros)
             {
                 // Empty.
             }
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override

@@ -27,7 +27,7 @@ namespace Sgt
     ///
     /// Implement some common functionality for convenience.
     /// @ingroup PowerFlowCore
-    class ZipAbc : public Component
+    class ZipAbc : virtual public Component
     {
         public:
 
@@ -45,11 +45,11 @@ namespace Sgt
         /// @name Lifecycle:
         /// @{
 
-            ZipAbc(const std::string& id, const Phases& phases) : Component(id), phases_(phases) {}
+            ZipAbc(const Phases& phases) : Component(""), phases_(phases) {}
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override
@@ -167,7 +167,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override

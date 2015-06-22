@@ -18,8 +18,7 @@
 
 namespace Sgt
 {
-    BranchAbc::BranchAbc(const std::string & id, const Phases& phases0, const Phases& phases1) :
-        Component(id),
+    BranchAbc::BranchAbc(const Phases& phases0, const Phases& phases1) :
         phases0_(phases0),
         phases1_(phases1),
         isInService_(true)

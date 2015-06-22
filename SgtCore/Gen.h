@@ -26,7 +26,7 @@ namespace Sgt
     ///
     /// Implement some common functionality for convenience.
     /// @ingroup PowerFlowCore
-    class GenAbc : public Component
+    class GenAbc : virtual public Component
     {
         public:
 
@@ -44,17 +44,15 @@ namespace Sgt
         /// @name Lifecycle:
         /// @{
 
-            GenAbc(const std::string& id, const Phases& phases) :
-                Component(id),
-                phases_(phases),
-                isInService_(true)
+            GenAbc(const Phases& phases) :
+                phases_(phases)
             {
                 // Empty.
             }
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override
@@ -181,8 +179,8 @@ namespace Sgt
 
         private:
 
-            Phases phases_;
-            bool isInService_;
+            Phases phases_{Phase::BAD};
+            bool isInService_{true};
 
             Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
             Event generationChanged_{std::string(sComponentType()) + " : Generation changed"};
@@ -211,7 +209,8 @@ namespace Sgt
         /// @{
 
             GenericGen(const std::string& id, const Phases& phases) :
-                GenAbc(id, phases),
+                Component(id),
+                GenAbc(phases),
                 S_(phases.size(), arma::fill::zeros)
             {
                 // Empty.
@@ -219,7 +218,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override

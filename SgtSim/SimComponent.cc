@@ -16,7 +16,7 @@
 
 namespace Sgt
 {
-    void SimComponentAdaptor::initialize()
+    void SimComponent::initialize()
     {
         SGT_DEBUG(Log().debug() << "SimComponent " << id() << " initialize." << std::endl);
         willUpdate_.setDescription(id() + ": Will update");
@@ -28,7 +28,7 @@ namespace Sgt
         initializeState();
     }
 
-    void SimComponentAdaptor::update(Time t)
+    void SimComponent::update(Time t)
     {
         SGT_DEBUG(Log().debug() << "SimComponent " << id() << " update from " << lastUpdated_ << " to " << t
                   << std::endl);

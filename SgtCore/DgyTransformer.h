@@ -48,7 +48,8 @@ namespace Sgt
             /// @param offNomRatioDY Off nominal complex ratio for each of the six windings.
             /// @param ZL The leakage impedance, must be > 0.
             DgyTransformer(const std::string& id, Complex nomVRatioDY, Complex offNomRatioDY, Complex ZL) :
-                BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
+                Component(id),
+                BranchAbc(Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
                 nomVRatioDY_(nomVRatioDY), offNomRatioDY_(offNomRatioDY), YL_(1.0/ZL)
             {
                 // Empty.
@@ -56,7 +57,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override

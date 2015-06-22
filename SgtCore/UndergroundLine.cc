@@ -19,9 +19,9 @@
 namespace Sgt
 {
     UndergroundLine::UndergroundLine(
-        const std::string& id, double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
+        double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
         double gmrPhase, double resPerLPhase, double freq, double rhoEarth) :
-        BranchAbc(id, Phase::A|Phase::B|Phase::C, Phase::A|Phase::B|Phase::C),
+        BranchAbc(Phase::A|Phase::B|Phase::C, Phase::A|Phase::B|Phase::C),
         L_(L),
         hasNeutral_(hasNeutral),
         phaseDist_(phaseDist),
@@ -40,7 +40,8 @@ namespace Sgt
             const std::string& id, double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
             double gmrPhase, double resPerLPhase, double freq, double rhoEarth,
             double gmrConcStrand, double resPerLConcStrand, int nConcStrands, double rConc) :
-        UndergroundLine(id, L, hasNeutral, phaseDist, gmrPhase, resPerLPhase, freq, rhoEarth),
+        Component(id),
+        UndergroundLine(L, hasNeutral, phaseDist, gmrPhase, resPerLPhase, freq, rhoEarth),
         gmrConcStrand_(gmrConcStrand),
         resPerLConcStrand_(resPerLConcStrand),
         nConcStrands_(nConcStrands),

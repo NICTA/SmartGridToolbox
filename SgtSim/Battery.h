@@ -31,8 +31,9 @@ namespace Sgt
         /// @{
 
         public:
+            
             Battery(const std::string& id) :
-                DcPowerSourceAbc(id),
+                Component(id),
                 dt_(posix_time::minutes(5)),
                 initCharge_(0.0),
                 maxChargePower_(0.0),
@@ -47,10 +48,11 @@ namespace Sgt
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
         public:
+            
             static const std::string& sComponentType()
             {
                 static std::string result("battery");
@@ -70,12 +72,14 @@ namespace Sgt
         /// @{
 
         public:
+            
             virtual Time validUntil() const override
             {
                 return lastUpdated() + dt_;
             }
 
         protected:
+            
             virtual void initializeState() override
             {
                 charge_ = initCharge_;
@@ -89,6 +93,7 @@ namespace Sgt
         /// @{
 
         public:
+            
             virtual double PDc() const override; ///< Positive = charging.
 
         /// @}

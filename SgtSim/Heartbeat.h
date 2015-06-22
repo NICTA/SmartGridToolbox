@@ -91,7 +91,7 @@ namespace Sgt
             Time nextBeat_{posix_time::not_a_date_time};
     };
 
-    class Heartbeat : public HeartbeatAdaptor, public Component
+    class Heartbeat : virtual public Component, public HeartbeatAdaptor
     {
         public:
 
@@ -118,7 +118,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override

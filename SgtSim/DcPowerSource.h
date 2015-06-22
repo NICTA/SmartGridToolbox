@@ -42,11 +42,14 @@ namespace Sgt
         /// @name Lifecycle.
         /// @{
 
-            DcPowerSourceAbc(const std::string& id) : SimComponent(id) {}
+            DcPowerSourceAbc()
+            {
+                // Empty.
+            }
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override
@@ -99,11 +102,11 @@ namespace Sgt
         /// @name Lifecycle
         /// @{
 
-            GenericDcPowerSource(const std::string& id) : DcPowerSourceAbc(id), PDc_(0.0) {}
+            GenericDcPowerSource(const std::string& id) : Component(id), PDc_(0.0) {}
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override

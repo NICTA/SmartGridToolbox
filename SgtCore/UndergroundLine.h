@@ -53,14 +53,14 @@ namespace Sgt
         /// @{
 
             /// @brief Constructor.
-            UndergroundLine(const std::string& id, double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
+            UndergroundLine(double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
                             double gmrPhase, double resPerLPhase, double freq, double rhoEarth);
 
             virtual void validate() = 0; ///< Calcuate all cached quantities.
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override

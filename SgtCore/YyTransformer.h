@@ -49,7 +49,8 @@ namespace Sgt
             /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
             /// @param ZL The leakage impedance, must be > 0.
             YyTransformer(const std::string& id, Complex a, Complex ZL, Complex YM) :
-                BranchAbc(id, Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
+                Component(id),
+                BranchAbc(Phase::A | Phase::B | Phase::C, Phase::A | Phase::B | Phase::C),
                 a_(a),
                 YL_(1.0 / ZL),
                 YM_(YM)
@@ -66,7 +67,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override

@@ -21,12 +21,9 @@
 
 namespace Sgt
 {
-    /// @brief Adaptor that can be used add SimComponent functionality.
-    ///
-    /// By deriving from this class and from an existing Component, we may extend that Component to include
-    /// SimComponent functionality via multiple inheritance. See comments for SimComponent for more details.
+    /// @brief A base class for components of a Simulation.
     /// @ingroup SimCore
-    class SimComponentAdaptor : virtual public ComponentInterface
+    class SimComponent : virtual public Component
     {
         public:
 
@@ -40,16 +37,31 @@ namespace Sgt
             }
 
             /// @}
-
+            
             /// @name Lifecycle:
             /// @{
 
-            SimComponentAdaptor() = default;
+            SimComponent() : Component("")
+            {
+                // Empty.
+            }
 
-            virtual ~SimComponentAdaptor() = default;
+            virtual ~SimComponent() = default;
 
             /// @}
 
+            /// @name Component virtual overridden functions.
+            /// @{
+
+            virtual const std::string& componentType() const override
+            {
+                return sComponentType();
+            }
+
+            // virtual void print(std::ostream& os) const override; // TODO
+
+            /// @}
+    
             /// @name Simulation flow
             /// @{
 
@@ -126,13 +138,13 @@ namespace Sgt
             /// @name Dependencies.
             /// @{
 
-            const std::vector<std::weak_ptr<const SimComponentAdaptor>>& dependencies() const
+            const std::vector<std::weak_ptr<const SimComponent>>& dependencies() const
             {
                 return dependencies_;
             }
 
             /// @brief Components on which I depend will update first.
-            void dependsOn(std::shared_ptr<const SimComponentAdaptor> b)
+            void dependsOn(std::shared_ptr<const SimComponent> b)
             {
                 dependencies_.push_back(b);
             }
@@ -163,7 +175,7 @@ namespace Sgt
 
             Time lastUpdated_{posix_time::not_a_date_time};
             ///< The time to which I am up to date
-            std::vector<std::weak_ptr<const SimComponentAdaptor>> dependencies_;
+            std::vector<std::weak_ptr<const SimComponent>> dependencies_;
             ///< I depend on these.
             int rank_{-1};
             ///< Evaluation rank, based on weak ordering.
@@ -177,32 +189,6 @@ namespace Sgt
             ///< Triggered immediately prior to time advancing.
             Event didCompleteTimestep_{std::string(sComponentType()) + "Did complete timestep"};
             ///< Triggered just after fully completing a timestep.
-    };
-
-    /// @brief A base class for SimComponents.
-    ///
-    /// Although most SimComponents will derive from this base class, some may not, due to multiple inheritance.
-    /// For example, we have SimBus : public SimComponentAdaptor, public Bus, which takes it's
-    /// ComponentInterface from Bus rather than Component. Depending on needs, this kind of thing may be done using
-    /// multiple inheritance, as just described, or using composition: both have advantages and disadvantages.
-    /// @ingroup SimCore
-    class SimComponent : public SimComponentAdaptor, public Component
-    {
-        public:
-
-            SimComponent(const std::string& id) : Component(id) {}
-
-            /// @name ComponentInterface virtual overridden functions.
-            /// @{
-
-            virtual const std::string& componentType() const override
-            {
-                return SimComponentAdaptor::sComponentType();
-            }
-
-            // virtual void print(std::ostream& os) const override; // TODO
-
-            /// @}
     };
 }
 

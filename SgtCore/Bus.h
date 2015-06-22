@@ -31,7 +31,7 @@ namespace Sgt
 
     /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
     /// @ingroup PowerFlowCore
-    class Bus : public Component, public HasProperties<Bus>
+    class Bus : virtual public Component, public HasProperties<Bus>
     {
         public:
 
@@ -62,7 +62,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name ComponentInterface virtual overridden functions.
+        /// @name Component virtual overridden functions.
         /// @{
 
             virtual const std::string& componentType() const override
