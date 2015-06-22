@@ -36,7 +36,6 @@ namespace Sgt
                 std::string("Trigger ") + sComponentType() + " " + id() + " injection changed.");
     }
 
-
     arma::Col<Complex> SimpleZipInverter::SConst() const
     {
         double PPerPh = availableP() / phases().size();
@@ -54,6 +53,4 @@ namespace Sgt
         Complex SPerPh{PPerPh, QPerPh};
         return arma::Col<Complex>(phases().size(), arma::fill::none).fill(SPerPh);
     }
-
-        
 }

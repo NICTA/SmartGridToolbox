@@ -29,7 +29,7 @@ namespace Sgt
         public:
 
             SimZip(std::shared_ptr<ZipAbc> zip) :
-                SimComponent(zip->id()),
+                Component(zip->id()),
                 zip_(zip)
             {
                 // Empty.

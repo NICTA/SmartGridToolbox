@@ -16,7 +16,6 @@
 #define SIM_NETWORK_DOT_H
 
 #include <SgtSim/SimComponent.h>
-#include <SgtSim/SimNetworkComponent.h>
 
 #include <SgtCore/Network.h>
 

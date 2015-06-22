@@ -29,7 +29,7 @@ namespace Sgt
         public:
 
             SimGen(std::shared_ptr<GenAbc> gen) :
-                SimComponent(gen->id()),
+                Component(gen->id()),
                 gen_(gen)
             {
                 // Empty.

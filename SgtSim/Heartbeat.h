@@ -20,14 +20,26 @@
 namespace Sgt
 {
     /// @brief Utility base class for a component that updates with a regular "tick" dt.
-    class HeartbeatAdaptor : public SimComponentAdaptor
+    class Heartbeat : virtual public SimComponent
     {
+        /// @name Static member functions:
+        /// @{
+
+            static const std::string& sComponentType()
+            {
+                static std::string result("heartbeat");
+                return result;
+            }
+
+        /// @}
+        
         /// @name Lifecycle:
         /// @{
 
         public:
 
-            HeartbeatAdaptor(const Time& dt) :
+            Heartbeat(const std::string& id, const Time& dt) :
+                Component(id),
                 dt_(dt)
             {
                 // Empty.
@@ -35,7 +47,19 @@ namespace Sgt
 
         /// @}
 
-        /// @name Overridden member functions from SimComponent.
+        /// @name Component virtual overridden member functions.
+        /// @{
+
+            virtual const std::string& componentType() const override
+            {
+                return sComponentType();
+            }
+
+            // virtual void print(std::ostream& os) const override; TODO
+
+        /// @}
+
+        /// @name SimComponent virtual overridden member functions.
         /// @{
 
         public:
@@ -89,46 +113,6 @@ namespace Sgt
             Time dt_;
 
             Time nextBeat_{posix_time::not_a_date_time};
-    };
-
-    class Heartbeat : virtual public Component, public HeartbeatAdaptor
-    {
-        public:
-
-        /// @name Static member functions:
-        /// @{
-
-            static const std::string& sComponentType()
-            {
-                static std::string result("heartbeat");
-                return result;
-            }
-
-        /// @}
-
-        /// @name Lifecycle:
-        /// @{
-
-            Heartbeat(const std::string& id, const Time& dt) :
-                HeartbeatAdaptor(dt),
-                Component(id)
-            {
-                // Empty.
-            }
-
-        /// @}
-
-        /// @name Component virtual overridden functions.
-        /// @{
-
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
-
-            // virtual void print(std::ostream& os) const override; TODO
-
-        /// @}
     };
 }
 

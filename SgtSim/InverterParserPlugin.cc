@@ -51,6 +51,6 @@ namespace Sgt
         const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
         auto network = sim.simComponent<SimNetwork>(networkId);
-        network->addZip(inverter, busId);
+        inverter->joinNetwork(*network, busId);
     }
 }

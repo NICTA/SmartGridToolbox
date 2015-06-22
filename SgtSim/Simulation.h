@@ -32,8 +32,8 @@ namespace Sgt
     {
         private:
 
-            typedef std::shared_ptr<SimComponentAdaptor> SimCompPtr;
-            typedef std::shared_ptr<const SimComponentAdaptor> SimCompConstPtr;
+            typedef std::shared_ptr<SimComponent> SimCompPtr;
+            typedef std::shared_ptr<const SimComponent> SimCompConstPtr;
             typedef std::shared_ptr<TimeSeriesBase> TimeSeriesPtr;
             typedef std::shared_ptr<const TimeSeriesBase> TimeSeriesConstPtr;
 
@@ -133,7 +133,7 @@ namespace Sgt
             template<typename T> std::shared_ptr<const T> simComponent(const std::string& id,
                     bool crashOnFail = true) const
             {
-                std::shared_ptr<const SimComponentAdaptor> simComp = genericSimComponent(id, crashOnFail);
+                std::shared_ptr<const SimComponent> simComp = genericSimComponent(id, crashOnFail);
                 auto result = std::dynamic_pointer_cast<const T>(simComp);
                 sgtAssert(!(result == nullptr && crashOnFail), "Component " << id 
                         << " was requested and exists in the simulation, but is of the wrong type.");
@@ -231,10 +231,10 @@ namespace Sgt
 
         private:
 
-            std::shared_ptr<const SimComponentAdaptor> genericSimComponent(const std::string& id,
+            std::shared_ptr<const SimComponent> genericSimComponent(const std::string& id,
                     bool crashOnFail = true) const;
 
-            void addOrReplaceGenericSimComponent(std::shared_ptr<SimComponentAdaptor> simComp, bool allowReplace);
+            void addOrReplaceGenericSimComponent(std::shared_ptr<SimComponent> simComp, bool allowReplace);
 
             std::shared_ptr<const TimeSeriesBase> genericTimeSeries(const std::string& id,
                     bool crashOnFail = true) const;

@@ -16,7 +16,7 @@
 #define INVERTER_DOT_H
 
 #include <SgtSim/DcPowerSource.h>
-#include <SgtSim/SimNetworkComponent.h>
+#include <SgtSim/SimZip.h>
 
 #include <memory>
 #include <numeric>
@@ -24,7 +24,7 @@
 namespace Sgt
 {
     /// @brief DC power to n-phase AC converter.
-    class InverterAbc
+    class InverterAbc : virtual public SimComponent
     {
         public:
 
@@ -67,7 +67,7 @@ namespace Sgt
             /// @name Lifecycle
             /// @{
 
-            SimpleInverterAbc(double efficiency = 1.0) : efficiency_(efficiency)
+            SimpleInverterAbc(double efficiency = 1.0) : Component(""), efficiency_(efficiency)
             {
                 // Empty.
             }
@@ -82,7 +82,7 @@ namespace Sgt
                 return efficiency_;
             }
 
-            /// @{
+            /// @}
 
             /// @name Efficiency.
             /// @{
@@ -97,7 +97,7 @@ namespace Sgt
                 efficiency_ = efficiency;
             }
 
-            /// @{
+            /// @}
 
         private:
 
@@ -105,14 +105,12 @@ namespace Sgt
     };
 
     /// @brief DC power to n-phase AC converter.
-    class SimpleZipInverter : public SimpleInverterAbc, public SimZip, private ZipAbc
+    class SimpleZipInverter : public SimpleInverterAbc, private ZipAbc, public SimZip
     {
         public:
 
             /// @name Static member functions:
             /// @{
-
-        public:
 
             static const std::string& sComponentType()
             {
@@ -122,12 +120,21 @@ namespace Sgt
 
             /// @}
 
-            SimpleZipInverter(std::shared_ptr<ZipAbc> zip, double efficiency = 1.0) :
+            /// @name Lifecycle.
+            /// @{
+            
+            SimpleZipInverter(const std::string& id, const Phases& phases, double efficiency = 1.0) :
+                Component(id),
                 SimpleInverterAbc(efficiency),
-                SimZip(zip)
+                ZipAbc(phases),
+                SimZip(std::dynamic_pointer_cast<ZipAbc>(shared_from_this()))
             {
                 // Empty.
             }
+
+            virtual ~SimpleZipInverter() = default;
+            
+            /// @}
 
             /// @name Component virtual overridden functions.
             /// @{
@@ -145,21 +152,6 @@ namespace Sgt
             /// @{
 
             virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source) override;
-
-            /// @}
-
-            /// @name ZipAbc virtual overridden functions.
-            /// @{
-
-            virtual arma::Col<Complex> YConst() const override
-            {
-                return arma::Col<Complex>(phases().size(), arma::fill::zeros);
-            }
-            virtual arma::Col<Complex> IConst() const override
-            {
-                return arma::Col<Complex>(phases().size(), arma::fill::zeros);
-            }
-            virtual arma::Col<Complex> SConst() const override;
 
             /// @}
 
@@ -189,10 +181,19 @@ namespace Sgt
             /// @}
 
         private:
+            
+            /// @name ZipAbc virtual overridden functions.
+            /// @{
+            
+            virtual arma::Col<Complex> SConst() const override;
+            
+            /// @}
+
+        private:
 
             double maxSMag_{1e9};
             double requestedQ_{0.0};
     };
-    }
+}
 
 #endif // INVERTER_DOT_H
