@@ -26,7 +26,7 @@ namespace Sgt
         return result;
     }
 
-    void Simulation::addOrReplaceGenericSimComponent(std::shared_ptr<SimComponentAdaptor> simComp, bool allowReplace)
+    void Simulation::addOrReplaceGenericSimComponent(std::shared_ptr<SimComponent> simComp, bool allowReplace)
     {
         SimCompMap::iterator it1 = simCompMap_.find(simComp->id());
         if (it1 != simCompMap_.end())
@@ -261,10 +261,10 @@ namespace Sgt
         }
     }
 
-    std::shared_ptr<const SimComponentAdaptor> Simulation::genericSimComponent(const std::string& id,
+    std::shared_ptr<const SimComponent> Simulation::genericSimComponent(const std::string& id,
             bool crashOnFail) const
     {
-        std::shared_ptr<const SimComponentAdaptor> result = nullptr;
+        std::shared_ptr<const SimComponent> result = nullptr;
         SimCompMap::const_iterator it = simCompMap_.find(id);
         if (it != simCompMap_.end())
         {

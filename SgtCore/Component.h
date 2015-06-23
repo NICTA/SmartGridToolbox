@@ -29,7 +29,7 @@ namespace Sgt
     /// A Component is essentially an object with a unique key.
     /// It is usually a good idea to use virtual inheritance to derive from component.
     /// @ingroup Foundation
-    class Component : virtual public std::enable_shared_from_this<Component>, public HasProperties<Component>
+    class Component : public std::enable_shared_from_this<Component>, public HasProperties<Component>
     {
         public:
 
@@ -58,6 +58,19 @@ namespace Sgt
 
             virtual ~Component() = default;
 
+            /// @}
+            
+            /// @name Shared pointer access:
+            /// @{
+
+            /// @brief Dynamic pointer cast to std::shared_ptr<T>
+            ///
+            /// For non-template shared_ptr<Component>, use shared_from_this()
+            template<typename T> std::shared_ptr<T> shared()
+            {
+                return std::dynamic_pointer_cast<T>(shared_from_this());
+            }
+            
             /// @}
 
             /// @name Virtual fuctions (to be overridden):

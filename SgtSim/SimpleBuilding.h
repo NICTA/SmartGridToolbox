@@ -33,7 +33,7 @@ namespace Sgt
         OFF
     };
 
-    class SimpleBuilding : private ZipAbc, public SimZip
+    class SimpleBuilding : virtual public Component, private ZipAbc, public SimZip
     {
         /// @name Static member functions:
         /// @{
@@ -55,7 +55,7 @@ namespace Sgt
             SimpleBuilding(const std::string& id) :
                 Component(id),
                 ZipAbc(Phase::BAL),
-                SimZip(std::dynamic_pointer_cast<ZipAbc>(shared_from_this())),
+                SimZip(shared<ZipAbc>()),
                 dt_(posix_time::minutes(5)),
                 kb_(5 * kwatt / kelvin),
                 Cb_(1.0e5 * kjoule / kelvin),

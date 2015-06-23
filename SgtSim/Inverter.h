@@ -43,7 +43,7 @@ namespace Sgt
             virtual double efficiency(double powerDc) const = 0;
 
             /// @brief Total DC power from all sources.
-            double PDc() const
+            virtual double PDc() const
             {
                 return std::accumulate(sources_.begin(), sources_.end(), 0.0,
                         [] (double tot, const std::shared_ptr<DcPowerSourceAbc>& source)
@@ -105,7 +105,7 @@ namespace Sgt
     };
 
     /// @brief DC power to n-phase AC converter.
-    class SimpleZipInverter : public SimpleInverterAbc, private ZipAbc, public SimZip
+    class SimpleZipInverter : public SimpleInverterAbc, public SimZipAbc, private ZipAbc
     {
         public:
 
@@ -126,8 +126,7 @@ namespace Sgt
             SimpleZipInverter(const std::string& id, const Phases& phases, double efficiency = 1.0) :
                 Component(id),
                 SimpleInverterAbc(efficiency),
-                ZipAbc(phases),
-                SimZip(std::dynamic_pointer_cast<ZipAbc>(shared_from_this()))
+                ZipAbc(phases)
             {
                 // Empty.
             }
@@ -152,6 +151,21 @@ namespace Sgt
             /// @{
 
             virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source) override;
+
+            /// @}
+            
+            /// @name SimZipAbc virtual overridden functions.
+            /// @{
+            
+            virtual std::shared_ptr<const ZipAbc> zip() const override
+            {
+                return shared<const ZipAbc>();
+            }
+
+            virtual std::shared_ptr<ZipAbc> zip() override
+            {
+                return shared<ZipAbc>();
+            }
 
             /// @}
 

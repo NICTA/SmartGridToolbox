@@ -16,40 +16,49 @@
 #define TIME_SERIES_ZIP_DOT_H
 
 #include "Heartbeat.h"
-#include "SimNetworkComponent.h"
 #include "TimeSeries.h"
+
+#include <SgtSim/SimZip.h>
 
 namespace Sgt
 {
-    class TimeSeriesZip : public ZipAbc, public HeartbeatAdaptor
+    class TimeSeriesZip : public SimZipAbc, public Heartbeat, private ZipAbc
     {
+        public:
+            
+            static const std::string& sComponentType()
+            {
+                static std::string result("time_series_zip");
+                return result;
+            }
+
         public:
 
             TimeSeriesZip(const std::string& id, const Phases& phases,
                           std::shared_ptr<const TimeSeries<Time, arma::Col<Complex>>> series, const Time& dt) :
-                ZipAbc(id, phases),
-                HeartbeatAdaptor(dt),
+                Component(id),
+                Heartbeat(id, dt),
+                ZipAbc(phases),
                 series_(series)
             {
                 // Empty.
             }
 
-            virtual arma::Col<Complex> YConst() const
+            virtual const std::string& componentType() const override
             {
-                return scaleFactorY_ * series_->value(lastUpdated())(
-                        arma::span(0, phases().size() - 1));
+                return sComponentType();
             }
 
-            virtual arma::Col<Complex> IConst() const
+            virtual void print(std::ostream& os) const override;
+
+            virtual std::shared_ptr<const ZipAbc> zip() const override
             {
-                return scaleFactorI_ * series_->value(lastUpdated())(
-                        arma::span(phases().size(), 2 * phases().size() - 1));
+                return shared<const ZipAbc>();
             }
 
-            virtual arma::Col<Complex> SConst() const
+            virtual std::shared_ptr<ZipAbc> zip() override
             {
-                return scaleFactorS_ * series_->value(lastUpdated())(
-                        arma::span(2 * phases().size(), 3 * phases().size() - 1));
+                return shared<ZipAbc>();
             }
 
             double scaleFactorY() const
@@ -84,10 +93,28 @@ namespace Sgt
 
         protected:
 
-            virtual void updateState(Time t)
+            virtual void updateState(Time t) override
             {
-                HeartbeatAdaptor::updateState(t);
+                Heartbeat::updateState(t);
                 injectionChanged().trigger();
+            }
+
+            virtual arma::Col<Complex> YConst() const override
+            {
+                return scaleFactorY_ * series_->value(lastUpdated())(
+                        arma::span(0, phases().size() - 1));
+            }
+
+            virtual arma::Col<Complex> IConst() const override
+            {
+                return scaleFactorI_ * series_->value(lastUpdated())(
+                        arma::span(phases().size(), 2 * phases().size() - 1));
+            }
+
+            virtual arma::Col<Complex> SConst() const override
+            {
+                return scaleFactorS_ * series_->value(lastUpdated())(
+                        arma::span(2 * phases().size(), 3 * phases().size() - 1));
             }
 
         private:

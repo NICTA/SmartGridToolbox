@@ -24,7 +24,23 @@
 
 namespace Sgt
 {
-    class SimGen : virtual public SimComponent
+    /// @brief Abstract base class for SimGen.
+    /// 
+    /// Depending on how the derived class works, gen() could either be provided by containment or inheritance.
+    class SimGenAbc : virtual public SimComponent
+    {
+        public:
+
+            virtual std::shared_ptr<const GenAbc> gen() const = 0;
+            virtual std::shared_ptr<GenAbc> gen() = 0;
+
+            virtual void joinNetwork(SimNetwork& simNetwork, const std::string& busId);
+    };
+
+    /// @brief Simulation gen, corresponding to a GenAbc in a SimNetwork's network(). 
+    /// 
+    /// gen() is provided by containment which is enough for a normal network gen types. 
+    class SimGen : public SimGenAbc
     {
         public:
 
@@ -44,8 +60,6 @@ namespace Sgt
             {
                 return gen_;
             }
-
-            virtual void joinNetwork(SimNetwork& simNetwork, const std::string& busId);
 
         private:
 

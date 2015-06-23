@@ -24,7 +24,23 @@
 
 namespace Sgt
 {
-    class SimBranch : virtual public SimComponent
+    /// @brief Abstract base class for SimBranch.
+    /// 
+    /// Depending on how the derived class works, branch() could either be provided by containment or inheritance.
+    class SimBranchAbc : virtual public SimComponent
+    {
+        public:
+
+            virtual std::shared_ptr<const BranchAbc> branch() const = 0;
+            virtual std::shared_ptr<BranchAbc> branch() = 0;
+
+            virtual void joinNetwork(SimNetwork& simNetwork, const std::string& bus0Id, const std::string& bus1Id);
+    };
+
+    /// @brief Simulation branch, corresponding to a BranchAbc in a SimNetwork's network(). 
+    /// 
+    /// branch() is provided by containment which is enough for a normal network branch types. 
+    class SimBranch : public SimBranchAbc
     {
         public:
 
@@ -44,8 +60,6 @@ namespace Sgt
             {
                 return branch_;
             }
-
-            virtual void joinNetwork(SimNetwork& simNetwork, const std::string& bus0Id, const std::string& bus1Id);
 
         private:
 

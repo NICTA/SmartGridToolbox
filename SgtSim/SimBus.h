@@ -24,7 +24,27 @@
 
 namespace Sgt
 {
-    class SimBus : virtual public SimComponent
+    /// @brief Abstract base class for SimBus.
+    /// 
+    /// Depending on how the derived class works, bus() could either be provided by containment or inheritance.
+    class SimBusAbc : virtual public SimComponent
+    {
+        public:
+
+            virtual std::shared_ptr<const Bus> bus() const = 0;
+            virtual std::shared_ptr<Bus> bus() = 0;
+            
+            virtual void joinNetwork(SimNetwork& simNetwork);
+
+        protected:
+
+            virtual void initializeState() override;
+    };
+
+    /// @brief Simulation bus, corresponding to a Bus in a SimNetwork's network(). 
+    /// 
+    /// bus() is provided by containment which is enough for a normal network bus. 
+    class SimBus : public SimBusAbc
     {
         public:
 
@@ -36,21 +56,16 @@ namespace Sgt
                 // Empty.
             }
 
-            std::shared_ptr<const Bus> bus() const
+            std::shared_ptr<const Bus> bus() const override
             {
                 return bus_;
             }
             
-            std::shared_ptr<Bus> bus()
+            std::shared_ptr<Bus> bus() override
             {
                 return bus_;
             }
 
-            virtual void joinNetwork(SimNetwork& simNetwork);
-
-        protected:
-
-            virtual void initializeState() override;
 
         private:
 

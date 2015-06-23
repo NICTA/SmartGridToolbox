@@ -121,7 +121,7 @@ namespace Sgt
         /// @name DC Power.
         /// @{
 
-            virtual double PDc() const {return PDc_;}
+            virtual double PDc() const override {return PDc_;}
             void setPDc(double PDc) {PDc_ = PDc; dcPowerChanged().trigger();}
 
         /// @}

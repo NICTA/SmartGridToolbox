@@ -20,7 +20,7 @@
 namespace Sgt
 {
     SolarPv::SolarPv(const std::string& id) :
-        DcPowerSourceAbc(id),
+        Component(id),
         weather_(nullptr),
         efficiency_(1.0),
         planeNormal_( {0.0, 0.0}),

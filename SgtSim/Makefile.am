@@ -50,7 +50,6 @@ libSgtSim_la_SOURCES = \
 	SimParser.h SimParser.cc \
 	SimpleBuilding.h SimpleBuilding.cc \
 	SimpleBuildingParserPlugin.h SimpleBuildingParserPlugin.cc \
-	SimSinglePhaseTransformerParserPlugin.h SimSinglePhaseTransformerParserPlugin.cc \
 	Simulation.h Simulation.cc \
 	SimZip.h SimZip.cc \
 	SimZipParserPlugin.h SimZipParserPlugin.cc \
