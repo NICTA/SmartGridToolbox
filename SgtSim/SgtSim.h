@@ -21,11 +21,14 @@
 #include <SgtSim/DcPowerSource.h>
 #include <SgtSim/Inverter.h>
 #include <SgtSim/Heartbeat.h>
+#include <SgtSim/SimBranch.h>
+#include <SgtSim/SimBus.h>
 #include <SgtSim/SimComponent.h>
+#include <SgtSim/SimGen.h>
 #include <SgtSim/SimNetwork.h>
-#include <SgtSim/SimNetworkComponent.h>
 #include <SgtSim/SimpleBuilding.h>
 #include <SgtSim/Simulation.h>
+#include <SgtSim/SimZip.h>
 #include <SgtSim/SolarPv.h>
 #include <SgtSim/Sun.h>
 #include <SgtSim/TimeSeries.h>
