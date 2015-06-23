@@ -59,6 +59,6 @@ namespace Sgt
             tsZip->setScaleFactorS(scaleFactorS);
         }
 
-        network->addZip(tsZip, busId);
+        tsZip->joinNetwork(*network, busId);
     }
 }
