@@ -48,6 +48,7 @@ libinclude_HEADERS = \
 	Properties.h \
 	Random.h \
 	SinglePhaseTransformer.h \
+	Spline.h \
 	Stopwatch.h \
 	UndergroundLine.h \
 	Units.h \
@@ -88,6 +89,7 @@ libSgtCore_la_SOURCES = \
 	RegisterParserPlugins.cc \
 	SparseHelper.h \
 	SgtCore.h \
+	Spline.h \
 	Stopwatch.h \
 	SinglePhaseTransformer.h SinglePhaseTransformer.cc \
 	SinglePhaseTransformerParserPlugin.h SinglePhaseTransformerParserPlugin.cc \

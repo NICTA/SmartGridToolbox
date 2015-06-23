@@ -32,6 +32,7 @@
 #include <SgtSim/SolarPv.h>
 #include <SgtSim/Sun.h>
 #include <SgtSim/TimeSeries.h>
+#include <SgtSim/TimeSeriesZip.h>
 #include <SgtSim/Weather.h>
 
 #endif // SGT_SIM_DOT_H

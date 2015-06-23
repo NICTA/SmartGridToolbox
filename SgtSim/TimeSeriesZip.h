@@ -49,8 +49,6 @@ namespace Sgt
                 return sComponentType();
             }
 
-            virtual void print(std::ostream& os) const override;
-
             virtual std::shared_ptr<const ZipAbc> zip() const override
             {
                 return shared<const ZipAbc>();

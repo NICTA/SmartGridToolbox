@@ -23,8 +23,8 @@ int main(int argc, char** argv)
     Network nw; // Create a network named "network".
     Parser<Network> p; 
         // Make a network parser to parse information into the network.
-    p.parse("solve_network_yaml.yaml", nw);
-        // Read in from the config file "solve_network_yaml.yaml".
+    p.parse("network.yaml", nw);
+        // Read in from the config file "network.yaml".
         
     nw.solvePowerFlow();
         // Solve the power flow problem, using default Newton-Raphson solver.
