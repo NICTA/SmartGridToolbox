@@ -41,6 +41,7 @@ libSgtSim_la_SOURCES = \
 	SimBusParserPlugin.h SimBusParserPlugin.cc \
 	SimBranch.h SimBranch.cc \
 	SimBranchParserPlugin.h SimBranchParserPlugin.cc \
+	SimComponent.h SimComponent.cc \
 	SimGen.h SimGen.cc \
 	SimGenParserPlugin.h SimGenParserPlugin.cc \
 	SimGlobalParserPlugin.h SimGlobalParserPlugin.cc \
