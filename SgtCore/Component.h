@@ -24,12 +24,44 @@ using std::string;
 
 namespace Sgt
 {
+    // KLUDGE: TODO: Deriving Component from std::enable_shared_from_this<Component> would be ideal, but this triggers
+    // a clang bug (apparently recently fixed but not in latest version of clang) preventing one from thereafter
+    // constructing a std::shared_ptr<const Component>. Thus we need to add some machinery as a workaround. While we
+    // are about it, we may as well add the other desired machinery for e.g. dynamic_pointer_casting, here in the
+    // base class.
+    template<typename T> class Shared : public std::enable_shared_from_this<const T>
+    {
+        public:
+
+            // Hides std::enable_shared_from_this::shared_from_this.
+            std::shared_ptr<const T> shared_from_this() const
+            {
+                return std::enable_shared_from_this<const T>::shared_from_this();
+            }
+            
+            // Non-const version.
+            std::shared_ptr<T> shared_from_this()
+            {
+                return std::const_pointer_cast<T>(std::enable_shared_from_this<const T>::shared_from_this());
+            }
+
+            template<typename U> std::shared_ptr<U> shared() const
+            {
+                return std::dynamic_pointer_cast<U>(shared_from_this());
+            }
+
+            template<typename U> std::shared_ptr<U> shared()
+            {
+                return std::dynamic_pointer_cast<U>(shared_from_this());
+            }
+    };
+
     /// @brief Base class for all Components. 
     ///
     /// A Component is essentially an object with a unique key.
     /// It is usually a good idea to use virtual inheritance to derive from component.
     /// @ingroup Foundation
-    class Component : public std::enable_shared_from_this<Component>, public HasProperties<Component>
+    class Component : public Shared<Component>, public HasProperties<Component>
     {
         public:
 
@@ -60,19 +92,6 @@ namespace Sgt
 
             /// @}
             
-            /// @name Shared pointer access:
-            /// @{
-
-            /// @brief Dynamic pointer cast to std::shared_ptr<T>
-            ///
-            /// For non-template shared_ptr<Component>, use shared_from_this()
-            template<typename T> std::shared_ptr<T> shared()
-            {
-                return std::dynamic_pointer_cast<T>(shared_from_this());
-            }
-            
-            /// @}
-
             /// @name Virtual fuctions (to be overridden):
             /// @{
 
