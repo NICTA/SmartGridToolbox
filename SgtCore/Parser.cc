@@ -96,9 +96,9 @@ namespace Sgt
         int start = expand<int>(ndLoopVar[1]);
         int upper = expand<int>(ndLoopVar[2]);
         int stride = expand<int>(ndLoopVar[3]);
-        loops_.push_back(std::unique_ptr<ParserLoop>(new ParserLoop{name, start, upper, stride, ndBody}));
+        loops_.push_back({name, start, upper, stride, ndBody});
 
-        return *loops_.back();
+        return loops_.back();
     }
 
 
@@ -191,13 +191,12 @@ namespace Sgt
     {
         std::string result;
 
-        auto it = std::find_if(loops_.begin(), loops_.end(),
-        [&s1](const std::unique_ptr<ParserLoop>& l) {return l->name_ == s1;});
+        auto it = std::find_if(loops_.begin(), loops_.end(), [&s1](const ParserLoop& l) {return l.name_ == s1;});
         if (it != loops_.end())
         {
             // We matched a loop variable. Make sure there is no index!
             sgtAssert(s2 == "", "Loop variable " << s1 << " can not be indexed with " << s2 << ".");
-            result = std::regex_replace(s1, std::regex((**it).name_), std::to_string((**it).i_));
+            result = std::regex_replace(s1, std::regex(it->name_), std::to_string(it->i_));
         }
         else
         {

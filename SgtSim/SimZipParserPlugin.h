@@ -28,7 +28,7 @@ namespace Sgt
         public:
             virtual const char* key() override
             {
-                return "zip";
+                return "sim_zip";
             }
 
         public:

@@ -29,16 +29,19 @@ namespace Sgt
 
     YAML::Node getTopNode(const std::string& fname);
 
+    template<typename T> class Parser;
+
     // Some no-templated functionality in the base class.
     class ParserBase
     {
-
         public:
 
             template<typename T> T expand(const YAML::Node& nd) const
             {
                 return YAML::Load(expandString(nd2Str(nd))).as<T>();
             }
+
+            template<typename T> Parser<T> subParser() const;
 
         protected:
 
@@ -66,10 +69,8 @@ namespace Sgt
         protected:
 
             std::map<std::string, YAML::Node> parameters_;
-            std::vector<std::unique_ptr<ParserLoop>> loops_;
+            std::vector<ParserLoop> loops_;
     };
-
-    template<typename T> class Parser;
 
     /// @brief A plugin to parse YAML into an object.
     /// @ingroup Parsing
@@ -171,6 +172,14 @@ namespace Sgt
 
             std::map<std::string, std::unique_ptr<ParserPlugin<T>>> plugins_;
     };
+            
+    template<typename T> Parser<T> ParserBase::subParser() const
+    {
+        Parser<T> result;
+        result.parameters_ = parameters_;
+        result.loops_ = loops_;
+        return result;
+    }
 }
 
 #endif // PARSER_DOT_H

@@ -28,7 +28,7 @@ namespace Sgt
         public:
             virtual const char* key() override
             {
-                return "bus";
+                return "sim_bus";
             }
 
         public:

@@ -26,15 +26,21 @@ namespace Sgt
     {
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "network_id");
+        assertFieldPresent(nd, "bus");
         
         string id = parser.expand<std::string>(nd["id"]);
 
         string netwId = parser.expand<std::string>(nd["network_id"]);
         auto network = sim.simComponent<SimNetwork>(netwId)->network();
 
-        NetworkParser p;
-        p.parse(nd, *network);
-        auto bus = network->bus("id");
+        YAML::Node busNode = nd["bus"];
+        (busNode.begin()->second)["id"] = nd["id"];
+
+        YAML::Node netwNode;
+        netwNode.push_back(busNode);
+        NetworkParser p = parser.subParser<Network>();
+        p.parse(netwNode, *network);
+        auto bus = network->bus(id);
 
         sim.newSimComponent<SimBus>(bus);
     }

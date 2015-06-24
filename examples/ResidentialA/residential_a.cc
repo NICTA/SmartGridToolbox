@@ -25,7 +25,7 @@ void print(std::ostream& out, std::ostream& outV, double t, const Network& netw)
     outV << t;
     for (ConstBusPtr bus : netw.busses())
     {
-        int nPhase = bus->phases().size();
+        auto nPhase = bus->phases().size();
         double P = arma::accu(arma::real(bus->SZip()));
         double VRms = std::sqrt(arma::accu(arma::real(bus->V() * arma::conj(bus->V()))) / nPhase) / bus->VBase();
         out << " " << P;
@@ -37,11 +37,7 @@ void print(std::ostream& out, std::ostream& outV, double t, const Network& netw)
 
 int main(int argc, const char** argv)
 {
-    if (argc != 3)
-    {
-        Log().error() << "Usage: " << argv[0] << " config_name out_name" << std::endl;
-        error();
-    }
+    sgtAssert(argc != 3, "Usage: " << argv[0] << " config_name out_name.");
 
     const char* configName = argv[1];
     const char* outName = argv[2];

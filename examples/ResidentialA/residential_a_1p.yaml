@@ -4,178 +4,199 @@
 # Resistance is in ohms.
 # Current is in kA.
 
--  parameters: 
-        # Parameters that may be used in the input file, e.g. <n_neighbourhoods> is expanded to 5.
-        n_neigbourhoods: 5
-        n_streets: [4, 5, 2, 6, 2]
-        n_houses_0: [5, 3, 8, 8]
-        n_houses_1: [4, 7, 7, 5, 9]
-        n_houses_2: [7, 10]
-        n_houses_3: [4, 4, 7, 7, 9, 9]
-        n_houses_4: [10, 9]
+- parameters: # Parameters that may be used in the input, e.g. <n_neighbourhoods> is expanded to 5.
+    # Network topology:
+    n_neigbourhoods: 5
+    n_streets: [4, 5, 2, 6, 2]
+    n_houses_0: [5, 3, 8, 8]
+    n_houses_1: [4, 7, 7, 5, 9]
+    n_houses_2: [7, 10]
+    n_houses_3: [4, 4, 7, 7, 9, 9]
+    n_houses_4: [10, 9]
 
-        V_base_mv: 6.3509 # Medium voltage phase-ground voltage.
-        V_base_lv: 0.240 # Low voltage phase-ground voltage.
-        
-        nom_V_ratio_mv_lv: 26.506 # Transformer ratio from medium to low voltage.
+    # Base voltages:
+    V_base_mv: 6.3509 # Medium voltage phase-ground voltage.
+    V_base_lv: 0.240 # Low voltage phase-ground voltage.
 
-        # Parameters for overhead lines:
-        earth_resist: 100
+    # Transformer ratios:
+    nom_V_ratio_mv_lv: 26.506 # Transformer ratio from med to low voltage.
 
-        R_per_L_mv: 1e-4
-        gmrmv: 0.015
-        length_mv: [2000, 4000, 300, 600, 856]
+    # Parameters for overhead lines:
+    earth_resist: 100 # Earth resistivity.
 
-        R_per_L_lv: 4e-4
-        gmrlv: 0.007
+    # Medium voltage:
+    R_per_L_mv: 1e-4 # Resistance (ohms) per unit length (m).
+    gmrmv: 0.015 # Geometric mean radius of wire.
+    length_mv: [2000, 4000, 300, 600, 856] # Length of wires in neighbourhood.
 
--  simulation: 
-        lat_long: [-35.3075, 149.1244] # Canberra, Australia. Used for solar power.
-        start_time: 2013-01-01 00:00:00
-        end_time: 2013-01-07 00:00:00
-        timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra.
--  network: 
-        id: network # All components have a unique "id" (name).
-        P_base: 1e6 # Per-unit base power.
-        freq_Hz: 60
--  loop:
-        loop_variable: [i, 0, 49, 1] # Loop i in range [0, 49]
-        loop_body: # Everything in the following indented block is in the loop.
-            -  time_series: 
-                    # Define a set of 50 time series objects, named load_0_series,
-                    # load_1_series etc.
-                    id: load_<i>_series
-                    value_type: complex_vector
-                    type: data_time_series
-                    data_file: loads/load_<i>.txt # Read in data from file.
-                    relative_to_time: 2013-01-01 06:00:00
-                        # Zero time in file corresponds to this time in simulation.
-                    time_unit: m # Minutes.
-                    interp_type: lerp # Linear interpolation.
--  bus:
-        # A bus is a "node" in the power network - a point at which a definite
-        # voltage exists. A bus is a bit like an electricity wall socket.
-        id: bus_mv_up # The "top" (generator) bus in the network.
-        network_id: network
-        phases: [BAL] # Balanced/single phase, instead of 3-phase [A, B, C].
-        V_base: <V_base_mv> # Base voltage is medium voltage base.
-        V_nom: [<V_base_mv>] # Nominal voltage - the "normal" operating voltage.
-        type: SL
-            # SL and PV busses have generators, PQ busses are normally loads
-            # (consumers of power)
--  generic_gen: # A generator for bus_mv_up.
-        id: gen_mv_up
-        network_id: network
-        bus_id: bus_mv_up
-        phases: [BAL]
--  loop:
-        loop_variable: [i, 0, <n_neigbourhoods>, 1] 
-            # Loop over each neighbourhood.
-        loop_body:
-            -  bus: 
-                    # There are several of these, each connected to bus_mv_up_<i>.
-                    # They correspond to the bus at the MV side of a transformer.
-                    id: bus_mv_down_<i>
-                    network_id: network
+    # Low voltage:
+    R_per_L_lv: 4e-4
+    gmrlv: 0.007
+
+- simulation: 
+    lat_long: [-35.3075, 149.1244] # Canberra, Australia. Used for solar pv.
+    start_time: 2013-01-01 00:00:00
+    end_time: 2013-01-07 00:00:00
+    timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra.
+- network: 
+    id: network # All components have a unique "id" (name).
+    P_base: 1e6 # Per-unit base power (MW).
+    freq_Hz: 60
+- loop:
+    loop_variable: [i, 0, 49, 1] # Loop i in range [0, 49]
+    loop_body: # Everything in the following indented block is in the loop.
+        - time_series: # Define a set of 50 time series objects, named load_0_series, load_1_series ... load_49_series.
+            id: load_<i>_series
+            value_type: complex_vector
+            type: data_time_series
+            data_file: loads/load_<i>.txt # Read in data from file.
+            relative_to_time: 2013-01-01 06:00:00 # Zero time in file corresponds to this time in sim.
+            time_unit: m # Minutes.
+            interp_type: lerp # Linear interpolation.
+- sim_bus:
+    # A bus is a "node" in the power network - a point at which a definite voltage exists. A bus is a bit like
+    # an electricity wall socket.
+    id: bus_mv_up # The "top" (generator) bus in the network.
+    network_id: network
+    bus:
+        bus:
+            phases: [BAL] # Balanced/single phase, instead of 3-phase [A, B, C].
+            V_base: <V_base_mv> # Base voltage is medium voltage base.
+            V_nom: [<V_base_mv>] # Nominal voltage - the "normal" operating voltage.
+            type: SL # SL and PV busses have generators, PQ busses are normally loads (consumers of power)
+- sim_gen: # A generator for bus_mv_up.
+    id: gen_mv_up
+    network_id: network
+    gen:
+        generic_gen:
+            bus_id: bus_mv_up
+            phases: [BAL]
+- loop:
+    loop_variable: [i, 0, <n_neigbourhoods>, 1] # Loop over each neighbourhood.
+    loop_body:
+        - sim_bus: # There are several of these, each connected to bus_mv_up_<i>. They correspond to bus at the MV side.
+            id: bus_mv_down_<i>
+            network_id: network
+            bus:
+                bus:
                     phases: [BAL]
                     V_base: <V_base_mv>
                     V_nom: [<V_base_mv>]
                     type: PQ
-            -  overhead_line: # The connecting line.
-                    id: line_mv_<i>
-                    network_id: network
+        - sim_branch: # The connecting line.
+            id: line_mv_<i>
+            network_id: network
+            branch:
+                overhead_line: # The connecting line.
                     bus_0_id: bus_mv_up
                     bus_1_id: bus_mv_down_<i>
                     phases_0: [BAL]
                     phases_1: [BAL]
                     length: <length_mv(<i>)>
+                    cond_dist: [[0]]
+                    subcond_gmr: [<gmrmv>]
                     subcond_R_per_L: [<R_per_L_mv>]
-                    earth_resist: <earth_resist>
-                    cond_dist: [[<gmrmv>]]
                     freq: 60.0
-            -  bus: 
-                    id: bus_lv_up_<i> # The other, LV side of the transformer.
-                    network_id: network
+                    earth_resist: <earth_resist>
+        - sim_bus: 
+            id: bus_lv_up_<i> # The other, LV side of the transformer.
+            network_id: network
+            bus:
+                bus: 
                     phases: [BAL]
                     V_base: <V_base_lv>
                     V_nom: [<V_base_lv>]
                     type: PQ
-            -  single_phase_transformer:
-                    id: trans_mv_lv_<i>
-                    network_id: network
+        - sim_branch:
+            id: trans_mv_lv_<i>
+            network_id: network
+            branch:
+                single_phase_transformer:
                     bus_0_id: bus_mv_down_<i>
                     bus_1_id: bus_lv_up_<i>
                     nom_V_ratio: <nom_V_ratio_mv_lv>
                     leakage_impedance: 0.1 # TODO
-            -  loop: 
-                    loop_variable: [j, 0, <n_streets(<i>)>, 1]
+        - loop: 
+            loop_variable: [j, 0, <n_streets(<i>)>, 1]
+            loop_body: 
+                - loop: 
+                    loop_variable: [k, 0, <n_houses_<i>(<j>)>, 1]
                     loop_body: 
-                        -  loop: 
-                                loop_variable: [k, 0, <n_houses_<i>(<j>)>, 1]
-                                loop_body: 
-                                    -  bus: 
-                                            id: bus_<i>_<j>_<k>
-                                            network_id: network
-                                            phases: [BAL]
-                                            V_base: <V_base_lv>
-                                            V_nom: [<V_base_lv>]
-                                            type: PQ
-                                    -  bus: 
-                                            id: house_<i>_<j>_<k>
-                                            network_id: network
-                                            phases: [BAL]
-                                            V_base: <V_base_lv>
-                                            V_nom: [<V_base_lv>]
-                                            type: PQ
-                                    -  time_series_zip:
-                                            # A network load, household use.
-                                            # Google "ZIP load". A ZIP load is a three
-                                            # component load. There are constant impedance,
-                                            # current, and power components.
-                                            id: zip_<i>_<j>_<k>
-                                            network_id: network
-                                            bus_id: house_<i>_<j>_<k> # Associated bus.
-                                            phases: [BAL]
-                                            time_series_id: load_<(<i>+<j>+<k>)%50>_series
-                                                # The time series that determines what
-                                                # the load is at different times.
-                                            dt: 00:05:00 # 5 minutes between updates.
-                                    -  overhead_line: 
-                                            id: drop_<i>_<j>_<k>
-                                            network_id: network
-                                            bus_0_id: bus_<i>_<j>_<k>
-                                            bus_1_id: house_<i>_<j>_<k>
-                                            phases_0: [BAL]
-                                            phases_1: [BAL]
-                                            length: 20
-                                            subcond_R_per_L: [<R_per_L_lv>]
-                                            earth_resist: <earth_resist>
-                                            cond_dist: [[0.01]]
-                                            freq: 60.0
-                        -  loop: 
-                                loop_variable: [k, 0, <<n_houses_<i>(<j>)>-1>, 1]
-                                loop_body: 
-                                    -  overhead_line: 
-                                            id: line_<i>_<j>_<k>_<<k>+1>
-                                            network_id: network
+                        - sim_bus: 
+                            id: bus_<i>_<j>_<k>
+                            network_id: network
+                            bus:
+                                bus:
+                                    phases: [BAL]
+                                    V_base: <V_base_lv>
+                                    V_nom: [<V_base_lv>]
+                                    type: PQ
+                        - sim_bus: 
+                            id: house_<i>_<j>_<k>
+                            network_id: network
+                            bus:
+                                bus:
+                                    phases: [BAL]
+                                    V_base: <V_base_lv>
+                                    V_nom: [<V_base_lv>]
+                                    type: PQ
+                        - sim_zip: 
+                            id: zip_<i>_<j>_<k>
+                            network_id: network
+                            zip:
+                                time_series_zip:
+                                    # A network load, household use. A ZIP load is a three component load. There are
+                                    # constant impedance, current, and power components.
+                                    bus_id: house_<i>_<j>_<k> # Assoc. bus.
+                                    phases: [BAL]
+                                    time_series_id: load_<(<i>+<j>+<k>)%50>_series
+                                        # The time series that determines what the load is at different times.
+                                    dt: 00:05:00 # 5 minutes between updates.
+                        - sim_branch: 
+                            id: drop_<i>_<j>_<k>
+                            network_id: network
+                            branch:
+                                overhead_line:
+                                    bus_0_id: bus_<i>_<j>_<k>
+                                    bus_1_id: house_<i>_<j>_<k>
+                                    phases_0: [BAL]
+                                    phases_1: [BAL]
+                                    length: 20
+                                    cond_dist: [[0]]
+                                    subcond_gmr: [<gmrlv>]
+                                    subcond_R_per_L: [<R_per_L_lv>]
+                                    freq: 60.0
+                                    earth_resist: <earth_resist>
+                        - loop: 
+                            loop_variable: [k, 0, <<n_houses_<i>(<j>)>-1>, 1]
+                            loop_body: 
+                                - sim_branch: 
+                                    id: line_<i>_<j>_<k>_<<k>+1>
+                                    network_id: network
+                                    branch:
+                                        overhead_line: 
                                             bus_0_id: bus_<i>_<j>_<k>
                                             bus_1_id: bus_<i>_<j>_<<k>+1>
                                             phases_0: [BAL]
                                             phases_1: [BAL]
                                             length: 100
+                                            cond_dist: [[0]]
+                                            subcond_gmr: [<gmrlv>]
                                             subcond_R_per_L: [<R_per_L_lv>]
-                                            earth_resist: <earth_resist>
-                                            cond_dist: [[<gmrlv>]]
                                             freq: 60.0
-                        -  overhead_line: 
-                                id: line_lv_up_<i>_<j>_0
-                                network_id: network
-                                bus_0_id: bus_lv_up_<i>
-                                bus_1_id: bus_<i>_<j>_0
-                                phases_0: [BAL]
-                                phases_1: [BAL]
-                                length: 1000
-                                subcond_R_per_L: [<R_per_L_lv>]
-                                earth_resist: <earth_resist>
-                                cond_dist: [[<gmrlv>]]
-                                freq: 60.0
+                                            earth_resist: <earth_resist>
+                        - sim_branch: 
+                            id: line_lv_up_<i>_<j>_0
+                            network_id: network
+                            branch:
+                                overhead_line: 
+                                    bus_0_id: bus_lv_up_<i>
+                                    bus_1_id: bus_<i>_<j>_0
+                                    phases_0: [BAL]
+                                    phases_1: [BAL]
+                                    length: 1000
+                                    subcond_R_per_L: [<R_per_L_lv>]
+                                    cond_dist: [[0]]
+                                    subcond_gmr: [<gmrlv>]
+                                    freq: 60.0
+                                    earth_resist: <earth_resist>
