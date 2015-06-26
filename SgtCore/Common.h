@@ -56,24 +56,55 @@ namespace Sgt
             std::string ind2_;
     };
 
+    enum class LogLevel
+    {
+        NONE,
+        NORMAL,
+        VERBOSE
+    };
+
     /// @brief Logging object.
     ///
-    /// Use e.g. Log().message << "this is a message" << std::endl;
+    /// Use e.g. Log().message() << "this is a message" << std::endl;
     /// @ingroup Utilities
     class Log
     {
         friend class LogIndent;
 
         public:
+            
+            static LogLevel messageLevel;
+            static LogLevel warningLevel;
+            static LogLevel debugLevel;
+        
+        public:
 
-            std::ostream& message();
+            std::ostream& message(LogLevel level = LogLevel::NORMAL);
 
-            std::ostream& warning();
-
-            std::ostream& debug();
+            std::ostream& warning(LogLevel level = LogLevel::NORMAL);
 
             std::ostream& error();
+            
+            std::ostream& debug(LogLevel level = LogLevel::NONE);
 
+        private:
+
+            static std::ostream& nullStream()
+            {
+                class NullBuf : public std::streambuf
+                {
+                    protected:
+
+                        virtual int overflow(int ch) override
+                        {
+                            return ch;
+                        }
+                };
+                static NullBuf nullBuf_;
+                static std::ostream nullStream_(&nullBuf_);
+                return nullStream_;
+            }
+        
         private:
 
             static unsigned int indentLevel_;

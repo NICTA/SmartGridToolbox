@@ -151,7 +151,8 @@ namespace Sgt
                         }
                         else
                         {
-                            SGT_DEBUG(Log().message() << "Parsing plugin " <<  nodeType << "." << std::endl);
+                            Log().message(LogLevel::VERBOSE) << "Parsing plugin " <<  nodeType << "." << std::endl;
+                            LogIndent _;
                             auto it = plugins_.find(nodeType);
                             if (it == plugins_.end())
                             {
@@ -159,10 +160,10 @@ namespace Sgt
                             }
                             else
                             {
-                                SGT_DEBUG(LogIndent _);
                                 it->second->parse(nodeVal, into, *this);
                             }
-                            SGT_DEBUG(Log().message() << "Finished parsing plugin " <<  nodeType << "." << std::endl);
+                            Log().message(LogLevel::VERBOSE) << "Finished parsing plugin " <<  nodeType << "." 
+                                << std::endl;
                         }
                     }
                 }

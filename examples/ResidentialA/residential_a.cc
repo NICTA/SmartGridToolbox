@@ -37,6 +37,7 @@ void print(std::ostream& out, std::ostream& outV, double t, const Network& netw)
 
 int main(int argc, const char** argv)
 {
+    Sgt::Log::messageLevel = Sgt::LogLevel::VERBOSE;
     sgtAssert(argc != 3, "Usage: " << argv[0] << " config_name out_name.");
 
     const char* configName = argv[1];
