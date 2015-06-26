@@ -140,18 +140,13 @@
                                     V_base: <V_base_lv>
                                     V_nom: [<V_base_lv>]
                                     type: PQ
-                        - sim_zip: 
+                        - time_series_zip: 
                             id: zip_<i>_<j>_<k>
                             network_id: network
-                            zip:
-                                time_series_zip:
-                                    # A network load, household use. A ZIP load is a three component load. There are
-                                    # constant impedance, current, and power components.
-                                    bus_id: house_<i>_<j>_<k> # Assoc. bus.
-                                    phases: [BAL]
-                                    time_series_id: load_<(<i>+<j>+<k>)%50>_series
-                                        # The time series that determines what the load is at different times.
-                                    dt: 00:05:00 # 5 minutes between updates.
+                            bus_id: house_<i>_<j>_<k> # Assoc. bus.
+                            time_series_id: load_<(<i>+<j>+<k>)%50>_series # The time series for the load.
+                            phases: [BAL]
+                            dt: 00:05:00 # 5 minutes between updates.
                         - sim_branch: 
                             id: drop_<i>_<j>_<k>
                             network_id: network

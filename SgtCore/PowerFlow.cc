@@ -217,13 +217,21 @@ namespace Sgt
     arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, arma::uword nPhase)
     {
         auto n = Z.n_rows;
-        auto Zpp = Z.submat(0, 0, nPhase - 1, nPhase - 1);
-        auto Zpn = Z.submat(0, nPhase, nPhase - 1, n - 1);
-        auto Znp = Z.submat(nPhase, 0, n - 1, nPhase - 1);
-        auto Znn = Z.submat(nPhase, nPhase, n - 1, n - 1);
-        auto ZnnInv = arma::inv(Znn);
+        if (n == nPhase)
+        {
+            return Z;
+        }
+        else
+        {
+            sgtAssert(nPhase < n, "Kron reduction: nPhase must be <= the impedance matrix size.");
+            auto Zpp = Z.submat(0, 0, nPhase - 1, nPhase - 1);
+            auto Zpn = Z.submat(0, nPhase, nPhase - 1, n - 1);
+            auto Znp = Z.submat(nPhase, 0, n - 1, nPhase - 1);
+            auto Znn = Z.submat(nPhase, nPhase, n - 1, n - 1);
+            auto ZnnInv = arma::inv(Znn);
 
-        return (Zpp - Zpn * ZnnInv * Znp);
+            return (Zpp - Zpn * ZnnInv * Znp);
+        }
     }
 
     arma::Mat<Complex> ZLine2YNode(const arma::Mat<Complex>& ZLine)

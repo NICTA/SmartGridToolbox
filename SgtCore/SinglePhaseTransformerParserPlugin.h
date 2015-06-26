@@ -27,7 +27,7 @@ namespace Sgt
     class SinglePhaseTransformerParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key()
+            virtual const char* key() override
             {
                 return "single_phase_transformer";
             }
