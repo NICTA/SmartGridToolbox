@@ -72,13 +72,13 @@ namespace Sgt
         return destBuf_->sputc(static_cast<char_type>(ch));
     }
 
-    LogLevel Log::messageLevel = LogLevel::NORMAL;
-    LogLevel Log::warningLevel = LogLevel::NORMAL;
-    LogLevel Log::debugLevel = LogLevel::NONE;
+    LogLevel Log::messageLogLevel = LogLevel::NORMAL;
+    LogLevel Log::warningLogLevel = LogLevel::NORMAL;
+    LogLevel Log::debugLogLevel = LogLevel::NONE;
 
     std::ostream& Log::message(LogLevel level)
     {
-        if (level >= messageLevel)
+        if (messageLogLevel >= level)
         {
             coutBuf_.reset(
                     std::string("MESSAGE: ") + std::string(indentLevel_, ' '),
@@ -93,7 +93,7 @@ namespace Sgt
 
     std::ostream& Log::warning(LogLevel level)
     {
-        if (level >= warningLevel)
+        if (warningLogLevel >= level)
         {
             cerrBuf_.reset(
                     std::string("WARNING: ") + std::string(indentLevel_, ' '),
@@ -116,7 +116,7 @@ namespace Sgt
 
     std::ostream& Log::debug(LogLevel level)
     {
-        if (level >= debugLevel)
+        if (debugLogLevel >= level)
         {
             cerrBuf_.reset(
                     std::string("DEBUG  : ") + std::string(indentLevel_, ' '),

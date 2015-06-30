@@ -129,8 +129,9 @@ namespace Sgt
 
     std::string ParserBase::expandString(const std::string& str) const
     {
-        SGT_DEBUG(Log().message() << "expand " << str << std::endl);
-        SGT_DEBUG(LogIndent _);
+        Log().debug(LogLevel::VERBOSE) << "Expand:" << std::endl;
+        {LogIndent _; Log().debug(LogLevel::VERBOSE) << str << std::endl;}
+        LogIndent _;
         std::string result;
 
         // Iterator over expansion expressions in the target.
@@ -156,7 +157,8 @@ namespace Sgt
             // Now recursively check if the expansion of this expression has created any more expressions to expand.
             result = expandString(result);
         }
-        SGT_DEBUG(Log().message() << "result = " << result << std::endl);
+        Log().debug(LogLevel::VERBOSE) << "Result:" << std::endl;
+        {LogIndent _; Log().debug(LogLevel::VERBOSE) << result << std::endl;}
         return result;
     }
 

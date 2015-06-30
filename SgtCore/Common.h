@@ -73,9 +73,9 @@ namespace Sgt
 
         public:
             
-            static LogLevel messageLevel;
-            static LogLevel warningLevel;
-            static LogLevel debugLevel;
+            static LogLevel messageLogLevel;
+            static LogLevel warningLogLevel;
+            static LogLevel debugLogLevel;
         
         public:
 

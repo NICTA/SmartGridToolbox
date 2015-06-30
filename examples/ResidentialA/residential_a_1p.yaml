@@ -6,7 +6,7 @@
 
 - parameters: # Parameters that may be used in the input, e.g. <n_neighbourhoods> is expanded to 5.
     # Network topology:
-    n_neigbourhoods: 5
+    n_neighbourhoods: 5
     n_streets: [4, 5, 2, 6, 2]
     n_houses_0: [5, 3, 8, 8]
     n_houses_1: [4, 7, 7, 5, 9]
@@ -72,7 +72,7 @@
             bus_id: bus_mv_up
             phases: [BAL]
 - loop:
-    loop_variable: [i, 0, <n_neigbourhoods>, 1] # Loop over each neighbourhood.
+    loop_variable: [i, 0, <n_neighbourhoods>, 1] # Loop over each neighbourhood.
     loop_body:
         - sim_bus: # There are several of these, each connected to bus_mv_up_<i>. They correspond to bus at the MV side.
             id: bus_mv_down_<i>
@@ -162,36 +162,36 @@
                                     subcond_R_per_L: [<R_per_L_lv>]
                                     freq: 60.0
                                     earth_resist: <earth_resist>
-                        - loop: 
-                            loop_variable: [k, 0, <<n_houses_<i>(<j>)>-1>, 1]
-                            loop_body: 
-                                - sim_branch: 
-                                    id: line_<i>_<j>_<k>_<<k>+1>
-                                    network_id: network
-                                    branch:
-                                        overhead_line: 
-                                            bus_0_id: bus_<i>_<j>_<k>
-                                            bus_1_id: bus_<i>_<j>_<<k>+1>
-                                            phases_0: [BAL]
-                                            phases_1: [BAL]
-                                            length: 100
-                                            cond_dist: [[0]]
-                                            subcond_gmr: [<gmrlv>]
-                                            subcond_R_per_L: [<R_per_L_lv>]
-                                            freq: 60.0
-                                            earth_resist: <earth_resist>
+                - loop: 
+                    loop_variable: [k, 0, <<n_houses_<i>(<j>)>-1>, 1]
+                    loop_body: 
                         - sim_branch: 
-                            id: line_lv_up_<i>_<j>_0
+                            id: line_<i>_<j>_<k>_<<k>+1>
                             network_id: network
                             branch:
                                 overhead_line: 
-                                    bus_0_id: bus_lv_up_<i>
-                                    bus_1_id: bus_<i>_<j>_0
+                                    bus_0_id: bus_<i>_<j>_<k>
+                                    bus_1_id: bus_<i>_<j>_<<k>+1>
                                     phases_0: [BAL]
                                     phases_1: [BAL]
-                                    length: 1000
-                                    subcond_R_per_L: [<R_per_L_lv>]
+                                    length: 100
                                     cond_dist: [[0]]
                                     subcond_gmr: [<gmrlv>]
+                                    subcond_R_per_L: [<R_per_L_lv>]
                                     freq: 60.0
                                     earth_resist: <earth_resist>
+                - sim_branch: 
+                    id: line_lv_up_<i>_<j>_0
+                    network_id: network
+                    branch:
+                        overhead_line: 
+                            bus_0_id: bus_lv_up_<i>
+                            bus_1_id: bus_<i>_<j>_0
+                            phases_0: [BAL]
+                            phases_1: [BAL]
+                            length: 1000
+                            subcond_R_per_L: [<R_per_L_lv>]
+                            cond_dist: [[0]]
+                            subcond_gmr: [<gmrlv>]
+                            freq: 60.0
+                            earth_resist: <earth_resist>

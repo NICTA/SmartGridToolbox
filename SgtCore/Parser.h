@@ -143,8 +143,8 @@ namespace Sgt
                         {
                             for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_)
                             {
-                                SGT_DEBUG(
-                                    Log().message() << "LOOP: " << l.name_ << " : " << l.i_ << std::endl; LogIndent _);
+                                Log().debug(LogLevel::VERBOSE) << "Loop " << l.name_ << " : " << l.i_ << std::endl;
+                                LogIndent _;
                                 parse(l.body_, into);
                             }
                             loops_.pop_back();
