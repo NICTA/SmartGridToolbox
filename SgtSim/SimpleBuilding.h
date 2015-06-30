@@ -111,7 +111,7 @@ namespace Sgt
 
         public:
 
-            virtual arma::Col<Complex> SConst() const
+            virtual arma::Col<Complex> SConst() const override
             {
                 return {Complex(-Ph_, 0.0)};
             }
