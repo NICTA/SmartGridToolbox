@@ -27,7 +27,7 @@ namespace Sgt
     class UndergroundLineParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key()
+            virtual const char* key() override
             {
                 return "underground_line";
             }

@@ -27,7 +27,7 @@ namespace Sgt
     class BusParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key()
+            virtual const char* key() override
             {
                 return "bus";
             }

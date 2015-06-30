@@ -26,7 +26,7 @@ namespace Sgt
     class PowerFlowSolverParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key()
+            virtual const char* key() override
             {
                 return "power_flow_solver";
             }

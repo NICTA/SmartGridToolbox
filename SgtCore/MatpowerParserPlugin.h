@@ -26,7 +26,7 @@ namespace Sgt
     class MatpowerParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key()
+            virtual const char* key() override
             {
                 return "matpower";
             }

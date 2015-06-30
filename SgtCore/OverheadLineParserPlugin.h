@@ -27,7 +27,7 @@ namespace Sgt
     class OverheadLineParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key()
+            virtual const char* key() override
             {
                 return "overhead_line";
             }
