@@ -69,7 +69,7 @@ namespace Sgt
         protected:
 
             std::map<std::string, YAML::Node> parameters_;
-            std::vector<ParserLoop> loops_;
+            std::vector<std::unique_ptr<ParserLoop>> loops_;
     };
 
     /// @brief A plugin to parse YAML into an object.
@@ -143,7 +143,8 @@ namespace Sgt
                         {
                             for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_)
                             {
-                                Log().debug(LogLevel::VERBOSE) << "Loop " << l.name_ << " : " << l.i_ << std::endl;
+                                Log().debug(LogLevel::VERBOSE) << "Loop " << l.name_ << " : " << l.i_
+                                    << " (upper = " << l.upper_ << ")" << std::endl;
                                 LogIndent _;
                                 parse(l.body_, into);
                             }
@@ -178,7 +179,10 @@ namespace Sgt
     {
         Parser<T> result;
         result.parameters_ = parameters_;
-        result.loops_ = loops_;
+        for (auto& l : loops_)
+        {
+            result.loops_.push_back(std::unique_ptr<ParserLoop>(new ParserLoop(*l)));
+        }
         return result;
     }
 }
