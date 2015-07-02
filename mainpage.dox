@@ -19,5 +19,5 @@
 /// @defgroup Parsing Parsing
 /// @brief Parsing classes, functions etc.
 
-/// @namespace SmartGridToolbox
-/// @brief The primary namespace for SmartGridToolbox
+/// @namespace Sgt
+/// @brief The primary namespace for SmartGridToolbox.
