@@ -36,9 +36,10 @@ AC_SUBST([AM_CXXFLAGS], ["$AM_CXXFLAGS -Wall"])
 #AC_LANG([Objective C++])
 #AX_CHECK_COMPILE_FLAG([-std=c++11], [AC_SUBST([AM_OBJCXXFLAGS], ["-std=c++11"])])
 
+AC_CHECK_PROG([HAVE_DOT], [dot], ["YES"], ["NO"])
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
-AC_CHECK_PROGS([PDFLATEX], [pdflatex])
 AC_CHECK_PROGS([MAKEINDEX], [makeindex])
+AC_CHECK_PROGS([PDFLATEX], [pdflatex])
 
 if test -z "$DOXYGEN";
     then AC_MSG_WARN([Doxygen not found - continuing without Doxygen support])
