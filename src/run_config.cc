@@ -31,8 +31,6 @@ int main(int argc, const char** argv)
     p.parse(configName, sim);
     sim.initialize();
 
-    sim.simComponent<SimNetwork>("network")->network()->print(std::cout);
-
     while (!sim.isFinished())
     {
         LogIndent _;
