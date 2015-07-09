@@ -25,23 +25,26 @@ namespace Sgt
     void SimGenParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "network_id");
+        assertFieldPresent(nd, "sim_network_id");
+        assertFieldPresent(nd, "sim_bus_id");
         assertFieldPresent(nd, "gen");
         
         string id = parser.expand<std::string>(nd["id"]);
+        string simNetwId = parser.expand<std::string>(nd["sim_network_id"]);
+        string simBusId = parser.expand<std::string>(nd["sim_bus_id"]);
 
-        string netwId = parser.expand<std::string>(nd["network_id"]);
-        auto network = sim.simComponent<SimNetwork>(netwId)->network();
+        auto simNetwork = sim.simComponent<SimNetwork>(simNetwId);
+        sgtAssert(simNetwork != nullptr, "Parsing SimGen " << id << ": sim_network not found.");
+        auto& network = *simNetwork->network();
 
         YAML::Node genNode = nd["gen"];
-        (genNode.begin()->second)["id"] = nd["id"];
 
         YAML::Node netwNode;
         netwNode.push_back(genNode);
         NetworkParser p = parser.subParser<Network>();
-        p.parse(netwNode, *network);
-        auto gen = network->gen(id);
-
-        sim.newSimComponent<SimGen>(gen);
+        p.parse(netwNode, network);
+        auto gen = network.gen(id);
+        auto simGen = sim.newSimComponent<SimGen>(gen);
+        simGen->linkToSimNetwork(*simNetwork, simBusId);
     }
 }

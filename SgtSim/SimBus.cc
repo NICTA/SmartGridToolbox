@@ -2,21 +2,14 @@
 
 namespace Sgt
 {
-    void SimBusAbc::joinNetwork(SimNetwork& simNetwork)
+    void SimBusAbc::linkToSimNetwork(SimNetwork& simNetwork)
     {
-        auto& network = *simNetwork.network();
-        auto networkBus = network.bus(id());
-        if (!networkBus)
-        {
-            network.addBus(bus());
-        }
-        else
-        {
-            sgtAssert(networkBus == bus(), "Bus " << id() << " already exists in the network.");
-        }
-
+        // Safety check that my bus has already been added to simNetwork's network.
+        auto networkBus = simNetwork.network()->bus(bus()->id());
+        sgtAssert(networkBus != nullptr, "My Bus must be added to the SimNetwork's Network before calling "
+                << __PRETTY_FUNCTION__);
+        
         simNetwork.dependsOn(shared<SimComponent>());
-
         bus()->setpointChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
                 std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
         bus()->isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},

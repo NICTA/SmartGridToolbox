@@ -27,33 +27,33 @@ namespace Sgt
         assertFieldPresent(nd, "network_id");
         string netwId = parser.expand<std::string>(nd["network_id"]);
         auto simNetw = sim.simComponent<SimNetwork>(netwId);
+        auto netw = simNetw->network();
 
-        Network tempNetw(100.0);
-        mpParser.parse(nd, tempNetw, parser);
+        mpParser.parse(nd, *simNetw->network(), parser);
 
         // Now recreate the SimNetwork from the Network.
-        for (auto bus : tempNetw.busses())
+        for (auto bus : netw->busses())
         {
             auto simBus = sim.newSimComponent<SimBus>(bus);
-            simBus->joinNetwork(*simNetw);
+            simBus->linkToSimNetwork(*simNetw);
 
             for (auto gen : bus->gens())
             {
                 auto simGen = sim.newSimComponent<SimGen>(gen);
-                simGen->joinNetwork(*simNetw, bus->id());
+                simGen->linkToSimNetwork(*simNetw, bus->id());
             }
 
             for (auto zip : bus->zips())
             {
                 auto simZip = sim.newSimComponent<SimZip>(zip);
-                simZip->joinNetwork(*simNetw, bus->id());
+                simZip->linkToSimNetwork(*simNetw, bus->id());
             }
         }
 
-        for (auto branch : tempNetw.branches())
+        for (auto branch : netw->branches())
         {
             auto simBranch = sim.newSimComponent<SimBranch>(branch);
-            simBranch->joinNetwork(*simNetw, branch->bus0()->id(), branch->bus1()->id());
+            simBranch->linkToSimNetwork(*simNetw, branch->bus0()->id(), branch->bus1()->id());
         }
     }
 }

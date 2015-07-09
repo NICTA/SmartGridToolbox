@@ -25,23 +25,28 @@ namespace Sgt
     void SimBranchParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "network_id");
+        assertFieldPresent(nd, "sim_network_id");
+        assertFieldPresent(nd, "sim_bus_0_id");
+        assertFieldPresent(nd, "sim_bus_1_id");
         assertFieldPresent(nd, "branch");
         
         string id = parser.expand<std::string>(nd["id"]);
+        string simNetwId = parser.expand<std::string>(nd["sim_network_id"]);
+        string simBus0Id = parser.expand<std::string>(nd["sim_bus_0_id"]);
+        string simBus1Id = parser.expand<std::string>(nd["sim_bus_1_id"]);
 
-        string netwId = parser.expand<std::string>(nd["network_id"]);
-        auto network = sim.simComponent<SimNetwork>(netwId)->network();
+        auto simNetwork = sim.simComponent<SimNetwork>(simNetwId);
+        sgtAssert(simNetwork != nullptr, "Parsing SimBranch " << id << ": sim_network not found.");
+        auto& network = *simNetwork->network();
 
         YAML::Node branchNode = nd["branch"];
-        (branchNode.begin()->second)["id"] = nd["id"];
 
         YAML::Node netwNode;
         netwNode.push_back(branchNode);
         NetworkParser p = parser.subParser<Network>();
-        p.parse(netwNode, *network);
-        auto branch = network->branch(id);
-
-        sim.newSimComponent<SimBranch>(branch);
+        p.parse(netwNode, network);
+        auto branch = network.branch(id);
+        auto simBranch = sim.newSimComponent<SimBranch>(branch);
+        simBranch->linkToSimNetwork(*simNetwork, simBus0Id, simBus1Id);
     }
 }

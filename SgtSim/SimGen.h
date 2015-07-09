@@ -31,10 +31,16 @@ namespace Sgt
     {
         public:
 
+            /// @brief Return the gen that I wrap (const). 
             virtual std::shared_ptr<const GenAbc> gen() const = 0;
+            /// @brief Return the gen that I wrap (non-const). 
             virtual std::shared_ptr<GenAbc> gen() = 0;
 
-            virtual void joinNetwork(SimNetwork& simNetwork, const std::string& busId);
+            /// @brief Do anything I need to do to add myself to the simNetwork.
+            ///
+            /// Important: my gen must separately be added to SimNetwork's Network. This is to prevent any possible
+            /// confusion about whether it is already added on not.
+            virtual void linkToSimNetwork(SimNetwork& simNetwork, const std::string& busId);
     };
 
     /// @brief Simulation gen, corresponding to a GenAbc in a SimNetwork's network(). 

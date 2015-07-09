@@ -2,19 +2,13 @@
 
 namespace Sgt
 {
-    void SimZipAbc::joinNetwork(SimNetwork& simNetwork, const std::string& busId)
+    void SimZipAbc::linkToSimNetwork(SimNetwork& simNetwork, const std::string& busId)
     {
-        auto& network = *simNetwork.network();
-        auto networkZip = network.zip(id());
-        if (!networkZip)
-        {
-            network.addZip(zip(), busId);
-        }
-        else
-        {
-            sgtAssert(networkZip == zip(), "Zip " << id() << " already exists in the network.");
-        }
-
+        // Safety check that my zip has already been added to simNetwork's network.
+        auto networkZip = simNetwork.network()->zip(zip()->id());
+        sgtAssert(networkZip != nullptr, "My ZipAbc must be added to the SimNetwork's Network before calling "
+                << __PRETTY_FUNCTION__);
+        
         simNetwork.dependsOn(shared<SimComponent>());
 
         zip()->injectionChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},

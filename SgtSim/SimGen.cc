@@ -2,18 +2,12 @@
 
 namespace Sgt
 {
-    void SimGenAbc::joinNetwork(SimNetwork& simNetwork, const std::string& busId)
+    void SimGenAbc::linkToSimNetwork(SimNetwork& simNetwork, const std::string& busId)
     {
-        auto& network = *simNetwork.network();
-        auto networkGen = network.gen(busId);
-        if (!networkGen)
-        {
-            network.addGen(gen(), busId);
-        }
-        else
-        {
-            sgtAssert(networkGen == gen(), "Gen " << id() << " already exists in the network.");
-        }
+        // Safety check that my gen has already been added to simNetwork's network.
+        auto networkGen = simNetwork.network()->gen(gen()->id());
+        sgtAssert(networkGen != nullptr, "My GenAbc must be added to the SimNetwork's Network before calling "
+                << __PRETTY_FUNCTION__);
 
         simNetwork.dependsOn(shared<SimComponent>());
 

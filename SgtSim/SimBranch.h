@@ -31,10 +31,16 @@ namespace Sgt
     {
         public:
 
+            /// @brief Return the branch that I wrap (const). 
             virtual std::shared_ptr<const BranchAbc> branch() const = 0;
+            /// @brief Return the branch that I wrap (non-const). 
             virtual std::shared_ptr<BranchAbc> branch() = 0;
 
-            virtual void joinNetwork(SimNetwork& simNetwork, const std::string& bus0Id, const std::string& bus1Id);
+            /// @brief Do anything I need to do to add myself to the simNetwork.
+            ///
+            /// Important: my branch must separately be added to SimNetwork's Network. This is to prevent any possible
+            /// confusion about whether it is already added on not.
+            virtual void linkToSimNetwork(SimNetwork& simNetwork, const std::string& bus0Id, const std::string& bus1Id);
     };
 
     /// @brief Simulation branch, corresponding to a BranchAbc in a SimNetwork's network(). 

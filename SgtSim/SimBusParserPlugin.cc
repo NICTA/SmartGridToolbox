@@ -25,23 +25,24 @@ namespace Sgt
     void SimBusParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "network_id");
+        assertFieldPresent(nd, "sim_network_id");
         assertFieldPresent(nd, "bus");
         
         string id = parser.expand<std::string>(nd["id"]);
+        string simNetwId = parser.expand<std::string>(nd["sim_network_id"]);
 
-        string netwId = parser.expand<std::string>(nd["network_id"]);
-        auto network = sim.simComponent<SimNetwork>(netwId)->network();
+        auto simNetwork = sim.simComponent<SimNetwork>(simNetwId);
+        sgtAssert(simNetwork != nullptr, "Parsing SimBus " << id << ": sim_network not found.");
+        auto& network = *simNetwork->network();
 
         YAML::Node busNode = nd["bus"];
-        (busNode.begin()->second)["id"] = nd["id"];
 
         YAML::Node netwNode;
         netwNode.push_back(busNode);
         NetworkParser p = parser.subParser<Network>();
-        p.parse(netwNode, *network);
-        auto bus = network->bus(id);
-
-        sim.newSimComponent<SimBus>(bus);
+        p.parse(netwNode, network);
+        auto bus = network.bus(id);
+        auto simBus = sim.newSimComponent<SimBus>(bus);
+        simBus->linkToSimNetwork(*simNetwork);
     }
 }

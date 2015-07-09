@@ -31,10 +31,16 @@ namespace Sgt
     {
         public:
 
+            /// @brief Return the zip that I wrap (const). 
             virtual std::shared_ptr<const ZipAbc> zip() const = 0;
+            /// @brief Return the zip that I wrap (non-const). 
             virtual std::shared_ptr<ZipAbc> zip() = 0;
 
-            virtual void joinNetwork(SimNetwork& simNetwork, const std::string& busId);
+            /// @brief Do anything I need to do to add myself to the simNetwork.
+            ///
+            /// Important: my zip must separately be added to SimNetwork's Network. This is to prevent any possible
+            /// confusion about whether it is already added on not.
+            virtual void linkToSimNetwork(SimNetwork& simNetwork, const std::string& busId);
     };
 
     /// @brief Simulation zip, corresponding to a ZipAbc in a SimNetwork's network(). 

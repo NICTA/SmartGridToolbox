@@ -50,7 +50,9 @@ namespace Sgt
         const std::string networkId = parser.expand<std::string>(nd["network_id"]);
         const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
-        auto network = sim.simComponent<SimNetwork>(networkId);
-        inverter->joinNetwork(*network, busId);
+        auto& network = *sim.simComponent<SimNetwork>(networkId);
+
+        network.network()->addZip(inverter->zip(), busId);
+        inverter->linkToSimNetwork(network, busId);
     }
 }

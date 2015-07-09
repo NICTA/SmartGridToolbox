@@ -31,10 +31,16 @@ namespace Sgt
     {
         public:
 
+            /// @brief Return the bus that I wrap (const). 
             virtual std::shared_ptr<const Bus> bus() const = 0;
+            /// @brief Return the bus that I wrap (non-const). 
             virtual std::shared_ptr<Bus> bus() = 0;
             
-            virtual void joinNetwork(SimNetwork& simNetwork);
+            /// @brief Do anything I need to do to add myself to the simNetwork.
+            ///
+            /// Important: my bus must separately be added to SimNetwork's Network. This is to prevent any possible
+            /// confusion about whether it is already added on not.
+            virtual void linkToSimNetwork(SimNetwork& simNetwork);
 
         protected:
 

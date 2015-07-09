@@ -59,6 +59,6 @@ namespace Sgt
             tsZip->setScaleFactorS(scaleFactorS);
         }
 
-        tsZip->joinNetwork(*network, busId);
+        tsZip->linkToSimNetwork(*network, busId);
     }
 }
