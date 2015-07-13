@@ -94,27 +94,45 @@ We define the real power and reactive power phasors to be
 which shows that $P$ and $Q$ are ``in phase'' and ``out of phase'' components of the product of $I$ and $V$. $P$ is just the average power dissipated by the resistive component of the load, while $Q$ is the magnitude of the instantaneous power absorbed by the reactive part of the load.
 
 \section{Three phase balanced power}
+In balanced positive sequence three-phase systems, the phase to neutral voltages at a bus, or phase voltages, are $V_A = V$, $V_B = V\exp(-2j\pi/3)$ and $V_C = V\exp(2j\pi/3)$. The line to line voltages, also just called the line voltages, are $V_{AB}$, $V_{BC}$, $V_{CA}$, where, for example, $V_{AB} = V_A - V_B = \sqrt{3}V_A\exp(j\pi/6)$. Similarly, $V_{BC} = \sqrt{3}V_A\exp(-j\pi/2)$ and $V_{CA} = \sqrt{3}V_A\exp(5j\pi/6)$ Thus, the magnitude of the line to line voltages is $\sqrt{3}$ times the magnitude of the phase voltages.
+
+Loads and sources can be connected in either $\Delta$ or $Y$ configuration. Fig. \ref{FIG_YY_DD} shows these connections.
 \begin{figure}[!h]
 	\begin{center}
-		\includegraphics[width=(8cm)]{DeltaY}
+		\includegraphics[width=(12cm)]{YSrcYLd.png}
+		\includegraphics[width=(12cm)]{DSrcDLd.png}
 	\end{center}
 	\caption{
-		Delta and Y circuits for balanced three phase power.
+		Top: A Y-connected source connected to a Y-connected load. Bottom: A $\Delta$-connected source connected to a $\Delta$-connected load.
 	}
-	\label{FIG_PI_LINE}
+	\label{FIG_YY_DD}
 \end{figure}
-In balanced positive sequence three-phase systems, the voltages are $V_A = V$, $V_B = V\exp(-2\pi/3)$ and $V_C = V\exp(2\pi / 3)$, and the currents have the same phase relationship. For balanced loads, we can model the system by considering only one of the phases (e.g. A, or A-B), knowing that all the currents and voltages will be duplicated for the other two with the appropriate phase shifts. 
 
-Delta-connected loads are mathematically equivalent to Y-connected loads, with the following relationships holding if the total power is the same in both cases
+The currents along the phase wires, $I_A, I_B, I_C$ are known as the line currents. Note that this can be confusing when compared to the common use of the term ``line voltage'', meaning line to line voltage. For a $\Delta$-connected load, we can easily show, using Ohm's law, that $I_{BC} = \exp(-2j\pi/3) I_{AB}$ and $I_{CA} = \exp(2j\pi/3) I_{AB}$. Using Kirchoff's current law, we then have,
 \begin{align}
-	V_{AB} &= \sqrt{3}\exp\left(j\frac{\pi}{6}\right)V_A \notag \\
-	V_{BC} &= \sqrt{3}\exp\left(j\frac{\pi}{6}\right)V_B \notag \\
-	V_{CA} &= \sqrt{3}\exp\left(j\frac{\pi}{6}\right)V_C \notag \\
-	I_{AB} &= \frac{1}{\sqrt{3}}\exp\left(j\frac{\pi}{6}\right)I_A \notag \\
-	I_{BC} &= \frac{1}{\sqrt{3}}\exp\left(j\frac{\pi}{6}\right)I_B \notag \\
-	I_{CA} &= \frac{1}{\sqrt{3}}\exp\left(j\frac{\pi}{6}\right)I_C \notag \\
-	Z_\Delta &= 3 Z_Y
+I_{A} &= I_{AB} - I_{CA} \notag \\
+&= I_{AB}(1 - \exp(2j\pi/3)) \notag \\
+\rightarrow I_{AB} &= \frac{1}{\sqrt{3}}\exp\left(j\pi/6\right)I_A
 \end{align}
+Meaning the $\Delta$ currents are a factor of $\sqrt{3}$ less than the line currents, which is opposite to the relation that holds for the voltages.
+
+Note that for every $\Delta$ connected load, there is an equivalent $Y$-connected load.
+
+Balanced power flow can be analysed in terms of a single phase of the circuit. The power will be three times the power in that phase. For a Y-connected load,
+\begin{align}
+S &= 3I_{A}^*V_{A} \notag \\
+&= \sqrt{3}I_{A}^*V_{AB}\exp(-j\pi/6)
+\end{align}
+and for a Y-connected load,
+\begin{align}
+S &= 3I_{AB}^*V_{AB} \notag \\
+&= \sqrt{3}I_{A}^*V_{AB}\exp(-j\pi/6)
+\end{align}
+Thus, regardless of whether we have a $\Delta$ or a $Y$-connected load, the power is often expressed as
+\begin{align}
+S &= \sqrt{3}I_{l}^*V_{l}.
+\end{align}
+where $I_{l}$ is the line current, $V_l$ is the line to line voltage, and we have absorbed a constant phase factor. 
 
 \section{The powerflow problem}
 We start with a collection \emph{busses} -- terminal-like conductors that have a single associated voltage, $V_i$, where $i$ is the bus index. We can consider \emph{ground} to be a special bus (to which we assign index 0), at which $V$ is always zero.
