@@ -134,6 +134,76 @@ S &= \sqrt{3}I_{l}^*V_{l}.
 \end{align}
 where $I_{l}$ is the line current, $V_l$ is the line to line voltage, and we have absorbed a constant phase factor. 
 
+\section{Symmetric components}
+Let 
+\begin{align}
+	A &= \left[
+		\begin{array}{lll}
+			1 & 1 & 1 \\
+			1 & \alpha^2 & \alpha \\
+			1 & \alpha & \alpha^2
+		\end{array}
+	\right]
+\end{align}
+where $\alpha := \exp(2\pi j/3)$, and it's inverse is then
+\begin{align}
+	A^{-1} &= \frac{1}{3}\left[
+		\begin{array}{lll}
+			1 & 1 & 1 \\
+			1 & \alpha & \alpha^2 \\
+			1 & \alpha^2 & \alpha
+		\end{array}
+	\right]
+\end{align}
+
+We define a transformation to symmetric components:
+\begin{align}
+	V_{012} = A^{-1}V_{ABC}
+\end{align}
+which applies for all vectors e.g. to $I$ as well as $V$, and
+\begin{align}
+	Z_{012} = A^{-1}Z_{ABC}A
+\end{align}
+which applies for matrices, for example, impedance matrices $Z$, as shown above.
+
+Suppose we have a balanced positive sequence voltage $V^+_{ABC} = V_0[1, \alpha^2, \alpha]^T$. Then, under the transformation to symmetric components, we find $V_{012} = V_0[0, 1, 0]^T$. Similarly, a negative sequence voltage $V^-_{ABC} = V_0[1, \alpha, \alpha^2]^T$ transforms to $V_{012} = V_0[0, 0, 1]^T$. Finally, the unbalanced \emph{zero sequence} voltage $V^-_{ABC} = V_0[1, 1, 1]^T$ transforms to $V_{012} = V_0[1, 0, 0]^T$. Therefore, the transformation $A^{-1}$ decomposes $V_{ABC}$ into a positive sequence component $V_1$, a negative sequence component $V_2$, and a zero sequence component $V_0$. For positive sequence balanced power flow, only $V_1$ will be non-zero.
+
+Now consider a three phase transmission line. The equation for the voltage drop in each wire is:
+\begin{align}
+	\Delta V = ZI
+\end{align}
+where $Z$ is the phase impedance matrix for the line. If the power flow is to be perfectly balanced, then there must be a symmetry under exchange of any two phases, meaning all wires must be located on an equilateral triangle and must have the same impedance. The $Z$ must have the form:
+\begin{align}
+	Z_{ABC} = \left[
+			\begin{array}{lll}
+				z & m & m \\
+				m & z & m \\
+				m & m & z
+			\end{array}
+		\right]
+\end{align}
+where $Z$ is the single line impedance, and $m$ is the mutual coupling impedance. Under the transformation to symmetric components, this becomes
+\begin{align}
+	Z_{012} = \left[
+			\begin{array}{lll}
+				z+2m & 0 & 0 \\
+				0 & z-m & 0 \\
+				0 & 0 & z-m
+			\end{array}
+		\right]
+		\label{EQ_Z012}
+\end{align}
+This matrix is diagonal, and therefore a perfectly symmetric network can be decomposed under the transformation to symmetric components into three independent networks: a positive sequence network, a negative sequence network, and a zero sequence network.
+
+For balanced positive sequence power flow, we need only be concerned with the positive sequence network, so the problem becomes scalar, in other words the three phase problem reduces to an equivalent single phase problem. Quantities are interpreted as follows:
+\begin{align}
+	V &\leftarrow V_1, \text{the voltage in phase A} \notag \\
+	I &\leftarrow I_1, \text{the line current along phase A wire} \notag \\
+	Z &\leftarrow Z_{11}, \text{line impedance, equal to $z - m$, see Eq. \ref{EQ_Z012}.}
+\end{align}
+
+What about power? While we could just
+
 \section{The powerflow problem}
 We start with a collection \emph{busses} -- terminal-like conductors that have a single associated voltage, $V_i$, where $i$ is the bus index. We can consider \emph{ground} to be a special bus (to which we assign index 0), at which $V$ is always zero.
 
