@@ -221,9 +221,9 @@ This matrix is diagonal, which confirms that a perfectly symmetric network can b
 
 For balanced positive sequence power flow, we need only be concerned with the positive sequence network, so the problem becomes scalar, in other words the three phase problem reduces to an equivalent single phase problem. Quantities are interpreted as follows:
 \begin{align}
-	V &\leftarrow V_1,\;\text{$\sqrt{3} \times$ phase A voltage (effectively the line to line voltage, or RMS),} \notag \\
-	I &\leftarrow I_1,\;\text{$\sqrt{3} \times$ the line current in phase A, effectively the RMS,} \notag \\
-	Z &\leftarrow Z_{11},\;\text{line impedance, equal to $z - m$, see Eq. \ref{EQ_Z012}.}
+	V &\leftarrow V_1 = \sqrt{3} V_A,\; \text{effectively the line to line voltage, or RMS,} \notag \\
+	I &\leftarrow I_1 = \sqrt{3} I_A,\; \text{effectively the RMS,} \notag \\
+	Z &\leftarrow Z_{11} = z - m,\; \text{line impedance, see Eq. \ref{EQ_Z012}.}
 \end{align}
 
 What about power? For a positive sequence balanced system, we have, in terms of sequence components,
