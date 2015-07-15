@@ -94,7 +94,16 @@ We define the real power and reactive power phasors to be
 which shows that $P$ and $Q$ are ``in phase'' and ``out of phase'' components of the product of $I$ and $V$. $P$ is just the average power dissipated by the resistive component of the load, while $Q$ is the magnitude of the instantaneous power absorbed by the reactive part of the load.
 
 \section{Three phase balanced power}
-In balanced positive sequence three-phase systems, the phase to neutral voltages (or, simply, the phase voltages), at a bus, are $V_A = V$, $V_B = V\exp(-2j\pi/3)$ and $V_C = V\exp(2j\pi/3)$. The line to line voltages, also just called the line voltages, are $V_{AB} = V_A - V_B = \sqrt{3}V_A\exp(j\pi/6)$, $V_{BC} = \sqrt{3}V_A\exp(-j\pi/2)$ and $V_{CA} = \sqrt{3}V_A\exp(5j\pi/6)$ Thus, the magnitude of the line to line voltages is $\sqrt{3}$ times the magnitude of the phase voltages.
+In balanced positive sequence three-phase systems, the phase to neutral voltages (or, simply, the phase voltages), at a bus, are 
+\begin{align}
+(V_A, V_B, V_C) = (V_A, V_A\exp(-j2\pi/3), V_A\exp(j2\pi/3)).
+\end{align}
+The line to line voltages, also just called the line voltages, are 
+\begin{align}
+(V_{AB}, V_{BC}, V_{CA}) &= (V_A - V_B, V_B - V_C, V_C - V_A) \notag \\
+&= \sqrt{3}\exp(j\pi/6)(V_A, V_B, V_C).
+\end{align}
+Thus, the line to line voltages have a magnitude $\sqrt{3}$ times that of the phase voltages, and they also form a positive sequence set.
 
 Loads and sources can be connected in either $\Delta$ or $Y$ configuration. Fig. \ref{FIG_YY_DD} shows these connections.
 \begin{figure}[!h]
@@ -108,15 +117,15 @@ Loads and sources can be connected in either $\Delta$ or $Y$ configuration. Fig.
 	\label{FIG_YY_DD}
 \end{figure}
 
-The currents along the phase wires, $I_A, I_B, I_C$ are known as the line currents. Note that this can be confusing when compared to the common use of the term ``line voltage'', meaning line to line voltage. For a $\Delta$-connected load, we can easily show, using Ohm's law, that $I_{BC} = \exp(-2j\pi/3) I_{AB}$ and $I_{CA} = \exp(2j\pi/3) I_{AB}$. Using Kirchoff's current law, we then have,
-\begin{align}
-I_{A} &= I_{AB} - I_{CA} \notag \\
-&= I_{AB}(1 - \exp(2j\pi/3)) \notag \\
-\rightarrow I_{AB} &= \frac{1}{\sqrt{3}}\exp\left(j\pi/6\right)I_A
-\end{align}
-Meaning the $\Delta$ currents are a factor of $\sqrt{3}$ less than the line currents, which is opposite to the relation that holds for the voltages.
+The currents along the phase wires, $I_A, I_B, I_C$ are known as the ``line currents''. Note that this can be confusing when compared to the use of ``line voltage'' to mean line to line voltage.
 
-Note that for every $\Delta$ connected load, there is an equivalent $Y$-connected load.
+For a $\Delta$-connected load or source operating under balanced positive sequence conditions, we can easily show, using Ohm's law, that $I_{BC} = \exp(-j2\pi/3) I_{AB}$ and $I_{CA} = \exp(j2\pi/3) I_{AB}$, i.e. the delta currents also form a positive sequence set. Kirchoff's current law can then be used to show that,
+\begin{align}
+(I_{AB}, I_{BC}, I_{CA}) &= \frac{1}{\sqrt{3}}\exp\left(j\pi/6\right)(I_A, I_B, I_C)
+\end{align}
+meaning the $\Delta$ currents are a factor of $\sqrt{3}$ less than the line currents. Note that this is opposite to the relationship that holds for phase voltages vs line to line voltages.
+
+Note that for every $\Delta$ connected load, there is an equivalent $Y$-connected load. For balanced power flow, if the impedance on each arm of the $Y$ is $Z_Y$, then the equivalent impedance for each side of the $\Delta$ is $Z_\Delta = 3Z_Y$.
 
 \section{Symmetric components}
 Let 
@@ -127,11 +136,8 @@ Let
 			1 & \alpha^2 & \alpha \\
 			1 & \alpha & \alpha^2
 		\end{array}
-	\right]
-\end{align}
-where $\alpha := \exp(2\pi j/3)$. We then have,
-\begin{align}
-	A^{-1} &= \frac{1}{3}\left[
+	\right],\;
+	A^{-1} = \frac{1}{3}\left[
 		\begin{array}{lll}
 			1 & 1 & 1 \\
 			1 & \alpha & \alpha^2 \\
@@ -139,6 +145,7 @@ where $\alpha := \exp(2\pi j/3)$. We then have,
 		\end{array}
 	\right]
 \end{align}
+where $\alpha := \exp(j2\pi/3)$. We then have,
 
 We define a transformation to symmetric components:
 \begin{align}
@@ -150,11 +157,11 @@ which applies for all vectors e.g. to $I$ as well as $V$, and
 \end{align}
 which applies for matrices, for example, impedance matrices $Z$, as shown above.
 
-Suppose we have a balanced positive sequence voltage $V^+_{ABC} = V_0[1, \alpha^2, \alpha]^T$. Then, under the transformation to symmetric components, we find $V_{012} = V_0[0, 1, 0]^T$. Similarly, a negative sequence voltage $V^-_{ABC} = V_0[1, \alpha, \alpha^2]^T$ transforms to $V_{012} = V_0[0, 0, 1]^T$. Finally, the unbalanced \emph{zero sequence} voltage $V^-_{ABC} = V_0[1, 1, 1]^T$ transforms to $V_{012} = V_0[1, 0, 0]^T$. Therefore, the transformation $A^{-1}$ decomposes $V_{ABC}$ into a positive sequence component $V_1$, a negative sequence component $V_2$, and a zero sequence component $V_0$.
+Suppose we have a balanced positive sequence voltage $V^+_{ABC} = V_A[1, \alpha^2, \alpha]^T$. Then, under the transformation to symmetric components, we find $V_{012} = V_A[0, 1, 0]^T$. Similarly, a negative sequence voltage $V^-_{ABC} = V_A[1, \alpha, \alpha^2]^T$ transforms to $V_{012} = V_A[0, 0, 1]^T$. Finally, the unbalanced \emph{zero sequence} voltage $V^-_{ABC} = V_A[1, 1, 1]^T$ transforms to $V_{012} = V_A[1, 0, 0]^T$. Therefore, the transformation $A^{-1}$ decomposes $V_{ABC}$ into a positive sequence component $V_1$, a negative sequence component $V_2$, and a zero sequence component $V_0$.
 
 \subsection{Reduction of a three-phase balanced problem to single phase}
 
-In balanced power flow, there is only a positive sequence component, which suggests that symmetric components could be used to reduce a three-phase problem to an equivalent single-phase problem. However, using the treatment above, it turns out that we then need to remember to artificially multiply by three when calculating the total power. This is not ideal, because total power is an important physical quantity that corresponds to the amount of actual energy consumed or generated. Therefore, we shall develop a non-standard treatment of symmetric components.
+In balanced power flow, there is only a positive sequence component, which suggests that symmetric components could be used to reduce a three-phase problem to an equivalent single-phase problem, since the negative and zero sequence components will always be zero. However, using the treatment above, it turns out that we then need to remember to artificially multiply by three when calculating the total power. This is not ideal, because total power is an important physical quantity that corresponds to the amount of actual energy consumed or generated. Therefore, we shall develop a non-standard treatment of symmetric components.
 
 Let the transformation matrix $B$ be defined as
 \begin{align}
@@ -166,7 +173,7 @@ Let the transformation matrix $B$ be defined as
 		\end{array}
 	\right]
 \end{align}
-Note that $B = \sqrt(3)A^{-1}$, and also that $B^{-1} = B^\dag$, so $B$ is a unitary matrix.
+Note that $B = \sqrt{3}A^{-1}$, and also that $B^{-1} = B^\dag$, so $B$ is a unitary matrix\footnote{$B$ being unitary implies that the transformation that it describes will have nice properties like preserving scalar (dot) products. The total power, $S$, is a scalar product: $S = I^\dag V$, so this transformation preserves the value obtained for the total power.}.
 
 Under this transformation, positive, negative and zero sequence voltages transform as follows
 \begin{align}
@@ -189,7 +196,7 @@ V_{012}^0 = \sqrt{3}V_A\left[\begin{array}{l}
 	1 \\ 0 \\ 0
 \end{array}\right] & \text{(zero sequence voltage)}\notag \\
 \end{align}
-So for example, a positive sequence balanced three phase voltage will have a single nonzero positive sequence component $V_1$, effectively equal to the line to line voltage (or, alternatively whose magnitude is the RMS of the phase voltages). A similar relationship holds for the line currents, but this time there is no simple interpretation of $\sqrt{3}I_A$ analogous to $\sqrt{3}V_A$ being interpreted as the line to line voltage (although it's magnitude is still the RMS line current).
+So for example, a positive sequence balanced three phase voltage will have a single nonzero sequence component, the positive sequence component $V_1 = \sqrt{3}V_A$, with magnitude equal to the line voltage. A similar relationship holds for the line currents: a positive sequence balanced three phase current will have $I_1 = \sqrt{3}I_A$, however, this time, there is no simple interpretation of $\sqrt{3}I_A$ that is analogous to $\sqrt{3}V_A$ being interpreted as the line to line voltage.
 
 Now consider a three phase transmission line. The equation for the voltage drop in each wire is:
 \begin{align}
@@ -219,24 +226,11 @@ where $z$ is the single line impedance, and $m$ is the mutual coupling impedance
 \end{align}
 This matrix is diagonal, which confirms that a perfectly symmetric network can be decomposed into three independent networks: a positive sequence network, a negative sequence network, and a zero sequence network. Shunt impedances or loads can be represented in a similar manner, but have $m = 0$. $\Delta$ connected shunt impedances or loads can be treated using the equivalent $Y$ impedance: each impedance in the $\Delta$ load must be divided by 3 to get the equivalent $Y$-impedance.
 
-For balanced positive sequence power flow, we need only be concerned with the positive sequence network, so the problem becomes scalar, in other words the three phase problem reduces to an equivalent single phase problem. Quantities are interpreted as follows:
-\begin{align}
-	V &\leftarrow V_1 = \sqrt{3} V_A,\; \text{effectively the line to line voltage, or RMS,} \notag \\
-	I &\leftarrow I_1 = \sqrt{3} I_A,\; \text{effectively the RMS,} \notag \\
-	Z &\leftarrow Z_{11} = z - m,\; \text{line impedance, see Eq. \ref{EQ_Z012}.}
-\end{align}
-
-What about power? For a positive sequence balanced system, we have, in terms of sequence components,
-\begin{align}
-	S = I^\dag V = 3I_A^*V_A
-\end{align}
-which is indeed the total power.
-
 In summary, we can model a balanced three phase power problem as a single phase problem by making the following interpretations:
 \begin{itemize}
-	\item The voltage in the equivalent single phase system is the line to line voltage in the three phase system (but, to be pedantic, with the same phase as A). To get the phase A voltage, divide the single phase voltage by $\sqrt{3}$.
-	\item To get the current along each phase of a three phase line, divide the single phase current by $\sqrt{3}$. This is most important when calculating line limits.
-	\item Power in the single phase system is the \emph{total} power of all phases in the three phase system. Thus, for example, the power at a $PQ$ bus for the single phase system is the sum of the power for all phases in the three phase system. This is regardless of whether the load or source is $\Delta$ or $Y$-connected.
+	\item The voltage in the equivalent single phase system is the line to line voltage in the three phase system (but, to be pedantic, with the same angle as A). To get the phase A voltage, divide the single phase voltage by $\sqrt{3}$.
+	\item To get the current along each phase of a three phase line, divide the single phase current by $\sqrt{3}$. This is most important when considering line limits.
+	\item Power in the equivalent single phase system is the \emph{total} power of all phases in the three phase system. Thus, for example, the power at an equivalent single phase $PQ$ bus is the sum of the power for all phases in the three phase system. This is regardless of whether the load or source is $\Delta$ or $Y$-connected.
 	\item Three-phase lines represented as in Eq. \ref{EQ_ZABC} have an equivalent single phase impedance of $z - m$.
 	\item A Y-connected load/shunt impedance, with impedance $z$ on each phase, becomes a single impedance $z$ in the equivalent single phase system.
 	\item A $\Delta$-connected load/shunt impedance, with impedance $z$ between each pair of phases, becomes a single load impedance $z/3$ in the equivalent single phase system.
