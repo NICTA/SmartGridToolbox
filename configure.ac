@@ -1,4 +1,4 @@
-AC_INIT([SmartGridToolbox], [v2.0.0b3], [dan.gordon@nicta.com.au], [SmartGridToolbox])
+AC_INIT([SmartGridToolbox], [v2.0.0b4], [dan.gordon@nicta.com.au], [SmartGridToolbox])
 AC_CONFIG_SRCDIR([src/run_config.cc])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
