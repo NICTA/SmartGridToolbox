@@ -37,6 +37,8 @@ namespace Sgt
             const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
+        assertFieldPresent(nd, "phases_0");
+        assertFieldPresent(nd, "phases_1");
         assertFieldPresent(nd, "length");
         assertFieldPresent(nd, "has_neutral");
         assertFieldPresent(nd, "shielding_type");
@@ -47,6 +49,8 @@ namespace Sgt
         assertFieldPresent(nd, "earth_resistivity");
 
         string id = parser.expand<std::string>(nd["id"]);
+        Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
+        Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
         double length = parser.expand<double>(nd["length"]);
         bool hasNeutral = parser.expand<bool>(nd["has_neutral"]);
         std::string shieldingType = parser.expand<std::string>(nd["shielding_type"]);
@@ -70,8 +74,22 @@ namespace Sgt
             int nConcStrands = parser.expand<int>(nd["n_conc_strands"]);
             double rConc = parser.expand<double>(nd["radius_conc"]);
 
-            ugl.reset(new UndergroundLineStrandedShield(id, length, hasNeutral, distMatrix, gmrPhase,
+            ugl.reset(new UndergroundLineStrandedShield(id, phases0, phases1, length, hasNeutral, distMatrix, gmrPhase,
                         RPerLPhase, freq, earthResistivity, gmrConcStrand, RPerLConcStrand, nConcStrands, rConc));
+            ugl->validate();
+        }
+        else if (shieldingType == "tape")
+        {
+            assertFieldPresent(nd, "outside_radius_shield");
+            assertFieldPresent(nd, "thickness_shield");
+            assertFieldPresent(nd, "resistivity_shield");
+            
+            double outsideRShield = parser.expand<double>(nd["outside_radius_shield"]);
+            double thickShield = parser.expand<double>(nd["thickness_shield"]);
+            double resistivityShield = parser.expand<double>(nd["resistivity_shield"]);
+
+            ugl.reset(new UndergroundLineTapeShield(id, phases0, phases1, length, hasNeutral, distMatrix, gmrPhase,
+                        RPerLPhase, freq, earthResistivity, outsideRShield, thickShield, resistivityShield));
             ugl->validate();
         }
 

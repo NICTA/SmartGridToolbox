@@ -112,13 +112,13 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
     BOOST_CHECK(err2 < 0.001);
 }
 
-BOOST_AUTO_TEST_CASE (test_underground_compare_carson)
+BOOST_AUTO_TEST_CASE (test_underground_conc_compare_carson)
 {
     // For this test, we compare values for an underground line examined in one of Kersting's papers:
     // docs/background/Kersting_Carson.pdf.
     Network netw;
     Parser<Network> p;
-    p.parse("test_underground_compare_carson.yaml", netw);
+    p.parse("test_underground_conc_compare_carson.yaml", netw);
 
     netw.solvePowerFlow();
 
@@ -128,6 +128,26 @@ BOOST_AUTO_TEST_CASE (test_underground_compare_carson)
     ZPhaseKersting << Complex(0.7981, 0.4463) << Complex(0.3191, 0.0328) << Complex(0.2849, -0.0143) << arma::endr
                    << Complex(0.3191, 0.0328) << Complex(0.7891, 0.4041) << Complex(0.3191, 0.0328) << arma::endr
                    << Complex(0.2849, -0.0143) << Complex(0.3191, 0.0328) << Complex(0.7981, 0.4463) << arma::endr;
+    BOOST_MESSAGE(ZPhase);
+    BOOST_MESSAGE(ZPhaseKersting);
+    double err = arma::norm(ZPhase - ZPhaseKersting, "inf");
+    BOOST_MESSAGE("Err = " << err);
+    BOOST_CHECK(err < 0.0005);
+}
+
+BOOST_AUTO_TEST_CASE (test_underground_tape_compare_carson)
+{
+    // For this test, we compare values for an underground line examined in one of Kersting's papers:
+    // docs/background/Kersting_Carson.pdf.
+    Network netw;
+    Parser<Network> p;
+    p.parse("test_underground_tape_compare_carson.yaml", netw);
+
+    netw.solvePowerFlow();
+
+    auto ug = std::dynamic_pointer_cast<UndergroundLine>(netw.branch("line_1_2"));
+    arma::Mat<Complex> ZPhase = ug->ZPhase() * 1609.344; // Convert to ohms per mile.
+    Complex ZPhaseKersting = Complex(1.3219, 0.6743);
     BOOST_MESSAGE(ZPhase);
     BOOST_MESSAGE(ZPhaseKersting);
     double err = arma::norm(ZPhase - ZPhaseKersting, "inf");

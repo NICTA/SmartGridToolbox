@@ -25,6 +25,8 @@
         S_const: [-6.99e-1 - 1.43e-1j, -6.90e-1 - 1.03e-1j, -5.91e-1 - 1.60e-2j]
 -  underground_line:
         id: line_1_2
+        phases_0: [A, B, C]
+        phases_1: [A, B, C]
         network_id: network_1
         bus_0_id: bus_1
         bus_1_id: bus_2

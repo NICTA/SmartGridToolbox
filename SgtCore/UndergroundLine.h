@@ -23,12 +23,12 @@ namespace Sgt
     ///
     /// As in Gridlab-D, we take direction from Kersting: Distribution System Modelling and Analysis.
     ///
-    /// Phases A, B, and C are individually surrounded by *either* a concentric stranded neutral, or a neutral
+    /// Phases (e.g. A, B, and C) are individually surrounded by *either* a concentric stranded neutral, or a neutral
     /// tape shield. In addition, there may be a separate neutral wire, which does not have its own shielding as it is
-    /// not expected to carry (much) current.
-    /// Thus, there are either 6 or 7 conductors to consider, depending on whether there is a separate neutral wire.
-    /// Conductors 1-3 and 7 are the usual type of conductor with their own particular GMR specified, etc.
-    /// Conductors 4-6 represent either the concentric neutrals or the tape.
+    /// not expected to carry (much) current. Thus, for three phase, there are either 6 or 7 conductors to consider,
+    /// depending on whether there is a separate neutral wire. Conductors 1-3 and 7 are the usual type of conductor
+    /// with their own particular GMR specified, etc. Conductors 4-6 represent either the concentric neutrals or the
+    /// tape.
     /// @ingroup PowerFlowCore
     class UndergroundLine : public BranchAbc
     {
@@ -53,8 +53,9 @@ namespace Sgt
         /// @{
 
             /// @brief Constructor.
-            UndergroundLine(double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
-                            double gmrPhase, double resPerLPhase, double freq, double rhoEarth);
+            UndergroundLine(const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
+                    const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, double freq,
+                    double rhoEarth);
 
             virtual void validate() = 0; ///< Calcuate all cached quantities.
 
@@ -127,9 +128,9 @@ namespace Sgt
         public:
             
             UndergroundLineStrandedShield(
-                    const std::string& id, double L, bool hasNeutral, const arma::Mat<double>& phaseDist,
-                    double gmrPhase, double resPerLPhase, double freq, double rhoEarth,
-                    double gmrConcStrand, double resPerLConcStrand, int nConcStrands, double rConc);
+                    const std::string& id, const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
+                    const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, double freq, 
+                    double rhoEarth, double gmrConcStrand, double resPerLConcStrand, int nConcStrands, double rConc);
             
             virtual void validate() override; ///< Calcuate all cached quantities.
 
@@ -139,6 +140,26 @@ namespace Sgt
             double resPerLConcStrand_; ///< resistance/length of concentric neutral strand, r_s in Kersting.
             int nConcStrands_; ///< Number of concentric neutral strands, k in Kersting.
             double rConc_; ///< Radius center of phase conductor to center of shield strands, R in Kersting.
+    };
+
+    /// @brief Underground line with tape shielding.
+    /// @ingroup PowerFlowCore
+    class UndergroundLineTapeShield : public UndergroundLine
+    {
+        public:
+            
+            UndergroundLineTapeShield(
+                    const std::string& id, const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
+                    const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, double freq,
+                    double rhoEarth, double outsideRShield, double thickShield_, double resistivityShield = 1.7e-8);
+            
+            virtual void validate() override; ///< Calcuate all cached quantities.
+
+        private:
+
+            double outsideRShield_; ///< Radius of tape shield (center to oustside of shield.
+            double thickShield_; ///< Thickness of shield.
+            double resistivityShield_; ///< Resistivity of the tape shield (@ 50 C).
     };
 }
 
