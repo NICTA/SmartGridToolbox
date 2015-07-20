@@ -57,8 +57,18 @@ namespace Sgt
         arma::Mat<double> distMatrix = parser.expand<arma::Mat<double>>(nd["distance_matrix"]);
         double gmrPhase = parser.expand<double>(nd["gmr_phase"]);
         double RPerLPhase = parser.expand<double>(nd["R_per_L_phase"]);
+        double gmrNeut = 0.0;
+        double RPerLNeut = 0.0;
         double freq = parser.expand<double>(nd["freq"]);
         double earthResistivity = parser.expand<double>(nd["earth_resistivity"]);
+       
+        if (hasNeutral)
+        {
+            assertFieldPresent(nd, "gmr_neutral");
+            assertFieldPresent(nd, "R_per_L_neutral");
+            gmrNeut = parser.expand<double>(nd["gmr_neutral"]);
+            RPerLNeut = parser.expand<double>(nd["R_per_L_neutral"]);
+        }
 
         std::unique_ptr<UndergroundLine> ugl;
 
@@ -74,8 +84,9 @@ namespace Sgt
             int nConcStrands = parser.expand<int>(nd["n_conc_strands"]);
             double rConc = parser.expand<double>(nd["radius_conc"]);
 
-            ugl.reset(new UndergroundLineStrandedShield(id, phases0, phases1, length, hasNeutral, distMatrix, gmrPhase,
-                        RPerLPhase, freq, earthResistivity, gmrConcStrand, RPerLConcStrand, nConcStrands, rConc));
+            ugl.reset(new UndergroundLineStrandedShield(id, phases0, phases1, length, hasNeutral, distMatrix,
+                        gmrPhase, RPerLPhase, gmrNeut, RPerLNeut, freq, earthResistivity, gmrConcStrand,
+                        RPerLConcStrand, nConcStrands, rConc));
             ugl->validate();
         }
         else if (shieldingType == "tape")
@@ -88,8 +99,9 @@ namespace Sgt
             double thickShield = parser.expand<double>(nd["thickness_shield"]);
             double resistivityShield = parser.expand<double>(nd["resistivity_shield"]);
 
-            ugl.reset(new UndergroundLineTapeShield(id, phases0, phases1, length, hasNeutral, distMatrix, gmrPhase,
-                        RPerLPhase, freq, earthResistivity, outsideRShield, thickShield, resistivityShield));
+            ugl.reset(new UndergroundLineTapeShield(id, phases0, phases1, length, hasNeutral, distMatrix,
+                        gmrPhase, RPerLPhase, gmrNeut, RPerLNeut, freq, earthResistivity, outsideRShield,
+                        thickShield, resistivityShield));
             ugl->validate();
         }
 

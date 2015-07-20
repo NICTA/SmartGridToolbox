@@ -54,8 +54,8 @@ namespace Sgt
 
             /// @brief Constructor.
             UndergroundLine(const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
-                    const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, double freq,
-                    double rhoEarth);
+                    const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, 
+                    double gmrNeut, double resPerLNeut, double freq, double rhoEarth);
 
             virtual void validate() = 0; ///< Calcuate all cached quantities.
 
@@ -110,6 +110,9 @@ namespace Sgt
 
             double gmrPhase_; ///< GMR of phase conductor, GMR_c in Kersting.
             double resPerLPhase_; ///< resistance/length of phase conductor, r_c in Kersting.
+            
+            double gmrNeut_; ///< GMR of neutral conductor, GMR_n in Kersting.
+            double resPerLNeut_; ///< resistance/length of neutral conductor, r_n in Kersting.
 
             double freq_; ///< Frequency : TODO : link to network frequency.
             double rhoEarth_{100.0}; ///< Earth resistivity.
@@ -129,8 +132,9 @@ namespace Sgt
             
             UndergroundLineStrandedShield(
                     const std::string& id, const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
-                    const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, double freq, 
-                    double rhoEarth, double gmrConcStrand, double resPerLConcStrand, int nConcStrands, double rConc);
+                    const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, 
+                    double gmrNeut, double resPerLNeut, double freq, double rhoEarth, double gmrConcStrand,
+                    double resPerLConcStrand, int nConcStrands, double rConc);
             
             virtual void validate() override; ///< Calcuate all cached quantities.
 
@@ -150,8 +154,9 @@ namespace Sgt
             
             UndergroundLineTapeShield(
                     const std::string& id, const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
-                    const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, double freq,
-                    double rhoEarth, double outsideRShield, double thickShield_, double resistivityShield = 1.7e-8);
+                    const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase,
+                    double gmrNeut, double resPerLNeut, double freq, double rhoEarth, double outsideRShield,
+                    double thickShield_, double resistivityShield = 1.7e-8);
             
             virtual void validate() override; ///< Calcuate all cached quantities.
 

@@ -19,13 +19,16 @@
 namespace Sgt
 {
     UndergroundLine::UndergroundLine(const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
-            const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, double freq, double rhoEarth) :
+            const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, 
+            double gmrNeut, double resPerLNeut, double freq, double rhoEarth) :
         BranchAbc(phases0, phases1),
         L_(L),
         hasNeutral_(hasNeutral),
         phaseDist_(phaseDist),
         gmrPhase_(gmrPhase),
         resPerLPhase_(resPerLPhase),
+        gmrNeut_(gmrNeut),
+        resPerLNeut_(resPerLNeut),
         freq_(freq),
         rhoEarth_(rhoEarth)
     {
@@ -37,10 +40,12 @@ namespace Sgt
 
     UndergroundLineStrandedShield::UndergroundLineStrandedShield(
             const std::string& id, const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
-            const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, double freq, double rhoEarth,
-            double gmrConcStrand, double resPerLConcStrand, int nConcStrands, double rConc) :
+            const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase,
+            double gmrNeut, double resPerLNeut, double freq, double rhoEarth, double gmrConcStrand,
+            double resPerLConcStrand, int nConcStrands, double rConc) :
         Component(id),
-        UndergroundLine(phases0, phases1, L, hasNeutral, phaseDist, gmrPhase, resPerLPhase, freq, rhoEarth),
+        UndergroundLine(phases0, phases1, L, hasNeutral, phaseDist, gmrPhase, resPerLPhase, gmrNeut, resPerLNeut,
+                freq, rhoEarth),
         gmrConcStrand_(gmrConcStrand),
         resPerLConcStrand_(resPerLConcStrand),
         nConcStrands_(nConcStrands),
@@ -83,7 +88,7 @@ namespace Sgt
         }
         if (hasNeutral_)
         {
-            Dij(iNeut, iNeut) = gmrPhase_; // neutral - neutral
+            Dij(iNeut, iNeut) = gmrNeut_; // neutral - neutral
         }
 
         // Calculate the resistance per unit length.
@@ -96,7 +101,7 @@ namespace Sgt
         }
         if (hasNeutral_)
         {
-            resPerL(iNeut) = resPerLPhase_;
+            resPerL(iNeut) = resPerLNeut_;
         }
 
         // Calculate the primative impedance matrix, using Carson's equations.
@@ -111,10 +116,12 @@ namespace Sgt
     
     UndergroundLineTapeShield::UndergroundLineTapeShield(
             const std::string& id, const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
-            const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, double freq, double rhoEarth,
-            double outsideRShield, double thickShield, double resistivityShield):
+            const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase,
+            double gmrNeut, double resPerLNeut, double freq, double rhoEarth, double outsideRShield,
+            double thickShield, double resistivityShield):
         Component(id),
-        UndergroundLine(phases0, phases1, L, hasNeutral, phaseDist, gmrPhase, resPerLPhase, freq, rhoEarth),
+        UndergroundLine(phases0, phases1, L, hasNeutral, phaseDist, gmrPhase, resPerLPhase, gmrNeut, resPerLNeut,
+                freq, rhoEarth),
         outsideRShield_(outsideRShield),
         thickShield_(thickShield),
         resistivityShield_(resistivityShield)
@@ -133,26 +140,29 @@ namespace Sgt
         double gmrShield = outsideRShield_ - 0.5 * thickShield_;
         for (arma::uword i = 0; i < nExtPhase; ++i)
         {
-            Dij(i, i) = gmrPhase_; // phase_i - phase_i
-            Dij(i + nExtPhase, i + nExtPhase) = gmrShield; // shield_i - shield_i
-            Dij(i, i + nExtPhase) = Dij(i + nExtPhase, i) = gmrShield; // phase_i - shield_i
+            // phase_i - phase_i
+            Dij(i, i) = gmrPhase_;
+
+            // shield_i - shield_i, phase_i - shield i, shield_i - phase_i
+            Dij(i + nExtPhase, i + nExtPhase) = Dij(i, i + nExtPhase) = Dij(i + nExtPhase, i) = gmrShield;
             if (hasNeutral_)
             {
-                Dij(iNeut, i) = Dij(i, iNeut) = phaseDist_(nExtPhase, i); // phase_i - neutral
-                Dij(iNeut, i + nExtPhase) = Dij(i + nExtPhase, iNeut) = phaseDist_(nExtPhase, i); // shield_i - neutral
+                // neut - phase_i, phase_i - neut, neut - shield_i, shield_i - neut
+                Dij(iNeut, i) = Dij(i, iNeut) = Dij(iNeut, i + nExtPhase) = Dij(i + nExtPhase, iNeut) =
+                    phaseDist_(nExtPhase, i);
             }
             for (arma::uword j = 0; j < i; ++j)
             {
-                Dij(i, j) = Dij(j, i) = phaseDist_(i, j); // phase_i - phase_j
-                Dij(i + nExtPhase, j + nExtPhase) = Dij(j + nExtPhase, i + nExtPhase) = phaseDist_(i, j);
-                    // shield_i - shield_j
-                Dij(i, j + nExtPhase) = Dij(j, i + nExtPhase) = Dij(i + nExtPhase, j) = Dij(j + nExtPhase, i) =
-                    phaseDist_(i, j); // phase_i - shield_j.
+                // phase_i - phase_j, phase_j - phase_i, shield_i - shield_j, shield_j - shield_i,
+                // phase_i - shield_j, phase_j - shield_i, shield_i - phase_j, shield_j - phase_i
+                Dij(i, j) = Dij(j, i) = Dij(i + nExtPhase, j + nExtPhase) = Dij(j + nExtPhase, i + nExtPhase) =
+                    Dij(i, j + nExtPhase) = Dij(j, i + nExtPhase) = Dij(i + nExtPhase, j) = Dij(j + nExtPhase, i) =
+                    phaseDist_(i, j);
             }
         }
         if (hasNeutral_)
         {
-            Dij(iNeut, iNeut) = gmrPhase_; // neutral - neutral
+            Dij(iNeut, iNeut) = gmrNeut_; // neut - neut
         }
 
         // Calculate the resistance per unit length.
@@ -166,7 +176,7 @@ namespace Sgt
         }
         if (hasNeutral_)
         {
-            resPerL(iNeut) = resPerLPhase_;
+            resPerL(iNeut) = resPerLNeut_;
         }
 
         // Calculate the primative impedance matrix, using Carson's equations.

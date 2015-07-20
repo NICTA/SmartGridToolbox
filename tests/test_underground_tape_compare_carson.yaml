@@ -37,9 +37,11 @@
             [0.0762          , 0.0]]
         gmr_phase: 0.00338328
         R_per_L_phase: 6.0273e-04
+        gmr_neutral: 0.003392424
+        R_per_L_neutral: 3.77172314e-4
         earth_resistivity: 100.0
         freq: 60.0
         shielding_type: tape
-        outside_radius_shield : 0.022352
-        thickness_shield: 0.005
+        outside_radius_shield : 0.011176
+        thickness_shield: 0.000127
         resistivity_shield: 2.3715e-8
