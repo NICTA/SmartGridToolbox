@@ -333,24 +333,24 @@ namespace Sgt
 
     /// @name Constants
     /// @{
-
-    extern const double pi;
-    extern const double negInfinity;
-    extern const double infinity;
-    extern const double second;
-    extern const double minute;
-    extern const double hour;
-    extern const double day;
-    extern const double week;
-    extern const double joule;
-    extern const double kjoule;
-    extern const double watt;
-    extern const double kwatt;
-    extern const double kwattHour;
-    extern const double amp;
-    extern const double coulomb;
-    extern const double kelvin;
-    extern const LatLong greenwich;
+    
+    constexpr double pi = 3.141592653589793238462643383279502884;
+    constexpr double negInfinity = -std::numeric_limits<double>::infinity(); // No guarantee, but no better option?
+    constexpr double infinity = std::numeric_limits<double>::infinity();
+    constexpr double second = 1.0;
+    constexpr double minute = 60.0 * second;
+    constexpr double hour = 60.0 * minute;
+    constexpr double day = 24.0 * hour;
+    constexpr double week = 7 * day;
+    constexpr double joule = 1.0;
+    constexpr double kjoule = 1000.0 * joule;
+    constexpr double watt = joule / second;
+    constexpr double kwatt = 1000.0 * watt;
+    constexpr double kwattHour = kwatt * hour;
+    constexpr double amp = 1.0;
+    constexpr double coulomb = amp * second;
+    constexpr double kelvin = 1.0;
+    constexpr LatLong greenwich{51.4791, 0.0};
 
     /// @}
 

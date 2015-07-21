@@ -270,4 +270,44 @@ namespace Sgt
         }
         return result;
     }
+
+    namespace
+    {
+        static constexpr Complex alpha = {-0.5, 0.866025403784439};
+        static constexpr Complex alpha2 = {-0.5, -0.866025403784439};
+        static constexpr Array2D<Complex, 3, 3> B{{{{1, 1, 1}}, {{1, alpha, alpha2}}, {{1, alpha2, alpha}}}};
+        static constexpr Array2D<Complex, 3, 3> BInv{{{{1, 1, 1}}, {{1, alpha2, alpha}}, {{1, alpha, alpha2}}}};
+    }
+
+    arma::Col<Complex> toScaledSequence(const arma::Col<Complex>& v)
+    {
+        arma::Col<Complex> result(3, arma::fill::zeros);
+        for (arma::uword i = 0; i < 3; ++i)
+        {
+            for (arma::uword j = 0; j < 3; ++j)
+            {
+                result(i) += B[i][j] * v(j);
+            }
+        }
+        return result;
+    }
+
+    arma::Mat<Complex> toScaledSequence(const arma::Mat<Complex>& M)
+    {
+        arma::Mat<Complex> result(3, 3, arma::fill::zeros);
+        for (arma::uword i = 0; i < 3; ++i)
+        {
+            for (arma::uword j = 0; j < 3; ++j)
+            {
+                for (arma::uword k = 0; k < 3; ++k)
+                {
+                    for (arma::uword l = 0; l < 3; ++l)
+                    {
+                        result(i, l) += B[i][j] * M(j, k) * BInv[k][l];
+                    }
+                }
+            }
+        }
+        return result;
+    }
 }

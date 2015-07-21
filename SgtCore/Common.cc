@@ -258,21 +258,5 @@ namespace Sgt
                 local_date_time::NOT_DATE_TIME_ON_ERROR);
         return ldt.utc_time();
     }
-    const double pi = 3.141592653589793238462643383279502884;
-    const double negInfinity = -std::numeric_limits<double>::infinity(); // No guarantee, but no better option?
-    const double infinity = std::numeric_limits<double>::infinity();
-    const double second = 1.0;
-    const double minute = 60.0 * second;
-    const double hour = 60.0 * minute;
-    const double day = 24.0 * hour;
-    const double week = 7 * day;
-    const double joule = 1.0;
-    const double kjoule = 1000.0 * joule;
-    const double watt = joule / second;
-    const double kwatt = 1000.0 * watt;
-    const double kwattHour = kwatt * hour;
-    const double amp = 1.0;
-    const double coulomb = amp * second;
-    const double kelvin = 1.0;
-    const LatLong greenwich{51.4791, 0.0};
+
 }
