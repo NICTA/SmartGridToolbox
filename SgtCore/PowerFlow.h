@@ -143,8 +143,8 @@ namespace Sgt
     double bundleGmr(unsigned int n, double gmr1, double d);
     
     /// @brief To sequence components transform for vector.
-    /// @param v A 3 x 1 vector.
-    /// @return The transformed vector: 0 = zero seq, 1 = pos seq, 2 = neg seq.
+    /// @param v A 3 x 1 vector, 0 = A, 1 = B, 2 = C.
+    /// @return The transformed vector: 0 = 0, 1 = +, 2 = -.
     /// @ingroup PowerFlowCore
     ///
     /// IMPORTANT: as per the theory section, we use a scaled sequence transformation that is unitary and therefore
@@ -154,8 +154,8 @@ namespace Sgt
     arma::Col<Complex> toScaledSequence(const arma::Col<Complex>& v);
     
     /// @brief To sequence components transform for matrix.
-    /// @param M A 3 x 3 matrix.
-    /// @return The transformed matrix: 0 = zero seq, 1 = pos seq, 2 = neg seq.
+    /// @param M A 3 x 3 matrix, 0 = A, 1 = B, 2 = C.
+    /// @return The transformed matrix: 0 = 0, 1 = +, 2 = -.
     /// @ingroup PowerFlowCore
     ///
     /// IMPORTANT: as per the theory section, we use a scaled sequence transformation that is unitary and therefore
@@ -163,6 +163,28 @@ namespace Sgt
     /// matrix. Then v_123 = B v_abc. A positive sequence vector V+ = [V_A, V_A exp(-2 pi / 3), V_A exp(2 pi / 3)]
     /// then transforms to sqrt(3) [0, V_A, 0]; note the sqrt(3) factor.
     arma::Mat<Complex> toScaledSequence(const arma::Mat<Complex>& M);
+
+    /// @brief From sequence components transform for vector.
+    /// @param v A 3 x 1 vector, 0 = 0, 1 = +, 2 = -.
+    /// @return The transformed vector: 0 = A, 1 = B, 2 = C.
+    /// @ingroup PowerFlowCore
+    ///
+    /// IMPORTANT: as per the theory section, we use a scaled sequence transformation that is unitary and therefore
+    /// preserves scalars like total power. Let B = sqrt(3) A^-1, where A is the usual sequence transformation
+    /// matrix. Then v_123 = B v_abc. A positive sequence vector V+ = [V_A, V_A exp(-2 pi / 3), V_A exp(2 pi / 3)]
+    /// then transforms to sqrt(3) [0, V_A, 0]; note the sqrt(3) factor.
+    arma::Col<Complex> fromScaledSequence(const arma::Col<Complex>& v);
+    
+    /// @brief From sequence components transform for matrix.
+    /// @param M A 3 x 3 matrix, 0 = 0, 1 = +, 2 = -.
+    /// @return The transformed matrix: 0 = A, 1 = B, 2 = C.
+    /// @ingroup PowerFlowCore
+    ///
+    /// IMPORTANT: as per the theory section, we use a scaled sequence transformation that is unitary and therefore
+    /// preserves scalars like total power. Let B = sqrt(3) A^-1, where A is the usual sequence transformation
+    /// matrix. Then v_123 = B v_abc. A positive sequence vector V+ = [V_A, V_A exp(-2 pi / 3), V_A exp(2 pi / 3)]
+    /// then transforms to sqrt(3) [0, V_A, 0]; note the sqrt(3) factor.
+    arma::Mat<Complex> fromScaledSequence(const arma::Mat<Complex>& M);
 }
 
 #endif // POWERFLOW_DOT_H

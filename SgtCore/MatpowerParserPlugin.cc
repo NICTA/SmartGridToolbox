@@ -520,9 +520,9 @@ namespace Sgt
             branch->setYSeries(GScale * YBranch2Siemens(1.0 / Complex(branchInfo.R, branchInfo.X), bus1->VBase(),
                                data.MVABase));
             branch->setYShunt(GScale * YBranch2Siemens(Complex(0.0, branchInfo.b), bus1->VBase(), data.MVABase));
-            branch->setRateA(PScale * branchInfo.rateA);
-            branch->setRateB(PScale * branchInfo.rateB);
-            branch->setRateC(PScale * branchInfo.rateC);
+            branch->setRateA(branchInfo.rateA == 0.0 ? infinity : PScale * branchInfo.rateA);
+            branch->setRateB(branchInfo.rateB == 0.0 ? infinity : PScale * branchInfo.rateB);
+            branch->setRateC(branchInfo.rateC == 0.0 ? infinity : PScale * branchInfo.rateC);
             branch->setAngMin(branchInfo.angMinDeg * pi / 180.0);
             branch->setAngMax(branchInfo.angMaxDeg * pi / 180.0);
 
