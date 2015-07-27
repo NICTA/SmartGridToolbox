@@ -24,6 +24,7 @@
 
 #include <fstream>
 #include <map>
+#include <numeric>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
@@ -235,6 +236,18 @@ namespace Sgt
             return "branch_" + std::to_string(iBranch) + "_" + std::to_string(iBus0)
                    + "_" + std::to_string(iBus1);
         }
+
+        bool checkNzCplx(Complex x)
+        {
+            static constexpr double eps = std::numeric_limits<double>::epsilon();
+            return std::abs(x.real()) >= eps || std::abs(x.imag()) >= eps;
+        }
+
+        bool checkNzZip(Complex SConst, Complex YConst)
+        {
+
+            return checkNzCplx(SConst) || checkNzCplx(YConst);
+        }
     }
 
     void MatpowerParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
@@ -431,12 +444,6 @@ namespace Sgt
             }
             bus->setType(type);
 
-            Complex SConst = -Complex(busInfo.Pd, busInfo.Qd); // Already in MW.
-            Complex YConst = YBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
-            std::string zipId = getZipId(nZip++, busInfo.id);
-            std::unique_ptr<GenericZip> zip(new GenericZip(zipId, Phase::BAL));
-            zip->setYConst({GScale * YConst});
-            zip->setSConst({PScale * SConst});
             bus->setVMagMin(busInfo.VMagMin <= -infinity ? -infinity : VScale * pu2kV(busInfo.VMagMin, busInfo.kVBase));
             bus->setVMagMax(busInfo.VMagMax >= infinity ? infinity : VScale * pu2kV(busInfo.VMagMax, busInfo.kVBase));
 
@@ -447,7 +454,17 @@ namespace Sgt
             bus->setV({VScale * std::polar(VMag, VAng)});
 
             netw.addBus(std::move(bus));
-            netw.addZip(std::move(zip), busId);
+
+            Complex SConst = -Complex(busInfo.Pd, busInfo.Qd); // Already in MW.
+            Complex YConst = YBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
+            if (checkNzZip(SConst, YConst))
+            {
+                std::string zipId = getZipId(nZip++, busInfo.id);
+                std::unique_ptr<GenericZip> zip(new GenericZip(zipId, Phase::BAL));
+                zip->setYConst({GScale * YConst});
+                zip->setSConst({PScale * SConst});
+                netw.addZip(std::move(zip), busId);
+            }
         } // Busses
 
         // If there is no slack bus, Matpower assigns the first PV bus as slack. We need to do the same.
