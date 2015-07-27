@@ -42,7 +42,6 @@ namespace Sgt
             virtual bool solveProblem() override;
 
             virtual void updateNetwork() override;
-
         
         protected:
             virtual std::unique_ptr<PowerModel> makeModel();

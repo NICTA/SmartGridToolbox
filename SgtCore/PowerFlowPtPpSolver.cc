@@ -191,7 +191,7 @@ namespace Sgt
         Stopwatch stopwatchSolve;
         stopwatchSolve.start();
         auto pModel = makeModel();
-        pModel->solve();
+        bool success = pModel->solve();
         stopwatchSolve.stop();
         
         // printNetw(*ptNetw_);
@@ -200,7 +200,7 @@ namespace Sgt
             LogIndent _;
             Log().message() << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
         }
-        return true;
+        return success;
     }
     
     void PowerFlowPtPpSolver::updateNetwork()
@@ -210,8 +210,8 @@ namespace Sgt
 
     std::unique_ptr<PowerModel> PowerFlowPtPpSolver::makeModel()
     {
-        auto mod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT_, ptNetw_));
-        mod->min_cost_();
+        auto mod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_));
+        mod->min_cost();
         return mod;
     }
 }
