@@ -25,40 +25,43 @@ namespace Sgt
 {
     std::unique_ptr<PowerModel> PvDemoSolver::makeModel()
     {
-        auto mod = PowerFlowPtPpSolver::makeModel();
+        auto mod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_));
 
-        for (auto gen : sgtNetw_->gens())
+        for (auto bus : sgtNetw_->busses())
         {
-            auto inverter = std::dynamic_pointer_cast<PvInverter>(gen);
-            if (inverter != nullptr)
+            for (auto gen : bus->gens())
             {
-                // Add an extra constraint for max apparent power.
-                auto bus = ptNetw_->nodeID.at(inverter->busId_);
-                auto genId = inverter->id();
-                auto gen = std::find_if(bus->_gen.begin(), bus->_gen.end(), 
-                        [genId](Gen* gen){return gen->_name == genId;});
-                assert(gen != bus->_gen.end());
-
-                if (true)
+                auto inverter = std::dynamic_pointer_cast<PvInverter>(gen);
+                if (inverter != nullptr)
                 {
-                    Constraint c("PVD_SPECIAL_A");
-                    c += (((**gen).pg)^2) + (((**gen).qg)^2);
-                    double maxSMag = sgtNetw_->S2Pu(inverter->maxSMag());
-                    c <= pow(maxSMag, 2);
-                    // c.print(); std::cout << std::endl;
-                    mod->_model->addConstraint(c);
-                }
+                    // Add an extra constraint for max apparent power.
+                    auto ptBus = ptNetw_->nodeID.at(bus->id());
+                    auto genId = inverter->id();
+                    auto ptGen = std::find_if(ptBus->_gen.begin(), ptBus->_gen.end(), 
+                            [genId](Gen* g){return g->_name == genId;});
+                    assert(ptGen != ptBus->_gen.end());
 
-                if (false)
-                {
-                    Constraint c("PVD_SPECIAL_B");
-                    c += (((**gen).pg)^2) - (((**gen).qg)^2);
-                    c >= 0;
-                    // c.print(); std::cout << std::endl;
-                    mod->_model->addConstraint(c);
+                    if (true)
+                    {
+                        Constraint c("PVD_SPECIAL_A");
+                        c += (((**ptGen).pg)^2) + (((**ptGen).qg)^2);
+                        double maxSMag = sgtNetw_->S2Pu(inverter->maxSMag());
+                        c <= pow(maxSMag, 2);
+                        mod->_model->addConstraint(c);
+                    }
+
+                    if (false)
+                    {
+                        Constraint c("PVD_SPECIAL_B");
+                        c += (((**ptGen).pg)^2) - (((**ptGen).qg)^2);
+                        c >= 0;
+                        // c.print(); std::cout << std::endl;
+                        mod->_model->addConstraint(c);
+                    }
                 }
             }
         }
+        mod->min_cost();
         // mod->_model->print();
         return mod;
     }

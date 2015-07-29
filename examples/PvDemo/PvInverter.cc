@@ -36,7 +36,7 @@ namespace Sgt
         string id = parser.expand<std::string>(nd["id"]);
         const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
-        auto inverter = sim.newSimComponent<PvInverter>(id, busId);
+        auto inverter = sim.newSimComponent<PvInverter>(id);
 
         if (nd["efficiency"])
         {
@@ -55,6 +55,7 @@ namespace Sgt
 
         const std::string networkId = parser.expand<std::string>(nd["network_id"]);
         auto network = sim.simComponent<SimNetwork>(networkId);
-        network->addGen(inverter, busId);
+        network->network()->addGen(inverter->gen(), busId);
+        inverter->linkToSimNetwork(*network, busId);
     }
 }

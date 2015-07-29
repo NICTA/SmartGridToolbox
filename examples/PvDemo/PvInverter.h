@@ -18,11 +18,12 @@
 #include <SgtCore/Gen.h>
 #include <SgtSim/Inverter.h>
 #include <SgtCore/Parser.h>
+#include <SgtSim/SimGen.h>
 #include <SgtSim/SimParser.h>
 
 namespace Sgt
 {
-    class PvInverter : public SimpleInverterAbc, public GenericGen
+    class PvInverter : public SimpleInverterAbc, public SimGenAbc, public GenericGen
     {
         public:
 
@@ -39,9 +40,9 @@ namespace Sgt
 
             /// @}
 
-            PvInverter(const std::string& id, std::string busId) :
-                GenericGen(id, Phase::BAL),
-                busId_(busId)
+            PvInverter(const std::string& id) :
+                Component(id),
+                GenericGen(id, Phase::BAL)
             {
                 setPMin(0.0);
             }
@@ -62,14 +63,29 @@ namespace Sgt
             virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source) override
             {
                 InverterAbc::addDcPowerSource(source);
-                source->dcPowerChanged().addAction([this]() {PChanged();}, "Update max power");
+                source->dcPowerChanged().addAction([this]() {PChanged();}, "P changed");
             }
 
             /// @}
 
-            /// @name SimpleZipInverter specific member functions.
+            /// @name SimGenAbc virtual overridden functions.
             /// @{
+            
+            virtual std::shared_ptr<const GenAbc> gen() const override
+            {
+                return shared<const GenAbc>();
+            }
 
+            virtual std::shared_ptr<GenAbc> gen() override
+            {
+                return shared<GenAbc>();
+            }
+
+            /// @}
+            
+            /// @name PvInverter specific functions.
+            /// @{
+            
             double maxSMag() const
             {
                 return maxSMag_;
@@ -79,12 +95,21 @@ namespace Sgt
             {
                 maxSMag_ = maxSMag;
             }
+            
+            double maxQ() const
+            {
+                return maxQ_;
+            }
 
+            void setMaxQ(double maxQ)
+            {
+                maxQ_ = maxQ;
+            }
+            
             /// @}
 
         public:
 
-            std::string busId_;
             double maxSMag_{1e9};
             double maxQ_{1e9};
         

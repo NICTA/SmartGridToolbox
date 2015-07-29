@@ -18,9 +18,21 @@
 #include <SgtSim/Simulation.h>
 #include <SgtSim/SimNetwork.h>
 
+void setFlatStart(Sgt::Network& netw)
+{
+    for (auto bus : netw.busses())
+    {
+        bus->setV(bus->VNom());
+    }
+}
+
 int main(int argc, const char ** argv)
 {
     using namespace Sgt;
+
+    // Log::messageLogLevel = LogLevel::VERBOSE;
+    // Log::warningLogLevel = LogLevel::VERBOSE;
+    // Log::debugLogLevel = LogLevel::VERBOSE;
 
     const char * configName = argv[1];
     const char * outputName = argv[2];
@@ -70,10 +82,10 @@ int main(int argc, const char ** argv)
         }
     }
 
-    auto sumLoad = [&] () -> Complex {Complex x = 0; for (auto bus : network.busses()) x -= bus->SZip()(0); return x;};
-    auto sumGen = [&] () -> Complex {Complex x = 0; for (auto gen : otherGens) x += gen->S()(0); return x;};
-    auto sumInv = [&] () -> Complex {Complex x = 0; for (auto inv : invs) x += inv->S()(0); return x;};
-    auto minV = [&] () -> double {
+    auto sumLoad = [&] () {Complex x = 0; for (auto bus : network.busses()) x -= bus->SZip()(0); return x;};
+    auto sumGen = [&] () {Complex x = 0; for (auto gen : otherGens) x += gen->S()(0); return x;};
+    auto sumInv = [&] () {Complex x = 0; for (auto inv : invs) x += inv->gen()->S()(0); return x;};
+    auto minV = [&] () {
         double minV = 100;
         for (auto bus : network.busses())
         {
@@ -85,22 +97,41 @@ int main(int argc, const char ** argv)
         }
         return minV;
     };
+    auto maxV = [&] () {
+        double maxV = 0;
+        for (auto bus : network.busses())
+        {
+            double V = network.V2Pu(std::abs(bus->V()(0)), bus->VBase());
+            if (V > maxV)
+            {
+                maxV = V;
+            }
+        }
+        return maxV;
+    };
 
     auto print = [&] () {
-        Complex SLoad = sumLoad();
-        Complex SGen = sumGen();
-        Complex SInv = sumInv();
-        Complex STot = SGen + SInv;
-        Complex VMin = minV();
         double h = dSeconds(sim.currentTime() - sim.startTime()) / 3600.0;
-        outFile << h << " " << SLoad << " " << SGen << " " << SInv << " " << STot << " " << VMin
-                << " " << network.genCostPerUnitTime() << std::endl;
+        Complex SLoad = sumLoad();
+        Complex SNormalGen = sumGen();
+        Complex SInvGen = sumInv();
+        Complex STotGen = SNormalGen + SInvGen;
+        Complex VMin = minV();
+        Complex VMax = maxV();
+        outFile << h << " " << SLoad << " " << STotGen << " " << SNormalGen << " " << SInvGen << " " 
+                << VMin << " " << VMax << std::endl;
     };
 
     while (!sim.isFinished())
     {
-        print();
+        // Flat start:
+        for (auto bus : network.busses())
+        {
+            bus->setV(bus->VNom());
+        }
+
         sim.doTimestep();
+        print();
     }
     print();
 }

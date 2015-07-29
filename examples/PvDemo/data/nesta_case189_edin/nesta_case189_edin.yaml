@@ -1,0 +1,85 @@
+- sgt_gui:
+    bar_power_scaling: 0.01
+    V_mag_min: 0.95
+    V_mag_max: 1.00
+- parameters:
+    start_time: 2013-01-02 06:00:00
+    end_time: 2013-01-03 06:00:00
+    loads_start_time: 2013-01-01 20:00:00
+    input_file: nesta_case189_edin_mod.m
+    n_load_busses: 51
+    load_busses: [2, 3, 22, 23, 24, 37, 38, 44, 45, 49, 54, 60, 63, 65, 67, 68, 70, 74, 77, 78, 80, 81, 83, 85, 87, 89, 91, 93, 102, 104, 105, 110, 114, 116, 117, 120, 124, 131, 133, 134, 139, 143, 155, 156, 159, 162, 167, 173, 178, 184, 185] 
+    n_solar_busses: 51
+    solar_busses: [93, 24, 134, 155, 70, 133, 38, 131, 65, 104, 60, 77, 67, 116, 78, 22, 167, 120, 114, 173, 162, 49, 87, 159, 124, 45, 54, 89, 3, 110, 80, 83, 178, 91, 63, 44, 117, 2, 37, 85, 184, 81, 105, 102, 185, 68, 139, 156, 74, 143, 23]
+- simulation: 
+    start_time: <start_time>
+    end_time: <end_time>
+    lat_long: [-35.3075, 149.1244]                                                 
+    timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra.
+- time_series:
+    id: cloud_cover_series
+    value_type: real_scalar 
+    #type: const_time_series
+    #const_value: 1.0
+    type: data_time_series
+    data_file: ../cloud.txt
+    relative_to_time: <start_time>                                                        
+    time_unit: m                                                                          
+    interp_type: lerp                 
+- weather:
+    id: weather
+    cloud_cover: cloud_cover_series
+    dt: 00:30:00
+- network: 
+    id: network # All components have a unique "id" (name).
+    P_base: 1 # Per-unit base power.
+    freq_Hz: 60
+    #solver: nr
+    solver: opf_pt_pp
+- matpower:
+    network_id: network
+    input_file: <input_file>
+    default_kV_base: 11
+- loop:
+    loop_variable: [i, 0, <n_load_busses>, 1]
+    loop_body: 
+        - time_series:
+            id: load_<load_busses(<i>)>_series
+            value_type: complex_vector
+            type: data_time_series
+            data_file: ./loads/load_<load_busses(<i>)>.txt
+            relative_to_time: <loads_start_time>
+            time_unit: m
+            interp_type: lerp
+        - time_series_zip:
+            id: load_<load_busses(<i>)>
+            network_id: network
+            bus_id: bus_<load_busses(<i>)>
+            phases: [BAL]
+            time_series_id: load_<load_busses(<i>)>_series
+            dt: 00:30:00
+            scale_factor_S: -1.0
+- loop:
+    loop_variable: [i, 0, <n_solar_busses>, 1]
+    loop_body: 
+        - pv_inverter:
+            id: pv_inverter_<solar_busses(<i>)>
+            network_id: network
+            bus_id: bus_<solar_busses(<i>)>
+            max_S_mag: 1.5
+            #max_Q: 0
+            efficiency: 0.86
+        #- inverter:
+        #    id: pv_inverter_<solar_busses(<i>)>
+        #    phases: [BAL]
+        #    network_id: network
+        #    bus_id: bus_<solar_busses(<i>)>
+        #    efficiency: 0.86
+        - solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
+            id: solar_pv_<solar_busses(<i>)>
+            weather: weather
+            inverter: pv_inverter_<solar_busses(<i>)>
+            efficiency: 0.25
+            area_m2: 20000
+            zenith_degrees: 40 
+            azimuth_degrees: 25
