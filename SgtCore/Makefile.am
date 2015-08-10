@@ -20,7 +20,7 @@ KLU_SOLVER_CC =
 L_KLU_SOLVER =
 endif
 
-libincludedir=$(includedir)/SgtCore
+libincludedir = $(includedir)/SgtCore
 
 lib_LTLIBRARIES = libSgtCore.la
 
