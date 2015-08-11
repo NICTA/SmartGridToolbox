@@ -5,6 +5,6 @@
 int main()
 {
     using namespace Sgt;
-    SgtServer sgtServer;
+    SgtServer sgtServer(1);
     sgtServer.run();
 };

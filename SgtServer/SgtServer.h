@@ -6,13 +6,14 @@
 #include <SgtSim/Simulation.h>
 
 #include <memory>
+#include <thread>
 
 namespace Sgt
 {
-    class SgtSimEnvironment
+    struct SimInstance
     {
-        public:
-            Sgt::Simulation sim;
+        Sgt::Simulation sim_;
+        std::mutex mutex_;
     };
 
     class SgtServer
@@ -21,29 +22,45 @@ namespace Sgt
 
             SgtServer(size_t nThreads = 4) : server_(std::unique_ptr<HttpServer>(new HttpServer(8080, nThreads)))
             {
-                server_->resource["^/simulations"]["GET"] = 
+                server_->resource["^/simulations/([a-zA-Z_][a-zA-Z0-9_]*)"]["GET"] = 
                     [this](HttpServer::Response& response, std::shared_ptr<HttpServer::Request> request) 
                     {
-                        std::cout << "Get sim" << std::endl;
-                        response << "Get sim" << std::endl;
+                        std::string simId = request->path_match[1];
+                        try
+                        {
+                            auto& sim = simulations_.at(simId);
+                            std::stringstream ss;
+                            request->content >> ss.rdbuf();
+                            string content=ss.str();
+                            response
+                                << "HTTP/1.1 200 OK" << "\r\n"
+                                << "Content-Length: " << content.length() << "\r\n\r\n"
+                                << content;
+                        }
+                        catch (std::out_of_range)
+                        {
+                            std::string content("Error 404: Not Found. Simulation not found.");
+                            response
+                                << "HTTP/1.1 404 Not Found" << "\r\n"
+                                << "Content-Length: " << content.length() << "\r\n\r\n"
+                                << content;
+                        }
                     };
-                server_->resource["^/simulations"]["PUT"] = 
+                server_->resource["^/simulations/([a-zA-Z_][a-zA-Z0-9_]*)"]["PUT"] = 
                     [this](HttpServer::Response& response, std::shared_ptr<HttpServer::Request> request) 
                     {
-                        auto& sim = simulations_[request->path];
+                        std::string simId = request->path_match[1];
+                        auto& sim = simulations_[simId];
                         if (sim == nullptr)
                         {
-                            sim.reset(new Sgt::Simulation);
+                            sim.reset(new SimInstance);
                         }
-                        std::cout << "Created sim" << std::endl;
-                        response << "Created sim" << std::endl;
+                        response << "HTTP/1.1 200 OK\r\nContent-Length: 3" << "\r\n\r\n" << "aaa";
                     };
             }
 
             void run()
             {
-                // std::thread server_thread([this](){server_->start();});
-                // server_thread.join();   
                 server_->start();
             }
 
@@ -54,8 +71,8 @@ namespace Sgt
         private:
 
             std::unique_ptr<HttpServer> server_;
-            std::map<std::string, std::unique_ptr<Sgt::Simulation>> simulations_;
+            std::map<std::string, std::unique_ptr<SimInstance>> simulations_;
     };
-}
+};
 
 #endif // SGT_SERVER_DOT_H
