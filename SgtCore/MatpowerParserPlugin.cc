@@ -202,39 +202,24 @@ namespace Sgt
 
     namespace
     {
-        /*
-        std::string num2PaddedString(int num)
+        std::string getBusName(std::size_t id, std::map<size_t, std::string>& map)
         {
-           std::ostringstream ss;
-           ss << std::setfill('0') << std::setw(5) << num;
-           return ss.str();
-        }
-        */
-
-        std::string getBusId(std::size_t id)
-        {
-            // return "bus_" + num2PaddedString(id);
-            return "bus_" + std::to_string(id);
+            return map.insert(std::make_pair(id, "bus_" + std::to_string(id))).first->second;
         }
 
-        std::string getZipId(std::size_t iZip, std::size_t iBus)
+        std::string getZipName(std::size_t iZip, const std::string& busName)
         {
-            // return "zip_" + num2PaddedString(iZip) + "_" + num2PaddedString(iBus);
-            return "zip_" + std::to_string(iZip) + "_" + std::to_string(iBus);
+            return "zip_" + std::to_string(iZip) + "_" + busName;
         }
 
-        std::string getGenId(std::size_t iGen, std::size_t iBus)
+        std::string getGenName(std::size_t iGen, const std::string& busName)
         {
-            // return "gen_" + num2PaddedString(iGen) + "_" + num2PaddedString(iBus);
-            return "gen_" + std::to_string(iGen) + "_" + std::to_string(iBus);
+            return "gen_" + std::to_string(iGen) + "_" + busName;
         }
 
-        std::string getBranchId(std::size_t iBranch, std::size_t iBus0, std::size_t iBus1)
+        std::string getBranchName(std::size_t iBranch, const std::string& busName0, const std::string& busName1)
         {
-            // return "branch_" + num2PaddedString(iBranch) + "_" + num2PaddedString(iBus0)
-            //   + "_" + num2PaddedString(iBus1);
-            return "branch_" + std::to_string(iBranch) + "_" + std::to_string(iBus0)
-                   + "_" + std::to_string(iBus1);
+            return "branch_" + std::to_string(iBranch) + "_" + busName0 + "_" + busName1;
         }
 
         bool checkNzCplx(Complex x)
@@ -273,6 +258,16 @@ namespace Sgt
         }
         double RScale = VScale * VScale / PScale;
         double GScale = 1.0 / RScale;
+
+        YAML::Node busNamesNd = nd["bus_names"];
+        std::map<size_t, std::string> busNames;
+        if (busNamesNd)
+        {
+            for (auto keyVal : busNamesNd)
+            {
+                busNames[keyVal.first.as<size_t>()] = keyVal.second.as<std::string>();
+            }
+        }
 
         // Parse in the raw matpower data.
         MpData data;
@@ -386,9 +381,9 @@ namespace Sgt
             {
                 Log().warning() << "Reactive generator costs not yet implemented. Ignoring them." << std::endl;
             }
-            else 
+            else
             {
-                sgtAssert(data.genCost.size() == data.gen.size(), 
+                sgtAssert(data.genCost.size() == data.gen.size(),
                         "There are a different number of generators to generator costs.");
             }
         }
@@ -424,7 +419,7 @@ namespace Sgt
         std::size_t nZip = 0;
         for (const auto& busInfo : busVec)
         {
-            std::string busId = getBusId(busInfo.id);
+            std::string busId = getBusName(busInfo.id, busNames);
             std::unique_ptr<Bus> bus(
                 new Bus(busId, Phase::BAL, {VScale * Complex(busInfo.kVBase, 0.0)}, PScale * busInfo.kVBase));
             BusType type = BusType::BAD;
@@ -444,8 +439,12 @@ namespace Sgt
             }
             bus->setType(type);
 
-            bus->setVMagMin(busInfo.VMagMin <= -infinity ? -infinity : VScale * pu2kV(busInfo.VMagMin, busInfo.kVBase));
-            bus->setVMagMax(busInfo.VMagMax >= infinity ? infinity : VScale * pu2kV(busInfo.VMagMax, busInfo.kVBase));
+            bus->setVMagMin(busInfo.VMagMin <= -infinity
+                    ? -infinity
+                    : VScale * pu2kV(busInfo.VMagMin, busInfo.kVBase));
+            bus->setVMagMax(busInfo.VMagMax >= infinity
+                    ? infinity
+                    : VScale * pu2kV(busInfo.VMagMax, busInfo.kVBase));
 
             bus->setIsInService(true);
 
@@ -459,7 +458,7 @@ namespace Sgt
             Complex YConst = YBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
             if (checkNzZip(SConst, YConst))
             {
-                std::string zipId = getZipId(nZip++, busInfo.id);
+                std::string zipId = getZipName(nZip++, getBusName(busInfo.id, busNames));
                 std::unique_ptr<GenericZip> zip(new GenericZip(zipId, Phase::BAL));
                 zip->setYConst({GScale * YConst});
                 zip->setSConst({PScale * SConst});
@@ -491,11 +490,11 @@ namespace Sgt
         for (std::size_t i = 0; i < genVec.size(); ++i)
         {
             MpGenInfo& genInfo = genVec[i];
-            std::string genId = getGenId(i, genInfo.busId);
+            std::string genId = getGenName(i, getBusName(genInfo.busId, busNames));
             std::unique_ptr<GenericGen> gen(new GenericGen(genId, Phase::BAL));
             genCompVec.push_back(gen.get());
 
-            std::string busId = getBusId(genInfo.busId);
+            std::string busId = busNames.at(genInfo.busId);
 
             gen->setIsInService(genInfo.status);
 
@@ -521,16 +520,16 @@ namespace Sgt
         {
             const MpBranchInfo& branchInfo = branchVec[i];
 
-            std::string branchId = getBranchId(i, branchInfo.busIdF, branchInfo.busIdT);
-            std::unique_ptr<CommonBranch> branch(new CommonBranch(branchId));
+            std::string bus0Name = getBusName(branchInfo.busIdF, busNames);
+            std::string bus1Name = getBusName(branchInfo.busIdT, busNames);
+            std::string branchName = getBranchName(i, bus0Name, bus1Name);
+
+            std::unique_ptr<CommonBranch> branch(new CommonBranch(branchName));
 
             branch->setIsInService(branchInfo.status);
 
-            std::string bus0Id = getBusId(branchInfo.busIdF);
-            std::string bus1Id = getBusId(branchInfo.busIdT);
-
-            auto bus0 = netw.bus(bus0Id);
-            auto bus1 = netw.bus(bus1Id);
+            auto bus0 = netw.bus(bus0Name);
+            auto bus1 = netw.bus(bus1Name);
 
             double tap = (std::abs(branchInfo.tap) < 1e-6 ? 1.0 : branchInfo.tap) * bus0->VBase() / bus1->VBase();
             branch->setTapRatio(std::polar(tap, deg2Rad(branchInfo.shiftDeg)));
@@ -543,7 +542,7 @@ namespace Sgt
             branch->setAngMin(branchInfo.angMinDeg * pi / 180.0);
             branch->setAngMax(branchInfo.angMaxDeg * pi / 180.0);
 
-            netw.addBranch(std::move(branch), bus0Id, bus1Id);
+            netw.addBranch(std::move(branch), bus0Name, bus1Name);
         }
 
         // Add generator costs, if they exist.

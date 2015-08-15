@@ -93,6 +93,30 @@ We define the real power and reactive power phasors to be
 \end{align}
 which shows that $P$ and $Q$ are ``in phase'' and ``out of phase'' components of the product of $I$ and $V$. $P$ is just the average power dissipated by the resistive component of the load, while $Q$ is the magnitude of the instantaneous power absorbed by the reactive part of the load.
 
+\subsection{Reactive power, voltage and line losses}
+The loss of real power over a section of transmission line is given by
+\begin{align}
+	P_\text{loss} &= \left|I\right|^2 R
+\end{align}
+We can express $I$ as a function of the voltage and power injection to the downstream (or upstream) bus, e.g.
+\begin{align}
+	I &= \frac{S^*_\text{out}}{V^*_\text{out}}
+\end{align}
+Therefore, we have
+\begin{align}
+	P_\text{loss} &= \frac{\left|S_\text{out}\right|^2}{\left|V_\text{out}\right|^2}R
+\end{align}
+
+This equation explains, firstly, why transmission lines are more efficient at high voltage (because, e.g. doubling the voltage means the line loss is reduced by a factor of four), and secondly, why utilities are keen to reduce the reactive power flowing through lines (because doubling the reactive power multiplies the line losses by four). Line losses are bad for three reasons: they are a waste of energy, they correspond to dissipated heat and therefore thermal limits, and they also correspond to voltage drops in the line.
+
+We have
+\begin{align}
+	\frac{\left|V_\text{out}\right|^2}{\left|V_\text{in}\right|^2} &= \frac{\left|V_\text{in} - IZ\right|^2}{\left|V_\text{in}\right|^2} \notag \\
+	&= \frac{\left|V_\text{in} - \frac{S^*_\text{in}Z}{V^*_\text{in}}\right|^2}{\left|V_\text{in}\right|^2} \notag \\
+	&= 1 - \frac{2\re{S^*_\text{in}Z}}{\left|V_\text{in}\right|^2} + \frac{\left|S\right|^2\left|Z\right|^2}{\left|V_\text{in}\right|^4} \notag \\
+	&= 1 - \frac{2(PR + QX)}{\left|V_\text{in}\right|^2} + \frac{\left|S\right|^2\left|Z\right|^2}{\left|V_\text{in}\right|^4} \notag
+\end{align}
+At high voltages, the middle term dominates the voltage drop. High voltage lines normally also have a larger reactance than resistance, so reactive power is a more significant contributor to the voltage drop than is real power.
 \section{Three phase balanced power}
 In balanced positive sequence three-phase systems, the phase to neutral voltages (or, simply, the phase voltages), at a bus, are 
 \begin{align}
@@ -390,7 +414,6 @@ which gives
 \end{align}
 
 Using these expressions, $\Delta \Vr$ may be eliminated from the NR equations for the PV bus. First write the Jacobian as if all busses were PQ. Let $k$ be any PV bus. Take the column corresponding to $\Delta \Vr_k$, and add its product with $-\Vi_k/\Vr_k$ to the matching column for  $\Delta \Vi_k$. Add its product with $(|V|^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2)/(2\Vr_k)$ to $f$ in Eq. (\ref{EQ_NR}). The column and the corresponding element of $x$ for $\Delta \Vr_k$ will now be replaced with a column and elment for $\Delta Q_{\text{gen},k}$. Set the column to zero, and then set the block diagonal elements, using Eq. (\ref{EQ_PV_JAC_Q}). Reinterpret the corresponding element of $\Delta x$ in Eq. (\ref{EQ_NR}) as now corresponding to $\Delta Q_{\text{gen},k}$ instead of $\Delta \Vr_k$.
-
 \section{Formalism for modelling branches}
 \subsection{Branch admittance ($Y$) parameters}
 Consider a network consisting of three busses, $a$, $b$ and $c$. Due to the linear nature of the nodal admittance relation, the nodal admittance matrix for the network $Y$, can be decomposed as follows:
