@@ -23,7 +23,7 @@ namespace Sgt
     {
         double Pmax = availableP();
         setPMax(Pmax);
-        setQMax(std::min(10 * Pmax, maxQ_));
+        setQMax(std::min(100 * Pmax, maxQ_));
         setQMin(-QMax());
     }
 

@@ -62,7 +62,7 @@ int main(int argc, const char ** argv)
 
     for (auto bus : network.busses())
     {
-        if (true || bus->type() != BusType::SL)
+        if (bus->type() != BusType::SL)
         {
             if (vlb > 0)
             {

@@ -1,4 +1,4 @@
-function loads = aggregate_loads(case_rel_path, max_factor = 1, as_const_Z = false)
+function loads = aggregate_loads(case_rel_path, max_factor = 1, Q_factor = 1, as_const_Z = false)
     define_constants;
     mpc = loadcase([pwd(), '/', case_rel_path]);
     n_bus = size(mpc.bus, 1);
@@ -61,6 +61,7 @@ function loads = aggregate_loads(case_rel_path, max_factor = 1, as_const_Z = fal
         % This introduces sampling errors. We handle this by scaling the noise.
         noise = noise * sqrt(n * mean_var_noise_lds / var(noise));
         ld = n * mean_lds + noise;
+        ld = real(ld) + I * Q_factor * imag(ld);
 
         loads = [loads, ld];
         printf('static = %f+%fj, n = %d, mean = %f, min = %f, max = %f\n', ...
