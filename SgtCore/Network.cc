@@ -21,7 +21,7 @@
 
 namespace Sgt
 {
-    Network::Network(double PBase) : PBase_(PBase), solver_(new PowerFlowNrSolver)
+    Network::Network(double PBase) : PBase_(PBase), solver_(new PowerFlowNrSolver), nrSolver_(new PowerFlowNrSolver)
     {
         // Empty.
     }
@@ -67,6 +67,7 @@ namespace Sgt
         sgtLogDebug() << "Network : solving power flow." << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << *this;
 
+        isValidSolution_ = nrSolver_->solve(this);
         isValidSolution_ = solver_->solve(this);
         if (!isValidSolution_)
         {

@@ -38,11 +38,13 @@ int main(int argc, const char ** argv)
     const char * outputName = argv[2];
     double vlb = atof(argv[3]);
     double vub = atof(argv[4]);
+    bool usePvSolver = argv[5][0] == 'T';
 
     std::cout << "Configuration filename = " << configName << std::endl;
     std::cout << "Output filename        = " << outputName << std::endl;
     std::cout << "Voltage lower bound    = " << vlb << std::endl;
     std::cout << "Voltage upper bound    = " << vub << std::endl;
+    std::cout << "Use PV solver          = " << usePvSolver << std::endl;
 
     std::ofstream outFile(outputName);
 
@@ -52,18 +54,29 @@ int main(int argc, const char ** argv)
     p.parse(configName, sim);
     SimNetwork& simNetwork = *sim.simComponent<SimNetwork>("network");
     Network& network = *simNetwork.network();
-    network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
+    if (usePvSolver)
+    {
+        network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
+    }
     sim.initialize();
 
     for (auto bus : network.busses())
     {
-        if (vlb > 0)
+        if (true || bus->type() != BusType::SL)
         {
-            bus->setVMagMin(vlb * bus->VBase());
+            if (vlb > 0)
+            {
+                bus->setVMagMin(vlb * bus->VBase());
+            }
+            if (vub > 0)
+            {
+                bus->setVMagMax(vub * bus->VBase());
+            }
         }
-        if (vub > 0)
+        else
         {
-            bus->setVMagMax(vub * bus->VBase());
+            bus->setVMagMin(bus->VBase());
+            bus->setVMagMax(bus->VBase());
         }
     }
 
