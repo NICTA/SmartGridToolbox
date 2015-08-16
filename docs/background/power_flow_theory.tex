@@ -111,12 +111,11 @@ This equation explains, firstly, why transmission lines are more efficient at hi
 
 We have
 \begin{align}
-	\frac{\left|V_\text{out}\right|^2}{\left|V_\text{in}\right|^2} &= \frac{\left|V_\text{in} - IZ\right|^2}{\left|V_\text{in}\right|^2} \notag \\
-	&= \frac{\left|V_\text{in} - \frac{S^*_\text{in}Z}{V^*_\text{in}}\right|^2}{\left|V_\text{in}\right|^2} \notag \\
-	&= 1 - \frac{2\re{S^*_\text{in}Z}}{\left|V_\text{in}\right|^2} + \frac{\left|S\right|^2\left|Z\right|^2}{\left|V_\text{in}\right|^4} \notag \\
-	&= 1 - \frac{2(PR + QX)}{\left|V_\text{in}\right|^2} + \frac{\left|S\right|^2\left|Z\right|^2}{\left|V_\text{in}\right|^4} \notag
+	\left|\frac{V_\text{out}}{V_\text{in}}\right|^2 &= \left|\frac{V_\text{in} - IZ}{V_\text{in}}\right|^2 \notag \\
+	&= \left|1 - \frac{S^*_\text{in}Z}{\left|V_\text{in}\right|^2}\right|^2 \notag \\
+	&= 1 - \frac{2(PR + QX)}{\left|V_\text{in}\right|^2} + \frac{\left|S\right|^2\left|Z\right|^2}{\left|V_\text{in}\right|^4}
 \end{align}
-At high voltages, the middle term dominates the voltage drop. High voltage lines normally also have a larger reactance than resistance, so reactive power is a more significant contributor to the voltage drop than is real power.
+At high voltages, the middle term in the sum dominates the voltage drop. High voltage lines normally also have a larger reactance than resistance, and in such cases we see that reactive power is a more significant contributor to the voltage drop than is real power.
 \section{Three phase balanced power}
 In balanced positive sequence three-phase systems, the phase to neutral voltages (or, simply, the phase voltages), at a bus, are 
 \begin{align}
