@@ -7,7 +7,7 @@ mpc_orig.branch(sel, RATE_A) = 0;
 mpc_orig.branch(sel, RATE_B) = 0;
 mpc_orig.branch(sel, RATE_C) = 0;
 
-mpc_orig.branch(sel, BR_X) *= 3;
+% mpc_orig.branch(sel, BR_X) *= 1;
 
 mpc_orig.bus(sel, PD) *= 3;
 mpc_orig.bus(sel, QD) *= 3;
