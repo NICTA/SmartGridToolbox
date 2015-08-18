@@ -1,7 +1,7 @@
 - sgt_gui:
     bar_power_scaling: 0.01
-    V_mag_min: 0.9
-    V_mag_max: 1.00
+    V_mag_min: 0.92
+    V_mag_max: 1.0
 - parameters:
     start_time: 2013-01-02 06:00:00
     end_time: 2013-01-03 06:00:00
@@ -9,7 +9,7 @@
     input_file: anu_a_mod.m
     n_load_busses: 69
     load_busses: [1, 2, 3, 4, 7, 10, 12, 13, 16, 18, 20, 21, 22, 24, 26, 28, 29, 31, 33, 35, 37, 39, 41, 42, 43, 44, 45, 46, 48, 51, 53, 56, 57, 58, 60, 62, 64, 65, 66, 68, 70, 73, 75, 77, 79, 81, 83, 85, 87, 89, 91, 235, 237, 239, 241, 243, 247, 248, 251, 252, 253, 254, 259, 267, 271, 274, 275, 276, 277] 
-    n_solar_busses: 40
+    n_solar_busses: 60
     solar_busses: [26, 75, 1, 33, 45, 3, 53, 48, 277, 275, 43, 2, 37, 60, 44, 235, 248, 4, 81, 58, 56, 12, 252, 254, 16, 237, 91, 41, 31, 247, 62, 13, 79, 39, 28, 253, 18, 70, 35, 57, 66, 271, 22, 24, 10, 276, 274, 68, 77, 20, 83, 42, 241, 251, 73, 29, 51, 239, 64, 259, 85, 46, 89, 21, 7, 267, 243, 65, 87] 
 - simulation: 
     start_time: <start_time>
@@ -58,8 +58,8 @@
             phases: [BAL]
             time_series_id: load_<load_busses(<i>)>_series
             dt: 00:30:00
-            scale_factor_Y: 5 
-            scale_factor_S: 5 
+            scale_factor_Y: 7
+            scale_factor_S: 7
 - loop:
     loop_variable: [i, 0, <n_solar_busses>, 1]
     loop_body: 
@@ -67,8 +67,8 @@
             id: pv_inverter_<solar_busses(<i>)>
             network_id: network
             bus_id: bus_<solar_busses(<i>)>
-            max_S_mag: 4 
-            # max_Q: 4
+            max_S_mag: 0.5 
+            # max_Q: 0
             efficiency: 0.86
 #       - inverter:
 #           id: pv_inverter_<solar_busses(<i>)>

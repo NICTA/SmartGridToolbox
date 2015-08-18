@@ -26,7 +26,7 @@ namespace Sgt
     std::unique_ptr<PowerModel> PvDemoSolver::makeModel()
     {
         auto mod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_));
-
+        mod->min_cost();
         for (auto bus : sgtNetw_->busses())
         {
             for (auto gen : bus->gens())
@@ -40,6 +40,8 @@ namespace Sgt
                     auto ptGen = std::find_if(ptBus->_gen.begin(), ptBus->_gen.end(), 
                             [genId](Gen* g){return g->_name == genId;});
                     assert(ptGen != ptBus->_gen.end());
+
+                    *mod->_model->_obj += 10000 * ((**ptGen).qg^2);
 
                     if (true)
                     {
@@ -61,7 +63,6 @@ namespace Sgt
                 }
             }
         }
-        mod->min_cost();
         // mod->_model->print();
         return mod;
     }
