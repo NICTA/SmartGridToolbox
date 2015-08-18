@@ -67,8 +67,8 @@
             id: pv_inverter_<solar_busses(<i>)>
             network_id: network
             bus_id: bus_<solar_busses(<i>)>
-            max_S_mag: 1000 
-            #max_Q: 0
+            max_S_mag: 4 
+            # max_Q: 4
             efficiency: 0.86
 #       - inverter:
 #           id: pv_inverter_<solar_busses(<i>)>
