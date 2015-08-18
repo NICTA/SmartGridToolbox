@@ -3,15 +3,18 @@ define_constants;
 mpc_orig = loadcase("anu.m");
 sel = mpc_orig.branch(:, TAP) == 0;
 
+mpc_orig.branch(sel, RATE_A) = 0;
+mpc_orig.branch(sel, RATE_B) = 0;
+mpc_orig.branch(sel, RATE_C) = 0;
+
+mpc_orig.branch(sel, BR_X) *= 3;
+
+mpc_orig.bus(sel, PD) *= 3;
+mpc_orig.bus(sel, QD) *= 3;
+
 mpc = mpc_orig;
-    
-mpc.branch(sel, RATE_A) = 0;
-mpc.branch(sel, RATE_B) = 0;
-mpc.branch(sel, RATE_C) = 0;
 
-mpc.branch(sel, BR_X) *= 2;
-
-mult_factors = -5:0.5:5;
+mult_factors = -2:0.5:2;
 
 result_Q = [];
 for mult_factor = mult_factors
