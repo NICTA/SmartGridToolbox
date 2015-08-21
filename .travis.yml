@@ -1,0 +1,50 @@
+language: cpp
+sudo: false
+matrix:
+    include:
+        -   
+            os: linux
+            compiler: clang
+            addons:
+                apt:
+                    sources:
+                        - llvm-toolchain-precise-3.6
+                        - ubuntu-toolchain-r-test
+                        - boost-latest
+                    packages: 
+                        - clang-3.6
+                        - libboost1.55-all-dev
+                        - libboost1.55-all-dev
+                        - libsuperlu3-dev
+            env:
+                - INSTALL_CXX=clang++-3.6
+                - LD_LIBRARY_PATH=$HOME/lib
+#   include:
+#       -   
+#           os: linux
+#           compiler: gcc
+#           addons:
+#               apt:
+#                   sources:
+#                       - llvm-toolchain-precise-3.6
+#                       - ubuntu-toolchain-r-test
+#                       - boost-latest
+#                   packages: 
+#                       - g++-4.9
+#                       - libboost1.55-all-dev
+#                       - libboost1.55-all-dev
+#           env:
+#               - INSTALL_CXX=g++-4.9
+#               - LD_LIBRARY_PATH=$HOME/lib
+before_install:
+    - mkdir $HOME/include
+    - mkdir $HOME/lib
+before_script:
+    - if [ -n "$INSTALL_CXX" ]; then CXX=$INSTALL_CXX; fi
+script:
+    - cd third_party/armadillo-5.400.2; cmake -DCMAKE_CXX_COMPILER=$INSTALL_CXX -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
+    - cd third_party/yaml-cpp-0.5.1; cmake -DCMAKE_CXX_COMPILER=$INSTALL_CXX -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
+    - ls -l $HOME/lib
+    - ./autogen.sh
+    - ./configure CXX=$INSTALL_CXX CPPFLAGS=-I$HOME/include LDFLAGS=-L$HOME/lib
+    - make && make check

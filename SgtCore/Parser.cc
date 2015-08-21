@@ -135,8 +135,8 @@ namespace Sgt
         std::string result;
 
         // Iterator over expansion expressions in the target.
-        const std::sregex_iterator begin(str.begin(), str.end(), expr);
-        const std::sregex_iterator end;
+        std::sregex_iterator begin(str.cbegin(), str.cend(), expr);
+        std::sregex_iterator end;
 
         if (begin == end)
         {
