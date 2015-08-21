@@ -6,7 +6,6 @@ os:
     - osx
 branches:
     only:
-        - master
         - travis
 os:
     - osx
