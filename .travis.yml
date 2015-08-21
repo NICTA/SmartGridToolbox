@@ -1,16 +1,12 @@
-language: 
-    - cpp
-compiler:
-    - clang
-os:
-    - osx
+language: cpp
+compiler: clang
+os: osx
 branches:
     only:
         - travis
-os:
-    - osx
 before_install:
-  - brew update
-  - brew install boost --c++11 
-  - brew install yaml-cpp --c++11 
-  - brew install suite-sparse
+    - echo $TRAVIS_OS_NAME
+    - brew update
+    - brew install boost --c++11 
+    - brew install yaml-cpp --c++11 
+    - brew install suite-sparse
