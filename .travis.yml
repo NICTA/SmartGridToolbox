@@ -1,10 +1,15 @@
-language: cpp
+language: 
+    - cpp
+
 compiler: 
     - clang
+
 os:
     - osx
+
 branches: 
     - master
+
 before_install:
     - echo $TRAVIS_OS_NAME
     - brew update
