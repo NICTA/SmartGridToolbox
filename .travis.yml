@@ -1,12 +1,15 @@
 language: cpp
 compiler: clang
 os: linux
-addons:
-    apt:
-        sources:
-            - libboost-dev
-            - libyaml-cpp-dev
-            - sudo apt-get install libarmadillo-dev
+before_install:
+    - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty           main restricted universe multiverse' | sudo tee    /etc/apt/sources.list.d/trusty.list > /dev/null
+    - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-backports main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
+    - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-security  main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
+    - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-updates   main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
+    - sudo apt-get update
+    - sudo apt-get install libboost-dev
+    - sudo apt-get install libyaml-cpp-dev
+    - sudo apt-get install sudo apt-get install libarmadillo-dev
 script:
     - autogen.sh
     - configure
