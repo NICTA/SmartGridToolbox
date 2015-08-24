@@ -5,6 +5,7 @@ compiler:
     - clang
 
 os:
+    - linux
     - osx
 
 branches: 
