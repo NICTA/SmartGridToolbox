@@ -1,6 +1,4 @@
 language: cpp
-compiler: clang
-os: linux
 before_install:
     - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty           main restricted universe multiverse' | sudo tee    /etc/apt/sources.list.d/trusty.list > /dev/null
     - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-backports main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
@@ -10,8 +8,9 @@ before_install:
     - sudo apt-get install libboost-dev
     - sudo apt-get install libyaml-cpp-dev
     - sudo apt-get install libarmadillo-dev
+    - sudo apt-get install automa
 script:
-    - autogen.sh
-    - configure
+    - ./autogen.sh
+    - ./configure
     - make 
     - make check
