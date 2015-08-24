@@ -1,12 +1,14 @@
 language: cpp
 compiler: clang
-os: osx
-#before_install:
-#    - sudo apt-get install libarmadillo-dev
-#    - sudo apt-get install libboost-dev
-#    - sudo apt-get install libyaml-cpp-dev
-#script:
-#    - autogen.sh
-#    - configure
-#    - make 
-#    - make check
+os: linux
+addons:
+    apt:
+        sources:
+            - libboost-dev
+            - libyaml-cpp-dev
+            - sudo apt-get install libarmadillo-dev
+script:
+    - autogen.sh
+    - configure
+    - make 
+    - make check
