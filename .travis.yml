@@ -9,7 +9,7 @@ before_install:
     - sudo apt-get update
     - sudo apt-get install libboost-dev
     - sudo apt-get install libyaml-cpp-dev
-    - sudo apt-get install sudo apt-get install libarmadillo-dev
+    - sudo apt-get install libarmadillo-dev
 script:
     - autogen.sh
     - configure
