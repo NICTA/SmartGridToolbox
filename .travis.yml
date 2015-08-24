@@ -1,5 +1,6 @@
 language: 
     - cpp
+    - objective-c
 
 compiler: 
     - clang
@@ -7,6 +8,10 @@ compiler:
 os:
     - linux
     - osx
+
+matrix:
+    exclude:
+        os: linux
 
 branches: 
     - master
