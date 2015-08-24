@@ -1,24 +1,15 @@
-language: 
-    - cpp
-    - objective-c
-
+language: c++
 compiler: 
     - clang
-
-os:
-    - linux
-    - osx
-
-matrix:
-    exclude:
-        os: linux
-
-branches: 
-    - master
-
+    - gcc
+os: linux
+branches: master
 before_install:
-    - echo $TRAVIS_OS_NAME
-    - brew update
-    - brew install boost --c++11 
-    - brew install yaml-cpp --c++11 
-    - brew install suite-sparse
+    - apt-get install libarmadillo-dev
+    - apt-get install libboost-dev
+    - apt-get install yaml-cpp
+script:
+    - autogen.sh
+    - configure
+    - make 
+    - make check
