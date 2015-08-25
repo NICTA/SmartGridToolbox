@@ -5,7 +5,8 @@ matrix:
     include:
         addons:
             apt:
-                sources: 
+                sources:
+                    - boost-latest
                     - ubuntu-toolchain-r-test
                     - llvm-toolchain-precise-3.6
                 packages: 
