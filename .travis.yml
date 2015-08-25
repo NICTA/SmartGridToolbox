@@ -19,6 +19,6 @@ before_install:
     - sudo apt-get install libarmadillo-dev
 script:
     - ./autogen.sh
-    - if [ $CXX == g++ ]; then .configure CXX=g++-4.8; else .configure CXX=g++-4.8; fi
+    - if [ $CXX == g++ ]; then ./configure CXX=g++-4.8; else ./configure CXX=g++-4.8; fi
     - make 
     - make check
