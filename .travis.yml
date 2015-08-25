@@ -1,7 +1,7 @@
 language: cpp
 compiler: 
     - clang
-    - gcc
+    # - gcc
 before_install:
     - echo $CXX
     # The following are necessary to use the apt packages from Ubuntu Trusty (Ubuntu 14) with travis' infrastructure,
@@ -10,14 +10,17 @@ before_install:
     - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-backports main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
     - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-security  main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
     - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-updates   main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
-
+      
+    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test # To get g++-4.9, lowest supported version.
     - sudo apt-get update
+    - sudo apt-get install gcc-4.9
     - sudo apt-get install clang
-    - if [ $CXX == g++ ]; then sudo apt-get install g++-4.8; else sudo apt-get install clang; fi
+    - if [ $CXX == g++ ]; then sudo apt-get install g++-4.9; else sudo apt-get install clang; fi
     - sudo apt-get install libboost-dev
+    - sudo apt-get install libboost-date-time-dev
     - sudo apt-get install libyaml-cpp-dev
-    - sudo apt-get install libarmadillo-dev
 script:
+    - cd third_party/armadillo-5.400.2; cmake -DCMAKE_INSTALL_PREFIX=/usr/local . && make && sudo make install; cd -
     - ./autogen.sh
-    - if [ $CXX == g++ ]; then ./configure CXX=g++-4.8; else ./configure CXX=clang++; fi
+    - if [ $CXX == g++ ]; then ./configure CXX=g++-4.9; else ./configure CXX=clang++; fi
     - make && make check
