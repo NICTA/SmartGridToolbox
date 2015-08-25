@@ -17,6 +17,7 @@ matrix:
                         - libboost1.55-all-dev
             env:
                 - INSTALL_CXX=clang++-3.6
+                - LD_LIBRARY_PATH=$HOME/lib
 #   include:
 #       -   
 #           os: linux
@@ -33,6 +34,7 @@ matrix:
 #                       - libboost1.55-all-dev
 #           env:
 #               - INSTALL_CXX=g++-4.9
+#               - LD_LIBRARY_PATH=$HOME/lib
 before_install:
     - mkdir $HOME/include
     - mkdir $HOME/lib
