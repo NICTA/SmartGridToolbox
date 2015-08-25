@@ -7,8 +7,8 @@ matrix:
             apt:
                 sources:
                     - boost-latest
-                    - ubuntu-toolchain-r-test
                     - llvm-toolchain-precise-3.6
+                    - ubuntu-toolchain-r-test
                 packages: 
                     - clang-3.6
                     - libboost-dev
