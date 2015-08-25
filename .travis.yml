@@ -1,28 +1,23 @@
 language: cpp
-compiler: 
-    - clang
-    # - gcc
+os: linux
+compiler: clang
+matrix:
+    include:
+        addons:
+            apt:
+                sources: 
+                    - 'ubuntu-toolchain-r-test'
+                    - 'llvm-toolchain-precise-3.6'
+                packages: 
+                    - 'clang-3.6'
+                    - 'libboost-dev'
+                    - 'libboost-date-time-dev'
+                    - 'libyaml-cpp-dev'
+            env: COMPILER=clang++-3.6
 before_install:
     - echo $CXX
-
-    # The following are necessary to use the apt packages from Ubuntu Trusty (Ubuntu 14) with travis' infrastructure,
-    # which runs on Ubuntu Precise (Ubuntu 12): 
-    - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty           main restricted universe multiverse' | sudo tee    /etc/apt/sources.list.d/trusty.list > /dev/null
-    - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-backports main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
-    - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-security  main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
-    - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-updates   main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
-      
-    # To get g++-4.9, lowest supported version.
-    - if [ $CXX == g++ ]; then sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y; fi
-
-    - sudo apt-get update -q
-
-    - if [ $CXX == g++ ]; then sudo apt-get install g++-4.9; else sudo apt-get install clang-3.6; fi
-    - sudo apt-get install libboost-dev
-    - sudo apt-get install libboost-date-time-dev
-    - sudo apt-get install libyaml-cpp-dev
 script:
-    - cd third_party/armadillo-5.400.2; cmake -DCMAKE_INSTALL_PREFIX=/usr/local . && make && sudo make install; cd -
+    - cd third_party/armadillo-5.400.2; cmake -DCMAKE_INSTALL_PREFIX=/usr/local . && make && make install; cd -
     - ./autogen.sh
     - if [ $CXX == g++ ]; then ./configure CXX=g++-4.9; else ./configure CXX=clang++-3.6; fi
     - make && make check
