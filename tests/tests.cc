@@ -23,7 +23,6 @@
 #include <cmath>
 #include <ostream>
 #include <fstream>
-#include <strstream>
 
 using namespace Sgt;
 using namespace std;
