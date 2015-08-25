@@ -12,8 +12,7 @@ matrix:
                         - ubuntu-toolchain-r-test
                     packages: 
                         - clang-3.6
-                        - libboost-dev
-                        - libboost-date-time-dev
+                        - boost1.55
             env:
                 - INSTALL_CXX=clang++-3.6
 before_script:
