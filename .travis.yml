@@ -17,7 +17,7 @@ matrix:
 before_install:
     - echo $CXX
 script:
-    - cd third_party/armadillo-5.400.2; cmake -DCMAKE_INSTALL_PREFIX=/usr/local . && make && make install; cd -
+    - cd third_party/armadillo-5.400.2; cmake -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
     - ./autogen.sh
     - if [ $CXX == g++ ]; then ./configure CXX=g++-4.9; else ./configure CXX=clang++-3.6; fi
     - make && make check
