@@ -2,7 +2,8 @@ language: cpp
 sudo: false
 matrix:
     include:
-        -   os: linux
+        -   
+            os: linux
             compiler: clang
             addons:
                 apt:
@@ -14,10 +15,11 @@ matrix:
                         - clang-3.6
                         - libboost-dev
                         - libboost-date-time-dev
-                env:
-                    - INSTALL_CXX=clang++-3.6
+            env:
+                - INSTALL_CXX=clang++-3.6
 before_script:
-    - if [ -n "${INSTALL_CXX}" ]; then CXX=${INSTALL_CXX}; fi
+    - if [ -n "$INSTALL_CXX" ]; then CXX=$INSTALL_CXX; fi
+    - echo $CXX
 script:
     - cd third_party/armadillo-5.400.2; cmake -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
     - cd third_party/yaml-cpp-0.5.1; cmake -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
