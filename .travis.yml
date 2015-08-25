@@ -2,8 +2,7 @@ language: cpp
 sudo: false
 matrix:
     include:
-        -   
-            os: linux
+        -   os: linux
             compiler: clang
             addons:
                 apt:
@@ -15,8 +14,8 @@ matrix:
                         - clang-3.6
                         - libboost-dev
                         - libboost-date-time-dev
-                    env:
-                        - INSTALL_CXX=clang++-3.6
+                env:
+                    - INSTALL_CXX=clang++-3.6
 before_script:
     - if [ -n "${INSTALL_CXX}" ]; then CXX=${INSTALL_CXX}; fi
 script:
