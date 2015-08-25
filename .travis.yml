@@ -6,13 +6,13 @@ matrix:
         addons:
             apt:
                 sources: 
-                    - 'ubuntu-toolchain-r-test'
-                    - 'llvm-toolchain-precise-3.6'
+                    - ubuntu-toolchain-r-test
+                    - llvm-toolchain-precise-3.6
                 packages: 
-                    - 'clang-3.6'
-                    - 'libboost-dev'
-                    - 'libboost-date-time-dev'
-                    - 'libyaml-cpp-dev'
+                    - clang-3.6
+                    - libboost-dev
+                    - libboost-date-time-dev
+                    - libyaml-cpp-dev
             env: COMPILER=clang++-3.6
 before_install:
     - echo $CXX
