@@ -1,11 +1,16 @@
 language: cpp
+compiler: clang
 before_install:
+    # The following are necessary to use the apt packages from Ubuntu Trusty (Ubuntu 14) with travis' infrastructure,
+    # which runs on Ubuntu Precise (Ubuntu 12): 
     - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty           main restricted universe multiverse' | sudo tee    /etc/apt/sources.list.d/trusty.list > /dev/null
     - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-backports main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
     - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-security  main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
     - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty-updates   main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list.d/trusty.list > /dev/null
+
     - sudo apt-get update
-    - sudo apt-get install g++-4.8
+    - sudo apt-get install clang
+    # - sudo apt-get install g++-4.8
     - sudo apt-get install libboost-dev
     - sudo apt-get install libyaml-cpp-dev
     - sudo apt-get install libarmadillo-dev
