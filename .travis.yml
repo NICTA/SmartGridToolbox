@@ -13,8 +13,8 @@ matrix:
                         - boost-latest
                     packages: 
                         - clang-3.6
-                        - libboost1.55-date-time-dev
-                        - libboost1.55-random-dev
+                        - libboost1.55-all-dev
+                        - libboost1.55-all-dev
             env:
                 - INSTALL_CXX=clang++-3.6
 before_script:
