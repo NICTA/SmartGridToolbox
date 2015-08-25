@@ -15,6 +15,8 @@ matrix:
                     - libyaml-cpp-dev
             env: COMPILER=clang++-3.6
 before_install:
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+    - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.6" CC="clang-3.6"; fi
     - echo $CXX
 script:
     - cd third_party/armadillo-5.400.2; cmake -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
