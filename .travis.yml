@@ -3,6 +3,7 @@ compiler:
     - clang
     - gcc
 before_install:
+    - echo $CXX
     # The following are necessary to use the apt packages from Ubuntu Trusty (Ubuntu 14) with travis' infrastructure,
     # which runs on Ubuntu Precise (Ubuntu 12): 
     - echo 'deb http://us.archive.ubuntu.com/ubuntu trusty           main restricted universe multiverse' | sudo tee    /etc/apt/sources.list.d/trusty.list > /dev/null
