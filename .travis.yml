@@ -23,5 +23,5 @@ script:
     - cd third_party/armadillo-5.400.2; cmake -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
     - cd third_party/yaml-cpp-0.5.1; cmake -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
     - ./autogen.sh
-    - ./configure CXX=$INSTALL_CXX
+    - ./configure CXX=$INSTALL_CXX CPPFLAGS=-I$HOME LDFLAGS=-L$HOME
     - make && make check
