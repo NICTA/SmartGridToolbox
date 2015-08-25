@@ -41,7 +41,7 @@ before_script:
 script:
     - cd third_party/armadillo-5.400.2; cmake -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
     - cd third_party/yaml-cpp-0.5.1; cmake -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
-    - ls $HOME/lib
+    - ls -l $HOME/lib
     - ./autogen.sh
     - ./configure CXX=$INSTALL_CXX CPPFLAGS=-I$HOME/include LDFLAGS=-L$HOME/lib
     - make && make check
