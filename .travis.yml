@@ -13,7 +13,8 @@ matrix:
                         - boost-latest
                     packages: 
                         - clang-3.6
-                        - libboost1.55-all-dev
+                        - libboost1.55-date-time-dev
+                        - libboost1.55-random-dev
             env:
                 - INSTALL_CXX=clang++-3.6
 before_script:
@@ -23,5 +24,5 @@ script:
     - cd third_party/armadillo-5.400.2; cmake -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
     - cd third_party/yaml-cpp-0.5.1; cmake -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
     - ./autogen.sh
-    - ./configure CXX=$INSTALL_CXX CPPFLAGS=-I$HOME LDFLAGS=-L$HOME
+    - ./configure CXX=$INSTALL_CXX CPPFLAGS=-I$HOME/include LDFLAGS=-L$HOME/lib
     - make && make check
