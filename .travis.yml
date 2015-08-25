@@ -1,5 +1,7 @@
 language: cpp
-compiler: clang
+compiler: 
+    - clang
+    - gcc
 before_install:
     # The following are necessary to use the apt packages from Ubuntu Trusty (Ubuntu 14) with travis' infrastructure,
     # which runs on Ubuntu Precise (Ubuntu 12): 
