@@ -2,7 +2,7 @@ language: cpp
 sudo: false
 matrix:
     include:
-        -   
+        -
             os: linux
             compiler: clang
             addons:
@@ -11,7 +11,7 @@ matrix:
                         - llvm-toolchain-precise-3.6
                         - ubuntu-toolchain-r-test
                         - boost-latest
-                    packages: 
+                    packages:
                         - clang-3.6
                         - libboost1.55-all-dev
                         - libboost1.55-all-dev
@@ -20,7 +20,7 @@ matrix:
                 - INSTALL_CXX=clang++-3.6
                 - LD_LIBRARY_PATH=$HOME/lib
 #   include:
-#       -   
+#       -
 #           os: linux
 #           compiler: gcc
 #           addons:
@@ -29,7 +29,7 @@ matrix:
 #                       - llvm-toolchain-precise-3.6
 #                       - ubuntu-toolchain-r-test
 #                       - boost-latest
-#                   packages: 
+#                   packages:
 #                       - g++-4.9
 #                       - libboost1.55-all-dev
 #                       - libboost1.55-all-dev
