@@ -33,6 +33,9 @@ matrix:
 #                       - libboost1.55-all-dev
 #           env:
 #               - INSTALL_CXX=g++-4.9
+before_install:
+    - mkdir $HOME/include
+    - mkdir $HOME/lib
 before_script:
     - if [ -n "$INSTALL_CXX" ]; then CXX=$INSTALL_CXX; fi
     - echo $CXX
