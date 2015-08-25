@@ -15,6 +15,7 @@ matrix:
                         - clang-3.6
                         - libboost1.55-all-dev
                         - libboost1.55-all-dev
+                        - libsuperlu3-dev
             env:
                 - INSTALL_CXX=clang++-3.6
                 - LD_LIBRARY_PATH=$HOME/lib
