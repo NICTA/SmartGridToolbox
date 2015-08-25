@@ -12,12 +12,12 @@ before_install:
 
     - sudo apt-get update
     - sudo apt-get install clang
-    # - sudo apt-get install g++-4.8
+    - if [ $CXX == g++ ]; then sudo apt-get install g++-4.8; else sudo apt-get install clang; fi
     - sudo apt-get install libboost-dev
     - sudo apt-get install libyaml-cpp-dev
     - sudo apt-get install libarmadillo-dev
 script:
     - ./autogen.sh
-    - ./configure CXX=g++-4.8
+    - if [ $CXX == g++ ]; then .configure CXX=g++-4.8; else .configure CXX=g++-4.8
     - make 
     - make check
