@@ -1,21 +1,22 @@
 language: cpp
 sudo: false
 matrix:
-    - include:
-        os: linux
-        compiler: clang
-        addons:
-            apt:
-                sources:
-                    - boost-latest
-                    - llvm-toolchain-precise-3.6
-                    - ubuntu-toolchain-r-test
-                packages: 
-                    - clang-3.6
-                    - libboost-dev
-                    - libboost-date-time-dev
-                env:
-                    - INSTALL_CXX=clang++-3.6
+    include:
+        -   
+            os: linux
+            compiler: clang
+            addons:
+                apt:
+                    sources:
+                        - boost-latest
+                        - llvm-toolchain-precise-3.6
+                        - ubuntu-toolchain-r-test
+                    packages: 
+                        - clang-3.6
+                        - libboost-dev
+                        - libboost-date-time-dev
+                    env:
+                        - INSTALL_CXX=clang++-3.6
 before_script:
     - if [ -n "${INSTALL_CXX}" ]; then CXX=${INSTALL_CXX}; fi
 script:
