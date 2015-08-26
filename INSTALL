@@ -2,70 +2,121 @@ Building and Installing SmartGridToolbox
 ----------------------------------------
 
 1. Prerequisites
-----------------
+================
 
-You need a compiler that will support modern C++. The clang compiler is
-recommended, although later versions of g++ (we have tested gcc 4.9) may also
-work.
+1.1 Compilers
+-------------
+
+You need a compiler that will properly support C++11. SmartGridToolbox is
+tested on Mac OS X with clang++ from Apple LLVM version 6.1.0 (similar to
+linux v. 3.6), and on linux with clang++ version 3.5 and g++ version 4.9. We
+recommend using clang++, version 3.5 or later.
 
 If building on a Mac, you should have a recent version of the OSX operating
-system (Mavericks and Yosemite work). Install XCode, and you will have access
-to the clang compilers.
+system (Mavericks and Yosemite work). Install the latest version of XCode, and
+you will automatically have access to the correct clang compilers.
 
-If building on Ubuntu, you should ideally have Ubuntu 13 or later installed so
-as to be able to easily install a recent version of gcc (e.g. 4.9+) or clang.
-You can use, e.g.
-> sudo apt-get install clang++
+If building on Ubuntu 14 (or perhaps earlier) you can use, e.g.
+
+> sudo apt-add-repository "deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main"
+> sudo apt-get update
+> sudo apt-get install clang++-3.6
+
+or
+
+> sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+> sudo apt-get update
+> sudo apt-get install g++-4.9
+
+1.2 Libraries
+-------------
 
 Install up to date versions of the following libraries:
 
 a) Boost libraries:
 
-   boost/date_time, boost/random (header only), boost/spirit (header only).
+   boost/date_time, boost/random (header only), boost/spirit (header only),
+   boost/test.
    
-   The easiest procedure is to just install the whole of boost, either by
+   The easiest procedure is probaly to install the whole of boost, either by
    downloading the latest version from www.boost.org and following the build
-   instructions, or by using a tool such as homebrew (Mac OSX), apt-get
-   (Debian Linux distributions such as Ubuntu) or similar.  
+   instructions, or, preferably, by using a tool such as homebrew (Mac OSX),
+   apt-get (Debian Linux distributions such as Ubuntu) or similar. Make sure
+   your boost version is not too old (we test v.1.55, and of course later
+   versions should also work).
 
 b) Armadillo linear algebra library:
 
-   This is available from http://arma.sourceforge.net. On a mac, you can also
-   use homebrew.
+   This is available from http://arma.sourceforge.net, and is also included in
+   the third_party directory of SmartGridToolbox for convenience. You should use
+   version 5.2 or later. 
+   
+   On a mac, you can use homebrew:
+
+   > brew install armadillo
+  
+   To build and install from the third_party directory (assuming you
+   are in the top level SmartGridToolbox directory), you can do something like
+   the following:
+
+   > cd third_party/armadillo-5.400.2
+   > mkdir build
+   > cd build
+   > cmake ..
+   > make && sudo make install
+  
+c) (Optional) SuperLU (for armadillo):
 
    If you intend to use Armadillo as a sparse solver (the default option), you
    will need to make sure it has been built with SuperLU support enabled. 
-   This will require the SuperLU libraries to be installed. If using homebrew,
-   all of this is taken care of automatically when you install Armadillo.
+   This will require the SuperLU libraries to be installed prior to
+   compilation. Please see the armadillo documentation for more information.
+   If using homebrew on a mac, all of this is taken care of automatically when
+   you install Armadillo.
 
-c) (Optional) SuiteSparse libraries:
+d) (Optional) SuiteSparse libraries:
 
    amd, colamd, btf, klu
 
-   These need only be installed if the default Armadillo sparse solve is not
-   used, which would imply that SmartGridToolbox is configured with the
-   --with-klu specified.
+   These need only be installed if the default Armadillo sparse solver is not
+   used, which means that SmartGridToolbox must be configured with 
+   --with-klu specified. Since these libraries are moderately faster than
+   SuperLU, you should choose this option unless you already have SuperLU or
+   have used, e.g., homebrew to install SuperLU in which case the dependency is
+   automatically taken care of.
    
    The source code for these is provided in the third_party/SuiteSparse
    directory. The build is straightforward, but depending on your system, you
    may need to modify the file 
-   SuiteSparse/SuiteSparse_config/SuiteSparse_config.mk. For example, on a mac,
-   you will probably need to remove the "-lrt" link flag. Alternatively, 
-   install using homebrew (OSX), apt-get (Ubuntu) or similar.
+   SuiteSparse/SuiteSparse_config/SuiteSparse_config.mk.
+   For example, on a mac, you should replace that file with a copy of 
+   SuiteSparse/SuiteSparse_config/SuiteSparse_config_Mac.mk. Then, just build
+   the required libraries:
+
+   > cd SuiteSparse_config; make && sudo make install; cd ..
+   > cd AMD; make && sudo make install; cd ..
+   > cd BTF; make && sudo make install; cd ..
+   > cd COLAMD; make && sudo make install; cd ..
+   > cd KLU; make && sudo make install; cd ..
 
 d) The yaml-cpp library:
 
    Source code is provided in third_party/yaml-cpp-0.5.0, or alternatively,
    install using homebrew, apt-get or the like.
 
-2. Build and install the libraries:
------------------------------------
+   > mkdir build
+   > cd build
+   > cmake ..
+   > make && sudo make install
+
+2. Build and install the SmartGridToolbox libraries:
+====================================================
 
 If installing from a tarball: simply run the usual configure/make/install
 procedure, using the desired options to configure (type "configure --help" for a
 list).
 
-> ./configure
+> ./configure # --with-klu # if you don't have SuiteSparse support in armadillo.
 > make
 > sudo make install
 
@@ -74,12 +125,19 @@ autogen.sh immediately after cloning the github repository. You will need an
 up to date version of gnu autotools.
 
 > ./autogen.sh # Normally only need to do this once. 
-> ./configure
+> ./configure # --with-klu # if you don't have SuiteSparse support in armadillo.
 > make
 > sudo make install
 
-3. To compile and link your program:
-------------------------------------
+3. Run tests
+============
+
+From the top level directory,
+
+> make check
+
+4. To compile and link your custom SmartGridToolbox program:
+============================================================
 
 If you wish to build using GNU autotools, have a look at
 examples/PvDemo/Makefile.am. You could copy examples/PvDemo to use as a
