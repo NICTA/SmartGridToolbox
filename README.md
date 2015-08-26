@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/NICTA/SmartGridToolbox.svg)](https://travis-ci.org/NICTA/SmartGridToolbox)
 SmartGridToolbox
 ================
 
