@@ -1,8 +1,10 @@
 language: cpp
+
 sudo: false
+
 matrix:
     include:
-        -
+        -   
             os: linux
             compiler: clang
             addons:
@@ -11,16 +13,16 @@ matrix:
                         - llvm-toolchain-precise-3.6
                         - ubuntu-toolchain-r-test
                         - boost-latest
-                    packages:
+                    packages: 
+                        - csh
                         - clang-3.6
-                        - libboost1.55-all-dev
-                        - libboost1.55-all-dev
-                        - libsuperlu3-dev
+                        - libboost-date-time1.55-dev
+                        - libboost-random1.55-dev
+                        - libblas-dev
             env:
                 - INSTALL_CXX=clang++-3.6
                 - LD_LIBRARY_PATH=$HOME/lib
-#   include:
-#       -
+#       -   
 #           os: linux
 #           compiler: gcc
 #           addons:
@@ -29,22 +31,25 @@ matrix:
 #                       - llvm-toolchain-precise-3.6
 #                       - ubuntu-toolchain-r-test
 #                       - boost-latest
-#                   packages:
+#                   packages: 
 #                       - g++-4.9
-#                       - libboost1.55-all-dev
-#                       - libboost1.55-all-dev
+#                       - libboost-date-time1.55-dev
+#                       - libboost-random1.55-dev
 #           env:
 #               - INSTALL_CXX=g++-4.9
 #               - LD_LIBRARY_PATH=$HOME/lib
+
 before_install:
     - mkdir $HOME/include
     - mkdir $HOME/lib
+
 before_script:
     - if [ -n "$INSTALL_CXX" ]; then CXX=$INSTALL_CXX; fi
+
 script:
-    - cd third_party/armadillo-5.400.2; cmake -DCMAKE_CXX_COMPILER=$INSTALL_CXX -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
-    - cd third_party/yaml-cpp-0.5.1; cmake -DCMAKE_CXX_COMPILER=$INSTALL_CXX -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd -
-    - ls -l $HOME/lib
+    - cd third_party/SuiteSparse; sed -i'' -e "s#^INSTALL_LIB.*#INSTALL_LIB = $HOME/lib#g" -e "s#INSTALL_INCLUDE.*#INSTALL_INCLUDE = $HOME/include#g" SuiteSparse_config/SuiteSparse_config.mk; cd SuiteSparse_config; make; make install; cd ..; cd AMD; make; make install; cd ..; cd BTF; make; make install; cd ..; cd COLAMD; make; make install; cd ..; cd KLU; make; make install; cd ../../..
+    - cd third_party/armadillo-5.400.2; cmake -DCMAKE_CXX_COMPILER=$INSTALL_CXX -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd ../.. 
+    - cd third_party/yaml-cpp-0.5.1; cmake -DCMAKE_CXX_COMPILER=$INSTALL_CXX -DCMAKE_INSTALL_PREFIX=$HOME && make && make install; cd ../..
     - ./autogen.sh
-    - ./configure CXX=$INSTALL_CXX CPPFLAGS=-I$HOME/include LDFLAGS=-L$HOME/lib
+    - ./configure CXX=$INSTALL_CXX CPPFLAGS=-I$HOME/include LDFLAGS=-L$HOME/lib --with-klu
     - make && make check
