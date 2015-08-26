@@ -16,8 +16,7 @@ matrix:
                     packages: 
                         - csh
                         - clang-3.6
-                        - libboost-date-time1.55-dev
-                        - libboost-random1.55-dev
+                        - libboost-all1.55-dev
                         - libblas-dev
             env:
                 - INSTALL_CXX=clang++-3.6
@@ -34,8 +33,7 @@ matrix:
                     packages: 
                         - csh
                         - g++-4.9
-                        - libboost-date-time1.55-dev
-                        - libboost-random1.55-dev
+                        - libboost-all1.55-dev
                         - libblas-dev
             env:
                 - INSTALL_CXX=g++-4.9
