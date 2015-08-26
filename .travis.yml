@@ -22,22 +22,24 @@ matrix:
             env:
                 - INSTALL_CXX=clang++-3.6
                 - LD_LIBRARY_PATH=$HOME/lib
-#       -   
-#           os: linux
-#           compiler: gcc
-#           addons:
-#               apt:
-#                   sources:
-#                       - llvm-toolchain-precise-3.6
-#                       - ubuntu-toolchain-r-test
-#                       - boost-latest
-#                   packages: 
-#                       - g++-4.9
-#                       - libboost-date-time1.55-dev
-#                       - libboost-random1.55-dev
-#           env:
-#               - INSTALL_CXX=g++-4.9
-#               - LD_LIBRARY_PATH=$HOME/lib
+        -   
+            os: linux
+            compiler: gcc
+            addons:
+                apt:
+                    sources:
+                        - llvm-toolchain-precise-3.6
+                        - ubuntu-toolchain-r-test
+                        - boost-latest
+                    packages: 
+                        - csh
+                        - g++-4.9
+                        - libboost-date-time1.55-dev
+                        - libboost-random1.55-dev
+                        - libblas-dev
+            env:
+                - INSTALL_CXX=g++-4.9
+                - LD_LIBRARY_PATH=$HOME/lib
 
 before_install:
     - mkdir $HOME/include
