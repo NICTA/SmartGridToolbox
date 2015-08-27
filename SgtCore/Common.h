@@ -85,7 +85,7 @@ namespace Sgt
 
             std::ostream& error();
             
-            std::ostream& debug(LogLevel level = LogLevel::NONE);
+            std::ostream& debug(LogLevel level = LogLevel::NORMAL);
 
         private:
 

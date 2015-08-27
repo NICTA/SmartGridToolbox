@@ -23,12 +23,21 @@ int main(int argc, char** argv)
 {
     using namespace Sgt;
 
-    sgtAssert(argc == 5, "Usage: solve_network solver infile out_prefix warm_start");
+    sgtAssert(argc == 6, "Usage: solve_network solver infile out_prefix warm_start debug");
 
     std::string solver = argv[1];
     std::string inFName = argv[2];
     std::string outPrefix = argv[3];
     bool warm_start = argv[4][0] == 'T';
+    bool debug = argv[5][0] == 'T';
+
+    if (debug)
+    {
+        std::cout << "debug" << std::endl;
+        Sgt::Log::messageLogLevel = Sgt::LogLevel::VERBOSE;
+        Sgt::Log::warningLogLevel = Sgt::LogLevel::VERBOSE;
+        Sgt::Log::debugLogLevel = Sgt::LogLevel::NORMAL;
+    }
 
     Network nw(100.0);
 

@@ -121,7 +121,8 @@ namespace Sgt
 
     bool PowerFlowNrSolver::solveProblem()
     {
-        SGT_DEBUG(Log().debug() << "PowerFlowNrSolver : solve." << std::endl; LogIndent _;);
+        Log().debug() << "PowerFlowNrSolver : solve." << std::endl;
+        LogIndent _;
 
         Stopwatch stopwatch;
         Stopwatch stopwatchTot;
@@ -187,18 +188,21 @@ namespace Sgt
 
         for (niter = 0; niter < maxiter; ++niter)
         {
-            SGT_DEBUG(Log().debug() << "Iteration = " << niter << std::endl);
+            Log().debug() << "Iteration = " << niter << std::endl;
 
             stopwatch.reset();
             stopwatch.start();
             calcf(f, Vr, Vi, P, Q, M2Pv);
 
             err = norm(f, "inf");
-            SGT_DEBUG(Log().debug() << "f  = " << std::setprecision(5) << std::setw(9) << f << std::endl);
-            SGT_DEBUG(Log().debug() << "Error = " << err << std::endl);
+            if (Log::debugLogLevel == LogLevel::VERBOSE)
+            {
+                Log().debug(LogLevel::VERBOSE) << "f  = " << std::setprecision(5) << std::setw(9) << f << std::endl;
+            }
+            Log().debug() << "Error = " << err << std::endl;
             if (err <= tol)
             {
-                SGT_DEBUG(Log().debug() << "Success at iteration " << niter << "." << std::endl);
+                Log().debug() << "Success at iteration " << niter << "." << std::endl;
                 wasSuccessful = true;
                 break;
             }
@@ -228,22 +232,29 @@ namespace Sgt
             stopwatch.stop();
             durationConstructJMat += stopwatch.seconds();
 
-SGT_DEBUG
-(
-            Log().debug() << "Before solve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
-            Log().debug() << "Before solve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
-            Log().debug() << "Before solve: M^2 = " << std::setprecision(5) << std::setw(9)
-            << (Vr % Vr + Vi % Vi) << std::endl;
-            Log().debug() << "Before solve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
-            Log().debug() << "Before solve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
-            Log().debug() << "Before solve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
-            Log().debug() << "Before solve: J   = " << std::endl;
-            LogIndent _;
-            for (uword i = 0; i < nVar(); ++i)
+            if (Log::debugLogLevel == LogLevel::VERBOSE)
             {
-                Log().debug() << std::setprecision(5) << std::setw(9) << JMat.row(i) << std::endl;
+                Log().debug(LogLevel::VERBOSE)
+                    << "Before solve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
+                Log().debug(LogLevel::VERBOSE) 
+                    << "Before solve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
+                Log().debug(LogLevel::VERBOSE) 
+                    << "Before solve: M^2 = " << std::setprecision(5) << std::setw(9)
+                    << (Vr % Vr + Vi % Vi) << std::endl;
+                Log().debug(LogLevel::VERBOSE) 
+                    << "Before solve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
+                Log().debug(LogLevel::VERBOSE) 
+                    << "Before solve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
+                Log().debug(LogLevel::VERBOSE) 
+                    << "Before solve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
+                Log().debug(LogLevel::VERBOSE) << "Before solve: J   = " << std::endl;
+                LogIndent _;
+                for (uword i = 0; i < nVar(); ++i)
+                {
+                    Log().debug(LogLevel::VERBOSE)
+                        << std::setprecision(5) << std::setw(9) << JMat.row(i) << std::endl;
+                }
             }
-);
 
             stopwatch.reset();
             stopwatch.start();
@@ -257,9 +268,12 @@ SGT_DEBUG
             stopwatch.stop();
             durationSolve += stopwatch.seconds();
 
-            SGT_DEBUG(Log().debug() << "After solve: ok = " << ok << std::endl);
-            SGT_DEBUG(Log().debug() << "After solve: x  = " << std::setprecision(5) << std::setw(9) << x
-                      << std::endl);
+            Log().debug() << "After solve: ok = " << ok << std::endl;
+            if (Log::debugLogLevel == LogLevel::VERBOSE)
+            {
+                    Log().debug(LogLevel::VERBOSE) 
+                        << "After solve: x  = " << std::setprecision(5) << std::setw(9) << x << std::endl;
+            }
             if (!ok)
             {
                 Log().warning() << "Solve failed." << std::endl;
@@ -288,12 +302,19 @@ SGT_DEBUG
                 Q(mod_->selPvFromAll()) += x(selQPvFrom_x_);
             }
 
-            SGT_DEBUG(Log().debug() << "Updated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl);
-            SGT_DEBUG(Log().debug() << "Updated Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl);
-            SGT_DEBUG(Log().debug() << "Updated M^2 = " << std::setprecision(5) << std::setw(9)
-                      << Vr % Vr + Vi % Vi << std::endl);
-            SGT_DEBUG(Log().debug() << "Updated P   = " << std::setprecision(5) << std::setw(9) << P << std::endl);
-            SGT_DEBUG(Log().debug() << "Updated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl);
+            if (Log::debugLogLevel == LogLevel::VERBOSE)
+            {
+                Log().debug(LogLevel::VERBOSE)
+                    << "Updated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
+                Log().debug(LogLevel::VERBOSE)
+                    << "Updated Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
+                Log().debug(LogLevel::VERBOSE)
+                    << "Updated M^2 = " << std::setprecision(5) << std::setw(9) << Vr % Vr + Vi % Vi << std::endl;
+                Log().debug(LogLevel::VERBOSE)
+                    << "Updated P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
+                Log().debug(LogLevel::VERBOSE)
+                    << "Updated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
+            }
             stopwatch.stop();
             durationUpdateIter += stopwatch.seconds();
         }
@@ -346,24 +367,20 @@ SGT_DEBUG
         stopwatchTot.stop();
         durationTot = stopwatchTot.seconds();
 
-        bool printStats = false;
-        SGT_DEBUG(printStats = true);
-        if (printStats)
-        {
-            Log().message() << "PowerFlowNrSolver: \n"
-                            << "    successful = " << wasSuccessful << "\n"
-                            << "    error = " << err << "\n" 
-                            << "    iterations = " << niter << "\n"
-                            << "    total time = " << durationTot << "\n" 
-                            << "    time to create model = " << durationMakeModel << "\n"
-                            << "    time for setup = " << durationInitSetup << "\n"
-                            << "    calcf time = " << durationCalcf << "\n"
-                            << "    updateJ time = " << durationUpdateJ << "\n"
-                            << "    modifyForPv time = " << durationModifyForPv << "\n"
-                            << "    constructJMat time = " << durationConstructJMat << "\n"
-                            << "    solve time = " << durationSolve << "\n"
-                            << "    updateIter time = " << durationUpdateIter << std::endl;
-        }
+        Log().debug()
+            << "PowerFlowNrSolver: \n"
+            << "    successful = " << wasSuccessful << "\n"
+            << "    error = " << err << "\n" 
+            << "    iterations = " << niter << "\n"
+            << "    total time = " << durationTot << "\n" 
+            << "    time to create model = " << durationMakeModel << "\n"
+            << "    time for setup = " << durationInitSetup << "\n"
+            << "    calcf time = " << durationCalcf << "\n"
+            << "    updateJ time = " << durationUpdateJ << "\n"
+            << "    modifyForPv time = " << durationModifyForPv << "\n"
+            << "    constructJMat time = " << durationConstructJMat << "\n"
+            << "    solve time = " << durationSolve << "\n"
+            << "    updateIter time = " << durationUpdateIter << std::endl;
 
         return wasSuccessful;
     }
