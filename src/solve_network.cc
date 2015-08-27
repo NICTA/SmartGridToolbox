@@ -23,10 +23,13 @@ int main(int argc, char** argv)
 {
     using namespace Sgt;
 
-    assert(argc == 4);
+    sgtAssert(argc == 5, "Usage: solve_network solver infile out_prefix warm_start");
+
     std::string solver = argv[1];
     std::string inFName = argv[2];
     std::string outPrefix = argv[3];
+    bool warm_start = argv[4][0] == 'T';
+
     Network nw(100.0);
 
     std::string yamlStr = std::string("--- [{power_flow_solver : " + solver + "}, {matpower : {input_file : ") +
@@ -38,6 +41,14 @@ int main(int argc, char** argv)
     auto outFBus = std::fopen((outPrefix + ".bus").c_str(), "w+");
     auto outFBranch = std::fopen((outPrefix + ".branch").c_str(), "w+");
     std::map<std::string, int> busMap;
+
+    if (!warm_start)
+    {
+        for (auto bus : nw.busses())
+        {
+            bus->setV(bus->VNom());
+        }
+    }
 
     auto print = [&]()
     {
