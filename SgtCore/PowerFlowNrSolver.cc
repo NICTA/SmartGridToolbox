@@ -180,13 +180,10 @@ namespace Sgt
         double err = 0;
         int niter;
 
-        const double tol = 1e-8;
-        const int maxiter = 20;
-
         stopwatch.stop();
         durationInitSetup += stopwatch.seconds();
 
-        for (niter = 0; niter < maxiter; ++niter)
+        for (niter = 0; niter < maxiter_; ++niter)
         {
             Log().debug() << "Iteration = " << niter << std::endl;
 
@@ -200,7 +197,7 @@ namespace Sgt
                 Log().debug(LogLevel::VERBOSE) << "f  = " << std::setprecision(5) << std::setw(9) << f << std::endl;
             }
             Log().debug() << "Error = " << err << std::endl;
-            if (err <= tol)
+            if (err <= tol_)
             {
                 Log().debug() << "Success at iteration " << niter << "." << std::endl;
                 wasSuccessful = true;

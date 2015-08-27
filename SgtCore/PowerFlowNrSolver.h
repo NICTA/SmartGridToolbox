@@ -248,6 +248,11 @@ namespace Sgt
 
             void calcJMatrix(arma::SpMat<double>& JMat, const Jacobian& J) const;
 
+        public:
+
+            double tol_{1e-8};
+            unsigned int maxiter_{100};
+
         private:
 
             Network* netw_;
