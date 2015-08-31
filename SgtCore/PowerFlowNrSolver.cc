@@ -178,7 +178,7 @@ namespace Sgt
 
         bool wasSuccessful = false;
         double err = 0;
-        int niter;
+        unsigned int niter;
 
         stopwatch.stop();
         durationInitSetup += stopwatch.seconds();
