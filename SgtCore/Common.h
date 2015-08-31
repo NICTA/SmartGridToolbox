@@ -56,13 +56,6 @@ namespace Sgt
             std::string ind2_;
     };
 
-    enum class LogLevel
-    {
-        NONE,
-        NORMAL,
-        VERBOSE
-    };
-
     /// @brief Logging object.
     ///
     /// Use e.g. Log().message() << "this is a message" << std::endl;
@@ -73,44 +66,37 @@ namespace Sgt
 
         public:
             
-            static LogLevel messageLogLevel;
-            static LogLevel warningLogLevel;
-            static LogLevel debugLogLevel;
-        
         public:
 
-            std::ostream& message(LogLevel level = LogLevel::NORMAL);
+            std::ostream& message();
 
-            std::ostream& warning(LogLevel level = LogLevel::NORMAL);
+            std::ostream& warning();
 
             std::ostream& error();
             
-            std::ostream& debug(LogLevel level = LogLevel::NORMAL);
+            std::ostream& debug();
 
-        private:
-
-            static std::ostream& nullStream()
-            {
-                class NullBuf : public std::streambuf
-                {
-                    protected:
-
-                        virtual int overflow(int ch) override
-                        {
-                            return ch;
-                        }
-                };
-                static NullBuf nullBuf_;
-                static std::ostream nullStream_(&nullBuf_);
-                return nullStream_;
-            }
-        
         private:
 
             static unsigned int indentLevel_;
 
             StreamIndent coutBuf_{std::cout};
             StreamIndent cerrBuf_{std::cerr};
+    };
+
+    enum class LogLevel
+    {
+        NONE,
+        NORMAL,
+        VERBOSE
+    };
+
+    struct LogLevels
+    {
+        static LogLevel messageLogLevel;
+        static LogLevel warningLogLevel;
+        static LogLevel errorLogLevel;
+        static LogLevel debugLogLevel;
     };
 
     /// @brief Create a LogIndent on the stack to indent all logs.
@@ -131,11 +117,49 @@ namespace Sgt
             }
     };
 
+    // Internal macros to help with machinery of logging.
+    // Don't bother trying to understand these!
+#define LOG_1(strm, threshold, default_level, level) if (level >= threshold) strm
+#define LOG_0(strm, threshold, default_level, ...) LOG_1(strm, threshold, default_level, default_level)
+#define FUNC_CHOOSER(_f1, _f2, _f3, ...) _f3
+#define FUNC_RECOMPOSER(argsWithParentheses) FUNC_CHOOSER argsWithParentheses
+#define CHOOSE_FROM_ARG_COUNT(...) FUNC_RECOMPOSER((__VA_ARGS__, LOG_2, LOG_1, ))
+#define NO_ARG_EXPANDER() ,,LOG_0
+#define MACRO_CHOOSER(...) CHOOSE_FROM_ARG_COUNT(NO_ARG_EXPANDER __VA_ARGS__ ())
+#define LOG(strm, threshold, default_level, ...) MACRO_CHOOSER(__VA_ARGS__)(strm, threshold, default_level, __VA_ARGS__)
+
+    /// @brief Log a message.
     /// @ingroup Utilities
+    ///
+    /// E.g. sgtLogMessage(LogLevel::VERBOSE) << "this is a message: number = " << 5 << std::endl;
+    /// Parameter is optional and defaults to LogLevel::NORMAL
+#define sgtLogMessage(...) LOG(Sgt::Log().message(), Sgt::LogLevels::messageLogLevel, Sgt::LogLevel::NORMAL, __VA_ARGS__)
+
+    /// @brief Log a warning.
+    /// @ingroup Utilities
+    ///
+    /// E.g. sgtLogWarning(LogLevel::VERBOSE) << "this is a warning: number = " << 5 << std::endl;
+    /// Parameter is optional and defaults to LogLevel::NORMAL
+#define sgtLogWarning(...) LOG(Sgt::Log().warning(), Sgt::LogLevels::warningLogLevel, Sgt::LogLevel::NORMAL, __VA_ARGS__)
+
+    /// @brief Log an error.
+    /// @ingroup Utilities
+    ///
+    /// E.g. sgtLogError(LogLevel::VERBOSE) << "this is an error: number = " << 5 << std::endl;
+    /// Parameter is optional and defaults to LogLevel::NORMAL
+#define sgtLogError(...) LOG(Sgt::Log().error(), Sgt::LogLevels::errorLogLevel, Sgt::LogLevel::NORMAL, __VA_ARGS__)
+
+    /// @brief Log a debug message.
+    /// @ingroup Utilities
+    ///
+    /// E.g. sgtLogDebug(LogLevel::VERBOSE) << "this is a debug message: number = " << 5 << std::endl;
+    /// Parameter is optional and defaults to LogLevel::NORMAL
+#define sgtLogDebug(...) LOG(Sgt::Log().debug(), Sgt::LogLevels::debugLogLevel, Sgt::LogLevel::NONE, __VA_ARGS__)
+
 #define sgtError(msg) {std::ostringstream ss; ss << "SmartGridToolbox: " << __PRETTY_FUNCTION__ << ": " << msg; throw std::runtime_error(ss.str());}
 
     /// @ingroup Utilities
-#define sgtAssert(cond, msg) if (!(cond)) sgtError(msg);
+#define sgtAssert(cond, msg) if (!(cond)) sgtError(msg)
 
     /// @ingroup Utilities
 #ifdef DEBUG
