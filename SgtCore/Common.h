@@ -118,14 +118,14 @@ namespace Sgt
 
     // Internal macros to help with machinery of logging.
     // Don't bother trying to understand these!
-#define LOG_1(strm, threshold, default_level, level) if (level >= threshold) strm
-#define LOG_0(strm, threshold, default_level, ...) LOG_1(strm, threshold, default_level, default_level)
+#define LOG_1(strm, level, default_threshold, threshold) if (level >= threshold) strm
+#define LOG_0(strm, level, default_threshold, ...) LOG_1(strm, level, default_threshold, default_threshold)
 #define FUNC_CHOOSER(_f1, _f2, _f3, ...) _f3
 #define FUNC_RECOMPOSER(argsWithParentheses) FUNC_CHOOSER argsWithParentheses
 #define CHOOSE_FROM_ARG_COUNT(...) FUNC_RECOMPOSER((__VA_ARGS__, LOG_2, LOG_1, ))
 #define NO_ARG_EXPANDER() ,,LOG_0
 #define MACRO_CHOOSER(...) CHOOSE_FROM_ARG_COUNT(NO_ARG_EXPANDER __VA_ARGS__ ())
-#define LOG(strm, threshold, default_level, ...) MACRO_CHOOSER(__VA_ARGS__)(strm, threshold, default_level, __VA_ARGS__)
+#define LOG(strm, level, default_threshold, ...) MACRO_CHOOSER(__VA_ARGS__)(strm, level, default_threshold, __VA_ARGS__)
 
     /// @brief Log a message.
     /// @ingroup Utilities
@@ -153,7 +153,7 @@ namespace Sgt
     ///
     /// E.g. sgtLogDebug(LogLevel::VERBOSE) << "this is a debug message: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
-#define sgtLogDebug(...) LOG(Sgt::Log().debug(), Sgt::debugLogLevel(), Sgt::LogLevel::NONE, __VA_ARGS__)
+#define sgtLogDebug(...) LOG(Sgt::Log().debug(), Sgt::debugLogLevel(), Sgt::LogLevel::NORMAL, __VA_ARGS__)
 
 #define sgtError(msg) {std::ostringstream ss; ss << "SmartGridToolbox: " << __PRETTY_FUNCTION__ << ": " << msg; throw std::runtime_error(ss.str());}
 
