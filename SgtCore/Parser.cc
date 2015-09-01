@@ -76,7 +76,7 @@ namespace Sgt
 
     YAML::Node getTopNode(const std::string& fname)
     {
-        Log().message() << "Opening file " << fname << " for parsing." << std::endl;
+        sgtLogMessage() << "Opening file " << fname << " for parsing." << std::endl;
         auto top = YAML::LoadFile(fname);
         sgtAssert(top.size() > 0, "File " << fname << " is empty or doesn't exist.");
         return top;
@@ -129,8 +129,8 @@ namespace Sgt
 
     std::string ParserBase::expandString(const std::string& str) const
     {
-        Log().debug(LogLevel::VERBOSE) << "Expand:" << std::endl;
-        {LogIndent _; Log().debug(LogLevel::VERBOSE) << str << std::endl;}
+        sgtLogDebug(LogLevel::VERBOSE) << "Expand:" << std::endl;
+        {LogIndent _; sgtLogDebug(LogLevel::VERBOSE) << str << std::endl;}
         LogIndent _;
         std::string result;
 
@@ -157,8 +157,8 @@ namespace Sgt
             // Now recursively check if the expansion of this expression has created any more expressions to expand.
             result = expandString(result);
         }
-        Log().debug(LogLevel::VERBOSE) << "Result:" << std::endl;
-        {LogIndent _; Log().debug(LogLevel::VERBOSE) << result << std::endl;}
+        sgtLogDebug(LogLevel::VERBOSE) << "Result:" << std::endl;
+        {LogIndent _; sgtLogDebug(LogLevel::VERBOSE) << result << std::endl;}
         return result;
     }
 
@@ -200,7 +200,7 @@ namespace Sgt
             // We matched a loop variable. Make sure there is no index!
             sgtAssert(s2 == "", "Loop variable " << s1 << " can not be indexed with " << s2 << ".");
             result = std::regex_replace(s1, std::regex((**it).name_), std::to_string((**it).i_));
-            Log().debug(LogLevel::VERBOSE) << "Expand loop: " << s1 << " -> " << result << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "Expand loop: " << s1 << " -> " << result << std::endl;
         }
         else
         {

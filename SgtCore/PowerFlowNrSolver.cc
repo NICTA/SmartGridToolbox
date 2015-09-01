@@ -121,7 +121,7 @@ namespace Sgt
 
     bool PowerFlowNrSolver::solveProblem()
     {
-        Log().debug() << "PowerFlowNrSolver : solve." << std::endl;
+        sgtLogDebug() << "PowerFlowNrSolver : solve." << std::endl;
         LogIndent _;
 
         Stopwatch stopwatch;
@@ -185,21 +185,21 @@ namespace Sgt
 
         for (niter = 0; niter < maxiter_; ++niter)
         {
-            Log().debug() << "Iteration = " << niter << std::endl;
+            sgtLogDebug() << "Iteration = " << niter << std::endl;
 
             stopwatch.reset();
             stopwatch.start();
             calcf(f, Vr, Vi, P, Q, M2Pv);
 
             err = norm(f, "inf");
-            if (Log::debugLogLevel == LogLevel::VERBOSE)
+            if (debugLogLevel() == LogLevel::VERBOSE)
             {
-                Log().debug(LogLevel::VERBOSE) << "f  = " << std::setprecision(5) << std::setw(9) << f << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << "f  = " << std::setprecision(5) << std::setw(9) << f << std::endl;
             }
-            Log().debug() << "Error = " << err << std::endl;
+            sgtLogDebug() << "Error = " << err << std::endl;
             if (err <= tol_)
             {
-                Log().debug() << "Success at iteration " << niter << "." << std::endl;
+                sgtLogDebug() << "Success at iteration " << niter << "." << std::endl;
                 wasSuccessful = true;
                 break;
             }
@@ -229,26 +229,26 @@ namespace Sgt
             stopwatch.stop();
             durationConstructJMat += stopwatch.seconds();
 
-            if (Log::debugLogLevel == LogLevel::VERBOSE)
+            if (debugLogLevel() == LogLevel::VERBOSE)
             {
-                Log().debug(LogLevel::VERBOSE)
+                sgtLogDebug(LogLevel::VERBOSE)
                     << "Before solve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
-                Log().debug(LogLevel::VERBOSE) 
+                sgtLogDebug(LogLevel::VERBOSE) 
                     << "Before solve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
-                Log().debug(LogLevel::VERBOSE) 
+                sgtLogDebug(LogLevel::VERBOSE) 
                     << "Before solve: M^2 = " << std::setprecision(5) << std::setw(9)
                     << (Vr % Vr + Vi % Vi) << std::endl;
-                Log().debug(LogLevel::VERBOSE) 
+                sgtLogDebug(LogLevel::VERBOSE) 
                     << "Before solve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
-                Log().debug(LogLevel::VERBOSE) 
+                sgtLogDebug(LogLevel::VERBOSE) 
                     << "Before solve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
-                Log().debug(LogLevel::VERBOSE) 
+                sgtLogDebug(LogLevel::VERBOSE) 
                     << "Before solve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
-                Log().debug(LogLevel::VERBOSE) << "Before solve: J   = " << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << "Before solve: J   = " << std::endl;
                 LogIndent _;
                 for (uword i = 0; i < nVar(); ++i)
                 {
-                    Log().debug(LogLevel::VERBOSE)
+                    sgtLogDebug(LogLevel::VERBOSE)
                         << std::setprecision(5) << std::setw(9) << JMat.row(i) << std::endl;
                 }
             }
@@ -265,15 +265,15 @@ namespace Sgt
             stopwatch.stop();
             durationSolve += stopwatch.seconds();
 
-            Log().debug() << "After solve: ok = " << ok << std::endl;
-            if (Log::debugLogLevel == LogLevel::VERBOSE)
+            sgtLogDebug() << "After solve: ok = " << ok << std::endl;
+            if (debugLogLevel() == LogLevel::VERBOSE)
             {
-                    Log().debug(LogLevel::VERBOSE) 
+                    sgtLogDebug(LogLevel::VERBOSE) 
                         << "After solve: x  = " << std::setprecision(5) << std::setw(9) << x << std::endl;
             }
             if (!ok)
             {
-                Log().warning() << "Solve failed." << std::endl;
+                sgtLogWarning() << "Solve failed." << std::endl;
                 break;
             }
 
@@ -299,17 +299,17 @@ namespace Sgt
                 Q(mod_->selPvFromAll()) += x(selQPvFrom_x_);
             }
 
-            if (Log::debugLogLevel == LogLevel::VERBOSE)
+            if (debugLogLevel() == LogLevel::VERBOSE)
             {
-                Log().debug(LogLevel::VERBOSE)
+                sgtLogDebug(LogLevel::VERBOSE)
                     << "Updated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
-                Log().debug(LogLevel::VERBOSE)
+                sgtLogDebug(LogLevel::VERBOSE)
                     << "Updated Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
-                Log().debug(LogLevel::VERBOSE)
+                sgtLogDebug(LogLevel::VERBOSE)
                     << "Updated M^2 = " << std::setprecision(5) << std::setw(9) << Vr % Vr + Vi % Vi << std::endl;
-                Log().debug(LogLevel::VERBOSE)
+                sgtLogDebug(LogLevel::VERBOSE)
                     << "Updated P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
-                Log().debug(LogLevel::VERBOSE)
+                sgtLogDebug(LogLevel::VERBOSE)
                     << "Updated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
             }
             stopwatch.stop();
@@ -318,7 +318,7 @@ namespace Sgt
 
         if (!wasSuccessful)
         {
-            Log().warning() << "PowerFlowNrSolver: Newton-Raphson method failed to converge." << std::endl;
+            sgtLogWarning() << "PowerFlowNrSolver: Newton-Raphson method failed to converge." << std::endl;
             for (std::size_t i = 0; i < mod_->nNode(); ++i)
             {
                 auto node = mod_->nodes()[i];
@@ -364,7 +364,7 @@ namespace Sgt
         stopwatchTot.stop();
         durationTot = stopwatchTot.seconds();
 
-        Log().debug()
+        sgtLogDebug()
             << "PowerFlowNrSolver: \n"
             << "    successful = " << wasSuccessful << "\n"
             << "    error = " << err << "\n" 

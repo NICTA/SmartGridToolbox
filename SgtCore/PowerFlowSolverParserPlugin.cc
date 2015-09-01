@@ -30,13 +30,13 @@ namespace Sgt
         auto key = nd.as<std::string>();
         if (key == "nr")
         {
-            Log().message() << "Using Newton-Raphson solver." << std::endl;
+            sgtLogMessage() << "Using Newton-Raphson solver." << std::endl;
             netw.setSolver(std::unique_ptr<PowerFlowNrSolver>(new PowerFlowNrSolver));
         }
         else if (key == "opf_pt_pp")
         {
 #ifdef ENABLE_POWER_TOOLS_PP
-            Log().message() << "Using OPF (PowerTools++) solver." << std::endl;
+            sgtLogMessage() << "Using OPF (PowerTools++) solver." << std::endl;
             netw.setSolver(std::unique_ptr<PowerFlowPtPpSolver>(new PowerFlowPtPpSolver));
 #else // ENABLE_POWER_TOOLS_PP
             sgtError("OPF solver is not available, since SmartGridToolbox was not compiled with "

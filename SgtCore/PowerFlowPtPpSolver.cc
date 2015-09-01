@@ -131,7 +131,7 @@ namespace Sgt
             Complex SLoadUnservedSol = sgtNw.pu2S(SLoadUnservedSolPu);
             if (std::abs(SLoadUnservedSol) > 1e-3)
             {
-                Log().warning() << "Unserved load at bus " << sgtBus->id() << " is " << SLoadUnservedSol << std::endl;
+                sgtLogWarning() << "Unserved load at bus " << sgtBus->id() << " is " << SLoadUnservedSol << std::endl;
             }
 
             sgtBus->setSZipUnserved({SLoadUnservedSol});
@@ -155,22 +155,22 @@ namespace Sgt
 
     void printNetw(const Net& net)
     {
-        Log().message() << "Nodes-----------------" << std::endl;
+        sgtLogMessage() << "Nodes-----------------" << std::endl;
         for (const auto node : net.nodes)
         {
             node->print();
         }
-        Log().message() << "Arcs------------------" << std::endl;
+        sgtLogMessage() << "Arcs------------------" << std::endl;
         for (const auto arc : net.arcs)
         {
             arc->print();
         }
-        Log().message() << "Gens------------------" << std::endl;
+        sgtLogMessage() << "Gens------------------" << std::endl;
         for (const auto gen : net.gens)
         {
             gen->print();
         }
-        Log().message() << "Done------------------" << std::endl;
+        sgtLogMessage() << "Done------------------" << std::endl;
     }
 
     void PowerFlowPtPpSolver::setNetwork(Network* netw) 
@@ -195,10 +195,10 @@ namespace Sgt
         stopwatchSolve.stop();
         
         // printNetw(*ptNetw_);
-        Log().message() << "PowerFlowPtPpSolver:" << std::endl;
+        sgtLogMessage() << "PowerFlowPtPpSolver:" << std::endl;
         {
             LogIndent _;
-            Log().message() << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
+            sgtLogMessage() << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
         }
         return success;
     }

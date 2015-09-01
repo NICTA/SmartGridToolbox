@@ -75,27 +75,27 @@ namespace Sgt
             const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
             double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S)
     {
-        SGT_DEBUG(Log().debug() << "PowerFlowModel : add bus " << id << std::endl);
+        SGT_DEBUG(sgtLogDebug() << "PowerFlowModel : add bus " << id << std::endl);
         busses_[id].reset(new PfBus(id, type, phases, YConst, IConst, SConst, J, V, S));
     }
 
     void PowerFlowModel::addBranch(const std::string& idBus0, const std::string& idBus1,
                                    const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& Y)
     {
-        SGT_DEBUG(Log().debug() << "PowerFlowModel : addBranch " << idBus0 << " " << idBus1 << std::endl);
+        SGT_DEBUG(sgtLogDebug() << "PowerFlowModel : addBranch " << idBus0 << " " << idBus1 << std::endl);
         branches_.push_back(std::unique_ptr<PfBranch>(new PfBranch(idBus0, idBus1, phases0, phases1, Y)));
     }
 
     void PowerFlowModel::reset()
     {
-        SGT_DEBUG(Log().debug() << "PowerFlowModel : reset." << std::endl);
+        SGT_DEBUG(sgtLogDebug() << "PowerFlowModel : reset." << std::endl);
         busses_ = PfBusMap();
         branches_ = PfBranchVec();
     }
 
     void PowerFlowModel::validate()
     {
-        SGT_DEBUG(Log().debug() << "PowerFlowModel : validate." << std::endl);
+        SGT_DEBUG(sgtLogDebug() << "PowerFlowModel : validate." << std::endl);
 
         // Make Nodes:
         PfNodeVec PqNodes = PfNodeVec();
@@ -199,7 +199,7 @@ namespace Sgt
 
         Y_ = YHelper.get();
 
-        SGT_DEBUG(Log().debug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
+        SGT_DEBUG(sgtLogDebug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
 
         // Vector quantities of problem:
         V_.set_size(nNode);
@@ -214,49 +214,49 @@ namespace Sgt
             IConst_(i) = node.IConst_;
         }
 
-        SGT_DEBUG(Log().debug() << "PowerFlowModel : validate complete." << std::endl);
+        SGT_DEBUG(sgtLogDebug() << "PowerFlowModel : validate complete." << std::endl);
         SGT_DEBUG(print());
     }
 
     void PowerFlowModel::print()
     {
-        Log().debug() << "PowerFlowModel::print()" << std::endl;
+        sgtLogDebug() << "PowerFlowModel::print()" << std::endl;
         LogIndent _;
-        Log().debug() << "Nodes:" << std::endl;
+        sgtLogDebug() << "Nodes:" << std::endl;
         {
             LogIndent _;
             for (const PfNode* nd : nodes_)
             {
-                Log().debug() << "Node:" << std::endl;
+                sgtLogDebug() << "Node:" << std::endl;
                 {
                     LogIndent _;
-                    Log().debug() << "Id     : " << nd->bus_->id_ << std::endl;
-                    Log().debug() << "Type   : " << nd->bus_->type_ << std::endl;
-                    Log().debug() << "Phase  : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
-                    Log().debug() << "V      : " << nd->V_ << std::endl;
-                    Log().debug() << "S      : " << nd->S_ << std::endl;
-                    Log().debug() << "YConst : " << nd->YConst_ << std::endl;
-                    Log().debug() << "IConst : " << nd->IConst_ << std::endl;
-                    Log().debug() << "SConst : " << nd->SConst_ << std::endl;
+                    sgtLogDebug() << "Id     : " << nd->bus_->id_ << std::endl;
+                    sgtLogDebug() << "Type   : " << nd->bus_->type_ << std::endl;
+                    sgtLogDebug() << "Phase  : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
+                    sgtLogDebug() << "V      : " << nd->V_ << std::endl;
+                    sgtLogDebug() << "S      : " << nd->S_ << std::endl;
+                    sgtLogDebug() << "YConst : " << nd->YConst_ << std::endl;
+                    sgtLogDebug() << "IConst : " << nd->IConst_ << std::endl;
+                    sgtLogDebug() << "SConst : " << nd->SConst_ << std::endl;
                 }
             }
         }
-        Log().debug() << "Branches:" << std::endl;
+        sgtLogDebug() << "Branches:" << std::endl;
         {
             LogIndent _;
             for (const std::unique_ptr<PfBranch>& branch : branches_)
             {
-                Log().debug() << "Branch:" << std::endl;
+                sgtLogDebug() << "Branch:" << std::endl;
                 {
                     LogIndent _;
-                    Log().debug() << "Busses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;
-                    Log().debug() << "Phases : " << branch->phases_[0] << ", " << branch->phases_[1] << std::endl;
-                    Log().debug() << "Y      :" << std::endl;
+                    sgtLogDebug() << "Busses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;
+                    sgtLogDebug() << "Phases : " << branch->phases_[0] << ", " << branch->phases_[1] << std::endl;
+                    sgtLogDebug() << "Y      :" << std::endl;
                     {
                         LogIndent _;
                         for (arma::uword i = 0; i < branch->Y_.n_rows; ++i)
                         {
-                            Log().debug() << std::setprecision(14) << std::setw(18) << branch->Y_.row(i) << std::endl;
+                            sgtLogDebug() << std::setprecision(14) << std::setw(18) << branch->Y_.row(i) << std::endl;
                         }
                     }
                 }

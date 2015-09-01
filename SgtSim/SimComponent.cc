@@ -18,7 +18,7 @@ namespace Sgt
 {
     void SimComponent::initialize()
     {
-        SGT_DEBUG(Log().debug() << "SimComponent " << id() << " initialize." << std::endl);
+        SGT_DEBUG(sgtLogDebug() << "SimComponent " << id() << " initialize." << std::endl);
         willUpdate_.setDescription(id() + ": Will update");
         didUpdate_.setDescription(id() + ": Did update");
         needsUpdate_.setDescription(id() + ": Needs update");
@@ -30,7 +30,7 @@ namespace Sgt
 
     void SimComponent::update(Time t)
     {
-        SGT_DEBUG(Log().debug() << "SimComponent " << id() << " update from " << lastUpdated_ << " to " << t
+        SGT_DEBUG(sgtLogDebug() << "SimComponent " << id() << " update from " << lastUpdated_ << " to " << t
                   << std::endl);
         if (lastUpdated_ < t)
         {

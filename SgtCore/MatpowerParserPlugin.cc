@@ -277,7 +277,7 @@ namespace Sgt
 
             std::fstream infile(inputName);
             sgtAssert(infile.is_open(), "Could not open the matpower input file " << inputName << ".");
-            Log().message() << "Parsing matpower input file " << inputName << "." << std::endl;
+            sgtLogMessage() << "Parsing matpower input file " << inputName << "." << std::endl;
 
             // Iterate over stream input:
             BaseIterator inBegin(infile);
@@ -291,7 +291,7 @@ namespace Sgt
             }
         }
 
-        Log().message() << "Parsed " << data.bus.size() << " busses, " << data.gen.size() << " generators and "
+        sgtLogMessage() << "Parsed " << data.bus.size() << " busses, " << data.gen.size() << " generators and "
                         << data.branch.size() << " branches." << std::endl;
 
         // Extract the bus data.
@@ -379,7 +379,7 @@ namespace Sgt
         {
             if (data.genCost.size() == 2 * data.gen.size())
             {
-                Log().warning() << "Reactive generator costs not yet implemented. Ignoring them." << std::endl;
+                sgtLogWarning() << "Reactive generator costs not yet implemented. Ignoring them." << std::endl;
             }
             else
             {
@@ -471,7 +471,7 @@ namespace Sgt
                                [](const BusPtr& bus)->bool{return bus->type() == BusType::SL;});
         if (it == netw.busses().cend())
         {
-            Log().warning()
+            sgtLogWarning()
                     << "There is no slack bus defined on the network. Setting the type of the first PV bus to SL."
                     << std::endl;
             auto itb = std::find_if(netw.busses().cbegin(), netw.busses().cend(),
@@ -481,7 +481,7 @@ namespace Sgt
         }
         else
         {
-            Log().message() << "The slack bus is " << (**it).id() << std::endl;
+            sgtLogMessage() << "The slack bus is " << (**it).id() << std::endl;
         }
 
         // Gens:
@@ -554,13 +554,13 @@ namespace Sgt
 
             if (genCostInfo.costs.size() > 3)
             {
-                Log().warning() << "Can't have more than three costs for generator. Ignoring costs." << std::endl;
+                sgtLogWarning() << "Can't have more than three costs for generator. Ignoring costs." << std::endl;
                 isBad = true;
             }
 
             if (genCostInfo.model != 2)
             {
-                Log().warning() << "Can only use model 2 for generator costs. Ignoring costs." << std::endl;
+                sgtLogWarning() << "Can only use model 2 for generator costs. Ignoring costs." << std::endl;
                 isBad = true;
             }
 

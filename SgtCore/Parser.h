@@ -110,13 +110,13 @@ namespace Sgt
 
             void parse(const std::string& fname, T& into)
             {
-                Log().message() << "Parsing file " << fname << "." << std::endl;
+                sgtLogMessage() << "Parsing file " << fname << "." << std::endl;
                 {
                     LogIndent _;
                     auto top = getTopNode(fname);
                     parse(top, into);
                 }
-                Log().message() << "Finished parsing file " << fname << "." << std::endl;
+                sgtLogMessage() << "Finished parsing file " << fname << "." << std::endl;
             }
 
             void parse(const YAML::Node& node, T& into)
@@ -143,7 +143,7 @@ namespace Sgt
                         {
                             for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_)
                             {
-                                Log().debug(LogLevel::VERBOSE) << "Loop " << l.name_ << " : " << l.i_
+                                sgtLogDebug(LogLevel::VERBOSE) << "Loop " << l.name_ << " : " << l.i_
                                     << " (upper = " << l.upper_ << ")" << std::endl;
                                 LogIndent _;
                                 parse(l.body_, into);
@@ -152,18 +152,18 @@ namespace Sgt
                         }
                         else
                         {
-                            Log().message(LogLevel::VERBOSE) << "Parsing plugin " <<  nodeType << "." << std::endl;
+                            sgtLogMessage(LogLevel::VERBOSE) << "Parsing plugin " <<  nodeType << "." << std::endl;
                             LogIndent _;
                             auto it = plugins_.find(nodeType);
                             if (it == plugins_.end())
                             {
-                                Log().warning() << "I don't know how to parse plugin " << nodeType << std::endl;
+                                sgtLogWarning() << "I don't know how to parse plugin " << nodeType << std::endl;
                             }
                             else
                             {
                                 it->second->parse(nodeVal, into, *this);
                             }
-                            Log().message(LogLevel::VERBOSE) << "Finished parsing plugin " <<  nodeType << "." 
+                            sgtLogMessage(LogLevel::VERBOSE) << "Finished parsing plugin " <<  nodeType << "." 
                                 << std::endl;
                         }
                     }

@@ -65,8 +65,6 @@ namespace Sgt
         friend class LogIndent;
 
         public:
-            
-        public:
 
             std::ostream& message();
 
@@ -91,13 +89,14 @@ namespace Sgt
         VERBOSE
     };
 
-    struct LogLevels
-    {
-        static LogLevel messageLogLevel;
-        static LogLevel warningLogLevel;
-        static LogLevel errorLogLevel;
-        static LogLevel debugLogLevel;
-    };
+    /// @brief Get a reference to the current message logging level.
+    LogLevel& messageLogLevel();
+    /// @brief Get a reference to the current warning logging level.
+    LogLevel& warningLogLevel();
+    /// @brief Get a reference to the current error logging level.
+    LogLevel& errorLogLevel();
+    /// @brief Get a reference to the current debug logging level.
+    LogLevel& debugLogLevel();
 
     /// @brief Create a LogIndent on the stack to indent all logs.
     ///
@@ -133,28 +132,28 @@ namespace Sgt
     ///
     /// E.g. sgtLogMessage(LogLevel::VERBOSE) << "this is a message: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
-#define sgtLogMessage(...) LOG(Sgt::Log().message(), Sgt::LogLevels::messageLogLevel, Sgt::LogLevel::NORMAL, __VA_ARGS__)
+#define sgtLogMessage(...) LOG(Sgt::Log().message(), Sgt::messageLogLevel(), Sgt::LogLevel::NORMAL, __VA_ARGS__)
 
     /// @brief Log a warning.
     /// @ingroup Utilities
     ///
     /// E.g. sgtLogWarning(LogLevel::VERBOSE) << "this is a warning: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
-#define sgtLogWarning(...) LOG(Sgt::Log().warning(), Sgt::LogLevels::warningLogLevel, Sgt::LogLevel::NORMAL, __VA_ARGS__)
+#define sgtLogWarning(...) LOG(Sgt::Log().warning(), Sgt::warningLogLevel(), Sgt::LogLevel::NORMAL, __VA_ARGS__)
 
     /// @brief Log an error.
     /// @ingroup Utilities
     ///
     /// E.g. sgtLogError(LogLevel::VERBOSE) << "this is an error: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
-#define sgtLogError(...) LOG(Sgt::Log().error(), Sgt::LogLevels::errorLogLevel, Sgt::LogLevel::NORMAL, __VA_ARGS__)
+#define sgtLogError(...) LOG(Sgt::Log().error(), Sgt::errorLogLevel(), Sgt::LogLevel::NORMAL, __VA_ARGS__)
 
     /// @brief Log a debug message.
     /// @ingroup Utilities
     ///
     /// E.g. sgtLogDebug(LogLevel::VERBOSE) << "this is a debug message: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
-#define sgtLogDebug(...) LOG(Sgt::Log().debug(), Sgt::LogLevels::debugLogLevel, Sgt::LogLevel::NONE, __VA_ARGS__)
+#define sgtLogDebug(...) LOG(Sgt::Log().debug(), Sgt::debugLogLevel(), Sgt::LogLevel::NONE, __VA_ARGS__)
 
 #define sgtError(msg) {std::ostringstream ss; ss << "SmartGridToolbox: " << __PRETTY_FUNCTION__ << ": " << msg; throw std::runtime_error(ss.str());}
 

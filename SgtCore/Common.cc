@@ -72,38 +72,44 @@ namespace Sgt
         return destBuf_->sputc(static_cast<char_type>(ch));
     }
 
-    LogLevel Log::messageLogLevel = LogLevel::NORMAL;
-    LogLevel Log::warningLogLevel = LogLevel::NORMAL;
-    LogLevel Log::debugLogLevel = LogLevel::NONE;
-
-    std::ostream& Log::message(LogLevel level)
+    LogLevel& messageLogLevel()
     {
-        if (messageLogLevel >= level)
-        {
-            coutBuf_.reset(
-                    std::string("MESSAGE: ") + std::string(indentLevel_, ' '),
-                    std::string("         ") + std::string(indentLevel_, ' '));
-            return std::cout;
-        }
-        else
-        {
-            return nullStream();
-        }
+        static LogLevel level = LogLevel::NORMAL;
+        return level;
     }
 
-    std::ostream& Log::warning(LogLevel level)
+    LogLevel& warningLogLevel()
     {
-        if (warningLogLevel >= level)
-        {
-            cerrBuf_.reset(
-                    std::string("WARNING: ") + std::string(indentLevel_, ' '),
-                    std::string("         ") + std::string(indentLevel_, ' '));
-            return std::cerr;
-        }
-        else
-        {
-            return nullStream();
-        }
+        static LogLevel level = LogLevel::NORMAL;
+        return level;
+    }
+
+    LogLevel& errorLogLevel()
+    {
+        static LogLevel level = LogLevel::NORMAL;
+        return level;
+    }
+
+    LogLevel& debugLogLevel()
+    {
+        static LogLevel level = LogLevel::NONE;
+        return level;
+    }
+
+    std::ostream& Log::message()
+    {
+        coutBuf_.reset(
+                std::string("MESSAGE: ") + std::string(indentLevel_, ' '),
+                std::string("         ") + std::string(indentLevel_, ' '));
+        return std::cout;
+    }
+
+    std::ostream& Log::warning()
+    {
+        cerrBuf_.reset(
+                std::string("WARNING: ") + std::string(indentLevel_, ' '),
+                std::string("         ") + std::string(indentLevel_, ' '));
+        return std::cerr;
     }
 
     std::ostream& Log::error()
@@ -114,19 +120,12 @@ namespace Sgt
         return std::cerr;
     }
 
-    std::ostream& Log::debug(LogLevel level)
+    std::ostream& Log::debug()
     {
-        if (debugLogLevel >= level)
-        {
-            cerrBuf_.reset(
-                    std::string("DEBUG  : ") + std::string(indentLevel_, ' '),
-                    std::string("         ") + std::string(indentLevel_, ' '));
-            return std::cerr;
-        }
-        else
-        {
-            return nullStream();
-        }
+        cerrBuf_.reset(
+                std::string("DEBUG  : ") + std::string(indentLevel_, ' '),
+                std::string("         ") + std::string(indentLevel_, ' '));
+        return std::cerr;
     }
 
     unsigned int Log::indentLevel_ = 0;
