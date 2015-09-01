@@ -64,8 +64,8 @@ namespace Sgt
 
     bool Network::solvePowerFlow()
     {
-        SGT_DEBUG(sgtLogDebug() << "Network : solving power flow." << std::endl);
-        SGT_DEBUG(sgtLogDebug() << *this);
+        sgtLogDebug() << "Network : solving power flow." << std::endl;
+        sgtLogDebug() << *this;
 
         isValidSolution_ = solver_->solve(this);
         if (!isValidSolution_)

@@ -80,7 +80,7 @@ namespace Sgt
 
             void addAction(const std::function<void ()>& action, const std::string& description)
             {
-                SGT_DEBUG(sgtLogDebug() << "Event: " << description_ << ": addAction: " << description << std::endl);
+                sgtLogDebug() << "Event: " << description_ << ": addAction: " << description << std::endl;
                 actions_.emplace_back(action, description);
             }
 

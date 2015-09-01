@@ -39,10 +39,10 @@ namespace Sgt
         if (!visited_)
         {
             visited_ = true;
-            SGT_DEBUG(sgtLogDebug() << prlevel(level - 1) << "DFS " << idx_ << " {" << std::endl);
+            sgtLogDebug() << prlevel(level - 1) << "DFS " << idx_ << " {" << std::endl;
             for (WoNode* predecessor : stack)
             {
-                SGT_DEBUG(sgtLogDebug() << prlevel(level) << predecessor->idx_ << std::endl);
+                sgtLogDebug() << prlevel(level) << predecessor->idx_ << std::endl;
                 predecessor->descendents_.insert(this);
             }
             stack.push_back(this);
@@ -51,7 +51,7 @@ namespace Sgt
                 toNd->dfs(stack);
             }
             stack.pop_back();
-            SGT_DEBUG(sgtLogDebug() << prlevel(level - 1) << "}" << std::endl);
+            sgtLogDebug() << prlevel(level - 1) << "}" << std::endl;
         }
         --level;
     }
@@ -66,12 +66,13 @@ namespace Sgt
 
     void WoGraph::weakOrder()
     {
-        SGT_DEBUG(sgtLogDebug() << std::endl);
-        SGT_DEBUG(
+        sgtLogDebug() << std::endl;
+        if (debugLogLevel() >= LogLevel::NORMAL)
+        {
             sgtLogDebug() << "Weak order graph: initial:" << std::endl;
             debugPrint();
             sgtLogDebug() << std::endl;
-        );
+        }
 
         std::vector<WoNode*> stack;
         // First do a DFS to induce an order on the nodes.
@@ -105,11 +106,12 @@ namespace Sgt
         // so if we want e.g. a secondary alphabetical ordering then we should first pass in an alphabetically ordered
         // vector.
 
-        SGT_DEBUG(
+        if (debugLogLevel() >= LogLevel::NORMAL)
+        {
             sgtLogDebug() << "Weak order graph: pre-sort:" << std::endl;
             debugPrint();
             sgtLogDebug() << std::endl;
-        );
+        }
 
         for (auto it1 = nodes_.begin(); it1 != nodes_.end(); ++it1)
         {
@@ -127,7 +129,7 @@ namespace Sgt
             }
         }
 
-        SGT_DEBUG(sgtLogDebug() << "Weak order graph: final:" << std::endl; debugPrint());
+        sgtLogDebug() << "Weak order graph: final:" << std::endl; debugPrint();
     }
 
     void WoGraph::debugPrint()

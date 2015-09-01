@@ -75,27 +75,27 @@ namespace Sgt
             const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
             double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S)
     {
-        SGT_DEBUG(sgtLogDebug() << "PowerFlowModel : add bus " << id << std::endl);
+        sgtLogDebug() << "PowerFlowModel : add bus " << id << std::endl;
         busses_[id].reset(new PfBus(id, type, phases, YConst, IConst, SConst, J, V, S));
     }
 
     void PowerFlowModel::addBranch(const std::string& idBus0, const std::string& idBus1,
                                    const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& Y)
     {
-        SGT_DEBUG(sgtLogDebug() << "PowerFlowModel : addBranch " << idBus0 << " " << idBus1 << std::endl);
+        sgtLogDebug() << "PowerFlowModel : addBranch " << idBus0 << " " << idBus1 << std::endl;
         branches_.push_back(std::unique_ptr<PfBranch>(new PfBranch(idBus0, idBus1, phases0, phases1, Y)));
     }
 
     void PowerFlowModel::reset()
     {
-        SGT_DEBUG(sgtLogDebug() << "PowerFlowModel : reset." << std::endl);
+        sgtLogDebug() << "PowerFlowModel : reset." << std::endl;
         busses_ = PfBusMap();
         branches_ = PfBranchVec();
     }
 
     void PowerFlowModel::validate()
     {
-        SGT_DEBUG(sgtLogDebug() << "PowerFlowModel : validate." << std::endl);
+        sgtLogDebug() << "PowerFlowModel : validate." << std::endl;
 
         // Make Nodes:
         PfNodeVec PqNodes = PfNodeVec();
@@ -199,7 +199,7 @@ namespace Sgt
 
         Y_ = YHelper.get();
 
-        SGT_DEBUG(sgtLogDebug() << "Y_.nnz() = " << Y_.nnz() << std::endl);
+        sgtLogDebug() << "Y_.nnz() = " << Y_.n_nonzero << std::endl;
 
         // Vector quantities of problem:
         V_.set_size(nNode);
@@ -214,8 +214,8 @@ namespace Sgt
             IConst_(i) = node.IConst_;
         }
 
-        SGT_DEBUG(sgtLogDebug() << "PowerFlowModel : validate complete." << std::endl);
-        SGT_DEBUG(print());
+        sgtLogDebug() << "PowerFlowModel : validate complete." << std::endl;
+        print();
     }
 
     void PowerFlowModel::print()

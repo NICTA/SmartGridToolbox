@@ -19,7 +19,7 @@ namespace Sgt
 {
     void SimNetwork::updateState(Time t)
     {
-        SGT_DEBUG(sgtLogDebug() << "SimNetwork : update state." << std::endl);
+        sgtLogDebug() << "SimNetwork : update state." << std::endl;
         network_->solvePowerFlow(); // TODO: inefficient to rebuild even if not needed.
     }
 }

@@ -192,10 +192,7 @@ namespace Sgt
             calcf(f, Vr, Vi, P, Q, M2Pv);
 
             err = norm(f, "inf");
-            if (debugLogLevel() == LogLevel::VERBOSE)
-            {
-                sgtLogDebug(LogLevel::VERBOSE) << "f  = " << std::setprecision(5) << std::setw(9) << f << std::endl;
-            }
+            sgtLogDebug(LogLevel::VERBOSE) << "f  = " << std::setprecision(5) << std::setw(9) << f << std::endl;
             sgtLogDebug() << "Error = " << err << std::endl;
             if (err <= tol_)
             {
@@ -229,7 +226,7 @@ namespace Sgt
             stopwatch.stop();
             durationConstructJMat += stopwatch.seconds();
 
-            if (debugLogLevel() == LogLevel::VERBOSE)
+            if (debugLogLevel() >= LogLevel::VERBOSE)
             {
                 sgtLogDebug(LogLevel::VERBOSE)
                     << "Before solve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
@@ -266,11 +263,8 @@ namespace Sgt
             durationSolve += stopwatch.seconds();
 
             sgtLogDebug() << "After solve: ok = " << ok << std::endl;
-            if (debugLogLevel() == LogLevel::VERBOSE)
-            {
-                    sgtLogDebug(LogLevel::VERBOSE) 
-                        << "After solve: x  = " << std::setprecision(5) << std::setw(9) << x << std::endl;
-            }
+            sgtLogDebug(LogLevel::VERBOSE) 
+                << "After solve: x  = " << std::setprecision(5) << std::setw(9) << x << std::endl;
             if (!ok)
             {
                 sgtLogWarning() << "Solve failed." << std::endl;
@@ -299,7 +293,7 @@ namespace Sgt
                 Q(mod_->selPvFromAll()) += x(selQPvFrom_x_);
             }
 
-            if (debugLogLevel() == LogLevel::VERBOSE)
+            if (debugLogLevel() >= LogLevel::VERBOSE)
             {
                 sgtLogDebug(LogLevel::VERBOSE)
                     << "Updated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;

@@ -130,7 +130,10 @@ namespace Sgt
     std::string ParserBase::expandString(const std::string& str) const
     {
         sgtLogDebug(LogLevel::VERBOSE) << "Expand:" << std::endl;
-        {LogIndent _; sgtLogDebug(LogLevel::VERBOSE) << str << std::endl;}
+        {
+            LogIndent _;
+            sgtLogDebug(LogLevel::VERBOSE) << str << std::endl;
+        }
         LogIndent _;
         std::string result;
 
@@ -158,7 +161,10 @@ namespace Sgt
             result = expandString(result);
         }
         sgtLogDebug(LogLevel::VERBOSE) << "Result:" << std::endl;
-        {LogIndent _; sgtLogDebug(LogLevel::VERBOSE) << result << std::endl;}
+        {
+            LogIndent _;
+            sgtLogDebug(LogLevel::VERBOSE) << result << std::endl;
+        }
         return result;
     }
 

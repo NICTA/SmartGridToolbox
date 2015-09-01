@@ -160,13 +160,6 @@ namespace Sgt
     /// @ingroup Utilities
 #define sgtAssert(cond, msg) if (!(cond)) sgtError(msg)
 
-    /// @ingroup Utilities
-#ifdef DEBUG
-#define SGT_DEBUG(x) x
-#else
-#define SGT_DEBUG(x)
-#endif
-
     /// @}
 
     /// @name String conversion.
