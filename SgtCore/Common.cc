@@ -128,7 +128,7 @@ namespace Sgt
         return std::cerr;
     }
 
-    unsigned int Log::indentLevel_ = 0;
+    int Log::indentLevel_ = 0;
 
     struct CGram : Qi::grammar<std::string::const_iterator, Complex(), Ascii::space_type>
     {

@@ -76,7 +76,7 @@ namespace Sgt
 
         private:
 
-            static unsigned int indentLevel_;
+            static int indentLevel_;
 
             StreamIndent coutBuf_{std::cout};
             StreamIndent cerrBuf_{std::cerr};
@@ -105,16 +105,42 @@ namespace Sgt
     class LogIndent
     {
         public:
-            LogIndent()
+
+            LogIndent(unsigned int tabWidth = 4) : 
+                tabWidth_(tabWidth)
             {
-                Log::indentLevel_ += 4;
+                in();
             }
 
             ~LogIndent()
             {
-                Log::indentLevel_ -= 4;
+                Log::indentLevel_ -= myIndentLevel_;
             }
+
+            void in() 
+            {
+                myIndentLevel_ += tabWidth_;
+                Log::indentLevel_ += tabWidth_;
+            }
+
+            void out()
+            {
+                const int n = std::min(tabWidth, myIndentLevel_);
+                myIndentLevel_ -= n;
+                Log::indentLevel_ -= n;
+            }
+
+        private:
+
+            unsigned int tabWidth_{4};
+            int myIndentLevel_{0};
     };
+
+#ifdef DEBUG
+#define SGT_DEBUG if (true)
+#else 
+#define SGT_DEBUG if (false)
+#endif
 
     // Internal macros to help with machinery of logging.
     // Don't bother trying to understand these!

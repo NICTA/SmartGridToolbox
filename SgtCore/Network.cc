@@ -65,7 +65,7 @@ namespace Sgt
     bool Network::solvePowerFlow()
     {
         sgtLogDebug() << "Network : solving power flow." << std::endl;
-        sgtLogDebug() << *this;
+        sgtLogDebug(LogLevel::VERBOSE) << *this;
 
         isValidSolution_ = solver_->solve(this);
         if (!isValidSolution_)
@@ -134,9 +134,9 @@ namespace Sgt
             {
                 if (bus->nInServiceGens() == 0)
                 {
-                    sgtLogWarning() << "Bus " << bus->id() << " has type " << bus->type()
-                                    << ", but does not have any in service generators. Temporarily setting type to PQ."
-                                    << std::endl;
+                    sgtLogWarning(LogLevel::VERBOSE) << "Bus " << bus->id() << " has type " << bus->type()
+                        << ", but does not have any in service generators. Temporarily setting type to PQ."
+                        << std::endl;
                     bus->setType(BusType::PQ);
                 }
             }

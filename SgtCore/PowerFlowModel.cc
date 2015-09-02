@@ -75,14 +75,14 @@ namespace Sgt
             const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
             double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S)
     {
-        sgtLogDebug() << "PowerFlowModel : add bus " << id << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "PowerFlowModel : add bus " << id << std::endl;
         busses_[id].reset(new PfBus(id, type, phases, YConst, IConst, SConst, J, V, S));
     }
 
     void PowerFlowModel::addBranch(const std::string& idBus0, const std::string& idBus1,
                                    const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& Y)
     {
-        sgtLogDebug() << "PowerFlowModel : addBranch " << idBus0 << " " << idBus1 << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "PowerFlowModel : addBranch " << idBus0 << " " << idBus1 << std::endl;
         branches_.push_back(std::unique_ptr<PfBranch>(new PfBranch(idBus0, idBus1, phases0, phases1, Y)));
     }
 
@@ -96,6 +96,7 @@ namespace Sgt
     void PowerFlowModel::validate()
     {
         sgtLogDebug() << "PowerFlowModel : validate." << std::endl;
+        LogIndent _;
 
         // Make Nodes:
         PfNodeVec PqNodes = PfNodeVec();

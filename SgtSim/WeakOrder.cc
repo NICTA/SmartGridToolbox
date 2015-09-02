@@ -39,10 +39,10 @@ namespace Sgt
         if (!visited_)
         {
             visited_ = true;
-            sgtLogDebug() << prlevel(level - 1) << "DFS " << idx_ << " {" << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << prlevel(level - 1) << "DFS " << idx_ << " {" << std::endl;
             for (WoNode* predecessor : stack)
             {
-                sgtLogDebug() << prlevel(level) << predecessor->idx_ << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << prlevel(level) << predecessor->idx_ << std::endl;
                 predecessor->descendents_.insert(this);
             }
             stack.push_back(this);
@@ -51,7 +51,7 @@ namespace Sgt
                 toNd->dfs(stack);
             }
             stack.pop_back();
-            sgtLogDebug() << prlevel(level - 1) << "}" << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << prlevel(level - 1) << "}" << std::endl;
         }
         --level;
     }
@@ -66,12 +66,12 @@ namespace Sgt
 
     void WoGraph::weakOrder()
     {
-        sgtLogDebug() << std::endl;
         if (debugLogLevel() >= LogLevel::NORMAL)
         {
-            sgtLogDebug() << "Weak order graph: initial:" << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "Weak order graph: initial:" << std::endl;
             debugPrint();
-            sgtLogDebug() << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << std::endl;
         }
 
         std::vector<WoNode*> stack;
@@ -106,11 +106,11 @@ namespace Sgt
         // so if we want e.g. a secondary alphabetical ordering then we should first pass in an alphabetically ordered
         // vector.
 
-        if (debugLogLevel() >= LogLevel::NORMAL)
+        if (debugLogLevel() >= LogLevel::VERBOSE)
         {
-            sgtLogDebug() << "Weak order graph: pre-sort:" << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "Weak order graph: pre-sort:" << std::endl;
             debugPrint();
-            sgtLogDebug() << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << std::endl;
         }
 
         for (auto it1 = nodes_.begin(); it1 != nodes_.end(); ++it1)
@@ -129,87 +129,87 @@ namespace Sgt
             }
         }
 
-        sgtLogDebug() << "Weak order graph: final:" << std::endl; debugPrint();
+        sgtLogDebug(LogLevel::VERBOSE) << "Weak order graph: final:" << std::endl; debugPrint();
     }
 
     void WoGraph::debugPrint()
     {
         // TODO: Indentation may be messed up here.
-        sgtLogDebug() << "Weak order graph: Node i : direct descendents" << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "Weak order graph: Node i : direct descendents" << std::endl;
         for (const std::unique_ptr<WoNode>& nd1 : nodes())
         {
-            sgtLogDebug() << nd1->index() << "   ";
+            sgtLogDebug(LogLevel::VERBOSE) << nd1->index() << "   ";
             for (const WoNode* nd2 : nd1->to_)
             {
-                sgtLogDebug() << nd2->index() << " ";
+                sgtLogDebug(LogLevel::VERBOSE) << nd2->index() << " ";
             }
-            sgtLogDebug() << endl;
+            sgtLogDebug(LogLevel::VERBOSE) << endl;
         }
-        sgtLogDebug() << endl;
-        sgtLogDebug() << "Weak order graph: Node i : indirect descendents" << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "Weak order graph: Node i : indirect descendents" << std::endl;
         {
             for (const std::unique_ptr<WoNode>& nd1 : nodes())
             {
-                sgtLogDebug() << nd1->index() << "   ";
+                sgtLogDebug(LogLevel::VERBOSE) << nd1->index() << "   ";
                 for (const WoNode* nd2 : nd1->descendents_)
                 {
-                    sgtLogDebug() << nd2->index() << " ";
+                    sgtLogDebug(LogLevel::VERBOSE) << nd2->index() << " ";
                 }
-                sgtLogDebug() << endl;
+                sgtLogDebug(LogLevel::VERBOSE) << endl;
             }
         }
-        sgtLogDebug() << endl;
-        sgtLogDebug() << "Weak order graph: Node i : dominated nodes" << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "Weak order graph: Node i : dominated nodes" << std::endl;
         {
             for (const std::unique_ptr<WoNode>& nd1 : nodes())
             {
-                sgtLogDebug() << nd1->index() << "   ";
+                sgtLogDebug(LogLevel::VERBOSE) << nd1->index() << "   ";
                 for (const WoNode* nd2 : nd1->dominated_)
                 {
-                    sgtLogDebug() << nd2->index() << " ";
+                    sgtLogDebug(LogLevel::VERBOSE) << nd2->index() << " ";
                 }
-                sgtLogDebug() << endl;
+                sgtLogDebug(LogLevel::VERBOSE) << endl;
             }
         }
-        sgtLogDebug() << endl;
-        sgtLogDebug() << "Weak order graph: (i, j) : i dominates j" << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "Weak order graph: (i, j) : i dominates j" << std::endl;
         {
-            sgtLogDebug() << "     ";
+            sgtLogDebug(LogLevel::VERBOSE) << "     ";
             for (const std::unique_ptr<WoNode>& nd2 : nodes())
             {
-                sgtLogDebug() << setw(3) << left << nd2->index();
+                sgtLogDebug(LogLevel::VERBOSE) << setw(3) << left << nd2->index();
             }
-            sgtLogDebug() << endl;
+            sgtLogDebug(LogLevel::VERBOSE) << endl;
         }
-        sgtLogDebug() << endl;
+        sgtLogDebug(LogLevel::VERBOSE) << endl;
         for (const std::unique_ptr<WoNode>& nd1 : nodes())
         {
-            sgtLogDebug() << setw(5) << left << nd1->index();
+            sgtLogDebug(LogLevel::VERBOSE) << setw(5) << left << nd1->index();
             for (const std::unique_ptr<WoNode>& nd2 : nodes())
             {
-                sgtLogDebug() << setw(3) << left << (nd1->dominates(*nd2));
+                sgtLogDebug(LogLevel::VERBOSE) << setw(3) << left << (nd1->dominates(*nd2));
             }
-            sgtLogDebug() << endl;
+            sgtLogDebug(LogLevel::VERBOSE) << endl;
         }
-        sgtLogDebug() << endl;
-        sgtLogDebug() << "Weak order graph: (i, j) : i < j" << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "Weak order graph: (i, j) : i < j" << std::endl;
         {
-            sgtLogDebug() << "     ";
+            sgtLogDebug(LogLevel::VERBOSE) << "     ";
             for (const std::unique_ptr<WoNode>& nd2 : nodes())
             {
-                sgtLogDebug() << setw(3) << left << nd2->index();
+                sgtLogDebug(LogLevel::VERBOSE) << setw(3) << left << nd2->index();
             }
-            sgtLogDebug() << endl;
+            sgtLogDebug(LogLevel::VERBOSE) << endl;
         }
-        sgtLogDebug() << endl;
+        sgtLogDebug(LogLevel::VERBOSE) << endl;
         for (const std::unique_ptr<WoNode>& nd1 : nodes())
         {
-            sgtLogDebug() << setw(5) << left << nd1->index();
+            sgtLogDebug(LogLevel::VERBOSE) << setw(5) << left << nd1->index();
             for (const std::unique_ptr<WoNode>& nd2 : nodes())
             {
-                sgtLogDebug() << setw(3) << left << (*nd1 < *nd2);
+                sgtLogDebug(LogLevel::VERBOSE) << setw(3) << left << (*nd1 < *nd2);
             }
-            sgtLogDebug() << endl;
+            sgtLogDebug(LogLevel::VERBOSE) << endl;
         }
     }
 }
