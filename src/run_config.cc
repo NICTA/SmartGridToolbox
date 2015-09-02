@@ -33,7 +33,7 @@ int main(int argc, const char** argv)
 
     while (!sim.isFinished())
     {
-        LogIndent _;
+        LogIndent indent;
         sim.doTimestep();
     }
 }

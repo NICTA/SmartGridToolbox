@@ -130,11 +130,9 @@ namespace Sgt
     std::string ParserBase::expandString(const std::string& str) const
     {
         sgtLogDebug(LogLevel::VERBOSE) << "Expand:" << std::endl;
-        {
-            LogIndent _;
-            sgtLogDebug(LogLevel::VERBOSE) << str << std::endl;
-        }
-        LogIndent _;
+        LogIndent indent;
+        sgtLogDebug(LogLevel::VERBOSE) << "String:" << std::endl;
+        indent.in(); sgtLogDebug(LogLevel::VERBOSE) << str << std::endl; indent.out();
         std::string result;
 
         // Iterator over expansion expressions in the target.
@@ -161,10 +159,7 @@ namespace Sgt
             result = expandString(result);
         }
         sgtLogDebug(LogLevel::VERBOSE) << "Result:" << std::endl;
-        {
-            LogIndent _;
-            sgtLogDebug(LogLevel::VERBOSE) << result << std::endl;
-        }
+        indent.in(); sgtLogDebug(LogLevel::VERBOSE) << result << std::endl; indent.out();
         return result;
     }
 

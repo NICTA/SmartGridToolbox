@@ -23,17 +23,15 @@ namespace Sgt
         if (isEnabled_)
         {
             sgtLogDebug(LogLevel::VERBOSE) << "Event was triggered: " << description_ << std::endl;
+            LogIndent indent;
+            for (const Action& action : actions_)
             {
-                LogIndent _;
-                for (const Action& action : actions_)
+                sgtLogDebug(LogLevel::VERBOSE) << "Event perform action: " << action.description() << std::endl;
                 {
-                    sgtLogDebug(LogLevel::VERBOSE) << "Event perform action: " << action.description() << std::endl;
-                    {
-                        LogIndent _;
-                        action.perform();
-                    }
-                    sgtLogDebug(LogLevel::VERBOSE) << "Event performed action: " << action.description() << std::endl;
+                    LogIndent indent;
+                    action.perform();
                 }
+                sgtLogDebug(LogLevel::VERBOSE) << "Event performed action: " << action.description() << std::endl;
             }
             sgtLogDebug(LogLevel::VERBOSE) << "Event finished: " << description_ << std::endl;
         }

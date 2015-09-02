@@ -111,11 +111,9 @@ namespace Sgt
             void parse(const std::string& fname, T& into)
             {
                 sgtLogMessage() << "Parsing file " << fname << "." << std::endl;
-                {
-                    LogIndent _;
-                    auto top = getTopNode(fname);
-                    parse(top, into);
-                }
+                LogIndent indent;
+                auto top = getTopNode(fname);
+                parse(top, into);
                 sgtLogMessage() << "Finished parsing file " << fname << "." << std::endl;
             }
 
@@ -145,7 +143,7 @@ namespace Sgt
                             {
                                 sgtLogDebug(LogLevel::VERBOSE) << "Loop " << l.name_ << " : " << l.i_
                                     << " (upper = " << l.upper_ << ")" << std::endl;
-                                LogIndent _;
+                                LogIndent indent;
                                 parse(l.body_, into);
                             }
                             loops_.pop_back();
@@ -153,7 +151,7 @@ namespace Sgt
                         else
                         {
                             sgtLogMessage(LogLevel::VERBOSE) << "Parsing plugin " <<  nodeType << "." << std::endl;
-                            LogIndent _;
+                            LogIndent indent;
                             auto it = plugins_.find(nodeType);
                             if (it == plugins_.end())
                             {

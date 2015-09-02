@@ -122,7 +122,7 @@ namespace Sgt
     bool PowerFlowNrSolver::solveProblem()
     {
         sgtLogDebug() << "PowerFlowNrSolver : solve." << std::endl;
-        LogIndent _;
+        LogIndent indent;
 
         Stopwatch stopwatch;
         Stopwatch stopwatchTot;
@@ -242,7 +242,7 @@ namespace Sgt
                 sgtLogDebug(LogLevel::VERBOSE) 
                     << "Before solve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
                 sgtLogDebug(LogLevel::VERBOSE) << "Before solve: J   = " << std::endl;
-                LogIndent _;
+                LogIndent indent;
                 for (uword i = 0; i < nVar(); ++i)
                 {
                     sgtLogDebug(LogLevel::VERBOSE)

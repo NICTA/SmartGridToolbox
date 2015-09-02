@@ -96,7 +96,7 @@ namespace Sgt
     void PowerFlowModel::validate()
     {
         sgtLogDebug() << "PowerFlowModel : validate." << std::endl;
-        LogIndent _;
+        LogIndent indent;
 
         // Make Nodes:
         PfNodeVec PqNodes = PfNodeVec();
@@ -216,21 +216,24 @@ namespace Sgt
         }
 
         sgtLogDebug() << "PowerFlowModel : validate complete." << std::endl;
-        print();
+        if (debugLogLevel() >= LogLevel::VERBOSE)
+        {
+            print();
+        }
     }
 
     void PowerFlowModel::print()
     {
         sgtLogDebug() << "PowerFlowModel::print()" << std::endl;
-        LogIndent _;
+        LogIndent indent;
         sgtLogDebug() << "Nodes:" << std::endl;
         {
-            LogIndent _;
+            LogIndent indent;
             for (const PfNode* nd : nodes_)
             {
                 sgtLogDebug() << "Node:" << std::endl;
                 {
-                    LogIndent _;
+                    LogIndent indent;
                     sgtLogDebug() << "Id     : " << nd->bus_->id_ << std::endl;
                     sgtLogDebug() << "Type   : " << nd->bus_->type_ << std::endl;
                     sgtLogDebug() << "Phase  : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
@@ -244,17 +247,17 @@ namespace Sgt
         }
         sgtLogDebug() << "Branches:" << std::endl;
         {
-            LogIndent _;
+            LogIndent indent;
             for (const std::unique_ptr<PfBranch>& branch : branches_)
             {
                 sgtLogDebug() << "Branch:" << std::endl;
                 {
-                    LogIndent _;
+                    LogIndent indent;
                     sgtLogDebug() << "Busses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;
                     sgtLogDebug() << "Phases : " << branch->phases_[0] << ", " << branch->phases_[1] << std::endl;
                     sgtLogDebug() << "Y      :" << std::endl;
                     {
-                        LogIndent _;
+                        LogIndent indent;
                         for (arma::uword i = 0; i < branch->Y_.n_rows; ++i)
                         {
                             sgtLogDebug() << std::setprecision(14) << std::setw(18) << branch->Y_.row(i) << std::endl;

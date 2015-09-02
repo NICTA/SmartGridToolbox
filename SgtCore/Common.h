@@ -76,7 +76,7 @@ namespace Sgt
 
         private:
 
-            static int indentLevel_;
+            static unsigned int indentLevel_;
 
             StreamIndent coutBuf_{std::cout};
             StreamIndent cerrBuf_{std::cerr};
@@ -106,10 +106,10 @@ namespace Sgt
     {
         public:
 
-            LogIndent(unsigned int tabWidth = 4) : 
+            LogIndent(unsigned int nInit = 1, unsigned int tabWidth = 4) : 
                 tabWidth_(tabWidth)
             {
-                in();
+                in(nInit);
             }
 
             ~LogIndent()
@@ -117,23 +117,24 @@ namespace Sgt
                 Log::indentLevel_ -= myIndentLevel_;
             }
 
-            void in() 
+            void in(unsigned int n = 1) 
             {
-                myIndentLevel_ += tabWidth_;
-                Log::indentLevel_ += tabWidth_;
+                const unsigned int delta = n * tabWidth_;
+                myIndentLevel_ += delta;
+                Log::indentLevel_ += delta;
             }
 
-            void out()
+            void out(unsigned int n = 1)
             {
-                const int n = std::min(tabWidth, myIndentLevel_);
-                myIndentLevel_ -= n;
-                Log::indentLevel_ -= n;
+                const unsigned int delta = std::min(n * tabWidth_, myIndentLevel_);
+                myIndentLevel_ -= delta;
+                Log::indentLevel_ -= delta;
             }
 
         private:
 
             unsigned int tabWidth_{4};
-            int myIndentLevel_{0};
+            unsigned int myIndentLevel_{0};
     };
 
 #ifdef DEBUG
