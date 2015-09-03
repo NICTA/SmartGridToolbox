@@ -431,10 +431,17 @@ The preceding section treated the power flow problem in rectangular coordinates,
 where we introduce the polar notation $V_i := M_i \exp{(j\theta_i)}$ and $\theta_{ik} := \theta_i - \theta_k$. $S_i$ is the \emph{total} power injection into a bus, including all loads, branch flows and generation, and should be zero in a correct power flow solution. The real and reactive components of this are:
 \begin{align}
 	P_i &= P_{ci} + P_{gi} + \Ir_{ci}M_i - g_i\M{i}^2 \notag \\
-	&- \M{i}\sm{\M{k}\left(G_{ik}\cs{ik} + B_{ik}\sn{ik}\right)} \notag \\
+	&- \M{i}\sm{\left(G_{ik}\cs{ik} + B_{ik}\sn{ik}\right)\M{k}} \notag \\
 	Q_i &= Q_{ci} + Q_{gi} - \Ii_{ci}M_i + b_i\M{i}^2 \notag \\
-	&- \M{i}\sm{\M{k}\left(G_{ik}\sn{ik} - B_{ik}\cs{ik}\right)} \notag \\
+	&- \M{i}\sm{\left(G_{ik}\sn{ik} - B_{ik}\cs{ik}\right)\M{k}} \notag \\
 \end{align}
+
+Note for computations (particularly in what follows), it will be more efficient to cache $\sin(\theta)$ and $\cos(\theta)$, and to use
+\begin{align}
+	\sin(\theta_{ik}) &:= \sin(\theta_i)\cos(\theta_k) - \cos(\theta_i)\sin(\theta_k) \notag \\
+	\cos(\theta_{ik}) &:= \cos(\theta_i)\cos(\theta_k) + \sin(\theta_i)\sin(\theta_k)
+\end{align}
+
 
 \subsection{The NR method in polar coordinates}
 For PQ busses, the possible unknowns are $\M{}$ and $\theta$. For PV busses, the possible unknowns are $Q_g$ and $\theta$. The Jacobian is therefore

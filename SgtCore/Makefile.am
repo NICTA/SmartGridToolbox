@@ -41,10 +41,11 @@ libinclude_HEADERS = \
 	OverheadLine.h \
 	Parser.h \
 	PowerFlow.h \
+	PowerFlowFdSolver.h \
 	PowerFlowModel.h \
-	PowerFlowSolver.h \
 	PowerFlowNrSolver.h \
 	$(POWER_FLOW_PT_PP_SOLVER_H) \
+	PowerFlowSolver.h \
 	Properties.h \
 	Random.h \
 	SinglePhaseTransformer.h \
@@ -79,6 +80,7 @@ libSgtCore_la_SOURCES = \
 	OverheadLineParserPlugin.h OverheadLineParserPlugin.cc \
 	Parser.h Parser.cc \
 	PowerFlow.h PowerFlow.cc \
+	PowerFlowFdSolver.h PowerFlowFdSolver.cc \
 	PowerFlowModel.h PowerFlowModel.cc \
 	PowerFlowNrSolver.h PowerFlowNrSolver.cc \
 	$(POWER_FLOW_PT_PP_SOLVER_H) $(POWER_FLOW_PT_PP_SOLVER_CC) \
