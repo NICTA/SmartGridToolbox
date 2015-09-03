@@ -314,9 +314,9 @@ The one piece of the puzzle we haven't yet dealt with is the current injections 
 
 Current injections take the form of \emph{loads} or \emph{generation}. Load currents can often be modeled using the \emph{ZIP} model:
 \begin{align}
-	I_\text{ZIP} = I_c + \frac{S^*_c}{V^*} - y_cV
+	I_\text{ZIP} = \frac{I_cV}{|V|} + \frac{S^*_c}{V^*} - y_cV
 \end{align}
-Where $I_\text{ZIP}$ is the total current injection of the ZIP, $I_c$ and $S_c$ are constant current and power injections and $y_c$ is a constant impedance. The ZIP model is a good model for many types of load, but could also be used for certain types of generation - e.g. fixed power generation. If the real power injection $P = \re{I_\text{ZIP}^*V}$ is negative, then we have a load; if it is positive, then we have a generator.
+Where $I_\text{ZIP}$ is the total current injection of the ZIP, $I_c$ and $S_c$ are constant current\footnote{Note the expression $I_cV/|V|$ for the constant current component. The voltage dependence ensures that the complex power $S$ does not depend on the absolute phase of the voltage. Instead we have $S = I^*_c |V|$, which is much more reasonable for realistic devices.} and power injections and $y_c$ is a constant impedance. The ZIP model is a good model for many types of load, but could also be used for certain types of generation - e.g. fixed power generation. If the real power injection $P = \re{I_\text{ZIP}^*V}$ is negative, then we have a load; if it is positive, then we have a generator.
 
 In addition to the ZIP loads at a bus, we may include generators that apply some kind of extra voltage control on the bus to maintain power stability in the system. A bus that only has a ZIP load is termed a PQ bus. The term PQ means constant P, constant Q.\footnote{Confusingly, though, the presence of fixed current and fixed impedance components of the ZIP means that the total power injection may not be constant. This confusion arises because ZIP loads provide a generalisation to the original concept of PQ busses.}
 
@@ -328,7 +328,7 @@ Note that SL and PV busses may also have ZIP loads attached.
 
 We now write the final form of the powerflow equations:
 \begin{align}
-I_{\text{inj},i} &= \frac{S^*_{ci} + S^*_{\text{gen},i}}{V^*_i} + I_{ci} - y_{ci}V_i - \sum_{k=0}^NY_{ik}V_k = 0
+I_{\text{inj},i} &= \frac{S^*_{ci} + S^*_{\text{gen},i}}{V^*_i} + \frac{I_{ci}V_i}{|V_i|} - y_{ci}V_i - \sum_{k=0}^NY_{ik}V_k = 0
 \label{EQ_POWERFLOW_COMPLEX}
 \end{align}
 The term $-y_{ci}V_i$ may in practice be absorbed into $Y$ by adding $y_{ci}$ to $Y_{ii}$; we retain it here as an explicit bus shunt for bookkeeping purposes.
@@ -336,10 +336,10 @@ The term $-y_{ci}V_i$ may in practice be absorbed into $Y$ by adding $y_{ci}$ to
 Real and imaginary components are:
 \begin{align}
 	\Ir_i &= \frac{(P_{ci} + P_{\text{gen},i})\Vr_i + (Q_{ci} + Q_{\text{gen},i})\Vi_i}{|V|^2_i} \notag \\
-	      &+ \Ir_{ci} -g_{ci}\Vr_i + b_{ci}\Vi_i \notag \\
+	      &+ \frac{\Ir_{ci}\Vr_{i} - \Ii_{ci}\Vi_i}{|V_i|} -g_{ci}\Vr_i + b_{ci}\Vi_i \notag \\
 	      &+ \sum_{k=0}^N\left(-G_{ik}\Vr_k + B_{ik}\Vi_k\right) = 0\\
 	\Ii_i &= \frac{(P_{ci} + P_{\text{gen},i})\Vi_i - (Q_{ci} + Q_{\text{gen},i})\Vr_i}{|V|^2_i} \notag \\
-	      &+ \Ii_{ci} -g_{ci}\Vi_i - b_{ci}\Vr_i \notag \\
+	      &+ \frac{\Ir_{ci}\Vi_{i} + \Ii_{ci}\Vr_{i}}{|V_i|} -g_{ci}\Vi_i - b_{ci}\Vr_i \notag \\
 	&+ \sum_{k=0}^N\left(-G_{ik}\Vi_k - B_{ik}\Vr_k\right) = 0
 \end{align}
 
@@ -370,24 +370,28 @@ the NR method calculates the update to $x$ at each iteration as the solution to 
 The Jacobian elements for variables $V$ are given by:
 \begin{align}
 	\frac{\partial \Ir_i}{\partial \Vr_{k}} 
-		&= \left[-\frac{2\Vr_k[(P_{ck} + P_{\text{gen},k})\Vr_k + (Q_{ck} + Q_{\text{gen},k})\Vi_k]}{|V|_k^4} + \frac{(P_{ck} + P_{\text{gen},k})}{|V|_k^2} \right]\delta_{ik} \notag \\
+		&= \left[-\frac{2\Vr_k[(P_{ck} + P_{\text{gen},k})\Vr_k + (Q_{ck} + Q_{\text{gen},k})\Vi_k]}{|V|_k^4} + \frac{(P_{ck} + P_{\text{gen},k})}{|V|_k^2}\right]\delta_{ik} \notag \\
+		&+ \frac{\Vi_i(\Ii_i\Vr_i + \Ir_i\Vi_i)}{|V_i|^3}\delta_{ik} \notag \\
 		&- (G_{ik} + g_{ci}\delta_{ik}) \\
 	\frac{\partial \Ir_i}{\partial \Vi_{k}} 
 		&= \left[-\frac{2\Vi_k[(P_{ck} + P_{\text{gen},k})\Vr_k + (Q_{ck} + Q_{\text{gen},k})\Vi_k]}{|V|_k^4} + \frac{(Q_{ck} + Q_{\text{gen},k})}{|V|_k^2} \right]\delta_{ik} \notag \\
+		&- \frac{\Vr_i(\Ii_i\Vr_i + \Ir_i\Vi_i)}{|V_i|^3}\delta_{ik} \notag \\
 		&+ (B_{ik} + b_{ci}\delta_{ik}) \\
 	\frac{\partial \Ii_i}{\partial \Vr_{k}}
 		&= \left[-\frac{2\Vr_k[(P_{ck} + P_{\text{gen},k})\Vi_k - (Q_{ck} + Q_{\text{gen},k})\Vr_k]}{|V|_k^4} - \frac{(Q_{ck} + Q_{\text{gen},k})}{|V|_k^2} \right]\delta_{ik} \notag \\
+		&+ \frac{\Vi_i(\Ii_i\Vi_i - \Ir_i\Vr_i)}{|V_i|^3}\delta_{ik} \notag \\
 		&- (B_{ik} + b_{ci}\delta_{ik}) \\
 	\frac{\partial \Ii_i}{\partial \Vi_{k}}
 		&= \left[-\frac{2\Vi_k[(P_{ck} + P_{\text{gen},k})\Vi_k - (Q_{ck} + Q_{\text{gen},k})\Vr_k]}{|V|_k^4} + \frac{(P_{ck} + P_{\text{gen},k})}{|V|_k^2} \right] \delta_{ik} \notag \\
-		&- (G_{ik} + g_{ci}\delta_{ik}) \\
+		&+ \frac{\Vr_i(\Ir_i\Vr_i - \Ii_i\Vi_i)}{|V_i|^3}\delta_{ik} \notag \\
+		&- (G_{ik} + g_{ci}\delta_{ik})
 \end{align}
 
 \subsubsection{Treatment of the slack bus}
 There are no variables associated with the slack bus. The voltage is constant, and the power can be found after the rest of the busses are solved.
 
 \subsubsection{Treatment of PV busses}
-As explained earlier, $PV$ busses add an extra variable, $Q$. This adds the following non-zero elements to the Jacobian:
+As explained earlier, $PV$ busses add an extra variable, $Q_g$. This adds the following non-zero elements to the Jacobian:
 \begin{align}
 \frac{\partial \Ir_k}{\partial Q_{\text{gen},k}} &= \frac{\Vi_k}{|V|_k^2} \\
 \frac{\partial \Ii_k}{\partial Q_{\text{gen},k}} &= -\frac{\Vr_k}{|V|_k^2}
@@ -413,6 +417,49 @@ which gives
 \end{align}
 
 Using these expressions, $\Delta \Vr$ may be eliminated from the NR equations for the PV bus. First write the Jacobian as if all busses were PQ. Let $k$ be any PV bus. Take the column corresponding to $\Delta \Vr_k$, and add its product with $-\Vi_k/\Vr_k$ to the matching column for  $\Delta \Vi_k$. Add its product with $(|V|^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2)/(2\Vr_k)$ to $f$ in Eq. (\ref{EQ_NR}). The column and the corresponding element of $x$ for $\Delta \Vr_k$ will now be replaced with a column and elment for $\Delta Q_{\text{gen},k}$. Set the column to zero, and then set the block diagonal elements, using Eq. (\ref{EQ_PV_JAC_Q}). Reinterpret the corresponding element of $\Delta x$ in Eq. (\ref{EQ_NR}) as now corresponding to $\Delta Q_{\text{gen},k}$ instead of $\Delta \Vr_k$.
+
+\section{Power flow in polar coordinates}
+The preceding section treated the power flow problem in rectangular coordinates, in which the mathematical expressions are simpler and the Newton-Raphson method works well in rectangular coordinates. In fact, it is more common to work in polar coordinates. Doing so can give a clearer physical insight, and is conducive to the development of approximations such as are used in the DC approximation or fast decoupled power flow. Taking the complex conjugate of Eq. \ref{EQ_POWERFLOW_COMPLEX} and multiplying by $V_i$ gives
+\newcommand{\M}[1]{\ensuremath{M_{#1}}}
+\newcommand{\cs}[1]{\ensuremath{\cos(\theta_{#1})}}
+\newcommand{\sn}[1]{\ensuremath{\sin(\theta_{#1})}}
+\newcommand{\sm}[1]{\ensuremath{\sum_{k = 0}^N{#1}}}
+\begin{align}
+	S_i &= S_{ci} + S_{gi} + I^*_{ci}M_i - y^*_{ci}\M{i}^2 - V_i\sm{Y^*_{ik}V^*_k} \notag \\
+	&= S_{ci} + S_{gi} + I^*_{ci}M_i - y^*_{ci}\M{i}^2 - \M{i}\sm{Y^*_{ik}\M{k}\exp{(j\theta_{ik})}}
+\end{align}
+where we introduce the polar notation $V_i := M_i \exp{(j\theta_i)}$ and $\theta_{ik} := \theta_i - \theta_k$. $S_i$ is the \emph{total} power injection into a bus, including all loads, branch flows and generation, and should be zero in a correct power flow solution. The real and reactive components of this are:
+\begin{align}
+	P_i &= P_{ci} + P_{gi} + \Ir_{ci}M_i - g_i\M{i}^2 \notag \\
+	&- \M{i}\sm{\M{k}\left(G_{ik}\cs{ik} + B_{ik}\sn{ik}\right)} \notag \\
+	Q_i &= Q_{ci} + Q_{gi} - \Ii_{ci}M_i + b_i\M{i}^2 \notag \\
+	&- \M{i}\sm{\M{k}\left(G_{ik}\sn{ik} - B_{ik}\cs{ik}\right)} \notag \\
+\end{align}
+
+\subsection{The NR method in polar coordinates}
+For PQ busses, the possible unknowns are $\M{}$ and $\theta$. For PV busses, the possible unknowns are $Q_g$ and $\theta$. The Jacobian is therefore
+\begin{align}
+	\frac{\partial P_i}{\partial \M{k}} &= \left(\Ir_{ci} - 2g_i\M{i}\right)\delta_{ik} - \M{i}(1 + \delta_{ik})\left(G_{ik}\cs{ik} + B_{ik}\sn{ik}\right), & k \in \text{PQ} \notag \\
+	\frac{\partial P_i}{\partial Q_{gk}} &= 0, &k \in \text{PV}\notag \\
+	\frac{\partial P_i}{\partial \theta_k} &= -\M{i}\M{k}(1 - \delta_{ik})(G_{ik}\sn{ik} - B_{ik}\cs{ik}) \notag \\
+	\frac{\partial Q_i}{\partial \M{k}} &= \left(-\Ii_{ci} + 2b_i\M{i}\right)\delta_{ik} - \M{i}(1 + \delta_{ik})\left(G_{ik}\sn{ik} - B_{ik}\cs{ik}\right), & k \in \text{PQ} \notag \\
+	\frac{\partial Q_i}{\partial Q_{gk}} &= \delta_{ik}, & k \in \text{PV} \notag \\
+	\frac{\partial Q_i}{\partial \theta_k} &= \M{i}\M{k}(1 - \delta_{ik})(G_{ik}\cs{ik} + B_{ik}\sn{ik})
+\end{align}
+
+This gives us enough information to carry out the NR method for polar coordinates.
+
+\subsection{Fast-decoupled load flow}
+Especially in transmission networks, we have that $G_{ik} << B_{ik}$ and $\theta_{ik} \approx 0$. Under these conditions, the Jacobian above can be simplified:
+\begin{align}
+	\frac{\partial P_i}{\partial \M{k}} &= \left(\Ir_{ci} - 2g_i\M{i}\right)\delta_{ik}, & k \in \text{PQ} \notag \\
+	\frac{\partial P_i}{\partial Q_{gk}} &= 0, &k \in \text{PV}\notag \\
+	\frac{\partial P_i}{\partial \theta_k} &= \M{i}\M{k}(1 - \delta_{ik})B_{ik} \notag \\
+	\frac{\partial Q_i}{\partial \M{k}} &= \left(-\Ii_{ci} + 2b_i\M{i}\right)\delta_{ik} + \M{i}(1 + \delta_{ik})B_{ik}, & k \in \text{PQ} \notag \\
+	\frac{\partial Q_i}{\partial Q_{gk}} &= \delta_{ik}, & k \in \text{PV} \notag \\
+	\frac{\partial Q_i}{\partial \theta_k} &= 0
+\end{align}
+
 \section{Formalism for modelling branches}
 \subsection{Branch admittance ($Y$) parameters}
 Consider a network consisting of three busses, $a$, $b$ and $c$. Due to the linear nature of the nodal admittance relation, the nodal admittance matrix for the network $Y$, can be decomposed as follows:
