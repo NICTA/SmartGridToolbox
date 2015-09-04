@@ -50,26 +50,6 @@ namespace Sgt
 
             void init(Network* netw);
             
-            arma::uword nPq() const
-            {
-                return mod_->nPq();
-            }
-            
-            arma::uword nPv() const
-            {
-                return mod_->nPv();
-            }
-
-            arma::uword nPqPv() const
-            {
-                return mod_->nPq() + mod_->nPv();
-            }
-
-            arma::uword nVar() const
-            {
-                return 2 * nPqPv();
-            }
-
         public:
 
             double tol_{1e-8};

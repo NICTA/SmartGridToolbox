@@ -18,6 +18,7 @@
 
 #include "Network.h"
 #include "PowerFlowNrSolver.h"
+#include "PowerFlowFdSolver.h"
 #ifdef ENABLE_POWER_TOOLS_PP
 #include "PowerFlowPtPpSolver.h"
 #endif
@@ -32,6 +33,11 @@ namespace Sgt
         {
             sgtLogMessage() << "Using Newton-Raphson solver." << std::endl;
             netw.setSolver(std::unique_ptr<PowerFlowNrSolver>(new PowerFlowNrSolver));
+        }
+        else if (key == "fd")
+        {
+            sgtLogMessage() << "Using fast-decoupled load flow solver." << std::endl;
+            netw.setSolver(std::unique_ptr<PowerFlowFdSolver>(new PowerFlowFdSolver));
         }
         else if (key == "opf_pt_pp")
         {

@@ -19,7 +19,6 @@
 #ifdef WITH_KLU
 #include "KluSolver.h"
 #endif
-#include "Stopwatch.h"
 
 #include <algorithm>
 #include <ostream>
@@ -53,43 +52,133 @@ namespace Sgt
 {
     namespace
     {
-        void calcf(Col<double>& f,
-                   const uword nPqPv,
-                   const Col<double>& P, const Col<double>& Q,
-                   const Col<double>& Irc, const Col<double>& Iic,
-                   const Col<double>& M, const Col<double>& theta,
-                   const SpMat<double>& G, const SpMat<double>& B)
+
+        // Build the Jacobian JP for P, theta. Indexing is [0 ... nPqPv - 1].
+        SpMat<double> calcJP(
+                const uword nPqPv,
+                const Col<double>& M,
+                const SpMat<double>& B)
         {
-            const Col<double> cosTheta = cos(theta);
-            const Col<double> sinTheta = sin(theta);
+            sgtLogDebug() << "Building JP..." << std::endl;
+            LogIndent _;
+            SparseHelper<double> helper(nPqPv, nPqPv, false, false, false);
 
-            Col<double> P = P + Irc % M;
-            Col<double> Q = Q - Iic % M;
-           
-            // TODO: many of the trig multiplications below will end up being done twice.
-
-            for (SpMat<double>::iterator it = G.begin(); it != G.end(); ++it)
+            for (SpMat<double>::iterator it = B.begin(); it != B.end(); ++it)
             {
                 uword i = it.row();
                 uword k = it.col();
-                double Gcos = *it * (cosTheta(i) * cosTheta(k) + sinTheta(i) * sinTheta(k));
-                double Gsin = *it * (sinTheta(i) * cosTheta(k) - cosTheta(i) * sinTheta(k));
-                P(i) -= M(i) * Gcos * M(k); 
-                Q(i) -= M(i) * Gsin * M(k); 
+                if (i > 0 && k > 0 && i != k)
+                {
+                    helper.insert(i - 1, k - 1, *it * M(i) * M(k));
+                }
             }
+
+            sgtLogDebug() << "Finished." << std::endl;
+            return helper.get();
+        }
+
+        SpMat<double> calcJQ(
+                const uword nPqPv, const uword nPq, const uword nPv,
+                const Col<double>& M,
+                const SpMat<double>& B)
+        {
+            sgtLogDebug() << "Building JQ..." << std::endl;
+            LogIndent _;
+            
+            // Note: shunt terms have already been absorbed into Y (PowerFlowModel).
+            
+            SparseHelper<double> helper(nPqPv, nPqPv, true, false, false);
             
             for (SpMat<double>::iterator it = B.begin(); it != B.end(); ++it)
             {
                 uword i = it.row();
                 uword k = it.col();
-                double Bcos = *it * (cosTheta(i) * cosTheta(k) + sinTheta(i) * sinTheta(k));
-                double Bsin = *it * (sinTheta(i) * cosTheta(k) - cosTheta(i) * sinTheta(k));
-                P(i) -= M(i) * Bsin * M(k); 
-                Q(i) += M(i) * Bcos * M(k); 
+                
+                if (i > 0 && k > 0 && k <= nPq)
+                {
+                    double val = *it * M(i); if (i == k) val *= 2;
+                    helper.insert(i - 1, k - 1, val);
+                }
             }
 
-            f.subvec(0, nPqPv - 1) = P.subvec(1, nPqPv);
-            f.subvec(nPqPv, 2 * nPqPv - 1) = Q.subvec(1, nPqPv);
+            for (uword i = nPq; i < nPqPv; ++i)
+            {
+                helper.insert(i, i, 1.0);
+            }
+
+            sgtLogDebug() << "Finished." << std::endl;
+            return helper.get();
+        }
+
+        Col<double> calc_fP(
+                const uword nPqPv,
+                const Col<double>& Pcg, const Col<double>& Irc,
+                const Col<double>& M, const Col<double>& theta,
+                const SpMat<double>& G, const SpMat<double>& B)
+        {
+            // TODO: efficiency.
+
+            Col<double> cosTheta = cos(theta);
+            Col<double> sinTheta = sin(theta);
+
+            Col<double> P = Pcg + Irc % M;
+
+            for (SpMat<double>::iterator it = G.begin(); it != G.end(); ++it)
+            {
+                uword i = it.row();
+                uword k = it.col();
+                P(i) -= *it * (cosTheta(i) * cosTheta(k) + sinTheta(i) * sinTheta(k)) * M(i) * M(k);
+            }
+
+            for (SpMat<double>::iterator it = B.begin(); it != B.end(); ++it)
+            {
+                uword i = it.row();
+                uword k = it.col();
+                P(i) -= *it * (sinTheta(i) * cosTheta(k) - cosTheta(i) * sinTheta(k)) * M(i) * M(k);
+            }
+
+            return P.subvec(1, nPqPv);
+        }
+
+        Col<double> calc_fQ(
+                const uword nPqPv,
+                const Col<double>& Qcg, const Col<double>& Iic,
+                const Col<double>& M, const Col<double>& theta,
+                const SpMat<double>& G, const SpMat<double>& B)
+        {
+            // TODO: efficiency.
+            
+            Col<double> cosTheta = cos(theta);
+            Col<double> sinTheta = sin(theta);
+
+            Col<double> Q = Qcg - Iic % M;
+
+            for (SpMat<double>::iterator it = G.begin(); it != G.end(); ++it)
+            {
+                uword i = it.row();
+                uword k = it.col();
+                Q(i) -= *it * (sinTheta(i) * cosTheta(k) - cosTheta(i) * sinTheta(k)) * M(i) * M(k);
+            }
+
+            for (SpMat<double>::iterator it = B.begin(); it != B.end(); ++it)
+            {
+                uword i = it.row();
+                uword k = it.col();
+                Q(i) += *it * (cosTheta(i) * cosTheta(k) + sinTheta(i) * sinTheta(k)) * M(i) * M(k);
+            }
+
+            return Q.subvec(1, nPqPv);
+        }
+
+        bool solveSparseSystem(const SpMat<double>& J, const Col<double>& f, Col<double>& x)
+        {
+            bool ok;
+#ifdef WITH_KLU
+            ok = kluSolve(J, -f, x);
+#else
+            ok = spsolve(x, J, -f, "superlu");
+#endif
+            return ok;
         }
     }
 
@@ -98,172 +187,105 @@ namespace Sgt
         sgtLogDebug() << "PowerFlowFdSolver : solve." << std::endl;
         LogIndent indent;
 
+        mod_ = buildModel(*netw_);
+        mod_->print();
+        
         // Set up data structures for the calculation.
         // Model indexing is 0 = slack, [1 ... nPq] = PQ, [nPq + 1 ... nPq + nPv] = PV.
-        
+
+        uword nPq = mod_->nPq();
+        sgtLogDebug() << "nPq = " << nPq << std::endl;
+        uword nPv = mod_->nPv();
+        sgtLogDebug() << "nPv = " << nPv << std::endl;
+        uword nNode = mod_->nNode();
+        sgtLogDebug() << "nNode = " << nNode << std::endl;
+        uword nPqPv = nPq + nPv;
+
         SpMat<double> G = real(mod_->Y()); // Model indexing. Includes shunts (const Y in ZIPs).
-        SpMat<double> B = real(mod_->Y()); // Model indexing. Includes shunts (const Y in ZIPs).
+        SpMat<double> B = imag(mod_->Y()); // Model indexing. Includes shunts (const Y in ZIPs).
 
         Col<double> M = abs(mod_->V()); // Model indexing.
-        
-        Col<double> theta(mod_->nNode(), fill::none); // Model indexing.
-        for (uword i = 0; i < mod_->nNode(); ++i) theta(i) = std::abs(mod_->V()(i));
-        
-        Col<double> P = real(mod_->S()); // Model indexing. P = P_c + P_g.
-        Col<double> Q = imag(mod_->S()); // Model indexing. Q = Q_c + Q_g.
-        
+        sgtLogDebug() << "M = " << M << std::endl;
+
+        Col<double> theta(nNode, fill::none); // Model indexing.
+        for (uword i = 0; i < nNode; ++i) theta(i) = std::arg(mod_->V()(i));
+        sgtLogDebug() << "theta = " << theta << std::endl;
+
+        Col<double> Pcg = real(mod_->S()); // Model indexing. Pcg = P_c + P_g.
+        Col<double> Qcg = imag(mod_->S()); // Model indexing. Qcg = Q_c + Q_g.
+
         Col<double> Irc = real(mod_->IConst()); // Model indexing. P_c + P_g.
         Col<double> Iic = imag(mod_->IConst()); // Model indexing. P_c + P_g.
 
-        Col<double> f(nVar()); // Power mismatch function, [P, Q].
-
         // Jacobian:
-        SpMat<double> JP(nVar(), nVar());
-        SpMat<double> JQ(nVar(), nVar());
+        SpMat<double> JP = calcJP(nPqPv, M, B);
+        SpMat<double> JQ = calcJQ(nPqPv, nPq, nPv, M, B);
 
         bool wasSuccessful = false;
-        double err = 0;
+        double errP = 0;
+        double errQ = 0;
         unsigned int niter;
+        bool ok;
 
-        // Build the Jacobian for P, theta:
-        {
-            SparseHelper<double> helper(nPqPv(), nPqPv(), false, false, false);
-            for (uword i = 0; i < nPqPv(); ++i)
-            {
-                for (uword k = 0; k < i; ++k)
-                {
-                    double MiMk = M(i) * M(k);
-                    helper.insert(i, k, MiMk * B(i, k));
-                    helper.insert(k, i, MiMk * B(k, i)); // B not nec. symmetric.
-                }
-            }
-            JP += helper.get();
-        }
-
-        // Build the Jacobian for Q, M/Qg:
-        {
-            SparseHelper<double> helper(nVar(), nVar(), false, false, false);
-            for (uword i = 0; i < nPqPv(); ++i)
-            {
-                // Note: shunt terms have already been absorbed into Y (PowerFlowModel).
-                for (uword k = 0; k < nPq(); ++k)
-                {
-                    double val = M(i) * B(i, k); if (i == k) val *= 2;
-                    helper.insert(i, k, val);
-                }
-            }
-            for (uword i = 0; i < nPv(); ++i)
-            {
-                helper.insert(i, i, 1.0);
-            }
-            JQ += helper.get();
-        }
-
-        // Do the iterations for P:
         for (niter = 0; niter < maxiter_; ++niter)
         {
-            calcf(f, nPqPv(), P, Q, Irc, Iic, M, theta, G, B);
+            sgtLogDebug() << "iter " << niter << std::endl;
 
-            err = norm(f, "inf");
-            sgtLogDebug(LogLevel::VERBOSE) << "f  = " << std::setprecision(5) << std::setw(9) << f << std::endl;
-            sgtLogDebug() << "Error = " << err << std::endl;
-            if (err <= tol_)
+            // P subsystem:
+            
+            Col<double> fP = calc_fP(nPqPv, Pcg, Irc, M, theta, G, B);
+            sgtLogDebug() << "fP = " << fP << std::endl;
+
+            errP = norm(fP, "inf");
+            sgtLogDebug() << "Err_P = " << errP << std::endl;
+            if (errP <= tol_)
             {
-                sgtLogDebug() << "Success at iteration " << niter << "." << std::endl;
                 wasSuccessful = true;
                 break;
             }
 
-            Col<double> x;
-            bool ok;
-#ifdef WITH_KLU
-            ok = kluSolve(JP, -f, x);
-#else
-            ok = spsolve(x, JMat, -f, "superlu");
-#endif
-            sgtLogDebug() << "After solve: ok = " << ok << std::endl;
-            sgtLogDebug(LogLevel::VERBOSE) 
-                << "After solve: x  = " << std::setprecision(5) << std::setw(9) << x << std::endl;
+            Col<double> xP; // Delta theta.
+            ok = solveSparseSystem(JP, -fP, xP);
             if (!ok)
             {
                 sgtLogWarning() << "Solve failed." << std::endl;
                 break;
             }
 
-            // Update the current variables (M, theta, Q) from the solution:
-            if (mod_->nPq() > 0)
+            // Update theta.
+            sgtLogDebug() << "xP = " << xP << std::endl;
+            theta.subvec(1, nPqPv) += xP;
+
+            // Q subsystem:
+            
+            Col<double> fQ = calc_fQ(nPqPv, Qcg, Iic, M, theta, G, B);
+
+            errQ = norm(fQ, "inf");
+            sgtLogDebug() << "Err_Q = " << errQ << std::endl;
+            if (errQ <= tol_)
             {
-                M.subvec(1, nPq()) += x.subvec(0, nPq() - 1);
+                wasSuccessful = true;
+                break;
             }
-            if (mod_->nPv() > 0)
+
+            Col<double> xQ; // Delta theta.
+            ok = solveSparseSystem(JQ, -fQ, xQ);
+            if (!ok)
             {
-                Q.subvec(nPq() + 1, nPqPv()) += x.subvec(nPq(), nPqPv() - 1);
+                sgtLogWarning() << "Solve failed." << std::endl;
+                break;
             }
-            theta.subvec(1, nPqPv()) += x.subvec(nPqPv(), nVar() - 1);
+
+            // Update M and Qcg.
+            if (nPq > 0) M.subvec(1, nPq) += xQ.subvec(0, nPq - 1);
+            if (nPv > 0) Qcg.subvec(nPq + 1, nPqPv) += xQ.subvec(nPq, nPqPv - 1);
         }
 
         if (!wasSuccessful)
         {
-            sgtLogWarning() << "PowerFlowFdSolver: Newton-Raphson method failed to converge." << std::endl;
-            for (std::size_t i = 0; i < mod_->nNode(); ++i)
-            {
-                auto node = mod_->nodes()[i];
-                node->V_ = 0;
-                node->S_ = 0;
-                node->bus_->V_[node->phaseIdx_] = node->V_;
-                node->bus_->S_[node->phaseIdx_] = node->S_;
-            }
+            sgtLogWarning() << "PowerFlowFdSolver: failed to converge." << std::endl;
+            // TODO.
         }
-
-        for (uword i = 0; i < mod_->nNode(); ++i)
-        {
-            mod_->V()(i) = {Vr(i), Vi(i)};
-            mod_->S()(i) = {P(i), Q(i)};
-        }
-
-        // Set the slack power.
-        if (mod_->nSl() > 0)
-        {
-            auto SSl = mod_->S()(mod_->selSlFromAll());
-
-            auto VSl = mod_->V()(mod_->selSlFromAll());
-            auto IConstSl = mod_->IConst()(mod_->selSlFromAll());
-
-            SpMat<Complex> YStar = mod_->Y()(mod_->selSlFromAll(), mod_->selAllFromAll());
-            for (auto elem : YStar) elem = std::conj(Complex(elem));
-            auto VStar = colConj(mod_->V());
-            auto IConstStar = colConj(mod_->IConst()(mod_->selSlFromAll()));
-
-            SSl = VSl % (YStar * VStar) - VSl % IConstStar;
-        }
-
-        // Update nodes and busses.
-        for (uword i = 0; i < mod_->nNode(); ++i)
-        {
-            auto node = mod_->nodes()[i];
-            node->V_ = mod_->V()(i);
-            node->S_ = mod_->S()(i);
-            node->bus_->V_[node->phaseIdx_] = node->V_;
-            node->bus_->S_[node->phaseIdx_] = node->S_;
-        }
-
-        stopwatchTot.stop();
-        durationTot = stopwatchTot.seconds();
-
-        sgtLogDebug()
-            << "PowerFlowFdSolver: \n"
-            << "    successful = " << wasSuccessful << "\n"
-            << "    error = " << err << "\n" 
-            << "    iterations = " << niter << "\n"
-            << "    total time = " << durationTot << "\n" 
-            << "    time to create model = " << durationMakeModel << "\n"
-            << "    time for setup = " << durationInitSetup << "\n"
-            << "    calcf time = " << durationCalcf << "\n"
-            << "    updateJ time = " << durationUpdateJ << "\n"
-            << "    modifyForPv time = " << durationModifyForPv << "\n"
-            << "    constructJMat time = " << durationConstructJMat << "\n"
-            << "    solve time = " << durationSolve << "\n"
-            << "    updateIter time = " << durationUpdateIter << std::endl;
 
         return wasSuccessful;
     }
