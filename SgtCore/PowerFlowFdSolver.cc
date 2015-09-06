@@ -67,9 +67,25 @@ namespace Sgt
             {
                 uword i = it.row();
                 uword k = it.col();
-                if (i > 0 && k > 0 && i != k)
+                if (i > 0 && k > 0)
                 {
-                    helper.insert(i - 1, k - 1, *it * M(i) * M(k));
+                    if (i != k)
+                    {
+                        helper.insert(i - 1, k - 1, *it * M(i) * M(k));
+                    }
+                    else
+                    {
+                        double sum = 0;
+                        auto row = B.row(i);
+                        for (auto rowIt = B.begin_row(i); rowIt != B.end_row(i); ++rowIt)
+                        {
+                            if (rowIt.col() != k)
+                            {
+                                sum += *rowIt;
+                            }
+                        }
+                        helper.insert(i - 1, i - 1, -sum * M(i) * M(i));
+                    }
                 }
             }
 
@@ -137,6 +153,8 @@ namespace Sgt
                 P(i) -= *it * (sinTheta(i) * cosTheta(k) - cosTheta(i) * sinTheta(k)) * M(i) * M(k);
             }
 
+            sgtLogDebug() << "P = " << P << std::endl;
+
             return P.subvec(1, nPqPv);
         }
 
@@ -167,9 +185,12 @@ namespace Sgt
                 Q(i) += *it * (cosTheta(i) * cosTheta(k) + sinTheta(i) * sinTheta(k)) * M(i) * M(k);
             }
 
+            sgtLogDebug() << "Q = " << Q << std::endl;
+
             return Q.subvec(1, nPqPv);
         }
 
+        // Solve Jx + f = 0
         bool solveSparseSystem(const SpMat<double>& J, const Col<double>& f, Col<double>& x)
         {
             bool ok;
@@ -188,7 +209,7 @@ namespace Sgt
         LogIndent indent;
 
         mod_ = buildModel(*netw_);
-        mod_->print();
+        sgtLogDebug() << "YBus = " << mod_->Y() << std::endl;
         
         // Set up data structures for the calculation.
         // Model indexing is 0 = slack, [1 ... nPq] = PQ, [nPq + 1 ... nPq + nPv] = PV.
@@ -235,6 +256,9 @@ namespace Sgt
             
             Col<double> fP = calc_fP(nPqPv, Pcg, Irc, M, theta, G, B);
             sgtLogDebug() << "fP = " << fP << std::endl;
+            sgtLogDebug() << "JP = " << JP << std::endl;
+Col<double> fQDebug = calc_fQ(nPqPv, Qcg, Iic, M, theta, G, B);
+            sgtLogDebug() << "fQ = " << fQDebug << std::endl;
 
             errP = norm(fP, "inf");
             sgtLogDebug() << "Err_P = " << errP << std::endl;
@@ -245,7 +269,7 @@ namespace Sgt
             }
 
             Col<double> xP; // Delta theta.
-            ok = solveSparseSystem(JP, -fP, xP);
+            ok = solveSparseSystem(JP, fP, xP);
             if (!ok)
             {
                 sgtLogWarning() << "Solve failed." << std::endl;
@@ -259,6 +283,7 @@ namespace Sgt
             // Q subsystem:
             
             Col<double> fQ = calc_fQ(nPqPv, Qcg, Iic, M, theta, G, B);
+            sgtLogDebug() << "fQ = " << fQ << std::endl;
 
             errQ = norm(fQ, "inf");
             sgtLogDebug() << "Err_Q = " << errQ << std::endl;
@@ -269,7 +294,7 @@ namespace Sgt
             }
 
             Col<double> xQ; // Delta theta.
-            ok = solveSparseSystem(JQ, -fQ, xQ);
+            ok = solveSparseSystem(JQ, fQ, xQ);
             if (!ok)
             {
                 sgtLogWarning() << "Solve failed." << std::endl;

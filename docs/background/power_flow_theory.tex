@@ -448,10 +448,18 @@ For PQ busses, the possible unknowns are $\M{}$ and $\theta$. For PV busses, the
 \begin{align}
 	\frac{\partial P_i}{\partial \M{k}} &= \left(\Ir_{ci} - 2g_i\M{i}\right)\delta_{ik} - \M{i}(1 + \delta_{ik})\left(G_{ik}\cs{ik} + B_{ik}\sn{ik}\right), & k \in \text{PQ} \notag \\
 	\frac{\partial P_i}{\partial Q_{gk}} &= 0, &k \in \text{PV}\notag \\
-	\frac{\partial P_i}{\partial \theta_k} &= -\M{i}\M{k}(1 - \delta_{ik})(G_{ik}\sn{ik} - B_{ik}\cs{ik}) \notag \\
+	\frac{\partial P_i}{\partial \theta_k} &=
+		\begin{cases}
+			\M{i}\M{k}(-G_{ik}\sn{ik} + B_{ik}\cs{ik}), &i \ne k \\
+			\M{i}^2\sum_{\stackrel{l = 0}{l \ne i}}^N(G_{il}\sn{il} - B_{il}\cs{il}), &i = k
+		\end{cases} \notag \\
 	\frac{\partial Q_i}{\partial \M{k}} &= \left(-\Ii_{ci} + 2b_i\M{i}\right)\delta_{ik} - \M{i}(1 + \delta_{ik})\left(G_{ik}\sn{ik} - B_{ik}\cs{ik}\right), & k \in \text{PQ} \notag \\
 	\frac{\partial Q_i}{\partial Q_{gk}} &= \delta_{ik}, & k \in \text{PV} \notag \\
-	\frac{\partial Q_i}{\partial \theta_k} &= \M{i}\M{k}(1 - \delta_{ik})(G_{ik}\cs{ik} + B_{ik}\sn{ik})
+	\frac{\partial Q_i}{\partial \theta_k} &= 
+		\begin{cases}
+			\M{i}\M{k}(G_{ik}\cs{ik} + B_{ik}\sn{ik}), & i \ne k \\
+			-\M{i}^2\sum_{\stackrel{l = 0}{l \ne i}}^N(G_{il}\cs{il} + B_{il}\sn{il}), & i \ne k \\
+		\end{cases}
 \end{align}
 
 This gives us enough information to carry out the NR method for polar coordinates.
@@ -461,7 +469,11 @@ Especially in transmission networks, we have that $G_{ik} \ll B_{ik}$ and $\thet
 \begin{align}
 	\frac{\partial P_i}{\partial \M{k}} &= 0, & k \in \text{PQ} \notag \\
 	\frac{\partial P_i}{\partial Q_{gk}} &= 0, &k \in \text{PV}\notag \\
-	\frac{\partial P_i}{\partial \theta_k} &= \M{i}\M{k}(1 - \delta_{ik})B_{ik} \notag \\
+	\frac{\partial P_i}{\partial \theta_k} &= 
+		\begin{cases}
+			\M{i}\M{k}B_{ik}, & i \ne k \\
+			-\M{i}^2\sum_{\stackrel{l = 0}{l \ne i}}^NB_{il}, &i = k
+		\end{cases} \notag \\
 	\frac{\partial Q_i}{\partial \M{k}} &= 2b_i\M{i}\delta_{ik} + \M{i}(1 + \delta_{ik})B_{ik}, & k \in \text{PQ} \notag \\
 	\frac{\partial Q_i}{\partial Q_{gk}} &= \delta_{ik}, & k \in \text{PV} \notag \\
 	\frac{\partial Q_i}{\partial \theta_k} &= 0
