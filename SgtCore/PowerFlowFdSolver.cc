@@ -52,15 +52,12 @@ namespace Sgt
 {
     namespace
     {
-
         // Build the Jacobian JP for P, theta. Indexing is [0 ... nPqPv - 1].
         SpMat<double> calcJP(
                 const uword nPqPv,
                 const Col<double>& M,
                 const SpMat<double>& B)
         {
-            sgtLogDebug() << "Building JP..." << std::endl;
-            LogIndent _;
             SparseHelper<double> helper(nPqPv, nPqPv, false, false, false);
 
             for (SpMat<double>::iterator it = B.begin(); it != B.end(); ++it)
@@ -89,7 +86,6 @@ namespace Sgt
                 }
             }
 
-            sgtLogDebug() << "Finished." << std::endl;
             return helper.get();
         }
 
@@ -98,9 +94,6 @@ namespace Sgt
                 const Col<double>& M,
                 const SpMat<double>& B)
         {
-            sgtLogDebug() << "Building JQ..." << std::endl;
-            LogIndent _;
-            
             // Note: shunt terms have already been absorbed into Y (PowerFlowModel).
             
             SparseHelper<double> helper(nPqPv, nPqPv, true, false, false);
@@ -122,7 +115,6 @@ namespace Sgt
                 helper.insert(i, i, 1.0);
             }
 
-            sgtLogDebug() << "Finished." << std::endl;
             return helper.get();
         }
 
@@ -152,8 +144,6 @@ namespace Sgt
                 uword k = it.col();
                 P(i) -= *it * (sinTheta(i) * cosTheta(k) - cosTheta(i) * sinTheta(k)) * M(i) * M(k);
             }
-
-            sgtLogDebug() << "P = " << P << std::endl;
 
             return P.subvec(1, nPqPv);
         }
@@ -185,8 +175,6 @@ namespace Sgt
                 Q(i) += *it * (cosTheta(i) * cosTheta(k) + sinTheta(i) * sinTheta(k)) * M(i) * M(k);
             }
 
-            sgtLogDebug() << "Q = " << Q << std::endl;
-
             return Q.subvec(1, nPqPv);
         }
 
@@ -209,28 +197,22 @@ namespace Sgt
         LogIndent indent;
 
         mod_ = buildModel(*netw_);
-        sgtLogDebug() << "YBus = " << mod_->Y() << std::endl;
         
         // Set up data structures for the calculation.
         // Model indexing is 0 = slack, [1 ... nPq] = PQ, [nPq + 1 ... nPq + nPv] = PV.
 
         uword nPq = mod_->nPq();
-        sgtLogDebug() << "nPq = " << nPq << std::endl;
         uword nPv = mod_->nPv();
-        sgtLogDebug() << "nPv = " << nPv << std::endl;
         uword nNode = mod_->nNode();
-        sgtLogDebug() << "nNode = " << nNode << std::endl;
         uword nPqPv = nPq + nPv;
 
         SpMat<double> G = real(mod_->Y()); // Model indexing. Includes shunts (const Y in ZIPs).
         SpMat<double> B = imag(mod_->Y()); // Model indexing. Includes shunts (const Y in ZIPs).
 
         Col<double> M = abs(mod_->V()); // Model indexing.
-        sgtLogDebug() << "M = " << M << std::endl;
 
         Col<double> theta(nNode, fill::none); // Model indexing.
         for (uword i = 0; i < nNode; ++i) theta(i) = std::arg(mod_->V()(i));
-        sgtLogDebug() << "theta = " << theta << std::endl;
 
         Col<double> Pcg = real(mod_->S()); // Model indexing. Pcg = P_c + P_g.
         Col<double> Qcg = imag(mod_->S()); // Model indexing. Qcg = Q_c + Q_g.
@@ -251,14 +233,14 @@ namespace Sgt
         for (niter = 0; niter < maxiter_; ++niter)
         {
             sgtLogDebug() << "iter " << niter << std::endl;
+            sgtLogDebug() << "theta = " << theta << std::endl;
+            sgtLogDebug() << "M = " << M << std::endl;
+            sgtLogDebug() << "Qcg = " << Qcg << std::endl;
 
             // P subsystem:
             
             Col<double> fP = calc_fP(nPqPv, Pcg, Irc, M, theta, G, B);
             sgtLogDebug() << "fP = " << fP << std::endl;
-            sgtLogDebug() << "JP = " << JP << std::endl;
-Col<double> fQDebug = calc_fQ(nPqPv, Qcg, Iic, M, theta, G, B);
-            sgtLogDebug() << "fQ = " << fQDebug << std::endl;
 
             errP = norm(fP, "inf");
             sgtLogDebug() << "Err_P = " << errP << std::endl;
@@ -279,6 +261,7 @@ Col<double> fQDebug = calc_fQ(nPqPv, Qcg, Iic, M, theta, G, B);
             // Update theta.
             sgtLogDebug() << "xP = " << xP << std::endl;
             theta.subvec(1, nPqPv) += xP;
+            sgtLogDebug() << "theta new = " << theta << std::endl;
 
             // Q subsystem:
             
@@ -302,8 +285,11 @@ Col<double> fQDebug = calc_fQ(nPqPv, Qcg, Iic, M, theta, G, B);
             }
 
             // Update M and Qcg.
+            sgtLogDebug() << "xQ = " << xQ << std::endl;
             if (nPq > 0) M.subvec(1, nPq) += xQ.subvec(0, nPq - 1);
             if (nPv > 0) Qcg.subvec(nPq + 1, nPqPv) += xQ.subvec(nPq, nPqPv - 1);
+            sgtLogDebug() << "M new = " << M << std::endl;
+            sgtLogDebug() << "Qcg new = " << Qcg << std::endl;
         }
 
         if (!wasSuccessful)
