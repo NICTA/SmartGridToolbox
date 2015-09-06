@@ -423,17 +423,16 @@ The preceding section treated the power flow problem in rectangular coordinates,
 \newcommand{\M}[1]{\ensuremath{M_{#1}}}
 \newcommand{\cs}[1]{\ensuremath{\cos(\theta_{#1})}}
 \newcommand{\sn}[1]{\ensuremath{\sin(\theta_{#1})}}
-\newcommand{\sm}[1]{\ensuremath{\sum_{k = 0}^N{#1}}}
 \begin{align}
-	S_i &= S_{ci} + S_{gi} + I^*_{ci}M_i - y^*_{ci}\M{i}^2 - V_i\sm{Y^*_{ik}V^*_k} \notag \\
-	&= S_{ci} + S_{gi} + I^*_{ci}M_i - y^*_{ci}\M{i}^2 - \M{i}\sm{Y^*_{ik}\M{k}\exp{(j\theta_{ik})}}
+	S_i &= S_{ci} + S_{gi} + I^*_{ci}M_i - y^*_{ci}\M{i}^2 - V_i\sum_{k = 0}^N{Y^*_{ik}V^*_k} \notag \\
+	&= S_{ci} + S_{gi} + I^*_{ci}M_i - y^*_{ci}\M{i}^2 - \M{i}\sum_{k = 0}^N{Y^*_{ik}\M{k}\exp{(j\theta_{ik})}}
 \end{align}
 where we introduce the polar notation $V_i := M_i \exp{(j\theta_i)}$ and $\theta_{ik} := \theta_i - \theta_k$. $S_i$ is the \emph{total} power injection into a bus, including all loads, branch flows and generation, and should be zero in a correct power flow solution. The real and reactive components of this are:
 \begin{align}
 	P_i &= P_{ci} + P_{gi} + \Ir_{ci}M_i - g_i\M{i}^2 \notag \\
-	&- \M{i}\sm{\left(G_{ik}\cs{ik} + B_{ik}\sn{ik}\right)\M{k}} \notag \\
+	&- \M{i}\sum_{k = 0}^N{\left(G_{ik}\cs{ik} + B_{ik}\sn{ik}\right)\M{k}} \notag \\
 	Q_i &= Q_{ci} + Q_{gi} - \Ii_{ci}M_i + b_i\M{i}^2 \notag \\
-	&- \M{i}\sm{\left(G_{ik}\sn{ik} - B_{ik}\cs{ik}\right)\M{k}} \notag \\
+	&- \M{i}\sum_{k = 0}^N{\left(G_{ik}\sn{ik} - B_{ik}\cs{ik}\right)\M{k}} \notag \\
 \end{align}
 
 Note for computations (particularly in what follows), it will be more efficient to cache $\sin(\theta)$ and $\cos(\theta)$, and to use
@@ -453,7 +452,11 @@ For PQ busses, the possible unknowns are $\M{}$ and $\theta$. For PV busses, the
 			\M{i}\M{k}(-G_{ik}\sn{ik} + B_{ik}\cs{ik}), &i \ne k \\
 			\M{i}^2\sum_{\stackrel{l = 0}{l \ne i}}^N(G_{il}\sn{il} - B_{il}\cs{il}), &i = k
 		\end{cases} \notag \\
-	\frac{\partial Q_i}{\partial \M{k}} &= \left(-\Ii_{ci} + 2b_i\M{i}\right)\delta_{ik} - \M{i}(1 + \delta_{ik})\left(G_{ik}\sn{ik} - B_{ik}\cs{ik}\right), & k \in \text{PQ} \notag \\
+	\frac{\partial Q_i}{\partial \M{k}} &= 
+		\begin{cases}
+			-\M{i}\left(G_{ik}\sn{ik} - B_{ik}\cs{ik}\right), & k \ne i \\
+			-\Ii_{ci} + 2b_i\M{i} - \sum_{l = 0}^N{(1 + \delta_{il})\left(G_{il}\sn{il} - B_{il}\cs{il}\right)M_l}, & k = i, \\
+		\end{cases} &  k \in \text{PQ} \notag \\
 	\frac{\partial Q_i}{\partial Q_{gk}} &= \delta_{ik}, & k \in \text{PV} \notag \\
 	\frac{\partial Q_i}{\partial \theta_k} &= 
 		\begin{cases}
@@ -474,7 +477,11 @@ Especially in transmission networks, we have that $G_{ik} \ll B_{ik}$ and $\thet
 			\M{i}\M{k}B_{ik}, & i \ne k \\
 			-\M{i}^2\sum_{\stackrel{l = 0}{l \ne i}}^NB_{il}, &i = k
 		\end{cases} \notag \\
-	\frac{\partial Q_i}{\partial \M{k}} &= 2b_i\M{i}\delta_{ik} + \M{i}(1 + \delta_{ik})B_{ik}, & k \in \text{PQ} \notag \\
+	\frac{\partial Q_i}{\partial \M{k}} &= 
+		\begin{cases}
+			\M{i}B_{ik}, & k \ne i \\
+			-\Ii_{ci} + 2b_i\M{i} + \sum_{l = 0}^N{(1 + \delta_{il})B_{il}M_l}, & k = i, \\
+		\end{cases} \notag \\
 	\frac{\partial Q_i}{\partial Q_{gk}} &= \delta_{ik}, & k \in \text{PV} \notag \\
 	\frac{\partial Q_i}{\partial \theta_k} &= 0
 \end{align}
