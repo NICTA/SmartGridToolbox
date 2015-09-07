@@ -27,27 +27,6 @@
 using namespace Sgt;
 using namespace arma;
 
-namespace
-{
-    template<typename T> Col<Complex> colConj(const T& from)
-    {
-        Col<Complex> result(from.n_elem, fill::none);
-        for (uword i = 0; i < from.n_elem; ++i)
-        {
-            result(i) = std::conj(from(i));
-        }
-        return result;
-    }
-
-    template<typename T, typename U> void initJcBlock(const T& G, const T& B, U& Jrr, U& Jri, U& Jir, U& Jii)
-    {
-        Jrr = -G;
-        Jri =  B;
-        Jir = -B;
-        Jii = -G;
-    }
-}
-
 namespace Sgt
 {
     namespace
@@ -58,31 +37,34 @@ namespace Sgt
                 const Col<double>& M,
                 const SpMat<double>& B)
         {
-            SparseHelper<double> helper(nPqPv, nPqPv, false, false, false);
+            SparseHelper<double> helper(nPqPv, nPqPv, true, false, false);
+
+            for (uword i = 1; i <= nPqPv; ++i) // TODO: inefficient?
+            {
+                auto hadNz = false; 
+                double sum = 0.0;
+                for (auto it = B.begin_row(i); it != B.end_row(i); ++it)
+                {
+                    hadNz = true;
+                    uword l = it.col();
+                    if (l != i)
+                    {
+                        sum -= *it * M(l);
+                    }
+                }
+                if (hadNz)
+                {
+                    helper.insert(i - 1, i - 1, sum * M(i));
+                }
+            }
 
             for (SpMat<double>::iterator it = B.begin(); it != B.end(); ++it)
             {
                 uword i = it.row();
                 uword k = it.col();
-                if (i > 0 && k > 0)
+                if (i > 0 && k > 0 && i != k)
                 {
-                    if (i != k)
-                    {
-                        helper.insert(i - 1, k - 1, *it * M(i) * M(k));
-                    }
-                    else
-                    {
-                        double sum = 0;
-                        auto row = B.row(i);
-                        for (auto rowIt = B.begin_row(i); rowIt != B.end_row(i); ++rowIt)
-                        {
-                            if (rowIt.col() != k)
-                            {
-                                sum += *rowIt;
-                            }
-                        }
-                        helper.insert(i - 1, i - 1, -sum * M(i) * M(i));
-                    }
+                    helper.insert(i - 1, k - 1, *it * M(i) * M(k));
                 }
             }
 
@@ -97,16 +79,38 @@ namespace Sgt
             // Note: shunt terms have already been absorbed into Y (PowerFlowModel).
             
             SparseHelper<double> helper(nPqPv, nPqPv, true, false, false);
+
+            for (uword i = 1; i <= nPq; ++i) // TODO: inefficient?
+            {
+                auto hadNz = false; 
+                double sum = 0.0;
+                for (auto it = B.begin_row(i); it != B.end_row(i); ++it)
+                {
+                    hadNz = true;
+                    uword l = it.col();
+                    if (l == i)
+                    {
+                        sum += 2 * M(i) * (*it);
+                    }
+                    else
+                    {
+                        sum += *it * M(l);
+                    }
+                }
+                if (hadNz)
+                {
+                    helper.insert(i - 1, i - 1, sum);
+                }
+            }
             
             for (SpMat<double>::iterator it = B.begin(); it != B.end(); ++it)
             {
                 uword i = it.row();
                 uword k = it.col();
                 
-                if (i > 0 && k > 0 && k <= nPq)
+                if (i > 0 && k > 0 && i != k && k <= nPq)
                 {
-                    double val = *it * M(i); if (i == k) val *= 2;
-                    helper.insert(i - 1, k - 1, val);
+                    helper.insert(i - 1, k - 1, *it * M(i));
                 }
             }
 
@@ -208,11 +212,14 @@ namespace Sgt
 
         SpMat<double> G = real(mod_->Y()); // Model indexing. Includes shunts (const Y in ZIPs).
         SpMat<double> B = imag(mod_->Y()); // Model indexing. Includes shunts (const Y in ZIPs).
+        sgtLogDebug() << "B = " << B << std::endl;
 
         Col<double> M = abs(mod_->V()); // Model indexing.
+        sgtLogDebug() << "M = " << M << std::endl;
 
         Col<double> theta(nNode, fill::none); // Model indexing.
         for (uword i = 0; i < nNode; ++i) theta(i) = std::arg(mod_->V()(i));
+        sgtLogDebug() << "theta = " << theta << std::endl;
 
         Col<double> Pcg = real(mod_->S()); // Model indexing. Pcg = P_c + P_g.
         Col<double> Qcg = imag(mod_->S()); // Model indexing. Qcg = Q_c + Q_g.
@@ -223,6 +230,8 @@ namespace Sgt
         // Jacobian:
         SpMat<double> JP = calcJP(nPqPv, M, B);
         SpMat<double> JQ = calcJQ(nPqPv, nPq, nPv, M, B);
+        sgtLogDebug() << "JP = " << JP << std::endl;
+        sgtLogDebug() << "JQ = " << JQ << std::endl;
 
         bool wasSuccessful = false;
         double errP = 0;
