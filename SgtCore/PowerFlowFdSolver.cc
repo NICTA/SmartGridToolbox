@@ -241,7 +241,7 @@ namespace Sgt
 
         for (niter = 0; niter < maxiter_; ++niter)
         {
-            sgtLogDebug() << "iter " << niter << std::endl;
+            sgtLogMessage() << "iter " << niter << std::endl;
             sgtLogDebug() << "theta = " << theta << std::endl;
             sgtLogDebug() << "M = " << M << std::endl;
             sgtLogDebug() << "Qcg = " << Qcg << std::endl;
@@ -252,7 +252,7 @@ namespace Sgt
             sgtLogDebug() << "fP = " << fP << std::endl;
 
             errP = norm(fP, "inf");
-            sgtLogDebug() << "Err_P = " << errP << std::endl;
+            sgtLogMessage() << "Err_P = " << errP << std::endl;
             if (errP <= tol_)
             {
                 wasSuccessful = true;
@@ -278,7 +278,7 @@ namespace Sgt
             sgtLogDebug() << "fQ = " << fQ << std::endl;
 
             errQ = norm(fQ, "inf");
-            sgtLogDebug() << "Err_Q = " << errQ << std::endl;
+            sgtLogMessage() << "Err_Q = " << errQ << std::endl;
             if (errQ <= tol_)
             {
                 wasSuccessful = true;
