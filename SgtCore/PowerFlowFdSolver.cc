@@ -241,19 +241,33 @@ namespace Sgt
 
         for (niter = 0; niter < maxiter_; ++niter)
         {
-            sgtLogMessage() << "iter " << niter << std::endl;
             sgtLogDebug() << "theta = " << theta << std::endl;
             sgtLogDebug() << "M = " << M << std::endl;
             sgtLogDebug() << "Qcg = " << Qcg << std::endl;
+            sgtLogMessage() << "iter " << niter << std::endl;
+            LogIndent _;
 
             // P subsystem:
             
             Col<double> fP = calc_fP(nPqPv, Pcg, Irc, M, theta, G, B);
             sgtLogDebug() << "fP = " << fP << std::endl;
+           
+            // TODO: it would seem to make sense to do this *after* the P iteration. But for now, we're doing
+            // it the same way as Matpower to try to achieve the same result.
+            Col<double> fQ = calc_fQ(nPqPv, Qcg, Iic, M, theta, G, B);
+            sgtLogDebug() << "fQ = " << fQ << std::endl;
 
             errP = norm(fP, "inf");
             sgtLogMessage() << "Err_P = " << errP << std::endl;
             if (errP <= tol_)
+            {
+                wasSuccessful = true;
+                break;
+            }
+            
+            errQ = norm(fQ, "inf");
+            sgtLogMessage() << "Err_Q = " << errQ << std::endl;
+            if (errQ <= tol_)
             {
                 wasSuccessful = true;
                 break;
@@ -273,17 +287,6 @@ namespace Sgt
             sgtLogDebug() << "theta new = " << theta << std::endl;
 
             // Q subsystem:
-            
-            Col<double> fQ = calc_fQ(nPqPv, Qcg, Iic, M, theta, G, B);
-            sgtLogDebug() << "fQ = " << fQ << std::endl;
-
-            errQ = norm(fQ, "inf");
-            sgtLogMessage() << "Err_Q = " << errQ << std::endl;
-            if (errQ <= tol_)
-            {
-                wasSuccessful = true;
-                break;
-            }
 
             Col<double> xQ; // Delta theta.
             ok = solveSparseSystem(JQ, fQ, xQ);
