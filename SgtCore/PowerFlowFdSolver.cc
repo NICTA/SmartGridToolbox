@@ -200,15 +200,9 @@ namespace Sgt
 
             errP = norm(fP, "inf");
             sgtLogMessage() << "Err_P = " << errP << std::endl;
-            if (errP <= tol_)
-            {
-                wasSuccessful = true;
-                break;
-            }
-            
             errQ = norm(fQ, "inf");
             sgtLogMessage() << "Err_Q = " << errQ << std::endl;
-            if (errQ <= tol_)
+            if (errP <= tol_ && errQ <= tol_)
             {
                 wasSuccessful = true;
                 break;
