@@ -31,6 +31,16 @@ namespace Sgt
 {
     namespace
     {
+        Col<Complex> calcS(
+                const Col<Complex>& Scg,
+                const Col<Complex>& Ic,
+                const Col<Complex>& V,
+                const Col<double>& M,
+                const SpMat<Complex>& Y)
+        {
+            return Scg + conj(Ic) % M - V % conj(Y * V);
+        }
+
         // Build the Jacobian JP for P, theta. Indexing is [0 ... nPqPv - 1].
         SpMat<double> calcJP(
                 const uword nPqPv,
@@ -72,13 +82,13 @@ namespace Sgt
         }
 
         SpMat<double> calcJQ(
-                const uword nPqPv, const uword nPq, const uword nPv,
+                const uword nPq,
                 const Col<double>& M,
                 const SpMat<double>& B)
         {
             // Note: shunt terms have already been absorbed into Y (PowerFlowModel).
             
-            SparseHelper<double> helper(nPqPv, nPqPv, true, false, false);
+            SparseHelper<double> helper(nPq, nPq, true, false, false);
 
             for (uword i = 1; i <= nPq; ++i) // TODO: inefficient?
             {
@@ -102,84 +112,20 @@ namespace Sgt
                     helper.insert(i - 1, i - 1, sum);
                 }
             }
-            
-            for (SpMat<double>::iterator it = B.begin(); it != B.end(); ++it)
+           
+            auto BSel = B.submat(1, 1, nPq, nPq);
+            for (auto it = BSel.begin(); it != BSel.end(); ++it)
             {
                 uword i = it.row();
                 uword k = it.col();
                 
-                if (i > 0 && k > 0 && i != k && k <= nPq)
+                if (i != k)
                 {
-                    helper.insert(i - 1, k - 1, *it * M(i));
+                    helper.insert(i, k, *it * M(i));
                 }
             }
 
-            for (uword i = nPq; i < nPqPv; ++i)
-            {
-                helper.insert(i, i, 1.0);
-            }
-
             return helper.get();
-        }
-
-        Col<double> calc_fP(
-                const uword nPqPv,
-                const Col<double>& Pcg, const Col<double>& Irc,
-                const Col<double>& M, const Col<double>& theta,
-                const SpMat<double>& G, const SpMat<double>& B)
-        {
-            // TODO: efficiency.
-
-            Col<double> cosTheta = cos(theta);
-            Col<double> sinTheta = sin(theta);
-
-            Col<double> P = Pcg + Irc % M;
-
-            for (SpMat<double>::iterator it = G.begin(); it != G.end(); ++it)
-            {
-                uword i = it.row();
-                uword k = it.col();
-                P(i) -= *it * (cosTheta(i) * cosTheta(k) + sinTheta(i) * sinTheta(k)) * M(i) * M(k);
-            }
-
-            for (SpMat<double>::iterator it = B.begin(); it != B.end(); ++it)
-            {
-                uword i = it.row();
-                uword k = it.col();
-                P(i) -= *it * (sinTheta(i) * cosTheta(k) - cosTheta(i) * sinTheta(k)) * M(i) * M(k);
-            }
-
-            return P.subvec(1, nPqPv);
-        }
-
-        Col<double> calc_fQ(
-                const uword nPqPv,
-                const Col<double>& Qcg, const Col<double>& Iic,
-                const Col<double>& M, const Col<double>& theta,
-                const SpMat<double>& G, const SpMat<double>& B)
-        {
-            // TODO: efficiency.
-            
-            Col<double> cosTheta = cos(theta);
-            Col<double> sinTheta = sin(theta);
-
-            Col<double> Q = Qcg - Iic % M;
-
-            for (SpMat<double>::iterator it = G.begin(); it != G.end(); ++it)
-            {
-                uword i = it.row();
-                uword k = it.col();
-                Q(i) -= *it * (sinTheta(i) * cosTheta(k) - cosTheta(i) * sinTheta(k)) * M(i) * M(k);
-            }
-
-            for (SpMat<double>::iterator it = B.begin(); it != B.end(); ++it)
-            {
-                uword i = it.row();
-                uword k = it.col();
-                Q(i) += *it * (cosTheta(i) * cosTheta(k) + sinTheta(i) * sinTheta(k)) * M(i) * M(k);
-            }
-
-            return Q.subvec(1, nPqPv);
         }
 
         // Solve Jx + f = 0
@@ -210,26 +156,26 @@ namespace Sgt
         uword nNode = mod_->nNode();
         uword nPqPv = nPq + nPv;
 
-        SpMat<double> G = real(mod_->Y()); // Model indexing. Includes shunts (const Y in ZIPs).
-        SpMat<double> B = imag(mod_->Y()); // Model indexing. Includes shunts (const Y in ZIPs).
+        const SpMat<Complex>& Y = mod_->Y(); // Model indexing. Includes shunts (const Y in ZIPs).
+        SpMat<double> G = real(Y); // Model indexing. Includes shunts (const Y in ZIPs).
+        SpMat<double> B = imag(Y); // Model indexing. Includes shunts (const Y in ZIPs).
         sgtLogDebug() << "B = " << B << std::endl;
 
-        Col<double> M = abs(mod_->V()); // Model indexing.
+        Col<Complex> V = mod_->V(); // Model indexing.
+        Col<double> M = abs(V); // Model indexing.
         sgtLogDebug() << "M = " << M << std::endl;
 
         Col<double> theta(nNode, fill::none); // Model indexing.
         for (uword i = 0; i < nNode; ++i) theta(i) = std::arg(mod_->V()(i));
         sgtLogDebug() << "theta = " << theta << std::endl;
 
-        Col<double> Pcg = real(mod_->S()); // Model indexing. Pcg = P_c + P_g.
-        Col<double> Qcg = imag(mod_->S()); // Model indexing. Qcg = Q_c + Q_g.
+        Col<Complex> Scg = mod_->S(); // Model indexing. S_cg = S_c + S_g.
 
-        Col<double> Irc = real(mod_->IConst()); // Model indexing. P_c + P_g.
-        Col<double> Iic = imag(mod_->IConst()); // Model indexing. P_c + P_g.
+        const Col<Complex>& Ic = mod_->IConst(); // Model indexing. P_c + P_g.
 
         // Jacobian:
         SpMat<double> JP = calcJP(nPqPv, M, B);
-        SpMat<double> JQ = calcJQ(nPqPv, nPq, nPv, M, B);
+        SpMat<double> JQ = calcJQ(nPq, M, B);
         sgtLogDebug() << "JP = " << JP << std::endl;
         sgtLogDebug() << "JQ = " << JQ << std::endl;
 
@@ -243,18 +189,13 @@ namespace Sgt
         {
             sgtLogDebug() << "theta = " << theta << std::endl;
             sgtLogDebug() << "M = " << M << std::endl;
-            sgtLogDebug() << "Qcg = " << Qcg << std::endl;
             sgtLogMessage() << "iter " << niter << std::endl;
             LogIndent _;
 
-            // P subsystem:
-            
-            Col<double> fP = calc_fP(nPqPv, Pcg, Irc, M, theta, G, B);
+            auto S = calcS(Scg, Ic, V, M, Y);
+            Col<double> fP = real(S.subvec(1, nPqPv));
+            Col<double> fQ = imag(S.subvec(1, nPq));
             sgtLogDebug() << "fP = " << fP << std::endl;
-           
-            // TODO: it would seem to make sense to do this *after* the P iteration. But for now, we're doing
-            // it the same way as Matpower to try to achieve the same result.
-            Col<double> fQ = calc_fQ(nPqPv, Qcg, Iic, M, theta, G, B);
             sgtLogDebug() << "fQ = " << fQ << std::endl;
 
             errP = norm(fP, "inf");
@@ -284,9 +225,15 @@ namespace Sgt
             // Update theta.
             sgtLogDebug() << "xP = " << xP << std::endl;
             theta.subvec(1, nPqPv) += xP;
+            Col<Complex> dir = cx_vec(cos(theta), sin(theta)); 
+            V.subvec(1, nPqPv) = M.subvec(1, nPqPv) % dir.subvec(1, nPqPv);
             sgtLogDebug() << "theta new = " << theta << std::endl;
+            sgtLogDebug() << "V new = " << V << std::endl;
 
-            // Q subsystem:
+            S = calcS(Scg, Ic, V, M, Y);
+            fP = real(S.subvec(1, nPqPv));
+            fQ = imag(S.subvec(1, nPq));
+            sgtLogDebug() << "fQ = " << fQ << std::endl;
 
             Col<double> xQ; // Delta theta.
             ok = solveSparseSystem(JQ, fQ, xQ);
@@ -296,12 +243,12 @@ namespace Sgt
                 break;
             }
 
-            // Update M and Qcg.
+            // Update M and V.
             sgtLogDebug() << "xQ = " << xQ << std::endl;
-            if (nPq > 0) M.subvec(1, nPq) += xQ.subvec(0, nPq - 1);
-            if (nPv > 0) Qcg.subvec(nPq + 1, nPqPv) += xQ.subvec(nPq, nPqPv - 1);
+            M.subvec(1, nPq) += xQ;
+            V.subvec(1, nPq) = M.subvec(1, nPq) % dir.subvec(1, nPq);
+            sgtLogDebug() << "V new = " << V << std::endl;
             sgtLogDebug() << "M new = " << M << std::endl;
-            sgtLogDebug() << "Qcg new = " << Qcg << std::endl;
         }
 
         if (!wasSuccessful)
