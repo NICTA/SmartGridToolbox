@@ -17,10 +17,4 @@
 int main()
 {
     std::cout << "Hello, world." << std::endl;
-
-    unsigned int i = 4;
-    unsigned int j = 3;
-    unsigned int k = i - j;
-    unsigned int l = j - i;
-    std::cout << i << " " << j << " " << k << " " << l << " " << (j - i) << std::endl;
 }
