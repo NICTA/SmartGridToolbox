@@ -434,6 +434,18 @@ where we introduce the polar notation $V_i := M_i \exp{(j\theta_i)}$ and $\theta
 	Q_i &= Q_{ci} + Q_{gi} - \Ii_{ci}M_i + b_i\M{i}^2 \notag \\
 	&- \M{i}\sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]\M{l}} \notag \\
 \end{align}
+However, for PV busses, $Q_{g}$ is a free variable, and can immediately be set to the value that makes the error $Q_i$ zero:
+\begin{align}
+	P_i &= P_{ci} + P_{gi} + \Ir_{ci}M_i - g_i\M{i}^2 \notag \\
+	&- \M{i}\sum_{l = 0}^N{\left[G_{il}\cs{il} + B_{il}\sn{il}\right]\M{l}} \notag \\
+	Q_i &= Q_{ci} - \Ii_{ci}M_i + b_i\M{i}^2 \notag \\
+	&- \M{i}\sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]\M{l}}, & i \in PQ
+\end{align}
+and,
+\begin{align}
+	Q_{gi} &= -Q_{ci} + \Ii_{ci}M_i - b_i\M{i}^2 \notag \\
+	&+ \M{i}\sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]\M{l}}, & i \in PV
+\end{align}
 
 Note for computations (particularly in what follows), it may be more efficient to cache $\sin(\theta)$ and $\cos(\theta)$, and to use
 \begin{align}
@@ -450,7 +462,6 @@ For PQ busses, the possible unknowns are $\M{}$ and $\theta$. For PV busses, the
 			-\M{i}\left[G_{ik}\cs{ik} + B_{ik}\sn{ik}\right] & k \ne i \\
 			\Ir_{ci} - 2g_i\M{i} - 2 \M{i}G_{ii} - \sum_{\stackrel{l = 0}{l \ne i}}^N{\left[G_{ik}\cs{ik} + B_{ik}\sn{ik}\right]\M{l}} & k = i
 		\end{cases} & k \in \text{PQ} \notag \\
-	\frac{\partial P_i}{\partial Q_{gk}} &= 0, &k \in \text{PV}\notag \\
 	\frac{\partial P_i}{\partial \theta_k} &=
 		\begin{cases}
 			\M{i}\left[-G_{ik}\sn{ik} + B_{ik}\cs{ik}\right]\M{k}, &k \ne i \\
@@ -460,22 +471,20 @@ For PQ busses, the possible unknowns are $\M{}$ and $\theta$. For PV busses, the
 		\begin{cases}
 			-\M{i}\left[G_{ik}\sn{ik} - B_{ik}\cs{ik}\right], & k \ne i \\
 			-\Ii_{ci} + 2b_i\M{i} + 2\M{i}B_{ii} - \sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]M_l}, & k = i, \\
-		\end{cases} &  k \in \text{PQ} \notag \\
-	\frac{\partial Q_i}{\partial Q_{gk}} &= \delta_{ik}, & k \in \text{PV} \notag \\
+		\end{cases} &  i, k \in \text{PQ} \notag \\
 	\frac{\partial Q_i}{\partial \theta_k} &= 
 		\begin{cases}
 			\M{i}\left[G_{ik}\cs{ik} + B_{ik}\sn{ik}\right]\M{k}, & k \ne i \\
 			-\M{i}\sum_{\stackrel{l = 0}{l \ne i}}^N{\left[G_{il}\cs{il} + B_{il}\sn{il}\right]\M{l}}, & k = i \\
-		\end{cases}
+		\end{cases}, & i \in PQ
 \end{align}
 
-This gives us enough information to carry out the NR method for polar coordinates.
+This gives us enough information to carry out the NR method for polar coordinates. Note that the value of $Q_g$ is not needed for any of the iterations, and so can be calculated once-only after convergence is achieved.
 
 \subsection{Fast-decoupled load flow}
 Especially in transmission networks, we have that $G_{ik} \ll B_{ik}$ and $\theta_{ik} \approx 0$. We also assume that shunts are mainly reactive (i.e. there are no large resistive loads), so that $g_i \approx 0$, and that there are no large constant current loads, so that $I_c \approx 0$. Under these conditions, the Jacobian above can be simplified:
 \begin{align}
 	\frac{\partial P_i}{\partial \M{k}} &= 0, & k \in \text{PQ} \notag \\
-	\frac{\partial P_i}{\partial Q_{gk}} &= 0, &k \in \text{PV}\notag \\
 	\frac{\partial P_i}{\partial \theta_k} &= 
 		\begin{cases}
 			\M{i}B_{ik}\M{k}, & i \ne k \\
@@ -485,11 +494,10 @@ Especially in transmission networks, we have that $G_{ik} \ll B_{ik}$ and $\thet
 		\begin{cases}
 			\M{i}B_{ik}, & k \ne i \\
 			-\Ii_{ci} + 2b_i\M{i} + 2 \M{i}B_{ii} + \sum_{\stackrel{l = 0}{l \ne i}}^N{B_{il}M_l}, & k = i,
-		\end{cases} & k \in \text{PQ} \notag \\
-	\frac{\partial Q_i}{\partial Q_{gk}} &= \delta_{ik}, & k \in \text{PV} \notag \\
-	\frac{\partial Q_i}{\partial \theta_k} &= 0
+		\end{cases} & i, k \in \text{PQ} \notag \\
+	\frac{\partial Q_i}{\partial \theta_k} &= 0, & i \in PQ
 \end{align}
-Note that the problem then separates into two independent problems: one for $\{P, \theta\}$ and one for $\{Q, M, Q_g\}$. 
+Note that the problem then separates into two independent problems: one for $\{P, \theta\}$ and one for $\{Q, M\}$. 
 
 For a flat-start, we have $M_k \approx 1$, and the Jacobian simplifies further. The fast decoupled load flow method normally uses this flat start Jacobian throughout the iteration process. The error function $f$ is assumed to be unchanged from the full NR method, so if it converges, it will converge to the correct solution to the full AC power flow problem. In practice it requires many more iterations than the full NR method, but each iteration is much faster, and the convergence properties can be much better.
 
