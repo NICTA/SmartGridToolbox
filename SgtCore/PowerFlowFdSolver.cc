@@ -38,7 +38,7 @@ namespace Sgt
                 const Col<double>& M,
                 const SpMat<Complex>& Y)
         {
-            return Scg + conj(Ic) % M - V % conj(Y * V);
+            return (Scg + conj(Ic) % M - V % conj(Y * V)) / M;
         }
 
         // Build the Jacobian JP for P, theta. Indexing is [0 ... nPqPv - 1].
@@ -159,7 +159,6 @@ namespace Sgt
         const SpMat<Complex>& Y = mod_->Y(); // Model indexing. Includes shunts (const Y in ZIPs).
         SpMat<double> G = real(Y); // Model indexing. Includes shunts (const Y in ZIPs).
         SpMat<double> B = imag(Y); // Model indexing. Includes shunts (const Y in ZIPs).
-        sgtLogDebug() << "B = " << B << std::endl;
 
         Col<Complex> V = mod_->V(); // Model indexing.
         Col<double> M = abs(V); // Model indexing.
@@ -187,21 +186,26 @@ namespace Sgt
 
         for (niter = 0; niter < maxiter_; ++niter)
         {
+            sgtLogDebug() << "iter " << niter << std::endl;
+            LogIndent _;
             sgtLogDebug() << "theta = " << theta << std::endl;
             sgtLogDebug() << "M = " << M << std::endl;
-            sgtLogMessage() << "iter " << niter << std::endl;
-            LogIndent _;
 
             auto S = calcS(Scg, Ic, V, M, Y);
+            sgtLogDebug() << "Re V = " << Col<double>(real(V)) << std::endl;
+            sgtLogDebug() << "Im V = " << Col<double>(imag(V)) << std::endl;
+            sgtLogDebug() << "Re Sbus = " << Col<double>(real(Scg)) << std::endl;
+            sgtLogDebug() << "Im Sbus = " << Col<double>(imag(Scg)) << std::endl;
+            sgtLogDebug() << "Re S = " << Col<double>(real(S)) << std::endl;
+            sgtLogDebug() << "Im S = " << Col<double>(imag(S)) << std::endl;
             Col<double> fP = real(S.subvec(1, nPqPv));
             Col<double> fQ = imag(S.subvec(1, nPq));
-            sgtLogDebug() << "fP = " << fP << std::endl;
-            sgtLogDebug() << "fQ = " << fQ << std::endl;
-
             errP = norm(fP, "inf");
-            sgtLogMessage() << "Err_P = " << errP << std::endl;
             errQ = norm(fQ, "inf");
-            sgtLogMessage() << "Err_Q = " << errQ << std::endl;
+            sgtLogDebug() << "P = " << fP << std::endl;
+            sgtLogDebug() << "Err_P = " << errP << std::endl;
+            sgtLogDebug() << "Q = " << fQ << std::endl;
+            sgtLogDebug() << "Err_Q = " << errQ << std::endl;
             if (errP <= tol_ && errQ <= tol_)
             {
                 wasSuccessful = true;
@@ -217,19 +221,16 @@ namespace Sgt
             }
 
             // Update theta.
-            sgtLogDebug() << "xP = " << xP << std::endl;
             theta.subvec(1, nPqPv) += xP;
+            sgtLogDebug() << "-> theta = " << theta << std::endl;
             Col<Complex> dir = cx_vec(cos(theta), sin(theta)); 
             V.subvec(1, nPqPv) = M.subvec(1, nPqPv) % dir.subvec(1, nPqPv);
-            sgtLogDebug() << "theta new = " << theta << std::endl;
-            sgtLogDebug() << "V new = " << V << std::endl;
 
             S = calcS(Scg, Ic, V, M, Y);
             fP = real(S.subvec(1, nPqPv));
             fQ = imag(S.subvec(1, nPq));
-            sgtLogDebug() << "fQ = " << fQ << std::endl;
 
-            Col<double> xQ; // Delta theta.
+            Col<double> xQ; // Delta M.
             ok = solveSparseSystem(JQ, fQ, xQ);
             if (!ok)
             {
@@ -238,11 +239,9 @@ namespace Sgt
             }
 
             // Update M and V.
-            sgtLogDebug() << "xQ = " << xQ << std::endl;
             M.subvec(1, nPq) += xQ;
+            sgtLogDebug() << "-> M = " << M << std::endl;
             V.subvec(1, nPq) = M.subvec(1, nPq) % dir.subvec(1, nPq);
-            sgtLogDebug() << "V new = " << V << std::endl;
-            sgtLogDebug() << "M new = " << M << std::endl;
         }
 
         if (!wasSuccessful)
