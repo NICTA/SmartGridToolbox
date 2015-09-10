@@ -47,24 +47,17 @@ namespace Sgt
                 const Col<double>& M,
                 const SpMat<double>& B)
         {
-            SparseHelper<double> helper(nPqPv, nPqPv, true, false, false);
+            SparseHelper<double> helper(nPqPv, nPqPv, true, true, true);
 
-            for (uword i = 1; i <= nPqPv; ++i) // TODO: inefficient?
+            auto BSel = B.rows(1, nPqPv);
+            for (auto it = BSel.begin(); it != BSel.end(); ++it)
             {
-                auto hadNz = false; 
-                double sum = 0.0;
-                for (auto it = B.begin_row(i); it != B.end_row(i); ++it)
+                uword i = it.row() + 1; // Convert to index in full set of busses.
+                uword l = it.col();
+                double Bil = *it;
+                if (i != l)
                 {
-                    hadNz = true;
-                    uword l = it.col();
-                    if (l != i)
-                    {
-                        sum -= *it * M(l);
-                    }
-                }
-                if (hadNz)
-                {
-                    helper.insert(i - 1, i - 1, sum * M(i));
+                    helper.insert(i - 1, i - 1, -Bil * M(l));
                 }
             }
 
@@ -88,40 +81,37 @@ namespace Sgt
         {
             // Note: shunt terms have already been absorbed into Y (PowerFlowModel).
             
-            SparseHelper<double> helper(nPq, nPq, true, false, false);
+            SparseHelper<double> helper(nPq, nPq, true, true, true);
 
-            for (uword i = 1; i <= nPq; ++i) // TODO: inefficient?
             {
-                auto hadNz = false; 
-                double sum = 0.0;
-                for (auto it = B.begin_row(i); it != B.end_row(i); ++it)
+                auto BSel = B.rows(1, nPq);
+                for (auto it = BSel.begin(); it != BSel.end(); ++it)
                 {
-                    hadNz = true;
+                    uword i = it.row() + 1; // Convert to index in full set of busses.
                     uword l = it.col();
-                    if (l == i)
+                    double Bil = *it;
+                    if (i == l)
                     {
-                        sum += 2 * M(i) * (*it);
+                        helper.insert(i - 1, i - 1, 2 * M(i) * Bil);
                     }
                     else
                     {
-                        sum += *it * M(l);
+                        helper.insert(i - 1, i - 1, Bil * M(l));
                     }
                 }
-                if (hadNz)
-                {
-                    helper.insert(i - 1, i - 1, sum);
-                }
             }
-           
-            auto BSel = B.submat(1, 1, nPq, nPq);
-            for (auto it = BSel.begin(); it != BSel.end(); ++it)
+
             {
-                uword i = it.row();
-                uword k = it.col();
-                
-                if (i != k)
+                auto BSel = B.submat(1, 1, nPq, nPq);
+                for (auto it = BSel.begin(); it != BSel.end(); ++it)
                 {
-                    helper.insert(i, k, *it * M(i));
+                    uword i = it.row();
+                    uword k = it.col();
+
+                    if (i != k)
+                    {
+                        helper.insert(i, k, *it * M(i));
+                    }
                 }
             }
 
@@ -182,7 +172,7 @@ namespace Sgt
 
         for (niter = 0; niter < maxiter_; ++niter)
         {
-            sgtLogDebug() << "iter " << niter << std::endl;
+            sgtLogMessage() << "iter " << niter << std::endl;
             LogIndent _;
             sgtLogDebug() << "theta = " << theta << std::endl;
             sgtLogDebug() << "M = " << M << std::endl;
@@ -192,8 +182,8 @@ namespace Sgt
             Col<double> fQ = imag(S.subvec(1, nPq));
             errP = norm(fP, "inf");
             errQ = norm(fQ, "inf");
-            sgtLogDebug() << "Err_P = " << errP << std::endl;
-            sgtLogDebug() << "Err_Q = " << errQ << std::endl;
+            sgtLogMessage() << "Err_P = " << errP << std::endl;
+            sgtLogMessage() << "Err_Q = " << errQ << std::endl;
             if (errP <= tol_ && errQ <= tol_)
             {
                 wasSuccessful = true;
