@@ -162,11 +162,9 @@ namespace Sgt
 
         Col<Complex> V = mod_->V(); // Model indexing.
         Col<double> M = abs(V); // Model indexing.
-        sgtLogDebug() << "M = " << M << std::endl;
 
         Col<double> theta(nNode, fill::none); // Model indexing.
         for (uword i = 0; i < nNode; ++i) theta(i) = std::arg(mod_->V()(i));
-        sgtLogDebug() << "theta = " << theta << std::endl;
 
         Col<Complex> Scg = mod_->S(); // Model indexing. S_cg = S_c + S_g.
 
@@ -175,8 +173,6 @@ namespace Sgt
         // Jacobian:
         SpMat<double> JP = calcJP(nPqPv, M, B);
         SpMat<double> JQ = calcJQ(nPq, M, B);
-        sgtLogDebug() << "JP = " << JP << std::endl;
-        sgtLogDebug() << "JQ = " << JQ << std::endl;
 
         bool wasSuccessful = false;
         double errP = 0;
@@ -192,19 +188,11 @@ namespace Sgt
             sgtLogDebug() << "M = " << M << std::endl;
 
             auto S = calcS(Scg, Ic, V, M, Y);
-            sgtLogDebug() << "Re V = " << Col<double>(real(V)) << std::endl;
-            sgtLogDebug() << "Im V = " << Col<double>(imag(V)) << std::endl;
-            sgtLogDebug() << "Re Sbus = " << Col<double>(real(Scg)) << std::endl;
-            sgtLogDebug() << "Im Sbus = " << Col<double>(imag(Scg)) << std::endl;
-            sgtLogDebug() << "Re S = " << Col<double>(real(S)) << std::endl;
-            sgtLogDebug() << "Im S = " << Col<double>(imag(S)) << std::endl;
             Col<double> fP = real(S.subvec(1, nPqPv));
             Col<double> fQ = imag(S.subvec(1, nPq));
             errP = norm(fP, "inf");
             errQ = norm(fQ, "inf");
-            sgtLogDebug() << "P = " << fP << std::endl;
             sgtLogDebug() << "Err_P = " << errP << std::endl;
-            sgtLogDebug() << "Q = " << fQ << std::endl;
             sgtLogDebug() << "Err_Q = " << errQ << std::endl;
             if (errP <= tol_ && errQ <= tol_)
             {
