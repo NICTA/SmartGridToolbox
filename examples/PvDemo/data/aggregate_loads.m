@@ -11,7 +11,7 @@ function loads = aggregate_loads(case_rel_path, as_const_Z = false)
     mpc.bus(:, QD) = 0.0;
 
     [dirname, fname, ext] = fileparts(case_rel_path);
-    fname_mod = fullfile(dirname, [fname, '_mod', ext])
+    fname_mod = fullfile(dirname, [fname, '_mod', ext]);
     savecase(fname_mod, mpc);
 
     sel = abs(S_static) > 0;
@@ -21,11 +21,6 @@ function loads = aggregate_loads(case_rel_path, as_const_Z = false)
     S_static_sel = S_static(sel);
 
     n_sel = length(idx_sel);
-
-    printf('size = %d\n', n_sel);
-    printf('[');
-    printf('%d, ', id_sel(1:end-1));
-    printf('%d]\n', id_sel(end));
 
     n_load = size(glob('loads/load_[0-9][0-9]*.txt'), 1);
     lds = [];
