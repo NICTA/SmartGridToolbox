@@ -21,5 +21,6 @@ function loads = analyse_loads(case_rel_path, max_factor = 1)
 
     printf('n_load_busses: %d\n', length(idx_sel));
     print_vec('load_busses', id_sel);
+    printf('n_solar_busses: %d\n', length(idx_sel));
     print_vec('solar_busses', id_perm);
     print_vec('solar_area', a_perm);
