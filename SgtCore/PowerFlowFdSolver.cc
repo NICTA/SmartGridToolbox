@@ -45,11 +45,29 @@ namespace Sgt
         SpMat<double> calcJP(
                 const uword nPqPv,
                 const Col<double>& M,
-                const SpMat<double>& B)
+                const SpMat<Complex>& Y)
         {
+            // Note that the diagonal terms of B do not make an appearance in
+            // the following. This means that it is easy to zero out R.
+            SpMat<double> B1;
+            {
+                SparseHelper<double> helper(Y.n_rows, Y.n_rows, false, false, false);
+                for (auto it = Y.begin(); it != Y.end(); ++it)
+                {
+                    auto i = it.row();
+                    auto k = it.col();
+                    if (i != k)
+                    {
+                        auto val = *it;
+                        helper.insert(i, k, -norm(val) / imag(val)); // Remember, norm in std::complex is |x|^2.
+                    }
+                }
+                B1 = helper.get();
+            }
+
             SparseHelper<double> helper(nPqPv, nPqPv, true, true, true);
 
-            auto BSel = B.rows(1, nPqPv);
+            auto BSel = B1.rows(1, nPqPv);
             for (auto it = BSel.begin(); it != BSel.end(); ++it)
             {
                 uword i = it.row() + 1; // Convert to index in full set of busses.
@@ -61,7 +79,7 @@ namespace Sgt
                 }
             }
 
-            for (SpMat<double>::iterator it = B.begin(); it != B.end(); ++it)
+            for (SpMat<double>::iterator it = B1.begin(); it != B1.end(); ++it)
             {
                 uword i = it.row();
                 uword k = it.col();
@@ -161,7 +179,7 @@ namespace Sgt
         const Col<Complex>& Ic = mod_->IConst(); // Model indexing. P_c + P_g.
 
         // Jacobian:
-        SpMat<double> JP = calcJP(nPqPv, M, B);
+        SpMat<double> JP = calcJP(nPqPv, M, Y);
         SpMat<double> JQ = calcJQ(nPq, M, B);
 
         bool wasSuccessful = false;
