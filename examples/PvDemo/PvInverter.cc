@@ -14,7 +14,6 @@
 
 #include "PvInverter.h"
 
-#include <SgtSim/SimNetwork.h>
 #include <SgtSim/Simulation.h>
 
 namespace Sgt

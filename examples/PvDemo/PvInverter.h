@@ -16,8 +16,9 @@
 #define PV_INVERTER_DOT_H
 
 #include <SgtCore/Gen.h>
-#include <SgtSim/Inverter.h>
 #include <SgtCore/Parser.h>
+
+#include <SgtSim/Inverter.h>
 #include <SgtSim/SimGen.h>
 #include <SgtSim/SimParser.h>
 
