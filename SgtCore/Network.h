@@ -295,7 +295,6 @@ namespace Sgt
             ZipMap zipMap_;
 
             std::unique_ptr<PowerFlowSolverInterface> solver_{nullptr};
-            std::unique_ptr<PowerFlowSolverInterface> nrSolver_{nullptr};
 
             bool isValidSolution_{false};
     };
