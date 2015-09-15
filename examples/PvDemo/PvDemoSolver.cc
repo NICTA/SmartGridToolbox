@@ -25,8 +25,24 @@ namespace Sgt
 {
     std::unique_ptr<PowerModel> PvDemoSolver::makeModel()
     {
-        auto mod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_));
-        mod->min_cost();
+        auto powerMod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_));
+        powerMod->min_cost();
+        auto mod = powerMod->_model;
+        *mod->_obj += 10000 * V2Slack_;
+        V2Slack_.init("VSlack", 0, INFINITY); // TODO: PowerTools needs to use a NEG_INFINITY.
+        mod->addVar(V2Slack_);
+        for (auto& cPair : mod->_cons)
+        {
+            auto& c = *cPair.second;
+            if (c._name == "V_LB")
+            {
+                c += V2Slack_;
+            }
+            else if (c._name == "V_UB")
+            {
+                c -= V2Slack_;
+            }
+        }
         for (auto bus : sgtNetw_->busses())
         {
             for (auto gen : bus->gens())
@@ -41,7 +57,7 @@ namespace Sgt
                             [genId](Gen* g){return g->_name == genId;});
                     assert(ptGen != ptBus->_gen.end());
 
-                    *mod->_model->_obj += 10000 * ((**ptGen).qg^2);
+                    *mod->_obj += 10000 * ((**ptGen).qg^2);
 
                     if (true)
                     {
@@ -49,7 +65,7 @@ namespace Sgt
                         c += (((**ptGen).pg)^2) + (((**ptGen).qg)^2);
                         double maxSMag = sgtNetw_->S2Pu(inverter->maxSMag());
                         c <= pow(maxSMag, 2);
-                        mod->_model->addConstraint(c);
+                        mod->addConstraint(c);
                     }
 
                     if (false)
@@ -58,12 +74,11 @@ namespace Sgt
                         c += (((**ptGen).pg)^2) - (((**ptGen).qg)^2);
                         c >= 0;
                         // c.print(); std::cout << std::endl;
-                        mod->_model->addConstraint(c);
+                        mod->addConstraint(c);
                     }
                 }
             }
         }
-        // mod->_model->print();
-        return mod;
+        return powerMod;
     }
 }

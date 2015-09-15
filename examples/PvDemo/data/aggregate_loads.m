@@ -7,14 +7,14 @@ function loads = aggregate_loads(case_rel_path, as_const_Z = false)
     mean_S_static = mean(S_static);
     S_static_factor = imag(mean_S_static) / real(mean_S_static);
 
-    mpc.bus(:, PD) = 0.0;
-    mpc.bus(:, QD) = 0.0;
+    sel = real(S_static) > 0;
 
+    mpc.bus(sel, PD) = 0.0;
+    mpc.bus(sel, QD) = 0.0;
     [dirname, fname, ext] = fileparts(case_rel_path);
     fname_mod = fullfile(dirname, [fname, '_mod', ext]);
     savecase(fname_mod, mpc);
 
-    sel = abs(S_static) > 0;
     idx_sel = [1:n_bus](sel);
     id_sel = mpc.bus(sel, BUS_I);
     Kv_base_sel = mpc.bus(sel, BASE_KV);

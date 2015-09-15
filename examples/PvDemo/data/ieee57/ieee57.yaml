@@ -3,9 +3,9 @@
     V_mag_min: 0.92
     V_mag_max: 1.0
 - parameters:
-    start_time: 2013-01-02 06:00:00
-    end_time: 2013-01-03 06:00:00
-    loads_start_time: 2013-01-01 20:00:00
+    start_time: 2013-01-02 00:00:00
+    end_time: 2013-01-05 00:00:00
+    loads_start_time: 2013-01-01 21:00:00
     input_file: ieee57_0_mod.m
     n_load_busses: 42 
     load_busses: [1, 2, 3, 5, 6, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 25, 27, 28, 29, 30, 31, 32, 33, 35, 38, 41, 42, 43, 44, 47, 49, 50, 51, 52, 53, 54, 55, 56, 57]
@@ -61,7 +61,7 @@
             time_series_id: load_<load_busses(<i>)>_series
             dt: 00:10:00
             scale_factor_Y: 1
-            scale_factor_S: 1
+            scale_factor_S: 1.2
 - loop:
     loop_variable: [i, 0, <n_solar_busses>, 1]
     loop_body: 
@@ -70,6 +70,7 @@
             network_id: network
             bus_id: bus_<solar_busses(<i>)>
             max_S_mag: <solar_S_mag_max(<i>)>
+            # max_Q: 0
             efficiency: 0.86
         - solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
             id: solar_pv_<solar_busses(<i>)>
@@ -77,5 +78,5 @@
             inverter: pv_inverter_<solar_busses(<i>)>
             efficiency: 0.25
             area_m2: <solar_area(<i>)>
-            zenith_degrees: 40 
-            azimuth_degrees: 25
+            zenith_degrees: 60 
+            azimuth_degrees: 0
