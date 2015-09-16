@@ -24,7 +24,7 @@ namespace Sgt
     {
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "phases");
-        assertFieldPresent(nd, "network_id");
+        assertFieldPresent(nd, "sim_network_id");
         assertFieldPresent(nd, "bus_id");
 
         string id = parser.expand<std::string>(nd["id"]);
@@ -47,7 +47,7 @@ namespace Sgt
             inverter->setRequestedQ(parser.expand<double>(nd["requested_Q"]));
         }
 
-        const std::string networkId = parser.expand<std::string>(nd["network_id"]);
+        const std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
         const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
         auto& network = *sim.simComponent<SimNetwork>(networkId);

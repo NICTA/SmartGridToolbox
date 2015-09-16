@@ -24,8 +24,8 @@ namespace Sgt
     void SimMatpowerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         MatpowerParserPlugin mpParser;
-        assertFieldPresent(nd, "network_id");
-        string netwId = parser.expand<std::string>(nd["network_id"]);
+        assertFieldPresent(nd, "sim_network_id");
+        string netwId = parser.expand<std::string>(nd["sim_network_id"]);
         auto simNetw = sim.simComponent<SimNetwork>(netwId);
         auto netw = simNetw->network();
 

@@ -24,7 +24,7 @@ namespace Sgt
     void SimpleBuildingParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "network_id");
+        assertFieldPresent(nd, "sim_network_id");
         assertFieldPresent(nd, "bus_id");
 
         std::string id = parser.expand<std::string>(nd["id"]);
@@ -66,7 +66,7 @@ namespace Sgt
             build->set_dQgSeries(series);
         }
 
-        std::string netwId = parser.expand<std::string>(nd["network_id"]);
+        std::string netwId = parser.expand<std::string>(nd["sim_network_id"]);
         std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
         auto netw = sim.simComponent<SimNetwork>(netwId);

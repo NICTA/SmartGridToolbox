@@ -1,164 +1,151 @@
-# Sample SmartGridToolbox configuration file.
-# File format is YAML.
-
---- # Marks the start of each configuration document.
-
-# Global information:
-configuration_name: test_microgrid # Name for this model.
-lat_long: [-35.3075, 149.1244] # Canberra, Australia.
-timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Canberra, Australia.
-start_time: 2013-06-10 00:00:00 # Local date/time in given timezone.
-end_time: 2013-08-10 00:00:00 # Local date/time in given timezone.
-
-# Add all time series use for the model here:
-time_series_list:
-    data_time_series: # A time series based on a data file.
-        name: cloud_cover_series
-        data_file: cloud_cover.txt # Filename of series data.
-        value_type: real_scalar # Type of values, e.g. real_scalar, complex_vector.
-        interp_type: lerp # lerp = linear interpolation.
-        relative_to_time: 2013-01-01 00:00:00 # Corresponds to zero in data file.
-        time_unit: h # Data file time unit, s/m/h/d.
-    data_time_series:
-        name: external_temperature_series
-        data_file: external_temperature.txt
-        value_type: real_scalar
-        interp_type: lerp
-        relative_to_time: 2013-01-01 00:00:00
-        time_unit: h
-    data_time_series:
-        name: internal_thermal_power
-        data_file: internal_thermal_power.txt
-        value_type: real_scalar
-        interp_type: lerp
-        relative_to_time: 2013-01-01 00:00:00
-        time_unit: h
-
-# List of components in the model:
-components:
-    weather:
-        name: weather
-        temperature: external_temperature_series # My temperature time series.
-        cloud_cover: cloud_cover_series # My cloud cover series, 0 = clear, 1 = fully overcast.
-        dt: 00:05:00 # Update frequency.
-    network:
-        name: network # Power network component for model.
+- sgt_gui:
+    bar_power_scaling: 0.01
+    V_mag_min: 0.92
+    V_mag_max: 1.0
+- simulation: 
+    start_time: 2013-06-10 00:00:00
+    end_time: 2013-08-10 00:00:00
+    lat_long: [-35.3075, 149.1244]
+    timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03
+- time_series:
+    id: cloud_cover_series
+    value_type: real_scalar
+    type: data_time_series
+    data_file: cloud_cover.txt
+    relative_to_time: 2013-01-01 00:00:00
+    time_unit: h
+    interp_type: lerp
+- time_series:
+    id: external_temperature_series
+    value_type: real_scalar
+    type: data_time_series
+    data_file: external_temperature.txt
+    relative_to_time: 2013-01-01 00:00:00
+    time_unit: h
+    interp_type: lerp
+- time_series:
+    id: internal_thermal_power
+    value_type: real_scalar
+    type: data_time_series
+    data_file: internal_thermal_power.txt
+    relative_to_time: 2013-01-01 00:00:00
+    time_unit: h
+    interp_type: lerp
+- weather:
+    id: weather
+    temperature: external_temperature_series
+    cloud_cover: cloud_cover_series
+    dt: 00:05:00
+- network:
+    id: network
+    P_base: 1
+    freq_Hz: 60
+    solver: nr
+- sim_bus:
+    id: bus_trans
+    sim_network_id: network
     bus:
-        name: bus_trans
-        network: network # My network
-        type: SL # SL = slack/swing/infinite bus, PQ = PQ bus, PV = PV bus.
-        phases: [BAL] # e.g. [A, B, C] = three phase, [BAL] = balanced/sing phase.
-        nominal_voltage: [240] # Nominal/starting voltage, SI (Volts).
-        V_mag_setpoint: [240] # For slack / PV busses, voltage magnitude setpoint
-        V_ang_setpoint: [0] # For slack busses, voltage angle setpoint in degrees.
+        bus:
+            id: bus_trans
+            phases: [BAL]
+            V_base: 415
+            V_nom: [415]
+            type: SL
+- sim_bus:
+    id: bus_build
+    sim_network_id: network
     bus:
-        name: bus_build
-        network: network
-        type: PQ
-        phases: [BAL]
-        nominal_voltage: [240]
+        bus:
+            id: bus_trans
+            phases: [BAL]
+            V_base: 415
+            V_nom: [415]
+            type: PQ
+- sim_bus:
+    id: bus_pv
+    sim_network_id: network
     bus:
-        name: bus_pv
-        network: network
-        type: PQ
-        phases: [BAL]
-        nominal_voltage: [240]
-    bus:
-        name: bus_batt
-        network: network
-        type: PQ
-        phases: [BAL]
-        nominal_voltage: [240]
-    overhead_line:
-        name: branch_trans_pv
-        network: network # My network.
-        phases_0: [BAL] # Phases on end 0.
-        phases_1: [BAL] # Phases on end 1.
-        bus_0: bus_trans # Bus connected to end 0 (phases must match).
-        bus_1: bus_pv # Bus connected to end 1 (phases must match).
-        length: 20 # Line length in meters.
-        subcond_R_per_L: [1.9014e-04] # SI, Ohms/m.
-        earth_resist: 100 # SI, Ohm m.
-        cond_dist: [[0.00743712]] # Diag = geom mean radius, off diag = wire-wire dist.
-        freq: 50 # Frequency on line.
-    overhead_line:
-        name: branch_trans_batt
-        network: network
-        phases_0: [BAL]
-        phases_1: [BAL]
-        bus_0: bus_trans
-        bus_1: bus_batt
-        length: 20
-        subcond_R_per_L: [1.9014e-04]
-        cond_dist: [[0.00743712]]
-        earth_resist: 100
-        freq: 50
-    overhead_line:
-        name: branch_trans_build
-        network: network
-        phases_0: [BAL]
-        phases_1: [BAL]
-        bus_0: bus_trans
-        bus_1: bus_build
-        length: 100
-        subcond_R_per_L: [1.9014e-04]
-        cond_dist: [[0.00743712]]
-        earth_resist: 100
-        freq: 50
-    inverter:
-        name: inverter_batt
-        bus: bus_batt # My bus.
-        phases: [BAL] # My phases.
-        efficiency: 0.9 # Efficiency in converting DC power to AC power.
-    simple_battery:
-        name: batt
-        dt: 00:05:00 # Update frequency.
-        inverter: inverter_batt # Name of my inverter.
-        init_charge: 0 # SI, 100 kWh.
-        max_charge: 4.5e8 # SI, 200 kWh.
-        max_charge_power: 2e4 # Charge in 10 hours.
-        max_discharge_power: 5e4 # Discharge in 4 hours.
-        charge_efficiency: 0.85 # Typical Li-I.
-        discharge_efficiency: 0.85 # Typical Li-I.
-        requested_power: -1e4 # SI, initial value.
-    inverter:
-        name: inverter_pv
-        bus: bus_pv
-        phases: [BAL]
-        efficiency: 0.9
-    solar_pv:
-        name: pv
-        inverter: inverter_pv # My inverter.
-        weather: weather # Weather at collector.
-        efficiency: 0.4 # Efficiency in converting solar irradiance to DC power.
-        area_m2: 50 # Collector area, m^2.
-        zenith_degrees: 64.6 # Zenith angle, 0 = pointing directly up.
-        azimuth_degrees: 95.8 # Azimuth angle, e.g. 2 = 2 degrees east of north.
-    inverter:
-        name: inverter_build
-        bus: bus_pv
-        phases: [BAL]
-        efficiency: 0.9
-    simple_building:
-        name: build
-        bus: bus_build # My bus.
-        dt: 00:05:00 # Update frequency.
-        kb: 5e3 # Conductivity parameter, W/K.
-        Cb: 1e8 # Heat capacity, J/K.
-        Tb_init: 23 # Initial temperature.
-        kh: 1e4 # Hvac control paramter, W/K.
-        COP_cool: 3 # Units of energy removed per unit of energy used.
-        COP_heat: 4 # Units of energy added per unit of energy used.
-        P_max: 1e5 # 70 kW, about typical for largeish building.
-        Ts: 20 # HVAC setpoint.
-        weather: weather # The weather outside building.
-        internal_heat_power: internal_thermal_power # Time series for W of waste heat inside building.
-    microgrid_controller:
-        name: controller
-        building_bus: bus_build # Bus of building.
-        pv_bus: bus_pv # Bus of PV.
-        battery: batt # The battery.
-        min_P: -15e3 # Build P inj. below which attempt to discharge batt. 
-        max_P: -5e3 # Build P inj. above which attempt to charge batt. 
-
---- # Marks the end of each configuration document.
+        bus:
+            id: bus_pv
+            phases: [BAL]
+            V_base: 415
+            V_nom: [415]
+            type: PQ
+- overhead_line:
+    id: branch_trans_build
+    network_id: network
+    bus_0_id: bus_trans
+    bus_1_id: bus_build
+    phases_0: [BAL]
+    phases_1: [BAL]
+    length: 100
+    subcond_R_per_L: [1.9014e-04]
+    earth_resist: 100
+    cond_dist: [[0]]
+    subcond_gmr: [0.007]
+    freq: 50
+- overhead_line:
+    id: branch_build_pv
+    network_id: network
+    bus_0_id: bus_build
+    bus_1_id: bus_pv
+    phases_0: [BAL]
+    phases_1: [BAL]
+    length: 20
+    subcond_R_per_L: [1.9014e-04]
+    earth_resist: 100
+    cond_dist: [[0]]
+    subcond_gmr: [0.007]
+    freq: 50
+- inverter:
+    id: inverter_batt
+    phases: [BAL]
+    network_id: network
+    bus_id: bus_build
+    efficiency: 0.9
+- battery:
+    id: batt
+    dt: 00:05:00
+    inverter: inverter_batt
+    init_charge: 0
+    max_charge: 4.5e8
+    max_charge_power: 2e4
+    max_discharge_power: 5e4
+    charge_efficiency: 0.85
+    discharge_efficiency: 0.85
+    requested_power: -1e4
+inverter:
+    id: inverter_pv
+    phases: [BAL]
+    network_id: network
+    bus_id: bus_pv
+    efficiency: 0.9
+- solar_pv:
+    id: pv
+    inverter: inverter_pv
+    weather: weather
+    efficiency: 0.4
+    area_m2: 50
+    zenith_degrees: 64.6
+    azimuth_degrees: 95.8
+- simple_building:
+    id: build
+    bus: bus_build
+    dt: 00:05:00
+    kb: 5e3
+    Cb: 1e8
+    Tb_init: 23
+    kh: 1e4
+    COP_cool: 3
+    COP_heat: 4
+    P_max: 1e5
+    Ts: 20
+    weather: weather
+    internal_heat_power: internal_thermal_power
+- microgrid_controller:
+    id: controller
+    building_bus: bus_build
+    pv_bus: bus_pv
+    battery: batt
+    min_P: -15e3
+    max_P: -5e3

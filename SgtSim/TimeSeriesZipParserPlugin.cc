@@ -23,14 +23,14 @@ namespace Sgt
     void TimeSeriesZipParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "network_id");
+        assertFieldPresent(nd, "sim_network_id");
         assertFieldPresent(nd, "bus_id");
         assertFieldPresent(nd, "time_series_id");
         assertFieldPresent(nd, "phases");
         assertFieldPresent(nd, "dt");
 
         string id = parser.expand<std::string>(nd["id"]);
-        string networkId = parser.expand<std::string>(nd["network_id"]);
+        string networkId = parser.expand<std::string>(nd["sim_network_id"]);
         string busId = parser.expand<std::string>(nd["bus_id"]);
         string tsId = parser.expand<std::string>(nd["time_series_id"]);
         Phases phases = parser.expand<Phases>(nd["phases"]);

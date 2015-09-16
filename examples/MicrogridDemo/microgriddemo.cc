@@ -14,7 +14,9 @@
 
 #include "MicrogridController.h"
 
+#include <SgtSim/Battery.h>
 #include <SgtSim/Inverter.h>
+#include <SgtSim/Simulation.h>
 #include <SgtSim/SimpleBuilding.h>
 
 #include <fstream>
@@ -23,6 +25,7 @@ using namespace Sgt;
 
 int main(int argc, const char ** argv)
 {
+    messageLogLevel() = LogLevel::VERBOSE;
     std::string configName(argv[1]);
     std::string outputPrefix(argv[2]);
 
@@ -35,7 +38,7 @@ int main(int argc, const char ** argv)
 
     Simulation sim;
     Parser<Simulation> p;
-    p.registerParserPlugin<MicrogridControllerParserPlugin>();
+    // p.registerParserPlugin<MicrogridControllerParserPlugin>();
     p.parse(configName, sim);
 
     auto build = sim.simComponent<SimpleBuilding>("build");
