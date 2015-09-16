@@ -77,7 +77,7 @@ namespace Sgt
 
             /// @}
 
-            /// @name Component virtual overridden functions.
+            /// @name Component virtual overridden member functions.
             /// @{
 
         public:
@@ -91,7 +91,7 @@ namespace Sgt
 
             /// @}
 
-            /// @name Overridden member functions from SimComponent.
+            /// @name SimComponent virtual overridden member functions.
             /// @{
 
         public:
@@ -105,7 +105,7 @@ namespace Sgt
 
             /// @}
         
-            /// @name SimZipAbc virtual overridden functions.
+            /// @name SimZipAbc virtual overridden member functions.
             /// @{
 
         public:
@@ -122,13 +122,15 @@ namespace Sgt
 
             /// @}
 
-            /// @name SimpleBuilding specific member functions.
+            /// @name ZipAbc virtual overridden member functions.
             /// @{
 
             virtual arma::Col<Complex> SConst() const override
             {
-                return {Complex(-Ph_, 0.0)};
+                return {Complex(-1e-6 * Ph_, 0.0)}; // Need to convert from W to MW.
             }
+            
+            /// @}
 
             // Parameters:
             Time dt() {return dt_;}

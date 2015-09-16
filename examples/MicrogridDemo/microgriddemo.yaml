@@ -2,11 +2,13 @@
     bar_power_scaling: 0.01
     V_mag_min: 0.92
     V_mag_max: 1.0
+
 - simulation: 
     start_time: 2013-06-10 00:00:00
     end_time: 2013-08-10 00:00:00
     lat_long: [-35.3075, 149.1244]
     timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03
+
 - time_series:
     id: cloud_cover_series
     value_type: real_scalar
@@ -15,6 +17,7 @@
     relative_to_time: 2013-01-01 00:00:00
     time_unit: h
     interp_type: lerp
+
 - time_series:
     id: external_temperature_series
     value_type: real_scalar
@@ -23,6 +26,7 @@
     relative_to_time: 2013-01-01 00:00:00
     time_unit: h
     interp_type: lerp
+
 - time_series:
     id: internal_thermal_power
     value_type: real_scalar
@@ -31,16 +35,19 @@
     relative_to_time: 2013-01-01 00:00:00
     time_unit: h
     interp_type: lerp
+
 - weather:
     id: weather
     temperature: external_temperature_series
     cloud_cover: cloud_cover_series
     dt: 00:05:00
+
 - sim_network:
     id: network
     P_base: 1
     freq_Hz: 60
     solver: nr
+
 - sim_bus:
     id: bus_trans
     sim_network_id: network
@@ -51,6 +58,17 @@
             V_base: 415
             V_nom: [415]
             type: SL
+
+- sim_gen:
+    id: gen_trans
+    sim_network_id: network
+    bus_id: bus_trans
+    gen:
+        generic_gen:
+            id: gen_trans
+            bus_id: bus_trans
+            phases: [BAL]
+
 - sim_bus:
     id: bus_build
     sim_network_id: network
@@ -61,6 +79,7 @@
             V_base: 415
             V_nom: [415]
             type: PQ
+
 - sim_bus:
     id: bus_pv
     sim_network_id: network
@@ -71,6 +90,7 @@
             V_base: 415
             V_nom: [415]
             type: PQ
+
 - sim_branch:
     id: branch_trans_build
     sim_network_id: network
@@ -87,6 +107,7 @@
             cond_dist: [[0]]
             subcond_gmr: [0.007]
             freq: 50
+
 - sim_branch:
     id: branch_build_pv
     sim_network_id: network
@@ -103,29 +124,33 @@
             cond_dist: [[0]]
             subcond_gmr: [0.007]
             freq: 50
+
 - inverter:
     id: inverter_batt
     phases: [BAL]
     sim_network_id: network
     bus_id: bus_build
     efficiency: 0.9
+
 - battery:
     id: batt
     dt: 00:05:00
     inverter: inverter_batt
     init_charge: 0
-    max_charge: 4.5e8
-    max_charge_power: 2e4
-    max_discharge_power: 5e4
+    max_charge: 4.5e2
+    max_charge_power: 2e-2
+    max_discharge_power: 5e-2
     charge_efficiency: 0.85
     discharge_efficiency: 0.85
-    requested_power: -1e4
+    requested_power: -1e-2
+
 - inverter:
     id: inverter_pv
     phases: [BAL]
     sim_network_id: network
     bus_id: bus_pv
     efficiency: 0.9
+
 - solar_pv:
     id: pv
     inverter: inverter_pv
@@ -133,22 +158,24 @@
     efficiency: 0.4
     area_m2: 50
     zenith_degrees: 64.6
-    azimuth_degrees: 95.8
+    azimuth_degrees: 10.8
+
 - simple_building:
     id: build
     sim_network_id: network
     bus_id: bus_build
     dt: 00:05:00
-    kb: 0.005
-    Cb: 1e2
+    kb: 5e3
+    Cb: 1e8
     Tb_init: 23
-    kh: 0.01
+    kh: 1e4
     COP_cool: 3
     COP_heat: 4
-    P_max: 0.1
+    P_max: 1e5
     Ts: 20
     weather: weather
     internal_heat_power: internal_thermal_power
+
 - microgrid_controller:
     id: controller
     building_bus: bus_build

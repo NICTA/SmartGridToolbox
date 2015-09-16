@@ -32,9 +32,9 @@ int main(int argc, const char ** argv)
     std::cout << "Configuration filename = " << configName << std::endl;
     std::cout << "Output prefix          = " << outputPrefix << std::endl;
 
-    std::ofstream VFile(outputPrefix + ".out_V");
-    std::ofstream SFile(outputPrefix + ".out_S");
-    std::ofstream TFile(outputPrefix + ".out_T");
+    std::ofstream VFile(outputPrefix + ".V");
+    std::ofstream SFile(outputPrefix + ".S");
+    std::ofstream TFile(outputPrefix + ".T");
 
     Simulation sim;
     Parser<Simulation> p;
@@ -49,6 +49,7 @@ int main(int argc, const char ** argv)
     sim.initialize();
 
     auto busses = simNetw->network()->busses();
+    sgtLogMessage() << *simNetw->network() << std::endl;
     while (!sim.isFinished())
     {
         VFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
@@ -67,6 +68,7 @@ int main(int argc, const char ** argv)
 
         TFile << (dSeconds(sim.currentTime() - sim.startTime())) << " " << build->Te() 
             << " " << build->Tb() << std::endl;
+        sim.doTimestep();
     }
 
     VFile.close();
