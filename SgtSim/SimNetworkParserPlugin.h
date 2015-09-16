@@ -22,13 +22,13 @@ namespace Sgt
 {
     class Simulation;
 
-    /// @brief ParserPlugin that parses the network keyword, adding a new SimNetwork to the model.
+    /// @brief ParserPlugin that parses the sim_network keyword, adding a new SimNetwork to the model.
     class SimNetworkParserPlugin : public SimParserPlugin
     {
         public:
             virtual const char* key() override
             {
-                return "network";
+                return "sim_network";
             }
 
         public:
