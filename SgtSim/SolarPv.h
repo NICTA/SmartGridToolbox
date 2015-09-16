@@ -47,7 +47,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name Component virtual overridden functions.
+        /// @name Component virtual overridden member functions.
         /// @{
 
         public:

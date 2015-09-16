@@ -74,7 +74,7 @@ namespace Sgt
 
             /// @}
 
-            /// @name InverterAbc virtual overridden functions.
+            /// @name InverterAbc virtual overridden member functions.
             /// @{
 
             virtual double efficiency(double powerDc) const override
@@ -135,7 +135,7 @@ namespace Sgt
             
             /// @}
 
-            /// @name Component virtual overridden functions.
+            /// @name Component virtual overridden member functions.
             /// @{
 
             virtual const std::string& componentType() const override
@@ -147,14 +147,14 @@ namespace Sgt
 
             /// @}
 
-            /// @name InverterAbc virtual overridden functions.
+            /// @name InverterAbc virtual overridden member functions.
             /// @{
 
             virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source) override;
 
             /// @}
             
-            /// @name SimZipAbc virtual overridden functions.
+            /// @name SimZipAbc virtual overridden member functions.
             /// @{
             
             virtual std::shared_ptr<const ZipAbc> zip() const override
@@ -196,7 +196,7 @@ namespace Sgt
 
         private:
             
-            /// @name ZipAbc virtual overridden functions.
+            /// @name ZipAbc virtual overridden member functions.
             /// @{
             
             virtual arma::Col<Complex> SConst() const override;

@@ -49,7 +49,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name Component virtual overridden functions.
+        /// @name Component virtual overridden member functions.
         /// @{
 
             virtual const std::string& componentType() const override
@@ -106,7 +106,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name Component virtual overridden functions.
+        /// @name Component virtual overridden member functions.
         /// @{
 
             virtual const std::string& componentType() const override

@@ -54,7 +54,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name Component virtual overridden functions.
+        /// @name Component virtual overridden member functions.
         /// @{
 
             virtual const std::string& componentType() const override
@@ -218,7 +218,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name Component virtual overridden functions.
+        /// @name Component virtual overridden member functions.
         /// @{
 
             virtual const std::string& componentType() const override
@@ -230,7 +230,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name BranchAbc virtual overridden functions.
+        /// @name BranchAbc virtual overridden member functions.
         /// @{
 
             virtual arma::Mat<Complex> inServiceY() const override

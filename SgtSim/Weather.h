@@ -55,7 +55,7 @@ namespace Sgt
                 // Empty.
             }
 
-        /// @name Component virtual overridden functions.
+        /// @name Component virtual overridden member functions.
         /// @{
 
         public:
