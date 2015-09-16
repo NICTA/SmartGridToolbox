@@ -31,7 +31,6 @@ namespace Sgt
         
         string id = parser.expand<std::string>(nd["id"]);
         string simNetwId = parser.expand<std::string>(nd["sim_network_id"]);
-        string busId = parser.expand<std::string>(nd["bus_id"]);
 
         auto simNetwork = sim.simComponent<SimNetwork>(simNetwId);
         sgtAssert(simNetwork != nullptr, "Parsing SimZip " << id << ": sim_network not found.");
@@ -45,6 +44,6 @@ namespace Sgt
         p.parse(netwNode, network);
         auto zip = network.zip(id);
         auto simZip = sim.newSimComponent<SimZip>(zip);
-        simZip->linkToSimNetwork(*simNetwork, busId);
+        simZip->linkToSimNetwork(*simNetwork);
     }
 }

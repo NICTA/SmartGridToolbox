@@ -26,14 +26,10 @@ namespace Sgt
     {
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "sim_network_id");
-        assertFieldPresent(nd, "bus_0_id");
-        assertFieldPresent(nd, "bus_1_id");
         assertFieldPresent(nd, "branch");
         
         string id = parser.expand<std::string>(nd["id"]);
         string simNetwId = parser.expand<std::string>(nd["sim_network_id"]);
-        string bus0Id = parser.expand<std::string>(nd["bus_0_id"]);
-        string bus1Id = parser.expand<std::string>(nd["bus_1_id"]);
 
         auto simNetwork = sim.simComponent<SimNetwork>(simNetwId);
         sgtAssert(simNetwork != nullptr, "Parsing SimBranch " << id << ": sim_network not found.");
@@ -47,6 +43,6 @@ namespace Sgt
         p.parse(netwNode, network);
         auto branch = network.branch(id);
         auto simBranch = sim.newSimComponent<SimBranch>(branch);
-        simBranch->linkToSimNetwork(*simNetwork, bus0Id, bus1Id);
+        simBranch->linkToSimNetwork(*simNetwork);
     }
 }

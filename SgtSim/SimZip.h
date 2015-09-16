@@ -40,7 +40,7 @@ namespace Sgt
             ///
             /// Important: my zip must separately be added to SimNetwork's Network. This is to prevent any possible
             /// confusion about whether it is already added on not.
-            virtual void linkToSimNetwork(SimNetwork& simNetwork, const std::string& busId);
+            virtual void linkToSimNetwork(SimNetwork& simNetwork);
     };
 
     /// @brief Simulation zip, corresponding to a ZipAbc in a SimNetwork's network(). 

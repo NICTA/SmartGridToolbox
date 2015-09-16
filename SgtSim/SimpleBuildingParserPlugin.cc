@@ -66,11 +66,12 @@ namespace Sgt
             build->set_dQgSeries(series);
         }
 
-        std::string netwId = parser.expand<std::string>(nd["sim_network_id"]);
-        std::string busId = parser.expand<std::string>(nd["bus_id"]);
+        std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
+        const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
-        auto netw = sim.simComponent<SimNetwork>(netwId);
-        build->linkToSimNetwork(*netw, busId);
+        auto netw = sim.simComponent<SimNetwork>(networkId);
+        netw->network()->addZip(build->zip(), busId);
+        build->linkToSimNetwork(*netw);
 
         const auto& weatherNd = nd["weather"];
         if (weatherNd)

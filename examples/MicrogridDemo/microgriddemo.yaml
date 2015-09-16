@@ -75,7 +75,8 @@
     id: branch_trans_build
     sim_network_id: network
     branch:
-        - overhead_line:
+        overhead_line:
+            id: branch_trans_build
             bus_0_id: bus_trans
             bus_1_id: bus_build
             phases_0: [BAL]
@@ -90,7 +91,8 @@
     id: branch_build_pv
     sim_network_id: network
     branch:
-        - overhead_line:
+        overhead_line:
+            id: branch_build_pv
             bus_0_id: bus_build
             bus_1_id: bus_pv
             phases_0: [BAL]
@@ -118,7 +120,7 @@
     charge_efficiency: 0.85
     discharge_efficiency: 0.85
     requested_power: -1e4
-inverter:
+- inverter:
     id: inverter_pv
     phases: [BAL]
     sim_network_id: network
@@ -134,15 +136,16 @@ inverter:
     azimuth_degrees: 95.8
 - simple_building:
     id: build
-    bus: bus_build
+    sim_network_id: network
+    bus_id: bus_build
     dt: 00:05:00
-    kb: 5e3
-    Cb: 1e8
+    kb: 0.005
+    Cb: 1e2
     Tb_init: 23
-    kh: 1e4
+    kh: 0.01
     COP_cool: 3
     COP_heat: 4
-    P_max: 1e5
+    P_max: 0.1
     Ts: 20
     weather: weather
     internal_heat_power: internal_thermal_power
@@ -151,5 +154,5 @@ inverter:
     building_bus: bus_build
     pv_bus: bus_pv
     battery: batt
-    min_P: -15e3
-    max_P: -5e3
+    min_P: -15e-3
+    max_P: -5e-3

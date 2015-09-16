@@ -60,6 +60,6 @@ namespace Sgt
         }
 
         network->network()->addZip(tsZip->zip(), busId);
-        tsZip->linkToSimNetwork(*network, busId);
+        tsZip->linkToSimNetwork(*network);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Sgt
 {
-    void SimBranchAbc::linkToSimNetwork(SimNetwork& simNetwork, const std::string& bus0Id, const std::string& bus1Id)
+    void SimBranchAbc::linkToSimNetwork(SimNetwork& simNetwork)
     {
         // Safety check that my branch has already been added to simNetwork's network.
         auto networkBranch = simNetwork.network()->branch(branch()->id());

@@ -2,7 +2,7 @@
 
 namespace Sgt
 {
-    void SimZipAbc::linkToSimNetwork(SimNetwork& simNetwork, const std::string& busId)
+    void SimZipAbc::linkToSimNetwork(SimNetwork& simNetwork)
     {
         // Safety check that my zip has already been added to simNetwork's network.
         auto networkZip = simNetwork.network()->zip(zip()->id());

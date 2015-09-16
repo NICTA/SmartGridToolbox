@@ -40,20 +40,20 @@ namespace Sgt
             for (auto gen : bus->gens())
             {
                 auto simGen = sim.newSimComponent<SimGen>(gen);
-                simGen->linkToSimNetwork(*simNetw, bus->id());
+                simGen->linkToSimNetwork(*simNetw);
             }
 
             for (auto zip : bus->zips())
             {
                 auto simZip = sim.newSimComponent<SimZip>(zip);
-                simZip->linkToSimNetwork(*simNetw, bus->id());
+                simZip->linkToSimNetwork(*simNetw);
             }
         }
 
         for (auto branch : netw->branches())
         {
             auto simBranch = sim.newSimComponent<SimBranch>(branch);
-            simBranch->linkToSimNetwork(*simNetw, branch->bus0()->id(), branch->bus1()->id());
+            simBranch->linkToSimNetwork(*simNetw);
         }
     }
 }

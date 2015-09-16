@@ -33,7 +33,7 @@ namespace Sgt
         OFF
     };
 
-    class SimpleBuilding : virtual public Component, private ZipAbc, public SimZip
+    class SimpleBuilding : public SimZipAbc, private ZipAbc
     {
         /// @name Static member functions:
         /// @{
@@ -46,16 +46,15 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Lifecycle:
-        /// @{
+            /// @name Lifecycle:
+            /// @{
 
         public:
             SimpleBuilding(const std::string& id) :
                 Component(id),
                 ZipAbc(Phase::BAL),
-                SimZip(shared<ZipAbc>()),
                 dt_(posix_time::minutes(5)),
                 kb_(5 * kwatt / kelvin),
                 Cb_(1.0e5 * kjoule / kelvin),
@@ -76,10 +75,10 @@ namespace Sgt
             {
             }
 
-        /// @}
+            /// @}
 
-        /// @name Component virtual overridden functions.
-        /// @{
+            /// @name Component virtual overridden functions.
+            /// @{
 
         public:
 
@@ -90,10 +89,10 @@ namespace Sgt
 
             // virtual void print(std::ostream& os) const override; TODO
 
-        /// @}
+            /// @}
 
-        /// @name Overridden member functions from SimComponent.
-        /// @{
+            /// @name Overridden member functions from SimComponent.
+            /// @{
 
         public:
 
@@ -104,12 +103,27 @@ namespace Sgt
             virtual void initializeState() override;
             virtual void updateState(Time t) override;
 
-        /// @}
-
-        /// @name SimpleBuilding specific member functions.
-        /// @{
+            /// @}
+        
+            /// @name SimZipAbc virtual overridden functions.
+            /// @{
 
         public:
+
+            virtual std::shared_ptr<const ZipAbc> zip() const override
+            {
+                return shared<const ZipAbc>();
+            }
+
+            virtual std::shared_ptr<ZipAbc> zip() override
+            {
+                return shared<ZipAbc>();
+            }
+
+            /// @}
+
+            /// @name SimpleBuilding specific member functions.
+            /// @{
 
             virtual arma::Col<Complex> SConst() const override
             {
@@ -164,15 +178,15 @@ namespace Sgt
 
             double dQh() {return dQh_;}
 
-        /// @}
+            /// @}
 
-        /// @name My private member functions.
-        /// @{
+            /// @name My private member functions.
+            /// @{
 
         private:
             void setOperatingParams(Time t);
 
-        /// @}
+            /// @}
 
         private:
             // Parameters and controls.
