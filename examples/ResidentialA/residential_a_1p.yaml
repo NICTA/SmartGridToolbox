@@ -61,7 +61,7 @@
     # A bus is a "node" in the power network - a point at which a definite voltage exists. A bus is a bit like
     # an electricity wall socket.
     id: bus_mv_up # The "top" (generator) bus in the network.
-    network_id: network
+    sim_network_id: network
     bus:
         bus:
             phases: [BAL] # Balanced/single phase, instead of 3-phase [A, B, C].
@@ -70,7 +70,7 @@
             type: SL # SL and PV busses have generators, PQ busses are normally loads (consumers of power)
 - sim_gen: # A generator for bus_mv_up.
     id: gen_mv_up
-    network_id: network
+    sim_network_id: network
     gen:
         generic_gen:
             bus_id: bus_mv_up
@@ -80,7 +80,7 @@
     loop_body:
         - sim_bus: # There are several of these, each connected to bus_mv_up_<i>. They correspond to bus at the MV side.
             id: bus_mv_down_<i>
-            network_id: network
+            sim_network_id: network
             bus:
                 bus:
                     phases: [BAL]
@@ -89,7 +89,7 @@
                     type: PQ
         - sim_branch: # The connecting line.
             id: line_mv_<i>
-            network_id: network
+            sim_network_id: network
             branch:
                 overhead_line: # The connecting line.
                     bus_0_id: bus_mv_up
@@ -104,7 +104,7 @@
                     earth_resist: <earth_resist>
         - sim_bus: 
             id: bus_lv_up_<i> # The other, LV side of the transformer.
-            network_id: network
+            sim_network_id: network
             bus:
                 bus: 
                     phases: [BAL]
@@ -113,7 +113,7 @@
                     type: PQ
         - sim_branch:
             id: trans_mv_lv_<i>
-            network_id: network
+            sim_network_id: network
             branch:
                 single_phase_transformer:
                     bus_0_id: bus_mv_down_<i>
@@ -128,7 +128,7 @@
                     loop_body: 
                         - sim_bus: 
                             id: bus_<i>_<j>_<k>
-                            network_id: network
+                            sim_network_id: network
                             bus:
                                 bus:
                                     phases: [BAL]
@@ -137,7 +137,7 @@
                                     type: PQ
                         - sim_bus: 
                             id: house_<i>_<j>_<k>
-                            network_id: network
+                            sim_network_id: network
                             bus:
                                 bus:
                                     phases: [BAL]
@@ -146,14 +146,14 @@
                                     type: PQ
                         - time_series_zip: 
                             id: zip_<i>_<j>_<k>
-                            network_id: network
+                            sim_network_id: network
                             bus_id: house_<i>_<j>_<k> # Assoc. bus.
                             time_series_id: load_<(<i>+<j>+<k>)%50>_series # The time series for the load.
                             phases: [BAL]
                             dt: 00:05:00 # 5 minutes between updates.
                         - sim_branch: 
                             id: drop_<i>_<j>_<k>
-                            network_id: network
+                            sim_network_id: network
                             branch:
                                 overhead_line:
                                     bus_0_id: bus_<i>_<j>_<k>
@@ -171,7 +171,7 @@
                     loop_body: 
                         - sim_branch: 
                             id: line_<i>_<j>_<k>_<<k>+1>
-                            network_id: network
+                            sim_network_id: network
                             branch:
                                 overhead_line: 
                                     bus_0_id: bus_<i>_<j>_<k>
@@ -186,7 +186,7 @@
                                     earth_resist: <earth_resist>
                 - sim_branch: 
                     id: line_lv_up_<i>_<j>_0
-                    network_id: network
+                    sim_network_id: network
                     branch:
                         overhead_line: 
                             bus_0_id: bus_lv_up_<i>

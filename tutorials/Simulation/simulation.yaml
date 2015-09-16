@@ -24,19 +24,19 @@
     P_base: 1e6
     freq_Hz: 60
 - matpower: # Use a matpower case for the network design.
-    network_id: network
+    sim_network_id: network
     input_file: <input_file>
     default_kV_base: 11
 - inverter: # Add an inverter.
     id: pv_inverter
-    network_id: network
+    sim_network_id: network
     bus_id: bus_2
     phases: [BAL]
     max_S_mag: 60
     efficiency: 0.86
 - solar_pv: # Add a solar farm to the inverter.
     id: solar_pv
-    network_id: network
+    sim_network_id: network
     inverter: pv_inverter
     weather: weather
     efficiency: 0.75

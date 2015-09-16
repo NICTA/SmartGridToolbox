@@ -36,7 +36,7 @@
     temperature: external_temperature_series
     cloud_cover: cloud_cover_series
     dt: 00:05:00
-- network:
+- sim_network:
     id: network
     P_base: 1
     freq_Hz: 60
@@ -56,7 +56,7 @@
     sim_network_id: network
     bus:
         bus:
-            id: bus_trans
+            id: bus_build
             phases: [BAL]
             V_base: 415
             V_nom: [415]
@@ -71,36 +71,40 @@
             V_base: 415
             V_nom: [415]
             type: PQ
-- overhead_line:
+- sim_branch:
     id: branch_trans_build
-    network_id: network
-    bus_0_id: bus_trans
-    bus_1_id: bus_build
-    phases_0: [BAL]
-    phases_1: [BAL]
-    length: 100
-    subcond_R_per_L: [1.9014e-04]
-    earth_resist: 100
-    cond_dist: [[0]]
-    subcond_gmr: [0.007]
-    freq: 50
-- overhead_line:
+    sim_network_id: network
+    branch:
+        - overhead_line:
+            bus_0_id: bus_trans
+            bus_1_id: bus_build
+            phases_0: [BAL]
+            phases_1: [BAL]
+            length: 100
+            subcond_R_per_L: [1.9014e-04]
+            earth_resist: 100
+            cond_dist: [[0]]
+            subcond_gmr: [0.007]
+            freq: 50
+- sim_branch:
     id: branch_build_pv
-    network_id: network
-    bus_0_id: bus_build
-    bus_1_id: bus_pv
-    phases_0: [BAL]
-    phases_1: [BAL]
-    length: 20
-    subcond_R_per_L: [1.9014e-04]
-    earth_resist: 100
-    cond_dist: [[0]]
-    subcond_gmr: [0.007]
-    freq: 50
+    sim_network_id: network
+    branch:
+        - overhead_line:
+            bus_0_id: bus_build
+            bus_1_id: bus_pv
+            phases_0: [BAL]
+            phases_1: [BAL]
+            length: 20
+            subcond_R_per_L: [1.9014e-04]
+            earth_resist: 100
+            cond_dist: [[0]]
+            subcond_gmr: [0.007]
+            freq: 50
 - inverter:
     id: inverter_batt
     phases: [BAL]
-    network_id: network
+    sim_network_id: network
     bus_id: bus_build
     efficiency: 0.9
 - battery:
@@ -117,7 +121,7 @@
 inverter:
     id: inverter_pv
     phases: [BAL]
-    network_id: network
+    sim_network_id: network
     bus_id: bus_pv
     efficiency: 0.9
 - solar_pv:

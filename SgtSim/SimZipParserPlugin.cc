@@ -26,12 +26,12 @@ namespace Sgt
     {
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "sim_network_id");
-        assertFieldPresent(nd, "sim_bus_id");
+        assertFieldPresent(nd, "bus_id");
         assertFieldPresent(nd, "zip");
         
         string id = parser.expand<std::string>(nd["id"]);
         string simNetwId = parser.expand<std::string>(nd["sim_network_id"]);
-        string simBusId = parser.expand<std::string>(nd["sim_bus_id"]);
+        string busId = parser.expand<std::string>(nd["bus_id"]);
 
         auto simNetwork = sim.simComponent<SimNetwork>(simNetwId);
         sgtAssert(simNetwork != nullptr, "Parsing SimZip " << id << ": sim_network not found.");
@@ -45,6 +45,6 @@ namespace Sgt
         p.parse(netwNode, network);
         auto zip = network.zip(id);
         auto simZip = sim.newSimComponent<SimZip>(zip);
-        simZip->linkToSimNetwork(*simNetwork, simBusId);
+        simZip->linkToSimNetwork(*simNetwork, busId);
     }
 }
