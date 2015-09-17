@@ -18,20 +18,6 @@
 
 namespace Sgt
 {
-    void MicrogridController::setBuildBus(std::shared_ptr<SimBusAbc> bus)
-    {
-        buildBus_ = bus;
-        dependsOn(buildBus_);
-        buildBus_->didUpdate().addAction([this](){needsUpdate().trigger();}, "trigger " + id() + " needsUpdate()");
-    }
-
-    void MicrogridController::setPvBus(std::shared_ptr<SimBusAbc> bus)
-    {
-        pvBus_ = bus;
-        dependsOn(pvBus_);
-        pvBus_->didUpdate().addAction([this](){needsUpdate().trigger();}, "trigger " + id() + " needsUpdate()");
-    }
-
     void MicrogridController::setBatt(std::shared_ptr<Battery> batt)
     {
         batt_ = batt;
@@ -41,39 +27,58 @@ namespace Sgt
 
     void MicrogridController::updateState(Time t)
     {
-        double P = (buildBus_->bus()->SZip()(0) + pvBus_->bus()->SZip()(0)).real();
-        if (P < minP_)
+        const int N = 100;
+
+        Time t0 = lastUpdated();
+        std::vector<double> PLoad; PLoad.reserve(N);
+        int dtSecs = 5 * 60;
+        for (int i = 0; i < N; ++i)
         {
-            double battP = 0.5 * (maxP_ + minP_) - P;
-            batt_->setRequestedPower(battP);
+            Time ti = t0 + posix_time::seconds(i * dtSecs);
+            PLoad.push_back(-real(loadSeries_->value(ti)[0])); // Change from inj. to draw.
         }
-        else if (P > maxP_)
+        double chg0 = batt_->charge();
+
+        GRBEnv env = GRBEnv();
+        GRBModel model = GRBModel(env);
+
+        std::vector<GRBVar> PChg(N);
+        std::vector<GRBVar> PDis(N);
+        std::vector<GRBVar> chg(N);
+
+        for (size_t i = 0; i < N; ++i)
         {
-            double battP = 0.5 * (maxP_ + minP_) - P;
-            batt_->setRequestedPower(battP);
+            PChg[i] =  model.addVar(0.0, batt_->maxChargePower(), 1.0, GRB_CONTINUOUS, "x");
+            PDis[i] =  model.addVar(0.0, batt_->maxDischargePower(), 1.0, GRB_CONTINUOUS, "x");
         }
-        else
+        model.update();
+            
+        GRBLinExpr obj; 
+        for (size_t i = 0; i < N; ++i)
         {
-            batt_->setRequestedPower(0.0);
+            obj += PChg[i] + PLoad[i] - PDis[i]; // Electricity purchased from grid.
         }
+        model.setObjective(obj);
+
+        model.addConstr(chg[2] - chg0 - 2 * (PChg[1] - PDis[1]) * dtSecs == 0);
+        for (size_t i = 1; i < N; ++i)
+        {
+            model.addConstr(chg[i + 1] - chg[i - 1] - 2 * (PChg[i] - PDis[i]) * dtSecs == 0);
+        }
+
+        model.update();
     }
 
     void MicrogridControllerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         string id = parser.expand<std::string>(nd["id"]);
         auto contr = sim.newSimComponent<MicrogridController>(id);
-
-        contr->setMinP(parser.expand<double>(nd["min_P"]));
-        contr->setMaxP(parser.expand<double>(nd["max_P"]));
-        
-        id = parser.expand<std::string>(nd["building_bus"]);
-        contr->setBuildBus(sim.simComponent<SimBusAbc>(id));
-
-        id = parser.expand<std::string>(nd["pv_bus"]);
-        contr->setPvBus(sim.simComponent<SimBusAbc>(id));
         
         id = parser.expand<std::string>(nd["battery"]);
         contr->setBatt(sim.simComponent<Battery>(id));
+
+        id = parser.expand<std::string>(nd["load_series"]);
+        contr->setLoadSeries(sim.timeSeries<MicrogridController::TimeSeriesType>(id));
     }
 }
 

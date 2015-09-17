@@ -27,13 +27,17 @@ namespace Sgt
     class MicrogridController : public SimComponent
     {
         public:
+
+            using TimeSeriesType = TimeSeries<Time, arma::Col<Complex>>; 
+
             MicrogridController(const std::string& id) : Component(id) {}
 
-            void setMinP(double P) {minP_ = P;}
-            void setMaxP(double P) {maxP_ = P;}
+            void setLoadSeries(std::shared_ptr<const TimeSeriesType> loadSeries)
+            {
+                loadSeries_ = loadSeries;
+            }
 
-            void setLoadSeries(const TimeSeries<Time, arma::Col<Complex>>* loadSeries);
-            void setBatt(Battery* batt);
+            void setBatt(std::shared_ptr<Battery> batt);
 
         protected:
             virtual void updateState(Time t) override;
@@ -41,11 +45,8 @@ namespace Sgt
         private:
 
         private:
-            Battery* batt_;
-            const TimeSeries<Time, arma::Col<Complex>>* loadSeries_;
-
-            double minP_;
-            double maxP_;
+            std::shared_ptr<Battery> batt_;
+            std::shared_ptr<const TimeSeriesType> loadSeries_;
     };
 
     class MicrogridControllerParserPlugin : public SimParserPlugin
