@@ -14,7 +14,9 @@
 
 #include "MicrogridController.h"
 
-#include "gurobi_c++.h"
+extern "C" {
+#include "gurobi_c.h"
+};
 
 namespace Sgt
 {
@@ -39,34 +41,54 @@ namespace Sgt
         }
         double chg0 = batt_->charge();
 
-        GRBEnv env = GRBEnv();
-        GRBModel model = GRBModel(env);
+        GRBenv* env = NULL;
+        GRBmodel* model = NULL;
+        int error = 0;
 
-        std::vector<GRBVar> PChg(N);
-        std::vector<GRBVar> PDis(N);
-        std::vector<GRBVar> chg(N);
+        error = GRBloadenv(&env, "gurobi.log"); assert(error == 0);
 
-        for (size_t i = 0; i < N; ++i)
+        double obj[3 * N];
+        double lb[3 * N];
+        double ub[3 * N];
+        char vtype[3 * N];
+        for (int i = 0; i < N; ++i)
         {
-            PChg[i] =  model.addVar(0.0, batt_->maxChargePower(), 1.0, GRB_CONTINUOUS, "x");
-            PDis[i] =  model.addVar(0.0, batt_->maxDischargePower(), 1.0, GRB_CONTINUOUS, "x");
-        }
-        model.update();
+            obj[i] = 1.0;
+            lb[i] = 0.0;
+            ub[i] = batt_->maxChargePower();
+            vtype[i] = GRB_CONTINUOUS;
+
+            obj[N + i] = -1.0;
+            lb[N + i] = 0.0;
+            ub[N + i] = batt_->maxDischargePower();
+            vtype[N + i] = GRB_CONTINUOUS;
             
-        GRBLinExpr obj; 
-        for (size_t i = 0; i < N; ++i)
-        {
-            obj += PChg[i] + PLoad[i] - PDis[i]; // Electricity purchased from grid.
-        }
-        model.setObjective(obj);
-
-        model.addConstr(chg[2] - chg0 - 2 * (PChg[1] - PDis[1]) * dtSecs == 0);
-        for (size_t i = 1; i < N; ++i)
-        {
-            model.addConstr(chg[i + 1] - chg[i - 1] - 2 * (PChg[i] - PDis[i]) * dtSecs == 0);
+            obj[2 * N + i] = 0.0;
+            lb[2 * N + i] = -INFINITY;
+            ub[2 * N + i] = INFINITY;
+            vtype[2 * N + i] = GRB_CONTINUOUS;
         }
 
-        model.update();
+        error = GRBnewmodel(env, &model, "gurobi_model", 3 * N, obj, lb, ub, vtype, NULL); assert(error == 0);
+
+        error = GRBupdatemodel(model); assert(error == 0);
+
+        int constrInds[4];
+        double constrVals[4];
+
+        constrInds[0] = 2 * N + 2; constrInds[1] = 1; constrInds[2] = N + 1;
+        constrVals[0] = 1; constrVals[1] = 2 * dtSecs; constrVals[2] = -2 * dtSecs;
+        GRBaddconstr(model, 3, constrInds, constrVals, GRB_EQUAL, chg0, NULL);
+        for (int i = 1; i < N; ++i)
+        {
+            constrInds[0] = 2 * N + i + 1; constrInds[2] = 2 * N + i - 1; constrInds[2] = i; constrInds[3] = N + i;
+            constrVals[0] = 1; constrVals[1] = -1; constrVals[2] = -2 * dtSecs; constrVals[3] = 2 * dtSecs;
+            GRBaddconstr(model, 3, constrInds, constrVals, GRB_EQUAL, 0.0, NULL);
+        }
+
+        GRBsetintattr(model, "ModelSense", 1);
+
+        GRBoptimize(model);
     }
 
     void MicrogridControllerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
