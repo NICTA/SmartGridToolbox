@@ -32,9 +32,8 @@ namespace Sgt
             void setMinP(double P) {minP_ = P;}
             void setMaxP(double P) {maxP_ = P;}
 
-            void setBuildBus(std::shared_ptr<SimBusAbc> bus);
-            void setPvBus(std::shared_ptr<SimBusAbc> bus);
-            void setBatt(std::shared_ptr<Battery> batt);
+            void setLoadSeries(const TimeSeries<Time, arma::Col<Complex>>* loadSeries);
+            void setBatt(Battery* batt);
 
         protected:
             virtual void updateState(Time t) override;
@@ -42,9 +41,8 @@ namespace Sgt
         private:
 
         private:
-            std::shared_ptr<SimBusAbc> buildBus_;
-            std::shared_ptr<SimBusAbc> pvBus_;
-            std::shared_ptr<Battery> batt_;
+            Battery* batt_;
+            const TimeSeries<Time, arma::Col<Complex>>* loadSeries_;
 
             double minP_;
             double maxP_;

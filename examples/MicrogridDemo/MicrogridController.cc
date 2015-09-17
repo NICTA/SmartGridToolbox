@@ -14,6 +14,8 @@
 
 #include "MicrogridController.h"
 
+#include "gurobi_c++.h"
+
 namespace Sgt
 {
     void MicrogridController::setBuildBus(std::shared_ptr<SimBusAbc> bus)
