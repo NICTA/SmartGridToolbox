@@ -79,16 +79,16 @@
     scale_factor_S: 1
 
 - inverter:
-    id: inverter_batt
+    id: inverter_battery
     phases: [BAL]
     sim_network_id: network
     bus_id: bus_build
     efficiency: 0.9
 
 - battery:
-    id: batt
+    id: battery
     dt: 00:05:00
-    inverter: inverter_batt
+    inverter: inverter_battery
     init_charge: 0
     max_charge: 4.5e2
     max_charge_power: 2e-2
@@ -116,7 +116,7 @@
 
 - microgrid_controller:
     id: controller
-    battery: batt
+    battery: battery
     load_series: load_build
     price_series: price
     dt: 00:10:00

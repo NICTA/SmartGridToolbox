@@ -14,14 +14,17 @@
 
 #include "MicrogridController.h"
 
-extern "C" {
-#include "gurobi_c.h"
-};
-
 #include <stdlib.h>
 
 namespace Sgt
 {
+    MicrogridController::MicrogridController(const std::string& id, const Time& dt) :
+        Component(id), Heartbeat(id, dt) 
+    {
+        int error = GRBloadenv(&env, "gurobi.log");
+        sgtAssert(error == 0, "Gurobi exited with error " << error);
+    }
+
     void MicrogridController::setBatt(std::shared_ptr<Battery> batt)
     {
         batt_ = batt;
@@ -49,7 +52,7 @@ namespace Sgt
         int iPChg[N];
         int iPDis[N];
         int iChg[N];
-        
+
         for (int i = 0; i < N; ++i)
         {
             iPChg[i] = i;
@@ -68,14 +71,14 @@ namespace Sgt
             price.push_back(priceSeries_->value(ti));
         }
 
+        sgtLogMessage() << "t0 = " << t0 << std::endl;
+        sgtLogMessage() << "price = " << price[0] << std::endl;
+        sgtLogMessage() << "load = " << PLoad[0] << std::endl;
+
         double chg0 = batt_->charge();
 
-        GRBenv* env = NULL;
         GRBmodel* model = NULL;
         int error = 0;
-
-        error = GRBloadenv(&env, "gurobi.log");
-        assert(error == 0);
 
         double obj[nVar];
         double lb[nVar];
@@ -111,11 +114,11 @@ namespace Sgt
         }
 
         error = GRBnewmodel(env, &model, "gurobi_model", nVar, obj, lb, ub, vtype, varnames);
-        assert(error == 0);
+        sgtAssert(error == 0, "Gurobi exited with error " << error);
         error = GRBsetintattr(model, "ModelSense", 1);
-        assert(error == 0);
+        sgtAssert(error == 0, "Gurobi exited with error " << error);
         error = GRBupdatemodel(model);
-        assert(error == 0);
+        sgtAssert(error == 0, "Gurobi exited with error " << error);
 
         // Add constraints:
         {
@@ -124,7 +127,7 @@ namespace Sgt
             double constrVals[] = {1.0};
             char buff[16]; sprintf(buff, "constr_chg_%d", 0);
             error = GRBaddconstr(model, 1, constrInds, constrVals, GRB_EQUAL, chg0, buff);
-            assert(error == 0);
+            sgtAssert(error == 0, "Gurobi exited with error " << error);
         }
         double chgFactor = -dtSecs * batt_->chargeEfficiency();
         double disFactor = dtSecs / batt_->dischargeEfficiency();
@@ -135,17 +138,14 @@ namespace Sgt
             double constrVals[] = {1.0, -1.0, chgFactor, disFactor};
             char buff[16]; sprintf(buff, "constr_chg_%d", i + 1);
             error = GRBaddconstr(model, 4, constrInds, constrVals, GRB_EQUAL, 0.0, buff);
-            assert(error == 0);
+            sgtAssert(error == 0, "Gurobi exited with error " << error);
         }
         
         error = GRBupdatemodel(model);
-        assert(error == 0);
+        sgtAssert(error == 0, "Gurobi exited with error " << error);
         
-        error = GRBwrite(model, "mod.lp");
-        assert(error == 0);
-
         error = GRBoptimize(model);
-        assert(error == 0);
+        sgtAssert(error == 0, "Gurobi exited with error " << error);
         
         // Retrieve the results:
         double pChg[N];
@@ -157,8 +157,12 @@ namespace Sgt
 
         for (int i = 0; i < N; ++i)
         {
-            std::cout << i * dtSecs / 60.0 << " " << pChg[i] << " " << pDis[i] << " " << chg[i] << std::endl;
+            sgtLogMessage() << i * dtSecs / 60.0 << " " << pChg[i] << " " << pDis[i] << " " << chg[i] << std::endl;
         }
+
+        batt_->setRequestedPower(pChg[0] - pDis[0]); // Injection.
+        
+        Heartbeat::updateState(t);
     }
 
     void MicrogridControllerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
@@ -182,7 +186,5 @@ namespace Sgt
         
         id = parser.expand<std::string>(nd["price_series"]);
         contr->setPriceSeries(sim.timeSeries<MicrogridController::PriceSeries>(id));
-        
     }
 }
-

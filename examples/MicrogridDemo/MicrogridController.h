@@ -23,6 +23,10 @@
 #include <SgtSim/SimParser.h>
 #include <SgtSim/Simulation.h>
 
+extern "C" {
+#include "gurobi_c.h"
+};
+
 namespace Sgt
 {
     class MicrogridController : public Heartbeat
@@ -32,7 +36,7 @@ namespace Sgt
             using LoadSeries = TimeSeries<Time, arma::Col<Complex>>; 
             using PriceSeries = TimeSeries<Time, double>;
 
-            MicrogridController(const std::string& id, const Time& dt) : Component(id), Heartbeat(id, dt) {}
+            MicrogridController(const std::string& id, const Time& dt);
 
             void setLoadSeries(std::shared_ptr<const LoadSeries> loadSeries)
             {
@@ -55,6 +59,7 @@ namespace Sgt
             std::shared_ptr<Battery> batt_;
             std::shared_ptr<const LoadSeries> loadSeries_;
             std::shared_ptr<const PriceSeries> priceSeries_;
+            GRBenv* env{NULL};
     };
 
     class MicrogridControllerParserPlugin : public SimParserPlugin

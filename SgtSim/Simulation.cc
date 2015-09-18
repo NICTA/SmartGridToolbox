@@ -49,7 +49,7 @@ namespace Sgt
 
     void Simulation::initialize()
     {
-        sgtLogDebug() << "Simulation initialize(): " << std::endl;
+        sgtLogMessage(LogLevel::VERBOSE) << "Simulation initialize(): " << std::endl;
         LogIndent indent;
         if (debugLogLevel() >= LogLevel::VERBOSE)
         {
@@ -114,13 +114,13 @@ namespace Sgt
                 logComponents();
             }
         }
-        sgtLogDebug() << "Simulation initialize(): Completed." << std::endl;
+        sgtLogMessage(LogLevel::VERBOSE) << "Simulation initialize(): Completed." << std::endl;
     }
 
     // TODO: can we tidy up the logic in this function?
     void Simulation::doNextUpdate()
     {
-        sgtLogDebug(LogLevel::VERBOSE) << "Simulation doNextUpdate(): " << std::endl;
+        sgtLogMessage(LogLevel::VERBOSE) << "Simulation doNextUpdate(): " << std::endl;
         LogIndent indent;
         sgtLogDebug(LogLevel::VERBOSE) << "Number of scheduled = " << scheduledUpdates_.size() << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << "Number of contingent = " << contingentUpdates_.size() << std::endl;
@@ -135,17 +135,17 @@ namespace Sgt
             nextSchedTime = schedUpdateIt->second;
 
             sgtLogDebug(LogLevel::VERBOSE) << "Next scheduled time = " << nextSchedTime << " for simComponent "
-                      << schedComp->id() << std::endl;
+                << schedComp->id() << std::endl;
             sgtLogDebug(LogLevel::VERBOSE) << "(Start, current, end time = " << startTime_ << " " << currentTime_
-                      << " " << endTime_ << ")." << std::endl;
+                << " " << endTime_ << ")." << std::endl;
         }
 
         if (nextSchedTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ <= endTime_)
         {
             // There are contingent updates pending.
             auto contComp = *contingentUpdates_.begin();
-            sgtLogDebug(LogLevel::VERBOSE) << "Contingent update simComponent " << contComp->id() << " from "
-                      << contComp->lastUpdated() << " to " << currentTime_ << std::endl;
+            sgtLogMessage(LogLevel::VERBOSE) << "Contingent update simComponent " << contComp->id() << " from "
+                << contComp->lastUpdated() << " to " << currentTime_ << std::endl;
             LogIndent indent;
             contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
             // Before updating the simComponent, we need to take it out of the scheduled updates set, because its
@@ -173,12 +173,13 @@ namespace Sgt
             // There is a scheduled update to do next.
             if (nextSchedTime > currentTime_)
             {
-                sgtLogDebug() << "Timestep " << currentTime_ << " -> " << nextSchedTime << " will start" << std::endl;
+                sgtLogMessage(LogLevel::VERBOSE) << "Timestep " << currentTime_ << " -> " << nextSchedTime
+                    << " will start" << std::endl;
                 timestepWillStart_.trigger();
             }
             currentTime_ = nextSchedTime;
-            sgtLogDebug(LogLevel::VERBOSE) << "Scheduled update simComponent " << schedComp->id() << " from "
-                      << schedComp->lastUpdated() << " to " << currentTime_ << std::endl;
+            sgtLogMessage(LogLevel::VERBOSE) << "Scheduled update simComponent " << schedComp->id() << " from "
+                << schedComp->lastUpdated() << " to " << currentTime_ << std::endl;
 
             // Remove the scheduled and possible contingent update. Note that if there is a contingent update, it was
             // inserted by an element that has already updated, and so it is safe to do the scheduled update in place
@@ -204,7 +205,7 @@ namespace Sgt
                 (scheduledUpdates_.size() == 0 || (scheduledUpdates_.begin()->second > currentTime_)))
         {
             // We've reached the end of this step.
-            sgtLogDebug() << "Timestep completed at " << currentTime_ << std::endl;
+            sgtLogMessage(LogLevel::VERBOSE) << "Timestep completed at " << currentTime_ << std::endl;
             for (auto comp : simCompVec_)
             {
                 if (comp->lastUpdated() == currentTime_)
@@ -221,12 +222,12 @@ namespace Sgt
         sgtLogDebug(LogLevel::VERBOSE) << "Number of scheduled = " << scheduledUpdates_.size() << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << "Number of contingent = " << contingentUpdates_.size() << std::endl;
         indent.out();
-        sgtLogDebug(LogLevel::VERBOSE) << "Simulation doNextUpdate(): Completed:" << std::endl;
+        sgtLogMessage(LogLevel::VERBOSE) << "Simulation doNextUpdate(): Completed:" << std::endl;
     }
 
     void Simulation::doTimestep()
     {
-        sgtLogDebug() << "Simulation doTimestep(): " << std::endl;
+        sgtLogMessage() << "Simulation doTimestep(): " << std::endl;
         LogIndent indent;
         Time time1 = currentTime_;
         // Do at least one step. This may push us over into the next timestep, in which case we should stop, unless
@@ -248,7 +249,7 @@ namespace Sgt
         {
             doNextUpdate();
         }
-        sgtLogDebug() << "Simulation doTimestep(): Completed." << std::endl;
+        sgtLogMessage() << "Simulation doTimestep(): Completed." << std::endl;
     }
 
     void Simulation::logComponents()

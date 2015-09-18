@@ -17,7 +17,7 @@
 #include <SgtSim/Battery.h>
 #include <SgtSim/Inverter.h>
 #include <SgtSim/Simulation.h>
-#include <SgtSim/SimpleBuilding.h>
+#include <SgtSim/TimeSeriesZip.h>
 
 #include <fstream>
 
@@ -30,11 +30,10 @@ int main(int argc, const char ** argv)
     std::string configName(argv[1]);
     std::string outputPrefix(argv[2]);
 
-    std::cout << "Configuration filename = " << configName << std::endl;
-    std::cout << "Output prefix          = " << outputPrefix << std::endl;
+    sgtLogMessage() << "Configuration filename = " << configName << std::endl;
+    sgtLogMessage() << "Output prefix          = " << outputPrefix << std::endl;
 
-    std::ofstream VFile(outputPrefix + ".V");
-    std::ofstream SFile(outputPrefix + ".S");
+    std::ofstream battFile(outputPrefix + ".batt");
 
     Simulation sim;
     Parser<Simulation> p;
@@ -43,32 +42,16 @@ int main(int argc, const char ** argv)
 
     sim.initialize();
 
+    auto batt = sim.simComponent<Battery>("battery");
+    auto inv = sim.simComponent<SimpleZipInverter>("inverter_battery");
+    auto buildZip = sim.simComponent<TimeSeriesZip>("load_build");
 
-    auto batt = sim.simComponent<Battery>("batt");
-    auto inv = sim.simComponent<InverterAbc>("inverter_batt");
-    auto simNetw = sim.simComponent<SimNetwork>("network");
-
-    auto busses = simNetw->network()->busses();
-    sgtLogMessage() << *simNetw->network() << std::endl;
     while (!sim.isFinished())
     {
-        VFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
-        for (auto & bus : busses)
-        {
-            VFile <<  bus->V()(0)  << " ";
-        }
-        VFile << std::endl;
-
-        SFile << (dSeconds(sim.currentTime() - sim.startTime())) << " ";
-        for (auto & bus : busses)
-        {
-            SFile <<  bus->SZip()(0)  << " ";
-        }
-        SFile << std::endl;
-
+        std::cout << "TEST " << buildZip->zip()->SConst() << std::endl;
+        battFile << (dSeconds(sim.currentTime() - sim.startTime()) / 3600.0)
+            << " " << batt->PDc() << " " << batt->charge() << " " << real(inv->zip()->SConst()(0)) << " "
+            << real(buildZip->zip()->SConst()(0)) << std::endl;
         sim.doTimestep();
     }
-
-    VFile.close();
-    SFile.close();
 }
