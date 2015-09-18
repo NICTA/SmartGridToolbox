@@ -18,23 +18,30 @@
 #include <SgtCore/Parser.h>
 
 #include <SgtSim/Battery.h>
+#include <SgtSim/Heartbeat.h>
 #include <SgtSim/SimBus.h>
 #include <SgtSim/SimParser.h>
 #include <SgtSim/Simulation.h>
 
 namespace Sgt
 {
-    class MicrogridController : public SimComponent
+    class MicrogridController : public Heartbeat
     {
         public:
 
-            using TimeSeriesType = TimeSeries<Time, arma::Col<Complex>>; 
+            using LoadSeries = TimeSeries<Time, arma::Col<Complex>>; 
+            using PriceSeries = TimeSeries<Time, double>;
 
-            MicrogridController(const std::string& id) : Component(id) {}
+            MicrogridController(const std::string& id, const Time& dt) : Component(id), Heartbeat(id, dt) {}
 
-            void setLoadSeries(std::shared_ptr<const TimeSeriesType> loadSeries)
+            void setLoadSeries(std::shared_ptr<const LoadSeries> loadSeries)
             {
                 loadSeries_ = loadSeries;
+            }
+            
+            void setPriceSeries(std::shared_ptr<const PriceSeries> priceSeries)
+            {
+                priceSeries_ = priceSeries;
             }
 
             void setBatt(std::shared_ptr<Battery> batt);
@@ -46,7 +53,8 @@ namespace Sgt
 
         private:
             std::shared_ptr<Battery> batt_;
-            std::shared_ptr<const TimeSeriesType> loadSeries_;
+            std::shared_ptr<const LoadSeries> loadSeries_;
+            std::shared_ptr<const PriceSeries> priceSeries_;
     };
 
     class MicrogridControllerParserPlugin : public SimParserPlugin

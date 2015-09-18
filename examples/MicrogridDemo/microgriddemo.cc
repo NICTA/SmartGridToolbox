@@ -26,6 +26,7 @@ using namespace Sgt;
 int main(int argc, const char ** argv)
 {
     messageLogLevel() = LogLevel::VERBOSE;
+    debugLogLevel() = LogLevel::NORMAL;
     std::string configName(argv[1]);
     std::string outputPrefix(argv[2]);
 
@@ -34,19 +35,18 @@ int main(int argc, const char ** argv)
 
     std::ofstream VFile(outputPrefix + ".V");
     std::ofstream SFile(outputPrefix + ".S");
-    std::ofstream TFile(outputPrefix + ".T");
 
     Simulation sim;
     Parser<Simulation> p;
-    // p.registerParserPlugin<MicrogridControllerParserPlugin>();
+    p.registerParserPlugin<MicrogridControllerParserPlugin>();
     p.parse(configName, sim);
 
-    auto build = sim.simComponent<SimpleBuilding>("build");
+    sim.initialize();
+
+
     auto batt = sim.simComponent<Battery>("batt");
     auto inv = sim.simComponent<InverterAbc>("inverter_batt");
     auto simNetw = sim.simComponent<SimNetwork>("network");
-
-    sim.initialize();
 
     auto busses = simNetw->network()->busses();
     sgtLogMessage() << *simNetw->network() << std::endl;
@@ -66,12 +66,9 @@ int main(int argc, const char ** argv)
         }
         SFile << std::endl;
 
-        TFile << (dSeconds(sim.currentTime() - sim.startTime())) << " " << build->Te() 
-            << " " << build->Tb() << std::endl;
         sim.doTimestep();
     }
 
     VFile.close();
     SFile.close();
-    TFile.close();
 }

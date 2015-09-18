@@ -5,7 +5,7 @@
 
 - parameters:
     start_time: 2013-06-10 00:00:00
-    end_time: 2013-01-05 00:00:00
+    end_time: 2013-06-15 00:00:00
 
 - simulation: 
     start_time: <start_time>
@@ -17,7 +17,16 @@
     id: load_build
     value_type: complex_vector
     type: data_time_series
-    data_file: load_build.txt
+    data_file: load.txt
+    relative_to_time: <start_time>
+    time_unit: m
+    interp_type: lerp
+
+- time_series:
+    id: price
+    value_type: real_scalar
+    type: data_time_series
+    data_file: price.txt
     relative_to_time: <start_time>
     time_unit: m
     interp_type: lerp
@@ -67,7 +76,6 @@
     phases: [BAL]
     time_series_id: load_build
     dt: 00:10:00
-    scale_factor_Y: 1
     scale_factor_S: 1
 
 - inverter:
@@ -85,8 +93,8 @@
     max_charge: 4.5e2
     max_charge_power: 2e-2
     max_discharge_power: 5e-2
-    charge_efficiency: 0.85
-    discharge_efficiency: 0.85
+    charge_efficiency: 0.95
+    discharge_efficiency: 0.95
     requested_power: -1e-2
 
 - sim_branch:
@@ -108,8 +116,7 @@
 
 - microgrid_controller:
     id: controller
-    building_bus: bus_build
-    pv_bus: bus_pv
     battery: batt
-    min_P: -15e-3
-    max_P: -5e-3
+    load_series: load_build
+    price_series: price
+    dt: 00:10:00

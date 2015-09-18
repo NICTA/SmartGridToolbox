@@ -18,6 +18,8 @@ extern "C" {
 #include "gurobi_c.h"
 };
 
+#include <stdlib.h>
+
 namespace Sgt
 {
     void MicrogridController::setBatt(std::shared_ptr<Battery> batt)
@@ -29,78 +31,158 @@ namespace Sgt
 
     void MicrogridController::updateState(Time t)
     {
-        const int N = 100;
+        // Variables:
+        // [0 ... N - 1] : PChg[i] [0, maxPChg]
+        // [N ... 2N - 1] : PDis[i] [0, min(maxPDis, PLd[i])] No feed in tariff so may as well not discharge more.
+        // [2N ... 3N - 1] : Chg[i] [0, maxChg]
+        //
+        // Constraints:
+        // Chg[0] = Chg0
+        // Chg[i+1] - Chg[i] - chg_eff * dt * PChg[i] + (1 / dis_eff) * dt * PDis[i] = 0
+        //
+        // Objective
+        // Sum_i price[i] * {PLd[i] + PChg[i] - PDis[i]} [= electricity purchased from grid]
+        
+        sgtLogDebug() << "MicrogridController" << std::endl; LogIndent _;
+        const int N = 41;
+        const int nVar = 3 * N;
+        int iPChg[N];
+        int iPDis[N];
+        int iChg[N];
+        
+        for (int i = 0; i < N; ++i)
+        {
+            iPChg[i] = i;
+            iPDis[i] = N + i;
+            iChg[i] = 2 * N + i;
+        }
 
-        Time t0 = lastUpdated();
+        Time t0 = t; // We're doing a lookahead to set current operating params...
         std::vector<double> PLoad; PLoad.reserve(N);
-        int dtSecs = 5 * 60;
+        std::vector<double> price; price.reserve(N);
+        int dtSecs = 15 * 60;
         for (int i = 0; i < N; ++i)
         {
             Time ti = t0 + posix_time::seconds(i * dtSecs);
-            PLoad.push_back(-real(loadSeries_->value(ti)[0])); // Change from inj. to draw.
+            PLoad.push_back(-real(loadSeries_->value(ti)[2])); // Change from inj. to draw.
+            price.push_back(priceSeries_->value(ti));
         }
+
         double chg0 = batt_->charge();
 
         GRBenv* env = NULL;
         GRBmodel* model = NULL;
         int error = 0;
 
-        error = GRBloadenv(&env, "gurobi.log"); assert(error == 0);
+        error = GRBloadenv(&env, "gurobi.log");
+        assert(error == 0);
 
-        double obj[3 * N];
-        double lb[3 * N];
-        double ub[3 * N];
-        char vtype[3 * N];
+        double obj[nVar];
+        double lb[nVar];
+        double ub[nVar];
+        char vtype[nVar];
+        char varnames1[nVar][16];
+        char* varnames[nVar];
         for (int i = 0; i < N; ++i)
         {
-            obj[i] = 1.0;
-            lb[i] = 0.0;
-            ub[i] = batt_->maxChargePower();
-            vtype[i] = GRB_CONTINUOUS;
+            // PChg:
+            obj[iPChg[i]] = price[i];
+            lb[iPChg[i]] = 0.0;
+            ub[iPChg[i]] = batt_->maxChargePower();
+            vtype[iPChg[i]] = GRB_CONTINUOUS;
+            sprintf(varnames1[iPChg[i]], "PChg_%d", i);
+            varnames[iPChg[i]] = varnames1[iPChg[i]];
 
-            obj[N + i] = -1.0;
-            lb[N + i] = 0.0;
-            ub[N + i] = batt_->maxDischargePower();
-            vtype[N + i] = GRB_CONTINUOUS;
+            // PDis:
+            obj[iPDis[i]] = -price[i];
+            lb[iPDis[i]] = 0.0;
+            ub[iPDis[i]] = std::min(batt_->maxDischargePower(), PLoad[i]);
+            vtype[iPDis[i]] = GRB_CONTINUOUS;
+            sprintf(varnames1[iPDis[i]], "PDis_%d", i);
+            varnames[iPDis[i]] = varnames1[iPDis[i]];
             
-            obj[2 * N + i] = 0.0;
-            lb[2 * N + i] = -INFINITY;
-            ub[2 * N + i] = INFINITY;
-            vtype[2 * N + i] = GRB_CONTINUOUS;
+            // Chg:
+            obj[iChg[i]] = 0.0;
+            lb[iChg[i]] = 0.0;
+            ub[iChg[i]] = batt_->maxCharge();
+            vtype[iChg[i]] = GRB_CONTINUOUS;
+            sprintf(varnames1[iChg[i]], "Chg_%d", i);
+            varnames[iChg[i]] = varnames1[iChg[i]];
         }
 
-        error = GRBnewmodel(env, &model, "gurobi_model", 3 * N, obj, lb, ub, vtype, NULL); assert(error == 0);
+        error = GRBnewmodel(env, &model, "gurobi_model", nVar, obj, lb, ub, vtype, varnames);
+        assert(error == 0);
+        error = GRBsetintattr(model, "ModelSense", 1);
+        assert(error == 0);
+        error = GRBupdatemodel(model);
+        assert(error == 0);
 
-        error = GRBupdatemodel(model); assert(error == 0);
-
-        int constrInds[4];
-        double constrVals[4];
-
-        constrInds[0] = 2 * N + 2; constrInds[1] = 1; constrInds[2] = N + 1;
-        constrVals[0] = 1; constrVals[1] = 2 * dtSecs; constrVals[2] = -2 * dtSecs;
-        GRBaddconstr(model, 3, constrInds, constrVals, GRB_EQUAL, chg0, NULL);
-        for (int i = 1; i < N; ++i)
+        // Add constraints:
         {
-            constrInds[0] = 2 * N + i + 1; constrInds[2] = 2 * N + i - 1; constrInds[2] = i; constrInds[3] = N + i;
-            constrVals[0] = 1; constrVals[1] = -1; constrVals[2] = -2 * dtSecs; constrVals[3] = 2 * dtSecs;
-            GRBaddconstr(model, 3, constrInds, constrVals, GRB_EQUAL, 0.0, NULL);
+            // Chg[0] = Chg0
+            int constrInds[] = {iChg[0]};
+            double constrVals[] = {1.0};
+            char buff[16]; sprintf(buff, "constr_chg_%d", 0);
+            error = GRBaddconstr(model, 1, constrInds, constrVals, GRB_EQUAL, chg0, buff);
+            assert(error == 0);
         }
+        double chgFactor = -dtSecs * batt_->chargeEfficiency();
+        double disFactor = dtSecs / batt_->dischargeEfficiency();
+        for (int i = 0; i < N - 1; ++i)
+        {
+            // Chg[i+1] - Chg[i] - chg_eff * dt * PChg[i] + (1 / dis_eff) * dt * PDis[i] = 0
+            int constrInds[] = {iChg[i + 1], iChg[i], iPChg[i], iPDis[i]};
+            double constrVals[] = {1.0, -1.0, chgFactor, disFactor};
+            char buff[16]; sprintf(buff, "constr_chg_%d", i + 1);
+            error = GRBaddconstr(model, 4, constrInds, constrVals, GRB_EQUAL, 0.0, buff);
+            assert(error == 0);
+        }
+        
+        error = GRBupdatemodel(model);
+        assert(error == 0);
+        
+        error = GRBwrite(model, "mod.lp");
+        assert(error == 0);
 
-        GRBsetintattr(model, "ModelSense", 1);
+        error = GRBoptimize(model);
+        assert(error == 0);
+        
+        // Retrieve the results:
+        double pChg[N];
+        error = GRBgetdblattrarray(model, "X", 0, N, pChg);
+        double pDis[N];
+        error = GRBgetdblattrarray(model, "X", N, N, pDis);
+        double chg[N];
+        error = GRBgetdblattrarray(model, "X", 2 * N, N, chg);
 
-        GRBoptimize(model);
+        for (int i = 0; i < N; ++i)
+        {
+            std::cout << i * dtSecs / 60.0 << " " << pChg[i] << " " << pDis[i] << " " << chg[i] << std::endl;
+        }
     }
 
     void MicrogridControllerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         string id = parser.expand<std::string>(nd["id"]);
-        auto contr = sim.newSimComponent<MicrogridController>(id);
+        Time dt = posix_time::minutes(5);
+        auto contr = sim.newSimComponent<MicrogridController>(id, dt);
         
+        auto ndDt = nd["dt"];
+        if (ndDt)
+        {
+            dt = parser.expand<Time>(ndDt);
+            contr->setDt(dt);
+        }
+
         id = parser.expand<std::string>(nd["battery"]);
         contr->setBatt(sim.simComponent<Battery>(id));
 
         id = parser.expand<std::string>(nd["load_series"]);
-        contr->setLoadSeries(sim.timeSeries<MicrogridController::TimeSeriesType>(id));
+        contr->setLoadSeries(sim.timeSeries<MicrogridController::LoadSeries>(id));
+        
+        id = parser.expand<std::string>(nd["price_series"]);
+        contr->setPriceSeries(sim.timeSeries<MicrogridController::PriceSeries>(id));
+        
     }
 }
 
