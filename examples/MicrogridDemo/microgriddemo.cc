@@ -28,12 +28,12 @@ int main(int argc, const char ** argv)
     messageLogLevel() = LogLevel::VERBOSE;
     debugLogLevel() = LogLevel::NORMAL;
     std::string configName(argv[1]);
-    std::string outputPrefix(argv[2]);
+    std::string outName(argv[2]);
 
     sgtLogMessage() << "Configuration filename = " << configName << std::endl;
-    sgtLogMessage() << "Output prefix          = " << outputPrefix << std::endl;
+    sgtLogMessage() << "Output file            = " << outName << std::endl;
 
-    std::ofstream battFile(outputPrefix + ".batt");
+    std::ofstream datFile(outName);
 
     Simulation sim;
     Parser<Simulation> p;
@@ -45,13 +45,17 @@ int main(int argc, const char ** argv)
     auto batt = sim.simComponent<Battery>("battery");
     auto inv = sim.simComponent<SimpleZipInverter>("inverter_battery");
     auto buildZip = sim.simComponent<TimeSeriesZip>("load_build");
+    auto price = sim.timeSeries<MicrogridController::PriceSeries>("price");
 
     while (!sim.isFinished())
     {
         std::cout << "TEST " << buildZip->zip()->SConst() << std::endl;
-        battFile << (dSeconds(sim.currentTime() - sim.startTime()) / 3600.0)
-            << " " << batt->PDc() << " " << batt->charge() << " " << real(inv->zip()->SConst()(0)) << " "
-            << real(buildZip->zip()->SConst()(0)) << std::endl;
+        datFile 
+            << (dSeconds(sim.currentTime() - sim.startTime()) / 3600.0) << " "
+            << price->value(sim.currentTime()) << " "
+            << real(buildZip->zip()->SConst()(0)) << " "
+            << real(inv->zip()->SConst()(0)) << " "
+            << batt->charge() << std::endl;
         sim.doTimestep();
     }
 }

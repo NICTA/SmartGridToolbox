@@ -64,6 +64,7 @@ namespace Sgt
         std::vector<double> PLoad; PLoad.reserve(N);
         std::vector<double> price; price.reserve(N);
         int dtSecs = 15 * 60;
+        double dtHrs = dtSecs / 3600.0;
         for (int i = 0; i < N; ++i)
         {
             Time ti = t0 + posix_time::seconds(i * dtSecs);
@@ -129,8 +130,8 @@ namespace Sgt
             error = GRBaddconstr(model, 1, constrInds, constrVals, GRB_EQUAL, chg0, buff);
             sgtAssert(error == 0, "Gurobi exited with error " << error);
         }
-        double chgFactor = -dtSecs * batt_->chargeEfficiency();
-        double disFactor = dtSecs / batt_->dischargeEfficiency();
+        double chgFactor = -dtHrs * batt_->chargeEfficiency();
+        double disFactor = dtHrs / batt_->dischargeEfficiency();
         for (int i = 0; i < N - 1; ++i)
         {
             // Chg[i+1] - Chg[i] - chg_eff * dt * PChg[i] + (1 / dis_eff) * dt * PDis[i] = 0
@@ -157,7 +158,7 @@ namespace Sgt
 
         for (int i = 0; i < N; ++i)
         {
-            sgtLogMessage() << i * dtSecs / 60.0 << " " << pChg[i] << " " << pDis[i] << " " << chg[i] << std::endl;
+            sgtLogMessage() << i * dtHrs << " " << pChg[i] << " " << pDis[i] << " " << chg[i] << std::endl;
         }
 
         batt_->setRequestedPower(pChg[0] - pDis[0]); // Injection.

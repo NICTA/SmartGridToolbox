@@ -24,6 +24,9 @@
 namespace Sgt
 {
     /// @brief Basic battery class, deriving from DCPowerSourceBase.
+    ///
+    /// Units: SmartGridToolbox system of units uses MW for power. For the Battery class, we shall therefore measure
+    /// charge in units of MWh.
     class Battery : public DcPowerSourceAbc
     {
 

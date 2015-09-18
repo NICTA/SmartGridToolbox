@@ -90,12 +90,12 @@
     dt: 00:05:00
     inverter: inverter_battery
     init_charge: 0
-    max_charge: 4.5e2
-    max_charge_power: 2e-2
-    max_discharge_power: 5e-2
+    max_charge: 0.01 # 10 kWh
+    max_charge_power: 0.02 # 20 kW
+    max_discharge_power: 0.05 # 50 kW
     charge_efficiency: 0.95
     discharge_efficiency: 0.95
-    requested_power: -1e-2
+    requested_power: 0.0
 
 - sim_branch:
     id: branch_trans_build

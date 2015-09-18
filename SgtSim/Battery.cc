@@ -25,7 +25,7 @@ namespace Sgt
         double dt = lastUpdated() == posix_time::neg_infin ? 0 : dSeconds(t - lastUpdated());
         if (dt > 0)
         {
-            charge_ += internalPower() * dSeconds(t - lastUpdated());
+            charge_ += internalPower() * dSeconds(t - lastUpdated()) / 3600.0; // Charge in MWh.
             if (charge_ < 0.0) charge_ = 0.0;
         }
     }
