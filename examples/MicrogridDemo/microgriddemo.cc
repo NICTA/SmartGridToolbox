@@ -49,7 +49,6 @@ int main(int argc, const char ** argv)
 
     while (!sim.isFinished())
     {
-        std::cout << "TEST " << buildZip->zip()->SConst() << std::endl;
         datFile 
             << (dSeconds(sim.currentTime() - sim.startTime()) / 3600.0) << " "
             << price->value(sim.currentTime()) << " "

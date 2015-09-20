@@ -47,12 +47,15 @@ namespace Sgt
         // Sum_i price[i] * {PLd[i] + PChg[i] - PDis[i]} [= electricity purchased from grid]
         
         sgtLogDebug() << "MicrogridController" << std::endl; LogIndent _;
+
         const int N = 41;
         const int nVar = 3 * N;
+        const int dtSecs = 15 * 60;
+        const double dtHrs = dtSecs / 3600.0;
         int iPChg[N];
+
         int iPDis[N];
         int iChg[N];
-
         for (int i = 0; i < N; ++i)
         {
             iPChg[i] = i;
@@ -63,8 +66,6 @@ namespace Sgt
         Time t0 = t; // We're doing a lookahead to set current operating params...
         std::vector<double> PLoad; PLoad.reserve(N);
         std::vector<double> price; price.reserve(N);
-        int dtSecs = 15 * 60;
-        double dtHrs = dtSecs / 3600.0;
         for (int i = 0; i < N; ++i)
         {
             Time ti = t0 + posix_time::seconds(i * dtSecs);
@@ -149,19 +150,20 @@ namespace Sgt
         sgtAssert(error == 0, "Gurobi exited with error " << error);
         
         // Retrieve the results:
-        double pChg[N];
-        error = GRBgetdblattrarray(model, "X", 0, N, pChg);
-        double pDis[N];
-        error = GRBgetdblattrarray(model, "X", N, N, pDis);
+        double PChg[N];
+        error = GRBgetdblattrarray(model, "X", 0, N, PChg);
+        double PDis[N];
+        error = GRBgetdblattrarray(model, "X", N, N, PDis);
         double chg[N];
         error = GRBgetdblattrarray(model, "X", 2 * N, N, chg);
 
         for (int i = 0; i < N; ++i)
         {
-            sgtLogMessage() << i * dtHrs << " " << pChg[i] << " " << pDis[i] << " " << chg[i] << std::endl;
+            sgtLogMessage() << i * dtHrs << " " << PChg[i] << " " << PDis[i] << " " << chg[i] << std::endl;
         }
 
-        batt_->setRequestedPower(pChg[0] - pDis[0]); // Injection.
+        batt_->setRequestedPower(PDis[0] - PChg[0]); // Injection.
+        std::cout << "TEST " << PChg[0] << " " << PDis[0] << " " << batt_->requestedPower() << " " << batt_->charge() << " " << batt_->PDc() << " " << std::endl;
         
         Heartbeat::updateState(t);
     }
