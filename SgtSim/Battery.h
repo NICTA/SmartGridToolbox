@@ -27,6 +27,9 @@ namespace Sgt
     ///
     /// Units: SmartGridToolbox system of units uses MW for power. For the Battery class, we shall therefore measure
     /// charge in units of MWh.
+    ///
+    /// Sign convention: like other components, a positive power means injection into the grid. Therefore, charging
+    /// is positive and discharging is negative.
     class Battery : public DcPowerSourceAbc
     {
 
@@ -127,7 +130,7 @@ namespace Sgt
 
             double charge() {return charge_;}
 
-            double requestedPower() {return requestedPower_;}
+            double requestedPower() {return requestedPower_;} // +ve = injection into grid.
             void setRequestedPower(double val) {requestedPower_ = val; needsUpdate().trigger();}
 
             double internalPower();

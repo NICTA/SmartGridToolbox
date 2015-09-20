@@ -25,19 +25,24 @@ namespace Sgt
         double dt = lastUpdated() == posix_time::neg_infin ? 0 : dSeconds(t - lastUpdated());
         if (dt > 0)
         {
-            charge_ += internalPower() * dSeconds(t - lastUpdated()) / 3600.0; // Charge in MWh.
+            charge_ -= internalPower() * dSeconds(t - lastUpdated()) / 3600.0; // Charge in MWh.
             if (charge_ < 0.0) charge_ = 0.0;
+            if (charge_ > maxCharge_) charge_ = maxCharge_;
         }
     }
 
     double Battery::PDc() const
     {
         double result = 0.0;
-        if ((requestedPower_ > 0 && charge_ < maxCharge_) || (requestedPower_ < 0 && charge_ > 0))
+        if (requestedPower_ > 0 && charge_ > 0)
         {
-            result = requestedPower_ < 0
-                     ? std::max(requestedPower_, -maxDischargePower_)
-                     : std::min(requestedPower_, maxChargePower_);
+            // Discharging.
+            result = std::min(requestedPower_, maxDischargePower_);
+        }
+        else if (requestedPower_ < 0 && charge_ < maxCharge_)
+        {
+            // Charging.
+            result = std::max(requestedPower_, -maxChargePower_);
         }
         return result;
     }
@@ -45,6 +50,6 @@ namespace Sgt
     double Battery::internalPower()
     {
         double P = PDc();
-        return (P > 0 ? P * chargeEfficiency_ : P / dischargeEfficiency_);
+        return (P > 0 ? P / dischargeEfficiency_ : P * chargeEfficiency_);
     }
 }
