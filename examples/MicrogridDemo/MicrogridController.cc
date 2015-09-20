@@ -48,7 +48,7 @@ namespace Sgt
         
         sgtLogDebug() << "MicrogridController" << std::endl; LogIndent _;
 
-        const int N = 41;
+        const int N = 100;
         const int nVar = 3 * N;
         const int dtSecs = 15 * 60;
         const double dtHrs = dtSecs / 3600.0;
@@ -72,10 +72,6 @@ namespace Sgt
             PLoad.push_back(-real(loadSeries_->value(ti)[2])); // Change from inj. to draw.
             price.push_back(priceSeries_->value(ti));
         }
-
-        sgtLogMessage() << "t0 = " << t0 << std::endl;
-        sgtLogMessage() << "price = " << price[0] << std::endl;
-        sgtLogMessage() << "load = " << PLoad[0] << std::endl;
 
         double chg0 = batt_->charge();
 
@@ -157,13 +153,7 @@ namespace Sgt
         double chg[N];
         error = GRBgetdblattrarray(model, "X", 2 * N, N, chg);
 
-        for (int i = 0; i < N; ++i)
-        {
-            sgtLogMessage() << i * dtHrs << " " << PChg[i] << " " << PDis[i] << " " << chg[i] << std::endl;
-        }
-
         batt_->setRequestedPower(PDis[0] - PChg[0]); // Injection.
-        std::cout << "TEST " << PChg[0] << " " << PDis[0] << " " << batt_->requestedPower() << " " << batt_->charge() << " " << batt_->PDc() << " " << std::endl;
         
         Heartbeat::updateState(t);
     }

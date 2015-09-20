@@ -90,7 +90,7 @@
     dt: 00:05:00
     inverter: inverter_battery
     init_charge: 0
-    max_charge: 0.01 # 10 kWh
+    max_charge: 0.05 # 50 kWh
     max_charge_power: 0.02 # 20 kW
     max_discharge_power: 0.05 # 50 kW
     charge_efficiency: 0.95

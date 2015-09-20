@@ -25,8 +25,8 @@ using namespace Sgt;
 
 int main(int argc, const char ** argv)
 {
-    messageLogLevel() = LogLevel::VERBOSE;
-    debugLogLevel() = LogLevel::NORMAL;
+    messageLogLevel() = LogLevel::NORMAL;
+    // debugLogLevel() = LogLevel::NORMAL;
     std::string configName(argv[1]);
     std::string outName(argv[2]);
 
