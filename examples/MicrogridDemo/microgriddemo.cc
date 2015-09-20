@@ -50,11 +50,11 @@ int main(int argc, const char ** argv)
     while (!sim.isFinished())
     {
         datFile 
-            << (dSeconds(sim.currentTime() - sim.startTime()) / 3600.0) << " "
-            << price->value(sim.currentTime()) << " "
-            << real(buildZip->zip()->SConst()(0)) << " "
-            << real(inv->zip()->SConst()(0)) << " "
-            << batt->charge() << std::endl;
+            << (dSeconds(sim.currentTime() - sim.startTime()) / 3600.0) << " "  // 1: Time
+            << price->value(sim.currentTime()) << " "                           // 2: Price
+            << real(buildZip->zip()->SConst()(0)) << " "                        // 3: Consumption
+            << real(inv->zip()->SConst()(0)) << " "                             // 4: Battery injection 
+            << batt->charge() << std::endl;                                     // 5: Battery charge
         sim.doTimestep();
     }
 }
