@@ -180,12 +180,16 @@ namespace Sgt
         sgtAssert(error == 0, "Gurobi exited with error " << error);
         
         // Retrieve the results:
+        double PImp[N];
+        error = GRBgetdblattrarray(model, "X", 0, N, PImp);
+        double PExp[N];
+        error = GRBgetdblattrarray(model, "X", N, N, PExp);
         double PChg[N];
-        error = GRBgetdblattrarray(model, "X", 0, N, PChg);
+        error = GRBgetdblattrarray(model, "X", 2 * N, N, PChg);
         double PDis[N];
-        error = GRBgetdblattrarray(model, "X", N, N, PDis);
+        error = GRBgetdblattrarray(model, "X", 3 * N, N, PDis);
         double chg[N];
-        error = GRBgetdblattrarray(model, "X", 2 * N, N, chg);
+        error = GRBgetdblattrarray(model, "X", 4 * N, N, chg);
 
         batt_->setRequestedPower(PDis[0] - PChg[0]); // Injection.
         

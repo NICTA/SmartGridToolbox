@@ -115,8 +115,8 @@
     inverter: battery_inverter
     init_charge: 0
     max_charge: 0.1 # 100 kWh, ~ 10 large sized Tesla Powerwalls
-    max_charge_power: 0.02 # 20 kWh, assume similar to discharge rate.
-    max_discharge_power: 0.02 # 20 kWh, ~ 10 large sized Tesla Powerwalls
+    max_charge_power: 0.02 # 20 kW, assume similar to discharge rate.
+    max_discharge_power: 0.02 # 20 kW, ~ 10 large sized Tesla Powerwalls
     charge_efficiency: 0.96 # Something like Tesla Powerwall.
     discharge_efficiency: 0.96 # Something like Tesla Powerwall.
     requested_power: 0.0
