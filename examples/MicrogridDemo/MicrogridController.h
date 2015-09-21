@@ -55,17 +55,22 @@ namespace Sgt
             {
                 solar_ = solar;
             }
+            
+            void setFeedInTariff(double feedInTariff)
+            {
+                feedInTariff_ = feedInTariff;
+            }
 
         protected:
             virtual void updateState(Time t) override;
-
-        private:
 
         private:
             std::shared_ptr<Battery> batt_;
             std::shared_ptr<SolarPv> solar_;
             std::shared_ptr<const LoadSeries> loadSeries_;
             std::shared_ptr<const PriceSeries> priceSeries_;
+            double feedInTariff_;
+
             GRBenv* env{NULL};
     };
 

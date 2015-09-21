@@ -49,27 +49,30 @@ namespace Sgt
         sgtLogDebug() << "MicrogridController" << std::endl; LogIndent _;
 
         const int N = 100;
-        const int nVar = 3 * N;
-        const int dtSecs = 15 * 60;
+        const int dtSecs = 15 * 60; // 15 minute steps.
         const double dtHrs = dtSecs / 3600.0;
-        int iPChg[N];
 
+        int iPImp[N];
+        int iPExp[N];
+        int iPChg[N];
         int iPDis[N];
         int iChg[N];
         for (int i = 0; i < N; ++i)
         {
-            iPChg[i] = i;
-            iPDis[i] = N + i;
-            iChg[i] = 2 * N + i;
+            iPImp[i] = i;
+            iPExp[i] = N + i;
+            iPChg[i] = 2 * N + i;
+            iPDis[i] = 3 * N + i;
+            iChg[i] = 4 * N + i;
         }
 
         Time t0 = t; // We're doing a lookahead to set current operating params...
-        std::vector<double> PRequired; PRequired.reserve(N); // Load minus solar.
+        std::vector<double> PRequired; PRequired.reserve(N); // Solar and load, as a draw.
         std::vector<double> price; price.reserve(N);
         for (int i = 0; i < N; ++i)
         {
             Time ti = t0 + posix_time::seconds(i * dtSecs);
-            PRequired.push_back(-real(loadSeries_->value(ti)[2]) - solar_->PDc(ti)); // Change from inj. to draw.
+            PRequired.push_back(-(solar_->PDc(ti) + real(loadSeries_->value(ti)[2]))); // Change from inj. to draw.
             price.push_back(priceSeries_->value(ti));
         }
 
@@ -78,28 +81,46 @@ namespace Sgt
         GRBmodel* model = NULL;
         int error = 0;
 
+        const int nVar = 5 * N;
         double obj[nVar];
         double lb[nVar];
         double ub[nVar];
         char vtype[nVar];
-        char varnames1[nVar][16];
+        char varnames1[nVar][32];
         char* varnames[nVar];
+
         for (int i = 0; i < N; ++i)
         {
+            // PImp:
+            obj[iPImp[i]] = price[i];
+            lb[iPImp[i]] = 0.0;
+            ub[iPImp[i]] = INFINITY;
+            vtype[iPImp[i]] = GRB_CONTINUOUS;
+            sprintf(varnames1[iPImp[i]], "P_imp_%d", i);
+            varnames[iPImp[i]] = varnames1[iPImp[i]];
+            
+            // PExp:
+            obj[iPExp[i]] = -feedInTariff_;
+            lb[iPExp[i]] = 0.0;
+            ub[iPExp[i]] = INFINITY;
+            vtype[iPExp[i]] = GRB_CONTINUOUS;
+            sprintf(varnames1[iPExp[i]], "P_exp_%d", i);
+            varnames[iPExp[i]] = varnames1[iPExp[i]];
+
             // PChg:
-            obj[iPChg[i]] = price[i];
+            obj[iPChg[i]] = 0.0;
             lb[iPChg[i]] = 0.0;
             ub[iPChg[i]] = batt_->maxChargePower();
             vtype[iPChg[i]] = GRB_CONTINUOUS;
-            sprintf(varnames1[iPChg[i]], "PChg_%d", i);
+            sprintf(varnames1[iPChg[i]], "P_chg_%d", i);
             varnames[iPChg[i]] = varnames1[iPChg[i]];
 
             // PDis:
-            obj[iPDis[i]] = -price[i];
+            obj[iPDis[i]] = 0.0;
             lb[iPDis[i]] = 0.0;
-            ub[iPDis[i]] = std::min(batt_->maxDischargePower(), PRequired[i]);
+            ub[iPDis[i]] = batt_->maxDischargePower();
             vtype[iPDis[i]] = GRB_CONTINUOUS;
-            sprintf(varnames1[iPDis[i]], "PDis_%d", i);
+            sprintf(varnames1[iPDis[i]], "P_dis_%d", i);
             varnames[iPDis[i]] = varnames1[iPDis[i]];
             
             // Chg:
@@ -107,7 +128,7 @@ namespace Sgt
             lb[iChg[i]] = 0.0;
             ub[iChg[i]] = batt_->maxCharge();
             vtype[iChg[i]] = GRB_CONTINUOUS;
-            sprintf(varnames1[iChg[i]], "Chg_%d", i);
+            sprintf(varnames1[iChg[i]], "chg_%d", i);
             varnames[iChg[i]] = varnames1[iChg[i]];
         }
 
@@ -123,19 +144,32 @@ namespace Sgt
             // Chg[0] = Chg0
             int constrInds[] = {iChg[0]};
             double constrVals[] = {1.0};
-            char buff[16]; sprintf(buff, "constr_chg_%d", 0);
+            char buff[32]; sprintf(buff, "constr_chg_%d", 0);
             error = GRBaddconstr(model, 1, constrInds, constrVals, GRB_EQUAL, chg0, buff);
             sgtAssert(error == 0, "Gurobi exited with error " << error);
         }
-        double chgFactor = -dtHrs * batt_->chargeEfficiency();
-        double disFactor = dtHrs / batt_->dischargeEfficiency();
-        for (int i = 0; i < N - 1; ++i)
+
         {
             // Chg[i+1] - Chg[i] - chg_eff * dt * PChg[i] + (1 / dis_eff) * dt * PDis[i] = 0
-            int constrInds[] = {iChg[i + 1], iChg[i], iPChg[i], iPDis[i]};
-            double constrVals[] = {1.0, -1.0, chgFactor, disFactor};
-            char buff[16]; sprintf(buff, "constr_chg_%d", i + 1);
-            error = GRBaddconstr(model, 4, constrInds, constrVals, GRB_EQUAL, 0.0, buff);
+            double chgFactor = -dtHrs * batt_->chargeEfficiency();
+            double disFactor = dtHrs / batt_->dischargeEfficiency();
+            for (int i = 0; i < N - 1; ++i)
+            {
+                int constrInds[] = {iChg[i + 1], iChg[i], iPChg[i], iPDis[i]};
+                double constrVals[] = {1.0, -1.0, chgFactor, disFactor};
+                char buff[32]; sprintf(buff, "constr_chg_%d", i + 1);
+                error = GRBaddconstr(model, 4, constrInds, constrVals, GRB_EQUAL, 0.0, buff);
+                sgtAssert(error == 0, "Gurobi exited with error " << error);
+            }
+        }
+
+        // PImp + PDis - PExp - PChg = PRequired
+        for (int i = 0; i < N - 1; ++i)
+        {
+            int constrInds[] = {iPImp[i], iPDis[i], iPExp[i], iPChg[i]};
+            double constrVals[] = {1.0, 1.0, -1.0, -1.0};
+            char buff[32]; sprintf(buff, "constr_P_bal_%d", i);
+            error = GRBaddconstr(model, 4, constrInds, constrVals, GRB_EQUAL, PRequired[i], buff);
             sgtAssert(error == 0, "Gurobi exited with error " << error);
         }
         
@@ -182,5 +216,8 @@ namespace Sgt
         
         id = parser.expand<std::string>(nd["solar"]);
         contr->setSolar(sim.simComponent<SolarPv>(id));
+        
+        double feedInTariff = parser.expand<double>(nd["feed_in_tariff"]);
+        contr->setFeedInTariff(feedInTariff);
     }
 }
