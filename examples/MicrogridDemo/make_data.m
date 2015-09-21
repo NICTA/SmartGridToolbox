@@ -1,6 +1,6 @@
 dat = dlmread('../PvDemo/data/loads/load_1.txt');
 for i = 2:10
-    dat = dat + dlmread(['../PvDemo/data/loads/load_', num2str(i), '.txt']);
+    dat(:, 2:3) = dat(:, 2:3) + dlmread(['../PvDemo/data/loads/load_', num2str(i), '.txt'])(:, 2:3);
 end
 t = dat(:, 1);
 z = zeros(size(t));

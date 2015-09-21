@@ -17,7 +17,7 @@
     id: load_build
     value_type: complex_vector
     type: data_time_series
-    data_file: load.txt
+    data_file: load_build.txt
     relative_to_time: <start_time>
     time_unit: m
     interp_type: lerp
@@ -107,18 +107,18 @@
     phases: [BAL]
     sim_network_id: network
     bus_id: bus_build
-    efficiency: 0.9
+    efficiency: 0.95
 
 - battery:
     id: battery
     dt: 00:05:00
     inverter: battery_inverter
     init_charge: 0
-    max_charge: 0.05 # MWh
-    max_charge_power: 0.02
-    max_discharge_power: 0.05
-    charge_efficiency: 0.95
-    discharge_efficiency: 0.95
+    max_charge: 0.1 # 100 kWh, ~ 10 large sized Tesla Powerwalls
+    max_charge_power: 0.02 # 20 kWh, assume similar to discharge rate.
+    max_discharge_power: 0.02 # 20 kWh, ~ 10 large sized Tesla Powerwalls
+    charge_efficiency: 0.96 # Something like Tesla Powerwall.
+    discharge_efficiency: 0.96 # Something like Tesla Powerwall.
     requested_power: 0.0
         
 - inverter:
@@ -126,14 +126,14 @@
     phases: [BAL]
     sim_network_id: network
     bus_id: bus_build
-    efficiency: 0.86
+    efficiency: 0.95
 
 - solar_pv:
     id: solar_pv
     weather: weather
     inverter: pv_inverter
     efficiency: 0.25
-    area_m2: 50
+    area_m2: 120 # About 10 houses worth
     zenith_degrees: 45 
     azimuth_degrees: 35
 
