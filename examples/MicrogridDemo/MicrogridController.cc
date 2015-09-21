@@ -21,7 +21,9 @@ namespace Sgt
     MicrogridController::MicrogridController(const std::string& id, const Time& dt) :
         Component(id), Heartbeat(id, dt) 
     {
-        int error = GRBloadenv(&env, "gurobi.log");
+        int error = GRBloadenv(&env, "");
+        sgtAssert(error == 0, "Gurobi exited with error " << error);
+        error = GRBsetintparam(env, "LogToConsole", 0);
         sgtAssert(error == 0, "Gurobi exited with error " << error);
     }
 
