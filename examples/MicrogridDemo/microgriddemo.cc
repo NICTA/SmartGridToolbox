@@ -55,8 +55,8 @@ int main(int argc, const char ** argv)
         datFile 
             << (dSeconds(sim.currentTime() - sim.startTime()) / 3600.0) << " "  // 1: Time
             << price->value(sim.currentTime()) << " "                           // 2: Price
-            << real(buildingLoad->zip()->SConst()(0)) << " "                    // 3: Consumed power
-            << real(genTrans->gen()->S()(0)) << " "                             // 4: Imported power
+            << real(genTrans->gen()->S()(0)) << " "                             // 3: Imported power
+            << real(buildingLoad->zip()->SConst()(0)) << " "                    // 4: Consumed power
             << real(pvInverter->zip()->SConst()(0)) << " "                      // 5: Pv injection
             << real(battInv->zip()->SConst()(0)) << " "                         // 6: Battery injection 
             << batt->charge() << std::endl;                                     // 7: Battery charge
