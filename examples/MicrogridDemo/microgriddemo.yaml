@@ -31,6 +31,30 @@
     time_unit: m
     interp_type: lerp
 
+- time_series:
+    id: temp
+    value_type: real_scalar
+    type: data_time_series
+    data_file: temp.txt
+    relative_to_time: <start_time>
+    time_unit: m
+    interp_type: lerp
+ 
+- time_series:
+    id: cloud
+    value_type: real_scalar
+    type: data_time_series
+    data_file: cloud.txt
+    relative_to_time: <start_time>
+    time_unit: m
+    interp_type: lerp
+      
+- weather:
+    name: weather
+    temperature: temp
+    cloud_cover: cloud
+    dt: 00:05:00
+
 - sim_network:
     id: network
     P_base: 1
