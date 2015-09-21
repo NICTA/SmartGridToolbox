@@ -17,6 +17,7 @@
 #include <SgtSim/Battery.h>
 #include <SgtSim/Inverter.h>
 #include <SgtSim/Simulation.h>
+#include <SgtSim/SimGen.h>
 #include <SgtSim/TimeSeriesZip.h>
 
 #include <fstream>
@@ -42,19 +43,23 @@ int main(int argc, const char ** argv)
 
     sim.initialize();
 
-    auto batt = sim.simComponent<Battery>("battery");
-    auto inv = sim.simComponent<SimpleZipInverter>("inverter_battery");
-    auto buildZip = sim.simComponent<TimeSeriesZip>("load_build");
     auto price = sim.timeSeries<MicrogridController::PriceSeries>("price");
+    auto genTrans = sim.simComponent<SimGen>("gen_trans");
+    auto buildingLoad = sim.simComponent<TimeSeriesZip>("load_build");
+    auto pvInverter = sim.simComponent<SimpleZipInverter>("pv_inverter");
+    auto batt = sim.simComponent<Battery>("battery");
+    auto battInv = sim.simComponent<SimpleZipInverter>("battery_inverter");
 
     while (!sim.isFinished())
     {
         datFile 
             << (dSeconds(sim.currentTime() - sim.startTime()) / 3600.0) << " "  // 1: Time
             << price->value(sim.currentTime()) << " "                           // 2: Price
-            << real(buildZip->zip()->SConst()(0)) << " "                        // 3: Consumption
-            << real(inv->zip()->SConst()(0)) << " "                             // 4: Battery injection 
-            << batt->charge() << std::endl;                                     // 5: Battery charge
+            << real(buildingLoad->zip()->SConst()(0)) << " "                    // 3: Consumed power
+            << real(genTrans->gen()->S()(0)) << " "                             // 4: Imported power
+            << real(pvInverter->zip()->SConst()(0)) << " "                      // 5: Pv injection
+            << real(battInv->zip()->SConst()(0)) << " "                         // 6: Battery injection 
+            << batt->charge() << std::endl;                                     // 7: Battery charge
         sim.doTimestep();
     }
 }

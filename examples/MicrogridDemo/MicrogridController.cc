@@ -64,12 +64,12 @@ namespace Sgt
         }
 
         Time t0 = t; // We're doing a lookahead to set current operating params...
-        std::vector<double> PLoad; PLoad.reserve(N);
+        std::vector<double> PRequired; PRequired.reserve(N); // Load minus solar.
         std::vector<double> price; price.reserve(N);
         for (int i = 0; i < N; ++i)
         {
             Time ti = t0 + posix_time::seconds(i * dtSecs);
-            PLoad.push_back(-real(loadSeries_->value(ti)[2])); // Change from inj. to draw.
+            PRequired.push_back(-real(loadSeries_->value(ti)[2]) - solar_->PDc(ti)); // Change from inj. to draw.
             price.push_back(priceSeries_->value(ti));
         }
 
@@ -97,7 +97,7 @@ namespace Sgt
             // PDis:
             obj[iPDis[i]] = -price[i];
             lb[iPDis[i]] = 0.0;
-            ub[iPDis[i]] = std::min(batt_->maxDischargePower(), PLoad[i]);
+            ub[iPDis[i]] = std::min(batt_->maxDischargePower(), PRequired[i]);
             vtype[iPDis[i]] = GRB_CONTINUOUS;
             sprintf(varnames1[iPDis[i]], "PDis_%d", i);
             varnames[iPDis[i]] = varnames1[iPDis[i]];
@@ -179,5 +179,8 @@ namespace Sgt
         
         id = parser.expand<std::string>(nd["price_series"]);
         contr->setPriceSeries(sim.timeSeries<MicrogridController::PriceSeries>(id));
+        
+        id = parser.expand<std::string>(nd["solar"]);
+        contr->setSolar(sim.simComponent<SolarPv>(id));
     }
 }

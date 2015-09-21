@@ -22,6 +22,7 @@
 #include <SgtSim/SimBus.h>
 #include <SgtSim/SimParser.h>
 #include <SgtSim/Simulation.h>
+#include <SgtSim/SolarPv.h>
 
 extern "C" {
 #include "gurobi_c.h"
@@ -49,6 +50,11 @@ namespace Sgt
             }
 
             void setBatt(std::shared_ptr<Battery> batt);
+            
+            void setSolar(std::shared_ptr<SolarPv> solar)
+            {
+                solar_ = solar;
+            }
 
         protected:
             virtual void updateState(Time t) override;
@@ -57,6 +63,7 @@ namespace Sgt
 
         private:
             std::shared_ptr<Battery> batt_;
+            std::shared_ptr<SolarPv> solar_;
             std::shared_ptr<const LoadSeries> loadSeries_;
             std::shared_ptr<const PriceSeries> priceSeries_;
             GRBenv* env{NULL};

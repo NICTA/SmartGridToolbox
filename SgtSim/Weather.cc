@@ -18,12 +18,12 @@
 
 namespace Sgt
 {
-    double Weather::solarPower(SphericalAngles planeNormal, double planeArea) const
+    double Weather::solarPower(const Time& t, const SphericalAngles& planeNormal, double planeArea) const
     {
         // Neglect ground reflected radiation. This is reasonable, because typically a solar collector etc would
         // be pointing at a zenith angle of less than 90 degrees, so would not get a ground component.
         Array<double, 3> planeVec = angsAndMagToVec(planeNormal, planeArea);
-        auto irr = irradiance(lastUpdated());
+        auto irr = irradiance(t);
         double direct = dot<double, 3>(planeVec, irr.direct);
         if (direct < 0) direct = 0;
         double diffuse = planeArea * irr.horizontalDiffuse * (pi - planeNormal.zenith) / pi;

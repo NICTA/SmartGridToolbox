@@ -83,9 +83,13 @@ namespace Sgt
                 temperatureSeries_ = series;
                 needsUpdate().trigger();
             }
+            double temperature(const Time& t) const
+            {
+                return temperatureSeries_->value(t);
+            }
             double temperature() const
             {
-                return temperatureSeries_->value(lastUpdated());
+                return temperature(lastUpdated());
             }
 
             std::shared_ptr<const TimeSeries<Time, double>> cloudCoverSeries() const
@@ -97,12 +101,16 @@ namespace Sgt
                 cloudCoverSeries_ = series;
                 needsUpdate().trigger();
             }
+            double cloudCover(const Time& t) const
+            {
+                return cloudCoverSeries_->value(t);
+            }
             double cloudCover() const
             {
-                return cloudCoverSeries_->value(lastUpdated());
+                return cloudCover(lastUpdated());
             }
 
-            double solarPower(SphericalAngles planeNormal, double planeArea) const;
+            double solarPower(const Time& t, const SphericalAngles& planeNormal, double planeArea) const;
 
             SolarIrradiance irradiance(const Time& tm) const;
 

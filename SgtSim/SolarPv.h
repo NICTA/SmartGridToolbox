@@ -86,6 +86,7 @@ namespace Sgt
 
             void setPlaneArea(double planeArea) {planeArea_ = planeArea; needsUpdate().trigger();}
 
+            virtual double PDc(const Time& t) const;
             virtual double PDc() const override;
 
         /// @}

@@ -35,9 +35,14 @@ namespace Sgt
         std::string("Trigger ") + sComponentType() + " " + id() + " DC power changed");
     }
 
-    double SolarPv::PDc() const
+    double SolarPv::PDc(const Time& t) const
     {
         // Note: convert from SI to MW.
-        return 1e-6*weather_->solarPower(planeNormal_, planeArea_) * efficiency_;
+        return 1e-6 * weather_->solarPower(t, planeNormal_, planeArea_) * efficiency_;
+    }
+
+    double SolarPv::PDc() const
+    {
+        return PDc(weather_->lastUpdated());
     }
 };
