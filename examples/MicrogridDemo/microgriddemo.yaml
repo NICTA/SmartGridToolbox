@@ -37,7 +37,7 @@
     type: data_time_series
     data_file: temp.txt
     relative_to_time: <start_time>
-    time_unit: m
+    time_unit: h
     interp_type: lerp
  
 - time_series:
@@ -46,7 +46,16 @@
     type: data_time_series
     data_file: cloud.txt
     relative_to_time: <start_time>
-    time_unit: h
+    time_unit: m
+    interp_type: lerp
+ 
+- time_series:
+    id: internal_thermal_power
+    value_type: real_scalar
+    type: data_time_series
+    data_file: internal_thermal_power.txt
+    relative_to_time: <start_time>
+    time_unit: m
     interp_type: lerp
       
 - weather:
@@ -136,7 +145,22 @@
     area_m2: 120 # About 10 houses worth
     zenith_degrees: 45 
     azimuth_degrees: 35
-
+    
+- simple_building:
+    name: build
+    bus: bus_build
+    weather: weather
+    dt: 00:05:00
+    kb: 5e3
+    Cb: 1e8
+    Tb_init: 23
+    kh: 1e4
+    COP_cool: 3
+    COP_heat: 4
+    P_max: 1e5
+    Ts: 20
+    internal_heat_power: internal_thermal_power
+    
 - sim_branch:
     id: branch_trans_build
     sim_network_id: network

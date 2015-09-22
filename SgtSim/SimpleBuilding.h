@@ -132,52 +132,78 @@ namespace Sgt
             
             /// @}
 
-            // Parameters:
+            /// @name Parameters
+            /// @{
+            
+            /// @brief Timestep, s
             Time dt() {return dt_;}
             void set_dt(Time val) {dt_ = val; needsUpdate().trigger();}
 
+            /// @brief Thermal conductivity, W/K
             double kb() {return kb_;}
             void set_kb(double val) {kb_ = val;}
 
+            /// @brief Heat capacity of building, J/K
             double Cb() {return Cb_;}
             void setCb(double val) {Cb_ = val;}
 
+            /// @brief Initial temperature of building, C
             double TbInit() {return TbInit_;}
             void setTbInit(double val) {TbInit_ = val; needsUpdate().trigger();}
-
+            
+            /// @brief HVAC PID parameter, W/K.
             double kh() {return kh_;}
             void set_kh(double val) {kh_ = val;}
 
+            /// @brief Coefficient of performance for cooling.
             double copCool() {return copCool_;}
             void setCopCool(double val) {copCool_ = val;}
 
+            /// @brief Coefficient of performance for heating.
             double copHeat() {return copHeat_;}
             void setCopHeat(double val) {copHeat_ = val; needsUpdate().trigger();}
 
+            /// @brief Maximum HVAC power, W.
             double PMax() {return PMax_;}
             void setPMax(double val) {PMax_ = val;}
 
+            /// @brief Temperature setpoint, C.
             double Ts() {return Ts_;}
             void setTs(double val) {Ts_ = val;}
 
+            /// @brief Weather object.
             void setWeather(std::shared_ptr<Weather> weather) {weather_ = weather; needsUpdate().trigger();}
 
+            /// @brief Time series for internal generated heat. 
             void set_dQgSeries(std::shared_ptr<TimeSeries<Time, double>> dQg) {dQg_ = dQg; needsUpdate().trigger();}
+            
+            /// @}
 
+            /// @name state
+            /// @{
+            
+            /// @brief Temperature of building.
             double Tb() {return Tb_;}
 
+            /// @brief External temperature.
             double Te() {return weather_->temperatureSeries()->value(lastUpdated());}
 
+            /// @brief Extraneous thermal power generated inside building.
             double dQg() {return dQg_->value(lastUpdated());}
 
+            /// @brief HVAC mode (COOLING/HEATING/OFF).
             HvacMode mode() {return mode_;}
 
+            /// @brief HVAC coefficient of performance.
             double cop() {return cop_;}
 
+            /// @brief Is HVAC maxed out? 
             double isMaxed() {return isMaxed_;}
 
+            /// @brief HVAC electrical power, W.
             double Ph() {return Ph_;}
 
+            /// @brief HVAC thermal power, +ve = heating.
             double dQh() {return dQh_;}
 
             /// @}
