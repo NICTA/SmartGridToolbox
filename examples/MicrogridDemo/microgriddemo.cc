@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Building.h"
 #include "MicrogridController.h"
 
 #include <SgtSim/Battery.h>
 #include <SgtSim/Inverter.h>
 #include <SgtSim/Simulation.h>
-#include <SgtSim/SimpleBuilding.h>
 #include <SgtSim/SimGen.h>
 #include <SgtSim/TimeSeriesZip.h>
 
@@ -40,6 +40,7 @@ int main(int argc, const char ** argv)
     Simulation sim;
     Parser<Simulation> p;
     p.registerParserPlugin<MicrogridControllerParserPlugin>();
+    p.registerParserPlugin<BuildingParserPlugin>();
     p.parse(configName, sim);
 
     sim.initialize();
@@ -47,7 +48,7 @@ int main(int argc, const char ** argv)
     auto price = sim.timeSeries<MicrogridController::PriceSeries>("price");
     auto genTrans = sim.simComponent<SimGen>("gen_trans");
     auto buildingLoad = sim.simComponent<TimeSeriesZip>("load_build");
-    auto buildingHvac = sim.simComponent<SimpleBuilding>("build");
+    auto building = sim.simComponent<Building>("build");
     auto pvInverter = sim.simComponent<SimpleZipInverter>("pv_inverter");
     auto batt = sim.simComponent<Battery>("battery");
     auto battInv = sim.simComponent<SimpleZipInverter>("battery_inverter");
@@ -59,10 +60,12 @@ int main(int argc, const char ** argv)
             << price->value(sim.currentTime()) << " "                           // 2: Price
             << real(genTrans->gen()->S()(0)) << " "                             // 3: Imported power
             << real(buildingLoad->zip()->SConst()(0)) << " "                    // 4: Building other load 
-            << real(buildingHvac->zip()->SConst()(0)) << " "                    // 5: Building HVAC 
+            << real(building->zip()->SConst()(0)) << " "                        // 5: Building HVAC 
             << real(pvInverter->zip()->SConst()(0)) << " "                      // 6: Pv injection
             << real(battInv->zip()->SConst()(0)) << " "                         // 7: Battery injection 
-            << batt->charge() << std::endl;                                     // 8: Battery charge
+            << batt->charge() << " "                                            // 8: Battery charge
+            << building->Tb() << " "                                            // 9: Building temp 
+            << building->Te() << std::endl;                                     // 9: Extern temp 
         sim.doTimestep();
     }
 }

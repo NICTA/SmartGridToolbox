@@ -153,13 +153,13 @@
     dt: 00:05:00
     kb: 5e3
     Cb: 1e8
-    Tb_init: 23
+    Tb_init: 20
     COP_cool: 3
     COP_heat: 4
-    P_max_cool: 1e5
-    P_max_heat: 1e5
+    P_max_cool: 3.5e4
+    P_max_heat: 3.5e4
     req_P_cool: 0
-    req_P_heat: 1e5
+    req_P_heat: 3.5e4
     Ts: 20
     internal_heat_power: internal_thermal_power
     weather: weather
