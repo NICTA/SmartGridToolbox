@@ -32,10 +32,10 @@
     interp_type: lerp
 
 - time_series:
-    id: temp
+    id: temperature
     value_type: real_scalar
     type: data_time_series
-    data_file: temp.txt
+    data_file: temperature.txt
     relative_to_time: <start_time>
     time_unit: h
     interp_type: lerp
@@ -60,7 +60,7 @@
       
 - weather:
     id: weather
-    temperature: temp
+    temperature: temperature
     cloud_cover: cloud
     dt: 00:05:00
 
@@ -146,20 +146,23 @@
     zenith_degrees: 45 
     azimuth_degrees: 35
     
-- simple_building:
-    name: build
-    bus: bus_build
-    weather: weather
+- building:
+    id: build
+    sim_network_id: network
+    bus_id: bus_build
     dt: 00:05:00
     kb: 5e3
     Cb: 1e8
     Tb_init: 23
-    kh: 1e4
     COP_cool: 3
     COP_heat: 4
-    P_max: 1e5
+    P_max_cool: 1e5
+    P_max_heat: 1e5
+    req_P_cool: 0
+    req_P_heat: 1e5
     Ts: 20
     internal_heat_power: internal_thermal_power
+    weather: weather
     
 - sim_branch:
     id: branch_trans_build
