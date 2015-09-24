@@ -30,14 +30,26 @@ extern "C" {
 
 namespace Sgt
 {
+    class Building;
+
     class MicrogridController : public Heartbeat
     {
         public:
 
             using LoadSeries = TimeSeries<Time, arma::Col<Complex>>; 
             using PriceSeries = TimeSeries<Time, double>;
+            using TempSeries = TimeSeries<Time, double>;
 
             MicrogridController(const std::string& id, const Time& dt);
+
+            void setBatt(std::shared_ptr<Battery> batt);
+            
+            void setBuild(std::shared_ptr<Building> build);
+            
+            void setSolar(std::shared_ptr<SolarPv> solar)
+            {
+                solar_ = solar;
+            }
 
             void setLoadSeries(std::shared_ptr<const LoadSeries> loadSeries)
             {
@@ -48,17 +60,25 @@ namespace Sgt
             {
                 priceSeries_ = priceSeries;
             }
-
-            void setBatt(std::shared_ptr<Battery> batt);
             
-            void setSolar(std::shared_ptr<SolarPv> solar)
+            void setTExtSeries(std::shared_ptr<const TempSeries> TExtSeries)
             {
-                solar_ = solar;
+                TExtSeries_ = TExtSeries;
             }
-            
+
             void setFeedInTariff(double feedInTariff)
             {
                 feedInTariff_ = feedInTariff;
+            }
+            
+            void setComfortFactor(double comfortFactor)
+            {
+                comfortFactor_ = comfortFactor;
+            }
+            
+            void setTSetp(double TSetp)
+            {
+                TSetp_ = TSetp;
             }
 
         protected:
@@ -66,10 +86,16 @@ namespace Sgt
 
         private:
             std::shared_ptr<Battery> batt_;
+            std::shared_ptr<Building> build_;
             std::shared_ptr<SolarPv> solar_;
+
             std::shared_ptr<const LoadSeries> loadSeries_;
             std::shared_ptr<const PriceSeries> priceSeries_;
-            double feedInTariff_;
+            std::shared_ptr<const TempSeries> TExtSeries_;
+
+            double feedInTariff_; // Objective paid for power injected back into grid.
+            double comfortFactor_; // Objective per degree away from setpoint.
+            double TSetp_; // Temperature setpoint.
 
             GRBenv* env{NULL};
     };

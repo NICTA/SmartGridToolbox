@@ -62,9 +62,8 @@ namespace Sgt
                 TbInit_(20.0 * kelvin),
                 copCool_(3.0),
                 copHeat_(4.0),
-                PMaxCool_(20.0 * kwatt),
-                PMaxHeat_(20.0 * kwatt),
-                Ts_(20.0 * kelvin),
+                maxPCool_(20.0 * kwatt),
+                maxPHeat_(20.0 * kwatt),
                 reqPCool_(0.0),
                 reqPHeat_(0.0),
                 weather_(nullptr),
@@ -158,17 +157,13 @@ namespace Sgt
             void setCopHeat(double val) {copHeat_ = val; needsUpdate().trigger();}
 
             /// @brief Maximum cooling electrical power, W.
-            double PMaxCool() const {return PMaxCool_;}
-            void setPMaxCool(double val) {PMaxCool_ = val;}
+            double maxPCool() const {return maxPCool_;}
+            void setMaxPCool(double val) {maxPCool_ = val;}
             
             /// @brief Maximum heating electrical power, W.
-            double PMaxHeat() const {return PMaxHeat_;}
-            void setPMaxHeat(double val) {PMaxHeat_ = val;}
+            double maxPHeat() const {return maxPHeat_;}
+            void setMaxPHeat(double val) {maxPHeat_ = val;}
 
-            /// @brief Temperature setpoint, C.
-            double Ts() const {return Ts_;}
-            void setTs(double val) {Ts_ = val;}
-            
             /// @brief Requested cooling power, W.
             double reqPCool() const {return reqPCool_;}
             void setReqPCool(double val) {reqPCool_ = val;}
@@ -206,22 +201,22 @@ namespace Sgt
             double PThInt() const {return PThInt_->value(lastUpdated());}
  
             /// @brief Actual cooling power, W.
-            double PCool() const {return std::min(reqPCool_, PMaxCool_);}
+            double PCool() const {return std::min(reqPCool_, maxPCool_);}
             
             /// @brief Actual heating power, W.
-            double PHeat() const {return std::min(reqPHeat_, PMaxHeat_);}
+            double PHeat() const {return std::min(reqPHeat_, maxPHeat_);}
            
             /// @brief HVAC electrical power, W.
             double PHvac() const {return PCool() + PHeat();}
 
-            /// @brief coefficient a in dT/dt = a T + b
-            double a() const
+            /// @brief d = exp(a t) for a in dT/dt = a T + b
+            double d(double dt) const
             {
-                return -kb_ / Cb_;
+                return exp(-kb_ * dt / Cb_);
             }
 
-            /// @brief coefficient b in dT/dt = a T + b
-            double b(const Time& t0, const Time& t1) const;
+            /// @brief c = b/a for a, b in dT/dt = a T + b
+            double c(const Time& t0, const Time& t1) const;
 
             /// @}
             
@@ -239,11 +234,10 @@ namespace Sgt
             // HVAC performance parameters:
             double copCool_; // HVAC cooling coeff. of perf.
             double copHeat_; // HVAC heating coeff. of perf.
-            double PMaxCool_; // Maximum cooling power from grid, W.
-            double PMaxHeat_; // Maximum heating power from grid, W.
+            double maxPCool_; // Maximum cooling power from grid, W.
+            double maxPHeat_; // Maximum heating power from grid, W.
             
             // HVAC controls:
-            double Ts_; // Temperature setpoint, C.
             double reqPCool_; // Requested cooling power.
             double reqPHeat_; // Requested heating power.
 

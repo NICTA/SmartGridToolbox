@@ -156,8 +156,8 @@
     Tb_init: 20
     COP_cool: 3
     COP_heat: 4
-    P_max_cool: 3.5e4
-    P_max_heat: 3.5e4
+    max_P_cool: 3.5e4
+    max_P_heat: 3.5e4
     req_P_cool: 0
     req_P_heat: 3.5e4
     Ts: 20
@@ -183,9 +183,13 @@
 
 - microgrid_controller:
     id: controller
+    dt: 00:10:00
     battery: battery
+    building: build
     solar: solar_pv
     load_series: load_build
     price_series: price
-    dt: 00:10:00
+    T_extern_series: temperature
     feed_in_tariff: 0
+    comfort_factor: 1e5
+    T_setpoint: 20

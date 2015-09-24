@@ -28,22 +28,29 @@ namespace Sgt
         double dt = lastUpdated() == posix_time::neg_infin ? 0 : dSeconds(t - lastUpdated());
 
         // Solve dT/dt = a T + b
-        // where a = -kb_ / Cb_
-        // and b = (kb TExt + COPh Ph - COPc Pc) / Cb
-        // Solution is T(t) = (T0 + b/a) exp(at) - b/a
+        //
+        // Solution is T(t) = (d - 1) c + d T0
+        //
+        // where d = exp(at) = exp(-(kb_/Cb_)t)
+        // c = b/a = (copCool_ / kb_) PCool - (copHeat_ / kb_) PHeat - TExt
+        //
+        // a = -kb_/Cb_
+        // b = (kb_ TExt + copHeat_ PHeat_ - copCool_ PCool) / Cb
+        //
         // Approximate TExt by its average over the interval.
-        double T0b = Tb_; // Last updated temperature.
-        double b_d_a = b(lastUpdated(), t) / a();
-
-        Tb_ = (T0b + b_d_a) * exp(a() * dt) - b_d_a;
+       
+        double dSv = d(dt);
+        double cSv = c(lastUpdated(), t);
+        Tb_ = (dSv - 1.0) * cSv + dSv * Tb_;
     }
     
-    double Building::b(const Time& t0, const Time& t1) const
+    double Building::c(const Time& t0, const Time& t1) const
     {
         double T0Ext = weather_->temperatureSeries()->value(t0);
         double T1Ext = weather_->temperatureSeries()->value(t1);
         double TExt = 0.5 * T0Ext * T1Ext;
-        return (kb_ * TExt + copHeat_ * PHeat() - copCool_ * PCool()) / Cb_;
+
+        return (copCool_ * PCool() - copHeat_ * PHeat()) / kb_ - TExt;
     }
 
     void BuildingParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
@@ -72,15 +79,12 @@ namespace Sgt
         subNd = nd["COP_heat"];
         if (subNd) build->setCopHeat(parser.expand<double>(subNd));
 
-        subNd = nd["P_max_cool"];
-        if (subNd) build->setPMaxCool(parser.expand<double>(subNd));
+        subNd = nd["max_P_cool"];
+        if (subNd) build->setMaxPCool(parser.expand<double>(subNd));
         
-        subNd = nd["P_max_heat"];
-        if (subNd) build->setPMaxHeat(parser.expand<double>(subNd));
+        subNd = nd["max_P_heat"];
+        if (subNd) build->setMaxPHeat(parser.expand<double>(subNd));
 
-        subNd = nd["Ts"];
-        if (subNd) build->setTs(parser.expand<double>(subNd));
-        
         subNd = nd["req_P_cool"];
         if (subNd) build->setReqPCool(parser.expand<double>(subNd));
         
