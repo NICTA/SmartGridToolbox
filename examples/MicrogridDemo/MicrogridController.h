@@ -80,6 +80,11 @@ namespace Sgt
             {
                 TSetp_ = TSetp;
             }
+            
+            void setTMaxDev(double TMaxDev)
+            {
+                TMaxDev_ = TMaxDev;
+            }
 
         protected:
             virtual void updateState(Time t) override;
@@ -96,6 +101,7 @@ namespace Sgt
             double feedInTariff_; // Objective paid for power injected back into grid.
             double comfortFactor_; // Objective per degree away from setpoint.
             double TSetp_; // Temperature setpoint.
+            double TMaxDev_; // Max allowable deviation from setpoint before incurring cost.
 
             GRBenv* env{NULL};
     };

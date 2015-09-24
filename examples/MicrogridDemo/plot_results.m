@@ -14,8 +14,10 @@ batt_chg = dat(:, 10);
 clf;
 subplot(211);
 [ax, h1, h2] = plotyy(t, price, t, extern_temp);
+hold on
+h3 = plot(ax(2), t, build_temp, 'r'); 
 ylabel(ax(1), 'Price');
-ylabel(ax(2), 'External Temperature');
+ylabel(ax(2), 'Temperature');
 grid on;
 axis(ax(1), [80, 120])
 axis(ax(2), [80, 120])
@@ -29,7 +31,7 @@ ylabel(ax(2), 'Battery Charge');
 grid on;
 axis(ax(1), [80, 120])
 axis(ax(2), [80, 120])
-% legend([h1, h3, h2], {'Uncontrolled', 'HVAC', 'Charge'}, 'location', 'northeastoutside'); 
+%legend([h1, h3, h2], {'Uncontrolled', 'HVAC', 'Charge'}, 'location', 'northeastoutside'); 
 %subplot(413);
 %plot(t, batt_chg);
 %ylabel('Battery charge');

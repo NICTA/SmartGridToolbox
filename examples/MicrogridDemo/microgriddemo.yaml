@@ -108,7 +108,7 @@
     bus_id: bus_build
     phases: [BAL]
     time_series_id: load_build
-    dt: 00:10:00
+    dt: 00:05:00
     scale_factor_S: 1
 
 - inverter:
@@ -192,4 +192,5 @@
     T_extern_series: temperature
     feed_in_tariff: 0
     comfort_factor: 2e5
-    T_setpoint: 22
+    T_setpoint: 20
+    T_max_dev: 1

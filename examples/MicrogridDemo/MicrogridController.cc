@@ -32,19 +32,20 @@ namespace Sgt
     void MicrogridController::setBatt(std::shared_ptr<Battery> batt)
     {
         batt_ = batt;
-        batt_->dependsOn(shared<MicrogridController>());
-        didUpdate().addAction([this](){batt_->needsUpdate().trigger();}, "trigger " + batt_->id() + " needsUpdate()");
+        dependsOn(batt);
     }
 
     void MicrogridController::setBuild(std::shared_ptr<Building> build)
     {
         build_ = build;
-        build_->dependsOn(shared<MicrogridController>());
-        didUpdate().addAction([this](){build_->needsUpdate().trigger();}, "trigger " + build_->id() + " needsUpdate()");
+        dependsOn(build);
     }
-
+            
     void MicrogridController::updateState(Time t)
     {
+        assert(batt_->lastUpdated() == t);
+        assert(build_->lastUpdated() == t);
+
         // Variables:
         // [0 ... N - 1] : PImp[i] [-Inf, Inf]
         // [N ... 2N - 1] : PExp[i] [-Inf, Inf]
@@ -52,21 +53,23 @@ namespace Sgt
         // [3N ... 4N - 1] : PDis[i] [0, maxPDis]
         // [4N ... 5N - 1] : Chg[i] [0, maxChg]
         // [5N ... 6N - 1] : Tb[i] [-Infin, Infin]
-        // [6N ... 7N - 1] : TbPlus[i] [0, Infin]
-        // [7N ... 8N - 1] : TbMinus[i] [0, Infin]
-        // [8N ... 9N - 1] : PCool[i] [0, maxPCool]
-        // [9N ... 10N - 1] : PHeat[i] [0, maxPHeat]
+        // [6N ... 7N - 1] : TbPlus[i] [0, TMaxDev_]
+        // [7N ... 8N - 1] : TbMinus[i] [0, TMaxDev_]
+        // [8N ... 9N - 1] : TbPlusPen[i] [0, Infin]
+        // [9N ... 10N - 1] : TbMinusPen[i] [0, Infin]
+        // [10N ... 11N - 1] : PCool[i] [0, maxPCool]
+        // [11N ... 12N - 1] : PHeat[i] [0, maxPHeat]
         //
         // Constraints:
         // Chg[0] = Chg0
         // Chg[i+1] - Chg[i] - chg_eff * dt * PChg[i] + (1 / dis_eff) * dt * PDis[i] = 0
         // Tb[0] = Tb0
         // Tb[i+1] - d Tb[i] + ((1 - d) COPCool / kb) PCool[i] - ((1 - d) COPHeat / kb) PHeat = (1 - d) TExt
-        // Tb[i] - TbPlus[i] + TbMinus[i] = TSetp_
+        // Tb[i] - TbPlus[i] + TbMinus[i] - TbPlusPen + TbMinusPen = TSetp_
         // PImp[i] + PDis[i] - PExp[i] - PChg[i] - PHeat[i] - PCool[i] = PUncontrolledLoad[i]
         //
         // Objective:
-        // Sum_i (price[i] * PImp[i] - feedInTariff_ * PExp[i] + comfortFactor_ * (TbPlus[i] + TbMinus[i])
+        // Sum_i (price[i] * PImp[i] - feedInTariff_ * PExp[i] + comfortFactor_ * (TbPlusPen[i] + TbMinusPen[i])
         
         sgtLogDebug() << "MicrogridController" << std::endl; LogIndent _;
 
@@ -76,7 +79,7 @@ namespace Sgt
         const double dtHrs = dtSecs / 3600.0;
 
         // Variable Indexing
-        const int nVar = 10 * N;
+        const int nVar = 12 * N;
 
         int iPImp[N];
         int iPExp[N];
@@ -86,6 +89,8 @@ namespace Sgt
         int iTb[N];
         int iTbPlus[N];
         int iTbMinus[N];
+        int iTbPlusPen[N];
+        int iTbMinusPen[N];
         int iPCool[N];
         int iPHeat[N];
         for (int i = 0; i < N; ++i)
@@ -98,8 +103,10 @@ namespace Sgt
             iTb[i] = 5 * N + i;
             iTbPlus[i] = 6 * N + i;
             iTbMinus[i] = 7 * N + i;
-            iPCool[i] = 8 * N + i;
-            iPHeat[i] = 9 * N + i;
+            iTbPlusPen[i] = 8 * N + i;
+            iTbMinusPen[i] = 9 * N + i;
+            iPCool[i] = 10 * N + i;
+            iPHeat[i] = 11 * N + i;
         }
 
         // Constants:
@@ -115,18 +122,10 @@ namespace Sgt
             TExt.push_back(TExtSeries_->value(ti));
         }
 
-        if (batt_->lastUpdated() != t)
-        {
-            sgtLogWarning() << "Battery last update in past. TODO: fix this." << std::endl;
-        }
         double chg0 = batt_->charge();
         
-        if (build_->lastUpdated() != t)
-        {
-            sgtLogWarning() << "Building last update in past. TODO: fix this." << std::endl;
-        }
         double Tb0 = build_->Tb();
-
+        
         // Gurobi:
         GRBmodel* model = NULL;
         int error = 0;
@@ -189,21 +188,37 @@ namespace Sgt
             varnames[iTb[i]] = varnames1[iTb[i]];
 
             // TbPlus:
-            obj[iTbPlus[i]] = comfortFactor_;
+            obj[iTbPlus[i]] = 0.0;
             lb[iTbPlus[i]] = 0.0;
-            ub[iTbPlus[i]] = INFINITY;
+            ub[iTbPlus[i]] = TMaxDev_;
             vtype[iTbPlus[i]] = GRB_CONTINUOUS;
             sprintf(varnames1[iTbPlus[i]], "TbPlus_%lu", i);
             varnames[iTbPlus[i]] = varnames1[iTbPlus[i]];
 
             // TbMinus:
-            obj[iTbMinus[i]] = comfortFactor_;
+            obj[iTbMinus[i]] = 0.0;
             lb[iTbMinus[i]] = 0.0;
-            ub[iTbMinus[i]] = INFINITY;
+            ub[iTbMinus[i]] = TMaxDev_;
             vtype[iTbMinus[i]] = GRB_CONTINUOUS;
             sprintf(varnames1[iTbMinus[i]], "TbMinus_%lu", i);
             varnames[iTbMinus[i]] = varnames1[iTbMinus[i]];
-            
+ 
+            // TbPlusPen:
+            obj[iTbPlusPen[i]] = comfortFactor_;
+            lb[iTbPlusPen[i]] = 0.0;
+            ub[iTbPlusPen[i]] = INFINITY;
+            vtype[iTbPlusPen[i]] = GRB_CONTINUOUS;
+            sprintf(varnames1[iTbPlusPen[i]], "TbPlusPen_%lu", i);
+            varnames[iTbPlusPen[i]] = varnames1[iTbPlusPen[i]];
+
+            // TbMinus:
+            obj[iTbMinusPen[i]] = comfortFactor_;
+            lb[iTbMinusPen[i]] = 0.0;
+            ub[iTbMinusPen[i]] = INFINITY;
+            vtype[iTbMinusPen[i]] = GRB_CONTINUOUS;
+            sprintf(varnames1[iTbMinusPen[i]], "TbMinusPen_%lu", i);
+            varnames[iTbMinusPen[i]] = varnames1[iTbMinusPen[i]];
+                      
             // PCool:
             obj[iPCool[i]] = 0.0;
             lb[iPCool[i]] = 0.0;
@@ -277,13 +292,13 @@ namespace Sgt
             sgtAssert(error == 0, "Gurobi exited with error " << error);
         }
         
-        // Tb[i] - TbPlus[i] + TbMinus[i] = TSetp_
+        // Tb[i] - TbPlus[i] + TbMinus[i] - TbPlusPen + TbMinusPen = TSetp_
         for (size_t i = 0; i < N; ++i)
         {
-            int constrInds[] = {iTb[i], iTbPlus[i], iTbMinus[i]};
-            double constrVals[] = {1.0, -1.0, 1.0};
+            int constrInds[] = {iTb[i], iTbPlus[i], iTbMinus[i], iTbPlusPen[i], iTbMinusPen[i]};
+            double constrVals[] = {1.0, -1.0, 1.0, -1.0, 1.0};
             char buff[32]; sprintf(buff, "constr_Tb_bal_%d", 0);
-            error = GRBaddconstr(model, 3, constrInds, constrVals, GRB_EQUAL, TSetp_, buff);
+            error = GRBaddconstr(model, 5, constrInds, constrVals, GRB_EQUAL, TSetp_, buff);
             sgtAssert(error == 0, "Gurobi exited with error " << error);
         }
         
@@ -320,10 +335,14 @@ namespace Sgt
         error = GRBgetdblattrarray(model, "X", 6 * N, N, TbPlus);
         double TbMinus[N];
         error = GRBgetdblattrarray(model, "X", 7 * N, N, TbMinus);
+        double TbPlusPen[N];
+        error = GRBgetdblattrarray(model, "X", 8 * N, N, TbPlusPen);
+        double TbMinusPen[N];
+        error = GRBgetdblattrarray(model, "X", 9 * N, N, TbMinusPen);
         double PCool[N];
-        error = GRBgetdblattrarray(model, "X", 8 * N, N, PCool);
+        error = GRBgetdblattrarray(model, "X", 10 * N, N, PCool);
         double PHeat[N];
-        error = GRBgetdblattrarray(model, "X", 9 * N, N, PHeat);
+        error = GRBgetdblattrarray(model, "X", 11 * N, N, PHeat);
 
         batt_->setRequestedPower(PDis[0] - PChg[0]); // Injection.
         assert(PCool[0] * PHeat[0] < std::numeric_limits<double>::epsilon());
@@ -372,5 +391,8 @@ namespace Sgt
         
         double TSetp = parser.expand<double>(nd["T_setpoint"]);
         contr->setTSetp(TSetp);
+        
+        double TMaxDev = parser.expand<double>(nd["T_max_dev"]);
+        contr->setTMaxDev(TMaxDev);
     }
 }
