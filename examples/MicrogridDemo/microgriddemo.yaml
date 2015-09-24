@@ -191,5 +191,5 @@
     price_series: price
     T_extern_series: temperature
     feed_in_tariff: 0
-    comfort_factor: 3e5
-    T_setpoint: 20
+    comfort_factor: 2e5
+    T_setpoint: 22

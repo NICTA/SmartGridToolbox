@@ -13,16 +13,23 @@ batt_chg = dat(:, 10);
 
 clf;
 subplot(211);
-ax = plotyy(t, price, t, extern_temp);
+[ax, h1, h2] = plotyy(t, price, t, extern_temp);
 ylabel(ax(1), 'Price');
 ylabel(ax(2), 'External Temperature');
 grid on;
-axis([100, 120])
+axis(ax(1), [80, 120])
+axis(ax(2), [80, 120])
+
 subplot(212);
-plot(t, [uncontr_inj, batt_inj, hvac_inj]);
-ylabel('Injections');
+[ax, h1, h2] = plotyy(t, uncontr_inj, t, batt_chg);
+hold on;
+h3 = plot(ax(1), t, hvac_inj, 'r'); 
+ylabel(ax(1), 'Injections');
+ylabel(ax(2), 'Battery Charge');
 grid on;
-axis([100, 120])
+axis(ax(1), [80, 120])
+axis(ax(2), [80, 120])
+% legend([h1, h3, h2], {'Uncontrolled', 'HVAC', 'Charge'}, 'location', 'northeastoutside'); 
 %subplot(413);
 %plot(t, batt_chg);
 %ylabel('Battery charge');
