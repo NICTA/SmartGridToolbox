@@ -325,11 +325,6 @@ namespace Sgt
         double PHeat[N];
         error = GRBgetdblattrarray(model, "X", 9 * N, N, PHeat);
 
-        for (int i = 0; i < N; ++i)
-        {
-            std::cout << "DEBUG " << PHeat[i] << " " << PCool[i] << " " << Tb[i] << " " << TbPlus[i] << " " << TbMinus[i] << " " << TSetp_ << std::endl;
-        }
-
         batt_->setRequestedPower(PDis[0] - PChg[0]); // Injection.
         assert(PCool[0] * PHeat[0] < std::numeric_limits<double>::epsilon());
         build_->setReqPCool(PCool[0]); // Injection.
