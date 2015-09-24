@@ -58,14 +58,14 @@ int main(int argc, const char ** argv)
         datFile 
             << (dSeconds(sim.currentTime() - sim.startTime()) / 3600.0) << " "  // 1: Time
             << price->value(sim.currentTime()) << " "                           // 2: Price
-            << building->Te() << " "                                            // 3: Extern temp 
-            << real(buildingLoad->zip()->SConst()(0)) << " "                    // 4: Building uncontrolled inj 
-            << real(pvInverter->zip()->SConst()(0)) << " "                      // 5: Pv uncontrolled inj
-            << real(genTrans->gen()->S()(0)) << " "                             // 6: Grid inj
+            << real(buildingLoad->zip()->SConst()(0)) << " "                    // 3: Load uncontrolled inj 
+            << real(pvInverter->zip()->SConst()(0)) << " "                      // 4: Pv uncontrolled inj
+            << real(genTrans->gen()->S()(0)) << " "                             // 5: Grid inj
+            << building->Te() << " "                                            // 6: Extern temp 
             << real(building->zip()->SConst()(0)) << " "                        // 7: Building HVAC inj
-            << real(battInv->zip()->SConst()(0)) << " "                         // 8: Battery inj 
-            << batt->charge() << " "                                            // 9: Battery charge
-            << building->Tb() << std::endl;                                     // 10: Building temp 
+            << building->Tb() << " "                                            // 8: Building temp 
+            << real(battInv->zip()->SConst()(0)) << " "                         // 9: Battery inj 
+            << batt->charge() << std::endl;                                     // 10: Battery charge
         sim.doTimestep();
     }
 }
