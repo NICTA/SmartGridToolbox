@@ -18,16 +18,20 @@ hold on
 h3 = plot(ax(2), t, build_temp, 'r'); 
 ylabel(ax(1), 'Price ($ per kWh)');
 ylabel(ax(2), 'Temperature');
-grid on;
 axis(ax(1), [0, 120])
 axis(ax(2), [0, 120])
+set(ax(1), 'xgrid', 'on');
+set(ax(1), 'xminorgrid', 'on');
+set(ax(1), 'ygrid', 'on');
 
 subplot(212);
-[ax, h1, h2] = plotyy(t, uncontr_inj, t, batt_chg);
+[ax, h1, h2] = plotyy(t, -uncontr_inj, t, batt_chg);
 hold on;
-h3 = plot(ax(1), t, hvac_inj, 'r'); 
-ylabel(ax(1), 'Power Injection (kW)');
+h3 = plot(ax(1), t, -hvac_inj, 'r'); 
+ylabel(ax(1), 'Power Demand (kW)');
 ylabel(ax(2), 'Battery Charge (% of Maximum)');
-grid on;
 axis(ax(1), [0, 120])
 axis(ax(2), [0, 120])
+set(ax(1), 'xgrid', 'on');
+set(ax(1), 'xminorgrid', 'on');
+set(ax(1), 'ygrid', 'on');
