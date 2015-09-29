@@ -13,11 +13,11 @@ batt_chg = dat(:, 10); batt_chg *= 100 / max(batt_chg);
 
 clf;
 subplot(211);
-[ax, h1, h2] = plotyy(t, price, t, extern_temp);
+[ax, h1, h2] = plotyy(t, extern_temp, t, price);
 hold on
-h3 = plot(ax(2), t, build_temp, 'r'); 
-ylabel(ax(1), 'Price ($ per kWh)');
-ylabel(ax(2), 'Temperature');
+h3 = plot(ax(1), t, build_temp, 'r'); 
+ylabel(ax(1), 'Temperature');
+ylabel(ax(2), 'Price ($ per kWh)');
 axis(ax(1), [0, 120])
 axis(ax(2), [0, 120])
 set(ax(1), 'xgrid', 'on');
