@@ -1,41 +1,33 @@
 dat = dlmread('out');
 t = dat(:, 1);
-price = dat(:, 2);
-build_load_inj = dat(:, 3);
-pv_inj = dat(:, 4);
+price = dat(:, 2) * 0.001;
+build_load_inj = dat(:, 3) * 1000;
+pv_inj = dat(:, 4) * 1000;
 uncontr_inj = build_load_inj + pv_inj;
-grid_inj = dat(:, 5);
+grid_inj = dat(:, 5) * 1000;
 extern_temp = dat(:, 6);
-hvac_inj = dat(:, 7);
+hvac_inj = dat(:, 7) * 1000;
 build_temp = dat(:, 8);
-batt_inj = dat(:, 9);
-batt_chg = dat(:, 10);
+batt_inj = dat(:, 9) * 1000;
+batt_chg = dat(:, 10); batt_chg *= 100 / max(batt_chg);
 
 clf;
 subplot(211);
 [ax, h1, h2] = plotyy(t, price, t, extern_temp);
 hold on
 h3 = plot(ax(2), t, build_temp, 'r'); 
-ylabel(ax(1), 'Price');
+ylabel(ax(1), 'Price ($ per kWh)');
 ylabel(ax(2), 'Temperature');
 grid on;
-axis(ax(1), [80, 120])
-axis(ax(2), [80, 120])
+axis(ax(1), [0, 120])
+axis(ax(2), [0, 120])
 
 subplot(212);
 [ax, h1, h2] = plotyy(t, uncontr_inj, t, batt_chg);
 hold on;
 h3 = plot(ax(1), t, hvac_inj, 'r'); 
-ylabel(ax(1), 'Injections');
-ylabel(ax(2), 'Battery Charge');
+ylabel(ax(1), 'Power Injection (kW)');
+ylabel(ax(2), 'Battery Charge (% of Maximum)');
 grid on;
-axis(ax(1), [80, 120])
-axis(ax(2), [80, 120])
-%legend([h1, h3, h2], {'Uncontrolled', 'HVAC', 'Charge'}, 'location', 'northeastoutside'); 
-%subplot(413);
-%plot(t, batt_chg);
-%ylabel('Battery charge');
-%subplot(414);
-%plot(t, [extern_temp, build_temp]);
-%ylabel('Temperatures');
-%legend({'External', 'Internal'});
+axis(ax(1), [0, 120])
+axis(ax(2), [0, 120])

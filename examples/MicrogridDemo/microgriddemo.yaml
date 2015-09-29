@@ -36,7 +36,7 @@
     value_type: real_scalar
     type: data_time_series
     data_file: temperature.txt
-    relative_to_time: <start_time>
+    relative_to_time: 2013-01-01 00:00:00
     time_unit: h
     interp_type: lerp
  
@@ -156,8 +156,8 @@
     Tb_init: 20
     COP_cool: 3
     COP_heat: 4
-    max_P_cool: 3.5e4
-    max_P_heat: 3.5e4
+    max_P_cool: 5e4
+    max_P_heat: 5e4
     req_P_cool: 0
     req_P_heat: 3.5e4
     Ts: 20
@@ -191,6 +191,6 @@
     price_series: price
     T_extern_series: temperature
     feed_in_tariff: 0
-    comfort_factor: 2e5
-    T_setpoint: 20
+    comfort_factor: 1e6
+    T_setpoint: 22
     T_max_dev: 1

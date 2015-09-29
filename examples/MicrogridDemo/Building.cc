@@ -27,30 +27,31 @@ namespace Sgt
     {
         double dt = lastUpdated() == posix_time::neg_infin ? 0 : dSeconds(t - lastUpdated());
 
-        // Solve dT/dt = a T + b
+        // Solve dT/dt = -(kb/Cb)(T - TExt) + copHeat PHeat/Cb - copCool PCool/Cb
+        // => dT/dt = a T + b
+        // a = -kb/Cb
+        // b = (kb TExt + copHeat PHeat - copCool PCool) / Cb
         //
-        // Solution is T(t) = (d - 1) c + d T0
+        // Solution is T(t) = (T0 + b/a) exp(at) - b/a 
+        //                  = d T0 + (1 - d) c
         //
-        // where d = exp(at) = exp(-(kb_/Cb_)t)
-        // c = b/a = (copCool_ / kb_) PCool - (copHeat_ / kb_) PHeat - TExt
-        //
-        // a = -kb_/Cb_
-        // b = (kb_ TExt + copHeat_ PHeat_ - copCool_ PCool) / Cb
+        // where d = exp(at) = exp(-(kb/Cb)t)
+        //       c = -b/a = TExt + (copHeat / kb) PHeat - (copCool / kb) PCool
         //
         // Approximate TExt by its average over the interval.
        
         double dSv = d(dt);
         double cSv = c(lastUpdated(), t);
-        Tb_ = (dSv - 1.0) * cSv + dSv * Tb_;
+        Tb_ = dSv * Tb_ + (1.0 - dSv) * cSv;
     }
     
     double Building::c(const Time& t0, const Time& t1) const
     {
         double T0Ext = weather_->temperatureSeries()->value(t0);
         double T1Ext = weather_->temperatureSeries()->value(t1);
-        double TExt = 0.5 * T0Ext * T1Ext;
+        double TExt = 0.5 * (T0Ext + T1Ext);
 
-        return (copCool_ * PCool() - copHeat_ * PHeat()) / kb_ - TExt;
+        return TExt + (copHeat_ * PHeat() - copCool_ * PCool()) / kb_;
     }
 
     void BuildingParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
