@@ -6,7 +6,7 @@
     start_time: 2013-01-02 00:00:00
     end_time: 2013-01-05 00:00:00
     loads_start_time: 2013-01-01 21:00:00
-    input_file: ieee57_0_mod.m
+    input_file: data/ieee57/ieee57_0_mod.m
     n_load_busses: 42 
     load_busses: [1, 2, 3, 5, 6, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 25, 27, 28, 29, 30, 31, 32, 33, 35, 38, 41, 42, 43, 44, 47, 49, 50, 51, 52, 53, 54, 55, 56, 57]
     n_solar_busses: 42 
@@ -24,7 +24,7 @@
     #type: const_time_series
     #const_value: 1.0
     type: data_time_series
-    data_file: ../cloud.txt
+    data_file: data/cloud.txt
     relative_to_time: <start_time>                                                        
     time_unit: m                                                                          
     interp_type: lerp                 
@@ -32,7 +32,7 @@
     id: weather
     cloud_cover: cloud_cover_series
     dt: 00:30:00
-- network: 
+- sim_network: 
     id: network # All components have a unique "id" (name).
     P_base: 1 # Per-unit base power.
     freq_Hz: 60
@@ -49,7 +49,7 @@
             id: load_<load_busses(<i>)>_series
             value_type: complex_vector
             type: data_time_series
-            data_file: ./loads/load_<load_busses(<i>)>.txt
+            data_file: data/ieee57/loads/load_<load_busses(<i>)>.txt
             relative_to_time: <loads_start_time>
             time_unit: m
             interp_type: lerp

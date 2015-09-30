@@ -30,9 +30,9 @@ int main(int argc, const char ** argv)
 {
     using namespace Sgt;
 
-    // Log::messageLogLevel = LogLevel::VERBOSE;
-    // Log::warningLogLevel = LogLevel::VERBOSE;
-    // Log::debugLogLevel = LogLevel::VERBOSE;
+    // messageLogLevel() = LogLevel::VERBOSE;
+    // warningLogLevel() = LogLevel::VERBOSE;
+    // debugLogLevel() = LogLevel::VERBOSE;
 
     const char * configName = argv[1];
     const char * outputName = argv[2];

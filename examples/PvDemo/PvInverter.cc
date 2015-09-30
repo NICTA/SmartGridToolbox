@@ -29,7 +29,7 @@ namespace Sgt
     void PvInverterParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "network_id");
+        assertFieldPresent(nd, "sim_network_id");
         assertFieldPresent(nd, "bus_id");
 
         string id = parser.expand<std::string>(nd["id"]);
@@ -52,9 +52,9 @@ namespace Sgt
             inverter->maxQ_ = parser.expand<double>(nd["max_Q"]);
         }
 
-        const std::string networkId = parser.expand<std::string>(nd["network_id"]);
+        const std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
         auto network = sim.simComponent<SimNetwork>(networkId);
         network->network()->addGen(inverter->gen(), busId);
-        inverter->linkToSimNetwork(*network, busId);
+        inverter->linkToSimNetwork(*network);
     }
 }
