@@ -32,21 +32,23 @@ namespace Sgt
 
     SolarIrradiance Weather::irradiance(const Time& tm) const
     {
-        // Possibly dodgy model.
+        // This model is provisional and definitely needs to be improved.
         // Assume transmitted and diffuse components vary linearly with the cloud cover coefficient.
-        // Values taken haphazardly from "the web" - http://www.powerfromthesun.net/Book/chapter02/chapter02.html.
+        //
+        // See http://www.powerfromthesun.net/Book/chapter02/chapter02.html for some relevant information.
 
-        const double maxTransmit = 0.83;
-        const double minDiffuse = 0.05;
+        // Lots of guesses below:
+        const double minDirect = 0.0;
+        const double maxDirect = 0.6; // Average of clear sky values in reference above.
 
-        const double minTransmit = 0.33;
-        const double maxDiffuse = 0.26;
+        const double minDiffuse = 0.025;
+        const double maxDiffuse = 0.15; // Average of clear sky values in reference above.
 
         double cloudCover = cloudCoverSeries_->value(tm);
         assert(cloudCover >= 0 && cloudCover <= 1);
 
-        double directFrac = maxTransmit - cloudCover * (maxTransmit - minTransmit);
-        double diffuseFrac = minDiffuse + cloudCover * (maxDiffuse - minDiffuse);
+        double directFrac = maxDirect - cloudCover * (maxDirect - minDirect);
+        double diffuseFrac = maxDiffuse - cloudCover * (maxDiffuse - minDiffuse);
 
         SphericalAngles sunAngs = sunPos(utcTime(tm), latLong_);
 

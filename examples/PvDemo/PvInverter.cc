@@ -22,8 +22,6 @@ namespace Sgt
     {
         double Pmax = availableP();
         setPMax(Pmax);
-        setQMax(std::min(100 * Pmax, maxQ_));
-        setQMin(-QMax());
     }
 
     void PvInverterParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const

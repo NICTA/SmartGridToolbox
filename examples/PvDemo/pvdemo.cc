@@ -17,6 +17,7 @@
 
 #include <SgtSim/Simulation.h>
 #include <SgtSim/SimNetwork.h>
+#include <SgtSim/Weather.h>
 
 void setFlatStart(Sgt::Network& netw)
 {
@@ -53,6 +54,7 @@ int main(int argc, const char ** argv)
     p.registerParserPlugin<PvInverterParserPlugin>();
     p.parse(configName, sim);
     SimNetwork& simNetwork = *sim.simComponent<SimNetwork>("network");
+    Weather& weather = *sim.simComponent<Weather>("weather");
     Network& network = *simNetwork.network();
     if (usePvSolver)
     {
@@ -128,11 +130,11 @@ int main(int argc, const char ** argv)
         Complex SLoad = sumLoad();
         Complex SNormalGen = sumGen();
         Complex SInvGen = sumInv();
-        Complex STotGen = SNormalGen + SInvGen;
         Complex VMin = minV();
         Complex VMax = maxV();
-        outFile << h << " " << SLoad << " " << STotGen << " " << SNormalGen << " " << SInvGen << " " 
-                << VMin << " " << VMax << std::endl;
+        double cloud = weather.cloudCover(sim.currentTime());
+        outFile << h << " " << SLoad << " " << SNormalGen << " " << SInvGen << " " 
+                << VMin << " " << VMax << " " << cloud << std::endl;
     };
 
     while (!sim.isFinished())

@@ -1,16 +1,19 @@
 day = 24 * 60;
-t = 0:5:2*24*60;
-T = [0.15*day, 0.38*day, 2.4*day, 1.7*day, 2*day];
-d = [0.1*day, 1.2*day, 3.2*day, 0.9*day, 0.3*day];
-f = [0.2, 0.3, 0.6, 0.4, 0.1];
+t = 0:5:3*day;
 
-c = 0;
+T = [0.07, 0.15, 0.38, 1, 2.4, 1.7, 2] * day;
+d = [0.5, 0.1, 1.2, 0.4, 3.2, 0.9, 0.3] * day;
+f = [0.35, 0.67, 0.72, 0.8, 0.6, 0.4, 0.15];
+x = 0;
 for i = 1:size(T, 2)
-    c += f(i)*sin(2*pi*(t + d(i))./T(i));
+    x += f(i)*sin(2*pi*(t + d(i))./T(i));
 end
-maxc = 0.95;
-minc = 0.1;
-c *= (maxc - minc)/(max(c) - min(c));
-c += minc - min(c);
-dat = [t;c]';
-save -ascii cloud.txt dat
+max_x = 0.95;
+min_x = 0.1;
+x *= (max_x - min_x)/(max(x) - min(x));
+x += min_x - min(x);
+x = x.^2;
+
+f = fopen('cloud.txt', 'w+');
+fprintf(f, '%d %f\n', [t; x]);
+fclose(f);

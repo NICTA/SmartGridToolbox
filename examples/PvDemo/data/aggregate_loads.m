@@ -25,7 +25,7 @@ function loads = aggregate_loads(case_rel_path, as_const_Z = false)
     n_load = size(glob('loads/load_[0-9][0-9]*.txt'), 1);
     lds = [];
     for i = 1:n_load
-        ld = load_load(fullfile('loads', ['load_', num2str(i), '.txt']));
+        ld = dlmread(fullfile('loads', ['load_', num2str(i), '.txt']));
         if (i == 1)
             t = ld(:, 1);
         end
@@ -94,9 +94,4 @@ function loads = aggregate_loads(case_rel_path, as_const_Z = false)
         fprintf(fp, '%d %f%+fj %f%+fj %f%+fj\n', printArg');
         fclose(fp);
     end
-end
-
-function l = load_load(filename)
-    l = load(filename);
-    l = [l(:, 1), l(:, 2) + I * l(:, 3)];
 end
