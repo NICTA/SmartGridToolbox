@@ -20,8 +20,8 @@ namespace Sgt
 {
     void PvInverter::PChanged()
     {
-        double Pmax = availableP();
-        setPMax(Pmax);
+        double PMax = availableP();
+        setPMax(PMax);
     }
 
     void PvInverterParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
@@ -47,7 +47,7 @@ namespace Sgt
         
         if (nd["max_Q"])
         {
-            inverter->maxQ_ = parser.expand<double>(nd["max_Q"]);
+            inverter->setMaxQ(parser.expand<double>(nd["max_Q"]));
         }
 
         const std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);

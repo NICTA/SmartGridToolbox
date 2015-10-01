@@ -99,12 +99,13 @@ namespace Sgt
             
             double maxQ() const
             {
-                return maxQ_;
+                return QMax();
             }
 
             void setMaxQ(double maxQ)
             {
-                maxQ_ = maxQ;
+                setQMax(maxQ);
+                setQMin(-maxQ);
             }
             
             /// @}
@@ -112,7 +113,6 @@ namespace Sgt
         public:
 
             double maxSMag_{1e9};
-            double maxQ_{1e9};
         
         private:
 
