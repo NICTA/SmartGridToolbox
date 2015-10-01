@@ -39,13 +39,13 @@ int main(int argc, const char ** argv)
     const char * outputName = argv[2];
     double vlb = atof(argv[3]);
     double vub = atof(argv[4]);
-    bool usePvSolver = argv[5][0] == 'T';
+    bool useQ = argv[5][0] == 'T';
 
     std::cout << "Configuration filename = " << configName << std::endl;
     std::cout << "Output filename        = " << outputName << std::endl;
     std::cout << "Voltage lower bound    = " << vlb << std::endl;
     std::cout << "Voltage upper bound    = " << vub << std::endl;
-    std::cout << "Use PV solver          = " << usePvSolver << std::endl;
+    std::cout << "Allow Q                = " << useQ << std::endl;
 
     std::ofstream outFile(outputName);
 
@@ -56,15 +56,17 @@ int main(int argc, const char ** argv)
     SimNetwork& simNetwork = *sim.simComponent<SimNetwork>("network");
     Weather& weather = *sim.simComponent<Weather>("weather");
     Network& network = *simNetwork.network();
-    if (usePvSolver)
-    {
-        network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
-    }
+    network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
     sim.initialize();
 
     for (auto bus : network.busses())
     {
-        if (bus->type() != BusType::SL)
+        if (bus->type() == BusType::SL || bus->type() == BusType::PV)
+        {
+            bus->setVMagMin(bus->VMagSetpoint()(0));
+            bus->setVMagMax(bus->VMagSetpoint()(0));
+        }
+        else
         {
             if (vlb > 0)
             {
@@ -75,11 +77,7 @@ int main(int argc, const char ** argv)
                 bus->setVMagMax(vub * bus->VBase());
             }
         }
-        else
-        {
-            bus->setVMagMin(bus->VBase());
-            bus->setVMagMax(bus->VBase());
-        }
+        std::cout << bus->type() << " " << bus->VMagMin() << " " << bus->VMagMax() << " " << bus->VMagSetpoint() << std::endl;
     }
 
     std::vector<PvInverter*> invs;
@@ -89,6 +87,10 @@ int main(int argc, const char ** argv)
         auto inv = std::dynamic_pointer_cast<PvInverter>(gen);
         if (inv != nullptr)
         {
+            if (!useQ)
+            {
+                inv->setMaxQ(0.0);
+            }
             invs.push_back(inv.get());
         }
         else

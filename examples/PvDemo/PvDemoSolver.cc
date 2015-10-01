@@ -28,7 +28,7 @@ namespace Sgt
         auto powerMod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_));
         powerMod->min_cost();
         auto mod = powerMod->_model;
-        *mod->_obj += 10000 * V2Slack_;
+        *mod->_obj += 2e3 * V2Slack_;
         V2Slack_.init("VSlack", 0, INFINITY); // TODO: PowerTools needs to use a NEG_INFINITY.
         mod->addVar(V2Slack_);
         for (auto& cPair : mod->_cons)
@@ -56,26 +56,11 @@ namespace Sgt
                     auto ptGen = std::find_if(ptBus->_gen.begin(), ptBus->_gen.end(), 
                             [genId](Gen* g){return g->_name == genId;});
                     assert(ptGen != ptBus->_gen.end());
-
-                    *mod->_obj += 10000 * ((**ptGen).qg^2);
-
-                    if (true)
-                    {
-                        Constraint c("PVD_SPECIAL_A");
-                        c += (((**ptGen).pg)^2) + (((**ptGen).qg)^2);
-                        double maxSMag = sgtNetw_->S2Pu(inverter->maxSMag());
-                        c <= pow(maxSMag, 2);
-                        mod->addConstraint(c);
-                    }
-
-                    if (false)
-                    {
-                        Constraint c("PVD_SPECIAL_B");
-                        c += (((**ptGen).pg)^2) - (((**ptGen).qg)^2);
-                        c >= 0;
-                        // c.print(); std::cout << std::endl;
-                        mod->addConstraint(c);
-                    }
+                    Constraint c("PVD_SPECIAL_A");
+                    c += (((**ptGen).pg)^2) + (((**ptGen).qg)^2);
+                    double maxSMag = sgtNetw_->S2Pu(inverter->maxSMag());
+                    c <= pow(maxSMag, 2);
+                    mod->addConstraint(c);
                 }
             }
         }
