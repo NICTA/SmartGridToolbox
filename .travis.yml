@@ -4,24 +4,24 @@ sudo: false
 
 matrix:
     include:
-#       -   
-#           os: linux
-#           compiler: clang
-#           addons:
-#               apt:
-#                   sources:
-#                       - llvm-toolchain-precise-3.6
-#                       - ubuntu-toolchain-r-test
-#                       - boost-latest
-#                   packages: 
-#                       - csh
-#                       - clang-3.6
-#                       - libboost-date-time1.55-dev
-#                       - libboost-random1.55-dev
-#                       - libblas-dev
-#           env:
-#               - INSTALL_CXX=clang++-3.6
-#               - LD_LIBRARY_PATH=$HOME/lib
+        -   
+            os: linux
+            compiler: clang
+            addons:
+                apt:
+                    sources:
+                        - llvm-toolchain-precise-3.6
+                        - ubuntu-toolchain-r-test
+                        - boost-latest
+                    packages: 
+                        - csh
+                        - clang-3.6
+                        - libboost-date-time1.55-dev
+                        - libboost-random1.55-dev
+                        - libblas-dev
+            env:
+                - INSTALL_CXX=clang++-3.6
+                - LD_LIBRARY_PATH=$HOME/lib
         -   
             os: linux
             compiler: gcc
