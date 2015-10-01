@@ -12,7 +12,7 @@ unpatched_loadtxt = np.loadtxt
 np.loadtxt = my_loadtxt
 
 dat = np.loadtxt('out.txt', dtype=np.complex)
-t = np.real(dat[:, 0])
+t = np.real(dat[:, 0]) / 24
 S_load = dat[:, 1]
 S_norm_gen = dat[:, 2]
 S_inv_gen = dat[:, 3]
@@ -34,12 +34,17 @@ ax1.fill_between(t, V_min, V_max, where=V_max >= V_min,
                 facecolor='red', alpha=0.5, linewidth=0.0)
 ax1.axhline(0.96, color='black')
 ax1.axhline(1.04, color='black')
-ax1.set_xlim([0, 72])
+ax1.set_xlim([0, 3])
 ax1.set_ylim([0.9, 1.1])
+ax1.set_ylabel('Voltage Envelope (p.u.)')
 
 ax2.plot(t, np.real(S_load))
 ax2.plot(t, np.real(S_inv_gen), color='red')
 ax2.plot(t, np.imag(S_inv_gen))
-ax2.set_xlim([0, 72])
+ax2.set_xlim([0, 3])
+ax2.set_xlabel('Time (days)')
+ax2.set_ylabel('Power (MW/MVAR)')
+ax2.legend(['Real Load (MW)', 'Solar PV P (MW)', 'Solar PV Q (MVAR)'],
+           framealpha=0.5, prop={'size' : 11})
 
 plt.show()
