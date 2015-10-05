@@ -51,5 +51,5 @@ ax22.legend(l1 + l2 + l3,
             framealpha=0.75,
             prop={'size' : 11})
 
-plt.savefig('microgrid_results.png')
+plt.savefig('building_controller_results.png')
 plt.show()

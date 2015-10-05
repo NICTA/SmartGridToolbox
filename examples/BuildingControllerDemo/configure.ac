@@ -1,5 +1,5 @@
 AC_INIT([PVDemo], [0.1], [dan.gordon@nicta.com.au])
-AC_CONFIG_SRCDIR([microgriddemo.cc])
+AC_CONFIG_SRCDIR([building_controller_demo.cc])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MicrogridController.h"
+#include "BuildingController.h"
 
 #include "Building.h"
 
@@ -20,7 +20,7 @@
 
 namespace Sgt
 {
-    MicrogridController::MicrogridController(const std::string& id, const Time& dt) :
+    BuildingController::BuildingController(const std::string& id, const Time& dt) :
         Component(id), Heartbeat(id, dt) 
     {
         int error = GRBloadenv(&env, "");
@@ -29,19 +29,19 @@ namespace Sgt
         sgtAssert(error == 0, "Gurobi exited with error " << error);
     }
 
-    void MicrogridController::setBatt(std::shared_ptr<Battery> batt)
+    void BuildingController::setBatt(std::shared_ptr<Battery> batt)
     {
         batt_ = batt;
         dependsOn(batt);
     }
 
-    void MicrogridController::setBuild(std::shared_ptr<Building> build)
+    void BuildingController::setBuild(std::shared_ptr<Building> build)
     {
         build_ = build;
         dependsOn(build);
     }
             
-    void MicrogridController::updateState(Time t)
+    void BuildingController::updateState(Time t)
     {
         assert(batt_->lastUpdated() == t);
         assert(build_->lastUpdated() == t);
@@ -71,7 +71,7 @@ namespace Sgt
         // Objective:
         // Sum_i (price[i] * PImp[i] - feedInTariff_ * PExp[i] + comfortFactor_ * (TbPlusPen[i] + TbMinusPen[i])
         
-        sgtLogDebug() << "MicrogridController" << std::endl; LogIndent _;
+        sgtLogDebug() << "BuildingController" << std::endl; LogIndent _;
 
         // Parameters:
         const int N = 100;
@@ -352,11 +352,11 @@ namespace Sgt
         Heartbeat::updateState(t);
     }
 
-    void MicrogridControllerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
+    void BuildingControllerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         string id = parser.expand<std::string>(nd["id"]);
         Time dt = posix_time::minutes(5);
-        auto contr = sim.newSimComponent<MicrogridController>(id, dt);
+        auto contr = sim.newSimComponent<BuildingController>(id, dt);
         
         auto ndDt = nd["dt"];
         if (ndDt)
@@ -375,13 +375,13 @@ namespace Sgt
         contr->setSolar(sim.simComponent<SolarPv>(id));
 
         id = parser.expand<std::string>(nd["load_series"]);
-        contr->setLoadSeries(sim.timeSeries<MicrogridController::LoadSeries>(id));
+        contr->setLoadSeries(sim.timeSeries<BuildingController::LoadSeries>(id));
         
         id = parser.expand<std::string>(nd["price_series"]);
-        contr->setPriceSeries(sim.timeSeries<MicrogridController::PriceSeries>(id));
+        contr->setPriceSeries(sim.timeSeries<BuildingController::PriceSeries>(id));
         
         id = parser.expand<std::string>(nd["T_extern_series"]);
-        contr->setTExtSeries(sim.timeSeries<MicrogridController::TempSeries>(id));
+        contr->setTExtSeries(sim.timeSeries<BuildingController::TempSeries>(id));
         
         double feedInTariff = parser.expand<double>(nd["feed_in_tariff"]);
         contr->setFeedInTariff(feedInTariff);

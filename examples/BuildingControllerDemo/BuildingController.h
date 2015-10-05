@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef MICROGRID_DEMO_CONTROLLER_DOT_H
-#define MICROGRID_DEMO_CONTROLLER_DOT_H
+#ifndef BUILDING_CONTROLLER_DOT_H
+#define BUILDING_CONTROLLER_DOT_H
 
 #include <SgtCore/Parser.h>
 
@@ -32,7 +32,7 @@ namespace Sgt
 {
     class Building;
 
-    class MicrogridController : public Heartbeat
+    class BuildingController : public Heartbeat
     {
         public:
 
@@ -40,7 +40,7 @@ namespace Sgt
             using PriceSeries = TimeSeries<Time, double>;
             using TempSeries = TimeSeries<Time, double>;
 
-            MicrogridController(const std::string& id, const Time& dt);
+            BuildingController(const std::string& id, const Time& dt);
 
             void setBatt(std::shared_ptr<Battery> batt);
             
@@ -106,12 +106,12 @@ namespace Sgt
             GRBenv* env{NULL};
     };
 
-    class MicrogridControllerParserPlugin : public SimParserPlugin
+    class BuildingControllerParserPlugin : public SimParserPlugin
     {
         public:
             virtual const char* key() override
             {
-                return "microgrid_controller";
+                return "building_controller";
             }
 
         public:

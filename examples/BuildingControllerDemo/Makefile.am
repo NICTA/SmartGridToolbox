@@ -4,13 +4,13 @@ AM_CPPFLAGS =
 
 lib_LIBRARIES = 
 
-bin_PROGRAMS = microgriddemo
+bin_PROGRAMS = building_controller_demo
 
-microgriddemo_SOURCES = Building.h Building.cc \
-						MicrogridController.h MicrogridController.cc \
-						microgriddemo.cc
+building_controller_demo_SOURCES = Building.h Building.cc \
+						BuildingController.h BuildingController.cc \
+						building_controller_demo.cc
 
-microgriddemo_LDADD = -lSgtCore \
+building_controller_demo_LDADD = -lSgtCore \
 					  -lSgtSim \
 					  -larmadillo \
 					  -lyaml-cpp \

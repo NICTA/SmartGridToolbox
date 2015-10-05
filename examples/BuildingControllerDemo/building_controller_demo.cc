@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "Building.h"
-#include "MicrogridController.h"
+#include "BuildingController.h"
 
 #include <SgtSim/Battery.h>
 #include <SgtSim/Inverter.h>
@@ -39,13 +39,13 @@ int main(int argc, const char ** argv)
 
     Simulation sim;
     Parser<Simulation> p;
-    p.registerParserPlugin<MicrogridControllerParserPlugin>();
+    p.registerParserPlugin<BuildingControllerParserPlugin>();
     p.registerParserPlugin<BuildingParserPlugin>();
     p.parse(configName, sim);
 
     sim.initialize();
 
-    auto price = sim.timeSeries<MicrogridController::PriceSeries>("price");
+    auto price = sim.timeSeries<BuildingController::PriceSeries>("price");
     auto genTrans = sim.simComponent<SimGen>("gen_trans");
     auto buildingLoad = sim.simComponent<TimeSeriesZip>("load_build");
     auto building = sim.simComponent<Building>("build");

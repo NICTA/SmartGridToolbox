@@ -181,7 +181,7 @@
             subcond_gmr: [0.007]
             freq: 50
 
-- microgrid_controller:
+- building_controller:
     id: controller
     dt: 00:10:00
     battery: battery
