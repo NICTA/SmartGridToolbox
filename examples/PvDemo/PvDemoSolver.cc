@@ -35,7 +35,7 @@ namespace Sgt
         V2SlackB_.init("V2SlackB", 0, INFINITY);
         mod->addVar(V2SlackB_);
 
-        *mod->_obj += 1000 * V2SlackA_;
+        *mod->_obj += 10 * V2SlackA_;
         *mod->_obj += 2e3 * V2SlackB_;
 
         for (auto& cPair : mod->_cons)

@@ -14,9 +14,9 @@ function loads = analyse_loads(case_rel_path, max_factor = 1)
     penetration = 0.2 * ones(size(PSel));
     ave_area = 15;
     a = n_house .* penetration .* ave_area;
-    MVA_max = n_house .* penetration .* 0.0015;
+    MVA_max = n_house .* penetration .* 0.002;
     
-    p = randperm(size(id_sel));
+    rand('state', 1234); p = randperm(size(id_sel));
     id_perm = id_sel(p);
     a_perm = a(p);
     MVA_max_perm = MVA_max(p);

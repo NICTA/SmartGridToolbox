@@ -77,7 +77,6 @@ int main(int argc, const char ** argv)
                 bus->setVMagMax(vub * bus->VBase());
             }
         }
-        std::cout << bus->type() << " " << bus->VMagMin() << " " << bus->VMagMax() << " " << bus->VMagSetpoint() << std::endl;
     }
 
     std::vector<PvInverter*> invs;
