@@ -28,21 +28,48 @@ namespace Sgt
         auto powerMod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_));
         powerMod->min_cost();
         auto mod = powerMod->_model;
-        *mod->_obj += 2e3 * V2Slack_;
-        V2Slack_.init("VSlack", 0, INFINITY); // TODO: PowerTools needs to use a NEG_INFINITY.
-        mod->addVar(V2Slack_);
+
+        V2SlackA_.init("V2SlackA", 0, INFINITY);
+        mod->addVar(V2SlackA_);
+        
+        V2SlackB_.init("V2SlackB", 0, INFINITY);
+        mod->addVar(V2SlackB_);
+
+        *mod->_obj += 1000 * V2SlackA_;
+        *mod->_obj += 2e3 * V2SlackB_;
+
         for (auto& cPair : mod->_cons)
         {
             auto& c = *cPair.second;
             if (c._name == "V_LB")
             {
-                c += V2Slack_;
+                c += V2SlackB_;
             }
             else if (c._name == "V_UB")
             {
-                c -= V2Slack_;
+                c -= V2SlackB_;
             }
         }
+
+        for (auto n : powerMod->_net->nodes)
+        {
+            // Add constraints to try to achieve nominal voltage.
+            {
+                Constraint c(std::string("NOM_VOLTAGE_PLUS_") + std::to_string(n->ID));
+                c += (n->_V_.square_magnitude());
+                c -= V2SlackA_;
+                c <= 1.01;
+                mod->addConstraint(c);
+            }
+            {
+                Constraint c(std::string("NOM_VOLTAGE_MINUS_") + std::to_string(n->ID));
+                c += (n->_V_.square_magnitude());
+                c += V2SlackA_;
+                c >= 0.99;
+                mod->addConstraint(c);
+            }
+        }
+            
         for (auto bus : sgtNetw_->busses())
         {
             for (auto gen : bus->gens())
@@ -57,10 +84,12 @@ namespace Sgt
                             [genId](Gen* g){return g->_name == genId;});
                     assert(ptGen != ptBus->_gen.end());
                     Constraint c("PVD_SPECIAL_A");
-                    c += (((**ptGen).pg)^2) + (((**ptGen).qg)^2);
+                    c += ((**ptGen).pg^2) + ((**ptGen).qg^2);
                     double maxSMag = sgtNetw_->S2Pu(inverter->maxSMag());
                     c <= pow(maxSMag, 2);
                     mod->addConstraint(c);
+
+                    // *mod->_obj += (**ptGen).qg^2; // Only use Q if we have to.
                 }
             }
         }

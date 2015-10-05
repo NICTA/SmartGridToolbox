@@ -30,7 +30,8 @@ namespace Sgt
     {
         protected:
             virtual std::unique_ptr<PowerModel> makeModel() override;
-            var<> V2Slack_;
+            var<> V2SlackA_;
+            var<> V2SlackB_;
     };
 }
 
