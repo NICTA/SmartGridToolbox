@@ -57,7 +57,6 @@
             phases: [BAL]
             time_series_id: load_<load_busses(<i>)>_series
             dt: 00:10:00
-            scale_factor_Y: 1
             scale_factor_S: 1.2
 - loop:
     loop_variable: [i, 0, <n_solar_busses>, 1]
