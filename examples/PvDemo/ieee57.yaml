@@ -6,10 +6,10 @@
     start_time: 2013-01-02 00:00:00
     end_time: 2013-01-05 00:00:00
     loads_start_time: 2013-01-02 00:00:00
-    n_load_busses: 42
-    load_busses: [1, 2, 3, 5, 6, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 25, 27, 28, 29, 30, 31, 32, 33, 35, 38, 41, 42, 43, 44, 47, 49, 50, 51, 52, 53, 54, 55, 56, 57]
-    n_solar_busses: 42
-    solar_busses: [56, 27, 3, 54, 55, 35, 43, 13, 50, 20, 14, 51, 30, 44, 17, 2, 28, 19, 25, 9, 57, 16, 47, 18, 12, 8, 15, 31, 33, 53, 41, 32, 38, 10, 42, 5, 52, 6, 23, 29, 1, 49]
+    n_ld_busses: 42
+    ld_busses: [1, 2, 3, 5, 6, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 25, 27, 28, 29, 30, 31, 32, 33, 35, 38, 41, 42, 43, 44, 47, 49, 50, 51, 52, 53, 54, 55, 56, 57]
+    n_pv_busses: 42
+    pv_busses: [56, 27, 3, 54, 55, 35, 43, 13, 50, 20, 14, 51, 30, 44, 17, 2, 28, 19, 25, 9, 57, 16, 47, 18, 12, 8, 15, 31, 33, 53, 41, 32, 38, 10, 42, 5, 52, 6, 23, 29, 1, 49]
     solar_area: [15200.0, 18600.0, 82000.0, 8200.0, 13600.0, 12000.0, 4000.0, 36000.0, 42000.0, 4600.0, 21000.0, 36000.0, 7200.0, 24000.0, 84000.0, 6000.0, 9200.0, 6600.0, 12600.0, 242000.0, 13400.0, 86000.0, 59400.0, 54400.0, 754000.0, 300000.0, 44000.0, 11600.0, 7600.0, 40000.0, 12600.0, 3200.0, 28000.0, 10000.0, 14200.0, 26000.0, 9800.0, 150000.0, 12600.0, 34000.0, 110000.0, 36000.0]
     solar_S_mag_max: [2.0, 2.5, 10.9, 1.1, 1.8, 1.6, 0.5, 4.8, 5.6, 0.6, 2.8, 4.8, 1.0, 3.2, 11.2, 0.8, 1.2, 0.9, 1.7, 32.3, 1.8, 11.5, 7.9, 7.3, 100.5, 40.0, 5.9, 1.5, 1.0, 5.3, 1.7, 0.4, 3.7, 1.3, 1.9, 3.5, 1.3, 20.0, 1.7, 4.5, 14.7, 4.8]
 - simulation: 
@@ -31,47 +31,46 @@
     dt: 00:20:00
 - sim_network: 
     id: network # All components have a unique "id" (name).
-    P_base: 1 # Per-unit base power.
+    P_base: 1 # Base power for per unit.
     freq_Hz: 60
-    # solver: nr
     solver: opf_pt_pp
 - matpower:
     sim_network_id: network
     input_file: data/ieee57/ieee57_0_mod.m
     default_kV_base: 11
 - loop:
-    loop_variable: [i, 0, <n_load_busses>, 1]
+    loop_variable: [i, 0, <n_ld_busses>, 1]
     loop_body: 
         - time_series:
-            id: load_<load_busses(<i>)>_series
+            id: load_<ld_busses(<i>)>_series
             value_type: complex_vector
             type: data_time_series
-            data_file: data/ieee57/loads/load_<load_busses(<i>)>.txt
+            data_file: data/ieee57/loads/load_<ld_busses(<i>)>.txt
             relative_to_time: <loads_start_time>
             time_unit: m
             interp_type: lerp
         - time_series_zip:
-            id: load_<load_busses(<i>)>
+            id: load_<ld_busses(<i>)>
             sim_network_id: network
-            bus_id: bus_<load_busses(<i>)>
+            bus_id: bus_<ld_busses(<i>)>
             phases: [BAL]
-            time_series_id: load_<load_busses(<i>)>_series
+            time_series_id: load_<ld_busses(<i>)>_series
             dt: 00:10:00
             scale_factor_S: 1.2
 - loop:
-    loop_variable: [i, 0, <n_solar_busses>, 1]
+    loop_variable: [i, 0, <n_pv_busses>, 1]
     loop_body: 
         - pv_inverter:
-            id: pv_inverter_<solar_busses(<i>)>
+            id: pv_inv_<pv_busses(<i>)>
             sim_network_id: network
-            bus_id: bus_<solar_busses(<i>)>
+            bus_id: bus_<pv_busses(<i>)>
             max_S_mag: <solar_S_mag_max(<i>)>
             # max_Q: 0
             efficiency: 0.86
         - solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
-            id: solar_pv_<solar_busses(<i>)>
+            id: solar_pv_<pv_busses(<i>)>
             weather: weather
-            inverter: pv_inverter_<solar_busses(<i>)>
+            inverter: pv_inv_<pv_busses(<i>)>
             efficiency: 0.25
             area_m2: <solar_area(<i>)>
             zenith_degrees: 60 

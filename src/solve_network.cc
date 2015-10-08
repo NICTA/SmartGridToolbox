@@ -53,10 +53,15 @@ int main(int argc, char** argv)
 
     if (!warm_start)
     {
+        std::cout << "Using cold start" << std::endl;
         for (auto bus : nw.busses())
         {
             bus->setV(bus->VNom());
         }
+    }
+    else
+    {
+        std::cout << "Using warm start" << std::endl;
     }
 
     auto print = [&]()

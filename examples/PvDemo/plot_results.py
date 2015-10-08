@@ -46,10 +46,10 @@ ax1.hold(True)
 ax2.hold(True)
 
 p1 = my_fill_between(ax1, t, V_min_ctrl, V_max_ctrl, where=V_max_ctrl >= V_min_ctrl,
-                     facecolor='green', alpha=0.85, linewidth=0.0,
-                     label='Control')
+                     facecolor='green', alpha=0.65, linewidth=0.0,
+                     label='Without solar PV Optimised Q')
 p2 = my_fill_between(ax1, t, V_min, V_max, where=V_max >= V_min,
-                     facecolor='red', alpha=0.85, linewidth=0.0,
+                     facecolor='red', alpha=0.65, linewidth=0.0,
                      label='With solar PV Optimised Q')
 ax1.axhline(0.96, color='black')
 ax1.axhline(1.04, color='black')
