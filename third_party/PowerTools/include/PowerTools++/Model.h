@@ -18,8 +18,8 @@
 #include <unordered_set>
 #include <math.h>
 #include <vector>
-#include <IpIpoptApplication.hpp>
-#include <IpTNLP.hpp>
+#include <coin/IpIpoptApplication.hpp>
+#include <coin/IpTNLP.hpp>
 #include <thread>
 #include <gurobi_c++.h>
 

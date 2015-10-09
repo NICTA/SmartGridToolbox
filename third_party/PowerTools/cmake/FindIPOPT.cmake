@@ -8,6 +8,7 @@ message("Looking for Ipopt in ${IPOPT_ROOT_DIR}")
 
 #string(SUBSTRING ${IPOPT_VERSION} 0 2 IPOPT_VERSION_SHORT)
 
+
 find_path(IPOPT_INCLUDE_DIR
 	NAMES IpNLP.hpp 
 	HINTS /usr/local/include/coin
@@ -33,6 +34,7 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(IPOPT DEFAULT_MSG IPOPT_LIBRARY IPOPT_INCLUDE_DIR)
 
 if(IPOPT_FOUND)
+	message("—- Found Ipopt under ${IPOPT_INCLUDE_DIR}")
     set(IPOPT_INCLUDE_DIRS ${IPOPT_INCLUDE_DIR})
     set(IPOPT_LIBRARIES ${IPOPT_LIBRARY})
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
