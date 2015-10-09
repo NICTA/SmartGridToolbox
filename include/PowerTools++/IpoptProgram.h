@@ -11,8 +11,8 @@
 
 #include <stdio.h>
 #include <assert.h>
-#include <IpIpoptApplication.hpp>
-#include <IpTNLP.hpp>
+#include <coin/IpIpoptApplication.hpp>
+#include <coin/IpTNLP.hpp>
 #include <PowerTools++/Model.h>
 
 using   Ipopt::IpoptApplication;

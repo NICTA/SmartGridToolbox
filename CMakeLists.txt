@@ -9,7 +9,7 @@ find_package(GUROBI REQUIRED)
 find_package(IPOPT REQUIRED)
 
 # Include gurobi and ipopt headers and libraries
-include_directories(${GUROBI_INCLUDE_DIRS} ${IPOPT_INCLUDE_DIRS})
+include_directories(${GUROBI_INCLUDE_DIRS} ${IPOPT_INCLUDE_DIRS}/..)
 set(LIBS ${LIBS} ${GUROBI_LIBRARIES} ${IPOPT_LIBRARIES})
 
 # Compiler options
@@ -17,7 +17,8 @@ set(LIBS ${LIBS} ${GUROBI_LIBRARIES} ${IPOPT_LIBRARIES})
 # specify the cross compiler
 set(CMAKE_C_COMPILER_ID GNU)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -g")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -ggdb")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -ggdb")
+#string (REPLACE "-Wmost" "" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Ofast")
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all-symbols")
 
