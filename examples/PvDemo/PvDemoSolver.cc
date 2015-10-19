@@ -25,7 +25,8 @@ namespace Sgt
 {
     std::unique_ptr<PowerModel> PvDemoSolver::makeModel()
     {
-        auto powerMod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_));
+        auto powerMod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_, ipopt));
+        powerMod->build();
         powerMod->min_cost();
         auto mod = powerMod->_model;
 
@@ -38,9 +39,9 @@ namespace Sgt
         *mod->_obj += 10 * V2SlackA_;
         *mod->_obj += 2e3 * V2SlackB_;
 
-        for (auto& cPair : mod->_cons)
+        for (auto& cPair : mod->get_cons())
         {
-            auto& c = *cPair.second;
+            auto& c = *cPair;
             if (c._name == "V_LB")
             {
                 c += V2SlackB_;

@@ -67,6 +67,11 @@ namespace Sgt
         sgtLogDebug() << "Network : solving power flow." << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << *this;
 
+        // Flat start (more stable). 
+        for (auto bus : busses())
+        {
+            bus->setV(bus->VNom());
+        }
         isValidSolution_ = solver_->solve(this);
         if (!isValidSolution_)
         {

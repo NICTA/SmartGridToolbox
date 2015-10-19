@@ -126,7 +126,6 @@ namespace Sgt
 
             sgtBus->setV({VSol});
 
-            /*
             Complex SLoadUnservedSolPu(-node->plv.get_value(), -node->qlv.get_value());
             Complex SLoadUnservedSol = sgtNw.pu2S(SLoadUnservedSolPu);
             if (std::abs(SLoadUnservedSol) > 1e-3)
@@ -136,7 +135,6 @@ namespace Sgt
 
             sgtBus->setSZipUnserved({SLoadUnservedSol});
             sgtBus->setSGenUnserved(arma::Col<Complex>(sgtBus->phases().size(), arma::fill::zeros));
-            */
 
             auto nGen = node->_gen.size();
             auto nSgtGen = sgtBus->gens().size();
@@ -208,7 +206,8 @@ namespace Sgt
 
     std::unique_ptr<PowerModel> PowerFlowPtPpSolver::makeModel()
     {
-        auto mod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_));
+        auto mod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_, ipopt));
+        mod->build();
         mod->min_cost();
         return mod;
     }
