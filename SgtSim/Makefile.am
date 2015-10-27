@@ -20,6 +20,7 @@ libinclude_HEADERS = \
 	SimParser.h \
 	SimZip.h \
 	Simulation.h \
+	SolarGeom.h \
 	SolarPv.h \
 	Sun.h \
 	TimeSeries.h \
@@ -54,6 +55,7 @@ libSgtSim_la_SOURCES = \
 	Simulation.h Simulation.cc \
 	SimZip.h SimZip.cc \
 	SimZipParserPlugin.h SimZipParserPlugin.cc \
+	SolarGeom.h SolarGeom.cc \
 	SolarPv.h SolarPv.cc \
 	SolarPvParserPlugin.h SolarPvParserPlugin.cc \
 	Sun.h Sun.cc \

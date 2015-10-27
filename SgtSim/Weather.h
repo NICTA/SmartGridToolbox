@@ -16,23 +16,31 @@
 #define WEATHER_DOT_H
 
 #include <SgtSim/Heartbeat.h>
-#include <SgtSim/Sun.h>
-#include <SgtSim/TimeSeries.h>
+#include <SgtSim/SolarGeom.h>
+
+#include <SgtCore/Common.h>
 
 namespace Sgt
 {
-    struct SolarIrradiance
+    struct Weather
     {
-        Array<double, 3> direct;
-        double horizontalDiffuse;
+        LatLong latLong{greenwich};
+        double elevation{0.0};
+        std::function<double (const Time&)> temperature{[](const Time&){return 20.0;}}; // Centigrade.
+        std::function<Irradiance (const Time&)> irradiance{[](const Time&)->Irradiance
+            {return Irradiance{{{0.0, 0.0, 0.0}}, 0.0, 0.0};}};
+        std::function<Array<double, 3> (const Time&)> windVector{
+            [](const Time&)->Array<double, 3>{return {{0.0, 0.0, 0.0}};}};
     };
 
-    class Weather : public Heartbeat
+    class SimWeather : public Heartbeat
     {
+        public:
+        
+            Weather weather;
+
         /// @name Static member functions:
         /// @{
-
-        public:
 
             static const std::string& sComponentType()
             {
@@ -45,20 +53,17 @@ namespace Sgt
         /// @name Lifecycle:
         /// @{
 
-            Weather(const std::string& id) :
+            SimWeather(const std::string& id) :
                 Component(id),
-                Heartbeat(id, posix_time::minutes(5)),
-                latLong_(greenwich),
-                temperatureSeries_(nullptr),
-                cloudCoverSeries_(nullptr)
+                Heartbeat(id, posix_time::minutes(5))
             {
                 // Empty.
             }
 
+            virtual ~SimWeather() = default;
+
         /// @name Component virtual overridden member functions.
         /// @{
-
-        public:
 
             virtual const std::string& componentType() const override
             {
@@ -69,57 +74,23 @@ namespace Sgt
 
         /// @name Weather specific member functions.
         /// @{
-
-        public:
-
-            void setLatLong(const LatLong& latLong) {latLong_ = latLong; needsUpdate().trigger();}
-
-            std::shared_ptr<const TimeSeries<Time, double>> temperatureSeries() const
+            
+            double temperature()
             {
-                return temperatureSeries_;
+                return weather.temperature(lastUpdated());
             }
-            void setTemperatureSeries(std::shared_ptr<const TimeSeries<Time, double>> series)
+            
+            Irradiance irradiance()
             {
-                temperatureSeries_ = series;
-                needsUpdate().trigger();
+                return weather.irradiance(lastUpdated());
             }
-            double temperature(const Time& t) const
+            
+            Array<double, 3> windVector()
             {
-                return temperatureSeries_->value(t);
+                return weather.windVector(lastUpdated());
             }
-            double temperature() const
-            {
-                return temperature(lastUpdated());
-            }
-
-            std::shared_ptr<const TimeSeries<Time, double>> cloudCoverSeries() const
-            {
-                return cloudCoverSeries_;
-            }
-            void setCloudCoverSeries(std::shared_ptr<const TimeSeries<Time, double>> series)
-            {
-                cloudCoverSeries_ = series;
-                needsUpdate().trigger();
-            }
-            double cloudCover(const Time& t) const
-            {
-                return cloudCoverSeries_->value(t);
-            }
-            double cloudCover() const
-            {
-                return cloudCover(lastUpdated());
-            }
-
-            double solarPower(const Time& t, const SphericalAngles& planeNormal, double planeArea) const;
-
-            SolarIrradiance irradiance(const Time& tm) const;
 
         /// @}
-
-        private:
-            LatLong latLong_;
-            std::shared_ptr<const TimeSeries<Time, double>> temperatureSeries_;
-            std::shared_ptr<const TimeSeries<Time, double>> cloudCoverSeries_;
     };
 }
 

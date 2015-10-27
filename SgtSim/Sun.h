@@ -18,49 +18,13 @@
 #ifndef SUN_DOT_H
 #define SUN_DOT_H
 
+#include <SgtSim/SolarGeom.h>
+
 #include <SgtCore/Common.h>
 
 namespace Sgt
 {
     constexpr double solarIrradianceMag() {return 1367;} // W/m^2, atmospheric absorbance not taken into account.
-
-    struct SphericalAngles
-    {
-        double zenith;    ///< Angle in radians between directly overhead and the desired point on sphere.
-        double azimuth;   ///< Direction of point in radians, angle clockwise from due north(?).
-    };
-
-    /// @brief Convert spherical angles and magnitude to a vector.
-    ///
-    /// x -> north, y -> east, z -> directly up.
-    /// @param angs Struct containing spherical angles of the sun.
-    /// @param mag Magnitude of the vector.
-    /// @return The vector.
-    inline Array<double, 3> angsAndMagToVec(const SphericalAngles& angs, double mag)
-    {
-        using std::cos;
-        using std::sin;
-        return {{
-                mag * cos(angs.azimuth) * sin(angs.zenith), mag * sin(angs.azimuth) * sin(angs.zenith),
-                mag * cos(angs.zenith)
-            }};
-    }
-
-    /// @brief Convert spherical angles and projection to a vector.
-    /// @param angs struct containing spherical angles of the sun.
-    /// @param proj projection of the vector onto a vertical vector.
-    /// @return The vector.
-    ///
-    /// x -> north, y -> east, z -> directly up.
-    /// If the vector is interpreted as the normal to an area, then the projection is interpreted as being
-    /// onto the horizontal plane.
-    inline Array<double, 3> angsAndProjToVec(const SphericalAngles& angs, double proj)
-    {
-        using std::cos;
-        using std::sin;
-
-        return angsAndMagToVec(angs, proj / cos(angs.zenith));
-    }
 
     /// @brief Spherical angles of the sun at a given time and location.
     /// @param utcTime UTC time.

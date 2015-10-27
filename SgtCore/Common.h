@@ -362,11 +362,10 @@ namespace Sgt
 
     /// @ingroup Utilities
     /// @brief Simple struct storing a latitude and longitude.
-    class LatLong
+    struct LatLong
     {
-        public:
-            double lat_;
-            double long_;
+        double lat_;
+        double long_;
     };
 
     /// @}
