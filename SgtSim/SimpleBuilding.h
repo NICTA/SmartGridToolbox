@@ -186,7 +186,7 @@ namespace Sgt
             double Tb() {return Tb_;}
 
             /// @brief External temperature.
-            double Te() {return weather_->temperatureSeries()->value(lastUpdated());}
+            double Te() {return weather_->data.temperature(lastUpdated());}
 
             /// @brief Extraneous thermal power generated inside building.
             double dQg() {return dQg_->value(lastUpdated());}

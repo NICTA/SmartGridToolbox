@@ -26,24 +26,24 @@ namespace Sgt
         string id = parser.expand<std::string>(nd["id"]);
         auto weather = sim.newSimComponent<Weather>(id);
 
-        weather->setLatLong(sim.latLong());
+        weather->data.latLong = sim.latLong();
 
         const auto& temperatureNd = nd["temperature"];
         if (temperatureNd)
         {
-            std::string id = parser.expand<std::string>(temperatureNd);
-            auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
-            sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-            weather->setTemperatureSeries(series);
-        }
-
-        const auto& cloudNd = nd["cloud_cover"];
-        if (cloudNd)
-        {
-            std::string id = parser.expand<std::string>(cloudNd);
-            auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
-            sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-            weather->setCloudCoverSeries(series);
+            std::string nd1Key = nd.begin()->first.as<std::string>();
+            YAML::Node nd1 = nd.begin()->second;
+            if (nd1Key == "series")
+            {
+                std::string id = parser.expand<std::string>(nd1);
+                auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
+                sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
+                weather->data.setTemperature(series);
+            }
+            else if (nd1Key == "const")
+            {
+                weather->data.setTemperature(nd1.as<double>());
+            }
         }
 
         if (nd["dt"])

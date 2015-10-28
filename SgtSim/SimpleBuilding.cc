@@ -68,16 +68,14 @@ namespace Sgt
         {
             // Power is constrained by maximum.
             Tb_ = propTbMaxed(dt, Tb_, dQg_->value(lastUpdated()), dQg_->value(t),
-                              weather_->temperatureSeries()->value(lastUpdated()),
-                              weather_->temperatureSeries()->value(t), kb_, dQh_, Cb_);
+                    weather_->data.temperature(lastUpdated()), weather_->data.temperature(t), kb_, dQh_, Cb_);
         }
         setOperatingParams(t);
     }
 
     void SimpleBuilding::setOperatingParams(Time t)
     {
-        dQh_ = -dQg_->value(t) + kb_ * (Ts_ - weather_->temperatureSeries()->value(t))
-               + kh_ * (Ts_ - Tb_); // Heat ADDED.
+        dQh_ = -dQg_->value(t) + kb_ * (Ts_ - weather_->data.temperature(t)) + kh_ * (Ts_ - Tb_); // Heat ADDED.
         mode_ = dQh_ > 0 ? HvacMode::HEATING : HvacMode::COOLING;
         cop_ = mode_ == HvacMode::HEATING ? copHeat_ : copCool_;
         Ph_ = std::abs(dQh_) / cop_;
