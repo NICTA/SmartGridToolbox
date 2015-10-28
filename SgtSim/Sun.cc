@@ -141,13 +141,4 @@ namespace Sgt
         }
         return result;
     }
-
-    double solarPower(const Irradiance& irr, const SphericalAngles& planeNormal, double planeArea)
-    {
-        const auto& xSun = irr.direct;
-        auto xPlane = angsAndMagToVec(planeNormal, planeArea);
-        double d = dot<double, 3>(xSun, xPlane);
-        if (d < 0) d = 0;
-        return d;
-    }
 }

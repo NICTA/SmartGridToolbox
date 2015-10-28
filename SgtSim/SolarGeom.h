@@ -57,7 +57,20 @@ namespace Sgt
         double groundDiffuse;
     };
     
+    /// @brief Solar power falling on a plane, W.
+    /// @param irr Irradiance struct
+    /// @param planeNormal The coordinates specified by the normal of a plane.
+    /// @param planeArea The area of the plane.
+    /// @return Power in W. Angle between sun and plane normal of >= 90 degrees implies zero power.
     double solarPower(const Irradiance& irradiance, const SphericalAngles& planeNormal, double planeArea);
+
+    /// @brief Solar power per m^2 falling on a plane, W/m^2.
+    /// @param irr Irradiance struct
+    /// @param planeNormal The coordinates specified by the normal of a plane.
+    inline double solarIrradiance(const Irradiance& irr, const SphericalAngles& planeNormal)
+    {
+        return solarPower(irr, planeNormal, 1.0);
+    }
 }
 
 #endif // SOLAR_GEOM_DOT_H
