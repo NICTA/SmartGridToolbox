@@ -24,47 +24,72 @@
 
 namespace Sgt
 {
-    constexpr double solarIrradianceMag() {return 1367;} // W/m^2, atmospheric absorbance not taken into account.
-
     /// @brief Spherical angles of the sun at a given time and location.
     /// @param utcTime UTC time.
     /// @param location Lat long of the location.
     /// @return Spherical angles of the sun.
-    SphericalAngles sunPos(posix_time::ptime utcTime, LatLong location);
+    SphericalAngles sunPos(const posix_time::ptime& utcTime, const LatLong& location);
 
-    /// @brief Horizontal solar irradiance.
-    ///
-    /// This quantity is often used as a proxy for the solar irradiance magnitude, as it is easier to measure.
-    /// @param angs Spherical angles of the sun.
-    /// @return Horizontal solar irradiance of the sun, in W/m^2.
-    inline double horizontalSolarIrradiance(const SphericalAngles& angs)
+    /// @brief Magnitude of clear sky direct irradiance, given position of sun and optional altitude.
+    /// @param angs position of sun expressed as SphericalAngles.
+    /// @param altitudeMeters Altitude in meters, default = 0.
+    /// @return Magnitude of direct irradiance vector.
+    /// See http://www.pveducation.org/pvcdrom/properties-of-sunlight/air-mass
+    double directIrradianceMag(const SphericalAngles& angs, double altitudeMeters = 0.0);
+    
+    /// @brief Horizontal clear sky diffuse irradiance, given direct irradiance.
+    /// @param directIrradianceMag Magnitude of direct irradiance, W/m^2.
+    /// @return Horizontal diffuse irradiance.
+    /// Just use 10% of direct magnitude, See http://www.pveducation.org/pvcdrom/properties-of-sunlight/air-mass.
+    inline double skyDiffuseIrradiance(double directIrradianceMag)
     {
-        double cosZen = cos(angs.zenith);
-        return (cosZen > 0.0 ? solarIrradianceMag() * cosZen : 0.0);
+        // See http://www.pveducation.org/pvcdrom/properties-of-sunlight/air-mass
+        return 0.1 * directIrradianceMag;
+    }
+    
+    /// @brief Ground reflected irradiance, given direct irradiance.
+    /// @param directIrradianceMag Magnitude of direct irradiance, W/m^2.
+    /// @return Ground reflected irradiance.
+    /// Currently set to 0.0 (ignored).
+    inline double groundDiffuseIrradiance(double directIrradianceMag)
+    {
+        return 0.0;
     }
 
     /// @brief Solar irradiance vector, W/m^2.
-    /// @param solarAngles Solar angles of the sun.
+    /// @param angs Solar angles of the sun.
+    /// @param altitudeMeters Altitude in meters, default = 0.
     /// @return Irradiance vector in W/m^2. Direction of vector points to the sun.
-    inline Array<double, 3> solarIrradianceVec(SphericalAngles solarAngles)
+    inline Array<double, 3> directIrradianceVec(const SphericalAngles& angs, double altitudeMeters = 0.0)
     {
-        return angsAndMagToVec(solarAngles, solarIrradianceMag());
+        return angsAndMagToVec(angs, directIrradianceMag(angs, altitudeMeters));
+    }
+
+    /// @brief Solar irradiance components (direct vec, diffuse, ground), W/m^2
+    /// @param angs Solar angles of the sun.
+    /// @param altitudeMeters Altitude in meters, default = 0.
+    /// @return Irradiance components (direct vector, diffuse, ground).
+    inline Irradiance irradiance(const SphericalAngles& angs, double altitudeMeters = 0.0)
+    {
+        auto dir = directIrradianceMag(angs, altitudeMeters);
+        auto diff = skyDiffuseIrradiance(dir);
+        auto ground = groundDiffuseIrradiance(dir);
+        return {angsAndMagToVec(angs, dir), diff, ground};
     }
 
     /// @brief Solar power falling on a plane, W.
-    /// @param solarAngles Spherical angles of the sun.
+    /// @param irr Irradiance struct
     /// @param planeNormal The coordinates specified by the normal of a plane.
     /// @param planeArea The area of the plane.
     /// @return Power in W. Angle between sun and plane normal of >= 90 degrees implies zero power.
-    double solarPower(SphericalAngles solarAngles, SphericalAngles planeNormal, double planeArea);
+    double solarPower(const Irradiance& irr, const SphericalAngles& planeNormal, double planeArea = 1.0);
 
     /// @brief Solar power per m^2 falling on a plane, W/m^2.
-    /// @param solarAngles Struct containing zenith and azimuth angles of the sun.
+    /// @param irr Irradiance struct
     /// @param planeNormal The coordinates specified by the normal of a plane.
-    /// @return Irradiance in W/m^2. Angle between sun and plane normal of >= 90 degrees implies zero power.
-    inline double solarIrradiance(SphericalAngles solarAngles, SphericalAngles planeNormal)
+    inline double solarIrradiance(const Irradiance& irr, const SphericalAngles& planeNormal)
     {
-        return solarPower(solarAngles, planeNormal, 1.0);
+        return solarPower(irr, planeNormal, 1.0);
     }
 }
 

@@ -28,7 +28,7 @@ namespace Sgt
         const double dAstronomicalUnit = 149597890.0; // km.
     }
 
-    SphericalAngles sunPos(posix_time::ptime utcTime, LatLong location)
+    SphericalAngles sunPos(const posix_time::ptime& utcTime, const LatLong& location)
     {
         // Note: in original code, time was "udtTime". "UT" was also mentioned. Not sure exactly what "UDT" refers to
         // but UT is probably either UT1 or UTC, both being approximately equivalent. So I changed variable name
@@ -124,12 +124,28 @@ namespace Sgt
 
         return result;
     }
-
-
-    double solarPower(SphericalAngles solarAngles, SphericalAngles planeNormal, double planeArea)
+    
+    double directIrradianceMag(const SphericalAngles& angs, double altitudeMeters)
     {
-        Array<double, 3> xSun = solarIrradianceVec(solarAngles);
-        Array<double, 3> xPlane = angsAndMagToVec(planeNormal, planeArea);
+        double result;
+        if (angs.zenith < 0.5 * pi)
+        {
+            // See http://www.pveducation.org/pvcdrom/properties-of-sunlight/air-mass
+            double airMass = 1.0 / (std::cos(angs.zenith) + 28.976 * (1.6769 - angs.zenith));
+            double ah = 1.4e-4 * altitudeMeters;
+            result = 1353.0 * ((1.0 - ah) * std::pow(0.7, pow(airMass, 0.678)) + ah); // W/m^2.
+        }
+        else
+        {
+            result = 0.0;
+        }
+        return result;
+    }
+
+    double solarPower(const Irradiance& irr, const SphericalAngles& planeNormal, double planeArea)
+    {
+        const auto& xSun = irr.direct;
+        auto xPlane = angsAndMagToVec(planeNormal, planeArea);
         double d = dot<double, 3>(xSun, xPlane);
         if (d < 0) d = 0;
         return d;

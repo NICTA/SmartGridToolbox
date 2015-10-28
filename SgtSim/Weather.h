@@ -17,16 +17,17 @@
 
 #include <SgtSim/Heartbeat.h>
 #include <SgtSim/SolarGeom.h>
+#include <SgtSim/Sun.h>
+#include <SgtSim/TimeSeries.h>
 
 #include <SgtCore/Common.h>
-#include <SgtSim/TimeSeries.h>
 
 namespace Sgt
 {
     struct WeatherData
     {
         LatLong latLong{greenwich};
-        double elevation{0.0};
+        double altitude{0.0};
 
         std::function<double (const Time&)> temperature{[](const Time&){return 20.0;}}; // Centigrade.
 
@@ -35,17 +36,26 @@ namespace Sgt
 
         std::function<Array<double, 3> (const Time&)> windVector{[](const Time&)->Array<double, 3>{
             return {{0.0, 0.0, 0.0}};}};
+        
+        std::function<double (const Time&, const SphericalAngles&)> cloudDirectAttenuationFactor{
+            [](const Time&, const SphericalAngles&)->double{return 1.0;}};
+
+        std::function<double (const Time&)> cloudDiffuseAttenuationFactor{
+            [](const Time&)->double{return 1.0;}};
+
+        std::function<double (const Time&)> cloudGroundAttenuationFactor{
+            [](const Time&)->double{return 1.0;}};
 
         // Utility functions:
         template<typename T> void setTemperature(const T& f)
         {
             temperature = [f](const Time& t){return f(t);};
         }
-        void setTemperature(std::shared_ptr<TimeSeries<Time, double>> series)
+        void setTemperatureToSeries(std::shared_ptr<TimeSeries<Time, double>> series)
         {
             temperature = [series](const Time& t){return series->value(t);};
         }
-        void setTemperature(double val)
+        void setTemperatureToConst(double val)
         {
             temperature = [val](const Time& t){return val;};
         }
@@ -54,29 +64,37 @@ namespace Sgt
         {
             irradiance = [f](const Time& t){return f(t);};
         }
-        void setIrradiance(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
+        void setIrradianceToSeries(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
         {
             irradiance = [series](const Time& t)->Irradiance{
                 auto val = series->value(t); return {{{val(0), val(1), val(2)}}, val(3), val(4)};};
         }
-        void setIrradiance(const Irradiance& val)
+        void setIrradianceToConst(const Irradiance& val)
         {
             irradiance = [val](const Time& t){return val;};
+        }
+        void setIrradianceToSunModel()
+        {
+            irradiance = [this](const Time& t)->Irradiance{return sunModelIrr(t);};
         }
 
         template<typename T> void setWindVector(const T& f)
         {
             windVector = [f](const Time& t){return f(t);};
         }
-        void setWindVector(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
+        void setWindVectorToSeries(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
         {
             windVector = [series](const Time& t)->Array<double, 3>{
                 auto val = series->value(t); return {{val(0), val(1), val(2)}};};
         }
-        void setWindVector(const Array<double, 3>& val)
+        void setWindVectorToConst(const Array<double, 3>& val)
         {
             windVector = [val](const Time& t){return val;};
         }
+        
+        private:
+
+            Irradiance sunModelIrr(const Time& t);
     };
 
     class Weather : public Heartbeat
