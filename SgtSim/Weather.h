@@ -51,11 +51,11 @@ namespace Sgt
         {
             temperature = [f](const Time& t){return f(t);};
         }
-        void setTemperatureToSeries(std::shared_ptr<TimeSeries<Time, double>> series)
+        void setTemperature(std::shared_ptr<TimeSeries<Time, double>> series)
         {
             temperature = [series](const Time& t){return series->value(t);};
         }
-        void setTemperatureToConst(double val)
+        void setTemperature(double val)
         {
             temperature = [val](const Time& t){return val;};
         }
@@ -64,12 +64,12 @@ namespace Sgt
         {
             irradiance = [f](const Time& t){return f(t);};
         }
-        void setIrradianceToSeries(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
+        void setIrradiance(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
         {
             irradiance = [series](const Time& t)->Irradiance{
                 auto val = series->value(t); return {{{val(0), val(1), val(2)}}, val(3), val(4)};};
         }
-        void setIrradianceToConst(const Irradiance& val)
+        void setIrradiance(const Irradiance& val)
         {
             irradiance = [val](const Time& t){return val;};
         }
@@ -82,12 +82,12 @@ namespace Sgt
         {
             windVector = [f](const Time& t){return f(t);};
         }
-        void setWindVectorToSeries(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
+        void setWindVector(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
         {
             windVector = [series](const Time& t)->Array<double, 3>{
                 auto val = series->value(t); return {{val(0), val(1), val(2)}};};
         }
-        void setWindVectorToConst(const Array<double, 3>& val)
+        void setWindVector(const Array<double, 3>& val)
         {
             windVector = [val](const Time& t){return val;};
         }

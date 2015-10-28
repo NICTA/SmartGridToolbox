@@ -47,11 +47,11 @@ namespace Sgt
                 std::string id = parser.expand<std::string>(nd1);
                 auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-                weather->data.setTemperatureToSeries(series);
+                weather->data.setTemperature(series);
             }
             else if (nd1Key == "const")
             {
-                weather->data.setTemperatureToConst(nd1.as<double>());
+                weather->data.setTemperature(nd1.as<double>());
             }
         }
 
@@ -65,12 +65,12 @@ namespace Sgt
                 std::string id = parser.expand<std::string>(nd1);
                 auto series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-                weather->data.setIrradianceToSeries(series);
+                weather->data.setIrradiance(series);
             }
             else if (nd1Key == "const")
             {
                 auto vec = nd1.as<arma::Col<double>>();
-                weather->data.setIrradianceToConst({{{vec(0), vec(1), vec(2)}}, vec(3), vec(4)}); 
+                weather->data.setIrradiance({{{vec(0), vec(1), vec(2)}}, vec(3), vec(4)}); 
             }
             else if (nd1Key == "solar_model")
             {
@@ -88,12 +88,12 @@ namespace Sgt
                 std::string id = parser.expand<std::string>(nd1);
                 auto series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-                weather->data.setWindVectorToSeries(series);
+                weather->data.setWindVector(series);
             }
             else if (nd1Key == "const")
             {
                 auto vec = nd1.as<arma::Col<double>>();
-                weather->data.setWindVectorToConst({{vec(0), vec(1), vec(2)}}); 
+                weather->data.setWindVector({{vec(0), vec(1), vec(2)}}); 
             }
         }
 
