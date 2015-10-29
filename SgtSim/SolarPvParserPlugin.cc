@@ -26,36 +26,40 @@ namespace Sgt
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "weather");
         assertFieldPresent(nd, "inverter");
-        assertFieldPresent(nd, "area_m2");
+        assertFieldPresent(nd, "n_modules");
+        assertFieldPresent(nd, "module_area_m2");
         assertFieldPresent(nd, "zenith_degrees");
         assertFieldPresent(nd, "azimuth_degrees");
+        assertFieldPresent(nd, "irradiance_ref_W_per_m2");
+        assertFieldPresent(nd, "T_cell_ref_C");
+        assertFieldPresent(nd, "P_max_ref_W");
+        assertFieldPresent(nd, "P_max_temp_coeff_per_C");
+        assertFieldPresent(nd, "NOCT_C");
 
         string id = parser.expand<std::string>(nd["id"]);
         auto spv = sim.newSimComponent<SolarPv>(id);
-
-        if (nd["efficiency"])
-        {
-            spv->setEfficiency(parser.expand<double>(nd["efficiency"]));
-        }
-        else
-        {
-            spv->setEfficiency(1.0);
-        }
-        spv->setPlaneArea(parser.expand<double>(nd["area_m2"]));
-        double zen = parser.expand<double>(nd["zenith_degrees"]) * pi / 180;
-        double azi = parser.expand<double>(nd["azimuth_degrees"]) * pi / 180;
-        spv->setPlaneNormal({zen, azi});
 
         const std::string weatherStr = parser.expand<std::string>(nd["weather"]);
         auto weather = sim.simComponent<Weather>(weatherStr);
         sgtAssert(weather != nullptr, 
                 "For component " << id << ", weather " << weatherStr << " was not found in the simulation.");
         spv->setWeather(weather);
-
+        
         const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
         auto inverter = sim.simComponent<InverterAbc>(inverterStr);
         sgtAssert(inverter != nullptr,
             "For component " << id << ", inverter " << inverterStr << " was not found in the simulation.");
         inverter->addDcPowerSource(spv);
+
+        spv->setNModules(parser.expand<int>(nd["n_modules"]));
+        spv->setModuleArea(parser.expand<double>(nd["module_area_m2"]));
+        double zen = parser.expand<double>(nd["zenith_degrees"]) * pi / 180;
+        double azi = parser.expand<double>(nd["azimuth_degrees"]) * pi / 180;
+        spv->setPlaneNormal({zen, azi});
+        spv->setPhiRef(nd["irradiance_ref_W_per_m2"].as<double>());
+        spv->setTRef(nd["T_cell_ref_C"].as<double>() + 273.0);
+        spv->setPMaxRef(nd["P_max_ref_W"].as<double>());
+        spv->set_beta(nd["P_max_temp_coeff_per_C"].as<double>());
+        spv->setNOCT(nd["NOCT_C"].as<double>() + 273.0);
     }
 }

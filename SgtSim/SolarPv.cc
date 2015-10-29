@@ -20,11 +20,7 @@
 namespace Sgt
 {
     SolarPv::SolarPv(const std::string& id) :
-        Component(id),
-        weather_(nullptr),
-        efficiency_(1.0),
-        planeNormal_( {0.0, 0.0}),
-                  planeArea_(0.0)
+        Component(id)
     {}
 
     void SolarPv::setWeather(std::shared_ptr<Weather> weather)
@@ -38,11 +34,16 @@ namespace Sgt
     double SolarPv::PDc(const Time& t) const
     {
         // Note: convert from SI to MW.
-        return 1e-6 * solarPower(weather_->data.irradiance(t), planeNormal_, planeArea_) * efficiency_;
+        return 1e-6 * PMaxRef_ * nModules_ * 
+            (solarIrradiance(weather_->data.irradiance(t), planeNormal_) / phiRef_) * 
+            (1.0 - beta_ * (TCell() - TRef_));
     }
 
-    double SolarPv::PDc() const
+    double SolarPv::TCell(const Time& t) const
     {
-        return PDc(weather_->lastUpdated());
+        // See http://www.pveducation.org/pvcdrom/modules/nominal-operating-cell-temperature
+        // Some conversion C <-> K, W/m^2 <-> mW/cm^2.
+        return weather_->data.temperature(t) + ((NOCT_ - 293.0) / 800.0) * 
+            solarIrradiance(weather_->data.irradiance(t), planeNormal_) + 273.0;
     }
 };

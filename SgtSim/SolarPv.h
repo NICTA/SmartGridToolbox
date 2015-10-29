@@ -41,8 +41,6 @@ namespace Sgt
         /// @name Lifecycle:
         /// @{
 
-        public:
-
             SolarPv(const std::string& id);
 
         /// @}
@@ -50,52 +48,92 @@ namespace Sgt
         /// @name Component virtual overridden member functions.
         /// @{
 
-        public:
-
             virtual const std::string& componentType() const override
             {
                 return sComponentType();
             }
-
-            // virtual void print(std::ostream& os) const override; TODO
-
-        /// @}
-
-        /// @name Overridden member functions from SimComponent.
-        /// @{
-
-        public:
-            // virtual Time validUntil() const override;
-
-        protected:
-            // virtual void initializeState() override;
-            // virtual void updateState(Time t) override;
 
         /// @}
 
         /// @name My public member functions.
         /// @{
 
-        public:
-
+            /// @brief Set the weather component.
+            /// @param weather The weather component
             void setWeather(std::shared_ptr<Weather> weather);
 
-            void setEfficiency(double efficiency) {efficiency_ = efficiency; needsUpdate().trigger();}
+            /// @brief Set the number of modules.
+            /// @param nModules The number of modules
+            void setNModules(int nModules) {nModules_ = nModules; needsUpdate().trigger();}
 
+            /// @brief Set the area of each module.
+            /// @param moduleArea The area in m^2
+            void setModuleArea(double moduleArea) {moduleArea_ = moduleArea; needsUpdate().trigger();}
+
+            /// @brief Set the unit normal to the plane of the solar panels.
+            /// @param planeNormal The SphericalAngles object decribing the plane normal.
             void setPlaneNormal(SphericalAngles planeNormal) {planeNormal_ = planeNormal; needsUpdate().trigger();}
+            
+            /// @brief Set the reference irradiance.
+            /// @param phiRef Irradiance in W/m^2, should be given in datasheet.
+            /// The reference irradiance is usually taken to be 1000 W/m^2 (1 sun).
+            void setPhiRef(double phiRef) {phiRef_ = phiRef; needsUpdate().trigger();}
 
-            void setPlaneArea(double planeArea) {planeArea_ = planeArea; needsUpdate().trigger();}
+            /// @brief Set the reference temperature.
+            /// @param TRef Temperature in K of cells under reference conditions, should be given in datasheet.
+            /// The reference temperature is usually taken to be 25 C, although the nominal operating cell temperature
+            /// (NOCT) is usually higher than this.
+            /// See <http://www.pveducation.org/pvcdrom/modules/nominal-operating-cell-temperature>.
+            void setTRef(double TRef) {TRef_ = TRef; needsUpdate().trigger();}
 
+            /// @brief Set the maximum power (power at the MPP) in W under reference conditions.
+            /// @param PMaxRef Maximum power in W, should be given in datasheet.
+            void setPMaxRef(double PMaxRef) {PMaxRef_ = PMaxRef; needsUpdate().trigger();}
+
+            /// @brief Set the temperature coefficient of maximum power.
+            /// @param beta Temperature coefficient of maximum power, K^-1. Should be given in datasheet.
+            /// Quantifies linear effect on maximum power of deviations from reference temperature.
+            void set_beta(double beta) {beta_ = beta; needsUpdate().trigger();}
+
+            /// @brief Set the NOCT (nominal operating cell temperature)
+            /// @param NOCT Temperature in K.
+            void setNOCT(double NOCT) {NOCT_ = NOCT; needsUpdate().trigger();}
+
+            /// @brief Power output in MW, assuming efficient maximum power point tracking (MPPT).
             virtual double PDc(const Time& t) const;
-            virtual double PDc() const override;
+
+            /// @brief Power output in MW, assuming efficient maximum power point tracking (MPPT).
+            virtual double PDc() const override
+            {
+                return PDc(lastUpdated());
+            }
+
+        /// @}
+
+        /// @name Some utility calculated quantities:
+        /// @{
+            
+            /// @brief Temperature of the cell, in K.
+            /// See http://www.pveducation.org/pvcdrom/modules/nominal-operating-cell-temperature
+            double TCell(const Time& t) const;
+            
+            /// @brief Temperature of the cell, in K.
+            /// See http://www.pveducation.org/pvcdrom/modules/nominal-operating-cell-temperature
+            double TCell() const {return TCell(lastUpdated());}
 
         /// @}
 
         private:
             std::shared_ptr<const Weather> weather_;
-            double efficiency_;
-            SphericalAngles planeNormal_; // TODO : more than one plane?
-            double planeArea_; // TODO : more than one plane?
+            int nModules_;
+            double moduleArea_;
+            SphericalAngles planeNormal_;
+
+            double phiRef_{1000.0}; // Reference irradiance, usually 1000 W/m^2
+            double TRef_{298.0}; // Reference temperature (K), usually 25 C 
+            double PMaxRef_; // Maximum power of a single module at reference conditions.
+            double beta_; // Temperature coefficient of maximum power.
+            double NOCT_; // Nominal operating cell temperature, should be given in datasheet.
     };
 }
 

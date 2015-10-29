@@ -139,17 +139,17 @@ namespace Sgt
         /// @name Weather specific member functions.
         /// @{
             
-            double temperature()
+            double temperature() const
             {
                 return data.temperature(lastUpdated());
             }
             
-            Irradiance irradiance()
+            Irradiance irradiance() const
             {
                 return data.irradiance(lastUpdated());
             }
             
-            Array<double, 3> windVector()
+            Array<double, 3> windVector() const
             {
                 return data.windVector(lastUpdated());
             }
