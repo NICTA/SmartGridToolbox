@@ -34,9 +34,10 @@ namespace Sgt
     double SolarPv::PDc(const Time& t) const
     {
         // Note: convert from SI to MW.
-        return 1e-6 * PMaxRef_ * nModules_ * 
+        // Also need to multiply by number of panels.
+        return 1e-6 * PMaxRef_ * nPanels_ * 
             (solarIrradiance(weather_->data.irradiance(t), planeNormal_) / phiRef_) * 
-            (1.0 - beta_ * (TCell() - TRef_));
+            (1.0 + tempCoeffPMax_ * (TCell() - TRef_));
     }
 
     double SolarPv::TCell(const Time& t) const

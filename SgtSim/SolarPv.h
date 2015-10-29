@@ -62,13 +62,13 @@ namespace Sgt
             /// @param weather The weather component
             void setWeather(std::shared_ptr<Weather> weather);
 
-            /// @brief Set the number of modules.
-            /// @param nModules The number of modules
-            void setNModules(int nModules) {nModules_ = nModules; needsUpdate().trigger();}
+            /// @brief Set the number of panels.
+            /// @param nPanels The number of panels.
+            void setNPanels(int nPanels) {nPanels_ = nPanels; needsUpdate().trigger();}
 
-            /// @brief Set the area of each module.
-            /// @param moduleArea The area in m^2
-            void setModuleArea(double moduleArea) {moduleArea_ = moduleArea; needsUpdate().trigger();}
+            /// @brief Set the area of each panel.
+            /// @param panelArea The area in m^2
+            void setPanelArea(double panelArea) {panelArea_ = panelArea; needsUpdate().trigger();}
 
             /// @brief Set the unit normal to the plane of the solar panels.
             /// @param planeNormal The SphericalAngles object decribing the plane normal.
@@ -90,10 +90,11 @@ namespace Sgt
             /// @param PMaxRef Maximum power in W, should be given in datasheet.
             void setPMaxRef(double PMaxRef) {PMaxRef_ = PMaxRef; needsUpdate().trigger();}
 
-            /// @brief Set the temperature coefficient of maximum power.
-            /// @param beta Temperature coefficient of maximum power, K^-1. Should be given in datasheet.
+            /// @brief Set the temperature coefficient of maximum power relative to TRef.
+            /// @param tempCoeffPMax Temperature coefficient of maximum power, K^-1. Should be given in datasheet.
             /// Quantifies linear effect on maximum power of deviations from reference temperature.
-            void set_beta(double beta) {beta_ = beta; needsUpdate().trigger();}
+            /// Negative = fractional reduction in max. power per degree ABOVE reference temp.
+            void setTempCoeffPMax(double tempCoeffPMax) {tempCoeffPMax_ = tempCoeffPMax; needsUpdate().trigger();}
 
             /// @brief Set the NOCT (nominal operating cell temperature)
             /// @param NOCT Temperature in K.
@@ -125,14 +126,14 @@ namespace Sgt
 
         private:
             std::shared_ptr<const Weather> weather_;
-            int nModules_;
-            double moduleArea_;
+            int nPanels_;
+            double panelArea_;
             SphericalAngles planeNormal_;
 
             double phiRef_{1000.0}; // Reference irradiance, usually 1000 W/m^2
             double TRef_{298.0}; // Reference temperature (K), usually 25 C 
-            double PMaxRef_; // Maximum power of a single module at reference conditions.
-            double beta_; // Temperature coefficient of maximum power.
+            double PMaxRef_; // Maximum power of a single panel at reference conditions.
+            double tempCoeffPMax_; // Temperature coefficient of maximum power, relative to TRef.
             double NOCT_; // Nominal operating cell temperature, should be given in datasheet.
     };
 }
