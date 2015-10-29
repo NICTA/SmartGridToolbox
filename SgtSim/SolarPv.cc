@@ -36,15 +36,15 @@ namespace Sgt
         // Note: convert from SI to MW.
         // Also need to multiply by number of panels.
         return 1e-6 * PMaxRef_ * nPanels_ * 
-            (solarIrradiance(weather_->data.irradiance(t), planeNormal_) / phiRef_) * 
-            (1.0 + tempCoeffPMax_ * (TCell() - TRef_));
+            (solarIrradiance(weather_->model.irradiance(t), planeNormal_) / phiRef_) * 
+            (1.0 + tempCoeffPMax_ * (TCell(t) - TRef_));
     }
 
     double SolarPv::TCell(const Time& t) const
     {
         // See http://www.pveducation.org/pvcdrom/modules/nominal-operating-cell-temperature
         // Some conversion C <-> K, W/m^2 <-> mW/cm^2.
-        return weather_->data.temperature(t) + ((NOCT_ - 293.0) / 800.0) * 
-            solarIrradiance(weather_->data.irradiance(t), planeNormal_) + 273.0;
+        return weather_->model.temperature(t) + ((NOCT_ - 293.0) / 800.0) * 
+            solarIrradiance(weather_->model.irradiance(t), planeNormal_) + 273.0;
     }
 };

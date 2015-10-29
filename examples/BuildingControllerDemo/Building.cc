@@ -47,8 +47,8 @@ namespace Sgt
     
     double Building::c(const Time& t0, const Time& t1) const
     {
-        double T0Ext = weather_->data.temperature(t0);
-        double T1Ext = weather_->data.temperature(t1);
+        double T0Ext = weather_->model.temperature(t0);
+        double T1Ext = weather_->model.temperature(t1);
         double TExt = 0.5 * (T0Ext + T1Ext);
 
         return TExt + (copHeat_ * PHeat() - copCool_ * PCool()) / kb_;

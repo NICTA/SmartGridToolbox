@@ -38,15 +38,16 @@ ax21 = axes[1]
 l1 = ax21.plot(t, -hvac_inj, 'b-')
 ax21.hold(True)
 l2 = ax21.plot(t, -uncontr_inj, 'b:')
+l3 = ax21.plot(t, -pv_inj, 'g')
 ax21.set_xlabel('Time (days)')
 ax21.set_ylabel('Power (kW)', color='b')
 ax21.xaxis.grid('on')
 
 ax22 = ax21.twinx()
-l3 = ax22.plot(t, batt_chg, 'r-')
+l4 = ax22.plot(t, batt_chg, 'r-')
 ax22.set_ylabel('Stored Energy (kWh)', color='r')
-ax22.legend(l1 + l2 + l3, 
-            ['HVAC Power (kW)', 'Purchased Power (kW)', 'Battery Charge (kWh)'],
+ax22.legend(l1 + l2 + l3 + l4, 
+            ['HVAC Power (kW)', 'Purchased Power (kW)', 'PV power (kW)', 'Battery Charge (kWh)'],
             loc=1,
             framealpha=0.75,
             prop={'size' : 11})

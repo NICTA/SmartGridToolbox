@@ -24,7 +24,7 @@
 
 namespace Sgt
 {
-    struct WeatherData
+    struct WeatherModel
     {
         LatLong latLong{greenwich};
         double altitude{0.0};
@@ -110,7 +110,7 @@ namespace Sgt
     {
         public:
         
-            WeatherData data;
+            WeatherModel model;
 
         /// @name Static member functions:
         /// @{
@@ -150,17 +150,22 @@ namespace Sgt
             
             double temperature() const
             {
-                return data.temperature(lastUpdated());
+                return model.temperature(lastUpdated());
             }
             
             Irradiance irradiance() const
             {
-                return data.irradiance(lastUpdated());
+                return model.irradiance(lastUpdated());
             }
             
             Array<double, 3> windVector() const
             {
-                return data.windVector(lastUpdated());
+                return model.windVector(lastUpdated());
+            }
+            
+            Array<double, 3> cloudAttenuationFactors() const
+            {
+                return model.cloudAttenuationFactors(lastUpdated(), sunPos(utcTime(lastUpdated()), model.latLong));
             }
 
         /// @}

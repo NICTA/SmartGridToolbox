@@ -31,9 +31,7 @@ namespace Sgt
                     LogIndent indent;
                     action.perform();
                 }
-                sgtLogDebug(LogLevel::VERBOSE) << "Event performed action: " << action.description() << std::endl;
             }
-            sgtLogDebug(LogLevel::VERBOSE) << "Event finished: " << description_ << std::endl;
         }
         else
         {

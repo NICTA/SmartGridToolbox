@@ -71,8 +71,6 @@ namespace Sgt
         // Objective:
         // Sum_i (price[i] * PImp[i] - feedInTariff_ * PExp[i] + comfortFactor_ * (TbPlusPen[i] + TbMinusPen[i])
         
-        sgtLogDebug() << "BuildingController" << std::endl; LogIndent _;
-
         // Parameters:
         const int N = 100;
         const int dtSecs = 15 * 60; // 15 minute steps.

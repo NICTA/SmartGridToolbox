@@ -26,7 +26,7 @@ namespace Sgt
         string id = parser.expand<std::string>(nd["id"]);
         auto weather = sim.newSimComponent<Weather>(id);
 
-        weather->data.latLong = sim.latLong(); // TODO: could be restrictive?
+        weather->model.latLong = sim.latLong(); // TODO: could be restrictive?
 
         if (nd["dt"])
         {
@@ -40,79 +40,79 @@ namespace Sgt
         const auto& temperatureNd = nd["temperature"];
         if (temperatureNd)
         {
-            std::string nd1Key = nd.begin()->first.as<std::string>();
-            YAML::Node nd1 = nd.begin()->second;
+            std::string nd1Key = temperatureNd.begin()->first.as<std::string>();
+            YAML::Node nd1 = temperatureNd.begin()->second;
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
                 auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-                weather->data.setTemperature(series);
+                weather->model.setTemperature(series);
             }
             else if (nd1Key == "const")
             {
-                weather->data.setTemperature(nd1.as<double>());
+                weather->model.setTemperature(nd1.as<double>());
             }
         }
 
         const auto& irradianceNd = nd["irradiance"];
         if (irradianceNd)
         {
-            std::string nd1Key = nd.begin()->first.as<std::string>();
-            YAML::Node nd1 = nd.begin()->second;
+            std::string nd1Key = irradianceNd.begin()->first.as<std::string>();
+            YAML::Node nd1 = irradianceNd.begin()->second;
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
                 auto series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-                weather->data.setIrradiance(series);
+                weather->model.setIrradiance(series);
             }
             else if (nd1Key == "const")
             {
                 auto vec = nd1.as<arma::Col<double>>();
-                weather->data.setIrradiance({{{vec(0), vec(1), vec(2)}}, vec(3), vec(4)}); 
+                weather->model.setIrradiance({{{vec(0), vec(1), vec(2)}}, vec(3), vec(4)}); 
             }
             else if (nd1Key == "solar_model" && nd1.as<std::string>() == "standard")
             {
-                weather->data.setIrradianceToSunModel();
+                weather->model.setIrradianceToSunModel();
             }
         }
 
         const auto& cloudAttenNd = nd["cloud_attenuation_factors"];
         if (cloudAttenNd)
         {
-            std::string nd1Key = nd.begin()->first.as<std::string>();
-            YAML::Node nd1 = nd.begin()->second;
+            std::string nd1Key = cloudAttenNd.begin()->first.as<std::string>();
+            YAML::Node nd1 = cloudAttenNd.begin()->second;
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
                 auto series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-                weather->data.setCloudAttenuationFactors(series);
+                weather->model.setCloudAttenuationFactors(series);
             }
             else if (nd1Key == "const")
             {
                 auto vec = nd1.as<arma::Col<double>>();
-                weather->data.setCloudAttenuationFactors({{vec(0), vec(1), vec(2)}}); 
+                weather->model.setCloudAttenuationFactors({{vec(0), vec(1), vec(2)}}); 
             }
         }
 
         const auto& windNd = nd["wind"];
         if (windNd)
         {
-            std::string nd1Key = nd.begin()->first.as<std::string>();
-            YAML::Node nd1 = nd.begin()->second;
+            std::string nd1Key = windNd.begin()->first.as<std::string>();
+            YAML::Node nd1 = windNd.begin()->second;
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
                 auto series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-                weather->data.setWindVector(series);
+                weather->model.setWindVector(series);
             }
             else if (nd1Key == "const")
             {
                 auto vec = nd1.as<arma::Col<double>>();
-                weather->data.setWindVector({{vec(0), vec(1), vec(2)}}); 
+                weather->model.setWindVector({{vec(0), vec(1), vec(2)}}); 
             }
         }
 

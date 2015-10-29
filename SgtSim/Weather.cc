@@ -16,7 +16,7 @@
 
 namespace Sgt
 {
-    Irradiance WeatherData::sunModelIrr(const Time& t)
+    Irradiance WeatherModel::sunModelIrr(const Time& t)
     {
         SphericalAngles angs = sunPos(utcTime(t), latLong);
         Irradiance irr = Sgt::irradiance(angs, altitude);

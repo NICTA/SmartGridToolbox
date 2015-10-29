@@ -1,7 +1,7 @@
 % Load raw data:
 dat_ld = dlmread('../PvDemo/data/loads/load_1.txt');
 for i = 2:10
-    dat_ld(:, 2:3) = dat_ld(:, 2:3) + dlmread(['../PvDemo/data/loads/load_', num2str(i), '.txt'])(:, 2:3);
+    dat_ld(:, 2) = dat_ld(:, 2) + dlmread(['../PvDemo/data/loads/load_', num2str(i), '.txt'])(:, 2);
 end
 t_ld = dat_ld(:, 1);
 
@@ -16,8 +16,8 @@ pr_sel = t_pr <= t_minimax;
 
 % Load data:
 t_ld = t_ld(ld_sel);
-P_ld = dat_ld(ld_sel, 2);
-Q_ld = dat_ld(ld_sel, 3);
+P_ld = real(dat_ld(ld_sel, 2));
+Q_ld = imag(dat_ld(ld_sel, 2));
 z = zeros(size(t_ld));
 f = fopen('load_build.txt', 'w+');
 fprintf(f, '%d %f%+fj %f%+fj %f%+fj\n', [t_ld, z, z, z, z, -P_ld, -Q_ld]');
@@ -46,7 +46,7 @@ min_x = 0.1;
 x *= (max_x - min_x)/(max(x) - min(x));
 x += min_x - min(x);
 f = fopen('cloud.txt', 'w+');
-fprintf(f, '%d %f\n', [t; x]);
+fprintf(f, '%d %f %f %f\n', [t; x; 0.3 * x; 0.3 * x]);
 fclose(f);
 
 % Building heat data:

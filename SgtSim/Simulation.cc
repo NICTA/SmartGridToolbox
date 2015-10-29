@@ -114,7 +114,6 @@ namespace Sgt
                 logComponents();
             }
         }
-        sgtLogMessage(LogLevel::VERBOSE) << "Simulation initialize(): Completed." << std::endl;
     }
 
     // TODO: can we tidy up the logic in this function?
@@ -163,7 +162,6 @@ namespace Sgt
             // Now perform the update...
             contComp->update(currentTime_);
             indent.out();
-            sgtLogDebug(LogLevel::VERBOSE) << "... Done" << std::endl;
 
             // ... and try to reinsert component in scheduled updates.
             tryInsertScheduledUpdate(contComp);
@@ -192,7 +190,6 @@ namespace Sgt
             indent.in();
             schedComp->update(currentTime_);
             indent.out();
-            sgtLogDebug(LogLevel::VERBOSE) << "... Done" << std::endl;
 
             // ... and try to reinsert it.
             tryInsertScheduledUpdate(schedComp);
@@ -222,7 +219,6 @@ namespace Sgt
         sgtLogDebug(LogLevel::VERBOSE) << "Number of scheduled = " << scheduledUpdates_.size() << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << "Number of contingent = " << contingentUpdates_.size() << std::endl;
         indent.out();
-        sgtLogMessage(LogLevel::VERBOSE) << "Simulation doNextUpdate(): Completed:" << std::endl;
     }
 
     void Simulation::doTimestep()
@@ -249,7 +245,6 @@ namespace Sgt
         {
             doNextUpdate();
         }
-        sgtLogMessage() << "Simulation doTimestep(): Completed." << std::endl;
     }
 
     void Simulation::logComponents()
