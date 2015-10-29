@@ -20,12 +20,12 @@ namespace Sgt
     {
         SphericalAngles angs = sunPos(utcTime(t), latLong);
         Irradiance irr = Sgt::irradiance(angs, altitude);
-        double dirAtten = cloudDirectAttenuationFactor(t, angs);
-        irr.direct[0] *= dirAtten; 
-        irr.direct[1] *= dirAtten; 
-        irr.direct[2] *= dirAtten; 
-        irr.skyDiffuse *= cloudDiffuseAttenuationFactor(t);
-        irr.groundDiffuse *= cloudGroundAttenuationFactor(t);
+        auto atten = cloudAttenuationFactors(t, angs);
+        irr.direct[0] *= atten[0]; 
+        irr.direct[1] *= atten[0]; 
+        irr.direct[2] *= atten[0]; 
+        irr.skyDiffuse *= atten[1];
+        irr.groundDiffuse *= atten[2];
         return irr;
     }
 }

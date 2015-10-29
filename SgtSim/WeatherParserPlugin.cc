@@ -72,9 +72,28 @@ namespace Sgt
                 auto vec = nd1.as<arma::Col<double>>();
                 weather->data.setIrradiance({{{vec(0), vec(1), vec(2)}}, vec(3), vec(4)}); 
             }
-            else if (nd1Key == "solar_model")
+            else if (nd1Key == "solar_model" && nd1.as<std::string>() == "standard")
             {
                 weather->data.setIrradianceToSunModel();
+            }
+        }
+
+        const auto& cloudAttenNd = nd["cloud_attenuation_factors"];
+        if (cloudAttenNd)
+        {
+            std::string nd1Key = nd.begin()->first.as<std::string>();
+            YAML::Node nd1 = nd.begin()->second;
+            if (nd1Key == "series")
+            {
+                std::string id = parser.expand<std::string>(nd1);
+                auto series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
+                sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
+                weather->data.setCloudAttenuationFactors(series);
+            }
+            else if (nd1Key == "const")
+            {
+                auto vec = nd1.as<arma::Col<double>>();
+                weather->data.setCloudAttenuationFactors({{vec(0), vec(1), vec(2)}}); 
             }
         }
 

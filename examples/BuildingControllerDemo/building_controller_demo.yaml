@@ -60,9 +60,15 @@
       
 - weather:
     id: weather
-    temperature: temperature
-    cloud_cover: cloud
     dt: 00:05:00
+    temperature: 
+        series: temperature
+    irradiance: 
+        solar_model: standard
+    cloud_attenuation_factors:
+        series: cloud
+    wind:
+        constant: 0
 
 - sim_network:
     id: network
@@ -141,11 +147,16 @@
     id: solar_pv
     weather: weather
     inverter: pv_inverter
-    efficiency: 0.25
-    area_m2: 120 # About 10 houses worth
     zenith_degrees: 45 
     azimuth_degrees: 35
-    
+    n_panels: 120 
+    panel_area_m2: 1.64 
+    irradiance_ref_W_per_m2: 1000 
+    T_cell_ref_C: 25 
+    P_max_ref_W: 265
+    temp_coeff_P_max_per_C: -0.004
+    NOCT_C: 44
+
 - building:
     id: build
     sim_network_id: network

@@ -26,10 +26,10 @@ namespace Sgt
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "weather");
         assertFieldPresent(nd, "inverter");
-        assertFieldPresent(nd, "n_panels");
-        assertFieldPresent(nd, "panel_area_m2");
         assertFieldPresent(nd, "zenith_degrees");
         assertFieldPresent(nd, "azimuth_degrees");
+        assertFieldPresent(nd, "n_panels");
+        assertFieldPresent(nd, "panel_area_m2");
         assertFieldPresent(nd, "irradiance_ref_W_per_m2");
         assertFieldPresent(nd, "T_cell_ref_C");
         assertFieldPresent(nd, "P_max_ref_W");
@@ -52,10 +52,10 @@ namespace Sgt
         inverter->addDcPowerSource(spv);
 
         spv->setNPanels(parser.expand<int>(nd["n_panels"]));
-        spv->setPanelArea(parser.expand<double>(nd["panel_area_m2"]));
         double zen = parser.expand<double>(nd["zenith_degrees"]) * pi / 180;
         double azi = parser.expand<double>(nd["azimuth_degrees"]) * pi / 180;
         spv->setPlaneNormal({zen, azi});
+        spv->setPanelArea(parser.expand<double>(nd["panel_area_m2"]));
         spv->setPhiRef(nd["irradiance_ref_W_per_m2"].as<double>());
         spv->setTRef(nd["T_cell_ref_C"].as<double>() + 273.0);
         spv->setPMaxRef(nd["P_max_ref_W"].as<double>());

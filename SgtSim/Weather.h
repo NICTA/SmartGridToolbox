@@ -37,14 +37,9 @@ namespace Sgt
         std::function<Array<double, 3> (const Time&)> windVector{[](const Time&)->Array<double, 3>{
             return {{0.0, 0.0, 0.0}};}};
         
-        std::function<double (const Time&, const SphericalAngles&)> cloudDirectAttenuationFactor{
-            [](const Time&, const SphericalAngles&)->double{return 1.0;}};
-
-        std::function<double (const Time&)> cloudDiffuseAttenuationFactor{
-            [](const Time&)->double{return 1.0;}};
-
-        std::function<double (const Time&)> cloudGroundAttenuationFactor{
-            [](const Time&)->double{return 1.0;}};
+        std::function<Array<double, 3> (const Time&, const SphericalAngles&)> cloudAttenuationFactors{
+            [](const Time&, const SphericalAngles& angs)->Array<double, 3>{return {{1.0, 1.0, 1.0}};}}; 
+            // No attenuation for any component by default.
 
         // Utility functions:
         template<typename T> void setTemperature(const T& f)
@@ -91,7 +86,21 @@ namespace Sgt
         {
             windVector = [val](const Time& t){return val;};
         }
-        
+ 
+        template<typename T> void setCloudAttenuationFactors(const T& f)
+        {
+            cloudAttenuationFactors = [f](const Time& t, const SphericalAngles&){return f(t);};
+        }
+        void setCloudAttenuationFactors(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
+        {
+            cloudAttenuationFactors = [series](const Time& t, const SphericalAngles&)->Array<double, 3>{
+                auto val = series->value(t); return {{val(0), val(1), val(2)}};};
+        }
+        void setCloudAttenuationFactors(const Array<double, 3>& val)
+        {
+            cloudAttenuationFactors = [val](const Time& t, const SphericalAngles&){return val;};
+        }
+              
         private:
 
             Irradiance sunModelIrr(const Time& t);

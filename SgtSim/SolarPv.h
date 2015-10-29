@@ -62,6 +62,10 @@ namespace Sgt
             /// @param weather The weather component
             void setWeather(std::shared_ptr<Weather> weather);
 
+            /// @brief Set the unit normal to the plane of the solar panels.
+            /// @param planeNormal The SphericalAngles object decribing the plane normal.
+            void setPlaneNormal(SphericalAngles planeNormal) {planeNormal_ = planeNormal; needsUpdate().trigger();}
+
             /// @brief Set the number of panels.
             /// @param nPanels The number of panels.
             void setNPanels(int nPanels) {nPanels_ = nPanels; needsUpdate().trigger();}
@@ -69,10 +73,6 @@ namespace Sgt
             /// @brief Set the area of each panel.
             /// @param panelArea The area in m^2
             void setPanelArea(double panelArea) {panelArea_ = panelArea; needsUpdate().trigger();}
-
-            /// @brief Set the unit normal to the plane of the solar panels.
-            /// @param planeNormal The SphericalAngles object decribing the plane normal.
-            void setPlaneNormal(SphericalAngles planeNormal) {planeNormal_ = planeNormal; needsUpdate().trigger();}
             
             /// @brief Set the reference irradiance.
             /// @param phiRef Irradiance in W/m^2, should be given in datasheet.
@@ -126,10 +126,9 @@ namespace Sgt
 
         private:
             std::shared_ptr<const Weather> weather_;
+            SphericalAngles planeNormal_;
             int nPanels_;
             double panelArea_;
-            SphericalAngles planeNormal_;
-
             double phiRef_{1000.0}; // Reference irradiance, usually 1000 W/m^2
             double TRef_{298.0}; // Reference temperature (K), usually 25 C 
             double PMaxRef_; // Maximum power of a single panel at reference conditions.
