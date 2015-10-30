@@ -60,6 +60,7 @@ namespace Sgt
             std::vector<std::shared_ptr<DcPowerSourceAbc>> sources_;   ///< My DC power sources.
     };
 
+    /// @brief An inverter with a simple constant efficiency.
     class SimpleInverterAbc : public InverterAbc
     {
         public:

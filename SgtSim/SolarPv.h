@@ -106,7 +106,7 @@ namespace Sgt
             /// @brief Power output in MW, assuming efficient maximum power point tracking (MPPT).
             virtual double PDc() const override
             {
-                return PDc(lastUpdated());
+                return PDc_;
             }
 
         /// @}
@@ -124,8 +124,20 @@ namespace Sgt
 
         /// @}
 
+        /// @name SimComponent virtual overridden member functions.
+        /// @{
+
+        protected:
+            
+            virtual void updateState(Time t) override;
+
+        /// @}
+
         private:
+
             std::shared_ptr<const Weather> weather_;
+            
+            // Parameters:
             SphericalAngles planeNormal_;
             int nPanels_;
             double panelArea_;
@@ -134,6 +146,9 @@ namespace Sgt
             double PMaxRef_; // Maximum power of a single panel at reference conditions.
             double tempCoeffPMax_; // Temperature coefficient of maximum power, relative to TRef.
             double NOCT_; // Nominal operating cell temperature, should be given in datasheet.
+            
+            // State:
+            double PDc_{0.0};
     };
 }
 

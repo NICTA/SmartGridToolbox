@@ -38,7 +38,7 @@ ax21 = axes[1]
 l1 = ax21.plot(t, -hvac_inj, 'b-')
 ax21.hold(True)
 l2 = ax21.plot(t, -uncontr_inj, 'b:')
-l3 = ax21.plot(t, -pv_inj, 'g')
+l3 = ax21.plot(t, pv_inj, 'g')
 ax21.set_xlabel('Time (days)')
 ax21.set_ylabel('Power (kW)', color='b')
 ax21.xaxis.grid('on')

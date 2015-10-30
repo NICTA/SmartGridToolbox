@@ -27,8 +27,8 @@ namespace Sgt
     {
         weather_ = weather;
         dependsOn(weather);
-        weather->didUpdate().addAction([this]() {dcPowerChanged().trigger();},
-        std::string("Trigger ") + sComponentType() + " " + id() + " DC power changed");
+        weather->didUpdate().addAction([this]() {needsUpdate().trigger();},
+                std::string("Trigger ") + sComponentType() + " " + id() + " needsUpdate");
     }
 
     double SolarPv::PDc(const Time& t) const
@@ -47,4 +47,10 @@ namespace Sgt
         return weather_->model.temperature(t) + ((NOCT_ - 293.0) / 800.0) * 
             solarIrradiance(weather_->model.irradiance(t), planeNormal_) + 273.0;
     }
+
+    void SolarPv::updateState(Time t)
+    {
+        PDc_ = PDc(t);
+        dcPowerChanged().trigger();
+    };
 };

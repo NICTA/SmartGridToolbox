@@ -28,8 +28,8 @@ namespace Sgt
     {
         public:
 
-        /// @name Static member functions:
-        /// @{
+            /// @name Static member functions:
+            /// @{
 
             static const std::string& sComponentType()
             {
@@ -37,59 +37,44 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Lifecycle.
-        /// @{
+            /// @name Lifecycle.
+            /// @{
 
-            DcPowerSourceAbc()
-            {
-                // Empty.
-            }
+            virtual ~DcPowerSourceAbc() = default;
 
-        /// @}
+            /// @}
 
-        /// @name Component virtual overridden member functions.
-        /// @{
-
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
-
-            // virtual void print(std::ostream& os) const override; TODO
-
-        /// @}
-
-        /// @name DC Power.
-        /// @{
+            /// @name DC Power.
+            /// @{
 
             virtual double PDc() const = 0;
 
-        /// @}
+            /// @}
 
-        /// @name Events.
-        /// @{
+            /// @name Events.
+            /// @{
 
-            /// @brief Event triggered when I go in or out of service.
+            /// @brief Event triggered when the DC power changes.
             virtual Event& dcPowerChanged()
             {
                 return dcPowerChanged_;
             }
 
-        /// @}
+            /// @}
 
         private:
 
             Event dcPowerChanged_{std::string(sComponentType()) + ": DC power changed"};
     };
 
-    class GenericDcPowerSource : virtual public DcPowerSourceAbc
+    class GenericDcPowerSource : public DcPowerSourceAbc
     {
         public:
 
-        /// @name Static member functions:
-        /// @{
+            /// @name Static member functions:
+            /// @{
 
             static const std::string& sComponentType()
             {
@@ -97,34 +82,54 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Lifecycle
-        /// @{
+            /// @name Lifecycle
+            /// @{
 
             GenericDcPowerSource(const std::string& id) : Component(id), PDc_(0.0) {}
 
-        /// @}
+            /// @}
 
-        /// @name Component virtual overridden member functions.
-        /// @{
+            /// @name Component virtual overridden member functions.
+            /// @{
 
             virtual const std::string& componentType() const override
             {
                 return sComponentType();
             }
 
-            // virtual void print(std::ostream& os) const override; TODO
+            virtual void print(std::ostream& os) const override
+            {
+                SimComponent::print(os);
+                os << "    " << "DC power = " << PDc() << std::endl;
+            }
 
-        /// @}
+            /// @}
 
-        /// @name DC Power.
-        /// @{
+            /// @name SimComponent virtual overridden member functions.
+            /// @{
+
+        protected:
+
+            /// @brief Reset state of the object, time will be at negative infinity.
+            
+            virtual void initializeState() override
+            {
+                PDc_ = 0.0;
+            }
+
+            /// @}
+
+        public:
+
+            /// @name DC Power.
+            /// @{
 
             virtual double PDc() const override {return PDc_;}
             void setPDc(double PDc) {PDc_ = PDc; dcPowerChanged().trigger();}
 
-        /// @}
+            /// @}
 
         private:
             double PDc_;
