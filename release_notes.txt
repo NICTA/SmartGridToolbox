@@ -1,0 +1,10 @@
+Release Notes for SmartGridToolbox v2.1.0.
+------------------------------------------
+Various updates since previous release (v. 2.0.0b5), including:
+
+* Weather component completely revamped and greatly improved.
+* Solar modeling revamped and greatly improved.
+* Simulation logic of SolarPv, inverters, Battery improved.
+* Added BuildingControllerDemo demo.
+* Greatly improved SolarPvDemo.
+* Added PowerTools public repo as a git subtree.
