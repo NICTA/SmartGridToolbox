@@ -26,7 +26,7 @@ namespace Sgt
 {
     struct WeatherModel
     {
-        LatLong latLong{greenwich};
+        LatLong latLong{greenwich.lat_, greenwich.long_};
         double altitude{0.0};
 
         std::function<double (const Time&)> temperature{[](const Time&){return 20.0;}}; // Centigrade.
