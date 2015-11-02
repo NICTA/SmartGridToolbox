@@ -41,10 +41,17 @@ namespace Sgt
         dependsOn(build);
     }
             
+    void BuildingController::setSolar(std::shared_ptr<SolarPv> solar)
+    {
+        solar_ = solar;
+        dependsOn(solar);
+    }
+
     void BuildingController::updateState(Time t)
     {
-        assert(batt_->lastUpdated() == t);
-        assert(build_->lastUpdated() == t);
+        assert(batt_->validUntil() > t); // Next update is in the future.
+        assert(build_->validUntil() > t); // Next update is in the future.
+        assert(solar_->validUntil() > t); // Next update is in the future.
 
         // Variables:
         // [0 ... N - 1] : PImp[i] [-Inf, Inf]
@@ -342,6 +349,7 @@ namespace Sgt
         double PHeat[N];
         error = GRBgetdblattrarray(model, "X", 11 * N, N, PHeat);
 
+        // Propogate control to battery and building:
         batt_->setRequestedPower(PDis[0] - PChg[0]); // Injection.
         assert(PCool[0] * PHeat[0] < std::numeric_limits<double>::epsilon());
         build_->setReqPCool(PCool[0]); // Injection.

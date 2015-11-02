@@ -22,6 +22,13 @@ namespace Sgt
 {
     void Battery::updateState(Time t)
     {
+        double prevPDc = PDc_;
+        PDc_ = calcPDc();
+        if (std::abs(prevPDc - PDc_) > std::numeric_limits<double>::epsilon())
+        {
+            dcPowerChanged().trigger();
+        }
+
         double dt = lastUpdated() == posix_time::neg_infin ? 0 : dSeconds(t - lastUpdated());
         if (dt > 0)
         {
@@ -29,9 +36,52 @@ namespace Sgt
             if (charge_ < 0.0) charge_ = 0.0;
             if (charge_ > maxCharge_) charge_ = maxCharge_;
         }
+        dcPowerChanged().trigger();
+    }
+    
+    void Battery::setMaxCharge(double val)
+    {
+        maxCharge_ = val;
+        needsUpdate().trigger();
+    }
+    
+    void Battery::setMaxChargePower(double val)
+    {
+        maxChargePower_ = val;
+        needsUpdate().trigger();
+    }
+    
+    void Battery::setMaxDischargePower(double val)
+    {
+        maxDischargePower_ = val;
+        needsUpdate().trigger();
     }
 
-    double Battery::PDc() const
+    void Battery::setChargeEfficiency(double val)
+    {
+        chargeEfficiency_ = val;
+        needsUpdate().trigger();
+    }
+
+    void Battery::setDischargeEfficiency(double val)
+    {
+        dischargeEfficiency_ = val;
+        needsUpdate().trigger();
+    }
+
+    void Battery::setRequestedPower(double val)
+    {
+        requestedPower_ = val;
+        needsUpdate().trigger();
+    } 
+
+    double Battery::internalPower()
+    {
+        double P = PDc();
+        return (P > 0 ? P / dischargeEfficiency_ : P * chargeEfficiency_);
+    }
+
+    double Battery::calcPDc() const
     {
         double result = 0.0;
         if (requestedPower_ > 0 && charge_ > 0)
@@ -45,11 +95,5 @@ namespace Sgt
             result = std::max(requestedPower_, -maxChargePower_);
         }
         return result;
-    }
-
-    double Battery::internalPower()
-    {
-        double P = PDc();
-        return (P > 0 ? P / dischargeEfficiency_ : P * chargeEfficiency_);
     }
 }

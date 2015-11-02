@@ -12,8 +12,8 @@ namespace Sgt
         simNetwork.dependsOn(shared<SimComponent>());
 
         gen()->setpointChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
-                std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
+                std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
         gen()->isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
-                std::string("Trigger ") + sComponentType() + " " + id() + " needs update");
+                std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
     }
 }

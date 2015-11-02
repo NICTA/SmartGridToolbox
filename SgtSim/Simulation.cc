@@ -49,7 +49,7 @@ namespace Sgt
 
     void Simulation::initialize()
     {
-        sgtLogMessage(LogLevel::VERBOSE) << "Simulation initialize(): " << std::endl;
+        sgtLogMessage() << "Simulation initialize(): " << std::endl;
         LogIndent indent;
         if (debugLogLevel() >= LogLevel::VERBOSE)
         {
@@ -157,7 +157,6 @@ namespace Sgt
                     break;
                 }
             }
-            sgtLogDebug(LogLevel::VERBOSE) << "About to perform update..." << std::endl;
             indent.in();
             // Now perform the update...
             contComp->update(currentTime_);
@@ -186,7 +185,6 @@ namespace Sgt
             contingentUpdates_.erase(schedComp);
 
             // Now perform the update...
-            sgtLogDebug(LogLevel::VERBOSE) << "About to perform update..." << std::endl;
             indent.in();
             schedComp->update(currentTime_);
             indent.out();
@@ -196,7 +194,7 @@ namespace Sgt
         }
         else
         {
-            sgtLogDebug() << "No update." << std::endl;
+            sgtLogMessage(LogLevel::VERBOSE) << "No update." << std::endl;
         }
         if (contingentUpdates_.size() == 0 &&
                 (scheduledUpdates_.size() == 0 || (scheduledUpdates_.begin()->second > currentTime_)))

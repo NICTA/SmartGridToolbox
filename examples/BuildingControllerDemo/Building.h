@@ -166,14 +166,14 @@ namespace Sgt
 
             /// @brief Requested cooling power, W.
             double reqPCool() const {return reqPCool_;}
-            void setReqPCool(double val) {reqPCool_ = val;}
+            void setReqPCool(double val) {reqPCool_ = val;} // Doesn't affect state in this timestep, no update needed.
             
             /// @brief Requested heating power, W.
             double reqPHeat() const {return reqPHeat_;}
-            void setReqPHeat(double val) {reqPHeat_ = val;}
+            void setReqPHeat(double val) {reqPHeat_ = val;} // Doesn't affect state in this timestep, no update needed.
 
             /// @brief Weather object.
-            void setWeather(std::shared_ptr<Weather> weather) {weather_ = weather; needsUpdate().trigger();}
+            void setWeather(std::shared_ptr<Weather> weather);
 
             /// @brief Time series for internal generated heat. 
             void setPThIntSeries(std::shared_ptr<TimeSeries<Time, double>> PThInt)

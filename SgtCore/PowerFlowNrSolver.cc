@@ -358,20 +358,20 @@ namespace Sgt
         stopwatchTot.stop();
         durationTot = stopwatchTot.seconds();
 
-        sgtLogDebug()
-            << "PowerFlowNrSolver: \n"
-            << "    successful = " << wasSuccessful << "\n"
-            << "    error = " << err << "\n" 
-            << "    iterations = " << niter << "\n"
-            << "    total time = " << durationTot << "\n" 
-            << "    time to create model = " << durationMakeModel << "\n"
-            << "    time for setup = " << durationInitSetup << "\n"
-            << "    calcf time = " << durationCalcf << "\n"
-            << "    updateJ time = " << durationUpdateJ << "\n"
-            << "    modifyForPv time = " << durationModifyForPv << "\n"
-            << "    constructJMat time = " << durationConstructJMat << "\n"
-            << "    solve time = " << durationSolve << "\n"
-            << "    updateIter time = " << durationUpdateIter << std::endl;
+        sgtLogDebug() << "PowerFlowNrSolver: " << std::endl; 
+        indent.in(); 
+        sgtLogDebug() << "successful = " << wasSuccessful << std::endl;
+        sgtLogDebug() << "error = " << err << std::endl; 
+        sgtLogDebug() << "iterations = " << niter << std::endl;
+        sgtLogDebug() << "total time = " << durationTot << std::endl; 
+        sgtLogDebug(LogLevel::VERBOSE) << "time to create model = " << durationMakeModel << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "time for setup = " << durationInitSetup << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "calcf time = " << durationCalcf << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "updateJ time = " << durationUpdateJ << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "modifyForPv time = " << durationModifyForPv << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "constructJMat time = " << durationConstructJMat << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "solve time = " << durationSolve << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "updateIter time = " << durationUpdateIter << std::endl;
 
         return wasSuccessful;
     }

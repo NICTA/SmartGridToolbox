@@ -46,10 +46,7 @@ namespace Sgt
             
             void setBuild(std::shared_ptr<Building> build);
             
-            void setSolar(std::shared_ptr<SolarPv> solar)
-            {
-                solar_ = solar;
-            }
+            void setSolar(std::shared_ptr<SolarPv> solar);
 
             void setLoadSeries(std::shared_ptr<const LoadSeries> loadSeries)
             {

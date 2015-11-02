@@ -100,7 +100,11 @@ namespace Sgt
 
         public:
             
-            virtual double PDc() const override; ///< Positive = charging.
+            /// Positive = charging.
+            virtual double PDc() const override
+            {
+                return PDc_;
+            }
 
         /// @}
 
@@ -108,50 +112,58 @@ namespace Sgt
         /// @{
 
             Time dt() {return dt_;}
-            void set_dt(Time val) {dt_ = val; needsUpdate().trigger();}
+            void set_dt(Time val) {dt_ = val;}
+                // Doesn't affect state this timestep, no update needed.
 
             double initCharge() {return initCharge_;}
-            void setInitCharge(double val) {initCharge_ = val; needsUpdate().trigger();}
+            void setInitCharge(double val) {initCharge_ = val;}
+                // Doesn't affect state this timestep, no update needed.
 
             double maxCharge() {return maxCharge_;}
-            void setMaxCharge(double val) {maxCharge_ = val; needsUpdate().trigger();}
+            void setMaxCharge(double val);
 
             double maxChargePower() {return maxChargePower_;}
-            void setMaxChargePower(double val) {maxChargePower_ = val; needsUpdate().trigger();}
+            void setMaxChargePower(double val);
 
             double maxDischargePower() {return maxDischargePower_;}
-            void setMaxDischargePower(double val) {maxDischargePower_ = val; needsUpdate().trigger();}
+            void setMaxDischargePower(double val);
 
             double chargeEfficiency() {return chargeEfficiency_;}
-            void setChargeEfficiency(double val) {chargeEfficiency_ = val; needsUpdate().trigger();}
+            void setChargeEfficiency(double val);
 
             double dischargeEfficiency() {return dischargeEfficiency_;}
-            void setDischargeEfficiency(double val) {dischargeEfficiency_ = val; needsUpdate().trigger();}
+            void setDischargeEfficiency(double val);
 
             double charge() {return charge_;}
 
             double requestedPower() {return requestedPower_;} // +ve = injection into grid.
-            void setRequestedPower(double val) {requestedPower_ = val; needsUpdate().trigger();}
+            void setRequestedPower(double val);
 
             double internalPower();
 
         /// @}
 
         private:
+
+            double calcPDc() const;
+        
+        private:
+
             // Parameters.
             Time dt_; ///< Timestep.
-            double initCharge_;
-            double maxCharge_;
-            double maxChargePower_;
-            double maxDischargePower_;
-            double chargeEfficiency_;
-            double dischargeEfficiency_;
+            double initCharge_{0.0};
+            double maxCharge_{0.0};
+            double maxChargePower_{0.0};
+            double maxDischargePower_{0.0};
+            double chargeEfficiency_{1.0};
+            double dischargeEfficiency_{1.0};
 
             // Setpoint.
-            double requestedPower_; ///< Positive = charging.
+            double requestedPower_{0.0}; ///< Positive = charging.
 
             // State.
-            double charge_;
+            double charge_{0.0};
+            double PDc_{0.0};
     };
 }
 #endif // BATTERY_DOT_H

@@ -44,7 +44,14 @@ namespace Sgt
         double cSv = c(lastUpdated(), t);
         Tb_ = dSv * Tb_ + (1.0 - dSv) * cSv;
     }
-    
+
+    void Building::setWeather(std::shared_ptr<Weather> weather)
+    {
+        weather_ = weather;
+        dependsOn(weather);
+        needsUpdate().trigger();
+    }
+
     double Building::c(const Time& t0, const Time& t1) const
     {
         double T0Ext = weather_->model.temperature(t0);
