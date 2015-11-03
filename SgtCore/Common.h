@@ -397,49 +397,6 @@ namespace Sgt
     /// @}
 
     /// @}
-
-    /// @addtogroup Utilities
-    /// @{
-
-    /// @name Basic vector algebra in n dimensions.
-    /// @{
-
-    template<typename T, std::size_t d> double dot(const Array<T, d>& v1, const Array<T, d>& v2)
-    {
-        T result(0.0);
-        for (std::size_t i = 0; i < d; ++i) result += v1[i] * v2[i];
-        return result;
-    }
-
-    template<typename T, std::size_t d, typename S> Array<T, d> operator*(const Array<T, d>& v, const S& s)
-    {
-        Array<T, d> result = v;
-        for (std::size_t i = 0; i < d; ++i) result[i] *= s;
-        return result;
-    }
-
-    template<typename T, std::size_t d, typename S> Array<T, d> operator*(const S& s, const Array<T, d>& v)
-    {
-        return operator*(v, s);
-    }
-
-    template<typename T, std::size_t d> Array<T, d> operator+(const Array<T, d>& lhs, const Array<T, d>& rhs)
-    {
-        Array<T, d> result = lhs;
-        for (std::size_t i = 0; i < d; ++i) result[i] += rhs[i];
-        return result;
-    }
-
-    template<typename T, std::size_t d> Array<T, d> operator-(const Array<T, d>& lhs, const Array<T, d>& rhs)
-    {
-        Array<T, d> result = lhs;
-        for (std::size_t i = 0; i < d; ++i) result[i] -= rhs[i];
-        return result;
-    }
-
-    /// @}
-
-    /// @}
 }
 
 #endif // COMMON_DOT_H

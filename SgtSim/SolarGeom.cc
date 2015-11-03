@@ -18,8 +18,8 @@ namespace Sgt
 {
     double solarPower(const Irradiance& irradiance, const SphericalAngles& planeNormal, double planeArea)
     {
-        Array<double, 3> planeVec = angsAndMagToVec(planeNormal, planeArea);
-        double direct = dot<double, 3>(planeVec, irradiance.direct);
+        arma::Col<double>::fixed<3> planeVec = angsAndMagToVec(planeNormal, planeArea);
+        double direct = arma::dot(planeVec, irradiance.direct);
         if (direct < 0) direct = 0;
         double cd2 = 0.5 * std::cos(planeNormal.zenith);
         double diffuse = planeArea * (irradiance.skyDiffuse * (0.5 + cd2) + irradiance.groundDiffuse * (0.5 - cd2));

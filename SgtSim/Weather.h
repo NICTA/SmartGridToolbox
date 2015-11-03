@@ -34,11 +34,11 @@ namespace Sgt
         std::function<Irradiance (const Time&)> irradiance{[](const Time&)->Irradiance{
             return {{{0.0, 0.0, 0.0}}, 0.0, 0.0};}};
 
-        std::function<Array<double, 3> (const Time&)> windVector{[](const Time&)->Array<double, 3>{
-            return {{0.0, 0.0, 0.0}};}};
+        std::function<arma::Col<double>::fixed<3> (const Time&)> windVector{
+            [](const Time&)->arma::Col<double>::fixed<3>{return {{0.0, 0.0, 0.0}};}};
         
-        std::function<Array<double, 3> (const Time&, const SphericalAngles&)> cloudAttenuationFactors{
-            [](const Time&, const SphericalAngles& angs)->Array<double, 3>{return {{1.0, 1.0, 1.0}};}}; 
+        std::function<arma::Col<double>::fixed<3> (const Time&, const SphericalAngles&)> cloudAttenuationFactors{
+            [](const Time&, const SphericalAngles& angs)->arma::Col<double>::fixed<3>{return {{1.0, 1.0, 1.0}};}}; 
             // No attenuation for any component by default.
 
         // Utility functions:
@@ -79,10 +79,10 @@ namespace Sgt
         }
         void setWindVector(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
         {
-            windVector = [series](const Time& t)->Array<double, 3>{
+            windVector = [series](const Time& t)->arma::Col<double>::fixed<3>{
                 auto val = series->value(t); return {{val(0), val(1), val(2)}};};
         }
-        void setWindVector(const Array<double, 3>& val)
+        void setWindVector(const arma::Col<double>::fixed<3>& val)
         {
             windVector = [val](const Time& t){return val;};
         }
@@ -93,10 +93,10 @@ namespace Sgt
         }
         void setCloudAttenuationFactors(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
         {
-            cloudAttenuationFactors = [series](const Time& t, const SphericalAngles&)->Array<double, 3>{
+            cloudAttenuationFactors = [series](const Time& t, const SphericalAngles&)->arma::Col<double>::fixed<3>{
                 auto val = series->value(t); return {{val(0), val(1), val(2)}};};
         }
-        void setCloudAttenuationFactors(const Array<double, 3>& val)
+        void setCloudAttenuationFactors(const arma::Col<double>::fixed<3>& val)
         {
             cloudAttenuationFactors = [val](const Time& t, const SphericalAngles&){return val;};
         }
@@ -158,12 +158,12 @@ namespace Sgt
                 return model.irradiance(lastUpdated());
             }
             
-            Array<double, 3> windVector() const
+            arma::Col<double>::fixed<3> windVector() const
             {
                 return model.windVector(lastUpdated());
             }
             
-            Array<double, 3> cloudAttenuationFactors() const
+            arma::Col<double>::fixed<3> cloudAttenuationFactors() const
             {
                 return model.cloudAttenuationFactors(lastUpdated(), sunPos(utcTime(lastUpdated()), model.latLong));
             }

@@ -60,7 +60,7 @@ namespace Sgt
     /// @param angs Solar angles of the sun.
     /// @param altitudeMeters Altitude in meters, default = 0.
     /// @return Irradiance vector in W/m^2. Direction of vector points to the sun.
-    inline Array<double, 3> directIrradianceVec(const SphericalAngles& angs, double altitudeMeters = 0.0)
+    inline arma::Col<double>::fixed<3> directIrradianceVec(const SphericalAngles& angs, double altitudeMeters = 0.0)
     {
         return angsAndMagToVec(angs, directIrradianceMag(angs, altitudeMeters));
     }

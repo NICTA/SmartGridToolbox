@@ -30,7 +30,7 @@ namespace Sgt
     /// @param mag Magnitude of the vector.
     /// @return The vector.
     /// x -> north, y -> east, z -> directly up.
-    inline Array<double, 3> angsAndMagToVec(const SphericalAngles& angs, double mag)
+    inline arma::Col<double>::fixed<3> angsAndMagToVec(const SphericalAngles& angs, double mag)
     {
         return {{
             mag * std::cos(angs.azimuth) * std::sin(angs.zenith),
@@ -45,14 +45,14 @@ namespace Sgt
     /// x -> north, y -> east, z -> directly up.
     /// If the vector is interpreted as the normal to an area, then the projection is interpreted as being
     /// onto the horizontal plane.
-    inline Array<double, 3> angsAndProjToVec(const SphericalAngles& angs, double proj)
+    inline arma::Col<double>::fixed<3> angsAndProjToVec(const SphericalAngles& angs, double proj)
     {
         return angsAndMagToVec(angs, proj / std::cos(angs.zenith));
     }
 
     struct Irradiance
     {
-        Array<double, 3> direct;
+        arma::Col<double>::fixed<3> direct;
         double skyDiffuse;
         double groundDiffuse;
     };
