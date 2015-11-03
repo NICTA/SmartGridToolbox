@@ -23,7 +23,7 @@ namespace Sgt
         Component(id)
     {}
 
-    void SolarPv::setWeather(std::shared_ptr<Weather> weather)
+    void SolarPv::setWeather(Weather* weather)
     {
         weather_ = weather;
         dependsOn(weather);

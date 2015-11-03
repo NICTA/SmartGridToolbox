@@ -35,7 +35,7 @@ namespace Sgt
         public:
 
             TimeSeriesZip(const std::string& id, const Phases& phases,
-                          std::shared_ptr<const TimeSeries<Time, arma::Col<Complex>>> series, const Time& dt) :
+                          const TimeSeries<Time, arma::Col<Complex>>* series, const Time& dt) :
                 Component(id),
                 Heartbeat(id, dt),
                 ZipAbc(phases),
@@ -49,14 +49,14 @@ namespace Sgt
                 return sComponentType();
             }
 
-            virtual std::shared_ptr<const ZipAbc> zip() const override
+            virtual const ZipAbc* zip() const override
             {
-                return shared<const ZipAbc>();
+                return this;
             }
 
-            virtual std::shared_ptr<ZipAbc> zip() override
+            virtual ZipAbc* zip() override
             {
-                return shared<ZipAbc>();
+                return this;
             }
 
             double scaleFactorY() const
@@ -117,7 +117,7 @@ namespace Sgt
 
         private:
 
-            std::shared_ptr<const TimeSeries<Time, arma::Col<Complex>>> series_;
+            const TimeSeries<Time, arma::Col<Complex>>* series_;
             double scaleFactorY_{1.0};
             double scaleFactorI_{1.0};
             double scaleFactorS_{1.0};

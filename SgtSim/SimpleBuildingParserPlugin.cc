@@ -70,7 +70,7 @@ namespace Sgt
         const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
         auto netw = sim.simComponent<SimNetwork>(networkId);
-        netw->network()->addZip(build->zip(), busId);
+        netw->network()->addZip(build->zip()->shared<ZipAbc>(), busId); // TODO: smells.
         build->linkToSimNetwork(*netw);
 
         const auto& weatherNd = nd["weather"];

@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
     Parser<Network> p;
     p.parse("test_overhead_compare_carson_1.yaml", netw);
 
-    auto oh = std::dynamic_pointer_cast<OverheadLine>(netw.branch("line_1_2"));
+    auto oh = dynamic_cast<OverheadLine*>(netw.branch("line_1_2"));
 
     arma::Mat<Complex> ZPrim = oh->ZPrim();
     arma::Mat<Complex> ZPhase = oh->ZPhase();
@@ -93,9 +93,6 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
 
     netw.solvePowerFlow();
 
-    auto oh = std::dynamic_pointer_cast<OverheadLine>(netw.branch("line_1_2"));
-
-    auto bus1 = netw.bus("bus_1");
     auto bus2 = netw.bus("bus_2");
 
     Complex cmp;
@@ -121,7 +118,7 @@ BOOST_AUTO_TEST_CASE (test_underground_conc_compare_carson)
 
     netw.solvePowerFlow();
 
-    auto ug = std::dynamic_pointer_cast<UndergroundLine>(netw.branch("line_1_2"));
+    auto ug = dynamic_cast<UndergroundLine*>(netw.branch("line_1_2"));
     arma::Mat<Complex> ZPhase = ug->ZPhase() * 1609.344; // Convert to ohms per mile.
     arma::Mat<Complex> ZPhaseKersting;
     ZPhaseKersting << Complex(0.7981, 0.4463) << Complex(0.3191, 0.0328) << Complex(0.2849, -0.0143) << arma::endr
@@ -144,7 +141,7 @@ BOOST_AUTO_TEST_CASE (test_underground_tape_compare_carson)
 
     netw.solvePowerFlow();
 
-    auto ug = std::dynamic_pointer_cast<UndergroundLine>(netw.branch("line_1_2"));
+    auto ug = dynamic_cast<UndergroundLine*>(netw.branch("line_1_2"));
     arma::Mat<Complex> ZPrim = ug->ZPrim() * 1609.344; // Convert to ohms per mile.
     arma::Mat<Complex> ZPhase = ug->ZPhase() * 1609.344; // Convert to ohms per mile.
     Complex ZPhaseKersting = Complex(1.3219, 0.6743);

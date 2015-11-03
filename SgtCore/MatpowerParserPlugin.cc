@@ -468,14 +468,14 @@ namespace Sgt
 
         // If there is no slack bus, Matpower assigns the first PV bus as slack. We need to do the same.
         auto it = std::find_if(netw.busses().cbegin(), netw.busses().cend(),
-                               [](const BusPtr& bus)->bool{return bus->type() == BusType::SL;});
+                               [](const Bus* bus)->bool{return bus->type() == BusType::SL;});
         if (it == netw.busses().cend())
         {
             sgtLogWarning()
                     << "There is no slack bus defined on the network. Setting the type of the first PV bus to SL."
                     << std::endl;
             auto itb = std::find_if(netw.busses().cbegin(), netw.busses().cend(),
-                                    [](const BusPtr& bus)->bool{return bus->type() == BusType::PV;});
+                                    [](const Bus* bus)->bool{return bus->type() == BusType::PV;});
             assert(itb != netw.busses().cend());
             (**itb).setType(BusType::SL);
         }

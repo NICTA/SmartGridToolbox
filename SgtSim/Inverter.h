@@ -38,7 +38,7 @@ namespace Sgt
             /// @name Inverter specific member functions.
             /// @{
 
-            virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source);
+            virtual void addDcPowerSource(DcPowerSourceAbc* source);
 
             virtual double efficiency(double powerDc) const = 0;
 
@@ -46,7 +46,7 @@ namespace Sgt
             virtual double PDc() const
             {
                 return std::accumulate(sources_.begin(), sources_.end(), 0.0,
-                        [] (double tot, const std::shared_ptr<DcPowerSourceAbc>& source)
+                        [] (double tot, const DcPowerSourceAbc* source)
                         {return tot + source->PDc();});
             }
 
@@ -57,7 +57,7 @@ namespace Sgt
 
         private:
 
-            std::vector<std::shared_ptr<DcPowerSourceAbc>> sources_;   ///< My DC power sources.
+            std::vector<const DcPowerSourceAbc*> sources_;   ///< My DC power sources.
     };
 
     /// @brief An inverter with a simple constant efficiency.
@@ -151,21 +151,21 @@ namespace Sgt
             /// @name InverterAbc virtual overridden member functions.
             /// @{
 
-            virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source) override;
+            virtual void addDcPowerSource(DcPowerSourceAbc* source) override;
 
             /// @}
             
             /// @name SimZipAbc virtual overridden member functions.
             /// @{
             
-            virtual std::shared_ptr<const ZipAbc> zip() const override
+            virtual const ZipAbc* zip() const override
             {
-                return shared<const ZipAbc>();
+                return this; 
             }
 
-            virtual std::shared_ptr<ZipAbc> zip() override
+            virtual ZipAbc* zip() override
             {
-                return shared<ZipAbc>();
+                return this;
             }
 
             /// @}

@@ -32,9 +32,9 @@ namespace Sgt
         public:
 
             /// @brief Return the branch that I wrap (const). 
-            virtual std::shared_ptr<const BranchAbc> branch() const = 0;
+            virtual const BranchAbc* branch() const = 0;
             /// @brief Return the branch that I wrap (non-const). 
-            virtual std::shared_ptr<BranchAbc> branch() = 0;
+            virtual BranchAbc* branch() = 0;
 
             /// @brief Do anything I need to do to add myself to the simNetwork.
             ///
@@ -50,26 +50,26 @@ namespace Sgt
     {
         public:
 
-            SimBranch(std::shared_ptr<BranchAbc> branch) :
+            SimBranch(BranchAbc* branch) :
                 Component(branch->id()),
                 branch_(branch)
             {
                 // Empty.
             }
 
-            std::shared_ptr<const BranchAbc> branch() const
+            const BranchAbc* branch() const
             {
                 return branch_;
             }
             
-            std::shared_ptr<BranchAbc> branch()
+            BranchAbc* branch()
             {
                 return branch_;
             }
 
         private:
 
-            std::shared_ptr<BranchAbc> branch_;
+            BranchAbc* branch_;
     };
 }
 

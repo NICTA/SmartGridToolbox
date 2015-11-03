@@ -49,7 +49,7 @@ namespace Sgt
         auto inverter = sim.simComponent<InverterAbc>(inverterStr);
         sgtAssert(inverter != nullptr,
             "For component " << id << ", inverter " << inverterStr << " was not found in the simulation.");
-        inverter->addDcPowerSource(spv);
+        inverter->addDcPowerSource(spv.get());
 
         spv->setNPanels(parser.expand<int>(nd["n_panels"]));
         double zen = parser.expand<double>(nd["zenith_degrees"]) * pi / 180;

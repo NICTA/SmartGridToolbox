@@ -17,7 +17,7 @@
 
 namespace Sgt
 {
-    void InverterAbc::addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source)
+    void InverterAbc::addDcPowerSource(DcPowerSourceAbc* source)
     {
         sources_.push_back(source);
         dependsOn(source);
@@ -29,7 +29,7 @@ namespace Sgt
         return PDcA * efficiency(PDcA);
     }
         
-    void SimpleZipInverter::addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source)
+    void SimpleZipInverter::addDcPowerSource(DcPowerSourceAbc* source)
     {
         InverterAbc::addDcPowerSource(source);
         source->dcPowerChanged().addAction([this]() {injectionChanged().trigger();},

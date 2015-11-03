@@ -30,18 +30,6 @@ namespace Sgt
     /// @ingroup SimCore
     class Simulation
     {
-        private:
-
-            typedef std::shared_ptr<SimComponent> SimCompPtr;
-            typedef std::shared_ptr<const SimComponent> SimCompConstPtr;
-            typedef std::shared_ptr<TimeSeriesBase> TimeSeriesPtr;
-            typedef std::shared_ptr<const TimeSeriesBase> TimeSeriesConstPtr;
-
-            typedef std::vector<SimCompPtr> SimCompVec;
-            typedef std::vector<SimCompConstPtr> ConstSimCompVec;
-            typedef std::map<std::string, SimCompPtr> SimCompMap;
-            typedef std::map<std::string, TimeSeriesPtr> TimeSeriesMap;
-
         public:
 
             /// @brief Constructor.
@@ -104,7 +92,7 @@ namespace Sgt
             /// @brief Factory method for SimComponents.
             template<typename T, typename... Args> std::shared_ptr<T> newSimComponent(Args&&... args)
             {
-                std::shared_ptr<T> comp(new T(std::forward<Args>(args)...));
+                auto comp = std::make_shared<T>(std::forward<Args>(args)...);
                 acquireSimComponent(comp);
                 return comp;
             }
@@ -118,9 +106,9 @@ namespace Sgt
             /// @brief Replace an existing SimComponent factory method.
             template<typename T, typename... Args> std::shared_ptr<T> replaceSimComponentWithNew(Args&&... args)
             {
-                std::shared_ptr<T> comp(new T(std::forward<Args>(args)...));
+                auto comp = std::make_shared<T>(new T(std::forward<Args>(args)...));
                 replaceSimComponent(comp);
-                return comp;
+                return comp.get();
             }
 
             /// @brief Replace an existing SimComponent with an existing SimComponent.
@@ -130,28 +118,26 @@ namespace Sgt
             }
 
             /// @brief Retrieve a const SimComponent.
-            template<typename T> std::shared_ptr<const T> simComponent(const std::string& id,
-                    bool crashOnFail = true) const
+            template<typename T> const T* simComponent(const std::string& id, bool crashOnFail = true) const
             {
-                std::shared_ptr<const SimComponent> simComp = genericSimComponent(id, crashOnFail);
-                auto result = std::dynamic_pointer_cast<const T>(simComp);
+                const SimComponent* simComp = genericSimComponent(id, crashOnFail);
+                auto result = dynamic_cast<const T*>(simComp);
                 sgtAssert(!(result == nullptr && crashOnFail), "Component " << id 
                         << " was requested and exists in the simulation, but is of the wrong type.");
                 return result;
             }
 
             /// @brief Retrieve a SimComponent.
-            template<typename T> std::shared_ptr<T> simComponent(const std::string& id, bool crashOnFail = true)
+            template<typename T> T* simComponent(const std::string& id, bool crashOnFail = true)
             {
-                return std::const_pointer_cast<T>((static_cast<const Simulation*>(this))->simComponent<T>(id,
-                                                  crashOnFail));
+                return const_cast<T*>((static_cast<const Simulation*>(this))->simComponent<T>(id, crashOnFail));
             }
 
             /// @brief Copied vector of all const SimComponents.
-            ConstSimCompVec simComponents() const;
+            std::vector<const SimComponent*> simComponents() const;
 
             /// @brief Copied vector of all SimComponents.
-            SimCompVec simComponents() {return simCompVec_;}
+            std::vector<SimComponent*> simComponents() {return simCompVec_;}
 
             /// @brief Initialize to start time.
             void initialize();
@@ -175,27 +161,25 @@ namespace Sgt
             Event& timestepDidComplete() {return timestepDidComplete_;}
 
             /// @brief Retrieve a const TimeSeries.
-            template<typename T> std::shared_ptr<const T> timeSeries(const std::string& id, 
-                    bool crashOnFail = true) const
+            template<typename T> const T* timeSeries(const std::string& id, bool crashOnFail = true) const
             {
-                std::shared_ptr<const TimeSeriesBase> ts = genericTimeSeries(id, crashOnFail);
-                auto result = std::dynamic_pointer_cast<const T>(ts);
+                const TimeSeriesBase* ts = genericTimeSeries(id, crashOnFail);
+                auto result = dynamic_cast<const T*>(ts);
                 sgtAssert(!(result == nullptr && crashOnFail), "Time series " << id
                         << " was requested and exists in the simulation, but is of the wrong type.");
                 return result;
             }
 
             /// @brief Retrieve a TimeSeries.
-            template<typename T> std::shared_ptr<T> timeSeries(const std::string& id, bool crashOnFail = true)
+            template<typename T> T* timeSeries(const std::string& id, bool crashOnFail = true)
             {
-                return std::const_pointer_cast<T>(
-                        (static_cast<const Simulation*>(this))->timeSeries<T>(id, crashOnFail));
+                return const_cast<T*>((static_cast<const Simulation*>(this))->timeSeries<T>(id, crashOnFail));
             }
 
             /// @brief Add a time series.
             void acquireTimeSeries (const std::string& id, std::shared_ptr<TimeSeriesBase> timeSeries)
             {
-                timeSeriesMap_[id] = std::move(timeSeries);
+                timeSeriesMap_[id] = timeSeries;
             }
 
         private:
@@ -204,8 +188,8 @@ namespace Sgt
             class ScheduledUpdatesCompare
             {
                 public:
-                    bool operator()(const std::pair<SimCompPtr, Time>& lhs,
-                                    const std::pair<SimCompPtr, Time>& rhs)
+                    bool operator()(const std::pair<SimComponent*, Time>& lhs,
+                                    const std::pair<SimComponent*, Time>& rhs)
                     {
                         return ((lhs.second < rhs.second) ||
                                 (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
@@ -218,28 +202,26 @@ namespace Sgt
             class ContingentUpdatesCompare
             {
                 public:
-                    bool operator()(const SimCompPtr lhs, const SimCompPtr rhs)
+                    bool operator()(const SimComponent* lhs, const SimComponent* rhs)
                     {
                         return ((lhs->rank() < rhs->rank()) ||
                                 ((lhs->rank() == rhs->rank()) && (lhs->id() < rhs->id())));
                     }
             };
 
-            typedef std::pair<SimCompPtr, Time> ScheduledUpdate;
+            typedef std::pair<SimComponent*, Time> ScheduledUpdate;
             typedef std::set<ScheduledUpdate, ScheduledUpdatesCompare> ScheduledUpdates;
-            typedef std::set<SimCompPtr, ContingentUpdatesCompare> ContingentUpdates;
+            typedef std::set<SimComponent*, ContingentUpdatesCompare> ContingentUpdates;
 
         private:
 
-            std::shared_ptr<const SimComponent> genericSimComponent(const std::string& id,
-                    bool crashOnFail = true) const;
+            const SimComponent* genericSimComponent(const std::string& id, bool crashOnFail = true) const;
 
             void addOrReplaceGenericSimComponent(std::shared_ptr<SimComponent> simComp, bool allowReplace);
 
-            std::shared_ptr<const TimeSeriesBase> genericTimeSeries(const std::string& id,
-                    bool crashOnFail = true) const;
+            const TimeSeriesBase* genericTimeSeries(const std::string& id, bool crashOnFail = true) const;
 
-            void tryInsertScheduledUpdate(SimCompPtr schedComp);
+            void tryInsertScheduledUpdate(SimComponent* schedComp);
 
         private:
 
@@ -250,10 +232,10 @@ namespace Sgt
             LatLong latLong_;
             local_time::time_zone_ptr timezone_;
 
-            SimCompMap simCompMap_;
-            SimCompVec simCompVec_; // Encoding order of evaluation/rank.
+            std::map<std::string, std::shared_ptr<SimComponent>> simCompMap_;
+            std::vector<SimComponent*> simCompVec_; // Encoding order of evaluation/rank.
 
-            TimeSeriesMap timeSeriesMap_; // Contains TimeSeries objects for Simulation.
+            std::map<std::string, std::shared_ptr<TimeSeriesBase>> timeSeriesMap_;
 
             Time currentTime_{posix_time::neg_infin};
             ScheduledUpdates scheduledUpdates_;

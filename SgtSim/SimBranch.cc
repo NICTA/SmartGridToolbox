@@ -9,7 +9,7 @@ namespace Sgt
         sgtAssert(networkBranch != nullptr, "My BranchAbc must be added to the SimNetwork's Network before calling "
                 << __PRETTY_FUNCTION__);
         
-        simNetwork.dependsOn(shared<SimComponent>());
+        simNetwork.dependsOn(this);
 
         branch()->admittanceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
                 std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");

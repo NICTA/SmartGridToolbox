@@ -138,13 +138,13 @@ namespace Sgt
             /// @name Dependencies.
             /// @{
 
-            const std::vector<std::weak_ptr<const SimComponent>>& dependencies() const
+            const std::vector<const SimComponent*>& dependencies() const
             {
                 return dependencies_;
             }
 
             /// @brief Components on which I depend will update first.
-            void dependsOn(std::shared_ptr<const SimComponent> b)
+            void dependsOn(const SimComponent* b)
             {
                 dependencies_.push_back(b);
             }
@@ -175,7 +175,7 @@ namespace Sgt
 
             Time lastUpdated_{posix_time::not_a_date_time};
             ///< The time to which I am up to date
-            std::vector<std::weak_ptr<const SimComponent>> dependencies_;
+            std::vector<const SimComponent*> dependencies_;
             ///< I depend on these.
             int rank_{-1};
             ///< Evaluation rank, based on weak ordering.

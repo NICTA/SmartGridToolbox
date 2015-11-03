@@ -29,30 +29,6 @@
 
 namespace Sgt
 {
-    typedef std::shared_ptr<const Bus> ConstBusPtr;
-    typedef std::shared_ptr<Bus> BusPtr;
-
-    typedef std::shared_ptr<const BranchAbc> ConstBranchPtr;
-    typedef std::shared_ptr<BranchAbc> BranchPtr;
-
-    typedef std::shared_ptr<const GenAbc> ConstGenPtr;
-    typedef std::shared_ptr<GenAbc> GenPtr;
-
-    typedef std::shared_ptr<const ZipAbc> ConstZipPtr;
-    typedef std::shared_ptr<ZipAbc> ZipPtr;
-
-    typedef std::vector<BusPtr> BusVec;
-    typedef std::map<std::string, BusPtr> BusMap;
-
-    typedef std::vector<BranchPtr> BranchVec;
-    typedef std::map<std::string, BranchPtr> BranchMap;
-
-    typedef std::vector<GenPtr> GenVec;
-    typedef std::map<std::string, GenPtr> GenMap;
-
-    typedef std::vector<ZipPtr> ZipVec;
-    typedef std::map<std::string, ZipPtr> ZipMap;
-
     class PowerFlowModel;
 
     /// @brief Network component, describing an electricity network.
@@ -108,27 +84,27 @@ namespace Sgt
             /// @name Network Components:
             /// @{
 
-            const BusVec& busses() const
+            const std::vector<Bus*>& busses() const
             {
                 return busVec_;
             }
 
-            ConstBusPtr bus(const std::string& id) const
+            const Bus* bus(const std::string& id) const
             {
-                BusMap::const_iterator it = busMap_.find(id);
-                return (it == busMap_.end()) ? nullptr : it->second;
+                auto it = busMap_.find(id);
+                return (it == busMap_.end()) ? nullptr : it->second.get();
             }
-            BusPtr bus(const std::string& id)
+            Bus* bus(const std::string& id)
             {
-                return std::const_pointer_cast<Bus>((static_cast<const Network*>(this))->bus(id));
+                return const_cast<Bus*>((static_cast<const Network*>(this))->bus(id));
             }
-            void addBus(BusPtr bus);
+            void addBus(std::shared_ptr<Bus> bus);
 
-            ConstBusPtr referenceBus() const
+            const Bus* referenceBus() const
             {
                 return referenceBus_;
             }
-            BusPtr referenceBus()
+            Bus* referenceBus()
             {
                 return referenceBus_;
             }
@@ -137,50 +113,51 @@ namespace Sgt
                 referenceBus_ = bus(id);
             }
 
-            const BranchVec& branches() const
+            const std::vector<BranchAbc*>& branches() const
             {
                 return branchVec_;
             }
-            ConstBranchPtr branch(const std::string& id) const
+            const BranchAbc* branch(const std::string& id) const
             {
-                BranchMap::const_iterator it = branchMap_.find(id);
-                return (it == branchMap_.end()) ? nullptr : it->second;
+                auto it = branchMap_.find(id);
+                return (it == branchMap_.end()) ? nullptr : it->second.get();
             }
-            BranchPtr branch(const std::string& id)
+            BranchAbc* branch(const std::string& id)
             {
-                return std::const_pointer_cast<BranchAbc>((static_cast<const Network*>(this))->branch(id));
+                return const_cast<BranchAbc*>((static_cast<const Network*>(this))->branch(id));
             }
-            virtual void addBranch(BranchPtr branch, const std::string& bus0Id, const std::string& bus1Id);
+            virtual void addBranch(std::shared_ptr<BranchAbc> branch,
+                    const std::string& bus0Id, const std::string& bus1Id);
 
-            const GenVec& gens() const
+            const std::vector<GenAbc*>& gens() const
             {
                 return genVec_;
             }
-            ConstGenPtr gen(const std::string& id) const
+            const GenAbc* gen(const std::string& id) const
             {
-                GenMap::const_iterator it = genMap_.find(id);
-                return (it == genMap_.end()) ? nullptr : it->second;
+                auto it = genMap_.find(id);
+                return (it == genMap_.end()) ? nullptr : it->second.get();
             }
-            GenPtr gen(const std::string& id)
+            GenAbc* gen(const std::string& id)
             {
-                return std::const_pointer_cast<GenAbc>((static_cast<const Network*>(this))->gen(id));
+                return const_cast<GenAbc*>((static_cast<const Network*>(this))->gen(id));
             }
-            virtual void addGen(GenPtr gen, const std::string& busId);
+            virtual void addGen(std::shared_ptr<GenAbc> gen, const std::string& busId);
 
-            const ZipVec& zips() const
+            const std::vector<ZipAbc*>& zips() const
             {
                 return zipVec_;
             }
-            ConstZipPtr zip(const std::string& id) const
+            const ZipAbc* zip(const std::string& id) const
             {
-                ZipMap::const_iterator it = zipMap_.find(id);
-                return (it == zipMap_.end()) ? nullptr : it->second;
+                auto it = zipMap_.find(id);
+                return (it == zipMap_.end()) ? nullptr : it->second.get();
             }
-            ZipPtr zip(const std::string& id)
+            ZipAbc* zip(const std::string& id)
             {
-                return std::const_pointer_cast<ZipAbc>((static_cast<const Network*>(this))->zip(id));
+                return const_cast<ZipAbc*>((static_cast<const Network*>(this))->zip(id));
             }
-            virtual void addZip(ZipPtr zip, const std::string& busId);
+            virtual void addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId);
 
             /// @}
 
@@ -291,18 +268,18 @@ namespace Sgt
             double nomFreq_{50.0};
             double freq_{50.0};
 
-            BusVec busVec_;
-            BusMap busMap_;
-            BusPtr referenceBus_{nullptr};
+            std::map<std::string, std::shared_ptr<Bus>> busMap_;
+            std::vector<Bus*> busVec_;
+            Bus* referenceBus_{nullptr};
 
-            BranchVec branchVec_;
-            BranchMap branchMap_;
+            std::map<std::string, std::shared_ptr<BranchAbc>> branchMap_;
+            std::vector<BranchAbc*> branchVec_;
 
-            GenVec genVec_;
-            GenMap genMap_;
+            std::map<std::string, std::shared_ptr<GenAbc>> genMap_;
+            std::vector<GenAbc*> genVec_;
 
-            ZipVec zipVec_;
-            ZipMap zipMap_;
+            std::map<std::string, std::shared_ptr<ZipAbc>> zipMap_;
+            std::vector<ZipAbc*> zipVec_;
 
             std::unique_ptr<PowerFlowSolverInterface> solver_{nullptr};
             bool usesFlatStart_{false};

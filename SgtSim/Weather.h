@@ -46,11 +46,11 @@ namespace Sgt
         {
             temperature = [f](const Time& t){return f(t);};
         }
-        void setTemperature(std::shared_ptr<TimeSeries<Time, double>> series)
+        void setTemperatureSeries(const TimeSeries<Time, double>* series)
         {
             temperature = [series](const Time& t){return series->value(t);};
         }
-        void setTemperature(double val)
+        void setTemperatureConst(double val)
         {
             temperature = [val](const Time& t){return val;};
         }
@@ -59,12 +59,12 @@ namespace Sgt
         {
             irradiance = [f](const Time& t){return f(t);};
         }
-        void setIrradiance(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
+        void setIrradianceSeries(const TimeSeries<Time, arma::Col<double>>* series)
         {
             irradiance = [series](const Time& t)->Irradiance{
                 auto val = series->value(t); return {{{val(0), val(1), val(2)}}, val(3), val(4)};};
         }
-        void setIrradiance(const Irradiance& val)
+        void setIrradianceConst(const Irradiance& val)
         {
             irradiance = [val](const Time& t){return val;};
         }
@@ -77,12 +77,12 @@ namespace Sgt
         {
             windVector = [f](const Time& t){return f(t);};
         }
-        void setWindVector(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
+        void setWindVectorSeries(const TimeSeries<Time, arma::Col<double>>* series)
         {
             windVector = [series](const Time& t)->arma::Col<double>::fixed<3>{
                 auto val = series->value(t); return {{val(0), val(1), val(2)}};};
         }
-        void setWindVector(const arma::Col<double>::fixed<3>& val)
+        void setWindVectorConst(const arma::Col<double>::fixed<3>& val)
         {
             windVector = [val](const Time& t){return val;};
         }
@@ -91,12 +91,12 @@ namespace Sgt
         {
             cloudAttenuationFactors = [f](const Time& t, const SphericalAngles&){return f(t);};
         }
-        void setCloudAttenuationFactors(std::shared_ptr<TimeSeries<Time, arma::Col<double>>> series)
+        void setCloudAttenuationFactorsSeries(const TimeSeries<Time, arma::Col<double>>* series)
         {
             cloudAttenuationFactors = [series](const Time& t, const SphericalAngles&)->arma::Col<double>::fixed<3>{
                 auto val = series->value(t); return {{val(0), val(1), val(2)}};};
         }
-        void setCloudAttenuationFactors(const arma::Col<double>::fixed<3>& val)
+        void setCloudAttenuationFactorsConst(const arma::Col<double>::fixed<3>& val)
         {
             cloudAttenuationFactors = [val](const Time& t, const SphericalAngles&){return val;};
         }

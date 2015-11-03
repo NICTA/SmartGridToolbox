@@ -20,8 +20,6 @@
 
 #include <SgtCore/Gen.h>
 
-#include <memory>
-
 namespace Sgt
 {
     /// @brief Abstract base class for SimGen.
@@ -32,9 +30,9 @@ namespace Sgt
         public:
 
             /// @brief Return the gen that I wrap (const). 
-            virtual std::shared_ptr<const GenAbc> gen() const = 0;
+            virtual const GenAbc* gen() const = 0;
             /// @brief Return the gen that I wrap (non-const). 
-            virtual std::shared_ptr<GenAbc> gen() = 0;
+            virtual GenAbc* gen() = 0;
 
             /// @brief Do anything I need to do to add myself to the simNetwork.
             ///
@@ -50,26 +48,26 @@ namespace Sgt
     {
         public:
 
-            SimGen(std::shared_ptr<GenAbc> gen) :
+            SimGen(GenAbc* gen) :
                 Component(gen->id()),
                 gen_(gen)
             {
                 // Empty.
             }
 
-            std::shared_ptr<const GenAbc> gen() const
+            const GenAbc* gen() const
             {
                 return gen_;
             }
             
-            std::shared_ptr<GenAbc> gen()
+            GenAbc* gen()
             {
                 return gen_;
             }
 
         private:
 
-            std::shared_ptr<GenAbc> gen_;
+            GenAbc* gen_;
     };
 }
 

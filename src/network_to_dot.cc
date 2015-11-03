@@ -39,7 +39,7 @@ int main(int argc, const char** argv)
     p.parse(configName, sim);
     sim.initialize();
 
-    std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
+    auto netw = sim.simComponent<SimNetwork>("network")->network();
 
     out << "digraph G {" << std::endl;
     {

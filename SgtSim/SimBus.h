@@ -20,8 +20,6 @@
 
 #include <SgtCore/Bus.h>
 
-#include <memory>
-
 namespace Sgt
 {
     /// @brief Abstract base class for SimBus.
@@ -32,9 +30,9 @@ namespace Sgt
         public:
 
             /// @brief Return the bus that I wrap (const). 
-            virtual std::shared_ptr<const Bus> bus() const = 0;
+            virtual const Bus* bus() const = 0;
             /// @brief Return the bus that I wrap (non-const). 
-            virtual std::shared_ptr<Bus> bus() = 0;
+            virtual Bus* bus() = 0;
             
             /// @brief Do anything I need to do to add myself to the simNetwork.
             ///
@@ -54,7 +52,7 @@ namespace Sgt
     {
         public:
 
-            SimBus(std::shared_ptr<Bus> bus) :
+            SimBus(Bus* bus) :
                 Component(bus->id()),
                 SimComponent(),
                 bus_(bus)
@@ -62,12 +60,12 @@ namespace Sgt
                 // Empty.
             }
 
-            std::shared_ptr<const Bus> bus() const override
+            const Bus* bus() const override
             {
                 return bus_;
             }
             
-            std::shared_ptr<Bus> bus() override
+            Bus* bus() override
             {
                 return bus_;
             }
@@ -75,7 +73,7 @@ namespace Sgt
 
         private:
 
-            std::shared_ptr<Bus> bus_;
+            Bus* bus_;
     };
 }
 

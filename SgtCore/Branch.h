@@ -88,32 +88,32 @@ namespace Sgt
         /// @name attached busses:
         /// @{
 
-            std::shared_ptr<const Bus> bus0() const
+            const Bus* bus0() const
             {
                 return bus0_;
             }
 
-            std::shared_ptr<Bus> bus0()
+            Bus* bus0()
             {
                 return bus0_;
             }
 
-            void setBus0(std::shared_ptr<Bus> bus0)
+            void setBus0(Bus* bus0)
             {
                 bus0_ = bus0;
             }
 
-            std::shared_ptr<const Bus> bus1() const
+            const Bus* bus1() const
             {
                 return bus1_;
             }
 
-            std::shared_ptr<Bus> bus1()
+            Bus* bus1()
             {
                 return bus1_;
             }
 
-            void setBus1(std::shared_ptr<Bus> bus1)
+            void setBus1(Bus* bus1)
             {
                 bus1_ = bus1;
             }
@@ -178,8 +178,8 @@ namespace Sgt
             Phases phases0_; ///< Phases on bus 0.
             Phases phases1_; ///< Phases on bus 1.
 
-            std::shared_ptr<Bus> bus0_;
-            std::shared_ptr<Bus> bus1_;
+            Bus* bus0_;
+            Bus* bus1_;
 
             bool isInService_; ///< Am I in service?
 

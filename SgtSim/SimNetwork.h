@@ -60,14 +60,14 @@ namespace Sgt
         /// @name Network access.
         /// @{
 
-            std::shared_ptr<const Network> network() const
+            const Network* network() const
             {
-                return network_;
+                return network_.get();
             }
 
-            std::shared_ptr<Network> network()
+            Network* network()
             {
-                return network_;
+                return network_.get();
             }
 
         /// @}

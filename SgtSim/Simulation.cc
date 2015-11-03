@@ -19,16 +19,16 @@
 
 namespace Sgt
 {
-    Simulation::ConstSimCompVec Simulation::simComponents() const
+    std::vector<const SimComponent*> Simulation::simComponents() const
     {
-        ConstSimCompVec result(simCompVec_.size());
+        std::vector<const SimComponent*> result(simCompVec_.size());
         std::copy(simCompVec_.begin(), simCompVec_.end(), result.begin());
         return result;
     }
 
     void Simulation::addOrReplaceGenericSimComponent(std::shared_ptr<SimComponent> simComp, bool allowReplace)
     {
-        SimCompMap::iterator it1 = simCompMap_.find(simComp->id());
+        auto it1 = simCompMap_.find(simComp->id());
         if (it1 != simCompMap_.end())
         {
             if (allowReplace)
@@ -42,7 +42,7 @@ namespace Sgt
         }
         else
         {
-            simCompVec_.push_back(simComp);
+            simCompVec_.push_back(simComp.get());
             simCompMap_[simComp->id()] = simComp;
         }
     }
@@ -71,13 +71,13 @@ namespace Sgt
             for (auto dep : simCompVec_[i]->dependencies())
             {
                 // i depends on dep->rank().
-                g.link(static_cast<std::size_t>(dep.lock()->rank()), i);
+                g.link(static_cast<std::size_t>(dep->rank()), i);
             }
         }
         g.weakOrder();
 
         // g.nodes() now specifies a permutation to be applied to simCompVec_.
-        SimCompVec perm;
+        std::vector<SimComponent*> perm;
         perm.reserve(simCompVec_.size());
         for (auto& nd : g.nodes())
         {
@@ -125,7 +125,7 @@ namespace Sgt
         sgtLogDebug(LogLevel::VERBOSE) << "Number of contingent = " << contingentUpdates_.size() << std::endl;
 
         Time nextSchedTime = posix_time::pos_infin;
-        SimCompPtr schedComp(nullptr);
+        SimComponent* schedComp(nullptr);
         auto schedUpdateIt = scheduledUpdates_.begin();
 
         if (scheduledUpdates_.size() > 0)
@@ -253,19 +253,18 @@ namespace Sgt
             LogIndent indent;
             for (auto dep : comp->dependencies())
             {
-                sgtLogMessage() << dep.lock()->id() << " " << dep.lock()->rank() << std::endl;
+                sgtLogMessage() << dep->id() << " " << dep->rank() << std::endl;
             }
         }
     }
 
-    std::shared_ptr<const SimComponent> Simulation::genericSimComponent(const std::string& id,
-            bool crashOnFail) const
+    const SimComponent* Simulation::genericSimComponent(const std::string& id, bool crashOnFail) const
     {
-        std::shared_ptr<const SimComponent> result = nullptr;
-        SimCompMap::const_iterator it = simCompMap_.find(id);
+        const SimComponent* result = nullptr;
+        auto it = simCompMap_.find(id);
         if (it != simCompMap_.end())
         {
-            result = it->second;
+            result = it->second.get();
         }
         else if (crashOnFail)
         {
@@ -274,13 +273,13 @@ namespace Sgt
         return result;
     }
 
-    std::shared_ptr<const TimeSeriesBase> Simulation::genericTimeSeries(const std::string& id, bool crashOnFail) const
+    const TimeSeriesBase* Simulation::genericTimeSeries(const std::string& id, bool crashOnFail) const
     {
-        std::shared_ptr<const TimeSeriesBase> result = nullptr;
-        TimeSeriesMap::const_iterator it = timeSeriesMap_.find(id);
+        const TimeSeriesBase* result = nullptr;
+        auto it = timeSeriesMap_.find(id);
         if (it != timeSeriesMap_.end())
         {
-            result = it->second;
+            result = it->second.get();
         }
         else if (crashOnFail)
         {
@@ -289,7 +288,7 @@ namespace Sgt
         return result;
     }
 
-    void Simulation::tryInsertScheduledUpdate(SimCompPtr schedComp)
+    void Simulation::tryInsertScheduledUpdate(SimComponent* schedComp)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "TryInsertScheduledUpdate: " << schedComp->id() << std::endl;
         LogIndent indent;

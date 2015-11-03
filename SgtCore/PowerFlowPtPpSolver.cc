@@ -68,7 +68,7 @@ namespace Sgt
 
         for (const auto& branch : sgtNw.branches())
         {
-            auto cBranch = std::dynamic_pointer_cast<CommonBranch>(branch);
+            auto cBranch = dynamic_cast<CommonBranch*>(branch);
             auto bus0 = branch->bus0();
             auto bus1 = branch->bus1();
 
@@ -143,7 +143,7 @@ namespace Sgt
             {
                 // Order of gens should be same in Sgt and Pt.
                 auto gen = node->_gen[i];
-                auto sgtGen = std::dynamic_pointer_cast<Sgt::GenericGen>(sgtBus->gens()[i]);
+                auto sgtGen = dynamic_cast<Sgt::GenericGen*>(sgtBus->gens()[i]);
                 Complex SGenSolPu(gen->pg.get_value(), gen->qg.get_value());
                 Complex SGenSol = sgtNw.pu2S(SGenSolPu);
                 sgtGen->setInServiceS({SGenSol});

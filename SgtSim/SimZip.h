@@ -20,8 +20,6 @@
 
 #include <SgtCore/Zip.h>
 
-#include <memory>
-
 namespace Sgt
 {
     /// @brief Abstract base class for SimZip.
@@ -32,9 +30,9 @@ namespace Sgt
         public:
 
             /// @brief Return the zip that I wrap (const). 
-            virtual std::shared_ptr<const ZipAbc> zip() const = 0;
+            virtual const ZipAbc* zip() const = 0;
             /// @brief Return the zip that I wrap (non-const). 
-            virtual std::shared_ptr<ZipAbc> zip() = 0;
+            virtual ZipAbc* zip() = 0;
 
             /// @brief Do anything I need to do to add myself to the simNetwork.
             ///
@@ -50,26 +48,26 @@ namespace Sgt
     {
         public:
 
-            SimZip(std::shared_ptr<ZipAbc> zip) :
+            SimZip(ZipAbc* zip) :
                 Component(zip->id()),
                 zip_(zip)
             {
                 // Empty.
             }
 
-            std::shared_ptr<const ZipAbc> zip() const
+            const ZipAbc* zip() const
             {
                 return zip_;
             }
             
-            std::shared_ptr<ZipAbc> zip()
+            ZipAbc* zip()
             {
                 return zip_;
             }
 
         private:
 
-            std::shared_ptr<ZipAbc> zip_;
+            ZipAbc* zip_;
     };
 }
 

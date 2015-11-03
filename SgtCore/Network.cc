@@ -26,13 +26,13 @@ namespace Sgt
         // Empty.
     }
 
-    void Network::addBus(BusPtr bus)
+    void Network::addBus(std::shared_ptr<Bus> bus)
     {
         busMap_[bus->id()] = bus;
-        busVec_.push_back(bus);
+        busVec_.push_back(bus.get());
     }
 
-    void Network::addBranch(BranchPtr branch, const std::string& bus0Id, const std::string& bus1Id)
+    void Network::addBranch(std::shared_ptr<BranchAbc> branch, const std::string& bus0Id, const std::string& bus1Id)
     {
         auto bus0 = bus(bus0Id);
         auto bus1 = bus(bus1Id);
@@ -41,25 +41,25 @@ namespace Sgt
         branch->setBus0(bus0);
         branch->setBus1(bus1);
         branchMap_[branch->id()] = branch;
-        branchVec_.push_back(branch);
+        branchVec_.push_back(branch.get());
     }
 
-    void Network::addGen(GenPtr gen, const std::string& busId)
+    void Network::addGen(std::shared_ptr<GenAbc> gen, const std::string& busId)
     {
         genMap_[gen->id()] = gen;
-        genVec_.push_back(gen);
+        genVec_.push_back(gen.get());
         auto bus = this->bus(busId);
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
-        bus->addGen(gen);
+        bus->addGen(gen.get());
     }
 
-    void Network::addZip(ZipPtr zip, const std::string& busId)
+    void Network::addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId)
     {
         zipMap_[zip->id()] = zip;
-        zipVec_.push_back(zip);
+        zipVec_.push_back(zip.get());
         auto bus = this->bus(busId);
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
-        bus->addZip(zip);
+        bus->addZip(zip.get());
     }
 
     bool Network::solvePowerFlow()
@@ -86,7 +86,7 @@ namespace Sgt
     double Network::genCostPerUnitTime()
     {
         return std::accumulate(genVec_.begin(), genVec_.end(), 0.0, 
-                [](double d, GenPtr g)->double{return d + g->cost();});
+                [](double d, GenAbc* g)->double{return d + g->cost();});
     }
 
     void Network::print(std::ostream& os) const

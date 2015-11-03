@@ -45,13 +45,13 @@ namespace Sgt
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
-                auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
+                const auto* series = sim.timeSeries<TimeSeries<Time, double>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-                weather->model.setTemperature(series);
+                weather->model.setTemperatureSeries(series);
             }
             else if (nd1Key == "const")
             {
-                weather->model.setTemperature(nd1.as<double>());
+                weather->model.setTemperatureConst(nd1.as<double>());
             }
         }
 
@@ -63,14 +63,14 @@ namespace Sgt
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
-                auto series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
+                const auto* series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-                weather->model.setIrradiance(series);
+                weather->model.setIrradianceSeries(series);
             }
             else if (nd1Key == "const")
             {
                 auto vec = nd1.as<arma::Col<double>>();
-                weather->model.setIrradiance({{{vec(0), vec(1), vec(2)}}, vec(3), vec(4)}); 
+                weather->model.setIrradianceConst({{{vec(0), vec(1), vec(2)}}, vec(3), vec(4)}); 
             }
             else if (nd1Key == "solar_model" && nd1.as<std::string>() == "standard")
             {
@@ -86,14 +86,14 @@ namespace Sgt
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
-                auto series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
+                const auto* series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-                weather->model.setCloudAttenuationFactors(series);
+                weather->model.setCloudAttenuationFactorsSeries(series);
             }
             else if (nd1Key == "const")
             {
                 auto vec = nd1.as<arma::Col<double>>();
-                weather->model.setCloudAttenuationFactors({{vec(0), vec(1), vec(2)}}); 
+                weather->model.setCloudAttenuationFactorsConst({{vec(0), vec(1), vec(2)}}); 
             }
         }
 
@@ -105,14 +105,14 @@ namespace Sgt
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
-                auto series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
+                const auto* series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
-                weather->model.setWindVector(series);
+                weather->model.setWindVectorSeries(series);
             }
             else if (nd1Key == "const")
             {
                 auto vec = nd1.as<arma::Col<double>>();
-                weather->model.setWindVector({{vec(0), vec(1), vec(2)}}); 
+                weather->model.setWindVectorConst({{vec(0), vec(1), vec(2)}}); 
             }
         }
 

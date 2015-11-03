@@ -110,14 +110,14 @@ namespace Sgt
 
         public:
 
-            virtual std::shared_ptr<const ZipAbc> zip() const override
+            virtual const ZipAbc* zip() const override
             {
-                return shared<const ZipAbc>();
+                return this;
             }
 
-            virtual std::shared_ptr<ZipAbc> zip() override
+            virtual ZipAbc* zip() override
             {
-                return shared<ZipAbc>();
+                return this;
             }
 
             /// @}
@@ -172,10 +172,10 @@ namespace Sgt
             void setTs(double val) {Ts_ = val;}
 
             /// @brief Weather object.
-            void setWeather(std::shared_ptr<Weather> weather) {weather_ = weather; needsUpdate().trigger();}
+            void setWeather(Weather* weather) {weather_ = weather; needsUpdate().trigger();}
 
             /// @brief Time series for internal generated heat. 
-            void set_dQgSeries(std::shared_ptr<TimeSeries<Time, double>> dQg) {dQg_ = dQg; needsUpdate().trigger();}
+            void set_dQgSeries(TimeSeries<Time, double>* dQg) {dQg_ = dQg; needsUpdate().trigger();}
             
             /// @}
 
@@ -228,8 +228,8 @@ namespace Sgt
             double PMax_;                                   // HVAC max power, W.
             double Ts_;                                     // HVAC set_point, C.
 
-            std::shared_ptr<Weather> weather_;              // For external temperature.
-            std::shared_ptr<TimeSeries<Time, double>> dQg_; // Extra heat -> building.
+            Weather* weather_;                              // For external temperature.
+            TimeSeries<Time, double>* dQg_;                 // Extra heat -> building.
 
             // State.
             double Tb_;                                     // Building temperature, C.

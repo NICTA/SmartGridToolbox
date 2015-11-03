@@ -35,11 +35,9 @@ namespace Sgt
     {
         public:
 
-            typedef std::shared_ptr<GenAbc> GenPtr;
-            typedef std::vector<GenPtr> GenVec;
+            typedef std::vector<GenAbc*> GenVec;
 
-            typedef std::shared_ptr<ZipAbc> ZipPtr;
-            typedef std::vector<ZipPtr> ZipVec;
+            typedef std::vector<ZipAbc*> ZipVec;
 
             SGT_PROPS_INIT(Bus);
             SGT_PROPS_INHERIT(Bus, Component);
@@ -105,7 +103,7 @@ namespace Sgt
 
             const GenVec gens() const {return genVec_;}
 
-            void addGen(GenPtr gen) {genVec_.push_back(gen);}
+            void addGen(GenAbc* gen) {genVec_.push_back(gen);}
 
             void removeAllGens() {genVec_.clear();}
 
@@ -132,7 +130,7 @@ namespace Sgt
 
             const ZipVec zips() const {return zipVec_;}
 
-            void addZip(ZipPtr zip) {zipVec_.push_back(zip);}
+            void addZip(ZipAbc* zip) {zipVec_.push_back(zip);}
 
             void removeAllZips() {zipVec_.clear();}
 

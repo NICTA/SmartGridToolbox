@@ -60,7 +60,7 @@ namespace Sgt
 
             /// @brief Set the weather component.
             /// @param weather The weather component
-            void setWeather(std::shared_ptr<Weather> weather);
+            void setWeather(Weather* weather);
 
             /// @brief Set the unit normal to the plane of the solar panels.
             /// @param planeNormal The SphericalAngles object decribing the plane normal.
@@ -135,7 +135,7 @@ namespace Sgt
 
         private:
 
-            std::shared_ptr<const Weather> weather_;
+            const Weather* weather_;
             
             // Parameters:
             SphericalAngles planeNormal_;

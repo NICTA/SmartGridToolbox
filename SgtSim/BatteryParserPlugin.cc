@@ -55,6 +55,6 @@ namespace Sgt
         auto inverter = sim.simComponent<InverterAbc>(inverterStr);
         sgtAssert(inverter != nullptr,
                 "For component " << id << ", inverter " << inverterStr << " was not found in the simulation.");
-        inverter->addDcPowerSource(batt);
+        inverter->addDcPowerSource(batt.get());
     }
 }
