@@ -26,9 +26,7 @@ namespace Sgt
     void SolarPv::setWeather(Weather* weather)
     {
         weather_ = weather;
-        dependsOn(weather);
-        weather->didUpdate().addAction([this]() {needsUpdate().trigger();},
-                std::string("Trigger ") + sComponentType() + " " + id() + " needsUpdate");
+        SimComponent::addDependency(*weather, *this, true);
     }
 
     double SolarPv::PDc(const Time& t) const

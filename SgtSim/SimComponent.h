@@ -143,10 +143,22 @@ namespace Sgt
                 return dependencies_;
             }
 
-            /// @brief Components on which I depend will update first.
-            void dependsOn(const SimComponent* b)
+            /// @brief Add a dependency of dependent on dependency.
+            /// @param comp A SimComponent.
+            /// @param dependsOnComp A SimComponent that depends on comp.
+            /// @param forceUpdate Should an update of dependency force a contingent update of dependent?
+            /// If dependent updates, then this is guaranteed to occur after dependency, so long as there aren't any
+            /// circular dependencies. If forceUpdate is true, then an update of dependency will guarantee (using a
+            /// contingent update) that dependent also updates.
+            static void addDependency(SimComponent& comp, SimComponent& dependsOnComp, bool forceUpdate)
             {
-                dependencies_.push_back(b);
+                dependsOnComp.dependencies_.push_back(&comp);
+                if (forceUpdate)
+                {
+                    comp.didUpdate().addAction([&dependsOnComp]() {dependsOnComp.needsUpdate().trigger();},
+                            std::string("Add ") + dependsOnComp.componentType() + " " + dependsOnComp.id() 
+                            + " contingent update.");
+                }
             }
 
             /// @}

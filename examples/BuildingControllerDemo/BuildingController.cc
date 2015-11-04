@@ -32,19 +32,19 @@ namespace Sgt
     void BuildingController::setBatt(std::shared_ptr<Battery> batt)
     {
         batt_ = batt;
-        dependsOn(batt);
+        SimComponent::addDependency(*batt, *this, false);
     }
 
     void BuildingController::setBuild(std::shared_ptr<Building> build)
     {
         build_ = build;
-        dependsOn(build);
+        SimComponent::addDependency(*build, *this, false);
     }
             
     void BuildingController::setSolar(std::shared_ptr<SolarPv> solar)
     {
         solar_ = solar;
-        dependsOn(solar);
+        SimComponent::addDependency(*solar, *this, false);
     }
 
     void BuildingController::updateState(Time t)

@@ -45,11 +45,10 @@ namespace Sgt
         Tb_ = dSv * Tb_ + (1.0 - dSv) * cSv;
     }
 
-    void Building::setWeather(std::shared_ptr<Weather> weather)
+    void Building::setWeather(Weather* weather)
     {
         weather_ = weather;
-        dependsOn(weather);
-        needsUpdate().trigger();
+        SimComponent::addDependency(*weather, *this, true);
     }
 
     double Building::c(const Time& t0, const Time& t1) const

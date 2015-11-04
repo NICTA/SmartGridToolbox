@@ -30,7 +30,7 @@ int main()
     {
         std::cout << "Property " << p.first << " : " << p.second->string(bar) << std::endl;
     }
-    Sgt::PropertyBase& xProp = *bar.properties()["xProp"];
+    Sgt::PropertyAbc& xProp = *bar.properties()["xProp"];
     std::cout << "xProp as string : " << xProp.string(bar) << std::endl;
     std::cout << "xProp as const int& : " << xProp.get<const int&>(bar) << std::endl;
     xProp.set<const int&>(bar, 345);

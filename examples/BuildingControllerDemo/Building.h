@@ -107,14 +107,14 @@ namespace Sgt
 
         public:
 
-            virtual std::shared_ptr<const ZipAbc> zip() const override
+            virtual const ZipAbc* zip() const override
             {
-                return shared<const ZipAbc>();
+                return this;
             }
 
-            virtual std::shared_ptr<ZipAbc> zip() override
+            virtual ZipAbc* zip() override
             {
-                return shared<ZipAbc>();
+                return this;
             }
 
             /// @}
@@ -173,10 +173,10 @@ namespace Sgt
             void setReqPHeat(double val) {reqPHeat_ = val;} // Doesn't affect state in this timestep, no update needed.
 
             /// @brief Weather object.
-            void setWeather(std::shared_ptr<Weather> weather);
+            void setWeather(Weather* weather);
 
             /// @brief Time series for internal generated heat. 
-            void setPThIntSeries(std::shared_ptr<TimeSeries<Time, double>> PThInt)
+            void setPThIntSeries(TimeSeries<Time, double>* PThInt)
             {
                 PThInt_ = PThInt; needsUpdate().trigger();
             }
@@ -242,8 +242,8 @@ namespace Sgt
             double reqPHeat_; // Requested heating power.
 
             // Extraneous factors:
-            std::shared_ptr<Weather> weather_; // For external temperature.
-            std::shared_ptr<TimeSeries<Time, double>> PThInt_; // Extraneous heat generated in building.
+            const Weather* weather_; // For external temperature.
+            const TimeSeries<Time, double>* PThInt_; // Extraneous heat generated in building.
 
             // State.
             double Tb_; // Building temperature, C.

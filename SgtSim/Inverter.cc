@@ -20,7 +20,7 @@ namespace Sgt
     void InverterAbc::addDcPowerSource(DcPowerSourceAbc* source)
     {
         sources_.push_back(source);
-        dependsOn(source);
+        SimComponent::addDependency(*source, *this, false);
     }
 
     double InverterAbc::availableP() const
