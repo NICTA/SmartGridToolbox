@@ -177,7 +177,7 @@ namespace Sgt
             }
 
             /// @brief Add a time series.
-            void acquireTimeSeries (const std::string& id, std::shared_ptr<TimeSeriesBase> timeSeries)
+            void acquireTimeSeries(const std::string& id, std::shared_ptr<TimeSeriesBase> timeSeries)
             {
                 timeSeriesMap_[id] = timeSeries;
             }
