@@ -23,10 +23,10 @@ namespace Sgt
         Component(id)
     {}
 
-    void SolarPv::setWeather(Weather* weather)
+    void SolarPv::setWeather(Weather& weather)
     {
-        weather_ = weather;
-        SimComponent::addDependency(*weather, *this, true);
+        weather_ = &weather;
+        SimComponent::addDependency(weather, *this, true);
     }
 
     double SolarPv::PDc(const Time& t) const

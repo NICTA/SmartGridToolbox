@@ -145,7 +145,7 @@ namespace Sgt
         stopwatch.reset();
         stopwatch.start();
 
-        init(netw_);
+        init(*netw_);
 
         stopwatch.stop();
         durationMakeModel = stopwatch.seconds();
@@ -376,7 +376,7 @@ namespace Sgt
         return wasSuccessful;
     }
 
-    void PowerFlowNrSolver::init(Network* netw)
+    void PowerFlowNrSolver::init(Network& netw)
     {
         mod_ = buildModel(*netw_);
 

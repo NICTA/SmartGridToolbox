@@ -110,14 +110,14 @@ namespace Sgt
 
         public:
 
-            virtual const ZipAbc* zip() const override
+            virtual const ZipAbc& zip() const override
             {
-                return this;
+                return *this;
             }
 
-            virtual ZipAbc* zip() override
+            virtual ZipAbc& zip() override
             {
-                return this;
+                return *this;
             }
 
             /// @}
@@ -172,10 +172,10 @@ namespace Sgt
             void setTs(double val) {Ts_ = val;}
 
             /// @brief Weather object.
-            void setWeather(Weather* weather) {weather_ = weather; needsUpdate().trigger();}
+            void setWeather(Weather& weather) {weather_ = &weather; needsUpdate().trigger();}
 
             /// @brief Time series for internal generated heat. 
-            void set_dQgSeries(TimeSeries<Time, double>* dQg) {dQg_ = dQg; needsUpdate().trigger();}
+            void set_dQgSeries(TimeSeries<Time, double>& dQg) {dQg_ = &dQg; needsUpdate().trigger();}
             
             /// @}
 

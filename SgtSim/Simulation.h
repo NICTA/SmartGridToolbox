@@ -221,7 +221,7 @@ namespace Sgt
 
             const TimeSeriesBase* genericTimeSeries(const std::string& id, bool crashOnFail = true) const;
 
-            void tryInsertScheduledUpdate(SimComponent* schedComp);
+            void tryInsertScheduledUpdate(SimComponent& schedComp);
 
         private:
 

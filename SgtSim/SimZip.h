@@ -30,9 +30,9 @@ namespace Sgt
         public:
 
             /// @brief Return the zip that I wrap (const). 
-            virtual const ZipAbc* zip() const = 0;
+            virtual const ZipAbc& zip() const = 0;
             /// @brief Return the zip that I wrap (non-const). 
-            virtual ZipAbc* zip() = 0;
+            virtual ZipAbc& zip() = 0;
 
             /// @brief Do anything I need to do to add myself to the simNetwork.
             ///
@@ -48,21 +48,21 @@ namespace Sgt
     {
         public:
 
-            SimZip(ZipAbc* zip) :
-                Component(zip->id()),
-                zip_(zip)
+            SimZip(ZipAbc& zip) :
+                Component(zip.id()),
+                zip_(&zip)
             {
                 // Empty.
             }
 
-            const ZipAbc* zip() const
+            const ZipAbc& zip() const override
             {
-                return zip_;
+                return *zip_;
             }
             
-            ZipAbc* zip()
+            ZipAbc& zip() override
             {
-                return zip_;
+                return *zip_;
             }
 
         private:

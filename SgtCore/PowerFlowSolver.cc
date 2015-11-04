@@ -16,7 +16,7 @@
 
 namespace Sgt
 {
-    bool PowerFlowSolverInterface::solve(Network* netw)
+    bool PowerFlowSolverInterface::solve(Network& netw)
     {
         setNetwork(netw);
         bool ok = solveProblem();

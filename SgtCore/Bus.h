@@ -103,7 +103,7 @@ namespace Sgt
 
             const GenVec gens() const {return genVec_;}
 
-            void addGen(GenAbc* gen) {genVec_.push_back(gen);}
+            void addGen(GenAbc& gen) {genVec_.push_back(&gen);}
 
             void removeAllGens() {genVec_.clear();}
 
@@ -130,7 +130,7 @@ namespace Sgt
 
             const ZipVec zips() const {return zipVec_;}
 
-            void addZip(ZipAbc* zip) {zipVec_.push_back(zip);}
+            void addZip(ZipAbc& zip) {zipVec_.push_back(&zip);}
 
             void removeAllZips() {zipVec_.clear();}
 

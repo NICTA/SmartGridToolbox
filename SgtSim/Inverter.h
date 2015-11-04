@@ -38,7 +38,7 @@ namespace Sgt
             /// @name Inverter specific member functions.
             /// @{
 
-            virtual void addDcPowerSource(DcPowerSourceAbc* source);
+            virtual void addDcPowerSource(DcPowerSourceAbc& source);
 
             virtual double efficiency(double powerDc) const = 0;
 
@@ -151,21 +151,21 @@ namespace Sgt
             /// @name InverterAbc virtual overridden member functions.
             /// @{
 
-            virtual void addDcPowerSource(DcPowerSourceAbc* source) override;
+            virtual void addDcPowerSource(DcPowerSourceAbc& source) override;
 
             /// @}
             
             /// @name SimZipAbc virtual overridden member functions.
             /// @{
             
-            virtual const ZipAbc* zip() const override
+            virtual const ZipAbc& zip() const override
             {
-                return this; 
+                return *this;
             }
 
-            virtual ZipAbc* zip() override
+            virtual ZipAbc& zip() override
             {
-                return this;
+                return *this;
             }
 
             /// @}

@@ -99,8 +99,8 @@ namespace Sgt
             assert(std::abs(yShunt.real()) < 1e-9);
             arc->ch = yShunt.imag();
 
-            arc->cc = arc->tr*cos(arc->as);
-            arc->dd = arc->tr*sin(arc->as);
+            arc->cc = arc->tr * cos(arc->as);
+            arc->dd = arc->tr * sin(arc->as);
 
             arc->tbound.min = cBranch->angMin();
             arc->tbound.max = cBranch->angMax();
@@ -171,11 +171,6 @@ namespace Sgt
         sgtLogMessage() << "Done------------------" << std::endl;
     }
 
-    void PowerFlowPtPpSolver::setNetwork(Network* netw) 
-    {
-        sgtNetw_ = netw;
-    }
-            
     PowerFlowPtPpSolver::~PowerFlowPtPpSolver()
     {
         delete ptNetw_;
@@ -198,7 +193,7 @@ namespace Sgt
         sgtLogMessage() << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
         return success;
     }
-    
+
     void PowerFlowPtPpSolver::updateNetwork()
     {
         powerTools2Sgt(*ptNetw_, *sgtNetw_);

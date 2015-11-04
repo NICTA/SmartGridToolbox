@@ -30,9 +30,9 @@ namespace Sgt
         public:
 
             /// @brief Return the gen that I wrap (const). 
-            virtual const GenAbc* gen() const = 0;
+            virtual const GenAbc& gen() const = 0;
             /// @brief Return the gen that I wrap (non-const). 
-            virtual GenAbc* gen() = 0;
+            virtual GenAbc& gen() = 0;
 
             /// @brief Do anything I need to do to add myself to the simNetwork.
             ///
@@ -48,21 +48,21 @@ namespace Sgt
     {
         public:
 
-            SimGen(GenAbc* gen) :
-                Component(gen->id()),
-                gen_(gen)
+            SimGen(GenAbc& gen) :
+                Component(gen.id()),
+                gen_(&gen)
             {
                 // Empty.
             }
 
-            const GenAbc* gen() const
+            const GenAbc& gen() const override
             {
-                return gen_;
+                return *gen_;
             }
             
-            GenAbc* gen()
+            GenAbc& gen() override
             {
-                return gen_;
+                return *gen_;
             }
 
         private:

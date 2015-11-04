@@ -60,14 +60,14 @@ namespace Sgt
         /// @name Network access.
         /// @{
 
-            const Network* network() const
+            const Network& network() const
             {
-                return network_.get();
+                return *network_;
             }
 
-            Network* network()
+            Network& network()
             {
-                return network_.get();
+                return *network_;
             }
 
         /// @}

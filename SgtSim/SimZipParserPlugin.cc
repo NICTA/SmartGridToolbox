@@ -34,7 +34,7 @@ namespace Sgt
 
         auto simNetwork = sim.simComponent<SimNetwork>(simNetwId);
         sgtAssert(simNetwork != nullptr, "Parsing SimZip " << id << ": sim_network not found.");
-        auto& network = *simNetwork->network();
+        auto& network = simNetwork->network();
 
         YAML::Node zipNode = nd["zip"];
 
@@ -43,7 +43,7 @@ namespace Sgt
         NetworkParser p = parser.subParser<Network>();
         p.parse(netwNode, network);
         auto zip = network.zip(id);
-        auto simZip = sim.newSimComponent<SimZip>(zip);
+        auto simZip = sim.newSimComponent<SimZip>(*zip);
         simZip->linkToSimNetwork(*simNetwork);
     }
 }

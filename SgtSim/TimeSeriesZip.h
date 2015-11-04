@@ -49,14 +49,14 @@ namespace Sgt
                 return sComponentType();
             }
 
-            virtual const ZipAbc* zip() const override
+            virtual const ZipAbc& zip() const override
             {
-                return this;
+                return *this;
             }
 
-            virtual ZipAbc* zip() override
+            virtual ZipAbc& zip() override
             {
-                return this;
+                return *this;
             }
 
             double scaleFactorY() const

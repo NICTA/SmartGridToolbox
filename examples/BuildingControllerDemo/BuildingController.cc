@@ -29,22 +29,22 @@ namespace Sgt
         sgtAssert(error == 0, "Gurobi exited with error " << error);
     }
 
-    void BuildingController::setBatt(std::shared_ptr<Battery> batt)
+    void BuildingController::setBatt(Battery& batt)
     {
-        batt_ = batt;
-        SimComponent::addDependency(*batt, *this, false);
+        batt_ = &batt;
+        SimComponent::addDependency(batt, *this, false);
     }
 
-    void BuildingController::setBuild(std::shared_ptr<Building> build)
+    void BuildingController::setBuild(Building& build)
     {
-        build_ = build;
-        SimComponent::addDependency(*build, *this, false);
+        build_ = &build;
+        SimComponent::addDependency(build, *this, false);
     }
             
-    void BuildingController::setSolar(std::shared_ptr<SolarPv> solar)
+    void BuildingController::setSolar(SolarPv& solar)
     {
-        solar_ = solar;
-        SimComponent::addDependency(*solar, *this, false);
+        solar_ = &solar;
+        SimComponent::addDependency(solar, *this, false);
     }
 
     void BuildingController::updateState(Time t)
@@ -372,22 +372,22 @@ namespace Sgt
         }
 
         id = parser.expand<std::string>(nd["battery"]);
-        contr->setBatt(sim.simComponent<Battery>(id));
+        contr->setBatt(*sim.simComponent<Battery>(id));
         
         id = parser.expand<std::string>(nd["building"]);
-        contr->setBuild(sim.simComponent<Building>(id));
+        contr->setBuild(*sim.simComponent<Building>(id));
         
         id = parser.expand<std::string>(nd["solar"]);
-        contr->setSolar(sim.simComponent<SolarPv>(id));
+        contr->setSolar(*sim.simComponent<SolarPv>(id));
 
         id = parser.expand<std::string>(nd["load_series"]);
-        contr->setLoadSeries(sim.timeSeries<BuildingController::LoadSeries>(id));
+        contr->setLoadSeries(*sim.timeSeries<BuildingController::LoadSeries>(id));
         
         id = parser.expand<std::string>(nd["price_series"]);
-        contr->setPriceSeries(sim.timeSeries<BuildingController::PriceSeries>(id));
+        contr->setPriceSeries(*sim.timeSeries<BuildingController::PriceSeries>(id));
         
         id = parser.expand<std::string>(nd["T_extern_series"]);
-        contr->setTExtSeries(sim.timeSeries<BuildingController::TempSeries>(id));
+        contr->setTExtSeries(*sim.timeSeries<BuildingController::TempSeries>(id));
         
         double feedInTariff = parser.expand<double>(nd["feed_in_tariff"]);
         contr->setFeedInTariff(feedInTariff);

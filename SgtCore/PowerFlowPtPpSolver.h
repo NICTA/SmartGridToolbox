@@ -37,7 +37,10 @@ namespace Sgt
 
             virtual ~PowerFlowPtPpSolver();
 
-            virtual void setNetwork(Network* netw) override;
+            virtual void setNetwork(Network& netw) override
+            {
+                sgtNetw_ = &netw;
+            }
 
             virtual bool solveProblem() override;
 

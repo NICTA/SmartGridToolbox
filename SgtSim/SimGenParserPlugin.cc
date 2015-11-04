@@ -34,7 +34,7 @@ namespace Sgt
 
         auto simNetwork = sim.simComponent<SimNetwork>(simNetwId);
         sgtAssert(simNetwork != nullptr, "Parsing SimGen " << id << ": sim_network not found.");
-        auto& network = *simNetwork->network();
+        auto& network = simNetwork->network();
 
         YAML::Node genNode = nd["gen"];
 
@@ -43,7 +43,7 @@ namespace Sgt
         NetworkParser p = parser.subParser<Network>();
         p.parse(netwNode, network);
         auto gen = network.gen(id);
-        auto simGen = sim.newSimComponent<SimGen>(gen);
+        auto simGen = sim.newSimComponent<SimGen>(*gen);
         simGen->linkToSimNetwork(*simNetwork);
     }
 }

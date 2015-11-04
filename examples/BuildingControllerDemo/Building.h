@@ -107,14 +107,14 @@ namespace Sgt
 
         public:
 
-            virtual const ZipAbc* zip() const override
+            virtual const ZipAbc& zip() const override
             {
-                return this;
+                return *this;
             }
 
-            virtual ZipAbc* zip() override
+            virtual ZipAbc& zip() override
             {
-                return this;
+                return *this;
             }
 
             /// @}
@@ -173,12 +173,12 @@ namespace Sgt
             void setReqPHeat(double val) {reqPHeat_ = val;} // Doesn't affect state in this timestep, no update needed.
 
             /// @brief Weather object.
-            void setWeather(Weather* weather);
+            void setWeather(Weather& weather);
 
             /// @brief Time series for internal generated heat. 
-            void setPThIntSeries(TimeSeries<Time, double>* PThInt)
+            void setPThIntSeries(TimeSeries<Time, double>& PThInt)
             {
-                PThInt_ = PThInt; needsUpdate().trigger();
+                PThInt_ = &PThInt; needsUpdate().trigger();
             }
             
             /// @}

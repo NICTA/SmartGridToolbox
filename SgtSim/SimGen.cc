@@ -5,15 +5,15 @@ namespace Sgt
     void SimGenAbc::linkToSimNetwork(SimNetwork& simNetwork)
     {
         // Safety check that my gen has already been added to simNetwork's network.
-        auto networkGen = simNetwork.network()->gen(gen()->id());
+        auto networkGen = simNetwork.network().gen(gen().id());
         sgtAssert(networkGen != nullptr, "My GenAbc must be added to the SimNetwork's Network before calling "
                 << __PRETTY_FUNCTION__);
 
         SimComponent::addDependency(*this, simNetwork, false);
 
-        gen()->setpointChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
+        gen().setpointChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
                 std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
-        gen()->isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
+        gen().isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
                 std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
     }
 }

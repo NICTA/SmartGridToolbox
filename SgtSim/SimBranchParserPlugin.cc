@@ -33,7 +33,7 @@ namespace Sgt
 
         auto simNetwork = sim.simComponent<SimNetwork>(simNetwId);
         sgtAssert(simNetwork != nullptr, "Parsing SimBranch " << id << ": sim_network not found.");
-        auto& network = *simNetwork->network();
+        auto& network = simNetwork->network();
 
         YAML::Node branchNode = nd["branch"];
 
@@ -42,7 +42,7 @@ namespace Sgt
         NetworkParser p = parser.subParser<Network>();
         p.parse(netwNode, network);
         auto branch = network.branch(id);
-        auto simBranch = sim.newSimComponent<SimBranch>(branch);
+        auto simBranch = sim.newSimComponent<SimBranch>(*branch);
         simBranch->linkToSimNetwork(*simNetwork);
     }
 }

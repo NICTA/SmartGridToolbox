@@ -59,7 +59,7 @@ namespace Sgt
             tsZip->setScaleFactorS(scaleFactorS);
         }
 
-        network->network()->addZip(tsZip->zip()->shared<ZipAbc>(), busId);
+        network->network().addZip(tsZip->zip().shared<ZipAbc>(), busId);
         tsZip->linkToSimNetwork(*network);
     }
 }

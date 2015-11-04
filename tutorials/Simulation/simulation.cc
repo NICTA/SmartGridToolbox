@@ -29,8 +29,8 @@ int main(int argc, char** argv)
     auto netw = sim.simComponent<SimNetwork>("network"); // Get network by name.
     auto extraZip = std::make_shared<GenericZip>("extra_zip", Phase::BAL); // Make a GenericZip.
     extraZip->setYConst({1e-3}); // Modify it.
-    netw->network()->addZip(extraZip, "bus_2");
-    auto simExtraZip = sim.newSimComponent<SimZip>(extraZip.get()); // Give it to a new SimZip for the Simulation.
+    netw->network().addZip(extraZip, "bus_2");
+    auto simExtraZip = sim.newSimComponent<SimZip>(*extraZip); // Give it to a new SimZip for the Simulation.
     simExtraZip->linkToSimNetwork(*netw); // Add it to the SimNetwork.
 
     // After parsing and other user setup is done, we need to call initialize.
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
             // will update one component at a time.
         {
             LogIndent _; // Indent within scope.
-            Log().message() << "bus_2 V = " << bus2->bus()->V() << std::endl;
+            Log().message() << "bus_2 V = " << bus2->bus().V() << std::endl;
         }
     }
 }

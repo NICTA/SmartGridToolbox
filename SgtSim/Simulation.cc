@@ -163,7 +163,7 @@ namespace Sgt
             indent.out();
 
             // ... and try to reinsert component in scheduled updates.
-            tryInsertScheduledUpdate(contComp);
+            tryInsertScheduledUpdate(*contComp);
         }
         else if (scheduledUpdates_.size() > 0 && nextSchedTime <= endTime_)
         {
@@ -190,7 +190,7 @@ namespace Sgt
             indent.out();
 
             // ... and try to reinsert it.
-            tryInsertScheduledUpdate(schedComp);
+            tryInsertScheduledUpdate(*schedComp);
         }
         else
         {
@@ -288,18 +288,18 @@ namespace Sgt
         return result;
     }
 
-    void Simulation::tryInsertScheduledUpdate(SimComponent* schedComp)
+    void Simulation::tryInsertScheduledUpdate(SimComponent& schedComp)
     {
-        sgtLogDebug(LogLevel::VERBOSE) << "TryInsertScheduledUpdate: " << schedComp->id() << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "TryInsertScheduledUpdate: " << schedComp.id() << std::endl;
         LogIndent indent;
-        Time nextUpdate = schedComp->validUntil();
+        Time nextUpdate = schedComp.validUntil();
         sgtLogDebug(LogLevel::VERBOSE) << "nextUpdate = " << nextUpdate << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << "endTime_ = " << endTime_ << std::endl;
         if (nextUpdate <= endTime_) 
         {
-            sgtLogDebug(LogLevel::VERBOSE) << "Inserting " << schedComp->id() << ": nextUpdate = " << nextUpdate 
+            sgtLogDebug(LogLevel::VERBOSE) << "Inserting " << schedComp.id() << ": nextUpdate = " << nextUpdate 
                 << std::endl;
-            scheduledUpdates_.insert(std::make_pair(schedComp, nextUpdate));
+            scheduledUpdates_.insert(std::make_pair(&schedComp, nextUpdate));
         }
     };
 }

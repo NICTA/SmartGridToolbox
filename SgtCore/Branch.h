@@ -98,9 +98,9 @@ namespace Sgt
                 return bus0_;
             }
 
-            void setBus0(Bus* bus0)
+            void setBus0(Bus& bus0)
             {
-                bus0_ = bus0;
+                bus0_ = &bus0;
             }
 
             const Bus* bus1() const
@@ -113,9 +113,9 @@ namespace Sgt
                 return bus1_;
             }
 
-            void setBus1(Bus* bus1)
+            void setBus1(Bus& bus1)
             {
-                bus1_ = bus1;
+                bus1_ = &bus1;
             }
 
         /// @}

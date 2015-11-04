@@ -30,9 +30,9 @@ namespace Sgt
         public:
 
             /// @brief Return the bus that I wrap (const). 
-            virtual const Bus* bus() const = 0;
+            virtual const Bus& bus() const = 0;
             /// @brief Return the bus that I wrap (non-const). 
-            virtual Bus* bus() = 0;
+            virtual Bus& bus() = 0;
             
             /// @brief Do anything I need to do to add myself to the simNetwork.
             ///
@@ -52,22 +52,22 @@ namespace Sgt
     {
         public:
 
-            SimBus(Bus* bus) :
-                Component(bus->id()),
+            SimBus(Bus& bus) :
+                Component(bus.id()),
                 SimComponent(),
-                bus_(bus)
+                bus_(&bus)
             {
                 // Empty.
             }
 
-            const Bus* bus() const override
+            virtual const Bus& bus() const override
             {
-                return bus_;
+                return *bus_;
             }
             
-            Bus* bus() override
+            virtual Bus& bus() override
             {
-                return bus_;
+                return *bus_;
             }
 
 

@@ -42,25 +42,25 @@ namespace Sgt
 
             BuildingController(const std::string& id, const Time& dt);
 
-            void setBatt(std::shared_ptr<Battery> batt);
+            void setBatt(Battery& batt);
             
-            void setBuild(std::shared_ptr<Building> build);
+            void setBuild(Building& build);
             
-            void setSolar(std::shared_ptr<SolarPv> solar);
+            void setSolar(SolarPv& solar);
 
-            void setLoadSeries(std::shared_ptr<const LoadSeries> loadSeries)
+            void setLoadSeries(const LoadSeries& loadSeries)
             {
-                loadSeries_ = loadSeries;
+                loadSeries_ = &loadSeries;
             }
             
-            void setPriceSeries(std::shared_ptr<const PriceSeries> priceSeries)
+            void setPriceSeries(const PriceSeries& priceSeries)
             {
-                priceSeries_ = priceSeries;
+                priceSeries_ = &priceSeries;
             }
             
-            void setTExtSeries(std::shared_ptr<const TempSeries> TExtSeries)
+            void setTExtSeries(const TempSeries& TExtSeries)
             {
-                TExtSeries_ = TExtSeries;
+                TExtSeries_ = &TExtSeries;
             }
 
             void setFeedInTariff(double feedInTariff)
@@ -87,13 +87,13 @@ namespace Sgt
             virtual void updateState(Time t) override;
 
         private:
-            std::shared_ptr<Battery> batt_;
-            std::shared_ptr<Building> build_;
-            std::shared_ptr<SolarPv> solar_;
+            Battery* batt_;
+            Building* build_;
+            SolarPv* solar_;
 
-            std::shared_ptr<const LoadSeries> loadSeries_;
-            std::shared_ptr<const PriceSeries> priceSeries_;
-            std::shared_ptr<const TempSeries> TExtSeries_;
+            const LoadSeries* loadSeries_;
+            const PriceSeries* priceSeries_;
+            const TempSeries* TExtSeries_;
 
             double feedInTariff_; // Objective paid for power injected back into grid.
             double comfortFactor_; // Objective per degree away from setpoint.

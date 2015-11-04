@@ -34,12 +34,12 @@ namespace Sgt
 
     void Network::addBranch(std::shared_ptr<BranchAbc> branch, const std::string& bus0Id, const std::string& bus1Id)
     {
-        auto bus0 = bus(bus0Id);
-        auto bus1 = bus(bus1Id);
+        Bus* bus0 = bus(bus0Id);
+        Bus* bus1 = bus(bus1Id);
         sgtAssert(bus0 != nullptr, "Bus " << bus0Id << " was not found in the network.");
         sgtAssert(bus1 != nullptr, "Bus " << bus1Id << " was not found in the network.");
-        branch->setBus0(bus0);
-        branch->setBus1(bus1);
+        branch->setBus0(*bus0);
+        branch->setBus1(*bus1);
         branchMap_[branch->id()] = branch;
         branchVec_.push_back(branch.get());
     }
@@ -48,18 +48,18 @@ namespace Sgt
     {
         genMap_[gen->id()] = gen;
         genVec_.push_back(gen.get());
-        auto bus = this->bus(busId);
+        Bus* bus = this->bus(busId);
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
-        bus->addGen(gen.get());
+        bus->addGen(*gen);
     }
 
     void Network::addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId)
     {
         zipMap_[zip->id()] = zip;
         zipVec_.push_back(zip.get());
-        auto bus = this->bus(busId);
+        Bus* bus = this->bus(busId);
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
-        bus->addZip(zip.get());
+        bus->addZip(*zip);
     }
 
     bool Network::solvePowerFlow()
@@ -69,12 +69,12 @@ namespace Sgt
 
         if (usesFlatStart_)
         {
-            for (auto bus : busses())
+            for (Bus* bus : busses())
             {
                 bus->setV(bus->VNom());
             }
         }
-        isValidSolution_ = solver_->solve(this);
+        isValidSolution_ = solver_->solve(*this);
         if (!isValidSolution_)
         {
             sgtLogWarning() << "Couldn't solve power flow model" << std::endl;
@@ -94,7 +94,7 @@ namespace Sgt
         os << "Network:" << std::endl;
         StreamIndent _(os);
         os << "P_base: " << PBase_ << std::endl;
-        for (auto bus : busVec_)
+        for (const Bus* bus : busVec_)
         {
             {
                 os << "Bus: " << std::endl;
@@ -104,7 +104,7 @@ namespace Sgt
             {
                 os << "Zips: " << std::endl;
                 StreamIndent _1(os);
-                for (auto zip : bus->zips())
+                for (const ZipAbc* zip : bus->zips())
                 {
                     os << *zip << std::endl;
                 }
@@ -112,13 +112,13 @@ namespace Sgt
             {
                 os << "Gens: " << std::endl;
                 StreamIndent _(os);
-                for (auto gen : bus->gens())
+                for (const GenAbc* gen : bus->gens())
                 {
                     os << *gen << std::endl;
                 }
             }
         }
-        for (auto branch : branchVec_)
+        for (const BranchAbc* branch : branchVec_)
         {
             os << "Branch: " << std::endl;
             StreamIndent _1(os);
@@ -132,7 +132,7 @@ namespace Sgt
     std::unique_ptr<PowerFlowModel> buildModel(const Network& netw)
     {
         std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel);
-        for (const auto bus : netw.busses())
+        for (Bus* bus : netw.busses())
         {
             bool isEnabledSv = bus->setpointChanged().isEnabled();
             bus->setpointChanged().setIsEnabled(false);
@@ -155,7 +155,7 @@ namespace Sgt
             bus->setType(busTypeSv);
             bus->setpointChanged().setIsEnabled(isEnabledSv);
         }
-        for (const auto branch : netw.branches())
+        for (const BranchAbc* branch : netw.branches())
         {
             if (branch->isInService())
             {
@@ -173,7 +173,7 @@ namespace Sgt
         for (const auto& busPair: mod.busses())
         {
             auto& modBus = *busPair.second;
-            const auto bus = netw.bus(modBus.id_);
+            Bus* bus = netw.bus(modBus.id_);
 
             int nInService = bus->nInServiceGens();
 
@@ -192,7 +192,7 @@ namespace Sgt
             switch (bus->type())
             {
                 case BusType::SL:
-                    for (const auto& gen : bus->gens())
+                    for (GenAbc* gen : bus->gens())
                     {
                         if (gen->isInService())
                         {
@@ -203,7 +203,7 @@ namespace Sgt
                 case BusType::PQ:
                     break;
                 case BusType::PV:
-                    for (const auto& gen : bus->gens())
+                    for (GenAbc* gen : bus->gens())
                     {
                         if (gen->isInService())
                         {

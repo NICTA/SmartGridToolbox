@@ -28,7 +28,7 @@ namespace Sgt
 
     /// @brief Sample from discrete distribution with nProbs given probabilities.
     /// @ingroup Utilities
-    double randDiscrete(const double* probs, int nProbs);
+    double randDiscrete(const double probs[], int nProbs);
     /// @brief Sample from normal distribution with given mean and s.d.
     /// @ingroup Utilities
     double randNormal(double mu, double sig);

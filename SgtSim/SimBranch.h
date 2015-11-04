@@ -32,9 +32,9 @@ namespace Sgt
         public:
 
             /// @brief Return the branch that I wrap (const). 
-            virtual const BranchAbc* branch() const = 0;
+            virtual const BranchAbc& branch() const = 0;
             /// @brief Return the branch that I wrap (non-const). 
-            virtual BranchAbc* branch() = 0;
+            virtual BranchAbc& branch() = 0;
 
             /// @brief Do anything I need to do to add myself to the simNetwork.
             ///
@@ -50,21 +50,21 @@ namespace Sgt
     {
         public:
 
-            SimBranch(BranchAbc* branch) :
-                Component(branch->id()),
-                branch_(branch)
+            SimBranch(BranchAbc& branch) :
+                Component(branch.id()),
+                branch_(&branch)
             {
                 // Empty.
             }
 
-            const BranchAbc* branch() const
+            virtual const BranchAbc& branch() const override
             {
-                return branch_;
+                return *branch_;
             }
             
-            BranchAbc* branch()
+            virtual BranchAbc& branch() override
             {
-                return branch_;
+                return *branch_;
             }
 
         private:

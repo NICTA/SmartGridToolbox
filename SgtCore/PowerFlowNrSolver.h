@@ -203,9 +203,9 @@ namespace Sgt
     {
         public:
 
-            virtual void setNetwork(Network* netw) override
+            virtual void setNetwork(Network& netw) override
             {
-                netw_ = netw;
+                netw_ = &netw;
             }
 
             virtual bool solveProblem() override;
@@ -217,7 +217,7 @@ namespace Sgt
 
         private:
 
-            void init(Network* netw);
+            void init(Network& netw);
 
             arma::uword nPqPv() const
             {
