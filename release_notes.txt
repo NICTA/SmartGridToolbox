@@ -1,5 +1,16 @@
-Release Notes for SmartGridToolbox v2.1.0.
-------------------------------------------
+Release Notes for SmartGridToolbox v3.0.0
+-----------------------------------------
+Release 3.0.0 sees major breaking changes to the SmartGridToolbox API. We do
+not anticipate many more changes like this, but have decided to take the
+opportunity to make these changes fairly early on. Most notably, the use of
+shared_ptr has been quarantined to objects (Network, Simulation) that actually
+posess true ownership of components. In conjunction with this change, many
+functions now use pass by reference, rather than the previous pass by (shared)
+pointer. These changes result in a cleaner, more easily understood design that
+is just as safe.
+
+Release Notes for SmartGridToolbox v2.1.0
+-----------------------------------------
 Various updates since previous release (v. 2.0.0b5), including:
 
 * Weather component completely revamped and greatly improved.
