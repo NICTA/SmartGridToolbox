@@ -143,14 +143,14 @@ namespace Sgt
                 return dependencies_;
             }
 
-            /// @brief Add a dependency of dependent on dependency.
-            /// @param comp A SimComponent.
-            /// @param dependsOnComp A SimComponent that depends on comp.
-            /// @param forceUpdate Should an update of dependency force a contingent update of dependent?
-            /// If dependent updates, then this is guaranteed to occur after dependency, so long as there aren't any
-            /// circular dependencies. If forceUpdate is true, then an update of dependency will guarantee (using a
-            /// contingent update) that dependent also updates.
-            static void addDependency(SimComponent& comp, SimComponent& dependsOnComp, bool forceUpdate);
+            /// @brief Add a dependency of one component on another.
+            /// @param comp SimComponent on which `dependentComp` depends.
+            /// @param dependentComp SimComponent that depends on `comp`.
+            /// @param forceUpdate Should an update of `comp` force a contingent update of `dependentComp`?
+            /// If there is an update of `dependentComp`, then it is guaranteed to occur after `comp`, so long as
+            /// there aren't any circular dependencies. If `forceUpdate` is true, then an update of `comp`
+            /// will guarantee (using a contingent update) that `dependentComp` also updates.
+            static void addDependency(SimComponent& comp, SimComponent& dependentComp, bool forceUpdate);
 
             /// @}
 
