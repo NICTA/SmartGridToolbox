@@ -150,16 +150,7 @@ namespace Sgt
             /// If dependent updates, then this is guaranteed to occur after dependency, so long as there aren't any
             /// circular dependencies. If forceUpdate is true, then an update of dependency will guarantee (using a
             /// contingent update) that dependent also updates.
-            static void addDependency(SimComponent& comp, SimComponent& dependsOnComp, bool forceUpdate)
-            {
-                dependsOnComp.dependencies_.push_back(&comp);
-                if (forceUpdate)
-                {
-                    comp.didUpdate().addAction([&dependsOnComp]() {dependsOnComp.needsUpdate().trigger();},
-                            std::string("Add ") + dependsOnComp.componentType() + " " + dependsOnComp.id() 
-                            + " contingent update.");
-                }
-            }
+            static void addDependency(SimComponent& comp, SimComponent& dependsOnComp, bool forceUpdate);
 
             /// @}
 

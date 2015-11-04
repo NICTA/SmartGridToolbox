@@ -41,4 +41,15 @@ namespace Sgt
         lastUpdated_ = t;
         didUpdate_.trigger();
     }
+
+    void SimComponent::addDependency(SimComponent& comp, SimComponent& dependsOnComp, bool forceUpdate)
+    {
+        dependsOnComp.dependencies_.push_back(&comp);
+        if (forceUpdate)
+        {
+            comp.didUpdate().addAction([&dependsOnComp]() {dependsOnComp.needsUpdate().trigger();},
+                    std::string("Add ") + dependsOnComp.componentType() + " " + dependsOnComp.id() 
+                    + " contingent update due to " + comp.id() + ".");
+        }
+    }
 }
