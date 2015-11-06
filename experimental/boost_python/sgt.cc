@@ -1,25 +1,13 @@
-#include <boost/python.hpp>
-
 #include <SgtCore.h>
 #include <SgtSim.h>
 
+#include <boost/iostreams/stream.hpp>
+#include <boost/python.hpp>
+
 #include <iostream>
 
-using namespace boost::python;
-
-void test()
-{
-    using namespace Sgt;
-    Network netw;
-    std::cout << netw.busses().size() << std::endl;
-}
- 
 BOOST_PYTHON_MODULE(sgt)
 {
-    using namespace boost::python;
-    using namespace Sgt;
-    def("test", test);
-    class_<Sgt::Network>("Network")
-        .def(init<double>())
-        .def("print", &Network::print);
+    boost::python::class_<Sgt::Network, boost::noncopyable>("Network", boost::python::init<double>())
+        .def(str(boost::python::self));
 }
