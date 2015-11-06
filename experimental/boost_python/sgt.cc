@@ -14,8 +14,12 @@ void test()
     std::cout << netw.busses().size() << std::endl;
 }
  
-BOOST_PYTHON_MODULE(sgt_python)
+BOOST_PYTHON_MODULE(sgt)
 {
     using namespace boost::python;
+    using namespace Sgt;
     def("test", test);
+    class_<Sgt::Network>("Network")
+        .def(init<double>())
+        .def("print", &Network::print);
 }
