@@ -6,25 +6,42 @@
 
 #include <iostream>
 
+using namespace Sgt;
+using namespace boost::python;
+
+namespace 
+{
+    inline Phases phaseOr(const Phase& pl, const Phase& pr)
+    {
+        return pl | pr;
+    }
+}
+
 BOOST_PYTHON_MODULE(sgt)
 {
-    boost::python::enum_<Sgt::Phase>("Phase")
-        .value("BAL", Sgt::Phase::BAL)
-        .value("A", Sgt::Phase::A)
-        .value("B", Sgt::Phase::B)
-        .value("C", Sgt::Phase::C)
-        .value("G", Sgt::Phase::G)
-        .value("N", Sgt::Phase::N)
-        .value("SP", Sgt::Phase::SP)
-        .value("SM", Sgt::Phase::SM)
-        .value("SN", Sgt::Phase::SN)
-        .value("BAD", Sgt::Phase::BAD);
+    using PyComplex = class_<Complex>;
 
-    boost::python::class_<Sgt::Phases>("Phases", boost::python::init<>())
-        .def(boost::python::init<unsigned int>())
-        .def(boost::python::init<Sgt::Phase>())
-        .def(str(boost::python::self));
+    using PyPhase = enum_<Phase>;
+    PyPhase("Phase")
+        .value("BAL", Phase::BAL)
+        .value("A", Phase::A)
+        .value("B", Phase::B)
+        .value("C", Phase::C)
+        .value("G", Phase::G)
+        .value("N", Phase::N)
+        .value("SP", Phase::SP)
+        .value("SM", Phase::SM)
+        .value("SN", Phase::SN)
+        .value("BAD", Phase::BAD);
 
-    boost::python::class_<Sgt::Network, boost::noncopyable>("Network", boost::python::init<double>())
-        .def(str(boost::python::self));
+    using PyPhases = class_<Phases>;
+    PyPhases("Phases", init<>())
+        .def(init<unsigned int>())
+        .def(init<Phase>())
+        .def(str(self))
+        .def(self | self)
+        .def(self | Phase::BAD); 
+
+    class_<Network, boost::noncopyable>("Network", init<double>())
+        .def(str(self));
 }

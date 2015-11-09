@@ -4,7 +4,7 @@ def main():
     print(sgt.Phase.BAL)
     print(sgt.Phase.A)
     print(sgt.Phases(sgt.Phase.N))
-    print(sgt.Phases(sgt.Phase.A | sgt.Phase.B | sgt.Phase.N))
+    print(phase_or(sgt.Phase.A | sgt.Phase.B))
     netw = sgt.Network(1)
     print(netw)
 
