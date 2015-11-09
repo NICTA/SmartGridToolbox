@@ -61,10 +61,10 @@ namespace Sgt
             /// @name InverterAbc virtual overridden functions.
             /// @{
 
-            virtual void addDcPowerSource(std::shared_ptr<DcPowerSourceAbc> source) override
+            virtual void addDcPowerSource(DcPowerSourceAbc& source) override
             {
                 InverterAbc::addDcPowerSource(source);
-                source->dcPowerChanged().addAction([this]() {PChanged();}, "P changed");
+                source.dcPowerChanged().addAction([this]() {PChanged();}, "P changed");
             }
 
             /// @}
@@ -72,14 +72,14 @@ namespace Sgt
             /// @name SimGenAbc virtual overridden functions.
             /// @{
             
-            virtual std::shared_ptr<const GenAbc> gen() const override
+            virtual const GenAbc& gen() const override
             {
-                return shared<const GenAbc>();
+                return *this;
             }
 
-            virtual std::shared_ptr<GenAbc> gen() override
+            virtual GenAbc& gen() override
             {
-                return shared<GenAbc>();
+                return *this;
             }
 
             /// @}

@@ -54,8 +54,7 @@ int main(int argc, const char ** argv)
     p.registerParserPlugin<PvInverterParserPlugin>();
     p.parse(configName, sim);
     SimNetwork& simNetwork = *sim.simComponent<SimNetwork>("network");
-    Weather& weather = *sim.simComponent<Weather>("weather");
-    Network& network = *simNetwork.network();
+    Network& network = simNetwork.network();
     network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
     sim.initialize();
 
@@ -83,24 +82,24 @@ int main(int argc, const char ** argv)
     std::vector<GenAbc*> otherGens;
     for (auto gen : network.gens())
     {
-        auto inv = std::dynamic_pointer_cast<PvInverter>(gen);
+        auto inv = dynamic_cast<PvInverter*>(gen);
         if (inv != nullptr)
         {
             if (!useQ)
             {
                 inv->setMaxQ(0.0);
             }
-            invs.push_back(inv.get());
+            invs.push_back(inv);
         }
         else
         {
-            otherGens.push_back(gen.get());
+            otherGens.push_back(gen);
         }
     }
 
     auto sumLoad = [&] () {Complex x = 0; for (auto bus : network.busses()) x -= bus->SZip()(0); return x;};
     auto sumGen = [&] () {Complex x = 0; for (auto gen : otherGens) x += gen->S()(0); return x;};
-    auto sumInv = [&] () {Complex x = 0; for (auto inv : invs) x += inv->gen()->S()(0); return x;};
+    auto sumInv = [&] () {Complex x = 0; for (auto inv : invs) x += inv->gen().S()(0); return x;};
     auto minV = [&] () {
         double minV = 100;
         for (auto bus : network.busses())
@@ -133,9 +132,8 @@ int main(int argc, const char ** argv)
         Complex SInvGen = sumInv();
         Complex VMin = minV();
         Complex VMax = maxV();
-        double cloud = weather.cloudCover(sim.currentTime());
         outFile << h << " " << SLoad << " " << SNormalGen << " " << SInvGen << " " 
-                << VMin << " " << VMax << " " << cloud << std::endl;
+            << VMin << " " << VMax << " " << std::endl;
     };
 
     while (!sim.isFinished())
