@@ -1,4 +1,4 @@
-function loads = analyse_loads(case_rel_path, max_factor = 1)
+function analyse(case_rel_path, single_panel_area)
     mpc = loadcase([pwd(), '/', case_rel_path]);
     define_constants;
     n_bus = size(mpc.bus, 1);
@@ -14,16 +14,17 @@ function loads = analyse_loads(case_rel_path, max_factor = 1)
     penetration = 0.2 * ones(size(PSel));
     ave_area = 15;
     a = n_house .* penetration .* ave_area;
+    n_panel = a / single_panel_area;
     MVA_max = n_house .* penetration .* 0.002;
     
     rand('state', 1234); p = randperm(size(id_sel));
     id_perm = id_sel(p);
-    a_perm = a(p);
+    n_panel_perm = int32(n_panel(p));
     MVA_max_perm = MVA_max(p);
 
-    printf('    n_load_busses: %d\n', length(idx_sel));
-    print_int_vec('    load_busses', id_sel);
-    printf('    n_solar_busses: %d\n', length(idx_sel));
-    print_int_vec('    solar_busses', id_perm);
-    print_vec('    solar_area', a_perm);
-    print_vec('    solar_S_mag_max', MVA_max_perm);
+    printf(       '    n_ld_busses: %d\n', length(idx_sel));
+    print_int_vec('    ld_busses', id_sel);
+    printf(       '    n_pv_busses: %d\n', length(idx_sel));
+    print_int_vec('    pv_busses', id_perm);
+    print_int_vec('    pv_n_panel', n_panel_perm);
+    print_vec(    '    pv_S_mag_max', MVA_max_perm);
