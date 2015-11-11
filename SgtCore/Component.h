@@ -92,7 +92,7 @@ namespace Sgt
                 // Empty.
             }
 
-            Component(const Component& from) = default;
+            Component(const Component& from) = delete;
 
             virtual ~Component() = default;
 
