@@ -19,14 +19,6 @@
 #include <SgtSim/SimNetwork.h>
 #include <SgtSim/Weather.h>
 
-void setFlatStart(Sgt::Network& netw)
-{
-    for (auto bus : netw.busses())
-    {
-        bus->setV(bus->VNom());
-    }
-}
-
 int main(int argc, const char ** argv)
 {
     using namespace Sgt;
@@ -56,7 +48,7 @@ int main(int argc, const char ** argv)
     SimNetwork& simNetwork = *sim.simComponent<SimNetwork>("network");
     Network& network = simNetwork.network();
     network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
-    sim.initialize();
+    network.setUsesFlatStart(true);
 
     for (auto bus : network.busses())
     {
@@ -136,14 +128,10 @@ int main(int argc, const char ** argv)
             << VMin << " " << VMax << " " << std::endl;
     };
 
+    sim.initialize();
     while (!sim.isFinished())
     {
-        // Flat start:
-        for (auto bus : network.busses())
-        {
-            bus->setV(bus->VNom());
-        }
-
+        std::cout << sim.currentTime()-sim.startTime() << std::endl;
         sim.doTimestep();
         print();
     }
