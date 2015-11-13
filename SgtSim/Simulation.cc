@@ -221,9 +221,9 @@ namespace Sgt
 
     void Simulation::doTimestep()
     {
-        sgtLogMessage() << "Simulation doTimestep(): " << std::endl;
-        LogIndent indent;
         Time time1 = currentTime_;
+        sgtLogMessage() << "Simulation doTimestep() at time " << time1 << std::endl;
+        LogIndent indent;
         // Do at least one step. This may push us over into the next timestep, in which case we should stop, unless
         // this was the very first timestep.
         doNextUpdate();
