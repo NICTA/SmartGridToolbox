@@ -344,6 +344,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         std::string yamlStr =
             std::string("--- [{matpower : {input_file : matpower_test_cases/") + c + ".m, default_kV_base : 11}}]";
         Network nw(100.0);
+        // nw.setUsesFlatStart(true);
         YAML::Node n = YAML::Load(yamlStr);
         Sgt::Parser<Network> p;
         p.parse(n, nw);
@@ -356,20 +357,26 @@ BOOST_AUTO_TEST_CASE (test_matpower)
 
         ifstream compareName(std::string("mp_compare/") + c + ".compare");
 
+        int nBadV = 0;
+        int nBadS = 0;
         for (auto bus : nw.busses())
         {
             double Vr, Vi, P, Q;
             compareName >> Vr >> Vi >> P >> Q;
+            assert(!compareName.eof());
             Complex V = {Vr, Vi};
             Complex S = {P, Q};
-            BOOST_ASSERT(!compareName.eof());
-            BOOST_CHECK_MESSAGE(std::abs(V - bus->V()(0) / bus->VBase()) < 1e-3,
-                                "V doesn't agree with Matpower at " << bus->type() << " bus " << bus->id() << "\n"
-                                << "    " << bus->V()(0) / bus->VBase() << " : " << V);
-            BOOST_CHECK_MESSAGE(std::abs(S - bus->SGen()(0) - bus->SConst()(0)) / nw.PBase() < 1e-3,
-                                "S doesn't agree with Matpower at " << bus->type() << " bus " << bus->id() << "\n"
-                                << "    " << (bus->SGen()(0) + bus->SConst()(0)) << " : " << S);
+            if (std::abs(V - bus->V()(0) / bus->VBase()) >= 1e-3)
+            {
+                ++nBadV;
+            }
+            if (std::abs(S - bus->SGen()(0) - bus->SConst()(0)) / nw.PBase() >= 1e-3)
+            {
+                ++nBadS;
+            }
         }
+        BOOST_CHECK_MESSAGE(nBadV == 0, c << ": V doesn't agree with Matpower at " << nBadV << " busses.\n");
+        BOOST_CHECK_MESSAGE(nBadS == 0, c << ": S doesn't agree with Matpower at " << nBadS << " busses.\n");
     }
 }
 
