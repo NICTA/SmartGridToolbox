@@ -703,7 +703,7 @@ The $Y$ matrix for this model is defined by the following equation:
 	\begin{bmatrix}\frac{y_a + y_b}{|n|^2} & -\frac{y_a}{n^*} \\ -\frac{y_a}{n} & y_a + y_c \end{bmatrix}
 	\begin{bmatrix}V_0 \\ V_1\end{bmatrix}
 \end{align}
-Normally, $y_b = y_c = -jb_c/2$ for both transformers and transmission lines, as per the {\sc Matpower} manual. For a transmission line, $b_c$ is a capacitative admittance, and is positive, and for a transformer, $b_c$ is an inductive admittance and is negative. For both transformers and lines, $y_a$ has a real positive part (corresponding to the resistance) and a negative imaginary part (an inductive admittance).
+Normally, $y_b = y_c = jb_c/2$ for both transformers and transmission lines, as per the {\sc Matpower} manual. For a transmission line, $b_c$ is a capacitative susceptance, and is positive, and for a transformer, $b_c$ is an inductive susceptance and is negative. For both transformers and lines, $y_a$ has a real positive part (a resistive conductance) and a negative imaginary part (an inductive susceptance).
 
 \section{Units and the per-unit system}
 The following self-consistent system of units is often used in modelling electricity networks:
