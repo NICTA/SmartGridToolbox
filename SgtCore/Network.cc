@@ -131,7 +131,7 @@ namespace Sgt
 
     std::unique_ptr<PowerFlowModel> buildModel(const Network& netw)
     {
-        std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel);
+        std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel(netw.busses().size(), netw.branches().size()));
         for (Bus* bus : netw.busses())
         {
             if (bus->isInService())

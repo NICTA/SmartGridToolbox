@@ -35,8 +35,8 @@ namespace Sgt
         typedef std::vector<std::unique_ptr<PfNode>> PfNodeVec;
 
         PfBus(const std::string& id, BusType type, const Phases& phases,
-              const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
-              double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S);
+                const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
+                double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S);
 
         std::string id_; ///< Externally relevant id.
         BusType type_{BusType::BAD}; ///< Bus type.
@@ -54,7 +54,7 @@ namespace Sgt
         arma::Col<Complex> V_; ///< Voltage, one per phase. Setpoint/warm start on input.
         arma::Col<Complex> S_; ///< Total power injection, one per phase. Setpt/wm start on input.
 
-        PfNodeVec nodes_; ///< Nodes, one per phase.
+        PfNodeVec nodeVec_; ///< Nodes, one per phase.
     };
 
     struct PfNode
@@ -78,7 +78,7 @@ namespace Sgt
     struct PfBranch
     {
         PfBranch(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
-                 const arma::Mat<Complex>& Y);
+                const arma::Mat<Complex>& Y);
 
         std::size_t nPhase_{0}; ///< Number of phases.
         Array<std::string, 2> ids_; ///< Id of bus 0/1
@@ -98,13 +98,20 @@ namespace Sgt
 
         public:
 
-        /// @name Bus, branch and node accessors.
-        /// @{
+            /// @name Lifecycle
+            /// @{
+            
+            PowerFlowModel(size_t nBus, size_t nBranch);
+            
+            /// @}
+
+            /// @name Bus, branch and node accessors.
+            /// @{
 
             void addBus(const std::string& id, BusType type, const Phases& phases,
-                        const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst,
-                        const arma::Col<Complex>& SConst, double J, const arma::Col<Complex>& V,
-                        const arma::Col<Complex>& S);
+                    const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst,
+                    const arma::Col<Complex>& SConst, double J, const arma::Col<Complex>& V,
+                    const arma::Col<Complex>& S);
 
             const PfBusMap& busMap() const
             {
@@ -125,40 +132,39 @@ namespace Sgt
             }
 
             void addBranch(const std::string& idBus0, const std::string& idBus1,
-                           const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& Y);
+                    const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& Y);
 
-            const PfBranchVec& branches() const
+            const PfBranchVec& branchVec() const
             {
-                return branches_;
+                return branchVec_;
             }
-            PfBranchVec& branches()
+            PfBranchVec& branchVec()
             {
-                return branches_;
-            }
-
-            const PfNodeVec& nodes() const
-            {
-                return nodes_;
-            }
-            PfNodeVec& nodes()
-            {
-                return nodes_;
+                return branchVec_;
             }
 
-        /// @}
+            const PfNodeVec& nodeVec() const
+            {
+                return nodeVec_;
+            }
+            PfNodeVec& nodeVec()
+            {
+                return nodeVec_;
+            }
 
-        /// @name Setup etc.
-        /// @{
+            /// @}
 
-            void reset();
+            /// @name Setup etc.
+            /// @{
+
             void validate();
             void print();
 
-        /// @}
+            /// @}
 
-        /// @name Y matrix.
-        /// This absorbs any constant admittance ZIP components.
-        /// @{
+            /// @name Y matrix.
+            /// This absorbs any constant admittance ZIP components.
+            /// @{
 
             const arma::SpMat<Complex>& Y() const
             {
@@ -169,15 +175,16 @@ namespace Sgt
                 return Y_;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Vectors.
-        /// SL node: V is a setpoint, S is a warm start.
-        /// PQ node: V is a warm start, S is a setpoint.
-        /// PV node: |V| is a setpoint, arg(V) is a warm start, P is a setpoint, Q is a warm start.
-        /// Note that P includes both load and generation and thus may include constant power components of ZIPs.
-        /// For example, for a slack bus with a constant S load, P represents the generated power minus the load draw.
-        /// @{
+            /// @name Vectors.
+            /// SL node: V is a setpoint, S is a warm start.
+            /// PQ node: V is a warm start, S is a setpoint.
+            /// PV node: |V| is a setpoint, arg(V) is a warm start, P is a setpoint, Q is a warm start.
+            /// Note that P includes both load and generation and thus may include constant power components of ZIPs.
+            /// For example, for a slack bus with a constant S load, P represents the generated power minus the load
+            /// draw.
+            /// @{
 
             const arma::Col<Complex>& V() const ///< Voltage.
             {
@@ -206,15 +213,15 @@ namespace Sgt
                 return IConst_;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Count nodes of different types.
-        /// Nodes are ordered as: SL first, then PQ, then PV.
-        /// @{
+            /// @name Count nodes of different types.
+            /// Nodes are ordered as: SL first, then PQ, then PV.
+            /// @{
 
             std::size_t nNode()
             {
-                return nodes_.size();
+                return nodeVec_.size();
             }
             std::size_t nPq()
             {
@@ -229,10 +236,10 @@ namespace Sgt
                 return nSl_;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Ordering of variables etc.
-        /// @{
+            /// @name Ordering of variables etc.
+            /// @{
 
             // Note: a more elegant general solution to ordering would be to use matrix_slice. But assigning into
             // a matrix slice of a compressed_matrix appears to destroy the sparsity. MatrixRange works, but does not
@@ -273,45 +280,45 @@ namespace Sgt
                 return arma::span(0, arma::uword(nSl_ + nPq_ + nPv_ - 1));
             }
 
-        /// @}
+            /// @}
 
         private:
 
-        /// @name vector of busses and branches.
-        /// @{
+            /// @name vector of busses and branches.
+            /// @{
 
             PfBusMap busMap_;
             PfBusVec busVec_;
-            PfBranchVec branches_;
-            PfNodeVec nodes_; // NOT owned by me - they are owned by their parent Busses.
+            PfBranchVec branchVec_;
+            PfNodeVec nodeVec_; // NOT owned by me - they are owned by their parent Busses.
 
-        /// @}
+            /// @}
 
-        /// @name Array bounds.
-        /// @{
+            /// @name Array bounds.
+            /// @{
 
             std::size_t nSl_; ///< Number of SL nodes.
             std::size_t nPq_; ///< Number of PQ nodes.
             std::size_t nPv_; ///< Number of PV nodes.
 
-        /// @}
+            /// @}
 
-        /// @name Y matrix.
-        /// @{
+            /// @name Y matrix.
+            /// @{
 
             arma::SpMat<Complex> Y_; ///< Y matrix.
 
-        /// @}
+            /// @}
 
-        /// @name Vectors per node.
-        /// @{
+            /// @name Vectors per node.
+            /// @{
 
             arma::Col<Complex> V_; ///< Complex voltage.
             arma::Col<Complex> S_; ///< Complex power injection = S_zip + S_gen
             arma::Col<Complex> IConst_; ///< Complex current.
 
-        /// @}
+            /// @}
     };
-}
+    }
 
 #endif // POWERFLOW_MODEL_DOT_H

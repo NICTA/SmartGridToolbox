@@ -42,7 +42,7 @@ namespace Sgt
 
         for (std::size_t i = 0; i < phases.size(); ++i)
         {
-            nodes_.push_back(std::unique_ptr<PfNode>(new PfNode(*this, i)));
+            nodeVec_.push_back(std::unique_ptr<PfNode>(new PfNode(*this, i)));
         }
     }
 
@@ -71,6 +71,13 @@ namespace Sgt
         assert(Y.n_cols == nTerm);
     }
 
+    PowerFlowModel::PowerFlowModel(size_t nBus, size_t nBranch)
+    {
+        sgtLogDebug() << "PowerFlowModel : constructor." << std::endl;
+        busVec_.reserve(nBus);
+        branchVec_.reserve(nBranch);
+    }
+
     void PowerFlowModel::addBus(const std::string& id, BusType type, const Phases& phases,
             const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
             double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S)
@@ -85,15 +92,7 @@ namespace Sgt
                                    const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& Y)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "PowerFlowModel : addBranch " << idBus0 << " " << idBus1 << std::endl;
-        branches_.push_back(std::unique_ptr<PfBranch>(new PfBranch(idBus0, idBus1, phases0, phases1, Y)));
-    }
-
-    void PowerFlowModel::reset()
-    {
-        sgtLogDebug() << "PowerFlowModel : reset." << std::endl;
-        busMap_ = PfBusMap();
-        busVec_ = PfBusVec();
-        branches_ = PfBranchVec();
+        branchVec_.push_back(std::unique_ptr<PfBranch>(new PfBranch(idBus0, idBus1, phases0, phases1, Y)));
     }
 
     void PowerFlowModel::validate()
@@ -125,7 +124,7 @@ namespace Sgt
             {
                 sgtError("Unsupported bus type " << to_string(bus->type_) << ".");
             }
-            for (const std::unique_ptr<PfNode>& node : bus->nodes_)
+            for (const std::unique_ptr<PfNode>& node : bus->nodeVec_)
             {
                 vec->push_back(node.get());
             }
@@ -136,25 +135,25 @@ namespace Sgt
         nPv_ = PvNodes.size();
 
         // Insert nodes into ordered list of all nodes. Be careful of ordering!
-        nodes_ = PfNodeVec();
-        nodes_.reserve(nPq_ + nPv_ + nSl_);
-        nodes_.insert(nodes_.end(), SlNodes.begin(), SlNodes.end());
-        nodes_.insert(nodes_.end(), PqNodes.begin(), PqNodes.end());
-        nodes_.insert(nodes_.end(), PvNodes.begin(), PvNodes.end());
+        nodeVec_ = PfNodeVec();
+        nodeVec_.reserve(nPq_ + nPv_ + nSl_);
+        nodeVec_.insert(nodeVec_.end(), SlNodes.begin(), SlNodes.end());
+        nodeVec_.insert(nodeVec_.end(), PqNodes.begin(), PqNodes.end());
+        nodeVec_.insert(nodeVec_.end(), PvNodes.begin(), PvNodes.end());
 
         // Index all nodes:
-        for (std::size_t i = 0; i < nodes_.size(); ++i)
+        for (std::size_t i = 0; i < nodeVec_.size(); ++i)
         {
-            nodes_[i]->idx_ = i;
+            nodeVec_[i]->idx_ = i;
         }
 
-        auto nNode = nodes_.size();
+        auto nNode = nodeVec_.size();
 
         // Bus admittance matrix:
         SparseHelper<Complex> YHelper(nNode, nNode, true, true, true);
 
         // Branch admittances:
-        for (const std::unique_ptr<PfBranch>& branch : branches_)
+        for (const std::unique_ptr<PfBranch>& branch : branchVec_)
         {
             auto it0 = busMap_.find(branch->ids_[0]);
             sgtAssert(it0 != busMap_.end(), "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] 
@@ -172,7 +171,7 @@ namespace Sgt
                 auto branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
                 const PfBus* busI = busses[busIdxI];
                 auto busPhaseIdxI = busI->phases_.phaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
-                const PfNode* nodeI = busI->nodes_[busPhaseIdxI].get();
+                const PfNode* nodeI = busI->nodeVec_[busPhaseIdxI].get();
                 auto idxNodeI = nodeI->idx_;
 
                 // Only count each diagonal element in branch->Y_ once!
@@ -184,7 +183,7 @@ namespace Sgt
                     auto branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
                     const PfBus* busK = busses[busIdxK];
                     auto busPhaseIdxK = busK->phases_.phaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
-                    const PfNode* nodeK = busK->nodes_[busPhaseIdxK].get();
+                    const PfNode* nodeK = busK->nodeVec_[busPhaseIdxK].get();
                     auto idxNodeK = nodeK->idx_;
 
                     YHelper.insert(idxNodeI, idxNodeK, branch->Y_(i, k));
@@ -196,7 +195,7 @@ namespace Sgt
         // Add shunt terms:
         for (arma::uword i = 0; i < nNode; ++i)
         {
-            YHelper.insert(i, i, nodes_[i]->YConst_);
+            YHelper.insert(i, i, nodeVec_[i]->YConst_);
         }
 
         Y_ = YHelper.get();
@@ -210,7 +209,7 @@ namespace Sgt
 
         for (arma::uword i = 0; i < nNode; ++i)
         {
-            const PfNode& node = *nodes_[i];
+            const PfNode& node = *nodeVec_[i];
             V_(i) = node.V_;
             S_(i) = node.S_;
             IConst_(i) = node.IConst_;
@@ -230,7 +229,7 @@ namespace Sgt
         sgtLogDebug() << "Nodes:" << std::endl;
         {
             LogIndent indent;
-            for (const PfNode* nd : nodes_)
+            for (const PfNode* nd : nodeVec_)
             {
                 sgtLogDebug() << "Node:" << std::endl;
                 {
@@ -249,7 +248,7 @@ namespace Sgt
         sgtLogDebug() << "Branches:" << std::endl;
         {
             LogIndent indent;
-            for (const std::unique_ptr<PfBranch>& branch : branches_)
+            for (const std::unique_ptr<PfBranch>& branch : branchVec_)
             {
                 sgtLogDebug() << "Branch:" << std::endl;
                 {

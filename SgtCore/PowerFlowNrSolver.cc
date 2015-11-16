@@ -315,7 +315,7 @@ namespace Sgt
             sgtLogWarning() << "PowerFlowNrSolver: Newton-Raphson method failed to converge." << std::endl;
             for (std::size_t i = 0; i < mod_->nNode(); ++i)
             {
-                auto node = mod_->nodes()[i];
+                auto node = mod_->nodeVec()[i];
                 node->V_ = 0;
                 node->S_ = 0;
                 node->bus_->V_[node->phaseIdx_] = node->V_;
@@ -348,7 +348,7 @@ namespace Sgt
         // Update nodes and busses.
         for (uword i = 0; i < mod_->nNode(); ++i)
         {
-            auto node = mod_->nodes()[i];
+            auto node = mod_->nodeVec()[i];
             node->V_ = mod_->V()(i);
             node->S_ = mod_->S()(i);
             node->bus_->V_[node->phaseIdx_] = node->V_;
