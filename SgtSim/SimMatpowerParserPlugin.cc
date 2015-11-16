@@ -34,25 +34,25 @@ namespace Sgt
         // Now recreate the SimNetwork from the Network.
         for (auto bus : netw.busses())
         {
-            auto simBus = sim.newSimComponent<SimBus>(*bus);
+            auto simBus = sim.newSimComponent<SimBus>(bus->id(), *bus);
             simBus->linkToSimNetwork(*simNetw);
 
             for (auto gen : bus->gens())
             {
-                auto simGen = sim.newSimComponent<SimGen>(*gen);
+                auto simGen = sim.newSimComponent<SimGen>(gen->id(), *gen);
                 simGen->linkToSimNetwork(*simNetw);
             }
 
             for (auto zip : bus->zips())
             {
-                auto simZip = sim.newSimComponent<SimZip>(*zip);
+                auto simZip = sim.newSimComponent<SimZip>(zip->id(), *zip);
                 simZip->linkToSimNetwork(*simNetw);
             }
         }
 
         for (auto branch : netw.branches())
         {
-            auto simBranch = sim.newSimComponent<SimBranch>(*branch);
+            auto simBranch = sim.newSimComponent<SimBranch>(branch->id(), *branch);
             simBranch->linkToSimNetwork(*simNetw);
         }
     }

@@ -42,8 +42,10 @@ namespace Sgt
         netwNode.push_back(genNode);
         NetworkParser p = parser.subParser<Network>();
         p.parse(netwNode, network);
-        auto gen = network.gen(id);
-        auto simGen = sim.newSimComponent<SimGen>(*gen);
+        auto& gens = network.gens();
+        sgtAssert(gens.size() == 1, "Parsing SimGen " << id << ": must specify exactly one gen.");
+        auto gen = gens[0];
+        auto simGen = sim.newSimComponent<SimGen>(id, *gen);
         simGen->linkToSimNetwork(*simNetwork);
     }
 }

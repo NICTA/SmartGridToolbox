@@ -41,8 +41,10 @@ namespace Sgt
         netwNode.push_back(branchNode);
         NetworkParser p = parser.subParser<Network>();
         p.parse(netwNode, network);
-        auto branch = network.branch(id);
-        auto simBranch = sim.newSimComponent<SimBranch>(*branch);
+        auto& branches = network.branches();
+        sgtAssert(branches.size() == 1, "Parsing SimBranch " << id << ": must specify exactly one branch.");
+        auto branch = branches[0];
+        auto simBranch = sim.newSimComponent<SimBranch>(id, *branch);
         simBranch->linkToSimNetwork(*simNetwork);
     }
 }

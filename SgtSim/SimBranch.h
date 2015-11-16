@@ -50,8 +50,8 @@ namespace Sgt
     {
         public:
 
-            SimBranch(BranchAbc& branch) :
-                Component(branch.id()),
+            SimBranch(const std::string& id, BranchAbc& branch) :
+                Component(id),
                 branch_(&branch)
             {
                 // Empty.

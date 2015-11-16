@@ -48,8 +48,8 @@ namespace Sgt
     {
         public:
 
-            SimGen(GenAbc& gen) :
-                Component(gen.id()),
+            SimGen(const std::string& id, GenAbc& gen) :
+                Component(id),
                 gen_(&gen)
             {
                 // Empty.

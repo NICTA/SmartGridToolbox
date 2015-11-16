@@ -52,9 +52,8 @@ namespace Sgt
     {
         public:
 
-            SimBus(Bus& bus) :
-                Component(bus.id()),
-                SimComponent(),
+            SimBus(const std::string& id, Bus& bus) :
+                Component(id),
                 bus_(&bus)
             {
                 // Empty.

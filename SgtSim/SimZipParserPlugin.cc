@@ -42,8 +42,10 @@ namespace Sgt
         netwNode.push_back(zipNode);
         NetworkParser p = parser.subParser<Network>();
         p.parse(netwNode, network);
-        auto zip = network.zip(id);
-        auto simZip = sim.newSimComponent<SimZip>(*zip);
+        auto& zips = network.zips();
+        sgtAssert(zips.size() == 1, "Parsing SimZip " << id << ": must specify exactly one zip.");
+        auto zip = zips[0];
+        auto simZip = sim.newSimComponent<SimZip>(id, *zip);
         simZip->linkToSimNetwork(*simNetwork);
     }
 }

@@ -15,12 +15,15 @@ namespace
     {
         return pl | pr;
     }
+
+    inline Complex test()
+    {
+        return {0.1, 0.9};
+    }
 }
 
 BOOST_PYTHON_MODULE(sgt)
 {
-    using PyComplex = class_<Complex>;
-
     using PyPhase = enum_<Phase>;
     PyPhase("Phase")
         .value("BAL", Phase::BAL)
@@ -38,10 +41,13 @@ BOOST_PYTHON_MODULE(sgt)
     PyPhases("Phases", init<>())
         .def(init<unsigned int>())
         .def(init<Phase>())
+        .def("__init__", make_constructor(phaseOr))
         .def(str(self))
         .def(self | self)
-        .def(self | Phase::BAD); 
+        .def(self | Phase::BAD);
 
     class_<Network, boost::noncopyable>("Network", init<double>())
         .def(str(self));
+
+    def("test", test);
 }

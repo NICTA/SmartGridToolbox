@@ -48,8 +48,8 @@ namespace Sgt
     {
         public:
 
-            SimZip(ZipAbc& zip) :
-                Component(zip.id()),
+            SimZip(const std::string& id, ZipAbc& zip) :
+                Component(id),
                 zip_(&zip)
             {
                 // Empty.
