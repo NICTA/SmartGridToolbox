@@ -317,9 +317,9 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         "nesta_case189_edin",
         "nesta_case300_ieee",
         "nesta_case1354_pegase",
-        // "nesta_case1394sop_eir", // Needs investigation, see GitHub Issues.
-        // "nesta_case1397sp_eir", // Needs investigation, see GitHub Issues.
-        // "nesta_case1460wp_eir", // Needs investigation, see GitHub Issues.
+        "nesta_case1394sop_eir",
+        "nesta_case1397sp_eir",
+        "nesta_case1460wp_eir",
         "nesta_case2224_edin",
         "nesta_case2383wp_mp",
         "nesta_case2736sp_mp",

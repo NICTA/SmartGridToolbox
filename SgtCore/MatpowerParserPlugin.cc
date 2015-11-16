@@ -423,6 +423,7 @@ namespace Sgt
             std::unique_ptr<Bus> bus(
                 new Bus(busId, Phase::BAL, {VScale * Complex(busInfo.kVBase, 0.0)}, PScale * busInfo.kVBase));
             BusType type = BusType::BAD;
+            bool isInService = true;
             switch (busInfo.type)
             {
                 case 1:
@@ -434,10 +435,15 @@ namespace Sgt
                 case 3:
                     type = BusType::SL;
                     break;
+                case 4:
+                    type = BusType::BAD;
+                    isInService = false;
+                    break;
                 default:
                     break;
             }
             bus->setType(type);
+            bus->setIsInService(isInService);
 
             bus->setVMagMin(busInfo.VMagMin <= -infinity
                     ? -infinity
@@ -445,8 +451,6 @@ namespace Sgt
             bus->setVMagMax(busInfo.VMagMax >= infinity
                     ? infinity
                     : VScale * pu2kV(busInfo.VMagMax, busInfo.kVBase));
-
-            bus->setIsInService(true);
 
             double VMag = pu2kV(busInfo.VMag, busInfo.kVBase);
             double VAng = deg2Rad(busInfo.VAngDeg);

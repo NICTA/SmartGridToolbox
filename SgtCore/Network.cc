@@ -134,30 +134,33 @@ namespace Sgt
         std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel);
         for (Bus* bus : netw.busses())
         {
-            bool isEnabledSv = bus->setpointChanged().isEnabled();
-            bus->setpointChanged().setIsEnabled(false);
-            BusType busTypeSv = bus->type();
-            if (bus->type() != BusType::PQ)
+            if (bus->isInService())
             {
-                if (bus->nInServiceGens() == 0)
+                bool isEnabledSv = bus->setpointChanged().isEnabled();
+                bus->setpointChanged().setIsEnabled(false);
+                BusType busTypeSv = bus->type();
+                if (bus->type() != BusType::PQ)
                 {
-                    sgtLogWarning(LogLevel::VERBOSE) << "Bus " << bus->id() << " has type " << bus->type()
-                        << ", but does not have any in service generators. Temporarily setting type to PQ."
-                        << std::endl;
-                    bus->setType(BusType::PQ);
+                    if (bus->nInServiceGens() == 0)
+                    {
+                        sgtLogWarning(LogLevel::VERBOSE) << "Bus " << bus->id() << " has type " << bus->type()
+                            << ", but does not have any in service generators. Temporarily setting type to PQ."
+                            << std::endl;
+                        bus->setType(BusType::PQ);
+                    }
                 }
+
+                bus->applyVSetpoints();
+                mod->addBus(bus->id(), bus->type(), bus->phases(), bus->YConst(), bus->IConst(), bus->SConst(),
+                        bus->JGen(), bus->V(), bus->SGenRequested() + bus->SConst());
+
+                bus->setType(busTypeSv);
+                bus->setpointChanged().setIsEnabled(isEnabledSv);
             }
-
-            bus->applyVSetpoints();
-            mod->addBus(bus->id(), bus->type(), bus->phases(), bus->YConst(), bus->IConst(), bus->SConst(),
-                    bus->JGen(), bus->V(), bus->SGenRequested() + bus->SConst());
-
-            bus->setType(busTypeSv);
-            bus->setpointChanged().setIsEnabled(isEnabledSv);
         }
         for (const BranchAbc* branch : netw.branches())
         {
-            if (branch->isInService())
+            if (branch->isInService() && branch->bus0()->isInService() && branch->bus1()->isInService())
             {
                 // TODO: ignore like this, or add the branch with zero admittance?
                 mod->addBranch(branch->bus0()->id(), branch->bus1()->id(),
