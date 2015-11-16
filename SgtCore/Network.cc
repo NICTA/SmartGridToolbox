@@ -173,7 +173,7 @@ namespace Sgt
 
     void applyModel(const PowerFlowModel& mod, Network& netw)
     {
-        for (const auto& busPair: mod.busses())
+        for (const auto& busPair: mod.busMap())
         {
             auto& modBus = *busPair.second;
             Bus* bus = netw.bus(modBus.id_);

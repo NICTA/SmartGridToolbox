@@ -51,18 +51,7 @@ int main(int argc, char** argv)
     auto outFBranch = std::fopen((outPrefix + ".branch").c_str(), "w+");
     std::map<std::string, int> busMap;
 
-    if (!warm_start)
-    {
-        std::cout << "Using cold start" << std::endl;
-        for (auto bus : nw.busses())
-        {
-            bus->setV(bus->VNom());
-        }
-    }
-    else
-    {
-        std::cout << "Using warm start" << std::endl;
-    }
+    nw.setUsesFlatStart(!warm_start);
 
     auto print = [&]()
     {

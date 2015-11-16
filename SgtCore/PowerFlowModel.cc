@@ -76,7 +76,9 @@ namespace Sgt
             double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "PowerFlowModel : add bus " << id << std::endl;
-        busses_[id].reset(new PfBus(id, type, phases, YConst, IConst, SConst, J, V, S));
+        std::unique_ptr<PfBus> bus(new PfBus(id, type, phases, YConst, IConst, SConst, J, V, S));
+        busVec_.push_back(bus.get());
+        busMap_[id] = std::move(bus);
     }
 
     void PowerFlowModel::addBranch(const std::string& idBus0, const std::string& idBus1,
@@ -89,7 +91,8 @@ namespace Sgt
     void PowerFlowModel::reset()
     {
         sgtLogDebug() << "PowerFlowModel : reset." << std::endl;
-        busses_ = PfBusMap();
+        busMap_ = PfBusMap();
+        busVec_ = PfBusVec();
         branches_ = PfBranchVec();
     }
 
@@ -99,31 +102,30 @@ namespace Sgt
         LogIndent indent;
 
         // Make Nodes:
-        PfNodeVec PqNodes = PfNodeVec();
-        PfNodeVec PvNodes = PfNodeVec();
-        PfNodeVec SlNodes = PfNodeVec();
+        PfNodeVec PqNodes;
+        PfNodeVec PvNodes;
+        PfNodeVec SlNodes;
 
-        for (auto& busPair : busses_)
+        for (auto bus : busVec_)
         {
-            PfBus& bus = *busPair.second;
             PfNodeVec* vec = nullptr;
-            if (bus.type_ == BusType::PQ)
+            if (bus->type_ == BusType::PQ)
             {
                 vec = &PqNodes;
             }
-            else if (bus.type_ == BusType::PV)
+            else if (bus->type_ == BusType::PV)
             {
                 vec = &PvNodes;
             }
-            else if (bus.type_ == BusType::SL)
+            else if (bus->type_ == BusType::SL)
             {
                 vec = &SlNodes;
             }
             else
             {
-                sgtError("Unsupported bus type " << to_string(bus.type_) << ".");
+                sgtError("Unsupported bus type " << to_string(bus->type_) << ".");
             }
-            for (const std::unique_ptr<PfNode>& node : bus.nodes_)
+            for (const std::unique_ptr<PfNode>& node : bus->nodes_)
             {
                 vec->push_back(node.get());
             }
@@ -151,15 +153,14 @@ namespace Sgt
         // Bus admittance matrix:
         SparseHelper<Complex> YHelper(nNode, nNode, true, true, true);
 
-
         // Branch admittances:
         for (const std::unique_ptr<PfBranch>& branch : branches_)
         {
-            auto it0 = busses_.find(branch->ids_[0]);
-            sgtAssert(it0 != busses_.end(), "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] 
+            auto it0 = busMap_.find(branch->ids_[0]);
+            sgtAssert(it0 != busMap_.end(), "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] 
                     << " contains a non-existent bus " << branch->ids_[0] << ".");
-            auto it1 = busses_.find(branch->ids_[1]);
-            sgtAssert(it1 != busses_.end(), "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] 
+            auto it1 = busMap_.find(branch->ids_[1]);
+            sgtAssert(it1 != busMap_.end(), "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] 
                     << " contains a non-existent bus " << branch->ids_[1] << ".");
             const PfBus* busses[] = {it0->second.get(), it1->second.get()};
             auto nTerm = 2 * branch->nPhase_;

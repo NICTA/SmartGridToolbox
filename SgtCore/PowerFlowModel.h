@@ -92,6 +92,7 @@ namespace Sgt
     {
         public:
             typedef std::map<std::string, std::unique_ptr<PfBus>> PfBusMap;
+            typedef std::vector<PfBus*> PfBusVec;
             typedef std::vector<std::unique_ptr<PfBranch>> PfBranchVec;
             typedef std::vector<PfNode*> PfNodeVec;
 
@@ -105,13 +106,22 @@ namespace Sgt
                         const arma::Col<Complex>& SConst, double J, const arma::Col<Complex>& V,
                         const arma::Col<Complex>& S);
 
-            const PfBusMap& busses() const
+            const PfBusMap& busMap() const
             {
-                return busses_;
+                return busMap_;
             }
-            PfBusMap& busses()
+            PfBusMap& busMap()
             {
-                return busses_;
+                return busMap_;
+            }
+
+            const PfBusVec& busVec() const
+            {
+                return busVec_;
+            }
+            PfBusVec& busVec()
+            {
+                return busVec_;
             }
 
             void addBranch(const std::string& idBus0, const std::string& idBus1,
@@ -270,7 +280,8 @@ namespace Sgt
         /// @name vector of busses and branches.
         /// @{
 
-            PfBusMap busses_;
+            PfBusMap busMap_;
+            PfBusVec busVec_;
             PfBranchVec branches_;
             PfNodeVec nodes_; // NOT owned by me - they are owned by their parent Busses.
 
