@@ -20,7 +20,7 @@
     timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra.
 - time_series:
     id: cloud_cover_series
-    value_type: real_scalar 
+    value_type: real_vector
     type: data_time_series
     data_file: data/cloud.txt
     relative_to_time: <start_time>                                                        
@@ -28,8 +28,11 @@
     interp_type: lerp                 
 - weather:
     id: weather
-    cloud_cover: cloud_cover_series
     dt: 00:20:00
+    irradiance: 
+        solar_model: standard
+    cloud_attenuation_factors:
+        series: cloud_cover_series
 - sim_network: 
     id: network # All components have a unique "id" (name).
     P_base: 1 # Base power for per unit.
