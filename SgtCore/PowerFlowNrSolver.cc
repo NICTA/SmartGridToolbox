@@ -30,48 +30,6 @@ using namespace arma;
 
 namespace
 {
-    SpMat<double> real(const SpMat<Complex>& cMat)
-    {
-        Col<uword> rowInd(cMat.n_nonzero + 1, fill::none);
-        for (uword i = 0; i < cMat.n_nonzero + 1; ++i)
-        {
-            rowInd(i) = cMat.row_indices[i];
-        }
-        Col<uword> colPtr(cMat.n_cols + 1, fill::none);
-        for (uword i = 0; i < cMat.n_cols + 1; ++i)
-        {
-            colPtr(i) = cMat.col_ptrs[i];
-        }
-        Col<double> values(cMat.n_nonzero + 1, fill::none);
-        for (uword i = 0; i < cMat.n_nonzero + 1; ++i)
-        {
-            values(i) = cMat.values[i].real();
-        }
-        SpMat<double> result(rowInd, colPtr, values, cMat.n_rows, cMat.n_cols);
-        return result;
-    }
-
-    SpMat<double> imag(const SpMat<Complex>& cMat)
-    {
-        Col<uword> rowInd(cMat.n_nonzero + 1, fill::none);
-        for (uword i = 0; i < cMat.n_nonzero + 1; ++i)
-        {
-            rowInd(i) = cMat.row_indices[i];
-        }
-        Col<uword> colPtr(cMat.n_cols + 1, fill::none);
-        for (uword i = 0; i < cMat.n_cols + 1; ++i)
-        {
-            colPtr(i) = cMat.col_ptrs[i];
-        }
-        Col<double> values(cMat.n_nonzero + 1, fill::none);
-        for (uword i = 0; i < cMat.n_nonzero + 1; ++i)
-        {
-            values(i) = cMat.values[i].imag();
-        }
-        SpMat<double> result(rowInd, colPtr, values, cMat.n_rows, cMat.n_cols);
-        return result;
-    }
-
     template<typename T> Col<Complex> colConj(const T& from)
     {
         Col<Complex> result(from.n_elem, fill::none);
@@ -93,7 +51,7 @@ namespace
 
 namespace Sgt
 {
-    Jacobian::Jacobian(arma::uword nPq, arma::uword nPv)
+    Jacobian::Jacobian(uword nPq, uword nPv)
     {
         for (std::size_t i = 0; i < 2; ++i)
         {
@@ -557,7 +515,7 @@ namespace Sgt
         // Block diagonal:
         for (uword i = 0; i < mod_->nPq(); ++i)
         {
-            arma::uword iPqi = mod_->iPq(i);
+            uword iPqi = mod_->iPq(i);
 
             double PVr_p_QVi = P(iPqi) * Vr(iPqi) + Q(iPqi) * Vi(iPqi);
             double PVi_m_QVr = P(iPqi) * Vi(iPqi) - Q(iPqi) * Vr(iPqi);
@@ -577,7 +535,7 @@ namespace Sgt
         // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
         for (uword i = 0; i < mod_->nPv(); ++i)
         {
-            arma::uword iPvi = mod_->iPv(i);
+            uword iPvi = mod_->iPv(i);
 
             J.IrPvVrPv()(i, i) = Jc.IrPvVrPv()(i, i) + P(iPvi) / M2Pv(i); // Could -> Jc if we wanted.
             J.IrPvViPv()(i, i) = Jc.IrPvViPv()(i, i) + Q(iPvi) / M2Pv(i);
@@ -654,8 +612,8 @@ namespace Sgt
 
                 for (auto it = block.begin(); it != block.end(); ++it)
                 {
-                    arma::uword i1 = sl1(it.row());
-                    arma::uword k1 = sl2(it.col());
+                    uword i1 = sl1(it.row());
+                    uword k1 = sl2(it.col());
                     helper.insert(i1, k1, *it);
                 }
                 JMat += helper.get();
