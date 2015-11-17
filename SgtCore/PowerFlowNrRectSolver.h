@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef POWER_FLOW_NR_SOLVER_DOT_H
-#define POWER_FLOW_NR_SOLVER_DOT_H
+#ifndef POWER_FLOW_NR_RECT_SOLVER_DOT_H
+#define POWER_FLOW_NR_RECT_SOLVER_DOT_H
 
 #include "Common.h"
 #include "PowerFlowModel.h"
@@ -199,7 +199,7 @@ namespace Sgt
 
     /// @brief Newton-Raphson AC power flow solver.
     /// @ingroup PowerFlowCore
-    class PowerFlowNrSolver : public PowerFlowSolverInterface
+    class PowerFlowNrRectSolver : public PowerFlowSolverInterface
     {
         public:
 
@@ -272,4 +272,4 @@ namespace Sgt
     };
 }
 
-#endif // POWER_FLOW_NR_SOLVER_DOT_H
+#endif // POWER_FLOW_NR_RECT_SOLVER_DOT_H

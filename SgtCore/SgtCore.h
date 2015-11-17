@@ -31,7 +31,8 @@
 #include <SgtCore/Parser.h>
 #include <SgtCore/PowerFlow.h>
 #include <SgtCore/PowerFlowSolver.h>
-#include <SgtCore/PowerFlowNrSolver.h>
+#include <SgtCore/PowerFlowNrPolSolver.h>
+#include <SgtCore/PowerFlowNrRectSolver.h>
 #ifdef ENABLE_POWER_TOOLS_PP
 #include <SgtCore/PowerFlowPtPpSolver.h>
 #endif // ENABLE_POWER_TOOLS_PP

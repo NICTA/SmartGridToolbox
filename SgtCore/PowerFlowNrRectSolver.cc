@@ -14,7 +14,7 @@
 
 #include "config.h"
 #include "Network.h"
-#include "PowerFlowNrSolver.h"
+#include "PowerFlowNrRectSolver.h"
 #include "SparseHelper.h"
 #ifdef WITH_KLU
 #include "KluSolver.h"
@@ -67,9 +67,9 @@ namespace Sgt
         }
     }
 
-    bool PowerFlowNrSolver::solveProblem()
+    bool PowerFlowNrRectSolver::solveProblem()
     {
-        sgtLogDebug() << "PowerFlowNrSolver : solve." << std::endl;
+        sgtLogDebug() << "PowerFlowNrRectSolver : solve." << std::endl;
         LogIndent indent;
 
         Stopwatch stopwatch;
@@ -260,7 +260,7 @@ namespace Sgt
 
         if (!wasSuccessful)
         {
-            sgtLogWarning() << "PowerFlowNrSolver: Newton-Raphson method failed to converge." << std::endl;
+            sgtLogWarning() << "PowerFlowNrRectSolver: Newton-Raphson method failed to converge." << std::endl;
             for (std::size_t i = 0; i < mod_->nNode(); ++i)
             {
                 auto node = mod_->nodeVec()[i];
@@ -306,7 +306,7 @@ namespace Sgt
         stopwatchTot.stop();
         durationTot = stopwatchTot.seconds();
 
-        sgtLogDebug() << "PowerFlowNrSolver: " << std::endl; 
+        sgtLogDebug() << "PowerFlowNrRectSolver: " << std::endl; 
         indent.in(); 
         sgtLogDebug() << "successful = " << wasSuccessful << std::endl;
         sgtLogDebug() << "error = " << err << std::endl; 
@@ -324,7 +324,7 @@ namespace Sgt
         return wasSuccessful;
     }
 
-    void PowerFlowNrSolver::init(Network& netw)
+    void PowerFlowNrRectSolver::init(Network& netw)
     {
         mod_ = buildModel(*netw_);
 
@@ -368,7 +368,7 @@ namespace Sgt
 
     /// Set the part of J that doesn't update at each iteration.
     /** At this stage, we are treating J as if all busses were PQ. */
-    void PowerFlowNrSolver::initJc(Jacobian& Jc) const
+    void PowerFlowNrRectSolver::initJc(Jacobian& Jc) const
     {
         if (mod_->nPq() > 0)
         {
@@ -433,7 +433,7 @@ namespace Sgt
     }
 
     // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-    void PowerFlowNrSolver::calcf(Col<double>& f,
+    void PowerFlowNrRectSolver::calcf(Col<double>& f,
                                   const Col<double>& Vr, const Col<double>& Vi,
                                   const Col<double>& P, const Col<double>& Q,
                                   const Col<double>& M2Pv) const
@@ -485,7 +485,7 @@ namespace Sgt
     }
 
     // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
-    void PowerFlowNrSolver::updateJ(Jacobian& J, const Jacobian& Jc,
+    void PowerFlowNrRectSolver::updateJ(Jacobian& J, const Jacobian& Jc,
                                     const Col<double>& Vr, const Col<double>& Vi,
                                     const Col<double>& P, const Col<double>& Q,
                                     const Col<double>& M2Pv) const
@@ -547,7 +547,7 @@ namespace Sgt
     }
 
     // Modify J and f to take into account PV busses.
-    void PowerFlowNrSolver::modifyForPv(Jacobian& J, Col<double>& f,
+    void PowerFlowNrRectSolver::modifyForPv(Jacobian& J, Col<double>& f,
                                         const Col<double>& Vr, const Col<double>& Vi,
                                         const Col<double>& M2Pv)
     {
@@ -581,7 +581,7 @@ namespace Sgt
         }
     }
 
-    void PowerFlowNrSolver::calcJMatrix(SpMat<double>& JMat, const Jacobian& J) const
+    void PowerFlowNrRectSolver::calcJMatrix(SpMat<double>& JMat, const Jacobian& J) const
     {
         Array<unsigned int, 4> ibInd = {{0, 1, 2, 3}};
         Array<unsigned int, 4> kbInd = {{0, 1, 3, 4}}; // Skip VrPv, since it doesn't appear as a variable.

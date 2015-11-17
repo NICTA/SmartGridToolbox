@@ -43,7 +43,8 @@ libinclude_HEADERS = \
 	PowerFlow.h \
 	PowerFlowFdSolver.h \
 	PowerFlowModel.h \
-	PowerFlowNrSolver.h \
+	PowerFlowNrPolSolver.h \
+	PowerFlowNrRectSolver.h \
 	$(POWER_FLOW_PT_PP_SOLVER_H) \
 	PowerFlowSolver.h \
 	Properties.h \
@@ -82,7 +83,8 @@ libSgtCore_la_SOURCES = \
 	PowerFlow.h PowerFlow.cc \
 	PowerFlowFdSolver.h PowerFlowFdSolver.cc \
 	PowerFlowModel.h PowerFlowModel.cc \
-	PowerFlowNrSolver.h PowerFlowNrSolver.cc \
+	PowerFlowNrPolSolver.h PowerFlowNrPolSolver.cc \
+	PowerFlowNrRectSolver.h PowerFlowNrRectSolver.cc \
 	$(POWER_FLOW_PT_PP_SOLVER_H) $(POWER_FLOW_PT_PP_SOLVER_CC) \
 	PowerFlowSolver.h PowerFlowSolver.cc \
 	PowerFlowSolverParserPlugin.h PowerFlowSolverParserPlugin.cc \

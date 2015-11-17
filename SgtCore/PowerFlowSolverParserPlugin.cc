@@ -17,7 +17,8 @@
 #include "PowerFlowSolverParserPlugin.h"
 
 #include "Network.h"
-#include "PowerFlowNrSolver.h"
+#include "PowerFlowNrPolSolver.h"
+#include "PowerFlowNrRectSolver.h"
 #include "PowerFlowFdSolver.h"
 #ifdef ENABLE_POWER_TOOLS_PP
 #include "PowerFlowPtPpSolver.h"
@@ -29,10 +30,15 @@ namespace Sgt
     void PowerFlowSolverParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
     {
         auto key = nd.as<std::string>();
-        if (key == "nr")
+        if (key == "nr_rect")
         {
-            sgtLogMessage() << "Using Newton-Raphson solver." << std::endl;
-            netw.setSolver(std::unique_ptr<PowerFlowNrSolver>(new PowerFlowNrSolver));
+            sgtLogMessage() << "Using Newton-Raphson (rectangular) solver." << std::endl;
+            netw.setSolver(std::unique_ptr<PowerFlowNrRectSolver>(new PowerFlowNrRectSolver));
+        }
+        if (key == "nr_pol")
+        {
+            sgtLogMessage() << "Using Newton-Raphson (polar) solver." << std::endl;
+            netw.setSolver(std::unique_ptr<PowerFlowNrPolSolver>(new PowerFlowNrPolSolver));
         }
         else if (key == "fd")
         {
