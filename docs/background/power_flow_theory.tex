@@ -434,17 +434,19 @@ where we introduce the polar notation $V_i := M_i \exp{(j\theta_i)}$ and $\theta
 	Q_i &= Q_{ci} + Q_{gi} - \Ii_{ci}M_i + b_i\M{i}^2 \notag \\
 	&- \M{i}\sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]\M{l}} \notag \\
 \end{align}
-However, for PV busses, $Q_{g}$ is a free variable, and can immediately be set to the value that makes the error $Q_i$ zero:
+However, for PV busses, $Q_{g}$ is a free variable, and can immediately be set to the value that makes the error $Q_i$ zero.
+
+We first solve:
 \begin{align}
 	P_i &= P_{ci} + P_{gi} + \Ir_{ci}M_i - g_i\M{i}^2 \notag \\
-	&- \M{i}\sum_{l = 0}^N{\left[G_{il}\cs{il} + B_{il}\sn{il}\right]\M{l}} \notag \\
+	&- \M{i}\sum_{l = 0}^N{\left[G_{il}\cs{il} + B_{il}\sn{il}\right]\M{l}}  , & i \in \mathrm{PQ} \cup \mathrm{PV}\notag \\
 	Q_i &= Q_{ci} - \Ii_{ci}M_i + b_i\M{i}^2 \notag \\
-	&- \M{i}\sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]\M{l}}, & i \in PQ
+	&- \M{i}\sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]\M{l}}, & i \in \mathrm{PQ}
 \end{align}
-and,
+for variables $\{M_\text{PQ}, \theta_\text{PQ, PV}\}$. These equations are independent of $Q_g$, which can be therefore be calculated in a single final step as:
 \begin{align}
 	Q_{gi} &= -Q_{ci} + \Ii_{ci}M_i - b_i\M{i}^2 \notag \\
-	&+ \M{i}\sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]\M{l}}, & i \in PV
+	&+ \M{i}\sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]\M{l}}, & i \in \mathrm{PV}
 \end{align}
 
 Note for computations (particularly in what follows), it may be more efficient to cache $\sin(\theta)$ and $\cos(\theta)$, and to use
@@ -460,7 +462,7 @@ For PQ busses, the possible unknowns are $\M{}$ and $\theta$. For PV busses, the
 	\frac{\partial P_i}{\partial \M{k}} &= 
 		\begin{cases}
 			-\M{i}\left[G_{ik}\cs{ik} + B_{ik}\sn{ik}\right] & k \ne i \\
-			\Ir_{ci} - 2g_i\M{i} - 2 \M{i}G_{ii} - \sum_{\stackrel{l = 0}{l \ne i}}^N{\left[G_{ik}\cs{ik} + B_{ik}\sn{ik}\right]\M{l}} & k = i
+			\Ir_{ci} - 2g_i\M{i} - 2 \M{i}G_{ii} - \sum_{\stackrel{l = 0}{l \ne i}}^N{\left[G_{il}\cs{il} + B_{il}\sn{il}\right]\M{l}} & k = i
 		\end{cases} & k \in \text{PQ} \notag \\
 	\frac{\partial P_i}{\partial \theta_k} &=
 		\begin{cases}
