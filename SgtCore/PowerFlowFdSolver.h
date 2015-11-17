@@ -46,10 +46,6 @@ namespace Sgt
                 applyModel(*mod_, *netw_);
             }
 
-        private:
-
-            void init(Network& netw);
-            
         public:
 
             double tol_{1e-8};
