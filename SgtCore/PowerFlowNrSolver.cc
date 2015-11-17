@@ -30,16 +30,6 @@ using namespace arma;
 
 namespace
 {
-    template<typename T> Col<Complex> colConj(const T& from)
-    {
-        Col<Complex> result(from.n_elem, fill::none);
-        for (uword i = 0; i < from.n_elem; ++i)
-        {
-            result(i) = std::conj(from(i));
-        }
-        return result;
-    }
-
     template<typename T, typename U> void initJcBlock(const T& G, const T& B, U& Jrr, U& Jri, U& Jir, U& Jii)
     {
         Jrr = -G;
@@ -297,8 +287,8 @@ namespace Sgt
 
             SpMat<Complex> YStar = mod_->Y()(mod_->selSlFromAll(), mod_->selAllFromAll());
             for (auto elem : YStar) elem = std::conj(Complex(elem));
-            auto VStar = colConj(mod_->V());
-            auto IConstStar = colConj(mod_->IConst()(mod_->selSlFromAll()));
+            auto VStar = conj(mod_->V());
+            auto IConstStar = conj(mod_->IConst()(mod_->selSlFromAll()));
 
             SSl = VSl % (YStar * VStar) - VSl % IConstStar;
         }
