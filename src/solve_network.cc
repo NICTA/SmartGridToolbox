@@ -36,7 +36,7 @@ int main(int argc, char** argv)
         std::cout << "debug" << std::endl;
         Sgt::messageLogLevel() = Sgt::LogLevel::VERBOSE;
         Sgt::warningLogLevel() = Sgt::LogLevel::VERBOSE;
-        Sgt::debugLogLevel() = Sgt::LogLevel::VERBOSE;
+        Sgt::debugLogLevel() = Sgt::LogLevel::NORMAL;
     }
 
     Network nw(100.0);

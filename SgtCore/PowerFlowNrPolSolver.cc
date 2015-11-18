@@ -361,7 +361,7 @@ namespace Sgt
         uword nPqPv = nPq + nPv;
 
         const SpMat<Complex>& Y = mod_->Y(); // Model indexing. Includes shunts (const Y in ZIPs).
-        sgtLogDebug(LogLevel::VERBOSE) << "Y = \n" << Y << std::endl;
+        sgtLogDebug() << "Y = \n" << Y << std::endl;
         SpMat<double> G = real(Y); // Model indexing. Includes shunts (const Y in ZIPs).
         SpMat<double> B = imag(Y); // Model indexing. Includes shunts (const Y in ZIPs).
 
@@ -384,12 +384,13 @@ namespace Sgt
         {
             sgtLogMessage(LogLevel::VERBOSE) << "iter " << niter << std::endl;
             LogIndent _;
-            sgtLogDebug(LogLevel::VERBOSE) << "theta = " << theta << std::endl;
-            sgtLogDebug(LogLevel::VERBOSE) << "M = " << M << std::endl;
 
             auto S = calcS(Scg, Ic, V, M, Y);
-
-            auto f = join_vert(real(S.subvec(0, nPq - 1)), imag(S.subvec(0, nPqPv - 1)));
+            auto f = join_vert(real(S.subvec(0, nPqPv - 1)), imag(S.subvec(0, nPq - 1)));
+            
+            sgtLogDebug() << "M = " << M << std::endl;
+            sgtLogDebug() << "theta = " << theta << std::endl;
+            sgtLogDebug() << "S = " << S << std::endl;
 
             err = norm(f, "inf");
             sgtLogMessage(LogLevel::VERBOSE) << "Err = " << err << std::endl;
@@ -401,9 +402,9 @@ namespace Sgt
 
             Col<double> x; // Delta theta.
             SpMat<double> J = calcJ(nPq, nPv, M, theta, G, B);
-            sgtLogDebug(LogLevel::VERBOSE) << "J =\n" << J << std::endl;
 
             ok = solveSparseSystem(J, f, x);
+            sgtLogDebug() << "x = " << x << std::endl;
             if (!ok)
             {
                 sgtLogWarning() << "Solve failed." << std::endl;
