@@ -74,7 +74,7 @@
     id: network
     P_base: 1
     freq_Hz: 60
-    solver: nr
+    solver: nr_rect
 
 - sim_bus:
     id: bus_trans

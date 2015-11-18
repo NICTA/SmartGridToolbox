@@ -72,11 +72,11 @@ namespace Sgt
             
             // G terms in dP/dM_PQ
             {
-                auto GSel = G.submat(1, 1, nPqPv, nPq);
+                auto GSel = G.submat(0, 0, nPqPv - 1, nPq - 1);
                 for (auto it = GSel.begin(); it != GSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
-                    uword k = it.col() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
+                    uword k = it.col(); // Index in full set of busses.
                     double Gik = *it;
                     if (i != k)
                     {
@@ -91,11 +91,11 @@ namespace Sgt
 
             // B terms in dP/dM_PQ
             {
-                auto BSel = B.submat(1, 1, nPqPv, nPq);
+                auto BSel = B.submat(0, 0, nPqPv - 1, nPq - 1);
                 for (auto it = BSel.begin(); it != BSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
-                    uword k = it.col() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
+                    uword k = it.col(); // Index in full set of busses.
                     double Bik = *it;
                     if (i != k)
                     {
@@ -106,10 +106,10 @@ namespace Sgt
 
             // Inner sum G terms in dP/dM_PQ
             {
-                auto GSel = G.rows(1, nPqPv);
+                auto GSel = G.rows(0, nPqPv - 1);
                 for (auto it = GSel.begin(); it != GSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
                     uword l = it.col(); // Index in full set of busses.
                     double Gil = *it;
                     if (i != l)
@@ -121,10 +121,10 @@ namespace Sgt
 
             // Inner sum B terms in dP/dM_PQ
             {
-                auto BSel = B.rows(1, nPqPv);
+                auto BSel = B.rows(0, nPqPv - 1);
                 for (auto it = BSel.begin(); it != BSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
                     uword l = it.col(); // Index in full set of busses.
                     double Bil = *it;
                     if (i != l)
@@ -139,11 +139,11 @@ namespace Sgt
 
             // G terms in dP/dtheta
             {
-                auto GSel = G.submat(1, 1, nPqPv, nPqPv);
+                auto GSel = G.submat(0, 0, nPqPv - 1, nPqPv - 1);
                 for (auto it = GSel.begin(); it != GSel.end(); ++it)
                 {
-                    uword i = it.row() + 1;
-                    uword k = it.col() + 1;
+                    uword i = it.row();
+                    uword k = it.col();
                     double Gik = *it;
                     if (i != k)
                     {
@@ -154,11 +154,11 @@ namespace Sgt
 
             // B terms in dP/dtheta
             {
-                auto BSel = B.submat(1, 1, nPqPv, nPqPv);
+                auto BSel = B.submat(0, 0, nPqPv - 1, nPqPv - 1);
                 for (auto it = BSel.begin(); it != BSel.end(); ++it)
                 {
-                    uword i = it.row() + 1;
-                    uword k = it.col() + 1;
+                    uword i = it.row();
+                    uword k = it.col();
                     double Bik = *it;
                     if (i != k)
                     {
@@ -169,10 +169,10 @@ namespace Sgt
 
             // Inner sum G terms in dP/dtheta
             {
-                auto GSel = G.rows(1, nPqPv);
+                auto GSel = G.rows(0, nPqPv - 1);
                 for (auto it = GSel.begin(); it != GSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
                     uword l = it.col(); // Index in full set of busses.
                     double Gil = *it;
                     if (i != l)
@@ -184,10 +184,10 @@ namespace Sgt
 
             // Inner sum B terms in dP/dtheta
             {
-                auto BSel = B.rows(1, nPqPv);
+                auto BSel = B.rows(0, nPqPv - 1);
                 for (auto it = BSel.begin(); it != BSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
                     uword l = it.col(); // Index in full set of busses.
                     double Bil = *it;
                     if (i != l)
@@ -202,11 +202,11 @@ namespace Sgt
 
             // G terms in dQ_PQ/dM_PQ
             {
-                auto GSel = G.submat(1, 1, nPq, nPq);
+                auto GSel = G.submat(0, 0, nPq - 1, nPq - 1);
                 for (auto it = GSel.begin(); it != GSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
-                    uword k = it.col() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
+                    uword k = it.col(); // Index in full set of busses.
                     double Gik = *it;
                     if (i != k)
                     {
@@ -217,11 +217,11 @@ namespace Sgt
             
             // B terms in dQ_PQ/dM_PQ
             {
-                auto BSel = B.submat(1, 1, nPq, nPq);
+                auto BSel = B.submat(0, 0, nPq - 1, nPq - 1);
                 for (auto it = BSel.begin(); it != BSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
-                    uword k = it.col() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
+                    uword k = it.col(); // Index in full set of busses.
                     double Bik = *it;
                     if (i != k)
                     {
@@ -236,10 +236,10 @@ namespace Sgt
 
             // Inner sum G terms in dQ_PQ/dM_PQ
             {
-                auto GSel = G.rows(1, nPq);
+                auto GSel = G.rows(0, nPq - 1);
                 for (auto it = GSel.begin(); it != GSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
                     uword l = it.col(); // Index in full set of busses.
                     double Gil = *it;
                     if (i != l)
@@ -251,10 +251,10 @@ namespace Sgt
  
             // Inner sum B terms in dQ_PQ/dM_PQ
             {
-                auto BSel = B.rows(1, nPq);
+                auto BSel = B.rows(0, nPq - 1);
                 for (auto it = BSel.begin(); it != BSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
                     uword l = it.col(); // Index in full set of busses.
                     double Bil = *it;
                     if (i != l)
@@ -269,11 +269,11 @@ namespace Sgt
 
             // G terms in dQ_PQ/dtheta
             {
-                auto GSel = G.submat(1, 1, nPq, nPqPv);
+                auto GSel = G.submat(0, 0, nPq - 1, nPqPv - 1);
                 for (auto it = GSel.begin(); it != GSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
-                    uword k = it.col() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
+                    uword k = it.col(); // Index in full set of busses.
                     double Gik = *it;
                     if (i != k)
                     {
@@ -284,11 +284,11 @@ namespace Sgt
 
             // B terms in dQ_PQ/dtheta
             {
-                auto BSel = B.submat(1, 1, nPq, nPqPv);
+                auto BSel = B.submat(0, 0, nPq - 1, nPqPv - 1);
                 for (auto it = BSel.begin(); it != BSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
-                    uword k = it.col() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
+                    uword k = it.col(); // Index in full set of busses.
                     double Bik = *it;
                     if (i != k)
                     {
@@ -299,10 +299,10 @@ namespace Sgt
 
             // Inner sum G terms in dQ_PQ/dtheta
             {
-                auto GSel = G.rows(1, nPq);
+                auto GSel = G.rows(0, nPq - 1);
                 for (auto it = GSel.begin(); it != GSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
                     uword l = it.col(); // Index in full set of busses.
                     double Gil = *it;
                     if (i != l)
@@ -314,10 +314,10 @@ namespace Sgt
 
             // Inner sum B terms in dQ_PQ/dtheta
             {
-                auto BSel = B.rows(1, nPq);
+                auto BSel = B.rows(0, nPq - 1);
                 for (auto it = BSel.begin(); it != BSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Index in full set of busses.
+                    uword i = it.row(); // Index in full set of busses.
                     uword l = it.col(); // Index in full set of busses.
                     double Bil = *it;
                     if (i != l)
@@ -353,7 +353,7 @@ namespace Sgt
         mod_ = buildModel(*netw_);
         
         // Set up data structures for the calculation.
-        // Model indexing is 0 = slack, [1 ... nPq] = PQ, [nPq + 1 ... nPq + nPv] = PV.
+        // Model indexing is [0 ... nPq - 1] = PQ, [nPq ... nPq + nPv - 1] = PV, [nPq + nPv ... nPq + nPv + nSl] = SL
 
         uword nNode = mod_->nNode();
         uword nPq = mod_->nPq();
@@ -361,6 +361,7 @@ namespace Sgt
         uword nPqPv = nPq + nPv;
 
         const SpMat<Complex>& Y = mod_->Y(); // Model indexing. Includes shunts (const Y in ZIPs).
+        sgtLogDebug(LogLevel::VERBOSE) << "Y = \n" << Y << std::endl;
         SpMat<double> G = real(Y); // Model indexing. Includes shunts (const Y in ZIPs).
         SpMat<double> B = imag(Y); // Model indexing. Includes shunts (const Y in ZIPs).
 
@@ -373,9 +374,6 @@ namespace Sgt
         Col<Complex> Scg = mod_->S(); // Model indexing. S_cg = S_c + S_g.
 
         const Col<Complex>& Ic = mod_->IConst(); // Model indexing. P_c + P_g.
-
-        // Jacobian:
-        SpMat<double> J = calcJ(nPq, nPv, M, theta, G, B);
 
         bool wasSuccessful = false;
         double err = 0;
@@ -390,7 +388,9 @@ namespace Sgt
             sgtLogDebug(LogLevel::VERBOSE) << "M = " << M << std::endl;
 
             auto S = calcS(Scg, Ic, V, M, Y);
+
             auto f = join_vert(real(S.subvec(1, nPq)), imag(S.subvec(1, nPqPv)));
+
             err = norm(f, "inf");
             sgtLogMessage(LogLevel::VERBOSE) << "Err = " << err << std::endl;
             if (err <= tol_) 
@@ -400,6 +400,9 @@ namespace Sgt
             }
 
             Col<double> x; // Delta theta.
+            SpMat<double> J = calcJ(nPq, nPv, M, theta, G, B);
+            sgtLogDebug(LogLevel::VERBOSE) << "J =\n" << J << std::endl;
+
             ok = solveSparseSystem(J, f, x);
             if (!ok)
             {
