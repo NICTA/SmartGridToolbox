@@ -66,7 +66,7 @@ namespace Sgt
                 {
                     arma::span sp1(0, 1);
                     arma::span sp2(0, nWaiting_ - 1);
-                    m_ += arma::SpMat<T>(checkZeros_, locs_(sp1, sp2), vals_(sp2), m_.n_rows, m_.n_cols, sort_, add_);
+                    m_ += arma::SpMat<T>(add_, locs_(sp1, sp2), vals_(sp2), m_.n_rows, m_.n_cols, sort_, checkZeros_);
                     nWaiting_ = 0;
                 }
             }
