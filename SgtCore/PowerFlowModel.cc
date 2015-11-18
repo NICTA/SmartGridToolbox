@@ -130,16 +130,16 @@ namespace Sgt
             }
         }
 
-        nSl_ = SlNodes.size();
         nPq_ = PqNodes.size();
         nPv_ = PvNodes.size();
+        nSl_ = SlNodes.size();
 
         // Insert nodes into ordered list of all nodes. Be careful of ordering!
         nodeVec_ = PfNodeVec();
         nodeVec_.reserve(nPq_ + nPv_ + nSl_);
-        nodeVec_.insert(nodeVec_.end(), SlNodes.begin(), SlNodes.end());
         nodeVec_.insert(nodeVec_.end(), PqNodes.begin(), PqNodes.end());
         nodeVec_.insert(nodeVec_.end(), PvNodes.begin(), PvNodes.end());
+        nodeVec_.insert(nodeVec_.end(), SlNodes.begin(), SlNodes.end());
 
         // Index all nodes:
         for (std::size_t i = 0; i < nodeVec_.size(); ++i)

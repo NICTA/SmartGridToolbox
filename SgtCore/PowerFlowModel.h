@@ -246,38 +246,38 @@ namespace Sgt
             // present a general solution to ordering. Thus, when assigning into a compressed_matrix, we need to work
             // element by element, using an indexing scheme.
 
-            arma::uword iSl(arma::uword i) const
+            arma::uword iPq(arma::uword i) const
             {
                 return i;
             }
-            arma::uword iPq(arma::uword i) const
-            {
-                return nSl_ + i;
-            }
             arma::uword iPv(arma::uword i) const
             {
-                return nSl_ + nPq_ + i;
+                return nPq_ + i;
+            }
+            arma::uword iSl(arma::uword i) const
+            {
+                return nPq_ + nPv_ + i;
             }
 
-            arma::span selSlFromAll() const
-            {
-                return arma::span(0, arma::uword(nSl_ - 1));
-            }
             arma::span selPqFromAll() const
             {
-                return arma::span(arma::uword(nSl_), arma::uword(nSl_ + nPq_ - 1));
+                return arma::span(iPq(0), iPq(nPq_ - 1));
             }
             arma::span selPvFromAll() const
             {
-                return arma::span(arma::uword(nSl_ + nPq_), arma::uword(nSl_ + nPq_ + nPv_ - 1));
+                return arma::span(iPv(0), iPv(nPv_ - 1));
+            }
+            arma::span selSlFromAll() const
+            {
+                return arma::span(iSl(0), iSl(nSl_ - 1));
             }
             arma::span selPqPvFromAll() const
             {
-                return arma::span(arma::uword(nSl_), arma::uword(nSl_ + nPq_ + nPv_ - 1));
+                return arma::span(iPq(0), iPv(nPv_ - 1));
             }
             arma::span selAllFromAll() const
             {
-                return arma::span(0, arma::uword(nSl_ + nPq_ + nPv_ - 1));
+                return arma::span(0, nPq_ + nPv_ + nSl_ - 1);
             }
 
             /// @}
@@ -297,9 +297,9 @@ namespace Sgt
             /// @name Array bounds.
             /// @{
 
-            std::size_t nSl_; ///< Number of SL nodes.
             std::size_t nPq_; ///< Number of PQ nodes.
             std::size_t nPv_; ///< Number of PV nodes.
+            std::size_t nSl_; ///< Number of SL nodes.
 
             /// @}
 
