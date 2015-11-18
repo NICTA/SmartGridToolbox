@@ -57,7 +57,7 @@ namespace Sgt
             arma::Col<double> s = sin(theta);
 
             SpMat<double> result;
-            SparseHelper<double> helper(3 * nPqPv, 3 * nPqPv, false, false, false);
+            SparseHelper<double> helper(3 * nPqPv, 3 * nPqPv);
         
             auto cos_ik = [&](uword i, uword k) {return c(i) * c(k) + s(i) * s(k);};
             auto sin_ik = [&](uword i, uword k) {return s(i) * c(k) - c(i) * s(k);};
@@ -384,15 +384,15 @@ namespace Sgt
 
         for (niter = 0; niter < maxiter_; ++niter)
         {
-            sgtLogMessage() << "iter " << niter << std::endl;
+            sgtLogMessage(LogLevel::VERBOSE) << "iter " << niter << std::endl;
             LogIndent _;
-            sgtLogDebug() << "theta = " << theta << std::endl;
-            sgtLogDebug() << "M = " << M << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "theta = " << theta << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "M = " << M << std::endl;
 
             auto S = calcS(Scg, Ic, V, M, Y);
-            auto f = join_horiz(real(S.subvec(1, nPq)), imag(S.subvec(1, nPqPv)));
+            auto f = join_vert(real(S.subvec(1, nPq)), imag(S.subvec(1, nPqPv)));
             err = norm(f, "inf");
-            sgtLogMessage() << "Err = " << err << std::endl;
+            sgtLogMessage(LogLevel::VERBOSE) << "Err = " << err << std::endl;
             if (err <= tol_) 
             {
                 wasSuccessful = true;
