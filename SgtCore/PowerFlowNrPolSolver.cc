@@ -40,7 +40,7 @@ namespace Sgt
                 const Col<double>& M,
                 const SpMat<Complex>& Y)
         {
-            return (Scg + conj(Ic) % M - V % conj(Y * V)) / M;
+            return (Scg + conj(Ic) % M - V % conj(Y * V));
         }
 
         // Build the Jacobian JP for P, theta. Indexing is [0 ... nPqPv - 1].
@@ -62,10 +62,10 @@ namespace Sgt
             auto cos_ik = [&](uword i, uword k) {return c(i) * c(k) + s(i) * s(k);};
             auto sin_ik = [&](uword i, uword k) {return s(i) * c(k) - c(i) * s(k);};
         
-            auto iP = [&](uword i){return i - 1;};
-            auto iQ = [&](uword i){return i - 1 + nPqPv;};
-            auto iM = [&](uword i){return i - 1;};
-            auto iT = [&](uword i){return i - 1 + nPq;};
+            auto iP = [&](uword i){return i;};
+            auto iQ = [&](uword i){return i + nPqPv;};
+            auto iM = [&](uword i){return i;};
+            auto iT = [&](uword i){return i + nPq;};
         
             // -----------------------------------------------------------------
             // dP/dM_PQ
@@ -389,7 +389,7 @@ namespace Sgt
 
             auto S = calcS(Scg, Ic, V, M, Y);
 
-            auto f = join_vert(real(S.subvec(1, nPq)), imag(S.subvec(1, nPqPv)));
+            auto f = join_vert(real(S.subvec(0, nPq - 1)), imag(S.subvec(0, nPqPv - 1)));
 
             err = norm(f, "inf");
             sgtLogMessage(LogLevel::VERBOSE) << "Err = " << err << std::endl;
@@ -411,10 +411,10 @@ namespace Sgt
             }
 
             // Update M, theta, V.
-            M.subvec(1, nPq) += x.subvec(0, nPq - 1);
-            theta.subvec(1, nPqPv) += x.subvec(nPq, 2 * nPq + nPv - 1);
+            M.subvec(0, nPq - 1) += x.subvec(0, nPq - 1);
+            theta.subvec(0, nPqPv - 1) += x.subvec(nPq, 2 * nPq + nPv - 1);
             Col<Complex> dir = cx_vec(cos(theta), sin(theta)); 
-            V.subvec(1, nPqPv) = M.subvec(1, nPqPv) % dir.subvec(1, nPqPv);
+            V.subvec(0, nPqPv - 1) = M.subvec(0, nPqPv - 1) % dir.subvec(0, nPqPv - 1);
         }
 
         if (!wasSuccessful)
