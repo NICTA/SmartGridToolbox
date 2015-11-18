@@ -106,7 +106,7 @@ namespace Sgt
 
             // Inner sum G terms in dP/dM_PQ
             {
-                auto GSel = G.rows(0, nPqPv - 1);
+                auto GSel = G.rows(0, nPq - 1);
                 for (auto it = GSel.begin(); it != GSel.end(); ++it)
                 {
                     uword i = it.row(); // Index in full set of busses.
@@ -121,7 +121,7 @@ namespace Sgt
 
             // Inner sum B terms in dP/dM_PQ
             {
-                auto BSel = B.rows(0, nPqPv - 1);
+                auto BSel = B.rows(0, nPq - 1);
                 for (auto it = BSel.begin(); it != BSel.end(); ++it)
                 {
                     uword i = it.row(); // Index in full set of busses.
@@ -404,12 +404,12 @@ namespace Sgt
             SpMat<double> J = calcJ(nPq, nPv, M, theta, G, B);
 
             ok = solveSparseSystem(J, f, x);
-            sgtLogDebug() << "x = " << x << std::endl;
             if (!ok)
             {
                 sgtLogWarning() << "Solve failed." << std::endl;
                 break;
             }
+            sgtLogDebug() << "x = " << x << std::endl;
 
             // Update M, theta, V.
             M.subvec(0, nPq - 1) += x.subvec(0, nPq - 1);
