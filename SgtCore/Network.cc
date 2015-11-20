@@ -14,14 +14,14 @@
 
 #include "Network.h"
 
-#include "PowerFlowNrRectSolver.h"
+#include "PowerFlowNrPolSolver.h"
 #include "Zip.h"
 
 #include <numeric>
 
 namespace Sgt
 {
-    Network::Network(double PBase) : PBase_(PBase), solver_(new PowerFlowNrRectSolver)
+    Network::Network(double PBase) : PBase_(PBase), solver_(new PowerFlowNrPolSolver)
     {
         // Empty.
     }

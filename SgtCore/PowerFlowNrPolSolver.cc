@@ -31,7 +31,6 @@ namespace Sgt
 {
     namespace
     {
-              
         Col<Complex> calcS(
                 const Col<Complex>& Scg,
                 const Col<Complex>& Ic,
@@ -40,6 +39,34 @@ namespace Sgt
                 const SpMat<Complex>& Y)
         {
             return (Scg + conj(Ic) % M - V % conj(Y * V));
+        }
+
+        void updateQcgPv(
+                Col<Complex>& Scg,
+                arma::span selPv,
+                const Col<Complex>& Ic,
+                const Col<Complex>& V,
+                const Col<double>& M,
+                const SpMat<Complex>& Y)
+        {
+            // TODO: may unnessecarily calculate P.
+            // Note: set_imag doesn't work for subview.
+            Col<double> PSv = real(Scg(selPv)); // Temporary works.
+            Col<double> QNew = imag(Ic(selPv)) % M(selPv) + imag(V(selPv) % conj(Y.rows(selPv.a, selPv.b) * V)); 
+            Scg(selPv) = cx_mat(PSv, QNew); 
+        }
+
+        void updateScgSl(
+                Col<Complex>& Scg,
+                arma::span selSl,
+                const Col<Complex>& Ic,
+                const Col<Complex>& V,
+                const Col<double>& M,
+                const SpMat<Complex>& Y)
+        {
+            // TODO: may unnessecarily calculate P.
+            // Note: set_imag doesn't work for subview.
+            Scg(selSl) = Ic(selSl) % M(selSl) + V(selSl) % conj(Y.rows(selSl.a, selSl.b) * V);
         }
 
         template<typename T> SpMat<typename T::elem_type> spDiag(const T& v)
@@ -75,11 +102,11 @@ namespace Sgt
         {
             uword nPqPv = nPq + nPv;
 
-            auto iPQ = [&](uword i){return i;};
+            auto iPq = [&](uword i){return i;};
             auto iPV = [&](uword i){return i + nPq;};
 
-            auto allPQ = span(iPQ(0), iPQ(nPq - 1));
-            auto allPQPV = span(iPQ(0), iPV(nPv - 1));
+            auto allPq = span(iPq(0), iPq(nPq - 1));
+            auto allPqPV = span(iPq(0), iPV(nPv - 1));
 
             uword szJ = 2 * nPq + nPv;
 
@@ -87,10 +114,10 @@ namespace Sgt
             const auto& dSdM = dSdV_.first;
             const auto& dSdT = dSdV_.second;
 
-            SpMat<double> dPdM = real(dSdM.submat(allPQPV, allPQ));
-            SpMat<double> dQdM = imag(dSdM.submat(allPQ, allPQ));
-            SpMat<double> dPdT = real(dSdT.submat(allPQPV, allPQPV));
-            SpMat<double> dQdT = imag(dSdT.submat(allPQ, allPQPV));
+            SpMat<double> dPdM = real(dSdM.submat(allPqPV, allPq));
+            SpMat<double> dQdM = imag(dSdM.submat(allPq, allPq));
+            SpMat<double> dPdT = real(dSdT.submat(allPqPV, allPqPV));
+            SpMat<double> dQdT = imag(dSdT.submat(allPq, allPqPV));
             
             SparseHelper<double> h(szJ, szJ);
             for (auto it = dPdM.begin(); it != dPdM.end(); ++it)
@@ -138,11 +165,12 @@ namespace Sgt
         mod_ = buildModel(*netw_);
         
         // Set up data structures for the calculation.
-        // Model indexing is [0 ... nPq - 1] = PQ, [nPq ... nPq + nPv - 1] = PV, [nPq + nPv ... nPq + nPv + nSl] = SL
+        // Model indexing is [0 ... nPq - 1] = Pq, [nPq ... nPq + nPv - 1] = PV, [nPq + nPv ... nPq + nPv + nSl] = SL
 
         uword nNode = mod_->nNode();
         uword nPq = mod_->nPq();
         uword nPv = mod_->nPv();
+        uword nSl = mod_->nSl();
         uword nPqPv = nPq + nPv;
 
         const SpMat<Complex>& Y = mod_->Y(); // Model indexing. Includes shunts (const Y in ZIPs).
@@ -207,7 +235,37 @@ namespace Sgt
         if (!wasSuccessful)
         {
             sgtLogWarning() << "PowerFlowFdSolver: failed to converge." << std::endl;
-            // TODO.
+            for (std::size_t i = 0; i < mod_->nNode(); ++i)
+            {
+                // TODO: this should be part of PowerFlowModel.
+                auto node = mod_->nodeVec()[i];
+                node->V_ = 0;
+                node->S_ = 0;
+                node->bus_->V_[node->phaseIdx_] = node->V_;
+                node->bus_->S_[node->phaseIdx_] = node->S_;
+            }
+        }
+
+        if (nPv > 0)
+        {
+            updateQcgPv(Scg, mod_->selPv(), Ic, V, M, Y);
+        }
+        if (nSl > 0)
+        {
+            updateScgSl(Scg, mod_->selPq(), Ic, V, M, Y);
+        }
+
+        mod_->V() = V;
+        mod_->S() = Scg;
+
+        // Update nodes and busses.
+        for (uword i = 0; i < mod_->nNode(); ++i)
+        {
+            auto node = mod_->nodeVec()[i];
+            node->V_ = mod_->V()(i);
+            node->S_ = mod_->S()(i);
+            node->bus_->V_[node->phaseIdx_] = node->V_;
+            node->bus_->S_[node->phaseIdx_] = node->S_;
         }
 
         return wasSuccessful;

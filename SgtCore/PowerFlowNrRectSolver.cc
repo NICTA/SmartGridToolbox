@@ -113,8 +113,8 @@ namespace Sgt
         Col<double> Q = imag(mod_->S());
 
         Col<double> M2Pv = mod_->nPv() > 0
-            ? Vr(mod_->selPvFromAll()) % Vr(mod_->selPvFromAll()) 
-              + Vi(mod_->selPvFromAll()) % Vi(mod_->selPvFromAll())
+            ? Vr(mod_->selPv()) % Vr(mod_->selPv()) 
+              + Vi(mod_->selPv()) % Vi(mod_->selPv())
             : Col<double>();
 
         Jacobian Jc(mod_->nPq(), mod_->nPv()); ///< The part of J that doesn't update at each iteration.
@@ -224,21 +224,21 @@ namespace Sgt
             // Update the current values of V from the solution:
             if (mod_->nPq() > 0)
             {
-                Vr(mod_->selPqFromAll()) += x(selVrPqFrom_x_);
-                Vi(mod_->selPqFromAll()) += x(selViPqFrom_x_);
+                Vr(mod_->selPq()) += x(selVrPqFrom_x_);
+                Vi(mod_->selPq()) += x(selViPqFrom_x_);
             }
 
             // Explicitly deal with the voltage magnitude constraint by updating VrPv by hand.
             if (mod_->nPv() > 0)
             {
-                auto VrPv = Vr(mod_->selPvFromAll());
-                auto ViPv = Vi(mod_->selPvFromAll());
+                auto VrPv = Vr(mod_->selPv());
+                auto ViPv = Vi(mod_->selPv());
                 const auto DeltaViPv = x(selViPvFrom_x_);
                 VrPv += (M2Pv - VrPv % VrPv - ViPv % ViPv - 2 * ViPv % DeltaViPv) / (2 * VrPv);
                 ViPv += DeltaViPv;
 
                 // Update Q for PV busses based on the solution.
-                Q(mod_->selPvFromAll()) += x(selQPvFrom_x_);
+                Q(mod_->selPv()) += x(selQPvFrom_x_);
             }
 
             if (debugLogLevel() >= LogLevel::VERBOSE)
@@ -280,15 +280,15 @@ namespace Sgt
         // Set the slack power.
         if (mod_->nSl() > 0)
         {
-            auto SSl = mod_->S()(mod_->selSlFromAll());
+            auto SSl = mod_->S()(mod_->selSl());
 
-            auto VSl = mod_->V()(mod_->selSlFromAll());
-            auto IConstSl = mod_->IConst()(mod_->selSlFromAll());
+            auto VSl = mod_->V()(mod_->selSl());
+            auto IConstSl = mod_->IConst()(mod_->selSl());
 
-            SpMat<Complex> YStar = mod_->Y()(mod_->selSlFromAll(), mod_->selAllFromAll());
+            SpMat<Complex> YStar = mod_->Y()(mod_->selSl(), span::all);
             for (auto elem : YStar) elem = std::conj(Complex(elem));
             auto VStar = conj(mod_->V());
-            auto IConstStar = conj(mod_->IConst()(mod_->selSlFromAll()));
+            auto IConstStar = conj(mod_->IConst()(mod_->selSl()));
 
             SSl = VSl % (YStar * VStar) - VSl % IConstStar;
         }
@@ -372,8 +372,8 @@ namespace Sgt
     {
         if (mod_->nPq() > 0)
         {
-            initJcBlock(G_(mod_->selPqFromAll(), mod_->selPqFromAll()),
-                        B_(mod_->selPqFromAll(), mod_->selPqFromAll()),
+            initJcBlock(G_(mod_->selPq(), mod_->selPq()),
+                        B_(mod_->selPq(), mod_->selPq()),
                         Jc.IrPqVrPq(),
                         Jc.IrPqViPq(),
                         Jc.IiPqVrPq(),
@@ -389,8 +389,8 @@ namespace Sgt
 
         if (mod_->nPv() > 0)
         {
-            initJcBlock(G_(mod_->selPvFromAll(), mod_->selPvFromAll()),
-                        B_(mod_->selPvFromAll(), mod_->selPvFromAll()),
+            initJcBlock(G_(mod_->selPv(), mod_->selPv()),
+                        B_(mod_->selPv(), mod_->selPv()),
                         Jc.IrPvVrPv(),
                         Jc.IrPvViPv(),
                         Jc.IiPvVrPv(),
@@ -406,14 +406,14 @@ namespace Sgt
 
         if (mod_->nPv() > 0 && mod_->nPq() > 0)
         {
-            initJcBlock(G_(mod_->selPqFromAll(), mod_->selPvFromAll()),
-                        B_(mod_->selPqFromAll(), mod_->selPvFromAll()),
+            initJcBlock(G_(mod_->selPq(), mod_->selPv()),
+                        B_(mod_->selPq(), mod_->selPv()),
                         Jc.IrPqVrPv(),
                         Jc.IrPqViPv(),
                         Jc.IiPqVrPv(),
                         Jc.IiPqViPv());
-            initJcBlock(G_(mod_->selPvFromAll(), mod_->selPqFromAll()),
-                        B_(mod_->selPvFromAll(), mod_->selPqFromAll()),
+            initJcBlock(G_(mod_->selPv(), mod_->selPq()),
+                        B_(mod_->selPv(), mod_->selPq()),
                         Jc.IrPvVrPq(),
                         Jc.IrPvViPq(),
                         Jc.IiPvVrPq(),
@@ -441,16 +441,16 @@ namespace Sgt
         if (mod_->nPq() > 0)
         {
             // PQ busses:
-            const SpMat<double> GPq = G_(mod_->selPqFromAll(), mod_->selAllFromAll());
-            const SpMat<double> BPq = B_(mod_->selPqFromAll(), mod_->selAllFromAll());
+            const SpMat<double> GPq = G_(mod_->selPq(), span::all);
+            const SpMat<double> BPq = B_(mod_->selPq(), span::all);
 
-            const auto VrPq = Vr(mod_->selPqFromAll());
-            const auto ViPq = Vi(mod_->selPqFromAll());
+            const auto VrPq = Vr(mod_->selPq());
+            const auto ViPq = Vi(mod_->selPq());
 
-            const auto PPq = P(mod_->selPqFromAll());
-            const auto QPq = Q(mod_->selPqFromAll());
+            const auto PPq = P(mod_->selPq());
+            const auto QPq = Q(mod_->selPq());
 
-            const auto IConstPq = mod_->IConst()(mod_->selPqFromAll());
+            const auto IConstPq = mod_->IConst()(mod_->selPq());
             const auto IConstrPq = real(IConstPq);
             const auto IConstiPq = imag(IConstPq);
 
@@ -465,17 +465,17 @@ namespace Sgt
         if (mod_->nPv() > 0)
         {
             // PV busses. Note that these differ in that M2Pv is considered a constant.
-            const auto GPv = G_(mod_->selPvFromAll(), mod_->selAllFromAll());
-            const auto BPv = B_(mod_->selPvFromAll(), mod_->selAllFromAll());
+            const auto GPv = G_(mod_->selPv(), span::all);
+            const auto BPv = B_(mod_->selPv(), span::all);
 
-            const auto VrPv = Vr(mod_->selPvFromAll());
-            const auto ViPv = Vi(mod_->selPvFromAll());
+            const auto VrPv = Vr(mod_->selPv());
+            const auto ViPv = Vi(mod_->selPv());
 
-            const auto PPv = P(mod_->selPvFromAll());
-            const auto QPv = Q(mod_->selPvFromAll());
+            const auto PPv = P(mod_->selPv());
+            const auto QPv = Q(mod_->selPv());
 
-            const auto IConstrPv = real(mod_->IConst()(mod_->selPvFromAll()));
-            const auto IConstiPv = imag(mod_->IConst()(mod_->selPvFromAll()));
+            const auto IConstrPv = real(mod_->IConst()(mod_->selPv()));
+            const auto IConstiPv = imag(mod_->IConst()(mod_->selPv()));
 
             f(selIrPvFrom_f_) = (VrPv % PPv + ViPv % QPv) / M2Pv
                                 + IConstrPv - GPv * Vr + BPv * Vi;
@@ -536,8 +536,8 @@ namespace Sgt
         if (mod_->nPv() > 0)
         {
             // Set the PV Q columns in the Jacobian. They are diagonal.
-            const auto VrPv = Vr(mod_->selPvFromAll());
-            const auto ViPv = Vi(mod_->selPvFromAll());
+            const auto VrPv = Vr(mod_->selPv());
+            const auto ViPv = Vi(mod_->selPv());
             for (uword i = 0; i < mod_->nPv(); ++i)
             {
                 J.IrPvQPv()(i, i) = ViPv(i) / M2Pv(i);
@@ -563,8 +563,8 @@ namespace Sgt
             }
         };
 
-        const auto VrPv = Vr(mod_->selPvFromAll());
-        const auto ViPv = Vi(mod_->selPvFromAll());
+        const auto VrPv = Vr(mod_->selPv());
+        const auto ViPv = Vi(mod_->selPv());
 
         for (uword k = 0; k < mod_->nPv(); ++k)
         {

@@ -34,11 +34,11 @@ struct Init
     Init()
     {
         unit_test_log.set_threshold_level(boost::unit_test::log_messages);
-        BOOST_MESSAGE("\nTesting " << framework::current_test_case().p_name);
+        BOOST_TEST_MESSAGE("\nTesting " << framework::current_test_case().p_name);
     }
     ~Init()
     {
-        BOOST_MESSAGE("Finished " << framework::current_test_case().p_name << "\n");
+        BOOST_TEST_MESSAGE("Finished " << framework::current_test_case().p_name << "\n");
     }
 };
 
@@ -124,10 +124,10 @@ BOOST_AUTO_TEST_CASE (test_underground_conc_compare_carson)
     ZPhaseKersting << Complex(0.7981, 0.4463) << Complex(0.3191, 0.0328) << Complex(0.2849, -0.0143) << arma::endr
                    << Complex(0.3191, 0.0328) << Complex(0.7891, 0.4041) << Complex(0.3191, 0.0328) << arma::endr
                    << Complex(0.2849, -0.0143) << Complex(0.3191, 0.0328) << Complex(0.7981, 0.4463) << arma::endr;
-    BOOST_MESSAGE(ZPhase);
-    BOOST_MESSAGE(ZPhaseKersting);
+    BOOST_TEST_MESSAGE(ZPhase);
+    BOOST_TEST_MESSAGE(ZPhaseKersting);
     double err = arma::norm(ZPhase - ZPhaseKersting, "inf");
-    BOOST_MESSAGE("Err = " << err);
+    BOOST_TEST_MESSAGE("Err = " << err);
     BOOST_CHECK(err < 0.0005);
 }
 
@@ -145,10 +145,10 @@ BOOST_AUTO_TEST_CASE (test_underground_tape_compare_carson)
     arma::Mat<Complex> ZPrim = ug->ZPrim() * 1609.344; // Convert to ohms per mile.
     arma::Mat<Complex> ZPhase = ug->ZPhase() * 1609.344; // Convert to ohms per mile.
     Complex ZPhaseKersting = Complex(1.3219, 0.6743);
-    BOOST_MESSAGE(ZPhase(0));
-    BOOST_MESSAGE(ZPhaseKersting);
+    BOOST_TEST_MESSAGE(ZPhase(0));
+    BOOST_TEST_MESSAGE(ZPhaseKersting);
     double err = arma::norm(ZPhase - ZPhaseKersting, "inf");
-    BOOST_MESSAGE("Err = " << err);
+    BOOST_TEST_MESSAGE("Err = " << err);
     BOOST_CHECK(err < 0.0006);
 }
 
@@ -262,7 +262,7 @@ BOOST_AUTO_TEST_CASE (test_function_timeseries)
 
 BOOST_AUTO_TEST_CASE (test_matpower)
 {
-    BOOST_MESSAGE("Starting matpower tests");
+    BOOST_TEST_MESSAGE("Starting matpower tests");
     using namespace Sgt;
 
     std::vector<std::string> cases =
@@ -339,12 +339,12 @@ BOOST_AUTO_TEST_CASE (test_matpower)
 
     for (auto c : cases)
     {
-        BOOST_MESSAGE("Case " << c);
+        BOOST_TEST_MESSAGE("Case " << c);
 
         std::string yamlStr =
             std::string("--- [{matpower : {input_file : matpower_test_cases/") + c + ".m, default_kV_base : 11}}]";
         Network nw(100.0);
-        // nw.setUsesFlatStart(true);
+        nw.setUsesFlatStart(true);
         YAML::Node n = YAML::Load(yamlStr);
         Sgt::Parser<Network> p;
         p.parse(n, nw);
@@ -353,7 +353,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         sw.start();
         nw.solvePowerFlow();
         sw.stop();
-        BOOST_MESSAGE("Solve time = " << sw.seconds());
+        BOOST_TEST_MESSAGE("Solve time = " << sw.seconds());
 
         ifstream compareName(std::string("mp_compare/") + c + ".compare");
 

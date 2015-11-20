@@ -186,32 +186,14 @@ namespace Sgt
             /// draw.
             /// @{
 
-            const arma::Col<Complex>& V() const ///< Voltage.
-            {
-                return V_;
-            }
-            arma::Col<Complex>& V() ///< Voltage.
-            {
-                return V_;
-            }
+            arma::Col<Complex> V() const; ///< Voltage.
+            void setV(const arma::Col<Complex>& V) const; ///< Voltage.
 
-            const arma::Col<Complex>& S() const ///< Generated power injection minus load draw.
-            {
-                return S_;
-            }
-            arma::Col<Complex>& S() ///< Generated power injection minus load draw.
-            {
-                return S_;
-            }
+            arma::Col<Complex> S() const; ///< SGen + SZip.
+            void setS(const arma::Col<Complex>& S) const; ///< SGen + SZip.
 
-            const arma::Col<Complex>& IConst() const ///< Constant current component of ZIP.
-            {
-                return IConst_;
-            }
-            arma::Col<Complex>& IConst() ///< Constant current component of ZIP.
-            {
-                return IConst_;
-            }
+            arma::Col<Complex> IConst() const; ///< IZip.
+            void setIConst(const arma::Col<Complex>& IConst) const; ///< IZip.
 
             /// @}
 
@@ -259,25 +241,21 @@ namespace Sgt
                 return nPq_ + nPv_ + i;
             }
 
-            arma::span selPqFromAll() const
+            arma::span selPq() const
             {
                 return arma::span(iPq(0), iPq(nPq_ - 1));
             }
-            arma::span selPvFromAll() const
+            arma::span selPv() const
             {
                 return arma::span(iPv(0), iPv(nPv_ - 1));
             }
-            arma::span selSlFromAll() const
+            arma::span selSl() const
             {
                 return arma::span(iSl(0), iSl(nSl_ - 1));
             }
-            arma::span selPqPvFromAll() const
+            arma::span selPqPv() const
             {
                 return arma::span(iPq(0), iPv(nPv_ - 1));
-            }
-            arma::span selAllFromAll() const
-            {
-                return arma::span(0, nPq_ + nPv_ + nSl_ - 1);
             }
 
             /// @}
@@ -309,16 +287,7 @@ namespace Sgt
             arma::SpMat<Complex> Y_; ///< Y matrix.
 
             /// @}
-
-            /// @name Vectors per node.
-            /// @{
-
-            arma::Col<Complex> V_; ///< Complex voltage.
-            arma::Col<Complex> S_; ///< Complex power injection = S_zip + S_gen
-            arma::Col<Complex> IConst_; ///< Complex current.
-
-            /// @}
     };
-    }
+}
 
 #endif // POWERFLOW_MODEL_DOT_H

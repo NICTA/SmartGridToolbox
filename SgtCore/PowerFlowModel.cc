@@ -19,11 +19,13 @@
 #include <iostream>
 #include <sstream>
 
+using namespace arma;
+
 namespace Sgt
 {
     PfBus::PfBus(const std::string& id, BusType type, const Phases& phases,
-                 const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
-                 double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S) :
+                 const Col<Complex>& YConst, const Col<Complex>& IConst, const Col<Complex>& SConst,
+                 double J, const Col<Complex>& V, const Col<Complex>& S) :
         id_(id),
         type_(type),
         phases_(phases),
@@ -59,7 +61,7 @@ namespace Sgt
     }
 
     PfBranch::PfBranch(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
-                       const arma::Mat<Complex>& Y) :
+                       const Mat<Complex>& Y) :
         nPhase_(phases0.size()),
         ids_{{id0, id1}},
         phases_{{phases0, phases1}},
@@ -79,8 +81,8 @@ namespace Sgt
     }
 
     void PowerFlowModel::addBus(const std::string& id, BusType type, const Phases& phases,
-            const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
-            double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S)
+            const Col<Complex>& YConst, const Col<Complex>& IConst, const Col<Complex>& SConst,
+            double J, const Col<Complex>& V, const Col<Complex>& S)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "PowerFlowModel : add bus " << id << std::endl;
         std::unique_ptr<PfBus> bus(new PfBus(id, type, phases, YConst, IConst, SConst, J, V, S));
@@ -89,7 +91,7 @@ namespace Sgt
     }
 
     void PowerFlowModel::addBranch(const std::string& idBus0, const std::string& idBus1,
-                                   const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& Y)
+                                   const Phases& phases0, const Phases& phases1, const Mat<Complex>& Y)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "PowerFlowModel : addBranch " << idBus0 << " " << idBus1 << std::endl;
         branchVec_.push_back(std::unique_ptr<PfBranch>(new PfBranch(idBus0, idBus1, phases0, phases1, Y)));
@@ -165,7 +167,7 @@ namespace Sgt
             auto nTerm = 2 * branch->nPhase_;
 
             // There is one link per distinct pair of bus/phase pairs.
-            for (arma::uword i = 0; i < nTerm; ++i)
+            for (uword i = 0; i < nTerm; ++i)
             {
                 auto busIdxI = i / branch->nPhase_; // 0 or 1
                 auto branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
@@ -177,7 +179,7 @@ namespace Sgt
                 // Only count each diagonal element in branch->Y_ once!
                 YHelper.insert(idxNodeI, idxNodeI, branch->Y_(i, i));
 
-                for (arma::uword k = i + 1; k < nTerm; ++k)
+                for (uword k = i + 1; k < nTerm; ++k)
                 {
                     auto busIdxK = k / branch->nPhase_; // 0 or 1
                     auto branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
@@ -193,7 +195,7 @@ namespace Sgt
         } // Loop over branches.
 
         // Add shunt terms:
-        for (arma::uword i = 0; i < nNode; ++i)
+        for (uword i = 0; i < nNode; ++i)
         {
             YHelper.insert(i, i, nodeVec_[i]->YConst_);
         }
@@ -201,19 +203,6 @@ namespace Sgt
         Y_ = YHelper.get();
 
         sgtLogDebug() << "Y_.nnz() = " << Y_.n_nonzero << std::endl;
-
-        // Vector quantities of problem:
-        V_.set_size(nNode);
-        S_.set_size(nNode);
-        IConst_.set_size(nNode);
-
-        for (arma::uword i = 0; i < nNode; ++i)
-        {
-            const PfNode& node = *nodeVec_[i];
-            V_(i) = node.V_;
-            S_(i) = node.S_;
-            IConst_(i) = node.IConst_;
-        }
 
         sgtLogDebug() << "PowerFlowModel : validate complete." << std::endl;
         if (debugLogLevel() >= LogLevel::VERBOSE)
@@ -258,13 +247,52 @@ namespace Sgt
                     sgtLogDebug() << "Y      :" << std::endl;
                     {
                         LogIndent indent;
-                        for (arma::uword i = 0; i < branch->Y_.n_rows; ++i)
+                        for (uword i = 0; i < branch->Y_.n_rows; ++i)
                         {
                             sgtLogDebug() << std::setprecision(14) << std::setw(18) << branch->Y_.row(i) << std::endl;
                         }
                     }
                 }
             }
+        }
+    }
+
+    Col<Complex> PowerFlowModel::V() const
+    {
+        auto it = nodeVec_.begin();
+        return Col<Complex>(nodeVec_.size()).imbue([&](){return (**(it++)).V_;});
+    }
+    void PowerFlowModel::setV(const arma::Col<Complex>& V) const
+    {
+        for (uword i = 0; i < V.size(); ++i)
+        {
+            nodeVec_[i]->V_ = V[i];
+        }
+    }
+
+    Col<Complex> PowerFlowModel::S() const
+    {
+        auto it = nodeVec_.begin();
+        return Col<Complex>(nodeVec_.size()).imbue([&](){return (**(it++)).S_;});
+    }
+    void PowerFlowModel::setS(const arma::Col<Complex>& S) const
+    {
+        for (uword i = 0; i < S.size(); ++i)
+        {
+            nodeVec_[i]->S_ = S[i];
+        }
+    }
+
+    Col<Complex> PowerFlowModel::IConst() const
+    {
+        auto it = nodeVec_.begin();
+        return Col<Complex>(nodeVec_.size()).imbue([&](){return (**(it++)).IConst_;});
+    }
+    void PowerFlowModel::setIConst(const arma::Col<Complex>& IConst) const
+    {
+        for (uword i = 0; i < IConst.size(); ++i)
+        {
+            nodeVec_[i]->IConst_ = IConst[i];
         }
     }
 }
