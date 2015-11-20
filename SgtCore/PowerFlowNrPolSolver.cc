@@ -165,6 +165,11 @@ namespace Sgt
         LogIndent indent;
 
         mod_ = buildModel(*netw_);
+
+        // Cache V, Scg, IConst, as these are calculated and not cached in the model.
+        Col<Complex> V = mod_->V(); // Model indexing.
+        Col<Complex> Scg = mod_->S(); // Model indexing. S_cg = S_c + S_g.
+        const Col<Complex>& Ic = mod_->IConst(); // Model indexing. P_c + P_g.
         
         // Set up data structures for the calculation.
         // Model indexing is [0 ... nPq - 1] = Pq, [nPq ... nPq + nPv - 1] = PV, [nPq + nPv ... nPq + nPv + nSl] = SL
@@ -175,15 +180,10 @@ namespace Sgt
         SpMat<double> G = real(Y); // Model indexing. Includes shunts (const Y in ZIPs).
         SpMat<double> B = imag(Y); // Model indexing. Includes shunts (const Y in ZIPs).
 
-        Col<Complex> V = mod_->V(); // Model indexing.
         Col<double> M = abs(V); // Model indexing.
 
         Col<double> theta(mod_->nNode(), fill::none); // Model indexing.
-        for (uword i = 0; i < mod_->nNode(); ++i) theta(i) = std::arg(mod_->V()(i));
-
-        Col<Complex> Scg = mod_->S(); // Model indexing. S_cg = S_c + S_g.
-
-        const Col<Complex>& Ic = mod_->IConst(); // Model indexing. P_c + P_g.
+        for (uword i = 0; i < mod_->nNode(); ++i) theta(i) = std::arg(V(i));
 
         bool wasSuccessful = false;
         double err = 0;
@@ -200,7 +200,6 @@ namespace Sgt
                 ? static_cast<Col<double>>(
                         join_vert(real(S.subvec(0, nPqPv - 1)), imag(S.subvec(0, mod_->nPq() - 1))))
                 : real(S.subvec(0, nPqPv - 1));
-            
             err = norm(f, "inf");
             sgtLogMessage(LogLevel::VERBOSE) << "Err = " << err << std::endl;
             if (err <= tol_) 
@@ -209,9 +208,9 @@ namespace Sgt
                 break;
             }
 
-            Col<double> x; // Delta theta.
             SpMat<double> J = calcJ(mod_->nPq(), mod_->nPv(), V, Y);
 
+            Col<double> x; // Delta theta.
             ok = solveSparseSystem(J, f, x);
             if (!ok)
             {
