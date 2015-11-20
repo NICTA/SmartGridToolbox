@@ -19,7 +19,6 @@
 #ifdef WITH_KLU
 #include "KluSolver.h"
 #endif
-#include "Stopwatch.h"
 
 #include <algorithm>
 #include <ostream>
@@ -41,39 +40,6 @@ namespace Sgt
                 const SpMat<Complex>& Y)
         {
             return (Scg + conj(Ic) % M - V % conj(Y * V));
-        }
-
-        template<typename T, typename U> auto dM(const T& d, const U& M) -> decltype(diag(d) * M)
-        {
-            using Result = decltype(dM(std::declval<const T&>(), std::declval<const U&>()));
-            Result result = M;
-            for (auto it = result.begin(); it != result.end(); ++it)
-            {
-                *it *= d(it.row());
-            }
-            return result;
-        }
-
-        template<typename T, typename U> auto Md(const T& M, const U& d) -> decltype(M * diag(d))
-        {
-            using Result = decltype(Md(std::declval<const T&>(), std::declval<const U&>()));
-            Result result = M;
-            for (auto it = result.begin(); it != result.end(); ++it)
-            {
-                *it *= d(it.row());
-            }
-            return result;
-        }
-
-        template<typename T, typename U> auto addDiag(const T& M, const U& d) -> decltype(M + diag(d))
-        {
-            using Result = decltype(addDiag(std::declval<const T&>(), std::declval<const U&>()));
-            Result result = M;
-            for (auto it = result.begin(); it != result.end(); ++it)
-            {
-                *it += d(it.row());
-            }
-            return result;
         }
 
         template<typename T> SpMat<typename T::elem_type> spDiag(const T& v)
@@ -101,7 +67,7 @@ namespace Sgt
             };
         }
         
-        SpMat<double> calcJ1(
+        SpMat<double> calcJ(
                 const uword nPq,
                 const uword nPv,
                 const Col<Complex>& V,
@@ -109,28 +75,15 @@ namespace Sgt
         {
             uword nPqPv = nPq + nPv;
 
-            auto iP = [&](uword i){return i;};
-            auto iQ = [&](uword i){return i + nPqPv;};
-            auto iM = [&](uword i){return i;};
-            auto iT = [&](uword i){return i + nPq;};
             auto iPQ = [&](uword i){return i;};
             auto iPV = [&](uword i){return i + nPq;};
 
-            auto allP = span(iP(0), iP(nPqPv - 1));
-            auto allQ = span(iQ(0), iQ(nPq - 1));
-            auto allM = span(iM(0), iM(nPq - 1));
-            auto allT = span(iT(0), iT(nPqPv - 1));
             auto allPQ = span(iPQ(0), iPQ(nPq - 1));
             auto allPQPV = span(iPQ(0), iPV(nPv - 1));
 
             uword szJ = 2 * nPq + nPv;
 
-            Stopwatch sw;
-            sw.start();
             auto dSdV_ = dSdV(Y, V);
-            sw.stop();
-            std::cout << "time in dSdV = " << sw.seconds() << std::endl;
-            sw.reset();
             const auto& dSdM = dSdV_.first;
             const auto& dSdT = dSdV_.second;
 
@@ -162,313 +115,6 @@ namespace Sgt
             }
 
             return h.get();
-        }
-
-        // Build the Jacobian JP for P, theta. Indexing is [0 ... nPqPv - 1].
-        SpMat<double> calcJ(
-                const uword nPq,
-                const uword nPv,
-                const Col<double>& M,
-                const Col<double>& theta,
-                const SpMat<double>& G,
-                const SpMat<double>& B)
-        {
-            uword nPqPv = nPq + nPv;
-            arma::Col<double> c = cos(theta);
-            arma::Col<double> s = sin(theta);
-
-            SparseHelper<double> helper(2 * nPq + nPv, 2 * nPq + nPv);
-        
-            auto cos_ik = [&](uword i, uword k) {return c(i) * c(k) + s(i) * s(k);};
-            auto sin_ik = [&](uword i, uword k) {return s(i) * c(k) - c(i) * s(k);};
-        
-            auto iP = [&](uword i){return i;};
-            auto iQ = [&](uword i){return i + nPqPv;};
-            auto iM = [&](uword i){return i;};
-            auto iT = [&](uword i){return i + nPq;};
-        
-            // -----------------------------------------------------------------
-            // dP/dM_PQ
-            
-            // G terms in dP/dM_PQ
-            {
-                auto GSel = G.submat(0, 0, nPqPv - 1, nPq - 1);
-                for (auto it = GSel.begin(); it != GSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword k = it.col(); // Index in full set of busses.
-                    if (iP(i) == 2 && iM(k) == 0) std::cout << "A " << i << " " << k << std::endl;
-                    double Gik = *it;
-                    if (i != k)
-                    {
-                        helper.insert(iP(i), iM(k), -M(i) * Gik * cos_ik(i, k));
-                        if (iP(i) == 2 && iM(k) == 0) std::cout << "    A " << -M(i) * Gik * cos_ik(i, k) << " " << cos_ik(i, k) << std::endl;
-                    }
-                    else
-                    {
-                        helper.insert(iP(i), iM(k), -2 * M(i) * Gik);
-                        if (iP(i) == 2 && iM(k) == 0) std::cout << "    B " << -2 * M(i) * Gik << std::endl;
-                    }
-                }
-            }
-
-            // B terms in dP/dM_PQ
-            {
-                auto BSel = B.submat(0, 0, nPqPv - 1, nPq - 1);
-                for (auto it = BSel.begin(); it != BSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword k = it.col(); // Index in full set of busses.
-                    if (iP(i) == 2 && iM(k) == 0) std::cout << "B " << i << " " << k << std::endl;
-                    double Bik = *it;
-                    if (i != k)
-                    {
-                        if (iP(i) == 2 && iM(k) == 0) std::cout << "    A " << M(i) * Bik * sin_ik(i, k) << std::endl;
-                        helper.insert(iP(i), iM(k), M(i) * Bik * sin_ik(i, k));
-                    }
-                }
-            }
-
-            // Inner sum G terms in dP/dM_PQ
-            {
-                auto GSel = G.rows(0, nPq - 1);
-                for (auto it = GSel.begin(); it != GSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword l = it.col(); // Index in full set of busses.
-                    if (iP(i) == 2 && iM(i) == 0) std::cout << "C" << std::endl;
-                    double Gil = *it;
-                    if (i != l)
-                    {
-                        helper.insert(iP(i), iM(i), -M(l) * Gil * cos_ik(i, l));
-                    }
-                }
-            }
-
-            // Inner sum B terms in dP/dM_PQ
-            {
-                auto BSel = B.rows(0, nPq - 1);
-                for (auto it = BSel.begin(); it != BSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword l = it.col(); // Index in full set of busses.
-                    if (iP(i) == 2 && iM(i) == 0) std::cout << "D" << std::endl;
-                    double Bil = *it;
-                    if (i != l)
-                    {
-                        helper.insert(iP(i), iM(i), -M(l) * Bil * sin_ik(i, l));
-                    }
-                }
-            }
-            
-            // -----------------------------------------------------------------
-            // dP/dtheta
-
-            // G terms in dP/dtheta
-            {
-                auto GSel = G.submat(0, 0, nPqPv - 1, nPqPv - 1);
-                for (auto it = GSel.begin(); it != GSel.end(); ++it)
-                {
-                    uword i = it.row();
-                    uword k = it.col();
-                    if (iP(i) == 2 && iT(k) == 0) std::cout << "E" << std::endl;
-                    double Gik = *it;
-                    if (i != k)
-                    {
-                        helper.insert(iP(i), iT(k), -M(i) * M(k) * Gik * sin_ik(i, k));
-                    }
-                }
-            }
-
-            // B terms in dP/dtheta
-            {
-                auto BSel = B.submat(0, 0, nPqPv - 1, nPqPv - 1);
-                for (auto it = BSel.begin(); it != BSel.end(); ++it)
-                {
-                    uword i = it.row();
-                    uword k = it.col();
-                    if (iP(i) == 2 && iT(k) == 0) std::cout << "F" << std::endl;
-                    double Bik = *it;
-                    if (i != k)
-                    {
-                        helper.insert(iP(i), iT(k), M(i) * M(k) * Bik * cos_ik(i, k));
-                    }
-                }
-            }
-
-            // Inner sum G terms in dP/dtheta
-            {
-                auto GSel = G.rows(0, nPqPv - 1);
-                for (auto it = GSel.begin(); it != GSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword l = it.col(); // Index in full set of busses.
-                    if (iP(i) == 2 && iT(i) == 0) std::cout << "G" << std::endl;
-                    double Gil = *it;
-                    if (i != l)
-                    {
-                        helper.insert(iP(i), iT(i), M(i) * M(l) * Gil * sin_ik(i, l));
-                    }
-                }
-            }
-
-            // Inner sum B terms in dP/dtheta
-            {
-                auto BSel = B.rows(0, nPqPv - 1);
-                for (auto it = BSel.begin(); it != BSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword l = it.col(); // Index in full set of busses.
-                    if (iP(i) == 2 && iT(i) == 0) std::cout << "H" << std::endl;
-                    double Bil = *it;
-                    if (i != l)
-                    {
-                        helper.insert(iP(i), iT(i), -M(i) * M(l) * Bil * cos_ik(i, l));
-                    }
-                }
-            }
-            
-            // -----------------------------------------------------------------
-            // dQ_PQ/dM_PQ
-
-            // G terms in dQ_PQ/dM_PQ
-            {
-                auto GSel = G.submat(0, 0, nPq - 1, nPq - 1);
-                for (auto it = GSel.begin(); it != GSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword k = it.col(); // Index in full set of busses.
-                    if (iQ(i) == 2 && iM(k) == 0) std::cout << "I" << std::endl;
-                    double Gik = *it;
-                    if (i != k)
-                    {
-                        helper.insert(iQ(i), iM(k), -M(i) * Gik * sin_ik(i, k));
-                    }
-                }
-            }
-            
-            // B terms in dQ_PQ/dM_PQ
-            {
-                auto BSel = B.submat(0, 0, nPq - 1, nPq - 1);
-                for (auto it = BSel.begin(); it != BSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword k = it.col(); // Index in full set of busses.
-                    if (iQ(i) == 2 && iM(k) == 0) std::cout << "J" << std::endl;
-                    double Bik = *it;
-                    if (i != k)
-                    {
-                        helper.insert(iQ(i), iM(k), M(i) * Bik * cos_ik(i, k));
-                    }
-                    else
-                    {
-                        helper.insert(iQ(i), iM(k), 2 * M(i) * Bik);
-                    }
-                }
-            }
-
-            // Inner sum G terms in dQ_PQ/dM_PQ
-            {
-                auto GSel = G.rows(0, nPq - 1);
-                for (auto it = GSel.begin(); it != GSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword l = it.col(); // Index in full set of busses.
-                    if (iQ(i) == 2 && iM(i) == 0) std::cout << "K" << std::endl;
-                    double Gil = *it;
-                    if (i != l)
-                    {
-                        helper.insert(iQ(i), iM(i), -M(l) * Gil * sin_ik(i, l));
-                    }
-                }
-            }
- 
-            // Inner sum B terms in dQ_PQ/dM_PQ
-            {
-                auto BSel = B.rows(0, nPq - 1);
-                for (auto it = BSel.begin(); it != BSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword l = it.col(); // Index in full set of busses.
-                    if (iQ(i) == 2 && iM(i) == 0) std::cout << "L" << std::endl;
-                    double Bil = *it;
-                    if (i != l)
-                    {
-                        helper.insert(iQ(i), iM(i), M(l) * Bil * cos_ik(i, l));
-                    }
-                }
-            }
-            
-            // -----------------------------------------------------------------
-            // dQ_PQ/dtheta
-
-            // G terms in dQ_PQ/dtheta
-            {
-                auto GSel = G.submat(0, 0, nPq - 1, nPqPv - 1);
-                for (auto it = GSel.begin(); it != GSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword k = it.col(); // Index in full set of busses.
-                    if (iQ(i) == 2 && iT(k) == 0) std::cout << "M" << std::endl;
-                    double Gik = *it;
-                    if (i != k)
-                    {
-                        helper.insert(iQ(i), iT(k), M(i) * M(k) * Gik * cos_ik(i, k));
-                    }
-                }
-            }
-
-            // B terms in dQ_PQ/dtheta
-            {
-                auto BSel = B.submat(0, 0, nPq - 1, nPqPv - 1);
-                for (auto it = BSel.begin(); it != BSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword k = it.col(); // Index in full set of busses.
-                    if (iQ(i) == 2 && iT(k) == 0) std::cout << "N" << std::endl;
-                    double Bik = *it;
-                    if (i != k)
-                    {
-                        helper.insert(iQ(i), iT(k), M(i) * M(k) * Bik * sin_ik(i, k));
-                    }
-                }
-            }
-
-            // Inner sum G terms in dQ_PQ/dtheta
-            {
-                auto GSel = G.rows(0, nPq - 1);
-                for (auto it = GSel.begin(); it != GSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword l = it.col(); // Index in full set of busses.
-                    if (iQ(i) == 2 && iT(i) == 0) std::cout << "O" << std::endl;
-                    double Gil = *it;
-                    if (i != l)
-                    {
-                        helper.insert(iQ(i), iT(i), -M(i) * M(l) * Gil * cos_ik(i, l));
-                    }
-                }
-            }
-
-            // Inner sum B terms in dQ_PQ/dtheta
-            {
-                auto BSel = B.rows(0, nPq - 1);
-                for (auto it = BSel.begin(); it != BSel.end(); ++it)
-                {
-                    uword i = it.row(); // Index in full set of busses.
-                    uword l = it.col(); // Index in full set of busses.
-                    if (iQ(i) == 2 && iT(i) == 0) std::cout << "P" << std::endl;
-                    double Bil = *it;
-                    if (i != l)
-                    {
-                        helper.insert(iQ(i), iT(i), -M(i) * M(l) * Bil * sin_ik(i, l));
-                    }
-                }
-            }
-
-            // -----------------------------------------------------------------
-              
-            return helper.get();
         }
 
         // Solve Jx + f = 0
@@ -535,18 +181,9 @@ namespace Sgt
             }
 
             Col<double> x; // Delta theta.
-            Stopwatch sw;
-            sw.start();
-            SpMat<double> J = calcJ(nPq, nPv, M, theta, G, B);
-            sw.stop();
-            std::cout << "J " << sw.seconds() << std::endl;
-            sw.reset();
-            sw.start();
-            SpMat<double> J1 = calcJ1(nPq, nPv, V, Y);
-            sw.stop();
-            std::cout << "J1 " << sw.seconds() << std::endl;
+            SpMat<double> J = calcJ(nPq, nPv, V, Y);
 
-            ok = solveSparseSystem(J1, f, x);
+            ok = solveSparseSystem(J, f, x);
             if (!ok)
             {
                 sgtLogWarning() << "Solve failed." << std::endl;
@@ -556,10 +193,9 @@ namespace Sgt
             sgtLogDebug() << "V = " << V << std::endl;
             sgtLogDebug() << "S = " << S << std::endl;
             sgtLogDebug() << "f = " << f << std::endl;
-            sgtLogMessage() << "|f| = " << err << std::endl;
+            sgtLogDebug() << "|f| = " << err << std::endl;
             sgtLogDebug() << "x = " << x << std::endl;
             sgtLogDebug() << "J =\n" << std::setw(10) << arma::Mat<double>(J) << std::endl;
-            sgtLogDebug() << "J1 =\n" << std::setw(10) << arma::Mat<double>(J1) << std::endl;
             sgtLogDebug() << "--------------------" << std::endl;
 
             // Update M, theta, V.
