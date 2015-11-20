@@ -50,8 +50,7 @@ namespace Sgt
                 const SpMat<Complex>& Y)
         {
             // TODO: may unnessecarily calculate P.
-            // Note: set_imag doesn't work for subview.
-            Col<double> PSv = real(Scg(selPv)); // Temporary works.
+            Col<double> PSv = real(Scg(selPv));
             Col<double> QNew = imag(Ic(selPv)) % M(selPv) + imag(V(selPv) % conj(Y.rows(selPv.a, selPv.b) * V)); 
             Scg(selPv) = cx_mat(PSv, QNew); 
         }
@@ -64,8 +63,6 @@ namespace Sgt
                 const Col<double>& M,
                 const SpMat<Complex>& Y)
         {
-            // TODO: may unnessecarily calculate P.
-            // Note: set_imag doesn't work for subview.
             Scg(selSl) = Ic(selSl) % M(selSl) + V(selSl) % conj(Y.rows(selSl.a, selSl.b) * V);
         }
 
@@ -239,10 +236,8 @@ namespace Sgt
             {
                 // TODO: this should be part of PowerFlowModel.
                 auto node = mod_->nodeVec()[i];
-                node->V_ = 0;
-                node->S_ = 0;
-                node->bus_->V_[node->phaseIdx_] = node->V_;
-                node->bus_->S_[node->phaseIdx_] = node->S_;
+                node->setV(0);
+                node->setS(0);
             }
         }
 
@@ -252,21 +247,11 @@ namespace Sgt
         }
         if (nSl > 0)
         {
-            updateScgSl(Scg, mod_->selPq(), Ic, V, M, Y);
+            updateScgSl(Scg, mod_->selSl(), Ic, V, M, Y);
         }
 
-        mod_->V() = V;
-        mod_->S() = Scg;
-
-        // Update nodes and busses.
-        for (uword i = 0; i < mod_->nNode(); ++i)
-        {
-            auto node = mod_->nodeVec()[i];
-            node->V_ = mod_->V()(i);
-            node->S_ = mod_->S()(i);
-            node->bus_->V_[node->phaseIdx_] = node->V_;
-            node->bus_->S_[node->phaseIdx_] = node->S_;
-        }
+        mod_->setV(V);
+        mod_->setS(Scg);
 
         return wasSuccessful;
     }

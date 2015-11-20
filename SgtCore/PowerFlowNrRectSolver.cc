@@ -41,6 +41,20 @@ namespace
 
 namespace Sgt
 {
+    namespace
+    {
+        void updateScgSl(
+                Col<Complex>& Scg,
+                arma::span selSl,
+                const Col<Complex>& Ic,
+                const Col<Complex>& V,
+                const Col<double>& M,
+                const SpMat<Complex>& Y)
+        {
+            Scg(selSl) = Ic(selSl) % M(selSl) + V(selSl) % conj(Y.rows(selSl.a, selSl.b) * V);
+        }
+    }
+
     Jacobian::Jacobian(uword nPq, uword nPv)
     {
         for (std::size_t i = 0; i < 2; ++i)
@@ -264,44 +278,21 @@ namespace Sgt
             for (std::size_t i = 0; i < mod_->nNode(); ++i)
             {
                 auto node = mod_->nodeVec()[i];
-                node->V_ = 0;
-                node->S_ = 0;
-                node->bus_->V_[node->phaseIdx_] = node->V_;
-                node->bus_->S_[node->phaseIdx_] = node->S_;
+                node->setV(0);
+                node->setS(0);
             }
         }
 
-        for (uword i = 0; i < mod_->nNode(); ++i)
-        {
-            mod_->V()(i) = {Vr(i), Vi(i)};
-            mod_->S()(i) = {P(i), Q(i)};
-        }
+        Col<Complex> V = cx_vec(Vr, Vi);
 
-        // Set the slack power.
+        Col<Complex> S = cx_vec(P, Q);
         if (mod_->nSl() > 0)
         {
-            auto SSl = mod_->S()(mod_->selSl());
-
-            auto VSl = mod_->V()(mod_->selSl());
-            auto IConstSl = mod_->IConst()(mod_->selSl());
-
-            SpMat<Complex> YStar = mod_->Y()(mod_->selSl(), span::all);
-            for (auto elem : YStar) elem = std::conj(Complex(elem));
-            auto VStar = conj(mod_->V());
-            auto IConstStar = conj(mod_->IConst()(mod_->selSl()));
-
-            SSl = VSl % (YStar * VStar) - VSl % IConstStar;
+            updateScgSl(S, mod_->selSl(), mod_->IConst(), V, abs(V), mod_->Y());
         }
 
-        // Update nodes and busses.
-        for (uword i = 0; i < mod_->nNode(); ++i)
-        {
-            auto node = mod_->nodeVec()[i];
-            node->V_ = mod_->V()(i);
-            node->S_ = mod_->S()(i);
-            node->bus_->V_[node->phaseIdx_] = node->V_;
-            node->bus_->S_[node->phaseIdx_] = node->S_;
-        }
+        mod_->setV(V);
+        mod_->setS(S);
 
         stopwatchTot.stop();
         durationTot = stopwatchTot.seconds();

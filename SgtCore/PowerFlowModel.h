@@ -59,20 +59,27 @@ namespace Sgt
 
     struct PfNode
     {
-        PfNode(PfBus& bus, std::size_t phaseIdx);
+        public:
+            PfBus* bus_{nullptr};
+            std::size_t phaseIdx_{0};
+            std::size_t idx_{0};
 
-        PfBus* bus_{nullptr};
+            PfNode(PfBus& bus, std::size_t phaseIdx);
 
-        std::size_t phaseIdx_{0};
+            const Complex& YConst() const {return bus_->YConst_(phaseIdx_);}
+            void setYConst(const Complex& YConst) {bus_->YConst_(phaseIdx_) = YConst;}
 
-        Complex YConst_{0.0, 0.0};
-        Complex IConst_{0.0, 0.0};
-        Complex SConst_{0.0, 0.0};
+            const Complex& IConst() const {return bus_->IConst_(phaseIdx_);}
+            void setIConst(const Complex& IConst) {bus_->IConst_(phaseIdx_) = IConst;}
 
-        Complex V_{0.0, 0.0};
-        Complex S_{0.0, 0.0};
+            const Complex& SConst() const {return bus_->SConst_(phaseIdx_);}
+            void setSConst(const Complex& SConst) {bus_->SConst_(phaseIdx_) = SConst;}
 
-        std::size_t idx_{0};
+            const Complex& V() const {return bus_->V_(phaseIdx_);}
+            void setV(const Complex& V) {bus_->V_(phaseIdx_) = V;}
+
+            const Complex& S() const {return bus_->S_(phaseIdx_);}
+            void setS(const Complex& S) {bus_->S_(phaseIdx_) = S;}
     };
 
     struct PfBranch
