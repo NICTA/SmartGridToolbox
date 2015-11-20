@@ -43,7 +43,7 @@ namespace Sgt
 
         void updateQcgPv(
                 Col<Complex>& Scg,
-                arma::span selPv,
+                span selPv,
                 const Col<Complex>& Ic,
                 const Col<Complex>& V,
                 const Col<double>& M,
@@ -57,7 +57,7 @@ namespace Sgt
 
         void updateScgSl(
                 Col<Complex>& Scg,
-                arma::span selSl,
+                span selSl,
                 const Col<Complex>& Ic,
                 const Col<Complex>& V,
                 const Col<double>& M,
@@ -69,7 +69,7 @@ namespace Sgt
         template<typename T> SpMat<typename T::elem_type> spDiag(const T& v)
         {
             uword n = v.size();
-            Mat<uword> locs(2, n, arma::fill::none);
+            Mat<uword> locs(2, n, fill::none);
             locs.row(0) = linspace<Row<uword>>(0, n - 1, n);
             locs.row(1) = locs.row(0);
             return SpMat<typename T::elem_type>(locs, v, false);
@@ -111,31 +111,36 @@ namespace Sgt
             const auto& dSdM = dSdV_.first;
             const auto& dSdT = dSdV_.second;
 
-            SpMat<double> dPdM = real(dSdM.submat(allPqPV, allPq));
-            SpMat<double> dQdM = imag(dSdM.submat(allPq, allPq));
-            SpMat<double> dPdT = real(dSdT.submat(allPqPV, allPqPV));
-            SpMat<double> dQdT = imag(dSdT.submat(allPq, allPqPV));
-            
             SparseHelper<double> h(szJ, szJ);
-            for (auto it = dPdM.begin(); it != dPdM.end(); ++it)
+            if (nPq > 0)
             {
-                uword i = it.row(); uword k = it.col(); double val = *it;
-                h.insert(i, k, val);
+                SpMat<double> dPdM = real(dSdM.submat(allPqPV, allPq));
+                for (auto it = dPdM.begin(); it != dPdM.end(); ++it)
+                {
+                    uword i = it.row(); uword k = it.col(); double val = *it;
+                    h.insert(i, k, val);
+                }
+                
+                SpMat<double> dQdM = imag(dSdM.submat(allPq, allPq));
+                for (auto it = dQdM.begin(); it != dQdM.end(); ++it)
+                {
+                    uword i = it.row(); uword k = it.col(); double val = *it;
+                    h.insert(i + nPqPv, k, val);
+                }
+
+                SpMat<double> dQdT = imag(dSdT.submat(allPq, allPqPV));
+                for (auto it = dQdT.begin(); it != dQdT.end(); ++it)
+                {
+                    uword i = it.row(); uword k = it.col(); double val = *it;
+                    h.insert(i + nPqPv, k + nPq, val);
+                }
             }
-            for (auto it = dQdM.begin(); it != dQdM.end(); ++it)
-            {
-                uword i = it.row(); uword k = it.col(); double val = *it;
-                h.insert(i + nPqPv, k, val);
-            }
+
+            SpMat<double> dPdT = real(dSdT.submat(allPqPV, allPqPV));
             for (auto it = dPdT.begin(); it != dPdT.end(); ++it)
             {
                 uword i = it.row(); uword k = it.col(); double val = *it;
                 h.insert(i, k + nPq, val);
-            }
-            for (auto it = dQdT.begin(); it != dQdT.end(); ++it)
-            {
-                uword i = it.row(); uword k = it.col(); double val = *it;
-                h.insert(i + nPqPv, k + nPq, val);
             }
 
             return h.get();
@@ -164,11 +169,7 @@ namespace Sgt
         // Set up data structures for the calculation.
         // Model indexing is [0 ... nPq - 1] = Pq, [nPq ... nPq + nPv - 1] = PV, [nPq + nPv ... nPq + nPv + nSl] = SL
 
-        uword nNode = mod_->nNode();
-        uword nPq = mod_->nPq();
-        uword nPv = mod_->nPv();
-        uword nSl = mod_->nSl();
-        uword nPqPv = nPq + nPv;
+        uword nPqPv = mod_->nPq() + mod_->nPv();
 
         const SpMat<Complex>& Y = mod_->Y(); // Model indexing. Includes shunts (const Y in ZIPs).
         SpMat<double> G = real(Y); // Model indexing. Includes shunts (const Y in ZIPs).
@@ -177,8 +178,8 @@ namespace Sgt
         Col<Complex> V = mod_->V(); // Model indexing.
         Col<double> M = abs(V); // Model indexing.
 
-        Col<double> theta(nNode, fill::none); // Model indexing.
-        for (uword i = 0; i < nNode; ++i) theta(i) = std::arg(mod_->V()(i));
+        Col<double> theta(mod_->nNode(), fill::none); // Model indexing.
+        for (uword i = 0; i < mod_->nNode(); ++i) theta(i) = std::arg(mod_->V()(i));
 
         Col<Complex> Scg = mod_->S(); // Model indexing. S_cg = S_c + S_g.
 
@@ -195,7 +196,10 @@ namespace Sgt
             LogIndent _;
 
             auto S = calcS(Scg, Ic, V, M, Y);
-            arma::Col<double> f = join_vert(real(S.subvec(0, nPqPv - 1)), imag(S.subvec(0, nPq - 1)));
+            Col<double> f = mod_->nPq() > 0
+                ? static_cast<Col<double>>(
+                        join_vert(real(S.subvec(0, nPqPv - 1)), imag(S.subvec(0, mod_->nPq() - 1))))
+                : real(S.subvec(0, nPqPv - 1));
             
             err = norm(f, "inf");
             sgtLogMessage(LogLevel::VERBOSE) << "Err = " << err << std::endl;
@@ -206,7 +210,7 @@ namespace Sgt
             }
 
             Col<double> x; // Delta theta.
-            SpMat<double> J = calcJ(nPq, nPv, V, Y);
+            SpMat<double> J = calcJ(mod_->nPq(), mod_->nPv(), V, Y);
 
             ok = solveSparseSystem(J, f, x);
             if (!ok)
@@ -220,12 +224,15 @@ namespace Sgt
             sgtLogDebug() << "f = " << f << std::endl;
             sgtLogDebug() << "|f| = " << err << std::endl;
             sgtLogDebug() << "x = " << x << std::endl;
-            sgtLogDebug() << "J =\n" << std::setw(10) << arma::Mat<double>(J) << std::endl;
+            sgtLogDebug() << "J =\n" << std::setw(10) << Mat<double>(J) << std::endl;
             sgtLogDebug() << "--------------------" << std::endl;
 
             // Update M, theta, V.
-            M.subvec(0, nPq - 1) += x.subvec(0, nPq - 1);
-            theta.subvec(0, nPqPv - 1) += x.subvec(nPq, 2 * nPq + nPv - 1);
+            if (mod_->nPq() > 0)
+            {
+                M.subvec(0, mod_->nPq() - 1) += x.subvec(0, mod_->nPq() - 1);
+            }
+            theta.subvec(0, nPqPv - 1) += x.subvec(mod_->nPq(), 2 * mod_->nPq() + mod_->nPv() - 1);
             V.subvec(0, nPqPv - 1) = M.subvec(0, nPqPv - 1) % exp(Complex{0, 1} * theta.subvec(0, nPqPv - 1));
         }
 
@@ -241,11 +248,11 @@ namespace Sgt
             }
         }
 
-        if (nPv > 0)
+        if (mod_->nPv() > 0)
         {
             updateQcgPv(Scg, mod_->selPv(), Ic, V, M, Y);
         }
-        if (nSl > 0)
+        if (mod_->nSl() > 0)
         {
             updateScgSl(Scg, mod_->selSl(), Ic, V, M, Y);
         }
