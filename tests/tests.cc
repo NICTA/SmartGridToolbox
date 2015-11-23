@@ -369,7 +369,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
             std::string yamlStr = std::string("--- [{matpower : {input_file : matpower_test_cases/") 
                 + c + ".m, default_kV_base : 11}, power_flow_solver : " + solverType + "}]";
             Network nw(100.0);
-            nw.setUsesFlatStart(true);
+            nw.setUseFlatStart(true);
             YAML::Node n = YAML::Load(yamlStr);
             Sgt::Parser<Network> p;
             p.parse(n, nw);

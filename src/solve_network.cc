@@ -51,7 +51,7 @@ int main(int argc, char** argv)
     auto outFBranch = std::fopen((outPrefix + ".branch").c_str(), "w+");
     std::map<std::string, int> busMap;
 
-    nw.setUsesFlatStart(!warm_start);
+    nw.setUseFlatStart(!warm_start);
 
     auto print = [&]()
     {

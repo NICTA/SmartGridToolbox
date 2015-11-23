@@ -36,14 +36,14 @@ t_ok_rect = [x[1] for x in zip(ok_rect, t_rect) if x[0] == 1]
 n_bad_rect = [x[1] for x in zip(ok_rect, n) if x[0] == 0]
 t_bad_rect = [x[1] for x in zip(ok_rect, t_rect) if x[0] == 0]
 
-print(len(t_bad_mp))
-print(len(t_bad_pol))
-print(len(t_bad_rect))
+print('# bad matpower = ' + str(len(t_bad_mp)))
+print('# bad nr_rect  = ' + str(len(t_bad_pol)))
+print('# bad nr_pol   = ' + str(len(t_bad_rect)))
 
-ax.scatter(n_ok_mp, t_ok_mp, color='red')
+ax.scatter(n_ok_mp, t_ok_mp, color='red', marker='.')
 ax.scatter(n_bad_mp, t_bad_mp, color='red', marker='x')
-ax.scatter(n_ok_pol, t_ok_pol, color='lightgreen')
-ax.scatter(n_bad_pol, t_bad_pol, color='lightgreen', marker='x')
-ax.scatter(n_ok_rect, t_ok_rect, color='blue')
-ax.scatter(n_bad_rect, t_bad_rect, color='blue', marker='x')
+ax.scatter(n_ok_pol, t_ok_pol, color='blue', marker='.')
+ax.scatter(n_bad_pol, t_bad_pol, color='blue', marker='x')
+ax.scatter(n_ok_rect, t_ok_rect, color='lightgreen', marker='.')
+ax.scatter(n_bad_rect, t_bad_rect, color='lightgreen', marker='x')
 plt.show()

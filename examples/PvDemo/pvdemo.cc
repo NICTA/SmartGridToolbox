@@ -48,7 +48,7 @@ int main(int argc, const char ** argv)
     SimNetwork& simNetwork = *sim.simComponent<SimNetwork>("network");
     Network& network = simNetwork.network();
     network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
-    network.setUsesFlatStart(true);
+    network.setUseFlatStart(true);
 
     for (auto bus : network.busses())
     {

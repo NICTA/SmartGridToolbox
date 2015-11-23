@@ -229,14 +229,14 @@ namespace Sgt
                 solver_ = std::move(solver);
             }
 
-            bool usesFlatStart() const
+            bool useFlatStart() const
             {
-                return usesFlatStart_;
+                return useFlatStart_;
             }
 
-            void setUsesFlatStart(bool usesFlatStart)
+            void setUseFlatStart(bool useFlatStart)
             {
-                usesFlatStart_ = usesFlatStart;
+                useFlatStart_ = useFlatStart;
             }
 
             virtual bool solvePowerFlow();
@@ -282,7 +282,7 @@ namespace Sgt
             std::vector<ZipAbc*> zipVec_;
 
             std::unique_ptr<PowerFlowSolverInterface> solver_{nullptr};
-            bool usesFlatStart_{false};
+            bool useFlatStart_{false};
 
             bool isValidSolution_{false};
     };

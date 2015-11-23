@@ -67,7 +67,7 @@ namespace Sgt
         sgtLogDebug() << "Network : solving power flow." << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << *this;
 
-        if (usesFlatStart_)
+        if (useFlatStart_)
         {
             for (Bus* bus : busses())
             {
