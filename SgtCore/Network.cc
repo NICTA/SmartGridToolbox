@@ -151,8 +151,8 @@ namespace Sgt
                 }
 
                 bus->applyVSetpoints();
-                mod->addBus(bus->id(), bus->type(), bus->phases(), bus->YConst(), bus->IConst(), bus->SConst(),
-                        bus->JGen(), bus->V(), bus->SGenRequested() + bus->SConst());
+                mod->addBus(bus->id(), bus->type(), bus->phases(), bus->V(), bus->YConst(), bus->IConst(),
+                        bus->SGenRequested() + bus->SConst(), bus->JGen());
 
                 bus->setType(busTypeSv);
                 bus->setpointChanged().setIsEnabled(isEnabledSv);
@@ -181,7 +181,7 @@ namespace Sgt
             int nInService = bus->nInServiceGens();
 
             arma::Col<Complex> SGen = nInService > 0
-                                      ? (modBus.S_ - bus->SConst()) / nInService
+                                      ? (modBus.Scg_ - bus->SConst()) / nInService
                                       : arma::Col<Complex>(bus->phases().size(), arma::fill::zeros);
             // Note: we've already taken YConst and IConst explicitly into account, so this is correct.
             // KLUDGE: We're using a vector above, rather than "auto" (which gives some kind of expression type).

@@ -34,25 +34,23 @@ namespace Sgt
     {
         typedef std::vector<std::unique_ptr<PfNode>> PfNodeVec;
 
-        PfBus(const std::string& id, BusType type, const Phases& phases,
-                const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& SConst,
-                double J, const arma::Col<Complex>& V, const arma::Col<Complex>& S);
+        PfBus(const std::string& id, BusType type, const Phases& phases, const arma::Col<Complex>& V,
+                const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& Scg,
+                double J);
 
         std::string id_; ///< Externally relevant id.
         BusType type_{BusType::BAD}; ///< Bus type.
         Phases phases_; ///< Bus phases.
 
+        arma::Col<Complex> V_; ///< Voltage, one per phase. Setpoint/warm start on input.
         arma::Col<Complex> YConst_; ///< Constant admittance shunt, one per phase.
         arma::Col<Complex> IConst_; ///< Constant current injection, one per phase.
-        arma::Col<Complex> SConst_; ///< Constant power injection, one per phase.
+        arma::Col<Complex> Scg_; ///< Constant power injection plus gen, one per phase.
 
         // Regardless of numbers of poles, etc., the combined generation at a bus will have a certain angular
         // momentum for any given frequency of the network. Thus, we define an effective moment of inertia at the
         // bus by L = J omega_netw.
         double J_{0.0}; ///< Effective moment of inertia for all machines attached to bus.
-
-        arma::Col<Complex> V_; ///< Voltage, one per phase. Setpoint/warm start on input.
-        arma::Col<Complex> S_; ///< Total power injection, one per phase. Setpt/wm start on input.
 
         PfNodeVec nodeVec_; ///< Nodes, one per phase.
     };
@@ -66,20 +64,17 @@ namespace Sgt
 
             PfNode(PfBus& bus, std::size_t phaseIdx);
 
+            const Complex& V() const {return bus_->V_(phaseIdx_);}
+            void setV(const Complex& V) {bus_->V_(phaseIdx_) = V;}
+            
             const Complex& YConst() const {return bus_->YConst_(phaseIdx_);}
             void setYConst(const Complex& YConst) {bus_->YConst_(phaseIdx_) = YConst;}
 
             const Complex& IConst() const {return bus_->IConst_(phaseIdx_);}
             void setIConst(const Complex& IConst) {bus_->IConst_(phaseIdx_) = IConst;}
 
-            const Complex& SConst() const {return bus_->SConst_(phaseIdx_);}
-            void setSConst(const Complex& SConst) {bus_->SConst_(phaseIdx_) = SConst;}
-
-            const Complex& V() const {return bus_->V_(phaseIdx_);}
-            void setV(const Complex& V) {bus_->V_(phaseIdx_) = V;}
-
-            const Complex& S() const {return bus_->S_(phaseIdx_);}
-            void setS(const Complex& S) {bus_->S_(phaseIdx_) = S;}
+            const Complex& Scg() const {return bus_->Scg_(phaseIdx_);}
+            void setScg(const Complex& Scg) {bus_->Scg_(phaseIdx_) = Scg;}
     };
 
     struct PfBranch
@@ -115,10 +110,9 @@ namespace Sgt
             /// @name Bus, branch and node accessors.
             /// @{
 
-            void addBus(const std::string& id, BusType type, const Phases& phases,
-                    const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst,
-                    const arma::Col<Complex>& SConst, double J, const arma::Col<Complex>& V,
-                    const arma::Col<Complex>& S);
+            void addBus(const std::string& id, BusType type, const Phases& phases, const arma::Col<Complex>& V,
+                    const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& Scg,
+                    double J);
 
             const PfBusMap& busMap() const
             {
@@ -195,12 +189,12 @@ namespace Sgt
 
             arma::Col<Complex> V() const; ///< Voltage.
             void setV(const arma::Col<Complex>& V) const; ///< Voltage.
+            
+            arma::Col<Complex> Scg() const;
+            void setScg(const arma::Col<Complex>& Scg) const;
 
-            arma::Col<Complex> S() const; ///< SGen + SZip.
-            void setS(const arma::Col<Complex>& S) const; ///< SGen + SZip.
-
-            arma::Col<Complex> IConst() const; ///< IZip.
-            void setIConst(const arma::Col<Complex>& IConst) const; ///< IZip.
+            arma::Col<Complex> IConst() const;
+            void setIConst(const arma::Col<Complex>& IConst) const;
 
             /// @}
 

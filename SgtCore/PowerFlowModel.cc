@@ -23,24 +23,22 @@ using namespace arma;
 
 namespace Sgt
 {
-    PfBus::PfBus(const std::string& id, BusType type, const Phases& phases,
-                 const Col<Complex>& YConst, const Col<Complex>& IConst, const Col<Complex>& SConst,
-                 double J, const Col<Complex>& V, const Col<Complex>& S) :
+    PfBus::PfBus(const std::string& id, BusType type, const Phases& phases, const Col<Complex>& V,
+            const Col<Complex>& YConst, const Col<Complex>& IConst, const Col<Complex>& Scg,
+            double J) :
         id_(id),
         type_(type),
         phases_(phases),
+        V_(V),
         YConst_(YConst),
         IConst_(IConst),
-        SConst_(SConst),
-        J_(J),
-        V_(V),
-        S_(S)
+        Scg_(Scg),
+        J_(J)
     {
+        assert(V.size() == phases.size());
         assert(YConst.size() == phases.size());
         assert(IConst.size() == phases.size());
-        assert(SConst.size() == phases.size());
-        assert(V.size() == phases.size());
-        assert(S.size() == phases.size());
+        assert(Scg.size() == phases.size());
 
         for (std::size_t i = 0; i < phases.size(); ++i)
         {
@@ -75,12 +73,12 @@ namespace Sgt
         branchVec_.reserve(nBranch);
     }
 
-    void PowerFlowModel::addBus(const std::string& id, BusType type, const Phases& phases,
-            const Col<Complex>& YConst, const Col<Complex>& IConst, const Col<Complex>& SConst,
-            double J, const Col<Complex>& V, const Col<Complex>& S)
+    void PowerFlowModel::addBus(const std::string& id, BusType type, const Phases& phases, const arma::Col<Complex>& V,
+            const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& Scg,
+            double J)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "PowerFlowModel : add bus " << id << std::endl;
-        std::unique_ptr<PfBus> bus(new PfBus(id, type, phases, YConst, IConst, SConst, J, V, S));
+        std::unique_ptr<PfBus> bus(new PfBus(id, type, phases, V, YConst, IConst, Scg, J));
         busVec_.push_back(bus.get());
         busMap_[id] = std::move(bus);
     }
@@ -222,10 +220,9 @@ namespace Sgt
                     sgtLogDebug() << "Type   : " << nd->bus_->type_ << std::endl;
                     sgtLogDebug() << "Phase  : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
                     sgtLogDebug() << "V      : " << nd->V() << std::endl;
-                    sgtLogDebug() << "S      : " << nd->S() << std::endl;
                     sgtLogDebug() << "YConst : " << nd->YConst() << std::endl;
                     sgtLogDebug() << "IConst : " << nd->IConst() << std::endl;
-                    sgtLogDebug() << "SConst : " << nd->SConst() << std::endl;
+                    sgtLogDebug() << "Scg    : " << nd->Scg() << std::endl;
                 }
             }
         }
@@ -257,7 +254,7 @@ namespace Sgt
         auto it = nodeVec_.begin();
         return Col<Complex>(nodeVec_.size()).imbue([&](){return (**(it++)).V();});
     }
-    void PowerFlowModel::setV(const arma::Col<Complex>& V) const
+    void PowerFlowModel::setV(const Col<Complex>& V) const
     {
         for (uword i = 0; i < V.size(); ++i)
         {
@@ -265,16 +262,17 @@ namespace Sgt
         }
     }
 
-    Col<Complex> PowerFlowModel::S() const
+    Col<Complex> PowerFlowModel::Scg() const
     {
         auto it = nodeVec_.begin();
-        return Col<Complex>(nodeVec_.size()).imbue([&](){return (**(it++)).S();});
+        return Col<Complex>(nodeVec_.size()).imbue([&](){return (**(it++)).Scg();});
     }
-    void PowerFlowModel::setS(const arma::Col<Complex>& S) const
+
+    void PowerFlowModel::setScg(const Col<Complex>& Scg) const
     {
-        for (uword i = 0; i < S.size(); ++i)
+        for (uword i = 0; i < Scg.size(); ++i)
         {
-            nodeVec_[i]->setS(S[i]);
+            nodeVec_[i]->setScg(Scg[i]);
         }
     }
 
@@ -283,7 +281,7 @@ namespace Sgt
         auto it = nodeVec_.begin();
         return Col<Complex>(nodeVec_.size()).imbue([&](){return (**(it++)).IConst();});
     }
-    void PowerFlowModel::setIConst(const arma::Col<Complex>& IConst) const
+    void PowerFlowModel::setIConst(const Col<Complex>& IConst) const
     {
         for (uword i = 0; i < IConst.size(); ++i)
         {

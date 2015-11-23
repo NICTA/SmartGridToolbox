@@ -111,6 +111,11 @@ namespace Sgt
 
         stopwatch.stop();
         durationMakeModel = stopwatch.seconds();
+        
+        // Cache V, Scg, IConst, as these are calculated and not cached in the model.
+        Col<Complex> V = mod_->V(); // Model indexing.
+        Col<Complex> Scg = mod_->Scg(); // Model indexing. S_cg = S_c + S_g.
+        const Col<Complex>& Ic = mod_->IConst(); // Model indexing. P_c + P_g.
 
         // Set up data structures for the calculation.
         
@@ -120,11 +125,11 @@ namespace Sgt
         G_ = real(mod_->Y());
         B_ = imag(mod_->Y());
 
-        Col<double> Vr = real(mod_->V());
-        Col<double> Vi = imag(mod_->V());
+        Col<double> Vr = real(V);
+        Col<double> Vi = imag(V);
 
-        Col<double> P = real(mod_->S());
-        Col<double> Q = imag(mod_->S());
+        Col<double> P = real(Scg);
+        Col<double> Q = imag(Scg);
 
         Col<double> M2Pv = mod_->nPv() > 0
             ? Vr(mod_->selPv()) % Vr(mod_->selPv()) 
@@ -151,10 +156,10 @@ namespace Sgt
 
             stopwatch.reset();
             stopwatch.start();
-            calcf(f, Vr, Vi, P, Q, M2Pv);
+            calcf(f, Vr, Vi, P, Q, Ic, M2Pv);
 
             err = norm(f, "inf");
-            sgtLogDebug(LogLevel::VERBOSE) << "f  = " << std::setprecision(5) << std::setw(9) << f << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "f = " << std::setprecision(5) << std::setw(9) << f << std::endl;
             sgtLogDebug() << "Error = " << err << std::endl;
             if (err <= tol_)
             {
@@ -275,24 +280,17 @@ namespace Sgt
         if (!wasSuccessful)
         {
             sgtLogWarning() << "PowerFlowNrRectSolver: Newton-Raphson method failed to converge." << std::endl;
-            for (std::size_t i = 0; i < mod_->nNode(); ++i)
-            {
-                auto node = mod_->nodeVec()[i];
-                node->setV(0);
-                node->setS(0);
-            }
         }
 
-        Col<Complex> V = cx_vec(Vr, Vi);
+        V = cx_vec(Vr, Vi);
+        mod_->setV(V);
 
-        Col<Complex> S = cx_vec(P, Q);
+        Scg = cx_vec(P, Q);
         if (mod_->nSl() > 0)
         {
-            updateScgSl(S, mod_->selSl(), mod_->IConst(), V, abs(V), mod_->Y());
+            updateScgSl(Scg, mod_->selSl(), Ic, V, abs(V), mod_->Y());
         }
-
-        mod_->setV(V);
-        mod_->setS(S);
+        mod_->setScg(Scg);
 
         stopwatchTot.stop();
         durationTot = stopwatchTot.seconds();
@@ -425,9 +423,9 @@ namespace Sgt
 
     // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
     void PowerFlowNrRectSolver::calcf(Col<double>& f,
-                                  const Col<double>& Vr, const Col<double>& Vi,
-                                  const Col<double>& P, const Col<double>& Q,
-                                  const Col<double>& M2Pv) const
+            const Col<double>& Vr, const Col<double>& Vi,
+            const Col<double>& P, const Col<double>& Q,
+            const Col<Complex>& Ic, const Col<double>& M2Pv) const
     {
         if (mod_->nPq() > 0)
         {
@@ -441,7 +439,7 @@ namespace Sgt
             const auto PPq = P(mod_->selPq());
             const auto QPq = Q(mod_->selPq());
 
-            const auto IConstPq = mod_->IConst()(mod_->selPq());
+            const Col<Complex> IConstPq = Ic(mod_->selPq());
             const auto IConstrPq = real(IConstPq);
             const auto IConstiPq = imag(IConstPq);
 
@@ -465,8 +463,8 @@ namespace Sgt
             const auto PPv = P(mod_->selPv());
             const auto QPv = Q(mod_->selPv());
 
-            const auto IConstrPv = real(mod_->IConst()(mod_->selPv()));
-            const auto IConstiPv = imag(mod_->IConst()(mod_->selPv()));
+            const auto IConstrPv = real(Ic(mod_->selPv()));
+            const auto IConstiPv = imag(Ic(mod_->selPv()));
 
             f(selIrPvFrom_f_) = (VrPv % PPv + ViPv % QPv) / M2Pv
                                 + IConstrPv - GPv * Vr + BPv * Vi;

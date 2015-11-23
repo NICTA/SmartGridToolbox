@@ -155,6 +155,11 @@ namespace Sgt
         LogIndent indent;
 
         mod_ = buildModel(*netw_);
+
+        // Cache V, Scg, IConst, as these are calculated and not cached in the model.
+        Col<Complex> V = mod_->V(); // Model indexing.
+        Col<Complex> Scg = mod_->Scg(); // Model indexing. S_cg = S_c + S_g.
+        const Col<Complex>& Ic = mod_->IConst(); // Model indexing. P_c + P_g.
         
         // Set up data structures for the calculation.
         // Model indexing is 0 = slack, [1 ... nPq] = PQ, [nPq + 1 ... nPq + nPv] = PV.
@@ -168,15 +173,10 @@ namespace Sgt
         SpMat<double> G = real(Y); // Model indexing. Includes shunts (const Y in ZIPs).
         SpMat<double> B = imag(Y); // Model indexing. Includes shunts (const Y in ZIPs).
 
-        Col<Complex> V = mod_->V(); // Model indexing.
         Col<double> M = abs(V); // Model indexing.
 
         Col<double> theta(nNode, fill::none); // Model indexing.
-        for (uword i = 0; i < nNode; ++i) theta(i) = std::arg(mod_->V()(i));
-
-        Col<Complex> Scg = mod_->S(); // Model indexing. S_cg = S_c + S_g.
-
-        const Col<Complex>& Ic = mod_->IConst(); // Model indexing. P_c + P_g.
+        for (uword i = 0; i < nNode; ++i) theta(i) = std::arg(V(i));
 
         // Jacobian:
         SpMat<double> JP = calcJP(nPqPv, M, Y);

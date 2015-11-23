@@ -265,7 +265,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
     BOOST_TEST_MESSAGE("Starting matpower tests");
     using namespace Sgt;
 
-    std::vector<std::string> cases =
+    std::vector<std::string> casesCommon =
     {
         "case4gs",
         "case5",
@@ -276,11 +276,11 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         "case14",
         "case14_shift",
         "case24_ieee_rts",
-        "case30",
-        "case30Q",
-        "case30_all",
-        "case30pwl",
-        "case_ieee30",
+        // "case30", // Flat start fails for rect.
+        // "case30Q", // Flat start fails for rect. 
+        // "case30_all", // Flat start fails for rect. 
+        // "case30pwl", // Flat start fails for rect.
+        // "case_ieee30", // Flat start fails for rect.
         "case39",
         "case57",
         "case89pegase",
@@ -292,11 +292,11 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         "case2737sop",
         "case2746wop",
         "case2746wp",
-        "case2869pegase",
+        // "case2869pegase", // Flat start fails for rect.
         // "case3012wp", // TODO This fails, probably because SGT doesn't enforce reactive limits. See e.g. bus 70.
         "case3120sp",
         // "case3375wp", // Can't solve correctly, but then neither can Matpower...
-        "case9241pegase",
+        // "case9241pegase", // Flat start fails for rect.
         "nesta_case3_lmbd",
         "nesta_case4_gs",
         "nesta_case5_pjm",
@@ -305,29 +305,29 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         "nesta_case9_wscc",
         "nesta_case14_ieee",
         "nesta_case29_edin",
-        "nesta_case30_as",
-        "nesta_case30_fsr",
-        "nesta_case30_ieee",
-        "nesta_case39_epri",
+        // "nesta_case30_as", // Flat start fails for rect.
+        // "nesta_case30_fsr", // Flat start fails for rect.
+        // "nesta_case30_ieee", // Flat start fails for rect.
+        // "nesta_case39_epri", // Flat start fails for rect.
         "nesta_case57_ieee",
         "nesta_case73_ieee_rts",
         "nesta_case89_pegase",
         "nesta_case118_ieee",
-        "nesta_case162_ieee_dtc",
-        "nesta_case189_edin",
+        // "nesta_case162_ieee_dtc", // Flat start fails for rect.
+        // "nesta_case189_edin", // Flat start fails for rect.
         "nesta_case300_ieee",
         "nesta_case1354_pegase",
-        "nesta_case1394sop_eir",
-        "nesta_case1397sp_eir",
-        "nesta_case1460wp_eir",
-        "nesta_case2224_edin",
+        // "nesta_case1394sop_eir", // Flat start fails for matpower too.
+        // "nesta_case1397sp_eir", // Flat start fails for rect.
+        // "nesta_case1460wp_eir", // Flat start fails for matpower too.
+        // "nesta_case2224_edin", // Flat start fails for rect.
         "nesta_case2383wp_mp",
-        "nesta_case2736sp_mp",
+        // "nesta_case2736sp_mp", // Flat start fails for rect.
         "nesta_case2737sop_mp",
         "nesta_case2746wop_mp",
         "nesta_case2746wp_mp",
         "nesta_case2869_pegase",
-        "nesta_case3012wp_mp",
+        // "nesta_case3012wp_mp", // Flat start fails for matpower too.
         "nesta_case3120sp_mp",
         // "nesta_case3375wp_mp", // See above, doesn't converge.
         "nesta_case9241_pegase",
@@ -337,46 +337,86 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         "transformer"
     };
 
-    for (auto c : cases)
+    std::vector<std::string> extraPol = {
+        "case30", // Flat start fails for rect.
+        "case30Q", // Flat start fails for rect. 
+        "case30_all", // Flat start fails for rect. 
+        "case30pwl", // Flat start fails for rect.
+        "case_ieee30", // Flat start fails for rect.
+        "case2869pegase", // Flat start fails for rect.
+        "case9241pegase", // Flat start fails for rect.
+        "nesta_case30_as", // Flat start fails for rect.
+        "nesta_case30_fsr", // Flat start fails for rect.
+        "nesta_case30_ieee", // Flat start fails for rect.
+        "nesta_case39_epri", // Flat start fails for rect.
+        "nesta_case162_ieee_dtc", // Flat start fails for rect.
+        "nesta_case189_edin", // Flat start fails for rect.
+        "nesta_case1397sp_eir", // Flat start fails for rect.
+        "nesta_case2224_edin", // Flat start fails for rect.
+        "nesta_case2736sp_mp", // Flat start fails for rect.
+    };
+
+    std::map<std::string, std::pair<double, double>> times;
+    for (auto c : casesCommon) times[c] = {-1, -1};
+    for (auto c : extraPol) times[c] = {-1, -1};
+
+    auto doTest = [&](const decltype(casesCommon)& cs, const std::string& solverType)
     {
-        BOOST_TEST_MESSAGE("Case " << c);
-
-        std::string yamlStr =
-            std::string("--- [{matpower : {input_file : matpower_test_cases/") + c + ".m, default_kV_base : 11}}]";
-        Network nw(100.0);
-        nw.setUsesFlatStart(true);
-        YAML::Node n = YAML::Load(yamlStr);
-        Sgt::Parser<Network> p;
-        p.parse(n, nw);
-
-        Stopwatch sw;
-        sw.start();
-        nw.solvePowerFlow();
-        sw.stop();
-        BOOST_TEST_MESSAGE("Solve time = " << sw.seconds());
-
-        ifstream compareName(std::string("mp_compare/") + c + ".compare");
-
-        int nBadV = 0;
-        int nBadS = 0;
-        for (auto bus : nw.busses())
+        for (auto c : cs)
         {
-            double Vr, Vi, P, Q;
-            compareName >> Vr >> Vi >> P >> Q;
-            assert(!compareName.eof());
-            Complex V = {Vr, Vi};
-            Complex S = {P, Q};
-            if (std::abs(V - bus->V()(0) / bus->VBase()) >= 1e-3)
+            BOOST_TEST_MESSAGE("Case " << c);
+
+            std::string yamlStr = std::string("--- [{matpower : {input_file : matpower_test_cases/") 
+                + c + ".m, default_kV_base : 11}, power_flow_solver : " + solverType + "}]";
+            Network nw(100.0);
+            nw.setUsesFlatStart(true);
+            YAML::Node n = YAML::Load(yamlStr);
+            Sgt::Parser<Network> p;
+            p.parse(n, nw);
+
+            Stopwatch sw;
+            sw.start();
+            nw.solvePowerFlow();
+            sw.stop();
+            double& tRef = (solverType == "nr_rect") ? times[c].first : times[c].second;
+            tRef = sw.seconds();
+            BOOST_TEST_MESSAGE("Solve time = " << sw.seconds());
+
+            ifstream compareName(std::string("mp_compare/") + c + ".compare");
+
+            int nBadV = 0;
+            int nBadS = 0;
+            for (auto bus : nw.busses())
             {
-                ++nBadV;
+                double Vr, Vi, P, Q;
+                compareName >> Vr >> Vi >> P >> Q;
+                assert(!compareName.eof());
+                Complex V = {Vr, Vi};
+                Complex S = {P, Q};
+                if (std::abs(V - bus->V()(0) / bus->VBase()) >= 1e-3)
+                {
+                    ++nBadV;
+                }
+                if (std::abs(S - bus->SGen()(0) - bus->SConst()(0)) / nw.PBase() >= 1e-3)
+                {
+                    ++nBadS;
+                }
             }
-            if (std::abs(S - bus->SGen()(0) - bus->SConst()(0)) / nw.PBase() >= 1e-3)
-            {
-                ++nBadS;
-            }
+            BOOST_CHECK_MESSAGE(nBadV == 0, c << ": V doesn't agree with Matpower at " << nBadV << " busses.\n");
+            BOOST_CHECK_MESSAGE(nBadS == 0, c << ": S doesn't agree with Matpower at " << nBadS << " busses.\n");
         }
-        BOOST_CHECK_MESSAGE(nBadV == 0, c << ": V doesn't agree with Matpower at " << nBadV << " busses.\n");
-        BOOST_CHECK_MESSAGE(nBadS == 0, c << ": S doesn't agree with Matpower at " << nBadS << " busses.\n");
+    };
+
+    doTest(casesCommon, "nr_rect");
+    doTest(casesCommon, "nr_pol");
+    doTest(extraPol, "nr_pol");
+
+    BOOST_TEST_MESSAGE("Times(rect, pol)");
+    BOOST_TEST_MESSAGE("----------------");
+    for (auto elem : times)
+    {
+        BOOST_TEST_MESSAGE(setw(32) << elem.first << " => (" << elem.second.first << ", " << elem.second.second 
+                << ")");
     }
 }
 

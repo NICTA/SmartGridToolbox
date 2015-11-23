@@ -168,7 +168,7 @@ namespace Sgt
 
         // Cache V, Scg, IConst, as these are calculated and not cached in the model.
         Col<Complex> V = mod_->V(); // Model indexing.
-        Col<Complex> Scg = mod_->S(); // Model indexing. S_cg = S_c + S_g.
+        Col<Complex> Scg = mod_->Scg(); // Model indexing. S_cg = S_c + S_g.
         const Col<Complex>& Ic = mod_->IConst(); // Model indexing. P_c + P_g.
         
         // Set up data structures for the calculation.
@@ -238,13 +238,6 @@ namespace Sgt
         if (!wasSuccessful)
         {
             sgtLogWarning() << "PowerFlowFdSolver: failed to converge." << std::endl;
-            for (std::size_t i = 0; i < mod_->nNode(); ++i)
-            {
-                // TODO: this should be part of PowerFlowModel.
-                auto node = mod_->nodeVec()[i];
-                node->setV(0);
-                node->setS(0);
-            }
         }
 
         if (mod_->nPv() > 0)
@@ -257,7 +250,7 @@ namespace Sgt
         }
 
         mod_->setV(V);
-        mod_->setS(Scg);
+        mod_->setScg(Scg);
 
         return wasSuccessful;
     }

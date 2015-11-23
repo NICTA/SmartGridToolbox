@@ -235,7 +235,7 @@ namespace Sgt
             void calcf(arma::Col<double>& f,
                        const arma::Col<double>& Vr, const arma::Col<double>& Vi,
                        const arma::Col<double>& P, const arma::Col<double>& Q,
-                       const arma::Col<double>& M2Pv) const;
+                       const arma::Col<Complex>& Ic, const arma::Col<double>& M2Pv) const;
 
             void updateJ(Jacobian& J, const Jacobian& Jc,
                          const arma::Col<double>& Vr, const arma::Col<double>& Vi,

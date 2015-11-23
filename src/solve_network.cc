@@ -116,10 +116,10 @@ int main(int argc, char** argv)
 
     Stopwatch sw;
     sw.start();
-    nw.solvePowerFlow();
+    bool success = nw.solvePowerFlow();
     sw.stop();
     print();
-    std::cout << "Elapsed time: " << sw.seconds() << std::endl;
+    std::cout << "(success, time) = " << success << " " << sw.seconds() << std::endl;
     fclose(outFBus);
     fclose(outFBranch);
 }
