@@ -279,7 +279,7 @@ namespace Sgt
 
         if (!wasSuccessful)
         {
-            sgtLogWarning() << "PowerFlowNrRectSolver: Newton-Raphson method failed to converge." << std::endl;
+            sgtLogWarning() << "PowerFlowNrRectSolver: failed to converge." << std::endl;
         }
 
         V = cx_vec(Vr, Vi);

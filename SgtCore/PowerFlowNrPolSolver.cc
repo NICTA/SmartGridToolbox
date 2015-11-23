@@ -237,7 +237,7 @@ namespace Sgt
 
         if (!wasSuccessful)
         {
-            sgtLogWarning() << "PowerFlowFdSolver: failed to converge." << std::endl;
+            sgtLogWarning() << "PowerFlowNrPolSolver: failed to converge." << std::endl;
         }
 
         if (mod_->nPv() > 0)
