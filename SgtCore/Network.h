@@ -228,7 +228,7 @@ namespace Sgt
             {
                 solver_ = std::move(solver);
             }
-
+    
             bool useFlatStart() const
             {
                 return useFlatStart_;
@@ -238,6 +238,8 @@ namespace Sgt
             {
                 useFlatStart_ = useFlatStart;
             }
+            
+            void applyFlatStart();
 
             virtual bool solvePowerFlow();
 

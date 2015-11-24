@@ -71,7 +71,7 @@ namespace Sgt
         {
             if (gen->isInService())
             {
-                sum += gen->S();
+                sum += gen->inServiceS();
             }
         }
         return sum;

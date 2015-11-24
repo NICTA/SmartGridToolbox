@@ -19,6 +19,8 @@
 
 #include <numeric>
 
+using namespace arma;
+
 namespace Sgt
 {
     Network::Network(double PBase) : PBase_(PBase), solver_(new PowerFlowNrPolSolver)
@@ -61,6 +63,39 @@ namespace Sgt
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
         bus->addZip(*zip);
     }
+        
+    void Network::applyFlatStart()
+    {
+        for (auto bus : busses())
+        {
+            bus->setV(bus->VNom());
+
+            for (auto gen : bus->gens())
+            {
+                switch (bus->type())
+                {
+                    case BusType::SL:
+                        {
+                            // Set SGen to 0.
+                            gen->setInServiceS(Col<Complex>(gen->phases().size(), fill::zeros));
+                            break;
+                        }
+                    case BusType::PV:
+                        {
+                            // Set QGen to 0.
+                            auto S = gen->inServiceS();
+                            S.set_imag(zeros(gen->phases().size()));
+                            gen->setInServiceS(S);
+                            break;
+                        }
+                    default: 
+                        {
+                            break;
+                        }
+                }
+            }
+        }
+    }
 
     bool Network::solvePowerFlow()
     {
@@ -69,10 +104,7 @@ namespace Sgt
 
         if (useFlatStart_)
         {
-            for (Bus* bus : busses())
-            {
-                bus->setV(bus->VNom());
-            }
+            applyFlatStart();
         }
         isValidSolution_ = solver_->solve(*this);
         if (!isValidSolution_)
@@ -180,9 +212,9 @@ namespace Sgt
 
             int nInService = bus->nInServiceGens();
 
-            arma::Col<Complex> SGen = nInService > 0
+            Col<Complex> SGen = nInService > 0
                                       ? (modBus.Scg_ - bus->SConst()) / nInService
-                                      : arma::Col<Complex>(bus->phases().size(), arma::fill::zeros);
+                                      : Col<Complex>(bus->phases().size(), fill::zeros);
             // Note: we've already taken YConst and IConst explicitly into account, so this is correct.
             // KLUDGE: We're using a vector above, rather than "auto" (which gives some kind of expression type).
             // This is less efficient, but the latter gives errors in valgrind.
@@ -190,8 +222,8 @@ namespace Sgt
             // the purpose of the solver.
 
             bus->setV(modBus.V_);
-            bus->setSGenUnserved(arma::Col<Complex>(bus->phases().size(), arma::fill::zeros)); // TODO: allow unserved.
-            bus->setSZipUnserved(arma::Col<Complex>(bus->phases().size(), arma::fill::zeros)); // TODO: allow unserved.
+            bus->setSGenUnserved(Col<Complex>(bus->phases().size(), fill::zeros)); // TODO: allow unserved.
+            bus->setSZipUnserved(Col<Complex>(bus->phases().size(), fill::zeros)); // TODO: allow unserved.
             switch (bus->type())
             {
                 case BusType::SL:
@@ -211,8 +243,8 @@ namespace Sgt
                         if (gen->isInService())
                         {
                             // Keep P for gens, distribute Q amongst all gens.
-                            arma::Col<Complex> SNew(gen->S().size());
-                            for (arma::uword i = 0; i < SNew.size(); ++i)
+                            Col<Complex> SNew(gen->S().size());
+                            for (uword i = 0; i < SNew.size(); ++i)
                             {
                                 SNew(i) = Complex(gen->S()(i).real(), SGen(i).imag());
                             }

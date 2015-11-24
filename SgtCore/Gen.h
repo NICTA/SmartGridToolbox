@@ -95,7 +95,7 @@ namespace Sgt
 
             virtual arma::Col<Complex> S() const final
             {
-                return isInService_ ? inServiceS() : arma::Col<Complex>(phases_.size());
+                return isInService_ ? inServiceS() : arma::Col<Complex>(phases_.size(), arma::fill::zeros);
             }
 
             virtual arma::Col<Complex> inServiceS() const = 0;
