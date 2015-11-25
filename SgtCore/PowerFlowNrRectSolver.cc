@@ -445,10 +445,8 @@ namespace Sgt
 
             Col<double> M2Pq = VrPq % VrPq + ViPq % ViPq;
 
-            f(selIrPqFrom_f_) = (VrPq % PPq + ViPq % QPq) / M2Pq
-                                + IConstrPq - GPq * Vr + BPq * Vi;
-            f(selIiPqFrom_f_) = (ViPq % PPq - VrPq % QPq) / M2Pq
-                                + IConstiPq - GPq * Vi - BPq * Vr;
+            f(selIrPqFrom_f_) = (VrPq % PPq + ViPq % QPq) / M2Pq + IConstrPq - GPq * Vr + BPq * Vi;
+            f(selIiPqFrom_f_) = (ViPq % PPq - VrPq % QPq) / M2Pq + IConstiPq - GPq * Vi - BPq * Vr;
         }
 
         if (mod_->nPv() > 0)
@@ -466,10 +464,8 @@ namespace Sgt
             const auto IConstrPv = real(Ic(mod_->selPv()));
             const auto IConstiPv = imag(Ic(mod_->selPv()));
 
-            f(selIrPvFrom_f_) = (VrPv % PPv + ViPv % QPv) / M2Pv
-                                + IConstrPv - GPv * Vr + BPv * Vi;
-            f(selIiPvFrom_f_) = (ViPv % PPv - VrPv % QPv) / M2Pv
-                                + IConstiPv - GPv * Vi - BPv * Vr;
+            f(selIrPvFrom_f_) = (VrPv % PPv + ViPv % QPv) / M2Pv + IConstrPv - GPv * Vr + BPv * Vi;
+            f(selIiPvFrom_f_) = (ViPv % PPv - VrPv % QPv) / M2Pv + IConstiPv - GPv * Vi - BPv * Vr;
         }
     }
 
