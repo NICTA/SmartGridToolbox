@@ -57,14 +57,14 @@ int main(int argc, char** argv)
     {
         fprintf(outFBus, "# ------------------------------------------------------------------------\n");
         fprintf(outFBus,
-                "# %14s %15s %15s %15s %15s %15s %15s %15s %15s %15s %15s %15s\n",
+                "# %14s %11s %11s %11s %11s %11s %11s %11s %11s %11s %11s %11s\n",
                 "bus", "V_base", "|V|", "theta", "P_gen", "Q_gen", "P_load", "Q_load",
                 "y_shunt_r", "y_shunt_i", "I_zip_r", "I_zip_i");
         fprintf(outFBus, "# ------------------------------------------------------------------------\n");
         
         fprintf(outFBranch, "# ------------------------------------------------------------------------\n");
         fprintf(outFBranch,
-                "# %3s %5s %15s %15s %15s %15s %15s %15s %15s %15s\n",
+                "# %3s %5s %11s %11s %11s %11s %11s %11s %11s %11s\n",
                 "b0", "b1", "Y00r", "Y00i", "Y01r", "Y01i", "Y10r", "Y10i", "Y11r", "Y11i");
         fprintf(outFBranch, "# ------------------------------------------------------------------------\n");
 
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
             auto yZip = bus->YConst()[0];
             auto IConst = bus->IConst()[0];
             fprintf(outFBus,
-                    "%16s %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n",
+                    "%16s %11.6f %11.6f %11.6f %11.6f %11.6f %11.6f %11.6f %11.6f %11.6f %11.6f %11.6f\n",
                     bus->id().c_str(), bus->VBase(), std::abs(V), std::arg(V)*180.0/pi,
                     SGen.real(), SGen.imag(), SLoad.real(), SLoad.imag(),
                     yZip.real(), yZip.imag(), IConst.real(), IConst.imag());
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
             auto bus1 = branch->bus1();
             int iBus0 = busMap[bus0->id()];
             int iBus1 = busMap[bus1->id()];
-            fprintf(outFBranch, "%5d %5d %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f %15.10f\n",
+            fprintf(outFBranch, "%5d %5d %11.6f %11.6f %11.6f %11.6f %11.6f %11.6f %11.6f %11.6f\n",
                     iBus0, iBus1, branch->Y()(0, 0).real(), branch->Y()(0, 0).imag(), branch->Y()(0, 1).real(),
                     branch->Y()(0, 1).imag(), branch->Y()(1, 0).real(), branch->Y()(1, 0).imag(),
                     branch->Y()(1, 1).real(), branch->Y()(1, 1).imag());
