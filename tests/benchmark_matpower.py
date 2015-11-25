@@ -88,7 +88,7 @@ for c in cases:
     out_mp_t = float(ps1[2])
 
     ps0 = subprocess.Popen(
-        ['solve_network', 'nr_pol', fullpath, 'ps1', 'F', 'F'],
+        ['solve_network', 'nr_pol', fullpath, 'out', 'F', 'F'],
         stdout=subprocess.PIPE)
     ps1 = subprocess.check_output(
         ['tail', '-1'],
@@ -98,7 +98,7 @@ for c in cases:
     out_pol_t = float(ps1[1])
 
     ps0 = subprocess.Popen(
-        ['solve_network', 'nr_rect', fullpath, 'ps1', 'F', 'F'],
+        ['solve_network', 'nr_rect', fullpath, 'out', 'F', 'F'],
         stdout=subprocess.PIPE)
     ps1 = subprocess.check_output(
         ['tail', '-1'],
