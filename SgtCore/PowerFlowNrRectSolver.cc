@@ -87,31 +87,16 @@ namespace Sgt
         LogIndent indent;
 
         Stopwatch stopwatch;
-        Stopwatch stopwatchTot;
 
-        double durationMakeModel = 0;
-        double durationInitSetup = 0;
-        double durationCalcf = 0;
-        double durationUpdateJ = 0;
-        double durationModifyForPv = 0;
-        double durationConstructJMat = 0;
-        double durationSolve = 0;
-        double durationUpdateIter = 0;
-        double durationTot = 0;
+        double duration = 0;
 
-        stopwatchTot.reset();
-        stopwatchTot.start();
-
-        // Construct the model from the network.
-        
         stopwatch.reset();
         stopwatch.start();
 
+        // Construct the model from the network.
+        
         init(*netw_);
 
-        stopwatch.stop();
-        durationMakeModel = stopwatch.seconds();
-        
         // Cache V, Scg, IConst, as these are calculated and not cached in the model.
         Col<Complex> V = mod_->V(); // Model indexing.
         Col<Complex> Scg = mod_->Scg(); // Model indexing. S_cg = S_c + S_g.
@@ -119,9 +104,6 @@ namespace Sgt
 
         // Set up data structures for the calculation.
         
-        stopwatch.reset();
-        stopwatch.start();
-
         G_ = real(mod_->Y());
         B_ = imag(mod_->Y());
 
@@ -147,15 +129,10 @@ namespace Sgt
         double err = 0;
         unsigned int niter;
 
-        stopwatch.stop();
-        durationInitSetup += stopwatch.seconds();
-
         for (niter = 0; niter < maxiter_; ++niter)
         {
             sgtLogDebug() << "Iteration = " << niter << std::endl;
 
-            stopwatch.reset();
-            stopwatch.start();
             calcf(f, Vr, Vi, P, Q, Ic, M2Pv);
 
             err = norm(f, "inf");
@@ -167,31 +144,17 @@ namespace Sgt
                 wasSuccessful = true;
                 break;
             }
-            stopwatch.stop();
-            durationCalcf += stopwatch.seconds();
 
-            stopwatch.reset();
-            stopwatch.start();
             updateJ(J, Jc, Vr, Vi, P, Q, M2Pv);
-            stopwatch.stop();
-            durationUpdateJ += stopwatch.seconds();
 
-            stopwatch.reset();
-            stopwatch.start();
             if (mod_->nPv() > 0)
             {
                 modifyForPv(J, f, Vr, Vi, M2Pv);
             }
-            stopwatch.stop();
-            durationModifyForPv += stopwatch.seconds();
 
             // Construct the full Jacobian from J, which contains the block structure.
-            stopwatch.reset();
-            stopwatch.start();
             SpMat<double> JMat;
             calcJMatrix(JMat, J);
-            stopwatch.stop();
-            durationConstructJMat += stopwatch.seconds();
 
             if (debugLogLevel() >= LogLevel::VERBOSE)
             {
@@ -217,8 +180,6 @@ namespace Sgt
                 }
             }
 
-            stopwatch.reset();
-            stopwatch.start();
             Col<double> x;
             bool ok;
 #ifdef WITH_KLU
@@ -226,8 +187,6 @@ namespace Sgt
 #else
             ok = spsolve(x, JMat, -f, "superlu");
 #endif
-            stopwatch.stop();
-            durationSolve += stopwatch.seconds();
 
             sgtLogDebug() << "After solve: ok = " << ok << std::endl;
             sgtLogDebug(LogLevel::VERBOSE) 
@@ -238,8 +197,6 @@ namespace Sgt
                 break;
             }
 
-            stopwatch.reset();
-            stopwatch.start();
             // Update the current values of V from the solution:
             if (mod_->nPq() > 0)
             {
@@ -273,8 +230,6 @@ namespace Sgt
                 sgtLogDebug(LogLevel::VERBOSE)
                     << "Updated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
             }
-            stopwatch.stop();
-            durationUpdateIter += stopwatch.seconds();
         }
 
         if (!wasSuccessful)
@@ -292,23 +247,15 @@ namespace Sgt
         }
         mod_->setScg(Scg);
 
-        stopwatchTot.stop();
-        durationTot = stopwatchTot.seconds();
+        stopwatch.stop();
+        duration = stopwatch.seconds();
 
         sgtLogDebug() << "PowerFlowNrRectSolver: " << std::endl; 
         indent.in(); 
         sgtLogDebug() << "successful = " << wasSuccessful << std::endl;
         sgtLogDebug() << "error = " << err << std::endl; 
         sgtLogDebug() << "iterations = " << niter << std::endl;
-        sgtLogDebug() << "total time = " << durationTot << std::endl; 
-        sgtLogDebug(LogLevel::VERBOSE) << "time to create model = " << durationMakeModel << std::endl;
-        sgtLogDebug(LogLevel::VERBOSE) << "time for setup = " << durationInitSetup << std::endl;
-        sgtLogDebug(LogLevel::VERBOSE) << "calcf time = " << durationCalcf << std::endl;
-        sgtLogDebug(LogLevel::VERBOSE) << "updateJ time = " << durationUpdateJ << std::endl;
-        sgtLogDebug(LogLevel::VERBOSE) << "modifyForPv time = " << durationModifyForPv << std::endl;
-        sgtLogDebug(LogLevel::VERBOSE) << "constructJMat time = " << durationConstructJMat << std::endl;
-        sgtLogDebug(LogLevel::VERBOSE) << "solve time = " << durationSolve << std::endl;
-        sgtLogDebug(LogLevel::VERBOSE) << "updateIter time = " << durationUpdateIter << std::endl;
+        sgtLogDebug() << "total time = " << duration << std::endl; 
 
         return wasSuccessful;
     }

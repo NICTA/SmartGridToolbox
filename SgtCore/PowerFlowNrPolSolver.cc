@@ -51,7 +51,7 @@ namespace Sgt
         {
             // TODO: may unnessecarily calculate P.
             Col<double> PSv = real(Scg(selPv));
-            Col<double> QNew = imag(Ic(selPv)) % M(selPv) + imag(V(selPv) % conj(Y.rows(selPv.a, selPv.b) * V)); 
+            Col<double> QNew = imag(conj(Ic(selPv))) % M(selPv) + imag(V(selPv) % conj(Y.rows(selPv.a, selPv.b) * V)); 
             Scg(selPv) = cx_mat(PSv, QNew); 
         }
 
@@ -63,7 +63,7 @@ namespace Sgt
                 const Col<double>& M,
                 const SpMat<Complex>& Y)
         {
-            Scg(selSl) = Ic(selSl) % M(selSl) + V(selSl) % conj(Y.rows(selSl.a, selSl.b) * V);
+            Scg(selSl) = conj(Ic(selSl)) % M(selSl) + V(selSl) % conj(Y.rows(selSl.a, selSl.b) * V);
         }
 
         template<typename T> SpMat<typename T::elem_type> spDiag(const T& v)
