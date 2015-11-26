@@ -355,7 +355,6 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         "nesta_case1354_pegase", // Doesn't converge.
         "case2869pegase", // Doesn't converge.
         "nesta_case2869_pegase", // Doesn't converge.
-        "case3012wp", // WARNING: doesn't agree with matpower!
         "case3375wp", // Doesn't converge, neither does matpower.
         "nesta_case3375wp_mp", // Doesn't converge, neither does matpower.
         "case9241pegase" // Doesn't converge.
