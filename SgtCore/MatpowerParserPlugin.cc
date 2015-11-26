@@ -513,8 +513,11 @@ namespace Sgt
             gen->setC1(0.0);
             gen->setC2(0.0);
 
-            auto bus = netw.bus(busId);
-            bus->setVMagSetpoint({VScale * pu2kV(genInfo.Vg, bus->VBase())});
+            if (gen->isInService())
+            {
+                auto bus = netw.bus(busId);
+                bus->setVMagSetpoint({VScale * pu2kV(genInfo.Vg, bus->VBase())});
+            }
 
             netw.addGen(std::move(gen), busId);
         } // Gens

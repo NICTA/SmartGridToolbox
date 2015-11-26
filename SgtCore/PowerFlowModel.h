@@ -110,9 +110,9 @@ namespace Sgt
             /// @name Bus, branch and node accessors.
             /// @{
 
-            void addBus(const std::string& id, BusType type, const Phases& phases, const arma::Col<Complex>& V,
-                    const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& Scg,
-                    double J);
+            void addBus(const std::string& id, BusType type, const Phases& phases,
+                    const arma::Col<Complex>& V, const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst,
+                    const arma::Col<Complex>& Scg, double J);
 
             const PfBusMap& busMap() const
             {

@@ -73,9 +73,9 @@ namespace Sgt
         branchVec_.reserve(nBranch);
     }
 
-    void PowerFlowModel::addBus(const std::string& id, BusType type, const Phases& phases, const arma::Col<Complex>& V,
-            const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& Scg,
-            double J)
+    void PowerFlowModel::addBus(const std::string& id, BusType type, const Phases& phases,
+            const arma::Col<Complex>& V, const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst,
+            const arma::Col<Complex>& Scg, double J)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "PowerFlowModel : add bus " << id << std::endl;
         std::unique_ptr<PfBus> bus(new PfBus(id, type, phases, V, YConst, IConst, Scg, J));
