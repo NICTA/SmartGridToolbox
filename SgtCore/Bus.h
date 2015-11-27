@@ -110,12 +110,14 @@ namespace Sgt
             int nInServiceGens() const;
 
             SGT_PROP_GET(nInServiceGens, Bus, int, nInServiceGens);
-
-            arma::Col<Complex> SGenRequested() const; ///< Requested power of gens.
+            
+            /// @brief Requested power of gens.
+            arma::Col<Complex> SGenRequested() const;
 
             SGT_PROP_GET(SGenRequested, Bus, arma::Col<Complex>, SGenRequested);
-
-            arma::Col<Complex> SGen() const;  ///< Actual power of gens, including possible unserved generation.
+            
+            /// @brief Actual power of gens, including possible unserved generation.
+            arma::Col<Complex> SGen() const;
 
             SGT_PROP_GET(SGen, Bus, arma::Col<Complex>, SGen);
 
@@ -137,32 +139,43 @@ namespace Sgt
             int nInServiceZips() const;
 
             SGT_PROP_GET(nInServiceZips, Bus, int, nInServiceZips);
-
-            arma::Col<Complex> YConst() const; ///< Constant impedance component of zip.
+            
+            /// @brief Constant impedance component of zip.
+            arma::Col<Complex> YConst() const;
 
             SGT_PROP_GET(YConst, Bus, arma::Col<Complex>, YConst);
-
-            arma::Col<Complex> SYConst() const; ///< Complex power from constant impedance component.
+            
+            /// @brief Complex power from constant impedance component.
+            arma::Col<Complex> SYConst() const;
             
             SGT_PROP_GET(SYConst, Bus, arma::Col<Complex>, SYConst);
-
-            arma::Col<Complex> IConst() const; ///< Constant current component of zip.
+            
+            /// @brief Constant current component of zip.
+            ///
+            /// Relative to phase of V. Actual current will be IConst V / |V|, so that S doesn't depend on phase of V.
+            arma::Col<Complex> IConst() const;
             
             SGT_PROP_GET(IConst, Bus, arma::Col<Complex>, IConst);
             
-            arma::Col<Complex> SIConst() const; ///< Complex power from constant current component of zip.
+            /// @brief Complex power from constant current component of zip.
+            /// 
+            /// Independent of phase of V.
+            arma::Col<Complex> SIConst() const;
             
             SGT_PROP_GET(SIConst, Bus, arma::Col<Complex>, SIConst);
-
-            arma::Col<Complex> SConst() const; ///< Complex power component of zip.
+            
+            /// @brief Complex power component of zip.
+            arma::Col<Complex> SConst() const;
             
             SGT_PROP_GET(SConst, Bus, arma::Col<Complex>, SConst);
-
-            arma::Col<Complex> SZipRequested() const; ///< Requested power of zips.
+            
+            /// @brief Requested power of zips.
+            arma::Col<Complex> SZipRequested() const;
             
             SGT_PROP_GET(SZipRequested, Bus, arma::Col<Complex>, SZipRequested);
-            
-            arma::Col<Complex> SZip() const; ///< Actual power of zips, including possible unserved load.
+           
+            /// @brief Actual power of zips, including possible unserved load.
+            arma::Col<Complex> SZip() const;
             
             SGT_PROP_GET(SZip, Bus, arma::Col<Complex>, SZip);
 

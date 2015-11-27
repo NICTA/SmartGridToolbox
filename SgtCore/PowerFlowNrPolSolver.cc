@@ -51,7 +51,7 @@ namespace Sgt
         {
             // TODO: may unnessecarily calculate P.
             Col<double> PSv = real(Scg(selPv));
-            Col<double> QNew = imag(conj(Ic(selPv))) % M(selPv) + imag(V(selPv) % conj(Y.rows(selPv.a, selPv.b) * V)); 
+            Col<double> QNew = imag(Ic(selPv)) % M(selPv) + imag(V(selPv) % conj(Y.rows(selPv.a, selPv.b) * V)); 
             Scg(selPv) = cx_mat(PSv, QNew); 
         }
 
@@ -63,7 +63,7 @@ namespace Sgt
                 const Col<double>& M,
                 const SpMat<Complex>& Y)
         {
-            Scg(selSl) = conj(Ic(selSl)) % M(selSl) + V(selSl) % conj(Y.rows(selSl.a, selSl.b) * V);
+            Scg(selSl) = -conj(Ic(selSl)) % M(selSl) + V(selSl) % conj(Y.rows(selSl.a, selSl.b) * V);
         }
 
         template<typename T> SpMat<typename T::elem_type> spDiag(const T& v)
@@ -217,14 +217,14 @@ namespace Sgt
                 sgtLogWarning() << "Solve failed." << std::endl;
                 break;
             }
-            sgtLogDebug() << "--------------------" << std::endl;
-            sgtLogDebug() << "V = " << V << std::endl;
-            sgtLogDebug() << "S = " << S << std::endl;
-            sgtLogDebug() << "f = " << f << std::endl;
-            sgtLogDebug() << "|f| = " << err << std::endl;
-            sgtLogDebug() << "x = " << x << std::endl;
-            sgtLogDebug() << "J =\n" << std::setw(10) << Mat<double>(J) << std::endl;
-            sgtLogDebug() << "--------------------" << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "--------------------" << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "V = " << V << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "S = " << S << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "f = " << f << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "|f| = " << err << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "x = " << x << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "J =\n" << std::setw(10) << Mat<double>(J) << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "--------------------" << std::endl;
 
             // Update M, theta, V.
             if (mod_->nPq() > 0)

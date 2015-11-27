@@ -31,8 +31,8 @@ namespace Sgt
     {
         public:
 
-        /// @name Static member functions:
-        /// @{
+            /// @name Static member functions:
+            /// @{
 
             static const std::string& sComponentType()
             {
@@ -40,17 +40,17 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Lifecycle:
-        /// @{
+            /// @name Lifecycle:
+            /// @{
 
             ZipAbc(const Phases& phases) : Component(""), phases_(phases) {}
 
-        /// @}
+            /// @}
 
-        /// @name Component virtual overridden member functions.
-        /// @{
+            /// @name Component virtual overridden member functions.
+            /// @{
 
             virtual const std::string& componentType() const override
             {
@@ -59,20 +59,20 @@ namespace Sgt
 
             virtual void print(std::ostream& os) const override;
 
-        /// @}
+            /// @}
 
-        /// @name Phases
-        /// @{
+            /// @name Phases
+            /// @{
 
             virtual const Phases& phases() const
             {
                 return phases_;
             }
 
-        /// @}
+            /// @}
 
-        /// @name In service:
-        /// @{
+            /// @name In service:
+            /// @{
 
             virtual bool isInService() const
             {
@@ -84,19 +84,22 @@ namespace Sgt
                 isInService_ = isInService;
             }
 
-        /// @}
+            /// @}
 
-        /// @name ZIP parameters:
+            /// @name ZIP parameters:
             ///
             /// These are implemented for convenience, so subclasses don't have to reimplement them unless they have
             /// a non-zero value.
-        /// @{
+            /// @{
 
             virtual arma::Col<Complex> YConst() const
             {
                 return arma::Col<Complex>(phases_.size(), arma::fill::zeros);
             }
 
+            /// @brief Constant current component.
+            ///
+            /// Relative to phase of V. Actual current will be IConst V / |V|, so that S doesn't depend on phase of V.
             virtual arma::Col<Complex> IConst() const
             {
                 return arma::Col<Complex>(phases_.size(), arma::fill::zeros);
@@ -107,10 +110,10 @@ namespace Sgt
                 return arma::Col<Complex>(phases_.size(), arma::fill::zeros);
             }
 
-        /// @}
+            /// @}
 
-        /// @name Events.
-        /// @{
+            /// @name Events.
+            /// @{
 
             /// @brief Event triggered when I go in or out of service.
             virtual Event& isInServiceChanged()
@@ -130,7 +133,7 @@ namespace Sgt
                 return setpointChanged_;
             }
 
-        /// @}
+            /// @}
 
         private:
 
@@ -149,8 +152,8 @@ namespace Sgt
     {
         public:
 
-        /// @name Static member functions:
-        /// @{
+            /// @name Static member functions:
+            /// @{
 
             static const std::string& sComponentType()
             {
@@ -158,17 +161,17 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Lifecycle:
-        /// @{
+            /// @name Lifecycle:
+            /// @{
 
             GenericZip(const std::string& id, const Phases& phases);
 
-        /// @}
+            /// @}
 
-        /// @name Component virtual overridden member functions.
-        /// @{
+            /// @name Component virtual overridden member functions.
+            /// @{
 
             virtual const std::string& componentType() const override
             {
@@ -177,10 +180,10 @@ namespace Sgt
 
             // virtual void print(std::ostream& os) const override; TODO
 
-        /// @}
+            /// @}
 
-        /// @name ZIP parameters:
-        /// @{
+            /// @name ZIP parameters:
+            /// @{
 
             virtual arma::Col<Complex> YConst() const override
             {
@@ -212,7 +215,7 @@ namespace Sgt
                 SConst_ = SConst;
             }
 
-        /// @}
+            /// @}
 
         private:
 

@@ -20,10 +20,12 @@
 #include <ostream>
 #include <istream>
 
+using namespace arma;
+
 namespace
 {
     using namespace Sgt;
-    template<typename T> std::istream& operator>>(std::istringstream& ss, const arma::Col<T>& v)
+    template<typename T> std::istream& operator>>(std::istringstream& ss, const Col<T>& v)
     {
         return ss;
     }
@@ -31,7 +33,7 @@ namespace
 
 namespace Sgt
 {
-    Bus::Bus(const std::string& id, const Phases& phases, const arma::Col<Complex>& VNom, double VBase) :
+    Bus::Bus(const std::string& id, const Phases& phases, const Col<Complex>& VNom, double VBase) :
         Component(id),
         phases_(phases),
         VNom_(VNom),
@@ -39,10 +41,10 @@ namespace Sgt
         VMagSetpoint_(phases.size()),
         VAngSetpoint_(phases.size()),
         V_(VNom),
-        SGenUnserved_(phases.size(), arma::fill::zeros),
-        SZipUnserved_(phases.size(), arma::fill::zeros)
+        SGenUnserved_(phases.size(), fill::zeros),
+        SZipUnserved_(phases.size(), fill::zeros)
     {
-        for (arma::uword i = 0; i < phases_.size(); ++i)
+        for (uword i = 0; i < phases_.size(); ++i)
         {
             VMagSetpoint_(i) = std::abs(VNom_(i));
             VAngSetpoint_(i) = std::arg(VNom_(i));
@@ -62,11 +64,11 @@ namespace Sgt
         return sum;
     }
 
-    arma::Col<Complex> Bus::SGenRequested() const
+    Col<Complex> Bus::SGenRequested() const
     {
         // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
         // Easier to just do this.
-        auto sum = arma::Col<Complex>(phases().size(), arma::fill::zeros);
+        auto sum = Col<Complex>(phases().size(), fill::zeros);
         for (auto gen : genVec_)
         {
             if (gen->isInService())
@@ -77,7 +79,7 @@ namespace Sgt
         return sum;
     }
 
-    arma::Col<Complex> Bus::SGen() const
+    Col<Complex> Bus::SGen() const
     {
         return SGenRequested() - SGenUnserved_;
     }
@@ -110,11 +112,11 @@ namespace Sgt
         return sum;
     }
 
-    arma::Col<Complex> Bus::YConst() const
+    Col<Complex> Bus::YConst() const
     {
         // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
         // Easier to just do this.
-        auto sum = arma::Col<Complex>(phases().size(), arma::fill::zeros);
+        auto sum = Col<Complex>(phases().size(), fill::zeros);
         for (auto zip : zipVec_)
         {
             sum += zip->YConst();
@@ -122,33 +124,36 @@ namespace Sgt
         return sum;
     }
 
-    arma::Col<Complex> Bus::SYConst() const
+    Col<Complex> Bus::SYConst() const
     {
-        return -arma::conj(YConst()) % arma::conj(V()) % V();
+        return -conj(YConst()) % conj(V()) % V();
     }
 
-    arma::Col<Complex> Bus::IConst() const
+    Col<Complex> Bus::IConst() const
     {
+        // Note the returned current is relative to the phase of V.
+        
         // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
         // Easier to just do this.
-        auto sum = arma::Col<Complex>(phases().size(), arma::fill::zeros);
+        auto sum = Col<Complex>(phases().size(), fill::zeros);
         for (auto zip : zipVec_)
         {
-            sum += zip->IConst();
+            sum += zip->IConst() % V() / abs(V());
         }
         return sum;
     }
 
-    arma::Col<Complex> Bus::SIConst() const
+    Col<Complex> Bus::SIConst() const
     {
-        return arma::conj(IConst()) % V();
+        // Note special phase relationship with V.
+        return conj(IConst()) % abs(V());
     }
 
-    arma::Col<Complex> Bus::SConst() const
+    Col<Complex> Bus::SConst() const
     {
         // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
         // Easier to just do this.
-        auto sum = arma::Col<Complex>(phases().size(), arma::fill::zeros);
+        auto sum = Col<Complex>(phases().size(), fill::zeros);
         for (auto zip : zipVec_)
         {
             sum += zip->SConst();
@@ -156,23 +161,23 @@ namespace Sgt
         return sum;
     }
 
-    arma::Col<Complex> Bus::SZipRequested() const
+    Col<Complex> Bus::SZipRequested() const
     {
         return SYConst() + SIConst() + SConst();
     }
 
-    arma::Col<Complex> Bus::SZip() const
+    Col<Complex> Bus::SZip() const
     {
         return SZipRequested() - SZipUnserved_;
     }
 
     void Bus::applyVSetpoints()
     {
-        arma::Col<Complex> VNew(phases_.size());
+        Col<Complex> VNew(phases_.size());
         switch (type_)
         {
             case BusType::SL:
-                for (arma::uword i = 0; i < phases_.size(); ++i)
+                for (uword i = 0; i < phases_.size(); ++i)
                 {
                     VNew(i) = std::polar(VMagSetpoint_(i), VAngSetpoint_(i));
                 }
@@ -180,7 +185,7 @@ namespace Sgt
                 break;
             case BusType::PV:
                 VNew = V_;
-                for (arma::uword i = 0; i < phases_.size(); ++i)
+                for (uword i = 0; i < phases_.size(); ++i)
                 {
                     VNew(i) *= VMagSetpoint_(i) / std::abs(V_(i));
                 }
