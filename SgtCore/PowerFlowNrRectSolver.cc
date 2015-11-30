@@ -51,7 +51,7 @@ namespace Sgt
                 const Col<double>& M,
                 const SpMat<Complex>& Y)
         {
-            Scg(selSl) = Ic(selSl) % M(selSl) + V(selSl) % conj(Y.rows(selSl.a, selSl.b) * V);
+            Scg(selSl) = -conj(Ic(selSl)) % M(selSl) + V(selSl) % conj(Y.rows(selSl.a, selSl.b) * V);
         }
     }
 
@@ -210,8 +210,8 @@ namespace Sgt
                 auto VrPv = Vr(mod_->selPv());
                 auto ViPv = Vi(mod_->selPv());
                 const auto DeltaViPv = x(selViPvFrom_x_);
-                VrPv += (M2Pv - VrPv % VrPv - ViPv % ViPv - 2 * ViPv % DeltaViPv) / (2 * VrPv);
                 ViPv += DeltaViPv;
+                VrPv += (M2Pv - VrPv % VrPv - ViPv % ViPv) / (2 * VrPv);
 
                 // Update Q for PV busses based on the solution.
                 Q(mod_->selPv()) += x(selQPvFrom_x_);
