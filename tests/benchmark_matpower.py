@@ -107,9 +107,9 @@ for c in cases:
     out_rect_ok = int(ps1[0])
     out_rect_t = float(ps1[1])
 
-    out.append((c, n, out_mp_ok, out_mp_t, out_pol_ok, out_pol_t, out_rect_ok,
+    out.append((c, n, out_mp_ok, out_pol_ok, out_rect_ok, out_mp_t, out_pol_t, 
                 out_rect_t))
 
 with open('benchmark.txt', mode='w', encoding='utf-8') as f:
     for l in out:
-        f.write('{:24s} {:6d} {:1d} {:8.5f} {:1d} {:8.5f} {:1d} {:8.5f}\n'.format(*l))
+        f.write('{:24s} {:6d} {:1d} {:1d} {:1d} {:8.5f} {:8.5f} {:8.5f}\n'.format(*l))

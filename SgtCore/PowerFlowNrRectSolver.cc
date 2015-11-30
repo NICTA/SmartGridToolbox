@@ -51,7 +51,7 @@ namespace Sgt
                 const Col<double>& M,
                 const SpMat<Complex>& Y)
         {
-            Scg(selSl) = -conj(Ic(selSl)) % M(selSl) + V(selSl) % conj(Y.rows(selSl.a, selSl.b) * V);
+            Scg(selSl) = V(selSl) % conj(Y.rows(selSl.a, selSl.b) * V) - conj(Ic(selSl)) % M(selSl);
         }
     }
 
@@ -97,26 +97,25 @@ namespace Sgt
         
         init(*netw_);
 
-        // Cache V, Scg, IConst, as these are calculated and not cached in the model.
-        Col<Complex> V = mod_->V(); // Model indexing.
-        Col<Complex> Scg = mod_->Scg(); // Model indexing. S_cg = S_c + S_g.
-        const Col<Complex>& Ic = mod_->IConst(); // Model indexing. P_c + P_g.
-
-        // Set up data structures for the calculation.
-        
-        G_ = real(mod_->Y());
-        B_ = imag(mod_->Y());
-
+        Col<Complex> V = mod_->V(); // Cache, as model cacluates on the fly.
         Col<double> Vr = real(V);
         Col<double> Vi = imag(V);
-
-        Col<double> P = real(Scg);
-        Col<double> Q = imag(Scg);
-
+        Col<double> M = abs(V);
         Col<double> M2Pv = mod_->nPv() > 0
             ? Vr(mod_->selPv()) % Vr(mod_->selPv()) 
               + Vi(mod_->selPv()) % Vi(mod_->selPv())
-            : Col<double>();
+            : Col<double>(); // Constant.
+
+        Col<Complex> Scg = mod_->Scg(); // Model indexing. S_cg = S_c + S_g. Cache, as model calculates on the fly.
+        Col<double> Pcg = real(Scg);
+        Col<double> Qcg = imag(Scg);
+
+        const Col<Complex>& Ic = mod_->IConst(); // Model indexing. P_c + P_g. Cache, as model calculates on the fly.
+
+        // Set up data structures for the calculation.
+        
+        G_ = real(mod_->Y()); // Constant.
+        B_ = imag(mod_->Y()); // Constant.
 
         Jacobian Jc(mod_->nPq(), mod_->nPv()); ///< The part of J that doesn't update at each iteration.
         initJc(Jc);
@@ -133,7 +132,7 @@ namespace Sgt
         {
             sgtLogDebug() << "Iteration = " << niter << std::endl;
 
-            calcf(f, Vr, Vi, P, Q, Ic, M2Pv);
+            calcf(f, Vr, Vi, M, Pcg, Qcg, Ic, M2Pv);
 
             err = norm(f, "inf");
             sgtLogDebug(LogLevel::VERBOSE) << "f = " << std::setprecision(5) << std::setw(9) << f << std::endl;
@@ -145,7 +144,7 @@ namespace Sgt
                 break;
             }
 
-            updateJ(J, Jc, Vr, Vi, P, Q, M2Pv);
+            updateJ(J, Jc, Vr, Vi, Pcg, Qcg, M2Pv);
 
             if (mod_->nPv() > 0)
             {
@@ -166,9 +165,9 @@ namespace Sgt
                     << "Before solve: M^2 = " << std::setprecision(5) << std::setw(9)
                     << (Vr % Vr + Vi % Vi) << std::endl;
                 sgtLogDebug(LogLevel::VERBOSE) 
-                    << "Before solve: P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
+                    << "Before solve: Pcg   = " << std::setprecision(5) << std::setw(9) << Pcg << std::endl;
                 sgtLogDebug(LogLevel::VERBOSE) 
-                    << "Before solve: Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
+                    << "Before solve: Qcg   = " << std::setprecision(5) << std::setw(9) << Qcg << std::endl;
                 sgtLogDebug(LogLevel::VERBOSE) 
                     << "Before solve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
                 sgtLogDebug(LogLevel::VERBOSE) << "Before solve: J   = " << std::endl;
@@ -213,8 +212,15 @@ namespace Sgt
                 ViPv += DeltaViPv;
                 VrPv += (M2Pv - VrPv % VrPv - ViPv % ViPv) / (2 * VrPv);
 
-                // Update Q for PV busses based on the solution.
-                Q(mod_->selPv()) += x(selQPvFrom_x_);
+                // Update Qcg for PV busses based on the solution.
+                Qcg(mod_->selPv()) += x(selQPvFrom_x_);
+            }
+        
+            if (mod_->nPq() > 0)
+            {
+                auto VrPq = Vr(mod_->selPq());
+                auto ViPq = Vi(mod_->selPq());
+                M(mod_->selPq()) = sqrt(VrPq % VrPq + ViPq % ViPq);
             }
 
             if (debugLogLevel() >= LogLevel::VERBOSE)
@@ -226,9 +232,9 @@ namespace Sgt
                 sgtLogDebug(LogLevel::VERBOSE)
                     << "Updated M^2 = " << std::setprecision(5) << std::setw(9) << Vr % Vr + Vi % Vi << std::endl;
                 sgtLogDebug(LogLevel::VERBOSE)
-                    << "Updated P   = " << std::setprecision(5) << std::setw(9) << P << std::endl;
+                    << "Updated Pcg   = " << std::setprecision(5) << std::setw(9) << Pcg << std::endl;
                 sgtLogDebug(LogLevel::VERBOSE)
-                    << "Updated Q   = " << std::setprecision(5) << std::setw(9) << Q << std::endl;
+                    << "Updated Qcg   = " << std::setprecision(5) << std::setw(9) << Qcg << std::endl;
             }
         }
 
@@ -238,9 +244,10 @@ namespace Sgt
         }
 
         V = cx_vec(Vr, Vi);
+
         mod_->setV(V);
 
-        Scg = cx_vec(P, Q);
+        Scg = cx_vec(Pcg, Qcg);
         if (mod_->nSl() > 0)
         {
             updateScgSl(Scg, mod_->selSl(), Ic, V, abs(V), mod_->Y());
@@ -370,8 +377,8 @@ namespace Sgt
 
     // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
     void PowerFlowNrRectSolver::calcf(Col<double>& f,
-            const Col<double>& Vr, const Col<double>& Vi,
-            const Col<double>& P, const Col<double>& Q,
+            const Col<double>& Vr, const Col<double>& Vi, const Col<double>& M,
+            const Col<double>& Pcg, const Col<double>& Qcg,
             const Col<Complex>& Ic, const Col<double>& M2Pv) const
     {
         if (mod_->nPq() > 0)
@@ -383,8 +390,8 @@ namespace Sgt
             const auto VrPq = Vr(mod_->selPq());
             const auto ViPq = Vi(mod_->selPq());
 
-            const auto PPq = P(mod_->selPq());
-            const auto QPq = Q(mod_->selPq());
+            const auto PPq = Pcg(mod_->selPq());
+            const auto QPq = Qcg(mod_->selPq());
 
             const Col<Complex> IConstPq = Ic(mod_->selPq());
             const auto IConstrPq = real(IConstPq);
@@ -405,8 +412,8 @@ namespace Sgt
             const auto VrPv = Vr(mod_->selPv());
             const auto ViPv = Vi(mod_->selPv());
 
-            const auto PPv = P(mod_->selPv());
-            const auto QPv = Q(mod_->selPv());
+            const auto PPv = Pcg(mod_->selPv());
+            const auto QPv = Qcg(mod_->selPv());
 
             const auto IConstrPv = real(Ic(mod_->selPv()));
             const auto IConstiPv = imag(Ic(mod_->selPv()));
@@ -419,7 +426,7 @@ namespace Sgt
     // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
     void PowerFlowNrRectSolver::updateJ(Jacobian& J, const Jacobian& Jc,
                                     const Col<double>& Vr, const Col<double>& Vi,
-                                    const Col<double>& P, const Col<double>& Q,
+                                    const Col<double>& Pcg, const Col<double>& Qcg,
                                     const Col<double>& M2Pv) const
     {
         // Elements in J that have no non-constant part will be initialized to the corresponding term in Jc at the
@@ -439,14 +446,14 @@ namespace Sgt
         {
             uword iPqi = mod_->iPq(i);
 
-            double PVr_p_QVi = P(iPqi) * Vr(iPqi) + Q(iPqi) * Vi(iPqi);
-            double PVi_m_QVr = P(iPqi) * Vi(iPqi) - Q(iPqi) * Vr(iPqi);
+            double PVr_p_QVi = Pcg(iPqi) * Vr(iPqi) + Qcg(iPqi) * Vi(iPqi);
+            double PVi_m_QVr = Pcg(iPqi) * Vi(iPqi) - Qcg(iPqi) * Vr(iPqi);
             double M2 = Vr(iPqi) * Vr(iPqi) + Vi(iPqi) * Vi(iPqi);
             double M4 = M2 * M2;
             double VrdM4 = Vr(iPqi) / M4;
             double VidM4 = Vi(iPqi) / M4;
-            double PdM2 = P(iPqi) / M2;
-            double QdM2 = Q(iPqi) / M2;
+            double PdM2 = Pcg(iPqi) / M2;
+            double QdM2 = Qcg(iPqi) / M2;
 
             J.IrPqVrPq()(i, i) = Jc.IrPqVrPq()(i, i) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
             J.IrPqViPq()(i, i) = Jc.IrPqViPq()(i, i) - (2 * VidM4 * PVr_p_QVi) + QdM2;
@@ -459,15 +466,15 @@ namespace Sgt
         {
             uword iPvi = mod_->iPv(i);
 
-            J.IrPvVrPv()(i, i) = Jc.IrPvVrPv()(i, i) + P(iPvi) / M2Pv(i); // Could -> Jc if we wanted.
-            J.IrPvViPv()(i, i) = Jc.IrPvViPv()(i, i) + Q(iPvi) / M2Pv(i);
-            J.IiPvVrPv()(i, i) = Jc.IiPvVrPv()(i, i) - Q(iPvi) / M2Pv(i);
-            J.IiPvViPv()(i, i) = Jc.IiPvViPv()(i, i) + P(iPvi) / M2Pv(i);
+            J.IrPvVrPv()(i, i) = Jc.IrPvVrPv()(i, i) + Pcg(iPvi) / M2Pv(i); // Could -> Jc if we wanted.
+            J.IrPvViPv()(i, i) = Jc.IrPvViPv()(i, i) + Qcg(iPvi) / M2Pv(i);
+            J.IiPvVrPv()(i, i) = Jc.IiPvVrPv()(i, i) - Qcg(iPvi) / M2Pv(i);
+            J.IiPvViPv()(i, i) = Jc.IiPvViPv()(i, i) + Pcg(iPvi) / M2Pv(i);
         }
 
         if (mod_->nPv() > 0)
         {
-            // Set the PV Q columns in the Jacobian. They are diagonal.
+            // Set the PV Qcg columns in the Jacobian. They are diagonal.
             const auto VrPv = Vr(mod_->selPv());
             const auto ViPv = Vi(mod_->selPv());
             for (uword i = 0; i < mod_->nPv(); ++i)

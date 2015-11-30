@@ -233,7 +233,7 @@ namespace Sgt
             void initJc(Jacobian& Jc) const;
 
             void calcf(arma::Col<double>& f,
-                       const arma::Col<double>& Vr, const arma::Col<double>& Vi,
+                       const arma::Col<double>& Vr, const arma::Col<double>& Vi, const arma::Col<double>& M,
                        const arma::Col<double>& P, const arma::Col<double>& Q,
                        const arma::Col<Complex>& Ic, const arma::Col<double>& M2Pv) const;
 

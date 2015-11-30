@@ -13,12 +13,11 @@ dat = np.loadtxt('benchmark.txt', usecols=(1,2,3,4,5,6,7))
 n = dat[:, 0]
 
 ok_mp = dat[:, 1]
-t_mp = dat[:, 2]
+ok_pol = dat[:, 2]
+ok_rect = dat[:, 3]
 
-ok_pol = dat[:, 3]
-t_pol = dat[:, 4]
-
-ok_rect = dat[:, 5]
+t_mp = dat[:, 4]
+t_pol = dat[:, 5]
 t_rect = dat[:, 6]
 
 n_ok_mp = [x[1] for x in zip(ok_mp, n) if x[0] == 1]
