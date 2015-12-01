@@ -26,6 +26,7 @@
 #include <set>
 #include <vector>
 
+using namespace arma;
 using namespace Sgt;
 using namespace std;
 using namespace boost::posix_time;
@@ -56,8 +57,8 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
 
     auto oh = dynamic_cast<OverheadLine*>(netw.branch("line_1_2"));
 
-    arma::Mat<Complex> ZPrim = oh->ZPrim();
-    arma::Mat<Complex> ZPhase = oh->ZPhase();
+    Mat<Complex> ZPrim = oh->ZPrim();
+    Mat<Complex> ZPhase = oh->ZPhase();
 
     Complex cmp;
     cmp = {1.3369, 1.3331};
@@ -121,14 +122,14 @@ BOOST_AUTO_TEST_CASE (test_underground_conc_compare_carson)
     netw.solvePowerFlow();
 
     auto ug = dynamic_cast<UndergroundLine*>(netw.branch("line_1_2"));
-    arma::Mat<Complex> ZPhase = ug->ZPhase() * 1609.344; // Convert to ohms per mile.
-    arma::Mat<Complex> ZPhaseKersting;
-    ZPhaseKersting << Complex(0.7981, 0.4463) << Complex(0.3191, 0.0328) << Complex(0.2849, -0.0143) << arma::endr
-                   << Complex(0.3191, 0.0328) << Complex(0.7891, 0.4041) << Complex(0.3191, 0.0328) << arma::endr
-                   << Complex(0.2849, -0.0143) << Complex(0.3191, 0.0328) << Complex(0.7981, 0.4463) << arma::endr;
+    Mat<Complex> ZPhase = ug->ZPhase() * 1609.344; // Convert to ohms per mile.
+    Mat<Complex> ZPhaseKersting;
+    ZPhaseKersting << Complex(0.7981, 0.4463) << Complex(0.3191, 0.0328) << Complex(0.2849, -0.0143) << endr
+                   << Complex(0.3191, 0.0328) << Complex(0.7891, 0.4041) << Complex(0.3191, 0.0328) << endr
+                   << Complex(0.2849, -0.0143) << Complex(0.3191, 0.0328) << Complex(0.7981, 0.4463) << endr;
     BOOST_TEST_MESSAGE(ZPhase);
     BOOST_TEST_MESSAGE(ZPhaseKersting);
-    double err = arma::norm(ZPhase - ZPhaseKersting, "inf");
+    double err = norm(ZPhase - ZPhaseKersting, "inf");
     BOOST_TEST_MESSAGE("Err = " << err);
     BOOST_CHECK(err < 0.0005);
 }
@@ -144,12 +145,12 @@ BOOST_AUTO_TEST_CASE (test_underground_tape_compare_carson)
     netw.solvePowerFlow();
 
     auto ug = dynamic_cast<UndergroundLine*>(netw.branch("line_1_2"));
-    arma::Mat<Complex> ZPrim = ug->ZPrim() * 1609.344; // Convert to ohms per mile.
-    arma::Mat<Complex> ZPhase = ug->ZPhase() * 1609.344; // Convert to ohms per mile.
+    Mat<Complex> ZPrim = ug->ZPrim() * 1609.344; // Convert to ohms per mile.
+    Mat<Complex> ZPhase = ug->ZPhase() * 1609.344; // Convert to ohms per mile.
     Complex ZPhaseKersting = Complex(1.3219, 0.6743);
     BOOST_TEST_MESSAGE(ZPhase(0));
     BOOST_TEST_MESSAGE(ZPhaseKersting);
-    double err = arma::norm(ZPhase - ZPhaseKersting, "inf");
+    double err = norm(ZPhase - ZPhaseKersting, "inf");
     BOOST_TEST_MESSAGE("Err = " << err);
     BOOST_CHECK(err < 0.0006);
 }
@@ -379,7 +380,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
             Network nw(100.0);
             nw.setUseFlatStart(true);
             YAML::Node n = YAML::Load(yamlStr);
-            Sgt::Parser<Network> p;
+            Parser<Network> p;
             p.parse(n, nw);
 
             Stopwatch sw;
@@ -435,6 +436,45 @@ BOOST_AUTO_TEST_CASE (test_matpower)
     }
 }
 
+BOOST_AUTO_TEST_CASE (test_const_I)
+{
+    using namespace Sgt;
+
+    std::string yamlStr(
+            "--- [{matpower : {input_file : matpower_test_cases/nesta_case189_edin.m, " "default_kV_base : 11}}]");
+    Network nw(100.0);
+    nw.setUseFlatStart(true);
+    YAML::Node n = YAML::Load(yamlStr);
+    Parser<Network> p;
+    p.parse(n, nw);
+
+    std::string bus1Id = "bus_174";
+    auto bus1 = nw.bus(bus1Id); // No existing zip generation. 
+    assert(bus1->zips().size() == 0);
+
+    std::string branchId = "branch_194_bus_173_bus_174";
+    auto branch = dynamic_cast<const CommonBranch*>(nw.branch(branchId));
+
+    auto bus0 = branch->bus0();
+
+    auto zip = std::make_shared<GenericZip>("zip_I_const", Phase::BAL);
+    Complex Ic = std::polar(1.0, 15.0 * pi / 180.0) * 0.789;
+    zip->setIConst({Ic});
+    nw.addZip(zip, bus1Id);
+
+    bool ok = nw.solvePowerFlow();
+    BOOST_CHECK(ok == true);
+
+    Complex V0 = bus0->V()(0);
+    Complex V1 = bus1->V()(0);
+    Complex S1 = bus1->SZip()(0);
+
+    BOOST_CHECK(std::abs(S1 - conj(Ic) * abs(V1)) < 1e-6);
+    
+    Complex I1 = (branch->Y() * Col<Complex>({V0, V1})).eval()(1);
+    BOOST_CHECK(std::abs(Ic * V1 / abs(V1)  - I1) < 1e-6);
+}
+
 BOOST_AUTO_TEST_CASE (test_weak_order)
 {
     WoGraph g(6);
@@ -460,7 +500,7 @@ BOOST_AUTO_TEST_CASE (test_weak_order)
 BOOST_AUTO_TEST_CASE (test_loops)
 {
     Simulation sim;
-    Sgt::Parser<Simulation> p;
+    Parser<Simulation> p;
     p.parse("test_loops.yaml", sim);
     auto comps = sim.simComponents();
     BOOST_CHECK(comps.size() == 6);
@@ -474,7 +514,7 @@ BOOST_AUTO_TEST_CASE (test_loops)
 
 BOOST_AUTO_TEST_CASE (test_properties)
 {
-    class Foo : public Sgt::HasProperties<Foo>
+    class Foo : public HasProperties<Foo>
     {
         public:
             SGT_PROPS_INIT(Foo);                                                               
@@ -483,7 +523,7 @@ BOOST_AUTO_TEST_CASE (test_properties)
             SGT_PROP_GET(fourProp, Foo, int, four);
     };
 
-    class Bar : public Foo, public Sgt::HasProperties<Bar>
+    class Bar : public Foo, public HasProperties<Bar>
     {
         public:
             SGT_PROPS_INIT(Bar);                                                               
