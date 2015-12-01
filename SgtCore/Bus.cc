@@ -138,7 +138,7 @@ namespace Sgt
         auto sum = Col<Complex>(phases().size(), fill::zeros);
         for (auto zip : zipVec_)
         {
-            sum += zip->IConst() % V() / abs(V());
+            sum += zip->IConst();
         }
         return sum;
     }
