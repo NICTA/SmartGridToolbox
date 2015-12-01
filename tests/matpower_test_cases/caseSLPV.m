@@ -1,4 +1,4 @@
-function mpc = case4gs
+function mpc = caseSLPV
 %CASE4GS  Power flow data for 4 bus, 2 gen case from Grainger & Stevenson.
 %   Please see CASEFORMAT for details on the case file format.
 %
