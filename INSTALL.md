@@ -1,6 +1,7 @@
 DEPENDENCIES
 -------
-ipopt: https://projects.coin-or.org/Ipopt
+
+Ipopt: https://projects.coin-or.org/Ipopt
 
 gurobi: http://www.gurobi.com
 
@@ -8,8 +9,14 @@ cmake: http://www.cmake.org (Version 3.2 or better)
 
 ********* IMPORTANT *********
 --------
-PowerTools currently only compiles with gcc 4.9 (due to a lack of c++11 support by Gurobi).
+If you are using a version of Gurobi that is older than 6.5, you will need to compile PowerTools with gcc 4.9 (due to a lack of c++11 support by the older versions of Gurobi).
 --------
+
+If your Gurobi version is >= 6.5, you just need to enter
+
+cmake ..
+
+make
 
 ---------------------- For Mac Users ----------------------
 
@@ -76,7 +83,7 @@ Remove the -Wmost -Wno-four-char-constants and -Wno-unknown-pragmas flags as the
 
 >\> cd build
 
->\> CC=gcc-4.9 CXX=g++-.9 cmake ..
+>\> CC=gcc-4.9 CXX=g++-4.9 cmake ..
 
 >\> make
 
