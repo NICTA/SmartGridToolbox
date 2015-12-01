@@ -392,7 +392,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
             if (!ok)
             {
                 tRef = -1;
-                BOOST_TEST_ERROR("Case " << c << " could not be solved.\n");
+                BOOST_ERROR("Case " << c << " could not be solved.\n");
                 continue;
             }
 
