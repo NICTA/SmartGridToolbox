@@ -209,8 +209,8 @@ namespace Sgt
                 auto VrPv = Vr(mod_->selPv());
                 auto ViPv = Vi(mod_->selPv());
                 const auto DeltaViPv = x(selViPvFrom_x_);
+                VrPv += (M2Pv - VrPv % VrPv - ViPv % ViPv - 2 * ViPv % DeltaViPv) / (2 * VrPv);
                 ViPv += DeltaViPv;
-                VrPv += (M2Pv - VrPv % VrPv - ViPv % ViPv) / (2 * VrPv);
 
                 // Update Qcg for PV busses based on the solution.
                 Qcg(mod_->selPv()) += x(selQPvFrom_x_);
