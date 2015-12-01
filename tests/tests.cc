@@ -462,17 +462,25 @@ BOOST_AUTO_TEST_CASE (test_const_I)
     zip->setIConst({Ic});
     nw.addZip(zip, bus1Id);
 
-    bool ok = nw.solvePowerFlow();
-    BOOST_CHECK(ok == true);
+    for (std::string solverType : {"nr_pol", "nr_rect"})
+    {
+        BOOST_TEST_MESSAGE("Solver type = " << solverType);
+        auto solver = solverType == "nr_pol" 
+            ? std::unique_ptr<PowerFlowSolverInterface>(new PowerFlowNrPolSolver)
+            : std::unique_ptr<PowerFlowSolverInterface>(new PowerFlowNrRectSolver);
+        nw.setSolver(std::move(solver));
+        bool ok = nw.solvePowerFlow();
+        BOOST_CHECK(ok == true);
 
-    Complex V0 = bus0->V()(0);
-    Complex V1 = bus1->V()(0);
-    Complex S1 = bus1->SZip()(0);
+        Complex V0 = bus0->V()(0);
+        Complex V1 = bus1->V()(0);
+        Complex S1 = bus1->SZip()(0);
 
-    BOOST_CHECK(std::abs(S1 - conj(Ic) * abs(V1)) < 1e-6);
-    
-    Complex I1 = (branch->Y() * Col<Complex>({V0, V1})).eval()(1);
-    BOOST_CHECK(std::abs(Ic * V1 / abs(V1)  - I1) < 1e-6);
+        BOOST_CHECK(std::abs(S1 - conj(Ic) * abs(V1)) < 1e-6);
+
+        Complex I1 = (branch->Y() * Col<Complex>({V0, V1})).eval()(1);
+        BOOST_CHECK(std::abs(Ic * V1 / abs(V1)  - I1) < 1e-6);
+    }
 }
 
 BOOST_AUTO_TEST_CASE (test_weak_order)
