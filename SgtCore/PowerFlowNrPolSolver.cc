@@ -197,8 +197,7 @@ namespace Sgt
 
             auto S = calcS(Scg, Ic, V, M, Y);
             Col<double> f = mod_->nPq() > 0
-                ? static_cast<Col<double>>(
-                        join_vert(real(S.subvec(0, nPqPv - 1)), imag(S.subvec(0, mod_->nPq() - 1))))
+                ? join_vert(real(S.subvec(0, nPqPv - 1)), imag(S.subvec(0, mod_->nPq() - 1))).eval()
                 : real(S.subvec(0, nPqPv - 1));
             err = norm(f, "inf");
             sgtLogMessage(LogLevel::VERBOSE) << "Err = " << err << std::endl;
