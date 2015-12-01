@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.2)
 
+set(CMAKE_C_COMPILER "gcc")
+set(CMAKE_CXX_COMPILER "g++")
+
 project(PowerTools)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
