@@ -51,18 +51,18 @@ namespace Sgt
         assert(solar_->validUntil() > t); // Next update is in the future.
 
         // Variables:
-        // [0 ... N - 1] : PImp[i] [-Inf, Inf]
-        // [N ... 2N - 1] : PExp[i] [-Inf, Inf]
-        // [2N ... 3N - 1] : PChg[i] [0, maxPChg]
-        // [3N ... 4N - 1] : PDis[i] [0, maxPDis]
-        // [4N ... 5N - 1] : Chg[i] [0, maxChg]
-        // [5N ... 6N - 1] : Tb[i] [-Infin, Infin]
-        // [6N ... 7N - 1] : TbPlus[i] [0, TMaxDev_]
-        // [7N ... 8N - 1] : TbMinus[i] [0, TMaxDev_]
-        // [8N ... 9N - 1] : TbPlusPen[i] [0, Infin]
-        // [9N ... 10N - 1] : TbMinusPen[i] [0, Infin]
-        // [10N ... 11N - 1] : PCool[i] [0, maxPCool]
-        // [11N ... 12N - 1] : PHeat[i] [0, maxPHeat]
+        // PImp [-Inf, Inf]
+        // PExp [-Inf, Inf]
+        // PChg [0, maxPChg]
+        // PDis [0, maxPDis]
+        // Chg [0, maxChg]
+        // Tb [-Infin, Infin]
+        // TbPlus [0, TMaxDev_]
+        // TbMinus [0, TMaxDev_]
+        // TbPlusPen [0, Infin]
+        // TbMinusPen [0, Infin]
+        // PCool [0, maxPCool]
+        // PHeat [0, maxPHeat]
         //
         // Constraints:
         // Chg[0] = Chg0
@@ -73,7 +73,7 @@ namespace Sgt
         // PImp[i] + PDis[i] - PExp[i] - PChg[i] - PHeat[i] - PCool[i] = PUncontrolledLoad[i]
         //
         // Objective:
-        // Sum_i (price[i] * PImp[i] - feedInTariff_ * PExp[i] + comfortFactor_ * (TbPlusPen[i] + TbMinusPen[i])
+        // Sum_i (price[i] * PImp[i] - feedInTariff_ * PExp[i] + comfortFactor_ * (TbPlusPen[i] + TbMinusPen[i]))
         
         // Parameters:
         const int N = 100;
