@@ -51,18 +51,18 @@ namespace Sgt
         assert(solar_->validUntil() > t); // Next update is in the future.
 
         // Variables:
-        // PImp [-Inf, Inf]
-        // PExp [-Inf, Inf]
-        // PChg [0, maxPChg]
-        // PDis [0, maxPDis]
-        // Chg [0, maxChg]
-        // Tb [-Infin, Infin]
-        // TbPlus [0, TMaxDev_]
-        // TbMinus [0, TMaxDev_]
-        // TbPlusPen [0, Infin]
-        // TbMinusPen [0, Infin]
-        // PCool [0, maxPCool]
-        // PHeat [0, maxPHeat]
+        // PImp         [-Inf, Inf]     Power imported from the grid.
+        // PExp         [-Inf, Inf]     Power exported to the grid.
+        // PChg         [0, maxPChg]    Battery (external) charge power.
+        // PDis         [0, maxPDis]    Battery (external) discharge power.
+        // Chg          [0, maxChg]     Battery charge.
+        // Tb           [-Infin, Infin] Building temperature.
+        // TbPlus       [0, TMaxDev_]   Building temperature above setpoint.
+        // TbMinus      [0, TMaxDev_]   Building temperature below setpoint.
+        // TbPlusPen    [0, Infin]      Building temperature above max. allowable.
+        // TbMinusPen   [0, Infin]      Building temperature below min. allowable.
+        // PCool        [0, maxPCool]   HVAC cooling power.
+        // PHeat        [0, maxPHeat]   HVAC heating power.
         //
         // Constraints:
         // Chg[0] = Chg0
