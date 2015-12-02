@@ -42,8 +42,7 @@ namespace Sgt
         NetworkParser p = parser.subParser<Network>();
         p.parse(netwNode, network);
         auto& branches = network.branches();
-        sgtAssert(branches.size() == 1, "Parsing SimBranch " << id << ": must specify exactly one branch.");
-        auto branch = branches[0];
+        auto branch = branches.back(); // KLUDGE: assumes just parsed branch is last (which is true, but not robust).
         auto simBranch = sim.newSimComponent<SimBranch>(id, *branch);
         simBranch->linkToSimNetwork(*simNetwork);
     }

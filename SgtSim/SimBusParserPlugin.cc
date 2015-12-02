@@ -42,8 +42,7 @@ namespace Sgt
         NetworkParser p = parser.subParser<Network>();
         p.parse(netwNode, network);
         auto& busses = network.busses();
-        sgtAssert(busses.size() == 1, "Parsing SimBus " << id << ": must specify exactly one bus.");
-        auto bus = busses[0];
+        auto bus = busses.back(); // KLUDGE: assumes just parsed bus is last (which is true, but not robust).
         auto simBus = sim.newSimComponent<SimBus>(id, *bus);
         simBus->linkToSimNetwork(*simNetwork);
     }
