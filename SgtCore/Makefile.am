@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = foreign
 if ENABLE_POWER_TOOLS_PP
 POWER_FLOW_PT_PP_SOLVER_H = PowerFlowPtPpSolver.h
 POWER_FLOW_PT_PP_SOLVER_CC = PowerFlowPtPpSolver.cc
-L_POWER_TOOLS_PP = -lPowerTools++ -lipopt -lcoinhsl
+L_POWER_TOOLS_PP = -lPowerTools++ -lipopt -lcoinhsl -lgurobi65 -lgurobi_c++
 else
 POWER_FLOW_PT_PP_SOLVER_H =
 POWER_FLOW_PT_PP_SOLVER_CC =
