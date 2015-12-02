@@ -24,9 +24,7 @@
 #include <SgtSim/Simulation.h>
 #include <SgtSim/SolarPv.h>
 
-extern "C" {
-#include "gurobi_c.h"
-};
+#include <gurobi_c++.h>
 
 namespace Sgt
 {
@@ -100,7 +98,7 @@ namespace Sgt
             double TSetp_; // Temperature setpoint.
             double TMaxDev_; // Max allowable deviation from setpoint before incurring cost.
 
-            GRBenv* env{NULL};
+            GRBEnv env_;
     };
 
     class BuildingControllerParserPlugin : public SimParserPlugin

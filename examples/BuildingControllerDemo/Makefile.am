@@ -22,4 +22,5 @@ building_controller_demo_LDADD = -lSgtCore \
 					  -lamd \
 					  -lbtf \
 					  -lcolamd \
-					  -lgurobi60
+					  -lgurobi65 \
+					  -lgurobi_c++
