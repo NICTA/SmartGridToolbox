@@ -141,27 +141,27 @@ namespace Sgt
         model.addConstr(chgVars[0] == chg0, "constr_chg_0");
 
         // Chg[i+1] - Chg[i] - chg_eff * dt * PChg[i] + (1 / dis_eff) * dt * PDis[i] = 0
-        double chgFactor = -dtHrs * batt_->chargeEfficiency();
+        double chgFactor = dtHrs * batt_->chargeEfficiency();
         double disFactor = dtHrs / batt_->dischargeEfficiency();
         for (size_t i = 0; i < N - 1; ++i)
         {
-            model.addConstr(chgVars[i+1] - chgVars[i] + chgFactor * PChgVars[i] + disFactor * PDisVars[i] == 0,
+            model.addConstr(chgVars[i+1] - chgVars[i] - chgFactor * PChgVars[i] + disFactor * PDisVars[i] == 0,
                     "constr_chg_" + std::to_string(i));
         }
 
         // Tb[0] = Tb0
         model.addConstr(TbVars[0] == Tb0, "constr_Tb_0");
         
-        // Tb[i+1] - d Tb[i] + ((1 - d) COPCool / kb) PCool[i] - ((1 - d) COPHeat / kb) PHeat = (1 - d) TExt
+        // Tb[i+1] - d Tb[i] + ((1 - d) COPCool / kb) PCool[i] - ((1 - d) COPHeat / kb) PHeat = (1 - d) TExt[i]
         for (size_t i = 0; i < N - 1; ++i)
         {
             double d = build_->d(dtSecs);
             double d1 = 1.0 - d;
             double tmp = d1 / build_->kb();
             double PCoolFactor = tmp * build_->copCool();
-            double PHeatFactor = -tmp * build_->copHeat();
+            double PHeatFactor = tmp * build_->copHeat();
         
-            model.addConstr(TbVars[i+1] - d * TbVars[i] + PCoolFactor * PCoolVars[i] + PHeatFactor * PHeatVars[i] 
+            model.addConstr(TbVars[i+1] - d * TbVars[i] + PCoolFactor * PCoolVars[i] - PHeatFactor * PHeatVars[i] 
                     == d1 * TExt[i], "constr_Tb_" + std::to_string(i));
         }
         
