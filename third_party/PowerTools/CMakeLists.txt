@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 
-set(CMAKE_C_COMPILER "gcc")
-set(CMAKE_CXX_COMPILER "g++")
+set(CMAKE_C_COMPILER gcc CACHE STRING "C compiler")
+set(CMAKE_CXX_COMPILER g++ CACHE STRING "C++ compiler")
 
 project(PowerTools)
 
