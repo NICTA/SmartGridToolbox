@@ -17,6 +17,8 @@
 #include <iostream>
 #include <sstream>
 
+using namespace arma;
+
 namespace Sgt
 {
     namespace
@@ -192,18 +194,18 @@ namespace Sgt
         phaseVec_.shrink_to_fit();
     }
 
-    arma::Mat<Complex> carson(arma::uword nWire, const arma::Mat<double>& Dij, const arma::Col<double> resPerL,
+    Mat<Complex> carson(uword nWire, const Mat<double>& Dij, const Col<double> resPerL,
                               double L, double freq, double rhoEarth)
     {
         // Calculate the primative Z matrix (i.e. before Kron)
-        arma::Mat<Complex> Z(nWire, nWire, arma::fill::zeros);
+        Mat<Complex> Z(nWire, nWire, fill::zeros);
         double freqCoeffReal = 9.869611e-7 * freq;
         double freqCoeffImag = 1.256642e-6 * freq;
         double freqAdditiveTerm = 0.5 * log(rhoEarth / freq) + 6.490501;
-        for (arma::uword i = 0; i < nWire; ++i)
+        for (uword i = 0; i < nWire; ++i)
         {
             Z(i, i) = {resPerL(i) + freqCoeffReal, freqCoeffImag * (log(1 / Dij(i, i)) + freqAdditiveTerm)};
-            for (arma::uword k = i + 1; k < nWire; ++k)
+            for (uword k = i + 1; k < nWire; ++k)
             {
                 Z(i, k) = {freqCoeffReal, freqCoeffImag * (log(1 / Dij(i, k)) + freqAdditiveTerm)};
                 Z(k, i) = Z(i, k);
@@ -214,7 +216,7 @@ namespace Sgt
         return Z;
     }
 
-    arma::Mat<Complex> kron(const arma::Mat<Complex>& Z, arma::uword nPhase)
+    Mat<Complex> kron(const Mat<Complex>& Z, uword nPhase)
     {
         auto n = Z.n_rows;
         if (n == nPhase)
@@ -228,23 +230,23 @@ namespace Sgt
             auto Zpn = Z.submat(0, nPhase, nPhase - 1, n - 1);
             auto Znp = Z.submat(nPhase, 0, n - 1, nPhase - 1);
             auto Znn = Z.submat(nPhase, nPhase, n - 1, n - 1);
-            auto ZnnInv = arma::inv(Znn);
+            auto ZnnInv = inv(Znn);
 
             return (Zpp - Zpn * ZnnInv * Znp);
         }
     }
 
-    arma::Mat<Complex> ZLine2YNode(const arma::Mat<Complex>& ZLine)
+    Mat<Complex> ZLine2YNode(const Mat<Complex>& ZLine)
     {
         auto n = ZLine.n_rows;
 
         // The line admittance matrix
-        arma::Mat<Complex> YLine = arma::inv(ZLine);
+        Mat<Complex> YLine = inv(ZLine);
 
-        arma::Mat<Complex>YNode(2 * n, 2 * n, arma::fill::zeros);
-        for (arma::uword i = 0; i < n; ++i)
+        Mat<Complex>YNode(2 * n, 2 * n, fill::zeros);
+        for (uword i = 0; i < n; ++i)
         {
-            for (arma::uword j = 0; j < n; ++j)
+            for (uword j = 0; j < n; ++j)
             {
                 YNode(i, j) = YLine(i, j);
                 YNode(i, j + n) = -YLine(i, j);
@@ -273,19 +275,65 @@ namespace Sgt
 
     namespace
     {
-        static constexpr Complex alpha{-0.5, 0.866025403784439};
-        static constexpr Complex alpha2{-0.5, -0.866025403784439};
-        const arma::Mat<Complex>::fixed<3, 3> B{{1, 1, 1}, {1, alpha, alpha2}, {1, alpha2, alpha}};
-        const arma::Mat<Complex>::fixed<3, 3> BInv{{1, 1, 1}, {1, alpha2, alpha}, {1, alpha, alpha2}};
+        const Complex alpha{-0.5, 0.866025403784439};
+        const Complex alpha2{-0.5, -0.866025403784439};
+        const double oneThird = 1.0 / 3.0;
+        const double sqrt3Inv = 1.0 / std::sqrt(3.0);
+
+        const Mat<Complex>::fixed<3, 3> A{{1, 1, 1}, {1, alpha2, alpha}, {1, alpha, alpha2}};
+        const Mat<Complex>::fixed<3, 3> AInv(oneThird * 
+                Mat<Complex>::fixed<3, 3>{{1, alpha, alpha2}, {1, alpha2, alpha}});
+
+        const Mat<Complex>::fixed<3, 3> B(sqrt3Inv *
+                Mat<Complex>::fixed<3, 3>{{1, 1, 1}, {1, alpha2, alpha}, {1, alpha, alpha2}});
+        const Mat<Complex>::fixed<3, 3> BInv(sqrt3Inv *
+                Mat<Complex>::fixed<3, 3>{{1, 1, 1}, {1, alpha, alpha2}, {1, alpha2, alpha}});
     }
 
-    arma::Col<Complex> toScaledSequence(const arma::Col<Complex>& v)
+    Col<Complex> toSequence(const Col<Complex>& v)
+    {
+        return AInv * v;
+    }
+
+    Mat<Complex> toSequence(const Mat<Complex>& M)
+    {
+        return AInv * M * A;
+    }
+
+    Col<Complex> fromSequence(const Col<Complex>& v)
+    {
+        return A * v;
+    }
+
+    Mat<Complex> fromSequence(const Mat<Complex>& M)
+    {
+        return A * M * AInv;
+    }
+ 
+    Col<Complex> toScaledSequence(const Col<Complex>& v)
+    {
+        return BInv * v;
+    }
+
+    Mat<Complex> toScaledSequence(const Mat<Complex>& M)
+    {
+        return BInv * M * B;
+    }
+
+    Col<Complex> fromScaledSequence(const Col<Complex>& v)
     {
         return B * v;
     }
 
-    arma::Mat<Complex> toScaledSequence(const arma::Mat<Complex>& M)
+    Mat<Complex> fromScaledSequence(const Mat<Complex>& M)
     {
         return B * M * BInv;
+    }
+      
+    Mat<Complex> approxPhaseImpedanceMatrix(Complex ZPlus, Complex Z0)
+    {
+        return oneThird * Mat<Complex>{{2 * ZPlus + Z0, Z0 - ZPlus,    Z0 - ZPlus}, 
+                                       {Z0 - ZPlus,     2 *ZPlus + Z0, Z0 - ZPlus},
+                                       {Z0 - ZPlus,     Z0 - ZPlus,    2 *ZPlus + Z0}};
     }
 }
