@@ -329,7 +329,9 @@ where
 \end{align}
 However, in what follows, we do not make further use of the particular form of $Y$ expressed in Eq. (\ref{EQ_YNODE_OHMIC}) above. We simply require that $Y$ be a constant matrix, so that there is a linear relationship between $I$ and $V$. We shall see later that including components such as shunts and transformers allows us to retain the linear relationship while modifying the particular form of $Y$.
 
-Due to the basic relation $S = I^*V$, the power loss between bus $i$ and $k$ is $S_{ik} = I_{ik}^*(V_i - V_k)$. Note that power is a scalar: if we reverse the order of the busses, then the power loss is unchanged, in contrast to, say, a current, where reversing the order of the busses will negate the current. More commonly, though, you will deal with the power entering or leaving a bus rather than the power lost in a line. Consider a current leaving a bus. If the current is a draw to ground, or if the system is radial and the current is in the direction of the downstream loads, all of this current will eventually end up at ground. The voltage drop in this process will just be the voltage of the bus. Thus, the power eventually transferred to ground will be 
+Due to the basic relation $S = I^*V$, the power loss between bus $i$ and $k$ is $S_{ik} = I_{ik}^*(V_i - V_k)$. Note that power is a scalar: if we reverse the order of the busses, then the power loss is unchanged, in contrast to, say, a current, where reversing the order of the busses will negate the current.
+
+More commonly, though, we deal with the power entering or leaving a bus rather than the power lost in a line. Consider a current leaving a bus. If the current is a draw to ground, or if the system is radial and the current is in the direction of the downstream loads, all of this current will eventually end up at ground. The voltage drop in this process will just be the voltage of the bus. Thus, the power eventually transferred to ground will be 
 \begin{align}
 	S_\text{draw} = I_\text{draw}^*V_\text{bus}
 \end{align}

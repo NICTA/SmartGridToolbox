@@ -60,22 +60,24 @@ namespace Sgt
         assertFieldPresent(nd, "phases_1");
         assertFieldPresent(nd, "Y");
 
-        std::string id = parser.expand<std::string>(nd["id"]);
-        Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
-        Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
+        const std::string id = parser.expand<std::string>(nd["id"]);
+        const Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
+        const Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
 
-        const YAML::Node& ndY = nd["Y"];
-        const YAML::Node& ndYMatrix = ndY["matrix"];
-        const YAML::Node& ndYSimpleLine = ndY["simple_line"];
+        const YAML::Node ndY = nd["Y"];
+
+        const YAML::Node ndYMatrix = ndY["matrix"];
+        const YAML::Node ndYApproxPhaseImpedance = ndY["approximate_phase_impedance"];
         arma::Mat<Complex> Y(2 * phases0.size(), 2 * phases1.size(), arma::fill::zeros);
         if (ndYMatrix)
         {
             Y = parser.expand<arma::Mat<Complex>>(ndYMatrix);
         }
-        else if (ndYSimpleLine)
+        else if (ndYApproxPhaseImpedance)
         {
-            arma::Col<Complex> YLine = parser.expand<arma::Col<Complex>>(ndYSimpleLine);
-            Y = YSimpleLine(YLine);
+            const YAML::Node ndZPlus = ndYApproxPhaseImpedance["Z+"];
+            const YAML::Node ndZ0 = ndYApproxPhaseImpedance["Z0"];
+            Y = approxPhaseImpedanceMatrix(ndZPlus.as<Complex>(), ndZ0.as<Complex>());
         }
 
         std::unique_ptr<GenericBranch> branch(new GenericBranch(id, phases0, phases1));
