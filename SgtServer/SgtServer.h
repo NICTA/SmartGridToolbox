@@ -1,7 +1,7 @@
 #ifndef SGT_SERVER_DOT_H
 #define SGT_SERVER_DOT_H
 
-#include "server_http.hpp"
+#include "WebServer/server_http.hpp"
 
 #include <SgtSim/Simulation.h>
 
@@ -30,7 +30,7 @@ namespace Sgt
                         {
                             auto& sim = simulations_.at(simId);
                             std::stringstream ss;
-                            request->content >> ss.rdbuf();
+                            request->content >> ss;
                             string content=ss.str();
                             response
                                 << "HTTP/1.1 200 OK" << "\r\n"
