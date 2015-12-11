@@ -278,16 +278,15 @@ namespace Sgt
         const Complex alpha{-0.5, 0.866025403784439};
         const Complex alpha2{-0.5, -0.866025403784439};
         const double oneThird = 1.0 / 3.0;
-        const double sqrt3Inv = 1.0 / std::sqrt(3.0);
+        const double sqrt3 = std::sqrt(3.0);
+        const double sqrt3Inv = 1.0 / sqrt3;
 
         const Mat<Complex>::fixed<3, 3> A{{1, 1, 1}, {1, alpha2, alpha}, {1, alpha, alpha2}};
         const Mat<Complex>::fixed<3, 3> AInv(oneThird * 
-                Mat<Complex>::fixed<3, 3>{{1, alpha, alpha2}, {1, alpha2, alpha}});
-
-        const Mat<Complex>::fixed<3, 3> B(sqrt3Inv *
-                Mat<Complex>::fixed<3, 3>{{1, 1, 1}, {1, alpha2, alpha}, {1, alpha, alpha2}});
-        const Mat<Complex>::fixed<3, 3> BInv(sqrt3Inv *
                 Mat<Complex>::fixed<3, 3>{{1, 1, 1}, {1, alpha, alpha2}, {1, alpha2, alpha}});
+
+        const Mat<Complex>::fixed<3, 3> B(sqrt3Inv * A);
+        const Mat<Complex>::fixed<3, 3> BInv(sqrt3 * AInv);
     }
 
     Col<Complex> toSequence(const Col<Complex>& v)
