@@ -15,6 +15,8 @@
 #ifndef COMMON_DOT_H
 #define COMMON_DOT_H
 
+#include <SgtCore/json.hpp>
+
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/local_time/local_time.hpp>
@@ -195,6 +197,38 @@ namespace Sgt
     /// @brief Create a value from a string.
     /// @ingroup Utilities
     template<typename T> T from_string(const std::string& s);
+
+    /// @}
+    
+    /// @name JSON.
+    /// @{
+
+    using namespace nlohmann;
+
+    template<typename T> struct HasToJson
+    {
+        private:
+            typedef std::true_type yes;
+            typedef std::false_type no;
+            template<typename U> static auto testMember(int) -> decltype(std::declval<U>().toJson(), yes());
+            template<typename> static no testMember(...);
+            template<typename U> static auto testFree(int) -> decltype(toJson(std::declval<U>()), yes());
+            template<typename> static no testFree(...);
+        public:
+            static constexpr bool hasMember = std::is_same<decltype(testMember<T>(0)),yes>::value;
+            static constexpr bool hasFree = std::is_same<decltype(testFree<T>(0)),yes>::value;
+    };
+
+    template<typename T> auto toJson(const T& t) -> decltype(t.toJson())
+    {
+        return t.toJson();
+    }
+
+    template<typename T> auto toJson(const T& t) 
+        -> typename std::enable_if<!HasToJson<T>::hasMember && !HasToJson<T>::hasFree, json>::type
+    {
+        return "JSON conversion not implemented for this object";
+    }
 
     /// @}
 
