@@ -23,7 +23,7 @@ void print(std::ostream& out, std::ostream& outV, double t, const Network& netw)
 {
     out << t;
     outV << t;
-    for (ConstBusPtr bus : netw.busses())
+    for (const Bus* bus : netw.busses())
     {
         auto nPhase = bus->phases().size();
         double P = arma::accu(arma::real(bus->SZip()));
@@ -39,7 +39,7 @@ int main(int argc, const char** argv)
 {
     // Sgt::Log::messageLogLevel = Sgt::LogLevel::VERBOSE;
     // Sgt::Log::debugLogLevel = Sgt::LogLevel::VERBOSE;
-    sgtAssert(argc != 3, "Usage: " << argv[0] << " config_name out_name.");
+    sgtAssert(argc == 3, "Usage: " << argv[0] << " config_name out_name.");
 
     const char* configName = argv[1];
     const char* outName = argv[2];
@@ -56,10 +56,10 @@ int main(int argc, const char** argv)
     p.parse(configName, sim);
     sim.initialize();
 
-    std::shared_ptr<Network> netw = sim.simComponent<SimNetwork>("network")->network();
+    Network& netw = sim.simComponent<SimNetwork>("network")->network();
 
     out << "% t";
-    for (auto bus : netw->busses())
+    for (auto bus : netw.busses())
     {
         out << " " << bus->id();
     }
@@ -68,12 +68,12 @@ int main(int argc, const char** argv)
     Stopwatch swTot;
     swTot.start();
     double t = dSeconds(sim.currentTime() - sim.startTime())/3600;
-    print(out, outV, t, *netw);
+    print(out, outV, t, netw);
     while (!sim.isFinished())
     {
         sim.doTimestep();
         t = dSeconds(sim.currentTime() - sim.startTime())/3600;
-        print(out, outV, t, *netw);
+        print(out, outV, t, netw);
     }
     swTot.stop();
     Log().message() << "Total time = " << swTot.seconds() << std::endl;

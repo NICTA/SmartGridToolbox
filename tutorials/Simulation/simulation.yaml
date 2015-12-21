@@ -9,17 +9,20 @@
     timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra.
 - time_series:
     id: cloud_cover_series
-    value_type: real_scalar
+    value_type: real_vector
     type: data_time_series
     data_file: cloud.txt
-    relative_to_time: <start_time>
-    time_unit: m
-    interp_type: lerp
+    relative_to_time: <start_time>                                                        
+    time_unit: m                                                                          
+    interp_type: lerp                 
 - weather:
     id: weather
-    cloud_cover: cloud_cover_series
-    dt: 00:30:00
-- network:
+    dt: 00:20:00
+    irradiance: 
+        solar_model: standard
+    cloud_attenuation_factors:
+        series: cloud_cover_series
+- sim_network:
     id: network
     P_base: 1e6
     freq_Hz: 60
@@ -36,10 +39,14 @@
     efficiency: 0.86
 - solar_pv: # Add a solar farm to the inverter.
     id: solar_pv
-    sim_network_id: network
-    inverter: pv_inverter
     weather: weather
-    efficiency: 0.75
-    area_m2: 10000
-    zenith_degrees: 40
-    azimuth_degrees: 290
+    inverter: pv_inverter
+    zenith_degrees: 60 
+    azimuth_degrees: 0
+    n_panels: 3000
+    panel_area_m2: 1.64 
+    irradiance_ref_W_per_m2: 1000 
+    T_cell_ref_C: 25 
+    P_max_ref_W: 265
+    temp_coeff_P_max_per_C: -0.004
+    NOCT_C: 44
