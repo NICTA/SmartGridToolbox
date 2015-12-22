@@ -26,6 +26,8 @@ namespace Qi = boost::spirit::qi;
 namespace Ascii = boost::spirit::ascii;
 namespace Phoenix = boost::phoenix;
 
+using namespace arma;
+
 namespace Sgt
 {
     StreamIndent::StreamIndent(std::ostream& strm) :
@@ -225,17 +227,19 @@ namespace Sgt
         }
         return ss.str();
     }
+    
+    template std::ostream& operator<< <double>(std::ostream& os, const Col<double>& v);
+    template std::ostream& operator<< <float>(std::ostream& os, const Col<float>& v);
+    template std::ostream& operator<< <int>(std::ostream& os, const Col<int>& v);
+    template std::ostream& operator<< <uword>(std::ostream& os, const Col<uword>& v);
+    template std::ostream& operator<< <Complex>(std::ostream& os, const Col<Complex>& v);
 
-    template std::ostream& operator<< <double>(std::ostream& os, const arma::Col<double>& v);
-    template std::ostream& operator<< <float>(std::ostream& os, const arma::Col<float>& v);
-    template std::ostream& operator<< <int>(std::ostream& os, const arma::Col<int>& v);
-    template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Col<Complex>& v);
-
-    template std::ostream& operator<< <double>(std::ostream& os, const arma::Mat<double>& v);
-    template std::ostream& operator<< <float>(std::ostream& os, const arma::Mat<float>& v);
-    template std::ostream& operator<< <int>(std::ostream& os, const arma::Mat<int>& v);
-    template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Mat<Complex>& v);
-
+    template std::ostream& operator<< <double>(std::ostream& os, const Mat<double>& v);
+    template std::ostream& operator<< <float>(std::ostream& os, const Mat<float>& v);
+    template std::ostream& operator<< <int>(std::ostream& os, const Mat<int>& v);
+    template std::ostream& operator<< <uword>(std::ostream& os, const Mat<uword>& v);
+    template std::ostream& operator<< <Complex>(std::ostream& os, const Mat<Complex>& v);
+    
     const posix_time::ptime epoch(gregorian::date(1970,1,1));
 
     Time timeFromDSeconds(double dSeconds)
@@ -257,5 +261,9 @@ namespace Sgt
                 local_date_time::NOT_DATE_TIME_ON_ERROR);
         return ldt.utc_time();
     }
-
+    
+    json JsonConvert<Complex>::asJson(const Complex& c)
+    {
+        return {{"cplx", {c.real(), c.imag()}}};
+    }
 }

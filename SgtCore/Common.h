@@ -23,6 +23,7 @@
 
 #include <armadillo>
 
+#include <algorithm>
 #include <complex>
 #include <iostream>
 #include <iomanip>
@@ -199,38 +200,6 @@ namespace Sgt
     template<typename T> T from_string(const std::string& s);
 
     /// @}
-    
-    /// @name JSON.
-    /// @{
-
-    using namespace nlohmann;
-
-    template<typename T> struct HasToJson
-    {
-        private:
-            typedef std::true_type yes;
-            typedef std::false_type no;
-            template<typename U> static auto testMember(int) -> decltype(std::declval<U>().toJson(), yes());
-            template<typename> static no testMember(...);
-            template<typename U> static auto testFree(int) -> decltype(toJson(std::declval<U>()), yes());
-            template<typename> static no testFree(...);
-        public:
-            static constexpr bool hasMember = std::is_same<decltype(testMember<T>(0)),yes>::value;
-            static constexpr bool hasFree = std::is_same<decltype(testFree<T>(0)),yes>::value;
-    };
-
-    template<typename T> auto toJson(const T& t) -> decltype(t.toJson())
-    {
-        return t.toJson();
-    }
-
-    template<typename T> auto toJson(const T& t) 
-        -> typename std::enable_if<!HasToJson<T>::hasMember && !HasToJson<T>::hasFree, json>::type
-    {
-        return "JSON conversion not implemented for this object";
-    }
-
-    /// @}
 
     /// @name Constant dimension 1D array type.
     /// @{
@@ -306,6 +275,7 @@ namespace Sgt
     extern template std::ostream& operator<< <double>(std::ostream& os, const arma::Col<double>& v);
     extern template std::ostream& operator<< <float>(std::ostream& os, const arma::Col<float>& v);
     extern template std::ostream& operator<< <int>(std::ostream& os, const arma::Col<int>& v);
+    extern template std::ostream& operator<< <arma::uword>(std::ostream& os, const arma::Col<arma::uword>& v);
     extern template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Col<Complex>& v);
 
     /// @ingroup Utilities
@@ -338,6 +308,7 @@ namespace Sgt
     extern template std::ostream& operator<< <double>(std::ostream& os, const arma::Mat<double>& v);
     extern template std::ostream& operator<< <float>(std::ostream& os, const arma::Mat<float>& v);
     extern template std::ostream& operator<< <int>(std::ostream& os, const arma::Mat<int>& v);
+    extern template std::ostream& operator<< <arma::uword>(std::ostream& os, const arma::Mat<arma::uword>& v);
     extern template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Mat<Complex>& v);
 
     /// @}
@@ -400,6 +371,102 @@ namespace Sgt
     {
         double lat_;
         double long_;
+    };
+
+    /// @}
+    
+    /// @name JSON.
+    /// @{
+
+    using namespace nlohmann;
+
+    template<typename T, typename Dummy = int> struct JsonConvert;
+
+    template<typename T> struct JsonTraits
+    {
+        private:
+            template<typename U> static auto testMember(int) -> decltype(std::declval<U>().asJson(), std::true_type());
+            template<typename> static std::false_type testMember(...);
+
+            template<typename U> static auto testFree(int) 
+                -> decltype(JsonConvert<U>::asJson(std::declval<U>()), std::true_type());
+            template<typename> static std::false_type testFree(...);
+
+            template<typename U> static auto testNative(int) -> decltype(json(std::declval<U>()), std::true_type());
+            template<typename> static std::false_type testNative(...);
+
+            using HasMember = decltype(testMember<T>(0));
+            using HasFree = decltype(testFree<T>(0));
+            using HasNative = decltype(testNative<T>(0));
+        public:
+            constexpr static bool hasMember = std::is_same<HasMember, std::true_type>::value;
+            constexpr static bool hasFree = !hasMember && std::is_same<HasFree, std::true_type>::value;
+            constexpr static bool hasNative = !hasMember && !hasFree && std::is_same<HasNative, std::true_type>::value;
+            constexpr static bool hasAny = hasMember || hasFree || hasNative;
+    };
+
+    template<typename T> using JsonMemberType = typename std::enable_if<JsonTraits<T>::hasMember, T>::type;
+    template<typename T> using JsonFreeType = typename std::enable_if<JsonTraits<T>::hasFree, T>::type;
+    template<typename T> using JsonNativeType = typename std::enable_if<JsonTraits<T>::hasNative, T>::type;
+
+    template<typename T> json toJson(const T& t, typename std::enable_if<JsonTraits<T>::hasMember, int>::type = 0)
+    {
+        return t.asJson();
+    }
+
+    template<typename T> json toJson(const T& t, typename std::enable_if<JsonTraits<T>::hasFree, int>::type = 0)
+    {
+        return JsonConvert<T>::asJson(t);
+    }
+
+    template<typename T> json toJson(const T& t, typename std::enable_if<JsonTraits<T>::hasNative, int>::type = 0)
+    {
+        return json(t);
+    }
+
+    // Vector-like objects (std::list, std::vector, etc)
+    template <typename V>
+    struct JsonConvert<V, typename std::enable_if<JsonTraits<typename V::value_type>::hasAny, int>::type>
+    {
+        static json asJson(const V& v)
+        {
+            auto array = json::array();
+            for (auto x : v)
+            {
+                array.push_back(toJson(x));
+            }
+            return array;
+        }
+    };
+
+    // Map-like objects (std::map, std::unordered_map, etc)
+    template <typename M>
+    struct JsonConvert<M, typename std::enable_if<std::is_constructible<std::string, typename M::key_type>::value &&
+                                                  JsonTraits<typename M::value_type>::hasAny, int>::type>
+    {
+        static json asJson(const M& m)
+        {
+            auto obj = json::object();
+            for (auto pair : m)
+            {
+                obj[pair.first] = toJson(pair.second);
+            }
+            return obj;
+        }
+    };
+   
+    // Automatically dereference pointers.
+    template<typename T> struct JsonConvert<T*>
+    {
+        static json asJson(T* t)
+        {
+            return toJson(*t);
+        }
+    };
+
+    template<> struct JsonConvert<Complex>
+    {
+        static json asJson(const Complex& c);
     };
 
     /// @}

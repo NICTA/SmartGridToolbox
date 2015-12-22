@@ -120,6 +120,11 @@ namespace Sgt
                 os << componentType() << ": " << id() << ":" << std::endl;
             }
 
+            virtual json asJson() const
+            {
+                return {{"component", {{"id", id_}}}};
+            }
+
             /// @}
         
         private:

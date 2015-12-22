@@ -262,6 +262,8 @@ namespace Sgt
            
             virtual void print(std::ostream& os) const;
 
+            virtual json asJson() const; 
+            
             /// @}
 
         private:

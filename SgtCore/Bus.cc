@@ -208,4 +208,18 @@ namespace Sgt
         os << "V_mag_max: " << VMagMax() << std::endl;
         os << "V: " << V() << std::endl;
     }
+    
+    json Bus::asJson() const
+    {
+        json j = this->Component::asJson();
+        j["bus"] = {
+            {"phases", toJson(phases())},
+            {"type", toJson(type())},
+            {"V_base", VBase()},
+            {"V_nom", toJson(VNom())},
+            {"V_mag_min", VMagMin()},
+            {"V_mag_max", VMagMax()},
+            {"V", toJson(V())}};
+        return j;
+    }
 }

@@ -35,6 +35,13 @@ namespace Sgt
     };
 
     std::string to_string(BusType type);
+    template<> struct JsonConvert<BusType>
+    {
+        static json asJson(BusType type)
+        {
+            return to_string(type);
+        }
+    };
     inline std::ostream& operator<<(std::ostream& os, BusType t) {return os << to_string(t);}
     template<> BusType from_string<BusType>(const std::string& str);
 
@@ -54,6 +61,13 @@ namespace Sgt
     };
 
     std::string to_string(Phase phase);
+    template<> struct JsonConvert<Phase>
+    {
+        static json asJson(Phase phase)
+        {
+            return to_string(phase);
+        }
+    };
     inline std::ostream& operator<<(std::ostream& os, Phase p) {return os << to_string(p);}
     template<> Phase from_string<Phase>(const std::string& str);
     const char* phaseDescr(Phase phase);
@@ -91,6 +105,7 @@ namespace Sgt
             IdxMap::const_iterator end() const {return idxMap_.end();}
 
             std::string to_string() const;
+            json asJson() const;
 
             friend bool operator==(const Phases& a, const Phases& b) {return a.mask_ == b.mask_;}
             friend Phases operator&(const Phases& a, const Phases& b) {return {a.mask_& b.mask_};}

@@ -160,6 +160,15 @@ namespace Sgt
             os << "Bus 1 = " << branch->bus1()->id() << std::endl;
         }
     }
+            
+    json Network::asJson() const
+    {
+        json j;
+        j["network"] = {
+            {"busses", toJson(busses())}
+        };
+        return j;
+    }
 
     std::unique_ptr<PowerFlowModel> buildModel(const Network& netw)
     {
