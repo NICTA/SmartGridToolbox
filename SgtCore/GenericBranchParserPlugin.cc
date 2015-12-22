@@ -20,25 +20,6 @@
 
 namespace Sgt
 {
-    // No cross terms, just nPhase lines with single admittances.
-    namespace
-    {
-        const arma::Mat<Complex> YSimpleLine(const arma::Col<Complex>& Y)
-        {
-            auto nPhase = Y.size();
-            auto nTerm = 2 * nPhase;
-            arma::Mat<Complex> YNode(nTerm, nTerm, arma::fill::zeros);
-            for (arma::uword i = 0; i < nPhase; ++i)
-            {
-                YNode(i, i) = Y(i);
-                YNode(i + nPhase, i + nPhase) = Y(i);
-                YNode(i, i + nPhase) = -Y(i);
-                YNode(i + nPhase, i) = -Y(i);
-            }
-            return YNode;
-        }
-    }
-
     void GenericBranchParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
     {
         auto gb = parseGenericBranch(nd, parser);
