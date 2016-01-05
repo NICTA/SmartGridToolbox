@@ -36,6 +36,7 @@ libinclude_HEADERS = \
 	DgyTransformer.h \
 	Event.h \
 	Gen.h \
+	json.hpp \
 	Network.h \
 	NetworkParser.h \
 	OverheadLine.h \
@@ -73,6 +74,7 @@ libSgtCore_la_SOURCES = \
 	GenericBranchParserPlugin.h GenericBranchParserPlugin.cc \
 	GenericGenParserPlugin.h GenericGenParserPlugin.cc \
 	GenericZipParserPlugin.h GenericZipParserPlugin.cc \
+	json.hpp \
 	$(KLU_SOLVER_H) $(KLU_SOLVER_CC) \
 	MatpowerParserPlugin.h MatpowerParserPlugin.cc \
 	Network.h Network.cc \

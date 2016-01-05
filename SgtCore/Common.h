@@ -409,24 +409,29 @@ namespace Sgt
     template<typename T> using JsonFreeType = typename std::enable_if<JsonTraits<T>::hasFree, T>::type;
     template<typename T> using JsonNativeType = typename std::enable_if<JsonTraits<T>::hasNative, T>::type;
 
+    /// Convert an object with a "asJson" member function to JSON.
     template<typename T> json toJson(const T& t, typename std::enable_if<JsonTraits<T>::hasMember, int>::type = 0)
     {
         return t.asJson();
     }
 
+    /// Convert a T to JSON where a JsonConvert<T> struct exists with an asJson(const T&) member function.
     template<typename T> json toJson(const T& t, typename std::enable_if<JsonTraits<T>::hasFree, int>::type = 0)
     {
         return JsonConvert<T>::asJson(t);
     }
 
+    /// Convert a T to JSON if it is natively convertible by the JSON library.
     template<typename T> json toJson(const T& t, typename std::enable_if<JsonTraits<T>::hasNative, int>::type = 0)
     {
         return json(t);
     }
 
-    // Vector-like objects (std::list, std::vector, etc)
+    /// JSON conversion for vector-like objects (std::list, std::vector, etc), excluding arma::Mat
     template <typename V>
-    struct JsonConvert<V, typename std::enable_if<JsonTraits<typename V::value_type>::hasAny, int>::type>
+    struct JsonConvert<V, typename std::enable_if<
+            JsonTraits<typename V::value_type>::hasAny && !std::is_same<V, arma::Mat<typename V::value_type>>::value, 
+            int>::type>
     {
         static json asJson(const V& v)
         {
@@ -439,7 +444,7 @@ namespace Sgt
         }
     };
 
-    // Map-like objects (std::map, std::unordered_map, etc)
+    /// JSON conversion for map-like objects (std::map etc).
     template <typename M>
     struct JsonConvert<M, typename std::enable_if<std::is_constructible<std::string, typename M::key_type>::value &&
                                                   JsonTraits<typename M::value_type>::hasAny, int>::type>
@@ -454,8 +459,27 @@ namespace Sgt
             return obj;
         }
     };
+
+    /// JSON conversion for armadillo matrices.
+    template<typename T> struct JsonConvert<arma::Mat<T>>
+    {
+        static json asJson(const arma::Mat<T>& m)
+        {
+            json result;
+            for (int i = 0; i < m.n_rows; ++i)
+            {
+                json row;
+                for (int j = 0; j < m.n_cols; ++j)
+                {
+                    row.push_back(toJson(m(i, j)));
+                }
+                result.push_back(row);
+            }
+            return result;
+        }
+    };
    
-    // Automatically dereference pointers.
+    /// Automatically dereference pointers.
     template<typename T> struct JsonConvert<T*>
     {
         static json asJson(T* t)
@@ -464,6 +488,7 @@ namespace Sgt
         }
     };
 
+    /// JSON conversion for complex numbers.
     template<> struct JsonConvert<Complex>
     {
         static json asJson(const Complex& c);

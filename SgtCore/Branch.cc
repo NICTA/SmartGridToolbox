@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "Branch.h"
+#include "Bus.h"
 
 #include <ostream>
 
@@ -32,5 +33,19 @@ namespace Sgt
         StreamIndent _(os);
         os << "phases0: " << phases0() << std::endl;
         os << "phases1: " << phases1() << std::endl;
+    }
+    
+    json BranchAbc::asJson() const
+    {
+        json j = this->Component::asJson();
+        j[sComponentType()] = {
+            {"phases0", toJson(phases0())},
+            {"phases1", toJson(phases1())},
+            {"bus0", bus0()->id()},
+            {"bus1", bus1()->id()},
+            {"is_in_service", toJson(isInService())},
+            {"Y", toJson(Y())}
+        };
+        return j;
     }
 }

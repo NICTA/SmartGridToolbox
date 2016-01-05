@@ -165,7 +165,11 @@ namespace Sgt
     {
         json j;
         j["network"] = {
-            {"busses", toJson(busses())}
+            {"p_base", toJson(PBase())},
+            {"busses", toJson(busses())},
+            {"branches", toJson(branches())},
+            {"gens", toJson(gens())},
+            {"zips", toJson(zips())}
         };
         return j;
     }

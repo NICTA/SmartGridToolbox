@@ -63,6 +63,8 @@ namespace Sgt
             }
 
             virtual void print(std::ostream& os) const override;
+            
+            virtual json asJson() const override;
 
         /// @}
 

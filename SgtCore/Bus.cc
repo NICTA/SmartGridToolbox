@@ -212,7 +212,7 @@ namespace Sgt
     json Bus::asJson() const
     {
         json j = this->Component::asJson();
-        j["bus"] = {
+        j[sComponentType()] = {
             {"phases", toJson(phases())},
             {"type", toJson(type())},
             {"V_base", VBase()},
