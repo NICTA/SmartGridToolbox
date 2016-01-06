@@ -25,14 +25,21 @@
 #include<type_traits>
 #include<vector>
 
+/// Need to include this macro in HasProperties<T> so that properties() acts polymorphically and returns the right
+/// static map.
 #define SGT_PROPS_INIT(Targ) virtual const std::map<std::string, std::shared_ptr<Sgt::PropertyAbc>>& properties() const override {return Sgt::HasProperties<Targ>::sMap();}; virtual std::map<std::string, std::shared_ptr<Sgt::PropertyAbc>>& properties() override {return Sgt::HasProperties<Targ>::sMap();}
 
+/// Copy all properties from the base class into this class. This allows an override mechanism, just like method
+/// overrides. 
 #define SGT_PROPS_INHERIT(Targ, Base) struct Inherit ## Base {Inherit ## Base (){auto& targMap = Sgt::HasProperties<Targ>::sMap(); auto& baseMap = Sgt::HasProperties<Base>::sMap(); for (auto& elem : baseMap) {targMap[elem.first] = elem.second;}}}; struct DoInherit ## Base {DoInherit ## Base(){static Inherit ## Base inherit ## Base;}} doinherit ## Base
 
+/// Use a member function as a property getter.
 #define SGT_PROP_GET(name, Targ, T, getter) struct InitProp_ ## name {InitProp_ ## name(){Sgt::HasProperties<Targ>::sMap()[#name] = std::make_shared<Sgt::Property<T>>(std::unique_ptr<Sgt::Getter<Targ, T>>(new Sgt::Getter<Targ, T>([](const Targ& targ)->T{return targ.getter();})), nullptr);}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name;
 
+/// Use a member function as a property setter.
 #define SGT_PROP_SET(name, Targ, T, setter) struct InitProp_ ## name {InitProp_ ## name(){Sgt::HasProperties<Targ>::sMap()[#name] = std::make_shared<Sgt::Property<T>>(std::unique_ptr<Sgt::Setter<Targ, T>>(nullptr, new Sgt::Setter<Targ, T>([](Targ& targ, std::add_lvalue_reference<std::add_const<T>::type>::type val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
 
+/// Use member functions as a property getters and setters.
 #define SGT_PROP_GET_SET(name, Targ, T, getter, setter) struct InitProp_ ## name {InitProp_ ## name(){Sgt::HasProperties<Targ>::sMap()[#name] = std::make_shared<Sgt::Property<T>>(std::unique_ptr<Sgt::Getter<Targ, T>>(new Sgt::Getter<Targ, T>([](const Targ& targ)->T{return targ.getter();})), std::unique_ptr<Sgt::Setter<Targ, T>>(new Sgt::Setter<Targ, T>([](Targ& targ, std::add_lvalue_reference<std::add_const<T>::type>::type val){targ.setter(val);})));}}; struct Prop_ ## name {Prop_ ## name(){static InitProp_ ## name _;}} prop_ ## name
 
 namespace Sgt
@@ -41,6 +48,7 @@ namespace Sgt
 
     class PropertyAbc;
 
+    /// @brief Abstract base class for an object with properties.
     /// @ingroup Foundation
     class HasPropertiesAbc
     {
@@ -48,10 +56,16 @@ namespace Sgt
             HasPropertiesAbc() = default;
             HasPropertiesAbc(const HasPropertiesAbc& from) = default;
             virtual ~HasPropertiesAbc() = default;
+            /// Polymorphically directs us to the correct static map.
             virtual const std::map<std::string, std::shared_ptr<PropertyAbc>>& properties() const = 0;
+            /// Polymorphically directs us to the correct static map.
             virtual std::map<std::string, std::shared_ptr<PropertyAbc>>& properties() = 0;
     };
     
+    /// @brief Abstract base class for an object with properties.
+    ///
+    /// The only function of the Targ template parameter is to allow us to have a different static map for each
+    /// target class.
     /// @ingroup Foundation
     template<typename Targ> class HasProperties : virtual public HasPropertiesAbc
     {
