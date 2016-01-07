@@ -309,6 +309,23 @@ namespace Sgt
             SGT_PROP_GET(SZipUnserved, Bus, const arma::Col<Complex>&, SZipUnserved);
 
         /// @}
+        
+        /// @name coordinates.
+        /// @{
+      
+            arma::Col<double> coords() const
+            {
+                return coords_;
+            }
+            
+            void setCoords(const arma::Col<double>& coords)
+            {
+                coords_ = coords;
+            }
+            
+            SGT_PROP_GET_SET(coords, Bus, arma::Col<double>, coords, setCoords);
+
+        /// @}
 
         /// @name Events.
         /// @{
@@ -354,6 +371,8 @@ namespace Sgt
             arma::Col<Complex> V_;
             arma::Col<Complex> SGenUnserved_; // SGen + SGenUnserved = SGenRequested
             arma::Col<Complex> SZipUnserved_; // SZip + SZipUnserved = SZipRequested
+
+            arma::Col<double>::fixed<2> coords_{{0.0, 0.0}};
 
             Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
             Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
