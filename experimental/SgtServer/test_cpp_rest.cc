@@ -12,33 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Common.h"
-#include "Network.h"
-#include "Parser.h"
+#include <SgtCore/Common.h>
+#include <SgtCore/json.hpp>
+#include <SgtCore/Network.h>
+#include <SgtCore/Parser.h>
 
-#include "json.hpp"
-
-#include <armadillo>
-
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <sstream>
-#include <iostream>
-#include <fstream>
-#include <random>
-
-# include <sys/time.h>
-
-#include <cpprest/json.h>
 #include <cpprest/http_listener.h>
 #include <cpprest/uri.h>
 #include <cpprest/asyncrt_utils.h>
-
-#include <complex>
-#include <iostream>
-#include <map>
-#include <vector>
 
 using namespace Sgt;
 
@@ -47,12 +28,11 @@ using namespace http;
 using namespace utility;
 using namespace http::experimental::listener;
 
-class Server
+class SgtServer
 {
-
 public:
 
-    Server(const std::string& fName, const std::string& url);
+    SgtServer(const std::string& fName, const std::string& url);
 
     pplx::task<void> open() {return listener_.open();}
     pplx::task<void> close() {return listener_.close();}
@@ -69,7 +49,7 @@ private:
     Network nw_{100.0};
 };
 
-static std::unique_ptr<Server> gServer;
+static std::unique_ptr<SgtServer> gSgtServer;
 
 void on_initialize(const std::string& fname, const std::string& address)
 {
@@ -77,15 +57,15 @@ void on_initialize(const std::string& fname, const std::string& address)
     uri.append_path("network");
 
     auto addr = uri.to_uri().to_string();
-    gServer = std::unique_ptr<Server>(new Server(fname, addr));
-    gServer->open().wait();
+    gSgtServer = std::unique_ptr<SgtServer>(new SgtServer(fname, addr));
+    gSgtServer->open().wait();
     
     std::cout << "Listening for requests at: " << addr << std::endl;
 }
 
 void on_shutdown()
 {
-    gServer->close().wait();
+    gSgtServer->close().wait();
 }
 
 int main(int argc, char *argv[])
@@ -108,7 +88,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-Server::Server(const std::string& fname, const std::string& url) : listener_(url)
+SgtServer::SgtServer(const std::string& fname, const std::string& url) : listener_(url)
 {
     std::string yamlStr = std::string("--- [{matpower : {input_file : ") + fname + ", default_kV_base : 11}}]";
     YAML::Node n = YAML::Load(yamlStr);
@@ -116,13 +96,13 @@ Server::Server(const std::string& fname, const std::string& url) : listener_(url
     p.parse(n, nw_);
     std::cout << toJson(nw_).dump(2) << std::endl;
 
-    listener_.support(methods::GET, std::bind(&Server::handle_get, this, std::placeholders::_1));
-    // listener_.support(methods::PUT, std::bind(&Server::handle_put, this, std::placeholders::_1));
-    // listener_.support(methods::POST, std::bind(&Server::handle_post, this, std::placeholders::_1));
-    // listener_.support(methods::DEL, std::bind(&Server::handle_delete, this, std::placeholders::_1));
+    listener_.support(methods::GET, std::bind(&SgtServer::handle_get, this, std::placeholders::_1));
+    // listener_.support(methods::PUT, std::bind(&SgtServer::handle_put, this, std::placeholders::_1));
+    // listener_.support(methods::POST, std::bind(&SgtServer::handle_post, this, std::placeholders::_1));
+    // listener_.support(methods::DEL, std::bind(&SgtServer::handle_delete, this, std::placeholders::_1));
 }
 
-void Server::handle_get(http_request message)
+void SgtServer::handle_get(http_request message)
 {
     auto paths = http::uri::split_path(http::uri::decode(message.relative_uri().path()));
     for (auto path : paths)
@@ -133,32 +113,56 @@ void Server::handle_get(http_request message)
     auto status = status_codes::OK;
     if (paths.size() >= 1)
     {
-        if (paths[0] == "busses")
+        if (paths[0] == "branches")
+        {
+            responseJson.push_back(toJson(nw_.branches()));
+        }
+        else if (paths[0] == "gens")
+        {
+            responseJson.push_back(toJson(nw_.gens()));
+        }
+        else if (paths[0] == "zips")
+        {
+            responseJson.push_back(toJson(nw_.zips()));
+        }
+        else if (paths[0] == "busses")
         {
             if (paths.size() == 1)
             {
+                // Just all the busses as JSON.
                 responseJson.push_back(toJson(nw_.busses()));
             }
-            else if (paths.size() == 2)
+            else if (paths.size() > 1)
             {
+                // Do something with a specific bus.
                 auto bus = nw_.bus(paths[1]);
                 if (bus != nullptr)
                 {
-                    responseJson.push_back(toJson(*bus));
+                    if (paths.size() > 2 && paths[2] == "properties")
+                    {
+                        // We're interested in the bus's properties...
+                        if (paths.size() == 3)
+                        {
+                            // ... all the properties.
+                            responseJson.push_back(toJson(bus->properties()))
+                        }
+                        else
+                        {
+                            // ... a specific property.
+                        }
+                    }
+                    else
+                    {
+                        // Just return the bus as JSON.
+                        responseJson.push_back(toJson(*bus));
+                    }
                 }
                 else
                 {
+                    // Bus not found.
                     status = status_codes::NotFound;
                 }
             }
-            else
-            {
-                status = status_codes::BadRequest;
-            }
-        }
-        else if (paths[0] == "branches")
-        {
-            responseJson.push_back(toJson(nw_.branches()));
         }
     }
     message.reply(status, responseJson.dump(2));
