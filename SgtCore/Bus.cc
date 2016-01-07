@@ -207,6 +207,7 @@ namespace Sgt
         os << "V_mag_min: " << VMagMin() << std::endl;
         os << "V_mag_max: " << VMagMax() << std::endl;
         os << "V: " << V() << std::endl;
+        os << "coords: " << coords() << std::endl;
     }
     
     json Bus::asJson() const
@@ -219,7 +220,8 @@ namespace Sgt
             {"V_nom", toJson(VNom())},
             {"V_mag_min", VMagMin()},
             {"V_mag_max", VMagMax()},
-            {"V", toJson(V())}};
+            {"V", toJson(V())},
+            {"coords", toJson(coords())}};
         return j;
     }
 }
