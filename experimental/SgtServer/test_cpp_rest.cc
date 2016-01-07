@@ -42,8 +42,8 @@ public:
 private:
 
     void handleGet(http_request message);
-    // void handlePut(http_request message);
-    void handlePost(http_request message);
+    void handlePut(http_request message);
+    // void handlePost(http_request message);
     void handleDelete(http_request message);
 
     void handleGetNetwork(http_request message);
@@ -94,16 +94,18 @@ int main(int argc, char *argv[])
 SgtServer::SgtServer(const std::string& fname, const std::string& url) : listener_(url)
 {
     listener_.support(methods::GET, std::bind(&SgtServer::handleGet, this, std::placeholders::_1));
-    // listener_.support(methods::PUT, std::bind(&SgtServer::handlePut, this, std::placeholders::_1));
-    listener_.support(methods::POST, std::bind(&SgtServer::handlePost, this, std::placeholders::_1));
+    listener_.support(methods::PUT, std::bind(&SgtServer::handlePut, this, std::placeholders::_1));
+    // listener_.support(methods::POST, std::bind(&SgtServer::handlePost, this, std::placeholders::_1));
     listener_.support(methods::DEL, std::bind(&SgtServer::handleDelete, this, std::placeholders::_1));
 }
 
 void SgtServer::handleGet(http_request message)
 {
+    std::cout << "GET received." << std::endl;
+
     auto pathsVec = http::uri::split_path(http::uri::decode(message.relative_uri().path()));
     std::deque<decltype(pathsVec)::value_type> paths(pathsVec.begin(), pathsVec.end());
-    Json responseJson;
+    Json reply = {{"message_type", "GET"}};
     auto status = status_codes::OK;
 
     Network* nw;
@@ -120,7 +122,7 @@ void SgtServer::handleGet(http_request message)
             auto prop = bus->properties().at(propName);
             if (prop->isGettable())
             {
-                responseJson = {{propName, prop->asJson(*bus)}};
+                reply = {{propName, prop->asJson(*bus)}};
             }
         }
         catch (std::out_of_range e)
@@ -134,7 +136,7 @@ void SgtServer::handleGet(http_request message)
         if (paths.size() == 0)
         {
             // Just return the bus.
-            responseJson = toJson(*bus);
+            reply = toJson(*bus);
         }
         else
         {
@@ -151,7 +153,7 @@ void SgtServer::handleGet(http_request message)
                     {
                         if (p.second->isGettable())
                         {
-                            responseJson[p.first] = p.second->asJson(*bus);
+                            reply[p.first] = p.second->asJson(*bus);
                         }
                     }
                 }
@@ -167,7 +169,7 @@ void SgtServer::handleGet(http_request message)
     {
         if (paths.size() == 0)
         {
-            responseJson = toJson(nw->branches());
+            reply = toJson(nw->branches());
         }
         else
         {
@@ -179,7 +181,7 @@ void SgtServer::handleGet(http_request message)
     {
         if (paths.size() == 0)
         {
-            responseJson = toJson(nw->gens());
+            reply = toJson(nw->gens());
         }
         else
         {
@@ -191,7 +193,7 @@ void SgtServer::handleGet(http_request message)
     {
         if (paths.size() == 0)
         {
-            responseJson = toJson(nw->busses());
+            reply = toJson(nw->busses());
         }
         else
         {
@@ -214,7 +216,7 @@ void SgtServer::handleGet(http_request message)
     {
         if (paths.size() == 0)
         {
-            responseJson = toJson(nw->zips());
+            reply = toJson(nw->zips());
         }
         else
         {
@@ -227,7 +229,7 @@ void SgtServer::handleGet(http_request message)
         if (paths.size() == 0)
         {
             // Just return the network.
-            responseJson = toJson(*nw).dump(2);
+            reply = toJson(*nw);
         }
         else
         {
@@ -296,37 +298,58 @@ void SgtServer::handleGet(http_request message)
         }
     }
 
-    message.reply(status, responseJson.dump(2));
+    message.reply(status, reply.dump(2));
 }
 
-void SgtServer::handlePost(http_request message)
+void SgtServer::handlePut(http_request message)
 {
-    Json requestJson = Json::parse(message.extract_string(true).get());
-    std::string id = requestJson["network_id"];
-    std::string fname = requestJson["matpower_filename"];
-    Network* nw = new Network();
-    std::string yamlStr = std::string("--- [{matpower : {input_file : ") + fname + ", default_kV_base : 11}}]";
-    YAML::Node n = YAML::Load(yamlStr);
-    Parser<Network> p;
-    p.parse(n, *nw);
-    nws_[id].reset(nw);
+    std::cout << "PUT received." << std::endl;
 
-    message.reply(status_codes::OK, Json().dump(2));
-}
+    Json messageContentJson = Json::parse(message.extract_string(true).get());
+    std::cout << "message: " << messageContentJson << "." << std::endl;
 
-void SgtServer::handleDelete(http_request message)
-{
     auto pathsVec = http::uri::split_path(http::uri::decode(message.relative_uri().path()));
     if (pathsVec.size() != 2)
     {
-        message.reply(status_codes::BadRequest, Json().dump(2));
+        message.reply(status_codes::BadRequest);
     }
     else
     {
         std::string first = pathsVec[0];
         if (first != "networks")
         {
-            message.reply(status_codes::BadRequest, Json().dump(2));
+            message.reply(status_codes::BadRequest);
+        }
+        else
+        {
+            std::string networkId = pathsVec[1];
+            std::string fname = messageContentJson["matpower_filename"];
+            Network* nw = new Network();
+            std::string yamlStr = std::string("--- [{matpower : {input_file : ") + fname + ", default_kV_base : 11}}]";
+            YAML::Node n = YAML::Load(yamlStr);
+            Parser<Network> p;
+            p.parse(n, *nw);
+            nws_[networkId].reset(nw);
+        }
+    }
+    message.reply(status_codes::OK);
+}
+
+void SgtServer::handleDelete(http_request message)
+{
+    std::cout << "DELETE received." << std::endl;
+
+    auto pathsVec = http::uri::split_path(http::uri::decode(message.relative_uri().path()));
+    if (pathsVec.size() != 2)
+    {
+        message.reply(status_codes::BadRequest);
+    }
+    else
+    {
+        std::string first = pathsVec[0];
+        if (first != "networks")
+        {
+            message.reply(status_codes::BadRequest);
         }
         else
         {
@@ -334,11 +357,11 @@ void SgtServer::handleDelete(http_request message)
             auto n = nws_.erase(nwId);
             if (n == 0)
             {
-                message.reply(status_codes::NotFound, Json().dump(2));
+                message.reply(status_codes::NotFound);
             }
             else
             {
-                message.reply(status_codes::OK, Json().dump(2));
+                message.reply(status_codes::OK);
             }
         }
     }
