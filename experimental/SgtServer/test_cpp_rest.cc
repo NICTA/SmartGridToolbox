@@ -159,6 +159,7 @@ void SgtServer::handleGet(http_request message)
                 }
                 else
                 {
+                    // ... a specific property.
                     getBusProperty();
                 }
             }
@@ -269,13 +270,12 @@ void SgtServer::handleGet(http_request message)
             try
             {
                 nw = nws_.at(nwId).get();
+                getNetwork();
             }
             catch (std::out_of_range)
             {
                 status = status_codes::NotFound;
             }
-
-            getNetwork();
         }
     };
 
