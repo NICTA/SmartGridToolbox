@@ -25,17 +25,18 @@ namespace Sgt
         return Y_;
     }
 
-    void CommonBranch::print(std::ostream& os) const
+    json CommonBranch::asJson() const
     {
-        BranchAbc::print(os);
-        StreamIndent _(os);
-        os << "tap_ratio_magnitude: " << std::abs(tapRatio_) << std::endl;
-        os << "tap_ratio_angle_deg: " << std::arg(tapRatio_) * 180 / pi << std::endl;
-        os << "Y_series: " << YSeries_ << std::endl;
-        os << "Y_shunt: " << YShunt_ << std::endl;
-        os << "rate_A: " << rateA_ << std::endl;
-        os << "rate_B: " << rateB_ << std::endl;
-        os << "rate_C: " << rateC_ << std::endl;
+        json j = BranchAbc::asJson();
+        j[sComponentType()] = {
+            {"tap_ratio_magnitude", std::abs(tapRatio_)},
+            {"tap_ratio_angle_deg", std::arg(tapRatio_) * 180 / pi},
+            {"Y_series", toJson(YSeries_)},
+            {"Y_shunt", toJson(YShunt_)},
+            {"rate_A", rateA_},
+            {"rate_B", rateB_},
+            {"rate_C", rateC_}};
+        return j;
     }
 
     void CommonBranch::validate() const

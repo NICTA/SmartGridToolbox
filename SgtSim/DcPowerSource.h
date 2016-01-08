@@ -99,10 +99,11 @@ namespace Sgt
                 return sComponentType();
             }
 
-            virtual void print(std::ostream& os) const override
+            virtual json asJson() const override
             {
-                SimComponent::print(os);
-                os << "    " << "DC power = " << PDc() << std::endl;
+                json j = this->SimComponent::asJson();
+                j[sComponentType()] = {{"DC_power", toJson(PDc())}};
+                return j;
             }
 
             /// @}

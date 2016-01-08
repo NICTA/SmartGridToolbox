@@ -69,7 +69,7 @@ namespace Sgt
                 return sComponentType();
             }
 
-            // virtual void print(std::ostream& os) const override; // TODO
+            // virtual json asJson() const override; // TODO
 
         /// @}
 

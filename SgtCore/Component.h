@@ -117,7 +117,7 @@ namespace Sgt
 
             virtual void print(std::ostream& os) const
             {
-                os << componentType() << ": " << id() << ":" << std::endl;
+                os << asJson().dump(2);
             }
 
             virtual json asJson() const

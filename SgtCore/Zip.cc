@@ -28,14 +28,14 @@ namespace Sgt
         // Empty.
     }
 
-    void ZipAbc::print(std::ostream& os) const
+    json ZipAbc::asJson() const
     {
-        Component::print(os);
-        StreamIndent _(os);
-        os << "id: " << id() << std::endl;
-        os << "phases: " << phases() << std::endl;
-        os << "YConst: " << YConst() << std::endl;
-        os << "IConst: " << IConst() << std::endl;
-        os << "SConst: " << SConst() << std::endl;
-    }
+        json j = Component::asJson();
+		j[sComponentType()] = {
+			{"phases", toJson(phases())},
+			{"YConst", toJson(YConst())},
+			{"IConst", toJson(IConst())},
+			{"SConst", toJson(SConst())}};
+		return j;
+	}
 }

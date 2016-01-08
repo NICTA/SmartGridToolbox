@@ -120,46 +120,6 @@ namespace Sgt
         return std::accumulate(genVec_.begin(), genVec_.end(), 0.0, 
                 [](double d, GenAbc* g)->double{return d + g->cost();});
     }
-
-    void Network::print(std::ostream& os) const
-    {
-        os << "Network:" << std::endl;
-        StreamIndent _(os);
-        os << "P_base: " << PBase_ << std::endl;
-        for (const Bus* bus : busVec_)
-        {
-            {
-                os << "Bus: " << std::endl;
-                StreamIndent _1(os);
-                os << *bus << std::endl;
-            }
-            {
-                os << "Zips: " << std::endl;
-                StreamIndent _1(os);
-                for (const ZipAbc* zip : bus->zips())
-                {
-                    os << *zip << std::endl;
-                }
-            }
-            {
-                os << "Gens: " << std::endl;
-                StreamIndent _(os);
-                for (const GenAbc* gen : bus->gens())
-                {
-                    os << *gen << std::endl;
-                }
-            }
-        }
-        for (const BranchAbc* branch : branchVec_)
-        {
-            os << "Branch: " << std::endl;
-            StreamIndent _1(os);
-            os << *branch << std::endl;
-            StreamIndent _2(os);
-            os << "Bus 0 = " << branch->bus0()->id() << std::endl;
-            os << "Bus 1 = " << branch->bus1()->id() << std::endl;
-        }
-    }
             
     json Network::asJson() const
     {

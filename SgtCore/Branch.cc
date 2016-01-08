@@ -27,14 +27,6 @@ namespace Sgt
         // Empty.
     }
 
-    void BranchAbc::print(std::ostream& os) const
-    {
-        Component::print(os);
-        StreamIndent _(os);
-        os << "phases0: " << phases0() << std::endl;
-        os << "phases1: " << phases1() << std::endl;
-    }
-    
     json BranchAbc::asJson() const
     {
         json j = this->Component::asJson();

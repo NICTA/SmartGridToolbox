@@ -196,20 +196,6 @@ namespace Sgt
         }
     }
 
-    void Bus::print(std::ostream& os) const
-    {
-        Component::print(os);
-        StreamIndent _(os);
-        os << "phases: " << phases() << std::endl;
-        os << "type: " << type() << std::endl;
-        os << "V_base: " << VBase() << std::endl;
-        os << "V_nom: " << VNom() << std::endl;
-        os << "V_mag_min: " << VMagMin() << std::endl;
-        os << "V_mag_max: " << VMagMax() << std::endl;
-        os << "V: " << V() << std::endl;
-        os << "coords: " << coords() << std::endl;
-    }
-    
     json Bus::asJson() const
     {
         json j = this->Component::asJson();

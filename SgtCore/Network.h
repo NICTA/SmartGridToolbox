@@ -260,7 +260,10 @@ namespace Sgt
             /// @name Printing:
             /// @{
            
-            virtual void print(std::ostream& os) const;
+            virtual void print(std::ostream& os) const
+            {
+                os << asJson().dump(2);
+            }
 
             virtual json asJson() const; 
             

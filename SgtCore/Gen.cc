@@ -18,21 +18,22 @@
 
 namespace Sgt
 {
-    void GenAbc::print(std::ostream& os) const
+    json GenAbc::asJson() const
     {
-        Component::print(os);
-        StreamIndent _(os);
-        os << "phases: " << phases() << std::endl;
-        os << "S: " << S() << std::endl;
-        os << "PMin: " << PMin() << std::endl;
-        os << "PMax: " << PMax() << std::endl;
-        os << "QMin: " << QMin() << std::endl;
-        os << "QMax: " << QMax() << std::endl;
-        os << "cStartup : " << cStartup() << std::endl;
-        os << "cShutdown: " << cShutdown() << std::endl;
-        os << "c0: " << c0() << std::endl;
-        os << "c1: " << c1() << std::endl;
-        os << "c2: " << c2() << std::endl;
+        json j = Component::asJson();
+        j[sComponentType()] = {
+            {"phases: ", toJson(phases())},
+            {"S: ", toJson(S())},
+            {"PMin: ", PMin()},
+            {"PMax: ", PMax()},
+            {"QMin: ", QMin()},
+            {"QMax: ", QMax()},
+            {"cStartup : ", cStartup()},
+            {"cShutdown: ", cShutdown()},
+            {"c0: ", c0()},
+            {"c1: ", c1()},
+            {"c2: ", c2()}};
+        return j;
     }
 
     double GenAbc::cost() const
