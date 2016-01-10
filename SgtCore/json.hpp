@@ -35,6 +35,8 @@ Class @ref nlohmann::basic_json is a good entry point for the documentation.
 @see https://github.com/nlohmann/json to download the source code
 */
 
+// Modified for use with SmartGridToolbox by Dan Gordon.
+
 #ifndef NLOHMANN_JSON_HPP
 #define NLOHMANN_JSON_HPP
 
@@ -124,6 +126,33 @@ static bool approx(const T a, const T b)
 }
 }
 
+template <
+    template<typename U, typename V, typename... Args> class ObjectType = std::map,
+    template<typename U, typename... Args> class ArrayType = std::vector,
+    class StringType = std::string,
+    class BooleanType = bool,
+    class NumberIntegerType = int64_t,
+    class NumberFloatType = double,
+    template<typename U> class AllocatorType = std::allocator
+    >
+class basic_json;
+using json = basic_json<>;
+
+template<typename T, typename J = json, typename Dummy = int> struct JsonConvert;
+
+template<typename T> struct JsonTraits
+{
+    private:
+        template<typename U> 
+            static auto testUser(int) -> decltype(JsonConvert<U>::asJson(std::declval<U>()), std::true_type());
+
+        template<typename> static std::false_type testUser(...);
+
+        using HasUser = decltype(testUser<T>(0));
+    public:
+        constexpr static bool hasUser = std::is_same<HasUser, std::true_type>::value;
+};
+
 /*!
 @brief a class to store JSON values
 
@@ -189,13 +218,13 @@ default)
 @see RFC 7159 <http://rfc7159.net/rfc7159>
 */
 template <
-    template<typename U, typename V, typename... Args> class ObjectType = std::map,
-    template<typename U, typename... Args> class ArrayType = std::vector,
-    class StringType = std::string,
-    class BooleanType = bool,
-    class NumberIntegerType = int64_t,
-    class NumberFloatType = double,
-    template<typename U> class AllocatorType = std::allocator
+    template<typename U, typename V, typename... Args> class ObjectType,
+    template<typename U, typename... Args> class ArrayType,
+    class StringType,
+    class BooleanType,
+    class NumberIntegerType,
+    class NumberFloatType,
+    template<typename U> class AllocatorType
     >
 class basic_json
 {
@@ -907,6 +936,7 @@ class basic_json
     */
     template <class CompatibleObjectType, typename
               std::enable_if<
+                  !JsonTraits<CompatibleObjectType>::hasUser and
                   std::is_constructible<typename object_t::key_type, typename CompatibleObjectType::key_type>::value and
                   std::is_constructible<basic_json, typename CompatibleObjectType::mapped_type>::value, int>::type
               = 0>
@@ -961,6 +991,7 @@ class basic_json
     */
     template <class CompatibleArrayType, typename
               std::enable_if<
+                  !JsonTraits<CompatibleArrayType>::hasUser and
                   not std::is_same<CompatibleArrayType, typename basic_json_t::iterator>::value and
                   not std::is_same<CompatibleArrayType, typename basic_json_t::const_iterator>::value and
                   not std::is_same<CompatibleArrayType, typename basic_json_t::reverse_iterator>::value and
@@ -7298,7 +7329,7 @@ basic_json_parser_64:
 This type is the default specialization of the @ref basic_json class which uses
 the standard template types.
 */
-using json = basic_json<>;
+// using json = basic_json<>;
 }
 
 
