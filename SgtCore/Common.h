@@ -405,10 +405,6 @@ namespace Sgt
             constexpr static bool hasAny = hasMember || hasFree || hasNative;
     };
 
-    template<typename T> using JsonMemberType = typename std::enable_if<JsonTraits<T>::hasMember, T>::type;
-    template<typename T> using JsonFreeType = typename std::enable_if<JsonTraits<T>::hasFree, T>::type;
-    template<typename T> using JsonNativeType = typename std::enable_if<JsonTraits<T>::hasNative, T>::type;
-
     /// Convert an object with a "asJson" member function to JSON.
     template<typename T> json toJson(const T& t, typename std::enable_if<JsonTraits<T>::hasMember, int>::type = 0)
     {
