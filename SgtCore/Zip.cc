@@ -28,14 +28,14 @@ namespace Sgt
         // Empty.
     }
 
-    json ZipAbc::asJson() const
+    json ZipAbc::toJson() const
     {
-        json j = Component::asJson();
+        json j = Component::toJson();
 		j[sComponentType()] = {
-			{"phases", toJson(phases())},
-			{"YConst", toJson(YConst())},
-			{"IConst", toJson(IConst())},
-			{"SConst", toJson(SConst())}};
+			{"phases", phases()},
+			{"YConst", YConst()},
+			{"IConst", IConst()},
+			{"SConst", SConst()}};
 		return j;
 	}
 }

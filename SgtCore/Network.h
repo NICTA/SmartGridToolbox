@@ -262,10 +262,10 @@ namespace Sgt
            
             virtual void print(std::ostream& os) const
             {
-                os << asJson().dump(2);
+                os << toJson().dump(2);
             }
 
-            virtual json asJson() const; 
+            virtual json toJson() const; 
             
             /// @}
 

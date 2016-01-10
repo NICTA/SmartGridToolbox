@@ -4,7 +4,7 @@
 These pages contain the API documentation of JSON for Modern C++, a C++11
 header-only JSON class.
 
-Class @ref nlohmann::basic_json is a good entry point for the documentation.
+Class @ref Sgt::basic_json is a good entry point for the documentation.
 
 @copyright The code is licensed under the [MIT
            License](http://opensource.org/licenses/MIT):
@@ -95,7 +95,8 @@ inline long double strtold(const char* str, char** str_end)
 @brief namespace for Niels Lohmann
 @see https://github.com/nlohmann
 */
-namespace nlohmann
+// namespace nlohmann
+namespace Sgt // Makes writing JsonConvert templates neater in Sgt.
 {
 
 
@@ -126,6 +127,7 @@ static bool approx(const T a, const T b)
 }
 }
 
+// Forward declarations:
 template <
     template<typename U, typename V, typename... Args> class ObjectType = std::map,
     template<typename U, typename... Args> class ArrayType = std::vector,
@@ -136,21 +138,32 @@ template <
     template<typename U> class AllocatorType = std::allocator
     >
 class basic_json;
+
 using json = basic_json<>;
 
-template<typename T, typename J = json, typename Dummy = int> struct JsonConvert;
+template<typename T, typename Dummy = int> struct JsonConvert;
 
-template<typename T> struct JsonTraits
+template<typename T, typename J = json> struct JsonTraits
 {
     private:
         template<typename U> 
-            static auto testUser(int) -> decltype(JsonConvert<U>::asJson(std::declval<U>()), std::true_type());
-
-        template<typename> static std::false_type testUser(...);
-
-        using HasUser = decltype(testUser<T>(0));
+            static auto testMember(int) -> decltype(std::declval<U>().toJson(), std::true_type());
+        template<typename> static std::false_type testMember(...);
+        using HasMember = decltype(testMember<T>(0));
+        
+        template<typename U> 
+            static auto testJsonConvert(int) -> decltype(JsonConvert<U>::toJson(std::declval<U>()), std::true_type());
+        template<typename> static std::false_type testJsonConvert(...);
+        using HasJsonConvert = decltype(testJsonConvert<T>(0));
     public:
-        constexpr static bool hasUser = std::is_same<HasUser, std::true_type>::value;
+        constexpr static bool hasMember = std::is_same<HasMember, std::true_type>::value;
+        constexpr static bool hasUser = hasMember || std::is_same<HasJsonConvert, std::true_type>::value;
+};
+
+/// @brief Provide a default class conversion if a toJson() member function exists.
+template<typename T> struct JsonConvert<T, typename std::enable_if<JsonTraits<T>::hasMember, int>::type>
+{
+    static auto toJson(const T& t) -> decltype(std::declval<T>().toJson()) const {return t.toJson();}
 };
 
 /*!
@@ -1243,6 +1256,13 @@ class basic_json
              >
     basic_json(const CompatibleNumberFloatType value) noexcept
         : basic_json(number_float_t(value))
+    {}
+
+    /*!
+    @brief create json where a user defined conversion exists.
+    */
+    template<typename T, typename = typename std::enable_if<JsonTraits<T>::hasUser>::type>
+    basic_json(const T& t) : basic_json(JsonConvert<T>::toJson(t))
     {}
 
     /*!
@@ -7344,10 +7364,10 @@ namespace std
 @brief exchanges the values of two JSON objects
 */
 template <>
-inline void swap(nlohmann::json& j1,
-                 nlohmann::json& j2) noexcept(
-                     is_nothrow_move_constructible<nlohmann::json>::value and
-                     is_nothrow_move_assignable<nlohmann::json>::value
+inline void swap(Sgt::json& j1,
+                 Sgt::json& j2) noexcept(
+                     is_nothrow_move_constructible<Sgt::json>::value and
+                     is_nothrow_move_assignable<Sgt::json>::value
                  )
 {
     j1.swap(j2);
@@ -7355,13 +7375,13 @@ inline void swap(nlohmann::json& j1,
 
 /// hash value for JSON objects
 template <>
-struct hash<nlohmann::json>
+struct hash<Sgt::json>
 {
     /// return a hash value for a JSON object
-    std::size_t operator()(const nlohmann::json& j) const
+    std::size_t operator()(const Sgt::json& j) const
     {
         // a naive hashing via the string representation
-        const auto& h = hash<nlohmann::json::string_t>();
+        const auto& h = hash<Sgt::json::string_t>();
         return h(j.dump());
     }
 };
@@ -7377,9 +7397,9 @@ no parse error occurred.
 @param[in] s  a string representation of a JSON object
 @return a JSON object
 */
-inline nlohmann::json operator "" _json(const char* s, std::size_t)
+inline Sgt::json operator "" _json(const char* s, std::size_t)
 {
-    return nlohmann::json::parse(reinterpret_cast<nlohmann::json::string_t::value_type*>
+    return Sgt::json::parse(reinterpret_cast<Sgt::json::string_t::value_type*>
                                  (const_cast<char*>(s)));
 }
 

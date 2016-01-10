@@ -25,14 +25,14 @@ namespace Sgt
         return Y_;
     }
 
-    json CommonBranch::asJson() const
+    json CommonBranch::toJson() const
     {
-        json j = BranchAbc::asJson();
+        json j = BranchAbc::toJson();
         j[sComponentType()] = {
             {"tap_ratio_magnitude", std::abs(tapRatio_)},
             {"tap_ratio_angle_deg", std::arg(tapRatio_) * 180 / pi},
-            {"Y_series", toJson(YSeries_)},
-            {"Y_shunt", toJson(YShunt_)},
+            {"Y_series", YSeries_},
+            {"Y_shunt", YShunt_},
             {"rate_A", rateA_},
             {"rate_B", rateB_},
             {"rate_C", rateC_}};

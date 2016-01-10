@@ -37,7 +37,7 @@ namespace Sgt
     std::string to_string(BusType type);
     template<> struct JsonConvert<BusType>
     {
-        static json asJson(BusType type)
+        static json toJson(BusType type)
         {
             return to_string(type);
         }
@@ -63,7 +63,7 @@ namespace Sgt
     std::string to_string(Phase phase);
     template<> struct JsonConvert<Phase>
     {
-        static json asJson(Phase phase)
+        static json toJson(Phase phase)
         {
             return to_string(phase);
         }
@@ -105,7 +105,7 @@ namespace Sgt
             IdxMap::const_iterator end() const {return idxMap_.end();}
 
             std::string to_string() const;
-            json asJson() const;
+            json toJson() const;
 
             friend bool operator==(const Phases& a, const Phases& b) {return a.mask_ == b.mask_;}
             friend Phases operator&(const Phases& a, const Phases& b) {return {a.mask_& b.mask_};}

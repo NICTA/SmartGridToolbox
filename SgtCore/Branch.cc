@@ -27,16 +27,16 @@ namespace Sgt
         // Empty.
     }
 
-    json BranchAbc::asJson() const
+    json BranchAbc::toJson() const
     {
-        json j = this->Component::asJson();
+        json j = this->Component::toJson();
         j[sComponentType()] = {
-            {"phases0", toJson(phases0())},
-            {"phases1", toJson(phases1())},
+            {"phases0", phases0()},
+            {"phases1", phases1()},
             {"bus0", bus0()->id()},
             {"bus1", bus1()->id()},
-            {"is_in_service", toJson(isInService())},
-            {"Y", toJson(Y())}
+            {"is_in_service", isInService()},
+            {"Y", Y()}
         };
         return j;
     }

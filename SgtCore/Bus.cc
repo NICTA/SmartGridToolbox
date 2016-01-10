@@ -196,18 +196,18 @@ namespace Sgt
         }
     }
 
-    json Bus::asJson() const
+    json Bus::toJson() const
     {
-        json j = this->Component::asJson();
+        json j = this->Component::toJson();
         j[sComponentType()] = {
-            {"phases", toJson(phases())},
-            {"type", toJson(type())},
+            {"phases", phases()},
+            {"type", type()},
             {"V_base", VBase()},
-            {"V_nom", toJson(VNom())},
+            {"V_nom", VNom()},
             {"V_mag_min", VMagMin()},
             {"V_mag_max", VMagMax()},
-            {"V", toJson(V())},
-            {"coords", toJson(coords())}};
+            {"V", V()},
+            {"coords", coords()}};
         return j;
     }
 }

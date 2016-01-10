@@ -262,7 +262,7 @@ namespace Sgt
         return ldt.utc_time();
     }
     
-    json JsonConvert<Complex>::asJson(const Complex& c)
+    json JsonConvert<Complex>::toJson(const Complex& c)
     {
         return {c.real(), c.imag()};
     }

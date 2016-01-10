@@ -121,15 +121,15 @@ namespace Sgt
                 [](double d, GenAbc* g)->double{return d + g->cost();});
     }
             
-    json Network::asJson() const
+    json Network::toJson() const
     {
         json j;
         j["network"] = {
-            {"p_base", toJson(PBase())},
-            {"busses", toJson(busses())},
-            {"branches", toJson(branches())},
-            {"gens", toJson(gens())},
-            {"zips", toJson(zips())}
+            {"p_base", PBase()},
+            {"busses", busses()},
+            {"branches", branches()},
+            {"gens", gens()},
+            {"zips", zips()}
         };
         return j;
     }

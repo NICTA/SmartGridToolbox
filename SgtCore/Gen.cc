@@ -18,12 +18,12 @@
 
 namespace Sgt
 {
-    json GenAbc::asJson() const
+    json GenAbc::toJson() const
     {
-        json j = Component::asJson();
+        json j = Component::toJson();
         j[sComponentType()] = {
-            {"phases: ", toJson(phases())},
-            {"S: ", toJson(S())},
+            {"phases: ", phases()},
+            {"S: ", S()},
             {"PMin: ", PMin()},
             {"PMax: ", PMax()},
             {"QMin: ", QMin()},

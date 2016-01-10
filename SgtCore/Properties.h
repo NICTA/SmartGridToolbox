@@ -195,7 +195,7 @@ namespace Sgt
 
             virtual std::string string(const HasPropertiesAbc& targ) = 0;
             
-            virtual json asJson(const HasPropertiesAbc& targ) = 0;
+            virtual json toJson(const HasPropertiesAbc& targ) = 0;
 
             virtual void setFromString(HasPropertiesAbc& targ, const std::string& str) = 0;
     };
@@ -253,9 +253,9 @@ namespace Sgt
                 return toYamlString(get(targ));
             }
             
-            virtual json asJson(const HasPropertiesAbc& targ) override
+            virtual json toJson(const HasPropertiesAbc& targ) override
             {
-                return toJson(get(targ));
+                return get(targ);
             }
 
         private:

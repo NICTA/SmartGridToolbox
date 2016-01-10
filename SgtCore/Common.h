@@ -378,88 +378,10 @@ namespace Sgt
     /// @name JSON.
     /// @{
 
-    using namespace nlohmann;
-
-    template<typename T, typename Dummy = int> struct JsonConvert;
-
-    template<typename T> struct JsonTraits
-    {
-        private:
-            template<typename U> static auto testMember(int) -> decltype(std::declval<U>().asJson(), std::true_type());
-            template<typename> static std::false_type testMember(...);
-
-            template<typename U> static auto testFree(int) 
-                -> decltype(JsonConvert<U>::asJson(std::declval<U>()), std::true_type());
-            template<typename> static std::false_type testFree(...);
-
-            template<typename U> static auto testNative(int) -> decltype(json(std::declval<U>()), std::true_type());
-            template<typename> static std::false_type testNative(...);
-
-            using HasMember = decltype(testMember<T>(0));
-            using HasFree = decltype(testFree<T>(0));
-            using HasNative = decltype(testNative<T>(0));
-        public:
-            constexpr static bool hasMember = std::is_same<HasMember, std::true_type>::value;
-            constexpr static bool hasFree = !hasMember && std::is_same<HasFree, std::true_type>::value;
-            constexpr static bool hasNative = !hasMember && !hasFree && std::is_same<HasNative, std::true_type>::value;
-            constexpr static bool hasAny = hasMember || hasFree || hasNative;
-    };
-
-    /// Convert an object with a "asJson" member function to JSON.
-    template<typename T> json toJson(const T& t, typename std::enable_if<JsonTraits<T>::hasMember, int>::type = 0)
-    {
-        return t.asJson();
-    }
-
-    /// Convert a T to JSON where a JsonConvert<T> struct exists with an asJson(const T&) member function.
-    template<typename T> json toJson(const T& t, typename std::enable_if<JsonTraits<T>::hasFree, int>::type = 0)
-    {
-        return JsonConvert<T>::asJson(t);
-    }
-
-    /// Convert a T to JSON if it is natively convertible by the JSON library.
-    template<typename T> json toJson(const T& t, typename std::enable_if<JsonTraits<T>::hasNative, int>::type = 0)
-    {
-        return json(t);
-    }
-
-    /// JSON conversion for vector-like objects (std::list, std::vector, etc), excluding arma::Mat
-    template <typename V>
-    struct JsonConvert<V, typename std::enable_if<
-            JsonTraits<typename V::value_type>::hasAny && !std::is_same<V, arma::Mat<typename V::value_type>>::value, 
-            int>::type>
-    {
-        static json asJson(const V& v)
-        {
-            auto array = json::array();
-            for (auto x : v)
-            {
-                array.push_back(toJson(x));
-            }
-            return array;
-        }
-    };
-
-    /// JSON conversion for map-like objects (std::map etc).
-    template <typename M>
-    struct JsonConvert<M, typename std::enable_if<std::is_constructible<std::string, typename M::key_type>::value &&
-                                                  JsonTraits<typename M::value_type>::hasAny, int>::type>
-    {
-        static json asJson(const M& m)
-        {
-            auto obj = json::object();
-            for (auto pair : m)
-            {
-                obj[pair.first] = toJson(pair.second);
-            }
-            return obj;
-        }
-    };
-
     /// JSON conversion for armadillo matrices.
     template<typename T> struct JsonConvert<arma::Mat<T>>
     {
-        static json asJson(const arma::Mat<T>& m)
+        static json toJson(const arma::Mat<T>& m)
         {
             json result;
             for (int i = 0; i < m.n_rows; ++i)
@@ -467,7 +389,7 @@ namespace Sgt
                 json row;
                 for (int j = 0; j < m.n_cols; ++j)
                 {
-                    row.push_back(toJson(m(i, j)));
+                    row.push_back(m(i, j));
                 }
                 result.push_back(row);
             }
@@ -478,16 +400,16 @@ namespace Sgt
     /// Automatically dereference pointers.
     template<typename T> struct JsonConvert<T*>
     {
-        static json asJson(T* t)
+        static json toJson(T* t)
         {
-            return toJson(*t);
+            return json(*t);
         }
     };
 
     /// JSON conversion for complex numbers.
     template<> struct JsonConvert<Complex>
     {
-        static json asJson(const Complex& c);
+        static json toJson(const Complex& c);
     };
 
     /// @}

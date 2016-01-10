@@ -64,7 +64,7 @@ namespace Sgt
                 return sComponentType();
             }
 
-            virtual json asJson() const override;
+            virtual json toJson() const override;
 
         /// @}
 

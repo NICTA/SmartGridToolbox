@@ -178,12 +178,12 @@ namespace Sgt
         return ss.str();
     }
 
-    json Phases::asJson() const
+    json Phases::toJson() const
     {
         json result;
         for (auto phase : phaseVec_)
         {
-            result.push_back(toJson(phase));
+            result.push_back(phase);
         }
         return result;
     }
