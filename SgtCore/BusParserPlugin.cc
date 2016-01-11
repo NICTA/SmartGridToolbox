@@ -42,6 +42,14 @@ namespace Sgt
 
         std::unique_ptr<Bus> bus(new Bus(id, phases, VNom, VBase));
         bus->setType(type);
+
+        auto coordsNd = nd["coords"];
+        if (coordsNd)
+        {
+            arma::Col<double> coords = coordsNd.as<arma::Col<double>>();
+            bus->setCoords(coords);
+        }
+
         return bus;
     }
 }
