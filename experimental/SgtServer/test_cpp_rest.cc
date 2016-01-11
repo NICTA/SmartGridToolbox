@@ -28,7 +28,7 @@ using namespace http;
 using namespace utility;
 using namespace http::experimental::listener;
 
-using Json = nlohmann::json;
+using Json = Sgt::json;
 
 class SgtServer
 {
@@ -122,7 +122,7 @@ void SgtServer::handleGet(http_request message)
             auto prop = bus->properties().at(propName);
             if (prop->isGettable())
             {
-                reply = {{propName, prop->asJson(*bus)}};
+                reply = {{propName, prop->toJson(*bus)}};
             }
         }
         catch (std::out_of_range e)
@@ -136,7 +136,7 @@ void SgtServer::handleGet(http_request message)
         if (paths.size() == 0)
         {
             // Just return the bus.
-            reply = toJson(*bus);
+            reply = Json(*bus);
         }
         else
         {
@@ -153,7 +153,7 @@ void SgtServer::handleGet(http_request message)
                     {
                         if (p.second->isGettable())
                         {
-                            reply[p.first] = p.second->asJson(*bus);
+                            reply[p.first] = p.second->toJson(*bus);
                         }
                     }
                 }
@@ -170,7 +170,7 @@ void SgtServer::handleGet(http_request message)
     {
         if (paths.size() == 0)
         {
-            reply = toJson(nw->branches());
+            reply = Json(nw->branches());
         }
         else
         {
@@ -182,7 +182,7 @@ void SgtServer::handleGet(http_request message)
     {
         if (paths.size() == 0)
         {
-            reply = toJson(nw->gens());
+            reply = Json(nw->gens());
         }
         else
         {
@@ -194,7 +194,7 @@ void SgtServer::handleGet(http_request message)
     {
         if (paths.size() == 0)
         {
-            reply = toJson(nw->busses());
+            reply = Json(nw->busses());
         }
         else
         {
@@ -217,7 +217,7 @@ void SgtServer::handleGet(http_request message)
     {
         if (paths.size() == 0)
         {
-            reply = toJson(nw->zips());
+            reply = Json(nw->zips());
         }
         else
         {
@@ -230,7 +230,7 @@ void SgtServer::handleGet(http_request message)
         if (paths.size() == 0)
         {
             // Just return the network.
-            reply = toJson(*nw);
+            reply = Json(*nw);
         }
         else
         {
