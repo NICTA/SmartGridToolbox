@@ -79,12 +79,11 @@ function loadNetwork(id) {
 
             renderer.run();
 
-            /*
             // Final bit: most likely graph will take more space than available
             // screen. Let's zoom out to fit it into the view:
             var graphRect = layout.getGraphRect();
-            var graphSize = Math.min(graphRect.x2 - graphRect.x1, graphRect.y2 - graphRect.y1);
-            var screenSize = Math.min(document.body.clientWidth, document.body.clientHeight);
+            var graphSize = Math.max(graphRect.x2 - graphRect.x1, graphRect.y2 - graphRect.y1);
+            var screenSize = Math.min($('#network_graph').width(), $('#network_graph').height());
 
             var desiredScale = screenSize / graphSize;
             zoomOut(desiredScale, 1);
@@ -99,7 +98,6 @@ function loadNetwork(id) {
                     }, 16);
                 }
             }
-            */
         }
     }
 };
