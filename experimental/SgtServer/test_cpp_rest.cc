@@ -25,8 +25,8 @@
 
 #include <regex>
 
-static std::string dataDirString("/Users/dgordon/Devel/SmartGridToolbox/data/matpower_cases/");
-static boost::filesystem::path dataDirPath("/Users/dgordon/Devel/SmartGridToolbox/data/matpower_cases/");
+static std::string dataDirString("/Users/dgordon/Devel/nesta/");
+static boost::filesystem::path dataDirPath(dataDirString);
 
 using namespace Sgt;
 

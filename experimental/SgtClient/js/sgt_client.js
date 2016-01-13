@@ -54,7 +54,7 @@ function drawGraph(netw) {
     });
     
     // we need to compute layout, but we don't want to freeze the browser
-    precompute(1000, renderGraph);
+    precompute(500, renderer.run);
 
     function precompute(iterations, callback) {
         // let's run 10 iterations per event loop cycle:
@@ -70,34 +70,7 @@ function drawGraph(netw) {
                 precompute(iterations, callback);
             }, 0); // keep going in next even cycle
         } else {
-            // we are done!
             callback();
-        }
-    }
-
-    function renderGraph() {
-        console.log('renderGraph');
-
-        renderer.run();
-
-        // Final bit: most likely graph will take more space than available
-        // screen. Let's zoom out to fit it into the view:
-        var graphRect = layout.getGraphRect();
-        var graphSize = Math.max(graphRect.x2 - graphRect.x1, graphRect.y2 - graphRect.y1);
-        var screenSize = Math.min($('#network_graph').width(), $('#network_graph').height());
-
-        var desiredScale = screenSize / graphSize;
-        zoomOut(desiredScale, 1);
-
-        function zoomOut(desiredScale, currentScale) {
-            // zoom API in vivagraph 0.5.x is silly. There is no way to pass transform
-            // directly. Maybe it will be fixed in future, for now this is the best I could do:
-            if (desiredScale < currentScale) {
-                currentScale = renderer.zoomOut();
-                setTimeout(function () {
-                        zoomOut(desiredScale, currentScale);
-                        }, 16);
-            }
         }
     }
 };
