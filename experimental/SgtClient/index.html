@@ -6,10 +6,16 @@
             .sgt_demo { text-align: center; }
             .network_graph {
                 border-style: solid;
+                border-width: thin;
                 width: 50vw;
                 height: 30vw;
                 margin-left: auto;
                 margin-right: auto;
+            }
+            .align-center {
+                display: block;
+                margin: 0 auto;
+                text-align: center;
             }
         </style>
     </head>
@@ -17,10 +23,11 @@
     <body>
         <h1 class="sgt_demo">SmartGridToolbox Client Demo</h1>
         <h2 class="sgt_demo">SmartGridToolbox Network Displayed Using VivaGraph</h1>
-        <table style = 'margin: auto;'><tr>
-                <td>Select Network</td>
-                <td class="sgt_demo"><select id="select_matpower" name="select_matpower"></select></td>
-        </tr></table>
+        <fieldset class='align-center' style='border: none;'>
+            <select id="select_matpower" name="select_matpower"></select>
+            <button type="button" id="pause" name="pause">Pause</button>
+            <button type="button" id="restart" name="restart">Restart</button>
+        </fieldset class='align-center'>
         <div style='margin: 20px;'><div class="network_graph" id="network_graph"></div></div>
 
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>

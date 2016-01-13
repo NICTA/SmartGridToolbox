@@ -36,10 +36,10 @@ function drawGraph(netw) {
     }
 
     var layout = Viva.Graph.Layout.forceDirected(graph, {
-        springLength : 30,
-        // springCoeff : 0.0001,
-        dragCoeff : 0.05,
-        gravity : -1.2
+        springLength : 40,
+        springCoeff : 0.0002,
+        dragCoeff : 0.007,
+        gravity : -0.5
         // theta : 1
     });
 
