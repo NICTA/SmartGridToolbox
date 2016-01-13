@@ -21,6 +21,13 @@
 #include <cpprest/uri.h>
 #include <cpprest/asyncrt_utils.h>
 
+#include <boost/filesystem.hpp>
+
+#include <regex>
+
+static std::string dataDirString("/Users/dgordon/Devel/SmartGridToolbox/data/matpower_cases/");
+static boost::filesystem::path dataDirPath("/Users/dgordon/Devel/SmartGridToolbox/data/matpower_cases/");
+
 using namespace Sgt;
 
 using namespace web;
@@ -79,7 +86,6 @@ int main(int argc, char *argv[])
 
     std::string address = "http://localhost:";
     address.append(port);
-    std::cout << "address = " << address << std::endl;
 
     on_initialize(fname, address);
     std::cout << "Press ENTER to exit." << std::endl;
@@ -278,6 +284,26 @@ void SgtServer::handleGet(http_request message)
             }
         }
     };
+       
+    auto getNetworkFiles = [&]()
+    {
+        using namespace boost::filesystem;
+        if (paths.size() != 0)
+        {
+            message.reply(status_codes::BadRequest);
+        }
+        else
+        {
+            directory_iterator it(dataDirPath);
+            std::vector<std::string> files;
+            std::vector<std::string> mFiles;
+            std::transform(it, directory_iterator(), std::back_inserter(files),
+                    [](const decltype(*it)& entry){return entry.path().filename().string();});
+            std::copy_if(files.begin(), files.end(), std::back_inserter(mFiles), 
+                    [](const std::string& s){return std::regex_search(s, std::regex(".*\\.m$"));});
+            reply = Json(mFiles); 
+        }
+    };
 
     if (paths.size() == 0)
     {
@@ -291,6 +317,10 @@ void SgtServer::handleGet(http_request message)
         if (pathsFront == "networks")
         {
             getNetworks();
+        }
+        else if (pathsFront == "matpower_files")
+        {
+            getNetworkFiles();
         }
         else
         {
@@ -306,30 +336,34 @@ void SgtServer::handlePut(http_request message)
     std::cout << "PUT received." << std::endl;
 
     Json messageContentJson = Json::parse(message.extract_string(true).get());
-    std::cout << "message: " << messageContentJson << "." << std::endl;
 
     auto pathsVec = http::uri::split_path(http::uri::decode(message.relative_uri().path()));
-    if (pathsVec.size() != 2)
+    std::deque<decltype(pathsVec)::value_type> paths(pathsVec.begin(), pathsVec.end());
+
+    if (paths.size() == 0)
     {
         message.reply(status_codes::BadRequest);
     }
     else
     {
-        std::string first = pathsVec[0];
-        if (first != "networks")
-        {
-            message.reply(status_codes::BadRequest);
-        }
-        else
+        std::string first = paths.front();
+        paths.pop_front();
+        if (first == "networks")
         {
             std::string networkId = pathsVec[1];
             std::string fname = messageContentJson["matpower_filename"];
             Network* nw = new Network();
-            std::string yamlStr = std::string("--- [{matpower : {input_file : ") + fname + ", default_kV_base : 11}}]";
+            std::string yamlStr = std::string("--- [{matpower : {input_file : ") 
+                + dataDirString + fname + ", default_kV_base : 11}}]";
+            std::cout << yamlStr << std::endl;
             YAML::Node n = YAML::Load(yamlStr);
             Parser<Network> p;
             p.parse(n, *nw);
             nws_[networkId].reset(nw);
+        }
+        else
+        {
+            message.reply(status_codes::BadRequest);
         }
     }
     message.reply(status_codes::OK);
