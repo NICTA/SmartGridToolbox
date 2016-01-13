@@ -3,8 +3,8 @@
     <head>
         <style type="text/css" media="screen">
             html, body, svg { width: 100%; height: 100%;}
-            .sgt_demo { text-align: center; }
-            .network_graph {
+            .sgt_header { text-align: center; }
+            .sgt_network_graph {
                 border-style: solid;
                 border-width: thin;
                 width: 50vw;
@@ -12,23 +12,33 @@
                 margin-left: auto;
                 margin-right: auto;
             }
-            .align-center {
+            .sgt_controls {
                 display: block;
                 margin: 0 auto;
                 text-align: center;
+            }
+            .sgt_control {
+                display: inline;
+                margin: 2em;
+            }
+            .sgt_checkbox {
+                margin: 0.75em;
             }
         </style>
     </head>
 
     <body>
-        <h1 class="sgt_demo">SmartGridToolbox Client Demo</h1>
-        <h2 class="sgt_demo">SmartGridToolbox Network Displayed Using VivaGraph</h1>
-        <fieldset class='align-center' style='border: none;'>
-            <select id="select_matpower" name="select_matpower"></select>
-            <button type="button" id="pause" name="pause">Pause</button>
-            <button type="button" id="restart" name="restart">Restart</button>
-        </fieldset class='align-center'>
-        <div style='margin: 20px;'><div class="network_graph" id="network_graph"></div></div>
+        <h1 class="sgt_header">SmartGridToolbox Client Demo</h1>
+        <h2 class="sgt_header">SmartGridToolbox Network Displayed Using VivaGraph</h1>
+        <fieldset class="sgt_controls" style="border: none;">
+            <div class="sgt_control"><input class="sgt_checkbox" type="checkbox" id="use_spring_layout" checked=true onchange="useSpringLayoutChanged()">Use Spring Layout</input></div>
+            <div class="sgt_control">
+                <select id="select_matpower">
+                    <option disabled selected> -- select a matpower case -- </option>
+                </select>
+            </div>
+        </fieldset>
+        <div style="margin: 20px;"><div class="sgt_network_graph" id="sgt_network_graph"></div></div>
 
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="js/vivagraph.js"></script>

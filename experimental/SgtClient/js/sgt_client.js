@@ -50,8 +50,10 @@ function drawGraph(netw) {
         graphics   : graphics,
         renderLinks : true,
         prerender  : true,
-        container  : document.getElementById('network_graph')
+        container  : document.getElementById('sgt_network_graph')
     });
+
+    enableSpringLayout();
     
     // we need to compute layout, but we don't want to freeze the browser
     precompute(500, renderer.run);
@@ -76,12 +78,14 @@ function drawGraph(netw) {
 };
 
 var selector = $("#select_matpower");
-var files = $.getJSON('http://localhost:34568/matpower_files/', function(files) {
-    for (i = 0; i < files.length; ++i)
-    {
-        selector.append("<option>" + files[i] + '</option>');
+var files = $.getJSON(
+    'http://localhost:34568/matpower_files/',
+    function(files) {
+        for (i = 0; i < files.length; ++i) {
+            selector.append("<option>" + files[i] + '</option>');
+        }
     }
-});
+);
 
 selector.change(
     function() {
@@ -100,10 +104,22 @@ selector.change(
     }
 );
 
-document.body.addEventListener('keydown', function (e) {
+function useSpringLayoutChanged() {
+    var newState = springLayoutIsOn();
     if (renderer) {
-        if (e.which === 32) { // spacebar
-            renderer.reset();
+        if (newState) {
+            renderer.resume();
+        } else {
+            renderer.pause();
         }
     }
-});
+}
+
+function springLayoutIsOn() {
+    var chk = $("#use_spring_layout")[0];
+    return chk.checked;
+}
+
+function enableSpringLayout() {
+    $("#use_spring_layout")[0].checked = true;
+}
