@@ -1,8 +1,8 @@
 var renderer = null;
 
 function loadNetwork(id) {
-    var url = "http://localhost:34568/networks/" + id;
-    console.log("Load network " + url);
+    var url = 'http://localhost:34568/networks/' + id;
+    console.log('Load network ' + url);
     jQuery.getJSON(url, drawGraph);
 }
 
@@ -42,6 +42,7 @@ function drawGraph(netw) {
     });
 
     // we need to compute layout, but we don't want to freeze the browser
+    showProgress(true, 'Laying out network graph, please wait.');
     precompute(500, renderer.run);
 
     function precompute(iterations, callback) {
@@ -58,6 +59,7 @@ function drawGraph(netw) {
                 precompute(iterations, callback);
             }, 0); // keep going in next even cycle
         } else {
+            showProgress(false);
             callback();
             syncSpringLayout();
         }
@@ -72,25 +74,25 @@ function removeGraph() {
     renderer = null;
 }
 
-var selector = $("#select_matpower");
+var selector = $('#select_matpower');
 var files = $.getJSON(
     'http://localhost:34568/matpower_files/',
     function(files) {
         for (i = 0; i < files.length; ++i) {
-            selector.append("<option>" + files[i] + '</option>');
+            selector.append('<option>' + files[i] + '</option>');
         }
     }
 );
 
 selector.change(
     function() {
-        var file = $(this).find("option:selected").text();
+        var file = $(this).find('option:selected').text();
         var url = 'http://localhost:34568/networks/' + file;
-        var json = JSON.stringify({"matpower_filename": file});
+        var json = JSON.stringify({'matpower_filename': file});
         $.ajax({
             url: url,
             type: 'PUT',
-            contentType: "application/json",
+            contentType: 'application/json',
             data: json,
             success: function(result) {
                 loadNetwork(file);
@@ -111,6 +113,20 @@ function syncSpringLayout() {
 }
 
 function springLayoutIsOn() {
-    var chk = $("#use_spring_layout")[0];
+    var chk = $('#use_spring_layout')[0];
     return chk.checked;
+}
+
+function showProgress(isVisible, htmlMessage) {
+    var progressGroupSel = $('#sgt_progress_group');
+    var progressGroup = progressGroupSel[0];
+    var progressMessage = progressGroupSel.find('#sgt_progress_message')[0];
+    if (isVisible) {
+        if (htmlMessage) {
+            progressMessage.innerHTML = htmlMessage;
+        }
+        progressGroup.removeAttribute('hidden');
+    } else {
+        progressGroup.setAttribute('hidden');
+    }
 }

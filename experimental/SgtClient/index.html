@@ -11,18 +11,34 @@
                 height: 30vw;
                 margin-left: auto;
                 margin-right: auto;
+                position: relative;
+                background: relative;
+                background-color: transparent;
             }
             .sgt_controls {
                 display: block;
                 margin: 0 auto;
+                border: none;
                 text-align: center;
             }
             .sgt_control {
-                display: inline;
-                margin: 2em;
+                display: inline-block;
+                margin: 0.5em;
             }
             .sgt_checkbox {
                 margin: 0.75em;
+            }
+            .sgt_progress {
+                position: absolute;
+                left: 0;
+                right: 0;
+                margin-left: auto;
+                margin-right: auto;
+                z-index: 100;
+            }
+            progress {
+                display: block;
+                margin: 1em auto;
             }
         </style>
     </head>
@@ -30,15 +46,21 @@
     <body>
         <h1 class="sgt_header">SmartGridToolbox Client Demo</h1>
         <h2 class="sgt_header">SmartGridToolbox Network Displayed Using VivaGraph</h1>
-        <fieldset class="sgt_controls" style="border: none;">
-            <div class="sgt_control"><input class="sgt_checkbox" type="checkbox" id="use_spring_layout" checked=true onchange="syncSpringLayout()">Use Spring Layout</input></div>
+        <fieldset class="sgt_controls">
+            <div class="sgt_control"><input class="sgt_checkbox" type="checkbox" id="use_spring_layout" onchange="syncSpringLayout()">Use Spring Layout</input></div>
             <div class="sgt_control">
                 <select id="select_matpower">
                     <option disabled selected> -- select a matpower case -- </option>
                 </select>
             </div>
         </fieldset>
-        <div style="margin: 20px;"><div class="sgt_network_graph" id="sgt_network_graph"></div></div>
+        <div style="margin: 20px;">
+            <div class="sgt_progress" id="sgt_progress_group" value="0" min="0" max="100" hidden>
+                <progress id="sgt_progress"></progress>
+                <p id="sgt_progress_message" style="text-align: center;"></p>
+            </div>
+            <div class="sgt_network_graph" id="sgt_network_graph"></div>
+        </div>
 
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="js/vivagraph.js"></script>
