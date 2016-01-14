@@ -1,14 +1,14 @@
 var renderer = null;
-
+var nPrecompute = 500;
+    
 function loadNetwork(id) {
+    removeGraph();
     var url = 'http://localhost:34568/networks/' + id;
-    console.log('Load network ' + url);
+    showProgress(true, 'Loading network ' + id + '. Please wait.');
     jQuery.getJSON(url, drawGraph);
 }
 
 function drawGraph(netw) {
-    removeGraph();
-
     var busses = netw.network.busses;
     var branches = netw.network.branches;
 
@@ -33,6 +33,21 @@ function drawGraph(netw) {
 
     var graphics = Viva.Graph.View.webglGraphics();
 
+    var events = Viva.Graph.webglInputEvents(graphics, graph);
+
+    events.mouseEnter(function (node) {
+        console.log('Mouse entered node: ' + node.id);
+    }).mouseLeave(function (node) {
+        console.log('Mouse left node: ' + node.id);
+    }).dblClick(function (node) {
+        console.log('Double click on node: ' + node.id);
+    }).click(function (node) {
+        console.log('Single click on node: ' + node.id);
+        var nodeUI = graphics.getNodeUI(node.id);
+        nodeUI.color = 0xFFA500ff;
+        renderer.rerender();
+    });
+
     renderer = Viva.Graph.View.renderer(graph, {
         layout   : layout,
         graphics   : graphics,
@@ -43,9 +58,10 @@ function drawGraph(netw) {
 
     // we need to compute layout, but we don't want to freeze the browser
     showProgress(true, 'Laying out network graph, please wait.');
-    precompute(500, renderer.run);
+    precompute(nPrecompute, renderer.run);
 
     function precompute(iterations, callback) {
+        reportProgress(iterations);
         // let's run 10 iterations per event loop cycle:
         var i = 0;
         while (iterations > 0 && i < 10) {
@@ -59,6 +75,7 @@ function drawGraph(netw) {
                 precompute(iterations, callback);
             }, 0); // keep going in next even cycle
         } else {
+            reportProgress(iterations);
             showProgress(false);
             callback();
             syncSpringLayout();
@@ -130,3 +147,9 @@ function showProgress(isVisible, htmlMessage) {
         progressGroup.setAttribute('hidden');
     }
 }
+
+function reportProgress(iter) {
+    console.log(nPrecompute + " " + iter);
+    reportProgress.progress.value = 100 * (nPrecompute - iter) / nPrecompute;
+}
+reportProgress.progress = $('#sgt_progress')[0];
