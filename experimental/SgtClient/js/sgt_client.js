@@ -1,5 +1,6 @@
 var renderer = null;
 var nPrecompute = 500;
+var useWebGl = false;
     
 function loadNetwork(id) {
     removeGraph();
@@ -31,22 +32,25 @@ function drawGraph(netw) {
         // theta : 1
     });
 
-    var graphics = Viva.Graph.View.webglGraphics();
+    if (useWebGl) {
+        var graphics = Viva.Graph.View.webglGraphics();
+        var webglEvents = Viva.Graph.webglInputEvents(graphics, graph);
+    } else {
+        var graphics = Viva.Graph.View.svgGraphics();
+        var webglEvents = null;
+    }
 
-    var events = Viva.Graph.webglInputEvents(graphics, graph);
-
-    events.mouseEnter(function (node) {
-        console.log('Mouse entered node: ' + node.id);
-    }).mouseLeave(function (node) {
-        console.log('Mouse left node: ' + node.id);
-    }).dblClick(function (node) {
-        console.log('Double click on node: ' + node.id);
-    }).click(function (node) {
-        console.log('Single click on node: ' + node.id);
-        var nodeUI = graphics.getNodeUI(node.id);
-        nodeUI.color = 0xFFA500ff;
-        renderer.rerender();
-    });
+    if (webglEvents) {
+        webglEvents.mouseEnter(function (node) {
+            console.log('Mouse entered node: ' + node.id);
+        }).mouseLeave(function (node) {
+            console.log('Mouse left node: ' + node.id);
+        }).dblClick(function (node) {
+            console.log('Double click on node: ' + node.id);
+        }).click(function (node) {
+            console.log('Single click on node: ' + node.id);
+        });
+    }
 
     renderer = Viva.Graph.View.renderer(graph, {
         layout   : layout,
@@ -69,7 +73,6 @@ function drawGraph(netw) {
             iterations--;
             i++;
         }
-        console.log('Layout precompute: ' + iterations);
         if (iterations > 0) {
             setTimeout(function () {
                 precompute(iterations, callback);
@@ -149,7 +152,6 @@ function showProgress(isVisible, htmlMessage) {
 }
 
 function reportProgress(iter) {
-    console.log(nPrecompute + " " + iter);
     reportProgress.progress.value = 100 * (nPrecompute - iter) / nPrecompute;
 }
 reportProgress.progress = $('#sgt_progress')[0];
