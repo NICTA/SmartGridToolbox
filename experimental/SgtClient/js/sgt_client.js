@@ -1,20 +1,8 @@
 var renderer = null;
 
-function removeGraph() {
-    if (!renderer) {
-        return; // already removed
-    }
-    renderer.dispose(); // remove the graph
-    renderer = null;
-}
-
 function loadNetwork(id) {
-    console.log("Load network " + url);
-    
     var url = "http://localhost:34568/networks/" + id;
-    var width = 960;
-    var height = 500;
-
+    console.log("Load network " + url);
     jQuery.getJSON(url, drawGraph);
 }
 
@@ -53,8 +41,6 @@ function drawGraph(netw) {
         container  : document.getElementById('sgt_network_graph')
     });
 
-    enableSpringLayout();
-    
     // we need to compute layout, but we don't want to freeze the browser
     precompute(500, renderer.run);
 
@@ -73,9 +59,18 @@ function drawGraph(netw) {
             }, 0); // keep going in next even cycle
         } else {
             callback();
+            syncSpringLayout();
         }
     }
 };
+
+function removeGraph() {
+    if (!renderer) {
+        return; // already removed
+    }
+    renderer.dispose(); // remove the graph
+    renderer = null;
+}
 
 var selector = $("#select_matpower");
 var files = $.getJSON(
@@ -104,10 +99,10 @@ selector.change(
     }
 );
 
-function useSpringLayoutChanged() {
-    var newState = springLayoutIsOn();
+function syncSpringLayout() {
+    var useSpringLayout = springLayoutIsOn();
     if (renderer) {
-        if (newState) {
+        if (useSpringLayout) {
             renderer.resume();
         } else {
             renderer.pause();
@@ -118,8 +113,4 @@ function useSpringLayoutChanged() {
 function springLayoutIsOn() {
     var chk = $("#use_spring_layout")[0];
     return chk.checked;
-}
-
-function enableSpringLayout() {
-    $("#use_spring_layout")[0].checked = true;
 }
