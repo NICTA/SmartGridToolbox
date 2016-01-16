@@ -1,6 +1,6 @@
 var renderer = null;
 var nPrecompute = 500;
-var useWebGl = false;
+var useWebGl = true;
     
 function loadNetwork(id) {
     removeGraph();
