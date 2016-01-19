@@ -4,20 +4,25 @@ var useWebGl = true;
     
 function loadNetwork(id) {
     removeGraph();
-    var url = 'http://localhost:34568/networks/' + id;
+    var url = 'http://sgt.com/api/networks/' + id;
     showProgress(true, 'Loading network ' + id + '. Please wait.');
-    jQuery.getJSON(url, drawGraph);
+    jQuery.getJSON(url, graphLoaded);
 }
 
-function drawGraph(netw) {
+function graphLoaded(netw) {
+
     var busses = netw.network.busses;
     var branches = netw.network.branches;
 
     var graph = Viva.Graph.graph();
 
+    busMap = {}; 
+
     for (i = 0; i < busses.length; ++i)
     {
-        graph.addNode(busses[i].component.id);
+        var bus = busses[i];
+        graph.addNode(bus.component.id);
+        busMap[bus.component.id] = bus;
     }
     for (i = 0; i < branches.length; ++i)
     {
@@ -49,6 +54,9 @@ function drawGraph(netw) {
             console.log('Double click on node: ' + node.id);
         }).click(function (node) {
             console.log('Single click on node: ' + node.id);
+            var busJson = busMap[node.id];
+            $("#sgt_network_properties")[0].innerHTML = '<p>' + JSON.stringify(busJson) + '</p>';
+            
         });
     }
 
@@ -96,7 +104,7 @@ function removeGraph() {
 
 var selector = $('#select_matpower');
 var files = $.getJSON(
-    'http://localhost:34568/matpower_files/',
+    'http://sgt.com/api/matpower_files/',
     function(files) {
         for (i = 0; i < files.length; ++i) {
             selector.append('<option>' + files[i] + '</option>');
@@ -107,7 +115,7 @@ var files = $.getJSON(
 selector.change(
     function() {
         var file = $(this).find('option:selected').text();
-        var url = 'http://localhost:34568/networks/' + file;
+        var url = 'http://sgt.com/api/networks/' + file;
         var json = JSON.stringify({'matpower_filename': file});
         $.ajax({
             url: url,

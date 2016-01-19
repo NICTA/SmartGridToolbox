@@ -41,7 +41,7 @@ class SgtServer
 {
 public:
 
-    SgtServer(const std::string& fName, const std::string& url);
+    SgtServer(const std::string& url);
 
     pplx::task<void> open() {return listener_.open();}
     pplx::task<void> close() {return listener_.close();}
@@ -62,12 +62,12 @@ private:
 
 static std::unique_ptr<SgtServer> gSgtServer;
 
-void on_initialize(const std::string& fname, const std::string& address)
+void on_initialize(const std::string& address)
 {
     uri_builder uri(address);
 
     auto addr = uri.to_uri().to_string();
-    gSgtServer = std::unique_ptr<SgtServer>(new SgtServer(fname, addr));
+    gSgtServer = std::unique_ptr<SgtServer>(new SgtServer(addr));
     gSgtServer->open().wait();
     
     std::cout << "Listening for requests at: " << addr << std::endl;
@@ -80,14 +80,13 @@ void on_shutdown()
 
 int main(int argc, char *argv[])
 {
-    sgtAssert(argc == 2, "Usage: solve_network infile");
-    std::string fname = argv[1];
+    sgtAssert(argc == 1, "Usage: test_cpp_rest");
     std::string port = "34568";
 
     std::string address = "http://localhost:";
     address.append(port);
 
-    on_initialize(fname, address);
+    on_initialize(address);
     std::cout << "Press ENTER to exit." << std::endl;
 
     std::string line;
@@ -97,7 +96,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-SgtServer::SgtServer(const std::string& fname, const std::string& url) : listener_(url)
+SgtServer::SgtServer(const std::string& url) : listener_(url)
 {
     listener_.support(methods::GET, std::bind(&SgtServer::handleGet, this, std::placeholders::_1));
     listener_.support(methods::PUT, std::bind(&SgtServer::handlePut, this, std::placeholders::_1));
