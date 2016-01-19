@@ -1,5 +1,6 @@
 var renderer = null;
-var nPrecompute = 500;
+var iMaxPrecompute = 2000;
+var tMaxPrecompute = 15000; // ms
 var useWebGl = true;
     
 function loadNetwork(id) {
@@ -69,11 +70,16 @@ function graphLoaded(netw) {
     });
 
     // we need to compute layout, but we don't want to freeze the browser
+    var tStart = new Date();
+    var t = 0;
     showProgress(true, 'Laying out network graph, please wait.');
-    precompute(nPrecompute, renderer.run);
+    precompute(iMaxPrecompute, renderer.run);
 
     function precompute(iterations, callback) {
-        reportProgress(iterations);
+        var tCur = new Date();
+        t = (tCur - tStart); // ms
+
+        reportProgress(iterations, t);
         // let's run 10 iterations per event loop cycle:
         var i = 0;
         while (iterations > 0 && i < 10) {
@@ -81,12 +87,12 @@ function graphLoaded(netw) {
             iterations--;
             i++;
         }
-        if (iterations > 0) {
+        if (iterations > 0 && t <= tMaxPrecompute) {
             setTimeout(function () {
                 precompute(iterations, callback);
             }, 0); // keep going in next even cycle
         } else {
-            reportProgress(iterations);
+            reportProgress(iterations, t);
             showProgress(false);
             callback();
             syncSpringLayout();
@@ -149,17 +155,23 @@ function showProgress(isVisible, htmlMessage) {
     var progressGroupSel = $('#sgt_progress_group');
     var progressGroup = progressGroupSel[0];
     var progressMessage = progressGroupSel.find('#sgt_progress_message')[0];
+    var progress = progressGroupSel.find('#sgt_progress')[0];
     if (isVisible) {
         if (htmlMessage) {
             progressMessage.innerHTML = htmlMessage;
         }
+        progress.value = -1;
         progressGroup.removeAttribute('hidden');
     } else {
         progressGroup.setAttribute('hidden');
     }
 }
 
-function reportProgress(iter) {
-    reportProgress.progress.value = 100 * (nPrecompute - iter) / nPrecompute;
+function reportProgress(iter, t) {
+    var iterPercent = 100 * (iMaxPrecompute - iter) / iMaxPrecompute;
+    var tPercent = 100 * t / tMaxPrecompute;
+    var percent = Math.max(iterPercent, tPercent);
+    reportProgress.progress.value = percent;
 }
+
 reportProgress.progress = $('#sgt_progress')[0];
