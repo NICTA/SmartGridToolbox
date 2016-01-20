@@ -5,9 +5,9 @@ var useWebGl = true;
     
 function loadNetwork(id) {
     removeGraph();
-    var url = "http://sgt.com/api/networks/" + id;
+    loadNetwork.url = "http://sgt.com/api/networks/" + id;
     showProgress(true, "Loading network " + id + ". Please wait.");
-    jQuery.getJSON(url, graphLoaded);
+    jQuery.getJSON(loadNetwork.url, graphLoaded);
 }
 
 function graphLoaded(netw) {
@@ -55,8 +55,18 @@ function graphLoaded(netw) {
             console.log("Double click on node: " + node.id);
         }).click(function (node) {
             console.log("Single click on node: " + node.id);
-            var busJson = busMap[node.id];
-            graphLoaded.editor = new JSONEditor($("#sgt_network_properties")[0], {mode : "tree"}, busJson);
+
+            var url = loadNetwork.url + '/busses/' + node.id + '/properties/'
+            console.log(url)
+            $.ajax({
+                url: url,
+                async: false,
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response)
+                    graphLoaded.editor = new JSONEditor($("#sgt_network_properties")[0], {mode : "tree"}, response);
+                }
+            });
         });
     }
 
