@@ -102,7 +102,7 @@ namespace Sgt
             virtual json toJson() const override
             {
                 json j = this->SimComponent::toJson();
-                j[sComponentType()] = {{"DC_power", toJson(PDc())}};
+                j[sComponentType()] = {{"DC_power", PDc()}};
                 return j;
             }
 

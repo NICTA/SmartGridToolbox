@@ -264,6 +264,6 @@ namespace Sgt
     
     json JsonConvert<Complex>::toJson(const Complex& c)
     {
-        return {c.real(), c.imag()};
+        return {{"r", c.real()}, {"i", c.imag()}};
     }
 }
