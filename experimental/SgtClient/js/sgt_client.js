@@ -5,8 +5,8 @@ var useWebGl = true;
     
 function loadNetwork(id) {
     removeGraph();
-    var url = 'http://sgt.com/api/networks/' + id;
-    showProgress(true, 'Loading network ' + id + '. Please wait.');
+    var url = "http://sgt.com/api/networks/" + id;
+    showProgress(true, "Loading network " + id + ". Please wait.");
     jQuery.getJSON(url, graphLoaded);
 }
 
@@ -48,15 +48,15 @@ function graphLoaded(netw) {
 
     if (webglEvents) {
         webglEvents.mouseEnter(function (node) {
-            console.log('Mouse entered node: ' + node.id);
+            console.log("Mouse entered node: " + node.id);
         }).mouseLeave(function (node) {
-            console.log('Mouse left node: ' + node.id);
+            console.log("Mouse left node: " + node.id);
         }).dblClick(function (node) {
-            console.log('Double click on node: ' + node.id);
+            console.log("Double click on node: " + node.id);
         }).click(function (node) {
-            console.log('Single click on node: ' + node.id);
+            console.log("Single click on node: " + node.id);
             var busJson = busMap[node.id];
-            $('#sgt_network_properties').jsonEditor(busJson);
+            graphLoaded.editor = new JSONEditor($("#sgt_network_properties")[0], {mode : "tree"}, busJson);
         });
     }
 
@@ -65,13 +65,13 @@ function graphLoaded(netw) {
         graphics   : graphics,
         renderLinks : true,
         prerender  : true,
-        container  : document.getElementById('sgt_network_graph')
+        container  : document.getElementById("sgt_network_graph")
     });
 
-    // we need to compute layout, but we don't want to freeze the browser
+    // we need to compute layout, but we don"t want to freeze the browser
     var tStart = new Date();
     var t = 0;
-    showProgress(true, 'Laying out network graph, please wait.');
+    showProgress(true, "Laying out network graph, please wait.");
     precompute(iMaxPrecompute, renderer.run);
 
     function precompute(iterations, callback) {
@@ -79,7 +79,7 @@ function graphLoaded(netw) {
         t = (tCur - tStart); // ms
 
         reportProgress(iterations, t);
-        // let's run 10 iterations per event loop cycle:
+        // let"s run 10 iterations per event loop cycle:
         var i = 0;
         while (iterations > 0 && i < 10) {
             layout.step();
@@ -107,25 +107,25 @@ function removeGraph() {
     renderer = null;
 }
 
-var selector = $('#select_matpower');
+var selector = $("#select_matpower");
 var files = $.getJSON(
-    'http://sgt.com/api/matpower_files/',
+    "http://sgt.com/api/matpower_files/",
     function(files) {
         for (i = 0; i < files.length; ++i) {
-            selector.append('<option>' + files[i] + '</option>');
+            selector.append("<option>" + files[i] + "</option>");
         }
     }
 );
 
 selector.change(
     function() {
-        var file = $(this).find('option:selected').text();
-        var url = 'http://sgt.com/api/networks/' + file;
-        var json = JSON.stringify({'matpower_filename': file});
+        var file = $(this).find("option:selected").text();
+        var url = "http://sgt.com/api/networks/" + file;
+        var json = JSON.stringify({"matpower_filename": file});
         $.ajax({
             url: url,
-            type: 'PUT',
-            contentType: 'application/json',
+            type: "PUT",
+            contentType: "application/json",
             data: json,
             success: function(result) {
                 loadNetwork(file);
@@ -146,23 +146,23 @@ function syncSpringLayout() {
 }
 
 function springLayoutIsOn() {
-    var chk = $('#use_spring_layout')[0];
+    var chk = $("#use_spring_layout")[0];
     return chk.checked;
 }
 
 function showProgress(isVisible, htmlMessage) {
-    var progressGroupSel = $('#sgt_progress_group');
+    var progressGroupSel = $("#sgt_progress_group");
     var progressGroup = progressGroupSel[0];
-    var progressMessage = progressGroupSel.find('#sgt_progress_message')[0];
-    var progress = progressGroupSel.find('#sgt_progress')[0];
+    var progressMessage = progressGroupSel.find("#sgt_progress_message")[0];
+    var progress = progressGroupSel.find("#sgt_progress")[0];
     if (isVisible) {
         if (htmlMessage) {
             progressMessage.innerHTML = htmlMessage;
         }
         progress.value = -1;
-        progressGroup.removeAttribute('hidden');
+        progressGroup.removeAttribute("hidden");
     } else {
-        progressGroup.setAttribute('hidden');
+        progressGroup.setAttribute("hidden");
     }
 }
 
@@ -174,5 +174,5 @@ function reportProgress(iter, t) {
 }
 
 $(document).ready(function() {
-    reportProgress.progress = $('#sgt_progress')[0];
+    reportProgress.progress = $("#sgt_progress")[0];
 });
