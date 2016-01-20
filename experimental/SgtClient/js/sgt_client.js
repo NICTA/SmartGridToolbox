@@ -56,8 +56,7 @@ function graphLoaded(netw) {
         }).click(function (node) {
             console.log('Single click on node: ' + node.id);
             var busJson = busMap[node.id];
-            $("#sgt_network_properties")[0].innerHTML = '<p>' + JSON.stringify(busJson) + '</p>';
-            
+            $('#sgt_network_properties').jsonEditor(busJson);
         });
     }
 
@@ -174,4 +173,6 @@ function reportProgress(iter, t) {
     reportProgress.progress.value = percent;
 }
 
-reportProgress.progress = $('#sgt_progress')[0];
+$(document).ready(function() {
+    reportProgress.progress = $('#sgt_progress')[0];
+});
