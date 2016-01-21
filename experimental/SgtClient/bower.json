@@ -1,0 +1,25 @@
+{
+  "name": "sgt_client",
+  "main": "index.js",
+  "homepage": "https://github.com/NICTA/SmartGridToolbox",
+  "authors": [
+    "Dan Gordon <dan.gordon@nicta.com.au>"
+  ],
+  "description": "SmartGridToolbox client",
+  "moduleType": [],
+  "license": "Apache-2.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.2.0",
+    "jsoneditor": "~5.1.1",
+    "vivagraphjs": "~0.8.1"
+  }
+}
