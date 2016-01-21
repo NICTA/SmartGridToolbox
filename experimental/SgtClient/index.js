@@ -84,11 +84,6 @@ Sgt.SgtClient = (function() {
                     }
                 });
             });
-
-            heatmap.setData({
-                max: 5,
-                data: [{ x: 0, y: 0, value: 5}]
-            });
         }
 
         renderer = Viva.Graph.View.renderer(graph, {
@@ -128,6 +123,11 @@ Sgt.SgtClient = (function() {
                 syncSpringLayout();
             }
         }
+
+        heatmap.setData({
+            max: 5,
+            data: [{ x: 0, y: 0, value: 5}]
+        });
     };
 
     function removeGraph() {
