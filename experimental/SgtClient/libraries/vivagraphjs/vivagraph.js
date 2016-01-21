@@ -4346,7 +4346,6 @@ function renderer(graph, settings) {
     }
 
     settings.prerender = settings.prerender || 0;
-    console.log("prerender = " + settings.prerender);
     inputManager = (graphics.inputManager || domInputManager)(graph, graphics);
   }
 
@@ -4401,7 +4400,6 @@ function renderer(graph, settings) {
     // perform several prerender steps in background.
     if (typeof settings.prerender === 'number' && settings.prerender > 0) {
       for (var i = 0; i < settings.prerender; i += 1) {
-        console.log("prerender step");
         layout.step();
       }
     }
