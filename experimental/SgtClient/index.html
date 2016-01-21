@@ -26,14 +26,17 @@
             </div>
         </fieldset>
 
-        <div class="sgt_network_wrapper">
+        <div class="sgt_wrapper">
             <div class="sgt_progress_outer">
                 <div class="sgt_progress_inner" id="sgt_progress_group" hidden>
                     <progress id="sgt_progress" min="0" max="100" value="-1"></progress>
                     <p id="sgt_progress_message" style="text-align: center;"></p>
                 </div>
             </div>
-            <div class="sgt_network_graph" id="sgt_network_graph"></div>
+            <div class="sgt_network_graph">
+                <div class="sgt_network_graph_layer" id="sgt_network_heatmap"></div>
+                <div class="sgt_network_graph_layer" id="sgt_network_graph"></div>
+            </div>
             <div class="sgt_network_properties" id="sgt_network_properties"></div>
         </div>
         <script src="index.js"></script>

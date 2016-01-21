@@ -1,17 +1,27 @@
 html, body, svg { width: 100%; height: 100%;}
 .sgt_header { text-align: center; }
-.sgt_network_wrapper {
+.sgt_wrapper {
+    position: relative;
     width: 90vw;
     height: 60vh;
     margin : 10px auto;
 }
 .sgt_network_graph {
+    position: relative;
     width: calc(60% - 15px);
     height: 100%;
     border-style: solid;
     border-width: thin;
     background-color: transparent;
     float: left;
+}
+.sgt_network_graph_layer{
+    position: absolute;
+    float: left;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 .sgt_network_properties {
     width: calc(40% - 40px);
