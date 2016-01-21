@@ -121,14 +121,28 @@ Sgt.SgtClient = (function() {
                 showProgress(false);
                 callback();
                 syncSpringLayout();
+                drawHeatmap();
             }
         }
 
-        heatmap.setData({
-            max: 5,
-            data: [{ x: 0, y: 0, value: 5}]
-        });
-    };
+        function drawHeatmap()
+        {
+            heatmapData = [];
+            graph.forEachNode(function(node) {
+                var pos = layout.getNodePosition(node.id);
+                console.log("Pos");
+                console.log(pos);
+                pos = graphics.transformGraphToClientCoordinates(layout.getNodePosition(node.id));
+                console.log(pos);
+                pos.value = 5;
+                heatmapData.push(pos);
+            });
+            heatmap.setData({
+                max: 1,
+                data: heatmapData
+            });
+        }
+    }
 
     function removeGraph() {
         if (!renderer) {
