@@ -6,6 +6,7 @@
 
         <script src="components/jquery/dist/jquery.min.js"></script>
         <script src="components/jsoneditor/dist/jsoneditor.min.js"></script>
+        <script src="components/heatmap.js-amd/build/heatmap.min.js"></script>
         <script src="components/vivagraphjs/dist/vivagraph.min.js"></script>
     </head>
 
@@ -15,7 +16,9 @@
         <h2 class="sgt_header">SmartGridToolbox Network Displayed Using VivaGraph</h1>
 
         <fieldset class="sgt_controls">
-            <div class="sgt_control"><input class="sgt_checkbox" type="checkbox" id="use_spring_layout" onchange="syncSpringLayout()">Use Spring Layout</input></div>
+            <div class="sgt_control">
+                <input class="sgt_checkbox" type="checkbox" id="use_spring_layout" onchange="Sgt.SgtClient.syncSpringLayout()">Use Spring Layout</input>
+            </div>
             <div class="sgt_control">
                 <select id="select_matpower">
                     <option disabled selected> -- select a matpower case -- </option>
