@@ -24,6 +24,8 @@ Sgt.SgtClient = (function() {
     var heatmap = h337.create({
         container: document.getElementById("sgt_network_heatmap") 
     });
+    heatmap.setDataMin(0.8);
+    heatmap.setDataMax(1.2);
     
     function loadNetwork(id) {
         removeGraph();
@@ -128,17 +130,18 @@ Sgt.SgtClient = (function() {
 
         function drawHeatmap()
         {
-            heatmapData = [];
+            heatmap.setData({max: 1, data: []});
+            heatmap.configure({radius: 1});
             graph.forEachNode(function(node) {
                 var pos = layout.getNodePosition(node.id);
                 var newPos = graphics.transformGraphToClientCoordinates(
-                    {x: pos.x, y: pos.y, value: pos.value, reset: pos.reset});
+                    {x: pos.x, y: pos.y, value: pos.value, reset: pos.reset}
+                );
                 newPos.value = 5;
-                heatmapData.push(newPos);
+                heatmap.addData(newPos);
             });
-                heatmap.setData({max: 1, data: heatmapData});
-            }
         }
+    }
 
     function removeGraph() {
         if (!renderer) {
