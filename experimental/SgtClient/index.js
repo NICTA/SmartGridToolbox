@@ -63,6 +63,8 @@ Sgt.SgtClient = (function() {
         if (params.useWebGl) {
             var graphics = Viva.Graph.View.webglGraphics();
             var webglEvents = Viva.Graph.webglInputEvents(graphics, graph);
+            oldEndRender = graphics.endRender;
+            graphics.endRender = function() {oldEndRender(); drawHeatmap();}; 
         } else {
             var graphics = Viva.Graph.View.svgGraphics();
             var webglEvents = null;
@@ -129,16 +131,14 @@ Sgt.SgtClient = (function() {
             heatmapData = [];
             graph.forEachNode(function(node) {
                 var pos = layout.getNodePosition(node.id);
-                pos = graphics.transformGraphToClientCoordinates(layout.getNodePosition(node.id));
-                pos.value = 5;
-                heatmapData.push(pos);
+                var newPos = graphics.transformGraphToClientCoordinates(
+                    {x: pos.x, y: pos.y, value: pos.value, reset: pos.reset});
+                newPos.value = 5;
+                heatmapData.push(newPos);
             });
-            heatmap.setData({
-                max: 1,
-                data: heatmapData
-            });
+                heatmap.setData({max: 1, data: heatmapData});
+            }
         }
-    }
 
     function removeGraph() {
         if (!renderer) {
