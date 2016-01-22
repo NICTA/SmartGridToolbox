@@ -1,19 +1,25 @@
 var Sgt = Sgt || {};
 
 Sgt.SgtClient = (function() {
-    var selector = $("#select_matpower");
-    var properties = $("#sgt_network_properties")[0];
-    var useSpring = $("#use_spring_layout")[0];
-    var progressGroup = $("#sgt_progress_group")[0];
-    var progressMessage = $("#sgt_progress_message")[0];
-    var progress = $("#sgt_progress")[0];
+    var params = {
+        iMaxPrecompute: 2000,
+        tMaxPrecompute: 15000,
+        useWebGl: true
+    };
+
+    var dom = {
+        useSpring: $("#use_spring_layout"),
+        selector: $("#select_matpower"),
+        networkGraph: $("#sgt_network_graph"),
+        properties: $("#sgt_network_properties"),
+        progressGroup: $("#sgt_progress_group"),
+        progressMessage: $("#sgt_progress_message"),
+        progress: $("#sgt_progress")
+    };
 
     var renderer = null;
-    var iMaxPrecompute = 2000;
-    var tMaxPrecompute = 15000; // ms
-    var useWebGl = true;
     
-    var editor = new JSONEditor(properties, {mode : "tree"});
+    var editor = new JSONEditor(dom.properties[0], {mode : "tree"});
 
     var heatmap = h337.create({
         container: document.getElementById("sgt_network_heatmap") 
@@ -54,7 +60,7 @@ Sgt.SgtClient = (function() {
             // theta : 1
         });
 
-        if (useWebGl) {
+        if (params.useWebGl) {
             var graphics = Viva.Graph.View.webglGraphics();
             var webglEvents = Viva.Graph.webglInputEvents(graphics, graph);
         } else {
@@ -64,22 +70,15 @@ Sgt.SgtClient = (function() {
 
         if (webglEvents) {
             webglEvents.mouseEnter(function (node) {
-                console.log("Mouse entered node: " + node.id);
             }).mouseLeave(function (node) {
-                console.log("Mouse left node: " + node.id);
             }).dblClick(function (node) {
-                console.log("Double click on node: " + node.id);
             }).click(function (node) {
-                console.log("Single click on node: " + node.id);
-
                 var url = loadNetwork.url + '/busses/' + node.id + '/properties/'
-                console.log(url)
                 $.ajax({
                     url: url,
                     async: false,
                     dataType: 'json',
                     success: function (response) {
-                        console.log(response)
                         editor.set(response);
                     }
                 });
@@ -98,7 +97,7 @@ Sgt.SgtClient = (function() {
         var tStart = new Date();
         var t = 0;
         showProgress(true, "Laying out network graph, please wait.");
-        precompute(iMaxPrecompute, renderer.run);
+        precompute(params.iMaxPrecompute, renderer.run);
 
         function precompute(iterations, callback) {
             var tCur = new Date();
@@ -112,7 +111,7 @@ Sgt.SgtClient = (function() {
                 iterations--;
                 i++;
             }
-            if (iterations > 0 && t <= tMaxPrecompute) {
+            if (iterations > 0 && t <= params.tMaxPrecompute) {
                 setTimeout(function () {
                     precompute(iterations, callback);
                 }, 0); // keep going in next even cycle
@@ -130,10 +129,7 @@ Sgt.SgtClient = (function() {
             heatmapData = [];
             graph.forEachNode(function(node) {
                 var pos = layout.getNodePosition(node.id);
-                console.log("Pos");
-                console.log(pos);
                 pos = graphics.transformGraphToClientCoordinates(layout.getNodePosition(node.id));
-                console.log(pos);
                 pos.value = 5;
                 heatmapData.push(pos);
             });
@@ -156,12 +152,12 @@ Sgt.SgtClient = (function() {
         "http://sgt.com/api/matpower_files/",
         function(files) {
             for (i = 0; i < files.length; ++i) {
-                selector.append("<option>" + files[i] + "</option>");
+                dom.selector.append("<option>" + files[i] + "</option>");
             }
         }
     );
 
-    selector.change(
+    dom.selector.change(
         function() {
             var file = $(this).find("option:selected").text();
             var url = "http://sgt.com/api/networks/" + file;
@@ -180,11 +176,9 @@ Sgt.SgtClient = (function() {
 
     function syncSpringLayout() {
         if (renderer) {
-            if (useSpring.checked) {
-                console.log("use spring");
+            if (dom.useSpring[0].checked) {
                 renderer.resume();
             } else {
-                console.log("don't use spring");
                 renderer.pause();
             }
         }
@@ -193,20 +187,20 @@ Sgt.SgtClient = (function() {
     function showProgress(isVisible, htmlMessage) {
         if (isVisible) {
             if (htmlMessage) {
-                progressMessage.innerHTML = htmlMessage;
+                dom.progressMessage[0].innerHTML = htmlMessage;
             }
-            progress.value = -1;
-            progressGroup.removeAttribute("hidden");
+            dom.progress[0].value = -1;
+            dom.progressGroup[0].removeAttribute("hidden");
         } else {
-            progressGroup.setAttribute("hidden");
+            dom.progressGroup[0].setAttribute("hidden");
         }
     }
 
     function reportProgress(iter, t) {
-        var iterPercent = 100 * (iMaxPrecompute - iter) / iMaxPrecompute;
-        var tPercent = 100 * t / tMaxPrecompute;
+        var iterPercent = 100 * (params.iMaxPrecompute - iter) / params.iMaxPrecompute;
+        var tPercent = 100 * t / params.tMaxPrecompute;
         var percent = Math.max(iterPercent, tPercent);
-        progress.value = percent;
+        dom.progress[0].value = percent;
     }
 
     return {"loadNetwork": loadNetwork, "syncSpringLayout": syncSpringLayout};
