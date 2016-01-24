@@ -17,7 +17,16 @@
 
         <fieldset class="sgt_controls">
             <div class="sgt_control">
-                <input class="sgt_checkbox" type="checkbox" id="use_spring_layout" onchange="Sgt.SgtClient.syncSpringLayout()">Use Spring Layout</input>
+                <input 
+                 class="sgt_checkbox" 
+                 type="checkbox"
+                 id="use_spring_layout"
+                 onchange="Sgt.SgtClient.syncSpringLayout()">Use Spring Layout</input>
+                <input
+                 class="sgt_checkbox"
+                 type="checkbox"
+                 id="show_heatmap"
+                 onchange="Sgt.SgtClient.syncHeatmap()">Show Heatmap</input>
             </div>
             <div class="sgt_control">
                 <select id="select_matpower">

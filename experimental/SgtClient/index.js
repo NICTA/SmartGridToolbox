@@ -9,23 +9,29 @@ Sgt.SgtClient = (function() {
 
     var dom = {
         useSpring: $("#use_spring_layout"),
+        showHeatmap: $("#show_heatmap"),
         selector: $("#select_matpower"),
         networkGraph: $("#sgt_network_graph"),
+        networkHeatmap: $("#sgt_network_heatmap"),
         properties: $("#sgt_network_properties"),
         progressGroup: $("#sgt_progress_group"),
         progressMessage: $("#sgt_progress_message"),
         progress: $("#sgt_progress")
     };
 
+    var graph = null;
+    
+    var layout = null;
+    
+    var graphics = null;
+
     var renderer = null;
     
     var editor = new JSONEditor(dom.properties[0], {mode : "tree"});
 
     var heatmap = h337.create({
-        container: document.getElementById("sgt_network_heatmap") 
+        container: dom.networkHeatmap[0]
     });
-    heatmap.setDataMin(0.8);
-    heatmap.setDataMax(1.2);
     
     function loadNetwork(id) {
         removeGraph();
@@ -39,7 +45,7 @@ Sgt.SgtClient = (function() {
         var busses = netw.network.busses;
         var branches = netw.network.branches;
 
-        var graph = Viva.Graph.graph();
+        graph = Viva.Graph.graph();
 
         busMap = {}; 
 
@@ -54,7 +60,7 @@ Sgt.SgtClient = (function() {
             graph.addLink(branches[i].branch.bus0, branches[i].branch.bus1);
         }
 
-        var layout = Viva.Graph.Layout.forceDirected(graph, {
+        layout = Viva.Graph.Layout.forceDirected(graph, {
             springLength : 40,
             springCoeff : 0.0002,
             dragCoeff : 0.007,
@@ -63,12 +69,15 @@ Sgt.SgtClient = (function() {
         });
 
         if (params.useWebGl) {
-            var graphics = Viva.Graph.View.webglGraphics();
+            graphics = Viva.Graph.View.webglGraphics();
             var webglEvents = Viva.Graph.webglInputEvents(graphics, graph);
             oldEndRender = graphics.endRender;
-            graphics.endRender = function() {oldEndRender(); drawHeatmap();}; 
+            graphics.endRender = function() {
+                oldEndRender();
+                if (dom.showHeatmap[0].checked) drawHeatmap();
+            }; 
         } else {
-            var graphics = Viva.Graph.View.svgGraphics();
+            graphics = Viva.Graph.View.svgGraphics();
             var webglEvents = null;
         }
 
@@ -127,20 +136,6 @@ Sgt.SgtClient = (function() {
                 drawHeatmap();
             }
         }
-
-        function drawHeatmap()
-        {
-            heatmap.setData({max: 1, data: []});
-            heatmap.configure({radius: 1});
-            graph.forEachNode(function(node) {
-                var pos = layout.getNodePosition(node.id);
-                var newPos = graphics.transformGraphToClientCoordinates(
-                    {x: pos.x, y: pos.y, value: pos.value, reset: pos.reset}
-                );
-                newPos.value = 5;
-                heatmap.addData(newPos);
-            });
-        }
     }
 
     function removeGraph() {
@@ -187,6 +182,33 @@ Sgt.SgtClient = (function() {
         }
     }
 
+    function syncHeatmap() {
+        if (dom.showHeatmap[0].checked) {
+            drawHeatmap();
+            dom.networkHeatmap[0].removeAttribute("hidden");
+        } else {
+            dom.networkHeatmap[0].setAttribute("hidden");
+            clearHeatmap();
+        }
+    }
+
+    function clearHeatmap() {
+        heatmap.setData({max: 1, data: []});
+    }
+
+    function drawHeatmap()
+    {
+        clearHeatmap();
+        graph.forEachNode(function(node) {
+            var pos = layout.getNodePosition(node.id);
+            var newPos = graphics.transformGraphToClientCoordinates(
+                {x: pos.x, y: pos.y, value: pos.value, reset: pos.reset, radius: 30}
+            );
+            newPos.value = 5;
+            heatmap.addData(newPos);
+        });
+    }
+
     function showProgress(isVisible, htmlMessage) {
         if (isVisible) {
             if (htmlMessage) {
@@ -206,5 +228,5 @@ Sgt.SgtClient = (function() {
         dom.progress[0].value = percent;
     }
 
-    return {"loadNetwork": loadNetwork, "syncSpringLayout": syncSpringLayout};
+    return {"loadNetwork": loadNetwork, "syncSpringLayout": syncSpringLayout, "syncHeatmap": syncHeatmap};
 }());
