@@ -12,7 +12,7 @@ Sgt.SgtClient = (function() {
         showHeatmap: $("#show_heatmap"),
         selector: $("#select_matpower"),
         networkGraph: $("#sgt_network_graph"),
-        networkHeatmap: $("#sgt_network_heatmap"),
+        heatmapCanvas: $("#sgt_heatmap_canvas"),
         properties: $("#sgt_network_properties"),
         progressGroup: $("#sgt_progress_group"),
         progressMessage: $("#sgt_progress_message"),
@@ -29,10 +29,8 @@ Sgt.SgtClient = (function() {
     
     var editor = new JSONEditor(dom.properties[0], {mode : "tree"});
 
-    var heatmap = h337.create({
-        container: dom.networkHeatmap[0]
-    });
-    
+    var heatmap = createWebGLHeatmap({canvas: dom.heatmapCanvas});
+
     function loadNetwork(id) {
         removeGraph();
         loadNetwork.url = "http://sgt.com/api/networks/" + id;
@@ -81,6 +79,7 @@ Sgt.SgtClient = (function() {
         });
 
         if (params.useWebGl) {
+            console.log("use gl");
             graphics = Viva.Graph.View.webglGraphics();
             var webglEvents = Viva.Graph.webglInputEvents(graphics, graph);
             oldEndRender = graphics.endRender;
@@ -143,10 +142,10 @@ Sgt.SgtClient = (function() {
             } else {
                 reportProgress(iterations, t);
                 showProgress(false);
-                syncHeatmap();
+                // syncHeatmap();
                 callback();
                 syncSpringLayout();
-                drawHeatmap();
+                // drawHeatmap();
             }
         }
     }
@@ -205,21 +204,15 @@ Sgt.SgtClient = (function() {
         }
     }
 
-    function clearHeatmap() {
-        heatmap.setData({min: 0.8, max: 1.2, data: []});
-    }
-
     function drawHeatmap()
     {
-        clearHeatmap();
+        heatmap.clear();
         graph.forEachNode(function(node) {
             var pos = layout.getNodePosition(node.id);
-            var newPos = graphics.transformGraphToClientCoordinates(
-                {x: pos.x, y: pos.y, value: pos.value, reset: pos.reset, radius: 50}
-            );
-            newPos.value = node.data.VMag;
-            heatmap.addData(newPos);
+            var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
+            heatmap.addData({x: newPos.x, y: newPos.y, size: 20, intensity: node.data.VMag});
         });
+        heatmap.update();
     }
 
     function showProgress(isVisible, htmlMessage) {

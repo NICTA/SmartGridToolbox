@@ -6,8 +6,8 @@
 
         <script src="components/jquery/dist/jquery.min.js"></script>
         <script src="components/jsoneditor/dist/jsoneditor.min.js"></script>
-        <script src="components/heatmap.js-amd/build/heatmap.min.js"></script>
-        <script src="components/vivagraphjs/dist/vivagraph.min.js"></script>
+        <script src="components/webgl-heatmap/webgl-heatmap.js"></script>
+        <script src="components/vivagraphjs/dist/vivagraph.js"></script>
     </head>
 
     <body>
@@ -43,7 +43,7 @@
                 </div>
             </div>
             <div class="sgt_network_graph">
-                <div class="sgt_network_graph_layer" id="sgt_network_heatmap"></div>
+                <canvas class="sgt_network_graph_layer" id="sgt_heatmap_canvas"></canvas>
                 <div class="sgt_network_graph_layer" id="sgt_network_graph"></div>
             </div>
             <div class="sgt_network_properties" id="sgt_network_properties"></div>
