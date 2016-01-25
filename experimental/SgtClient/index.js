@@ -12,7 +12,7 @@ Sgt.SgtClient = (function() {
         showHeatmap: $("#show_heatmap"),
         selector: $("#select_matpower"),
         networkGraph: $("#sgt_network_graph"),
-        heatmapCanvas: $("#sgt_heatmap_canvas"),
+        networkHeatmap: $("#sgt_heatmap_canvas"),
         properties: $("#sgt_network_properties"),
         progressGroup: $("#sgt_progress_group"),
         progressMessage: $("#sgt_progress_message"),
@@ -29,7 +29,7 @@ Sgt.SgtClient = (function() {
     
     var editor = new JSONEditor(dom.properties[0], {mode : "tree"});
 
-    var heatmap = createWebGLHeatmap({canvas: dom.heatmapCanvas});
+    var heatmap = createWebGLHeatmap({canvas: dom.networkHeatmap[0], intensityToAlpha: true});
 
     function loadNetwork(id) {
         removeGraph();
@@ -79,7 +79,6 @@ Sgt.SgtClient = (function() {
         });
 
         if (params.useWebGl) {
-            console.log("use gl");
             graphics = Viva.Graph.View.webglGraphics();
             var webglEvents = Viva.Graph.webglInputEvents(graphics, graph);
             oldEndRender = graphics.endRender;
@@ -142,10 +141,10 @@ Sgt.SgtClient = (function() {
             } else {
                 reportProgress(iterations, t);
                 showProgress(false);
-                // syncHeatmap();
+                syncHeatmap();
                 callback();
                 syncSpringLayout();
-                // drawHeatmap();
+                drawHeatmap();
             }
         }
     }
@@ -200,19 +199,27 @@ Sgt.SgtClient = (function() {
             dom.networkHeatmap[0].removeAttribute("hidden");
         } else {
             dom.networkHeatmap[0].setAttribute("hidden");
-            clearHeatmap();
+            heatmap.clear();
         }
     }
 
     function drawHeatmap()
     {
-        heatmap.clear();
-        graph.forEachNode(function(node) {
-            var pos = layout.getNodePosition(node.id);
-            var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
-            heatmap.addData({x: newPos.x, y: newPos.y, size: 20, intensity: node.data.VMag});
-        });
-        heatmap.update();
+        var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame
+            || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+        var draw = function() {
+            heatmap.clear();
+            graph.forEachNode(function(node) {
+                var pos = layout.getNodePosition(node.id);
+                var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
+                heatmap.addPoint(newPos.x, newPos.y, 100, (1.2 - node.data.VMag) / 0.4);
+            });
+            heatmap.adjustSize(); // can be commented out for statically sized heatmaps, resize clears the map
+            heatmap.update(); // adds the buffered points
+            heatmap.display(); // adds the buffered points
+        };
+        raf(draw);
     }
 
     function showProgress(isVisible, htmlMessage) {
