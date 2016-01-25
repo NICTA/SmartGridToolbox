@@ -40,6 +40,18 @@ Sgt.SgtClient = (function() {
         jQuery.getJSON(loadNetwork.url, networkLoaded);
     }
 
+    function Vmag(bus) {
+        var V = bus.bus.V;
+        var VBase = bus.bus.V_base;
+        var result = 0.0;
+        for (var i = 0; i < V.length; ++i) {
+            var VrPu = V[i].r / VBase;
+            var ViPu = V[i].i / VBase;
+            result += Math.sqrt(VrPu * VrPu + ViPu * ViPu);
+        }
+        return result;
+    }
+
     function networkLoaded(netw) {
 
         var busses = netw.network.busses;
@@ -49,13 +61,13 @@ Sgt.SgtClient = (function() {
 
         busMap = {}; 
 
-        for (i = 0; i < busses.length; ++i)
+        for (var i = 0; i < busses.length; ++i)
         {
             var bus = busses[i];
-            graph.addNode(bus.component.id);
+            graph.addNode(bus.component.id, {VMag: Vmag(bus)});
             busMap[bus.component.id] = bus;
         }
-        for (i = 0; i < branches.length; ++i)
+        for (var i = 0; i < branches.length; ++i)
         {
             graph.addLink(branches[i].branch.bus0, branches[i].branch.bus1);
         }
@@ -131,6 +143,7 @@ Sgt.SgtClient = (function() {
             } else {
                 reportProgress(iterations, t);
                 showProgress(false);
+                syncHeatmap();
                 callback();
                 syncSpringLayout();
                 drawHeatmap();
@@ -149,7 +162,7 @@ Sgt.SgtClient = (function() {
     var files = $.getJSON(
         "http://sgt.com/api/matpower_files/",
         function(files) {
-            for (i = 0; i < files.length; ++i) {
+            for (var i = 0; i < files.length; ++i) {
                 dom.selector.append("<option>" + files[i] + "</option>");
             }
         }
@@ -193,7 +206,7 @@ Sgt.SgtClient = (function() {
     }
 
     function clearHeatmap() {
-        heatmap.setData({max: 1, data: []});
+        heatmap.setData({min: 0.8, max: 1.2, data: []});
     }
 
     function drawHeatmap()
@@ -202,9 +215,9 @@ Sgt.SgtClient = (function() {
         graph.forEachNode(function(node) {
             var pos = layout.getNodePosition(node.id);
             var newPos = graphics.transformGraphToClientCoordinates(
-                {x: pos.x, y: pos.y, value: pos.value, reset: pos.reset, radius: 30}
+                {x: pos.x, y: pos.y, value: pos.value, reset: pos.reset, radius: 50}
             );
-            newPos.value = 5;
+            newPos.value = node.data.VMag;
             heatmap.addData(newPos);
         });
     }
