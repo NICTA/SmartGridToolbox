@@ -12,14 +12,17 @@
     <script id="shader-vs" type="x-shader/x-vertex">
         precision lowp float;
 
-        attribute vec3 aVertexPosition;
-        attribute float aVertexTexCoord;
+        attribute vec3 aPosition;
+        attribute float aTexCoord;
+        attribute float aAlpha;
 
         varying float vTexCoord;
+        varying float vAlpha;
 
         void main(void) {
-            vTexCoord = aVertexTexCoord;
-            gl_Position = vec4(aVertexPosition, 1.0);
+            vTexCoord = aTexCoord;
+            vAlpha = aAlpha;
+            gl_Position = vec4(aPosition, 1.0);
         }
     </script>
 
@@ -29,9 +32,11 @@
 
         uniform sampler2D uTexture;
         varying float vTexCoord;
+        varying float vAlpha;
 
         void main(void) {
             vec4 color = texture2D(uTexture, vec2(vTexCoord, 0.5));
+            color.a = vAlpha;
             gl_FragColor = color;
         }
     </script>
