@@ -2,7 +2,7 @@ var Dexter = Dexter || {};
 
 Dexter.Heatmap = (function() {
     console.log("Loaded Dexter.Heatmap.");
-    var n = 32;
+    var n = 16;
     var nTri = 2 * (n - 1) * (n - 1);
     var nInd = 3 * nTri;
     var nCols = 256;
@@ -29,8 +29,8 @@ Dexter.Heatmap = (function() {
 
     var dat;
 
-    var spreadVal = 0.15;
-    var spreadAlpha = 0.2;
+    var spreadVal = 0.1;
+    var spreadAlpha = 0.1;
 
     var heatMap = {
         n: 6,
@@ -41,8 +41,8 @@ Dexter.Heatmap = (function() {
         a: [255, 255, 255, 255, 255, 255]
     };
 
-    function init() {
-        canvas = document.getElementById("glcanvas");
+    function init(canv) {
+        canvas = canv;
 
         initWebGL(canvas);      // Initialize the GL context
 
@@ -81,12 +81,12 @@ Dexter.Heatmap = (function() {
                     var datPos = dat[k].slice(0, 2);
                     var datVal = dat[k][2];
                     var d = disp([x, y], datPos);
-                    // if (manhattan(d) < 0.5) {
-                    var wVal = weight(d, spreadVal);
-                    totWeightVal += wVal;
-                    val += wVal * datVal;
-                    totWeightAlpha += weight(d, spreadAlpha);
-                    // }
+                    if (manhattan(d) < 0.5) {
+                        var wVal = weight(d, spreadVal);
+                        totWeightVal += wVal;
+                        val += wVal * datVal;
+                        totWeightAlpha += weight(d, spreadAlpha);
+                    }
                 }
 
                 if (totWeightVal > 0.0) {
@@ -123,6 +123,21 @@ Dexter.Heatmap = (function() {
         }
     };
 
+    function testData(nMin, nMax) {
+        function rand(min, max)
+        {
+            return min + Math.random() * (max - min);
+        }
+
+        var nDat = Math.floor(rand(nMin, nMax));
+        var dat = [];
+        for (var i = 0; i < nDat; ++i)
+        {
+            dat.push([rand(-1, 1), rand(-1, 1), rand(0, 1)]);
+        }
+        return dat;
+    }
+
     function initWebGL() {
         gl = null;
 
@@ -135,21 +150,6 @@ Dexter.Heatmap = (function() {
         if (!gl) {
             alert("Unable to initialize WebGL. Your browser may not support it.");
         }
-    }
-
-    function testData() {
-        function rand(min, max)
-        {
-            return min + Math.random() * (max - min);
-        }
-
-        var nDat = 10;
-        var dat = [];
-        for (var i = 0; i < nDat; ++i)
-        {
-            dat.push([rand(-1, 1), rand(-1, 1), rand(0, 1)]);
-        }
-        return dat;
     }
 
     function initShaders() {
@@ -295,7 +295,6 @@ Dexter.Heatmap = (function() {
         return i * n + j;
     }
 
-
     function colorAt(x) { 
         var result;
 
@@ -337,12 +336,16 @@ Dexter.Heatmap = (function() {
 
     return {
         init: init,
-        draw: draw
+        setData: setData,
+        draw: draw,
+        testData: testData
     };
 }());
 
-function start()
+function testDexterHeatmap()
 {
-    Dexter.Heatmap.init();
-    Dexter.Heatmap.draw();
+    var canvas = document.getElementById("glcanvas");
+    Dexter.Heatmap.init(canvas);
+    // setInterval(function() {Dexter.Heatmap.setData(Dexter.Heatmap.testData(1, 10)); Dexter.Heatmap.draw();}, 10);
+    Dexter.Heatmap.setData(Dexter.Heatmap.testData(1, 10)); Dexter.Heatmap.draw();
 }
