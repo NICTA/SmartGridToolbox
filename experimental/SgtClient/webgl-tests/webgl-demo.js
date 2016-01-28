@@ -1,12 +1,13 @@
+var N = 16;
+var nTri = 2 * (N - 1) * (N - 1);
+var nInd = 3 * nTri;
+
 var canvas;
 var gl;
-
 var verticesBuffer;
 var vertexIndicesBuffer;
 var verticesColorBuffer;
-
 var vertexPositionAttribute;
-
 var shaderProgram;
 
 //
@@ -46,41 +47,36 @@ function initWebGL() {
 }
 
 function initBuffers() {
+    var vertices = [];
+    var verticesColor = [];
+    for (var i = 0; i < N; ++i) {
+        var x = 2 * i / (N - 1) - 1;
+        for (var j = 0; j < N; ++j) {
+            var y = 2 * j / (N - 1) - 1;
+            vertices.push.apply(vertices, [x, y, 0.0]);
+            verticesColor.push.apply(verticesColor, [0.5 * (x + 1), 0.5 * (y + 1), Math.random(), 1.0]);
+        }
+    }
 
-    var vertices = [
-        -1.0, -1.0,  0.0,
-        -1.0,  0.0,  0.0,
-        -1.0,  1.0,  0.0,
-         0.0, -1.0,  0.0,
-         0.0,  0.0,  0.0,
-         0.0,  1.0,  0.0,
-         1.0, -1.0,  0.0,
-         1.0,  0.0,  0.0,
-         1.0,  1.0,  0.0
-    ];
     verticesBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
-    var verticesColor = [
-        0.0, 0.0, 0.0, 1.0,
-        0.0, 0.5, 0.0, 1.0,
-        0.0, 1.0, 0.0, 1.0,
-        0.5, 0.0, 0.0, 1.0,
-        0.5, 0.5, 0.0, 1.0,
-        0.5, 1.0, 0.0, 1.0,
-        1.0, 0.0, 0.0, 1.0,
-        1.0, 0.5, 0.0, 1.0,
-        1.0, 1.0, 0.0, 1.0
-    ];
     verticesColorBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, verticesColorBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verticesColor), gl.STATIC_DRAW);
 
-    var vertexIndices = [
-        0,  1,  4,      0,  3,  4,
-        4,  5,  8,      4,  7,  8,
-    ]
+    var vertexIndices = [];
+    function idx(i, j) {
+        return i * N + j;
+    }
+    for (var i = 0; i < N - 1; ++i) {
+        for (var j = 0; j < N - 1; ++j) {
+            vertexIndices.push.apply(
+                vertexIndices,
+                [idx(i, j), idx(i + 1, j), idx(i + 1, j + 1), idx(i, j), idx(i, j + 1), idx(i + 1, j + 1)]);
+        }
+    }
     vertexIndicesBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndicesBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
@@ -97,7 +93,7 @@ function drawScene() {
     gl.bindBuffer(gl.ARRAY_BUFFER, verticesColorBuffer);
     gl.vertexAttribPointer(vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
 
-    gl.drawElements(gl.TRIANGLES, 12, gl.UNSIGNED_SHORT, 0);
+    gl.drawElements(gl.TRIANGLES, nInd, gl.UNSIGNED_SHORT, 0);
 }
 
 function initShaders() {
