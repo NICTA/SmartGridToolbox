@@ -4,10 +4,16 @@ var nInd = 3 * nTri;
 
 var canvas;
 var gl;
-var verticesBuffer;
+
+var vertexBuffer;
 var vertexIndicesBuffer;
-var verticesColorBuffer;
+var texCoordBuffer;
+
 var vertexPositionAttribute;
+var texCoordAttribute;
+
+var tex;
+
 var shaderProgram;
 
 var dat;
@@ -34,6 +40,7 @@ function start() {
         initShaders();
         initData();
         initBuffers();
+        initTextures();
         drawScene();
     }
 }
@@ -58,7 +65,7 @@ function initData() {
         return min + Math.random() * (max - min);
     }
 
-    var nDat = 10;
+    var nDat = 100;
     dat = [];
     for (var i = 0; i < nDat; ++i)
     {
@@ -68,7 +75,7 @@ function initData() {
 
 function initBuffers() {
     var spreadVal = 0.1;
-    var spreadSat = 0.1;
+    var spreadAlpha = 0.04;
 
     function idx(i, j) {
         return i * N + j;
@@ -90,8 +97,7 @@ function initBuffers() {
     }
 
     var vertices = [];
-    var vertColorWork = [];
-    var verticesColor = [];
+    var texCoord = [];
     for (var i = 0; i < N; ++i) {
         var x = 2 * i / (N - 1) - 1;
         for (var j = 0; j < N; ++j) {
@@ -99,37 +105,37 @@ function initBuffers() {
             vertices.push.apply(vertices, [x, y, 0.0]);
 
             var totWeightVal = 0.0;
-            var totWeightSat = 0.0;
+            var totWeightAlpha = 0.0;
             var val = 0.0;
             
             for (var k = 0; k < dat.length; ++k) {
                 var datPos = dat[k].slice(0, 2);
                 var datVal = dat[k][2];
                 var d = disp([x, y], datPos);
-                // if (manhattan(d) < 0.25) {
+                if (manhattan(d) < 0.5) {
                     var wVal = weight(d, spreadVal);
                     totWeightVal += wVal;
                     val += wVal * datVal;
-                    totWeightSat += weight(d, spreadSat);
-                // }
+                    totWeightAlpha += weight(d, spreadAlpha);
+                }
             }
 
             if (totWeightVal > 0.0) {
                 val /= totWeightVal;
             }
-            var sat = 1.0 - Math.exp(-totWeightSat * totWeightSat);
+            var alpha = 1.0 - Math.exp(-totWeightAlpha * totWeightAlpha);
 
-            verticesColor.push.apply(verticesColor, [val, val, val, sat]);
+            texCoord.push(val);
         }
     }
 
-    verticesBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
+    vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
-    verticesColorBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, verticesColorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verticesColor), gl.STATIC_DRAW);
+    texCoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoord), gl.STATIC_DRAW);
 
     var vertexIndices = [];
     for (var i = 0; i < N - 1; ++i) {
@@ -142,19 +148,47 @@ function initBuffers() {
     vertexIndicesBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndicesBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
+    
+    vertexIndicesBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndicesBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
+}
+
+function initTextures() {
+    tex = gl.createTexture();
+    var oneDTextureTexels = new Uint8Array([
+        255,0,0,255, 
+        0,255,0,255,
+        0,0,255,255,
+        255,255,0,255,
+    ]);
+    var width = 4;
+    var height = 1;
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, oneDTextureTexels);
+    // gl.NEAREST is also allowed, instead of gl.LINEAR, as neither mipmap.
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    // Prevents s-coordinate wrapping (repeating).
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    // Prevents t-coordinate wrapping (repeating).
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.bindTexture(gl.TEXTURE_2D, null);
 }
 
 function drawScene() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
     gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+    gl.vertexAttribPointer(texCoordAttribute, 1, gl.FLOAT, false, 0, 0);
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.uniform1i(gl.getUniformLocation(shaderProgram, "uTexture"), 0);
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndicesBuffer);
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, verticesColorBuffer);
-    gl.vertexAttribPointer(vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
-
     gl.drawElements(gl.TRIANGLES, nInd, gl.UNSIGNED_SHORT, 0);
 }
 
@@ -175,9 +209,9 @@ function initShaders() {
 
     vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
     gl.enableVertexAttribArray(vertexPositionAttribute);
-
-    vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-    gl.enableVertexAttribArray(vertexColorAttribute);
+    
+    texCoordAttribute = gl.getAttribLocation(shaderProgram, "aVertexTexCoord");
+    gl.enableVertexAttribArray(texCoordAttribute);
 }
 
 function getShader(gl, id) {

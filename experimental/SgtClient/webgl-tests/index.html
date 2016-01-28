@@ -10,22 +10,29 @@
 
     <!-- Vertex shader program -->
     <script id="shader-vs" type="x-shader/x-vertex">
+        precision lowp float;
+
         attribute vec3 aVertexPosition;
-        attribute vec4 aVertexColor;
-        varying lowp vec4 vColor;
+        attribute float aVertexTexCoord;
+
+        varying float vTexCoord;
 
         void main(void) {
-            vColor = aVertexColor;
+            vTexCoord = aVertexTexCoord;
             gl_Position = vec4(aVertexPosition, 1.0);
         }
     </script>
 
     <!-- Fragment shader program -->
     <script id="shader-fs" type="x-shader/x-fragment">
-        varying lowp vec4 vColor;
+        precision lowp float;
+
+        uniform sampler2D uTexture;
+        varying float vTexCoord;
 
         void main(void) {
-            gl_FragColor = vColor;
+            vec4 color = texture2D(uTexture, vec2(vTexCoord, 0.5));
+            gl_FragColor = color;
         }
     </script>
 
