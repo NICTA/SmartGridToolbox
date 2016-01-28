@@ -1,6 +1,7 @@
 var n = 32;
 var nTri = 2 * (n - 1) * (n - 1);
 var nInd = 3 * nTri;
+var nCols = 256;
 
 var canvas;
 var gl;
@@ -164,16 +165,15 @@ function initBuffers() {
 
 function initTextures() {
     tex = gl.createTexture();
-    var oneDTextureTexels = new Uint8Array([
-        255,0,0,255, 
-        0,255,0,255,
-        0,0,255,255,
-        255,0,0,255
-    ]);
-    var width = 4;
-    var height = 1;
+    var cols = [];
+    for (var i = 0; i < nCols; ++i) {
+        var x = (i / (nCols - 1));
+        cols.push(colorAt()(x));
+    }
+    cols = [].concat.apply([], cols); // Flatten.
+    var oneDTextureTexels = new Uint8Array(cols);
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, oneDTextureTexels);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, nCols, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, oneDTextureTexels);
 
     // gl.NEAREST is also allowed, instead of gl.LINEAR, as neither mipmap.
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
@@ -271,3 +271,52 @@ function getShader(gl, id) {
 
     return shader;
 }
+
+var colorAt = function() { 
+    var heatMap = {
+        n: 6,
+        x: [0.00, 0.20, 0.40, 0.60, 0.80, 1.00],
+        r: [0,   0,   0,   128, 255, 255],
+        g: [0,   128, 255, 255, 255, 128],
+        b: [255, 255, 255, 128, 0,   0  ],
+        a: [255, 255, 255, 255, 255, 255]
+    };
+    return function(x) {
+        var result;
+
+        if (x <= 0) {
+            result = [
+                heatMap.r[0],
+                heatMap.g[0],
+                heatMap.b[0],
+                heatMap.a[0]
+            ];
+        } else if (x >= 1) {
+            result = [
+                heatMap.r[heatMap.n - 1],
+                heatMap.g[heatMap.n - 1],
+                heatMap.b[heatMap.n - 1],
+                heatMap.a[heatMap.n - 1]
+            ];
+        } else {
+            var i1 = 0;
+            for (i1 = 1; i1 < heatMap.n; ++i1)
+            {
+                if (heatMap.x[i1] > x) break;
+            }
+            var i0 = i1 - 1;
+            var x0 = heatMap.x[i0];
+            var x1 = heatMap.x[i1];
+            var fx0 = (x1 - x) / (x1 - x0);
+            var fx1 = (x - x0) / (x1 - x0);
+
+            result = [
+                fx0 * heatMap.r[i0] + fx1 * heatMap.r[i1],
+                fx0 * heatMap.g[i0] + fx1 * heatMap.g[i1],
+                fx0 * heatMap.b[i0] + fx1 * heatMap.b[i1],
+                fx0 * heatMap.a[i0] + fx1 * heatMap.a[i1]
+            ];
+        }
+        return result;
+    };
+};
