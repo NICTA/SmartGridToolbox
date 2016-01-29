@@ -2,20 +2,58 @@ var Dexter = Dexter || {};
 
 Dexter.Heatmap = (function() {
     console.log("Loaded Dexter.Heatmap.");
-    var n = 16;
-    var nTri = 2 * (n - 1) * (n - 1);
-    var nInd = 3 * nTri;
-    var nCols = 256;
+
+    // The grid looks like this:
+    //
+    // +   +   +   +
+    //   .   .   .  
+    // +   +   +   +
+    //   .   .   .  
+    // +   +   +   +
+    //   .   .   .  
+    // +   +   +   +
+    //
+    // + = vertices at edges of grid squares (0 .. n^2 - 1)
+    // . = vertices at center of grid squares (n^2 .. n^2 + nm1^2 - 1)
+    //
+    // Triangles are formed by joining the center of each square to the corners.
+    
+    var n = 32; // n x n grid.
+    var n2 = n * n; // Number of grid points.
+    var nm1 = n - 1; // Number of grid intervals in each dimension.
+    var nm12 = nm1 * nm1; // Number of grid squares.
+
+    var nVert = n2 + nm12; // A vertex for each grid point, plus one at the center of each square.
+    var nTri = 4 * nm12; // Each grid square has four triangles.
+    var nTriVert = 3 * nTri; // Each triangle has three vertices. 
+
+    var xMin = -1;
+    var xMax = 1;
+    var yMin = -1;
+    var yMax = 1;
+
+    var nCols = 256; // Number of colors in colormap.
+    
+    var spreadVal = 0.05; // Characteristic radius around each data point for calculating value on grid.
+    var spreadAlpha = 0.03; // Characteristic radius around each data point for calculating alpha on grid.
+    
+    var heatMap = {
+        n: 6,
+        x: [0.00, 0.20, 0.40, 0.60, 0.80, 1.00],
+        r: [0,   0,   0,   128, 255, 255],
+        g: [0,   128, 255, 255, 255, 128],
+        b: [255, 255, 255, 128, 0,   0  ],
+        a: [255, 255, 255, 255, 255, 255]
+    }; // Determines the colormap.
 
     var canvas;
     var gl;
 
-    var nVert;
     var vertices;
     var vertexBuffer;
 
-    var vertexIndices;
-    var vertexIndicesBuffer;
+    var triVertices;
+    var triVertexBuffer;
 
     var texCoordBuffer;
     var alphaBuffer;
@@ -29,18 +67,6 @@ Dexter.Heatmap = (function() {
     var shaderProgram;
 
     var dat;
-
-    var spreadVal = 0.1;
-    var spreadAlpha = 0.1;
-
-    var heatMap = {
-        n: 6,
-        x: [0.00, 0.20, 0.40, 0.60, 0.80, 1.00],
-        r: [0,   0,   0,   128, 255, 255],
-        g: [0,   128, 255, 255, 255, 128],
-        b: [255, 255, 255, 128, 0,   0  ],
-        a: [255, 255, 255, 255, 255, 255]
-    };
 
     var vertexShaderSrc = "\
 precision lowp float;\
@@ -91,6 +117,20 @@ gl_FragColor = color;\
         }
     }
     
+    function setViewRect(xMin_, yMin_, xMax_, yMax_) {
+        xMin = xMin_;
+        yMin = yMin_;
+        xMax = xMax_;
+        yMax = yMax_;
+    }
+    
+    function setViewRectToCanvas() {
+        xMin = 0;
+        yMin = 0;
+        xMax = canvas.width;
+        yMax = canvas.height;
+    }
+    
     function setData(dat) {
         this.dat = dat;
 
@@ -107,12 +147,12 @@ gl_FragColor = color;\
                 var datPos = dat[k].slice(0, 2);
                 var datVal = dat[k][2];
                 var d = disp(xy, datPos);
-                if (manhattan(d) < 0.5) {
+                // if (manhattan(d) < 0.5) {
                     var wVal = weight(d, spreadVal);
                     totWeightVal += wVal;
                     val += wVal * datVal;
                     totWeightAlpha += weight(d, spreadAlpha);
-                }
+                // }
             }
 
             if (totWeightVal > 0.0) {
@@ -203,35 +243,15 @@ gl_FragColor = color;\
     }
 
     function initBuffers() {
-        vertices = [];
-        for (var i = 0; i < n; ++i) {
-            var x = indToCoord(i);
-            for (var j = 0; j < n; ++j) {
-                var y = indToCoord(j);
-                vertices.push.apply(vertices, [x, y, 0.0]);
-            }
-        }
-        nVert = vertices.length / 3;
-
+        initVertices();
         vertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
-        vertexIndices = [];
-        for (var i = 0; i < n - 1; ++i) {
-            for (var j = 0; j < n - 1; ++j) {
-                vertexIndices.push.apply(
-                    vertexIndices,
-                    [
-                        vertexIdx(i, j), vertexIdx(i + 1, j), vertexIdx(i + 1, j + 1),
-                        vertexIdx(i, j), vertexIdx(i, j + 1), vertexIdx(i + 1, j + 1)
-                    ]
-                );
-            }
-        }
-        vertexIndicesBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndicesBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndices), gl.STATIC_DRAW);
+        initTriangles();
+        triVertexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triVertexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(triVertices), gl.STATIC_DRAW);
     };
 
     function initTextures() {
@@ -274,8 +294,8 @@ gl_FragColor = color;\
         gl.bindTexture(gl.TEXTURE_2D, tex);
         gl.uniform1i(gl.getUniformLocation(shaderProgram, "uTexture"), 0);
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndicesBuffer);
-        gl.drawElements(gl.TRIANGLES, nInd, gl.UNSIGNED_SHORT, 0);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triVertexBuffer);
+        gl.drawElements(gl.TRIANGLES, nTriVert, gl.UNSIGNED_SHORT, 0);
     }
 
     function getShader(gl, src, shaderType) {
@@ -288,15 +308,58 @@ gl_FragColor = color;\
         }
         return shader;
     }
-        
-    function vertexIdx(i, j) {
-        return i * n + j;
-    }
-    
-    function indToCoord(i) {
-        return 2 * i / (n - 1) - 1;
+
+    function initVertices() {
+        function gridCoord(i) {
+            return 2 * i / nm1 - 1;
+        }
+
+        function centerCoord(i) {
+            return gridCoord(i + 0.5);
+        }
+
+        vertices = [];
+        for (var i = 0; i < n; ++i) {
+            var x = gridCoord(i);
+            for (var j = 0; j < n; ++j) {
+                var y = gridCoord(j);
+                vertices.push.apply(vertices, [x, y, 0.0]);
+            }
+        }
+        for (var i = 0; i < n - 1; ++i) {
+            var x = centerCoord(i);
+            for (var j = 0; j < n - 1; ++j) {
+                var y = centerCoord(j);
+                vertices.push.apply(vertices, [x, y, 0.0]);
+            }
+        }
     }
 
+    function initTriangles() {
+        function cornerIdx(i, j) {
+            return i * n + j;
+        }
+        
+        function centerIdx(i, j) {
+            return n2 + i * nm1 + j;
+        }
+
+        triVertices = [];
+        for (var i = 0; i < n - 1; ++i) {
+            for (var j = 0; j < n - 1; ++j) {
+                triVertices.push.apply(
+                    triVertices,
+                    [
+                        centerIdx(i, j), cornerIdx(i, j), cornerIdx(i, j + 1),
+                        centerIdx(i, j), cornerIdx(i, j + 1), cornerIdx(i + 1, j + 1),
+                        centerIdx(i, j), cornerIdx(i + 1, j + 1), cornerIdx(i + 1, j),
+                        centerIdx(i, j), cornerIdx(i + 1, j), cornerIdx(i, j)
+                    ]
+                );
+            }
+        }
+    }
+        
     function vertexXy(i) {
         return vertices.slice(3 * i, 3 * i + 2);
     }
@@ -343,6 +406,8 @@ gl_FragColor = color;\
     return {
         init: init,
         setData: setData,
+        setViewRect: setViewRect,
+        setViewRectToCanvas: setViewRectToCanvas,
         draw: draw,
         testData: testData
     };
@@ -352,6 +417,7 @@ function testDexterHeatmap()
 {
     var canvas = document.getElementById("glcanvas");
     Dexter.Heatmap.init(canvas);
-    // setInterval(function() {Dexter.Heatmap.setData(Dexter.Heatmap.testData(1, 10)); Dexter.Heatmap.draw();}, 10);
-    Dexter.Heatmap.setData(Dexter.Heatmap.testData(1, 10)); Dexter.Heatmap.draw();
+    Dexter.Heatmap.setViewRectToCanvas();
+    setInterval(function() {Dexter.Heatmap.setData(Dexter.Heatmap.testData(200, 200)); Dexter.Heatmap.draw();}, 10);
+    // Dexter.Heatmap.setData(Dexter.Heatmap.testData(1, 10)); Dexter.Heatmap.draw();
 }
