@@ -96,35 +96,32 @@ gl_FragColor = color;\
 
         var texCoord = [];
         var alpha = [];
-        for (var i = 0; i < n; ++i) {
-            var x = indToCoord(i);
-            for (var j = 0; j < n; ++j) {
-                var y = indToCoord(j);
+        for (var i = 0; i < nVert; ++i) {
+            var xy = vertexXy(i);
 
-                var totWeightVal = 0.0;
-                var totWeightAlpha = 0.0;
-                var val = 0.0;
+            var totWeightVal = 0.0;
+            var totWeightAlpha = 0.0;
+            var val = 0.0;
 
-                for (var k = 0; k < dat.length; ++k) {
-                    var datPos = dat[k].slice(0, 2);
-                    var datVal = dat[k][2];
-                    var d = disp([x, y], datPos);
-                    if (manhattan(d) < 0.5) {
-                        var wVal = weight(d, spreadVal);
-                        totWeightVal += wVal;
-                        val += wVal * datVal;
-                        totWeightAlpha += weight(d, spreadAlpha);
-                    }
+            for (var k = 0; k < dat.length; ++k) {
+                var datPos = dat[k].slice(0, 2);
+                var datVal = dat[k][2];
+                var d = disp(xy, datPos);
+                if (manhattan(d) < 0.5) {
+                    var wVal = weight(d, spreadVal);
+                    totWeightVal += wVal;
+                    val += wVal * datVal;
+                    totWeightAlpha += weight(d, spreadAlpha);
                 }
-
-                if (totWeightVal > 0.0) {
-                    val /= totWeightVal;
-                }
-                var alphaVal = 1.0 - Math.exp(-totWeightAlpha * totWeightAlpha);
-
-                texCoord.push(val);
-                alpha.push(alphaVal);
             }
+
+            if (totWeightVal > 0.0) {
+                val /= totWeightVal;
+            }
+            var alphaVal = 1.0 - Math.exp(-totWeightAlpha * totWeightAlpha);
+
+            texCoord.push(val);
+            alpha.push(alphaVal);
         }
 
         texCoordBuffer = gl.createBuffer();
