@@ -10,6 +10,7 @@ Dexter.Heatmap = (function() {
     var canvas;
     var gl;
 
+    var nVert;
     var vertices;
     var vertexBuffer;
 
@@ -41,6 +42,34 @@ Dexter.Heatmap = (function() {
         a: [255, 255, 255, 255, 255, 255]
     };
 
+    var vertexShaderSrc = "\
+precision lowp float;\
+attribute vec3 aPosition;\
+attribute float aTexCoord;\
+attribute float aAlpha;\
+varying float vTexCoord;\
+varying float vAlpha;\
+\
+void main(void) {\
+vTexCoord = aTexCoord;\
+vAlpha = aAlpha;\
+gl_Position = vec4(aPosition, 1.0);\
+}\
+    ";
+
+    var fragmentShaderSrc = "\
+precision lowp float;\
+uniform sampler2D uTexture;\
+varying float vTexCoord;\
+varying float vAlpha;\
+\
+void main(void) {\
+vec4 color = texture2D(uTexture, vec2(vTexCoord, 0.5));\
+color.a = vAlpha;\
+gl_FragColor = color;\
+}\
+    ";
+
     function init(canv) {
         canvas = canv;
 
@@ -68,10 +97,9 @@ Dexter.Heatmap = (function() {
         var texCoord = [];
         var alpha = [];
         for (var i = 0; i < n; ++i) {
-            var x = 2 * i / (n - 1) - 1;
+            var x = indToCoord(i);
             for (var j = 0; j < n; ++j) {
-                var y = 2 * j / (n - 1) - 1;
-                vertices.push.apply(vertices, [x, y, 0.0]);
+                var y = indToCoord(j);
 
                 var totWeightVal = 0.0;
                 var totWeightAlpha = 0.0;
@@ -153,8 +181,8 @@ Dexter.Heatmap = (function() {
     }
 
     function initShaders() {
-        var fragmentShader = getShader(gl, "shader-fs");
-        var vertexShader = getShader(gl, "shader-vs");
+        var vertexShader = getShader(gl, vertexShaderSrc, gl.VERTEX_SHADER);
+        var fragmentShader = getShader(gl, fragmentShaderSrc, gl.FRAGMENT_SHADER);
 
         shaderProgram = gl.createProgram();
         gl.attachShader(shaderProgram, vertexShader);
@@ -180,12 +208,14 @@ Dexter.Heatmap = (function() {
     function initBuffers() {
         vertices = [];
         for (var i = 0; i < n; ++i) {
-            var x = 2 * i / (n - 1) - 1;
+            var x = indToCoord(i);
             for (var j = 0; j < n; ++j) {
-                var y = 2 * j / (n - 1) - 1;
+                var y = indToCoord(j);
                 vertices.push.apply(vertices, [x, y, 0.0]);
             }
         }
+        nVert = vertices.length / 3;
+
         vertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
@@ -251,48 +281,27 @@ Dexter.Heatmap = (function() {
         gl.drawElements(gl.TRIANGLES, nInd, gl.UNSIGNED_SHORT, 0);
     }
 
-    function getShader(gl, id) {
-        var shaderScript = document.getElementById(id);
-
-        if (!shaderScript) {
-            return null;
-        }
-
-        var theSource = "";
-        var currentChild = shaderScript.firstChild;
-
-        while(currentChild) {
-            if (currentChild.nodeType == 3) {
-                theSource += currentChild.textContent;
-            }
-
-            currentChild = currentChild.nextSibling;
-        }
-
-        var shader;
-
-        if (shaderScript.type == "x-shader/x-fragment") {
-            shader = gl.createShader(gl.FRAGMENT_SHADER);
-        } else if (shaderScript.type == "x-shader/x-vertex") {
-            shader = gl.createShader(gl.VERTEX_SHADER);
-        } else {
-            return null;  // Unknown shader type
-        }
-
-        gl.shaderSource(shader, theSource);
-
+    function getShader(gl, src, shaderType) {
+        var shader = gl.createShader(shaderType);
+        gl.shaderSource(shader, src);
         gl.compileShader(shader);
-
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
             alert("An error occurred compiling the shaders: " + gl.getShaderInfoLog(shader));
             return null;
         }
-
         return shader;
     }
         
     function vertexIdx(i, j) {
         return i * n + j;
+    }
+    
+    function indToCoord(i) {
+        return 2 * i / (n - 1) - 1;
+    }
+
+    function vertexXy(i) {
+        return vertices.slice(3 * i, 3 * i + 2);
     }
 
     function colorAt(x) { 
