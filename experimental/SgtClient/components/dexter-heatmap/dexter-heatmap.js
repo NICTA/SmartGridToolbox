@@ -35,7 +35,7 @@ Dexter.Heatmap = (function() {
     var nCols = 256; // Number of colors in colormap.
     
     var spreadVal = 0.05; // Characteristic radius around each data point for calculating value on grid.
-    var spreadAlpha = 0.03; // Characteristic radius around each data point for calculating alpha on grid.
+    var spreadAlpha = 0.1; // Characteristic radius around each data point for calculating alpha on grid.
     
     var heatMap = {
         n: 6,
@@ -51,22 +51,22 @@ Dexter.Heatmap = (function() {
 
     var vertices;
     var vertexBuffer;
+    var vertexPositionAttribute;
 
     var triVertices;
     var triVertexBuffer;
 
+    var texCoord;
     var texCoordBuffer;
-    var alphaBuffer;
-
-    var vertexPositionAttribute;
     var texCoordAttribute;
+
+    var alpha;
+    var alphaBuffer;
     var alphaAttribute;
 
     var tex;
 
     var shaderProgram;
-
-    var dat;
 
     var vertexShaderSrc = "\
 precision lowp float;\
@@ -113,29 +113,19 @@ gl_FragColor = color;\
             initShaders();
             initBuffers();
             initTextures();
-            setData(testData());
+            setViewRectToCanvas();
         }
     }
     
-    function setViewRect(xMin_, yMin_, xMax_, yMax_) {
-        xMin = xMin_;
-        yMin = yMin_;
-        xMax = xMax_;
-        yMax = yMax_;
-    }
-    
-    function setViewRectToCanvas() {
-        xMin = 0;
-        yMin = 0;
-        xMax = canvas.width;
-        yMax = canvas.height;
-    }
-    
     function setData(dat) {
-        this.dat = dat;
+        // Scale to clip coordinates:
+        for (var i = 0; i < dat.length; ++i) {
+            var x = dat[i][0];
+            var y = dat[i][1];
+            dat[i][0] = 2 * (x - xMin) / (xMax - xMin) - 1;
+            dat[i][1] = -2 * (y - yMin) / (yMax - yMin) + 1;
+        }
 
-        var texCoord = [];
-        var alpha = [];
         for (var i = 0; i < nVert; ++i) {
             var xy = vertexXy(i);
 
@@ -147,12 +137,12 @@ gl_FragColor = color;\
                 var datPos = dat[k].slice(0, 2);
                 var datVal = dat[k][2];
                 var d = disp(xy, datPos);
-                // if (manhattan(d) < 0.5) {
+                if (manhattan(d) < 0.5) {
                     var wVal = weight(d, spreadVal);
                     totWeightVal += wVal;
                     val += wVal * datVal;
                     totWeightAlpha += weight(d, spreadAlpha);
-                // }
+                }
             }
 
             if (totWeightVal > 0.0) {
@@ -160,15 +150,13 @@ gl_FragColor = color;\
             }
             var alphaVal = 1.0 - Math.exp(-totWeightAlpha * totWeightAlpha);
 
-            texCoord.push(val);
-            alpha.push(alphaVal);
+            texCoord[i] = val;
+            alpha[i] = alphaVal;
         }
 
-        texCoordBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoord), gl.STATIC_DRAW);
 
-        alphaBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(alpha), gl.STATIC_DRAW);
 
@@ -187,6 +175,21 @@ gl_FragColor = color;\
             return 1.0 / (1.0 + l2); // Cauchy distribution.
         }
     };
+    
+    function setViewRect(xMin_, yMin_, xMax_, yMax_) {
+        xMin = xMin_;
+        yMin = yMin_;
+        xMax = xMax_;
+        yMax = yMax_;
+    }
+    
+    function setViewRectToCanvas() {
+        setViewRect(0, 0, canvas.width, canvas.height);
+    }
+    
+    function setViewRectToClip() {
+        setViewRect(-1, -1, 1, 1);
+    }
 
     function testData(nMin, nMax) {
         function rand(min, max)
@@ -198,9 +201,16 @@ gl_FragColor = color;\
         var dat = [];
         for (var i = 0; i < nDat; ++i)
         {
-            dat.push([rand(-1, 1), rand(-1, 1), rand(0, 1)]);
+            dat.push([rand(xMin, xMax), rand(yMin, yMax), rand(0, 1)]);
         }
         return dat;
+    }
+
+    function draw() {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triVertexBuffer);
+        gl.drawElements(gl.TRIANGLES, nTriVert, gl.UNSIGNED_SHORT, 0);
     }
 
     function initWebGL() {
@@ -246,12 +256,21 @@ gl_FragColor = color;\
         initVertices();
         vertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+        gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
         initTriangles();
         triVertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triVertexBuffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(triVertices), gl.STATIC_DRAW);
+
+        texCoordBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+        gl.vertexAttribPointer(texCoordAttribute, 1, gl.FLOAT, false, 0, 0);
+
+        alphaBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuffer);
+        gl.vertexAttribPointer(alphaAttribute, 1, gl.FLOAT, false, 0, 0);
     };
 
     function initTextures() {
@@ -276,26 +295,11 @@ gl_FragColor = color;\
         // Prevents t-coordinate wrapping (repeating).
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         gl.bindTexture(gl.TEXTURE_2D, null);
-    }
-
-    function draw() {
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-        gl.vertexAttribPointer(texCoordAttribute, 1, gl.FLOAT, false, 0, 0);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuffer);
-        gl.vertexAttribPointer(alphaAttribute, 1, gl.FLOAT, false, 0, 0);
-
+        
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, tex);
         gl.uniform1i(gl.getUniformLocation(shaderProgram, "uTexture"), 0);
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triVertexBuffer);
-        gl.drawElements(gl.TRIANGLES, nTriVert, gl.UNSIGNED_SHORT, 0);
     }
 
     function getShader(gl, src, shaderType) {
@@ -332,6 +336,14 @@ gl_FragColor = color;\
                 var y = centerCoord(j);
                 vertices.push.apply(vertices, [x, y, 0.0]);
             }
+        }
+
+        texCoord = [];
+        alpha = [];
+        for (var i = 0; i < nVert; ++i)
+        {
+            texCoord[i] = 0.0;
+            alpha[i] = 0.0;
         }
     }
 
@@ -408,6 +420,7 @@ gl_FragColor = color;\
         setData: setData,
         setViewRect: setViewRect,
         setViewRectToCanvas: setViewRectToCanvas,
+        setViewRectToClip: setViewRectToClip,
         draw: draw,
         testData: testData
     };
@@ -418,6 +431,7 @@ function testDexterHeatmap()
     var canvas = document.getElementById("glcanvas");
     Dexter.Heatmap.init(canvas);
     Dexter.Heatmap.setViewRectToCanvas();
-    setInterval(function() {Dexter.Heatmap.setData(Dexter.Heatmap.testData(200, 200)); Dexter.Heatmap.draw();}, 10);
+    setInterval(function() {Dexter.Heatmap.setViewRectToCanvas(); Dexter.Heatmap.setData(Dexter.Heatmap.testData(200, 200)); Dexter.Heatmap.draw();}, 50);
     // Dexter.Heatmap.setData(Dexter.Heatmap.testData(1, 10)); Dexter.Heatmap.draw();
+    // Dexter.Heatmap.setData([[0, 0, 0.25], [100, 0, 0.5], [0, 100, 0.75], [100, 100, 1]]); Dexter.Heatmap.draw();
 }
