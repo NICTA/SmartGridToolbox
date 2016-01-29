@@ -29,7 +29,8 @@ Sgt.SgtClient = (function() {
     
     var editor = new JSONEditor(dom.properties[0], {mode : "tree"});
 
-    var heatmap = createWebGLHeatmap({canvas: dom.networkHeatmap[0], intensityToAlpha: true});
+    Dexter.Heatmap.init(dom.networkHeatmap[0]);
+    Dexter.Heatmap.setViewRectToCanvas();
 
     function loadNetwork(id) {
         removeGraph();
@@ -194,32 +195,24 @@ Sgt.SgtClient = (function() {
     }
 
     function syncHeatmap() {
-        if (dom.showHeatmap[0].checked) {
+        if (dom.showHeatmap[0].checked && graph) {
             drawHeatmap();
             dom.networkHeatmap[0].removeAttribute("hidden");
         } else {
             dom.networkHeatmap[0].setAttribute("hidden");
-            heatmap.clear();
         }
     }
 
     function drawHeatmap()
     {
-        var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame
-            || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-
-        var draw = function() {
-            heatmap.clear();
-            graph.forEachNode(function(node) {
-                var pos = layout.getNodePosition(node.id);
-                var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
-                heatmap.addPoint(newPos.x, newPos.y, 100, (1.2 - node.data.VMag) / 0.4);
-            });
-            heatmap.adjustSize(); // can be commented out for statically sized heatmaps, resize clears the map
-            heatmap.update(); // adds the buffered points
-            heatmap.display(); // adds the buffered points
-        };
-        raf(draw);
+        dat = [];
+        graph.forEachNode(function(node) {
+            var pos = layout.getNodePosition(node.id);
+            var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
+            dat.push([newPos.x, newPos.y, (1.1 - node.data.VMag) / 0.2]);
+        });
+        Dexter.Heatmap.setData(dat);
+        Dexter.Heatmap.draw(); // adds the buffered points
     }
 
     function showProgress(isVisible, htmlMessage) {

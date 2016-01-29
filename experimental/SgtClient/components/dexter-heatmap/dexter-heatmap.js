@@ -32,14 +32,14 @@ Dexter.Heatmap = (function() {
     var yMin = -1;
     var yMax = 1;
 
-    var nCols = 256; // Number of colors in colormap.
+    var nCols = 512; // Number of colors in colormap.
     
-    var spreadVal = 0.05; // Characteristic radius around each data point for calculating value on grid.
-    var spreadAlpha = 0.1; // Characteristic radius around each data point for calculating alpha on grid.
+    var spreadVal = 0.02; // Characteristic radius around each data point for calculating value on grid.
+    var spreadAlpha = 0.2; // Characteristic radius around each data point for calculating alpha on grid.
     
     var heatMap = {
         n: 6,
-        x: [0.00, 0.20, 0.40, 0.60, 0.80, 1.00],
+        x: [0.00, 0.30, 0.40, 0.60, 0.70, 1.00],
         r: [0,   0,   0,   128, 255, 255],
         g: [0,   128, 255, 255, 255, 128],
         b: [255, 255, 255, 128, 0,   0  ],
@@ -137,12 +137,12 @@ gl_FragColor = color;\
                 var datPos = dat[k].slice(0, 2);
                 var datVal = dat[k][2];
                 var d = disp(xy, datPos);
-                if (manhattan(d) < 0.5) {
+                // if (manhattan(d) < 0.5) {
                     var wVal = weight(d, spreadVal);
                     totWeightVal += wVal;
                     val += wVal * datVal;
                     totWeightAlpha += weight(d, spreadAlpha);
-                }
+                // }
             }
 
             if (totWeightVal > 0.0) {
@@ -184,7 +184,7 @@ gl_FragColor = color;\
     }
     
     function setViewRectToCanvas() {
-        setViewRect(0, 0, canvas.width, canvas.height);
+        setViewRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
     }
     
     function setViewRectToClip() {
