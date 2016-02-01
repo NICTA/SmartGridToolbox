@@ -22,6 +22,12 @@ Dexter.Heatmap = (function() {
     var n2 = n * n; // Number of grid points.
     var nm1 = n - 1; // Number of grid intervals in each dimension.
     var nm12 = nm1 * nm1; // Number of grid squares.
+    function gridVertexIdx(i, j) {
+        return i * n + j;
+    }
+    function gridCenterIdx(i, j) {
+        return n2 + i * nm1 + j;
+    }
 
     var nVert = n2 + nm12; // A vertex for each grid point, plus one at the center of each square.
     var nTri = 4 * nm12; // Each grid square has four triangles.
@@ -34,8 +40,8 @@ Dexter.Heatmap = (function() {
 
     var nCols = 512; // Number of colors in colormap.
     
-    var spreadVal = 0.02; // Characteristic radius around each data point for calculating value on grid.
-    var spreadAlpha = 0.2; // Characteristic radius around each data point for calculating alpha on grid.
+    var spreadVal = 0.03; // Characteristic radius around each data point for calculating value on grid.
+    var spreadAlpha = 0.125; // Characteristic radius around each data point for calculating alpha on grid.
     
     var heatMap = {
         n: 6,
@@ -115,50 +121,96 @@ gl_FragColor = color;\
     }
     
     function setData(dat) {
-        // Scale to clip coordinates:
-        for (var i = 0; i < dat.length; ++i) {
-            var x = dat[i][0];
-            var y = dat[i][1];
-            dat[i][0] = 2 * (x - xMin) / (xMax - xMin) - 1;
-            dat[i][1] = -2 * (y - yMin) / (yMax - yMin) + 1;
+        function disp(v1, v2) {
+            return [v1[0] - v2[0], v1[1] - v2[1]];
+        }
+        
+        function addTo(v1, v2) {
+            v1[0] += v2[0];
+            v1[1] += v2[1];
         }
 
-        // Bin the data into the n x n grid:
+        function weight(d, s)
+        {
+            var dds = [d[0] / s, d[1] / s];
+            var l2 = dds[0] * dds[0] + dds[1] * dds[1];
+            return 1.0 / (1.0 + l2); // Cauchy distribution.
+        }
+
+        function toClip(xy) {
+            return [2 * (xy[0] - xMin) / (xMax - xMin) - 1, -2 * (xy[1] - yMin) / (yMax - yMin) + 1];
+        }
+
+        // Scale to clip coordinates:
+        for (var i = 0; i < dat.length; ++i) {
+            dat[i][0] = toClip(dat[i][0]);
+        }
+
+        // Bin the data:
+        var nBin = 16; // n x n grid.
+        
+        function binIdx(xy) {
+            var iBin = Math.floor(nBin * 0.5 * (xy[0] + 1));
+            var jBin = Math.floor(nBin * 0.5 * (xy[1] + 1));
+            return [iBin, jBin, nBin * iBin + jBin];
+        }
+
         var bins = [];
         for (var i = 0; i < dat.length; ++i) {
-            var iBin = Math.floor(n * 0.5 * (dat[i][0] + 1));
-            var jBin = Math.floor(n * 0.5 * (dat[i][1] + 1));
-            var iVert = n * iBin + jBin;
-            if (bins[iVert]) {
-                bins[iVert].count += 1;
-                bins[iVert].x += dat[i][0];
-                bins[iVert].y += dat[i][1];
-                bins[iVert].val += dat[i][2];
+            if (Math.abs(dat[i][0][0]) > 1 || Math.abs(dat[i][0][1]) > 1) continue; // Ignore if off viewport.
+            var iBin = binIdx(dat[i][0]);
+            var bin = bins[iBin[2]];
+            if (bin) {
+                bin.dataPoints.push(dat[i]);
+                addTo(bin.xy, dat[i][0]);
+                bin.val += dat[i][1];
             } else {
-                bins[iVert] = {count: 1, x: dat[i][0], y: dat[i][1], val: dat[i][2]};
+                bins[iBin[2]] = {idx: iBin, xy: dat[i][0].slice(), val: dat[i][1], dataPoints: [dat[i]]};
             }
         }
 
-        bins.forEach(function (bin, i) {
-            bin.val /= bin.count;
-            bin.x /= bin.count;
-            bin.y /= bin.count;
+        bins.forEach(function (bin) {
+            var count = bin.dataPoints.length;
+            bin.val /= count;
+            bin.xy[0] /= count;
+            bin.xy[1] /= count;
         });
 
         for (var i = 0; i < nVert; ++i) {
-            var xy = vertexXy(i);
+            var vertXy = vertexXy(i);
 
             var totWeightVal = 0.0;
             var totWeightAlpha = 0.0;
             var val = 0.0;
 
-            bins.forEach(function (bin, j) {
-                var d = disp(xy, [bin.x, bin.y]);
-                var wVal = bin.count * weight(d, spreadVal);
-                totWeightVal += wVal;
-                val += wVal * bin.val;
-                totWeightAlpha += bin.count * weight(d, spreadAlpha);
+            vertBinIdx = binIdx(vertXy); // TODO: store.
+            
+            bins.forEach(function (bin) {
+                if (Math.abs(bin.idx[0] - vertBinIdx[0]) < 3 && Math.abs(bin.idx[1] - vertBinIdx[1]) < 3) {
+                    // Neighbouring bin, use all points.
+                    for (var j = 0; j < bin.dataPoints.length; ++j) {
+                        var dat = bin.dataPoints[j];
+                        var d = disp(vertXy, dat[0]);
+
+                        var wVal = weight(d, spreadVal);
+                        totWeightVal += wVal;
+                        val += wVal * dat[1];
+
+                        totWeightAlpha += weight(d, spreadAlpha);
+                    }
+                } else {
+                    // Non-neighbouring bin, use average.
+                    var d = disp(vertXy, bin.xy);
+                    var count = bin.dataPoints.length;
+
+                    var wVal = count * weight(d, spreadVal);
+                    totWeightVal += wVal;
+                    val += wVal * bin.val;
+
+                    totWeightAlpha += count * weight(d, spreadAlpha);
+                }
             });
+
             if (totWeightVal > 0.0) {
                 val /= totWeightVal;
             }
@@ -173,34 +225,19 @@ gl_FragColor = color;\
 
         gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(alpha), gl.STATIC_DRAW);
-
-        function disp(p1, p2) {
-            return [p1[0] - p2[0], p1[1] - p2[1]];
-        }
-
-        function manhattan(disp) {
-            return Math.max(Math.abs(disp[0]), Math.abs(disp[1]));
-        }
-
-        function weight(d, s)
-        {
-            var dds = [d[0] / s, d[1] / s];
-            var l2 = dds[0] * dds[0] + dds[1] * dds[1];
-            return 1.0 / (1.0 + l2); // Cauchy distribution.
-        }
     };
-    
+
     function setViewRect(xMin_, yMin_, xMax_, yMax_) {
         xMin = xMin_;
         yMin = yMin_;
         xMax = xMax_;
         yMax = yMax_;
     }
-    
+
     function setViewRectToCanvas() {
         setViewRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
     }
-    
+
     function setViewRectToClip() {
         setViewRect(-1, -1, 1, 1);
     }
@@ -215,7 +252,7 @@ gl_FragColor = color;\
         var dat = [];
         for (var i = 0; i < nDat; ++i)
         {
-            dat.push([rand(xMin, xMax), rand(yMin, yMax), rand(0, 1)]);
+            dat.push([[rand(xMin, xMax), rand(yMin, yMax)], rand(0, 1)]);
         }
         return dat;
     }
@@ -299,16 +336,17 @@ gl_FragColor = color;\
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, nCols, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, oneDTextureTexels);
 
         // gl.NEAREST is also allowed, instead of gl.LINEAR, as neither mipmap.
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
         // Prevents s-coordinate wrapping (repeating).
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 
         // Prevents t-coordinate wrapping (repeating).
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
         gl.bindTexture(gl.TEXTURE_2D, null);
-        
+
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, tex);
         gl.uniform1i(gl.getUniformLocation(shaderProgram, "uTexture"), 0);
@@ -361,13 +399,6 @@ gl_FragColor = color;\
     }
 
     function initTriangles() {
-        function cornerIdx(i, j) {
-            return i * n + j;
-        }
-        
-        function centerIdx(i, j) {
-            return n2 + i * nm1 + j;
-        }
 
         triVertices = [];
         for (var i = 0; i < n - 1; ++i) {
@@ -375,16 +406,16 @@ gl_FragColor = color;\
                 triVertices.push.apply(
                     triVertices,
                     [
-                        centerIdx(i, j), cornerIdx(i, j), cornerIdx(i, j + 1),
-                        centerIdx(i, j), cornerIdx(i, j + 1), cornerIdx(i + 1, j + 1),
-                        centerIdx(i, j), cornerIdx(i + 1, j + 1), cornerIdx(i + 1, j),
-                        centerIdx(i, j), cornerIdx(i + 1, j), cornerIdx(i, j)
+                        gridCenterIdx(i, j), gridVertexIdx(i, j), gridVertexIdx(i, j + 1),
+                        gridCenterIdx(i, j), gridVertexIdx(i, j + 1), gridVertexIdx(i + 1, j + 1),
+                        gridCenterIdx(i, j), gridVertexIdx(i + 1, j + 1), gridVertexIdx(i + 1, j),
+                        gridCenterIdx(i, j), gridVertexIdx(i + 1, j), gridVertexIdx(i, j)
                     ]
                 );
             }
         }
     }
-        
+
     function vertexXy(i) {
         return vertices.slice(3 * i, 3 * i + 2);
     }
@@ -444,7 +475,7 @@ function testDexterHeatmap()
     var canvas = document.getElementById("glcanvas");
     Dexter.Heatmap.init(canvas);
     Dexter.Heatmap.setViewRectToCanvas();
-    setInterval(function() {Dexter.Heatmap.setViewRectToCanvas(); Dexter.Heatmap.setData(Dexter.Heatmap.testData(200, 200)); Dexter.Heatmap.draw();}, 50);
+    //setInterval(function() {Dexter.Heatmap.setViewRectToCanvas(); Dexter.Heatmap.setData(Dexter.Heatmap.testData(200, 200)); Dexter.Heatmap.draw();}, 50);
     // Dexter.Heatmap.setData(Dexter.Heatmap.testData(1, 10)); Dexter.Heatmap.draw();
-    // Dexter.Heatmap.setData([[0, 0, 0.25], [100, 0, 0.5], [0, 100, 0.75], [100, 100, 1]]); Dexter.Heatmap.draw();
+    Dexter.Heatmap.setData([[[0, 0], 0.25], [[100, 0], 0.5], [[0, 100], 0.75], [[100, 100], 1]]); Dexter.Heatmap.draw();
 }

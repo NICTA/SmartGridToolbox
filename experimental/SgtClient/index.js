@@ -2,8 +2,8 @@ var Sgt = Sgt || {};
 
 Sgt.SgtClient = (function() {
     var params = {
-        iMaxPrecompute: 2000,
-        tMaxPrecompute: 15000,
+        iMaxPrecompute: 1000,
+        tMaxPrecompute: 10000,
         useWebGl: true
     };
 
@@ -208,7 +208,7 @@ Sgt.SgtClient = (function() {
         graph.forEachNode(function(node) {
             var pos = layout.getNodePosition(node.id);
             var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
-            dat.push([newPos.x, newPos.y, (1.1 - node.data.VMag) / 0.2]);
+            dat.push([[newPos.x, newPos.y], (1.1 - node.data.VMag) / 0.2]);
         });
         Dexter.Heatmap.setData(dat);
         Dexter.Heatmap.draw(); // adds the buffered points
