@@ -104,11 +104,8 @@ gl_FragColor = color;\
         // Only continue if WebGL is available and working
 
         if (gl) {
-            gl.enable(gl.BLEND);
-            gl.blendEquation(gl.FUNC_ADD);
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-            gl.clearColor(1, 1, 1, 1);  // Clear to black, fully opaque
-            gl.clearDepth(1.0);                 // Clear everything
+            gl.clearColor(1, 1, 1, 1); // Clear to black, fully opaque
+            gl.clearDepth(1.0); // Clear everything
 
             initShaders();
             initBuffers();
@@ -126,6 +123,28 @@ gl_FragColor = color;\
             dat[i][1] = -2 * (y - yMin) / (yMax - yMin) + 1;
         }
 
+        // Bin the data into the n x n grid:
+        var bins = [];
+        for (var i = 0; i < dat.length; ++i) {
+            var iBin = Math.floor(n * 0.5 * (dat[i][0] + 1));
+            var jBin = Math.floor(n * 0.5 * (dat[i][1] + 1));
+            var iVert = n * iBin + jBin;
+            if (bins[iVert]) {
+                bins[iVert].count += 1;
+                bins[iVert].x += dat[i][0];
+                bins[iVert].y += dat[i][1];
+                bins[iVert].val += dat[i][2];
+            } else {
+                bins[iVert] = {count: 1, x: dat[i][0], y: dat[i][1], val: dat[i][2]};
+            }
+        }
+
+        bins.forEach(function (bin, i) {
+            bin.val /= bin.count;
+            bin.x /= bin.count;
+            bin.y /= bin.count;
+        });
+
         for (var i = 0; i < nVert; ++i) {
             var xy = vertexXy(i);
 
@@ -133,18 +152,13 @@ gl_FragColor = color;\
             var totWeightAlpha = 0.0;
             var val = 0.0;
 
-            for (var k = 0; k < dat.length; ++k) {
-                var datPos = dat[k].slice(0, 2);
-                var datVal = dat[k][2];
-                var d = disp(xy, datPos);
-                // if (manhattan(d) < 0.5) {
-                    var wVal = weight(d, spreadVal);
-                    totWeightVal += wVal;
-                    val += wVal * datVal;
-                    totWeightAlpha += weight(d, spreadAlpha);
-                // }
-            }
-
+            bins.forEach(function (bin, j) {
+                var d = disp(xy, [bin.x, bin.y]);
+                var wVal = bin.count * weight(d, spreadVal);
+                totWeightVal += wVal;
+                val += wVal * bin.val;
+                totWeightAlpha += bin.count * weight(d, spreadAlpha);
+            });
             if (totWeightVal > 0.0) {
                 val /= totWeightVal;
             }
@@ -208,7 +222,6 @@ gl_FragColor = color;\
 
     function draw() {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triVertexBuffer);
         gl.drawElements(gl.TRIANGLES, nTriVert, gl.UNSIGNED_SHORT, 0);
     }

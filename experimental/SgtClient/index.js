@@ -196,7 +196,6 @@ Sgt.SgtClient = (function() {
 
     function syncHeatmap() {
         if (dom.showHeatmap[0].checked && graph) {
-            drawHeatmap();
             dom.networkHeatmap[0].removeAttribute("hidden");
         } else {
             dom.networkHeatmap[0].setAttribute("hidden");
