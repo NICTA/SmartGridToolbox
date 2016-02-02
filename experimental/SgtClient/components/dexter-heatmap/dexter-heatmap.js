@@ -203,7 +203,7 @@ gl_FragColor = color;\
         }
 
         gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoord), gl.STATIC_DRAW);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(texCoord));
     };
 
     function setViewRect(xMin_, yMin_, xMax_, yMax_) {
@@ -293,6 +293,7 @@ gl_FragColor = color;\
         texCoordBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
         gl.vertexAttribPointer(texCoordAttribute, 1, gl.FLOAT, false, 0, 0);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoord), gl.DYNAMIC_DRAW);
     };
 
     function initTextures() {
