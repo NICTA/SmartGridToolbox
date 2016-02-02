@@ -18,7 +18,7 @@ Dexter.Heatmap = (function() {
     //
     // Triangles are formed by joining the center of each square to the corners.
     
-    var n = 32; // n x n grid.
+    var n = 40; // n x n grid.
     var n2 = n * n; // Number of grid points.
     var nm1 = n - 1; // Number of grid intervals in each dimension.
     var nm12 = nm1 * nm1; // Number of grid squares.
@@ -40,8 +40,7 @@ Dexter.Heatmap = (function() {
 
     var nCols = 512; // Number of colors in colormap.
     
-    var spreadVal = 0.03; // Characteristic radius around each data point for calculating value on grid.
-    var spreadAlpha = 0.125; // Characteristic radius around each data point for calculating alpha on grid.
+    var spread = 0.01; // Characteristic radius around each data point for calculating value on grid.
     
     var heatMap = {
         n: 6,
@@ -66,10 +65,6 @@ Dexter.Heatmap = (function() {
     var texCoordBuffer;
     var texCoordAttribute;
 
-    var alpha;
-    var alphaBuffer;
-    var alphaAttribute;
-
     var tex;
 
     var shaderProgram;
@@ -78,13 +73,10 @@ Dexter.Heatmap = (function() {
 precision lowp float;\
 attribute vec3 aPosition;\
 attribute float aTexCoord;\
-attribute float aAlpha;\
 varying float vTexCoord;\
-varying float vAlpha;\
 \
 void main(void) {\
 vTexCoord = aTexCoord;\
-vAlpha = aAlpha;\
 gl_Position = vec4(aPosition, 1.0);\
 }\
     ";
@@ -93,11 +85,9 @@ gl_Position = vec4(aPosition, 1.0);\
 precision lowp float;\
 uniform sampler2D uTexture;\
 varying float vTexCoord;\
-varying float vAlpha;\
 \
 void main(void) {\
 vec4 color = texture2D(uTexture, vec2(vTexCoord, 0.5));\
-color.a = vAlpha;\
 gl_FragColor = color;\
 }\
     ";
@@ -179,8 +169,7 @@ gl_FragColor = color;\
         for (var i = 0; i < nVert; ++i) {
             var vertXy = vertexXy(i);
 
-            var totWeightVal = 0.0;
-            var totWeightAlpha = 0.0;
+            var totWeight = 0.0;
             var val = 0.0;
 
             vertBinIdx = binIdx(vertXy); // TODO: store.
@@ -192,39 +181,29 @@ gl_FragColor = color;\
                         var dat = bin.dataPoints[j];
                         var d = disp(vertXy, dat[0]);
 
-                        var wVal = weight(d, spreadVal);
-                        totWeightVal += wVal;
-                        val += wVal * dat[1];
-
-                        totWeightAlpha += weight(d, spreadAlpha);
+                        var wt = weight(d, spread);
+                        totWeight += wt;
+                        val += wt * dat[1];
                     }
                 } else {
                     // Non-neighbouring bin, use average.
                     var d = disp(vertXy, bin.xy);
                     var count = bin.dataPoints.length;
 
-                    var wVal = count * weight(d, spreadVal);
-                    totWeightVal += wVal;
-                    val += wVal * bin.val;
-
-                    totWeightAlpha += count * weight(d, spreadAlpha);
+                    var wt = count * weight(d, spread);
+                    totWeight += wt;
+                    val += wt * bin.val;
                 }
             });
 
-            if (totWeightVal > 0.0) {
-                val /= totWeightVal;
+            if (totWeight > 0.0) {
+                val /= totWeight;
             }
-            var alphaVal = 1.0 - Math.exp(-totWeightAlpha * totWeightAlpha);
-
             texCoord[i] = val;
-            alpha[i] = alphaVal;
         }
 
         gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoord), gl.STATIC_DRAW);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(alpha), gl.STATIC_DRAW);
     };
 
     function setViewRect(xMin_, yMin_, xMax_, yMax_) {
@@ -297,9 +276,6 @@ gl_FragColor = color;\
 
         texCoordAttribute = gl.getAttribLocation(shaderProgram, "aTexCoord");
         gl.enableVertexAttribArray(texCoordAttribute);
-
-        alphaAttribute = gl.getAttribLocation(shaderProgram, "aAlpha");
-        gl.enableVertexAttribArray(alphaAttribute);
     }
 
     function initBuffers() {
@@ -317,10 +293,6 @@ gl_FragColor = color;\
         texCoordBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
         gl.vertexAttribPointer(texCoordAttribute, 1, gl.FLOAT, false, 0, 0);
-
-        alphaBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuffer);
-        gl.vertexAttribPointer(alphaAttribute, 1, gl.FLOAT, false, 0, 0);
     };
 
     function initTextures() {
@@ -390,11 +362,9 @@ gl_FragColor = color;\
         }
 
         texCoord = [];
-        alpha = [];
         for (var i = 0; i < nVert; ++i)
         {
             texCoord[i] = 0.0;
-            alpha[i] = 0.0;
         }
     }
 
