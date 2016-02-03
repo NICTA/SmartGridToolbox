@@ -18,9 +18,9 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "~2.2.0",
-    "jsoneditor": "~5.1.1",
-    "vivagraphjs": "~0.8.1",
-    "webgl-heatmap": "*"
+    "jquery": "*",
+    "jsoneditor": "*",
+    "vivagraphjs": "*",
+    "bootstrap": "*"
   }
 }

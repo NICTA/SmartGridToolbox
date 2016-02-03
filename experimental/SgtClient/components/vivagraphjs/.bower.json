@@ -32,6 +32,6 @@
     "commit": "32677868d92eafc6fec8a83a549877227a385f4d"
   },
   "_source": "git://github.com/anvaka/VivaGraphJS.git",
-  "_target": "~0.8.1",
+  "_target": "*",
   "_originalSource": "vivagraphjs"
 }

@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link href="components/jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
         <link href="index.css" rel="stylesheet" type="text/css">
+        <link href="components/jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
+        <link href="components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 
         <script src="components/jquery/dist/jquery.min.js"></script>
+        <script href="components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script href="components/bootstrap/dist/js/bootstrap-theme.min.js"></script>
         <script src="components/jsoneditor/dist/jsoneditor.min.js"></script>
         <script src="components/dexter-heatmap/dexter-heatmap.js"></script>
         <script src="components/vivagraphjs/dist/vivagraph.js"></script>
@@ -12,46 +16,54 @@
 
     <body>
 
-        <h1 class="sgt_header">SmartGridToolbox Client/Server Demo</h1>
-        <h2 class="sgt_header">SmartGridToolbox Network Displayed Using VivaGraph</h1>
+        <h1>SmartGridToolbox Client/Server Demo</h1>
+        <h2>SmartGridToolbox Network Displayed Using VivaGraph</h2>
 
-        <fieldset class="sgt_controls">
-            <div class="sgt_control">
-                <input 
-                 class="sgt_checkbox" 
-                 type="checkbox"
-                 id="use_spring_layout"
-                 onchange="Sgt.SgtClient.syncSpringLayout()">Use Spring Layout</input>
-                <input
-                 class="sgt_checkbox"
-                 type="checkbox"
-                 id="show_heatmap"
-                 onchange="Sgt.SgtClient.syncHeatmap()">Show Heatmap</input>
-            </div>
-            <div class="sgt_control">
-                <select id="select_matpower">
-                    <option disabled selected> -- select a matpower case -- </option>
-                </select>
-            </div>
-            <div class="sgt_control"> 
-                <input class="sgt_range" id="test" type="range"/>Low Voltage</input>
-                <input class="sgt_range" id="test" type="range"/>High Voltage</input>
-            </div>
-        </fieldset>
-
-        <div class="sgt_wrapper">
-            <div class="sgt_progress_outer">
-                <div class="sgt_progress_inner" id="sgt_progress_group" hidden>
-                    <progress id="sgt_progress" min="0" max="100" value="-1"></progress>
-                    <p id="sgt_progress_message" style="text-align: center;"></p>
+        <form class="container-fluid" style="width: 80%;">
+            <div class="form-group row">
+                <div class="col-xs-12">
+                    <select class="center" id="select_matpower">
+                        <option disabled selected> -- select a matpower case -- </option>
+                    </select>
                 </div>
             </div>
-            <div class="sgt_network_graph">
-                <canvas class="sgt_network_graph_layer" id="sgt_heatmap_canvas"></canvas>
-                <div class="sgt_network_graph_layer" id="sgt_network_graph"></div>
+
+            <div class="form-group row">
+                <div class="col-xs-5">
+                    <input type="range" id="range_V_low"/>Low Voltage</input>
+                </div>
+                <div class="col-xs-5 col-xs-offset-2">
+                    <input type="range" id="range_V_high"/>High Voltage</input>
+                </div>
             </div>
-            <div class="sgt_network_properties" id="sgt_network_properties"></div>
+
+            <div class="form-group row">
+                <div class="col-sm-6 center" style="text-align: center;">
+                    <input type="checkbox" id="use_spring_layout" onchange="Sgt.SgtClient.syncSpringLayout()">Use Spring Layout</input>
+                </div>
+                <div class="col-sm-6 center">
+                    <input type="checkbox" id="show_heatmap" onchange="Sgt.SgtClient.syncHeatmap()">Show Heatmap</input>
+                </div>
+            </div>
+        </form>
+
+        <div class="centered_wrapper">
+            <div class="sgt-progress-outer">
+                <div class="sgt-progress-inner" id="sgt-progress-group" hidden>
+                    <progress id="sgt-progress" min="0" max="100" value="-1"></progress>
+                    <p id="sgt-progress-message" style="text-align: center;"></p>
+                </div>
+            </div>
+
+            <div class="sgt-network-graph">
+                <canvas class="sgt-network-graph-layer" id="sgt_heatmap_canvas"></canvas>
+                <div class="sgt-network-graph-layer" id="sgt-network-graph"></div>
+            </div>
+
+            <div class="sgt-network-properties" id="sgt-network-properties"></div>
         </div>
+
         <script src="index.js"></script>
+        </div>
     </body>
 </html>
