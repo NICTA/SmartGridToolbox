@@ -8,15 +8,15 @@ Sgt.SgtClient = (function() {
     };
 
     var dom = {
-        useSpring: $("#use_spring_layout"),
-        showHeatmap: $("#show_heatmap"),
-        selector: $("#select_matpower"),
-        networkGraph: $("#sgt_network_graph"),
-        networkHeatmap: $("#sgt_heatmap_canvas"),
-        properties: $("#sgt_network_properties"),
-        progressGroup: $("#sgt_progress_group"),
-        progressMessage: $("#sgt_progress_message"),
-        progress: $("#sgt_progress")
+        useSpring: $("#use-spring-layout"),
+        showHeatmap: $("#show-heatmap"),
+        selector: $("#select-matpower"),
+        networkGraph: $("#sgt-network-graph"),
+        networkHeatmap: $("#sgt-heatmap-canvas"),
+        properties: $("#sgt-network-properties"),
+        progressGroup: $("#sgt-progress-group"),
+        progressMessage: $("#sgt-progress-message"),
+        progress: $("#sgt-progress")
     };
 
     var graph = null;
@@ -114,7 +114,7 @@ Sgt.SgtClient = (function() {
             graphics   : graphics,
             renderLinks : true,
             prerender  : true,
-            container  : document.getElementById("sgt_network_graph")
+            container  : document.getElementById("sgt-network-graph")
         });
 
         // we need to compute layout, but we don"t want to freeze the browser
