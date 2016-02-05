@@ -5,15 +5,16 @@ Sgt.SgtClient = (function() {
         iMaxPrecompute: 1000,
         tMaxPrecompute: 10000,
         useWebGl: true,
-        VLow: 0.95,
-        VHigh: 1
     };
-    params.VRange = params.VHigh - params.VLow;
 
     var dom = {
+        selector: $("#select-matpower"),
         useSpring: $("#use-spring-layout"),
         showHeatmap: $("#show-heatmap"),
-        selector: $("#select-matpower"),
+        rangeVLow: $("#range-V-low"),
+        rangeVHigh: $("#range-V-high"),
+        labelVLow: $("#label-V-low"),
+        labelVHigh: $("#label-V-high"),
         networkGraph: $("#sgt-network-graph"),
         networkHeatmap: $("#sgt-heatmap-canvas"),
         properties: $("#sgt-network-properties"),
@@ -29,6 +30,12 @@ Sgt.SgtClient = (function() {
     var graphics = null;
 
     var renderer = null;
+
+    var VLow = 0.0;
+    var VHigh = 2.0;
+    var VRange;
+    syncVLow();
+    syncVHigh();
     
     var editor = new JSONEditor(dom.properties[0], {mode : "tree"});
 
@@ -192,6 +199,19 @@ Sgt.SgtClient = (function() {
         }
     );
 
+    function drawHeatmap()
+    {
+        dat = [];
+        graph.forEachNode(function(node) {
+            var pos = layout.getNodePosition(node.id);
+            var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
+            var VParam = (clamp(node.data.VMag, VLow, VHigh) - VLow) / VRange;
+            dat.push([[newPos.x, newPos.y], VParam]);
+        });
+        Dexter.Heatmap.setData(dat);
+        Dexter.Heatmap.draw(); // adds the buffered points
+    }
+
     function syncSpringLayout() {
         if (renderer) {
             if (dom.useSpring[0].checked) {
@@ -210,17 +230,28 @@ Sgt.SgtClient = (function() {
         }
     }
 
-    function drawHeatmap()
-    {
-        dat = [];
-        graph.forEachNode(function(node) {
-            var pos = layout.getNodePosition(node.id);
-            var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
-            var VParam = (clamp(node.data.VMag, params.VLow, params.VHigh) - params.VLow) / params.VRange;
-            dat.push([[newPos.x, newPos.y], VParam]);
-        });
-        Dexter.Heatmap.setData(dat);
-        Dexter.Heatmap.draw(); // adds the buffered points
+    function syncVLow() {
+        VLow = dom.rangeVLow[0].value / 100;
+        VHigh = dom.rangeVHigh[0].value / 100;
+        if (VLow > VHigh) {
+            VLow = VHigh;
+            dom.rangeVLow[0].value = 100 * VLow;
+        }
+        dom.labelVLow[0].innerHTML = VLow;
+        VRange = VHigh - VLow;
+        if (dom.showHeatmap[0].checked) drawHeatmap();
+    }
+
+    function syncVHigh() {
+        VLow = dom.rangeVLow[0].value / 100;
+        VHigh = dom.rangeVHigh[0].value / 100;
+        if (VHigh < VLow) {
+            VHigh = VLow;
+            dom.rangeVHigh[0].value = 100 * VHigh;
+        }
+        dom.labelVHigh[0].innerHTML = VHigh;
+        VRange = VHigh - VLow;
+        if (dom.showHeatmap[0].checked) drawHeatmap();
     }
 
     function showProgress(isVisible, htmlMessage) {
@@ -242,5 +273,11 @@ Sgt.SgtClient = (function() {
         dom.progress[0].value = percent;
     }
 
-    return {"loadNetwork": loadNetwork, "syncSpringLayout": syncSpringLayout, "syncHeatmap": syncHeatmap};
+    return {
+        "loadNetwork": loadNetwork,
+        "syncSpringLayout": syncSpringLayout,
+        "syncHeatmap": syncHeatmap,
+        "syncVLow": syncVLow,
+        "syncVHigh": syncVHigh
+    };
 }());
