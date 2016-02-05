@@ -4,8 +4,11 @@ Sgt.SgtClient = (function() {
     var params = {
         iMaxPrecompute: 1000,
         tMaxPrecompute: 10000,
-        useWebGl: true
+        useWebGl: true,
+        VLow: 0.95,
+        VHigh: 1
     };
+    params.VRange = params.VHigh - params.VLow;
 
     var dom = {
         useSpring: $("#use-spring-layout"),
@@ -31,24 +34,29 @@ Sgt.SgtClient = (function() {
 
     Dexter.Heatmap.init(dom.networkHeatmap[0]);
     Dexter.Heatmap.setViewRectToCanvas();
+        
+    function clamp(x, min, max) {
+        return Math.max(min, Math.min(x, max));
+    }
+
+    function VMag(bus) {
+        var V = bus.bus.V;
+        var VBase = bus.bus.V_base;
+        var result = 0.0;
+        for (var i = 0; i < V.length; ++i) {
+            var Vr = V[i].r;
+            var Vi = V[i].i;
+            result += Math.sqrt(Vr * Vr + Vi * Vi);
+        }
+        result /= VBase;
+        return result;
+    }
 
     function loadNetwork(id) {
         removeGraph();
         loadNetwork.url = "http://sgt.com/api/networks/" + id;
         showProgress(true, "Loading network " + id + ". Please wait.");
         jQuery.getJSON(loadNetwork.url, networkLoaded);
-    }
-
-    function Vmag(bus) {
-        var V = bus.bus.V;
-        var VBase = bus.bus.V_base;
-        var result = 0.0;
-        for (var i = 0; i < V.length; ++i) {
-            var VrPu = V[i].r / VBase;
-            var ViPu = V[i].i / VBase;
-            result += Math.sqrt(VrPu * VrPu + ViPu * ViPu);
-        }
-        return result;
     }
 
     function networkLoaded(netw) {
@@ -63,7 +71,7 @@ Sgt.SgtClient = (function() {
         for (var i = 0; i < busses.length; ++i)
         {
             var bus = busses[i];
-            graph.addNode(bus.component.id, {VMag: Vmag(bus)});
+            graph.addNode(bus.component.id, {VMag: VMag(bus)});
             busMap[bus.component.id] = bus;
         }
         for (var i = 0; i < branches.length; ++i)
@@ -208,7 +216,8 @@ Sgt.SgtClient = (function() {
         graph.forEachNode(function(node) {
             var pos = layout.getNodePosition(node.id);
             var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
-            dat.push([[newPos.x, newPos.y], (1.1 - node.data.VMag) / 0.2]);
+            var VParam = (clamp(node.data.VMag, params.VLow, params.VHigh) - params.VLow) / params.VRange;
+            dat.push([[newPos.x, newPos.y], VParam]);
         });
         Dexter.Heatmap.setData(dat);
         Dexter.Heatmap.draw(); // adds the buffered points
