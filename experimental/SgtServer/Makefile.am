@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS += -I../../SgtSim -I../../SgtCore -I/usr/local/opt/openssl/include
+AM_CPPFLAGS += -I../.. -I/usr/local/opt/openssl/include
 
 AM_LDFLAGS = -L/usr/local/opt/openssl/lib
 

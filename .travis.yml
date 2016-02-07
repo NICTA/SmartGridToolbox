@@ -20,6 +20,9 @@ matrix:
                         - libboost-random1.55-dev
                         - libboost-test1.55-dev
                         - libblas-dev
+                        - openssl
+                        - iconv
+                        - ssl
             env:
                 - INSTALL_CXX=clang++-3.6
                 - LD_LIBRARY_PATH=$HOME/lib
@@ -39,6 +42,8 @@ matrix:
                         - libboost-random1.55-dev
                         - libboost-test1.55-dev
                         - libblas-dev
+                        - iconv
+                        - ssl
             env:
                 - INSTALL_CXX=g++-4.9
                 - LD_LIBRARY_PATH=$HOME/lib
