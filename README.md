@@ -1,7 +1,7 @@
 SmartGridToolbox
 ================
 
-[![Build Status](https://travis-ci.org/NICTA/SmartGridToolbox.svg)](https://travis-ci.org/NICTA/SmartGridToolbox)
+[![Build Status](https://travis-ci.org/NICTA/SmartGridToolbox.svg?branch=master)](https://travis-ci.org/NICTA/SmartGridToolbox)
 
 [SmartGridToolbox](http://nicta.github.io/SmartGridToolbox) is a C++11 library for electricity grids and associated
 elements, concentrating on smart/future grids and grid optimisation. It is designed to provide an extensible and
