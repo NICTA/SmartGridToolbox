@@ -1,11 +1,5 @@
 #!/bin/bash
 
-cd third_party/cpprestsdk
-cmake -DCMAKE_CXX_COMPILER=$INSTALL_CXX -DCMAKE_INSTALL_PREFIX=$HOME -DCMAKE_BUILD_TYPE=Release Release || exit $?
-make || exit $?
-make install || exit $?
-cd ../..
-
 cd third_party/armadillo-5.400.2
 cmake -DCMAKE_CXX_COMPILER=$INSTALL_CXX -DCMAKE_INSTALL_PREFIX=$HOME || exit $?
 make || exit $?
@@ -41,6 +35,12 @@ cd KLU
 make || exit $?
 make install || exit $?
 cd ..
+cd ../..
+
+cd third_party/cpprestsdk
+cmake -DCMAKE_CXX_COMPILER=$INSTALL_CXX -DCMAKE_INSTALL_PREFIX=$HOME -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_SAMPLES=OFF Release || exit $?
+make || exit $?
+make install || exit $?
 cd ../..
 
 ./autogen.sh
