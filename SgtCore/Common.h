@@ -384,10 +384,10 @@ namespace Sgt
         static json toJson(const arma::Mat<T>& m)
         {
             json result;
-            for (int i = 0; i < m.n_rows; ++i)
+            for (arma::uword i = 0; i < m.n_rows; ++i)
             {
                 json row;
-                for (int j = 0; j < m.n_cols; ++j)
+                for (arma::uword j = 0; j < m.n_cols; ++j)
                 {
                     row.push_back(m(i, j));
                 }
