@@ -36,6 +36,14 @@ AC_SUBST([AM_CXXFLAGS], ["$AM_CXXFLAGS -Wall"])
 #AC_LANG([Objective C++])
 #AX_CHECK_COMPILE_FLAG([-std=c++11], [AC_SUBST([AM_OBJCXXFLAGS], ["-std=c++11"])])
 
+AX_BOOST_BASE(,, [AC_MSG_ERROR([SmartGridToolbox needs Boost, but it was not found in your system])])
+AX_BOOST_CHRONO
+AX_BOOST_DATE_TIME
+AX_BOOST_SYSTEM
+AX_BOOST_THREAD
+AX_BOOST_REGEX
+AX_BOOST_FILESYSTEM
+
 AC_CHECK_PROG([HAVE_DOT], [dot], ["YES"], ["NO"])
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
 AC_CHECK_PROGS([MAKEINDEX], [makeindex])

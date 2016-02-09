@@ -17,7 +17,7 @@ building_controller_demo_LDADD = -lSgtCore \
 					  -lPowerTools++ \
 					  -lipopt \
 					  -lcoinhsl \
-					  -lboost_date_time \
+					  $(BOOST_DATE_TIME_LIB) \
 					  -lklu \
 					  -lamd \
 					  -lbtf \

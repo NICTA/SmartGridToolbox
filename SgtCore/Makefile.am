@@ -109,7 +109,7 @@ libSgtCore_la_SOURCES = \
 
 libSgtCore_la_LIBADD = \
 	-larmadillo \
-	-lboost_date_time \
+	$(BOOST_DATE_TIME_LIB) \
 	-lyaml-cpp \
 	$(L_KLU_SOLVER) \
 	$(L_POWER_TOOLS_PP)

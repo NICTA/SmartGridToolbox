@@ -8,4 +8,4 @@ bin_PROGRAMS = sgt_server
 
 sgt_server_SOURCES = sgt_server.cc
 
-sgt_server_LDADD = ../../SgtSim/libSgtSim.la ../../SgtCore/libSgtCore.la -lcpprest -lcrypto -lssl -lboost_thread -lboost_system -lboost_filesystem -lboost_chrono
+sgt_server_LDADD = ../../SgtSim/libSgtSim.la ../../SgtCore/libSgtCore.la -lcpprest -lcrypto -lssl $(BOOST_THREAD_LIB) $(BOOST_SYSTEM_LIB) $(BOOST_FILESYSTEM_LIB) $(BOOST_CHRONO_LIB)
