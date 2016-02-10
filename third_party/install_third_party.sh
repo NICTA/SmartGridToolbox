@@ -14,7 +14,7 @@ mkdir build_sgt
 cd build_sgt
 cmake -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX .. || exit $?
 make || exit $?
-make install || exit $?
+sudo make install || exit $?
 cd ../..
 
 cd yaml-cpp-0.5.1
@@ -23,7 +23,7 @@ mkdir build_sgt
 cd build_sgt
 cmake -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX .. || exit $?
 make || exit $?
-make install || exit $?
+sudo make install || exit $?
 cd ../..
 
 cd SuiteSparse
@@ -34,27 +34,27 @@ sed -i'' \
 
 cd SuiteSparse_config
 make || exit $?
-make install || exit $?
+sudo make install || exit $?
 cd ..
 
 cd AMD
 make || exit $?
-make install || exit $?
+sudo make install || exit $?
 cd ..
 
 cd BTF
 make || exit $?
-make install || exit $?
+sudo make install || exit $?
 cd ..
 
 cd COLAMD
 make || exit $?
-make install || exit $?
+sudo make install || exit $?
 cd ..
 
 cd KLU
 make || exit $?
-make install || exit $?
+sudo make install || exit $?
 cd ..
 
 cd ..
@@ -65,5 +65,5 @@ mkdir build_sgt
 cd build_sgt
 cmake -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_SAMPLES=OFF ../Release || exit $?
 make || exit $?
-make install || exit $?
+sudo make install || exit $?
 cd ../..
