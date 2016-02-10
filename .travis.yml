@@ -31,6 +31,7 @@ matrix:
             env:
                 - INSTALL_CXX=clang++-3.6
                 - LD_LIBRARY_PATH=$HOME/lib
+                - TARGS='all'
         -   
             os: linux
             compiler: gcc
@@ -56,6 +57,7 @@ matrix:
             env:
                 - INSTALL_CXX=g++-4.9
                 - LD_LIBRARY_PATH=$HOME/lib
+                - TARGS='all experimental/SgtServer'
 
 before_install:
     - mkdir $HOME/include

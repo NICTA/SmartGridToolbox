@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = SgtCore SgtSim src tests docs experimental/SgtServer
+SUBDIRS = SgtCore SgtSim src tests docs
 
 dist_doc_DATA = README.md
 
