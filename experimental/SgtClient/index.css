@@ -41,22 +41,17 @@ h1,h2 {
     overflow: scroll;
 }
 
-.sgt-progress-outer {
+.sgt-progress {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
+    margin-left: -200px;
+    width: 400px;
     margin-top: -50px;
-    margin-left: -100px;
-}
-
-.sgt-progress-inner {
-    margin: auto;
-    width: 200px;
     height: 100px;
     padding: 5px;
     background-color: rgba(230, 230, 240, 0.96);
     z-index: 1;
-    position: relative;
 }
 
 progress {
