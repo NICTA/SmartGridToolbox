@@ -6,5 +6,5 @@ cd ..
 
 ./autogen.sh
 ./configure CXX=$INSTALL_CXX CPPFLAGS=-I$HOME/include LDFLAGS=-L$HOME/lib --with-klu || exit $?
-make $TARGS || exit $?
+make || exit $?
 make check

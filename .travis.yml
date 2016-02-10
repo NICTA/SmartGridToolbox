@@ -18,46 +18,31 @@ matrix:
                         - csh
                         - clang-3.6
                         - libc++-dev
-                        - libboost-chrono1.55-dev
                         - libboost-date-time1.55-dev
-                        - libboost-filesystem1.55-dev
                         - libboost-random1.55-dev
-                        - libboost-regex1.55-dev
-                        - libboost-system1.55-dev
-                        - libboost-test1.55-dev
-                        - libboost-thread1.55-dev
                         - libblas-dev
                         - openssl
             env:
                 - INSTALL_CXX=clang++-3.6
                 - LD_LIBRARY_PATH=$HOME/lib
-                - TARGS='all'
         -   
             os: linux
             compiler: gcc
             addons:
                 apt:
                     sources:
-                        - llvm-toolchain-precise-3.6
                         - ubuntu-toolchain-r-test
                         - boost-latest
                     packages: 
                         - csh
                         - g++-4.9
-                        - libboost-chrono1.55-dev
                         - libboost-date-time1.55-dev
-                        - libboost-filesystem1.55-dev
                         - libboost-random1.55-dev
-                        - libboost-regex1.55-dev
-                        - libboost-system1.55-dev
-                        - libboost-test1.55-dev
-                        - libboost-thread1.55-dev
                         - libblas-dev
                         - openssl
             env:
                 - INSTALL_CXX=g++-4.9
                 - LD_LIBRARY_PATH=$HOME/lib
-                - TARGS='all experimental/SgtServer'
 
 before_install:
     - mkdir $HOME/include
