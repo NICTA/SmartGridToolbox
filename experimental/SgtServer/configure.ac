@@ -13,6 +13,7 @@ AC_SUBST([AM_CXXFLAGS], ["$AM_CXXFLAGS -Wall"])
 
 AX_BOOST_BASE(,, [AC_MSG_ERROR([SmartGridToolbox needs Boost, but it was not found in your system])])
 AX_BOOST_CHRONO
+AX_BOOST_DATE_TIME
 AX_BOOST_FILESYSTEM
 AX_BOOST_REGEX
 AX_BOOST_SYSTEM
