@@ -1,4 +1,4 @@
-function analyse(case_rel_path, single_panel_area)
+function analyse(case_rel_path, single_panel_area, solar_penetration)
     mpc = loadcase([pwd(), '/', case_rel_path]);
     define_constants;
     n_bus = size(mpc.bus, 1);
@@ -11,7 +11,7 @@ function analyse(case_rel_path, single_panel_area)
     
     PSel = PStatic(sel);
     n_house = PSel * 1000 / 1.5;
-    penetration = 0.2 * ones(size(PSel));
+    penetration = solar_penetration * ones(size(PSel));
     ave_area = 15;
     a = n_house .* penetration .* ave_area;
     n_panel = a / single_panel_area;

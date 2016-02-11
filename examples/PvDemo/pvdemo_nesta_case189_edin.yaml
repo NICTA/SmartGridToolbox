@@ -1,9 +1,9 @@
 - sgt_gui:
     bar_power_scaling: 0.01
     V_mag_min: 0.97
-    V_mag_max: 1.1
+    V_mag_max: 1.07
 - parameters:
-    start_time: 2013-01-02 00:00:00
+    start_time: 2013-01-02 07:00:00
     end_time: 2013-01-05 00:00:00
     loads_start_time: 2013-01-02 00:00:00
     n_ld_busses: 51
@@ -27,7 +27,7 @@
     interp_type: lerp                 
 - weather:
     id: weather
-    dt: 00:05:00
+    dt: 00:10:00
     irradiance: 
         solar_model: standard
     cloud_attenuation_factors:
@@ -39,7 +39,7 @@
     solver: opf_pt_pp
 - matpower:
     sim_network_id: network
-    input_file: data/nesta_case189_edin/nesta_case189_edin.m
+    input_file: data/nesta_case189_edin/nesta_case189_edin_mod.m
     default_kV_base: 11
 - loop:
     loop_variable: [i, 0, <n_ld_busses>, 1]
@@ -58,7 +58,7 @@
             bus_id: bus_<ld_busses(<i>)>
             phases: [BAL]
             time_series_id: load_<ld_busses(<i>)>_series
-            dt: 00:05:00
+            dt: 00:10:00
             scale_factor_S: 1.2
 - loop:
     loop_variable: [i, 0, <n_pv_busses>, 1]
