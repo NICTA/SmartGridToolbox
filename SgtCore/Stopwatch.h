@@ -28,7 +28,7 @@ class Stopwatch
         void reset()
         {
             dur_ = std::chrono::duration<double>::zero();
-            if (isRunning_) start_ = start_ = std::chrono::system_clock::now();
+            if (isRunning_) start_ = std::chrono::system_clock::now();
         }
         double seconds() {return isRunning_
             ? (dur_ + std::chrono::duration<double>(std::chrono::system_clock::now() - start_)).count()
