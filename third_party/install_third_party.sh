@@ -8,13 +8,15 @@ if [ "$CXX" == "" -o "$INSTALL_PREFIX" == "" ]; then
     exit 1
 fi
 
+if [ -w $INSTALL_PREFIX ]; then SUDO=""; else SUDO=sudo; fi
+
 cd armadillo-5.400.2
 rm -rf build_sgt
 mkdir build_sgt
 cd build_sgt
 cmake -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX .. || exit $?
 make || exit $?
-sudo make install || exit $?
+$SUDO make install || exit $?
 cd ../..
 
 cd yaml-cpp-0.5.1
@@ -23,7 +25,7 @@ mkdir build_sgt
 cd build_sgt
 cmake -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX .. || exit $?
 make || exit $?
-sudo make install || exit $?
+$SUDO make install || exit $?
 cd ../..
 
 cd SuiteSparse
@@ -34,27 +36,27 @@ sed -i'' \
 
 cd SuiteSparse_config
 make || exit $?
-sudo make install || exit $?
+$SUDO make install || exit $?
 cd ..
 
 cd AMD
 make || exit $?
-sudo make install || exit $?
+$SUDO make install || exit $?
 cd ..
 
 cd BTF
 make || exit $?
-sudo make install || exit $?
+$SUDO make install || exit $?
 cd ..
 
 cd COLAMD
 make || exit $?
-sudo make install || exit $?
+$SUDO make install || exit $?
 cd ..
 
 cd KLU
 make || exit $?
-sudo make install || exit $?
+$SUDO make install || exit $?
 cd ..
 
 cd ..
