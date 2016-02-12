@@ -125,6 +125,22 @@ static bool approx(const T a, const T b)
 {
     return not (a > b or a < b);
 }
+
+/// Is type T safe for a numeric_limits template parameter?
+template<typename T> using isNlSafe = std::is_convertible<T, T>;
+
+/// Is type T an integer type?
+template<typename T, bool = isNlSafe<T>::value> struct IsInt;
+
+template<typename T > struct IsInt<T, true>
+{
+    static const bool value = std::conditional<std::numeric_limits<T>::is_integer, std::true_type, std::false_type>::type::value;
+};
+
+template<typename T > struct IsInt<T, false>
+{
+    static const bool value = false;
+};
 }
 
 // Forward declarations:
@@ -1185,7 +1201,7 @@ class basic_json
     template<typename CompatibleNumberIntegerType, typename
              std::enable_if<
                  std::is_constructible<number_integer_t, CompatibleNumberIntegerType>::value and
-                 std::numeric_limits<CompatibleNumberIntegerType>::is_integer, CompatibleNumberIntegerType>::type
+                 IsInt<CompatibleNumberIntegerType>::value, CompatibleNumberIntegerType>::type
              = 0>
     basic_json(const CompatibleNumberIntegerType value) noexcept
         : m_type(value_t::number_integer),
