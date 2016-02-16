@@ -18,7 +18,7 @@ Dexter.Heatmap = (function() {
     //
     // Triangles are formed by joining the center of each square to the corners.
     
-    var n = 40; // n x n grid.
+    var n = 50; // n x n grid.
     var n2 = n * n; // Number of grid points.
     var nm1 = n - 1; // Number of grid intervals in each dimension.
     var nm12 = nm1 * nm1; // Number of grid squares.
