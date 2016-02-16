@@ -16,7 +16,8 @@ Sgt.SgtClient = (function() {
         labelVLow: $("#label-V-low"),
         labelVHigh: $("#label-V-high"),
         networkGraph: $("#sgt-network-graph"),
-        networkHeatmap: $("#sgt-heatmap-canvas"),
+        heatmapCanvas: $("#sgt-heatmap-canvas"),
+        labelCanvas: $("#sgt-label-canvas"),
         properties: $("#sgt-network-properties"),
         progressGroup: $("#sgt-progress-group"),
         progressMessage: $("#sgt-progress-message"),
@@ -30,6 +31,11 @@ Sgt.SgtClient = (function() {
     var graphics = null;
 
     var renderer = null;
+   
+    dom.labelCanvas[0].setAttribute('width', dom.labelCanvas[0].offsetWidth);
+    dom.labelCanvas[0].setAttribute('height',dom.labelCanvas[0].offsetHeight);
+    var labelCtx = dom.labelCanvas[0].getContext("2d");
+    labelCtx.textAlign = "center";
 
     var VLow = 0.0;
     var VHigh = 2.0;
@@ -37,7 +43,7 @@ Sgt.SgtClient = (function() {
     syncVLow();
     syncVHigh();
    
-    Dexter.Heatmap.init(dom.networkHeatmap[0]);
+    Dexter.Heatmap.init(dom.heatmapCanvas[0]);
     Dexter.Heatmap.setViewRectToCanvas();
         
     function clamp(x, min, max) {
@@ -103,6 +109,7 @@ Sgt.SgtClient = (function() {
         graphics.endRender = function() {
             oldEndRender();
             if (dom.showHeatmap[0].checked) drawHeatmap();
+            drawLabels();
         }; 
 
         if (webglEvents) {
@@ -227,6 +234,16 @@ Sgt.SgtClient = (function() {
         Dexter.Heatmap.draw(); // adds the buffered points
     }
 
+    function drawLabels()
+    {
+        labelCtx.clearRect(0, 0, dom.labelCanvas[0].scrollWidth, dom.labelCanvas[0].scrollHeight);
+        graph.forEachNode(function(node) {
+            var pos = layout.getNodePosition(node.id);
+            var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
+            labelCtx.fillText(node.id, newPos.x, newPos.y);
+        });
+    }
+
     function syncSpringLayout() {
         if (renderer) {
             if (dom.useSpring[0].checked) {
@@ -239,9 +256,9 @@ Sgt.SgtClient = (function() {
 
     function syncHeatmap() {
         if (dom.showHeatmap[0].checked && graph) {
-            dom.networkHeatmap[0].removeAttribute("hidden");
+            dom.heatmapCanvas[0].removeAttribute("hidden");
         } else {
-            dom.networkHeatmap[0].setAttribute("hidden");
+            dom.heatmapCanvas[0].setAttribute("hidden");
         }
     }
 
