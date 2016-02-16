@@ -97,15 +97,15 @@ Sgt.SgtClient = (function() {
         if (params.useWebGl) {
             graphics = Viva.Graph.View.webglGraphics();
             var webglEvents = Viva.Graph.webglInputEvents(graphics, graph);
-            oldEndRender = graphics.endRender;
-            graphics.endRender = function() {
-                oldEndRender();
-                if (dom.showHeatmap[0].checked) drawHeatmap();
-            }; 
         } else {
             graphics = Viva.Graph.View.svgGraphics();
             var webglEvents = null;
         }
+        oldEndRender = graphics.endRender;
+        graphics.endRender = function() {
+            oldEndRender();
+            if (dom.showHeatmap[0].checked) drawHeatmap();
+        }; 
 
         if (webglEvents) {
             webglEvents.mouseEnter(function (node) {
@@ -204,7 +204,13 @@ Sgt.SgtClient = (function() {
         dat = [];
         graph.forEachNode(function(node) {
             var pos = layout.getNodePosition(node.id);
-            var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
+            if (params.useWebGl) {
+                var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
+            } else {
+                var svg = $('g')[0];
+                var t = svg.getCTM();
+                var newPos = {x: t.a * pos.x + t.b * pos.y + t.e, y: t.c * pos.x + t.d * pos.y + t.f};
+            }
             var VParam = (clamp(node.data.VMag, VLow, VHigh) - VLow) / VRange;
             dat.push([[newPos.x, newPos.y], VParam]);
         });

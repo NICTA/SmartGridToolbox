@@ -68,3 +68,8 @@ progress {
     padding-left: 10px;
     padding-right: 0px;
 }
+
+svg {
+    height: 100%;
+    width: 100%;
+}
