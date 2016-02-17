@@ -69,6 +69,11 @@ progress {
     padding-right: 0px;
 }
 
+.pgTable {
+    width: 100%;
+    font-size: 80%;
+}
+
 svg {
     height: 100%;
     width: 100%;

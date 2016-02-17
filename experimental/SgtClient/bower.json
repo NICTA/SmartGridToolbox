@@ -19,7 +19,6 @@
   ],
   "dependencies": {
     "jquery": "*",
-    "jsoneditor": "*",
     "vivagraphjs": "*",
     "bootstrap": "*"
   }

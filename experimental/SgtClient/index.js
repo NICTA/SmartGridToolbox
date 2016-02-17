@@ -36,8 +36,8 @@ Sgt.SgtClient = (function() {
     var VRange;
     syncVLow();
     syncVHigh();
-    
-    var editor = new JSONEditor(dom.properties[0], {mode : "tree"});
+   
+    // var editor = new JSONEditor(dom.properties[0], {mode : "tree"});
 
     Dexter.Heatmap.init(dom.networkHeatmap[0]);
     Dexter.Heatmap.setViewRectToCanvas();
@@ -112,13 +112,14 @@ Sgt.SgtClient = (function() {
             }).mouseLeave(function (node) {
             }).dblClick(function (node) {
             }).click(function (node) {
-                var url = loadNetwork.url + '/busses/' + node.id + '/properties/'
+                var url = loadNetwork.url + "/busses/" + node.id + "/properties/"
                 $.ajax({
                     url: url,
                     async: false,
-                    dataType: 'json',
+                    dataType: "json",
                     success: function (response) {
-                        editor.set(response);
+                        dom.properties.jqPropertyGrid(response, {"id": {group: "Identity"}});
+                        // editor.set(response);
                     }
                 });
             });
@@ -207,7 +208,7 @@ Sgt.SgtClient = (function() {
             if (params.useWebGl) {
                 var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
             } else {
-                var svg = $('g')[0];
+                var svg = $("g")[0];
                 var t = svg.getCTM();
                 var newPos = {x: t.a * pos.x + t.b * pos.y + t.e, y: t.c * pos.x + t.d * pos.y + t.f};
             }
