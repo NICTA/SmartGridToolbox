@@ -139,7 +139,7 @@ namespace Sgt
 
             Phases phases_;
 
-            bool isInService_;
+            bool isInService_{true};
 
             Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
             Event injectionChanged_{std::string(sComponentType()) + " : Injection changed"};
