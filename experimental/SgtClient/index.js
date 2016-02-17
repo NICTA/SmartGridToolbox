@@ -51,8 +51,8 @@ Sgt.SgtClient = (function() {
         var VBase = bus.bus.V_base;
         var result = 0.0;
         for (var i = 0; i < V.length; ++i) {
-            var Vr = V[i].r;
-            var Vi = V[i].i;
+            var Vr = V[i][0];
+            var Vi = V[i][1];
             result += Math.sqrt(Vr * Vr + Vi * Vi);
         }
         result /= VBase;
