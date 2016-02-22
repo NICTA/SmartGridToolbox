@@ -37,8 +37,6 @@ Sgt.SgtClient = (function() {
     syncVLow();
     syncVHigh();
    
-    // var editor = new JSONEditor(dom.properties[0], {mode : "tree"});
-
     Dexter.Heatmap.init(dom.networkHeatmap[0]);
     Dexter.Heatmap.setViewRectToCanvas();
         
@@ -118,8 +116,18 @@ Sgt.SgtClient = (function() {
                     async: false,
                     dataType: "json",
                     success: function (response) {
-                        dom.properties.jqPropertyGrid(response, {"id": {group: "Identity"}});
-                        // editor.set(response);
+                        dom.properties.jqPropertyGrid(response, {
+                            "id": {group: "Identity"},
+                            "type": {group: "Identity"},
+                            "phases": {group: "Identity"},
+                            "V": {group: "Key Bus Properties"},
+                            "VBase": {group: "Key Bus Properties"},
+                            "isInService": {group: "Key Bus Properties"},
+                            "nInServiceGens": {group: "Key Bus Properties"},
+                            "SGen": {group: "Key Bus Properties"},
+                            "nInServiceZips": {group: "Key Bus Properties"},
+                            "SZip": {group: "Key Bus Properties"}
+                        });
                     }
                 });
             });
