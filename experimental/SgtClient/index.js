@@ -82,7 +82,7 @@ Sgt.SgtClient = (function() {
         for (var i = 0; i < busses.length; ++i)
         {
             var bus = busses[i];
-            graph.addNode(bus.component.id, {VMag: VMag(bus)});
+            graph.addNode(bus.component.id, {VMag: VMag(bus), type: bus.bus.type});
             busMap[bus.component.id] = bus;
         }
         for (var i = 0; i < branches.length; ++i)
@@ -105,6 +105,22 @@ Sgt.SgtClient = (function() {
             graphics = Viva.Graph.View.svgGraphics();
             var webglEvents = null;
         }
+
+        graphics.node(function (node) {
+            switch(node.data.type) {
+                case "SL": 
+                    col = 0xaa0000ff; 
+                    break;
+                case "PV": 
+                    col = 0xaaaa00ff; 
+                    break;
+                case "PQ":
+                    col = 0x0000aaff; 
+                    break;
+            }
+            return {size: 10, color: col};
+        });
+
         oldEndRender = graphics.endRender;
         graphics.endRender = function() {
             oldEndRender();
@@ -239,7 +255,7 @@ Sgt.SgtClient = (function() {
         labelCtx.clearRect(0, 0, dom.labelCanvas[0].scrollWidth, dom.labelCanvas[0].scrollHeight);
         graph.forEachNode(function(node) {
             var pos = layout.getNodePosition(node.id);
-            var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
+            var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y + 10});
             labelCtx.fillText(node.id, newPos.x, newPos.y);
         });
     }
