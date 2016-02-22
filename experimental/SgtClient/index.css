@@ -1,3 +1,7 @@
+body {
+    background-color: rgba(100, 105, 120, 0.05);
+}
+
 h1,h2 {
     text-align: center;
     margin-bottom: 5px;
@@ -35,6 +39,10 @@ h1,h2 {
     height: 60vh;
     border-style: solid;
     border-width: thin;
+    background-color: white;
+    -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.5);
+    -moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.5);
+    box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.5);
 }
 
 .sgt-network-properties {
