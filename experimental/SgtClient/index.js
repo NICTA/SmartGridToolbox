@@ -109,13 +109,13 @@ Sgt.SgtClient = (function() {
         graphics.node(function (node) {
             switch(node.data.type) {
                 case "SL": 
-                    col = 0xaa0000ff; 
+                    col = 0xdc143cff; 
                     break;
                 case "PV": 
-                    col = 0xaaaa00ff; 
+                    col = 0xda70d6ff; 
                     break;
                 case "PQ":
-                    col = 0x0000aaff; 
+                    col = 0x009090ff; 
                     break;
             }
             return {size: 10, color: col};
@@ -125,7 +125,14 @@ Sgt.SgtClient = (function() {
         graphics.endRender = function() {
             oldEndRender();
             if (dom.showHeatmap[0].checked) drawHeatmap();
-            drawLabels();
+            var scale = graphics.transformGraphToClientCoordinates(
+                {x: graphics.transformClientToGraphCoordinates({x: 0, y: 0}).x + 1, y: 0}).x;
+            console.log("scale = " + scale);
+            if (scale >= 1) {
+                drawLabels();
+            } else {
+                clearLabels();
+            }
         }; 
 
         if (webglEvents) {
@@ -250,12 +257,17 @@ Sgt.SgtClient = (function() {
         Dexter.Heatmap.draw(); // adds the buffered points
     }
 
-    function drawLabels()
+    function clearLabels()
     {
         labelCtx.clearRect(0, 0, dom.labelCanvas[0].scrollWidth, dom.labelCanvas[0].scrollHeight);
+    }
+
+    function drawLabels()
+    {
+        clearLabels();
         graph.forEachNode(function(node) {
             var pos = layout.getNodePosition(node.id);
-            var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y + 10});
+            var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y + 15});
             labelCtx.fillText(node.id, newPos.x, newPos.y);
         });
     }
