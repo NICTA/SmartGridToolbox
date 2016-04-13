@@ -108,7 +108,7 @@ namespace Sgt
             "<"
             "("                                     // Submatch 1: whole expr body, without <>.
                 "("                                 // Submatch 2: whole math expr body.
-                    "[0-9+.eEfFlL\\-*/%() \t]+"
+                    "[-+*/%0-9.eEfFlL() \t]+"       // Any string of allowed chars in math expression.
                 ")|"                                // End submatch 2.
                 "("                                 // Submatch 3: whole var/loop expr body.
                     "("                             // Submatch 4: non-index part of var/loop expr body.
