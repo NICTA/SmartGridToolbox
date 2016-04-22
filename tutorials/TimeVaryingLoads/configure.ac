@@ -1,5 +1,5 @@
-AC_INIT([PVDemo], [0.1], [dan.gordon@nicta.com.au])
-AC_CONFIG_SRCDIR([pvdemo.cc])
+AC_INIT([TimeVaryingLoads], [0.1], [dan.gordon@nicta.com.au])
+AC_CONFIG_SRCDIR([tvloads.cc])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 

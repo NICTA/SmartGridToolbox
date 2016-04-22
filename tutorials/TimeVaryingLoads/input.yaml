@@ -16,7 +16,7 @@
     solver: nr
 - matpower:
     sim_network_id: network
-    input_file: input.m
+    input_file: data/input_mod.m
     default_kV_base: 11
 - loop:
     loop_variable: [i, 0, <n_ld_buses>, 1]
