@@ -9,31 +9,31 @@
     end_time: <end_time>
     lat_long: [-35.3075, 149.1244]                                                 
     timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra.
-- sim_network: 
+- sim_network: # Our network object. 
     id: network # All components have a unique "id" (name).
     P_base: 1 # Base power for per unit.
-    freq_Hz: 60
-    solver: nr
-- matpower:
+    freq_Hz: 60 # Can ignore...
+    solver: nr # Newton-Raphson power flow solver.
+- matpower: # Load in a matpower file into sim_network (easy way to create network).
     sim_network_id: network
     input_file: data/input_mod.m
     default_kV_base: 11
-- loop:
-    loop_variable: [i, 0, <n_ld_buses>, 1]
+- loop: # Like a for loop...
+    loop_variable: [i, 0, <n_ld_buses>, 1] # loop i through the range [0, n_ld_buses - 1].
     loop_body: 
-        - time_series:
-            id: load_<ld_buses(<i>)>_series
+        - time_series: # Specify some time series data...
+            id: load_<ld_buses(<i>)>_series # e.g. for i = 0 we have load_1_series
             value_type: complex_vector
             type: data_time_series
-            data_file: data/loads/load_<ld_buses(<i>)>.txt
+            data_file: data/loads/load_<ld_buses(<i>)>.txt # e.g. data/loads/load_1.txt
             relative_to_time: <loads_start_time>
             time_unit: m
             interp_type: lerp
-        - time_series_zip:
-            id: load_<ld_buses(<i>)>
+        - time_series_zip: # The load itself
+            id: load_<ld_buses(<i>)> # e.g. load_1
             sim_network_id: network
-            bus_id: bus_<ld_buses(<i>)>
-            phases: [BAL]
-            time_series_id: load_<ld_buses(<i>)>_series
-            dt: 00:10:00
+            bus_id: bus_<ld_buses(<i>)> # for bus_1
+            phases: [BAL] # Balanced (one phase) power flow.
+            time_series_id: load_<ld_buses(<i>)>_series # e.g. load_1_series, see above
+            dt: 00:10:00 # Signal that the zip updates its value every 10 minutes
             scale_factor_S: 1.2
