@@ -1,0 +1,39 @@
+- parameters:
+    start_time: 2013-01-02 00:00:00
+    end_time: 2013-01-05 00:00:00
+    loads_start_time: 2013-01-02 00:00:00
+    n_ld_buses: 42
+    ld_buses: [1, 2, 3, 5, 6, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 25, 27, 28, 29, 30, 31, 32, 33, 35, 38, 41, 42, 43, 44, 47, 49, 50, 51, 52, 53, 54, 55, 56, 57]
+- simulation: 
+    start_time: <start_time>
+    end_time: <end_time>
+    lat_long: [-35.3075, 149.1244]                                                 
+    timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra.
+- sim_network: 
+    id: network # All components have a unique "id" (name).
+    P_base: 1 # Base power for per unit.
+    freq_Hz: 60
+    solver: nr
+- matpower:
+    sim_network_id: network
+    input_file: input.m
+    default_kV_base: 11
+- loop:
+    loop_variable: [i, 0, <n_ld_buses>, 1]
+    loop_body: 
+        - time_series:
+            id: load_<ld_buses(<i>)>_series
+            value_type: complex_vector
+            type: data_time_series
+            data_file: data/loads/load_<ld_buses(<i>)>.txt
+            relative_to_time: <loads_start_time>
+            time_unit: m
+            interp_type: lerp
+        - time_series_zip:
+            id: load_<ld_buses(<i>)>
+            sim_network_id: network
+            bus_id: bus_<ld_buses(<i>)>
+            phases: [BAL]
+            time_series_id: load_<ld_buses(<i>)>_series
+            dt: 00:10:00
+            scale_factor_S: 1.2
