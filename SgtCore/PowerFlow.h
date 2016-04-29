@@ -81,47 +81,50 @@ namespace Sgt
             typedef std::vector<Phase> PhaseVec;
 
         public:
-            Phases() : mask_(0) {}
-            Phases(unsigned int mask) : mask_(mask) {rebuild();}
-            Phases(Phase phase) : mask_(static_cast<unsigned int>(phase)) {rebuild();}
+            Phases() = default;
 
-            operator unsigned int() const {return mask_;}
-
-            Phases& operator&=(const Phases& other);
-            Phases& operator|=(const Phases& other);
-
-            bool hasPhase(Phase phase) const
+            Phases(const Phase& p)
             {
-                return (mask_& static_cast<unsigned int>(phase)) == static_cast<unsigned int>(phase);
+                phaseVec_.push_back(p);
             }
-            bool isSubsetOf(const Phases& other) const {return (*this& other) == *this;}
+
+            Phases(std::initializer_list<Phase> ps) :
+                phaseVec_(ps)
+            {
+                // Empty.
+            }
+
+            template<typename T> Phases(const T& container)
+            {
+                for (const auto& p : container)
+                {
+                    phaseVec_.push_back(p);
+                }
+            }
 
             std::size_t size() const {return phaseVec_.size();}
+
             Phase operator[](std::size_t i) const {return phaseVec_[i];}
             std::size_t phaseIndex(Phase p) const;
-            IdxMap::iterator begin() {return idxMap_.begin();}
-            IdxMap::iterator end() {return idxMap_.end();}
-            IdxMap::const_iterator begin() const {return idxMap_.begin();}
-            IdxMap::const_iterator end() const {return idxMap_.end();}
 
-            std::string to_string() const;
+            PhaseVec::iterator begin() {return phaseVec_.begin();}
+            PhaseVec::iterator end() {return phaseVec_.end();}
+            PhaseVec::const_iterator begin() const {return phaseVec_.begin();}
+            PhaseVec::const_iterator end() const {return phaseVec_.end();}
+
+            std::string to_string() const
+            {
+                return toJson().dump();
+            }
+
             json toJson() const;
 
-            friend bool operator==(const Phases& a, const Phases& b) {return a.mask_ == b.mask_;}
-            friend Phases operator&(const Phases& a, const Phases& b) {return {a.mask_& b.mask_};}
-            friend Phases operator|(const Phases& a, const Phases& b) {return {a.mask_ | b.mask_};}
+            friend bool operator==(const Phases& a, const Phases& b) {return a.phaseVec_ == b.phaseVec_;}
             friend std::ostream& operator<<(std::ostream& os, const Phases& p) {return os << p.to_string();}
-        private:
-            void rebuild();
 
         private:
-            unsigned int mask_;
             PhaseVec phaseVec_;
-            IdxMap idxMap_;
     };
-
-    inline Phases operator|(Phase a, Phase b) {return {static_cast<unsigned int>(a) | static_cast<unsigned int>(b)};}
-    inline Phases operator&(Phase a, Phase b) {return {static_cast<unsigned int>(a) & static_cast<unsigned int>(b)};}
 
     /// @brief Apply Carson's equations.
     /// @param nWire The number of wires.

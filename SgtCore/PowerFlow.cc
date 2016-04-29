@@ -21,32 +21,14 @@ using namespace arma;
 
 namespace Sgt
 {
-    namespace
-    {
-        const int nPhases = 9;
-
-        Phase allPhases[nPhases + 1] =
-        {
-            Phase::BAL,
-            Phase::A,
-            Phase::B,
-            Phase::C,
-            Phase::G,
-            Phase::N,
-            Phase::SP,
-            Phase::SM,
-            Phase::SN,
-            Phase::BAD
-        };
-    }
-
     std::size_t Phases::phaseIndex(Phase p) const 
     {
-        if (!hasPhase(p))
+        auto it = std::find(begin(), end(), p);
+        if (it == end())
         {
             throw std::out_of_range("Requested phase does not exist.");
         }
-        return static_cast<std::size_t>(idxMap_.at(p));
+        return static_cast<size_t>(std::distance(begin(), it));
     }
 
     std::string to_string(BusType type)
@@ -153,31 +135,6 @@ namespace Sgt
         return "ERROR";
     }
 
-    Phases& Phases::operator&=(const Phases& other)
-    {
-        mask_ &= other;
-        rebuild();
-        return *this;
-    }
-
-    Phases& Phases::operator|=(const Phases& other)
-    {
-        mask_ |= other;
-        rebuild();
-        return *this;
-    }
-
-    std::string Phases::to_string() const
-    {
-        std::ostringstream ss;
-        ss << phaseVec_[0];
-        for (std::size_t i = 1; i < phaseVec_.size(); ++i)
-        {
-            ss << "|" << phaseVec_[i];
-        }
-        return ss.str();
-    }
-
     json Phases::toJson() const
     {
         json result;
@@ -186,22 +143,6 @@ namespace Sgt
             result.push_back(phase);
         }
         return result;
-    }
-
-    void Phases::rebuild()
-    {
-        phaseVec_ = PhaseVec();
-        phaseVec_.reserve(nPhases);
-        idxMap_ = IdxMap();
-        for (unsigned int i = 0, j = 0; allPhases[i] != Phase::BAD; ++i)
-        {
-            if (hasPhase(allPhases[i]))
-            {
-                phaseVec_.push_back(allPhases[i]);
-                idxMap_[allPhases[i]] = j++;
-            }
-        }
-        phaseVec_.shrink_to_fit();
     }
 
     Mat<Complex> carson(uword nWire, const Mat<double>& Dij, const Col<double> resPerL,

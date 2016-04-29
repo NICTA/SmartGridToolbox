@@ -45,9 +45,9 @@ namespace YAML
     Node convert<Phases>::encode(const Phases& from)
     {
         Node nd;
-        for (const auto& phasePair : from)
+        for (const auto& phase: from)
         {
-            nd.push_back(to_string(phasePair.first));
+            nd.push_back(to_string(phase));
         }
         return nd;
     }
@@ -60,11 +60,12 @@ namespace YAML
         }
         else
         {
-            to = Phases();
+            std::vector<Phase> pVec; 
             for (std::size_t i = 0; i < nd.size(); ++i)
             {
-                to |= nd[i].as<Phase>();
+                pVec.push_back(nd[i].as<Phase>());
             }
+            to = Phases(pVec);
         }
         return true;
     }
