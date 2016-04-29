@@ -48,17 +48,25 @@ namespace Sgt
     /// @ingroup PowerFlowCore
     enum class Phase : unsigned int
     {
-        BAL = 0x1,     // Balanced/one-phase.
-        A   = 0x2,     // Three phase A.
-        B   = 0x4,     // Three phase B.
-        C   = 0x8,     // Three phase C.
-        G   = 0x10,    // Ground.
-        N   = 0x20,    // Neutral, to be used only when it is distinct from ground.
-        SP  = 0x40,    // Split phase plus.
-        SM  = 0x80,    // Split phase minus.
-        SN  = 0x100,   // Split phase neutral.
-        BAD = 0x200    // Not a phase.
+        BAL,    // Balanced/one-phase.
+        A,      // Three phase A.
+        B,      // Three phase B.
+        C,      // Three phase C.
+        G,      // Ground.
+        N,      // Neutral, to be used only when it is distinct from ground.
+        AB,     // Delta AB.
+        BC,     // Delta BC.
+        CA,     // Delta CA.
+        S0,     // Symmetrical zero sequence.
+        S1,     // Symmetrical positive sequence.
+        S2,     // Symmetrical negative sequence.
+        SPP,    // Split phase plus.
+        SPM,    // Split phase minus.
+        SPN,    // Split phase neutral.
+        BAD     // Not a phase.
     };
+
+    constexpr size_t gNPhases = static_cast<size_t>(Phase::BAD) + 1;
 
     std::string to_string(Phase phase);
     template<> struct JsonConvert<Phase>
