@@ -19,17 +19,50 @@
 #include <iostream>
 #include <map>
 
+char* getCmdOption(char** argv, int argc, const std::string & option)
+{
+    auto begin = argv;
+    auto end = argv + argc;
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return *itr;
+    }
+    return 0;
+}
+
+bool cmdOptionExists(char** argv, int argc, const std::string& option)
+{
+    auto begin = argv;
+    auto end = argv + argc;
+    return std::find(begin, end, option) != end;
+}
+
 int main(int argc, char** argv)
 {
     using namespace Sgt;
 
-    sgtAssert(argc == 6, "Usage: solve_network solver infile out_prefix warm_start debug");
+    sgtAssert(argc > 1,
+            "Usage: solve_network [--solver solver_arg] [--prefix prefix] [--warm_start] [--debug] infile");
 
-    std::string solver = argv[1];
-    std::string inFName = argv[2];
-    std::string outPrefix = argv[3];
-    bool warm_start = argv[4][0] == 'T';
-    bool debug = argv[5][0] == 'T';
+    std::string inFName = argv[argc - 1];
+    std::string inSuffix = inFName.substr(inFName.find_last_of(".") + 1);
+
+    std::string solver = "nr";
+    {
+        const char* opt = getCmdOption(argv, argc, "--solver");
+        if (opt != nullptr) solver = opt;
+    }
+
+    std::string outPrefix = "out";
+    {
+        const char* opt = getCmdOption(argv, argc, "--prefix");
+        if (opt != nullptr) outPrefix = opt;
+    }
+
+    bool warmStart = cmdOptionExists(argv, argc, "--warm_start");
+    
+    bool debug = cmdOptionExists(argv, argc, "--debug");
 
     if (debug)
     {
@@ -40,18 +73,25 @@ int main(int argc, char** argv)
     }
 
     Network nw(100.0);
-
-    std::string yamlStr = std::string("--- [{power_flow_solver : " + solver + "}, {matpower : {input_file : ") +
-        inFName + ", default_kV_base : 11}}]";
-    YAML::Node n = YAML::Load(yamlStr);
-
     Parser<Network> p;
-    p.parse(n, nw);
+
+    if (inSuffix == "m")
+    {
+        std::string yamlStr = std::string("--- [{power_flow_solver : " + solver + "}, {matpower : {input_file : ") +
+            inFName + ", default_kV_base : 11}}]";
+        YAML::Node n = YAML::Load(yamlStr);
+        p.parse(n, nw);
+    }
+    else if (inSuffix == "yaml" || inSuffix == "yml")
+    {
+        p.parse(inFName, nw);
+    }
+
     auto outFBus = std::fopen((outPrefix + ".bus").c_str(), "w+");
     auto outFBranch = std::fopen((outPrefix + ".branch").c_str(), "w+");
     std::map<std::string, int> busMap;
 
-    nw.setUseFlatStart(!warm_start);
+    nw.setUseFlatStart(!warmStart);
 
     auto print = [&]()
     {
