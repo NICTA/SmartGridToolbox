@@ -165,7 +165,7 @@ namespace Sgt
                 auto busIdxI = i / branch->nPhase_; // 0 or 1
                 auto branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
                 const PfBus* busI = buses[busIdxI];
-                auto busPhaseIdxI = busI->phases_.phaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
+                auto busPhaseIdxI = phaseIndex(busI->phases_, branch->phases_[busIdxI][branchPhaseIdxI]);
                 const PfNode* nodeI = busI->nodeVec_[busPhaseIdxI].get();
                 auto idxNodeI = nodeI->idx_;
 
@@ -177,7 +177,7 @@ namespace Sgt
                     auto busIdxK = k / branch->nPhase_; // 0 or 1
                     auto branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
                     const PfBus* busK = buses[busIdxK];
-                    auto busPhaseIdxK = busK->phases_.phaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
+                    auto busPhaseIdxK = phaseIndex(busK->phases_, branch->phases_[busIdxK][branchPhaseIdxK]);
                     const PfNode* nodeK = busK->nodeVec_[busPhaseIdxK].get();
                     auto idxNodeK = nodeK->idx_;
 

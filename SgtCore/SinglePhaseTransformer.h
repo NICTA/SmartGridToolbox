@@ -49,7 +49,7 @@ namespace Sgt
             /// @param ZL The leakage impedance, must be > 0.
             SinglePhaseTransformer(const std::string& id, Complex nomVRatio, Complex offNomRatio, Complex ZL) :
                 Component(id),
-                BranchAbc(Phase::BAL, Phase::BAL), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
+                BranchAbc({Phase::BAL}, {Phase::BAL}), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
             {
                 // Empty.
             }

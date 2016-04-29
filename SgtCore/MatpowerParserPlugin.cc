@@ -421,7 +421,7 @@ namespace Sgt
         {
             std::string busId = getBusName(busInfo.id, busNames);
             std::unique_ptr<Bus> bus(
-                new Bus(busId, Phase::BAL, {VScale * Complex(busInfo.kVBase, 0.0)}, PScale * busInfo.kVBase));
+                new Bus(busId, {Phase::BAL}, {VScale * Complex(busInfo.kVBase, 0.0)}, PScale * busInfo.kVBase));
             BusType type = BusType::BAD;
             bool isInService = true;
             switch (busInfo.type)
@@ -463,7 +463,7 @@ namespace Sgt
             if (checkNzZip(SConst, YConst))
             {
                 std::string zipId = getZipName(nZip++, getBusName(busInfo.id, busNames));
-                std::unique_ptr<GenericZip> zip(new GenericZip(zipId, Phase::BAL));
+                std::unique_ptr<GenericZip> zip(new GenericZip(zipId, {Phase::BAL}));
                 zip->setYConst({GScale * YConst});
                 zip->setSConst({PScale * SConst});
                 netw.addZip(std::move(zip), busId);
@@ -495,7 +495,7 @@ namespace Sgt
         {
             MpGenInfo& genInfo = genVec[i];
             std::string genId = getGenName(i, getBusName(genInfo.busId, busNames));
-            std::unique_ptr<GenericGen> gen(new GenericGen(genId, Phase::BAL));
+            std::unique_ptr<GenericGen> gen(new GenericGen(genId, {Phase::BAL}));
             genCompVec.push_back(gen.get());
 
             std::string busId = busNames.at(genInfo.busId);

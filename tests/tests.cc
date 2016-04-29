@@ -457,7 +457,7 @@ BOOST_AUTO_TEST_CASE (test_const_I)
 
     auto bus0 = branch->bus0();
 
-    auto zip = std::make_shared<GenericZip>("zip_I_const", Phase::BAL);
+    auto zip = std::make_shared<GenericZip>("zip_I_const", Phases{Phase::BAL});
     Complex Ic = std::polar(1.0, 15.0 * pi / 180.0) * 0.789;
     zip->setIConst({Ic});
     nw.addZip(zip, bus1Id);

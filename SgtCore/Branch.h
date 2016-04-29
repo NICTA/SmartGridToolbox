@@ -143,8 +143,8 @@ namespace Sgt
 
             virtual arma::Mat<Complex> Y() const final
             {
-                return isInService_ ? inServiceY() : arma::Mat<Complex>(
-                           2 * phases0_.size(), 2 * phases1_.size(), arma::fill::zeros);
+                size_t n = phases0_.size() + phases1_.size();
+                return isInService_ ? inServiceY() : arma::Mat<Complex>(n, n, arma::fill::zeros);
             }
 
             SGT_PROP_GET(Y, BranchAbc, arma::Mat<Complex>, Y);

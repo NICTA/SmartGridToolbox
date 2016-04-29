@@ -49,7 +49,7 @@ namespace Sgt
 
             CommonBranch(const std::string& id) :
                 Component(id),
-                BranchAbc(Phase::BAL, Phase::BAL)
+                BranchAbc({Phase::BAL}, {Phase::BAL})
             {
                 // Empty.
             }

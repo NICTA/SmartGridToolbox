@@ -21,16 +21,6 @@ using namespace arma;
 
 namespace Sgt
 {
-    std::size_t Phases::phaseIndex(Phase p) const 
-    {
-        auto it = std::find(begin(), end(), p);
-        if (it == end())
-        {
-            throw std::out_of_range("Requested phase does not exist.");
-        }
-        return static_cast<size_t>(std::distance(begin(), it));
-    }
-
     std::string to_string(BusType type)
     {
         switch (type)
@@ -79,12 +69,24 @@ namespace Sgt
                 return "G";
             case Phase::N:
                 return "N";
-            case Phase::SP:
+            case Phase::AB:
+                return "AB";
+            case Phase::BC:
+                return "BC";
+            case Phase::CA:
+                return "CA";
+            case Phase::SY0:
+                return "SY0";
+            case Phase::SY1:
+                return "SY1";
+            case Phase::SY2:
+                return "SY2";
+            case Phase::SPP:
                 return "SP";
-            case Phase::SM:
-                return "SM";
-            case Phase::SN:
-                return "SN";
+            case Phase::SPM:
+                return "SPM";
+            case Phase::SPN:
+                return "SPN";
             case Phase::BAD:
                 return "BAD";
         }
@@ -93,11 +95,11 @@ namespace Sgt
 
     template<> Phase from_string<Phase>(const std::string& str)
     {
-        static Phase phases[] = {Phase::BAL, Phase::A, Phase::B, Phase::C, Phase::G, Phase::N, Phase::SP,
-                                 Phase::SM, Phase:: SN, Phase::BAD
-                                };
+        const static Phase phases[] = {Phase::BAL, Phase::A, Phase::B, Phase::C, Phase::G, Phase::N, Phase::AB,
+            Phase::BC, Phase::CA, Phase::SY0, Phase::SY1, Phase::SY2, Phase::SPP, Phase::SPM, Phase:: SPN,
+            Phase::BAD};
         Phase result = Phase::BAD;
-        for (Phase* test = &phases[0]; *test != Phase::BAD; ++test)
+        for (const Phase* test = &phases[0]; *test != Phase::BAD; ++test)
         {
             if (str == to_string(*test))
             {
@@ -106,43 +108,15 @@ namespace Sgt
         }
         return result;
     }
-
-    const char* phaseDescr(Phase phase)
+    
+    std::size_t phaseIndex(const Phases& ps, Phase p)
     {
-        switch (phase)
+        auto it = std::find(ps.begin(), ps.end(), p);
+        if (it == ps.end())
         {
-            case Phase::BAL:
-                return "balanced/1-phase";
-            case Phase::A:
-                return "3-phase A";
-            case Phase::B:
-                return "3-phase B";
-            case Phase::C:
-                return "3-phase C";
-            case Phase::G:
-                return "ground";
-            case Phase::N:
-                return "neutral";
-            case Phase::SP:
-                return "split-phase +ve";
-            case Phase::SM:
-                return "split-phase -ve";
-            case Phase::SN:
-                return "split-phase neutral";
-            case Phase::BAD:
-                return "UNDEFINED";
+            throw std::out_of_range("Requested phase does not exist.");
         }
-        return "ERROR";
-    }
-
-    json Phases::toJson() const
-    {
-        json result;
-        for (auto phase : phaseVec_)
-        {
-            result.push_back(phase);
-        }
-        return result;
+        return static_cast<size_t>(std::distance(ps.begin(), it));
     }
 
     Mat<Complex> carson(uword nWire, const Mat<double>& Dij, const Col<double> resPerL,

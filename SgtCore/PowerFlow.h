@@ -17,7 +17,6 @@
 
 #include <SgtCore/Common.h>
 
-#include <map>
 #include <ostream>
 #include <string>
 #include <vector>
@@ -57,82 +56,34 @@ namespace Sgt
         AB,     // Delta AB.
         BC,     // Delta BC.
         CA,     // Delta CA.
-        S0,     // Symmetrical zero sequence.
-        S1,     // Symmetrical positive sequence.
-        S2,     // Symmetrical negative sequence.
+        SY0,    // Symmetrical zero sequence.
+        SY1,    // Symmetrical positive sequence.
+        SY2,    // Symmetrical negative sequence.
         SPP,    // Split phase plus.
         SPM,    // Split phase minus.
         SPN,    // Split phase neutral.
         BAD     // Not a phase.
     };
 
-    constexpr size_t gNPhases = static_cast<size_t>(Phase::BAD) + 1;
+    constexpr size_t gNPhase = static_cast<size_t>(Phase::BAD) + 1;
 
-    std::string to_string(Phase phase);
+    std::string to_string(Phase p);
     template<> struct JsonConvert<Phase>
     {
-        static json toJson(Phase phase)
+        static json toJson(Phase p)
         {
-            return to_string(phase);
+            return to_string(p);
         }
     };
     inline std::ostream& operator<<(std::ostream& os, Phase p) {return os << to_string(p);}
     template<> Phase from_string<Phase>(const std::string& str);
-    const char* phaseDescr(Phase phase);
 
-    /// @brief A set of network phases, each specified by a Phase value. 
-    /// @ingroup PowerFlowCore
-    class Phases
-    {
-        private:
-            typedef std::map<Phase, unsigned int> IdxMap;
-            typedef std::vector<Phase> PhaseVec;
+    using Phases = std::vector<Phase>;
+    
+    std::size_t phaseIndex(const Phases& ps, Phase p);
 
-        public:
-            Phases() = default;
-
-            Phases(const Phase& p)
-            {
-                phaseVec_.push_back(p);
-            }
-
-            Phases(std::initializer_list<Phase> ps) :
-                phaseVec_(ps)
-            {
-                // Empty.
-            }
-
-            template<typename T> Phases(const T& container)
-            {
-                for (const auto& p : container)
-                {
-                    phaseVec_.push_back(p);
-                }
-            }
-
-            std::size_t size() const {return phaseVec_.size();}
-
-            Phase operator[](std::size_t i) const {return phaseVec_[i];}
-            std::size_t phaseIndex(Phase p) const;
-
-            PhaseVec::iterator begin() {return phaseVec_.begin();}
-            PhaseVec::iterator end() {return phaseVec_.end();}
-            PhaseVec::const_iterator begin() const {return phaseVec_.begin();}
-            PhaseVec::const_iterator end() const {return phaseVec_.end();}
-
-            std::string to_string() const
-            {
-                return toJson().dump();
-            }
-
-            json toJson() const;
-
-            friend bool operator==(const Phases& a, const Phases& b) {return a.phaseVec_ == b.phaseVec_;}
-            friend std::ostream& operator<<(std::ostream& os, const Phases& p) {return os << p.to_string();}
-
-        private:
-            PhaseVec phaseVec_;
-    };
+    inline std::string to_string(const Phases& ps) {return json(ps).dump();}
+    inline std::ostream& operator<<(std::ostream& os, const Phases& ps) {return os << to_string(ps);}
 
     /// @brief Apply Carson's equations.
     /// @param nWire The number of wires.
