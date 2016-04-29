@@ -573,4 +573,34 @@ BOOST_AUTO_TEST_CASE (test_phases_A)
     }
 }
 
+BOOST_AUTO_TEST_CASE (test_phases_B)
+{
+    Network netw;
+    Parser<Network> p;
+    p.parse("test_phases_B.yaml", netw);
+    netw.solvePowerFlow();
+    for (auto b : netw.buses())
+    {
+        std::cout << b->id() << std::endl;
+        std::cout << b->phases() << std::endl;
+        std::cout << b->V() << std::endl;
+        std::cout << std::endl;
+    }
+}
+
+BOOST_AUTO_TEST_CASE (test_phases_C)
+{
+    Network netw;
+    Parser<Network> p;
+    p.parse("test_phases_C.yaml", netw);
+    netw.solvePowerFlow();
+    for (auto b : netw.buses())
+    {
+        std::cout << b->id() << std::endl;
+        std::cout << b->phases() << std::endl;
+        std::cout << b->V() << std::endl;
+        std::cout << std::endl;
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()

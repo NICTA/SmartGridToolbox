@@ -1,0 +1,31 @@
+# Mix and match phase connections.
+    -  bus:
+            id: bus_1
+            phases: [A, B, C]
+            V_base: 1
+            V_nom: [1, 1D120, 1D-120]
+            type: SL
+    -  generic_gen:
+            id: gen_1
+            bus_id: bus_1
+            phases: [A, B, C]
+    -  bus:
+            id: bus_2
+            phases: [A, B, C]
+            V_base: 1
+            V_nom: [1D120, 1D-120, 1]
+            type: PQ
+    -  generic_branch:
+            id: branch_1_2
+            bus_0_id: bus_1
+            bus_1_id: bus_2
+            phases_0: [A, B, C]
+            phases_1: [C, A, B]
+            Y:  [
+                    [    0.4-0.4j,       0.0,        0.0,  -0.4+0.4j,        0.0,        0.0],
+                    [         0.0,  0.4-0.4j,        0.0,        0.0,  -0.4+0.4j,        0.0],
+                    [         0.0,       0.0,   0.4-0.4j,        0.0,        0.0,  -0.4+0.4j],
+                    [   -0.4+0.4j,       0.0,        0.0,   0.4-0.4j,        0.0,        0.0],
+                    [         0.0, -0.4+0.4j,        0.0,        0.0,   0.4-0.4j,        0.0],
+                    [         0.0,       0.0,  -0.4+0.4j,        0.0,        0.0,   0.4-0.4j]
+                ]
