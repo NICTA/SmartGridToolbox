@@ -41,8 +41,8 @@ namespace Sgt
         netwNode.push_back(busNode);
         NetworkParser p = parser.subParser<Network>();
         p.parse(netwNode, network);
-        auto& busses = network.busses();
-        auto bus = busses.back(); // KLUDGE: assumes just parsed bus is last (which is true, but not robust).
+        auto& buses = network.buses();
+        auto bus = buses.back(); // KLUDGE: assumes just parsed bus is last (which is true, but not robust).
         auto simBus = sim.newSimComponent<SimBus>(id, *bus);
         simBus->linkToSimNetwork(*simNetwork);
     }

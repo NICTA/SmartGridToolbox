@@ -85,7 +85,7 @@ namespace Sgt
 
         /// @}
 
-        /// @name attached busses:
+        /// @name attached buses:
         /// @{
 
             const Bus* bus0() const

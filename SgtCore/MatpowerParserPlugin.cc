@@ -291,7 +291,7 @@ namespace Sgt
             }
         }
 
-        sgtLogMessage() << "Parsed " << data.bus.size() << " busses, " << data.gen.size() << " generators and "
+        sgtLogMessage() << "Parsed " << data.bus.size() << " buses, " << data.gen.size() << " generators and "
                         << data.branch.size() << " branches." << std::endl;
 
         // Extract the bus data.
@@ -415,7 +415,7 @@ namespace Sgt
         // Network:
         netw.setPBase(data.MVABase);
 
-        // Busses:
+        // Buses:
         std::size_t nZip = 0;
         for (const auto& busInfo : busVec)
         {
@@ -468,19 +468,19 @@ namespace Sgt
                 zip->setSConst({PScale * SConst});
                 netw.addZip(std::move(zip), busId);
             }
-        } // Busses
+        } // Buses
 
         // If there is no slack bus, Matpower assigns the first PV bus as slack. We need to do the same.
-        auto it = std::find_if(netw.busses().cbegin(), netw.busses().cend(),
+        auto it = std::find_if(netw.buses().cbegin(), netw.buses().cend(),
                                [](const Bus* bus)->bool{return bus->type() == BusType::SL;});
-        if (it == netw.busses().cend())
+        if (it == netw.buses().cend())
         {
             sgtLogWarning()
                     << "There is no slack bus defined on the network. Setting the type of the first PV bus to SL."
                     << std::endl;
-            auto itb = std::find_if(netw.busses().cbegin(), netw.busses().cend(),
+            auto itb = std::find_if(netw.buses().cbegin(), netw.buses().cend(),
                                     [](const Bus* bus)->bool{return bus->type() == BusType::PV;});
-            assert(itb != netw.busses().cend());
+            assert(itb != netw.buses().cend());
             (**itb).setType(BusType::SL);
         }
         else

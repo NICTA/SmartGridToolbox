@@ -22,8 +22,8 @@
 // Terminology:
 // "Bus" and "Branch" refer to n-phase objects i.e. they can contain several phases.
 // "Node" and "Link" refer to individual bus conductors and single phase lines.
-// A three phase network involving busses and branches can always be decomposed into a single phase network
-// involving nodes and links. Thus use of busses and branches is simply a convenience that lumps together nodes and
+// A three phase network involving buses and branches can always be decomposed into a single phase network
+// involving nodes and links. Thus use of buses and branches is simply a convenience that lumps together nodes and
 // links.
 
 namespace Sgt

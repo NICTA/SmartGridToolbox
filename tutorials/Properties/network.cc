@@ -53,7 +53,7 @@ int main(int argc, char** argv)
     line->setYSeries({Complex(0.005, -0.05)});
         // Set the series admittance of the line.
     nw.addBranch(line, "bus_1", "bus_2");
-        // Add the line to the network, between the two busses.
+        // Add the line to the network, between the two buses.
     
     nw.solvePowerFlow();
         // Solve the power flow problem, using default Newton-Raphson solver.

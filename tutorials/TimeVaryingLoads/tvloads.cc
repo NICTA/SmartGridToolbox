@@ -40,12 +40,12 @@ int main(int argc, const char ** argv)
     Network& network = simNetwork.network();
     network.setUseFlatStart(true);
 
-    auto sumLoad = [&] () {Complex x = 0; for (auto bus : network.busses()) x -= bus->SZip()(0); return x;};
+    auto sumLoad = [&] () {Complex x = 0; for (auto bus : network.buses()) x -= bus->SZip()(0); return x;};
     auto sumGen = [&] () {Complex x = 0; for (auto gen : network.gens()) x += gen->S()(0); return x;};
 
     auto minV = [&] () {
         double minV1 = 100;
-        for (auto bus : network.busses())
+        for (auto bus : network.buses())
         {
             double V = network.V2Pu(std::abs(bus->V()(0)), bus->VBase());
             if (V < minV1)
@@ -57,7 +57,7 @@ int main(int argc, const char ** argv)
     };
     auto maxV = [&] () {
         double maxV1 = 0;
-        for (auto bus : network.busses())
+        for (auto bus : network.buses())
         {
             double V = network.V2Pu(std::abs(bus->V()(0)), bus->VBase());
             if (V > maxV1)

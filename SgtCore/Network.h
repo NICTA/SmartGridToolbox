@@ -84,7 +84,7 @@ namespace Sgt
             /// @name Network Components:
             /// @{
 
-            const std::vector<Bus*>& busses() const
+            const std::vector<Bus*>& buses() const
             {
                 return busVec_;
             }

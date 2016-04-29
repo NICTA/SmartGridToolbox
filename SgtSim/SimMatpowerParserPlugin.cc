@@ -32,7 +32,7 @@ namespace Sgt
         mpParser.parse(nd, netw, parser);
 
         // Now recreate the SimNetwork from the Network.
-        for (auto bus : netw.busses())
+        for (auto bus : netw.buses())
         {
             auto simBus = sim.newSimComponent<SimBus>(bus->id(), *bus);
             simBus->linkToSimNetwork(*simNetw);

@@ -195,11 +195,11 @@ void SgtServer::handleGet(http_request message)
         }
     };
 
-    auto getBusses = [&]()
+    auto getBuses = [&]()
     {
         if (paths.size() == 0)
         {
-            reply = Json(nw->busses());
+            reply = Json(nw->buses());
         }
         else
         {
@@ -250,9 +250,9 @@ void SgtServer::handleGet(http_request message)
             {
                 getGens();
             }
-            else if (nwSub == "busses")
+            else if (nwSub == "buses")
             {
-                getBusses();
+                getBuses();
             }
             else if (nwSub == "zips")
             {

@@ -50,7 +50,7 @@ int main(int argc, const char ** argv)
     network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
     network.setUseFlatStart(true);
 
-    for (auto bus : network.busses())
+    for (auto bus : network.buses())
     {
         if (bus->type() == BusType::SL || bus->type() == BusType::PV)
         {
@@ -89,12 +89,12 @@ int main(int argc, const char ** argv)
         }
     }
 
-    auto sumLoad = [&] () {Complex x = 0; for (auto bus : network.busses()) x -= bus->SZip()(0); return x;};
+    auto sumLoad = [&] () {Complex x = 0; for (auto bus : network.buses()) x -= bus->SZip()(0); return x;};
     auto sumGen = [&] () {Complex x = 0; for (auto gen : otherGens) x += gen->S()(0); return x;};
     auto sumInv = [&] () {Complex x = 0; for (auto inv : invs) x += inv->gen().S()(0); return x;};
     auto minV = [&] () {
         double minV = 100;
-        for (auto bus : network.busses())
+        for (auto bus : network.buses())
         {
             double V = network.V2Pu(std::abs(bus->V()(0)), bus->VBase());
             if (V < minV)
@@ -106,7 +106,7 @@ int main(int argc, const char ** argv)
     };
     auto maxV = [&] () {
         double maxV = 0;
-        for (auto bus : network.busses())
+        for (auto bus : network.buses())
         {
             double V = network.V2Pu(std::abs(bus->V()(0)), bus->VBase());
             if (V > maxV)

@@ -156,7 +156,7 @@ namespace Sgt
             auto it1 = busMap_.find(branch->ids_[1]);
             sgtAssert(it1 != busMap_.end(), "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] 
                     << " contains a non-existent bus " << branch->ids_[1] << ".");
-            const PfBus* busses[] = {it0->second.get(), it1->second.get()};
+            const PfBus* buses[] = {it0->second.get(), it1->second.get()};
             auto nTerm = 2 * branch->nPhase_;
 
             // There is one link per distinct pair of bus/phase pairs.
@@ -164,7 +164,7 @@ namespace Sgt
             {
                 auto busIdxI = i / branch->nPhase_; // 0 or 1
                 auto branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
-                const PfBus* busI = busses[busIdxI];
+                const PfBus* busI = buses[busIdxI];
                 auto busPhaseIdxI = busI->phases_.phaseIndex(branch->phases_[busIdxI][branchPhaseIdxI]);
                 const PfNode* nodeI = busI->nodeVec_[busPhaseIdxI].get();
                 auto idxNodeI = nodeI->idx_;
@@ -176,7 +176,7 @@ namespace Sgt
                 {
                     auto busIdxK = k / branch->nPhase_; // 0 or 1
                     auto branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
-                    const PfBus* busK = busses[busIdxK];
+                    const PfBus* busK = buses[busIdxK];
                     auto busPhaseIdxK = busK->phases_.phaseIndex(branch->phases_[busIdxK][branchPhaseIdxK]);
                     const PfNode* nodeK = busK->nodeVec_[busPhaseIdxK].get();
                     auto idxNodeK = nodeK->idx_;
@@ -234,7 +234,7 @@ namespace Sgt
                 sgtLogDebug() << "Branch:" << std::endl;
                 {
                     LogIndent indent;
-                    sgtLogDebug() << "Busses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;
+                    sgtLogDebug() << "Buses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;
                     sgtLogDebug() << "Phases : " << branch->phases_[0] << ", " << branch->phases_[1] << std::endl;
                     sgtLogDebug() << "Y      :" << std::endl;
                     {

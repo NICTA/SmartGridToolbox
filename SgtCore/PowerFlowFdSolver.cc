@@ -70,7 +70,7 @@ namespace Sgt
             auto BSel = B1.rows(1, nPqPv);
             for (auto it = BSel.begin(); it != BSel.end(); ++it)
             {
-                uword i = it.row() + 1; // Convert to index in full set of busses.
+                uword i = it.row() + 1; // Convert to index in full set of buses.
                 uword l = it.col();
                 double Bil = *it;
                 if (i != l)
@@ -105,7 +105,7 @@ namespace Sgt
                 auto BSel = B.rows(1, nPq);
                 for (auto it = BSel.begin(); it != BSel.end(); ++it)
                 {
-                    uword i = it.row() + 1; // Convert to index in full set of busses.
+                    uword i = it.row() + 1; // Convert to index in full set of buses.
                     uword l = it.col();
                     double Bil = *it;
                     if (i == l)

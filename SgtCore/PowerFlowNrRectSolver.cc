@@ -212,7 +212,7 @@ namespace Sgt
                 VrPv += (M2Pv - VrPv % VrPv - ViPv % ViPv - 2 * ViPv % DeltaViPv) / (2 * VrPv);
                 ViPv += DeltaViPv;
 
-                // Update Qcg for PV busses based on the solution.
+                // Update Qcg for PV buses based on the solution.
                 Qcg(mod_->selPv()) += x(selQPvFrom_x_);
             }
         
@@ -310,7 +310,7 @@ namespace Sgt
     }
 
     /// Set the part of J that doesn't update at each iteration.
-    /** At this stage, we are treating J as if all busses were PQ. */
+    /** At this stage, we are treating J as if all buses were PQ. */
     void PowerFlowNrRectSolver::initJc(Jacobian& Jc) const
     {
         if (mod_->nPq() > 0)
@@ -375,7 +375,7 @@ namespace Sgt
         }
     }
 
-    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
+    // At this stage, we are treating f as if all buses were PQ. PV buses will be taken into account later.
     void PowerFlowNrRectSolver::calcf(Col<double>& f,
             const Col<double>& Vr, const Col<double>& Vi, const Col<double>& M,
             const Col<double>& Pcg, const Col<double>& Qcg,
@@ -383,7 +383,7 @@ namespace Sgt
     {
         if (mod_->nPq() > 0)
         {
-            // PQ busses:
+            // PQ buses:
             const SpMat<double> GPq = G_(mod_->selPq(), span::all);
             const SpMat<double> BPq = B_(mod_->selPq(), span::all);
 
@@ -411,7 +411,7 @@ namespace Sgt
 
         if (mod_->nPv() > 0)
         {
-            // PV busses. Note that these differ in that M2Pv is considered a constant.
+            // PV buses. Note that these differ in that M2Pv is considered a constant.
             const auto GPv = G_(mod_->selPv(), span::all);
             const auto BPv = B_(mod_->selPv(), span::all);
 
@@ -435,7 +435,7 @@ namespace Sgt
         }
     }
 
-    // At this stage, we are treating f as if all busses were PQ. PV busses will be taken into account later.
+    // At this stage, we are treating f as if all buses were PQ. PV buses will be taken into account later.
     void PowerFlowNrRectSolver::updateJ(Jacobian& J, const Jacobian& Jc,
                                     const Col<double>& Vr, const Col<double>& Vi,
                                     const Col<double>& Pcg, const Col<double>& Qcg,
@@ -473,7 +473,7 @@ namespace Sgt
             J.IiPqViPq()(i, i) = Jc.IiPqViPq()(i, i) - (2 * VidM4 * PVi_m_QVr) + PdM2;
         }
 
-        // For PV busses, M^2 is constant, and therefore we can write the Jacobian more simply.
+        // For PV buses, M^2 is constant, and therefore we can write the Jacobian more simply.
         for (uword i = 0; i < mod_->nPv(); ++i)
         {
             uword iPvi = mod_->iPv(i);
@@ -497,7 +497,7 @@ namespace Sgt
         }
     }
 
-    // Modify J and f to take into account PV busses.
+    // Modify J and f to take into account PV buses.
     void PowerFlowNrRectSolver::modifyForPv(Jacobian& J, Col<double>& f,
                                         const Col<double>& Vr, const Col<double>& Vi,
                                         const Col<double>& M2Pv)

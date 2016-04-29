@@ -66,7 +66,7 @@ namespace Sgt
         
     void Network::applyFlatStart()
     {
-        for (auto bus : busses())
+        for (auto bus : buses())
         {
             bus->setV(bus->VNom());
 
@@ -126,7 +126,7 @@ namespace Sgt
         json j;
         j["network"] = {
             {"p_base", PBase()},
-            {"busses", busses()},
+            {"buses", buses()},
             {"branches", branches()},
             {"gens", gens()},
             {"zips", zips()}
@@ -136,8 +136,8 @@ namespace Sgt
 
     std::unique_ptr<PowerFlowModel> buildModel(const Network& netw)
     {
-        std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel(netw.busses().size(), netw.branches().size()));
-        for (Bus* bus : netw.busses())
+        std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel(netw.buses().size(), netw.branches().size()));
+        for (Bus* bus : netw.buses())
         {
             if (bus->isInService())
             {

@@ -23,7 +23,7 @@ void print(std::ostream& out, std::ostream& outV, double t, const Network& netw)
 {
     out << t;
     outV << t;
-    for (const Bus* bus : netw.busses())
+    for (const Bus* bus : netw.buses())
     {
         auto nPhase = bus->phases().size();
         double P = arma::accu(arma::real(bus->SZip()));
@@ -59,7 +59,7 @@ int main(int argc, const char** argv)
     Network& netw = sim.simComponent<SimNetwork>("network")->network();
 
     out << "% t";
-    for (auto bus : netw.busses())
+    for (auto bus : netw.buses())
     {
         out << " " << bus->id();
     }

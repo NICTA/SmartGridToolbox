@@ -71,7 +71,7 @@ namespace Sgt
             }
         }
             
-        for (auto bus : sgtNetw_->busses())
+        for (auto bus : sgtNetw_->buses())
         {
             for (auto gen : bus->gens())
             {

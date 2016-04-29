@@ -30,7 +30,7 @@ namespace Sgt
         Net* net(new Net);
 
         net->bMVA = sgtNw.PBase();
-        for (auto& bus : sgtNw.busses())
+        for (auto& bus : sgtNw.buses())
         {
             std::string busId = bus->id();
 

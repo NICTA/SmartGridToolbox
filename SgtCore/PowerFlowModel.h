@@ -263,13 +263,13 @@ namespace Sgt
 
         private:
 
-            /// @name vector of busses and branches.
+            /// @name vector of buses and branches.
             /// @{
 
             PfBusMap busMap_;
             PfBusVec busVec_;
             PfBranchVec branchVec_;
-            PfNodeVec nodeVec_; // NOT owned by me - they are owned by their parent Busses.
+            PfNodeVec nodeVec_; // NOT owned by me - they are owned by their parent Buses.
 
             /// @}
 

@@ -403,7 +403,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
 
             int nBadV = 0;
             int nBadS = 0;
-            for (auto bus : nw.busses())
+            for (auto bus : nw.buses())
             {
                 double Vr, Vi, P, Q;
                 compareName >> Vr >> Vi >> P >> Q;
@@ -419,8 +419,8 @@ BOOST_AUTO_TEST_CASE (test_matpower)
                     ++nBadS;
                 }
             }
-            BOOST_CHECK_MESSAGE(nBadV == 0, c << ": V doesn't agree with Matpower at " << nBadV << " busses.\n");
-            BOOST_CHECK_MESSAGE(nBadS == 0, c << ": S doesn't agree with Matpower at " << nBadS << " busses.\n");
+            BOOST_CHECK_MESSAGE(nBadV == 0, c << ": V doesn't agree with Matpower at " << nBadV << " buses.\n");
+            BOOST_CHECK_MESSAGE(nBadS == 0, c << ": S doesn't agree with Matpower at " << nBadS << " buses.\n");
         }
     };
 
@@ -557,5 +557,14 @@ BOOST_AUTO_TEST_CASE (test_properties)
     xProp->setFromString(bar, "678");
     BOOST_CHECK_EQUAL(xProp->get<const int&>(bar), 678);
 };
+
+BOOST_AUTO_TEST_CASE (test_phases_A)
+{
+    Network netw;
+    Parser<Network> p;
+    p.parse("test_overhead_compare_carson_1.yaml", netw);
+    netw.solvePowerFlow();
+    for (auto b : netw.buses());
+}
 
 BOOST_AUTO_TEST_SUITE_END()

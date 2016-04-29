@@ -73,7 +73,7 @@ int main(int argc, char** argv)
         Complex SLoadTot = 0;
         double costTot = 0;
 
-        for (auto bus : nw.busses())
+        for (auto bus : nw.buses())
         {
             busMap[bus->id()] = iBus;
             auto V = nw.V2Pu(bus->V()[0], bus->VBase());
