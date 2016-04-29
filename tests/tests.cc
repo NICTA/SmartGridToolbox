@@ -562,9 +562,15 @@ BOOST_AUTO_TEST_CASE (test_phases_A)
 {
     Network netw;
     Parser<Network> p;
-    p.parse("test_overhead_compare_carson_1.yaml", netw);
+    p.parse("test_phases_A.yaml", netw);
     netw.solvePowerFlow();
-    for (auto b : netw.buses());
+    for (auto b : netw.buses())
+    {
+        std::cout << b->id() << std::endl;
+        std::cout << b->phases() << std::endl;
+        std::cout << b->V() << std::endl;
+        std::cout << std::endl;
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
