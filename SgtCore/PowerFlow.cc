@@ -108,15 +108,32 @@ namespace Sgt
         }
         return result;
     }
-    
-    std::size_t phaseIndex(const Phases& ps, Phase p)
+
+    constexpr uint8_t Phases::noSuchPhase;
+
+    std::string Phases::to_string() const
     {
-        auto it = std::find(ps.begin(), ps.end(), p);
-        if (it == ps.end())
+        std::ostringstream ss;
+        ss << "[";
+        if (vec_.size() > 0)
         {
-            throw std::out_of_range("Requested phase does not exist.");
+            ss << vec_[0];
+            for (std::size_t i = 1; i < vec_.size(); ++i)
+            {
+                ss << ", " << vec_[i];
+            }
         }
-        return static_cast<size_t>(std::distance(ps.begin(), it));
+        ss << "]";
+        return ss.str();
+    }
+
+    void Phases::buildIndex()
+    {
+        std::fill_n(index_, gNPhase, noSuchPhase);
+        for (uint8_t i = 0; i < vec_.size(); ++i)
+        {
+            index_[static_cast<uint8_t>(vec_[i])] = i;
+        }
     }
 
     Mat<Complex> carson(uword nWire, const Mat<double>& Dij, const Col<double> resPerL,

@@ -54,7 +54,7 @@ namespace Sgt
         public:
             SimpleBuilding(const std::string& id) :
                 Component(id),
-                ZipAbc({Phase::BAL}),
+                ZipAbc(Phase::BAL),
                 dt_(posix_time::minutes(5)),
                 kb_(5 * kwatt / kelvin),
                 Cb_(1.0e5 * kjoule / kelvin),

@@ -45,7 +45,7 @@ namespace Sgt
             /// @name Lifecycle:
             /// @{
 
-            ZipAbc(const Phases& phases) : Component(""), phases_(phases) {}
+            explicit ZipAbc(const Phases& phases) : Component(""), phases_(phases) {}
 
             /// @}
 

@@ -45,7 +45,7 @@ namespace Sgt
     template<> BusType from_string<BusType>(const std::string& str);
 
     /// @ingroup PowerFlowCore
-    enum class Phase : unsigned int
+    enum class Phase : std::uint8_t // Max of 255
     {
         BAL,    // Balanced/one-phase.
         A,      // Three phase A.
@@ -65,7 +65,7 @@ namespace Sgt
         BAD     // Not a phase.
     };
 
-    constexpr size_t gNPhase = static_cast<size_t>(Phase::BAD) + 1;
+    constexpr size_t gNPhase = static_cast<std::uint8_t>(Phase::BAD) + 1;
 
     std::string to_string(Phase p);
     template<> struct JsonConvert<Phase>
@@ -78,12 +78,65 @@ namespace Sgt
     inline std::ostream& operator<<(std::ostream& os, Phase p) {return os << to_string(p);}
     template<> Phase from_string<Phase>(const std::string& str);
 
-    using Phases = std::vector<Phase>;
-    
-    std::size_t phaseIndex(const Phases& ps, Phase p);
+    /// @brief A set of network phases, each specified by a Phase value. 
+    /// @ingroup PowerFlowCore
+    class Phases
+    {
+        public:
+            static constexpr uint8_t noSuchPhase = UINT8_MAX;
 
-    inline std::string to_string(const Phases& ps) {return json(ps).dump();}
-    inline std::ostream& operator<<(std::ostream& os, const Phases& ps) {return os << to_string(ps);}
+        public:
+            Phases()
+            {
+                buildIndex();
+            }
+
+            Phases(Phase p) : vec_({p})
+            {
+                buildIndex();
+            }
+            
+            Phases(std::initializer_list<Phase> ps) : vec_(ps)
+            {
+                buildIndex();
+            }
+            
+            Phases(const std::vector<Phase>& ps) : vec_(ps)
+            {
+                buildIndex();
+            }
+
+            std::size_t size() const {return vec_.size();}
+            Phase operator[](std::size_t i) const {return vec_[i];}
+
+            std::uint8_t index(Phase p) const
+            {
+                return index_[static_cast<std::uint8_t>(p)];
+            }
+
+            std::vector<Phase>::iterator begin() {return vec_.begin();}
+            std::vector<Phase>::iterator end() {return vec_.end();}
+            std::vector<Phase>::const_iterator begin() const {return vec_.begin();}
+            std::vector<Phase>::const_iterator end() const {return vec_.end();}
+            std::vector<Phase>::const_iterator cbegin() const {return vec_.cbegin();}
+            std::vector<Phase>::const_iterator cend() const {return vec_.cend();}
+
+            std::string to_string() const;
+            json toJson() const
+            {
+                return vec_;
+            }
+
+            friend bool operator==(const Phases& a, const Phases& b) {return a.vec_ == b.vec_;}
+
+        private:
+            void buildIndex();
+
+        private:
+            std::vector<Phase> vec_;
+            std::uint8_t index_[gNPhase];
+    };
+    inline std::ostream& operator<<(std::ostream& os, const Phases& ps) {return os << ps.to_string();}
 
     /// @brief Apply Carson's equations.
     /// @param nWire The number of wires.

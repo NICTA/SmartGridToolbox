@@ -44,7 +44,7 @@ namespace Sgt
         /// @name Lifecycle:
         /// @{
 
-            GenAbc(const Phases& phases) :
+            explicit GenAbc(const Phases& phases) :
                 phases_(phases)
             {
                 // Empty.

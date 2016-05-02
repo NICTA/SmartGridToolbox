@@ -29,6 +29,21 @@ namespace
     {
         return ss;
     }
+
+    arma::Col<Complex> mapToBusPhases(
+            const arma::Col<Complex>& values, const Phases& phases, const Phases& busPhases)
+    {
+        auto result = arma::Col<Complex>(phases.size(), fill::zeros);
+        for (std::size_t i = 0; i < phases.size(); ++i)
+        {
+            std::uint8_t j = busPhases.index(phases[i]); 
+            if (j != Phases::noSuchPhase)
+            {
+                result(j) = values(i);
+            }
+        }
+        return result;
+    }
 }
 
 namespace Sgt
@@ -66,14 +81,12 @@ namespace Sgt
 
     Col<Complex> Bus::SGenRequested() const
     {
-        // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
-        // Easier to just do this.
         auto sum = Col<Complex>(phases().size(), fill::zeros);
         for (auto gen : genVec_)
         {
             if (gen->isInService())
             {
-                sum += gen->inServiceS();
+                sum += mapToBusPhases(gen->inServiceS(), gen->phases(), phases_);
             }
         }
         return sum;
@@ -119,7 +132,10 @@ namespace Sgt
         auto sum = Col<Complex>(phases().size(), fill::zeros);
         for (auto zip : zipVec_)
         {
-            sum += zip->YConst();
+            if (zip->isInService())
+            {
+                sum += mapToBusPhases(zip->YConst(), zip->phases(), phases_);
+            }
         }
         return sum;
     }
@@ -132,13 +148,13 @@ namespace Sgt
     Col<Complex> Bus::IConst() const
     {
         // Note the returned current is relative to the phase of V.
-        
-        // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
-        // Easier to just do this.
         auto sum = Col<Complex>(phases().size(), fill::zeros);
         for (auto zip : zipVec_)
         {
-            sum += zip->IConst();
+            if (zip->isInService())
+            {
+                sum += mapToBusPhases(zip->IConst(), zip->phases(), phases_);
+            }
         }
         return sum;
     }
@@ -151,12 +167,13 @@ namespace Sgt
 
     Col<Complex> Bus::SConst() const
     {
-        // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
-        // Easier to just do this.
         auto sum = Col<Complex>(phases().size(), fill::zeros);
         for (auto zip : zipVec_)
         {
-            sum += zip->SConst();
+            if (zip->isInService())
+            {
+                sum += mapToBusPhases(zip->SConst(), zip->phases(), phases_);
+            }
         }
         return sum;
     }
