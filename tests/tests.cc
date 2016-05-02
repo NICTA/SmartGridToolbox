@@ -564,13 +564,11 @@ BOOST_AUTO_TEST_CASE (test_phases_A)
     Parser<Network> p;
     p.parse("test_phases_A.yaml", netw);
     netw.solvePowerFlow();
-    for (auto b : netw.buses())
-    {
-        std::cout << b->id() << std::endl;
-        std::cout << b->phases() << std::endl;
-        std::cout << b->V() << std::endl;
-        std::cout << std::endl;
-    }
+    auto V0 = netw.buses()[0]->V();
+    auto V1 = netw.buses()[1]->V();
+    BOOST_CHECK_EQUAL(V0(0), V1(1));
+    BOOST_CHECK_EQUAL(V0(1), V1(2));
+    BOOST_CHECK_EQUAL(V0(2), V1(0));
 }
 
 BOOST_AUTO_TEST_CASE (test_phases_B)
@@ -579,13 +577,11 @@ BOOST_AUTO_TEST_CASE (test_phases_B)
     Parser<Network> p;
     p.parse("test_phases_B.yaml", netw);
     netw.solvePowerFlow();
-    for (auto b : netw.buses())
-    {
-        std::cout << b->id() << std::endl;
-        std::cout << b->phases() << std::endl;
-        std::cout << b->V() << std::endl;
-        std::cout << std::endl;
-    }
+    auto V0 = netw.buses()[0]->V();
+    auto V1 = netw.buses()[1]->V();
+    BOOST_CHECK_EQUAL(V0(0), V1(2));
+    BOOST_CHECK_EQUAL(V0(1), V1(0));
+    BOOST_CHECK_EQUAL(V0(2), V1(1));
 }
 
 BOOST_AUTO_TEST_CASE (test_phases_C)
@@ -594,13 +590,17 @@ BOOST_AUTO_TEST_CASE (test_phases_C)
     Parser<Network> p;
     p.parse("test_phases_C.yaml", netw);
     netw.solvePowerFlow();
-    for (auto b : netw.buses())
-    {
-        std::cout << b->id() << std::endl;
-        std::cout << b->phases() << std::endl;
-        std::cout << b->V() << std::endl;
-        std::cout << std::endl;
-    }
+    auto V0 = netw.buses()[0]->V();
+    auto V1 = netw.buses()[1]->V();
+    auto S0Gen = netw.buses()[0]->SGen();
+    auto S1Zip = netw.buses()[1]->SZip();
+    auto y = netw.branches()[0]->Y()(0, 0);
+    BOOST_CHECK_EQUAL(V0(0), V1(0));
+    BOOST_CHECK_EQUAL(S0Gen(0), Complex{0.0});
+    BOOST_CHECK_EQUAL(S0Gen(1), Complex{0.0});
+    auto delta = (V0(2) - V1(1));
+    auto diff = S0Gen(2) + S1Zip(1) - delta * std::conj(y) * std::conj(delta);
+    BOOST_CHECK_SMALL(abs(diff), 1e-9);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
