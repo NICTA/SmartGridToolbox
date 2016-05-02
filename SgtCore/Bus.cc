@@ -33,7 +33,7 @@ namespace
     arma::Col<Complex> mapToBusPhases(
             const arma::Col<Complex>& values, const Phases& phases, const Phases& busPhases)
     {
-        auto result = arma::Col<Complex>(phases.size(), fill::zeros);
+        auto result = arma::Col<Complex>(busPhases.size(), fill::zeros);
         for (std::size_t i = 0; i < phases.size(); ++i)
         {
             std::uint8_t j = busPhases.index(phases[i]); 
