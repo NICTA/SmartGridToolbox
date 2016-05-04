@@ -29,21 +29,6 @@ namespace
     {
         return ss;
     }
-
-    arma::Col<Complex> mapToBusPhases(
-            const arma::Col<Complex>& values, const Phases& phases, const Phases& busPhases)
-    {
-        auto result = arma::Col<Complex>(busPhases.size(), fill::zeros);
-        for (std::size_t i = 0; i < phases.size(); ++i)
-        {
-            std::uint8_t j = busPhases.index(phases[i]); 
-            if (j != Phases::noSuchPhase)
-            {
-                result(j) = values(i);
-            }
-        }
-        return result;
-    }
 }
 
 namespace Sgt
@@ -86,7 +71,7 @@ namespace Sgt
         {
             if (gen->isInService())
             {
-                sum += mapToBusPhases(gen->inServiceS(), gen->phases(), phases_);
+                sum += mapPhases(gen->inServiceS(), gen->phases(), phases_);
             }
         }
         return sum;
@@ -134,7 +119,7 @@ namespace Sgt
         {
             if (zip->isInService())
             {
-                sum += mapToBusPhases(zip->YConst(), zip->phases(), phases_);
+                sum += mapPhases(zip->YConst(), zip->phases(), phases_);
             }
         }
         return sum;
@@ -153,7 +138,7 @@ namespace Sgt
         {
             if (zip->isInService())
             {
-                sum += mapToBusPhases(zip->IConst(), zip->phases(), phases_);
+                sum += mapPhases(zip->IConst(), zip->phases(), phases_);
             }
         }
         return sum;
@@ -172,7 +157,7 @@ namespace Sgt
         {
             if (zip->isInService())
             {
-                sum += mapToBusPhases(zip->SConst(), zip->phases(), phases_);
+                sum += mapPhases(zip->SConst(), zip->phases(), phases_);
             }
         }
         return sum;

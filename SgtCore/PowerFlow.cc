@@ -135,6 +135,11 @@ namespace Sgt
             index_[static_cast<uint8_t>(vec_[i])] = i;
         }
     }
+    
+    template arma::Col<double> mapPhases<arma::Col<double>>(const arma::Col<double>& srcVals,
+            const Phases& srcPhases, const Phases& dstPhases);
+    template arma::Col<Complex> mapPhases<arma::Col<Complex>>(const arma::Col<Complex>& srcVals,
+            const Phases& srcPhases, const Phases& dstPhases);
 
     Mat<Complex> carson(uword nWire, const Mat<double>& Dij, const Col<double> resPerL,
                               double L, double freq, double rhoEarth)

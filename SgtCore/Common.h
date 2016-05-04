@@ -224,7 +224,7 @@ namespace Sgt
     /// @addtogroup Utilities
     /// @{
     
-    typedef std::complex<double> Complex;
+    using Complex = std::complex<double>;
 
     inline Complex polar(double m, double theta) // theta is radians.
     {

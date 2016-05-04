@@ -136,7 +136,55 @@ namespace Sgt
             std::vector<Phase> vec_;
             std::uint8_t index_[gNPhase];
     };
+
     inline std::ostream& operator<<(std::ostream& os, const Phases& ps) {return os << ps.to_string();}
+
+    template<typename T> struct MapPhasesTraits
+    {
+        static T init(size_t sz)
+        {
+            T result(sz);
+            for (std::size_t i = 0; i < sz; ++i)
+            {
+                result[i] = 0.0;
+            }
+            return result;
+        }
+    };
+
+    template<typename T> struct MapPhasesTraits<std::vector<T>>
+    {
+        static std::vector<T> init(size_t sz)
+        {
+            return std::vector<T>(sz, 0.0);
+        }
+    };
+
+    template<typename T> struct MapPhasesTraits<arma::Col<T>>
+    {
+        static arma::Col<T> init(size_t sz)
+        {
+            return arma::Col<T>(sz, arma::fill::zeros);
+        }
+    };
+
+    template<typename T> T mapPhases(const T& srcVals, const Phases& srcPhases, const Phases& dstPhases)
+    {
+        T result = MapPhasesTraits<T>::init(dstPhases.size());
+        for (std::size_t i = 0; i < srcPhases.size(); ++i)
+        {
+            std::uint8_t j = dstPhases.index(srcPhases[i]); 
+            if (j != Phases::noSuchPhase)
+            {
+                result[j] = srcVals[i];
+            }
+        }
+        return result;
+    }
+    extern template arma::Col<double> mapPhases<arma::Col<double>>(const arma::Col<double>& srcVals,
+            const Phases& srcPhases, const Phases& dstPhases);
+    extern template arma::Col<Complex> mapPhases<arma::Col<Complex>>(const arma::Col<Complex>& srcVals,
+            const Phases& srcPhases, const Phases& dstPhases);
 
     /// @brief Apply Carson's equations.
     /// @param nWire The number of wires.
