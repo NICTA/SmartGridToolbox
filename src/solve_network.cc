@@ -75,7 +75,7 @@ int main(int argc, char** argv)
     Parser<Network> p;
     p.parse(inFName, nw);
 
-    auto outF = std::ofstream(outFName.c_str());
+    std::ofstream outF(outFName.c_str());
     std::map<std::string, int> busMap;
 
     nw.setUseFlatStart(!warmStart);

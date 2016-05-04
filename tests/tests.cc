@@ -566,9 +566,9 @@ BOOST_AUTO_TEST_CASE (test_phases_A)
     netw.solvePowerFlow();
     auto V0 = netw.buses()[0]->V();
     auto V1 = netw.buses()[1]->V();
-    BOOST_CHECK_EQUAL(V0(0), V1(1));
-    BOOST_CHECK_EQUAL(V0(1), V1(2));
-    BOOST_CHECK_EQUAL(V0(2), V1(0));
+    BOOST_CHECK_SMALL(std::abs(V0(0) - V1(1)), 1e-9);
+    BOOST_CHECK_SMALL(std::abs(V0(1) - V1(2)), 1e-9);
+    BOOST_CHECK_SMALL(std::abs(V0(2) - V1(0)), 1e-9);
 }
 
 BOOST_AUTO_TEST_CASE (test_phases_B)
@@ -579,9 +579,9 @@ BOOST_AUTO_TEST_CASE (test_phases_B)
     netw.solvePowerFlow();
     auto V0 = netw.buses()[0]->V();
     auto V1 = netw.buses()[1]->V();
-    BOOST_CHECK_EQUAL(V0(0), V1(2));
-    BOOST_CHECK_EQUAL(V0(1), V1(0));
-    BOOST_CHECK_EQUAL(V0(2), V1(1));
+    BOOST_CHECK_SMALL(std::abs(V0(0) - V1(2)), 1e-9);
+    BOOST_CHECK_SMALL(std::abs(V0(1) - V1(0)), 1e-9);
+    BOOST_CHECK_SMALL(std::abs(V0(2) - V1(1)), 1e-9);
 }
 
 BOOST_AUTO_TEST_CASE (test_phases_C)
@@ -595,12 +595,12 @@ BOOST_AUTO_TEST_CASE (test_phases_C)
     auto S0Gen = netw.buses()[0]->SGen();
     auto S1Zip = netw.buses()[1]->SZip();
     auto y = netw.branches()[0]->Y()(0, 0);
-    BOOST_CHECK_EQUAL(V0(0), V1(0));
-    BOOST_CHECK_EQUAL(S0Gen(0), Complex{0.0});
-    BOOST_CHECK_EQUAL(S0Gen(1), Complex{0.0});
+    BOOST_CHECK_SMALL(std::abs(V0(0) - V1(0)), 1e-9);
+    BOOST_CHECK_SMALL(std::abs(S0Gen(0)), 1e-9);
+    BOOST_CHECK_SMALL(std::abs(S0Gen(1)), 1e-9);
     auto delta = (V0(2) - V1(1));
     auto diff = S0Gen(2) + S1Zip(1) - delta * std::conj(y) * std::conj(delta);
-    BOOST_CHECK_SMALL(abs(diff), 1e-9);
+    BOOST_CHECK_SMALL(std::abs(diff), 1e-9);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
