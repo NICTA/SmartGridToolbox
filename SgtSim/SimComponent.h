@@ -68,12 +68,12 @@ namespace Sgt
             /// @brief Initialize state of the object.
             ///
             /// This simply does the initial work needed to set the object up, prior to simulation. The time following
-            /// initialization will be set to negative infinity, and the object will not be considered to be in an
+            /// initialization will be set to negative infinity, and the object will be considered to be in an
             /// invalid state. To progress to a valid state, the object will need to undergo an update().
-            void initialize();
+            virtual void initialize() final;
 
             /// @brief Bring state up to time t.
-            void update(Time t);
+            virtual void update(Time t) final;
 
             /// @}
 
@@ -82,7 +82,10 @@ namespace Sgt
 
         public:
 
-            /// @brief What is the latest time that I should update?
+            /// @brief When is the component scheduled to update?
+            ///
+            /// An update may occur before this time if the component undergoes a contingent update. If this
+            /// occurs, it is possible that validUntil() could change to a later time.
             virtual Time validUntil() const
             {
                 return posix_time::pos_infin;
