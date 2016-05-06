@@ -23,18 +23,13 @@ AS_IF([test x$with_klu == xyes],
 
 AC_PROG_CC([clang gcc])
 AC_PROG_CXX([clang++ g++])
-#AC_PROG_OBJCXX([clang]) # Unfortunately it is an autoconf error to make this macro conditional.
 
 LT_INIT([disable-shared]) # disable-shared doesn't seem to be working: autoconf bug?
 
 AC_LANG([C++])
-AX_CXX_COMPILE_STDCXX_11([noext])
+AX_CXX_COMPILE_STDCXX_14([noext])
 AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [AM_CXXFLAGS="$AM_CXXFLAGS -ftemplate-depth=160"])
 AC_SUBST([AM_CXXFLAGS], ["$AM_CXXFLAGS -Wall"])
-
-# See above comments for AC_PROG_OBJCXX
-#AC_LANG([Objective C++])
-#AX_CHECK_COMPILE_FLAG([-std=c++11], [AC_SUBST([AM_OBJCXXFLAGS], ["-std=c++11"])])
 
 AX_BOOST_BASE(,, [AC_MSG_ERROR([SmartGridToolbox needs Boost, but it was not found in your system])])
 AX_BOOST_DATE_TIME
