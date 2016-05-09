@@ -8,7 +8,7 @@ matrix:
             compiler: clang
  
             before_install:
-                  # For g++-4.9
+                  # For g++-5
                 - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
 
                   # For clang++-3.6
@@ -20,9 +20,9 @@ matrix:
 
                   # We need following so clang uses up-to-date libstdc++. libc++ causes issues with boost.
                   # A simplification may be possible, but this works!
-                - sudo apt-get install gcc-4.9 -y 
-                - sudo apt-get install g++-4.9 -y 
-                - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.9
+                - sudo apt-get install gcc-5 -y 
+                - sudo apt-get install g++-5 -y 
+                - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
 
                 - sudo apt-get install csh -y
                 - sudo apt-get install clang-3.6 -y
@@ -41,13 +41,13 @@ matrix:
                 - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
                 - sudo apt-get update -q
                 - sudo apt-get install csh -y
-                - sudo apt-get install gcc-4.9 g++-4.9 -y
+                - sudo apt-get install gcc-5 g++-5 -y
                 - sudo apt-get install libboost-date-time-dev -y
                 - sudo apt-get install libboost-random-dev -y
                 - sudo apt-get install libblas-dev -y
 
             env:
-                - MY_CXX=g++-4.9
+                - MY_CXX=g++-5
                 - LD_LIBRARY_PATH=/usr/local/lib
 
 install:
