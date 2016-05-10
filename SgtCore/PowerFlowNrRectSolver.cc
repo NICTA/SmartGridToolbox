@@ -395,7 +395,7 @@ namespace Sgt
             const auto PPq = Pcg(mod_->selPq());
             const auto QPq = Qcg(mod_->selPq());
 
-            const Col<Complex> IConstPq = Ic(mod_->selPq());
+            auto IConstPq = Ic(mod_->selPq()).eval();
             const auto IConstrPq = real(IConstPq);
             const auto IConstiPq = imag(IConstPq);
 
@@ -423,8 +423,9 @@ namespace Sgt
             const auto PPv = Pcg(mod_->selPv());
             const auto QPv = Qcg(mod_->selPv());
 
-            const auto IConstrPv = real(Ic(mod_->selPv()));
-            const auto IConstiPv = imag(Ic(mod_->selPv()));
+            auto IConstPv = Ic(mod_->selPv()).eval();
+            const auto IConstrPv = real(IConstPv);
+            const auto IConstiPv = imag(IConstPv);
 
             f(selIrPvFrom_f_) = (VrPv % PPv + ViPv % QPv) / M2Pv
                               + (IConstrPv % VrPv - IConstiPv % ViPv) / MPv 
