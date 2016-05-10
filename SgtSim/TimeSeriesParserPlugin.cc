@@ -167,7 +167,7 @@ namespace Sgt
         {
             //if (interpType == SPLINE)
             //{
-            //    return std::unique_ptr<DataTimeSeries<Time, double>>(new SplineTimeSeries<Time>());
+            //    return std::make_unique<DataTimeSeries<Time, double>>();
             //}
             //else
             {

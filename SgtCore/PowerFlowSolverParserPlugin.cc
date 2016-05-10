@@ -33,23 +33,23 @@ namespace Sgt
         if (key == "nr_rect")
         {
             sgtLogMessage() << "Using Newton-Raphson (rectangular) solver." << std::endl;
-            netw.setSolver(std::unique_ptr<PowerFlowNrRectSolver>(new PowerFlowNrRectSolver));
+            netw.setSolver(std::make_unique<PowerFlowNrRectSolver>());
         }
         if (key == "nr_pol")
         {
             sgtLogMessage() << "Using Newton-Raphson (polar) solver." << std::endl;
-            netw.setSolver(std::unique_ptr<PowerFlowNrPolSolver>(new PowerFlowNrPolSolver));
+            netw.setSolver(std::make_unique<PowerFlowNrPolSolver>());
         }
         else if (key == "fd")
         {
             sgtLogMessage() << "Using fast-decoupled load flow solver." << std::endl;
-            netw.setSolver(std::unique_ptr<PowerFlowFdSolver>(new PowerFlowFdSolver));
+            netw.setSolver(std::make_unique<PowerFlowFdSolver>());
         }
         else if (key == "opf_pt_pp")
         {
 #ifdef ENABLE_POWER_TOOLS_PP
             sgtLogMessage() << "Using OPF (PowerTools++) solver." << std::endl;
-            netw.setSolver(std::unique_ptr<PowerFlowPtPpSolver>(new PowerFlowPtPpSolver));
+            netw.setSolver(std::make_unique<PowerFlowPtPpSolver>());
 #else // ENABLE_POWER_TOOLS_PP
             sgtError("OPF solver is not available, since SmartGridToolbox was not compiled with "
                      "--enable-power-tools++.");

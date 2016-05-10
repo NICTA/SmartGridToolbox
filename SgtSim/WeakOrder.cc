@@ -60,7 +60,7 @@ namespace Sgt
     {
         for (std::size_t i = 0; i < n; ++i)
         {
-            nodes_[i] = std::unique_ptr<WoNode>(new WoNode(i));
+            nodes_[i] = std::make_unique<WoNode>(i);
         }
     }
 

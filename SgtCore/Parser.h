@@ -104,7 +104,7 @@ namespace Sgt
 
             template<typename PluginType> void registerParserPlugin()
             {
-                auto plugin = std::unique_ptr<PluginType>(new PluginType());
+                auto plugin = std::make_unique<PluginType>();
                 plugins_[plugin->key()] = std::move(plugin);
             }
 
@@ -179,7 +179,7 @@ namespace Sgt
         result.parameters_ = parameters_;
         for (auto& l : loops_)
         {
-            result.loops_.push_back(std::unique_ptr<ParserLoop>(new ParserLoop(*l)));
+            result.loops_.push_back(std::make_unique<ParserLoop>(*l));
         }
         return result;
     }

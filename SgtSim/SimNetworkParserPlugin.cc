@@ -33,7 +33,7 @@ namespace Sgt
 
         auto ndSolver = nd["solver"];
 
-        std::unique_ptr<Network> nw = std::unique_ptr<Network>(new Network(PBase));
+        std::unique_ptr<Network> nw(new Network(PBase));
 
         if (ndFreq)
         {

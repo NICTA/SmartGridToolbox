@@ -42,7 +42,7 @@ namespace Sgt
 
         for (std::size_t i = 0; i < phases.size(); ++i)
         {
-            nodeVec_.push_back(std::unique_ptr<PfNode>(new PfNode(*this, i)));
+            nodeVec_.push_back(std::make_unique<PfNode>(*this, i));
         }
     }
 
@@ -87,7 +87,7 @@ namespace Sgt
                                    const Phases& phases0, const Phases& phases1, const Mat<Complex>& Y)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "PowerFlowModel : addBranch " << idBus0 << " " << idBus1 << std::endl;
-        branchVec_.push_back(std::unique_ptr<PfBranch>(new PfBranch(idBus0, idBus1, phases0, phases1, Y)));
+        branchVec_.push_back(std::make_unique<PfBranch>(idBus0, idBus1, phases0, phases1, Y));
     }
 
     void PowerFlowModel::validate()
