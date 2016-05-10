@@ -13,9 +13,9 @@ AS_IF([test x$enable_power_tools_pp == xyes],
       [AC_DEFINE([ENABLE_POWER_TOOLS_PP], [], [enable PowerTools++ support])])
 
 AC_ARG_WITH([klu],
-            [AS_HELP_STRING([--with-klu], [use the KLU library as a sparse solver @<:@no@:>@])],
+            [AS_HELP_STRING([--without-klu], [Do not use the KLU library as a sparse solver (use SuperLU instead) @<:@no@:>@])],
             [],
-            [with_klu=no])
+            [with_klu=yes])
 AC_SUBST([with_klu])
 AM_CONDITIONAL([WITH_KLU], [test x$with_klu = xyes])
 AS_IF([test x$with_klu == xyes],
