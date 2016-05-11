@@ -451,32 +451,32 @@ Using these expressions, $\Delta \Vr$ may be eliminated from the NR equations fo
 
 \section{Power flow in polar coordinates}
 The preceding section treated the power flow problem in rectangular coordinates, in which the mathematical expressions are simpler and the Newton-Raphson method works well in rectangular coordinates. In fact, it is more common to work in polar coordinates. Doing so can give a clearer physical insight, and is conducive to the development of approximations such as are used in the DC approximation or fast decoupled power flow. Taking the complex conjugate of Eq. \ref{EQ_POWERFLOW_COMPLEX} and multiplying by $V_i$ gives
-\newcommand{\M}[1]{\ensuremath{M_{#1}}}
+\newcommand{\M}[1]{\ensuremath{|V_{#1}|}}
 \newcommand{\cs}[1]{\ensuremath{\cos(\theta_{#1})}}
 \newcommand{\sn}[1]{\ensuremath{\sin(\theta_{#1})}}
 \begin{align}
-	S_i &= S_{ci} + S_{gi} + I^*_{ci}M_i - y^*_{ci}\M{i}^2 - V_i\sum_{k = 0}^N{Y^*_{ik}V^*_k} \notag \\
+	S_i &= S_{ci} + S_{gi} + I^*_{ci}\M{i} - y^*_{ci}\M{i}^2 - V_i\sum_{k = 0}^N{Y^*_{ik}V^*_k} \notag \\
 	&= S_{ci} + S_{gi} + I^*_{ci}M_i - y^*_{ci}\M{i}^2 - \M{i}\sum_{k = 0}^N{Y^*_{ik}\M{k}\exp{(j\theta_{ik})}}
 \end{align}
-where we introduce the polar notation $V_i := M_i \exp{(j\theta_i)}$ and $\theta_{ik} := \theta_i - \theta_k$. $S_i$ is the \emph{total} power injection into a bus, including all loads, branch flows and generation, and should be zero in a correct power flow solution. The real and reactive components of this are:
+where we introduce the polar notation $V_i := \M{i} \exp{(j\theta_i)}$ and $\theta_{ik} := \theta_i - \theta_k$. $S_i$ is the \emph{total} power injection into a bus, including all loads, branch flows and generation, and should be zero in a correct power flow solution. The real and reactive components of this are:
 \begin{align}
-	P_i &= P_{ci} + P_{gi} + \Ir_{ci}M_i - g_i\M{i}^2 \notag \\
+	P_i &= P_{ci} + P_{gi} + \Ir_{ci}\M{i} - g_i\M{i}^2 \notag \\
 	&- \M{i}\sum_{l = 0}^N{\left[G_{il}\cs{il} + B_{il}\sn{il}\right]\M{l}} \notag \\
-	Q_i &= Q_{ci} + Q_{gi} - \Ii_{ci}M_i + b_i\M{i}^2 \notag \\
+	Q_i &= Q_{ci} + Q_{gi} - \Ii_{ci}\M{i} + b_i\M{i}^2 \notag \\
 	&- \M{i}\sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]\M{l}} \notag \\
 \end{align}
 However, for PV buses, $Q_{g}$ is a free variable, and can immediately be set to the value that makes the error $Q_i$ zero.
 
 We first solve:
 \begin{align}
-	P_i &= P_{ci} + P_{gi} + \Ir_{ci}M_i - g_i\M{i}^2 \notag \\
+	P_i &= P_{ci} + P_{gi} + \Ir_{ci}\M{i} - g_i\M{i}^2 \notag \\
 	&- \M{i}\sum_{l = 0}^N{\left[G_{il}\cs{il} + B_{il}\sn{il}\right]\M{l}}  , & i \in \mathrm{PQ} \cup \mathrm{PV}\notag \\
-	Q_i &= Q_{ci} - \Ii_{ci}M_i + b_i\M{i}^2 \notag \\
+	Q_i &= Q_{ci} - \Ii_{ci}\M{i} + b_i\M{i}^2 \notag \\
 	&- \M{i}\sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]\M{l}}, & i \in \mathrm{PQ}
 \end{align}
-for variables $\{M_\text{PQ}, \theta_\text{PQ, PV}\}$. These equations are independent of $Q_g$, which can be therefore be calculated in a single final step as:
+for variables $\{\M{\text{PQ}}, \theta_\text{PQ, PV}\}$. These equations are independent of $Q_g$, which can be therefore be calculated in a single final step as:
 \begin{align}
-	Q_{gi} &= -Q_{ci} + \Ii_{ci}M_i - b_i\M{i}^2 \notag \\
+	Q_{gi} &= -Q_{ci} + \Ii_{ci}\M{i} - b_i\M{i}^2 \notag \\
 	&+ \M{i}\sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]\M{l}}, & i \in \mathrm{PV}
 \end{align}
 
@@ -503,7 +503,7 @@ For PQ buses, the possible unknowns are $\M{}$ and $\theta$. For PV buses, the p
 	\frac{\partial Q_i}{\partial \M{k}} &= 
 		\begin{cases}
 			-\M{i}\left[G_{ik}\sn{ik} - B_{ik}\cs{ik}\right], & k \ne i \\
-			-\Ii_{ci} + 2b_i\M{i} + 2\M{i}B_{ii} - \sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]M_l}, & k = i, \\
+			-\Ii_{ci} + 2b_i\M{i} + 2\M{i}B_{ii} - \sum_{l = 0}^N{\left[G_{il}\sn{il} - B_{il}\cs{il}\right]\M{l}}, & k = i, \\
 		\end{cases} &  i, k \in \text{PQ} \notag \\
 	\frac{\partial Q_i}{\partial \theta_k} &= 
 		\begin{cases}
@@ -526,13 +526,13 @@ Especially in transmission networks, we have that $G_{ik} \ll B_{ik}$ and $\thet
 	\frac{\partial Q_i}{\partial \M{k}} &= 
 		\begin{cases}
 			\M{i}B_{ik}, & k \ne i \\
-			-\Ii_{ci} + 2b_i\M{i} + 2 \M{i}B_{ii} + \sum_{\stackrel{l = 0}{l \ne i}}^N{B_{il}M_l}, & k = i,
+			-\Ii_{ci} + 2b_i\M{i} + 2 \M{i}B_{ii} + \sum_{\stackrel{l = 0}{l \ne i}}^N{B_{il}\M{l}}, & k = i,
 		\end{cases} & i, k \in \text{PQ} \notag \\
 	\frac{\partial Q_i}{\partial \theta_k} &= 0, & i \in PQ
 \end{align}
-Note that the problem then separates into two independent problems: one for $\{P, \theta\}$ and one for $\{Q, M\}$. 
+Note that the problem then separates into two independent problems: one for $\{P, \theta\}$ and one for $\{Q, \M{}\}$. 
 
-For a flat-start, we have $M_k \approx 1$, and the Jacobian simplifies further. The fast decoupled load flow method normally uses this flat start Jacobian throughout the iteration process. The error function $f$ is assumed to be unchanged from the full NR method, so if it converges, it will converge to the correct solution to the full AC power flow problem. In practice it requires many more iterations than the full NR method, but each iteration is much faster, and the convergence properties can be much better.
+For a flat-start, we have $\M{k} \approx 1$, and the Jacobian simplifies further. The fast decoupled load flow method normally uses this flat start Jacobian throughout the iteration process. The error function $f$ is assumed to be unchanged from the full NR method, so if it converges, it will converge to the correct solution to the full AC power flow problem. In practice it requires many more iterations than the full NR method, but each iteration is much faster, and the convergence properties can be much better.
 
 \section{Formalism for modelling branches}
 \subsection{Branch admittance ($Y$) parameters}
