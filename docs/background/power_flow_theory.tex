@@ -672,6 +672,7 @@ The nodal admittance matrix is:
 \begin{bmatrix}I_0 \\ I_1 \end{bmatrix} &= 
 \begin{bmatrix}\frac{y_l + \frac{1}{2}y_m}{|n|^2} & -\frac{y_l}{n^*} \\ -\frac{y_l}{n} & y_l + \frac{1}{2}y_m\end{bmatrix}
 \begin{bmatrix}V_0 \\ V_1 \end{bmatrix}
+\label{EQ_REAL_TRANS}
 \end{align}
 where $n = n_1/n_0$ is the ideal turns ratio, $y_l$ is the leakage impedance and $y_m$ is the magnetising admittance. Often, the magnetising admittance is very small and is neglected. $y_l$ can be found by short circuiting the secondary, while $y_m$ can be found using an open circuit test.
 
@@ -717,6 +718,44 @@ y_l \begin{bmatrix}
 \begin{bmatrix}V_A \\ V_B \\ V_C \\ V_a \\ V_b \\ V_c\end{bmatrix}
 \end{align}
 with the nodal admittance matrix being specified by the matrix on the right, including the factor of $y_l$.
+
+\subsubsection{Open Delta-open Delta}
+\begin{figure}
+\begin{center}
+\includegraphics[width=7cm]{OpenDelta.png}
+\caption{Schematic of an open-delta transformer connection}
+\label{FIG_OPEN_DELTA}
+\end{center}
+\end{figure}
+Referring to Fig. \ref{FIG_OPEN_DELTA} and using Eq. (\ref{EQ_REAL_TRANS}) (and neglecting magnetising impedance),  we can derive the following equations:
+\newcommand{\maa}{\ensuremath{\frac{y_l}{|n|^2}}}
+\newcommand{\mab}{\ensuremath{\frac{y_l}{n^*}}}
+\newcommand{\mba}{\ensuremath{\frac{y_l}{n}}}
+\newcommand{\mbb}{\ensuremath{y_l}}
+\begin{align}
+	I_A &= \maa(V_A - V_C) - \mab(V_a - V_c) \notag \\
+	I_B &= \maa(V_B - V_C) - \mab(V_b - V_c) \notag \\
+	I_C &= \mab(V_a - V_c) - \maa(V_A - V_C) + \mab(V_b - V_c) - \maa(V_B - V_C) \notag \\
+	I_a &= \mbb(V_a - V_c) - \mba(V_A - V_C) \notag \\
+	I_b &= \mbb(V_b - V_c) - \mba(V_B - V_C) \notag \\
+	I_c &= \mba(V_A - V_C) - \mbb(V_a - V_c) + \mba(V_B - V_C) - \mbb(V_b - V_c)
+\end{align}
+Since $I = YV$, we can deduce the bus admittance matrix $Y$ as:
+\renewcommand{\maa}[1]{\ensuremath{#1/|n|^2}}
+\renewcommand{\mab}[1]{\ensuremath{#1/n^*}}
+\renewcommand{\mba}[1]{\ensuremath{#1/n}}
+\renewcommand{\mbb}[1]{\ensuremath{#1}}
+\begin{align}
+Y &= 
+y_l\begin{bmatrix}
+	\maa{1} & 0 & -\maa{1} & -\mab{1} & 0 & \mab{1} \\
+	0 & \maa{1} & -\maa{1} & 0 & -\mab{1} & \mab{1} \\
+	-\maa{1} & -\maa{1} & \maa{2} & -\mab{1} & -\mab{1} & \mab{2} \\
+	-\mba{1} & 0 & \mba{1} & \mbb{1} & 0 & -\mbb{1} \\
+	0 & -\mba{1} & \mba{1} & 0 & \mbb{1} & -\mbb{1} \\
+	-\mba{1} & -\mba{1} & \mba{2} & \mbb{1} & \mbb{1} & -\mbb{2}
+\end{bmatrix}
+\end{align}
 
 \section{General single phase branch model}
 \label{SEC_GEN_BRANCH_MODEL}

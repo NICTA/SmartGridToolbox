@@ -55,6 +55,7 @@ libinclude_HEADERS = \
 	Stopwatch.h \
 	UndergroundLine.h \
 	Units.h \
+	VvTransformer.h \
 	YamlSupport.h \
 	YyTransformer.h \
 	Zip.h
@@ -102,6 +103,7 @@ libSgtCore_la_SOURCES = \
 	UndergroundLine.h UndergroundLine.cc \
 	UndergroundLineParserPlugin.h UndergroundLineParserPlugin.cc \
 	Units.h Units.cc \
+	VvTransformer.h VvTransformer.cc \
 	YamlSupport.h YamlSupport.cc \
 	YyTransformer.h YyTransformer.cc \
 	YyTransformerParserPlugin.h YyTransformerParserPlugin.cc \
