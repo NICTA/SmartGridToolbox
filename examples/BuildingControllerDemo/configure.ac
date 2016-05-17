@@ -7,7 +7,7 @@ AC_PROG_CC
 AC_PROG_CXX([clang++ g++])
 AC_PROG_RANLIB
 AC_LANG([C++])
-AX_CXX_COMPILE_STDCXX_11([noext])
+AX_CXX_COMPILE_STDCXX_14([noext])
 AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [AM_CXXFLAGS="$AM_CXXFLAGS -ftemplate-depth=160"])
 AC_SUBST([AM_CXXFLAGS], ["$AM_CXXFLAGS -Wall"])
 
