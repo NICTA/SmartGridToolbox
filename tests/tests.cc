@@ -603,4 +603,15 @@ BOOST_AUTO_TEST_CASE (test_phases_C)
     BOOST_CHECK_SMALL(std::abs(diff), 1e-9);
 }
 
+BOOST_AUTO_TEST_CASE (test_Vv_transformer)
+{
+    Network netw;
+    Parser<Network> p;
+    p.parse("test_Vv_transformer.yaml", netw);
+    netw.solvePowerFlow();
+    auto V0 = netw.buses()[0]->V();
+    auto V1 = netw.buses()[1]->V();
+    BOOST_CHECK_CLOSE(std::abs(V0(0) - V1(0)), 1e-9);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

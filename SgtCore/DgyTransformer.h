@@ -52,7 +52,9 @@ namespace Sgt
                     const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
                 Component(id),
                 BranchAbc(phases0, phases1),
-                nomVRatioDY_(nomVRatioDY), offNomRatioDY_(offNomRatioDY), YL_(1.0/ZL)
+                nomVRatioDY_(nomVRatioDY),
+                offNomRatioDY_(offNomRatioDY),
+                YL_(1.0/ZL)
             {
                 // Empty.
             }
