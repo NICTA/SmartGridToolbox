@@ -1,0 +1,29 @@
+    -  parameters:
+            V0a: 6.3509
+            V1a: 12.702
+    -  bus:
+            id: bus_1
+            phases: [A, B, C]
+            V_base: <V0a>
+            V_nom: [<V0a>, <V0a>D120, <V0a>D-120]
+            type: SL
+    -  generic_gen:
+            id: gen_1
+            bus_id: bus_1
+            phases: [A, B, C]
+    -  bus:
+            id: bus_2
+            phases: [A, B, C]
+            V_base: <V1a>
+            V_nom: [<V1a>, <V1a>D120, <V1a>D-120]
+            type: PQ
+    -  v_v_transformer:
+            id: trans_1_2
+            nom_ratio: 0.5
+            off_nom_ratio_13: 1.0
+            off_nom_ratio_23: 1.0
+            bus_0_id: bus_1
+            bus_1_id: bus_2
+            phases_0: [A, B, C]
+            phases_1: [A, B, C]
+            leakage_impedance: 1e-2+1e-2j 
