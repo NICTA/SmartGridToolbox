@@ -44,6 +44,7 @@
 #include <SgtCore/Stopwatch.h>
 #include <SgtCore/UndergroundLine.h>
 #include <SgtCore/Units.h>
+#include <SgtCore/VvTransformer.h>
 #include <SgtCore/YyTransformer.h>
 #include <SgtCore/Zip.h>
 

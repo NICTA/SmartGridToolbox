@@ -24,6 +24,7 @@
 #include "PowerFlowSolverParserPlugin.h"
 #include "SinglePhaseTransformerParserPlugin.h"
 #include "UndergroundLineParserPlugin.h"
+#include "VvTransformerParserPlugin.h"
 #include "YyTransformerParserPlugin.h"
 
 namespace Sgt
@@ -42,6 +43,7 @@ namespace Sgt
         p.registerParserPlugin<PowerFlowSolverParserPlugin>();
         p.registerParserPlugin<SinglePhaseTransformerParserPlugin>();
         p.registerParserPlugin<UndergroundLineParserPlugin>();
+        p.registerParserPlugin<VvTransformerParserPlugin>();
         p.registerParserPlugin<YyTransformerParserPlugin>();
     }
 }
