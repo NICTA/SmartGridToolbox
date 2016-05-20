@@ -757,6 +757,44 @@ y_l\begin{bmatrix}
 \end{bmatrix}
 \end{align}
 
+\subsubsection{Open Delta-open Delta (short across middle phase)}
+\begin{figure}
+\begin{center}
+\includegraphics[width=7cm]{OpenDeltaB.png}
+\caption{Schematic of an open-delta transformer connection with a short across the middle phase.}
+\label{FIG_OPEN_DELTA_B}
+\end{center}
+\end{figure}
+Referring to Fig. \ref{FIG_OPEN_DELTA_B} and using Eq. (\ref{EQ_REAL_TRANS}) (and neglecting magnetising impedance),  we can derive the following equations:
+\renewcommand{\maa}{\ensuremath{\frac{y_l}{|n|^2}}}
+\renewcommand{\mab}{\ensuremath{\frac{y_l}{n^*}}}
+\renewcommand{\mba}{\ensuremath{\frac{y_l}{n}}}
+\renewcommand{\mbb}{\ensuremath{y_l}}
+\begin{align}
+	I_A &= \maa(V_A - V_C) - \mab(V_a - V_c) \notag \\
+	I_B &= \maa(V_B - V_C) - \mab(V_b - V_c) \notag \\
+	I_C &= \mab(V_a - V_c) - \maa(V_A - V_C) + \mab(V_b - V_c) - \maa(V_B - V_C) \notag \\
+	I_a &= \mbb(V_a - V_c) - \mba(V_A - V_C) \notag \\
+	I_b &= \mbb(V_b - V_c) - \mba(V_B - V_C) \notag \\
+	I_c &= \mba(V_A - V_C) - \mbb(V_a - V_c) + \mba(V_B - V_C) - \mbb(V_b - V_c)
+\end{align}
+Since $I = YV$, we can deduce the bus admittance matrix $Y$ as:
+\renewcommand{\maa}[1]{\ensuremath{#1/|n|^2}}
+\renewcommand{\mab}[1]{\ensuremath{#1/n^*}}
+\renewcommand{\mba}[1]{\ensuremath{#1/n}}
+\renewcommand{\mbb}[1]{\ensuremath{#1}}
+\begin{align}
+Y &= 
+y_l\begin{bmatrix}
+	\maa{1} & 0 & -\maa{1} & -\mab{1} & 0 & \mab{1} \\
+	0 & \maa{1} & -\maa{1} & 0 & -\mab{1} & \mab{1} \\
+	-\maa{1} & -\maa{1} & \maa{2} & -\mab{1} & -\mab{1} & \mab{2} \\
+	-\mba{1} & 0 & \mba{1} & \mbb{1} & 0 & -\mbb{1} \\
+	0 & -\mba{1} & \mba{1} & 0 & \mbb{1} & -\mbb{1} \\
+	-\mba{1} & -\mba{1} & \mba{2} & \mbb{1} & \mbb{1} & -\mbb{2}
+\end{bmatrix}
+\end{align}
+
 \section{General single phase branch model}
 \label{SEC_GEN_BRANCH_MODEL}
 Single phase transformers and transmission lines can both be incorporated within a single general branch model, shown in Fig. \ref{FIG_GEN_BRANCH_MODEL}.
