@@ -20,10 +20,10 @@
     -  v_v_transformer:
             id: trans_1_2
             nom_ratio: 0.5
-            off_nom_ratio_13: 1.0
-            off_nom_ratio_23: 1.0
+            off_nom_ratio_13: 0.95652 # Gives 11 : 23
+            off_nom_ratio_23: 0.95652 # Gives 11 : 23
             bus_0_id: bus_1
             bus_1_id: bus_2
             phases_0: [A, B, C]
             phases_1: [A, B, C]
-            leakage_impedance: 1e-2+1e-2j 
+            leakage_impedance: 0+2e-5j 

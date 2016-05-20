@@ -609,6 +609,10 @@ BOOST_AUTO_TEST_CASE (test_Vv_transformer)
     Parser<Network> p;
     p.parse("test_Vv_transformer.yaml", netw);
     netw.solvePowerFlow();
+
+    auto trans = netw.branch("trans_1_2");
+    std::cout << trans->Y() << 
+
     auto V0 = netw.buses()[0]->V();
     auto V1 = netw.buses()[1]->V();
     auto V0ab = V0(0) - V0(1);
@@ -621,8 +625,10 @@ BOOST_AUTO_TEST_CASE (test_Vv_transformer)
     std::cout << std::abs(V1(0)) << " " << std::abs(V1(1)) << " " << std::abs(V1(2)) << std::endl;
     std::cout << std::abs(V0ab) << " " << std::abs(V0bc) << " " << std::abs(V0ca) << std::endl;
     std::cout << std::abs(V1ab) << " " << std::abs(V1bc) << " " << std::abs(V1ca) << std::endl;
-    std::cout << V0ab/V1ab << " " << V0bc/V1bc << " " << V0ca/V1ca << std::endl;
-    // BOOST_CHECK_CLOSE(std::abs(V0(0)), std::abs(V1(0)), 1e-7);
+    std::cout << std::abs(V0ab/V1ab) << " " << std::abs(V0bc/V1bc) << " " << std::abs(V0ca/V1ca) << std::endl;
+    BOOST_CHECK_CLOSE(std::abs(V0ab/V1ab), 0.47826, 1e-6);
+    BOOST_CHECK_CLOSE(std::abs(V0bc/V1bc), 0.47826, 1e-6);
+    BOOST_CHECK_CLOSE(std::abs(V0ca/V1ca), 0.47826, 1e-6);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -663,9 +663,18 @@ This can't be modelled correctly in the formalism of nodal admittance matrices, 
 	}
 	\label{FIG_IDEAL_TRANS_EQUIV}
 \end{figure}
-The relationships could be included in the powerflow equations specially, but more commonly real transformers are used, as described below; these may be expressed in the nodal admittance formalism.
+The relationships could be included in the power flow equations specially, but more commonly real transformers are used, as described below; these may be expressed in the nodal admittance formalism.
 
-A real transformer includes a leakage impedance (due to finite resistance of copper windings and core losses) and a shunt magnetising impedance. There are various ways of drawing an equivalent circuit. We use the general branch model described in Section \ref{SEC_GEN_BRANCH_MODEL}, see Fig. \ref{FIG_GEN_BRANCH_MODEL}.
+A real transformer includes a leakage impedance (due to finite resistance of copper windings and core losses) and a shunt magnetising impedance. There are various ways of drawing an equivalent circuit. We use the general branch model described in Section \ref{SEC_GEN_BRANCH_MODEL}, with the series admittance set to a leakage admittance $y_l$ (mainly inductive) and the shunt admittances forming the magnetising admittance $y_m$, see Fig. \ref{FIG_REAL_TRANS}.
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=(\textwidth-2cm)]{transformer.png}
+	\end{center}
+	\caption{
+		An equivalent circuit for a real transformer.
+	}
+	\label{FIG_REAL_TRANS}
+\end{figure}
 
 The nodal admittance matrix is:
 \begin{align}
@@ -732,44 +741,6 @@ Referring to Fig. \ref{FIG_OPEN_DELTA} and using Eq. (\ref{EQ_REAL_TRANS}) (and 
 \newcommand{\mab}{\ensuremath{\frac{y_l}{n^*}}}
 \newcommand{\mba}{\ensuremath{\frac{y_l}{n}}}
 \newcommand{\mbb}{\ensuremath{y_l}}
-\begin{align}
-	I_A &= \maa(V_A - V_C) - \mab(V_a - V_c) \notag \\
-	I_B &= \maa(V_B - V_C) - \mab(V_b - V_c) \notag \\
-	I_C &= \mab(V_a - V_c) - \maa(V_A - V_C) + \mab(V_b - V_c) - \maa(V_B - V_C) \notag \\
-	I_a &= \mbb(V_a - V_c) - \mba(V_A - V_C) \notag \\
-	I_b &= \mbb(V_b - V_c) - \mba(V_B - V_C) \notag \\
-	I_c &= \mba(V_A - V_C) - \mbb(V_a - V_c) + \mba(V_B - V_C) - \mbb(V_b - V_c)
-\end{align}
-Since $I = YV$, we can deduce the bus admittance matrix $Y$ as:
-\renewcommand{\maa}[1]{\ensuremath{#1/|n|^2}}
-\renewcommand{\mab}[1]{\ensuremath{#1/n^*}}
-\renewcommand{\mba}[1]{\ensuremath{#1/n}}
-\renewcommand{\mbb}[1]{\ensuremath{#1}}
-\begin{align}
-Y &= 
-y_l\begin{bmatrix}
-	\maa{1} & 0 & -\maa{1} & -\mab{1} & 0 & \mab{1} \\
-	0 & \maa{1} & -\maa{1} & 0 & -\mab{1} & \mab{1} \\
-	-\maa{1} & -\maa{1} & \maa{2} & -\mab{1} & -\mab{1} & \mab{2} \\
-	-\mba{1} & 0 & \mba{1} & \mbb{1} & 0 & -\mbb{1} \\
-	0 & -\mba{1} & \mba{1} & 0 & \mbb{1} & -\mbb{1} \\
-	-\mba{1} & -\mba{1} & \mba{2} & \mbb{1} & \mbb{1} & -\mbb{2}
-\end{bmatrix}
-\end{align}
-
-\subsubsection{Open Delta-open Delta (short across middle phase)}
-\begin{figure}
-\begin{center}
-\includegraphics[width=7cm]{OpenDeltaB.png}
-\caption{Schematic of an open-delta transformer connection with a short across the middle phase.}
-\label{FIG_OPEN_DELTA_B}
-\end{center}
-\end{figure}
-Referring to Fig. \ref{FIG_OPEN_DELTA_B} and using Eq. (\ref{EQ_REAL_TRANS}) (and neglecting magnetising impedance),  we can derive the following equations:
-\renewcommand{\maa}{\ensuremath{\frac{y_l}{|n|^2}}}
-\renewcommand{\mab}{\ensuremath{\frac{y_l}{n^*}}}
-\renewcommand{\mba}{\ensuremath{\frac{y_l}{n}}}
-\renewcommand{\mbb}{\ensuremath{y_l}}
 \begin{align}
 	I_A &= \maa(V_A - V_C) - \mab(V_a - V_c) \notag \\
 	I_B &= \maa(V_B - V_C) - \mab(V_b - V_c) \notag \\
