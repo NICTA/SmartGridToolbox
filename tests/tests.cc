@@ -610,9 +610,6 @@ BOOST_AUTO_TEST_CASE (test_Vv_transformer)
     p.parse("test_Vv_transformer.yaml", netw);
     netw.solvePowerFlow();
 
-    auto trans = netw.branch("trans_1_2");
-    std::cout << trans->Y() << 
-
     auto V0 = netw.buses()[0]->V();
     auto V1 = netw.buses()[1]->V();
     auto V0ab = V0(0) - V0(1);
