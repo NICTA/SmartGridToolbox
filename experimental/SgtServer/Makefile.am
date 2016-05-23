@@ -1,4 +1,5 @@
 AUTOMAKE_OPTIONS = foreign
+ACLOCAL_AMFLAGS = -I m4
 
 AM_CPPFLAGS = -I../.. -I/usr/local/opt/openssl/include
 
