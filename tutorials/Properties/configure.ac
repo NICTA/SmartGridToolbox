@@ -1,16 +1,12 @@
-AC_INIT([tutorials], [v1.0.0], [dan.gordon@nicta.com.au], [Template])
+AC_INIT([tutorials], [0.1], [dan.gordon@nicta.com.au])
 AC_CONFIG_SRCDIR([properties.cc])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
-
+LT_INIT([disable-shared])
 AC_PROG_CXX([clang++ g++])
-AC_PROG_LIBTOOL
-
 AC_LANG([C++])
-AX_CXX_COMPILE_STDCXX_11([noext])
+AX_CXX_COMPILE_STDCXX_14([noext])
 AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [AM_CXXFLAGS="$AM_CXXFLAGS -ftemplate-depth=160"])
-
-AC_CONFIG_HEADERS([config.h])
+AC_SUBST([AM_CXXFLAGS], ["$AM_CXXFLAGS -Wall"])
 AC_CONFIG_FILES([Makefile])
-
 AC_OUTPUT

@@ -66,5 +66,3 @@ libSgtSim_la_SOURCES = \
 	WeakOrder.h WeakOrder.cc \
 	Weather.h Weather.cc \
 	WeatherParserPlugin.h WeatherParserPlugin.cc
-
-#libSgtSim_la_LIBADD = ../SgtCore/libSgtCore.la

@@ -2,6 +2,7 @@ AC_INIT([SmartGridToolbox], [v3.0.0], [dan.gordon@nicta.com.au], [SmartGridToolb
 AC_CONFIG_SRCDIR([src/run_config.cc])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+LT_INIT([disable-shared])
 
 AC_ARG_ENABLE([power_tools_pp],
               [AS_HELP_STRING([--enable-power_tools_pp], [enable PowerTools++ specific features @<:@no@:>@])],
@@ -21,10 +22,7 @@ AM_CONDITIONAL([WITH_KLU], [test x$with_klu = xyes])
 AS_IF([test x$with_klu == xyes],
       [AC_DEFINE([WITH_KLU], [], [use the KLU library as a sparse solver])])
 
-AC_PROG_CC([clang gcc])
 AC_PROG_CXX([clang++ g++])
-
-LT_INIT([disable-shared]) # disable-shared doesn't seem to be working: autoconf bug?
 
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_14([noext])
