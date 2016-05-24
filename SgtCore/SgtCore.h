@@ -25,7 +25,7 @@
 #include <SgtCore/DgyTransformer.h>
 #include <SgtCore/Event.h>
 #include <SgtCore/Gen.h>
-#include <SgtCore/json.hpp>
+#include <SgtCore/json.h>
 #include <SgtCore/Network.h>
 #include <SgtCore/NetworkParser.h>
 #include <SgtCore/OverheadLine.h>

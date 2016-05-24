@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <SgtCore/Common.h>
-#include <SgtCore/json.hpp>
+#include <SgtCore/json.h>
 #include <SgtCore/Network.h>
 #include <SgtCore/Parser.h>
 
