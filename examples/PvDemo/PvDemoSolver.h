@@ -15,7 +15,7 @@
 #ifndef PV_DEMO_SOLVER_DOT_H
 #define PV_DEMO_SOLVER_DOT_H
 
-#include <SgtCore/PowerFlowPtPpSolver.h>
+#include <SgtCore/PowerFlowPtSolver.h>
 
 #include <PowerTools++/var.h>
 
@@ -26,7 +26,7 @@ namespace Sgt
     class Network;
     class Simulation;
 
-    class PvDemoSolver : public PowerFlowPtPpSolver
+    class PvDemoSolver : public PowerFlowPtSolver
     {
         protected:
             virtual std::unique_ptr<PowerModel> makeModel() override;

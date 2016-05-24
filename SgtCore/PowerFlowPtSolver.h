@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef POWER_FLOW_PT_PP_SOLVER_DOT_H
-#define POWER_FLOW_PT_PP_SOLVER_DOT_H
+#ifndef POWER_FLOW_PT_SOLVER_DOT_H
+#define POWER_FLOW_PT_SOLVER_DOT_H
 
 #include <SgtCore/Network.h>
 #include <SgtCore/PowerFlowSolver.h>
@@ -29,13 +29,13 @@ namespace Sgt
 
     /// @brief Optimal power flow (OPF) solver.
     ///
-    /// Uses the external PowerTools++ library.
+    /// Uses the external PowerTools library.
     /// @ingroup PowerFlowCore
-    class PowerFlowPtPpSolver : public PowerFlowSolverInterface
+    class PowerFlowPtSolver : public PowerFlowSolverInterface
     {
         public:
 
-            virtual ~PowerFlowPtPpSolver();
+            virtual ~PowerFlowPtSolver();
 
             virtual void setNetwork(Network& netw) override
             {
@@ -55,4 +55,4 @@ namespace Sgt
     };
 }
 
-#endif // POWER_FLOW_PT_PP_SOLVER_DOT_H
+#endif // POWER_FLOW_PT_SOLVER_DOT_H

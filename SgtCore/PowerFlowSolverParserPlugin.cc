@@ -20,8 +20,8 @@
 #include "PowerFlowNrPolSolver.h"
 #include "PowerFlowNrRectSolver.h"
 #include "PowerFlowFdSolver.h"
-#ifdef ENABLE_POWER_TOOLS_PP
-#include "PowerFlowPtPpSolver.h"
+#ifdef ENABLE_POWER_TOOLS
+#include "PowerFlowPtSolver.h"
 #endif
 #include "YamlSupport.h"
 
@@ -45,15 +45,15 @@ namespace Sgt
             sgtLogMessage() << "Using fast-decoupled load flow solver." << std::endl;
             netw.setSolver(std::make_unique<PowerFlowFdSolver>());
         }
-        else if (key == "opf_pt_pp")
+        else if (key == "opf_pt")
         {
-#ifdef ENABLE_POWER_TOOLS_PP
-            sgtLogMessage() << "Using OPF (PowerTools++) solver." << std::endl;
-            netw.setSolver(std::make_unique<PowerFlowPtPpSolver>());
-#else // ENABLE_POWER_TOOLS_PP
+#ifdef ENABLE_POWER_TOOLS
+            sgtLogMessage() << "Using OPF (PowerTools) solver." << std::endl;
+            netw.setSolver(std::make_unique<PowerFlowPtSolver>());
+#else // ENABLE_POWER_TOOLS
             sgtError("OPF solver is not available, since SmartGridToolbox was not compiled with "
                      "--enable-power-tools++.");
-#endif // ENABLE_POWER_TOOLS_PP
+#endif // ENABLE_POWER_TOOLS
         }
     }
 }

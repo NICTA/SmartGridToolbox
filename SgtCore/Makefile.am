@@ -1,13 +1,13 @@
 AUTOMAKE_OPTIONS = foreign
 
-if ENABLE_POWER_TOOLS_PP
-POWER_FLOW_PT_PP_SOLVER_H = PowerFlowPtPpSolver.h
-POWER_FLOW_PT_PP_SOLVER_CC = PowerFlowPtPpSolver.cc
-L_POWER_TOOLS_PP = -lPowerTools++ -lipopt -lcoinhsl -lgurobi65 -lgurobi_c++
+if ENABLE_POWER_TOOLS
+POWER_FLOW_PT_SOLVER_H = PowerFlowPtSolver.h
+POWER_FLOW_PT_SOLVER_CC = PowerFlowPtSolver.cc
+L_POWER_TOOLS = -lPowerTools++ -lipopt -lcoinhsl -lgurobi65 -lgurobi_c++
 else
-POWER_FLOW_PT_PP_SOLVER_H =
-POWER_FLOW_PT_PP_SOLVER_CC =
-L_POWER_TOOLS_PP =
+POWER_FLOW_PT_SOLVER_H =
+POWER_FLOW_PT_SOLVER_CC =
+L_POWER_TOOLS =
 endif
 
 if WITH_KLU
@@ -46,7 +46,7 @@ libinclude_HEADERS = \
 	PowerFlowModel.h \
 	PowerFlowNrPolSolver.h \
 	PowerFlowNrRectSolver.h \
-	$(POWER_FLOW_PT_PP_SOLVER_H) \
+	$(POWER_FLOW_PT_SOLVER_H) \
 	PowerFlowSolver.h \
 	Properties.h \
 	Random.h \
@@ -88,7 +88,7 @@ libSgtCore_la_SOURCES = \
 	PowerFlowModel.h PowerFlowModel.cc \
 	PowerFlowNrPolSolver.h PowerFlowNrPolSolver.cc \
 	PowerFlowNrRectSolver.h PowerFlowNrRectSolver.cc \
-	$(POWER_FLOW_PT_PP_SOLVER_H) $(POWER_FLOW_PT_PP_SOLVER_CC) \
+	$(POWER_FLOW_PT_SOLVER_H) $(POWER_FLOW_PT_SOLVER_CC) \
 	PowerFlowSolver.h PowerFlowSolver.cc \
 	PowerFlowSolverParserPlugin.h PowerFlowSolverParserPlugin.cc \
 	Properties.h \
@@ -115,7 +115,7 @@ libSgtCore_la_LIBADD = \
 	$(BOOST_DATE_TIME_LIB) \
 	-lyaml-cpp \
 	$(L_KLU_SOLVER) \
-	$(L_POWER_TOOLS_PP)
+	$(L_POWER_TOOLS)
 
 noinst_PROGRAMS = helloworld
 helloworld_SOURCES = helloworld.cc

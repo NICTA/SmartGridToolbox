@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PowerFlowPtPpSolver.h"
+#include "PowerFlowPtSolver.h"
 
 #include "Network.h"
 #include "CommonBranch.h"
@@ -171,12 +171,12 @@ namespace Sgt
         sgtLogMessage() << "Done------------------" << std::endl;
     }
 
-    PowerFlowPtPpSolver::~PowerFlowPtPpSolver()
+    PowerFlowPtSolver::~PowerFlowPtSolver()
     {
         delete ptNetw_;
     }
 
-    bool PowerFlowPtPpSolver::solveProblem()
+    bool PowerFlowPtSolver::solveProblem()
     {
         ptNetw_ = sgt2PowerTools(*sgtNetw_);
         // printNetw(*ptNetw_);
@@ -188,18 +188,18 @@ namespace Sgt
         stopwatchSolve.stop();
         
         // printNetw(*ptNetw_);
-        sgtLogMessage() << "PowerFlowPtPpSolver:" << std::endl;
+        sgtLogMessage() << "PowerFlowPtSolver:" << std::endl;
         LogIndent indent;
         sgtLogMessage() << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
         return success;
     }
 
-    void PowerFlowPtPpSolver::updateNetwork()
+    void PowerFlowPtSolver::updateNetwork()
     {
         powerTools2Sgt(*ptNetw_, *sgtNetw_);
     }
 
-    std::unique_ptr<PowerModel> PowerFlowPtPpSolver::makeModel()
+    std::unique_ptr<PowerModel> PowerFlowPtSolver::makeModel()
     {
         std::unique_ptr<PowerModel> mod(new PowerModel(ACRECT, ptNetw_, ipopt));
         mod->build();
