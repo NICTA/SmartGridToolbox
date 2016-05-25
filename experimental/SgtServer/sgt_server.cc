@@ -25,9 +25,6 @@
 
 #include <regex>
 
-static std::string dataDirString("/Users/dgordon/Devel/nesta/");
-static boost::filesystem::path dataDirPath(dataDirString);
-
 using namespace Sgt;
 
 using namespace web;
@@ -41,7 +38,7 @@ class SgtServer
 {
 public:
 
-    SgtServer(const std::string& url);
+    SgtServer(const std::string& url, const std::string& dataDir);
 
     pplx::task<void> open() {return listener_.open();}
     pplx::task<void> close() {return listener_.close();}
@@ -56,37 +53,39 @@ private:
     void handleGetNetwork(http_request message);
 
     http_listener listener_;   
-    
+
+    boost::filesystem::path dataDir_;
     std::map<std::string, std::unique_ptr<Network>> nws_;
 };
 
-static std::unique_ptr<SgtServer> gSgtServer;
+static std::unique_ptr<SgtServer> gServer;
 
-void on_initialize(const std::string& address)
+void on_initialize(const std::string& address, const std::string& dataDir)
 {
     uri_builder uri(address);
 
     auto addr = uri.to_uri().to_string();
-    gSgtServer = std::unique_ptr<SgtServer>(new SgtServer(addr));
-    gSgtServer->open().wait();
+    gServer = std::unique_ptr<SgtServer>(new SgtServer(addr, dataDir));
+    gServer->open().wait();
     
     std::cout << "Listening for requests at: " << addr << std::endl;
 }
 
 void on_shutdown()
 {
-    gSgtServer->close().wait();
+    gServer->close().wait();
 }
 
 int main(int argc, char *argv[])
 {
-    sgtAssert(argc == 1, "Usage: test_cpp_rest");
+    sgtAssert(argc == 2, "Usage: test_cpp_rest data_dir");
+    std::string dataDir(argv[1]);
     std::string port = "34568";
 
     std::string address = "http://localhost:";
     address.append(port);
 
-    on_initialize(address);
+    on_initialize(address, dataDir);
     std::cout << "Press ENTER to exit." << std::endl;
 
     std::string line;
@@ -96,7 +95,8 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-SgtServer::SgtServer(const std::string& url) : listener_(url)
+SgtServer::SgtServer(const std::string& url, const std::string& dataDir) : 
+    listener_(url), dataDir_(dataDir.c_str())
 {
     listener_.support(methods::GET, std::bind(&SgtServer::handleGet, this, std::placeholders::_1));
     listener_.support(methods::PUT, std::bind(&SgtServer::handlePut, this, std::placeholders::_1));
@@ -284,7 +284,7 @@ void SgtServer::handleGet(http_request message)
         }
     };
        
-    auto getNetworkFiles = [&]()
+    auto getYamlNetworkFiles = [&]()
     {
         using namespace boost::filesystem;
         if (paths.size() != 0)
@@ -293,11 +293,31 @@ void SgtServer::handleGet(http_request message)
         }
         else
         {
-            directory_iterator it(dataDirPath);
+            directory_iterator it(dataDir_);
             std::vector<std::string> files;
             std::vector<std::string> mFiles;
             std::transform(it, directory_iterator(), std::back_inserter(files),
-                    [](const decltype(*it)& entry){return entry.path().filename().string();});
+                    [](decltype(*it)& entry){return entry.path().filename().string();});
+            std::copy_if(files.begin(), files.end(), std::back_inserter(mFiles), 
+                    [](const std::string& s){return std::regex_search(s, std::regex(".*\\.yaml$"));});
+            reply = Json(mFiles); 
+        }
+    };
+       
+    auto getMatpowerNetworkFiles = [&]()
+    {
+        using namespace boost::filesystem;
+        if (paths.size() != 0)
+        {
+            message.reply(status_codes::BadRequest);
+        }
+        else
+        {
+            directory_iterator it(dataDir_);
+            std::vector<std::string> files;
+            std::vector<std::string> mFiles;
+            std::transform(it, directory_iterator(), std::back_inserter(files),
+                    [](decltype(*it)& entry){return entry.path().filename().string();});
             std::copy_if(files.begin(), files.end(), std::back_inserter(mFiles), 
                     [](const std::string& s){return std::regex_search(s, std::regex(".*\\.m$"));});
             reply = Json(mFiles); 
@@ -317,9 +337,13 @@ void SgtServer::handleGet(http_request message)
         {
             getNetworks();
         }
-        else if (pathsFront == "matpower_files")
+        else if (pathsFront == "yaml_network_files")
         {
-            getNetworkFiles();
+            getYamlNetworkFiles();
+        }
+        else if (pathsFront == "matpower_network_files")
+        {
+            getMatpowerNetworkFiles();
         }
         else
         {
@@ -347,13 +371,26 @@ void SgtServer::handlePut(http_request message)
     {
         std::string first = paths.front();
         paths.pop_front();
-        if (first == "networks")
+        if (first == "yaml_networks")
+        {
+            std::string networkId = pathsVec[1];
+            std::string fname = messageContentJson["yaml_filename"];
+            Network* nw = new Network();
+            std::string yamlStr = std::string("--- [{matpower : {input_file : ") 
+                + dataDir_.string() + fname + ", default_kV_base : 11}}]";
+            std::cout << yamlStr << std::endl;
+            YAML::Node n = YAML::Load(yamlStr);
+            Parser<Network> p;
+            p.parse(dataDir_.string() + fname, *nw);
+            nws_[networkId].reset(nw);
+        }
+        else if (first == "matpower_networks")
         {
             std::string networkId = pathsVec[1];
             std::string fname = messageContentJson["matpower_filename"];
             Network* nw = new Network();
             std::string yamlStr = std::string("--- [{matpower : {input_file : ") 
-                + dataDirString + fname + ", default_kV_base : 11}}]";
+                + dataDir_.string() + fname + ", default_kV_base : 11}}]";
             std::cout << yamlStr << std::endl;
             YAML::Node n = YAML::Load(yamlStr);
             Parser<Network> p;

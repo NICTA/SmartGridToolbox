@@ -213,7 +213,7 @@ Sgt.SgtClient = (function() {
     }
 
     var files = $.getJSON(
-        "http://sgt.com/api/matpower_files/",
+        "http://sgt.com/api/matpower_network_files/",
         function(files) {
             for (var i = 0; i < files.length; ++i) {
                 dom.selector.append("<option>" + files[i] + "</option>");
