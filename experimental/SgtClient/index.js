@@ -72,16 +72,16 @@ Sgt.SgtClient = (function() {
 
     function networkLoaded(netw) {
 
-        var busses = netw.network.busses;
+        var buses = netw.network.buses;
         var branches = netw.network.branches;
 
         graph = Viva.Graph.graph();
 
         busMap = {}; 
 
-        for (var i = 0; i < busses.length; ++i)
+        for (var i = 0; i < buses.length; ++i)
         {
-            var bus = busses[i];
+            var bus = buses[i];
             graph.addNode(bus.component.id, {VMag: VMag(bus), type: bus.bus.type});
             busMap[bus.component.id] = bus;
         }
@@ -140,7 +140,7 @@ Sgt.SgtClient = (function() {
             }).mouseLeave(function (node) {
             }).dblClick(function (node) {
             }).click(function (node) {
-                var url = loadNetwork.url + "/busses/" + node.id + "/properties/"
+                var url = loadNetwork.url + "/buses/" + node.id + "/properties/"
                 $.ajax({
                     url: url,
                     async: false,
