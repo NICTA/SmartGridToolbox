@@ -126,6 +126,16 @@ namespace Sgt
             }
 
             /// @}
+            
+        public:
+
+            /// @name User data.
+            /// @{
+
+            /// @brief For application specific data, not used internally by SGT.
+            json userData;
+
+            /// @}
         
         private:
 
