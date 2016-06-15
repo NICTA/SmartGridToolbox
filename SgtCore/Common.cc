@@ -261,9 +261,4 @@ namespace Sgt
                 local_date_time::NOT_DATE_TIME_ON_ERROR);
         return ldt.utc_time();
     }
-    
-    json JsonConvert<Complex>::toJson(const Complex& c)
-    {
-        return {c.real(), c.imag()};
-    }
 }

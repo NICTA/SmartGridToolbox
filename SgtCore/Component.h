@@ -122,7 +122,7 @@ namespace Sgt
 
             virtual json toJson() const
             {
-                return {{"component", {{"id", id_}}}};
+                return {{"component", {{"id", id_}, {"component_type", componentType()}}}};
             }
 
             /// @}

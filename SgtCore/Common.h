@@ -409,7 +409,10 @@ namespace Sgt
     /// JSON conversion for complex numbers.
     template<> struct JsonConvert<Complex>
     {
-        static json toJson(const Complex& c);
+        static json toJson(const Complex& c)
+        {
+            return {c.real(), c.imag()};
+        }
     };
 
     /// @}
