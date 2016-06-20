@@ -201,6 +201,19 @@ namespace Sgt
     json Bus::toJson() const
     {
         json j = this->Component::toJson();
+
+        json gensJson = json::array();
+        for (const auto& g : gens())
+        {
+            gensJson.push_back(g->id());
+        }
+        
+        json zipsJson = json::array();
+        for (const auto& z : zips())
+        {
+            zipsJson.push_back(z->id());
+        }
+
         j[sComponentType()] = {
             {"phases", phases()},
             {"type", type()},
@@ -209,7 +222,9 @@ namespace Sgt
             {"V_mag_min", VMagMin()},
             {"V_mag_max", VMagMax()},
             {"V", V()},
-            {"coords", coords()}};
+            {"coords", coords()},
+            {"gens", gensJson},
+            {"zips", zipsJson}};
         return j;
     }
 }
