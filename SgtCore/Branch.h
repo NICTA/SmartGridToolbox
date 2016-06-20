@@ -29,7 +29,7 @@ namespace Sgt
     ///
     /// Implement some common functionality for convenience.
     /// @ingroup PowerFlowCore
-    class BranchAbc : virtual public Component
+    class BranchAbc : virtual public Component, public HasProperties<BranchAbc>
     {
         public:
 
@@ -189,12 +189,12 @@ namespace Sgt
 
     /// @brief A concrete, generic branch.
     /// @ingroup PowerFlowCore
-    class GenericBranch : public BranchAbc
+    class GenericBranch : public BranchAbc, public HasProperties<GenericBranch>
     {
         public:
 
             SGT_PROPS_INIT(GenericBranch);
-            SGT_PROPS_INHERIT(GenericBranch, Component);
+            SGT_PROPS_INHERIT(GenericBranch, BranchAbc);
 
         /// @name Static member functions:
         /// @{
