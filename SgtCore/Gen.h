@@ -26,12 +26,15 @@ namespace Sgt
     ///
     /// Implement some common functionality for convenience.
     /// @ingroup PowerFlowCore
-    class GenAbc : virtual public Component
+    class GenAbc : virtual public Component, public HasProperties<GenAbc>
     {
         public:
 
-        /// @name Static member functions:
-        /// @{
+            SGT_PROPS_INIT(GenAbc);
+            SGT_PROPS_INHERIT(GenAbc, Component);
+
+            /// @name Static member functions:
+            /// @{
 
             static const std::string& sComponentType()
             {
@@ -39,10 +42,10 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Lifecycle:
-        /// @{
+            /// @name Lifecycle:
+            /// @{
 
             explicit GenAbc(const Phases& phases) :
                 phases_(phases)
@@ -50,10 +53,10 @@ namespace Sgt
                 // Empty.
             }
 
-        /// @}
+            /// @}
 
-        /// @name Component virtual overridden member functions.
-        /// @{
+            /// @name Component virtual overridden member functions.
+            /// @{
 
             virtual const std::string& componentType() const override
             {
@@ -62,94 +65,123 @@ namespace Sgt
 
             virtual json toJson() const override;
 
-        /// @}
+            /// @}
 
-        /// @name Phase accessors:
-        /// @{
+            /// @name Phase accessors:
+            /// @{
 
             virtual const Phases& phases() const
             {
                 return phases_;
             }
+            
+            SGT_PROP_GET(phases, GenAbc, const Phases&, phases);
 
-        /// @}
+            /// @}
 
-        /// @name In service:
-        /// @{
+            /// @name In service:
+            /// @{
 
             virtual bool isInService() const
             {
                 return isInService_;
             }
-
+            
             virtual void setIsInService(bool isInService)
             {
                 isInService_ = isInService;
                 isInServiceChanged_.trigger();
             }
+            
+            SGT_PROP_GET_SET(isInService, GenAbc, bool, isInService, setIsInService);
 
-        /// @}
+            /// @}
 
-        /// @name Power injection:
-        /// @{
+            /// @name Power injection:
+            /// @{
 
             virtual arma::Col<Complex> S() const final
             {
                 return isInService_ ? inServiceS() : arma::Col<Complex>(phases_.size(), arma::fill::zeros);
             }
+            
+            SGT_PROP_GET(S, GenAbc, arma::Col<Complex>, S);
 
             virtual arma::Col<Complex> inServiceS() const = 0;
 
             virtual void setInServiceS(const arma::Col<Complex>& S) = 0;
+            
+            SGT_PROP_GET_SET(inServiceS, GenAbc, arma::Col<Complex>, inServiceS, setInServiceS);
+            
+            /// @}
 
-        /// @}
-
-        /// @name Moment of inertia:
-        /// @{
+            /// @name Moment of inertia:
+            /// @{
 
             virtual double J() const final
             {
                 return isInService_ ? inServiceJ() : 0.0;
             }
 
+            SGT_PROP_GET(J, GenAbc, double, J);
+
             virtual double inServiceJ() const = 0;
+            
+            SGT_PROP_GET(inServiceJ, GenAbc, double, inServiceJ);
 
-        /// @}
+            /// @}
 
-        /// @name Generation bounds:
-        /// @{
+            /// @name Generation bounds:
+            /// @{
 
             virtual double PMin() const = 0;
             virtual void setPMin(double PMin) = 0;
+            SGT_PROP_GET_SET(PMin, GenAbc, double, PMin, setPMin);
+
             virtual double PMax() const = 0;
             virtual void setPMax(double PMax) = 0;
+            SGT_PROP_GET_SET(PMax, GenAbc, double, PMax, setPMax);
+
             virtual double QMin() const = 0;
             virtual void setQMin(double QMin) = 0;
+            SGT_PROP_GET_SET(QMin, GenAbc, double, QMin, setQMin);
+
             virtual double QMax() const = 0;
             virtual void setQMax(double QMax) = 0;
+            SGT_PROP_GET_SET(QMax, GenAbc, double, QMax, setQMax);
 
-        /// @}
+            /// @}
 
-        /// @name Generation costs:
-        /// @{
+            /// @name Generation costs:
+            /// @{
 
             virtual double cStartup() const = 0;
             virtual void setCStartup(double cStartup) = 0;
+            SGT_PROP_GET_SET(cStartup, GenAbc, double, cStartup, setCStartup);
+
             virtual double cShutdown() const = 0;
             virtual void setCShutdown(double cShutdown) = 0;
+            SGT_PROP_GET_SET(cShutdown, GenAbc, double, cShutdown, setCShutdown);
+
             virtual double c0() const = 0;
             virtual void setC0(double c0) = 0;
+            SGT_PROP_GET_SET(c0, GenAbc, double, c0, setC0);
+
             virtual double c1() const = 0;
             virtual void setC1(double c1) = 0;
+            SGT_PROP_GET_SET(c1, GenAbc, double, c1, setC1);
+
             virtual double c2() const = 0;
             virtual void setC2(double c2) = 0;
+            SGT_PROP_GET_SET(c2, GenAbc, double, c2, setC2);
 
             double cost() const;
+            SGT_PROP_GET(cost, GenAbc, double, cost);
 
-        /// @}
+            /// @}
 
-        /// @name Events.
-        /// @{
+            /// @name Events.
+            /// @{
 
             /// @brief Event triggered when I go in or out of service.
             virtual Event& isInServiceChanged()
@@ -175,7 +207,7 @@ namespace Sgt
                 return setpointChanged_;
             }
 
-        /// @}
+            /// @}
 
         private:
 
@@ -190,12 +222,15 @@ namespace Sgt
 
     /// @brief A concrete, generic generation at a bus.
     /// @ingroup PowerFlowCore
-    class GenericGen : public GenAbc
+    class GenericGen : public GenAbc, public HasProperties<GenericGen>
     {
         public:
+            
+            SGT_PROPS_INIT(GenericGen);
+            SGT_PROPS_INHERIT(GenericGen, GenAbc);
 
-        /// @name Static member functions:
-        /// @{
+            /// @name Static member functions:
+            /// @{
 
             static const std::string& sComponentType()
             {
@@ -203,10 +238,10 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Lifecycle:
-        /// @{
+            /// @name Lifecycle:
+            /// @{
 
             GenericGen(const std::string& id, const Phases& phases) :
                 Component(id),
@@ -216,10 +251,10 @@ namespace Sgt
                 // Empty.
             }
 
-        /// @}
+            /// @}
 
-        /// @name Component virtual overridden member functions.
-        /// @{
+            /// @name Component virtual overridden member functions.
+            /// @{
 
             virtual const std::string& componentType() const override
             {
@@ -228,10 +263,10 @@ namespace Sgt
 
             // virtual json toJson() const override; // TODO
 
-        /// @}
+            /// @}
 
-        /// @name Power injection:
-        /// @{
+            /// @name Power injection:
+            /// @{
 
             virtual arma::Col<Complex> inServiceS() const override
             {
@@ -244,10 +279,10 @@ namespace Sgt
                 generationChanged().trigger();
             }
 
-        /// @}
+            /// @}
 
-        /// @name Moment of inertia:
-        /// @{
+            /// @name Moment of inertia:
+            /// @{
 
             virtual double inServiceJ() const override
             {
@@ -258,11 +293,13 @@ namespace Sgt
             {
                 J_ = J;
             }
+            
+            SGT_PROP_GET_SET(inServiceJ, GenericGen, double, inServiceJ, setInServiceJ);
 
-        /// @}
+            /// @}
 
-        /// @name Generation bounds:
-        /// @{
+            /// @name Generation bounds:
+            /// @{
 
             virtual double PMin() const override
             {
@@ -308,10 +345,10 @@ namespace Sgt
                 setpointChanged().trigger();
             }
 
-        /// @}
+            /// @}
 
-        /// @name Generation costs:
-        /// @{
+            /// @name Generation costs:
+            /// @{
 
             virtual double cStartup() const override
             {
