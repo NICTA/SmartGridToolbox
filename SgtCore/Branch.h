@@ -29,12 +29,12 @@ namespace Sgt
     ///
     /// Implement some common functionality for convenience.
     /// @ingroup PowerFlowCore
-    class BranchAbc : virtual public Component, public HasProperties<BranchAbc>
+    class BranchAbc : virtual public Component
     {
         public:
 
             SGT_PROPS_INIT(BranchAbc);
-            SGT_PROPS_INHERIT(BranchAbc, Component);
+            SGT_PROPS_INHERIT(Component);
 
         /// @name Static member functions:
         /// @{
@@ -74,14 +74,14 @@ namespace Sgt
                 return phases0_;
             }
 
-            SGT_PROP_GET(phases0, BranchAbc, const Phases&, phases0);
+            SGT_PROP_GET(phases0, phases0, const Phases&);
 
             virtual const Phases& phases1() const
             {
                 return phases1_;
             }
 
-            SGT_PROP_GET(phases1, BranchAbc, const Phases&, phases1);
+            SGT_PROP_GET(phases1, phases1, const Phases&);
 
         /// @}
 
@@ -134,7 +134,7 @@ namespace Sgt
                 isInServiceChanged_.trigger();
             }
 
-            SGT_PROP_GET_SET(isInService, BranchAbc, bool, isInService, setIsInService);
+            SGT_PROP_GET_SET(isInService, isInService, bool, setIsInService, bool);
 
         /// @}
 
@@ -147,12 +147,12 @@ namespace Sgt
                 return isInService_ ? inServiceY() : arma::Mat<Complex>(n, n, arma::fill::zeros);
             }
 
-            SGT_PROP_GET(Y, BranchAbc, arma::Mat<Complex>, Y);
+            SGT_PROP_GET(Y, Y, arma::Mat<Complex>);
 
             /// @brief The admittance whenever isInService.
             virtual arma::Mat<Complex> inServiceY() const = 0;
 
-            SGT_PROP_GET(inServiceY, BranchAbc, arma::Mat<Complex>, inServiceY);
+            SGT_PROP_GET(inServiceY, inServiceY, arma::Mat<Complex>);
 
         /// @}
 
@@ -189,12 +189,12 @@ namespace Sgt
 
     /// @brief A concrete, generic branch.
     /// @ingroup PowerFlowCore
-    class GenericBranch : public BranchAbc, public HasProperties<GenericBranch>
+    class GenericBranch : public BranchAbc
     {
         public:
 
             SGT_PROPS_INIT(GenericBranch);
-            SGT_PROPS_INHERIT(GenericBranch, BranchAbc);
+            SGT_PROPS_INHERIT(BranchAbc);
 
         /// @name Static member functions:
         /// @{

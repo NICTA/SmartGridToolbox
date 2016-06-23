@@ -15,6 +15,7 @@
 #ifndef PROPERTIES_DOT_H
 #define PROPERTIES_DOT_H
 
+#include <SgtCore/json.h>
 #include <SgtCore/YamlSupport.h>
 
 #include<map>
@@ -25,146 +26,9 @@
 #include<type_traits>
 #include<vector>
 
-/// Need to include this macro in HasProperties<T> so that properties() acts polymorphically and returns the right
-/// static map.
-#define SGT_PROPS_INIT(Targ) \
-virtual const std::map<std::string, std::shared_ptr<Sgt::PropertyAbc>>& properties() const override \
-{ \
-    return Sgt::HasProperties<Targ>::sMap(); \
-}; \
-\
-virtual std::map<std::string, std::shared_ptr<Sgt::PropertyAbc>>& properties() override \
-{ \
-    return Sgt::HasProperties<Targ>::sMap();\
-}
-
-/// Copy all properties from the base class into this class. This allows an override mechanism, just like method
-/// overrides. 
-#define SGT_PROPS_INHERIT(Targ, Base) \
-struct Inherit ## Base \
-{ \
-    Inherit ## Base () \
-    { \
-        auto& targMap = Sgt::HasProperties<Targ>::sMap(); \
-        auto& baseMap = Sgt::HasProperties<Base>::sMap(); \
-        for (auto& elem : baseMap) \
-        { \
-            targMap[elem.first] = elem.second; \
-        } \
-    } \
-}; \
-struct DoInherit ## Base \
-{ \
-    DoInherit ## Base() \
-    { \
-        static Inherit ## Base inherit ## Base; \
-    } \
-} doinherit ## Base \
-
-/// Use a member function as a property getter.
-#define SGT_PROP_GET(name, Targ, T, getter) \
-struct InitProp_ ## name \
-{ \
-    InitProp_ ## name() \
-    { \
-        Sgt::HasProperties<Targ>::sMap()[#name] = std::make_shared<Sgt::Property<T>>( \
-                std::make_unique<Sgt::Getter<Targ, T>>( \
-                    [](const Targ& targ)->T \
-                    { \
-                        return targ.getter(); \
-                    }), nullptr); \
-    } \
-}; \
-struct Prop_ ## name \
-{ \
-    Prop_ ## name() \
-    { \
-        static InitProp_ ## name _; \
-    } \
-} prop_ ## name;
-
-/// Use a member function as a property setter.
-#define SGT_PROP_SET(name, Targ, T, setter) \
-struct InitProp_ ## name \
-{ \
-    InitProp_ ## name() \
-    { \
-        Sgt::HasProperties<Targ>::sMap()[#name] = std::make_shared<Sgt::Property<T>>(nullptr, \
-                std::make_unique<Sgt::Setter<Targ, T>>( \
-                    [](Targ& targ, std::add_lvalue_reference<std::add_const<T>::type>::type val) \
-                    { \
-                        targ.setter(val); \
-                    })); \
-    } \
-}; \
-struct Prop_ ## name { \
-    Prop_ ## name() \
-    { \
-        static InitProp_ ## name _; \
-    } \
-} prop_ ## name
-
-/// Use member functions as a property getters and setters.
-#define SGT_PROP_GET_SET(name, Targ, T, getter, setter) \
-struct InitProp_ ## name \
-{ \
-    InitProp_ ## name() \
-    { \
-        Sgt::HasProperties<Targ>::sMap()[#name] = std::make_shared<Sgt::Property<T>>( \
-                std::make_unique<Sgt::Getter<Targ, T>>( \
-                    [](const Targ& targ)->T \
-                    { \
-                        return targ.getter(); \
-                    }), \
-                std::make_unique<Sgt::Setter<Targ, T>>( \
-                    [](Targ& targ, std::add_lvalue_reference<std::add_const<T>::type>::type val) \
-                    { \
-                        targ.setter(val); \
-                    })); \
-    } \
-}; \
-struct Prop_ ## name \
-{ \
-    Prop_ ## name() \
-    { \
-        static InitProp_ ## name _; \
-    } \
-} prop_ ## name
-
 namespace Sgt
 {
-    template<typename T> using TypeByVal = typename std::remove_const<typename std::remove_reference<T>::type>::type;
-
-    class PropertyAbc;
-
-    /// @brief Abstract base class for an object with properties.
-    /// @ingroup Foundation
-    class HasPropertiesAbc
-    {
-        public:
-            HasPropertiesAbc() = default;
-            HasPropertiesAbc(const HasPropertiesAbc& from) = default;
-            virtual ~HasPropertiesAbc() = default;
-            /// Polymorphically directs us to the correct static map.
-            virtual const std::map<std::string, std::shared_ptr<PropertyAbc>>& properties() const = 0;
-            /// Polymorphically directs us to the correct static map.
-            virtual std::map<std::string, std::shared_ptr<PropertyAbc>>& properties() = 0;
-    };
-    
-    /// @brief Abstract base class for an object with properties.
-    ///
-    /// The only function of the Targ template parameter is to allow us to have a different static map for each
-    /// target class.
-    /// @ingroup Foundation
-    template<typename Targ> class HasProperties : virtual public HasPropertiesAbc
-    {
-        public:
-            static std::map<std::string, std::shared_ptr<PropertyAbc>>& sMap()
-            {
-                static std::map<std::string, std::shared_ptr<PropertyAbc>> map;
-                return map;
-            }
-    };
+    using NoneType = std::nullptr_t;
 
     class NotGettableException : public std::logic_error
     {
@@ -184,26 +48,52 @@ namespace Sgt
             BadTargException() : std::logic_error("Target supplied to property has the wrong type") {}
     };
 
-    template<typename T> class GetterAbc
+    class PropertyAbc;
+
+    using PropertyMap = std::map<std::string, std::shared_ptr<PropertyAbc>>;
+
+    /// @brief Abstract base class for an object with properties.
+    /// @ingroup Foundation
+    class HasProperties
     {
         public:
-            virtual ~GetterAbc() = default;
-            virtual T get(const HasPropertiesAbc& targ) const = 0;
+            virtual ~HasProperties() = default;
+            virtual PropertyMap& properties() const = 0;
     };
 
-    template<typename Targ, typename T> class Getter : public GetterAbc<T>
+    template<typename RetType> class GetterAbc2;
+
+    class GetterAbc1
     {
         public:
-            using Get = T (const Targ&);
+            virtual ~GetterAbc1() = default;
 
-            Getter(Get getArg) : get_(getArg)
+            template<typename TargType, typename RetType> RetType get(const TargType& targ)
+            {
+                auto derivedThis = dynamic_cast<const GetterAbc2<RetType>*>(this);
+                auto derivedTarg = dynamic_cast<const TargType*>(&targ);
+                return derivedThis->get(derivedTarg);
+            }
+    };
+
+    template<typename RetType> class GetterAbc2 : public GetterAbc1
+    {
+        public:
+            virtual ~GetterAbc2() = default;
+            virtual RetType get(const HasProperties& targ) const = 0;
+    };
+
+    template<typename TargType, typename RetType> class Getter : public GetterAbc2<RetType>
+    {
+        public:
+            template<typename T> Getter(T getArg) : get_(getArg)
             {
                 // Empty.
             }
 
-            virtual T get(const HasPropertiesAbc& targ) const override
+            virtual RetType get(const HasProperties& targ) const override
             {
-                auto derived = dynamic_cast<const Targ*>(&targ);
+                auto derived = dynamic_cast<const TargType*>(&targ);
                 if (derived == nullptr)
                 {
                     throw BadTargException();
@@ -211,37 +101,43 @@ namespace Sgt
                 return get_(*derived);
             }
 
-            T get(const Targ& targ) const
-            {
-                return get_(targ);
-            }
-
         private:
-            std::function<Get> get_;
+            std::function<RetType(const TargType&)> get_;
     };
 
-    template<typename T> class SetterAbc
+    template<typename ArgType> class SetterAbc2;
+
+    class SetterAbc1
     {
         public:
-            virtual ~SetterAbc() = default;
-            using Set = void (HasPropertiesAbc&, const T&);
-            virtual void set(HasPropertiesAbc& targ, const T& val) const = 0;
+            virtual ~SetterAbc1() = default;
+
+            template<typename TargType, typename ArgType> void set(TargType& targ, ArgType val)
+            {
+                auto derivedThis = dynamic_cast<const SetterAbc2<ArgType>*>(this);
+                auto derivedTarg = dynamic_cast<TargType*>(&targ);
+                derivedThis->set(derivedTarg, val);
+            }
     };
 
-    template<typename Targ, typename T>
-    class Setter : public SetterAbc<T>
+    template<typename ArgType> class SetterAbc2 : public SetterAbc1
     {
         public:
-            using Set = void (Targ&, const T&);
+            virtual ~SetterAbc2() = default;
+            virtual void set(HasProperties& targ, ArgType val) const = 0;
+    };
 
-            Setter(Set setArg) : set_(setArg)
+    template<typename TargType, typename ArgType> class Setter : public SetterAbc2<ArgType>
+    {
+        public:
+            template<typename T> Setter(T setArg) : set_(setArg)
             {
                 // Empty.
             }
 
-            virtual void set(HasPropertiesAbc& targ, const T& val) const override
+            virtual void set(HasProperties& targ, ArgType val) const override
             {
-                auto derived = dynamic_cast<Targ*>(&targ);
+                auto derived = dynamic_cast<TargType*>(&targ);
                 if (derived == nullptr)
                 {
                     throw BadTargException();
@@ -249,16 +145,9 @@ namespace Sgt
                 set_(*derived, val);
             }
 
-            void set(Targ& targ, const T& val) const
-            {
-                set_(targ, val);
-            }
-
         private:
-            std::function<Set> set_;
+            std::function<void(TargType&, ArgType)> set_;
     };
-
-    template<typename T> class Property;
 
     /// @ingroup Foundation
     class PropertyAbc
@@ -268,25 +157,30 @@ namespace Sgt
 
             virtual bool isGettable() = 0;
 
-            template<typename T> T get(const HasPropertiesAbc& targ) const
+            template<typename RetType> RetType getAs(const HasProperties& targ) const
             {
-                auto derived = dynamic_cast<const Property<T>*>(this);
+                auto derived = dynamic_cast<const GetterAbc2<RetType>*>(getterAbc1());
                 return derived->get(targ);
             }
 
             virtual bool isSettable() = 0;
 
-            template<typename T> void set(HasPropertiesAbc& targ, const T& val) const
+            template<typename ArgType> void setAs(HasProperties& targ, ArgType val) const
             {
-                auto derived = dynamic_cast<const Property<T>*>(this);
+                auto derived = dynamic_cast<const SetterAbc2<ArgType>*>(setterAbc1());
                 derived->set(targ, val);
             }
 
-            virtual std::string string(const HasPropertiesAbc& targ) = 0;
-            
-            virtual json toJson(const HasPropertiesAbc& targ) = 0;
+            virtual std::string string(const HasProperties& targ) = 0;
 
-            virtual void setFromString(HasPropertiesAbc& targ, const std::string& str) = 0;
+            virtual json toJson(const HasProperties& targ) = 0;
+
+            virtual void setFromString(HasProperties& targ, const std::string& str) = 0;
+
+        private:
+
+            virtual const GetterAbc1* getterAbc1() const = 0;
+            virtual const SetterAbc1* setterAbc1() const = 0;
     };
 
     /// @brief Dynamically discoverable property.
@@ -294,10 +188,12 @@ namespace Sgt
     /// A property can have a getter and a setter. It can generically get its value and set via strings,
     /// or can get and set its the particular template type, if we know what that is.
     /// @ingroup Foundation
-    template<typename T> class Property : public PropertyAbc
+    template<typename GetterRetType, typename SetterArgType> class Property : public PropertyAbc
     {
         public:
-            Property(std::unique_ptr<GetterAbc<T>> getter, std::unique_ptr<SetterAbc<T>> setter) :
+
+            Property(std::unique_ptr<GetterAbc2<GetterRetType>> getter, 
+                    std::unique_ptr<SetterAbc2<SetterArgType>> setter) :
                 getter_(std::move(getter)),
                 setter_(std::move(setter))
             {
@@ -309,7 +205,7 @@ namespace Sgt
                 return getter_ != nullptr;
             }
 
-            T get(const HasPropertiesAbc& targ) const
+            GetterRetType get(const HasProperties& targ) const
             {
                 if (getter_ == nullptr)
                 {
@@ -323,7 +219,7 @@ namespace Sgt
                 return setter_ != nullptr;
             }
 
-            void set(HasPropertiesAbc& targ, const T& val) const
+            void set(HasProperties& targ, SetterArgType val) const
             {
                 if (setter_ == nullptr)
                 {
@@ -332,26 +228,142 @@ namespace Sgt
                 setter_->set(targ, val);
             }
 
-            virtual void setFromString(HasPropertiesAbc& targ, const std::string& str) override
+            virtual void setFromString(HasProperties& targ, const std::string& str) override
             {
-                set(targ, fromYamlString<TypeByVal<T>>(str));
+                set(targ, fromYamlString<std::decay_t<SetterArgType>>(str));
             }
 
-            virtual std::string string(const HasPropertiesAbc& targ) override
+            virtual std::string string(const HasProperties& targ) override
             {
                 return toYamlString(get(targ));
             }
-            
-            virtual json toJson(const HasPropertiesAbc& targ) override
+
+            virtual json toJson(const HasProperties& targ) override
             {
                 return get(targ);
             }
 
         private:
+            virtual const GetterAbc1* getterAbc1() const override
+            {
+                return getter_.get();
+            }
 
-            std::unique_ptr<GetterAbc<T>> getter_;
-            std::unique_ptr<SetterAbc<T>> setter_;
+            virtual const SetterAbc1* setterAbc1() const override
+            {
+                return setter_.get();
+            }
+
+        private:
+            std::unique_ptr<GetterAbc2<GetterRetType>> getter_;
+            std::unique_ptr<SetterAbc2<SetterArgType>> setter_;
     };
 }
+
+#define SGT_PROPS_INIT(Type) \
+using TargType = Type; \
+static Sgt::PropertyMap& sPropertyMap() \
+{ \
+    static Sgt::PropertyMap map; \
+    return map; \
+} \
+virtual std::map<std::string, std::shared_ptr<Sgt::PropertyAbc>>& properties() const override \
+{ \
+    return sPropertyMap(); \
+}
+
+/// Copy all properties from the base class into this class. This allows an override mechanism, just like method
+/// overrides. 
+#define SGT_PROPS_INHERIT(Base) \
+struct Inherit ## Base \
+{ \
+    Inherit ## Base () \
+    { \
+        auto& targMap = sPropertyMap(); \
+        auto& baseMap = Base::sPropertyMap(); \
+        for (auto& elem : baseMap) \
+        { \
+            targMap[elem.first] = elem.second; \
+        } \
+    } \
+}; \
+struct DoInherit ## Base \
+{ \
+    DoInherit ## Base() \
+    { \
+        static Inherit ## Base inherit ## Base; \
+    } \
+} doinherit ## Base \
+
+/// Use a member function as a property getter.
+#define SGT_PROP_GET(name, getter, RetType) \
+struct InitProp_ ## name \
+{ \
+    InitProp_ ## name() \
+    { \
+        sPropertyMap()[#name] = std::make_shared<Sgt::Property<RetType, Sgt::NoneType>>( \
+            std::make_unique<Sgt::Getter<TargType, RetType>>( \
+                [](const TargType& targ)->RetType \
+                { \
+                    return targ.getter(); \
+                }), nullptr); \
+    } \
+}; \
+struct Prop_ ## name \
+{ \
+    Prop_ ## name() \
+    { \
+        static InitProp_ ## name _; \
+    } \
+} prop_ ## name;
+
+/// Use a member function as a property setter.
+#define SGT_PROP_SET(name, setter, ArgType) \
+struct InitProp_ ## name \
+{ \
+    InitProp_ ## name() \
+    { \
+        sPropertyMap()[#name] = std::make_shared<Sgt::Property<Sgt::NoneType, ArgType>>(nullptr, \
+                std::make_unique<Sgt::Setter<TargType, ArgType>>( \
+                    [](TargType& targ, ArgType val) \
+                    { \
+                        targ.setter(val); \
+                    })); \
+    } \
+}; \
+struct Prop_ ## name { \
+    Prop_ ## name() \
+    { \
+        static InitProp_ ## name _; \
+    } \
+} prop_ ## name
+
+/// Use member functions as a property getters and setters.
+#define SGT_PROP_GET_SET(name, getter, RetType, setter, ArgType) \
+struct InitProp_ ## name \
+{ \
+    InitProp_ ## name() \
+    { \
+        sPropertyMap()[#name] = \
+            std::make_shared<Sgt::Property<RetType, ArgType>>( \
+                std::make_unique<Sgt::Getter<TargType, RetType>>( \
+                    [](const TargType& targ)->RetType \
+                    { \
+                        return targ.getter(); \
+                    }), \
+                std::make_unique<Sgt::Setter<TargType, ArgType>>( \
+                    [](TargType& targ, ArgType val) \
+                    { \
+                        targ.setter(val); \
+                    })); \
+    } \
+}; \
+struct Prop_ ## name \
+{ \
+    Prop_ ## name() \
+    { \
+        static InitProp_ ## name _; \
+    } \
+} prop_ ## name
 
 #endif // PROPERTIES_DOT_H

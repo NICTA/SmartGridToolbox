@@ -522,24 +522,24 @@ BOOST_AUTO_TEST_CASE (test_loops)
 
 BOOST_AUTO_TEST_CASE (test_properties)
 {
-    class Foo : public HasProperties<Foo>
+    class Foo : public HasProperties
     {
         public:
             SGT_PROPS_INIT(Foo);                                                               
 
             int four() const {return 4;}
-            SGT_PROP_GET(fourProp, Foo, int, four);
+            SGT_PROP_GET(fourProp, four, int);
     };
 
-    class Bar : public Foo, public HasProperties<Bar>
+    class Bar : public Foo
     {
         public:
             SGT_PROPS_INIT(Bar);                                                               
-            SGT_PROPS_INHERIT(Bar, Foo);          
+            SGT_PROPS_INHERIT(Foo);          
 
             const int& x() const {return x_;}
             void setX(const int& x) {x_ = x;}
-            SGT_PROP_GET_SET(xProp, Bar, const int&, x, setX);
+            SGT_PROP_GET_SET(xProp, x, const int&, setX, const int&);
 
         public:
             int x_{5};
@@ -549,13 +549,13 @@ BOOST_AUTO_TEST_CASE (test_properties)
     auto fourProp = bar.properties()["fourProp"].get();
     auto xProp = bar.properties()["xProp"].get();
     BOOST_CHECK_EQUAL(fourProp->string(bar), "4");
-    BOOST_CHECK_EQUAL(fourProp->get<int>(bar), 4);
+    BOOST_CHECK_EQUAL(fourProp->getAs<int>(bar), 4);
     BOOST_CHECK_EQUAL(xProp->string(bar), "5");
-    BOOST_CHECK_EQUAL(xProp->get<const int&>(bar), 5);
-    xProp->set<const int&>(bar, 345);
-    BOOST_CHECK_EQUAL(xProp->get<const int&>(bar), 345);
+    BOOST_CHECK_EQUAL(xProp->getAs<const int&>(bar), 5);
+    xProp->setAs<const int&>(bar, 345);
+    BOOST_CHECK_EQUAL(xProp->getAs<const int&>(bar), 345);
     xProp->setFromString(bar, "678");
-    BOOST_CHECK_EQUAL(xProp->get<const int&>(bar), 678);
+    BOOST_CHECK_EQUAL(xProp->getAs<const int&>(bar), 678);
 };
 
 BOOST_AUTO_TEST_CASE (test_phases_A)

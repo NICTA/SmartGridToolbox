@@ -61,7 +61,7 @@ namespace Sgt
     /// A Component is essentially an object with a unique key.
     /// It is usually a good idea to use virtual inheritance to derive from component.
     /// @ingroup Foundation
-    class Component : public Shared<Component>, public HasProperties<Component>
+    class Component : public Shared<Component>, public HasProperties
     {
         public:
 
@@ -106,14 +106,14 @@ namespace Sgt
                 return id_;
             }
 
-            SGT_PROP_GET(id, Component, const std::string&, id);
+            SGT_PROP_GET(id, id, const std::string&);
 
             virtual const std::string& componentType() const
             {
                 return sComponentType();
             }
 
-            SGT_PROP_GET(componentType, Component, const std::string&, componentType);
+            SGT_PROP_GET(componentType, componentType, const std::string&);
 
             virtual void print(std::ostream& os) const
             {

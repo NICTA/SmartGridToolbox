@@ -17,6 +17,22 @@
 namespace YAML
 {
     using namespace Sgt;
+    
+    Node convert<std::nullptr_t>::encode(const std::nullptr_t& from)
+    {
+        return Node();
+    }
+
+    bool convert<std::nullptr_t>::decode(const Node& nd, std::nullptr_t& to)
+    {
+        bool result = false;
+        if (nd.Type() == YAML::NodeType::Null)
+        {
+            to = nullptr;
+            result = true;
+        }
+        return result;
+    }
 
     Node convert<Complex>::encode(const Complex& from)
     {

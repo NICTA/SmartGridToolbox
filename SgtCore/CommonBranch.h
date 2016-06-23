@@ -29,10 +29,6 @@ namespace Sgt
     {
         public:
 
-            SGT_PROPS_INIT(CommonBranch);
-            SGT_PROPS_INHERIT(CommonBranch, Component);
-            SGT_PROPS_INHERIT(CommonBranch, BranchAbc);
-
         /// @name Static member functions:
         /// @{
 

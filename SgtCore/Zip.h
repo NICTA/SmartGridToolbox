@@ -27,12 +27,12 @@ namespace Sgt
     ///
     /// Implement some common functionality for convenience.
     /// @ingroup PowerFlowCore
-    class ZipAbc : virtual public Component, public HasProperties<ZipAbc>
+    class ZipAbc : virtual public Component
     {
         public:
             
             SGT_PROPS_INIT(ZipAbc);
-            SGT_PROPS_INHERIT(ZipAbc, Component);
+            SGT_PROPS_INHERIT(Component);
 
             /// @name Static member functions:
             /// @{
@@ -72,7 +72,7 @@ namespace Sgt
                 return phases_;
             }
             
-            SGT_PROP_GET(phases, ZipAbc, const Phases&, phases);
+            SGT_PROP_GET(phases, phases, const Phases&);
 
             /// @}
 
@@ -89,7 +89,7 @@ namespace Sgt
                 isInService_ = isInService;
             }
             
-            SGT_PROP_GET_SET(isInService, ZipAbc, bool, isInService, setIsInService);
+            SGT_PROP_GET_SET(isInService, isInService, bool, setIsInService, bool);
 
             /// @}
 
@@ -104,7 +104,7 @@ namespace Sgt
                 return arma::Col<Complex>(phases_.size(), arma::fill::zeros);
             }
             
-            SGT_PROP_GET(YConst, ZipAbc, arma::Col<Complex>, YConst);
+            SGT_PROP_GET(YConst, YConst, arma::Col<Complex>);
 
             /// @brief Constant current component.
             ///
@@ -114,14 +114,14 @@ namespace Sgt
                 return arma::Col<Complex>(phases_.size(), arma::fill::zeros);
             }
             
-            SGT_PROP_GET(IConst, ZipAbc, arma::Col<Complex>, IConst);
+            SGT_PROP_GET(IConst, IConst, arma::Col<Complex>);
 
             virtual arma::Col<Complex> SConst() const
             {
                 return arma::Col<Complex>(phases_.size(), arma::fill::zeros);
             }
             
-            SGT_PROP_GET(SConst, ZipAbc, arma::Col<Complex>, SConst);
+            SGT_PROP_GET(SConst, SConst, arma::Col<Complex>);
 
             /// @}
 
@@ -161,12 +161,12 @@ namespace Sgt
 
     /// @brief A concrete, generic ZIP at a bus.
     /// @ingroup PowerFlowCore
-    class GenericZip : public ZipAbc, public HasProperties<GenericZip>
+    class GenericZip : public ZipAbc
     {
         public:
             
             SGT_PROPS_INIT(GenericZip);
-            SGT_PROPS_INHERIT(GenericZip, ZipAbc);
+            SGT_PROPS_INHERIT(ZipAbc);
 
             /// @name Static member functions:
             /// @{
@@ -211,7 +211,7 @@ namespace Sgt
                 YConst_ = YConst;
             }
             
-            SGT_PROP_GET_SET(YConst, GenericZip, arma::Col<Complex>, YConst, setYConst);
+            SGT_PROP_GET_SET(YConst, YConst, arma::Col<Complex>, setYConst, const arma::Col<Complex>&);
 
             virtual arma::Col<Complex> IConst() const override
             {
@@ -223,7 +223,7 @@ namespace Sgt
                 IConst_ = IConst;
             }
             
-            SGT_PROP_GET_SET(IConst, GenericZip, arma::Col<Complex>, IConst, setIConst);
+            SGT_PROP_GET_SET(IConst, IConst, arma::Col<Complex>, setIConst, const arma::Col<Complex>&);
 
             virtual arma::Col<Complex> SConst() const override
             {
@@ -235,7 +235,7 @@ namespace Sgt
                 SConst_ = SConst;
             }
             
-            SGT_PROP_GET_SET(SConst, GenericZip, arma::Col<Complex>, SConst, setSConst);
+            SGT_PROP_GET_SET(SConst, SConst, arma::Col<Complex>, setSConst, const arma::Col<Complex>&);
 
             /// @}
 

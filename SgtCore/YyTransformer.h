@@ -27,10 +27,6 @@ namespace Sgt
     {
         public:
 
-            SGT_PROPS_INIT(YyTransformer);
-            SGT_PROPS_INHERIT(YyTransformer, Component);
-            SGT_PROPS_INHERIT(YyTransformer, BranchAbc);
-
         /// @name Static member functions:
         /// @{
 

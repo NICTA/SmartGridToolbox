@@ -26,12 +26,12 @@ namespace Sgt
     ///
     /// Implement some common functionality for convenience.
     /// @ingroup PowerFlowCore
-    class GenAbc : virtual public Component, public HasProperties<GenAbc>
+    class GenAbc : virtual public Component
     {
         public:
 
             SGT_PROPS_INIT(GenAbc);
-            SGT_PROPS_INHERIT(GenAbc, Component);
+            SGT_PROPS_INHERIT(Component);
 
             /// @name Static member functions:
             /// @{
@@ -75,7 +75,7 @@ namespace Sgt
                 return phases_;
             }
             
-            SGT_PROP_GET(phases, GenAbc, const Phases&, phases);
+            SGT_PROP_GET(phases, phases, const Phases&);
 
             /// @}
 
@@ -93,7 +93,7 @@ namespace Sgt
                 isInServiceChanged_.trigger();
             }
             
-            SGT_PROP_GET_SET(isInService, GenAbc, bool, isInService, setIsInService);
+            SGT_PROP_GET_SET(isInService, isInService, bool, setIsInService, bool);
 
             /// @}
 
@@ -105,13 +105,13 @@ namespace Sgt
                 return isInService_ ? inServiceS() : arma::Col<Complex>(phases_.size(), arma::fill::zeros);
             }
             
-            SGT_PROP_GET(S, GenAbc, arma::Col<Complex>, S);
+            SGT_PROP_GET(S, S, arma::Col<Complex>);
 
             virtual arma::Col<Complex> inServiceS() const = 0;
 
             virtual void setInServiceS(const arma::Col<Complex>& S) = 0;
             
-            SGT_PROP_GET_SET(inServiceS, GenAbc, arma::Col<Complex>, inServiceS, setInServiceS);
+            SGT_PROP_GET_SET(inServiceS, inServiceS, arma::Col<Complex>, setInServiceS, const arma::Col<Complex>&);
             
             /// @}
 
@@ -123,11 +123,11 @@ namespace Sgt
                 return isInService_ ? inServiceJ() : 0.0;
             }
 
-            SGT_PROP_GET(J, GenAbc, double, J);
+            SGT_PROP_GET(J, J, double);
 
             virtual double inServiceJ() const = 0;
             
-            SGT_PROP_GET(inServiceJ, GenAbc, double, inServiceJ);
+            SGT_PROP_GET(inServiceJ, inServiceJ, double);
 
             /// @}
 
@@ -136,19 +136,19 @@ namespace Sgt
 
             virtual double PMin() const = 0;
             virtual void setPMin(double PMin) = 0;
-            SGT_PROP_GET_SET(PMin, GenAbc, double, PMin, setPMin);
+            SGT_PROP_GET_SET(PMin, PMin, double, setPMin, double);
 
             virtual double PMax() const = 0;
             virtual void setPMax(double PMax) = 0;
-            SGT_PROP_GET_SET(PMax, GenAbc, double, PMax, setPMax);
+            SGT_PROP_GET_SET(PMax, PMax, double, setPMax, double);
 
             virtual double QMin() const = 0;
             virtual void setQMin(double QMin) = 0;
-            SGT_PROP_GET_SET(QMin, GenAbc, double, QMin, setQMin);
+            SGT_PROP_GET_SET(QMin, QMin, double, setQMin, double);
 
             virtual double QMax() const = 0;
             virtual void setQMax(double QMax) = 0;
-            SGT_PROP_GET_SET(QMax, GenAbc, double, QMax, setQMax);
+            SGT_PROP_GET_SET(QMax, QMax, double, setQMax, double);
 
             /// @}
 
@@ -157,26 +157,26 @@ namespace Sgt
 
             virtual double cStartup() const = 0;
             virtual void setCStartup(double cStartup) = 0;
-            SGT_PROP_GET_SET(cStartup, GenAbc, double, cStartup, setCStartup);
+            SGT_PROP_GET_SET(cStartup, cStartup, double, setCStartup, double);
 
             virtual double cShutdown() const = 0;
             virtual void setCShutdown(double cShutdown) = 0;
-            SGT_PROP_GET_SET(cShutdown, GenAbc, double, cShutdown, setCShutdown);
+            SGT_PROP_GET_SET(cShutdown, cShutdown, double, setCShutdown, double);
 
             virtual double c0() const = 0;
             virtual void setC0(double c0) = 0;
-            SGT_PROP_GET_SET(c0, GenAbc, double, c0, setC0);
+            SGT_PROP_GET_SET(c0, c0, double, setC0, double);
 
             virtual double c1() const = 0;
             virtual void setC1(double c1) = 0;
-            SGT_PROP_GET_SET(c1, GenAbc, double, c1, setC1);
+            SGT_PROP_GET_SET(c1, c1, double, setC1, double);
 
             virtual double c2() const = 0;
             virtual void setC2(double c2) = 0;
-            SGT_PROP_GET_SET(c2, GenAbc, double, c2, setC2);
+            SGT_PROP_GET_SET(c2, c2, double, setC2, double);
 
             double cost() const;
-            SGT_PROP_GET(cost, GenAbc, double, cost);
+            SGT_PROP_GET(cost, cost, double);
 
             /// @}
 
@@ -222,12 +222,12 @@ namespace Sgt
 
     /// @brief A concrete, generic generation at a bus.
     /// @ingroup PowerFlowCore
-    class GenericGen : public GenAbc, public HasProperties<GenericGen>
+    class GenericGen : public GenAbc
     {
         public:
             
             SGT_PROPS_INIT(GenericGen);
-            SGT_PROPS_INHERIT(GenericGen, GenAbc);
+            SGT_PROPS_INHERIT(GenAbc);
 
             /// @name Static member functions:
             /// @{
@@ -294,7 +294,7 @@ namespace Sgt
                 J_ = J;
             }
             
-            SGT_PROP_GET_SET(inServiceJ, GenericGen, double, inServiceJ, setInServiceJ);
+            SGT_PROP_GET_SET(inServiceJ, inServiceJ, double, setInServiceJ, double);
 
             /// @}
 

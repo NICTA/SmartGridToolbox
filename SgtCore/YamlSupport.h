@@ -51,6 +51,12 @@ namespace YAML
     using Sgt::Phases;
     using Sgt::Time;
     using Sgt::posix_time::ptime;
+    
+    template<> struct convert<std::nullptr_t>
+    {
+        static Node encode(const std::nullptr_t& from);
+        static bool decode(const Node& nd, std::nullptr_t& to);
+    };
 
     template<> struct convert<Complex>
     {

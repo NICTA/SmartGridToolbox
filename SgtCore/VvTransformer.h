@@ -25,10 +25,6 @@ namespace Sgt
     {
         public:
 
-            SGT_PROPS_INIT(VvTransformer);
-            SGT_PROPS_INHERIT(VvTransformer, Component);
-            SGT_PROPS_INHERIT(VvTransformer, BranchAbc);
-
         /// @name Static member functions:
         /// @{
 

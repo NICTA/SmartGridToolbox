@@ -36,10 +36,6 @@ namespace Sgt
 
         /// @}
 
-            SGT_PROPS_INIT(SinglePhaseTransformer);
-            SGT_PROPS_INHERIT(SinglePhaseTransformer, Component);
-            SGT_PROPS_INHERIT(SinglePhaseTransformer, BranchAbc);
-
         /// @name Lifecycle
         /// @{
 

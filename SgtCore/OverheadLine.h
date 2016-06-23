@@ -35,10 +35,6 @@ namespace Sgt
     {
         public:
 
-            SGT_PROPS_INIT(OverheadLine);
-            SGT_PROPS_INHERIT(OverheadLine, Component);
-            SGT_PROPS_INHERIT(OverheadLine, BranchAbc);
-
         /// @name Static member functions:
         /// @{
 
