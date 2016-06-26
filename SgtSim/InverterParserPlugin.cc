@@ -52,7 +52,7 @@ namespace Sgt
 
         auto& network = *sim.simComponent<SimNetwork>(networkId);
 
-        network.network().addZip(inverter->zip().shared<ZipAbc>(), busId);
+        network.network().addZip(shared(inverter->zip()), busId);
         inverter->linkToSimNetwork(network);
     }
 }
