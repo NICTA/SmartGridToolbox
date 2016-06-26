@@ -173,9 +173,10 @@ namespace Sgt
 
             virtual std::string string(const HasProperties& targ) = 0;
 
-            virtual json toJson(const HasProperties& targ) = 0;
-
             virtual void setFromString(HasProperties& targ, const std::string& str) = 0;
+            
+            virtual Sgt::json json(const HasProperties& targ) = 0;
+
 
         private:
 
@@ -227,18 +228,18 @@ namespace Sgt
                 }
                 setter_->set(targ, val);
             }
+            
+            virtual std::string string(const HasProperties& targ) override
+            {
+                return toYamlString(get(targ));
+            }
 
             virtual void setFromString(HasProperties& targ, const std::string& str) override
             {
                 set(targ, fromYamlString<std::decay_t<SetterArgType>>(str));
             }
 
-            virtual std::string string(const HasProperties& targ) override
-            {
-                return toYamlString(get(targ));
-            }
-
-            virtual json toJson(const HasProperties& targ) override
+            virtual Sgt::json json(const HasProperties& targ) override
             {
                 return get(targ);
             }
