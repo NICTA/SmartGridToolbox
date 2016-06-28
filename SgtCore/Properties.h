@@ -61,29 +61,29 @@ namespace Sgt
             virtual PropertyMap& properties() const = 0;
     };
 
-    template<typename RetType> class GetterAbc2;
+    template<typename GetterRetType> class GetterAbc2;
 
     class GetterAbc1
     {
         public:
             virtual ~GetterAbc1() = default;
 
-            template<typename TargType, typename RetType> RetType get(const TargType& targ)
+            template<typename TargType, typename GetterRetType> GetterRetType get(const TargType& targ)
             {
-                auto derivedThis = dynamic_cast<const GetterAbc2<RetType>*>(this);
+                auto derivedThis = dynamic_cast<const GetterAbc2<GetterRetType>*>(this);
                 auto derivedTarg = dynamic_cast<const TargType*>(&targ);
                 return derivedThis->get(derivedTarg);
             }
     };
 
-    template<typename RetType> class GetterAbc2 : public GetterAbc1
+    template<typename GetterRetType> class GetterAbc2 : public GetterAbc1
     {
         public:
             virtual ~GetterAbc2() = default;
-            virtual RetType get(const HasProperties& targ) const = 0;
+            virtual GetterRetType get(const HasProperties& targ) const = 0;
     };
 
-    template<typename TargType, typename RetType> class Getter : public GetterAbc2<RetType>
+    template<typename TargType, typename GetterRetType> class Getter : public GetterAbc2<GetterRetType>
     {
         public:
             template<typename T> Getter(T getArg) : get_(getArg)
@@ -91,7 +91,7 @@ namespace Sgt
                 // Empty.
             }
 
-            virtual RetType get(const HasProperties& targ) const override
+            virtual GetterRetType get(const HasProperties& targ) const override
             {
                 auto derived = dynamic_cast<const TargType*>(&targ);
                 if (derived == nullptr)
@@ -102,32 +102,32 @@ namespace Sgt
             }
 
         private:
-            std::function<RetType(const TargType&)> get_;
+            std::function<GetterRetType(const TargType&)> get_;
     };
 
-    template<typename ArgType> class SetterAbc2;
+    template<typename SetterArgType> class SetterAbc2;
 
     class SetterAbc1
     {
         public:
             virtual ~SetterAbc1() = default;
 
-            template<typename TargType, typename ArgType> void set(TargType& targ, ArgType val)
+            template<typename TargType, typename SetterArgType> void set(TargType& targ, SetterArgType val)
             {
-                auto derivedThis = dynamic_cast<const SetterAbc2<ArgType>*>(this);
+                auto derivedThis = dynamic_cast<const SetterAbc2<SetterArgType>*>(this);
                 auto derivedTarg = dynamic_cast<TargType*>(&targ);
                 derivedThis->set(derivedTarg, val);
             }
     };
 
-    template<typename ArgType> class SetterAbc2 : public SetterAbc1
+    template<typename SetterArgType> class SetterAbc2 : public SetterAbc1
     {
         public:
             virtual ~SetterAbc2() = default;
-            virtual void set(HasProperties& targ, ArgType val) const = 0;
+            virtual void set(HasProperties& targ, SetterArgType val) const = 0;
     };
 
-    template<typename TargType, typename ArgType> class Setter : public SetterAbc2<ArgType>
+    template<typename TargType, typename SetterArgType> class Setter : public SetterAbc2<SetterArgType>
     {
         public:
             template<typename T> Setter(T setArg) : set_(setArg)
@@ -135,7 +135,7 @@ namespace Sgt
                 // Empty.
             }
 
-            virtual void set(HasProperties& targ, ArgType val) const override
+            virtual void set(HasProperties& targ, SetterArgType val) const override
             {
                 auto derived = dynamic_cast<TargType*>(&targ);
                 if (derived == nullptr)
@@ -146,7 +146,7 @@ namespace Sgt
             }
 
         private:
-            std::function<void(TargType&, ArgType)> set_;
+            std::function<void(TargType&, SetterArgType)> set_;
     };
 
     /// @ingroup Foundation
@@ -157,17 +157,17 @@ namespace Sgt
 
             virtual bool isGettable() = 0;
 
-            template<typename RetType> RetType getAs(const HasProperties& targ) const
+            template<typename GetterRetType> GetterRetType getAs(const HasProperties& targ) const
             {
-                auto derived = dynamic_cast<const GetterAbc2<RetType>*>(getterAbc1());
+                auto derived = dynamic_cast<const GetterAbc2<GetterRetType>*>(getterAbc1());
                 return derived->get(targ);
             }
 
             virtual bool isSettable() = 0;
 
-            template<typename ArgType> void setAs(HasProperties& targ, ArgType val) const
+            template<typename SetterArgType> void setAs(HasProperties& targ, SetterArgType val) const
             {
-                auto derived = dynamic_cast<const SetterAbc2<ArgType>*>(setterAbc1());
+                auto derived = dynamic_cast<const SetterAbc2<SetterArgType>*>(setterAbc1());
                 derived->set(targ, val);
             }
 
@@ -259,6 +259,39 @@ namespace Sgt
             std::unique_ptr<GetterAbc2<GetterRetType>> getter_;
             std::unique_ptr<SetterAbc2<SetterArgType>> setter_;
     };
+
+    // Factory function to make a property with a getter.
+    template<typename TargType, typename GetterRetType, typename GA>
+    std::shared_ptr<Property<GetterRetType, NoneType>> addGetProperty(GA ga, const std::string& name)
+    {
+        auto result = std::make_shared<Property<GetterRetType, NoneType>>(
+                std::make_unique<Getter<TargType, GetterRetType>>(ga), 
+                nullptr);
+        TargType::sPropertyMap()["name"] = result;
+        return result;
+    }
+
+    // Factory function to make a property with a setter.
+    template<typename TargType, typename SetterArgType, typename SA>
+    std::shared_ptr<Property<NoneType, SetterArgType>> addSetProperty(SA sa, const std::string& name)
+    {
+        auto result = std::make_shared<Property<NoneType, SetterArgType>>(
+                nullptr,
+                std::make_unique<Setter<TargType, SetterArgType>>(sa));
+        TargType::sPropertyMap()["name"] = result;
+        return result;
+    }
+
+    // Factory function to make a property with a getter and a setter.
+    template<typename TargType, typename GetterRetType, typename SetterArgType, typename GA, typename SA>
+    std::shared_ptr<Property<GetterRetType, SetterArgType>> addGetSetProperty(GA ga, SA sa, const std::string& name)
+    {
+        auto result = std::make_shared<Property<GetterRetType, SetterArgType>>(
+                std::make_unique<Getter<TargType, GetterRetType>>(ga), 
+                std::make_unique<Setter<TargType, SetterArgType>>(sa));
+        TargType::sPropertyMap()["name"] = result;
+        return result;
+    }
 }
 
 #define SGT_PROPS_INIT(Type) \
@@ -297,17 +330,14 @@ struct DoInherit ## Base \
 } doinherit ## Base \
 
 /// Use a member function as a property getter.
-#define SGT_PROP_GET(name, getter, RetType) \
+#define SGT_PROP_GET(name, getter, GetterRetType) \
 struct InitProp_ ## name \
 { \
     InitProp_ ## name() \
     { \
-        sPropertyMap()[#name] = std::make_shared<Sgt::Property<RetType, Sgt::NoneType>>( \
-            std::make_unique<Sgt::Getter<TargType, RetType>>( \
-                [](const TargType& targ)->RetType \
-                { \
-                    return targ.getter(); \
-                }), nullptr); \
+        addGetProperty<TargType, GetterRetType>( \
+                [](const TargType& targ)->GetterRetType {return targ.getter();}, \
+                #name); \
     } \
 }; \
 struct Prop_ ## name \
@@ -319,17 +349,14 @@ struct Prop_ ## name \
 } prop_ ## name;
 
 /// Use a member function as a property setter.
-#define SGT_PROP_SET(name, setter, ArgType) \
+#define SGT_PROP_SET(name, setter, SetterArgType) \
 struct InitProp_ ## name \
 { \
     InitProp_ ## name() \
     { \
-        sPropertyMap()[#name] = std::make_shared<Sgt::Property<Sgt::NoneType, ArgType>>(nullptr, \
-                std::make_unique<Sgt::Setter<TargType, ArgType>>( \
-                    [](TargType& targ, ArgType val) \
-                    { \
-                        targ.setter(val); \
-                    })); \
+        addSetProperty<TargType, SetterArgType>( \
+                [](TargType& targ, SetterArgType val) {targ.setter(val);}, \
+                #name); \
     } \
 }; \
 struct Prop_ ## name { \
@@ -340,23 +367,15 @@ struct Prop_ ## name { \
 } prop_ ## name
 
 /// Use member functions as a property getters and setters.
-#define SGT_PROP_GET_SET(name, getter, RetType, setter, ArgType) \
+#define SGT_PROP_GET_SET(name, getter, GetterRetType, setter, SetterArgType) \
 struct InitProp_ ## name \
 { \
     InitProp_ ## name() \
     { \
-        sPropertyMap()[#name] = \
-            std::make_shared<Sgt::Property<RetType, ArgType>>( \
-                std::make_unique<Sgt::Getter<TargType, RetType>>( \
-                    [](const TargType& targ)->RetType \
-                    { \
-                        return targ.getter(); \
-                    }), \
-                std::make_unique<Sgt::Setter<TargType, ArgType>>( \
-                    [](TargType& targ, ArgType val) \
-                    { \
-                        targ.setter(val); \
-                    })); \
+        addGetSetProperty<TargType, GetterRetType, SetterArgType>( \
+                [](const TargType& targ)->GetterRetType {return targ.getter();}, \
+                [](TargType& targ, SetterArgType val) {targ.setter(val);}, \
+                #name); \
     } \
 }; \
 struct Prop_ ## name \
