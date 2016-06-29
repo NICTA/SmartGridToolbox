@@ -48,18 +48,7 @@ namespace Sgt
             BadTargException() : std::logic_error("Target supplied to property has the wrong type") {}
     };
 
-    class PropertyAbc;
-
-    using PropertyMap = std::map<std::string, std::shared_ptr<PropertyAbc>>;
-
-    /// @brief Abstract base class for an object with properties.
-    /// @ingroup Foundation
-    class HasProperties
-    {
-        public:
-            virtual ~HasProperties() = default;
-            virtual PropertyMap& properties() const = 0;
-    };
+    class HasProperties;
 
     template<typename GetterRetType> class GetterAbc2;
 
@@ -260,73 +249,91 @@ namespace Sgt
             std::unique_ptr<SetterAbc2<SetterArgType>> setter_;
     };
 
-    // Factory function to make a property with a getter.
-    template<typename TargType, typename GetterRetType, typename GA>
-    std::shared_ptr<Property<GetterRetType, NoneType>> addGetProperty(GA ga, const std::string& name)
+    /// @brief A collection of properties.
+    class Properties
     {
-        auto result = std::make_shared<Property<GetterRetType, NoneType>>(
-                std::make_unique<Getter<TargType, GetterRetType>>(ga), 
-                nullptr);
-        TargType::sPropertyMap()["name"] = result;
-        return result;
-    }
+        public:
+            // Add a property with a getter.
+            template<typename TargType, typename GetterRetType, typename GA>
+            std::shared_ptr<Property<GetterRetType, NoneType>> addGetProperty(GA ga, const std::string& name)
+            {
+                auto result = std::make_shared<Property<GetterRetType, NoneType>>(
+                        std::make_unique<Getter<TargType, GetterRetType>>(ga), 
+                        nullptr);
+                map_[name] = result;
+                return result;
+            }
 
-    // Factory function to make a property with a setter.
-    template<typename TargType, typename SetterArgType, typename SA>
-    std::shared_ptr<Property<NoneType, SetterArgType>> addSetProperty(SA sa, const std::string& name)
-    {
-        auto result = std::make_shared<Property<NoneType, SetterArgType>>(
-                nullptr,
-                std::make_unique<Setter<TargType, SetterArgType>>(sa));
-        TargType::sPropertyMap()["name"] = result;
-        return result;
-    }
+            // Add a property with a setter.
+            template<typename TargType, typename SetterArgType, typename SA>
+            std::shared_ptr<Property<NoneType, SetterArgType>> addSetProperty(SA sa, const std::string& name)
+            {
+                auto result = std::make_shared<Property<NoneType, SetterArgType>>(
+                        nullptr,
+                        std::make_unique<Setter<TargType, SetterArgType>>(sa));
+                map_[name] = result;
+                return result;
+            }
 
-    // Factory function to make a property with a getter and a setter.
-    template<typename TargType, typename GetterRetType, typename SetterArgType, typename GA, typename SA>
-    std::shared_ptr<Property<GetterRetType, SetterArgType>> addGetSetProperty(GA ga, SA sa, const std::string& name)
+            // Add a property with a getter and a setter.
+            template<typename TargType, typename GetterRetType, typename SetterArgType, typename GA, typename SA>
+            std::shared_ptr<Property<GetterRetType, SetterArgType>> addGetSetProperty(
+                    GA ga, SA sa, const std::string& name)
+            {
+                auto result = std::make_shared<Property<GetterRetType, SetterArgType>>(
+                        std::make_unique<Getter<TargType, GetterRetType>>(ga), 
+                        std::make_unique<Setter<TargType, SetterArgType>>(sa));
+                map_[name] = result;
+                return result;
+            }
+
+            const PropertyAbc& operator[](const std::string& s) const {return *map_.at(s);}
+            PropertyAbc& operator[](const std::string& s) {return *map_.at(s);}
+
+            auto begin() {return map_.begin();}
+            auto end() {return map_.end();}
+            auto cbegin() {return map_.begin();}
+            auto cend() {return map_.end();}
+            auto rbegin() {return map_.begin();}
+            auto rend() {return map_.end();}
+
+            template<typename ...Args> auto insert(Args... args) {return map_.insert(std::forward<Args>(args)...);}
+
+            void remove(const std::string& key) {map_.erase(key);}
+
+        private:
+            std::map<std::string, std::shared_ptr<PropertyAbc>> map_;
+    };
+
+    /// @brief Abstract base class for an object with properties.
+    /// @ingroup Foundation
+    class HasProperties
     {
-        auto result = std::make_shared<Property<GetterRetType, SetterArgType>>(
-                std::make_unique<Getter<TargType, GetterRetType>>(ga), 
-                std::make_unique<Setter<TargType, SetterArgType>>(sa));
-        TargType::sPropertyMap()["name"] = result;
-        return result;
-    }
+        public:
+            virtual ~HasProperties() = default;
+            virtual Properties& properties() const = 0;
+    };
 }
 
 #define SGT_PROPS_INIT(Type) \
 using TargType = Type; \
-static Sgt::PropertyMap& sPropertyMap() \
+static Sgt::Properties& sProperties() \
 { \
-    static Sgt::PropertyMap map; \
-    return map; \
+    static Sgt::Properties props; \
+    return props; \
 } \
-virtual std::map<std::string, std::shared_ptr<Sgt::PropertyAbc>>& properties() const override \
-{ \
-    return sPropertyMap(); \
-}
+virtual Sgt::Properties& properties() const override {return sProperties();}
 
 /// Copy all properties from the base class into this class. This allows an override mechanism, just like method
 /// overrides. 
 #define SGT_PROPS_INHERIT(Base) \
 struct Inherit ## Base \
 { \
-    Inherit ## Base () \
-    { \
-        auto& targMap = sPropertyMap(); \
-        auto& baseMap = Base::sPropertyMap(); \
-        for (auto& elem : baseMap) \
-        { \
-            targMap[elem.first] = elem.second; \
-        } \
-    } \
+    Inherit ## Base () {sProperties().insert(Base::sProperties().begin(), Base::sProperties().end());} \
 }; \
 struct DoInherit ## Base \
 { \
-    DoInherit ## Base() \
-    { \
-        static Inherit ## Base inherit ## Base; \
-    } \
+    DoInherit ## Base() {static Inherit ## Base inherit ## Base;} \
 } doinherit ## Base \
 
 /// Use a member function as a property getter.
@@ -335,7 +342,7 @@ struct InitProp_ ## name \
 { \
     InitProp_ ## name() \
     { \
-        addGetProperty<TargType, GetterRetType>( \
+        sProperties().addGetProperty<TargType, GetterRetType>( \
                 [](const TargType& targ)->GetterRetType {return targ.getter();}, \
                 #name); \
     } \
@@ -354,7 +361,7 @@ struct InitProp_ ## name \
 { \
     InitProp_ ## name() \
     { \
-        addSetProperty<TargType, SetterArgType>( \
+        sProperties().addSetProperty<TargType, SetterArgType>( \
                 [](TargType& targ, SetterArgType val) {targ.setter(val);}, \
                 #name); \
     } \
@@ -372,7 +379,7 @@ struct InitProp_ ## name \
 { \
     InitProp_ ## name() \
     { \
-        addGetSetProperty<TargType, GetterRetType, SetterArgType>( \
+        sProperties().addGetSetProperty<TargType, GetterRetType, SetterArgType>( \
                 [](const TargType& targ)->GetterRetType {return targ.getter();}, \
                 [](TargType& targ, SetterArgType val) {targ.setter(val);}, \
                 #name); \
