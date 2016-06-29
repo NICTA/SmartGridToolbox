@@ -23,12 +23,16 @@
 
 namespace Sgt
 {
+    class Bus;
+
     /// @brief A Zip is an injection into a bus with constant impedance / current / complex power components.
     ///
     /// Implement some common functionality for convenience.
     /// @ingroup PowerFlowCore
     class ZipAbc : virtual public Component
     {
+        friend class Network;
+
         public:
             
             SGT_PROPS_INIT(ZipAbc);
@@ -148,6 +152,21 @@ namespace Sgt
 
             /// @}
 
+            /// @name Bus.
+            /// @{
+            
+            const Bus* bus() const
+            {
+                return bus_;
+            }
+            
+            Bus* bus()
+            {
+                return bus_;
+            }
+
+            /// @}
+
         private:
 
             Phases phases_;
@@ -157,6 +176,8 @@ namespace Sgt
             Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
             Event injectionChanged_{std::string(sComponentType()) + " : Injection changed"};
             Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
+
+            Bus* bus_;
     };
 
     /// @brief A concrete, generic ZIP at a bus.

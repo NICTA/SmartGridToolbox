@@ -22,12 +22,16 @@
 
 namespace Sgt
 {
+    class Bus;
+
     /// @brief Common abstract base class for a generation at a bus.
     ///
     /// Implement some common functionality for convenience.
     /// @ingroup PowerFlowCore
     class GenAbc : virtual public Component
     {
+        friend class Network;
+
         public:
 
             SGT_PROPS_INIT(GenAbc);
@@ -208,6 +212,21 @@ namespace Sgt
             }
 
             /// @}
+            
+            /// @name Bus.
+            /// @{
+            
+            const Bus* bus() const
+            {
+                return bus_;
+            }
+            
+            Bus* bus()
+            {
+                return bus_;
+            }
+
+            /// @}
 
         private:
 
@@ -218,6 +237,8 @@ namespace Sgt
             Event generationChanged_{std::string(sComponentType()) + " : Generation changed"};
             Event JChanged_{std::string(sComponentType()) + " : Angular momentum changed"};
             Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
+
+            Bus* bus_;
     };
 
     /// @brief A concrete, generic generation at a bus.

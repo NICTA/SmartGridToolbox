@@ -23,6 +23,24 @@ using namespace arma;
 
 namespace Sgt
 {
+    namespace
+    {
+        void islandDfs(Bus* bus, int islandIdx, std::set<Bus*>& remaining)
+        {
+            if (bus->islandIdx() != -1) return;
+            bus->setIslandIdx(islandIdx);
+            remaining.erase(remaining.find(bus));
+            for (auto branch : bus->branches0())
+            {
+                if (branch->isInService()) islandDfs(branch->bus1(), islandIdx, remaining);
+            }
+            for (auto branch : bus->branches1())
+            {
+                if (branch->isInService()) islandDfs(branch->bus0(), islandIdx, remaining);
+            }
+        }
+    }
+
     Network::Network(double PBase) : PBase_(PBase), solver_(new PowerFlowNrPolSolver)
     {
         // Empty.
@@ -36,34 +54,42 @@ namespace Sgt
 
     void Network::addBranch(std::shared_ptr<BranchAbc> branch, const std::string& bus0Id, const std::string& bus1Id)
     {
-        Bus* bus0 = bus(bus0Id);
-        Bus* bus1 = bus(bus1Id);
-        sgtAssert(bus0 != nullptr, "Bus " << bus0Id << " was not found in the network.");
-        sgtAssert(bus1 != nullptr, "Bus " << bus1Id << " was not found in the network.");
-        branch->setBus0(*bus0);
-        branch->setBus1(*bus1);
         branchMap_[branch->id()] = branch;
         branchVec_.push_back(branch.get());
+
+        Bus* bus0 = bus(bus0Id);
+        sgtAssert(bus0 != nullptr, "Bus " << bus0Id << " was not found in the network.");
+        branch->bus0_ = bus0;
+        bus0->branchVec0_.push_back(branch.get());
+        
+        Bus* bus1 = bus(bus1Id);
+        sgtAssert(bus1 != nullptr, "Bus " << bus1Id << " was not found in the network.");
+        branch->bus1_ = bus1;
+        bus1->branchVec1_.push_back(branch.get());
     }
 
     void Network::addGen(std::shared_ptr<GenAbc> gen, const std::string& busId)
     {
         genMap_[gen->id()] = gen;
         genVec_.push_back(gen.get());
+
         Bus* bus = this->bus(busId);
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
-        bus->addGen(*gen);
+        gen->bus_ = bus;
+        bus->genVec_.push_back(gen.get());
     }
 
     void Network::addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId)
     {
         zipMap_[zip->id()] = zip;
         zipVec_.push_back(zip.get());
+
         Bus* bus = this->bus(busId);
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
-        bus->addZip(*zip);
+        zip->bus_ = bus;
+        bus->zipVec_.push_back(zip.get());
     }
-        
+
     void Network::applyFlatStart()
     {
         for (auto bus : buses())
@@ -102,6 +128,8 @@ namespace Sgt
         sgtLogDebug() << "Network : solving power flow." << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << *this;
 
+        findIslands();
+
         if (useFlatStart_)
         {
             applyFlatStart();
@@ -119,6 +147,33 @@ namespace Sgt
     {
         return std::accumulate(genVec_.begin(), genVec_.end(), 0.0, 
                 [](double d, GenAbc* g)->double{return d + g->cost();});
+    }
+            
+    void Network::findIslands()
+    {
+        std::set<Bus*> remaining(busVec_.begin(), busVec_.end());
+
+        // Step 1: Initialize.
+        nIslands_ = 0;
+        islandIsSupplied_.clear();
+        for (auto bus : buses()) bus->islandIdx_ = -1;
+        
+        // Step 2: do all buses with a working generator.
+        for (auto gen : gens())
+        {
+            if (!gen->isInService()) continue;
+            auto bus = gen->bus();
+            islandIsSupplied_.push_back(true);
+            islandDfs(bus, nIslands_++, remaining);
+        }
+
+        // Step 3: do all unsupplied buses.
+        while (!remaining.empty())
+        {
+            auto bus = *remaining.begin();
+            islandIsSupplied_.push_back(false);
+            islandDfs(bus, nIslands_++, remaining);
+        }
     }
             
     json Network::toJson() const

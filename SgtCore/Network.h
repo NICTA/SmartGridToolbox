@@ -257,6 +257,23 @@ namespace Sgt
 
             /// @}
             
+            /// @name Connectivity / islands:
+            /// @{
+           
+            int nIslands() const
+            {
+                return nIslands_;
+            }
+
+            const std::vector<bool>& islandIsSupplied() const
+            {
+                return islandIsSupplied_;
+            }
+
+            void findIslands();
+
+            /// @}
+            
             /// @name Printing:
             /// @{
            
@@ -287,6 +304,9 @@ namespace Sgt
 
             std::map<std::string, std::shared_ptr<ZipAbc>> zipMap_;
             std::vector<ZipAbc*> zipVec_;
+
+            int nIslands_{0};
+            std::vector<bool> islandIsSupplied_;
 
             std::unique_ptr<PowerFlowSolverInterface> solver_{nullptr};
             bool useFlatStart_{false};

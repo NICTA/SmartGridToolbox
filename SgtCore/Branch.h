@@ -31,6 +31,8 @@ namespace Sgt
     /// @ingroup PowerFlowCore
     class BranchAbc : virtual public Component
     {
+        friend class Network;
+
         public:
 
             SGT_PROPS_INIT(BranchAbc);
@@ -82,41 +84,6 @@ namespace Sgt
             }
 
             SGT_PROP_GET(phases1, phases1, const Phases&);
-
-        /// @}
-
-        /// @name attached buses:
-        /// @{
-
-            const Bus* bus0() const
-            {
-                return bus0_;
-            }
-
-            Bus* bus0()
-            {
-                return bus0_;
-            }
-
-            void setBus0(Bus& bus0)
-            {
-                bus0_ = &bus0;
-            }
-
-            const Bus* bus1() const
-            {
-                return bus1_;
-            }
-
-            Bus* bus1()
-            {
-                return bus1_;
-            }
-
-            void setBus1(Bus& bus1)
-            {
-                bus1_ = &bus1;
-            }
 
         /// @}
 
@@ -173,18 +140,43 @@ namespace Sgt
 
         /// @}
 
+        /// @name attached buses:
+        /// @{
+
+            const Bus* bus0() const
+            {
+                return bus0_;
+            }
+
+            Bus* bus0()
+            {
+                return bus0_;
+            }
+
+            const Bus* bus1() const
+            {
+                return bus1_;
+            }
+
+            Bus* bus1()
+            {
+                return bus1_;
+            }
+
+        /// @}
+
         private:
 
             Phases phases0_; ///< Phases on bus 0.
             Phases phases1_; ///< Phases on bus 1.
 
-            Bus* bus0_;
-            Bus* bus1_;
-
             bool isInService_; ///< Am I in service?
 
             Event isInServiceChanged_{sComponentType() + " : Is in service changed"};
             Event admittanceChanged_{sComponentType() + " : Admittance changed"};
+            
+            Bus* bus0_{nullptr};
+            Bus* bus1_{nullptr};
     };
 
     /// @brief A concrete, generic branch.
