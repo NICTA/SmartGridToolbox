@@ -31,6 +31,28 @@ namespace Sgt
 {
     class PowerFlowModel;
 
+    struct Island
+    {
+        int idx{-1};
+        bool isSupported{false};
+        std::vector<Bus*> buses;
+    };
+    
+    struct ConstIsland
+    {
+        ConstIsland(const Island& from) :
+            idx(from.idx),
+            isSupported(from.isSupported),
+            buses({from.buses.begin(), from.buses.end()})
+        {
+            // Empty.
+        }
+
+        int idx{-1};
+        bool isSupported{false};
+        std::vector<Bus*> buses;
+    };
+
     /// @brief Network component, describing an electricity network.
     /// @ingroup PowerFlowCore
     class Network
@@ -84,7 +106,11 @@ namespace Sgt
             /// @name Network Components:
             /// @{
 
-            const std::vector<Bus*>& buses() const
+            std::vector<const Bus*> buses() const
+            {
+                return {busVec_.begin(), busVec_.end()};
+            }
+            const std::vector<Bus*>& buses()
             {
                 return busVec_;
             }
@@ -113,7 +139,11 @@ namespace Sgt
                 referenceBus_ = bus(id);
             }
 
-            const std::vector<BranchAbc*>& branches() const
+            std::vector<const BranchAbc*> branches() const
+            {
+                return {branchVec_.begin(), branchVec_.end()};
+            }
+            const std::vector<BranchAbc*>& branches()
             {
                 return branchVec_;
             }
@@ -129,7 +159,11 @@ namespace Sgt
             virtual void addBranch(std::shared_ptr<BranchAbc> branch,
                     const std::string& bus0Id, const std::string& bus1Id);
 
-            const std::vector<GenAbc*>& gens() const
+            std::vector<const GenAbc*> gens() const
+            {
+                return {genVec_.begin(), genVec_.end()};
+            }
+            const std::vector<GenAbc*>& gens()
             {
                 return genVec_;
             }
@@ -144,7 +178,11 @@ namespace Sgt
             }
             virtual void addGen(std::shared_ptr<GenAbc> gen, const std::string& busId);
 
-            const std::vector<ZipAbc*>& zips() const
+            std::vector<const ZipAbc*> zips() const
+            {
+                return {zipVec_.begin(), zipVec_.end()};
+            }
+            const std::vector<ZipAbc*>& zips()
             {
                 return zipVec_;
             }
@@ -259,18 +297,20 @@ namespace Sgt
             
             /// @name Connectivity / islands:
             /// @{
-           
-            int nIslands() const
+          
+            std::vector<ConstIsland> islands() const
             {
-                return nIslands_;
+                return {islands_.begin(), islands_.end()};
             }
 
-            const std::vector<bool>& islandIsSupplied() const
+            const std::vector<Island>& islands()
             {
-                return islandIsSupplied_;
+                return islands_;
             }
 
             void findIslands();
+            
+            void handleUnsuppliedIslands();
 
             /// @}
             
@@ -305,8 +345,7 @@ namespace Sgt
             std::map<std::string, std::shared_ptr<ZipAbc>> zipMap_;
             std::vector<ZipAbc*> zipVec_;
 
-            int nIslands_{0};
-            std::vector<bool> islandIsSupplied_;
+            std::vector<Island> islands_;
 
             std::unique_ptr<PowerFlowSolverInterface> solver_{nullptr};
             bool useFlatStart_{false};
@@ -320,7 +359,7 @@ namespace Sgt
         return os;
     }
 
-    std::unique_ptr<PowerFlowModel> buildModel(const Network& netw);
+    std::unique_ptr<PowerFlowModel> buildModel(Network& netw);
     void applyModel(const PowerFlowModel& mod, Network& netw);
 }
 

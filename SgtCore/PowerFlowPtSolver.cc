@@ -68,7 +68,7 @@ namespace Sgt
 
         for (const auto& branch : sgtNw.branches())
         {
-            auto cBranch = dynamic_cast<CommonBranch*>(branch);
+            auto cBranch = dynamic_cast<const CommonBranch*>(branch);
             auto bus0 = branch->bus0();
             auto bus1 = branch->bus1();
 

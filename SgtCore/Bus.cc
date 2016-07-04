@@ -222,6 +222,7 @@ namespace Sgt
             {"V_mag_min", VMagMin()},
             {"V_mag_max", VMagMax()},
             {"V", V()},
+            {"islandIdx", islandIdx()},
             {"coords", coords()},
             {"gens", gensJson},
             {"zips", zipsJson}};

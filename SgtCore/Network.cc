@@ -25,18 +25,19 @@ namespace Sgt
 {
     namespace
     {
-        void islandDfs(Bus* bus, int islandIdx, std::set<Bus*>& remaining)
+        void islandDfs(Bus* bus, Island& island)
         {
-            if (bus->islandIdx() != -1) return;
-            bus->setIslandIdx(islandIdx);
-            remaining.erase(remaining.find(bus));
+            if (bus->islandIdx() != -1 || !bus->isInService()) return;
+
+            bus->setIslandIdx(island.idx);
+            island.buses.push_back(bus);
             for (auto branch : bus->branches0())
             {
-                if (branch->isInService()) islandDfs(branch->bus1(), islandIdx, remaining);
+                if (branch->isInService()) islandDfs(branch->bus1(), island);
             }
             for (auto branch : bus->branches1())
             {
-                if (branch->isInService()) islandDfs(branch->bus0(), islandIdx, remaining);
+                if (branch->isInService()) islandDfs(branch->bus0(), island);
             }
         }
     }
@@ -128,17 +129,23 @@ namespace Sgt
         sgtLogDebug() << "Network : solving power flow." << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << *this;
 
-        findIslands();
-
+        // Preprocess.
         if (useFlatStart_)
         {
             applyFlatStart();
         }
+        findIslands();
+        handleUnsuppliedIslands();
+
+        // Solve.
         isValidSolution_ = solver_->solve(*this);
         if (!isValidSolution_)
         {
             sgtLogWarning() << "Couldn't solve power flow model" << std::endl;
         }
+        
+        // Postprocess.
+        // TODO.
 
         return isValidSolution_;
     }
@@ -151,31 +158,50 @@ namespace Sgt
             
     void Network::findIslands()
     {
-        std::set<Bus*> remaining(busVec_.begin(), busVec_.end());
+        std::map<std::string, Bus*> remaining; 
+        for (auto bus : busVec_) remaining[bus->id()] = bus;
 
         // Step 1: Initialize.
-        nIslands_ = 0;
-        islandIsSupplied_.clear();
+        islands_.clear();
         for (auto bus : buses()) bus->islandIdx_ = -1;
-        
-        // Step 2: do all buses with a working generator.
+        int curIdx = 0;
+
+        // Step 2: DFS from all in-service buses with a working generator.
         for (auto gen : gens())
         {
             if (!gen->isInService()) continue;
             auto bus = gen->bus();
-            islandIsSupplied_.push_back(true);
-            islandDfs(bus, nIslands_++, remaining);
-        }
+            if (!bus->isInService()) continue;
 
-        // Step 3: do all unsupplied buses.
+            islands_.push_back({curIdx++, true, {}});
+            islandDfs(bus, islands_.back());
+            for (auto b : islands_.back().buses) remaining.erase(b->id());
+        }
+        
+        // Step 3: Do all unsupplied and out-of-service buses.
         while (!remaining.empty())
         {
-            auto bus = *remaining.begin();
-            islandIsSupplied_.push_back(false);
-            islandDfs(bus, nIslands_++, remaining);
+            auto bus = remaining.begin()->second;
+            if (!bus->isInService())
+            { 
+                // Out of service buses get their own island.
+                islands_.push_back({curIdx++, false, {bus}});
+                remaining.erase(bus->id());
+            }
+            else
+            {
+                // Should be unsupplied.
+                islands_.push_back({curIdx++, false, {}});
+                islandDfs(bus, islands_.back());
+                for (auto b : islands_.back().buses) remaining.erase(b->id());
+            }
         }
     }
             
+    void Network::handleUnsuppliedIslands()
+    {
+    }
+    
     json Network::toJson() const
     {
         json j;
@@ -189,7 +215,7 @@ namespace Sgt
         return j;
     }
 
-    std::unique_ptr<PowerFlowModel> buildModel(const Network& netw)
+    std::unique_ptr<PowerFlowModel> buildModel(Network& netw)
     {
         std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel(netw.buses().size(), netw.branches().size()));
         for (Bus* bus : netw.buses())
