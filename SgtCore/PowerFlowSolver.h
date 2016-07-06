@@ -25,14 +25,7 @@ namespace Sgt
     {
         public:
             virtual ~PowerFlowSolverInterface() {}
-
-            bool solve(Network& netw);
-
-            virtual void setNetwork(Network& netw) = 0;
-
-            virtual bool solveProblem() = 0;
-
-            virtual void updateNetwork() = 0;
+            virtual bool solve(Network& netw);
     };
 };
 

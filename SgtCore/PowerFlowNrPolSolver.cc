@@ -164,7 +164,24 @@ namespace Sgt
         sgtLogDebug() << "PowerFlowNrPolSolver : solve." << std::endl;
         LogIndent indent;
 
-        mod_ = buildModel(*netw_);
+        bool ok = true;
+        for (auto island : netw_->islands())
+        {
+            if (island.isSupplied)
+            {
+                ok = ok && solveProblemForIsland(island.idx);
+            }
+            else 
+            {
+                ok = false;
+            }
+        }
+        return ok;
+    }
+
+    bool PowerFlowNrPolSolver::solveProblemForIsland(int islandIdx)
+    {
+        mod_ = buildModel(*netw_, [islandIdx](const Bus& b){return b.islandIdx() == islandIdx;});
 
         // Cache V, Scg, IConst, as these are calculated and not cached in the model.
         Col<Complex> V = mod_->V(); // Model indexing.

@@ -49,6 +49,7 @@ namespace Sgt
         private:
 
             void init(Network& netw);
+            bool solveProblemForIsland(int islandIdx);
 
         public:
 

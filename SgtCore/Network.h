@@ -34,7 +34,7 @@ namespace Sgt
     struct Island
     {
         int idx{-1};
-        bool isSupported{false};
+        bool isSupplied{false};
         std::vector<Bus*> buses;
     };
     
@@ -42,14 +42,14 @@ namespace Sgt
     {
         ConstIsland(const Island& from) :
             idx(from.idx),
-            isSupported(from.isSupported),
+            isSupplied(from.isSupplied),
             buses({from.buses.begin(), from.buses.end()})
         {
             // Empty.
         }
 
         int idx{-1};
-        bool isSupported{false};
+        bool isSupplied{false};
         std::vector<Bus*> buses;
     };
 
@@ -359,7 +359,9 @@ namespace Sgt
         return os;
     }
 
-    std::unique_ptr<PowerFlowModel> buildModel(Network& netw);
+    std::unique_ptr<PowerFlowModel> buildModel(Network& netw, 
+            std::function<bool (const Bus&)> filter = [](const Bus& bus){return true;});
+
     void applyModel(const PowerFlowModel& mod, Network& netw);
 }
 

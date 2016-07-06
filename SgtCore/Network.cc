@@ -200,6 +200,17 @@ namespace Sgt
             
     void Network::handleUnsuppliedIslands()
     {
+        for (auto island : islands_)
+        {
+            if (island.isSupplied) continue;
+
+            for (auto bus : island.buses)
+            {
+                bus->setV(arma::Col<Complex>(bus->V().size(), arma::fill::zeros));
+                bus->setSGenUnserved(bus->SGenRequested());
+                bus->setSZipUnserved(bus->SZipRequested());
+            }
+        }
     }
     
     json Network::toJson() const
@@ -215,10 +226,19 @@ namespace Sgt
         return j;
     }
 
-    std::unique_ptr<PowerFlowModel> buildModel(Network& netw)
+    std::unique_ptr<PowerFlowModel> buildModel(Network& netw,
+            std::function<bool (const Bus&)> filter)
     {
-        std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel(netw.buses().size(), netw.branches().size()));
-        for (Bus* bus : netw.buses())
+        std::vector<Bus*> buses; buses.reserve(netw.buses().size());
+        std::copy_if(buses.begin(), buses.end(),
+                [&filter](auto x){return filter(*x);}, std::back_inserter(buses));
+
+        std::vector<BranchAbc*> branches; branches.reserve(netw.branches().size());
+        std::copy_if(buses.begin(), buses.end(), 
+                [&filter](auto x){return filter(*x->bus0()) && filter(*x->bus1());}, std::back_inserter(branches));
+
+        std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel(buses.size(), branches.size()));
+        for (Bus* bus : buses)
         {
             if (bus->isInService())
             {
@@ -244,7 +264,7 @@ namespace Sgt
                 bus->setpointChanged().setIsEnabled(isEnabledSv);
             }
         }
-        for (const BranchAbc* branch : netw.branches())
+        for (const BranchAbc* branch : branches)
         {
             if (branch->isInService() && branch->bus0()->isInService() && branch->bus1()->isInService())
             {
