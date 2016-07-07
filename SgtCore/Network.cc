@@ -177,9 +177,14 @@ namespace Sgt
             auto bus = gen->bus();
             if (!bus->isInService()) continue;
 
-            islands_.push_back({curIdx++, true, {}});
-            islandDfs(bus, islands_.back());
-            for (auto b : islands_.back().buses) remaining.erase(b->id());
+            Island island{curIdx+1, true, {}};
+            islandDfs(bus, island);
+            if (island.buses.size() > 0)
+            {
+                for (auto b : island.buses) remaining.erase(b->id());
+                islands_.push_back(std::move(island));
+                ++curIdx;
+            }
         }
         
         // Step 3: Do all unsupplied and out-of-service buses.
@@ -194,7 +199,7 @@ namespace Sgt
             }
             else
             {
-                // Should be unsupplied.
+                // Should be unsupplied. Note that the island will contain at least bus.
                 islands_.push_back({curIdx++, false, {}});
                 islandDfs(bus, islands_.back());
                 for (auto b : islands_.back().buses) remaining.erase(b->id());

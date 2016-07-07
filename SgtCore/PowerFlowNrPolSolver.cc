@@ -273,6 +273,9 @@ namespace Sgt
         {
             applyModel(*mod_, *netw_);
         }
+        
+        sgtLogDebug() << "Finished: successful = " << wasSuccessful << std::endl;
+
         return wasSuccessful;
     }
 }
