@@ -89,7 +89,7 @@ libSgtCore_la_SOURCES = \
 	PowerFlowNrPolSolver.h PowerFlowNrPolSolver.cc \
 	PowerFlowNrRectSolver.h PowerFlowNrRectSolver.cc \
 	$(POWER_FLOW_PT_SOLVER_H) $(POWER_FLOW_PT_SOLVER_CC) \
-	PowerFlowSolver.h PowerFlowSolver.cc \
+	PowerFlowSolver.h \
 	PowerFlowSolverParserPlugin.h PowerFlowSolverParserPlugin.cc \
 	Properties.h \
 	Random.h Random.cc \

@@ -34,22 +34,11 @@ namespace Sgt
     {
         public:
 
-            virtual void setNetwork(Network& netw) override
-            {
-                netw_ = &netw;
-            }
-
-            virtual bool solveProblem() override;
-
-            virtual void updateNetwork() override
-            {
-                applyModel(*mod_, *netw_);
-            }
+            virtual bool solve(Network& netw) override;
 
         private:
 
-            void init(Network& netw);
-            bool solveProblemForIsland(int islandIdx);
+            bool solveForIsland(int islandIdx);
 
         public:
 

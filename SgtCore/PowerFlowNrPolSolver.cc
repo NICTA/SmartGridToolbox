@@ -159,28 +159,25 @@ namespace Sgt
         }
     }
 
-    bool PowerFlowNrPolSolver::solveProblem()
+    bool PowerFlowNrPolSolver::solve(Network& netw)
     {
         sgtLogDebug() << "PowerFlowNrPolSolver : solve." << std::endl;
         LogIndent indent;
 
+        netw_ = &netw;
         bool ok = true;
-        for (auto island : netw_->islands())
+        for (auto& island : netw.islands())
         {
-            if (island.isSupplied)
-            {
-                ok = ok && solveProblemForIsland(island.idx);
-            }
-            else 
-            {
-                ok = false;
-            }
+            ok = ok && solveForIsland(island.idx);
         }
         return ok;
     }
 
-    bool PowerFlowNrPolSolver::solveProblemForIsland(int islandIdx)
+    bool PowerFlowNrPolSolver::solveForIsland(int islandIdx)
     {
+        sgtLogDebug() << "PowerFlowNrPolSolver : solving for island " << islandIdx << std::endl;
+        LogIndent indent;
+        bool ok = true;
         mod_ = buildModel(*netw_, [islandIdx](const Bus& b){return b.islandIdx() == islandIdx;});
 
         // Cache V, Scg, IConst, as these are calculated and not cached in the model.
@@ -205,7 +202,6 @@ namespace Sgt
         bool wasSuccessful = false;
         double err = 0;
         unsigned int niter;
-        bool ok;
 
         for (niter = 0; niter < maxiter_; ++niter)
         {
@@ -268,6 +264,10 @@ namespace Sgt
         mod_->setV(V);
         mod_->setScg(Scg);
 
+        if (wasSuccessful)
+        {
+            applyModel(*mod_, *netw_);
+        }
         return wasSuccessful;
     }
 }

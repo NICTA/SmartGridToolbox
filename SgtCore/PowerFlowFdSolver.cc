@@ -149,11 +149,12 @@ namespace Sgt
         }
     }
 
-    bool PowerFlowFdSolver::solveProblem()
+    bool PowerFlowFdSolver::solve(Network& netw)
     {
         sgtLogDebug() << "PowerFlowFdSolver : solve." << std::endl;
         LogIndent indent;
 
+        netw_ = &netw;
         mod_ = buildModel(*netw_);
 
         // Cache V, Scg, IConst, as these are calculated and not cached in the model.
@@ -240,7 +241,11 @@ namespace Sgt
             V.subvec(1, nPq) = M.subvec(1, nPq) % dir.subvec(1, nPq);
         }
 
-        if (!wasSuccessful)
+        if (wasSuccessful)
+        {
+            applyModel(*mod_, *netw_);
+        }
+        else
         {
             sgtLogWarning() << "PowerFlowFdSolver: failed to converge." << std::endl;
             // TODO.

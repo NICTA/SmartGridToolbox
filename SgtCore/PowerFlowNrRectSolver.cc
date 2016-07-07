@@ -81,11 +81,22 @@ namespace Sgt
         }
     }
 
-    bool PowerFlowNrRectSolver::solveProblem()
+    bool PowerFlowNrRectSolver::solve(Network& netw)
     {
         sgtLogDebug() << "PowerFlowNrRectSolver : solve." << std::endl;
         LogIndent indent;
 
+        netw_ = &netw;
+        bool ok = true;
+        for (auto& island : netw.islands())
+        {
+            ok = ok && solveForIsland(island.idx);
+        }
+        return ok;
+    }
+    
+    bool PowerFlowNrRectSolver::solveForIsland(int islandIdx)
+    {
         Stopwatch stopwatch;
 
         double duration = 0;
@@ -94,8 +105,7 @@ namespace Sgt
         stopwatch.start();
 
         // Construct the model from the network.
-        
-        init(*netw_);
+        init(islandIdx);
 
         Col<Complex> V = mod_->V(); // Cache, as model cacluates on the fly.
         Col<double> Vr = real(V);
@@ -258,18 +268,25 @@ namespace Sgt
         duration = stopwatch.seconds();
 
         sgtLogDebug() << "PowerFlowNrRectSolver: " << std::endl; 
-        indent.in(); 
-        sgtLogDebug() << "successful = " << wasSuccessful << std::endl;
-        sgtLogDebug() << "error = " << err << std::endl; 
-        sgtLogDebug() << "iterations = " << niter << std::endl;
-        sgtLogDebug() << "total time = " << duration << std::endl; 
+        {
+            LogIndent indent;
+            sgtLogDebug() << "successful = " << wasSuccessful << std::endl;
+            sgtLogDebug() << "error = " << err << std::endl; 
+            sgtLogDebug() << "iterations = " << niter << std::endl;
+            sgtLogDebug() << "total time = " << duration << std::endl;
+        }
+
+        if (wasSuccessful)
+        {
+            applyModel(*mod_, *netw_);
+        }
 
         return wasSuccessful;
     }
 
-    void PowerFlowNrRectSolver::init(Network& netw)
+    void PowerFlowNrRectSolver::init(int islandIdx)
     {
-        mod_ = buildModel(*netw_);
+        mod_ = buildModel(*netw_, [islandIdx](const Bus& b){return b.islandIdx() == islandIdx;});
 
         selIrPqFrom_f_.set_size(mod_->nPq());
         selIiPqFrom_f_.set_size(mod_->nPq());

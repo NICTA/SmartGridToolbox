@@ -176,8 +176,9 @@ namespace Sgt
         delete ptNetw_;
     }
 
-    bool PowerFlowPtSolver::solveProblem()
+    bool PowerFlowPtSolver::solve(Network& netw)
     {
+        sgtNetw_ = &netw;
         ptNetw_ = sgt2PowerTools(*sgtNetw_);
         // printNetw(*ptNetw_);
         
@@ -191,12 +192,11 @@ namespace Sgt
         sgtLogMessage() << "PowerFlowPtSolver:" << std::endl;
         LogIndent indent;
         sgtLogMessage() << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
+        if (success)
+        {
+            powerTools2Sgt(*ptNetw_, *sgtNetw_);
+        }
         return success;
-    }
-
-    void PowerFlowPtSolver::updateNetwork()
-    {
-        powerTools2Sgt(*ptNetw_, *sgtNetw_);
     }
 
     std::unique_ptr<PowerModel> PowerFlowPtSolver::makeModel()

@@ -106,11 +106,8 @@ namespace Sgt
             /// @name Network Components:
             /// @{
 
-            std::vector<const Bus*> buses() const
-            {
-                return {busVec_.begin(), busVec_.end()};
-            }
-            const std::vector<Bus*>& buses()
+            // TODO: this breaks logical constness - but alternatives are long winded and/or brittle.
+            const std::vector<Bus*>& buses() const
             {
                 return busVec_;
             }
@@ -124,6 +121,7 @@ namespace Sgt
             {
                 return const_cast<Bus*>((static_cast<const Network*>(this))->bus(id));
             }
+
             void addBus(std::shared_ptr<Bus> bus);
 
             const Bus* referenceBus() const
@@ -139,11 +137,8 @@ namespace Sgt
                 referenceBus_ = bus(id);
             }
 
-            std::vector<const BranchAbc*> branches() const
-            {
-                return {branchVec_.begin(), branchVec_.end()};
-            }
-            const std::vector<BranchAbc*>& branches()
+            // TODO: this breaks logical constness - but alternatives are long winded and/or brittle.
+            const std::vector<BranchAbc*>& branches() const
             {
                 return branchVec_;
             }
@@ -159,11 +154,8 @@ namespace Sgt
             virtual void addBranch(std::shared_ptr<BranchAbc> branch,
                     const std::string& bus0Id, const std::string& bus1Id);
 
-            std::vector<const GenAbc*> gens() const
-            {
-                return {genVec_.begin(), genVec_.end()};
-            }
-            const std::vector<GenAbc*>& gens()
+            // TODO: this breaks logical constness - but alternatives are long winded and/or brittle.
+            const std::vector<GenAbc*>& gens() const
             {
                 return genVec_;
             }
@@ -178,11 +170,8 @@ namespace Sgt
             }
             virtual void addGen(std::shared_ptr<GenAbc> gen, const std::string& busId);
 
-            std::vector<const ZipAbc*> zips() const
-            {
-                return {zipVec_.begin(), zipVec_.end()};
-            }
-            const std::vector<ZipAbc*>& zips()
+            // TODO: this breaks logical constness - but alternatives are long winded and/or brittle.
+            const std::vector<ZipAbc*>& zips() const
             {
                 return zipVec_;
             }
@@ -359,8 +348,8 @@ namespace Sgt
         return os;
     }
 
-    std::unique_ptr<PowerFlowModel> buildModel(Network& netw, 
-            std::function<bool (const Bus&)> filter = [](const Bus& bus){return true;});
+    std::unique_ptr<PowerFlowModel> buildModel(const Network& netw,
+            const std::function<bool (const Bus&)> selBus = [](const Bus&){return true;});
 
     void applyModel(const PowerFlowModel& mod, Network& netw);
 }

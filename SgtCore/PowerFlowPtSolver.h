@@ -37,14 +37,7 @@ namespace Sgt
 
             virtual ~PowerFlowPtSolver();
 
-            virtual void setNetwork(Network& netw) override
-            {
-                sgtNetw_ = &netw;
-            }
-
-            virtual bool solveProblem() override;
-
-            virtual void updateNetwork() override;
+            virtual bool solve(Network& netw) override;
         
         protected:
             virtual std::unique_ptr<PowerModel> makeModel();

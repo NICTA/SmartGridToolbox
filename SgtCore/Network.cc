@@ -130,14 +130,18 @@ namespace Sgt
         sgtLogDebug(LogLevel::VERBOSE) << *this;
 
         // Preprocess.
+        
+        // Flat start.
         if (useFlatStart_)
         {
             applyFlatStart();
         }
+
+        // Islands.
         findIslands();
         handleUnsuppliedIslands();
 
-        // Solve.
+        // Solve and update network.
         isValidSolution_ = solver_->solve(*this);
         if (!isValidSolution_)
         {
@@ -226,21 +230,13 @@ namespace Sgt
         return j;
     }
 
-    std::unique_ptr<PowerFlowModel> buildModel(Network& netw,
-            std::function<bool (const Bus&)> filter)
+    std::unique_ptr<PowerFlowModel> buildModel(const Network& netw,
+            const std::function<bool (const Bus&)> selBus)
     {
-        std::vector<Bus*> buses; buses.reserve(netw.buses().size());
-        std::copy_if(buses.begin(), buses.end(),
-                [&filter](auto x){return filter(*x);}, std::back_inserter(buses));
-
-        std::vector<BranchAbc*> branches; branches.reserve(netw.branches().size());
-        std::copy_if(buses.begin(), buses.end(), 
-                [&filter](auto x){return filter(*x->bus0()) && filter(*x->bus1());}, std::back_inserter(branches));
-
-        std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel(buses.size(), branches.size()));
-        for (Bus* bus : buses)
+        std::unique_ptr<PowerFlowModel> mod(new PowerFlowModel(netw.buses().size(), netw.branches().size()));
+        for (auto bus : netw.buses())
         {
-            if (bus->isInService())
+            if (selBus(*bus) && bus->isInService())
             {
                 bool isEnabledSv = bus->setpointChanged().isEnabled();
                 bus->setpointChanged().setIsEnabled(false);
@@ -264,13 +260,14 @@ namespace Sgt
                 bus->setpointChanged().setIsEnabled(isEnabledSv);
             }
         }
-        for (const BranchAbc* branch : branches)
+        for (const BranchAbc* branch : netw.branches())
         {
-            if (branch->isInService() && branch->bus0()->isInService() && branch->bus1()->isInService())
+            if (branch->isInService() && 
+                    selBus(*branch->bus0()) && branch->bus0()->isInService() &&
+                    selBus(*branch->bus1()) && branch->bus1()->isInService())
             {
-                // TODO: ignore like this, or add the branch with zero admittance?
                 mod->addBranch(branch->bus0()->id(), branch->bus1()->id(),
-                               branch->phases0(), branch->phases1(), branch->Y());
+                        branch->phases0(), branch->phases1(), branch->Y());
             }
         }
         mod->validate();
