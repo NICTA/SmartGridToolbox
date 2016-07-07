@@ -90,7 +90,7 @@ namespace Sgt
         bool ok = true;
         for (auto& island : netw.islands())
         {
-            ok = ok && solveForIsland(island.idx);
+            ok = solveForIsland(island.idx) && ok;
         }
         return ok;
     }

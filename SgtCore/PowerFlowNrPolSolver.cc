@@ -161,14 +161,19 @@ namespace Sgt
 
     bool PowerFlowNrPolSolver::solve(Network& netw)
     {
-        sgtLogDebug() << "PowerFlowNrPolSolver : solve." << std::endl;
+        sgtLogDebug() << "PowerFlowNrPolSolver : solve for " << netw.islands().size() << " islands." << std::endl;
         LogIndent indent;
 
         netw_ = &netw;
         bool ok = true;
         for (auto& island : netw.islands())
         {
-            ok = ok && solveForIsland(island.idx);
+            sgtLogDebug() << "island " << island.idx << " isSupplied = " << island.isSupplied
+                << " n_buses = " << island.buses.size() << std::endl;
+            if (island.isSupplied)
+            {
+                ok = solveForIsland(island.idx) && ok;
+            }
         }
         return ok;
     }
