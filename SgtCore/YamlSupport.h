@@ -47,6 +47,7 @@ namespace YAML
 {
     using Sgt::BusType;
     using Sgt::Complex;
+    using Sgt::json;
     using Sgt::Phase;
     using Sgt::Phases;
     using Sgt::Time;
@@ -56,6 +57,12 @@ namespace YAML
     {
         static Node encode(const std::nullptr_t& from);
         static bool decode(const Node& nd, std::nullptr_t& to);
+    };
+    
+    template<> struct convert<json>
+    {
+        static Node encode(const json& from);
+        static bool decode(const Node& nd, json& to);
     };
 
     template<> struct convert<Complex>

@@ -95,19 +95,28 @@ namespace Sgt
 
             /// @}
             
-        public:
-
             /// @name User data.
             /// @{
 
             /// @brief For application specific data, not used internally by SGT.
-            json userData;
+            const json& userData() const
+            {
+                return userData_;
+            }
+            
+            void setUserData(const json& userData)
+            {
+                userData_ = userData;
+            }
+
+            SGT_PROP_GET_SET(userData, userData, const json&, setUserData, const json&);
 
             /// @}
         
         private:
 
             std::string id_;
+            json userData_;
     };
       
     template<typename T, typename U = T> std::shared_ptr<U> shared(T& x)

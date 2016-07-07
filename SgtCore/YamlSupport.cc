@@ -34,6 +34,19 @@ namespace YAML
         return result;
     }
 
+    Node convert<json>::encode(const json& from)
+    {
+        YAML::Node nd = YAML::Load(from.dump());
+        return nd;
+    }
+
+    bool convert<json>::decode(const Node& nd, json& to)
+    {
+        // TODO: actually try to reconstruct json from YAML.
+        to = nd.as<std::string>();
+        return true;
+    }
+
     Node convert<Complex>::encode(const Complex& from)
     {
         Node nd(to_string(from));
