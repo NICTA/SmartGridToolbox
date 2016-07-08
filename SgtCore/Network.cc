@@ -177,7 +177,7 @@ namespace Sgt
             auto bus = gen->bus();
             if (!bus->isInService()) continue;
 
-            Island island{curIdx+1, true, {}};
+            Island island{curIdx, true, {}};
             islandDfs(bus, island);
             if (island.buses.size() > 0)
             {
