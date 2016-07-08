@@ -30,7 +30,7 @@ namespace Sgt
 
             static const std::string& sComponentType()
             {
-                static std::string result("odod_transformer");
+                static std::string result("vv_transformer");
                 return result;
             }
 
