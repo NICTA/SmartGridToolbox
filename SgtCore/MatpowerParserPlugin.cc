@@ -237,10 +237,7 @@ namespace Sgt
 
     void MatpowerParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
     {
-        assertFieldPresent(nd, "input_file");
         assertFieldPresent(nd, "default_kV_base");
-
-        std::string inputName = parser.expand<std::string>(nd["input_file"]);
 
         double default_kVBase = parser.expand<double>(nd["default_kV_base"]);
 
@@ -269,18 +266,36 @@ namespace Sgt
             }
         }
 
+        auto ndInputFile = nd["input_file"];
+        auto ndEmbeddedInput = nd["embedded_input"];
+
+        sgtAssert(static_cast<bool>(ndInputFile) != static_cast<bool>(ndEmbeddedInput),
+                "Parsing matpower data: \"input_file\" or \"embedded_input\" must be present, but not both");
+
+        std::unique_ptr<std::istream> inStream;
+        if (ndInputFile)
+        {
+            std::string inputFName = ndInputFile.as<std::string>();
+            auto inFStream = new std::fstream(inputFName);
+            sgtAssert(inFStream->is_open(), "Could not open the matpower input file " << inputFName << ".");
+            inStream.reset(inFStream);
+            sgtLogMessage() << "Parsing matpower input file " << inputFName << "." << std::endl;
+        }
+        else
+        {
+            inStream.reset(new std::stringstream(ndEmbeddedInput.as<std::string>()));
+            sgtLogMessage() << "Parsing matpower embedded input." << std::endl;
+        }
+
         // Parse in the raw matpower data.
         MpData data;
 
         {
             Gram gram(data);
 
-            std::fstream infile(inputName);
-            sgtAssert(infile.is_open(), "Could not open the matpower input file " << inputName << ".");
-            sgtLogMessage() << "Parsing matpower input file " << inputName << "." << std::endl;
 
             // Iterate over stream input:
-            BaseIterator inBegin(infile);
+            BaseIterator inBegin(*inStream);
 
             ForwardIterator fwdBegin = boost::spirit::make_default_multi_pass(inBegin);
             ForwardIterator fwdEnd;

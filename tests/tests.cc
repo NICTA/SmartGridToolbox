@@ -546,16 +546,16 @@ BOOST_AUTO_TEST_CASE (test_properties)
     };
 
     Bar bar;
-    auto fourProp = bar.properties()["fourProp"].get();
-    auto xProp = bar.properties()["xProp"].get();
-    BOOST_CHECK_EQUAL(fourProp->string(bar), "4");
-    BOOST_CHECK_EQUAL(fourProp->getAs<int>(bar), 4);
-    BOOST_CHECK_EQUAL(xProp->string(bar), "5");
-    BOOST_CHECK_EQUAL(xProp->getAs<const int&>(bar), 5);
-    xProp->setAs<const int&>(bar, 345);
-    BOOST_CHECK_EQUAL(xProp->getAs<const int&>(bar), 345);
-    xProp->setFromString(bar, "678");
-    BOOST_CHECK_EQUAL(xProp->getAs<const int&>(bar), 678);
+    auto& fourProp = bar.properties()["fourProp"];
+    auto& xProp = bar.properties()["xProp"];
+    BOOST_CHECK_EQUAL(fourProp.string(bar), "4");
+    BOOST_CHECK_EQUAL(fourProp.getAs<int>(bar), 4);
+    BOOST_CHECK_EQUAL(xProp.string(bar), "5");
+    BOOST_CHECK_EQUAL(xProp.getAs<const int&>(bar), 5);
+    xProp.setAs<const int&>(bar, 345);
+    BOOST_CHECK_EQUAL(xProp.getAs<const int&>(bar), 345);
+    xProp.setFromString(bar, "678");
+    BOOST_CHECK_EQUAL(xProp.getAs<const int&>(bar), 678);
 };
 
 BOOST_AUTO_TEST_CASE (test_phases_A)
