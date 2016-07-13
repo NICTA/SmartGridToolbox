@@ -279,7 +279,7 @@ namespace Sgt
     Mat<Complex> approxPhaseImpedanceMatrix(Complex ZPlus, Complex Z0)
     {
         return oneThird * Mat<Complex>{{2 * ZPlus + Z0, Z0 - ZPlus,    Z0 - ZPlus}, 
-                                       {Z0 - ZPlus,     2 *ZPlus + Z0, Z0 - ZPlus},
-                                       {Z0 - ZPlus,     Z0 - ZPlus,    2 *ZPlus + Z0}};
+                                       {Z0 - ZPlus,     2  * ZPlus + Z0, Z0 - ZPlus},
+                                       {Z0 - ZPlus,     Z0 - ZPlus,    2 * ZPlus + Z0}};
     }
 }
