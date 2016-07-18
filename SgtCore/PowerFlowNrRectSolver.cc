@@ -30,12 +30,10 @@ using namespace arma;
 
 namespace
 {
-    template<typename T, typename U> void initJcBlock(const T& G, const T& B, U& Jrr, U& Jri, U& Jir, U& Jii)
+    template<typename T, typename U> void initJcBlock(const T& Y, U& JVr, U& JVi)
     {
-        Jrr = -G;
-        Jri =  B;
-        Jir = -B;
-        Jii = -G;
+        JVr = -Y;
+        JVi =  Complex(0, -1) * Y;
     }
 }
 
@@ -43,42 +41,49 @@ namespace Sgt
 {
     namespace
     {
-        void updateScgSl(
-                Col<Complex>& Scg,
-                arma::span selSl,
-                const Col<Complex>& Ic,
+        Col<Complex> calcSGenSl(
+                span selSl,
                 const Col<Complex>& V,
                 const Col<double>& M,
-                const SpMat<Complex>& Y)
+                const SpMat<Complex>& YConst,
+                const SpMat<Complex>& IConst,
+                const SpMat<Complex>& SConst)
         {
-            Scg(selSl) = V(selSl) % conj(Y.rows(selSl.a, selSl.b) * V) - conj(Ic(selSl)) % M(selSl);
+            auto VSl = V(selSl);
+            auto YConstSl = YConst.rows(selSl.a, selSl.b);
+            auto IConstSl = IConst.rows(selSl.a, selSl.b);
+            auto SConstSl = SConst.rows(selSl.a, selSl.b);
+
+            Col<Complex> SGenSl = conj(YConst.rows(selSl.a, selSl.b) * V);
+
+            for (auto it = SConstSl.begin(); it != SConstSl.end(); ++it)
+            {
+                uword i = it.row(); // Index in submatrix.
+                uword k = it.col(); // Index in both submatrix and full matrix, since we're using rows().
+                Complex Vik = i == k ? VSl(i) : VSl(i) - V(k); // Ground elems stored in diagonal elems of SConst.
+                SGenSl(i) += static_cast<Complex>(*it) / Vik;
+            }
+
+            for (auto it = IConstSl.begin(); it != IConstSl.end(); ++it)
+            {
+                uword i = it.row(); // Index in submatrix.
+                uword k = it.col(); // Index in both submatrix and full matrix, since we're using rows().
+                Complex Vik = i == k ? VSl(i) : VSl(i) - V(k); // Ground elems stored in diagonal elems of SConst.
+                SGenSl(i) += conj(IConst(i, k) * Vik) / abs(Vik);
+            }
+
+            SGenSl %= VSl;
+
+            return SGenSl;
         }
     }
 
     Jacobian::Jacobian(uword nPq, uword nPv)
     {
-        for (std::size_t i = 0; i < 2; ++i)
-        {
-            for (std::size_t k = 0; k < 2; ++k)
-            {
-                blocks_[i][k] = SpMat<double>(nPq, nPq);
-            }
-            for (std::size_t k = 2; k < 5; ++k)
-            {
-                blocks_[i][k] = SpMat<double>(nPq, nPv);
-            }
-        }
-        for (std::size_t i = 2; i < 4; ++i)
-        {
-            for (std::size_t k = 0; k < 2; ++k)
-            {
-                blocks_[i][k] = SpMat<double>(nPv, nPq);
-            }
-            for (std::size_t k = 2; k < 5; ++k)
-            {
-                blocks_[i][k] = SpMat<double>(nPv, nPv);
-            }
-        }
+        uword nPqPv = nPq + nPv;
+        dDdVr = SpMat<Complex>(nPqPv, nPqPv);
+        dDdVi = SpMat<Complex>(nPqPv, nPqPv);
+        dDdQPv = SpMat<Complex>(nPqPv, nPv);
     }
 
     bool PowerFlowNrRectSolver::solve(Network& netw)
@@ -94,45 +99,53 @@ namespace Sgt
         }
         return ok;
     }
+
+    void PowerFlowNrRectSolver::init(int islandIdx)
+    {
+        mod_ = buildModel(*netw_, [islandIdx](const Bus& b){return b.islandIdx() == islandIdx;});
+
+        selDrFrom_f_.set_size(mod_->nPqPv());
+        selDiFrom_f_.set_size(mod_->nPqPv());
+
+        selVrOrQFrom_x_.set_size(mod_->nPqPv());
+        selViFrom_x_.set_size(mod_->nPqPv());
+
+        for (uword i = 0; i < mod_->nPqPv(); ++i)
+        {
+            selDrFrom_f_[i] = 2 * i + 1;
+            selDiFrom_f_[i] = 2 * i;
+        }
+
+        for (uword i = 0; i < mod_->nPqPv(); ++i)
+        {
+            selVrOrQFrom_x_[i] = 2 * i;
+            selViFrom_x_[i] = 2 * i + 1;
+        }
+    }
     
     bool PowerFlowNrRectSolver::solveForIsland(int islandIdx)
     {
-        Stopwatch stopwatch;
-
         double duration = 0;
 
+        Stopwatch stopwatch;
         stopwatch.reset();
         stopwatch.start();
 
         // Construct the model from the network.
         init(islandIdx);
 
-        Col<Complex> V = mod_->V(); // Cache, as model cacluates on the fly.
+        // Variables and derived quantities:
+        Col<Complex> V = mod_->V();
         Col<double> Vr = real(V);
         Col<double> Vi = imag(V);
-        Col<double> M = abs(V);
-        Col<double> M2Pv = mod_->nPv() > 0
-            ? Vr(mod_->selPv()) % Vr(mod_->selPv()) 
-              + Vi(mod_->selPv()) % Vi(mod_->selPv())
-            : Col<double>(); // Constant.
+        Col<double> M2 = square(Vr) + square(Vi);
+        Col<double> M = sqrt(M2);
+        Col<Complex> SGenPv = mod_->nPv() > 0 ? mod_->SGen()(mod_->selPv()) : Col<Complex>();
+        Col<double> QGenPv = imag(SGenPv); // Variable.
 
-        Col<Complex> Scg = mod_->Scg(); // Model indexing. S_cg = S_c + S_g. Cache, as model calculates on the fly.
-        Col<double> Pcg = real(Scg);
-        Col<double> Qcg = imag(Scg);
-
-        const Col<Complex>& Ic = mod_->IConst(); // Model indexing. P_c + P_g. Cache, as model calculates on the fly.
-
-        // Set up data structures for the calculation.
-        
-        G_ = real(mod_->Y()); // Constant.
-        B_ = imag(mod_->Y()); // Constant.
-
-        Jacobian Jc(mod_->nPq(), mod_->nPv()); ///< The part of J that doesn't update at each iteration.
-        initJc(Jc);
-
-        Col<double> f(nVar()); ///< Current mismatch function.
-
-        Jacobian J = Jc; ///< Jacobian, d f_i/d x_i.
+        // Setpoints.
+        const Col<double> PGenPvConst = real(SGenPv);
+        const Col<double> M2PvConst = mod_->nPv() > 0 ? square(M(mod_->selPv())) : Col<double>();
 
         bool wasSuccessful = false;
         double err = 0;
@@ -142,10 +155,10 @@ namespace Sgt
         {
             sgtLogDebug() << "Iteration = " << niter << std::endl;
 
-            calcf(f, Vr, Vi, M, Pcg, Qcg, Ic, M2Pv);
+            auto D = calcD(V, SGenPv, M2PvConst);
 
-            err = norm(f, "inf");
-            sgtLogDebug(LogLevel::VERBOSE) << "f = " << std::setprecision(5) << std::setw(9) << f << std::endl;
+            err = norm(D, "inf");
+            sgtLogDebug(LogLevel::VERBOSE) << "D = " << std::setprecision(5) << std::setw(9) << D << std::endl;
             sgtLogDebug() << "Error = " << err << std::endl;
             if (err <= tol_)
             {
@@ -154,42 +167,35 @@ namespace Sgt
                 break;
             }
 
-            updateJ(J, Jc, Vr, Vi, Pcg, Qcg, M2Pv);
+            auto J = calcJ(V, SGenPv);
 
             if (mod_->nPv() > 0)
             {
-                modifyForPv(J, f, Vr, Vi, M2Pv);
+                modifyForPv(J, D, Vr, Vi, M2, M2PvConst);
             }
-
-            // Construct the full Jacobian from J, which contains the block structure.
-            SpMat<double> JMat;
-            calcJMatrix(JMat, J);
 
             if (debugLogLevel() >= LogLevel::VERBOSE)
             {
                 sgtLogDebug(LogLevel::VERBOSE)
-                    << "Before solve: Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
+                    << "Before solve: V      = " << std::setprecision(5) << std::setw(9) << V << std::endl;
                 sgtLogDebug(LogLevel::VERBOSE) 
-                    << "Before solve: Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
+                    << "Before solve: M      = " << std::setprecision(5) << std::setw(9) << M << std::endl;
                 sgtLogDebug(LogLevel::VERBOSE) 
-                    << "Before solve: M^2 = " << std::setprecision(5) << std::setw(9)
-                    << (Vr % Vr + Vi % Vi) << std::endl;
-                sgtLogDebug(LogLevel::VERBOSE) 
-                    << "Before solve: Pcg   = " << std::setprecision(5) << std::setw(9) << Pcg << std::endl;
-                sgtLogDebug(LogLevel::VERBOSE) 
-                    << "Before solve: Qcg   = " << std::setprecision(5) << std::setw(9) << Qcg << std::endl;
-                sgtLogDebug(LogLevel::VERBOSE) 
-                    << "Before solve: f   = " << std::setprecision(5) << std::setw(9) << f << std::endl;
-                sgtLogDebug(LogLevel::VERBOSE) << "Before solve: J   = " << std::endl;
-                LogIndent indent;
-                for (uword i = 0; i < nVar(); ++i)
-                {
-                    sgtLogDebug(LogLevel::VERBOSE)
-                        << std::setprecision(5) << std::setw(9) << JMat.row(i) << std::endl;
-                }
+                    << "Before solve: SGenPv = " << std::setprecision(5) << std::setw(9) << SGenPv << std::endl;
             }
 
+            // Construct the f vector consisting of real and imgaginary parts of D.
+            auto f = construct_f(D); 
+
+            // Construct the full Jacobian from J, which contains the block structure.
+            auto JMat = constructJMatrix(J);
+
+            std::cout << "f    = " << f << std::endl;
+            std::cout << "JMat = " << JMat << std::endl;
+
+            // Solution vector.
             Col<double> x;
+            
             bool ok;
 #ifdef WITH_KLU
             ok = kluSolve(JMat, -f, x);
@@ -209,8 +215,8 @@ namespace Sgt
             // Update the current values of V from the solution:
             if (mod_->nPq() > 0)
             {
-                Vr(mod_->selPq()) += x(selVrPqFrom_x_);
-                Vi(mod_->selPq()) += x(selViPqFrom_x_);
+                Vr(mod_->selPq()) += x(selVrOrQFrom_x_(mod_->selPq()));
+                Vi(mod_->selPq()) += x(selViFrom_x_(mod_->selPq()));
             }
 
             // Explicitly deal with the voltage magnitude constraint by updating VrPv by hand.
@@ -218,33 +224,30 @@ namespace Sgt
             {
                 auto VrPv = Vr(mod_->selPv());
                 auto ViPv = Vi(mod_->selPv());
-                const auto DeltaViPv = x(selViPvFrom_x_);
-                VrPv += (M2Pv - VrPv % VrPv - ViPv % ViPv - 2 * ViPv % DeltaViPv) / (2 * VrPv);
+                const auto DeltaViPv = x(selViFrom_x_(mod_->selPv()));
+                VrPv += (M2PvConst - square(VrPv) - square(ViPv) - 2 * ViPv % DeltaViPv) / (2 * VrPv);
                 ViPv += DeltaViPv;
 
-                // Update Qcg for PV buses based on the solution.
-                Qcg(mod_->selPv()) += x(selQPvFrom_x_);
-            }
-        
-            if (mod_->nPq() > 0)
-            {
-                auto VrPq = Vr(mod_->selPq());
-                auto ViPq = Vi(mod_->selPq());
-                M(mod_->selPq()) = sqrt(VrPq % VrPq + ViPq % ViPq);
+                // Update QGen for PV buses based on the solution.
+                QGenPv += x(selVrOrQFrom_x_(mod_->selPv()));
             }
 
-            if (debugLogLevel() >= LogLevel::VERBOSE)
+            // Set V, M2 and M from Vr and Vi.
+            V = cx_vec(Vr, Vi); 
+            M2 = square(Vr) + square(Vi);
+            M = sqrt(M2);
+       
+            // Set SGenPv from PGenPv and QGenPv.
+            SGenPv = cx_vec(PGenPvConst, QGenPv);
+
+            // if (debugLogLevel() >= LogLevel::VERBOSE)
             {
-                sgtLogDebug(LogLevel::VERBOSE)
-                    << "Updated Vr  = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
-                sgtLogDebug(LogLevel::VERBOSE)
-                    << "Updated Vi  = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
-                sgtLogDebug(LogLevel::VERBOSE)
-                    << "Updated M^2 = " << std::setprecision(5) << std::setw(9) << Vr % Vr + Vi % Vi << std::endl;
-                sgtLogDebug(LogLevel::VERBOSE)
-                    << "Updated Pcg   = " << std::setprecision(5) << std::setw(9) << Pcg << std::endl;
-                sgtLogDebug(LogLevel::VERBOSE)
-                    << "Updated Qcg   = " << std::setprecision(5) << std::setw(9) << Qcg << std::endl;
+                sgtLogDebug()
+                    << "Updated V   = " << std::setprecision(5) << std::setw(9) << V << std::endl;
+                sgtLogDebug()
+                    << "Updated M^2 = " << std::setprecision(5) << std::setw(9) << M << std::endl;
+                sgtLogDebug()
+                    << "Updated SCg = " << std::setprecision(5) << std::setw(9) << SGenPv(0) - static_cast<Complex>(mod_->SConst()(0, 0)) << std::endl;
             }
         }
 
@@ -253,16 +256,21 @@ namespace Sgt
             sgtLogWarning() << "PowerFlowNrRectSolver: failed to converge." << std::endl;
         }
 
-        V = cx_vec(Vr, Vi);
-
+        // Propagate V to the model.
         mod_->setV(V);
 
-        Scg = cx_vec(Pcg, Qcg);
+        // Propagate SGen to the model.
+        Col<Complex> SGen(mod_->nNode(), fill::zeros);
+        if (mod_->nPv() > 0)
+        {
+            SGen(mod_->selPv()) = SGenPv;
+        }
         if (mod_->nSl() > 0)
         {
-            updateScgSl(Scg, mod_->selSl(), Ic, V, abs(V), mod_->Y());
+            SGen(mod_->selSl()) = 
+                calcSGenSl(mod_->selSl(), V, abs(V), mod_->YConst(), mod_->IConst(), mod_->SConst());
         }
-        mod_->setScg(Scg);
+        mod_->setSGen(SGen);
 
         stopwatch.stop();
         duration = stopwatch.seconds();
@@ -284,299 +292,187 @@ namespace Sgt
         return wasSuccessful;
     }
 
-    void PowerFlowNrRectSolver::init(int islandIdx)
+    // At this stage, we are treating f as if all buses were PQ. PV buses will be taken into account later.
+    Col<Complex> PowerFlowNrRectSolver::calcD(const Col<Complex>& V, const Col<Complex>& SGenPv, const Col<double>& M2PvConst) const
     {
-        mod_ = buildModel(*netw_, [islandIdx](const Bus& b){return b.islandIdx() == islandIdx;});
+        const auto YConstPqPv = mod_->YConst().rows(mod_->selPqPv().a, mod_->selPqPv().b);
+        const auto IConstPqPv = mod_->IConst().rows(mod_->selPqPv().a, mod_->selPqPv().b);
+        const auto SConstPqPv = mod_->SConst().rows(mod_->selPqPv().a, mod_->selPqPv().b);
 
-        selIrPqFrom_f_.set_size(mod_->nPq());
-        selIiPqFrom_f_.set_size(mod_->nPq());
-        selIrPvFrom_f_.set_size(mod_->nPv());
-        selIiPvFrom_f_.set_size(mod_->nPv());
-        selVrPqFrom_x_.set_size(mod_->nPq());
-        selViPqFrom_x_.set_size(mod_->nPq());
-        selQPvFrom_x_.set_size(mod_->nPv());
-        selViPvFrom_x_.set_size(mod_->nPv());
+        Col<Complex> D = -YConstPqPv * V;
 
-        for (uword i = 0; i < mod_->nPq(); ++i)
+        std::cout << "calcD Vr  = " << real(V(0)) << std::endl;
+        std::cout << "calcD Vi  = " << imag(V(0)) << std::endl;
+        std::cout << "calcD PCg = " << real(SGenPv(0) - SConstPqPv(0, 0)) << std::endl;
+        std::cout << "calcD QCg = " << imag(SGenPv(0) - SConstPqPv(0, 0)) << std::endl;
+
+        for (auto it = SConstPqPv.begin(); it != SConstPqPv.end(); ++it) 
         {
-            selIrPqFrom_f_[i] = 2 * i + 1;
-            selIiPqFrom_f_[i] = 2 * i;
+            uword i = it.row();
+            uword k = it.col();
+            // Complex Vik = i == k ? V(i) : V(i) - V(k); // Ground elems stored in diagonal elems of SConst.
+            // D(i) -= conj(*it / Vik);
         }
-
-        for (uword i = 0; i < mod_->nPv(); ++i)
+ 
+        for (auto it = IConstPqPv.begin(); it != IConstPqPv.end(); ++it) 
         {
-            selIrPvFrom_f_[i] = 2 * mod_->nPq() + 2 * i + 1;
-            selIiPvFrom_f_[i] = 2 * mod_->nPq() + 2 * i;
-        }
-
-        for (uword i = 0; i < mod_->nPq(); ++i)
-        {
-            selVrPqFrom_x_[i] = 2 * i;
-            selViPqFrom_x_[i] = 2 * i + 1;
-        }
-
-        for (uword i = 0; i < mod_->nPv(); ++i)
-        {
-            selQPvFrom_x_[i] = 2 * mod_->nPq() + 2 * i;
-            selViPvFrom_x_[i] = 2 * mod_->nPq() + 2 * i + 1;
-        }
-
-        // Just in case...
-        G_.reset();
-        B_.reset();
-    }
-
-    /// Set the part of J that doesn't update at each iteration.
-    /** At this stage, we are treating J as if all buses were PQ. */
-    void PowerFlowNrRectSolver::initJc(Jacobian& Jc) const
-    {
-        if (mod_->nPq() > 0)
-        {
-            initJcBlock(G_(mod_->selPq(), mod_->selPq()),
-                        B_(mod_->selPq(), mod_->selPq()),
-                        Jc.IrPqVrPq(),
-                        Jc.IrPqViPq(),
-                        Jc.IiPqVrPq(),
-                        Jc.IiPqViPq());
-        }
-        else
-        {
-            Jc.IrPqVrPq().reset();
-            Jc.IrPqViPq().reset();
-            Jc.IiPqVrPq().reset();
-            Jc.IiPqViPq().reset();
+            uword i = it.row();
+            uword k = it.col();
+            Complex Vik = i == k ? V(i) : V(i) - V(k); // Ground elems stored in diagonal elems of SConst.
+            D(i) -= *it * Vik / abs(Vik);
         }
 
         if (mod_->nPv() > 0)
         {
-            initJcBlock(G_(mod_->selPv(), mod_->selPv()),
-                        B_(mod_->selPv(), mod_->selPv()),
-                        Jc.IrPvVrPv(),
-                        Jc.IrPvViPv(),
-                        Jc.IiPvVrPv(),
-                        Jc.IiPvViPv());
-        }
-        else
-        {
-            Jc.IrPvVrPv().reset();
-            Jc.IrPvViPv().reset();
-            Jc.IiPvVrPv().reset();
-            Jc.IiPvViPv().reset();
+            // D(mod_->selPv()) += conj(SGenPv / V(mod_->selPv()));
         }
 
-        if (mod_->nPv() > 0 && mod_->nPq() > 0)
-        {
-            initJcBlock(G_(mod_->selPq(), mod_->selPv()),
-                        B_(mod_->selPq(), mod_->selPv()),
-                        Jc.IrPqVrPv(),
-                        Jc.IrPqViPv(),
-                        Jc.IiPqVrPv(),
-                        Jc.IiPqViPv());
-            initJcBlock(G_(mod_->selPv(), mod_->selPq()),
-                        B_(mod_->selPv(), mod_->selPq()),
-                        Jc.IrPvVrPq(),
-                        Jc.IrPvViPq(),
-                        Jc.IiPvVrPq(),
-                        Jc.IiPvViPq());
-        }
-        else
-        {
-            Jc.IrPqVrPv().reset();
-            Jc.IrPqViPv().reset();
-            Jc.IiPqVrPv().reset();
-            Jc.IiPqViPv().reset();
-            Jc.IrPvVrPq().reset();
-            Jc.IrPvViPq().reset();
-            Jc.IiPvVrPq().reset();
-            Jc.IiPvViPq().reset();
-        }
+        D(0) += conj(SGenPv(0) - SConstPqPv(0, 0)) * V(0) / M2PvConst(0);
+                   
+        std::cout << "calcD D   = " << D << std::endl;
+        return D;
     }
 
     // At this stage, we are treating f as if all buses were PQ. PV buses will be taken into account later.
-    void PowerFlowNrRectSolver::calcf(Col<double>& f,
-            const Col<double>& Vr, const Col<double>& Vi, const Col<double>& M,
-            const Col<double>& Pcg, const Col<double>& Qcg,
-            const Col<Complex>& Ic, const Col<double>& M2Pv) const
+    Jacobian PowerFlowNrRectSolver::calcJ(const Col<Complex>& V, const Col<Complex>& SGenPv) const
     {
-        if (mod_->nPq() > 0)
-        {
-            // PQ buses:
-            const SpMat<double> GPq = G_(mod_->selPq(), span::all);
-            const SpMat<double> BPq = B_(mod_->selPq(), span::all);
+        auto YConstPqPv = mod_->YConst()(mod_->selPqPv(), mod_->selPqPv());
+        auto IConstPqPv = mod_->IConst()(mod_->selPqPv(), mod_->selPqPv());
+        auto SConstPqPv = mod_->SConst()(mod_->selPqPv(), mod_->selPqPv());
 
-            const auto VrPq = Vr(mod_->selPq());
-            const auto ViPq = Vi(mod_->selPq());
-            
-            const auto MPq = M(mod_->selPq());
+        Jacobian J(mod_->nPq(), mod_->nPv());
 
-            const auto PPq = Pcg(mod_->selPq());
-            const auto QPq = Qcg(mod_->selPq());
+        SparseHelper<Complex> hVr(mod_->nPqPv(), mod_->nPqPv(), true, true, true);
+        SparseHelper<Complex> hVi(mod_->nPqPv(), mod_->nPqPv(), true, true, true);
+        SparseHelper<Complex> hQg(mod_->nPv(), mod_->nPv(), true, true, true);
 
-            auto IConstPq = Ic(mod_->selPq()).eval();
-            const auto IConstrPq = real(IConstPq);
-            const auto IConstiPq = imag(IConstPq);
-
-            Col<double> M2Pq = MPq % MPq;
-
-            f(selIrPqFrom_f_) = (VrPq % PPq + ViPq % QPq) / M2Pq 
-                              + (IConstrPq % VrPq - IConstiPq % ViPq) / MPq 
-                              - GPq * Vr + BPq * Vi;
-            f(selIiPqFrom_f_) = (ViPq % PPq - VrPq % QPq) / M2Pq 
-                              + (IConstrPq % ViPq + IConstiPq % VrPq) / MPq 
-                              - GPq * Vi - BPq * Vr;
-        }
-
-        if (mod_->nPv() > 0)
-        {
-            // PV buses. Note that these differ in that M2Pv is considered a constant.
-            const auto GPv = G_(mod_->selPv(), span::all);
-            const auto BPv = B_(mod_->selPv(), span::all);
-
-            const auto VrPv = Vr(mod_->selPv());
-            const auto ViPv = Vi(mod_->selPv());
-            
-            const auto MPv = M(mod_->selPv());
-
-            const auto PPv = Pcg(mod_->selPv());
-            const auto QPv = Qcg(mod_->selPv());
-
-            auto IConstPv = Ic(mod_->selPv()).eval();
-            const auto IConstrPv = real(IConstPv);
-            const auto IConstiPv = imag(IConstPv);
-
-            f(selIrPvFrom_f_) = (VrPv % PPv + ViPv % QPv) / M2Pv
-                              + (IConstrPv % VrPv - IConstiPv % ViPv) / MPv 
-                              - GPv * Vr + BPv * Vi;
-            f(selIiPvFrom_f_) = (ViPv % PPv - VrPv % QPv) / M2Pv 
-                              + (IConstrPv % ViPv + IConstiPv % VrPv) / MPv 
-                              - GPv * Vi - BPv * Vr;
-        }
-    }
-
-    // At this stage, we are treating f as if all buses were PQ. PV buses will be taken into account later.
-    void PowerFlowNrRectSolver::updateJ(Jacobian& J, const Jacobian& Jc,
-                                    const Col<double>& Vr, const Col<double>& Vi,
-                                    const Col<double>& Pcg, const Col<double>& Qcg,
-                                    const Col<double>& M2Pv) const
-    {
-        // Elements in J that have no non-constant part will be initialized to the corresponding term in Jc at the
-        // start of the calculation, and will not change. Thus, only set elements that have a non-constant part.
-
-        if (mod_->nPv() > 0)
-        {
-            // Reset PV Vi columns, since these get messed with:
-            J.IrPqViPv() = Jc.IrPqViPv();
-            J.IiPqViPv() = Jc.IiPqViPv();
-            J.IrPvViPv() = Jc.IrPvViPv();
-            J.IiPvViPv() = Jc.IiPvViPv();
-        }
-
-        // Block diagonal:
-        for (uword i = 0; i < mod_->nPq(); ++i)
-        {
-            uword iPqi = mod_->iPq(i);
-
-            double PVr_p_QVi = Pcg(iPqi) * Vr(iPqi) + Qcg(iPqi) * Vi(iPqi);
-            double PVi_m_QVr = Pcg(iPqi) * Vi(iPqi) - Qcg(iPqi) * Vr(iPqi);
-            double M2 = Vr(iPqi) * Vr(iPqi) + Vi(iPqi) * Vi(iPqi);
-            double M4 = M2 * M2;
-            double VrdM4 = Vr(iPqi) / M4;
-            double VidM4 = Vi(iPqi) / M4;
-            double PdM2 = Pcg(iPqi) / M2;
-            double QdM2 = Qcg(iPqi) / M2;
-
-            J.IrPqVrPq()(i, i) = Jc.IrPqVrPq()(i, i) - (2 * VrdM4 * PVr_p_QVi) + PdM2;
-            J.IrPqViPq()(i, i) = Jc.IrPqViPq()(i, i) - (2 * VidM4 * PVr_p_QVi) + QdM2;
-            J.IiPqVrPq()(i, i) = Jc.IiPqVrPq()(i, i) - (2 * VrdM4 * PVi_m_QVr) - QdM2;
-            J.IiPqViPq()(i, i) = Jc.IiPqViPq()(i, i) - (2 * VidM4 * PVi_m_QVr) + PdM2;
-        }
-
-        // For PV buses, M^2 is constant, and therefore we can write the Jacobian more simply.
         for (uword i = 0; i < mod_->nPv(); ++i)
         {
-            uword iPvi = mod_->iPv(i);
-
-            J.IrPvVrPv()(i, i) = Jc.IrPvVrPv()(i, i) + Pcg(iPvi) / M2Pv(i); // Could -> Jc if we wanted.
-            J.IrPvViPv()(i, i) = Jc.IrPvViPv()(i, i) + Qcg(iPvi) / M2Pv(i);
-            J.IiPvVrPv()(i, i) = Jc.IiPvVrPv()(i, i) - Qcg(iPvi) / M2Pv(i);
-            J.IiPvViPv()(i, i) = Jc.IiPvViPv()(i, i) + Pcg(iPvi) / M2Pv(i);
+            uword iPv = mod_->iPv(i);
+            Complex x = conj(SGenPv(i) / (V(iPv) * V(iPv)));
+            hVr.insert(iPv, iPv, -x);
+            hVi.insert(iPv, iPv, im * x);
+            hQg.insert(i, i, -im / conj(V(iPv)));
+        }
+        for (auto it = YConstPqPv.begin(); it != YConstPqPv.end(); ++it)
+        {
+            Complex x = -static_cast<Complex>(*it);
+            hVr.insert(it.row(), it.col(), x);
+            hVi.insert(it.row(), it.col(), im * x);
         }
 
-        if (mod_->nPv() > 0)
+        for (auto it = SConstPqPv.begin(); it != SConstPqPv.end(); ++it)
         {
-            // Set the PV Qcg columns in the Jacobian. They are diagonal.
-            const auto VrPv = Vr(mod_->selPv());
-            const auto ViPv = Vi(mod_->selPv());
-            for (uword i = 0; i < mod_->nPv(); ++i)
+            uword i = it.row();
+            uword k = it.col();
+            Complex Vik = i == k ? V(i) : V(i) - V(k);
+
+            Complex x = conj(static_cast<Complex>(*it) / (Vik * Vik));
+            Complex imX = im * x;
+            hVr.insert(i, i, x);
+            hVi.insert(i, i, -imX);
+            if (i != k)
             {
-                J.IrPvQPv()(i, i) = ViPv(i) / M2Pv(i);
-                J.IiPvQPv()(i, i) = -VrPv(i) / M2Pv(i);
+                hVr.insert(i, k, -x);
+                hVr.insert(i, k, imX);
             }
         }
+
+        for (auto it = IConstPqPv.begin(); it != IConstPqPv.end(); ++it)
+        {
+            uword i = it.row();
+            uword k = it.col();
+            Complex Vik = i == k ? V(i) : V(i) - V(k);
+            Complex Mik = abs(Vik);
+            Complex M2ik = Mik * Mik;
+            Complex M3ik = Mik * M2ik;
+
+            Complex x = static_cast<Complex>(*it) * (-M2ik + real(Vik) * Vik) / M3ik;
+            Complex imX = im * x;
+            hVr.insert(i, i, x);
+            hVi.insert(i, i, imX);
+            if (i != k)
+            {
+                hVr.insert(i, k, -x);
+                hVi.insert(i, k, -imX);
+            }
+        }
+        J.dDdVr = hVr.get();
+        J.dDdVi = hVi.get();
+        J.dDdQPv = hQg.get();
+
+        std::cout << -conj(SGenPv(0) / (V(0) * V(0))) + conj(Complex(SConstPqPv(0, 0)) / (V(0)*V(0))) << std::endl;
+        std::cout << "J.dDdVr " << Mat<Complex>(J.dDdVr) << std::endl;
+        std::cout << "J.dDdVi " << Mat<Complex>(J.dDdVi) << std::endl;
+        std::cout << "J.dDdQPv " << Mat<Complex>(J.dDdQPv) << std::endl;
+
+        return J;
     }
 
     // Modify J and f to take into account PV buses.
-    void PowerFlowNrRectSolver::modifyForPv(Jacobian& J, Col<double>& f,
-                                        const Col<double>& Vr, const Col<double>& Vi,
-                                        const Col<double>& M2Pv)
+    void PowerFlowNrRectSolver::modifyForPv(
+            Jacobian& J,
+            Col<Complex>& D,
+            const Col<double>& Vr,
+            const Col<double>& Vi,
+            const Col<double>& M2,
+            const Col<double>& M2PvConst)
     {
-        auto mod = [&f](uword k, const Col<uword>& idx, SpMat<double>& JViPv, const SpMat<double>& JVrPv,
-                        double fMult, double JMult)
+        for (uword k = 0; k < mod_->nPv(); ++k) // Loop over PV buses.
         {
-            auto colVrPv = JVrPv.col(k);
-            for (auto it = colVrPv.begin(); it != colVrPv.end(); ++it)
+            uword kPv = mod_->iPv(k); // Get bus index in full list of buses.
+            double DMult = 0.5 * (M2PvConst(k) - M2(kPv)) / Vr(kPv);
+            double JMult = -Vi(kPv) / Vr(kPv);
+
+            auto colK = J.dDdVr.col(kPv); // Select column in J corresponding to d/dVr for PV bus k.
+            for (auto it = colK.begin(); it != colK.end(); ++it)
             {
-                uword iRow = it.row();
-                f(idx(iRow)) += JVrPv(iRow, k) * fMult;
-                JViPv(iRow, k) += JVrPv(iRow, k) * JMult;
+                // Loop over all buses in this column.
+                uword i = it.row();
+                D(i) += *it * DMult; // Adding DMult * this column to D.
+                J.dDdVi(i, k) += *it * JMult; // Adding JMult * this column to corresponding d/dVi col.
             }
-        };
-
-        const auto VrPv = Vr(mod_->selPv());
-        const auto ViPv = Vi(mod_->selPv());
-
-        for (uword k = 0; k < mod_->nPv(); ++k)
-        {
-            double fMult = (0.5 * (M2Pv(k) - VrPv(k) * VrPv(k) - ViPv(k) * ViPv(k)) / VrPv(k));
-            double colViPvMult = -ViPv(k) / VrPv(k);
-
-            if (mod_->nPq() > 0)
-            {
-                mod(k, selIrPqFrom_f_, J.IrPqViPv(), J.IrPqVrPv(), fMult, colViPvMult);
-                mod(k, selIiPqFrom_f_, J.IiPqViPv(), J.IiPqVrPv(), fMult, colViPvMult);
-            }
-            mod(k, selIrPvFrom_f_, J.IrPvViPv(), J.IrPvVrPv(), fMult, colViPvMult);
-            mod(k, selIiPvFrom_f_, J.IiPvViPv(), J.IiPvVrPv(), fMult, colViPvMult);
         }
     }
-
-    void PowerFlowNrRectSolver::calcJMatrix(SpMat<double>& JMat, const Jacobian& J) const
+            
+    Col<double> PowerFlowNrRectSolver::construct_f(const Col<Complex>&D) const
     {
-        Array<unsigned int, 4> ibInd = {{0, 1, 2, 3}};
-        Array<unsigned int, 4> kbInd = {{0, 1, 3, 4}}; // Skip VrPv, since it doesn't appear as a variable.
-        Array<Col<uword>, 4> sl1Vec = {{selIrPqFrom_f_, selIiPqFrom_f_, selIrPvFrom_f_, selIiPvFrom_f_}};
-        Array<Col<uword>, 4> sl2Vec = {{selVrPqFrom_x_, selViPqFrom_x_, selViPvFrom_x_, selQPvFrom_x_}};
-
-        JMat = SpMat<double>(nVar(), nVar());
-
-        // Loop over all blocks in J.
-        for (std::size_t ib = 0; ib < 4; ++ib)
+        // Construct the real f vector from D.
+        Col<double> f(nVar(), fill::none);
+        for (uword i = 0; i < mod_->nPqPv(); ++i)
         {
-            Col<uword>& sl1 = sl1Vec[ib];
-            for (std::size_t kb = 0; kb < 4; ++kb)
-            {
-                SparseHelper<double> helper(nVar(), nVar(), false, false, false);
-                Col<uword>& sl2 = sl2Vec[kb];
-                const SpMat<double>& block = J.blocks_[ibInd[ib]][kbInd[kb]];
-
-                for (auto it = block.begin(); it != block.end(); ++it)
-                {
-                    uword i1 = sl1(it.row());
-                    uword k1 = sl2(it.col());
-                    helper.insert(i1, k1, *it);
-                }
-                JMat += helper.get();
-            }
+            f(selDrFrom_f_(i)) = real(D(i));
+            f(selDiFrom_f_(i)) = imag(D(i));
         }
+        return f;
+    }
+
+    SpMat<double> PowerFlowNrRectSolver::constructJMatrix(const Jacobian& J) const
+    {
+        SparseHelper<double> h(nVar(), nVar(), true, true, true);
+
+        auto insert = [&](const auto& JSel, const auto& xSel)
+        {
+            for (auto it = JSel.begin(); it != JSel.end(); ++it)
+            {
+                uword i = it.row(); 
+                uword k = it.col(); 
+                Complex x = *it;
+                h.insert(selDrFrom_f_(i), xSel(k), real(x));
+                h.insert(selDiFrom_f_(i), xSel(k), imag(x));
+            }
+        };
+       
+        insert(J.dDdVi, selViFrom_x_); // All Vi rows.
+        if (mod_->nPq() > 0)
+        {
+            insert(J.dDdVr.cols(mod_->selPq().a, mod_->selPq().b), selVrOrQFrom_x_(mod_->selPq())); // Vr PQ rows.
+        }
+        if (mod_->nPv() > 0)
+        {
+            insert(J.dDdQPv, selVrOrQFrom_x_(mod_->selPv())); // Q PV rows.
+        }
+
+        return h.get();
     }
 }

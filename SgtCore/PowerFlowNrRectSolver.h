@@ -30,171 +30,11 @@ namespace Sgt
 {
     struct Jacobian
     {
+        arma::SpMat<Complex> dDdVr;
+        arma::SpMat<Complex> dDdVi;
+        arma::SpMat<Complex> dDdQPv;
+
         Jacobian(arma::uword nPq, arma::uword nPv);
-
-        arma::SpMat<double>& IrPqVrPq()
-        {
-            return blocks_[0][0];
-        }
-        arma::SpMat<double>& IiPqVrPq()
-        {
-            return blocks_[1][0];
-        }
-        arma::SpMat<double>& IrPvVrPq()
-        {
-            return blocks_[2][0];
-        }
-        arma::SpMat<double>& IiPvVrPq()
-        {
-            return blocks_[3][0];
-        }
-        arma::SpMat<double>& IrPqViPq()
-        {
-            return blocks_[0][1];
-        }
-        arma::SpMat<double>& IiPqViPq()
-        {
-            return blocks_[1][1];
-        }
-        arma::SpMat<double>& IrPvViPq()
-        {
-            return blocks_[2][1];
-        }
-        arma::SpMat<double>& IiPvViPq()
-        {
-            return blocks_[3][1];
-        }
-        arma::SpMat<double>& IrPqVrPv()
-        {
-            return blocks_[0][2];
-        }
-        arma::SpMat<double>& IiPqVrPv()
-        {
-            return blocks_[1][2];
-        }
-        arma::SpMat<double>& IrPvVrPv()
-        {
-            return blocks_[2][2];
-        }
-        arma::SpMat<double>& IiPvVrPv()
-        {
-            return blocks_[3][2];
-        }
-        arma::SpMat<double>& IrPqViPv()
-        {
-            return blocks_[0][3];
-        }
-        arma::SpMat<double>& IiPqViPv()
-        {
-            return blocks_[1][3];
-        }
-        arma::SpMat<double>& IrPvViPv()
-        {
-            return blocks_[2][3];
-        }
-        arma::SpMat<double>& IiPvViPv()
-        {
-            return blocks_[3][3];
-        }
-        arma::SpMat<double>& IrPqQPv()
-        {
-            return blocks_[0][4];
-        }
-        arma::SpMat<double>& IiPqQPv()
-        {
-            return blocks_[1][4];
-        }
-        arma::SpMat<double>& IrPvQPv()
-        {
-            return blocks_[2][4];
-        }
-        arma::SpMat<double>& IiPvQPv()
-        {
-            return blocks_[3][4];
-        }
-
-        const arma::SpMat<double>& IrPqVrPq() const
-        {
-            return blocks_[0][0];
-        }
-        const arma::SpMat<double>& IiPqVrPq() const
-        {
-            return blocks_[1][0];
-        }
-        const arma::SpMat<double>& IrPvVrPq() const
-        {
-            return blocks_[2][0];
-        }
-        const arma::SpMat<double>& IiPvVrPq() const
-        {
-            return blocks_[3][0];
-        }
-        const arma::SpMat<double>& IrPqViPq() const
-        {
-            return blocks_[0][1];
-        }
-        const arma::SpMat<double>& IiPqViPq() const
-        {
-            return blocks_[1][1];
-        }
-        const arma::SpMat<double>& IrPvViPq() const
-        {
-            return blocks_[2][1];
-        }
-        const arma::SpMat<double>& IiPvViPq() const
-        {
-            return blocks_[3][1];
-        }
-        const arma::SpMat<double>& IrPqVrPv() const
-        {
-            return blocks_[0][2];
-        }
-        const arma::SpMat<double>& IiPqVrPv() const
-        {
-            return blocks_[1][2];
-        }
-        const arma::SpMat<double>& IrPvVrPv() const
-        {
-            return blocks_[2][2];
-        }
-        const arma::SpMat<double>& IiPvVrPv() const
-        {
-            return blocks_[3][2];
-        }
-        const arma::SpMat<double>& IrPqViPv() const
-        {
-            return blocks_[0][3];
-        }
-        const arma::SpMat<double>& IiPqViPv() const
-        {
-            return blocks_[1][3];
-        }
-        const arma::SpMat<double>& IrPvViPv() const
-        {
-            return blocks_[2][3];
-        }
-        const arma::SpMat<double>& IiPvViPv() const
-        {
-            return blocks_[3][3];
-        }
-        const arma::SpMat<double>& IrPqQPv()  const
-        {
-            return blocks_[0][4];
-        }
-        const arma::SpMat<double>& IiPqQPv()  const
-        {
-            return blocks_[1][4];
-        }
-        const arma::SpMat<double>& IrPvQPv()  const
-        {
-            return blocks_[2][4];
-        }
-        const arma::SpMat<double>& IiPvQPv()  const
-        {
-            return blocks_[3][4];
-        }
-
-        Array2D<arma::SpMat<double>, 4, 5> blocks_;
     };
 
     /// @brief Newton-Raphson AC power flow solver.
@@ -206,39 +46,33 @@ namespace Sgt
             virtual bool solve(Network& netw) override;
 
         private:
+            
+            void init(int islandIdx);
     
             bool solveForIsland(int islandIdx);
 
-            void init(int islandIdx);
-
-            arma::uword nPqPv() const
-            {
-                return mod_->nPq() + mod_->nPv();
-            }
             arma::uword nVar() const
             {
-                return 2 * nPqPv();
+                return 2 * mod_->nPqPv();
             }
 
             void initSubmatrixRanges();
 
-            void initJc(Jacobian& Jc) const;
+            arma::Col<Complex> calcD(const arma::Col<Complex>& V, const arma::Col<Complex>& SGenPv, const arma::Col<double>& M2PvConst) const;
 
-            void calcf(arma::Col<double>& f,
-                       const arma::Col<double>& Vr, const arma::Col<double>& Vi, const arma::Col<double>& M,
-                       const arma::Col<double>& P, const arma::Col<double>& Q,
-                       const arma::Col<Complex>& Ic, const arma::Col<double>& M2Pv) const;
+            Jacobian calcJ(const arma::Col<Complex>& V, const arma::Col<Complex>& SGenPv) const;
 
-            void updateJ(Jacobian& J, const Jacobian& Jc,
-                         const arma::Col<double>& Vr, const arma::Col<double>& Vi,
-                         const arma::Col<double>& P, const arma::Col<double>& Q,
-                         const arma::Col<double>& M2Pv) const;
+            void modifyForPv(
+                    Jacobian& J,
+                    arma::Col<Complex>& D,
+                    const arma::Col<double>& Vr,
+                    const arma::Col<double>& Vi,
+                    const arma::Col<double>& M2,
+                    const arma::Col<double>& M2PvConst);
 
-            void modifyForPv(Jacobian& J, arma::Col<double>& f,
-                             const arma::Col<double>& Vr, const arma::Col<double>& Vi,
-                             const arma::Col<double>& M2Pv);
+            arma::Col<double> construct_f(const arma::Col<Complex>&D) const;
 
-            void calcJMatrix(arma::SpMat<double>& JMat, const Jacobian& J) const;
+            arma::SpMat<double> constructJMatrix(const Jacobian& J) const;
 
         public:
 
@@ -250,17 +84,11 @@ namespace Sgt
             Network* netw_;
             std::unique_ptr<PowerFlowModel> mod_;
 
-            arma::Col<arma::uword> selIrPqFrom_f_;
-            arma::Col<arma::uword> selIiPqFrom_f_;
-            arma::Col<arma::uword> selIrPvFrom_f_;
-            arma::Col<arma::uword> selIiPvFrom_f_;
-            arma::Col<arma::uword> selVrPqFrom_x_;
-            arma::Col<arma::uword> selViPqFrom_x_;
-            arma::Col<arma::uword> selQPvFrom_x_;
-            arma::Col<arma::uword> selViPvFrom_x_;
+            arma::Col<arma::uword> selDrFrom_f_;
+            arma::Col<arma::uword> selDiFrom_f_;
 
-            arma::SpMat<double> G_;   ///< Real part of Y matrix.
-            arma::SpMat<double> B_;   ///< Imag part of Y matrix.
+            arma::Col<arma::uword> selVrOrQFrom_x_;
+            arma::Col<arma::uword> selViFrom_x_;
     };
 }
 

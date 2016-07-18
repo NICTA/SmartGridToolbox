@@ -24,22 +24,18 @@ using namespace arma;
 namespace Sgt
 {
     PfBus::PfBus(const std::string& id, BusType type, const Phases& phases, const Col<Complex>& V,
-            const Col<Complex>& YConst, const Col<Complex>& IConst, const Col<Complex>& Scg,
-            double J) :
+            const Mat<Complex>& YConst, const Mat<Complex>& IConst, const Mat<Complex>& SConst,
+            const Col<Complex>& SGen, double JGen) :
         id_(id),
         type_(type),
         phases_(phases),
         V_(V),
         YConst_(YConst),
         IConst_(IConst),
-        Scg_(Scg),
-        J_(J)
+        SConst_(SConst),
+        SGen_(SGen),
+        JGen_(JGen)
     {
-        assert(V.size() == phases.size());
-        assert(YConst.size() == phases.size());
-        assert(IConst.size() == phases.size());
-        assert(Scg.size() == phases.size());
-
         for (std::size_t i = 0; i < phases.size(); ++i)
         {
             nodeVec_.push_back(std::make_unique<PfNode>(*this, i));
@@ -54,14 +50,14 @@ namespace Sgt
     }
 
     PfBranch::PfBranch(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
-                       const Mat<Complex>& Y) :
+                       const Mat<Complex>& YConst) :
         ids_{{id0, id1}},
         phases_{{phases0, phases1}},
-        Y_(Y)
+        YConst_(YConst)
     {
         std::size_t nTerm = phases0.size() + phases1.size();
-        assert(Y.n_rows == nTerm);
-        assert(Y.n_cols == nTerm);
+        assert(YConst.n_rows == nTerm);
+        assert(YConst.n_cols == nTerm);
     }
 
     PowerFlowModel::PowerFlowModel(size_t nBus, size_t nBranch)
@@ -72,20 +68,20 @@ namespace Sgt
     }
 
     void PowerFlowModel::addBus(const std::string& id, BusType type, const Phases& phases,
-            const arma::Col<Complex>& V, const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst,
-            const arma::Col<Complex>& Scg, double J)
+            const arma::Col<Complex>& V, const arma::Mat<Complex>& YConst, const arma::Mat<Complex>& IConst,
+            const arma::Mat<Complex>& SConst, const arma::Col<Complex> SGen, double JGen)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "PowerFlowModel : add bus " << id << std::endl;
-        std::unique_ptr<PfBus> bus(new PfBus(id, type, phases, V, YConst, IConst, Scg, J));
+        std::unique_ptr<PfBus> bus(new PfBus(id, type, phases, V, YConst, IConst, SConst, SGen, JGen));
         busVec_.push_back(bus.get());
         busMap_[id] = std::move(bus);
     }
 
     void PowerFlowModel::addBranch(const std::string& idBus0, const std::string& idBus1,
-                                   const Phases& phases0, const Phases& phases1, const Mat<Complex>& Y)
+                                   const Phases& phases0, const Phases& phases1, const Mat<Complex>& YConst)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "PowerFlowModel : addBranch " << idBus0 << " " << idBus1 << std::endl;
-        branchVec_.push_back(std::make_unique<PfBranch>(idBus0, idBus1, phases0, phases1, Y));
+        branchVec_.push_back(std::make_unique<PfBranch>(idBus0, idBus1, phases0, phases1, YConst));
     }
 
     void PowerFlowModel::validate()
@@ -142,8 +138,34 @@ namespace Sgt
 
         std::size_t nNode = nodeVec_.size();
 
-        // Bus admittance matrix:
-        SparseHelper<Complex> YHelper(nNode, nNode, true, true, true);
+        SparseHelper<Complex> YConstHelper(nNode, nNode, true, true, true);
+        SparseHelper<Complex> IConstHelper(nNode, nNode, true, true, true);
+        SparseHelper<Complex> SConstHelper(nNode, nNode, true, true, true);
+
+        for (auto& bus : busVec_)
+        {
+            for (std::size_t iPh = 0; iPh < bus->phases_.size(); ++iPh)
+            {
+                const auto& ndI = bus->nodeVec_[iPh];
+                auto iNd = ndI->idx_;
+                    
+                YConstHelper.insert(iNd, iNd, bus->YConst_(iPh, iPh)); // NOTE: filters out zeros.
+                IConstHelper.insert(iNd, iNd, bus->IConst_(iPh, iPh)); // NOTE: filters out zeros.
+                SConstHelper.insert(iNd, iNd, bus->SConst_(iPh, iPh)); // NOTE: filters out zeros.
+
+                for (std::size_t jPh = iPh + 1; jPh < bus->phases_.size(); ++jPh)
+                {
+                    const auto& ndJ = bus->nodeVec_[jPh];
+                    auto jNd = ndJ->idx_;
+                    YConstHelper.insert(iNd, jNd, bus->YConst_(iPh, jPh)); // NOTE: filters out zeros.
+                    IConstHelper.insert(iNd, jNd, bus->IConst_(iPh, jPh)); // NOTE: filters out zeros.
+                    SConstHelper.insert(iNd, jNd, bus->SConst_(iPh, jPh)); // NOTE: filters out zeros.
+                    YConstHelper.insert(jNd, iNd, bus->YConst_(jPh, iPh)); // NOTE: filters out zeros.
+                    IConstHelper.insert(jNd, iNd, bus->IConst_(jPh, iPh)); // NOTE: filters out zeros.
+                    SConstHelper.insert(jNd, iNd, bus->SConst_(jPh, iPh)); // NOTE: filters out zeros.
+                }
+            }
+        }
 
         // Branch admittances:
         for (const std::unique_ptr<PfBranch>& branch : branchVec_)
@@ -169,8 +191,8 @@ namespace Sgt
                 const PfNode* nodeI = busI->nodeVec_[busPhaseIdxI].get();
                 std::size_t idxNodeI = nodeI->idx_;
 
-                // Only count each diagonal element in branch->Y_ once!
-                YHelper.insert(idxNodeI, idxNodeI, branch->Y_(i, i));
+                // Only count each diagonal element in branch->YConst_ once!
+                YConstHelper.insert(idxNodeI, idxNodeI, branch->YConst_(i, i));
 
                 for (uword k = i + 1; k < nTerm; ++k)
                 {
@@ -183,21 +205,19 @@ namespace Sgt
                     const PfNode* nodeK = busK->nodeVec_[busPhaseIdxK].get();
                     std::size_t idxNodeK = nodeK->idx_;
 
-                    YHelper.insert(idxNodeI, idxNodeK, branch->Y_(i, k));
-                    YHelper.insert(idxNodeK, idxNodeI, branch->Y_(k, i));
+                    YConstHelper.insert(idxNodeI, idxNodeK, branch->YConst_(i, k));
+                    YConstHelper.insert(idxNodeK, idxNodeI, branch->YConst_(k, i));
                 }
             }
         } // Loop over branches.
 
-        // Add shunt terms:
-        for (uword i = 0; i < nNode; ++i)
-        {
-            YHelper.insert(i, i, nodeVec_[i]->YConst());
-        }
+        YConst_ = YConstHelper.get();
+        IConst_ = IConstHelper.get();
+        SConst_ = SConstHelper.get();
 
-        Y_ = YHelper.get();
-
-        sgtLogDebug() << "Y_.nnz() = " << Y_.n_nonzero << std::endl;
+        sgtLogDebug() << "YConst_.nnz() = " << YConst_.n_nonzero << std::endl;
+        sgtLogDebug() << "IConst_.nnz() = " << IConst_.n_nonzero << std::endl;
+        sgtLogDebug() << "SConst_.nnz() = " << SConst_.n_nonzero << std::endl;
 
         sgtLogDebug() << "PowerFlowModel : validate complete." << std::endl;
         if (debugLogLevel() >= LogLevel::VERBOSE)
@@ -222,9 +242,7 @@ namespace Sgt
                     sgtLogDebug() << "Type   : " << nd->bus_->type_ << std::endl;
                     sgtLogDebug() << "Phase  : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
                     sgtLogDebug() << "V      : " << nd->V() << std::endl;
-                    sgtLogDebug() << "YConst : " << nd->YConst() << std::endl;
-                    sgtLogDebug() << "IConst : " << nd->IConst() << std::endl;
-                    sgtLogDebug() << "Scg    : " << nd->Scg() << std::endl;
+                    sgtLogDebug() << "SGen    : " << nd->SGen() << std::endl;
                 }
             }
         }
@@ -238,12 +256,13 @@ namespace Sgt
                     LogIndent indent;
                     sgtLogDebug() << "Buses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;
                     sgtLogDebug() << "Phases : " << branch->phases_[0] << ", " << branch->phases_[1] << std::endl;
-                    sgtLogDebug() << "Y      :" << std::endl;
+                    sgtLogDebug() << "YConst :" << std::endl;
                     {
                         LogIndent indent;
-                        for (uword i = 0; i < branch->Y_.n_rows; ++i)
+                        for (uword i = 0; i < branch->YConst_.n_rows; ++i)
                         {
-                            sgtLogDebug() << std::setprecision(14) << std::setw(18) << branch->Y_.row(i) << std::endl;
+                            sgtLogDebug() << std::setprecision(14) << std::setw(18) 
+                                << branch->YConst_.row(i) << std::endl;
                         }
                     }
                 }
@@ -264,30 +283,17 @@ namespace Sgt
         }
     }
 
-    Col<Complex> PowerFlowModel::Scg() const
+    Col<Complex> PowerFlowModel::SGen() const
     {
         auto it = nodeVec_.begin();
-        return Col<Complex>(nodeVec_.size()).imbue([&](){return (**(it++)).Scg();});
+        return Col<Complex>(nodeVec_.size()).imbue([&](){return (**(it++)).SGen();});
     }
 
-    void PowerFlowModel::setScg(const Col<Complex>& Scg) const
+    void PowerFlowModel::setSGen(const Col<Complex>& SGen) const
     {
-        for (uword i = 0; i < Scg.size(); ++i)
+        for (uword i = 0; i < SGen.size(); ++i)
         {
-            nodeVec_[i]->setScg(Scg[i]);
-        }
-    }
-
-    Col<Complex> PowerFlowModel::IConst() const
-    {
-        auto it = nodeVec_.begin();
-        return Col<Complex>(nodeVec_.size()).imbue([&](){return (**(it++)).IConst();});
-    }
-    void PowerFlowModel::setIConst(const Col<Complex>& IConst) const
-    {
-        for (uword i = 0; i < IConst.size(); ++i)
-        {
-            nodeVec_[i]->setIConst(IConst[i]);
+            nodeVec_[i]->setSGen(SGen[i]);
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Sgt
         {
             std::string busId = bus->id();
 
-            Complex PLoad = -sgtNw.S2Pu(bus->SConst()(0));
+            Complex PLoad = sgtNw.S2Pu(bus->SConst()(0));
             Complex yShunt = sgtNw.Y2Pu(bus->YConst()(0), bus->VBase());
             Complex V = sgtNw.V2Pu(bus->V()(0), bus->VBase());
             double VMin = sgtNw.V2Pu(bus->VMagMin(), bus->VBase());

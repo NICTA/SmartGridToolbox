@@ -48,15 +48,15 @@ namespace Sgt
 
         if (ndYConst)
         {
-            zip->setYConst(parser.expand<arma::Col<Complex>>(nd["Y_const"]));
+            zip->setYConst(parser.expand<arma::Mat<Complex>>(nd["Y_const"]));
         }
         if (ndIConst)
         {
-            zip->setIConst(parser.expand<arma::Col<Complex>>(nd["I_const"]));
+            zip->setIConst(parser.expand<arma::Mat<Complex>>(nd["I_const"]));
         }
         if (ndSConst)
         {
-            zip->setSConst(parser.expand<arma::Col<Complex>>(nd["S_const"]));
+            zip->setSConst(parser.expand<arma::Mat<Complex>>(nd["S_const"]));
         }
 
         return zip;

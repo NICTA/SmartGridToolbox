@@ -210,17 +210,17 @@ namespace Sgt
                 SGenUnserved_ = SGenUnserved;
             }
 
-            virtual const arma::Col<Complex>& SZipUnserved() const
+            virtual const arma::Mat<Complex>& SZipUnserved() const
             {
                 return SZipUnserved_;
             }
 
-            virtual void setSZipUnserved(const arma::Col<Complex>& SZipUnserved)
+            virtual void setSZipUnserved(const arma::Mat<Complex>& SZipUnserved)
             {
                 SZipUnserved_ = SZipUnserved;
             }
 
-            SGT_PROP_GET(SZipUnserved, SZipUnserved, const arma::Col<Complex>&);
+            SGT_PROP_GET(SZipUnserved, SZipUnserved, const arma::Mat<Complex>&);
 
             /// @}
         
@@ -329,43 +329,43 @@ namespace Sgt
             SGT_PROP_GET(nInServiceZips, nInServiceZips, int);
             
             /// @brief Constant impedance component of zip.
-            arma::Col<Complex> YConst() const;
+            arma::Mat<Complex> YConst() const;
 
-            SGT_PROP_GET(YConst, YConst, arma::Col<Complex>);
+            SGT_PROP_GET(YConst, YConst, arma::Mat<Complex>);
             
             /// @brief Complex power from constant impedance component.
-            arma::Col<Complex> SYConst() const;
+            arma::Mat<Complex> SYConst() const;
             
-            SGT_PROP_GET(SYConst, SYConst, arma::Col<Complex>);
+            SGT_PROP_GET(SYConst, SYConst, arma::Mat<Complex>);
             
             /// @brief Constant current component of zip.
             ///
             /// Relative to phase of V. Actual current will be IConst V / |V|, so that S doesn't depend on phase of V.
-            arma::Col<Complex> IConst() const;
+            arma::Mat<Complex> IConst() const;
             
-            SGT_PROP_GET(IConst, IConst, arma::Col<Complex>);
+            SGT_PROP_GET(IConst, IConst, arma::Mat<Complex>);
             
             /// @brief Complex power from constant current component of zip.
             /// 
             /// Independent of phase of V.
-            arma::Col<Complex> SIConst() const;
+            arma::Mat<Complex> SIConst() const;
             
-            SGT_PROP_GET(SIConst, SIConst, arma::Col<Complex>);
+            SGT_PROP_GET(SIConst, SIConst, arma::Mat<Complex>);
             
             /// @brief Complex power component of zip.
-            arma::Col<Complex> SConst() const;
+            arma::Mat<Complex> SConst() const;
             
-            SGT_PROP_GET(SConst, SConst, arma::Col<Complex>);
+            SGT_PROP_GET(SConst, SConst, arma::Mat<Complex>);
             
             /// @brief Requested power of zips.
-            arma::Col<Complex> SZipRequested() const;
+            arma::Mat<Complex> SZipRequested() const;
             
-            SGT_PROP_GET(SZipRequested, SZipRequested, arma::Col<Complex>);
+            SGT_PROP_GET(SZipRequested, SZipRequested, arma::Mat<Complex>);
            
             /// @brief Actual power of zips, including possible unserved load.
-            arma::Col<Complex> SZip() const;
+            arma::Mat<Complex> SZip() const;
             
-            SGT_PROP_GET(SZip, SZip, arma::Col<Complex>);
+            SGT_PROP_GET(SZip, SZip, arma::Mat<Complex>);
 
             /// @}
 
@@ -385,7 +385,7 @@ namespace Sgt
 
             arma::Col<Complex> V_;
             arma::Col<Complex> SGenUnserved_; // SGen + SGenUnserved = SGenRequested
-            arma::Col<Complex> SZipUnserved_; // SZip + SZipUnserved = SZipRequested
+            arma::Mat<Complex> SZipUnserved_; // SZip + SZipUnserved = SZipRequested
 
             int islandIdx_{-1};
 

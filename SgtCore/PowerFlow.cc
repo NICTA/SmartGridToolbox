@@ -140,6 +140,10 @@ namespace Sgt
             const Phases& srcPhases, const Phases& dstPhases);
     template arma::Col<Complex> mapPhases<arma::Col<Complex>>(const arma::Col<Complex>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
+    template arma::Mat<double> mapPhases<arma::Mat<double>>(const arma::Mat<double>& srcVals,
+            const Phases& srcPhases, const Phases& dstPhases);
+    template arma::Mat<Complex> mapPhases<arma::Mat<Complex>>(const arma::Mat<Complex>& srcVals,
+            const Phases& srcPhases, const Phases& dstPhases);
 
     Mat<Complex> carson(uword nWire, const Mat<double>& Dij, const Col<double> resPerL,
                               double L, double freq, double rhoEarth)

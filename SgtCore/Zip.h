@@ -103,29 +103,29 @@ namespace Sgt
             /// a non-zero value.
             /// @{
 
-            virtual arma::Col<Complex> YConst() const
+            virtual arma::Mat<Complex> YConst() const
             {
-                return arma::Col<Complex>(phases_.size(), arma::fill::zeros);
+                return arma::Mat<Complex>(phases_.size(), phases_.size(), arma::fill::zeros);
             }
             
-            SGT_PROP_GET(YConst, YConst, arma::Col<Complex>);
+            SGT_PROP_GET(YConst, YConst, arma::Mat<Complex>);
 
             /// @brief Constant current component.
             ///
             /// Relative to phase of V. Actual current will be IConst V / |V|, so that S doesn't depend on phase of V.
-            virtual arma::Col<Complex> IConst() const
+            virtual arma::Mat<Complex> IConst() const
             {
-                return arma::Col<Complex>(phases_.size(), arma::fill::zeros);
+                return arma::Mat<Complex>(phases_.size(), phases_.size(), arma::fill::zeros);
             }
             
-            SGT_PROP_GET(IConst, IConst, arma::Col<Complex>);
+            SGT_PROP_GET(IConst, IConst, arma::Mat<Complex>);
 
-            virtual arma::Col<Complex> SConst() const
+            virtual arma::Mat<Complex> SConst() const
             {
-                return arma::Col<Complex>(phases_.size(), arma::fill::zeros);
+                return arma::Mat<Complex>(phases_.size(), phases_.size(), arma::fill::zeros);
             }
             
-            SGT_PROP_GET(SConst, SConst, arma::Col<Complex>);
+            SGT_PROP_GET(SConst, SConst, arma::Mat<Complex>);
 
             /// @}
 
@@ -222,41 +222,41 @@ namespace Sgt
             /// @name ZIP parameters:
             /// @{
 
-            virtual arma::Col<Complex> YConst() const override
+            virtual arma::Mat<Complex> YConst() const override
             {
                 return YConst_;
             }
 
-            virtual void setYConst(const arma::Col<Complex>& YConst)
+            virtual void setYConst(const arma::Mat<Complex>& YConst)
             {
                 YConst_ = YConst;
             }
             
-            SGT_PROP_GET_SET(YConst, YConst, arma::Col<Complex>, setYConst, const arma::Col<Complex>&);
+            SGT_PROP_GET_SET(YConst, YConst, arma::Mat<Complex>, setYConst, const arma::Mat<Complex>&);
 
-            virtual arma::Col<Complex> IConst() const override
+            virtual arma::Mat<Complex> IConst() const override
             {
                 return IConst_;
             }
 
-            virtual void setIConst(const arma::Col<Complex>& IConst)
+            virtual void setIConst(const arma::Mat<Complex>& IConst)
             {
                 IConst_ = IConst;
             }
             
-            SGT_PROP_GET_SET(IConst, IConst, arma::Col<Complex>, setIConst, const arma::Col<Complex>&);
+            SGT_PROP_GET_SET(IConst, IConst, arma::Mat<Complex>, setIConst, const arma::Mat<Complex>&);
 
-            virtual arma::Col<Complex> SConst() const override
+            virtual arma::Mat<Complex> SConst() const override
             {
                 return SConst_;
             }
 
-            virtual void setSConst(const arma::Col<Complex>& SConst)
+            virtual void setSConst(const arma::Mat<Complex>& SConst)
             {
                 SConst_ = SConst;
             }
             
-            SGT_PROP_GET_SET(SConst, SConst, arma::Col<Complex>, setSConst, const arma::Col<Complex>&);
+            SGT_PROP_GET_SET(SConst, SConst, arma::Mat<Complex>, setSConst, const arma::Mat<Complex>&);
 
             /// @}
 
@@ -264,9 +264,9 @@ namespace Sgt
 
             Phases phases_;
 
-            arma::Col<Complex> YConst_;
-            arma::Col<Complex> IConst_;
-            arma::Col<Complex> SConst_;
+            arma::Mat<Complex> YConst_;
+            arma::Mat<Complex> IConst_;
+            arma::Mat<Complex> SConst_;
     };
 }
 

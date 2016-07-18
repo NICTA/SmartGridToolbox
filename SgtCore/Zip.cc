@@ -21,9 +21,9 @@ namespace Sgt
     GenericZip::GenericZip(const std::string& id, const Phases& phases) :
         Component(id),
         ZipAbc(phases),
-        YConst_(phases.size(), arma::fill::zeros),
-        IConst_(phases.size(), arma::fill::zeros),
-        SConst_(phases.size(), arma::fill::zeros)
+        YConst_(phases.size(), phases.size(), arma::fill::zeros),
+        IConst_(phases.size(), phases.size(), arma::fill::zeros),
+        SConst_(phases.size(), phases.size(), arma::fill::zeros)
     {
         // Empty.
     }

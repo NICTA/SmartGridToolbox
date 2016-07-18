@@ -35,22 +35,23 @@ namespace Sgt
         typedef std::vector<std::unique_ptr<PfNode>> PfNodeVec;
 
         PfBus(const std::string& id, BusType type, const Phases& phases, const arma::Col<Complex>& V,
-                const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst, const arma::Col<Complex>& Scg,
-                double J);
+                const arma::Mat<Complex>& YConst, const arma::Mat<Complex>& IConst, const arma::Mat<Complex>& SConst,
+                const arma::Col<Complex>& SGen, double JGen);
 
         std::string id_; ///< Externally relevant id.
         BusType type_{BusType::BAD}; ///< Bus type.
         Phases phases_; ///< Bus phases.
 
-        arma::Col<Complex> V_; ///< Voltage, one per phase. Setpoint/warm start on input.
-        arma::Col<Complex> YConst_; ///< Constant admittance shunt, one per phase.
-        arma::Col<Complex> IConst_; ///< Constant current injection, one per phase.
-        arma::Col<Complex> Scg_; ///< Constant power injection plus gen, one per phase.
+        arma::Mat<Complex> V_; ///< Voltage, one per phase. Setpoint/warm start on input.
+        arma::Mat<Complex> YConst_; ///< Constant admittance.
+        arma::Mat<Complex> IConst_; ///< Constant current.
+        arma::Mat<Complex> SConst_; ///< Constant power.
+        arma::Mat<Complex> SGen_; ///< Generated power.
 
         // Regardless of numbers of poles, etc., the combined generation at a bus will have a certain angular
         // momentum for any given frequency of the network. Thus, we define an effective moment of inertia at the
-        // bus by L = J omega_netw.
-        double J_{0.0}; ///< Effective moment of inertia for all machines attached to bus.
+        // bus by L = JGen omega_netw.
+        double JGen_{0.0}; ///< Effective moment of inertia for all machines attached to bus.
 
         PfNodeVec nodeVec_; ///< Nodes, one per phase.
     };
@@ -67,24 +68,18 @@ namespace Sgt
             const Complex& V() const {return bus_->V_(phaseIdx_);}
             void setV(const Complex& V) {bus_->V_(phaseIdx_) = V;}
             
-            const Complex& YConst() const {return bus_->YConst_(phaseIdx_);}
-            void setYConst(const Complex& YConst) {bus_->YConst_(phaseIdx_) = YConst;}
-
-            const Complex& IConst() const {return bus_->IConst_(phaseIdx_);}
-            void setIConst(const Complex& IConst) {bus_->IConst_(phaseIdx_) = IConst;}
-
-            const Complex& Scg() const {return bus_->Scg_(phaseIdx_);}
-            void setScg(const Complex& Scg) {bus_->Scg_(phaseIdx_) = Scg;}
+            const Complex& SGen() const {return bus_->SGen_(phaseIdx_);}
+            void setSGen(const Complex& SGen) {bus_->SGen_(phaseIdx_) = SGen;}
     };
 
     struct PfBranch
     {
         PfBranch(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
-                const arma::Mat<Complex>& Y);
+                const arma::Mat<Complex>& YConst);
 
         Array<std::string, 2> ids_; ///< Id of bus 0/1
         Array<Phases, 2> phases_; ///< phases of bus 0/1.
-        arma::Mat<Complex> Y_; ///< Bus admittance matrix.
+        arma::Mat<Complex> YConst_; ///< Bus admittance matrix.
     };
 
     /// @brief A mathematical model of a network, suitable for solving the AC power flow problem.
@@ -110,8 +105,8 @@ namespace Sgt
             /// @{
 
             void addBus(const std::string& id, BusType type, const Phases& phases,
-                    const arma::Col<Complex>& V, const arma::Col<Complex>& YConst, const arma::Col<Complex>& IConst,
-                    const arma::Col<Complex>& Scg, double J);
+                    const arma::Col<Complex>& V, const arma::Mat<Complex>& YConst, const arma::Mat<Complex>& IConst,
+                    const arma::Mat<Complex>& SConst, const arma::Col<Complex> SGen, double JGen);
 
             const PfBusMap& busMap() const
             {
@@ -132,7 +127,7 @@ namespace Sgt
             }
 
             void addBranch(const std::string& idBus0, const std::string& idBus1,
-                    const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& Y);
+                    const Phases& phases0, const Phases& phases1, const arma::Mat<Complex>& YConst);
 
             const PfBranchVec& branchVec() const
             {
@@ -162,38 +157,49 @@ namespace Sgt
 
             /// @}
 
-            /// @name Y matrix.
-            /// This absorbs any constant admittance ZIP components.
+            /// @name Branch flows.
             /// @{
 
-            const arma::SpMat<Complex>& Y() const
+            const arma::SpMat<Complex>& YConst() const
             {
-                return Y_;
+                return YConst_;
             }
-            arma::SpMat<Complex>& Y()
+            arma::SpMat<Complex>& YConst()
             {
-                return Y_;
+                return YConst_;
+            }
+
+            const arma::SpMat<Complex>& IConst() const
+            {
+                return IConst_;
+            }
+            arma::SpMat<Complex>& IConst()
+            {
+                return IConst_;
+            }
+
+            const arma::SpMat<Complex>& SConst() const
+            {
+                return SConst_;
+            }
+            arma::SpMat<Complex>& SConst()
+            {
+                return SConst_;
             }
 
             /// @}
 
             /// @name Vectors.
-            /// SL node: V is a setpoint, S is a warm start.
-            /// PQ node: V is a warm start, S is a setpoint.
-            /// PV node: |V| is a setpoint, arg(V) is a warm start, P is a setpoint, Q is a warm start.
-            /// Note that P includes both load and generation and thus may include constant power components of ZIPs.
-            /// For example, for a slack bus with a constant S load, P represents the generated power minus the load
-            /// draw.
+            /// SL node: V is a setpoint, SGen is a warm start.
+            /// PQ node: V is a warm start, SGen is a setpoint.
+            /// PV node: |V| is a setpoint, arg(V) is a warm start, Pg is a setpoint, Qg is a warm start.
             /// @{
 
             arma::Col<Complex> V() const; ///< Voltage.
             void setV(const arma::Col<Complex>& V) const; ///< Voltage.
             
-            arma::Col<Complex> Scg() const;
-            void setScg(const arma::Col<Complex>& Scg) const;
-
-            arma::Col<Complex> IConst() const;
-            void setIConst(const arma::Col<Complex>& IConst) const;
+            arma::Col<Complex> SGen() const;
+            void setSGen(const arma::Col<Complex>& SGen) const;
 
             /// @}
 
@@ -212,6 +218,10 @@ namespace Sgt
             std::size_t nPv()
             {
                 return nPv_;
+            }
+            std::size_t nPqPv()
+            {
+                return nPq_ + nPv_;
             }
             std::size_t nSl()
             {
@@ -240,7 +250,6 @@ namespace Sgt
             {
                 return nPq_ + nPv_ + i;
             }
-
             arma::span selPq() const
             {
                 return arma::span(iPq(0), iPq(nPq_ - 1));
@@ -249,13 +258,17 @@ namespace Sgt
             {
                 return arma::span(iPv(0), iPv(nPv_ - 1));
             }
+            arma::span selPqPv() const
+            {
+                return arma::span(iPq(0), iPv(nPv_ - 1));
+            }
             arma::span selSl() const
             {
                 return arma::span(iSl(0), iSl(nSl_ - 1));
             }
-            arma::span selPqPv() const
+            arma::span selAll() const
             {
-                return arma::span(iPq(0), iPv(nPv_ - 1));
+                return arma::span(iPq(0), iSl(nSl_ - 1));
             }
 
             /// @}
@@ -281,10 +294,12 @@ namespace Sgt
 
             /// @}
 
-            /// @name Y matrix.
+            /// @name Branch flows.
             /// @{
 
-            arma::SpMat<Complex> Y_; ///< Y matrix.
+            arma::SpMat<Complex> YConst_; ///< bus admittance matrix for constant admittance.
+            arma::SpMat<Complex> IConst_; ///< constant current elements.
+            arma::SpMat<Complex> SConst_; ///< constant power elements.
 
             /// @}
     };

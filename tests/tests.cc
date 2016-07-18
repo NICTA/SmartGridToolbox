@@ -465,9 +465,12 @@ BOOST_AUTO_TEST_CASE (test_const_I)
     for (std::string solverType : {"nr_pol", "nr_rect"})
     {
         BOOST_TEST_MESSAGE("Solver type = " << solverType);
+        /*
         auto solver = solverType == "nr_pol" 
             ? std::unique_ptr<PowerFlowSolverInterface>(new PowerFlowNrPolSolver)
             : std::unique_ptr<PowerFlowSolverInterface>(new PowerFlowNrRectSolver);
+        */
+        auto solver = std::unique_ptr<PowerFlowSolverInterface>(new PowerFlowNrRectSolver);
         nw.setSolver(std::move(solver));
         bool ok = nw.solvePowerFlow();
         BOOST_CHECK(ok == true);

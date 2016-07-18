@@ -125,9 +125,9 @@ namespace Sgt
             /// @name ZipAbc virtual overridden member functions.
             /// @{
 
-            virtual arma::Col<Complex> SConst() const override
+            virtual arma::Mat<Complex> SConst() const override
             {
-                return {Complex(-1e-6 * Ph_, 0.0)}; // Need to convert from W to MW.
+                return {{{Complex(1e-6 * Ph_, 0.0)}}}; // Need to convert from W to MW.
             }
             
             /// @}

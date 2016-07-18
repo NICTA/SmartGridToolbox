@@ -200,7 +200,7 @@ namespace Sgt
             /// @name ZipAbc virtual overridden member functions.
             /// @{
             
-            virtual arma::Col<Complex> SConst() const override;
+            virtual arma::Mat<Complex> SConst() const override;
             
             /// @}
 

@@ -473,14 +473,14 @@ namespace Sgt
 
             netw.addBus(std::move(bus));
 
-            Complex SConst = -Complex(busInfo.Pd, busInfo.Qd); // Already in MW.
+            Complex SConst = Complex(busInfo.Pd, busInfo.Qd); // Already in MW.
             Complex YConst = YBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
             if (checkNzZip(SConst, YConst))
             {
                 std::string zipId = getZipName(nZip++, getBusName(busInfo.id, busNames));
                 std::unique_ptr<GenericZip> zip(new GenericZip(zipId, {Phase::BAL}));
-                zip->setYConst({GScale * YConst});
-                zip->setSConst({PScale * SConst});
+                zip->setYConst(arma::Mat<Complex>{{{GScale * YConst}}});
+                zip->setSConst(arma::Mat<Complex>{{{PScale * SConst}}});
                 netw.addZip(std::move(zip), busId);
             }
         } // Buses

@@ -426,6 +426,7 @@ namespace Sgt
     constexpr double pi = 3.141592653589793238462643383279502884;
     constexpr double negInfinity = -std::numeric_limits<double>::infinity(); // No guarantee, but no better option?
     constexpr double infinity = std::numeric_limits<double>::infinity();
+    constexpr Complex im{0, 1};
     constexpr double second = 1.0;
     constexpr double minute = 60.0 * second;
     constexpr double hour = 60.0 * minute;

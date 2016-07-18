@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 
 \usepackage{dsfont}
 \usepackage{amssymb}
@@ -532,6 +532,101 @@ Especially in transmission networks, we have that $G_{ik} \ll B_{ik}$ and $\thet
 Note that the problem then separates into two independent problems: one for $\{P, \theta\}$ and one for $\{Q, \M{}\}$. 
 
 For a flat-start, we have $\M{k} \approx 1$, and the Jacobian simplifies further. The fast decoupled load flow method normally uses this flat start Jacobian throughout the iteration process. The error function $f$ is assumed to be unchanged from the full NR method, so if it converges, it will converge to the correct solution to the full AC power flow problem. In practice it requires many more iterations than the full NR method, but each iteration is much faster, and the convergence properties can be much better.
+
+\section{Generalised Power Flow Theory}
+Let the voltage at bus $i$ be $V_i$, and let the voltage difference between buses $i$ and $k$ be $V_{ik} := V_i - V_k$. We represent ground as a special bus, with index zero, which must always have a voltage of zero: $V_0 = 0$. Let $S^*_{g,i}$ be the power injected into bus $i$. Let $y_{c,ik}$ be a constant admittance between buses $i$ and $k$, $S_{c,ik}$ be a constant power flow between these buses and $I_{c,ik}$ be a constant magnitude current flow whose phase varies with $V$, so that the resulting actual current is\footnote{This ensures that the controlled current loads can't have a power that depends on the local absolute phase.} $I_{c,ik}V_{ik}/|V_{ik}|$.
+
+The generated current injection at bus $i$ is then equal to the sum of the current flowing from $i$ to all other connected buses:
+\begin{align}
+	\frac{S^*_{g,i}}{V^*_i} - \sum_{k \ne i} \left[y_{c,ik}V_{ik} + \frac{S^*_{c,ik}}{V^*_{ik}} + \frac{I_{c,ik}V_{ik}}{|V_{ik}|}\right] = 0
+	\label{EQ_POWERFLOW_B}
+\end{align}
+
+To simplify the calculation for the terms proportional to $y$, we define the bus admittance matrix, $Y$:
+\begin{align}
+	Y_{c,ik} &=
+		\begin{cases}
+			-y_{c,ik}&\text{if $i \ne k$} \\
+			\sum_{l \ne i} y_{c,il}& \text{if $i = k$}
+		\end{cases}
+	\label{EQ_YNODE_OHMIC_B}
+\end{align}
+The sum over $k$ in this equation includes the special ground bus, $k = 0$. Such terms represent shunt admittances to ground. Equation \ref{EQ_POWERFLOW_B} then becomes
+\begin{align}
+	\frac{S^*_{g,i}}{V^*_i} - \sum_{k \ne 0}{Y_{c,ik}V_{k}} - \sum_{k \ne i}\left[\frac{S^*_{c,ik}}{V^*_{ik}} + \frac{I_{c,ik}V_{ik}}{|V_{ik}|}\right] = 0
+	\label{EQ_POWERFLOW_B1}
+\end{align}
+Since ground is treated implicitly, there is no need to consider terms where $i = 0$, and, because $V_0$ = 0, we may safely omit terms in the first sum where $k = 0$, as shown in the equation. Note that the second sum \emph{does} include terms with $k = 0$; these are usual constant current and constant power components of a ZIP load model. However, this equation allows more general loads than the usual ZIP model, as constant current and power components are also possible \emph{between} buses, not just from a single bus to ground. This allows us to consider FACTS devices, as well as various types of delta loads, for example.
+
+\subsection{NR method in rectangular coordinates}
+Let the mismatch, $\Delta I$, equal the LHS of Eq. \ref{EQ_POWERFLOW_B1}:
+\begin{align}
+\Delta I_i = \frac{S^*_{g,i}}{V^*_i} - \sum_{k \ne 0}{Y_{c,ik}V_{k}} - \sum_{k \ne i}\left[\frac{S^*_{c,ik}}{V^*_{ik}} + \frac{I_{c,ik}V_{ik}}{|V_{ik}|}\right]
+\label{EQ_MISMATCH}
+\end{align}
+
+Considering for the moment PQ buses only, the unknowns are the real and imaginary voltage components, $x = [\Vr, \Vi]$. We wish to find values for these variables such that the mismatch, $\Delta I$, is zero. Using the Jacobian
+\begin{align}
+J_{ik}(x) = \frac{\partial \Delta I_i(x)}{\partial x_k},
+\end{align}
+the NR method calculates the update to $x$ at each iteration as the solution to the linear equations
+\begin{align}
+-\Delta I_{(n)} &= J(x_{(n)})(x_{(n+1)}-x_{(n)}) \notag \\
+                &= J(x_{(n)})\Delta x_{(n,n+1)}
+\label{EQ_NR}
+\end{align}
+
+The Jacobian is given below:
+\begin{align}
+	\frac{\partial \Delta I_i}{\partial \Vr_l} 
+		&= \delta_{il}\frac{-S^*_{g,i}}{{V^*_i}^2} \notag \\
+		&- Y_{c,il} \notag \\
+		&+ \delta_{il} \sum_{k \ne i}{\frac{S^*_{c,ik}}{{V^*_{ik}}^2}} \notag \\
+		&+ (1-\delta_{il})\frac{-S^*_{c,il}}{{V^*_{il}}^2} \notag \\
+		&+ \delta_{il} \sum_{k \ne i}{\frac{I_{c,ik}(-|V_{ik}|^2 + \Vr_{ik}V_{ik})}{|V_{ik}|^3}} \notag \\
+		&+ (1 - \delta_{il})\frac{I_{c,il}(|V_{il}|^2 - \Vr_{il}V_{il})}{|V_{il}|^3} \notag \\
+	\frac{\partial \Delta I_i}{\partial \Vi_l} 
+		&= \delta_{il}\frac{j S^*_{g,i}}{{V^*_i}^2} \notag \\
+		&- j Y_{c,il} \notag \\
+		&+ \delta_{il} \sum_{k \ne i}{\frac{-j S^*_{c,ik}}{{V^*_{ik}}^2}} \notag \\
+		&+ (1-\delta_{il}) \frac{j S^*_{c,il}}{{V^*_{il}}^2} \notag \\
+		&+ \delta_{il} \sum_{k \ne i}{\frac{I_{c,ik}(-j|V_{ik}|^2 + \Vi_{ik}V_{ik})}{|V_{ik}|^3}} \notag \\
+		&+ (1 - \delta_{il})\frac{I_{c,il}(j|V_{il}|^2 - \Vi_{il}V_{il})}{|V_{il}|^3}	
+\end{align}
+To solve these equations, we transform each complex row of the mismatch vector and the Jacobian into separate real and imaginary rows, and then use a sparse solver on the resulting system of real equations.
+
+\subsubsection{Treatment of the slack bus}
+There are no variables associated with the slack bus. The voltage is constant, and the power can be found after the rest of the buses are solved.
+
+\subsubsection{Treatment of the ground bus}
+Similarly, there are no variables associated with the special ground bus, and indeed this bus may be treated completely implicitly. Its voltage is, of course, zero. We have already seen how constant admittance shunts to ground are absorbed into the definition of the bus admittance matrix, $Y$. Similarly, there are columns in $S_c$ and $I_c$ involving the ground bus that need to be taken into account in various sums.
+
+\subsubsection{Treatment of PV buses}
+As explained earlier, $PV$ buses add an extra variable, $Q_g$. This adds the following non-zero elements to the Jacobian:
+\begin{align}
+\frac{\partial \Delta I_i}{\partial Q_{g,l}} &= \delta_{il}\frac{-i}{V^*_i}
+\end{align}
+There is also an extra constraint, Eq. (\ref{EQ_POWERFLOW_PV_CONSTRAINT}), reproduced here:
+\begin{align}
+\Delta |V|^2 = |V|^2 - V_\text{PV}^2 = 0
+\label{EQ_POWERFLOW_PV_CONSTRAINT_AGAIN}
+\end{align}
+with corresponding elements in the Jacobian being:
+\begin{align}
+\frac{\partial \Delta|V|^2_k}{\partial \Vr_k} &= 2 \Vr_k \notag \\
+\frac{\partial \Delta|V|^2_k}{\partial \Vi_k} &= 2 \Vi_k
+\label{EQ_PV_JAC_Q}
+\end{align}
+The NR update corresponding to this constraint row is:
+\begin{align}
+	-|V_k|^2 + V_{\text{PV},k}^2 &= 2\Vr_k\Delta\Vr_k + 2\Vi_k\Delta\Vi_k
+\end{align}
+which gives
+\begin{align}
+\Delta \Vr_k &= \frac{V^2_{\text{PV},k} - |V_k|^2- 2\Vi_k\Delta \Vi_k}{2\Vr_k}
+\end{align}
+
+Using these expressions, $\Delta \Vr$ may be eliminated from the NR equations for the PV bus. First write the Jacobian as if all buses were PQ. Let $k$ be any PV bus. Take the column corresponding to $\Delta \Vr_k$, and add its product with $-\Vi_k/\Vr_k$ to the matching column for  $\Delta \Vi_k$. Add its product with $(|V|^2_{\text{PV},k} - \Vr_k^2 - \Vi_k^2)/(2\Vr_k)$ to $f$ in Eq. (\ref{EQ_NR}). The column and the corresponding element of $x$ for $\Delta \Vr_k$ will now be replaced with a column and elment for $\Delta Q_{g,k}$. Set the column to zero, and then set the block diagonal elements, using Eq. (\ref{EQ_PV_JAC_Q}). Reinterpret the corresponding element of $\Delta x$ in Eq. (\ref{EQ_NR}) as now corresponding to $\Delta Q_{g,k}$ instead of $\Delta \Vr_k$.
 
 \section{Formalism for modelling branches}
 \subsection{Branch admittance ($Y$) parameters}

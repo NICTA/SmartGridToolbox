@@ -168,6 +168,14 @@ namespace Sgt
         }
     };
 
+    template<typename T> struct MapPhasesTraits<arma::Mat<T>>
+    {
+        static arma::Mat<T> init(size_t sz)
+        {
+            return arma::Mat<T>(sz, sz, arma::fill::zeros);
+        }
+    };
+
     template<typename T> T mapPhases(const T& srcVals, const Phases& srcPhases, const Phases& dstPhases)
     {
         T result = MapPhasesTraits<T>::init(dstPhases.size());
@@ -181,9 +189,36 @@ namespace Sgt
         }
         return result;
     }
+
+    template<typename T> arma::Mat<T> mapPhases(const arma::Mat<T>& srcVals,
+            const Phases& srcPhases, const Phases& dstPhases)
+    {
+        arma::Mat<T> result = MapPhasesTraits<arma::Mat<T>>::init(dstPhases.size());
+        for (std::size_t iSrc = 0; iSrc < srcPhases.size(); ++iSrc)
+        {
+            std::uint8_t iDst = dstPhases.index(srcPhases[iSrc]); 
+            if (iDst != Phases::noSuchPhase)
+            {
+                for (std::size_t jSrc = 0; jSrc < srcPhases.size(); ++jSrc)
+                {
+                    std::uint8_t jDst = dstPhases.index(srcPhases[jSrc]); 
+                    if (jDst != Phases::noSuchPhase)
+                    {
+                        result(iDst, jDst) = srcVals(iSrc, jSrc);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     extern template arma::Col<double> mapPhases<arma::Col<double>>(const arma::Col<double>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
     extern template arma::Col<Complex> mapPhases<arma::Col<Complex>>(const arma::Col<Complex>& srcVals,
+            const Phases& srcPhases, const Phases& dstPhases);
+    extern template arma::Mat<double> mapPhases<arma::Mat<double>>(const arma::Mat<double>& srcVals,
+            const Phases& srcPhases, const Phases& dstPhases);
+    extern template arma::Mat<Complex> mapPhases<arma::Mat<Complex>>(const arma::Mat<Complex>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
 
     /// @brief Apply Carson's equations.

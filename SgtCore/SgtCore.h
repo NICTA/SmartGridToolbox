@@ -32,10 +32,10 @@
 #include <SgtCore/Parser.h>
 #include <SgtCore/PowerFlow.h>
 #include <SgtCore/PowerFlowSolver.h>
-#include <SgtCore/PowerFlowNrPolSolver.h>
+// #include <SgtCore/PowerFlowNrPolSolver.h>
 #include <SgtCore/PowerFlowNrRectSolver.h>
 #ifdef ENABLE_POWER_TOOLS
-#include <SgtCore/PowerFlowPtSolver.h>
+// #include <SgtCore/PowerFlowPtSolver.h>
 #endif // ENABLE_POWER_TOOLS
 #include <SgtCore/Properties.h>
 #include <SgtCore/Random.h>

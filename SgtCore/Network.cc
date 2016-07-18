@@ -14,7 +14,7 @@
 
 #include "Network.h"
 
-#include "PowerFlowNrPolSolver.h"
+#include "PowerFlowNrRectSolver.h"
 #include "Zip.h"
 
 #include <numeric>
@@ -42,7 +42,7 @@ namespace Sgt
         }
     }
 
-    Network::Network(double PBase) : PBase_(PBase), solver_(new PowerFlowNrPolSolver)
+    Network::Network(double PBase) : PBase_(PBase), solver_(new PowerFlowNrRectSolver)
     {
         // Empty.
     }
@@ -259,7 +259,7 @@ namespace Sgt
 
                 bus->applyVSetpoints();
                 mod->addBus(bus->id(), bus->type(), bus->phases(), bus->V(), bus->YConst(), bus->IConst(),
-                        bus->SGenRequested() + bus->SConst(), bus->JGen());
+                        bus->SConst(), bus->SGenRequested(), bus->JGen());
 
                 bus->setType(busTypeSv);
                 bus->setpointChanged().setIsEnabled(isEnabledSv);
@@ -289,7 +289,7 @@ namespace Sgt
             int nInService = bus->nInServiceGens();
 
             Col<Complex> SGen = nInService > 0
-                                      ? (modBus.Scg_ - bus->SConst()) / nInService
+                                      ? (modBus.SGen_) / nInService
                                       : Col<Complex>(bus->phases().size(), fill::zeros);
             // Note: we've already taken YConst and IConst explicitly into account, so this is correct.
             // KLUDGE: We're using a vector above, rather than "auto" (which gives some kind of expression type).

@@ -22,15 +22,6 @@
 
 using namespace arma;
 
-namespace
-{
-    using namespace Sgt;
-    template<typename T> std::istream& operator>>(std::istringstream& ss, const Col<T>& v)
-    {
-        return ss;
-    }
-}
-
 namespace Sgt
 {
     Bus::Bus(const std::string& id, const Phases& phases, const Col<Complex>& VNom, double VBase) :
@@ -42,7 +33,7 @@ namespace Sgt
         VAngSetpoint_(phases.size()),
         V_(VNom),
         SGenUnserved_(phases.size(), fill::zeros),
-        SZipUnserved_(phases.size(), fill::zeros)
+        SZipUnserved_(phases.size(), phases.size(), fill::zeros)
     {
         for (uword i = 0; i < phases_.size(); ++i)
         {
@@ -110,11 +101,11 @@ namespace Sgt
         return sum;
     }
 
-    Col<Complex> Bus::YConst() const
+    Mat<Complex> Bus::YConst() const
     {
         // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
         // Easier to just do this.
-        auto sum = Col<Complex>(phases().size(), fill::zeros);
+        auto sum = Mat<Complex>(phases().size(), phases().size(), fill::zeros);
         for (auto zip : zipVec_)
         {
             if (zip->isInService())
@@ -125,15 +116,27 @@ namespace Sgt
         return sum;
     }
 
-    Col<Complex> Bus::SYConst() const
+    Mat<Complex> Bus::SYConst() const
     {
-        return -conj(YConst()) % conj(V()) % V();
+        Mat<Complex> result = -conj(YConst());
+        for (uword i = 0; i < result.n_rows; ++i)
+        {
+            for (uword k = 0; k < result.n_cols; ++k)
+            {
+                if (result(i, k) != Complex(0.0))
+                {
+                    Complex Vik = i == k ? V_(i) : V_(i) - V_(k);
+                    result(i, k) *= norm(Vik); // std::norm gives |Vik|^2
+                }
+            }
+        }
+        return result;
     }
 
-    Col<Complex> Bus::IConst() const
+    Mat<Complex> Bus::IConst() const
     {
         // Note the returned current is relative to the phase of V.
-        auto sum = Col<Complex>(phases().size(), fill::zeros);
+        auto sum = Mat<Complex>(phases().size(), phases().size(), fill::zeros);
         for (auto zip : zipVec_)
         {
             if (zip->isInService())
@@ -144,15 +147,26 @@ namespace Sgt
         return sum;
     }
 
-    Col<Complex> Bus::SIConst() const
+    Mat<Complex> Bus::SIConst() const
     {
-        // Note special phase relationship with V.
-        return conj(IConst()) % abs(V());
+        Mat<Complex> result = -conj(IConst());
+        for (uword i = 0; i < result.n_rows; ++i)
+        {
+            for (uword k = 0; k < result.n_cols; ++k)
+            {
+                if (result(i, k) != Complex(0.0))
+                {
+                    Complex Vik = i == k ? V_(i) : V_(i) - V_(k);
+                    result(i, k) *= abs(Vik); // std::norm gives |Vik|^2
+                }
+            }
+        }
+        return result;
     }
 
-    Col<Complex> Bus::SConst() const
+    Mat<Complex> Bus::SConst() const
     {
-        auto sum = Col<Complex>(phases().size(), fill::zeros);
+        auto sum = Mat<Complex>(phases().size(), phases().size(), fill::zeros);
         for (auto zip : zipVec_)
         {
             if (zip->isInService())
@@ -163,12 +177,12 @@ namespace Sgt
         return sum;
     }
 
-    Col<Complex> Bus::SZipRequested() const
+    Mat<Complex> Bus::SZipRequested() const
     {
         return SYConst() + SIConst() + SConst();
     }
 
-    Col<Complex> Bus::SZip() const
+    Mat<Complex> Bus::SZip() const
     {
         return SZipRequested() - SZipUnserved_;
     }

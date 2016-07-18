@@ -97,22 +97,25 @@ namespace Sgt
                 injectionChanged().trigger();
             }
 
-            virtual arma::Col<Complex> YConst() const override
+            virtual arma::Mat<Complex> YConst() const override
             {
-                return scaleFactorY_ * series_->value(lastUpdated())(
-                        arma::span(0, phases().size() - 1));
+                return diagmat(
+                        scaleFactorY_ * series_->value(lastUpdated())(
+                        arma::span(0, phases().size() - 1)));
             }
 
-            virtual arma::Col<Complex> IConst() const override
+            virtual arma::Mat<Complex> IConst() const override
             {
-                return scaleFactorI_ * series_->value(lastUpdated())(
-                        arma::span(phases().size(), 2 * phases().size() - 1));
+                return diagmat(
+                        scaleFactorI_ * series_->value(lastUpdated())(
+                        arma::span(phases().size(), 2 * phases().size() - 1)));
             }
 
-            virtual arma::Col<Complex> SConst() const override
+            virtual arma::Mat<Complex> SConst() const override
             {
-                return scaleFactorS_ * series_->value(lastUpdated())(
-                        arma::span(2 * phases().size(), 3 * phases().size() - 1));
+                return diagmat(
+                        scaleFactorS_ * series_->value(lastUpdated())(
+                        arma::span(2 * phases().size(), 3 * phases().size() - 1)));
             }
 
         private:

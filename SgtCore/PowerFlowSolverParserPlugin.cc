@@ -17,9 +17,9 @@
 #include "PowerFlowSolverParserPlugin.h"
 
 #include "Network.h"
-#include "PowerFlowNrPolSolver.h"
+// #include "PowerFlowNrPolSolver.h"
 #include "PowerFlowNrRectSolver.h"
-#include "PowerFlowFdSolver.h"
+// #include "PowerFlowFdSolver.h"
 #ifdef ENABLE_POWER_TOOLS
 #include "PowerFlowPtSolver.h"
 #endif
@@ -35,7 +35,8 @@ namespace Sgt
             sgtLogMessage() << "Using Newton-Raphson (rectangular) solver." << std::endl;
             netw.setSolver(std::make_unique<PowerFlowNrRectSolver>());
         }
-        if (key == "nr_pol")
+        /*
+        else if (key == "nr_pol")
         {
             sgtLogMessage() << "Using Newton-Raphson (polar) solver." << std::endl;
             netw.setSolver(std::make_unique<PowerFlowNrPolSolver>());
@@ -55,5 +56,6 @@ namespace Sgt
                      "--enable-power-tools++.");
 #endif // ENABLE_POWER_TOOLS
         }
+        */
     }
 }
