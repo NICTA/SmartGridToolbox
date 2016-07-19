@@ -203,7 +203,11 @@ namespace Sgt
         /// @{
 
             GenericBranch(const std::string& id, const Phases& phases0, const Phases& phases1) :
-                Component(id), BranchAbc(phases0, phases1), Y_(2*phases0.size(), 2*phases0.size(), arma::fill::zeros)
+                Component(id),
+                BranchAbc(phases0, phases1),
+                Y_(phases0.size() + phases1.size(),
+                phases0.size() + phases1.size(),
+                arma::fill::zeros)
             {
                 // Empty.
             }

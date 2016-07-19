@@ -49,7 +49,7 @@ namespace Sgt
 
         const YAML::Node ndYMatrix = ndY["matrix"];
         const YAML::Node ndYApproxPhaseImpedance = ndY["approximate_phase_impedance"];
-        arma::Mat<Complex> Y(2 * phases0.size(), 2 * phases1.size(), arma::fill::zeros);
+        arma::Mat<Complex> Y(phases0.size() + phases1.size(), phases0.size() + phases1.size(), arma::fill::zeros);
         if (ndYMatrix)
         {
             Y = parser.expand<arma::Mat<Complex>>(ndYMatrix);
