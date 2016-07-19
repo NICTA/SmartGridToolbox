@@ -59,7 +59,7 @@ namespace Sgt
         phases_{{phases0, phases1}},
         Y_(Y)
     {
-        auto nTerm = phases0.size() + phases1.size();
+        std::size_t nTerm = phases0.size() + phases1.size();
         assert(Y.n_rows == nTerm);
         assert(Y.n_cols == nTerm);
     }
@@ -140,7 +140,7 @@ namespace Sgt
             nodeVec_[i]->idx_ = i;
         }
 
-        auto nNode = nodeVec_.size();
+        std::size_t nNode = nodeVec_.size();
 
         // Bus admittance matrix:
         SparseHelper<Complex> YHelper(nNode, nNode, true, true, true);
@@ -155,39 +155,36 @@ namespace Sgt
             sgtAssert(it1 != busMap_.end(), "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] 
                     << " contains a non-existent bus " << branch->ids_[1] << ".");
             const PfBus* buses[] = {it0->second.get(), it1->second.get()};
+            std::size_t nTerm = branch->phases_[0].size() + branch->phases_[1].size();
 
             // There is one link per distinct pair of bus/phase pairs.
-            for (std::size_t busIdxI = 0; busIdxI < 2; ++busIdxI)
+            for (uword i = 0; i < nTerm; ++i)
             {
-                for (std::size_t branchPhaseIdxI = 0; branchPhaseIdxI < branch->phases_[busIdxI].size(); 
-                        ++branchPhaseIdxI)
+                bool firstBusI = (i < branch->phases_[0].size());
+                std::size_t busIdxI = firstBusI ? 0 : 1;
+                std::size_t branchPhaseIdxI = firstBusI ? i : i - branch->phases_[0].size();
+
+                const PfBus* busI = buses[busIdxI];
+                std::size_t busPhaseIdxI = busI->phases_.index(branch->phases_[busIdxI][branchPhaseIdxI]);
+                const PfNode* nodeI = busI->nodeVec_[busPhaseIdxI].get();
+                std::size_t idxNodeI = nodeI->idx_;
+
+                // Only count each diagonal element in branch->Y_ once!
+                YHelper.insert(idxNodeI, idxNodeI, branch->Y_(i, i));
+
+                for (uword k = i + 1; k < nTerm; ++k)
                 {
-                    uword iTerm = busIdxI == 0 ? branchPhaseIdxI : branchPhaseIdxI + branch->phases_[0].size();
-                    const PfBus* busI = buses[busIdxI];
-                    auto busPhaseIdxI = busI->phases_.index(branch->phases_[busIdxI][branchPhaseIdxI]);
-                    const PfNode* nodeI = busI->nodeVec_[busPhaseIdxI].get();
-                    auto idxNodeI = nodeI->idx_;
+                    bool firstBusK = (k < branch->phases_[0].size());
+                    std::size_t busIdxK = firstBusK ? 0 : 1;
+                    std::size_t branchPhaseIdxK = firstBusK ? k : k - branch->phases_[0].size();
 
-                    // Only count each diagonal element in branch->Y_ once!
-                    YHelper.insert(idxNodeI, idxNodeI, branch->Y_(iTerm, iTerm));
+                    const PfBus* busK = buses[busIdxK];
+                    std::size_t busPhaseIdxK = busK->phases_.index(branch->phases_[busIdxK][branchPhaseIdxK]);
+                    const PfNode* nodeK = busK->nodeVec_[busPhaseIdxK].get();
+                    std::size_t idxNodeK = nodeK->idx_;
 
-                    for (std::size_t busIdxK = 0; busIdxK < 2; ++busIdxK)
-                    {
-                        for (std::size_t branchPhaseIdxK = 0; branchPhaseIdxK < branch->phases_[busIdxK].size(); 
-                                ++branchPhaseIdxK)
-                        {
-                            uword kTerm = busIdxK == 0 
-                                ? branchPhaseIdxK 
-                                : branchPhaseIdxK + branch->phases_[0].size();
-                            const PfBus* busK = buses[busIdxK];
-                            auto busPhaseIdxK = busK->phases_.index(branch->phases_[busIdxK][branchPhaseIdxK]);
-                            const PfNode* nodeK = busK->nodeVec_[busPhaseIdxK].get();
-                            auto idxNodeK = nodeK->idx_;
-
-                            YHelper.insert(idxNodeI, idxNodeK, branch->Y_(iTerm, kTerm));
-                            YHelper.insert(idxNodeK, idxNodeI, branch->Y_(kTerm, iTerm));
-                        }
-                    }
+                    YHelper.insert(idxNodeI, idxNodeK, branch->Y_(i, k));
+                    YHelper.insert(idxNodeK, idxNodeI, branch->Y_(k, i));
                 }
             }
         } // Loop over branches.
