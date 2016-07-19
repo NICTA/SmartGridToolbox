@@ -55,13 +55,11 @@ namespace Sgt
 
     PfBranch::PfBranch(const std::string& id0, const std::string& id1, const Phases& phases0, const Phases& phases1,
                        const Mat<Complex>& Y) :
-        nPhase_(phases0.size()),
         ids_{{id0, id1}},
         phases_{{phases0, phases1}},
         Y_(Y)
     {
-        assert(phases1.size() == nPhase_);
-        auto nTerm = 2 * nPhase_;
+        auto nTerm = phases0.size() + phases1.size();
         assert(Y.n_rows == nTerm);
         assert(Y.n_cols == nTerm);
     }
@@ -157,32 +155,39 @@ namespace Sgt
             sgtAssert(it1 != busMap_.end(), "BranchComp " << branch->ids_[0] << " " << branch->ids_[1] 
                     << " contains a non-existent bus " << branch->ids_[1] << ".");
             const PfBus* buses[] = {it0->second.get(), it1->second.get()};
-            auto nTerm = 2 * branch->nPhase_;
 
             // There is one link per distinct pair of bus/phase pairs.
-            for (uword i = 0; i < nTerm; ++i)
+            for (std::size_t busIdxI = 0; busIdxI < 2; ++busIdxI)
             {
-                auto busIdxI = i / branch->nPhase_; // 0 or 1
-                auto branchPhaseIdxI = i % branch->nPhase_; // 0 to nPhase of branch.
-                const PfBus* busI = buses[busIdxI];
-                auto busPhaseIdxI = busI->phases_.index(branch->phases_[busIdxI][branchPhaseIdxI]);
-                const PfNode* nodeI = busI->nodeVec_[busPhaseIdxI].get();
-                auto idxNodeI = nodeI->idx_;
-
-                // Only count each diagonal element in branch->Y_ once!
-                YHelper.insert(idxNodeI, idxNodeI, branch->Y_(i, i));
-
-                for (uword k = i + 1; k < nTerm; ++k)
+                for (std::size_t branchPhaseIdxI = 0; branchPhaseIdxI < branch->phases_[busIdxI].size(); 
+                        ++branchPhaseIdxI)
                 {
-                    auto busIdxK = k / branch->nPhase_; // 0 or 1
-                    auto branchPhaseIdxK = k % branch->nPhase_; // 0 to nPhase of branch.
-                    const PfBus* busK = buses[busIdxK];
-                    auto busPhaseIdxK = busK->phases_.index(branch->phases_[busIdxK][branchPhaseIdxK]);
-                    const PfNode* nodeK = busK->nodeVec_[busPhaseIdxK].get();
-                    auto idxNodeK = nodeK->idx_;
+                    uword iTerm = busIdxI == 0 ? branchPhaseIdxI : branchPhaseIdxI + branch->phases_[0].size();
+                    const PfBus* busI = buses[busIdxI];
+                    auto busPhaseIdxI = busI->phases_.index(branch->phases_[busIdxI][branchPhaseIdxI]);
+                    const PfNode* nodeI = busI->nodeVec_[busPhaseIdxI].get();
+                    auto idxNodeI = nodeI->idx_;
 
-                    YHelper.insert(idxNodeI, idxNodeK, branch->Y_(i, k));
-                    YHelper.insert(idxNodeK, idxNodeI, branch->Y_(k, i));
+                    // Only count each diagonal element in branch->Y_ once!
+                    YHelper.insert(idxNodeI, idxNodeI, branch->Y_(iTerm, iTerm));
+
+                    for (std::size_t busIdxK = 0; busIdxK < 2; ++busIdxK)
+                    {
+                        for (std::size_t branchPhaseIdxK = 0; branchPhaseIdxK < branch->phases_[busIdxK].size(); 
+                                ++branchPhaseIdxK)
+                        {
+                            uword kTerm = busIdxK == 0 
+                                ? branchPhaseIdxK 
+                                : branchPhaseIdxK + branch->phases_[0].size();
+                            const PfBus* busK = buses[busIdxK];
+                            auto busPhaseIdxK = busK->phases_.index(branch->phases_[busIdxK][branchPhaseIdxK]);
+                            const PfNode* nodeK = busK->nodeVec_[busPhaseIdxK].get();
+                            auto idxNodeK = nodeK->idx_;
+
+                            YHelper.insert(idxNodeI, idxNodeK, branch->Y_(iTerm, kTerm));
+                            YHelper.insert(idxNodeK, idxNodeI, branch->Y_(kTerm, iTerm));
+                        }
+                    }
                 }
             }
         } // Loop over branches.
