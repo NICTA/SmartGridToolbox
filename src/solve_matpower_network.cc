@@ -61,14 +61,15 @@ int main(int argc, char** argv)
 
     bool warmStart = cmdOptionExists(argv, argc, "--warm_start");
     
-    bool debug = cmdOptionExists(argv, argc, "--debug");
+    const char* debug = getCmdOption(argv, argc, "--debug");
 
     if (debug)
     {
         std::cout << "debug" << std::endl;
         Sgt::messageLogLevel() = Sgt::LogLevel::VERBOSE;
         Sgt::warningLogLevel() = Sgt::LogLevel::VERBOSE;
-        Sgt::debugLogLevel() = Sgt::LogLevel::NORMAL;
+        Sgt::debugLogLevel() = std::string(debug) == std::string("verbose") 
+            ? Sgt::LogLevel::VERBOSE : Sgt::LogLevel::NORMAL;
     }
 
     Network nw(100.0);

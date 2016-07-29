@@ -83,7 +83,7 @@ namespace Sgt
         uword nPqPv = nPq + nPv;
         dDdVr = SpMat<Complex>(nPqPv, nPqPv);
         dDdVi = SpMat<Complex>(nPqPv, nPqPv);
-        dDdQPv = SpMat<Complex>(nPqPv, nPv);
+        dDPvdQPv = SpMat<Complex>(nPv, nPv);
     }
 
     bool PowerFlowNrRectSolver::solve(Network& netw)
@@ -155,7 +155,7 @@ namespace Sgt
         {
             sgtLogDebug() << "Iteration = " << niter << std::endl;
 
-            auto D = calcD(V, SGenPv, M2PvConst);
+            auto D = calcD(V, SGenPv);
 
             err = norm(D, "inf");
             sgtLogDebug(LogLevel::VERBOSE) << "D = " << std::setprecision(5) << std::setw(9) << D << std::endl;
@@ -169,10 +169,60 @@ namespace Sgt
 
             auto J = calcJ(V, SGenPv);
 
+            if (debugLogLevel() >= LogLevel::VERBOSE)
+            {
+                sgtLogDebug(LogLevel::VERBOSE) << "Before modify" << std::endl;
+
+                sgtLogDebug(LogLevel::VERBOSE) << "DPq VrPq" << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(real(J.dDdVr(mod_->selPq(), mod_->selPq())));
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(imag(J.dDdVr(mod_->selPq(), mod_->selPq())));
+
+                sgtLogDebug(LogLevel::VERBOSE) << "DPv VrPq" << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(real(J.dDdVr(mod_->selPv(), mod_->selPq())));
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(imag(J.dDdVr(mod_->selPv(), mod_->selPq())));
+
+                sgtLogDebug(LogLevel::VERBOSE) << "DPq ViPq" << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(real(J.dDdVi(mod_->selPq(), mod_->selPq())));
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(imag(J.dDdVi(mod_->selPq(), mod_->selPq())));
+
+                sgtLogDebug(LogLevel::VERBOSE) << "DPv ViPq" << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(real(J.dDdVi(mod_->selPv(), mod_->selPq())));
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(imag(J.dDdVi(mod_->selPv(), mod_->selPq())));
+
+                sgtLogDebug(LogLevel::VERBOSE) << "DPq VrPv" << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(real(J.dDdVr(mod_->selPq(), mod_->selPv())));
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(imag(J.dDdVr(mod_->selPq(), mod_->selPv())));
+
+                sgtLogDebug(LogLevel::VERBOSE) << "DPv VrPv" << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(real(J.dDdVr(mod_->selPv(), mod_->selPv()))); // *
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(imag(J.dDdVr(mod_->selPv(), mod_->selPv()))); // *
+
+                sgtLogDebug(LogLevel::VERBOSE) << "DPq ViPv" << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(real(J.dDdVi(mod_->selPq(), mod_->selPv())));
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(imag(J.dDdVi(mod_->selPq(), mod_->selPv())));
+
+                sgtLogDebug(LogLevel::VERBOSE) << "DPv ViPv" << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(real(J.dDdVi(mod_->selPv(), mod_->selPv())));
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(imag(J.dDdVi(mod_->selPv(), mod_->selPv())));
+
+                sgtLogDebug(LogLevel::VERBOSE) << "DPv QPv" << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(real(J.dDPvdQPv));
+                sgtLogDebug(LogLevel::VERBOSE) << Mat<double>(imag(J.dDPvdQPv)); // *
+            }
+
             if (mod_->nPv() > 0)
             {
                 modifyForPv(J, D, Vr, Vi, M2, M2PvConst);
             }
+
+            // Construct the f vector consisting of real and imgaginary parts of D.
+            auto f = construct_f(D); 
+
+            // Construct the full Jacobian from J, which contains the block structure.
+            auto JMat = constructJMatrix(J);
+
+            // Solution vector.
+            Col<double> x;
 
             if (debugLogLevel() >= LogLevel::VERBOSE)
             {
@@ -182,19 +232,11 @@ namespace Sgt
                     << "Before solve: M      = " << std::setprecision(5) << std::setw(9) << M << std::endl;
                 sgtLogDebug(LogLevel::VERBOSE) 
                     << "Before solve: SGenPv = " << std::setprecision(5) << std::setw(9) << SGenPv << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) 
+                    << "Before solve: f      = " << std::setprecision(5) << std::setw(9) << f << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) 
+                    << "Before solve: JMat   = " << std::setprecision(5) << std::setw(9) << JMat << std::endl;
             }
-
-            // Construct the f vector consisting of real and imgaginary parts of D.
-            auto f = construct_f(D); 
-
-            // Construct the full Jacobian from J, which contains the block structure.
-            auto JMat = constructJMatrix(J);
-
-            std::cout << "f    = " << f << std::endl;
-            std::cout << "JMat = " << JMat << std::endl;
-
-            // Solution vector.
-            Col<double> x;
             
             bool ok;
 #ifdef WITH_KLU
@@ -240,14 +282,14 @@ namespace Sgt
             // Set SGenPv from PGenPv and QGenPv.
             SGenPv = cx_vec(PGenPvConst, QGenPv);
 
-            // if (debugLogLevel() >= LogLevel::VERBOSE)
+            if (debugLogLevel() >= LogLevel::VERBOSE)
             {
                 sgtLogDebug()
-                    << "Updated V   = " << std::setprecision(5) << std::setw(9) << V << std::endl;
+                    << "Updated V      = " << std::setprecision(5) << std::setw(9) << V << std::endl;
                 sgtLogDebug()
-                    << "Updated M^2 = " << std::setprecision(5) << std::setw(9) << M << std::endl;
+                    << "Updated M      = " << std::setprecision(5) << std::setw(9) << M << std::endl;
                 sgtLogDebug()
-                    << "Updated SCg = " << std::setprecision(5) << std::setw(9) << SGenPv(0) - static_cast<Complex>(mod_->SConst()(0, 0)) << std::endl;
+                    << "Updated SGenPv = " << std::setprecision(5) << std::setw(9) << SGenPv(0) << std::endl;
             }
         }
 
@@ -293,7 +335,7 @@ namespace Sgt
     }
 
     // At this stage, we are treating f as if all buses were PQ. PV buses will be taken into account later.
-    Col<Complex> PowerFlowNrRectSolver::calcD(const Col<Complex>& V, const Col<Complex>& SGenPv, const Col<double>& M2PvConst) const
+    Col<Complex> PowerFlowNrRectSolver::calcD(const Col<Complex>& V, const Col<Complex>& SGenPv) const
     {
         const auto YConstPqPv = mod_->YConst().rows(mod_->selPqPv().a, mod_->selPqPv().b);
         const auto IConstPqPv = mod_->IConst().rows(mod_->selPqPv().a, mod_->selPqPv().b);
@@ -301,17 +343,12 @@ namespace Sgt
 
         Col<Complex> D = -YConstPqPv * V;
 
-        std::cout << "calcD Vr  = " << real(V(0)) << std::endl;
-        std::cout << "calcD Vi  = " << imag(V(0)) << std::endl;
-        std::cout << "calcD PCg = " << real(SGenPv(0) - SConstPqPv(0, 0)) << std::endl;
-        std::cout << "calcD QCg = " << imag(SGenPv(0) - SConstPqPv(0, 0)) << std::endl;
-
         for (auto it = SConstPqPv.begin(); it != SConstPqPv.end(); ++it) 
         {
             uword i = it.row();
             uword k = it.col();
-            // Complex Vik = i == k ? V(i) : V(i) - V(k); // Ground elems stored in diagonal elems of SConst.
-            // D(i) -= conj(*it / Vik);
+            Complex Vik = i == k ? V(i) : V(i) - V(k); // Ground elems stored in diagonal elems of SConst.
+            D(i) -= conj(*it / Vik);
         }
  
         for (auto it = IConstPqPv.begin(); it != IConstPqPv.end(); ++it) 
@@ -324,12 +361,9 @@ namespace Sgt
 
         if (mod_->nPv() > 0)
         {
-            // D(mod_->selPv()) += conj(SGenPv / V(mod_->selPv()));
+            D(mod_->selPv()) += conj(SGenPv / V(mod_->selPv()));
         }
 
-        D(0) += conj(SGenPv(0) - SConstPqPv(0, 0)) * V(0) / M2PvConst(0);
-                   
-        std::cout << "calcD D   = " << D << std::endl;
         return D;
     }
 
@@ -399,12 +433,7 @@ namespace Sgt
         }
         J.dDdVr = hVr.get();
         J.dDdVi = hVi.get();
-        J.dDdQPv = hQg.get();
-
-        std::cout << -conj(SGenPv(0) / (V(0) * V(0))) + conj(Complex(SConstPqPv(0, 0)) / (V(0)*V(0))) << std::endl;
-        std::cout << "J.dDdVr " << Mat<Complex>(J.dDdVr) << std::endl;
-        std::cout << "J.dDdVi " << Mat<Complex>(J.dDdVi) << std::endl;
-        std::cout << "J.dDdQPv " << Mat<Complex>(J.dDdQPv) << std::endl;
+        J.dDPvdQPv = hQg.get();
 
         return J;
     }
@@ -429,8 +458,9 @@ namespace Sgt
             {
                 // Loop over all buses in this column.
                 uword i = it.row();
-                D(i) += *it * DMult; // Adding DMult * this column to D.
-                J.dDdVi(i, k) += *it * JMult; // Adding JMult * this column to corresponding d/dVi col.
+                Complex x = *it;
+                D(i) += x * DMult; // Adding DMult * this column to D.
+                J.dDdVi(i, k) += x * JMult; // Adding JMult * this column to corresponding d/dVi col.
             }
         }
     }
@@ -451,26 +481,28 @@ namespace Sgt
     {
         SparseHelper<double> h(nVar(), nVar(), true, true, true);
 
-        auto insert = [&](const auto& JSel, const auto& xSel)
+        auto insert = [&](const auto& JSel, const auto& indDim1R, const auto& indDim1I, const auto& indDim2)
         {
             for (auto it = JSel.begin(); it != JSel.end(); ++it)
             {
                 uword i = it.row(); 
                 uword k = it.col(); 
                 Complex x = *it;
-                h.insert(selDrFrom_f_(i), xSel(k), real(x));
-                h.insert(selDiFrom_f_(i), xSel(k), imag(x));
+                h.insert(indDim1R(i), indDim2(k), real(x));
+                h.insert(indDim1I(i), indDim2(k), imag(x));
             }
         };
        
-        insert(J.dDdVi, selViFrom_x_); // All Vi rows.
+        insert(J.dDdVi, selDrFrom_f_, selDiFrom_f_, selViFrom_x_);
         if (mod_->nPq() > 0)
         {
-            insert(J.dDdVr.cols(mod_->selPq().a, mod_->selPq().b), selVrOrQFrom_x_(mod_->selPq())); // Vr PQ rows.
+            insert(J.dDdVr.cols(mod_->selPq().a, mod_->selPq().b), selDrFrom_f_, selDiFrom_f_,
+                   selVrOrQFrom_x_(mod_->selPq())); // Vr PQ.
         }
         if (mod_->nPv() > 0)
         {
-            insert(J.dDdQPv, selVrOrQFrom_x_(mod_->selPv())); // Q PV rows.
+            insert(J.dDPvdQPv, selDrFrom_f_(mod_->selPv()), selDiFrom_f_(mod_->selPv()), 
+                   selVrOrQFrom_x_(mod_->selPv())); // Q PV.
         }
 
         return h.get();

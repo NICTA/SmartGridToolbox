@@ -32,7 +32,7 @@ namespace Sgt
     {
         arma::SpMat<Complex> dDdVr;
         arma::SpMat<Complex> dDdVi;
-        arma::SpMat<Complex> dDdQPv;
+        arma::SpMat<Complex> dDPvdQPv;
 
         Jacobian(arma::uword nPq, arma::uword nPv);
     };
@@ -58,7 +58,7 @@ namespace Sgt
 
             void initSubmatrixRanges();
 
-            arma::Col<Complex> calcD(const arma::Col<Complex>& V, const arma::Col<Complex>& SGenPv, const arma::Col<double>& M2PvConst) const;
+            arma::Col<Complex> calcD(const arma::Col<Complex>& V, const arma::Col<Complex>& SGenPv) const;
 
             Jacobian calcJ(const arma::Col<Complex>& V, const arma::Col<Complex>& SGenPv) const;
 
