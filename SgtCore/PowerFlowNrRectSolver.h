@@ -58,9 +58,15 @@ namespace Sgt
 
             void initSubmatrixRanges();
 
-            arma::Col<Complex> calcD(const arma::Col<Complex>& V, const arma::Col<Complex>& SGenPv) const;
+            arma::Col<Complex> calcD(
+                    const arma::Col<Complex>& V, 
+                    const arma::Col<Complex>& SGenPv,
+                    const arma::Col<double>& M2PvConst) const;
 
-            Jacobian calcJ(const arma::Col<Complex>& V, const arma::Col<Complex>& SGenPv) const;
+            Jacobian calcJ(
+                    const arma::Col<Complex>& V,
+                    const arma::Col<Complex>& SGenPv,
+                    const arma::Col<double>& M2PvConst) const;
 
             void modifyForPv(
                     Jacobian& J,
