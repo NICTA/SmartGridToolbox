@@ -414,7 +414,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
                 {
                     ++nBadV;
                 }
-                if (std::abs(S - bus->SGen()(0) - bus->SConst()(0)) / nw.PBase() >= 1e-3)
+                if (std::abs(S - bus->SGen()(0) + bus->SConst()(0, 0)) / nw.PBase() >= 1e-3)
                 {
                     ++nBadS;
                 }
