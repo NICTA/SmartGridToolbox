@@ -112,7 +112,7 @@ int main(int argc, char** argv)
             auto V = nw.V2Pu(bus->V()[0], bus->VBase());
             auto SGen = bus->SGen()[0];
             SGenTot += SGen;
-            auto SLoad = -bus->SConst()[0];
+            auto SLoad = bus->SConst()[0];
             SLoadTot += SLoad;
             auto yZip = bus->YConst()[0];
             auto IConst = bus->IConst()[0];

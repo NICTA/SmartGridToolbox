@@ -14,7 +14,7 @@ for file = files;
    bus(:, 9) -= angOff;
 
    V = bus(:, 8) .* exp(I * bus(:, 9) * pi / 180);
-   S = - bus(:, 3) - I * bus(:, 4);
+   S = zeros(rows(bus), 1);
    for (row = gen')
       busIdx = find(bus(:, 1) == row(1));
       S(busIdx) += row(2) + I * row(3);

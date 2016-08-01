@@ -39,45 +39,6 @@ namespace
 
 namespace Sgt
 {
-    namespace
-    {
-        Col<Complex> calcSGenSl(
-                span selSl,
-                const Col<Complex>& V,
-                const Col<double>& M,
-                const SpMat<Complex>& YConst,
-                const SpMat<Complex>& IConst,
-                const SpMat<Complex>& SConst)
-        {
-            auto VSl = V(selSl);
-            auto YConstSl = YConst.rows(selSl.a, selSl.b);
-            auto IConstSl = IConst.rows(selSl.a, selSl.b);
-            auto SConstSl = SConst.rows(selSl.a, selSl.b);
-
-            Col<Complex> SGenSl = conj(YConst.rows(selSl.a, selSl.b) * V);
-
-            for (auto it = SConstSl.begin(); it != SConstSl.end(); ++it)
-            {
-                uword i = it.row(); // Index in submatrix.
-                uword k = it.col(); // Index in both submatrix and full matrix, since we're using rows().
-                Complex Vik = i == k ? VSl(i) : VSl(i) - V(k); // Ground elems stored in diagonal elems of SConst.
-                SGenSl(i) += static_cast<Complex>(*it) / Vik;
-            }
-
-            for (auto it = IConstSl.begin(); it != IConstSl.end(); ++it)
-            {
-                uword i = it.row(); // Index in submatrix.
-                uword k = it.col(); // Index in both submatrix and full matrix, since we're using rows().
-                Complex Vik = i == k ? VSl(i) : VSl(i) - V(k); // Ground elems stored in diagonal elems of SConst.
-                SGenSl(i) += conj(IConst(i, k) * Vik) / abs(Vik);
-            }
-
-            SGenSl %= VSl;
-
-            return SGenSl;
-        }
-    }
-
     Jacobian::Jacobian(uword nPq, uword nPv)
     {
         uword nPqPv = nPq + nPv;
@@ -139,18 +100,19 @@ namespace Sgt
         // Construct the model from the network.
         init(islandIdx);
 
-        // Variables and derived quantities:
         Col<Complex> V = mod_->V();
         Col<double> Vr = real(V);
         Col<double> Vi = imag(V);
         Col<double> M2 = square(Vr) + square(Vi);
         Col<double> M = sqrt(M2);
-        Col<Complex> SGenPv = mod_->nPv() > 0 ? mod_->SGen()(mod_->selPv()) : Col<Complex>();
-        Col<double> QGenPv = imag(SGenPv); // Variable.
+        const Col<double> M2PvSetpt = mod_->nPv() > 0 ? square(M(mod_->selPv())) : Col<double>();
 
-        // Setpoints.
-        const Col<double> PGenPvConst = real(SGenPv);
-        const Col<double> M2PvConst = mod_->nPv() > 0 ? square(M(mod_->selPv())) : Col<double>();
+        Col<Complex> SGen = mod_->SGen();
+        const Col<double> PGenPv = mod_->nPv() > 0 ? real(SGen(mod_->selPv())) : Col<double>();
+        Col<double> QGenPv = mod_->nPv() > 0 ? imag(SGen(mod_->selPv())) : Col<double>();
+
+        const Col<Complex> SConstDiag = mod_->SConst().diag();
+        Col<Complex> Scg = SGen - SConstDiag;
 
         bool wasSuccessful = false;
         double err = 0;
@@ -163,7 +125,7 @@ namespace Sgt
                 sgtLogDebug() << "Vi = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
                 if (mod_->nPv() > 0)
                 {
-                    auto ScgPv = SGenPv - Col<Complex>(mod_->SConst().diag())(mod_->selPv());
+                    auto ScgPv = Scg(mod_->selPv());
                     Col<double> PcgPv = real(ScgPv);
                     Col<double> QcgPv = imag(ScgPv);
                     sgtLogDebug() << "PcgPv = " << std::setprecision(5) << std::setw(9) << PcgPv << std::endl;
@@ -254,7 +216,7 @@ namespace Sgt
             sgtLogDebug() << "Iteration = " << niter << std::endl;
             debugPrintVars();
 
-            auto D = calcD(V, SGenPv, M2PvConst);
+            auto D = calcD(V, Scg, M2PvSetpt);
 
             err = norm(D, "inf");
             sgtLogDebug() << "Error = " << err << std::endl;
@@ -265,14 +227,14 @@ namespace Sgt
                 break;
             }
 
-            auto J = calcJ(V, SGenPv, M2PvConst);
+            auto J = calcJ(V, Scg, M2PvSetpt);
 
             sgtLogDebug() << "Before modifyForPv:" << std::endl;
             debugPrintProb(D, J);
 
             if (mod_->nPv() > 0)
             {
-                modifyForPv(J, D, Vr, Vi, M2, M2PvConst);
+                modifyForPv(J, D, Vr, Vi, M2, M2PvSetpt);
             }
             
             sgtLogDebug() << "After modifyForPv:" << std::endl;
@@ -319,7 +281,7 @@ namespace Sgt
                 auto VrPv = Vr(mod_->selPv());
                 auto ViPv = Vi(mod_->selPv());
                 const auto DeltaViPv = x(selViFrom_x_(mod_->selPv()));
-                VrPv += (M2PvConst - square(VrPv) - square(ViPv) - 2 * ViPv % DeltaViPv) / (2 * VrPv);
+                VrPv += (M2PvSetpt - square(VrPv) - square(ViPv) - 2 * ViPv % DeltaViPv) / (2 * VrPv);
                 ViPv += DeltaViPv;
 
                 // Update QGen for PV buses based on the solution.
@@ -332,29 +294,28 @@ namespace Sgt
             M = sqrt(M2);
        
             // Set SGenPv from PGenPv and QGenPv.
-            SGenPv = cx_vec(PGenPvConst, QGenPv);
-
+            if (mod_->nPv() > 0)
+            {
+                SGen(mod_->selPv()) = cx_vec(PGenPv, QGenPv); 
+                Scg(mod_->selPv()) = SGen(mod_->selPv()) - SConstDiag(mod_->selPv());
+            }
         }
 
         if (!wasSuccessful)
         {
             sgtLogWarning() << "PowerFlowNrRectSolver: failed to converge." << std::endl;
         }
+        
+        // Set the slack generation.
+        if (mod_->nSl() > 0)
+        {
+            SGen(mod_->selSl()) = calcSGenSl(V, M);
+        }
 
         // Propagate V to the model.
         mod_->setV(V);
 
         // Propagate SGen to the model.
-        Col<Complex> SGen(mod_->nNode(), fill::zeros);
-        if (mod_->nPv() > 0)
-        {
-            SGen(mod_->selPv()) = SGenPv;
-        }
-        if (mod_->nSl() > 0)
-        {
-            SGen(mod_->selSl()) = 
-                calcSGenSl(mod_->selSl(), V, abs(V), mod_->YConst(), mod_->IConst(), mod_->SConst());
-        }
         mod_->setSGen(SGen);
 
         stopwatch.stop();
@@ -380,14 +341,24 @@ namespace Sgt
     // At this stage, we are treating f as if all buses were PQ. PV buses will be taken into account later.
     Col<Complex> PowerFlowNrRectSolver::calcD(
             const Col<Complex>& V,
-            const Col<Complex>& SGenPv,
-            const Col<double>& M2PvConst) const
+            const Col<Complex>& Scg,
+            const Col<double>& M2PvSetpt) const
     {
         const auto YConstPqPv = mod_->YConst().rows(mod_->selPqPv().a, mod_->selPqPv().b);
         const auto IConstPqPv = mod_->IConst().rows(mod_->selPqPv().a, mod_->selPqPv().b);
         const auto SConstPqPv = mod_->SConst().rows(mod_->selPqPv().a, mod_->selPqPv().b);
 
         Col<Complex> D = -YConstPqPv * V;
+       
+        if (mod_->nPq() > 0)
+        {
+            D(mod_->selPq()) += conj(Scg(mod_->selPq()) / V(mod_->selPq()));
+        }
+
+        if (mod_->nPv() > 0)
+        {
+            D(mod_->selPv()) += conj(Scg(mod_->selPv())) % V(mod_->selPv()) / M2PvSetpt;
+        }
 
         for (auto it = SConstPqPv.begin(); it != SConstPqPv.end(); ++it) 
         {
@@ -398,18 +369,6 @@ namespace Sgt
                 continue;
             }
             D(i) -= conj(*it / (V(i) - V(k)));
-        }
-
-        for (uword i = 0; i < mod_->nPq(); ++i)
-        {
-            uword iPq = mod_->iPq(i);
-            D(iPq) -= conj(SConstPqPv(iPq, iPq) / V(iPq));
-        }
-
-        for (uword i = 0; i < mod_->nPv(); ++i)
-        {
-            uword iPv= mod_->iPv(i);
-            D(iPv) += conj(SGenPv(i) - SConstPqPv(iPv, iPv)) * V(iPv) / M2PvConst(i);
         }
 
         for (auto it = IConstPqPv.begin(); it != IConstPqPv.end(); ++it) 
@@ -426,8 +385,8 @@ namespace Sgt
     // At this stage, we are treating f as if all buses were PQ. PV buses will be taken into account later.
     Jacobian PowerFlowNrRectSolver::calcJ(
             const Col<Complex>& V,
-            const Col<Complex>& SGenPv,
-            const Col<double>& M2PvConst) const
+            const Col<Complex>& Scg,
+            const Col<double>& M2PvSetpt) const
     {
         auto YConstPqPv = mod_->YConst()(mod_->selPqPv(), mod_->selPqPv());
         auto IConstPqPv = mod_->IConst()(mod_->selPqPv(), mod_->selPqPv());
@@ -462,20 +421,18 @@ namespace Sgt
         for (uword i = 0; i < mod_->nPq(); ++i)
         {
             uword iPq = mod_->iPq(i);
-            Complex x = conj(static_cast<Complex>(SConstPqPv(iPq, iPq)) / (V(iPq) * V(iPq)));
-
-            hVr.insert(iPq, iPq, x);
-            hVi.insert(iPq, iPq, -im * x);
+            Complex x = conj(static_cast<Complex>(Scg(iPq)) / (V(iPq) * V(iPq)));
+            hVr.insert(iPq, iPq, -x);
+            hVi.insert(iPq, iPq, im * x);
         }
 
         for (uword i = 0; i < mod_->nPv(); ++i)
         {
             uword iPv = mod_->iPv(i);
-            Complex x = conj(SGenPv(i) - static_cast<Complex>(SConstPqPv(iPv, iPv))) / M2PvConst(i);
-
+            Complex x = conj(Scg(iPv)) / M2PvSetpt(i);
             hVr.insert(iPv, iPv, x);
             hVi.insert(iPv, iPv, im * x);
-            hQg.insert(i, i, -im * V(iPv) / M2PvConst(i));
+            hQg.insert(i, i, -im * V(iPv) / M2PvSetpt(i));
         }
 
         for (auto it = YConstPqPv.begin(); it != YConstPqPv.end(); ++it)
@@ -518,12 +475,12 @@ namespace Sgt
             const Col<double>& Vr,
             const Col<double>& Vi,
             const Col<double>& M2,
-            const Col<double>& M2PvConst)
+            const Col<double>& M2PvSetpt)
     {
         for (uword k = 0; k < mod_->nPv(); ++k) // Loop over PV buses.
         {
             uword kPv = mod_->iPv(k); // Get bus index in full list of buses.
-            double DMult = 0.5 * (M2PvConst(k) - M2(kPv)) / Vr(kPv);
+            double DMult = 0.5 * (M2PvSetpt(k) - M2(kPv)) / Vr(kPv);
             double JMult = -Vi(kPv) / Vr(kPv);
 
             auto colK = J.dDdVr.col(kPv); // Select column in J corresponding to d/dVr for PV bus k.
@@ -579,5 +536,37 @@ namespace Sgt
         }
 
         return h.get();
+    }
+            
+    Col<Complex> PowerFlowNrRectSolver::calcSGenSl(const Col<Complex>& V, const Col<double>& M)
+    {
+        auto VSl = V(mod_->selSl());
+        auto YConstSl = mod_->YConst().rows(mod_->selSl().a, mod_->selSl().b);
+        auto IConstSl = mod_->IConst().rows(mod_->selSl().a, mod_->selSl().b);
+        auto SConstSl = mod_->SConst().rows(mod_->selSl().a, mod_->selSl().b);
+
+        Col<Complex> SGenSl = conj(YConstSl * V);
+
+        for (auto it = SConstSl.begin(); it != SConstSl.end(); ++it)
+        {
+            uword i = it.row(); // Index in submatrix.
+            uword k = it.col(); // Index in both submatrix and full matrix, since we're using rows().
+            uword iSl = mod_->iSl(i); // Index in full matrix.
+            Complex Vik = iSl == k ? VSl(i) : VSl(i) - V(k); // Ground elems stored in diagonal elems of SConst.
+            SGenSl(i) += static_cast<Complex>(*it) / Vik;
+        }
+
+        for (auto it = IConstSl.begin(); it != IConstSl.end(); ++it)
+        {
+            uword i = it.row(); // Index in submatrix.
+            uword k = it.col(); // Index in both submatrix and full matrix, since we're using rows().
+            uword iSl = mod_->iSl(i); // Index in full matrix.
+            Complex Vik = iSl == k ? VSl(i) : VSl(i) - V(k); // Ground elems stored in diagonal elems of SConst.
+            SGenSl(i) += conj(static_cast<Complex>(*it) * Vik) / abs(Vik);
+        }
+
+        SGenSl %= VSl;
+
+        return SGenSl;
     }
 }

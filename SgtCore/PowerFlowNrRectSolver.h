@@ -60,13 +60,13 @@ namespace Sgt
 
             arma::Col<Complex> calcD(
                     const arma::Col<Complex>& V, 
-                    const arma::Col<Complex>& SGenPv,
-                    const arma::Col<double>& M2PvConst) const;
+                    const arma::Col<Complex>& Scg,
+                    const arma::Col<double>& M2PvSetpt) const;
 
             Jacobian calcJ(
                     const arma::Col<Complex>& V,
-                    const arma::Col<Complex>& SGenPv,
-                    const arma::Col<double>& M2PvConst) const;
+                    const arma::Col<Complex>& Scg,
+                    const arma::Col<double>& M2PvSetpt) const;
 
             void modifyForPv(
                     Jacobian& J,
@@ -74,11 +74,13 @@ namespace Sgt
                     const arma::Col<double>& Vr,
                     const arma::Col<double>& Vi,
                     const arma::Col<double>& M2,
-                    const arma::Col<double>& M2PvConst);
+                    const arma::Col<double>& M2PvSetpt);
 
             arma::Col<double> construct_f(const arma::Col<Complex>&D) const;
 
             arma::SpMat<double> constructJMatrix(const Jacobian& J) const;
+        
+            arma::Col<Complex> calcSGenSl(const arma::Col<Complex>& V, const arma::Col<double>& M);
 
         public:
 
