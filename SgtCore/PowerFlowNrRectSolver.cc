@@ -95,7 +95,10 @@ namespace Sgt
         bool ok = true;
         for (auto& island : netw.islands())
         {
-            ok = solveForIsland(island.idx) && ok;
+            if (island.isSupplied)
+            {
+                ok = solveForIsland(island.idx) && ok;
+            }
         }
         return ok;
     }
@@ -125,6 +128,8 @@ namespace Sgt
     
     bool PowerFlowNrRectSolver::solveForIsland(int islandIdx)
     {
+        sgtLogDebug() << "Solve for island " << islandIdx << std::endl;
+
         double duration = 0;
 
         Stopwatch stopwatch;
@@ -154,8 +159,6 @@ namespace Sgt
         auto debugPrintVars = [&](){
             if (debugLogLevel() >= LogLevel::VERBOSE)
             {
-                Col<double> Vr = real(V);
-                Col<double> Vi = imag(V);
                 sgtLogDebug() << "Vr = " << std::setprecision(5) << std::setw(9) << Vr << std::endl;
                 sgtLogDebug() << "Vi = " << std::setprecision(5) << std::setw(9) << Vi << std::endl;
                 if (mod_->nPv() > 0)
