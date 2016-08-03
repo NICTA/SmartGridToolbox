@@ -160,9 +160,9 @@ namespace Sgt
                     YConstHelper.insert(iNd, jNd, bus->YConst_(iPh, jPh)); // NOTE: filters out zeros.
                     IConstHelper.insert(iNd, jNd, bus->IConst_(iPh, jPh)); // NOTE: filters out zeros.
                     SConstHelper.insert(iNd, jNd, bus->SConst_(iPh, jPh)); // NOTE: filters out zeros.
-                    YConstHelper.insert(jNd, iNd, bus->YConst_(jPh, iPh)); // NOTE: filters out zeros.
-                    IConstHelper.insert(jNd, iNd, bus->IConst_(jPh, iPh)); // NOTE: filters out zeros.
-                    SConstHelper.insert(jNd, iNd, bus->SConst_(jPh, iPh)); // NOTE: filters out zeros.
+                    YConstHelper.insert(jNd, iNd, bus->YConst_(iPh, jPh)); // NOTE: filters out zeros.
+                    IConstHelper.insert(jNd, iNd, bus->IConst_(iPh, jPh)); // NOTE: filters out zeros.
+                    SConstHelper.insert(jNd, iNd, bus->SConst_(iPh, jPh)); // NOTE: filters out zeros.
                 }
             }
         }
