@@ -631,4 +631,116 @@ BOOST_AUTO_TEST_CASE (test_Vv_transformer)
     BOOST_CHECK_CLOSE(std::abs(V0ca/V1ca), 0.47826, 1e-6);
 }
 
+BOOST_AUTO_TEST_CASE (test_load_model_a)
+{
+    Network netw;
+    Parser<Network> p;
+    p.parse("test_load_model_a.yaml", netw);
+    netw.solvePowerFlow();
+
+    Complex y{0.1, -0.1};
+    Complex s{0.1, 0.05};
+
+    const auto& bus1 = *netw.bus("bus_1");
+    const auto& bus2 = *netw.bus("bus_2");
+
+    const Col<Complex>& V1 = bus1.V();
+    const Col<Complex>& V2 = bus2.V();
+
+    BOOST_CHECK_SMALL(norm(V1 - bus1.VNom()), 1e-9);
+
+    {
+        Complex IA = y * (V1(0) - V2(0));
+        Complex IAB = conj(s/(V2(0) - V2(1)));
+        Complex ICA = conj(s/(V2(2) - V2(0)));
+        BOOST_CHECK_SMALL(abs(IA - IAB + ICA), 1e-9);
+    }
+   
+    {
+        Complex IB = y * (V1(1) - V2(1));
+        Complex IBC = conj(s/(V2(1) - V2(2)));
+        Complex IAB = conj(s/(V2(0) - V2(1)));
+        BOOST_CHECK_SMALL(abs(IB - IBC + IAB), 1e-9);
+    }
+   
+    {
+        Complex IC = y * (V1(2) - V2(2));
+        Complex ICA = conj(s/(V2(2) - V2(0)));
+        Complex IBC = conj(s/(V2(1) - V2(2)));
+        BOOST_CHECK_SMALL(abs(IC - ICA + IBC), 1e-9);
+    }
+}
+
+BOOST_AUTO_TEST_CASE (test_load_model_b)
+{
+    Network netw;
+    Parser<Network> p;
+    p.parse("test_load_model_b.yaml", netw);
+    netw.solvePowerFlow();
+
+    Complex y{0.1, -0.1};
+    Complex s{0.1, 0.05};
+
+    const auto& bus1 = *netw.bus("bus_1");
+    const auto& bus2 = *netw.bus("bus_2");
+
+    const Col<Complex>& V1 = bus1.V();
+    const Col<Complex>& V2 = bus2.V();
+
+    BOOST_CHECK_SMALL(norm(V1 - bus1.VNom()), 1e-9);
+
+    {
+        Complex IA = y * (V1(0) - V2(0));
+        Complex IAB = conj(s/(V2(0) - V2(1)));
+        BOOST_CHECK_SMALL(abs(IA - IAB), 1e-9);
+    }
+   
+    {
+        Complex IB = y * (V1(1) - V2(1));
+        Complex IAB = conj(s/(V2(0) - V2(1)));
+        BOOST_CHECK_SMALL(abs(IB + IAB), 1e-9);
+    }
+   
+    {
+        Complex IC = y * (V1(2) - V2(2));
+        BOOST_CHECK_SMALL(abs(IC), 1e-9);
+    }
+}
+
+BOOST_AUTO_TEST_CASE (test_load_model_c)
+{
+    Network netw;
+    Parser<Network> p;
+    p.parse("test_load_model_c.yaml", netw);
+    netw.solvePowerFlow();
+
+    Complex y{0.1, -0.1};
+    Complex i{0.1, 0.05};
+
+    const auto& bus1 = *netw.bus("bus_1");
+    const auto& bus2 = *netw.bus("bus_2");
+
+    const Col<Complex>& V1 = bus1.V();
+    const Col<Complex>& V2 = bus2.V();
+
+    BOOST_CHECK_SMALL(norm(V1 - bus1.VNom()), 1e-8);
+
+    {
+        Complex IA = y * (V1(0) - V2(0));
+        Complex IAB = i * (V2(0) - V2(1)) / abs(V2(0) - V2(1));
+        BOOST_CHECK_SMALL(abs(IA - IAB), 1e-8);
+    }
+   
+    {
+        Complex IB = y * (V1(1) - V2(1));
+        Complex IAB = i * (V2(0) - V2(1)) / abs(V2(0) - V2(1));
+        BOOST_CHECK_SMALL(abs(IB + IAB), 1e-8);
+    }
+   
+    {
+        Complex IC = y * (V1(2) - V2(2));
+        BOOST_CHECK_SMALL(abs(IC), 1e-8);
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
