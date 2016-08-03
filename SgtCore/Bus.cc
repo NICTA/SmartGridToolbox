@@ -42,6 +42,62 @@ namespace Sgt
         }
     }
 
+    json Bus::toJson() const
+    {
+        json j = this->Component::toJson();
+
+        json gensJson = json::array();
+        for (const auto& g : gens())
+        {
+            gensJson.push_back(g->id());
+        }
+        
+        json zipsJson = json::array();
+        for (const auto& z : zips())
+        {
+            zipsJson.push_back(z->id());
+        }
+
+        j[sComponentType()] = {
+            {"phases", phases()},
+            {"type", type()},
+            {"V_base", VBase()},
+            {"V_nom", VNom()},
+            {"V_mag_min", VMagMin()},
+            {"V_mag_max", VMagMax()},
+            {"V", V()},
+            {"islandIdx", islandIdx()},
+            {"coords", coords()},
+            {"gens", gensJson},
+            {"zips", zipsJson}};
+        return j;
+    }
+
+    void Bus::applyVSetpoints()
+    {
+        Col<Complex> VNew(phases_.size());
+        switch (type_)
+        {
+            case BusType::SL:
+                for (uword i = 0; i < phases_.size(); ++i)
+                {
+                    VNew(i) = std::polar(VMagSetpoint_(i), VAngSetpoint_(i));
+                }
+                setV(VNew); // TODO: this triggers an event: is this desirable, or just set V_ directly?
+                break;
+            case BusType::PV:
+                VNew = V_;
+                for (uword i = 0; i < phases_.size(); ++i)
+                {
+                    VNew(i) *= VMagSetpoint_(i) / std::abs(V_(i));
+                }
+                setV(VNew);
+                break;
+            default:
+                break;
+        }
+    }
+
     int Bus::nInServiceGens() const
     {
         int sum = 0;
@@ -66,11 +122,6 @@ namespace Sgt
             }
         }
         return sum;
-    }
-
-    Col<Complex> Bus::SGen() const
-    {
-        return SGenRequested() - SGenUnserved_;
     }
 
     double Bus::JGen() const
@@ -175,71 +226,5 @@ namespace Sgt
             }
         }
         return sum;
-    }
-
-    Mat<Complex> Bus::SZipRequested() const
-    {
-        return SYConst() + SIConst() + SConst();
-    }
-
-    Mat<Complex> Bus::SZip() const
-    {
-        return SZipRequested() - SZipUnserved_;
-    }
-
-    void Bus::applyVSetpoints()
-    {
-        Col<Complex> VNew(phases_.size());
-        switch (type_)
-        {
-            case BusType::SL:
-                for (uword i = 0; i < phases_.size(); ++i)
-                {
-                    VNew(i) = std::polar(VMagSetpoint_(i), VAngSetpoint_(i));
-                }
-                setV(VNew); // TODO: this triggers an event: is this desirable, or just set V_ directly?
-                break;
-            case BusType::PV:
-                VNew = V_;
-                for (uword i = 0; i < phases_.size(); ++i)
-                {
-                    VNew(i) *= VMagSetpoint_(i) / std::abs(V_(i));
-                }
-                setV(VNew);
-                break;
-            default:
-                break;
-        }
-    }
-
-    json Bus::toJson() const
-    {
-        json j = this->Component::toJson();
-
-        json gensJson = json::array();
-        for (const auto& g : gens())
-        {
-            gensJson.push_back(g->id());
-        }
-        
-        json zipsJson = json::array();
-        for (const auto& z : zips())
-        {
-            zipsJson.push_back(z->id());
-        }
-
-        j[sComponentType()] = {
-            {"phases", phases()},
-            {"type", type()},
-            {"V_base", VBase()},
-            {"V_nom", VNom()},
-            {"V_mag_min", VMagMin()},
-            {"V_mag_max", VMagMax()},
-            {"V", V()},
-            {"islandIdx", islandIdx()},
-            {"coords", coords()},
-            {"gens", gensJson},
-            {"zips", zipsJson}};
-        return j;
     }
 }

@@ -291,15 +291,11 @@ namespace Sgt
             Col<Complex> SGen = nInService > 0
                                       ? (modBus.SGen_) / nInService
                                       : Col<Complex>(bus->phases().size(), fill::zeros);
-            // Note: we've already taken YConst and IConst explicitly into account, so this is correct.
-            // KLUDGE: We're using a vector above, rather than "auto" (which gives some kind of expression type).
-            // This is less efficient, but the latter gives errors in valgrind.
-            // Also: regarding the nInService check, recall that if nInService = 0, the bus is treated as PQ for
-            // the purpose of the solver.
 
             bus->setV(modBus.V_);
-            bus->setSGenUnserved(Col<Complex>(bus->phases().size(), fill::zeros)); // TODO: allow unserved.
-            bus->setSZipUnserved(Col<Complex>(bus->phases().size(), fill::zeros)); // TODO: allow unserved.
+            bus->setSGenUnserved(Col<Complex>(bus->phases().size(), fill::zeros));
+            bus->setSZipUnserved(Mat<Complex>(bus->phases().size(), bus->phases().size(), fill::zeros)); 
+            // TODO: allow unserved.
             switch (bus->type())
             {
                 case BusType::SL:

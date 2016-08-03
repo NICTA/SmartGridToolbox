@@ -16,14 +16,18 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <iomanip>
 #include <iostream>
 #include <map>
 
-char* getCmdOption(char** argv, int argc, const std::string & option)
+using namespace arma;
+using namespace std;
+
+char* getCmdOption(char** argv, int argc, const string & option)
 {
     auto begin = argv;
     auto end = argv + argc;
-    char ** itr = std::find(begin, end, option);
+    char ** itr = find(begin, end, option);
     if (itr != end && ++itr != end)
     {
         return *itr;
@@ -31,11 +35,11 @@ char* getCmdOption(char** argv, int argc, const std::string & option)
     return 0;
 }
 
-bool cmdOptionExists(char** argv, int argc, const std::string& option)
+bool cmdOptionExists(char** argv, int argc, const string& option)
 {
     auto begin = argv;
     auto end = argv + argc;
-    return std::find(begin, end, option) != end;
+    return find(begin, end, option) != end;
 }
 
 int main(int argc, char** argv)
@@ -45,38 +49,38 @@ int main(int argc, char** argv)
     sgtAssert(argc > 1,
             "Usage: solve_network [--solver solver_arg] [--prefix prefix] [--warm_start] [--debug] infile");
 
-    std::string inFName = argv[argc - 1];
+    string inFName = argv[argc - 1];
 
-    std::string solver = "nr";
+    string solver = "nr";
     {
         const char* opt = getCmdOption(argv, argc, "--solver");
         if (opt != nullptr) solver = opt;
     }
 
-    std::string outFName = "out.txt";
+    string outPrefix = "out";
     {
         const char* opt = getCmdOption(argv, argc, "--prefix");
-        if (opt != nullptr) outFName = opt;
+        if (opt != nullptr) outPrefix = opt;
     }
 
     bool warmStart = cmdOptionExists(argv, argc, "--warm_start");
     
-    bool debug = cmdOptionExists(argv, argc, "--debug");
+    const char* debug = getCmdOption(argv, argc, "--debug");
 
     if (debug)
     {
-        std::cout << "debug" << std::endl;
+        cout << "debug" << endl;
         Sgt::messageLogLevel() = Sgt::LogLevel::VERBOSE;
         Sgt::warningLogLevel() = Sgt::LogLevel::VERBOSE;
-        Sgt::debugLogLevel() = Sgt::LogLevel::NORMAL;
+        Sgt::debugLogLevel() = string(debug) == string("verbose") 
+            ? Sgt::LogLevel::VERBOSE : Sgt::LogLevel::NORMAL;
     }
 
     Network nw(100.0);
     Parser<Network> p;
     p.parse(inFName, nw);
 
-    std::ofstream outF(outFName.c_str());
-    std::map<std::string, int> busMap;
+    map<string, int> busMap;
 
     nw.setUseFlatStart(!warmStart);
 
@@ -84,6 +88,16 @@ int main(int argc, char** argv)
     sw.start();
     bool success = nw.solvePowerFlow();
     sw.stop();
-    std::cout << "(success, time) = " << success << " " << sw.seconds() << std::endl;
-    outF << nw << std::endl;
+    cout << "(success, time) = " << success << " " << sw.seconds() << endl;
+
+    for (auto bus : nw.buses())
+    {
+        cout
+            << fixed << setw(12) << sqrt(sum(square(real(bus->V())) + square(imag(bus->V())))) << " "
+            << fixed << setw(12) << real(bus->SGenTot()) << " "
+            << fixed << setw(12) << imag(bus->SGenTot()) << " "
+            << fixed << setw(12) << real(bus->SZipTot()) << " "
+            << fixed << setw(12) << imag(bus->SZipTot())
+            << std::endl;
+    }
 }

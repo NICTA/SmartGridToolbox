@@ -307,10 +307,21 @@ namespace Sgt
 
             SGT_PROP_GET(SGenRequested, SGenRequested, arma::Col<Complex>);
             
-            /// @brief Actual power of gens, including possible unserved generation.
-            arma::Col<Complex> SGen() const;
+            /// @brief Actual of gens, including possible unserved generation.
+            arma::Col<Complex> SGen() const
+            {
+                return SGenRequested() - SGenUnserved_;
+            }
 
             SGT_PROP_GET(SGen, SGen, arma::Col<Complex>);
+
+            /// @brief Sum of actual generation at bus.
+            Complex SGenTot() const
+            {
+                return sum(SGen());
+            }
+
+            SGT_PROP_GET(SGenTot, SGenTot, Complex);
 
             double JGen() const;
             
@@ -358,14 +369,28 @@ namespace Sgt
             SGT_PROP_GET(SConst, SConst, arma::Mat<Complex>);
             
             /// @brief Requested power of zips.
-            arma::Mat<Complex> SZipRequested() const;
+            arma::Mat<Complex> SZipRequested() const
+            {
+                return SYConst() + SIConst() + SConst();
+            }
             
             SGT_PROP_GET(SZipRequested, SZipRequested, arma::Mat<Complex>);
            
             /// @brief Actual power of zips, including possible unserved load.
-            arma::Mat<Complex> SZip() const;
+            arma::Mat<Complex> SZip() const
+            {
+                return SZipRequested() - SZipUnserved_;
+            }
             
             SGT_PROP_GET(SZip, SZip, arma::Mat<Complex>);
+           
+            /// @brief Scalar actual power consumed at bus.
+            Complex SZipTot() const
+            {
+                return sum(sum(trimatu(SZip())));
+            }
+
+            SGT_PROP_GET(SZipTot, SZipTot, Complex);
 
             /// @}
 
