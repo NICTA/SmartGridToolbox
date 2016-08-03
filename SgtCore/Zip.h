@@ -222,6 +222,10 @@ namespace Sgt
             /// @name ZIP parameters:
             /// @{
 
+            /// @brief Constant admittance component.
+            ///
+            /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
+            /// And the off-diagonal elements are between pairs of bus terminals.
             virtual arma::Mat<Complex> YConst() const override
             {
                 return YConst_;
@@ -234,6 +238,11 @@ namespace Sgt
             
             SGT_PROP_GET_SET(YConst, YConst, arma::Mat<Complex>, setYConst, const arma::Mat<Complex>&);
 
+            /// @brief Constant current component.
+            ///
+            /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
+            /// And the off-diagonal elements are between pairs of bus terminals. The phase is assumed to be relative
+            /// to the phase of V, so that the power is independent of the absolute phase.
             virtual arma::Mat<Complex> IConst() const override
             {
                 return IConst_;
@@ -246,6 +255,10 @@ namespace Sgt
             
             SGT_PROP_GET_SET(IConst, IConst, arma::Mat<Complex>, setIConst, const arma::Mat<Complex>&);
 
+            /// @brief Constant power component.
+            ///
+            /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
+            /// And the off-diagonal elements are between pairs of bus terminals.
             virtual arma::Mat<Complex> SConst() const override
             {
                 return SConst_;
