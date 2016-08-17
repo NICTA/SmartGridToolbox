@@ -25,6 +25,9 @@ namespace Sgt
     {
         public:
 
+            SGT_PROPS_INIT(VvTransformer);
+            SGT_PROPS_INHERIT(BranchAbc);
+
         /// @name Static member functions:
         /// @{
 
@@ -87,17 +90,21 @@ namespace Sgt
                 nomRatio_ = nomRatio;
                 isValid_ = false;
             }
+            
+            SGT_PROP_GET_SET(nomRatio, nomRatio, Complex, setNomRatio, Complex);
 
             Complex offNomRatio13() const
             {
                 return offNomRatio13_;
             }
-
+            
             void setOffNomRatio13(Complex offNomRatio13)
             {
                 offNomRatio13_ = offNomRatio13;
                 isValid_ = false;
             }
+            
+            SGT_PROP_GET_SET(offNomRatio13, offNomRatio13, Complex, setOffNomRatio13, Complex);
 
             Complex offNomRatio23() const
             {
@@ -109,27 +116,36 @@ namespace Sgt
                 offNomRatio23_ = offNomRatio23;
                 isValid_ = false;
             }
+            
+            SGT_PROP_GET_SET(offNomRatio23, offNomRatio23, Complex, setOffNomRatio23, Complex);
 
             Complex a13() const
             {
                 return offNomRatio13_ * nomRatio_;
             }
+            
+            SGT_PROP_GET(a13, a13, Complex);
 
             Complex a23() const
             {
                 return offNomRatio23_ * nomRatio_;
             }
+            
+            SGT_PROP_GET(a23, a23, Complex);
 
             Complex ZL() const
             {
                 return 1.0 / YL_;
             }
-
+            
             void setZL(Complex ZL)
             {
                 YL_ = 1.0 / ZL;
                 isValid_ = false;
             }
+            
+            SGT_PROP_GET_SET(ZL, ZL, Complex, setZL, Complex);
+
 
         /// @}
 

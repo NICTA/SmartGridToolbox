@@ -26,4 +26,4 @@
             bus_1_id: bus_2
             phases_0: [A, B, C]
             phases_1: [A, B, C]
-            leakage_impedance: 0+2e-5j 
+            leakage_impedance: 0+2e-5j
