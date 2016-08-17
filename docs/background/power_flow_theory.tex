@@ -781,6 +781,65 @@ where $n = n_1/n_0$ is the ideal turns ratio, $y_l$ is the leakage impedance and
 
 \subsection{Three-phase transformers}
 The nodal admittance matrices of three-phase transformers may be derived from the single-phase expression, above, combined with information about the connections between phases.
+\subsubsection{Wye-Wye}
+We have
+\begin{align}
+I_{A} &= \frac{y_l}{|n|^2}V_A - \frac{y_l}{n^*}V_a \\
+I_{B} &= \frac{y_l}{|n|^2}V_B - \frac{y_l}{n^*}V_b \\
+I_{C} &= \frac{y_l}{|n|^2}V_C - \frac{y_l}{n^*}V_c \\
+I_a &= -\frac{y_l}{n}V_A + y_l V_a \\
+I_b &= -\frac{y_l}{n}V_B + y_l V_b \\
+I_c &= -\frac{y_l}{n}V_C + y_l V_c \\
+\end{align}
+so we can immediately write down the nodal admittance relationship:
+\begin{align}
+\begin{bmatrix}I_A \\ I_B \\ I_C \\ I_a \\ I_b \\ I_c\end{bmatrix} &=
+y_l \begin{bmatrix}
+	1/|n|^2 & 0 & 0 & -1/n^* & 0 & 0 \\
+	0 & 1/|n|^2 & 0 & 0 & -1/n^* & 0 \\
+	0 & 0 & 1/|n|^2 & 0 & 0 & -1/n^* \\
+	-1/n & 0 & 0 & 1 & 0 & 0 \\
+	0 & -1/n & 0 & 0 & 1 & 0 \\
+	0 & 0 & -1/n & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}V_A \\ V_B \\ V_C \\ V_a \\ V_b \\ V_c\end{bmatrix}
+\end{align}
+with the nodal admittance matrix being specified by the matrix on the right, including the factor of $y_l$.
+
+\subsubsection{Delta-Delta}
+We have
+\begin{align}
+I_{AB} &= \frac{y_l}{|n|^2}(V_A - V_B) - \frac{y_l}{n^*}(V_a - V_b) \\
+I_{BC} &= \frac{y_l}{|n|^2}(V_B - V_C) - \frac{y_l}{n^*}(V_b - V_c) \\
+I_{CA} &= \frac{y_l}{|n|^2}(V_C - V_A) - \frac{y_l}{n^*}(V_c - V_a) \\
+I_{ab} &= -\frac{y_l}{n}(V_A - V_B) + y_l (V_a - V_b) \\
+I_{bc} &= -\frac{y_l}{n}(V_B - V_C) + y_l (V_b - V_c) \\
+I_{ca} &= -\frac{y_l}{n}(V_C - V_A) + y_l (V_c - V_a)
+\end{align}
+Also, by the KCL, we have
+\begin{align}
+I_A &= I_{AB} - I_{CA} \\ &= \frac{y_l}{|n|^2}(2V_A - V_B - V_C) - \frac{y_l}{n^*}(2V_a - V_b - V_c) \\
+I_B &= I_{BC} - I_{AB} \\ &= \frac{y_l}{|n|^2}(2V_B - V_C - V_A) - \frac{y_l}{n^*}(2V_b - V_c - V_a) \\
+I_C &= I_{CA} - I_{BC} \\ &= \frac{y_l}{|n|^2}(2V_C - V_A - V_B) - \frac{y_l}{n^*}(2V_c - V_a - V_b) \\
+I_a &= I_{ab} - I_{ca} \\ &= -\frac{y_l}{n}(2V_A - V_B - V_C) + y_l(2V_a - V_b - V_c) \\
+I_b &= I_{bc} - I_{ab} \\ &= -\frac{y_l}{n}(2V_B - V_C - V_A) + y_l(2V_b - V_c - V_a) \\
+I_c &= I_{ca} - I_{bc} \\ &= -\frac{y_l}{n}(2V_C - V_A - V_B) + y_l(2V_c - V_a - V_b)
+\end{align}
+so we can immediately write down the nodal admittance relationship:
+\begin{align}
+\begin{bmatrix}I_A \\ I_B \\ I_C \\ I_a \\ I_b \\ I_c\end{bmatrix} &=
+y_l \begin{bmatrix}
+	2/|n|^2 & -1/|n|^2 & -1/|n|^2 & -2/n^* & 1/n^* & 1/n^* \\
+	-1/|n|^2 & 2/|n|^2 & -1/|n|^2 & 1/n^* & -2/n^* & 1/n^* \\
+	-1/|n|^2 & -1/|n|^2 & 2/|n|^2 & 1/n^* & 1/n^* & -2/n^* \\
+	-2/n & 1/n & 1/n & 2 & -1 & -1 \\
+	1/n & -2/n & 1/n & -1 & 2 & -1 \\
+	1/n & 1/n & -2/n & -1 & -1 & 2
+\end{bmatrix}
+\begin{bmatrix}V_A \\ V_B \\ V_C \\ V_a \\ V_b \\ V_c\end{bmatrix}
+\end{align}
+with the nodal admittance matrix being specified by the matrix on the right, including the factor of $y_l$.
+
 \subsubsection{Delta-GWye}
 \begin{figure}
 \begin{center}
