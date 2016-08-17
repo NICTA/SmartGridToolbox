@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 
     string inFName = argv[argc - 1];
 
-    string solver = "nr";
+    string solver = "nr_rect";
     {
         const char* opt = getCmdOption(argv, argc, "--solver");
         if (opt != nullptr) solver = opt;
@@ -79,6 +79,24 @@ int main(int argc, char** argv)
     Network nw(100.0);
     Parser<Network> p;
     p.parse(inFName, nw);
+    if (solver == "nr_rect")
+    {
+        nw.setSolver(std::make_unique<PowerFlowNrRectSolver>());
+    }
+    /*
+    else if (solver == "nr_pol")
+    {
+        nw.setSolver(std::make_unique<PowerFlowNrPolSolver>());
+    }
+    else if (solver == "fd")
+    {
+        nw.setSolver(std::make_unique<PowerFlowFdSolver>());
+    }
+    else if (solver == "opf_pt")
+    {
+        nw.setSolver(std::make_unique<PowerFlowOpfPtSolver>());
+    }
+    */
 
     map<string, int> busMap;
 
