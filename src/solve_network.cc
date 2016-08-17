@@ -108,14 +108,16 @@ int main(int argc, char** argv)
     sw.stop();
     cout << "(success, time) = " << success << " " << sw.seconds() << endl;
 
+    cout << nw << std::endl;
+
     for (auto bus : nw.buses())
     {
-        cout
-            << fixed << setw(12) << sqrt(sum(square(real(bus->V())) + square(imag(bus->V())))) << " "
-            << fixed << setw(12) << real(bus->SGenTot()) << " "
-            << fixed << setw(12) << imag(bus->SGenTot()) << " "
-            << fixed << setw(12) << real(bus->SZipTot()) << " "
-            << fixed << setw(12) << imag(bus->SZipTot())
-            << std::endl;
+        cout << 
+            fixed << setw(12) << abs(bus->V()(0)) << " " << 
+            fixed << setw(12) << abs(bus->V()(1)) << " " << 
+            fixed << setw(12) << abs(bus->V()(2)) << " " <<
+            fixed << setw(12) << abs(bus->V()(0) - bus->V()(1)) << " " << 
+            fixed << setw(12) << abs(bus->V()(1) - bus->V()(2)) << " " << 
+            fixed << setw(12) << abs(bus->V()(2) - bus->V()(0)) << endl;
     }
 }

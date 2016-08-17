@@ -19,7 +19,9 @@
 
 namespace Sgt
 {
-    /// @brief Delta-grounded wye transformer.
+    /// @brief V-V / open Delta - open Delta transformer.
+    ///
+    /// Windings are between terminals 2-1 and 2-3, so that terminal 2 forms the point of the "V".
     /// @ingroup PowerFlowCore
     class VvTransformer : public BranchAbc
     {
@@ -44,21 +46,22 @@ namespace Sgt
 
             /// @brief Constructor
             /// @param nomRatio Nominal complex voltage/turns ratio for windings.
-            /// @param offNomRatio13 Off-nominal complex voltage/turns ratio for windings between phases 1 and 3.
+            /// @param offNomRatio21 Off-nominal complex voltage/turns ratio for windings between phases 2 and 1.
             /// @param offNomRatio23 Off-nominal complex voltage/turns ratio for windings between phases 2 and 3.
             /// @param ZL The leakage impedance, must be > 0.
             /// @param phases0 The phases on the first (primary) side.
             /// @param phases1 The phases on the second (secondary) side.
             VvTransformer(const std::string& id, Complex nomRatio,
-                    Complex offNomRatio13, Complex offNomRatio23, Complex ZL, 
+                    Complex offNomRatio21, Complex offNomRatio23, Complex ZL, Complex YTie ,
                     const Phases& phases0 = {Phase::A, Phase::B, Phase::C},
                     const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
                 Component(id),
                 BranchAbc(phases0, phases1),
                 nomRatio_(nomRatio),
-                offNomRatio13_(offNomRatio13),
+                offNomRatio21_(offNomRatio21),
                 offNomRatio23_(offNomRatio23),
-                YL_(1.0/ZL)
+                YL_(1.0/ZL),
+                YTie_(YTie)
             {
                 // Empty.
             }
@@ -93,18 +96,18 @@ namespace Sgt
             
             SGT_PROP_GET_SET(nomRatio, nomRatio, Complex, setNomRatio, Complex);
 
-            Complex offNomRatio13() const
+            Complex offNomRatio21() const
             {
-                return offNomRatio13_;
+                return offNomRatio21_;
             }
             
-            void setOffNomRatio13(Complex offNomRatio13)
+            void setOffNomRatio21(Complex offNomRatio21)
             {
-                offNomRatio13_ = offNomRatio13;
+                offNomRatio21_ = offNomRatio21;
                 isValid_ = false;
             }
             
-            SGT_PROP_GET_SET(offNomRatio13, offNomRatio13, Complex, setOffNomRatio13, Complex);
+            SGT_PROP_GET_SET(offNomRatio21, offNomRatio21, Complex, setOffNomRatio21, Complex);
 
             Complex offNomRatio23() const
             {
@@ -119,12 +122,12 @@ namespace Sgt
             
             SGT_PROP_GET_SET(offNomRatio23, offNomRatio23, Complex, setOffNomRatio23, Complex);
 
-            Complex a13() const
+            Complex a21() const
             {
-                return offNomRatio13_ * nomRatio_;
+                return offNomRatio21_ * nomRatio_;
             }
             
-            SGT_PROP_GET(a13, a13, Complex);
+            SGT_PROP_GET(a21, a21, Complex);
 
             Complex a23() const
             {
@@ -179,10 +182,10 @@ namespace Sgt
         private:
 
             Complex nomRatio_; ///< Nominal voltage ratio, V_nom,p/V_nom,s
-            Complex offNomRatio13_; ///< Off nominal mulitplier for nomRatio_, winding between phases 1 and 3.
+            Complex offNomRatio21_; ///< Off nominal mulitplier for nomRatio_, winding between phases 2 and 1.
             Complex offNomRatio23_; ///< Off nominal mulitplier for nomRatio_, winding between phases 2 and 3.
             Complex YL_; ///< Series leakage admittance.
-            Complex YTie_{1e4}; ///< Admittance tying phase 3 between primary and secondary (should be big).
+            Complex YTie_; ///< Admittance tying terminals 2 between primary and secondary.
 
             mutable bool isValid_{false};
             mutable arma::Mat<Complex> Y_;

@@ -895,12 +895,12 @@ Referring to Fig. \ref{FIG_OPEN_DELTA} and using Eq. (\ref{EQ_REAL_TRANS}) (and 
 \newcommand{\mba}{\ensuremath{\frac{y_l}{n}}}
 \newcommand{\mbb}{\ensuremath{y_l}}
 \begin{align}
-	I_A &= \maa(V_A - V_C) - \mab(V_a - V_c) \notag \\
-	I_B &= \maa(V_B - V_C) - \mab(V_b - V_c) \notag \\
-	I_C &= \mab(V_a - V_c) - \maa(V_A - V_C) + \mab(V_b - V_c) - \maa(V_B - V_C) \notag \\
-	I_a &= \mbb(V_a - V_c) - \mba(V_A - V_C) \notag \\
-	I_b &= \mbb(V_b - V_c) - \mba(V_B - V_C) \notag \\
-	I_c &= \mba(V_A - V_C) - \mbb(V_a - V_c) + \mba(V_B - V_C) - \mbb(V_b - V_c)
+	I_A &= \maa(V_A - V_B) - \mab(V_a - V_b) \notag \\
+	I_B &= -\maa(V_A - 2V_B + V_C) + \mab(V_a - 2V_b + V_c)\\
+	I_C &= \maa(V_C - V_B) - \mab(V_c - V_b) \notag \\
+	I_a &= -\mba(V_A - V_B) + \mbb(V_a - V_b) \notag \\
+	I_b &= \mba(V_A - 2V_B + V_C) - \mbb(V_a - 2V_b + V_c) \\
+	I_c &=  -\mba(V_C - V_B) + \mbb(V_c - V_b)
 \end{align}
 Since $I = YV$, we can deduce the bus admittance matrix $Y$ as:
 \renewcommand{\maa}[1]{\ensuremath{#1/|n|^2}}
@@ -910,12 +910,12 @@ Since $I = YV$, we can deduce the bus admittance matrix $Y$ as:
 \begin{align}
 Y &= 
 y_l\begin{bmatrix}
-	\maa{1} & 0 & -\maa{1} & -\mab{1} & 0 & \mab{1} \\
-	0 & \maa{1} & -\maa{1} & 0 & -\mab{1} & \mab{1} \\
-	-\maa{1} & -\maa{1} & \maa{2} & -\mab{1} & -\mab{1} & \mab{2} \\
-	-\mba{1} & 0 & \mba{1} & \mbb{1} & 0 & -\mbb{1} \\
-	0 & -\mba{1} & \mba{1} & 0 & \mbb{1} & -\mbb{1} \\
-	-\mba{1} & -\mba{1} & \mba{2} & \mbb{1} & \mbb{1} & -\mbb{2}
+	\maa{1} & -\maa{1} & 0 & -\mab{1} & \mab{1} & 0 \\
+	-\maa{1} & \maa{2} & -\maa{1} & \mab{1} & -\mab{2} & \mab{1} \\
+	0 & -\maa{1} & \maa{1} & 0 & \mab{1} & -\mab{1} \\
+	-\mba{1} & \mba{1} & 0 & \mbb{1} & -\mbb{1} & 0 \\
+	\mba{1} & -\mba{2} & \mba{1} & -\mbb{1} & \mbb{2} & -\mbb{1} \\
+	0 & \mba{1} & -\mba{1} & 0 & -\mbb{1} & \mbb{1}
 \end{bmatrix}
 \end{align}
 

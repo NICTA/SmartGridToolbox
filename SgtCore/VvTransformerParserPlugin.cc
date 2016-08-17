@@ -43,21 +43,18 @@ namespace Sgt
         const std::string id = parser.expand<std::string>(nd["id"]);
         Complex nomRatio = parser.expand<Complex>(nd["nom_ratio"]);
 
-        auto ndOffNomRatio13 = nd["off_nom_ratio_13"];
-        Complex offNomRatio13 = ndOffNomRatio13 ? parser.expand<Complex>(nd["off_nom_ratio_13"]) : 1.0;
+        auto ndOffNomRatio21 = nd["off_nom_ratio_21"];
+        Complex offNomRatio21 = ndOffNomRatio21 ? parser.expand<Complex>(nd["off_nom_ratio_21"]) : 1.0;
         
         auto ndOffNomRatio23 = nd["off_nom_ratio_23"];
         Complex offNomRatio23 = ndOffNomRatio23 ? parser.expand<Complex>(nd["off_nom_ratio_23"]) : 1.0;
 
         Complex ZL = parser.expand<Complex>(nd["leakage_impedance"]);
 
-        std::unique_ptr<VvTransformer> trans(new VvTransformer(id, nomRatio, offNomRatio13, offNomRatio23, ZL));
-
         auto ndTieAdmittance = nd["tie_admittance"];
-        if (ndTieAdmittance)
-        {
-            trans->setYTie(parser.expand<Complex>(ndTieAdmittance));
-        }
+        Complex YTie = ndTieAdmittance ? parser.expand<Complex>(ndTieAdmittance) : Complex{0.0, 0.0};
+        
+        std::unique_ptr<VvTransformer> trans(new VvTransformer(id, nomRatio, offNomRatio21, offNomRatio23, ZL, YTie));
 
         return trans;
     }

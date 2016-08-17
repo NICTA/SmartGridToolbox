@@ -27,8 +27,8 @@ namespace Sgt
 
     void VvTransformer::validate() const
     {
-        // 1-3 windings:
-        Complex ai = 1.0 / a13();
+        // 2-1 windings:
+        Complex ai = 1.0 / a21();
         Complex aci = conj(ai);
         Complex a2i = ai * aci;
         
@@ -39,12 +39,12 @@ namespace Sgt
 
         Complex data[] =  
             {
-                 a2i,            0.0,           -a2i,           -aci,            0.0,            aci,
-                 0.0,            b2i,           -b2i,            0.0,           -bci,            bci,
-                -a2i,           -b2i,  a2i+b2i+YTie_,           -aci,           -bci,  aci+bci-YTie_,
-                 -ai,            0.0,             ai,            1.0,            0.0,           -1.0,
-                 0.0,            -bi,             bi,            0.0,            1.0,           -1.0,
-                 -ai,            -bi,    ai+bi-YTie_,            1.0,            1.0,     -2.0+YTie_
+                 a2i,           -a2i,            0.0,           -aci,            aci,            0.0,
+                -a2i,  a2i+b2i+YTie_,           -b2i,            aci, -aci-bci-YTie_,            bci,
+                 0.0,           -b2i,            b2i,            0.0,            bci,           -bci,
+                 -ai,             ai,            0.0,            1.0,           -1.0,            0.0,
+                  ai,   -ai-bi-YTie_,             bi,           -1.0,      2.0+YTie_,           -1.0,
+                 0.0,             bi,            -bi,            0.0,           -1.0,            1.0
             };
 
         Y_ = arma::Mat<Complex>(6, 6, arma::fill::none);
