@@ -22,6 +22,7 @@
 #include <SgtCore/Common.h>
 #include <SgtCore/CommonBranch.h>
 #include <SgtCore/Component.h>
+#include <SgtCore/DdTransformer.h>
 #include <SgtCore/DgyTransformer.h>
 #include <SgtCore/Event.h>
 #include <SgtCore/Gen.h>

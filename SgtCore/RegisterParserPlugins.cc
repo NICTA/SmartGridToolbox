@@ -15,6 +15,7 @@
 #include "Parser.h"
 #include "BusParserPlugin.h"
 #include "CommonBranchParserPlugin.h"
+#include "DdTransformerParserPlugin.h"
 #include "DgyTransformerParserPlugin.h"
 #include "GenericBranchParserPlugin.h"
 #include "GenericGenParserPlugin.h"
@@ -34,6 +35,7 @@ namespace Sgt
     {
         p.registerParserPlugin<BusParserPlugin>();
         p.registerParserPlugin<CommonBranchParserPlugin>();
+        p.registerParserPlugin<DdTransformerParserPlugin>();
         p.registerParserPlugin<DgyTransformerParserPlugin>();
         p.registerParserPlugin<GenericBranchParserPlugin>();
         p.registerParserPlugin<GenericGenParserPlugin>();

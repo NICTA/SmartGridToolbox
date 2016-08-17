@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef YY_TRANSFORMER_DOT_H
-#define YY_TRANSFORMER_DOT_H
+#ifndef DD_TRANSFORMER_DOT_H
+#define DD_TRANSFORMER_DOT_H
 
 #include <SgtCore/Branch.h>
 
 namespace Sgt
 {
-    /// @brief Wye-wye transformer.
+    /// @brief Delta-Delta transformer.
     ///
     /// Equivalent to a single phase transformer on each phase.
     /// @ingroup PowerFlowCore
-    class YyTransformer : public BranchAbc
+    class DdTransformer : public BranchAbc
     {
         public:
 
@@ -32,7 +32,7 @@ namespace Sgt
 
             static const std::string& sComponentType()
             {
-                static std::string result("yy_transformer");
+                static std::string result("dd_transformer");
                 return result;
             }
 
@@ -44,7 +44,7 @@ namespace Sgt
             /// @brief Constructor
             /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
             /// @param ZL The leakage impedance, must be > 0.
-            YyTransformer(const std::string& id, Complex a, Complex ZL, Complex YM,
+            DdTransformer(const std::string& id, Complex a, Complex ZL, Complex YM,
                     const Phases& phases0 = {Phase::A, Phase::B, Phase::C},
                     const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
                 Component(id),
@@ -134,4 +134,4 @@ namespace Sgt
     };
 }
 
-#endif // YY_TRANSFORMER_DOT_H
+#endif // DD_TRANSFORMER_DOT_H
