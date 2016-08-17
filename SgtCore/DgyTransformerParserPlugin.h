@@ -29,7 +29,7 @@ namespace Sgt
         public:
             virtual const char* key() override
             {
-                return "delta_g_wye_transformer";
+                return "dgy_transformer";
             }
 
             virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
