@@ -146,6 +146,17 @@ namespace Sgt
             
             SGT_PROP_GET_SET(ZL, ZL, Complex, setZL, Complex);
 
+            Complex YTie() const
+            {
+                return YTie_;
+            }
+            
+            void setYTie(Complex YTie)
+            {
+                YTie_ = YTie;
+            }
+            
+            SGT_PROP_GET_SET(YTie, YTie, Complex, setYTie, Complex);
 
         /// @}
 
@@ -171,6 +182,7 @@ namespace Sgt
             Complex offNomRatio13_; ///< Off nominal mulitplier for nomRatio_, winding between phases 1 and 3.
             Complex offNomRatio23_; ///< Off nominal mulitplier for nomRatio_, winding between phases 2 and 3.
             Complex YL_; ///< Series leakage admittance.
+            Complex YTie_{1e4}; ///< Admittance tying phase 3 between primary and secondary (should be big).
 
             mutable bool isValid_{false};
             mutable arma::Mat<Complex> Y_;

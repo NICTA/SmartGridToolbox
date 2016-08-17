@@ -53,6 +53,12 @@ namespace Sgt
 
         std::unique_ptr<VvTransformer> trans(new VvTransformer(id, nomRatio, offNomRatio13, offNomRatio23, ZL));
 
+        auto ndTieAdmittance = nd["tie_admittance"];
+        if (ndTieAdmittance)
+        {
+            trans->setYTie(parser.expand<Complex>(ndTieAdmittance));
+        }
+
         return trans;
     }
 }

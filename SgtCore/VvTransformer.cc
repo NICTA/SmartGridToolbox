@@ -39,12 +39,12 @@ namespace Sgt
 
         Complex data[] =  
             {
-                 a2i,          0,       -a2i,   -aci,      0,        aci,
-                   0,        b2i,       -b2i,      0,   -bci,        bci,
-                -a2i,       -b2i,    a2i+b2i,   -aci,   -bci,    aci+bci,
-                 -ai,          0,         ai,      1,      0,         -1,
-                   0,        -bi,         bi,      0,      1,         -1,
-                 -ai,        -bi,      ai+bi,      1,      1,         -2
+                 a2i,            0.0,           -a2i,           -aci,            0.0,            aci,
+                 0.0,            b2i,           -b2i,            0.0,           -bci,            bci,
+                -a2i,           -b2i,  a2i+b2i+YTie_,           -aci,           -bci,  aci+bci-YTie_,
+                 -ai,            0.0,             ai,            1.0,            0.0,           -1.0,
+                 0.0,            -bi,             bi,            0.0,            1.0,           -1.0,
+                 -ai,            -bi,    ai+bi-YTie_,            1.0,            1.0,     -2.0+YTie_
             };
 
         Y_ = arma::Mat<Complex>(6, 6, arma::fill::none);
