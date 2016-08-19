@@ -95,7 +95,7 @@ namespace Sgt
     {
         for (auto bus : buses())
         {
-            bus->setV(bus->VNom());
+            bus->V_ = bus->VNom();
 
             for (auto gen : bus->gens())
             {
@@ -127,7 +127,7 @@ namespace Sgt
     bool Network::solvePowerFlow()
     {
         sgtLogDebug() << "Network : solving power flow." << std::endl;
-        sgtLogDebug(LogLevel::VERBOSE) << *this;
+        sgtLogDebug(LogLevel::VERBOSE) << *this << std::endl;
 
         // Preprocess.
         
