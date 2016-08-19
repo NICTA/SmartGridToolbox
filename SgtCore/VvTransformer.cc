@@ -43,7 +43,7 @@ namespace Sgt
                 -a2i,  a2i+b2i+YTie_,           -b2i,            aci, -aci-bci-YTie_,            bci,
                  0.0,           -b2i,            b2i,            0.0,            bci,           -bci,
                  -ai,             ai,            0.0,            1.0,           -1.0,            0.0,
-                  ai,   -ai-bi-YTie_,             bi,           -1.0,      2.0+YTie_,           -1.0,
+                  ai,   -ai-bi-YTie_,             bi,           -1.0, 2.0+YTie_+YGround_,       -1.0,
                  0.0,             bi,            -bi,            0.0,           -1.0,            1.0
             };
 

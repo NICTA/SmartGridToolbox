@@ -52,7 +52,7 @@ namespace Sgt
             /// @param phases0 The phases on the first (primary) side.
             /// @param phases1 The phases on the second (secondary) side.
             VvTransformer(const std::string& id, Complex nomRatio,
-                    Complex offNomRatio21, Complex offNomRatio23, Complex ZL, Complex YTie ,
+                    Complex offNomRatio21, Complex offNomRatio23, Complex ZL, Complex YTie, Complex YGround,
                     const Phases& phases0 = {Phase::A, Phase::B, Phase::C},
                     const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
                 Component(id),
@@ -61,7 +61,8 @@ namespace Sgt
                 offNomRatio21_(offNomRatio21),
                 offNomRatio23_(offNomRatio23),
                 YL_(1.0/ZL),
-                YTie_(YTie)
+                YTie_(YTie),
+                YGround_(YGround)
             {
                 // Empty.
             }
@@ -161,6 +162,18 @@ namespace Sgt
             
             SGT_PROP_GET_SET(YTie, YTie, Complex, setYTie, Complex);
 
+            Complex YGround() const
+            {
+                return YGround_;
+            }
+            
+            void setYGround(Complex YGround)
+            {
+                YGround_ = YGround;
+            }
+            
+            SGT_PROP_GET_SET(YGround, YGround, Complex, setYGround, Complex);
+
         /// @}
 
         /// @name Overridden from BranchAbc:
@@ -186,6 +199,7 @@ namespace Sgt
             Complex offNomRatio23_; ///< Off nominal mulitplier for nomRatio_, winding between phases 2 and 3.
             Complex YL_; ///< Series leakage admittance.
             Complex YTie_; ///< Admittance tying terminals 2 between primary and secondary.
+            Complex YGround_; ///< Admittance tying secondary terminal 2 to ground.
 
             mutable bool isValid_{false};
             mutable arma::Mat<Complex> Y_;

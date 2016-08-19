@@ -54,7 +54,11 @@ namespace Sgt
         auto ndTieAdmittance = nd["tie_admittance"];
         Complex YTie = ndTieAdmittance ? parser.expand<Complex>(ndTieAdmittance) : Complex{0.0, 0.0};
         
-        std::unique_ptr<VvTransformer> trans(new VvTransformer(id, nomRatio, offNomRatio21, offNomRatio23, ZL, YTie));
+        auto ndGndAdmittance = nd["ground_admittance"];
+        Complex YGnd = ndGndAdmittance ? parser.expand<Complex>(ndGndAdmittance) : Complex{0.0, 0.0};
+        
+        std::unique_ptr<VvTransformer> trans(
+                new VvTransformer(id, nomRatio, offNomRatio21, offNomRatio23, ZL, YTie, YGnd));
 
         return trans;
     }
