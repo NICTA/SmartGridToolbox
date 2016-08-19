@@ -60,6 +60,12 @@ namespace Sgt
             const YAML::Node ndZ0 = ndYApproxPhaseImpedance["Z0"];
             Y = approxPhaseImpedanceMatrix(ndZPlus.as<Complex>(), ndZ0.as<Complex>());
         }
+        
+        const YAML::Node ndFactor = ndY["factor"];
+        if (ndFactor)
+        {
+            Y *= ndFactor.as<double>();
+        }
 
         std::unique_ptr<GenericBranch> branch(new GenericBranch(id, phases0, phases1));
 
