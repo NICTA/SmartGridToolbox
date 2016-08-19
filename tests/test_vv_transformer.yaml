@@ -24,5 +24,4 @@
             id: trans_1_2
             nom_ratio: 0.95
             leakage_impedance: 0.0001j 
-            magnetizing_admittance: 0
             tie_admittance: 1000
