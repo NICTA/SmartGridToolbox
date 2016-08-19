@@ -108,11 +108,12 @@ int main(int argc, char** argv)
     sw.stop();
     cout << "(success, time) = " << success << " " << sw.seconds() << endl;
 
-    cout << nw << std::endl;
+    // cout << nw << std::endl;
 
     for (auto bus : nw.buses())
     {
         cout << 
+            setw(12) << bus->id() << " " << 
             fixed << setw(12) << abs(bus->V()(0)) << " " << 
             fixed << setw(12) << abs(bus->V()(1)) << " " << 
             fixed << setw(12) << abs(bus->V()(2)) << " " <<
