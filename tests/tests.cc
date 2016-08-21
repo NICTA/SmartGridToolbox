@@ -626,9 +626,8 @@ BOOST_AUTO_TEST_CASE (test_vv_transformer)
     std::cout << std::abs(V0ab) << " " << std::abs(V0bc) << " " << std::abs(V0ca) << std::endl;
     std::cout << std::abs(V1ab) << " " << std::abs(V1bc) << " " << std::abs(V1ca) << std::endl;
     std::cout << std::abs(V0ab/V1ab) << " " << std::abs(V0bc/V1bc) << " " << std::abs(V0ca/V1ca) << std::endl;
-    BOOST_CHECK_CLOSE(std::abs(V0ab/V1ab), 0.47826, 1e-6);
-    BOOST_CHECK_CLOSE(std::abs(V0bc/V1bc), 0.47826, 1e-6);
-    BOOST_CHECK_CLOSE(std::abs(V0ca/V1ca), 0.47826, 1e-6);
+    BOOST_CHECK_CLOSE(std::abs(V0ab/V1ab), 0.95, 1e-6);
+    BOOST_CHECK_CLOSE(std::abs(V0bc/V1bc), 1.05, 1e-6);
 }
 
 BOOST_AUTO_TEST_CASE (test_load_model_a)

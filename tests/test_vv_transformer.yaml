@@ -1,72 +1,29 @@
-    - parameters:
-        V_base: 5.7735
-        V_nom: [<V_base>, <V_base>D120, <V_base>D-120]
-    - bus:
-        id: bus_1
-        phases: [A, B, C]
-        V_base: <V_base>
-        V_nom: <V_nom>
-        type: SL
-    - generic_gen:
-        id: gen_1
-        bus_id: bus_1
-        phases: [A, B, C]
-    - bus:
-        id: bus_2
-        phases: [A, B, C]
-        V_base: <V_base>
-        V_nom: <V_nom>
-        type: PQ
-    - generic_branch:
-        id: branch_1_2
-        bus_0_id: bus_1
-        bus_1_id: bus_2
-        phases_0: [A, B, C]
-        phases_1: [A, B, C]
-        Y:  
-            approximate_phase_impedance:
-                Z+: 0.19 + 0.33j
-                Z0: 0.33 + 1.58j
-            impedance_multiplier: 1
-    - bus:
-        id: bus_3
-        phases: [A, B, C]
-        V_base: <V_base>
-        V_nom: <V_nom>
-        type: PQ
-    - vv_transformer:
-        id: trans_2_3
-        bus_0_id: bus_2
-        bus_1_id: bus_3
-        nom_ratio: 1
-        off_nom_ratio_21: 0.94
-        off_nom_ratio_23: 0.96
-        leakage_impedance: 0.01
-        tie_admittance: 100
-    - bus:
-        id: bus_4
-        phases: [A, B, C]
-        V_base: <V_base>
-        V_nom: <V_nom>
-        type: PQ
-    - generic_zip:
-        id: zip_4
-        bus_id: bus_4
-        phases: [A, B, C]
-        S_const:
-            [
-                [0.01, 0.0, 0.0],
-                [0.0, 0.01, 0.0],
-                [0.0, 0.0, 0.01]
-            ]
-    - generic_branch:
-        id: branch_3_4
-        bus_0_id: bus_3
-        bus_1_id: bus_4
-        phases_0: [A, B, C]
-        phases_1: [A, B, C]
-        Y:  
-            approximate_phase_impedance:
-                Z+: 0.19 + 0.33j
-                Z0: 0.33 + 1.58j
-            impedance_multiplier: 1
+    -  parameters:
+            V0a: 6.3509
+            V1a: 6.3509
+            secondary_admittance: 1000
+    -  bus:
+            id: bus_1
+            phases: [A, B, C]
+            V_base: <V0a>
+            V_nom: [<V0a>, <V0a>D120, <V0a>D-120]
+            type: SL
+    -  generic_gen:
+            id: gen_1
+            bus_id: bus_1
+            phases: [A, B, C]
+    -  bus:
+            id: bus_2
+            phases: [A, B, C]
+            V_base: <V1a>
+            V_nom: [<V1a>, <V1a>D120, <V1a>D-120]
+            type: PQ
+    -  vv_transformer:
+            bus_0_id: bus_1
+            bus_1_id: bus_2
+            id: trans_1_2
+            nom_ratio: 1.0
+            off_nom_ratio_21: 0.95
+            off_nom_ratio_23: 1.05
+            leakage_impedance: 0.0001j 
+            tie_admittance: 1000
