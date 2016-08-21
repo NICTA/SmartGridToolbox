@@ -35,7 +35,7 @@ namespace Sgt
         // 2-3 windings:
         Complex bi = 1.0 / a23();
         Complex bci = conj(bi);
-        Complex b2i = ai * bci;
+        Complex b2i = bi * bci;
 
         Complex data[] =  
             {
