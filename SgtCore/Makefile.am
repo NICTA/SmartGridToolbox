@@ -36,6 +36,7 @@ libinclude_HEADERS = \
 	Common.h \
 	CommonBranch.h \
 	Component.h \
+	Components.h \
 	config.h \
 	DdTransformer.h \
 	DgyTransformer.h \
@@ -72,6 +73,7 @@ libSgtCore_la_SOURCES = \
 	CommonBranch.h CommonBranch.cc \
 	CommonBranchParserPlugin.h CommonBranchParserPlugin.cc \
 	Component.h \
+	Components.h \
 	DdTransformer.h DdTransformer.cc \
 	DdTransformerParserPlugin.h DdTransformerParserPlugin.cc \
 	DgyTransformer.h DgyTransformer.cc \

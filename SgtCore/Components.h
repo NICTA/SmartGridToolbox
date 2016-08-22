@@ -15,6 +15,7 @@
 #ifndef COMPONENTS_DOT_H
 #define COMPONENTS_DOT_H
 
+#include <iostream>
 #include <map>
 #include <string>
 #include <vector>
@@ -32,8 +33,8 @@ namespace Sgt
 
             ComponentPtr(std::unique_ptr<T>& p) : p_(p) {}
 
-            const T& operator*() const {return *p_;}
-            T& operator*() {return *p_;}
+            const T& operator*() const {return *(p_.get());}
+            T& operator*() {return *(p_.get());}
 
             const T* operator->() const {return p_.get();}
             T* operator->() {return p_.get().get();}
@@ -52,26 +53,33 @@ namespace Sgt
     template<typename T> class Components
     {
         public:
-            void insert(std::unique_ptr<T>&& comp)
+            void insert(std::unique_ptr<T> comp)
             {
-                auto pair = map_.insert(std::make_pair(comp->id(), std::move(comp)));
-                if (pair.second)
+                auto it = map_.find(comp->id());
+                if (it == map_.end())
                 {
-                    // New element was inserted.
-                    vec_.push_back(pair.first->second);
+                    // Insert new element.
+                    it = map_.insert(std::make_pair(comp->id(), std::move(comp))).first;
+                    vec_.push_back(it->second);
                 }
                 else
                 {
-                    // Previous element existed, replace it.
-                    // An element will already exist in vec_ which need not be updated.
-                    pair.first->second = std::move(comp);
+                    // Replace existing element.
+                    it->second = std::move(comp);
                 }
             }
 
-            void remove(const std::string& id) 
+            std::unique_ptr<T> remove(const std::string& id) 
             {
-                map_.erase(id);
-                vec_.erase(std::remove(vec_.begin(), vec_.end(), id), vec_.end());
+                std::unique_ptr<T> result;
+                auto it = map_.find(id);
+                if (it != map_.end())
+                {
+                    result = std::move(it->second);
+                    map_.erase(it);
+                    vec_.erase(std::remove(vec_.begin(), vec_.end(), id), vec_.end());
+                }
+                return result;
             }
 
             auto begin()
