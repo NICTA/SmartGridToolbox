@@ -92,12 +92,12 @@ namespace Sgt
                 return vec_.end();
             }
 
-            auto cbegin()
+            auto cbegin() const
             {
                 return vec_.cbegin();
             }
             
-            auto cend()
+            auto cend() const
             {
                 return vec_.cend();
             }
@@ -110,6 +110,16 @@ namespace Sgt
             auto rend()
             {
                 return vec_.rend();
+            }
+
+            auto rcbegin()
+            {
+                return vec_.rcbegin();
+            }
+            
+            auto rcend()
+            {
+                return vec_.rcend();
             }
 
             ComponentPtr<const T> get(const std::string& id) const
