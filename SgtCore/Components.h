@@ -22,36 +22,48 @@
 
 namespace Sgt
 {
-    template<typename T> class ComponentPtr
-    {
-        public:
-            ComponentPtr()
-            {
-                static const std::unique_ptr<T> null;
-                p_ = null;
-            }
-
-            ComponentPtr(std::unique_ptr<T>& p) : p_(p) {}
-
-            const T& operator*() const {return *(p_.get());}
-            T& operator*() {return *(p_.get());}
-
-            const T* operator->() const {return p_.get();}
-            T* operator->() {return p_.get().get();}
-
-            operator bool() {return  p_;}
-            bool operator==(const std::nullptr_t& rhs) {return p_ == nullptr;}
-            bool operator!=(const std::nullptr_t& rhs) {return p_ != nullptr;}
-
-            template<typename U> const U* as() const {return dynamic_cast<const U*>(p_.get().get());}
-            template<typename U> U* as() {return dynamic_cast<U*>(p_.get().get());}
-
-        private:
-            std::reference_wrapper<std::unique_ptr<T>> p_;
-    };
 
     template<typename T> class Components
     {
+        public:
+            class ConstPtr
+            {
+                public:
+                    ConstPtr()
+                    {
+                        static const std::unique_ptr<T> null;
+                        p_ = null;
+                    }
+
+                    ConstPtr(std::unique_ptr<T>& p) : p_(p) {}
+
+                    const T& operator*() const {return *(p_.get().get());}
+
+                    const T* operator->() const {return p_.get().get();}
+
+                    operator bool() {return  p_;}
+                    bool operator==(const std::nullptr_t& rhs) {return p_ == nullptr;}
+                    bool operator!=(const std::nullptr_t& rhs) {return p_ != nullptr;}
+
+                    template<typename U> const U* as() const {return dynamic_cast<const U*>(p_.get().get());}
+
+                protected:
+                    std::reference_wrapper<std::unique_ptr<T>> p_;
+            };
+
+            class Ptr : public ConstPtr
+            {
+                public:
+                    Ptr(std::unique_ptr<T>& p) : ConstPtr(p) {}
+
+                    T& operator*() {return *(ConstPtr::p_.get());}
+
+                    T* operator->() {return ConstPtr::p_.get().get();}
+
+                    template<typename U> const U* as() const {return dynamic_cast<const U*>(ConstPtr::p_.get().get());}
+                    template<typename U> U* as() {return dynamic_cast<U*>(ConstPtr::p_.get().get());}
+            };
+
         public:
             void insert(std::unique_ptr<T> comp)
             {
@@ -122,19 +134,19 @@ namespace Sgt
                 return vec_.rcend();
             }
 
-            ComponentPtr<const T> get(const std::string& id) const
+            ConstPtr get(const std::string& id) const
             {
                 return map_.at(id);
             }
             
-            ComponentPtr<T> get(const std::string& id)
+            Ptr get(const std::string& id)
             {
                 return map_.at(id);  
             }
 
         private:
             std::map<std::string, std::unique_ptr<T>> map_;
-            std::vector<ComponentPtr<T>> vec_;
+            std::vector<Ptr> vec_;
     };
 }
 
