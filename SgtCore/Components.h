@@ -43,8 +43,8 @@ namespace Sgt
             bool operator==(const std::nullptr_t& rhs) {return p_ == nullptr;}
             bool operator!=(const std::nullptr_t& rhs) {return p_ != nullptr;}
 
-            template<typename U> const U* as() const {return dynamic_cast<const U*>(p_.get());}
-            template<typename U> U* as() const {return dynamic_cast<U*>(p_.get());}
+            template<typename U> const U* as() const {return dynamic_cast<const U*>(p_.get().get());}
+            template<typename U> U* as() {return dynamic_cast<U*>(p_.get().get());}
 
         private:
             std::reference_wrapper<std::unique_ptr<T>> p_;
