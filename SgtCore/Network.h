@@ -117,9 +117,9 @@ namespace Sgt
                 return buses_;
             }
 
-            void addBus(std::shared_ptr<Bus> bus)
+            ComponentPtr<Bus> addBus(std::shared_ptr<Bus> bus)
             {
-                buses_.insert(bus);
+                return buses_.insert(bus);
             }
             
             std::shared_ptr<Bus> removeBus(std::string& id)
@@ -151,7 +151,7 @@ namespace Sgt
                 return branches_;
             }
 
-            virtual void addBranch(std::shared_ptr<BranchAbc> branch,
+            ComponentPtr<BranchAbc> addBranch(std::shared_ptr<BranchAbc> branch,
                     const std::string& bus0Id, const std::string& bus1Id);
             
             std::shared_ptr<BranchAbc> removeBranch(std::string& id)
@@ -169,7 +169,7 @@ namespace Sgt
                 return gens_;
             }
 
-            void addGen(std::shared_ptr<GenAbc> gen, const std::string& busId);
+            ComponentPtr<Gen> addGen(std::shared_ptr<GenAbc> gen, const std::string& busId);
             
             std::shared_ptr<GenAbc> removeGen(std::string& id)
             {
@@ -186,7 +186,7 @@ namespace Sgt
                 return zips_;
             }
 
-            void addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId);
+            ComponentPtr<Zip> addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId);
             
             std::shared_ptr<ZipAbc> removeZip(std::string& id)
             {

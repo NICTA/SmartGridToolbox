@@ -47,40 +47,43 @@ namespace Sgt
         // Empty.
     }
 
-    void Network::addBranch(std::shared_ptr<BranchAbc> branch, const std::string& bus0Id, const std::string& bus1Id)
+    ComponentPtr<BranchAbc> Network::addBranch(std::shared_ptr<BranchAbc> branch,
+            const std::string& bus0Id, const std::string& bus1Id)
     {
         auto bus0 = buses_[bus0Id];
         sgtAssert(bus0 != nullptr, "Bus " << bus0Id << " was not found in the network.");
         auto bus1 = buses_[bus0Id];
         sgtAssert(bus1 != nullptr, "Bus " << bus1Id << " was not found in the network.");
 
-        branches_.insert(branch);
-
         branch->bus0_ = bus0;
         branch->bus1_ = bus1;
 
         bus0->branches0_.insert(branch);
         bus1->branches1_.insert(branch);
+
+        return branches_.insert(branch);
     }
 
-    void Network::addGen(std::shared_ptr<GenAbc> gen, const std::string& busId)
+    ComponentPtr<GenAbc> Network::addGen(std::shared_ptr<GenAbc> gen, const std::string& busId)
     {
         auto bus = buses_[busId];
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
 
-        gens_.insert(gen);
         gen->bus_ = bus;
         bus->gens_.insert(gen);
+
+        return gens_.insert(gen);
     }
 
-    void Network::addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId)
+    ComponentPtr<ZipAbc> Network::addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId)
     {
         auto bus = buses_[busId];
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
 
-        zips_.insert(zip);
         zip->bus_ = bus;
         bus->zips_.insert(zip);
+        
+        return zips_.insert(zip);
     }
 
     void Network::applyFlatStart()
