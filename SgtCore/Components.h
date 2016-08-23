@@ -140,7 +140,7 @@ namespace Sgt
 
             template<typename U, typename ... Args> Ptr emplace(Args&&... args)
             {
-                auto comp = std::make_shared<T>(std::forward<Args>(args)...);
+                auto comp = std::make_shared<U>(std::forward<Args>(args)...);
                 return insert(comp);
             }
             
