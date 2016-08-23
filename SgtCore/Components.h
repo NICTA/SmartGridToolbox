@@ -39,8 +39,12 @@ namespace Sgt
             operator const T*() const {return pp_->get();}
 
             operator bool() const {return  pp_ && *pp_;}
+
             bool operator==(const std::nullptr_t& rhs) const {return pp_ == nullptr || *pp_ == nullptr;}
             bool operator!=(const std::nullptr_t& rhs) const {return pp_ != nullptr && *pp_ != nullptr;}
+
+            bool operator==(const ConstComponentPtr& rhs) const {return pp_ == rhs.pp_;}
+            bool operator!=(const ConstComponentPtr& rhs) const {return pp_ != rhs.pp_;}
 
             template<typename U> const U* as() const {return dynamic_cast<const U*>(pp_->get());}
 
