@@ -37,16 +37,17 @@ namespace Sgt
         assertFieldPresent(nd, "NOCT_C");
 
         string id = parser.expand<std::string>(nd["id"]);
-        auto spv = sim.newSimComponent<SolarPv>(id);
+        auto spv = std::make_shared<SolarPv>(id);
+        sim.addSimComponent(spv);
 
         const std::string weatherStr = parser.expand<std::string>(nd["weather"]);
-        auto weather = sim.simComponent<Weather>(weatherStr);
+        auto weather = sim.simComponents()[weatherStr].as<Weather>();
         sgtAssert(weather != nullptr, 
                 "For component " << id << ", weather " << weatherStr << " was not found in the simulation.");
         spv->setWeather(*weather);
         
         const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
-        auto inverter = sim.simComponent<InverterAbc>(inverterStr);
+        auto inverter = sim.simComponents()[inverterStr].as<InverterAbc>();
         sgtAssert(inverter != nullptr,
             "For component " << id << ", inverter " << inverterStr << " was not found in the simulation.");
         inverter->addDcPowerSource(*spv);

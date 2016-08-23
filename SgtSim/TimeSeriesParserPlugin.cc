@@ -137,16 +137,17 @@ namespace Sgt
             return result;
         }
 
-        template<typename T> std::unique_ptr<DataTimeSeries<Time, T>> initDataTimeSeries_(InterpType interpType)
+        template<typename T> std::unique_ptr<DataTimeSeries<Time, T>> initDataTimeSeries_(
+                const std::string& id, InterpType interpType)
         {
             std::unique_ptr<DataTimeSeries<Time, T>> dts;
             switch (interpType)
             {
                 case STEPWISE:
-                    dts.reset(new StepwiseTimeSeries<Time, T>());
+                    dts.reset(new StepwiseTimeSeries<Time, T>(id));
                     break;
                 case LERP:
-                    dts.reset(new LerpTimeSeries<Time, T>());
+                    dts.reset(new LerpTimeSeries<Time, T>(id));
                     break;
                 //case SPLINE:
                 //    sgtError("Spline data time series can only be used with real data.");
@@ -158,12 +159,14 @@ namespace Sgt
             return dts;
         }
 
-        template<typename T> std::unique_ptr<DataTimeSeries<Time, T>> initDataTimeSeries(InterpType interpType)
+        template<typename T> std::unique_ptr<DataTimeSeries<Time, T>> initDataTimeSeries(
+                const std::string& id, InterpType interpType)
         {
-            return initDataTimeSeries_<T>(interpType);
+            return initDataTimeSeries_<T>(id, interpType);
         }
 
-        template<> std::unique_ptr<DataTimeSeries<Time, double>> initDataTimeSeries<double>(InterpType interpType)
+        template<> std::unique_ptr<DataTimeSeries<Time, double>> initDataTimeSeries<double>(
+                const std::string& id, InterpType interpType)
         {
             //if (interpType == SPLINE)
             //{
@@ -171,7 +174,7 @@ namespace Sgt
             //}
             //else
             {
-                return initDataTimeSeries_<double>(interpType);
+                return initDataTimeSeries_<double>(id, interpType);
             }
         }
 
@@ -208,25 +211,25 @@ namespace Sgt
                     case REAL_SCALAR:
                     {
                         double v = parser.expand<double>(ndVal);
-                        ts.reset(new ConstTimeSeries<Time, double>(v));
+                        ts.reset(new ConstTimeSeries<Time, double>(id, v));
                         break;
                     }
                     case COMPLEX_SCALAR:
                     {
                         Complex v = parser.expand<Complex>(ndVal);
-                        ts.reset(new ConstTimeSeries<Time, Complex>(v));
+                        ts.reset(new ConstTimeSeries<Time, Complex>(id, v));
                         break;
                     }
                     case REAL_VECTOR:
                     {
                         arma::Col<double> v = parser.expand<arma::Col<double>>(ndVal);
-                        ts.reset(new ConstTimeSeries<Time, arma::Col<double>>(v));
+                        ts.reset(new ConstTimeSeries<Time, arma::Col<double>>(id, v));
                         break;
                     }
                     case COMPLEX_VECTOR:
                     {
                         arma::Col<Complex> v = parser.expand<arma::Col<Complex>>(ndVal);
-                        ts.reset(new ConstTimeSeries<Time, arma::Col<Complex>>(v));
+                        ts.reset(new ConstTimeSeries<Time, arma::Col<Complex>>(id, v));
                         break;
                     }
                     default:
@@ -264,7 +267,8 @@ namespace Sgt
                 {
                     case REAL_SCALAR:
                     {
-                        std::unique_ptr<DataTimeSeries<Time, double>> dts = initDataTimeSeries<double>(interpType);
+                        std::unique_ptr<DataTimeSeries<Time, double>> dts = 
+                            initDataTimeSeries<double>(id, interpType);
                         while (std::getline(infile, line))
                         {
                             std::istringstream ss(line);
@@ -279,7 +283,8 @@ namespace Sgt
                     }
                     case COMPLEX_SCALAR:
                     {
-                        std::unique_ptr<DataTimeSeries<Time, Complex>> dts = initDataTimeSeries<Complex>(interpType);
+                        std::unique_ptr<DataTimeSeries<Time, Complex>> dts =
+                            initDataTimeSeries<Complex>(id, interpType);
                         while (std::getline(infile, line))
                         {
                             std::istringstream ss(line);
@@ -295,7 +300,7 @@ namespace Sgt
                     case REAL_VECTOR:
                     {
                         std::unique_ptr<DataTimeSeries<Time, arma::Col<double>>> dts =
-                            initDataTimeSeries<arma::Col<double>>(interpType);
+                            initDataTimeSeries<arma::Col<double>>(id, interpType);
                         while (std::getline(infile, line))
                         {
                             std::istringstream ss(line);
@@ -317,7 +322,7 @@ namespace Sgt
                     case COMPLEX_VECTOR:
                     {
                         std::unique_ptr<DataTimeSeries<Time, arma::Col<Complex>>> dts =
-                            initDataTimeSeries<arma::Col<Complex>>(interpType);
+                            initDataTimeSeries<arma::Col<Complex>>(id, interpType);
                         while (std::getline(infile, line))
                         {
                             std::istringstream ss(line);
@@ -348,6 +353,6 @@ namespace Sgt
                 sgtError("Bad time series type.");
             }
         }
-        sim.acquireTimeSeries(id, std::move(ts));
+        sim.addTimeSeries(std::move(ts));
     }
 }

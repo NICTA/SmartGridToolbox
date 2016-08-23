@@ -5,7 +5,7 @@ namespace Sgt
     void SimGenAbc::linkToSimNetwork(SimNetwork& simNetwork)
     {
         // Safety check that my gen has already been added to simNetwork's network.
-        auto networkGen = simNetwork.network().gen(gen().id());
+        auto networkGen = simNetwork.network().gens()[gen().id()];
         sgtAssert(networkGen != nullptr, "My GenAbc must be added to the SimNetwork's Network before calling "
                 << __PRETTY_FUNCTION__);
 

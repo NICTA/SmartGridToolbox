@@ -27,11 +27,12 @@ namespace Sgt
         assertFieldPresent(nd, "dc_power");
 
         string id = parser.expand<std::string>(nd["id"]);
-        auto comp = sim.newSimComponent<GenericDcPowerSource>(id);
+        auto comp = std::make_shared<GenericDcPowerSource>(id);
+        sim.addSimComponent(comp);
         comp->setPDc(parser.expand<double>(nd["dc_power"]));
 
         const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
-        auto inverterComp = sim.simComponent<InverterAbc>(inverterStr);
+        auto inverterComp = sim.simComponents()[inverterStr].as<InverterAbc>();
         sgtAssert(inverterComp != nullptr,
                 "For component " << id << ", inverter " << inverterStr << " was not found in the simulation.");
         inverterComp->addDcPowerSource(*comp);

@@ -118,7 +118,7 @@ namespace Sgt
             // sort key might change.
             for (auto it = scheduledUpdates_.begin(); it != scheduledUpdates_.end(); ++it)
             {
-                if (it->first == contComp)
+                if (static_cast<const SimComponent*>(it->first) == static_cast<const SimComponent*>(contComp))
                 {
                     scheduledUpdates_.erase(it);
                     break;
@@ -130,7 +130,7 @@ namespace Sgt
             indent.out();
 
             // ... and try to reinsert component in scheduled updates.
-            tryInsertScheduledUpdate(*contComp);
+            tryInsertScheduledUpdate(contComp);
         }
         else if (scheduledUpdates_.size() > 0 && nextSchedTime <= endTime_)
         {
@@ -157,7 +157,7 @@ namespace Sgt
             indent.out();
 
             // ... and try to reinsert it.
-            tryInsertScheduledUpdate(*schedComp);
+            tryInsertScheduledUpdate(schedComp);
         }
         else
         {
@@ -227,14 +227,14 @@ namespace Sgt
 
     void Simulation::tryInsertScheduledUpdate(ComponentPtr<SimComponent> schedComp)
     {
-        sgtLogDebug(LogLevel::VERBOSE) << "TryInsertScheduledUpdate: " << schedComp.id() << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "TryInsertScheduledUpdate: " << schedComp->id() << std::endl;
         LogIndent indent;
-        Time nextUpdate = schedComp.validUntil();
+        Time nextUpdate = schedComp->validUntil();
         sgtLogDebug(LogLevel::VERBOSE) << "nextUpdate = " << nextUpdate << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << "endTime_ = " << endTime_ << std::endl;
         if (nextUpdate <= endTime_) 
         {
-            sgtLogDebug(LogLevel::VERBOSE) << "Inserting " << schedComp.id() << ": nextUpdate = " << nextUpdate 
+            sgtLogDebug(LogLevel::VERBOSE) << "Inserting " << schedComp->id() << ": nextUpdate = " << nextUpdate 
                 << std::endl;
             scheduledUpdates_.insert(std::make_pair(schedComp, nextUpdate));
         }

@@ -5,7 +5,7 @@ namespace Sgt
     void SimBusAbc::linkToSimNetwork(SimNetwork& simNetwork)
     {
         // Safety check that my bus has already been added to simNetwork's network.
-        auto networkBus = simNetwork.network().bus(bus().id());
+        auto networkBus = simNetwork.network().buses()[bus().id()];
         sgtAssert(networkBus != nullptr, "My Bus must be added to the SimNetwork's Network before calling "
                 << __PRETTY_FUNCTION__);
         

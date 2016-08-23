@@ -192,7 +192,7 @@ namespace Sgt
 
         private:
 
-            void tryInsertScheduledUpdate(SimComponent& schedComp);
+            void tryInsertScheduledUpdate(ComponentPtr<SimComponent> schedComp);
 
         private:
 

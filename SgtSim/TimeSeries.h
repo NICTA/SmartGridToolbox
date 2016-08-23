@@ -20,13 +20,18 @@
 #endif
 
 #include <map>
+#include <string>
 
 namespace Sgt
 {
     class TimeSeriesBase
     {
         public:
+            TimeSeriesBase(const std::string& id) : id_(id) {};
             virtual ~TimeSeriesBase() = default;
+            const std::string& id() const {return id_;}
+        private:
+            std::string id_;
     };
 
     /// @brief Base class for time series objects: functions of time.
@@ -35,6 +40,7 @@ namespace Sgt
     class TimeSeries : public TimeSeriesBase
     {
         public:
+            TimeSeries(const std::string& id) : TimeSeriesBase(id) {}
             virtual V value(const T& t) const = 0;
     };
 
@@ -44,7 +50,7 @@ namespace Sgt
     class ConstTimeSeries : public TimeSeries<T, V>
     {
         public:
-            ConstTimeSeries(const V& val) {val_ = val;}
+            ConstTimeSeries(const std::string& id, const V& val) : TimeSeries<T, V>(id) {val_ = val;}
 
             virtual V value(const T& t) const {return val_;}
 
@@ -58,6 +64,7 @@ namespace Sgt
     class DataTimeSeries : public TimeSeries<T, V>
     {
         public:
+            DataTimeSeries(const std::string& id) : TimeSeries<T, V>(id) {}
             virtual void addPoint(const T& t, const V& v) = 0;
     };
 
@@ -67,6 +74,8 @@ namespace Sgt
     class StepwiseTimeSeries : public DataTimeSeries<T, V>
     {
         public:
+            StepwiseTimeSeries(const std::string& id) : DataTimeSeries<T, V>(id) {}
+
             virtual V value(const T& t) const override
             {
                 auto pos = points_.upper_bound(dSeconds(t));
@@ -93,6 +102,8 @@ namespace Sgt
     class LerpTimeSeries : public DataTimeSeries<T, V>
     {
         public:
+            LerpTimeSeries(const std::string& id) : DataTimeSeries<T, V>(id) {}
+
             virtual V value(const T& t) const override
             {
                 double td = dSeconds(t);
@@ -152,7 +163,8 @@ namespace Sgt
     class FunctionTimeSeries : public TimeSeries<T, V>
     {
         public:
-            FunctionTimeSeries<T, V>(const std::function<V (T)>& func) :
+            FunctionTimeSeries<T, V>(const std::string& id, const std::function<V (T)>& func) :
+                TimeSeries<T, V>(id),
                 func_(func)
             {
                 // Empty.
