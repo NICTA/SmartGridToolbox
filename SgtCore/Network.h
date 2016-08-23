@@ -169,7 +169,7 @@ namespace Sgt
                 return gens_;
             }
 
-            ComponentPtr<Gen> addGen(std::shared_ptr<GenAbc> gen, const std::string& busId);
+            ComponentPtr<GenAbc> addGen(std::shared_ptr<GenAbc> gen, const std::string& busId);
             
             std::shared_ptr<GenAbc> removeGen(std::string& id)
             {

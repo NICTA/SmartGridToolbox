@@ -19,34 +19,6 @@
 
 namespace Sgt
 {
-    std::vector<const SimComponent*> Simulation::simComponents() const
-    {
-        std::vector<const SimComponent*> result(simCompVec_.size());
-        std::copy(simCompVec_.begin(), simCompVec_.end(), result.begin());
-        return result;
-    }
-
-    void Simulation::addOrReplaceGenericSimComponent(std::shared_ptr<SimComponent> simComp, bool allowReplace)
-    {
-        auto it1 = simCompMap_.find(simComp->id());
-        if (it1 != simCompMap_.end())
-        {
-            if (allowReplace)
-            {
-                it1->second = simComp;
-            }
-            else
-            {
-                sgtError("SimComponent " << simComp->id() << " occurs more than once in the model.");
-            }
-        }
-        else
-        {
-            simCompVec_.push_back(simComp.get());
-            simCompMap_[simComp->id()] = simComp;
-        }
-    }
-
     void Simulation::initialize()
     {
         sgtLogMessage() << "Simulation initialize(): " << std::endl;
@@ -60,39 +32,34 @@ namespace Sgt
             }
         }
 
-        for (std::size_t i = 0; i < simCompVec_.size(); ++i)
+        for (std::size_t i = 0; i < simComps_.size(); ++i)
         {
-            simCompVec_[i]->setRank(static_cast<int>(i));
+            simComps_[i]->setRank(static_cast<int>(i));
         }
 
-        WoGraph g(simCompVec_.size());
-        for (std::size_t i = 0; i < simCompVec_.size(); ++i)
+        WoGraph g(simComps_.size());
+        for (std::size_t i = 0; i < simComps_.size(); ++i)
         {
-            for (auto dep : simCompVec_[i]->dependencies())
+            for (auto dep : simComps_[i]->dependencies())
             {
                 // i depends on dep->rank().
                 g.link(static_cast<std::size_t>(dep->rank()), i);
             }
         }
         g.weakOrder();
-
-        // g.nodes() now specifies a permutation to be applied to simCompVec_.
-        std::vector<SimComponent*> perm;
-        perm.reserve(simCompVec_.size());
-        for (auto& nd : g.nodes())
+       
+        for (std::size_t i = 0; i < simComps_.size(); ++i)
         {
-            perm.push_back(simCompVec_[nd->index()]);
+            std::size_t j = g.nodes()[i]->index();
+            simComps_[j]->setRank(static_cast<int>(i));
         }
-        simCompVec_ = perm;
 
-        // Reset the evaluation rank.
-        for (std::size_t i = 0; i < simCompVec_.size(); ++i)
-        {
-            simCompVec_[i]->setRank(static_cast<int>(i));
-        }
+        std::sort(simComps_.begin(), simComps_.end(), 
+                [](const ComponentPtr<SimComponent>& lhs, const ComponentPtr<SimComponent>& rhs)
+                {return lhs->rank() < rhs->rank();});
 
         scheduledUpdates_.clear();
-        for (auto comp : simCompVec_)
+        for (auto comp : simComps_)
         {
             comp->initialize();
             scheduledUpdates_.insert(std::make_pair(comp, startTime_));
@@ -125,7 +92,7 @@ namespace Sgt
         sgtLogDebug(LogLevel::VERBOSE) << "Number of contingent = " << contingentUpdates_.size() << std::endl;
 
         Time nextSchedTime = posix_time::pos_infin;
-        SimComponent* schedComp(nullptr);
+        ComponentPtr<SimComponent> schedComp;
         auto schedUpdateIt = scheduledUpdates_.begin();
 
         if (scheduledUpdates_.size() > 0)
@@ -201,7 +168,7 @@ namespace Sgt
         {
             // We've reached the end of this step.
             sgtLogMessage(LogLevel::VERBOSE) << "Timestep completed at " << currentTime_ << std::endl;
-            for (auto comp : simCompVec_)
+            for (auto comp : simComps_)
             {
                 if (comp->lastUpdated() == currentTime_)
                 {
@@ -247,7 +214,7 @@ namespace Sgt
 
     void Simulation::logComponents()
     {
-        for (auto comp : simCompVec_)
+        for (auto comp : simComps_)
         {
             sgtLogMessage() << comp->id() << " " << comp->rank() << std::endl;
             LogIndent indent;
@@ -258,37 +225,7 @@ namespace Sgt
         }
     }
 
-    const SimComponent* Simulation::genericSimComponent(const std::string& id, bool crashOnFail) const
-    {
-        const SimComponent* result = nullptr;
-        auto it = simCompMap_.find(id);
-        if (it != simCompMap_.end())
-        {
-            result = it->second.get();
-        }
-        else if (crashOnFail)
-        {
-            sgtError("Component " << id << " was requested but was not found in the simulation.");
-        }
-        return result;
-    }
-
-    const TimeSeriesBase* Simulation::genericTimeSeries(const std::string& id, bool crashOnFail) const
-    {
-        const TimeSeriesBase* result = nullptr;
-        auto it = timeSeriesMap_.find(id);
-        if (it != timeSeriesMap_.end())
-        {
-            result = it->second.get();
-        }
-        else if (crashOnFail)
-        {
-            sgtError("Time series " << id << " was requested but was not found in the simulation.");
-        }
-        return result;
-    }
-
-    void Simulation::tryInsertScheduledUpdate(SimComponent& schedComp)
+    void Simulation::tryInsertScheduledUpdate(ComponentPtr<SimComponent> schedComp)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "TryInsertScheduledUpdate: " << schedComp.id() << std::endl;
         LogIndent indent;
@@ -299,7 +236,7 @@ namespace Sgt
         {
             sgtLogDebug(LogLevel::VERBOSE) << "Inserting " << schedComp.id() << ": nextUpdate = " << nextUpdate 
                 << std::endl;
-            scheduledUpdates_.insert(std::make_pair(&schedComp, nextUpdate));
+            scheduledUpdates_.insert(std::make_pair(schedComp, nextUpdate));
         }
     };
 }
