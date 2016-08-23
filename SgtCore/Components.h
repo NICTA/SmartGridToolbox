@@ -138,12 +138,6 @@ namespace Sgt
                 return it->second;
             }
 
-            template<typename U, typename ... Args> Ptr emplace(Args&&... args)
-            {
-                auto comp = std::make_shared<U>(std::forward<Args>(args)...);
-                return insert(comp);
-            }
-            
             std::shared_ptr<T> remove(const std::string& id) 
             {
                 std::shared_ptr<T> result;
