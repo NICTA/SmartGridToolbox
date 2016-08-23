@@ -73,7 +73,7 @@ namespace Sgt
 
             template<typename U> U* as() 
             {
-                return dynamic_cast<U*>(pp_.get());
+                return dynamic_cast<U*>(pp_->get());
             }
     };
 
@@ -136,6 +136,12 @@ namespace Sgt
                     it->second = comp;
                 }
                 return it->second;
+            }
+
+            template<typename U, typename ... Args> Ptr emplace(Args&&... args)
+            {
+                auto comp = std::make_shared<T>(std::forward<Args>(args)...);
+                return insert(comp);
             }
             
             std::shared_ptr<T> remove(const std::string& id) 

@@ -186,7 +186,7 @@ namespace Sgt
                 return zips_;
             }
 
-            ComponentPtr<Zip> addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId);
+            ComponentPtr<ZipAbc> addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId);
             
             std::shared_ptr<ZipAbc> removeZip(std::string& id)
             {
