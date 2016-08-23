@@ -17,6 +17,7 @@
 
 #include <SgtCore/Branch.h>
 #include <SgtCore/Bus.h>
+#include <SgtCore/Components.h>
 #include <SgtCore/Gen.h>
 #include <SgtCore/PowerFlow.h>
 #include <SgtCore/PowerFlowSolver.h>
@@ -35,7 +36,7 @@ namespace Sgt
     {
         int idx{-1};
         bool isSupplied{false};
-        std::vector<Bus*> buses;
+        std::vector<Components<Bus>::Ptr> buses;
     };
     
     struct ConstIsland
@@ -50,7 +51,7 @@ namespace Sgt
 
         int idx{-1};
         bool isSupplied{false};
-        std::vector<Bus*> buses;
+        std::vector<Components<Bus>::ConstPtr> buses;
     };
 
     /// @brief Network component, describing an electricity network.
@@ -107,34 +108,33 @@ namespace Sgt
             /// @{
 
             // TODO: this breaks logical constness - but alternatives are long winded and/or brittle.
-            const std::vector<Bus*>& buses() const
+            const Components<Bus>& buses() const
             {
-                return busVec_;
+                return buses_;
             }
 
-            const Bus* bus(const std::string& id) const
+            void addBus(std::unique_ptr<Bus> bus)
             {
-                auto it = busMap_.find(id);
-                return (it == busMap_.end()) ? nullptr : it->second.get();
+                buses_.insert(std::move(bus));
             }
-            Bus* bus(const std::string& id)
+            
+            std::unique_ptr<Bus> removeBus(std::string& id)
             {
-                return const_cast<Bus*>((static_cast<const Network*>(this))->bus(id));
+                return buses_.remove(id);
             }
 
-            void addBus(std::shared_ptr<Bus> bus);
-
-            const Bus* referenceBus() const
+            Components<Bus>::ConstPtr referenceBus() const
             {
                 return referenceBus_;
             }
-            Bus* referenceBus()
+            Components<Bus>::Ptr referenceBus()
             {
                 return referenceBus_;
             }
+
             void setReferenceBus(const std::string& id)
             {
-                referenceBus_ = bus(id);
+                referenceBus_ = buses_.get(id);
             }
 
             // TODO: this breaks logical constness - but alternatives are long winded and/or brittle.
@@ -321,18 +321,14 @@ namespace Sgt
             double nomFreq_{50.0};
             double freq_{50.0};
 
-            std::map<std::string, std::shared_ptr<Bus>> busMap_;
-            std::vector<Bus*> busVec_;
-            Bus* referenceBus_{nullptr};
+            MutableComponents<Bus> buses_;
+            Components<Bus>::Ptr referenceBus_;
+            
+            MutableComponents<Bus> branches_;
+            
+            MutableComponents<GenAbc> gens_;
 
-            std::map<std::string, std::shared_ptr<BranchAbc>> branchMap_;
-            std::vector<BranchAbc*> branchVec_;
-
-            std::map<std::string, std::shared_ptr<GenAbc>> genMap_;
-            std::vector<GenAbc*> genVec_;
-
-            std::map<std::string, std::shared_ptr<ZipAbc>> zipMap_;
-            std::vector<ZipAbc*> zipVec_;
+            MutableComponents<ZipAbc> zips_;
 
             std::vector<Island> islands_;
 
