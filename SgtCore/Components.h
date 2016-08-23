@@ -15,6 +15,7 @@
 #ifndef COMPONENTS_DOT_H
 #define COMPONENTS_DOT_H
 
+#include <assert.h>
 #include <iostream>
 #include <map>
 #include <string>
@@ -22,49 +23,67 @@
 
 namespace Sgt
 {
+    template<typename T> class ConstComponentPtr
+    {
+        public:
+            ConstComponentPtr() : pp_(nullptr) {}
+
+            ConstComponentPtr(std::shared_ptr<T>& p) : pp_(&p) {}
+
+            const T& operator*() const {return *(pp_->get());}
+
+            const T* operator->() const {return pp_->get();}
+            
+            operator std::shared_ptr<const T>() const {return *pp_;}
+
+            operator const T*() const {return pp_->get();}
+
+            operator bool() const {return  pp_ && *pp_;}
+            bool operator==(const std::nullptr_t& rhs) const {return pp_ == nullptr || *pp_ == nullptr;}
+            bool operator!=(const std::nullptr_t& rhs) const {return pp_ != nullptr && *pp_ != nullptr;}
+
+            template<typename U> const U* as() const {return dynamic_cast<const U*>(pp_->get());}
+
+        protected:
+            std::shared_ptr<T>* pp_;
+    };
+
+    template<typename T> class ComponentPtr : public ConstComponentPtr<T>
+    {
+        protected:
+            using ConstComponentPtr<T>::pp_;
+
+        public:
+            using ConstComponentPtr<T>::operator*;
+            using ConstComponentPtr<T>::operator->;
+            using ConstComponentPtr<T>::operator std::shared_ptr<const T>;
+            using ConstComponentPtr<T>::as;
+
+            ComponentPtr() = default;
+
+            ComponentPtr(std::shared_ptr<T>& p) : ConstComponentPtr<T>(p) {}
+
+            T& operator*() {return *(pp_->get());}
+
+            T* operator->() {return pp_->get();}
+            
+            operator std::shared_ptr<T>() {return *pp_;}
+
+            operator T*() {return pp_->get();}
+
+            template<typename U> U* as() 
+            {
+                return dynamic_cast<U*>(pp_.get());
+            }
+    };
+
     template<typename T> class Components
     {
         public:
-            class ConstPtr
-            {
-                public:
-                    ConstPtr() : pp_(nullptr) {}
-
-                    ConstPtr(std::unique_ptr<T>& p) : pp_(&p) {}
-
-                    const T& operator*() const {return *(pp_->get());}
-
-                    const T* operator->() const {return pp_->get();}
-
-                    operator bool() const {return  pp_ && *pp_;}
-                    bool operator==(const std::nullptr_t& rhs) const {return pp_ == nullptr || *pp_ == nullptr;}
-                    bool operator!=(const std::nullptr_t& rhs) const {return pp_ != nullptr && *pp_ != nullptr;}
-
-                    template<typename U> const U* as() const {return dynamic_cast<const U*>(pp_->get());}
-
-                protected:
-                    std::unique_ptr<T>* pp_;
-            };
-
-            class Ptr : public ConstPtr
-            {
-                public:
-                    Ptr() = default;
-
-                    Ptr(std::unique_ptr<T>& p) : ConstPtr(p) {}
-
-                    const T& operator*() const {return *(ConstPtr::pp_->get());}
-                    T& operator*() {return *(ConstPtr::pp_->get());}
-
-                    const T* operator->() const {return ConstPtr::pp_->get();}
-                    T* operator->() {return ConstPtr::pp_->get();}
-
-                    template<typename U> const U* as() const {return dynamic_cast<const U*>(ConstPtr::p_.get().get());}
-                    template<typename U> U* as() {return dynamic_cast<U*>(ConstPtr::p_.get().get());}
-            };
+            using ConstPtr = ConstComponentPtr<T>;
+            using Ptr = ComponentPtr<T>;
 
         public:
-
             ConstPtr operator[](const std::string& id) const {return map_.at(id);}
             Ptr operator[](const std::string& id) {return map_.at(id);}
             
@@ -92,7 +111,7 @@ namespace Sgt
             auto rcend() const {return vec_.rcend();}
             
         protected:
-            std::map<std::string, std::unique_ptr<T>> map_;
+            std::map<std::string, std::shared_ptr<T>> map_;
             std::vector<Ptr> vec_;
     };
     
@@ -102,29 +121,30 @@ namespace Sgt
             using Ptr = typename Components<T>::Ptr;
             using ConstPtr = typename Components<T>::ConstPtr;
 
-            Ptr insert(std::unique_ptr<T> comp)
+            Ptr insert(std::shared_ptr<T> comp)
             {
                 auto it = Components<T>::map_.find(comp->id());
                 if (it == Components<T>::map_.end())
                 {
                     // Insert new element.
-                    it = Components<T>::map_.insert(std::make_pair(comp->id(), std::move(comp))).first;
+                    it = Components<T>::map_.insert(std::make_pair(comp->id(), comp)).first;
                     Components<T>::vec_.push_back(it->second);
                 }
                 else
                 {
                     // Replace existing element.
-                    it->second = std::move(comp);
+                    it->second = comp;
                 }
+                return it->second;
             }
-
-            std::unique_ptr<T> remove(const std::string& id) 
+            
+            std::shared_ptr<T> remove(const std::string& id) 
             {
-                std::unique_ptr<T> result;
+                std::shared_ptr<T> result;
                 auto mapIt = Components<T>::map_.find(id);
                 if (mapIt != Components<T>::map_.end())
                 {
-                    result = std::move(mapIt->second);
+                    result = mapIt->second;
                     Components<T>::map_.erase(mapIt);
                     auto vecIt = std::find_if(Components<T>::vec_.begin(), Components<T>::vec_.end(), 
                             [&id](Ptr& p){return p->id() == id;});

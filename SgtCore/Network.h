@@ -36,7 +36,7 @@ namespace Sgt
     {
         int idx{-1};
         bool isSupplied{false};
-        std::vector<Components<Bus>::Ptr> buses;
+        std::vector<ComponentPtr<Bus>> buses;
     };
     
     struct ConstIsland
@@ -51,7 +51,7 @@ namespace Sgt
 
         int idx{-1};
         bool isSupplied{false};
-        std::vector<Components<Bus>::ConstPtr> buses;
+        std::vector<ConstComponentPtr<Bus>> buses;
     };
 
     /// @brief Network component, describing an electricity network.
@@ -117,21 +117,21 @@ namespace Sgt
                 return buses_;
             }
 
-            void addBus(std::unique_ptr<Bus> bus)
+            void addBus(std::shared_ptr<Bus> bus)
             {
-                buses_.insert(std::move(bus));
+                buses_.insert(bus);
             }
             
-            std::unique_ptr<Bus> removeBus(std::string& id)
+            std::shared_ptr<Bus> removeBus(std::string& id)
             {
                 return buses_.remove(id);
             }
 
-            Components<Bus>::ConstPtr referenceBus() const
+            ConstComponentPtr<Bus> referenceBus() const
             {
                 return referenceBus_;
             }
-            Components<Bus>::Ptr referenceBus()
+            ComponentPtr<Bus> referenceBus()
             {
                 return referenceBus_;
             }
@@ -151,10 +151,10 @@ namespace Sgt
                 return branches_;
             }
 
-            virtual void addBranch(std::unique_ptr<BranchAbc> branch,
+            virtual void addBranch(std::shared_ptr<BranchAbc> branch,
                     const std::string& bus0Id, const std::string& bus1Id);
             
-            std::unique_ptr<BranchAbc> removeBranch(std::string& id)
+            std::shared_ptr<BranchAbc> removeBranch(std::string& id)
             {
                 return branches_.remove(id);
             }
@@ -169,9 +169,9 @@ namespace Sgt
                 return gens_;
             }
 
-            void addGen(std::unique_ptr<GenAbc> gen, const std::string& busId);
+            void addGen(std::shared_ptr<GenAbc> gen, const std::string& busId);
             
-            std::unique_ptr<GenAbc> removeGen(std::string& id)
+            std::shared_ptr<GenAbc> removeGen(std::string& id)
             {
                 return gens_.remove(id);
             }
@@ -186,9 +186,9 @@ namespace Sgt
                 return zips_;
             }
 
-            void addZip(std::unique_ptr<ZipAbc> zip, const std::string& busId);
+            void addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId);
             
-            std::unique_ptr<ZipAbc> removeZip(std::string& id)
+            std::shared_ptr<ZipAbc> removeZip(std::string& id)
             {
                 return zips_.remove(id);
             }
@@ -329,7 +329,7 @@ namespace Sgt
             double freq_{50.0};
 
             MutableComponents<Bus> buses_;
-            Components<Bus>::Ptr referenceBus_;
+            ComponentPtr<Bus> referenceBus_;
             
             MutableComponents<BranchAbc> branches_;
             

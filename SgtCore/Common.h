@@ -15,6 +15,7 @@
 #ifndef COMMON_DOT_H
 #define COMMON_DOT_H
 
+#include <SgtCore/Components.h>
 #include <SgtCore/json.h>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -403,6 +404,21 @@ namespace Sgt
         static json toJson(T* t)
         {
             return json(*t);
+        }
+    };
+   
+    /// ComponentPtrs
+    template<typename T> struct JsonConvert<Components<T>>
+    {
+        json result;
+        static json toJson(const Components<T>& x)
+        {
+            json result;
+            for (auto c : x)
+            {
+                result.push_back(*c);
+            }
+            return result;
         }
     };
 

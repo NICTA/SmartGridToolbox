@@ -144,22 +144,22 @@ namespace Sgt
         /// @name attached buses:
         /// @{
 
-            Components<Bus>::ConstPtr bus0() const
+            ConstComponentPtr<Bus> bus0() const
             {
                 return bus0_;
             }
             
-            Components<Bus>::Ptr bus0()
+            ComponentPtr<Bus> bus0()
             {
                 return bus0_;
             }
 
-            Components<Bus>::ConstPtr bus1() const
+            ConstComponentPtr<Bus> bus1() const
             {
                 return bus1_;
             }
             
-            Components<Bus>::Ptr bus1()
+            ComponentPtr<Bus> bus1()
             {
                 return bus1_;
             }
@@ -176,8 +176,8 @@ namespace Sgt
             Event isInServiceChanged_{sComponentType() + " : Is in service changed"};
             Event admittanceChanged_{sComponentType() + " : Admittance changed"};
             
-            Components<Bus>::Ptr bus0_;
-            Components<Bus>::Ptr bus1_;
+            ComponentPtr<Bus> bus0_;
+            ComponentPtr<Bus> bus1_;
     };
 
     /// @brief A concrete, generic branch.

@@ -508,15 +508,15 @@ namespace Sgt
 
         // If there is no slack bus, Matpower assigns the first PV bus as slack. We need to do the same.
         auto it = std::find_if(netw.buses().cbegin(), netw.buses().cend(),
-                               [](const Bus* bus)->bool{return bus->type() == BusType::SL;});
+                [](const ConstComponentPtr<Bus>& bus)->bool{return bus->type() == BusType::SL;});
         if (it == netw.buses().cend())
         {
             sgtLogWarning()
                     << "There is no slack bus defined on the network. Setting the type of the first PV bus to SL."
                     << std::endl;
-            auto itb = std::find_if(netw.buses().cbegin(), netw.buses().cend(),
-                                    [](const Bus* bus)->bool{return bus->type() == BusType::PV;});
-            assert(itb != netw.buses().cend());
+            auto itb = std::find_if(netw.buses().begin(), netw.buses().end(),
+                                    [](const ComponentPtr<Bus>& bus)->bool{return bus->type() == BusType::PV;});
+            assert(itb != netw.buses().end());
             (**itb).setType(BusType::SL);
         }
         else
@@ -551,7 +551,7 @@ namespace Sgt
 
             if (gen->isInService())
             {
-                auto bus = netw.bus(busId);
+                auto bus = netw.buses()[busId];
                 bus->setVMagSetpoint({VScale * pu2kV(genInfo.Vg, bus->VBase())});
             }
 
@@ -571,8 +571,8 @@ namespace Sgt
 
             branch->setIsInService(branchInfo.status);
 
-            auto bus0 = netw.bus(bus0Name);
-            auto bus1 = netw.bus(bus1Name);
+            auto bus0 = netw.buses()[bus0Name];
+            auto bus1 = netw.buses()[bus1Name];
 
             double tap = (std::abs(branchInfo.tap) < 1e-6 ? 1.0 : branchInfo.tap) * bus0->VBase() / bus1->VBase();
             branch->setTapRatio(std::polar(tap, deg2Rad(branchInfo.shiftDeg)));

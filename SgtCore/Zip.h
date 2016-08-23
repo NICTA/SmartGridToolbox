@@ -16,6 +16,7 @@
 #define ZIP_DOT_H
 
 #include <SgtCore/Component.h>
+#include <SgtCore/Components.h>
 #include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
 
@@ -160,12 +161,12 @@ namespace Sgt
             /// @name Bus.
             /// @{
             
-            const Bus* bus() const
+            ConstComponentPtr<Bus> bus() const
             {
                 return bus_;
             }
             
-            Bus* bus()
+            ComponentPtr<Bus> bus()
             {
                 return bus_;
             }
@@ -182,7 +183,7 @@ namespace Sgt
             Event injectionChanged_{std::string(sComponentType()) + " : Injection changed"};
             Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
 
-            Bus* bus_;
+            ComponentPtr<Bus> bus_;
     };
 
     /// @brief A concrete, generic ZIP at a bus.

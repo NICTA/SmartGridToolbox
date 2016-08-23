@@ -17,6 +17,7 @@
 
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
+#include <SgtCore/Components.h>
 #include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
 
@@ -216,12 +217,12 @@ namespace Sgt
             /// @name Bus.
             /// @{
             
-            const Bus* bus() const
+            ConstComponentPtr<Bus> bus() const
             {
                 return bus_;
             }
             
-            Bus* bus()
+            ComponentPtr<Bus> bus()
             {
                 return bus_;
             }
@@ -238,7 +239,7 @@ namespace Sgt
             Event JChanged_{std::string(sComponentType()) + " : Angular momentum changed"};
             Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
 
-            Bus* bus_;
+            ComponentPtr<Bus> bus_;
     };
 
     /// @brief A concrete, generic generation at a bus.

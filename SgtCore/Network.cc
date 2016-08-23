@@ -25,7 +25,7 @@ namespace Sgt
 {
     namespace
     {
-        void islandDfs(Bus* bus, Island& island)
+        void islandDfs(ComponentPtr<Bus> bus, Island& island)
         {
             if (bus->islandIdx() != -1 || !bus->isInService()) return;
 
@@ -47,43 +47,40 @@ namespace Sgt
         // Empty.
     }
 
-    void Network::addBranch(std::unique_ptr<BranchAbc> branch, const std::string& bus0Id, const std::string& bus1Id)
+    void Network::addBranch(std::shared_ptr<BranchAbc> branch, const std::string& bus0Id, const std::string& bus1Id)
     {
-        auto branchPtr = branches_.insert(std::move(branch));
         auto bus0 = buses_[bus0Id];
         sgtAssert(bus0 != nullptr, "Bus " << bus0Id << " was not found in the network.");
         auto bus1 = buses_[bus0Id];
         sgtAssert(bus1 != nullptr, "Bus " << bus1Id << " was not found in the network.");
 
+        branches_.insert(branch);
+
         branch->bus0_ = bus0;
         branch->bus1_ = bus1;
 
-        bus0->branchVec0_.push_back(branchPtr);
-        
-        branch->bus1_ = bus1;
-        bus1->branchVec1_.push_back(branch.get());
+        bus0->branches0_.insert(branch);
+        bus1->branches1_.insert(branch);
     }
 
     void Network::addGen(std::shared_ptr<GenAbc> gen, const std::string& busId)
     {
-        genMap_[gen->id()] = gen;
-        genVec_.push_back(gen.get());
-
-        Bus* bus = this->bus(busId);
+        auto bus = buses_[busId];
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
+
+        gens_.insert(gen);
         gen->bus_ = bus;
-        bus->genVec_.push_back(gen.get());
+        bus->gens_.insert(gen);
     }
 
     void Network::addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId)
     {
-        zipMap_[zip->id()] = zip;
-        zipVec_.push_back(zip.get());
-
-        Bus* bus = this->bus(busId);
+        auto bus = buses_[busId];
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
+
+        zips_.insert(zip);
         zip->bus_ = bus;
-        bus->zipVec_.push_back(zip.get());
+        bus->zips_.insert(zip);
     }
 
     void Network::applyFlatStart()
@@ -151,14 +148,14 @@ namespace Sgt
             
     double Network::genCostPerUnitTime()
     {
-        return std::accumulate(genVec_.begin(), genVec_.end(), 0.0, 
+        return std::accumulate(gens_.begin(), gens_.end(), 0.0, 
                 [](double d, GenAbc* g)->double{return d + g->cost();});
     }
             
     void Network::findIslands()
     {
-        std::map<std::string, Bus*> remaining; 
-        for (auto bus : busVec_) remaining[bus->id()] = bus;
+        std::map<std::string, ComponentPtr<Bus>> remaining; 
+        for (auto bus : buses_) remaining[bus->id()] = bus;
 
         // Step 1: Initialize.
         islands_.clear();
@@ -260,7 +257,7 @@ namespace Sgt
                 bus->setpointChanged().setIsEnabled(isEnabledSv);
             }
         }
-        for (const BranchAbc* branch : netw.branches())
+        for (auto branch : netw.branches())
         {
             if (branch->isInService() && 
                     selBus(*branch->bus0()) && branch->bus0()->isInService() &&
@@ -279,7 +276,7 @@ namespace Sgt
         for (const auto& busPair: mod.busMap())
         {
             auto& modBus = *busPair.second;
-            Bus* bus = netw.bus(modBus.id_);
+            auto bus = netw.buses()[modBus.id_];
 
             int nInService = bus->nInServiceGens();
 
@@ -294,7 +291,7 @@ namespace Sgt
             switch (bus->type())
             {
                 case BusType::SL:
-                    for (GenAbc* gen : bus->gens())
+                    for (auto gen : bus->gens())
                     {
                         if (gen->isInService())
                         {
@@ -305,7 +302,7 @@ namespace Sgt
                 case BusType::PQ:
                     break;
                 case BusType::PV:
-                    for (GenAbc* gen : bus->gens())
+                    for (auto gen : bus->gens())
                     {
                         if (gen->isInService())
                         {
