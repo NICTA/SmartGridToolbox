@@ -101,7 +101,7 @@ namespace Sgt
     int Bus::nInServiceGens() const
     {
         int sum = 0;
-        for (auto gen : genVec_)
+        for (auto gen : gens_)
         {
             if (gen->isInService())
             {
@@ -114,7 +114,7 @@ namespace Sgt
     Col<Complex> Bus::SGenRequested() const
     {
         auto sum = Col<Complex>(phases().size(), fill::zeros);
-        for (auto gen : genVec_)
+        for (auto gen : gens_)
         {
             if (gen->isInService())
             {
@@ -129,7 +129,7 @@ namespace Sgt
         // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
         // Easier to just do this.
         double sum = 0;
-        for (auto gen : genVec_)
+        for (auto gen : gens_)
         {
             if (gen->isInService())
             {
@@ -142,7 +142,7 @@ namespace Sgt
     int Bus::nInServiceZips() const
     {
         int sum = 0;
-        for (auto zip : zipVec_)
+        for (auto zip : zips_)
         {
             if (zip->isInService())
             {
@@ -157,7 +157,7 @@ namespace Sgt
         // Note: std::accumulate gave weird, hard to debug malloc errors under certain circumstances...
         // Easier to just do this.
         auto sum = Mat<Complex>(phases().size(), phases().size(), fill::zeros);
-        for (auto zip : zipVec_)
+        for (auto zip : zips_)
         {
             if (zip->isInService())
             {
@@ -188,7 +188,7 @@ namespace Sgt
     {
         // Note the returned current is relative to the phase of V.
         auto sum = Mat<Complex>(phases().size(), phases().size(), fill::zeros);
-        for (auto zip : zipVec_)
+        for (auto zip : zips_)
         {
             if (zip->isInService())
             {
@@ -218,7 +218,7 @@ namespace Sgt
     Mat<Complex> Bus::SConst() const
     {
         auto sum = Mat<Complex>(phases().size(), phases().size(), fill::zeros);
-        for (auto zip : zipVec_)
+        for (auto zip : zips_)
         {
             if (zip->isInService())
             {

@@ -17,6 +17,7 @@
 
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
+#include <SgtCore/Components.h>
 #include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
 
@@ -284,19 +285,37 @@ namespace Sgt
             /// @name Branches
             /// @{
             
-            const std::vector<const BranchAbc*> branches0() const {return {branchVec0_.begin(), branchVec0_.end()};}
-            const std::vector<BranchAbc*>& branches0() {return branchVec0_;}
-
-            const std::vector<const BranchAbc*> branches1() const {return {branchVec1_.begin(), branchVec1_.end()};}
-            const std::vector<BranchAbc*>& branches1() {return branchVec1_;}
+            const Components<BranchAbc>& branches0() const
+            {
+                return branches0_;
+            }
+            Components<BranchAbc>& branches0()
+            {
+                return branches0_;
+            }
+            
+            const Components<BranchAbc>& branches1() const
+            {
+                return branches1_;
+            }
+            Components<BranchAbc>& branches1()
+            {
+                return branches1_;
+            }
 
             /// @}
 
             /// @name Generators
             /// @{
 
-            const std::vector<const GenAbc*> gens() const {return {genVec_.begin(), genVec_.end()};}
-            const std::vector<GenAbc*>& gens() {return genVec_;}
+            const Components<GenAbc>& gens() const
+            {
+                return gens_;
+            }
+            Components<GenAbc>& gens()
+            {
+                return gens_;
+            }
 
             int nInServiceGens() const;
 
@@ -332,8 +351,14 @@ namespace Sgt
             /// @name Zips
             /// @{
 
-            const std::vector<const ZipAbc*> zips() const {return {zipVec_.begin(), zipVec_.end()};}
-            const std::vector<ZipAbc*>& zips() {return zipVec_;}
+            const Components<ZipAbc>& zips() const
+            {
+                return zips_;
+            }
+            Components<ZipAbc>& zips()
+            {
+                return zips_;
+            }
 
             int nInServiceZips() const;
 
@@ -420,10 +445,10 @@ namespace Sgt
             Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
             Event voltageUpdated_{std::string(sComponentType()) + " : Voltage updated"};
             
-            std::vector<BranchAbc*> branchVec0_;
-            std::vector<BranchAbc*> branchVec1_;
-            std::vector<GenAbc*> genVec_;
-            std::vector<ZipAbc*> zipVec_;
+            MutableComponents<BranchAbc> branches0_;
+            MutableComponents<BranchAbc> branches1_;
+            MutableComponents<GenAbc> gens_;
+            MutableComponents<ZipAbc> zips_;
     };
 }
 

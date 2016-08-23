@@ -22,59 +22,42 @@
 
 namespace Sgt
 {
-    template<class Iter> class Range
-    {
-        public:
-            Range(const Iter& begin, const Iter& end) : begin_(begin), end_(end) {}
-            Iter begin() const {return begin_;}
-            Iter end() const {return end_;}
-            auto operator[](int i) {return *(begin_ + i);}
-        private:
-            Iter begin_;
-            Iter end_;
-    };
-
-    template<class Iter> Range<Iter> range(Iter b, Iter e)
-    {
-        return Range<Iter>(b, e);
-    }
-
     template<typename T> class Components
     {
         public:
             class ConstPtr
             {
                 public:
-                    ConstPtr()
-                    {
-                        static const std::unique_ptr<T> null;
-                        p_ = null;
-                    }
+                    ConstPtr() : pp_(nullptr) {}
 
-                    ConstPtr(std::unique_ptr<T>& p) : p_(p) {}
+                    ConstPtr(std::unique_ptr<T>& p) : pp_(&p) {}
 
-                    const T& operator*() const {return *(p_.get().get());}
+                    const T& operator*() const {return *(pp_->get());}
 
-                    const T* operator->() const {return p_.get().get();}
+                    const T* operator->() const {return pp_->get();}
 
-                    operator bool() {return  p_;}
-                    bool operator==(const std::nullptr_t& rhs) {return p_ == nullptr;}
-                    bool operator!=(const std::nullptr_t& rhs) {return p_ != nullptr;}
+                    operator bool() const {return  pp_ && *pp_;}
+                    bool operator==(const std::nullptr_t& rhs) const {return pp_ == nullptr || *pp_ == nullptr;}
+                    bool operator!=(const std::nullptr_t& rhs) const {return pp_ != nullptr && *pp_ != nullptr;}
 
-                    template<typename U> const U* as() const {return dynamic_cast<const U*>(p_.get().get());}
+                    template<typename U> const U* as() const {return dynamic_cast<const U*>(pp_->get());}
 
                 protected:
-                    std::reference_wrapper<std::unique_ptr<T>> p_;
+                    std::unique_ptr<T>* pp_;
             };
 
             class Ptr : public ConstPtr
             {
                 public:
+                    Ptr() = default;
+
                     Ptr(std::unique_ptr<T>& p) : ConstPtr(p) {}
 
-                    T& operator*() {return *(ConstPtr::p_.get());}
+                    const T& operator*() const {return *(ConstPtr::pp_->get());}
+                    T& operator*() {return *(ConstPtr::pp_->get());}
 
-                    T* operator->() {return ConstPtr::p_.get().get();}
+                    const T* operator->() const {return ConstPtr::pp_->get();}
+                    T* operator->() {return ConstPtr::pp_->get();}
 
                     template<typename U> const U* as() const {return dynamic_cast<const U*>(ConstPtr::p_.get().get());}
                     template<typename U> U* as() {return dynamic_cast<U*>(ConstPtr::p_.get().get());}
@@ -108,10 +91,7 @@ namespace Sgt
             auto rcbegin() const {return vec_.rcbegin();}
             auto rcend() const {return vec_.rcend();}
             
-            Range<decltype(std::declval<Components>->cbegin())> vec() const {return {cbegin(), cend()};}
-            Range<decltype(std::declval<Components>->begin())> vec() {return {begin(), end()};}
-
-        private:
+        protected:
             std::map<std::string, std::unique_ptr<T>> map_;
             std::vector<Ptr> vec_;
     };
@@ -119,7 +99,10 @@ namespace Sgt
     template<typename T> class MutableComponents : public Components<T>
     {
         public:
-            void insert(std::unique_ptr<T> comp)
+            using Ptr = typename Components<T>::Ptr;
+            using ConstPtr = typename Components<T>::ConstPtr;
+
+            Ptr insert(std::unique_ptr<T> comp)
             {
                 auto it = Components<T>::map_.find(comp->id());
                 if (it == Components<T>::map_.end())
@@ -138,14 +121,15 @@ namespace Sgt
             std::unique_ptr<T> remove(const std::string& id) 
             {
                 std::unique_ptr<T> result;
-                auto it = Components<T>::map_.find(id);
-                if (it != Components<T>::map_.end())
+                auto mapIt = Components<T>::map_.find(id);
+                if (mapIt != Components<T>::map_.end())
                 {
-                    result = std::move(it->second);
-                    Components<T>::map_.erase(it);
-                    Components<T>::vec_.erase(
-                            std::remove(Components<T>::vec_.begin(), Components<T>::vec_.end(), id), 
-                            Components<T>::vec_.end());
+                    result = std::move(mapIt->second);
+                    Components<T>::map_.erase(mapIt);
+                    auto vecIt = std::find_if(Components<T>::vec_.begin(), Components<T>::vec_.end(), 
+                            [&id](Ptr& p){return p->id() == id;});
+                    assert(vecIt != Components<T>::vec_.end());
+                    Components<T>::vec_.erase(vecIt);
                 }
                 return result;
             }

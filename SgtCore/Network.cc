@@ -47,24 +47,19 @@ namespace Sgt
         // Empty.
     }
 
-    void Network::addBus(std::shared_ptr<Bus> bus)
+    void Network::addBranch(std::unique_ptr<BranchAbc> branch, const std::string& bus0Id, const std::string& bus1Id)
     {
-        busMap_[bus->id()] = bus;
-        busVec_.push_back(bus.get());
-    }
-
-    void Network::addBranch(std::shared_ptr<BranchAbc> branch, const std::string& bus0Id, const std::string& bus1Id)
-    {
-        branchMap_[branch->id()] = branch;
-        branchVec_.push_back(branch.get());
-
-        Bus* bus0 = bus(bus0Id);
+        auto branchPtr = branches_.insert(std::move(branch));
+        auto bus0 = buses_[bus0Id];
         sgtAssert(bus0 != nullptr, "Bus " << bus0Id << " was not found in the network.");
-        branch->bus0_ = bus0;
-        bus0->branchVec0_.push_back(branch.get());
-        
-        Bus* bus1 = bus(bus1Id);
+        auto bus1 = buses_[bus0Id];
         sgtAssert(bus1 != nullptr, "Bus " << bus1Id << " was not found in the network.");
+
+        branch->bus0_ = bus0;
+        branch->bus1_ = bus1;
+
+        bus0->branchVec0_.push_back(branchPtr);
+        
         branch->bus1_ = bus1;
         bus1->branchVec1_.push_back(branch.get());
     }

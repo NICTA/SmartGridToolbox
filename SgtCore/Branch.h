@@ -16,6 +16,7 @@
 #define BRANCH_DOT_H
 
 #include <SgtCore/Component.h>
+#include <SgtCore/Components.h>
 #include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
 
@@ -143,22 +144,22 @@ namespace Sgt
         /// @name attached buses:
         /// @{
 
-            const Bus* bus0() const
+            Components<Bus>::ConstPtr bus0() const
+            {
+                return bus0_;
+            }
+            
+            Components<Bus>::Ptr bus0()
             {
                 return bus0_;
             }
 
-            Bus* bus0()
-            {
-                return bus0_;
-            }
-
-            const Bus* bus1() const
+            Components<Bus>::ConstPtr bus1() const
             {
                 return bus1_;
             }
-
-            Bus* bus1()
+            
+            Components<Bus>::Ptr bus1()
             {
                 return bus1_;
             }
@@ -175,8 +176,8 @@ namespace Sgt
             Event isInServiceChanged_{sComponentType() + " : Is in service changed"};
             Event admittanceChanged_{sComponentType() + " : Admittance changed"};
             
-            Bus* bus0_{nullptr};
-            Bus* bus1_{nullptr};
+            Components<Bus>::Ptr bus0_;
+            Components<Bus>::Ptr bus1_;
     };
 
     /// @brief A concrete, generic branch.

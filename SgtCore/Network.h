@@ -107,8 +107,12 @@ namespace Sgt
             /// @name Network Components:
             /// @{
 
-            // TODO: this breaks logical constness - but alternatives are long winded and/or brittle.
             const Components<Bus>& buses() const
+            {
+                return buses_;
+            }
+            
+            Components<Bus>& buses()
             {
                 return buses_;
             }
@@ -134,57 +138,60 @@ namespace Sgt
 
             void setReferenceBus(const std::string& id)
             {
-                referenceBus_ = buses_.get(id);
+                referenceBus_ = buses_[id];
             }
 
-            // TODO: this breaks logical constness - but alternatives are long winded and/or brittle.
-            const std::vector<BranchAbc*>& branches() const
+            const Components<BranchAbc>& branches() const
             {
-                return branchVec_;
+                return branches_;
             }
-            const BranchAbc* branch(const std::string& id) const
+            
+            Components<BranchAbc>& branches()
             {
-                auto it = branchMap_.find(id);
-                return (it == branchMap_.end()) ? nullptr : it->second.get();
+                return branches_;
             }
-            BranchAbc* branch(const std::string& id)
-            {
-                return const_cast<BranchAbc*>((static_cast<const Network*>(this))->branch(id));
-            }
-            virtual void addBranch(std::shared_ptr<BranchAbc> branch,
+
+            virtual void addBranch(std::unique_ptr<BranchAbc> branch,
                     const std::string& bus0Id, const std::string& bus1Id);
+            
+            std::unique_ptr<BranchAbc> removeBranch(std::string& id)
+            {
+                return branches_.remove(id);
+            }
 
-            // TODO: this breaks logical constness - but alternatives are long winded and/or brittle.
-            const std::vector<GenAbc*>& gens() const
+            const Components<GenAbc>& gens() const
             {
-                return genVec_;
+                return gens_;
             }
-            const GenAbc* gen(const std::string& id) const
+            
+            Components<GenAbc>& gens()
             {
-                auto it = genMap_.find(id);
-                return (it == genMap_.end()) ? nullptr : it->second.get();
+                return gens_;
             }
-            GenAbc* gen(const std::string& id)
-            {
-                return const_cast<GenAbc*>((static_cast<const Network*>(this))->gen(id));
-            }
-            virtual void addGen(std::shared_ptr<GenAbc> gen, const std::string& busId);
 
-            // TODO: this breaks logical constness - but alternatives are long winded and/or brittle.
-            const std::vector<ZipAbc*>& zips() const
+            void addGen(std::unique_ptr<GenAbc> gen, const std::string& busId);
+            
+            std::unique_ptr<GenAbc> removeGen(std::string& id)
             {
-                return zipVec_;
+                return gens_.remove(id);
             }
-            const ZipAbc* zip(const std::string& id) const
+
+            const Components<ZipAbc>& zips() const
             {
-                auto it = zipMap_.find(id);
-                return (it == zipMap_.end()) ? nullptr : it->second.get();
+                return zips_;
             }
-            ZipAbc* zip(const std::string& id)
+            
+            Components<ZipAbc>& zips()
             {
-                return const_cast<ZipAbc*>((static_cast<const Network*>(this))->zip(id));
+                return zips_;
             }
-            virtual void addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId);
+
+            void addZip(std::unique_ptr<ZipAbc> zip, const std::string& busId);
+            
+            std::unique_ptr<ZipAbc> removeZip(std::string& id)
+            {
+                return zips_.remove(id);
+            }
 
             /// @}
 
@@ -324,7 +331,7 @@ namespace Sgt
             MutableComponents<Bus> buses_;
             Components<Bus>::Ptr referenceBus_;
             
-            MutableComponents<Bus> branches_;
+            MutableComponents<BranchAbc> branches_;
             
             MutableComponents<GenAbc> gens_;
 
