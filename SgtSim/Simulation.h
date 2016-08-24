@@ -111,6 +111,7 @@ namespace Sgt
             /// @brief Access a particular SimComponent of a given type.
             template<typename T> std::shared_ptr<T> simComponent(const std::string& id)
             {
+                const_cast<const MutableComponentCollection<SimComponent>&>(simComps_)[id].asShared<T>();
                 return simComps_[id].asShared<T>();
             }
             
