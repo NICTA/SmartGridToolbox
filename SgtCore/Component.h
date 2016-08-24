@@ -104,6 +104,11 @@ namespace Sgt
                 return userData_;
             }
             
+            json& userData()
+            {
+                return userData_;
+            }
+            
             void setUserData(const json& userData)
             {
                 userData_ = userData;
