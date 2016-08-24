@@ -17,7 +17,7 @@
 
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
-#include <SgtCore/Components.h>
+#include <SgtCore/ComponentCollection.h>
 #include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
 
@@ -285,20 +285,20 @@ namespace Sgt
             /// @name Branches
             /// @{
             
-            const Components<BranchAbc>& branches0() const
+            const ComponentCollection<BranchAbc>& branches0() const
             {
                 return branches0_;
             }
-            Components<BranchAbc>& branches0()
+            ComponentCollection<BranchAbc>& branches0()
             {
                 return branches0_;
             }
             
-            const Components<BranchAbc>& branches1() const
+            const ComponentCollection<BranchAbc>& branches1() const
             {
                 return branches1_;
             }
-            Components<BranchAbc>& branches1()
+            ComponentCollection<BranchAbc>& branches1()
             {
                 return branches1_;
             }
@@ -308,11 +308,11 @@ namespace Sgt
             /// @name Generators
             /// @{
 
-            const Components<GenAbc>& gens() const
+            const ComponentCollection<GenAbc>& gens() const
             {
                 return gens_;
             }
-            Components<GenAbc>& gens()
+            ComponentCollection<GenAbc>& gens()
             {
                 return gens_;
             }
@@ -351,11 +351,11 @@ namespace Sgt
             /// @name Zips
             /// @{
 
-            const Components<ZipAbc>& zips() const
+            const ComponentCollection<ZipAbc>& zips() const
             {
                 return zips_;
             }
-            Components<ZipAbc>& zips()
+            ComponentCollection<ZipAbc>& zips()
             {
                 return zips_;
             }
@@ -445,10 +445,10 @@ namespace Sgt
             Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
             Event voltageUpdated_{std::string(sComponentType()) + " : Voltage updated"};
             
-            MutableComponents<BranchAbc> branches0_;
-            MutableComponents<BranchAbc> branches1_;
-            MutableComponents<GenAbc> gens_;
-            MutableComponents<ZipAbc> zips_;
+            MutableComponentCollection<BranchAbc> branches0_;
+            MutableComponentCollection<BranchAbc> branches1_;
+            MutableComponentCollection<GenAbc> gens_;
+            MutableComponentCollection<ZipAbc> zips_;
     };
 }
 

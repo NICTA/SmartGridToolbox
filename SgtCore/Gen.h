@@ -17,7 +17,7 @@
 
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
-#include <SgtCore/Components.h>
+#include <SgtCore/ComponentCollection.h>
 #include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
 

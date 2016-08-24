@@ -58,10 +58,10 @@ namespace Sgt
         branch->bus0_ = bus0;
         branch->bus1_ = bus1;
 
-        bus0->branches0_.insert(branch);
-        bus1->branches1_.insert(branch);
+        bus0->branches0_.insert(branch->id(), branch);
+        bus1->branches1_.insert(branch->id(), branch);
 
-        return branches_.insert(branch);
+        return branches_.insert(branch->id(), branch);
     }
 
     ComponentPtr<GenAbc> Network::addGen(std::shared_ptr<GenAbc> gen, const std::string& busId)
@@ -70,9 +70,9 @@ namespace Sgt
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
 
         gen->bus_ = bus;
-        bus->gens_.insert(gen);
+        bus->gens_.insert(gen->id(), gen);
 
-        return gens_.insert(gen);
+        return gens_.insert(gen->id(), gen);
     }
 
     ComponentPtr<ZipAbc> Network::addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId)
@@ -81,9 +81,9 @@ namespace Sgt
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
 
         zip->bus_ = bus;
-        bus->zips_.insert(zip);
+        bus->zips_.insert(zip->id(), zip);
         
-        return zips_.insert(zip);
+        return zips_.insert(zip->id(), zip);
     }
 
     void Network::applyFlatStart()

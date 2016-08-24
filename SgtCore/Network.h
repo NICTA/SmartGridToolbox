@@ -17,7 +17,7 @@
 
 #include <SgtCore/Branch.h>
 #include <SgtCore/Bus.h>
-#include <SgtCore/Components.h>
+#include <SgtCore/ComponentCollection.h>
 #include <SgtCore/Gen.h>
 #include <SgtCore/PowerFlow.h>
 #include <SgtCore/PowerFlowSolver.h>
@@ -107,19 +107,19 @@ namespace Sgt
             /// @name Network Components:
             /// @{
 
-            const Components<Bus>& buses() const
+            const ComponentCollection<Bus>& buses() const
             {
                 return buses_;
             }
             
-            Components<Bus>& buses()
+            ComponentCollection<Bus>& buses()
             {
                 return buses_;
             }
 
             ComponentPtr<Bus> addBus(std::shared_ptr<Bus> bus)
             {
-                return buses_.insert(bus);
+                return buses_.insert(bus->id(), bus);
             }
             
             std::shared_ptr<Bus> removeBus(std::string& id)
@@ -141,12 +141,12 @@ namespace Sgt
                 referenceBus_ = buses_[id];
             }
 
-            const Components<BranchAbc>& branches() const
+            const ComponentCollection<BranchAbc>& branches() const
             {
                 return branches_;
             }
             
-            Components<BranchAbc>& branches()
+            ComponentCollection<BranchAbc>& branches()
             {
                 return branches_;
             }
@@ -159,12 +159,12 @@ namespace Sgt
                 return branches_.remove(id);
             }
 
-            const Components<GenAbc>& gens() const
+            const ComponentCollection<GenAbc>& gens() const
             {
                 return gens_;
             }
             
-            Components<GenAbc>& gens()
+            ComponentCollection<GenAbc>& gens()
             {
                 return gens_;
             }
@@ -176,12 +176,12 @@ namespace Sgt
                 return gens_.remove(id);
             }
 
-            const Components<ZipAbc>& zips() const
+            const ComponentCollection<ZipAbc>& zips() const
             {
                 return zips_;
             }
             
-            Components<ZipAbc>& zips()
+            ComponentCollection<ZipAbc>& zips()
             {
                 return zips_;
             }
@@ -328,14 +328,14 @@ namespace Sgt
             double nomFreq_{50.0};
             double freq_{50.0};
 
-            MutableComponents<Bus> buses_;
+            MutableComponentCollection<Bus> buses_;
             ComponentPtr<Bus> referenceBus_;
             
-            MutableComponents<BranchAbc> branches_;
+            MutableComponentCollection<BranchAbc> branches_;
             
-            MutableComponents<GenAbc> gens_;
+            MutableComponentCollection<GenAbc> gens_;
 
-            MutableComponents<ZipAbc> zips_;
+            MutableComponentCollection<ZipAbc> zips_;
 
             std::vector<Island> islands_;
 

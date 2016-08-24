@@ -16,7 +16,7 @@
 #define BRANCH_DOT_H
 
 #include <SgtCore/Component.h>
-#include <SgtCore/Components.h>
+#include <SgtCore/ComponentCollection.h>
 #include <SgtCore/Event.h>
 #include <SgtCore/PowerFlow.h>
 
