@@ -47,6 +47,6 @@ namespace Sgt
             pfSolverParser.parse(ndSolver, *nw, parser);
         }
 
-        sim.addSimComponent(std::make_shared<SimNetwork>(id, std::move(nw)));
+        sim.newSimComponent<SimNetwork>(id, std::move(nw));
     }
 }

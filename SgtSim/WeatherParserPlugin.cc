@@ -24,8 +24,7 @@ namespace Sgt
         assertFieldPresent(nd, "id");
 
         string id = parser.expand<std::string>(nd["id"]);
-        auto weather = std::make_shared<Weather>(id);
-        sim.addSimComponent(weather);
+        auto weather = sim.newSimComponent<Weather>(id);
 
         weather->model.latLong = sim.latLong(); // TODO: could be restrictive?
 
@@ -46,7 +45,7 @@ namespace Sgt
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
-                const auto* series = sim.timeSeries()[id].as<TimeSeries<Time, double>>();
+                const auto* series = sim.timeSeries<TimeSeries<Time, double>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
                 weather->model.setTemperatureSeries(*series);
             }
@@ -64,7 +63,7 @@ namespace Sgt
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
-                const auto* series = sim.timeSeries()[id].as<TimeSeries<Time, arma::Col<double>>>();
+                const auto* series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
                 weather->model.setIrradianceSeries(*series);
             }
@@ -87,7 +86,7 @@ namespace Sgt
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
-                const auto* series = sim.timeSeries()[id].as<TimeSeries<Time, arma::Col<double>>>();
+                const auto* series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
                 weather->model.setCloudAttenuationFactorsSeries(*series);
             }
@@ -106,7 +105,7 @@ namespace Sgt
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
-                const auto* series = sim.timeSeries()[id].as<TimeSeries<Time, arma::Col<double>>>();
+                const auto* series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
                 weather->model.setWindVectorSeries(*series);
             }

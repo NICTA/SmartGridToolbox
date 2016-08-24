@@ -25,8 +25,7 @@ namespace Sgt
         assertFieldPresent(nd, "inverter");
 
         string id = parser.expand<std::string>(nd["id"]);
-        auto batt = std::make_shared<Battery>(id);
-        sim.addSimComponent(batt);
+        auto batt = sim.newSimComponent<Battery>(id);
 
         auto nd_dt = nd["dt"];
         if (nd_dt) batt->set_dt(parser.expand<Time>(nd_dt));
@@ -53,7 +52,7 @@ namespace Sgt
         if (ndRequestedPower) batt->setRequestedPower(parser.expand<double>(ndRequestedPower));
 
         const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
-        auto inverter = sim.simComponents()[inverterStr].as<InverterAbc>();
+        auto inverter = sim.simComponent<InverterAbc>(inverterStr);
         sgtAssert(inverter != nullptr,
                 "For component " << id << ", inverter " << inverterStr << " was not found in the simulation.");
         inverter->addDcPowerSource(*batt);

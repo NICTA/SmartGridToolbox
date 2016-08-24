@@ -26,7 +26,7 @@ namespace Sgt
         MatpowerParserPlugin mpParser;
         assertFieldPresent(nd, "sim_network_id");
         string netwId = parser.expand<std::string>(nd["sim_network_id"]);
-        auto simNetw = sim.simComponents()[netwId].as<SimNetwork>();
+        auto simNetw = sim.simComponent<SimNetwork>(netwId);
         auto& netw = simNetw->network();
 
         mpParser.parse(nd, netw, parser);
@@ -34,29 +34,25 @@ namespace Sgt
         // Now recreate the SimNetwork from the Network.
         for (auto bus : netw.buses())
         {
-            auto simBus = std::make_shared<SimBus>(bus->id(), *bus);
-            sim.addSimComponent(simBus);
+            auto simBus = sim.newSimComponent<SimBus>(bus->id(), *bus);
             simBus->linkToSimNetwork(*simNetw);
 
             for (auto gen : bus->gens())
             {
-                auto simGen = std::make_shared<SimGen>(gen->id(), *gen);
-                sim.addSimComponent(simGen);
+                auto simGen = sim.newSimComponent<SimGen>(gen->id(), *gen);
                 simGen->linkToSimNetwork(*simNetw);
             }
 
             for (auto zip : bus->zips())
             {
-                auto simZip = std::make_shared<SimZip>(zip->id(), *zip);
-                sim.addSimComponent(simZip);
+                auto simZip = sim.newSimComponent<SimZip>(zip->id(), *zip);
                 simZip->linkToSimNetwork(*simNetw);
             }
         }
 
         for (auto branch : netw.branches())
         {
-            auto simBranch = std::make_shared<SimBranch>(branch->id(), *branch);
-            sim.addSimComponent(simBranch);
+            auto simBranch = sim.newSimComponent<SimBranch>(branch->id(), *branch);
             simBranch->linkToSimNetwork(*simNetw);
         }
     }

@@ -29,7 +29,6 @@ namespace Sgt
         string id = parser.expand<std::string>(nd["id"]);
         Time dt = parser.expand<Time>(nd["dt"]);
 
-        auto comp = std::make_shared<Heartbeat>(id, dt);
-        sim.addSimComponent(comp);
+        auto heartbeat = sim.newSimComponent<Heartbeat>(id, dt);
     }
 }

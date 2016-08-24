@@ -28,8 +28,7 @@ namespace Sgt
         assertFieldPresent(nd, "bus_id");
 
         std::string id = parser.expand<std::string>(nd["id"]);
-        auto build = std::make_shared<SimpleBuilding>(id);
-        sim.addSimComponent(build);
+        auto build = sim.newSimComponent<SimpleBuilding>(id);
 
         auto nd_dt = nd["dt"];
         if (nd_dt) build->set_dt(parser.expand<Time>(nd_dt));
@@ -62,7 +61,7 @@ namespace Sgt
         if (dQgNd)
         {
             std::string id = parser.expand<std::string>(dQgNd);
-            auto series = sim.timeSeries()[id].as<TimeSeries<Time, double>>();
+            auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
             sgtAssert(series != nullptr, "Parsing simple_building: couldn't find time series " << id << ".");
             build->set_dQgSeries(*series);
         }
@@ -70,7 +69,7 @@ namespace Sgt
         std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
         const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
-        auto netw = sim.simComponents()[networkId].as<SimNetwork>();
+        auto netw = sim.simComponent<SimNetwork>(networkId);
         netw->network().addZip(shared(build->zip()), busId); // TODO: smells.
         build->linkToSimNetwork(*netw);
 
@@ -78,7 +77,7 @@ namespace Sgt
         if (weatherNd)
         {
             std::string weatherStr = parser.expand<std::string>(weatherNd);
-            auto weather = sim.simComponents()[weatherStr].as<Weather>();
+            auto weather = sim.simComponent<Weather>(weatherStr);
             sgtAssert(weather != nullptr, "Parsing simple_building: couldn't find weather " << weatherStr << ".");
             build->setWeather(*weather);
         }

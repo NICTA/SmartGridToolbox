@@ -31,7 +31,7 @@ namespace Sgt
         string id = parser.expand<std::string>(nd["id"]);
         string simNetwId = parser.expand<std::string>(nd["sim_network_id"]);
 
-        auto simNetwork = sim.simComponents()[simNetwId].as<SimNetwork>();
+        auto simNetwork = sim.simComponent<SimNetwork>(simNetwId);
         sgtAssert(simNetwork != nullptr, "Parsing SimBranch " << id << ": sim_network not found.");
         auto& network = simNetwork->network();
 
@@ -41,9 +41,9 @@ namespace Sgt
         netwNode.push_back(branchNode);
         NetworkParser p = parser.subParser<Network>();
         p.parse(netwNode, network);
-        auto branch = *network.branches().rbegin(); // KLUDGE: assumes just parsed branch is last (true, not robust).
-        auto simBranch = std::make_shared<SimBranch>(id, *branch);
-        sim.addSimComponent(simBranch);
+        auto& branches = network.branches();
+        auto branch = branches.back(); // KLUDGE: assumes just parsed branch is last (which is true, but not robust).
+        auto simBranch = sim.newSimComponent<SimBranch>(id, *branch);
         simBranch->linkToSimNetwork(*simNetwork);
     }
 }

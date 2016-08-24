@@ -19,7 +19,7 @@
 #include <SgtSim/TimeSeries.h>
 
 #include <SgtCore/Common.h>
-#include <SgtCore/Components.h>
+#include <SgtCore/ComponentCollection.h>
 #include <SgtCore/Event.h>
 
 #include <list>
@@ -91,21 +91,41 @@ namespace Sgt
             }
 
             /// @brief Access SimComponents (const version).
-            const Components<SimComponent>& simComponents() const
+            const ComponentCollection<SimComponent>& simComponents() const
             {
                 return simComps_;
             }
             
             /// @brief Access SimComponents (non-const version).
-            Components<SimComponent>& simComponents()
+            ComponentCollection<SimComponent>& simComponents()
             {
                 return simComps_;
+            }
+            
+            /// @brief Access a particular SimComponent of a given type.
+            template<typename T> std::shared_ptr<const T> simComponent(const std::string& id) const
+            {
+                return simComps_[id].asShared<T>();
+            }
+            
+            /// @brief Access a particular SimComponent of a given type.
+            template<typename T> std::shared_ptr<T> simComponent(const std::string& id)
+            {
+                return simComps_[id].asShared<T>();
             }
             
             /// @brief Add a SimComponent.
             ComponentPtr<SimComponent> addSimComponent(std::shared_ptr<SimComponent> comp)
             {
-                return simComps_.insert(comp);
+                return simComps_.insert(comp->id(), comp);
+            }
+            
+            /// @brief Factory method for SimComponents.
+            template<typename T, typename... Args> std::shared_ptr<T> newSimComponent(Args&&... args)
+            {
+                auto comp = std::make_shared<T>(std::forward<Args>(args)...);
+                simComps_.insert(comp->id(), comp);
+                return comp;
             }
             
             /// @brief Remove a SimComponent.
@@ -136,21 +156,21 @@ namespace Sgt
             Event& timestepDidComplete() {return timestepDidComplete_;}
 
             /// @brief Access TimeSeries (const version).
-            const Components<TimeSeriesBase>& timeSeries() const
+            const ComponentCollection<TimeSeriesBase>& timeSeries() const
             {
                 return timeSeries_;
             }
             
             /// @brief Access TimeSeries (non-const version).
-            Components<TimeSeriesBase>& timeSeries()
+            ComponentCollection<TimeSeriesBase>& timeSeries()
             {
                 return timeSeries_;
             }
             
             /// @brief Add a TimeSeries.
-            ComponentPtr<TimeSeriesBase> addTimeSeries(std::shared_ptr<TimeSeriesBase> ts)
+            ComponentPtr<TimeSeriesBase> addTimeSeries(const std::string& id, std::shared_ptr<TimeSeriesBase> ts)
             {
-                return timeSeries_.insert(ts);
+                return timeSeries_.insert(id, ts);
             }
             
             /// @brief Remove a TimeSeries.
@@ -203,8 +223,8 @@ namespace Sgt
             LatLong latLong_;
             local_time::time_zone_ptr timezone_;
 
-            MutableComponents<SimComponent> simComps_;
-            MutableComponents<TimeSeriesBase> timeSeries_;
+            MutableComponentCollection<SimComponent> simComps_;
+            MutableComponentCollection<TimeSeriesBase> timeSeries_;
 
             Time currentTime_{posix_time::neg_infin};
             ScheduledUpdates scheduledUpdates_;
