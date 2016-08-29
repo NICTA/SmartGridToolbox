@@ -185,7 +185,8 @@ namespace Sgt
         Stopwatch stopwatchSolve;
         stopwatchSolve.start();
         auto pModel = makeModel();
-        bool success = pModel->solve();
+        int retVal = pModel->solve();
+        bool success = (retVal != -1);
         stopwatchSolve.stop();
         
         // printNetw(*ptNetw_);
