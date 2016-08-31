@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PowerFlowPtSolver.h"
+#include "PowerToolsSupport.h"
 
 #include "Network.h"
-#include "PowerToolsSupport.h"
 #include "CommonBranch.h"
 #include "Stopwatch.h"
 
@@ -170,42 +169,5 @@ namespace Sgt
             gen->print();
         }
         sgtLogMessage() << "Done------------------" << std::endl;
-    }
-
-    PowerFlowPtSolver::~PowerFlowPtSolver()
-    {
-        delete ptNetw_;
-    }
-
-    bool PowerFlowPtSolver::solve(Network& netw)
-    {
-        sgtNetw_ = &netw;
-        ptNetw_ = sgt2PowerTools(*sgtNetw_);
-        // printNetw(*ptNetw_);
-        
-        Stopwatch stopwatchSolve;
-        stopwatchSolve.start();
-        auto pModel = makeModel();
-        int retVal = pModel->solve();
-        bool success = (retVal != -1);
-        stopwatchSolve.stop();
-        
-        // printNetw(*ptNetw_);
-        sgtLogMessage() << "PowerFlowPtSolver:" << std::endl;
-        LogIndent indent;
-        sgtLogMessage() << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
-        if (success)
-        {
-            powerTools2Sgt(*ptNetw_, *sgtNetw_);
-        }
-        return success;
-    }
-
-    std::unique_ptr<PowerModel> PowerFlowPtSolver::makeModel()
-    {
-        std::unique_ptr<PowerModel> mod(new PowerModel(ACRECT, ptNetw_, ipopt));
-        mod->build();
-        mod->min_cost();
-        return mod;
     }
 }

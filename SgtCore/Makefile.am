@@ -2,11 +2,15 @@ AUTOMAKE_OPTIONS = foreign
 
 if ENABLE_POWER_TOOLS
 POWER_FLOW_PT_SOLVER_H = PowerFlowPtSolver.h
+POWER_TOOLS_SUPPORT_H = powerToolsSupport.h
 POWER_FLOW_PT_SOLVER_CC = PowerFlowPtSolver.cc
+POWER_TOOLS_SUPPORT_CC = powerToolsSupport.cc
 L_POWER_TOOLS = -lPowerTools++ -lipopt -lcoinhsl -lgurobi65 -lgurobi_c++
 else
 POWER_FLOW_PT_SOLVER_H =
+POWER_TOOLS_SUPPORT_H =
 POWER_FLOW_PT_SOLVER_CC =
+POWER_TOOLS_SUPPORT_CC =
 L_POWER_TOOLS =
 endif
 
@@ -47,6 +51,7 @@ libinclude_HEADERS = \
 	PowerFlowNrRectSolver.h \
 	$(POWER_FLOW_PT_SOLVER_H) \
 	PowerFlowSolver.h \
+	$(POWER_TOOLS_SUPPORT_H) \
 	Properties.h \
 	Random.h \
 	SinglePhaseTransformer.h \
@@ -90,6 +95,7 @@ libSgtCore_la_SOURCES = \
 	$(POWER_FLOW_PT_SOLVER_H) $(POWER_FLOW_PT_SOLVER_CC) \
 	PowerFlowSolver.h \
 	PowerFlowSolverParserPlugin.h PowerFlowSolverParserPlugin.cc \
+	$(POWER_TOOLS_SUPPORT_H) $(POWER_TOOLS_SUPPORT_CC) \
 	Properties.h \
 	Random.h Random.cc \
 	RegisterParserPlugins.cc \
