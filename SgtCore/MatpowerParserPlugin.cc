@@ -22,6 +22,7 @@
 #include "Zip.h"
 #include "YamlSupport.h"
 
+#include <cmath>
 #include <fstream>
 #include <map>
 #include <numeric>
@@ -202,24 +203,38 @@ namespace Sgt
 
     namespace
     {
-        std::string getBusName(std::size_t id, std::map<size_t, std::string>& map)
+        std::size_t nDigits(std::size_t n) 
         {
-            return map.insert(std::make_pair(id, "bus_" + std::to_string(id))).first->second;
+            return n == 0 ? 1 : static_cast<std::size_t>(std::floor(std::log10(n)) + 1);
         }
 
-        std::string getZipName(std::size_t iZip, const std::string& busName)
+        std::string zeroPadded(std::size_t n, std::size_t nDigits)
         {
-            return "zip_" + std::to_string(iZip) + "_" + busName;
+            auto result = std::to_string(n);
+            size_t len = result.length();
+            if (len < nDigits) result.insert(0, nDigits - len, '0');
+            return result;
         }
 
-        std::string getGenName(std::size_t iGen, const std::string& busName)
+        std::string getBusName(std::size_t id, std::map<std::size_t, std::string>& map, std::size_t nDigits)
         {
-            return "gen_" + std::to_string(iGen) + "_" + busName;
+            return map.insert(std::make_pair(id, "bus_" + zeroPadded(id, nDigits))).first->second;
         }
 
-        std::string getBranchName(std::size_t iBranch, const std::string& busName0, const std::string& busName1)
+        std::string getZipName(std::size_t iZip, const std::string& busName, std::size_t nDigits)
         {
-            return "branch_" + std::to_string(iBranch) + "_" + busName0 + "_" + busName1;
+            return "zip_" + zeroPadded(iZip, nDigits) + "_" + busName;
+        }
+        
+        std::string getGenName(std::size_t iGen, const std::string& busName, std::size_t nDigits)
+        {
+            return "gen_" + zeroPadded(iGen, nDigits) + "_" + busName;
+        }
+
+        std::string getBranchName(std::size_t iBranch, const std::string& busName0, const std::string& busName1, 
+                std::size_t nDigits)
+        {
+            return "branch_" + zeroPadded(iBranch, nDigits) + "_" + busName0 + "_" + busName1;
         }
 
         bool checkNzCplx(Complex x)
@@ -310,6 +325,7 @@ namespace Sgt
                         << data.branch.size() << " branches." << std::endl;
 
         // Extract the bus data.
+        std::size_t maxBusId = 0;
         std::vector<MpBusInfo> busVec;
         {
             busVec.reserve(data.bus.size());
@@ -319,6 +335,7 @@ namespace Sgt
                 MpBusInfo& busInfo = busVec.back();
 
                 busInfo.id = static_cast<std::size_t>(row[0]);
+                if (maxBusId < busInfo.id) maxBusId = busInfo.id;
                 busInfo.type = static_cast<int>(row[1]);
                 busInfo.Pd = row[2];
                 busInfo.Qd = row[3];
@@ -340,6 +357,8 @@ namespace Sgt
                 }
             }
         }
+        std::size_t busNDigits = nDigits(maxBusId);
+        std::size_t zipNDigits = busNDigits; // Upper bound.
 
         // Extract the gen data.
         std::vector<MpGenInfo> genVec;
@@ -363,6 +382,7 @@ namespace Sgt
                 // There are other fields, but at present we are ignoring them.
             }
         }
+        std::size_t genNDigits = nDigits(genVec.size() - 1);
 
         // Extract the branch data.
         std::vector<MpBranchInfo> branchVec;
@@ -388,6 +408,7 @@ namespace Sgt
                 branchInfo.angMaxDeg = row[12];
             }
         }
+        std::size_t branchNDigits = nDigits(branchVec.size() - 1);
 
         // Extract the genCost data.
         if (data.genCost.size() > 0)
@@ -434,7 +455,7 @@ namespace Sgt
         std::size_t nZip = 0;
         for (const auto& busInfo : busVec)
         {
-            std::string busId = getBusName(busInfo.id, busNames);
+            std::string busId = getBusName(busInfo.id, busNames, busNDigits);
             std::unique_ptr<Bus> bus(
                 new Bus(busId, {Phase::BAL}, {VScale * Complex(busInfo.kVBase, 0.0)}, PScale * busInfo.kVBase));
             BusType type = BusType::BAD;
@@ -477,7 +498,7 @@ namespace Sgt
             Complex YConst = YBusShunt2Siemens(Complex(busInfo.Gs, busInfo.Bs), busInfo.kVBase);
             if (checkNzZip(SConst, YConst))
             {
-                std::string zipId = getZipName(nZip++, getBusName(busInfo.id, busNames));
+                std::string zipId = getZipName(nZip++, getBusName(busInfo.id, busNames, busNDigits), zipNDigits);
                 std::unique_ptr<GenericZip> zip(new GenericZip(zipId, {Phase::BAL}));
                 zip->setYConst(arma::Mat<Complex>{{{GScale * YConst}}});
                 zip->setSConst(arma::Mat<Complex>{{{PScale * SConst}}});
@@ -509,7 +530,7 @@ namespace Sgt
         for (std::size_t i = 0; i < genVec.size(); ++i)
         {
             MpGenInfo& genInfo = genVec[i];
-            std::string genId = getGenName(i, getBusName(genInfo.busId, busNames));
+            std::string genId = getGenName(i, getBusName(genInfo.busId, busNames, busNDigits), genNDigits);
             std::unique_ptr<GenericGen> gen(new GenericGen(genId, {Phase::BAL}));
             genCompVec.push_back(gen.get());
 
@@ -542,9 +563,9 @@ namespace Sgt
         {
             const MpBranchInfo& branchInfo = branchVec[i];
 
-            std::string bus0Name = getBusName(branchInfo.busIdF, busNames);
-            std::string bus1Name = getBusName(branchInfo.busIdT, busNames);
-            std::string branchName = getBranchName(i, bus0Name, bus1Name);
+            std::string bus0Name = getBusName(branchInfo.busIdF, busNames, busNDigits);
+            std::string bus1Name = getBusName(branchInfo.busIdT, busNames, busNDigits);
+            std::string branchName = getBranchName(i, bus0Name, bus1Name, branchNDigits);
 
             std::unique_ptr<CommonBranch> branch(new CommonBranch(branchName));
 

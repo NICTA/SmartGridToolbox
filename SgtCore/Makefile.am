@@ -45,6 +45,7 @@ libinclude_HEADERS = \
 	PowerFlow.h \
 	PowerFlowModel.h \
 	PowerFlowNrRectSolver.h \
+	$(POWER_FLOW_PT_SOLVER_H) \
 	PowerFlowSolver.h \
 	Properties.h \
 	Random.h \
@@ -86,6 +87,7 @@ libSgtCore_la_SOURCES = \
 	PowerFlow.h PowerFlow.cc \
 	PowerFlowModel.h PowerFlowModel.cc \
 	PowerFlowNrRectSolver.h PowerFlowNrRectSolver.cc \
+	$(POWER_FLOW_PT_SOLVER_H) $(POWER_FLOW_PT_SOLVER_CC) \
 	PowerFlowSolver.h \
 	PowerFlowSolverParserPlugin.h PowerFlowSolverParserPlugin.cc \
 	Properties.h \
