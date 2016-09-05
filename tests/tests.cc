@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
     Parser<Network> p;
     p.parse("test_overhead_compare_carson_1.yaml", netw);
 
-    auto oh = dynamic_cast<OverheadLine*>(netw.branch("line_1_2"));
+    auto oh = netw.branches()["line_1_2"].as<OverheadLine>();
 
     Mat<Complex> ZPrim = oh->ZPrim();
     Mat<Complex> ZPhase = oh->ZPhase();
@@ -96,7 +96,7 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
 
     netw.solvePowerFlow();
 
-    auto bus2 = netw.bus("bus_2");
+    auto bus2 = netw.buses()["bus_2"];
 
     Complex cmp;
     cmp = polar(14.60660, -0.62 * pi / 180.0);
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE (test_underground_conc_compare_carson)
 
     netw.solvePowerFlow();
 
-    auto ug = dynamic_cast<UndergroundLine*>(netw.branch("line_1_2"));
+    auto ug = netw.branches()["line_1_2"].as<UndergroundLine>();
     Mat<Complex> ZPhase = ug->ZPhase() * 1609.344; // Convert to ohms per mile.
     Mat<Complex> ZPhaseKersting;
     ZPhaseKersting << Complex(0.7981, 0.4463) << Complex(0.3191, 0.0328) << Complex(0.2849, -0.0143) << endr
@@ -144,7 +144,7 @@ BOOST_AUTO_TEST_CASE (test_underground_tape_compare_carson)
 
     netw.solvePowerFlow();
 
-    auto ug = dynamic_cast<UndergroundLine*>(netw.branch("line_1_2"));
+    auto ug = netw.branches()["line_1_2"].as<UndergroundLine>();
     Mat<Complex> ZPrim = ug->ZPrim() * 1609.344; // Convert to ohms per mile.
     Mat<Complex> ZPhase = ug->ZPhase() * 1609.344; // Convert to ohms per mile.
     Complex ZPhaseKersting = Complex(1.3219, 0.6743);
@@ -456,11 +456,11 @@ BOOST_AUTO_TEST_CASE (test_const_I)
     p.parse(n, nw);
 
     std::string bus1Id = "bus_174";
-    auto bus1 = nw.bus(bus1Id); // No existing zip generation. 
+    auto bus1 = nw.buses()[bus1Id]; // No existing zip generation. 
     assert(bus1->zips().size() == 0);
 
     std::string branchId = "branch_194_bus_173_bus_174";
-    auto branch = dynamic_cast<const CommonBranch*>(nw.branch(branchId));
+    auto branch = nw.branches()[branchId].as<CommonBranch>();
 
     auto bus0 = branch->bus0();
 
@@ -648,8 +648,8 @@ BOOST_AUTO_TEST_CASE (test_load_model_a)
     Complex y{0.1, -0.1};
     Complex s{0.1, 0.05};
 
-    const auto& bus1 = *netw.bus("bus_1");
-    const auto& bus2 = *netw.bus("bus_2");
+    const auto& bus1 = *netw.buses()["bus_1"];
+    const auto& bus2 = *netw.buses()["bus_2"];
 
     const Col<Complex>& V1 = bus1.V();
     const Col<Complex>& V2 = bus2.V();
@@ -688,8 +688,8 @@ BOOST_AUTO_TEST_CASE (test_load_model_b)
     Complex y{0.1, -0.1};
     Complex s{0.1, 0.05};
 
-    const auto& bus1 = *netw.bus("bus_1");
-    const auto& bus2 = *netw.bus("bus_2");
+    const auto& bus1 = *netw.buses()["bus_1"];
+    const auto& bus2 = *netw.buses()["bus_2"];
 
     const Col<Complex>& V1 = bus1.V();
     const Col<Complex>& V2 = bus2.V();
@@ -724,8 +724,8 @@ BOOST_AUTO_TEST_CASE (test_load_model_c)
     Complex y{0.1, -0.1};
     Complex i{0.1, 0.05};
 
-    const auto& bus1 = *netw.bus("bus_1");
-    const auto& bus2 = *netw.bus("bus_2");
+    const auto& bus1 = *netw.buses()["bus_1"];
+    const auto& bus2 = *netw.buses()["bus_2"];
 
     const Col<Complex>& V1 = bus1.V();
     const Col<Complex>& V2 = bus2.V();
