@@ -52,7 +52,7 @@ namespace Sgt
     {
         auto bus0 = buses_[bus0Id];
         sgtAssert(bus0 != nullptr, "Bus " << bus0Id << " was not found in the network.");
-        auto bus1 = buses_[bus0Id];
+        auto bus1 = buses_[bus1Id];
         sgtAssert(bus1 != nullptr, "Bus " << bus1Id << " was not found in the network.");
 
         branch->bus0_ = bus0;
