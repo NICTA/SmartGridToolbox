@@ -40,7 +40,7 @@ namespace Sgt
         auto ndScaleFactorI = nd["scale_factor_I"];
         auto ndScaleFactorS = nd["scale_factor_S"];
 
-        auto series = sim.timeSeries<const TimeSeries<Time, arma::Col<Complex>>>(tsId);
+        auto series = sim.timeSeries()[tsId].as<const TimeSeries<Time, arma::Col<Complex>>>();
         auto network = sim.simComponent<SimNetwork>(networkId);
         auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, phases, series, dt);
         if (ndScaleFactorY)

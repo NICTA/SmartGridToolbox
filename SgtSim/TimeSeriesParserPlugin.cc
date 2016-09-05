@@ -348,6 +348,6 @@ namespace Sgt
                 sgtError("Bad time series type.");
             }
         }
-        sim.acquireTimeSeries(id, std::move(ts));
+        sim.addTimeSeries(id, std::move(ts));
     }
 }

@@ -45,7 +45,7 @@ namespace Sgt
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
-                const auto* series = sim.timeSeries<TimeSeries<Time, double>>(id);
+                const auto* series = sim.timeSeries()[id].as<TimeSeries<Time, double>>();
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
                 weather->model.setTemperatureSeries(*series);
             }
@@ -63,7 +63,7 @@ namespace Sgt
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
-                const auto* series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
+                const auto* series = sim.timeSeries()[id].as<TimeSeries<Time, arma::Col<double>>>();
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
                 weather->model.setIrradianceSeries(*series);
             }
@@ -86,7 +86,7 @@ namespace Sgt
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
-                const auto* series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
+                const auto* series = sim.timeSeries()[id].as<TimeSeries<Time, arma::Col<double>>>();
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
                 weather->model.setCloudAttenuationFactorsSeries(*series);
             }
@@ -105,7 +105,7 @@ namespace Sgt
             if (nd1Key == "series")
             {
                 std::string id = parser.expand<std::string>(nd1);
-                const auto* series = sim.timeSeries<TimeSeries<Time, arma::Col<double>>>(id);
+                const auto* series = sim.timeSeries()[id].as<TimeSeries<Time, arma::Col<double>>>();
                 sgtAssert(series != nullptr, "Parsing weather: couldn't find time series " << id << ".");
                 weather->model.setWindVectorSeries(*series);
             }

@@ -26,18 +26,20 @@ namespace Sgt
 {
     template<typename T> class ComponentCollection;
     template<typename T> class MutableComponentCollection;
+    template<typename T>
+        using ComponentCollectionIter = typename std::map<std::string, std::shared_ptr<T>>::iterator;
+    template<typename T>
+        using ComponentCollectionConstIter = typename std::map<std::string, std::shared_ptr<T>>::const_iterator;
 
     /// @brief Pointer type to a member of ComponentCollection.
-    template<typename T> class ComponentPtr
+    template<typename T, typename Iter = ComponentCollectionIter<T>>
+    class ComponentPtr
     {
         friend class ComponentCollection<T>;
         friend class MutableComponentCollection<T>;
+        template<typename U, typename V> friend class ComponentPtr;
 
         private:
-            using Iter = typename std::conditional<
-                std::is_const<T>::value,
-                typename std::map<std::string, std::shared_ptr<T>>::const_iterator,
-                typename std::map<std::string, std::shared_ptr<T>>::iterator>::type;
 
             /// @brief Constructor for existing component.
             ComponentPtr(const Iter& it) : it_(std::make_unique<Iter>(it)) {}
@@ -48,9 +50,15 @@ namespace Sgt
             
             /// @brief Copy constructor. 
             ComponentPtr(const ComponentPtr& from) : it_(std::make_unique<Iter>(*from.it_)) {}
+
+            /// @brief Conversion constructor. 
+            template<typename U> ComponentPtr(const ComponentPtr<U>& from) : it_(std::make_unique<Iter>(*from.it_)) {}
             
             /// @brief Move constructor. 
             ComponentPtr(ComponentPtr&& from) : it_(std::move(from.it_)) {}
+            
+            /// @brief Move conversion constructor. 
+            template<typename U> ComponentPtr(ComponentPtr<U>&& from) : it_(std::move(from.it_)) {}
 
             /// @brief Copy assignment. 
             void operator=(const ComponentPtr& from)
@@ -58,50 +66,47 @@ namespace Sgt
                 it_ = std::make_unique<Iter>(*from.it_);
             }
             
+            /// @brief Conversion assignment. 
+            template<typename U> void operator=(const ComponentPtr<U>& from)
+            {
+                it_ = std::make_unique<Iter>(*from.it_);
+            }
+            
             /// @brief Move assignment. 
-            void operator=(const ComponentPtr&& from)
+            void operator=(ComponentPtr&& from)
+            {
+                it_ = std::move(from.it_);
+            }
+            
+            /// @brief Move conversion assignment. 
+            template<typename U> void operator=(ComponentPtr<U>&& from)
             {
                 it_ = std::move(from.it_);
             }
 
             /// @brief Dereference.
-            const T& operator*() const {return *((**it_).second);}
-            /// @brief Dereference.
-            T& operator*() {return *((**it_).second);}
+            T& operator*() const {return *((**it_).second);}
 
             /// @brief Dereference. 
-            const T* operator->() const {return (**it_).second.get();}
-            /// @brief Dereference. 
-            T* operator->() {return (**it_).second.get();}
+            T* operator->() const {return (**it_).second.get();}
             
             /// @brief Converts to shared_ptr. 
-            operator std::shared_ptr<const T>() const {return (**it_).second;}
-            /// @brief Converts to shared_ptr. 
-            operator std::shared_ptr<T>() {return (**it_).second;}
+            operator std::shared_ptr<T>() const {return (**it_).second;}
 
             /// @brief Converts to raw pointer. 
-            operator const T*() const {return (**it_).second.get();}
-            /// @brief Converts to raw pointer. 
-            operator T*() {return (**it_).second.get();}
+            operator T*() const {return (**it_).second.get();}
 
             /// @brief Cast to shared.
-            template<typename U> std::shared_ptr<const U> asShared() const
-            {
-                return std::dynamic_pointer_cast<const U>((**it_).second);
-            }
-            /// @brief Cast to shared.
-            template<typename U> std::shared_ptr<U> asShared()
+            template<typename U> std::shared_ptr<U> asShared() const
             {
                 return std::dynamic_pointer_cast<U>((**it_).second);
             }
 
             /// @brief Cast.
-            template<typename U> const U* as() const {return dynamic_cast<const U*>((**it_).second.get());}
-            /// @brief Cast.
-            template<typename U> U* as() {return dynamic_cast<U*>((**it_).second.get());}
+            template<typename U> U* as() const {return dynamic_cast<U*>((**it_).second.get());}
             
             /// @brief Obtain the key in my container.
-            const std::string& key() {return (**it_).first;}
+            const std::string& key() const {return (**it_).first;}
 
             /// @brief Do I refer to an actual component? 
             operator bool() const {return  it_ && (**it_).second;}
@@ -126,8 +131,8 @@ namespace Sgt
         private:
             typename std::unique_ptr<Iter> it_{nullptr};
     };
-
-    template<typename T> using ConstComponentPtr = ComponentPtr<std::add_const_t<T>>; 
+    
+    template<typename T> using ConstComponentPtr = ComponentPtr<T, ComponentCollectionConstIter<T>>;
 
     /// @brief Utility container type combining aspects of map and vector.
     ///
@@ -144,13 +149,19 @@ namespace Sgt
             using Ptr = ComponentPtr<T>;
 
         public:
+            size_t size() const {return vec_.size();}
+
             ConstPtr operator[](const std::string& key) const {return map_.find(key);}
             Ptr operator[](const std::string& key) {return map_.find(key);}
             
             ConstPtr operator[](size_t idx) const {return vec_[idx];}
             Ptr operator[](size_t idx) {return vec_[idx];}
-
-            size_t size() const {return vec_.size();}
+            
+            ConstPtr front() const {return vec_.front();}
+            Ptr front() {return vec_.front();}
+            
+            ConstPtr back() const {return vec_.back();}
+            Ptr back() {return vec_.back();}
 
             auto begin() {return vec_.begin();}
             auto end() {return vec_.end();}

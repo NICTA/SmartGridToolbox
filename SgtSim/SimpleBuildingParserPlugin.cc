@@ -61,7 +61,7 @@ namespace Sgt
         if (dQgNd)
         {
             std::string id = parser.expand<std::string>(dQgNd);
-            auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
+            auto series = sim.timeSeries()[id].as<TimeSeries<Time, double>>();
             sgtAssert(series != nullptr, "Parsing simple_building: couldn't find time series " << id << ".");
             build->set_dQgSeries(*series);
         }
