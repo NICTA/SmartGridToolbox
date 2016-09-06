@@ -18,6 +18,7 @@
 #include <assert.h>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -126,7 +127,7 @@ namespace Sgt
             /// @brief Compare two ComponentPtrs.
             ///
             /// Undefined behaviour if they come from different ComponentCollection containers.
-            bool operator!=(const ComponentPtr& rhs) const {!operator==(rhs);}
+            bool operator!=(const ComponentPtr& rhs) const {return !operator==(rhs);}
 
         private:
             typename std::unique_ptr<Iter> it_{nullptr};
