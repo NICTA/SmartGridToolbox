@@ -408,14 +408,21 @@ BOOST_AUTO_TEST_CASE (test_matpower)
                 double Vr, Vi, P, Q;
                 compareName >> Vr >> Vi >> P >> Q;
                 assert(!compareName.eof());
+
+                if (!bus->isInService()) continue;
+
                 Complex V = {Vr, Vi};
                 Complex S = {P, Q};
                 if (std::abs(V - bus->V()(0) / bus->VBase()) >= 1e-3)
                 {
+                    std::cout << "Bus V mismatch at bus " << bus->id() << ": " 
+                        << V << " : " << bus->V() << std::endl;
                     ++nBadV;
                 }
                 if (std::abs(S - bus->SGen()(0)) / nw.PBase() >= 1e-3)
                 {
+                    std::cout << "Bus S mismatch at bus " << bus->id() << ": " 
+                        << S << " : " << bus->SGen() << std::endl;
                     ++nBadS;
                 }
             }
