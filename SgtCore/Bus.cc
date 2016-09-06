@@ -169,7 +169,7 @@ namespace Sgt
 
     Mat<Complex> Bus::SYConst() const
     {
-        Mat<Complex> result = -conj(YConst());
+        Mat<Complex> result = conj(YConst());
         for (uword i = 0; i < result.n_rows; ++i)
         {
             for (uword k = 0; k < result.n_cols; ++k)
@@ -200,7 +200,7 @@ namespace Sgt
 
     Mat<Complex> Bus::SIConst() const
     {
-        Mat<Complex> result = -conj(IConst());
+        Mat<Complex> result = conj(IConst());
         for (uword i = 0; i < result.n_rows; ++i)
         {
             for (uword k = 0; k < result.n_cols; ++k)

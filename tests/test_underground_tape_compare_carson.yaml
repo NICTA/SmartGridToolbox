@@ -22,7 +22,7 @@
         network_id: network_1
         bus_id: bus_2
         phases: [A]
-        S_const: [-6.99e-1 - 1.43e-1j]
+        S_const: [[6.99e-1 + 1.43e-1j]]
 -  underground_line:
         id: line_1_2
         phases_0: [A]

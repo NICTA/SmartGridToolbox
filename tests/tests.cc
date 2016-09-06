@@ -459,10 +459,11 @@ BOOST_AUTO_TEST_CASE (test_const_I)
 
     auto zip = std::make_shared<GenericZip>("zip_I_const", Phases{Phase::BAL});
     Complex Ic = std::polar(1.0, 15.0 * pi / 180.0) * 0.789;
-    zip->setIConst({Ic});
+    zip->setIConst({{{Ic}}});
     nw.addZip(zip, bus1Id);
 
-    for (std::string solverType : {"nr_pol", "nr_rect"})
+    // for (std::string solverType : {"nr_pol", "nr_rect"})
+    for (std::string solverType : {"nr_rect"})
     {
         BOOST_TEST_MESSAGE("Solver type = " << solverType);
         /*
@@ -481,7 +482,7 @@ BOOST_AUTO_TEST_CASE (test_const_I)
 
         BOOST_CHECK(std::abs(S1 - conj(Ic) * abs(V1)) < 1e-6);
 
-        Complex I1 = (branch->Y() * Col<Complex>({V0, V1})).eval()(1);
+        Complex I1 = -(branch->Y() * Col<Complex>({V0, V1})).eval()(1); // Current entering bus 1 from bus 0.
         BOOST_CHECK(std::abs(Ic * V1 / abs(V1)  - I1) < 1e-6);
     }
 }

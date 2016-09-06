@@ -22,7 +22,7 @@
         network_id: network_1
         bus_id: bus_2
         phases: [A, B, C]
-        S_const: [[-6.99e-1 - 1.43e-1j, 0, 0], [0, -6.90e-1 - 1.03e-1j, 0], [0, 0, -5.91e-1 - 1.60e-2j]]
+        S_const: [[6.99e-1 + 1.43e-1j, 0, 0], [0, 6.90e-1 + 1.03e-1j, 0], [0, 0, 5.91e-1 + 1.60e-2j]]
 -  overhead_line:
         id: line_1_2
         network_id: network_1
