@@ -466,7 +466,7 @@ BOOST_AUTO_TEST_CASE (test_const_I)
 
     auto zip = std::make_shared<GenericZip>("zip_I_const", Phases{Phase::BAL});
     Complex Ic = std::polar(1.0, 15.0 * pi / 180.0) * 0.789;
-    zip->setIConst({{{Ic}}});
+    zip->setIConst({Ic});
     nw.addZip(zip, bus1Id);
 
     // for (std::string solverType : {"nr_pol", "nr_rect"})
