@@ -15,6 +15,7 @@
 #ifndef COMPONENT_COLLECTION_DOT_H
 #define COMPONENT_COLLECTION_DOT_H
 
+#include <algorithm>
 #include <assert.h>
 #include <iostream>
 #include <map>
