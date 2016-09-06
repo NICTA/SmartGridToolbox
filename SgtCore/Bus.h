@@ -339,7 +339,7 @@ namespace Sgt
 
             SGT_PROP_GET(nInServiceZips, nInServiceZips, int);
             
-            /// @brief Constant impedance component of zip.
+            /// @brief Constant impedance component of zip, as described in Zip documentation.
             arma::Mat<Complex> YConst() const;
 
             SGT_PROP_GET(YConst, YConst, arma::Mat<Complex>);
@@ -349,7 +349,7 @@ namespace Sgt
             
             SGT_PROP_GET(SYConst, SYConst, arma::Mat<Complex>);
             
-            /// @brief Constant current component of zip.
+            /// @brief Constant current component of zip, as described in Zip documentation.
             ///
             /// Relative to phase of V. Actual current will be IConst V / |V|, so that S doesn't depend on phase of V.
             arma::Mat<Complex> IConst() const;
@@ -363,7 +363,7 @@ namespace Sgt
             
             SGT_PROP_GET(SIConst, SIConst, arma::Mat<Complex>);
             
-            /// @brief Complex power component of zip.
+            /// @brief Complex power component of zip, as described in Zip documentation.
             arma::Mat<Complex> SConst() const;
             
             SGT_PROP_GET(SConst, SConst, arma::Mat<Complex>);

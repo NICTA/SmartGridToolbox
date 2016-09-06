@@ -25,9 +25,14 @@ namespace Sgt
 {
     class Bus;
 
-    /// @brief A Zip is an injection into a bus with constant impedance / current / complex power components.
+    /// @brief A Zip is a power consumption at a bus with constant impedance / current / complex power components.
     ///
-    /// Implement some common functionality for convenience.
+    /// These components are described by an N x N matrix, where N is the number of phases.
+    /// Diagonal components represent a power consumption between the phase and ground.
+    /// Upper off-diagonal components, (i, j) where j > i, represent a power consumption between two phases. 
+    /// Lower off-diagonal components are ignored.
+    /// Positive real power = consumption, negative = generation.
+    ///
     /// @ingroup PowerFlowCore
     class ZipAbc : virtual public Component
     {

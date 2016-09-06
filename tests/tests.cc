@@ -602,7 +602,7 @@ BOOST_AUTO_TEST_CASE (test_phases_C)
     BOOST_CHECK_SMALL(std::abs(S0Gen(0)), 1e-9);
     BOOST_CHECK_SMALL(std::abs(S0Gen(1)), 1e-9);
     auto delta = (V0(2) - V1(1));
-    auto diff = S0Gen(2) + S1Zip(1) - delta * std::conj(y) * std::conj(delta);
+    auto diff = S0Gen(2) - S1Zip(1, 1) - delta * std::conj(y) * std::conj(delta);
     BOOST_CHECK_SMALL(std::abs(diff), 1e-9);
 }
 

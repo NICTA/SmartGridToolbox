@@ -19,7 +19,7 @@
             id: zip_2
             bus_id: bus_2 
             phases: [C] 
-            S_const: [[-0.1]]
+            S_const: [[0.1]]
     -  generic_branch:
             id: branch_1_2
             bus_0_id: bus_1
