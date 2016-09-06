@@ -500,8 +500,8 @@ namespace Sgt
             {
                 std::string zipId = getZipName(nZip++, getBusName(busInfo.id, busNames, busNDigits), zipNDigits);
                 std::unique_ptr<GenericZip> zip(new GenericZip(zipId, {Phase::BAL}));
-                zip->setYConst(arma::Mat<Complex>({{GScale * YConst}}));
-                zip->setSConst(arma::Mat<Complex>({{PScale * SConst}}));
+                zip->setYConst(arma::Mat<Complex>({GScale * YConst}));
+                zip->setSConst(arma::Mat<Complex>({PScale * SConst}));
                 netw.addZip(std::move(zip), busId);
             }
         } // Buses

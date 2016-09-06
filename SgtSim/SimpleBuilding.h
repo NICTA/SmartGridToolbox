@@ -127,7 +127,7 @@ namespace Sgt
 
             virtual arma::Mat<Complex> SConst() const override
             {
-                return {{{Complex(1e-6 * Ph_, 0.0)}}}; // Need to convert from W to MW.
+                return {Complex(1e-6 * Ph_, 0.0)}; // Need to convert from W to MW.
             }
             
             /// @}
