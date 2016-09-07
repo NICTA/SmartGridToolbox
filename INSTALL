@@ -42,7 +42,17 @@ a) Boost libraries:
    your boost version is not too old (we test v.1.55, and of course later
    versions should also work).
 
-b) Armadillo linear algebra library:
+b) The yaml-cpp library:
+
+   Source code is provided in third_party/yaml-cpp-0.5.0, or alternatively,
+   install using homebrew, apt-get or the like.
+
+   > mkdir build
+   > cd build
+   > cmake ..
+   > make && sudo make install
+
+c) Armadillo linear algebra library:
 
    This is available from http://arma.sourceforge.net, and is also included in
    the third_party directory of SmartGridToolbox for convenience. You should use
@@ -62,7 +72,7 @@ b) Armadillo linear algebra library:
    > cmake ..
    > make && sudo make install
   
-c) (Optional) SuperLU (for armadillo):
+d) (Optional) SuperLU (for armadillo):
 
    If you intend to use Armadillo as a sparse solver (the default option), you
    will need to make sure it has been built with SuperLU support enabled. 
@@ -71,7 +81,7 @@ c) (Optional) SuperLU (for armadillo):
    If using homebrew on a mac, all of this is taken care of automatically when
    you install Armadillo.
 
-d) (Optional) SuiteSparse libraries:
+e) (Optional) SuiteSparse libraries:
 
    amd, colamd, btf, klu
 
@@ -96,19 +106,11 @@ d) (Optional) SuiteSparse libraries:
    > cd COLAMD; make && sudo make install; cd ..
    > cd KLU; make && sudo make install; cd ..
 
-d) The yaml-cpp library:
+f) (Optional) PowerTools
 
-   Source code is provided in third_party/yaml-cpp-0.5.0, or alternatively,
-   install using homebrew, apt-get or the like.
-
-   > mkdir build
-   > cd build
-   > cmake ..
-   > make && sudo make install
-
-d) PowerTools
-
-   PowerTools is Source code is provided in third_party/PowerTools. 
+   PowerTools provides optional optimising solvers (OPF, relaxations, etc.).
+   An installation is included in third_party/PowerTools, with build
+   instructions available in that directory.
 
 2. Build and install the SmartGridToolbox libraries:
 ====================================================
@@ -120,6 +122,9 @@ list).
 > ./configure
 > make
 > sudo make install
+
+The "--enable-power_tools" and "--without-klu" options to configure may be
+useful.
 
 If running from a source distribution cloned from git, you should run
 autogen.sh immediately after cloning the github repository. You will need an
