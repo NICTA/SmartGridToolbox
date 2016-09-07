@@ -290,7 +290,7 @@ namespace Sgt
         std::unique_ptr<std::istream> inStream;
         if (ndInputFile)
         {
-            std::string inputFName = ndInputFile.as<std::string>();
+            std::string inputFName = parser.expand<string>(ndInputFile);
             auto inFStream = new std::fstream(inputFName);
             sgtAssert(inFStream->is_open(), "Could not open the matpower input file " << inputFName << ".");
             inStream.reset(inFStream);

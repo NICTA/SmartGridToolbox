@@ -25,8 +25,10 @@ int main(int argc, const char ** argv)
     // warningLogLevel() = LogLevel::VERBOSE;
     // debugLogLevel() = LogLevel::VERBOSE;
 
-    const char * configName = argv[1];
-    const char * outputName = argv[2];
+    // const char * configName = argv[1];
+    std::string configName = "input.yaml";
+    // const char * outputName = argv[2];
+    std::string outputName = "out.txt";
 
     std::cout << "Configuration filename = " << configName << std::endl;
     std::cout << "Output filename        = " << outputName << std::endl;
