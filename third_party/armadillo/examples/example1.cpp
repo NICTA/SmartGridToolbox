@@ -4,6 +4,8 @@
 using namespace std;
 using namespace arma;
 
+// Armadillo documentation is available at:
+// http://arma.sourceforge.net/docs.html
 
 int
 main(int argc, char** argv)
@@ -18,10 +20,8 @@ main(int argc, char** argv)
   A(1,2) = 456.0;  // directly access an element (indexing starts at 0)
   A.print("A:");
   
-  
   A = 5.0;         // scalars are treated as a 1x1 matrix
   A.print("A:");
-  
   
   A.set_size(4,5); // change the size (data is not preserved)
   
@@ -43,7 +43,7 @@ main(int argc, char** argv)
   // inverse
   cout << "inv(A): " << endl << inv(A) << endl;
   
-  // save matrix as a file
+  // save matrix as a text file
   A.save("A.txt", raw_ascii);
   
   // load from file
@@ -52,6 +52,8 @@ main(int argc, char** argv)
   
   // submatrices
   cout << "B( span(0,2), span(3,4) ):" << endl << B( span(0,2), span(3,4) ) << endl;
+  
+  cout << "B( 0,3, size(3,2) ):" << endl << B( 0,3, size(3,2) ) << endl;
   
   cout << "B.row(0): " << endl << B.row(0) << endl;
   
@@ -94,9 +96,13 @@ main(int argc, char** argv)
   r.print("r:");
   
   // column vectors are treated like a matrix with one column
-  colvec q;
+  vec q;
   q << 0.14333 << 0.59478 << 0.14481 << 0.58558 << 0.60809;
   q.print("q:");
+  
+  // convert matrix to vector; data in matrices is stored column-by-column
+  vec v = vectorise(A);
+  v.print("v:");
   
   // dot or inner product
   cout << "as_scalar(r*q): " << as_scalar(r*q) << endl;
@@ -130,18 +136,16 @@ main(int argc, char** argv)
   
   Q.print("Q:");
   
-  // 2D field of arbitrary length row vectors (fields can also store abitrary objects, eg. instances of std::string)
-  field<rowvec> xyz(3,2);
+  // 2D field of matrices; 3D fields are also supported
+  field<mat> F(4,3); 
   
-  xyz(0,0) = randu(1,2);
-  xyz(1,0) = randu(1,3);
-  xyz(2,0) = randu(1,4);
-  xyz(0,1) = randu(1,5);
-  xyz(1,1) = randu(1,6);
-  xyz(2,1) = randu(1,7);
+  for(uword col=0; col < F.n_cols; ++col)
+  for(uword row=0; row < F.n_rows; ++row)
+    {
+    F(row,col) = randu<mat>(2,3);  // each element in field<mat> is a matrix
+    }
   
-  cout << "xyz:" << endl;
-  cout << xyz << endl;
+  F.print("F:");
   
   return 0;
   }

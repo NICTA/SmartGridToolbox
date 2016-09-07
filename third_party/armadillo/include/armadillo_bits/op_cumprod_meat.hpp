@@ -1,9 +1,11 @@
-// Copyright (C) 2015 Conrad Sanderson
-// Copyright (C) 2015 NICTA (www.nicta.com.au)
+// Copyright (C) 2015 National ICT Australia (NICTA)
 // 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// -------------------------------------------------------------------
+// 
+// Written by Conrad Sanderson - http://conradsanderson.id.au
 
 
 //! \addtogroup op_cumprod
@@ -132,13 +134,28 @@ op_cumprod::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_cumprod>& in)
 template<typename T1>
 inline
 void
-op_cumprod_simple::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_cumprod_simple>& in)
+op_cumprod_default::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_cumprod_default>& in)
   {
   arma_extra_debug_sigprint();
   
-  const Op<T1,op_cumprod> tmp(in.m, in.aux_uword_a, 0);
+  typedef typename T1::elem_type eT;
   
-  op_cumprod::apply(out, tmp);
+  const quasi_unwrap<T1> U(in.m);
+  
+  const uword dim = (T1::is_row) ? 1 : 0;
+  
+  if(U.is_alias(out))
+    {
+    Mat<eT> tmp;
+    
+    op_cumprod::apply_noalias(tmp, U.M, dim);
+    
+    out.steal_mem(tmp);
+    }
+  else
+    {
+    op_cumprod::apply_noalias(out, U.M, dim);
+    }
   }
 
 

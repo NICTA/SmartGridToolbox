@@ -1,36 +1,48 @@
 Name:           armadillo
-Version:        5.000.1
+Version:        7.400.1
 Release:        1%{?dist}
-Summary:        Fast C++ matrix library with interfaces to LAPACK and ATLAS
+Summary:        Fast C++ matrix library with syntax similar to MATLAB and Octave
 
 Group:          Development/Libraries
 License:        MPLv2.0
 URL:            http://arma.sourceforge.net/
-Source:         http://sourceforge.net/projects/arma/files/%{name}-%{version}.tar.gz
+Source:         http://sourceforge.net/projects/arma/files/%{name}-%{version}.tar.xz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  cmake, blas-devel, lapack-devel, atlas-devel, arpack-devel, hdf5-devel, libstdc++-devel, SuperLU-devel
+BuildRequires:  cmake, lapack-devel, arpack-devel, hdf5-devel
+%ifarch x86_64 %{ix86} armv7hl ppc64le aarch64
+BuildRequires:  openblas-devel
+%endif
+BuildRequires:  SuperLU-devel
+
 
 %description
-Armadillo is a C++ linear algebra library (matrix maths)
+Armadillo is a high quality C++ linear algebra library,
 aiming towards a good balance between speed and ease of use.
-Integer, floating point and complex numbers are supported,
-as well as a subset of trigonometric and statistics functions.
-Various matrix decompositions are provided through optional
-integration with LAPACK and ATLAS libraries.
-A delayed evaluation approach is employed (during compile time)
-to combine several operations into one and reduce (or eliminate)
-the need for temporaries. This is accomplished through recursive
-templates and template meta-programming.
-This library is useful if C++ has been decided as the language
-of choice (due to speed and/or integration capabilities), rather
-than another language like Matlab or Octave.
+It's useful for algorithm development directly in C++,
+and/or quick conversion of research code into production environments.
+The syntax (API) is deliberately similar to Matlab.
+The library provides efficient classes for vectors, matrices and cubes,
+as well as 200+ associated functions (eg. contiguous and non-contiguous
+submatrix views).  Various matrix decompositions are provided through
+integration with LAPACK, or one of its high performance drop-in replacements
+(eg. OpenBLAS, Intel MKL, AMD ACML, Apple Accelerate framework, etc).
+A sophisticated expression evaluator (via C++ template meta-programming)
+automatically combines several operations (at compile time) to increase
+speed and efficiency.
+The library can be used for machine learning, pattern recognition,
+computer vision, signal processing, bioinformatics, statistics, etc.
 
 
 %package devel
 Summary:        Development headers and documentation for the Armadillo C++ library
 Group:          Development/Libraries
 Requires:       %{name} = %{version}-%{release}
-Requires:       blas-devel, lapack-devel, atlas-devel, arpack-devel, hdf5-devel, libstdc++-devel, SuperLU-devel
+Requires:       lapack-devel, arpack-devel, hdf5-devel, libstdc++-devel
+%ifarch x86_64 %{ix86} armv7hl ppc64le aarch64
+Requires:       openblas-devel
+%endif
+Requires:       SuperLU-devel
+
 
 %description devel
 This package contains files necessary for development using the
@@ -74,17 +86,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %files
-%defattr(-,root,root,-)
 %{_libdir}/*.so.*
-%doc LICENSE.txt
+%license LICENSE.txt
 
 %files devel
-%defattr(-,root,root,-)
 %{_libdir}/*.so
 %{_includedir}/armadillo
 %{_includedir}/armadillo_bits/
 %{_datadir}/Armadillo/
 %doc README.txt index.html docs.html
 %doc examples armadillo_icon.png
-%doc armadillo_nicta_2010.pdf rcpp_armadillo_csda_2014.pdf
+%doc armadillo_nicta_2010.pdf rcpp_armadillo_csda_2014.pdf armadillo_joss_2016.pdf
 %doc mex_interface
+

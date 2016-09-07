@@ -1,10 +1,12 @@
-// Copyright (C) 2008-2012 Conrad Sanderson
-// Copyright (C) 2008-2012 NICTA (www.nicta.com.au)
-// Copyright (C) 2012 Ryan Curtin
+// Copyright (C) 2008-2015 National ICT Australia (NICTA)
 // 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// -------------------------------------------------------------------
+// 
+// Written by Conrad Sanderson - http://conradsanderson.id.au
+// Written by Ryan Curtin
 
 
 //! \addtogroup operator_minus
@@ -285,6 +287,70 @@ operator-
     }
   
   return result;
+  }
+
+
+
+template<typename parent, unsigned int mode, typename T2>
+arma_inline
+Mat<typename parent::elem_type>
+operator-
+  (
+  const subview_each1<parent,mode>&          X,
+  const Base<typename parent::elem_type,T2>& Y
+  )
+  {
+  arma_extra_debug_sigprint();
+  
+  return subview_each1_aux::operator_minus(X, Y.get_ref());
+  }
+
+
+
+template<typename T1, typename parent, unsigned int mode>
+arma_inline
+Mat<typename parent::elem_type>
+operator-
+  (
+  const Base<typename parent::elem_type,T1>& X,
+  const subview_each1<parent,mode>&          Y
+  )
+  {
+  arma_extra_debug_sigprint();
+  
+  return subview_each1_aux::operator_minus(X.get_ref(), Y);
+  }
+
+
+
+template<typename parent, unsigned int mode, typename TB, typename T2>
+arma_inline
+Mat<typename parent::elem_type>
+operator-
+  (
+  const subview_each2<parent,mode,TB>&       X,
+  const Base<typename parent::elem_type,T2>& Y
+  )
+  {
+  arma_extra_debug_sigprint();
+  
+  return subview_each2_aux::operator_minus(X, Y.get_ref());
+  }
+
+
+
+template<typename T1, typename parent, unsigned int mode, typename TB>
+arma_inline
+Mat<typename parent::elem_type>
+operator-
+  (
+  const Base<typename parent::elem_type,T1>& X,
+  const subview_each2<parent,mode,TB>&       Y
+  )
+  {
+  arma_extra_debug_sigprint();
+  
+  return subview_each2_aux::operator_minus(X.get_ref(), Y);
   }
 
 

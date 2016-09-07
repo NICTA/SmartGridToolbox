@@ -1,9 +1,11 @@
-// Copyright (C) 2008-2015 Conrad Sanderson
-// Copyright (C) 2008-2015 NICTA (www.nicta.com.au)
+// Copyright (C) 2008-2015 National ICT Australia (NICTA)
 // 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// -------------------------------------------------------------------
+// 
+// Written by Conrad Sanderson - http://conradsanderson.id.au
 
 
 //! \addtogroup gemm
@@ -291,9 +293,9 @@ class gemm
         const char trans_A = (do_trans_A) ? ( is_cx<eT>::yes ? 'C' : 'T' ) : 'N';
         const char trans_B = (do_trans_B) ? ( is_cx<eT>::yes ? 'C' : 'T' ) : 'N';
         
-        const blas_int m   = C.n_rows;
-        const blas_int n   = C.n_cols;
-        const blas_int k   = (do_trans_A) ? A.n_rows : A.n_cols;
+        const blas_int m   = blas_int(C.n_rows);
+        const blas_int n   = blas_int(C.n_cols);
+        const blas_int k   = (do_trans_A) ? blas_int(A.n_rows) : blas_int(A.n_cols);
         
         const eT local_alpha = (use_alpha) ? alpha : eT(1);
         
@@ -302,8 +304,8 @@ class gemm
         
         const eT local_beta  = (use_beta) ? beta : eT(0);
         
-        arma_extra_debug_print( arma_boost::format("blas::gemm(): trans_A = %c") % trans_A );
-        arma_extra_debug_print( arma_boost::format("blas::gemm(): trans_B = %c") % trans_B );
+        arma_extra_debug_print( arma_str::format("blas::gemm(): trans_A = %c") % trans_A );
+        arma_extra_debug_print( arma_str::format("blas::gemm(): trans_B = %c") % trans_B );
         
         blas::gemm<eT>
           (

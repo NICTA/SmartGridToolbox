@@ -1,9 +1,11 @@
-// Copyright (C) 2008-2015 Conrad Sanderson
-// Copyright (C) 2008-2015 NICTA (www.nicta.com.au)
+// Copyright (C) 2008-2015 National ICT Australia (NICTA)
 // 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// -------------------------------------------------------------------
+// 
+// Written by Conrad Sanderson - http://conradsanderson.id.au
 
 
 //! \addtogroup Row
@@ -25,10 +27,12 @@ class Row : public Mat<eT>
   inline          Row();
   inline          Row(const Row<eT>& X);
   inline explicit Row(const uword N);
-  inline          Row(const uword in_rows, const uword in_cols);
+  inline explicit Row(const uword in_rows, const uword in_cols);
+  inline explicit Row(const SizeMat& s);
   
   template<typename fill_type> inline Row(const uword n_elem,                       const fill::fill_class<fill_type>& f);
   template<typename fill_type> inline Row(const uword in_rows, const uword in_cols, const fill::fill_class<fill_type>& f);
+  template<typename fill_type> inline Row(const SizeMat& s,                         const fill::fill_class<fill_type>& f);
   
   inline                  Row(const char*        text);
   inline const Row& operator=(const char*        text);
@@ -55,7 +59,7 @@ class Row : public Mat<eT>
   template<typename T1> inline                   Row(const Base<eT,T1>& X);
   template<typename T1> inline const Row&  operator=(const Base<eT,T1>& X);
   
-  inline Row(      eT* aux_mem, const uword aux_length, const bool copy_aux_mem = true, const bool strict = true);
+  inline Row(      eT* aux_mem, const uword aux_length, const bool copy_aux_mem = true, const bool strict = false);
   inline Row(const eT* aux_mem, const uword aux_length);
   
   template<typename T1, typename T2>
@@ -93,6 +97,9 @@ class Row : public Mat<eT>
   
   arma_inline       subview_row<eT> operator()(const span& col_span);
   arma_inline const subview_row<eT> operator()(const span& col_span) const;
+  
+  arma_inline       subview_row<eT> subvec(const uword start_col, const SizeMat& s);
+  arma_inline const subview_row<eT> subvec(const uword start_col, const SizeMat& s) const;
   
   arma_inline       subview_row<eT> head(const uword N);
   arma_inline const subview_row<eT> head(const uword N) const;

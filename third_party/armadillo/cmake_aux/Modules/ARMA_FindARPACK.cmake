@@ -7,7 +7,7 @@
 
 find_library(ARPACK_LIBRARY
   NAMES arpack
-  PATHS /usr/lib64 /usr/lib /usr/local/lib64 /usr/local/lib
+  PATHS ${CMAKE_SYSTEM_LIBRARY_PATH} /usr/lib64 /usr/lib /usr/local/lib64 /usr/local/lib /opt/local/lib64 /opt/local/lib
   )
 
 

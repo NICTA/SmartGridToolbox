@@ -1,13 +1,18 @@
-// Copyright (C) 2011-2012 Ryan Curtin
-// Copyright (C) 2011 Matthew Amidon
-// Copyright (C) 2012 Conrad Sanderson
-//
+// Copyright (C) 2011-2016 National ICT Australia (NICTA)
+// 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// -------------------------------------------------------------------
+// 
+// Written by Conrad Sanderson - http://conradsanderson.id.au
+// Written by Ryan Curtin
+// Written by Matthew Amidon
+
 
 //! \addtogroup SpSubview
 //! @{
+
 
 template<typename eT>
 class SpSubview : public SpBase<eT, SpSubview<eT> >
@@ -72,6 +77,8 @@ class SpSubview : public SpBase<eT, SpSubview<eT> >
   inline static void schur_inplace(Mat<eT>& out, const subview& in);
   inline static void   div_inplace(Mat<eT>& out, const subview& in);
   */
+
+  inline void replace(const eT old_val, const eT new_val);
 
   inline void fill(const eT val);
   inline void zeros();

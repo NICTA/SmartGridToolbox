@@ -1,10 +1,12 @@
-// Copyright (C) 2008-2015 Conrad Sanderson
-// Copyright (C) 2008-2015 NICTA (www.nicta.com.au)
-// Copyright (C)      2011 James Sanders
+// Copyright (C) 2008-2016 National ICT Australia (NICTA)
 // 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// -------------------------------------------------------------------
+// 
+// Written by Conrad Sanderson - http://conradsanderson.id.au
+// Written by James Sanders
 
 
 //! \addtogroup subview
@@ -42,31 +44,36 @@ class subview : public Base<eT, subview<eT> >
   
   inline ~subview();
   
+  template<typename op_type             > inline void inplace_op(const eT           val                        );
+  template<typename op_type, typename T1> inline void inplace_op(const Base<eT,T1>& x,   const char* identifier);
+  template<typename op_type             > inline void inplace_op(const subview<eT>& x,   const char* identifier);
+  
+  // deliberately returning void
+  
   inline void operator=  (const eT val);
   inline void operator+= (const eT val);
   inline void operator-= (const eT val);
   inline void operator*= (const eT val);
   inline void operator/= (const eT val);
   
-  // deliberately returning void
-  template<typename T1> inline void operator=  (const Base<eT,T1>& x);
-  template<typename T1> inline void operator+= (const Base<eT,T1>& x);
-  template<typename T1> inline void operator-= (const Base<eT,T1>& x);
-  template<typename T1> inline void operator%= (const Base<eT,T1>& x);
-  template<typename T1> inline void operator/= (const Base<eT,T1>& x);
-  
-  template<typename T1> inline void operator= (const SpBase<eT, T1>& x);
-  template<typename T1> inline void operator+=(const SpBase<eT, T1>& x);
-  template<typename T1> inline void operator-=(const SpBase<eT, T1>& x);
-  template<typename T1> inline void operator%=(const SpBase<eT, T1>& x);
-  template<typename T1> inline void operator/=(const SpBase<eT, T1>& x);
-
   inline void operator=  (const subview& x);
   inline void operator+= (const subview& x);
   inline void operator-= (const subview& x);
   inline void operator%= (const subview& x);
   inline void operator/= (const subview& x);
   
+  template<typename T1> inline void operator=  (const Base<eT,T1>& x);
+  template<typename T1> inline void operator+= (const Base<eT,T1>& x);
+  template<typename T1> inline void operator-= (const Base<eT,T1>& x);
+  template<typename T1> inline void operator%= (const Base<eT,T1>& x);
+  template<typename T1> inline void operator/= (const Base<eT,T1>& x);
+  
+  template<typename T1> inline void operator=  (const SpBase<eT,T1>& x);
+  template<typename T1> inline void operator+= (const SpBase<eT,T1>& x);
+  template<typename T1> inline void operator-= (const SpBase<eT,T1>& x);
+  template<typename T1> inline void operator%= (const SpBase<eT,T1>& x);
+  template<typename T1> inline void operator/= (const SpBase<eT,T1>& x);
+
   template<typename T1, typename gen_type>
   inline typename enable_if2< is_same_type<typename T1::elem_type, eT>::value, void>::result operator=(const Gen<T1,gen_type>& x);
   
@@ -78,8 +85,13 @@ class subview : public Base<eT, subview<eT> >
   inline static void schur_inplace(Mat<eT>& out, const subview& in);
   inline static void   div_inplace(Mat<eT>& out, const subview& in);
   
+  template<typename functor> inline void  for_each(functor F);
+  template<typename functor> inline void  for_each(functor F) const;
+  
   template<typename functor> inline void transform(functor F);
   template<typename functor> inline void     imbue(functor F);
+  
+  inline void replace(const eT old_val, const eT new_val);
   
   inline void fill(const eT val);
   inline void zeros();
@@ -148,6 +160,14 @@ class subview : public Base<eT, subview<eT> >
   
   template<typename T1> inline subview_each2< subview<eT>, 0, T1 > each_col(const Base<uword, T1>& indices);
   template<typename T1> inline subview_each2< subview<eT>, 1, T1 > each_row(const Base<uword, T1>& indices);
+  
+  #if defined(ARMA_USE_CXX11)
+  inline void each_col(const std::function< void(      Col<eT>&) >& F);
+  inline void each_col(const std::function< void(const Col<eT>&) >& F) const;
+  
+  inline void each_row(const std::function< void(      Row<eT>&) >& F);
+  inline void each_row(const std::function< void(const Row<eT>&) >& F) const;
+  #endif
   
   inline       diagview<eT> diag(const sword in_id = 0);
   inline const diagview<eT> diag(const sword in_id = 0) const;
@@ -218,11 +238,23 @@ class subview_col : public subview<eT>
   inline       subview_col<eT> subvec(const uword in_row1, const uword in_row2);
   inline const subview_col<eT> subvec(const uword in_row1, const uword in_row2) const;
   
+  inline       subview_col<eT> subvec(const uword start_row, const SizeMat& s);
+  inline const subview_col<eT> subvec(const uword start_row, const SizeMat& s) const;
+  
   inline       subview_col<eT> head(const uword N);
   inline const subview_col<eT> head(const uword N) const;
   
   inline       subview_col<eT> tail(const uword N);
   inline const subview_col<eT> tail(const uword N) const;
+  
+  inline arma_warn_unused eT min() const;
+  inline arma_warn_unused eT max() const;
+  
+  inline eT min(uword& index_of_min_val) const;
+  inline eT max(uword& index_of_max_val) const;
+  
+  inline arma_warn_unused uword index_min() const;
+  inline arma_warn_unused uword index_max() const;
   
   
   protected:
@@ -287,11 +319,17 @@ class subview_row : public subview<eT>
   inline       subview_row<eT> subvec(const uword in_col1, const uword in_col2);
   inline const subview_row<eT> subvec(const uword in_col1, const uword in_col2) const;
   
+  inline       subview_row<eT> subvec(const uword start_col, const SizeMat& s);
+  inline const subview_row<eT> subvec(const uword start_col, const SizeMat& s) const;
+  
   inline       subview_row<eT> head(const uword N);
   inline const subview_row<eT> head(const uword N) const;
   
   inline       subview_row<eT> tail(const uword N);
   inline const subview_row<eT> tail(const uword N) const;
+  
+  inline arma_warn_unused uword index_min() const;
+  inline arma_warn_unused uword index_max() const;
   
   
   protected:

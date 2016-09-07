@@ -1,18 +1,20 @@
 
-# Copyright (C) 2008-2015 Conrad Sanderson
-# Copyright (C) 2008-2015 NICTA (www.nicta.com.au)
-# Copyright (C) 2013-2015 Ryan Curtin
-# Copyright (C) 2011 Clement Creusot
+# Copyright (C) 2008-2016 National ICT Australia (NICTA)
 # 
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
+# -------------------------------------------------------------------
+# 
+# Written by Conrad Sanderson - http://conradsanderson.id.au
+# Written by Ryan Curtin
+# Written by Clement Creusot
 
 
 
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
-set(ARMA_MAJOR 5)
+set(ARMA_MAJOR 7)
 set(ARMA_MINOR 400)
 set(ARMA_PATCH 2)
 set(ARMADILLO_VERSION ${ARMA_MAJOR}.${ARMA_MINOR}.${ARMA_PATCH})
@@ -36,36 +38,47 @@ set(ARMA_USE_ATLAS            false)
 set(ARMA_USE_HDF5_ALT         false)
 set(ARMA_USE_ARPACK           false)
 set(ARMA_USE_EXTERN_CXX11_RNG false)
-set(ARMA_USE_SUPERLU          false)  # Caveat: only SuperLU version 4.3 can be used!
+set(ARMA_USE_SUPERLU          false)  # Caveat: only SuperLU version 5.x can be used!
+
+project(armadillo CXX)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_aux/Modules/")
 
 include(CheckIncludeFileCXX)
 include(CheckLibraryExists)
-include(ARMA_CheckProto)
-include(ARMA_CheckMathProto)
 
-project(armadillo CXX)
 
-option(BUILD_SHARED_LIBS "build shared library" ON)
+if(MSVC)
+  option(BUILD_SHARED_LIBS "build shared library" OFF)
+else()
+  option(BUILD_SHARED_LIBS "build shared library" ON)
+endif()
+
 option(DETECT_HDF5 "Detect HDF5 and include HDF5 support, if found" OFF)
+
+
+if(WIN32)
+  message(STATUS "")
+  message(STATUS "*** WARNING: automatic installation is experimental for this platform.")
+  message(STATUS "*** WARNING: if anything breaks, you get to keep all the pieces.")
+  message(STATUS "*** WARNING: manual installation is described in README.txt")
+  message(STATUS "")
+endif()
+
+if(MSVC AND BUILD_SHARED_LIBS)
+  message(STATUS "")
+  message(STATUS "*** WARNING: building shared library with MSVC is not supported." )
+  message(STATUS "*** WARNING: if anything breaks, you get to keep all the pieces.")
+  message(STATUS "")
+endif()
+
 
 message(STATUS "CMAKE_SYSTEM_NAME          = ${CMAKE_SYSTEM_NAME}"         )
 message(STATUS "CMAKE_CXX_COMPILER_ID      = ${CMAKE_CXX_COMPILER_ID}"     )
 message(STATUS "CMAKE_CXX_COMPILER_VERSION = ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "CMAKE_COMPILER_IS_GNUCXX   = ${CMAKE_COMPILER_IS_GNUCXX}"  )
-
-
-if(WIN32)
-  message(STATUS "")
-  message(STATUS "WARNING:")
-  message(STATUS "Automatic installation is currently not available for this platform.")
-  message(STATUS "Please use the manual installation, as described in the README.txt file.")
-  message(STATUS "You can also use the 'include' folder directly, but you may want to edit")
-  message(STATUS "'include/armadillo_bits/config.hpp' if you have LAPACK installed.")
-  message(STATUS "")
-endif()
-
+message(STATUS "BUILD_SHARED_LIBS          = ${BUILD_SHARED_LIBS}"         )
+message(STATUS "DETECT_HDF5                = ${DETECT_HDF5}"               )
 
 
 ##
@@ -258,7 +271,7 @@ if(ARPACK_FOUND)
   set(ARMA_LIBS ${ARMA_LIBS} ${ARPACK_LIBRARY})
 endif()
 
-include(ARMA_FindSuperLU)
+include(ARMA_FindSuperLU5)
 message(STATUS "SuperLU_FOUND = ${SuperLU_FOUND}")
 
 if(SuperLU_FOUND)
@@ -323,6 +336,7 @@ message(STATUS "CMAKE_CXX_FLAGS           = ${CMAKE_CXX_FLAGS}"          )
 message(STATUS "CMAKE_SHARED_LINKER_FLAGS = ${CMAKE_SHARED_LINKER_FLAGS}")
 message(STATUS "CMAKE_REQUIRED_INCLUDES   = ${CMAKE_REQUIRED_INCLUDES}"  )
 
+
 add_library( armadillo ${PROJECT_SOURCE_DIR}/src/wrapper.cpp )
 target_link_libraries( armadillo ${ARMA_LIBS} )
 set_target_properties(armadillo PROPERTIES VERSION ${ARMA_MAJOR}.${ARMA_MINOR_ALT}.${ARMA_PATCH} SOVERSION ${ARMA_MAJOR})
@@ -336,12 +350,14 @@ set_target_properties(armadillo PROPERTIES VERSION ${ARMA_MAJOR}.${ARMA_MINOR_AL
 # does not search /usr/local/lib by default, we need to place the
 # library in either /usr/lib or /usr/lib64
 
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  message(STATUS "*** CMAKE_INSTALL_PREFIX was initalised by cmake to the default value of ${CMAKE_INSTALL_PREFIX}")
-  message(STATUS "*** CMAKE_INSTALL_PREFIX changed to /usr")
-  unset(CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/usr")
-  #set(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "install prefix" FORCE)
+if(NOT APPLE)
+  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    message(STATUS "*** CMAKE_INSTALL_PREFIX was initalised by cmake to the default value of ${CMAKE_INSTALL_PREFIX}")
+    message(STATUS "*** CMAKE_INSTALL_PREFIX changed to /usr")
+    unset(CMAKE_INSTALL_PREFIX)
+    set(CMAKE_INSTALL_PREFIX "/usr")
+    #set(CMAKE_INSTALL_PREFIX "/usr" CACHE PATH "install prefix" FORCE)
+  endif()
 endif()
 
 # Allow for the "lib" directory to be specified on the command line

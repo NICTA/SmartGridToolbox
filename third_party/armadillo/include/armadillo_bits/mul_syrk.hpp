@@ -1,9 +1,11 @@
-// Copyright (C) 2013 Conrad Sanderson
-// Copyright (C) 2013 NICTA (www.nicta.com.au)
+// Copyright (C) 2013 National ICT Australia (NICTA)
 // 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// -------------------------------------------------------------------
+// 
+// Written by Conrad Sanderson - http://conradsanderson.id.au
 
 
 //! \addtogroup syrk
@@ -344,15 +346,15 @@ class syrk
         
         const char trans_A = (do_trans_A) ? 'T' : 'N';
         
-        const blas_int n = C.n_cols;
-        const blas_int k = (do_trans_A) ? A.n_rows : A.n_cols;
+        const blas_int n = blas_int(C.n_cols);
+        const blas_int k = (do_trans_A) ? blas_int(A.n_rows) : blas_int(A.n_cols);
         
         const eT local_alpha = (use_alpha) ? alpha : eT(1);
         const eT local_beta  = (use_beta)  ? beta  : eT(0);
         
         const blas_int lda = (do_trans_A) ? k : n;
         
-        arma_extra_debug_print( arma_boost::format("blas::syrk(): trans_A = %c") % trans_A );
+        arma_extra_debug_print( arma_str::format("blas::syrk(): trans_A = %c") % trans_A );
         
         blas::syrk<eT>
           (

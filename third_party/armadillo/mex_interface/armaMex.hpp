@@ -1,12 +1,16 @@
-// Connector for Mex files to use Armadillo for calculation
-// Version 0.5
-// 
-// Copyright (C) 2014 George Yammine
-// Copyright (C) 2014 Conrad Sanderson
+// Copyright (C) 2014 National ICT Australia (NICTA)
 // 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// -------------------------------------------------------------------
+// 
+// Written by Conrad Sanderson - http://conradsanderson.id.au
+// Written by George Yammine
+
+
+// Connector for Mex files to use Armadillo for calculation
+// Version 0.5
 
 
 #include <armadillo>
