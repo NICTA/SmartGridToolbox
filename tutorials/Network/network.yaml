@@ -18,7 +18,7 @@
     id: load_2
     bus_id: bus_2
     phases: [BAL]
-    S_const: [0.1D-5.0] # 0.1 @ -5 degrees.
+    S_const: [[0.1D-5.0]] # 0.1 @ -5 degrees.
 - common_branch:
     id: line
     bus_0_id: bus_1

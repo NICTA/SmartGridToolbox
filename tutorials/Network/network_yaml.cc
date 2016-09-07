@@ -30,7 +30,7 @@ int main(int argc, char** argv)
         // Solve the power flow problem, using default Newton-Raphson solver.
     
     // Below, we show how to retrieve some information:
-    auto bus = nw.bus("bus_2");
+    auto bus = nw.buses()["bus_2"];
     Log().message() << "Bus " << bus->id() << ": " << " voltage is "
                     << bus->V() << std::endl;
     
