@@ -10,7 +10,7 @@ fi
 
 if [ -w $INSTALL_PREFIX ]; then SUDO=""; else SUDO=sudo; fi
 
-cd armadillo-5.400.2
+cd armadillo
 rm -rf build_sgt
 mkdir build_sgt
 cd build_sgt
