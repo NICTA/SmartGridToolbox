@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <string>
 #include "PowerTools++/var.h"
 #include <PowerTools++/Constraint.h>
 

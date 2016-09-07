@@ -253,7 +253,7 @@ void Model::addConstraint(Constraint* c){
     }
     _nnz_g+=c->get_nb_vars();
     
-//        c->print();
+        c->print();
 };
 
 
@@ -358,8 +358,6 @@ void Model::concretise(meta_Constraint& mc, int meta_link, string name){
     }
     c->_meta_constr = &mc;
     addConstraint(c);
-//    mc.concretise().print(false);
-//    cout << endl;
     //    c.Function::print(true);
     mc._nb_concrete++;
 //    return *c;
@@ -370,7 +368,6 @@ void Model::addMetaConstraint(meta_Constraint& c){
     int idx = 0;
     _meta_cons.insert(pair<int, meta_Constraint*>(_meta_cons.size(), &c));
     c.set_idx((int)_meta_cons.size()-1);
-//    c.print();
     if (c._lparent) {
         idx = has_function(c._lparent);
         if (idx!=-1) {
@@ -400,7 +397,7 @@ void Model::addMetaConstraint(meta_Constraint& c){
         }
         vi->addConstraint(&c);
         if (c.get_ftype()==nlin_ || c.has_meta()) {
-//            c.print();
+            
             c.compute_dfdx(vi);
 //            if (c._dfdx[vid]->_lparent) {
 //                add_functions(*c._dfdx[vid]->_lparent);
@@ -444,14 +441,14 @@ void Model::addMetaConstraint(meta_Constraint& c){
                     }
                     else
                         add_functions(c._dfdx[vid]->_dfdx[vjd]);
-//                    c.print();
+//                    c->print();
 //                    vi->print();
 //                    cout << " : ";
-//                    c._dfdx[vid]->print(true);
-//                    vj = c.get_var(vjd);
+//                    dfdx->print(true);
+//                    vj = c->get_var(vjd);
 //                    vj->print();
 //                    cout << " : ";
-//                    c._dfdx[vid]->_dfdx[vjd]->print(true);
+//                    dfdx->get_dfdx(vjd)->print(true);
                     //
                     
                 }
@@ -685,7 +682,6 @@ void Model::fill_in_var_bounds(double* x_l ,double* x_u) {
                 break;
             case longreal:
                 long_real_var = (var<>*)v;
-//                long_real_var->print();
                 x_l[idx] = long_real_var->get_lb();
                 x_u[idx] = long_real_var->get_ub();
                 break;
@@ -869,12 +865,12 @@ void Model::fill_in_jac_nnz(int* iRow , int* jCol){
     for(auto& c :_cons)
     {
         cid = c->get_idx();
-        assert(cid==c->get_idx());
+//        assert(cid==c->get_idx());
         for(auto itv = c->_vars.cbegin(); itv != c->_vars.cend(); ++itv)
         {
             vid = itv->first;
             v = itv->second;
-            assert(vid==v->get_idx());
+//            assert(vid==v->get_idx());
             iRow[idx] = cid;
             jCol[idx] = vid;
             idx++;
@@ -1648,13 +1644,13 @@ void Model::fill_in_cstr_bounds(double* g_l ,double* g_u) {
 }
 
 void Model::print_functions() const{
-    cout << "Number of atomic functions = " << _functions.size();
+    cout << " Number of atomic functions = " << _functions.size();
     cout << endl;
 //    for (auto& f: _functions){
 //        f->print(false);
 //        cout << endl;
 //    }
-    cout << endl;
+//    cout << endl;
 }
 
 void Model::print_solution() const{

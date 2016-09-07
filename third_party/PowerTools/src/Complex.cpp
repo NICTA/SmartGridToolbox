@@ -7,7 +7,10 @@
 //
 
 #include "PowerTools++/Complex.h"
-
+#include <iostream>
+#include <string>
+#include <stdio.h>
+#include <cstring>
 using namespace std;
 
 /** Constructor */

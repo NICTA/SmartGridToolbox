@@ -7,6 +7,8 @@
 //
 
 #include <stdio.h>
+#include <string>
+#include <cstring>
 #include <iostream>
 #include "PowerTools++/var.h"
 #include "PowerTools++/Constraint.h"
@@ -129,6 +131,11 @@ template<typename Number>void var<Number>::init(string name){
         _type = binary;
         _lb = false;
         _ub = true;
+        _lb_off = false;
+        _ub_off = true;
+        _bounded_down = true;
+        _bounded_up = true;
+        _val = false;
     }
     else{
         if(typeid(Number)==typeid(int))
@@ -139,14 +146,15 @@ template<typename Number>void var<Number>::init(string name){
             else
                 _type = longreal;
         }
+        _bounded_down = false;
+        _bounded_up = false;
+        _lb=-numeric_limits<Number>::infinity();
+        _ub=numeric_limits<Number>::infinity();
+        _lb_off=-numeric_limits<Number>::infinity();
+        _ub_off=numeric_limits<Number>::infinity();
+        _val = 0.0;
     }
-    _bounded_down = false;
-    _bounded_up = false;
-    _lb=-numeric_limits<Number>::infinity();
-    _ub=numeric_limits<Number>::infinity();
-    _lb_off=0;
-    _ub_off=0;
-    _val = 0.0;
+
 };
 
 template<typename Number>void var<Number>::set_lb(Number lb){

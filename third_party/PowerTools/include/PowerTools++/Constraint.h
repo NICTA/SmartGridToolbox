@@ -26,6 +26,7 @@ public:
     int                         _meta_link;
     ConstraintType              _ctype; /**< Constraint type: leq, geq or eq */
     double _rhs;
+    double                      _dual = 0.; /**< dual value */
     /** Constructor */
     //@{
     Constraint();

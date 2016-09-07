@@ -6,8 +6,8 @@ GurobiProgram::GurobiProgram(){
 //    grb_env->set(GRB_IntParam_Presolve,0);
     //grb_env->set(GRB_DoubleParam_NodeLimit,1);
     grb_env->set(GRB_DoubleParam_TimeLimit,7200);
-    grb_env->set(GRB_DoubleParam_MIPGap,0.00001);
-    grb_env->set(GRB_IntParam_Threads,1);
+    grb_env->set(GRB_DoubleParam_MIPGap,0.01);
+//    grb_env->set(GRB_IntParam_Threads,1);
     grb_env->set(GRB_IntParam_OutputFlag,0);
 //    grb_mod = new GRBModel(*grb_env);
     grb_mod = NULL;
@@ -32,9 +32,11 @@ void GurobiProgram::reset_model(){
 
 void GurobiProgram::solve(bool relax){
     //cout << "\n Presolve = " << grb_env->get(GRB_IntParam_Presolve) << endl;
+//    print_constraints();
     if (relax) relax_model();
 //    relax_model();
     grb_mod->optimize();
+//    grb_mod->write("~/Gqc_ots.lp");
     if (grb_mod->get(GRB_IntAttr_Status) != 2) {
         cerr << "\nModel has not been solved to optimality, error code = " << grb_mod->get(GRB_IntAttr_Status) << endl;
         exit(1);
@@ -43,14 +45,15 @@ void GurobiProgram::solve(bool relax){
     //grb_mod->write("/home/kbestuzheva/PowerTools--/qc_ots.lp");
     GRBVar* gvars = grb_mod->getVars();
     for(int i = 0; i < grb_mod->get(GRB_IntAttr_NumVars); ++i) {
-        //cout << gvars[i].get(GRB_StringAttr_VarName) << "  " << gvars[i].get(GRB_DoubleAttr_X) << endl;
+//        cout << gvars[i].get(GRB_StringAttr_VarName) << "  " << gvars[i].get(GRB_DoubleAttr_X) << endl;
         if (gvars[i].get(GRB_CharAttr_VType)==GRB_BINARY) {
             cout << gvars[i].get(GRB_StringAttr_VarName) << "  ";
             cout << gvars[i].get(GRB_DoubleAttr_X);
             cout << "\n";
         }
     }
-    cout << "\n***** Optimal Objective = " << grb_mod->get(GRB_DoubleAttr_ObjVal) << " *****\n";
+//    cout << "\n***** Optimal Objective = " << grb_mod->get(GRB_DoubleAttr_ObjVal) << " *****\n";
+    model->_opt = grb_mod->get(GRB_DoubleAttr_ObjVal);
     if (grb_mod->get(GRB_IntAttr_IsMIP)) {
         cout.setf(ios::fixed);
         cout.precision(3);
@@ -69,6 +72,7 @@ void GurobiProgram::prepare_model(){
     fill_in_grb_vmap();
     create_grb_constraints();
     set_grb_objective();
+//    print_constraints();
 }
 
 void GurobiProgram::update_model(){
@@ -93,7 +97,7 @@ void GurobiProgram::update_model(){
                 vr =  (var<double>*)it;
                 gvarit = _grb_vars.find(it->get_idx());
                 vr->set_val(gvarit->second->get(GRB_DoubleAttr_X));
-                //cout << "\ngrbvar name = " << gvarit->second->get(GRB_StringAttr_VarName) << " grbvar value = " << gvarit->second->get(GRB_DoubleAttr_X);
+//                cout << "\ngrbvar name = " << gvarit->second->get(GRB_StringAttr_VarName) << " grbvar value = " << gvarit->second->get(GRB_DoubleAttr_X);
                 break;
             default:
                 break;
@@ -118,6 +122,7 @@ void GurobiProgram::fill_in_grb_vmap(){
         switch (it->get_type()) {
             case binary:
                 vb =  (var<bool>*)it;
+//                cout << "[" << vb->get_lb() << ", " << vb->get_ub() << "]\n";
                 gvar = new GRBVar(grb_mod->addVar(vb->get_lb(), vb->get_ub(), 0.0, GRB_BINARY, vb->_name));
                 break;
             case integ:
@@ -129,6 +134,7 @@ void GurobiProgram::fill_in_grb_vmap(){
                 vr = (var<double>*)it;
                 lb = min(vr->get_lb(), vr->get_lb_off());
                 ub = max(vr->get_ub(), vr->get_ub_off());
+//                cout << "[" << lb << ", " << ub << "]\n";
 //                lb = vr->get_lb();
 //                ub = vr->get_ub();
                 gvar = new GRBVar(grb_mod->addVar(lb, ub, 0.0, GRB_CONTINUOUS, vr->_name));
@@ -137,7 +143,7 @@ void GurobiProgram::fill_in_grb_vmap(){
                 break;
         }
         _grb_vars.insert(pair<int, GRBVar*>(it->get_idx(),gvar));
-        //cout << "\n\ngvar = " << gvar->get(GRB_StringAttr_VarName) << " vtype = " << gvar->get(GRB_CharAttr_VType);
+//        cout << "\n\ngvar = " << gvar->get(GRB_StringAttr_VarName) << " vtype = " << gvar->get(GRB_CharAttr_VType);
     }
     grb_mod->update();
 }
@@ -174,6 +180,7 @@ void GurobiProgram::create_grb_constraints(){
                     linlhs += gvar1*coeff;
                 }
                 linlhs += q->get_const();
+//                cout << c->get_name() << linlhs << endl;
                 grb_mod->addConstr(linlhs,sense,c->get_rhs(),c->get_name());
                 break;
             case quad_:
@@ -196,6 +203,7 @@ void GurobiProgram::create_grb_constraints(){
                     quadlhs += gvar1*coeff;
                 }
                 quadlhs += q->get_const();
+//                cout << c->get_name() << quadlhs << endl;
                 grb_mod->addQConstr(quadlhs,sense,c->get_rhs(),c->get_name());
                 break;
             case nlin_:
@@ -238,7 +246,7 @@ void GurobiProgram::set_grb_objective(){
                    gvar2 = *(gvit->second);
                    coeff = it2.second;
                    qobj += gvar1*gvar2*coeff;
-                   //cout << coeff << "*" << gvar1.get(GRB_StringAttr_VarName) << "*" << gvar2.get(GRB_StringAttr_VarName) << " + ";
+//                   cout << coeff << "*" << gvar1.get(GRB_StringAttr_VarName) << "*" << gvar2.get(GRB_StringAttr_VarName) << " + ";
                  }
              }
              for (auto& it1: q->_coefs) {
@@ -246,9 +254,9 @@ void GurobiProgram::set_grb_objective(){
                  gvar1 = *(gvit->second);
                  coeff = it1.second;
                  qobj += gvar1*coeff;
-                 //cout << coeff << "*" << gvar1.get(GRB_StringAttr_VarName) << " + ";
+//                 cout << coeff << "*" << gvar1.get(GRB_StringAttr_VarName) << " + ";
              }
-            //cout << "\n";
+//            cout << "\n";
             qobj += model->_obj->get_const();
             grb_mod->setObjective(qobj,objt);
             break;

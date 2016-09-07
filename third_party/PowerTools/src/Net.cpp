@@ -12,6 +12,8 @@
 #include "PowerTools++/Path.h"
 #include <algorithm>
 #include <map>
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <list>
 #include <iostream>
 #include <fstream>
@@ -1169,6 +1171,7 @@ int Net::readFile(string fname){
         arc->tbound.max = atof(word.c_str())*M_PI/180;
         arc_clone->tbound.max = arc->tbound.max;
         m_theta_ub += arc->tbound.max;
+        arc->smax = max(pow(arc->src->vbound.max,2)*(arc->g*arc->g+arc->b*arc->b)*(pow(arc->src->vbound.max,2) + pow(arc->dest->vbound.max,2)), pow(arc->dest->vbound.max,2)*(arc->g*arc->g+arc->b*arc->b)*(pow(arc->dest->vbound.max,2) + pow(arc->src->vbound.max,2)));
         if(arc->status==1){
             arc->connect();
             if(!add_arc(arc)){// not a parallel line
@@ -1188,10 +1191,10 @@ int Net::readFile(string fname){
         file >> word;
     }
     file.close();
-    for (auto n:nodes) {
+//    for (auto n:nodes) {
 //        n->print();
 //        cout << "node" << n->ID << ": fill_in = " << n->fill_in << endl;
-    }
+//    }
     get_tree_decomp_bags();
     return 0;
 }

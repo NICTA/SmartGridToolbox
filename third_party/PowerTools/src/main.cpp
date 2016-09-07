@@ -13,7 +13,7 @@
 #include <fstream>
 #include "PowerTools++/Net.h"
 #include "PowerTools++/IpoptProgram.h"
-#include "PowerTools++/Solver.h"
+#include "PowerTools++/PTSolver.h"
 #include "PowerTools++/Complex.h"
 #include "PowerTools++/PowerModel.h"
 
@@ -72,20 +72,26 @@ int main (int argc, const char * argv[])
 //        exit(1);
 //    }
 //    PowerModelType pmt = ACPOL;
-//    PowerModelType pmt = SOCP;
+//    PowerModelType pmt = SDP;
+//    setenv("GRB_LICENSE_FILE", "/home/kbestuzheva/gurobi.research.lic", 1);
+    PowerModelType pmt = QC;
+//    PowerModelType pmt = QC_OTS_N;
+//    PowerModelType pmt = GRB_TEST;
+
     //  Start Timers
     double wall0 = get_wall_time();
     double cpu0  = get_cpu_time();
-    PowerModelType pmt = SDP;
+//    PowerModelType pmt = SDP;
 //    PowerModelType pmt = QC;
 //    PowerModelType pmt = QC_SDP;
 //    PowerModelType pmt = SOCP_OTS;
 //    PowerModelType pmt = ACRECT;
     SolverType st = ipopt;
 //    SolverType st = gurobi;
-//        string filename = "../../data/nesta_case5_pjm__sad.m";
+        string filename = "../../data/nesta_case3_lmbd.m";
+//    string filename = "/Users/hassan/Documents/Dropbox/Work/Dev/Private_PT/data/nesta_case30_ieee.m";
 //    string filename = "../../data/nesta_case3_lmbd.m";
-    string filename = "../../data/nesta_case118_ieee.m";
+//    string filename = "../data/nesta_case118_ieee__api.m";
 //    string filename = "../../data/nesta_case29_edin__sad.m";
 //    string filename = "../../data/nesta_case24_ieee_rts.m";
 //    string filename = "../../data/nesta_case24_ieee_rts__api.m";
@@ -108,7 +114,9 @@ int main (int argc, const char * argv[])
         else if(!strcmp(argv[2],"SOCP")) pmt = SOCP;
         else if(!strcmp(argv[2],"SDP")) pmt = SDP;
         else if(!strcmp(argv[2],"DC")) pmt = DC;
-        //else if(!strcmp(argv[2],"QC_OTS")) pmt = QC_OTS;
+        else if(!strcmp(argv[2],"QC_OTS_O")) pmt = QC_OTS_O;
+        else if(!strcmp(argv[2],"QC_OTS_N")) pmt = QC_OTS_N;
+        else if(!strcmp(argv[2],"QC_OTS_L")) pmt = QC_OTS_L;
         else if(!strcmp(argv[2],"SOCP_OTS")) pmt = SOCP_OTS;
             else{
                     cerr << "Unknown model type.\n";
@@ -118,6 +126,7 @@ int main (int argc, const char * argv[])
         if(!strcmp(argv[3],"ipopt")) st = ipopt;
         
         else if(!strcmp(argv[3],"gurobi")) st = gurobi;
+        else if(!strcmp(argv[3],"bonmin")) st = bonmin;
         else{
             cerr << "Unknown solver type.\n";
             exit(1);
@@ -137,7 +146,7 @@ int main (int argc, const char * argv[])
 //    PowerModel power_model(pmt,&net);
     cout << "\nTo run PowerTools with a different input/power flow model, enter:\nPowerTools filename ACPOL/ACRECT/SOCP/QC/QC_SDP/SDPDC/OTS/SOCP_OTS ipopt/gurobi\n\n";
     PowerModel power_model(pmt,&net,st);
-//    power_model.propagate_bounds();
+    //power_model.propagate_bounds();
     power_model.build();
     power_model.min_cost();
     int status = power_model.solve();

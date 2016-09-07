@@ -31,8 +31,8 @@ protected:
     Number                      _lb_off; /**< Lower Bound when the variable is not active */
     Number                      _ub_off; /**< Upper Bound when the variable is not active */
 
-
 public:
+    double                      _dual = 0.; /**< Dual value for variable bounds */
     /* Constructors */
     
     //@{

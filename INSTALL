@@ -7,26 +7,23 @@ Building and Installing SmartGridToolbox
 1.1 Compilers
 -------------
 
-You need a compiler that will properly support C++11. SmartGridToolbox is
+You need a compiler that will properly support C++14. SmartGridToolbox is
 tested on Mac OS X with clang++ from Apple LLVM version 6.1.0 (similar to
-linux v. 3.6), and on linux with clang++ version 3.5 and g++ version 4.9. We
-recommend using clang++, version 3.5 or later.
+linux v. 3.6), and on Ubuntu (linux) with clang++ version 3.6 and 
+g++ version 5.0. For macs, we recommend using clang++, and for linux we 
+recommend g++ version 5 or greater.
 
 If building on a Mac, you should have a recent version of the OSX operating
-system (Mavericks and Yosemite work). Install the latest version of XCode, and
+system (Mavericks(?), Yosemite, or El Capitan). Install the latest version of XCode, and
 you will automatically have access to the correct clang compilers.
 
-If building on Ubuntu 14 (or perhaps earlier) you can use, e.g.
-
-> sudo apt-add-repository "deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main"
-> sudo apt-get update
-> sudo apt-get install clang++-3.6
-
-or
+If building on Ubuntu 14 (or 15?) you can use, e.g.
 
 > sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 > sudo apt-get update
-> sudo apt-get install g++-4.9
+> sudo apt-get install g++5.0
+
+Ubuntu 16 should just work out of the box.
 
 1.2 Libraries
 -------------
@@ -59,7 +56,7 @@ b) Armadillo linear algebra library:
    are in the top level SmartGridToolbox directory), you can do something like
    the following:
 
-   > cd third_party/armadillo-5.400.2
+   > cd third_party/armadillo
    > mkdir build
    > cd build
    > cmake ..
@@ -109,6 +106,10 @@ d) The yaml-cpp library:
    > cmake ..
    > make && sudo make install
 
+d) PowerTools
+
+   PowerTools is Source code is provided in third_party/PowerTools. 
+
 2. Build and install the SmartGridToolbox libraries:
 ====================================================
 
@@ -116,7 +117,7 @@ If installing from a tarball: simply run the usual configure/make/install
 procedure, using the desired options to configure (type "configure --help" for a
 list).
 
-> ./configure # --with-klu # if you don't have SuiteSparse support in armadillo.
+> ./configure
 > make
 > sudo make install
 

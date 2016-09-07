@@ -7,6 +7,8 @@
 //
 
 #include <stdio.h>
+#include <string>
+#include <cstring>
 #include "PowerTools++/Constraint.h"
 #include "PowerTools++/meta_Constraint.h"
 

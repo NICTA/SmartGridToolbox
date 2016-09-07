@@ -81,7 +81,7 @@ bool additive(OperatorType op) {
 }
 
 bool unary(OperatorType op) {
-    return (op==sin_ || op==cos_ || op==power_);
+    return (op==sin_ || op==cos_ || op==power_ || op==exp_ || op==log_ || op==sqrt_);
 }
 
 
@@ -377,6 +377,15 @@ double Function::eval(const double* x) const{
                 case sin_:
                     res = sin(res);
                     break;
+                case log_:
+                    res = log(res);
+                    break;
+                case exp_:
+                    res = exp(res);
+                    break;
+                case sqrt_:
+                    res = sqrt(res);
+                    break;
                 default:
                     std::cerr << "unsupported operation";
                     exit(-1);
@@ -440,6 +449,15 @@ double Function::eval_meta(const double *x, map<int, double>& meta_coeff, map<in
                 case sin_:
                     res = sin(res);
                     break;
+                case log_:
+                    res = log(res);
+                    break;
+                case exp_:
+                    res = exp(res);
+                    break;
+                case sqrt_:
+                    res = sqrt(res);
+                    break;
                 default:
                     std::cerr << "unsupported operation";
                     exit(-1);
@@ -500,8 +518,17 @@ double Function::eval_dfdx(int vid, const double* x) const {
                 case sin_:
                     return _coeff*(_lparent->eval_dfdx(vid, x)*cos(_lparent->eval(x))) + q_res;
                     break;
+                case sqrt_:
+                    return _coeff*(_lparent->eval_dfdx(vid, x)/(2*sqrt(_lparent->eval(x)))) + q_res;
+                    break;
+                case exp_:
+                    return _coeff*(_lparent->eval_dfdx(vid, x)*exp2(_lparent->eval(x))) + q_res;
+                    break;
+                case log_:
+                    return _coeff*(_lparent->eval_dfdx(vid, x)/_lparent->eval(x)) + q_res;
+                    break;
                 default:
-                    std::cerr << "unsupported unary operation";
+                    std::cerr << "ok unsupported unary operation";
                     exit(-1);
                     break;
             }
@@ -639,8 +666,20 @@ void Function::compute_dfdx(var_* v){
                     *df += _coeff * (*_lparent->_dfdx[vid]) * cos(*_lparent);
                     _dfdx[vid] = (df);
                     break;
+                case exp_:
+                    *df += _coeff * (*_lparent->_dfdx[vid]) * expo(*_lparent);
+                    _dfdx[vid] = (df);
+                    break;
+                case log_:
+                    *df += _coeff * (*_lparent->_dfdx[vid])/(*_lparent);
+                    _dfdx[vid] = (df);
+                    break;
+                case sqrt_:
+                    *df += _coeff/2 * (*_lparent->_dfdx[vid])/sqrt(*_lparent);
+                    _dfdx[vid] = (df);
+                    break;
                 default:
-                    std::cerr << "unsupported unary operation";
+                    std::cerr << "ouch unsupported unary operation";
                     exit(-1);
                     break;
             }
@@ -687,6 +726,44 @@ Function Function::outer_approx(const double* x) const{
     }
     res += eval(x);
     return res;
+}
+
+Function Function::quad_ch_right(var<>& x, var<>& z, var<bool>& u, double *vals) const{
+    Function res, z_of_x;
+    double a, b, c;
+    assert(is_quadratic());
+    a = _quad.get_q_coeff(x.get_idx(), x.get_idx()); // a should be > 0, vals[x] should be set
+    b = _quad.get_coeff(x.get_idx());
+    c = _quad.get_const();
+    if (_quad.get_coeff(z.get_idx()) == -1) res += x - x.get_ub_off()*(1-u) + (b/(2*a))*u - sqrt(((b*b - 4*a*c)/(4*a*a))*u*u + z*u/a);
+    if (_quad.get_coeff(z.get_idx()) == 1) res += x - x.get_ub_off()*(1-u) + (b/(2*a))*u - sqrt(((b*b - 4*a*c)/(4*a*a))*u*u - z*u/a);
+
+    // evaluating at on = 1
+    z_of_x = a*(b/(2*a) + x)*(b/(2*a) + x) - (b*b - 4*a*c)/(4*a);
+    vals[z.get_idx()] = z_of_x.eval(vals);
+    if(_quad.get_coeff(z.get_idx()) == 1) vals[z.get_idx()] = -vals[z.get_idx()];
+    vals[u.get_idx()] = 1;
+
+    return res.outer_approx(vals);
+}
+
+Function Function::quad_ch_left(var<>& x, var<>& z, var<bool>& u, double *vals) const{
+    Function res, z_of_x;
+    double a, b, c;
+    assert(is_quadratic());
+    a = _quad.get_q_coeff(x.get_idx(), x.get_idx()); // a should be > 0, vals[x] should be set
+    b = _quad.get_coeff(x.get_idx());
+    c = _quad.get_const();
+    if (_quad.get_coeff(z.get_idx()) == -1) res += -1*x + x.get_lb_off()*(1-u) - (b/(2*a))*u - sqrt(((b*b - 4*a*c)/(4*a*a))*u*u + z*u/a);
+    if (_quad.get_coeff(z.get_idx()) == 1) res += -1*x + x.get_lb_off()*(1-u) - (b/(2*a))*u - sqrt(((b*b - 4*a*c)/(4*a*a))*u*u - z*u/a);
+
+    // evaluating at on = 1
+    z_of_x = a*(b/(2*a) + x)*(b/(2*a) + x) - (b*b - 4*a*c)/(4*a);
+    vals[z.get_idx()] = z_of_x.eval(vals);
+    if(_quad.get_coeff(z.get_idx()) == 1) vals[z.get_idx()] = -vals[z.get_idx()];
+    vals[u.get_idx()] = 1;
+
+    return res.outer_approx(vals);
 }
 
 void Function::merge_vars(const Quadratic& q){
@@ -1053,16 +1130,6 @@ Function cos(Function& f){
     return res;
 }
 
-//Function cos(Function& f){
-//    f._lparent = shared_ptr<Function>(new Function(f));
-//    f._rparent = nullptr;
-//    f._otype = cos_;
-//    f._quad.reset_coeffs();
-//    f._coeff = 1;
-//    f.full_hess();
-//    f.update_type();
-//    return f;
-//}
 
 Function sin(Function& f){
     Function res;
@@ -1073,26 +1140,42 @@ Function sin(Function& f){
     res.full_hess();
     res.update_type();
     return res;
-//    f._lparent = shared_ptr<Function>(new Function(f));
-//    f._rparent = nullptr;
-//    f._otype = sin_;
-//    f._quad.reset_coeffs();
-//    f._coeff = 1;
-//    f.full_hess();
-//    f.update_type();
-//    return f;
 }
 
 Function sqrt(Function& f){
-    f._lparent = shared_ptr<Function>(new Function(f));
-    f._rparent = nullptr;
-    f._otype = sqrt_;
-    f._quad.reset_coeffs();
-    f._coeff = 1;
-    f.full_hess();
-    f.update_type();
-    return f;
+    Function res;
+    res.merge_vars(f);
+    res._lparent = make_shared<Function>(f);
+    res._rparent = nullptr;
+    res._otype = sqrt_;
+    res.full_hess();
+    res.update_type();
+    return res;
 }
+
+Function expo(Function& f){
+    Function res;
+    res.merge_vars(f);
+    res._lparent = make_shared<Function>(f);
+    res._rparent = nullptr;
+    res._otype = exp_;
+    res.full_hess();
+    res.update_type();
+    return res;
+}
+
+
+Function log(Function& f){
+    Function res;
+    res.merge_vars(f);
+    res._lparent = make_shared<Function>(f);
+    res._rparent = nullptr;
+    res._otype = log_;
+    res.full_hess();
+    res.update_type();
+    return res;
+}
+
 
 
 Function cos(Function&& f){
@@ -1107,22 +1190,14 @@ Function cos(Function&& f){
 }
 
 Function sin(Function&& f){
-        Function res;
-        res.merge_vars(f);
-        res._lparent = make_shared<Function>(f);
-        res._rparent = nullptr;
-        res._otype = sin_;
-        res.full_hess();
-        res.update_type();
-        return res;
-//    f._lparent = shared_ptr<Function>(new Function(f));
-//    f._rparent = nullptr;
-//    f._otype = sin_;
-//    f._quad.reset_coeffs();
-//    f._coeff = 1;
-//    f.full_hess();
-//    f.update_type();
-//    return f;
+    Function res;
+    res.merge_vars(f);
+    res._lparent = make_shared<Function>(f);
+    res._rparent = nullptr;
+    res._otype = sin_;
+    res.full_hess();
+    res.update_type();
+    return res;
 }
 
 Function sqrt(Function&& f){
@@ -1136,50 +1211,27 @@ Function sqrt(Function&& f){
     return res;
 }
 
-//Function sqrt(Function& f){
-//    Function res;
-//    res.merge_vars(f);
-//    res._lparent = make_shared<Function>(f);
-//    res._rparent = nullptr;
-//    res._otype = sqrt_;
-//    res.full_hess();
-//    res.update_type();
-//    return res;
-//}
+Function expo(Function&& f){
+    Function res;
+    res.merge_vars(f);
+    res._lparent = make_shared<Function>(f);
+    res._rparent = nullptr;
+    res._otype = exp_;
+    res.full_hess();
+    res.update_type();
+    return res;
+}
 
-//Function cos(Function&& f){
-//    Function res;
-//    res.merge_vars(f);
-//    res._lparent = make_shared<Function>(f);
-//    res._rparent = nullptr;
-//    res._otype = cos_;
-//    res.full_hess();
-//    res.update_type();
-//    return res;
-//}
-//
-//Function sin(Function&& f){
-//    Function res;
-//    res.merge_vars(f);
-//    res._lparent = make_shared<Function>(f);
-//    res._rparent = nullptr;
-//    res._otype = sin_;
-//    res.full_hess();
-//    res.update_type();
-//    return res;
-//}
-//
-//Function sqrt(Function&& f){
-//    Function res;
-//    res.merge_vars(f);
-//    res._lparent = make_shared<Function>(f);
-//    res._rparent = nullptr;
-//    res._otype = sqrt_;
-//    res.full_hess();
-//    res.update_type();
-//    return res;
-//}
-
+Function log(Function&& f){
+    Function res;
+    res.merge_vars(f);
+    res._lparent = make_shared<Function>(f);
+    res._rparent = nullptr;
+    res._otype = log_;
+    res.full_hess();
+    res.update_type();
+    return res;
+}
 
 Function operator*(Function f1, const Function& f2){
     return f1 *= f2;
@@ -1290,6 +1342,16 @@ Function Function::concretise(){
             case sin_:
                 res = sin(res);
                 break;
+            case exp_:
+                res = expo(res);
+                break;
+            case log_:
+                res = log(res);
+                break;
+            case sqrt_:
+                res = sqrt(res);
+                break;
+
             default:
                 std::cerr << "unsupported operation";
                 exit(-1);
@@ -1334,7 +1396,7 @@ void Function::print_domain() const {
 }
 
 void Function::print_expr(bool brackets) const {
-    
+
     if(_otype==id_){
         _quad.print();
         return;
@@ -1345,7 +1407,7 @@ void Function::print_expr(bool brackets) const {
     if (_coeff==-1) {
         cout << "-";
     }
-    
+
     if (_coeff != 0 && _coeff!=1 && _lparent->get_nb_vars()>1) {
         cout << "(";
     }
@@ -1355,12 +1417,21 @@ void Function::print_expr(bool brackets) const {
     if(_otype==sin_) {
         cout << "sin";
     }
+    if (_otype==exp_) {
+        cout << "exp";
+    }
+    if (_otype==log_) {
+        cout << "log";
+    }
+    if (_otype==sqrt_) {
+        cout << "sqrt";
+    }
     if(brackets && _rparent)
         cout << "(";
     if (_otype!=product_ || !_lparent->is_constant() || _lparent->get_const()!=1) {
-        
+
         if (_lparent->is_leaf()) {
-            if(_otype!=plus_ && _otype!=minus_&& _lparent->get_nb_vars()>1) {
+            if((_otype!=plus_ && _otype!=minus_&& _lparent->get_nb_vars()>1) || _otype==sqrt_ || _otype==sin_ || _otype==cos_|| _otype==exp_ || _otype==log_){
                 cout << "(";
                 _lparent->_quad.print();
                 cout << ")";
@@ -1375,7 +1446,7 @@ void Function::print_expr(bool brackets) const {
             else
                 _lparent->print_expr(false);
         }
-        
+
     }
     if (_otype==plus_) {
         cout << " + ";
@@ -1390,15 +1461,15 @@ void Function::print_expr(bool brackets) const {
     if (_otype==div_) {
         cout << "/";
     }
-    
+
     if (_otype==power_) {
         cout << "^";
-//        if (_rparent->get_const()==1) {
-//            cerr << "To the power of one!\n";
-//            exit(-1);
-//        }
+        //        if (_rparent->get_const()==1) {
+        //            cerr << "To the power of one!\n";
+        //            exit(-1);
+        //        }
     }
-    
+
     if (_rparent) {
         if (_otype==plus_ || _rparent->get_nb_vars()<=1) {
             _rparent->print(false);

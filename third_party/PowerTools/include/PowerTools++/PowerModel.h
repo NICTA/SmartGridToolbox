@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include <PowerTools++/Model.h>
-#include <PowerTools++/Solver.h>
+#include "PowerTools++/PTSolver.h"
 #include <PowerTools++/Net.h>
 #include <PowerTools++/Constraint.h>
 #include <PowerTools++/meta_constant.h>
@@ -26,7 +26,7 @@ public:
     PowerModelType      _type;
     Obj                 _objective;
     Model*              _model;
-    Solver*             _solver;
+    PTSolver *           _solver;
     Net*                _net;
     SolverType          _stype;
     
@@ -79,11 +79,14 @@ public:
     /** Solve */
     int solve(int output = 1,bool relax = false);
     void min_cost();
-    void min_var(var<> v);
-    void max_var(var<> v);
+    void min_var(var<>& v);
+    void max_var(var<>& v);
     void min_cost_load();
     void print();
-    
+
+    void add_SineCutsPos(Arc *a);
+
+    void add_SineCutsNeg(Arc *a);
 };
 
 #endif /* defined(__PowerTools____PowerModel__) */

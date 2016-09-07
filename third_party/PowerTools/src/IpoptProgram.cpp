@@ -66,6 +66,31 @@ void IpoptProgram::finalize_solution(    Ipopt::SolverReturn               statu
                 break;
         } ;
     }
+    if (model->_store_duals) {
+        auto &cons = model->get_cons();
+        for (size_t i=0; i<m; i++)
+            cons[i]->_dual = lambda[i];
+        for (int i = 0; i<n; i++) {
+            double dual = z_U[i] - z_L[i]; // upper bound active is +ve dual
+            v = model->getVar(i);
+            switch (v->get_type()) {
+                case real:
+                    static_cast<var<float> *>(v)->_dual = dual;
+                    break;
+                case longreal:
+                    static_cast<var<> *>(v)->_dual = dual;
+                    break;
+                case integ:
+                    static_cast<var<int> *>(v)->_dual = dual;
+                    break;
+                case binary:
+                    static_cast<var<bool> *>(v)->_dual = dual;
+                    break;
+                default:
+                    break;
+            } ;
+        }
+    }
 //    model->check_feasible(x);
     model->_opt = model->_obj->eval(x);
     cout << "\n************** Objective Function Value = " << model->_opt << " **************" << endl;

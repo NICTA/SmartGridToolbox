@@ -148,10 +148,14 @@ public:
     friend Function cos(Function& f);
     friend Function sin(Function& f);
     friend Function sqrt(Function& f);
+    friend Function expo(Function& f);
+    friend Function log(Function& f);
 
     friend Function cos(Function&& f);
     friend Function sin(Function&& f);
     friend Function sqrt(Function&& f);
+    friend Function expo(Function&& f);
+    friend Function log(Function&& f);
 
     Function& operator=(const Function& f);
     
@@ -163,8 +167,10 @@ public:
     void print_expr(bool brackets) const;
     void print_linear() const;
     void print_quad() const;
-    
 
+    Function quad_ch_right(var<>& x, var<>& z, var<bool>& u, double* vals) const;
+
+    Function quad_ch_left(var<>& x, var<>& z, var<bool> &u, double* vals) const;
 };
 
 

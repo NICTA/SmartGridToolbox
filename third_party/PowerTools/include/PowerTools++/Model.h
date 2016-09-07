@@ -21,7 +21,6 @@
 #include <coin/IpIpoptApplication.hpp>
 #include <coin/IpTNLP.hpp>
 #include <thread>
-#include <gurobi_c++.h>
 
 class Model {
     
@@ -43,6 +42,7 @@ public:
     Function*                       _obj; /** Objective function */
     double                          _opt;
     ObjectiveType                   _objt; /** Minimize or maximize */
+    bool                            _store_duals = false; /** Store dual values */
     /** Constructor */
     //@{
     Model();
