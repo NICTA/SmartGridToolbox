@@ -280,7 +280,7 @@ namespace Sgt
             {
                 auto VrPv = Vr(mod_->selPv());
                 auto ViPv = Vi(mod_->selPv());
-                const auto DeltaViPv = x(selViFrom_x_(mod_->selPv()));
+                const Col<double> DeltaViPv = x(selViFrom_x_(mod_->selPv()));
                 VrPv += (M2PvSetpt - square(VrPv) - square(ViPv) - 2 * ViPv % DeltaViPv) / (2 * VrPv);
                 ViPv += DeltaViPv;
 
