@@ -19,7 +19,7 @@ make || exit $?
 $SUDO make install || exit $?
 cd ../..
 
-cd yaml-cpp-0.5.1
+cd yaml-cpp
 rm -rf build_sgt
 mkdir build_sgt
 cd build_sgt
