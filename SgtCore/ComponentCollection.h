@@ -153,8 +153,16 @@ namespace Sgt
         public:
             size_t size() const {return vec_.size();}
 
-            ConstPtr operator[](const std::string& key) const {return map_.find(key);}
-            Ptr operator[](const std::string& key) {return map_.find(key);}
+            ConstPtr operator[](const std::string& key) const 
+            {
+                auto it = map_.find(key);
+                return it != map_.end() ? it : ConstPtr();
+            }
+            Ptr operator[](const std::string& key)
+            {
+                auto it = map_.find(key);
+                return it != map_.end() ? it : Ptr();
+            }
             
             ConstPtr operator[](size_t idx) const {return vec_[idx];}
             Ptr operator[](size_t idx) {return vec_[idx];}
