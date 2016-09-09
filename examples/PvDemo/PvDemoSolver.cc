@@ -75,7 +75,7 @@ namespace Sgt
         {
             for (auto gen : bus->gens())
             {
-                auto inverter = dynamic_cast<PvInverter*>(gen);
+                auto inverter = gen.as<PvInverter>();
                 if (inverter != nullptr)
                 {
                     // Add an extra constraint for max apparent power.

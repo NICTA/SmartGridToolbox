@@ -74,7 +74,7 @@ int main(int argc, const char ** argv)
     std::vector<GenAbc*> otherGens;
     for (auto gen : network.gens())
     {
-        auto inv = dynamic_cast<PvInverter*>(gen);
+        auto inv = gen.as<PvInverter>();
         if (inv != nullptr)
         {
             if (!useQ)
