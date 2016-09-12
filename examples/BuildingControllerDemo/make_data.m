@@ -20,7 +20,7 @@ P_ld = real(dat_ld(ld_sel, 2));
 Q_ld = imag(dat_ld(ld_sel, 2));
 z = zeros(size(t_ld));
 f = fopen('load_build.txt', 'w+');
-fprintf(f, '%d %f%+fj %f%+fj %f%+fj\n', [t_ld, z, z, z, z, -P_ld, -Q_ld]');
+fprintf(f, '%d %f%+fj %f%+fj %f%+fj\n', [t_ld, z, z, z, z, P_ld, Q_ld]');
 fclose(f);
 
 % Price data:
