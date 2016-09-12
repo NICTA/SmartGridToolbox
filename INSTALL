@@ -126,7 +126,7 @@ list).
 > sudo make install
 
 If you have the PowerTools library installed and wish to use its functionality,
-you should use the "--enable-power_tools" option to configure. If you happen to
+you should use the "--enable-power-tools" option to configure. If you happen to
 have the SuperLU library installed, and wish to use it instead of KLU as a
 sparse solver, use the "--without-klu" option. 
 
