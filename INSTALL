@@ -14,8 +14,8 @@ g++ version 5.0. For macs, we recommend using clang++, and for linux we
 recommend g++ version 5 or greater.
 
 If building on a Mac, you should have a recent version of the OSX operating
-system (Mavericks(?), Yosemite, or El Capitan). Install the latest version of XCode, and
-you will automatically have access to the correct clang compilers.
+system (Mavericks(?), Yosemite, or El Capitan). Install the latest version of
+XCode, and you will automatically have access to the correct clang compilers.
 
 If building on Ubuntu 14 (or 15?) you can use, e.g.
 
@@ -110,7 +110,9 @@ f) (Optional) PowerTools
 
    PowerTools provides optional optimising solvers (OPF, relaxations, etc.).
    An installation is included in third_party/PowerTools, with build
-   instructions available in that directory.
+   instructions available in that directory. PowerTools requires you to install
+   IPOPT, which is fairly involved owing to having to install several other
+   dependencies.
 
 2. Build and install the SmartGridToolbox libraries:
 ====================================================
@@ -123,8 +125,10 @@ list).
 > make
 > sudo make install
 
-The "--enable-power_tools" and "--without-klu" options to configure may be
-useful.
+If you have the PowerTools library installed and wish to use its functionality,
+you should use the "--enable-power_tools" option to configure. If you happen to
+have the SuperLU library installed, and wish to use it instead of KLU as a
+sparse solver, use the "--without-klu" option. 
 
 If running from a source distribution cloned from git, you should run
 autogen.sh immediately after cloning the github repository. You will need an
