@@ -2,9 +2,9 @@ AUTOMAKE_OPTIONS = foreign
 
 if ENABLE_POWER_TOOLS
 POWER_FLOW_PT_SOLVER_H = PowerFlowPtSolver.h
-POWER_TOOLS_SUPPORT_H = powerToolsSupport.h
+POWER_TOOLS_SUPPORT_H = PowerToolsSupport.h
 POWER_FLOW_PT_SOLVER_CC = PowerFlowPtSolver.cc
-POWER_TOOLS_SUPPORT_CC = powerToolsSupport.cc
+POWER_TOOLS_SUPPORT_CC = PowerToolsSupport.cc
 L_POWER_TOOLS = -lPowerTools++ -lipopt -lcoinhsl -lgurobi65 -lgurobi_c++
 else
 POWER_FLOW_PT_SOLVER_H =
