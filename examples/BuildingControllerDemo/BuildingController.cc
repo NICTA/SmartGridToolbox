@@ -215,13 +215,13 @@ namespace Sgt
         contr->setSolar(*sim.simComponent<SolarPv>(id));
 
         id = parser.expand<std::string>(nd["load_series"]);
-        contr->setLoadSeries(*sim.timeSeries<BuildingController::LoadSeries>(id));
+        contr->setLoadSeries(*sim.timeSeries()[id].as<BuildingController::LoadSeries>());
         
         id = parser.expand<std::string>(nd["price_series"]);
-        contr->setPriceSeries(*sim.timeSeries<BuildingController::PriceSeries>(id));
+        contr->setPriceSeries(*sim.timeSeries()[id].as<BuildingController::PriceSeries>());
         
         id = parser.expand<std::string>(nd["T_extern_series"]);
-        contr->setTExtSeries(*sim.timeSeries<BuildingController::TempSeries>(id));
+        contr->setTExtSeries(*sim.timeSeries()[id].as<BuildingController::TempSeries>());
         
         double feedInTariff = parser.expand<double>(nd["feed_in_tariff"]);
         contr->setFeedInTariff(feedInTariff);

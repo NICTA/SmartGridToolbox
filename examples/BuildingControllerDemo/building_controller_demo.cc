@@ -45,7 +45,7 @@ int main(int argc, const char ** argv)
 
     sim.initialize();
 
-    auto price = sim.timeSeries<BuildingController::PriceSeries>("price");
+    auto price = sim.timeSeries()["price"].as<BuildingController::PriceSeries>();
     auto genTrans = sim.simComponent<SimGen>("gen_trans");
     auto buildingLoad = sim.simComponent<TimeSeriesZip>("load_build");
     auto building = sim.simComponent<Building>("build");

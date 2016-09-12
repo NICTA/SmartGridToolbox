@@ -102,7 +102,7 @@ namespace Sgt
         if (PThIntNd)
         {
             std::string id = parser.expand<std::string>(PThIntNd);
-            auto series = sim.timeSeries<TimeSeries<Time, double>>(id);
+            auto series = sim.timeSeries()[id].as<TimeSeries<Time, double>>();
             sgtAssert(series != nullptr, "Parsing building: couldn't find time series " << id << ".");
             build->setPThIntSeries(*series);
         }
@@ -114,7 +114,7 @@ namespace Sgt
         const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
         auto netw = sim.simComponent<SimNetwork>(networkId);
-        netw->network().addZip(build->zip().shared<ZipAbc>(), busId);
+        netw->network().addZip(shared<ZipAbc>(build->zip()), busId);
         build->linkToSimNetwork(*netw);
 
         const auto& weatherNd = nd["weather"];
