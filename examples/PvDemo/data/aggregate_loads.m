@@ -1,7 +1,11 @@
 function loads = aggregate_loads(case_rel_path, as_const_Z = false)
     define_constants;
     mpc = loadcase([pwd(), '/', case_rel_path]);
+
     n_bus = size(mpc.bus, 1);
+    
+    max_bus = max(mpc.bus(:, BUS_I));
+    n_pad = floor(log10(max_bus)) + 1;
 
     S_static = mpc.bus(:, PD) + I * mpc.bus(:, QD);
     mean_S_static = mean(S_static);
@@ -73,7 +77,8 @@ function loads = aggregate_loads(case_rel_path, as_const_Z = false)
         loadsdirname = fullfile(dirname, 'loads');
         mkdir(loadsdirname);
 
-        fname = fullfile(loadsdirname, ['load_', num2str(id_sel(i)), '.txt']);
+        format = ['load_%0', num2str(n_pad), 'd.txt'];
+        fname = fullfile(loadsdirname, sprintf(format, id_sel(i)))
         fp = fopen(fname, 'w+');
         z = zeros(size(t));
         if (as_const_Z)

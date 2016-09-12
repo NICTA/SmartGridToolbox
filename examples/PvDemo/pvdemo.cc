@@ -89,7 +89,7 @@ int main(int argc, const char ** argv)
         }
     }
 
-    auto sumLoad = [&] () {Complex x = 0; for (auto bus : network.buses()) x -= bus->SZip()(0); return x;};
+    auto sumLoad = [&] () {Complex x = 0; for (auto bus : network.buses()) x += bus->SZip()(0); return x;};
     auto sumGen = [&] () {Complex x = 0; for (auto gen : otherGens) x += gen->S()(0); return x;};
     auto sumInv = [&] () {Complex x = 0; for (auto inv : invs) x += inv->gen().S()(0); return x;};
     auto minV = [&] () {

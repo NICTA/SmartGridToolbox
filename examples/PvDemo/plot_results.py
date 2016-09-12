@@ -33,13 +33,10 @@ S_norm_gen = dat[:, 2]
 S_inv_gen = dat[:, 3]
 V_min = np.abs(dat[:, 4])
 V_max = np.abs(dat[:, 5])
-cloud = dat[:, 6]
 
 dat_ctrl = np.loadtxt('out_ctrl.txt', dtype=np.complex)
 V_min_ctrl = np.abs(dat_ctrl[:, 4])
 V_max_ctrl = np.abs(dat_ctrl[:, 5])
-print(len(V_min_ctrl))
-print(len(V_max_ctrl))
 
 (fig, (ax1, ax2)) = plt.subplots(2, 1)
 ax1.hold(True)
