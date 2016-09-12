@@ -4,8 +4,8 @@ AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 LT_INIT([disable-shared])
 
-AC_ARG_ENABLE([power_tools],
-              [AS_HELP_STRING([--enable-power_tools], [enable PowerTools specific features @<:@no@:>@])],
+AC_ARG_ENABLE([power-tools],
+              [AS_HELP_STRING([--enable-power-tools], [enable PowerTools specific features @<:@no@:>@])],
               [],
               [enable_power_tools=no])
 AC_SUBST([enable_power_tools])
