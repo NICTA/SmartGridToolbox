@@ -199,7 +199,10 @@ namespace Sgt
             
             /// @name ZipAbc virtual overridden member functions.
             /// @{
-            
+           
+            /// @brief Overridden ZipAbc load.
+            ///
+            /// Note that to interpret the injected power as a *load*, we need a factor of -1.
             virtual arma::Mat<Complex> SConst() const override;
             
             /// @}

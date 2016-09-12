@@ -50,7 +50,7 @@ namespace Sgt
         {
             QPerPh *= -1;
         }
-        Complex SPerPh{PPerPh, QPerPh};
-        return diagmat(arma::Col<Complex>(phases().size(), arma::fill::none).fill(SPerPh));
+        Complex SLoadPerPh{-PPerPh, -QPerPh}; // Load = -ve gen.
+        return diagmat(arma::Col<Complex>(phases().size(), arma::fill::none).fill(SLoadPerPh));
     }
 }
