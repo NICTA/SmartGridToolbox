@@ -148,6 +148,12 @@ namespace Sgt
                             }
                             loops_.pop_back();
                         }
+                        else if (nodeType == "include")
+                        {
+                            std::string fname = nodeVal.as<std::string>();
+                            auto content = getTopNode(fname);
+                            parse(content, into);
+                        }
                         else
                         {
                             sgtLogMessage(LogLevel::VERBOSE) << "Parsing plugin " <<  nodeType << "." << std::endl;

@@ -1,0 +1,23 @@
+    -   bus:
+            id: bus_1
+            phases: [BAL]
+            V_base: 1
+            V_nom: [1]
+            type: SL
+    -   generic_gen:
+            id: gen_1
+            bus_id: bus_1
+            phases: [BAL]
+    -   include: test_include_B.yaml
+    -   generic_branch:
+            id: branch_1_2
+            bus_0_id: bus_1
+            bus_1_id: bus_2
+            phases_0: [BAL]
+            phases_1: [BAL]
+            Y:  
+                matrix:
+                    [
+                        [   0.4-0.4j, -0.4+0.4j ],
+                        [  -0.4-0.4j,  0.4-0.4j ],
+                    ]

@@ -750,4 +750,15 @@ BOOST_AUTO_TEST_CASE (test_load_model_c)
     }
 }
 
+BOOST_AUTO_TEST_CASE (test_include)
+{
+    Network netw;
+    Parser<Network> p;
+    p.parse("test_include_A.yaml", netw);
+    std::cout << netw << std::endl;
+    BOOST_CHECK(netw.buses().size() == 2);
+    BOOST_CHECK(netw.branches().size() == 1);
+    BOOST_CHECK(netw.gens().size() == 1);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

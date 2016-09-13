@@ -1,0 +1,6 @@
+    -  bus:
+            id: bus_2
+            phases: [BAL]
+            V_base: 1
+            V_nom: [1]
+            type: PQ
