@@ -957,7 +957,7 @@ void PowerModel::post_QC(){
 
             //            Sn_LBound -= sin(a->delta);
         }
-        delete x;
+        delete[] x;
         Sn_UBound <= 0;
         _model->addConstraint(Sn_UBound);
         Sn_LBound >= 0;
