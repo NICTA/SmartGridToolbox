@@ -3,27 +3,26 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
         <link href="components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-        <link href="components/jqPropertyGrid/jqPropertyGrid.css" rel="stylesheet" type="text/css">
         <link href="index.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="components/FlexiJsonEditor/jsoneditor.css"/>
 
         <script src="components/jquery/dist/jquery.min.js"></script>
-        <script href="components/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script href="components/bootstrap/dist/js/bootstrap-theme.min.js"></script>
-        <script src="components/jqPropertyGrid/jqPropertyGrid.js"></script>
+        <script src="components/FlexiJsonEditor/jquery.jsoneditor.js"></script>
+        <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="components/dexter-heatmap/dexter-heatmap.js"></script>
         <script src="components/vivagraphjs/dist/vivagraph.js"></script>
     </head>
 
     <body>
 
-        <h1>SmartGridToolbox Client/Server Demo</h1>
+        <h2>SmartGridToolbox</h2>
 
         <div class="container-fluid" style="width: 80%;">
             <div class="row sgt-row">
                 <div class="col-xs-6 container-fluid">
                     <div class="row sgt-row">
-                        <select class="col-xs-12 sgt-center-block" id="select-matpower">
-                            <option disabled selected> -- select a matpower case -- </option>
+                        <select class="col-xs-12 sgt-center-block" id="select-network">
+                            <option disabled selected> -- select a network -- </option>
                         </select>
                     </div>
                     <div class="row sgt-row">
@@ -44,14 +43,14 @@
                 <div class="col-xs-6 container-fluid">
                     <div class="row sgt-row">
                         <div class="col-xs-12">
-                            <input type="range" id="range-V-low" min=80 max=120 value=95 oninput="Sgt.SgtClient.syncVLow()" onchange="Sgt.SgtClient.syncVLow()">
+                            <input type="range" id="range-V-low" min=750 max=1250 value=950 oninput="Sgt.SgtClient.syncVLow()" onchange="Sgt.SgtClient.syncVLow()">
                             Low Voltage <span id="label-V-low" style="color: red;"></span>
                             </input>
                         </div>
                     </div>
                     <div class="row sgt-row">
                         <div class="col-xs-12">
-                            <input type="range" id="range-V-high" min=80 max=120 value=105 oninput="Sgt.SgtClient.syncVHigh()" onchange="Sgt.SgtClient.syncVHigh()">
+                            <input type="range" id="range-V-high" min=750 max=1250 value=1050 oninput="Sgt.SgtClient.syncVHigh()" onchange="Sgt.SgtClient.syncVHigh()">
                             High Voltage
                             High Voltage <span id="label-V-high" style="color: red;"></span>
                             </input>
@@ -67,6 +66,7 @@
                 <!-- Network graph, consisting of two layers:-->
                 <div class="col-xs-7 guttered-left">
                     <div class="sgt-panel sgt-layers">
+                        <canvas class="sgt-layer" id="sgt-master-layer" style="pointer-events: none"></canvas>
                         <canvas class="sgt-layer" id="sgt-heatmap-canvas" style="pointer-events: none"></canvas>
                         <div class="sgt-layer" id="sgt-network-graph"></div>
                         <canvas class="sgt-layer" id="sgt-label-canvas" style="pointer-events: none"></canvas>
@@ -74,7 +74,7 @@
                 </div>
                 <!-- Properties:-->
                 <div class="col-xs-5 guttered-right">
-                    <div class="sgt-panel sgt-network-properties" id="sgt-network-properties"></div>
+                    <div class="sgt-panel sgt-network-properties json-editor" id="sgt-network-properties" style="font-size: small !important;"></div>
                 </div>
             </div>
         </div>

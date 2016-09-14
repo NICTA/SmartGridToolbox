@@ -3,12 +3,16 @@ var Sgt = Sgt || {};
 Sgt.SgtClient = (function() {
     var params = {
         iMaxPrecompute: 1000,
-        tMaxPrecompute: 10000,
-        useWebGl: true,
+        tMaxPrecompute: 5000,
+        nominalEdgeLength: 50,
+        busSz: 10,
+        genSz: 20,
+        zipSz: 5,
+        usePinNodes: true
     };
 
     var dom = {
-        selector: $("#select-matpower"),
+        selector: $("#select-network"),
         useSpring: $("#use-spring-layout"),
         showHeatmap: $("#show-heatmap"),
         rangeVLow: $("#range-V-low"),
@@ -25,15 +29,12 @@ Sgt.SgtClient = (function() {
     };
 
     var graph = null;
-    
     var layout = null;
-    
     var graphics = null;
-
     var renderer = null;
    
-    dom.labelCanvas[0].setAttribute('width', dom.labelCanvas[0].offsetWidth);
-    dom.labelCanvas[0].setAttribute('height',dom.labelCanvas[0].offsetHeight);
+    dom.labelCanvas[0].setAttribute("width", dom.labelCanvas[0].offsetWidth);
+    dom.labelCanvas[0].setAttribute("height",dom.labelCanvas[0].offsetHeight);
     var labelCtx = dom.labelCanvas[0].getContext("2d");
     labelCtx.textAlign = "center";
 
@@ -50,118 +51,324 @@ Sgt.SgtClient = (function() {
         return Math.max(min, Math.min(x, max));
     }
 
-    function VMag(bus) {
-        var V = bus.bus.V;
-        var VBase = bus.bus.V_base;
-        var result = 0.0;
-        for (var i = 0; i < V.length; ++i) {
-            var Vr = V[i][0];
-            var Vi = V[i][1];
-            result += Math.sqrt(Vr * Vr + Vi * Vi);
+    function toGraphCoords(pos) {
+        return {
+            x: (pos.x - toGraphCoords.pos0.x) * toGraphCoords.scaleFactor, 
+            y: -(pos.y - toGraphCoords.pos0.y) * toGraphCoords.scaleFactor};
+    }
+    toGraphCoords.scaleFactor = 1;
+    toGraphCoords.pos0 = {x: 0, y: 0};
+
+    function replacer(key, val) {
+        return val && val.toPrecision 
+            ? Number(val.toPrecision(6))
+            : val;
+    }
+
+    function sortedKeys(json, keys) {
+        var unsortedKeys = [];
+        for (var key in json) {
+            if (json.hasOwnProperty(key)) {
+                if (keys.indexOf(key) == -1) {
+                    unsortedKeys.push(key);
+                }
+            }
         }
-        result /= VBase;
+
+        var result = [];
+
+        for (var i = 0; i < keys.length; ++i) {
+            result.push(keys[i]);
+        }
+
+        for (var i = 0; i < unsortedKeys.length; ++i) {
+            result.push(unsortedKeys[i]);
+        }
+
         return result;
     }
 
     function loadNetwork(id) {
         removeGraph();
         loadNetwork.url = "http://sgt.com/api/networks/" + id;
-        showProgress(true, "Loading network " + id + ". Please wait.");
+        // showProgress(true, "Loading network " + id + ". Please wait.");
         jQuery.getJSON(loadNetwork.url, networkLoaded);
     }
 
     function networkLoaded(netw) {
+        var buses = netw.buses;
+        var branches = netw.branches;
+        var gens = netw.gens;
+        var zips = netw.zips;
+        
+        var busMap = {};
+        for (var i = 0; i < buses.length; ++i) {
+            var bus = buses[i];
+            busMap[bus.id] = bus;
+        }
 
-        var buses = netw.network.buses;
-        var branches = netw.network.branches;
+        var genMap = {};
+        for (var i = 0; i < gens.length; ++i) {
+            var gen = gens[i];
+            genMap[gen.id] = gen;
+        }
+        
+        var zipMap = {};
+        for (var i = 0; i < zips.length; ++i) {
+            var zip = zips[i];
+            zipMap[zip.id] = zip;
+        }
 
+        // Scale so that average link length is 50 pixels.
+        var ls = [];
+        for (var i = 0; i < branches.length; ++i) {
+            var branch = branches[i];
+            var bus0 = busMap[branch.bus0];
+            var bus1 = busMap[branch.bus1];
+            dx = bus0.coords[0] - bus1.coords[0];
+            dy = bus0.coords[1] - bus1.coords[1];
+            var l = Math.sqrt(dx * dx + dy * dy);
+            ls.push(l);
+        }
+
+        function median(xs) {
+            if (xs.length == 0) {
+                return 0;
+            } else if (xs.length == 1) {
+                return xs[0];
+            } else {
+                xs.sort(function(a, b){return a - b;});
+                var middle = Math.ceil((xs.length - 1) / 2);
+                return ((xs.length - 1) % 2 == 0)
+                    ? 0.5 * (xs[middle - 1] + xs[middle])
+                    : xs[middle];
+            }
+        }
+
+        var medLs = median(ls);
+        var hasPriorLayout = (medLs > 1e-10);
+
+        if (hasPriorLayout) {
+            toGraphCoords.scaleFactor = params.nominalEdgeLength / medLs;
+
+            // Shift to origin is center of graph.
+            var maxX = -1e10;
+            var minX = 1e10;
+            var maxY = -1e10;
+            var minY = 1e10;
+            for (var i = 0; i < buses.length; ++i) {
+                var bus = buses[i];
+                if (bus.coords[0] > maxX) maxX = bus.coords[0];
+                if (bus.coords[0] < minX) minX = bus.coords[0];
+                if (bus.coords[1] > maxY) maxY = bus.coords[1];
+                if (bus.coords[1] < minY) minY = bus.coords[1];
+            }
+            var x0 = 0.5 * (minX + maxX);
+            var y0 = 0.5 * (minY + maxY);
+            toGraphCoords.pos0 = {x: x0, y: y0};
+        }
+        
         graph = Viva.Graph.graph();
 
-        busMap = {}; 
-
-        for (var i = 0; i < buses.length; ++i)
-        {
+        for (var i = 0; i < buses.length; ++i) {
             var bus = buses[i];
-            graph.addNode(bus.component.id, {VMag: VMag(bus), type: bus.bus.type});
-            busMap[bus.component.id] = bus;
-        }
-        for (var i = 0; i < branches.length; ++i)
-        {
-            graph.addLink(branches[i].branch.bus0, branches[i].branch.bus1);
+            var pos = toGraphCoords(
+                {x: bus.coords[0], y: bus.coords[1]});
+
+            graph.addNode(bus.id, {
+                islandIdx: bus.islandIdx,
+                nodeType: "bus",
+                pos: pos,
+                type: bus.type, 
+                VRmsPu: bus.VRmsPu,
+                VError: bus.VError
+            });
+
+            if (params.usePinNodes) {
+                var pinId = "__PIN__" + bus.id;
+                graph.addNode(pinId, {
+                    nodeType: "pin",
+                    pos: pos,
+                });
+
+                graph.addLink(bus.id, pinId, {
+                    linkType: "pin",
+                });
+            }
+            
+            var genIds = bus.gens;
+            var nGens = genIds.length;
+            for (var j = 0; j < nGens; ++j) {
+                var genId = genIds[j];
+                var gen = genMap[genId];
+                graph.addNode(gen.id, {
+                    nodeType: "gen",
+                    pos: pos
+                });
+                graph.addLink(bus.id, gen.id, {
+                    linkType: "gen",
+                    isInService: gen.isInService
+                });
+            }
+
+            var zipIds = bus.zips;
+            var nZips = zipIds.length;
+            for (var j = 0; j < nZips; ++j) {
+                var zipId = zipIds[j];
+                var zip = zipMap[zipId];
+                graph.addNode(zip.id, {
+                    nodeType: "zip",
+                    pos: pos
+                });
+                graph.addLink(bus.id, zip.id, {
+                    linkType: "zip",
+                    isInService: zip.isInService
+                });
+            }
         }
 
-        layout = Viva.Graph.Layout.forceDirected(graph, {
-            springLength : 40,
-            springCoeff : 0.0002,
-            dragCoeff : 0.007,
-            gravity : -0.5
-            // theta : 1
+        for (var i = 0; i < branches.length; ++i) {
+            var branch = branches[i];
+            graph.addLink(branch.bus0, branch.bus1, {
+                id: branch.id,
+                linkType: "branch",
+                componentType: branch.componentType,
+                isInService: branch.isInService
+            });
+        }
+        
+        var forceParams = {
+            springLength : 0.0,
+            springCoeff : 0.0,
+            dragCoeff : 0.05,
+            gravity : -1.2
+        };
+        if (params.usePinNodes) {
+            forceParams.springTransform = function (link, spring) {
+                if (link.data.linkType == 'branch') {
+                    spring.coeff = 0;
+                } else if (link.data.linkType == 'gen') {
+                    spring.length = params.busSz + params.genSz + 7;
+                    spring.coeff = 0.002;
+                } else if (link.data.linkType == 'zip') {
+                    spring.length = params.busSz + params.zipSz + 7;
+                    spring.coeff = 0.002;
+                } else if (link.data.linkType == 'pin') {
+                    spring.length = 0.0;
+                    spring.coeff = 0.0005;
+                }
+            };
+        }
+
+        layout = Viva.Graph.Layout.forceDirected(graph, forceParams);
+
+        // Make sure pins don't repel their nodes.
+        // TODO: is this right?
+        graph.forEachNode(function(node) {
+            var body = layout.getBody(node.id);
+            if (node.data.nodeType == "pin") {
+                body.mass = 0.0;
+            }
         });
 
-        if (params.useWebGl) {
-            graphics = Viva.Graph.View.webglGraphics();
-            var webglEvents = Viva.Graph.webglInputEvents(graphics, graph);
-        } else {
-            graphics = Viva.Graph.View.svgGraphics();
-            var webglEvents = null;
-        }
+        graphics = Viva.Graph.View.svgGraphics();
 
-        graphics.node(function (node) {
-            switch(node.data.type) {
-                case "SL": 
-                    col = 0xdc143cff; 
-                    break;
-                case "PV": 
-                    col = 0xda70d6ff; 
-                    break;
-                case "PQ":
-                    col = 0x009090ff; 
-                    break;
+        graphics.node(function(node) {
+            var nodeType = node.data.nodeType;
+            if (nodeType == "pin") return Viva.Graph.svg("svg");
+
+            var someColors = [
+                "Coral", "Cyan", "DarkGray", "HotPink", "DarkSalmon", "Khaki", "Indigo", "BlueViolet", "Brown", "Purple", "PowderBlue", "DarkBlue", "Chocolate", "DarkMagenta", "Black", "Orange", "Gold", "GreenYellow", "Plum", "Olive", "LightBlue", "Lime", "Maroon", "MintCream", "MistyRose", "Moccasin", "Navy", "OldLace", "OliveDrab", "OrangeRed", "Orchid", "PaleGoldenRod", "PaleGreen", "PaleTurquoise", "PaleVioletRed", "AliceBlue", "Aqua", "Aquamarine", "Azure", "Bisque", "BlanchedAlmond", "Blue", "BurlyWood", "CadetBlue", "Chartreuse", "CornflowerBlue", "Cornsilk", "Crimson", "DarkCyan", "DarkGoldenRod", "DarkGrey", "DarkGreen", "DarkKhaki", "DarkOliveGreen", "Darkorange", "DarkOrchid", "DarkRed", "DarkSeaGreen", "DarkSlateBlue", "DarkSlateGray", "DarkSlateGrey", "DarkTurquoise", "DarkViolet", "DeepPink", "DeepSkyBlue", "DimGray", "DimGrey", "DodgerBlue", "FireBrick", "ForestGreen", "Fuchsia", "Gainsboro", "GoldenRod", "Gray", "Grey", "Green", "HoneyDew", "IndianRed", "Ivory", "Lavender", "LavenderBlush", "LawnGreen", "LemonChiffon", "LightCoral", "LightCyan", "LightGoldenRodYellow", "LightGray", "LightGreen", "LightPink", "LightSalmon", "LightSeaGreen", "LightSkyBlue", "LightSlateGray", "LightSlateGrey", "LightSteelBlue", "LightYellow", "LimeGreen", "Linen", "Magenta", "MediumAquaMarine", "MediumBlue", "MediumOrchid", "MediumPurple", "MediumSeaGreen", "MediumSlateBlue", "MediumSpringGreen", "MediumTurquoise", "MediumVioletRed", "MidnightBlue", "PapayaWhip", "PeachPuff", "Peru", "Pink", "Red", "RosyBrown", "RoyalBlue", "SaddleBrown", "Salmon", "SandyBrown", "SeaGreen", "SeaShell", "Sienna", "Silver", "SkyBlue", "SlateBlue", "SlateGray", "SlateGrey", "Snow", "SpringGreen", "SteelBlue", "Tan", "Teal", "Thistle", "Tomato", "Turquoise", "Violet", "Wheat", "Yellow", "YellowGreen"]; 
+
+            var sz;
+            var color;
+            var selector;
+
+            if (nodeType == "bus") {
+                sz = params.busSz;
+                color = someColors[node.data.islandIdx % someColors.length];
+                selector = "/buses/";
+            } else if (nodeType == "gen") {
+                sz = params.genSz;
+                color = "Red";
+                selector = "/gens/";
+            } else if (nodeType == "zip") {
+                sz = params.zipSz;
+                color = "Green";
+                selector = "/zips/";
             }
-            return {size: 10, color: col};
-        });
-
-        oldEndRender = graphics.endRender;
-        graphics.endRender = function() {
-            oldEndRender();
-            if (dom.showHeatmap[0].checked) drawHeatmap();
-            var scale = graphics.transformGraphToClientCoordinates(
-                {x: graphics.transformClientToGraphCoordinates({x: 0, y: 0}).x + 1, y: 0}).x;
-            console.log("scale = " + scale);
-            if (scale >= 1) {
-                drawLabels();
-            } else {
-                clearLabels();
-            }
-        }; 
-
-        if (webglEvents) {
-            webglEvents.mouseEnter(function (node) {
-            }).mouseLeave(function (node) {
-            }).dblClick(function (node) {
-            }).click(function (node) {
-                var url = loadNetwork.url + "/buses/" + node.id + "/properties/"
+            var ui = Viva.Graph.svg("circle")
+                .attr("r", sz)
+                .attr("fill", color);
+            $(ui).click(function() {
+                var url = loadNetwork.url + selector + node.id + "/";
                 $.ajax({
                     url: url,
                     async: false,
                     dataType: "json",
                     success: function (response) {
-                        dom.properties.jqPropertyGrid(response, {
-                            "id": {group: "Identity"},
-                            "type": {group: "Identity"},
-                            "phases": {group: "Identity"},
-                            "V": {group: "Key Bus Properties"},
-                            "VBase": {group: "Key Bus Properties"},
-                            "isInService": {group: "Key Bus Properties"},
-                            "nInServiceGens": {group: "Key Bus Properties"},
-                            "SGen": {group: "Key Bus Properties"},
-                            "nInServiceZips": {group: "Key Bus Properties"},
-                            "SZip": {group: "Key Bus Properties"}
-                        });
+                        var keys = sortedKeys(response, [
+                            "id", "componentType", "phases", "V", "VSincal", "VMagPu", "VMagPuSincal", "VMag_kV", "VMag_kV_Sincal", "VAngDeg", "VAngDegSincal", "VRmsPu", "VRmsPuSincal", "VRms_kV", "VRms_kV_Sincal", "VError", "VBase", "islandIdx", "SGen", "SGenTot", "SZip", "SZipTot", "userData"]);
+                        var opt = { 
+                            change: function(data) {},
+                            propertyclick: function(path) {},
+                            keys: keys,
+                            replacer: replacer
+                        };
+                        dom.properties.jsonEditor(response, opt);
                     }
                 });
             });
-        }
+            return ui;
+        });
+
+        graphics.placeNode(function(nodeUI, pos) {
+            nodeUI
+                .attr("cx", pos.x)
+                .attr("cy", pos.y)
+                .attr("style", "stroke: white; stroke-width: 3px;");
+        });
+        
+        graphics.link(function(link) {
+            var linkType = link.data.linkType;
+            if (linkType == "pin") return Viva.Graph.svg("svg");
+
+            var ui = Viva.Graph.svg("line");
+
+            if (linkType == "branch" && link.data.componentType.indexOf("trans") > -1)  {
+                ui.attr("stroke", "red");
+            } else {
+                ui.attr("stroke", "#2F4F4F");
+            }
+
+            ui.attr("stroke-width", "6px");
+            if (!link.data.isInService) {
+                ui.attr("stroke-dasharray", [4,4]);
+            }
+            
+            $(ui).click(function() {
+                var url = loadNetwork.url + "/branches/" + link.data["id"] + 
+                    "/";
+                $.ajax({
+                    url: url,
+                    async: false,
+                    dataType: "json",
+                    success: function (response) {
+                        var keys = sortedKeys(response, [
+                            "id", "componentType", "phases0", "phases1", "Y", "userData"]);
+                        var opt = { 
+                            change: function(data) {},
+                            propertyclick: function(path) {},
+                            keys: keys,
+                            replacer: replacer
+                        };
+                        dom.properties.jsonEditor(response, opt);
+
+                    }
+                });
+            });
+            return ui;
+        });
 
         renderer = Viva.Graph.View.renderer(graph, {
             layout   : layout,
@@ -171,6 +378,23 @@ Sgt.SgtClient = (function() {
             container  : document.getElementById("sgt-network-graph")
         });
 
+        oldEndRender = graphics.endRender;
+        graphics.endRender = function() {
+            oldEndRender();
+            if (dom.showHeatmap[0].checked) drawHeatmap();
+        }; 
+        
+        // Pin buses.
+        graph.forEachNode(function(node) {
+            layout.setNodePosition(node.id, node.data.pos.x, node.data.pos.y);
+            if (hasPriorLayout && 
+                ((!params.usePinNodes && node.data.nodeType == "bus") ||
+                 node.data.nodeType == "pin"))
+            {
+                layout.pinNode(node, true);
+            }
+        });
+        
         // we need to compute layout, but we don"t want to freeze the browser
         var tStart = new Date();
         var t = 0;
@@ -213,7 +437,7 @@ Sgt.SgtClient = (function() {
     }
 
     var files = $.getJSON(
-        "http://sgt.com/api/matpower_network_files/",
+        "http://sgt.com/api/sincal_network_files/",
         function(files) {
             for (var i = 0; i < files.length; ++i) {
                 dom.selector.append("<option>" + files[i] + "</option>");
@@ -224,8 +448,8 @@ Sgt.SgtClient = (function() {
     dom.selector.change(
         function() {
             var file = $(this).find("option:selected").text();
-            var url = "http://sgt.com/api/networks/" + file;
-            var json = JSON.stringify({"matpower_filename": file});
+            var url = "http://sgt.com/api/sincal_networks/" + file;
+            var json = JSON.stringify({"sincal_filename": file});
             $.ajax({
                 url: url,
                 type: "PUT",
@@ -241,16 +465,19 @@ Sgt.SgtClient = (function() {
     function drawHeatmap()
     {
         dat = [];
+        var svg = $("g")[0];
+        var t = svg.getCTM();
         graph.forEachNode(function(node) {
-            var pos = layout.getNodePosition(node.id);
-            if (params.useWebGl) {
-                var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y});
-            } else {
-                var svg = $("g")[0];
-                var t = svg.getCTM();
-                var newPos = {x: t.a * pos.x + t.b * pos.y + t.e, y: t.c * pos.x + t.d * pos.y + t.f};
+            if (node.data.nodeType != "bus") {
+                return;
             }
-            var VParam = (clamp(node.data.VMag, VLow, VHigh) - VLow) / VRange;
+            var pos = layout.getNodePosition(node.id);
+            var newPos = {x: t.a * pos.x + t.b * pos.y + t.e, y: t.c * pos.x
+                + t.d * pos.y + t.f};
+            // var dV = 1.0 + 10 * node.data.VError;
+            // var VParam = (clamp(dV, VLow, VHigh) - VLow) / VRange;
+            var VParam = 
+                (clamp(node.data.VRmsPu, VLow, VHigh) - VLow) / VRange;
             dat.push([[newPos.x, newPos.y], VParam]);
         });
         Dexter.Heatmap.setData(dat);
@@ -259,7 +486,8 @@ Sgt.SgtClient = (function() {
 
     function clearLabels()
     {
-        labelCtx.clearRect(0, 0, dom.labelCanvas[0].scrollWidth, dom.labelCanvas[0].scrollHeight);
+        labelCtx.clearRect(0, 0, dom.labelCanvas[0].scrollWidth,
+                           dom.labelCanvas[0].scrollHeight);
     }
 
     function drawLabels()
@@ -267,7 +495,8 @@ Sgt.SgtClient = (function() {
         clearLabels();
         graph.forEachNode(function(node) {
             var pos = layout.getNodePosition(node.id);
-            var newPos = graphics.transformGraphToClientCoordinates({x: pos.x, y: pos.y + 15});
+            var newPos = graphics.transformGraphToClientCoordinates(
+                {x: pos.x, y: pos.y + 15});
             labelCtx.fillText(node.id, newPos.x, newPos.y);
         });
     }
@@ -291,11 +520,11 @@ Sgt.SgtClient = (function() {
     }
 
     function syncVLow() {
-        VLow = dom.rangeVLow[0].value / 100;
-        VHigh = dom.rangeVHigh[0].value / 100;
+        VLow = dom.rangeVLow[0].value / 1000;
+        VHigh = dom.rangeVHigh[0].value / 1000;
         if (VLow > VHigh) {
             VLow = VHigh;
-            dom.rangeVLow[0].value = 100 * VLow;
+            dom.rangeVLow[0].value = 1000 * VLow;
         }
         dom.labelVLow[0].innerHTML = VLow;
         VRange = VHigh - VLow;
@@ -303,11 +532,11 @@ Sgt.SgtClient = (function() {
     }
 
     function syncVHigh() {
-        VLow = dom.rangeVLow[0].value / 100;
-        VHigh = dom.rangeVHigh[0].value / 100;
+        VLow = dom.rangeVLow[0].value / 1000;
+        VHigh = dom.rangeVHigh[0].value / 1000;
         if (VHigh < VLow) {
             VHigh = VLow;
-            dom.rangeVHigh[0].value = 100 * VHigh;
+            dom.rangeVHigh[0].value = 1000 * VHigh;
         }
         dom.labelVHigh[0].innerHTML = VHigh;
         VRange = VHigh - VLow;
@@ -327,7 +556,8 @@ Sgt.SgtClient = (function() {
     }
 
     function reportProgress(iter, t) {
-        var iterPercent = 100 * (params.iMaxPrecompute - iter) / params.iMaxPrecompute;
+        var iterPercent = 
+            100 * (params.iMaxPrecompute - iter) / params.iMaxPrecompute;
         var tPercent = 100 * t / params.tMaxPrecompute;
         var percent = Math.max(iterPercent, tPercent);
         dom.progress[0].value = percent;

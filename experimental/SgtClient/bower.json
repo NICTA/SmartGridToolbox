@@ -21,5 +21,20 @@
     "jquery": "*",
     "vivagraphjs": "*",
     "bootstrap": "*"
+  },
+  "preen": {
+      "jquery": [
+          "bower.json",
+          "dist/**"
+      ],
+      "bootstrap": [
+          "bower.json",
+          "dist/**"
+      ],
+      "vivagraphjs": [
+          "bower.json",
+          "dist/**",
+          "demos/**"
+      ]
   }
 }

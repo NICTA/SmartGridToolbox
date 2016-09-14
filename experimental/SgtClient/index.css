@@ -40,13 +40,13 @@ h1,h2 {
     border-style: solid;
     border-width: thin;
     background-color: white;
-    -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.5);
-    -moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.5);
-    box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.5);
 }
 
 .sgt-network-properties {
-    overflow: scroll;
+    overflow-y: scroll;
+}
+
+.sgt-network-properties input {
 }
 
 .sgt-progress {
