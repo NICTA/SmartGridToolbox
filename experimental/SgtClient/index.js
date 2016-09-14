@@ -2,11 +2,11 @@ var Sgt = Sgt || {};
 
 Sgt.SgtClient = (function() {
     var params = {
-        iMaxPrecompute: 1000,
-        tMaxPrecompute: 5000,
+        iMaxPrecompute: 2000,
+        tMaxPrecompute: 10000,
         nominalEdgeLength: 50,
         busSz: 10,
-        genSz: 20,
+        genSz: 15,
         zipSz: 5,
         usePinNodes: false
     };
@@ -239,15 +239,12 @@ Sgt.SgtClient = (function() {
         
         var forceParams = {
                 springLength : 0,
-                springCoeff : 0.0005,
-                dragCoeff : 0.02,
+                springCoeff : 0.001,
+                dragCoeff : 0.05,
                 gravity : -1.2
         };
 
         if (params.usePinNodes) {
-            forceParams.springCoeff = 0.002;
-            forceParams.dragCoeff = 0.005;
-
             forceParams.springTransform = function (link, spring) {
                 if (link.data.linkType == 'branch') {
                     spring.length = 0.0;
@@ -264,13 +261,17 @@ Sgt.SgtClient = (function() {
                 }
             };
         } else {
+            forceParams.gravity = -5;
+            forceParams.dragCoeff = 0.01;
             forceParams.springTransform = function (link, spring) {
                 if (link.data.linkType == 'branch') {
-                    spring.length = 8 * params.busSz;
+                    spring.length = 6 * params.busSz;
                 } else if (link.data.linkType == 'gen') {
                     spring.length = params.busSz + params.genSz + 7;
+                    spring.coeff = 0.001;
                 } else if (link.data.linkType == 'zip') {
                     spring.length = params.busSz + params.zipSz + 7;
+                    spring.coeff = 0.001;
                 }
             };
         }
@@ -350,13 +351,18 @@ Sgt.SgtClient = (function() {
 
             var ui = Viva.Graph.svg("line");
 
-            if (linkType == "branch" && link.data.componentType.indexOf("trans") > -1)  {
-                ui.attr("stroke", "red");
-            } else {
-                ui.attr("stroke", "#2F4F4F");
+            if (linkType == "branch") {
+                if (link.data.componentType.indexOf("trans") > -1)  {
+                    ui.attr("stroke", "red");
+                } else {
+                    ui.attr("stroke", "#2F4F4F");
+                }
+            } else if (linkType == "gen" || linkType == "zip") {
+                ui.attr("stroke", "#568F8F");
             }
 
             ui.attr("stroke-width", "6px");
+
             if (!link.data.isInService) {
                 ui.attr("stroke-dasharray", [4,4]);
             }
@@ -398,17 +404,19 @@ Sgt.SgtClient = (function() {
             oldEndRender();
             if (dom.showHeatmap[0].checked) drawHeatmap();
         }; 
-        
-        // Pin buses.
-        graph.forEachNode(function(node) {
-            layout.setNodePosition(node.id, node.data.pos.x, node.data.pos.y);
-            if (hasPriorLayout && 
-                ((!params.usePinNodes && node.data.nodeType == "bus") ||
-                 node.data.nodeType == "pin"))
-            {
-                layout.pinNode(node, true);
-            }
-        });
+       
+        if (params.usePinNodes) {
+            // Pin buses.
+            graph.forEachNode(function(node) {
+                layout.setNodePosition(node.id, node.data.pos.x, node.data.pos.y);
+                if (hasPriorLayout && 
+                    ((!params.usePinNodes && node.data.nodeType == "bus") ||
+                     node.data.nodeType == "pin"))
+                     {
+                         layout.pinNode(node, true);
+                     }
+            });
+        }
         
         // we need to compute layout, but we don"t want to freeze the browser
         var tStart = new Date();
