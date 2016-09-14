@@ -8,7 +8,7 @@ Sgt.SgtClient = (function() {
         busSz: 10,
         genSz: 20,
         zipSz: 5,
-        usePinNodes: true
+        usePinNodes: false
     };
 
     var dom = {
@@ -238,14 +238,19 @@ Sgt.SgtClient = (function() {
         }
         
         var forceParams = {
-            springLength : 0.0,
-            springCoeff : 0.0,
-            dragCoeff : 0.05,
-            gravity : -1.2
+                springLength : 0,
+                springCoeff : 0.0005,
+                dragCoeff : 0.02,
+                gravity : -1.2
         };
+
         if (params.usePinNodes) {
+            forceParams.springCoeff = 0.002;
+            forceParams.dragCoeff = 0.005;
+
             forceParams.springTransform = function (link, spring) {
                 if (link.data.linkType == 'branch') {
+                    spring.length = 0.0;
                     spring.coeff = 0;
                 } else if (link.data.linkType == 'gen') {
                     spring.length = params.busSz + params.genSz + 7;
@@ -256,6 +261,16 @@ Sgt.SgtClient = (function() {
                 } else if (link.data.linkType == 'pin') {
                     spring.length = 0.0;
                     spring.coeff = 0.0005;
+                }
+            };
+        } else {
+            forceParams.springTransform = function (link, spring) {
+                if (link.data.linkType == 'branch') {
+                    spring.length = 8 * params.busSz;
+                } else if (link.data.linkType == 'gen') {
+                    spring.length = params.busSz + params.genSz + 7;
+                } else if (link.data.linkType == 'zip') {
+                    spring.length = params.busSz + params.zipSz + 7;
                 }
             };
         }
@@ -437,7 +452,7 @@ Sgt.SgtClient = (function() {
     }
 
     var files = $.getJSON(
-        "http://sgt.com/api/sincal_network_files/",
+        "http://sgt.com/api/matpower_network_files/",
         function(files) {
             for (var i = 0; i < files.length; ++i) {
                 dom.selector.append("<option>" + files[i] + "</option>");
@@ -448,8 +463,8 @@ Sgt.SgtClient = (function() {
     dom.selector.change(
         function() {
             var file = $(this).find("option:selected").text();
-            var url = "http://sgt.com/api/sincal_networks/" + file;
-            var json = JSON.stringify({"sincal_filename": file});
+            var url = "http://sgt.com/api/matpower_networks/" + file;
+            var json = JSON.stringify({"matpower_filename": file});
             $.ajax({
                 url: url,
                 type: "PUT",
