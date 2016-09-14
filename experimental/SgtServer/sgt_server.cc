@@ -23,9 +23,12 @@
 
 #include <boost/filesystem.hpp>
 
+#include <map>
 #include <regex>
 
+using namespace arma;
 using namespace Sgt;
+using namespace std;
 
 using namespace web;
 using namespace http;
@@ -34,11 +37,108 @@ using namespace http::experimental::listener;
 
 using Json = Sgt::json;
 
+namespace
+{
+    double sumOfSquares(const Col<Complex>& x)
+    {
+        return accumulate(x.begin(), x.end(), 0.0, [](double cur, const Complex& xi)->double{return cur + norm(xi);});
+    }
+
+    double rms(const Col<Complex>& x)
+    {
+        return sqrt(sumOfSquares(x)/x.size());
+    }
+
+    Col<double> argDeg(const Col<Complex>& x)
+    {
+        Col<double> result(x.size(), fill::none);
+        transform(x.begin(), x.end(), result.begin(), [](const Complex& y)->double{return arg(y);});
+        return result * 180 / pi;
+    }
+}
+
+template<typename T> Json componentPropsJson(const T& comp)
+{
+    Json result;
+    for (const auto& propPair : comp.properties())
+    {
+        result[propPair.first] = propPair.second->json(comp);
+    }
+    return result;
+}
+
+template<typename T> Json componentJson(const T& comp)
+{
+    return componentPropsJson(comp);
+}
+
+template<> Json componentJson<BranchAbc>(const BranchAbc& comp)
+{
+    Json result = componentPropsJson(comp);
+    result["bus0"] = comp.bus0() != nullptr ? Json(comp.bus0()->id()) : Json();
+    result["bus1"] = comp.bus1() != nullptr ? Json(comp.bus1()->id()) : Json();
+    return result;
+}
+
+template<> Json componentJson<Bus>(const Bus& comp)
+{
+    Json result = componentPropsJson(comp);
+
+    auto branches0 = comp.branches0();
+    auto branches1 = comp.branches1();
+    auto gens = comp.gens();
+    auto zips = comp.zips();
+
+    auto getId = [](const Component* x){return x->id();};
+
+    vector<string> branch0Ids;
+    transform(branches0.begin(), branches0.end(), back_inserter(branch0Ids), getId);
+    result["branches0"] = branch0Ids;
+    
+    vector<string> branch1Ids;
+    transform(branches1.begin(), branches1.end(), back_inserter(branch1Ids), getId);
+    result["branches1"] = branch1Ids;
+    
+    vector<string> genIds;
+    transform(gens.begin(), gens.end(), back_inserter(genIds), getId); 
+    result["gens"] = genIds;
+    
+    vector<string> zipIds;
+    transform(zips.begin(), zips.end(), back_inserter(zipIds), getId); 
+    result["zips"] = zipIds;
+
+    return result;
+}
+
+template<> Json componentJson<GenAbc>(const GenAbc& comp)
+{
+    Json result = componentPropsJson(comp);
+    result["bus"] = comp.bus() != nullptr ? Json(comp.bus()->id()) : Json();
+    return result;
+}
+
+template<> Json componentJson<ZipAbc>(const ZipAbc& comp)
+{
+    Json result = componentPropsJson(comp);
+    result["bus"] = comp.bus() != nullptr ? Json(comp.bus()->id()) : Json();
+    return result;
+}
+
+template<typename T> Json componentsJson(const T& compVec)
+{
+    Json result;
+    for (auto comp : compVec)
+    {
+        result.push_back(componentJson(*comp));
+    }
+    return result;
+}
+
 class SgtServer
 {
 public:
 
-    SgtServer(const std::string& url, const std::string& dataDir);
+    SgtServer(const string& url, const string& dataDir);
 
     pplx::task<void> open() {return listener_.open();}
     pplx::task<void> close() {return listener_.close();}
@@ -55,20 +155,20 @@ private:
     http_listener listener_;   
 
     boost::filesystem::path dataDir_;
-    std::map<std::string, std::unique_ptr<Network>> nws_;
+    map<string, unique_ptr<Network>> nws_;
 };
 
-static std::unique_ptr<SgtServer> gServer;
+static unique_ptr<SgtServer> gServer;
 
-void on_initialize(const std::string& address, const std::string& dataDir)
+void on_initialize(const string& address, const string& dataDir)
 {
     uri_builder uri(address);
 
     auto addr = uri.to_uri().to_string();
-    gServer = std::unique_ptr<SgtServer>(new SgtServer(addr, dataDir));
+    gServer = unique_ptr<SgtServer>(new SgtServer(addr, dataDir));
     gServer->open().wait();
     
-    std::cout << "Listening for requests at: " << addr << std::endl;
+    cout << "Listening for requests at: " << addr << endl;
 }
 
 void on_shutdown()
@@ -78,59 +178,137 @@ void on_shutdown()
 
 int main(int argc, char *argv[])
 {
-    sgtAssert(argc == 2, "Usage: test_cpp_rest data_dir");
-    std::string dataDir(argv[1]);
-    std::string port = "34568";
+    Bus::sProperties().addGetProperty<Bus, Col<double>>(
+            [](const Bus& bus){return abs(bus.V());}, "VMag_kV");
 
-    std::string address = "http://localhost:";
+    Bus::sProperties().addGetProperty<Bus, Col<double>>(
+            [](const Bus& bus){return abs(bus.V())/bus.VBase();}, "VMagPu");
+
+    Bus::sProperties().addGetProperty<Bus, double>(
+            [&](const Bus& bus){return rms(bus.V());}, "VRms_kV");
+
+    Bus::sProperties().addGetProperty<Bus, double>(
+            [&](const Bus& bus){return rms(bus.V())/bus.VBase();}, "VRmsPu");
+
+    Bus::sProperties().addGetProperty<Bus, Col<double>>(
+            [&](const Bus& bus)->Col<double>{return argDeg(bus.V());}, "VAngDeg");
+
+    sgtAssert(argc == 2, "Usage: test_cpp_rest data_dir");
+    string dataDir(argv[1]);
+    string port = "34568";
+
+    string address = "http://localhost:";
     address.append(port);
 
     on_initialize(address, dataDir);
-    std::cout << "Press ENTER to exit." << std::endl;
+    cout << "Press ENTER to exit." << endl;
 
-    std::string line;
-    std::getline(std::cin, line);
+    string line;
+    getline(cin, line);
 
     on_shutdown();
     return 0;
 }
 
-SgtServer::SgtServer(const std::string& url, const std::string& dataDir) : 
+SgtServer::SgtServer(const string& url, const string& dataDir) : 
     listener_(url), dataDir_(dataDir.c_str())
 {
-    listener_.support(methods::GET, std::bind(&SgtServer::handleGet, this, std::placeholders::_1));
-    listener_.support(methods::PUT, std::bind(&SgtServer::handlePut, this, std::placeholders::_1));
-    // listener_.support(methods::POST, std::bind(&SgtServer::handlePost, this, std::placeholders::_1));
-    listener_.support(methods::DEL, std::bind(&SgtServer::handleDelete, this, std::placeholders::_1));
+    listener_.support(methods::GET, bind(&SgtServer::handleGet, this, placeholders::_1));
+    listener_.support(methods::PUT, bind(&SgtServer::handlePut, this, placeholders::_1));
+    // listener_.support(methods::POST, bind(&SgtServer::handlePost, this, placeholders::_1));
+    listener_.support(methods::DEL, bind(&SgtServer::handleDelete, this, placeholders::_1));
 }
 
 void SgtServer::handleGet(http_request message)
 {
-    std::cout << "GET received." << std::endl;
+    cout << "GET received." << endl;
 
     auto pathsVec = http::uri::split_path(http::uri::decode(message.relative_uri().path()));
-    std::deque<decltype(pathsVec)::value_type> paths(pathsVec.begin(), pathsVec.end());
-    Json reply = {{"message_type", "GET"}};
+    deque<decltype(pathsVec)::value_type> paths(pathsVec.begin(), pathsVec.end());
+    Json reply;
     auto status = status_codes::OK;
 
     Network* nw;
     Bus* bus;
+    BranchAbc* branch;
+    GenAbc* gen;
+    ZipAbc* zip;
 
-    auto getBusProperty = [&]()
+    auto getBranchProperty = [&]()
     {
         // ... a specific property.
-        std::string propName = paths.front();
+        string propName = paths.front();
         paths.pop_front();
 
         try
         {
-            auto prop = bus->properties().at(propName);
-            if (prop->isGettable())
+            auto& prop = branch->properties()[propName];
+            if (prop.isGettable())
             {
-                reply = {{propName, prop->toJson(*bus)}};
+                reply = {{propName, prop.json(*branch)}};
             }
         }
-        catch (std::out_of_range e)
+        catch (out_of_range e)
+        {
+            status = status_codes::NotFound;
+        }
+    };
+
+    auto getBranch = [&]()
+    {
+        if (paths.size() == 0)
+        {
+            // Just return the branch.
+            reply = componentJson(*branch);
+        }
+        else
+        {
+            // We're interested in the branch's properties...
+            // ... a specific property.
+            getBranchProperty();
+        }
+    };
+
+    auto getBranches = [&]()
+    {
+        if (paths.size() == 0)
+        {
+            // All the branches.
+            reply = componentsJson(nw->branches());
+        }
+        else
+        {
+            // A single branch.
+            string branchId = paths.front();
+            paths.pop_front();
+
+            branch = nw->branches()[branchId];
+            if (branch == nullptr)
+            {
+                status = status_codes::NotFound;
+            }
+            else
+            {
+                getBranch();
+            }
+        }
+    };
+
+    auto getBusProperty = [&]()
+    {
+        // ... a specific property.
+        string propName = paths.front();
+        paths.pop_front();
+
+        try
+        {
+            auto& prop = bus->properties()[propName];
+            if (prop.isGettable())
+            {
+                reply = {{propName, prop.json(*bus)}};
+            }
+        }
+        catch (out_of_range e)
         {
             status = status_codes::NotFound;
         }
@@ -141,57 +319,13 @@ void SgtServer::handleGet(http_request message)
         if (paths.size() == 0)
         {
             // Just return the bus.
-            reply = Json(*bus);
+            reply = componentJson(*bus);
         }
         else
         {
-            std::string busSub = paths.front();
-            paths.pop_front();
-
-            if (busSub == "properties")
-            {
-                // We're interested in the bus's properties...
-                if (paths.size() == 0)
-                {
-                    // ... all the properties.
-                    for (auto p : bus->properties())
-                    {
-                        if (p.second->isGettable())
-                        {
-                            reply[p.first] = p.second->toJson(*bus);
-                        }
-                    }
-                }
-                else
-                {
-                    // ... a specific property.
-                    getBusProperty();
-                }
-            }
-        }
-    };
-
-    auto getBranches = [&]()
-    {
-        if (paths.size() == 0)
-        {
-            reply = Json(nw->branches());
-        }
-        else
-        {
-            status = status_codes::BadRequest;
-        }
-    };
-
-    auto getGens = [&]()
-    {
-        if (paths.size() == 0)
-        {
-            reply = Json(nw->gens());
-        }
-        else
-        {
-            status = status_codes::BadRequest;
+            // We're interested in the bus's properties...
+            // ... a specific property.
+            getBusProperty();
         }
     };
 
@@ -199,14 +333,16 @@ void SgtServer::handleGet(http_request message)
     {
         if (paths.size() == 0)
         {
-            reply = Json(nw->buses());
+            // All the buses.
+            reply = componentsJson(nw->buses());
         }
         else
         {
-            std::string busId = paths.front();
+            // A single bus.
+            string busId = paths.front();
             paths.pop_front();
 
-            bus = nw->bus(busId);
+            bus = nw->buses()[busId];
             if (bus == nullptr)
             {
                 status = status_codes::NotFound;
@@ -218,28 +354,140 @@ void SgtServer::handleGet(http_request message)
         }
     };
 
+    auto getGenProperty = [&]()
+    {
+        // ... a specific property.
+        string propName = paths.front();
+        paths.pop_front();
+
+        try
+        {
+            auto& prop = gen->properties()[propName];
+            if (prop.isGettable())
+            {
+                reply = {{propName, prop.json(*gen)}};
+            }
+        }
+        catch (out_of_range e)
+        {
+            status = status_codes::NotFound;
+        }
+    };
+
+    auto getGen = [&]()
+    {
+        if (paths.size() == 0)
+        {
+            // Just return the gen.
+            reply = componentJson(*gen);
+        }
+        else
+        {
+            // We're interested in the gen's properties...
+            // ... a specific property.
+            getGenProperty();
+        }
+    };
+
+    auto getGens = [&]()
+    {
+        if (paths.size() == 0)
+        {
+            // All the gens.
+            reply = componentsJson(nw->gens());
+        }
+        else
+        {
+            // A single gen.
+            string genId = paths.front();
+            paths.pop_front();
+
+            gen = nw->gens()[genId];
+            if (gen == nullptr)
+            {
+                status = status_codes::NotFound;
+            }
+            else
+            {
+                getGen();
+            }
+        }
+    };
+
+    auto getZipProperty = [&]()
+    {
+        // ... a specific property.
+        string propName = paths.front();
+        paths.pop_front();
+
+        try
+        {
+            auto& prop = gen->properties()[propName];
+            if (prop.isGettable())
+            {
+                reply = {{propName, prop.json(*zip)}};
+            }
+        }
+        catch (out_of_range e)
+        {
+            status = status_codes::NotFound;
+        }
+    };
+
+    auto getZip = [&]()
+    {
+        if (paths.size() == 0)
+        {
+            // Just return the zip.
+            reply = componentJson(*zip);
+        }
+        else
+        {
+            // We're interested in the zip's properties...
+            // ... a specific property.
+            getZipProperty();
+        }
+    };
+
     auto getZips = [&]()
     {
         if (paths.size() == 0)
         {
-            reply = Json(nw->zips());
+            // All the zips.
+            reply = componentsJson(nw->zips());
         }
         else
         {
-            status = status_codes::BadRequest;
+            // A single zip.
+            string zipId = paths.front();
+            paths.pop_front();
+
+            zip = nw->zips()[zipId];
+            if (zip == nullptr)
+            {
+                status = status_codes::NotFound;
+            }
+            else
+            {
+                getZip();
+            }
         }
     };
-    
+
     auto getNetwork = [&]()
     {
         if (paths.size() == 0)
         {
             // Just return the network.
-            reply = Json(*nw);
+            reply = {
+                {"branches", componentsJson(nw->branches())},
+                {"buses", componentsJson(nw->buses())},
+                {"gens", componentsJson(nw->gens())},
+                {"zips", componentsJson(nw->zips())}};
         }
         else
         {
-            std::string nwSub = paths.front();
+            string nwSub = paths.front();
             paths.pop_front();
 
             if (nwSub == "branches")
@@ -269,7 +517,7 @@ void SgtServer::handleGet(http_request message)
         }
         else
         {
-            std::string nwId = paths.front();
+            string nwId = paths.front();
             paths.pop_front();
 
             try
@@ -277,7 +525,7 @@ void SgtServer::handleGet(http_request message)
                 nw = nws_.at(nwId).get();
                 getNetwork();
             }
-            catch (std::out_of_range)
+            catch (out_of_range)
             {
                 status = status_codes::NotFound;
             }
@@ -294,12 +542,12 @@ void SgtServer::handleGet(http_request message)
         else
         {
             directory_iterator it(dataDir_);
-            std::vector<std::string> files;
-            std::vector<std::string> mFiles;
-            std::transform(it, directory_iterator(), std::back_inserter(files),
+            vector<string> files;
+            vector<string> mFiles;
+            transform(it, directory_iterator(), back_inserter(files),
                     [](decltype(*it)& entry){return entry.path().filename().string();});
-            std::copy_if(files.begin(), files.end(), std::back_inserter(mFiles), 
-                    [](const std::string& s){return std::regex_search(s, std::regex(".*\\.yaml$"));});
+            copy_if(files.begin(), files.end(), back_inserter(mFiles), 
+                    [](const string& s){return regex_search(s, regex(".*\\.yaml$"));});
             reply = Json(mFiles); 
         }
     };
@@ -314,23 +562,23 @@ void SgtServer::handleGet(http_request message)
         else
         {
             directory_iterator it(dataDir_);
-            std::vector<std::string> files;
-            std::vector<std::string> mFiles;
-            std::transform(it, directory_iterator(), std::back_inserter(files),
+            vector<string> files;
+            vector<string> mFiles;
+            transform(it, directory_iterator(), back_inserter(files),
                     [](decltype(*it)& entry){return entry.path().filename().string();});
-            std::copy_if(files.begin(), files.end(), std::back_inserter(mFiles), 
-                    [](const std::string& s){return std::regex_search(s, std::regex(".*\\.m$"));});
+            copy_if(files.begin(), files.end(), back_inserter(mFiles), 
+                    [](const string& s){return regex_search(s, regex(".*\\.m$"));});
             reply = Json(mFiles); 
         }
     };
-
+       
     if (paths.size() == 0)
     {
         status = status_codes::BadRequest;
     }
     else
     {
-        const std::string& pathsFront = paths.front();
+        const string& pathsFront = paths.front();
         paths.pop_front();
 
         if (pathsFront == "networks")
@@ -356,12 +604,12 @@ void SgtServer::handleGet(http_request message)
 
 void SgtServer::handlePut(http_request message)
 {
-    std::cout << "PUT received." << std::endl;
+    cout << "PUT received." << endl;
 
     Json messageContentJson = Json::parse(message.extract_string(true).get());
 
     auto pathsVec = http::uri::split_path(http::uri::decode(message.relative_uri().path()));
-    std::deque<decltype(pathsVec)::value_type> paths(pathsVec.begin(), pathsVec.end());
+    deque<decltype(pathsVec)::value_type> paths(pathsVec.begin(), pathsVec.end());
 
     if (paths.size() == 0)
     {
@@ -369,29 +617,23 @@ void SgtServer::handlePut(http_request message)
     }
     else
     {
-        std::string first = paths.front();
+        string first = paths.front();
         paths.pop_front();
+        Network* nw = new Network();
         if (first == "yaml_networks")
         {
-            std::string networkId = pathsVec[1];
-            std::string fname = messageContentJson["yaml_filename"];
-            Network* nw = new Network();
-            std::string yamlStr = std::string("--- [{matpower : {input_file : ") 
-                + dataDir_.string() + fname + ", default_kV_base : 11}}]";
-            std::cout << yamlStr << std::endl;
-            YAML::Node n = YAML::Load(yamlStr);
+            string networkId = pathsVec[1];
+            string fname = messageContentJson["yaml_filename"];
             Parser<Network> p;
-            p.parse(dataDir_.string() + fname, *nw);
+            p.parse(dataDir_.string() + "/" + fname, *nw);
             nws_[networkId].reset(nw);
         }
         else if (first == "matpower_networks")
         {
-            std::string networkId = pathsVec[1];
-            std::string fname = messageContentJson["matpower_filename"];
-            Network* nw = new Network();
-            std::string yamlStr = std::string("--- [{matpower : {input_file : ") 
-                + dataDir_.string() + fname + ", default_kV_base : 11}}]";
-            std::cout << yamlStr << std::endl;
+            string networkId = pathsVec[1];
+            string fname = messageContentJson["matpower_filename"];
+            string yamlStr = string("--- [{matpower : {input_file : ") 
+                + dataDir_.string() + "/" + fname + ", default_kV_base : 11}}]";
             YAML::Node n = YAML::Load(yamlStr);
             Parser<Network> p;
             p.parse(n, *nw);
@@ -401,13 +643,24 @@ void SgtServer::handlePut(http_request message)
         {
             message.reply(status_codes::BadRequest);
         }
+
+        try 
+        {
+            nw->solvePowerFlow();
+        }
+        catch (exception& e)
+        {
+            cerr << "Something went wrong with solving the network." << endl;
+            cerr << e.what() << endl;
+            // throw(e);
+        }
     }
     message.reply(status_codes::OK);
 }
 
 void SgtServer::handleDelete(http_request message)
 {
-    std::cout << "DELETE received." << std::endl;
+    cout << "DELETE received." << endl;
 
     auto pathsVec = http::uri::split_path(http::uri::decode(message.relative_uri().path()));
     if (pathsVec.size() != 2)
@@ -416,14 +669,14 @@ void SgtServer::handleDelete(http_request message)
     }
     else
     {
-        std::string first = pathsVec[0];
+        string first = pathsVec[0];
         if (first != "networks")
         {
             message.reply(status_codes::BadRequest);
         }
         else
         {
-            std::string nwId = pathsVec[1];
+            string nwId = pathsVec[1];
             auto n = nws_.erase(nwId);
             if (n == 0)
             {
