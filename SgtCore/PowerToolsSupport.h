@@ -18,8 +18,9 @@
 #include <SgtCore/Network.h>
 #include <SgtCore/PowerFlowSolver.h>
 
-class PowerModel;
+class Model;
 class Net;
+class PowerModel;
 
 #include <memory>
 
@@ -30,6 +31,7 @@ namespace Sgt
     Net* sgt2PowerTools(const Network& sgtNw);
     void powerTools2Sgt(const Net& ptNetw, Network& sgtNw);
     void printNetw(const Net& net);
+    void printModel(const Model& mod);
 }
 
 #endif // POWER_TOOLS_SUPPORT_DOT_H

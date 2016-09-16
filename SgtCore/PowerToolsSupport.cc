@@ -174,4 +174,22 @@ namespace Sgt
         }
         sgtLogMessage() << "Done------------------" << std::endl;
     }
+
+    void printModel(const Model& mod)
+    {
+        std::cout << "----vars----" << std::endl;
+        for (auto v : mod._vars)
+        {
+            (static_cast<const var<>*>(v))->print();
+            std::cout << std::endl;
+        }
+        std::cout << "------------" << std::endl;
+        std::cout << "----constrs----" << std::endl;
+        for (auto cons : mod.get_cons())
+        {
+            cons->print();
+            std::cout << std::endl;
+        }
+        std::cout << "------------" << std::endl;
+    }
 }

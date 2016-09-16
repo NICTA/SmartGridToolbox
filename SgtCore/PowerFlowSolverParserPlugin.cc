@@ -46,6 +46,7 @@ namespace Sgt
             sgtLogMessage() << "Using fast-decoupled load flow solver." << std::endl;
             netw.setSolver(std::make_unique<PowerFlowFdSolver>());
         }
+        */
         else if (key == "opf_pt")
         {
 #ifdef ENABLE_POWER_TOOLS
@@ -56,6 +57,5 @@ namespace Sgt
                      "--enable-power-tools++.");
 #endif // ENABLE_POWER_TOOLS
         }
-        */
     }
 }
