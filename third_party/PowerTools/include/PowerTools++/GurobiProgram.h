@@ -18,7 +18,7 @@ public:
     ~GurobiProgram();
     void reset_model();
 
-    void solve(bool relax);
+    bool solve(bool relax);
     void prepare_model();
     void update_model();
     void relax_model();

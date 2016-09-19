@@ -115,7 +115,8 @@ int PTSolver::run(int output, bool relax){
                 prog.grb_prog->_output = output;
                 prog.grb_prog->reset_model();
                 prog.grb_prog->prepare_model();
-                prog.grb_prog->solve(relax);
+                bool ok = prog.grb_prog->solve(relax);
+                return ok ? 100 : -1;
             }catch(GRBException e) {
                 cerr << "\nError code = " << e.getErrorCode() << endl;
                 cerr << e.getMessage() << endl;

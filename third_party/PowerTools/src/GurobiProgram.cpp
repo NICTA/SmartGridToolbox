@@ -30,7 +30,7 @@ void GurobiProgram::reset_model(){
     grb_mod = new GRBModel(*grb_env);
 }
 
-void GurobiProgram::solve(bool relax){
+bool GurobiProgram::solve(bool relax){
     //cout << "\n Presolve = " << grb_env->get(GRB_IntParam_Presolve) << endl;
 //    print_constraints();
     if (relax) relax_model();
@@ -39,7 +39,7 @@ void GurobiProgram::solve(bool relax){
 //    grb_mod->write("~/Gqc_ots.lp");
     if (grb_mod->get(GRB_IntAttr_Status) != 2) {
         cerr << "\nModel has not been solved to optimality, error code = " << grb_mod->get(GRB_IntAttr_Status) << endl;
-        exit(1);
+        return false;
     }
     update_model();
     //grb_mod->write("/home/kbestuzheva/PowerTools--/qc_ots.lp");
@@ -66,6 +66,7 @@ void GurobiProgram::solve(bool relax){
         cout << grb_mod->get(GRB_DoubleAttr_Runtime) << " & " << endl;
     }
     delete[] gvars;
+    return true;
 }
 
 void GurobiProgram::prepare_model(){
