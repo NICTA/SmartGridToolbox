@@ -25,9 +25,9 @@
 
 namespace Sgt
 {
-    Net* sgt2PowerTools(const Sgt::Network& sgtNw)
+    std::unique_ptr<Net> sgt2PowerTools(const Sgt::Network& sgtNw)
     {
-        Net* net(new Net);
+        std::unique_ptr<Net> net(new Net);
 
         net->bMVA = sgtNw.PBase();
         for (auto& bus : sgtNw.buses())

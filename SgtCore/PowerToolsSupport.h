@@ -28,7 +28,7 @@ namespace Sgt
 {
     class Network;
 
-    Net* sgt2PowerTools(const Network& sgtNw);
+    std::unique_ptr<Net> sgt2PowerTools(const Network& sgtNw);
     void powerTools2Sgt(const Net& ptNetw, Network& sgtNw);
     void printNetw(const Net& net);
     void printModel(const Model& mod);

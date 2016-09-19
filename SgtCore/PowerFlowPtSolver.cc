@@ -26,10 +26,8 @@
 
 namespace Sgt
 {
-    PowerFlowPtSolver::~PowerFlowPtSolver()
-    {
-        delete ptNetw_;
-    }
+    PowerFlowPtSolver::PowerFlowPtSolver() {};
+    PowerFlowPtSolver::~PowerFlowPtSolver() {};
 
     bool PowerFlowPtSolver::solve(Network& netw)
     {
@@ -57,7 +55,7 @@ namespace Sgt
 
     std::unique_ptr<PowerModel> PowerFlowPtSolver::makeModel()
     {
-        std::unique_ptr<PowerModel> mod(new PowerModel(ACRECT, ptNetw_, ipopt));
+        std::unique_ptr<PowerModel> mod(new PowerModel(ACRECT, ptNetw_.get(), ipopt)); // PowerModel doesn't own net.
         mod->build();
         mod->min_cost();
         return mod;

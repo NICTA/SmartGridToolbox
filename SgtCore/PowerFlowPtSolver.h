@@ -35,6 +35,7 @@ namespace Sgt
     {
         public:
 
+            PowerFlowPtSolver();
             virtual ~PowerFlowPtSolver();
 
             virtual bool solve(Network& netw) override;
@@ -43,8 +44,8 @@ namespace Sgt
             virtual std::unique_ptr<PowerModel> makeModel();
         
         protected:
-            Network * sgtNetw_{nullptr};
-            Net* ptNetw_{nullptr};
+            Network* sgtNetw_{nullptr};
+            std::unique_ptr<Net> ptNetw_{nullptr};
     };
 }
 
