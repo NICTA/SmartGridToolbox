@@ -10,6 +10,9 @@
 #define __PowerTools____Solver__
 
 #include <stdio.h>
+
+#include <PowerTools++/PowerToolsConfig.h>
+
 #include <PowerTools++/Model.h>
 #include <PowerTools++/IpoptProgram.h>
 #ifdef ENABLE_GUROBI
