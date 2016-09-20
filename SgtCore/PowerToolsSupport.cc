@@ -191,5 +191,9 @@ namespace Sgt
             std::cout << std::endl;
         }
         std::cout << "------------" << std::endl;
+        std::cout << "----objective----" << std::endl;
+        mod._obj->print(false);
+        std::cout << std::endl;
+        std::cout << "------------" << std::endl;
     }
 }
