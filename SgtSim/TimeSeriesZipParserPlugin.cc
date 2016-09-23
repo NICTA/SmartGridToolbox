@@ -34,6 +34,12 @@ namespace Sgt
         string busId = parser.expand<std::string>(nd["bus_id"]);
         string tsId = parser.expand<std::string>(nd["time_series_id"]);
         Phases phases = parser.expand<Phases>(nd["phases"]);
+        YAML::Node ndMatElems = nd["matrix_elements"];
+        arma::Mat<arma::uword> matElems;
+        if (ndMatElems)
+        {
+            matElems = parser.expand<arma::Mat<arma::uword>>(nd["matrix_elements"]);
+        }
         Time dt = parser.expand<Time>(nd["dt"]);
 
         auto ndScaleFactorY = nd["scale_factor_Y"];
@@ -42,7 +48,7 @@ namespace Sgt
 
         auto series = sim.timeSeries()[tsId].as<const TimeSeries<Time, arma::Col<Complex>>>();
         auto network = sim.simComponent<SimNetwork>(networkId);
-        auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, phases, series, dt);
+        auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, phases, series, dt, matElems);
         if (ndScaleFactorY)
         {
             double scaleFactorY = parser.expand<double>(ndScaleFactorY);

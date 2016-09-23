@@ -25,7 +25,6 @@ namespace Sgt
     class TimeSeriesZip : public SimZipAbc, public Heartbeat, private ZipAbc
     {
         public:
-            
             static const std::string& sComponentType()
             {
                 static std::string result("time_series_zip");
@@ -33,16 +32,9 @@ namespace Sgt
             }
 
         public:
-
             TimeSeriesZip(const std::string& id, const Phases& phases,
-                          const TimeSeries<Time, arma::Col<Complex>>* series, const Time& dt) :
-                Component(id),
-                Heartbeat(id, dt),
-                ZipAbc(phases),
-                series_(series)
-            {
-                // Empty.
-            }
+                    const TimeSeries<Time, arma::Col<Complex>>* series, const Time& dt,
+                    arma::Mat<arma::uword> matrixElements = arma::Mat<arma::uword>());
 
             virtual const std::string& componentType() const override
             {
@@ -90,37 +82,32 @@ namespace Sgt
             }
 
         protected:
-
-            virtual void updateState(Time t) override
-            {
-                Heartbeat::updateState(t);
-                injectionChanged().trigger();
-            }
-
+            virtual void updateState(Time t) override;
+            
             virtual arma::Mat<Complex> YConst() const override
             {
-                return diagmat(
-                        scaleFactorY_ * series_->value(lastUpdated())(
-                        arma::span(0, phases().size() - 1)));
+                return mapToMat(scaleFactorY_ * series_->value(lastUpdated())(
+                            arma::span(0, phases().size() - 1)));
             }
 
             virtual arma::Mat<Complex> IConst() const override
             {
-                return diagmat(
-                        scaleFactorI_ * series_->value(lastUpdated())(
-                        arma::span(phases().size(), 2 * phases().size() - 1)));
-            }
-
+                return mapToMat(scaleFactorI_ * series_->value(lastUpdated())(
+                            arma::span(phases().size(), 2 * phases().size() - 1)));
+            }        
             virtual arma::Mat<Complex> SConst() const override
             {
-                return diagmat(
-                        scaleFactorS_ * series_->value(lastUpdated())(
-                        arma::span(2 * phases().size(), 3 * phases().size() - 1)));
+                return mapToMat(scaleFactorS_ * series_->value(lastUpdated())(
+                            arma::span(2 * phases().size(), 3 * phases().size() - 1)));
             }
 
         private:
+            arma::Mat<Complex> mapToMat(const arma::Col<Complex>& vec) const;
 
+        private:
             const TimeSeries<Time, arma::Col<Complex>>* series_;
+            arma::Col<arma::uword> rowIdxs_;
+            arma::Col<arma::uword> colIdxs_;
             double scaleFactorY_{1.0};
             double scaleFactorI_{1.0};
             double scaleFactorS_{1.0};
