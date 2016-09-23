@@ -34,7 +34,7 @@ namespace Sgt
         public:
             TimeSeriesZip(const std::string& id, const Phases& phases,
                     const TimeSeries<Time, arma::Col<Complex>>* series, const Time& dt,
-                    arma::Mat<arma::uword> matrixElements = arma::Mat<arma::uword>());
+                    arma::Mat<arma::uword> idxs = {});
 
             virtual const std::string& componentType() const override
             {
@@ -49,6 +49,11 @@ namespace Sgt
             virtual ZipAbc& zip() override
             {
                 return *this;
+            }
+
+            arma::uword numComponents() const
+            {
+                return dataIdxs_.size();
             }
 
             double scaleFactorY() const
@@ -84,28 +89,16 @@ namespace Sgt
         protected:
             virtual void updateState(Time t) override;
             
-            virtual arma::Mat<Complex> YConst() const override
-            {
-                return mapToMat(scaleFactorY_ * series_->value(lastUpdated())(
-                            arma::span(0, phases().size() - 1)));
-            }
-
-            virtual arma::Mat<Complex> IConst() const override
-            {
-                return mapToMat(scaleFactorI_ * series_->value(lastUpdated())(
-                            arma::span(phases().size(), 2 * phases().size() - 1)));
-            }        
-            virtual arma::Mat<Complex> SConst() const override
-            {
-                return mapToMat(scaleFactorS_ * series_->value(lastUpdated())(
-                            arma::span(2 * phases().size(), 3 * phases().size() - 1)));
-            }
+            virtual arma::Mat<Complex> YConst() const override;
+            virtual arma::Mat<Complex> IConst() const override;
+            virtual arma::Mat<Complex> SConst() const override;
 
         private:
             arma::Mat<Complex> mapToMat(const arma::Col<Complex>& vec) const;
 
         private:
             const TimeSeries<Time, arma::Col<Complex>>* series_;
+            arma::Col<arma::uword> dataIdxs_;
             arma::Col<arma::uword> rowIdxs_;
             arma::Col<arma::uword> colIdxs_;
             double scaleFactorY_{1.0};

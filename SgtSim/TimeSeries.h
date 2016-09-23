@@ -35,6 +35,9 @@ namespace Sgt
     class TimeSeries : public TimeSeriesBase
     {
         public:
+            using TimeTipe = T;
+            using ValType = V;
+
             virtual V value(const T& t) const = 0;
     };
 
