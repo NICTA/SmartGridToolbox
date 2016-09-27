@@ -119,12 +119,60 @@ namespace Sgt
     };
 
     /// @brief Pointer type to a member of ComponentCollection.
-    template<typename T, typename Iter = ComponentCollectionIter<T>>
+    template<typename T, typename D, typename Iter>
     class ComponentPtr : public ComponentPtrBase<Iter>
     {
         friend class ComponentCollection<T>;
         friend class MutableComponentCollection<T>;
-        template<typename U, typename V> friend class ComponentPtr;
+
+        private:
+            /// @brief Constructor for existing component.
+            ComponentPtr(const Iter& it) : ComponentPtrBase<Iter>(it) {}
+
+        public:
+            /// @brief Default constructor.
+            ComponentPtr() = default;
+
+            /// @brief Copy constructor. 
+            ComponentPtr(const ComponentPtrBase<Iter>& from) : ComponentPtrBase<Iter>(from) {}
+
+            /// @brief Conversion constructor. 
+            template<typename U> ComponentPtr(const ComponentPtrBase<U>& from) : ComponentPtrBase<Iter>(from) {}
+            
+            /// @brief Move constructor. 
+            ComponentPtr(ComponentPtrBase<Iter>&& from) : ComponentPtrBase<Iter>(from) {}
+            
+            /// @brief Move conversion constructor. 
+            template<typename U> ComponentPtr(ComponentPtrBase<U>&& from) : ComponentPtrBase<Iter>(from) {}
+
+            /// @brief Dereference.
+            D& operator*() const {return *(this->template as<D>());}
+
+            /// @brief Dereference. 
+            D* operator->() const {return this->template as<D>();}
+            
+            /// @brief Converts to shared_ptr. 
+            operator std::shared_ptr<D>() const {return this->template asShared<D>();}
+
+            /// @brief Converts to raw pointer. 
+            operator D*() const {return this->template as<D>();}
+
+            /// @brief Do I refer to an actual component? 
+            operator bool() const {return this->it_ && this->template as<D>();}
+
+            /// @brief Comparison to nullptr.
+            bool operator==(const std::nullptr_t& rhs) const 
+            {
+                return this->it_ == nullptr || this->template as<D>() == nullptr;
+            }
+    };
+
+    /// @brief Pointer type to a member of ComponentCollection.
+    template<typename T, typename Iter>
+    class ComponentPtr<T, T, Iter> : public ComponentPtrBase<Iter>
+    {
+        friend class ComponentCollection<T>;
+        friend class MutableComponentCollection<T>;
 
         private:
             using ComponentPtrBase<Iter>::it_; 
@@ -137,16 +185,16 @@ namespace Sgt
             ComponentPtr() = default;
 
             /// @brief Copy constructor. 
-            ComponentPtr(const ComponentPtr& from) : ComponentPtrBase<Iter>(from) {}
+            ComponentPtr(const ComponentPtrBase<Iter>& from) : ComponentPtrBase<Iter>(from) {}
 
             /// @brief Conversion constructor. 
-            template<typename U> ComponentPtr(const ComponentPtr<U>& from) : ComponentPtrBase<Iter>(from) {}
+            template<typename U> ComponentPtr(const ComponentPtrBase<U>& from) : ComponentPtrBase<Iter>(from) {}
             
             /// @brief Move constructor. 
-            ComponentPtr(ComponentPtr&& from) : ComponentPtrBase<Iter>(from) {}
+            ComponentPtr(ComponentPtrBase<Iter>&& from) : ComponentPtrBase<Iter>(from) {}
             
             /// @brief Move conversion constructor. 
-            template<typename U> ComponentPtr(ComponentPtr<U>&& from) : ComponentPtrBase<Iter>(from) {}
+            template<typename U> ComponentPtr(ComponentPtrBase<U>&& from) : ComponentPtrBase<Iter>(from) {}
 
             /// @brief Dereference.
             T& operator*() const {return *((**it_).second);}
@@ -160,8 +208,9 @@ namespace Sgt
             /// @brief Converts to raw pointer. 
             operator T*() const {return (**it_).second.get();}
     };
-    
-    template<typename T> using ConstComponentPtr = ComponentPtr<T, ComponentCollectionConstIter<T>>;
+
+    template<typename T, typename D = T>
+    using ConstComponentPtr = ComponentPtr<T, D, ComponentCollectionConstIter<T>>;
 
     /// @brief Utility container type combining aspects of map and vector.
     ///
