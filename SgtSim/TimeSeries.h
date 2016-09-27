@@ -161,7 +161,7 @@ namespace Sgt
                 // Empty.
             }
 
-            virtual double value(const T& t) const override
+            virtual V value(const T& t) const override
             {
                 return func_(t);
             }
