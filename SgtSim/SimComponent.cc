@@ -42,7 +42,8 @@ namespace Sgt
         didUpdate_.trigger();
     }
 
-    void SimComponent::addDependency(SimComponent& comp, SimComponent& dependsOnComp, bool forceUpdate)
+    void SimComponent::addDependency(ConstComponentPtr<SimComponent> comp, 
+            SimComponent& dependsOnComp, bool forceUpdate)
     {
         dependsOnComp.dependencies_.push_back(&comp);
         if (forceUpdate)

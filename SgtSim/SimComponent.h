@@ -141,7 +141,7 @@ namespace Sgt
             /// @name Dependencies.
             /// @{
 
-            const std::vector<const SimComponent*>& dependencies() const
+            const std::vector<ConstComponentPtr<SimComponent>>& dependencies() const
             {
                 return dependencies_;
             }
@@ -153,7 +153,8 @@ namespace Sgt
             /// If there is an update of `dependentComp`, then it is guaranteed to occur after `comp`, so long as
             /// there aren't any circular dependencies. If `forceUpdate` is true, then an update of `comp`
             /// will guarantee (using a contingent update) that `dependentComp` also updates.
-            static void addDependency(SimComponent& comp, SimComponent& dependentComp, bool forceUpdate);
+            static void addDependency(const ComponentPtr<SimComponent> comp, 
+                    SimComponent& dependentComp, bool forceUpdate);
 
             /// @}
 
@@ -181,7 +182,7 @@ namespace Sgt
 
             Time lastUpdated_{posix_time::not_a_date_time};
             ///< The time to which I am up to date
-            std::vector<const SimComponent*> dependencies_;
+            std::vector<ConstComponentPtr<SimComponent>> dependencies_;
             ///< I depend on these.
             int rank_{-1};
             ///< Evaluation rank, based on weak ordering.
