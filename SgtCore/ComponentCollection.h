@@ -33,184 +33,150 @@ namespace Sgt
     template<typename T>
         using ComponentCollectionConstIter = typename std::map<std::string, std::shared_ptr<T>>::const_iterator;
 
-    /// @brief Pointer type to a member of ComponentCollection.
-    template<typename Iter> class ComponentPtrBase
-    {
-        private:
+    template<typename Iter>
+        using ComponentPtrType = std::remove_reference_t<decltype(*(std::declval<Iter>()->second))>;
 
-            /// @brief Constructor for existing component.
-            ComponentPtrBase(const Iter& it) : it_(std::make_unique<Iter>(it)) {}
+    template<typename B, typename D, typename Iter> class CompPtrA;
+    template<typename Iter> using CompPtrB = CompPtrA<ComponentPtrType<Iter>, ComponentPtrType<Iter>, Iter>;
+
+    /// @brief Pointer type to a member of ComponentCollection.
+    template<typename Iter> class CompPtrA<ComponentPtrType<Iter>, ComponentPtrType<Iter>, Iter>
+    {
+        using Type = ComponentPtrType<Iter>;
+        friend class CompPtrA<Type, Type, ComponentCollectionIter<Type>>;
+        friend class CompPtrA<Type, Type, ComponentCollectionConstIter<Type>>;
+
+        protected:
+        typename std::unique_ptr<Iter> it_{nullptr};
+
+        public:
+
+        /// @brief Default constructor.
+        CompPtrA() = default;
+
+        /// @brief Constructor for existing component.
+        CompPtrA(const Iter& it) : it_(std::make_unique<Iter>(it)) {}
+
+        /// @brief Copy constructor.
+        CompPtrA(const CompPtrA& from) : it_(std::make_unique<Iter>(*from.it_)) {}
+
+        /// @brief Copy/conversion constructor.
+        template<typename FromIter> CompPtrA(const CompPtrA<Type, Type, FromIter>& from) :
+            it_(std::make_unique<Iter>(*from.it_)) {}
+
+        /// @brief Copy assignment.
+        void operator=(const CompPtrA& from) {it_ = std::make_unique<Iter>(*from.it_);}
+        
+        /// @brief Copy/conversion assignment.
+        template<typename FromIter>
+            void operator=(const CompPtrA<Type, Type, FromIter>& from) {it_ = std::make_unique<Iter>(*from.it_);}
+
+        /// @brief Explicit shared pointer access.
+        std::shared_ptr<Type> shared() const {return it_ == nullptr ? nullptr : (**it_).second;}
+
+        /// @brief Explicit raw pointer access.
+        Type* get() const {return shared().get();}
+
+        /// @brief Cast.
+        template<typename U> U* as() const {return dynamic_cast<U*>(get());}
+
+        /// @brief Cast to shared.
+        template<typename U> std::shared_ptr<U> asShared() const {return std::dynamic_pointer_cast<U>(shared());}
+
+        /// @brief Dereference.
+        Type& operator*() const {return *(shared());}
+
+        /// @brief Dereference. 
+        Type* operator->() const {return get();}
+
+        /// @brief Converts to raw pointer. 
+        operator Type*() const {return get();}
+
+        /// @brief Converts to shared_ptr. 
+        operator std::shared_ptr<Type>() const {return shared();}
+
+        /// @brief Obtain the key in my container.
+        const std::string& key() const {return (**it_).first;}
+
+        /// @brief Do I refer to an actual component? 
+        operator bool() const {return shared();}
+
+        /// @brief Comparison to nullptr.
+        bool operator==(const std::nullptr_t& rhs) const {return shared() == nullptr;}
+
+        /// @brief Comparison to nullptr.
+        bool operator!=(const std::nullptr_t& rhs) const {return !operator==(rhs);}
+
+        /// @brief Compare two CompPtrA.
+        ///
+        /// Undefined behaviour if they come from different ComponentCollection containers.
+        bool operator==(const CompPtrB<Iter>& rhs) const {return (it_ == rhs.it_) || shared() == rhs.shared();}
+
+        /// @brief Compare two CompPtrA.
+        ///
+        /// Undefined behaviour if they come from different ComponentCollection containers.
+        bool operator!=(const CompPtrB<Iter>& rhs) const {return !operator==(rhs);}
+    };
+
+    /// @brief Pointer type to a member of ComponentCollection which implicitly casts to a derived class.
+    template<typename B, typename D, typename Iter> class CompPtrA : public CompPtrB<Iter>
+    {
+        protected:
+            using CompPtrB<Iter>::it_;
 
         public:
             /// @brief Default constructor.
-            ComponentPtrBase() = default;
+            CompPtrA() = default;
+
+            /// @brief Constructor for existing component.
+            CompPtrA(const Iter& it) : CompPtrB<Iter>(it) {}
 
             /// @brief Copy constructor. 
-            ComponentPtrBase(const ComponentPtrBase& from) : it_(std::make_unique<Iter>(*from.it_)) {}
+            CompPtrA(const CompPtrA& from) : CompPtrB<Iter>(from) {}
 
-            /// @brief Conversion constructor. 
-            template<typename U>
-            ComponentPtrBase(const ComponentPtrBase<U>& from) : it_(std::make_unique<Iter>(*from.it_)) {}
-            
-            /// @brief Move constructor. 
-            ComponentPtrBase(ComponentPtrBase&& from) : it_(std::move(from.it_)) {}
-            
-            /// @brief Move conversion constructor. 
-            template<typename U> ComponentPtrBase(ComponentPtrBase<U>&& from) : it_(std::move(from.it_)) {}
+            /// @brief Copy/conversion constructor. 
+            template<typename FromIter> CompPtrA(const CompPtrB<FromIter>& from) : CompPtrB<Iter>(from) {}
 
-            /// @brief Copy assignment. 
-            void operator=(const ComponentPtrBase& from)
-            {
-                it_ = std::make_unique<Iter>(*from.it_);
-            }
-            
-            /// @brief Conversion assignment. 
-            template<typename U> void operator=(const ComponentPtrBase<U>& from)
-            {
-                it_ = std::make_unique<Iter>(*from.it_);
-            }
-            
-            /// @brief Move assignment. 
-            void operator=(ComponentPtrBase&& from)
-            {
-                it_ = std::move(from.it_);
-            }
-            
-            /// @brief Move conversion assignment. 
-            template<typename U> void operator=(ComponentPtrBase<U>&& from)
-            {
-                it_ = std::move(from.it_);
-            }
+            /// @brief Explicit shared pointer access.
+            std::shared_ptr<D> shared() const {return std::dynamic_pointer_cast<D>(CompPtrA::shared());}
 
-            /// @brief Cast to shared.
-            template<typename U> std::shared_ptr<U> asShared() const
-            {
-                return std::dynamic_pointer_cast<U>((**it_).second);
-            }
+            /// @brief Explicit raw pointer access.
+            D* get() const {return shared().get();}
 
-            /// @brief Cast.
-            template<typename U> U* as() const {return dynamic_cast<U*>((**it_).second.get());}
-            
-            /// @brief Obtain the key in my container.
-            const std::string& key() const {return (**it_).first;}
+            /// @brief Dereference.
+            D& operator*() const {return *(shared());}
+
+            /// @brief Dereference. 
+            D* operator->() const {return get();}
+
+            /// @brief Converts to raw pointer. 
+            operator D*() const {return get();}
+
+            /// @brief Converts to shared_ptr. 
+            operator std::shared_ptr<D>() const {return shared();}
 
             /// @brief Do I refer to an actual component? 
-            operator bool() const {return  it_ && (**it_).second;}
+            operator bool() const {return shared();}
 
             /// @brief Comparison to nullptr.
-            bool operator==(const std::nullptr_t& rhs) const {return it_ == nullptr || (**it_).second == nullptr;}
+            bool operator==(const std::nullptr_t& rhs) const {return shared() == nullptr;}
+
             /// @brief Comparison to nullptr.
             bool operator!=(const std::nullptr_t& rhs) const {return !operator==(rhs);}
 
-            /// @brief Compare two ComponentPtrBases.
+            /// @brief Compare two CompPtrA.
             ///
             /// Undefined behaviour if they come from different ComponentCollection containers.
-            bool operator==(const ComponentPtrBase& rhs) const
-            {
-                return (it_ == rhs.it_) || ((**it_).first == (**rhs.it_).first); // Works for nullptr.
-            }
-            /// @brief Compare two ComponentPtrBases.
+            bool operator==(const CompPtrA& rhs) const {return (it_ == rhs.it_) || shared() == rhs.shared();}
+
+            /// @brief Compare two CompPtrA.
             ///
             /// Undefined behaviour if they come from different ComponentCollection containers.
-            bool operator!=(const ComponentPtrBase& rhs) const {return !operator==(rhs);}
-
-        protected:
-            typename std::unique_ptr<Iter> it_{nullptr};
+            bool operator!=(const CompPtrA& rhs) const {return !operator==(rhs);}
     };
 
-    /// @brief Pointer type to a member of ComponentCollection.
-    template<typename T, typename D, typename Iter>
-    class ComponentPtr : public ComponentPtrBase<Iter>
-    {
-        friend class ComponentCollection<T>;
-        friend class MutableComponentCollection<T>;
-
-        private:
-            /// @brief Constructor for existing component.
-            ComponentPtr(const Iter& it) : ComponentPtrBase<Iter>(it) {}
-
-        public:
-            /// @brief Default constructor.
-            ComponentPtr() = default;
-
-            /// @brief Copy constructor. 
-            ComponentPtr(const ComponentPtrBase<Iter>& from) : ComponentPtrBase<Iter>(from) {}
-
-            /// @brief Conversion constructor. 
-            template<typename U> ComponentPtr(const ComponentPtrBase<U>& from) : ComponentPtrBase<Iter>(from) {}
-            
-            /// @brief Move constructor. 
-            ComponentPtr(ComponentPtrBase<Iter>&& from) : ComponentPtrBase<Iter>(from) {}
-            
-            /// @brief Move conversion constructor. 
-            template<typename U> ComponentPtr(ComponentPtrBase<U>&& from) : ComponentPtrBase<Iter>(from) {}
-
-            /// @brief Dereference.
-            D& operator*() const {return *(this->template as<D>());}
-
-            /// @brief Dereference. 
-            D* operator->() const {return this->template as<D>();}
-            
-            /// @brief Converts to shared_ptr. 
-            operator std::shared_ptr<D>() const {return this->template asShared<D>();}
-
-            /// @brief Converts to raw pointer. 
-            operator D*() const {return this->template as<D>();}
-
-            /// @brief Do I refer to an actual component? 
-            operator bool() const {return this->it_ && this->template as<D>();}
-
-            /// @brief Comparison to nullptr.
-            bool operator==(const std::nullptr_t& rhs) const 
-            {
-                return this->it_ == nullptr || this->template as<D>() == nullptr;
-            }
-    };
-
-    /// @brief Pointer type to a member of ComponentCollection.
-    template<typename T, typename Iter>
-    class ComponentPtr<T, T, Iter> : public ComponentPtrBase<Iter>
-    {
-        friend class ComponentCollection<T>;
-        friend class MutableComponentCollection<T>;
-
-        private:
-            using ComponentPtrBase<Iter>::it_; 
-
-            /// @brief Constructor for existing component.
-            ComponentPtr(const Iter& it) : ComponentPtrBase<Iter>(it) {}
-
-        public:
-            /// @brief Default constructor.
-            ComponentPtr() = default;
-
-            /// @brief Copy constructor. 
-            ComponentPtr(const ComponentPtrBase<Iter>& from) : ComponentPtrBase<Iter>(from) {}
-
-            /// @brief Conversion constructor. 
-            template<typename U> ComponentPtr(const ComponentPtrBase<U>& from) : ComponentPtrBase<Iter>(from) {}
-            
-            /// @brief Move constructor. 
-            ComponentPtr(ComponentPtrBase<Iter>&& from) : ComponentPtrBase<Iter>(from) {}
-            
-            /// @brief Move conversion constructor. 
-            template<typename U> ComponentPtr(ComponentPtrBase<U>&& from) : ComponentPtrBase<Iter>(from) {}
-
-            /// @brief Dereference.
-            T& operator*() const {return *((**it_).second);}
-
-            /// @brief Dereference. 
-            T* operator->() const {return (**it_).second.get();}
-            
-            /// @brief Converts to shared_ptr. 
-            operator std::shared_ptr<T>() const {return (**it_).second;}
-
-            /// @brief Converts to raw pointer. 
-            operator T*() const {return (**it_).second.get();}
-    };
-
-    template<typename T, typename D = T>
-    using ConstComponentPtr = ComponentPtr<T, D, ComponentCollectionConstIter<T>>;
+    template<typename B, typename D = B> using ComponentPtr = CompPtrA<B, D, ComponentCollectionIter<B>>;
+    template<typename B, typename D = B> using ConstComponentPtr = CompPtrA<B, D, ComponentCollectionConstIter<B>>;
 
     /// @brief Utility container type combining aspects of map and vector.
     ///
@@ -239,13 +205,13 @@ namespace Sgt
                 auto it = map_.find(key);
                 return it != map_.end() ? it : Ptr();
             }
-            
+
             ConstPtr operator[](size_t idx) const {return vec_[idx];}
             Ptr operator[](size_t idx) {return vec_[idx];}
-            
+
             ConstPtr front() const {return vec_.front();}
             Ptr front() {return vec_.front();}
-            
+
             ConstPtr back() const {return vec_.back();}
             Ptr back() {return vec_.back();}
 
@@ -254,24 +220,24 @@ namespace Sgt
 
             auto begin() const {return vec_.cbegin();}
             auto end() const {return vec_.cend();}
-           
+
             auto cbegin() const {return vec_.cbegin();}
             auto cend() const {return vec_.cend();}
-            
+
             auto rbegin() {return vec_.rbegin();}
             auto rend() {return vec_.rend();}
-            
+
             auto rbegin() const {return vec_.rcbegin();}
             auto rend() const {return vec_.rcend();}
 
             auto rcbegin() const {return vec_.rcbegin();}
             auto rcend() const {return vec_.rcend();}
-            
+
         protected:
             std::map<std::string, std::shared_ptr<T>> map_;
             std::vector<Ptr> vec_;
     };
-    
+
     template<typename T> class MutableComponentCollection : public ComponentCollection<T>
     {
         public:
@@ -298,12 +264,12 @@ namespace Sgt
             Ptr reserve(const std::string& key) {insert(key, std::shared_ptr<T>(nullptr));}
 
             template<typename U, typename ... Args>
-            std::pair<Ptr, std::shared_ptr<U>> emplace(const std::string& key, Args&&... args)
-            {
-                auto comp = std::make_shared<U>(std::forward<Args>(args)...);
-                return {insert(key, comp), comp};
-            }
-            
+                std::pair<Ptr, std::shared_ptr<U>> emplace(const std::string& key, Args&&... args)
+                {
+                    auto comp = std::make_shared<U>(std::forward<Args>(args)...);
+                    return {insert(key, comp), comp};
+                }
+
             std::shared_ptr<T> remove(const std::string& key) 
             {
                 std::shared_ptr<T> result;
