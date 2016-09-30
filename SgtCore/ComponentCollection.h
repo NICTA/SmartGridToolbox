@@ -47,75 +47,81 @@ namespace Sgt
         friend class CompPtrA<Type, Type, ComponentCollectionConstIter<Type>>;
 
         protected:
-        typename std::unique_ptr<Iter> it_{nullptr};
+            typename std::unique_ptr<Iter> it_{nullptr};
+            using CIter = ComponentCollectionConstIter<Type>;
+            using NCIter = ComponentCollectionIter<Type>;
 
         public:
+            /// @brief Default constructor.
+            CompPtrA() = default;
 
-        /// @brief Default constructor.
-        CompPtrA() = default;
+            /// @brief Constructor for existing component.
+            CompPtrA(const Iter& it) : it_(std::make_unique<Iter>(it)) {}
 
-        /// @brief Constructor for existing component.
-        CompPtrA(const Iter& it) : it_(std::make_unique<Iter>(it)) {}
+            /// @brief Copy constructor.
+            CompPtrA(const CompPtrA& from) : it_(std::make_unique<Iter>(*from.it_)) {}
 
-        /// @brief Copy constructor.
-        CompPtrA(const CompPtrA& from) : it_(std::make_unique<Iter>(*from.it_)) {}
+            /// @brief Non-const to const copy conversion constructor. 
+            template<typename FromIter, 
+                std::enable_if_t<std::is_same<FromIter, NCIter>::value && std::is_same<Iter, CIter>::value, int> = 0>
+                CompPtrA(const CompPtrA<Type, Type, FromIter>& from) : it_(std::make_unique<Iter>(*from.it_)) {}
 
-        /// @brief Copy/conversion constructor.
-        template<typename FromIter> CompPtrA(const CompPtrA<Type, Type, FromIter>& from) :
-            it_(std::make_unique<Iter>(*from.it_)) {}
+            /// @brief Copy assignment.
+            void operator=(const CompPtrA& from) {it_ = std::make_unique<Iter>(*from.it_);}
 
-        /// @brief Copy assignment.
-        void operator=(const CompPtrA& from) {it_ = std::make_unique<Iter>(*from.it_);}
-        
-        /// @brief Copy/conversion assignment.
-        template<typename FromIter>
-            void operator=(const CompPtrA<Type, Type, FromIter>& from) {it_ = std::make_unique<Iter>(*from.it_);}
+            /// @brief Non-const to const conversion assignment.
+            template<typename FromIter, 
+                std::enable_if_t<std::is_same<FromIter, NCIter>::value && std::is_same<Iter, CIter>::value, int> = 0>
+                void operator=(const CompPtrA<Type, Type, FromIter>& from)
+            {
+                it_ = std::make_unique<Iter>(*from.it_);
+            }
 
-        /// @brief Explicit shared pointer access.
-        std::shared_ptr<Type> shared() const {return it_ == nullptr ? nullptr : (**it_).second;}
+            /// @brief Explicit shared pointer access.
+            std::shared_ptr<Type> shared() const {return it_ == nullptr ? nullptr : (**it_).second;}
 
-        /// @brief Explicit raw pointer access.
-        Type* get() const {return shared().get();}
+            /// @brief Explicit raw pointer access.
+            Type* get() const {return shared().get();}
 
-        /// @brief Cast.
-        template<typename U> U* as() const {return dynamic_cast<U*>(get());}
+            /// @brief Cast.
+            template<typename U> U* as() const {return dynamic_cast<U*>(get());}
 
-        /// @brief Cast to shared.
-        template<typename U> std::shared_ptr<U> asShared() const {return std::dynamic_pointer_cast<U>(shared());}
+            /// @brief Cast to shared.
+            template<typename U> std::shared_ptr<U> asShared() const {return std::dynamic_pointer_cast<U>(shared());}
 
-        /// @brief Dereference.
-        Type& operator*() const {return *(shared());}
+            /// @brief Dereference.
+            Type& operator*() const {return *(shared());}
 
-        /// @brief Dereference. 
-        Type* operator->() const {return get();}
+            /// @brief Dereference. 
+            Type* operator->() const {return get();}
 
-        /// @brief Converts to raw pointer. 
-        operator Type*() const {return get();}
+            /// @brief Converts to raw pointer. 
+            operator Type*() const {return get();}
 
-        /// @brief Converts to shared_ptr. 
-        operator std::shared_ptr<Type>() const {return shared();}
+            /// @brief Converts to shared_ptr. 
+            operator std::shared_ptr<Type>() const {return shared();}
 
-        /// @brief Obtain the key in my container.
-        const std::string& key() const {return (**it_).first;}
+            /// @brief Obtain the key in my container.
+            const std::string& key() const {return (**it_).first;}
 
-        /// @brief Do I refer to an actual component? 
-        operator bool() const {return shared();}
+            /// @brief Do I refer to an actual component? 
+            operator bool() const {return shared();}
 
-        /// @brief Comparison to nullptr.
-        bool operator==(const std::nullptr_t& rhs) const {return shared() == nullptr;}
+            /// @brief Comparison to nullptr.
+            bool operator==(const std::nullptr_t& rhs) const {return shared() == nullptr;}
 
-        /// @brief Comparison to nullptr.
-        bool operator!=(const std::nullptr_t& rhs) const {return !operator==(rhs);}
+            /// @brief Comparison to nullptr.
+            bool operator!=(const std::nullptr_t& rhs) const {return !operator==(rhs);}
 
-        /// @brief Compare two CompPtrA.
-        ///
-        /// Undefined behaviour if they come from different ComponentCollection containers.
-        bool operator==(const CompPtrB<Iter>& rhs) const {return (it_ == rhs.it_) || shared() == rhs.shared();}
+            /// @brief Compare two CompPtrA.
+            ///
+            /// Undefined behaviour if they come from different ComponentCollection containers.
+            bool operator==(const CompPtrB<Iter>& rhs) const {return (it_ == rhs.it_) || shared() == rhs.shared();}
 
-        /// @brief Compare two CompPtrA.
-        ///
-        /// Undefined behaviour if they come from different ComponentCollection containers.
-        bool operator!=(const CompPtrB<Iter>& rhs) const {return !operator==(rhs);}
+            /// @brief Compare two CompPtrA.
+            ///
+            /// Undefined behaviour if they come from different ComponentCollection containers.
+            bool operator!=(const CompPtrB<Iter>& rhs) const {return !operator==(rhs);}
     };
 
     /// @brief Pointer type to a member of ComponentCollection which implicitly casts to a derived class.
@@ -123,22 +129,33 @@ namespace Sgt
     {
         protected:
             using CompPtrB<Iter>::it_;
+            using CIter = ComponentCollectionConstIter<B>;
+            using NCIter = ComponentCollectionIter<B>;
 
         public:
+            // Note: Copy constructor and assignment operator should be implicitly defined.
+
             /// @brief Default constructor.
             CompPtrA() = default;
 
             /// @brief Constructor for existing component.
             CompPtrA(const Iter& it) : CompPtrB<Iter>(it) {}
 
-            /// @brief Copy constructor. 
-            CompPtrA(const CompPtrA& from) : CompPtrB<Iter>(from) {}
+            /// @brief Copy conversion constructor. 
+            template<typename FromIter, typename FromD, 
+                std::enable_if_t<std::is_same<FromIter, NCIter>::value && std::is_same<Iter, CIter>::value, int> = 0>
+                CompPtrA(const CompPtrA<B, FromD, FromIter>& from) : CompPtrB<Iter>(from) {}
 
-            /// @brief Copy/conversion constructor. 
-            template<typename FromIter> CompPtrA(const CompPtrB<FromIter>& from) : CompPtrB<Iter>(from) {}
+            /// @brief Conversion assignment.
+            template<typename FromIter, typename FromD, 
+                std::enable_if_t<std::is_same<FromIter, NCIter>::value && std::is_same<Iter, CIter>::value, int> = 0>
+                void operator=(const CompPtrA<B, FromD, FromIter>& from)
+            {
+                CompPtrB<Iter>::operator=(from);
+            }
 
             /// @brief Explicit shared pointer access.
-            std::shared_ptr<D> shared() const {return std::dynamic_pointer_cast<D>(CompPtrA::shared());}
+            std::shared_ptr<D> shared() const {return std::dynamic_pointer_cast<D>(CompPtrB<Iter>::shared());}
 
             /// @brief Explicit raw pointer access.
             D* get() const {return shared().get();}
