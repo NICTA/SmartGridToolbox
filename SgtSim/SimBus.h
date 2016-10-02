@@ -33,12 +33,6 @@ namespace Sgt
             virtual const Bus& bus() const = 0;
             /// @brief Return the bus that I wrap (non-const). 
             virtual Bus& bus() = 0;
-            
-            /// @brief Do anything I need to do to add myself to the simNetwork.
-            ///
-            /// Important: my bus must separately be added to SimNetwork's Network. This is to prevent any possible
-            /// confusion about whether it is already added on not.
-            virtual void linkToSimNetwork(SimNetwork& simNetwork);
 
         protected:
 
@@ -52,9 +46,9 @@ namespace Sgt
     {
         public:
 
-            SimBus(const std::string& id, Bus& bus) :
+            SimBus(const std::string& id, const ComponentPtr<Bus>& bus) :
                 Component(id),
-                bus_(&bus)
+                bus_(bus)
             {
                 // Empty.
             }
@@ -72,8 +66,14 @@ namespace Sgt
 
         private:
 
-            Bus* bus_;
+            ComponentPtr<Bus> bus_;
     };
+
+    /// @brief Do anything needed to do to add simBus to simNetwork.
+    ///
+    /// Important: simBus's bus must separately be added to simNetwork's network. This is to prevent any possible
+    /// confusion about whether it is already added on not.
+    void link(const ConstSimComponentPtr<SimBusAbc>& simBus, SimNetwork& simNetwork);
 }
 
 #endif // SIM_BUS_DOT_H

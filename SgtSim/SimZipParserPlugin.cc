@@ -44,7 +44,7 @@ namespace Sgt
         p.parse(netwNode, network);
         auto& zips = network.zips();
         auto zip = zips.back(); // KLUDGE: assumes just parsed zip is last (which is true, but not robust).
-        auto simZip = sim.newSimComponent<SimZip>(id, *zip);
-        simZip->linkToSimNetwork(*simNetwork);
+        auto simZip = sim.newSimComponent<SimZip>(id, zip);
+        link(simZip, *simNetwork);
     }
 }

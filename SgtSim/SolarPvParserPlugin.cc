@@ -43,13 +43,13 @@ namespace Sgt
         auto weather = sim.simComponent<Weather>(weatherStr);
         sgtAssert(weather != nullptr, 
                 "For component " << id << ", weather " << weatherStr << " was not found in the simulation.");
-        spv->setWeather(*weather);
+        spv->setWeather(weather);
         
         const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
         auto inverter = sim.simComponent<InverterAbc>(inverterStr);
         sgtAssert(inverter != nullptr,
             "For component " << id << ", inverter " << inverterStr << " was not found in the simulation.");
-        inverter->addDcPowerSource(*spv);
+        inverter->addDcPowerSource(spv);
 
         spv->setNPanels(parser.expand<int>(nd["n_panels"]));
         double zen = parser.expand<double>(nd["zenith_degrees"]) * pi / 180;

@@ -46,7 +46,7 @@ namespace Sgt
         auto ndScaleFactorI = nd["scale_factor_I"];
         auto ndScaleFactorS = nd["scale_factor_S"];
 
-        auto series = sim.timeSeries()[tsId].as<const TimeSeries<Time, arma::Col<Complex>>>();
+        auto series = sim.timeSeries()[tsId].as<TimeSeries<Time, arma::Col<Complex>>, true>();
         auto network = sim.simComponent<SimNetwork>(networkId);
         auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, phases, series, dt, matElems);
         if (ndScaleFactorY)
@@ -66,6 +66,6 @@ namespace Sgt
         }
 
         network->network().addZip(shared(tsZip->zip()), busId);
-        tsZip->linkToSimNetwork(*network);
+        link(tsZip, *network);
     }
 }

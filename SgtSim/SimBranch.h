@@ -35,12 +35,6 @@ namespace Sgt
             virtual const BranchAbc& branch() const = 0;
             /// @brief Return the branch that I wrap (non-const). 
             virtual BranchAbc& branch() = 0;
-
-            /// @brief Do anything I need to do to add myself to the simNetwork.
-            ///
-            /// Important: my branch must separately be added to SimNetwork's Network. This is to prevent any possible
-            /// confusion about whether it is already added on not.
-            virtual void linkToSimNetwork(SimNetwork& simNetwork);
     };
 
     /// @brief Simulation branch, corresponding to a BranchAbc in a SimNetwork's network(). 
@@ -50,9 +44,9 @@ namespace Sgt
     {
         public:
 
-            SimBranch(const std::string& id, BranchAbc& branch) :
+            SimBranch(const std::string& id, const ComponentPtr<BranchAbc>& branch) :
                 Component(id),
-                branch_(&branch)
+                branch_(branch)
             {
                 // Empty.
             }
@@ -69,8 +63,14 @@ namespace Sgt
 
         private:
 
-            BranchAbc* branch_;
+            ComponentPtr<BranchAbc> branch_;
     };
+    
+    /// @brief Do anything needed to do to add simBranch to the simNetwork.
+    ///
+    /// Important: simBranch's branch must separately be added to simNetwork's network. This is to prevent any possible
+    /// confusion about whether it is already added on not.
+    void link(const ConstSimComponentPtr<SimBranchAbc>& simBranch, SimNetwork& simNetwork);
 }
 
 #endif // SIM_BRANCH_DOT_H

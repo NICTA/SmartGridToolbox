@@ -44,7 +44,7 @@ namespace Sgt
         p.parse(netwNode, network);
         auto& gens = network.gens();
         auto gen = gens.back(); // KLUDGE: assumes just parsed gen is last (which is true, but not robust).
-        auto simGen = sim.newSimComponent<SimGen>(id, *gen);
-        simGen->linkToSimNetwork(*simNetwork);
+        auto simGen = sim.newSimComponent<SimGen>(id, gen);
+        link(simGen, *simNetwork);
     }
 }

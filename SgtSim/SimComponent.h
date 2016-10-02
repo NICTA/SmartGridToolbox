@@ -17,6 +17,7 @@
 
 #include <SgtCore/Common.h>
 #include <SgtCore/Component.h>
+#include <SgtCore/ComponentCollection.h>
 #include <SgtCore/Event.h>
 
 namespace Sgt
@@ -153,7 +154,7 @@ namespace Sgt
             /// If there is an update of `dependentComp`, then it is guaranteed to occur after `comp`, so long as
             /// there aren't any circular dependencies. If `forceUpdate` is true, then an update of `comp`
             /// will guarantee (using a contingent update) that `dependentComp` also updates.
-            static void addDependency(const ComponentPtr<SimComponent> comp, 
+            static void addDependency(const ConstComponentPtr<SimComponent>& comp, 
                     SimComponent& dependentComp, bool forceUpdate);
 
             /// @}
@@ -197,6 +198,9 @@ namespace Sgt
             Event didCompleteTimestep_{std::string(sComponentType()) + "Did complete timestep"};
             ///< Triggered just after fully completing a timestep.
     };
+
+    template<typename T> using SimComponentPtr = ComponentPtr<SimComponent, T>;
+    template<typename T> using ConstSimComponentPtr = ConstComponentPtr<SimComponent, T>;
 }
 
 #endif // SIM_COMPONENT_DOT_H

@@ -68,7 +68,7 @@ namespace Sgt
 
         for (const auto& branch : sgtNw.branches())
         {
-            auto cBranch = branch.as<const CommonBranch>();
+            auto cBranch = branch.raw<const CommonBranch>();
             auto bus0 = branch->bus0();
             auto bus1 = branch->bus1();
 
@@ -144,7 +144,7 @@ namespace Sgt
             for (std::size_t i = 0; i < nGen; ++i)
             {
                 // Order of gens should be same in Sgt and Pt.
-                auto sgtGen = sgtBus->gens()[i].as<GenericGen>();
+                auto sgtGen = sgtBus->gens()[i].raw<GenericGen>();
                 if (!sgtGen->isInService()) continue; // If not in service, ignore what PowerTools says.
 
                 auto gen = node->_gen[i];

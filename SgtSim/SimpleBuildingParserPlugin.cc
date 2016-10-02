@@ -63,7 +63,7 @@ namespace Sgt
             std::string id = parser.expand<std::string>(dQgNd);
             auto series = sim.timeSeries()[id].as<TimeSeries<Time, double>>();
             sgtAssert(series != nullptr, "Parsing simple_building: couldn't find time series " << id << ".");
-            build->set_dQgSeries(*series);
+            build->set_dQgSeries(series);
         }
 
         std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
@@ -71,7 +71,7 @@ namespace Sgt
 
         auto netw = sim.simComponent<SimNetwork>(networkId);
         netw->network().addZip(shared(build->zip()), busId); // TODO: smells.
-        build->linkToSimNetwork(*netw);
+        link(build, *netw);
 
         const auto& weatherNd = nd["weather"];
         if (weatherNd)
@@ -79,7 +79,7 @@ namespace Sgt
             std::string weatherStr = parser.expand<std::string>(weatherNd);
             auto weather = sim.simComponent<Weather>(weatherStr);
             sgtAssert(weather != nullptr, "Parsing simple_building: couldn't find weather " << weatherStr << ".");
-            build->setWeather(*weather);
+            build->setWeather(weather);
         }
     }
 }

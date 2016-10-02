@@ -103,16 +103,15 @@ namespace Sgt
             }
             
             /// @brief Access a particular SimComponent of a given type.
-            template<typename T> std::shared_ptr<const T> simComponent(const std::string& id) const
+            template<typename T> ConstSimComponentPtr<T> simComponent(const std::string& id) const
             {
-                return simComps_[id].asShared<T>();
+                return simComps_[id];
             }
             
             /// @brief Access a particular SimComponent of a given type.
-            template<typename T> std::shared_ptr<T> simComponent(const std::string& id)
+            template<typename T> SimComponentPtr<T> simComponent(const std::string& id)
             {
-                const_cast<const MutableComponentCollection<SimComponent>&>(simComps_)[id].asShared<T>();
-                return simComps_[id].asShared<T>();
+                return simComps_[id].as<T>();
             }
             
             /// @brief Add a SimComponent.
@@ -122,11 +121,10 @@ namespace Sgt
             }
             
             /// @brief Factory method for SimComponents.
-            template<typename T, typename... Args> std::shared_ptr<T> newSimComponent(Args&&... args)
+            template<typename T, typename... Args> SimComponentPtr<T> newSimComponent(Args&&... args)
             {
                 auto comp = std::make_shared<T>(std::forward<Args>(args)...);
-                simComps_.insert(comp->id(), comp);
-                return comp;
+                return simComps_.insert(comp->id(), comp).template as<T>();
             }
             
             /// @brief Remove a SimComponent.
@@ -213,7 +211,7 @@ namespace Sgt
 
         private:
 
-            void tryInsertScheduledUpdate(ComponentPtr<SimComponent> schedComp);
+            void tryInsertScheduledUpdate(const ComponentPtr<SimComponent>& schedComp);
 
         private:
 

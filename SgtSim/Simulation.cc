@@ -225,7 +225,7 @@ namespace Sgt
         }
     }
 
-    void Simulation::tryInsertScheduledUpdate(ComponentPtr<SimComponent> schedComp)
+    void Simulation::tryInsertScheduledUpdate(const ComponentPtr<SimComponent>& schedComp)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "TryInsertScheduledUpdate: " << schedComp->id() << std::endl;
         LogIndent indent;

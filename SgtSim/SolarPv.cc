@@ -23,9 +23,9 @@ namespace Sgt
         Component(id)
     {}
 
-    void SolarPv::setWeather(Weather& weather)
+    void SolarPv::setWeather(const ConstSimComponentPtr<Weather>& weather)
     {
-        weather_ = &weather;
+        weather_ = weather;
         SimComponent::addDependency(weather, *this, true);
     }
 

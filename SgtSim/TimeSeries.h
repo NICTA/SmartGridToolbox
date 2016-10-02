@@ -15,6 +15,7 @@
 #ifndef TIME_SERIES_DOT_H
 #define TIME_SERIES_DOT_H
 
+#include <SgtCore/ComponentCollection.h>
 #if 0 // TODO: redo spline due to license issues.
 #include <SgtCore/Spline.h>
 #endif
@@ -170,6 +171,9 @@ namespace Sgt
 
             std::function<V (T)> func_;
     };
+    
+    template<typename T> using TimeSeriesPtr = ComponentPtr<TimeSeriesBase, T>;
+    template<typename T> using ConstTimeSeriesPtr = ConstComponentPtr<TimeSeriesBase, T>;
 }
 
 #endif // TIME_SERIES_DOT_H

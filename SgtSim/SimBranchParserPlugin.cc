@@ -43,7 +43,7 @@ namespace Sgt
         p.parse(netwNode, network);
         auto& branches = network.branches();
         auto branch = branches.back(); // KLUDGE: assumes just parsed branch is last (which is true, but not robust).
-        auto simBranch = sim.newSimComponent<SimBranch>(id, *branch);
-        simBranch->linkToSimNetwork(*simNetwork);
+        auto simBranch = sim.newSimComponent<SimBranch>(id, branch);
+        link(simBranch, *simNetwork);
     }
 }

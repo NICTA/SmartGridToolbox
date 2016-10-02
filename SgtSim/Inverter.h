@@ -38,7 +38,7 @@ namespace Sgt
             /// @name Inverter specific member functions.
             /// @{
 
-            virtual void addDcPowerSource(DcPowerSourceAbc& source);
+            virtual void addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source);
 
             virtual double efficiency(double powerDc) const = 0;
 
@@ -46,7 +46,7 @@ namespace Sgt
             virtual double PDc() const
             {
                 return std::accumulate(sources_.begin(), sources_.end(), 0.0,
-                        [] (double tot, const DcPowerSourceAbc* source)
+                        [] (double tot, const ConstSimComponentPtr<DcPowerSourceAbc>& source)
                         {return tot + source->PDc();});
             }
 
@@ -57,7 +57,7 @@ namespace Sgt
 
         private:
 
-            std::vector<const DcPowerSourceAbc*> sources_;   ///< My DC power sources.
+            std::vector<ConstSimComponentPtr<DcPowerSourceAbc>> sources_;   ///< My DC power sources.
     };
 
     /// @brief An inverter with a simple constant efficiency.
@@ -151,7 +151,7 @@ namespace Sgt
             /// @name InverterAbc virtual overridden member functions.
             /// @{
 
-            virtual void addDcPowerSource(DcPowerSourceAbc& source) override;
+            virtual void addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source) override;
 
             /// @}
             

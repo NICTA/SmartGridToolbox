@@ -33,12 +33,6 @@ namespace Sgt
             virtual const ZipAbc& zip() const = 0;
             /// @brief Return the zip that I wrap (non-const). 
             virtual ZipAbc& zip() = 0;
-
-            /// @brief Do anything I need to do to add myself to the simNetwork.
-            ///
-            /// Important: my zip must separately be added to SimNetwork's Network. This is to prevent any possible
-            /// confusion about whether it is already added on not.
-            virtual void linkToSimNetwork(SimNetwork& simNetwork);
     };
 
     /// @brief Simulation zip, corresponding to a ZipAbc in a SimNetwork's network(). 
@@ -48,9 +42,9 @@ namespace Sgt
     {
         public:
 
-            SimZip(const std::string& id, ZipAbc& zip) :
+            SimZip(const std::string& id, const ComponentPtr<ZipAbc>& zip) :
                 Component(id),
-                zip_(&zip)
+                zip_(zip)
             {
                 // Empty.
             }
@@ -67,8 +61,14 @@ namespace Sgt
 
         private:
 
-            ZipAbc* zip_;
+            ComponentPtr<ZipAbc> zip_;
     };
+    
+    /// @brief Do anything needed to do to add simZip to the simNetwork.
+    ///
+    /// Important: simZip's zip must separately be added to simNetwork's network. This is to prevent any possible
+    /// confusion about whether it is already added on not.
+    void link(const ConstSimComponentPtr<SimZipAbc>& simZip, SimNetwork& simNetwork);
 }
 
 #endif // SIM_ZIP_DOT_H

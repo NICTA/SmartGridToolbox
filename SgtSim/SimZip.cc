@@ -2,20 +2,20 @@
 
 namespace Sgt
 {
-    void SimZipAbc::linkToSimNetwork(SimNetwork& simNetwork)
+    void link(const ConstSimComponentPtr<SimZipAbc>& simZip, SimNetwork& simNetwork)
     {
         // Safety check that my zip has already been added to simNetwork's network.
-        auto networkZip = simNetwork.network().zips()[zip().id()];
+        auto networkZip = simNetwork.network().zips()[simZip->zip().id()];
         sgtAssert(networkZip != nullptr, "My ZipAbc must be added to the SimNetwork's Network before calling "
                 << __PRETTY_FUNCTION__);
         
-        SimComponent::addDependency(*this, simNetwork, false);
+        SimComponent::addDependency(simZip, simNetwork, false);
 
-        zip().injectionChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
+        simZip->zip().injectionChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
                 std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
-        zip().setpointChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
+        simZip->zip().setpointChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
                 std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
-        zip().isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
+        simZip->zip().isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
                 std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
     }
 }

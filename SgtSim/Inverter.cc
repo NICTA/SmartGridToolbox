@@ -17,9 +17,9 @@
 
 namespace Sgt
 {
-    void InverterAbc::addDcPowerSource(DcPowerSourceAbc& source)
+    void InverterAbc::addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source)
     {
-        sources_.push_back(&source);
+        sources_.push_back(source);
         SimComponent::addDependency(source, *this, false);
     }
 
@@ -29,10 +29,10 @@ namespace Sgt
         return PDcA * efficiency(PDcA);
     }
         
-    void SimpleZipInverter::addDcPowerSource(DcPowerSourceAbc& source)
+    void SimpleZipInverter::addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source)
     {
         InverterAbc::addDcPowerSource(source);
-        source.dcPowerChanged().addAction([this]() {injectionChanged().trigger();},
+        source->dcPowerChanged().addAction([this]() {injectionChanged().trigger();},
                 std::string("Trigger ") + sComponentType() + " " + id() + " injection changed.");
     }
 

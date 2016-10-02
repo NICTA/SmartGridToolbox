@@ -172,10 +172,16 @@ namespace Sgt
             void setTs(double val) {Ts_ = val;}
 
             /// @brief Weather object.
-            void setWeather(Weather& weather) {weather_ = &weather; needsUpdate().trigger();}
+            void setWeather(const ConstSimComponentPtr<Weather>& weather) 
+            {
+                weather_ = weather; needsUpdate().trigger();
+            }
 
             /// @brief Time series for internal generated heat. 
-            void set_dQgSeries(TimeSeries<Time, double>& dQg) {dQg_ = &dQg; needsUpdate().trigger();}
+            void set_dQgSeries(const ConstTimeSeriesPtr<TimeSeries<Time, double>>& dQg) 
+            {
+                dQg_ = dQg; needsUpdate().trigger();
+            }
             
             /// @}
 
@@ -218,27 +224,27 @@ namespace Sgt
 
         private:
             // Parameters and controls.
-            Time dt_;                                       // Timestep.
-            double kb_;                                     // Thermal conductivity, W/K.
-            double Cb_;                                     // Heat capacity of building, J/K.
-            double TbInit_;                                 // Initial temp of building.
-            double kh_;                                     // HVAC PID parameter, W/K.
-            double copCool_;                                // HVAC cooling coeff. of perf.
-            double copHeat_;                                // HVAC heating coeff. of perf.
-            double PMax_;                                   // HVAC max power, W.
-            double Ts_;                                     // HVAC set_point, C.
+            Time dt_;                                                       // Timestep.
+            double kb_;                                                     // Thermal conductivity, W/K.
+            double Cb_;                                                     // Heat capacity of building, J/K.
+            double TbInit_;                                                 // Initial temp of building.
+            double kh_;                                                     // HVAC PID parameter, W/K.
+            double copCool_;                                                // HVAC cooling coeff. of perf.
+            double copHeat_;                                                // HVAC heating coeff. of perf.
+            double PMax_;                                                   // HVAC max power, W.
+            double Ts_;                                                     // HVAC set_point, C.
 
-            Weather* weather_;                              // For external temperature.
-            TimeSeries<Time, double>* dQg_;                 // Extra heat -> building.
+            ConstSimComponentPtr<Weather> weather_;                         // For external temperature.
+            ConstTimeSeriesPtr<TimeSeries<Time, double>> dQg_;              // Extra heat -> building.
 
             // State.
-            double Tb_;                                     // Building temperature, C.
+            double Tb_;                                                     // Building temperature, C.
             // Operating parameters.
-            HvacMode mode_;                                 // Cooling or heating?
-            double cop_;                                    // Depends on mode.
-            bool isMaxed_;                                  // On maximum power?
-            double Ph_;                                     // Power drawn from grid by HVAC.
-            double dQh_;                                    // Thermal output, +ve = heating.
+            HvacMode mode_;                                                 // Cooling or heating?
+            double cop_;                                                    // Depends on mode.
+            bool isMaxed_;                                                  // On maximum power?
+            double Ph_;                                                     // Power drawn from grid by HVAC.
+            double dQh_;                                                    // Thermal output, +ve = heating.
     };
 }
 #endif // SIMPLE_BUILDING_DOT_H

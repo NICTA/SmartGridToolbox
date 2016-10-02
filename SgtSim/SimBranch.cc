@@ -2,18 +2,18 @@
 
 namespace Sgt
 {
-    void SimBranchAbc::linkToSimNetwork(SimNetwork& simNetwork)
+    void link(const ConstSimComponentPtr<SimBranchAbc>& simBranch, SimNetwork& simNetwork)
     {
         // Safety check that my branch has already been added to simNetwork's network.
-        auto networkBranch = simNetwork.network().branches()[branch().id()];
+        auto networkBranch = simNetwork.network().branches()[simBranch->branch().id()];
         sgtAssert(networkBranch != nullptr, "My BranchAbc must be added to the SimNetwork's Network before calling "
                 << __PRETTY_FUNCTION__);
         
-        SimComponent::addDependency(*this, simNetwork, false);
+        SimComponent::addDependency(simBranch, simNetwork, false);
 
-        branch().admittanceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
+        simBranch->branch().admittanceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
                 std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
-        branch().isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
+        simBranch->branch().isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
                 std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
     }
 }

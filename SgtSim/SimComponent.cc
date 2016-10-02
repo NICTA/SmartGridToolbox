@@ -42,15 +42,15 @@ namespace Sgt
         didUpdate_.trigger();
     }
 
-    void SimComponent::addDependency(ConstComponentPtr<SimComponent> comp, 
-            SimComponent& dependsOnComp, bool forceUpdate)
+    void SimComponent::addDependency(const ConstComponentPtr<SimComponent>& comp, 
+            SimComponent& dependentComp, bool forceUpdate)
     {
-        dependsOnComp.dependencies_.push_back(&comp);
+        dependentComp.dependencies_.push_back(comp);
         if (forceUpdate)
         {
-            comp.didUpdate().addAction([&dependsOnComp]() {dependsOnComp.needsUpdate().trigger();},
-                    std::string("Add ") + dependsOnComp.componentType() + " " + dependsOnComp.id() 
-                    + " contingent update due to " + comp.id() + ".");
+            comp->didUpdate().addAction([&dependentComp]() {dependentComp.needsUpdate().trigger();},
+                    std::string("Add ") + dependentComp.componentType() + " " + dependentComp.id() 
+                    + " contingent update due to " + comp->id() + ".");
         }
     }
 }

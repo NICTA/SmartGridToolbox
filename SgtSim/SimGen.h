@@ -33,12 +33,6 @@ namespace Sgt
             virtual const GenAbc& gen() const = 0;
             /// @brief Return the gen that I wrap (non-const). 
             virtual GenAbc& gen() = 0;
-
-            /// @brief Do anything I need to do to add myself to the simNetwork.
-            ///
-            /// Important: my gen must separately be added to SimNetwork's Network. This is to prevent any possible
-            /// confusion about whether it is already added on not.
-            virtual void linkToSimNetwork(SimNetwork& simNetwork);
     };
 
     /// @brief Simulation gen, corresponding to a GenAbc in a SimNetwork's network(). 
@@ -48,9 +42,9 @@ namespace Sgt
     {
         public:
 
-            SimGen(const std::string& id, GenAbc& gen) :
+            SimGen(const std::string& id, const ComponentPtr<GenAbc>& gen) :
                 Component(id),
-                gen_(&gen)
+                gen_(gen)
             {
                 // Empty.
             }
@@ -67,8 +61,14 @@ namespace Sgt
 
         private:
 
-            GenAbc* gen_;
+            ComponentPtr<GenAbc> gen_;
     };
+
+    /// @brief Do anything needed to do to add simGen to simNetwork.
+    ///
+    /// Important: simGen's gen must separately be added to simNetwork's network. This is to prevent any possible
+    /// confusion about whether it is already added on not.
+    void link(const ConstSimComponentPtr<SimGenAbc>& simGen, SimNetwork& simNetwork);
 }
 
 #endif // SIM_GEN_DOT_H
