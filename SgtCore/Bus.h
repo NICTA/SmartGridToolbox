@@ -106,11 +106,7 @@ namespace Sgt
                 return type_;
             }
 
-            virtual void setType(BusType type)
-            {
-                type_ = type;
-                setpointChanged_.trigger();
-            }
+            virtual void setType(BusType type);
 
             SGT_PROP_GET_SET(type, type, BusType, setType, BusType);
 
@@ -119,11 +115,7 @@ namespace Sgt
                 return VMagSetpoint_;
             }
 
-            virtual void setVMagSetpoint(const arma::Col<double>& VMagSetpoint)
-            {
-                VMagSetpoint_ = VMagSetpoint;
-                setpointChanged_.trigger();
-            }
+            virtual void setVMagSetpoint(const arma::Col<double>& VMagSetpoint);
 
             SGT_PROP_GET_SET(VMagSetpoint, VMagSetpoint, arma::Col<double>, setVMagSetpoint, const arma::Col<double>&);
 
@@ -132,11 +124,7 @@ namespace Sgt
                 return VAngSetpoint_;
             }
 
-            virtual void setVAngSetpoint(const arma::Col<double>& VAngSetpoint)
-            {
-                VAngSetpoint_ = VAngSetpoint;
-                setpointChanged_.trigger();
-            }
+            virtual void setVAngSetpoint(const arma::Col<double>& VAngSetpoint);
 
             SGT_PROP_GET_SET(VAngSetpoint, VAngSetpoint, arma::Col<double>, setVAngSetpoint, const arma::Col<double>&);
 
@@ -147,11 +135,7 @@ namespace Sgt
                 return VMagMin_;
             }
 
-            virtual void setVMagMin(double VMagMin)
-            {
-                VMagMin_ = VMagMin;
-                setpointChanged_.trigger();
-            }
+            virtual void setVMagMin(double VMagMin);
 
             SGT_PROP_GET_SET(VMagMin, VMagMin, double, setVMagMin, double);
             
@@ -160,11 +144,7 @@ namespace Sgt
                 return VMagMax_;
             }
 
-            virtual void setVMagMax(double VMagMax)
-            {
-                VMagMax_ = VMagMax;
-                setpointChanged_.trigger();
-            }
+            virtual void setVMagMax(double VMagMax);
 
             SGT_PROP_GET_SET(VMagMax, VMagMax, double, setVMagMax, double);
 
@@ -178,13 +158,18 @@ namespace Sgt
                 return isInService_;
             }
 
-            virtual void setIsInService(bool isInService)
-            {
-                isInService_ = isInService;
-                isInServiceChanged_.trigger();
-            }
+            virtual void setIsInService(bool isInService);
 
             SGT_PROP_GET_SET(isInService, isInService, bool, setIsInService, bool);
+            
+            virtual bool isSupplied() const
+            {
+                return isSupplied_;
+            }
+
+            virtual void setIsSupplied(bool isSupplied);
+
+            SGT_PROP_GET_SET(isSupplied, isSupplied, bool, setIsSupplied, bool);
 
             virtual const arma::Col<Complex>& V() const
             {
@@ -193,11 +178,7 @@ namespace Sgt
 
             SGT_PROP_GET(V, V, const arma::Col<Complex>&);
 
-            virtual void setV(const arma::Col<Complex>& V)
-            {
-                V_ = V;
-                voltageUpdated_.trigger();
-            }
+            virtual void setV(const arma::Col<Complex>& V);
 
             virtual const arma::Col<Complex>& SGenUnserved() const
             {
@@ -266,6 +247,12 @@ namespace Sgt
             virtual Event& isInServiceChanged()
             {
                 return isInServiceChanged_;
+            }
+
+            /// @brief Event triggered when my supplied state changes.
+            virtual Event& isSuppliedChanged()
+            {
+                return isSuppliedChanged_;
             }
 
             /// @brief Event triggered when bus setpoint has changed.
@@ -432,7 +419,7 @@ namespace Sgt
             double VMagMax_{infinity};
 
             bool isInService_{true};
-
+            bool isSupplied_{true};
             arma::Col<Complex> V_;
             arma::Col<Complex> SGenUnserved_; // SGen + SGenUnserved = SGenRequested
             arma::Mat<Complex> SZipUnserved_; // SZip + SZipUnserved = SZipRequested
@@ -442,6 +429,7 @@ namespace Sgt
             arma::Col<double>::fixed<2> coords_{{0.0, 0.0}};
 
             Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
+            Event isSuppliedChanged_{std::string(sComponentType()) + " : Is supplied changed"};
             Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
             Event voltageUpdated_{std::string(sComponentType()) + " : Voltage updated"};
             

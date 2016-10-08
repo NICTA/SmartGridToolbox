@@ -72,6 +72,66 @@ namespace Sgt
             {"zips", zipsJson}};
         return j;
     }
+    
+    void Bus::setType(BusType type)
+    {
+        bool changed = type != type_;
+        if (changed)
+        {
+            type_ = type;
+            setpointChanged_.trigger();
+        }
+    }
+            
+    void Bus::setVMagSetpoint(const arma::Col<double>& VMagSetpoint)
+    {
+        VMagSetpoint_ = VMagSetpoint;
+        setpointChanged_.trigger();
+    }
+            
+    void Bus::setVAngSetpoint(const arma::Col<double>& VAngSetpoint)
+    {
+        VAngSetpoint_ = VAngSetpoint;
+        setpointChanged_.trigger();
+    }
+            
+    void Bus::setVMagMin(double VMagMin)
+    {
+        VMagMin_ = VMagMin;
+        setpointChanged_.trigger();
+    }
+
+    void Bus::setVMagMax(double VMagMax)
+    {
+        VMagMax_ = VMagMax;
+        setpointChanged_.trigger();
+    }
+            
+    void Bus::setIsInService(bool isInService)
+    {
+        bool changed = isInService != isInService_;
+        if (changed)
+        {
+            isInService_ = isInService;
+            isInServiceChanged_.trigger();
+        }
+    }
+            
+    void Bus::setIsSupplied(bool isSupplied)
+    {
+        bool changed = isSupplied != isSupplied_;
+        if (changed)
+        {
+            isSupplied_ = isSupplied;
+            isSuppliedChanged_.trigger();
+        }
+    }
+            
+    void Bus::setV(const arma::Col<Complex>& V)
+    {
+        V_ = V;
+        voltageUpdated_.trigger();
+    }
 
     void Bus::applyVSetpoints()
     {

@@ -134,7 +134,7 @@ namespace Sgt
 
         // Islands.
         findIslands();
-        handleUnsuppliedIslands();
+        handleIslands();
 
         // Solve and update network.
         isValidSolution_ = solver_->solve(*this);
@@ -194,7 +194,7 @@ namespace Sgt
             }
             else
             {
-                // Should be unsupplied. Note that the island will contain at least bus.
+                // Should be unsupplied. Note that the island will contain at least one bus.
                 islands_.push_back({curIdx++, false, {}});
                 islandDfs(bus, islands_.back());
                 for (auto b : islands_.back().buses) remaining.erase(b->id());
@@ -202,17 +202,19 @@ namespace Sgt
         }
     }
             
-    void Network::handleUnsuppliedIslands()
+    void Network::handleIslands()
     {
         for (auto island : islands_)
         {
-            if (island.isSupplied) continue;
-
             for (auto bus : island.buses)
             {
-                bus->setV(arma::Col<Complex>(bus->V().size(), arma::fill::zeros));
-                bus->setSGenUnserved(bus->SGenRequested());
-                bus->setSZipUnserved(bus->SZipRequested());
+                bus->setIsSupplied(island.isSupplied);
+                if (!island.isSupplied)
+                {
+                    bus->setV(arma::Col<Complex>(bus->V().size(), arma::fill::zeros));
+                    bus->setSGenUnserved(bus->SGenRequested());
+                    bus->setSZipUnserved(bus->SZipRequested());
+                }
             }
         }
     }

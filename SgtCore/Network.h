@@ -306,7 +306,7 @@ namespace Sgt
 
             void findIslands();
             
-            void handleUnsuppliedIslands();
+            void handleIslands();
 
             /// @}
             
