@@ -34,7 +34,10 @@ namespace Sgt
         public:
             TimeSeriesZip(const std::string& id, const Phases& phases,
                     const TimeSeries<Time, arma::Col<Complex>>* series, const Time& dt,
-                    arma::Mat<arma::uword> idxs = {});
+                    const arma::Mat<arma::uword>& matrixElems,
+                    const arma::Col<arma::uword>& dataIdxsY,
+                    const arma::Col<arma::uword>& dataIdxsI,
+                    const arma::Col<arma::uword>& dataIdxsS);
 
             virtual const std::string& componentType() const override
             {
@@ -49,11 +52,6 @@ namespace Sgt
             virtual ZipAbc& zip() override
             {
                 return *this;
-            }
-
-            arma::uword numComponents() const
-            {
-                return dataIdxs_.size();
             }
 
             double scaleFactorY() const
@@ -98,9 +96,10 @@ namespace Sgt
 
         private:
             const TimeSeries<Time, arma::Col<Complex>>* series_;
-            arma::Col<arma::uword> dataIdxs_;
-            arma::Col<arma::uword> rowIdxs_;
-            arma::Col<arma::uword> colIdxs_;
+            arma::Mat<arma::uword> matrixElems_;
+            arma::Col<arma::uword> dataIdxsY_;
+            arma::Col<arma::uword> dataIdxsI_;
+            arma::Col<arma::uword> dataIdxsS_;
             double scaleFactorY_{1.0};
             double scaleFactorI_{1.0};
             double scaleFactorS_{1.0};

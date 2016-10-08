@@ -28,37 +28,68 @@ namespace Sgt
         assertFieldPresent(nd, "time_series_id");
         assertFieldPresent(nd, "phases");
         assertFieldPresent(nd, "dt");
+        assertFieldPresent(nd, "matrix_elements");
 
         string id = parser.expand<std::string>(nd["id"]);
+
         string networkId = parser.expand<std::string>(nd["sim_network_id"]);
+
         string busId = parser.expand<std::string>(nd["bus_id"]);
-        string tsId = parser.expand<std::string>(nd["time_series_id"]);
+
         Phases phases = parser.expand<Phases>(nd["phases"]);
-        YAML::Node ndMatElems = nd["matrix_elements"];
-        arma::Mat<arma::uword> matElems;
-        if (ndMatElems)
-        {
-            matElems = parser.expand<arma::Mat<arma::uword>>(nd["matrix_elements"]);
-        }
+
+        string tsId = parser.expand<std::string>(nd["time_series_id"]);
+        auto series = sim.timeSeries()[tsId].as<TimeSeries<Time, arma::Col<Complex>>, true>();
+        
         Time dt = parser.expand<Time>(nd["dt"]);
 
-        auto ndScaleFactorY = nd["scale_factor_Y"];
-        auto ndScaleFactorI = nd["scale_factor_I"];
-        auto ndScaleFactorS = nd["scale_factor_S"];
+        arma::Mat<arma::uword> matrixElems;
+        YAML::Node ndMatElems = nd["matrix_elements"];
+        if (ndMatElems)
+        {
+            matrixElems = parser.expand<arma::Mat<arma::uword>>(nd["matrix_elements"]);
+        }
 
-        auto series = sim.timeSeries()[tsId].as<TimeSeries<Time, arma::Col<Complex>>, true>();
+        arma::Col<arma::uword> dataIdxsY;
+        YAML::Node ndDataIdxsY = nd["data_indices_Y"];
+        if (ndDataIdxsY)
+        {
+            dataIdxsY = parser.expand<arma::Col<arma::uword>>(nd["data_indices_Y"]);
+        }
+
+        arma::Col<arma::uword> dataIdxsI;
+        YAML::Node ndDataIdxsI = nd["data_indices_I"];
+        if (ndDataIdxsI)
+        {
+            dataIdxsI = parser.expand<arma::Col<arma::uword>>(nd["data_indices_I"]);
+        }
+
+        arma::Col<arma::uword> dataIdxsS;
+        YAML::Node ndDataIdxsS = nd["data_indices_S"];
+        if (ndDataIdxsS)
+        {
+            dataIdxsS = parser.expand<arma::Col<arma::uword>>(nd["data_indices_S"]);
+        }
+
         auto network = sim.simComponent<SimNetwork>(networkId);
-        auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, phases, series, dt, matElems);
+        auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, phases, series, dt, matrixElems, dataIdxsY, dataIdxsI,
+                dataIdxsS);
+        
+        auto ndScaleFactorY = nd["scale_factor_Y"];
         if (ndScaleFactorY)
         {
             double scaleFactorY = parser.expand<double>(ndScaleFactorY);
             tsZip->setScaleFactorY(scaleFactorY);
         }
+
+        auto ndScaleFactorI = nd["scale_factor_I"];
         if (ndScaleFactorI)
         {
             double scaleFactorI = parser.expand<double>(ndScaleFactorI);
             tsZip->setScaleFactorI(scaleFactorI);
         }
+
+        auto ndScaleFactorS = nd["scale_factor_S"];
         if (ndScaleFactorS)
         {
             double scaleFactorS = parser.expand<double>(ndScaleFactorS);
