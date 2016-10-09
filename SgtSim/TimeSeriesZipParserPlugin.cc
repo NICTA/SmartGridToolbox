@@ -39,7 +39,8 @@ namespace Sgt
         Phases phases = parser.expand<Phases>(nd["phases"]);
 
         string tsId = parser.expand<std::string>(nd["time_series_id"]);
-        auto series = sim.timeSeries()[tsId].as<TimeSeries<Time, arma::Col<Complex>>, true>();
+        ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>> series = 
+            sim.timeSeries()[tsId].as<TimeSeries<Time, arma::Col<Complex>>, true>();
         
         Time dt = parser.expand<Time>(nd["dt"]);
 

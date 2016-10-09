@@ -23,7 +23,7 @@ namespace
 namespace Sgt
 {
     TimeSeriesZip::TimeSeriesZip(const std::string& id, const Phases& phases,
-                    const TimeSeries<Time, Col<Complex>>* series, const Time& dt,
+                    const ConstTimeSeriesPtr<TimeSeries<Time, Col<Complex>>>& series, const Time& dt,
                     const Mat<uword>& matrixElems,
                     const Col<uword>& dataIdxsY,
                     const Col<uword>& dataIdxsI,

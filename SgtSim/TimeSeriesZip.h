@@ -33,7 +33,7 @@ namespace Sgt
 
         public:
             TimeSeriesZip(const std::string& id, const Phases& phases,
-                    const TimeSeries<Time, arma::Col<Complex>>* series, const Time& dt,
+                    const ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>>& series, const Time& dt,
                     const arma::Mat<arma::uword>& matrixElems,
                     const arma::Col<arma::uword>& dataIdxsY,
                     const arma::Col<arma::uword>& dataIdxsI,
@@ -95,7 +95,7 @@ namespace Sgt
             arma::Mat<Complex> mapToMat(const arma::Col<Complex>& vec) const;
 
         private:
-            const TimeSeries<Time, arma::Col<Complex>>* series_;
+            ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>> series_;
             arma::Mat<arma::uword> matrixElems_;
             arma::Col<arma::uword> dataIdxsY_;
             arma::Col<arma::uword> dataIdxsI_;
