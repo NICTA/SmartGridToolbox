@@ -124,7 +124,7 @@ namespace Sgt
             const std::string& key() const {return (**it_).first;}
 
             /// @brief Do I refer to an actual component? 
-            operator bool() const {return shared();}
+            operator bool() const {return shared().operator bool();}
 
             /// @brief Comparison to nullptr.
             bool operator==(const std::nullptr_t& rhs) const {return shared() == nullptr;}
