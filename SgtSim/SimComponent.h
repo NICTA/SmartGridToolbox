@@ -199,8 +199,8 @@ namespace Sgt
             ///< Triggered just after fully completing a timestep.
     };
 
-    template<typename T> using SimComponentPtr = ComponentPtr<SimComponent, T>;
-    template<typename T> using ConstSimComponentPtr = ConstComponentPtr<SimComponent, T>;
+    template<typename T = SimComponent> using SimComponentPtr = ComponentPtr<SimComponent, T>;
+    template<typename T = SimComponent> using ConstSimComponentPtr = ConstComponentPtr<SimComponent, T>;
 }
 
 #endif // SIM_COMPONENT_DOT_H
