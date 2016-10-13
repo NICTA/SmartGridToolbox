@@ -17,7 +17,7 @@ namespace Sgt
         sgtAssert(networkBus != nullptr, "My Bus must be added to the SimNetwork's Network before calling "
                 << __PRETTY_FUNCTION__);
         
-        SimComponent::addDependency(simBus, simNetwork, false);
+        simNetwork.dependsOn(simBus, false);
         simBus->bus().setpointChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
                 std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
         simBus->bus().isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},

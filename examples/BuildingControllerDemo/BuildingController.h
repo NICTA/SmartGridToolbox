@@ -40,25 +40,25 @@ namespace Sgt
 
             BuildingController(const std::string& id, const Time& dt);
 
-            void setBatt(Battery& batt);
+            void setBatt(const SimComponentPtr<Battery>& batt);
             
-            void setBuild(Building& build);
+            void setBuild(const SimComponentPtr<Building>& build);
             
-            void setSolar(SolarPv& solar);
+            void setSolar(const SimComponentPtr<SolarPv>& solar);
 
-            void setLoadSeries(const LoadSeries& loadSeries)
+            void setLoadSeries(const ConstTimeSeriesPtr<LoadSeries>& loadSeries)
             {
-                loadSeries_ = &loadSeries;
+                loadSeries_ = loadSeries;
             }
             
-            void setPriceSeries(const PriceSeries& priceSeries)
+            void setPriceSeries(const ConstTimeSeriesPtr<PriceSeries>& priceSeries)
             {
-                priceSeries_ = &priceSeries;
+                priceSeries_ = priceSeries;
             }
             
-            void setTExtSeries(const TempSeries& TExtSeries)
+            void setTExtSeries(const ConstTimeSeriesPtr<TempSeries>& TExtSeries)
             {
-                TExtSeries_ = &TExtSeries;
+                TExtSeries_ = TExtSeries;
             }
 
             void setFeedInTariff(double feedInTariff)
@@ -85,13 +85,13 @@ namespace Sgt
             virtual void updateState(Time t) override;
 
         private:
-            Battery* batt_;
-            Building* build_;
-            SolarPv* solar_;
+            SimComponentPtr<Battery> batt_;
+            SimComponentPtr<Building> build_;
+            SimComponentPtr<SolarPv> solar_;
 
-            const LoadSeries* loadSeries_;
-            const PriceSeries* priceSeries_;
-            const TempSeries* TExtSeries_;
+            ConstTimeSeriesPtr<LoadSeries> loadSeries_;
+            ConstTimeSeriesPtr<PriceSeries> priceSeries_;
+            ConstTimeSeriesPtr<TempSeries> TExtSeries_;
 
             double feedInTariff_; // Objective paid for power injected back into grid.
             double comfortFactor_; // Objective per degree away from setpoint.

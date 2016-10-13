@@ -173,12 +173,12 @@ namespace Sgt
             void setReqPHeat(double val) {reqPHeat_ = val;} // Doesn't affect state in this timestep, no update needed.
 
             /// @brief Weather object.
-            void setWeather(Weather& weather);
+            void setWeather(const ConstSimComponentPtr<Weather>& weather);
 
             /// @brief Time series for internal generated heat. 
-            void setPThIntSeries(TimeSeries<Time, double>& PThInt)
+            void setPThIntSeries(const ConstTimeSeriesPtr<TimeSeries<Time, double>>& PThInt)
             {
-                PThInt_ = &PThInt; needsUpdate().trigger();
+                PThInt_ = PThInt; needsUpdate().trigger();
             }
             
             /// @}
@@ -242,8 +242,8 @@ namespace Sgt
             double reqPHeat_; // Requested heating power.
 
             // Extraneous factors:
-            const Weather* weather_; // For external temperature.
-            const TimeSeries<Time, double>* PThInt_; // Extraneous heat generated in building.
+            ConstSimComponentPtr<Weather> weather_; // For external temperature.
+            ConstTimeSeriesPtr<TimeSeries<Time, double>> PThInt_; // Extraneous heat generated in building.
 
             // State.
             double Tb_; // Building temperature, C.

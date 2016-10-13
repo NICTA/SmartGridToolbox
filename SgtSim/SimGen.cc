@@ -9,7 +9,7 @@ namespace Sgt
         sgtAssert(networkGen != nullptr, "My GenAbc must be added to the SimNetwork's Network before calling "
                 << __PRETTY_FUNCTION__);
 
-        SimComponent::addDependency(simGen, simNetwork, false);
+        simNetwork.dependsOn(simGen, false);
 
         simGen->gen().setpointChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
                 std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");

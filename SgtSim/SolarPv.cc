@@ -26,7 +26,7 @@ namespace Sgt
     void SolarPv::setWeather(const ConstSimComponentPtr<Weather>& weather)
     {
         weather_ = weather;
-        SimComponent::addDependency(weather, *this, true);
+        dependsOn(weather, true);
     }
 
     double SolarPv::PDc(const Time& t) const

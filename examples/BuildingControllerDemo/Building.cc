@@ -45,10 +45,10 @@ namespace Sgt
         Tb_ = dSv * Tb_ + (1.0 - dSv) * cSv;
     }
 
-    void Building::setWeather(Weather& weather)
+    void Building::setWeather(const ConstSimComponentPtr<Weather>& weather)
     {
-        weather_ = &weather;
-        SimComponent::addDependency(weather, *this, true);
+        weather_ = weather;
+        dependsOn(weather, true);
     }
 
     double Building::c(const Time& t0, const Time& t1) const
@@ -104,7 +104,7 @@ namespace Sgt
             std::string id = parser.expand<std::string>(PThIntNd);
             auto series = sim.timeSeries()[id].as<TimeSeries<Time, double>>();
             sgtAssert(series != nullptr, "Parsing building: couldn't find time series " << id << ".");
-            build->setPThIntSeries(*series);
+            build->setPThIntSeries(series);
         }
 
         assertFieldPresent(nd, "sim_network_id");
@@ -115,7 +115,7 @@ namespace Sgt
 
         auto netw = sim.simComponent<SimNetwork>(networkId);
         netw->network().addZip(shared<ZipAbc>(build->zip()), busId);
-        build->linkToSimNetwork(*netw);
+        link(build, *netw);
 
         const auto& weatherNd = nd["weather"];
         if (weatherNd)
@@ -123,7 +123,7 @@ namespace Sgt
             std::string weatherStr = parser.expand<std::string>(weatherNd);
             auto weather = sim.simComponent<Weather>(weatherStr);
             sgtAssert(weather != nullptr, "Parsing simple_building: couldn't find weather " << weatherStr << ".");
-            build->setWeather(*weather);
+            build->setWeather(weather);
         }
     }
 }

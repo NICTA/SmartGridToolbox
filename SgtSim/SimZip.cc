@@ -9,7 +9,7 @@ namespace Sgt
         sgtAssert(networkZip != nullptr, "My ZipAbc must be added to the SimNetwork's Network before calling "
                 << __PRETTY_FUNCTION__);
         
-        SimComponent::addDependency(simZip, simNetwork, false);
+        simNetwork.dependsOn(simZip, false);
 
         simZip->zip().injectionChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
                 std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
