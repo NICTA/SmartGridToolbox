@@ -78,7 +78,7 @@ namespace Sgt
                 // Empty.
             }
 
-            void addAction(const std::function<void ()>& action, const std::string& description)
+            void addAction(const std::function<void ()>& action, const std::string& description) const
             {
                 sgtLogDebug() << "Event: " << description_ << ": addAction: " << description << std::endl;
                 actions_.emplace_back(action, description);
@@ -112,7 +112,7 @@ namespace Sgt
             }
 
         private:
-            std::list<Action> actions_;
+            mutable std::list<Action> actions_;
             std::string description_;
             bool isEnabled_{true};
     };

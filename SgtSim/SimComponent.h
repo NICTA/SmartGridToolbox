@@ -160,19 +160,19 @@ namespace Sgt
             /// @{
 
             /// @brief Triggered just before my update.
-            Event& willUpdate() {return willUpdate_;}
+            const Event& willUpdate() const {return willUpdate_;}
 
             /// @brief Triggered after my update.
-            Event& didUpdate() {return didUpdate_;}
+            const Event& didUpdate() const {return didUpdate_;}
 
             /// @brief Triggered when I am flagged for future update.
-            Event& needsUpdate() {return needsUpdate_;}
+            const Event& needsUpdate() const {return needsUpdate_;}
 
             /// @brief Triggered when I am about to update to a new timestep.
-            Event& willStartNewTimestep() {return willStartNewTimestep_;}
+            const Event& willStartNewTimestep() const {return willStartNewTimestep_;}
 
             /// @brief Triggered when I just updated, completing the current timestep.
-            Event& didCompleteTimestep() {return didCompleteTimestep_;}
+            const Event& didCompleteTimestep() const {return didCompleteTimestep_;}
 
             /// @}
 

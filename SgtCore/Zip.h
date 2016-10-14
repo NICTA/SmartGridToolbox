@@ -139,19 +139,19 @@ namespace Sgt
             /// @{
 
             /// @brief Event triggered when I go in or out of service.
-            virtual Event& isInServiceChanged()
+            virtual const Event& isInServiceChanged() const
             {
                 return isInServiceChanged_;
             }
 
             /// @brief Event triggered when I go in or out of service.
-            virtual Event& injectionChanged()
+            virtual const Event& injectionChanged() const
             {
                 return injectionChanged_;
             }
 
             /// @brief Event triggered when I go in or out of service.
-            virtual Event& setpointChanged()
+            virtual const Event& setpointChanged() const
             {
                 return setpointChanged_;
             }

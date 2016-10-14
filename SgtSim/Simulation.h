@@ -149,10 +149,10 @@ namespace Sgt
             bool isFinished() {return (scheduledUpdates_.size() == 0) && (contingentUpdates_.size() == 0);}
 
             /// @brief Get the timestep will start event.
-            Event& timestepWillStart() {return timestepWillStart_;}
+            const Event& timestepWillStart() const {return timestepWillStart_;}
 
             /// @brief Get the timestep did complete event.
-            Event& timestepDidComplete() {return timestepDidComplete_;}
+            const Event& timestepDidComplete() const {return timestepDidComplete_;}
 
             /// @brief Access TimeSeries (const version).
             const ComponentCollection<TimeSeriesBase>& timeSeries() const

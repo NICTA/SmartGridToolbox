@@ -57,7 +57,7 @@ namespace Sgt
             /// @{
 
             /// @brief Event triggered when the DC power changes.
-            virtual Event& dcPowerChanged()
+            virtual const Event& dcPowerChanged() const
             {
                 return dcPowerChanged_;
             }

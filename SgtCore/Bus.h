@@ -244,25 +244,25 @@ namespace Sgt
             /// @{
 
             /// @brief Event triggered when I go in or out of service.
-            virtual Event& isInServiceChanged()
+            virtual const Event& isInServiceChanged() const
             {
                 return isInServiceChanged_;
             }
 
             /// @brief Event triggered when my supplied state changes.
-            virtual Event& isSuppliedChanged()
+            virtual Event& isSuppliedChanged() const
             {
                 return isSuppliedChanged_;
             }
 
             /// @brief Event triggered when bus setpoint has changed.
-            virtual Event& setpointChanged()
+            virtual Event& setpointChanged() const
             {
                 return setpointChanged_;
             }
 
             /// @brief Event triggered when bus state (e.g. voltage) has been updated.
-            virtual Event& voltageUpdated()
+            virtual const Event& voltageUpdated() const
             {
                 return voltageUpdated_;
             }
