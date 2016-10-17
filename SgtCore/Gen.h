@@ -193,9 +193,21 @@ namespace Sgt
             {
                 return isInServiceChanged_;
             }
+            
+            /// @brief Event triggered when I go in or out of service.
+            virtual Event& isInServiceChanged()
+            {
+                return isInServiceChanged_;
+            }
 
             /// @brief Event triggered when the amount of generated power changes.
             virtual const Event& generationChanged() const
+            {
+                return generationChanged_;
+            }
+            
+            /// @brief Event triggered when the amount of generated power changes.
+            virtual Event& generationChanged()
             {
                 return generationChanged_;
             }
@@ -205,9 +217,21 @@ namespace Sgt
             {
                 return JChanged_;
             }
+            
+            /// @brief Event triggered when the angular momentum changes.
+            virtual Event& JChanged()
+            {
+                return JChanged_;
+            }
 
             /// @brief Event triggered when a setpoint is changed.
             virtual const Event& setpointChanged() const
+            {
+                return setpointChanged_;
+            }
+            
+            /// @brief Event triggered when a setpoint is changed.
+            virtual Event& setpointChanged()
             {
                 return setpointChanged_;
             }

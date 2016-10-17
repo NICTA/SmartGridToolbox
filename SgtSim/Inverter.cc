@@ -32,8 +32,7 @@ namespace Sgt
     void SimpleZipInverter::addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source)
     {
         InverterAbc::addDcPowerSource(source);
-        source->dcPowerChanged().addAction([this]() {injectionChanged().trigger();},
-                std::string("Trigger ") + sComponentType() + " " + id() + " injection changed.");
+        injectionChanged().addTrigger(source->dcPowerChanged());
     }
 
     arma::Mat<Complex> SimpleZipInverter::SConst() const

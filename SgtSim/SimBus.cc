@@ -18,9 +18,8 @@ namespace Sgt
                 << __PRETTY_FUNCTION__);
         
         simNetwork.dependsOn(simBus, false);
-        simBus->bus().setpointChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
-                std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
-        simBus->bus().isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
-                std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
+
+        simNetwork.needsUpdate().addTrigger(simBus->bus().setpointChanged());
+        simNetwork.needsUpdate().addTrigger(simBus->bus().isInServiceChanged());
     }
 }

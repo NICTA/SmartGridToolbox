@@ -11,9 +11,7 @@ namespace Sgt
         
         simNetwork.dependsOn(simBranch, false);
 
-        simBranch->branch().admittanceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
-                std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
-        simBranch->branch().isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
-                std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
+        simNetwork.needsUpdate().addTrigger(simBranch->branch().admittanceChanged());
+        simNetwork.needsUpdate().addTrigger(simBranch->branch().isInServiceChanged());
     }
 }

@@ -11,9 +11,7 @@ namespace Sgt
 
         simNetwork.dependsOn(simGen, false);
 
-        simGen->gen().setpointChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
-                std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
-        simGen->gen().isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
-                std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
+        simNetwork.needsUpdate().addTrigger(simGen->gen().setpointChanged());
+        simNetwork.needsUpdate().addTrigger(simGen->gen().isInServiceChanged());
     }
 }

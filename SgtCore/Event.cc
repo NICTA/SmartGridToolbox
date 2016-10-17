@@ -18,18 +18,37 @@
 
 namespace Sgt
 {
-    void Event::trigger()
+    Action::~Action()
+    {
+        for (auto event : events_) event->actions_.remove(this);
+    }
+
+    void Action::reset(const std::function<void ()>& function, const std::string& description)
+    {
+        for (auto event : events_) event->actions_.remove(this);
+        events_.clear();
+        function_ = function;
+        if (description != "") description_ = description;
+    }
+            
+    void Action::addTrigger(const Event& event)
+    {
+        events_.push_back(&event);
+        event.actions_.push_back(this); 
+    }
+
+    void Event::trigger() const
     {
         if (isEnabled_)
         {
             sgtLogDebug(LogLevel::VERBOSE) << "Event was triggered: " << description_ << std::endl;
             LogIndent indent;
-            for (const Action& action : actions_)
+            for (const Action* action : actions_)
             {
-                sgtLogDebug(LogLevel::VERBOSE) << "Event perform action: " << action.description() << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << "Event perform action: " << action->description() << std::endl;
                 {
                     LogIndent indent;
-                    action.perform();
+                    action->perform();
                 }
             }
         }

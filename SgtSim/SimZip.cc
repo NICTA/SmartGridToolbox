@@ -11,11 +11,8 @@ namespace Sgt
         
         simNetwork.dependsOn(simZip, false);
 
-        simZip->zip().injectionChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
-                std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
-        simZip->zip().setpointChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
-                std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
-        simZip->zip().isInServiceChanged().addAction([&simNetwork]() {simNetwork.needsUpdate().trigger();},
-                std::string("Trigger ") + simNetwork.componentType() + " " + simNetwork.id() + " needs update");
+        simNetwork.needsUpdate().addTrigger(simZip->zip().injectionChanged());
+        simNetwork.needsUpdate().addTrigger(simZip->zip().setpointChanged());
+        simNetwork.needsUpdate().addTrigger(simZip->zip().isInServiceChanged());
     }
 }

@@ -26,6 +26,8 @@ namespace Sgt
     /// @ingroup SimCore
     class SimComponent : virtual public Component
     {
+        friend class Simulation;
+
         public:
 
             /// @name Static member functions:
@@ -161,19 +163,34 @@ namespace Sgt
 
             /// @brief Triggered just before my update.
             const Event& willUpdate() const {return willUpdate_;}
+            
+            /// @brief Triggered just before my update.
+            Event& willUpdate() {return willUpdate_;}
 
             /// @brief Triggered after my update.
             const Event& didUpdate() const {return didUpdate_;}
 
+            /// @brief Triggered after my update.
+            Event& didUpdate() {return didUpdate_;}
+
             /// @brief Triggered when I am flagged for future update.
             const Event& needsUpdate() const {return needsUpdate_;}
+
+            /// @brief Triggered when I am flagged for future update.
+            Event& needsUpdate() {return needsUpdate_;}
 
             /// @brief Triggered when I am about to update to a new timestep.
             const Event& willStartNewTimestep() const {return willStartNewTimestep_;}
 
+            /// @brief Triggered when I am about to update to a new timestep.
+            Event& willStartNewTimestep() {return willStartNewTimestep_;}
+
             /// @brief Triggered when I just updated, completing the current timestep.
             const Event& didCompleteTimestep() const {return didCompleteTimestep_;}
 
+            /// @brief Triggered when I just updated, completing the current timestep.
+            Event& didCompleteTimestep() {return didCompleteTimestep_;}
+            
             /// @}
 
         private:
@@ -186,14 +203,25 @@ namespace Sgt
             ///< Evaluation rank, based on weak ordering.
             Event willUpdate_{std::string(sComponentType()) + "Will update"};
             ///< Triggered immediately prior to upddate.
+            Action triggerWillUpdate_;
+            ///< Trigger willUpdate event.
+
             Event didUpdate_{std::string(sComponentType()) + "Did update"};
             ///< Triggered immediately post update.
+            Action triggerDidUpdate_;
+            ///< Trigger didUpdate event.
+
             Event needsUpdate_{std::string(sComponentType()) + "Needs update"};
             ///< Triggered when I need to be updated.
+            Action triggerNeedsUpdate_;
+            ///< Trigger needsUpdate event.
+
             Event willStartNewTimestep_{std::string(sComponentType()) + "Will start new timestep"};
             ///< Triggered immediately prior to time advancing.
             Event didCompleteTimestep_{std::string(sComponentType()) + "Did complete timestep"};
             ///< Triggered just after fully completing a timestep.
+            
+            Action insertContingentUpdateAction_;
     };
 
     template<typename T = SimComponent> using SimComponentPtr = ComponentPtr<SimComponent, T>;

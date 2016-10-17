@@ -17,12 +17,16 @@
 
 #include <SgtCore/Common.h>
 
+#include <algorithm>
 #include <functional>
 #include <list>
 #include <string>
 
 namespace Sgt
 {
+    class Event;
+    class OwnedAction;
+
     /// @brief An action that gets performed when an event is triggered.
     ///
     /// Actions are stored as a list in the event in question. Anyone may register an action. Deregistration is
@@ -30,32 +34,39 @@ namespace Sgt
     /// @ingroup Foundation
     class Action
     {
+        friend class Event;
+
         public:
-            Action(const std::function<void ()>& function, const std::string& description)
-                : function_(function), description_(description)
+
+            Action() = default;
+
+            Action(const std::function<void ()>& function, const std::string& description) :
+                function_(function), 
+                description_(description)
             {
                 // Empty.
             }
 
-            Action(const std::function<void ()>& function)
-                : function_(function), description_("N/A")
-            {
-                // Empty.
-            }
+            Action(const Action&) = delete;
+            Action(Action&&) = delete;
+            void operator=(const Action&) = delete;
+            void operator=(Action&&) = delete;
 
+            ~Action();
+            
+            void reset(const std::function<void ()>& function, const std::string& description = "");
+
+            void addTrigger(const Event& event);
+            
             const std::string& description() const
             {
                 return description_;
             }
-
-            void setDescription(const std::string& description)
-            {
-                description_ = description;
-            }
-
+            
             void perform() const {function_();}
 
         private:
+            std::list<const Event*> events_;
             std::function<void ()> function_;
             std::string description_;
     };
@@ -67,29 +78,20 @@ namespace Sgt
     /// @ingroup Foundation
     class Event
     {
+        friend class Action;
+
         public:
             Event(const std::string& description) : description_(description)
             {
                 // Empty.
             }
 
-            Event() : description_("UNDEFINED")
+            ~Event()
             {
-                // Empty.
+                for (auto action : actions_) action->events_.remove(this);
             }
-
-            void addAction(const std::function<void ()>& action, const std::string& description) const
-            {
-                sgtLogDebug() << "Event: " << description_ << ": addAction: " << description << std::endl;
-                actions_.emplace_back(action, description);
-            }
-
-            void trigger();
-
-            void clear()
-            {
-                actions_.clear();
-            }
+            
+            void trigger() const;
 
             const std::string& description() const
             {
@@ -111,10 +113,16 @@ namespace Sgt
                 isEnabled_ = isEnabled;
             }
 
+            void addTrigger(const Event& trigger)
+            {
+                triggerThis_.addTrigger(trigger);
+            }
+
         private:
-            mutable std::list<Action> actions_;
+            mutable std::list<Action*> actions_;
             std::string description_;
             bool isEnabled_{true};
+            Action triggerThis_{[this](){trigger();}, "Trigger " + description_ + "."};
     };
 }
 

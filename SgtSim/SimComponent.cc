@@ -47,9 +47,7 @@ namespace Sgt
         dependencies_.push_back(comp);
         if (forceUpdate)
         {
-            comp->didUpdate().addAction([this]() {needsUpdate().trigger();},
-                    std::string("Add ") + componentType() + " " + id() 
-                    + " contingent update due to " + comp->id() + ".");
+            needsUpdate().addTrigger(comp->didUpdate());
         }
     }
 }

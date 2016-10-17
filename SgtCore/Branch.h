@@ -132,9 +132,21 @@ namespace Sgt
             {
                 return isInServiceChanged_;
             }
+            
+            /// @brief Event triggered when I go in or out of service.
+            virtual Event& isInServiceChanged()
+            {
+                return isInServiceChanged_;
+            }
 
             /// @brief Event triggered when my admittance changes.
             virtual const Event& admittanceChanged() const
+            {
+                return admittanceChanged_;
+            }
+            
+            /// @brief Event triggered when my admittance changes.
+            virtual Event& admittanceChanged()
             {
                 return admittanceChanged_;
             }
