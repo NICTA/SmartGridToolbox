@@ -79,22 +79,14 @@ namespace Sgt
                 return nomVRatio_;
             }
 
-            void setNomVRatio(Complex nomVRatio)
-            {
-                nomVRatio_ = nomVRatio;
-                isValid_ = false;
-            }
+            void setNomVRatio(Complex nomVRatio);
 
             Complex offNomRatio() const
             {
                 return offNomRatio_;
             }
 
-            void setOffNomRatio(Complex offNomRatio)
-            {
-                offNomRatio_ = offNomRatio;
-                isValid_ = false;
-            }
+            void setOffNomRatio(Complex offNomRatio);
 
             Complex a() const
             {
@@ -106,11 +98,7 @@ namespace Sgt
                 return 1.0 / YL_;
             }
 
-            void setZL(Complex ZL)
-            {
-                YL_ = 1.0 / ZL;
-                isValid_ = false;
-            }
+            void setZL(Complex ZL);
 
         /// @}
 

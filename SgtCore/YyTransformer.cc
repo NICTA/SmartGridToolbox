@@ -24,6 +24,20 @@ namespace Sgt
         }
         return Y_;
     }
+            
+    void YyTransformer::setZL(Complex ZL)
+    {
+        YL_ = 1.0 / ZL;
+        isValid_ = false;
+        admittanceChanged().trigger();
+    }
+            
+    void YyTransformer::setYM(Complex YM)
+    {
+        YM_ = YM;
+        isValid_ = false;
+        admittanceChanged().trigger();
+    }
 
     void YyTransformer::validate() const
     {

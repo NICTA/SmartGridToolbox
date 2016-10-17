@@ -16,6 +16,27 @@
 
 namespace Sgt
 {
+    void DgyTransformer::setNomVRatioDY(Complex nomVRatioDY)
+    {
+        nomVRatioDY_ = nomVRatioDY;
+        isValid_ = false;
+        admittanceChanged().trigger();
+    }
+
+    void DgyTransformer::setOffNomRatioDY(Complex offNomRatioDY)
+    {
+        offNomRatioDY_ = offNomRatioDY;
+        isValid_ = false;
+        admittanceChanged().trigger();
+    }
+            
+    void DgyTransformer::setZL(Complex ZL)
+    {
+        YL_ = 1.0 / ZL;
+        isValid_ = false;
+        admittanceChanged().trigger();
+    }
+
     arma::Mat<Complex> DgyTransformer::inServiceY() const
     {
         if (!isValid_)

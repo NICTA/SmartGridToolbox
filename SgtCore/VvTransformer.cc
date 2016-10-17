@@ -16,6 +16,46 @@
 
 namespace Sgt
 {
+    void VvTransformer::setNomRatio(Complex nomRatio)
+    {
+        nomRatio_ = nomRatio;
+        isValid_ = false;
+        admittanceChanged().trigger();
+    }
+            
+    void VvTransformer::setOffNomRatio21(Complex offNomRatio21)
+    {
+        offNomRatio21_ = offNomRatio21;
+        isValid_ = false;
+        admittanceChanged().trigger();
+    }
+            
+    void VvTransformer::setOffNomRatio23(Complex offNomRatio23)
+    {
+        offNomRatio23_ = offNomRatio23;
+        isValid_ = false;
+        admittanceChanged().trigger();
+    }
+            
+    void VvTransformer::setZL(Complex ZL)
+    {
+        YL_ = 1.0 / ZL;
+        isValid_ = false;
+        admittanceChanged().trigger();
+    }
+            
+    void VvTransformer::setYTie(Complex YTie)
+    {
+        YTie_ = YTie;
+        admittanceChanged().trigger();
+    }
+            
+    void VvTransformer::setYGround(Complex YGround)
+    {
+        YGround_ = YGround;
+        admittanceChanged().trigger();
+    }
+
     arma::Mat<Complex> VvTransformer::inServiceY() const
     {
         if (!isValid_)

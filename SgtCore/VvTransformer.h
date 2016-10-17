@@ -89,11 +89,7 @@ namespace Sgt
                 return nomRatio_;
             }
 
-            void setNomRatio(Complex nomRatio)
-            {
-                nomRatio_ = nomRatio;
-                isValid_ = false;
-            }
+            void setNomRatio(Complex nomRatio);
             
             SGT_PROP_GET_SET(nomRatio, nomRatio, Complex, setNomRatio, Complex);
 
@@ -102,11 +98,7 @@ namespace Sgt
                 return offNomRatio21_;
             }
             
-            void setOffNomRatio21(Complex offNomRatio21)
-            {
-                offNomRatio21_ = offNomRatio21;
-                isValid_ = false;
-            }
+            void setOffNomRatio21(Complex offNomRatio21);
             
             SGT_PROP_GET_SET(offNomRatio21, offNomRatio21, Complex, setOffNomRatio21, Complex);
 
@@ -115,11 +107,7 @@ namespace Sgt
                 return offNomRatio23_;
             }
 
-            void setOffNomRatio23(Complex offNomRatio23)
-            {
-                offNomRatio23_ = offNomRatio23;
-                isValid_ = false;
-            }
+            void setOffNomRatio23(Complex offNomRatio23);
             
             SGT_PROP_GET_SET(offNomRatio23, offNomRatio23, Complex, setOffNomRatio23, Complex);
 
@@ -142,11 +130,7 @@ namespace Sgt
                 return 1.0 / YL_;
             }
             
-            void setZL(Complex ZL)
-            {
-                YL_ = 1.0 / ZL;
-                isValid_ = false;
-            }
+            void setZL(Complex ZL);
             
             SGT_PROP_GET_SET(ZL, ZL, Complex, setZL, Complex);
 
@@ -155,10 +139,7 @@ namespace Sgt
                 return YTie_;
             }
             
-            void setYTie(Complex YTie)
-            {
-                YTie_ = YTie;
-            }
+            void setYTie(Complex YTie);
             
             SGT_PROP_GET_SET(YTie, YTie, Complex, setYTie, Complex);
 
@@ -167,10 +148,7 @@ namespace Sgt
                 return YGround_;
             }
             
-            void setYGround(Complex YGround)
-            {
-                YGround_ = YGround;
-            }
+            void setYGround(Complex YGround);
             
             SGT_PROP_GET_SET(YGround, YGround, Complex, setYGround, Complex);
 

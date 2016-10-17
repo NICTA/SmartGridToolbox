@@ -23,6 +23,7 @@ libinclude_HEADERS = \
 	SolarGeom.h \
 	SolarPv.h \
 	Sun.h \
+	TapChanger.h \
 	TimeSeries.h \
 	TimeSeriesZip.h \
 	Weather.h
@@ -59,6 +60,8 @@ libSgtSim_la_SOURCES = \
 	SolarPv.h SolarPv.cc \
 	SolarPvParserPlugin.h SolarPvParserPlugin.cc \
 	Sun.h Sun.cc \
+	TapChanger.h TapChanger.cc \
+	TapChangerParserPlugin.h TapChangerParserPlugin.cc \
 	TimeSeries.h \
 	TimeSeriesParserPlugin.h TimeSeriesParserPlugin.cc \
 	TimeSeriesZip.h TimeSeriesZip.cc \

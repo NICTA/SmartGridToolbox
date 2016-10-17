@@ -77,22 +77,14 @@ namespace Sgt
                 return nomVRatioDY_;
             }
 
-            void setNomVRatioDY(Complex nomVRatioDY)
-            {
-                nomVRatioDY_ = nomVRatioDY;
-                isValid_ = false;
-            }
+            void setNomVRatioDY(Complex nomVRatioDY);
 
             Complex offNomRatioDY() const
             {
                 return offNomRatioDY_;
             }
 
-            void setOffNomRatioDY(Complex offNomRatioDY)
-            {
-                offNomRatioDY_ = offNomRatioDY;
-                isValid_ = false;
-            }
+            void setOffNomRatioDY(Complex offNomRatioDY);
 
             Complex a() const
             {
@@ -104,11 +96,7 @@ namespace Sgt
                 return 1.0 / YL_;
             }
 
-            void setZL(Complex ZL)
-            {
-                YL_ = 1.0 / ZL;
-                isValid_ = false;
-            }
+            void setZL(Complex ZL);
 
         /// @}
 

@@ -24,6 +24,27 @@ namespace Sgt
         }
         return Y_;
     }
+            
+    void SinglePhaseTransformer::setNomVRatio(Complex nomVRatio)
+    {
+        nomVRatio_ = nomVRatio;
+        isValid_ = false;
+        admittanceChanged().trigger();
+    }
+            
+    void SinglePhaseTransformer::setOffNomRatio(Complex offNomRatio)
+    {
+        offNomRatio_ = offNomRatio;
+        isValid_ = false;
+        admittanceChanged().trigger();
+    }
+            
+    void SinglePhaseTransformer::setZL(Complex ZL)
+    {
+        YL_ = 1.0 / ZL;
+        isValid_ = false;
+        admittanceChanged().trigger();
+    }
 
     void SinglePhaseTransformer::validate() const
     {

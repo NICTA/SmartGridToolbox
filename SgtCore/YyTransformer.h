@@ -96,22 +96,14 @@ namespace Sgt
                 return 1.0 / YL_;
             }
 
-            void setZL(Complex ZL)
-            {
-                YL_ = 1.0 / ZL;
-                isValid_ = false;
-            }
+            void setZL(Complex ZL);
 
             Complex YM() const
             {
                 return YM_;
             }
 
-            void setYM(Complex YM)
-            {
-                YM_ = YM;
-                isValid_ = false;
-            }
+            void setYM(Complex YM);
 
         /// @}
 
