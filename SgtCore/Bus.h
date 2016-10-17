@@ -250,13 +250,13 @@ namespace Sgt
             }
 
             /// @brief Event triggered when my supplied state changes.
-            virtual Event& isSuppliedChanged() const
+            virtual const Event& isSuppliedChanged() const
             {
                 return isSuppliedChanged_;
             }
 
             /// @brief Event triggered when bus setpoint has changed.
-            virtual Event& setpointChanged() const
+            virtual const Event& setpointChanged() const
             {
                 return setpointChanged_;
             }
