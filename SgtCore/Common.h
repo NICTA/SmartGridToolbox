@@ -255,6 +255,19 @@ namespace Sgt
 
     /// @name Linear algebra
     /// @{
+    
+    /// @ingroup Utilities
+    inline double sumOfSquares(const arma::Col<Complex>& x)
+    {
+        return std::accumulate(x.begin(), x.end(), 0.0, 
+                [](double cur, const Complex& xi)->double{return cur + norm(xi);});
+    }
+
+    /// @ingroup Utilities
+    inline double rms(const arma::Col<Complex>& x)
+    {
+        return sqrt(sumOfSquares(x)/x.size());
+    }
 
     /// @ingroup Utilities
     template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Col<T>& v)

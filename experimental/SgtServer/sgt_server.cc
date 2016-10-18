@@ -39,16 +39,6 @@ using Json = Sgt::json;
 
 namespace
 {
-    double sumOfSquares(const Col<Complex>& x)
-    {
-        return accumulate(x.begin(), x.end(), 0.0, [](double cur, const Complex& xi)->double{return cur + norm(xi);});
-    }
-
-    double rms(const Col<Complex>& x)
-    {
-        return sqrt(sumOfSquares(x)/x.size());
-    }
-
     Col<double> argDeg(const Col<Complex>& x)
     {
         Col<double> result(x.size(), fill::none);
