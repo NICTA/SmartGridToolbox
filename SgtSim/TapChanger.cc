@@ -14,66 +14,75 @@
 
 #include <SgtSim/TapChanger.h>
 
+using namespace std;
+using namespace arma;
+
+namespace
+{
+    static const size_t unset = numeric_limits<size_t>::max();
+
+    size_t map3(int idx) 
+    {
+        return (idx + 3) % 3;
+    }
+}
+
 namespace Sgt
 {
     void TapChanger::initializeState()
     {
-        idx_ = (taps_.size() - 1) / 2; // Start in the middle of the range.
-        isFirstStep_ = false;
-        isDone_ = false;
+        prevTimestep_ = posix_time::neg_infin;
     }
 
     // TODO: what if the deadband is too small and we're alternating settings?
     void TapChanger::updateState(Time t)
     {
-        isDone_ = false;
+        bool tryAgain = false;
 
-        if (isFirstStep_)
+        bool isFirstStep = (prevTimestep_ == posix_time::neg_infin);
+        if (isFirstStep)
         {
-            set_(taps_[idx_]);
-            isFirstStep_ = false;
-            return;
-        }
-
-        val_ = get_();
-        double delta = val_ - setpoint_;
-
-        if (std::abs(delta / setpoint_) <= tolerance_)
-        {
-            // We're finished.
-            isDone_ = true;
+            // Must be my first update in the simulation. Do a special iteration.
+            setting_ = (taps_.size() - 1) / 2;
+            tryAgain = true;
         }
         else
         {
-            // Try again.
-            if (delta > 0)
+            bool isNewTimestep = (t != prevTimestep_);
+            if (isNewTimestep)
             {
-                // We're above the setpoint, reduce the setting.
-                if (idx_ == 0)
-                {
-                    isDone_ = true;
-                }
-                else
-                {
-                    --idx_;
-                }
+                iter_ = 0;
             }
             else
             {
-                // We're below the setpoint, reduce the setting.
-                if (idx_ == taps_.size() - 1)
-                {
-                    isDone_ = true;
-                }
-                else
-                {
-                    ++idx_;
-                }
+                ++iter_;
             }
-            if (!isDone_)
+
+            if (iter_ < taps_.size())
             {
-                set_(taps_[idx_]); // Update the setting.
+                val_ = get_();
+                double delta = val_ - setpoint_;
+                if (abs(delta / setpoint_) >= tolerance_)
+                {
+                    if (delta > 0 && setting_ != 0)
+                    {
+                        // Above the setpoint and can reduce setting.
+                        --setting_;
+                        tryAgain = true;
+                    }
+                    else if (delta < 0 && setting_ != taps_.size() - 1)
+                    {
+                        // Below the setpoint and can increase setting.
+                        ++setting_;
+                        tryAgain = true;
+                    }
+                }
             }
         }
+        if (tryAgain)
+        {
+            set_(taps_[setting_]);
+        }
+        prevTimestep_ = t;
     }
 }

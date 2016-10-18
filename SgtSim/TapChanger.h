@@ -45,6 +45,21 @@ namespace Sgt
                 return result;
             }
 
+            static const std::map<std::string, ConcreteGetter<Bus, double>>& getters()
+            {
+                static const std::map<std::string, ConcreteGetter<Bus, double>>& getters =
+                    {
+                        {"V0", [](const Bus& bus){return std::abs(bus.V()(0));}},
+                        {"V1", [](const Bus& bus){return std::abs(bus.V()(1));}},
+                        {"V2", [](const Bus& bus){return std::abs(bus.V()(2));}},
+                        {"V01", [](const Bus& bus){auto V = bus.V(); return std::abs(V(1) - V(0));}},
+                        {"V12", [](const Bus& bus){auto V = bus.V(); return std::abs(V(2) - V(1));}},
+                        {"V21", [](const Bus& bus){auto V = bus.V(); return std::abs(V(1) - V(2));}},
+                        {"VRms", [](const Bus& bus){return rms(bus.V());}}
+                    };
+                return getters;
+            }
+
             /// @}
 
             /// @name Lifecycle:
@@ -105,17 +120,16 @@ namespace Sgt
             /// @}
 
         private:
-
-            bool isFirstStep_{false};
-            bool isDone_{false};
-
             std::vector<double> taps_;
-            std::size_t idx_;
             double setpoint_;
             double tolerance_{0.02};
-            double val_{1e6}; // Always force at least one round.
             std::function<double ()> get_;
             std::function<void (double)> set_;
+          
+            Time prevTimestep_{posix_time::neg_infin};
+            size_t iter_{0};
+            std::size_t setting_{0};
+            double val_{0};
     };
 }
 

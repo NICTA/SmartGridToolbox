@@ -50,8 +50,7 @@ namespace Sgt
         ConstSimComponentPtr<SimNetwork> simNetwork = sim.simComponent<SimNetwork>(simNetworkId);
         ConstComponentPtr<Bus> controlBus = simNetwork->network().buses()[controlBusId];
         ComponentPtr<BranchAbc> target = simNetwork->network().branches()[targetId];
-        const Getter<double>& controlBusGetter = 
-            dynamic_cast<const Getter<double>&>(*target->properties()[controlBusGetterId].getter());
+        const Getter<double>& controlBusGetter = TapChanger::getters().at(controlBusGetterId);
         
         const Setter<double>& targetSetter = 
             dynamic_cast<const Setter<double>&>(*target->properties()[targetSetterId].setter());
