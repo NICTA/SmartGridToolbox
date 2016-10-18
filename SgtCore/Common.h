@@ -257,14 +257,20 @@ namespace Sgt
     /// @{
     
     /// @ingroup Utilities
+    inline double sumOfSquares(const arma::Col<double>& x)
+    {
+        return sum(square(x));
+    }
+
+    /// @ingroup Utilities
     inline double sumOfSquares(const arma::Col<Complex>& x)
     {
-        return std::accumulate(x.begin(), x.end(), 0.0, 
+        return std::accumulate(x.begin(), x.end(), 0.0,
                 [](double cur, const Complex& xi)->double{return cur + norm(xi);});
     }
 
     /// @ingroup Utilities
-    inline double rms(const arma::Col<Complex>& x)
+    template<typename T> double rms(const T& x)
     {
         return sqrt(sumOfSquares(x)/x.size());
     }
