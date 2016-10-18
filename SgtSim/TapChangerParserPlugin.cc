@@ -45,18 +45,53 @@ namespace Sgt
         double tolerance = parser.expand<double>(nd["tolerance"]);
 
         std::string controlBusGetterId = parser.expand<std::string>(nd["control_bus_getter"]);
-        std::string targetSetterId = parser.expand<std::string>(nd["target_setter"]);
+        auto ndTargetSetter = nd["target_setter"];
+        assertFieldPresent(ndTargetSetter, "id");
+        assertFieldPresent(ndTargetSetter, "type");
+        std::string targetSetterId = parser.expand<std::string>(ndTargetSetter["id"]);
+        std::string targetSetterType = parser.expand<std::string>(ndTargetSetter["type"]);
 
         ConstSimComponentPtr<SimNetwork> simNetwork = sim.simComponent<SimNetwork>(simNetworkId);
-        SgtAssert(simNetwork != nullptr, std::string(key()) + ": SimNetwork " + simNetworkId + " was not found.");
+        sgtAssert(simNetwork != nullptr, std::string(key()) + ": sim_network_id = " + simNetworkId + " was not found.");
+
         ConstComponentPtr<Bus> controlBus = simNetwork->network().buses()[controlBusId];
+        sgtAssert(controlBus != nullptr, std::string(key()) + ": control_bus_id = " + controlBusId + " was not found.");
+
         ComponentPtr<BranchAbc> target = simNetwork->network().branches()[targetId];
-        const Getter<double>& controlBusGetter = TapChanger::getters().at(controlBusGetterId);
-        for (auto prop : target->properties()) std::cout << prop.first << std::endl; 
-        const Setter<double>& targetSetter = 
-            dynamic_cast<const Setter<double>&>(*target->properties()[targetSetterId].setter());
+        sgtAssert(target != nullptr, std::string(key()) + ": target_id = " + targetId + " was not found.");
+
+        auto controlBusGetterFunc = TapChanger::get(controlBus, controlBusGetterId);
+
+        const PropertyAbc* targetProp = nullptr;
+        try
+        {
+            targetProp = &target->properties()[targetSetterId];
+        }
+        catch (std::out_of_range e)
+        {
+            sgtError(std::string(key()) + ": target_setter = " + targetSetterId + " was not found.");
+        }
+        sgtAssert(targetProp->setter() != nullptr, 
+                std::string(key()) + ": target_setter = " + targetSetterId + " is not settable.");
+        std::function<void (double)> targetSetterFunc;
+        if (targetSetterType == "value")
+        {
+            auto setter = dynamic_cast<const Setter<double>*>(targetProp->setter());
+            sgtAssert(setter != nullptr, 
+                    std::string(key()) + ": target_setter = " + targetSetterId + " was of the wrong type.");
+            targetSetterFunc = TapChanger::setVal(target, *setter);
+        }
+        else if (targetSetterType == "magnitude")
+        {
+            sgtAssert(targetProp->getter() != nullptr, 
+                    std::string(key()) + ": target_setter = " + targetSetterId + " is not gettable.");
+            auto prop = dynamic_cast<const Property<Complex, Complex>*>(targetProp);
+            sgtAssert(prop != nullptr, 
+                    std::string(key()) + ": target_setter = " + targetSetterId + " was of the wrong type.");
+            targetSetterFunc = TapChanger::setMag(target, *prop);
+        }
 
         sim.newSimComponent<TapChanger>(id, taps, setpoint, tolerance,
-                controlBus, target, controlBusGetter, targetSetter);
+                controlBus, controlBusGetterFunc, targetSetterFunc);
     }
 }

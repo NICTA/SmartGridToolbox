@@ -17,16 +17,6 @@
 using namespace std;
 using namespace arma;
 
-namespace
-{
-    static const size_t unset = numeric_limits<size_t>::max();
-
-    size_t map3(int idx) 
-    {
-        return (idx + 3) % 3;
-    }
-}
-
 namespace Sgt
 {
     void TapChanger::initializeState()

@@ -45,19 +45,57 @@ namespace Sgt
                 return result;
             }
 
-            static const std::map<std::string, ConcreteGetter<Bus, double>>& getters()
+            static std::function<double ()> get(const ConstComponentPtr<Bus>& targ, const std::string& key)
             {
-                static const std::map<std::string, ConcreteGetter<Bus, double>>& getters =
+                if      (key == "V0")
+                {
+                    return [targ](){return std::abs(targ->V()(0));};
+                }
+                else if (key == "V1")
+                {
+                    return [targ](){return std::abs(targ->V()(1));};
+                }
+                else if (key == "V2")
+                {
+                    return [targ](){return std::abs(targ->V()(1));};
+                }
+                else if (key == "V01")
+                {
+                    return [targ](){auto V = targ->V(); return std::abs(V(1) - V(0));};
+                }
+                else if (key == "V12")
+                {
+                    return [targ](){auto V = targ->V(); return std::abs(V(2) - V(1));};
+                }
+                else if (key == "V20")
+                {
+                    return [targ](){auto V = targ->V(); return std::abs(V(0) - V(2));};
+                }
+                else if (key == "VRms")
+                {
+                    return [targ](){return rms(targ->V());};
+                }
+                else
+                {
+                    sgtError(sComponentType() + " : no such control bus function.");
+                }
+            }
+
+            static std::function<void (double)> setMag(const ComponentPtr<BranchAbc>& targ,
+                    const Property<Complex, Complex>& prop)
+            {
+                return [targ, &prop](double val)
                     {
-                        {"V0", [](const Bus& bus){return std::abs(bus.V()(0));}},
-                        {"V1", [](const Bus& bus){return std::abs(bus.V()(1));}},
-                        {"V2", [](const Bus& bus){return std::abs(bus.V()(2));}},
-                        {"V01", [](const Bus& bus){auto V = bus.V(); return std::abs(V(1) - V(0));}},
-                        {"V12", [](const Bus& bus){auto V = bus.V(); return std::abs(V(2) - V(1));}},
-                        {"V21", [](const Bus& bus){auto V = bus.V(); return std::abs(V(1) - V(2));}},
-                        {"VRms", [](const Bus& bus){return rms(bus.V());}}
+                        Complex x = prop.get(*targ);
+                        x = val * x / std::abs(x);
+                        prop.set(*targ, x);
                     };
-                return getters;
+            }
+
+            static std::function<void (double)> setVal(const ComponentPtr<BranchAbc>& targ,
+                    const Setter<double>& setter)
+            {
+                return [targ, &setter](double val) {setter.set(*targ, val);};
             }
 
             /// @}
@@ -76,17 +114,6 @@ namespace Sgt
                 set_(set)
             {
                 needsUpdate().addTrigger(controlBus->voltageUpdated());
-            }
-
-            TapChanger(const std::string& id, const std::vector<double>& taps, double setpoint, double tolerance,
-                    const ConstComponentPtr<Bus>& controlBus, const ComponentPtr<BranchAbc>& targ,
-                    const Getter<double>& getter, const Setter<double>& setter) :
-                TapChanger(
-                        id, taps, setpoint, tolerance, controlBus,
-                        [&getter, targ]()->double{return getter.get(*targ);},
-                        [&setter, targ](double d){setter.set(*targ, d);})
-            {
-                // Empty.
             }
 
             virtual ~TapChanger() = default;
