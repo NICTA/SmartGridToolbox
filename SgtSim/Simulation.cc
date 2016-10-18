@@ -82,6 +82,9 @@ namespace Sgt
                 logComponents();
             }
         }
+        
+        indent.out();
+        sgtLogMessage() << "Simulation initialize() finished." << std::endl;
     }
 
     // TODO: can we tidy up the logic in this function?
@@ -185,6 +188,9 @@ namespace Sgt
         sgtLogDebug(LogLevel::VERBOSE) << "Number of scheduled = " << scheduledUpdates_.size() << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << "Number of contingent = " << contingentUpdates_.size() << std::endl;
         indent.out();
+
+        indent.out();
+        sgtLogMessage(LogLevel::VERBOSE) << "Simulation doNextUpdate() finished." << std::endl;
     }
 
     void Simulation::doTimestep()
@@ -211,6 +217,9 @@ namespace Sgt
         {
             doNextUpdate();
         }
+
+        indent.out();
+        sgtLogMessage() << "Simulation doTimestep() at time " << time1 << " finished." << std::endl;
     }
 
     void Simulation::logComponents()

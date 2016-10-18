@@ -79,12 +79,20 @@ namespace Sgt
                         ++setting_;
                         tryAgain = true;
                     }
+                    else
+                    {
+                        sgtLogDebug() << sComponentType() << " : No more settings available" << std::endl;
+                    }
+                }
+                else
+                {
+                    sgtLogDebug() << sComponentType() << " : Within tolerance" << std::endl;
                 }
             }
         }
         if (tryAgain)
         {
-            sgtLogDebug() << sComponentType() << " : Set and try again" << std::endl;
+            sgtLogDebug() << sComponentType() << " : Set to " << setting_ << " and try again" << std::endl;
             set_(taps_[setting_]);
         }
         prevTimestep_ = t;
