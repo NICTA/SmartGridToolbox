@@ -50,32 +50,32 @@ namespace Sgt
 
     class HasProperties;
 
-    template<typename GetterRetType> class GetterAbc2;
+    template<typename GetterRetType> class Getter;
 
-    class GetterAbc1
+    class GetterAbc
     {
         public:
-            virtual ~GetterAbc1() = default;
+            virtual ~GetterAbc() = default;
 
             template<typename TargType, typename GetterRetType> GetterRetType get(const TargType& targ)
             {
-                auto derivedThis = dynamic_cast<const GetterAbc2<GetterRetType>*>(this);
+                auto derivedThis = dynamic_cast<const Getter<GetterRetType>*>(this);
                 auto derivedTarg = dynamic_cast<const TargType*>(&targ);
                 return derivedThis->get(derivedTarg);
             }
     };
 
-    template<typename GetterRetType> class GetterAbc2 : public GetterAbc1
+    template<typename GetterRetType> class Getter : public GetterAbc
     {
         public:
-            virtual ~GetterAbc2() = default;
+            virtual ~Getter() = default;
             virtual GetterRetType get(const HasProperties& targ) const = 0;
     };
 
-    template<typename TargType, typename GetterRetType> class Getter : public GetterAbc2<GetterRetType>
+    template<typename TargType, typename GetterRetType> class ConcreteGetter : public Getter<GetterRetType>
     {
         public:
-            template<typename T> Getter(T getArg) : get_(getArg)
+            template<typename T> ConcreteGetter(T getArg) : get_(getArg)
             {
                 // Empty.
             }
@@ -89,37 +89,37 @@ namespace Sgt
                 }
                 return get_(*derived);
             }
-
+            
         private:
             std::function<GetterRetType(const TargType&)> get_;
     };
 
-    template<typename SetterArgType> class SetterAbc2;
+    template<typename SetterArgType> class Setter;
 
-    class SetterAbc1
+    class SetterAbc
     {
         public:
-            virtual ~SetterAbc1() = default;
+            virtual ~SetterAbc() = default;
 
             template<typename TargType, typename SetterArgType> void set(TargType& targ, SetterArgType val)
             {
-                auto derivedThis = dynamic_cast<const SetterAbc2<SetterArgType>*>(this);
+                auto derivedThis = dynamic_cast<const Setter<SetterArgType>*>(this);
                 auto derivedTarg = dynamic_cast<TargType*>(&targ);
                 derivedThis->set(derivedTarg, val);
             }
     };
 
-    template<typename SetterArgType> class SetterAbc2 : public SetterAbc1
+    template<typename SetterArgType> class Setter : public SetterAbc
     {
         public:
-            virtual ~SetterAbc2() = default;
+            virtual ~Setter() = default;
             virtual void set(HasProperties& targ, SetterArgType val) const = 0;
     };
 
-    template<typename TargType, typename SetterArgType> class Setter : public SetterAbc2<SetterArgType>
+    template<typename TargType, typename SetterArgType> class ConcreteSetter : public Setter<SetterArgType>
     {
         public:
-            template<typename T> Setter(T setArg) : set_(setArg)
+            template<typename T> ConcreteSetter(T setArg) : set_(setArg)
             {
                 // Empty.
             }
@@ -133,7 +133,7 @@ namespace Sgt
                 }
                 set_(*derived, val);
             }
-
+            
         private:
             std::function<void(TargType&, SetterArgType)> set_;
     };
@@ -146,17 +146,27 @@ namespace Sgt
 
             virtual bool isGettable() = 0;
 
+            virtual const GetterAbc* getter() const
+            {
+                return getterAbc();
+            }
+
             template<typename GetterRetType> GetterRetType getAs(const HasProperties& targ) const
             {
-                auto derived = dynamic_cast<const GetterAbc2<GetterRetType>*>(getterAbc1());
+                auto derived = dynamic_cast<const Getter<GetterRetType>*>(getterAbc());
                 return derived->get(targ);
             }
 
             virtual bool isSettable() = 0;
+            
+            virtual const SetterAbc* setter() const
+            {
+                return setterAbc();
+            }
 
             template<typename SetterArgType> void setAs(HasProperties& targ, SetterArgType val) const
             {
-                auto derived = dynamic_cast<const SetterAbc2<SetterArgType>*>(setterAbc1());
+                auto derived = dynamic_cast<const Setter<SetterArgType>*>(setterAbc());
                 derived->set(targ, val);
             }
 
@@ -169,8 +179,8 @@ namespace Sgt
 
         private:
 
-            virtual const GetterAbc1* getterAbc1() const = 0;
-            virtual const SetterAbc1* setterAbc1() const = 0;
+            virtual const GetterAbc* getterAbc() const = 0;
+            virtual const SetterAbc* setterAbc() const = 0;
     };
 
     /// @brief Dynamically discoverable property.
@@ -182,8 +192,8 @@ namespace Sgt
     {
         public:
 
-            Property(std::unique_ptr<GetterAbc2<GetterRetType>> getter, 
-                    std::unique_ptr<SetterAbc2<SetterArgType>> setter) :
+            Property(std::unique_ptr<Getter<GetterRetType>> getter, 
+                    std::unique_ptr<Setter<SetterArgType>> setter) :
                 getter_(std::move(getter)),
                 setter_(std::move(setter))
             {
@@ -195,6 +205,11 @@ namespace Sgt
                 return getter_ != nullptr;
             }
 
+            virtual const Getter<GetterRetType>* getter() const override
+            {
+                return getter_.get();
+            }
+            
             GetterRetType get(const HasProperties& targ) const
             {
                 if (getter_ == nullptr)
@@ -207,6 +222,11 @@ namespace Sgt
             virtual bool isSettable() override
             {
                 return setter_ != nullptr;
+            }
+            
+            virtual const Setter<SetterArgType>* setter() const override
+            {
+                return setter_.get();
             }
 
             void set(HasProperties& targ, SetterArgType val) const
@@ -234,19 +254,19 @@ namespace Sgt
             }
 
         private:
-            virtual const GetterAbc1* getterAbc1() const override
+            virtual const GetterAbc* getterAbc() const override
             {
                 return getter_.get();
             }
 
-            virtual const SetterAbc1* setterAbc1() const override
+            virtual const SetterAbc* setterAbc() const override
             {
                 return setter_.get();
             }
 
         private:
-            std::unique_ptr<GetterAbc2<GetterRetType>> getter_;
-            std::unique_ptr<SetterAbc2<SetterArgType>> setter_;
+            std::unique_ptr<Getter<GetterRetType>> getter_;
+            std::unique_ptr<Setter<SetterArgType>> setter_;
     };
 
     /// @brief A collection of properties.
@@ -258,7 +278,7 @@ namespace Sgt
             std::shared_ptr<Property<GetterRetType, NoneType>> addGetProperty(GA ga, const std::string& name)
             {
                 auto result = std::make_shared<Property<GetterRetType, NoneType>>(
-                        std::make_unique<Getter<TargType, GetterRetType>>(ga), 
+                        std::make_unique<ConcreteGetter<TargType, GetterRetType>>(ga), 
                         nullptr);
                 map_[name] = result;
                 return result;
@@ -270,7 +290,7 @@ namespace Sgt
             {
                 auto result = std::make_shared<Property<NoneType, SetterArgType>>(
                         nullptr,
-                        std::make_unique<Setter<TargType, SetterArgType>>(sa));
+                        std::make_unique<ConcreteSetter<TargType, SetterArgType>>(sa));
                 map_[name] = result;
                 return result;
             }
@@ -281,8 +301,8 @@ namespace Sgt
                     GA ga, SA sa, const std::string& name)
             {
                 auto result = std::make_shared<Property<GetterRetType, SetterArgType>>(
-                        std::make_unique<Getter<TargType, GetterRetType>>(ga), 
-                        std::make_unique<Setter<TargType, SetterArgType>>(sa));
+                        std::make_unique<ConcreteGetter<TargType, GetterRetType>>(ga), 
+                        std::make_unique<ConcreteSetter<TargType, SetterArgType>>(sa));
                 map_[name] = result;
                 return result;
             }
