@@ -213,13 +213,13 @@ namespace Sgt
 
         for (niter = 0; niter < maxiter_; ++niter)
         {
-            sgtLogDebug() << "Iteration = " << niter << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "Iteration = " << niter << std::endl;
             debugPrintVars();
 
             auto D = calcD(V, Scg, M2PvSetpt);
 
             err = norm(D, "inf");
-            sgtLogDebug() << "Error = " << err << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "Error = " << err << std::endl;
             if (err <= tol_)
             {
                 sgtLogDebug() << "Success at iteration " << niter << "." << std::endl;
@@ -229,7 +229,7 @@ namespace Sgt
 
             auto J = calcJ(V, Scg, M2PvSetpt);
 
-            sgtLogDebug() << "Before modifyForPv:" << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "Before modifyForPv:" << std::endl;
             debugPrintProb(D, J);
 
             if (mod_->nPv() > 0)
@@ -237,7 +237,7 @@ namespace Sgt
                 modifyForPv(J, D, Vr, Vi, M2, M2PvSetpt);
             }
             
-            sgtLogDebug() << "After modifyForPv:" << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "After modifyForPv:" << std::endl;
             debugPrintProb(D, J);
 
             // Construct the f vector consisting of real and imgaginary parts of D.
@@ -246,7 +246,7 @@ namespace Sgt
             // Construct the full Jacobian from J, which contains the block structure.
             auto JMat = constructJMatrix(J);
 
-            sgtLogDebug() << "Before solve:" << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "Before solve:" << std::endl;
             debugPrintFandJMat(f, JMat);
             
             // Solution vector.
@@ -259,7 +259,7 @@ namespace Sgt
             ok = spsolve(x, JMat, -f, "superlu");
 #endif
 
-            sgtLogDebug() << "After solve: ok = " << ok << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << "After solve: ok = " << ok << std::endl;
             sgtLogDebug(LogLevel::VERBOSE) 
                 << "After solve: x  = " << std::setprecision(5) << std::setw(9) << x << std::endl;
             if (!ok)
