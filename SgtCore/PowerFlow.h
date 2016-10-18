@@ -221,6 +221,9 @@ namespace Sgt
     extern template arma::Mat<Complex> mapPhases<arma::Mat<Complex>>(const arma::Mat<Complex>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
 
+    /// @brief Convert a set of phase-ground (wye) voltages to phase-phase (delta) voltages.
+    arma::Col<Complex> toDelta(const arma::Col<Complex> V);
+    
     /// @brief Apply Carson's equations.
     /// @param nWire The number of wires.
     /// @param Dij Distance between wires on off diagonal, GMR of wires on diagonal. Units: m.

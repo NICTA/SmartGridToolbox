@@ -136,14 +136,33 @@ namespace Sgt
         }
     }
     
-    template arma::Col<double> mapPhases<arma::Col<double>>(const arma::Col<double>& srcVals,
+    template Col<double> mapPhases<Col<double>>(const Col<double>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
-    template arma::Col<Complex> mapPhases<arma::Col<Complex>>(const arma::Col<Complex>& srcVals,
+    template Col<Complex> mapPhases<Col<Complex>>(const Col<Complex>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
-    template arma::Mat<double> mapPhases<arma::Mat<double>>(const arma::Mat<double>& srcVals,
+    template Mat<double> mapPhases<Mat<double>>(const Mat<double>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
-    template arma::Mat<Complex> mapPhases<arma::Mat<Complex>>(const arma::Mat<Complex>& srcVals,
+    template Mat<Complex> mapPhases<Mat<Complex>>(const Mat<Complex>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
+
+    Col<Complex> toDelta(const Col<Complex> V)
+    {
+        uword nY = V.size();
+        sgtAssert(nY <= 3, "toDelta(V): V must have maximum 3 phases.");
+
+        if (nY <= 1)
+        {
+            return {};
+        }
+        else if (nY == 2)
+        {
+            return {V(0) - V(1)};
+        }
+        else
+        {
+            return {V(0) - V(1), V(1) - V(2), V(2) - V(0)};
+        }
+    }
 
     Mat<Complex> carson(uword nWire, const Mat<double>& Dij, const Col<double> resPerL,
                               double L, double freq, double rhoEarth)
