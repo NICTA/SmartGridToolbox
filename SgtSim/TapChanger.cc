@@ -88,5 +88,6 @@ namespace Sgt
             set_(taps_[setting_]);
         }
         prevTimestep_ = t;
+        ++iter_;
     }
 }
