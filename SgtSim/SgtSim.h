@@ -31,6 +31,7 @@
 #include <SgtSim/SimZip.h>
 #include <SgtSim/SolarPv.h>
 #include <SgtSim/Sun.h>
+#include <SgtSim/TapChanger.h>
 #include <SgtSim/TimeSeries.h>
 #include <SgtSim/TimeSeriesZip.h>
 #include <SgtSim/Weather.h>
