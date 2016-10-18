@@ -159,6 +159,11 @@ namespace Sgt
                 return setting_;
             }
 
+            double controlValue() const
+            {
+                return get_();
+            }
+
             /// @}
 
         private:
