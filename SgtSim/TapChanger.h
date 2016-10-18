@@ -145,6 +145,21 @@ namespace Sgt
             virtual void updateState(Time t) override;
 
             /// @}
+            
+            /// @name My functions.
+            /// @{
+            
+            const std::vector<double>& taps() const
+            {
+                return taps_;
+            }
+
+            std::size_t tapSetting() const
+            {
+                return setting_;
+            }
+
+            /// @}
 
         private:
             std::vector<double> taps_;
