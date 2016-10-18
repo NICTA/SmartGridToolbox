@@ -27,72 +27,72 @@ namespace Sgt
     // TODO: what if the deadband is too small and we're alternating settings?
     void TapChanger::updateState(Time t)
     {
-        sgtLogDebug() << sComponentType() << " : Update : " << prevTimestep_ << " -> " << t << std::endl;
+        sgtLogDebug() << sComponentType() << " " << id() << " : Update : " << prevTimestep_ << " -> " << t << std::endl;
         LogIndent _;
         bool tryAgain = false;
 
         bool isFirstStep = (prevTimestep_ == posix_time::neg_infin);
         if (isFirstStep)
         {
-            sgtLogDebug() << sComponentType() << " : First iteration" << std::endl;
+            sgtLogDebug() << sComponentType() << " " << id() << " : First iteration" << std::endl;
             // Must be my first update in the simulation. Do a special iteration.
             setting_ = (taps_.size() - 1) / 2;
             tryAgain = true;
         }
         else
         {
-            sgtLogDebug() << sComponentType() << " : Not first iteration" << std::endl;
+            sgtLogDebug() << sComponentType() << " " << id() << " : Not first iteration" << std::endl;
             bool isNewTimestep = (t != prevTimestep_);
             if (isNewTimestep)
             {
-                sgtLogDebug() << sComponentType() << " : New timestep" << std::endl;
+                sgtLogDebug() << sComponentType() << " " << id() << " : New timestep" << std::endl;
                 iter_ = 0;
             }
             else
             {
-                sgtLogDebug() << sComponentType() << " : Repeated timestep : " << iter_ << std::endl;
+                sgtLogDebug() << sComponentType() << " " << id() << " : Repeated timestep : " << iter_ << std::endl;
                 ++iter_;
             }
 
             if (iter_ < taps_.size())
             {
-                LogIndent _;
-                sgtLogDebug() << sComponentType() << " : Try update" << std::endl;
+                sgtLogDebug() << sComponentType() << " " << id() << " : Try update" << std::endl;
                 val_ = get_();
-                sgtLogDebug() << sComponentType() << " : Val = " << val_ << std::endl;
+                sgtLogDebug() << sComponentType() << " " << id() << " : Val = " << val_ << std::endl;
                 double delta = val_ - setpoint_;
-                sgtLogDebug() << sComponentType() << " : Delta = " << delta << std::endl;
+                sgtLogDebug() << sComponentType() << " " << id() << " : Delta = " << delta << std::endl;
                 if (abs(delta / setpoint_) >= tolerance_)
                 {
-                    sgtLogDebug() << sComponentType() << " : Out of tolerance" << std::endl;
+                    sgtLogDebug() << sComponentType() << " " << id() << " : Out of tolerance" << std::endl;
                     if (delta > 0 && setting_ != 0)
                     {
-                        sgtLogDebug() << sComponentType() << " : Reduce setting" << std::endl;
+                        sgtLogDebug() << sComponentType() << " " << id() << " : Reduce setting" << std::endl;
                         // Above the setpoint and can reduce setting.
                         --setting_;
                         tryAgain = true;
                     }
                     else if (delta < 0 && setting_ != taps_.size() - 1)
                     {
-                        sgtLogDebug() << sComponentType() << " : Increase setting" << std::endl;
+                        sgtLogDebug() << sComponentType() << " " << id() << " : Increase setting" << std::endl;
                         // Below the setpoint and can increase setting.
                         ++setting_;
                         tryAgain = true;
                     }
                     else
                     {
-                        sgtLogDebug() << sComponentType() << " : No more settings available" << std::endl;
+                        sgtLogDebug() << sComponentType() << " " << id() << " : No more settings" << std::endl;
                     }
                 }
                 else
                 {
-                    sgtLogDebug() << sComponentType() << " : Within tolerance" << std::endl;
+                    sgtLogDebug() << sComponentType() << " " << id() << " : Within tolerance" << std::endl;
                 }
             }
         }
+        sgtLogDebug() << sComponentType() << " " << id() << " : Setting = " << setting_ << std::endl;
         if (tryAgain)
         {
-            sgtLogDebug() << sComponentType() << " : Set to " << setting_ << " and try again" << std::endl;
+            sgtLogDebug() << sComponentType() << " " << id() << " : Setting was updated; try again" << std::endl;
             set_(taps_[setting_]);
         }
         prevTimestep_ = t;
