@@ -27,7 +27,7 @@ namespace Sgt
     class SimGlobalParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() override
+            virtual const char* key() const override
             {
                 return "simulation";
             }

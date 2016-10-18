@@ -25,7 +25,7 @@ namespace Sgt
     class SimpleBuildingParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() override
+            virtual const char* key() const override
             {
                 return "simple_building";
             }

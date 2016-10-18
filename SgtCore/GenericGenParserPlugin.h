@@ -27,7 +27,7 @@ namespace Sgt
     class GenericGenParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key() override
+            virtual const char* key() const override
             {
                 return "generic_gen";
             }

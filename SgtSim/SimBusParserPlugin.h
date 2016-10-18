@@ -26,7 +26,7 @@ namespace Sgt
     class SimBusParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() override
+            virtual const char* key() const override
             {
                 return "sim_bus";
             }

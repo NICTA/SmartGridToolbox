@@ -29,7 +29,7 @@ namespace Sgt
     class SimMatpowerParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() override
+            virtual const char* key() const override
             {
                 return "matpower";
             }

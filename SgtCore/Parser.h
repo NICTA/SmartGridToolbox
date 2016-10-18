@@ -78,7 +78,7 @@ namespace Sgt
     {
         public:
             virtual ~ParserPlugin() = default;
-            virtual const char* key() {return "ERROR";}
+            virtual const char* key() const {return "ERROR";}
             virtual void parse(const YAML::Node& nd, T& into, const ParserBase& parser) const
             {
                 // Empty.

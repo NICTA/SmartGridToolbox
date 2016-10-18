@@ -24,7 +24,7 @@ namespace Sgt
     class TapChangerParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() override
+            virtual const char* key() const override
             {
                 return "tap_changer";
             }

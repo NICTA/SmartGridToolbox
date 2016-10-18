@@ -27,7 +27,7 @@ namespace Sgt
     class DgyTransformerParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key() override
+            virtual const char* key() const override
             {
                 return "dgy_transformer";
             }

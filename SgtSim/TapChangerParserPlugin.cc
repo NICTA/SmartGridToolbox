@@ -48,10 +48,11 @@ namespace Sgt
         std::string targetSetterId = parser.expand<std::string>(nd["target_setter"]);
 
         ConstSimComponentPtr<SimNetwork> simNetwork = sim.simComponent<SimNetwork>(simNetworkId);
+        SgtAssert(simNetwork != nullptr, std::string(key()) + ": SimNetwork " + simNetworkId + " was not found.");
         ConstComponentPtr<Bus> controlBus = simNetwork->network().buses()[controlBusId];
         ComponentPtr<BranchAbc> target = simNetwork->network().branches()[targetId];
         const Getter<double>& controlBusGetter = TapChanger::getters().at(controlBusGetterId);
-        
+        for (auto prop : target->properties()) std::cout << prop.first << std::endl; 
         const Setter<double>& targetSetter = 
             dynamic_cast<const Setter<double>&>(*target->properties()[targetSetterId].setter());
 

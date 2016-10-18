@@ -24,7 +24,7 @@ namespace Sgt
     class GenericDcPowerSourceParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() override
+            virtual const char* key() const override
             {
                 return "generic_dc_power_source";
             }
