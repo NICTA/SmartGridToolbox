@@ -66,14 +66,14 @@ namespace Sgt
     {
         return dataIdxsI_.size() == 0 
             ? Mat<Complex>(phases().size(), phases().size(), fill::zeros)
-            : mapToMat(scaleFactorY_ * series_->value(lastUpdated())(dataIdxsI_));
+            : mapToMat(scaleFactorI_ * series_->value(lastUpdated())(dataIdxsI_));
     }
 
     Mat<Complex> TimeSeriesZip::SConst() const
     {
         return dataIdxsS_.size() == 0 
             ? Mat<Complex>(phases().size(), phases().size(), fill::zeros)
-            : mapToMat(scaleFactorY_ * series_->value(lastUpdated())(dataIdxsS_));
+            : mapToMat(scaleFactorS_ * series_->value(lastUpdated())(dataIdxsS_));
     }
 
     Mat<Complex> TimeSeriesZip::mapToMat(const Col<Complex>& vec) const
