@@ -50,8 +50,8 @@ namespace Sgt
             /// @name Lifecycle:
             /// @{
 
-            TapChanger(const std::string& id, const ConstComponentPtr<Bus>& bus,
-                    const std::vector<double>& taps, double setpoint, double tolerance,
+            TapChanger(const std::string& id, const std::vector<double>& taps, double setpoint, double tolerance,
+                    const ConstComponentPtr<Bus>& controlBus,
                     std::function<double ()> get, std::function<void (double)> set) :
                 Component(id),
                 taps_(taps),
@@ -60,16 +60,16 @@ namespace Sgt
                 get_(get),
                 set_(set)
             {
-                needsUpdate().addTrigger(bus->voltageUpdated());
+                needsUpdate().addTrigger(controlBus->voltageUpdated());
             }
 
-            TapChanger(const std::string& id, const ConstComponentPtr<Bus>& bus,
-                    const std::vector<double>& taps, double setpoint, double tolerance,
-                    const Property<double, double>& prop, const ComponentPtr<BranchAbc>& targ) :
+            TapChanger(const std::string& id, const std::vector<double>& taps, double setpoint, double tolerance,
+                    const ConstComponentPtr<Bus>& controlBus, const ComponentPtr<BranchAbc>& targ,
+                    const Getter<double>& getter, const Setter<double>& setter) :
                 TapChanger(
-                        id, bus, taps, setpoint, tolerance,
-                        [&prop, targ]()->double{return prop.get(*targ);},
-                        [&prop, targ](double val){prop.set(*targ, val);})
+                        id, taps, setpoint, tolerance, controlBus,
+                        [&getter, targ]()->double{return getter.get(*targ);},
+                        [&setter, targ](double d){setter.set(*targ, d);})
             {
                 // Empty.
             }

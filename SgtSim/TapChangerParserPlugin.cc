@@ -24,30 +24,39 @@ namespace Sgt
     void TapChangerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "network_id");
-        assertFieldPresent(nd, "bus_id");
+        assertFieldPresent(nd, "sim_network_id");
+        assertFieldPresent(nd, "control_bus_id");
         assertFieldPresent(nd, "target_id");
+
         assertFieldPresent(nd, "taps");
         assertFieldPresent(nd, "setpoint");
         assertFieldPresent(nd, "tolerance");
-        assertFieldPresent(nd, "get_set_property");
+
+        assertFieldPresent(nd, "control_bus_getter");
+        assertFieldPresent(nd, "target_setter");
 
         std::string id = parser.expand<std::string>(nd["id"]);
         std::string simNetworkId = parser.expand<std::string>(nd["sim_network_id"]);
-        std::string busId = parser.expand<std::string>(nd["bus_id"]);
+        std::string controlBusId = parser.expand<std::string>(nd["control_bus_id"]);
         std::string targetId = parser.expand<std::string>(nd["target_id"]);
 
         std::vector<double> taps = parser.expand<std::vector<double>>(nd["taps"]);
         double setpoint = parser.expand<double>(nd["setpoint"]);
         double tolerance = parser.expand<double>(nd["tolerance"]);
-        std::string propName = parser.expand<std::string>(nd["get_set_property"]);
+
+        std::string controlBusGetterId = parser.expand<std::string>(nd["control_bus_getter"]);
+        std::string targetSetterId = parser.expand<std::string>(nd["target_setter"]);
 
         ConstSimComponentPtr<SimNetwork> simNetwork = sim.simComponent<SimNetwork>(simNetworkId);
-        ConstComponentPtr<Bus> bus = simNetwork->network().buses()[busId];
+        ConstComponentPtr<Bus> controlBus = simNetwork->network().buses()[controlBusId];
         ComponentPtr<BranchAbc> target = simNetwork->network().branches()[targetId];
-        const Property<double, double>& prop = 
-            dynamic_cast<const Property<double, double>&>(target->properties()[propName]);
+        const Getter<double>& controlBusGetter = 
+            dynamic_cast<const Getter<double>&>(*target->properties()[controlBusGetterId].getter());
+        
+        const Setter<double>& targetSetter = 
+            dynamic_cast<const Setter<double>&>(*target->properties()[targetSetterId].setter());
 
-        sim.newSimComponent<TapChanger>(id, bus, taps, setpoint, tolerance, prop, target);
+        sim.newSimComponent<TapChanger>(id, taps, setpoint, tolerance,
+                controlBus, target, controlBusGetter, targetSetter);
     }
 }
