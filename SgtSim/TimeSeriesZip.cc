@@ -46,7 +46,7 @@ namespace Sgt
                 matrixElems_(i, 0) = matrixElems_(i, 1) = i;
             }
         }
-        sgtAssert(matrixElems_.n_cols == 2, "TimeSeriesZip: phase indices parameter must be n x 2.");
+        sgtAssert(matrixElems_.n_cols == 2, "TimeSeriesZip: matrixElems parameter must be n x 2.");
     }
             
     void TimeSeriesZip::updateState(Time t)

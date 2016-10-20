@@ -57,9 +57,10 @@
             id: load_<ld_busses(<i>)>
             sim_network_id: network
             bus_id: bus_<ld_busses(<i>)>
-            phases: [BAL]
             time_series_id: load_<ld_busses(<i>)>_series
+            phases: [BAL]
             dt: 00:10:00
+            matrix_elements: [[1]]
             scale_factor_S: 1.2
 - loop:
     loop_variable: [i, 0, <n_pv_busses>, 1]
