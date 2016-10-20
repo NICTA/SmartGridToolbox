@@ -53,6 +53,6 @@ namespace Sgt
         const std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
         auto network = sim.simComponent<SimNetwork>(networkId);
         network->network().addGen(shared<GenAbc>(inverter->gen()), busId);
-        inverter->linkToSimNetwork(*network);
+        link(inverter, *network);
     }
 }

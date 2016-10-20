@@ -25,7 +25,7 @@ namespace Sgt
 {
     std::unique_ptr<PowerModel> PvDemoSolver::makeModel()
     {
-        auto powerMod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_, ipopt));
+        auto powerMod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_.get(), ipopt));
         powerMod->build();
         powerMod->min_cost();
         auto mod = powerMod->_model;

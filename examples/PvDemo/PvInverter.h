@@ -61,10 +61,10 @@ namespace Sgt
             /// @name InverterAbc virtual overridden functions.
             /// @{
 
-            virtual void addDcPowerSource(DcPowerSourceAbc& source) override
+            virtual void addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source) override
             {
                 InverterAbc::addDcPowerSource(source);
-                source.dcPowerChanged().addAction([this]() {PChanged();}, "P changed");
+                PChangedAction_.addTrigger(source->dcPowerChanged());
             }
 
             /// @}
@@ -113,7 +113,8 @@ namespace Sgt
         public:
 
             double maxSMag_{1e9};
-        
+            Action PChangedAction_{[this] () {PChanged();}, "P changed"};
+
         private:
 
             void PChanged();
@@ -122,7 +123,7 @@ namespace Sgt
     class PvInverterParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() override
+            virtual const char* key() const override
             {
                 return "pv_inverter";
             }
