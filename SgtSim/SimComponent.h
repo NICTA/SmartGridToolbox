@@ -201,21 +201,13 @@ namespace Sgt
             ///< I depend on these.
             int rank_{-1};
             ///< Evaluation rank, based on weak ordering.
+            
             Event willUpdate_{std::string(sComponentType()) + "Will update"};
             ///< Triggered immediately prior to upddate.
-            Action triggerWillUpdate_;
-            ///< Trigger willUpdate event.
-
             Event didUpdate_{std::string(sComponentType()) + "Did update"};
             ///< Triggered immediately post update.
-            Action triggerDidUpdate_;
-            ///< Trigger didUpdate event.
-
             Event needsUpdate_{std::string(sComponentType()) + "Needs update"};
             ///< Triggered when I need to be updated.
-            Action triggerNeedsUpdate_;
-            ///< Trigger needsUpdate event.
-
             Event willStartNewTimestep_{std::string(sComponentType()) + "Will start new timestep"};
             ///< Triggered immediately prior to time advancing.
             Event didCompleteTimestep_{std::string(sComponentType()) + "Did complete timestep"};
