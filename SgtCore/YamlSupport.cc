@@ -217,7 +217,7 @@ namespace YAML
             to = arma::Mat<T>(nrows, ncols);
             for (arma::uword i = 0; i < nrows; ++i)
             {
-                for (arma::uword k = 0; k < nrows; ++k)
+                for (arma::uword k = 0; k < ncols; ++k)
                 {
                     to(i, k) = nd[i][k].as<T>();
                 }
