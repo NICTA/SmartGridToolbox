@@ -1,7 +1,7 @@
 - sgt_gui:
     bar_power_scaling: 0.01
-    V_mag_min: 0.92
-    V_mag_max: 1.0
+    V_mag_min: 0.97
+    V_mag_max: 1.03
 - parameters:
     start_time: 2013-01-02 00:00:00
     end_time: 2013-01-05 00:00:00
@@ -12,7 +12,6 @@
     pv_busses: [56, 27, 03, 54, 55, 35, 43, 13, 50, 20, 14, 51, 30, 44, 17, 02, 28, 19, 25, 09, 57, 16, 47, 18, 12, 08, 15, 31, 33, 53, 41, 32, 38, 10, 42, 05, 52, 06, 23, 29, 01, 49]
     pv_n_panel: [9268, 11341, 50000, 5000, 8293, 7317, 2439, 21951, 25610, 2805, 12805, 21951, 4390, 14634, 51220, 3659, 5610, 4024, 7683, 147561, 8171, 52439, 36220, 33171, 459756, 182927, 26829, 7073, 4634, 24390, 7683, 1951, 17073, 6098, 8659, 15854, 5976, 91463, 7683, 20732, 67073, 21951]
     pv_S_mag_max: [2.0, 2.5, 10.9, 1.1, 1.8, 1.6, 0.5, 4.8, 5.6, 0.6, 2.8, 4.8, 1.0, 3.2, 11.2, 0.8, 1.2, 0.9, 1.7, 32.3, 1.8, 11.5, 7.9, 7.3, 100.5, 40.0, 5.9, 1.5, 1.0, 5.3, 1.7, 0.4, 3.7, 1.3, 1.9, 3.5, 1.3, 20.0, 1.7, 4.5, 14.7, 4.8]
-        
 - simulation: 
     start_time: <start_time>
     end_time: <end_time>
@@ -28,7 +27,7 @@
     interp_type: lerp                 
 - weather:
     id: weather
-    dt: 00:20:00
+    dt: 00:10:00
     irradiance: 
         solar_model: standard
     cloud_attenuation_factors:
@@ -60,7 +59,8 @@
             time_series_id: load_<ld_busses(<i>)>_series
             phases: [BAL]
             dt: 00:10:00
-            matrix_elements: [[1]]
+            matrix_elements: [[0, 0]]
+            data_indices_S: [0]
             scale_factor_S: 1.2
 - loop:
     loop_variable: [i, 0, <n_pv_busses>, 1]
