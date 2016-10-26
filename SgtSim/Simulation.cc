@@ -139,13 +139,16 @@ namespace Sgt
         else if (scheduledUpdates_.size() > 0 && nextSchedTime <= endTime_)
         {
             // There is a scheduled update to do next.
-            if (nextSchedTime > currentTime_)
+            bool isNew = (nextSchedTime > currentTime_);
+
+            currentTime_ = nextSchedTime;
+
+            if (isNew)
             {
-                sgtLogMessage(LogLevel::VERBOSE) << "Timestep " << currentTime_ << " -> " << nextSchedTime
-                    << " will start" << std::endl;
+                sgtLogMessage(LogLevel::VERBOSE) << "Timestep " << nextSchedTime << " will start" << std::endl;
                 timestepWillStart_.trigger();
             }
-            currentTime_ = nextSchedTime;
+
             sgtLogMessage(LogLevel::VERBOSE) << "Scheduled update simComponent " << schedComp->id() << " from "
                 << schedComp->lastUpdated() << " to " << currentTime_ << std::endl;
 
