@@ -39,8 +39,8 @@ namespace Sgt
             SGT_PROPS_INIT(BranchAbc);
             SGT_PROPS_INHERIT(Component);
 
-        /// @name Static member functions:
-        /// @{
+            /// @name Static member functions:
+            /// @{
 
             static const std::string& sComponentType()
             {
@@ -48,17 +48,17 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Lifecycle:
-        /// @{
+            /// @name Lifecycle:
+            /// @{
 
             BranchAbc(const Phases& phases0, const Phases& phases1);
 
-        /// @}
+            /// @}
 
-        /// @name Component virtual overridden member functions.
-        /// @{
+            /// @name Component virtual overridden member functions.
+            /// @{
 
             virtual const std::string& componentType() const override
             {
@@ -67,10 +67,10 @@ namespace Sgt
 
             virtual json toJson() const override;
 
-        /// @}
+            /// @}
 
-        /// @name Phase accessors:
-        /// @{
+            /// @name Phase accessors:
+            /// @{
 
             virtual const Phases& phases0() const
             {
@@ -86,10 +86,10 @@ namespace Sgt
 
             SGT_PROP_GET(phases1, phases1, const Phases&);
 
-        /// @}
+            /// @}
 
-        /// @name In service:
-        /// @{
+            /// @name In service:
+            /// @{
 
             virtual bool isInService() const
             {
@@ -104,10 +104,10 @@ namespace Sgt
 
             SGT_PROP_GET_SET(isInService, isInService, bool, setIsInService, bool);
 
-        /// @}
+            /// @}
 
-        /// @name Nodal admittance matrix (Y):
-        /// @{
+            /// @name Nodal admittance matrix (Y):
+            /// @{
 
             virtual arma::Mat<Complex> Y() const final
             {
@@ -122,17 +122,17 @@ namespace Sgt
 
             SGT_PROP_GET(inServiceY, inServiceY, arma::Mat<Complex>);
 
-        /// @}
+            /// @}
 
-        /// @name Events.
-        /// @{
+            /// @name Events.
+            /// @{
 
             /// @brief Event triggered when I go in or out of service.
             virtual const Event& isInServiceChanged() const
             {
                 return isInServiceChanged_;
             }
-            
+
             /// @brief Event triggered when I go in or out of service.
             virtual Event& isInServiceChanged()
             {
@@ -144,23 +144,23 @@ namespace Sgt
             {
                 return admittanceChanged_;
             }
-            
+
             /// @brief Event triggered when my admittance changes.
             virtual Event& admittanceChanged()
             {
                 return admittanceChanged_;
             }
 
-        /// @}
+            /// @}
 
-        /// @name attached buses:
-        /// @{
+            /// @name attached buses:
+            /// @{
 
             ConstComponentPtr<Bus> bus0() const
             {
                 return bus0_;
             }
-            
+
             ComponentPtr<Bus> bus0()
             {
                 return bus0_;
@@ -170,13 +170,13 @@ namespace Sgt
             {
                 return bus1_;
             }
-            
+
             ComponentPtr<Bus> bus1()
             {
                 return bus1_;
             }
 
-        /// @}
+            /// @}
 
         private:
 
@@ -187,7 +187,7 @@ namespace Sgt
 
             Event isInServiceChanged_{sComponentType() + " : Is in service changed"};
             Event admittanceChanged_{sComponentType() + " : Admittance changed"};
-            
+
             ComponentPtr<Bus> bus0_;
             ComponentPtr<Bus> bus1_;
     };
@@ -201,8 +201,8 @@ namespace Sgt
             SGT_PROPS_INIT(GenericBranch);
             SGT_PROPS_INHERIT(BranchAbc);
 
-        /// @name Static member functions:
-        /// @{
+            /// @name Static member functions:
+            /// @{
 
             static const std::string& sComponentType()
             {
@@ -210,25 +210,25 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Lifecycle:
-        /// @{
+            /// @name Lifecycle:
+            /// @{
 
             GenericBranch(const std::string& id, const Phases& phases0, const Phases& phases1) :
                 Component(id),
                 BranchAbc(phases0, phases1),
                 Y_(phases0.size() + phases1.size(),
-                phases0.size() + phases1.size(),
-                arma::fill::zeros)
+                        phases0.size() + phases1.size(),
+                        arma::fill::zeros)
             {
                 // Empty.
             }
 
-        /// @}
+            /// @}
 
-        /// @name Component virtual overridden member functions.
-        /// @{
+            /// @name Component virtual overridden member functions.
+            /// @{
 
             virtual const std::string& componentType() const override
             {
@@ -236,27 +236,27 @@ namespace Sgt
             }
 
             // virtual json toJson() const override; // TODO
-        /// @}
+            /// @}
 
-        /// @name BranchAbc virtual overridden member functions.
-        /// @{
+            /// @name BranchAbc virtual overridden member functions.
+            /// @{
 
             virtual arma::Mat<Complex> inServiceY() const override
             {
                 return Y_;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Setter for Y.
-        /// @{
+            /// @name Setter for Y.
+            /// @{
 
             void setInServiceY(const arma::Mat<Complex>& Y)
             {
                 Y_ = Y;
             }
 
-        /// @}
+            /// @}
 
         protected:
 
@@ -264,6 +264,9 @@ namespace Sgt
 
             arma::Mat<Complex> Y_;
     };
+
+    /// @brief Line currents (meant for lines only).
+    arma::Col<Complex> lineCurrents(const BranchAbc& branch); 
 }
 
 #endif // BRANCH_DOT_H
