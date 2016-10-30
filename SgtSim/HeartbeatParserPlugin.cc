@@ -19,6 +19,8 @@
 #include <SgtSim/SimNetwork.h>
 #include <SgtSim/Simulation.h>
 
+#include <vector>
+
 namespace Sgt
 {
     void HeartbeatParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
@@ -28,7 +30,13 @@ namespace Sgt
 
         string id = parser.expand<std::string>(nd["id"]);
         Time dt = parser.expand<Time>(nd["dt"]);
+        
+        std::vector<std::string> slaves = parser.expand<std::vector<std::string>>(nd["slaves"]);
 
         auto heartbeat = sim.newSimComponent<Heartbeat>(id, dt);
+        for (const auto& slaveId : slaves)
+        {
+            heartbeat->addSlave(sim.simComponents()[slaveId]); 
+        }
     }
 }

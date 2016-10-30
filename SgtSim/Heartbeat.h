@@ -25,37 +25,37 @@ namespace Sgt
         /// @name Static member functions:
         /// @{
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("heartbeat");
-                return result;
-            }
+        static const std::string& sComponentType()
+        {
+            static std::string result("heartbeat");
+            return result;
+        }
 
         /// @}
-        
+
         /// @name Lifecycle:
         /// @{
 
         public:
 
-            Heartbeat(const std::string& id, const Time& dt) :
-                Component(id),
-                dt_(dt)
-            {
-                // Empty.
-            }
+        Heartbeat(const std::string& id, const Time& dt) :
+            Component(id),
+            dt_(dt)
+        {
+            // Empty.
+        }
 
         /// @}
 
         /// @name Component virtual overridden member functions.
         /// @{
 
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
 
-            // virtual json toJson() const override; TODO
+        // virtual json toJson() const override; TODO
 
         /// @}
 
@@ -64,31 +64,31 @@ namespace Sgt
 
         public:
 
-            virtual Time validUntil() const override
-            {
-                return nextBeat_;
-            }
+        virtual Time validUntil() const override
+        {
+            return nextBeat_;
+        }
 
         protected:
 
-            virtual void initializeState() override
+        virtual void initializeState() override
+        {
+            nextBeat_ = posix_time::not_a_date_time;
+            needsUpdate().trigger(); // Update on the first timestep.
+        }
+
+        virtual void updateState(Time t) override
+        {
+            if (nextBeat_ == posix_time::not_a_date_time)
             {
-                nextBeat_ = posix_time::not_a_date_time;
-                needsUpdate().trigger(); // Update on the first timestep.
+                nextBeat_ = t; // OK because I'm guaranteed to update on first timestep.
             }
 
-            virtual void updateState(Time t) override
+            if (t == nextBeat_)
             {
-                if (nextBeat_ == posix_time::not_a_date_time)
-                {
-                    nextBeat_ = t; // OK because I'm guaranteed to update on first timestep.
-                }
-
-                if (t == nextBeat_)
-                {
-                    nextBeat_ += dt_;
-                };
-            }
+                nextBeat_ += dt_;
+            };
+        }
 
         /// @}
 
@@ -97,22 +97,27 @@ namespace Sgt
 
         public:
 
-            Time dt() const
-            {
-                return dt_;
-            }
+        Time dt() const
+        {
+            return dt_;
+        }
 
-            void setDt(Time dt)
-            {
-                dt_ = dt;
-            }
+        void setDt(Time dt)
+        {
+            dt_ = dt;
+        }
+
+        void addSlave(const SimComponentPtr<>& slave)
+        {
+            slave->needsUpdate().addTrigger(didUpdate());
+        }
 
         /// @}
 
         private:
-            Time dt_;
 
-            Time nextBeat_{posix_time::not_a_date_time};
+        Time dt_;
+        Time nextBeat_{posix_time::not_a_date_time};
     };
 }
 
