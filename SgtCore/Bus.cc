@@ -24,21 +24,6 @@ using namespace arma;
 
 namespace Sgt
 {
-    namespace
-    {
-        template<typename T> void makeUpper(Mat<T>& m)
-        {
-            for (int i = 0; i < m.n_rows; ++i)
-            {
-                for (int j = 0; j < i; ++j)
-                {
-                    m(j, i) += m(i, j);
-                    m(i, j) = 0;
-                }
-            }
-        }
-    }
-
     Bus::Bus(const std::string& id, const Phases& phases, const Col<Complex>& VNom, double VBase) :
         Component(id),
         phases_(phases),
@@ -239,8 +224,7 @@ namespace Sgt
                 sum += mapPhases(zip->YConst(), zip->phases(), phases_);
             }
         }
-        makeUpper(sum);
-        return sum;
+        return makeUpper(sum);
     }
 
     Mat<Complex> Bus::SYConst() const

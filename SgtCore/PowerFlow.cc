@@ -140,10 +140,14 @@ namespace Sgt
             const Phases& srcPhases, const Phases& dstPhases);
     template Col<Complex> mapPhases<Col<Complex>>(const Col<Complex>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
+
     template Mat<double> mapPhases<Mat<double>>(const Mat<double>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
     template Mat<Complex> mapPhases<Mat<Complex>>(const Mat<Complex>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
+    
+    template arma::Mat<double>& makeUpper<double>(arma::Mat<double>& m);
+    template arma::Mat<Complex>& makeUpper<Complex>(arma::Mat<Complex>& m);
 
     Col<Complex> toDelta(const Col<Complex> V)
     {

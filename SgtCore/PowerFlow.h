@@ -189,6 +189,11 @@ namespace Sgt
         }
         return result;
     }
+    
+    extern template arma::Col<double> mapPhases<arma::Col<double>>(const arma::Col<double>& srcVals,
+            const Phases& srcPhases, const Phases& dstPhases);
+    extern template arma::Col<Complex> mapPhases<arma::Col<Complex>>(const arma::Col<Complex>& srcVals,
+            const Phases& srcPhases, const Phases& dstPhases);
 
     template<typename T> arma::Mat<T> mapPhases(const arma::Mat<T>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases)
@@ -212,14 +217,41 @@ namespace Sgt
         return result;
     }
 
-    extern template arma::Col<double> mapPhases<arma::Col<double>>(const arma::Col<double>& srcVals,
-            const Phases& srcPhases, const Phases& dstPhases);
-    extern template arma::Col<Complex> mapPhases<arma::Col<Complex>>(const arma::Col<Complex>& srcVals,
-            const Phases& srcPhases, const Phases& dstPhases);
     extern template arma::Mat<double> mapPhases<arma::Mat<double>>(const arma::Mat<double>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
     extern template arma::Mat<Complex> mapPhases<arma::Mat<Complex>>(const arma::Mat<Complex>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
+        
+    /// @brief Move lower diagonal elements to upper.
+    ///
+    /// This is useful in making sure delta-type loads are correctly represented by an upper triangular matrix,
+    /// as required by the load model.
+    template<typename T> arma::Mat<T>& makeUpper(arma::Mat<T>& m)
+    {
+        for (arma::uword i = 0; i < m.n_rows; ++i)
+        {
+            for (arma::uword j = 0; j < i; ++j)
+            {
+                m(j, i) += m(i, j);
+                m(i, j) = 0;
+            }
+        }
+        return m;
+    }
+
+    extern template arma::Mat<double>& makeUpper<double>(arma::Mat<double>& m);
+    extern template arma::Mat<Complex>& makeUpper<Complex>(arma::Mat<Complex>& m);
+
+    /// @brief Map phases and move lower diagonal elements to upper.
+    ///
+    /// This is useful in making sure delta-type loads are correctly represented by an upper triangular matrix,
+    /// as required by the load model.
+    template<typename T> arma::Mat<T> mapPhasesToUpper(
+            const arma::Mat<T>& srcVals, const Phases& srcPhases, const Phases& dstPhases)
+    {
+        auto m = mapPhases(srcVals, srcPhases, dstPhases);
+        return makeUpper(m);
+    }
 
     /// @brief Convert a set of phase-ground (wye) voltages to phase-phase (delta) voltages.
     arma::Col<Complex> toDelta(const arma::Col<Complex> V);
