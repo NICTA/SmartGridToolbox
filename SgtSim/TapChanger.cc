@@ -61,7 +61,7 @@ namespace Sgt
                 sgtLogDebug() << sComponentType() << " " << id() << " : Val = " << val_ << std::endl;
                 double delta = val_ - setpoint_;
                 sgtLogDebug() << sComponentType() << " " << id() << " : Delta = " << delta << std::endl;
-                if (abs(delta / setpoint_) >= tolerance_)
+                if (abs(delta) >= tolerance_)
                 {
                     sgtLogDebug() << sComponentType() << " " << id() << " : Out of tolerance" << std::endl;
                     if (delta > 0 && setting_ != 0)
