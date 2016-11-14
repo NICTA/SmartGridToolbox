@@ -143,10 +143,10 @@ namespace Sgt
             void doTimestep();
 
             /// @brief Print components and their dependencies to log.
-            void logComponents();
+            void logComponents() const;
 
             /// @brief Have we reached the end of the simulation?
-            bool isFinished() {return (scheduledUpdates_.size() == 0) && (contingentUpdates_.size() == 0);}
+            bool isFinished() const {return (scheduledUpdates_.size() == 0) && (contingentUpdates_.size() == 0);}
 
             /// @brief Get the timestep will start event.
             const Event& timestepWillStart() const {return timestepWillStart_;}

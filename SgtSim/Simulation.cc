@@ -225,7 +225,7 @@ namespace Sgt
         sgtLogMessage() << "Simulation doTimestep() at time " << localTime(time1, timezone()) << " finished." << std::endl;
     }
 
-    void Simulation::logComponents()
+    void Simulation::logComponents() const
     {
         for (auto comp : simComps_)
         {
