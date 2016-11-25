@@ -32,6 +32,13 @@ namespace Sgt
             }
 
         public:
+
+            /// @brief Constructor.
+            ///
+            /// @param matrixElems A n x 2 matrix giving row and col indices for non-zero matrix elements. 
+            /// @param dataIdxsY Indices into time series data of const Y component. Empty or of size matrixElems.
+            /// @param dataIdxsI Indices into time series data of const I component. Empty or of size matrixElems.
+            /// @param dataIdxsS Indices into time series data of const S component. Empty or of size matrixElems.
             TimeSeriesZip(const std::string& id, const Phases& phases,
                     const ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>>& series, const Time& dt,
                     const arma::Mat<arma::uword>& matrixElems,

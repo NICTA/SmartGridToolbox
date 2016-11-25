@@ -171,10 +171,7 @@ namespace Sgt
 
             ComponentPtr<GenAbc> addGen(std::shared_ptr<GenAbc> gen, const std::string& busId);
             
-            std::shared_ptr<GenAbc> removeGen(std::string& id)
-            {
-                return gens_.remove(id);
-            }
+            std::shared_ptr<GenAbc> removeGen(std::string& id);
 
             const ComponentCollection<ZipAbc>& zips() const
             {
@@ -188,10 +185,7 @@ namespace Sgt
 
             ComponentPtr<ZipAbc> addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId);
             
-            std::shared_ptr<ZipAbc> removeZip(std::string& id)
-            {
-                return zips_.remove(id);
-            }
+            std::shared_ptr<ZipAbc> removeZip(std::string& id);
 
             /// @}
 

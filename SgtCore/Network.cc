@@ -75,6 +75,16 @@ namespace Sgt
         return gens_.insert(gen->id(), gen);
     }
 
+    std::shared_ptr<GenAbc> Network::removeGen(std::string& id)
+    {
+        auto gen = gens_.remove(id);
+        if (gen->bus() != nullptr)
+        {
+            gen->bus_->gens_.remove(id);
+        }
+        return gen;
+    }
+
     ComponentPtr<ZipAbc> Network::addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId)
     {
         auto bus = buses_[busId];
@@ -84,6 +94,16 @@ namespace Sgt
         bus->zips_.insert(zip->id(), zip);
         
         return zips_.insert(zip->id(), zip);
+    }
+
+    std::shared_ptr<ZipAbc> Network::removeZip(std::string& id)
+    {
+        auto zip = zips_.remove(id);
+        if (zip->bus() != nullptr)
+        {
+            zip->bus_->zips_.remove(id);
+        }
+        return zip;
     }
 
     void Network::applyFlatStart()
