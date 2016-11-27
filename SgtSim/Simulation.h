@@ -90,6 +90,18 @@ namespace Sgt
                 return currentTime_;
             }
 
+            /// @brief Local time for simulation.
+            posix_time::ptime localTime(const Time& t)
+            {
+                return Sgt::localTime(t, timezone_);
+            }
+            
+            /// @brief Current local time.
+            posix_time::ptime currentLocalTime()
+            {
+                return localTime(currentTime());
+            }
+
             /// @brief Access SimComponents (const version).
             const ComponentCollection<SimComponent>& simComponents() const
             {

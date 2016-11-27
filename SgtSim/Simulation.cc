@@ -199,7 +199,7 @@ namespace Sgt
     void Simulation::doTimestep()
     {
         Time time1 = currentTime_;
-        sgtLogMessage() << "Simulation doTimestep() at time " << localTime(time1, timezone()) << std::endl;
+        sgtLogMessage() << "Simulation doTimestep() at time " << localTime(time1) << std::endl;
         LogIndent indent;
         // Do at least one step. This may push us over into the next timestep, in which case we should stop, unless
         // this was the very first timestep.
@@ -222,7 +222,7 @@ namespace Sgt
         }
 
         indent.out();
-        sgtLogMessage() << "Simulation doTimestep() at time " << localTime(time1, timezone()) << " finished." << std::endl;
+        sgtLogMessage() << "Simulation doTimestep() at time " << localTime(time1) << " finished." << std::endl;
     }
 
     void Simulation::logComponents() const
