@@ -70,6 +70,7 @@ namespace Sgt
         currentTime_ = posix_time::neg_infin;
         // Contingent updates may have been inserted during initialization process e.g. when setting up setpoints etc.
         contingentUpdates_.clear();
+
         doTimestep(); // Do the first timestep, to advance the start time for -infinity to startTime_.
 
         isValid_ = true;
