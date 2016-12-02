@@ -5,7 +5,7 @@ POWER_FLOW_PT_SOLVER_H = PowerFlowPtSolver.h
 POWER_TOOLS_SUPPORT_H = PowerToolsSupport.h
 POWER_FLOW_PT_SOLVER_CC = PowerFlowPtSolver.cc
 POWER_TOOLS_SUPPORT_CC = PowerToolsSupport.cc
-L_POWER_TOOLS = -lPowerTools++ -lipopt -lcoinhsl -lgurobi65 -lgurobi_c++
+L_POWER_TOOLS = -lPowerTools++ -lipopt -lcoinhsl
 else
 POWER_FLOW_PT_SOLVER_H =
 POWER_TOOLS_SUPPORT_H =

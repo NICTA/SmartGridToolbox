@@ -25,7 +25,7 @@ PTSolver::PTSolver(Model* model, SolverType stype){
             prog.ipopt_prog = new IpoptProgram(model);
             break;
         case gurobi:
-#ifdef ENABLE_GUROBI
+#ifdef USE_GUROBI
             try{
                 prog.grb_prog = new GurobiProgram(model);
             }catch(GRBException e) {
@@ -44,7 +44,7 @@ PTSolver::PTSolver(Model* model, SolverType stype){
 
 PTSolver::~PTSolver(){
     if (_stype == gurobi) {
-#ifdef ENABLE_GUROBI
+#ifdef USE_GUROBI
         delete prog.grb_prog;
 #else
         gurobiNotAvailable();
@@ -56,7 +56,7 @@ PTSolver::~PTSolver(){
 void PTSolver::set_model(Model* m) {
     
     if (_stype == gurobi){
-#ifdef ENABLE_GUROBI
+#ifdef USE_GUROBI
         prog.grb_prog->model = m;
 #else
         gurobiNotAvailable();
@@ -109,7 +109,7 @@ int PTSolver::run(int output, bool relax){
         }
     }
     else if(_stype==gurobi)
-#ifdef ENABLE_GUROBI
+#ifdef USE_GUROBI
             try{
                 //                prog.grbprog = new GurobiProgram();
                 prog.grb_prog->_output = output;

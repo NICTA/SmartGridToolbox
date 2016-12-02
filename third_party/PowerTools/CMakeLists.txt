@@ -19,13 +19,12 @@ configure_file (
 # so that we will find PowerToolsConfig.h.
 include_directories("${PROJECT_BINARY_DIR}")
  
-set(CMAKE_C_COMPILER "gcc")
-set(CMAKE_CXX_COMPILER "g++")
-
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
 # Find Gurobi?
 if (ENABLE_GUROBI)
+    message(STATUS "Enable GUROBI")
+    add_definitions(-DUSE_GUROBI)
     find_package(GUROBI)
     include_directories(${GUROBI_INCLUDE_DIRS})
     set(LIBS ${LIBS} ${GUROBI_LIBRARIES})
