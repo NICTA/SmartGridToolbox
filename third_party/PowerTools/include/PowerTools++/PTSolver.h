@@ -15,7 +15,7 @@
 
 #include <PowerTools++/Model.h>
 #include <PowerTools++/IpoptProgram.h>
-#ifdef ENABLE_GUROBI
+#ifdef USE_GUROBI
 #include <PowerTools++/GurobiProgram.h>
 #endif
 
@@ -23,7 +23,7 @@ class PTSolver {
     
 protected:
     union {
-#ifdef ENABLE_GUROBI
+#ifdef USE_GUROBI
         GurobiProgram* grb_prog;
 #endif
         IpoptProgram* ipopt_prog;
