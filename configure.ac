@@ -13,6 +13,9 @@ AM_CONDITIONAL([ENABLE_POWER_TOOLS], [test x$enable_power_tools = xyes])
 AS_IF([test x$enable_power_tools == xyes],
       [AC_DEFINE([ENABLE_POWER_TOOLS], [], [enable PowerTools support])])
 
+AC_ARG_WITH([gurobi-libs], "specify gurobi link flags")
+AC_SUBST([gurobi_libs], [$with_gurobi_libs])
+
 AC_ARG_WITH([klu],
             [AS_HELP_STRING([--without-klu], [Do not use the KLU library as a sparse solver (use SuperLU instead) @<:@no@:>@])],
             [],
