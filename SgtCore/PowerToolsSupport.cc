@@ -180,7 +180,22 @@ namespace Sgt
         std::cout << "----vars----" << std::endl;
         for (auto v : mod._vars)
         {
-            (static_cast<const var<>*>(v))->print();
+            if (v->is_int())
+            {
+                static_cast<const var<int>*>(v)->print();
+            }
+            else if (v->is_binary())
+            {
+                static_cast<const var<bool>*>(v)->print();
+            }
+            else if (v->is_real())
+            {
+                static_cast<const var<float>*>(v)->print();
+            }
+            else if (v->is_longreal())
+            {
+                static_cast<const var<double>*>(v)->print();
+            }
             std::cout << std::endl;
         }
         std::cout << "------------" << std::endl;
