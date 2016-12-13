@@ -98,6 +98,30 @@ namespace Sgt
         return level;
     }
 
+    std::string& messageLogFilter()
+    {
+        static std::string filter = "";
+        return filter;
+    }
+
+    std::string& warningLogFilter()
+    {
+        static std::string filter = "";
+        return filter;
+    }
+
+    std::string& errorLogFilter()
+    {
+        static std::string filter = "";
+        return filter;
+    }
+
+    std::string& debugLogFilter()
+    {
+        static std::string filter = "";
+        return filter;
+    }
+
     std::ostream& Log::message()
     {
         coutBuf_.reset(
