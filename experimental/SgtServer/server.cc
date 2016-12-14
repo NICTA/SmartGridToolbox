@@ -237,7 +237,7 @@ namespace
 class SgtServer
 {
 public:
-    SgtServer(const string& url);
+    SgtServer(const string& url, const string& dataDir);
 
     pplx::task<void> open() {return listener_.open();}
     pplx::task<void> close() {return listener_.close();}
@@ -248,30 +248,22 @@ private:
     // void handlePost(http_request message);
     // void handleDelete(http_request message);
 
-    std::pair<status_code, Json> getNetwork(deque<std::string>& paths);
-
-    template<typename Comps> std::pair<status_code, Json>
-    getComps(const Comps& comps, deque<std::string>& paths);
-
-    template<typename Comp>
-    std::pair<status_code, Json> getComp(deque<std::string>& paths, const Comp& comp);
-    
-    template<typename Comp>
-    std::pair<status_code, Json> getCompProperty(deque<std::string>& paths, const Comp& comp);
+    Json getYamlNetworkFiles();
 
 private:
     http_listener listener_;   
-    Network netw_;
+    unique_ptr<Network> netw_;
+    boost::filesystem::path dataDir_;
 };
 
 static unique_ptr<SgtServer> gServer;
 
-void on_initialize(const string& address)
+void on_initialize(const string& address, const string& dataDir)
 {
     uri_builder uri(address);
 
     auto addr = uri.to_uri().to_string();
-    gServer = unique_ptr<SgtServer>(new SgtServer(addr));
+    gServer = unique_ptr<SgtServer>(new SgtServer(addr, dataDir));
     gServer->open().wait();
     
     cout << "Listening for requests at: " << addr << endl;
@@ -288,9 +280,11 @@ int main(int argc, char *argv[])
     string port = "34568";
 
     string address = "http://localhost:";
+    string dataDir(argv[1]);
+
     address.append(port);
 
-    on_initialize(address);
+    on_initialize(address, dataDir);
     cout << "Press ENTER to exit." << endl;
 
     string line;
@@ -300,8 +294,9 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-SgtServer::SgtServer(const string& url) : 
-    listener_(url)
+SgtServer::SgtServer(const string& url, const string& dataDir) : 
+    listener_(url),
+    dataDir_(dataDir.c_str())
 {
     addProperties();
 
@@ -323,14 +318,14 @@ void SgtServer::handleGet(http_request message)
         if (view == "network")
         {
             reply = {
-                {"branches", componentsJson(netw_.branches())},
-                {"buses", componentsJson(netw_.buses())},
-                {"gens", componentsJson(netw_.gens())},
-                {"zips", componentsJson(netw_.zips())}};
+                {"branches", componentsJson(netw_->branches())},
+                {"buses", componentsJson(netw_->buses())},
+                {"gens", componentsJson(netw_->gens())},
+                {"zips", componentsJson(netw_->zips())}};
         }
         else if (view == "bus_voltages")
         {
-            for (auto b : netw_.buses())
+            for (auto b : netw_->buses())
             {
                 reply.push_back(Json(rms(b->V()) / b->VBase()));
             }
@@ -338,7 +333,7 @@ void SgtServer::handleGet(http_request message)
         else if (view == "zip_powers")
         {
             auto& p = GenericZip::sProperties()["PTot"];
-            for (auto z : netw_.zips())
+            for (auto z : netw_->zips())
             {
                 reply.push_back(p.json(*z));
             }
@@ -346,7 +341,7 @@ void SgtServer::handleGet(http_request message)
         else if (view == "gen_powers")
         {
             auto& p = GenericGen::sProperties()["PTot"];
-            for (auto g : netw_.gens())
+            for (auto g : netw_->gens())
             {
                 reply.push_back(p.json(*g));
             }
@@ -354,22 +349,26 @@ void SgtServer::handleGet(http_request message)
         else if (view == "branch")
         {
             std::string id = query.at("id"); 
-            reply = componentJson(*netw_.branches()[id]);
+            reply = componentJson(*netw_->branches()[id]);
         }
         else if (view == "bus")
         {
             std::string id = query.at("id"); 
-            reply = componentJson(*netw_.buses()[id]);
+            reply = componentJson(*netw_->buses()[id]);
         }
         else if (view == "gen")
         {
             std::string id = query.at("id"); 
-            reply = componentJson(*netw_.gens()[id]);
+            reply = componentJson(*netw_->gens()[id]);
         }
         else if (view == "zip")
         {
             std::string id = query.at("id"); 
-            reply = componentJson(*netw_.zips()[id]);
+            reply = componentJson(*netw_->zips()[id]);
+        }
+        else if (view == "yaml_files")
+        {
+            reply = getYamlNetworkFiles();
         }
     }
     catch (out_of_range e)
@@ -389,11 +388,22 @@ void SgtServer::handlePut(http_request message)
     try
     {
         std::string action = query.at("action"); 
-        if (action == "load")
+        if (action == "load_yaml")
         {
+            std::string fName = query.at("file");
+            netw_.reset(new Network);
             NetworkParser p;
-            std::string fName = query.at("yaml_file");
-            p.parse(fName, netw_);
+            p.parse(dataDir_.string() + "/" + fName, *netw_);
+        }
+        else if (action == "load_matpower")
+        {
+            std::string fName = query.at("file");
+            string yamlStr = string("--- [{matpower : {input_file : ") 
+                + dataDir_.string() + "/" + fName + ", default_kV_base : 11}}]";
+            YAML::Node n = YAML::Load(yamlStr);
+            netw_.reset(new Network);
+            NetworkParser p;
+            p.parse(n, *netw_);
         }
     }
     catch (out_of_range e)
@@ -401,4 +411,17 @@ void SgtServer::handlePut(http_request message)
         status = status_codes::BadRequest;
     }
     message.reply(status, reply.dump(2));
+}
+
+Json SgtServer::getYamlNetworkFiles()
+{
+    using namespace boost::filesystem;
+    directory_iterator it(dataDir_);
+    vector<string> files;
+    vector<string> mFiles;
+    transform(it, directory_iterator(), back_inserter(files),
+            [](decltype(*it)& entry){return entry.path().filename().string();});
+    copy_if(files.begin(), files.end(), back_inserter(mFiles), 
+            [](const string& s){return regex_search(s, regex(".*\\.yaml$"));});
+    return Json(mFiles); 
 }

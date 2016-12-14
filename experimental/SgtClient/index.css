@@ -1,5 +1,5 @@
 body {
-    background-color: rgba(100, 105, 120, 0.05);
+    background-color: rgba(235, 235, 235, 1.0);
 }
 
 h1,h2 {
@@ -7,12 +7,8 @@ h1,h2 {
     margin-bottom: 5px;
 }
 
-.sgt-center-block {
-    display: table;
-}
-
 .sgt-row {
-    margin-top: 10px;
+    margin-top: 0;
     margin-bottom: 10px;
     height: 40px;
 }
@@ -31,19 +27,16 @@ h1,h2 {
     height: 100%;
 }
         
-.sgt-panels {
-    position: relative;
-}
-
 .sgt-panel {
-    height: 60vh;
     border-style: solid;
-    border-width: thin;
+    border-width: 2px;
+    border-color: darkgrey;
     background-color: white;
 }
 
 .sgt-network-properties {
     overflow-y: scroll;
+    margin: 0px;
 }
 
 .sgt-network-properties input {
@@ -59,7 +52,7 @@ h1,h2 {
     height: 100px;
     padding: 5px;
     background-color: rgba(230, 230, 240, 0.96);
-    z-index: 1;
+    z-index: 10000;
 }
 
 progress {
@@ -67,23 +60,8 @@ progress {
     margin: 1em auto;
 }
 
-.guttered-left {
-    padding-left: 0px;
-    padding-right: 10px;
-}
-
-.guttered-right {
-    padding-left: 10px;
-    padding-right: 0px;
-}
-
 .pgTable {
     width: 100%;
     font-size: 80%;
     border: none;
-}
-
-svg {
-    height: 100%;
-    width: 100%;
 }

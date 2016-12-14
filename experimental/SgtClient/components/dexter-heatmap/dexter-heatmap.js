@@ -18,7 +18,7 @@ Dexter.Heatmap = (function() {
     //
     // Triangles are formed by joining the center of each square to the corners.
     
-    var n = 45; // n x n grid.
+    var n = 64; // n x n grid.
     var n2 = n * n; // Number of grid points.
     var nm1 = n - 1; // Number of grid intervals in each dimension.
     var nm12 = nm1 * nm1; // Number of grid squares.
@@ -41,14 +41,26 @@ Dexter.Heatmap = (function() {
     var nCols = 512; // Number of colors in colormap.
     
     var spread = 0.01; // Characteristic radius around each data point for calculating value on grid.
-    
+    var spreadAlpha2 = Math.pow(0.3, 2); // Characteristic radius around each data point for calculating alpha on grid.
+   
+    /*
     var heatMap = {
         n: 6,
-        x: [0.00, 0.30, 0.40, 0.60, 0.70, 1.00],
-        r: [0,   0,   0,   128, 255, 255],
-        g: [0,   128, 255, 255, 255, 128],
-        b: [255, 255, 255, 128, 0,   0  ],
-        a: [255, 255, 255, 255, 255, 255]
+        x: [0.00,   0.30,   0.40,   0.60,   0.70,   1.00],
+        r: [0,      0,      0,      128,    255,    255],
+        g: [0,      128,    255,    255,    255,    128],
+        b: [255,    255,    255,    128,    0,      0],
+        a: [255,    255,    255,    255,    255,    255]
+    }; // Determines the colormap.
+    */
+    
+    var heatMap = {
+        n: 16,
+        x: [0.00,   0.12,0.18,  0.30,   0.32,0.38,  0.40,   0.47,0.53,  0.60,   0.62,0.68,  0.70,   0.82,0.88,  1.00],
+        r: [0,      0,0,        0,      0,0,        0,      0,128,      128,    128,255,    255,    255,255,    255],
+        g: [0,      0,128,      128,    128,255,    255,    255,255,    255,    255,255,    255,    255,128,    128],
+        b: [255,    255,255,    255,    255,255,    255,    255,128,    128,    128,0,      0,      0,0,        0],
+        a: [255,    255,255,    255,    255,255,    255,    255,255,    255,    255,255,    255,    255,255,    255],
     }; // Determines the colormap.
 
     var canvas;
@@ -64,6 +76,10 @@ Dexter.Heatmap = (function() {
     var texCoord;
     var texCoordBuffer;
     var texCoordAttribute;
+    
+    var alpha;
+    var alphaBuffer;
+    var alphaAttribute;
 
     var tex;
 
@@ -73,10 +89,13 @@ Dexter.Heatmap = (function() {
 precision lowp float;\
 attribute vec3 aPosition;\
 attribute float aTexCoord;\
+attribute float aAlpha;\
 varying float vTexCoord;\
+varying float vAlpha;\
 \
 void main(void) {\
 vTexCoord = aTexCoord;\
+vAlpha = aAlpha;\
 gl_Position = vec4(aPosition, 1.0);\
 }\
     ";
@@ -85,9 +104,11 @@ gl_Position = vec4(aPosition, 1.0);\
 precision lowp float;\
 uniform sampler2D uTexture;\
 varying float vTexCoord;\
+varying float vAlpha;\
 \
 void main(void) {\
 vec4 color = texture2D(uTexture, vec2(vTexCoord, 0.5));\
+color[3] = vAlpha;\
 gl_FragColor = color;\
 }\
     ";
@@ -100,7 +121,7 @@ gl_FragColor = color;\
         // Only continue if WebGL is available and working
 
         if (gl) {
-            gl.clearColor(1, 1, 1, 1); // Clear to black, fully opaque
+            gl.clearColor(1, 1, 1, 1); // Clear to white, fully opaque
             gl.clearDepth(1.0); // Clear everything
 
             initShaders();
@@ -113,6 +134,10 @@ gl_FragColor = color;\
     function setData(dat) {
         function disp(v1, v2) {
             return [v1[0] - v2[0], v1[1] - v2[1]];
+        }
+        
+        function disp2(disp) {
+            return Math.pow(disp[0], 2) + Math.pow(disp[1], 2);
         }
         
         function addTo(v1, v2) {
@@ -146,8 +171,10 @@ gl_FragColor = color;\
         }
 
         var bins = [];
+        var nVisible = 0;
         for (var i = 0; i < dat.length; ++i) {
             if (Math.abs(dat[i][0][0]) > 1 || Math.abs(dat[i][0][1]) > 1) continue; // Ignore if off viewport.
+            ++nVisible;
             var iBin = binIdx(dat[i][0]);
             var bin = bins[iBin[2]];
             if (bin) {
@@ -170,10 +197,12 @@ gl_FragColor = color;\
             var vertXy = vertexXy(i);
 
             var totWeight = 0.0;
+            var closestDist2 = 1e6;
+
             var val = 0.0;
 
             vertBinIdx = binIdx(vertXy); // TODO: store.
-            
+           
             bins.forEach(function (bin) {
                 if (Math.abs(bin.idx[0] - vertBinIdx[0]) < 3 && Math.abs(bin.idx[1] - vertBinIdx[1]) < 3) {
                     // Neighbouring bin, use all points.
@@ -184,6 +213,9 @@ gl_FragColor = color;\
                         var wt = weight(d, spread);
                         totWeight += wt;
                         val += wt * dat[1];
+                       
+                        var d2 = disp2(d);
+                        if (d2 < closestDist2) closestDist2 = d2;
                     }
                 } else {
                     // Non-neighbouring bin, use average.
@@ -193,6 +225,9 @@ gl_FragColor = color;\
                     var wt = count * weight(d, spread);
                     totWeight += wt;
                     val += wt * bin.val;
+                
+                    var d2 = disp2(d);
+                    if (d2 < closestDist2) closestDist2 = d2;
                 }
             });
 
@@ -200,10 +235,15 @@ gl_FragColor = color;\
                 val /= totWeight;
             }
             texCoord[i] = val;
+
+            alpha[i] = Math.exp(-closestDist2 / spreadAlpha2);
         }
 
         gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(texCoord));
+        
+        gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuffer);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(alpha));
     };
 
     function setViewRect(xMin_, yMin_, xMax_, yMax_) {
@@ -246,7 +286,7 @@ gl_FragColor = color;\
         gl = null;
 
         try {
-            gl = canvas.getContext("experimental-webgl");
+            gl = canvas.getContext("webgl");
         }
         catch(e) {
         }
@@ -276,6 +316,9 @@ gl_FragColor = color;\
 
         texCoordAttribute = gl.getAttribLocation(shaderProgram, "aTexCoord");
         gl.enableVertexAttribArray(texCoordAttribute);
+        
+        alphaAttribute = gl.getAttribLocation(shaderProgram, "aAlpha");
+        gl.enableVertexAttribArray(alphaAttribute);
     }
 
     function initBuffers() {
@@ -294,6 +337,11 @@ gl_FragColor = color;\
         gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
         gl.vertexAttribPointer(texCoordAttribute, 1, gl.FLOAT, false, 0, 0);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoord), gl.DYNAMIC_DRAW);
+        
+        alphaBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, alphaBuffer);
+        gl.vertexAttribPointer(alphaAttribute, 1, gl.FLOAT, false, 0, 0);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(alpha), gl.DYNAMIC_DRAW);
     };
 
     function initTextures() {
@@ -363,9 +411,11 @@ gl_FragColor = color;\
         }
 
         texCoord = [];
+        alpha = [];
         for (var i = 0; i < nVert; ++i)
         {
             texCoord[i] = 0.0;
+            alpha[i] = 0.0;
         }
     }
 
