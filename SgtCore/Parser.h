@@ -57,6 +57,7 @@ namespace Sgt
         protected:
 
             ParserLoop& parseLoop(const YAML::Node& nd);
+            void parseLogging(const YAML::Node& nd);
 
         private:
 
@@ -153,6 +154,10 @@ namespace Sgt
                             std::string fname = nodeVal.as<std::string>();
                             auto content = getTopNode(fname);
                             parse(content, into);
+                        }
+                        else if (nodeType == "logging")
+                        {
+                            parseLogging(nodeVal);
                         }
                         else
                         {

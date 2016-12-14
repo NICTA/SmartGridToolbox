@@ -100,7 +100,62 @@ namespace Sgt
 
         return *loops_.back();
     }
+            
+    void ParserBase::parseLogging(const YAML::Node& nd)
+    {
+        for (const auto& subNd : nd)
+        {
+            std::string nodeType = subNd.first.as<std::string>();
+            const YAML::Node& nodeVal = subNd.second;
 
+            LogLevel* logLevel = nullptr;
+            std::string* logFilter = nullptr; 
+            if (nodeType == "message") 
+            {
+                logLevel = &messageLogLevel(); logFilter = &messageLogFilter();
+            }
+            else if (nodeType == "warning")
+            {
+                logLevel = &warningLogLevel(); logFilter = &warningLogFilter();
+            }
+            else if (nodeType == "error")
+            {
+                logLevel = &errorLogLevel(); logFilter = &errorLogFilter();
+            }
+            else if (nodeType == "debug")
+            {
+                logLevel = &debugLogLevel(); logFilter = &debugLogFilter();
+            }
+
+            const YAML::Node& ndLogLevel = nodeVal["log_level"];
+            if (ndLogLevel)
+            {
+                auto lev = ndLogLevel.as<std::string>();
+                if (lev == "none")
+                {
+                    *logLevel = LogLevel::NONE;
+                }
+                else if (lev == "normal")
+                {
+                    *logLevel = LogLevel::NORMAL;
+                }
+                else if (lev == "verbose")
+                {
+                    *logLevel = LogLevel::VERBOSE;
+                }
+                else
+                {
+                    sgtError(std::string("Unknown log level ") + lev);
+                }
+            }
+
+            const YAML::Node& ndLogFilter = nodeVal["log_filter"];
+            if (ndLogFilter)
+            {
+                *logFilter = ndLogFilter.as<std::string>();
+            }
+        }
+    }
 
     namespace
     {
