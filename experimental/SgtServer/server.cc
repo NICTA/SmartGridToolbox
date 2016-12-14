@@ -47,105 +47,24 @@ namespace
         return result * 180 / pi;
     }
         
-    Col<double> VMag_kV_Sincal(const Bus& bus)
-    {
-        Col<double> result;
-        Json j;
-        if (j = bus.userData()["LFNodeResult"], !j.is_null())
-        {
-            result = Col<double>{j["U"]};
-        }
-        else if (j = bus.userData()["ULFNodeResult"], !j.is_null())
-        {
-            map<Phase, double> m{{Phase::A, j["U1"]}, {Phase::B, j["U2"]}, {Phase::C, j["U3"]}};
-            result = Col<double>(bus.phases().size(), fill::none);
-            for (size_t i = 0; i < bus.phases().size(); ++i) 
-            {
-                result(i) = m.at(bus.phases()[i]); 
-            }
-        }
-        return result;
-    }
-
-    Col<double> VMagPuSincal(const Bus& bus)
-    {
-        Col<double> result;
-        Json j;
-        if (j = bus.userData()["LFNodeResult"], !j.is_null())
-        {
-            result = 0.01 * Col<double>{j["U_Un"]};
-        }
-        else if (j = bus.userData()["ULFNodeResult"], !j.is_null())
-        {
-            map<Phase, double> m{
-                {Phase::A, 0.01 * j["U1_Un"].get<double>()},
-                    {Phase::B, 0.01 * j["U2_Un"].get<double>()},
-                    {Phase::C, 0.01 * j["U3_Un"].get<double>()}};
-            result = Col<double>(bus.phases().size(), fill::none);
-            for (size_t i = 0; i < bus.phases().size(); ++i) 
-            {
-                result(i) = m.at(bus.phases()[i]); 
-            }
-        }
-        return result;
-    }
-
-    Col<double> VAngDegSincal(const Bus& bus)
-    {
-        Col<double> result;
-        Json j;
-        if (j = bus.userData()["LFNodeResult"], !j.is_null())
-        {
-            result = Col<double>{j["phi"]};
-        }
-        else if (j = bus.userData()["ULFNodeResult"], !j.is_null())
-        {
-            map<Phase, double> m{{Phase::A, j["phi1"]}, {Phase::B, j["phi2"]}, {Phase::C, j["phi3"]}};
-            result = Col<double>(bus.phases().size(), fill::none);
-            for (size_t i = 0; i < bus.phases().size(); ++i) 
-            {
-                result(i) = m.at(bus.phases()[i]); 
-            }
-        }
-        return result;
-    }
-
-    Col<Complex> VSincal(const Bus& bus)
-    {
-        Col<double> VAngRad = (pi / 180.0) * VAngDegSincal(bus);
-        return VMag_kV_Sincal(bus) % Col<Complex>(cx_mat(cos(VAngRad), sin(VAngRad)));
-    }
-
     void addProperties()
     {
 
         Bus::sProperties().addGetProperty<Bus, Col<double>>(
                 [](const Bus& bus){return abs(bus.V());}, "VMag_kV");
-        Bus::sProperties().addGetProperty<Bus, Col<double>>(VMag_kV_Sincal, "VMag_kV_Sincal");
 
         Bus::sProperties().addGetProperty<Bus, Col<double>>(
                 [](const Bus& bus){return abs(bus.V())/bus.VBase();}, "VMagPu");
-        Bus::sProperties().addGetProperty<Bus, Col<double>>(VMagPuSincal, "VMagPuSincal");
 
         Bus::sProperties().addGetProperty<Bus, double>(
                 [&](const Bus& bus){return rms(bus.V());}, "VRms_kV");
-        Bus::sProperties().addGetProperty<Bus, double>(
-                [&](const Bus& bus){return rms(VMag_kV_Sincal(bus));}, "VRms_kV_Sincal");
 
         Bus::sProperties().addGetProperty<Bus, double>(
                 [&](const Bus& bus){return rms(bus.V())/bus.VBase();}, "VRmsPu");
-        Bus::sProperties().addGetProperty<Bus, double>(
-                [&](const Bus& bus){return rms(VMagPuSincal(bus));}, "VRmsPuSincal");
 
         Bus::sProperties().addGetProperty<Bus, Col<double>>(
                 [&](const Bus& bus)->Col<double>{return argDeg(bus.V());}, "VAngDeg");
-        Bus::sProperties().addGetProperty<Bus, Col<double>>(VAngDegSincal, "VAngDegSincal");
 
-        Bus::sProperties().addGetProperty<Bus, Col<Complex>>(VSincal, "VSincal");
-
-        Bus::sProperties().addGetProperty<Bus, double>(
-                [&](const Bus& bus)->double{return rms(bus.V())/bus.VBase() - rms(VMagPuSincal(bus));}, "VError");
-        
         Bus::sProperties().addGetProperty<Bus, double>(
                 [&](const Bus& bus){return real(bus.SZipTot() - bus.SGenTot());}, "PTot");
         
@@ -248,7 +167,7 @@ private:
     // void handlePost(http_request message);
     // void handleDelete(http_request message);
 
-    Json getYamlNetworkFiles();
+    Json getInputFiles(const std::string& suffix);
 
 private:
     http_listener listener_;   
@@ -317,58 +236,115 @@ void SgtServer::handleGet(http_request message)
         std::string view = query.at("view"); 
         if (view == "network")
         {
-            reply = {
-                {"branches", componentsJson(netw_->branches())},
-                {"buses", componentsJson(netw_->buses())},
-                {"gens", componentsJson(netw_->gens())},
-                {"zips", componentsJson(netw_->zips())}};
+            if (netw_ == nullptr)
+            {
+                status = status_codes::NotFound;
+            }
+            else
+            {
+                reply = {
+                    {"branches", componentsJson(netw_->branches())},
+                    {"buses", componentsJson(netw_->buses())},
+                    {"gens", componentsJson(netw_->gens())},
+                    {"zips", componentsJson(netw_->zips())}};
+            }
         }
         else if (view == "bus_voltages")
         {
-            for (auto b : netw_->buses())
+            if (netw_ == nullptr)
             {
-                reply.push_back(Json(rms(b->V()) / b->VBase()));
+                status = status_codes::NotFound;
+            }
+            else
+            {
+                for (auto b : netw_->buses())
+                {
+                    reply.push_back(Json(rms(b->V()) / b->VBase()));
+                }
             }
         }
         else if (view == "zip_powers")
         {
-            auto& p = GenericZip::sProperties()["PTot"];
-            for (auto z : netw_->zips())
+            if (netw_ == nullptr)
             {
-                reply.push_back(p.json(*z));
+                status = status_codes::NotFound;
+            }
+            else
+            {
+                auto& p = GenericZip::sProperties()["PTot"];
+                for (auto z : netw_->zips())
+                {
+                    reply.push_back(p.json(*z));
+                }
             }
         }
         else if (view == "gen_powers")
         {
-            auto& p = GenericGen::sProperties()["PTot"];
-            for (auto g : netw_->gens())
+            if (netw_ == nullptr)
             {
-                reply.push_back(p.json(*g));
+                status = status_codes::NotFound;
+            }
+            else
+            {
+                auto& p = GenericGen::sProperties()["PTot"];
+                for (auto g : netw_->gens())
+                {
+                    reply.push_back(p.json(*g));
+                }
             }
         }
         else if (view == "branch")
         {
-            std::string id = query.at("id"); 
-            reply = componentJson(*netw_->branches()[id]);
+            if (netw_ == nullptr)
+            {
+                status = status_codes::NotFound;
+            }
+            else
+            {
+                std::string id = query.at("id"); 
+                reply = componentJson(*netw_->branches()[id]);
+            }
         }
         else if (view == "bus")
         {
-            std::string id = query.at("id"); 
-            reply = componentJson(*netw_->buses()[id]);
+            if (netw_ == nullptr)
+            {
+                status = status_codes::NotFound;
+            }
+            else
+            {
+                std::string id = query.at("id"); 
+                reply = componentJson(*netw_->buses()[id]);
+            }
         }
         else if (view == "gen")
         {
-            std::string id = query.at("id"); 
-            reply = componentJson(*netw_->gens()[id]);
+            if (netw_ == nullptr)
+            {
+                status = status_codes::NotFound;
+            }
+            else
+            {
+                std::string id = query.at("id"); 
+                reply = componentJson(*netw_->gens()[id]);
+            }
         }
         else if (view == "zip")
         {
-            std::string id = query.at("id"); 
-            reply = componentJson(*netw_->zips()[id]);
+            if (netw_ == nullptr)
+            {
+                status = status_codes::NotFound;
+            }
+            else
+            {
+                std::string id = query.at("id"); 
+                reply = componentJson(*netw_->zips()[id]);
+            }
         }
-        else if (view == "yaml_files")
+        else if (view == "input_files")
         {
-            reply = getYamlNetworkFiles();
+            std::string suffix = query.at("suffix"); 
+            reply = getInputFiles(suffix);
         }
     }
     catch (out_of_range e)
@@ -413,7 +389,7 @@ void SgtServer::handlePut(http_request message)
     message.reply(status, reply.dump(2));
 }
 
-Json SgtServer::getYamlNetworkFiles()
+Json SgtServer::getInputFiles(const std::string& suffix)
 {
     using namespace boost::filesystem;
     directory_iterator it(dataDir_);
@@ -422,6 +398,6 @@ Json SgtServer::getYamlNetworkFiles()
     transform(it, directory_iterator(), back_inserter(files),
             [](decltype(*it)& entry){return entry.path().filename().string();});
     copy_if(files.begin(), files.end(), back_inserter(mFiles), 
-            [](const string& s){return regex_search(s, regex(".*\\.yaml$"));});
+            [&suffix](const string& s){return regex_search(s, regex(".*\\." + suffix + "$"));});
     return Json(mFiles); 
 }
