@@ -951,6 +951,40 @@ void Quadratic::print() const {
     var_* v = NULL;
     var_* vj = NULL;
     map<int, double>* qmat = NULL;
+    std::string minus = "-";
+    std::string plus = "";
+
+    for(auto it = _qmatrix.cbegin(); it != _qmatrix.cend(); ++it)
+    {
+        vid = it->first;
+        qmat = it->second;
+        for(auto itq = qmat->cbegin(); itq != qmat->cend(); ++itq) {
+            vjd = itq->first;
+            coeff = itq->second;
+            if (coeff<0) {
+                cout << minus;
+                if(coeff!=-1) cout << -coeff << " ";
+            }
+            else {
+                if(coeff!=1) cout << plus << coeff << " ";
+                else cout << plus;
+            }
+            if(vid!=vjd) {
+                v = get_var(vid);
+                v->print();
+                cout << " ";
+                vj = get_var(vjd);
+                vj->print();
+            }
+            else {
+                v = get_var(vid);
+                v->print();
+                cout << "^2";
+            }
+            minus = " - ";
+            plus = " + ";
+        }
+    }
     
     for(auto it = _coefs.cbegin(); it != _coefs.cend(); ++it)
     {
@@ -962,72 +996,26 @@ void Quadratic::print() const {
             continue;
         }
         if (coeff < 0) {
-            cout << " - ";
-            if(coeff != -1)
-                cout << -coeff;
+            cout << minus;
+            if(coeff != -1) cout << -coeff << " ";
         }
         else {
-            if (it == _coefs.cbegin()) {
-                if(coeff != 1)
-                    cout << coeff;
-            }
-            else{
-                if(coeff != 1)
-                    cout << " + " << coeff;
-                else
-                    cout << " + ";
-            }
+            if(coeff != 1)
+                cout << plus << coeff << " ";
+            else
+                cout << plus;
         }
         v = get_var(vid);
         v->print();
+        minus = " - ";
+        plus = " + ";
     }
-    if (!_coefs.empty() && !_qmatrix.empty() && _qmatrix.begin()->second->begin()->second > 0) {
-        cout << " + ";
-    }
-    for(auto it = _qmatrix.cbegin(); it != _qmatrix.cend(); ++it) {
-        vid = it->first;
-        qmat = it->second;
-        for(auto itq = qmat->cbegin(); itq != qmat->cend(); ++itq) {
-            vjd = itq->first;
-            coeff = itq->second;
-            if (coeff<0) {
-                cout << " - ";
-                if(coeff!=-1)
-                    cout << -coeff;
-            }
-            else {
-                if (it == _qmatrix.cbegin() && itq == qmat->cbegin()) {
-                    if(coeff!=1)
-                        cout << coeff;
-                }
-                else{
-                    if(coeff!=1)
-                        cout << " + " << coeff;
-                    else
-                        cout << " + ";
-                }
-            }
-            if(vid!=vjd) {
-                v = get_var(vid);
-                v->print();
-                vj = get_var(vjd);
-                vj->print();
-            }
-            else {
-                v = get_var(vid);
-                v->print();
-                cout << "^2";
-            }
-        }
-    }
+
     if (_cst>0) {
-        if (!_coefs.empty()||!_qmatrix.empty()) {
-            cout << " + ";
-        }
-        cout << _cst;
+        cout << plus << _cst;
     }
-    if (_cst<0) {
-        cout << " - " << -_cst;
+    else if (_cst<0) {
+        cout << minus << -_cst;
     }
     
 };
