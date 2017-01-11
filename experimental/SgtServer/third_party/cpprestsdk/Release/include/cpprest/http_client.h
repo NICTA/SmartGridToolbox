@@ -1,19 +1,7 @@
 /***
-* ==++==
+* Copyright (C) Microsoft. All rights reserved.
+* Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 *
-* Copyright (c) Microsoft Corporation. All rights reserved.
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* ==--==
 * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 *
 * HTTP Library: Client-side APIs.
@@ -94,13 +82,13 @@ public:
     http_client_config() :
         m_guarantee_order(false),
         m_timeout(std::chrono::seconds(30)),
-        m_chunksize(0)
+        m_chunksize(0),
+        m_request_compressed(false)
 #if !defined(__cplusplus_winrt)
         , m_validate_certificates(true)
 #endif
         , m_set_user_nativehandle_options([](native_handle)->void{})
 #if !defined(_WIN32) && !defined(__cplusplus_winrt)
-        , m_ssl_context_callback([](boost::asio::ssl::context&)->void{})
         , m_tlsext_sni_enabled(true)
 #endif
 #if defined(_WIN32) && !defined(__cplusplus_winrt)
@@ -259,6 +247,27 @@ public:
         return m_chunksize == 0;
     }
 
+    /// <summary>
+    /// Checks if requesting a compressed response is turned on, the default is off.
+    /// </summary>
+    /// <returns>True if compressed response is enabled, false otherwise</returns>
+    bool request_compressed_response() const
+    {
+        return m_request_compressed;
+    }
+
+    /// <summary>
+    /// Request that the server responds with a compressed body.
+    /// If true, in cases where the server does not support compression, this will have no effect.
+    /// The response body is internally decompressed before the consumer receives the data.
+    /// </summary>
+    /// <param name="request_compressed">True to turn on response body compression, false otherwise.</param>
+    /// <remarks>Please note there is a performance cost due to copying the request data. Currently only supported on Windows and OSX.</remarks>
+    void set_request_compressed_response(bool request_compressed)
+    {
+        m_request_compressed = request_compressed;
+    }
+
 #if !defined(__cplusplus_winrt)
     /// <summary>
     /// Gets the server certificate validation property.
@@ -280,8 +289,7 @@ public:
     }
 #endif
 
-#ifdef _WIN32
-#if !defined(__cplusplus_winrt)
+#if defined(_WIN32) && !defined(__cplusplus_winrt)
     /// <summary>
     /// Checks if request data buffering is turned on, the default is off.
     /// </summary>
@@ -302,7 +310,6 @@ public:
     {
         m_buffer_request = buffer_request;
     }
-#endif
 #endif
 
     /// <summary>
@@ -382,6 +389,7 @@ private:
 
     std::chrono::microseconds m_timeout;
     size_t m_chunksize;
+    bool m_request_compressed;
 
 #if !defined(__cplusplus_winrt)
     // IXmlHttpRequest2 doesn't allow configuration of certificate verification.
@@ -398,6 +406,8 @@ private:
     bool m_buffer_request;
 #endif
 };
+
+class http_pipeline;
 
 /// <summary>
 /// HTTP client class, used to maintain a connection to an HTTP service for an extended session.
@@ -422,7 +432,7 @@ public:
     /// Note the destructor doesn't necessarily close the connection and release resources.
     /// The connection is reference counted with the http_responses.
     /// </summary>
-    ~http_client() CPPREST_NOEXCEPT {}
+    _ASYNCRTIMP ~http_client() CPPREST_NOEXCEPT;
 
     /// <summary>
     /// Gets the base URI.
@@ -442,19 +452,14 @@ public:
     /// Adds an HTTP pipeline stage to the client.
     /// </summary>
     /// <param name="handler">A function object representing the pipeline stage.</param>
-    void add_handler(const std::function<pplx::task<http_response>(http_request, std::shared_ptr<http::http_pipeline_stage>)> &handler)
-    {
-        m_pipeline->append(std::make_shared<::web::http::details::function_pipeline_wrapper>(handler));
-    }
+    _ASYNCRTIMP void add_handler(const std::function<pplx::task<http_response> __cdecl(http_request, std::shared_ptr<http::http_pipeline_stage>)> &handler);
+
 
     /// <summary>
     /// Adds an HTTP pipeline stage to the client.
     /// </summary>
     /// <param name="stage">A shared pointer to a pipeline stage.</param>
-    void add_handler(const std::shared_ptr<http::http_pipeline_stage> &stage)
-    {
-        m_pipeline->append(stage);
-    }
+    _ASYNCRTIMP void add_handler(const std::shared_ptr<http::http_pipeline_stage> &stage);
 
     /// <summary>
     /// Asynchronously sends an HTTP request.
@@ -727,10 +732,15 @@ public:
 
 private:
 
-    void build_pipeline(const uri &base_uri, const http_client_config &client_config);
-
-    std::shared_ptr<::web::http::http_pipeline> m_pipeline;
+    std::shared_ptr<::web::http::client::http_pipeline> m_pipeline;
 };
+
+namespace details {
+#if defined(_WIN32)
+extern const utility::char_t * get_with_body_err_msg;
+#endif
+
+}
 
 }}}
 

@@ -1,19 +1,7 @@
 /***
-* ==++==
+* Copyright (C) Microsoft. All rights reserved.
+* Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 *
-* Copyright (c) Microsoft Corporation. All rights reserved.
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* ==--==
 * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 *
 * Tests cases for authentication with http_clients.
@@ -38,8 +26,15 @@
 #endif
 
 #if !defined(_WIN32)
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winfinite-recursion"
+#endif
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 #endif
 
 using namespace web;
@@ -619,6 +614,37 @@ TEST_FIXTURE(uri_address, failed_authentication_attempt, "Ignore:Linux", "89", "
 }
 
 #if !defined(_WIN32)
+
+// http_server does not support auth
+void auth_test_impl(bool fail)
+{
+    std::string user("user1"), password("user1");
+    auto return_code = status_codes::NotFound; // return 404 if successful auth
+
+    if (fail)
+    {
+        password = "invalid";
+        return_code = status_codes::Unauthorized;
+    }
+
+    http_client_config client_config;
+    web::credentials cred(U(user), U(password));
+    client_config.set_credentials(cred);
+    http_client client(U("http://test.webdav.org/auth-basic/"), client_config);
+
+    http_response response = client.request(methods::GET).get();
+    VERIFY_ARE_EQUAL(return_code, response.status_code());
+}
+
+TEST(auth_no_data)
+{
+    auth_test_impl(false);
+}
+
+TEST(unsuccessful_auth_with_basic_cred)
+{
+    auth_test_impl(true);
+}
 
 TEST_FIXTURE(uri_address, set_user_options_asio_http)
 {

@@ -1,16 +1,7 @@
-/*
-* Copyright (c) Microsoft Corporation. All rights reserved.
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/***
+* Copyright (C) Microsoft. All rights reserved.
+* Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
+****/
 
 #pragma once
 
@@ -20,6 +11,7 @@
 #if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wconversion"
+#pragma clang diagnostic ignored "-Winfinite-recursion"
 #endif
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
@@ -72,6 +64,7 @@ private:
     bool m_chunked;
     std::atomic<int> m_refs; // track how many threads are still referring to this
     
+    std::unique_ptr<boost::asio::ssl::context> m_ssl_context;
     std::unique_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>> m_ssl_stream;
 
 public:
@@ -81,13 +74,18 @@ public:
     , m_response_buf()
     , m_p_server(server)
     , m_p_parent(parent)
+    , m_close(false)
     , m_refs(1)
     {
         if (is_https)
         {
-            boost::asio::ssl::context ssl_context(boost::asio::ssl::context::sslv23);
-            ssl_context_callback(ssl_context);
-            m_ssl_stream = utility::details::make_unique<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(*m_socket, ssl_context);
+            m_ssl_context = utility::details::make_unique<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
+            if (ssl_context_callback)
+            {
+                ssl_context_callback(*m_ssl_context);
+            }
+            m_ssl_stream = utility::details::make_unique<boost::asio::ssl::stream<boost::asio::ip::tcp::socket&>>(*m_socket, *m_ssl_context);
+
             m_ssl_stream->async_handshake(boost::asio::ssl::stream_base::server, [this](const boost::system::error_code&) { this->start_request_response(); });
         }
         else 
@@ -134,7 +132,7 @@ private:
     std::map<std::string, web::http::experimental::listener::details::http_listener_impl* > m_listeners;
     pplx::extensibility::reader_writer_lock_t m_listeners_lock;
 
-    pplx::extensibility::recursive_lock_t m_connections_lock;
+    std::mutex m_connections_lock;
     pplx::extensibility::event_t m_all_connections_complete;
     std::set<connection*> m_connections;
 

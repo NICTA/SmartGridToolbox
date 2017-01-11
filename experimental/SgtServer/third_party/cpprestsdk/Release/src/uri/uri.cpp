@@ -1,19 +1,7 @@
 /***
-* ==++==
+* Copyright (C) Microsoft. All rights reserved.
+* Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 *
-* Copyright (c) Microsoft Corporation. All rights reserved.
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* ==--==
 * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 *
 * Protocol independent support for URIs.
@@ -53,28 +41,27 @@ utility::string_t uri_components::join()
         m_path.insert(m_path.begin(), 1, _XPLATSTR('/'));
     }
 
-    utility::ostringstream_t os;
-    os.imbue(std::locale::classic());
+    utility::string_t ret;
 
     if (!m_scheme.empty())
     {
-        os << m_scheme << _XPLATSTR(':');
+        ret.append(m_scheme).append({ _XPLATSTR(':') });
     }
 
     if (!m_host.empty())
     {
-        os << _XPLATSTR("//");
+        ret.append(_XPLATSTR("//"));
 
         if (!m_user_info.empty())
         {
-            os << m_user_info << _XPLATSTR('@');
+            ret.append(m_user_info).append({ _XPLATSTR('@') });
         }
 
-        os << m_host;
+        ret.append(m_host);
 
         if (m_port > 0)
         {
-            os << _XPLATSTR(':') << m_port;
+            ret.append({ _XPLATSTR(':') }).append(utility::conversions::details::to_string_t(m_port));
         }
     }
 
@@ -83,26 +70,36 @@ utility::string_t uri_components::join()
         // only add the leading slash when the host is present
         if (!m_host.empty() && m_path.front() != _XPLATSTR('/'))
         {
-            os << _XPLATSTR('/');
+            ret.append({ _XPLATSTR('/') });
         }
-        os << m_path;
+
+        ret.append(m_path);
     }
 
     if (!m_query.empty())
     {
-        os << _XPLATSTR('?') << m_query;
+        ret.append({ _XPLATSTR('?') }).append(m_query);
     }
 
     if (!m_fragment.empty())
     {
-        os << _XPLATSTR('#') << m_fragment;
+        ret.append({ _XPLATSTR('#') }).append(m_fragment);
     }
 
-    return os.str();
+    return ret;
 }
 }
 
 using namespace details;
+
+uri::uri(const details::uri_components &components) : m_components(components)
+{
+    m_uri = m_components.join();
+    if (!details::uri_parser::validate(m_uri))
+    {
+        throw uri_exception("provided uri is invalid: " + utility::conversions::to_utf8string(m_uri));
+    }
+}
 
 uri::uri(const utility::string_t &uri_string)
 {
@@ -226,7 +223,7 @@ static int hex_char_digit_to_decimal_char(int hex)
     }
     else
     {
-        throw uri_exception("Invalid hexidecimal digit");
+        throw uri_exception("Invalid hexadecimal digit");
     }
     return decimal;
 }
@@ -240,12 +237,12 @@ utility::string_t uri::decode(const utility::string_t &encoded)
         {
             if(++iter == encoded.end())
             {
-                throw uri_exception("Invalid URI string, two hexidecimal digits must follow '%'");
+                throw uri_exception("Invalid URI string, two hexadecimal digits must follow '%'");
             }
             int decimal_value = hex_char_digit_to_decimal_char(static_cast<int>(*iter)) << 4;
             if(++iter == encoded.end())
             {
-                throw uri_exception("Invalid URI string, two hexidecimal digits must follow '%'");
+                throw uri_exception("Invalid URI string, two hexadecimal digits must follow '%'");
             }
             decimal_value += hex_char_digit_to_decimal_char(static_cast<int>(*iter));
 

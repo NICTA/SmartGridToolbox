@@ -1,19 +1,7 @@
 /***
-* ==++==
+* Copyright (C) Microsoft. All rights reserved.
+* Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 *
-* Copyright (c) Microsoft Corporation. All rights reserved.
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* ==--==
 * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 *
 * Utilities
@@ -63,7 +51,7 @@ scoped_c_thread_locale::xplat_locale scoped_c_thread_locale::c_locale()
         scoped_c_thread_locale::xplat_locale *clocale = new scoped_c_thread_locale::xplat_locale();
 #ifdef _WIN32
         *clocale = _create_locale(LC_ALL, "C");
-        if (*clocale == nullptr)
+        if (clocale == nullptr || *clocale == nullptr)
         {
             throw std::runtime_error("Unable to create 'C' locale.");
         }
@@ -74,7 +62,7 @@ scoped_c_thread_locale::xplat_locale scoped_c_thread_locale::c_locale()
         };
 #else
         *clocale = newlocale(LC_ALL, "C", nullptr);
-        if (*clocale == nullptr)
+        if (clocale == nullptr || *clocale == nullptr)
         {
             throw std::runtime_error("Unable to create 'C' locale.");
         }
@@ -284,7 +272,7 @@ utf16string __cdecl conversions::utf8_to_utf16(const std::string &s)
 {
 #if defined(CPPREST_STDLIB_UNICODE_CONVERSIONS)
     std::wstring_convert<std::codecvt_utf8_utf16<utf16char>, utf16char> conversion;
-    return conversion.from_bytes(src);
+    return conversion.from_bytes(s);
 #else
     utf16string dest;
     // Save repeated heap allocations, use less than source string size assuming some
@@ -440,7 +428,7 @@ utf16string __cdecl conversions::latin1_to_utf16(const std::string &s)
     dest.resize(s.size());
     for (size_t i = 0; i < s.size(); ++i)
     {
-        dest[i] = utf16char(s[i]);
+        dest[i] = utf16char(static_cast<unsigned char>(s[i]));
     }
     return dest;
 }
@@ -450,49 +438,37 @@ utf8string __cdecl conversions::latin1_to_utf8(const std::string &s)
     return utf16_to_utf8(latin1_to_utf16(s));
 }
 
+#ifndef _UTF16_STRINGS
 utility::string_t __cdecl conversions::to_string_t(utf16string &&s)
 {
-#ifdef _UTF16_STRINGS
-    return std::move(s);
-#else
     return utf16_to_utf8(std::move(s));
-#endif
 }
+#endif
 
+#ifdef _UTF16_STRINGS
 utility::string_t __cdecl conversions::to_string_t(std::string &&s)
 {
-#ifdef _UTF16_STRINGS
     return utf8_to_utf16(std::move(s));
-#else
-    return std::move(s);
-#endif
 }
+#endif
 
+#ifndef _UTF16_STRINGS
 utility::string_t __cdecl conversions::to_string_t(const utf16string &s)
 {
-#ifdef _UTF16_STRINGS
-    return s;
-#else
     return utf16_to_utf8(s);
-#endif
 }
+#endif
 
+#ifdef _UTF16_STRINGS
 utility::string_t __cdecl conversions::to_string_t(const std::string &s)
 {
-#ifdef _UTF16_STRINGS
     return utf8_to_utf16(s);
-#else
-    return s;
-#endif
 }
-
-std::string __cdecl conversions::to_utf8string(std::string value) { return std::move(value); }
+#endif
 
 std::string __cdecl conversions::to_utf8string(const utf16string &value) { return utf16_to_utf8(value); }
 
 utf16string __cdecl conversions::to_utf16string(const std::string &value) { return utf8_to_utf16(value); }
-
-utf16string __cdecl conversions::to_utf16string(utf16string value) { return std::move(value); }
 
 #ifndef WIN32
 datetime datetime::timeval_to_datetime(const timeval &time)

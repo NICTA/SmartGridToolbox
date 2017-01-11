@@ -1,19 +1,7 @@
 /***
-* ==++==
+* Copyright (C) Microsoft. All rights reserved.
+* Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 *
-* Copyright (c) Microsoft Corporation. All rights reserved.
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* ==--==
 * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 *
 * Websocket library: Client-side APIs.
@@ -24,9 +12,10 @@
 ****/
 
 #include "stdafx.h"
-#include "cpprest/details/x509_cert_utilities.h"
 
 #if !defined(CPPREST_EXCLUDE_WEBSOCKETS)
+
+#include "cpprest/details/x509_cert_utilities.h"
 
 // Force websocketpp to use C++ std::error_code instead of Boost.
 #define _WEBSOCKETPP_CPP11_SYSTEM_ERROR_
@@ -60,6 +49,30 @@
 #endif
 
 #endif /* __GNUC__ */
+
+#if defined(_MSC_VER)
+#pragma warning( disable : 4503 )
+#endif
+
+// This is a hack to avoid memory leak reports from the debug MSVC CRT for all
+// programs using the library: ASIO calls SSL_library_init() which calls
+// SSL_COMP_get_compression_methods(), which allocates some heap memory and the
+// only way to free it later is to call SSL_COMP_free_compression_methods(),
+// but this function is unaccessible from the application code as OpenSSL is
+// statically linked into the C++ REST SDK DLL. So, just to be nice, call it
+// here ourselves -- even if the real problem is in ASIO (up to v1.60.0).
+#if defined(_WIN32) && !defined(NDEBUG) && !defined(CPPREST_NO_SSL_LEAK_SUPPRESS)
+
+#include <openssl/ssl.h>
+static struct ASIO_SSL_memory_leak_suppress
+{
+    ~ASIO_SSL_memory_leak_suppress()
+    {
+        ::SSL_COMP_free_compression_methods();
+    }
+} ASIO_SSL_memory_leak_suppressor;
+
+#endif /* _WIN32 && !NDEBUG */
 
 using websocketpp::lib::placeholders::_1;
 using websocketpp::lib::placeholders::_2;
@@ -159,7 +172,14 @@ public:
                 auto sslContext = websocketpp::lib::shared_ptr<boost::asio::ssl::context>(new boost::asio::ssl::context(boost::asio::ssl::context::sslv23));
                 sslContext->set_default_verify_paths();
                 sslContext->set_options(boost::asio::ssl::context::default_workarounds);
-                sslContext->set_verify_mode(boost::asio::ssl::context::verify_peer);
+                if (m_config.validate_certificates())
+                {
+                    sslContext->set_verify_mode(boost::asio::ssl::context::verify_peer);
+                }
+                else
+                {
+                    sslContext->set_verify_mode(boost::asio::ssl::context::verify_none);
+                }
 
 #if defined(__APPLE__) || (defined(ANDROID) || defined(__ANDROID__)) || defined(_WIN32)
                 m_openssl_failed = false;
@@ -184,6 +204,7 @@ public:
                     return rfc2818(preverified, verifyCtx);
                 });
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
                 // OpenSSL stores some per thread state that never will be cleaned up until
                 // the dll is unloaded. If static linking, like we do, the state isn't cleaned up
                 // at all and will be reported as leaks.
@@ -191,6 +212,7 @@ public:
                 // This is necessary here because it is called on the user's thread calling connect(...)
                 // eventually through websocketpp::client::get_connection(...)
                 ERR_remove_thread_state(nullptr);
+#endif
 
                 return sslContext;
             });
@@ -333,7 +355,7 @@ public:
             {
                 con->set_proxy_basic_auth(
                     utility::conversions::to_utf8string(cred.username()),
-                    utility::conversions::to_utf8string(*cred.decrypt()),
+                    utility::conversions::to_utf8string(*cred._internal_decrypt()),
                     ec);
                 if (ec)
                 {
@@ -354,11 +376,14 @@ public:
             crossplat::JVM.load()->DetachCurrentThread();
 #endif
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
             // OpenSSL stores some per thread state that never will be cleaned up until
             // the dll is unloaded. If static linking, like we do, the state isn't cleaned up
             // at all and will be reported as leaks.
             // See http://www.openssl.org/support/faq.html#PROG13
             ERR_remove_thread_state(nullptr);
+#endif
+
         });
         return pplx::create_task(m_connect_tce);
     }

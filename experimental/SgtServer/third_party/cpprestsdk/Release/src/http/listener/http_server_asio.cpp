@@ -1,19 +1,7 @@
 /***
-* ==++==
+* Copyright (C) Microsoft. All rights reserved.
+* Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 *
-* Copyright (c) Microsoft Corporation. All rights reserved.
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* ==--==
 * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 *
 * HTTP Library: HTTP listener (server-side) APIs
@@ -34,10 +22,17 @@
 #pragma clang diagnostic pop
 #endif
 
+#include "../common/internal_http_helpers.h"
+#ifdef __ANDROID__
+using utility::conversions::details::to_string;
+#else
+using std::to_string;
+#endif
 using namespace boost::asio;
 using namespace boost::asio::ip;
 
 #define CRLF std::string("\r\n")
+#define CRLFCRLF std::string("\r\n\r\n")
 
 namespace web
 {
@@ -57,7 +52,7 @@ namespace details
 // This is used as part of the async_read_until call below; see the
 // following for more details:
 // http://www.boost.org/doc/libs/1_55_0/doc/html/boost_asio/reference/async_read_until/overload4.html
-struct crlf_nonascii_searcher_t
+struct crlfcrlf_nonascii_searcher_t
 {
     enum class State
     {
@@ -144,14 +139,14 @@ struct crlf_nonascii_searcher_t
         }
         return std::make_pair(excluded, false);
     }
-} crlf_nonascii_searcher;
+} crlfcrlf_nonascii_searcher;
 }}}}}
 
 namespace boost
 {
 namespace asio
 {
-template <> struct is_match_condition<web::http::experimental::listener::details::crlf_nonascii_searcher_t> : public boost::true_type {};
+template <> struct is_match_condition<web::http::experimental::listener::details::crlfcrlf_nonascii_searcher_t> : public boost::true_type {};
 }}
 
 namespace web
@@ -205,14 +200,14 @@ void connection::start_request_response()
 
     if (m_ssl_stream)
     {
-        boost::asio::async_read_until(*m_ssl_stream, m_request_buf, CRLF, [this](const boost::system::error_code& ec, std::size_t)
+        boost::asio::async_read_until(*m_ssl_stream, m_request_buf, CRLFCRLF, [this](const boost::system::error_code& ec, std::size_t)
         {
             this->handle_http_line(ec);
         });
     }
     else
     {
-        boost::asio::async_read_until(*m_socket, m_request_buf, crlf_nonascii_searcher, [this](const boost::system::error_code& ec, std::size_t)
+        boost::asio::async_read_until(*m_socket, m_request_buf, crlfcrlf_nonascii_searcher, [this](const boost::system::error_code& ec, std::size_t)
         {
             this->handle_http_line(ec);
         });
@@ -227,8 +222,8 @@ void hostport_listener::on_accept(ip::tcp::socket* socket, const boost::system::
     }
     else
     {
+        std::lock_guard<std::mutex> lock(m_connections_lock);
         {
-            pplx::scoped_lock<pplx::extensibility::recursive_lock_t> lock(m_connections_lock);
             m_connections.insert(new connection(std::unique_ptr<tcp::socket>(std::move(socket)), m_p_server, this, m_is_https, m_ssl_context_callback));
             m_all_connections_complete.reset();
 
@@ -248,7 +243,12 @@ void connection::handle_http_line(const boost::system::error_code& ec)
     if (ec)
     {
         // client closed connection
-        if (ec == boost::asio::error::eof || ec == boost::asio::error::operation_aborted)
+        if (
+            ec == boost::asio::error::eof ||                // peer has performed an orderly shutdown
+            ec == boost::asio::error::operation_aborted ||  // this can be removed. ECONNABORTED happens only for accept()
+            ec == boost::asio::error::connection_reset ||   // connection reset by peer
+            ec == boost::asio::error::timed_out             // connection timed out
+        )
         {
             finish_request_response();
         }
@@ -361,7 +361,7 @@ void connection::handle_headers()
         }
     }
 
-    m_close = m_chunked = false;
+    m_chunked = false;
     utility::string_t name;
     // check if the client has requested we close the connection
     if (m_request.headers().match(header_names::connection, name))
@@ -786,7 +786,7 @@ void connection::finish_request_response()
 {
     // kill the connection
     {
-        pplx::scoped_lock<pplx::extensibility::recursive_lock_t> lock(m_p_parent->m_connections_lock);
+        std::lock_guard<std::mutex> lock(m_p_parent->m_connections_lock);
         m_p_parent->m_connections.erase(this);
         if (m_p_parent->m_connections.empty())
         {
@@ -802,7 +802,7 @@ void hostport_listener::stop()
 {
     // halt existing connections
     {
-        pplx::scoped_lock<pplx::extensibility::recursive_lock_t> lock(m_connections_lock);
+        std::lock_guard<std::mutex> lock(m_connections_lock);
         m_acceptor.reset();
         for(auto connection : m_connections)
         {

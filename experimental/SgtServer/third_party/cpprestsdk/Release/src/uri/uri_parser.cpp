@@ -1,19 +1,7 @@
 /***
-* ==++==
+* Copyright (C) Microsoft. All rights reserved.
+* Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 *
-* Copyright (c) Microsoft Corporation. All rights reserved.
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* ==--==
 * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 *
 * URI parsing implementation
@@ -100,7 +88,7 @@ bool parse(const utility::string_t &encoded_string, uri_components &components)
 
             // convert scheme to lowercase
             std::transform(components.m_scheme.begin(), components.m_scheme.end(), components.m_scheme.begin(), [](utility::char_t c) {
-                return std::tolower(c, std::locale::classic());
+                return (utility::char_t)tolower(c);
             });
         }
         else
@@ -119,7 +107,7 @@ bool parse(const utility::string_t &encoded_string, uri_components &components)
 
             // convert host to lowercase
             std::transform(components.m_host.begin(), components.m_host.end(), components.m_host.begin(), [](utility::char_t c) {
-                return std::tolower(c, std::locale::classic());
+                return (utility::char_t)tolower(c);
             });
         }
         else
@@ -252,7 +240,8 @@ bool inner_parse(
         // or by EOS. The authority could be empty ('file:///C:\file_name.txt')
         for (;*p != _XPLATSTR('/') && *p != _XPLATSTR('?') && *p != _XPLATSTR('#') && *p != _XPLATSTR('\0'); p++)
         {
-            // We're NOT currently supporting IPv6, IPvFuture or username/password in authority
+            // We're NOT currently supporting IPvFuture or username/password in authority
+            // IPv6 as the host (i.e. http://[:::::::]) is allowed as valid URI and passed to subsystem for support.
             if (!is_authority_character(*p))
             {
                 return false;
@@ -277,7 +266,7 @@ bool inner_parse(
                 //skip the colon
                 port_begin++;
 
-                *port = utility::conversions::scan_string<int>(utility::string_t(port_begin, authority_end), std::locale::classic());
+                *port = utility::conversions::details::scan_string<int>(utility::string_t(port_begin, authority_end));
             }
             else
             {

@@ -1,19 +1,7 @@
 /***
-* ==++==
+* Copyright (C) Microsoft. All rights reserved.
+* Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 *
-* Copyright (c) Microsoft Corporation. All rights reserved.
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* ==--==
 * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 *
 * HTTP Library: Client-side APIs.
@@ -26,7 +14,8 @@
 ****/
 #include "stdafx.h"
 
-#include "cpprest/details/http_client_impl.h"
+#include "cpprest/http_headers.h"
+#include "http_client_impl.h"
 
 namespace web
 {
@@ -66,6 +55,16 @@ static http::status_code parse_status_code(HINTERNET request_handle)
     return (unsigned short)_wtoi(buffer.c_str());
 }
 
+// Helper function to trim leading and trailing null characters from a string.
+static void trim_nulls(utility::string_t &str)
+{
+    size_t index;
+    for (index = 0; index < str.size() && str[index] == 0; ++index);
+    str.erase(0, index);
+    for (index = str.size(); index > 0 && str[index - 1] == 0; --index);
+    str.erase(index);
+}
+
 // Helper function to get the reason phrase from a WinHTTP response.
 static utility::string_t parse_reason_phrase(HINTERNET request_handle)
 {
@@ -98,7 +97,7 @@ static void parse_winhttp_headers(HINTERNET request_handle, _In_z_ utf16char *he
     response.set_status_code(parse_status_code(request_handle));
     response.set_reason_phrase(parse_reason_phrase(request_handle));
 
-    parse_headers_string(headersStr, response.headers());
+    web::http::details::parse_headers_string(headersStr, response.headers());
 }
 
 // Helper function to build error messages.
@@ -238,6 +237,8 @@ public:
 
     memory_holder m_body_data;
 
+    std::unique_ptr<web::http::details::compression::stream_decompressor> decompressor;
+
     virtual void cleanup()
     {
         if(m_request_handle != nullptr)
@@ -301,7 +302,13 @@ class winhttp_client : public _http_client_communicator
 {
 public:
     winhttp_client(http::uri address, http_client_config client_config)
-        : _http_client_communicator(std::move(address), std::move(client_config)), m_secure(m_uri.scheme() == _XPLATSTR("https")), m_hSession(nullptr), m_hConnection(nullptr) { }
+        : _http_client_communicator(std::move(address), std::move(client_config))
+        , m_secure(m_uri.scheme() == _XPLATSTR("https"))
+        , m_hSession(nullptr)
+        , m_hConnection(nullptr) { }
+
+    winhttp_client(const winhttp_client&) = delete;
+    winhttp_client &operator=(const winhttp_client&) = delete;
 
     // Closes session.
     ~winhttp_client()
@@ -322,6 +329,20 @@ public:
 
             WinHttpCloseHandle(m_hSession);
         }
+    }
+
+    virtual pplx::task<http_response> propagate(http_request request) override
+    {
+        auto self = std::static_pointer_cast<_http_client_communicator>(shared_from_this());
+        auto context = details::winhttp_request_context::create_request_context(self, request);
+
+        // Use a task to externally signal the final result and completion of the task.
+        auto result_task = pplx::create_task(context->m_request_completion);
+
+        // Asynchronously send the response with the HTTP client implementation.
+        this->async_send_request(context);
+
+        return result_task;
     }
 
 protected:
@@ -568,7 +589,7 @@ protected:
         {
             if ( msg.method() == http::methods::GET || msg.method() == http::methods::HEAD )
             {
-                request->report_exception(http_exception(get_with_body));
+                request->report_exception(http_exception(get_with_body_err_msg));
                 return;
             }
 
@@ -587,10 +608,15 @@ protected:
             }
         }
 
+        if(web::http::details::compression::stream_decompressor::is_supported() && client_config().request_compressed_response())
+        {
+            msg.headers().add(web::http::header_names::accept_encoding, U("deflate, gzip"));
+        }
+
         // Add headers.
         if(!msg.headers().empty())
         {
-            const utility::string_t flattened_headers = flatten_http_headers(msg.headers());
+            const utility::string_t flattened_headers = web::http::details::flatten_http_headers(msg.headers());
             if(!WinHttpAddRequestHeaders(
                 winhttp_context->m_request_handle,
                 flattened_headers.c_str(),
@@ -937,7 +963,7 @@ private:
 
             // New scope to ensure plaintext password is cleared as soon as possible.
             {
-                auto password = cred.decrypt();
+                auto password = cred._internal_decrypt();
                 if (!WinHttpSetCredentials(
                     hRequestHandle,
                     dwAuthTarget,
@@ -1135,6 +1161,24 @@ private:
                         }
                     }
 
+                    // If the response body is compressed we will read the encoding header and create a decompressor object which will later decompress the body
+                    utility::string_t encoding;
+                    if (web::http::details::compression::stream_decompressor::is_supported() && response.headers().match(web::http::header_names::content_encoding, encoding))
+                    {
+                        auto alg = web::http::details::compression::stream_decompressor::to_compression_algorithm(encoding);
+
+                        if (alg != web::http::details::compression::compression_algorithm::invalid)
+                        {
+                            p_request_context->decompressor = std::make_unique<web::http::details::compression::stream_decompressor>(alg);
+                        }
+                        else
+                        {
+                            utility::string_t error = U("Unsupported compression algorithm in the Content Encoding header: ");
+                            error += encoding;
+                            p_request_context->report_exception(http_exception(error));
+                        }
+                    }
+
                     // Signal that the headers are available.
                     p_request_context->complete_headers();
 
@@ -1159,12 +1203,21 @@ private:
             case WINHTTP_CALLBACK_STATUS_DATA_AVAILABLE :
                 {
                     // Status information contains pointer to DWORD containing number of bytes available.
-                    DWORD num_bytes = *(PDWORD)statusInfo;
+                    const DWORD num_bytes = *(PDWORD)statusInfo;
 
                     if(num_bytes > 0)
                     {
-                        auto writebuf = p_request_context->_get_writebuffer();
-                        p_request_context->allocate_reply_space(writebuf.alloc(num_bytes), num_bytes);
+                        if (p_request_context->decompressor)
+                        {
+                            // Decompression is too slow to reliably do on this callback. Therefore we need to store it now in order to decompress it at a later stage in the flow.
+                            // However, we want to eventually use the writebuf to store the decompressed body. Therefore we'll store the compressed body as an internal allocation in the request_context
+                            p_request_context->allocate_reply_space(nullptr, num_bytes);
+                        }
+                        else
+                        {
+                            auto writebuf = p_request_context->_get_writebuffer();
+                            p_request_context->allocate_reply_space(writebuf.alloc(num_bytes), num_bytes);
+                        }
 
                         // Read in body all at once.
                         if(!WinHttpReadData(
@@ -1198,7 +1251,7 @@ private:
             case WINHTTP_CALLBACK_STATUS_READ_COMPLETE :
                 {
                     // Status information length contains the number of bytes read.
-                    const DWORD bytesRead = statusInfoLength;
+                    DWORD bytesRead = statusInfoLength;
 
                     // Report progress about downloaded bytes.
                     auto progress = p_request_context->m_request._get_impl()->_progress_handler();
@@ -1220,9 +1273,36 @@ private:
                         break;
                     }
 
+                    auto writebuf = p_request_context->_get_writebuffer();
+
+                    // If we have compressed data it is stored in the local allocation of the p_request_context. We will store the decompressed buffer in the external allocation of the p_request_context.
+                    if (p_request_context->decompressor)
+                    {
+                        web::http::details::compression::data_buffer decompressed = p_request_context->decompressor->decompress(p_request_context->m_body_data.get(), bytesRead);
+
+                        if (p_request_context->decompressor->has_error())
+                        {
+                            p_request_context->report_exception(std::runtime_error("Failed to decompress the response body"));
+                            return;
+                        }
+
+                        // We've decompressed this chunk of the body, need to now store it in the writebuffer.
+                        auto decompressed_size = decompressed.size();
+
+                        if (decompressed_size > 0)
+                        {
+                            auto p = writebuf.alloc(decompressed_size);
+                            p_request_context->allocate_reply_space(p, decompressed_size);
+                            std::memcpy(p_request_context->m_body_data.get(), &decompressed[0], decompressed_size);
+                        }
+                        // Note, some servers seem to send a first chunk of body data that decompresses to nothing but initializes the zlib decryption state. This produces no decompressed output.
+                        // Subsequent chunks will then begin emmiting decompressed body data.
+
+                        bytesRead = static_cast<DWORD>(decompressed_size);
+                    }
+
                     // If the data was allocated directly from the buffer then commit, otherwise we still
                     // need to write to the response stream buffer.
-                    auto writebuf = p_request_context->_get_writebuffer();
                     if (p_request_context->is_externally_allocated())
                     {
                         writebuf.commit(bytesRead);
@@ -1261,28 +1341,11 @@ private:
     HINTERNET m_hSession;
     HINTERNET m_hConnection;
     bool      m_secure;
-
-    // No copy or assignment.
-    winhttp_client(const winhttp_client&);
-    winhttp_client &operator=(const winhttp_client&);
 };
 
-http_network_handler::http_network_handler(const uri &base_uri, const http_client_config &client_config) :
-    m_http_client_impl(std::make_shared<details::winhttp_client>(base_uri, client_config))
+std::shared_ptr<_http_client_communicator> create_platform_final_pipeline_stage(uri&& base_uri, http_client_config&& client_config)
 {
-}
-
-pplx::task<http_response> http_network_handler::propagate(http_request request)
-{
-    auto context = details::winhttp_request_context::create_request_context(m_http_client_impl, request);
-
-    // Use a task to externally signal the final result and completion of the task.
-    auto result_task = pplx::create_task(context->m_request_completion);
-
-    // Asynchronously send the response with the HTTP client implementation.
-    m_http_client_impl->async_send_request(context);
-
-    return result_task;
+    return std::make_shared<details::winhttp_client>(std::move(base_uri), std::move(client_config));
 }
 
 }}}}

@@ -1,19 +1,7 @@
 /***
-* ==++==
+* Copyright (C) Microsoft. All rights reserved.
+* Licensed under the MIT license. See LICENSE.txt file in the project root for full license information.
 *
-* Copyright (c) Microsoft Corporation. All rights reserved. 
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* http://www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-* ==--==
 * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 *
 * bingrequest.cpp - Simple cmd line application that makes an HTTP GET request to bing searching and outputting
@@ -29,6 +17,32 @@ using namespace utility;
 using namespace web::http;
 using namespace web::http::client;
 using namespace concurrency::streams;
+
+/* Can pass proxy information via environment variable http_proxy.
+   Example:
+   Linux:   export http_proxy=http://192.1.8.1:8080
+ */
+web::http::client::http_client_config client_config_for_proxy()
+{
+    web::http::client::http_client_config client_config;
+#ifdef _WIN32
+    wchar_t* pValue;
+    size_t len;
+    auto err = _wdupenv_s(&pValue, &len, L"http_proxy");
+    if (!err) {
+        std::unique_ptr<wchar_t, void(*)(wchar_t*)> holder(pValue, [](wchar_t* p) { free(p); });
+        uri proxy_uri(std::wstring(pValue, len));
+#else
+    if(const char* env_http_proxy = std::getenv("http_proxy")) {
+        uri proxy_uri(utility::conversions::to_string_t(env_http_proxy));
+#endif
+        web::web_proxy proxy(proxy_uri);
+        client_config.set_proxy(proxy);
+    }
+
+    return client_config;
+}
+
 
 #ifdef _WIN32
 int wmain(int argc, wchar_t *args[])
@@ -52,7 +66,7 @@ int main(int argc, char *args[])
 
         // Create an HTTP request.
         // Encode the URI query since it could contain special characters like spaces.
-        http_client client(U("http://www.bing.com/"));
+        http_client client(U("http://www.bing.com/"), client_config_for_proxy());
         return client.request(methods::GET, uri_builder(U("/search")).append_query(U("q"), searchTerm).to_string());
     })
 
