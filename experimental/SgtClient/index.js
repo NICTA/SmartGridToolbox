@@ -15,7 +15,7 @@ Sgt.SgtClient = (function() {
             "id", "componentType", "phases", "V", "VMagPu", "VMag_kV", "VAngDeg", "VRmsPu", "VRms_kV", "VBase", 
             "islandIdx", "SGen", "SGenTot", "SZip", "SZipTot", "PTot", "PZip", "userData"
         ],
-        keysGen: ["id", "componentType", "PTot", "userData"],
+        keysGen: ["id", "componentType", "PTot", "PMin", "PMax", "QMin", "QMax", "phases", "userData"],
         keysZip: ["id", "componentType", "PTot", "phases", "userData"]
     };
 
