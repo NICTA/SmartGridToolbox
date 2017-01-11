@@ -13,11 +13,11 @@ option(ENABLE_GUROBI "Link to Gurobi libraries" OFF)
 # to the source code.
 configure_file (
     "${PROJECT_SOURCE_DIR}/PowerToolsConfig.h.in"
-    "${PROJECT_BINARY_DIR}/PowerToolsConfig.h")
+    "${PROJECT_BINARY_DIR}/include/PowerTools++/PowerToolsConfig.h")
 
 # add the binary tree to the search path for include files
 # so that we will find PowerToolsConfig.h.
-include_directories("${PROJECT_BINARY_DIR}")
+include_directories("${PROJECT_BINARY_DIR}/include")
  
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
