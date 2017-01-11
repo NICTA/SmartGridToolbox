@@ -58,4 +58,4 @@ add_subdirectory(src)
 
 # Install
 install(DIRECTORY include/PowerTools++ DESTINATION include)
-install(FILES ${PROJECT_BINARY_DIR}/PowerToolsConfig.h DESTINATION include/PowerTools++)
+install(FILES ${PROJECT_BINARY_DIR}/include/PowerTools++/PowerToolsConfig.h DESTINATION include/PowerTools++)
