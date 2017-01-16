@@ -135,7 +135,7 @@ namespace Sgt
             /// @brief Compare two ComponentPtrs.
             ///
             /// Undefined behaviour if they come from different ComponentCollection containers.
-            template<typename RhsD, int rhsIsConst>
+            template<typename RhsD, bool rhsIsConst>
             bool operator==(const ComponentPtr<B, RhsD, rhsIsConst>& rhs) const 
             {
                 // First comparison mainly to get nullptrs.
@@ -145,7 +145,7 @@ namespace Sgt
             /// @brief Compare two ComponentPtrs.
             ///
             /// Undefined behaviour if they come from different ComponentCollection containers.
-            template<typename RhsD, int rhsIsConst>
+            template<typename RhsD, bool rhsIsConst>
             bool operator!=(const ComponentPtr<B, RhsD, rhsIsConst>& rhs) const 
             {
                 return !operator=(rhs);
