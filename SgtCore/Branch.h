@@ -178,6 +178,17 @@ namespace Sgt
 
             /// @}
 
+            /// @name Utility functions
+            /// @{
+
+            /// @brief Current injection into each bus.
+            std::array<arma::Col<Complex>, 2> IBusInj() const;
+            
+            /// @brief Power injection into each bus.
+            std::array<arma::Col<Complex>, 2> SBusInj() const;
+            
+            /// @}
+
         private:
 
             Phases phases0_; ///< Phases on bus 0.

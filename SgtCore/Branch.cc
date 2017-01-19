@@ -44,6 +44,41 @@ namespace Sgt
         return j;
     }
             
+    array<Col<Complex>, 2> VIBusInj(const BranchAbc& branch)
+    {
+        Col<Complex> V0 = mapPhases(branch.bus0()->V(), branch.bus0()->phases(), branch.phases0());
+        Col<Complex> V1 = mapPhases(branch.bus1()->V(), branch.bus1()->phases(), branch.phases1());
+        Col<Complex> V = join_vert(V0, V1);
+        return {{V, branch.Y() * V}};
+    }
+
+    std::array<Col<Complex>, 2> BranchAbc::IBusInj() const
+    {
+        auto I = VIBusInj(*this)[1];
+
+        Col<Complex> I0 = I.subvec(span(0, bus0_->phases().size() - 1));
+        I0 = mapPhases(I0, phases0_, bus0_->phases());
+
+        Col<Complex> I1 = I.subvec(span(bus1_->phases().size(), I.size() - 1));
+        I1 = mapPhases(I1, phases1_, bus1_->phases());
+
+        return {{I0, I1}};
+    }
+
+    std::array<Col<Complex>, 2> BranchAbc::SBusInj() const
+    {
+        auto VI = VIBusInj(*this);
+        Col<Complex> S = VI[0] % conj(VI[1]);
+
+        Col<Complex> S0 = S.subvec(span(0, bus0_->phases().size() - 1));
+        S0 = mapPhases(S0, phases0_, bus0_->phases());
+        
+        Col<Complex> S1 = S.subvec(span(bus1_->phases().size(), S.size() - 1));
+        S1 = mapPhases(S1, phases1_, bus1_->phases());
+
+        return {{S0, S1}};
+    }
+               
     Col<Complex> lineCurrents(const BranchAbc& branch)
     {
         sgtAssert(branch.phases0().size() == branch.phases1().size(),
