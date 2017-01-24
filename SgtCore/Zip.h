@@ -134,6 +134,42 @@ namespace Sgt
             SGT_PROP_GET(SConst, SConst, arma::Mat<Complex>);
 
             /// @}
+            
+            /// @name Total Power.
+            /// @{
+            
+            /// @brief Consumed power, by phase components, when in service.
+            ///
+            /// Does not take into account any unserved power - this is instead taken into account at the bus level.
+            arma::Mat<Complex> inServiceS() const;
+
+            /// @brief Consumed power, by phase components, zero if not in service.
+            ///
+            /// Does not take into account any unserved power - this is instead taken into account at the bus level.
+            arma::Mat<Complex> S() const
+            {
+                return isInService_ 
+                    ? inServiceS()
+                    : arma::Mat<Complex>(phases_.size(), phases_.size(), arma::fill::zeros);
+            }
+
+            /// @brief Total consumed power, when in service.
+            ///
+            /// Does not take into account any unserved power - this is instead taken into account at the bus level.
+            Complex inServiceSTot() const
+            {
+                return sum(sum(trimatu(inServiceS())));
+            }
+            
+            /// @brief Total consumed power, zero if not in service.
+            ///
+            /// Does not take into account any unserved power - this is instead taken into account at the bus level.
+            Complex STot() const
+            {
+                return isInService_ ? inServiceSTot() : Complex(0.0, 0.0);
+            }
+            
+            /// @}
 
             /// @name Events.
             /// @{

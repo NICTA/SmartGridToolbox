@@ -14,16 +14,20 @@
 
 #include "Zip.h"
 
+#include "Bus.h"
+
 #include <ostream>
+
+using namespace arma;
 
 namespace Sgt
 {
     GenericZip::GenericZip(const std::string& id, const Phases& phases) :
         Component(id),
         ZipAbc(phases),
-        YConst_(phases.size(), phases.size(), arma::fill::zeros),
-        IConst_(phases.size(), phases.size(), arma::fill::zeros),
-        SConst_(phases.size(), phases.size(), arma::fill::zeros)
+        YConst_(phases.size(), phases.size(), fill::zeros),
+        IConst_(phases.size(), phases.size(), fill::zeros),
+        SConst_(phases.size(), phases.size(), fill::zeros)
     {
         // Empty.
     }
@@ -38,4 +42,37 @@ namespace Sgt
 			{"SConst", SConst()}};
 		return j;
 	}
+
+    Mat<Complex> ZipAbc::inServiceS() const
+    {
+        Col<Complex> V = mapPhases(bus_->V(), bus_->phases(), phases_);
+
+        Mat<Complex> SYConst = conj(YConst());
+        for (uword i = 0; i < SYConst.n_rows; ++i)
+        {
+            for (uword k = 0; k < SYConst.n_cols; ++k)
+            {
+                if (SYConst(i, k) != Complex(0.0))
+                {
+                    Complex Vik = i == k ? V(i) : V(i) - V(k);
+                    SYConst(i, k) *= norm(Vik); // std::norm gives |Vik|^2
+                }
+            }
+        }
+
+        Mat<Complex> SIConst = conj(IConst());
+        for (uword i = 0; i < SIConst.n_rows; ++i)
+        {
+            for (uword k = 0; k < SIConst.n_cols; ++k)
+            {
+                if (SIConst(i, k) != Complex(0.0))
+                {
+                    Complex Vik = i == k ? V(i) : V(i) - V(k);
+                    SIConst(i, k) *= abs(Vik); // std::norm gives |Vik|^2
+                }
+            }
+        }
+
+        return SYConst + SIConst + SConst();
+    }
 }
