@@ -275,9 +275,6 @@ namespace Sgt
 
             arma::Mat<Complex> Y_;
     };
-
-    /// @brief Line currents (meant for lines only).
-    arma::Col<Complex> lineCurrents(const BranchAbc& branch); 
 }
 
 #endif // BRANCH_DOT_H

@@ -78,21 +78,4 @@ namespace Sgt
 
         return {{S0, S1}};
     }
-               
-    Col<Complex> lineCurrents(const BranchAbc& branch)
-    {
-        sgtAssert(branch.phases0().size() == branch.phases1().size(),
-                "lineCurrents(...) requires matching phases on both buses.");
-        size_t nPhase = branch.phases0().size();
-        Col<Complex> V0 = mapPhases(branch.bus0()->V(), branch.bus0()->phases(), branch.phases0());
-        Col<Complex> V1 = mapPhases(branch.bus1()->V(), branch.bus1()->phases(), branch.phases1());
-        Col<Complex> deltaV = V0 - V1;
-        Col<Complex> y(nPhase, fill::none);
-        Mat<Complex> YBus = branch.Y();
-        for (size_t i = 0; i < nPhase; ++i)
-        {
-            y(i) = -YBus(i, i + nPhase);
-        }
-        return y % deltaV;
-    }
 }
