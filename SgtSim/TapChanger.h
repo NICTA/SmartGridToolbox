@@ -164,6 +164,16 @@ namespace Sgt
                 return get_();
             }
 
+            double setpoint() const
+            {
+                return setpoint_;
+            }
+            
+            double tolerance() const
+            {
+                return tolerance_;
+            }
+
             /// @}
 
         private:
