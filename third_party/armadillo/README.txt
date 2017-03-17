@@ -1,6 +1,9 @@
 Armadillo C++ Linear Algebra Library
 http://arma.sourceforge.net
 
+Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+Copyright 2008-2016 National ICT Australia (NICTA)
+
 
 
 Contents
@@ -8,32 +11,30 @@ Contents
 
  1: Introduction
  2: Citation Details
+ 3: Distribution License
 
- 3: Licenses
- 4: Technical Support
+ 4: Compilers and External Dependencies
 
- 5: Requirements
+ 5: Linux and Mac OS X: Installation
+ 6: Linux and Mac OS X: Compiling & Linking
 
- 6: Linux and Mac OS X: Installation
- 7: Linux and Mac OS X: Compiling & Linking
+ 7: Windows: Installation
+ 8: Windows: Compiling & Linking
 
- 8: Windows: Installation
- 9: Windows: Compiling & Linking
-
-10: Support for OpenBLAS, Intel MKL and AMD ACML
-11: Support for ATLAS
+ 9: Support for OpenBLAS and Intel MKL
+10: Support for ATLAS
+11: Support for C++11/C++14 Features
 
 12: API Documentation
-13: MEX Interface to Octave/Matlab
+13: Bug Reports and Frequently Asked Questions
 
-14: Bug Reports and Frequently Asked Questions
+14: MEX Interface to Octave/Matlab
 15: Related Software
 
 
 
 1: Introduction
 ===============
-
 
 Armadillo is a high quality C++ linear algebra library,
 aiming towards a good balance between speed and ease of use.
@@ -44,21 +45,18 @@ The syntax (API) is deliberately similar to Matlab.
 
 The library provides efficient classes for vectors, matrices and cubes,
 as well as 200+ associated functions (eg. contiguous and non-contiguous
-submatrix views).  Various matrix decompositions are provided through
+submatrix views). Various matrix decompositions are provided through
 integration with LAPACK, or one of its high performance drop-in replacements
-(eg. OpenBLAS, Intel MKL, AMD ACML, Apple Accelerate framework, etc).
+(eg. OpenBLAS, Intel MKL, Apple Accelerate framework, etc).
 
 A sophisticated expression evaluator (via C++ template meta-programming)
 automatically combines several operations (at compile time) to increase speed
 and efficiency.
 
 The library can be used for machine learning, pattern recognition, computer vision,
-signal processing, bioinformatics, statistics, econometrics, etc.
+signal processing, bioinformatics, statistics, finance, etc.
 
-Armadillo is primarily developed at Data61 / NICTA (Australia).
-For information about Data61 see http://data61.csiro.au
-
-Main developers:
+Authors:
   Conrad Sanderson - http://conradsanderson.id.au
   Ryan Curtin      - http://ratml.org
 
@@ -77,40 +75,33 @@ development and maintenance of the library.
 
 
 
-3: Licenses
-===========
+3: Distribution License
+=======================
 
-Armadillo is available under 2 licenses:
+Armadillo can be used in both open-source and proprietary (closed-source) software.
 
-- Open source, under the restrictions of the Mozilla Public License (MPL) 2.0.
-  See the "LICENSE.txt" file for details.
-  
-- Commercial license (not open source), available for purchase.
-  Please contact Conrad Sanderson for more information:
-  http://conradsanderson.id.au
+Armadillo is licensed under the Apache License, Version 2.0 (the "License").
+A copy of the License is included in the "LICENSE.txt" file.
 
-
-
-4: Technical Support
-====================
-
-Technical support can be obtained by purchasing the commercial license (see above).
-Please contact Conrad Sanderson for more information:
-http://conradsanderson.id.au
+Any software that incorporates or distributes Armadillo in source or binary form
+must include, in the documentation and/or other materials provided with the software,
+a readable copy of the attribution notices present in the "NOTICE.txt" file.
+See the License for details. The contents of the "NOTICE.txt" file are for
+informational purposes only and do not modify the License.
 
 
 
-5: Requirements
-===============
+4: Compilers and External Dependencies
+======================================
 
 Armadillo makes extensive use of template meta-programming, recursive templates
-and template based function overloading.  As such, C++ compilers which do not
+and template based function overloading. As such, C++ compilers which do not
 fully implement the C++ standard may not work correctly.
 
 The functionality of Armadillo is partly dependent on other libraries:
-LAPACK, BLAS, ARPACK and SuperLU.  The LAPACK and BLAS libraries are
+LAPACK, BLAS, ARPACK and SuperLU. The LAPACK and BLAS libraries are
 used for dense matrices, while the ARPACK and SuperLU libraries are
-used for sparse matrices.  Armadillo can work without these libraries,
+used for sparse matrices. Armadillo can work without these libraries,
 but its functionality will be reduced. In particular, basic functionality
 will be available (eg. matrix addition and multiplication), but things
 like eigen decomposition or matrix inversion will not be.
@@ -122,7 +113,7 @@ For example, for GCC and Clang compilers use -O2 or -O3
 
 
 
-6: Linux and Mac OS X: Installation
+5: Linux and Mac OS X: Installation
 ===================================
 
 * Step 1:
@@ -154,7 +145,7 @@ For example, for GCC and Clang compilers use -O2 or -O3
   On Linux-based systems, the following libraries are recommended
   to be present: OpenBLAS, LAPACK, SuperLU and ARPACK.
   It is also necessary to install the corresponding development
-  files for each library.  For example, when installing the "lapack"
+  files for each library. For example, when installing the "lapack"
   package, also install the "lapack-devel" or "lapack-dev" package.
   
 * Step 4:
@@ -195,7 +186,7 @@ For example, for GCC and Clang compilers use -O2 or -O3
 
 
 
-7: Linux and Mac OS X: Compiling & Linking
+6: Linux and Mac OS X: Compiling & Linking
 ==========================================
 
 The "examples" directory contains several quick example programs
@@ -219,7 +210,7 @@ On Mac OS X, replace -lblas -llapack with -framework Accelerate
 
 
 
-8: Windows: Installation
+7: Windows: Installation
 ========================
 
 The installation is comprised of 3 steps:
@@ -249,20 +240,20 @@ The installation is comprised of 3 steps:
 
 
 
-9: Windows: Compiling & Linking
+8: Windows: Compiling & Linking
 ===============================
 
 Within the "examples" folder, we have included an MSVC project named "example1_win64"
-which can be used to compile "example1.cpp".  The project needs to be compiled as a
+which can be used to compile "example1.cpp". The project needs to be compiled as a
 64 bit program: the active solution platform must be set to x64, instead of win32.
 
-The MSCV project was tested on 64 bit Windows 7 with Visual C++ 2012.
+The MSVC project was tested on 64 bit Windows 7 with Visual C++ 2012.
 You may need to make adaptations for 32 bit systems, later versions of Windows
-and/or the compiler.  For example, you may have to enable or disable
-ARMA_BLAS_LONG and ARMA_BLAS_UNDERSCORE macros in "armadillo_bits/config.hpp".
+and/or the compiler. For example, you may have to enable or disable
+ARMA_BLAS_LONG and ARMA_BLAS_UNDERSCORE defines in "armadillo_bits/config.hpp".
 
 The folder "examples/lib_win64" contains standard LAPACK and BLAS libraries compiled
-for 64 bit Windows.  The compilation was done by a third party.  USE AT YOUR OWN RISK.
+for 64 bit Windows. The compilation was done by a third party. USE AT YOUR OWN RISK.
 The compiled versions of LAPACK and BLAS were obtained from:
   http://ylzhao.blogspot.com.au/2013/10/blas-lapack-precompiled-binaries-for.html
 
@@ -273,10 +264,9 @@ You can find the original sources for standard BLAS and LAPACK at:
 Faster and/or alternative implementations of BLAS and LAPACK are available:
   http://xianyi.github.com/OpenBLAS/
   http://software.intel.com/en-us/intel-mkl/
-  http://developer.amd.com/tools-and-sdks/cpu-development/amd-core-math-library-acml/
   http://icl.cs.utk.edu/lapack-for-windows/lapack/
 
-The OpenBLAS, MKL and ACML libraries are generally the fastest.
+The OpenBLAS and Intel MKL libraries are generally the fastest.
 
 For better performance, we recommend the following high-quality C++ compilers:
   GCC from MinGW:     http://www.mingw.org/
@@ -299,32 +289,29 @@ such as Mac OS X, or various Linux-based systems:
 
 
 
-10: Support for OpenBLAS, Intel MKL and AMD ACML
-================================================
+9: Support for OpenBLAS and Intel MKL
+=====================================
 
-Armadillo can use OpenBLAS, or Intel Math Kernel Library (MKL),
-or the AMD Core Math Library (ACML) as high-speed replacements
-for BLAS and LAPACK.  In essence this involves linking with the
+Armadillo can use OpenBLAS or Intel Math Kernel Library (MKL) as high-speed
+replacements for BLAS and LAPACK. In essence this involves linking with the
 replacement libraries instead of BLAS and LAPACK.
 
 You may need to make minor modifications to include/armadillo_bits/config.hpp
 to make sure Armadillo uses the same integer sizes and style of function names
-as used by MKL or ACML. Specifically, you may need comment or uncomment the
-following defines:
+as used by the replacement libraries. Specifically, you may need comment or uncomment
+the following defines:
+  ARMA_USE_WRAPPER
+  ARMA_BLAS_CAPITALS
+  ARMA_BLAS_UNDERSCORE
+  ARMA_BLAS_LONG
+  ARMA_BLAS_LONG_LONG
 
-ARMA_USE_WRAPPER
-ARMA_BLAS_CAPITALS
-ARMA_BLAS_UNDERSCORE
-ARMA_BLAS_LONG
-ARMA_BLAS_LONG_LONG
+See the documentation for more information on the above defines.
 
-See the associated descriptions in include/armadillo_bits/config.hpp
-for more information about the above defines.  
-
-On Linux systems, MKL and ACML might be installed in a non-standard
-location, such as /opt, which can cause problems during linking.
-Before installing Armadillo, the system should know where the MKL or ACML
-libraries are located. For example, "/opt/intel/mkl/lib/intel64/".
+On Linux systems, MKL might be installed in a non-standard location
+such as /opt which can cause problems during linking.
+Before installing Armadillo, the system should know where the MKL libraries
+are located. For example, "/opt/intel/mkl/lib/intel64/".
 This can be achieved by setting the LD_LIBRARY_PATH environment variable,
 or for a more permanent solution, adding the directory locations
 to "/etc/ld.so.conf". It may also be possible to store a text file 
@@ -339,25 +326,23 @@ where Intel MKL version 11.0.3 is installed in "/opt/intel":
 /opt/intel/lib/intel64
 /opt/intel/mkl/lib/intel64
 
-The default installations of ACML 4.4.0 and MKL 10.2.2.025 are known 
-to have issues with SELinux, which is turned on by default in Fedora
-(and possibly RHEL). The problem may manifest itself during run-time,
-where the run-time linker reports permission problems.
-It is possible to work around the problem by applying an appropriate
-SELinux type to all ACML and MKL libraries.
+The default installations of MKL 10.2.2.025 are known to have issues with
+SELinux, which is turned on by default in Fedora and RHEL.
+The problem may manifest itself during run-time, where the run-time linker
+reports permission problems. It is possible to work around the problem by
+applying an appropriate SELinux type to all MKL libraries.
 
-If you have ACML or MKL installed and they are persistently giving
-you problems during linking, you can disable the support for them
-by editing the "CMakeLists.txt" file, deleting "CMakeCache.txt" and
-re-running the CMake based installation. Specifically, comment out
-the lines containing:
+If you have MKL installed and its persistently giving you problems
+during linking, you can disable the support for MKL by editing the 
+"CMakeLists.txt" file, deleting "CMakeCache.txt" and re-running
+the CMake based installation. Comment out the lines containing:
   INCLUDE(ARMA_FindMKL)
   INCLUDE(ARMA_FindACMLMP)
   INCLUDE(ARMA_FindACML)
 
 
 
-11: Support for ATLAS
+10: Support for ATLAS
 =====================
 
 Armadillo can use the ATLAS library for faster versions of
@@ -369,50 +354,71 @@ Old versions (eg. 3.6) can produce incorrect results
 as well as corrupting memory, leading to random crashes.
 
 Users of older Ubuntu and Debian based systems should explicitly
-check that ATLAS 3.6 is not installed.  It's better to
+check that ATLAS 3.6 is not installed. It's better to
 remove the old version and use the standard LAPACK library.
+
+
+
+11: Support for C++11 / C++14 Features
+======================================
+
+Armadillo works with compilers supporting the older C++98 and C++03 standards,
+as well as the newer C++11 and C++14 standards.
+
+Armadillo will enable extra features (such as move constructors)
+when a C++11/C++14 compiler is detected. You can also force Armadillo
+to make use C++11 features by defining ARMA_USE_CXX11 before
+#include <armadillo> in your code.
+
+You may need to explicitly enable C++11 mode in your compiler.
+For example, use the -std=c++11 option in gcc & clang.
+
+Caveat: use of the C++11 "auto" keyword is not recommended with Armadillo
+objects and expressions. Armadillo has a template meta-programming framework
+which creates lots of short lived temporaries that are not handled by auto.
 
 
 
 12: API Documentation
 =====================
 
-Documentation of functions and classes is available at:
-  
+Documentation of functions, classes and options is available at:
+
   http://arma.sourceforge.net/docs.html
-  
+
 The documentation is also in the "docs.html" file in this folder,
 which can be viewed with a web browser.
 
 
 
-13: MEX Interface to Octave/Matlab
-==================================
-
-The "mex_interface" folder contains examples of how to interface
-Octave/Matlab with C++ code that uses Armadillo matrices.
-
-
-
-14: Bug Reports and Frequently Asked Questions
+13: Bug Reports and Frequently Asked Questions
 ==============================================
 
-Answers to frequently asked questions can be found at:
-
-  http://arma.sourceforge.net/faq.html
-
-This library has gone through extensive testing and
+Armadillo has gone through extensive testing and
 has been successfully used in production environments.
 However, as with almost all software, it's impossible
 to guarantee 100% correct functionality.
 
-If you find a bug in the library (or the documentation),
+If you find a bug in the library or the documentation,
 we are interested in hearing about it. Please make a
 _small_ and _self-contained_ program which exposes the bug,
-and then send the program source (as well as the bug description)
-to the developers.  The developers' contact details are at:
+and then send the program source and the bug description
+to the developers. The contact details are at:
 
   http://arma.sourceforge.net/contact.html
+
+Further information about Armadillo as well as
+answers to frequently asked questions are at:
+
+  http://arma.sourceforge.net/faq.html
+
+
+
+14: MEX Interface to Octave/Matlab
+==================================
+
+The "mex_interface" folder contains examples of how to interface
+Octave/Matlab with C++ code that uses Armadillo matrices.
 
 
 
@@ -421,9 +427,6 @@ to the developers.  The developers' contact details are at:
 
 * MLPACK: C++ library for machine learning and pattern recognition, built on top of Armadillo.
   http://mlpack.org
-  
-* Mantella: C++ library for analysing and solving optimisation problems
-  https://github.com/SebastianNiemann/Mantella
   
 * libpca: C++ library for principal component analysis
   http://sourceforge.net/projects/libpca/

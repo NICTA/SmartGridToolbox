@@ -1,26 +1,26 @@
 
-# Copyright (C) 2008-2016 National ICT Australia (NICTA)
+# Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+# Copyright 2008-2016 National ICT Australia (NICTA)
 # 
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at http://mozilla.org/MPL/2.0/.
-# -------------------------------------------------------------------
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# http://www.apache.org/licenses/LICENSE-2.0
 # 
-# Written by Conrad Sanderson - http://conradsanderson.id.au
-# Written by Ryan Curtin
-# Written by Clement Creusot
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------
 
 
 
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
-set(ARMA_MAJOR 7)
-set(ARMA_MINOR 400)
-set(ARMA_PATCH 2)
-set(ARMADILLO_VERSION ${ARMA_MAJOR}.${ARMA_MINOR}.${ARMA_PATCH})
-
-message(STATUS "Configuring Armadillo ${ARMADILLO_VERSION}")
-
+project(armadillo CXX C)
+include(CheckIncludeFileCXX)
+include(CheckLibraryExists)
 
 ## Set ARMA_USE_WRAPPER to false if you're getting linking errors when compiling your programs,
 ## or if you prefer to directly link with BLAS and/or LAPACK.
@@ -40,12 +40,24 @@ set(ARMA_USE_ARPACK           false)
 set(ARMA_USE_EXTERN_CXX11_RNG false)
 set(ARMA_USE_SUPERLU          false)  # Caveat: only SuperLU version 5.x can be used!
 
-project(armadillo CXX)
+
+## extract version from sources
+
+set(ARMA_VERSION_FILE_NAME "${PROJECT_SOURCE_DIR}/include/armadillo_bits/arma_version.hpp")
+
+if(NOT EXISTS ${ARMA_VERSION_FILE_NAME})
+  message(FATAL_ERROR "Can't read ${ARMA_VERSION_FILE_NAME}")
+endif()
+
+file(READ ${ARMA_VERSION_FILE_NAME} ARMA_VERSION_FILE_CONTENTS)
+string(REGEX REPLACE ".*#define ARMA_VERSION_MAJOR ([0-9]+).*" "\\1" ARMA_VERSION_MAJOR "${ARMA_VERSION_FILE_CONTENTS}")
+string(REGEX REPLACE ".*#define ARMA_VERSION_MINOR ([0-9]+).*" "\\1" ARMA_VERSION_MINOR "${ARMA_VERSION_FILE_CONTENTS}")
+string(REGEX REPLACE ".*#define ARMA_VERSION_PATCH ([0-9]+).*" "\\1" ARMA_VERSION_PATCH "${ARMA_VERSION_FILE_CONTENTS}")
+
+message(STATUS "Configuring Armadillo ${ARMA_VERSION_MAJOR}.${ARMA_VERSION_MINOR}.${ARMA_VERSION_PATCH}")
+
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake_aux/Modules/")
-
-include(CheckIncludeFileCXX)
-include(CheckLibraryExists)
 
 
 if(MSVC)
@@ -53,6 +65,8 @@ if(MSVC)
 else()
   option(BUILD_SHARED_LIBS "build shared library" ON)
 endif()
+
+option(DETECT_PKG_CONFIG "Detect pkg-config and install pkg-config data, if found" ON)
 
 option(DETECT_HDF5 "Detect HDF5 and include HDF5 support, if found" OFF)
 
@@ -78,6 +92,7 @@ message(STATUS "CMAKE_CXX_COMPILER_ID      = ${CMAKE_CXX_COMPILER_ID}"     )
 message(STATUS "CMAKE_CXX_COMPILER_VERSION = ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "CMAKE_COMPILER_IS_GNUCXX   = ${CMAKE_COMPILER_IS_GNUCXX}"  )
 message(STATUS "BUILD_SHARED_LIBS          = ${BUILD_SHARED_LIBS}"         )
+message(STATUS "DETECT_PKG_CONFIG          = ${DETECT_PKG_CONFIG}"         )
 message(STATUS "DETECT_HDF5                = ${DETECT_HDF5}"               )
 
 
@@ -217,6 +232,11 @@ else()
 endif()
 
 
+if(DETECT_PKG_CONFIG)
+  find_package(PkgConfig)
+endif()
+
+
 # set(DETECT_HDF5 true)
 
 ## uncomment the above line to enable the detection of the HDF5 library;
@@ -224,7 +244,7 @@ endif()
 ## cmake -D DETECT_HDF5=true .
 
 if(DETECT_HDF5)
-  find_package(HDF5 QUIET)
+  find_package(HDF5 QUIET COMPONENTS C)
 
   if(NOT HDF5_FOUND)
     # On Debian systems, the HDF5 package has been split into multiple packages
@@ -232,7 +252,6 @@ if(DETECT_HDF5)
     # are hidden somewhere very odd that the FindHDF5.cmake script will not
     # find.  Thus, we'll also quickly check pkgconfig to see if there is
     # information on what to use there.
-    find_package(PkgConfig)
     if (PKG_CONFIG_FOUND)
       pkg_check_modules(HDF5 hdf5)
       # But using pkgconfig is a little weird because HDF5_LIBRARIES won't be
@@ -261,7 +280,6 @@ if(DETECT_HDF5)
     message(STATUS "Set ARMA_HDF5_INCLUDE_DIR to ${ARMA_HDF5_INCLUDE_DIR}")
   endif()
 endif()
-
 
 include(ARMA_FindARPACK)
 message(STATUS "ARPACK_FOUND = ${ARPACK_FOUND}")
@@ -312,13 +330,13 @@ include_directories(${PROJECT_BINARY_DIR}/tmp/include/ ${CMAKE_REQUIRED_INCLUDES
 
 ## work around a silly limitation in Mac OS X
 if(APPLE)
-  if(${ARMA_MINOR} GREATER 99)
-    math(EXPR ARMA_MINOR_ALT "${ARMA_MINOR} / 10")
+  if(${ARMA_VERSION_MINOR} GREATER 99)
+    math(EXPR ARMA_VERSION_MINOR_ALT "${ARMA_VERSION_MINOR} / 10")
   else()
-    set(ARMA_MINOR_ALT ${ARMA_MINOR})
+    set(ARMA_VERSION_MINOR_ALT ${ARMA_VERSION_MINOR})
   endif()
 else()
-  set(ARMA_MINOR_ALT ${ARMA_MINOR})
+  set(ARMA_VERSION_MINOR_ALT ${ARMA_VERSION_MINOR})
 endif()
 
 
@@ -339,7 +357,8 @@ message(STATUS "CMAKE_REQUIRED_INCLUDES   = ${CMAKE_REQUIRED_INCLUDES}"  )
 
 add_library( armadillo ${PROJECT_SOURCE_DIR}/src/wrapper.cpp )
 target_link_libraries( armadillo ${ARMA_LIBS} )
-set_target_properties(armadillo PROPERTIES VERSION ${ARMA_MAJOR}.${ARMA_MINOR_ALT}.${ARMA_PATCH} SOVERSION ${ARMA_MAJOR})
+target_include_directories(armadillo INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
+set_target_properties(armadillo PROPERTIES VERSION ${ARMA_VERSION_MAJOR}.${ARMA_VERSION_MINOR_ALT}.${ARMA_VERSION_PATCH} SOVERSION ${ARMA_VERSION_MAJOR})
 
 
 ################################################################################
@@ -444,7 +463,6 @@ message(STATUS "Generating '${PROJECT_BINARY_DIR}/ArmadilloConfigVersion.cmake'"
 configure_file(${PROJECT_SOURCE_DIR}/cmake_aux/InstallFiles/ArmadilloConfigVersion.cmake.in
   "${PROJECT_BINARY_DIR}/ArmadilloConfigVersion.cmake" @ONLY)
 
-
 # Install the export set for use with the install-tree
 install(EXPORT ArmadilloLibraryDepends DESTINATION
   "${INSTALL_DATA_DIR}/Armadillo/CMake"
@@ -473,3 +491,18 @@ install(FILES
   "${PROJECT_BINARY_DIR}/InstallFiles/ArmadilloConfig.cmake"
   "${PROJECT_BINARY_DIR}/InstallFiles/ArmadilloConfigVersion.cmake"
   DESTINATION "${ARMADILLO_CMAKE_DIR}" COMPONENT dev)
+
+
+if(PKG_CONFIG_FOUND)
+  message(STATUS "Copying ${PROJECT_SOURCE_DIR}/misc/ to ${PROJECT_BINARY_DIR}/tmp/misc/")
+  file(COPY ${PROJECT_SOURCE_DIR}/misc/ DESTINATION ${PROJECT_BINARY_DIR}/tmp/misc/)
+
+  message(STATUS "Generating '${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc'")
+  configure_file(${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc.in "${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc" @ONLY)
+  
+  if(NOT PKG_CONFIG_DIR)
+    set(PKG_CONFIG_DIR "${INSTALL_LIB_DIR}/pkgconfig")
+  endif()
+  
+  install(FILES "${PROJECT_BINARY_DIR}/tmp/misc/armadillo.pc" DESTINATION ${PKG_CONFIG_DIR})
+endif()

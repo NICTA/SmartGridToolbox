@@ -1,12 +1,17 @@
-// Copyright (C) 2014 National ICT Australia (NICTA)
+// Copyright 2014 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2014 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// -------------------------------------------------------------------
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
 // 
-// Written by Conrad Sanderson - http://conradsanderson.id.au
-// Written by George Yammine
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 // Connector for Mex files to use Armadillo for calculation
@@ -439,7 +444,9 @@ armaSetCubePi(mxArray *matlabMatrix, const Cube<double>& armaCube)
   std::memcpy(dst_pointer, src_pointer, sizeof(double)*armaCube.n_elem); 
   }
 
+
 // Return double complex cube to Matlab/Octave.
+inline
 void
 armaSetCubeCx(mxArray *matlabMatrix, const cx_cube& armaCube)
   {
@@ -925,7 +932,7 @@ armaReadMatFromFile(const char *filename)
   MATFile *file;
   file = matOpen(filename,"r");
   
-  char buffer[64];
+  char buffer[1024];
   const char *name;
   name = buffer;
   
@@ -951,7 +958,7 @@ armaReadCxMatFromFile(const char *filename)
   MATFile *file;
   file = matOpen(filename,"r");
   
-  char buffer[64];
+  char buffer[1024];
   const char *name;
   name = buffer;
   
@@ -977,7 +984,7 @@ armaReadCubeFromFile(const char *filename)
   MATFile *file;
   file = matOpen(filename,"r");
   
-  char buffer[64];
+  char buffer[1024];
   const char *name;
   name = buffer;
   
@@ -1003,7 +1010,7 @@ armaReadCxCubeFromFile(const char *filename)
   MATFile *file;
   file = matOpen(filename,"r");
   
-  char buffer[64];
+  char buffer[1024];
   const char *name;
   name = buffer;
   

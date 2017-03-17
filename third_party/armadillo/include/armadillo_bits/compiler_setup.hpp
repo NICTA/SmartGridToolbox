@@ -1,11 +1,17 @@
-// Copyright (C) 2008-2016 National ICT Australia (NICTA)
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// -------------------------------------------------------------------
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
 // 
-// Written by Conrad Sanderson - http://conradsanderson.id.au
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 
@@ -163,8 +169,8 @@
   #endif
   
   #if (ARMA_GCC_VERSION < 40600)
-    #pragma message ("WARNING: this compiler is OUTDATED and has INCOMPLETE support for the C++ standard;")
-    #pragma message ("WARNING: if something breaks, you get to keep all the pieces.")
+    #undef  ARMA_PRINT_CXX98_WARNING
+    #define ARMA_PRINT_CXX98_WARNING
   #endif
   
   #if ( (ARMA_GCC_VERSION >= 40700) && (ARMA_GCC_VERSION <= 40701) )
@@ -336,6 +342,11 @@
     #error "*** Need a newer compiler ***"
   #endif
   
+  #if (_MSC_VER < 1800)
+    #undef  ARMA_PRINT_CXX98_WARNING
+    #define ARMA_PRINT_CXX98_WARNING
+  #endif
+  
   #if defined(ARMA_USE_CXX11)
     #if (_MSC_VER < 1900)
       #undef  ARMA_PRINT_CXX11_WARNING
@@ -422,6 +433,12 @@
 #endif
 
 
+#if defined(ARMA_PRINT_CXX98_WARNING) && !defined(ARMA_DONT_PRINT_CXX98_WARNING)
+  #pragma message ("WARNING: this compiler is OUTDATED and has INCOMPLETE support for the C++ standard;")
+  #pragma message ("WARNING: if something breaks, you get to keep all the pieces.")
+#endif
+
+
 #if defined(ARMA_PRINT_CXX11_WARNING) && !defined(ARMA_DONT_PRINT_CXX11_WARNING)
   #pragma message ("WARNING: use of C++11 features has been enabled,")
   #pragma message ("WARNING: but this compiler has INCOMPLETE support for C++11;")
@@ -431,6 +448,7 @@
 #endif
 
 
+#undef ARMA_PRINT_CXX98_WARNING
 #undef ARMA_PRINT_CXX11_WARNING
 
 

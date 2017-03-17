@@ -1,10 +1,10 @@
 Name:           armadillo
-Version:        7.400.1
+Version:        7.800.0
 Release:        1%{?dist}
 Summary:        Fast C++ matrix library with syntax similar to MATLAB and Octave
 
 Group:          Development/Libraries
-License:        MPLv2.0
+License:        ASL 2.0
 URL:            http://arma.sourceforge.net/
 Source:         http://sourceforge.net/projects/arma/files/%{name}-%{version}.tar.xz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -18,19 +18,19 @@ BuildRequires:  SuperLU-devel
 %description
 Armadillo is a high quality C++ linear algebra library,
 aiming towards a good balance between speed and ease of use.
-It's useful for algorithm development directly in C++,
+Useful for algorithm development directly in C++,
 and/or quick conversion of research code into production environments.
 The syntax (API) is deliberately similar to Matlab.
 The library provides efficient classes for vectors, matrices and cubes,
 as well as 200+ associated functions (eg. contiguous and non-contiguous
 submatrix views).  Various matrix decompositions are provided through
 integration with LAPACK, or one of its high performance drop-in replacements
-(eg. OpenBLAS, Intel MKL, AMD ACML, Apple Accelerate framework, etc).
+(eg. OpenBLAS, Intel MKL, Apple Accelerate framework, etc).
 A sophisticated expression evaluator (via C++ template meta-programming)
 automatically combines several operations (at compile time) to increase
 speed and efficiency.
 The library can be used for machine learning, pattern recognition,
-computer vision, signal processing, bioinformatics, statistics, etc.
+computer vision, signal processing, bioinformatics, statistics, finance, etc.
 
 
 %package devel
@@ -88,9 +88,11 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %{_libdir}/*.so.*
 %license LICENSE.txt
+%license NOTICE.txt
 
 %files devel
 %{_libdir}/*.so
+%{_libdir}/pkgconfig/%{name}.pc
 %{_includedir}/armadillo
 %{_includedir}/armadillo_bits/
 %{_datadir}/Armadillo/

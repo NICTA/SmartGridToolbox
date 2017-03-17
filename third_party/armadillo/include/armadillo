@@ -1,11 +1,17 @@
-// Copyright (C) 2008-2016 National ICT Australia (NICTA)
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
-// -------------------------------------------------------------------
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
 // 
-// Written by Conrad Sanderson - http://conradsanderson.id.au
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 #ifndef ARMA_INCLUDES
@@ -267,6 +273,7 @@ namespace arma
   #include "armadillo_bits/op_norm_bones.hpp"
   #include "armadillo_bits/op_sqrtmat_bones.hpp"
   #include "armadillo_bits/op_logmat_bones.hpp"
+  #include "armadillo_bits/op_range_bones.hpp"
   
   #include "armadillo_bits/glue_times_bones.hpp"
   #include "armadillo_bits/glue_mixed_bones.hpp"
@@ -284,6 +291,10 @@ namespace arma
   #include "armadillo_bits/glue_max_bones.hpp"
   #include "armadillo_bits/glue_min_bones.hpp"
   #include "armadillo_bits/glue_trapz_bones.hpp"
+  #include "armadillo_bits/glue_atan2_bones.hpp"
+  #include "armadillo_bits/glue_hypot_bones.hpp"
+  #include "armadillo_bits/glue_polyfit_bones.hpp"
+  #include "armadillo_bits/glue_polyval_bones.hpp"
   
   #include "armadillo_bits/gmm_misc_bones.hpp"
   #include "armadillo_bits/gmm_diag_bones.hpp"
@@ -297,6 +308,8 @@ namespace arma
   #include "armadillo_bits/spop_diagmat_bones.hpp"
   #include "armadillo_bits/spop_mean_bones.hpp"
   #include "armadillo_bits/spop_var_bones.hpp"
+  #include "armadillo_bits/spop_trimat_bones.hpp"
+  #include "armadillo_bits/spop_symmat_bones.hpp"
   
   #include "armadillo_bits/spglue_plus_bones.hpp"
   #include "armadillo_bits/spglue_minus_bones.hpp"
@@ -505,6 +518,9 @@ namespace arma
   #include "armadillo_bits/fn_sqrtmat.hpp"
   #include "armadillo_bits/fn_logmat.hpp"
   #include "armadillo_bits/fn_trapz.hpp"
+  #include "armadillo_bits/fn_range.hpp"
+  #include "armadillo_bits/fn_polyfit.hpp"
+  #include "armadillo_bits/fn_polyval.hpp"
   
   #include "armadillo_bits/fn_speye.hpp"
   #include "armadillo_bits/fn_spones.hpp"
@@ -632,6 +648,7 @@ namespace arma
   #include "armadillo_bits/op_norm_meat.hpp"
   #include "armadillo_bits/op_sqrtmat_meat.hpp"
   #include "armadillo_bits/op_logmat_meat.hpp"
+  #include "armadillo_bits/op_range_meat.hpp"
   
   #include "armadillo_bits/glue_times_meat.hpp"
   #include "armadillo_bits/glue_mixed_meat.hpp"
@@ -649,6 +666,10 @@ namespace arma
   #include "armadillo_bits/glue_max_meat.hpp"
   #include "armadillo_bits/glue_min_meat.hpp"
   #include "armadillo_bits/glue_trapz_meat.hpp"
+  #include "armadillo_bits/glue_atan2_meat.hpp"
+  #include "armadillo_bits/glue_hypot_meat.hpp"
+  #include "armadillo_bits/glue_polyfit_meat.hpp"
+  #include "armadillo_bits/glue_polyval_meat.hpp"
   
   #include "armadillo_bits/gmm_misc_meat.hpp"
   #include "armadillo_bits/gmm_diag_meat.hpp"
@@ -662,6 +683,8 @@ namespace arma
   #include "armadillo_bits/spop_diagmat_meat.hpp"
   #include "armadillo_bits/spop_mean_meat.hpp"
   #include "armadillo_bits/spop_var_meat.hpp"
+  #include "armadillo_bits/spop_trimat_meat.hpp"
+  #include "armadillo_bits/spop_symmat_meat.hpp"
   
   #include "armadillo_bits/spglue_plus_meat.hpp"
   #include "armadillo_bits/spglue_minus_meat.hpp"

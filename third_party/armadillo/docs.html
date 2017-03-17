@@ -1,14 +1,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
 <!--
-Copyright (C) 2008-2016 National ICT Australia (NICTA)
+Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+Copyright 2008-2016 National ICT Australia (NICTA)
 
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v. 2.0. If a copy of the MPL was not distributed with this
-file, You can obtain one at http://mozilla.org/MPL/2.0/.
-===================================================================
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
 
-Written by Conrad Sanderson - http://conradsanderson.id.au
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 -->
 
 <html>
@@ -144,7 +149,7 @@ hr.greyline
 <!--  -->
 <a class="noprint" style="display:scroll; position:fixed; bottom:5px; right:5px;" href="#top"><font size=-1>[top]</font></a>
 
-<big><b>API Documentation for Armadillo 7.400</b></big>
+<big><b>API Documentation for Armadillo 7.800</b></big>
 <br>
 <br>
 <br>
@@ -156,7 +161,7 @@ hr.greyline
 <table border="0" cellpadding="0" cellspacing="0">
 <tbody>
 <tr>
-<td style="text-align: left; vertical-align: top; width: 50%;">
+<td style="text-align: left; vertical-align: top; width: 45%;">
 <ul>
 <li>
 For converting Matlab/Octave programs,
@@ -182,23 +187,18 @@ History of <a href="#api_additions">API additions</a>
 <td class="line" style="vertical-align: top;">
 <br>
 </td>
-<td style="text-align: left; vertical-align: top; width: 45%;">
+<td style="text-align: left; vertical-align: top; width: 50%;">
 <ul>
 <li>
-Please cite the following tech report if you use Armadillo in your research and/or software.
+Please cite the following article if you use Armadillo in your research or software.
 Citations are useful for the continued development and maintenance of the library.
 <br>
 <br>
 <font size=-1>
 Conrad Sanderson and Ryan Curtin.
-<i><a href="armadillo_joss_2016.pdf">Armadillo: a template-based C++ library for linear algebra</a></i>.
-Journal of Open Source Software, Vol.&nbsp;1, pp.&nbsp;26, 2016.
+<br><i><a href="armadillo_joss_2016.pdf">Armadillo: a template-based C++ library for linear algebra</a></i>.
+<br>Journal of Open Source Software, Vol.&nbsp;1, pp.&nbsp;26, 2016.
 </font>
-</li>
-<br>
-<li>
-If you use Armadillo in products,
-please obtain the <a href="http://arma.sourceforge.net/faq.html#licenses">commercial license</a>
 </li>
 </ul>
 </td>
@@ -352,64 +352,66 @@ please obtain the <a href="http://arma.sourceforge.net/faq.html#licenses">commer
 <tr style="background-color: #F5F5F5;"><td><a href="#all">all</a></td><td>&nbsp;</td><td>check whether all elements are non-zero, or satisfy a relational condition</td></tr>
 <tr><td><a href="#any">any</a></td><td>&nbsp;</td><td>check whether any element is non-zero, or satisfies a relational condition</td></tr>
 <tr><td><a href="#approx_equal">approx_equal</a></td><td>&nbsp;</td><td>approximate equality</td></tr>
-<tr><td><a href="#as_scalar">as_scalar</a></td><td>&nbsp;</td><td>convert 1x1 matrix to pure scalar</td></tr>
+<tr><td><a href="#arg">arg</a></td><td>&nbsp;</td><td>phase angle of each element</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#as_scalar">as_scalar</a></td><td>&nbsp;</td><td>convert 1x1 matrix to pure scalar</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#clamp">clamp</a></td><td>&nbsp;</td><td>obtain clamped elements according to given limits</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#cond">cond</a></td><td>&nbsp;</td><td>condition number of matrix</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#conj">conj</a></td><td>&nbsp;</td><td>obtain complex conjugate of each element</td></tr>
+<tr><td><a href="#conj">conj</a></td><td>&nbsp;</td><td>obtain complex conjugate of each element</td></tr>
 <tr><td><a href="#conv_to">conv_to</a></td><td>&nbsp;</td><td>convert between matrix types</td></tr>
 <tr><td><a href="#cross">cross</a></td><td>&nbsp;</td><td>cross product</td></tr>
-<tr><td><a href="#cumsum">cumsum</a></td><td>&nbsp;</td><td>cumulative sum</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#cumsum">cumsum</a></td><td>&nbsp;</td><td>cumulative sum</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#cumprod">cumprod</a></td><td>&nbsp;</td><td>cumulative product</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#det">det / log_det</a></td><td>&nbsp;</td><td>determinant</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#diagmat">diagmat</a></td><td>&nbsp;</td><td>generate diagonal matrix from given matrix or vector</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#det">det</a></td><td>&nbsp;</td><td>determinant</td></tr>
+<tr><td><a href="#diagmat">diagmat</a></td><td>&nbsp;</td><td>generate diagonal matrix from given matrix or vector</td></tr>
 <tr><td><a href="#diagvec">diagvec</a></td><td>&nbsp;</td><td>extract specified diagonal</td></tr>
 <tr><td><a href="#diff">diff</a></td><td>&nbsp;</td><td>differences between adjacent elements</td></tr>
-<tr><td><a href="#dot">dot/cdot/norm_dot</a></td><td>&nbsp;</td><td>dot product</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#dot">dot&nbsp;/&nbsp;cdot&nbsp;/&nbsp;norm_dot</a></td><td>&nbsp;</td><td>dot product</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#eps">eps</a></td><td>&nbsp;</td><td>obtain distance of each element to next largest floating point representation</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#expmat">expmat</a></td><td>&nbsp;</td><td>matrix exponential</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#expmat_sym">expmat_sym</a></td><td>&nbsp;</td><td>matrix exponential (symmetric)</td></tr>
+<tr><td><a href="#expmat_sym">expmat_sym</a></td><td>&nbsp;</td><td>matrix exponential (symmetric)</td></tr>
 <tr><td><a href="#find">find</a></td><td>&nbsp;</td><td>find indices of non-zero elements, or elements satisfying a relational condition</td></tr>
 <tr><td><a href="#find_finite">find_finite</a></td><td>&nbsp;</td><td>find indices of finite elements</td></tr>
-<tr><td><a href="#find_nonfinite">find_nonfinite</a></td><td>&nbsp;</td><td>find indices of non-finite elements</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#find_nonfinite">find_nonfinite</a></td><td>&nbsp;</td><td>find indices of non-finite elements</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#find_unique">find_unique</a></td><td>&nbsp;</td><td>find indices of unique elements</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#flip">fliplr&nbsp;/&nbsp;flipud</a></td><td>&nbsp;</td><td>reverse order of columns or rows</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#imag_real">imag / real</a></td><td>&nbsp;</td><td>extract imaginary/real part</td></tr>
+<tr><td><a href="#imag_real">imag / real</a></td><td>&nbsp;</td><td>extract imaginary/real part</td></tr>
 <tr><td><a href="#ind2sub">ind2sub</a></td><td>&nbsp;</td><td>convert linear index to subscripts</td></tr>
 <tr><td><a href="#index_min_and_index_max_standalone">index_min / index_max</a></td><td>&nbsp;</td><td>indices of extremum values</td></tr>
-<tr><td><a href="#inplace_trans">inplace_trans</a></td><td>&nbsp;</td><td>in-place transpose</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#inplace_trans">inplace_trans</a></td><td>&nbsp;</td><td>in-place transpose</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#is_finite">is_finite</a></td><td>&nbsp;</td><td>check whether all elements are finite</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#join">join_rows / join_cols</a></td><td>&nbsp;</td><td>concatenation of matrices</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#join_slices">join_slices</a></td><td>&nbsp;</td><td>concatenation of cubes</td></tr>
+<tr><td><a href="#join_slices">join_slices</a></td><td>&nbsp;</td><td>concatenation of cubes</td></tr>
 <tr><td><a href="#kron">kron</a></td><td>&nbsp;</td><td>Kronecker tensor product</td></tr>
-<tr><td><a href="#logmat">logmat</a></td><td>&nbsp;</td><td>matrix logarithm</td></tr>
-<tr><td><a href="#logmat_sympd">logmat_sympd</a></td><td>&nbsp;</td><td>matrix logarithm (symmetric)</td></tr>
+<tr><td><a href="#log_det">log_det</a></td><td>&nbsp;</td><td>log determinant</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#logmat">logmat</a></td><td>&nbsp;</td><td>matrix logarithm</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#logmat_sympd">logmat_sympd</a></td><td>&nbsp;</td><td>matrix logarithm (symmetric)</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#min_and_max">min&nbsp;/&nbsp;max</a></td><td>&nbsp;</td><td>return extremum values</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#nonzeros">nonzeros</a></td><td>&nbsp;</td><td>return non-zero values</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#norm">norm</a></td><td>&nbsp;</td><td>various norms of vectors and matrices</td></tr>
+<tr><td><a href="#nonzeros">nonzeros</a></td><td>&nbsp;</td><td>return non-zero values</td></tr>
+<tr><td><a href="#norm">norm</a></td><td>&nbsp;</td><td>various norms of vectors and matrices</td></tr>
 <tr><td><a href="#normalise">normalise</a></td><td>&nbsp;</td><td>normalise vectors to unit <i>p</i>-norm</td></tr>
-<tr><td><a href="#prod">prod</a></td><td>&nbsp;</td><td>product of elements</td></tr>
-<tr><td><a href="#rank">rank</a></td><td>&nbsp;</td><td>rank of matrix</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#prod">prod</a></td><td>&nbsp;</td><td>product of elements</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#rank">rank</a></td><td>&nbsp;</td><td>rank of matrix</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#rcond">rcond</a></td><td>&nbsp;</td><td>reciprocal of condition number</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#repmat">repmat</a></td><td>&nbsp;</td><td>replicate matrix in block-like fashion</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#reshape">reshape</a></td><td>&nbsp;</td><td>change size while keeping elements</td></tr>
+<tr><td><a href="#repmat">repmat</a></td><td>&nbsp;</td><td>replicate matrix in block-like fashion</td></tr>
+<tr><td><a href="#reshape">reshape</a></td><td>&nbsp;</td><td>change size while keeping elements</td></tr>
 <tr><td><a href="#resize">resize</a></td><td>&nbsp;</td><td>change size while keeping elements and preserving layout</td></tr>
-<tr><td><a href="#shift">shift</a></td><td>&nbsp;</td><td>shift elements</td></tr>
-<tr><td><a href="#shuffle">shuffle</a></td><td>&nbsp;</td><td>randomly shuffle elements</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#shift">shift</a></td><td>&nbsp;</td><td>shift elements</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#shuffle">shuffle</a></td><td>&nbsp;</td><td>randomly shuffle elements</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#size">size</a></td><td>&nbsp;</td><td>obtain dimensions of given object</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#sort">sort</a></td><td>&nbsp;</td><td>sort elements</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#sort_index">sort_index</a></td><td>&nbsp;</td><td>vector describing sorted order of elements</td></tr>
+<tr><td><a href="#sort">sort</a></td><td>&nbsp;</td><td>sort elements</td></tr>
+<tr><td><a href="#sort_index">sort_index</a></td><td>&nbsp;</td><td>vector describing sorted order of elements</td></tr>
 <tr><td><a href="#sqrtmat">sqrtmat</a></td><td>&nbsp;</td><td>square root of matrix</td></tr>
-<tr><td><a href="#sqrtmat_sympd">sqrtmat_sympd</a></td><td>&nbsp;</td><td>square root of matrix (symmetric)</td></tr>
-<tr><td><a href="#sum">sum</a></td><td>&nbsp;</td><td>sum of elements</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#sqrtmat_sympd">sqrtmat_sympd</a></td><td>&nbsp;</td><td>square root of matrix (symmetric)</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#sum">sum</a></td><td>&nbsp;</td><td>sum of elements</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#sub2ind">sub2ind</a></td><td>&nbsp;</td><td>convert subscripts to linear index</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#symmat">symmatu&nbsp;/&nbsp;symmatl</a></td><td>&nbsp;</td><td>generate symmetric matrix from given matrix</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#trace">trace</a></td><td>&nbsp;</td><td>sum of diagonal elements</td></tr>
+<tr><td><a href="#symmat">symmatu&nbsp;/&nbsp;symmatl</a></td><td>&nbsp;</td><td>generate symmetric matrix from given matrix</td></tr>
+<tr><td><a href="#trace">trace</a></td><td>&nbsp;</td><td>sum of diagonal elements</td></tr>
 <tr><td><a href="#trans">trans</a></td><td>&nbsp;</td><td>transpose of matrix</td></tr>
-<tr><td><a href="#trapz">trapz</a></td><td>&nbsp;</td><td>trapezoidal numerical integration</td></tr>
-<tr><td><a href="#trimat">trimatu&nbsp;/&nbsp;trimatl</a></td><td>&nbsp;</td><td>generate triangular matrix from given matrix</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#trapz">trapz</a></td><td>&nbsp;</td><td>trapezoidal numerical integration</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#trimat">trimatu&nbsp;/&nbsp;trimatl</a></td><td>&nbsp;</td><td>copy upper/lower triangular part</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#unique">unique</a></td><td>&nbsp;</td><td>return unique elements</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#vectorise">vectorise</a></td><td>&nbsp;</td><td>convert matrix to vector</td></tr>
-<tr style="background-color: #F5F5F5;"><td><a href="#misc_fns">misc&nbsp;functions</a></td><td>&nbsp;</td><td>miscellaneous element-wise functions:&nbsp;exp,&nbsp;log,&nbsp;pow,&nbsp;sqrt,&nbsp;round,&nbsp;sign,&nbsp;...</td></tr>
+<tr><td><a href="#vectorise">vectorise</a></td><td>&nbsp;</td><td>convert matrix to vector</td></tr>
+<tr><td><a href="#misc_fns">misc&nbsp;functions</a></td><td>&nbsp;</td><td>miscellaneous element-wise functions:&nbsp;exp,&nbsp;log,&nbsp;pow,&nbsp;sqrt,&nbsp;round,&nbsp;sign,&nbsp;...</td></tr>
 <tr><td><a href="#trig_fns">trig&nbsp;functions</a></td><td>&nbsp;</td><td>trigonometric element-wise functions:&nbsp;cos,&nbsp;sin,&nbsp;...</td></tr>
 </tbody>
 </table>
@@ -468,6 +470,8 @@ please obtain the <a href="http://arma.sourceforge.net/faq.html#licenses">commer
 <tr><td><a href="#fft">fft&nbsp;/&nbsp;ifft</a></td><td>&nbsp;</td><td>1D fast Fourier transform and its inverse</td></tr>
 <tr><td><a href="#fft2">fft2&nbsp;/&nbsp;ifft2</a></td><td>&nbsp;</td><td>2D fast Fourier transform and its inverse</td></tr>
 <tr style="background-color: #F5F5F5;"><td><a href="#interp1">interp1</a></td><td>&nbsp;</td><td>1D interpolation</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#polyfit">polyfit</a></td><td>&nbsp;</td><td>find polynomial coefficients for data fitting</td></tr>
+<tr style="background-color: #F5F5F5;"><td><a href="#polyval">polyval</a></td><td>&nbsp;</td><td>evaluate polynomial</td></tr>
 </tbody>
 </table>
 </ul>
@@ -1824,10 +1828,10 @@ If <i>check_for_zeros</i> is set to <i>false</i>, the <i>values</i> vector is as
 <li><a href="#submat">submatrix views</a> (contiguous forms only)</li>
 <li><a href="#diag">diagonal views</a></li>
 <li><a href="#save_load_mat">saving and loading</a> (using <i>arma_binary</i> format only)</li>
-<li>element-wise functions: <a href="#abs">abs()</a>, <a href="#imag_real">imag()</a>, <a href="#imag_real">real()</a>, <a href="#conj">conj()</a>, <a href="#misc_fns">sqrt()</a>, <a href="#misc_fns">square()</a></li>
+<li>element-wise functions: <a href="#abs">abs()</a>, <a href="#imag_real">imag()</a>, <a href="#imag_real">real()</a>, <a href="#conj">conj()</a>, <a href="#misc_fns">sqrt()</a>, <a href="#misc_fns">square()</a>, <a href="#misc_fns">floor()</a>, <a href="#misc_fns">ceil()</a>, <a href="#misc_fns">round()</a>, <a href="#misc_fns">trunc()</a>, <a href="#misc_fns">sign()</a></li>
 <li>scalar functions of matrices: <a href="#accu">accu()</a>, <a href="#as_scalar">as_scalar()</a>, <a href="#dot">dot()</a>, <a href="#norm">norm()</a>, <a href="#trace">trace()</a></li>
 <li>vector valued functions of matrices: <a href="#min_and_max">min()</a>, <a href="#min_and_max">max()</a>, <a href="#nonzeros">nonzeros()</a>, <a href="#sum">sum()</a>, <a href="#stats_fns">mean()</a>, <a href="#stats_fns">var()</a></li>
-<li>matrix valued functions of matrices: <a href="#diagmat">diagmat()</a>, <a href="#join">join_rows()</a>, <a href="#join">join_cols()</a>, <a href="#repmat">repmat()</a>, <a href="#reshape">reshape()</a>, <a href="#resize">resize()</a>, <a href="#t_st_members">.t()</a>, <a href="#trans">trans()</a></li>
+<li>matrix valued functions of matrices: <a href="#diagmat">diagmat()</a>, <a href="#trimat">trimatu()/trimatl()</a>, <a href="#symmat">symmatu()/symmatl()</a>, <a href="#join">join_rows()</a>, <a href="#join">join_cols()</a>, <a href="#repmat">repmat()</a>, <a href="#reshape">reshape()</a>, <a href="#resize">resize()</a>, <a href="#t_st_members">.t()</a>, <a href="#trans">trans()</a></li>
 <li>generated matrices: <a href="#speye">speye()</a>, <a href="#spones">spones()</a>, <a href="#sprandu_sprandn">sprandu()/sprandn()</a></li>
 <li>eigen and svd decomposition: <a href="#eigs_sym">eigs_sym()</a>, <a href="#eigs_gen">eigs_gen()</a>, <a href="#svds">svds()</a></li>
 <li>solution of sparse linear systems: <a href="#spsolve">spsolve()</a>
@@ -3865,11 +3869,11 @@ Member function of <i>Cube</i>
 </li>
 <br>
 <li>
-Repeat a matrix operation on each slice of a cube
+Repeat a matrix operation on each slice of a cube, with each slice treated as a matrix
 </li>
 <br>
 <li>
-Supported operations for <i>.each_slice()</i> and <i>.each_slice(vector_of_indices)</i> forms:
+Supported operations for the <i>.each_slice()</i> form:
 <br>
 <br>
 <ul>
@@ -3878,9 +3882,14 @@ Supported operations for <i>.each_slice()</i> and <i>.each_slice(vector_of_indic
 <tr><td><code><b>-</b></code></td><td>&nbsp;</td><td>subtraction</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td><code><b>-=</b></code></td><td>&nbsp;</td><td>in-place subtraction</td></tr>
 <tr><td><code><b>%</b></code></td><td>&nbsp;</td><td>element-wise multiplication</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td><code><b>%=</b></code></td><td>&nbsp;</td><td>in-place element-wise multiplication</td></tr>
 <tr><td><code><b>/</b></code></td><td>&nbsp;</td><td>element-wise division</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td><code><b>/=</b></code></td><td>&nbsp;</td><td>in-place element-wise division</td></tr>
+<tr><td><code><b>*</b></code></td><td>&nbsp;</td><td>matrix multiplication</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td><code><b>*=</b></code></td><td>&nbsp;</td><td>in-place matrix multiplication</td></tr>
 <tr><td><code><b>=</b></code></td><td>&nbsp;</td><td>assignment (copy)</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
 </table>
 </ul>
+</li>
+<br>
+<li>
+The <i>.each_slice(vector_of_indices)</i> form also supports the above operations, except for <code><b>*</b></code> and <code><b>*=</b></code> (ie. matrix multiplication)
 </li>
 <br>
 <li>The argument <i>vector_of_indices</i> is optional; by default all slices are used</li>
@@ -6084,7 +6093,7 @@ as each matrix element is copied and converted to an 8 bit representation
 <hr class="greyline">
 <br>
 <br>
-<font size=+1><b>Generated Vectors/Matrices</b></font>
+<font size=+1><b>Generated Vectors/Matrices/Cubes</b></font>
 <br>
 <br>
 
@@ -6814,22 +6823,19 @@ Obtain the magnitude of each element
 </li>
 <br>
 <li>
-Usage for non-complex matrices and cubes:
+Usage for non-complex X:
 <ul>
-<li><i>matrix_type</i> Y = abs(X)</li>
-<li><i>cube_type</i> Y = abs(X)</li>
-<li>X and Y must have the same matrix_type / cube_type</li>
+<li>Y = abs(X)</li>
+<li>X and Y must have the same matrix type or cube type, such as <i>mat</i> or <i>cube</i></li>
 </ul>
 </li>
 <br>
 <li>
-Usage for complex matrices and cubes:
+Usage for complex X:
 <ul>
-<li><i>non_complex_matrix_type</i> Y = abs(X)</li>
-<li><i>non_complex_cube_type</i> Y = abs(X)</li>
-<li>X must be a have complex matrix / cube type, eg. <i>cx_mat</i> or <i>cx_cube</i></li>
-<li>The type of Y must be related to the type of X,
-eg. if X has the type <i>cx_mat</i>, then the type of Y must be <i>mat</i>
+<li><i>real_object_type</i> Y = abs(X)</li>
+<li>The type of X must be a complex matrix or complex cube, such as <i>cx_mat</i> or <i>cx_cube</i></li>
+<li>The type of Y must be the real counterpart to the type of X; if X has the type <i>cx_mat</i>, then the type of Y must be <i>mat</i>
 </ul>
 </li>
 <br>
@@ -6841,13 +6847,14 @@ mat A = randu&lt;mat&gt;(5,5);
 mat B = abs(A); 
 
 cx_mat X = randu&lt;cx_mat&gt;(5,5);
-mat    Y = abs(X);
+   mat Y = abs(X);
 </pre>
 </ul>
 </li>
 <li>
 See also:
 <ul>
+<li><a href="#arg">arg()</a></li>
 <li><a href="#conj">conj()</a></li>
 <li><a href="#imag_real">imag() / real()</a></li>
 <li><a href="#conv_to">conv_to()</a></li>
@@ -7085,6 +7092,54 @@ See also:
 </ul>
 
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
+<a name="arg"></a>
+<b>arg( X )</b>
+<ul>
+<li>
+Obtain the phase angle (in radians) of each element
+</li>
+<br>
+<li>
+Usage for non-complex X:
+<ul>
+<li>Y = arg(X)</li>
+<li>X and Y must have the same matrix type or cube type, such as <i>mat</i> or <i>cube</i></li>
+<li>non-complex elements are treated as complex elements with zero imaginary component
+</li>
+</ul>
+</li>
+<br>
+<li>
+Usage for complex X:
+<ul>
+<li><i>real_object_type</i> Y = arg(X)</li>
+<li>The type of X must be a complex matrix or complex cube, such as <i>cx_mat</i> or <i>cx_cube</i></li>
+<li>The type of Y must be the real counterpart to the type of X; if X has the type <i>cx_mat</i>, then the type of Y must be <i>mat</i>
+</ul>
+</li>
+<br>
+<li>
+Examples:
+<ul>
+<pre>
+cx_mat A = randu&lt;mat&gt;(5,5);
+   mat B = arg(A); 
+</pre>
+</ul>
+</li>
+<li>
+See also:
+<ul>
+<li><a href="#abs">abs()</a></li>
+<li><a href="#trig_fns">atan2()</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Argument_(complex_analysis)">Argument (complex analysis) in Wikipedia</a></li>
+<li><a href="http://mathworld.wolfram.com/ComplexArgument.html">Complex Argument in MathWorld</a></li>
+</ul>
+</li>
+<br>
+</ul>
+
+<div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="as_scalar"></a>
 <b>as_scalar( expression )</b>
 <ul>
@@ -7094,9 +7149,7 @@ followed by converting the 1x1 matrix to a pure scalar
 </li>
 <br>
 <li>
-If a binary or trinary expression is given (ie. 2 or 3 terms),
-the function will try to exploit the fact that the result is a 1x1 matrix
-by using optimised expression evaluations
+Optimised expression evaluations are automatically used when a binary or trinary expression is given (ie. 2 or 3 terms)
 </li>
 <br>
 <li>
@@ -7107,8 +7160,7 @@ rowvec r = randu&lt;rowvec&gt;(5);
 colvec q = randu&lt;colvec&gt;(5);
 mat    X = randu&lt;mat&gt;(5,5);
 
-// examples of some expressions
-// for which optimised implementations exist
+// examples of expressions which have optimised implementations
 
 double a = as_scalar(r*q);
 double b = as_scalar(r*X*q);
@@ -7406,7 +7458,6 @@ See also:
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="det"></a>
 <b>det( A )</b>
-<br><b>log_det( val, sign, A )</b>
 <ul>
 <li>
 Determinant of square matrix <i>A</i>
@@ -7417,24 +7468,16 @@ If <i>A</i> is not square sized, a <i>std::logic_error</i> exception is thrown
 </li>
 <br>
 <li>
-<i>log_det():</i> find the log determinant, such that the determinant is equal to <i>exp(val)*sign</i>
-</li>
-<br>
-<li>
-<b>Caveat</b>: for large matrices <i>log_det()</i> is more precise than <i>det()</i>
+<b>Caveat</b>: for large matrices <i><a href="#log_det">log_det()</a></i> is more precise than <i>det()</i>
 </li>
 <br>
 <li>
 Examples:
 <ul>
 <pre>
-mat    A = randu&lt;mat&gt;(5,5);
+mat A(5,5,fill::randu);
+
 double x = det(A);
-
-double val;
-double sign;
-
-log_det(val, sign, A);
 </pre>
 </ul>
 </li>
@@ -7442,6 +7485,7 @@ log_det(val, sign, A);
 <li>
 See also:
 <ul>
+<li><a href="#log_det">log_det()</a></li>
 <li><a href="http://mathworld.wolfram.com/Determinant.html">determinant in MathWorld</a></li>
 <li><a href="http://en.wikipedia.org/wiki/Determinant">determinant in Wikipedia</a></li>
 </ul>
@@ -8440,6 +8484,73 @@ See also:
 </ul>
 
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
+<a name="log_det"></a>
+<table>
+<tbody>
+<tr><td><b>log_det( val, sign, A )</b></td><td>&nbsp;&nbsp;&nbsp;</td><td>(form 1)</td></tr>
+<tr><td><b>complex result = log_det( A )</b></td><td>&nbsp;&nbsp;&nbsp;</td><td>(form 2)</td></tr>
+</tbody>
+</table>
+<ul>
+<li>
+Log determinant of square matrix <i>A</i>
+</li>
+<br>
+<li>
+If <i>A</i> is not square sized, a <i>std::logic_error</i> exception is thrown
+</li>
+<br>
+<li>form 1: store the calculated log determinant in <i>val</i> and <i>sign</i>
+<br>the determinant is equal to <i>exp(val)*sign</i>
+</li>
+<br>
+<li>form 2: return the complex log determinant
+<ul>
+<li>
+if matrix <i>A</i> is real and the determinant is positive:
+<ul>
+<li>the real part of the result is the log determinant</li>
+<li>the imaginary part is zero</li>
+</ul>
+</li>
+<li>
+if matrix <i>A</i> is real and the determinant is negative:
+<ul>
+<li>the real part of the result is the log of the absolute value of the determinant</li>
+<li>the imaginary part is equal to <i><a href="#constants">datum::pi</a></i></li>
+</ul>
+</li>
+</ul>
+<br>
+<li>
+Examples:
+<ul>
+<pre>
+mat A(5,5,fill::randu);
+
+double val;
+double sign;
+
+log_det(val, sign, A);          // form 1
+
+cx_double result = log_det(A);  // form 2
+</pre>
+</ul>
+</li>
+<br>
+<li>
+See also:
+<ul>
+<li><a href="#det">det()</a></li>
+<li><a href="#cx_double">cx_double</a></li>
+<li><a href="http://mathworld.wolfram.com/Determinant.html">determinant in MathWorld</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Determinant">determinant in Wikipedia</a></li>
+</ul>
+</li>
+<br>
+</ul>
+
+<div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="logmat"></a>
 <b>B = logmat(A)</b>
 <br><b>logmat(B, A)</b>
@@ -8609,6 +8720,7 @@ See also:
 <li><a href="#min_and_max_member">.min() &amp; .max()</a> (member functions)</li>
 <li><a href="#index_min_and_index_max_standalone">index_min() &amp; index_max()</a>
 <li><a href="#clamp">clamp()</a>
+<li><a href="#stats_fns">statistics functions</a>
 <li><a href="#running_stat">running_stat</a></li>
 <li><a href="#running_stat_vec">running_stat_vec</a></li>
 </ul>
@@ -9678,11 +9790,11 @@ mat Z = trapz(X,Y);
 <br><b>trimatl( A )</b>
 <ul>
 <li>
-<i>trimatu(A)</i>: generate upper triangular matrix from square matrix <i>A</i>
-</li>
-<br>
-<li>
-<i>trimatl(A)</i>: generate lower triangular matrix from square matrix <i>A</i>
+Create a new matrix by copying either the upper or lower triangular part from square matrix <i>A</i>, and setting the remaining elements to zero
+<ul>
+<li><i>trimatu()</i> copies the upper triangular part</li>
+<li><i>trimatl()</i> copies the lower triangular part</li>
+</ul>
 </li>
 <br>
 <li>
@@ -9752,11 +9864,11 @@ mat Y = unique(X);
 
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="vectorise"></a>
-<b>vectorise( A )</b>
-<br><b>vectorise( A, dim )</b>
+<b>vectorise( X )</b>
+<br><b>vectorise( X, dim )</b>
 <ul>
 <li>
-Generate a column vector (<i>dim=0</i>) or row vector (<i>dim=1</i>) from matrix <i>A</i>
+Generate a column vector (<i>dim=0</i>) or row vector (<i>dim=1</i>) from matrix <i>X</i>
 </li>
 <br>
 <li>
@@ -9764,11 +9876,11 @@ The argument <i>dim</i> is optional; by default <i>dim=0</i> is used
 </li>
 <br>
 <li>
-For <i>dim=0</i>, the elements are copied from <i>X</i> column-wise; equivalent to concatenating all the columns of <i>A</i>
+For <i>dim=0</i>, the elements are copied from <i>X</i> column-wise; equivalent to concatenating all the columns of <i>X</i>
 </li>
 <br>
 <li>
-For <i>dim=1</i>, the elements are copied from <i>X</i> row-wise; equivalent to concatenating all the rows of <i>A</i>
+For <i>dim=1</i>, the elements are copied from <i>X</i> row-wise; equivalent to concatenating all the rows of <i>X</i>
 </li>
 <br>
 <li>
@@ -9779,9 +9891,9 @@ Concatenating columns is faster than concatenating rows
 Examples:
 <ul>
 <pre>
-mat A = randu&lt;mat&gt;(4, 5);
+mat X = randu&lt;mat&gt;(4, 5);
 
-vec v = vectorise(A);
+vec v = vectorise(X);
 </pre>
 </ul>
 </li>
@@ -9820,15 +9932,8 @@ Apply a function to each element
 <li>
 Usage:
 <ul>
-<li>
-<i>matrix_type</i> B = fn(A)
-</li>
-<li>
-<i>cube_type</i> B = fn(A)
-</li>
-<li>
-A and B must have the same <i>matrix_type/cube_type</i>
-</li>
+<li>B = fn(A)</li>
+<li>A and B must have the same matrix type or cube type, such as <i>mat</i> or <i>cube</i></li>
 <li>
 fn(A) is one of:
 <br>
@@ -10098,35 +10203,25 @@ See also:
 <b>trigonometric element-wise functions (cos, sin, tan, ...)</b>
 <ul>
 <li>
-Apply a trigonometric function to each element
-</li>
-<br>
-<li>
-Usage:
+For single argument functions, <i>B = trig_fn(A)</i>, where <i>trig_fn</i> is applied to each element in <i>A</i>, with <i>trig_fn</i> as one of:
 <ul>
 <li>
-<i>matrix_type</i> Y = trig_fn(X)
+<i>cos</i>, <i>acos</i>, <i>cosh</i>, <i>acosh</i>
 </li>
 <li>
-<i>cube_type</i> Y = trig_fn(X)
+<i>sin</i>, <i>asin</i>, <i>sinh</i>, <i>asinh</i>
 </li>
 <li>
-X and Y must have the same <i>matrix_type/cube_type</i>
-</li>
-<li>
-trig_fn is one of:
-<ul>
-<li>
-cos family: <i>cos</i>, <i>acos</i>, <i>cosh</i>, <i>acosh</i>
-</li>
-<li>
-sin family: <i>sin</i>, <i>asin</i>, <i>sinh</i>, <i>asinh</i>
-</li>
-<li>
-tan family: <i>tan</i>, <i>atan</i>, <i>tanh</i>, <i>atanh</i>
+<i>tan</i>, <i>atan</i>, <i>tanh</i>, <i>atanh</i>
 </li>
 </ul>
 </li>
+<br>
+<li>
+For dual argument functions, apply the function to each tuple of two corresponding elements in <i>X</i> and <i>Y</i>:
+<ul>
+<li><i>Z = atan2(Y, X)</i></li>
+<li><i>Z = hypot(X, Y)</i></li>
 </ul>
 </li>
 <br>
@@ -10144,6 +10239,9 @@ See also:
 <ul>
 <li><a href="#misc_fns">miscellaneous functions</a></li>
 <li><a href="#stats_fns">statistics functions</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Trigonometric_functions">trigonometric functions in Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Atan2">atan2 function in Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hypot">hypot function in Wikipedia</a></li>
 </ul>
 </li>
 <br>
@@ -10873,10 +10971,26 @@ See also:
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="qz"></a>
 <b>qz( AA, BB, Q, Z, A, B )</b>
+<br><b>qz( AA, BB, Q, Z, A, B, select )</b>
 <ul>
 <li>
 Generalised Schur decomposition for pair of general square matrices <i>A</i> and <i>B</i> of the same size,
 <br>such that <i>A&nbsp;=&nbsp;Q.t()*AA*Z.t()</i> and <i>B&nbsp;=&nbsp;Q.t()*BB*Z.t()</i>
+</li>
+<br>
+<li>The <i>select</i> argument is optional and specifies the ordering of the top left of the Schur form; it is one of the following:
+<br>
+<ul>
+<table>
+<tbody>
+<tr><td><code>"none"</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>no ordering (default operation)</td></tr>
+<tr><td><code>"lhp"</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>left-half-plane: eigenvalues with real part &lt; 0</td></tr>
+<tr><td><code>"rhp"</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>right-half-plane: eigenvalues with real part &gt; 0</td></tr>
+<tr><td><code>"iuc"</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>inside-unit-circle: eigenvalues with absolute value &lt; 1</td></tr>
+<tr><td><code>"ouc"</code></td><td>&nbsp;&nbsp;&nbsp;</td><td>outside-unit-circle: eigenvalues with absolute value &gt; 1</td></tr>
+</tbody>
+</table>
+</ul>
 </li>
 <br>
 <li>The left and right Schur vectors are stored in <i>Q</i> and <i>Z</i>, respectively</li>
@@ -11942,9 +12056,125 @@ interp1(x, y, xx, yy, "nearest");
 <li>
 See also:
 <ul>
+<li><a href="#polyval">polyval()</a></li>
 <li><a href="#linspace">linspace()</a></li>
 <li><a href="#regspace">regspace()</a></li>
 <li><a href="#conv">conv()</a></li>
+</ul>
+</li>
+<br>
+</ul>
+
+<div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
+<a name="polyfit"></a>
+<b>P = polyfit( X, Y, N )</b>
+<br><b>polyfit( P, X, Y, N )</b>
+<ul>
+<li>
+Given a 1D function specified in vectors <i>X</i> and <i>Y</i>
+(where <i>X</i> holds independent values and <i>Y</i> holds the corresponding dependent values),
+<br>model the function as a polynomial of order <i>N</i> and store the polynomial coefficients in column vector <i>P</i>
+</li>
+<br>
+<li>
+The given function is modelled as:
+<ul>
+y = p<sub><sub>0</sub></sub>x<sup><sup>N</sup></sup>
+  + p<sub><sub>1</sub></sub>x<sup><sup>N-1</sup></sup>
+  + p<sub><sub>2</sub></sub>x<sup><sup>N-2</sup></sup>
+  + ...
+  + p<sub><sub>N-1</sub></sub>x<sup><sup>1</sup></sup>
+  + p<sub><sub>N</sub></sub>
+</ul>
+where p<sub><sub>i</sub></sub> is the i-th polynomial coefficient; the coefficients are selected to minimise the overall error of the fit (least squares)
+</li>
+<br>
+<li>
+The column vector <i>P</i> has <i>N+1</i> coefficients
+</li>
+<br>
+<li>
+<i>N</i> must be smaller than the number of elements in <i>X</i>
+</li>
+<br>
+<li>If the polynomial coefficients cannot be found:
+<ul>
+<li><i>P = polyfit( X, Y, N )</i> resets <i>P</i> and throws a <i>std::runtime_error</i> exception</li>
+<li><i>polyfit( P, X, Y, N )</i> resets <i>P</i> and returns a bool set to <i>false</i> (exception is not thrown)</li>
+</ul>
+</li>
+<br>
+<li>
+Examples:
+<ul>
+<pre>
+vec x = linspace&lt;vec&gt;(0,4*datum::pi,100);
+vec y = cos(x);
+
+vec p = polyfit(x,y,10);
+</pre>
+</ul>
+</li>
+<br>
+<li>
+See also:
+<ul>
+<li><a href="#polyval">polyval()</a></li>
+<li><a href="#interp1">interp1()</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Polynomial">polynomial in Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Least_squares">least squares in Wikipedia</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Curve_fitting">curve fitting in Wikipedia</a></li>
+<li><a href="http://mathworld.wolfram.com/LeastSquaresFitting.html">least squares fitting in MathWorld</a></li>
+</ul>
+</li>
+<br>
+</ul>
+
+<div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
+<a name="polyval"></a>
+<b>Y = polyval( P, X )</b>
+<ul>
+<li>
+Given vector <i>P</i> of polynomial coefficients and vector <i>X</i> containing the independent values of a 1D function,
+<br>generate vector <i>Y</i> which contains the corresponding dependent values
+</li>
+<br>
+<li>
+For each <i>x</i> value in vector <i>X</i>, the corresponding <i>y</i> value in vector <i>Y</i> is generated using:
+<ul>
+y = p<sub><sub>0</sub></sub>x<sup><sup>N</sup></sup>
+  + p<sub><sub>1</sub></sub>x<sup><sup>N-1</sup></sup>
+  + p<sub><sub>2</sub></sub>x<sup><sup>N-2</sup></sup>
+  + ...
+  + p<sub><sub>N-1</sub></sub>x<sup><sup>1</sup></sup>
+  + p<sub><sub>N</sub></sub>
+</ul>
+where p<sub><sub>i</sub></sub> is the i-th polynomial coefficient in vector <i>P</i>
+</li>
+<br>
+<li>
+<i>P</i> must contain polynomial coefficients in descending powers (eg. generated by the <a href="#polyfit">polyfit()</a> function)
+</li>
+<br>
+<li>
+Examples:
+<ul>
+<pre>
+vec x1 = linspace&lt;vec&gt;(0,4*datum::pi,100);
+vec y1 = cos(x1);
+vec p1 = polyfit(x1,y1,10);
+
+vec y2 = polyval(p1,x1);
+</pre>
+</ul>
+</li>
+<br>
+<li>
+See also:
+<ul>
+<li><a href="#polyfit">polyfit()</a></li>
+<li><a href="#interp1">interp1()</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Polynomial">polynomial in Wikipedia</a></li>
 </ul>
 </li>
 <br>
@@ -11965,7 +12195,7 @@ See also:
 
 <div class="pagebreak"></div><div class="noprint"><hr class="greyline"><br></div>
 <a name="stats_fns"></a>
-<b>mean, median, stddev, var</b>
+<b>mean, median, stddev, var, range</b>
 <ul>
 <table style="text-align: left;" border="0" cellpadding="0" cellspacing="0">
 <tbody>
@@ -12049,6 +12279,23 @@ See also:
       &#9133;&nbsp;
     </td>
   </tr>
+  <tr>
+    <td style="vertical-align: top;">
+       <b>range( V )</b>
+       <br><b>range( M )</b>
+       <br><b>range( M, dim )</b>
+       <br>
+       <br>
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;&nbsp;&nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &#9131;&nbsp;<br>
+      &#9132;&nbsp;&nbsp;range (difference between max and min)<br>
+      &#9133;&nbsp;
+    </td>
+  </tr>
 </tbody>
 </table>
 <li>
@@ -12102,6 +12349,7 @@ See also:
 <li><a href="#diff">diff()</a></li>
 <li><a href="#hist">hist()</a></li>
 <li><a href="#histc">histc()</a></li>
+<li><a href="#min_and_max">min() &amp; max()</a></li>
 <li><a href="#running_stat">running_stat</a> - class for running statistics of scalars</li>
 <li><a href="#running_stat_vec">running_stat_vec</a> - class for running statistics of vectors</li>
 <li><a href="#gmm_diag">gmm_diag</a> - class for modelling data as a Gaussian mixture model</li>
@@ -12429,7 +12677,7 @@ For an instance of <i>running_stat</i> named as <i>X</i>, the member functions a
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      update the statistics so far using the given scalar
+      update the statistics using the given scalar
       </td>
     </tr>
     <tr>
@@ -12439,7 +12687,7 @@ For an instance of <i>running_stat</i> named as <i>X</i>, the member functions a
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the minimum value so far
+      current minimum value
       </td>
     </tr>
     <tr>
@@ -12449,7 +12697,17 @@ For an instance of <i>running_stat</i> named as <i>X</i>, the member functions a
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the maximum value so far
+      current maximum value
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+      <b>X.range()</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      current range
       </td>
     </tr>
     <tr>
@@ -12459,7 +12717,7 @@ For an instance of <i>running_stat</i> named as <i>X</i>, the member functions a
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the mean or average value so far
+      current mean or average value
       </td>
     </tr>
     <tr>
@@ -12469,7 +12727,7 @@ For an instance of <i>running_stat</i> named as <i>X</i>, the member functions a
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the variance so far
+      current variance
       </td>
     </tr>
     <tr>
@@ -12479,7 +12737,7 @@ For an instance of <i>running_stat</i> named as <i>X</i>, the member functions a
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the standard deviation so far
+      current standard deviation
       </td>
     </tr>
     <tr>
@@ -12499,7 +12757,7 @@ For an instance of <i>running_stat</i> named as <i>X</i>, the member functions a
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the number of samples so far
+      current number of samples
       </td>
     </tr>
   </tbody>
@@ -12586,7 +12844,7 @@ For an instance of <i>running_stat_vec</i> named as <i>X</i>, the member functio
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      update the statistics so far using the given vector
+      update the statistics using the given vector
       </td>
     </tr>
     <tr>
@@ -12596,7 +12854,7 @@ For an instance of <i>running_stat_vec</i> named as <i>X</i>, the member functio
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the vector of minimum values so far
+      vector of current minimum values
       </td>
     </tr>
     <tr>
@@ -12606,7 +12864,17 @@ For an instance of <i>running_stat_vec</i> named as <i>X</i>, the member functio
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the vector of maximum values so far
+      vector of current maximum values
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">
+      <b>X.range()</b>
+      </td>
+      <td style="vertical-align: top;">&nbsp;<br>
+      </td>
+      <td style="vertical-align: top;">
+      vector of current ranges
       </td>
     </tr>
     <tr>
@@ -12616,7 +12884,7 @@ For an instance of <i>running_stat_vec</i> named as <i>X</i>, the member functio
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the mean vector so far
+      vector of current means
       </td>
     </tr>
     <tr>
@@ -12626,7 +12894,7 @@ For an instance of <i>running_stat_vec</i> named as <i>X</i>, the member functio
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the vector of variances so far
+      vector of current variances
       </td>
     </tr>
     <tr>
@@ -12636,7 +12904,7 @@ For an instance of <i>running_stat_vec</i> named as <i>X</i>, the member functio
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the vector of standard deviations so far
+      vector of current standard deviations
       </td>
     </tr>
     <tr>
@@ -12646,7 +12914,7 @@ For an instance of <i>running_stat_vec</i> named as <i>X</i>, the member functio
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the covariance matrix so far;
+      matrix of current covariances;
       valid if <i>calc_cov=true</i> during construction of <i>running_stat_vec</i>
       </td>
     </tr>
@@ -12667,7 +12935,7 @@ For an instance of <i>running_stat_vec</i> named as <i>X</i>, the member functio
       <td style="vertical-align: top;">&nbsp;<br>
       </td>
       <td style="vertical-align: top;">
-      get the number of samples so far
+      current number of samples
       </td>
     </tr>
   </tbody>
@@ -15119,6 +15387,29 @@ Specific functionality can be enabled or disabled by uncommenting or commenting 
 <tbody>
   <tr>
     <td style="vertical-align: top;">
+<code>ARMA_DONT_USE_WRAPPER</code>
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+Disable going through the run-time Armadillo wrapper library (<i>libarmadillo.so</i>) when calling LAPACK, BLAS, ARPACK, SuperLU and HDF5 functions.
+You will need to directly link with BLAS, LAPACK, etc (eg. <i>-lblas -llapack </i>)
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+    <td style="vertical-align: top;">
+      &nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td style="vertical-align: top;">
 <code>ARMA_USE_LAPACK</code>
     </td>
     <td style="vertical-align: top;">
@@ -15392,29 +15683,6 @@ Disable the use of the HDF5 library. Overrides <i>ARMA_USE_HDF5</i>
   </tr>
   <tr>
     <td style="vertical-align: top;">
-<code>ARMA_DONT_USE_WRAPPER</code>
-    </td>
-    <td style="vertical-align: top;">
-      &nbsp;
-    </td>
-    <td style="vertical-align: top;">
-Disable going through the run-time Armadillo wrapper library (<i>libarmadillo.so</i>) when calling LAPACK, BLAS, ARPACK, SuperLU and HDF5 functions.
-You will need to directly link with LAPACK, BLAS, etc (eg. <i>-llapack -lblas</i>)
-    </td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top;">
-      &nbsp;
-    </td>
-    <td style="vertical-align: top;">
-      &nbsp;
-    </td>
-    <td style="vertical-align: top;">
-      &nbsp;
-    </td>
-  </tr>
-  <tr>
-    <td style="vertical-align: top;">
 <a name="config_hpp_arma_use_cxx11"></a>
 <code>ARMA_USE_CXX11</code>
     </td>
@@ -15423,7 +15691,7 @@ You will need to directly link with LAPACK, BLAS, etc (eg. <i>-llapack -lblas</i
     </td>
     <td style="vertical-align: top;">
 Use C++11 features, such as <a href="#element_initialisation">initialiser lists</a>;
-automatically enabled when using a compiler in C++11 mode, for example, g++&nbsp;-std=c++11
+automatically enabled when using a compiler in C++11 or C++14 mode, for example: g++&nbsp;-std=c++11
     </td>
   </tr>
   <tr>
@@ -15839,8 +16107,10 @@ See also:
 <a name="api_changes"></a>
 <b>History of API Additions, Changes and Deprecations</b>
 <br>
+<ul>
+<li>API Version Policy:
 <br>
-<li>API Version Policy
+<br>
 <ul>
 <li>
 Armadillo's version number is <i>A.B.C</i>, where <i>A</i> is a major version, <i>B</i> is a minor version, and <i>C</i> is the patch level (indicating bug fixes)
@@ -15889,6 +16159,45 @@ List of additions and changes for each version:
 <br>
 <ul>
 
+
+
+<a name="version_7800"></a>
+<li>Version 7.800:
+<ul>
+<li>
+changed license to the permissve <a href="https://opensource.org/licenses/Apache-2.0">Apache License 2.0</a>;
+see the <a href="http://arma.sourceforge.net/faq.html#license">Questions page</a> for more info
+</li>
+</ul>
+</li>
+<br>
+<a name="version_7700"></a>
+<li>Version 7.700:
+<ul>
+<li>added <a href="#polyfit">polyfit()</a> and <a href="#polyval">polyval()</a></li>
+<li>added second form of <a href="#log_det">log_det()</a> to directly return the result as a complex number</li>
+<li>added <a href="#stats_fns">range()</a> to statistics functions</li>
+<li>expanded <a href="#trimat">trimatu()/trimatl()</a> and <a href="#symmat">symmatu()/symmatl()</a> to handle sparse matrices</li>
+</ul>
+</li>
+<br>
+<a name="version_7600"></a>
+<li>Version 7.600:
+<ul>
+<li>more accurate <a href="#eigs_sym">eigs_sym()</a> and <a href="#eigs_gen">eigs_gen()</a></li>
+<li>expanded <a href="#misc_fns">floor()</a>, <a href="#misc_fns">ceil()</a>, <a href="#misc_fns">round()</a>, <a href="#misc_fns">trunc()</a>, <a href="#misc_fns">sign()</a> to handle sparse matrices</li>
+<li>added <a href="#arg">arg()</a>, <a href="#trig_fns">atan2()</a>, <a href="#trig_fns">hypot()</a></li>
+</ul>
+</li>
+<br>
+<a name="version_7500"></a>
+<li>Version 7.500:
+<ul>
+<li>expanded <a href="#qz">qz()</a> to optionally specify ordering of the Schur form</li>
+<li>expanded <a href="#each_slice">.each_slice()</a> to support matrix multiplication</li>
+</ul>
+</li>
+<br>
 <a name="version_7400"></a>
 <li>Version 7.400:
 <ul>
@@ -16270,8 +16579,7 @@ eg. <i>mat&nbsp;X(4,&nbsp;5,&nbsp;fill::zeros)</i></li>
 <li>added <a href="#transform">.transform()</a> for transforming a matrix/cube using a functor or lambda expression</li>
 <li>added <a href="#misc_fns">round()</a> for rounding matrix elements towards nearest integer</li>
 <li>faster <a href="#find">find()</a></li>
-<li>changed license to the <a href="http://www.mozilla.org/MPL/2.0/">Mozilla Public License 2.0</a>;
-see also the associated <a href="http://www.mozilla.org/MPL/2.0/FAQ.html">frequently asked questions</a> about the license</li>
+<li>changed license to the <a href="http://www.mozilla.org/MPL/2.0/">Mozilla Public License 2.0</a></li>
 </ul>
 <br>
 </li>
@@ -16473,6 +16781,7 @@ use <i>my_function(&nbsp;mat(A+B)&nbsp;)</i>.
 </ul>
 </li>
 <br>
+</ul>
 
 <!-- END CONTENT -->
 
