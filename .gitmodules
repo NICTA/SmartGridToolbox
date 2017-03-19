@@ -1,0 +1,3 @@
+[submodule "third_party/PowerTools"]
+	path = third_party/PowerTools
+	url = https://github.com/hhijazi/PowerTools.git
