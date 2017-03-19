@@ -1,3 +1,6 @@
 [submodule "third_party/PowerTools"]
 	path = third_party/PowerTools
 	url = https://github.com/hhijazi/PowerTools.git
+[submodule "third_party/yaml-cpp"]
+	path = third_party/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git
