@@ -544,7 +544,7 @@ Sgt.SgtClient = (function() {
         if (dom.showHeatmap[0].checked && graph) {
             dom.heatmapCanvas[0].removeAttribute("hidden");
         } else {
-            dom.heatmapCanvas[0].setAttribute("hidden");
+            dom.heatmapCanvas[0].setAttribute("hidden", true);
         }
     }
 
@@ -580,7 +580,7 @@ Sgt.SgtClient = (function() {
             dom.progress[0].value = -1;
             dom.progressGroup[0].removeAttribute("hidden");
         } else {
-            dom.progressGroup[0].setAttribute("hidden");
+            dom.progressGroup[0].setAttribute("hidden", true);
         }
     }
 
