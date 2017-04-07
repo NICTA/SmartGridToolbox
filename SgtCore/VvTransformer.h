@@ -49,6 +49,8 @@ namespace Sgt
             /// @param offNomRatio21 Off-nominal complex voltage/turns ratio for windings between phases 2 and 1.
             /// @param offNomRatio23 Off-nominal complex voltage/turns ratio for windings between phases 2 and 3.
             /// @param ZL The leakage impedance, must be > 0.
+            /// @param YTie Tie admittance for center phase.
+            /// @param YGround Ground admittance for center phase.
             /// @param phases0 The phases on the first (primary) side.
             /// @param phases1 The phases on the second (secondary) side.
             VvTransformer(const std::string& id, Complex nomRatio,
