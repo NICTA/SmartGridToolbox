@@ -73,11 +73,15 @@ namespace Sgt
                                  (std::is_base_of<ToD, D>::value || std::is_base_of<D, ToD>::value), int> = 0>
             ComponentPtr<B, ToD, toIsConst> as()
             {
-                return *it_;
+                if (it_ == nullptr) return nullptr; else return *it_;
+                // Ternary causes possible complications.
             }
 
             /// @brief Copy assignment.
-            void operator=(const ComponentPtr& from) {it_ = std::make_unique<Iter>(*from.it_);}
+            void operator=(const ComponentPtr& from)
+            {
+                if (from == nullptr) it_ = nullptr; else it_ = std::make_unique<Iter>(*from.it_);
+            }
 
             /// @brief Conversion assignment.
             template<typename FromD, bool fromIsConst, 
@@ -85,14 +89,15 @@ namespace Sgt
                                  std::is_base_of<D, FromD>(), int> = 0>
             void operator=(const ComponentPtr<B, FromD, fromIsConst>& from)
             {
-                it_ = std::make_unique<Iter>(*from.it_);
+                if (from == nullptr) it_ = nullptr; else it_ = std::make_unique<Iter>(*from.it_);
             }
 
             /// @brief Shared pointer access.
             template<typename T = D, std::enable_if_t<std::is_same<T, B>::value, bool> = 0>
             std::shared_ptr<T> shared() const
             {
-                return it_ == nullptr ? nullptr : (**it_).second;
+                if (it_ == nullptr) return  nullptr; else return (**it_).second;
+                // Ternary causes possible complications.
             }
 
             /// @brief Explicit shared pointer access.
@@ -174,12 +179,14 @@ namespace Sgt
             ConstPtr operator[](const std::string& key) const 
             {
                 auto it = map_.find(key);
-                return it != map_.end() ? it : ConstPtr();
+                if (it != map_.end()) return it; else return ConstPtr();
+                // Ternary causes possible complications.
             }
             Ptr operator[](const std::string& key)
             {
                 auto it = map_.find(key);
-                return it != map_.end() ? it : Ptr();
+                if (it != map_.end()) return it; else return Ptr();
+                // Ternary causes possible complications.
             }
 
             ConstPtr operator[](size_t idx) const {return vec_[idx];}
