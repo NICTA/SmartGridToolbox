@@ -885,37 +885,47 @@ with the nodal admittance matrix being specified by the matrix on the right, inc
 \begin{figure}
 \begin{center}
 \includegraphics[width=7cm]{OpenDelta.png}
-\caption{Schematic of an open-delta transformer connection}
+\caption{Schematic of an open-delta transformer connection. The complex turns ratios (primary/secondary) are $n_A$ and $n_C$, and the leakage admittances are $y_{LA}$ and $y_{LC}$. There is a tie admittance $y_\text{tie}$ between the middle terminals.}
 \label{FIG_OPEN_DELTA}
 \end{center}
 \end{figure}
-Referring to Fig. \ref{FIG_OPEN_DELTA} and using Eq. (\ref{EQ_REAL_TRANS}) (and neglecting magnetising impedance),  we can derive the following equations:
-\newcommand{\maa}{\ensuremath{\frac{y_l}{|n|^2}}}
-\newcommand{\mab}{\ensuremath{\frac{y_l}{n^*}}}
-\newcommand{\mba}{\ensuremath{\frac{y_l}{n}}}
-\newcommand{\mbb}{\ensuremath{y_l}}
+We use the open delta model shown in \ref{FIG_OPEN_DELTA}. Note that the two middle phases are tied together using an admittance, to prevent a floating neutral. There are other grounding options available, for example, to ground the middle phase, and the model can be easily modified for these. Using Eq. (\ref{EQ_REAL_TRANS}) (and neglecting magnetising impedance),  we can derive the following equations:
 \begin{align}
-	I_A &= \maa(V_A - V_B) - \mab(V_a - V_b) \notag \\
-	I_B &= -\maa(V_A - 2V_B + V_C) + \mab(V_a - 2V_b + V_c)\\
-	I_C &= \maa(V_C - V_B) - \mab(V_c - V_b) \notag \\
-	I_a &= -\mba(V_A - V_B) + \mbb(V_a - V_b) \notag \\
-	I_b &= \mba(V_A - 2V_B + V_C) - \mbb(V_a - 2V_b + V_c) \\
-	I_c &=  -\mba(V_C - V_B) + \mbb(V_c - V_b)
+	I_A &= \frac{y_{LA}}{|n_A|^2}(V_A - V_B) - \frac{y_{LA}}{n_A^*}(V_a - V_b) \notag \\
+	&= V_A\left(\frac{y_{LA}}{|n_A|^2}\right) + V_B\left(-\frac{y_{LA}}{|n_A|^2}\right) + V_a\left(-\frac{y_{LA}}{n_A^*}\right) + V_b\left(\frac{y_{LA}}{n_A^*}\right) \notag \\
+	%
+	I_B &= y_\text{tie}(V_B - V_b) - I_A - I_C \notag \\
+	&= V_A\left(-\frac{y_{LA}}{|n_A|^2}\right) + V_B \left(y_\text{tie} + \frac{y_{LA}}{|n_A|^2} + \frac{y_{LC}}{|n_C|^2}\right) + V_C\left(-\frac{y_{C}}{|n_C|^2}\right) \notag \\
+	&+ V_a\left(\frac{y_{LA}}{n_A^*}\right) + V_b\left(-y_\text{tie} -\frac{y_{LA}}{n_A^*} - \frac{y_{LC}}{n_C^*}\right) + V_c\left(\frac{y_{LC}}{n_C^*}\right) \notag \\
+	%
+	I_C &= \frac{y_{LC}}{|n_C|^2}(V_C - V_B) - \frac{y_{LC}}{n_C^*}(V_c - V_b) \notag \\
+	&= V_B\left(-\frac{y_{LC}}{|n_C|^2}\right) + V_C\left(\frac{y_{LC}}{|n_C|^2}\right) + V_b\left(\frac{y_{LC}}{n_C^*}\right) +  V_c\left(-\frac{y_{LC}}{n_C^*}\right) \notag \\
+	%
+	I_a &= -\frac{y_{LA}}{n_A}(V_A - V_B) + y_{LA}(V_a - V_b) \notag \\
+	&= V_A\left(-\frac{y_{LA}}{n_A}\right) + V_B\left(\frac{y_{LA}}{n_A}\right) + V_a\left(y_{LA}\right) + V_b\left(-y_{LA}\right)\notag \\
+	%
+	I_b &= -y_\text{tie}(V_B - V_b) - I_a - I_c \notag \\
+	&= V_A\left( \frac{y_{LA}}{n_A}\right) + V_B\left(-y_\text{tie} - \frac{y_{LA}}{n_A} - \frac{y_{LC}}{n_C}\right) + V_C\left( \frac{y_{LC}}{n_C}\right) \notag \\
+	&+ V_a\left(-y_{LA}\right) + V_b\left(y_\text{tie} + y_{LA} + y_{LC}\right) + V_c\left(-y_{LC}\right) \notag \\
+	%
+	I_c &= -\frac{y_{LC}}{n_C}(V_C - V_B) + y_{LC}(V_c - V_b) \notag \\
+	&= V_B\left(\frac{y_{LC}}{n_C}\right) + V_C\left( -\frac{y_{LC}}{n_C}\right) + V_b\left(-y_{LC}\right)  + V_c\left(y_{LC}\right)
 \end{align}
 Since $I = YV$, we can deduce the bus admittance matrix $Y$ as:
-\renewcommand{\maa}[1]{\ensuremath{#1/|n|^2}}
-\renewcommand{\mab}[1]{\ensuremath{#1/n^*}}
-\renewcommand{\mba}[1]{\ensuremath{#1/n}}
-\renewcommand{\mbb}[1]{\ensuremath{#1}}
 \begin{align}
 Y &= 
-y_l\begin{bmatrix}
-	\maa{1} & -\maa{1} & 0 & -\mab{1} & \mab{1} & 0 \\
-	-\maa{1} & \maa{2} & -\maa{1} & \mab{1} & -\mab{2} & \mab{1} \\
-	0 & -\maa{1} & \maa{1} & 0 & \mab{1} & -\mab{1} \\
-	-\mba{1} & \mba{1} & 0 & \mbb{1} & -\mbb{1} & 0 \\
-	\mba{1} & -\mba{2} & \mba{1} & -\mbb{1} & \mbb{2} & -\mbb{1} \\
-	0 & \mba{1} & -\mba{1} & 0 & -\mbb{1} & \mbb{1}
+\begin{bmatrix}
+	\frac{y_{LA}}{|n_A|^2} & -\frac{y_{LA}}{|n_A|^2} & 0 & -\frac{y_{LA}}{n_A^*} & \frac{y_{LA}}{n_A^*} & 0 \\
+	%
+	-\frac{y_{LA}}{|n_A|^2} & \left(y_\text{tie} + \frac{y_{LA}}{|n_A|^2} + \frac{y_{LC}}{|n_C|^2}\right) & -\frac{y_{C}}{|n_C|^2} & \frac{y_{LA}}{n_A^*} & \left(-y_\text{tie} -\frac{y_{LA}}{n_A^*} - \frac{y_{LC}}{n_C^*}\right) & \frac{y_{LC}}{n_C^*} \\
+	%
+	0 & -\frac{y_{LC}}{|n_C|^2} & \frac{y_{LC}}{|n_C|^2} & 0 & \frac{y_{LC}}{n_C^*} &  -\frac{y_{LC}}{n_C^*} \\
+	%
+	-\frac{y_{LA}}{n_A} & \frac{y_{LA}}{n_A} & 0 & y_{LA} & -y_{LA} & 0 \\
+	%
+	\frac{y_{LA}}{n_A} & \left(-y_\text{tie} - \frac{y_{LA}}{n_A} - \frac{y_{LC}}{n_C}\right) & \frac{y_{LC}}{n_C} & -y_{LA} & \left(y_\text{tie} + y_{LA} + y_{LC}\right) & -y_{LC} \\
+	%
+	0 & \frac{y_{LC}}{n_C} & -\frac{y_{LC}}{n_C} & 0 & -y_{LC}\ & y_{LC}
 \end{bmatrix}
 \end{align}
 
