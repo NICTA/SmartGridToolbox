@@ -23,7 +23,8 @@
             bus_1_id: bus_2
             id: trans_1_2
             nom_ratio: 1.0
-            off_nom_ratio_21: 0.95
-            off_nom_ratio_23: 1.05
-            leakage_impedance: 0.0001j 
+            off_nom_ratio_10: 0.95
+            off_nom_ratio_12: 1.05
+            leakage_impedance_10: 0.0001j 
+            leakage_impedance_12: 0.0001j 
             tie_admittance: 1000

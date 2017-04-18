@@ -30,13 +30,17 @@ namespace Sgt
 
         string id = parser.expand<std::string>(nd["id"]);
         Time dt = parser.expand<Time>(nd["dt"]);
-        
-        std::vector<std::string> slaves = parser.expand<std::vector<std::string>>(nd["slaves"]);
 
         auto heartbeat = sim.newSimComponent<Heartbeat>(id, dt);
-        for (const auto& slaveId : slaves)
+       
+        auto ndSlaves = nd["slaves"];
+        if (ndSlaves)
         {
-            heartbeat->addSlave(sim.simComponents()[slaveId]); 
+            std::vector<std::string> slaves = parser.expand<std::vector<std::string>>(nd["slaves"]);
+            for (const auto& slaveId : slaves)
+            {
+                heartbeat->addSlave(sim.simComponents()[slaveId]); 
+            }
         }
     }
 }

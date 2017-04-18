@@ -38,7 +38,8 @@ namespace Sgt
     {
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "nom_ratio");
-        assertFieldPresent(nd, "leakage_impedance");
+        assertFieldPresent(nd, "leakage_impedance_10");
+        assertFieldPresent(nd, "leakage_impedance_12");
 
         const std::string id = parser.expand<std::string>(nd["id"]);
         Complex nomRatio = parser.expand<Complex>(nd["nom_ratio"]);

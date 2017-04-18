@@ -14,11 +14,11 @@
 
 #define BOOST_TEST_MODULE test_template
 
+#include <boost/test/included/unit_test.hpp>
+
 #include "../SgtCore/SgtCore.h"
 #include "../SgtSim/SgtSim.h"
 #include "../SgtSim/WeakOrder.h"
-
-#include <boost/test/included/unit_test.hpp>
 
 #include <cmath>
 #include <ostream>
