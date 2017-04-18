@@ -125,5 +125,6 @@ libSgtCore_la_LIBADD = \
 	$(L_POWER_TOOLS)
 
 noinst_PROGRAMS = helloworld
+
 helloworld_SOURCES = helloworld.cc
-helloworld_LDADD = -lSgtCore
+helloworld_LDADD = libSgtCore.la
