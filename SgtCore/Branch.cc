@@ -43,6 +43,12 @@ namespace Sgt
         };
         return j;
     }
+
+    array<Col<Complex>, 2> BranchAbc::VBus() const
+    {
+        return {{mapPhases(bus0()->V(), bus0()->phases(), phases0()), 
+            mapPhases(bus1()->V(), bus1()->phases(), phases1())}};
+    }
             
     array<Col<Complex>, 2> VIBusInj(const BranchAbc& branch)
     {

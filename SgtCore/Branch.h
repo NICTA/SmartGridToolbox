@@ -86,6 +86,11 @@ namespace Sgt
 
             SGT_PROP_GET(phases1, phases1, const Phases&);
 
+            std::array<Phases, 2> phases() const
+            {
+                return {{phases0_, phases1_}};
+            }
+
             /// @}
 
             /// @name In service:
@@ -176,10 +181,23 @@ namespace Sgt
                 return bus1_;
             }
 
+            std::array<ConstComponentPtr<Bus>, 2> buses() const
+            {
+                return {{bus0_, bus1_}};
+            }
+
+            std::array<ComponentPtr<Bus>, 2> buses()
+            {
+                return {{bus0_, bus1_}};
+            }
+
             /// @}
 
             /// @name Utility functions
             /// @{
+
+            /// @brief Voltage at each bus.
+            std::array<arma::Col<Complex>, 2> VBus() const;
 
             /// @brief Current injection into each bus.
             std::array<arma::Col<Complex>, 2> IBusInj() const;
