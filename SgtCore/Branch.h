@@ -196,13 +196,13 @@ namespace Sgt
             /// @name Utility functions
             /// @{
 
-            /// @brief Voltage at each bus.
+            /// @brief Voltage at each bus, mapped to the transformer terminals.
             std::array<arma::Col<Complex>, 2> VBus() const;
 
-            /// @brief Current injection into each bus.
+            /// @brief Current injection into each bus, mapped to the transformer terminals.
             std::array<arma::Col<Complex>, 2> IBusInj() const;
             
-            /// @brief Power injection into each bus.
+            /// @brief Power injection into each bus, mapped to the transformer terminals.
             std::array<arma::Col<Complex>, 2> SBusInj() const;
             
             /// @}
