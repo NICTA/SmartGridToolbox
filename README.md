@@ -6,7 +6,7 @@
 
 ## Getting Started
 
-Detailed installation instructions can be found below. Additional information and documentation is available at the [SmartGridToolbox homepage](http://nicta.github.io/SmartGridToolbox), including [doxygen documentation](http://nicta.github.io/SmartGridToolbox/doxygen_docs/index.html) and [tutorials](http://nicta.github.io/SmartGridToolbox/#tutorials). Examples may be found in the `examples` subdirectory.
+Detailed installation instructions can be found below. Additional information and documentation is available at the [SmartGridToolbox homepage](http://nicta.github.io/SmartGridToolbox), including [doxygen documentation](http://nicta.github.io/SmartGridToolbox/doxygen_docs/index.html) and [tutorials](http://nicta.github.io/SmartGridToolbox/#tutorials). Examples may be found in the *examples* subdirectory.
 
 ## License
 
@@ -46,13 +46,13 @@ Install up to date versions of the following libraries:
 
 - **Boost libraries**
 
-    boost/date\_time, boost/random (header only), boost/spirit (header only), boost/test.
+    *boost/date\_time*, *boost/random* (header only), *boost/spirit* (header only), *boost/test*.
 
-    The easiest procedure is probaly to install the whole of boost, either by downloading the latest version from www.boost.org and following the build instructions, or, preferably, by using a tool such as homebrew (Mac OSX), apt-get (Debian Linux distributions such as Ubuntu) or similar. Make sure your boost version is not too old (we test v.1.55, and of course later versions should also work).
+    The easiest procedure is probaly to install the whole of boost, either by downloading the latest version from [www.boost.org](http://www.boost.org) and following the build instructions, or, preferably, by using a tool such as homebrew (Mac OSX), apt-get (Debian Linux distributions such as Ubuntu) or similar. Make sure your boost version is not too old (we test v.1.55, and of course later versions should also work).
 
 - **The yaml-cpp library**
 
-    Source code is provided in third\_party/yaml-cpp-0.5.0, or alternatively, install using homebrew, apt-get or the like.
+    Source code is provided in *third\_party/yaml-cpp-0.5.0*, or alternatively, install using homebrew, apt-get or the like.
 
     ``` 
     mkdir build
@@ -63,7 +63,7 @@ Install up to date versions of the following libraries:
 
 - **Armadillo linear algebra library**
 
-    This is available from http://arma.sourceforge.net, and is also included in the third\_party directory of SmartGridToolbox for convenience. You should use version 5.2 or later. 
+    This is available from http://arma.sourceforge.net, and is also included in the *third\_party* directory of SmartGridToolbox for convenience. You should use version 5.2 or later. 
 
     On a mac, you can use homebrew:
 
@@ -71,7 +71,7 @@ Install up to date versions of the following libraries:
     brew install armadillo
     ```
 
-    To build and install from the third\_party directory (assuming you are in the top level SmartGridToolbox directory), you can do something like the following:
+    To build and install from the *third\_party* directory (assuming you are in the top level *SmartGridToolbox* directory), you can do something like the following:
 
     ```
     cd third\_party/armadillo
@@ -87,11 +87,11 @@ Install up to date versions of the following libraries:
 
 - **(Optional) SuiteSparse libraries**
 
-    amd, colamd, btf, klu
+    *amd*, *colamd*, *btf*, *klu*
 
-    These need only be installed if the default Armadillo sparse solver is not used, which means that SmartGridToolbox must be configured with --with-klu specified. Since these libraries are moderately faster than SuperLU, you should choose this option unless you already have SuperLU or have used, e.g., homebrew to install SuperLU in which case the dependency is automatically taken care of.
+    These need only be installed if the default Armadillo sparse solver is not used, which means that SmartGridToolbox must be configured with `--with-klu` specified. Since these libraries are moderately faster than SuperLU, you should choose this option unless you already have SuperLU or have used, e.g., homebrew to install SuperLU in which case the dependency is automatically taken care of.
 
-    The source code for these is provided in the third\_party/SuiteSparse directory. The build is straightforward, but depending on your system, you may need to modify the file SuiteSparse/SuiteSparse\_config/SuiteSparse\_config.mk. For example, on a mac, you should replace that file with a copy of SuiteSparse/SuiteSparse\_config/SuiteSparse\_config\_Mac.mk. Then, just build the required libraries:
+    The source code for these is provided in the *third\_party/SuiteSparse* directory. The build is straightforward, but depending on your system, you may need to modify the file *SuiteSparse/SuiteSparse\_config/SuiteSparse\_config.mk*. For example, on a mac, you should replace that file with a copy of *SuiteSparse/SuiteSparse\_config/SuiteSparse\_config\_Mac.mk*. Then, just build the required libraries:
 
     ```
     cd SuiteSparse_config; make && sudo make install; cd ..
@@ -103,7 +103,7 @@ Install up to date versions of the following libraries:
 
 - **(Optional) PowerTools**
 
-    PowerTools provides optional optimising solvers (OPF, relaxations, etc.). An installation is included in third\_party/PowerTools, with build instructions available in that directory. PowerTools requires you to install IPOPT, which is fairly involved owing to having to install several other dependencies.
+    PowerTools provides optional optimising solvers (OPF, relaxations, etc.). An installation is included in *third\_party/PowerTools*, with build instructions available in that directory. PowerTools requires you to install IPOPT, which is fairly involved owing to having to install several other dependencies.
 
 ### Build and install the SmartGridToolbox libraries:
 
