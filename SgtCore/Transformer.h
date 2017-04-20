@@ -41,12 +41,22 @@ namespace Sgt
                 return result;
             }
 
-            TransformerAbc(const Phases& phases0, const Phases& phases1) : BranchAbc(phases0, phases1) {}
+            TransformerAbc(const Phases& phases0, const Phases& phases1) : BranchAbc(phases0, phases1)
+            {
+                // Empty.
+            }
 
             virtual const std::string& componentType() const override
             {
                 return sComponentType();
             }
+
+            /// @name Overridden from BranchAbc:
+            /// @{
+
+            virtual arma::Mat<Complex> inServiceY() const override;
+
+            /// @}
 
             /// @brief Transformer type.
             virtual TransformerType transformerType() const = 0;
@@ -56,7 +66,7 @@ namespace Sgt
 
             /// @brief Voltages across secondary windings.
             virtual arma::Col<Complex> VWindings1() const = 0;
-            
+
             /// @brief Load currents across primary windings.
             ///
             /// Excludes any circular currents that may exist.
@@ -66,6 +76,21 @@ namespace Sgt
             ///
             /// Excludes any circular currents that may exist.
             virtual arma::Col<Complex> IWindings1() const = 0;
+
+        protected:
+
+            void invalidate() const;
+            
+            void ensureValid() const;
+
+        private:
+
+            virtual arma::Mat<Complex> calcY() const = 0;
+
+        private:
+
+            mutable bool isValid_{false};
+            mutable arma::Mat<Complex> Y_;
     };
 }
 

@@ -72,13 +72,6 @@ namespace Sgt
 
         /// @}
 
-        /// @name Overridden from BranchAbc:
-        /// @{
-
-            virtual arma::Mat<Complex> inServiceY() const override;
-
-        /// @}
-
         /// @name Component virtual overridden member functions.
         /// @{
 
@@ -99,11 +92,7 @@ namespace Sgt
                 return a_;
             }
 
-            void set_a(Complex a)
-            {
-                a_ = a;
-                isValid_ = false;
-            }
+            void set_a(Complex a);
 
             Complex ZL() const
             {
@@ -126,7 +115,7 @@ namespace Sgt
 
         private:
 
-            void validate() const;
+            virtual arma::Mat<Complex> calcY() const override;
 
         /// @}
 
@@ -134,9 +123,6 @@ namespace Sgt
             Complex a_;  ///< Complex turns ratio, n0/n1.
             Complex YL_; ///< Series leakage admittance.
             Complex YM_; ///< Shunt magnetising impedance.
-
-            mutable bool isValid_{false};
-            mutable arma::Mat<Complex> Y_;
     };
 }
 

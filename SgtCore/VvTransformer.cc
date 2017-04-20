@@ -49,60 +49,46 @@ namespace Sgt
     void VvTransformer::setNomRatio(Complex nomRatio)
     {
         nomRatio_ = nomRatio;
-        isValid_ = false;
-        admittanceChanged().trigger();
+        invalidate();
     }
             
     void VvTransformer::setOffNomRatio10(Complex offNomRatio10)
     {
         offNomRatio10_ = offNomRatio10;
-        isValid_ = false;
-        admittanceChanged().trigger();
+        invalidate();
     }
             
     void VvTransformer::setOffNomRatio12(Complex offNomRatio12)
     {
         offNomRatio12_ = offNomRatio12;
-        isValid_ = false;
-        admittanceChanged().trigger();
+        invalidate();
     }
             
     void VvTransformer::setZL10(Complex ZL10)
     {
         YL10_ = 1.0 / ZL10;
-        isValid_ = false;
-        admittanceChanged().trigger();
+        invalidate();
     }
 
     void VvTransformer::setZL12(Complex ZL12)
     {
         YL12_ = 1.0 / ZL12;
-        isValid_ = false;
-        admittanceChanged().trigger();
+        invalidate();
     }
             
     void VvTransformer::setYTie(Complex YTie)
     {
         YTie_ = YTie;
-        admittanceChanged().trigger();
+        invalidate();
     }
             
     void VvTransformer::setYGround(Complex YGround)
     {
         YGround_ = YGround;
-        admittanceChanged().trigger();
+        invalidate();
     }
 
-    Mat<Complex> VvTransformer::inServiceY() const
-    {
-        if (!isValid_)
-        {
-            validate();
-        }
-        return Y_;
-    }
-
-    void VvTransformer::validate() const
+    Mat<Complex> VvTransformer::calcY() const
     {
         // 2-1 windings:
         Complex a = 1.0 / a10();
@@ -120,14 +106,14 @@ namespace Sgt
         bc *= YL12_;
         b2 *= YL12_;
 
-        Y_ = 
+        return
         { 
-            {a2,                -a2,                0.0,                -ac,                ac,                 0.0},
-            {-a2,               a2+b2+YTie_,        -b2,                ac,                 -ac-bc-YTie_,       bc},
-            {0.0,               -b2,                b2,                 0.0,                bc,                 -bc},
-            {-a,                a,                  0.0,                YL10_,              -YL10_,             0.0},
-            {a,                 -a-b-YTie_,         b,                  -YL10_,   YL10_+YL12_+YTie_+YGround_,   -YL12_},
-            {0.0,               b,                  -b,                 0.0,                -YL12_,             YL12_}
+        {a2,                -a2,                0.0,                -ac,                ac,                 0.0},
+        {-a2,               a2+b2+YTie_,        -b2,                ac,                 -ac-bc-YTie_,       bc},
+        {0.0,               -b2,                b2,                 0.0,                bc,                 -bc},
+        {-a,                a,                  0.0,                YL10_,              -YL10_,             0.0},
+        {a,                 -a-b-YTie_,         b,                  -YL10_,   YL10_+YL12_+YTie_+YGround_,   -YL12_},
+        {0.0,               b,                  -b,                 0.0,                -YL12_,             YL12_}
         };
     }
 }

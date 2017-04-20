@@ -47,45 +47,33 @@ namespace Sgt
         return IWindings<1>(*this);
     }
 
-    Mat<Complex> SinglePhaseTransformer::inServiceY() const
-    {
-        if (!isValid_)
-        {
-            validate();
-        }
-        return Y_;
-    }
-            
     void SinglePhaseTransformer::setNomVRatio(Complex nomVRatio)
     {
         nomVRatio_ = nomVRatio;
-        isValid_ = false;
-        admittanceChanged().trigger();
+        invalidate();
     }
             
     void SinglePhaseTransformer::setOffNomRatio(Complex offNomRatio)
     {
         offNomRatio_ = offNomRatio;
-        isValid_ = false;
-        admittanceChanged().trigger();
+        invalidate();
     }
             
     void SinglePhaseTransformer::setZL(Complex ZL)
     {
         YL_ = 1.0 / ZL;
-        isValid_ = false;
-        admittanceChanged().trigger();
+        invalidate();
     }
 
-    void SinglePhaseTransformer::validate() const
+    Mat<Complex> SinglePhaseTransformer::calcY() const
     {
         Complex ai = 1.0 / a();
         Complex aci = conj(ai);
         Complex a2i = ai * aci;
-        Y_ = Mat<Complex>(2, 2, fill::none);
-        Y_(0, 0) = YL_ * a2i;
-        Y_(0, 1) = -YL_ * aci;
-        Y_(1, 0) = -YL_ * ai;
-        Y_(1, 1) = YL_;
+        return
+            {
+            {YL_ * a2i, -YL_ * aci},
+            {-YL_ * ai, YL_}
+            };
     }
 };

@@ -71,13 +71,6 @@ namespace Sgt
 
         /// @}
 
-        /// @name Overridden from BranchAbc:
-        /// @{
-
-            virtual arma::Mat<Complex> inServiceY() const override;
-
-        /// @}
-
         /// @name Component virtual overridden member functions.
         /// @{
 
@@ -126,7 +119,7 @@ namespace Sgt
 
         private:
 
-            void validate() const;
+            virtual arma::Mat<Complex> calcY() const override;
 
         /// @}
 
@@ -135,9 +128,6 @@ namespace Sgt
             Complex nomVRatioDY_; ///< Nominal voltage ratio, V_D / V_Y where V_D is phase-phase & V_Y is phase-ground.
             Complex offNomRatioDY_; ///< Off nominal complex turns ratio.
             Complex YL_; ///< Series leakage admittance.
-
-            mutable bool isValid_{false};
-            mutable arma::Mat<Complex> Y_;
     };
 }
 

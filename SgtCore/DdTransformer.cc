@@ -47,51 +47,41 @@ namespace Sgt
     {
         return IWindings<1>(*this);
     }
-
-    Mat<Complex> DdTransformer::inServiceY() const
+    
+    void DdTransformer::set_a(Complex a)
     {
-        if (!isValid_)
-        {
-            validate();
-        }
-        return Y_;
+        a_ = a;
+        invalidate();
     }
             
     void DdTransformer::setZL(Complex ZL)
     {
         YL_ = 1.0 / ZL;
-        isValid_ = false;
-        admittanceChanged().trigger();
+        invalidate();
     }
             
     void DdTransformer::setYM(Complex YM)
     {
         YM_ = YM;
-        isValid_ = false;
-        admittanceChanged().trigger();
+        invalidate();
     }
 
-    void DdTransformer::validate() const
+    Mat<Complex> DdTransformer::calcY() const
     {
         Complex ai = 1.0 / a();
         Complex aci = conj(ai);
         Complex a2i = ai * aci;
 
-        Complex data[] =  {
-            2.0 * a2i, -a2i, -a2i, -2.0 * aci, aci, aci,
-            -a2i, 2.0 * a2i, -a2i, aci, -2.0 * aci, aci,
-            -a2i, -a2i, 2.0 * a2i, aci, aci, -2.0 * aci,
-            -2.0 * ai, ai, ai, 2.0, -1.0, -1.0,
-            ai, -2.0 * ai, ai, -1.0, 2.0, -1.0,
-            ai, ai, -2.0 * ai, -1.0, -1.0, 2.0};
-        
-        Y_ = Mat<Complex>(6, 6, fill::none);
-        for (uword i = 0; i < 6; ++i)
-        {
-            for (uword j = 0; j < 6; ++j)
+        Mat<Complex> result(
             {
-                Y_(i, j) = YL_ * data[6 * i + j];
-            }
-        }
+            {2.0 * a2i, -a2i, -a2i, -2.0 * aci, aci, aci},
+            {-a2i, 2.0 * a2i, -a2i, aci, -2.0 * aci, aci},
+            {-a2i, -a2i, 2.0 * a2i, aci, aci, -2.0 * aci},
+            {-2.0 * ai, ai, ai, 2.0, -1.0, -1.0},
+            {ai, -2.0 * ai, ai, -1.0, 2.0, -1.0},
+            {ai, ai, -2.0 * ai, -1.0, -1.0, 2.0}
+            });
+        result *= YL_;
+        return result;
     }
 };

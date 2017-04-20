@@ -47,39 +47,35 @@ namespace Sgt
         return IWindings<1>(*this);
     }
 
-    Mat<Complex> YyTransformer::inServiceY() const
+    void YyTransformer::set_a(Complex a)
     {
-        if (!isValid_)
-        {
-            validate();
-        }
-        return Y_;
+        a_ = a;
+        invalidate();
     }
             
     void YyTransformer::setZL(Complex ZL)
     {
         YL_ = 1.0 / ZL;
-        isValid_ = false;
-        admittanceChanged().trigger();
+        invalidate();
     }
             
     void YyTransformer::setYM(Complex YM)
     {
         YM_ = YM;
-        isValid_ = false;
-        admittanceChanged().trigger();
+        invalidate();
     }
 
-    void YyTransformer::validate() const
+    Mat<Complex> YyTransformer::calcY() const
     {
         auto n = phases0().size();
-        Y_ = Mat<Complex>(2 * n, 2 * n, fill::zeros);
+        Mat<Complex> result(2 * n, 2 * n, fill::zeros);
         for (uword i = 0; i < n; ++i)
         {
-            Y_(i, i) = (YL_ + YM_) / (a_ * conj(a_));
-            Y_(i, i + n) = -YL_ / conj(a_);
-            Y_(i + n, i) = -YL_ / a_;
-            Y_(i + n, i + n) = YL_;
+            result(i, i) = (YL_ + YM_) / (a_ * conj(a_));
+            result(i, i + n) = -YL_ / conj(a_);
+            result(i + n, i) = -YL_ / a_;
+            result(i + n, i + n) = YL_;
         }
+        return result;
     }
 };

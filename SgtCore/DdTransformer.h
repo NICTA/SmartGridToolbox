@@ -30,8 +30,8 @@ namespace Sgt
             SGT_PROPS_INIT(DdTransformer);
             SGT_PROPS_INHERIT(TransformerAbc);
 
-        /// @name Static member functions:
-        /// @{
+            /// @name Static member functions:
+            /// @{
 
             static const std::string& sComponentType()
             {
@@ -39,10 +39,10 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Lifecycle
-        /// @{
+            /// @name Lifecycle
+            /// @{
 
             /// @brief Constructor
             /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
@@ -56,31 +56,24 @@ namespace Sgt
                 YL_(1.0 / ZL),
                 YM_(YM)
             {
-                // Empty.
+                    // Empty.
             }
 
-        /// @}
-        
-        /// @name Overridden from TransformerAbc:
-        /// @{
-            
+            /// @}
+
+            /// @name Overridden from TransformerAbc:
+            /// @{
+
             virtual TransformerType transformerType() const override {return TransformerType::DD;}
             virtual arma::Col<Complex> VWindings0() const override;
             virtual arma::Col<Complex> VWindings1() const override;
             virtual arma::Col<Complex> IWindings0() const override;
             virtual arma::Col<Complex> IWindings1() const override;
 
-        /// @}
+            /// @}
 
-        /// @name Overridden from BranchAbc:
-        /// @{
-
-            virtual arma::Mat<Complex> inServiceY() const override;
-
-        /// @}
-
-        /// @name Component virtual overridden member functions.
-        /// @{
+            /// @name Component virtual overridden member functions.
+            /// @{
 
             virtual const std::string& componentType() const override
             {
@@ -89,21 +82,18 @@ namespace Sgt
 
             // virtual json toJson() const override; // TODO
 
-        /// @}
+            /// @}
 
-        /// @name Parameters:
-        /// @{
+            /// @name Parameters:
+            /// @{
 
             Complex a() const
             {
                 return a_;
             }
 
-            void set_a(Complex a)
-            {
-                a_ = a;
-                isValid_ = false;
-            }
+            void set_a(Complex a);
+            
 
             Complex ZL() const
             {
@@ -119,24 +109,21 @@ namespace Sgt
 
             void setYM(Complex YM);
 
-        /// @}
+            /// @}
 
-        /// @name Private member functions
-        /// @{
+            /// @name Private member functions
+            /// @{
 
         private:
 
-            void validate() const;
+            virtual arma::Mat<Complex> calcY() const override;
 
-        /// @}
+            /// @}
 
         private:
             Complex a_;  ///< Complex turns ratio, n0/n1.
             Complex YL_; ///< Series leakage admittance.
             Complex YM_; ///< Shunt magnetising impedance.
-
-            mutable bool isValid_{false};
-            mutable arma::Mat<Complex> Y_;
     };
 }
 

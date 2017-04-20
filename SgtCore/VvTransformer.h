@@ -86,13 +86,6 @@ namespace Sgt
 
         /// @}
 
-        /// @name Overridden from BranchAbc:
-        /// @{
-
-            virtual arma::Mat<Complex> inServiceY() const override;
-
-        /// @}
-
         /// @name Component virtual overridden member functions.
         /// @{
 
@@ -192,7 +185,7 @@ namespace Sgt
 
         private:
 
-            void validate() const;
+            virtual arma::Mat<Complex> calcY() const override;
 
         /// @}
 
@@ -205,9 +198,6 @@ namespace Sgt
             Complex YL12_; ///< Series leakage admittance, phases 1 and 2.
             Complex YTie_; ///< Admittance tying terminals 2 between primary and secondary.
             Complex YGround_; ///< Admittance tying secondary terminal 2 to ground.
-
-            mutable bool isValid_{false};
-            mutable arma::Mat<Complex> Y_;
     };
 }
 
