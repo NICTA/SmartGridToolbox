@@ -42,27 +42,12 @@ namespace Sgt
         return {{I(0), I(1), I(2)}};
     }
 
-    void DgyTransformer::setNomVRatioDY(Complex nomVRatioDY)
-    {
-        nomVRatioDY_ = nomVRatioDY;
-        invalidate();
-    }
-
-    void DgyTransformer::setOffNomRatioDY(Complex offNomRatioDY)
-    {
-        offNomRatioDY_ = offNomRatioDY;
-        invalidate();
-    }
-            
-    void DgyTransformer::setZL(Complex ZL)
-    {
-        YL_ = 1.0 / ZL;
-        invalidate();
-    }
-
     Mat<Complex> DgyTransformer::calcY() const
     {
-        Complex ai = 1.0 / a();
+        Complex a = turnsRatio()(0);
+        Complex YL = 1.0 / ZL()(0);
+
+        Complex ai = 1.0 / a;
         Complex aci = conj(ai);
         Complex a2i = ai * aci;
 
@@ -75,7 +60,7 @@ namespace Sgt
             {0.0,   -ai,    ai,  0.0,  1.0,  0.0},
             {ai,   0.0,   -ai,  0.0,  0.0,  1.0}
             });
-        result *= YL_;
+        result *= YL;
         return result;
     }
 };

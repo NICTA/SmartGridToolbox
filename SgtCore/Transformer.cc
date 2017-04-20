@@ -24,7 +24,55 @@ namespace Sgt
         ensureValid();
         return Y_;
     }
-   
+            
+    void TransformerAbc::setNomTurnsRatio(const Col<Complex>& nomTurnsRatio)
+    {
+        nomTurnsRatio_ = nomTurnsRatio;
+        invalidate();
+    }
+
+    void TransformerAbc::setNomTurnsRatio(const Complex& nomTurnsRatio, arma::uword iWinding)
+    {
+        nomTurnsRatio_(iWinding) = nomTurnsRatio;
+        invalidate();
+    }
+             
+    void TransformerAbc::setOffNomRatio(const Col<Complex>& offNomRatio)
+    {
+        offNomRatio_ = offNomRatio;
+        invalidate();
+    }
+
+    void TransformerAbc::setOffNomRatio(const Complex& offNomRatio, arma::uword iWinding)
+    {
+        offNomRatio_(iWinding) = offNomRatio;
+        invalidate();
+    }
+
+    void TransformerAbc::setZL(const Col<Complex>& ZL)
+    {
+        ZL_ = ZL;
+        invalidate();
+    }
+
+    void TransformerAbc::setZL(const Complex& ZL, arma::uword iWinding)
+    {
+        ZL_(iWinding) = ZL;
+        invalidate();
+    }
+
+    void TransformerAbc::setYM(const Col<Complex>& YM)
+    {
+        YM_ = YM;
+        invalidate();
+    }
+
+    void TransformerAbc::setYM(const Complex& YM, arma::uword iWinding)
+    {
+        YM_(iWinding) = YM;
+        invalidate();
+    }
+    
     void TransformerAbc::invalidate() const
     {
         isValid_ = false;

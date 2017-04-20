@@ -43,17 +43,14 @@ namespace Sgt
         /// @{
 
             /// @brief Constructor
-            /// @param nomVRatioDY Nominal complex voltage ratio (not turns ratio) for each pair of windings.
-            /// @param offNomRatioDY Off nominal complex ratio for each of the six windings.
+            /// @param nomTurnsRatio Nominal complex voltage ratio (not turns ratio) for each pair of windings.
+            /// @param offNomRatio Off nominal complex ratio for each of the six windings.
             /// @param ZL The leakage impedance, must be > 0.
-            DgyTransformer(const std::string& id, Complex nomVRatioDY, Complex offNomRatioDY, Complex ZL,
+            DgyTransformer(const std::string& id, Complex nomTurnsRatio, Complex offNomRatio, Complex ZL,
                     const Phases& phases0 = {Phase::A, Phase::B, Phase::C},
                     const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
                 Component(id),
-                TransformerAbc(phases0, phases1),
-                nomVRatioDY_(nomVRatioDY),
-                offNomRatioDY_(offNomRatioDY),
-                YL_(1.0/ZL)
+                TransformerAbc(phases0, phases1, {nomTurnsRatio}, {offNomRatio}, {ZL}, {})
             {
                 // Empty.
             }
@@ -83,37 +80,6 @@ namespace Sgt
 
         /// @}
 
-        /// @name Parameters:
-        /// @{
-
-            Complex nomVRatioDY() const
-            {
-                return nomVRatioDY_;
-            }
-
-            void setNomVRatioDY(Complex nomVRatioDY);
-
-            Complex offNomRatioDY() const
-            {
-                return offNomRatioDY_;
-            }
-
-            void setOffNomRatioDY(Complex offNomRatioDY);
-
-            Complex a() const
-            {
-                return offNomRatioDY_ * nomVRatioDY_;
-            }
-
-            Complex ZL() const
-            {
-                return 1.0 / YL_;
-            }
-
-            void setZL(Complex ZL);
-
-        /// @}
-
         /// @name Private member functions
         /// @{
 
@@ -122,12 +88,6 @@ namespace Sgt
             virtual arma::Mat<Complex> calcY() const override;
 
         /// @}
-
-        private:
-
-            Complex nomVRatioDY_; ///< Nominal voltage ratio, V_D / V_Y where V_D is phase-phase & V_Y is phase-ground.
-            Complex offNomRatioDY_; ///< Off nominal complex turns ratio.
-            Complex YL_; ///< Series leakage admittance.
     };
 }
 

@@ -43,13 +43,13 @@ namespace Sgt
         /// @{
 
             /// @brief Constructor
-            /// @param nomVRatio The complex voltage ratio for each of the six windings.
-            /// @param offNomRatio The off nominal ratio for each of the six windings.
+            /// @param nomTurnsRatio The complex turns ratio for each of the three winding pairs.
+            /// @param offNomRatio The off nominal ratio for each of the three winding pairs.
             /// @param ZL The leakage impedance, must be > 0.
-            SinglePhaseTransformer(const std::string& id, Complex nomVRatio, Complex offNomRatio, Complex ZL,
+            SinglePhaseTransformer(const std::string& id, Complex nomTurnsRatio, Complex offNomRatio, Complex ZL,
                     const Phase phase0 = Phase::BAL, const Phase phase1 = Phase::BAL) :
                 Component(id),
-                TransformerAbc({phase0}, {phase1}), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
+                TransformerAbc({phase0}, {phase1}, {nomTurnsRatio}, {1.0}, {ZL}, {})
             {
                 // Empty.
             }
@@ -79,37 +79,6 @@ namespace Sgt
 
         /// @}
 
-        /// @name Parameters:
-        /// @{
-
-            Complex nomVRatio() const
-            {
-                return nomVRatio_;
-            }
-
-            void setNomVRatio(Complex nomVRatio);
-
-            Complex offNomRatio() const
-            {
-                return offNomRatio_;
-            }
-
-            void setOffNomRatio(Complex offNomRatio);
-
-            Complex a() const
-            {
-                return offNomRatio_ * nomVRatio_;
-            }
-
-            Complex ZL() const
-            {
-                return 1.0 / YL_;
-            }
-
-            void setZL(Complex ZL);
-
-        /// @}
-
         /// @name Private member functions
         /// @{
 
@@ -118,12 +87,6 @@ namespace Sgt
             virtual arma::Mat<Complex> calcY() const override;
 
         /// @}
-
-        private:
-
-            Complex nomVRatio_; ///< Nominal voltage ratio.
-            Complex offNomRatio_; ///< Off nominal complex turns ratio.
-            Complex YL_; ///< Series leakage admittance.
     };
 }
 

@@ -19,6 +19,34 @@ using namespace arma;
 
 namespace Sgt
 {
+    TapChanger::TapChanger(
+            const std::string& id,
+            const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
+            const std::vector<double>& taps,
+            double setpoint,
+            double tolerance,
+            arma::uword ctrlSideIdx,
+            arma::uword windingIdx,
+            arma::uword ratioIdx,
+            bool hasLdc,
+            Complex ZLdc,
+            Complex topFactorI) :
+        Component(id),
+        trans_(trans),
+        taps_(taps),
+        setpoint_(setpoint),
+        tolerance_(tolerance),
+        ctrlSideIdx_(ctrlSideIdx),
+        windingIdx_(windingIdx),
+        ratioIdx_(ratioIdx),
+        hasLdc_(hasLdc),
+        ZLdc_(ZLdc),
+        topFactorI_(topFactorI)
+    {
+        needsUpdate().addTrigger(trans_->bus1()->voltageUpdated());
+        // Slightly KLUDGey: If the bus voltage updates, then so might the winding voltage.
+    }
+
     void TapChanger::initializeState()
     {
         prevTimestep_ = posix_time::neg_infin;
@@ -57,7 +85,7 @@ namespace Sgt
             if (iter_ < taps_.size())
             {
                 sgtLogDebug() << sComponentType() << " " << id() << " : Try update" << std::endl;
-                val_ = get_();
+                val_ = get();
                 sgtLogDebug() << sComponentType() << " " << id() << " : Val = " << val_ << std::endl;
                 double delta = val_ - setpoint_;
                 sgtLogDebug() << sComponentType() << " " << id() << " : Delta = " << delta << std::endl;
@@ -93,9 +121,25 @@ namespace Sgt
         if (tryAgain)
         {
             sgtLogDebug() << sComponentType() << " " << id() << " : Setting was updated; try again" << std::endl;
-            set_(taps_[setting_]);
+            set(taps_[setting_]);
         }
         prevTimestep_ = t;
         ++iter_;
+    }
+
+    double TapChanger::get() const
+    {
+        Complex V = (ctrlSideIdx_ == 0 ? trans_->VWindings0() : trans_->VWindings1())[windingIdx_];
+        if (hasLdc_)
+        {
+            Complex I = (ctrlSideIdx_ == 0 ? trans_->IWindings0() : trans_->VWindings1())[windingIdx_] * topFactorI_;
+            V = V - I * ZLdc_;
+        }
+        return abs(V);
+    }
+    
+    void TapChanger::set(double val)
+    {
+        trans_->setOffNomRatio(val, ratioIdx_);
     }
 }

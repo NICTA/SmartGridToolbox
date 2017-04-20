@@ -61,12 +61,8 @@ namespace Sgt
                     const Phases& phases0 = {Phase::A, Phase::B, Phase::C},
                     const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
                 Component(id),
-                TransformerAbc(phases0, phases1),
-                nomRatio_(nomRatio),
-                offNomRatio10_(offNomRatio10),
-                offNomRatio12_(offNomRatio12),
-                YL10_(1.0/ZL10),
-                YL12_(1.0/ZL12),
+                TransformerAbc(phases0, phases1, {nomRatio, nomRatio}, {offNomRatio10, offNomRatio12},
+                        {ZL10, ZL12}, {}),
                 YTie_(YTie),
                 YGround_(YGround)
             {
@@ -101,65 +97,6 @@ namespace Sgt
         /// @name Parameters:
         /// @{
 
-            Complex nomRatio() const
-            {
-                return nomRatio_;
-            }
-
-            void setNomRatio(Complex nomRatio);
-            
-            SGT_PROP_GET_SET(nomRatio, nomRatio, Complex, setNomRatio, Complex);
-
-            Complex offNomRatio10() const
-            {
-                return offNomRatio10_;
-            }
-            
-            void setOffNomRatio10(Complex offNomRatio10);
-            
-            SGT_PROP_GET_SET(offNomRatio10, offNomRatio10, Complex, setOffNomRatio10, Complex);
-
-            Complex offNomRatio12() const
-            {
-                return offNomRatio12_;
-            }
-
-            void setOffNomRatio12(Complex offNomRatio12);
-            
-            SGT_PROP_GET_SET(offNomRatio12, offNomRatio12, Complex, setOffNomRatio12, Complex);
-
-            Complex a10() const
-            {
-                return offNomRatio10_ * nomRatio_;
-            }
-            
-            SGT_PROP_GET(a10, a10, Complex);
-
-            Complex a12() const
-            {
-                return offNomRatio12_ * nomRatio_;
-            }
-            
-            SGT_PROP_GET(a12, a12, Complex);
-
-            Complex ZL10() const
-            {
-                return 1.0 / YL10_;
-            }
-            
-            void setZL10(Complex ZL10);
-            
-            SGT_PROP_GET_SET(ZL10, ZL10, Complex, setZL10, Complex);
-
-            Complex ZL12() const
-            {
-                return 1.0 / YL12_;
-            }
-            
-            void setZL12(Complex ZL12);
-            
-            SGT_PROP_GET_SET(ZL12, ZL12, Complex, setZL12, Complex);
-
             Complex YTie() const
             {
                 return YTie_;
@@ -191,11 +128,6 @@ namespace Sgt
 
         private:
 
-            Complex nomRatio_; ///< Nominal voltage ratio, V_nom,p/V_nom,s
-            Complex offNomRatio10_; ///< Off nominal mulitplier for nomRatio_, winding between phases 1 and 0.
-            Complex offNomRatio12_; ///< Off nominal mulitplier for nomRatio_, winding between phases 1 and 2.
-            Complex YL10_; ///< Series leakage admittance, phases 1 and 0.
-            Complex YL12_; ///< Series leakage admittance, phases 1 and 2.
             Complex YTie_; ///< Admittance tying terminals 2 between primary and secondary.
             Complex YGround_; ///< Admittance tying secondary terminal 2 to ground.
     };

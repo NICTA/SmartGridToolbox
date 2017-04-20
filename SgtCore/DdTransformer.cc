@@ -47,28 +47,13 @@ namespace Sgt
     {
         return IWindings<1>(*this);
     }
-    
-    void DdTransformer::set_a(Complex a)
-    {
-        a_ = a;
-        invalidate();
-    }
-            
-    void DdTransformer::setZL(Complex ZL)
-    {
-        YL_ = 1.0 / ZL;
-        invalidate();
-    }
-            
-    void DdTransformer::setYM(Complex YM)
-    {
-        YM_ = YM;
-        invalidate();
-    }
 
     Mat<Complex> DdTransformer::calcY() const
     {
-        Complex ai = 1.0 / a();
+        Complex a = turnsRatio()(0);
+        Complex YL = 1.0 / ZL()(0);
+
+        Complex ai = 1.0 / a;
         Complex aci = conj(ai);
         Complex a2i = ai * aci;
 
@@ -81,7 +66,7 @@ namespace Sgt
             {ai, -2.0 * ai, ai, -1.0, 2.0, -1.0},
             {ai, ai, -2.0 * ai, -1.0, -1.0, 2.0}
             });
-        result *= YL_;
+        result *= YL;
         return result;
     }
 };

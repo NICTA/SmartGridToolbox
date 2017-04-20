@@ -25,73 +25,48 @@ namespace Sgt
     {
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "sim_network_id");
-        assertFieldPresent(nd, "control_bus_id");
-        assertFieldPresent(nd, "target_id");
+        assertFieldPresent(nd, "transformer_id");
 
         assertFieldPresent(nd, "taps");
         assertFieldPresent(nd, "setpoint");
         assertFieldPresent(nd, "tolerance");
-
-        assertFieldPresent(nd, "control_bus_getter");
-        assertFieldPresent(nd, "target_setter");
+        assertFieldPresent(nd, "ctrl_side_idx");
+        assertFieldPresent(nd, "winding_idx");
+        assertFieldPresent(nd, "ratio_idx");
 
         std::string id = parser.expand<std::string>(nd["id"]);
         std::string simNetworkId = parser.expand<std::string>(nd["sim_network_id"]);
-        std::string controlBusId = parser.expand<std::string>(nd["control_bus_id"]);
-        std::string targetId = parser.expand<std::string>(nd["target_id"]);
+        std::string transId = parser.expand<std::string>(nd["transformer_id"]);
 
         std::vector<double> taps = parser.expand<std::vector<double>>(nd["taps"]);
         double setpoint = parser.expand<double>(nd["setpoint"]);
         double tolerance = parser.expand<double>(nd["tolerance"]);
+        arma::uword ctrlSideIdx = parser.expand<arma::uword>(nd["ctrl_side_idx"]);
+        arma::uword windingIdx = parser.expand<arma::uword>(nd["winding_idx"]);
+        arma::uword ratioIdx = parser.expand<arma::uword>(nd["ratio_idx"]);
 
-        std::string controlBusGetterId = parser.expand<std::string>(nd["control_bus_getter"]);
-        auto ndTargetSetter = nd["target_setter"];
-        assertFieldPresent(ndTargetSetter, "id");
-        assertFieldPresent(ndTargetSetter, "type");
-        std::string targetSetterId = parser.expand<std::string>(ndTargetSetter["id"]);
-        std::string targetSetterType = parser.expand<std::string>(ndTargetSetter["type"]);
+        bool hasLdc = 0;
+        Complex ZLdc = 0;
+        Complex topFactorLdc = 1.0;
+        auto ndZLdc = nd["ldc_impedance"];
+        if (ndZLdc)
+        {
+            hasLdc = true;
+            ZLdc = parser.expand<Complex>(ndZLdc);
+            auto ndTopFactorLdc = nd["ldc_top_factor"];
+            if (ndTopFactorLdc)
+            {
+                topFactorLdc = parser.expand<Complex>(ndTopFactorLdc);
+            }
+        }
 
         ConstSimComponentPtr<SimNetwork> simNetwork = sim.simComponent<SimNetwork>(simNetworkId);
         sgtAssert(simNetwork != nullptr, std::string(key()) + ": sim_network_id = " + simNetworkId + " was not found.");
 
-        ConstComponentPtr<Bus> controlBus = simNetwork->network().buses()[controlBusId];
-        sgtAssert(controlBus != nullptr, std::string(key()) + ": control_bus_id = " + controlBusId + " was not found.");
+        auto trans = simNetwork->network().branches()[transId].as<TransformerAbc, true>();
+        sgtAssert(trans != nullptr, std::string(key()) + ": transformer_id = " + transId + " was not found.");
 
-        ComponentPtr<BranchAbc> target = simNetwork->network().branches()[targetId];
-        sgtAssert(target != nullptr, std::string(key()) + ": target_id = " + targetId + " was not found.");
-
-        auto controlBusGetterFunc = TapChanger::get(controlBus, controlBusGetterId);
-
-        const PropertyAbc* targetProp = nullptr;
-        try
-        {
-            targetProp = &target->properties()[targetSetterId];
-        }
-        catch (std::out_of_range e)
-        {
-            sgtError(std::string(key()) + ": target_setter = " + targetSetterId + " was not found.");
-        }
-        sgtAssert(targetProp->setter() != nullptr, 
-                std::string(key()) + ": target_setter = " + targetSetterId + " is not settable.");
-        std::function<void (double)> targetSetterFunc;
-        if (targetSetterType == "value")
-        {
-            auto setter = dynamic_cast<const Setter<double>*>(targetProp->setter());
-            sgtAssert(setter != nullptr, 
-                    std::string(key()) + ": target_setter = " + targetSetterId + " was of the wrong type.");
-            targetSetterFunc = TapChanger::setVal(target, *setter);
-        }
-        else if (targetSetterType == "magnitude")
-        {
-            sgtAssert(targetProp->getter() != nullptr, 
-                    std::string(key()) + ": target_setter = " + targetSetterId + " is not gettable.");
-            auto prop = dynamic_cast<const Property<Complex, Complex>*>(targetProp);
-            sgtAssert(prop != nullptr, 
-                    std::string(key()) + ": target_setter = " + targetSetterId + " was of the wrong type.");
-            targetSetterFunc = TapChanger::setMag(target, *prop);
-        }
-
-        sim.newSimComponent<TapChanger>(id, taps, setpoint, tolerance,
-                controlBus, controlBusGetterFunc, targetSetterFunc);
+        sim.newSimComponent<TapChanger>(id, trans, taps, setpoint, tolerance, ctrlSideIdx, windingIdx, ratioIdx,
+                hasLdc, ZLdc, topFactorLdc);
     }
 }

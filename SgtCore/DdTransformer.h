@@ -45,16 +45,14 @@ namespace Sgt
             /// @{
 
             /// @brief Constructor
-            /// @param a The complex turns ratio (not voltage ratio) for each of the six windings.
+            /// @param nomTurnsRatio The complex turns ratio (not voltage ratio) for each of the six windings.
             /// @param ZL The leakage impedance, must be > 0.
-            DdTransformer(const std::string& id, Complex a, Complex ZL, Complex YM,
+            /// @param YM The magnetising inductance.
+            DdTransformer(const std::string& id, Complex nomTurnsRatio, Complex ZL, Complex YM,
                     const Phases& phases0 = {Phase::A, Phase::B, Phase::C},
                     const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
                 Component(id),
-                TransformerAbc(phases0, phases1),
-                a_(a),
-                YL_(1.0 / ZL),
-                YM_(YM)
+                TransformerAbc(phases0, phases1, {nomTurnsRatio}, {1.0}, {ZL}, {YM})
             {
                     // Empty.
             }
@@ -84,33 +82,6 @@ namespace Sgt
 
             /// @}
 
-            /// @name Parameters:
-            /// @{
-
-            Complex a() const
-            {
-                return a_;
-            }
-
-            void set_a(Complex a);
-            
-
-            Complex ZL() const
-            {
-                return 1.0 / YL_;
-            }
-
-            void setZL(Complex ZL);
-
-            Complex YM() const
-            {
-                return YM_;
-            }
-
-            void setYM(Complex YM);
-
-            /// @}
-
             /// @name Private member functions
             /// @{
 
@@ -119,11 +90,6 @@ namespace Sgt
             virtual arma::Mat<Complex> calcY() const override;
 
             /// @}
-
-        private:
-            Complex a_;  ///< Complex turns ratio, n0/n1.
-            Complex YL_; ///< Series leakage admittance.
-            Complex YM_; ///< Shunt magnetising impedance.
     };
 }
 

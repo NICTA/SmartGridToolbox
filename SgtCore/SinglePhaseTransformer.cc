@@ -47,33 +47,18 @@ namespace Sgt
         return IWindings<1>(*this);
     }
 
-    void SinglePhaseTransformer::setNomVRatio(Complex nomVRatio)
-    {
-        nomVRatio_ = nomVRatio;
-        invalidate();
-    }
-            
-    void SinglePhaseTransformer::setOffNomRatio(Complex offNomRatio)
-    {
-        offNomRatio_ = offNomRatio;
-        invalidate();
-    }
-            
-    void SinglePhaseTransformer::setZL(Complex ZL)
-    {
-        YL_ = 1.0 / ZL;
-        invalidate();
-    }
-
     Mat<Complex> SinglePhaseTransformer::calcY() const
     {
-        Complex ai = 1.0 / a();
+        Complex a = turnsRatio()(0);
+        Complex YL = 1.0 / ZL()(0);
+
+        Complex ai = 1.0 / a;
         Complex aci = conj(ai);
         Complex a2i = ai * aci;
         return
             {
-            {YL_ * a2i, -YL_ * aci},
-            {-YL_ * ai, YL_}
+            {YL * a2i, -YL * aci},
+            {-YL * ai, YL}
             };
     }
 };
