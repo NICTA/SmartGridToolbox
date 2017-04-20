@@ -21,6 +21,8 @@
     -  vv_transformer:
             bus_0_id: bus_1
             bus_1_id: bus_2
+            phases_0: [A, B, C]
+            phases_1: [A, B, C]
             id: trans_1_2
             nom_ratio: 1.0
             off_nom_ratio_10: 0.95
