@@ -39,14 +39,18 @@ namespace Sgt
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "complex_turns_ratio_01");
         assertFieldPresent(nd, "leakage_impedance");
+        assertFieldPresent(nd, "phases_0");
+        assertFieldPresent(nd, "phases_1");
 
         const std::string id = parser.expand<std::string>(nd["id"]);
         Complex a = parser.expand<Complex>(nd["complex_turns_ratio_01"]);
         Complex ZL = parser.expand<Complex>(nd["leakage_impedance"]);
         auto ndYm = nd["magnetizing_admittance"];
         Complex YM = ndYm ? parser.expand<Complex>(ndYm) : Complex(0.0, 0.0);
+        const Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
+        const Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
 
-        std::unique_ptr<YyTransformer> trans(new YyTransformer(id, a, ZL, YM));
+        std::unique_ptr<YyTransformer> trans(new YyTransformer(id, a, ZL, YM, phases0, phases1));
 
         return trans;
     }

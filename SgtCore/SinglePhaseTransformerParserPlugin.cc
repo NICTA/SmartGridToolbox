@@ -39,15 +39,19 @@ namespace Sgt
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "nom_V_ratio");
         assertFieldPresent(nd, "leakage_impedance");
+        assertFieldPresent(nd, "phase_0");
+        assertFieldPresent(nd, "phase_1");
 
         const std::string id = parser.expand<std::string>(nd["id"]);
         Complex nomVRatio = parser.expand<Complex>(nd["nom_V_ratio"]);
         auto ndOffNomRatio = nd["off_nom_ratio"];
         Complex offNomRatio = ndOffNomRatio ? parser.expand<Complex>(nd["off_nom_ratio"]) : 1.0;
-
         Complex ZL = parser.expand<Complex>(nd["leakage_impedance"]);
+        const Phase phase0 = parser.expand<Phase>(nd["phase_0"]);
+        const Phase phase1 = parser.expand<Phase>(nd["phase_1"]);
 
-        std::unique_ptr<SinglePhaseTransformer> trans(new SinglePhaseTransformer(id, nomVRatio, offNomRatio, ZL));
+        std::unique_ptr<SinglePhaseTransformer> trans(new SinglePhaseTransformer(id, nomVRatio, offNomRatio, ZL,
+                    phase0, phase1));
 
         return trans;
     }

@@ -40,6 +40,8 @@ namespace Sgt
         assertFieldPresent(nd, "nom_ratio");
         assertFieldPresent(nd, "leakage_impedance_10");
         assertFieldPresent(nd, "leakage_impedance_12");
+        assertFieldPresent(nd, "phases_0");
+        assertFieldPresent(nd, "phases_1");
 
         const std::string id = parser.expand<std::string>(nd["id"]);
         Complex nomRatio = parser.expand<Complex>(nd["nom_ratio"]);
@@ -59,8 +61,12 @@ namespace Sgt
         auto ndGndAdmittance = nd["ground_admittance"];
         Complex YGnd = ndGndAdmittance ? parser.expand<Complex>(ndGndAdmittance) : Complex{0.0, 0.0};
         
+        const Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
+        const Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
+        
         std::unique_ptr<VvTransformer> trans(
-                new VvTransformer(id, nomRatio, offNomRatio10, offNomRatio12, ZL10, ZL12, YTie, YGnd));
+                new VvTransformer(id, nomRatio, offNomRatio10, offNomRatio12, ZL10, ZL12, YTie, YGnd,
+                    phases0, phases1));
 
         return trans;
     }

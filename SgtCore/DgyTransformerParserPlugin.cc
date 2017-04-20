@@ -39,15 +39,19 @@ namespace Sgt
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "nom_V_ratio_DY");
         assertFieldPresent(nd, "leakage_impedance");
+        assertFieldPresent(nd, "phases_0");
+        assertFieldPresent(nd, "phases_1");
 
         const std::string id = parser.expand<std::string>(nd["id"]);
         Complex nomVRatioDY = parser.expand<Complex>(nd["nom_V_ratio_DY"]);
         auto ndOffNomRatioDY = nd["off_nom_ratio_DY"];
         Complex offNomRatioDY = ndOffNomRatioDY ? parser.expand<Complex>(nd["off_nom_ratio_DY"]) : 1.0;
+        const Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
+        const Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
 
         Complex ZL = parser.expand<Complex>(nd["leakage_impedance"]);
 
-        std::unique_ptr<DgyTransformer> trans(new DgyTransformer(id, nomVRatioDY, offNomRatioDY, ZL));
+        std::unique_ptr<DgyTransformer> trans(new DgyTransformer(id, nomVRatioDY, offNomRatioDY, ZL, phases0, phases1));
 
         return trans;
     }
