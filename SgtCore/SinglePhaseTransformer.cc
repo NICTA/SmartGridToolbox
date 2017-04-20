@@ -14,9 +14,40 @@
 
 #include "SinglePhaseTransformer.h"
 
+using namespace arma;
+using namespace std;
+
 namespace Sgt
 {
-    arma::Mat<Complex> SinglePhaseTransformer::inServiceY() const
+    template<size_t i> Col<Complex> VWindings(const BranchAbc& b)
+    {
+        Col<Complex> V = b.VBus()[i];
+        return {{V(0)}};
+    }
+    Col<Complex> SinglePhaseTransformer::VWindings0() const
+    {
+        return VWindings<0>(*this);
+    }
+    Col<Complex> SinglePhaseTransformer::VWindings1() const
+    {
+        return VWindings<1>(*this);
+    }
+
+    template<size_t i> Col<Complex> IWindings(const BranchAbc& b)
+    {
+        Col<Complex> I = -b.IBusInj()[i];
+        return {{I(0)}};
+    }
+    Col<Complex> SinglePhaseTransformer::IWindings0() const
+    {
+        return IWindings<0>(*this);
+    }
+    Col<Complex> SinglePhaseTransformer::IWindings1() const
+    {
+        return IWindings<1>(*this);
+    }
+
+    Mat<Complex> SinglePhaseTransformer::inServiceY() const
     {
         if (!isValid_)
         {
@@ -51,7 +82,7 @@ namespace Sgt
         Complex ai = 1.0 / a();
         Complex aci = conj(ai);
         Complex a2i = ai * aci;
-        Y_ = arma::Mat<Complex>(2, 2, arma::fill::none);
+        Y_ = Mat<Complex>(2, 2, fill::none);
         Y_(0, 0) = YL_ * a2i;
         Y_(0, 1) = -YL_ * aci;
         Y_(1, 0) = -YL_ * ai;

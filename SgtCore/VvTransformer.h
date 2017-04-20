@@ -15,7 +15,7 @@
 #ifndef VV_TRANSFORMER_DOT_H
 #define VV_TRANSFORMER_DOT_H
 
-#include <SgtCore/Branch.h>
+#include <SgtCore/Transformer.h>
 
 namespace Sgt
 {
@@ -23,12 +23,12 @@ namespace Sgt
     ///
     /// Windings are between terminals 2-1 and 2-3, so that terminal 2 forms the point of the "V".
     /// @ingroup PowerFlowCore
-    class VvTransformer : public BranchAbc
+    class VvTransformer : public TransformerAbc
     {
         public:
 
             SGT_PROPS_INIT(VvTransformer);
-            SGT_PROPS_INHERIT(BranchAbc);
+            SGT_PROPS_INHERIT(TransformerAbc);
 
         /// @name Static member functions:
         /// @{
@@ -61,7 +61,7 @@ namespace Sgt
                     const Phases& phases0 = {Phase::A, Phase::B, Phase::C},
                     const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
                 Component(id),
-                BranchAbc(phases0, phases1),
+                TransformerAbc(phases0, phases1),
                 nomRatio_(nomRatio),
                 offNomRatio10_(offNomRatio10),
                 offNomRatio12_(offNomRatio12),
@@ -74,6 +74,24 @@ namespace Sgt
             }
 
         /// @}
+        
+        /// @name Overridden from TransformerAbc:
+        /// @{
+            
+            virtual TransformerType transformerType() const override {return TransformerType::VV;}
+            virtual arma::Col<Complex> VWindings0() const override;
+            virtual arma::Col<Complex> VWindings1() const override;
+            virtual arma::Col<Complex> IWindings0() const override;
+            virtual arma::Col<Complex> IWindings1() const override;
+
+        /// @}
+
+        /// @name Overridden from BranchAbc:
+        /// @{
+
+            virtual arma::Mat<Complex> inServiceY() const override;
+
+        /// @}
 
         /// @name Component virtual overridden member functions.
         /// @{
@@ -83,7 +101,7 @@ namespace Sgt
                 return sComponentType();
             }
 
-            // virtual json toJson() const override // TODO
+            // virtual json toJson() const override; // TODO
 
         /// @}
 
@@ -166,13 +184,6 @@ namespace Sgt
             void setYGround(Complex YGround);
             
             SGT_PROP_GET_SET(YGround, YGround, Complex, setYGround, Complex);
-
-        /// @}
-
-        /// @name Overridden from BranchAbc:
-        /// @{
-
-            virtual arma::Mat<Complex> inServiceY() const override;
 
         /// @}
 

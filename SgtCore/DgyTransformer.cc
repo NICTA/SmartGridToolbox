@@ -14,8 +14,34 @@
 
 #include "DgyTransformer.h"
 
+using namespace arma;
+using namespace std;
+
 namespace Sgt
 {
+    Col<Complex> DgyTransformer::VWindings0() const
+    {
+        Col<Complex> V = VBus()[0];
+        return {{V(0) - V(1), V(1) - V(2), V(2) - V(0)}};
+    }
+    Col<Complex> DgyTransformer::VWindings1() const
+    {
+        Col<Complex> V = VBus()[1];
+        return {{V(0), V(1), V(2)}};
+    }
+
+    Col<Complex> DgyTransformer::IWindings0() const
+    {
+        constexpr double c = 1.0 / 3.0;
+        Col<Complex> I = -IBusInj()[0];
+        return {{c * (I(0) - I(1)), c * (I(1) - I(2)), c * (I(2) - I(0))}};
+    }
+    Col<Complex> DgyTransformer::IWindings1() const
+    {
+        Col<Complex> I = -IBusInj()[1];
+        return {{I(0), I(1), I(2)}};
+    }
+
     void DgyTransformer::setNomVRatioDY(Complex nomVRatioDY)
     {
         nomVRatioDY_ = nomVRatioDY;
@@ -37,7 +63,7 @@ namespace Sgt
         admittanceChanged().trigger();
     }
 
-    arma::Mat<Complex> DgyTransformer::inServiceY() const
+    Mat<Complex> DgyTransformer::inServiceY() const
     {
         if (!isValid_)
         {
@@ -60,10 +86,10 @@ namespace Sgt
                            ai,   0.0,   -ai,  0.0,  0.0,  1.0
                           };
 
-        Y_ = arma::Mat<Complex>(6, 6, arma::fill::none);
-        for (arma::uword i = 0; i < 6; ++i)
+        Y_ = Mat<Complex>(6, 6, fill::none);
+        for (uword i = 0; i < 6; ++i)
         {
-            for (arma::uword j = 0; j < 6; ++j)
+            for (uword j = 0; j < 6; ++j)
             {
                 Y_(i, j) = YL_ * data[6 * i + j];
             }

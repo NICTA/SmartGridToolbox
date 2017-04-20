@@ -15,15 +15,18 @@
 #ifndef SINGLE_PHASE_TRANSFORMER_DOT_H
 #define SINGLE_PHASE_TRANSFORMER_DOT_H
 
-#include <SgtCore/Branch.h>
+#include <SgtCore/Transformer.h>
 
 namespace Sgt
 {
     /// @brief Single phase transformer.
     /// @ingroup PowerFlowCore
-    class SinglePhaseTransformer : public BranchAbc
+    class SinglePhaseTransformer : public TransformerAbc
     {
         public:
+
+            SGT_PROPS_INIT(SinglePhaseTransformer);
+            SGT_PROPS_INHERIT(TransformerAbc);
 
         /// @name Static member functions:
         /// @{
@@ -43,12 +46,31 @@ namespace Sgt
             /// @param nomVRatio The complex voltage ratio for each of the six windings.
             /// @param offNomRatio The off nominal ratio for each of the six windings.
             /// @param ZL The leakage impedance, must be > 0.
-            SinglePhaseTransformer(const std::string& id, Complex nomVRatio, Complex offNomRatio, Complex ZL) :
+            SinglePhaseTransformer(const std::string& id, Complex nomVRatio, Complex offNomRatio, Complex ZL,
+                    const Phase phase0 = Phase::BAL, const Phase phase1 = Phase::BAL) :
                 Component(id),
-                BranchAbc({Phase::BAL}, {Phase::BAL}), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
+                TransformerAbc({phase0}, {phase1}), nomVRatio_(nomVRatio), offNomRatio_(offNomRatio), YL_(1.0/ZL)
             {
                 // Empty.
             }
+
+        /// @}
+        
+        /// @name Overridden from TransformerAbc:
+        /// @{
+            
+            virtual TransformerType transformerType() const override {return TransformerType::SINGLE_PHASE;}
+            virtual arma::Col<Complex> VWindings0() const override;
+            virtual arma::Col<Complex> VWindings1() const override;
+            virtual arma::Col<Complex> IWindings0() const override;
+            virtual arma::Col<Complex> IWindings1() const override;
+
+        /// @}
+
+        /// @name Overridden from BranchAbc:
+        /// @{
+
+            virtual arma::Mat<Complex> inServiceY() const override;
 
         /// @}
 
@@ -61,13 +83,6 @@ namespace Sgt
             }
 
             // virtual json toJson() const override; // TODO
-
-        /// @}
-
-        /// @name Overridden from BranchAbc:
-        /// @{
-
-            virtual arma::Mat<Complex> inServiceY() const override;
 
         /// @}
 

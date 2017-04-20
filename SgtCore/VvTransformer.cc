@@ -14,8 +14,38 @@
 
 #include "VvTransformer.h"
 
+using namespace arma;
+using namespace std;
+
 namespace Sgt
 {
+    template<size_t i> Col<Complex> VWindings(const BranchAbc& b)
+    {
+        Col<Complex> V = b.VBus()[i];
+        return {{V(0) - V(1), V(2) - V(1)}};
+    }
+    Col<Complex> VvTransformer::VWindings0() const
+    {
+        return VWindings<0>(*this);
+    }
+    Col<Complex> VvTransformer::VWindings1() const
+    {
+        return VWindings<1>(*this);
+    }
+
+    template<size_t i> Col<Complex> IWindings(const BranchAbc& b)
+    {
+        Col<Complex> I = -b.IBusInj()[i];
+        return {{I(0), I(2)}};
+    }
+    Col<Complex> VvTransformer::IWindings0() const
+    {
+        return IWindings<0>(*this);
+    }
+    Col<Complex> VvTransformer::IWindings1() const
+    {
+        return IWindings<1>(*this);
+    }
     void VvTransformer::setNomRatio(Complex nomRatio)
     {
         nomRatio_ = nomRatio;
@@ -63,7 +93,7 @@ namespace Sgt
         admittanceChanged().trigger();
     }
 
-    arma::Mat<Complex> VvTransformer::inServiceY() const
+    Mat<Complex> VvTransformer::inServiceY() const
     {
         if (!isValid_)
         {

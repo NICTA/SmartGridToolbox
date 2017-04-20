@@ -14,9 +14,40 @@
 
 #include "YyTransformer.h"
 
+using namespace arma;
+using namespace std;
+
 namespace Sgt
 {
-    arma::Mat<Complex> YyTransformer::inServiceY() const
+    template<size_t i> Col<Complex> VWindings(const BranchAbc& b)
+    {
+        Col<Complex> V = b.VBus()[i];
+        return {{V(0), V(1), V(2)}};
+    }
+    Col<Complex> YyTransformer::VWindings0() const
+    {
+        return VWindings<0>(*this);
+    }
+    Col<Complex> YyTransformer::VWindings1() const
+    {
+        return VWindings<1>(*this);
+    }
+
+    template<size_t i> Col<Complex> IWindings(const BranchAbc& b)
+    {
+        Col<Complex> I = -b.IBusInj()[i];
+        return {{I(0), I(1), I(2)}};
+    }
+    Col<Complex> YyTransformer::IWindings0() const
+    {
+        return IWindings<0>(*this);
+    }
+    Col<Complex> YyTransformer::IWindings1() const
+    {
+        return IWindings<1>(*this);
+    }
+
+    Mat<Complex> YyTransformer::inServiceY() const
     {
         if (!isValid_)
         {
@@ -42,8 +73,8 @@ namespace Sgt
     void YyTransformer::validate() const
     {
         auto n = phases0().size();
-        Y_ = arma::Mat<Complex>(2 * n, 2 * n, arma::fill::zeros);
-        for (arma::uword i = 0; i < n; ++i)
+        Y_ = Mat<Complex>(2 * n, 2 * n, fill::zeros);
+        for (uword i = 0; i < n; ++i)
         {
             Y_(i, i) = (YL_ + YM_) / (a_ * conj(a_));
             Y_(i, i + n) = -YL_ / conj(a_);

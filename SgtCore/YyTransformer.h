@@ -15,7 +15,7 @@
 #ifndef YY_TRANSFORMER_DOT_H
 #define YY_TRANSFORMER_DOT_H
 
-#include <SgtCore/Branch.h>
+#include <SgtCore/Transformer.h>
 
 namespace Sgt
 {
@@ -23,9 +23,12 @@ namespace Sgt
     ///
     /// Equivalent to a single phase transformer on each phase.
     /// @ingroup PowerFlowCore
-    class YyTransformer : public BranchAbc
+    class YyTransformer : public TransformerAbc
     {
         public:
+
+            SGT_PROPS_INIT(YyTransformer);
+            SGT_PROPS_INHERIT(TransformerAbc);
 
         /// @name Static member functions:
         /// @{
@@ -48,13 +51,24 @@ namespace Sgt
                     const Phases& phases0 = {Phase::A, Phase::B, Phase::C},
                     const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
                 Component(id),
-                BranchAbc(phases0, phases1),
+                TransformerAbc(phases0, phases1),
                 a_(a),
                 YL_(1.0 / ZL),
                 YM_(YM)
             {
                 // Empty.
             }
+
+        /// @}
+        
+        /// @name Overridden from TransformerAbc:
+        /// @{
+            
+            virtual TransformerType transformerType() const override {return TransformerType::YY;}
+            virtual arma::Col<Complex> VWindings0() const override;
+            virtual arma::Col<Complex> VWindings1() const override;
+            virtual arma::Col<Complex> IWindings0() const override;
+            virtual arma::Col<Complex> IWindings1() const override;
 
         /// @}
 
