@@ -74,7 +74,7 @@ Install up to date versions of the following libraries:
     To build and install from the *third\_party* directory (assuming you are in the top level *SmartGridToolbox* directory), you can do something like the following:
 
     ```
-    cd third\_party/armadillo
+    cd third_party/armadillo
     mkdir build
     cd build
     cmake ..
