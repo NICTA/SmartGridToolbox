@@ -45,7 +45,7 @@ namespace Sgt
         arma::uword windingIdx = parser.expand<arma::uword>(nd["winding_idx"]);
         arma::uword ratioIdx = parser.expand<arma::uword>(nd["ratio_idx"]);
 
-        bool hasLdc = 0;
+        bool hasLdc = false;
         Complex ZLdc = 0;
         Complex topFactorLdc = 1.0;
         auto ndZLdc = nd["ldc_impedance"];
