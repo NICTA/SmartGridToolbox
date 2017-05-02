@@ -196,14 +196,12 @@ namespace Sgt
             {
                 static_cast<const var<double>*>(v)->print();
             }
-            std::cout << std::endl;
         }
         std::cout << "------------" << std::endl;
         std::cout << "----constrs----" << std::endl;
         for (auto cons : mod.get_cons())
         {
             cons->print();
-            std::cout << std::endl;
         }
         std::cout << "------------" << std::endl;
         std::cout << "----objective----" << std::endl;
