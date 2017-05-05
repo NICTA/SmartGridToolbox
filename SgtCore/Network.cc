@@ -139,13 +139,8 @@ namespace Sgt
         }
     }
 
-    bool Network::solvePowerFlow()
+    void Network::solvePreprocess()
     {
-        sgtLogDebug() << "Network : solving power flow." << std::endl;
-        sgtLogDebug(LogLevel::VERBOSE) << *this << std::endl;
-
-        // Preprocess.
-        
         // Flat start.
         if (useFlatStart_)
         {
@@ -155,6 +150,15 @@ namespace Sgt
         // Islands.
         findIslands();
         handleIslands();
+    }
+
+    bool Network::solvePowerFlow()
+    {
+        sgtLogDebug() << "Network : solving power flow." << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << *this << std::endl;
+
+        // Preprocess.
+        solvePreprocess();
 
         // Solve and update network.
         isValidSolution_ = solver_->solve(*this);

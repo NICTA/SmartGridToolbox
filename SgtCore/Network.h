@@ -269,6 +269,16 @@ namespace Sgt
             
             void applyFlatStart();
 
+            /// @brief Preprocess: called from solvePowerFlow().
+            ///
+            /// Find and handle islands, and apply a flat start if necessary. Normally, the user wouldn't explicitly
+            /// call this function, as it is already called from solvePowerFlow. However, it is provided as a public
+            /// member function for purposes of flexibility.
+            void solvePreprocess();
+
+            /// @brief Solve the power flow problem.
+            ///
+            /// Calls solvePreprocess, and then calls the solve method of the current network solver.
             virtual bool solvePowerFlow();
 
             bool isValidSolution() const
