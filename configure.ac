@@ -16,6 +16,9 @@ AS_IF([test x$enable_power_tools == xyes],
 AC_ARG_WITH([gurobi-libs], [AS_HELP_STRING([--with-gurobi-libs=LINK_FLAG], [specify gurobi link flags])])
 AC_SUBST([gurobi_libs], [$with_gurobi_libs])
 
+AC_ARG_WITH([bonmin-libs], [AS_HELP_STRING([--with-bonmin-libs=LINK_FLAG], [specify bonmin link flags])])
+AC_SUBST([bonmin_libs], [$with_bonmin_libs])
+
 AC_ARG_WITH([klu],
             [AS_HELP_STRING([--without-klu], [do not use the KLU library as a sparse solver (use SuperLU instead) @<:@no@:>@])],
             [],
