@@ -319,7 +319,7 @@ namespace Sgt
         mod_->setSGen(SGen);
 
         stopwatch.stop();
-        duration = stopwatch.seconds();
+        duration = stopwatch.cpuSeconds();
 
         sgtLogDebug() << "PowerFlowNrRectSolver: " << std::endl; 
         {

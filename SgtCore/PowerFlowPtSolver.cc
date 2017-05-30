@@ -45,7 +45,7 @@ namespace Sgt
         // printNetw(*ptNetw_);
         sgtLogMessage() << "PowerFlowPtSolver:" << std::endl;
         LogIndent indent;
-        sgtLogMessage() << "Solve time          = " << stopwatchSolve.seconds() << std::endl;
+        sgtLogMessage() << "Solve time          = " << stopwatchSolve.cpuSeconds() << std::endl;
         if (success)
         {
             powerTools2Sgt(*ptNetw_, *sgtNetw_);

@@ -16,27 +16,32 @@
 #define STOPWATCH_DOT_H
 
 #include <chrono>
+#include <ctime>
 
-/// @brief Simple stopwatch style timer, using std::chrono.
-/// @ingroup Utilities
-class Stopwatch
+namespace Sgt
 {
-    public:
-        Stopwatch() : isRunning_(false), dur_(std::chrono::duration<double>::zero()) {}
-        void start() {isRunning_ = true; start_ = std::chrono::system_clock::now();}
-        void stop() {if (isRunning_) dur_ += std::chrono::system_clock::now() - start_; isRunning_ = false;}
-        void reset()
-        {
-            dur_ = std::chrono::duration<double>::zero();
-            if (isRunning_) start_ = std::chrono::system_clock::now();
-        }
-        double seconds() {return isRunning_
-            ? (dur_ + std::chrono::duration<double>(std::chrono::system_clock::now() - start_)).count()
-            : dur_.count();}
-    private:
-        bool isRunning_;
-        std::chrono::time_point<std::chrono::system_clock> start_;
-        std::chrono::duration<double> dur_;
-};
+    /// @brief Simple stopwatch style timer, using std::chrono.
+    /// @ingroup Utilities
+    class Stopwatch
+    {
+        public:
+            Stopwatch() : isRunning_(false), wallDur_(std::chrono::duration<double>::zero()) {}
+
+            void start();
+            void stop();
+            void reset();
+            double wallSeconds();
+            double cpuSeconds();
+
+        private:
+            bool isRunning_;
+
+            std::chrono::time_point<std::chrono::system_clock> wallStart_;
+            std::chrono::duration<double> wallDur_;
+
+            std::clock_t cpuStart_;
+            double cpuDur_;
+    };
+}
 
 #endif // STOPWATCH_DOT_H

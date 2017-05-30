@@ -107,7 +107,7 @@ libSgtCore_la_SOURCES = \
 	SinglePhaseTransformer.h SinglePhaseTransformer.cc \
 	SinglePhaseTransformerParserPlugin.h SinglePhaseTransformerParserPlugin.cc \
 	Spline.h \
-	Stopwatch.h \
+	Stopwatch.h Stopwatch.cc \
 	Transformer.h Transformer.cc \
 	UndergroundLine.h UndergroundLine.cc \
 	UndergroundLineParserPlugin.h UndergroundLineParserPlugin.cc \

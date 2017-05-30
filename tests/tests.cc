@@ -396,8 +396,8 @@ BOOST_AUTO_TEST_CASE (test_matpower)
                 continue;
             }
 
-            tRef = sw.seconds();
-            BOOST_TEST_MESSAGE("Solve time = " << sw.seconds());
+            tRef = sw.cpuSeconds();
+            BOOST_TEST_MESSAGE("Solve time = " << sw.cpuSeconds());
 
             ifstream compareName(std::string("mp_compare/") + c + ".compare");
 

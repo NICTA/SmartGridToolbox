@@ -106,7 +106,7 @@ int main(int argc, char** argv)
     sw.start();
     bool success = nw.solvePowerFlow();
     sw.stop();
-    cout << "(success, time) = " << success << " " << sw.seconds() << endl;
+    cout << "(success, time) = " << success << " " << sw.cpuSeconds() << endl;
 
     // cout << nw << std::endl;
 

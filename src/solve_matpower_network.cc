@@ -152,7 +152,7 @@ int main(int argc, char** argv)
     bool success = nw.solvePowerFlow();
     sw.stop();
     print();
-    std::cout << "(success, time) = " << success << " " << sw.seconds() << std::endl;
+    std::cout << "(success, time) = " << success << " " << sw.cpuSeconds() << std::endl;
     fclose(outFBus);
     fclose(outFBranch);
 }
