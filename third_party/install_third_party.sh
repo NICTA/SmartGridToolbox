@@ -8,7 +8,7 @@ if [ "$CXX" == "" -o "$INSTALL_PREFIX" == "" ]; then
     exit 1
 fi
 
-if [ -w $INSTALL_PREFIX ]; then SUDO=""; else SUDO=sudo; fi
+if [ -w $INSTALL_PREFIX/lib ]; then SUDO=""; else SUDO=sudo; fi
 
 cd armadillo
 rm -rf build_sgt
