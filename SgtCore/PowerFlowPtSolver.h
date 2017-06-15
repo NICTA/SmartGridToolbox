@@ -18,6 +18,8 @@
 #include <SgtCore/Network.h>
 #include <SgtCore/PowerFlowSolver.h>
 
+#include <PowerTools++/Net.h>
+
 class PowerModel;
 class Net;
 

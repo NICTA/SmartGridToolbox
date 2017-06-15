@@ -19,7 +19,6 @@
 #include "CommonBranch.h"
 #include "Stopwatch.h"
 
-#include <PowerTools++/Net.h>
 #include <PowerTools++/PowerModel.h>
 
 #include <set>
