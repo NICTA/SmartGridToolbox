@@ -46,14 +46,14 @@ namespace Sgt
 
     }
 
-    double Stopwatch::wallSeconds() 
+    double Stopwatch::wallSeconds() const
     {
         return isRunning_
             ? (wallDur_ + std::chrono::duration<double>(std::chrono::system_clock::now() - wallStart_)).count()
             : wallDur_.count();
     }
     
-    double Stopwatch::cpuSeconds() 
+    double Stopwatch::cpuSeconds() const
     {
         return isRunning_
             ? (cpuDur_ + static_cast<double>(std::clock() - cpuStart_) / CLOCKS_PER_SEC)

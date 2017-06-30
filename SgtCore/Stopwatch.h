@@ -30,8 +30,8 @@ namespace Sgt
             void start();
             void stop();
             void reset();
-            double wallSeconds();
-            double cpuSeconds();
+            double wallSeconds() const;
+            double cpuSeconds() const;
 
         private:
             bool isRunning_;
