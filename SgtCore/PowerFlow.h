@@ -34,15 +34,20 @@ namespace Sgt
     };
 
     std::string to_string(BusType type);
-    template<> struct JsonConvert<BusType>
-    {
-        static json toJson(BusType type)
-        {
-            return to_string(type);
-        }
-    };
-    inline std::ostream& operator<<(std::ostream& os, BusType t) {return os << to_string(t);}
+
     template<> BusType from_string<BusType>(const std::string& str);
+
+    inline std::ostream& operator<<(std::ostream& os, BusType t) {return os << to_string(t);}
+
+    inline void to_json(json& js, const BusType& type)
+    {
+        js = to_string(type);
+    }
+    
+    inline void from_json(const json& js, BusType& type)
+    {
+        type = from_string<BusType>(js);
+    }
 
     /// @ingroup PowerFlowCore
     enum class Phase : std::uint8_t // Max of 255
@@ -68,15 +73,20 @@ namespace Sgt
     constexpr size_t gNPhase = static_cast<std::uint8_t>(Phase::BAD) + 1;
 
     std::string to_string(Phase p);
-    template<> struct JsonConvert<Phase>
-    {
-        static json toJson(Phase p)
-        {
-            return to_string(p);
-        }
-    };
-    inline std::ostream& operator<<(std::ostream& os, Phase p) {return os << to_string(p);}
+
     template<> Phase from_string<Phase>(const std::string& str);
+    
+    inline std::ostream& operator<<(std::ostream& os, Phase p) {return os << to_string(p);}
+
+    inline void to_json(json& js, const Phase& p)
+    {
+        js = to_string(p);
+    };
+    
+    inline void from_json(const json& js, Phase& p)
+    {
+        p = from_string<Phase>(js);
+    }
 
     /// @brief A set of network phases, each specified by a Phase value. 
     /// @ingroup PowerFlowCore

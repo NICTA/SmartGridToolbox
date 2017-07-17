@@ -403,63 +403,6 @@ namespace Sgt
     };
 
     /// @}
-    
-    /// @name JSON.
-    /// @{
-
-    /// JSON conversion for armadillo matrices.
-    template<typename T> struct JsonConvert<arma::Mat<T>>
-    {
-        static json toJson(const arma::Mat<T>& m)
-        {
-            json result;
-            for (arma::uword i = 0; i < m.n_rows; ++i)
-            {
-                json row;
-                for (arma::uword j = 0; j < m.n_cols; ++j)
-                {
-                    row.push_back(m(i, j));
-                }
-                result.push_back(row);
-            }
-            return result;
-        }
-    };
-   
-    /// Automatically dereference pointers.
-    template<typename T> struct JsonConvert<T*>
-    {
-        static json toJson(T* t)
-        {
-            return json(*t);
-        }
-    };
-   
-    /// ComponentPtrs
-    template<typename T> struct JsonConvert<ComponentCollection<T>>
-    {
-        json result;
-        static json toJson(const ComponentCollection<T>& x)
-        {
-            json result;
-            for (auto c : x)
-            {
-                result.push_back(*c);
-            }
-            return result;
-        }
-    };
-
-    /// JSON conversion for complex numbers.
-    template<> struct JsonConvert<Complex>
-    {
-        static json toJson(const Complex& c)
-        {
-            return {c.real(), c.imag()};
-        }
-    };
-
-    /// @}
 
     /// @addtogroup Utilities
     /// @{
@@ -490,5 +433,83 @@ namespace Sgt
 
     /// @}
 }
+    
+/// @name JSON.
+/// @{
+
+namespace Sgt
+{
+    using json = nlohmann::json;
+
+    /// @brief Deduce if toJson() member function exists.
+    template<typename T> struct JsonTraits
+    {
+        private:
+            template<typename U> 
+                static auto testMember(int) -> decltype(std::declval<U>().toJson(), std::true_type());
+            template<typename> static std::false_type testMember(...);
+            using HasMember = decltype(testMember<T>(0));
+        public:
+            constexpr static bool hasMember = std::is_same<HasMember, std::true_type>::value;
+    };
+
+    /// @brief Provide a default class conversion if a toJson() member function exists.
+    template<typename T> auto to_json(json& js, const T& t)
+        -> typename std::enable_if<JsonTraits<T>::hasMember, void>::type
+    {
+        js = t.toJson();
+    };
+
+    /// @brief Json conversion for ComponentCollection.
+    template<typename T> void to_json(json& js, const ComponentCollection<T>& x)
+    {
+        js = json();
+        for (auto c : x)
+        {
+            js.push_back(*c);
+        }
+    }
+}
+
+namespace nlohmann
+{
+    /// JSON conversion for armadillo matrices.
+    template<typename T> struct adl_serializer<arma::Mat<T>>
+    {
+        static void to_json(json& js, const arma::Mat<T>& m)
+        {
+            js = json();
+            for (arma::uword i = 0; i < m.n_rows; ++i)
+            {
+                json row;
+                for (arma::uword j = 0; j < m.n_cols; ++j)
+                {
+                    row.push_back(m(i, j));
+                }
+                js.push_back(row);
+            }
+        }
+    };
+
+    /// JSON conversion for complex numbers.
+    template<typename T> struct adl_serializer<std::complex<T>>
+    {
+        static void to_json(json& js, const std::complex<T>& c)
+        {
+            js = {c.real(), c.imag()};
+        }
+    };
+
+    /// Automatically dereference pointers.
+    template<typename T> struct adl_serializer<T*>
+    {
+        static void to_json(json& js, T* t)
+        {
+            js = *t;
+        }
+    };
+}
+
+/// @}
 
 #endif // COMMON_DOT_H
