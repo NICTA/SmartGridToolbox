@@ -473,6 +473,52 @@ namespace Sgt
 
 namespace nlohmann
 {
+    /// JSON conversion for complex numbers.
+    template<typename T> struct adl_serializer<std::complex<T>>
+    {
+        static void to_json(json& js, const std::complex<T>& c)
+        {
+            js = {c.real(), c.imag()};
+        }
+        
+        static void from_json(const json& js, std::complex<T>& c)
+        {
+            c = {js[0].get<double>(), js[1].get<double>()};
+        }
+    };
+
+    /// Automatically dereference pointers.
+    template<typename T> struct adl_serializer<T*>
+    {
+        static void to_json(json& js, T* t)
+        {
+            js = *t;
+        }
+    };
+
+    /// JSON conversion for armadillo vectors.
+    template<typename T> struct adl_serializer<arma::Col<T>>
+    {
+        static void to_json(json& js, const arma::Col<T>& vec)
+        {
+            js = json();
+            for (arma::uword i = 0; i < vec.n_rows; ++i)
+            {
+                js.push_back(vec(i));
+            }
+        }
+        
+        static void from_json(const json& js, arma::Col<T>& vec)
+        {
+            arma::uword n = js.size();
+            vec = arma::Col<T>(n, arma::fill::none);
+            for (arma::uword i = 0; i < n; ++i)
+            {
+                vec(i) = js[i].get<T>();
+            }
+        }
+    };
+    
     /// JSON conversion for armadillo matrices.
     template<typename T> struct adl_serializer<arma::Mat<T>>
     {
@@ -509,29 +555,6 @@ namespace nlohmann
                     }
                 }
             }
-        }
-    };
-
-    /// JSON conversion for complex numbers.
-    template<typename T> struct adl_serializer<std::complex<T>>
-    {
-        static void to_json(json& js, const std::complex<T>& c)
-        {
-            js = {c.real(), c.imag()};
-        }
-        
-        static void from_json(const json& js, std::complex<T>& c)
-        {
-            c = {js[0].get<double>(), js[1].get<double>()};
-        }
-    };
-
-    /// Automatically dereference pointers.
-    template<typename T> struct adl_serializer<T*>
-    {
-        static void to_json(json& js, T* t)
-        {
-            js = *t;
         }
     };
 }
