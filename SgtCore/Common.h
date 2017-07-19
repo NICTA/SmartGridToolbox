@@ -476,17 +476,38 @@ namespace nlohmann
     /// JSON conversion for armadillo matrices.
     template<typename T> struct adl_serializer<arma::Mat<T>>
     {
-        static void to_json(json& js, const arma::Mat<T>& m)
+        static void to_json(json& js, const arma::Mat<T>& mat)
         {
             js = json();
-            for (arma::uword i = 0; i < m.n_rows; ++i)
+            for (arma::uword i = 0; i < mat.n_rows; ++i)
             {
                 json row;
-                for (arma::uword j = 0; j < m.n_cols; ++j)
+                for (arma::uword j = 0; j < mat.n_cols; ++j)
                 {
-                    row.push_back(m(i, j));
+                    row.push_back(mat(i, j));
                 }
                 js.push_back(row);
+            }
+        }
+        
+        static void from_json(const json& js, arma::Mat<T>& mat)
+        {
+            arma::uword n = js.size();
+            if (n == 0)
+            {
+                mat = arma::Mat<T>(0, 0);
+            }
+            else
+            {
+                arma::uword m = js[0].size();
+                mat = arma::Mat<T>(n, m, arma::fill::none);
+                for (arma::uword i = 0; i < n; ++i)
+                {
+                    for (arma::uword j = 0; j < m; ++j)
+                    {
+                        mat(i, j) = js[i][j].get<T>();
+                    }
+                }
             }
         }
     };
@@ -497,6 +518,11 @@ namespace nlohmann
         static void to_json(json& js, const std::complex<T>& c)
         {
             js = {c.real(), c.imag()};
+        }
+        
+        static void from_json(const json& js, std::complex<T>& c)
+        {
+            c = {js[0].get<double>(), js[1].get<double>()};
         }
     };
 
