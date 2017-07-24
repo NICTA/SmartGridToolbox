@@ -26,6 +26,7 @@
 #include <SgtSim/SimComponent.h>
 #include <SgtSim/SimGen.h>
 #include <SgtSim/SimNetwork.h>
+#include <SgtSim/SimParser.h>
 #include <SgtSim/SimpleBuilding.h>
 #include <SgtSim/Simulation.h>
 #include <SgtSim/SimZip.h>
