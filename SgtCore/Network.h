@@ -127,20 +127,6 @@ namespace Sgt
                 return buses_.remove(id);
             }
 
-            ConstComponentPtr<Bus> referenceBus() const
-            {
-                return referenceBus_;
-            }
-            ComponentPtr<Bus> referenceBus()
-            {
-                return referenceBus_;
-            }
-
-            void setReferenceBus(const std::string& id)
-            {
-                referenceBus_ = buses_[id];
-            }
-
             const ComponentCollection<BranchAbc>& branches() const
             {
                 return branches_;
@@ -333,7 +319,6 @@ namespace Sgt
             double freq_{50.0};
 
             MutableComponentCollection<Bus> buses_;
-            ComponentPtr<Bus> referenceBus_;
             
             MutableComponentCollection<BranchAbc> branches_;
             
