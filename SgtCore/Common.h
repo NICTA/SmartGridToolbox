@@ -559,6 +559,17 @@ namespace nlohmann
     };
 }
 
+namespace arma
+{
+    // Provide documented but missing arg function in armadillo.
+    template<template<typename> class T, typename U> T<U> arg(const T<std::complex<U>>& x)
+    {
+        T<double> result(size(x));
+        for (uword i = 0; i < x.size(); ++i) result(i) = std::arg(x(i));
+        return result;
+    }
+}
+
 /// @}
 
 #endif // COMMON_DOT_H
