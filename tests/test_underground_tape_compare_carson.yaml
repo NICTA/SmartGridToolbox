@@ -5,7 +5,7 @@
         V_base: 15.0948
         V_nom: [15.0948D0] # 24.9 kV L-L nominal @ 1.05 p.u, convert L-G.
         type: SL
--  generic_gen:
+-  gen:
         id: gen_1
         network_id: network_1
         bus_id: bus_1
@@ -17,7 +17,7 @@
         V_base: 15.0948
         V_nom: [15.0948D0] # 24.9 kV L-L nominal @ 1.05 p.u, convert L-G.
         type: PQ
--  generic_zip:
+-  zip:
         id: zip_load_2
         network_id: network_1
         bus_id: bus_2

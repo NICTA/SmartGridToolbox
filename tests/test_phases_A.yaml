@@ -5,7 +5,7 @@
             V_base: 1
             V_nom: [1, 1D120, 1D-120]
             type: SL
-    -  generic_gen:
+    -  gen:
             id: gen_1
             bus_id: bus_1
             phases: [A, B, C]

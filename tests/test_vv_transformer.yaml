@@ -8,7 +8,7 @@
             V_base: <V0a>
             V_nom: [<V0a>, <V0a>D120, <V0a>D-120]
             type: SL
-    -  generic_gen:
+    -  gen:
             id: gen_1
             bus_id: bus_1
             phases: [A, B, C]

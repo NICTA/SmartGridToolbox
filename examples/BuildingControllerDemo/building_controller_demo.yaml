@@ -92,7 +92,7 @@
     sim_network_id: network
     bus_id: bus_trans
     gen:
-        generic_gen:
+        gen:
             id: gen_trans
             bus_id: bus_trans
             phases: [BAL]

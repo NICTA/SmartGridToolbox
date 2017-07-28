@@ -9,7 +9,7 @@
             V_base: <VA>
             V_nom: [<VA>, <VA>D120, <VA>D-120]
             type: SL
-    -  generic_gen:
+    -  gen:
             id: gen_1
             bus_id: bus_1
             phases: [A, B, C]
@@ -19,7 +19,7 @@
             V_base: <VA>
             V_nom: [<VA>, <VA>D120, <VA>D-120]
             type: PQ
-    - generic_zip:
+    - zip:
             id: zip_2 
             bus_id: bus_2
             phases: [A, B, C]
