@@ -128,6 +128,19 @@ namespace Sgt
 
             SGT_PROP_GET_SET(VAngSetpoint, VAngSetpoint, arma::Col<double>, setVAngSetpoint, const arma::Col<double>&);
 
+            virtual arma::Col<Complex> VSetpoint() const
+            {
+                return polar(VMagSetpoint_, VAngSetpoint_);
+            }
+            
+            virtual void setVSetpoint(const arma::Col<Complex>& VSetpoint)
+            {
+                setVMagSetpoint(abs(VSetpoint));
+                setVAngSetpoint(arg(VSetpoint));
+            }
+            
+            SGT_PROP_GET_SET(VSetpoint, VSetpoint, arma::Col<Complex>, setVSetpoint, const arma::Col<Complex>&);
+
             virtual void applyVSetpoints();
 
             virtual double VMagMin() const
