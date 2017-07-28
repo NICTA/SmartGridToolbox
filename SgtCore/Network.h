@@ -145,33 +145,33 @@ namespace Sgt
                 return branches_.remove(id);
             }
 
-            const ComponentCollection<GenAbc>& gens() const
+            const ComponentCollection<Gen>& gens() const
             {
                 return gens_;
             }
             
-            ComponentCollection<GenAbc>& gens()
+            ComponentCollection<Gen>& gens()
             {
                 return gens_;
             }
 
-            ComponentPtr<GenAbc> addGen(std::shared_ptr<GenAbc> gen, const std::string& busId);
+            ComponentPtr<Gen> addGen(std::shared_ptr<Gen> gen, const std::string& busId);
             
-            std::shared_ptr<GenAbc> removeGen(std::string& id);
+            std::shared_ptr<Gen> removeGen(std::string& id);
 
-            const ComponentCollection<ZipAbc>& zips() const
+            const ComponentCollection<Zip>& zips() const
             {
                 return zips_;
             }
             
-            ComponentCollection<ZipAbc>& zips()
+            ComponentCollection<Zip>& zips()
             {
                 return zips_;
             }
 
-            ComponentPtr<ZipAbc> addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId);
+            ComponentPtr<Zip> addZip(std::shared_ptr<Zip> zip, const std::string& busId);
             
-            std::shared_ptr<ZipAbc> removeZip(std::string& id);
+            std::shared_ptr<Zip> removeZip(std::string& id);
 
             /// @}
 
@@ -322,9 +322,9 @@ namespace Sgt
             
             MutableComponentCollection<BranchAbc> branches_;
             
-            MutableComponentCollection<GenAbc> gens_;
+            MutableComponentCollection<Gen> gens_;
 
-            MutableComponentCollection<ZipAbc> zips_;
+            MutableComponentCollection<Zip> zips_;
 
             std::vector<Island> islands_;
 

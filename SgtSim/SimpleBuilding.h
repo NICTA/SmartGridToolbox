@@ -33,7 +33,7 @@ namespace Sgt
         OFF
     };
 
-    class SimpleBuilding : public SimZipAbc, private ZipAbc
+    class SimpleBuilding : public SimZip
     {
         /// @name Static member functions:
         /// @{
@@ -52,9 +52,9 @@ namespace Sgt
             /// @{
 
         public:
-            SimpleBuilding(const std::string& id) :
+            SimpleBuilding(const std::string& id, const ComponentPtr<Zip>& zip) :
                 Component(id),
-                ZipAbc(Phase::BAL),
+                SimZip(id, zip),
                 dt_(posix_time::minutes(5)),
                 kb_(5 * kwatt / kelvin),
                 Cb_(1.0e5 * kjoule / kelvin),
@@ -105,32 +105,7 @@ namespace Sgt
 
             /// @}
         
-            /// @name SimZipAbc virtual overridden member functions.
-            /// @{
-
         public:
-
-            virtual const ZipAbc& zip() const override
-            {
-                return *this;
-            }
-
-            virtual ZipAbc& zip() override
-            {
-                return *this;
-            }
-
-            /// @}
-
-            /// @name ZipAbc virtual overridden member functions.
-            /// @{
-
-            virtual arma::Mat<Complex> SConst() const override
-            {
-                return {Complex(1e-6 * Ph_, 0.0)}; // Need to convert from W to MW.
-            }
-            
-            /// @}
 
             /// @name Parameters
             /// @{
@@ -218,6 +193,11 @@ namespace Sgt
             /// @{
 
         private:
+            virtual arma::Mat<Complex> SConst() const
+            {
+                return {Complex(1e-6 * Ph_, 0.0)}; // Need to convert from W to MW.
+            }
+            
             void setOperatingParams(Time t);
 
             /// @}

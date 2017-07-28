@@ -2,7 +2,7 @@
 
 namespace Sgt
 {
-    void SimBusAbc::initializeState()
+    void SimBus::initializeState()
     {
         bool sv = bus().voltageUpdated().isEnabled();
         bus().voltageUpdated().setIsEnabled(false);
@@ -10,7 +10,7 @@ namespace Sgt
         bus().voltageUpdated().setIsEnabled(sv);
     }
 
-    void link(const ConstSimComponentPtr<SimBusAbc>& simBus, SimNetwork& simNetwork)
+    void link(const ConstSimComponentPtr<SimBus>& simBus, SimNetwork& simNetwork)
     {
         // Safety check that my bus has already been added to simNetwork's network.
         auto networkBus = simNetwork.network().buses()[simBus->bus().id()];

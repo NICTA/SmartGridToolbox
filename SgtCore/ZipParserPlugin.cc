@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "GenericZipParserPlugin.h"
+#include "ZipParserPlugin.h"
 
 #include "Bus.h"
 #include "Network.h"
@@ -21,9 +21,9 @@
 
 namespace Sgt
 {
-    void GenericZipParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
+    void ZipParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
     {
-        auto zip = parseGenericZip(nd, parser);
+        auto zip = parseZip(nd, parser);
 
         assertFieldPresent(nd, "bus_id");
 
@@ -31,7 +31,7 @@ namespace Sgt
         netw.addZip(std::move(zip), busId);
     }
 
-    std::unique_ptr<GenericZip> GenericZipParserPlugin::parseGenericZip(const YAML::Node& nd,
+    std::unique_ptr<Zip> ZipParserPlugin::parseZip(const YAML::Node& nd,
             const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
@@ -40,7 +40,7 @@ namespace Sgt
         std::string id = parser.expand<std::string>(nd["id"]);
         Phases phases = parser.expand<Phases>(nd["phases"]);
 
-        std::unique_ptr<GenericZip> zip(new GenericZip(id, phases));
+        std::unique_ptr<Zip> zip(new Zip(id, phases));
 
         auto ndYConst = nd["Y_const"];
         auto ndIConst = nd["I_const"];

@@ -106,7 +106,7 @@ namespace Sgt
     };
 
     /// @brief DC power to n-phase AC converter.
-    class SimpleZipInverter : public SimpleInverterAbc, public SimZipAbc, private ZipAbc
+    class SimpleZipInverter : public SimZip, public SimpleInverterAbc
     {
         public:
 
@@ -124,10 +124,10 @@ namespace Sgt
             /// @name Lifecycle.
             /// @{
             
-            SimpleZipInverter(const std::string& id, const Phases& phases, double efficiency = 1.0) :
+            SimpleZipInverter(const std::string& id, const ComponentPtr<Zip>& zip, double efficiency = 1.0) :
                 Component(id),
-                SimpleInverterAbc(efficiency),
-                ZipAbc(phases)
+                SimZip(id, zip),
+                SimpleInverterAbc(efficiency)
             {
                 // Empty.
             }
@@ -155,21 +155,6 @@ namespace Sgt
 
             /// @}
             
-            /// @name SimZipAbc virtual overridden member functions.
-            /// @{
-            
-            virtual const ZipAbc& zip() const override
-            {
-                return *this;
-            }
-
-            virtual ZipAbc& zip() override
-            {
-                return *this;
-            }
-
-            /// @}
-
             /// @name SimpleZipInverter specific member functions.
             /// @{
 
@@ -195,17 +180,11 @@ namespace Sgt
 
             /// @}
 
+        protected:
+            virtual void updateState(Time t) override;
+            
         private:
-            
-            /// @name ZipAbc virtual overridden member functions.
-            /// @{
-           
-            /// @brief Overridden ZipAbc load.
-            ///
-            /// Note that to interpret the injected power as a *load*, we need a factor of -1.
-            virtual arma::Mat<Complex> SConst() const override;
-            
-            /// @}
+            virtual arma::Mat<Complex> SConst() const;
 
         private:
 

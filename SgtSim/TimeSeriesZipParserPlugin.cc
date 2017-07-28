@@ -23,25 +23,26 @@ namespace Sgt
     void TimeSeriesZipParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
+        assertFieldPresent(nd, "phases");
         assertFieldPresent(nd, "sim_network_id");
         assertFieldPresent(nd, "bus_id");
         assertFieldPresent(nd, "time_series_id");
-        assertFieldPresent(nd, "phases");
         assertFieldPresent(nd, "dt");
         assertFieldPresent(nd, "matrix_elements");
 
         string id = parser.expand<std::string>(nd["id"]);
+        Phases phases = parser.expand<Phases>(nd["phases"]);
 
         string networkId = parser.expand<std::string>(nd["sim_network_id"]);
-
         string busId = parser.expand<std::string>(nd["bus_id"]);
-
-        Phases phases = parser.expand<Phases>(nd["phases"]);
+        
+        auto& network = *sim.simComponent<SimNetwork>(networkId);
+        auto zip = network.network().addZip(std::make_shared<Zip>(id, phases), busId);
 
         string tsId = parser.expand<std::string>(nd["time_series_id"]);
         ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>> series = 
             sim.timeSeries()[tsId].as<TimeSeries<Time, arma::Col<Complex>>, true>();
-        
+
         Time dt = parser.expand<Time>(nd["dt"]);
 
         arma::Mat<arma::uword> matrixElems;
@@ -71,11 +72,10 @@ namespace Sgt
         {
             dataIdxsS = parser.expand<arma::Col<arma::uword>>(nd["data_indices_S"]);
         }
-
-        auto network = sim.simComponent<SimNetwork>(networkId);
-        auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, phases, series, dt, matrixElems, dataIdxsY, dataIdxsI,
-                dataIdxsS);
         
+        auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, zip, series, dt, matrixElems, dataIdxsY, dataIdxsI,
+                dataIdxsS);
+
         auto ndScaleFactorY = nd["scale_factor_Y"];
         if (ndScaleFactorY)
         {
@@ -97,7 +97,6 @@ namespace Sgt
             tsZip->setScaleFactorS(scaleFactorS);
         }
 
-        network->network().addZip(shared(tsZip->zip()), busId);
-        link(tsZip, *network);
+        link(tsZip, network);
     }
 }

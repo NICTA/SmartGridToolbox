@@ -28,8 +28,8 @@
 namespace Sgt
 {
     class BranchAbc;
-    class GenAbc;
-    class ZipAbc;
+    class Gen;
+    class Zip;
 
     /// @brief A Bus is a grouped set of conductors / terminals, one per phase.
     /// @ingroup PowerFlowCore
@@ -332,11 +332,11 @@ namespace Sgt
             /// @name Generators
             /// @{
 
-            const ComponentCollection<GenAbc>& gens() const
+            const ComponentCollection<Gen>& gens() const
             {
                 return gens_;
             }
-            ComponentCollection<GenAbc>& gens()
+            ComponentCollection<Gen>& gens()
             {
                 return gens_;
             }
@@ -375,11 +375,11 @@ namespace Sgt
             /// @name Zips
             /// @{
 
-            const ComponentCollection<ZipAbc>& zips() const
+            const ComponentCollection<Zip>& zips() const
             {
                 return zips_;
             }
-            ComponentCollection<ZipAbc>& zips()
+            ComponentCollection<Zip>& zips()
             {
                 return zips_;
             }
@@ -472,8 +472,8 @@ namespace Sgt
             
             MutableComponentCollection<BranchAbc> branches0_;
             MutableComponentCollection<BranchAbc> branches1_;
-            MutableComponentCollection<GenAbc> gens_;
-            MutableComponentCollection<ZipAbc> zips_;
+            MutableComponentCollection<Gen> gens_;
+            MutableComponentCollection<Zip> zips_;
     };
 }
 

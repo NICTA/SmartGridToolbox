@@ -22,9 +22,9 @@ using namespace arma;
 
 namespace Sgt
 {
-    GenericZip::GenericZip(const std::string& id, const Phases& phases) :
+    Zip::Zip(const std::string& id, const Phases& phases) :
         Component(id),
-        ZipAbc(phases),
+        phases_(phases),
         YConst_(phases.size(), phases.size(), fill::zeros),
         IConst_(phases.size(), phases.size(), fill::zeros),
         SConst_(phases.size(), phases.size(), fill::zeros)
@@ -32,7 +32,7 @@ namespace Sgt
         // Empty.
     }
 
-    json ZipAbc::toJson() const
+    json Zip::toJson() const
     {
         json j = Component::toJson();
 		j[sComponentType()] = {
@@ -43,7 +43,7 @@ namespace Sgt
 		return j;
 	}
 
-    Mat<Complex> ZipAbc::inServiceS() const
+    Mat<Complex> Zip::inServiceS() const
     {
         Col<Complex> V = mapPhases(bus_->V(), bus_->phases(), phases_);
 

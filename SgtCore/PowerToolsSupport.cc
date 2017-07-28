@@ -53,7 +53,7 @@ namespace Sgt
                 double QMin = sgtNw.S2Pu(gen->QMin());
                 double QMax = sgtNw.S2Pu(gen->QMax());
 
-                Gen* g = new Gen(node, gen->id(), PMin, PMax, QMin, QMax);
+                ::Gen* g = new ::Gen(node, gen->id(), PMin, PMax, QMin, QMax);
                 g->_active = gen->isInService();
 
                 double c0 = gen->c0();
@@ -144,7 +144,7 @@ namespace Sgt
             for (std::size_t i = 0; i < nGen; ++i)
             {
                 // Order of gens should be same in Sgt and Pt.
-                auto sgtGen = sgtBus->gens()[i].raw<GenericGen>();
+                auto sgtGen = sgtBus->gens()[i].raw<Gen>();
                 if (!sgtGen->isInService()) continue; // If not in service, ignore what PowerTools says.
 
                 auto gen = node->_gen[i];

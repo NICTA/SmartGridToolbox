@@ -22,27 +22,8 @@
 
 namespace Sgt
 {
-    /// @brief Abstract base class for SimBus.
-    /// 
-    /// Depending on how the derived class works, bus() could either be provided by containment or inheritance.
-    class SimBusAbc : virtual public SimComponent
-    {
-        public:
-
-            /// @brief Return the bus that I wrap (const). 
-            virtual const Bus& bus() const = 0;
-            /// @brief Return the bus that I wrap (non-const). 
-            virtual Bus& bus() = 0;
-
-        protected:
-
-            virtual void initializeState() override;
-    };
-
     /// @brief Simulation bus, corresponding to a Bus in a SimNetwork's network(). 
-    /// 
-    /// bus() is provided by containment which is enough for a normal network bus. 
-    class SimBus : public SimBusAbc
+    class SimBus : virtual public SimComponent
     {
         public:
 
@@ -53,16 +34,19 @@ namespace Sgt
                 // Empty.
             }
 
-            virtual const Bus& bus() const override
+            virtual const Bus& bus() const
             {
                 return *bus_;
             }
             
-            virtual Bus& bus() override
+            virtual Bus& bus()
             {
                 return *bus_;
             }
+        
+        protected:
 
+            virtual void initializeState() override;
 
         private:
 
@@ -73,7 +57,7 @@ namespace Sgt
     ///
     /// Important: simBus's bus must separately be added to simNetwork's network. This is to prevent any possible
     /// confusion about whether it is already added on not.
-    void link(const ConstSimComponentPtr<SimBusAbc>& simBus, SimNetwork& simNetwork);
+    void link(const ConstSimComponentPtr<SimBus>& simBus, SimNetwork& simNetwork);
 }
 
 #endif // SIM_BUS_DOT_H

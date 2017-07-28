@@ -18,7 +18,7 @@
 
 namespace Sgt
 {
-    json GenAbc::toJson() const
+    json Gen::toJson() const
     {
         json j = Component::toJson();
         j[sComponentType()] = {
@@ -36,7 +36,7 @@ namespace Sgt
         return j;
     }
 
-    double GenAbc::cost() const
+    double Gen::cost() const
     {
         double P = 0;
         for (const auto& Pi : S())

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "GenericGenParserPlugin.h"
+#include "GenParserPlugin.h"
 
 #include "Bus.h"
 #include "Gen.h"
@@ -21,16 +21,16 @@
 
 namespace Sgt
 {
-    void GenericGenParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
+    void GenParserPlugin::parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const
     {
-        auto gen = parseGenericGen(nd, parser);
+        auto gen = parseGen(nd, parser);
 
         assertFieldPresent(nd, "bus_id");
         std::string busId = parser.expand<std::string>(nd["bus_id"]);
         netw.addGen(std::move(gen), busId);
     }
 
-    std::unique_ptr<GenericGen> GenericGenParserPlugin::parseGenericGen(const YAML::Node& nd,
+    std::unique_ptr<Gen> GenParserPlugin::parseGen(const YAML::Node& nd,
             const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
@@ -39,7 +39,7 @@ namespace Sgt
         std::string id = parser.expand<std::string>(nd["id"]);
         Phases phases = parser.expand<Phases>(nd["phases"]);
 
-        std::unique_ptr<GenericGen> gen(new GenericGen(id, phases));
+        std::unique_ptr<Gen> gen(new Gen(id, phases));
 
         if (const YAML::Node& subNd = nd["S"])
         {

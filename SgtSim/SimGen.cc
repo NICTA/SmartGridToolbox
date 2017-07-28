@@ -2,11 +2,11 @@
 
 namespace Sgt
 {
-    void link(const ConstSimComponentPtr<SimGenAbc>& simGen, SimNetwork& simNetwork)
+    void link(const ConstSimComponentPtr<SimGen>& simGen, SimNetwork& simNetwork)
     {
         // Safety check that my gen has already been added to simNetwork's network.
         auto networkGen = simNetwork.network().gens()[simGen->gen().id()];
-        sgtAssert(networkGen != nullptr, "My GenAbc must be added to the SimNetwork's Network before calling "
+        sgtAssert(networkGen != nullptr, "My Gen must be added to the SimNetwork's Network before calling "
                 << __PRETTY_FUNCTION__);
 
         simNetwork.dependsOn(simGen, false);

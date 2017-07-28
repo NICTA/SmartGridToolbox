@@ -64,7 +64,7 @@ namespace Sgt
         return branches_.insert(branch->id(), branch);
     }
 
-    ComponentPtr<GenAbc> Network::addGen(std::shared_ptr<GenAbc> gen, const std::string& busId)
+    ComponentPtr<Gen> Network::addGen(std::shared_ptr<Gen> gen, const std::string& busId)
     {
         auto bus = buses_[busId];
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
@@ -75,7 +75,7 @@ namespace Sgt
         return gens_.insert(gen->id(), gen);
     }
 
-    std::shared_ptr<GenAbc> Network::removeGen(std::string& id)
+    std::shared_ptr<Gen> Network::removeGen(std::string& id)
     {
         auto gen = gens_.remove(id);
         if (gen->bus() != nullptr)
@@ -85,7 +85,7 @@ namespace Sgt
         return gen;
     }
 
-    ComponentPtr<ZipAbc> Network::addZip(std::shared_ptr<ZipAbc> zip, const std::string& busId)
+    ComponentPtr<Zip> Network::addZip(std::shared_ptr<Zip> zip, const std::string& busId)
     {
         auto bus = buses_[busId];
         sgtAssert(bus != nullptr, "Bus " << busId << " was not found in the network.");
@@ -96,7 +96,7 @@ namespace Sgt
         return zips_.insert(zip->id(), zip);
     }
 
-    std::shared_ptr<ZipAbc> Network::removeZip(std::string& id)
+    std::shared_ptr<Zip> Network::removeZip(std::string& id)
     {
         auto zip = zips_.remove(id);
         if (zip->bus() != nullptr)
@@ -176,7 +176,7 @@ namespace Sgt
     double Network::genCostPerUnitTime()
     {
         return std::accumulate(gens_.begin(), gens_.end(), 0.0, 
-                [](double d, GenAbc* g)->double{return d + g->cost();});
+                [](double d, Gen* g)->double{return d + g->cost();});
     }
             
     void Network::findIslands()

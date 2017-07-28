@@ -35,13 +35,13 @@ namespace Sgt
     /// Positive real power = consumption, negative = generation.
     ///
     /// @ingroup PowerFlowCore
-    class ZipAbc : virtual public Component
+    class Zip : virtual public Component
     {
         friend class Network;
 
         public:
             
-            SGT_PROPS_INIT(ZipAbc);
+            SGT_PROPS_INIT(Zip);
             SGT_PROPS_INHERIT(Component);
 
             /// @name Static member functions:
@@ -58,7 +58,7 @@ namespace Sgt
             /// @name Lifecycle:
             /// @{
 
-            explicit ZipAbc(const Phases& phases) : Component(""), phases_(phases) {}
+            Zip(const std::string& id, const Phases& phases);
 
             /// @}
 
@@ -104,34 +104,56 @@ namespace Sgt
             /// @}
 
             /// @name ZIP parameters:
-            ///
-            /// These are implemented for convenience, so subclasses don't have to reimplement them unless they have
-            /// a non-zero value.
             /// @{
 
+            /// @brief Constant admittance component.
+            ///
+            /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
+            /// And the off-diagonal elements are between pairs of bus terminals.
             virtual arma::Mat<Complex> YConst() const
             {
-                return arma::Mat<Complex>(phases_.size(), phases_.size(), arma::fill::zeros);
+                return YConst_;
+            }
+
+            virtual void setYConst(const arma::Mat<Complex>& YConst)
+            {
+                YConst_ = YConst;
             }
             
-            SGT_PROP_GET(YConst, YConst, arma::Mat<Complex>);
+            SGT_PROP_GET_SET(YConst, YConst, arma::Mat<Complex>, setYConst, const arma::Mat<Complex>&);
 
             /// @brief Constant current component.
             ///
-            /// Relative to phase of V. Actual current will be IConst V / |V|, so that S doesn't depend on phase of V.
+            /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
+            /// And the off-diagonal elements are between pairs of bus terminals. The phase is assumed to be relative
+            /// to the phase of V, so that the power is independent of the absolute phase.
             virtual arma::Mat<Complex> IConst() const
             {
-                return arma::Mat<Complex>(phases_.size(), phases_.size(), arma::fill::zeros);
+                return IConst_;
+            }
+
+            virtual void setIConst(const arma::Mat<Complex>& IConst)
+            {
+                IConst_ = IConst;
             }
             
-            SGT_PROP_GET(IConst, IConst, arma::Mat<Complex>);
+            SGT_PROP_GET_SET(IConst, IConst, arma::Mat<Complex>, setIConst, const arma::Mat<Complex>&);
 
+            /// @brief Constant power component.
+            ///
+            /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
+            /// And the off-diagonal elements are between pairs of bus terminals.
             virtual arma::Mat<Complex> SConst() const
             {
-                return arma::Mat<Complex>(phases_.size(), phases_.size(), arma::fill::zeros);
+                return SConst_;
+            }
+
+            virtual void setSConst(const arma::Mat<Complex>& SConst)
+            {
+                SConst_ = SConst;
             }
             
-            SGT_PROP_GET(SConst, SConst, arma::Mat<Complex>);
+            SGT_PROP_GET_SET(SConst, SConst, arma::Mat<Complex>, setSConst, const arma::Mat<Complex>&);
 
             /// @}
             
@@ -229,117 +251,18 @@ namespace Sgt
 
         private:
 
-            Phases phases_;
-
+            Phases phases_{Phase::BAD};
             bool isInService_{true};
+            
+            arma::Mat<Complex> YConst_;
+            arma::Mat<Complex> IConst_;
+            arma::Mat<Complex> SConst_;
 
             Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
             Event injectionChanged_{std::string(sComponentType()) + " : Injection changed"};
             Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
 
             ComponentPtr<Bus> bus_;
-    };
-
-    /// @brief A concrete, generic ZIP at a bus.
-    /// @ingroup PowerFlowCore
-    class GenericZip : public ZipAbc
-    {
-        public:
-            
-            SGT_PROPS_INIT(GenericZip);
-            SGT_PROPS_INHERIT(ZipAbc);
-
-            /// @name Static member functions:
-            /// @{
-
-            static const std::string& sComponentType()
-            {
-                static std::string result("generic_zip");
-                return result;
-            }
-
-            /// @}
-
-            /// @name Lifecycle:
-            /// @{
-
-            GenericZip(const std::string& id, const Phases& phases);
-
-            /// @}
-
-            /// @name Component virtual overridden member functions.
-            /// @{
-
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
-
-            // virtual json toJson() const override; TODO
-
-            /// @}
-
-            /// @name ZIP parameters:
-            /// @{
-
-            /// @brief Constant admittance component.
-            ///
-            /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
-            /// And the off-diagonal elements are between pairs of bus terminals.
-            virtual arma::Mat<Complex> YConst() const override
-            {
-                return YConst_;
-            }
-
-            virtual void setYConst(const arma::Mat<Complex>& YConst)
-            {
-                YConst_ = YConst;
-            }
-            
-            SGT_PROP_GET_SET(YConst, YConst, arma::Mat<Complex>, setYConst, const arma::Mat<Complex>&);
-
-            /// @brief Constant current component.
-            ///
-            /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
-            /// And the off-diagonal elements are between pairs of bus terminals. The phase is assumed to be relative
-            /// to the phase of V, so that the power is independent of the absolute phase.
-            virtual arma::Mat<Complex> IConst() const override
-            {
-                return IConst_;
-            }
-
-            virtual void setIConst(const arma::Mat<Complex>& IConst)
-            {
-                IConst_ = IConst;
-            }
-            
-            SGT_PROP_GET_SET(IConst, IConst, arma::Mat<Complex>, setIConst, const arma::Mat<Complex>&);
-
-            /// @brief Constant power component.
-            ///
-            /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
-            /// And the off-diagonal elements are between pairs of bus terminals.
-            virtual arma::Mat<Complex> SConst() const override
-            {
-                return SConst_;
-            }
-
-            virtual void setSConst(const arma::Mat<Complex>& SConst)
-            {
-                SConst_ = SConst;
-            }
-            
-            SGT_PROP_GET_SET(SConst, SConst, arma::Mat<Complex>, setSConst, const arma::Mat<Complex>&);
-
-            /// @}
-
-        private:
-
-            Phases phases_;
-
-            arma::Mat<Complex> YConst_;
-            arma::Mat<Complex> IConst_;
-            arma::Mat<Complex> SConst_;
     };
 }
 

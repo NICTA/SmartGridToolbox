@@ -18,8 +18,7 @@
 #include "DdTransformerParserPlugin.h"
 #include "DgyTransformerParserPlugin.h"
 #include "GenericBranchParserPlugin.h"
-#include "GenericGenParserPlugin.h"
-#include "GenericZipParserPlugin.h"
+#include "GenParserPlugin.h"
 #include "MatpowerParserPlugin.h"
 #include "OverheadLineParserPlugin.h"
 #include "PowerFlowSolverParserPlugin.h"
@@ -27,6 +26,7 @@
 #include "UndergroundLineParserPlugin.h"
 #include "VvTransformerParserPlugin.h"
 #include "YyTransformerParserPlugin.h"
+#include "ZipParserPlugin.h"
 
 namespace Sgt
 {
@@ -38,8 +38,7 @@ namespace Sgt
         p.registerParserPlugin<DdTransformerParserPlugin>();
         p.registerParserPlugin<DgyTransformerParserPlugin>();
         p.registerParserPlugin<GenericBranchParserPlugin>();
-        p.registerParserPlugin<GenericGenParserPlugin>();
-        p.registerParserPlugin<GenericZipParserPlugin>();
+        p.registerParserPlugin<GenParserPlugin>();
         p.registerParserPlugin<MatpowerParserPlugin>();
         p.registerParserPlugin<OverheadLineParserPlugin>();
         p.registerParserPlugin<PowerFlowSolverParserPlugin>();
@@ -47,5 +46,6 @@ namespace Sgt
         p.registerParserPlugin<UndergroundLineParserPlugin>();
         p.registerParserPlugin<VvTransformerParserPlugin>();
         p.registerParserPlugin<YyTransformerParserPlugin>();
+        p.registerParserPlugin<ZipParserPlugin>();
     }
 }

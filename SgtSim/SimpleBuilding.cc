@@ -71,6 +71,8 @@ namespace Sgt
                     weather_->model.temperature(lastUpdated()), weather_->model.temperature(t), kb_, dQh_, Cb_);
         }
         setOperatingParams(t);
+
+        zip().setSConst(SConst());
     }
 
     void SimpleBuilding::setOperatingParams(Time t)

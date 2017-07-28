@@ -82,8 +82,7 @@ libSgtCore_la_SOURCES = \
 	Event.h Event.cc \
 	Gen.h Gen.cc \
 	GenericBranchParserPlugin.h GenericBranchParserPlugin.cc \
-	GenericGenParserPlugin.h GenericGenParserPlugin.cc \
-	GenericZipParserPlugin.h GenericZipParserPlugin.cc \
+	GenParserPlugin.h GenParserPlugin.cc \
 	json.h \
 	$(KLU_SOLVER_H) $(KLU_SOLVER_CC) \
 	MatpowerParserPlugin.h MatpowerParserPlugin.cc \
@@ -117,7 +116,8 @@ libSgtCore_la_SOURCES = \
 	YamlSupport.h YamlSupport.cc \
 	YyTransformer.h YyTransformer.cc \
 	YyTransformerParserPlugin.h YyTransformerParserPlugin.cc \
-	Zip.h Zip.cc
+	Zip.h Zip.cc \
+	ZipParserPlugin.h ZipParserPlugin.cc
 
 libSgtCore_la_LIBADD = \
 	-larmadillo \

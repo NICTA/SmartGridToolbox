@@ -15,12 +15,14 @@
 #include "DcPowerSource.h"
 #include "Inverter.h"
 
+using namespace arma;
+
 namespace Sgt
 {
     void InverterAbc::addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source)
     {
         sources_.push_back(source);
-        dependsOn(source, false);
+        dependsOn(source, true);
     }
 
     double InverterAbc::availableP() const
@@ -32,16 +34,21 @@ namespace Sgt
     void SimpleZipInverter::addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source)
     {
         InverterAbc::addDcPowerSource(source);
-        injectionChanged().addTrigger(source->dcPowerChanged());
+    }
+    
+    void SimpleZipInverter::updateState(Time t)
+    {
+        zip().setSConst(SConst());
     }
 
-    arma::Mat<Complex> SimpleZipInverter::SConst() const
+    Mat<Complex> SimpleZipInverter::SConst() const
     {
-        double PPerPh = availableP() / phases().size();
+        uword nPhase = zip().phases().size();
+        double PPerPh = availableP() / nPhase;
         double P2PerPh = PPerPh * PPerPh;
-        double reqQPerPh = requestedQ_ / phases().size();
+        double reqQPerPh = requestedQ_ / nPhase;
         double reqQ2PerPh = reqQPerPh * reqQPerPh;
-        double maxSMagPerPh =  maxSMag_ / phases().size();
+        double maxSMagPerPh =  maxSMag_ / nPhase;
         double maxSMag2PerPh = maxSMagPerPh * maxSMagPerPh;
         double SMag2PerPh = std::min(P2PerPh + reqQ2PerPh, maxSMag2PerPh);
         double QPerPh = sqrt(SMag2PerPh - P2PerPh);
@@ -50,6 +57,6 @@ namespace Sgt
             QPerPh *= -1;
         }
         Complex SLoadPerPh{-PPerPh, -QPerPh}; // Load = -ve gen.
-        return diagmat(arma::Col<Complex>(phases().size(), arma::fill::none).fill(SLoadPerPh));
+        return diagmat(Col<Complex>(nPhase, fill::none).fill(SLoadPerPh));
     }
 }

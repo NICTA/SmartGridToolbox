@@ -12,30 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ZIP_PARSER_PLUGIN_DOT_H
-#define ZIP_PARSER_PLUGIN_DOT_H
+#ifndef GEN_PARSER_PLUGIN_DOT_H
+#define GEN_PARSER_PLUGIN_DOT_H
 
 #include <SgtCore/NetworkParser.h>
 
 namespace Sgt
 {
+    class Gen;
     class Network;
-    class GenericZip;
 
-    /// @brief ParserPlugin that parses GenericZip objects.
+    /// @brief ParserPlugin that parses Gen objects.
     /// @ingroup Parsing
-    class GenericZipParserPlugin : public NetworkParserPlugin
+    class GenParserPlugin : public NetworkParserPlugin
     {
         public:
             virtual const char* key() const override
             {
-                return "generic_zip";
+                return "gen";
             }
 
             virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
 
-            std::unique_ptr<GenericZip> parseGenericZip(const YAML::Node& nd, const ParserBase& parser) const;
+            std::unique_ptr<Gen> parseGen(const YAML::Node& nd, const ParserBase& parser) const;
     };
 }
 
-#endif // ZIP_PARSER_PLUGIN_DOT_H
+#endif // GEN_PARSER_PLUGIN_DOT_H

@@ -25,17 +25,15 @@ namespace Sgt
 {
     class Bus;
 
-    /// @brief Common abstract base class for a generation at a bus.
-    ///
-    /// Implement some common functionality for convenience.
+    /// @brief Generation at a bus.
     /// @ingroup PowerFlowCore
-    class GenAbc : virtual public Component
+    class Gen : virtual public Component
     {
         friend class Network;
 
         public:
 
-            SGT_PROPS_INIT(GenAbc);
+            SGT_PROPS_INIT(Gen);
             SGT_PROPS_INHERIT(Component);
 
             /// @name Static member functions:
@@ -52,8 +50,10 @@ namespace Sgt
             /// @name Lifecycle:
             /// @{
 
-            explicit GenAbc(const Phases& phases) :
-                phases_(phases)
+            Gen(const std::string& id, const Phases& phases) :
+                Component(id),
+                phases_(phases),
+                S_(phases.size(), arma::fill::zeros)
             {
                 // Empty.
             }
@@ -112,10 +112,17 @@ namespace Sgt
             
             SGT_PROP_GET(S, S, arma::Col<Complex>);
 
-            virtual arma::Col<Complex> inServiceS() const = 0;
+            virtual arma::Col<Complex> inServiceS() const
+            {
+                return S_;
+            }
 
-            virtual void setInServiceS(const arma::Col<Complex>& S) = 0;
-            
+            virtual void setInServiceS(const arma::Col<Complex>& S)
+            {
+                S_ = S;
+                generationChanged().trigger();
+            }
+
             SGT_PROP_GET_SET(inServiceS, inServiceS, arma::Col<Complex>, setInServiceS, const arma::Col<Complex>&);
             
             /// @}
@@ -130,29 +137,73 @@ namespace Sgt
 
             SGT_PROP_GET(J, J, double);
 
-            virtual double inServiceJ() const = 0;
+            virtual double inServiceJ() const
+            {
+                return J_;
+            }
+
+            virtual void setInServiceJ(double J)
+            {
+                J_ = J;
+            }
             
-            SGT_PROP_GET(inServiceJ, inServiceJ, double);
+            SGT_PROP_GET_SET(inServiceJ, inServiceJ, double, setInServiceJ, double);
 
             /// @}
 
             /// @name Generation bounds:
             /// @{
 
-            virtual double PMin() const = 0;
-            virtual void setPMin(double PMin) = 0;
+            virtual double PMin() const
+            {
+                return PMin_;
+            }
+
+            virtual void setPMin(double PMin)
+            {
+                PMin_ = PMin;
+                setpointChanged().trigger();
+            }
+            
             SGT_PROP_GET_SET(PMin, PMin, double, setPMin, double);
 
-            virtual double PMax() const = 0;
-            virtual void setPMax(double PMax) = 0;
+            virtual double PMax() const
+            {
+                return PMax_;
+            }
+
+            virtual void setPMax(double PMax)
+            {
+                PMax_ = PMax;
+                setpointChanged().trigger();
+            }
+            
             SGT_PROP_GET_SET(PMax, PMax, double, setPMax, double);
 
-            virtual double QMin() const = 0;
-            virtual void setQMin(double QMin) = 0;
+            virtual double QMin() const
+            {
+                return QMin_;
+            }
+
+            virtual void setQMin(double QMin)
+            {
+                QMin_ = QMin;
+                setpointChanged().trigger();
+            }
+            
             SGT_PROP_GET_SET(QMin, QMin, double, setQMin, double);
 
-            virtual double QMax() const = 0;
-            virtual void setQMax(double QMax) = 0;
+            virtual double QMax() const
+            {
+                return QMax_;
+            }
+
+            virtual void setQMax(double QMax)
+            {
+                QMax_ = QMax;
+                setpointChanged().trigger();
+            }
+            
             SGT_PROP_GET_SET(QMax, QMax, double, setQMax, double);
 
             /// @}
@@ -160,24 +211,69 @@ namespace Sgt
             /// @name Generation costs:
             /// @{
 
-            virtual double cStartup() const = 0;
-            virtual void setCStartup(double cStartup) = 0;
+            virtual double cStartup() const
+            {
+                return cStartup_;
+            }
+
+            virtual void setCStartup(double cStartup)
+            {
+                cStartup_ = cStartup;
+                setpointChanged().trigger();
+            }
+            
             SGT_PROP_GET_SET(cStartup, cStartup, double, setCStartup, double);
 
-            virtual double cShutdown() const = 0;
-            virtual void setCShutdown(double cShutdown) = 0;
+            virtual double cShutdown() const
+            {
+                return cShutdown_;
+            }
+
+            virtual void setCShutdown(double cShutdown)
+            {
+                cShutdown_ = cShutdown;
+                setpointChanged().trigger();
+            }
+
             SGT_PROP_GET_SET(cShutdown, cShutdown, double, setCShutdown, double);
 
-            virtual double c0() const = 0;
-            virtual void setC0(double c0) = 0;
+            virtual double c0() const
+            {
+                return c0_;
+            }
+
+            virtual void setC0(double c0)
+            {
+                c0_ = c0;
+                setpointChanged().trigger();
+            }
+
             SGT_PROP_GET_SET(c0, c0, double, setC0, double);
 
-            virtual double c1() const = 0;
-            virtual void setC1(double c1) = 0;
+            virtual double c1() const
+            {
+                return c1_;
+            }
+
+            virtual void setC1(double c1)
+            {
+                c1_ = c1;
+                setpointChanged().trigger();
+            }
+
             SGT_PROP_GET_SET(c1, c1, double, setC1, double);
 
-            virtual double c2() const = 0;
-            virtual void setC2(double c2) = 0;
+            virtual double c2() const
+            {
+                return c2_;
+            }
+
+            virtual void setC2(double c2)
+            {
+                c2_ = c2;
+                setpointChanged().trigger();
+            }
+
             SGT_PROP_GET_SET(c2, c2, double, setC2, double);
 
             double cost() const;
@@ -258,215 +354,27 @@ namespace Sgt
             Phases phases_{Phase::BAD};
             bool isInService_{true};
 
+            arma::Col<Complex> S_;
+            
+            double J_{0.0};
+            
+            double PMin_{-infinity};
+            double PMax_{infinity};
+            double QMin_{-infinity};
+            double QMax_{infinity};
+            
+            double cStartup_{0.0};
+            double cShutdown_{0.0};
+            double c0_{0.0};
+            double c1_{0.0};
+            double c2_{0.0};
+
             Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
             Event generationChanged_{std::string(sComponentType()) + " : Generation changed"};
             Event JChanged_{std::string(sComponentType()) + " : Angular momentum changed"};
             Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
 
             ComponentPtr<Bus> bus_;
-    };
-
-    /// @brief A concrete, generic generation at a bus.
-    /// @ingroup PowerFlowCore
-    class GenericGen : public GenAbc
-    {
-        public:
-            
-            SGT_PROPS_INIT(GenericGen);
-            SGT_PROPS_INHERIT(GenAbc);
-
-            /// @name Static member functions:
-            /// @{
-
-            static const std::string& sComponentType()
-            {
-                static std::string result("generic_gen");
-                return result;
-            }
-
-            /// @}
-
-            /// @name Lifecycle:
-            /// @{
-
-            GenericGen(const std::string& id, const Phases& phases) :
-                Component(id),
-                GenAbc(phases),
-                S_(phases.size(), arma::fill::zeros)
-            {
-                // Empty.
-            }
-
-            /// @}
-
-            /// @name Component virtual overridden member functions.
-            /// @{
-
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
-
-            // virtual json toJson() const override; // TODO
-
-            /// @}
-
-            /// @name Power injection:
-            /// @{
-
-            virtual arma::Col<Complex> inServiceS() const override
-            {
-                return S_;
-            }
-
-            virtual void setInServiceS(const arma::Col<Complex>& S) override
-            {
-                S_ = S;
-                generationChanged().trigger();
-            }
-
-            /// @}
-
-            /// @name Moment of inertia:
-            /// @{
-
-            virtual double inServiceJ() const override
-            {
-                return J_;
-            }
-
-            virtual void setInServiceJ(double J)
-            {
-                J_ = J;
-            }
-            
-            SGT_PROP_GET_SET(inServiceJ, inServiceJ, double, setInServiceJ, double);
-
-            /// @}
-
-            /// @name Generation bounds:
-            /// @{
-
-            virtual double PMin() const override
-            {
-                return PMin_;
-            }
-
-            virtual void setPMin(double PMin) override
-            {
-                PMin_ = PMin;
-                setpointChanged().trigger();
-            }
-
-            virtual double PMax() const override
-            {
-                return PMax_;
-            }
-
-            virtual void setPMax(double PMax) override
-            {
-                PMax_ = PMax;
-                setpointChanged().trigger();
-            }
-
-            virtual double QMin() const override
-            {
-                return QMin_;
-            }
-
-            virtual void setQMin(double QMin) override
-            {
-                QMin_ = QMin;
-                setpointChanged().trigger();
-            }
-
-            virtual double QMax() const override
-            {
-                return QMax_;
-            }
-
-            virtual void setQMax(double QMax) override
-            {
-                QMax_ = QMax;
-                setpointChanged().trigger();
-            }
-
-            /// @}
-
-            /// @name Generation costs:
-            /// @{
-
-            virtual double cStartup() const override
-            {
-                return cStartup_;
-            }
-
-            virtual void setCStartup(double cStartup) override
-            {
-                cStartup_ = cStartup;
-                setpointChanged().trigger();
-            }
-
-            virtual double cShutdown() const override
-            {
-                return cShutdown_;
-            }
-
-            virtual void setCShutdown(double cShutdown) override
-            {
-                cShutdown_ = cShutdown;
-                setpointChanged().trigger();
-            }
-
-            virtual double c0() const override
-            {
-                return c0_;
-            }
-
-            virtual void setC0(double c0) override
-            {
-                c0_ = c0;
-                setpointChanged().trigger();
-            }
-
-            virtual double c1() const override
-            {
-                return c1_;
-            }
-
-            virtual void setC1(double c1) override
-            {
-                c1_ = c1;
-                setpointChanged().trigger();
-            }
-
-            virtual double c2() const override
-            {
-                return c2_;
-            }
-
-            virtual void setC2(double c2) override
-            {
-                c2_ = c2;
-                setpointChanged().trigger();
-            }
-
-        private:
-
-            arma::Col<Complex> S_;
-
-            double J_{0.0};
-
-            double PMin_{-infinity};
-            double PMax_{infinity};
-            double QMin_{-infinity};
-            double QMax_{infinity};
-
-            double cStartup_{0.0};
-            double cShutdown_{0.0};
-            double c0_{0.0};
-            double c1_{0.0};
-            double c2_{0.0};
     };
 }
 

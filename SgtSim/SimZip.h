@@ -22,53 +22,38 @@
 
 namespace Sgt
 {
-    /// @brief Abstract base class for SimZip.
-    /// 
-    /// Depending on how the derived class works, zip() could either be provided by containment or inheritance.
-    class SimZipAbc : virtual public SimComponent
+    /// @brief Simulation zip, corresponding to a Zip in a SimNetwork's network(). 
+    class SimZip : virtual public SimComponent
     {
         public:
 
-            /// @brief Return the zip that I wrap (const). 
-            virtual const ZipAbc& zip() const = 0;
-            /// @brief Return the zip that I wrap (non-const). 
-            virtual ZipAbc& zip() = 0;
-    };
-
-    /// @brief Simulation zip, corresponding to a ZipAbc in a SimNetwork's network(). 
-    /// 
-    /// zip() is provided by containment which is enough for a normal network zip types. 
-    class SimZip : public SimZipAbc
-    {
-        public:
-
-            SimZip(const std::string& id, const ComponentPtr<ZipAbc>& zip) :
+            SimZip(const std::string& id, const ComponentPtr<Zip>& zip) :
                 Component(id),
                 zip_(zip)
             {
                 // Empty.
             }
 
-            const ZipAbc& zip() const override
+            const Zip& zip() const
             {
                 return *zip_;
             }
             
-            ZipAbc& zip() override
+            Zip& zip()
             {
                 return *zip_;
             }
 
         private:
 
-            ComponentPtr<ZipAbc> zip_;
+            ComponentPtr<Zip> zip_;
     };
     
     /// @brief Do anything needed to do to add simZip to the simNetwork.
     ///
     /// Important: simZip's zip must separately be added to simNetwork's network. This is to prevent any possible
     /// confusion about whether it is already added on not.
-    void link(const ConstSimComponentPtr<SimZipAbc>& simZip, SimNetwork& simNetwork);
+    void link(const ConstSimComponentPtr<SimZip>& simZip, SimNetwork& simNetwork);
 }
 
 #endif // SIM_ZIP_DOT_H

@@ -22,7 +22,7 @@
 
 namespace Sgt
 {
-    class TimeSeriesZip : public SimZipAbc, public Heartbeat, private ZipAbc
+    class TimeSeriesZip : public SimZip, public Heartbeat
     {
         public:
             static const std::string& sComponentType()
@@ -39,7 +39,7 @@ namespace Sgt
             /// @param dataIdxsY Indices into time series data of const Y component. Empty or of size matrixElems.
             /// @param dataIdxsI Indices into time series data of const I component. Empty or of size matrixElems.
             /// @param dataIdxsS Indices into time series data of const S component. Empty or of size matrixElems.
-            TimeSeriesZip(const std::string& id, const Phases& phases,
+            TimeSeriesZip(const std::string& id, const ComponentPtr<Zip>& zip,
                     const ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>>& series, const Time& dt,
                     const arma::Mat<arma::uword>& matrixElems,
                     const arma::Col<arma::uword>& dataIdxsY,
@@ -49,16 +49,6 @@ namespace Sgt
             virtual const std::string& componentType() const override
             {
                 return sComponentType();
-            }
-
-            virtual const ZipAbc& zip() const override
-            {
-                return *this;
-            }
-
-            virtual ZipAbc& zip() override
-            {
-                return *this;
             }
 
             double scaleFactorY() const
@@ -94,11 +84,11 @@ namespace Sgt
         protected:
             virtual void updateState(Time t) override;
             
-            virtual arma::Mat<Complex> YConst() const override;
-            virtual arma::Mat<Complex> IConst() const override;
-            virtual arma::Mat<Complex> SConst() const override;
-
         private:
+            arma::Mat<Complex> YConst() const;
+            arma::Mat<Complex> IConst() const;
+            arma::Mat<Complex> SConst() const;
+
             arma::Mat<Complex> mapToMat(const arma::Col<Complex>& vec) const;
 
         private:

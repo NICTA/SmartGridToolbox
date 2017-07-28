@@ -28,7 +28,13 @@ namespace Sgt
         assertFieldPresent(nd, "bus_id");
 
         std::string id = parser.expand<std::string>(nd["id"]);
-        auto build = sim.newSimComponent<SimpleBuilding>(id);
+
+        std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
+        auto& network = *sim.simComponent<SimNetwork>(networkId);
+        const std::string busId = parser.expand<std::string>(nd["bus_id"]);
+        auto zip = network.network().addZip(std::make_shared<Zip>(id, Phase::BAL), busId);
+
+        auto build = sim.newSimComponent<SimpleBuilding>(id, zip);
 
         auto nd_dt = nd["dt"];
         if (nd_dt) build->set_dt(parser.expand<Time>(nd_dt));
@@ -66,12 +72,7 @@ namespace Sgt
             build->set_dQgSeries(series);
         }
 
-        std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
-        const std::string busId = parser.expand<std::string>(nd["bus_id"]);
-
-        auto netw = sim.simComponent<SimNetwork>(networkId);
-        netw->network().addZip(shared(build->zip()), busId); // TODO: smells.
-        link(build, *netw);
+        link(build, network);
 
         const auto& weatherNd = nd["weather"];
         if (weatherNd)

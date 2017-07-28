@@ -30,7 +30,13 @@ namespace Sgt
         string id = parser.expand<std::string>(nd["id"]);
         Phases phases = parser.expand<Phases>(nd["phases"]);
 
-        auto inverter = sim.newSimComponent<SimpleZipInverter>(id, phases);
+        const std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
+        const std::string busId = parser.expand<std::string>(nd["bus_id"]);
+
+        auto& network = *sim.simComponent<SimNetwork>(networkId);
+        auto zip = network.network().addZip(std::make_shared<Zip>(id, phases), busId);
+        auto inverter = sim.newSimComponent<SimpleZipInverter>(id, zip);
+        link(inverter, network);
 
         if (nd["efficiency"])
         {
@@ -46,13 +52,5 @@ namespace Sgt
         {
             inverter->setRequestedQ(parser.expand<double>(nd["requested_Q"]));
         }
-
-        const std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
-        const std::string busId = parser.expand<std::string>(nd["bus_id"]);
-
-        auto& network = *sim.simComponent<SimNetwork>(networkId);
-
-        network.network().addZip(shared(inverter->zip()), busId);
-        link(inverter, network);
     }
 }

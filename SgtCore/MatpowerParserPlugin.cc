@@ -499,7 +499,7 @@ namespace Sgt
             if (checkNzZip(SConst, YConst))
             {
                 std::string zipId = getZipName(nZip++, getBusName(busInfo.id, busNames, busNDigits), zipNDigits);
-                std::unique_ptr<GenericZip> zip(new GenericZip(zipId, {Phase::BAL}));
+                std::unique_ptr<Zip> zip(new Zip(zipId, {Phase::BAL}));
                 zip->setYConst(arma::Mat<Complex>({GScale * YConst}));
                 zip->setSConst(arma::Mat<Complex>({PScale * SConst}));
                 netw.addZip(std::move(zip), busId);
@@ -525,13 +525,13 @@ namespace Sgt
         }
 
         // Gens:
-        std::vector<GenericGen*> genCompVec;
+        std::vector<Gen*> genCompVec;
         genCompVec.reserve(genVec.size());
         for (std::size_t i = 0; i < genVec.size(); ++i)
         {
             MpGenInfo& genInfo = genVec[i];
             std::string genId = getGenName(i, getBusName(genInfo.busId, busNames, busNDigits), genNDigits);
-            std::unique_ptr<GenericGen> gen(new GenericGen(genId, {Phase::BAL}));
+            std::unique_ptr<Gen> gen(new Gen(genId, {Phase::BAL}));
             genCompVec.push_back(gen.get());
 
             std::string busId = busNames.at(genInfo.busId);
@@ -609,7 +609,7 @@ namespace Sgt
 
             if (!isBad)
             {
-                GenericGen& gen = *genCompVec[i];
+                Gen& gen = *genCompVec[i];
                 gen.setCStartup(genCostInfo.startup);
                 gen.setCShutdown(genCostInfo.shutdown);
                 auto nCost = genCostInfo.costs.size();

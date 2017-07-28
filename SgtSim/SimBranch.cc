@@ -2,11 +2,11 @@
 
 namespace Sgt
 {
-    void link(const ConstSimComponentPtr<SimBranchAbc>& simBranch, SimNetwork& simNetwork)
+    void link(const ConstSimComponentPtr<SimBranch>& simBranch, SimNetwork& simNetwork)
     {
         // Safety check that my branch has already been added to simNetwork's network.
         auto networkBranch = simNetwork.network().branches()[simBranch->branch().id()];
-        sgtAssert(networkBranch != nullptr, "My BranchAbc must be added to the SimNetwork's Network before calling "
+        sgtAssert(networkBranch != nullptr, "My Branch must be added to the SimNetwork's Network before calling "
                 << __PRETTY_FUNCTION__);
         
         simNetwork.dependsOn(simBranch, false);

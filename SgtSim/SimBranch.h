@@ -24,23 +24,10 @@
 
 namespace Sgt
 {
-    /// @brief Abstract base class for SimBranch.
-    /// 
-    /// Depending on how the derived class works, branch() could either be provided by containment or inheritance.
-    class SimBranchAbc : virtual public SimComponent
-    {
-        public:
-
-            /// @brief Return the branch that I wrap (const). 
-            virtual const BranchAbc& branch() const = 0;
-            /// @brief Return the branch that I wrap (non-const). 
-            virtual BranchAbc& branch() = 0;
-    };
-
     /// @brief Simulation branch, corresponding to a BranchAbc in a SimNetwork's network(). 
     /// 
     /// branch() is provided by containment which is enough for a normal network branch types. 
-    class SimBranch : public SimBranchAbc
+    class SimBranch : virtual public SimComponent
     {
         public:
 
@@ -51,12 +38,12 @@ namespace Sgt
                 // Empty.
             }
 
-            virtual const BranchAbc& branch() const override
+            virtual const BranchAbc& branch() const
             {
                 return *branch_;
             }
             
-            virtual BranchAbc& branch() override
+            virtual BranchAbc& branch()
             {
                 return *branch_;
             }
@@ -70,7 +57,7 @@ namespace Sgt
     ///
     /// Important: simBranch's branch must separately be added to simNetwork's network. This is to prevent any possible
     /// confusion about whether it is already added on not.
-    void link(const ConstSimComponentPtr<SimBranchAbc>& simBranch, SimNetwork& simNetwork);
+    void link(const ConstSimComponentPtr<SimBranch>& simBranch, SimNetwork& simNetwork);
 }
 
 #endif // SIM_BRANCH_DOT_H
