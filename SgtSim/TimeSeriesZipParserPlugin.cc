@@ -49,28 +49,28 @@ namespace Sgt
         YAML::Node ndMatElems = nd["matrix_elements"];
         if (ndMatElems)
         {
-            matrixElems = parser.expand<arma::Mat<arma::uword>>(nd["matrix_elements"]);
+            matrixElems = parser.expand<arma::Mat<arma::uword>>(ndMatElems);
         }
 
         arma::Col<arma::uword> dataIdxsY;
         YAML::Node ndDataIdxsY = nd["data_indices_Y"];
         if (ndDataIdxsY)
         {
-            dataIdxsY = parser.expand<arma::Col<arma::uword>>(nd["data_indices_Y"]);
+            dataIdxsY = parser.expand<arma::Col<arma::uword>>(ndDataIdxsY);
         }
 
         arma::Col<arma::uword> dataIdxsI;
         YAML::Node ndDataIdxsI = nd["data_indices_I"];
         if (ndDataIdxsI)
         {
-            dataIdxsI = parser.expand<arma::Col<arma::uword>>(nd["data_indices_I"]);
+            dataIdxsI = parser.expand<arma::Col<arma::uword>>(ndDataIdxsI);
         }
 
         arma::Col<arma::uword> dataIdxsS;
         YAML::Node ndDataIdxsS = nd["data_indices_S"];
         if (ndDataIdxsS)
         {
-            dataIdxsS = parser.expand<arma::Col<arma::uword>>(nd["data_indices_S"]);
+            dataIdxsS = parser.expand<arma::Col<arma::uword>>(ndDataIdxsS);
         }
         
         auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, zip, series, dt, matrixElems, dataIdxsY, dataIdxsI,

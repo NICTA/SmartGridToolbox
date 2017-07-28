@@ -4,10 +4,10 @@ namespace Sgt
 {
     void SimBus::initializeState()
     {
-        bool sv = bus().voltageUpdated().isEnabled();
-        bus().voltageUpdated().setIsEnabled(false);
-        bus().setV(bus().VNom());
-        bus().voltageUpdated().setIsEnabled(sv);
+        bool sv = bus_->voltageUpdated().isEnabled();
+        bus_->voltageUpdated().setIsEnabled(false);
+        bus_->setV(bus_->VNom());
+        bus_->voltageUpdated().setIsEnabled(sv);
     }
 
     void link(const ConstSimComponentPtr<SimBus>& simBus, SimNetwork& simNetwork)

@@ -421,7 +421,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
                 }
                 if (std::abs(S - bus->SGen()(0)) / nw.PBase() >= 1e-3)
                 {
-                    std::cout << "Bus S mismatch at bus " << bus->id() << ": " 
+                    std::cout << "orkBus S mismatch at bus " << bus->id() << ": " 
                         << S << " : " << bus->SGen() << std::endl;
                     ++nBadS;
                 }
@@ -464,7 +464,7 @@ BOOST_AUTO_TEST_CASE (test_const_I)
 
     auto bus0 = branch->bus0();
 
-    auto zip = std::make_shared<GenericZip>("zip_I_const", Phases{Phase::BAL});
+    auto zip = std::make_shared<Zip>("zip_I_const", Phases{Phase::BAL});
     Complex Ic = std::polar(1.0, 15.0 * pi / 180.0) * 0.789;
     zip->setIConst({Ic});
     nw.addZip(zip, bus1Id);
