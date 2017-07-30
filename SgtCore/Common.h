@@ -572,7 +572,7 @@ namespace arma
     // Provide a polar function for armadillo.
     template<template<typename> class T, typename U> T<std::complex<U>> polar(const T<U>& m, const T<U>& a)
     {
-        return T<std::complex<U>>(m * cos(a), m * sin(a));
+        return T<std::complex<U>>(m % cos(a), m % sin(a));
     }
 }
 
