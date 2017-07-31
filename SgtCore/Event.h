@@ -19,7 +19,7 @@
 
 #include <algorithm>
 #include <functional>
-#include <list>
+#include <set>
 #include <string>
 
 namespace Sgt
@@ -29,7 +29,7 @@ namespace Sgt
 
     /// @brief An action that gets performed when an event is triggered.
     ///
-    /// Actions are stored as a list in the event in question. Anyone may register an action. Deregistration is
+    /// Actions are stored as a set in the event in question. Anyone may register an action. Deregistration is
     /// not currently supported.
     /// @ingroup Foundation
     class Action
@@ -58,6 +58,8 @@ namespace Sgt
 
             void addTrigger(const Event& event);
             
+            void removeTrigger(const Event& event);
+            
             const std::string& description() const
             {
                 return description_;
@@ -66,14 +68,14 @@ namespace Sgt
             void perform() const {function_();}
 
         private:
-            std::list<const Event*> events_;
+            std::set<const Event*> triggers_;
             std::function<void ()> function_;
             std::string description_;
     };
 
     /// @brief An event, when triggered, performs all of its registered actions.
     ///
-    /// Actions are stored as a list in the event in question. Anyone may register an action. Deregistration is
+    /// Actions are stored as a set in the event in question. Anyone may register an action. Deregistration is
     /// not currently supported.
     /// @ingroup Foundation
     class Event
@@ -86,10 +88,7 @@ namespace Sgt
                 // Empty.
             }
 
-            ~Event()
-            {
-                for (auto action : actions_) action->events_.remove(this);
-            }
+            ~Event();
             
             void trigger() const;
 
@@ -119,7 +118,7 @@ namespace Sgt
             }
 
         private:
-            mutable std::list<Action*> actions_;
+            mutable std::set<Action*> actions_;
             std::string description_;
             bool isEnabled_{true};
             Action triggerThis_{[this](){trigger();}, "Trigger " + description_ + "."};

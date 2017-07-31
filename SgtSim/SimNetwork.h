@@ -26,8 +26,8 @@ namespace Sgt
     {
         public:
 
-        /// @name Static member functions:
-        /// @{
+            /// @name Static member functions:
+            /// @{
 
             static const std::string& sComponentType()
             {
@@ -35,18 +35,17 @@ namespace Sgt
                 return result;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Lifecycle.
-        /// @{
+            /// @name Lifecycle.
+            /// @{
 
-            SimNetwork(const std::string& id, std::shared_ptr<Network> network) : 
-                Component(id), network_(network) {}
+            SimNetwork(const std::string& id, std::shared_ptr<Network> network);
 
-        /// @}
+            /// @}
 
-        /// @name Component virtual overridden member functions.
-        /// @{
+            /// @name Component virtual overridden member functions.
+            /// @{
 
             virtual const std::string& componentType() const override
             {
@@ -55,10 +54,10 @@ namespace Sgt
 
             // virtual json toJson() const override; // TODO
 
-        /// @}
+            /// @}
 
-        /// @name Network access.
-        /// @{
+            /// @name Network access.
+            /// @{
 
             const Network& network() const
             {
@@ -70,10 +69,39 @@ namespace Sgt
                 return *network_;
             }
 
-        /// @}
+            /// @}
+            
+            /// @name Network modification.
+            /// @{
+           
+            /// @brief Link a new branch to the SimNetwork.
+            ///
+            /// Note that all branches are linked automatically at construction time, so this only need be called
+            /// if a new branch is subsequently added to the network.
+            void linkBranch(const BranchAbc& branch);
 
-        /// @name Overridden member functions from SimComponent.
-        /// @{
+            /// @brief Link a new bus to the SimNetwork.
+            ///
+            /// Note that all buses are linked automatically at construction time, so this only need be called
+            /// if a new bus is subsequently added to the network.
+            void linkBus(const Bus& bus);
+            
+            /// @brief Link a new gen to the SimNetwork.
+            ///
+            /// Note that all gens are linked automatically at construction time, so this only need be called
+            /// if a new gen is subsequently added to the network.
+            void linkGen(const Gen& gen);
+           
+            /// @brief Link a new zip to the SimNetwork.
+            ///
+            /// Note that all zips are linked automatically at construction time, so this only need be called
+            /// if a new zip is subsequently added to the network.
+            void linkZip(const Zip& zip);
+
+            /// @}
+            
+            /// @name Overridden member functions from SimComponent.
+            /// @{
 
         public:
 
@@ -84,7 +112,7 @@ namespace Sgt
             // virtual void initializeState() override;
             virtual void updateState(Time t) override;
 
-        /// @}
+            /// @}
 
         private:
 

@@ -20,21 +20,34 @@ namespace Sgt
 {
     Action::~Action()
     {
-        for (auto event : events_) event->actions_.remove(this);
+        for (auto event : triggers_)
+        {
+            removeTrigger(*event);
+        }
     }
 
     void Action::reset(const std::function<void ()>& function, const std::string& description)
     {
-        for (auto event : events_) event->actions_.remove(this);
-        events_.clear();
+        for (auto event : triggers_) removeTrigger(*event);
         function_ = function;
         if (description != "") description_ = description;
     }
             
     void Action::addTrigger(const Event& event)
     {
-        events_.push_back(&event);
-        event.actions_.push_back(this); 
+        triggers_.insert(&event);
+        event.actions_.insert(this); 
+    }
+    
+    void Action::removeTrigger(const Event& event)
+    {
+        triggers_.erase(&event);
+        event.actions_.erase(this); 
+    }
+            
+    Event::~Event()
+    {
+        for (auto action : actions_) action->removeTrigger(*this);
     }
 
     void Event::trigger() const

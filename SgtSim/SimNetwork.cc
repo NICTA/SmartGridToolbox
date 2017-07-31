@@ -17,6 +17,52 @@
 
 namespace Sgt
 {
+    SimNetwork::SimNetwork(const std::string& id, std::shared_ptr<Network> network) : 
+        Component(id), network_(network)
+    {
+        for (auto branch: network->branches())
+        {
+            linkBranch(*branch);
+        }
+        for (auto bus: network->buses())
+        {
+            linkBus(*bus);
+        }
+        for (auto gen: network->gens())
+        {
+            linkGen(*gen);
+        }
+        for (auto zip: network->zips())
+        {
+            linkZip(*zip);
+        }
+    }
+
+    void SimNetwork::linkBranch(const BranchAbc& branch)
+    {
+        needsUpdate().addTrigger(branch.admittanceChanged());
+        needsUpdate().addTrigger(branch.isInServiceChanged());
+    }
+
+    void SimNetwork::linkBus(const Bus& bus)
+    {
+        needsUpdate().addTrigger(bus.setpointChanged());
+        needsUpdate().addTrigger(bus.isInServiceChanged());
+    }
+
+    void SimNetwork::linkGen(const Gen& gen)
+    {
+        needsUpdate().addTrigger(gen.setpointChanged());
+        needsUpdate().addTrigger(gen.isInServiceChanged());
+    }
+
+    void SimNetwork::linkZip(const Zip& zip)
+    {
+        needsUpdate().addTrigger(zip.injectionChanged());
+        needsUpdate().addTrigger(zip.setpointChanged());
+        needsUpdate().addTrigger(zip.isInServiceChanged());
+    }
+
     void SimNetwork::updateState(Time t)
     {
         sgtLogDebug() << "SimNetwork : update state." << std::endl;
