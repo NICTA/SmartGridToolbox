@@ -118,6 +118,50 @@ namespace Sgt
 
             std::shared_ptr<Network> network_;
     };
+
+    /// @brief Utility base class for branches in SimNetwork.
+    class SimBranch
+    {
+        public:
+            SimBranch(const ComponentPtr<BranchAbc>& branch, SimNetwork& simNetwork);
+            ConstComponentPtr<BranchAbc> branch() const {return branch_;}
+            ComponentPtr<BranchAbc> branch() {return branch_;}
+        private:
+            ComponentPtr<BranchAbc> branch_;
+    };
+
+    /// @brief Utility base class for buses in SimNetwork.
+    class SimBus
+    {
+        public:
+            SimBus(const ComponentPtr<Bus>& bus, SimNetwork& simNetwork);
+            ConstComponentPtr<Bus> bus() const {return bus_;}
+            ComponentPtr<Bus> bus() {return bus_;}
+        private:
+            ComponentPtr<Bus> bus_;
+    };
+
+    /// @brief Utility base class for gens in SimNetwork.
+    class SimGen
+    {
+        public:
+            SimGen(const ComponentPtr<Gen>& gen, SimNetwork& simNetwork);
+            ConstComponentPtr<Gen> gen() const {return gen_;}
+            ComponentPtr<Gen> gen() {return gen_;}
+        private:
+            ComponentPtr<Gen> gen_;
+    };
+
+    /// @brief Utility base class for zips in SimNetwork.
+    class SimZip
+    {
+        public:
+            SimZip(const ComponentPtr<Zip>& zip, SimNetwork& simNetwork);
+            ConstComponentPtr<Zip> zip() const {return zip_;}
+            ComponentPtr<Zip> zip() {return zip_;}
+        private:
+            ComponentPtr<Zip> zip_;
+    };
 }
 
 #endif // SIM_NETWORK_DOT_H

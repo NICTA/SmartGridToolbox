@@ -68,4 +68,24 @@ namespace Sgt
         sgtLogDebug() << "SimNetwork : update state." << std::endl;
         network_->solvePowerFlow(); // TODO: inefficient to rebuild even if not needed.
     }
+
+    SimBranch::SimBranch(const ComponentPtr<BranchAbc>& branch, SimNetwork& simNetwork) : branch_(branch)
+    {
+        simNetwork.linkBranch(*branch);
+    }
+            
+    SimBus::SimBus(const ComponentPtr<Bus>& bus, SimNetwork& simNetwork) : bus_(bus)
+    {
+        simNetwork.linkBus(*bus);
+    }
+
+    SimGen::SimGen(const ComponentPtr<Gen>& gen, SimNetwork& simNetwork) : gen_(gen)
+    {
+        simNetwork.linkGen(*gen);
+    }
+
+    SimZip::SimZip(const ComponentPtr<Zip>& zip, SimNetwork& simNetwork) : zip_(zip)
+    {
+        simNetwork.linkZip(*zip);
+    }
 }
