@@ -40,7 +40,6 @@ namespace Sgt
         // used from elsewhere.
         auto& simNetwork = *sim.simComponent<SimNetwork>(networkId);
         auto zip = simNetwork.network().addZip(std::make_shared<Zip>(id, phases), busId);
-        simNetwork.linkZip(*zip);
 
         string tsId = parser.expand<std::string>(nd["time_series_id"]);
         ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>> series = 
@@ -76,8 +75,8 @@ namespace Sgt
             dataIdxsS = parser.expand<arma::Col<arma::uword>>(ndDataIdxsS);
         }
         
-        auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, zip, series, dt, matrixElems, dataIdxsY, dataIdxsI,
-                dataIdxsS);
+        auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, zip, simNetwork, series, dt,
+                matrixElems, dataIdxsY, dataIdxsI, dataIdxsS);
 
         auto ndScaleFactorY = nd["scale_factor_Y"];
         if (ndScaleFactorY)

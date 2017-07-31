@@ -16,6 +16,7 @@
 #define INVERTER_DOT_H
 
 #include <SgtSim/DcPowerSource.h>
+#include <SgtSim/SimNetwork.h>
 
 #include <memory>
 #include <numeric>
@@ -107,7 +108,7 @@ namespace Sgt
     class Zip;
 
     /// @brief DC power to n-phase AC converter.
-    class SimpleZipInverter : public SimpleInverterAbc
+    class SimpleZipInverter : public SimpleInverterAbc, public SimZip
     {
         public:
 
@@ -125,10 +126,11 @@ namespace Sgt
             /// @name Lifecycle.
             /// @{
             
-            SimpleZipInverter(const std::string& id, const ComponentPtr<Zip>& zip, double efficiency = 1.0) :
+            SimpleZipInverter(const std::string& id, const ComponentPtr<Zip>& zip, SimNetwork& simNetwork,
+                    double efficiency = 1.0) :
                 Component(id),
                 SimpleInverterAbc(efficiency),
-                zip_(zip)
+                SimZip(zip, simNetwork)
             {
                 // Empty.
             }
@@ -189,7 +191,6 @@ namespace Sgt
 
         private:
 
-            ComponentPtr<Zip> zip_;
             double maxSMag_{1e9};
             double requestedQ_{0.0};
     };

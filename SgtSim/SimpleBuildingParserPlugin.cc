@@ -36,9 +36,8 @@ namespace Sgt
         // used from elsewhere.
         auto& simNetwork = *sim.simComponent<SimNetwork>(networkId);
         auto zip = simNetwork.network().addZip(std::make_shared<Zip>(id, Phase::BAL), busId);
-        simNetwork.linkZip(*zip);
 
-        auto build = sim.newSimComponent<SimpleBuilding>(id, zip);
+        auto build = sim.newSimComponent<SimpleBuilding>(id, zip, simNetwork);
 
         auto nd_dt = nd["dt"];
         if (nd_dt) build->set_dt(parser.expand<Time>(nd_dt));

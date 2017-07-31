@@ -40,12 +40,12 @@ namespace Sgt
     
     void SimpleZipInverter::updateState(Time t)
     {
-        zip_->setSConst(SConst());
+        zip()->setSConst(SConst());
     }
 
     Mat<Complex> SimpleZipInverter::SConst() const
     {
-        uword nPhase = zip_->phases().size();
+        uword nPhase = zip()->phases().size();
         double PPerPh = availableP() / nPhase;
         double P2PerPh = PPerPh * PPerPh;
         double reqQPerPh = requestedQ_ / nPhase;

@@ -37,9 +37,8 @@ namespace Sgt
         // used from elsewhere.
         auto& simNetwork = *sim.simComponent<SimNetwork>(networkId);
         auto zip = simNetwork.network().addZip(std::make_shared<Zip>(id, phases), busId);
-        simNetwork.linkZip(*zip);
 
-        auto inverter = sim.newSimComponent<SimpleZipInverter>(id, zip);
+        auto inverter = sim.newSimComponent<SimpleZipInverter>(id, zip, simNetwork);
 
         if (nd["efficiency"])
         {

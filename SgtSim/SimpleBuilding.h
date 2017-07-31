@@ -17,6 +17,7 @@
 
 #include <SgtSim/SimComponent.h>
 #include <SgtSim/TimeSeries.h>
+#include <SgtSim/SimNetwork.h>
 #include <SgtSim/Weather.h>
 
 #include <SgtCore/Common.h>
@@ -34,7 +35,7 @@ namespace Sgt
 
     class Zip;
 
-    class SimpleBuilding : public SimComponent
+    class SimpleBuilding : public SimComponent, public SimZip
     {
         /// @name Static member functions:
         /// @{
@@ -53,8 +54,9 @@ namespace Sgt
             /// @{
 
         public:
-            SimpleBuilding(const std::string& id, const ComponentPtr<Zip>& zip) :
+            SimpleBuilding(const std::string& id, const ComponentPtr<Zip>& zip, SimNetwork& simNetwork) :
                 Component(id),
+                SimZip(zip, simNetwork),
                 dt_(posix_time::minutes(5)),
                 kb_(5 * kwatt / kelvin),
                 Cb_(1.0e5 * kjoule / kelvin),
@@ -203,9 +205,6 @@ namespace Sgt
             /// @}
 
         private:
-            // Zip.
-            ComponentPtr<Zip> zip_;                                         // My Zip.
-            
             // Parameters and controls.
             Time dt_;                                                       // Timestep.
             double kb_;                                                     // Thermal conductivity, W/K.

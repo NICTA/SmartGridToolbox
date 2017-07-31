@@ -74,7 +74,7 @@ namespace Sgt
         }
         setOperatingParams(t);
 
-        zip_->setSConst(SConst());
+        zip()->setSConst(SConst());
     }
 
     void SimpleBuilding::setOperatingParams(Time t)

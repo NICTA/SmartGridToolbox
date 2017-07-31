@@ -24,7 +24,7 @@ namespace
 
 namespace Sgt
 {
-    TimeSeriesZip::TimeSeriesZip(const std::string& id, const ComponentPtr<Zip>& zip,
+    TimeSeriesZip::TimeSeriesZip(const std::string& id, const ComponentPtr<Zip>& zip, SimNetwork& simNetwork,
                     const ConstTimeSeriesPtr<TimeSeries<Time, Col<Complex>>>& series, const Time& dt,
                     const Mat<uword>& matrixElems,
                     const Col<uword>& dataIdxsY,
@@ -32,7 +32,7 @@ namespace Sgt
                     const Col<uword>& dataIdxsS) :
         Component(id),
         Heartbeat(id, dt),
-        zip_(zip),
+        SimZip(zip, simNetwork),
         series_(series),
         matrixElems_(matrixElems),
         dataIdxsY_(dataIdxsY),
@@ -55,14 +55,14 @@ namespace Sgt
     void TimeSeriesZip::updateState(Time t)
     {
         Heartbeat::updateState(t);
-        zip_->setYConst(YConst());
-        zip_->setIConst(IConst());
-        zip_->setSConst(SConst());
+        zip()->setYConst(YConst());
+        zip()->setIConst(IConst());
+        zip()->setSConst(SConst());
     }
 
     Mat<Complex> TimeSeriesZip::YConst() const
     {
-        uword nPhase = zip_->phases().size();
+        uword nPhase = zip()->phases().size();
         return dataIdxsY_.size() == 0 
             ? Mat<Complex>(nPhase, nPhase, fill::zeros)
             : mapToMat(scaleFactorY_ * series_->value(lastUpdated())(dataIdxsY_));
@@ -70,7 +70,7 @@ namespace Sgt
 
     Mat<Complex> TimeSeriesZip::IConst() const
     {
-        uword nPhase = zip_->phases().size();
+        uword nPhase = zip()->phases().size();
         return dataIdxsI_.size() == 0 
             ? Mat<Complex>(nPhase, nPhase, fill::zeros)
             : mapToMat(scaleFactorI_ * series_->value(lastUpdated())(dataIdxsI_));
@@ -78,7 +78,7 @@ namespace Sgt
 
     Mat<Complex> TimeSeriesZip::SConst() const
     {
-        uword nPhase = zip_->phases().size();
+        uword nPhase = zip()->phases().size();
         return dataIdxsS_.size() == 0 
             ? Mat<Complex>(nPhase, nPhase, fill::zeros)
             : mapToMat(scaleFactorS_ * series_->value(lastUpdated())(dataIdxsS_));
@@ -86,7 +86,7 @@ namespace Sgt
 
     Mat<Complex> TimeSeriesZip::mapToMat(const Col<Complex>& vec) const
     {
-        uword nPhase = zip_->phases().size();
+        uword nPhase = zip()->phases().size();
         Mat<Complex> result(nPhase, nPhase, fill::zeros);
         for (uword i = 0; i < vec.size(); ++i) result(matrixElems_(i, 0), matrixElems_(i, 1)) = vec(i);
         return result;

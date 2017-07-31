@@ -15,14 +15,15 @@
 #ifndef TIME_SERIES_ZIP_DOT_H
 #define TIME_SERIES_ZIP_DOT_H
 
-#include "Heartbeat.h"
-#include "TimeSeries.h"
+#include <SgtSim/Heartbeat.h>
+#include <SgtSim/TimeSeries.h>
+#include <SgtSim/SimNetwork.h> 
 
 namespace Sgt
 {
     class Zip;
 
-    class TimeSeriesZip : public Heartbeat
+    class TimeSeriesZip : public Heartbeat, public SimZip
     {
         public:
             static const std::string& sComponentType()
@@ -39,7 +40,7 @@ namespace Sgt
             /// @param dataIdxsY Indices into time series data of const Y component. Empty or of size matrixElems.
             /// @param dataIdxsI Indices into time series data of const I component. Empty or of size matrixElems.
             /// @param dataIdxsS Indices into time series data of const S component. Empty or of size matrixElems.
-            TimeSeriesZip(const std::string& id, const ComponentPtr<Zip>& zip,
+            TimeSeriesZip(const std::string& id, const ComponentPtr<Zip>& zip, SimNetwork& simNetwork,
                     const ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>>& series, const Time& dt,
                     const arma::Mat<arma::uword>& matrixElems,
                     const arma::Col<arma::uword>& dataIdxsY,
@@ -92,7 +93,6 @@ namespace Sgt
             arma::Mat<Complex> mapToMat(const arma::Col<Complex>& vec) const;
 
         private:
-            ComponentPtr<Zip> zip_;
             ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>> series_;
             arma::Mat<arma::uword> matrixElems_;
             arma::Col<arma::uword> dataIdxsY_;
