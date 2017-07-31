@@ -28,14 +28,18 @@ namespace Sgt
         assertFieldPresent(nd, "bus_id");
 
         std::string id = parser.expand<std::string>(nd["id"]);
+        std::string busId = parser.expand<std::string>(nd["bus_id"]);
+        auto ndZipId = nd["zip_id"];
+        std::string zipId = ndZipId ? parser.expand<std::string>(ndZipId) : id;
+        std::string simNetworkId = parser.expand<std::string>(nd["sim_network_id"]);
 
-        std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
-        const std::string busId = parser.expand<std::string>(nd["bus_id"]);
-
-        // TODO: Would be better to force zip to be created explicitly, or
-        // used from elsewhere.
-        auto& simNetwork = *sim.simComponent<SimNetwork>(networkId);
-        auto zip = simNetwork.network().addZip(std::make_shared<Zip>(id, Phase::BAL), busId);
+        auto& simNetwork = *sim.simComponent<SimNetwork>(simNetworkId);
+        Network& network = simNetwork.network();
+        ComponentPtr<Zip> zip = network.zips()[zipId]; 
+        if (zip == nullptr)
+        {
+            zip = network.addZip(std::make_shared<Zip>(zipId, Phase::BAL), busId);
+        }
 
         auto build = sim.newSimComponent<SimpleBuilding>(id, zip, simNetwork);
 

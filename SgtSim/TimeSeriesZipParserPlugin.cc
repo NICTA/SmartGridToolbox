@@ -23,25 +23,29 @@ namespace Sgt
     void TimeSeriesZipParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "phases");
-        assertFieldPresent(nd, "sim_network_id");
         assertFieldPresent(nd, "bus_id");
+        assertFieldPresent(nd, "sim_network_id");
         assertFieldPresent(nd, "time_series_id");
         assertFieldPresent(nd, "dt");
         assertFieldPresent(nd, "matrix_elements");
 
-        string id = parser.expand<std::string>(nd["id"]);
-        Phases phases = parser.expand<Phases>(nd["phases"]);
+        std::string id = parser.expand<std::string>(nd["id"]);
+        std::string busId = parser.expand<std::string>(nd["bus_id"]);
+        auto ndZipId = nd["zip_id"];
+        std::string zipId = ndZipId ? parser.expand<std::string>(ndZipId) : id;
+        std::string simNetworkId = parser.expand<std::string>(nd["sim_network_id"]);
 
-        string networkId = parser.expand<std::string>(nd["sim_network_id"]);
-        string busId = parser.expand<std::string>(nd["bus_id"]);
+        auto& simNetwork = *sim.simComponent<SimNetwork>(simNetworkId);
+        Network& network = simNetwork.network();
+        ComponentPtr<Zip> zip = network.zips()[zipId]; 
+        if (zip == nullptr)
+        {
+            assertFieldPresent(nd, "phases");
+            Phases phases = parser.expand<Phases>(nd["phases"]);
+            zip = network.addZip(std::make_shared<Zip>(zipId, phases), busId);
+        }
         
-        // TODO: Would be better to force zip to be created explicitly, or
-        // used from elsewhere.
-        auto& simNetwork = *sim.simComponent<SimNetwork>(networkId);
-        auto zip = simNetwork.network().addZip(std::make_shared<Zip>(id, phases), busId);
-
-        string tsId = parser.expand<std::string>(nd["time_series_id"]);
+        std::string tsId = parser.expand<std::string>(nd["time_series_id"]);
         ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>> series = 
             sim.timeSeries()[tsId].as<TimeSeries<Time, arma::Col<Complex>>, true>();
 

@@ -23,20 +23,25 @@ namespace Sgt
     void InverterParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "phases");
         assertFieldPresent(nd, "sim_network_id");
         assertFieldPresent(nd, "bus_id");
+        assertFieldPresent(nd, "phases");
 
-        string id = parser.expand<std::string>(nd["id"]);
-        Phases phases = parser.expand<Phases>(nd["phases"]);
+        std::string id = parser.expand<std::string>(nd["id"]);
+        std::string busId = parser.expand<std::string>(nd["bus_id"]);
+        auto ndZipId = nd["zip_id"];
+        std::string zipId = ndZipId ? parser.expand<std::string>(ndZipId) : id;
+        std::string simNetworkId = parser.expand<std::string>(nd["sim_network_id"]);
 
-        const std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
-        const std::string busId = parser.expand<std::string>(nd["bus_id"]);
-
-        // TODO: Would be better to force zip to be created explicitly, or
-        // used from elsewhere.
-        auto& simNetwork = *sim.simComponent<SimNetwork>(networkId);
-        auto zip = simNetwork.network().addZip(std::make_shared<Zip>(id, phases), busId);
+        auto& simNetwork = *sim.simComponent<SimNetwork>(simNetworkId);
+        Network& network = simNetwork.network();
+        ComponentPtr<Zip> zip = network.zips()[zipId]; 
+        if (zip == nullptr)
+        {
+            assertFieldPresent(nd, "phases");
+            Phases phases = parser.expand<Phases>(nd["phases"]);
+            zip = network.addZip(std::make_shared<Zip>(zipId, phases), busId);
+        }
 
         auto inverter = sim.newSimComponent<SimpleZipInverter>(id, zip, simNetwork);
 
