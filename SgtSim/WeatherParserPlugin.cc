@@ -34,7 +34,7 @@ namespace Sgt
         }
         else
         {
-            weather->setDt(posix_time::minutes(5.0));
+            weather->setDt(minutes(5.0));
         }
 
         const auto& temperatureNd = nd["temperature"];

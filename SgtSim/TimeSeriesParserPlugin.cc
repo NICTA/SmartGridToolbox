@@ -248,7 +248,7 @@ namespace Sgt
 
                 auto interpType = getInterpType(parser.expand<std::string>(nd["interp_type"]));
 
-                Time t0 = posix_time::seconds(0);
+                Time t0 = seconds(0);
                 auto ndRelto = nd["relative_to_time"];
                 if (ndRelto)
                 {

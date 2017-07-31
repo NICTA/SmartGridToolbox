@@ -57,7 +57,7 @@ namespace Sgt
             SimpleBuilding(const std::string& id, const ComponentPtr<Zip>& zip, SimNetwork& simNetwork) :
                 Component(id),
                 SimZip(zip, simNetwork),
-                dt_(posix_time::minutes(5)),
+                dt_(minutes(5)),
                 kb_(5 * kwatt / kelvin),
                 Cb_(1.0e5 * kjoule / kelvin),
                 TbInit_(20.0 * kelvin),

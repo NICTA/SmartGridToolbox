@@ -351,6 +351,12 @@ namespace Sgt
 
     using Time = posix_time::time_duration;
 
+    using microseconds = posix_time::microseconds;
+    using milliseconds = posix_time::milliseconds;
+    using seconds = posix_time::seconds;
+    using minutes = posix_time::minutes;
+    using hours = posix_time::hours;
+    
     extern const posix_time::ptime epoch;
 
     /// @ingroup Utilities

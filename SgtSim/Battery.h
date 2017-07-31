@@ -40,7 +40,7 @@ namespace Sgt
             
             Battery(const std::string& id) :
                 Component(id),
-                dt_(posix_time::minutes(5)),
+                dt_(minutes(5)),
                 initCharge_(0.0),
                 maxChargePower_(0.0),
                 maxDischargePower_(0.0),

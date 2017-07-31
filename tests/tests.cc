@@ -201,18 +201,18 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
 {
     local_time::time_zone_ptr tz(new local_time::posix_time_zone("UTC0"));
     using namespace boost::gregorian;
-    Time base = timeFromLocalTime(posix_time::ptime(gregorian::date(2013, Apr, 26), posix_time::hours(0)), tz);
+    Time base = timeFromLocalTime(posix_time::ptime(gregorian::date(2013, Apr, 26), hours(0)), tz);
     SplineTimeSeries<Time> sts;
-    sts.addPoint(base + posix_time::hours(0), sin(0 * pi / 12));
-    sts.addPoint(base + posix_time::hours(4), sin(4 * pi / 12));
-    sts.addPoint(base + posix_time::hours(8), sin(8 * pi / 12));
-    sts.addPoint(base + posix_time::hours(12), sin(12 * pi / 12));
-    sts.addPoint(base + posix_time::hours(16), sin(16 * pi / 12));
-    sts.addPoint(base + posix_time::hours(20), sin(20 * pi / 12));
-    sts.addPoint(base + posix_time::hours(24), sin(24 * pi / 12));
+    sts.addPoint(base + hours(0), sin(0 * pi / 12));
+    sts.addPoint(base + hours(4), sin(4 * pi / 12));
+    sts.addPoint(base + hours(8), sin(8 * pi / 12));
+    sts.addPoint(base + hours(12), sin(12 * pi / 12));
+    sts.addPoint(base + hours(16), sin(16 * pi / 12));
+    sts.addPoint(base + hours(20), sin(20 * pi / 12));
+    sts.addPoint(base + hours(24), sin(24 * pi / 12));
     for (int i = -1; i <= 25; ++i)
     {
-        double val = sts.value(base + posix_time::hours(i));
+        double val = sts.value(base + hours(i));
         double err = std::abs(val - sin(i * pi / 12));
         if (i > -1 && i < 25)
         {
@@ -226,41 +226,41 @@ BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
 {
     local_time::time_zone_ptr tz(new local_time::posix_time_zone("UTC0"));
     using namespace boost::gregorian;
-    Time base = timeFromLocalTime(posix_time::ptime(gregorian::date(2013, Apr, 26), posix_time::hours(0)), tz);
+    Time base = timeFromLocalTime(posix_time::ptime(gregorian::date(2013, Apr, 26), hours(0)), tz);
     LerpTimeSeries<Time, Complex> lts;
-    lts.addPoint(base + posix_time::hours(0), Complex(0, 0));
-    lts.addPoint(base + posix_time::hours(1), Complex(3, 1));
-    lts.addPoint(base + posix_time::hours(3), Complex(10, 11));
+    lts.addPoint(base + hours(0), Complex(0, 0));
+    lts.addPoint(base + hours(1), Complex(3, 1));
+    lts.addPoint(base + hours(3), Complex(10, 11));
 
-    BOOST_CHECK(lts.value(base + posix_time::hours(-1)) == Complex(0, 0));
-    BOOST_CHECK(lts.value(base + posix_time::hours(0)) == Complex(0, 0));
-    BOOST_CHECK(lts.value(base + posix_time::minutes(30)) == Complex(1.5, 0.5));
-    BOOST_CHECK(lts.value(base + posix_time::hours(1)) == Complex(3, 1));
-    BOOST_CHECK(lts.value(base + posix_time::hours(2)) == Complex(6.5, 6));
-    BOOST_CHECK(lts.value(base + posix_time::hours(3)) == Complex(10, 11));
-    BOOST_CHECK(lts.value(base + posix_time::hours(4) + posix_time::seconds(1)) == Complex(10, 11));
+    BOOST_CHECK(lts.value(base + hours(-1)) == Complex(0, 0));
+    BOOST_CHECK(lts.value(base + hours(0)) == Complex(0, 0));
+    BOOST_CHECK(lts.value(base + minutes(30)) == Complex(1.5, 0.5));
+    BOOST_CHECK(lts.value(base + hours(1)) == Complex(3, 1));
+    BOOST_CHECK(lts.value(base + hours(2)) == Complex(6.5, 6));
+    BOOST_CHECK(lts.value(base + hours(3)) == Complex(10, 11));
+    BOOST_CHECK(lts.value(base + hours(4) + seconds(1)) == Complex(10, 11));
 }
 
 BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
 {
-    time_duration base(posix_time::minutes(5));
+    time_duration base(minutes(5));
     StepwiseTimeSeries<time_duration, double> sts;
-    sts.addPoint(base + posix_time::hours(0), 1.5);
-    sts.addPoint(base + posix_time::hours(1), 2.5);
-    sts.addPoint(base + posix_time::hours(3), 5.5);
+    sts.addPoint(base + hours(0), 1.5);
+    sts.addPoint(base + hours(1), 2.5);
+    sts.addPoint(base + hours(3), 5.5);
 
-    BOOST_CHECK(sts.value(base + posix_time::seconds(-1)) == 1.5);
-    BOOST_CHECK(sts.value(base + posix_time::seconds(1)) == 1.5);
-    BOOST_CHECK(sts.value(base + posix_time::hours(1) - posix_time::seconds(1)) == 1.5);
-    BOOST_CHECK(sts.value(base + posix_time::hours(1) + posix_time::seconds(1)) == 2.5);
-    BOOST_CHECK(sts.value(base + posix_time::hours(3) + posix_time::seconds(1)) == 5.5);
+    BOOST_CHECK(sts.value(base + seconds(-1)) == 1.5);
+    BOOST_CHECK(sts.value(base + seconds(1)) == 1.5);
+    BOOST_CHECK(sts.value(base + hours(1) - seconds(1)) == 1.5);
+    BOOST_CHECK(sts.value(base + hours(1) + seconds(1)) == 2.5);
+    BOOST_CHECK(sts.value(base + hours(3) + seconds(1)) == 5.5);
 }
 
 BOOST_AUTO_TEST_CASE (test_function_timeseries)
 {
     FunctionTimeSeries <time_duration, double> fts([] (time_duration td) {return 2 * dSeconds(td);});
-    BOOST_CHECK(fts.value(posix_time::seconds(-1)) == -2.0);
-    BOOST_CHECK(fts.value(posix_time::seconds(3)) == 6.0);
+    BOOST_CHECK(fts.value(seconds(-1)) == -2.0);
+    BOOST_CHECK(fts.value(seconds(3)) == 6.0);
 }
 
 BOOST_AUTO_TEST_CASE (test_matpower)
