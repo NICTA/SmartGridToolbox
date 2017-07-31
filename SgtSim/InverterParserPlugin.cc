@@ -33,10 +33,13 @@ namespace Sgt
         const std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
         const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
-        auto& network = *sim.simComponent<SimNetwork>(networkId);
-        auto zip = network.network().addZip(std::make_shared<Zip>(id, phases), busId);
+        // TODO: Would be better to force zip to be created explicitly, or
+        // used from elsewhere.
+        auto& simNetwork = *sim.simComponent<SimNetwork>(networkId);
+        auto zip = simNetwork.network().addZip(std::make_shared<Zip>(id, phases), busId);
+        simNetwork.linkZip(*zip);
+
         auto inverter = sim.newSimComponent<SimpleZipInverter>(id, zip);
-        link(inverter, network);
 
         if (nd["efficiency"])
         {

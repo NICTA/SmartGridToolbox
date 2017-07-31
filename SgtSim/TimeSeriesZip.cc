@@ -14,6 +14,8 @@
 
 #include "TimeSeriesZip.h"
 
+#include <SgtCore/Zip.h>
+
 using namespace arma;
 
 namespace
@@ -29,8 +31,8 @@ namespace Sgt
                     const Col<uword>& dataIdxsI,
                     const Col<uword>& dataIdxsS) :
         Component(id),
-        SimZip(id, zip),
         Heartbeat(id, dt),
+        zip_(zip),
         series_(series),
         matrixElems_(matrixElems),
         dataIdxsY_(dataIdxsY),
@@ -53,14 +55,14 @@ namespace Sgt
     void TimeSeriesZip::updateState(Time t)
     {
         Heartbeat::updateState(t);
-        zip().setYConst(YConst());
-        zip().setIConst(IConst());
-        zip().setSConst(SConst());
+        zip_->setYConst(YConst());
+        zip_->setIConst(IConst());
+        zip_->setSConst(SConst());
     }
 
     Mat<Complex> TimeSeriesZip::YConst() const
     {
-        uword nPhase = zip().phases().size();
+        uword nPhase = zip_->phases().size();
         return dataIdxsY_.size() == 0 
             ? Mat<Complex>(nPhase, nPhase, fill::zeros)
             : mapToMat(scaleFactorY_ * series_->value(lastUpdated())(dataIdxsY_));
@@ -68,7 +70,7 @@ namespace Sgt
 
     Mat<Complex> TimeSeriesZip::IConst() const
     {
-        uword nPhase = zip().phases().size();
+        uword nPhase = zip_->phases().size();
         return dataIdxsI_.size() == 0 
             ? Mat<Complex>(nPhase, nPhase, fill::zeros)
             : mapToMat(scaleFactorI_ * series_->value(lastUpdated())(dataIdxsI_));
@@ -76,7 +78,7 @@ namespace Sgt
 
     Mat<Complex> TimeSeriesZip::SConst() const
     {
-        uword nPhase = zip().phases().size();
+        uword nPhase = zip_->phases().size();
         return dataIdxsS_.size() == 0 
             ? Mat<Complex>(nPhase, nPhase, fill::zeros)
             : mapToMat(scaleFactorS_ * series_->value(lastUpdated())(dataIdxsS_));
@@ -84,7 +86,7 @@ namespace Sgt
 
     Mat<Complex> TimeSeriesZip::mapToMat(const Col<Complex>& vec) const
     {
-        uword nPhase = zip().phases().size();
+        uword nPhase = zip_->phases().size();
         Mat<Complex> result(nPhase, nPhase, fill::zeros);
         for (uword i = 0; i < vec.size(); ++i) result(matrixElems_(i, 0), matrixElems_(i, 1)) = vec(i);
         return result;

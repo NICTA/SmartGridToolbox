@@ -14,6 +14,8 @@
 
 #include "SimpleBuilding.h"
 
+#include <SgtCore/Zip.h>
+
 namespace
 {
     double propTbNorm(double dt, double Tb0, double Ts, double kb,
@@ -72,7 +74,7 @@ namespace Sgt
         }
         setOperatingParams(t);
 
-        zip().setSConst(SConst());
+        zip_->setSConst(SConst());
     }
 
     void SimpleBuilding::setOperatingParams(Time t)

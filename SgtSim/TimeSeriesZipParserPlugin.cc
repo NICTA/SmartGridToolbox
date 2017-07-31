@@ -36,8 +36,11 @@ namespace Sgt
         string networkId = parser.expand<std::string>(nd["sim_network_id"]);
         string busId = parser.expand<std::string>(nd["bus_id"]);
         
-        auto& network = *sim.simComponent<SimNetwork>(networkId);
-        auto zip = network.network().addZip(std::make_shared<Zip>(id, phases), busId);
+        // TODO: Would be better to force zip to be created explicitly, or
+        // used from elsewhere.
+        auto& simNetwork = *sim.simComponent<SimNetwork>(networkId);
+        auto zip = simNetwork.network().addZip(std::make_shared<Zip>(id, phases), busId);
+        simNetwork.linkZip(*zip);
 
         string tsId = parser.expand<std::string>(nd["time_series_id"]);
         ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>> series = 
@@ -96,7 +99,5 @@ namespace Sgt
             double scaleFactorS = parser.expand<double>(ndScaleFactorS);
             tsZip->setScaleFactorS(scaleFactorS);
         }
-
-        link(tsZip, network);
     }
 }

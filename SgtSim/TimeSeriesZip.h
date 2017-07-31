@@ -18,11 +18,11 @@
 #include "Heartbeat.h"
 #include "TimeSeries.h"
 
-#include <SgtSim/SimZip.h>
-
 namespace Sgt
 {
-    class TimeSeriesZip : public SimZip, public Heartbeat
+    class Zip;
+
+    class TimeSeriesZip : public Heartbeat
     {
         public:
             static const std::string& sComponentType()
@@ -92,6 +92,7 @@ namespace Sgt
             arma::Mat<Complex> mapToMat(const arma::Col<Complex>& vec) const;
 
         private:
+            ComponentPtr<Zip> zip_;
             ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>> series_;
             arma::Mat<arma::uword> matrixElems_;
             arma::Col<arma::uword> dataIdxsY_;

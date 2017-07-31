@@ -15,6 +15,8 @@
 #include "DcPowerSource.h"
 #include "Inverter.h"
 
+#include <SgtCore/Zip.h>
+
 using namespace arma;
 
 namespace Sgt
@@ -38,12 +40,12 @@ namespace Sgt
     
     void SimpleZipInverter::updateState(Time t)
     {
-        zip().setSConst(SConst());
+        zip_->setSConst(SConst());
     }
 
     Mat<Complex> SimpleZipInverter::SConst() const
     {
-        uword nPhase = zip().phases().size();
+        uword nPhase = zip_->phases().size();
         double PPerPh = availableP() / nPhase;
         double P2PerPh = PPerPh * PPerPh;
         double reqQPerPh = requestedQ_ / nPhase;

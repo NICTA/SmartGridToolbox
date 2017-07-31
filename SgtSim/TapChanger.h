@@ -15,7 +15,7 @@
 #ifndef TAP_CHANGER_DOT_H
 #define TAP_CHANGER_DOT_H
 
-#include <SgtSim/SimBus.h>
+#include <SgtSim/SimComponent.h>
 
 #include <SgtCore/Bus.h>
 #include <SgtCore/Transformer.h>

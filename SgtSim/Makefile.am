@@ -11,14 +11,10 @@ libinclude_HEADERS = \
 	DcPowerSource.h \
 	Heartbeat.h \
 	Inverter.h \
-	SimBranch.h \
-	SimBus.h \
 	SimComponent.h \
-	SimGen.h \
 	SimNetwork.h \
 	SimpleBuilding.h \
 	SimParser.h \
-	SimZip.h \
 	Simulation.h \
 	SolarGeom.h \
 	SolarPv.h \
@@ -39,13 +35,7 @@ libSgtSim_la_SOURCES = \
 	InverterParserPlugin.h InverterParserPlugin.cc \
 	RegisterParserPlugins.cc \
 	SgtSim.h \
-	SimBus.h SimBus.cc \
-	SimBusParserPlugin.h SimBusParserPlugin.cc \
-	SimBranch.h SimBranch.cc \
-	SimBranchParserPlugin.h SimBranchParserPlugin.cc \
 	SimComponent.h SimComponent.cc \
-	SimGen.h SimGen.cc \
-	SimGenParserPlugin.h SimGenParserPlugin.cc \
 	SimGlobalParserPlugin.h SimGlobalParserPlugin.cc \
 	SimMatpowerParserPlugin.h SimMatpowerParserPlugin.cc \
 	SimNetwork.h SimNetwork.cc \
@@ -54,8 +44,6 @@ libSgtSim_la_SOURCES = \
 	SimpleBuilding.h SimpleBuilding.cc \
 	SimpleBuildingParserPlugin.h SimpleBuildingParserPlugin.cc \
 	Simulation.h Simulation.cc \
-	SimZip.h SimZip.cc \
-	SimZipParserPlugin.h SimZipParserPlugin.cc \
 	SolarGeom.h SolarGeom.cc \
 	SolarPv.h SolarPv.cc \
 	SolarPvParserPlugin.h SolarPvParserPlugin.cc \

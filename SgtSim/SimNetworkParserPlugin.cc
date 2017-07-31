@@ -32,6 +32,8 @@ namespace Sgt
         auto ndFreq = nd["freq_Hz"];
 
         auto ndSolver = nd["solver"];
+        
+        auto ndNetwork = nd["network"];
 
         std::unique_ptr<Network> nw(new Network(PBase));
 
@@ -45,6 +47,12 @@ namespace Sgt
         {
             PowerFlowSolverParserPlugin pfSolverParser;
             pfSolverParser.parse(ndSolver, *nw, parser);
+        }
+        
+        if (ndNetwork)
+        {
+            NetworkParserPlugin netwParser;
+            netwParser.parse(ndNetwork, *nw, parser);
         }
 
         sim.newSimComponent<SimNetwork>(id, std::move(nw));

@@ -31,29 +31,22 @@ namespace Sgt
 
         mpParser.parse(nd, netw, parser);
 
-        // Now recreate the SimNetwork from the Network.
-        for (auto bus : netw.buses())
-        {
-            auto simBus = sim.newSimComponent<SimBus>(bus->id(), bus);
-            link(simBus, *simNetw);
-
-            for (auto gen : bus->gens())
-            {
-                auto simGen = sim.newSimComponent<SimGen>(gen->id(), gen);
-                link(simGen, *simNetw);
-            }
-
-            for (auto zip : bus->zips())
-            {
-                auto simZip = sim.newSimComponent<SimZip>(zip->id(), zip);
-                link(simZip, *simNetw);
-            }
-        }
-
+        // Link to the SimNetwork.
         for (auto branch : netw.branches())
         {
-            auto simBranch = sim.newSimComponent<SimBranch>(branch->id(), branch);
-            link(simBranch, *simNetw);
+            simNetw->linkBranch(*branch);
+        }
+        for (auto bus : netw.buses())
+        {
+            simNetw->linkBus(*bus);
+        }
+        for (auto gen : netw.gens())
+        {
+            simNetw->linkGen(*gen);
+        }
+        for (auto zip : netw.zips())
+        {
+            simNetw->linkZip(*zip);
         }
     }
 }

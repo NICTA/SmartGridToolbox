@@ -17,14 +17,10 @@
 #include "BatteryParserPlugin.h"
 #include "HeartbeatParserPlugin.h"
 #include "InverterParserPlugin.h"
-#include "SimBranchParserPlugin.h"
-#include "SimBusParserPlugin.h"
-#include "SimGenParserPlugin.h"
 #include "SimGlobalParserPlugin.h"
 #include "SimMatpowerParserPlugin.h"
 #include "SimNetworkParserPlugin.h"
 #include "SimpleBuildingParserPlugin.h"
-#include "SimZipParserPlugin.h"
 #include "TapChangerParserPlugin.h"
 #include "TimeSeriesParserPlugin.h"
 #include "TimeSeriesZipParserPlugin.h"
@@ -40,14 +36,10 @@ namespace Sgt
         p.registerParserPlugin<BatteryParserPlugin>();
         p.registerParserPlugin<HeartbeatParserPlugin>();
         p.registerParserPlugin<InverterParserPlugin>();
-        p.registerParserPlugin<SimBranchParserPlugin>();
-        p.registerParserPlugin<SimBusParserPlugin>();
-        p.registerParserPlugin<SimGenParserPlugin>();
         p.registerParserPlugin<SimGlobalParserPlugin>();
         p.registerParserPlugin<SimMatpowerParserPlugin>();
         p.registerParserPlugin<SimNetworkParserPlugin>();
         p.registerParserPlugin<SimpleBuildingParserPlugin>();
-        p.registerParserPlugin<SimZipParserPlugin>();
         p.registerParserPlugin<TapChangerParserPlugin>();
         p.registerParserPlugin<TimeSeriesParserPlugin>();
         p.registerParserPlugin<TimeSeriesZipParserPlugin>();

@@ -30,9 +30,13 @@ namespace Sgt
         std::string id = parser.expand<std::string>(nd["id"]);
 
         std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
-        auto& network = *sim.simComponent<SimNetwork>(networkId);
         const std::string busId = parser.expand<std::string>(nd["bus_id"]);
-        auto zip = network.network().addZip(std::make_shared<Zip>(id, Phase::BAL), busId);
+
+        // TODO: Would be better to force zip to be created explicitly, or
+        // used from elsewhere.
+        auto& simNetwork = *sim.simComponent<SimNetwork>(networkId);
+        auto zip = simNetwork.network().addZip(std::make_shared<Zip>(id, Phase::BAL), busId);
+        simNetwork.linkZip(*zip);
 
         auto build = sim.newSimComponent<SimpleBuilding>(id, zip);
 
@@ -71,8 +75,6 @@ namespace Sgt
             sgtAssert(series != nullptr, "Parsing simple_building: couldn't find time series " << id << ".");
             build->set_dQgSeries(series);
         }
-
-        link(build, network);
 
         const auto& weatherNd = nd["weather"];
         if (weatherNd)

@@ -15,6 +15,7 @@
 #include "TapChangerParserPlugin.h"
 
 #include "Inverter.h"
+#include "SimNetwork.h"
 #include "Simulation.h"
 #include "TapChanger.h"
 #include "Weather.h"
