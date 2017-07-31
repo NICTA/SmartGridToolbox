@@ -120,6 +120,9 @@ namespace Sgt
     };
 
     /// @brief Utility base class for branches in SimNetwork.
+    ///
+    /// Provides constructor that ensures linking to SimNetwork.
+    /// Also provides convenience accessors.
     class SimBranch
     {
         public:
@@ -131,6 +134,9 @@ namespace Sgt
     };
 
     /// @brief Utility base class for buses in SimNetwork.
+    ///
+    /// Provides constructor that ensures linking to SimNetwork.
+    /// Also provides convenience accessors.
     class SimBus
     {
         public:
@@ -142,6 +148,9 @@ namespace Sgt
     };
 
     /// @brief Utility base class for gens in SimNetwork.
+    ///
+    /// Provides constructor that ensures linking to SimNetwork.
+    /// Also provides convenience accessors.
     class SimGen
     {
         public:
@@ -153,6 +162,9 @@ namespace Sgt
     };
 
     /// @brief Utility base class for zips in SimNetwork.
+    ///
+    /// Provides constructor that ensures linking to SimNetwork.
+    /// Also provides convenience accessors.
     class SimZip
     {
         public:
