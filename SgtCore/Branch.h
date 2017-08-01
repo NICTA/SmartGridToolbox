@@ -214,8 +214,8 @@ namespace Sgt
 
             bool isInService_; ///< Am I in service?
 
-            Event isInServiceChanged_{sComponentType() + " : Is in service changed"};
-            Event admittanceChanged_{sComponentType() + " : Admittance changed"};
+            Event isInServiceChanged_{componentType() + ": Is in service changed"};
+            Event admittanceChanged_{componentType() + ": Admittance changed"};
 
             ComponentPtr<Bus> bus0_;
             ComponentPtr<Bus> bus1_;

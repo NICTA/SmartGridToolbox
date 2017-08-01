@@ -258,9 +258,9 @@ namespace Sgt
             arma::Mat<Complex> IConst_;
             arma::Mat<Complex> SConst_;
 
-            Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
-            Event injectionChanged_{std::string(sComponentType()) + " : Injection changed"};
-            Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
+            Event isInServiceChanged_{std::string(componentType()) + ": Is in service changed"};
+            Event injectionChanged_{std::string(componentType()) + ": Injection changed"};
+            Event setpointChanged_{std::string(componentType()) + ": Setpoint changed"};
 
             ComponentPtr<Bus> bus_;
     };

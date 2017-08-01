@@ -202,15 +202,15 @@ namespace Sgt
             int rank_{-1};
             ///< Evaluation rank, based on weak ordering.
             
-            Event willUpdate_{std::string(sComponentType()) + "Will update"};
+            Event willUpdate_{std::string(componentType()) + ": Will update"};
             ///< Triggered immediately prior to upddate.
-            Event didUpdate_{std::string(sComponentType()) + "Did update"};
+            Event didUpdate_{std::string(componentType()) + ": Did update"};
             ///< Triggered immediately post update.
-            Event needsUpdate_{std::string(sComponentType()) + "Needs update"};
+            Event needsUpdate_{std::string(componentType()) + ": Needs update"};
             ///< Triggered when I need to be updated.
-            Event willStartNewTimestep_{std::string(sComponentType()) + "Will start new timestep"};
+            Event willStartNewTimestep_{std::string(componentType()) + ": Will start new timestep"};
             ///< Triggered immediately prior to time advancing.
-            Event didCompleteTimestep_{std::string(sComponentType()) + "Did complete timestep"};
+            Event didCompleteTimestep_{std::string(componentType()) + ": Did complete timestep"};
             ///< Triggered just after fully completing a timestep.
             
             Action insertContingentUpdateAction_;

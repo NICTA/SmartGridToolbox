@@ -66,7 +66,7 @@ namespace Sgt
 
         private:
 
-            Event dcPowerChanged_{std::string(sComponentType()) + ": DC power changed"};
+            Event dcPowerChanged_{std::string(componentType()) + ": DC power changed"};
     };
 
     class GenericDcPowerSource : public DcPowerSourceAbc

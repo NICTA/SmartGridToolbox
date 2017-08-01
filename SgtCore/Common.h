@@ -158,7 +158,7 @@ namespace Sgt
 
     // Internal macros to help with machinery of logging.
     // Don't bother trying to understand these!
-#define LOG_1(strm, level, fnames, default_threshold, threshold) if (level >= threshold && (fnames[0] == '\0' || strstr(fnames, __func__) != nullptr)) strm
+#define LOG_1(strm, level, fnames, default_threshold, threshold) if (level >= threshold && (fnames[0] == '\0' || strstr(fnames, __FILE__) != nullptr)) strm
 #define LOG_0(strm, level, fnames, default_threshold, ...) LOG_1(strm, level, fnames, default_threshold, default_threshold)
 #define FUNC_CHOOSER(_f1, _f2, _f3, ...) _f3
 #define FUNC_RECOMPOSER(argsWithParentheses) FUNC_CHOOSER argsWithParentheses

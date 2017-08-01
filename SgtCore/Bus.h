@@ -465,10 +465,10 @@ namespace Sgt
 
             arma::Col<double>::fixed<2> coords_{{0.0, 0.0}};
 
-            Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
-            Event isSuppliedChanged_{std::string(sComponentType()) + " : Is supplied changed"};
-            Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
-            Event voltageUpdated_{std::string(sComponentType()) + " : Voltage updated"};
+            Event isInServiceChanged_{std::string(componentType()) + ": Is in service changed"};
+            Event isSuppliedChanged_{std::string(componentType()) + ": Is supplied changed"};
+            Event setpointChanged_{std::string(componentType()) + ": Setpoint changed"};
+            Event voltageUpdated_{std::string(componentType()) + ": Voltage updated"};
             
             MutableComponentCollection<BranchAbc> branches0_;
             MutableComponentCollection<BranchAbc> branches1_;

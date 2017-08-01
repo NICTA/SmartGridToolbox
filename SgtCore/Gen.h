@@ -369,10 +369,10 @@ namespace Sgt
             double c1_{0.0};
             double c2_{0.0};
 
-            Event isInServiceChanged_{std::string(sComponentType()) + " : Is in service changed"};
-            Event generationChanged_{std::string(sComponentType()) + " : Generation changed"};
-            Event JChanged_{std::string(sComponentType()) + " : Angular momentum changed"};
-            Event setpointChanged_{std::string(sComponentType()) + " : Setpoint changed"};
+            Event isInServiceChanged_{std::string(componentType()) + ": Is in service changed"};
+            Event generationChanged_{std::string(componentType()) + ": Generation changed"};
+            Event JChanged_{std::string(componentType()) + ": Angular momentum changed"};
+            Event setpointChanged_{std::string(componentType()) + ": Setpoint changed"};
 
             ComponentPtr<Bus> bus_;
     };
