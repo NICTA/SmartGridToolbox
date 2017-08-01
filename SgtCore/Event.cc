@@ -20,15 +20,18 @@ namespace Sgt
 {
     Action::~Action()
     {
-        for (auto event : triggers_)
+        while (!triggers_.empty())
         {
-            removeTrigger(*event);
+            removeTrigger(**triggers_.begin());
         }
     }
 
     void Action::reset(const std::function<void ()>& function, const std::string& description)
     {
-        for (auto event : triggers_) removeTrigger(*event);
+        while (!triggers_.empty())
+        {
+            removeTrigger(**triggers_.begin());
+        }
         function_ = function;
         if (description != "") description_ = description;
     }
@@ -47,7 +50,10 @@ namespace Sgt
             
     Event::~Event()
     {
-        for (auto action : actions_) action->removeTrigger(*this);
+        while (!actions_.empty())
+        {
+            (**actions_.begin()).removeTrigger(*this);
+        }
     }
 
     void Event::trigger() const
