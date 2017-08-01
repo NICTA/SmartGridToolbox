@@ -83,9 +83,9 @@ namespace Sgt
         friend class Action;
 
         public:
-            Event(const std::string& description) : description_(description)
+            Event(const std::string& description)
             {
-                // Empty.
+                setDescription(description);
             }
 
             ~Event();
@@ -100,6 +100,7 @@ namespace Sgt
             void setDescription(const std::string& description)
             {
                 description_ = description;
+                triggerThis_.description_ = "Trigger " + description_ + ".";
             }
 
             bool isEnabled() const
@@ -121,7 +122,7 @@ namespace Sgt
             mutable std::set<Action*> actions_;
             std::string description_;
             bool isEnabled_{true};
-            Action triggerThis_{[this](){trigger();}, "Trigger " + description_ + "."};
+            Action triggerThis_{[this](){trigger();}, ""};
     };
 }
 
