@@ -152,7 +152,7 @@ namespace Sgt
     bool PowerFlowFdSolver::solve(Network& netw)
     {
         sgtLogDebug() << "PowerFlowFdSolver : solve." << std::endl;
-        LogIndent indent;
+        sgtLogIndent();
 
         netw_ = &netw;
         mod_ = buildModel(*netw_);
@@ -192,7 +192,7 @@ namespace Sgt
         for (niter = 0; niter < maxiter_; ++niter)
         {
             sgtLogMessage() << "iter " << niter << std::endl;
-            LogIndent _;
+            sgtLogIndent();
             sgtLogDebug() << "theta = " << theta << std::endl;
             sgtLogDebug() << "M = " << M << std::endl;
 

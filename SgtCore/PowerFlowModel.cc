@@ -87,7 +87,7 @@ namespace Sgt
     void PowerFlowModel::validate()
     {
         sgtLogDebug() << "PowerFlowModel : validate." << std::endl;
-        LogIndent indent;
+        sgtLogIndent();
 
         // Make Nodes:
         PfNodeVec PqNodes;
@@ -229,15 +229,15 @@ namespace Sgt
     void PowerFlowModel::print()
     {
         sgtLogDebug() << "PowerFlowModel::print()" << std::endl;
-        LogIndent indent;
+        sgtLogIndent();
         sgtLogDebug() << "Nodes:" << std::endl;
         {
-            LogIndent indent;
+            sgtLogIndent();
             for (const PfNode* nd : nodeVec_)
             {
                 sgtLogDebug() << "Node:" << std::endl;
                 {
-                    LogIndent indent;
+                    sgtLogIndent();
                     sgtLogDebug() << "Id     : " << nd->bus_->id_ << std::endl;
                     sgtLogDebug() << "Type   : " << nd->bus_->type_ << std::endl;
                     sgtLogDebug() << "Phase  : " << nd->bus_->phases_[nd->phaseIdx_] << std::endl;
@@ -248,17 +248,17 @@ namespace Sgt
         }
         sgtLogDebug() << "Branches:" << std::endl;
         {
-            LogIndent indent;
+            sgtLogIndent();
             for (const std::unique_ptr<PfBranch>& branch : branchVec_)
             {
                 sgtLogDebug() << "Branch:" << std::endl;
                 {
-                    LogIndent indent;
+                    sgtLogIndent();
                     sgtLogDebug() << "Buses : " << branch->ids_[0] << ", " << branch->ids_[1] << std::endl;
                     sgtLogDebug() << "Phases : " << branch->phases_[0] << ", " << branch->phases_[1] << std::endl;
                     sgtLogDebug() << "YConst :" << std::endl;
                     {
-                        LogIndent indent;
+                        sgtLogIndent();
                         for (uword i = 0; i < branch->YConst_.n_rows; ++i)
                         {
                             sgtLogDebug() << std::setprecision(14) << std::setw(18) 

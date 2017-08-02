@@ -162,7 +162,7 @@ namespace Sgt
     bool PowerFlowNrPolSolver::solve(Network& netw)
     {
         sgtLogDebug() << "PowerFlowNrPolSolver : solve for " << netw.islands().size() << " islands." << std::endl;
-        LogIndent indent;
+        sgtLogIndent();
 
         netw_ = &netw;
         bool ok = true;
@@ -181,7 +181,7 @@ namespace Sgt
     bool PowerFlowNrPolSolver::solveForIsland(int islandIdx)
     {
         sgtLogDebug() << "PowerFlowNrPolSolver : solving for island " << islandIdx << std::endl;
-        LogIndent indent;
+        sgtLogIndent();
         bool ok = true;
         mod_ = buildModel(*netw_, [islandIdx](const Bus& b){return b.islandIdx() == islandIdx;});
 
@@ -211,7 +211,7 @@ namespace Sgt
         for (niter = 0; niter < maxiter_; ++niter)
         {
             sgtLogMessage(LogLevel::VERBOSE) << "iter " << niter << std::endl;
-            LogIndent _;
+            sgtLogIndent();
 
             auto S = calcS(Scg, Ic, V, M, Y);
             Col<double> f = mod_->nPq() > 0

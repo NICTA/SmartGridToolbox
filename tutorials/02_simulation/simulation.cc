@@ -52,7 +52,7 @@ int main(int argc, char** argv)
             // Finer grained control is also possible, e.g. sim.doNextUpdate()
             // will update one component at a time.
         {
-            LogIndent _; // Indent within scope.
+            sgtLogIndent(); // Indent within scope.
             Log().message() << "bus_2 V = " << bus2->bus().V() << std::endl;
         }
     }

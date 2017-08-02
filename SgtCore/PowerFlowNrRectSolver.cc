@@ -50,7 +50,7 @@ namespace Sgt
     bool PowerFlowNrRectSolver::solve(Network& netw)
     {
         sgtLogDebug() << "PowerFlowNrRectSolver : solve." << std::endl;
-        LogIndent indent;
+        sgtLogIndent();
 
         netw_ = &netw;
         bool ok = true;
@@ -323,7 +323,7 @@ namespace Sgt
 
         sgtLogDebug() << "PowerFlowNrRectSolver: " << std::endl; 
         {
-            LogIndent indent;
+            sgtLogIndent();
             sgtLogDebug() << "successful = " << wasSuccessful << std::endl;
             sgtLogDebug() << "error = " << err << std::endl; 
             sgtLogDebug() << "iterations = " << niter << std::endl;

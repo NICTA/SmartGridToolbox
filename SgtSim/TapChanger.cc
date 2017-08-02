@@ -56,7 +56,7 @@ namespace Sgt
     void TapChanger::updateState(Time t)
     {
         sgtLogDebug() << sComponentType() << " " << id() << " : Update : " << prevTimestep_ << " -> " << t << std::endl;
-        LogIndent _;
+        sgtLogIndent();
         bool tryAgain = false;
 
         bool isFirstStep = (prevTimestep_ == posix_time::neg_infin);
