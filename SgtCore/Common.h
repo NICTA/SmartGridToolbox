@@ -31,6 +31,25 @@
 #include <sstream>
 #include <stdexcept>
 
+/// @name Utility macros - not normally for public consumption.
+/// @{
+
+// Macro symbol concatenation.
+#define SGT_DO_CAT(A, B) A ## B
+#define SGT_CAT(A, B) SGT_DO_CAT(A, B)
+
+// Unique name (within file scope). 
+#define SGT_UNIQUE_NAME(PREFIX) SGT_CAT(PREFIX, __LINE__)
+
+// For overloaded variadic function-like macros:
+#define SGT_COMPOSE(NAME, ARGS) NAME ARGS
+#define SGT_GET_COUNT(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, COUNT, ...) COUNT
+#define SGT_EXPAND() ,,,,,,,,,, // 10 commas (or 10 empty tokens)
+#define SGT_VA_SIZE(...) SGT_COMPOSE(SGT_GET_COUNT, (SGT_EXPAND __VA_ARGS__ (), 0, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0))
+#define SGT_VA_SELECT(NAME, ...) SGT_CAT(NAME, SGT_VA_SIZE(__VA_ARGS__))(__VA_ARGS__)
+
+/// @}
+
 namespace Sgt
 {
     /// @name Reporting and errors.
@@ -150,6 +169,7 @@ namespace Sgt
             unsigned int myIndentLevel_{0};
     };
 
+    // Debug macro.
 #ifdef DEBUG
 #define SGT_DEBUG if (true)
 #else 
@@ -157,43 +177,57 @@ namespace Sgt
 #endif
 
     // Internal macros to help with machinery of logging.
-    // Don't bother trying to understand these!
-#define LOG_1(strm, level, fnames, default_threshold, threshold) if (level >= threshold && (fnames[0] == '\0' || strstr(fnames, __FILE__) != nullptr)) strm
-#define LOG_0(strm, level, fnames, default_threshold, ...) LOG_1(strm, level, fnames, default_threshold, default_threshold)
-#define FUNC_CHOOSER(_f1, _f2, _f3, ...) _f3
-#define FUNC_RECOMPOSER(argsWithParentheses) FUNC_CHOOSER argsWithParentheses
-#define CHOOSE_FROM_ARG_COUNT(...) FUNC_RECOMPOSER((__VA_ARGS__, LOG_2, LOG_1, ))
-#define NO_ARG_EXPANDER() ,,LOG_0
-#define MACRO_CHOOSER(...) CHOOSE_FROM_ARG_COUNT(NO_ARG_EXPANDER __VA_ARGS__ ())
-#define LOG(strm, level, fnames, default_threshold, ...) MACRO_CHOOSER(__VA_ARGS__)(strm, level, fnames, default_threshold, __VA_ARGS__)
+#define SGT_LOG(strm, level, fnames, threshold) if (level >= threshold && (fnames[0] == '\0' || strstr(fnames, __FILE__) != nullptr)) strm
+
+#define SGT_LOG_MESSAGE1(threshold) SGT_LOG(Sgt::Log().message(), Sgt::messageLogLevel(), Sgt::messageLogFilter().c_str(), threshold)
+#define SGT_LOG_MESSAGE0() SGT_LOG_MESSAGE1(Sgt::LogLevel::NORMAL)
+
+#define SGT_LOG_WARNING1(threshold) SGT_LOG(Sgt::Log().warning(), Sgt::warningLogLevel(), Sgt::warningLogFilter().c_str(), threshold)
+#define SGT_LOG_WARNING0() SGT_LOG_WARNING1(Sgt::LogLevel::NORMAL)
+
+#define SGT_LOG_ERROR1(threshold) SGT_LOG(Sgt::Log().error(), Sgt::errorLogLevel(), Sgt::errorLogFilter().c_str(), threshold)
+#define SGT_LOG_ERROR0() SGT_LOG_ERROR1(Sgt::LogLevel::NORMAL)
+
+#define SGT_LOG_DEBUG1(threshold) SGT_LOG(Sgt::Log().debug(), Sgt::debugLogLevel(), Sgt::debugLogFilter().c_str(), threshold)
+#define SGT_LOG_DEBUG0() SGT_LOG_DEBUG1(Sgt::LogLevel::NORMAL)
+
+#define SGT_LOG_INDENT2(nInit, tabWidth) Sgt::LogIndent SGT_UNIQUE_NAME(indent)(nInit, tabWidth);
+#define SGT_LOG_INDENT1(nInit) Sgt::LogIndent SGT_UNIQUE_NAME(indent)(nInit);
+#define SGT_LOG_INDENT0() Sgt::LogIndent SGT_UNIQUE_NAME(indent);
 
     /// @brief Log a message.
     /// @ingroup Utilities
     ///
     /// E.g. sgtLogMessage(LogLevel::VERBOSE) << "this is a message: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
-#define sgtLogMessage(...) LOG(Sgt::Log().message(), Sgt::messageLogLevel(), Sgt::messageLogFilter().c_str(), Sgt::LogLevel::NORMAL, __VA_ARGS__)
+#define sgtLogMessage(...) SGT_VA_SELECT(SGT_LOG_MESSAGE, __VA_ARGS__)
 
     /// @brief Log a warning.
     /// @ingroup Utilities
     ///
     /// E.g. sgtLogWarning(LogLevel::VERBOSE) << "this is a warning: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
-#define sgtLogWarning(...) LOG(Sgt::Log().warning(), Sgt::warningLogLevel(), Sgt::warningLogFilter().c_str(), Sgt::LogLevel::NORMAL, __VA_ARGS__)
+#define sgtLogWarning(...) SGT_VA_SELECT(SGT_LOG_WARNING, __VA_ARGS__)
 
     /// @brief Log an error.
     /// @ingroup Utilities
     ///
     /// E.g. sgtLogError(LogLevel::VERBOSE) << "this is an error: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
-#define sgtLogError(...) LOG(Sgt::Log().error(), Sgt::errorLogLevel(), Sgt::errorLogFilter().c_str(), Sgt::LogLevel::NORMAL, __VA_ARGS__)
+#define sgtLogError(...) SGT_VA_SELECT(SGT_LOG_ERROR, __VA_ARGS__)
 
     /// @brief Log a debug message.
     /// @ingroup Utilities
     ///
     /// E.g. sgtLogDebug(LogLevel::VERBOSE) << "this is a debug message: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
-#define sgtLogDebug(...) LOG(Sgt::Log().debug(), Sgt::debugLogLevel(), Sgt::debugLogFilter().c_str(), Sgt::LogLevel::NORMAL, __VA_ARGS__)
+#define sgtLogDebug(...) SGT_VA_SELECT(SGT_LOG_DEBUG, __VA_ARGS__)
+
+    /// @brief Indent the logs.
+    /// @ingroup Utilities
+    ///
+    /// Indent lasts until the end of the current scope.
+#define sgtLogIndent(...) SGT_VA_SELECT(SGT_LOG_INDENT, __VA_ARGS__)
 
 #define sgtError(msg) {std::ostringstream ss; ss << "SmartGridToolbox: " << __PRETTY_FUNCTION__ << ": " << msg; throw std::runtime_error(ss.str());}
 
