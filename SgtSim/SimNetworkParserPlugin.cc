@@ -26,7 +26,7 @@ namespace Sgt
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "P_base");
 
-        string id = parser.expand<std::string>(nd["id"]);
+        std::string id = parser.expand<std::string>(nd["id"]);
         double PBase = parser.expand<double>(nd["P_base"]);
 
         auto ndFreq = nd["freq_Hz"];

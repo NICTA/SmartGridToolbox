@@ -24,7 +24,7 @@ namespace Sgt
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "inverter");
 
-        string id = parser.expand<std::string>(nd["id"]);
+        std::string id = parser.expand<std::string>(nd["id"]);
         auto batt = sim.newSimComponent<Battery>(id);
 
         auto nd_dt = nd["dt"];

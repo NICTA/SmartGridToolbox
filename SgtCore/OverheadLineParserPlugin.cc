@@ -46,7 +46,7 @@ namespace Sgt
         assertFieldPresent(nd, "freq");
         assertFieldPresent(nd, "earth_resist");
 
-        string id = parser.expand<std::string>(nd["id"]);
+        std::string id = parser.expand<std::string>(nd["id"]);
         Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
         Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
         double L = parser.expand<double>(nd["length"]);

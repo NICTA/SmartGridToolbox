@@ -26,7 +26,7 @@ namespace Sgt
         assertFieldPresent(nd, "inverter");
         assertFieldPresent(nd, "dc_power");
 
-        string id = parser.expand<std::string>(nd["id"]);
+        std::string id = parser.expand<std::string>(nd["id"]);
         auto comp = sim.newSimComponent<GenericDcPowerSource>(id);
         comp->setPDc(parser.expand<double>(nd["dc_power"]));
 

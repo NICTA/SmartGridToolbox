@@ -23,7 +23,7 @@ namespace Sgt
     {
         assertFieldPresent(nd, "id");
 
-        string id = parser.expand<std::string>(nd["id"]);
+        std::string id = parser.expand<std::string>(nd["id"]);
         auto weather = sim.newSimComponent<Weather>(id);
 
         weather->model.latLong = sim.latLong(); // TODO: could be restrictive?

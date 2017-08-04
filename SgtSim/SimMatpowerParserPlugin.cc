@@ -25,7 +25,7 @@ namespace Sgt
     {
         MatpowerParserPlugin mpParser;
         assertFieldPresent(nd, "sim_network_id");
-        string netwId = parser.expand<std::string>(nd["sim_network_id"]);
+        std::string netwId = parser.expand<std::string>(nd["sim_network_id"]);
         auto simNetw = sim.simComponent<SimNetwork>(netwId);
         auto& netw = simNetw->network();
 

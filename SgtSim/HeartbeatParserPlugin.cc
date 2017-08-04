@@ -28,7 +28,7 @@ namespace Sgt
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "dt");
 
-        string id = parser.expand<std::string>(nd["id"]);
+        std::string id = parser.expand<std::string>(nd["id"]);
         Time dt = parser.expand<Time>(nd["dt"]);
 
         auto heartbeat = sim.newSimComponent<Heartbeat>(id, dt);

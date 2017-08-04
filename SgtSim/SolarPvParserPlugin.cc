@@ -36,7 +36,7 @@ namespace Sgt
         assertFieldPresent(nd, "temp_coeff_P_max_per_C");
         assertFieldPresent(nd, "NOCT_C");
 
-        string id = parser.expand<std::string>(nd["id"]);
+        std::string id = parser.expand<std::string>(nd["id"]);
         auto spv = sim.newSimComponent<SolarPv>(id);
 
         const std::string weatherStr = parser.expand<std::string>(nd["weather"]);

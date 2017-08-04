@@ -20,8 +20,6 @@
 #include <ostream>
 #include <string>
 
-using std::string;
-
 namespace Sgt
 {
     /// @brief Base class for all Components. 
