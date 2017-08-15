@@ -26,6 +26,12 @@ namespace Sgt
     /// @name Random number generation.
     /// @{
 
+    /// @brief Seed random generator with unsigned int.
+    /// @ingroup Utilities
+    void randSeed(const unsigned int n);
+    /// @brief Seed random generator with time.
+    /// @ingroup Utilities
+    void randSeedWithTime();
     /// @brief Sample from discrete distribution with nProbs given probabilities.
     /// @ingroup Utilities
     double randDiscrete(const double probs[], int nProbs);

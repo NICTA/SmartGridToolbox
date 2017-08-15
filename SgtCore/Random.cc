@@ -21,11 +21,23 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/weibull_distribution.hpp>
 
+#include <ctime>
+
 namespace Sgt
 {
     namespace
     {
         boost::random::mt19937 sRng; // Random number generator.
+    }
+    
+    void randSeedWithTime()
+    {
+        sRng.seed(static_cast<unsigned int>(std::time(nullptr)));
+    }
+
+    void randSeed(const unsigned int n)
+    {
+        sRng.seed(n);
     }
 
     double randDiscrete(const double probs[], int nProbs)
