@@ -60,7 +60,7 @@ namespace Sgt
         return dist(sRng,  DistType::param_type(lower, upper));
     }
 
-    double randUniformInt(int lower, int upper)
+    int randUniformInt(int lower, int upper)
     {
         typedef boost::random::uniform_int_distribution<> DistType;
         static DistType dist(0, 1);

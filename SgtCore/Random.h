@@ -43,7 +43,7 @@ namespace Sgt
     double randUniform(double lower, double upper);
     /// @brief Sample from integer uniform distribution with given lower and upper bounds.
     /// @ingroup Utilities
-    double randUniformInt(int lower, int upper);
+    int randUniformInt(int lower, int upper);
     /// @brief Sample from Weibull distribution with given a and b parameters.
     /// @ingroup Utilities
     double randWeibull(double a, double b);
