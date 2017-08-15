@@ -39,7 +39,7 @@ namespace Sgt
         Time dt = parser.expand<Time>(nd["dt"]);
 
         auto series = sim.timeSeries()[timeSeriesId].as<TimeSeries<Time, double>>();
-        auto comp = sim.newSimComponent<TimeSeriesDcPowerSource>(id, series, scaleFactor, dt);
+        auto comp = sim.newSimComponent<TimeSeriesDcPowerSource>(id, series, dt, scaleFactor);
 
         auto inverterComp = sim.simComponent<InverterAbc>(inverterId);
         sgtAssert(inverterComp != nullptr,
