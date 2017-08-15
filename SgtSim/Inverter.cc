@@ -33,17 +33,17 @@ namespace Sgt
         return PDcA * efficiency(PDcA);
     }
         
-    void SimpleZipInverter::addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source)
+    void Inverter::addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source)
     {
         InverterAbc::addDcPowerSource(source);
     }
     
-    void SimpleZipInverter::updateState(Time t)
+    void Inverter::updateState(Time t)
     {
         zip()->setSConst(SConst());
     }
 
-    Mat<Complex> SimpleZipInverter::SConst() const
+    Mat<Complex> Inverter::SConst() const
     {
         uword nPhase = zip()->phases().size();
         double PPerPh = availableP() / nPhase;

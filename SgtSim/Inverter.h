@@ -108,7 +108,7 @@ namespace Sgt
     class Zip;
 
     /// @brief DC power to n-phase AC converter.
-    class SimpleZipInverter : public SimpleInverterAbc, public SimZip
+    class Inverter : public SimpleInverterAbc, public SimZip
     {
         public:
 
@@ -126,7 +126,7 @@ namespace Sgt
             /// @name Lifecycle.
             /// @{
             
-            SimpleZipInverter(const std::string& id, const ComponentPtr<Zip>& zip, SimNetwork& simNetwork,
+            Inverter(const std::string& id, const ComponentPtr<Zip>& zip, SimNetwork& simNetwork,
                     double efficiency = 1.0) :
                 Component(id),
                 SimpleInverterAbc(efficiency),
@@ -135,7 +135,7 @@ namespace Sgt
                 // Empty.
             }
 
-            virtual ~SimpleZipInverter() = default;
+            virtual ~Inverter() = default;
             
             /// @}
 
@@ -158,7 +158,7 @@ namespace Sgt
 
             /// @}
             
-            /// @name SimpleZipInverter specific member functions.
+            /// @name Inverter specific member functions.
             /// @{
 
             double maxSMag() const

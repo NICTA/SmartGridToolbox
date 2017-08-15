@@ -49,9 +49,9 @@ int main(int argc, const char ** argv)
     auto genTrans = sim.simComponent<SimGen>("gen_trans");
     auto buildingLoad = sim.simComponent<TimeSeriesZip>("load_build");
     auto building = sim.simComponent<Building>("build");
-    auto pvInverter = sim.simComponent<SimpleZipInverter>("pv_inverter");
+    auto pvInverter = sim.simComponent<Inverter>("pv_inverter");
     auto batt = sim.simComponent<Battery>("battery");
-    auto battInv = sim.simComponent<SimpleZipInverter>("battery_inverter");
+    auto battInv = sim.simComponent<Inverter>("battery_inverter");
 
     while (!sim.isFinished())
     {
