@@ -54,9 +54,6 @@ namespace Sgt
                 return scaleFactor_ * series_->value(lastUpdated());
             }
 
-        protected:
-            virtual void updateState(Time t) override;
-            
         private:
             ConstTimeSeriesPtr<TimeSeries<Time, double>> series_;
             double scaleFactor_{1.0};
