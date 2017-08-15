@@ -75,7 +75,7 @@
         - solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
             id: solar_pv_<pv_busses(<i>)>
             weather: weather
-            inverter: pv_inv_<pv_busses(<i>)>
+            inverter_id: pv_inv_<pv_busses(<i>)>
             zenith_degrees: 60 
             azimuth_degrees: 0
             n_panels: <pv_n_panel(<i>)>

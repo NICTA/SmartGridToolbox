@@ -21,6 +21,7 @@ libinclude_HEADERS = \
 	Sun.h \
 	TapChanger.h \
 	TimeSeries.h \
+	TimeSeriesDcPowerSource.h \
 	TimeSeriesZip.h \
 	Weather.h
 
@@ -51,6 +52,8 @@ libSgtSim_la_SOURCES = \
 	TapChanger.h TapChanger.cc \
 	TapChangerParserPlugin.h TapChangerParserPlugin.cc \
 	TimeSeries.h \
+	TimeSeriesDcPowerSource.h \
+	TimeSeriesDcPowerSourceParserPlugin.h TimeSeriesDcPowerSourceParserPlugin.cc \
 	TimeSeriesParserPlugin.h TimeSeriesParserPlugin.cc \
 	TimeSeriesZip.h TimeSeriesZip.cc \
 	TimeSeriesZipParserPlugin.h TimeSeriesZipParserPlugin.cc \

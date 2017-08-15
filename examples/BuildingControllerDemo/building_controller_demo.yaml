@@ -127,7 +127,7 @@
 - battery:
     id: battery
     dt: 00:05:00
-    inverter: battery_inverter
+    inverter_id: battery_inverter
     init_charge: 0
     max_charge: 0.1 # 100 kWh, ~ 10 large sized Tesla Powerwalls
     max_charge_power: 0.02 # 20 kW, assume similar to discharge rate.
@@ -146,7 +146,7 @@
 - solar_pv:
     id: solar_pv
     weather: weather
-    inverter: pv_inverter
+    inverter_id: pv_inverter
     zenith_degrees: 45 
     azimuth_degrees: 35
     n_panels: 120 

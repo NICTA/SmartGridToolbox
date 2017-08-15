@@ -18,10 +18,6 @@
 
 using namespace arma;
 
-namespace
-{
-}
-
 namespace Sgt
 {
     TimeSeriesZip::TimeSeriesZip(const std::string& id, const ComponentPtr<Zip>& zip, SimNetwork& simNetwork,

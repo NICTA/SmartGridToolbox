@@ -24,8 +24,8 @@ namespace Sgt
     void SolarPvParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
+        assertFieldPresent(nd, "inverter_id");
         assertFieldPresent(nd, "weather");
-        assertFieldPresent(nd, "inverter");
         assertFieldPresent(nd, "zenith_degrees");
         assertFieldPresent(nd, "azimuth_degrees");
         assertFieldPresent(nd, "n_panels");
@@ -45,7 +45,7 @@ namespace Sgt
                 "For component " << id << ", weather " << weatherStr << " was not found in the simulation.");
         spv->setWeather(weather);
         
-        const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
+        const std::string inverterStr = parser.expand<std::string>(nd["inverter_id"]);
         auto inverter = sim.simComponent<InverterAbc>(inverterStr);
         sgtAssert(inverter != nullptr,
             "For component " << id << ", inverter " << inverterStr << " was not found in the simulation.");

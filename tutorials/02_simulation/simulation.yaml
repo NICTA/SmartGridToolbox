@@ -40,7 +40,7 @@
 - solar_pv: # Add a solar farm to the inverter.
     id: solar_pv
     weather: weather
-    inverter: pv_inverter
+    inverter_id: pv_inverter
     zenith_degrees: 60 
     azimuth_degrees: 0
     n_panels: 3000

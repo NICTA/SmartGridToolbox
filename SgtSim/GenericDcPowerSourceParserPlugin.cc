@@ -23,14 +23,14 @@ namespace Sgt
     void GenericDcPowerSourceParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "inverter");
+        assertFieldPresent(nd, "inverter_id");
         assertFieldPresent(nd, "dc_power");
 
         std::string id = parser.expand<std::string>(nd["id"]);
         auto comp = sim.newSimComponent<GenericDcPowerSource>(id);
         comp->setPDc(parser.expand<double>(nd["dc_power"]));
 
-        const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
+        const std::string inverterStr = parser.expand<std::string>(nd["inverter_id"]);
         auto inverterComp = sim.simComponent<InverterAbc>(inverterStr);
         sgtAssert(inverterComp != nullptr,
                 "For component " << id << ", inverter " << inverterStr << " was not found in the simulation.");

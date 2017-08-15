@@ -22,7 +22,7 @@ namespace Sgt
     void BatteryParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "inverter");
+        assertFieldPresent(nd, "inverter_id");
 
         std::string id = parser.expand<std::string>(nd["id"]);
         auto batt = sim.newSimComponent<Battery>(id);
@@ -51,7 +51,7 @@ namespace Sgt
         auto ndRequestedPower = nd["requested_power"];
         if (ndRequestedPower) batt->setRequestedPower(parser.expand<double>(ndRequestedPower));
 
-        const std::string inverterStr = parser.expand<std::string>(nd["inverter"]);
+        const std::string inverterStr = parser.expand<std::string>(nd["inverter_id"]);
         auto inverter = sim.simComponent<InverterAbc>(inverterStr);
         sgtAssert(inverter != nullptr,
                 "For component " << id << ", inverter " << inverterStr << " was not found in the simulation.");
