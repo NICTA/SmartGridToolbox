@@ -422,6 +422,12 @@ namespace Sgt
     
     /// @ingroup Utilities
     Time timeFromDSeconds(double dSeconds);
+    
+    /// @ingroup Utilities
+    Time timeFromDurationString(const std::string& durString)
+    {
+        return boost::posix_time::duration_from_string(durString);
+    }
 
     /// @ingroup Utilities
     Time timeFromUtcTimeString(const std::string& utcTimeString);
