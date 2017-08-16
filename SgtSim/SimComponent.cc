@@ -24,7 +24,7 @@ namespace Sgt
         needsUpdate_.setDescription(id() + ": Needs update");
         willStartNewTimestep_.setDescription(id() + ": Will start new timestep");
         didCompleteTimestep_.setDescription(id() + ": Did complete timestep");
-        lastUpdated_ = posix_time::neg_infin;
+        lastUpdated_ = TimeSpecialValues::neg_infin;
         initializeState();
     }
 

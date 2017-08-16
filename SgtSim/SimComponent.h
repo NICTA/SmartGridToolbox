@@ -91,7 +91,7 @@ namespace Sgt
             /// occurs, it is possible that validUntil() could change to a later time.
             virtual Time validUntil() const
             {
-                return posix_time::pos_infin;
+                return TimeSpecialValues::pos_infin;
             }
 
         protected:
@@ -195,7 +195,7 @@ namespace Sgt
 
         private:
 
-            Time lastUpdated_{posix_time::not_a_date_time};
+            Time lastUpdated_{TimeSpecialValues::not_a_date_time};
             ///< The time to which I am up to date
             std::vector<ConstComponentPtr<SimComponent>> dependencies_;
             ///< I depend on these.

@@ -28,7 +28,7 @@ namespace Sgt
     /// @param utcTime UTC time.
     /// @param location Lat long of the location.
     /// @return Spherical angles of the sun.
-    SphericalAngles sunPos(const posix_time::ptime& utcTime, const LatLong& location);
+    SphericalAngles sunPos(const Time& time, const LatLong& location);
 
     /// @brief Magnitude of clear sky direct irradiance, given position of sun and optional altitude.
     /// @param angs position of sun expressed as SphericalAngles.

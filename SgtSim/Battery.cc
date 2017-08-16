@@ -29,7 +29,7 @@ namespace Sgt
             dcPowerChanged().trigger();
         }
 
-        double dt = lastUpdated() == posix_time::neg_infin ? 0 : dSeconds(t - lastUpdated());
+        double dt = lastUpdated() == TimeSpecialValues::neg_infin ? 0 : dSeconds(t - lastUpdated());
         if (dt > 0)
         {
             charge_ -= internalPower() * dSeconds(t - lastUpdated()) / 3600.0; // Charge in MWh.

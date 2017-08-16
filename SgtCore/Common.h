@@ -379,20 +379,41 @@ namespace Sgt
     /// @name Time
     /// @{
 
-    namespace posix_time = boost::posix_time;
-    namespace gregorian = boost::gregorian;
-    namespace local_time = boost::local_time;
+    /// @brief Simulation times and durations.
+    /// @ingroup Utilities
+    ///
+    /// For simplicity, we don't distinguish between time points and durations. The interpretation is context
+    /// dependent, and time points are treated as an offset from the posix epoch. This means we don't have any
+    /// confusion about things like leap seconds and the like. 
+    using Time = boost::posix_time::time_duration;
 
-    using Time = posix_time::time_duration;
+    /// @brief PIMPL wrapper class for boost::local_time::local_time_zone_ptr.
+    /// @ingroup Utilities
+    ///
+    /// Hides the machinery of Boost's time_zone_ptr mechanism, as we wish to not be tied to Boost.
+    class Timezone
+    {
+        public:
+            Timezone() = default;
+            Timezone(const std::string& s) : z(new boost::local_time::posix_time_zone(s)) {}
+            operator boost::local_time::time_zone_ptr() const {return z;};
+        private:
+            boost::local_time::time_zone_ptr z{nullptr};
+    };
 
-    using microseconds = posix_time::microseconds;
-    using milliseconds = posix_time::milliseconds;
-    using seconds = posix_time::seconds;
-    using minutes = posix_time::minutes;
-    using hours = posix_time::hours;
+    using TimeSpecialValues = boost::date_time::special_values;
+
+    /// @ingroup Utilities
+    using microseconds = boost::posix_time::microseconds;
+    /// @ingroup Utilities
+    using milliseconds = boost::posix_time::milliseconds;
+    /// @ingroup Utilities
+    using seconds = boost::posix_time::seconds;
+    /// @ingroup Utilities
+    using minutes = boost::posix_time::minutes;
+    /// @ingroup Utilities
+    using hours = boost::posix_time::hours;
     
-    extern const posix_time::ptime epoch;
-
     /// @ingroup Utilities
     inline double dSeconds(const Time& d)
     {
@@ -403,31 +424,36 @@ namespace Sgt
     Time timeFromDSeconds(double dSeconds);
 
     /// @ingroup Utilities
-    inline Time timeFromUtcTime(posix_time::ptime utcTime)
-    {
-        return (utcTime - epoch);
-    }
+    Time timeFromUtcTimeString(const std::string& utcTimeString);
+    
+    /// @ingroup Utilities
+    std::string utcTimeString(const Time& t);
+    
+    /// @ingroup Utilities
+    Time timeFromLocalTimeStringAndZone(const std::string& localTimeString, Timezone zone);
 
     /// @ingroup Utilities
-    inline posix_time::ptime utcTime(Time t)
-    {
-        return (epoch + t);
-    }
+    std::string localTimeString(const Time& t, Timezone zone);
+
+    /// @}
+    
+    /// @name Boost ptime access
+    /// @brief Useful only in a few select cases, e.g. involving parsing.
+    ///
+    /// Not part of the normal treatment of time points!
+    /// @{
+    
+    /// @ingroup Utilities
+    Time timeFromUtcPTime(const boost::posix_time::ptime& utcPTime);
+    
+    /// @ingroup Utilities
+    boost::posix_time::ptime utcPTime(const Time& t);
+    
+    /// @ingroup Utilities
+    Time timeFromLocalPTime(const boost::posix_time::ptime& localPTime, Timezone zone);
 
     /// @ingroup Utilities
-    posix_time::ptime utcTimeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz);
-
-    /// @ingroup Utilities
-    inline posix_time::ptime localTime(const Time& t, const local_time::time_zone_ptr localTz)
-    {
-        return boost::local_time::local_date_time(epoch + t, localTz).local_time();
-    }
-
-    /// @ingroup Utilities
-    inline Time timeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz)
-    {
-        return (utcTimeFromLocalTime(localTime, localTz) - epoch);
-    }
+    boost::posix_time::ptime localPTime(const Time& t);
 
     /// @}
 

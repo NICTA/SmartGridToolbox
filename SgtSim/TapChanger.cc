@@ -49,7 +49,7 @@ namespace Sgt
 
     void TapChanger::initializeState()
     {
-        prevTimestep_ = posix_time::neg_infin;
+        prevTimestep_ = TimeSpecialValues::neg_infin;
     }
 
     // TODO: what if the deadband is too small and we're alternating settings?
@@ -59,7 +59,7 @@ namespace Sgt
         sgtLogIndent();
         bool tryAgain = false;
 
-        bool isFirstStep = (prevTimestep_ == posix_time::neg_infin);
+        bool isFirstStep = (prevTimestep_ == TimeSpecialValues::neg_infin);
         if (isFirstStep)
         {
             sgtLogDebug() << sComponentType() << " " << id() << " : First iteration" << std::endl;

@@ -87,7 +87,7 @@ namespace Sgt
 
             virtual Time validUntil() const override
             {
-                return posix_time::pos_infin; // Never undergo a scheduled update.
+                return TimeSpecialValues::pos_infin; // Never undergo a scheduled update.
             }
 
             virtual void initializeState() override;
@@ -132,7 +132,7 @@ namespace Sgt
             double setpoint_;
             double tolerance_{0.02};
           
-            Time prevTimestep_{posix_time::neg_infin};
+            Time prevTimestep_{TimeSpecialValues::neg_infin};
             size_t iter_{0};
             std::size_t setting_{0};
             double val_{0};

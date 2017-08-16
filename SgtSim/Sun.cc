@@ -28,7 +28,7 @@ namespace Sgt
         const double dAstronomicalUnit = 149597890.0; // km.
     }
 
-    SphericalAngles sunPos(const posix_time::ptime& utcTime, const LatLong& location)
+    SphericalAngles sunPos(const Time& time, const LatLong& location)
     {
         // Note: in original code, time was "udtTime". "UT" was also mentioned. Not sure exactly what "UDT" refers to
         // but UT is probably either UT1 or UTC, both being approximately equivalent. So I changed variable name
@@ -47,6 +47,8 @@ namespace Sgt
         // Auxiliary variables
         double dY;
         double dX;
+
+        boost::posix_time::ptime utcTime = utcPTime(time); 
 
         // Calculate difference in days between the current Julian Day and JD 2451545.0, which is noon 1 January 2000
         // Universal Time

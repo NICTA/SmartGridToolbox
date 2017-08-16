@@ -45,60 +45,52 @@ namespace Sgt
 
 namespace YAML
 {
-    using Sgt::BusType;
-    using Sgt::Complex;
-    using Sgt::json;
-    using Sgt::Phase;
-    using Sgt::Phases;
-    using Sgt::Time;
-    using Sgt::posix_time::ptime;
-    
     template<> struct convert<std::nullptr_t>
     {
         static Node encode(const std::nullptr_t& from);
         static bool decode(const Node& nd, std::nullptr_t& to);
     };
     
-    template<> struct convert<json>
+    template<> struct convert<Sgt::json>
     {
-        static Node encode(const json& from);
-        static bool decode(const Node& nd, json& to);
+        static Node encode(const Sgt::json& from);
+        static bool decode(const Node& nd, Sgt::json& to);
     };
 
-    template<> struct convert<Complex>
+    template<> struct convert<Sgt::Complex>
     {
-        static Node encode(const Complex& from);
-        static bool decode(const Node& nd, Complex& to);
+        static Node encode(const Sgt::Complex& from);
+        static bool decode(const Node& nd, Sgt::Complex& to);
     };
 
-    template<> struct convert<Phase>
+    template<> struct convert<Sgt::Phase>
     {
-        static Node encode(const Phase& from);
-        static bool decode(const Node& nd, Phase& to);
+        static Node encode(const Sgt::Phase& from);
+        static bool decode(const Node& nd, Sgt::Phase& to);
     };
 
-    template<> struct convert<Phases>
+    template<> struct convert<Sgt::Phases>
     {
-        static Node encode(const Phases& from);
-        static bool decode(const Node& nd, Phases& to);
+        static Node encode(const Sgt::Phases& from);
+        static bool decode(const Node& nd, Sgt::Phases& to);
     };
 
-    template<> struct convert<BusType>
+    template<> struct convert<Sgt::BusType>
     {
-        static Node encode(const BusType& from);
-        static bool decode(const Node& nd, BusType& to);
+        static Node encode(const Sgt::BusType& from);
+        static bool decode(const Node& nd, Sgt::BusType& to);
     };
 
-    template<> struct convert<Time>
+    template<> struct convert<Sgt::Time>
     {
-        static Node encode(const Time& from);
-        static bool decode(const Node& nd, Time& to);
+        static Node encode(const Sgt::Time& from);
+        static bool decode(const Node& nd, Sgt::Time& to);
     };
 
-    template<> struct convert<ptime>
+    template<> struct convert<boost::posix_time::ptime>
     {
-        static Node encode(const ptime& from);
-        static bool decode(const Node& nd, ptime& to);
+        static Node encode(const boost::posix_time::ptime& from);
+        static bool decode(const Node& nd, boost::posix_time::ptime& to);
     };
 
     template<typename T> struct convert<arma::Col<T>>

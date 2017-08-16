@@ -18,9 +18,9 @@ namespace Sgt
 {
     namespace
     {
-        Time parseTime(const YAML::Node& nd, local_time::time_zone_ptr timezone, const ParserBase& parser)
+        Time parseTime(const YAML::Node& nd, Timezone timezone, const ParserBase& parser)
         {
-            return timeFromLocalTime(parser.expand<posix_time::ptime>(nd), timezone);
+            return timeFromLocalPTime(parser.expand<boost::posix_time::ptime>(nd), timezone);
         }
     }
 
@@ -33,8 +33,7 @@ namespace Sgt
         {
             try
             {
-                sim.setTimezone(
-                    local_time::time_zone_ptr(new local_time::posix_time_zone(parser.expand<std::string>(nodeTz))));
+                sim.setTimezone(Timezone(parser.expand<std::string>(nodeTz)));
             }
             catch (...)
             {

@@ -29,7 +29,6 @@
 using namespace arma;
 using namespace Sgt;
 using namespace std;
-using namespace boost::posix_time;
 using namespace boost::unit_test;
 
 struct Init
@@ -199,7 +198,7 @@ BOOST_AUTO_TEST_CASE (test_spline)
 
 BOOST_AUTO_TEST_CASE (test_spline_timeseries)
 {
-    local_time::time_zone_ptr tz(new local_time::posix_time_zone("UTC0"));
+    Timezone tz(new local_time::posix_time_zone("UTC0"));
     using namespace boost::gregorian;
     Time base = timeFromLocalTime(posix_time::ptime(gregorian::date(2013, Apr, 26), hours(0)), tz);
     SplineTimeSeries<Time> sts;
@@ -224,9 +223,9 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
 
 BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
 {
-    local_time::time_zone_ptr tz(new local_time::posix_time_zone("UTC0"));
+    Timezone tz("UTC0");
     using namespace boost::gregorian;
-    Time base = timeFromLocalTime(posix_time::ptime(gregorian::date(2013, Apr, 26), hours(0)), tz);
+    Time base = timeFromLocalTimeStringAndZone("2013-04-26 00:00:00", tz);
     LerpTimeSeries<Time, Complex> lts;
     lts.addPoint(base + hours(0), Complex(0, 0));
     lts.addPoint(base + hours(1), Complex(3, 1));
@@ -243,8 +242,8 @@ BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
 
 BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
 {
-    time_duration base(minutes(5));
-    StepwiseTimeSeries<time_duration, double> sts;
+    Time base(minutes(5));
+    StepwiseTimeSeries<Time, double> sts;
     sts.addPoint(base + hours(0), 1.5);
     sts.addPoint(base + hours(1), 2.5);
     sts.addPoint(base + hours(3), 5.5);
@@ -258,7 +257,7 @@ BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
 
 BOOST_AUTO_TEST_CASE (test_function_timeseries)
 {
-    FunctionTimeSeries <time_duration, double> fts([] (time_duration td) {return 2 * dSeconds(td);});
+    FunctionTimeSeries <Time, double> fts([] (Time td) {return 2 * dSeconds(td);});
     BOOST_CHECK(fts.value(seconds(-1)) == -2.0);
     BOOST_CHECK(fts.value(seconds(3)) == 6.0);
 }

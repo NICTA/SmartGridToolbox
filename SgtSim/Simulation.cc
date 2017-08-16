@@ -67,7 +67,7 @@ namespace Sgt
                     "Simulation insert contingent update of " + comp->componentType() + " " + comp->id());
             comp->insertContingentUpdateAction_.addTrigger(comp->needsUpdate());
         }
-        currentTime_ = posix_time::neg_infin;
+        currentTime_ = TimeSpecialValues::neg_infin;
         // Contingent updates may have been inserted during initialization process e.g. when setting up setpoints etc.
         contingentUpdates_.clear();
 
@@ -96,7 +96,7 @@ namespace Sgt
         sgtLogDebug(LogLevel::VERBOSE) << "Number of scheduled = " << scheduledUpdates_.size() << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << "Number of contingent = " << contingentUpdates_.size() << std::endl;
 
-        Time nextSchedTime = posix_time::pos_infin;
+        Time nextSchedTime = TimeSpecialValues::pos_infin;
         ComponentPtr<SimComponent> schedComp;
         auto schedUpdateIt = scheduledUpdates_.begin();
 
@@ -200,12 +200,12 @@ namespace Sgt
     void Simulation::doTimestep()
     {
         Time time1 = currentTime_;
-        sgtLogMessage() << "Simulation doTimestep() at time " << localTime(time1) << std::endl;
+        sgtLogMessage() << "Simulation doTimestep() at time " << localTimeString(time1, timezone_) << std::endl;
         LogIndent indent;
         // Do at least one step. This may push us over into the next timestep, in which case we should stop, unless
         // this was the very first timestep.
         doNextUpdate();
-        Time timeToComplete = (time1 == posix_time::neg_infin) ? currentTime_ : time1;
+        Time timeToComplete = (time1 == TimeSpecialValues::neg_infin) ? currentTime_ : time1;
 
         // Now finish off all contingent and scheduled updates in this step.
         while ((contingentUpdates_.size() > 0) ||
@@ -223,7 +223,8 @@ namespace Sgt
         }
 
         indent.out();
-        sgtLogMessage() << "Simulation doTimestep() at time " << localTime(time1) << " finished." << std::endl;
+        sgtLogMessage() << "Simulation doTimestep() at time " << localTimeString(time1, timezone_) 
+            << " finished." << std::endl;
     }
 
     void Simulation::logComponents() const

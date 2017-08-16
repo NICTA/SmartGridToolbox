@@ -73,13 +73,13 @@ namespace Sgt
             }
 
             /// @brief Timezone.
-            const local_time::time_zone_ptr timezone() const
+            Timezone timezone() const
             {
                 return timezone_;
             }
 
             /// @brief Timezone.
-            void setTimezone(local_time::time_zone_ptr tz)
+            void setTimezone(Timezone tz)
             {
                 timezone_ = tz;
             }
@@ -88,18 +88,6 @@ namespace Sgt
             Time currentTime() const
             {
                 return currentTime_;
-            }
-
-            /// @brief Local time for simulation.
-            posix_time::ptime localTime(const Time& t)
-            {
-                return Sgt::localTime(t, timezone_);
-            }
-            
-            /// @brief Current local time.
-            posix_time::ptime currentLocalTime()
-            {
-                return localTime(currentTime());
             }
 
             /// @brief Access SimComponents (const version).
@@ -229,15 +217,15 @@ namespace Sgt
 
             bool isValid_ = false;
 
-            Time startTime_{posix_time::not_a_date_time};
-            Time endTime_{posix_time::not_a_date_time};
+            Time startTime_{TimeSpecialValues::not_a_date_time};
+            Time endTime_{TimeSpecialValues::not_a_date_time};
             LatLong latLong_;
-            local_time::time_zone_ptr timezone_;
+            Timezone timezone_;
 
             MutableComponentCollection<SimComponent> simComps_;
             MutableComponentCollection<TimeSeriesBase> timeSeries_;
 
-            Time currentTime_{posix_time::neg_infin};
+            Time currentTime_{TimeSpecialValues::neg_infin};
             ScheduledUpdates scheduledUpdates_;
             ContingentUpdates contingentUpdates_;
             Event timestepWillStart_{"Simulation timestep will start"};

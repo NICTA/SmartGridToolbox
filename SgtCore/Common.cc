@@ -263,8 +263,32 @@ namespace Sgt
     template std::ostream& operator<< <int>(std::ostream& os, const Mat<int>& v);
     template std::ostream& operator<< <uword>(std::ostream& os, const Mat<uword>& v);
     template std::ostream& operator<< <Complex>(std::ostream& os, const Mat<Complex>& v);
-    
-    const posix_time::ptime epoch(gregorian::date(1970,1,1));
+
+    namespace
+    {
+        const boost::posix_time::ptime epoch(boost::gregorian::date(1970,1,1));
+
+        boost::posix_time::ptime localPTimeToUtcPTime(boost::posix_time::ptime localTime, Timezone localTz)
+        {
+            if (localTime.is_not_a_date_time())
+            {
+                return localTime;
+            }
+            boost::local_time::local_date_time ldt(localTime.date(), localTime.time_of_day(), localTz,
+                    boost::local_time::local_date_time::NOT_DATE_TIME_ON_ERROR);
+            return ldt.utc_time();
+        }
+        
+        boost::posix_time::ptime utcPTimeToLocalPTime(boost::posix_time::ptime utcTime, Timezone localTz)
+        {
+            if (utcTime.is_not_a_date_time())
+            {
+                return utcTime;
+            }
+            boost::local_time::local_date_time ldt(utcTime, localTz);
+            return ldt.local_time();
+        }
+    }
 
     Time timeFromDSeconds(double dSeconds)
     {
@@ -273,16 +297,44 @@ namespace Sgt
         return Time(0, 0, Time::sec_type(wholeSecs), 
                     Time::fractional_seconds_type(fracSecs * Time::ticks_per_second()));
     }
-
-    posix_time::ptime utcTimeFromLocalTime(posix_time::ptime localTime, const local_time::time_zone_ptr localTz)
+    
+    Time timeFromUtcTimeString(const std::string& utcTimeString)
     {
-        using namespace boost::local_time;
-        if (localTime.is_not_a_date_time())
-        {
-            return localTime;
-        }
-        local_date_time ldt(localTime.date(), localTime.time_of_day(), localTz,
-                local_date_time::NOT_DATE_TIME_ON_ERROR);
-        return ldt.utc_time();
+        return timeFromUtcPTime(boost::posix_time::time_from_string(utcTimeString));
+    }
+    
+    std::string utcTimeString(const Time& t)
+    {
+        return boost::posix_time::to_simple_string(utcPTime(t));
+    }
+
+    Time timeFromLocalTimeStringAndZone(const std::string& localTimeString, Timezone zone)
+    {
+        return timeFromUtcPTime(localPTimeToUtcPTime(boost::posix_time::time_from_string(localTimeString), zone));
+    }
+    
+    std::string localTimeString(const Time& t, Timezone zone)
+    {
+        return boost::posix_time::to_simple_string(utcPTimeToLocalPTime(utcPTime(t), zone));
+    }
+
+    Time timeFromUtcPTime(const boost::posix_time::ptime& utcPTime)
+    {
+        return utcPTime - epoch;
+    }
+    
+    boost::posix_time::ptime utcPTime(const Time& t)
+    {
+        return epoch + t;
+    }
+    
+    Time timeFromLocalPTime(const boost::posix_time::ptime& localPTime, Timezone zone)
+    {
+        return timeFromUtcPTime(localPTimeToUtcPTime(localPTime, zone));
+    }
+    
+    boost::posix_time::ptime localPTime(const Time& t, Timezone zone)
+    {
+        return utcPTimeToLocalPTime(utcPTime(t), zone);
     }
 }

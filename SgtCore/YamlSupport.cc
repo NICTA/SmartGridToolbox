@@ -16,14 +16,17 @@
 
 namespace YAML
 {
+    using namespace arma;
+    using namespace boost::posix_time;
     using namespace Sgt;
+    using namespace std;
     
-    Node convert<std::nullptr_t>::encode(const std::nullptr_t& from)
+    Node convert<nullptr_t>::encode(const nullptr_t& from)
     {
         return Node();
     }
 
-    bool convert<std::nullptr_t>::decode(const Node& nd, std::nullptr_t& to)
+    bool convert<nullptr_t>::decode(const Node& nd, nullptr_t& to)
     {
         bool result = false;
         if (nd.Type() == YAML::NodeType::Null)
@@ -43,7 +46,7 @@ namespace YAML
     bool convert<json>::decode(const Node& nd, json& to)
     {
         // TODO: actually try to reconstruct json from YAML.
-        to = nd.as<std::string>();
+        to = nd.as<string>();
         return true;
     }
 
@@ -55,7 +58,7 @@ namespace YAML
 
     bool convert<Complex>::decode(const Node& nd, Complex& to)
     {
-        to = from_string<Complex>(nd.as<std::string>());
+        to = from_string<Complex>(nd.as<string>());
         return true;
     }
 
@@ -67,7 +70,7 @@ namespace YAML
 
     bool convert<Phase>::decode(const Node& nd, Phase& to)
     {
-        to = from_string<Phase>(nd.as<std::string>());
+        to = from_string<Phase>(nd.as<string>());
         return true;
     }
 
@@ -89,8 +92,8 @@ namespace YAML
         }
         else
         {
-            std::vector<Phase> pVec; 
-            for (std::size_t i = 0; i < nd.size(); ++i)
+            vector<Phase> pVec; 
+            for (size_t i = 0; i < nd.size(); ++i)
             {
                 pVec.push_back(nd[i].as<Phase>());
             }
@@ -107,46 +110,46 @@ namespace YAML
 
     bool convert<BusType>::decode(const Node& nd, BusType& to)
     {
-        to = from_string<BusType>(nd.as<std::string>());
+        to = from_string<BusType>(nd.as<string>());
         return true;
     }
 
     Node convert<Time>::encode(const Time& from)
     {
-        Node nd(posix_time::to_simple_string(from));
+        Node nd(boost::posix_time::to_simple_string(from));
         return nd;
     }
 
     bool convert<Time>::decode(const Node& nd, Time& to)
     {
-        to = posix_time::duration_from_string(nd.as<std::string>());
+        to = boost::posix_time::duration_from_string(nd.as<string>());
         return true;
     }
 
-    Node convert<posix_time::ptime>::encode(const posix_time::ptime& from)
+    Node convert<ptime>::encode(const ptime& from)
     {
-        Node nd(posix_time::to_simple_string(from));
+        Node nd(boost::posix_time::to_simple_string(from));
         return nd;
     }
 
-    bool convert<posix_time::ptime>::decode(const Node& nd, posix_time::ptime& to)
+    bool convert<ptime>::decode(const Node& nd, ptime& to)
     {
-        to = posix_time::time_from_string(nd.as<std::string>());
+        to = boost::posix_time::time_from_string(nd.as<string>());
         return true;
     }
 
-    template<typename T> Node convert<arma::Col<T>>::encode(const arma::Col<T>& from)
+    template<typename T> Node convert<Col<T>>::encode(const Col<T>& from)
     {
         Node nd;
         for (const T& val : from) nd.push_back(val);
         return nd;
     }
-    template Node convert<arma::Col<double>>::encode(const arma::Col<double>& from);
-    template Node convert<arma::Col<Complex>>::encode(const arma::Col<Complex>& from);
-    template Node convert<arma::Col<int>>::encode(const arma::Col<int>& from);
-    template Node convert<arma::Col<arma::uword>>::encode(const arma::Col<arma::uword>& from);
+    template Node convert<Col<double>>::encode(const Col<double>& from);
+    template Node convert<Col<Complex>>::encode(const Col<Complex>& from);
+    template Node convert<Col<int>>::encode(const Col<int>& from);
+    template Node convert<Col<uword>>::encode(const Col<uword>& from);
 
-    template<typename T> bool convert<arma::Col<T>>::decode(const Node& nd, arma::Col<T>& to)
+    template<typename T> bool convert<Col<T>>::decode(const Node& nd, Col<T>& to)
     {
         if(!nd.IsSequence())
         {
@@ -154,26 +157,26 @@ namespace YAML
         }
         else
         {
-            to = arma::Col<T>(nd.size());
-            for (arma::uword i = 0; i < nd.size(); ++i)
+            to = Col<T>(nd.size());
+            for (uword i = 0; i < nd.size(); ++i)
             {
                 to(i) = nd[i].as<T>();
             }
         }
         return true;
     }
-    template bool convert<arma::Col<double>>::decode(const Node& nd, arma::Col<double>& to);
-    template bool convert<arma::Col<Complex>>::decode(const Node& nd, arma::Col<Complex>& to);
-    template bool convert<arma::Col<int>>::decode(const Node& nd, arma::Col<int>& to);
-    template bool convert<arma::Col<arma::uword>>::decode(const Node& nd, arma::Col<arma::uword>& to);
+    template bool convert<Col<double>>::decode(const Node& nd, Col<double>& to);
+    template bool convert<Col<Complex>>::decode(const Node& nd, Col<Complex>& to);
+    template bool convert<Col<int>>::decode(const Node& nd, Col<int>& to);
+    template bool convert<Col<uword>>::decode(const Node& nd, Col<uword>& to);
 
-    template<typename T> Node convert<arma::Mat<T>>::encode(const arma::Mat<T>& from)
+    template<typename T> Node convert<Mat<T>>::encode(const Mat<T>& from)
     {
         Node nd;
-        for (arma::uword i = 0; i < from.n_rows; ++i)
+        for (uword i = 0; i < from.n_rows; ++i)
         {
             Node nd1;
-            for (arma::uword k = 0; k < from.n_cols; ++k)
+            for (uword k = 0; k < from.n_cols; ++k)
             {
                 nd1.push_back(from(i, k));
             }
@@ -181,12 +184,12 @@ namespace YAML
         }
         return nd;
     }
-    template Node convert<arma::Mat<double>>::encode(const arma::Mat<double>& from);
-    template Node convert<arma::Mat<Complex>>::encode(const arma::Mat<Complex>& from);
-    template Node convert<arma::Mat<int>>::encode(const arma::Mat<int>& from);
-    template Node convert<arma::Mat<arma::uword>>::encode(const arma::Mat<arma::uword>& from);
+    template Node convert<Mat<double>>::encode(const Mat<double>& from);
+    template Node convert<Mat<Complex>>::encode(const Mat<Complex>& from);
+    template Node convert<Mat<int>>::encode(const Mat<int>& from);
+    template Node convert<Mat<uword>>::encode(const Mat<uword>& from);
 
-    template<typename T> bool convert<arma::Mat<T>>::decode(const Node& nd, arma::Mat<T>& to)
+    template<typename T> bool convert<Mat<T>>::decode(const Node& nd, Mat<T>& to)
     {
         if(!nd.IsSequence())
         {
@@ -197,27 +200,27 @@ namespace YAML
             auto nrows = nd.size();
             if (nrows == 0)
             {
-                std::cerr << "Matrix has no rows in yaml." << std::endl;
+                cerr << "Matrix has no rows in yaml." << endl;
                 return false;
             }
             auto ncols = nd[0].size();
             if (ncols == 0)
             {
-                std::cerr << "Matrix has no columns in yaml." << std::endl;
+                cerr << "Matrix has no columns in yaml." << endl;
                 return false;
             }
-            for (std::size_t i = 1; i < nrows; ++i)
+            for (size_t i = 1; i < nrows; ++i)
             {
                 if (nd[i].size() != ncols)
                 {
-                    std::cerr << "Ill-formed matrix in yaml." << std::endl;
+                    cerr << "Ill-formed matrix in yaml." << endl;
                     return false;
                 }
             }
-            to = arma::Mat<T>(nrows, ncols);
-            for (arma::uword i = 0; i < nrows; ++i)
+            to = Mat<T>(nrows, ncols);
+            for (uword i = 0; i < nrows; ++i)
             {
-                for (arma::uword k = 0; k < ncols; ++k)
+                for (uword k = 0; k < ncols; ++k)
                 {
                     to(i, k) = nd[i][k].as<T>();
                 }
@@ -225,8 +228,8 @@ namespace YAML
         }
         return true;
     }
-    template bool convert<arma::Mat<double>>::decode(const Node& nd, arma::Mat<double>& to);
-    template bool convert<arma::Mat<Complex>>::decode(const Node& nd, arma::Mat<Complex>& to);
-    template bool convert<arma::Mat<int>>::decode(const Node& nd, arma::Mat<int>& to);
-    template bool convert<arma::Mat<arma::uword>>::decode(const Node& nd, arma::Mat<arma::uword>& to);
+    template bool convert<Mat<double>>::decode(const Node& nd, Mat<double>& to);
+    template bool convert<Mat<Complex>>::decode(const Node& nd, Mat<Complex>& to);
+    template bool convert<Mat<int>>::decode(const Node& nd, Mat<int>& to);
+    template bool convert<Mat<uword>>::decode(const Node& nd, Mat<uword>& to);
 }

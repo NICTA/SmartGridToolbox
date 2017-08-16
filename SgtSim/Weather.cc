@@ -18,7 +18,7 @@ namespace Sgt
 {
     Irradiance WeatherModel::sunModelIrr(const Time& t)
     {
-        SphericalAngles angs = sunPos(utcTime(t), latLong);
+        SphericalAngles angs = sunPos(t, latLong);
         Irradiance irr = Sgt::irradiance(angs, altitude);
         auto atten = cloudAttenuationFactors(t, angs);
         irr.direct[0] *= atten[0]; 

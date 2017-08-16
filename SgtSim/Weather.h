@@ -165,7 +165,7 @@ namespace Sgt
             
             arma::Col<double>::fixed<3> cloudAttenuationFactors() const
             {
-                return model.cloudAttenuationFactors(lastUpdated(), sunPos(utcTime(lastUpdated()), model.latLong));
+                return model.cloudAttenuationFactors(lastUpdated(), sunPos(lastUpdated(), model.latLong));
             }
 
         /// @}

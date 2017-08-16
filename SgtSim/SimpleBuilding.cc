@@ -59,7 +59,7 @@ namespace Sgt
 
     void SimpleBuilding::updateState(Time t)
     {
-        double dt = lastUpdated() == posix_time::neg_infin ? 0 : dSeconds(t - lastUpdated());
+        double dt = lastUpdated() == TimeSpecialValues::neg_infin ? 0 : dSeconds(t - lastUpdated());
 
         if (!isMaxed_)
         {

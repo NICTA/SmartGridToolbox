@@ -73,13 +73,13 @@ namespace Sgt
 
         virtual void initializeState() override
         {
-            nextBeat_ = posix_time::not_a_date_time;
+            nextBeat_ = TimeSpecialValues::not_a_date_time;
             needsUpdate().trigger(); // Update on the first timestep.
         }
 
         virtual void updateState(Time t) override
         {
-            if (nextBeat_ == posix_time::not_a_date_time)
+            if (nextBeat_ == TimeSpecialValues::not_a_date_time)
             {
                 nextBeat_ = t; // OK because I'm guaranteed to update on first timestep.
             }
@@ -117,7 +117,7 @@ namespace Sgt
         private:
 
         Time dt_;
-        Time nextBeat_{posix_time::not_a_date_time};
+        Time nextBeat_{TimeSpecialValues::not_a_date_time};
     };
 }
 
