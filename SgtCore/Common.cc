@@ -268,7 +268,7 @@ namespace Sgt
     {
         const boost::posix_time::ptime epoch(boost::gregorian::date(1970,1,1));
 
-        boost::posix_time::ptime localPTimeToUtcPTime(boost::posix_time::ptime localTime, Timezone localTz)
+        boost::posix_time::ptime localPtimeToUtcPtime(boost::posix_time::ptime localTime, Timezone localTz)
         {
             if (localTime.is_not_a_date_time())
             {
@@ -279,7 +279,7 @@ namespace Sgt
             return ldt.utc_time();
         }
         
-        boost::posix_time::ptime utcPTimeToLocalPTime(boost::posix_time::ptime utcTime, Timezone localTz)
+        boost::posix_time::ptime utcPtimeToLocalPtime(boost::posix_time::ptime utcTime, Timezone localTz)
         {
             if (utcTime.is_not_a_date_time())
             {
@@ -300,41 +300,41 @@ namespace Sgt
     
     Time timeFromUtcTimeString(const std::string& utcTimeString)
     {
-        return timeFromUtcPTime(boost::posix_time::time_from_string(utcTimeString));
+        return timeFromUtcPtime(boost::posix_time::time_from_string(utcTimeString));
     }
     
     std::string utcTimeString(const Time& t)
     {
-        return boost::posix_time::to_simple_string(utcPTime(t));
+        return boost::posix_time::to_simple_string(utcPtime(t));
     }
 
     Time timeFromLocalTimeStringAndZone(const std::string& localTimeString, Timezone zone)
     {
-        return timeFromUtcPTime(localPTimeToUtcPTime(boost::posix_time::time_from_string(localTimeString), zone));
+        return timeFromUtcPtime(localPtimeToUtcPtime(boost::posix_time::time_from_string(localTimeString), zone));
     }
     
     std::string localTimeString(const Time& t, Timezone zone)
     {
-        return boost::posix_time::to_simple_string(utcPTimeToLocalPTime(utcPTime(t), zone));
+        return boost::posix_time::to_simple_string(utcPtimeToLocalPtime(utcPtime(t), zone));
     }
 
-    Time timeFromUtcPTime(const boost::posix_time::ptime& utcPTime)
+    Time timeFromUtcPtime(const boost::posix_time::ptime& utcPtime)
     {
-        return utcPTime - epoch;
+        return utcPtime - epoch;
     }
     
-    boost::posix_time::ptime utcPTime(const Time& t)
+    boost::posix_time::ptime utcPtime(const Time& t)
     {
         return epoch + t;
     }
     
-    Time timeFromLocalPTime(const boost::posix_time::ptime& localPTime, Timezone zone)
+    Time timeFromLocalPtime(const boost::posix_time::ptime& localPtime, Timezone zone)
     {
-        return timeFromUtcPTime(localPTimeToUtcPTime(localPTime, zone));
+        return timeFromUtcPtime(localPtimeToUtcPtime(localPtime, zone));
     }
     
-    boost::posix_time::ptime localPTime(const Time& t, Timezone zone)
+    boost::posix_time::ptime localPtime(const Time& t, Timezone zone)
     {
-        return utcPTimeToLocalPTime(utcPTime(t), zone);
+        return utcPtimeToLocalPtime(utcPtime(t), zone);
     }
 }

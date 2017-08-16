@@ -48,7 +48,7 @@ namespace Sgt
         double dY;
         double dX;
 
-        boost::posix_time::ptime utcTime = utcPTime(time); 
+        boost::posix_time::ptime utcTime = utcPtime(time); 
 
         // Calculate difference in days between the current Julian Day and JD 2451545.0, which is noon 1 January 2000
         // Universal Time

@@ -450,21 +450,21 @@ namespace Sgt
     /// @{
     
     /// @ingroup Utilities
-    Time timeFromUtcPTime(const boost::posix_time::ptime& utcPTime);
+    Time timeFromUtcPtime(const boost::posix_time::ptime& utcPtime);
     
     /// @ingroup Utilities
-    boost::posix_time::ptime utcPTime(const Time& t);
+    boost::posix_time::ptime utcPtime(const Time& t);
     
     /// @ingroup Utilities
-    Time timeFromLocalPTime(const boost::posix_time::ptime& localPTime, Timezone zone);
+    Time timeFromLocalPtime(const boost::posix_time::ptime& localPtime, Timezone zone);
 
     /// @ingroup Utilities
-    boost::posix_time::ptime localPTime(const Time& t);
+    boost::posix_time::ptime localPtime(const Time& t);
     
     /// @ingroup Utilities
     inline Time timeFromUtcTimeT(std::time_t timeT)
     {
-        return timeFromUtcPTime(boost::posix_time::from_time_t(timeT));
+        return timeFromUtcPtime(boost::posix_time::from_time_t(timeT));
     }
 
     /// @}

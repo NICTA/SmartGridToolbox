@@ -20,7 +20,7 @@ namespace Sgt
     {
         Time parseTime(const YAML::Node& nd, Timezone timezone, const ParserBase& parser)
         {
-            return timeFromLocalPTime(parser.expand<boost::posix_time::ptime>(nd), timezone);
+            return timeFromLocalPtime(parser.expand<boost::posix_time::ptime>(nd), timezone);
         }
     }
 
