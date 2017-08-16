@@ -443,7 +443,7 @@ namespace Sgt
 
     /// @}
     
-    /// @name Boost ptime access
+    /// @name Boost ptime and time_t access
     /// @brief Useful only in a few select cases, e.g. involving parsing.
     ///
     /// Not part of the normal treatment of time points!
@@ -460,6 +460,12 @@ namespace Sgt
 
     /// @ingroup Utilities
     boost::posix_time::ptime localPTime(const Time& t);
+    
+    /// @ingroup Utilities
+    inline Time timeFromUtcTimeT(std::time_t timeT)
+    {
+        return timeFromUtcPTime(boost::posix_time::from_time_t(timeT));
+    }
 
     /// @}
 
