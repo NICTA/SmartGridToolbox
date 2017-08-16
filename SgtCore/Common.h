@@ -424,7 +424,7 @@ namespace Sgt
     Time timeFromDSeconds(double dSeconds);
     
     /// @ingroup Utilities
-    Time timeFromDurationString(const std::string& durString)
+    inline Time timeFromDurationString(const std::string& durString)
     {
         return boost::posix_time::duration_from_string(durString);
     }
