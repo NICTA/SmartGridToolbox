@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#define BOOST_TEST_MODULE test_template
+#define BOOST_TEST_MODULE sgt_tests
 
 #include <boost/test/included/unit_test.hpp>
 
@@ -80,9 +80,9 @@ BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_1)
     BOOST_CHECK(err12 < 0.001);
     BOOST_CHECK(err22 < 0.001);
 
-    BOOST_CHECK(std::abs(ZPhase(0,1) - ZPhase(1,0)) < 1e-6);
-    BOOST_CHECK(std::abs(ZPhase(0,2) - ZPhase(2,0)) < 1e-6);
-    BOOST_CHECK(std::abs(ZPhase(1,2) - ZPhase(2,1)) < 1e-6);
+    BOOST_CHECK(abs(ZPhase(0,1) - ZPhase(1,0)) < 1e-6);
+    BOOST_CHECK(abs(ZPhase(0,2) - ZPhase(2,0)) < 1e-6);
+    BOOST_CHECK(abs(ZPhase(1,2) - ZPhase(2,1)) < 1e-6);
 }
 
 BOOST_AUTO_TEST_CASE (test_overhead_compare_carson_2)
@@ -171,7 +171,7 @@ BOOST_AUTO_TEST_CASE (test_spline)
     {
         //We can extract the original data points by treating the spline as
         //a read-only STL container.
-        std::ofstream of("orig.dat");
+        ofstream of("orig.dat");
         for (Spline::const_iterator iPtr = spline.begin(); iPtr != spline.end(); ++iPtr)
             of << iPtr->first << " " << iPtr->second << "\n";
     }
@@ -190,7 +190,7 @@ BOOST_AUTO_TEST_CASE (test_spline)
         //points. The extrapolation is based on the boundary conditions
         //used.
 
-        std::ofstream of("spline.natural.dat");
+        ofstream of("spline.natural.dat");
         for (double x(-0.2); x <= 1.2001; x += 0.005)
             of << x << " " << spline(x) << "\n";
     }
@@ -212,7 +212,7 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
     for (int i = -1; i <= 25; ++i)
     {
         double val = sts.value(base + hours(i));
-        double err = std::abs(val - sin(i * pi / 12));
+        double err = abs(val - sin(i * pi / 12));
         if (i > -1 && i < 25)
         {
             BOOST_CHECK(err < 0.005);
@@ -221,38 +221,106 @@ BOOST_AUTO_TEST_CASE (test_spline_timeseries)
 }
 #endif
 
-BOOST_AUTO_TEST_CASE (test_lerp_timeseries)
+BOOST_AUTO_TEST_CASE (test_data_timeseries)
 {
-    Timezone tz("UTC0");
-    using namespace boost::gregorian;
-    Time base = timeFromLocalTimeStringAndZone("2013-04-26 00:00:00", tz);
-    LerpTimeSeries<Time, Complex> lts;
-    lts.addPoint(base + hours(0), Complex(0, 0));
-    lts.addPoint(base + hours(1), Complex(3, 1));
-    lts.addPoint(base + hours(3), Complex(10, 11));
+    auto addPoint = [](auto& series, const Time& t, const auto& v){series.addPoint(t, v);};
 
-    BOOST_CHECK(lts.value(base + hours(-1)) == Complex(0, 0));
-    BOOST_CHECK(lts.value(base + hours(0)) == Complex(0, 0));
-    BOOST_CHECK(lts.value(base + minutes(30)) == Complex(1.5, 0.5));
-    BOOST_CHECK(lts.value(base + hours(1)) == Complex(3, 1));
-    BOOST_CHECK(lts.value(base + hours(2)) == Complex(6.5, 6));
-    BOOST_CHECK(lts.value(base + hours(3)) == Complex(10, 11));
-    BOOST_CHECK(lts.value(base + hours(4) + seconds(1)) == Complex(10, 11));
-}
+    vector<Time> times = {hours(1), hours(2), hours(3), hours(4)};
+    Time t0 = times[0] - minutes(30);
 
-BOOST_AUTO_TEST_CASE (test_stepwise_timeseries)
-{
-    Time base(minutes(5));
-    StepwiseTimeSeries<Time, double> sts;
-    sts.addPoint(base + hours(0), 1.5);
-    sts.addPoint(base + hours(1), 2.5);
-    sts.addPoint(base + hours(3), 5.5);
+    {
+        StepwiseTimeSeries<Time, double> series(0.0);
+        vector<double> vals{1.0, 2.0, 3.0, 4.0};
+        for (int i = 0; i < times.size(); ++i) addPoint(series, times[i], vals[i]);
 
-    BOOST_CHECK(sts.value(base + seconds(-1)) == 1.5);
-    BOOST_CHECK(sts.value(base + seconds(1)) == 1.5);
-    BOOST_CHECK(sts.value(base + hours(1) - seconds(1)) == 1.5);
-    BOOST_CHECK(sts.value(base + hours(1) + seconds(1)) == 2.5);
-    BOOST_CHECK(sts.value(base + hours(3) + seconds(1)) == 5.5);
+        vector<double> expected{0.0, 1.0, 1.0, 2.0, 2.0, 3.0, 3.0, 4.0, 0.0};
+        Time t = t0;
+        for (auto it = expected.begin(); it != expected.end(); ++it, t += minutes(30))
+        {
+            std::cout << series.value(t) << " " << *it << std::endl;
+            BOOST_CHECK_CLOSE(series.value(t), *it, 1e-6);
+        }
+    }
+
+    std::cout << std::endl;
+
+    {
+        LerpTimeSeries<Time, double> series(0.0);
+        vector<double> vals{1.0, 2.0, 3.0, 4.0};
+        for (int i = 0; i < times.size(); ++i) addPoint(series, times[i], vals[i]);
+
+        vector<double> expected{0.0, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 0.0};
+        Time t = t0;
+        for (auto it = expected.begin(); it != expected.end(); ++it, t += minutes(30))
+        {
+            std::cout << series.value(t) << " " << *it << std::endl;
+            BOOST_CHECK_CLOSE(series.value(t), *it, 1e-6);
+        }
+    }
+    
+    std::cout << std::endl;
+
+    {
+        StepwiseTimeSeries<Time, Col<Complex>> series({{0.0, 0.0}, {0.0, 0.0}});
+        vector<Col<Complex>> vals{
+            {{1.0, 10.0}, {100.0, 1000.0}},
+            {{2.0, 20.0}, {200.0, 2000.0}},
+            {{3.0, 30.0}, {300.0, 3000.0}},
+            {{4.0, 40.0}, {400.0, 4000.0}}
+        };
+        for (int i = 0; i < times.size(); ++i) addPoint(series, times[i], vals[i]);
+
+        vector<Col<Complex>> expected{
+            {{0.0, 0.0}, {0.0, 0.0}},
+            {{1.0, 10.0}, {100.0, 1000.0}},
+            {{1.0, 10.0}, {100.0, 1000.0}},
+            {{2.0, 20.0}, {200.0, 2000.0}},
+            {{2.0, 20.0}, {200.0, 2000.0}},
+            {{3.0, 30.0}, {300.0, 3000.0}},
+            {{3.0, 30.0}, {300.0, 3000.0}},
+            {{4.0, 40.0}, {400.0, 4000.0}},
+            {{0.0, 0.0}, {0.0, 0.0}}
+        };
+        Time t = t0;
+        for (auto it = expected.begin(); it != expected.end(); ++it, t += minutes(30))
+        {
+            std::cout << series.value(t) << " " << *it << std::endl;
+            std::cout << (norm(series.value(t) - *it, 2)) << " " << *it << std::endl;
+            BOOST_CHECK_SMALL(norm(series.value(t) - *it, 2), 1e-6);
+        }
+    }
+
+    std::cout << std::endl;
+
+    {
+        LerpTimeSeries<Time, Col<Complex>> series({{0.0, 0.0}, {0.0, 0.0}});
+        vector<Col<Complex>> vals{
+            {{1.0, 10.0}, {100.0, 1000.0}},
+            {{2.0, 20.0}, {200.0, 2000.0}},
+            {{3.0, 30.0}, {300.0, 3000.0}},
+            {{4.0, 40.0}, {400.0, 4000.0}}
+        };
+        for (int i = 0; i < times.size(); ++i) addPoint(series, times[i], vals[i]);
+
+        vector<Col<Complex>> expected{
+            {{0.0, 0.0}, {0.0, 0.0}},
+            {{1.0, 10.0}, {100.0, 1000.0}},
+            {{1.5, 15.0}, {150.0, 1500.0}},
+            {{2.0, 20.0}, {200.0, 2000.0}},
+            {{2.5, 25.0}, {250.0, 2500.0}},
+            {{3.0, 30.0}, {300.0, 3000.0}},
+            {{3.5, 35.0}, {350.0, 3500.0}},
+            {{4.0, 40.0}, {400.0, 4000.0}},
+            {{0.0, 0.0}, {0.0, 0.0}}
+        };
+        Time t = t0;
+        for (auto it = expected.begin(); it != expected.end(); ++it, t += minutes(30))
+        {
+            std::cout << series.value(t) << " " << *it << std::endl;
+            std::cout << (norm(series.value(t) - *it, 2)) << " " << *it << std::endl;
+            BOOST_CHECK_SMALL(norm(series.value(t) - *it, 2), 1e-6);
+        }
+    }
 }
 
 BOOST_AUTO_TEST_CASE (test_function_timeseries)
@@ -267,7 +335,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
     BOOST_TEST_MESSAGE("Starting matpower tests");
     using namespace Sgt;
 
-    std::vector<std::string> cases =
+    vector<string> cases =
     {
         "caseSLPQ",
         "caseSLPV",
@@ -340,7 +408,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
 
     };
 
-    std::set<std::string> polExclude = {
+    set<string> polExclude = {
         "nesta_case1394sop_eir", // Flat start doesn't converge, neither does matpower.
         "nesta_case1460wp_eir", // Flat start doesn't converge, neither does matpower.
         "case3012wp", // Flat start doesn't converge, neither does matpower.
@@ -349,7 +417,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         "nesta_case3375wp_mp" // Flat start doesn't converge, neither does matpower.
     };
     
-    std::set<std::string> rectExclude = {
+    set<string> rectExclude = {
         "nesta_case300_ieee", // Doesn't converge.
         "case1354pegase", // Doesn't converge.
         "nesta_case1354_pegase", // Doesn't converge.
@@ -360,10 +428,10 @@ BOOST_AUTO_TEST_CASE (test_matpower)
         "case9241pegase" // Doesn't converge.
     };
 
-    std::map<std::string, std::pair<double, double>> times;
+    map<string, pair<double, double>> times;
     for (auto c : cases) times[c] = {-1, -1};
 
-    auto doTest = [&](const decltype(cases)& cs, const std::string& solverType, const std::set<std::string>& exclude)
+    auto doTest = [&](const decltype(cases)& cs, const string& solverType, const set<string>& exclude)
     {
         for (auto c : cs)
         {
@@ -374,7 +442,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
 
             BOOST_TEST_MESSAGE("Case " << c);
 
-            std::string yamlStr = std::string("--- [{matpower : {input_file : matpower_test_cases/") 
+            string yamlStr = string("--- [{matpower : {input_file : matpower_test_cases/") 
                 + c + ".m, default_kV_base : 11}, power_flow_solver : " + solverType + "}]";
             Network nw(100.0);
             nw.setUseFlatStart(true);
@@ -398,7 +466,7 @@ BOOST_AUTO_TEST_CASE (test_matpower)
             tRef = sw.cpuSeconds();
             BOOST_TEST_MESSAGE("Solve time = " << sw.cpuSeconds());
 
-            ifstream compareName(std::string("mp_compare/") + c + ".compare");
+            ifstream compareName(string("mp_compare/") + c + ".compare");
 
             int nBadV = 0;
             int nBadS = 0;
@@ -412,16 +480,16 @@ BOOST_AUTO_TEST_CASE (test_matpower)
 
                 Complex V = {Vr, Vi};
                 Complex S = {P, Q};
-                if (std::abs(V - bus->V()(0) / bus->VBase()) >= 1e-3)
+                if (abs(V - bus->V()(0) / bus->VBase()) >= 1e-3)
                 {
-                    std::cout << "Bus V mismatch at bus " << bus->id() << ": " 
-                        << V << " : " << bus->V() << std::endl;
+                    cout << "Bus V mismatch at bus " << bus->id() << ": " 
+                        << V << " : " << bus->V() << endl;
                     ++nBadV;
                 }
-                if (std::abs(S - bus->SGen()(0)) / nw.PBase() >= 1e-3)
+                if (abs(S - bus->SGen()(0)) / nw.PBase() >= 1e-3)
                 {
-                    std::cout << "orkBus S mismatch at bus " << bus->id() << ": " 
-                        << S << " : " << bus->SGen() << std::endl;
+                    cout << "orkBus S mismatch at bus " << bus->id() << ": " 
+                        << S << " : " << bus->SGen() << endl;
                     ++nBadS;
                 }
             }
@@ -446,7 +514,7 @@ BOOST_AUTO_TEST_CASE (test_const_I)
 {
     using namespace Sgt;
 
-    std::string yamlStr(
+    string yamlStr(
             "--- [{matpower : {input_file : matpower_test_cases/nesta_case189_edin.m, " "default_kV_base : 11}}]");
     Network nw(100.0);
     nw.setUseFlatStart(true);
@@ -454,31 +522,31 @@ BOOST_AUTO_TEST_CASE (test_const_I)
     Parser<Network> p;
     p.parse(n, nw);
 
-    std::string bus1Id = "bus_174";
+    string bus1Id = "bus_174";
     auto bus1 = nw.buses()[bus1Id]; // No existing zip generation. 
     assert(bus1->zips().size() == 0);
 
-    std::string branchId = "branch_194_bus_173_bus_174";
+    string branchId = "branch_194_bus_173_bus_174";
     auto branch = nw.branches()[branchId].as<CommonBranch>();
 
     auto bus0 = branch->bus0();
 
-    auto zip = std::make_shared<Zip>("zip_I_const", Phases{Phase::BAL});
-    Complex Ic = std::polar(1.0, 15.0 * pi / 180.0) * 0.789;
+    auto zip = make_shared<Zip>("zip_I_const", Phases{Phase::BAL});
+    Complex Ic = polar(1.0, 15.0 * pi / 180.0) * 0.789;
     zip->setIConst({Ic});
     nw.addZip(zip, bus1Id);
 
-    // for (std::string solverType : {"nr_pol", "nr_rect"})
-    for (std::string solverType : {"nr_rect"})
+    // for (string solverType : {"nr_pol", "nr_rect"})
+    for (string solverType : {"nr_rect"})
     {
         BOOST_TEST_MESSAGE("Solver type = " << solverType);
         /*
         auto solver = solverType == "nr_pol" 
-            ? std::unique_ptr<PowerFlowSolverInterface>(new PowerFlowNrPolSolver)
-            : std::unique_ptr<PowerFlowSolverInterface>(new PowerFlowNrRectSolver);
+            ? unique_ptr<PowerFlowSolverInterface>(new PowerFlowNrPolSolver)
+            : unique_ptr<PowerFlowSolverInterface>(new PowerFlowNrRectSolver);
         */
-        auto solver = std::unique_ptr<PowerFlowSolverInterface>(new PowerFlowNrRectSolver);
-        nw.setSolver(std::move(solver));
+        auto solver = unique_ptr<PowerFlowSolverInterface>(new PowerFlowNrRectSolver);
+        nw.setSolver(move(solver));
         bool ok = nw.solvePowerFlow();
         BOOST_CHECK(ok == true);
 
@@ -486,10 +554,10 @@ BOOST_AUTO_TEST_CASE (test_const_I)
         Complex V1 = bus1->V()(0);
         Complex S1 = bus1->SZip()(0);
 
-        BOOST_CHECK(std::abs(S1 - conj(Ic) * abs(V1)) < 1e-6);
+        BOOST_CHECK(abs(S1 - conj(Ic) * abs(V1)) < 1e-6);
 
         Complex I1 = -(branch->Y() * Col<Complex>({V0, V1})).eval()(1); // Current entering bus 1 from bus 0.
-        BOOST_CHECK(std::abs(Ic * V1 / abs(V1)  - I1) < 1e-6);
+        BOOST_CHECK(abs(Ic * V1 / abs(V1)  - I1) < 1e-6);
     }
 }
 
@@ -576,9 +644,9 @@ BOOST_AUTO_TEST_CASE (test_phases_A)
     netw.solvePowerFlow();
     auto V0 = netw.buses()[0]->V();
     auto V1 = netw.buses()[1]->V();
-    BOOST_CHECK_SMALL(std::abs(V0(0) - V1(1)), 1e-9);
-    BOOST_CHECK_SMALL(std::abs(V0(1) - V1(2)), 1e-9);
-    BOOST_CHECK_SMALL(std::abs(V0(2) - V1(0)), 1e-9);
+    BOOST_CHECK_SMALL(abs(V0(0) - V1(1)), 1e-9);
+    BOOST_CHECK_SMALL(abs(V0(1) - V1(2)), 1e-9);
+    BOOST_CHECK_SMALL(abs(V0(2) - V1(0)), 1e-9);
 }
 
 BOOST_AUTO_TEST_CASE (test_phases_B)
@@ -589,9 +657,9 @@ BOOST_AUTO_TEST_CASE (test_phases_B)
     netw.solvePowerFlow();
     auto V0 = netw.buses()[0]->V();
     auto V1 = netw.buses()[1]->V();
-    BOOST_CHECK_SMALL(std::abs(V0(0) - V1(2)), 1e-9);
-    BOOST_CHECK_SMALL(std::abs(V0(1) - V1(0)), 1e-9);
-    BOOST_CHECK_SMALL(std::abs(V0(2) - V1(1)), 1e-9);
+    BOOST_CHECK_SMALL(abs(V0(0) - V1(2)), 1e-9);
+    BOOST_CHECK_SMALL(abs(V0(1) - V1(0)), 1e-9);
+    BOOST_CHECK_SMALL(abs(V0(2) - V1(1)), 1e-9);
 }
 
 BOOST_AUTO_TEST_CASE (test_phases_C)
@@ -605,12 +673,12 @@ BOOST_AUTO_TEST_CASE (test_phases_C)
     auto S0Gen = netw.buses()[0]->SGen();
     auto S1Zip = netw.buses()[1]->SZip();
     auto y = netw.branches()[0]->Y()(0, 0);
-    BOOST_CHECK_SMALL(std::abs(V0(0) - V1(0)), 1e-9);
-    BOOST_CHECK_SMALL(std::abs(S0Gen(0)), 1e-9);
-    BOOST_CHECK_SMALL(std::abs(S0Gen(1)), 1e-9);
+    BOOST_CHECK_SMALL(abs(V0(0) - V1(0)), 1e-9);
+    BOOST_CHECK_SMALL(abs(S0Gen(0)), 1e-9);
+    BOOST_CHECK_SMALL(abs(S0Gen(1)), 1e-9);
     auto delta = (V0(2) - V1(1));
-    auto diff = S0Gen(2) - S1Zip(1, 1) - delta * std::conj(y) * std::conj(delta);
-    BOOST_CHECK_SMALL(std::abs(diff), 1e-9);
+    auto diff = S0Gen(2) - S1Zip(1, 1) - delta * conj(y) * conj(delta);
+    BOOST_CHECK_SMALL(abs(diff), 1e-9);
 }
 
 BOOST_AUTO_TEST_CASE (test_vv_transformer)
@@ -628,13 +696,13 @@ BOOST_AUTO_TEST_CASE (test_vv_transformer)
     auto V1ab = V1(0) - V1(1);
     auto V1bc = V1(1) - V1(2);
     auto V1ca = V1(2) - V1(0);
-    std::cout << std::abs(V0(0)) << " " << std::abs(V0(1)) << " " << std::abs(V0(2)) << std::endl;
-    std::cout << std::abs(V1(0)) << " " << std::abs(V1(1)) << " " << std::abs(V1(2)) << std::endl;
-    std::cout << std::abs(V0ab) << " " << std::abs(V0bc) << " " << std::abs(V0ca) << std::endl;
-    std::cout << std::abs(V1ab) << " " << std::abs(V1bc) << " " << std::abs(V1ca) << std::endl;
-    std::cout << std::abs(V0ab/V1ab) << " " << std::abs(V0bc/V1bc) << " " << std::abs(V0ca/V1ca) << std::endl;
-    BOOST_CHECK_CLOSE(std::abs(V0ab/V1ab), 0.95, 1e-6);
-    BOOST_CHECK_CLOSE(std::abs(V0bc/V1bc), 1.05, 1e-6);
+    cout << abs(V0(0)) << " " << abs(V0(1)) << " " << abs(V0(2)) << endl;
+    cout << abs(V1(0)) << " " << abs(V1(1)) << " " << abs(V1(2)) << endl;
+    cout << abs(V0ab) << " " << abs(V0bc) << " " << abs(V0ca) << endl;
+    cout << abs(V1ab) << " " << abs(V1bc) << " " << abs(V1ca) << endl;
+    cout << abs(V0ab/V1ab) << " " << abs(V0bc/V1bc) << " " << abs(V0ca/V1ca) << endl;
+    BOOST_CHECK_CLOSE(abs(V0ab/V1ab), 0.95, 1e-6);
+    BOOST_CHECK_CLOSE(abs(V0bc/V1bc), 1.05, 1e-6);
 }
 
 BOOST_AUTO_TEST_CASE (test_load_model_a)
@@ -754,7 +822,7 @@ BOOST_AUTO_TEST_CASE (test_include)
     Network netw;
     Parser<Network> p;
     p.parse("test_include_A.yaml", netw);
-    std::cout << netw << std::endl;
+    cout << netw << endl;
     BOOST_CHECK(netw.buses().size() == 2);
     BOOST_CHECK(netw.branches().size() == 1);
     BOOST_CHECK(netw.gens().size() == 1);

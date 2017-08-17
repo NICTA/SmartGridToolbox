@@ -16,6 +16,7 @@
 - time_series:
     id: load_build
     value_type: complex_vector
+    dimension: 1
     type: data_time_series
     data_file: load_build.txt
     relative_to_time: <start_time>
@@ -43,6 +44,7 @@
 - time_series:
     id: cloud
     value_type: real_vector
+    dimension: 3
     type: data_time_series
     data_file: cloud.txt
     relative_to_time: <start_time>

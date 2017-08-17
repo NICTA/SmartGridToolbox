@@ -24,6 +24,7 @@
         - time_series: # Specify some time series data...
             id: load_<ld_buses(<i>)>_series # e.g. for i = 0 we have load_1_series
             value_type: complex_vector
+            dimension: 1
             type: data_time_series
             data_file: data/loads/load_<ld_buses(<i>)>.txt # e.g. data/loads/load_1.txt
             relative_to_time: <loads_start_time>

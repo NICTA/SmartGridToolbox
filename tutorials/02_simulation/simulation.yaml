@@ -10,6 +10,7 @@
 - time_series:
     id: cloud_cover_series
     value_type: real_vector
+    dimension: 3
     type: data_time_series
     data_file: cloud.txt
     relative_to_time: <start_time>                                                        

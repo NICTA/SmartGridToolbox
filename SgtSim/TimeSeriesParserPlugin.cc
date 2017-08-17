@@ -137,16 +137,17 @@ namespace Sgt
             return result;
         }
 
-        template<typename T> std::unique_ptr<DataTimeSeries<Time, T>> initDataTimeSeries_(InterpType interpType)
+        template<typename T> std::unique_ptr<DataTimeSeries<Time, T>> initDataTimeSeries_(
+                InterpType interpType, const T& defaultValue)
         {
             std::unique_ptr<DataTimeSeries<Time, T>> dts;
             switch (interpType)
             {
                 case STEPWISE:
-                    dts.reset(new StepwiseTimeSeries<Time, T>());
+                    dts.reset(new StepwiseTimeSeries<Time, T>(defaultValue));
                     break;
                 case LERP:
-                    dts.reset(new LerpTimeSeries<Time, T>());
+                    dts.reset(new LerpTimeSeries<Time, T>(defaultValue));
                     break;
                 //case SPLINE:
                 //    sgtError("Spline data time series can only be used with real data.");
@@ -158,12 +159,13 @@ namespace Sgt
             return dts;
         }
 
-        template<typename T> std::unique_ptr<DataTimeSeries<Time, T>> initDataTimeSeries(InterpType interpType)
+        template<typename T> std::unique_ptr<DataTimeSeries<Time, T>> initDataTimeSeries(
+                InterpType interpType, const T& defaultValue)
         {
-            return initDataTimeSeries_<T>(interpType);
+            return initDataTimeSeries_<T>(interpType, defaultValue);
         }
 
-        template<> std::unique_ptr<DataTimeSeries<Time, double>> initDataTimeSeries<double>(InterpType interpType)
+        template<> std::unique_ptr<DataTimeSeries<Time, double>> initDataTimeSeries<double>(InterpType interpType, const double& defaultValue)
         {
             //if (interpType == SPLINE)
             //{
@@ -171,7 +173,7 @@ namespace Sgt
             //}
             //else
             {
-                return initDataTimeSeries_<double>(interpType);
+                return initDataTimeSeries_<double>(interpType, defaultValue);
             }
         }
 
@@ -263,7 +265,8 @@ namespace Sgt
                 {
                     case REAL_SCALAR:
                     {
-                        std::unique_ptr<DataTimeSeries<Time, double>> dts = initDataTimeSeries<double>(interpType);
+                        std::unique_ptr<DataTimeSeries<Time, double>> dts = initDataTimeSeries<double>(
+                                interpType, 0.0);
                         while (std::getline(infile, line))
                         {
                             std::istringstream ss(line);
@@ -278,7 +281,8 @@ namespace Sgt
                     }
                     case COMPLEX_SCALAR:
                     {
-                        std::unique_ptr<DataTimeSeries<Time, Complex>> dts = initDataTimeSeries<Complex>(interpType);
+                        std::unique_ptr<DataTimeSeries<Time, Complex>> dts = initDataTimeSeries<Complex>(
+                                interpType, {0.0, 0.0});
                         while (std::getline(infile, line))
                         {
                             std::istringstream ss(line);
@@ -293,8 +297,11 @@ namespace Sgt
                     }
                     case REAL_VECTOR:
                     {
+                        assertFieldPresent(nd, "dimension");
+                        arma::uword dim = nd["dimension"].as<arma::uword>();
                         std::unique_ptr<DataTimeSeries<Time, arma::Col<double>>> dts =
-                            initDataTimeSeries<arma::Col<double>>(interpType);
+                            initDataTimeSeries<arma::Col<double>>(interpType, 
+                                    arma::Col<double>(dim, arma::fill::zeros));
                         while (std::getline(infile, line))
                         {
                             std::istringstream ss(line);
@@ -315,8 +322,11 @@ namespace Sgt
                     }
                     case COMPLEX_VECTOR:
                     {
+                        assertFieldPresent(nd, "dimension");
+                        arma::uword dim = nd["dimension"].as<arma::uword>();
                         std::unique_ptr<DataTimeSeries<Time, arma::Col<Complex>>> dts =
-                            initDataTimeSeries<arma::Col<Complex>>(interpType);
+                            initDataTimeSeries<arma::Col<Complex>>(interpType, 
+                                    arma::Col<Complex>(dim, arma::fill::zeros));
                         while (std::getline(infile, line))
                         {
                             std::istringstream ss(line);

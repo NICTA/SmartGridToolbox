@@ -20,6 +20,7 @@
 - time_series:
     id: cloud_cover_series
     value_type: real_vector
+    dimension: 3
     type: data_time_series
     data_file: data/cloud.txt
     relative_to_time: <start_time>                                                        
@@ -47,6 +48,7 @@
         - time_series:
             id: load_<ld_busses(<i>)>_series
             value_type: complex_vector
+            dimension: 1
             type: data_time_series
             data_file: data/ieee57/loads/load_<ld_busses(<i>)>.txt
             relative_to_time: <loads_start_time>

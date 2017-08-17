@@ -71,15 +71,14 @@ namespace Sgt
     class StepwiseTimeSeries : public DataTimeSeries<T, V>
     {
         public:
+            StepwiseTimeSeries(const V& defaultV) : defaultV_(defaultV) {}
+
             virtual V value(const T& t) const override
             {
-                auto pos = points_.upper_bound(dSeconds(t));
-                if (pos != points_.begin())
-                {
-                    --pos;
-                }
-                return pos->second;
-
+                double s = dSeconds(t);
+                return (s < points_.begin()->first || s > points_.rbegin()->first)
+                    ? defaultV_
+                    : (--points_.upper_bound(dSeconds(t)))->second; // Highest point <= s.
             }
 
             virtual void addPoint(const T& t, const V& v) override
@@ -89,6 +88,7 @@ namespace Sgt
 
         private:
             std::map<double, V> points_;
+            V defaultV_;
     };
 
     /// @brief TimeSeries that uses linear interpolation between tabulated times.
@@ -97,23 +97,24 @@ namespace Sgt
     class LerpTimeSeries : public DataTimeSeries<T, V>
     {
         public:
+            LerpTimeSeries(const V& defaultV) : defaultV_(defaultV) {}
+
             virtual V value(const T& t) const override
             {
-                double td = dSeconds(t);
-                auto pos2 = points_.upper_bound(td);
-                if (pos2 == points_.begin())
+                double s = dSeconds(t);
+                if (s < points_.begin()->first || s > points_.rbegin()->first) return defaultV_;
+
+                auto pos2 = points_.upper_bound(s);
+                // pos2 -> first point > s. It can't be begin, but could be end (if s -> last point)..
+                if (pos2 == points_.end())
                 {
-                    return pos2->second;
-                }
-                else if (pos2 == points_.end())
-                {
-                    return (--pos2)->second;
+                    return points_.rbegin()->second;
                 }
                 else
                 {
-                    auto pos1 = pos2;
-                    --pos1;
-                    return pos1->second + (pos2->second - pos1->second) * (td - pos1->first) /
+                    // We now know that s is strictly inside the range.
+                    auto pos1 = pos2; --pos1;
+                    return pos1->second + (pos2->second - pos1->second) * (s - pos1->first) /
                         (pos2->first - pos1->first);
                 }
             }
@@ -125,6 +126,7 @@ namespace Sgt
 
         private:
             std::map<double, V> points_;
+            V defaultV_;
     };
 
 #if 0 // TODO: redo spline due to license issues.

@@ -380,17 +380,17 @@ namespace Sgt
     /// @{
 
     /// @brief Simulation times and durations.
-    /// @ingroup Utilities
     ///
     /// For simplicity, we don't distinguish between time points and durations. The interpretation is context
     /// dependent, and time points are treated as an offset from the posix epoch. This means we don't have any
     /// confusion about things like leap seconds and the like. 
+    /// @ingroup Utilities
     using Time = boost::posix_time::time_duration;
 
-    /// @brief PIMPL wrapper class for boost::local_time::local_time_zone_ptr.
-    /// @ingroup Utilities
+    /// @brief PIMPL wrapper class for Boost local_time_zone_ptr.
     ///
     /// Hides the machinery of Boost's time_zone_ptr mechanism, as we wish to not be tied to Boost.
+    /// @ingroup Utilities
     class Timezone
     {
         public:
