@@ -466,6 +466,12 @@ namespace Sgt
     {
         return timeFromUtcPtime(boost::posix_time::from_time_t(timeT));
     }
+    
+    /// @ingroup Utilities
+    inline std::time_t utcTimeT(const Time& t)
+    {
+        return to_time_t(utcPtime(t));
+    }
 
     /// @}
 
