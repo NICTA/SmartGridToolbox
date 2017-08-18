@@ -112,7 +112,7 @@ namespace Sgt
         /// @{
 
             Time dt() {return dt_;}
-            void set_dt(Time val) {dt_ = val;}
+            void setDt(Time val) {dt_ = val;}
                 // Doesn't affect state this timestep, no update needed.
 
             double initCharge() {return initCharge_;}

@@ -28,7 +28,7 @@ namespace Sgt
         auto batt = sim.newSimComponent<Battery>(id);
 
         auto nd_dt = nd["dt"];
-        if (nd_dt) batt->set_dt(parser.expand<Time>(nd_dt));
+        if (nd_dt) batt->setDt(parser.expand<Time>(nd_dt));
 
         auto ndInitCharge = nd["init_charge"];
         if (ndInitCharge) batt->setInitCharge(parser.expand<double>(ndInitCharge));
