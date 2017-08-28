@@ -47,12 +47,6 @@ namespace Sgt
             /// @name Lifecycle:
             /// @{
            
-            /// Default constructor required by g++4.8 but not clang++.
-            Component() : id_("UNDEFINED")
-            {
-                // Empty.
-            }
-
             Component(const std::string& id) : id_(id)
             {
                 // Empty.
