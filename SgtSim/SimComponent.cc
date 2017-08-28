@@ -28,7 +28,7 @@ namespace Sgt
         initializeState();
     }
 
-    void SimComponent::update(Time t)
+    void SimComponent::update(const Time& t)
     {
         sgtLogDebug(LogLevel::VERBOSE) << "SimComponent " << id() << " update from " << lastUpdated_ << " to " 
             << t << std::endl;

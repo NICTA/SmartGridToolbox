@@ -23,7 +23,7 @@ namespace Sgt
         Tb_ = TbInit_;
     }
 
-    void Building::updateState(Time t)
+    void Building::updateState(const Time& t)
     {
         double dt = lastUpdated() == posix_time::neg_infin ? 0 : dSeconds(t - lastUpdated());
 

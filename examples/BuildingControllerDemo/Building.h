@@ -98,7 +98,7 @@ namespace Sgt
         protected:
 
             virtual void initializeState() override;
-            virtual void updateState(Time t) override;
+            virtual void updateState(const Time& t) override;
 
             /// @}
         

@@ -20,7 +20,7 @@ using namespace std;
 
 namespace Sgt
 {
-    void Battery::updateState(Time t)
+    void Battery::updateState(const Time& t)
     {
         double prevPDc = PDc_;
         PDc_ = calcPDc();

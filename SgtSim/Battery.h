@@ -91,7 +91,7 @@ namespace Sgt
                 charge_ = initCharge_;
             }
 
-            virtual void updateState(Time t) override;
+            virtual void updateState(const Time& t) override;
 
         /// @}
 

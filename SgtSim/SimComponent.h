@@ -76,7 +76,7 @@ namespace Sgt
             virtual void initialize() final;
 
             /// @brief Bring state up to time t.
-            virtual void update(Time t) final;
+            virtual void update(const Time& t) final;
 
             /// @}
 
@@ -103,7 +103,7 @@ namespace Sgt
             }
 
             /// @brief Bring state up to time current time.
-            virtual void updateState(Time t)
+            virtual void updateState(const Time& t)
             {
                 // Empty.
             }

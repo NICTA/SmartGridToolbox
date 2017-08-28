@@ -46,7 +46,7 @@ namespace Sgt
             solarIrradiance(weather_->model.irradiance(t), planeNormal_) + 273.0;
     }
 
-    void SolarPv::updateState(Time t)
+    void SolarPv::updateState(const Time& t)
     {
         PDc_ = PDc(t);
         dcPowerChanged().trigger();

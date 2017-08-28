@@ -470,7 +470,7 @@ namespace Sgt
     /// @ingroup Utilities
     inline std::time_t utcTimeT(const Time& t)
     {
-        return to_time_t(utcPtime(t));
+        return boost::posix_time::to_time_t(utcPtime(t));
     }
 
     /// @}

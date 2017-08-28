@@ -83,7 +83,7 @@ namespace Sgt
             }
 
         protected:
-            virtual void updateState(Time t) override;
+            virtual void updateState(const Time& t) override;
             
         private:
             arma::Mat<Complex> YConst() const;

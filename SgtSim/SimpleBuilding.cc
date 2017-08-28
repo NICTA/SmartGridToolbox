@@ -57,7 +57,7 @@ namespace Sgt
         setOperatingParams(lastUpdated());
     }
 
-    void SimpleBuilding::updateState(Time t)
+    void SimpleBuilding::updateState(const Time& t)
     {
         double dt = lastUpdated() == TimeSpecialValues::neg_infin ? 0 : dSeconds(t - lastUpdated());
 

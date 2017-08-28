@@ -48,7 +48,7 @@ namespace Sgt
         sgtAssert(matrixElems_.n_cols == 2, "TimeSeriesZip: matrixElems parameter must be n x 2.");
     }
             
-    void TimeSeriesZip::updateState(Time t)
+    void TimeSeriesZip::updateState(const Time& t)
     {
         Heartbeat::updateState(t);
         zip()->setYConst(YConst());

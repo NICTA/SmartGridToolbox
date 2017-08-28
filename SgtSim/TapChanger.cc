@@ -53,7 +53,7 @@ namespace Sgt
     }
 
     // TODO: what if the deadband is too small and we're alternating settings?
-    void TapChanger::updateState(Time t)
+    void TapChanger::updateState(const Time& t)
     {
         sgtLogDebug() << sComponentType() << " " << id() << " : Update : " << prevTimestep_ << " -> " << t << std::endl;
         sgtLogIndent();

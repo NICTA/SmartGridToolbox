@@ -44,7 +44,7 @@ namespace Sgt
         dependsOn(solar, false);
     }
 
-    void BuildingController::updateState(Time t)
+    void BuildingController::updateState(const Time& t)
     {
         assert(batt_->validUntil() > t); // Next update is in the future.
         assert(build_->validUntil() > t); // Next update is in the future.

@@ -77,7 +77,7 @@ namespace Sgt
             needsUpdate().trigger(); // Update on the first timestep.
         }
 
-        virtual void updateState(Time t) override
+        virtual void updateState(const Time& t) override
         {
             if (nextBeat_ == TimeSpecialValues::not_a_date_time)
             {

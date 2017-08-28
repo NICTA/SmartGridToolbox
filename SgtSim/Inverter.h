@@ -184,7 +184,7 @@ namespace Sgt
             /// @}
 
         protected:
-            virtual void updateState(Time t) override;
+            virtual void updateState(const Time& t) override;
             
         private:
             virtual arma::Mat<Complex> SConst() const;

@@ -38,7 +38,7 @@ namespace Sgt
         InverterAbc::addDcPowerSource(source);
     }
     
-    void Inverter::updateState(Time t)
+    void Inverter::updateState(const Time& t)
     {
         zip()->setSConst(SConst());
     }

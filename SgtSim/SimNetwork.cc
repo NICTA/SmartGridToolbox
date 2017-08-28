@@ -63,7 +63,7 @@ namespace Sgt
         needsUpdate().addTrigger(zip.isInServiceChanged());
     }
 
-    void SimNetwork::updateState(Time t)
+    void SimNetwork::updateState(const Time& t)
     {
         sgtLogDebug() << "SimNetwork : update state." << std::endl;
         network_->solvePowerFlow(); // TODO: inefficient to rebuild even if not needed.

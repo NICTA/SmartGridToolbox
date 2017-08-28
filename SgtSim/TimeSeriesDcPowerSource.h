@@ -37,6 +37,7 @@ namespace Sgt
 
             TimeSeriesDcPowerSource(const std::string& id, const ConstTimeSeriesPtr<TimeSeries<Time, double>>& series,
                     const Time& dt, double scaleFactor = 1.0) :
+                Component(id),
                 Heartbeat(id, dt),
                 series_(series),
                 scaleFactor_(scaleFactor)
