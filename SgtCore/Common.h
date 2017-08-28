@@ -470,7 +470,11 @@ namespace Sgt
     /// @ingroup Utilities
     inline std::time_t utcTimeT(const Time& t)
     {
-        return boost::posix_time::to_time_t(utcPtime(t));
+        // return boost::posix_time::to_time_t(utcPtime(t));
+        // Issue with e.g. Ubuntu Trusty. Replace with custom code (essentially copy-pasted from boost itself).
+        
+        auto dur = utcPtime(t) - boost::posix_time::ptime(boost::gregorian::date(1970,1,1));
+        return std::time_t(dur.total_seconds()); 
     }
 
     /// @}
