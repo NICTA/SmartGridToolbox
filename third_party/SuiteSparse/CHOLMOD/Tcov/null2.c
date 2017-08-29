@@ -4,9 +4,6 @@
 
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * The CHOLMOD/Tcov Module is licensed under Version 2.0 of the GNU
- * General Public License.  See gpl.txt for a text of the license.
- * CHOLMOD is also available under other licenses; contact authors for details.
  * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
@@ -2226,7 +2223,10 @@ if (do_nantests)
 	ATi = AT->i ;
 	fnz = ATp [i+1] - ATp [i] ;
 	ok = CHOLMOD(row_lsubtree)(A, ATi, fnz, i, L, C2, cm) ;
+        /*
         if (i < ncol) { OK (ok) ; } else { NOT (ok) ; }
+        */
+        OK (ok) ;
 
 	ok = CHOLMOD(row_lsubtree)(Abad2, ATi, fnz, i, L, C2, cm) ; NOT (ok) ;
 	ok = CHOLMOD(row_lsubtree)(A, NULL, fnz, i, L, C2, cm) ;    NOT (ok) ;
@@ -2775,8 +2775,6 @@ if (do_nantests)
 	}
 	lr = CHOLMOD(metis_bisector)(Abad2, Anw, Aew, Pok, cm) ;NOT (lr >= 0);
 	lr = CHOLMOD(metis_bisector)(NULL, Anw, Aew, Pok, cm) ;	NOT (lr >= 0);
-	lr = CHOLMOD(metis_bisector)(A, NULL, Aew, Pok, cm) ;	NOT (lr >= 0);
-	lr = CHOLMOD(metis_bisector)(A, Anw, NULL, Pok, cm) ;	NOT (lr >= 0);
 	lr = CHOLMOD(metis_bisector)(A, Anw, Aew, NULL, cm) ;	NOT (lr >= 0);
 
 	if (A->stype)

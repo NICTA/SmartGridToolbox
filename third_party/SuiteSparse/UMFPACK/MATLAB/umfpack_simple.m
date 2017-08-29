@@ -5,16 +5,9 @@
 %
 % Copyright 1995-2007 by Timothy A. Davis, http://www.suitesparse.com
 %
-% UMFPACK License:
+% UMFPACK License:  See UMFPACK/Doc/License.txt.
 %
-%     Your use or distribution of UMFPACK or any modified version of
-%     UMFPACK implies that you agree to this License.  UMFPACK is
-%     is free software; you can redistribute it and/or
-%     modify it under the terms of the GNU General Public
-%     License as published by the Free Software Foundation; either
-%     version 2 of the License, or (at your option) any later version.
-%
-% See also: umfpack, umfpack2, umfpack_details
+% See also: umfpack, umfpack_details
 
 help umfpack_simple
 
@@ -35,9 +28,9 @@ b = [8 45 -3 3 19]' ;
 fprintf ('b = \n') ; disp (b) ;
 
 fprintf ('Solution to Ax=b via UMFPACK:\n') ;
-fprintf ('x1 = umfpack2 (A, ''\\'', b)\n') ;
+fprintf ('x1 = umfpack (A, ''\\'', b)\n') ;
 
-x1 = umfpack2 (A, '\', b) ;
+x1 = umfpack (A, '\', b) ;
 fprintf ('x1 = \n') ; disp (x1) ;
 
 fprintf ('Solution to Ax=b via MATLAB:\n') ;

@@ -134,12 +134,6 @@ int UMF_cholmod
             break ;
     }
 
-    /* use AMD memory management routines for CHOLMOD */
-    cm.malloc_memory = amd_malloc ;
-    cm.realloc_memory = amd_realloc ;
-    cm.calloc_memory = amd_calloc ;
-    cm.free_memory = amd_free ;
-
     /* construct a CHOLMOD version of the input matrix A */
     A = &Amatrix ;
     A->nrow = nrow ;                /* A is nrow-by-ncol */
@@ -232,7 +226,7 @@ int UMF_cholmod
     CHOLMOD_finish (&cm) ;
     return (TRUE) ;
 #else
-    /* CHOLMOD and its supporting packages (CAMD, CCOLAMD, COLAMD, metis-4.0)
+    /* CHOLMOD and its supporting packages (CAMD, CCOLAMD, COLAMD, METIS)
       not installed */
     return (FALSE) ;
 #endif

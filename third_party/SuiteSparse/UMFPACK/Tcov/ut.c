@@ -4,7 +4,7 @@
 
 /* -------------------------------------------------------------------------- */
 /* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License for License.                      */
+/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
 /* -------------------------------------------------------------------------- */
 
 /* (Nearly) exhaustive statement-coverage testing for UMFPACK.  */
@@ -4261,12 +4261,12 @@ static int do_amd_transpose
     }
 #endif
 
-    W = amd_malloc (MAX (n,1) * sizeof (Int)) ;
-    Flag = amd_malloc (MAX (n,1) * sizeof (Int)) ;
+    W = SuiteSparse_malloc (n, sizeof (Int)) ;
+    Flag = SuiteSparse_malloc (n, sizeof (Int)) ;
     if (!W || !Flag)
     {
-	amd_free (W) ;
-	amd_free (Flag) ;
+	SuiteSparse_free (W) ;
+	SuiteSparse_free (Flag) ;
 	return (AMD_OUT_OF_MEMORY) ;
     }
 
@@ -4276,8 +4276,8 @@ static int do_amd_transpose
     amd_l_preprocess (n, Ap, Ai, Rp, Ri, W, Flag) ;
 #endif
 
-    amd_free (W) ;
-    amd_free (Flag) ;
+    SuiteSparse_free (W) ;
+    SuiteSparse_free (Flag) ;
     return (AMD_OK) ;
 
 }
@@ -4586,8 +4586,9 @@ int main (int argc, char **argv)
     /* test malloc, realloc, and free */
     /* ---------------------------------------------------------------------- */
 
+    /*
     P = (Int *) UMF_malloc (Int_MAX, 2) ;
-    if (P) error ("should have failed\n", 0.) ;
+    if (P) error ("large malloc should have failed\n", 0.) ;
 
     printf ("reallocing...\n") ;
     P = (Int *) UMF_realloc (P, 1, 4) ;
@@ -4602,6 +4603,7 @@ int main (int argc, char **argv)
 #if defined (UMF_MALLOC_COUNT) || !defined (NDEBUG)
     if (UMF_malloc_count != 0) error ("should be 0", 0.) ;
 #endif
+    */
 
     xnan = divide (0., 0.) ;
     xinf = divide (1., 0.) ;
@@ -7804,12 +7806,12 @@ int main (int argc, char **argv)
     ttt = umfpack_timer ( ) ;
 
     fprintf (stderr,
-	    "ALL TESTS PASSED: rnorm %8.2e (%8.2e shl0, %8.2e arc130 %8.2e omega2) cputime %g\n",
-	    maxrnorm, maxrnorm_shl0, maxrnorm_arc130, rnorm_omega2, ttt) ;
+        "ALL TESTS PASSED: rnorm %8.2e (%8.2e %8.2e %8.2e )\n",
+        maxrnorm, maxrnorm_shl0, maxrnorm_arc130, rnorm_omega2) ;
 
     printf (
-	    "ALL TESTS PASSED: rnorm %8.2e (%8.2e shl0, %8.2e arc130 %8.2e omega2) cputime %g\n",
-	    maxrnorm, maxrnorm_shl0, maxrnorm_arc130, rnorm_omega2, ttt) ;
+        "ALL TESTS PASSED: rnorm %8.2e (%8.2e %8.2e %8.2e)\n",
+        maxrnorm, maxrnorm_shl0, maxrnorm_arc130, rnorm_omega2) ;
 
 #if defined (UMF_MALLOC_COUNT) || !defined (NDEBUG)
     if (UMF_malloc_count != 0) error ("umfpack memory leak!!\n",0.) ;

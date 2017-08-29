@@ -67,6 +67,7 @@ void *my_malloc (size_t size)
     if (my_tries >= 0 || (my_punt && my_tries >= -1)) my_tries-- ;
     if (my_tries == -1)
     {
+        // printf ("malloc pretends to fail\n") ;
         return (NULL) ;          // pretend to fail
     }
     return (malloc (size)) ;
@@ -77,6 +78,7 @@ void *my_calloc (size_t n, size_t size)
     if (my_tries >= 0 || (my_punt && my_tries >= -1)) my_tries-- ;
     if (my_tries == -1)
     {
+        // printf ("calloc pretends to fail\n") ;
         return (NULL) ;          // pretend to fail
     }
     return (calloc (n, size)) ;
@@ -87,9 +89,15 @@ void *my_realloc (void *p, size_t size)
     if (my_tries >= 0 || (my_punt && my_tries >= -1)) my_tries-- ;
     if (my_tries == -1)
     {
+        // printf ("realloc pretends to fail\n") ;
         return (NULL) ;          // pretend to fail
     }
     return (realloc (p, size)) ;
+}
+
+void my_free (void *p)
+{
+    if (p) free (p) ;
 }
 
 void my_handler (int status, const char *file, int line, const char *msg)
@@ -99,11 +107,12 @@ void my_handler (int status, const char *file, int line, const char *msg)
 
 void normal_memory_handler (cholmod_common *cc)
 {
-    cc->print_function = printf ;
-    cc->malloc_memory = malloc ;
-    cc->calloc_memory = calloc ;
-    cc->realloc_memory = realloc ;
-    cc->free_memory = free ;
+    SuiteSparse_config.printf_func = printf ;
+    SuiteSparse_config.malloc_func = malloc ;
+    SuiteSparse_config.calloc_func = calloc ;
+    SuiteSparse_config.realloc_func = realloc ;
+    SuiteSparse_config.free_func = free ;
+
     cc->error_handler = my_handler ;
     cholmod_l_free_work (cc) ;
     my_tries = -2 ;
@@ -112,11 +121,12 @@ void normal_memory_handler (cholmod_common *cc)
 
 void test_memory_handler (cholmod_common *cc)
 {
-    cc->print_function = NULL ;
-    cc->malloc_memory = my_malloc ;
-    cc->calloc_memory = my_calloc ;
-    cc->realloc_memory = my_realloc ;
-    cc->free_memory = free ;
+    SuiteSparse_config.printf_func = NULL ;
+    SuiteSparse_config.malloc_func = my_malloc ;
+    SuiteSparse_config.calloc_func = my_calloc ;
+    SuiteSparse_config.realloc_func = my_realloc ;
+    SuiteSparse_config.free_func = my_free ;
+
     cc->error_handler = NULL ;
     cholmod_l_free_work (cc) ;
     my_tries = -2 ;
@@ -794,10 +804,14 @@ double erand (double range)
 
 Complex erand (Complex range)
 {
+    /*
     Complex x ;
     x.real ( ) = xrand ( ) ;
     x.imag ( ) = xrand ( ) ;
     return (range * x) ;
+    */
+    Complex i = Complex (0,1) ;
+    return (range * (xrand ( ) + i * xrand ( ))) ;
 }
 
 
@@ -1663,12 +1677,19 @@ template <typename Entry> double check_rc
     double resid = EMPTY ;
     Long xtype = spqr_type <Entry> ( ) ;
     cholmod_dense *W ;
-    Long ok ;
-    Entry *W1 ;
-    Long n = X->nrow ;
-    Entry *X1 = (Entry *) X->x ;
-    // solve X = R\X, overwriting X with solution
-    ok = Rsolve (rank, R, X1, nrhs, cc) ;
+    Long n, ok ;
+    Entry *W1, *X1 ;
+    if (!R || !X)
+    {
+        ok = 0 ;
+    }
+    else
+    {
+        n = X->nrow ;
+        X1 = (Entry *) X->x ;
+        // solve X = R\X, overwriting X with solution
+        ok = Rsolve (rank, R, X1, nrhs, cc) ;
+    }
     if (ok)
     {
         // W = E*X
@@ -1752,10 +1773,6 @@ template <typename Entry> void qrtest
     int ordering ;
     Entry range = (Entry) 1.0 ;
 
-    // non-defaults to test TBB, if installed
-    cc->SPQR_grain = 4 ;         // grain size relative to total work
-    cc->SPQR_small = 1e6 ;       // smallest task allowed
-
     errs [0] = EMPTY ;
     errs [1] = EMPTY ;
     errs [2] = EMPTY ;
@@ -1826,7 +1843,8 @@ template <typename Entry> void qrtest
         {
 
             tol = tols [ntol] ;
-            if (ntol == 0)
+            if // (ntol == 0)                   // this old test is fragile ...
+               (tol == SPQR_DEFAULT_TOL)        // use this instead
             {
                 // with default tolerance, the fixed ordering can sometimes
                 // fail if the matrix is rank deficient (R cannot be permuted
@@ -1842,7 +1860,7 @@ template <typename Entry> void qrtest
             printf ("\n=== QR with ordering %d tol %g:\n", ordering, tol) ;
 
             // -----------------------------------------------------------------
-            // X = qrsolve(A,B) where X and B are sparse
+            // create dense and sparse right-hand-sides
             // -----------------------------------------------------------------
 
             nb = 5 ;
@@ -1854,14 +1872,6 @@ template <typename Entry> void qrtest
             }
             Bsparse = cholmod_l_dense_to_sparse (Bdense, TRUE, cc) ;
 
-            // X = A\B
-            Xsparse = SuiteSparseQR <Entry> (ordering, tol, A, Bsparse, cc) ;
-
-            // check norm (A*x-b), x and b sparse
-            resid = sparse_resid <Entry> (A, anorm, Xsparse, Bsparse, cc) ;
-            maxresid [m>n][which] = MAX (maxresid [m>n][which], resid) ;
-            printf ("Resid0 %d %ld %d : %g\n", m>n, ntol, ordering, resid) ;
-
             // -----------------------------------------------------------------
             // X = qrsolve(A,B) where X and B are dense
             // -----------------------------------------------------------------
@@ -1869,11 +1879,17 @@ template <typename Entry> void qrtest
             // X = A\B
             if (ordering == SPQR_ORDERING_DEFAULT && tol == SPQR_DEFAULT_TOL)
             {
+                printf ("[ backslach, A and B and X dense: defaults\n") ;
                 Xdense = SuiteSparseQR <Entry> (A, Bdense, cc) ;
+                printf ("] done backslach, A and B and X dense: defaults\n") ;
             }
             else
             {
+                printf ("[ backslach, A and B and X dense: tol %g order %d\n",
+                    tol, ordering) ;
                 Xdense = SuiteSparseQR <Entry> (ordering, tol, A, Bdense, cc) ;
+                printf ("] done backslach, A B X dense: tol %g order %d\n",
+                    tol, ordering) ;
             }
 
             // check norm (A*x-b), x and b dense
@@ -1881,11 +1897,39 @@ template <typename Entry> void qrtest
             maxresid [m>n][which] = MAX (maxresid [m>n][which], resid) ;
             printf ("Resid0b %d %ld %d : %g\n", m>n, ntol, ordering, resid) ;
 
-            cholmod_l_free_sparse (&Xsparse, cc) ;
             cholmod_l_free_dense  (&Xdense, cc) ;
 
-            cholmod_l_free_sparse (&Bsparse, cc) ;
+            if (cc->useGPU)
+            {
+                // error testing for infeasible GPU memory
+                Long save = cc->gpuMemorySize ;
+                cc->gpuMemorySize = 1 ;
+                printf ("[ Pretend GPU memory is too small:\n") ;
+                Xdense = SuiteSparseQR <Entry> (ordering, tol, A, Bdense, cc) ;
+                cc->gpuMemorySize = save ;
+                printf ("] test done infeasible GPU, status %2d, useGPU: %d\n",
+                    cc->status, cc->useGPU) ;
+                cholmod_l_free_dense (&Xdense, cc) ;
+            }
+
             cholmod_l_free_dense  (&Bdense, cc) ;
+
+            // -----------------------------------------------------------------
+            // X = qrsolve(A,B) where X and B are sparse
+            // -----------------------------------------------------------------
+
+            // X = A\B
+            printf ("[ backslash with sparse B: tol  %g\n", tol) ;
+            Xsparse = SuiteSparseQR <Entry> (ordering, tol, A, Bsparse, cc) ;
+            printf ("] did tol %g\n", tol) ;
+
+            // check norm (A*x-b), x and b sparse
+            resid = sparse_resid <Entry> (A, anorm, Xsparse, Bsparse, cc) ;
+            maxresid [m>n][which] = MAX (maxresid [m>n][which], resid) ;
+            printf ("Resid0 %d %ld %d : %g\n", m>n, ntol, ordering, resid) ;
+
+            cholmod_l_free_sparse (&Xsparse, cc) ;
+            cholmod_l_free_sparse (&Bsparse, cc) ;
             
             // -----------------------------------------------------------------
             // X = qrsolve (A,B) where X and B are sparse, with memory test
@@ -1899,9 +1943,10 @@ template <typename Entry> void qrtest
                 cc, TRUE, m < 300, nrand (2)) ;
             cc->SPQR_shrink = 1 ;         // restore default shrink = 1 ;
 
-            if (ntol == 0)
+            if // (ntol == 0)               // old test is fragile ...
+               (tol == SPQR_DEFAULT_TOL)    // use this instead.
             {
-                printf ("using default tol: %g\n", cc->SPQR_xstat [1]) ;
+                printf ("using default tol: %g\n", cc->SPQR_tol_used) ;
             }
 
             // check norm (A*x-b), x and b sparse
@@ -2208,7 +2253,7 @@ template <typename Entry> void qrtest
 
             // compare Q with qmult
             err = check_qmult <Entry> (H, HTau, HPinv,
-                ordering == 2 && ntol == 0, cc) ;
+                ordering == 2 && /* ntol == 0 */ tol == SPQR_DEFAULT_TOL, cc) ;
             printf ("order %d : check qmult       Err12: %g\n", ordering, err) ;
             maxerr = MAX (maxerr, err) ;
 
@@ -2313,7 +2358,7 @@ template <typename Entry> void qrtest
                 // error testing
                 // -------------------------------------------------------------
 
-                if (ordering == 0 && ntol == 0)
+                if (ordering == 0 && /* ntol == 0 */ tol == SPQR_DEFAULT_TOL)
                 {
                     printf ("Error handling ... expect 3 error messages: \n") ;
                     err = (SuiteSparseQR_qmult <Entry> (-1, QR, Bdense, cc)
@@ -2369,7 +2414,8 @@ template <typename Entry> void qrtest
                 // error testing
                 // -------------------------------------------------------------
 
-                if (!split && ordering == 0 && ntol == 0)
+                if (!split && ordering == 0 && /* ntol == 0 */
+                    tol == SPQR_DEFAULT_TOL)
                 {
                     printf ("Error testing ... expect 3 error messages:\n") ;
                     err = (SuiteSparseQR_solve <Entry> (-1, QR, Bdense, cc)
@@ -2561,10 +2607,16 @@ template <typename Entry> void qrtest
 // Read in a matrix, and use it to test SuiteSparseQR
 // If kind == 0, then the first two residuals should be low.
 
+int do_matrix2 (int kind, cholmod_sparse *A, cholmod_common *cc) ;
+
 int do_matrix (int kind, FILE *file, cholmod_common *cc)
 {
     cholmod_sparse *A ;
-    double errs [5] = {0,0,0,0,0} ;
+
+    int nfail0 = 0 ;
+    int nfail1 = 0 ;
+    int nfail2 = 0 ;
+    int nfail3 = 0 ;
 
     // -------------------------------------------------------------------------
     // read in the matrix
@@ -2586,6 +2638,60 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
         return (0) ;
     }
 
+    // defaults
+    cc->SPQR_grain = 1 ;         // no parallel analysis
+    printf ("\nBeginning CPU tests [\n") ;
+    fprintf (stderr, " CPU ") ;
+    nfail0 = do_matrix2 (kind, A, cc) ;
+
+    // non-defaults to test TBB, if installed (will not use the GPU)
+    cc->SPQR_grain = 4 ;         // grain size relative to total work
+    nfail2 = do_matrix2 (kind, A, cc) ;
+    cc->SPQR_grain = 1 ;         // no parallel analysis
+    printf ("\nCPU tests done ]\n") ;
+
+    // test the GPU, if installed
+    #ifdef GPU_BLAS
+    cc->useGPU = TRUE ;
+    // was 3.5 * ((size_t) 1024 * 1024 * 1024) ;
+    size_t totmem, availmem ;
+    double t = SuiteSparse_time ( ) ;
+    cholmod_l_gpu_memorysize (&totmem, &availmem, cc) ;
+    t = SuiteSparse_time ( ) - t ;
+    cc->gpuMemorySize = availmem ;
+    printf ("\nBeginning GPU tests, GPU memory %g MB warmup time %g[\n",
+        (double) (cc->gpuMemorySize) / (1024*1024), t) ;
+    fprintf (stderr, " GPU ") ;
+    nfail1 = do_matrix2 (kind, A, cc) ;
+    printf ("\nGPU tests done ]\n") ;
+    if (m > 200)
+    {
+        // try with a tiny GPU memory size, but only for a few matrices
+        // in the test set.  Each front will go in its own stage.
+        printf ("\nBeginning GPU tests with tiny GPU memory [\n") ;
+        cc->gpuMemorySize = 0 ;
+        nfail3 = do_matrix2 (kind, A, cc) ;
+        // restore defaults
+        cc->useGPU = FALSE ;
+        printf ("\nGPU tests done (tiny memory) ]\n") ;
+    }
+    #endif
+
+    cholmod_l_free_sparse (&A, cc) ;
+
+    printf ("\n") ;
+    fprintf (stderr, "\n") ;
+    return (nfail0 + nfail1 + nfail2 + nfail3) ;
+}
+
+
+
+int do_matrix2 (int kind, cholmod_sparse *A, cholmod_common *cc)
+{
+    double errs [5] = {0,0,0,0,0} ;
+    Long m = A->nrow ;
+    Long n = A->ncol ;
+
     // -------------------------------------------------------------------------
     // use it to test SuiteSparseQR
     // -------------------------------------------------------------------------
@@ -2600,10 +2706,13 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
         {
             cholmod_sparse *A1 ;
             A1 = cholmod_l_copy (A, 0, 1, cc) ;
-            cholmod_l_free_sparse (&A, cc) ;
-            A = A1 ;
+            qrtest <double> (A1, errs, cc) ;
+            cholmod_l_free_sparse (&A1, cc) ;
         }
-        qrtest <double> (A, errs, cc) ;
+        else
+        {
+            qrtest <double> (A, errs, cc) ;
+        }
     }
     else
     {
@@ -2613,7 +2722,7 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
     }
 
     // -------------------------------------------------------------------------
-    // free the matrix and report the results
+    // report the results
     // -------------------------------------------------------------------------
 
     if (kind == 0)
@@ -2632,8 +2741,6 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
         printf (" %8.1e %8.1e", errs [3], errs [4]) ;
     }
 
-    cholmod_l_free_sparse (&A, cc) ;
-
     if (errs [0] > 1e-10)
     {
         printf (" : FAIL\n") ;
@@ -2649,8 +2756,8 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
         return (1) ;
     }
 
-    printf (" : OK\n") ;
-    fprintf (stderr, "OK\n") ;
+    printf (" : OK.") ;
+    fprintf (stderr, "OK.") ;
     return (0) ;
 }
 
@@ -2701,6 +2808,7 @@ int main (int argc, char **argv)
             fprintf (stderr, "Unable to open %s\n", argv [1]) ;
             exit (1) ;
         }
+
         while (1)
         {
             if (fscanf (file, "%d %100s\n", &kind, matrix_name) != 2)
@@ -2715,6 +2823,7 @@ int main (int argc, char **argv)
                 nfail++ ;
             }
             nfail += do_matrix (kind, matrix, cc) ;
+
             fclose (matrix) ;
         }
         fclose (file) ;

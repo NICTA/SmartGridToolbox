@@ -10,7 +10,7 @@ function SuiteSparse_test
 %
 % See also SuiteSparse_install, SuiteSparse_demo.
 
-% Copyright 1990-2013, Timothy A. Davis, http://www.suitesparse.com.
+% Copyright 1990-2015, Timothy A. Davis, http://www.suitesparse.com.
 
 help SuiteSparse_test
 
@@ -19,24 +19,10 @@ h = waitbar (0, 'SuiteSparse test:') ;
 SuiteSparse = pwd ;
 package = 0 ;
 
-if (verLessThan ('matlab', '7.0'))
-    error ('SuiteSparse_test requires MATLAB 7.0 or later') ;
-end
-
-% if at UF, ensure pre-installed UF Sparse Matrix Collection is used
-uf = { '/cise/homes/davis/Install/UFget', 'd:/UFget', '/share/UFget', ...
-    '/windows/UFget', '/cise/research/sparse/UFget' } ;
-for k = 1:length(uf)
-    if (exist (uf {k}, 'dir'))
-        addpath (uf {k}) ;
-        break ;
-    end
-end
-
 try
 
     %---------------------------------------------------------------------------
-    % CSparse (both 64-bit and 32-bit MATLAB)
+    % CSparse
     %---------------------------------------------------------------------------
 
     % compile and install CSparse (not installed by SuiteSparse_install)
@@ -206,12 +192,21 @@ try
     demo_spqr_rank ;
 
     %---------------------------------------------------------------------------
+    % PIRO_BAND
+    %---------------------------------------------------------------------------
+
+%   package = package + 1 ;
+%   waitbar (package/(npackages+1), h, 'SuiteSparse test: PIRO_BAND') ;
+%   cd ([SuiteSparse '/PIRO_BAND/MATLAB/Test']) ;
+%   demo_spqr_rank ;
+
+    %---------------------------------------------------------------------------
     % AMD, CAMD, UFcollection, UFget
     %---------------------------------------------------------------------------
 
     % no exhaustive tests; tested via other packages
 
-catch                                                                       %#ok
+catch
 
     %---------------------------------------------------------------------------
     % test failure

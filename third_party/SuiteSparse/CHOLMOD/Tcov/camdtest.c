@@ -4,9 +4,6 @@
 
 /* -----------------------------------------------------------------------------
  * CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * The CHOLMOD/Tcov Module is licensed under Version 2.0 of the GNU
- * General Public License.  See gpl.txt for a text of the license.
- * CHOLMOD is also available under other licenses; contact authors for details.
  * http://www.suitesparse.com
  * -------------------------------------------------------------------------- */
 
@@ -350,14 +347,14 @@ void camdtest (cholmod_sparse *A)
 
 	if (n > 0)
 	{
-	    camd_malloc = cm->malloc_memory ;
-	    camd_free = cm->free_memory ;
+
+	    normal_memory_handler ( ) ;
+
 	    ok = CAMD_order (n, Cp, Ci, P, Control, Info, NULL) ;
 	    OK (sorted ? (ok == CAMD_OK) : (ok >= CAMD_OK)) ;
 
 	    test_memory_handler ( ) ;
-	    camd_malloc = cm->malloc_memory ;
-	    camd_free = cm->free_memory ;
+
 	    for (trial = 0 ; trial < 6 ; trial++)
 	    {
 		my_tries = trial ;
@@ -370,8 +367,6 @@ void camdtest (cholmod_sparse *A)
 	    normal_memory_handler ( ) ;
 	    OK (CHOLMOD(print_perm) (P, n, n, "CAMD2 permutation", cm)) ;
 
-	    camd_malloc = cm->malloc_memory ;
-	    camd_free = cm->free_memory ;
 	}
 
 	CHOLMOD(free_sparse) (&E, cm) ;

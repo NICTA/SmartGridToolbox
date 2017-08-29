@@ -16,6 +16,12 @@
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
+#define MXFREE(a) { \
+    double *ptr ; \
+    ptr = (a) ; \
+    if (ptr != NULL) mxFree (ptr) ; \
+}
+
 // -----------------------------------------------------------------------------
 // primary sparse-times-full and full-times-sparse
 // -----------------------------------------------------------------------------
@@ -50,7 +56,7 @@ mxArray *fsmult		// returns y = x*A or variants
 // transpose
 // -----------------------------------------------------------------------------
 
-mxArray *ssmult_transpose	// returns C = A' or A.'    TODO rename
+mxArray *ssmult_transpose	// returns C = A' or A.'    (TO DO) rename
 (
     // --- inputs, not modified:
     const mxArray *A,

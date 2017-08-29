@@ -26,7 +26,7 @@
     Notice:
 
 	Copyright (c) 1998-2007, Timothy A. Davis.  All Rights Reserved.
-	See the colamd.c file for the License.
+	See COLAMD/Doc/License.txt for the License.
 
     Availability:
 
@@ -74,8 +74,6 @@ void mexFunction
     mxArray *Ainput ;           /* input matrix handle */
     Long spumoni ;              /* verbosity variable */
     Long stats [COLAMD_STATS] ; /* stats for symamd */
-
-    colamd_printf = mexPrintf ; /* COLAMD printf routine */
 
     /* === Check inputs ===================================================== */
 

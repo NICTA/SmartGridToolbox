@@ -10,7 +10,7 @@ fi
 
 if [ -w $INSTALL_PREFIX/lib ]; then SUDO=""; else SUDO=sudo; fi
 
-cd armadillo
+cd armadillo-code
 rm -rf build_sgt
 mkdir build_sgt
 cd build_sgt

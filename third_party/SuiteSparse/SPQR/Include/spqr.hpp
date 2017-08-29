@@ -202,7 +202,7 @@ typedef std::complex<double> Complex ;
 // For counting flops; disabled if TBB is used
 // -----------------------------------------------------------------------------
 
-#define FLOP_COUNT(f) { if (cc->SPQR_grain <= 1) cc->other1 [0] += (f) ; }
+#define FLOP_COUNT(f) { if (cc->SPQR_grain <= 1) cc->SPQR_flopcount += (f) ; }
 
 // =============================================================================
 // === spqr_work ===============================================================
@@ -392,7 +392,6 @@ template <typename Entry> void spqr_stranspose2
 
 #ifndef NDEBUG
 
-// #ifndef NPRINT
 template <typename Entry> void spqrDebug_dumpdense
 (
     Entry *A,
@@ -412,11 +411,8 @@ template <typename Entry> void spqrDebug_dumpsparse
     cholmod_common *cc
 ) ;
 
-void spqrDebug_print (double x, cholmod_common *cc) ;
-void spqrDebug_print (Complex x, cholmod_common *cc) ;
-void spqrDebug_printf (double x, cholmod_common *cc) ;
-void spqrDebug_printf (Complex x, cholmod_common *cc) ;
-// #endif
+void spqrDebug_print (double x) ;
+void spqrDebug_print (Complex x) ;
 
 void spqrDebug_dump_Parent (Long n, Long *Parent, const char *filename) ;
 
@@ -912,7 +908,7 @@ template <typename Entry> Long spqr_front
     double *wscale,
     double *wssq,
 
-    cholmod_common *cc  // for cc->hypotenuse function
+    cholmod_common *cc
 ) ;
 
 template <typename Entry> int spqr_rmap
@@ -921,6 +917,13 @@ template <typename Entry> int spqr_rmap
     cholmod_common *cc
 ) ;
 
+// =============================================================================
+// === spqrgpu features ========================================================
+// =============================================================================
+
+#ifdef GPU_BLAS
+#include "spqrgpu.hpp"
+#endif
 
 // =============================================================================
 // === spqr_conj ===============================================================
@@ -948,7 +951,7 @@ inline double spqr_abs (double x, cholmod_common *cc)       // cc is unused
 
 inline double spqr_abs (Complex x, cholmod_common *cc)
 {
-    return (cc->hypotenuse (x.real ( ), x.imag ( ))) ;
+    return (SuiteSparse_config.hypot_func (x.real ( ), x.imag ( ))) ;
 }
 
 
@@ -964,7 +967,8 @@ inline double spqr_divide (double a, double b, cholmod_common *cc)  // cc unused
 inline Complex spqr_divide (Complex a, Complex b, cholmod_common *cc)
 {
     double creal, cimag ;
-    cc->complex_divide (a.real(), a.imag(), b.real(), b.imag(), &creal, &cimag);
+    SuiteSparse_config.divcomplex_func
+        (a.real(), a.imag(), b.real(), b.imag(), &creal, &cimag) ;
     return (Complex (creal, cimag)) ;
 }
 

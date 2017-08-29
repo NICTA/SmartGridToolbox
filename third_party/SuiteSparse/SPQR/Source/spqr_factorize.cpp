@@ -278,7 +278,7 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
         // Wi no longer needed ]
     }
 
-    PR (("status after creating Sx: %d\n", cc->status)) ;
+    PR (("in spqr_factorize, status after creating Sx: %d\n", cc->status)) ;
 
     // -------------------------------------------------------------------------
     // input matrix A no longer needed; free it if the user doesn't need it
@@ -290,9 +290,11 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
         cholmod_l_free_sparse (Ahandle, cc) ;
         ASSERT (*Ahandle == NULL) ;
     }
+    PR (("in spqr_factorize, freed A, status %d\n", cc->status)) ;
 
     if (cc->status < CHOLMOD_OK)
     {
+        PR (("in spqr_factorize, failure %d\n", cc->status)) ;
         // out of memory
         FREE_WORK ;
         return (NULL) ;
@@ -304,6 +306,7 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
 
     QRnum = (spqr_numeric<Entry> *)
         cholmod_l_malloc (1, sizeof (spqr_numeric<Entry>), cc) ;
+    PR (("after allocating numeric object header, status %d\n", cc->status)) ;
 
     if (cc->status < CHOLMOD_OK)
     {
@@ -364,11 +367,14 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
         return (NULL) ;
     }
 
+    PR (("after allocating rest of numeric object, status %d\n", cc->status)) ;
+
     // -------------------------------------------------------------------------
     // allocate workspace
     // -------------------------------------------------------------------------
 
     Work = get_Work <Entry> (ns, n, maxfn, keepH, fchunk, &wtsize, cc) ;
+    PR (("after allocating work, status %d\n", cc->status)) ;
 
     // -------------------------------------------------------------------------
     // allocate and initialize each Stack
@@ -388,6 +394,8 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
             Work [stack].Stack_top  = Stack + stacksize ;
         }
     }
+
+    PR (("after allocating the stacks, status %d\n", cc->status)) ;
 
     // -------------------------------------------------------------------------
     // punt to sequential case and fchunk = 1 if out of memory
@@ -473,11 +481,13 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
     // initialize the "pure" flop count (for performance testing only)
     // -------------------------------------------------------------------------
 
-    cc->other1 [0] = 0 ;
+    cc->SPQR_flopcount = 0 ;
 
     // -------------------------------------------------------------------------
     // numeric QR factorization
     // -------------------------------------------------------------------------
+
+    PR (("[ calling the kernel\n")) ;
 
     if (ntasks == 1)
     {
@@ -500,18 +510,20 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
 #endif
     }
 
+    PR (("] did the kernel\n")) ;
+
     // -------------------------------------------------------------------------
-    // check for BLAS Long overflow
+    // check for BLAS Long overflow on the CPU, or GPU failure
     // -------------------------------------------------------------------------
 
-    if (CHECK_BLAS_INT && cc->status < CHOLMOD_OK)
+    if (cc->status < CHOLMOD_OK)
     {
-        // problem too large for the BLAS.  This can only occur if, for example
-        // you're on a 64-bit platform (with sizeof (Long) = 8) and using a
-        // 32-bit BLAS (with sizeof (BLAS_INT) = 4).  If sizeof (BLAS_INT) is
-        // equal to sizeof (Long), then CHECK_BLAS_INT is FALSE at
-        // compile-time, and this entire code is removed as dead code by the
-        // compiler.
+        // On the CPU, this case can only occur if the problem is too large for
+        // the BLAS.  This can only occur if, for example you're on a 64-bit
+        // platform (with sizeof (Long) = 8) and using a 32-bit BLAS (with
+        // sizeof (BLAS_INT) = 4).  On the GPU, this case can more easily
+        // occur, if we run out of memory in spqrgpu_kernel, or if we fail to
+        // communicate with the GPU.
         spqr_freenum (&QRnum, cc) ;
         FREE_WORK ;
         return (NULL) ;
@@ -521,10 +533,12 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
     // finalize the rank
     // -------------------------------------------------------------------------
 
+    PR (("finalize the rank\n")) ;
     rank = 0 ;
     maxfrank = 1 ;
     for (stack = 0 ; stack < ns ; stack++)
     {
+        PR (("stack: %ld Work [stack].sumfrank: %ld\n", stack, Work [stack].sumfrank)) ;
         rank += Work [stack].sumfrank ;
         maxfrank = MAX (maxfrank, Work [stack].maxfrank) ;
     }
@@ -560,7 +574,7 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
         }
     }
     QRnum->norm_E_fro = wscale * sqrt (wssq) ;
-    cc->SPQR_xstat [2] = QRnum->norm_E_fro ;
+    cc->SPQR_norm_E_fro = QRnum->norm_E_fro ;
 
     // -------------------------------------------------------------------------
     // free all workspace, except Cblock and Work
@@ -623,6 +637,8 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
             else
             {
                 // normal method; just realloc the block
+                PR (("Normal shrink of the stack: %ld to %ld\n",
+                    stacksize, newstacksize)) ;
                 Cblock [stack] =    // pointer to the new Stack
                     (Entry *) cholmod_l_realloc (
                     newstacksize,   // requested size of Stack, in # of Entries
@@ -703,20 +719,24 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
     // -------------------------------------------------------------------------
 
     // find the rank of the first ntol columns of A
+    PR (("find rank of first ntol cols of A: ntol %ld n %ld\n", ntol, n)) ;
     if (ntol >= n)
     {
         rank1 = rank ;
+        PR (("rank1 is rank: %ld\n", rank1)) ;
     }
     else
     {
         rank1 = 0 ;
         for (j = 0 ; j < ntol ; j++)
         {
+            PR (("column %ld Rdead: %d\n", j, (int) Rdead [j])) ;
             if (!Rdead [j])
             {
                 rank1++ ;
             }
         }
+        PR (("rank1 is sum of non-Rdead: %ld\n", rank1)) ;
     }
     QRnum->rank1 = rank1 ;
     return (QRnum) ;

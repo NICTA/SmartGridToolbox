@@ -5,7 +5,7 @@ function [objfiles, timestamp_out] = cs_make (f)
 %       [objfiles, timestamp] = cs_make (f)
 %
 %   With no input arguments, or with f=0, only those files needing to be
-%   compiled are compiled (like the Unix/Linux/GNU "make" command, but not
+%   compiled are compiled (like the "make" command, but not
 %   requiring "make").  If f is a nonzero number, all files are compiled.
 %   If f is a string, only that mexFunction is compiled.  For example,
 %   cs_make ('cs_add') just compiles the cs_add mexFunction.  This option is
@@ -27,7 +27,7 @@ function [objfiles, timestamp_out] = cs_make (f)
 %
 %       (7) Optionally add 'cs_mynewfunc' to CSparse/Source/Makefile
 %           and CSparse/MATLAB/CSparse/Makefile, if you want to use the
-%           Unix/Linux/GNU make command instead of cs_make.m.  See where
+%           make command instead of cs_make.m.  See where
 %           'cs_add' and 'cs_add_mex' appear in those files, and add
 %           'cs_mynewfunc' accordingly.
 %       (8) Optionally add 'cs_mynewfunc' to Tcov/Makefile, and add additional
@@ -55,6 +55,11 @@ if (~isempty (strfind (computer, '64')))
 else
     fprintf ('Compiling CSparse (32-bit)\n') ;
     mexcmd = 'mex' ;
+end
+
+% MATLAB 8.3.0 now has a -silent option to keep 'mex' from burbling too much
+if (~verLessThan ('matlab', '8.3.0'))
+    mexcmd = [mexcmd ' -silent'] ;
 end
 
 % CSparse source files, in ../../Source, such as ../../Source/cs_add.c.

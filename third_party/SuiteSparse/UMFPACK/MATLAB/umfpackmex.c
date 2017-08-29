@@ -4,7 +4,7 @@
 
 /* -------------------------------------------------------------------------- */
 /* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License for License.                      */
+/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
 /* -------------------------------------------------------------------------- */
 
 /*
@@ -885,26 +885,6 @@ void mexFunction
     mxComplexity Atype, Xtype ;
     char warning [200] ;
     int info_details ;
-
-    /* ---------------------------------------------------------------------- */
-    /* define the memory manager and printf functions for UMFPACK and AMD */ 
-    /* ---------------------------------------------------------------------- */
-
-    /* with these settings, the UMFPACK mexFunction can use ../Lib/libumfpack.a
-     * and ../Lib/libamd.a, instead compiling UMFPACK and AMD specifically for
-     * the MATLAB mexFunction. */
-
-    amd_malloc = mxMalloc ;
-    amd_free = mxFree ;
-    amd_calloc = mxCalloc ;
-    amd_realloc = mxRealloc ;
-
-    amd_printf = mexPrintf ;
-
-    /* The default values for these function pointers are fine.
-    umfpack_hypot = umf_hypot ;
-    umfpack_divcomplex = umf_divcomplex ;
-    */
 
     /* ---------------------------------------------------------------------- */
     /* get inputs A, b, and the operation to perform */

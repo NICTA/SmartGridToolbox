@@ -5,7 +5,6 @@
 /* ----------------------------------------------------------------------------
  * CCOLAMD Copyright (C), Univ. of Florida.  Authors: Timothy A. Davis,
  * Sivasankaran Rajamanickam, and Stefan Larimore
- * See License.txt for the Version 2.1 of the GNU Lesser General Public License
  * -------------------------------------------------------------------------- */
 
 /*
@@ -42,11 +41,11 @@ extern "C" {
  *	#endif
  */
 
-#define CCOLAMD_DATE "Jun 1, 2012"
+#define CCOLAMD_DATE "May 4, 2016"
 #define CCOLAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define CCOLAMD_MAIN_VERSION 2
-#define CCOLAMD_SUB_VERSION 8
-#define CCOLAMD_SUBSUB_VERSION 0
+#define CCOLAMD_SUB_VERSION 9
+#define CCOLAMD_SUBSUB_VERSION 6
 #define CCOLAMD_VERSION \
 	CCOLAMD_VERSION_CODE(CCOLAMD_MAIN_VERSION,CCOLAMD_SUB_VERSION)
 
@@ -349,12 +348,6 @@ SuiteSparse_long ccolamd_l_post_tree
     SuiteSparse_long Order [ ],
     SuiteSparse_long Stack [ ]
 ) ;
-
-#ifndef EXTERN
-#define EXTERN extern
-#endif
-
-EXTERN int (*ccolamd_printf) (const char *, ...) ;
 
 #ifdef __cplusplus
 }

@@ -2,8 +2,6 @@
 # CSparse Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 3.1.2
-
 C:
 	( cd Lib ; $(MAKE) )
 	( cd Demo ; $(MAKE) )
@@ -12,6 +10,10 @@ all: C cov
 
 library:
 	( cd Lib ; $(MAKE) )
+
+# compile the static libraries only
+static:
+	( cd Lib    ; $(MAKE) static )
 
 cov:
 	( cd Tcov ; $(MAKE) )
@@ -32,9 +34,9 @@ purge:
 
 distclean: purge
 
-# do not install CSparse; use CXSparse instead
-install:
+install: library
+	( cd Lib ; $(MAKE) install )
 
-# uninstall CSparse: do nothing
 uninstall:
+	( cd Lib ; $(MAKE) uninstall )
 

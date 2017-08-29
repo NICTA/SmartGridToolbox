@@ -2,7 +2,8 @@
 # CCOLAMD Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 2.8.0
+SUITESPARSE ?= $(realpath $(CURDIR)/..)
+export SUITESPARSE
 
 default: all
 
@@ -18,6 +19,10 @@ all:
 # compile just the C-callable libraries (not Demos)
 library:
 	( cd Lib    ; $(MAKE) )
+
+# compile the static libraries only
+static:
+	( cd Lib    ; $(MAKE) static )
 
 # remove object files, but keep the compiled programs and library archives
 clean:
@@ -43,14 +48,8 @@ lib: library
 
 # install CCOLAMD
 install:
-	$(CP) Lib/libccolamd.a $(INSTALL_LIB)/libccolamd.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -sf libccolamd.$(VERSION).a libccolamd.a )
-	$(CP) Include/ccolamd.h $(INSTALL_INCLUDE)
-	chmod 644 $(INSTALL_LIB)/libccolamd*.a
-	chmod 644 $(INSTALL_INCLUDE)/ccolamd.h
+	( cd Lib  ; $(MAKE) install )
 
 # uninstall CCOLAMD
 uninstall:
-	$(RM) $(INSTALL_LIB)/libccolamd*.a
-	$(RM) $(INSTALL_INCLUDE)/ccolamd.h
-
+	( cd Lib  ; $(MAKE) uninstall )

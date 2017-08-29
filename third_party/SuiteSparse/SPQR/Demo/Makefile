@@ -9,42 +9,31 @@ ccode: all
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 #-------------------------------------------------------------------------------
-# the optional Partition module requires METIS, CAMD, and CCOLAMD
-I_WITH_PARTITION = 
-LIB_WITH_PARTITION =
-CONFIG = -DNPARTITION
-# check if METIS is requested and available
-ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
-    # METIS is requested.  See if it is available
-    ifeq ($(METIS_PATH), $(wildcard $(METIS_PATH)))
-        ifeq (../../CAMD, $(wildcard ../../CAMD))
-            ifeq (../../CCOLAMD, $(wildcard ../../CCOLAMD))
-                # METIS, CAMD, and CCOLAMD are available
-                LIB_WITH_PARTITION = $(METIS) ../../CCOLAMD/Lib/libccolamd.a \
-                    ../../CAMD/Lib/libcamd.a
-                I_WITH_PARTITION = -I$(METIS_PATH)/Lib \
-                    -I../../CCOLAMD/Include -I../../CAMD/Include
-                CONFIG =
-            endif
-        endif
-    endif
+# the optional SPQRGPU module requires CUDA, SuiteSparse_GPURuntime, GPUQREngine
+ifneq ($(GPU_CONFIG),)
+    LIB_WITH_SPQRGPU = $(CUDART_LIB) $(CUBLAS_LIB) \
+        -lSuiteSparse_GPURuntime -lGPUQREngine
+    I_WITH_SPQRGPU = -I../../SuiteSparse_GPURuntime/Include \
+        -I../../GPUQREngine/Include $(CUDA_INC)
+else
+    LIB_WITH_SPQRGPU = 
+    I_WITH_SPQRGPU = 
 endif
+
 #-------------------------------------------------------------------------------
 
-CLIB = ../Lib/libspqr.a \
-        ../../SuiteSparse_config/libsuitesparseconfig.a \
-	../../CHOLMOD/Lib/libcholmod.a ../../AMD/Lib/libamd.a \
-	../../COLAMD/Lib/libcolamd.a $(LIB_WITH_PARTITION)
+CLIB = $(LDFLAGS) -L../../lib -lspqr -lsuitesparseconfig -lcholmod -lamd \
+        -lcolamd $(LIB_WITH_PARTITION) $(LIB_WITH_SPQRGPU) $(LDLIBS)
 
 # use the BLAS and LAPACK defined by SuiteSparse_config.mk; do not use valgrind 
 FLIB = $(LAPACK) $(BLAS)
-V = 
+V =
 
 # To use Valgrind and the plain BLAS and plain LAPACK (non-optimized):
 # FLIB = -lgfortran -llapack_plain -lblas_plain -lg2c
 # V = valgrind --quiet
 
-all: library qrdemo qrsimple qrsimplec
+all: library qrdemo qrsimple qrsimplec gpu
 	- $(V) ./qrsimple < ../Matrix/ash219.mtx
 	- $(V) ./qrsimplec < ../Matrix/ash219.mtx
 	- $(V) ./qrsimple < ../Matrix/west0067.mtx
@@ -76,6 +65,7 @@ all: library qrdemo qrsimple qrsimplec
 	- $(V) ./qrdemo < ../Matrix/GD98_a.mtx
 	- $(V) ./qrdemo < ../Matrix/Ragusa16.mtx
 	- $(V) ./qrdemo < ../Matrix/young1c.mtx
+	- $(V) ./qrdemo < ../Matrix/lp_e226_transposed.mtx
 
 cdemo: qrdemoc
 	- $(V) ./qrdemoc < ../Matrix/a2.mtx
@@ -105,69 +95,118 @@ cdemo: qrdemoc
 	- $(V) ./qrdemoc < ../Matrix/GD98_a.mtx
 	- $(V) ./qrdemoc < ../Matrix/Ragusa16.mtx
 	- $(V) ./qrdemoc < ../Matrix/young1c.mtx
+	- $(V) ./qrdemoc < ../Matrix/lp_e226_transposed.mtx
 
-../Lib/libspqr.a:
+ifneq ($(GPU_CONFIG),)
+GPU_DEMOS = gpu2 gpu3 gpu4 gpu1
+else
+GPU_DEMOS =
+endif
+
+gpu: $(GPU_DEMOS)
+
+gpu1: qrdemo_gpu
+	- $(V) ./qrdemo_gpu  ../Matrix/west0067.mtx 2
+	- $(V) ./qrdemo_gpu  ../Matrix/lp_e226_transposed.mtx 2
+	- $(V) ./qrdemo_gpu  ../Matrix/lp_e226_transposed.mtx 6
+
+gpu2: qrdemo_gpu2
+	- $(V) ./qrdemo_gpu2 ../Matrix/west0067.mtx 2
+	- $(V) ./qrdemo_gpu2 ../Matrix/lp_e226_transposed.mtx 2
+	- $(V) ./qrdemo_gpu2 ../Matrix/lp_e226_transposed.mtx 6
+
+gpu3: qrdemo_gpu3
+	- $(V) ./qrdemo_gpu3 ../Matrix/west0067.mtx 2
+	- $(V) ./qrdemo_gpu3 ../Matrix/lp_e226_transposed.mtx 2
+	- $(V) ./qrdemo_gpu3 ../Matrix/lp_e226_transposed.mtx 6
+
+gpu4: qrdemo_gpu
+	- $(V) ./qrdemo_gpu  ../Matrix/Groebner_id2003_aug.mtx 6
+	- $(V) ./qrdemo_gpu  ../Matrix/Franz6_id1959_aug.mtx 6
+
+library: metis
 	( cd ../Lib ; $(MAKE) )
-
-../../AMD/Lib/libamd.a:
 	( cd ../../AMD ; $(MAKE) library )
-
-../../SuiteSparse_config/libsuitesparseconfig.a:
 	( cd ../../SuiteSparse_config ; $(MAKE) library )
-
-../../CHOLMOD/Lib/libcholmod.a:
 	- ( cd ../../CHOLMOD && $(MAKE) library )
-
-../../COLAMD/Lib/libcolamd.a:
 	- ( cd ../../COLAMD && $(MAKE) library )
-
-../../CCOLAMD/Lib/libccolamd.a:
 	- ( cd ../../CCOLAMD && $(MAKE) library )
-
-../../CAMD/Lib/libcamd.a:
 	- ( cd ../../CAMD && $(MAKE) library )
+ifneq ($(GPU_CONFIG),)
+	- ( cd ../../SuiteSparse_GPURuntime && $(MAKE) library )
+	- ( cd ../../GPUQREngine && $(MAKE) library )
+endif
 
-$(METIS):
-	( cd $(METIS_PATH) && $(MAKE) )
+metis: ../../include/metis.h
 
-library: $(CLIB)
+../../include/metis.h:
+	- ( cd ../.. && $(MAKE) metis )
 
 purge: distclean
 
 distclean: clean
-	- $(RM) qrdemo qrdemoc qrsimple qrsimplec
-	- $(RM) -r *.dSYM
+	- $(RM) qrdemo qrdemo_gpu qrdemoc qrsimple qrsimplec X.mtx
+	- $(RM) R.mtx C.mtx E.txt gpu_results.txt qrdemo_gpu2 qrdemo_gpu3
+	- $(RM) *.dot pfile tfile
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
+	- $(RM) -r $(CLEAN)
 
 INC = ../Include/spqr.hpp ../Include/SuiteSparseQR_C.h \
 	../Include/SuiteSparseQR_definitions.h \
 	../Include/SuiteSparseQR.hpp Makefile
 
-I = -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../Include
+I = -I../../include $(I_WITH_SPQRGPU)
 
-C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG) $(I)
+C = $(CXX) $(CF) $(SPQR_CONFIG) $(CONFIG_PARTITION) $(CONFIG_GPU) $(I) \
+	$(CHOLMOD_CONFIG)
 
-LIBS = $(CLIB) $(LIB) $(FLIB) $(TBB)
+LIBS = $(CLIB) $(FLIB) $(TBB) $(GPULIB)
 
-qrsimple: qrsimple.cpp library $(INC)
+# With the CUDA BLAS
+ifneq ($(GPU_CONFIG),)
+LIBS += $(CUDART_LIB) $(CUBLAS_LIB)
+endif
+
+qrsimple: qrsimple.cpp $(INC)
 	$(C) qrsimple.cpp -o qrsimple $(LIBS)
 
-qrdemo: qrdemo.cpp library $(INC)
+qrdemo: qrdemo.cpp $(INC)
 	$(C) qrdemo.cpp -o qrdemo $(LIBS)
+
+qrdemo_gpu: qrdemo_gpu.cpp $(INC)
+ifneq ($(GPU_CONFIG),)
+	$(C) qrdemo_gpu.cpp -o qrdemo_gpu $(LIBS)
+else
+	echo
+endif
+
+qrdemo_gpu2: qrdemo_gpu2.cpp $(INC)
+ifneq ($(GPU_CONFIG),)
+	$(C) qrdemo_gpu2.cpp -o qrdemo_gpu2 $(LIBS)
+else
+	echo
+endif
+
+qrdemo_gpu3: qrdemo_gpu3.cpp $(INC)
+ifneq ($(GPU_CONFIG),)
+	$(C) qrdemo_gpu3.cpp -o qrdemo_gpu3 $(LIBS)
+else
+	echo
+endif
 
 # compile the C code with gcc, but link with g++ to use SuiteSparseQR:
 
 qrdemoc.o: qrdemoc.c $(INC)
-	$(CC) $(CF) $(SPQR_CONFIG) -ansi $(I) -c $<
+	$(CC) $(CF) $(SPQR_CONFIG) $(I) -c $<
 
-qrdemoc: qrdemoc.o library $(INC)
+qrdemoc: qrdemoc.o $(INC)
 	$(C) -o qrdemoc qrdemoc.o $(LIBS)
 
 qrsimplec.o: qrsimplec.c $(INC)
-	$(CC) $(CF) $(SPQR_CONFIG) -ansi $(I) -c $<
+	$(CC) $(CF) $(SPQR_CONFIG) $(CHOLMOD_CONFIG) $(I) -c $<
 
-qrsimplec: qrsimplec.o library $(INC)
+qrsimplec: qrsimplec.o $(INC)
 	$(C) -o qrsimplec qrsimplec.o $(LIBS)
 

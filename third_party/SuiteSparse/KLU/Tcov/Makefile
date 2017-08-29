@@ -3,9 +3,14 @@
 #
 # This test requires BTF, METIS, CHOLMOD, AMD, COLAMD, CAMD, and CCOLAMD.
 
+TCOV=yes
+
 default: all
 
 include ../../SuiteSparse_config/SuiteSparse_config.mk
+
+BLAS = -lrefblas
+LAPACK = -llapack
 
 # CF = -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
 # 	-Wredundant-decls -Wnested-externs -Wdisabled-optimization \
@@ -14,21 +19,17 @@ include ../../SuiteSparse_config/SuiteSparse_config.mk
 # for statement coverage, picky tests
 CF = -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization \
- 	-ansi -g -ftest-coverage -fprofile-arcs -fexceptions
+ 	-ansi -g -ftest-coverage -fprofile-arcs -fexceptions \
+	-fopenmp
 
 C = $(CC) $(CF)
 
-LIB = ../../AMD/Lib/libamd.a ../../COLAMD/Lib/libcolamd.a \
-    ../../CHOLMOD/Lib/libcholmod.a \
-    ../../CAMD/Lib/libcamd.a ../../CCOLAMD/Lib/libccolamd.a \
-    ../../metis-4.0/libmetis.a \
-    -lm
+LDLIBS = -L../../lib -lamd -lcolamd -lcholmod -lcamd -lccolamd \
+    -lmetis -lsuitesparseconfig \
+    $(LAPACK) $(BLAS) $(CUDART_LIB) $(CUBLAS_LIB) -lm -lrt \
+    -Wl,-rpath=$(SUITESPARSE)/lib -lstdc++
 
-I = -I../../SuiteSparse_config -I../../AMD/Include -I../../COLAMD/Include \
-    -I../../BTF/Include -I../../CHOLMOD/Include -I../../CAMD/Include \
-    -I../../CCOLAMD/Include -I../../metis-4.0/Lib -I../Include -I../User
-
-PRETTY = grep -v "^\#" | indent -bl -nce -bli0 -i4 -sob 
+I = -I../../include -I../Include -I../User -I../../BTF/Include
 
 all: purge libs klutest klultest
 	- ./klultests > klultests.out
@@ -41,21 +42,22 @@ valgrind: purge klutest klultest
 	- ./coverage
 
 libs:
-	( cd ../../AMD && $(MAKE) library )
-	( cd ../../COLAMD && $(MAKE) library )
-	( cd ../../CAMD && $(MAKE) library )
-	( cd ../../CCOLAMD && $(MAKE) library )
-	( cd ../../metis-4.0 && $(MAKE) )
-	( cd ../../CHOLMOD && $(MAKE) library )
+	( cd ../../SuiteSparse_config && $(MAKE) TCOV=yes)
+	( cd ../../AMD && $(MAKE) library TCOV=yes)
+	( cd ../../COLAMD && $(MAKE) library TCOV=yes)
+	( cd ../../CAMD && $(MAKE) library TCOV=yes)
+	( cd ../../CCOLAMD && $(MAKE) library TCOV=yes)
+	( cd ../.. && $(MAKE) metis )
+	( cd ../../CHOLMOD && $(MAKE) library TCOV=yes)
 
 purge: distclean
 
 distclean: clean
-	- $(RM) klutest klultest *.c.gcov *.out *.a cov_*.c *.gcda *.gcno
+	- $(RM) klutest klultest *.out cov_*.c
+	- $(RM) -r $(PURGE)
 
 clean:
-	- $(RM) $(CLEAN)
-	- $(RM) -r *.dSYM
+	- $(RM) -r $(CLEAN)
 
 INC =  \
 	../Include/klu.h \
@@ -143,10 +145,10 @@ $(OBJ): $(INC)
 $(LOBJ): $(INC)
 
 klutest: $(OBJ) klutest.c
-	$(C) $(I) klutest.c -o klutest $(OBJ) $(LIB)
+	$(C) $(I) klutest.c -o klutest $(OBJ) $(LDLIBS)
 
 klultest: $(LOBJ) klutest.c
-	$(C) -DDLONG $(I) klutest.c -o klultest $(LOBJ) $(LIB)
+	$(C) -DDLONG $(I) klutest.c -o klultest $(LOBJ) $(LDLIBS)
 
 .c.o:
 	$(C) -c $(I) $*.c

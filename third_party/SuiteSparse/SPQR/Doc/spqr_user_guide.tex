@@ -21,14 +21,15 @@
 %-------------------------------------------------------------------------------
 
 \title{User's Guide for SuiteSparseQR, a multifrontal multithreaded sparse
-QR factorization package}
+QR factorization package (with optional GPU acceleration)}
 \author{Timothy A. Davis\thanks{
 email: DrTimothyAldenDavis@gmail.com.
 http://www.suitesparse.com.
 Portions of this work were supported by the National
-Science Foundation, under grants 0203270, 0620286, and 0619080.}}
+Science Foundation, under grants 0203270, 0620286, and 0619080.},
+Sencer Nuri Yeralan, Sanjay Ranka, Wissam Sid-Lakhdar}
 
-\date{May 28, 2012}
+\date{VERSION 2.0.8, Dec 8, 2016}
 
 %-------------------------------------------------------------------------------
 \begin{document}
@@ -100,17 +101,10 @@ and then type \verb'mex -setup' in the MATLAB Command Window.
 \subsubsection{Optional instructions on using METIS for any operating system}
 %-------------------------------------------------------------------------------
 
-To use METIS \cite{KarypisKumar98e}, obtain a copy of the metis-4.0.1
-distribution from \newline
-\htmladdnormallink{http://glaros.dtc.umn.edu/gkhome/views/metis}{http://glaros.dtc.umn.edu/gkhome/views/metis}.
-Do not get the \verb'metis-4.0.zip' file since it does not contain source code;
-you must download the \verb'metis-4.0.tar.gz' file instead.  Uncompress this
-file and place the \verb'metis-4.0' directory in the SuiteSparse directory.
-You must not have a nested \verb'SuiteSparse/metis-4.0/metis-4.0' directory;
-this can occur on Windows when you extract a compressed archive.  If you have
-this directory, move the lowest \verb'metis-4.0' directory up one level so that
-(for example) the file \newline \verb'SuiteSparse/metis-4.0/Lib/metis.h'
-exists.
+SuiteSparse now relies on METIS 5.1.0, which is distributed along with
+SuiteSparse itself.  Its use is optional, however.  If you compile with
+{\tt -DNPARTITION}, or if you delete or move the {\tt SuiteSparse/metis-5.1.0}
+folder, then SuiteSparse will be compiled without it.
 
 METIS tends to give orderings that are good for the parallelism exploited by
 TBB, so its use with TBB is recommended.  Note however that METIS is not
@@ -608,7 +602,11 @@ functions.
 
 Before you compile the SuiteSparseQR library and demo programs, you may wish to
 edit the \verb'SuiteSparse/SuiteSparse_config/SuiteSparse_config.mk' configuration file.  The
-defaults should be fine on most Linux/Unix systems.  Next, type \verb'make' at
+defaults should be fine on most Linux/Unix systems and on the Mac.
+It automatically detects what system you have and sets compile parameters
+accordingly.
+
+Next, type \verb'make' at
 the Linux/Unix command line, in either the \verb'SuiteSparse' directory (which
 compiles all of SuiteSparse) or in the \verb'SuiteSparse/SPQR' directory (which
 just compiles SuiteSparseQR and the libraries it requires).  SuiteSparseQR will
@@ -620,7 +618,9 @@ found.  Selecting the right BLAS is critical.  There is no standard naming
 scheme for the name and location of these libraries.  The defaults in the
 \verb'SuiteSparse_config.mk' file use \verb'-llapack' and \verb'-lblas'; the latter may
 link against the standard Fortran reference BLAS, which will not provide
-optimal performance.  For best results, you should use the Goto BLAS
+optimal performance.  For best results, you should use the OpenBLAS
+at openblas.net
+(based on the Goto BLAS)
 \cite{GotoVanDeGeijn08}, or high-performance vendor-supplied BLAS such as the
 Intel MKL, AMD ACML, or the Sun Performance Library.  Selection of LAPACK and
 the BLAS is done with the \verb'LAPACK=' and \verb'BLAS=' lines in the
@@ -647,6 +647,11 @@ Select these via the \verb'SPQR_CONFIG=' line in the \verb'SuiteSparse_config.mk
 
 To fully test 100\% of the lines of SuiteSparseQR, go to the \verb'Tcov'
 directory and type \verb'make'.  This will work for Linux only.
+
+To install the shared library
+into /usr/local/lib and /usr/local/include, do {\tt make install}.
+To uninstall, do {\tt make uninstall}.
+For more options, see the {\tt SuiteSparse/README.txt} file.
 
 %-------------------------------------------------------------------------------
 \subsection{C/C++ Example}
@@ -757,8 +762,9 @@ can do:
     \verb"x=R'\b", or \verb"x=R'\(P'*b)".
 
     \item \verb'SuiteSparseQR_qmult': provides the same function as
-    \verb'spqr_qmult' in the MATLAB interface, computing \verb"Q*x",
-    \verb"Q'*x", \verb"x*Q", or \verb"x*Q'".  It uses either a QR factorization
+    \verb'spqr_qmult' in the MATLAB interface, computing
+    \verb"Q'*x", \verb"Q*x", \verb"x*Q'", or \verb"x*Q".
+    It uses either a QR factorization
     in MATLAB-style sparse matrix format, or the QR factorization object
     returned by \newline \verb'SuiteSparseQR_factorize' or
     \verb'SuiteSparseQR_numeric'.
@@ -838,8 +844,8 @@ Output statistics include:
 {\footnotesize
 \begin{tabular}{|ll|}
 \hline
-\verb'cc->SPQR_xstat [0]' & an upper bound on the flop count \\
-\verb'cc->SPQR_xstat [1]' & the tolerance used (\verb'opts.tol') \\
+\verb'cc->SPQR_flopcount_bound' & an upper bound on the flop count \\
+\verb'cc->SPQR_tol_used' & the tolerance used (\verb'opts.tol') \\
 \hline
 \verb'cc->SPQR_istat [0]' & upper bound on \verb'nnz(R)' \\
 \verb'cc->SPQR_istat [1]' & upper bound on \verb'nnz(H)' \\
@@ -860,6 +866,49 @@ The upper bound on the flop count is found in the analysis phase, which ignores
 the numerical values of \verb'A' (the same analysis phase operates on both real
 and complex matrices).  Thus, if you are factorizing a complex matrix, multiply
 this statistic by 4.
+
+%-------------------------------------------------------------------------------
+\section{GPU acceleration}
+\label{GPU}
+%-------------------------------------------------------------------------------
+
+As of version 2.0.0, SuiteSparseQR now includes GPU acceleration.
+It can exploit a single NVIDIA GPU, via CUDA.  To enable GPU acceleration,
+you must compile SuiteSparseQR with non-default options.  See the
+\verb'SuiteSparse_config_GPU_gcc.mk' file in the \verb'SuiteSparse_config'
+directory for details.  The packages SuiteSparse\_GPURuntime and
+GPUQREngine are also required (they should appear in the SuiteSparse 
+directory, along with SPQR).
+
+At run time, you must also enable the GPU by setting \verb'Common->useGPU'
+to \verb'true'.  Before calling any SuiteSparseQR function, you must
+poll the GPU to set the available memory.  Below is a sample code
+that initializes CHOLMOD and then polls the GPU for use in SuiteSparseQR.
+
+\begin{verbatim}
+    size_t total_mem, available_mem ;
+    cholmod_common *cc, Common ;
+    cc = &Common ;
+    cholmod_l_start (cc) ;
+    cc->useGPU = true ;
+    cholmod_l_gpu_memorysize (&total_mem, &available_mem, cc) ;
+    cc->gpuMemorySize = available_mem ;
+    if (cc->gpuMemorySize <= 1)
+    {
+        printf ("no GPU available\n") ;
+    }
+
+    // Subsequent calls to SuiteSparseQR will use the GPU, if available
+\end{verbatim}
+
+See \verb'Demo/qrdemo_gpu.cpp' for an extended example, which can be
+compiled via \verb'make gpu' in the \verb'Demo' directory.
+
+GPU acceleration is not yet available via the MATLAB mexFunction interface. 
+We expect to include this in a future release.
+
+For a detailed technical report on the GPU-accelerated algorithm,
+see \verb'qrgpu_paper.pdf' in the \verb'Doc' directory.
 
 %-------------------------------------------------------------------------------
 \section{Requirements and Availability}
@@ -891,7 +940,8 @@ and at MATLAB Central
 in the user-contributed File Exchange (
 \htmladdnormallink{http://www.mathworks.com/matlabcentral}{http://www.mathworks.com/matlabcentral}
 ).
-SuiteSparseQR is licensed under the GNU GPL.  Commercial licenses are also
+See SPQR/Doc/License.txt for the license.
+Alternative licenses are also
 available; contact the author for details.
 
 %-------------------------------------------------------------------------------

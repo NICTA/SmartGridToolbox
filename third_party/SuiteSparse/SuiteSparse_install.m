@@ -12,7 +12,7 @@ function SuiteSparse_install (do_demo)
 % CCOLAMD        constrained COLAMD
 % CSparse        a Concise Sparse matrix package (32-bit or 64-bit, real only)
 % CXSparse       extended version of CSparse (32-bit/64-bit/real/complex)
-% UFget          interface to UF Sparse Matrix Collection (MATLAB 7.0 or later)
+% UFget          interface to SuiteSparse Matrix Collection
 % KLU            sparse LU factorization (left-looking)
 % BTF            permutation to block triangular form (like dmperm)
 % LDL            sparse LDL' factorization
@@ -24,6 +24,7 @@ function SuiteSparse_install (do_demo)
 % SPARSEINV      sparse inverse subset; computes entries of inv(sparse(A))
 % MATLAB_Tools   various simple m-files and demos
 % SuiteSparseQR  sparse QR factorization
+% PIRO_BAND      pipelined rotations for SVD of a band matrix
 % spqr_rank      MATLAB toolbox for sparse rank deficient matrices
 %
 % Example:
@@ -38,10 +39,11 @@ function SuiteSparse_install (do_demo)
 %
 % This script installs the full-featured CXSparse rather than CSparse.
 %
-% Copyright 1990-2013, Timothy A. Davis, http://www.suitesparse.com.
+% Copyright 1990-2016, Timothy A. Davis, http://www.suitesparse.com.
 % In collaboration with Patrick Amestoy, Yanqing Chen, Iain Duff, John Gilbert,
-% Steve Hadfield, William Hager, Stefan Larimore, Leslie Foster,
-% Eka Palamadai Natarajan, Esmond Ng, and Siva Rajamanickam.
+% Steve Hadfield, William Hager, Stefan Larimore, Leslie Foster, Eka Palamadai
+% Natarajan, Esmond Ng, Siva Rajamanickam, Nuri Yeralan, Sanjay Ranka,
+% and Wissam Sid-Lakhdar.
 
 %-------------------------------------------------------------------------------
 % initializations
@@ -59,22 +61,7 @@ help SuiteSparse_install
 
 fprintf ('\nInstalling SuiteSparse for MATLAB version %s\n\n', v) ;
 
-% check if METIS 4.0.1 is present where it's supposed to be
-have_metis = exist ('metis-4.0/Lib', 'dir') ;
-if (~have_metis)
-    fprintf ('METIS 4.0.1 is not present.  CHOLMOD, KLU, UMFPACK and SPQR\n') ;
-    fprintf ('optionally use it as an ordering method.  To use METIS,\n') ;
-    fprintf ('download it from http://glaros.dtc.umn.edu/gkhome/views/metis\n');
-    fprintf ('and place the metis-4.0 directory in this directory\n') ;
-    fprintf ('so that ./metis-4.0/Lib exists.\n\n') ;
-    fprintf ('Now compiling without METIS.\n') ;
-else
-    fprintf ('\nCompiling with METIS 4.0.1.  You may safely ignore warnings\n');
-    fprintf ('in metis-4.0/Lib/util.c regarding a malformed format string.\n') ;
-end
-
 % add SuiteSparse to the path
-fprintf ('\n\nPlease wait while SuiteSparse is compiled and installed.\n\n') ;
 paths = add_to_path (paths, SuiteSparse) ;
 
 %-------------------------------------------------------------------------------
@@ -135,9 +122,28 @@ catch me
     fprintf ('CAMD not installed\n') ;
 end
 
-% compile and install CXSparse and UFget
+% install UFget, unless it's already in the path
 try
-    paths = add_to_path (paths, [SuiteSparse '/CXSparse/MATLAB/UFget']) ;
+    % if this fails, then UFget is not yet installed
+    index = UFget ;
+    fprintf ('UFget already installed:\n') ;
+    which UFget
+catch
+    index = [ ] ;
+end
+if (isempty (index))
+    % UFget is not installed.  Use SuiteSparse/UFget
+    fprintf ('Installing SuiteSparse/UFget\n') ;
+    try
+        paths = add_to_path (paths, [SuiteSparse '/UFget']) ;
+    catch me
+        disp (me.message) ;
+        fprintf ('UFget not installed\n') ;
+    end
+end
+
+% compile and install CXSparse
+try
     paths = add_to_path (paths, [SuiteSparse '/CXSparse/MATLAB/Demo']) ;
     paths = add_to_path (paths, [SuiteSparse '/CXSparse/MATLAB/CSparse']) ;
     fprintf ('Compiling CXSparse:\n') ;
@@ -256,6 +262,17 @@ catch me
     fprintf ('MATLAB_Tools/spok not installed\n') ;
 end
 
+%{
+% compile and install PIRO_BAND
+try
+    paths = add_to_path (paths, [SuiteSparse '/PIRO_BAND/MATLAB']) ;
+    piro_band_make ;
+catch me
+    disp (me.message) ;
+    fprintf ('PIRO_BAND not installed\n') ;
+end
+%}
+
 % compile and install sparsinv
 try
     paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/sparseinv']) ;
@@ -312,4 +329,4 @@ function paths = add_to_path (paths, newpath)
 % add a path
 cd (newpath) ;
 addpath (newpath) ;
-paths = [paths { newpath } ] ;						    %#ok
+paths = [paths { newpath } ] ;

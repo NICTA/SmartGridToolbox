@@ -10,9 +10,9 @@
 #endif
 #define CS_VER 3                    /* CSparse Version */
 #define CS_SUBVER 1
-#define CS_SUBSUB 2
-#define CS_DATE "April 16, 2013"    /* CSparse release date */
-#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2013"
+#define CS_SUBSUB 9
+#define CS_DATE "May 4, 2016"       /* CSparse release date */
+#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2016"
 
 #ifdef MATLAB_MEX_FILE
 #undef csi

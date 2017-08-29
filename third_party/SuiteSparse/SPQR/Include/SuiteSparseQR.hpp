@@ -11,8 +11,34 @@
 // include files
 // -----------------------------------------------------------------------------
 
-#include "cholmod.h"
+extern "C"
+{
 #include "SuiteSparseQR_definitions.h"
+#include "cholmod.h"
+}
+
+// =============================================================================
+// === spqr_gpu ================================================================
+// =============================================================================
+
+struct spqr_gpu
+{
+    SuiteSparse_long *RimapOffsets;      // Stores front offsets into Rimap
+    SuiteSparse_long RimapSize;          // Allocated space for in Rimap
+
+    SuiteSparse_long *RjmapOffsets;      // Stores front offsets into Rjmap
+    SuiteSparse_long RjmapSize;          // Allocated space for Rjmap
+
+    SuiteSparse_long numStages;          // # of Stages required to factorize
+    SuiteSparse_long *Stagingp;          // Pointers into Post for boundaries
+    SuiteSparse_long *StageMap;          // Mapping of front to stage #
+    size_t *FSize;                       // Total size of fronts in a stage
+    size_t *RSize;                       // Total size of R+C for a stage
+    size_t *SSize;                       // Total size of S for a stage
+    SuiteSparse_long *FOffsets;          // F Offsets relative to a base
+    SuiteSparse_long *ROffsets;          // R Offsets relative to a base
+    SuiteSparse_long *SOffsets;          // S Offsets relative to a base
+};
 
 // =============================================================================
 // === spqr_symbolic ===========================================================
@@ -153,6 +179,29 @@ struct spqr_symbolic
     // size of each stack
     SuiteSparse_long *Stack_maxstack ;   // size ns+2
 
+    // number of rows for each front
+    SuiteSparse_long *Fm ;               // size nf+1
+
+    // number of rows in the contribution block of each front
+    SuiteSparse_long *Cm ;               // size nf+1
+
+    // from CHOLMOD's supernodal analysis, needed for GPU factorization
+    size_t maxcsize ;
+    size_t maxesize ;
+    SuiteSparse_long *ColCount ;
+    // SuiteSparse_long *px ;
+
+    // -------------------------------------------------------------------------
+    // GPU structure
+    // -------------------------------------------------------------------------
+
+    // This is NULL if the GPU is not in use.  The GPU must be enabled at
+    // compile time (-DGPU_BLAS enables the GPU).  If the Householder vectors
+    // are requested, if TBB is used (Common->SPQR_grain > 1), or if rank
+    // detection is requested, then the GPU is disabled.
+
+    spqr_gpu *QRgpu ;
+
 } ;
 
 
@@ -202,7 +251,7 @@ template <typename Entry> struct spqr_numeric
     char *Rdead ;       // size n, Rdead [k] = 1 if k is a dead pivot column,
                         // Rdead [k] = 0 otherwise.  If no columns are dead,
                         // this is NULL.  If m < n, then at least m-n columns
-                        // will be dead. 
+                        // will be dead.
 
     SuiteSparse_long rank ;      // number of live pivot columns
     SuiteSparse_long rank1 ;     // number of live pivot columns in first ntol
@@ -224,7 +273,7 @@ template <typename Entry> struct spqr_numeric
 
     SuiteSparse_long rjsize ;    // size of Hstair and HTau
 
-    SuiteSparse_long *HStair ;   // size rjsize.  The list Hstair [Rp [f] ... 
+    SuiteSparse_long *HStair ;   // size rjsize.  The list Hstair [Rp [f] ...
                         // Rp [f+1]-1] gives the staircase for front F
 
     Entry *HTau ;       // size rjsize.  The list HTau [Rp [f] ... Rp [f+1]-1]
@@ -298,7 +347,7 @@ template <typename Entry> struct SuiteSparseQR_factorization
 // =============================================================================
 
 //  SuiteSparseQR           Sparse QR factorization and solve
-//  SuiteSparseQR_qmult     Q*X, Q'*X, X*Q, or X*Q' for X full or sparse
+//  SuiteSparseQR_qmult     Q'*X, Q*X, X*Q', or X*Q for X full or sparse
 
 // returns rank(A) estimate, or EMPTY on failure
 template <typename Entry> SuiteSparse_long SuiteSparseQR
@@ -568,7 +617,7 @@ template <typename Entry> cholmod_sparse *SuiteSparseQR_min2norm
 ) ;
 
 // symbolic QR factorization; no singletons exploited
-template <typename Entry> 
+template <typename Entry>
 SuiteSparseQR_factorization <Entry> *SuiteSparseQR_symbolic
 (
     // inputs:

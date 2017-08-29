@@ -134,16 +134,15 @@
 %       sparseinv       sparse inverse subset
 %       spqr_rank       toolbox for sparse rank-deficient matrices
 %
-%   UFcollection    for managing the UF Sparse Matrix Collection
+%   UFcollection    for managing the SuiteSparse Matrix Collection
 %   RBio            for reading/writing Rutherford/Boeing sparse matrices
-%   UFget           MATLAB interface to the UF Sparse Matrix Collection,
-%                   located in C*Sparse*/MATLAB
+%   UFget           MATLAB interface to the SuiteSparse Matrix Collection
 %
 %-------------------------------------------------------------------------------
 %
 % For help on compiling SuiteSparse or the demos, testing functions, etc.,
 % please see the help for each individual package.
 %
-% Copyright 2013, Timothy A. Davis, http://www.suitesparse.com.
+% Copyright 2014, Timothy A. Davis, http://www.suitesparse.com.
 
 help SuiteSparse

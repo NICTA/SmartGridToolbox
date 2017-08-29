@@ -19,18 +19,12 @@ int spqr_mx_config (Long spumoni, cholmod_common *cc)
     // cholmod_l_solve must return a real or zomplex X for MATLAB
     cc->prefer_zomplex = TRUE ;
 
-    // use mxMalloc and related memory management routines
-    cc->malloc_memory  = mxMalloc ;
-    cc->free_memory    = mxFree ;
-    cc->realloc_memory = mxRealloc ;
-    cc->calloc_memory  = mxCalloc ;
-
     // printing and error handling
     if (spumoni == 0)
     {
 	// do not print anything from within CHOLMOD
 	cc->print = -1 ;
-	cc->print_function = NULL ;
+	SuiteSparse_config.printf_func = NULL ;
     }
     else
     {
@@ -38,26 +32,11 @@ int spqr_mx_config (Long spumoni, cholmod_common *cc)
 	//	routines will print a one-line summary of each object printed.
 	// spumoni = 2: also print a short summary of each object.
 	cc->print = spumoni + 2 ;
-	cc->print_function = mexPrintf ;
     }
 
     // error handler
     cc->error_handler = spqr_mx_error ;
     spqr_spumoni = spumoni ;
-
-    // complex arithmetic
-    cc->complex_divide = cholmod_l_divcomplex ;
-    cc->hypotenuse     = cholmod_l_hypot ;
-
-#ifndef NPARTITION
-#if defined(METIS_VERSION)
-#if (METIS_VERSION >= METIS_VER(4,0,2))
-    // METIS 4.0.2 uses function pointers for malloc and free
-    METIS_malloc = cc->malloc_memory ;
-    METIS_free   = cc->free_memory ;
-#endif
-#endif
-#endif
 
     // Turn off METIS memory guard.  It is not needed, because mxMalloc will
     // safely terminate the mexFunction and free any workspace without killing
@@ -223,9 +202,9 @@ void spqr_mx_spumoni
     mexPrintf ("    rank(A) estimate: %ld\n",             cc->SPQR_istat [4]) ;
     mexPrintf ("    # of column singletons: %ld\n",       cc->SPQR_istat [5]) ;
     mexPrintf ("    # of singleton rows: %ld\n",          cc->SPQR_istat [6]) ;
-    mexPrintf ("    upper bound on flop count: %g\n",     cc->SPQR_xstat [0]
-        * (is_complex ? 4 : 1)) ;
-    mexPrintf ("    column 2-norm tolerance used: %g\n",  cc->SPQR_xstat [1]) ;
+    mexPrintf ("    upper bound on flop count: %g\n",
+        cc->SPQR_flopcount_bound * (is_complex ? 4 : 1)) ;
+    mexPrintf ("    column 2-norm tolerance used: %g\n",  cc->SPQR_tol_used) ;
     mexPrintf ("    actual memory usage: %g (bytes)\n",
         ((double) cc->memory_usage)) ;
 
@@ -459,7 +438,7 @@ int spqr_mx_get_options
             {
                 mexErrMsgIdAndTxt ("QR:invalidInput","invalid ordering option");
             }
-            mxFree (s) ;
+            MXFREE (s) ;
         }
     }
 
@@ -496,7 +475,7 @@ int spqr_mx_get_options
         {
             mexErrMsgIdAndTxt ("QR:invalidInput", "invalid Q option") ;
         }
-        mxFree (s) ;
+        MXFREE (s) ;
     }
 
     // -------------------------------------------------------------------------
@@ -519,7 +498,7 @@ int spqr_mx_get_options
         {
             mexErrMsgIdAndTxt ("QR:invalidInput", "invalid permutation option");
         }
-        mxFree (s) ;
+        MXFREE (s) ;
     }
 
     // -------------------------------------------------------------------------
@@ -547,7 +526,7 @@ int spqr_mx_get_options
         {
             mexErrMsgIdAndTxt ("QR:invalidInput", "invalid solution option");
         }
-        mxFree (s) ;
+        MXFREE (s) ;
     }
 
     // if haveB becomes TRUE, Qformat must be set to "discard"
@@ -577,7 +556,8 @@ static int put_values
         // A is complex, stored in interleaved form; split it for MATLAB
         Long k ;
         double z, *Ax2, *Az2 ;
-        mxFree (mxGetPi (A)) ;
+        MXFREE (mxGetPi (A)) ;
+        // Ax2 and Az2 will never be NULL, even if nz == 0
         Ax2 = (double *) cholmod_l_malloc (nz, sizeof (double), cc) ;
         Az2 = (double *) cholmod_l_malloc (nz, sizeof (double), cc) ;
         for (k = 0 ; k < nz ; k++)
@@ -594,7 +574,8 @@ static int put_values
         if (imag_all_zero)
         {
             // free the imaginary part, converting A to real
-            cholmod_l_free (nz, sizeof (double), Az2, cc) ;
+            cholmod_l_free (1, sizeof (double), Az2, cc) ;
+            // the imaginary part can be NULL, for MATLAB
             Az2 = NULL ;
         }
         mxSetPi (A, Az2) ;
@@ -604,6 +585,11 @@ static int put_values
     else
     {
         // A is real; just set Ax and return (do not free Ax) 
+        if (Ax == NULL)
+        {
+            // don't give MATLAB a null pointer
+            Ax = (double *) cholmod_l_malloc (1, sizeof (double), cc) ;
+        }
         mxSetPr (A, Ax) ;
     }
     return (TRUE) ;
@@ -633,9 +619,9 @@ mxArray *spqr_mx_put_sparse
     mxSetM (Amatlab, A->nrow) ;
     mxSetN (Amatlab, A->ncol) ;
     mxSetNzmax (Amatlab, A->nzmax) ;
-    mxFree (mxGetJc (Amatlab)) ;
-    mxFree (mxGetIr (Amatlab)) ;
-    mxFree (mxGetPr (Amatlab)) ;
+    MXFREE (mxGetJc (Amatlab)) ;
+    MXFREE (mxGetIr (Amatlab)) ;
+    MXFREE (mxGetPr (Amatlab)) ;
     mxSetJc (Amatlab, (mwIndex *) A->p) ;
     mxSetIr (Amatlab, (mwIndex *) A->i) ;
 
@@ -673,8 +659,8 @@ mxArray *spqr_mx_put_dense2
     A = mxCreateDoubleMatrix (0, 0, is_complex ? mxCOMPLEX : mxREAL) ;
     mxSetM (A, m) ;
     mxSetN (A, n) ; 
-    mxFree (mxGetPr (A)) ;
-    mxFree (mxGetPi (A)) ;
+    MXFREE (mxGetPr (A)) ;
+    MXFREE (mxGetPi (A)) ;
     put_values (m*n, A, Ax, is_complex, cc) ;
     return (A) ;
 }
@@ -1071,8 +1057,9 @@ mxArray *spqr_mx_info       // return a struct with info statistics
 
     mxSetFieldByNumber (s, 0, 8,
         mxCreateDoubleScalar ((double) cc->memory_usage)) ;
-    mxSetFieldByNumber (s, 0, 9, mxCreateDoubleScalar (cc->SPQR_xstat [0])) ;
-    mxSetFieldByNumber (s, 0, 10, mxCreateDoubleScalar (cc->SPQR_xstat [1])) ;
+    mxSetFieldByNumber (s, 0, 9,
+        mxCreateDoubleScalar (cc->SPQR_flopcount_bound)) ;
+    mxSetFieldByNumber (s, 0, 10, mxCreateDoubleScalar (cc->SPQR_tol_used)) ;
 
     int nthreads = cc->SPQR_nthreads ;
     if (nthreads <= 0)
@@ -1084,7 +1071,7 @@ mxArray *spqr_mx_info       // return a struct with info statistics
         mxSetFieldByNumber (s, 0, 11, mxCreateDoubleScalar ((double) nthreads));
     }
 
-    mxSetFieldByNumber (s, 0, 12, mxCreateDoubleScalar (cc->SPQR_xstat [2])) ;
+    mxSetFieldByNumber (s, 0, 12, mxCreateDoubleScalar (cc->SPQR_norm_E_fro)) ;
 
 #ifdef HAVE_TBB
     mxSetFieldByNumber (s, 0, 13, mxCreateString ("yes")) ;
@@ -1100,11 +1087,12 @@ mxArray *spqr_mx_info       // return a struct with info statistics
 
     if (flops >= 0)
     {
-        for (Long k = 1 ; k <= 3 ; k++)
-        {
-            mxSetFieldByNumber (s, 0, 14+k,
-                mxCreateDoubleScalar (cc->other1 [k])) ;
-        }
+        mxSetFieldByNumber (s, 0, 15,
+            mxCreateDoubleScalar (cc->SPQR_analyze_time)) ;
+        mxSetFieldByNumber (s, 0, 16,
+            mxCreateDoubleScalar (cc->SPQR_factorize_time)) ;
+        mxSetFieldByNumber (s, 0, 17,
+            mxCreateDoubleScalar (cc->SPQR_solve_time)) ;
         mxSetFieldByNumber (s, 0, 18, mxCreateDoubleScalar (t)) ;
         mxSetFieldByNumber (s, 0, 19, mxCreateDoubleScalar (flops)) ;
     }

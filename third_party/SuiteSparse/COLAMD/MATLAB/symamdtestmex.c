@@ -34,7 +34,7 @@
     Notice:
 
 	Copyright (c) 1998-2007, Timothy A. Davis.  All Rights Reserved.
-	See the colamd.c file for the License.
+	See COLAMD/Doc/License.txt for the License.
 
     Availability:
 
@@ -97,8 +97,6 @@ void mexFunction
     Long *cp, *cp_end, result, nnz, col, length ;
     Long *stats ;
     stats = stats2 ;
-
-    colamd_printf = mexPrintf ; /* COLAMD printf routine */
 
     /* === Check inputs ===================================================== */
 

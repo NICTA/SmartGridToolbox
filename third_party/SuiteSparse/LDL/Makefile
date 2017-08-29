@@ -2,7 +2,8 @@
 # LDL Makefile
 #------------------------------------------------------------------------------
 
-VERSION = 2.1.0
+SUITESPARSE ?= $(realpath $(CURDIR)/..)
+export SUITESPARSE
 
 default: all
 
@@ -18,6 +19,10 @@ all:
 # compile just the C-callable libraries (not Demos)
 library:
 	( cd Lib    ; $(MAKE) )
+
+# compile the static libraries only
+static:
+	( cd Lib    ; $(MAKE) static )
 
 # remove object files, but keep the compiled programs and library archives
 clean:
@@ -50,14 +55,9 @@ lib: library
 
 # install LDL
 install:
-	$(CP) Lib/libldl.a $(INSTALL_LIB)/libldl.$(VERSION).a
-	( cd $(INSTALL_LIB) ; ln -sf libldl.$(VERSION).a libldl.a )
-	$(CP) Include/ldl.h $(INSTALL_INCLUDE)
-	chmod 644 $(INSTALL_LIB)/libldl*.a
-	chmod 644 $(INSTALL_INCLUDE)/ldl.h
+	( cd Lib ; $(MAKE) install )
 
 # uninstall LDL
 uninstall:
-	$(RM) $(INSTALL_LIB)/libldl*.a
-	$(RM) $(INSTALL_INCLUDE)/ldl.h
+	( cd Lib ; $(MAKE) uninstall )
 
