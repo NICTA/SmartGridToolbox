@@ -29,34 +29,6 @@ $SUDO make install || exit $?
 cd ../..
 
 cd SuiteSparse
-sed -i'' \
-    -e "s#^INSTALL_LIB.*#INSTALL_LIB = $INSTALL_PREFIX/lib#g" \
-    -e "s#INSTALL_INCLUDE.*#INSTALL_INCLUDE = $INSTALL_PREFIX/include#g" \
-    SuiteSparse_config/SuiteSparse_config.mk
-
-cd SuiteSparse_config
-make || exit $?
-$SUDO make install || exit $?
-cd ..
-
-cd AMD
-make || exit $?
-$SUDO make install || exit $?
-cd ..
-
-cd BTF
-make || exit $?
-$SUDO make install || exit $?
-cd ..
-
-cd COLAMD
-make || exit $?
-$SUDO make install || exit $?
-cd ..
-
-cd KLU
-make || exit $?
-$SUDO make install || exit $?
-cd ..
+$SUDO make install INSTALL=$INSTALL_PREFIX BLAS=-lblas || exit $?
 
 cd ..
