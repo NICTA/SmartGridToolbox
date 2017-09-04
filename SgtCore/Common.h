@@ -30,7 +30,7 @@
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
-#include <thread>
+#include <mutex>
 
 /// @name Utility macros - not normally for public consumption.
 /// @{
