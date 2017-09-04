@@ -161,7 +161,6 @@ namespace Sgt
     LogIndent::LogIndent(unsigned int nInit, unsigned int tabWidth) : 
         tabWidth_(tabWidth)
     {
-        std::unique_lock<std::mutex> lock{Log::mutex_};
         in(nInit);
     }
 
