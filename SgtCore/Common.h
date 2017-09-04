@@ -30,6 +30,7 @@
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
+#include <thread>
 
 /// @name Utility macros - not normally for public consumption.
 /// @{
@@ -99,8 +100,10 @@ namespace Sgt
 
         private:
 
+            static std::mutex mutex_;
             static unsigned int indentLevel_;
 
+            std::unique_lock<std::mutex> lock_{mutex_};
             StreamIndent coutBuf_{std::cout};
             StreamIndent cerrBuf_{std::cerr};
     };
@@ -138,30 +141,13 @@ namespace Sgt
     {
         public:
 
-            LogIndent(unsigned int nInit = 1, unsigned int tabWidth = 4) : 
-                tabWidth_(tabWidth)
-            {
-                in(nInit);
-            }
+            LogIndent(unsigned int nInit = 1, unsigned int tabWidth = 4);
+            
+            ~LogIndent();
 
-            ~LogIndent()
-            {
-                Log::indentLevel_ -= myIndentLevel_;
-            }
+            void in(unsigned int n = 1);
 
-            void in(unsigned int n = 1) 
-            {
-                const unsigned int delta = n * tabWidth_;
-                myIndentLevel_ += delta;
-                Log::indentLevel_ += delta;
-            }
-
-            void out(unsigned int n = 1)
-            {
-                const unsigned int delta = std::min(n * tabWidth_, myIndentLevel_);
-                myIndentLevel_ -= delta;
-                Log::indentLevel_ -= delta;
-            }
+            void out(unsigned int n = 1);
 
         private:
 

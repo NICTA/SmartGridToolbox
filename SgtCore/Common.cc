@@ -74,6 +74,42 @@ namespace Sgt
         return destBuf_->sputc(static_cast<char_type>(ch));
     }
 
+    std::ostream& Log::message()
+    {
+        coutBuf_.reset(
+                std::string("MESSAGE: ") + std::string(indentLevel_, ' '),
+                std::string("         ") + std::string(indentLevel_, ' '));
+        return std::cout;
+    }
+
+    std::ostream& Log::warning()
+    {
+        cerrBuf_.reset(
+                std::string("WARNING: ") + std::string(indentLevel_, ' '),
+                std::string("         ") + std::string(indentLevel_, ' '));
+        return std::cerr;
+    }
+
+    std::ostream& Log::error()
+    {
+        cerrBuf_.reset(
+                std::string("ERROR  : ") + std::string(indentLevel_, ' '),
+                std::string("         ") + std::string(indentLevel_, ' '));
+        return std::cerr;
+    }
+
+    std::ostream& Log::debug()
+    {
+        coutBuf_.reset(
+                std::string("DEBUG  : ") + std::string(indentLevel_, ' '),
+                std::string("         ") + std::string(indentLevel_, ' '));
+        return std::cout;
+    }
+
+    std::mutex Log::mutex_;
+    
+    unsigned int Log::indentLevel_{0};
+
     LogLevel& messageLogLevel()
     {
         static LogLevel level = LogLevel::NORMAL;
@@ -121,40 +157,35 @@ namespace Sgt
         static std::string filter = "";
         return filter;
     }
-
-    std::ostream& Log::message()
+            
+    LogIndent::LogIndent(unsigned int nInit, unsigned int tabWidth) : 
+        tabWidth_(tabWidth)
     {
-        coutBuf_.reset(
-                std::string("MESSAGE: ") + std::string(indentLevel_, ' '),
-                std::string("         ") + std::string(indentLevel_, ' '));
-        return std::cout;
+        std::unique_lock<std::mutex> lock{Log::mutex_};
+        in(nInit);
     }
 
-    std::ostream& Log::warning()
+    LogIndent::~LogIndent()
     {
-        cerrBuf_.reset(
-                std::string("WARNING: ") + std::string(indentLevel_, ' '),
-                std::string("         ") + std::string(indentLevel_, ' '));
-        return std::cerr;
+        std::unique_lock<std::mutex> lock{Log::mutex_};
+        Log::indentLevel_ -= myIndentLevel_;
     }
 
-    std::ostream& Log::error()
+    void LogIndent::in(unsigned int n) 
     {
-        cerrBuf_.reset(
-                std::string("ERROR  : ") + std::string(indentLevel_, ' '),
-                std::string("         ") + std::string(indentLevel_, ' '));
-        return std::cerr;
+        std::unique_lock<std::mutex> lock{Log::mutex_};
+        const unsigned int delta = n * tabWidth_;
+        myIndentLevel_ += delta;
+        Log::indentLevel_ += delta;
     }
 
-    std::ostream& Log::debug()
+    void LogIndent::out(unsigned int n)
     {
-        coutBuf_.reset(
-                std::string("DEBUG  : ") + std::string(indentLevel_, ' '),
-                std::string("         ") + std::string(indentLevel_, ' '));
-        return std::cout;
+        std::unique_lock<std::mutex> lock{Log::mutex_};
+        const unsigned int delta = std::min(n * tabWidth_, myIndentLevel_);
+        myIndentLevel_ -= delta;
+        Log::indentLevel_ -= delta;
     }
-
-    unsigned int Log::indentLevel_ = 0;
 
     struct CGram : Qi::grammar<std::string::const_iterator, Complex(), Ascii::space_type>
     {
