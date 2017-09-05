@@ -88,8 +88,8 @@ namespace Sgt
             auto rbegin() const {return points_.rbegin();};
             auto rend() const {return points_.rend();};
 
-            auto upperBound(const T& t) const {return points_.upperBound(t);}
-            auto lowerBound(const T& t) const {return points_.lowerBound(t);}
+            auto upperBound(const T& t) const {return points_.upper_bound(t);}
+            auto lowerBound(const T& t) const {return points_.lower_bound(t);}
 
             void removePoint(const typename std::map<T, V>::const_iterator& it) {points_.erase(it);}
             void removePoints(const typename std::map<T, V>::const_iterator& a,
