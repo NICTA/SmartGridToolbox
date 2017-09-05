@@ -81,10 +81,17 @@ namespace Sgt
         public:
             DataTimeSeries(const V& defaultV) : defaultV_(defaultV) {}
 
-            virtual void addPoint(const T& t, const V& v)
-            {
-                points_[t] = v;
-            }
+            virtual void addPoint(const T& t, const V& v) {points_[t] = v;}
+
+            auto begin() const {return points_.begin();};
+            auto end() const {return points_.end();};
+            auto rbegin() const {return points_.rbegin();};
+            auto rend() const {return points_.rend();};
+
+            auto upperBound(const T& t) const {return points_.upperBound(t);}
+            auto lowerBound(const T& t) const {return points_.lowerBound(t);}
+
+            void removePoint(const typename std::map<T, V>::const_iterator& it) {points_.erase(it);}
 
         protected:
             std::map<T, V> points_;
