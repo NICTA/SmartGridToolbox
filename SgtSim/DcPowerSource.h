@@ -49,6 +49,7 @@ namespace Sgt
             /// @name DC Power.
             /// @{
 
+            /// @brief DC power. +ve = generation.
             virtual double PDc() const = 0;
 
             /// @}
