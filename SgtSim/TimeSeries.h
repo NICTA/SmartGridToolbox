@@ -92,6 +92,8 @@ namespace Sgt
             auto lowerBound(const T& t) const {return points_.lowerBound(t);}
 
             void removePoint(const typename std::map<T, V>::const_iterator& it) {points_.erase(it);}
+            void removePoints(const typename std::map<T, V>::const_iterator& a,
+                    const typename std::map<T, V>::const_iterator& b) {points_.erase(a, b);}
 
         protected:
             std::map<T, V> points_;
