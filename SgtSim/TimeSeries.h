@@ -114,9 +114,9 @@ namespace Sgt
 
             virtual V value(const T& t) const override
             {
-                return (t < points_.begin()->first || t > points_.rbegin()->first)
+                return (points_.size() == 0 || t < points_.begin()->first || t > points_.rbegin()->first)
                     ? defaultV_
-                    : (--points_.upper_bound(t))->second; // Highest point <= s.
+                    : (--points_.upper_bound(t))->second; // Highest point <= t.
             }
     };
 
@@ -134,7 +134,7 @@ namespace Sgt
 
             virtual V value(const T& t) const override
             {
-                if (t < points_.begin()->first || t > points_.rbegin()->first) return defaultV_;
+                if (points_.size() == 0 || t < points_.begin()->first || t > points_.rbegin()->first) return defaultV_;
 
                 auto pos2 = points_.upper_bound(t);
                 // pos2 -> first point > s. It can't be begin, but could be end (if t == last point).
