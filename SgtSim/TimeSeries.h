@@ -20,10 +20,27 @@
 #include <SgtCore/Spline.h>
 #endif
 
+#include <SgtCore/Common.h>
+
 #include <map>
 
 namespace Sgt
 {
+    template<typename T> struct TsTraits
+    {
+        static double toDouble(const T& t) {return static_cast<double>(t);}
+    };
+
+    template<> struct TsTraits<double>
+    {
+        static double toDouble(const double& t) {return t;}
+    };
+
+    template<> struct TsTraits<Time>
+    {
+        static double toDouble(const Time& t) {return dSeconds(t);}
+    };
+
     class TimeSeriesBase
     {
         public:
@@ -62,7 +79,16 @@ namespace Sgt
     class DataTimeSeries : public TimeSeries<T, V>
     {
         public:
-            virtual void addPoint(const T& t, const V& v) = 0;
+            DataTimeSeries(const V& defaultV) : defaultV_(defaultV) {}
+
+            virtual void addPoint(const T& t, const V& v)
+            {
+                points_[t] = v;
+            }
+
+        protected:
+            std::map<T, V> points_;
+            V defaultV_;
     };
 
     /// @brief TimeSeries that changes in a stepwise manner between tabulated times. 
@@ -70,25 +96,19 @@ namespace Sgt
     template<typename T, typename V>
     class StepwiseTimeSeries : public DataTimeSeries<T, V>
     {
+        protected:
+            using DataTimeSeries<T, V>::points_;
+            using DataTimeSeries<T, V>::defaultV_;
+
         public:
-            StepwiseTimeSeries(const V& defaultV) : defaultV_(defaultV) {}
+            StepwiseTimeSeries(const V& defaultV) : DataTimeSeries<T, V>(defaultV) {}
 
             virtual V value(const T& t) const override
             {
-                double s = dSeconds(t);
-                return (s < points_.begin()->first || s > points_.rbegin()->first)
+                return (t < points_.begin()->first || t > points_.rbegin()->first)
                     ? defaultV_
-                    : (--points_.upper_bound(dSeconds(t)))->second; // Highest point <= s.
+                    : (--points_.upper_bound(t))->second; // Highest point <= s.
             }
-
-            virtual void addPoint(const T& t, const V& v) override
-            {
-                points_[dSeconds(t)] = v;
-            }
-
-        private:
-            std::map<double, V> points_;
-            V defaultV_;
     };
 
     /// @brief TimeSeries that uses linear interpolation between tabulated times.
@@ -96,61 +116,32 @@ namespace Sgt
     template<typename T, typename V>
     class LerpTimeSeries : public DataTimeSeries<T, V>
     {
+        protected:
+            using DataTimeSeries<T, V>::points_;
+            using DataTimeSeries<T, V>::defaultV_;
+
         public:
-            LerpTimeSeries(const V& defaultV) : defaultV_(defaultV) {}
+            LerpTimeSeries(const V& defaultV) : DataTimeSeries<T, V>(defaultV) {}
 
             virtual V value(const T& t) const override
             {
-                double s = dSeconds(t);
-                if (s < points_.begin()->first || s > points_.rbegin()->first) return defaultV_;
+                if (t < points_.begin()->first || t > points_.rbegin()->first) return defaultV_;
 
-                auto pos2 = points_.upper_bound(s);
-                // pos2 -> first point > s. It can't be begin, but could be end (if s -> last point)..
+                auto pos2 = points_.upper_bound(t);
+                // pos2 -> first point > s. It can't be begin, but could be end (if t == last point).
                 if (pos2 == points_.end())
                 {
                     return points_.rbegin()->second;
                 }
                 else
                 {
-                    // We now know that s is strictly inside the range.
+                    // We now know that t is strictly inside the range.
                     auto pos1 = pos2; --pos1;
-                    return pos1->second + (pos2->second - pos1->second) * (s - pos1->first) /
-                        (pos2->first - pos1->first);
+                    return pos1->second + (pos2->second - pos1->second) * TsTraits<T>::toDouble(t - pos1->first) /
+                        TsTraits<T>::toDouble(pos2->first - pos1->first);
                 }
             }
-
-            virtual void addPoint(const T& t, const V& v) override
-            {
-                points_[dSeconds(t)] = v;
-            }
-
-        private:
-            std::map<double, V> points_;
-            V defaultV_;
     };
-
-#if 0 // TODO: redo spline due to license issues.
-    /// @brief TimeSeries that uses spline interpolation between tabulated times.
-    /// @ingroup SimCore
-    template<typename T>
-    class SplineTimeSeries : public DataTimeSeries<T, double>
-    {
-        public:
-            virtual double value(const T& t) const override
-            {
-                return spline_(dSeconds(t));
-            }
-
-            virtual void addPoint(const T& t, const double& v) override
-            {
-                spline_.addPoint(dSeconds(t), v);
-            }
-
-        private:
-
-            mutable Spline spline_;
-    };
-#endif
 
     /// @brief TimeSeries that uses a std::function to calculate values.
     /// @ingroup SimCore
@@ -177,5 +168,7 @@ namespace Sgt
     template<typename T> using TimeSeriesPtr = ComponentPtr<TimeSeriesBase, T>;
     template<typename T> using ConstTimeSeriesPtr = ConstComponentPtr<TimeSeriesBase, T>;
 }
+
+// TODO: Reinstate SplineTimeSeries that was removed due to license issues.
 
 #endif // TIME_SERIES_DOT_H
