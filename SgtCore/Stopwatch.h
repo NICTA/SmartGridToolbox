@@ -32,6 +32,7 @@ namespace Sgt
             void reset();
             double wallSeconds() const;
             double cpuSeconds() const;
+            bool isRunning() const {return isRunning_;}
 
         private:
             bool isRunning_;
