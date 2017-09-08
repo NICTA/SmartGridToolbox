@@ -37,7 +37,7 @@ namespace Sgt
         /// @{
 
         public:
-            
+
             Battery(const std::string& id) :
                 Component(id),
                 dt_(minutes(5)),
@@ -52,13 +52,13 @@ namespace Sgt
                 // Empty.
             }
 
-        /// @}
+            /// @}
 
-        /// @name Component virtual overridden member functions.
-        /// @{
+            /// @name Component virtual overridden member functions.
+            /// @{
 
         public:
-            
+
             static const std::string& sComponentType()
             {
                 static std::string result("battery");
@@ -72,20 +72,20 @@ namespace Sgt
 
             // virtual json toJson() const override; // TODO
 
-        /// @}
+            /// @}
 
-        /// @name Overridden member functions from SimComponent.
-        /// @{
+            /// @name Overridden member functions from SimComponent.
+            /// @{
 
         public:
-            
+
             virtual Time validUntil() const override
             {
                 return lastUpdated() + dt_;
             }
 
         protected:
-            
+
             virtual void initializeState() override
             {
                 charge_ = initCharge_;
@@ -93,31 +93,31 @@ namespace Sgt
 
             virtual void updateState(const Time& t) override;
 
-        /// @}
+            /// @}
 
-        /// @name Overridden member functions from DcPowerSourceAbc.
-        /// @{
+            /// @name Overridden member functions from DcPowerSourceAbc.
+            /// @{
 
         public:
-            
+
             /// Positive = charging.
             virtual double PDc() const override
             {
                 return PDc_;
             }
 
-        /// @}
+            /// @}
 
-        /// @name Battery specific member functions.
-        /// @{
+            /// @name Battery specific member functions.
+            /// @{
 
             Time dt() {return dt_;}
             void setDt(Time val) {dt_ = val;}
-                // Doesn't affect state this timestep, no update needed.
+            // Doesn't affect state this timestep, no update needed.
 
             double initCharge() {return initCharge_;}
             void setInitCharge(double val) {initCharge_ = val;}
-                // Doesn't affect state this timestep, no update needed.
+            // Doesn't affect state this timestep, no update needed.
 
             double maxCharge() {return maxCharge_;}
             void setMaxCharge(double val);
@@ -141,12 +141,12 @@ namespace Sgt
 
             double internalPower();
 
-        /// @}
+            /// @}
 
         private:
 
             double calcPDc() const;
-        
+
         private:
 
             // Parameters.
