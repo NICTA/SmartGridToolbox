@@ -121,6 +121,13 @@ namespace Sgt
                 return lastUpdated_;
             }
 
+            /// @brief Have we completed a time step yet?
+            bool isInitialStep()
+            {
+                return (lastUpdated_ == TimeSpecialValues::not_a_date_time ||   // Not initialized yet.
+                        lastUpdated_ == TimeSpecialValues::neg_infin);          // Initialized but no steps completed.
+            }
+
             /// @}
 
             /// @name Rank
