@@ -83,8 +83,6 @@ namespace Sgt
             /// @name Virtual methods to be overridden by derived classes.
             /// @{
 
-        public:
-
             /// @brief When is the component scheduled to update?
             ///
             /// An update may occur before this time if the component undergoes a contingent update. If this
