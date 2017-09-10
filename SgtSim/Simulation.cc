@@ -231,11 +231,11 @@ namespace Sgt
     {
         for (auto comp : simComps_)
         {
-            sgtLogMessage() << comp->id() << " " << comp->rank() << std::endl;
+            sgtLogDebug(LogLevel::VERBOSE) << comp->id() << " " << comp->rank() << std::endl;
             LogIndent indent;
             for (auto dep : comp->dependencies())
             {
-                sgtLogMessage() << dep->id() << " " << dep->rank() << std::endl;
+                sgtLogDebug(LogLevel::VERBOSE) << dep->id() << " " << dep->rank() << std::endl;
             }
         }
     }
