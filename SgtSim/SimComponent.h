@@ -119,7 +119,7 @@ namespace Sgt
                 return lastUpdated_;
             }
 
-            /// @brief Have we completed a time step yet?
+            /// @brief Have we completed my first update yet?
             bool isInitialStep() const
             {
                 return (lastUpdated_ == TimeSpecialValues::not_a_date_time ||   // Not initialized yet.
