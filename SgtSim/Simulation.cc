@@ -247,7 +247,7 @@ namespace Sgt
         Time nextUpdate = schedComp->validUntil();
         sgtLogDebug(LogLevel::VERBOSE) << "nextUpdate = " << nextUpdate << std::endl;
         sgtLogDebug(LogLevel::VERBOSE) << "endTime_ = " << endTime_ << std::endl;
-        if (nextUpdate <= endTime_) 
+        if ((!nextUpdate.is_special()) && nextUpdate <= endTime_)
         {
             sgtLogDebug(LogLevel::VERBOSE) << "Inserting " << schedComp->id() << ": nextUpdate = " << nextUpdate 
                 << std::endl;
