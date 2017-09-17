@@ -124,8 +124,8 @@ namespace Sgt
             /// true => we've finished both initializeState call and the subsequent initialization call to updateState.
             bool isInitialized() const
             {
-                return (lastUpdated_ == TimeSpecialValues::not_a_date_time ||   // InitializeState not yet complete.
-                        lastUpdated_ == TimeSpecialValues::neg_infin);          // Initialization update not yet done.
+                return (lastUpdated_ != TimeSpecialValues::not_a_date_time &&   // InitializeState not yet complete.
+                        lastUpdated_ != TimeSpecialValues::neg_infin);          // Initialization update not yet done.
             }
 
             /// @}
