@@ -110,9 +110,9 @@ namespace Sgt
 
         for (const auto& subNd : nd)
         {
-            if (subNd.IsScalar()) continue;
-
             std::string nodeType = subNd.first.as<std::string>();
+            if (nodeType == "indent") continue;
+
             const YAML::Node& nodeVal = subNd.second;
 
             LogLevel* logLevel = nullptr;
