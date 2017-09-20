@@ -45,9 +45,14 @@ namespace Sgt
 
         auto inverter = sim.newSimComponent<Inverter>(id, zip, simNetwork);
 
-        if (nd["efficiency"])
+        if (nd["efficiency_dc_to_ac"])
         {
-            inverter->setEfficiency(parser.expand<double>(nd["efficiency"]));
+            inverter->setEfficiencyDcToAc(parser.expand<double>(nd["efficiency_dc_to_ac"]));
+        }
+        
+        if (nd["efficiency_ac_to_dc"])
+        {
+            inverter->setEfficiencyAcToDc(parser.expand<double>(nd["efficiency_ac_to_dc"]));
         }
 
         if (nd["max_S_mag"])

@@ -30,7 +30,7 @@ namespace Sgt
     double InverterAbc::availableP() const
     {
         double PDcA = PDc();
-        return PDcA * efficiency(PDcA);
+        return PDcA >= 0 ? PDcA * efficiency(PDcA) : PDcA / efficiency(PDcA);
     }
         
     void Inverter::addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source)

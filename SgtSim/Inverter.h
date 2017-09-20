@@ -60,7 +60,7 @@ namespace Sgt
             std::vector<ConstSimComponentPtr<DcPowerSourceAbc>> sources_;   ///< My DC power sources.
     };
 
-    /// @brief An inverter with a simple constant efficiency.
+    /// @brief An inverter with simple constant DC-AC and AC-DC efficiencies.
     class SimpleInverterAbc : public InverterAbc
     {
         public:
@@ -68,7 +68,10 @@ namespace Sgt
             /// @name Lifecycle
             /// @{
 
-            SimpleInverterAbc(double efficiency = 1.0) : Component(""), efficiency_(efficiency)
+            SimpleInverterAbc(double effDcToAc = 1.0, double effAcToDc = 1.0) : 
+                Component(""),
+                effDcToAc_(effDcToAc),
+                effAcToDc_(effAcToDc)
             {
                 // Empty.
             }
@@ -80,7 +83,7 @@ namespace Sgt
 
             virtual double efficiency(double powerDc) const override
             {
-                return efficiency_;
+                return powerDc >= 0 ? effDcToAc_ : effAcToDc_;
             }
 
             /// @}
@@ -88,21 +91,32 @@ namespace Sgt
             /// @name Efficiency.
             /// @{
 
-            double efficiency() const
+            double efficiencyDcToAc() const
             {
-                return efficiency_;
+                return effDcToAc_;
             }
 
-            void setEfficiency(double efficiency)
+            void setEfficiencyDcToAc(double effDcToAc)
             {
-                efficiency_ = efficiency;
+                effDcToAc_ = effDcToAc;
+            }
+
+            double efficiencyAcToDc() const
+            {
+                return effAcToDc_;
+            }
+
+            void setEfficiencyAcToDc(double effAcToDc)
+            {
+                effAcToDc_ = effAcToDc;
             }
 
             /// @}
 
         private:
 
-            double efficiency_;
+            double effDcToAc_;
+            double effAcToDc_;
     };
 
     class Zip;

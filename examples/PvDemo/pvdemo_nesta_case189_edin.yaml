@@ -73,7 +73,8 @@
             bus_id: bus_<pv_busses(<i>)>
             max_S_mag: <pv_S_mag_max(<i>)>
             # max_Q: 0
-            efficiency: 0.86
+            efficiency_dc_to_ac: 0.86
+            efficiency_ac_to_dc: 0.86
         - solar_pv: # Should point right at sun on Jan 26, 2013, 0830. 
             id: solar_pv_<pv_busses(<i>)>
             weather: weather

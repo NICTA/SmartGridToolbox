@@ -124,7 +124,8 @@
     phases: [BAL]
     sim_network_id: network
     bus_id: bus_build
-    efficiency: 0.95
+    efficiency_dc_to_ac: 0.95
+    efficiency_ac_to_dc: 0.95
 
 - battery:
     id: battery
@@ -143,7 +144,8 @@
     phases: [BAL]
     sim_network_id: network
     bus_id: bus_build
-    efficiency: 0.95
+    efficiency_dc_to_ac: 0.95
+    efficiency_ac_to_dc: 0.95
 
 - solar_pv:
     id: solar_pv

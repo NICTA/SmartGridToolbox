@@ -37,7 +37,8 @@
     bus_id: bus_2
     phases: [BAL]
     max_S_mag: 60
-    efficiency: 0.86
+    efficiency_dc_to_ac: 0.86
+    efficiency_ac_to_dc: 0.86
 - solar_pv: # Add a solar farm to the inverter.
     id: solar_pv
     weather: weather
