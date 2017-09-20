@@ -140,8 +140,12 @@ namespace Sgt
     class LogIndent
     {
         public:
+        
+            static unsigned int defaultTabWidth;
 
-            LogIndent(unsigned int nInit = 1, unsigned int tabWidth = 4);
+        public:
+
+            LogIndent(unsigned int nInit = 1, unsigned int tabWidth = defaultTabWidth);
             
             ~LogIndent();
 

@@ -68,7 +68,6 @@ namespace
 
 namespace Sgt
 {
-
     void assertFieldPresent(const YAML::Node& nd, const std::string& field)
     {
         sgtAssert(nd[field], "Parsing: " << field << " field not present.");
@@ -103,8 +102,16 @@ namespace Sgt
             
     void ParserBase::parseLogging(const YAML::Node& nd)
     {
+        auto ndIndent = nd["indent"];
+        if (ndIndent)
+        {
+            LogIndent::defaultTabWidth = ndIndent.as<unsigned int>();
+        }
+
         for (const auto& subNd : nd)
         {
+            if (subNd.IsScalar()) continue;
+
             std::string nodeType = subNd.first.as<std::string>();
             const YAML::Node& nodeVal = subNd.second;
 

@@ -158,6 +158,8 @@ namespace Sgt
         return filter;
     }
             
+    unsigned int LogIndent::defaultTabWidth = 4;
+
     LogIndent::LogIndent(unsigned int nInit, unsigned int tabWidth) : 
         tabWidth_(tabWidth)
     {
