@@ -118,6 +118,7 @@ namespace Sgt
             virtual void setYConst(const arma::Mat<Complex>& YConst)
             {
                 YConst_ = YConst;
+                injectionChanged_.trigger();
             }
             
             SGT_PROP_GET_SET(YConst, YConst, arma::Mat<Complex>, setYConst, const arma::Mat<Complex>&);
@@ -135,6 +136,7 @@ namespace Sgt
             virtual void setIConst(const arma::Mat<Complex>& IConst)
             {
                 IConst_ = IConst;
+                injectionChanged_.trigger();
             }
             
             SGT_PROP_GET_SET(IConst, IConst, arma::Mat<Complex>, setIConst, const arma::Mat<Complex>&);
@@ -151,6 +153,7 @@ namespace Sgt
             virtual void setSConst(const arma::Mat<Complex>& SConst)
             {
                 SConst_ = SConst;
+                injectionChanged_.trigger();
             }
             
             SGT_PROP_GET_SET(SConst, SConst, arma::Mat<Complex>, setSConst, const arma::Mat<Complex>&);
@@ -208,25 +211,25 @@ namespace Sgt
                 return isInServiceChanged_;
             }
 
-            /// @brief Event triggered when I go in or out of service.
+            /// @brief Event triggered when my bus injection is changed.
             virtual const Event& injectionChanged() const
             {
                 return injectionChanged_;
             }
             
-            /// @brief Event triggered when I go in or out of service.
+            /// @brief Event triggered when my bus injection is changed.
             virtual Event& injectionChanged()
             {
                 return injectionChanged_;
             }
 
-            /// @brief Event triggered when I go in or out of service.
+            /// @brief Event triggered when a setpoint is changed.
             virtual const Event& setpointChanged() const
             {
                 return setpointChanged_;
             }
             
-            /// @brief Event triggered when I go in or out of service.
+            /// @brief Event triggered when a setpoint is changed.
             virtual Event& setpointChanged()
             {
                 return setpointChanged_;

@@ -43,6 +43,7 @@ namespace Sgt
             assertFieldPresent(nd, "phases");
             Phases phases = parser.expand<Phases>(nd["phases"]);
             zip = network.addZip(std::make_shared<Zip>(zipId, phases), busId);
+            simNetwork.linkZip(*zip);
         }
         
         std::string tsId = parser.expand<std::string>(nd["time_series_id"]);
