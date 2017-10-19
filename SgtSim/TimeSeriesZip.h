@@ -86,9 +86,23 @@ namespace Sgt
             virtual void updateState(const Time& t) override;
             
         private:
-            arma::Mat<Complex> YConst() const;
-            arma::Mat<Complex> IConst() const;
-            arma::Mat<Complex> SConst() const;
+            arma::Mat<Complex> YConst(const Time& t) const;
+            arma::Mat<Complex> YConst() const
+            {
+                return YConst(lastUpdated());
+            }
+
+            arma::Mat<Complex> IConst(const Time& t) const;
+            arma::Mat<Complex> IConst() const
+            {
+                return IConst(lastUpdated());
+            }
+
+            arma::Mat<Complex> SConst(const Time& t) const;
+            arma::Mat<Complex> SConst() const
+            {
+                return SConst(lastUpdated());
+            }
 
             arma::Mat<Complex> mapToMat(const arma::Col<Complex>& vec) const;
 

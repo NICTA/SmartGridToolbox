@@ -51,33 +51,33 @@ namespace Sgt
     void TimeSeriesZip::updateState(const Time& t)
     {
         Heartbeat::updateState(t);
-        zip()->setYConst(YConst());
-        zip()->setIConst(IConst());
-        zip()->setSConst(SConst());
+        zip()->setYConst(YConst(t));
+        zip()->setIConst(IConst(t));
+        zip()->setSConst(SConst(t));
     }
 
-    Mat<Complex> TimeSeriesZip::YConst() const
+    Mat<Complex> TimeSeriesZip::YConst(const Time& t) const
     {
         uword nPhase = zip()->phases().size();
         return dataIdxsY_.size() == 0 
             ? Mat<Complex>(nPhase, nPhase, fill::zeros)
-            : mapToMat(scaleFactorY_ * series_->value(lastUpdated())(dataIdxsY_));
+            : mapToMat(scaleFactorY_ * series_->value(t)(dataIdxsY_));
     }
 
-    Mat<Complex> TimeSeriesZip::IConst() const
+    Mat<Complex> TimeSeriesZip::IConst(const Time& t) const
     {
         uword nPhase = zip()->phases().size();
         return dataIdxsI_.size() == 0 
             ? Mat<Complex>(nPhase, nPhase, fill::zeros)
-            : mapToMat(scaleFactorI_ * series_->value(lastUpdated())(dataIdxsI_));
+            : mapToMat(scaleFactorI_ * series_->value(t)(dataIdxsI_));
     }
 
-    Mat<Complex> TimeSeriesZip::SConst() const
+    Mat<Complex> TimeSeriesZip::SConst(const Time& t) const
     {
         uword nPhase = zip()->phases().size();
         return dataIdxsS_.size() == 0 
             ? Mat<Complex>(nPhase, nPhase, fill::zeros)
-            : mapToMat(scaleFactorS_ * series_->value(lastUpdated())(dataIdxsS_));
+            : mapToMat(scaleFactorS_ * series_->value(t)(dataIdxsS_));
     }
 
     Mat<Complex> TimeSeriesZip::mapToMat(const Col<Complex>& vec) const
