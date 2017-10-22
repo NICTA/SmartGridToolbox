@@ -425,7 +425,7 @@ namespace Sgt
             
             SGT_PROP_GET(SZipRequested, SZipRequested, arma::Mat<Complex>);
            
-            /// @brief Actual power of zips, including possible unserved load.
+            /// @brief Actual power of zips, taking into account possible unserved load.
             arma::Mat<Complex> SZip() const
             {
                 return SZipRequested() - SZipUnserved_;
