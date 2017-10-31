@@ -79,7 +79,6 @@ namespace Sgt
             else
             {
                 sgtLogDebug() << sComponentType() << " " << id() << " : Repeated timestep : " << iter_ << std::endl;
-                ++iter_;
             }
 
             if (iter_ < taps_.size())
