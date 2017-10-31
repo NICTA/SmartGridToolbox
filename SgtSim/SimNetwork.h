@@ -21,6 +21,62 @@
 
 namespace Sgt
 {
+    /// @brief Utility base class for branches in SimNetwork.
+    ///
+    /// Provides constructor that ensures linking to SimNetwork.
+    /// Also provides convenience accessors.
+    class SimBranch : virtual public SimComponent
+    {
+        public:
+            SimBranch(const ComponentPtr<BranchAbc>& branch) : branch_(branch) {};
+            ConstComponentPtr<BranchAbc> branch() const {return branch_;}
+            ComponentPtr<BranchAbc> branch() {return branch_;}
+        private:
+            ComponentPtr<BranchAbc> branch_;
+    };
+
+    /// @brief Utility base class for buses in SimNetwork.
+    ///
+    /// Provides constructor that ensures linking to SimNetwork.
+    /// Also provides convenience accessors.
+    class SimBus : virtual public SimComponent
+    {
+        public:
+            SimBus(const ComponentPtr<Bus>& bus) : bus_(bus) {};
+            ConstComponentPtr<Bus> bus() const {return bus_;}
+            ComponentPtr<Bus> bus() {return bus_;}
+        private:
+            ComponentPtr<Bus> bus_;
+    };
+
+    /// @brief Utility base class for gens in SimNetwork.
+    ///
+    /// Provides constructor that ensures linking to SimNetwork.
+    /// Also provides convenience accessors.
+    class SimGen : virtual public SimComponent
+    {
+        public:
+            SimGen(const ComponentPtr<Gen>& gen) : gen_(gen) {};
+            ConstComponentPtr<Gen> gen() const {return gen_;}
+            ComponentPtr<Gen> gen() {return gen_;}
+        private:
+            ComponentPtr<Gen> gen_;
+    };
+
+    /// @brief Utility base class for zips in SimNetwork.
+    ///
+    /// Provides constructor that ensures linking to SimNetwork.
+    /// Also provides convenience accessors.
+    class SimZip : virtual public SimComponent
+    {
+        public:
+            SimZip(const ComponentPtr<Zip>& zip) : zip_(zip) {};
+            ConstComponentPtr<Zip> zip() const {return zip_;}
+            ComponentPtr<Zip> zip() {return zip_;}
+        private:
+            ComponentPtr<Zip> zip_;
+    };
+
     /// @brief SimNetwork : A SimComponent for an electrical network.
     class SimNetwork : virtual public SimComponent
     {
@@ -70,109 +126,56 @@ namespace Sgt
             }
 
             /// @}
-            
-            /// @name Network modification.
-            /// @{
-           
-            /// @brief Link a new branch to the SimNetwork.
-            ///
-            /// Note that all branches are linked automatically at construction time, so this only need be called
-            /// if a new branch is subsequently added to the network.
-            void linkBranch(const BranchAbc& branch);
 
-            /// @brief Link a new bus to the SimNetwork.
+            /// @brief Add a SimBranch to the SimNetwork.
             ///
-            /// Note that all buses are linked automatically at construction time, so this only need be called
-            /// if a new bus is subsequently added to the network.
-            void linkBus(const Bus& bus);
-            
-            /// @brief Link a new gen to the SimNetwork.
+            /// Creates dependency.
+            void addSimBranch(ConstSimComponentPtr<SimBranch> simBranch)
+            {
+                dependsOn(simBranch, false);
+            }
+
+            /// @brief Add a SimBus to the SimNetwork.
             ///
-            /// Note that all gens are linked automatically at construction time, so this only need be called
-            /// if a new gen is subsequently added to the network.
-            void linkGen(const Gen& gen);
-           
-            /// @brief Link a new zip to the SimNetwork.
+            /// Creates dependency.
+            void addSimBus(ConstSimComponentPtr<SimBus> simBus)
+            {
+                dependsOn(simBus, false);
+            }
+
+            /// @brief Add a SimGen to the SimNetwork.
             ///
-            /// Note that all zips are linked automatically at construction time, so this only need be called
-            /// if a new zip is subsequently added to the network.
-            void linkZip(const Zip& zip);
+            /// Creates dependency.
+            void addSimGen(ConstSimComponentPtr<SimGen> simGen)
+            {
+                dependsOn(simGen, false);
+            }
+
+            /// @brief Add a SimZip to the SimNetwork.
+            ///
+            /// Creates dependency.
+            void addSimZip(ConstSimComponentPtr<SimZip> simZip)
+            {
+                dependsOn(simZip, false);
+            }
 
             /// @}
-            
+
+    protected:
+
             /// @name Overridden member functions from SimComponent.
             /// @{
 
-        public:
+            virtual void initializeState() override;
 
-            // virtual Time validUntil() const override;
-
-        protected:
-
-            // virtual void initializeState() override;
             virtual void updateState(const Time& t) override;
 
             /// @}
 
-        private:
+    private:
 
             std::shared_ptr<Network> network_;
-    };
-
-    /// @brief Utility base class for branches in SimNetwork.
-    ///
-    /// Provides constructor that ensures linking to SimNetwork.
-    /// Also provides convenience accessors.
-    class SimBranch
-    {
-        public:
-            SimBranch(const ComponentPtr<BranchAbc>& branch, SimNetwork& simNetwork);
-            ConstComponentPtr<BranchAbc> branch() const {return branch_;}
-            ComponentPtr<BranchAbc> branch() {return branch_;}
-        private:
-            ComponentPtr<BranchAbc> branch_;
-    };
-
-    /// @brief Utility base class for buses in SimNetwork.
-    ///
-    /// Provides constructor that ensures linking to SimNetwork.
-    /// Also provides convenience accessors.
-    class SimBus
-    {
-        public:
-            SimBus(const ComponentPtr<Bus>& bus, SimNetwork& simNetwork);
-            ConstComponentPtr<Bus> bus() const {return bus_;}
-            ComponentPtr<Bus> bus() {return bus_;}
-        private:
-            ComponentPtr<Bus> bus_;
-    };
-
-    /// @brief Utility base class for gens in SimNetwork.
-    ///
-    /// Provides constructor that ensures linking to SimNetwork.
-    /// Also provides convenience accessors.
-    class SimGen
-    {
-        public:
-            SimGen(const ComponentPtr<Gen>& gen, SimNetwork& simNetwork);
-            ConstComponentPtr<Gen> gen() const {return gen_;}
-            ComponentPtr<Gen> gen() {return gen_;}
-        private:
-            ComponentPtr<Gen> gen_;
-    };
-
-    /// @brief Utility base class for zips in SimNetwork.
-    ///
-    /// Provides constructor that ensures linking to SimNetwork.
-    /// Also provides convenience accessors.
-    class SimZip
-    {
-        public:
-            SimZip(const ComponentPtr<Zip>& zip, SimNetwork& simNetwork);
-            ConstComponentPtr<Zip> zip() const {return zip_;}
-            ComponentPtr<Zip> zip() {return zip_;}
-        private:
-            ComponentPtr<Zip> zip_;
+            Event networkChanged_;
     };
 }
 

@@ -35,7 +35,7 @@ namespace Sgt
 
     class Zip;
 
-    class SimpleBuilding : public SimComponent, public SimZip
+    class SimpleBuilding : public SimZip
     {
         /// @name Static member functions:
         /// @{
@@ -54,9 +54,9 @@ namespace Sgt
             /// @{
 
         public:
-            SimpleBuilding(const std::string& id, const ComponentPtr<Zip>& zip, SimNetwork& simNetwork) :
+            SimpleBuilding(const std::string& id, const ComponentPtr<Zip>& zip) :
                 Component(id),
-                SimZip(zip, simNetwork),
+                SimZip(zip),
                 dt_(minutes(5)),
                 kb_(5 * kwatt / kelvin),
                 Cb_(1.0e5 * kjoule / kelvin),

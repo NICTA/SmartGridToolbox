@@ -30,23 +30,5 @@ namespace Sgt
         auto& netw = simNetw->network();
 
         mpParser.parse(nd, netw, parser);
-
-        // Link to the SimNetwork.
-        for (auto branch : netw.branches())
-        {
-            simNetw->linkBranch(*branch);
-        }
-        for (auto bus : netw.buses())
-        {
-            simNetw->linkBus(*bus);
-        }
-        for (auto gen : netw.gens())
-        {
-            simNetw->linkGen(*gen);
-        }
-        for (auto zip : netw.zips())
-        {
-            simNetw->linkZip(*zip);
-        }
     }
 }

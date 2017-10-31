@@ -43,7 +43,8 @@ namespace Sgt
             zip = network.addZip(std::make_shared<Zip>(zipId, phases), busId);
         }
 
-        auto inverter = sim.newSimComponent<Inverter>(id, zip, simNetwork);
+        auto inverter = sim.newSimComponent<Inverter>(id, zip);
+        simNetwork.addSimZip(inverter);
 
         if (nd["efficiency_dc_to_ac"])
         {

@@ -43,7 +43,6 @@ namespace Sgt
             assertFieldPresent(nd, "phases");
             Phases phases = parser.expand<Phases>(nd["phases"]);
             zip = network.addZip(std::make_shared<Zip>(zipId, phases), busId);
-            simNetwork.linkZip(*zip);
         }
         
         std::string tsId = parser.expand<std::string>(nd["time_series_id"]);
@@ -80,8 +79,9 @@ namespace Sgt
             dataIdxsS = parser.expand<arma::Col<arma::uword>>(ndDataIdxsS);
         }
         
-        auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, zip, simNetwork, series, dt,
+        auto tsZip = sim.newSimComponent<TimeSeriesZip>(id, zip, series, dt,
                 matrixElems, dataIdxsY, dataIdxsI, dataIdxsS);
+        simNetwork.addSimZip(tsZip);
 
         auto ndScaleFactorY = nd["scale_factor_Y"];
         if (ndScaleFactorY)

@@ -140,11 +140,10 @@ namespace Sgt
             /// @name Lifecycle.
             /// @{
             
-            Inverter(const std::string& id, const ComponentPtr<Zip>& zip, SimNetwork& simNetwork,
-                    double efficiency = 1.0) :
+            Inverter(const std::string& id, const ComponentPtr<Zip>& zip, double efficiency = 1.0) :
                 Component(id),
                 SimpleInverterAbc(efficiency),
-                SimZip(zip, simNetwork)
+                SimZip(zip)
             {
                 // Empty.
             }

@@ -60,6 +60,8 @@ namespace Sgt
             
             void removeTrigger(const Event& event);
             
+            void clearTriggers();
+            
             const std::string& description() const
             {
                 return description_;
@@ -116,6 +118,16 @@ namespace Sgt
             void addTrigger(const Event& trigger)
             {
                 triggerThis_.addTrigger(trigger);
+            }
+
+            void removeTrigger(const Event& trigger)
+            {
+                triggerThis_.removeTrigger(trigger);
+            }
+            
+            void clearTriggers()
+            {
+                triggerThis_.clearTriggers();
             }
 
         private:

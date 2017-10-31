@@ -18,74 +18,42 @@
 namespace Sgt
 {
     SimNetwork::SimNetwork(const std::string& id, std::shared_ptr<Network> network) : 
-        Component(id), network_(network)
+        Component(id),
+        network_(network),
+        networkChanged_("SimNetwork network changed")
     {
-        for (auto branch: network->branches())
-        {
-            linkBranch(*branch);
-        }
-        for (auto bus: network->buses())
-        {
-            linkBus(*bus);
-        }
-        for (auto gen: network->gens())
-        {
-            linkGen(*gen);
-        }
-        for (auto zip: network->zips())
-        {
-            linkZip(*zip);
-        }
+        needsUpdate().addTrigger(networkChanged_);
     }
 
-    void SimNetwork::linkBranch(const BranchAbc& branch)
+    void SimNetwork::initializeState()
     {
-        needsUpdate().addTrigger(branch.admittanceChanged());
-        needsUpdate().addTrigger(branch.isInServiceChanged());
-    }
-
-    void SimNetwork::linkBus(const Bus& bus)
-    {
-        needsUpdate().addTrigger(bus.setpointChanged());
-        needsUpdate().addTrigger(bus.isInServiceChanged());
-    }
-
-    void SimNetwork::linkGen(const Gen& gen)
-    {
-        needsUpdate().addTrigger(gen.setpointChanged());
-        needsUpdate().addTrigger(gen.isInServiceChanged());
-    }
-
-    void SimNetwork::linkZip(const Zip& zip)
-    {
-        needsUpdate().addTrigger(zip.injectionChanged());
-        needsUpdate().addTrigger(zip.setpointChanged());
-        needsUpdate().addTrigger(zip.isInServiceChanged());
+        networkChanged_.clearTriggers();
+        for (auto branch: network_->branches())
+        {
+            networkChanged_.addTrigger(branch->admittanceChanged());
+            networkChanged_.addTrigger(branch->isInServiceChanged());
+        }
+        for (auto bus: network_->buses())
+        {
+            networkChanged_.addTrigger(bus->setpointChanged());
+            networkChanged_.addTrigger(bus->isInServiceChanged());
+        }
+        for (auto gen: network_->gens())
+        {
+            networkChanged_.addTrigger(gen->setpointChanged());
+            networkChanged_.addTrigger(gen->isInServiceChanged());
+        }
+        for (auto zip: network_->zips())
+        {
+            networkChanged_.addTrigger(zip->injectionChanged());
+            networkChanged_.addTrigger(zip->setpointChanged());
+            networkChanged_.addTrigger(zip->isInServiceChanged());
+        }
     }
 
     void SimNetwork::updateState(const Time& t)
     {
         sgtLogDebug() << "SimNetwork : update state." << std::endl;
         network_->solvePowerFlow(); // TODO: inefficient to rebuild even if not needed.
-    }
-
-    SimBranch::SimBranch(const ComponentPtr<BranchAbc>& branch, SimNetwork& simNetwork) : branch_(branch)
-    {
-        simNetwork.linkBranch(*branch);
-    }
-            
-    SimBus::SimBus(const ComponentPtr<Bus>& bus, SimNetwork& simNetwork) : bus_(bus)
-    {
-        simNetwork.linkBus(*bus);
-    }
-
-    SimGen::SimGen(const ComponentPtr<Gen>& gen, SimNetwork& simNetwork) : gen_(gen)
-    {
-        simNetwork.linkGen(*gen);
-    }
-
-    SimZip::SimZip(const ComponentPtr<Zip>& zip, SimNetwork& simNetwork) : zip_(zip)
-    {
-        simNetwork.linkZip(*zip);
     }
 }

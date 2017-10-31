@@ -28,12 +28,9 @@ namespace Sgt
 
     void Action::reset(const std::function<void ()>& function, const std::string& description)
     {
-        while (!triggers_.empty())
-        {
-            removeTrigger(**triggers_.begin());
-        }
         function_ = function;
         if (description != "") description_ = description;
+        clearTriggers();
     }
             
     void Action::addTrigger(const Event& event)
@@ -46,6 +43,14 @@ namespace Sgt
     {
         triggers_.erase(&event);
         event.actions_.erase(this); 
+    }
+    
+    void Action::clearTriggers()
+    {
+        while (!triggers_.empty())
+        {
+            removeTrigger(**triggers_.begin());
+        }
     }
             
     Event::~Event()

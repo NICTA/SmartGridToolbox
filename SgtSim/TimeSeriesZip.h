@@ -40,7 +40,7 @@ namespace Sgt
             /// @param dataIdxsY Indices into time series data of const Y component. Empty or of size matrixElems.
             /// @param dataIdxsI Indices into time series data of const I component. Empty or of size matrixElems.
             /// @param dataIdxsS Indices into time series data of const S component. Empty or of size matrixElems.
-            TimeSeriesZip(const std::string& id, const ComponentPtr<Zip>& zip, SimNetwork& simNetwork,
+            TimeSeriesZip(const std::string& id, const ComponentPtr<Zip>& zip,
                     const ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>>& series, const Time& dt,
                     const arma::Mat<arma::uword>& matrixElems,
                     const arma::Col<arma::uword>& dataIdxsY,

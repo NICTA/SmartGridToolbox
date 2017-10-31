@@ -20,7 +20,7 @@ using namespace arma;
 
 namespace Sgt
 {
-    TimeSeriesZip::TimeSeriesZip(const std::string& id, const ComponentPtr<Zip>& zip, SimNetwork& simNetwork,
+    TimeSeriesZip::TimeSeriesZip(const std::string& id, const ComponentPtr<Zip>& zip,
                     const ConstTimeSeriesPtr<TimeSeries<Time, Col<Complex>>>& series, const Time& dt,
                     const Mat<uword>& matrixElems,
                     const Col<uword>& dataIdxsY,
@@ -28,7 +28,7 @@ namespace Sgt
                     const Col<uword>& dataIdxsS) :
         Component(id),
         Heartbeat(id, dt),
-        SimZip(zip, simNetwork),
+        SimZip(zip),
         series_(series),
         matrixElems_(matrixElems),
         dataIdxsY_(dataIdxsY),
