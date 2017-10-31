@@ -75,8 +75,7 @@ namespace Sgt
     
     void Bus::setType(BusType type)
     {
-        bool changed = type != type_;
-        if (changed)
+        if (type != type_)
         {
             type_ = type;
             setpointChanged_.trigger();
@@ -109,8 +108,7 @@ namespace Sgt
             
     void Bus::setIsInService(bool isInService)
     {
-        bool changed = isInService != isInService_;
-        if (changed)
+        if (isInService != isInService_)
         {
             isInService_ = isInService;
             isInServiceChanged_.trigger();
@@ -119,8 +117,7 @@ namespace Sgt
             
     void Bus::setIsSupplied(bool isSupplied)
     {
-        bool changed = isSupplied != isSupplied_;
-        if (changed)
+        if (isSupplied != isSupplied_)
         {
             isSupplied_ = isSupplied;
             isSuppliedChanged_.trigger();

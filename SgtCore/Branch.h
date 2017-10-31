@@ -101,11 +101,7 @@ namespace Sgt
                 return isInService_;
             }
 
-            virtual void setIsInService(bool isInService)
-            {
-                isInService_ = isInService;
-                isInServiceChanged_.trigger();
-            }
+            virtual void setIsInService(bool isInService);
 
             SGT_PROP_GET_SET(isInService, isInService, bool, setIsInService, bool);
 

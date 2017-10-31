@@ -43,6 +43,15 @@ namespace Sgt
         };
         return j;
     }
+    
+    void BranchAbc::setIsInService(bool isInService)
+    {
+        if (isInService != isInService_)
+        {
+            isInService_ = isInService;
+            isInServiceChanged_.trigger();
+        }
+    }
 
     array<Col<Complex>, 2> BranchAbc::VBus() const
     {

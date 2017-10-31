@@ -35,6 +35,15 @@ namespace Sgt
             {"c2: ", c2()}};
         return j;
     }
+            
+    void Gen::setIsInService(bool isInService)
+    {
+        if (isInService != isInService_)
+        {
+            isInService_ = isInService;
+            isInServiceChanged_.trigger();
+        }
+    }
 
     double Gen::cost() const
     {
