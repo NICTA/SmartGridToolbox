@@ -43,7 +43,7 @@ namespace Sgt
         /// @{
 
             /// @brief Constructor
-            /// @param nomTurnsRatio Nominal complex voltage ratio (not turns ratio) for each pair of windings.
+            /// @param nomTurnsRatio Nominal turns ratio for each pair of windings = V_delta_0 / V_wye_1.
             /// @param offNomRatio Off nominal complex ratio for each of the six windings.
             /// @param ZL The leakage impedance, must be > 0.
             DgyTransformer(const std::string& id, Complex nomTurnsRatio, Complex offNomRatio, Complex ZL,
