@@ -122,7 +122,7 @@ namespace Sgt
             PExpVars.push_back(model.addVar(0.0, INFINITY, -feedInTariff_, GRB_CONTINUOUS, "P_exp_" + iStr));
             PChgVars.push_back(model.addVar(0.0, batt_->maxChargePower(), 0.0, GRB_CONTINUOUS, "P_chg_" + iStr));
             PDisVars.push_back(model.addVar(0.0, batt_->maxDischargePower(), 0.0, GRB_CONTINUOUS, "P_dis_" + iStr));
-            chgVars.push_back(model.addVar(0.0, batt_->maxCharge(), 0.0, GRB_CONTINUOUS, "chg_" + iStr));
+            chgVars.push_back(model.addVar(0.0, batt_->maxSoc(), 0.0, GRB_CONTINUOUS, "chg_" + iStr));
             TbVars.push_back(model.addVar(-INFINITY, INFINITY, 0.0, GRB_CONTINUOUS, "Tb_" + iStr));
             TbPlusVars.push_back(model.addVar(0, TMaxDev_, 0.0, GRB_CONTINUOUS, "TbPlus_" + iStr));
             TbMinusVars.push_back(model.addVar(0, TMaxDev_, 0.0, GRB_CONTINUOUS, "TbMinus_" + iStr));

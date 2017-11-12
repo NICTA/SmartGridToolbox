@@ -115,12 +115,12 @@ namespace Sgt
             void setDt(Time val) {dt_ = val;}
             // Doesn't affect state this timestep, no update needed.
 
-            double initCharge() {return initCharge_;}
-            void setInitCharge(double val) {initCharge_ = val;}
+            double initSoc() {return initCharge_;}
+            void setInitSoc(double val) {initCharge_ = val;}
             // Doesn't affect state this timestep, no update needed.
 
-            double maxCharge() {return maxCharge_;}
-            void setMaxCharge(double val);
+            double maxSoc() {return maxCharge_;}
+            void setMaxSoc(double val);
 
             double maxChargePower() {return maxChargePower_;}
             void setMaxChargePower(double val);

@@ -39,7 +39,7 @@ namespace Sgt
         dcPowerChanged().trigger();
     }
     
-    void Battery::setMaxCharge(double val)
+    void Battery::setMaxSoc(double val)
     {
         maxCharge_ = val;
         needsUpdate().trigger();

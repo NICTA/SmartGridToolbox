@@ -131,8 +131,8 @@
     id: battery
     dt: 00:05:00
     inverter_id: battery_inverter
-    init_charge: 0
-    max_charge: 0.1 # 100 kWh, ~ 10 large sized Tesla Powerwalls
+    init_soc: 0
+    max_soc: 0.1 # 100 kWh, ~ 10 large sized Tesla Powerwalls
     max_charge_power: 0.02 # 20 kW, assume similar to discharge rate.
     max_discharge_power: 0.02 # 20 kW, ~ 10 large sized Tesla Powerwalls
     charge_efficiency: 0.96 # Something like Tesla Powerwall.

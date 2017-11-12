@@ -30,11 +30,11 @@ namespace Sgt
         auto nd_dt = nd["dt"];
         if (nd_dt) batt->setDt(parser.expand<Time>(nd_dt));
 
-        auto ndInitCharge = nd["init_charge"];
-        if (ndInitCharge) batt->setInitCharge(parser.expand<double>(ndInitCharge));
+        auto ndInitCharge = nd["init_soc"];
+        if (ndInitCharge) batt->setInitSoc(parser.expand<double>(ndInitCharge));
 
-        auto ndMaxCharge = nd["max_charge"];
-        if (ndMaxCharge) batt->setMaxCharge(parser.expand<double>(ndMaxCharge));
+        auto ndMaxCharge = nd["max_soc"];
+        if (ndMaxCharge) batt->setMaxSoc(parser.expand<double>(ndMaxCharge));
 
         auto ndMaxChargePower = nd["max_charge_power"];
         if (ndMaxChargePower) batt->setMaxChargePower(parser.expand<double>(ndMaxChargePower));
