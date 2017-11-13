@@ -45,19 +45,26 @@ namespace Sgt
 
     Mat<Complex> Inverter::SConst() const
     {
+        using std::abs;
+        using std::copysign;
+        using std::min;
+        using std::pow;
+
         uword nPhase = zip()->phases().size();
-        double PPerPh = availableP() / nPhase;
-        double P2PerPh = PPerPh * PPerPh;
-        double reqQPerPh = requestedQ_ / nPhase;
-        double reqQ2PerPh = reqQPerPh * reqQPerPh;
+
         double maxSMagPerPh =  maxSMag_ / nPhase;
-        double maxSMag2PerPh = maxSMagPerPh * maxSMagPerPh;
-        double SMag2PerPh = std::min(P2PerPh + reqQ2PerPh, maxSMag2PerPh);
-        double QPerPh = sqrt(SMag2PerPh - P2PerPh);
-        if (requestedQ_ < 0.0)
-        {
-            QPerPh *= -1;
-        }
+        double maxSMagPerPh2 =  pow(maxSMagPerPh, 2);
+
+        double availPPerPh = availableP() / nPhase;
+        double PPerPh = copysign(min(availPPerPh, maxSMagPerPh), availPPerPh); 
+        double PPerPh2 = pow(PPerPh, 2);
+
+        double reqQPerPh = requestedQ_ / nPhase;
+        double reqQPerPh2 = pow(reqQPerPh, 2);
+
+        double SMagPerPh2 = std::min(PPerPh2 + reqQPerPh2, maxSMagPerPh2);
+        double QPerPh = copysign(sqrt(SMagPerPh2 - PPerPh2), reqQPerPh);
+        
         Complex SLoadPerPh{-PPerPh, -QPerPh}; // Load = -ve gen.
         return diagmat(Col<Complex>(nPhase, fill::none).fill(SLoadPerPh));
     }
