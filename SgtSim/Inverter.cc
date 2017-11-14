@@ -34,8 +34,9 @@ namespace Sgt
 
         double reqPDc{requestedPDc()};
         double PDc{reqPDc};
-        double Pa;
-        while (abs(Pa = P(PDc)) > maxSMag_ * 1.000001)
+        double P;
+        const double c{1.000001};
+        while (abs(P = PAc(PDc)) > maxSMag_ * c)
         {
             // Limit exceeded. We need to curtail the sources.
             // We want to solve P^2 = maxSMag_^2
@@ -46,36 +47,30 @@ namespace Sgt
 
             PDc = copysign(maxSMag_ / dcToAcFactor(PDc), PDc);
         }
-        double curtailFactor = PDc / reqPDc;
+        double curtailFactor = PDc / (reqPDc * c);
         for (auto source : sources_)
         {
             source->setActualPDc(curtailFactor * source->requestedPDc());
         }
-        zip()->setSConst(SConst(Pa));
+        zip()->setSConst(SConst(P));
     }
 
-    Mat<Complex> Inverter::SConst(double Pa) const
+    Mat<Complex> Inverter::SConst(double P) const
     {
         using std::copysign;
         using std::min;
         using std::pow;
 
-        uword nPhase = zip()->phases().size();
+        double maxSMag2 =  pow(maxSMag_, 2);
+        double P2 = pow(P, 2);
+        double reqQ2 = pow(requestedQ_, 2);
 
-        double maxSMagPerPh =  maxSMag_ / nPhase;
-        double maxSMagPerPh2 =  pow(maxSMagPerPh, 2);
-
-        double PPerPh = Pa / nPhase;
-        double PPerPh2 = pow(PPerPh, 2);
-
-        double reqQPerPh = requestedQ_ / nPhase;
-        double reqQPerPh2 = pow(reqQPerPh, 2);
-
-        double SMagPerPh2 = std::min(PPerPh2 + reqQPerPh2, maxSMagPerPh2);
-        double QPerPh = copysign(sqrt(abs(SMagPerPh2 - PPerPh2)), reqQPerPh); 
+        double SMag2 = std::min(P2 + reqQ2, maxSMag2);
+        double Q = copysign(sqrt(abs(SMag2 - P2)), requestedQ_); 
         // abs is needed in case argument of sqrt is very slightly negative, due to numerical reasons.
         
-        Complex SLoadPerPh{-PPerPh, -QPerPh}; // Load = -ve gen.
+        uword nPhase = zip()->phases().size();
+        Complex SLoadPerPh{-P/nPhase, -Q/nPhase}; // Load = -ve gen.
         return diagmat(Col<Complex>(nPhase, fill::none).fill(SLoadPerPh));
     }
 }

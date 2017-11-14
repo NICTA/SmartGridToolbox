@@ -38,16 +38,22 @@ namespace Sgt
             /// @name Inverter specific member functions.
             /// @{
 
+            /// @brief Add a DC power source to this inverter.
             virtual void addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source);
             
             /// @brief Total requested DC power from all sources.
-            virtual double requestedPDc() const
+            double requestedPDc() const
             {
                 return std::accumulate(sources_.begin(), sources_.end(), 0.0,
                         [] (double tot, const ConstSimComponentPtr<DcPowerSourceAbc>& source)
                         {return tot + source->requestedPDc();});
             }
 
+            /// @}
+
+        protected:
+
+            /// @brief Efficiency as a function of DC power.
             virtual double efficiency(double powerDc) const = 0;
 
             /// @brief Multiply PDc by this to get PAc.
@@ -57,14 +63,10 @@ namespace Sgt
             }
 
             /// @brief Real power output that would result from requested DC powers.
-            virtual double P(double PDc) const
+            double PAc(double PDc) const
             {
                 return PDc * dcToAcFactor(PDc);
             }
-
-            /// @}
-
-        protected:
 
             std::vector<ConstSimComponentPtr<DcPowerSourceAbc>> sources_;   ///< My DC power sources.
     };
@@ -83,16 +85,6 @@ namespace Sgt
                 effAcToDc_(effAcToDc)
             {
                 // Empty.
-            }
-
-            /// @}
-
-            /// @name InverterAbc virtual overridden member functions.
-            /// @{
-
-            virtual double efficiency(double powerDc) const override
-            {
-                return powerDc >= 0 ? effDcToAc_ : effAcToDc_;
             }
 
             /// @}
@@ -122,6 +114,18 @@ namespace Sgt
 
             /// @}
 
+        protected:
+
+            /// @name InverterAbc virtual overridden member functions.
+            /// @{
+
+            virtual double efficiency(double powerDc) const override
+            {
+                return powerDc >= 0 ? effDcToAc_ : effAcToDc_;
+            }
+
+            /// @}
+        
         private:
 
             double effDcToAc_;
@@ -199,10 +203,12 @@ namespace Sgt
             /// @}
 
         protected:
+
             virtual void updateState(const Time& t) override;
             
         private:
-            virtual arma::Mat<Complex> SConst(double Pa) const;
+
+            virtual arma::Mat<Complex> SConst(double P) const;
 
         private:
 
