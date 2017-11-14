@@ -101,12 +101,12 @@ namespace Sgt
             void setNOCT(double NOCT) {NOCT_ = NOCT; needsUpdate().trigger();}
 
             /// @brief Power output in MW, assuming efficient maximum power point tracking (MPPT).
-            virtual double PDc(const Time& t) const;
+            virtual double requestedPDc(const Time& t) const;
 
             /// @brief Power output in MW, assuming efficient maximum power point tracking (MPPT).
-            virtual double PDc() const override
+            virtual double requestedPDc() const override
             {
-                return PDc_;
+                return requestedPDc_;
             }
 
         /// @}
@@ -148,7 +148,7 @@ namespace Sgt
             double NOCT_; // Nominal operating cell temperature, should be given in datasheet.
             
             // State:
-            double PDc_{0.0};
+            double requestedPDc_{0.0};
     };
 }
 

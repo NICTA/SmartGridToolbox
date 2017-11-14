@@ -29,7 +29,7 @@ namespace Sgt
         dependsOn(weather, true);
     }
 
-    double SolarPv::PDc(const Time& t) const
+    double SolarPv::requestedPDc(const Time& t) const
     {
         // Note: convert from SI to MW.
         // Also need to multiply by number of panels.
@@ -48,7 +48,7 @@ namespace Sgt
 
     void SolarPv::updateState(const Time& t)
     {
-        PDc_ = PDc(t);
+        requestedPDc_ = requestedPDc(t);
         dcPowerChanged().trigger();
     };
 };

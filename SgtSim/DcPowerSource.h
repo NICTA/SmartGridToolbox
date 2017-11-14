@@ -31,11 +31,7 @@ namespace Sgt
             /// @name Static member functions:
             /// @{
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("dc_power_source");
-                return result;
-            }
+            static const std::string& sComponentType();
 
             /// @}
 
@@ -49,8 +45,19 @@ namespace Sgt
             /// @name DC Power.
             /// @{
 
-            /// @brief DC power. +ve = generation.
-            virtual double PDc() const = 0;
+            /// @brief Requested DC power. +ve = generation.
+            virtual double requestedPDc() const = 0;
+            
+            /// @brief Actual DC power. +ve = generation.
+            double actualPDc() const
+            {
+                return actualPDc_;
+            }
+
+            /// @brief Set actual DC power. +ve = generation.
+            ///
+            /// Normally only called by inverter.
+            void setActualPDc(double actualPDc);
 
             /// @}
 
@@ -67,6 +74,7 @@ namespace Sgt
 
         private:
 
+            double actualPDc_;
             Event dcPowerChanged_{std::string(componentType()) + ": DC power changed"};
     };
 
@@ -88,7 +96,7 @@ namespace Sgt
             /// @name Lifecycle
             /// @{
 
-            GenericDcPowerSource(const std::string& id) : Component(id), PDc_(0.0) {}
+            GenericDcPowerSource(const std::string& id) : Component(id), requestedPDc_(0.0) {}
 
             /// @}
 
@@ -100,12 +108,7 @@ namespace Sgt
                 return sComponentType();
             }
 
-            virtual json toJson() const override
-            {
-                json j = this->SimComponent::toJson();
-                j[sComponentType()] = {{"DC_power", PDc()}};
-                return j;
-            }
+            virtual json toJson() const override;
 
             /// @}
 
@@ -118,7 +121,8 @@ namespace Sgt
             
             virtual void initializeState() override
             {
-                PDc_ = 0.0;
+                requestedPDc_ = 0.0;
+                setActualPDc(0.0);
             }
 
             /// @}
@@ -128,13 +132,20 @@ namespace Sgt
             /// @name DC Power.
             /// @{
 
-            virtual double PDc() const override {return PDc_;}
-            void setPDc(double PDc) {PDc_ = PDc; dcPowerChanged().trigger();}
+            virtual double requestedPDc() const override
+            {
+                return requestedPDc_;
+            }
+
+            void setRequestedPDc(double requestedPDc)
+            {
+                requestedPDc_ = requestedPDc;
+            }
 
             /// @}
 
         private:
-            double PDc_;
+            double requestedPDc_;
     };
 }
 

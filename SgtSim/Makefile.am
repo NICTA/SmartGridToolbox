@@ -28,7 +28,7 @@ libinclude_HEADERS = \
 libSgtSim_la_SOURCES = \
 	Battery.h Battery.cc \
 	BatteryParserPlugin.h BatteryParserPlugin.cc \
-	DcPowerSource.h \
+	DcPowerSource.h DcPowerSource.cc \
 	GenericDcPowerSourceParserPlugin.h GenericDcPowerSourceParserPlugin.cc \
 	Heartbeat.h \
 	HeartbeatParserPlugin.h HeartbeatParserPlugin.cc \

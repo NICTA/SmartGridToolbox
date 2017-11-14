@@ -101,9 +101,9 @@ namespace Sgt
         public:
 
             /// Positive = charging.
-            virtual double PDc() const override
+            virtual double requestedPDc() const override
             {
-                return PDc_;
+                return requestedPDc_;
             }
 
             /// @}
@@ -145,7 +145,7 @@ namespace Sgt
 
         private:
 
-            double calcPDc() const;
+            double calcRequestedPDc() const;
 
         private:
 
@@ -163,7 +163,7 @@ namespace Sgt
 
             // State.
             double soc_{0.0};
-            double PDc_{0.0};
+            double requestedPDc_{0.0};
     };
 }
 #endif // BATTERY_DOT_H

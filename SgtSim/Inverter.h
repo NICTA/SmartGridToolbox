@@ -39,23 +39,32 @@ namespace Sgt
             /// @{
 
             virtual void addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source);
-
-            virtual double efficiency(double powerDc) const = 0;
-
-            /// @brief Total DC power from all sources.
-            virtual double PDc() const
+            
+            /// @brief Total requested DC power from all sources.
+            virtual double requestedPDc() const
             {
                 return std::accumulate(sources_.begin(), sources_.end(), 0.0,
                         [] (double tot, const ConstSimComponentPtr<DcPowerSourceAbc>& source)
-                        {return tot + source->PDc();});
+                        {return tot + source->requestedPDc();});
             }
 
-            /// @brief Real power output.
-            virtual double availableP() const;
+            virtual double efficiency(double powerDc) const = 0;
+
+            /// @brief Multiply PDc by this to get PAc.
+            double dcToAcFactor(double PDc) const
+            {
+                return PDc > 0 ? efficiency(PDc) : 1.0 / efficiency(PDc);
+            }
+
+            /// @brief Real power output that would result from requested DC powers.
+            virtual double P(double PDc) const
+            {
+                return PDc * dcToAcFactor(PDc);
+            }
 
             /// @}
 
-        private:
+        protected:
 
             std::vector<ConstSimComponentPtr<DcPowerSourceAbc>> sources_;   ///< My DC power sources.
     };
@@ -164,13 +173,6 @@ namespace Sgt
 
             /// @}
 
-            /// @name InverterAbc virtual overridden member functions.
-            /// @{
-
-            virtual void addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source) override;
-
-            /// @}
-            
             /// @name Inverter specific member functions.
             /// @{
 
@@ -200,7 +202,7 @@ namespace Sgt
             virtual void updateState(const Time& t) override;
             
         private:
-            virtual arma::Mat<Complex> SConst() const;
+            virtual arma::Mat<Complex> SConst(double Pa) const;
 
         private:
 

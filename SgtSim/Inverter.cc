@@ -27,25 +27,35 @@ namespace Sgt
         dependsOn(source, true);
     }
 
-    double InverterAbc::availableP() const
-    {
-        double PDcA = PDc();
-        return PDcA >= 0 ? PDcA * efficiency(PDcA) : PDcA / efficiency(PDcA);
-    }
-        
-    void Inverter::addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source)
-    {
-        InverterAbc::addDcPowerSource(source);
-    }
-    
     void Inverter::updateState(const Time& t)
     {
-        zip()->setSConst(SConst());
+        using std::abs;
+        using std::copysign;
+
+        double reqPDc{requestedPDc()};
+        double PDc{reqPDc};
+        double Pa;
+        while (abs(Pa = P(PDc)) > maxSMag_ * 1.000001)
+        {
+            // Limit exceeded. We need to curtail the sources.
+            // We want to solve P^2 = maxSMag_^2
+            // => PDc^2 * dcToAcFactor(PDc)^2 = maxSMag^2
+            // => PDc = sgn(PDc) * maxSMag / dcToAcFactor(PDc)
+            // This can be solved by iterative method: PDc_n+1 <= sgn(PDc_n) * maxSMag / dcToAcFactor(PDc_n)
+            // For simple efficiencies, should be solved in one step.
+
+            PDc = copysign(maxSMag_ / dcToAcFactor(PDc), PDc);
+        }
+        double curtailFactor = PDc / reqPDc;
+        for (auto source : sources_)
+        {
+            source->setActualPDc(curtailFactor * source->requestedPDc());
+        }
+        zip()->setSConst(SConst(Pa));
     }
 
-    Mat<Complex> Inverter::SConst() const
+    Mat<Complex> Inverter::SConst(double Pa) const
     {
-        using std::abs;
         using std::copysign;
         using std::min;
         using std::pow;
@@ -55,15 +65,15 @@ namespace Sgt
         double maxSMagPerPh =  maxSMag_ / nPhase;
         double maxSMagPerPh2 =  pow(maxSMagPerPh, 2);
 
-        double availPPerPh = availableP() / nPhase;
-        double PPerPh = copysign(min(availPPerPh, maxSMagPerPh), availPPerPh); 
+        double PPerPh = Pa / nPhase;
         double PPerPh2 = pow(PPerPh, 2);
 
         double reqQPerPh = requestedQ_ / nPhase;
         double reqQPerPh2 = pow(reqQPerPh, 2);
 
         double SMagPerPh2 = std::min(PPerPh2 + reqQPerPh2, maxSMagPerPh2);
-        double QPerPh = copysign(sqrt(SMagPerPh2 - PPerPh2), reqQPerPh);
+        double QPerPh = copysign(sqrt(abs(SMagPerPh2 - PPerPh2)), reqQPerPh); 
+        // abs is needed in case argument of sqrt is very slightly negative, due to numerical reasons.
         
         Complex SLoadPerPh{-PPerPh, -QPerPh}; // Load = -ve gen.
         return diagmat(Col<Complex>(nPhase, fill::none).fill(SLoadPerPh));

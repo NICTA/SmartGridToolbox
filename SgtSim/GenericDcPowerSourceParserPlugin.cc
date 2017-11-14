@@ -28,7 +28,7 @@ namespace Sgt
 
         std::string id = parser.expand<std::string>(nd["id"]);
         auto comp = sim.newSimComponent<GenericDcPowerSource>(id);
-        comp->setPDc(parser.expand<double>(nd["dc_power"]));
+        comp->setRequestedPDc(parser.expand<double>(nd["dc_power"]));
 
         const std::string inverterStr = parser.expand<std::string>(nd["inverter_id"]);
         auto inverterComp = sim.simComponent<InverterAbc>(inverterStr);

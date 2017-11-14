@@ -31,9 +31,9 @@ namespace Sgt
             if (soc_ > maxSoc_) soc_ = maxSoc_;
         }
 
-        double prevPDc = PDc_;
-        PDc_ = calcPDc();
-        if (abs(prevPDc - PDc_) > numeric_limits<double>::epsilon())
+        double prevRequestedPDc = requestedPDc_;
+        requestedPDc_ = calcRequestedPDc();
+        if (abs(prevRequestedPDc - requestedPDc_) > numeric_limits<double>::epsilon())
         {
             dcPowerChanged().trigger();
         }
@@ -77,11 +77,11 @@ namespace Sgt
 
     double Battery::internalPower()
     {
-        double P = PDc();
+        double P = requestedPDc();
         return (P > 0 ? P / dischargeEfficiency_ : P * chargeEfficiency_);
     }
 
-    double Battery::calcPDc() const
+    double Battery::calcRequestedPDc() const
     {
         double result = 0.0;
         if (requestedPower_ > 0 && soc_ > 0)

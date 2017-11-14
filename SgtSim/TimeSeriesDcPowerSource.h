@@ -50,7 +50,7 @@ namespace Sgt
                 return sComponentType();
             }
 
-            virtual double PDc() const override
+            virtual double requestedPDc() const override
             {
                 return scaleFactor_ * series_->value(lastUpdated());
             }
