@@ -22,21 +22,21 @@ namespace Sgt
 {
     void Battery::updateState(const Time& t)
     {
+        double dt = lastUpdated() == TimeSpecialValues::neg_infin ? 0 : dSeconds(t - lastUpdated());
+        if (dt > 0)
+        {
+            // Euler step makes repeated updates of battery easier to handle.
+            soc_ -= internalPower() * dSeconds(t - lastUpdated()) / 3600.0; // Charge in MWh.
+            if (soc_ < 0.0) soc_ = 0.0;
+            if (soc_ > maxSoc_) soc_ = maxSoc_;
+        }
+
         double prevPDc = PDc_;
         PDc_ = calcPDc();
         if (abs(prevPDc - PDc_) > numeric_limits<double>::epsilon())
         {
             dcPowerChanged().trigger();
         }
-
-        double dt = lastUpdated() == TimeSpecialValues::neg_infin ? 0 : dSeconds(t - lastUpdated());
-        if (dt > 0)
-        {
-            soc_ -= internalPower() * dSeconds(t - lastUpdated()) / 3600.0; // Charge in MWh.
-            if (soc_ < 0.0) soc_ = 0.0;
-            if (soc_ > maxSoc_) soc_ = maxSoc_;
-        }
-        dcPowerChanged().trigger();
     }
     
     void Battery::setMaxSoc(double val)
