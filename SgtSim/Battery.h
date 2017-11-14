@@ -26,7 +26,7 @@ namespace Sgt
     /// @brief Basic battery class, deriving from DCPowerSourceBase.
     ///
     /// Units: SmartGridToolbox system of units uses MW for power. For the Battery class, we shall therefore measure
-    /// charge in units of MWh.
+    /// SOC in units of MWh.
     ///
     /// Sign convention: like other components, a positive power means injection into the grid. Therefore, charging
     /// is positive and discharging is negative.
@@ -41,13 +41,13 @@ namespace Sgt
             Battery(const std::string& id) :
                 Component(id),
                 dt_(minutes(5)),
-                initCharge_(0.0),
+                initSoc_(0.0),
                 maxChargePower_(0.0),
                 maxDischargePower_(0.0),
                 chargeEfficiency_(0.0),
                 dischargeEfficiency_(0.0),
                 requestedPower_(0.0),
-                charge_(0.0)
+                soc_(0.0)
             {
                 // Empty.
             }
@@ -88,7 +88,7 @@ namespace Sgt
 
             virtual void initializeState() override
             {
-                charge_ = initCharge_;
+                soc_ = initSoc_;
             }
 
             virtual void updateState(const Time& t) override;
@@ -115,11 +115,11 @@ namespace Sgt
             void setDt(Time val) {dt_ = val;}
             // Doesn't affect state this timestep, no update needed.
 
-            double initSoc() {return initCharge_;}
-            void setInitSoc(double val) {initCharge_ = val;}
+            double initSoc() {return initSoc_;}
+            void setInitSoc(double val) {initSoc_ = val;}
             // Doesn't affect state this timestep, no update needed.
 
-            double maxSoc() {return maxCharge_;}
+            double maxSoc() {return maxSoc_;}
             void setMaxSoc(double val);
 
             double maxChargePower() {return maxChargePower_;}
@@ -134,7 +134,7 @@ namespace Sgt
             double dischargeEfficiency() {return dischargeEfficiency_;}
             void setDischargeEfficiency(double val);
 
-            double charge() {return charge_;}
+            double soc() {return soc_;}
 
             double requestedPower() {return requestedPower_;} // +ve = injection into grid.
             void setRequestedPower(double val);
@@ -151,8 +151,8 @@ namespace Sgt
 
             // Parameters.
             Time dt_; ///< Timestep.
-            double initCharge_{0.0};
-            double maxCharge_{0.0};
+            double initSoc_{0.0};
+            double maxSoc_{0.0};
             double maxChargePower_{0.0};
             double maxDischargePower_{0.0};
             double chargeEfficiency_{1.0};
@@ -162,7 +162,7 @@ namespace Sgt
             double requestedPower_{0.0}; ///< Positive = charging.
 
             // State.
-            double charge_{0.0};
+            double soc_{0.0};
             double PDc_{0.0};
     };
 }

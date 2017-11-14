@@ -93,7 +93,7 @@ namespace Sgt
             TExt.push_back(TExtSeries_->value(ti));
         }
 
-        double chg0 = batt_->charge();
+        double chg0 = batt_->soc();
         
         double Tb0 = build_->Tb();
         

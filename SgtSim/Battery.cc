@@ -24,7 +24,7 @@ namespace Sgt
     {
         double prevPDc = PDc_;
         PDc_ = calcPDc();
-        if (std::abs(prevPDc - PDc_) > std::numeric_limits<double>::epsilon())
+        if (abs(prevPDc - PDc_) > numeric_limits<double>::epsilon())
         {
             dcPowerChanged().trigger();
         }
@@ -32,16 +32,16 @@ namespace Sgt
         double dt = lastUpdated() == TimeSpecialValues::neg_infin ? 0 : dSeconds(t - lastUpdated());
         if (dt > 0)
         {
-            charge_ -= internalPower() * dSeconds(t - lastUpdated()) / 3600.0; // Charge in MWh.
-            if (charge_ < 0.0) charge_ = 0.0;
-            if (charge_ > maxCharge_) charge_ = maxCharge_;
+            soc_ -= internalPower() * dSeconds(t - lastUpdated()) / 3600.0; // Charge in MWh.
+            if (soc_ < 0.0) soc_ = 0.0;
+            if (soc_ > maxSoc_) soc_ = maxSoc_;
         }
         dcPowerChanged().trigger();
     }
     
     void Battery::setMaxSoc(double val)
     {
-        maxCharge_ = val;
+        maxSoc_ = val;
         needsUpdate().trigger();
     }
     
@@ -84,15 +84,15 @@ namespace Sgt
     double Battery::calcPDc() const
     {
         double result = 0.0;
-        if (requestedPower_ > 0 && charge_ > 0)
+        if (requestedPower_ > 0 && soc_ > 0)
         {
             // Discharging.
-            result = std::min(requestedPower_, maxDischargePower_);
+            result = min(requestedPower_, maxDischargePower_);
         }
-        else if (requestedPower_ < 0 && charge_ < maxCharge_)
+        else if (requestedPower_ < 0 && soc_ < maxSoc_)
         {
             // Charging.
-            result = std::max(requestedPower_, -maxChargePower_);
+            result = max(requestedPower_, -maxChargePower_);
         }
         return result;
     }
