@@ -26,7 +26,7 @@ namespace Sgt
         if (dt > 0)
         {
             // Euler step makes repeated updates of battery easier to handle.
-            soc_ -= internalPower() * dSeconds(t - lastUpdated()) / 3600.0; // Charge in MWh.
+            soc_ -= internalPower() * dt / 3600.0; // Charge in MWh.
             if (soc_ < 0.0) soc_ = 0.0;
             if (soc_ > maxSoc_) soc_ = maxSoc_;
         }
