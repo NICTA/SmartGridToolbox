@@ -49,23 +49,23 @@ namespace Sgt
                         {return tot + source->requestedPDc();});
             }
 
+            /// @brief Efficiency as a function of DC power.
+            virtual double efficiency(double powerDc) const = 0;
+            
+            /// @brief Real power output that would result from requested DC powers.
+            double PAc(double PDc) const
+            {
+                return PDc * dcToAcFactor(PDc);
+            }
+
             /// @}
 
         protected:
-
-            /// @brief Efficiency as a function of DC power.
-            virtual double efficiency(double powerDc) const = 0;
 
             /// @brief Multiply PDc by this to get PAc.
             double dcToAcFactor(double PDc) const
             {
                 return PDc > 0 ? efficiency(PDc) : 1.0 / efficiency(PDc);
-            }
-
-            /// @brief Real power output that would result from requested DC powers.
-            double PAc(double PDc) const
-            {
-                return PDc * dcToAcFactor(PDc);
             }
 
             std::vector<ConstSimComponentPtr<DcPowerSourceAbc>> sources_;   ///< My DC power sources.
@@ -113,8 +113,6 @@ namespace Sgt
             }
 
             /// @}
-
-        protected:
 
             /// @name InverterAbc virtual overridden member functions.
             /// @{
