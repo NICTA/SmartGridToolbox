@@ -84,10 +84,10 @@ namespace Sgt
 
     std::ostream& Log::warning()
     {
-        cerrBuf_.reset(
+        coutBuf_.reset(
                 std::string("WARNING: ") + std::string(indentLevel_, ' '),
                 std::string("         ") + std::string(indentLevel_, ' '));
-        return std::cerr;
+        return std::cout;
     }
 
     std::ostream& Log::error()
