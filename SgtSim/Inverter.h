@@ -80,7 +80,6 @@ namespace Sgt
         /// @{
 
         SimpleInverterAbc(double effDcToAc = 1.0, double effAcToDc = 1.0) : 
-            Component(""),
             effDcToAc_(effDcToAc),
             effAcToDc_(effAcToDc)
         {

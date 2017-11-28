@@ -44,12 +44,12 @@ namespace Sgt
         /// @name Lifecycle:
         /// @{
 
-        SimComponent() : Component("")
+        SimComponent()
         {
             // Empty.
         }
 
-        virtual ~SimComponent() = default;
+        virtual ~SimComponent() override = default;
 
         /// @}
 

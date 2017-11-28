@@ -27,7 +27,7 @@ namespace Sgt
                     const Col<uword>& dataIdxsI,
                     const Col<uword>& dataIdxsS) :
         Component(id),
-        Heartbeat(id, dt),
+        Heartbeat(dt),
         SimZip(zip),
         series_(series),
         matrixElems_(matrixElems),

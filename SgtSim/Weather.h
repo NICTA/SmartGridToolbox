@@ -128,7 +128,7 @@ namespace Sgt
 
         Weather(const std::string& id) :
             Component(id),
-            Heartbeat(id, minutes(5))
+            Heartbeat(minutes(5))
         {
             // Empty.
         }

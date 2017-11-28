@@ -38,8 +38,16 @@ namespace Sgt
 
         public:
 
+        /// @brief Constructor.
         Heartbeat(const std::string& id, const Time& dt) :
             Component(id),
+            dt_(dt)
+        {
+            // Empty.
+        }
+        
+        /// @brief Constructor for use with derived classes. 
+        Heartbeat(const Time& dt) :
             dt_(dt)
         {
             // Empty.
