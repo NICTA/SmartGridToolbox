@@ -60,7 +60,7 @@ namespace Sgt
 
         Component(const Component& from) = delete;
 
-        virtual ~Component() = default;
+        virtual ~Component() override = default;
 
         /// @}
 
