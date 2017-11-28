@@ -73,6 +73,7 @@ namespace Sgt
         SimZip(const ComponentPtr<Zip>& zip) : zip_(zip) {};
         ConstComponentPtr<Zip> zip() const {return zip_;}
         ComponentPtr<Zip> zip() {return zip_;}
+
         private:
         ComponentPtr<Zip> zip_;
     };
@@ -159,9 +160,7 @@ namespace Sgt
             dependsOn(simZip, false);
         }
 
-        /// @}
-
-    protected:
+        protected:
 
         /// @name Overridden member functions from SimComponent.
         /// @{
@@ -172,11 +171,11 @@ namespace Sgt
 
         /// @}
 
-    private:
+        private:
 
         std::shared_ptr<Network> network_;
         Event networkChanged_;
-};
+    };
 }
 
 #endif // SIM_NETWORK_DOT_H
