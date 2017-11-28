@@ -26,12 +26,12 @@ namespace Sgt
     class PowerFlowSolverParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key() const override
-            {
-                return "power_flow_solver";
-            }
+        virtual const char* key() const override
+        {
+            return "power_flow_solver";
+        }
 
-            virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
+        virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
     };
 }
 

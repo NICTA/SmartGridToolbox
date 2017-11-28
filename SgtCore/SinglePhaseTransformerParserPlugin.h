@@ -27,15 +27,15 @@ namespace Sgt
     class SinglePhaseTransformerParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key() const override
-            {
-                return "single_phase_transformer";
-            }
+        virtual const char* key() const override
+        {
+            return "single_phase_transformer";
+        }
 
-            virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
+        virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
 
-            std::unique_ptr<SinglePhaseTransformer> parseSinglePhaseTransformer(const YAML::Node& nd,
-                    const ParserBase& parser) const;
+        std::unique_ptr<SinglePhaseTransformer> parseSinglePhaseTransformer(const YAML::Node& nd,
+                const ParserBase& parser) const;
     };
 }
 

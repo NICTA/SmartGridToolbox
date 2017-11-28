@@ -26,13 +26,13 @@ namespace Sgt
     class SimNetworkParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() const override
-            {
-                return "sim_network";
-            }
+        virtual const char* key() const override
+        {
+            return "sim_network";
+        }
 
         public:
-            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+        virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
     };
 }
 

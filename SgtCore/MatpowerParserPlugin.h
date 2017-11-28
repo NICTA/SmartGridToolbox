@@ -26,12 +26,12 @@ namespace Sgt
     class MatpowerParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key() const override
-            {
-                return "matpower";
-            }
+        virtual const char* key() const override
+        {
+            return "matpower";
+        }
 
-            virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
+        virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
     };
 }
 

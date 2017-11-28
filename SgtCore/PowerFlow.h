@@ -43,7 +43,7 @@ namespace Sgt
     {
         js = to_string(type);
     }
-    
+
     inline void from_json(const json& js, BusType& type)
     {
         type = from_string<BusType>(js);
@@ -75,14 +75,14 @@ namespace Sgt
     std::string to_string(Phase p);
 
     template<> Phase from_string<Phase>(const std::string& str);
-    
+
     inline std::ostream& operator<<(std::ostream& os, Phase p) {return os << to_string(p);}
 
     inline void to_json(json& js, const Phase& p)
     {
         js = to_string(p);
     };
-    
+
     inline void from_json(const json& js, Phase& p)
     {
         p = from_string<Phase>(js);
@@ -93,58 +93,58 @@ namespace Sgt
     class Phases
     {
         public:
-            static constexpr uint8_t noSuchPhase = UINT8_MAX;
+        static constexpr uint8_t noSuchPhase = UINT8_MAX;
 
         public:
-            Phases()
-            {
-                buildIndex();
-            }
+        Phases()
+        {
+            buildIndex();
+        }
 
-            Phases(Phase p) : vec_({p})
-            {
-                buildIndex();
-            }
-            
-            Phases(std::initializer_list<Phase> ps) : vec_(ps)
-            {
-                buildIndex();
-            }
-            
-            Phases(const std::vector<Phase>& ps) : vec_(ps)
-            {
-                buildIndex();
-            }
+        Phases(Phase p) : vec_({p})
+        {
+            buildIndex();
+        }
 
-            std::size_t size() const {return vec_.size();}
-            Phase operator[](std::size_t i) const {return vec_[i];}
+        Phases(std::initializer_list<Phase> ps) : vec_(ps)
+        {
+            buildIndex();
+        }
 
-            std::uint8_t index(Phase p) const
-            {
-                return index_[static_cast<std::uint8_t>(p)];
-            }
+        Phases(const std::vector<Phase>& ps) : vec_(ps)
+        {
+            buildIndex();
+        }
 
-            std::vector<Phase>::iterator begin() {return vec_.begin();}
-            std::vector<Phase>::iterator end() {return vec_.end();}
-            std::vector<Phase>::const_iterator begin() const {return vec_.begin();}
-            std::vector<Phase>::const_iterator end() const {return vec_.end();}
-            std::vector<Phase>::const_iterator cbegin() const {return vec_.cbegin();}
-            std::vector<Phase>::const_iterator cend() const {return vec_.cend();}
+        std::size_t size() const {return vec_.size();}
+        Phase operator[](std::size_t i) const {return vec_[i];}
 
-            std::string to_string() const;
-            json toJson() const
-            {
-                return vec_;
-            }
+        std::uint8_t index(Phase p) const
+        {
+            return index_[static_cast<std::uint8_t>(p)];
+        }
 
-            friend bool operator==(const Phases& a, const Phases& b) {return a.vec_ == b.vec_;}
+        std::vector<Phase>::iterator begin() {return vec_.begin();}
+        std::vector<Phase>::iterator end() {return vec_.end();}
+        std::vector<Phase>::const_iterator begin() const {return vec_.begin();}
+        std::vector<Phase>::const_iterator end() const {return vec_.end();}
+        std::vector<Phase>::const_iterator cbegin() const {return vec_.cbegin();}
+        std::vector<Phase>::const_iterator cend() const {return vec_.cend();}
 
-        private:
-            void buildIndex();
+        std::string to_string() const;
+        json toJson() const
+        {
+            return vec_;
+        }
+
+        friend bool operator==(const Phases& a, const Phases& b) {return a.vec_ == b.vec_;}
 
         private:
-            std::vector<Phase> vec_;
-            std::uint8_t index_[gNPhase];
+        void buildIndex();
+
+        private:
+        std::vector<Phase> vec_;
+        std::uint8_t index_[gNPhase];
     };
 
     inline std::ostream& operator<<(std::ostream& os, const Phases& ps) {return os << ps.to_string();}
@@ -199,7 +199,7 @@ namespace Sgt
         }
         return result;
     }
-    
+
     extern template arma::Col<double> mapPhases<arma::Col<double>>(const arma::Col<double>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
     extern template arma::Col<Complex> mapPhases<arma::Col<Complex>>(const arma::Col<Complex>& srcVals,
@@ -231,7 +231,7 @@ namespace Sgt
             const Phases& srcPhases, const Phases& dstPhases);
     extern template arma::Mat<Complex> mapPhases<arma::Mat<Complex>>(const arma::Mat<Complex>& srcVals,
             const Phases& srcPhases, const Phases& dstPhases);
-        
+
     /// @brief Move lower diagonal elements to upper.
     ///
     /// This is useful in making sure delta-type loads are correctly represented by an upper triangular matrix,
@@ -265,7 +265,7 @@ namespace Sgt
 
     /// @brief Convert a set of phase-ground (wye) voltages to phase-phase (delta) voltages.
     arma::Col<Complex> toDelta(const arma::Col<Complex> V);
-    
+
     /// @brief Apply Carson's equations.
     /// @param nWire The number of wires.
     /// @param Dij Distance between wires on off diagonal, GMR of wires on diagonal. Units: m.
@@ -276,7 +276,7 @@ namespace Sgt
     /// @return Line impedance matrix Z, s.t. I_phase = Z Delta V_phase.
     /// @ingroup PowerFlowCore
     arma::Mat<Complex> carson(arma::uword nWire, const arma::Mat<double>& Dij, const arma::Col<double> resPerL,
-                              double L, double freq, double rhoEarth);
+            double L, double freq, double rhoEarth);
 
     /// @brief Apply the kron reduction to line impedance matrix Z.
     /// @param Z The primitive nWire x nWire line impedance matrix
@@ -290,7 +290,7 @@ namespace Sgt
     /// @return The nodal admittance matrix YNode.
     /// @ingroup PowerFlowCore
     arma::Mat<Complex> ZLine2YNode(const arma::Mat<Complex>& ZLine);
-    
+
     /// @brief Calculate the GMR of a bundled conductor.
     ///
     /// @param n The number of single conductors.
@@ -299,7 +299,7 @@ namespace Sgt
     /// @return The GMR of the bundle.
     /// @ingroup PowerFlowCore
     double bundleGmr(unsigned int n, double gmr1, double d);
-    
+
     /// @brief To sequence components transform for vector.
     /// @param v A 3 x 1 vector, 0 = A, 1 = B, 2 = C.
     /// @return The transformed vector: 0 = 0, 1 = +, 2 = -.
@@ -307,7 +307,7 @@ namespace Sgt
     ///
     /// v_123 = A^-1 v_abc and M_123 = A^-1 M_abc A.
     arma::Col<Complex> toSequence(const arma::Col<Complex>& v);
-    
+
     /// @brief To sequence components transform for matrix.
     /// @param M A 3 x 3 matrix, 0 = A, 1 = B, 2 = C.
     /// @return The transformed matrix: 0 = 0, 1 = +, 2 = -.
@@ -323,7 +323,7 @@ namespace Sgt
     ///
     /// v_123 = A^-1 v_abc and M_123 = A^-1 M_abc A.
     arma::Col<Complex> fromSequence(const arma::Col<Complex>& v);
-    
+
     /// @brief From sequence components transform for matrix.
     /// @param M A 3 x 3 matrix, 0 = 0, 1 = +, 2 = -.
     /// @return The transformed matrix: 0 = A, 1 = B, 2 = C.
@@ -331,7 +331,7 @@ namespace Sgt
     ///
     /// v_123 = A^-1 v_abc and M_123 = A^-1 M_abc A.
     arma::Mat<Complex> fromSequence(const arma::Mat<Complex>& M);
-    
+
     /// @brief To sequence components transform for vector.
     /// @param v A 3 x 1 vector, 0 = A, 1 = B, 2 = C.
     /// @return The transformed vector: 0 = 0, 1 = +, 2 = -.
@@ -342,7 +342,7 @@ namespace Sgt
     /// matrix. Then v_123 = B^-1 v_abc. A positive sequence vector V+ = [V_A, V_A exp(-2 pi / 3), V_A exp(2 pi / 3)]
     /// then transforms to sqrt(3) [0, V_A, 0]; note the sqrt(3) factor.
     arma::Col<Complex> toScaledSequence(const arma::Col<Complex>& v);
-    
+
     /// @brief To sequence components transform for matrix.
     /// @param M A 3 x 3 matrix, 0 = A, 1 = B, 2 = C.
     /// @return The transformed matrix: 0 = 0, 1 = +, 2 = -.
@@ -364,7 +364,7 @@ namespace Sgt
     /// matrix. Then v_123 = B^-1 v_abc. A positive sequence vector V+ = [V_A, V_A exp(-2 pi / 3), V_A exp(2 pi / 3)]
     /// then transforms to sqrt(3) [0, V_A, 0]; note the sqrt(3) factor.
     arma::Col<Complex> fromScaledSequence(const arma::Col<Complex>& v);
-    
+
     /// @brief From sequence components transform for matrix.
     /// @param M A 3 x 3 matrix, 0 = 0, 1 = +, 2 = -.
     /// @return The transformed matrix: 0 = A, 1 = B, 2 = C.

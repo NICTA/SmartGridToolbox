@@ -50,7 +50,7 @@ namespace YAML
         static Node encode(const std::nullptr_t& from);
         static bool decode(const Node& nd, std::nullptr_t& to);
     };
-    
+
     template<> struct convert<Sgt::json>
     {
         static Node encode(const Sgt::json& from);

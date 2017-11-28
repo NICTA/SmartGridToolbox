@@ -24,13 +24,13 @@ namespace Sgt
     class TapChangerParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() const override
-            {
-                return "tap_changer";
-            }
+        virtual const char* key() const override
+        {
+            return "tap_changer";
+        }
 
         public:
-            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+        virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
     };
 }
 

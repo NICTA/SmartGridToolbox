@@ -27,14 +27,14 @@ namespace Sgt
     class CommonBranchParserPlugin : public NetworkParserPlugin
     {
         public:
-            virtual const char* key() const override
-            {
-                return "common_branch";
-            }
+        virtual const char* key() const override
+        {
+            return "common_branch";
+        }
 
-            virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
+        virtual void parse(const YAML::Node& nd, Network& netw, const ParserBase& parser) const override;
 
-            std::unique_ptr<CommonBranch> parseCommonBranch(const YAML::Node& nd, const ParserBase& parser) const;
+        std::unique_ptr<CommonBranch> parseCommonBranch(const YAML::Node& nd, const ParserBase& parser) const;
     };
 }
 

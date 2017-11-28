@@ -28,124 +28,124 @@ namespace Sgt
     {
         public:
 
-            /// @name Static member functions:
-            /// @{
+        /// @name Static member functions:
+        /// @{
 
-            static const std::string& sComponentType();
+        static const std::string& sComponentType();
 
-            /// @}
+        /// @}
 
-            /// @name Lifecycle.
-            /// @{
+        /// @name Lifecycle.
+        /// @{
 
-            virtual ~DcPowerSourceAbc() = default;
+        virtual ~DcPowerSourceAbc() = default;
 
-            /// @}
+        /// @}
 
-            /// @name DC Power.
-            /// @{
+        /// @name DC Power.
+        /// @{
 
-            /// @brief Requested DC power. +ve = generation.
-            virtual double requestedPDc() const = 0;
-            
-            /// @brief Actual DC power. +ve = generation.
-            double actualPDc() const
-            {
-                return actualPDc_;
-            }
+        /// @brief Requested DC power. +ve = generation.
+        virtual double requestedPDc() const = 0;
 
-            /// @brief Set actual DC power. +ve = generation.
-            ///
-            /// Normally only called by inverter.
-            void setActualPDc(double actualPDc);
+        /// @brief Actual DC power. +ve = generation.
+        double actualPDc() const
+        {
+            return actualPDc_;
+        }
 
-            /// @}
+        /// @brief Set actual DC power. +ve = generation.
+        ///
+        /// Normally only called by inverter.
+        void setActualPDc(double actualPDc);
 
-            /// @name Events.
-            /// @{
+        /// @}
 
-            /// @brief Event triggered when the DC power changes.
-            virtual const Event& dcPowerChanged() const
-            {
-                return dcPowerChanged_;
-            }
+        /// @name Events.
+        /// @{
 
-            /// @}
+        /// @brief Event triggered when the DC power changes.
+        virtual const Event& dcPowerChanged() const
+        {
+            return dcPowerChanged_;
+        }
+
+        /// @}
 
         private:
 
-            double actualPDc_;
-            Event dcPowerChanged_{std::string(componentType()) + ": DC power changed"};
+        double actualPDc_;
+        Event dcPowerChanged_{std::string(componentType()) + ": DC power changed"};
     };
 
     class GenericDcPowerSource : public DcPowerSourceAbc
     {
         public:
 
-            /// @name Static member functions:
-            /// @{
+        /// @name Static member functions:
+        /// @{
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("generic_dc_power_source");
-                return result;
-            }
+        static const std::string& sComponentType()
+        {
+            static std::string result("generic_dc_power_source");
+            return result;
+        }
 
-            /// @}
+        /// @}
 
-            /// @name Lifecycle
-            /// @{
+        /// @name Lifecycle
+        /// @{
 
-            GenericDcPowerSource(const std::string& id) : Component(id), requestedPDc_(0.0) {}
+        GenericDcPowerSource(const std::string& id) : Component(id), requestedPDc_(0.0) {}
 
-            /// @}
+        /// @}
 
-            /// @name Component virtual overridden member functions.
-            /// @{
+        /// @name Component virtual overridden member functions.
+        /// @{
 
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
 
-            virtual json toJson() const override;
+        virtual json toJson() const override;
 
-            /// @}
+        /// @}
 
-            /// @name SimComponent virtual overridden member functions.
-            /// @{
+        /// @name SimComponent virtual overridden member functions.
+        /// @{
 
         protected:
 
-            /// @brief Reset state of the object, time will be at negative infinity.
-            
-            virtual void initializeState() override
-            {
-                requestedPDc_ = 0.0;
-                setActualPDc(0.0);
-            }
+        /// @brief Reset state of the object, time will be at negative infinity.
 
-            /// @}
+        virtual void initializeState() override
+        {
+            requestedPDc_ = 0.0;
+            setActualPDc(0.0);
+        }
+
+        /// @}
 
         public:
 
-            /// @name DC Power.
-            /// @{
+        /// @name DC Power.
+        /// @{
 
-            virtual double requestedPDc() const override
-            {
-                return requestedPDc_;
-            }
+        virtual double requestedPDc() const override
+        {
+            return requestedPDc_;
+        }
 
-            void setRequestedPDc(double requestedPDc)
-            {
-                requestedPDc_ = requestedPDc;
-            }
+        void setRequestedPDc(double requestedPDc)
+        {
+            requestedPDc_ = requestedPDc;
+        }
 
-            /// @}
+        /// @}
 
         private:
-            double requestedPDc_;
+        double requestedPDc_;
     };
 }
 

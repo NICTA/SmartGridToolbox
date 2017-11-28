@@ -34,24 +34,24 @@ namespace Sgt
     {
         public:
 
-            virtual bool solve(Network& netw) override;
+        virtual bool solve(Network& netw) override;
 
         private:
 
-            bool solveForIsland(int islandIdx);
+        bool solveForIsland(int islandIdx);
 
         public:
 
-            double tol_{1e-8};
-            unsigned int maxiter_{100};
+        double tol_{1e-8};
+        unsigned int maxiter_{100};
 
         private:
 
-            Network* netw_;
-            std::unique_ptr<PowerFlowModel> mod_;
+        Network* netw_;
+        std::unique_ptr<PowerFlowModel> mod_;
 
-            arma::SpMat<double> G_;   ///< Real part of Y matrix.
-            arma::SpMat<double> B_;   ///< Imag part of Y matrix.
+        arma::SpMat<double> G_;   ///< Real part of Y matrix.
+        arma::SpMat<double> B_;   ///< Imag part of Y matrix.
     };
 }
 

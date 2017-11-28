@@ -44,136 +44,136 @@ namespace Sgt
     class TimeSeriesBase
     {
         public:
-            virtual ~TimeSeriesBase() = default;
+        virtual ~TimeSeriesBase() = default;
     };
 
     /// @brief Base class for time series objects: functions of time.
     /// @ingroup SimCore
     template<typename T, typename V>
-    class TimeSeries : public TimeSeriesBase
+        class TimeSeries : public TimeSeriesBase
     {
         public:
-            using TimeTipe = T;
-            using ValType = V;
+        using TimeTipe = T;
+        using ValType = V;
 
-            virtual V value(const T& t) const = 0;
+        virtual V value(const T& t) const = 0;
     };
 
     /// @brief Time series for a constant function of time. 
     /// @ingroup SimCore
     template<typename T, typename V>
-    class ConstTimeSeries : public TimeSeries<T, V>
+        class ConstTimeSeries : public TimeSeries<T, V>
     {
         public:
-            ConstTimeSeries(const V& val) {val_ = val;}
+        ConstTimeSeries(const V& val) {val_ = val;}
 
-            virtual V value(const T& t) const {return val_;}
+        virtual V value(const T& t) const {return val_;}
 
         private:
-            V val_;
+        V val_;
     };
 
     /// @brief Base class for TimeSeries object that stores a time/value table.  
     /// @ingroup SimCore
     template<typename T, typename V>
-    class DataTimeSeries : public TimeSeries<T, V>
+        class DataTimeSeries : public TimeSeries<T, V>
     {
         public:
-            DataTimeSeries(const V& defaultV) : defaultV_(defaultV) {}
+        DataTimeSeries(const V& defaultV) : defaultV_(defaultV) {}
 
-            virtual void addPoint(const T& t, const V& v) {points_[t] = v;}
+        virtual void addPoint(const T& t, const V& v) {points_[t] = v;}
 
-            auto begin() const {return points_.begin();};
-            auto end() const {return points_.end();};
-            auto rbegin() const {return points_.rbegin();};
-            auto rend() const {return points_.rend();};
+        auto begin() const {return points_.begin();};
+        auto end() const {return points_.end();};
+        auto rbegin() const {return points_.rbegin();};
+        auto rend() const {return points_.rend();};
 
-            auto upperBound(const T& t) const {return points_.upper_bound(t);}
-            auto lowerBound(const T& t) const {return points_.lower_bound(t);}
+        auto upperBound(const T& t) const {return points_.upper_bound(t);}
+        auto lowerBound(const T& t) const {return points_.lower_bound(t);}
 
-            void removePoint(const typename std::map<T, V>::const_iterator& it) {points_.erase(it);}
-            void removePoints(const typename std::map<T, V>::const_iterator& a,
-                    const typename std::map<T, V>::const_iterator& b) {points_.erase(a, b);}
+        void removePoint(const typename std::map<T, V>::const_iterator& it) {points_.erase(it);}
+        void removePoints(const typename std::map<T, V>::const_iterator& a,
+                const typename std::map<T, V>::const_iterator& b) {points_.erase(a, b);}
 
         protected:
-            std::map<T, V> points_;
-            V defaultV_;
+        std::map<T, V> points_;
+        V defaultV_;
     };
 
     /// @brief TimeSeries that changes in a stepwise manner between tabulated times. 
     /// @ingroup SimCore
     template<typename T, typename V>
-    class StepwiseTimeSeries : public DataTimeSeries<T, V>
+        class StepwiseTimeSeries : public DataTimeSeries<T, V>
     {
         protected:
-            using DataTimeSeries<T, V>::points_;
-            using DataTimeSeries<T, V>::defaultV_;
+        using DataTimeSeries<T, V>::points_;
+        using DataTimeSeries<T, V>::defaultV_;
 
         public:
-            StepwiseTimeSeries(const V& defaultV) : DataTimeSeries<T, V>(defaultV) {}
+        StepwiseTimeSeries(const V& defaultV) : DataTimeSeries<T, V>(defaultV) {}
 
-            virtual V value(const T& t) const override
-            {
-                return (points_.size() == 0 || t < points_.begin()->first || t > points_.rbegin()->first)
-                    ? defaultV_
-                    : (--points_.upper_bound(t))->second; // Highest point <= t.
-            }
+        virtual V value(const T& t) const override
+        {
+            return (points_.size() == 0 || t < points_.begin()->first || t > points_.rbegin()->first)
+                ? defaultV_
+                : (--points_.upper_bound(t))->second; // Highest point <= t.
+        }
     };
 
     /// @brief TimeSeries that uses linear interpolation between tabulated times.
     /// @ingroup SimCore
     template<typename T, typename V>
-    class LerpTimeSeries : public DataTimeSeries<T, V>
+        class LerpTimeSeries : public DataTimeSeries<T, V>
     {
         protected:
-            using DataTimeSeries<T, V>::points_;
-            using DataTimeSeries<T, V>::defaultV_;
+        using DataTimeSeries<T, V>::points_;
+        using DataTimeSeries<T, V>::defaultV_;
 
         public:
-            LerpTimeSeries(const V& defaultV) : DataTimeSeries<T, V>(defaultV) {}
+        LerpTimeSeries(const V& defaultV) : DataTimeSeries<T, V>(defaultV) {}
 
-            virtual V value(const T& t) const override
+        virtual V value(const T& t) const override
+        {
+            if (points_.size() == 0 || t < points_.begin()->first || t > points_.rbegin()->first) return defaultV_;
+
+            auto pos2 = points_.upper_bound(t);
+            // pos2 -> first point > s. It can't be begin, but could be end (if t == last point).
+            if (pos2 == points_.end())
             {
-                if (points_.size() == 0 || t < points_.begin()->first || t > points_.rbegin()->first) return defaultV_;
-
-                auto pos2 = points_.upper_bound(t);
-                // pos2 -> first point > s. It can't be begin, but could be end (if t == last point).
-                if (pos2 == points_.end())
-                {
-                    return points_.rbegin()->second;
-                }
-                else
-                {
-                    // We now know that t is strictly inside the range.
-                    auto pos1 = pos2; --pos1;
-                    return pos1->second + (pos2->second - pos1->second) * TsTraits<T>::toDouble(t - pos1->first) /
-                        TsTraits<T>::toDouble(pos2->first - pos1->first);
-                }
+                return points_.rbegin()->second;
             }
+            else
+            {
+                // We now know that t is strictly inside the range.
+                auto pos1 = pos2; --pos1;
+                return pos1->second + (pos2->second - pos1->second) * TsTraits<T>::toDouble(t - pos1->first) /
+                    TsTraits<T>::toDouble(pos2->first - pos1->first);
+            }
+        }
     };
 
     /// @brief TimeSeries that uses a std::function to calculate values.
     /// @ingroup SimCore
     template<typename T, typename V>
-    class FunctionTimeSeries : public TimeSeries<T, V>
+        class FunctionTimeSeries : public TimeSeries<T, V>
     {
         public:
-            FunctionTimeSeries<T, V>(const std::function<V (T)>& func) :
-                func_(func)
-            {
-                // Empty.
-            }
+        FunctionTimeSeries<T, V>(const std::function<V (T)>& func) :
+            func_(func)
+        {
+            // Empty.
+        }
 
-            virtual V value(const T& t) const override
-            {
-                return func_(t);
-            }
+        virtual V value(const T& t) const override
+        {
+            return func_(t);
+        }
 
         private:
 
-            std::function<V (T)> func_;
+        std::function<V (T)> func_;
     };
-    
+
     template<typename T> using TimeSeriesPtr = ComponentPtr<TimeSeriesBase, T>;
     template<typename T> using ConstTimeSeriesPtr = ConstComponentPtr<TimeSeriesBase, T>;
 }

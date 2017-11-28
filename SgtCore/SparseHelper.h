@@ -27,60 +27,60 @@ namespace Sgt
     {
         public:
 
-            SparseHelper(arma::uword nRow, arma::uword nCol, bool sort = true, bool add = true, 
-                    bool checkZeros = false, unsigned int nBatch = (1 << 16)) :
-                locs_(2, nBatch, arma::fill::none),
-                vals_(nBatch, arma::fill::none),
-                sort_(sort),
-                add_(add),
-                checkZeros_(checkZeros),
-                m_(nRow, nCol)
-            {
-                // Empty.
-            }
+        SparseHelper(arma::uword nRow, arma::uword nCol, bool sort = true, bool add = true, 
+                bool checkZeros = false, unsigned int nBatch = (1 << 16)) :
+            locs_(2, nBatch, arma::fill::none),
+            vals_(nBatch, arma::fill::none),
+            sort_(sort),
+            add_(add),
+            checkZeros_(checkZeros),
+            m_(nRow, nCol)
+        {
+            // Empty.
+        }
 
-            void insert(arma::uword iRow, arma::uword iCol, const T& x)
-            {
-                if (nWaiting_ == vals_.size())
-                {
-                    flush();
-                }
-
-                locs_(0, nWaiting_) = iRow;
-                locs_(1, nWaiting_) = iCol;
-                vals_(nWaiting_) = x;
-                ++nWaiting_;
-            }
-            
-            arma::SpMat<T> get()
+        void insert(arma::uword iRow, arma::uword iCol, const T& x)
+        {
+            if (nWaiting_ == vals_.size())
             {
                 flush();
-                return std::move(m_); // Should apply move constructor.
             }
+
+            locs_(0, nWaiting_) = iRow;
+            locs_(1, nWaiting_) = iCol;
+            vals_(nWaiting_) = x;
+            ++nWaiting_;
+        }
+
+        arma::SpMat<T> get()
+        {
+            flush();
+            return std::move(m_); // Should apply move constructor.
+        }
 
         private:
 
-            void flush()
+        void flush()
+        {
+            if (nWaiting_ > 0)
             {
-                if (nWaiting_ > 0)
-                {
-                    arma::span sp1(0, 1);
-                    arma::span sp2(0, nWaiting_ - 1);
-                    m_ += arma::SpMat<T>(add_, locs_(sp1, sp2), vals_(sp2), m_.n_rows, m_.n_cols, sort_, checkZeros_);
-                    nWaiting_ = 0;
-                }
+                arma::span sp1(0, 1);
+                arma::span sp2(0, nWaiting_ - 1);
+                m_ += arma::SpMat<T>(add_, locs_(sp1, sp2), vals_(sp2), m_.n_rows, m_.n_cols, sort_, checkZeros_);
+                nWaiting_ = 0;
             }
+        }
 
 
         private:
 
-            arma::uword nWaiting_{0};
-            arma::Mat<arma::uword> locs_;
-            arma::Col<T> vals_;
-            bool sort_;
-            bool add_;
-            bool checkZeros_;
-            arma::SpMat<T> m_;
+        arma::uword nWaiting_{0};
+        arma::Mat<arma::uword> locs_;
+        arma::Col<T> vals_;
+        bool sort_;
+        bool add_;
+        bool checkZeros_;
+        arma::SpMat<T> m_;
     };
 }
 

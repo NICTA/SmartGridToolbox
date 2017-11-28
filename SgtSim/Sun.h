@@ -36,7 +36,7 @@ namespace Sgt
     /// @return Magnitude of direct irradiance vector.
     /// See http://www.pveducation.org/pvcdrom/properties-of-sunlight/air-mass
     double directIrradianceMag(const SphericalAngles& angs, double altitudeMeters = 0.0);
-    
+
     /// @brief Horizontal clear sky diffuse irradiance, given direct irradiance.
     /// @param directIrradianceMag Magnitude of direct irradiance, W/m^2.
     /// @return Horizontal diffuse irradiance.
@@ -46,7 +46,7 @@ namespace Sgt
         // See http://www.pveducation.org/pvcdrom/properties-of-sunlight/air-mass
         return 0.1 * directIrradianceMag;
     }
-    
+
     /// @brief Ground reflected irradiance, given direct irradiance.
     /// @param directIrradianceMag Magnitude of direct irradiance, W/m^2.
     /// @return Ground reflected irradiance.

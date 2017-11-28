@@ -25,23 +25,23 @@ namespace Sgt
     class Stopwatch
     {
         public:
-            Stopwatch() : isRunning_(false), wallDur_(std::chrono::duration<double>::zero()) {}
+        Stopwatch() : isRunning_(false), wallDur_(std::chrono::duration<double>::zero()) {}
 
-            void start();
-            void stop();
-            void reset();
-            double wallSeconds() const;
-            double cpuSeconds() const;
-            bool isRunning() const {return isRunning_;}
+        void start();
+        void stop();
+        void reset();
+        double wallSeconds() const;
+        double cpuSeconds() const;
+        bool isRunning() const {return isRunning_;}
 
         private:
-            bool isRunning_;
+        bool isRunning_;
 
-            std::chrono::time_point<std::chrono::system_clock> wallStart_;
-            std::chrono::duration<double> wallDur_;
+        std::chrono::time_point<std::chrono::system_clock> wallStart_;
+        std::chrono::duration<double> wallDur_;
 
-            std::clock_t cpuStart_;
-            double cpuDur_;
+        std::clock_t cpuStart_;
+        double cpuDur_;
     };
 }
 

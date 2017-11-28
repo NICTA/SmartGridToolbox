@@ -26,13 +26,13 @@ namespace Sgt
     class TimeSeriesParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() const override
-            {
-                return "time_series";
-            }
+        virtual const char* key() const override
+        {
+            return "time_series";
+        }
 
         public:
-            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+        virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
     };
 }
 

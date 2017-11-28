@@ -36,41 +36,41 @@ namespace Sgt
     {
         public:
 
-            template<typename T> T expand(const YAML::Node& nd) const
-            {
-                return YAML::Load(expandString(nd2Str(nd))).as<T>();
-            }
+        template<typename T> T expand(const YAML::Node& nd) const
+        {
+            return YAML::Load(expandString(nd2Str(nd))).as<T>();
+        }
 
-            template<typename T> Parser<T> subParser() const;
-
-        protected:
-
-            struct ParserLoop
-            {
-                std::string name_;
-                int i_; // The number associated with the current iteration, starts are init and increments by stride.
-                int upper_;
-                int stride_;
-                YAML::Node body_;
-            };
+        template<typename T> Parser<T> subParser() const;
 
         protected:
 
-            ParserLoop& parseLoop(const YAML::Node& nd);
-            void parseLogging(const YAML::Node& nd);
+        struct ParserLoop
+        {
+            std::string name_;
+            int i_; // The number associated with the current iteration, starts are init and increments by stride.
+            int upper_;
+            int stride_;
+            YAML::Node body_;
+        };
+
+        protected:
+
+        ParserLoop& parseLoop(const YAML::Node& nd);
+        void parseLogging(const YAML::Node& nd);
 
         private:
 
-            std::string expandString(const std::string& str) const;
-            std::string expandExpression(const std::smatch& m) const;
-            std::string expandMathExpressionBody(const std::string& str) const;
-            std::string expandLoopOrParameterExpressionBody(const std::string& str1, const std::string& str2) const;
-            std::string nd2Str(const YAML::Node& nd) const;
+        std::string expandString(const std::string& str) const;
+        std::string expandExpression(const std::smatch& m) const;
+        std::string expandMathExpressionBody(const std::string& str) const;
+        std::string expandLoopOrParameterExpressionBody(const std::string& str1, const std::string& str2) const;
+        std::string nd2Str(const YAML::Node& nd) const;
 
         protected:
 
-            std::map<std::string, YAML::Node> parameters_;
-            std::vector<std::unique_ptr<ParserLoop>> loops_;
+        std::map<std::string, YAML::Node> parameters_;
+        std::vector<std::unique_ptr<ParserLoop>> loops_;
     };
 
     /// @brief A plugin to parse YAML into an object.
@@ -78,16 +78,16 @@ namespace Sgt
     template<typename T> class ParserPlugin
     {
         public:
-            virtual ~ParserPlugin() = default;
-            virtual const char* key() const {return "ERROR";}
-            virtual void parse(const YAML::Node& nd, T& into, const ParserBase& parser) const
-            {
-                // Empty.
-            }
-            virtual void postParse(const YAML::Node& nd, T& into, const ParserBase& parser) const
-            {
-                // Empty.
-            }
+        virtual ~ParserPlugin() = default;
+        virtual const char* key() const {return "ERROR";}
+        virtual void parse(const YAML::Node& nd, T& into, const ParserBase& parser) const
+        {
+            // Empty.
+        }
+        virtual void postParse(const YAML::Node& nd, T& into, const ParserBase& parser) const
+        {
+            // Empty.
+        }
     };
 
     template<typename T> class Parser;
@@ -98,92 +98,92 @@ namespace Sgt
     template<typename T> class Parser : public ParserBase
     {
         public:
-            Parser()
-            {
-                registerParserPlugins(*this);
-            }
+        Parser()
+        {
+            registerParserPlugins(*this);
+        }
 
-            template<typename PluginType> void registerParserPlugin()
-            {
-                auto plugin = std::make_unique<PluginType>();
-                plugins_[plugin->key()] = std::move(plugin);
-            }
+        template<typename PluginType> void registerParserPlugin()
+        {
+            auto plugin = std::make_unique<PluginType>();
+            plugins_[plugin->key()] = std::move(plugin);
+        }
 
-            void parse(const std::string& fname, T& into)
-            {
-                sgtLogMessage() << "Parsing file " << fname << "." << std::endl;
-                sgtLogIndent();
-                auto top = getTopNode(fname);
-                parse(top, into);
-                sgtLogMessage() << "Finished parsing file " << fname << "." << std::endl;
-            }
+        void parse(const std::string& fname, T& into)
+        {
+            sgtLogMessage() << "Parsing file " << fname << "." << std::endl;
+            sgtLogIndent();
+            auto top = getTopNode(fname);
+            parse(top, into);
+            sgtLogMessage() << "Finished parsing file " << fname << "." << std::endl;
+        }
 
-            void parse(const YAML::Node& node, T& into)
+        void parse(const YAML::Node& node, T& into)
+        {
+            for (const auto& subnode1 : node)
             {
-                for (const auto& subnode1 : node)
+                for (const auto& subnode : subnode1)
                 {
-                    for (const auto& subnode : subnode1)
-                    {
-                        // Normally, there will be only one map per list item, but it is OK to have more.
-                        // The issue is that maps have no implied ordering.
-                        std::string nodeType = subnode.first.as<std::string>();
-                        const YAML::Node& nodeVal = subnode.second;
+                    // Normally, there will be only one map per list item, but it is OK to have more.
+                    // The issue is that maps have no implied ordering.
+                    std::string nodeType = subnode.first.as<std::string>();
+                    const YAML::Node& nodeVal = subnode.second;
 
-                        if (nodeType == "parameters")
+                    if (nodeType == "parameters")
+                    {
+                        for (auto& nd : nodeVal)
                         {
-                            for (auto& nd : nodeVal)
-                            {
-                                std::string key = nd.first.as<std::string>();
-                                auto val = nd.second;
-                                parameters_[key] = val;
-                            }
+                            std::string key = nd.first.as<std::string>();
+                            auto val = nd.second;
+                            parameters_[key] = val;
                         }
-                        else if (nodeType == "loop")
+                    }
+                    else if (nodeType == "loop")
+                    {
+                        for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_)
                         {
-                            for (auto& l = parseLoop(nodeVal); l.i_ < l.upper_; l.i_ += l.stride_)
-                            {
-                                sgtLogDebug(LogLevel::VERBOSE) << "Loop " << l.name_ << " : " << l.i_
-                                    << " (upper = " << l.upper_ << ")" << std::endl;
-                                sgtLogIndent();
-                                parse(l.body_, into);
-                            }
-                            loops_.pop_back();
+                            sgtLogDebug(LogLevel::VERBOSE) << "Loop " << l.name_ << " : " << l.i_
+                                << " (upper = " << l.upper_ << ")" << std::endl;
+                            sgtLogIndent();
+                            parse(l.body_, into);
                         }
-                        else if (nodeType == "include")
+                        loops_.pop_back();
+                    }
+                    else if (nodeType == "include")
+                    {
+                        std::string fname = nodeVal.as<std::string>();
+                        auto content = getTopNode(fname);
+                        parse(content, into);
+                    }
+                    else if (nodeType == "logging")
+                    {
+                        parseLogging(nodeVal);
+                    }
+                    else
+                    {
+                        sgtLogMessage(LogLevel::VERBOSE) << "Parsing plugin " <<  nodeType << "." << std::endl;
+                        sgtLogIndent();
+                        auto it = plugins_.find(nodeType);
+                        if (it == plugins_.end())
                         {
-                            std::string fname = nodeVal.as<std::string>();
-                            auto content = getTopNode(fname);
-                            parse(content, into);
-                        }
-                        else if (nodeType == "logging")
-                        {
-                            parseLogging(nodeVal);
+                            sgtLogWarning() << "I don't know how to parse plugin " << nodeType << std::endl;
                         }
                         else
                         {
-                            sgtLogMessage(LogLevel::VERBOSE) << "Parsing plugin " <<  nodeType << "." << std::endl;
-                            sgtLogIndent();
-                            auto it = plugins_.find(nodeType);
-                            if (it == plugins_.end())
-                            {
-                                sgtLogWarning() << "I don't know how to parse plugin " << nodeType << std::endl;
-                            }
-                            else
-                            {
-                                it->second->parse(nodeVal, into, *this);
-                            }
-                            sgtLogMessage(LogLevel::VERBOSE) << "Finished parsing plugin " <<  nodeType << "." 
-                                << std::endl;
+                            it->second->parse(nodeVal, into, *this);
                         }
+                        sgtLogMessage(LogLevel::VERBOSE) << "Finished parsing plugin " <<  nodeType << "." 
+                            << std::endl;
                     }
                 }
             }
+        }
 
         private:
 
-            std::map<std::string, std::unique_ptr<ParserPlugin<T>>> plugins_;
+        std::map<std::string, std::unique_ptr<ParserPlugin<T>>> plugins_;
     };
-            
+
     template<typename T> Parser<T> ParserBase::subParser() const
     {
         Parser<T> result;

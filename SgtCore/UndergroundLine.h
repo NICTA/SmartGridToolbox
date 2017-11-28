@@ -37,87 +37,87 @@ namespace Sgt
         /// @name Static member functions:
         /// @{
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("underground_line");
-                return result;
-            }
+        static const std::string& sComponentType()
+        {
+            static std::string result("underground_line");
+            return result;
+        }
 
         /// @}
 
         /// @name Lifecycle:
         /// @{
 
-            /// @brief Constructor.
-            UndergroundLine(const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
-                    const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, 
-                    double gmrNeut, double resPerLNeut, double freq, double rhoEarth);
+        /// @brief Constructor.
+        UndergroundLine(const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
+                const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, 
+                double gmrNeut, double resPerLNeut, double freq, double rhoEarth);
 
-            virtual void validate() = 0; ///< Calcuate all cached quantities.
+        virtual void validate() = 0; ///< Calcuate all cached quantities.
 
         /// @}
 
         /// @name Component virtual overridden member functions.
         /// @{
 
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
 
-            // virtual json toJson() const override; // TODO
+        // virtual json toJson() const override; // TODO
 
         /// @}
 
         /// @name Overridden from BranchAbc:
         /// @{
 
-            virtual arma::Mat<Complex> inServiceY() const override
-            {
-                return YNode_;
-            }
+        virtual arma::Mat<Complex> inServiceY() const override
+        {
+            return YNode_;
+        }
 
         /// @}
 
         /// @name UndergroundLine specific member functions
         /// @{
 
-            /// Primative line impedance matrix (before Kron).
-            const arma::Mat<Complex>& ZPrim() const
-            {
-                return ZPrim_;
-            }
+        /// Primative line impedance matrix (before Kron).
+        const arma::Mat<Complex>& ZPrim() const
+        {
+            return ZPrim_;
+        }
 
-            /// Phase line impedance matrix (after Kron).
-            const arma::Mat<Complex>& ZPhase() const
-            {
-                return ZPhase_;
-            }
+        /// Phase line impedance matrix (after Kron).
+        const arma::Mat<Complex>& ZPhase() const
+        {
+            return ZPhase_;
+        }
 
         /// @}
 
         protected:
 
-            // Line Parameters:
+        // Line Parameters:
 
-            double L_; ///< Line length.
-            bool hasNeutral_{false}; ///< Is there a separate (unshielded) neutral wire.
-            arma::Mat<double> phaseDist_; ///< Distance between phases (possibly including neutral).
+        double L_; ///< Line length.
+        bool hasNeutral_{false}; ///< Is there a separate (unshielded) neutral wire.
+        arma::Mat<double> phaseDist_; ///< Distance between phases (possibly including neutral).
 
-            double gmrPhase_; ///< GMR of phase conductor, GMR_c in Kersting.
-            double resPerLPhase_; ///< resistance/length of phase conductor, r_c in Kersting.
-            
-            double gmrNeut_; ///< GMR of neutral conductor, GMR_n in Kersting.
-            double resPerLNeut_; ///< resistance/length of neutral conductor, r_n in Kersting.
+        double gmrPhase_; ///< GMR of phase conductor, GMR_c in Kersting.
+        double resPerLPhase_; ///< resistance/length of phase conductor, r_c in Kersting.
 
-            double freq_; ///< Frequency : TODO : link to network frequency.
-            double rhoEarth_{100.0}; ///< Earth resistivity.
+        double gmrNeut_; ///< GMR of neutral conductor, GMR_n in Kersting.
+        double resPerLNeut_; ///< resistance/length of neutral conductor, r_n in Kersting.
 
-            // Cached quantities:
+        double freq_; ///< Frequency : TODO : link to network frequency.
+        double rhoEarth_{100.0}; ///< Earth resistivity.
 
-            arma::Mat<Complex> ZPrim_; ///< Primative line impedance matrix.
-            arma::Mat<Complex> ZPhase_; ///< Phase line impedance matrix.
-            arma::Mat<Complex> YNode_; ///< Nodal admittance matrix.
+        // Cached quantities:
+
+        arma::Mat<Complex> ZPrim_; ///< Primative line impedance matrix.
+        arma::Mat<Complex> ZPhase_; ///< Phase line impedance matrix.
+        arma::Mat<Complex> YNode_; ///< Nodal admittance matrix.
     };
 
     /// @brief Underground line with stranded shielding.
@@ -125,21 +125,21 @@ namespace Sgt
     class UndergroundLineStrandedShield : public UndergroundLine
     {
         public:
-            
-            UndergroundLineStrandedShield(
-                    const std::string& id, const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
-                    const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, 
-                    double gmrNeut, double resPerLNeut, double freq, double rhoEarth, double gmrConcStrand,
-                    double resPerLConcStrand, int nConcStrands, double rConc);
-            
-            virtual void validate() override; ///< Calcuate all cached quantities.
+
+        UndergroundLineStrandedShield(
+                const std::string& id, const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
+                const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase, 
+                double gmrNeut, double resPerLNeut, double freq, double rhoEarth, double gmrConcStrand,
+                double resPerLConcStrand, int nConcStrands, double rConc);
+
+        virtual void validate() override; ///< Calcuate all cached quantities.
 
         private:
 
-            double gmrConcStrand_; ///< GMR of concentric neutral strand, GMR_s in Kersting.
-            double resPerLConcStrand_; ///< resistance/length of concentric neutral strand, r_s in Kersting.
-            int nConcStrands_; ///< Number of concentric neutral strands, k in Kersting.
-            double rConc_; ///< Radius center of phase conductor to center of shield strands, R in Kersting.
+        double gmrConcStrand_; ///< GMR of concentric neutral strand, GMR_s in Kersting.
+        double resPerLConcStrand_; ///< resistance/length of concentric neutral strand, r_s in Kersting.
+        int nConcStrands_; ///< Number of concentric neutral strands, k in Kersting.
+        double rConc_; ///< Radius center of phase conductor to center of shield strands, R in Kersting.
     };
 
     /// @brief Underground line with tape shielding.
@@ -147,20 +147,20 @@ namespace Sgt
     class UndergroundLineTapeShield : public UndergroundLine
     {
         public:
-            
-            UndergroundLineTapeShield(
-                    const std::string& id, const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
-                    const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase,
-                    double gmrNeut, double resPerLNeut, double freq, double rhoEarth, double outsideRShield,
-                    double thickShield_, double resistivityShield = 1.7e-8);
-            
-            virtual void validate() override; ///< Calcuate all cached quantities.
+
+        UndergroundLineTapeShield(
+                const std::string& id, const Phases& phases0, const Phases& phases1, double L, bool hasNeutral,
+                const arma::Mat<double>& phaseDist, double gmrPhase, double resPerLPhase,
+                double gmrNeut, double resPerLNeut, double freq, double rhoEarth, double outsideRShield,
+                double thickShield_, double resistivityShield = 1.7e-8);
+
+        virtual void validate() override; ///< Calcuate all cached quantities.
 
         private:
 
-            double outsideRShield_; ///< Radius of tape shield (center to oustside of shield.
-            double thickShield_; ///< Thickness of shield.
-            double resistivityShield_; ///< Resistivity of the tape shield (@ 50 C).
+        double outsideRShield_; ///< Radius of tape shield (center to oustside of shield.
+        double thickShield_; ///< Thickness of shield.
+        double resistivityShield_; ///< Resistivity of the tape shield (@ 50 C).
     };
 }
 

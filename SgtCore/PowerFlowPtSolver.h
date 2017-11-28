@@ -37,17 +37,17 @@ namespace Sgt
     {
         public:
 
-            PowerFlowPtSolver();
-            virtual ~PowerFlowPtSolver();
+        PowerFlowPtSolver();
+        virtual ~PowerFlowPtSolver();
 
-            virtual bool solve(Network& netw) override;
-        
+        virtual bool solve(Network& netw) override;
+
         protected:
-            virtual std::unique_ptr<PowerModel> makeModel();
-        
+        virtual std::unique_ptr<PowerModel> makeModel();
+
         protected:
-            Network* sgtNetw_{nullptr};
-            std::unique_ptr<Net> ptNetw_{nullptr};
+        Network* sgtNetw_{nullptr};
+        std::unique_ptr<Net> ptNetw_{nullptr};
     };
 }
 

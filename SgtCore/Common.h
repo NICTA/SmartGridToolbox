@@ -60,24 +60,24 @@ namespace Sgt
     {
         public:
 
-            explicit StreamIndent(std::ostream& strm);
+        explicit StreamIndent(std::ostream& strm);
 
-            virtual ~StreamIndent();
+        virtual ~StreamIndent();
 
-            void reset(const std::string& ind1, const std::string& ind2);
+        void reset(const std::string& ind1, const std::string& ind2);
 
         protected:
 
-            virtual int overflow(int ch) override;
+        virtual int overflow(int ch) override;
 
         private:
 
-            std::ostream* strm_;
-            std::streambuf* destBuf_;
-            bool isFirst_;
-            bool isNewline_;
-            std::string ind1_;
-            std::string ind2_;
+        std::ostream* strm_;
+        std::streambuf* destBuf_;
+        bool isFirst_;
+        bool isNewline_;
+        std::string ind1_;
+        std::string ind2_;
     };
 
     /// @brief Logging object.
@@ -90,22 +90,22 @@ namespace Sgt
 
         public:
 
-            std::ostream& message();
+        std::ostream& message();
 
-            std::ostream& warning();
+        std::ostream& warning();
 
-            std::ostream& error();
-            
-            std::ostream& debug();
+        std::ostream& error();
+
+        std::ostream& debug();
 
         private:
 
-            static std::mutex mutex_;
-            static unsigned int indentLevel_;
+        static std::mutex mutex_;
+        static unsigned int indentLevel_;
 
-            std::unique_lock<std::mutex> lock_{mutex_};
-            StreamIndent coutBuf_{std::cout};
-            StreamIndent cerrBuf_{std::cerr};
+        std::unique_lock<std::mutex> lock_{mutex_};
+        StreamIndent coutBuf_{std::cout};
+        StreamIndent cerrBuf_{std::cerr};
     };
 
     enum class LogLevel
@@ -140,23 +140,23 @@ namespace Sgt
     class LogIndent
     {
         public:
-        
-            static unsigned int defaultTabWidth;
+
+        static unsigned int defaultTabWidth;
 
         public:
 
-            LogIndent(unsigned int nInit = 1, unsigned int tabWidth = defaultTabWidth);
-            
-            ~LogIndent();
+        LogIndent(unsigned int nInit = 1, unsigned int tabWidth = defaultTabWidth);
 
-            void in(unsigned int n = 1);
+        ~LogIndent();
 
-            void out(unsigned int n = 1);
+        void in(unsigned int n = 1);
+
+        void out(unsigned int n = 1);
 
         private:
 
-            unsigned int tabWidth_{4};
-            unsigned int myIndentLevel_{0};
+        unsigned int tabWidth_{4};
+        unsigned int myIndentLevel_{0};
     };
 
     // Debug macro.
@@ -257,7 +257,7 @@ namespace Sgt
 
     /// @addtogroup Utilities
     /// @{
-    
+
     using Complex = std::complex<double>;
 
     inline Complex polar(double m, double theta) // theta is radians.
@@ -283,12 +283,12 @@ namespace Sgt
     std::string to_string(const Complex& c);
 
     /// @}
-    
+
     /// @}
 
     /// @name Linear algebra
     /// @{
-    
+
     /// @ingroup Utilities
     inline double sumOfSquares(const arma::Col<double>& x)
     {
@@ -384,11 +384,11 @@ namespace Sgt
     class Timezone
     {
         public:
-            Timezone() = default;
-            Timezone(const std::string& s) : z(new boost::local_time::posix_time_zone(s)) {}
-            operator boost::local_time::time_zone_ptr() const {return z;};
+        Timezone() = default;
+        Timezone(const std::string& s) : z(new boost::local_time::posix_time_zone(s)) {}
+        operator boost::local_time::time_zone_ptr() const {return z;};
         private:
-            boost::local_time::time_zone_ptr z{nullptr};
+        boost::local_time::time_zone_ptr z{nullptr};
     };
 
     using TimeSpecialValues = boost::date_time::special_values;
@@ -403,16 +403,16 @@ namespace Sgt
     using minutes = boost::posix_time::minutes;
     /// @ingroup Utilities
     using hours = boost::posix_time::hours;
-    
+
     /// @ingroup Utilities
     inline double dSeconds(const Time& d)
     {
         return double(d.ticks()) / Time::ticks_per_second();
     }
-    
+
     /// @ingroup Utilities
     Time timeFromDSeconds(double dSeconds);
-    
+
     /// @ingroup Utilities
     inline Time timeFromDurationString(const std::string& durString)
     {
@@ -421,10 +421,10 @@ namespace Sgt
 
     /// @ingroup Utilities
     Time timeFromUtcTimeString(const std::string& utcTimeString);
-    
+
     /// @ingroup Utilities
     std::string utcTimeString(const Time& t);
-    
+
     /// @ingroup Utilities
     Time timeFromLocalTimeStringAndZone(const std::string& localTimeString, Timezone zone);
 
@@ -432,37 +432,37 @@ namespace Sgt
     std::string localTimeString(const Time& t, Timezone zone);
 
     /// @}
-    
+
     /// @name Boost ptime and time_t access
     /// @brief Useful only in a few select cases, e.g. involving parsing.
     ///
     /// Not part of the normal treatment of time points!
     /// @{
-    
+
     /// @ingroup Utilities
     Time timeFromUtcPtime(const boost::posix_time::ptime& utcPtime);
-    
+
     /// @ingroup Utilities
     boost::posix_time::ptime utcPtime(const Time& t);
-    
+
     /// @ingroup Utilities
     Time timeFromLocalPtime(const boost::posix_time::ptime& localPtime, Timezone zone);
 
     /// @ingroup Utilities
     boost::posix_time::ptime localPtime(const Time& t);
-    
+
     /// @ingroup Utilities
     inline Time timeFromUtcTimeT(std::time_t timeT)
     {
         return timeFromUtcPtime(boost::posix_time::from_time_t(timeT));
     }
-    
+
     /// @ingroup Utilities
     inline std::time_t utcTimeT(const Time& t)
     {
         // return boost::posix_time::to_time_t(utcPtime(t));
         // Issue with e.g. Ubuntu Trusty. Replace with custom code (essentially copy-pasted from boost itself).
-        
+
         auto dur = utcPtime(t) - boost::posix_time::ptime(boost::gregorian::date(1970,1,1));
         return std::time_t(dur.total_seconds()); 
     }
@@ -487,7 +487,7 @@ namespace Sgt
 
     /// @name Constants
     /// @{
-    
+
     constexpr double pi = 3.141592653589793238462643383279502884;
     constexpr double negInfinity = -std::numeric_limits<double>::infinity(); // No guarantee, but no better option?
     constexpr double infinity = std::numeric_limits<double>::infinity();
@@ -511,7 +511,7 @@ namespace Sgt
 
     /// @}
 }
-    
+
 /// @name JSON.
 /// @{
 
@@ -523,20 +523,20 @@ namespace Sgt
     template<typename T> struct JsonTraits
     {
         private:
-            template<typename U> 
-                static auto testMember(int) -> decltype(std::declval<U>().toJson(), std::true_type());
-            template<typename> static std::false_type testMember(...);
-            using HasMember = decltype(testMember<T>(0));
+        template<typename U> 
+            static auto testMember(int) -> decltype(std::declval<U>().toJson(), std::true_type());
+        template<typename> static std::false_type testMember(...);
+        using HasMember = decltype(testMember<T>(0));
         public:
-            constexpr static bool hasMember = std::is_same<HasMember, std::true_type>::value;
+        constexpr static bool hasMember = std::is_same<HasMember, std::true_type>::value;
     };
 
     /// @brief Provide a default class conversion if a toJson() member function exists.
     template<typename T> auto to_json(json& js, const T& t)
         -> typename std::enable_if<JsonTraits<T>::hasMember, void>::type
-    {
-        js = t.toJson();
-    };
+        {
+            js = t.toJson();
+        };
 
     /// @brief Json conversion for ComponentCollection.
     template<typename T> void to_json(json& js, const ComponentCollection<T>& x)
@@ -558,7 +558,7 @@ namespace nlohmann
         {
             js = {c.real(), c.imag()};
         }
-        
+
         static void from_json(const json& js, std::complex<T>& c)
         {
             c = {js[0].get<double>(), js[1].get<double>()};
@@ -585,7 +585,7 @@ namespace nlohmann
                 js.push_back(vec(i));
             }
         }
-        
+
         static void from_json(const json& js, arma::Col<T>& vec)
         {
             arma::uword n = js.size();
@@ -596,7 +596,7 @@ namespace nlohmann
             }
         }
     };
-    
+
     /// JSON conversion for armadillo matrices.
     template<typename T> struct adl_serializer<arma::Mat<T>>
     {
@@ -613,7 +613,7 @@ namespace nlohmann
                 js.push_back(row);
             }
         }
-        
+
         static void from_json(const json& js, arma::Mat<T>& mat)
         {
             arma::uword n = js.size();

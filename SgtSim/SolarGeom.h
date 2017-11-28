@@ -24,7 +24,7 @@ namespace Sgt
         double zenith;    ///< Angle in radians between directly overhead and the desired point on sphere.
         double azimuth;   ///< Direction of point in radians, angle clockwise from due north(?).
     };
-    
+
     /// @brief Convert spherical angles and magnitude to a vector.
     /// @param angs Struct containing spherical angles of the sun.
     /// @param mag Magnitude of the vector.
@@ -34,8 +34,8 @@ namespace Sgt
     {
         return {{
             mag * std::cos(angs.azimuth) * std::sin(angs.zenith),
-            mag * std::sin(angs.azimuth) * std::sin(angs.zenith),
-            mag * std::cos(angs.zenith)}};
+                mag * std::sin(angs.azimuth) * std::sin(angs.zenith),
+                mag * std::cos(angs.zenith)}};
     }
 
     /// @brief Convert spherical angles and projection to a vector.
@@ -56,7 +56,7 @@ namespace Sgt
         double skyDiffuse;
         double groundDiffuse;
     };
-    
+
     /// @brief Solar power falling on a plane, W.
     /// @param irr Irradiance struct
     /// @param planeNormal The coordinates specified by the normal of a plane.

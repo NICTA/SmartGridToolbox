@@ -24,13 +24,13 @@ namespace Sgt
     class BatteryParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() const override
-            {
-                return "battery";
-            }
+        virtual const char* key() const override
+        {
+            return "battery";
+        }
 
         public:
-            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+        virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
     };
 }
 

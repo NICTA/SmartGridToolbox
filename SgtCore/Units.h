@@ -26,12 +26,12 @@ namespace Units
     constexpr const char* cdot = u8"\u00B7";
 
     template<int L, int M, int T, int I, int Th>
-    class Dimensions
-    {
-        public:
+        class Dimensions
+        {
+            public:
             typedef Dimensions D;
 
-        public:
+            public:
             static constexpr int LDim() {return L;}
             static constexpr int MDim() {return M;}
             static constexpr int TDim() {return T;}
@@ -39,27 +39,27 @@ namespace Units
             static constexpr int ThDim() {return Th;}
 
             template<int p>
-            static constexpr auto pow() -> Dimensions<L* p, M* p, T* p, I* p, Th* p>
-            {
-                return Dimensions<L* p, M* p, T* p, I* p, Th* p>();
-            }
-    };
+                static constexpr auto pow() -> Dimensions<L* p, M* p, T* p, I* p, Th* p>
+                {
+                    return Dimensions<L* p, M* p, T* p, I* p, Th* p>();
+                }
+        };
 
     template<int LL, int ML, int TL, int IL, int ThL, int LR, int MR, int TR, int IR, int ThR>
-    static constexpr auto operator*(const Dimensions<LL, ML, TL, IL, ThL>& lhs,
-                                    const Dimensions<LR, MR, TR, IR, ThR>& rhs)
-    -> Dimensions<LL + LR, ML + MR, TL + TR, IL + IR, ThL + ThR>
-    {
-        return Dimensions<LL + LR, ML + MR, TL + TR, IL + IR, ThL + ThR>();
-    }
+        static constexpr auto operator*(const Dimensions<LL, ML, TL, IL, ThL>& lhs,
+                const Dimensions<LR, MR, TR, IR, ThR>& rhs)
+        -> Dimensions<LL + LR, ML + MR, TL + TR, IL + IR, ThL + ThR>
+        {
+            return Dimensions<LL + LR, ML + MR, TL + TR, IL + IR, ThL + ThR>();
+        }
 
     template<int LL, int ML, int TL, int IL, int ThL, int LR, int MR, int TR, int IR, int ThR>
-    static constexpr auto operator/(const Dimensions<LL, ML, TL, IL, ThL>& lhs,
-                                    const Dimensions<LR, MR, TR, IR, ThR>& rhs)
-    -> Dimensions<LL - LR, ML - MR, TL - TR, IL - IR, ThL - ThR>
-    {
-        return Dimensions<LL - LR, ML - MR, TL - TR, IL - IR, ThL - ThR>();
-    }
+        static constexpr auto operator/(const Dimensions<LL, ML, TL, IL, ThL>& lhs,
+                const Dimensions<LR, MR, TR, IR, ThR>& rhs)
+        -> Dimensions<LL - LR, ML - MR, TL - TR, IL - IR, ThL - ThR>
+        {
+            return Dimensions<LL - LR, ML - MR, TL - TR, IL - IR, ThL - ThR>();
+        }
 
     // Base dimensions.
     constexpr Dimensions<1, 0, 0, 0, 0> LDim() {return decltype(LDim())();}
@@ -79,28 +79,28 @@ namespace Units
     constexpr decltype(QDim() / LDim()) VDim() {return decltype(VDim())();}
 
     template<typename D, typename V = double>
-    class DimensionalQuantity : public D
+        class DimensionalQuantity : public D
     {
         public:
-            typedef V ValType;
+        typedef V ValType;
 
         public:
-            DimensionalQuantity(const D& dim, const V& stdVal) : stdVal_(stdVal) {}
+        DimensionalQuantity(const D& dim, const V& stdVal) : stdVal_(stdVal) {}
 
-            const V& stdVal() const {return stdVal_;}
-            V& stdVal() {return stdVal_;}
+        const V& stdVal() const {return stdVal_;}
+        V& stdVal() {return stdVal_;}
 
         private:
-            V stdVal_;
+        V stdVal_;
     };
 
     template<typename V>
-    class DimensionalQuantity<Dimensions<0, 0, 0, 0, 0>, V>
-    {
-        public:
+        class DimensionalQuantity<Dimensions<0, 0, 0, 0, 0>, V>
+        {
+            public:
             typedef V ValType;
 
-        public:
+            public:
             DimensionalQuantity(V stdVal) : stdVal_(stdVal) {}
 
             const V& stdVal() const {return stdVal_;}
@@ -109,54 +109,54 @@ namespace Units
             operator const V &() const {return stdVal_;}
             operator V &() {return stdVal_;}
 
-        private:
+            private:
             V stdVal_;
-    };
+        };
 
     template<typename D, typename V, typename V2>
-    auto operator*(const DimensionalQuantity<D, V>& q, const V2& val)
-    -> DimensionalQuantity<D, decltype(q.stdVal() * val)>
-    {
-        return {q.stdVal() * val};
-    };
+        auto operator*(const DimensionalQuantity<D, V>& q, const V2& val)
+        -> DimensionalQuantity<D, decltype(q.stdVal() * val)>
+        {
+            return {q.stdVal() * val};
+        };
 
     template<typename D, typename V, typename V2>
-    auto operator*(const V2& scalar, const DimensionalQuantity<D, V>& q)
-    -> DimensionalQuantity<D, decltype(q.stdVal() * scalar)>
-    {
-        return {q.stdVal() * scalar};
-    };
+        auto operator*(const V2& scalar, const DimensionalQuantity<D, V>& q)
+        -> DimensionalQuantity<D, decltype(q.stdVal() * scalar)>
+        {
+            return {q.stdVal() * scalar};
+        };
 
     template<typename D, typename V1, typename V2>
-    auto operator+(const DimensionalQuantity<D, V1>& lhs, const DimensionalQuantity<D, V2>& rhs)
-    -> DimensionalQuantity<D, decltype(lhs.stdVal() * rhs.stdVal())>
-    {
-        return {lhs.stdVal() + rhs.stdVal()};
-    };
+        auto operator+(const DimensionalQuantity<D, V1>& lhs, const DimensionalQuantity<D, V2>& rhs)
+        -> DimensionalQuantity<D, decltype(lhs.stdVal() * rhs.stdVal())>
+        {
+            return {lhs.stdVal() + rhs.stdVal()};
+        };
 
     template<typename D1, typename D2, typename V1, typename V2>
-    auto operator*(const DimensionalQuantity<D1, V1>& lhs, const DimensionalQuantity<D2, V2>& rhs)
-    -> DimensionalQuantity<Dimensions<D1::LDim() + D2::LDim(),
-    D1::MDim() + D2::MDim(),
-    D1::TDim() + D2::TDim(),
-    D1::IDim() + D2::IDim(),
-    D1::ThDim() + D2::ThDim()>,
-    decltype(lhs.stdVal() * rhs.stdVal())>
-    {
-        return {lhs.stdVal() * rhs.stdVal()};
-    }
+        auto operator*(const DimensionalQuantity<D1, V1>& lhs, const DimensionalQuantity<D2, V2>& rhs)
+        -> DimensionalQuantity<Dimensions<D1::LDim() + D2::LDim(),
+        D1::MDim() + D2::MDim(),
+        D1::TDim() + D2::TDim(),
+        D1::IDim() + D2::IDim(),
+        D1::ThDim() + D2::ThDim()>,
+        decltype(lhs.stdVal() * rhs.stdVal())>
+        {
+            return {lhs.stdVal() * rhs.stdVal()};
+        }
 
     template<typename V1, typename D1, typename V2, typename D2>
-    auto operator/(const DimensionalQuantity<D1, V1>& lhs, const DimensionalQuantity<D2, V2>& rhs)
-    -> DimensionalQuantity<Dimensions<D1::LDim() - D2::LDim(),
-    D1::MDim() - D2::MDim(),
-    D1::TDim() - D2::TDim(),
-    D1::IDim() - D2::IDim(),
-    D1::ThDim() - D2::ThDim()>,
-    decltype(lhs.stdVal() / rhs.stdVal())>
-    {
-        return {lhs.stdVal() / rhs.stdVal()};
-    }
+        auto operator/(const DimensionalQuantity<D1, V1>& lhs, const DimensionalQuantity<D2, V2>& rhs)
+        -> DimensionalQuantity<Dimensions<D1::LDim() - D2::LDim(),
+        D1::MDim() - D2::MDim(),
+        D1::TDim() - D2::TDim(),
+        D1::IDim() - D2::IDim(),
+        D1::ThDim() - D2::ThDim()>,
+        decltype(lhs.stdVal() / rhs.stdVal())>
+        {
+            return {lhs.stdVal() / rhs.stdVal()};
+        }
 
     template<typename V = double> using Length = DimensionalQuantity<decltype(LDim()), V>;
     template<typename V = double> using Mass = DimensionalQuantity<decltype(MDim()), V>;
@@ -165,20 +165,20 @@ namespace Units
     template<typename V = double> using Temperature = DimensionalQuantity<decltype(ThDim()), V>;
 
     template<typename D, typename V = double>
-    class Unit : public DimensionalQuantity<D, V>
+        class Unit : public DimensionalQuantity<D, V>
     {
         public:
-            Unit(const DimensionalQuantity<D, V>& q, const std::string& name) :
-                DimensionalQuantity<D, V>(q),
-                name_(name)
-            {
-                // Empty.
-            }
+        Unit(const DimensionalQuantity<D, V>& q, const std::string& name) :
+            DimensionalQuantity<D, V>(q),
+            name_(name)
+        {
+            // Empty.
+        }
 
-            const std::string& name() const {return name_;}
+        const std::string& name() const {return name_;}
 
         private:
-            std::string name_;
+        std::string name_;
     };
 
     namespace SI
@@ -194,19 +194,19 @@ namespace Units
     }
 
     template<typename D, typename V = double, typename V2 = double>
-    class UnitQuantity
-    {
-        public:
+        class UnitQuantity
+        {
+            public:
             UnitQuantity(const DimensionalQuantity<D, V>& q, const Unit<D, V2>& u) : q_(q), u_(u) {}
 
             friend std::ostream& operator<<(std::ostream& os, const UnitQuantity& uq)
             {
                 return os << (uq.q_ / uq.u_) << " " << uq.u_.name();
             }
-        private:
+            private:
             const DimensionalQuantity<D, V>& q_;
             const Unit<D, V2>& u_;
-    };
+        };
 }
 
 #endif // UNITS_DOT_H

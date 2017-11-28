@@ -28,11 +28,11 @@ namespace Sgt
     class SimBranch : virtual public SimComponent
     {
         public:
-            SimBranch(const ComponentPtr<BranchAbc>& branch) : branch_(branch) {};
-            ConstComponentPtr<BranchAbc> branch() const {return branch_;}
-            ComponentPtr<BranchAbc> branch() {return branch_;}
+        SimBranch(const ComponentPtr<BranchAbc>& branch) : branch_(branch) {};
+        ConstComponentPtr<BranchAbc> branch() const {return branch_;}
+        ComponentPtr<BranchAbc> branch() {return branch_;}
         private:
-            ComponentPtr<BranchAbc> branch_;
+        ComponentPtr<BranchAbc> branch_;
     };
 
     /// @brief Utility base class for buses in SimNetwork.
@@ -42,11 +42,11 @@ namespace Sgt
     class SimBus : virtual public SimComponent
     {
         public:
-            SimBus(const ComponentPtr<Bus>& bus) : bus_(bus) {};
-            ConstComponentPtr<Bus> bus() const {return bus_;}
-            ComponentPtr<Bus> bus() {return bus_;}
+        SimBus(const ComponentPtr<Bus>& bus) : bus_(bus) {};
+        ConstComponentPtr<Bus> bus() const {return bus_;}
+        ComponentPtr<Bus> bus() {return bus_;}
         private:
-            ComponentPtr<Bus> bus_;
+        ComponentPtr<Bus> bus_;
     };
 
     /// @brief Utility base class for gens in SimNetwork.
@@ -56,11 +56,11 @@ namespace Sgt
     class SimGen : virtual public SimComponent
     {
         public:
-            SimGen(const ComponentPtr<Gen>& gen) : gen_(gen) {};
-            ConstComponentPtr<Gen> gen() const {return gen_;}
-            ComponentPtr<Gen> gen() {return gen_;}
+        SimGen(const ComponentPtr<Gen>& gen) : gen_(gen) {};
+        ConstComponentPtr<Gen> gen() const {return gen_;}
+        ComponentPtr<Gen> gen() {return gen_;}
         private:
-            ComponentPtr<Gen> gen_;
+        ComponentPtr<Gen> gen_;
     };
 
     /// @brief Utility base class for zips in SimNetwork.
@@ -70,11 +70,11 @@ namespace Sgt
     class SimZip : virtual public SimComponent
     {
         public:
-            SimZip(const ComponentPtr<Zip>& zip) : zip_(zip) {};
-            ConstComponentPtr<Zip> zip() const {return zip_;}
-            ComponentPtr<Zip> zip() {return zip_;}
+        SimZip(const ComponentPtr<Zip>& zip) : zip_(zip) {};
+        ConstComponentPtr<Zip> zip() const {return zip_;}
+        ComponentPtr<Zip> zip() {return zip_;}
         private:
-            ComponentPtr<Zip> zip_;
+        ComponentPtr<Zip> zip_;
     };
 
     /// @brief SimNetwork : A SimComponent for an electrical network.
@@ -82,101 +82,101 @@ namespace Sgt
     {
         public:
 
-            /// @name Static member functions:
-            /// @{
+        /// @name Static member functions:
+        /// @{
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("sim_network");
-                return result;
-            }
+        static const std::string& sComponentType()
+        {
+            static std::string result("sim_network");
+            return result;
+        }
 
-            /// @}
+        /// @}
 
-            /// @name Lifecycle.
-            /// @{
+        /// @name Lifecycle.
+        /// @{
 
-            SimNetwork(const std::string& id, std::shared_ptr<Network> network);
+        SimNetwork(const std::string& id, std::shared_ptr<Network> network);
 
-            /// @}
+        /// @}
 
-            /// @name Component virtual overridden member functions.
-            /// @{
+        /// @name Component virtual overridden member functions.
+        /// @{
 
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
 
-            // virtual json toJson() const override; // TODO
+        // virtual json toJson() const override; // TODO
 
-            /// @}
+        /// @}
 
-            /// @name Network access.
-            /// @{
+        /// @name Network access.
+        /// @{
 
-            const Network& network() const
-            {
-                return *network_;
-            }
+        const Network& network() const
+        {
+            return *network_;
+        }
 
-            Network& network()
-            {
-                return *network_;
-            }
+        Network& network()
+        {
+            return *network_;
+        }
 
-            /// @}
+        /// @}
 
-            /// @brief Add a SimBranch to the SimNetwork.
-            ///
-            /// Creates dependency.
-            void addSimBranch(ConstSimComponentPtr<SimBranch> simBranch)
-            {
-                dependsOn(simBranch, false);
-            }
+        /// @brief Add a SimBranch to the SimNetwork.
+        ///
+        /// Creates dependency.
+        void addSimBranch(ConstSimComponentPtr<SimBranch> simBranch)
+        {
+            dependsOn(simBranch, false);
+        }
 
-            /// @brief Add a SimBus to the SimNetwork.
-            ///
-            /// Creates dependency.
-            void addSimBus(ConstSimComponentPtr<SimBus> simBus)
-            {
-                dependsOn(simBus, false);
-            }
+        /// @brief Add a SimBus to the SimNetwork.
+        ///
+        /// Creates dependency.
+        void addSimBus(ConstSimComponentPtr<SimBus> simBus)
+        {
+            dependsOn(simBus, false);
+        }
 
-            /// @brief Add a SimGen to the SimNetwork.
-            ///
-            /// Creates dependency.
-            void addSimGen(ConstSimComponentPtr<SimGen> simGen)
-            {
-                dependsOn(simGen, false);
-            }
+        /// @brief Add a SimGen to the SimNetwork.
+        ///
+        /// Creates dependency.
+        void addSimGen(ConstSimComponentPtr<SimGen> simGen)
+        {
+            dependsOn(simGen, false);
+        }
 
-            /// @brief Add a SimZip to the SimNetwork.
-            ///
-            /// Creates dependency.
-            void addSimZip(ConstSimComponentPtr<SimZip> simZip)
-            {
-                dependsOn(simZip, false);
-            }
+        /// @brief Add a SimZip to the SimNetwork.
+        ///
+        /// Creates dependency.
+        void addSimZip(ConstSimComponentPtr<SimZip> simZip)
+        {
+            dependsOn(simZip, false);
+        }
 
-            /// @}
+        /// @}
 
     protected:
 
-            /// @name Overridden member functions from SimComponent.
-            /// @{
+        /// @name Overridden member functions from SimComponent.
+        /// @{
 
-            virtual void initializeState() override;
+        virtual void initializeState() override;
 
-            virtual void updateState(const Time& t) override;
+        virtual void updateState(const Time& t) override;
 
-            /// @}
+        /// @}
 
     private:
 
-            std::shared_ptr<Network> network_;
-            Event networkChanged_;
-    };
+        std::shared_ptr<Network> network_;
+        Event networkChanged_;
+};
 }
 
 #endif // SIM_NETWORK_DOT_H

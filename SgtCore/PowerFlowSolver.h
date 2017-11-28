@@ -24,8 +24,8 @@ namespace Sgt
     class PowerFlowSolverInterface
     {
         public:
-            virtual ~PowerFlowSolverInterface() = default;
-            virtual bool solve(Network& netw) = 0;
+        virtual ~PowerFlowSolverInterface() = default;
+        virtual bool solve(Network& netw) = 0;
     };
 };
 

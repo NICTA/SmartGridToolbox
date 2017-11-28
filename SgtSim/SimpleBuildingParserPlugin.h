@@ -25,13 +25,13 @@ namespace Sgt
     class SimpleBuildingParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() const override
-            {
-                return "simple_building";
-            }
+        virtual const char* key() const override
+        {
+            return "simple_building";
+        }
 
         public:
-            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+        virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
     };
 }
 

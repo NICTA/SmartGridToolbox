@@ -26,95 +26,95 @@ namespace Sgt
     class TimeSeriesZip : public Heartbeat, public SimZip
     {
         public:
-            static const std::string& sComponentType()
-            {
-                static std::string result("time_series_zip");
-                return result;
-            }
+        static const std::string& sComponentType()
+        {
+            static std::string result("time_series_zip");
+            return result;
+        }
 
         public:
 
-            /// @brief Constructor.
-            ///
-            /// @param matrixElems A n x 2 matrix giving row and col indices for non-zero matrix elements. 
-            /// @param dataIdxsY Indices into time series data of const Y component. Empty or of size matrixElems.
-            /// @param dataIdxsI Indices into time series data of const I component. Empty or of size matrixElems.
-            /// @param dataIdxsS Indices into time series data of const S component. Empty or of size matrixElems.
-            TimeSeriesZip(const std::string& id, const ComponentPtr<Zip>& zip,
-                    const ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>>& series, const Time& dt,
-                    const arma::Mat<arma::uword>& matrixElems,
-                    const arma::Col<arma::uword>& dataIdxsY,
-                    const arma::Col<arma::uword>& dataIdxsI,
-                    const arma::Col<arma::uword>& dataIdxsS);
+        /// @brief Constructor.
+        ///
+        /// @param matrixElems A n x 2 matrix giving row and col indices for non-zero matrix elements. 
+        /// @param dataIdxsY Indices into time series data of const Y component. Empty or of size matrixElems.
+        /// @param dataIdxsI Indices into time series data of const I component. Empty or of size matrixElems.
+        /// @param dataIdxsS Indices into time series data of const S component. Empty or of size matrixElems.
+        TimeSeriesZip(const std::string& id, const ComponentPtr<Zip>& zip,
+                const ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>>& series, const Time& dt,
+                const arma::Mat<arma::uword>& matrixElems,
+                const arma::Col<arma::uword>& dataIdxsY,
+                const arma::Col<arma::uword>& dataIdxsI,
+                const arma::Col<arma::uword>& dataIdxsS);
 
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
 
-            double scaleFactorY() const
-            {
-                return scaleFactorY_;
-            }
-            
-            void setScaleFactorY(double scaleFactorY)
-            {
-                scaleFactorY_ = scaleFactorY;
-            }
+        double scaleFactorY() const
+        {
+            return scaleFactorY_;
+        }
 
-            double scaleFactorI() const
-            {
-                return scaleFactorI_;
-            }
-            
-            void setScaleFactorI(double scaleFactorI)
-            {
-                scaleFactorI_ = scaleFactorI;
-            }
+        void setScaleFactorY(double scaleFactorY)
+        {
+            scaleFactorY_ = scaleFactorY;
+        }
 
-            double scaleFactorS() const
-            {
-                return scaleFactorS_;
-            }
-            
-            void setScaleFactorS(double scaleFactorS)
-            {
-                scaleFactorS_ = scaleFactorS;
-            }
+        double scaleFactorI() const
+        {
+            return scaleFactorI_;
+        }
+
+        void setScaleFactorI(double scaleFactorI)
+        {
+            scaleFactorI_ = scaleFactorI;
+        }
+
+        double scaleFactorS() const
+        {
+            return scaleFactorS_;
+        }
+
+        void setScaleFactorS(double scaleFactorS)
+        {
+            scaleFactorS_ = scaleFactorS;
+        }
 
         protected:
-            virtual void updateState(const Time& t) override;
-            
-        private:
-            arma::Mat<Complex> YConst(const Time& t) const;
-            arma::Mat<Complex> YConst() const
-            {
-                return YConst(lastUpdated());
-            }
-
-            arma::Mat<Complex> IConst(const Time& t) const;
-            arma::Mat<Complex> IConst() const
-            {
-                return IConst(lastUpdated());
-            }
-
-            arma::Mat<Complex> SConst(const Time& t) const;
-            arma::Mat<Complex> SConst() const
-            {
-                return SConst(lastUpdated());
-            }
-
-            arma::Mat<Complex> mapToMat(const arma::Col<Complex>& vec) const;
+        virtual void updateState(const Time& t) override;
 
         private:
-            ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>> series_;
-            arma::Mat<arma::uword> matrixElems_;
-            arma::Col<arma::uword> dataIdxsY_;
-            arma::Col<arma::uword> dataIdxsI_;
-            arma::Col<arma::uword> dataIdxsS_;
-            double scaleFactorY_{1.0};
-            double scaleFactorI_{1.0};
-            double scaleFactorS_{1.0};
+        arma::Mat<Complex> YConst(const Time& t) const;
+        arma::Mat<Complex> YConst() const
+        {
+            return YConst(lastUpdated());
+        }
+
+        arma::Mat<Complex> IConst(const Time& t) const;
+        arma::Mat<Complex> IConst() const
+        {
+            return IConst(lastUpdated());
+        }
+
+        arma::Mat<Complex> SConst(const Time& t) const;
+        arma::Mat<Complex> SConst() const
+        {
+            return SConst(lastUpdated());
+        }
+
+        arma::Mat<Complex> mapToMat(const arma::Col<Complex>& vec) const;
+
+        private:
+        ConstTimeSeriesPtr<TimeSeries<Time, arma::Col<Complex>>> series_;
+        arma::Mat<arma::uword> matrixElems_;
+        arma::Col<arma::uword> dataIdxsY_;
+        arma::Col<arma::uword> dataIdxsI_;
+        arma::Col<arma::uword> dataIdxsS_;
+        double scaleFactorY_{1.0};
+        double scaleFactorI_{1.0};
+        double scaleFactorS_{1.0};
     };
 }
 

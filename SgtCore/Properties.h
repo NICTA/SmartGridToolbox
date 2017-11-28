@@ -33,19 +33,19 @@ namespace Sgt
     class NotGettableException : public std::logic_error
     {
         public:
-            NotGettableException() : std::logic_error("Property is not gettable") {}
+        NotGettableException() : std::logic_error("Property is not gettable") {}
     };
 
     class NotSettableException : public std::logic_error
     {
         public:
-            NotSettableException() : std::logic_error("Property is not settable") {}
+        NotSettableException() : std::logic_error("Property is not settable") {}
     };
 
     class BadTargException : public std::logic_error
     {
         public:
-            BadTargException() : std::logic_error("Target supplied to property has the wrong type") {}
+        BadTargException() : std::logic_error("Target supplied to property has the wrong type") {}
     };
 
     class HasProperties;
@@ -55,43 +55,43 @@ namespace Sgt
     class GetterAbc
     {
         public:
-            virtual ~GetterAbc() = default;
+        virtual ~GetterAbc() = default;
 
-            template<typename TargType, typename GetterRetType> GetterRetType get(const TargType& targ)
-            {
-                auto derivedThis = dynamic_cast<const Getter<GetterRetType>*>(this);
-                auto derivedTarg = dynamic_cast<const TargType*>(&targ);
-                return derivedThis->get(derivedTarg);
-            }
+        template<typename TargType, typename GetterRetType> GetterRetType get(const TargType& targ)
+        {
+            auto derivedThis = dynamic_cast<const Getter<GetterRetType>*>(this);
+            auto derivedTarg = dynamic_cast<const TargType*>(&targ);
+            return derivedThis->get(derivedTarg);
+        }
     };
 
     template<typename GetterRetType> class Getter : public GetterAbc
     {
         public:
-            virtual ~Getter() = default;
-            virtual GetterRetType get(const HasProperties& targ) const = 0;
+        virtual ~Getter() = default;
+        virtual GetterRetType get(const HasProperties& targ) const = 0;
     };
 
     template<typename TargType, typename GetterRetType> class ConcreteGetter : public Getter<GetterRetType>
     {
         public:
-            template<typename T> ConcreteGetter(T getArg) : get_(getArg)
-            {
-                // Empty.
-            }
+        template<typename T> ConcreteGetter(T getArg) : get_(getArg)
+        {
+            // Empty.
+        }
 
-            virtual GetterRetType get(const HasProperties& targ) const override
+        virtual GetterRetType get(const HasProperties& targ) const override
+        {
+            auto derived = dynamic_cast<const TargType*>(&targ);
+            if (derived == nullptr)
             {
-                auto derived = dynamic_cast<const TargType*>(&targ);
-                if (derived == nullptr)
-                {
-                    throw BadTargException();
-                }
-                return get_(*derived);
+                throw BadTargException();
             }
-            
+            return get_(*derived);
+        }
+
         private:
-            std::function<GetterRetType(const TargType&)> get_;
+        std::function<GetterRetType(const TargType&)> get_;
     };
 
     template<typename SetterArgType> class Setter;
@@ -99,88 +99,88 @@ namespace Sgt
     class SetterAbc
     {
         public:
-            virtual ~SetterAbc() = default;
+        virtual ~SetterAbc() = default;
 
-            template<typename TargType, typename SetterArgType> void set(TargType& targ, SetterArgType val)
-            {
-                auto derivedThis = dynamic_cast<const Setter<SetterArgType>*>(this);
-                auto derivedTarg = dynamic_cast<TargType*>(&targ);
-                derivedThis->set(derivedTarg, val);
-            }
+        template<typename TargType, typename SetterArgType> void set(TargType& targ, SetterArgType val)
+        {
+            auto derivedThis = dynamic_cast<const Setter<SetterArgType>*>(this);
+            auto derivedTarg = dynamic_cast<TargType*>(&targ);
+            derivedThis->set(derivedTarg, val);
+        }
     };
 
     template<typename SetterArgType> class Setter : public SetterAbc
     {
         public:
-            virtual ~Setter() = default;
-            virtual void set(HasProperties& targ, SetterArgType val) const = 0;
+        virtual ~Setter() = default;
+        virtual void set(HasProperties& targ, SetterArgType val) const = 0;
     };
 
     template<typename TargType, typename SetterArgType> class ConcreteSetter : public Setter<SetterArgType>
     {
         public:
-            template<typename T> ConcreteSetter(T setArg) : set_(setArg)
-            {
-                // Empty.
-            }
+        template<typename T> ConcreteSetter(T setArg) : set_(setArg)
+        {
+            // Empty.
+        }
 
-            virtual void set(HasProperties& targ, SetterArgType val) const override
+        virtual void set(HasProperties& targ, SetterArgType val) const override
+        {
+            auto derived = dynamic_cast<TargType*>(&targ);
+            if (derived == nullptr)
             {
-                auto derived = dynamic_cast<TargType*>(&targ);
-                if (derived == nullptr)
-                {
-                    throw BadTargException();
-                }
-                set_(*derived, val);
+                throw BadTargException();
             }
-            
+            set_(*derived, val);
+        }
+
         private:
-            std::function<void(TargType&, SetterArgType)> set_;
+        std::function<void(TargType&, SetterArgType)> set_;
     };
 
     /// @ingroup Foundation
     class PropertyAbc
     {
         public:
-            virtual ~PropertyAbc() = default;
+        virtual ~PropertyAbc() = default;
 
-            virtual bool isGettable() = 0;
+        virtual bool isGettable() = 0;
 
-            virtual const GetterAbc* getter() const
-            {
-                return getterAbc();
-            }
+        virtual const GetterAbc* getter() const
+        {
+            return getterAbc();
+        }
 
-            template<typename GetterRetType> GetterRetType getAs(const HasProperties& targ) const
-            {
-                auto derived = dynamic_cast<const Getter<GetterRetType>*>(getterAbc());
-                return derived->get(targ);
-            }
+        template<typename GetterRetType> GetterRetType getAs(const HasProperties& targ) const
+        {
+            auto derived = dynamic_cast<const Getter<GetterRetType>*>(getterAbc());
+            return derived->get(targ);
+        }
 
-            virtual bool isSettable() = 0;
-            
-            virtual const SetterAbc* setter() const
-            {
-                return setterAbc();
-            }
+        virtual bool isSettable() = 0;
 
-            template<typename SetterArgType> void setAs(HasProperties& targ, SetterArgType val) const
-            {
-                auto derived = dynamic_cast<const Setter<SetterArgType>*>(setterAbc());
-                derived->set(targ, val);
-            }
+        virtual const SetterAbc* setter() const
+        {
+            return setterAbc();
+        }
 
-            virtual std::string string(const HasProperties& targ) = 0;
+        template<typename SetterArgType> void setAs(HasProperties& targ, SetterArgType val) const
+        {
+            auto derived = dynamic_cast<const Setter<SetterArgType>*>(setterAbc());
+            derived->set(targ, val);
+        }
 
-            virtual void setFromString(HasProperties& targ, const std::string& str) = 0;
-            
-            virtual Sgt::json json(const HasProperties& targ) = 0;
+        virtual std::string string(const HasProperties& targ) = 0;
+
+        virtual void setFromString(HasProperties& targ, const std::string& str) = 0;
+
+        virtual Sgt::json json(const HasProperties& targ) = 0;
 
 
         private:
 
-            virtual const GetterAbc* getterAbc() const = 0;
-            virtual const SetterAbc* setterAbc() const = 0;
+        virtual const GetterAbc* getterAbc() const = 0;
+        virtual const SetterAbc* setterAbc() const = 0;
     };
 
     /// @brief Dynamically discoverable property.
@@ -192,89 +192,89 @@ namespace Sgt
     {
         public:
 
-            Property(std::unique_ptr<Getter<GetterRetType>> getter, 
-                    std::unique_ptr<Setter<SetterArgType>> setter) :
-                getter_(std::move(getter)),
-                setter_(std::move(setter))
-            {
-                // Empty.
-            }
+        Property(std::unique_ptr<Getter<GetterRetType>> getter, 
+                std::unique_ptr<Setter<SetterArgType>> setter) :
+            getter_(std::move(getter)),
+            setter_(std::move(setter))
+        {
+            // Empty.
+        }
 
-            virtual bool isGettable() override
-            {
-                return getter_ != nullptr;
-            }
+        virtual bool isGettable() override
+        {
+            return getter_ != nullptr;
+        }
 
-            virtual const Getter<GetterRetType>* getter() const override
-            {
-                return getter_.get();
-            }
-            
-            GetterRetType get(const HasProperties& targ) const
-            {
-                if (getter_ == nullptr)
-                {
-                    throw NotGettableException();
-                }
-                return getter_->get(targ);
-            }
+        virtual const Getter<GetterRetType>* getter() const override
+        {
+            return getter_.get();
+        }
 
-            virtual bool isSettable() override
+        GetterRetType get(const HasProperties& targ) const
+        {
+            if (getter_ == nullptr)
             {
-                return setter_ != nullptr;
+                throw NotGettableException();
             }
-            
-            virtual const Setter<SetterArgType>* setter() const override
-            {
-                return setter_.get();
-            }
+            return getter_->get(targ);
+        }
 
-            void set(HasProperties& targ, SetterArgType val) const
-            {
-                if (setter_ == nullptr)
-                {
-                    throw NotSettableException();
-                }
-                setter_->set(targ, val);
-            }
-            
-            virtual std::string string(const HasProperties& targ) override
-            {
-                return toYamlString(get(targ));
-            }
+        virtual bool isSettable() override
+        {
+            return setter_ != nullptr;
+        }
 
-            virtual void setFromString(HasProperties& targ, const std::string& str) override
-            {
-                set(targ, fromYamlString<std::decay_t<SetterArgType>>(str));
-            }
+        virtual const Setter<SetterArgType>* setter() const override
+        {
+            return setter_.get();
+        }
 
-            virtual Sgt::json json(const HasProperties& targ) override
+        void set(HasProperties& targ, SetterArgType val) const
+        {
+            if (setter_ == nullptr)
             {
-                return get(targ);
+                throw NotSettableException();
             }
+            setter_->set(targ, val);
+        }
 
-        private:
-            virtual const GetterAbc* getterAbc() const override
-            {
-                return getter_.get();
-            }
+        virtual std::string string(const HasProperties& targ) override
+        {
+            return toYamlString(get(targ));
+        }
 
-            virtual const SetterAbc* setterAbc() const override
-            {
-                return setter_.get();
-            }
+        virtual void setFromString(HasProperties& targ, const std::string& str) override
+        {
+            set(targ, fromYamlString<std::decay_t<SetterArgType>>(str));
+        }
+
+        virtual Sgt::json json(const HasProperties& targ) override
+        {
+            return get(targ);
+        }
 
         private:
-            std::unique_ptr<Getter<GetterRetType>> getter_;
-            std::unique_ptr<Setter<SetterArgType>> setter_;
+        virtual const GetterAbc* getterAbc() const override
+        {
+            return getter_.get();
+        }
+
+        virtual const SetterAbc* setterAbc() const override
+        {
+            return setter_.get();
+        }
+
+        private:
+        std::unique_ptr<Getter<GetterRetType>> getter_;
+        std::unique_ptr<Setter<SetterArgType>> setter_;
     };
 
     /// @brief A collection of properties.
     class Properties
     {
         public:
-            // Add a property with a getter.
-            template<typename TargType, typename GetterRetType, typename GA>
+        // Add a property with a getter.
+        template<typename TargType, typename GetterRetType, typename GA>
             std::shared_ptr<Property<GetterRetType, NoneType>> addGetProperty(GA ga, const std::string& name)
             {
                 auto result = std::make_shared<Property<GetterRetType, NoneType>>(
@@ -284,8 +284,8 @@ namespace Sgt
                 return result;
             }
 
-            // Add a property with a setter.
-            template<typename TargType, typename SetterArgType, typename SA>
+        // Add a property with a setter.
+        template<typename TargType, typename SetterArgType, typename SA>
             std::shared_ptr<Property<NoneType, SetterArgType>> addSetProperty(SA sa, const std::string& name)
             {
                 auto result = std::make_shared<Property<NoneType, SetterArgType>>(
@@ -295,8 +295,8 @@ namespace Sgt
                 return result;
             }
 
-            // Add a property with a getter and a setter.
-            template<typename TargType, typename GetterRetType, typename SetterArgType, typename GA, typename SA>
+        // Add a property with a getter and a setter.
+        template<typename TargType, typename GetterRetType, typename SetterArgType, typename GA, typename SA>
             std::shared_ptr<Property<GetterRetType, SetterArgType>> addGetSetProperty(
                     GA ga, SA sa, const std::string& name)
             {
@@ -307,22 +307,22 @@ namespace Sgt
                 return result;
             }
 
-            const PropertyAbc& operator[](const std::string& s) const {return *map_.at(s);}
-            PropertyAbc& operator[](const std::string& s) {return *map_.at(s);}
+        const PropertyAbc& operator[](const std::string& s) const {return *map_.at(s);}
+        PropertyAbc& operator[](const std::string& s) {return *map_.at(s);}
 
-            auto begin() {return map_.begin();}
-            auto end() {return map_.end();}
-            auto cbegin() {return map_.begin();}
-            auto cend() {return map_.end();}
-            auto rbegin() {return map_.begin();}
-            auto rend() {return map_.end();}
+        auto begin() {return map_.begin();}
+        auto end() {return map_.end();}
+        auto cbegin() {return map_.begin();}
+        auto cend() {return map_.end();}
+        auto rbegin() {return map_.begin();}
+        auto rend() {return map_.end();}
 
-            template<typename ...Args> auto insert(Args... args) {return map_.insert(std::forward<Args>(args)...);}
+        template<typename ...Args> auto insert(Args... args) {return map_.insert(std::forward<Args>(args)...);}
 
-            void remove(const std::string& key) {map_.erase(key);}
+        void remove(const std::string& key) {map_.erase(key);}
 
         private:
-            std::map<std::string, std::shared_ptr<PropertyAbc>> map_;
+        std::map<std::string, std::shared_ptr<PropertyAbc>> map_;
     };
 
     /// @brief Abstract base class for an object with properties.
@@ -330,14 +330,14 @@ namespace Sgt
     class HasProperties
     {
         public:
-            virtual ~HasProperties() = default;
-            virtual Properties& properties() const = 0;
+        virtual ~HasProperties() = default;
+        virtual Properties& properties() const = 0;
     };
 }
 
 #define SGT_PROPS_INIT(Type) \
-using TargType = Type; \
-static Sgt::Properties& sProperties() \
+    using TargType = Type; \
+    static Sgt::Properties& sProperties() \
 { \
     static Sgt::Properties props; \
     return props; \
@@ -347,7 +347,7 @@ virtual Sgt::Properties& properties() const override {return sProperties();}
 /// Copy all properties from the base class into this class. This allows an override mechanism, just like method
 /// overrides. 
 #define SGT_PROPS_INHERIT(Base) \
-struct Inherit ## Base \
+    struct Inherit ## Base \
 { \
     Inherit ## Base () {sProperties().insert(Base::sProperties().begin(), Base::sProperties().end());} \
 }; \
@@ -358,16 +358,16 @@ struct DoInherit ## Base \
 
 /// Use a member function as a property getter.
 #define SGT_PROP_GET(name, getter, GetterRetType) \
-struct InitProp_ ## name \
+    struct InitProp_ ## name \
 { \
     InitProp_ ## name() \
     { \
         sProperties().addGetProperty<TargType, GetterRetType>( \
                 [](const TargType& targ)->GetterRetType {return targ.getter();}, \
-                #name); \
+#name); \
     } \
 }; \
-struct Prop_ ## name \
+                struct Prop_ ## name \
 { \
     Prop_ ## name() \
     { \
@@ -375,37 +375,37 @@ struct Prop_ ## name \
     } \
 } prop_ ## name;
 
-/// Use a member function as a property setter.
+                /// Use a member function as a property setter.
 #define SGT_PROP_SET(name, setter, SetterArgType) \
-struct InitProp_ ## name \
+                    struct InitProp_ ## name \
 { \
     InitProp_ ## name() \
     { \
         sProperties().addSetProperty<TargType, SetterArgType>( \
                 [](TargType& targ, SetterArgType val) {targ.setter(val);}, \
-                #name); \
+#name); \
     } \
 }; \
-struct Prop_ ## name { \
-    Prop_ ## name() \
-    { \
-        static InitProp_ ## name _; \
-    } \
-} prop_ ## name
+                struct Prop_ ## name { \
+                    Prop_ ## name() \
+                    { \
+                        static InitProp_ ## name _; \
+                    } \
+                } prop_ ## name
 
-/// Use member functions as a property getters and setters.
+                /// Use member functions as a property getters and setters.
 #define SGT_PROP_GET_SET(name, getter, GetterRetType, setter, SetterArgType) \
-struct InitProp_ ## name \
+                    struct InitProp_ ## name \
 { \
     InitProp_ ## name() \
     { \
         sProperties().addGetSetProperty<TargType, GetterRetType, SetterArgType>( \
                 [](const TargType& targ)->GetterRetType {return targ.getter();}, \
                 [](TargType& targ, SetterArgType val) {targ.setter(val);}, \
-                #name); \
+#name); \
     } \
 }; \
-struct Prop_ ## name \
+                struct Prop_ ## name \
 { \
     Prop_ ## name() \
     { \

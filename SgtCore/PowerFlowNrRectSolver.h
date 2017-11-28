@@ -43,60 +43,60 @@ namespace Sgt
     {
         public:
 
-            virtual bool solve(Network& netw) override;
+        virtual bool solve(Network& netw) override;
 
         private:
-            
-            void init(int islandIdx);
-    
-            bool solveForIsland(int islandIdx);
 
-            arma::uword nVar() const
-            {
-                return 2 * mod_->nPqPv();
-            }
+        void init(int islandIdx);
 
-            void initSubmatrixRanges();
+        bool solveForIsland(int islandIdx);
 
-            arma::Col<Complex> calcD(
-                    const arma::Col<Complex>& V, 
-                    const arma::Col<Complex>& Scg,
-                    const arma::Col<double>& M2PvSetpt) const;
+        arma::uword nVar() const
+        {
+            return 2 * mod_->nPqPv();
+        }
 
-            Jacobian calcJ(
-                    const arma::Col<Complex>& V,
-                    const arma::Col<Complex>& Scg,
-                    const arma::Col<double>& M2PvSetpt) const;
+        void initSubmatrixRanges();
 
-            void modifyForPv(
-                    Jacobian& J,
-                    arma::Col<Complex>& D,
-                    const arma::Col<double>& Vr,
-                    const arma::Col<double>& Vi,
-                    const arma::Col<double>& M2,
-                    const arma::Col<double>& M2PvSetpt);
+        arma::Col<Complex> calcD(
+                const arma::Col<Complex>& V, 
+                const arma::Col<Complex>& Scg,
+                const arma::Col<double>& M2PvSetpt) const;
 
-            arma::Col<double> construct_f(const arma::Col<Complex>&D) const;
+        Jacobian calcJ(
+                const arma::Col<Complex>& V,
+                const arma::Col<Complex>& Scg,
+                const arma::Col<double>& M2PvSetpt) const;
 
-            arma::SpMat<double> constructJMatrix(const Jacobian& J) const;
-        
-            arma::Col<Complex> calcSGenSl(const arma::Col<Complex>& V, const arma::Col<double>& M);
+        void modifyForPv(
+                Jacobian& J,
+                arma::Col<Complex>& D,
+                const arma::Col<double>& Vr,
+                const arma::Col<double>& Vi,
+                const arma::Col<double>& M2,
+                const arma::Col<double>& M2PvSetpt);
+
+        arma::Col<double> construct_f(const arma::Col<Complex>&D) const;
+
+        arma::SpMat<double> constructJMatrix(const Jacobian& J) const;
+
+        arma::Col<Complex> calcSGenSl(const arma::Col<Complex>& V, const arma::Col<double>& M);
 
         public:
 
-            double tol_{1e-8};
-            unsigned int maxiter_{100};
+        double tol_{1e-8};
+        unsigned int maxiter_{100};
 
         private:
 
-            Network* netw_;
-            std::unique_ptr<PowerFlowModel> mod_;
+        Network* netw_;
+        std::unique_ptr<PowerFlowModel> mod_;
 
-            arma::Col<arma::uword> selDrFrom_f_;
-            arma::Col<arma::uword> selDiFrom_f_;
+        arma::Col<arma::uword> selDrFrom_f_;
+        arma::Col<arma::uword> selDiFrom_f_;
 
-            arma::Col<arma::uword> selVrOrQFrom_x_;
-            arma::Col<arma::uword> selViFrom_x_;
+        arma::Col<arma::uword> selVrOrQFrom_x_;
+        arma::Col<arma::uword> selViFrom_x_;
     };
 }
 

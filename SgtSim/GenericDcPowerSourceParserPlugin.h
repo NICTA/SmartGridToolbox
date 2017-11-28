@@ -24,13 +24,13 @@ namespace Sgt
     class GenericDcPowerSourceParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() const override
-            {
-                return "generic_dc_power_source";
-            }
+        virtual const char* key() const override
+        {
+            return "generic_dc_power_source";
+        }
 
         public:
-            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+        virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
     };
 }
 

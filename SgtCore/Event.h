@@ -38,41 +38,41 @@ namespace Sgt
 
         public:
 
-            Action() = default;
+        Action() = default;
 
-            Action(const std::function<void ()>& function, const std::string& description) :
-                function_(function), 
-                description_(description)
-            {
-                // Empty.
-            }
+        Action(const std::function<void ()>& function, const std::string& description) :
+            function_(function), 
+            description_(description)
+        {
+            // Empty.
+        }
 
-            Action(const Action&) = delete;
-            Action(Action&&) = delete;
-            void operator=(const Action&) = delete;
-            void operator=(Action&&) = delete;
+        Action(const Action&) = delete;
+        Action(Action&&) = delete;
+        void operator=(const Action&) = delete;
+        void operator=(Action&&) = delete;
 
-            ~Action();
-            
-            void reset(const std::function<void ()>& function, const std::string& description = "");
+        ~Action();
 
-            void addTrigger(const Event& event);
-            
-            void removeTrigger(const Event& event);
-            
-            void clearTriggers();
-            
-            const std::string& description() const
-            {
-                return description_;
-            }
-            
-            void perform() const {function_();}
+        void reset(const std::function<void ()>& function, const std::string& description = "");
+
+        void addTrigger(const Event& event);
+
+        void removeTrigger(const Event& event);
+
+        void clearTriggers();
+
+        const std::string& description() const
+        {
+            return description_;
+        }
+
+        void perform() const {function_();}
 
         private:
-            std::set<const Event*> triggers_;
-            std::function<void ()> function_;
-            std::string description_;
+        std::set<const Event*> triggers_;
+        std::function<void ()> function_;
+        std::string description_;
     };
 
     /// @brief An event, when triggered, performs all of its registered actions.
@@ -85,56 +85,56 @@ namespace Sgt
         friend class Action;
 
         public:
-            Event(const std::string& description)
-            {
-                setDescription(description);
-            }
+        Event(const std::string& description)
+        {
+            setDescription(description);
+        }
 
-            ~Event();
-            
-            void trigger() const;
+        ~Event();
 
-            const std::string& description() const
-            {
-                return description_;
-            }
+        void trigger() const;
 
-            void setDescription(const std::string& description)
-            {
-                description_ = description;
-                triggerThis_.description_ = "Trigger " + description_ + ".";
-            }
+        const std::string& description() const
+        {
+            return description_;
+        }
 
-            bool isEnabled() const
-            {
-                return isEnabled_;
-            }
+        void setDescription(const std::string& description)
+        {
+            description_ = description;
+            triggerThis_.description_ = "Trigger " + description_ + ".";
+        }
 
-            void setIsEnabled(bool isEnabled)
-            {
-                isEnabled_ = isEnabled;
-            }
+        bool isEnabled() const
+        {
+            return isEnabled_;
+        }
 
-            void addTrigger(const Event& trigger)
-            {
-                triggerThis_.addTrigger(trigger);
-            }
+        void setIsEnabled(bool isEnabled)
+        {
+            isEnabled_ = isEnabled;
+        }
 
-            void removeTrigger(const Event& trigger)
-            {
-                triggerThis_.removeTrigger(trigger);
-            }
-            
-            void clearTriggers()
-            {
-                triggerThis_.clearTriggers();
-            }
+        void addTrigger(const Event& trigger)
+        {
+            triggerThis_.addTrigger(trigger);
+        }
+
+        void removeTrigger(const Event& trigger)
+        {
+            triggerThis_.removeTrigger(trigger);
+        }
+
+        void clearTriggers()
+        {
+            triggerThis_.clearTriggers();
+        }
 
         private:
-            mutable std::set<Action*> actions_;
-            std::string description_;
-            bool isEnabled_{true};
-            Action triggerThis_{[this](){trigger();}, ""};
+        mutable std::set<Action*> actions_;
+        std::string description_;
+        bool isEnabled_{true};
+        Action triggerThis_{[this](){trigger();}, ""};
     };
 }
 

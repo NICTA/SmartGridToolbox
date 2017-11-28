@@ -27,37 +27,37 @@ namespace Sgt
     class TimeSeriesDcPowerSource: public DcPowerSourceAbc, public Heartbeat
     {
         public:
-            static const std::string& sComponentType()
-            {
-                static std::string result("time_series_dc_power_source");
-                return result;
-            }
+        static const std::string& sComponentType()
+        {
+            static std::string result("time_series_dc_power_source");
+            return result;
+        }
 
         public:
 
-            TimeSeriesDcPowerSource(const std::string& id, const ConstTimeSeriesPtr<TimeSeries<Time, double>>& series,
-                    const Time& dt, double scaleFactor = 1.0) :
-                Component(id),
-                Heartbeat(id, dt),
-                series_(series),
-                scaleFactor_(scaleFactor)
-            {
-                // Empty.
-            }
+        TimeSeriesDcPowerSource(const std::string& id, const ConstTimeSeriesPtr<TimeSeries<Time, double>>& series,
+                const Time& dt, double scaleFactor = 1.0) :
+            Component(id),
+            Heartbeat(id, dt),
+            series_(series),
+            scaleFactor_(scaleFactor)
+        {
+            // Empty.
+        }
 
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
 
-            virtual double requestedPDc() const override
-            {
-                return scaleFactor_ * series_->value(lastUpdated());
-            }
+        virtual double requestedPDc() const override
+        {
+            return scaleFactor_ * series_->value(lastUpdated());
+        }
 
         private:
-            ConstTimeSeriesPtr<TimeSeries<Time, double>> series_;
-            double scaleFactor_{1.0};
+        ConstTimeSeriesPtr<TimeSeries<Time, double>> series_;
+        double scaleFactor_{1.0};
     };
 }
 

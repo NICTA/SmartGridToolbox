@@ -36,10 +36,10 @@ namespace Sgt
 
         std::function<arma::Col<double>::fixed<3> (const Time&)> windVector{
             [](const Time&)->arma::Col<double>::fixed<3>{return {{0.0, 0.0, 0.0}};}};
-        
+
         std::function<arma::Col<double>::fixed<3> (const Time&, const SphericalAngles&)> cloudAttenuationFactors{
             [](const Time&, const SphericalAngles& angs)->arma::Col<double>::fixed<3>{return {{1.0, 1.0, 1.0}};}}; 
-            // No attenuation for any component by default.
+        // No attenuation for any component by default.
 
         // Utility functions:
         template<typename T> void setTemperature(const T& f)
@@ -86,7 +86,7 @@ namespace Sgt
         {
             windVector = [val](const Time& t){return val;};
         }
- 
+
         template<typename T> void setCloudAttenuationFactors(const T& f)
         {
             cloudAttenuationFactors = [f](const Time& t, const SphericalAngles&){return f(t);};
@@ -100,76 +100,76 @@ namespace Sgt
         {
             cloudAttenuationFactors = [val](const Time& t, const SphericalAngles&){return val;};
         }
-              
+
         private:
 
-            Irradiance sunModelIrr(const Time& t);
+        Irradiance sunModelIrr(const Time& t);
     };
 
     class Weather : public Heartbeat
     {
         public:
-        
-            WeatherModel model;
+
+        WeatherModel model;
 
         /// @name Static member functions:
         /// @{
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("weather");
-                return result;
-            }
+        static const std::string& sComponentType()
+        {
+            static std::string result("weather");
+            return result;
+        }
 
         /// @}
 
         /// @name Lifecycle:
         /// @{
 
-            Weather(const std::string& id) :
-                Component(id),
-                Heartbeat(id, minutes(5))
-            {
-                // Empty.
-            }
+        Weather(const std::string& id) :
+            Component(id),
+            Heartbeat(id, minutes(5))
+        {
+            // Empty.
+        }
 
-            virtual ~Weather() = default;
+        virtual ~Weather() = default;
 
         /// @name Component virtual overridden member functions.
         /// @{
 
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
 
         /// @}
 
         /// @name Weather specific member functions.
         /// @{
-            
-            double temperature() const
-            {
-                return model.temperature(lastUpdated());
-            }
-            
-            Irradiance irradiance() const
-            {
-                return model.irradiance(lastUpdated());
-            }
-            
-            arma::Col<double>::fixed<3> windVector() const
-            {
-                return model.windVector(lastUpdated());
-            }
-            
-            arma::Col<double>::fixed<3> cloudAttenuationFactors() const
-            {
-                return model.cloudAttenuationFactors(lastUpdated(), sunPos(lastUpdated(), model.latLong));
-            }
+
+        double temperature() const
+        {
+            return model.temperature(lastUpdated());
+        }
+
+        Irradiance irradiance() const
+        {
+            return model.irradiance(lastUpdated());
+        }
+
+        arma::Col<double>::fixed<3> windVector() const
+        {
+            return model.windVector(lastUpdated());
+        }
+
+        arma::Col<double>::fixed<3> cloudAttenuationFactors() const
+        {
+            return model.cloudAttenuationFactors(lastUpdated(), sunPos(lastUpdated(), model.latLong));
+        }
 
         /// @}
     };
-}
+    }
 
 #endif // WEATHER_DOT_H

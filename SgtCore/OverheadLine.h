@@ -38,72 +38,72 @@ namespace Sgt
         /// @name Static member functions:
         /// @{
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("overhead_line");
-                return result;
-            }
+        static const std::string& sComponentType()
+        {
+            static std::string result("overhead_line");
+            return result;
+        }
 
         /// @}
 
         /// @name Lifecycle:
         /// @{
 
-            /// @brief Constructor.
-            /// @param id The line id. 
-            /// @param phases0 The phases on the '0' (from) end.
-            /// @param phases1 The phases on the '1' (to) end.
-            /// @param L The line length in m.
-            /// @param condDist Matrix with conductor spacing. Symmetric / zero diagonal.
-            /// @param subcondGmr Matrix with conductor spacing on off diagonal, subconductor GMR on diagonal.
-            /// @param subcondRPerL resistance per unit length of each subconductor.
-            /// @param freq The nominal frequency of the system.
-            /// @param rhoEarth The earth resistivity.
-            /// @param nInBundle The number of bundled subconductors for each conductor (optional).
-            /// @param adjSubcondDist The distance between adjacent bundled subconductors for each conductor (optional).
-            OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double L,
-                    const arma::Mat<double>& condDist, const arma::Mat<double> subcondGmr,
-                    const arma::Col<double>& subcondRPerL, double freq = 50.0, double rhoEarth = 100.0,
-                    const arma::Col<unsigned int>& nInBundle = arma::Col<unsigned int>(),
-                    const arma::Col<double>& adjSubcondDist = arma::Col<double>());
+        /// @brief Constructor.
+        /// @param id The line id. 
+        /// @param phases0 The phases on the '0' (from) end.
+        /// @param phases1 The phases on the '1' (to) end.
+        /// @param L The line length in m.
+        /// @param condDist Matrix with conductor spacing. Symmetric / zero diagonal.
+        /// @param subcondGmr Matrix with conductor spacing on off diagonal, subconductor GMR on diagonal.
+        /// @param subcondRPerL resistance per unit length of each subconductor.
+        /// @param freq The nominal frequency of the system.
+        /// @param rhoEarth The earth resistivity.
+        /// @param nInBundle The number of bundled subconductors for each conductor (optional).
+        /// @param adjSubcondDist The distance between adjacent bundled subconductors for each conductor (optional).
+        OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double L,
+                const arma::Mat<double>& condDist, const arma::Mat<double> subcondGmr,
+                const arma::Col<double>& subcondRPerL, double freq = 50.0, double rhoEarth = 100.0,
+                const arma::Col<unsigned int>& nInBundle = arma::Col<unsigned int>(),
+                const arma::Col<double>& adjSubcondDist = arma::Col<double>());
         /// @}
 
         /// @name Component virtual overridden member functions.
         /// @{
 
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
 
-            // virtual json toJson() const override; // TODO
+        // virtual json toJson() const override; // TODO
 
         /// @}
 
         /// @name Overridden from BranchAbc:
         /// @{
 
-            virtual arma::Mat<Complex> inServiceY() const override
-            {
-                return YNode_;
-            }
+        virtual arma::Mat<Complex> inServiceY() const override
+        {
+            return YNode_;
+        }
 
         /// @}
 
         /// @name OverheadLine specific member functions
         /// @{
 
-            /// Primative line impedance matrix (before Kron).
-            const arma::Mat<Complex>& ZPrim() const
-            {
-                return ZPrim_;
-            }
+        /// Primative line impedance matrix (before Kron).
+        const arma::Mat<Complex>& ZPrim() const
+        {
+            return ZPrim_;
+        }
 
-            /// Phase line impedance matrix (after Kron).
-            const arma::Mat<Complex>& ZPhase() const
-            {
-                return ZPhase_;
-            }
+        /// Phase line impedance matrix (after Kron).
+        const arma::Mat<Complex>& ZPhase() const
+        {
+            return ZPhase_;
+        }
 
         /// @}
 
@@ -112,28 +112,28 @@ namespace Sgt
         /// @name Private member functions
         /// @{
 
-            void validate(); ///< Calcuate all cached quantities.
+        void validate(); ///< Calcuate all cached quantities.
 
         /// @}
 
         private:
 
-            // Line Parameters:
+        // Line Parameters:
 
-            double L_; ///< Line length.
-            arma::Mat<double> condDist_; ///< Distance between conductors on off diag.
-            arma::Col<double> subcondGmr_; ///< GMR of conductor, or each subconductor if bundled.
-            arma::Col<double> subcondRPerL_; ///< resistance/length of each subconductor.
-            double freq_{50.0}; ///< Frequency (Hz) : TODO : link to network frequency.
-            double rhoEarth_{100.0}; ///< Earth resistivity.
-            arma::Col<unsigned int> nInBundle_; ///< Number of bundled subconductors on each conductor.
-            arma::Col<double> adjSubcondDist_; ///< Bundling distance (equilateral triangle for 3, square for 4).
+        double L_; ///< Line length.
+        arma::Mat<double> condDist_; ///< Distance between conductors on off diag.
+        arma::Col<double> subcondGmr_; ///< GMR of conductor, or each subconductor if bundled.
+        arma::Col<double> subcondRPerL_; ///< resistance/length of each subconductor.
+        double freq_{50.0}; ///< Frequency (Hz) : TODO : link to network frequency.
+        double rhoEarth_{100.0}; ///< Earth resistivity.
+        arma::Col<unsigned int> nInBundle_; ///< Number of bundled subconductors on each conductor.
+        arma::Col<double> adjSubcondDist_; ///< Bundling distance (equilateral triangle for 3, square for 4).
 
-            // Cached quantities:
+        // Cached quantities:
 
-            arma::Mat<Complex> ZPrim_; ///< Primative line impedance matrix.
-            arma::Mat<Complex> ZPhase_; ///< Phase line impedance matrix.
-            arma::Mat<Complex> YNode_; ///< Nodal admittance matrix.
+        arma::Mat<Complex> ZPrim_; ///< Primative line impedance matrix.
+        arma::Mat<Complex> ZPhase_; ///< Phase line impedance matrix.
+        arma::Mat<Complex> YNode_; ///< Nodal admittance matrix.
     };
 }
 

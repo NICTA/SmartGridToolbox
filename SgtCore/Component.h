@@ -31,97 +31,97 @@ namespace Sgt
     {
         public:
 
-            SGT_PROPS_INIT(Component);
+        SGT_PROPS_INIT(Component);
 
-            /// @name Static member functions:
-            /// @{
+        /// @name Static member functions:
+        /// @{
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("component");
-                return result;
-            }
+        static const std::string& sComponentType()
+        {
+            static std::string result("component");
+            return result;
+        }
 
-            /// @}
+        /// @}
 
-            /// @name Lifecycle:
-            /// @{
-           
-            /// Default constructor required by g++4.8 but not clang++.
-            Component() : id_("UNDEFINED")
-            {
-                // Empty.
-            }
+        /// @name Lifecycle:
+        /// @{
 
-            Component(const std::string& id) : id_(id)
-            {
-                // Empty.
-            }
+        /// Default constructor required by g++4.8 but not clang++.
+        Component() : id_("UNDEFINED")
+        {
+            // Empty.
+        }
 
-            Component(const Component& from) = delete;
+        Component(const std::string& id) : id_(id)
+        {
+            // Empty.
+        }
 
-            virtual ~Component() = default;
+        Component(const Component& from) = delete;
 
-            /// @}
-            
-            /// @name Virtual fuctions (to be overridden):
-            /// @{
+        virtual ~Component() = default;
 
-            virtual const std::string& id() const
-            {
-                return id_;
-            }
+        /// @}
 
-            SGT_PROP_GET(id, id, const std::string&);
+        /// @name Virtual fuctions (to be overridden):
+        /// @{
 
-            virtual const std::string& componentType() const
-            {
-                return sComponentType();
-            }
+        virtual const std::string& id() const
+        {
+            return id_;
+        }
 
-            SGT_PROP_GET(componentType, componentType, const std::string&);
+        SGT_PROP_GET(id, id, const std::string&);
 
-            virtual void print(std::ostream& os) const
-            {
-                os << toJson().dump(2);
-            }
+        virtual const std::string& componentType() const
+        {
+            return sComponentType();
+        }
 
-            virtual json toJson() const
-            {
-                return {{"component", {{"id", id_}, {"component_type", componentType()}}}};
-            }
+        SGT_PROP_GET(componentType, componentType, const std::string&);
 
-            /// @}
-            
-            /// @name User data.
-            /// @{
+        virtual void print(std::ostream& os) const
+        {
+            os << toJson().dump(2);
+        }
 
-            /// @brief For application specific data, not used internally by SGT.
-            const json& userData() const
-            {
-                return userData_;
-            }
-            
-            json& userData()
-            {
-                return userData_;
-            }
-            
-            void setUserData(const json& userData)
-            {
-                userData_ = userData;
-            }
+        virtual json toJson() const
+        {
+            return {{"component", {{"id", id_}, {"component_type", componentType()}}}};
+        }
 
-            SGT_PROP_GET_SET(userData, userData, const json&, setUserData, const json&);
+        /// @}
 
-            /// @}
-        
+        /// @name User data.
+        /// @{
+
+        /// @brief For application specific data, not used internally by SGT.
+        const json& userData() const
+        {
+            return userData_;
+        }
+
+        json& userData()
+        {
+            return userData_;
+        }
+
+        void setUserData(const json& userData)
+        {
+            userData_ = userData;
+        }
+
+        SGT_PROP_GET_SET(userData, userData, const json&, setUserData, const json&);
+
+        /// @}
+
         private:
 
-            std::string id_;
-            json userData_;
+        std::string id_;
+        json userData_;
     };
-      
+
     template<typename T, typename U = T> std::shared_ptr<U> shared(T& x)
     {
         return std::dynamic_pointer_cast<U>(x.shared_from_this());

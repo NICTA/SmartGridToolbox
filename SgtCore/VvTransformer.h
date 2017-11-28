@@ -27,93 +27,93 @@ namespace Sgt
     {
         public:
 
-            SGT_PROPS_INIT(VvTransformer);
-            SGT_PROPS_INHERIT(TransformerAbc);
+        SGT_PROPS_INIT(VvTransformer);
+        SGT_PROPS_INHERIT(TransformerAbc);
 
         /// @name Static member functions:
         /// @{
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("vv_transformer");
-                return result;
-            }
+        static const std::string& sComponentType()
+        {
+            static std::string result("vv_transformer");
+            return result;
+        }
 
         /// @}
 
         /// @name Lifecycle
         /// @{
 
-            /// @brief Constructor
-            /// @param nomRatio Nominal complex voltage/turns ratio for windings.
-            /// @param offNomRatio10 Off-nominal complex voltage/turns ratio for windings between phases 1 and 0.
-            /// @param offNomRatio12 Off-nominal complex voltage/turns ratio for windings between phases 1 and 2.
-            /// @param ZL10 The leakage impedance between phases 1 and 0, must be > 0.
-            /// @param ZL12 The leakage impedance between phases 1 and 2, must be > 0.
-            /// @param YTie Tie admittance for center phase.
-            /// @param YGround Ground admittance for center phase.
-            /// @param phases0 The phases on the first (primary) side.
-            /// @param phases1 The phases on the second (secondary) side.
-            VvTransformer(const std::string& id, Complex nomRatio,
-                    Complex offNomRatio10, Complex offNomRatio12,
-                    Complex ZL10, Complex ZL12,
-                    Complex YTie, Complex YGround,
-                    const Phases& phases0 = {Phase::A, Phase::B, Phase::C},
-                    const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
-                Component(id),
-                TransformerAbc(phases0, phases1, {nomRatio, nomRatio}, {offNomRatio10, offNomRatio12},
-                        {ZL10, ZL12}, {}),
-                YTie_(YTie),
-                YGround_(YGround)
-            {
-                // Empty.
-            }
+        /// @brief Constructor
+        /// @param nomRatio Nominal complex voltage/turns ratio for windings.
+        /// @param offNomRatio10 Off-nominal complex voltage/turns ratio for windings between phases 1 and 0.
+        /// @param offNomRatio12 Off-nominal complex voltage/turns ratio for windings between phases 1 and 2.
+        /// @param ZL10 The leakage impedance between phases 1 and 0, must be > 0.
+        /// @param ZL12 The leakage impedance between phases 1 and 2, must be > 0.
+        /// @param YTie Tie admittance for center phase.
+        /// @param YGround Ground admittance for center phase.
+        /// @param phases0 The phases on the first (primary) side.
+        /// @param phases1 The phases on the second (secondary) side.
+        VvTransformer(const std::string& id, Complex nomRatio,
+                Complex offNomRatio10, Complex offNomRatio12,
+                Complex ZL10, Complex ZL12,
+                Complex YTie, Complex YGround,
+                const Phases& phases0 = {Phase::A, Phase::B, Phase::C},
+                const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
+            Component(id),
+            TransformerAbc(phases0, phases1, {nomRatio, nomRatio}, {offNomRatio10, offNomRatio12},
+                    {ZL10, ZL12}, {}),
+            YTie_(YTie),
+            YGround_(YGround)
+        {
+            // Empty.
+        }
 
         /// @}
-        
+
         /// @name Overridden from TransformerAbc:
         /// @{
-            
-            virtual TransformerType transformerType() const override {return TransformerType::VV;}
-            virtual arma::Col<Complex> VWindings0() const override;
-            virtual arma::Col<Complex> VWindings1() const override;
-            virtual arma::Col<Complex> IWindings0() const override;
-            virtual arma::Col<Complex> IWindings1() const override;
+
+        virtual TransformerType transformerType() const override {return TransformerType::VV;}
+        virtual arma::Col<Complex> VWindings0() const override;
+        virtual arma::Col<Complex> VWindings1() const override;
+        virtual arma::Col<Complex> IWindings0() const override;
+        virtual arma::Col<Complex> IWindings1() const override;
 
         /// @}
 
         /// @name Component virtual overridden member functions.
         /// @{
 
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
 
-            // virtual json toJson() const override; // TODO
+        // virtual json toJson() const override; // TODO
 
         /// @}
 
         /// @name Parameters:
         /// @{
 
-            Complex YTie() const
-            {
-                return YTie_;
-            }
-            
-            void setYTie(Complex YTie);
-            
-            SGT_PROP_GET_SET(YTie, YTie, Complex, setYTie, Complex);
+        Complex YTie() const
+        {
+            return YTie_;
+        }
 
-            Complex YGround() const
-            {
-                return YGround_;
-            }
-            
-            void setYGround(Complex YGround);
-            
-            SGT_PROP_GET_SET(YGround, YGround, Complex, setYGround, Complex);
+        void setYTie(Complex YTie);
+
+        SGT_PROP_GET_SET(YTie, YTie, Complex, setYTie, Complex);
+
+        Complex YGround() const
+        {
+            return YGround_;
+        }
+
+        void setYGround(Complex YGround);
+
+        SGT_PROP_GET_SET(YGround, YGround, Complex, setYGround, Complex);
 
         /// @}
 
@@ -122,14 +122,14 @@ namespace Sgt
 
         private:
 
-            virtual arma::Mat<Complex> calcY() const override;
+        virtual arma::Mat<Complex> calcY() const override;
 
         /// @}
 
         private:
 
-            Complex YTie_; ///< Admittance tying terminals 2 between primary and secondary.
-            Complex YGround_; ///< Admittance tying secondary terminal 2 to ground.
+        Complex YTie_; ///< Admittance tying terminals 2 between primary and secondary.
+        Complex YGround_; ///< Admittance tying secondary terminal 2 to ground.
     };
 }
 

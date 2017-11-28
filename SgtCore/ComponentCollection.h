@@ -38,119 +38,119 @@ namespace Sgt
         template<typename B1, typename D1, bool isConst1> friend class ComponentPtr;
 
         private:
-            using CIter = typename std::map<std::string, std::shared_ptr<B>>::const_iterator;
-            using NCIter = typename std::map<std::string, std::shared_ptr<B>>::iterator;
-            
-            using Iter = std::conditional_t<isConst, CIter, NCIter>;
-            
-            std::unique_ptr<Iter> it_{nullptr};
+        using CIter = typename std::map<std::string, std::shared_ptr<B>>::const_iterator;
+        using NCIter = typename std::map<std::string, std::shared_ptr<B>>::iterator;
+
+        using Iter = std::conditional_t<isConst, CIter, NCIter>;
+
+        std::unique_ptr<Iter> it_{nullptr};
 
         public:
-            /// @brief Default constructor.
-            ComponentPtr() = default;
-            
-            /// @brief Constructor with nullptr.
-            ComponentPtr(const std::nullptr_t& null) : ComponentPtr() {};
+        /// @brief Default constructor.
+        ComponentPtr() = default;
 
-            /// @brief Constructor for existing component, non-const to const conversion.
-            template<typename FromIter, std::enable_if_t<std::is_convertible<FromIter, Iter>::value, int> = 0>
+        /// @brief Constructor with nullptr.
+        ComponentPtr(const std::nullptr_t& null) : ComponentPtr() {};
+
+        /// @brief Constructor for existing component, non-const to const conversion.
+        template<typename FromIter, std::enable_if_t<std::is_convertible<FromIter, Iter>::value, int> = 0>
             ComponentPtr(const FromIter& it) : it_(std::make_unique<Iter>(it)) {}
-            
-            /// @brief Copy constructor.
-            ComponentPtr(const ComponentPtr& from) : it_(std::make_unique<Iter>(*from.it_)) {}
 
-            /// @brief Conversion constructor.
-            ///
-            /// Implicit up-conversion.
-            template<typename FromD, bool fromIsConst, 
-                std::enable_if_t<(isConst || !fromIsConst) &&
-                                 std::is_base_of<D, FromD>::value, int> = 0>
-            ComponentPtr(const ComponentPtr<B, FromD, fromIsConst>& from) : it_(std::make_unique<Iter>(*from.it_)) {}
-            
-            /// @brief Explicit conversion, including down conversion. 
-            template<typename ToD, bool toIsConst = isConst,
-                std::enable_if_t<(toIsConst || !isConst) && 
-                                 (std::is_base_of<ToD, D>::value || std::is_base_of<D, ToD>::value), int> = 0>
-            ComponentPtr<B, ToD, toIsConst> as()
-            {
-                if (it_ == nullptr) return nullptr; else return *it_;
-                // Ternary causes possible complications.
-            }
+        /// @brief Copy constructor.
+        ComponentPtr(const ComponentPtr& from) : it_(std::make_unique<Iter>(*from.it_)) {}
 
-            /// @brief Copy assignment.
-            void operator=(const ComponentPtr& from)
-            {
-                if (from == nullptr) it_ = nullptr; else it_ = std::make_unique<Iter>(*from.it_);
-            }
+        /// @brief Conversion constructor.
+        ///
+        /// Implicit up-conversion.
+        template<typename FromD, bool fromIsConst, 
+            std::enable_if_t<(isConst || !fromIsConst) &&
+                std::is_base_of<D, FromD>::value, int> = 0>
+                ComponentPtr(const ComponentPtr<B, FromD, fromIsConst>& from) : it_(std::make_unique<Iter>(*from.it_)) {}
 
-            /// @brief Conversion assignment.
-            template<typename FromD, bool fromIsConst, 
-                std::enable_if_t<(isConst || !fromIsConst) && 
-                                 std::is_base_of<D, FromD>(), int> = 0>
-            void operator=(const ComponentPtr<B, FromD, fromIsConst>& from)
-            {
-                if (from == nullptr) it_ = nullptr; else it_ = std::make_unique<Iter>(*from.it_);
-            }
+        /// @brief Explicit conversion, including down conversion. 
+        template<typename ToD, bool toIsConst = isConst,
+            std::enable_if_t<(toIsConst || !isConst) && 
+                (std::is_base_of<ToD, D>::value || std::is_base_of<D, ToD>::value), int> = 0>
+                ComponentPtr<B, ToD, toIsConst> as()
+                {
+                    if (it_ == nullptr) return nullptr; else return *it_;
+                    // Ternary causes possible complications.
+                }
 
-            /// @brief Shared pointer access.
-            template<typename T = D, std::enable_if_t<std::is_same<T, B>::value, bool> = 0>
+        /// @brief Copy assignment.
+        void operator=(const ComponentPtr& from)
+        {
+            if (from == nullptr) it_ = nullptr; else it_ = std::make_unique<Iter>(*from.it_);
+        }
+
+        /// @brief Conversion assignment.
+        template<typename FromD, bool fromIsConst, 
+            std::enable_if_t<(isConst || !fromIsConst) && 
+                std::is_base_of<D, FromD>(), int> = 0>
+                void operator=(const ComponentPtr<B, FromD, fromIsConst>& from)
+                {
+                    if (from == nullptr) it_ = nullptr; else it_ = std::make_unique<Iter>(*from.it_);
+                }
+
+        /// @brief Shared pointer access.
+        template<typename T = D, std::enable_if_t<std::is_same<T, B>::value, bool> = 0>
             std::shared_ptr<T> shared() const
             {
                 if (it_ == nullptr) return  nullptr; else return (**it_).second;
                 // Ternary causes possible complications.
             }
 
-            /// @brief Explicit shared pointer access.
-            template<typename T = D, std::enable_if_t<!std::is_same<T, B>::value, bool> = 0>
+        /// @brief Explicit shared pointer access.
+        template<typename T = D, std::enable_if_t<!std::is_same<T, B>::value, bool> = 0>
             std::shared_ptr<T> shared() const
             {
                 return std::dynamic_pointer_cast<T>(shared<B>());
             }
-             
-            /// @brief Raw pointer access.
-            template<typename T = D> T* raw() const
-            {
-                return shared<T>().get();
-            }
 
-            /// @brief Dereference.
-            D& operator*() const {return *(shared());}
+        /// @brief Raw pointer access.
+        template<typename T = D> T* raw() const
+        {
+            return shared<T>().get();
+        }
 
-            /// @brief Dereference. 
-            D* operator->() const {return raw();}
+        /// @brief Dereference.
+        D& operator*() const {return *(shared());}
 
-            /// @brief Converts to raw pointer. 
-            operator D*() const {return raw();}
+        /// @brief Dereference. 
+        D* operator->() const {return raw();}
 
-            /// @brief Converts to shared_ptr. 
-            operator std::shared_ptr<D>() const {return shared();}
+        /// @brief Converts to raw pointer. 
+        operator D*() const {return raw();}
 
-            /// @brief Obtain the key in my container.
-            const std::string& key() const {return (**it_).first;}
+        /// @brief Converts to shared_ptr. 
+        operator std::shared_ptr<D>() const {return shared();}
 
-            /// @brief Do I refer to an actual component? 
-            operator bool() const {return shared().operator bool();}
+        /// @brief Obtain the key in my container.
+        const std::string& key() const {return (**it_).first;}
 
-            /// @brief Comparison to nullptr.
-            bool operator==(const std::nullptr_t& rhs) const {return shared() == nullptr;}
+        /// @brief Do I refer to an actual component? 
+        operator bool() const {return shared().operator bool();}
 
-            /// @brief Comparison to nullptr.
-            bool operator!=(const std::nullptr_t& rhs) const {return !operator==(rhs);}
+        /// @brief Comparison to nullptr.
+        bool operator==(const std::nullptr_t& rhs) const {return shared() == nullptr;}
 
-            /// @brief Compare two ComponentPtrs.
-            ///
-            /// Undefined behaviour if they come from different ComponentCollection containers.
-            template<typename RhsD, bool rhsIsConst>
+        /// @brief Comparison to nullptr.
+        bool operator!=(const std::nullptr_t& rhs) const {return !operator==(rhs);}
+
+        /// @brief Compare two ComponentPtrs.
+        ///
+        /// Undefined behaviour if they come from different ComponentCollection containers.
+        template<typename RhsD, bool rhsIsConst>
             bool operator==(const ComponentPtr<B, RhsD, rhsIsConst>& rhs) const 
             {
                 // First comparison mainly to get nullptrs.
                 return (it_ == rhs.it_) || shared() == rhs.shared();
             }
 
-            /// @brief Compare two ComponentPtrs.
-            ///
-            /// Undefined behaviour if they come from different ComponentCollection containers.
-            template<typename RhsD, bool rhsIsConst>
+        /// @brief Compare two ComponentPtrs.
+        ///
+        /// Undefined behaviour if they come from different ComponentCollection containers.
+        template<typename RhsD, bool rhsIsConst>
             bool operator!=(const ComponentPtr<B, RhsD, rhsIsConst>& rhs) const 
             {
                 return !operator=(rhs);
@@ -170,104 +170,104 @@ namespace Sgt
     template<typename T> class ComponentCollection
     {
         public:
-            using ConstPtr = ConstComponentPtr<T>;
-            using Ptr = ComponentPtr<T>;
+        using ConstPtr = ConstComponentPtr<T>;
+        using Ptr = ComponentPtr<T>;
 
         public:
-            size_t size() const {return vec_.size();}
+        size_t size() const {return vec_.size();}
 
-            ConstPtr operator[](const std::string& key) const 
-            {
-                auto it = map_.find(key);
-                if (it != map_.end()) return it; else return ConstPtr();
-                // Ternary causes possible complications.
-            }
-            Ptr operator[](const std::string& key)
-            {
-                auto it = map_.find(key);
-                if (it != map_.end()) return it; else return Ptr();
-                // Ternary causes possible complications.
-            }
+        ConstPtr operator[](const std::string& key) const 
+        {
+            auto it = map_.find(key);
+            if (it != map_.end()) return it; else return ConstPtr();
+            // Ternary causes possible complications.
+        }
+        Ptr operator[](const std::string& key)
+        {
+            auto it = map_.find(key);
+            if (it != map_.end()) return it; else return Ptr();
+            // Ternary causes possible complications.
+        }
 
-            ConstPtr operator[](size_t idx) const {return vec_[idx];}
-            Ptr operator[](size_t idx) {return vec_[idx];}
+        ConstPtr operator[](size_t idx) const {return vec_[idx];}
+        Ptr operator[](size_t idx) {return vec_[idx];}
 
-            ConstPtr front() const {return vec_.front();}
-            Ptr front() {return vec_.front();}
+        ConstPtr front() const {return vec_.front();}
+        Ptr front() {return vec_.front();}
 
-            ConstPtr back() const {return vec_.back();}
-            Ptr back() {return vec_.back();}
+        ConstPtr back() const {return vec_.back();}
+        Ptr back() {return vec_.back();}
 
-            auto begin() {return vec_.begin();}
-            auto end() {return vec_.end();}
+        auto begin() {return vec_.begin();}
+        auto end() {return vec_.end();}
 
-            auto begin() const {return vec_.cbegin();}
-            auto end() const {return vec_.cend();}
+        auto begin() const {return vec_.cbegin();}
+        auto end() const {return vec_.cend();}
 
-            auto cbegin() const {return vec_.cbegin();}
-            auto cend() const {return vec_.cend();}
+        auto cbegin() const {return vec_.cbegin();}
+        auto cend() const {return vec_.cend();}
 
-            auto rbegin() {return vec_.rbegin();}
-            auto rend() {return vec_.rend();}
+        auto rbegin() {return vec_.rbegin();}
+        auto rend() {return vec_.rend();}
 
-            auto rbegin() const {return vec_.rcbegin();}
-            auto rend() const {return vec_.rcend();}
+        auto rbegin() const {return vec_.rcbegin();}
+        auto rend() const {return vec_.rcend();}
 
-            auto rcbegin() const {return vec_.rcbegin();}
-            auto rcend() const {return vec_.rcend();}
+        auto rcbegin() const {return vec_.rcbegin();}
+        auto rcend() const {return vec_.rcend();}
 
         protected:
-            std::map<std::string, std::shared_ptr<T>> map_;
-            std::vector<Ptr> vec_;
+        std::map<std::string, std::shared_ptr<T>> map_;
+        std::vector<Ptr> vec_;
     };
 
     template<typename T> class MutableComponentCollection : public ComponentCollection<T>
     {
         public:
-            using Ptr = typename ComponentCollection<T>::Ptr;
-            using ConstPtr = typename ComponentCollection<T>::ConstPtr;
+        using Ptr = typename ComponentCollection<T>::Ptr;
+        using ConstPtr = typename ComponentCollection<T>::ConstPtr;
 
-            Ptr insert(const std::string& key, std::shared_ptr<T> comp)
+        Ptr insert(const std::string& key, std::shared_ptr<T> comp)
+        {
+            auto it = ComponentCollection<T>::map_.find(key);
+            if (it == ComponentCollection<T>::map_.end())
             {
-                auto it = ComponentCollection<T>::map_.find(key);
-                if (it == ComponentCollection<T>::map_.end())
-                {
-                    // Insert new element.
-                    it = ComponentCollection<T>::map_.insert(std::make_pair(key, comp)).first;
-                    ComponentCollection<T>::vec_.push_back(it);
-                }
-                else
-                {
-                    // Replace existing element.
-                    it->second = comp;
-                }
-                return it;
+                // Insert new element.
+                it = ComponentCollection<T>::map_.insert(std::make_pair(key, comp)).first;
+                ComponentCollection<T>::vec_.push_back(it);
             }
+            else
+            {
+                // Replace existing element.
+                it->second = comp;
+            }
+            return it;
+        }
 
-            Ptr reserve(const std::string& key) {insert(key, std::shared_ptr<T>(nullptr));}
+        Ptr reserve(const std::string& key) {insert(key, std::shared_ptr<T>(nullptr));}
 
-            template<typename U, typename ... Args>
+        template<typename U, typename ... Args>
             std::pair<Ptr, std::shared_ptr<U>> emplace(const std::string& key, Args&&... args)
             {
                 auto comp = std::make_shared<U>(std::forward<Args>(args)...);
                 return {insert(key, comp), comp};
             }
 
-            std::shared_ptr<T> remove(const std::string& key) 
+        std::shared_ptr<T> remove(const std::string& key) 
+        {
+            std::shared_ptr<T> result;
+            auto mapIt = ComponentCollection<T>::map_.find(key);
+            if (mapIt != ComponentCollection<T>::map_.end())
             {
-                std::shared_ptr<T> result;
-                auto mapIt = ComponentCollection<T>::map_.find(key);
-                if (mapIt != ComponentCollection<T>::map_.end())
-                {
-                    result = mapIt->second;
-                    ComponentCollection<T>::map_.erase(mapIt);
-                    auto vecIt = std::find_if(ComponentCollection<T>::vec_.begin(), ComponentCollection<T>::vec_.end(), 
-                            [&key](Ptr& p){return p.key() == key;});
-                    assert(vecIt != ComponentCollection<T>::vec_.end());
-                    ComponentCollection<T>::vec_.erase(vecIt);
-                }
-                return result;
+                result = mapIt->second;
+                ComponentCollection<T>::map_.erase(mapIt);
+                auto vecIt = std::find_if(ComponentCollection<T>::vec_.begin(), ComponentCollection<T>::vec_.end(), 
+                        [&key](Ptr& p){return p.key() == key;});
+                assert(vecIt != ComponentCollection<T>::vec_.end());
+                ComponentCollection<T>::vec_.erase(vecIt);
             }
+            return result;
+        }
     };
 }
 

@@ -40,232 +40,232 @@ namespace Sgt
         friend class Network;
 
         public:
-            
-            SGT_PROPS_INIT(Zip);
-            SGT_PROPS_INHERIT(Component);
 
-            /// @name Static member functions:
-            /// @{
+        SGT_PROPS_INIT(Zip);
+        SGT_PROPS_INHERIT(Component);
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("zip");
-                return result;
-            }
+        /// @name Static member functions:
+        /// @{
 
-            /// @}
+        static const std::string& sComponentType()
+        {
+            static std::string result("zip");
+            return result;
+        }
 
-            /// @name Lifecycle:
-            /// @{
+        /// @}
 
-            Zip(const std::string& id, const Phases& phases);
+        /// @name Lifecycle:
+        /// @{
 
-            /// @}
+        Zip(const std::string& id, const Phases& phases);
 
-            /// @name Component virtual overridden member functions.
-            /// @{
+        /// @}
 
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
+        /// @name Component virtual overridden member functions.
+        /// @{
 
-            virtual json toJson() const override;
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
 
-            /// @}
+        virtual json toJson() const override;
 
-            /// @name Phases
-            /// @{
+        /// @}
 
-            virtual const Phases& phases() const
-            {
-                return phases_;
-            }
-            
-            SGT_PROP_GET(phases, phases, const Phases&);
+        /// @name Phases
+        /// @{
 
-            /// @}
+        virtual const Phases& phases() const
+        {
+            return phases_;
+        }
 
-            /// @name In service:
-            /// @{
+        SGT_PROP_GET(phases, phases, const Phases&);
 
-            virtual bool isInService() const
-            {
-                return isInService_;
-            }
+        /// @}
 
-            virtual void setIsInService(bool isInService)
-            {
-                isInService_ = isInService;
-            }
-            
-            SGT_PROP_GET_SET(isInService, isInService, bool, setIsInService, bool);
+        /// @name In service:
+        /// @{
 
-            /// @}
+        virtual bool isInService() const
+        {
+            return isInService_;
+        }
 
-            /// @name ZIP parameters:
-            /// @{
+        virtual void setIsInService(bool isInService)
+        {
+            isInService_ = isInService;
+        }
 
-            /// @brief Constant admittance component.
-            ///
-            /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
-            /// And the off-diagonal elements are between pairs of bus terminals.
-            virtual arma::Mat<Complex> YConst() const
-            {
-                return YConst_;
-            }
+        SGT_PROP_GET_SET(isInService, isInService, bool, setIsInService, bool);
 
-            virtual void setYConst(const arma::Mat<Complex>& YConst)
-            {
-                YConst_ = YConst;
-                injectionChanged_.trigger();
-            }
-            
-            SGT_PROP_GET_SET(YConst, YConst, arma::Mat<Complex>, setYConst, const arma::Mat<Complex>&);
+        /// @}
 
-            /// @brief Constant current component.
-            ///
-            /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
-            /// And the off-diagonal elements are between pairs of bus terminals. The phase is assumed to be relative
-            /// to the phase of V, so that the power is independent of the absolute phase.
-            virtual arma::Mat<Complex> IConst() const
-            {
-                return IConst_;
-            }
+        /// @name ZIP parameters:
+        /// @{
 
-            virtual void setIConst(const arma::Mat<Complex>& IConst)
-            {
-                IConst_ = IConst;
-                injectionChanged_.trigger();
-            }
-            
-            SGT_PROP_GET_SET(IConst, IConst, arma::Mat<Complex>, setIConst, const arma::Mat<Complex>&);
+        /// @brief Constant admittance component.
+        ///
+        /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
+        /// And the off-diagonal elements are between pairs of bus terminals.
+        virtual arma::Mat<Complex> YConst() const
+        {
+            return YConst_;
+        }
 
-            /// @brief Constant power component.
-            ///
-            /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
-            /// And the off-diagonal elements are between pairs of bus terminals.
-            virtual arma::Mat<Complex> SConst() const
-            {
-                return SConst_;
-            }
+        virtual void setYConst(const arma::Mat<Complex>& YConst)
+        {
+            YConst_ = YConst;
+            injectionChanged_.trigger();
+        }
 
-            virtual void setSConst(const arma::Mat<Complex>& SConst)
-            {
-                SConst_ = SConst;
-                injectionChanged_.trigger();
-            }
-            
-            SGT_PROP_GET_SET(SConst, SConst, arma::Mat<Complex>, setSConst, const arma::Mat<Complex>&);
+        SGT_PROP_GET_SET(YConst, YConst, arma::Mat<Complex>, setYConst, const arma::Mat<Complex>&);
 
-            /// @}
-            
-            /// @name Total Power.
-            /// @{
-            
-            /// @brief Consumed power, by phase components, when in service.
-            ///
-            /// Does not take into account any unserved power - this is instead taken into account at the bus level.
-            arma::Mat<Complex> inServiceS() const;
+        /// @brief Constant current component.
+        ///
+        /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
+        /// And the off-diagonal elements are between pairs of bus terminals. The phase is assumed to be relative
+        /// to the phase of V, so that the power is independent of the absolute phase.
+        virtual arma::Mat<Complex> IConst() const
+        {
+            return IConst_;
+        }
 
-            /// @brief Consumed power, by phase components, zero if not in service.
-            ///
-            /// Does not take into account any unserved power - this is instead taken into account at the bus level.
-            arma::Mat<Complex> S() const
-            {
-                return isInService_ 
-                    ? inServiceS()
-                    : arma::Mat<Complex>(phases_.size(), phases_.size(), arma::fill::zeros);
-            }
+        virtual void setIConst(const arma::Mat<Complex>& IConst)
+        {
+            IConst_ = IConst;
+            injectionChanged_.trigger();
+        }
 
-            /// @brief Total consumed power, when in service.
-            ///
-            /// Does not take into account any unserved power - this is instead taken into account at the bus level.
-            Complex inServiceSTot() const
-            {
-                return sum(sum(trimatu(inServiceS())));
-            }
-            
-            /// @brief Total consumed power, zero if not in service.
-            ///
-            /// Does not take into account any unserved power - this is instead taken into account at the bus level.
-            Complex STot() const
-            {
-                return isInService_ ? inServiceSTot() : Complex(0.0, 0.0);
-            }
-            
-            /// @}
+        SGT_PROP_GET_SET(IConst, IConst, arma::Mat<Complex>, setIConst, const arma::Mat<Complex>&);
 
-            /// @name Events.
-            /// @{
+        /// @brief Constant power component.
+        ///
+        /// Assumed to be an upper triangular matrix. The diagonal elements are from the bus terminals to ground,
+        /// And the off-diagonal elements are between pairs of bus terminals.
+        virtual arma::Mat<Complex> SConst() const
+        {
+            return SConst_;
+        }
 
-            /// @brief Event triggered when I go in or out of service.
-            virtual const Event& isInServiceChanged() const
-            {
-                return isInServiceChanged_;
-            }
-            
-            /// @brief Event triggered when I go in or out of service.
-            virtual Event& isInServiceChanged()
-            {
-                return isInServiceChanged_;
-            }
+        virtual void setSConst(const arma::Mat<Complex>& SConst)
+        {
+            SConst_ = SConst;
+            injectionChanged_.trigger();
+        }
 
-            /// @brief Event triggered when my bus injection is changed.
-            virtual const Event& injectionChanged() const
-            {
-                return injectionChanged_;
-            }
-            
-            /// @brief Event triggered when my bus injection is changed.
-            virtual Event& injectionChanged()
-            {
-                return injectionChanged_;
-            }
+        SGT_PROP_GET_SET(SConst, SConst, arma::Mat<Complex>, setSConst, const arma::Mat<Complex>&);
 
-            /// @brief Event triggered when a setpoint is changed.
-            virtual const Event& setpointChanged() const
-            {
-                return setpointChanged_;
-            }
-            
-            /// @brief Event triggered when a setpoint is changed.
-            virtual Event& setpointChanged()
-            {
-                return setpointChanged_;
-            }
+        /// @}
 
-            /// @}
+        /// @name Total Power.
+        /// @{
 
-            /// @name Bus.
-            /// @{
-            
-            ConstComponentPtr<Bus> bus() const
-            {
-                return bus_;
-            }
-            
-            ComponentPtr<Bus> bus()
-            {
-                return bus_;
-            }
+        /// @brief Consumed power, by phase components, when in service.
+        ///
+        /// Does not take into account any unserved power - this is instead taken into account at the bus level.
+        arma::Mat<Complex> inServiceS() const;
 
-            /// @}
+        /// @brief Consumed power, by phase components, zero if not in service.
+        ///
+        /// Does not take into account any unserved power - this is instead taken into account at the bus level.
+        arma::Mat<Complex> S() const
+        {
+            return isInService_ 
+                ? inServiceS()
+                : arma::Mat<Complex>(phases_.size(), phases_.size(), arma::fill::zeros);
+        }
+
+        /// @brief Total consumed power, when in service.
+        ///
+        /// Does not take into account any unserved power - this is instead taken into account at the bus level.
+        Complex inServiceSTot() const
+        {
+            return sum(sum(trimatu(inServiceS())));
+        }
+
+        /// @brief Total consumed power, zero if not in service.
+        ///
+        /// Does not take into account any unserved power - this is instead taken into account at the bus level.
+        Complex STot() const
+        {
+            return isInService_ ? inServiceSTot() : Complex(0.0, 0.0);
+        }
+
+        /// @}
+
+        /// @name Events.
+        /// @{
+
+        /// @brief Event triggered when I go in or out of service.
+        virtual const Event& isInServiceChanged() const
+        {
+            return isInServiceChanged_;
+        }
+
+        /// @brief Event triggered when I go in or out of service.
+        virtual Event& isInServiceChanged()
+        {
+            return isInServiceChanged_;
+        }
+
+        /// @brief Event triggered when my bus injection is changed.
+        virtual const Event& injectionChanged() const
+        {
+            return injectionChanged_;
+        }
+
+        /// @brief Event triggered when my bus injection is changed.
+        virtual Event& injectionChanged()
+        {
+            return injectionChanged_;
+        }
+
+        /// @brief Event triggered when a setpoint is changed.
+        virtual const Event& setpointChanged() const
+        {
+            return setpointChanged_;
+        }
+
+        /// @brief Event triggered when a setpoint is changed.
+        virtual Event& setpointChanged()
+        {
+            return setpointChanged_;
+        }
+
+        /// @}
+
+        /// @name Bus.
+        /// @{
+
+        ConstComponentPtr<Bus> bus() const
+        {
+            return bus_;
+        }
+
+        ComponentPtr<Bus> bus()
+        {
+            return bus_;
+        }
+
+        /// @}
 
         private:
 
-            Phases phases_{Phase::BAD};
-            bool isInService_{true};
-            
-            arma::Mat<Complex> YConst_;
-            arma::Mat<Complex> IConst_;
-            arma::Mat<Complex> SConst_;
+        Phases phases_{Phase::BAD};
+        bool isInService_{true};
 
-            Event isInServiceChanged_{std::string(componentType()) + ": Is in service changed"};
-            Event injectionChanged_{std::string(componentType()) + ": Injection changed"};
-            Event setpointChanged_{std::string(componentType()) + ": Setpoint changed"};
+        arma::Mat<Complex> YConst_;
+        arma::Mat<Complex> IConst_;
+        arma::Mat<Complex> SConst_;
 
-            ComponentPtr<Bus> bus_;
+        Event isInServiceChanged_{std::string(componentType()) + ": Is in service changed"};
+        Event injectionChanged_{std::string(componentType()) + ": Injection changed"};
+        Event setpointChanged_{std::string(componentType()) + ": Setpoint changed"};
+
+        ComponentPtr<Bus> bus_;
     };
 }
 

@@ -39,110 +39,110 @@ namespace Sgt
     class TapChanger : public SimComponent
     {
         public:
-            /// @name Static member functions:
-            /// @{
+        /// @name Static member functions:
+        /// @{
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("tap_changer");
-                return result;
-            }
+        static const std::string& sComponentType()
+        {
+            static std::string result("tap_changer");
+            return result;
+        }
 
-            /// @}
+        /// @}
 
-            /// @name Lifecycle:
-            /// @{
+        /// @name Lifecycle:
+        /// @{
 
-            TapChanger(
-                    const std::string& id,
-                    const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
-                    const std::vector<double>& taps,
-                    double setpoint,
-                    double tolerance,
-                    arma::uword ctrlSideIdx,
-                    arma::uword windingIdx,
-                    arma::uword ratioIdx,
-                    bool hasLdc = false,
-                    Complex ZLdc = {0.0, 0.0},
-                    Complex topFactorI = 1.0);
+        TapChanger(
+                const std::string& id,
+                const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
+                const std::vector<double>& taps,
+                double setpoint,
+                double tolerance,
+                arma::uword ctrlSideIdx,
+                arma::uword windingIdx,
+                arma::uword ratioIdx,
+                bool hasLdc = false,
+                Complex ZLdc = {0.0, 0.0},
+                Complex topFactorI = 1.0);
 
-            virtual ~TapChanger() = default;
+        virtual ~TapChanger() = default;
 
-            /// @}
+        /// @}
 
-            /// @name Component virtual overridden member functions.
-            /// @{
+        /// @name Component virtual overridden member functions.
+        /// @{
 
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
 
-            // virtual json toJson() const override; TODO
+        // virtual json toJson() const override; TODO
 
-            /// @}
+        /// @}
 
-            /// @name SimComponent virtual overridden member functions.
-            /// @{
+        /// @name SimComponent virtual overridden member functions.
+        /// @{
 
-            virtual Time validUntil() const override
-            {
-                return TimeSpecialValues::pos_infin; // Never undergo a scheduled update.
-            }
+        virtual Time validUntil() const override
+        {
+            return TimeSpecialValues::pos_infin; // Never undergo a scheduled update.
+        }
 
-            virtual void initializeState() override;
+        virtual void initializeState() override;
 
-            virtual void updateState(const Time& t) override;
+        virtual void updateState(const Time& t) override;
 
-            /// @}
-            
-            /// @name My functions.
-            /// @{
-            
-            const std::vector<double>& taps() const
-            {
-                return taps_;
-            }
+        /// @}
 
-            std::size_t tapSetting() const
-            {
-                return setting_;
-            }
+        /// @name My functions.
+        /// @{
 
-            double setpoint() const
-            {
-                return setpoint_;
-            }
-            
-            double tolerance() const
-            {
-                return tolerance_;
-            }
-            
-            double get() const;
+        const std::vector<double>& taps() const
+        {
+            return taps_;
+        }
 
-            void set(double val);
+        std::size_t tapSetting() const
+        {
+            return setting_;
+        }
 
-            /// @}
+        double setpoint() const
+        {
+            return setpoint_;
+        }
+
+        double tolerance() const
+        {
+            return tolerance_;
+        }
+
+        double get() const;
+
+        void set(double val);
+
+        /// @}
 
         private:
-            const ConstComponentPtr<BranchAbc, TransformerAbc> trans_; // Target transformer.
+        const ConstComponentPtr<BranchAbc, TransformerAbc> trans_; // Target transformer.
 
-            std::vector<double> taps_;
-            double setpoint_;
-            double tolerance_{0.02};
-          
-            Time prevTimestep_{TimeSpecialValues::neg_infin};
-            size_t iter_{0};
-            std::size_t setting_{0};
-            double val_{0};
+        std::vector<double> taps_;
+        double setpoint_;
+        double tolerance_{0.02};
 
-            arma::uword ctrlSideIdx_; // Secondary (0) or primary (1)
-            arma::uword windingIdx_; // Which winding does tap changer act on, e.g. 1, 2, or 3?
-            arma::uword ratioIdx_; // Idx into offNomRatio vector to adjust.
-            bool hasLdc_; // Is there line drop compensation?
-            Complex ZLdc_; // Impedance for LDC.
-            Complex topFactorI_; // LDC topological factor that projects I in winding to a line current.
+        Time prevTimestep_{TimeSpecialValues::neg_infin};
+        size_t iter_{0};
+        std::size_t setting_{0};
+        double val_{0};
+
+        arma::uword ctrlSideIdx_; // Secondary (0) or primary (1)
+        arma::uword windingIdx_; // Which winding does tap changer act on, e.g. 1, 2, or 3?
+        arma::uword ratioIdx_; // Idx into offNomRatio vector to adjust.
+        bool hasLdc_; // Is there line drop compensation?
+        Complex ZLdc_; // Impedance for LDC.
+        Complex topFactorI_; // LDC topological factor that projects I in winding to a line current.
     };
 }
 

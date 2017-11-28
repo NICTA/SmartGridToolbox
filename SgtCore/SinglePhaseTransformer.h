@@ -25,57 +25,57 @@ namespace Sgt
     {
         public:
 
-            SGT_PROPS_INIT(SinglePhaseTransformer);
-            SGT_PROPS_INHERIT(TransformerAbc);
+        SGT_PROPS_INIT(SinglePhaseTransformer);
+        SGT_PROPS_INHERIT(TransformerAbc);
 
         /// @name Static member functions:
         /// @{
 
-            static const std::string& sComponentType()
-            {
-                static std::string result("single_phase_transformer");
-                return result;
-            }
+        static const std::string& sComponentType()
+        {
+            static std::string result("single_phase_transformer");
+            return result;
+        }
 
         /// @}
 
         /// @name Lifecycle
         /// @{
 
-            /// @brief Constructor
-            /// @param nomTurnsRatio The complex turns ratio for each of the three winding pairs.
-            /// @param offNomRatio The off nominal ratio for each of the three winding pairs.
-            /// @param ZL The leakage impedance, must be > 0.
-            SinglePhaseTransformer(const std::string& id, Complex nomTurnsRatio, Complex offNomRatio, Complex ZL,
-                    const Phase phase0 = Phase::BAL, const Phase phase1 = Phase::BAL) :
-                Component(id),
-                TransformerAbc({phase0}, {phase1}, {nomTurnsRatio}, {1.0}, {ZL}, {})
-            {
-                // Empty.
-            }
+        /// @brief Constructor
+        /// @param nomTurnsRatio The complex turns ratio for each of the three winding pairs.
+        /// @param offNomRatio The off nominal ratio for each of the three winding pairs.
+        /// @param ZL The leakage impedance, must be > 0.
+        SinglePhaseTransformer(const std::string& id, Complex nomTurnsRatio, Complex offNomRatio, Complex ZL,
+                const Phase phase0 = Phase::BAL, const Phase phase1 = Phase::BAL) :
+            Component(id),
+            TransformerAbc({phase0}, {phase1}, {nomTurnsRatio}, {1.0}, {ZL}, {})
+        {
+            // Empty.
+        }
 
         /// @}
-        
+
         /// @name Overridden from TransformerAbc:
         /// @{
-            
-            virtual TransformerType transformerType() const override {return TransformerType::SINGLE_PHASE;}
-            virtual arma::Col<Complex> VWindings0() const override;
-            virtual arma::Col<Complex> VWindings1() const override;
-            virtual arma::Col<Complex> IWindings0() const override;
-            virtual arma::Col<Complex> IWindings1() const override;
+
+        virtual TransformerType transformerType() const override {return TransformerType::SINGLE_PHASE;}
+        virtual arma::Col<Complex> VWindings0() const override;
+        virtual arma::Col<Complex> VWindings1() const override;
+        virtual arma::Col<Complex> IWindings0() const override;
+        virtual arma::Col<Complex> IWindings1() const override;
 
         /// @}
 
         /// @name Component virtual overridden member functions.
         /// @{
 
-            virtual const std::string& componentType() const override
-            {
-                return sComponentType();
-            }
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
 
-            // virtual json toJson() const override; // TODO
+        // virtual json toJson() const override; // TODO
 
         /// @}
 
@@ -84,7 +84,7 @@ namespace Sgt
 
         private:
 
-            virtual arma::Mat<Complex> calcY() const override;
+        virtual arma::Mat<Complex> calcY() const override;
 
         /// @}
     };
