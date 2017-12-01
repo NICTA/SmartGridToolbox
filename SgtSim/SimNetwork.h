@@ -23,8 +23,8 @@ namespace Sgt
 {
     /// @brief Utility base class for branches in SimNetwork.
     ///
-    /// Provides constructor that ensures linking to SimNetwork.
-    /// Also provides convenience accessors.
+    /// Provides convenience accessors.
+    /// Allows dependency ensuring I will update before network.
     class SimBranch : virtual public SimComponent
     {
         public:
@@ -37,8 +37,8 @@ namespace Sgt
 
     /// @brief Utility base class for buses in SimNetwork.
     ///
-    /// Provides constructor that ensures linking to SimNetwork.
-    /// Also provides convenience accessors.
+    /// Provides convenience accessors.
+    /// Allows dependency ensuring I will update before network.
     class SimBus : virtual public SimComponent
     {
         public:
@@ -51,8 +51,8 @@ namespace Sgt
 
     /// @brief Utility base class for gens in SimNetwork.
     ///
-    /// Provides constructor that ensures linking to SimNetwork.
-    /// Also provides convenience accessors.
+    /// Provides convenience accessors.
+    /// Allows dependency ensuring I will update before network.
     class SimGen : virtual public SimComponent
     {
         public:
@@ -65,8 +65,8 @@ namespace Sgt
 
     /// @brief Utility base class for zips in SimNetwork.
     ///
-    /// Provides constructor that ensures linking to SimNetwork.
-    /// Also provides convenience accessors.
+    /// Provides convenience accessors.
+    /// Allows dependency ensuring I will update before network.
     class SimZip : virtual public SimComponent
     {
         public:
