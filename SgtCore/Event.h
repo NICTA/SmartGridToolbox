@@ -25,7 +25,6 @@
 namespace Sgt
 {
     class Event;
-    class OwnedAction;
 
     /// @brief An action that gets performed when an event is triggered.
     ///
