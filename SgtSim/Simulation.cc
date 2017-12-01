@@ -175,16 +175,18 @@ namespace Sgt
                 (scheduledUpdates_.size() == 0 || (scheduledUpdates_.begin()->second > currentTime_)))
         {
             // We've reached the end of this step.
-            sgtLogMessage(LogLevel::VERBOSE) << "Timestep completed at " << currentTime_ << std::endl;
             for (auto comp : simComps_)
             {
                 if (comp->lastUpdated() == currentTime_)
                 {
+                    sgtLogDebug(LogLevel::VERBOSE) << "Calling finalizeState for " << comp->id() << std::endl;
+                    comp->finalizeTimestep();
                     sgtLogDebug(LogLevel::VERBOSE) << "SimComponent " << comp->id() << " completed timestep."
                         << std::endl;
                     comp->didCompleteTimestep().trigger();
                 }
             }
+            sgtLogMessage(LogLevel::VERBOSE) << "Timestep completed at " << currentTime_ << std::endl;
             timestepDidComplete_.trigger();
         }
         sgtLogDebug(LogLevel::VERBOSE) << "After Simulation doNextUpdate():" << std::endl;

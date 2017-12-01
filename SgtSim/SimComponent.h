@@ -105,6 +105,12 @@ namespace Sgt
         {
             // Empty.
         }
+        
+        /// @brief Called after all components have finished their final updateState for a timestep.
+        virtual void finalizeTimestep()
+        {
+            // Empty.
+        }
 
         /// @}
 
