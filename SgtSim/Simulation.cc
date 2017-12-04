@@ -146,7 +146,7 @@ namespace Sgt
 
             if (isNew)
             {
-                sgtLogMessage(LogLevel::VERBOSE) << "Timestep " << nextSchedTime << " will start" << std::endl;
+                sgtLogMessage() << "Simulation doTimestep() at time " << localTimeString(currentTime_, timezone_) << std::endl;
                 timestepWillStart_.trigger();
             }
 
@@ -202,7 +202,6 @@ namespace Sgt
     void Simulation::doTimestep()
     {
         Time time1 = currentTime_;
-        sgtLogMessage() << "Simulation doTimestep() at time " << localTimeString(time1, timezone_) << std::endl;
         LogIndent indent;
         // Do at least one step. This may push us over into the next timestep, in which case we should stop, unless
         // this was the very first timestep.
