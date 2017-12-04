@@ -222,7 +222,7 @@ namespace Sgt
 #define sgtError(msg) {std::ostringstream ss; ss << "SmartGridToolbox: " << __PRETTY_FUNCTION__ << ": " << msg; throw std::runtime_error(ss.str());}
 
     /// @ingroup Utilities
-#define sgtAssert(cond, msg) if (!(cond)) sgtError(msg)
+#define sgtAssert(cond, msg) if (!(cond)) {sgtLogError() << "SmartGridToolbox: " << __PRETTY_FUNCTION__ << ": " << msg << std::endl; std::abort();}
 
     /// @}
 
