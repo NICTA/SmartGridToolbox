@@ -224,7 +224,7 @@ namespace Sgt
         }
 
         indent.out();
-        sgtLogMessage() << "Simulation doTimestep() at time " << localTimeString(time1, timezone_) 
+        sgtLogMessage() << "Simulation doTimestep() at time " << localTimeString(currentTime_, timezone_) 
             << " finished." << std::endl;
     }
 
