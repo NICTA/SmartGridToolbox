@@ -72,7 +72,7 @@ namespace Sgt
         template<typename ToD, bool toIsConst = isConst,
             std::enable_if_t<(toIsConst || !isConst) && 
                 (std::is_base_of<ToD, D>::value || std::is_base_of<D, ToD>::value), int> = 0>
-                ComponentPtr<B, ToD, toIsConst> as()
+                ComponentPtr<B, ToD, toIsConst> as() const
                 {
                     if (it_ == nullptr) return nullptr; else return *it_;
                     // Ternary causes possible complications.
