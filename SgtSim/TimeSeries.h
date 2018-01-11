@@ -95,8 +95,7 @@ namespace Sgt
             // See the definition of map::upper_bound and map::lower_bound, which might be different to
             // what one would expect.
             // Also note, const_reverse_iterator(iterator) constructor shifts back by 1.
-            typename decltype(points_)::const_reverse_iterator it(points_.upper_bound(t)); 
-            return it;
+            return typename decltype(points_)::const_reverse_iterator(points_.upper_bound(t)); 
         }
         /// @brief Iterator to element with smallest key >= t, or rend if no such key exists.
         auto upperBound(const T& t) const
