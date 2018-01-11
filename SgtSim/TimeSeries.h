@@ -88,8 +88,24 @@ namespace Sgt
         auto rbegin() const {return points_.rbegin();};
         auto rend() const {return points_.rend();};
 
-        auto upperBound(const T& t) const {return points_.upper_bound(t);}
-        auto lowerBound(const T& t) const {return points_.lower_bound(t);}
+        /// @brief Iterator to element with largest key <= t, or rend if no such key exists.
+        auto lowerBound(const T& t) const
+        {
+            // NOTE: Careful with this code.
+            // See the definition of map::upper_bound and map::lower_bound, which might be different to
+            // what one would expect.
+            // Also note, const_reverse_iterator(iterator) constructor shifts back by 1.
+            typename decltype(points_)::const_reverse_iterator it(points_.upper_bound(t)); 
+            return it;
+        }
+        /// @brief Iterator to element with smallest key >= t, or rend if no such key exists.
+        auto upperBound(const T& t) const
+        {
+            // NOTE: Careful with this code.
+            // See the definition of map::upper_bound and map::lower_bound, which might be different to
+            // what one would expect.
+            return points_.lower_bound(t);
+        }
 
         void removePoint(const typename std::map<T, V>::const_iterator& it) {points_.erase(it);}
         void removePoints(const typename std::map<T, V>::const_iterator& a,
