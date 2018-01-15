@@ -106,7 +106,7 @@ namespace Sgt
             nextSchedTime = schedUpdateIt->second;
 
             sgtLogDebug(LogLevel::VERBOSE) << "Next scheduled time = "
-                << localTimeString(nextSchedTime) << " for simComponent " << schedComp->id() << std::endl;
+                << localTimeString(nextSchedTime) << " for SimComponent " << schedComp->id() << std::endl;
             sgtLogDebug(LogLevel::VERBOSE) << "(Start, current, end time = "
                 << localTimeString(startTime_) << " " << localTimeString(currentTime_)
                 << " " << localTimeString(endTime_) << ")." << std::endl;
@@ -116,12 +116,12 @@ namespace Sgt
         {
             // There are contingent updates pending.
             auto contComp = *contingentUpdates_.begin();
-            sgtLogMessage(LogLevel::VERBOSE) << "Contingent update simComponent " << contComp->id() << " from "
+            sgtLogMessage(LogLevel::VERBOSE) << "Contingent update SimComponent " << contComp->id() << " from "
                 << localTimeString(contComp->lastUpdated())
                 << " to " << localTimeString(currentTime_) << std::endl;
             LogIndent indent;
             contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
-            // Before updating the simComponent, we need to take it out of the scheduled updates set, because its
+            // Before updating the SimComponent, we need to take it out of the scheduled updates set, because its
             // sort key might change.
             for (auto it = scheduledUpdates_.begin(); it != scheduledUpdates_.end(); ++it)
             {
@@ -152,7 +152,7 @@ namespace Sgt
                 timestepWillStart_.trigger();
             }
 
-            sgtLogMessage(LogLevel::VERBOSE) << "Scheduled update simComponent " << schedComp->id()
+            sgtLogMessage(LogLevel::VERBOSE) << "Scheduled update SimComponent " << schedComp->id()
                 << " from " << localTimeString(schedComp->lastUpdated())
                 << " to " << localTimeString(currentTime_) << std::endl;
 
@@ -219,7 +219,7 @@ namespace Sgt
             doNextUpdate();
         }
 
-        // Now bring up all lagging simComponents to the new time, if they have an update.
+        // Now bring up all lagging SimComponents to the new time, if they have an update.
         Time time2 = currentTime_;
         while ((contingentUpdates_.size() > 0) ||
                 (scheduledUpdates_.size() > 0 && (scheduledUpdates_.begin()->second == time2)))
