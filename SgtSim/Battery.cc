@@ -77,7 +77,7 @@ namespace Sgt
 
     double Battery::internalPower()
     {
-        double P = requestedPDc();
+        double P = actualPDc();
         return (P > 0 ? P / dischargeEfficiency_ : P * chargeEfficiency_);
     }
 
