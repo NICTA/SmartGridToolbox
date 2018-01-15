@@ -70,7 +70,28 @@ namespace Sgt
         // abs is needed in case argument of sqrt is very slightly negative, due to numerical reasons.
         
         uword nPhase = zip()->phases().size();
-        Complex SLoadPerPh{-P/nPhase, -Q/nPhase}; // Load = -ve gen.
-        return diagmat(Col<Complex>(nPhase, fill::none).fill(SLoadPerPh));
+
+        if (isDelta_)
+        {
+            if (nPhase == 3)
+            {
+                Complex S{-P/3.0, -Q/3.0}; // Load = -ve gen.
+                return {{0.0, S, S}, {0.0, 0.0, S}, {0.0, 0.0, 0.0}};
+            }
+            else if (nPhase == 2)
+            {
+                Complex S{-P, -Q}; // Load = -ve gen.
+                return {{0.0, S}, {0.0, 0.0}};
+            }
+            else
+            {
+                sgtError("Wrong number of phases for Delta inverter." << std::endl);
+            }
+        }
+        else
+        {
+            Complex SLoadPerPh{-P/nPhase, -Q/nPhase}; // Load = -ve gen.
+            return diagmat(Col<Complex>(nPhase, fill::none).fill(SLoadPerPh));
+        }
     }
 }

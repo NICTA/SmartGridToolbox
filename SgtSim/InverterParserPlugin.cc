@@ -42,8 +42,11 @@ namespace Sgt
             Phases phases = parser.expand<Phases>(nd["phases"]);
             zip = network.addZip(std::make_shared<Zip>(zipId, phases), busId);
         }
+       
+        auto ndIsDelta = nd["is_delta"];
+        bool isDelta = ndIsDelta ? parser.expand<bool>(ndIsDelta) : false;
 
-        auto inverter = sim.newSimComponent<Inverter>(id, zip);
+        auto inverter = sim.newSimComponent<Inverter>(id, zip, isDelta);
         simNetwork.addSimZip(inverter);
 
         if (nd["efficiency_dc_to_ac"])

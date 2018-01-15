@@ -150,10 +150,11 @@ namespace Sgt
         /// @name Lifecycle.
         /// @{
 
-        Inverter(const std::string& id, const ComponentPtr<Zip>& zip, double efficiency = 1.0) :
+        Inverter(const std::string& id, const ComponentPtr<Zip>& zip, bool isDelta = false, double efficiency = 1.0) :
             Component(id),
             SimpleInverterAbc(efficiency),
-            SimZip(zip)
+            SimZip(zip),
+            isDelta_(isDelta)
         {
             // Empty.
         }
@@ -176,6 +177,11 @@ namespace Sgt
 
         /// @name Inverter specific member functions.
         /// @{
+        
+        bool isDelta() const
+        {
+            return isDelta_;
+        }
 
         double maxSMag() const
         {
@@ -209,6 +215,7 @@ namespace Sgt
 
         private:
 
+        bool isDelta_;
         double maxSMag_{1e9};
         double requestedQ_{0.0};
     };
