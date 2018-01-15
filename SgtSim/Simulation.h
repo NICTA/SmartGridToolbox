@@ -72,18 +72,6 @@ namespace Sgt
             latLong_ = latLong;
         }
 
-        /// @brief Timezone.
-        Timezone timezone() const
-        {
-            return timezone_;
-        }
-
-        /// @brief Timezone.
-        void setTimezone(Timezone tz)
-        {
-            timezone_ = tz;
-        }
-
         /// @brief Current time.
         Time currentTime() const
         {
@@ -220,7 +208,6 @@ namespace Sgt
         Time startTime_{TimeSpecialValues::not_a_date_time};
         Time endTime_{TimeSpecialValues::not_a_date_time};
         LatLong latLong_;
-        Timezone timezone_;
 
         MutableComponentCollection<SimComponent> simComps_;
         MutableComponentCollection<TimeSeriesBase> timeSeries_;

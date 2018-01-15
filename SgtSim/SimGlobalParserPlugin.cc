@@ -33,7 +33,7 @@ namespace Sgt
         {
             try
             {
-                sim.setTimezone(Timezone(parser.expand<std::string>(nodeTz)));
+                timezone() = Timezone(parser.expand<std::string>(nodeTz));
             }
             catch (...)
             {
@@ -44,7 +44,7 @@ namespace Sgt
         const YAML::Node& nodeStart = nd["start_time"];
         try
         {
-            sim.setStartTime(parseTime(nodeStart, sim.timezone(), parser));
+            sim.setStartTime(parseTime(nodeStart, timezone(), parser));
         }
         catch (...)
         {
@@ -54,7 +54,7 @@ namespace Sgt
         const YAML::Node& nodeEnd = nd["end_time"];
         try
         {
-            sim.setEndTime(parseTime(nodeEnd, sim.timezone(), parser));
+            sim.setEndTime(parseTime(nodeEnd, timezone(), parser));
         }
         catch (...)
         {

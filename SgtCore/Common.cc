@@ -296,6 +296,12 @@ namespace Sgt
     template std::ostream& operator<< <uword>(std::ostream& os, const Mat<uword>& v);
     template std::ostream& operator<< <Complex>(std::ostream& os, const Mat<Complex>& v);
 
+    Timezone& timezone()
+    {
+        static Timezone tz_; // Defaults to UTC.
+        return tz_; 
+    }
+
     namespace
     {
         const boost::posix_time::ptime epoch(boost::gregorian::date(1970,1,1));

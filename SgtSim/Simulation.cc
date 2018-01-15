@@ -106,10 +106,10 @@ namespace Sgt
             nextSchedTime = schedUpdateIt->second;
 
             sgtLogDebug(LogLevel::VERBOSE) << "Next scheduled time = "
-                << localTimeString(nextSchedTime, timezone_) << " for simComponent " << schedComp->id() << std::endl;
+                << localTimeString(nextSchedTime) << " for simComponent " << schedComp->id() << std::endl;
             sgtLogDebug(LogLevel::VERBOSE) << "(Start, current, end time = "
-                << localTimeString(startTime_, timezone_) << " " << localTimeString(currentTime_, timezone_)
-                << " " << localTimeString(endTime_, timezone_) << ")." << std::endl;
+                << localTimeString(startTime_) << " " << localTimeString(currentTime_)
+                << " " << localTimeString(endTime_) << ")." << std::endl;
         }
 
         if (nextSchedTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ <= endTime_)
@@ -117,8 +117,8 @@ namespace Sgt
             // There are contingent updates pending.
             auto contComp = *contingentUpdates_.begin();
             sgtLogMessage(LogLevel::VERBOSE) << "Contingent update simComponent " << contComp->id() << " from "
-                << localTimeString(contComp->lastUpdated(), timezone_)
-                << " to " << localTimeString(currentTime_, timezone_) << std::endl;
+                << localTimeString(contComp->lastUpdated())
+                << " to " << localTimeString(currentTime_) << std::endl;
             LogIndent indent;
             contingentUpdates_.erase(contingentUpdates_.begin()); // Remove from the set.
             // Before updating the simComponent, we need to take it out of the scheduled updates set, because its
@@ -148,13 +148,13 @@ namespace Sgt
 
             if (isNew)
             {
-                sgtLogMessage() << "Simulation doTimestep() at time " << localTimeString(currentTime_, timezone_) << std::endl;
+                sgtLogMessage() << "Simulation doTimestep() at time " << localTimeString(currentTime_) << std::endl;
                 timestepWillStart_.trigger();
             }
 
             sgtLogMessage(LogLevel::VERBOSE) << "Scheduled update simComponent " << schedComp->id()
-                << " from " << localTimeString(schedComp->lastUpdated(), timezone_)
-                << " to " << localTimeString(currentTime_, timezone_) << std::endl;
+                << " from " << localTimeString(schedComp->lastUpdated())
+                << " to " << localTimeString(currentTime_) << std::endl;
 
             // Remove the scheduled and possible contingent update. Note that if there is a contingent update, it was
             // inserted by an element that has already updated, and so it is safe to do the scheduled update in place
@@ -189,7 +189,7 @@ namespace Sgt
                     comp->didCompleteTimestep().trigger();
                 }
             }
-            sgtLogMessage(LogLevel::VERBOSE) << "Timestep completed at " << localTimeString(currentTime_, timezone_) 
+            sgtLogMessage(LogLevel::VERBOSE) << "Timestep completed at " << localTimeString(currentTime_) 
                 << std::endl;
             timestepDidComplete_.trigger();
         }
@@ -228,7 +228,7 @@ namespace Sgt
         }
 
         indent.out();
-        sgtLogMessage() << "Simulation doTimestep() at time " << localTimeString(currentTime_, timezone_) 
+        sgtLogMessage() << "Simulation doTimestep() at time " << localTimeString(currentTime_) 
             << " finished." << std::endl;
     }
 
@@ -250,12 +250,12 @@ namespace Sgt
         sgtLogDebug(LogLevel::VERBOSE) << "TryInsertScheduledUpdate: " << schedComp->id() << std::endl;
         LogIndent indent;
         Time nextUpdate = schedComp->validUntil();
-        sgtLogDebug(LogLevel::VERBOSE) << "nextUpdate = " << localTimeString(nextUpdate, timezone_) << std::endl;
-        sgtLogDebug(LogLevel::VERBOSE) << "endTime_ = " << localTimeString(endTime_, timezone_) << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "nextUpdate = " << localTimeString(nextUpdate) << std::endl;
+        sgtLogDebug(LogLevel::VERBOSE) << "endTime_ = " << localTimeString(endTime_) << std::endl;
         if ((!nextUpdate.is_special()) && nextUpdate <= endTime_)
         {
             sgtLogDebug(LogLevel::VERBOSE) << "Inserting " << schedComp->id()
-                << ": nextUpdate = " << localTimeString(nextUpdate, timezone_) << std::endl;
+                << ": nextUpdate = " << localTimeString(nextUpdate) << std::endl;
             scheduledUpdates_.insert(std::make_pair(schedComp, nextUpdate));
         }
     };

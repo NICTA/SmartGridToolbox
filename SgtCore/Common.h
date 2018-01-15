@@ -384,12 +384,17 @@ namespace Sgt
     class Timezone
     {
         public:
-        Timezone() = default;
-        Timezone(const std::string& s) : z(new boost::local_time::posix_time_zone(s)) {}
-        operator boost::local_time::time_zone_ptr() const {return z;};
+
+        Timezone() : z_(new boost::local_time::posix_time_zone("UTC")) {}
+        Timezone(const std::string& s) : z_(new boost::local_time::posix_time_zone(s)) {}
+        operator boost::local_time::time_zone_ptr() const {return z_;};
+
         private:
-        boost::local_time::time_zone_ptr z{nullptr};
+
+        boost::local_time::time_zone_ptr z_{nullptr};
     };
+
+    Timezone& timezone();
 
     using TimeSpecialValues = boost::date_time::special_values;
 
@@ -426,10 +431,10 @@ namespace Sgt
     std::string utcTimeString(const Time& t);
 
     /// @ingroup Utilities
-    Time timeFromLocalTimeStringAndZone(const std::string& localTimeString, Timezone zone);
+    Time timeFromLocalTimeStringAndZone(const std::string& localTimeString, Timezone zone = timezone());
 
     /// @ingroup Utilities
-    std::string localTimeString(const Time& t, Timezone zone);
+    std::string localTimeString(const Time& t, Timezone zone = timezone());
 
     /// @}
 
@@ -446,10 +451,10 @@ namespace Sgt
     boost::posix_time::ptime utcPtime(const Time& t);
 
     /// @ingroup Utilities
-    Time timeFromLocalPtime(const boost::posix_time::ptime& localPtime, Timezone zone);
+    Time timeFromLocalPtime(const boost::posix_time::ptime& localPtime, Timezone zone = timezone());
 
     /// @ingroup Utilities
-    boost::posix_time::ptime localPtime(const Time& t);
+    boost::posix_time::ptime localPtime(const Time& t, Timezone zone = timezone());
 
     /// @ingroup Utilities
     inline Time timeFromUtcTimeT(std::time_t timeT)
