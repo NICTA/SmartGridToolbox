@@ -346,7 +346,7 @@ namespace Sgt
         return boost::posix_time::to_simple_string(utcPtime(t));
     }
 
-    Time timeFromLocalTimeStringAndZone(const std::string& localTimeString, Timezone zone)
+    Time timeFromLocalTimeString(const std::string& localTimeString, Timezone zone)
     {
         return timeFromUtcPtime(localPtimeToUtcPtime(boost::posix_time::time_from_string(localTimeString), zone));
     }

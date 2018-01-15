@@ -18,9 +18,9 @@ namespace Sgt
 {
     namespace
     {
-        Time parseTime(const YAML::Node& nd, Timezone timezone, const ParserBase& parser)
+        Time parseTime(const YAML::Node& nd, const ParserBase& parser)
         {
-            return timeFromLocalPtime(parser.expand<boost::posix_time::ptime>(nd), timezone);
+            return timeFromLocalPtime(parser.expand<boost::posix_time::ptime>(nd));
         }
     }
 
@@ -44,7 +44,7 @@ namespace Sgt
         const YAML::Node& nodeStart = nd["start_time"];
         try
         {
-            sim.setStartTime(parseTime(nodeStart, timezone(), parser));
+            sim.setStartTime(parseTime(nodeStart, parser));
         }
         catch (...)
         {
@@ -54,7 +54,7 @@ namespace Sgt
         const YAML::Node& nodeEnd = nd["end_time"];
         try
         {
-            sim.setEndTime(parseTime(nodeEnd, timezone(), parser));
+            sim.setEndTime(parseTime(nodeEnd, parser));
         }
         catch (...)
         {

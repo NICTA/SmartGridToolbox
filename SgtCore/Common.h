@@ -431,7 +431,7 @@ namespace Sgt
     std::string utcTimeString(const Time& t);
 
     /// @ingroup Utilities
-    Time timeFromLocalTimeStringAndZone(const std::string& localTimeString, Timezone zone = timezone());
+    Time timeFromLocalTimeString(const std::string& localTimeString, Timezone zone = timezone());
 
     /// @ingroup Utilities
     std::string localTimeString(const Time& t, Timezone zone = timezone());

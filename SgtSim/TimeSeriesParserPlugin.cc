@@ -255,7 +255,7 @@ namespace Sgt
                 if (ndRelto)
                 {
                     std::string relto = parser.expand<std::string>(nd["relative_to_time"]);
-                    t0 = timeFromLocalTimeStringAndZone(relto, timezone());
+                    t0 = timeFromLocalTimeString(relto);
                 }
 
                 double toSecs = getToSecsFactor(parser.expand<std::string>(nd["time_unit"]));
