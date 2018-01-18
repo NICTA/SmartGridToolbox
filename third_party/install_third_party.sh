@@ -11,19 +11,21 @@ fi
 if [ -w $INSTALL_PREFIX/lib ]; then SUDO=""; else SUDO=sudo; fi
 
 cd armadillo-code
-rm -rf build_sgt
-mkdir build_sgt
+mkdir -p build_sgt
 cd build_sgt
-cmake -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX .. || exit $?
+if [ ! -f Makefile ]; then
+    cmake -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX .. || exit $?
+fi
 make || exit $?
 $SUDO make install || exit $?
 cd ../..
 
 cd yaml-cpp
-rm -rf build_sgt
-mkdir build_sgt
+mkdir -p build_sgt
 cd build_sgt
-cmake -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX .. || exit $?
+if [ ! -f Makefile ]; then
+    cmake -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX .. || exit $?
+fi
 make || exit $?
 $SUDO make install || exit $?
 cd ../..
