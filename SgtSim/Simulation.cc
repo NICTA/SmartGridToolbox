@@ -112,6 +112,8 @@ namespace Sgt
                 << " " << localTimeString(endTime_) << ")." << std::endl;
         }
 
+        bool simIsFinished = false;
+
         if (nextSchedTime > currentTime_ && contingentUpdates_.size() > 0 && currentTime_ <= endTime_)
         {
             // There are contingent updates pending.
@@ -172,8 +174,9 @@ namespace Sgt
         }
         else
         {
-            sgtLogMessage(LogLevel::VERBOSE) << "No update." << std::endl;
+            simIsFinished = true;
         }
+
         if (contingentUpdates_.size() == 0 &&
                 (scheduledUpdates_.size() == 0 || (scheduledUpdates_.begin()->second > currentTime_)))
         {
@@ -201,6 +204,10 @@ namespace Sgt
 
         indent.out();
         sgtLogMessage(LogLevel::VERBOSE) << "Simulation doNextUpdate() finished." << std::endl;
+        if (simIsFinished)
+        {
+            sgtLogMessage() << "Simulation is finished." << std::endl;
+        }
     }
 
     void Simulation::doTimestep()
