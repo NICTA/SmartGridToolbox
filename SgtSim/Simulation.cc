@@ -150,7 +150,7 @@ namespace Sgt
 
             if (isNew)
             {
-                sgtLogMessage() << "Simulation doTimestep() at time " << localTimeString(currentTime_) << std::endl;
+                sgtLogMessage() << "Simulation new timestep at time " << localTimeString(currentTime_) << std::endl;
                 timestepWillStart_.trigger();
             }
 
@@ -233,10 +233,6 @@ namespace Sgt
         {
             doNextUpdate();
         }
-
-        indent.out();
-        sgtLogMessage() << "Simulation doTimestep() at time " << localTimeString(currentTime_) 
-            << " finished." << std::endl;
     }
 
     void Simulation::logComponents() const
