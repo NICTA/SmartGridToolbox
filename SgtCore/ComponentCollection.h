@@ -66,7 +66,8 @@ namespace Sgt
         template<typename FromD, bool fromIsConst, 
             std::enable_if_t<(isConst || !fromIsConst) &&
                 std::is_base_of<D, FromD>::value, int> = 0>
-                ComponentPtr(const ComponentPtr<B, FromD, fromIsConst>& from) : it_(std::make_unique<Iter>(*from.it_))
+                ComponentPtr(const ComponentPtr<B, FromD, fromIsConst>& from) :
+                    it_(from == nullptr ? nullptr : std::make_unique<Iter>(*from.it_))
                 {}
 
         /// @brief Explicit conversion, including down conversion. 
