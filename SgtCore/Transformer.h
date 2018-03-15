@@ -24,6 +24,7 @@ namespace Sgt
         DD,
         DGY,
         SINGLE_PHASE,
+        SINGLE_PHASE_DGY,
         VV,
         YY
     };

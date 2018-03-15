@@ -56,6 +56,7 @@ libinclude_HEADERS = \
 	Properties.h \
 	Random.h \
 	SinglePhaseTransformer.h \
+	SinglePhaseDgyTransformer.h \
 	Spline.h \
 	Stopwatch.h \
 	Transformer.h \
@@ -105,6 +106,8 @@ libSgtCore_la_SOURCES = \
 	SgtCore.h \
 	SinglePhaseTransformer.h SinglePhaseTransformer.cc \
 	SinglePhaseTransformerParserPlugin.h SinglePhaseTransformerParserPlugin.cc \
+	SinglePhaseDgyTransformer.h SinglePhaseDgyTransformer.cc \
+	SinglePhaseDgyTransformerParserPlugin.h SinglePhaseDgyTransformerParserPlugin.cc \
 	Spline.h \
 	Stopwatch.h Stopwatch.cc \
 	Transformer.h Transformer.cc \

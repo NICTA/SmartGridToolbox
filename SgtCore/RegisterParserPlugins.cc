@@ -23,6 +23,7 @@
 #include "OverheadLineParserPlugin.h"
 #include "PowerFlowSolverParserPlugin.h"
 #include "SinglePhaseTransformerParserPlugin.h"
+#include "SinglePhaseDgyTransformerParserPlugin.h"
 #include "UndergroundLineParserPlugin.h"
 #include "VvTransformerParserPlugin.h"
 #include "YyTransformerParserPlugin.h"
@@ -43,6 +44,7 @@ namespace Sgt
         p.registerParserPlugin<OverheadLineParserPlugin>();
         p.registerParserPlugin<PowerFlowSolverParserPlugin>();
         p.registerParserPlugin<SinglePhaseTransformerParserPlugin>();
+        p.registerParserPlugin<SinglePhaseDgyTransformerParserPlugin>();
         p.registerParserPlugin<UndergroundLineParserPlugin>();
         p.registerParserPlugin<VvTransformerParserPlugin>();
         p.registerParserPlugin<YyTransformerParserPlugin>();
