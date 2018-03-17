@@ -657,6 +657,21 @@ BOOST_AUTO_TEST_CASE (test_dgy_transformer)
     BOOST_CHECK_CLOSE(arg(V1[2]) * 180 / pi, 150, 1e-2);
 }
 
+BOOST_AUTO_TEST_CASE (test_single_phase_dgy_transformer)
+{
+    Network netw;
+    Parser<Network> p;
+    p.parse("test_single_phase_dgy_transformer.yaml", netw);
+    netw.solvePowerFlow();
+
+    auto V0 = netw.buses()[0]->V();
+    auto V1 = netw.buses()[1]->V();
+    cout << abs(V0).eval() << " " << (arg(V0) * 180 / pi).eval() << endl;
+    cout << abs(V1).eval() << " " << (arg(V1) * 180 / pi).eval() << endl;
+    BOOST_CHECK_CLOSE(abs(V1[0]), 0.240 / 1.05, 1e-2);
+    BOOST_CHECK_CLOSE(arg(V1[0]) * 180 / pi, 30, 1e-2);
+}
+
 BOOST_AUTO_TEST_CASE (test_load_model_a)
 {
     Network netw;
