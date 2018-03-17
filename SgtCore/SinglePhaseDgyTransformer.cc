@@ -57,8 +57,8 @@ namespace Sgt
 
         Mat<Complex> result(
             {
-            {2 * a2i,  -a2i,  -aci},
-            {-a2i, 2 * a2i,  aci},
+            {a2i,  -a2i,  -aci},
+            {-a2i, a2i,  aci},
             {-ai,    ai,   1.0},
             });
         result *= YL;
