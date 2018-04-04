@@ -35,7 +35,7 @@ namespace Sgt
 
     template<size_t i> Col<Complex> IWindings(const BranchAbc& b)
     {
-        Col<Complex> I = -b.IBus()[i];
+        Col<Complex> I = b.IBus()[i];
         return {{I(0), I(1), I(2)}};
     }
     Col<Complex> YyTransformer::IWindings0() const
