@@ -59,7 +59,7 @@ namespace Sgt
             mapPhases(bus1()->V(), bus1()->phases(), phases1())}};
     }
             
-    array<Col<Complex>, 2> VIBusInj(const BranchAbc& branch)
+    array<Col<Complex>, 2> VIBus(const BranchAbc& branch)
     {
         Col<Complex> V0 = mapPhases(branch.bus0()->V(), branch.bus0()->phases(), branch.phases0());
         Col<Complex> V1 = mapPhases(branch.bus1()->V(), branch.bus1()->phases(), branch.phases1());
@@ -67,9 +67,9 @@ namespace Sgt
         return {{V, branch.Y() * V}};
     }
 
-    std::array<Col<Complex>, 2> BranchAbc::IBusInj() const
+    std::array<Col<Complex>, 2> BranchAbc::IBus() const
     {
-        auto I = VIBusInj(*this)[1];
+        auto I = VIBus(*this)[1];
 
         Col<Complex> I0 = I.subvec(span(0, bus0_->phases().size() - 1));
         I0 = mapPhases(I0, phases0_, bus0_->phases());
@@ -80,9 +80,9 @@ namespace Sgt
         return {{I0, I1}};
     }
 
-    std::array<Col<Complex>, 2> BranchAbc::SBusInj() const
+    std::array<Col<Complex>, 2> BranchAbc::SBus() const
     {
-        auto VI = VIBusInj(*this);
+        auto VI = VIBus(*this);
         Col<Complex> S = VI[0] % conj(VI[1]);
 
         Col<Complex> S0 = S.subvec(span(0, bus0_->phases().size() - 1));

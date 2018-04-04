@@ -35,13 +35,13 @@ namespace Sgt
     Col<Complex> SinglePhaseDgyTransformer::IWindings0() const
     {
         constexpr double c = 1.0 / 3.0;
-        Col<Complex> Ibi = -IBusInj()[0]; 
+        Col<Complex> Ibi = -IBus()[0]; 
         Col<Complex> I = mapPhases(Ibi, bus0()->phases(), phases0());
         return {{c * (I(0) - I(1))}};
     }
     Col<Complex> SinglePhaseDgyTransformer::IWindings1() const
     {
-        Col<Complex> Ibi = -IBusInj()[1]; 
+        Col<Complex> Ibi = -IBus()[1]; 
         Col<Complex> I = mapPhases(Ibi, bus1()->phases(), phases1());
         return {{I(0)}};
     }

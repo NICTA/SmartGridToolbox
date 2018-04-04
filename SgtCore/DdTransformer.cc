@@ -36,7 +36,7 @@ namespace Sgt
     template<size_t i> Col<Complex> IWindings(const BranchAbc& b)
     {
         constexpr double c = 1.0 / 3.0;
-        Col<Complex> I = -b.IBusInj()[i];
+        Col<Complex> I = -b.IBus()[i];
         return {{c * (I(0) - I(1)), c * (I(1) - I(2)), c * (I(2) - I(0))}};
     }
     Col<Complex> DdTransformer::IWindings0() const

@@ -33,12 +33,12 @@ namespace Sgt
     Col<Complex> DgyTransformer::IWindings0() const
     {
         constexpr double c = 1.0 / 3.0;
-        Col<Complex> I = -IBusInj()[0];
+        Col<Complex> I = -IBus()[0];
         return {{c * (I(0) - I(1)), c * (I(1) - I(2)), c * (I(2) - I(0))}};
     }
     Col<Complex> DgyTransformer::IWindings1() const
     {
-        Col<Complex> I = -IBusInj()[1];
+        Col<Complex> I = -IBus()[1];
         return {{I(0), I(1), I(2)}};
     }
 
