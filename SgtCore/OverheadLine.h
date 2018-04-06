@@ -55,14 +55,14 @@ namespace Sgt
         /// @param phases1 The phases on the '1' (to) end.
         /// @param L The line length in m.
         /// @param condDist Matrix with conductor spacing. Symmetric / zero diagonal.
-        /// @param subcondGmr Matrix with conductor spacing on off diagonal, subconductor GMR on diagonal.
-        /// @param subcondRPerL resistance per unit length of each subconductor.
+        /// @param subcondGmr GMR of each (sub)conductor.
+        /// @param subcondRPerL Resistance per unit length of each subconductor.
         /// @param freq The nominal frequency of the system.
         /// @param rhoEarth The earth resistivity.
         /// @param nInBundle The number of bundled subconductors for each conductor (optional).
         /// @param adjSubcondDist The distance between adjacent bundled subconductors for each conductor (optional).
         OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double L,
-                const arma::Mat<double>& condDist, const arma::Mat<double> subcondGmr,
+                const arma::Mat<double>& condDist, const arma::Col<double> subcondGmr,
                 const arma::Col<double>& subcondRPerL, double freq = 50.0, double rhoEarth = 100.0,
                 const arma::Col<unsigned int>& nInBundle = arma::Col<unsigned int>(),
                 const arma::Col<double>& adjSubcondDist = arma::Col<double>());

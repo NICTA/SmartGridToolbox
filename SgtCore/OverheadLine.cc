@@ -19,7 +19,7 @@
 namespace Sgt
 {
     OverheadLine::OverheadLine(const std::string& id, const Phases& phases0, const Phases& phases1, double L,
-            const arma::Mat<double>& condDist, const arma::Mat<double> subcondGmr,
+            const arma::Mat<double>& condDist, const arma::Col<double> subcondGmr,
             const arma::Col<double>& subcondRPerL, double freq, double rhoEarth,
             const arma::Col<unsigned int>& nInBundle,
             const arma::Col<double>& adjSubcondDist) :
