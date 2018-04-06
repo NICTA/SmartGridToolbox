@@ -24,9 +24,10 @@
             phases_0: [A, B, C]
             phases_1: [A, B, C]
             id: trans_1_2
-            nom_ratio: 1.0
-            off_nom_ratio_10: 0.95
-            off_nom_ratio_12: 1.05
-            leakage_impedance_10: 0.0001j 
-            leakage_impedance_12: 0.0001j 
+            nom_ratio_w1: 1.0
+            nom_ratio_w2: 1.0
+            off_nom_ratio_w1: 0.95
+            off_nom_ratio_w2: 1.05
+            leakage_impedance_w1: 0.0001j 
+            leakage_impedance_w2: 0.0001j 
             tie_admittance: 1000

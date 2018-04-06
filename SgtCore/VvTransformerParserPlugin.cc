@@ -38,22 +38,23 @@ namespace Sgt
     {
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "nom_ratio");
-        assertFieldPresent(nd, "leakage_impedance_10");
-        assertFieldPresent(nd, "leakage_impedance_12");
+        assertFieldPresent(nd, "leakage_impedance_w1");
+        assertFieldPresent(nd, "leakage_impedance_w2");
         assertFieldPresent(nd, "phases_0");
         assertFieldPresent(nd, "phases_1");
 
         const std::string id = parser.expand<std::string>(nd["id"]);
-        Complex nomRatio = parser.expand<Complex>(nd["nom_ratio"]);
+        Complex nomRatioW1 = parser.expand<Complex>(nd["nom_ratio_w1"]);
+        Complex nomRatioW2 = parser.expand<Complex>(nd["nom_ratio_w2"]);
 
-        auto ndOffNomRatio10 = nd["off_nom_ratio_10"];
-        Complex offNomRatio10 = ndOffNomRatio10 ? parser.expand<Complex>(nd["off_nom_ratio_10"]) : 1.0;
+        auto ndOffNomRatioW1 = nd["off_nom_ratio_w1"];
+        Complex offNomRatioW1 = ndOffNomRatioW1 ? parser.expand<Complex>(nd["off_nom_ratio_w1"]) : 1.0;
         
-        auto ndOffNomRatio12 = nd["off_nom_ratio_12"];
-        Complex offNomRatio12 = ndOffNomRatio12 ? parser.expand<Complex>(nd["off_nom_ratio_12"]) : 1.0;
+        auto ndOffNomRatioW2 = nd["off_nom_ratio_w2"];
+        Complex offNomRatioW2 = ndOffNomRatioW2 ? parser.expand<Complex>(nd["off_nom_ratio_w2"]) : 1.0;
 
-        Complex ZL10 = parser.expand<Complex>(nd["leakage_impedance_10"]);
-        Complex ZL12 = parser.expand<Complex>(nd["leakage_impedance_12"]);
+        Complex ZLW1 = parser.expand<Complex>(nd["leakage_impedance_w1"]);
+        Complex ZLW2 = parser.expand<Complex>(nd["leakage_impedance_w2"]);
 
         auto ndTieAdmittance = nd["tie_admittance"];
         Complex YTie = ndTieAdmittance ? parser.expand<Complex>(ndTieAdmittance) : Complex{0.0, 0.0};
@@ -65,7 +66,7 @@ namespace Sgt
         const Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
         
         std::unique_ptr<VvTransformer> trans(
-                new VvTransformer(id, nomRatio, offNomRatio10, offNomRatio12, ZL10, ZL12, YTie, YGnd,
+                new VvTransformer(id, nomRatioW1, nomRatioW2, offNomRatioW1, offNomRatioW2, ZLW1, ZLW2, YTie, YGnd,
                     phases0, phases1));
 
         return trans;

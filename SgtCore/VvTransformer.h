@@ -46,23 +46,23 @@ namespace Sgt
 
         /// @brief Constructor
         /// @param nomRatio Nominal complex voltage/turns ratio for windings.
-        /// @param offNomRatio10 Off-nominal complex voltage/turns ratio for windings between phases 1 and 0.
-        /// @param offNomRatio12 Off-nominal complex voltage/turns ratio for windings between phases 1 and 2.
-        /// @param ZL10 The leakage impedance between phases 1 and 0, must be > 0.
-        /// @param ZL12 The leakage impedance between phases 1 and 2, must be > 0.
+        /// @param offNomRatioW1 Off-nominal complex voltage/turns ratio for windings between phases 1 and 0.
+        /// @param offNomRatioW2 Off-nominal complex voltage/turns ratio for windings between phases 1 and 2.
+        /// @param ZLW1 The leakage impedance between phases 1 and 0, must be > 0.
+        /// @param ZLW2 The leakage impedance between phases 1 and 2, must be > 0.
         /// @param YTie Tie admittance for center phase.
         /// @param YGround Ground admittance for center phase.
         /// @param phases0 The phases on the first (primary) side.
         /// @param phases1 The phases on the second (secondary) side.
-        VvTransformer(const std::string& id, Complex nomRatio,
-                Complex offNomRatio10, Complex offNomRatio12,
-                Complex ZL10, Complex ZL12,
+        VvTransformer(const std::string& id, Complex nomRatioW1, Complex nomRatioW2,
+                Complex offNomRatioW1, Complex offNomRatioW2,
+                Complex ZLW1, Complex ZLW2,
                 Complex YTie, Complex YGround,
                 const Phases& phases0 = {Phase::A, Phase::B, Phase::C},
                 const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
             Component(id),
-            TransformerAbc(phases0, phases1, {nomRatio, nomRatio}, {offNomRatio10, offNomRatio12},
-                    {ZL10, ZL12}, {}),
+            TransformerAbc(phases0, phases1, {nomRatioW1, nomRatioW2}, {offNomRatioW1, offNomRatioW2},
+                    {ZLW1, ZLW2}, {}),
             YTie_(YTie),
             YGround_(YGround)
         {
