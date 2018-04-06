@@ -131,7 +131,7 @@ namespace Sgt
         Complex V = (ctrlSideIdx_ == 0 ? trans_->VWindings0() : trans_->VWindings1())[windingIdx_];
         if (hasLdc_)
         {
-            Complex I = (ctrlSideIdx_ == 0 ? trans_->IWindings0() : trans_->VWindings1())[windingIdx_] * topFactorI_;
+            Complex I = (ctrlSideIdx_ == 0 ? trans_->IWindings0() : trans_->IWindings1())[windingIdx_] * topFactorI_;
             V = V - I * ZLdc_;
         }
         return abs(V);
