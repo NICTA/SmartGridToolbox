@@ -173,7 +173,7 @@ namespace Sgt
         {
             public:
             bool operator()(const std::pair<ComponentPtr<SimComponent>, Time>& lhs,
-                    const std::pair<ComponentPtr<SimComponent>, Time>& rhs)
+                    const std::pair<ComponentPtr<SimComponent>, Time>& rhs) const
             {
                 return ((lhs.second < rhs.second) ||
                         (lhs.second == rhs.second && lhs.first->rank() < rhs.first->rank()) ||
@@ -186,7 +186,7 @@ namespace Sgt
         class ContingentUpdatesCompare
         {
             public:
-            bool operator()(const ComponentPtr<SimComponent>& lhs, const ComponentPtr<SimComponent>& rhs)
+            bool operator()(const ComponentPtr<SimComponent>& lhs, const ComponentPtr<SimComponent>& rhs) const
             {
                 return ((lhs->rank() < rhs->rank()) ||
                         ((lhs->rank() == rhs->rank()) && (lhs->id() < rhs->id())));
