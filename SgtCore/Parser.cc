@@ -16,6 +16,7 @@
 
 #include "Common.h"
 #include "PowerFlow.h"
+#include "Random.h"
 
 #include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>
@@ -162,6 +163,11 @@ namespace Sgt
                 *logFilter = ndLogFilter.as<std::string>();
             }
         }
+    }
+
+    void ParserBase::parseRandomSeed(const YAML::Node& nd)
+    {
+        randSeed(nd.as<unsigned int>()); 
     }
 
     namespace

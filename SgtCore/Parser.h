@@ -58,6 +58,7 @@ namespace Sgt
 
         ParserLoop& parseLoop(const YAML::Node& nd);
         void parseLogging(const YAML::Node& nd);
+        void parseRandomSeed(const YAML::Node& nd);
 
         private:
 
@@ -158,6 +159,10 @@ namespace Sgt
                     else if (nodeType == "logging")
                     {
                         parseLogging(nodeVal);
+                    }
+                    else if (nodeType == "random_seed")
+                    {
+                        parseRandomSeed(nodeVal);
                     }
                     else
                     {
