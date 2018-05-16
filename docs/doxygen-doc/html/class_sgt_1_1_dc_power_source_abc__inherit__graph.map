@@ -1,0 +1,9 @@
+<map id="Sgt::DcPowerSourceAbc" name="Sgt::DcPowerSourceAbc">
+<area shape="rect" id="node6" href="$class_sgt_1_1_battery.html" title="Basic battery class, deriving from DCPowerSourceBase. " alt="" coords="5,312,96,337"/>
+<area shape="rect" id="node7" href="$class_sgt_1_1_generic_dc_power_source.html" title="Sgt::GenericDcPowerSource" alt="" coords="120,312,312,337"/>
+<area shape="rect" id="node8" href="$class_sgt_1_1_solar_pv.html" title="Sgt::SolarPv" alt="" coords="336,312,432,337"/>
+<area shape="rect" id="node9" href="$class_sgt_1_1_time_series_dc_power_source.html" title="Sgt::TimeSeriesDcPowerSource" alt="" coords="455,312,668,337"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation. " alt="" coords="230,165,370,191"/>
+<area shape="rect" id="node3" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="241,92,359,117"/>
+<area shape="rect" id="node5" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="323,12,456,37"/>
+</map>

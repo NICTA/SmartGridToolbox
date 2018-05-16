@@ -1,0 +1,22 @@
+<map id="Sgt::SimComponent" name="Sgt::SimComponent">
+<area shape="rect" id="node5" href="$class_sgt_1_1_dc_power_source_abc.html" title="DC power source. " alt="" coords="583,104,751,129"/>
+<area shape="rect" id="node10" href="$class_sgt_1_1_heartbeat.html" title="Utility base class for a component that updates with a regular &quot;tick&quot; dt. " alt="" coords="614,203,721,228"/>
+<area shape="rect" id="node13" href="$class_sgt_1_1_inverter_abc.html" title="DC power to n&#45;phase AC converter. " alt="" coords="609,499,726,524"/>
+<area shape="rect" id="node16" href="$class_sgt_1_1_sim_branch.html" title="Utility base class for branches in SimNetwork. " alt="" coords="610,301,724,327"/>
+<area shape="rect" id="node17" href="$class_sgt_1_1_sim_bus.html" title="Utility base class for buses in SimNetwork. " alt="" coords="620,351,715,376"/>
+<area shape="rect" id="node18" href="$class_sgt_1_1_sim_gen.html" title="Utility base class for gens in SimNetwork. " alt="" coords="619,400,716,425"/>
+<area shape="rect" id="node19" href="$class_sgt_1_1_sim_network.html" title="SimNetwork : A SimComponent for an electrical network. " alt="" coords="607,449,728,475"/>
+<area shape="rect" id="node20" href="$class_sgt_1_1_sim_zip.html" title="Utility base class for zips in SimNetwork. " alt="" coords="622,252,712,277"/>
+<area shape="rect" id="node22" href="$class_sgt_1_1_tap_changer.html" title="Sgt::TapChanger" alt="" coords="606,548,728,573"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="229,351,347,376"/>
+<area shape="rect" id="node4" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="26,379,160,404"/>
+<area shape="rect" id="node6" href="$class_sgt_1_1_battery.html" title="Basic battery class, deriving from DCPowerSourceBase. " alt="" coords="860,5,951,31"/>
+<area shape="rect" id="node7" href="$class_sgt_1_1_generic_dc_power_source.html" title="Sgt::GenericDcPowerSource" alt="" coords="809,55,1001,80"/>
+<area shape="rect" id="node8" href="$class_sgt_1_1_solar_pv.html" title="Sgt::SolarPv" alt="" coords="858,104,953,129"/>
+<area shape="rect" id="node9" href="$class_sgt_1_1_time_series_dc_power_source.html" title="Sgt::TimeSeriesDcPowerSource" alt="" coords="799,153,1011,179"/>
+<area shape="rect" id="node11" href="$class_sgt_1_1_time_series_zip.html" title="Sgt::TimeSeriesZip" alt="" coords="838,252,972,277"/>
+<area shape="rect" id="node12" href="$class_sgt_1_1_weather.html" title="Sgt::Weather" alt="" coords="856,203,955,228"/>
+<area shape="rect" id="node14" href="$class_sgt_1_1_simple_inverter_abc.html" title="An inverter with simple constant DC&#45;AC and AC&#45;DC efficiencies. " alt="" coords="826,451,984,476"/>
+<area shape="rect" id="node15" href="$class_sgt_1_1_inverter.html" title="DC power to n&#45;phase AC converter. " alt="" coords="1059,401,1153,427"/>
+<area shape="rect" id="node21" href="$class_sgt_1_1_simple_building.html" title="Sgt::SimpleBuilding" alt="" coords="837,353,974,379"/>
+</map>

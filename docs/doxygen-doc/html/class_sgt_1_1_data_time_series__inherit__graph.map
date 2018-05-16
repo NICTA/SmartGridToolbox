@@ -1,0 +1,6 @@
+<map id="Sgt::DataTimeSeries&lt; T, V &gt;" name="Sgt::DataTimeSeries&lt; T, V &gt;">
+<area shape="rect" id="node4" href="$class_sgt_1_1_lerp_time_series.html" title="TimeSeries that uses linear interpolation between tabulated times. " alt="" coords="5,239,148,277"/>
+<area shape="rect" id="node5" href="$class_sgt_1_1_stepwise_time_series.html" title="TimeSeries that changes in a stepwise manner between tabulated times. " alt="" coords="172,239,341,277"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_time_series.html" title="Base class for time series objects: functions of time. " alt="" coords="85,79,247,104"/>
+<area shape="rect" id="node3" href="$class_sgt_1_1_time_series_base.html" title="Sgt::TimeSeriesBase" alt="" coords="93,5,239,31"/>
+</map>

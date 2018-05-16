@@ -1,0 +1,8 @@
+<map id="Sgt::Heartbeat" name="Sgt::Heartbeat">
+<area shape="rect" id="node6" href="$class_sgt_1_1_time_series_dc_power_source.html" title="Sgt::TimeSeriesDcPowerSource" alt="" coords="5,312,217,337"/>
+<area shape="rect" id="node7" href="$class_sgt_1_1_time_series_zip.html" title="Sgt::TimeSeriesZip" alt="" coords="242,312,376,337"/>
+<area shape="rect" id="node8" href="$class_sgt_1_1_weather.html" title="Sgt::Weather" alt="" coords="399,312,498,337"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation. " alt="" coords="238,165,379,191"/>
+<area shape="rect" id="node3" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="250,92,368,117"/>
+<area shape="rect" id="node5" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="331,12,465,37"/>
+</map>
