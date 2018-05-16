@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8' />
+		<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+		<meta name="description" content="NICTA SmartGridToolbox : Microgrid tutorial" />
+		<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+		<title>NICTA SmartGridToolbox Configuration Files</title>
+	</head>
+	<body>
+	<!-- MAIN CONTENT -->
+		<div id="main_content_wrap" class="outer">
+			<section id="main_content" class="inner">
+				<p>
+					<img src="images/logo.png?raw=true" alt="SmartGridToolbox Logo">
+				</p>
+				<h3><a name="sgt-config" class="anchor" href="#sgt-config"></a>SmartGridToolbox Configuration Files</h3>
+				<p>
+					Configuration files in SmartGridToolbox are written in <a href="http://www.yaml.org">YAML</a>, a markup language, like XML or JSON, but with a higher degree of human readability than either of these. You should acquire some basic knowledge of YAML before reading further.
+				</p>
+				<p>
+					Complex numbers are specified as <code>x+jy</code> e.g. <code>3.4+5.6j</code>. They may alternatively be specified in a polar form, e.g. <code>5D-30</code> (magnitude = 5, angle = -30 degrees), or <code>5R3.14</code> (magnitude 5, angle = 3.14 radians).
+				<p>
+					Vector quantities are specified using square brackets, e.g. <code>[5.3, 2.6, -4.7+2j]</code>.
+				</p>
+				<p>
+					Date/time quantities are specified as <code>YYYY-MM-DD HH:MM:SS</code>, and are assumed to be in local time.
+				</p>
+				<p>
+					Time durations are specified as <code>HH:MM:SS</code>.
+				</p>
+				<p>
+					Configuration files start by specifying the following global parameters:
+<pre><code>--- # Marks the start of each configuration document.
+
+configuration_name:           test_overhead_line	# Optional
+start_time:                   2013-01-23 13:13:00	# Required
+end_time:                     2013-01-23 15:13:00	# Required
+lat_long:                     [-35.3075, 149.1244] 	# Optional, used for e.g. solar angles.
+timezone:                     AEST10AEDT,M10.5.0/02,M3.5.0/03 # Optional, used for e.g. solar angles.</code></pre>
+				</p>
+				<p>
+					An optional list of time series is then given:
+<pre><code>time_series_list:
+   data_time_series:                                        # A time series based on a data file.    
+      name:                   cloud_cover_series                                                     
+      data_file:              cloud_cover.txt               # Filename of series data.               
+      value_type:             real_scalar                   # Type of values, e.g. real_scalar, complex_vector.
+      interp_type:            lerp                          # lerp = linear interpolation.           
+      relative_to_time:       2013-01-01 00:00:00           # Corresponds to zero in data file.      
+      time_unit:              h                             # Data file time unit, s/m/h/d.          
+   const_time_series:                                                                                 
+      name:                   demand_series                                            
+      const_value:            4.5e4</code></pre>
+					See below for a detailed spec for time series.
+				</p>
+				<p>
+					Finally, the list of components:
+<pre><code>components:
+   network:
+      name:                   network_1
+   bus:
+      name:                   bus_1
+      network:                network_1
+      type:                   SL
+      phases:                 [A, B, C]
+      nominal_voltage:        [15094.8D0, 15094.8D-120, 15094.8D120] # 24.9 kV L-L nominal @ 1.05 p.u, convert L-G.
+   # etc.
+--- # Marks the end of each configuration document.</code></pre>
+						The YAML spec for each component can be found below.
+					</p>
+					<p>
+						In the event of confusion, you can always consult the code. The code for parsing global and time series data is found in <code>Parser.cc</code>, and the code for the components is in files named <code>{Component}Parser.cc</code>, e.g. <code>BusParser.cc</code>. Doing this will give you a good idea of how to write your own component parsers.
+					</p>
+				<h4>
+					Time Series List
+				</h4>
+				<p>
+					As indicated above, the optional list of time series is specified with the <code>time_series_list</code> key. The value for this key is a list of time series specifiers, which can currently either be <code>data_time_series</code> or <code>const_time_series</code>. These are described below:
+				<p>
+				<h5>
+					data_time_series
+				</h5>
+				<p>
+					The following table gives the list of key/value pairs that should be specified:
+					<table style = "font-size:9pt">
+						<tr>
+							<th>Key</th>
+							<th>Description</th>
+							<th>Example</th>
+						</tr>	<tr>
+							<td><code>name</code></td>
+							<td>Name of the time series</td>
+							<td><code><nobr>name: temperature_time_series</nobr></code></td>
+						</tr>
+						<tr>
+							<td><code>data_file</code></td>
+							<td>Filename of file containing the data</td>
+							<td><code><nobr>data_file: temp.txt</nobr></code></td>
+						</tr>
+						<tr>
+							<td><code>value_type</code></td>
+							<td><code>real_scalar/<wbr>real_vector/<wbr>complex_scalar/<wbr>complex_vector</code>. Currently, only <code>real_scalar</code> is supported, though.</td>
+							<td><code><nobr>value_type: real_scalar</nobr></code></td>
+						</tr>
+						<tr>
+							<td><code>interp_type</code></td>
+							<td>Interpolation type: <code>stepwise</code> / <code>lerp</code> / <code>spline</code>.</td>
+							<td><code>interp_type: lerp</code></td>
+						</tr>
+						<tr>
+							<td><code>relative_to_time</code></td>
+							<td>Local time zero point of time in data file</td>
+							<td><code><nobr>relative_to_time: 2014-04-01 06:00:00</nobr></code></td>
+						</tr>
+						<tr>
+							<td><code>time_unit</code></td>
+							<td>Unit of time in data file: <code>h</code> / <code>m</code> / <code>s</code>.</td>
+							<td><code>time_unit: h</code></td>
+						</tr>
+				</table>
+				</p>
+				<h5>
+					const_time_series
+				</h5>
+				<p>
+					The following table gives the list of key/value pairs that should be specified:
+					<table style = "font-size:9pt">
+						<tr>
+							<th>Key</th>
+							<th>Description</th>
+							<th>Example</th>
+						</tr>
+						<tr>
+							<td><code>value_type</code></td>
+							<td><code>real_scalar/<wbr>real_vector/<wbr>complex_scalar/<wbr>complex_vector</code>. Currently, only <code>real_scalar</code> is supported, though.</td>
+							<td><code><nobr>value_type: real_scalar</nobr></code></td>
+						</tr>
+						<tr>
+							<td><code>const_value</code></td>
+							<td>Constant value of the time series</td>
+							<td><code><nobr>const_value: 5.7</nobr></code></td>
+						</tr>
+					</table>
+				</p>
+				<h4>
+					Components
+				</h4>
+				<p>
+					Here, we provide a list of all components that may be parsed in the configuration file, organised by the key for the component in question:
+					<ul>
+						<dl>
+								<dt>
+									<code>branch</code><dt>
+								<dd style="font-style:normal">
+									Creates a SmartGridToolbox::Branch object in the model. The following key/value pairs should be specified for the <code>branch</code> key.
+									<table style = "font-size:9pt">
+										<tr>
+											<th>Key</th>
+											<th>Description</th>
+											<th>Example</th>
+										</tr>
+										<tr>
+											<td><code>value_type</code></td>
+											<td><code>real_scalar</code> / <code>real_vector</code> / <code>complex_scalar</code> / <code>complex_vector</code>. Currently, only <code>real_scalar</code> is supported, though.</td>
+											<td><code>value_type: real_scalar</code></td>
+										</tr>
+										<tr>
+											<td><code>const_value</code></td>
+											<td>Constant value of the time series</td>
+											<td><code>const_value: 5.7</code></td>
+										</tr>
+									</table>
+							</dd>
+				</p>
+			</section>
+		</div>
+	</body>
+</html>

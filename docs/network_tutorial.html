@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8' />
+		<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+		<meta name="description" content="NICTA SmartGridToolbox : Network tutorial" />
+		<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+		<title>NICTA SmartGridToolbox Network Tutorial</title>
+	</head>
+	<body>
+	<!-- MAIN CONTENT -->
+		<div id="main_content_wrap" class="outer">
+			<section id="main_content" class="inner">
+				<p>
+					<img src="images/logo.png?raw=true" alt="SmartGridToolbox Logo">
+				</p>
+				<h3><a name="network-tutorial" class="anchor" href="#network-tutorial"></a>Network Tutorial</h3>
+				<p>
+					In this tutorial, we will explore the basics of how to set up and solve models of electricity networks. We are not performing any simulation, and as such we link only to <code>SgtCore</code>, not <code>SgtSim</code>.
+				</p>
+				<p>
+					The tutorial can be found in the <code>tutorials/IntroductionToSgt</code> subdirectory of the SmartGridToolbox directory. Copy this directory into a convenient work directory. <code>cd</code> into the directory, run <code>autogen.sh</code> (if needed) and <code>configure</code>. Now <code>make</code> to build the two executables, <code>network</code> and <code>network_yaml</code>.
+				</p>
+				<p>
+					The code is self documenting. Briefly, <code>network</code> manually creates and solves a network power flow problem. Normally, one wouldn't explicitly code all the network components, as is done in this first example. Instead, objects would be loaded in from a YAML configuration file.
+				</p>
+				<p>
+					<code>network_yaml</code> loads the same problem as <code>network</code> in from the configuration file <code>network_yaml.yaml</code>, and again solves the network, achieving the same solution.
+				</p>
+			</section>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8' />
+		<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+		<meta name="description" content="NICTA SmartGridToolbox : Network tutorial" />
+		<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+		<title>NICTA SmartGridToolbox Network Tutorial</title>
+	</head>
+	<body>
+	<!-- MAIN CONTENT -->
+		<div id="main_content_wrap" class="outer">
+			<section id="main_content" class="inner">
+				<p>
+					<img src="images/logo.png?raw=true" alt="SmartGridToolbox Logo">
+				</p>
+				<h3><a name="pv-demo" class="anchor" href="#pv-demo"></a>PV Demo</h3>
+				<p>
+					In this demo, we explore how residential PV inverters can be used to do optimized volt-VAR control on a network.
+				</p>
+				<p>
+					To build:
+<pre><code>./configure
+make</code></pre>
+				<p>
+					To run:
+<pre><code>pvdemo {input_yaml_filename} {output_filename} {V_min} {V_max} {use_special_inverters}</code></pre>
+				</p>
+				e.g.
+<pre><code>pvdemo pvdemo.yaml out 0.95 1.05 T</code></pre>
+				</p>
+				<p>
+					The output file contains the columns time/conventional generated complex power/PV complex power/maximum bus voltage/minimum bus voltage.
+				</p>
+				<p>
+					To plot results (using python 3):
+<pre><code>python3 plot_results.py</code></pre>
+				</p>
+				<h4>
+					Explanation
+				</h4>
+				<p>
+					The code uses two custom classes: PvInverter and PvDemoSolver.
+				</p>
+				<p>
+					A <code>PvInverter</code> is a special inverter that acts as a network generator, in that it can supply variable/optimized P and Q to the network, depending on the results of the network solver. In particular, we are interested in the fact that it can supply variable reactive power Q, which is generated for free, and can help to stablilize the voltage on the network. Of course, P is bounded by
+					the photovoltaic power generated, and the apparent power is bounded by the power capacity of the inverter. Thus, if we tried to generate too much reactive power, we would need to reduce the amount of active power, which would then need to be imported from elsewhere on the network, ie. from a conventional generator, and would come at a cost. A ParserPlugin, using the keyword "pv_inverter", allows PvInverters to be parsed in as part of the YAML file.
+				</p>
+				<p>
+					PvDemoSolver is like a standard OPF solver, except that it also incorporates some extra constraints and variables at the PvInverters. There is a constraint corresponding to an upper bound on the the apparent power of the inverter. Another constraint/variable pair models the deviation from the nominal voltage, which we penalized by a small cost (we probably don't want to forgo free solar power just to drive the voltage closer to nominal). Finally, another constraint pair penalizes voltage deviations from the specified upper and lower bounds; this time the penalty is much larger.
+				</p>
+				<p>
+				Have a look at the input file, pvdemo.yaml. We will explain the sections one by one.
+				</p>
+				<dl>
+				<dt>sgt_gui</dt>
+				<dd>You can ignore this; it is used to provide extra information to a GUI.</dd>
+				<dt>parameters</dt>
+				<dd>parameter macros which can thereafter be referenced in the rest of the YAML file, using angle brackets and possibly round brackets for indexing, e.g. "id: solar_pv_<pv_busses(<i>)>".
+				</dd>    
+				<dt>simulation</dt>
+				<dd>Basic simulation data e.g. start and end times, etc.</dd>    
+				<dt>time_series</dt>
+				<dd>A time series is set up that gives multiplier for the effect of clouds on the direct, diffuse and ground components of the solar radiation. 1.0 means no attenuation, and 0.0 means no radiation.</dd> 
+				<dt>weather</dt>
+				<dd>Define how the weather works; in this case the cloud_cover_series explained above models solar attenuation, and the solar radiation is calculated using the "standard" model, where radiation components are modelled by equations based on the movement of the sun.</dd>
+				<dt>sim_network</dt> 
+				<dd>The network component in the simulation.</dd>
+				<dt>matpower</dt>
+				<dd>Parse a matpower file and populate the network with its contents.
+				</dd>
+				<dt>loop</dt>
+				<dd>A looping construct. In this case, <code>&lti&gt</code> will loop from <code>0</code> to <code>n_load_busses - 1</code>. Within the loop, we set up an array of time series, load_1_series, load_2_series, ..., and a corresponding array of time_series_zip loads that read their components from these series.</dd>
+				<dt>loop</dt>
+				<dd>In the second loop, we set up the PV arrays and their associated inverters.</dd>
+			</section>
+		</div>
+	</body>
+</html>

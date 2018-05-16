@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8' />
+		<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+		<meta name="description" content="NICTA SmartGridToolbox : Simulation tutorial" />
+		<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+		<title>NICTA SmartGridToolbox Simulation Tutorial</title>
+	</head>
+	<body>
+	<!-- MAIN CONTENT -->
+		<div id="main_content_wrap" class="outer">
+			<section id="main_content" class="inner">
+				<p>
+					<img src="images/logo.png?raw=true" alt="SmartGridToolbox Logo">
+				</p>
+				<h3><a name="simulation-tutorial" class="anchor" href="#simulation-tutorial"></a>Simulation Tutorial</h3>
+				<p>
+					In this tutorial, we will explore the basics of how to set up and run a simulation.
+				</p>
+				<p>
+					The tutorial can be found in the <code>tutorials/Simulation</code> subdirectory of the SmartGridToolbox directory; please see the files <code>simulation.cc</code>, <code>simulation.yaml</code> and <code>simuation.m</code>. Copy this directory into a convenient work directory. <code>cd</code> into the directory, run <code>autogen.sh</code> (if needed) and <code>configure</code>. Now <code>make</code> to build executable, <code>simulation</code>.
+				</p>
+				<p>
+					The code is self documenting. Briefly, <code>simulation.cc</code> first	parses the file <code>simulation.yaml</code> into a <code>Simulation</code> object. The YAML file contains instructions to parse in a network from a Matpower file, and then to add certain objects such as solar PV collectors and inverters.
+					
+					After parsing the input file into the <code>Simulation</code>, <code>simulation.cc</code> demonstrates how the simulation can be manually modified in-code.
+					
+					Before running the simulation, <code>Simulation::init()</code> is called to make sure the simulation and all its component objects are in a valid starting point. A loop is then set up to advance the simulation step by step, extracting and printing information at each step.
+				</p>
+			</section>
+		</div>
+	</body>
+</html>
