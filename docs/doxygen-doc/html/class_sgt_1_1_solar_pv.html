@@ -134,7 +134,7 @@ virtual const std::string &amp;&#160;</td><td class="memItemRight" valign="botto
 <tr class="memdesc:a199458a617f90e36f5f219b4fb3e5a10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the NOCT (nominal operating cell temperature)  <a href="#a199458a617f90e36f5f219b4fb3e5a10">More...</a><br /></td></tr>
 <tr class="separator:a199458a617f90e36f5f219b4fb3e5a10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05c43e68d0ec8f0418718df0f3689c94"><td class="memItemLeft" align="right" valign="top"><a id="a05c43e68d0ec8f0418718df0f3689c94"></a>
-virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_solar_pv.html#a05c43e68d0ec8f0418718df0f3689c94">requestedPDc</a> (const <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t) const</td></tr>
+virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_solar_pv.html#a05c43e68d0ec8f0418718df0f3689c94">requestedPDc</a> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t) const</td></tr>
 <tr class="memdesc:a05c43e68d0ec8f0418718df0f3689c94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Power output in MW, assuming efficient maximum power point tracking (MPPT). <br /></td></tr>
 <tr class="separator:a05c43e68d0ec8f0418718df0f3689c94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a094910e97df181b45644f1a685932fa1"><td class="memItemLeft" align="right" valign="top"><a id="a094910e97df181b45644f1a685932fa1"></a>
@@ -143,7 +143,7 @@ virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <tr class="separator:a094910e97df181b45644f1a685932fa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Some utility calculated quantities:</div></td></tr>
 <tr class="memitem:ae963e33e7bdb2d8e6f54758ab127a849"><td class="memItemLeft" align="right" valign="top"><a id="ae963e33e7bdb2d8e6f54758ab127a849"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_solar_pv.html#ae963e33e7bdb2d8e6f54758ab127a849">TCell</a> (const <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t) const</td></tr>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_solar_pv.html#ae963e33e7bdb2d8e6f54758ab127a849">TCell</a> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t) const</td></tr>
 <tr class="memdesc:ae963e33e7bdb2d8e6f54758ab127a849"><td class="mdescLeft">&#160;</td><td class="mdescRight">Temperature of the cell, in K. See <a href="http://www.pveducation.org/pvcdrom/modules/nominal-operating-cell-temperature">http://www.pveducation.org/pvcdrom/modules/nominal-operating-cell-temperature</a>. <br /></td></tr>
 <tr class="separator:ae963e33e7bdb2d8e6f54758ab127a849"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49ac60cb98756a4f965787a53cad710e"><td class="memItemLeft" align="right" valign="top"><a id="a49ac60cb98756a4f965787a53cad710e"></a>
@@ -176,11 +176,11 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~SimComponent</b> 
 <tr class="memdesc:a260028579e7b1544322a156150ea9a88 inherit pub_methods_class_sgt_1_1_sim_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize state of the object.  <a href="class_sgt_1_1_sim_component.html#a260028579e7b1544322a156150ea9a88">More...</a><br /></td></tr>
 <tr class="separator:a260028579e7b1544322a156150ea9a88 inherit pub_methods_class_sgt_1_1_sim_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1dd9ca7ae3d2a8254316666a4668fac0 inherit pub_methods_class_sgt_1_1_sim_component"><td class="memItemLeft" align="right" valign="top"><a id="a1dd9ca7ae3d2a8254316666a4668fac0"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_sim_component.html#a1dd9ca7ae3d2a8254316666a4668fac0">update</a> (const <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t) final</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_sim_component.html#a1dd9ca7ae3d2a8254316666a4668fac0">update</a> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t) final</td></tr>
 <tr class="memdesc:a1dd9ca7ae3d2a8254316666a4668fac0 inherit pub_methods_class_sgt_1_1_sim_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bring state up to time t. <br /></td></tr>
 <tr class="separator:a1dd9ca7ae3d2a8254316666a4668fac0 inherit pub_methods_class_sgt_1_1_sim_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab1eba1274d83e086a2cc4a2ed40e0fc inherit pub_methods_class_sgt_1_1_sim_component"><td class="memItemLeft" align="right" valign="top"><a id="aab1eba1274d83e086a2cc4a2ed40e0fc"></a>
-<a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_sim_component.html#aab1eba1274d83e086a2cc4a2ed40e0fc">lastUpdated</a> () const</td></tr>
+<a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_sim_component.html#aab1eba1274d83e086a2cc4a2ed40e0fc">lastUpdated</a> () const</td></tr>
 <tr class="memdesc:aab1eba1274d83e086a2cc4a2ed40e0fc inherit pub_methods_class_sgt_1_1_sim_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current step for the object. <br /></td></tr>
 <tr class="separator:aab1eba1274d83e086a2cc4a2ed40e0fc inherit pub_methods_class_sgt_1_1_sim_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8ab6c58a8d774ebf564938a3da2bd35 inherit pub_methods_class_sgt_1_1_sim_component"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_sim_component.html#af8ab6c58a8d774ebf564938a3da2bd35">isInitialized</a> () const</td></tr>
@@ -240,7 +240,7 @@ const <a class="el" href="class_sgt_1_1_event.html">Event</a> &amp;&#160;</td><t
 <a class="el" href="class_sgt_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_sim_component.html#ae48f234ad36fa49246ab64eb74976fe1">didCompleteTimestep</a> ()</td></tr>
 <tr class="memdesc:ae48f234ad36fa49246ab64eb74976fe1 inherit pub_methods_class_sgt_1_1_sim_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Triggered when I just updated, completing the current timestep. <br /></td></tr>
 <tr class="separator:ae48f234ad36fa49246ab64eb74976fe1 inherit pub_methods_class_sgt_1_1_sim_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a947331c2e6e48daef0c384cb04fba434 inherit pub_methods_class_sgt_1_1_sim_component"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_sim_component.html#a947331c2e6e48daef0c384cb04fba434">validUntil</a> () const</td></tr>
+<tr class="memitem:a947331c2e6e48daef0c384cb04fba434 inherit pub_methods_class_sgt_1_1_sim_component"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_sim_component.html#a947331c2e6e48daef0c384cb04fba434">validUntil</a> () const</td></tr>
 <tr class="memdesc:a947331c2e6e48daef0c384cb04fba434 inherit pub_methods_class_sgt_1_1_sim_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">When is the component scheduled to update?  <a href="class_sgt_1_1_sim_component.html#a947331c2e6e48daef0c384cb04fba434">More...</a><br /></td></tr>
 <tr class="separator:a947331c2e6e48daef0c384cb04fba434 inherit pub_methods_class_sgt_1_1_sim_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_sgt_1_1_component"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_sgt_1_1_component')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_sgt_1_1_component.html">Sgt::Component</a></td></tr>
@@ -316,7 +316,7 @@ static const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom
 Protected Member Functions</h2></td></tr>
 <tr><td colspan="2"><div class="groupHeader">SimComponent virtual overridden member functions.</div></td></tr>
 <tr class="memitem:a3dfb3e5b1d317fed9ff13b310c8199f1"><td class="memItemLeft" align="right" valign="top"><a id="a3dfb3e5b1d317fed9ff13b310c8199f1"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_solar_pv.html#a3dfb3e5b1d317fed9ff13b310c8199f1">updateState</a> (const <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t) override</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_solar_pv.html#a3dfb3e5b1d317fed9ff13b310c8199f1">updateState</a> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t) override</td></tr>
 <tr class="memdesc:a3dfb3e5b1d317fed9ff13b310c8199f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bring state up to time current time. <br /></td></tr>
 <tr class="separator:a3dfb3e5b1d317fed9ff13b310c8199f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_class_sgt_1_1_sim_component"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_sgt_1_1_sim_component')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="class_sgt_1_1_sim_component.html">Sgt::SimComponent</a></td></tr>
@@ -635,7 +635,7 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 16 2018 10:40:32 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu May 17 2018 13:11:10 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

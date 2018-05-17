@@ -15,6 +15,34 @@
 ///
 /// These will typically be included in most headers, and provide access to utility functions etc. for time,
 /// complex numbers, linear algebra, etc.
+/// @{
+
+/// @defgroup Complex Complex Numbers
+/// @brief Complex numbers
+
+/// @defgroup Time Time
+/// @brief Constructs related to time.
+
+/// @defgroup LoggingAndErrors Logging and Errors
+/// @brief Logging and Errors
+
+/// @defgroup LinearAlgebra Linear Algebra
+/// @brief Linear algebra. See also the Armadillo library.
+///
+/// For the most part, SmartGridToolbox relies on the Armadillo library for linear algebra, matrix and vector classes.
+
+/// @defgroup JSON JSON Support
+/// @brief Support for JSON data format. See also the nlohmann::json library.
+///
+/// For the most part, SmartGridToolbox uses the nlohmann::json library.
+
+/// @defgroup Constants Constants
+/// @brief Various constants.
+
+/// @defgroup Random Random Numbers
+/// @brief Random number generation.
+
+/// @}
 
 /// @defgroup Parsing Parsing
 /// @brief Parsing classes, functions etc.

@@ -200,10 +200,10 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_time_series.html" title="Base class for time series objects: functions of time. ">TimeSeries</a> that uses linear interpolation between tabulated times.  <a href="class_sgt_1_1_lerp_time_series.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_log.html">Log</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logging object.  <a href="class_sgt_1_1_log.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logging objectUse e.g. Log().message() &lt;&lt; "this is a message" &lt;&lt; std::endl; Instances of <a class="el" href="class_sgt_1_1_log.html" title="Logging objectUse e.g. Log().message() &lt;&lt; &quot;this is a message&quot; &lt;&lt; std::endl; Instances of Log are norm...">Log</a> are normally obtained using one of these macros: <a class="el" href="group___logging_and_errors.html#gaa1f6de5cb0f7f907efd261195928b4d8" title="Log a message.E.g. sgtLogMessage(LogLevel::VERBOSE) &lt;&lt; &quot;this is a message: number = &quot; &lt;&lt; 5 &lt;&lt; std::en...">sgtLogMessage()</a>, <a class="el" href="group___logging_and_errors.html#ga2284d43f1289ee3e3e956806d0fa559d" title="Log a warning.E.g. sgtLogWarning(LogLevel::VERBOSE) &lt;&lt; &quot;this is a warning: number = &quot; &lt;&lt; 5 &lt;&lt; std::en...">sgtLogWarning()</a>, <a class="el" href="group___logging_and_errors.html#ga3893d2917066af52470ff85305922b8e" title="Log an error.E.g. sgtLogError(LogLevel::VERBOSE) &lt;&lt; &quot;this is an error: number = &quot; &lt;&lt; 5 &lt;&lt; std::endl; ...">sgtLogError()</a>  <a href="class_sgt_1_1_log.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_log_indent.html">LogIndent</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="class_sgt_1_1_log_indent.html" title="Create a LogIndent on the stack to indent all logs. ">LogIndent</a> on the stack to indent all logs.  <a href="class_sgt_1_1_log_indent.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="class_sgt_1_1_log_indent.html" title="Create a LogIndent on the stack to indent all logs.Indentation will persist while object is in scope...">LogIndent</a> on the stack to indent all logs.Indentation will persist while object is in scope.  <a href="class_sgt_1_1_log_indent.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_sgt_1_1_map_phases_traits.html">MapPhasesTraits</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -429,9 +429,33 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a1660b14366bedef769514d69c37bde0c"><td class="memItemLeft" align="right" valign="top"><a id="a1660b14366bedef769514d69c37bde0c"></a>
+<tr class="memitem:ga51ffb757fc994d4cc26e51cf776346a7"><td class="memItemLeft" align="right" valign="top">
+using&#160;</td><td class="memItemRight" valign="bottom"><b>Complex</b> = std::complex&lt; double &gt;</td></tr>
+<tr class="separator:ga51ffb757fc994d4cc26e51cf776346a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9708691c24e9b5f10ed7e9abd15f27e6"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> = boost::posix_time::time_duration</td></tr>
+<tr class="memdesc:ga9708691c24e9b5f10ed7e9abd15f27e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Times and durations.  <a href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">More...</a><br /></td></tr>
+<tr class="separator:ga9708691c24e9b5f10ed7e9abd15f27e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7fd1e806f7b61d92c85b30db212b352f"><td class="memItemLeft" align="right" valign="top">
+using&#160;</td><td class="memItemRight" valign="bottom"><b>TimeSpecialValues</b> = boost::date_time::special_values</td></tr>
+<tr class="separator:ga7fd1e806f7b61d92c85b30db212b352f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8d5842815bea8eb4e37b2049fe0b41d6"><td class="memItemLeft" align="right" valign="top">
+using&#160;</td><td class="memItemRight" valign="bottom"><b>microseconds</b> = boost::posix_time::microseconds</td></tr>
+<tr class="separator:ga8d5842815bea8eb4e37b2049fe0b41d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab6a5e523bd0e63bc2e098ed9df55a60b"><td class="memItemLeft" align="right" valign="top">
+using&#160;</td><td class="memItemRight" valign="bottom"><b>milliseconds</b> = boost::posix_time::milliseconds</td></tr>
+<tr class="separator:gab6a5e523bd0e63bc2e098ed9df55a60b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga86e6598776b3da89995c43c666f4dadd"><td class="memItemLeft" align="right" valign="top">
+using&#160;</td><td class="memItemRight" valign="bottom"><b>seconds</b> = boost::posix_time::seconds</td></tr>
+<tr class="separator:ga86e6598776b3da89995c43c666f4dadd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga41c9abee311ef4529f6f9f53df1b0192"><td class="memItemLeft" align="right" valign="top">
+using&#160;</td><td class="memItemRight" valign="bottom"><b>minutes</b> = boost::posix_time::minutes</td></tr>
+<tr class="separator:ga41c9abee311ef4529f6f9f53df1b0192"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga78f05fc5d73e88efbf528dcfe40fa225"><td class="memItemLeft" align="right" valign="top">
+using&#160;</td><td class="memItemRight" valign="bottom"><b>hours</b> = boost::posix_time::hours</td></tr>
+<tr class="separator:ga78f05fc5d73e88efbf528dcfe40fa225"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1660b14366bedef769514d69c37bde0c"><td class="memItemLeft" align="right" valign="top">
 using&#160;</td><td class="memItemRight" valign="bottom"><b>json</b> = <a class="el" href="namespacenlohmann.html#a2bfd99e845a2e5cd90aeaf1b1431f474">nlohmann::json</a></td></tr>
-<tr class="separator:a1660b14366bedef769514d69c37bde0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:ga1660b14366bedef769514d69c37bde0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbc790478d415c6ea12cc27066a5890c"><td class="memTemplParams" colspan="2"><a id="afbc790478d415c6ea12cc27066a5890c"></a>
 template&lt;typename B , typename D  = B&gt; </td></tr>
 <tr class="memitem:afbc790478d415c6ea12cc27066a5890c"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>ConstComponentPtr</b> = <a class="el" href="class_sgt_1_1_component_ptr.html">ComponentPtr</a>&lt; B, D, true &gt;</td></tr>
@@ -480,6 +504,12 @@ template&lt;class T , size_t NR, size_t NC&gt; </td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
+<tr class="memitem:ga15fe38ceb2ccd81e932f662f2478b916"><td class="memItemLeft" align="right" valign="top"><a id="ga15fe38ceb2ccd81e932f662f2478b916"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> { <b>NONE</b>, 
+<b>NORMAL</b>, 
+<b>VERBOSE</b>
+ }</td></tr>
+<tr class="memdesc:ga15fe38ceb2ccd81e932f662f2478b916"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logging levels. <br /></td></tr>
+<tr class="separator:ga15fe38ceb2ccd81e932f662f2478b916"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaeee8bcbe103bf0781875c819f5166c46"><td class="memItemLeft" align="right" valign="top"><a id="gaeee8bcbe103bf0781875c819f5166c46"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>BusType</b> { <br />
 &#160;&#160;<b>SL</b>, 
 <b>PQ</b>, 
@@ -535,9 +565,63 @@ Functions</h2></td></tr>
 <tr class="memitem:ad1238e167e0d8f86f5c8e923330b7c38"><td class="memItemLeft" align="right" valign="top"><a id="ad1238e167e0d8f86f5c8e923330b7c38"></a>
 array&lt; <a class="el" href="classarma_1_1_col.html">Col</a>&lt; Complex &gt;, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>VIBus</b> (const <a class="el" href="class_sgt_1_1_branch_abc.html">BranchAbc</a> &amp;branch)</td></tr>
 <tr class="separator:ad1238e167e0d8f86f5c8e923330b7c38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafd86bff8ffc62823b305838483b7a77d"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gafd86bff8ffc62823b305838483b7a77d">messageLogLevel</a> ()</td></tr>
+<tr class="memdesc:gafd86bff8ffc62823b305838483b7a77d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current message logging level. <br /></td></tr>
+<tr class="separator:gafd86bff8ffc62823b305838483b7a77d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga17581faf2394899167f22071638f2042"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga17581faf2394899167f22071638f2042">warningLogLevel</a> ()</td></tr>
+<tr class="memdesc:ga17581faf2394899167f22071638f2042"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current warning logging level. <br /></td></tr>
+<tr class="separator:ga17581faf2394899167f22071638f2042"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab82f84114b33f094ce5c75a18716bc5d"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gab82f84114b33f094ce5c75a18716bc5d">errorLogLevel</a> ()</td></tr>
+<tr class="memdesc:gab82f84114b33f094ce5c75a18716bc5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current error logging level. <br /></td></tr>
+<tr class="separator:gab82f84114b33f094ce5c75a18716bc5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga571562b5fa5ff4d80decb22f6be9ddd7"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga571562b5fa5ff4d80decb22f6be9ddd7">debugLogLevel</a> ()</td></tr>
+<tr class="memdesc:ga571562b5fa5ff4d80decb22f6be9ddd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current debug logging level. <br /></td></tr>
+<tr class="separator:ga571562b5fa5ff4d80decb22f6be9ddd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga42f0e65f2ab6566477765caffa287083"><td class="memItemLeft" align="right" valign="top">
+std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga42f0e65f2ab6566477765caffa287083">messageLogFilter</a> ()</td></tr>
+<tr class="memdesc:ga42f0e65f2ab6566477765caffa287083"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current message logging level. <br /></td></tr>
+<tr class="separator:ga42f0e65f2ab6566477765caffa287083"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab1f050b4089120985d959d4e69c1af19"><td class="memItemLeft" align="right" valign="top">
+std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gab1f050b4089120985d959d4e69c1af19">warningLogFilter</a> ()</td></tr>
+<tr class="memdesc:gab1f050b4089120985d959d4e69c1af19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current warning logging level. <br /></td></tr>
+<tr class="separator:gab1f050b4089120985d959d4e69c1af19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacd14e5cbf34229271120a960eea46922"><td class="memItemLeft" align="right" valign="top">
+std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gacd14e5cbf34229271120a960eea46922">errorLogFilter</a> ()</td></tr>
+<tr class="memdesc:gacd14e5cbf34229271120a960eea46922"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current error logging level. <br /></td></tr>
+<tr class="separator:gacd14e5cbf34229271120a960eea46922"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9591040b430f7dac48e1c0639c2f9b8f"><td class="memItemLeft" align="right" valign="top">
+std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga9591040b430f7dac48e1c0639c2f9b8f">debugLogFilter</a> ()</td></tr>
+<tr class="memdesc:ga9591040b430f7dac48e1c0639c2f9b8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current debug logging level. <br /></td></tr>
+<tr class="separator:ga9591040b430f7dac48e1c0639c2f9b8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6f19a2c7717d32855f7d0e6e82aaf1bc"><td class="memItemLeft" align="right" valign="top">
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const Complex &amp;c)</td></tr>
+<tr class="separator:ga6f19a2c7717d32855f7d0e6e82aaf1bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac4b21e0b06dc8783f93387cd909a2910"><td class="memTemplParams" colspan="2">
+template&lt;&gt; </td></tr>
+<tr class="memitem:gac4b21e0b06dc8783f93387cd909a2910"><td class="memTemplItemLeft" align="right" valign="top">Complex&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_string&lt; Complex &gt;</b> (const std::string &amp;s)</td></tr>
+<tr class="separator:gac4b21e0b06dc8783f93387cd909a2910"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1229884152822b9ec3be8533aec0fe4d"><td class="memItemLeft" align="right" valign="top">
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>to_string</b> (const Complex &amp;c)</td></tr>
+<tr class="separator:ga1229884152822b9ec3be8533aec0fe4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8780858ac67d87d969f7c9a6d58f2479"><td class="memItemLeft" align="right" valign="top">
+template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; double &gt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">Col</a>&lt; double &gt; &amp;v)</td></tr>
+<tr class="separator:ga8780858ac67d87d969f7c9a6d58f2479"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaedf58f4d3df22fdb4dd8e51a80cb2665"><td class="memItemLeft" align="right" valign="top">
+template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; float &gt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">Col</a>&lt; float &gt; &amp;v)</td></tr>
+<tr class="separator:gaedf58f4d3df22fdb4dd8e51a80cb2665"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1edde2087950a64034e317fa9898437c"><td class="memItemLeft" align="right" valign="top">
+template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; int &gt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">Col</a>&lt; int &gt; &amp;v)</td></tr>
+<tr class="separator:ga1edde2087950a64034e317fa9898437c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade22686dd827f6f3d12f6ae06a4a5e89"><td class="memItemLeft" align="right" valign="top"><a id="ade22686dd827f6f3d12f6ae06a4a5e89"></a>
 template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; uword &gt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">Col</a>&lt; uword &gt; &amp;v)</td></tr>
 <tr class="separator:ade22686dd827f6f3d12f6ae06a4a5e89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacffc53d90ea9d18bca86516b5ded58dc"><td class="memItemLeft" align="right" valign="top">
+template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; Complex &gt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">Col</a>&lt; Complex &gt; &amp;v)</td></tr>
+<tr class="separator:gacffc53d90ea9d18bca86516b5ded58dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac76ec46e1c8d7bb6bf9d268e17bba69"><td class="memItemLeft" align="right" valign="top"><a id="aac76ec46e1c8d7bb6bf9d268e17bba69"></a>
 template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; double &gt;</b> (std::ostream &amp;os, const Mat&lt; double &gt; &amp;v)</td></tr>
 <tr class="separator:aac76ec46e1c8d7bb6bf9d268e17bba69"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -553,6 +637,75 @@ template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><
 <tr class="memitem:a2af46c98af8e0f1dbcb09dcc464659c1"><td class="memItemLeft" align="right" valign="top"><a id="a2af46c98af8e0f1dbcb09dcc464659c1"></a>
 template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; Complex &gt;</b> (std::ostream &amp;os, const Mat&lt; Complex &gt; &amp;v)</td></tr>
 <tr class="separator:a2af46c98af8e0f1dbcb09dcc464659c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga09cff3dd9c3a5021456772cdf7d7c98e"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="class_sgt_1_1_timezone.html">Timezone</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>timezone</b> ()</td></tr>
+<tr class="separator:ga09cff3dd9c3a5021456772cdf7d7c98e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab6a4dfe0c1760de488d4ec33958cf1c5"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromDSeconds</b> (double dSeconds)</td></tr>
+<tr class="separator:gab6a4dfe0c1760de488d4ec33958cf1c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab6b8fe98828c957e829b2eced35a3742"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromUtcTimeString</b> (const std::string &amp;utcTimeString)</td></tr>
+<tr class="separator:gab6b8fe98828c957e829b2eced35a3742"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7eeff32f8f0dc2e2616466eac818e129"><td class="memItemLeft" align="right" valign="top">
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>utcTimeString</b> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t)</td></tr>
+<tr class="separator:ga7eeff32f8f0dc2e2616466eac818e129"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga65161a25ede8fa7f7fa20f4368df89a3"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromLocalTimeString</b> (const std::string &amp;localTimeString, <a class="el" href="class_sgt_1_1_timezone.html">Timezone</a> zone)</td></tr>
+<tr class="separator:ga65161a25ede8fa7f7fa20f4368df89a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3ff35fe283ab080f38e29d15571a6e52"><td class="memItemLeft" align="right" valign="top">
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>localTimeString</b> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t, <a class="el" href="class_sgt_1_1_timezone.html">Timezone</a> zone)</td></tr>
+<tr class="separator:ga3ff35fe283ab080f38e29d15571a6e52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1752fc4a938e8d4a052f45d63a2d9811"><td class="memItemLeft" align="right" valign="top">
+Complex&#160;</td><td class="memItemRight" valign="bottom"><b>polar</b> (double m, double theta)</td></tr>
+<tr class="separator:ga1752fc4a938e8d4a052f45d63a2d9811"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf03395d103907b61d9b08a86871b38a4"><td class="memItemLeft" align="right" valign="top">
+Complex&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (int i, const Complex &amp;c)</td></tr>
+<tr class="separator:gaf03395d103907b61d9b08a86871b38a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga300823b8f2ca1a7446965f75ec25001c"><td class="memItemLeft" align="right" valign="top">
+Complex&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (const Complex &amp;c, int i)</td></tr>
+<tr class="separator:ga300823b8f2ca1a7446965f75ec25001c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadca4cf70a25ae399193a1c981199b5c9"><td class="memItemLeft" align="right" valign="top">
+double&#160;</td><td class="memItemRight" valign="bottom"><b>sumOfSquares</b> (const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; double &gt; &amp;x)</td></tr>
+<tr class="separator:gadca4cf70a25ae399193a1c981199b5c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadb7cc8600641c5ff465489d6e7434897"><td class="memItemLeft" align="right" valign="top">
+double&#160;</td><td class="memItemRight" valign="bottom"><b>sumOfSquares</b> (const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; Complex &gt; &amp;x)</td></tr>
+<tr class="separator:gadb7cc8600641c5ff465489d6e7434897"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae4d1d1c9fc44233b03e2c13febd585fd"><td class="memTemplParams" colspan="2">
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:gae4d1d1c9fc44233b03e2c13febd585fd"><td class="memTemplItemLeft" align="right" valign="top">double&#160;</td><td class="memTemplItemRight" valign="bottom"><b>rms</b> (const T &amp;x)</td></tr>
+<tr class="separator:gae4d1d1c9fc44233b03e2c13febd585fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga47b0570928a773a8f90dc48052421989"><td class="memTemplParams" colspan="2">
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ga47b0570928a773a8f90dc48052421989"><td class="memTemplItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; T &gt; &amp;v)</td></tr>
+<tr class="separator:ga47b0570928a773a8f90dc48052421989"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaffcbfcc3cd5f7ff3164674ea2e61c8aa"><td class="memItemLeft" align="right" valign="top">
+template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; arma::uword &gt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; arma::uword &gt; &amp;v)</td></tr>
+<tr class="separator:gaffcbfcc3cd5f7ff3164674ea2e61c8aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae0761a1e0d8b115191cf0f5e5ea58e83"><td class="memTemplParams" colspan="2">
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:gae0761a1e0d8b115191cf0f5e5ea58e83"><td class="memTemplItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const arma::Mat&lt; T &gt; &amp;m)</td></tr>
+<tr class="separator:gae0761a1e0d8b115191cf0f5e5ea58e83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac34529b1e3bbdd345fa748046c97c75e"><td class="memItemLeft" align="right" valign="top"><a id="ac34529b1e3bbdd345fa748046c97c75e"></a>
+template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; double &gt;</b> (std::ostream &amp;os, const arma::Mat&lt; double &gt; &amp;v)</td></tr>
+<tr class="separator:ac34529b1e3bbdd345fa748046c97c75e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f954e47544c26201c50c6b52e3e8373"><td class="memItemLeft" align="right" valign="top"><a id="a9f954e47544c26201c50c6b52e3e8373"></a>
+template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; float &gt;</b> (std::ostream &amp;os, const arma::Mat&lt; float &gt; &amp;v)</td></tr>
+<tr class="separator:a9f954e47544c26201c50c6b52e3e8373"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af20a6ed4f2d65cc86cbf230bf7cf536a"><td class="memItemLeft" align="right" valign="top"><a id="af20a6ed4f2d65cc86cbf230bf7cf536a"></a>
+template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; int &gt;</b> (std::ostream &amp;os, const arma::Mat&lt; int &gt; &amp;v)</td></tr>
+<tr class="separator:af20a6ed4f2d65cc86cbf230bf7cf536a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b1df4bf29fd197c19c3e642f007f716"><td class="memItemLeft" align="right" valign="top"><a id="a4b1df4bf29fd197c19c3e642f007f716"></a>
+template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; arma::uword &gt;</b> (std::ostream &amp;os, const arma::Mat&lt; arma::uword &gt; &amp;v)</td></tr>
+<tr class="separator:a4b1df4bf29fd197c19c3e642f007f716"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfd06d206bed5bef31ac92e3cbd53701"><td class="memItemLeft" align="right" valign="top"><a id="abfd06d206bed5bef31ac92e3cbd53701"></a>
+template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; Complex &gt;</b> (std::ostream &amp;os, const arma::Mat&lt; Complex &gt; &amp;v)</td></tr>
+<tr class="separator:abfd06d206bed5bef31ac92e3cbd53701"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga377c42c8ec8c7ed5b38fcdd398f1c990"><td class="memItemLeft" align="right" valign="top">
+double&#160;</td><td class="memItemRight" valign="bottom"><b>dSeconds</b> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;d)</td></tr>
+<tr class="separator:ga377c42c8ec8c7ed5b38fcdd398f1c990"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafbc6b9e61894895e573f7014970a44c0"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromDurationString</b> (const std::string &amp;durString)</td></tr>
+<tr class="separator:gafbc6b9e61894895e573f7014970a44c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a07206d1916f887c98ef922d2248f37"><td class="memTemplParams" colspan="2"><a id="a9a07206d1916f887c98ef922d2248f37"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a9a07206d1916f887c98ef922d2248f37"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#a9a07206d1916f887c98ef922d2248f37">to_json</a> (<a class="el" href="classnlohmann_1_1basic__json.html">json</a> &amp;js, const T &amp;t) -&gt; typename std::enable_if&lt; <a class="el" href="struct_sgt_1_1_json_traits.html">JsonTraits</a>&lt; T &gt;::hasMember, void &gt;::type</td></tr>
@@ -754,6 +907,34 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>printNetw</b> (const 
 <tr class="memitem:ad071c7f35c261144f0f4c935309b686a"><td class="memItemLeft" align="right" valign="top"><a id="ad071c7f35c261144f0f4c935309b686a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>printModel</b> (const Model &amp;mod)</td></tr>
 <tr class="separator:ad071c7f35c261144f0f4c935309b686a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad5735fdb326609d2bf87e2d01110b6e8"><td class="memItemLeft" align="right" valign="top">
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___random.html#gad5735fdb326609d2bf87e2d01110b6e8">randSeedWithTime</a> ()</td></tr>
+<tr class="memdesc:gad5735fdb326609d2bf87e2d01110b6e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seed random generator with time. <br /></td></tr>
+<tr class="separator:gad5735fdb326609d2bf87e2d01110b6e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga689b43642e739bc1b185d03845e5adf1"><td class="memItemLeft" align="right" valign="top">
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___random.html#ga689b43642e739bc1b185d03845e5adf1">randSeed</a> (const unsigned int n)</td></tr>
+<tr class="memdesc:ga689b43642e739bc1b185d03845e5adf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seed random generator with unsigned int. <br /></td></tr>
+<tr class="separator:ga689b43642e739bc1b185d03845e5adf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga69e152ed4bbba20b4ccc086a1df2629e"><td class="memItemLeft" align="right" valign="top">
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___random.html#ga69e152ed4bbba20b4ccc086a1df2629e">randDiscrete</a> (const double probs[], int nProbs)</td></tr>
+<tr class="memdesc:ga69e152ed4bbba20b4ccc086a1df2629e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample from discrete distribution with nProbs given probabilities. <br /></td></tr>
+<tr class="separator:ga69e152ed4bbba20b4ccc086a1df2629e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8994ff617877a65cb01cd3b8a1a22f0d"><td class="memItemLeft" align="right" valign="top">
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___random.html#ga8994ff617877a65cb01cd3b8a1a22f0d">randNormal</a> (double mu, double sig)</td></tr>
+<tr class="memdesc:ga8994ff617877a65cb01cd3b8a1a22f0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample from normal distribution with given mean and s.d. <br /></td></tr>
+<tr class="separator:ga8994ff617877a65cb01cd3b8a1a22f0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1ae47f9b9323006e23fd3fe48f587f35"><td class="memItemLeft" align="right" valign="top">
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___random.html#ga1ae47f9b9323006e23fd3fe48f587f35">randUniform</a> (double lower, double upper)</td></tr>
+<tr class="memdesc:ga1ae47f9b9323006e23fd3fe48f587f35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample from uniform distribution with given lower and upper bounds. <br /></td></tr>
+<tr class="separator:ga1ae47f9b9323006e23fd3fe48f587f35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1488debd6e7d4841a46effd0aa5ef42e"><td class="memItemLeft" align="right" valign="top">
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___random.html#ga1488debd6e7d4841a46effd0aa5ef42e">randUniformInt</a> (int lower, int upper)</td></tr>
+<tr class="memdesc:ga1488debd6e7d4841a46effd0aa5ef42e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample from integer uniform distribution with given lower and upper bounds. <br /></td></tr>
+<tr class="separator:ga1488debd6e7d4841a46effd0aa5ef42e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf41dc3633984a6226bfb7ddaa3bca756"><td class="memItemLeft" align="right" valign="top">
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___random.html#gaf41dc3633984a6226bfb7ddaa3bca756">randWeibull</a> (double a, double b)</td></tr>
+<tr class="memdesc:gaf41dc3633984a6226bfb7ddaa3bca756"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample from Weibull distribution with given a and b parameters. <br /></td></tr>
+<tr class="separator:gaf41dc3633984a6226bfb7ddaa3bca756"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abae97bf8435e0a60fa508eaa9d571b75"><td class="memTemplParams" colspan="2"><a id="abae97bf8435e0a60fa508eaa9d571b75"></a>
 template&lt;&gt; </td></tr>
 <tr class="memitem:abae97bf8435e0a60fa508eaa9d571b75"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>registerParserPlugins&lt; Network &gt;</b> (<a class="el" href="class_sgt_1_1_parser.html">Parser</a>&lt; <a class="el" href="class_sgt_1_1_network.html">Network</a> &gt; &amp;p)</td></tr>
@@ -788,7 +969,7 @@ template&lt;&gt; </td></tr>
 <tr class="memitem:a714cd776b9f02bdc58d41db6b5b560d0"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#a714cd776b9f02bdc58d41db6b5b560d0">solarIrradiance</a> (const <a class="el" href="struct_sgt_1_1_irradiance.html">Irradiance</a> &amp;irr, const <a class="el" href="struct_sgt_1_1_spherical_angles.html">SphericalAngles</a> &amp;planeNormal)</td></tr>
 <tr class="memdesc:a714cd776b9f02bdc58d41db6b5b560d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solar power per m^2 falling on a plane, W/m^2.  <a href="#a714cd776b9f02bdc58d41db6b5b560d0">More...</a><br /></td></tr>
 <tr class="separator:a714cd776b9f02bdc58d41db6b5b560d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a23f22994497e45313fd65ae5da9212"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_sgt_1_1_spherical_angles.html">SphericalAngles</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#a3a23f22994497e45313fd65ae5da9212">sunPos</a> (const <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;time, const <a class="el" href="struct_sgt_1_1_lat_long.html">LatLong</a> &amp;location)</td></tr>
+<tr class="memitem:a3a23f22994497e45313fd65ae5da9212"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_sgt_1_1_spherical_angles.html">SphericalAngles</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#a3a23f22994497e45313fd65ae5da9212">sunPos</a> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;time, const <a class="el" href="struct_sgt_1_1_lat_long.html">LatLong</a> &amp;location)</td></tr>
 <tr class="memdesc:a3a23f22994497e45313fd65ae5da9212"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spherical angles of the sun at a given time and location.  <a href="#a3a23f22994497e45313fd65ae5da9212">More...</a><br /></td></tr>
 <tr class="separator:a3a23f22994497e45313fd65ae5da9212"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa69b15a269dc5153e81855c2a73e370c"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#aa69b15a269dc5153e81855c2a73e370c">directIrradianceMag</a> (const <a class="el" href="struct_sgt_1_1_spherical_angles.html">SphericalAngles</a> &amp;angs, double altitudeMeters=0.0)</td></tr>
@@ -806,76 +987,27 @@ template&lt;&gt; </td></tr>
 <tr class="memitem:a5402245415231a1d1752cd92abd480db"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_sgt_1_1_irradiance.html">Irradiance</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#a5402245415231a1d1752cd92abd480db">irradiance</a> (const <a class="el" href="struct_sgt_1_1_spherical_angles.html">SphericalAngles</a> &amp;angs, double altitudeMeters=0.0)</td></tr>
 <tr class="memdesc:a5402245415231a1d1752cd92abd480db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solar irradiance components (direct vec, diffuse, ground), W/m^2.  <a href="#a5402245415231a1d1752cd92abd480db">More...</a><br /></td></tr>
 <tr class="separator:a5402245415231a1d1752cd92abd480db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Linear algebra</div></td></tr>
-<tr class="memitem:ga8780858ac67d87d969f7c9a6d58f2479"><td class="memItemLeft" align="right" valign="top">
-template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; double &gt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">Col</a>&lt; double &gt; &amp;v)</td></tr>
-<tr class="separator:ga8780858ac67d87d969f7c9a6d58f2479"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaedf58f4d3df22fdb4dd8e51a80cb2665"><td class="memItemLeft" align="right" valign="top">
-template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; float &gt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">Col</a>&lt; float &gt; &amp;v)</td></tr>
-<tr class="separator:gaedf58f4d3df22fdb4dd8e51a80cb2665"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1edde2087950a64034e317fa9898437c"><td class="memItemLeft" align="right" valign="top">
-template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; int &gt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">Col</a>&lt; int &gt; &amp;v)</td></tr>
-<tr class="separator:ga1edde2087950a64034e317fa9898437c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gacffc53d90ea9d18bca86516b5ded58dc"><td class="memItemLeft" align="right" valign="top">
-template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; Complex &gt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">Col</a>&lt; Complex &gt; &amp;v)</td></tr>
-<tr class="separator:gacffc53d90ea9d18bca86516b5ded58dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gadca4cf70a25ae399193a1c981199b5c9"><td class="memItemLeft" align="right" valign="top">
-double&#160;</td><td class="memItemRight" valign="bottom"><b>sumOfSquares</b> (const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; double &gt; &amp;x)</td></tr>
-<tr class="separator:gadca4cf70a25ae399193a1c981199b5c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gadb7cc8600641c5ff465489d6e7434897"><td class="memItemLeft" align="right" valign="top">
-double&#160;</td><td class="memItemRight" valign="bottom"><b>sumOfSquares</b> (const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; Complex &gt; &amp;x)</td></tr>
-<tr class="separator:gadb7cc8600641c5ff465489d6e7434897"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae4d1d1c9fc44233b03e2c13febd585fd"><td class="memTemplParams" colspan="2">
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:gae4d1d1c9fc44233b03e2c13febd585fd"><td class="memTemplItemLeft" align="right" valign="top">double&#160;</td><td class="memTemplItemRight" valign="bottom"><b>rms</b> (const T &amp;x)</td></tr>
-<tr class="separator:gae4d1d1c9fc44233b03e2c13febd585fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga47b0570928a773a8f90dc48052421989"><td class="memTemplParams" colspan="2">
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ga47b0570928a773a8f90dc48052421989"><td class="memTemplItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; T &gt; &amp;v)</td></tr>
-<tr class="separator:ga47b0570928a773a8f90dc48052421989"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaffcbfcc3cd5f7ff3164674ea2e61c8aa"><td class="memItemLeft" align="right" valign="top">
-template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; arma::uword &gt;</b> (std::ostream &amp;os, const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; arma::uword &gt; &amp;v)</td></tr>
-<tr class="separator:gaffcbfcc3cd5f7ff3164674ea2e61c8aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae0761a1e0d8b115191cf0f5e5ea58e83"><td class="memTemplParams" colspan="2">
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:gae0761a1e0d8b115191cf0f5e5ea58e83"><td class="memTemplItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const arma::Mat&lt; T &gt; &amp;m)</td></tr>
-<tr class="separator:gae0761a1e0d8b115191cf0f5e5ea58e83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac34529b1e3bbdd345fa748046c97c75e"><td class="memItemLeft" align="right" valign="top">
-template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; double &gt;</b> (std::ostream &amp;os, const arma::Mat&lt; double &gt; &amp;v)</td></tr>
-<tr class="separator:gac34529b1e3bbdd345fa748046c97c75e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9f954e47544c26201c50c6b52e3e8373"><td class="memItemLeft" align="right" valign="top">
-template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; float &gt;</b> (std::ostream &amp;os, const arma::Mat&lt; float &gt; &amp;v)</td></tr>
-<tr class="separator:ga9f954e47544c26201c50c6b52e3e8373"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf20a6ed4f2d65cc86cbf230bf7cf536a"><td class="memItemLeft" align="right" valign="top">
-template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; int &gt;</b> (std::ostream &amp;os, const arma::Mat&lt; int &gt; &amp;v)</td></tr>
-<tr class="separator:gaf20a6ed4f2d65cc86cbf230bf7cf536a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4b1df4bf29fd197c19c3e642f007f716"><td class="memItemLeft" align="right" valign="top">
-template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; arma::uword &gt;</b> (std::ostream &amp;os, const arma::Mat&lt; arma::uword &gt; &amp;v)</td></tr>
-<tr class="separator:ga4b1df4bf29fd197c19c3e642f007f716"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabfd06d206bed5bef31ac92e3cbd53701"><td class="memItemLeft" align="right" valign="top">
-template std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;&lt; Complex &gt;</b> (std::ostream &amp;os, const arma::Mat&lt; Complex &gt; &amp;v)</td></tr>
-<tr class="separator:gabfd06d206bed5bef31ac92e3cbd53701"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Boost ptime and time_t access</div></td></tr>
 <tr><td colspan="2"><div class="groupText"><p>Useful only in a few select cases, e.g. involving parsing.</p>
 <p>Not part of the normal treatment of time points! </p>
 </div></td></tr>
 <tr class="memitem:gad16b0eaf30af1fc88bfa5148c4104d49"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromUtcPtime</b> (const boost::posix_time::ptime &amp;utcPtime)</td></tr>
+<a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromUtcPtime</b> (const boost::posix_time::ptime &amp;utcPtime)</td></tr>
 <tr class="separator:gad16b0eaf30af1fc88bfa5148c4104d49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga46a9d308322bbf7e9e6fabd4240a87fa"><td class="memItemLeft" align="right" valign="top">
-boost::posix_time::ptime&#160;</td><td class="memItemRight" valign="bottom"><b>utcPtime</b> (const <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t)</td></tr>
+boost::posix_time::ptime&#160;</td><td class="memItemRight" valign="bottom"><b>utcPtime</b> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t)</td></tr>
 <tr class="separator:ga46a9d308322bbf7e9e6fabd4240a87fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga85194e79904ceff908befefd03fb8db5"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromLocalPtime</b> (const boost::posix_time::ptime &amp;localPtime, <a class="el" href="class_sgt_1_1_timezone.html">Timezone</a> zone=timezone())</td></tr>
-<tr class="separator:ga85194e79904ceff908befefd03fb8db5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0fa1a1dbaf13e51378abe24dc4b02360"><td class="memItemLeft" align="right" valign="top">
-boost::posix_time::ptime&#160;</td><td class="memItemRight" valign="bottom"><b>localPtime</b> (const <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t, <a class="el" href="class_sgt_1_1_timezone.html">Timezone</a> zone=timezone())</td></tr>
-<tr class="separator:ga0fa1a1dbaf13e51378abe24dc4b02360"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga39650593efba569b1ca8f04e7de59c97"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromLocalPtime</b> (const boost::posix_time::ptime &amp;localPtime, <a class="el" href="class_sgt_1_1_timezone.html">Timezone</a> zone)</td></tr>
+<tr class="separator:ga39650593efba569b1ca8f04e7de59c97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4b3242eebc7ec4fe0756059229739c4d"><td class="memItemLeft" align="right" valign="top">
+boost::posix_time::ptime&#160;</td><td class="memItemRight" valign="bottom"><b>localPtime</b> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t, <a class="el" href="class_sgt_1_1_timezone.html">Timezone</a> zone)</td></tr>
+<tr class="separator:ga4b3242eebc7ec4fe0756059229739c4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga758dd93ff362d6494dec3d6b8f2d54a8"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromUtcTimeT</b> (std::time_t timeT)</td></tr>
+<a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromUtcTimeT</b> (std::time_t timeT)</td></tr>
 <tr class="separator:ga758dd93ff362d6494dec3d6b8f2d54a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab836b893a29310aa1761ea1341637534"><td class="memItemLeft" align="right" valign="top">
-std::time_t&#160;</td><td class="memItemRight" valign="bottom"><b>utcTimeT</b> (const <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t)</td></tr>
+std::time_t&#160;</td><td class="memItemRight" valign="bottom"><b>utcTimeT</b> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t)</td></tr>
 <tr class="separator:gab836b893a29310aa1761ea1341637534"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">String conversion.</div></td></tr>
 <tr class="memitem:gae13287ed53132b053e5bb7015ae35958"><td class="memTemplParams" colspan="2">
@@ -883,42 +1015,9 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:gae13287ed53132b053e5bb7015ae35958"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___utilities.html#gae13287ed53132b053e5bb7015ae35958">from_string</a> (const std::string &amp;s)</td></tr>
 <tr class="memdesc:gae13287ed53132b053e5bb7015ae35958"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a value from a string. <br /></td></tr>
 <tr class="separator:gae13287ed53132b053e5bb7015ae35958"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Random number generation.</div></td></tr>
-<tr class="memitem:gad5735fdb326609d2bf87e2d01110b6e8"><td class="memItemLeft" align="right" valign="top">
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___utilities.html#gad5735fdb326609d2bf87e2d01110b6e8">randSeedWithTime</a> ()</td></tr>
-<tr class="memdesc:gad5735fdb326609d2bf87e2d01110b6e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seed random generator with time. <br /></td></tr>
-<tr class="separator:gad5735fdb326609d2bf87e2d01110b6e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga689b43642e739bc1b185d03845e5adf1"><td class="memItemLeft" align="right" valign="top">
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___utilities.html#ga689b43642e739bc1b185d03845e5adf1">randSeed</a> (const unsigned int n)</td></tr>
-<tr class="memdesc:ga689b43642e739bc1b185d03845e5adf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seed random generator with unsigned int. <br /></td></tr>
-<tr class="separator:ga689b43642e739bc1b185d03845e5adf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga69e152ed4bbba20b4ccc086a1df2629e"><td class="memItemLeft" align="right" valign="top">
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___utilities.html#ga69e152ed4bbba20b4ccc086a1df2629e">randDiscrete</a> (const double probs[], int nProbs)</td></tr>
-<tr class="memdesc:ga69e152ed4bbba20b4ccc086a1df2629e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample from discrete distribution with nProbs given probabilities. <br /></td></tr>
-<tr class="separator:ga69e152ed4bbba20b4ccc086a1df2629e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8994ff617877a65cb01cd3b8a1a22f0d"><td class="memItemLeft" align="right" valign="top">
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___utilities.html#ga8994ff617877a65cb01cd3b8a1a22f0d">randNormal</a> (double mu, double sig)</td></tr>
-<tr class="memdesc:ga8994ff617877a65cb01cd3b8a1a22f0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample from normal distribution with given mean and s.d. <br /></td></tr>
-<tr class="separator:ga8994ff617877a65cb01cd3b8a1a22f0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1ae47f9b9323006e23fd3fe48f587f35"><td class="memItemLeft" align="right" valign="top">
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___utilities.html#ga1ae47f9b9323006e23fd3fe48f587f35">randUniform</a> (double lower, double upper)</td></tr>
-<tr class="memdesc:ga1ae47f9b9323006e23fd3fe48f587f35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample from uniform distribution with given lower and upper bounds. <br /></td></tr>
-<tr class="separator:ga1ae47f9b9323006e23fd3fe48f587f35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1488debd6e7d4841a46effd0aa5ef42e"><td class="memItemLeft" align="right" valign="top">
-int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___utilities.html#ga1488debd6e7d4841a46effd0aa5ef42e">randUniformInt</a> (int lower, int upper)</td></tr>
-<tr class="memdesc:ga1488debd6e7d4841a46effd0aa5ef42e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample from integer uniform distribution with given lower and upper bounds. <br /></td></tr>
-<tr class="separator:ga1488debd6e7d4841a46effd0aa5ef42e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf41dc3633984a6226bfb7ddaa3bca756"><td class="memItemLeft" align="right" valign="top">
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___utilities.html#gaf41dc3633984a6226bfb7ddaa3bca756">randWeibull</a> (double a, double b)</td></tr>
-<tr class="memdesc:gaf41dc3633984a6226bfb7ddaa3bca756"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample from Weibull distribution with given a and b parameters. <br /></td></tr>
-<tr class="separator:gaf41dc3633984a6226bfb7ddaa3bca756"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:abb794e573a80e7c13e8442462492fa9e"><td class="memItemLeft" align="right" valign="top"><a id="abb794e573a80e7c13e8442462492fa9e"></a>
-constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><b>gNPhase</b> = static_cast&lt;std::uint8_t&gt;(Phase::BAD) + 1</td></tr>
-<tr class="separator:abb794e573a80e7c13e8442462492fa9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr><td colspan="2"><div class="groupHeader">Constants</div></td></tr>
 <tr class="memitem:gae51073126e9cef6935dc3d09d6aeb9b3"><td class="memItemLeft" align="right" valign="top">
 constexpr double&#160;</td><td class="memItemRight" valign="bottom"><b>pi</b> = 3.141592653589793238462643383279502884</td></tr>
 <tr class="separator:gae51073126e9cef6935dc3d09d6aeb9b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -973,119 +1072,9 @@ constexpr double&#160;</td><td class="memItemRight" valign="bottom"><b>kelvin</b
 <tr class="memitem:ga04542f5526e44684632b6859b5ead142"><td class="memItemLeft" align="right" valign="top">
 constexpr <a class="el" href="struct_sgt_1_1_lat_long.html">LatLong</a>&#160;</td><td class="memItemRight" valign="bottom"><b>greenwich</b> {51.4791, 0.0}</td></tr>
 <tr class="separator:ga04542f5526e44684632b6859b5ead142"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Reporting and errors.</h2></td></tr>
-<tr class="memitem:a15fe38ceb2ccd81e932f662f2478b916"><td class="memItemLeft" align="right" valign="top"><a id="a15fe38ceb2ccd81e932f662f2478b916"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>LogLevel</b> { <b>NONE</b>, 
-<b>NORMAL</b>, 
-<b>VERBOSE</b>
- }</td></tr>
-<tr class="separator:a15fe38ceb2ccd81e932f662f2478b916"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd86bff8ffc62823b305838483b7a77d"><td class="memItemLeft" align="right" valign="top"><a id="afd86bff8ffc62823b305838483b7a77d"></a>
-LogLevel &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#afd86bff8ffc62823b305838483b7a77d">messageLogLevel</a> ()</td></tr>
-<tr class="memdesc:afd86bff8ffc62823b305838483b7a77d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current message logging level. <br /></td></tr>
-<tr class="separator:afd86bff8ffc62823b305838483b7a77d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a17581faf2394899167f22071638f2042"><td class="memItemLeft" align="right" valign="top"><a id="a17581faf2394899167f22071638f2042"></a>
-LogLevel &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#a17581faf2394899167f22071638f2042">warningLogLevel</a> ()</td></tr>
-<tr class="memdesc:a17581faf2394899167f22071638f2042"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current warning logging level. <br /></td></tr>
-<tr class="separator:a17581faf2394899167f22071638f2042"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab82f84114b33f094ce5c75a18716bc5d"><td class="memItemLeft" align="right" valign="top"><a id="ab82f84114b33f094ce5c75a18716bc5d"></a>
-LogLevel &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#ab82f84114b33f094ce5c75a18716bc5d">errorLogLevel</a> ()</td></tr>
-<tr class="memdesc:ab82f84114b33f094ce5c75a18716bc5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current error logging level. <br /></td></tr>
-<tr class="separator:ab82f84114b33f094ce5c75a18716bc5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a571562b5fa5ff4d80decb22f6be9ddd7"><td class="memItemLeft" align="right" valign="top"><a id="a571562b5fa5ff4d80decb22f6be9ddd7"></a>
-LogLevel &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#a571562b5fa5ff4d80decb22f6be9ddd7">debugLogLevel</a> ()</td></tr>
-<tr class="memdesc:a571562b5fa5ff4d80decb22f6be9ddd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current debug logging level. <br /></td></tr>
-<tr class="separator:a571562b5fa5ff4d80decb22f6be9ddd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a42f0e65f2ab6566477765caffa287083"><td class="memItemLeft" align="right" valign="top"><a id="a42f0e65f2ab6566477765caffa287083"></a>
-std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#a42f0e65f2ab6566477765caffa287083">messageLogFilter</a> ()</td></tr>
-<tr class="memdesc:a42f0e65f2ab6566477765caffa287083"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current message logging level. <br /></td></tr>
-<tr class="separator:a42f0e65f2ab6566477765caffa287083"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1f050b4089120985d959d4e69c1af19"><td class="memItemLeft" align="right" valign="top"><a id="ab1f050b4089120985d959d4e69c1af19"></a>
-std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#ab1f050b4089120985d959d4e69c1af19">warningLogFilter</a> ()</td></tr>
-<tr class="memdesc:ab1f050b4089120985d959d4e69c1af19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current warning logging level. <br /></td></tr>
-<tr class="separator:ab1f050b4089120985d959d4e69c1af19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd14e5cbf34229271120a960eea46922"><td class="memItemLeft" align="right" valign="top"><a id="acd14e5cbf34229271120a960eea46922"></a>
-std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#acd14e5cbf34229271120a960eea46922">errorLogFilter</a> ()</td></tr>
-<tr class="memdesc:acd14e5cbf34229271120a960eea46922"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current error logging level. <br /></td></tr>
-<tr class="separator:acd14e5cbf34229271120a960eea46922"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9591040b430f7dac48e1c0639c2f9b8f"><td class="memItemLeft" align="right" valign="top"><a id="a9591040b430f7dac48e1c0639c2f9b8f"></a>
-std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#a9591040b430f7dac48e1c0639c2f9b8f">debugLogFilter</a> ()</td></tr>
-<tr class="memdesc:a9591040b430f7dac48e1c0639c2f9b8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current debug logging level. <br /></td></tr>
-<tr class="separator:a9591040b430f7dac48e1c0639c2f9b8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Complex numbers</h2></td></tr>
-<tr class="memitem:ga51ffb757fc994d4cc26e51cf776346a7"><td class="memItemLeft" align="right" valign="top">
-using&#160;</td><td class="memItemRight" valign="bottom"><b>Complex</b> = std::complex&lt; double &gt;</td></tr>
-<tr class="separator:ga51ffb757fc994d4cc26e51cf776346a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6f19a2c7717d32855f7d0e6e82aaf1bc"><td class="memItemLeft" align="right" valign="top">
-std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const Complex &amp;c)</td></tr>
-<tr class="separator:ga6f19a2c7717d32855f7d0e6e82aaf1bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac4b21e0b06dc8783f93387cd909a2910"><td class="memTemplParams" colspan="2">
-template&lt;&gt; </td></tr>
-<tr class="memitem:gac4b21e0b06dc8783f93387cd909a2910"><td class="memTemplItemLeft" align="right" valign="top">Complex&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_string&lt; Complex &gt;</b> (const std::string &amp;s)</td></tr>
-<tr class="separator:gac4b21e0b06dc8783f93387cd909a2910"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1229884152822b9ec3be8533aec0fe4d"><td class="memItemLeft" align="right" valign="top">
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>to_string</b> (const Complex &amp;c)</td></tr>
-<tr class="separator:ga1229884152822b9ec3be8533aec0fe4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1752fc4a938e8d4a052f45d63a2d9811"><td class="memItemLeft" align="right" valign="top">
-Complex&#160;</td><td class="memItemRight" valign="bottom"><b>polar</b> (double m, double theta)</td></tr>
-<tr class="separator:ga1752fc4a938e8d4a052f45d63a2d9811"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf03395d103907b61d9b08a86871b38a4"><td class="memItemLeft" align="right" valign="top">
-Complex&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (int i, const Complex &amp;c)</td></tr>
-<tr class="separator:gaf03395d103907b61d9b08a86871b38a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga300823b8f2ca1a7446965f75ec25001c"><td class="memItemLeft" align="right" valign="top">
-Complex&#160;</td><td class="memItemRight" valign="bottom"><b>operator*</b> (const Complex &amp;c, int i)</td></tr>
-<tr class="separator:ga300823b8f2ca1a7446965f75ec25001c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
-Time</h2></td></tr>
-<tr class="memitem:ga9708691c24e9b5f10ed7e9abd15f27e6"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> = boost::posix_time::time_duration</td></tr>
-<tr class="memdesc:ga9708691c24e9b5f10ed7e9abd15f27e6"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_simulation.html" title="Simulation: steps time according to discrete event simulation principles. ">Simulation</a> times and durations.  <a href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">More...</a><br /></td></tr>
-<tr class="separator:ga9708691c24e9b5f10ed7e9abd15f27e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7fd1e806f7b61d92c85b30db212b352f"><td class="memItemLeft" align="right" valign="top">
-using&#160;</td><td class="memItemRight" valign="bottom"><b>TimeSpecialValues</b> = boost::date_time::special_values</td></tr>
-<tr class="separator:ga7fd1e806f7b61d92c85b30db212b352f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8d5842815bea8eb4e37b2049fe0b41d6"><td class="memItemLeft" align="right" valign="top">
-using&#160;</td><td class="memItemRight" valign="bottom"><b>microseconds</b> = boost::posix_time::microseconds</td></tr>
-<tr class="separator:ga8d5842815bea8eb4e37b2049fe0b41d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab6a5e523bd0e63bc2e098ed9df55a60b"><td class="memItemLeft" align="right" valign="top">
-using&#160;</td><td class="memItemRight" valign="bottom"><b>milliseconds</b> = boost::posix_time::milliseconds</td></tr>
-<tr class="separator:gab6a5e523bd0e63bc2e098ed9df55a60b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga86e6598776b3da89995c43c666f4dadd"><td class="memItemLeft" align="right" valign="top">
-using&#160;</td><td class="memItemRight" valign="bottom"><b>seconds</b> = boost::posix_time::seconds</td></tr>
-<tr class="separator:ga86e6598776b3da89995c43c666f4dadd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga41c9abee311ef4529f6f9f53df1b0192"><td class="memItemLeft" align="right" valign="top">
-using&#160;</td><td class="memItemRight" valign="bottom"><b>minutes</b> = boost::posix_time::minutes</td></tr>
-<tr class="separator:ga41c9abee311ef4529f6f9f53df1b0192"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga78f05fc5d73e88efbf528dcfe40fa225"><td class="memItemLeft" align="right" valign="top">
-using&#160;</td><td class="memItemRight" valign="bottom"><b>hours</b> = boost::posix_time::hours</td></tr>
-<tr class="separator:ga78f05fc5d73e88efbf528dcfe40fa225"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga09cff3dd9c3a5021456772cdf7d7c98e"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="class_sgt_1_1_timezone.html">Timezone</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>timezone</b> ()</td></tr>
-<tr class="separator:ga09cff3dd9c3a5021456772cdf7d7c98e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab6a4dfe0c1760de488d4ec33958cf1c5"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromDSeconds</b> (double dSeconds)</td></tr>
-<tr class="separator:gab6a4dfe0c1760de488d4ec33958cf1c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab6b8fe98828c957e829b2eced35a3742"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromUtcTimeString</b> (const std::string &amp;utcTimeString)</td></tr>
-<tr class="separator:gab6b8fe98828c957e829b2eced35a3742"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7eeff32f8f0dc2e2616466eac818e129"><td class="memItemLeft" align="right" valign="top">
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>utcTimeString</b> (const <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t)</td></tr>
-<tr class="separator:ga7eeff32f8f0dc2e2616466eac818e129"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga04b7ad185c475702abf2d1d6c106c26f"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromLocalTimeString</b> (const std::string &amp;localTimeString, <a class="el" href="class_sgt_1_1_timezone.html">Timezone</a> zone=timezone())</td></tr>
-<tr class="separator:ga04b7ad185c475702abf2d1d6c106c26f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaaa0ccf7cdaf02fe39b60cb2e708a7b92"><td class="memItemLeft" align="right" valign="top">
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>localTimeString</b> (const <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t, <a class="el" href="class_sgt_1_1_timezone.html">Timezone</a> zone=timezone())</td></tr>
-<tr class="separator:gaaa0ccf7cdaf02fe39b60cb2e708a7b92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga377c42c8ec8c7ed5b38fcdd398f1c990"><td class="memItemLeft" align="right" valign="top">
-double&#160;</td><td class="memItemRight" valign="bottom"><b>dSeconds</b> (const <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;d)</td></tr>
-<tr class="separator:ga377c42c8ec8c7ed5b38fcdd398f1c990"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gafbc6b9e61894895e573f7014970a44c0"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><b>timeFromDurationString</b> (const std::string &amp;durString)</td></tr>
-<tr class="separator:gafbc6b9e61894895e573f7014970a44c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb794e573a80e7c13e8442462492fa9e"><td class="memItemLeft" align="right" valign="top"><a id="abb794e573a80e7c13e8442462492fa9e"></a>
+constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><b>gNPhase</b> = static_cast&lt;std::uint8_t&gt;(Phase::BAD) + 1</td></tr>
+<tr class="separator:abb794e573a80e7c13e8442462492fa9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The primary namespace for SmartGridToolbox. </p>
@@ -1382,7 +1371,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname"><a class="el" href="struct_sgt_1_1_spherical_angles.html">SphericalAngles</a> Sgt::sunPos </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;&#160;</td>
           <td class="paramname"><em>time</em>, </td>
         </tr>
         <tr>
@@ -1614,7 +1603,7 @@ template&lt;typename T &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 16 2018 10:40:31 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu May 17 2018 13:11:09 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

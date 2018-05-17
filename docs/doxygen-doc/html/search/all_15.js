@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['warninglogfilter',['warningLogFilter',['../namespace_sgt.html#ab1f050b4089120985d959d4e69c1af19',1,'Sgt']]],
-  ['warningloglevel',['warningLogLevel',['../namespace_sgt.html#a17581faf2394899167f22071638f2042',1,'Sgt']]],
+  ['warninglogfilter',['warningLogFilter',['../group___logging_and_errors.html#gab1f050b4089120985d959d4e69c1af19',1,'Sgt']]],
+  ['warningloglevel',['warningLogLevel',['../group___logging_and_errors.html#ga17581faf2394899167f22071638f2042',1,'Sgt']]],
   ['weather',['Weather',['../class_sgt_1_1_weather.html',1,'Sgt']]],
   ['weathermodel',['WeatherModel',['../struct_sgt_1_1_weather_model.html',1,'Sgt']]],
   ['weatherparserplugin',['WeatherParserPlugin',['../class_sgt_1_1_weather_parser_plugin.html',1,'Sgt']]],

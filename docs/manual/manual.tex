@@ -24,8 +24,13 @@
 \usepackage{listings}
 \lstset{language = C++}
 
-% URLs:
+% URLs and hyperrefs:
 \usepackage{url}
+\usepackage[colorlinks]{hyperref}
+\hypersetup{
+	colorlinks = true,
+	urlcolor = {blue}
+}
 
 \title{Using SmartGridToolbox}
 \author{Dan Gordon}
@@ -63,6 +68,7 @@ SmartGridToolbox uses  \verb|Sgt::Complex| to handle complex numbers. \verb|Sgt:
 \subsubsection{Time}
 For reasons of simplicity and convenience, SmartGridToolbox uses the  \verb|Sgt::Time| class to handle both absolute times and time durations. Absolute times are defined relative to the unix epoch (1 Jan, 1970 00:00:00 UTC). \verb|Sgt::Time| is actually an alias for \verb|boost::posix_time::time_duration|.
 \subsubsection{Linear algebra; vectors and matrices}
+SmartGridToolbox makes extensive use of the \href{http://arma.sourceforge.net}{Armadillo library} for vector and matrix classes, and linear algebra purposes. In particular, vectors are normally represented as \verb|arma::Col<double>| or \verb|arma::Col<Complex>|, and matrices are represented as \verb|arma::Mat<double>| or \verb|arma::Mat<Complex>|. Please see the \href{http://arma.sourceforge.net/docs.html}{Armadillo documentation} for more detail.
 \subsubsection{Constants}
 \subsubsection{Logging}
 \subsection{YAML and the \texttt{Parser} class}

@@ -32,9 +32,6 @@
 #include <stdexcept>
 #include <mutex>
 
-/// @name Utility macros - not normally for public consumption.
-/// @{
-
 // Macro symbol concatenation.
 #define SGT_DO_CAT(A, B) A ## B
 #define SGT_CAT(A, B) SGT_DO_CAT(A, B)
@@ -49,13 +46,8 @@
 #define SGT_VA_SIZE(...) SGT_COMPOSE(SGT_GET_COUNT, (SGT_EXPAND __VA_ARGS__ (), 0, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0))
 #define SGT_VA_SELECT(NAME, ...) SGT_CAT(NAME, SGT_VA_SIZE(__VA_ARGS__))(__VA_ARGS__)
 
-/// @}
-
 namespace Sgt
 {
-    /// @name Reporting and errors.
-    /// @{
-
     class StreamIndent : public std::streambuf
     {
         public:
@@ -80,10 +72,12 @@ namespace Sgt
         std::string ind2_;
     };
 
-    /// @brief Logging object.
+    /// @brief Logging object
+    /// @ingroup LoggingAndErrors
     ///
     /// Use e.g. Log().message() << "this is a message" << std::endl;
-    /// @ingroup Utilities
+    /// Instances of Log are normally obtained using one of these macros:
+    /// sgtLogMessage(), sgtLogWarning(), sgtLogError()
     class Log
     {
         friend class LogIndent;
@@ -108,6 +102,8 @@ namespace Sgt
         StreamIndent cerrBuf_{std::cerr};
     };
 
+    /// @brief Logging levels
+    /// @ingroup LoggingAndErrors
     enum class LogLevel
     {
         NONE,
@@ -116,27 +112,35 @@ namespace Sgt
     };
 
     /// @brief Get a reference to the current message logging level.
+    /// @ingroup LoggingAndErrors
     LogLevel& messageLogLevel();
     /// @brief Get a reference to the current warning logging level.
+    /// @ingroup LoggingAndErrors
     LogLevel& warningLogLevel();
     /// @brief Get a reference to the current error logging level.
+    /// @ingroup LoggingAndErrors
     LogLevel& errorLogLevel();
     /// @brief Get a reference to the current debug logging level.
+    /// @ingroup LoggingAndErrors
     LogLevel& debugLogLevel();
 
     /// @brief Get a reference to the current message logging level.
+    /// @ingroup LoggingAndErrors
     std::string& messageLogFilter();
     /// @brief Get a reference to the current warning logging level.
+    /// @ingroup LoggingAndErrors
     std::string& warningLogFilter();
     /// @brief Get a reference to the current error logging level.
+    /// @ingroup LoggingAndErrors
     std::string& errorLogFilter();
     /// @brief Get a reference to the current debug logging level.
+    /// @ingroup LoggingAndErrors
     std::string& debugLogFilter();
 
     /// @brief Create a LogIndent on the stack to indent all logs.
+    /// @ingroup LoggingAndErrors
     ///
     /// Indentation will persist while object is in scope.
-    /// @ingroup Utilities
     class LogIndent
     {
         public:
@@ -186,45 +190,44 @@ namespace Sgt
 #define SGT_LOG_INDENT0() Sgt::LogIndent SGT_UNIQUE_NAME(indent);
 
     /// @brief Log a message.
-    /// @ingroup Utilities
+    /// @ingroup LoggingAndErrors
     ///
     /// E.g. sgtLogMessage(LogLevel::VERBOSE) << "this is a message: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
 #define sgtLogMessage(...) SGT_VA_SELECT(SGT_LOG_MESSAGE, __VA_ARGS__)
 
     /// @brief Log a warning.
-    /// @ingroup Utilities
+    /// @ingroup LoggingAndErrors
     ///
     /// E.g. sgtLogWarning(LogLevel::VERBOSE) << "this is a warning: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
 #define sgtLogWarning(...) SGT_VA_SELECT(SGT_LOG_WARNING, __VA_ARGS__)
 
     /// @brief Log an error.
-    /// @ingroup Utilities
+    /// @ingroup LoggingAndErrors
     ///
     /// E.g. sgtLogError(LogLevel::VERBOSE) << "this is an error: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
 #define sgtLogError(...) SGT_VA_SELECT(SGT_LOG_ERROR, __VA_ARGS__)
 
     /// @brief Log a debug message.
-    /// @ingroup Utilities
+    /// @ingroup LoggingAndErrors
     ///
     /// E.g. sgtLogDebug(LogLevel::VERBOSE) << "this is a debug message: number = " << 5 << std::endl;
     /// Parameter is optional and defaults to LogLevel::NORMAL
 #define sgtLogDebug(...) SGT_VA_SELECT(SGT_LOG_DEBUG, __VA_ARGS__)
 
     /// @brief Indent the logs.
-    /// @ingroup Utilities
+    /// @ingroup LoggingAndErrors
     ///
     /// Indent lasts until the end of the current scope.
 #define sgtLogIndent(...) SGT_VA_SELECT(SGT_LOG_INDENT, __VA_ARGS__)
 
+    /// @brief Report an error and throw an exception.
+    /// @ingroup LoggingAndErrors
 #define sgtError(msg) {std::ostringstream ss; ss << "SmartGridToolbox: " << __PRETTY_FUNCTION__ << ": " << msg; throw std::runtime_error(ss.str());}
 
-    /// @ingroup Utilities
 #define sgtAssert(cond, msg) if (!(cond)) {sgtLogError() << "SmartGridToolbox: " << __PRETTY_FUNCTION__ << ": " << msg << std::endl; std::abort();}
-
-    /// @}
 
     /// @name String conversion.
     /// @{
@@ -252,10 +255,7 @@ namespace Sgt
 
     /// @}
 
-    /// @name Complex numbers
-    /// @{
-
-    /// @addtogroup Utilities
+    /// @addtogroup Complex
     /// @{
 
     using Complex = std::complex<double>;
@@ -284,31 +284,24 @@ namespace Sgt
 
     /// @}
 
-    /// @}
-
-    /// @name Linear algebra
+    /// @addtogroup LinearAlgebra
     /// @{
-
-    /// @ingroup Utilities
     inline double sumOfSquares(const arma::Col<double>& x)
     {
         return sum(square(x));
     }
 
-    /// @ingroup Utilities
     inline double sumOfSquares(const arma::Col<Complex>& x)
     {
         return std::accumulate(x.begin(), x.end(), 0.0,
                 [](double cur, const Complex& xi)->double{return cur + norm(xi);});
     }
 
-    /// @ingroup Utilities
     template<typename T> double rms(const T& x)
     {
         return sqrt(sumOfSquares(x)/x.size());
     }
 
-    /// @ingroup Utilities
     template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Col<T>& v)
     {
         auto w = static_cast<int>(os.width());
@@ -331,7 +324,6 @@ namespace Sgt
     extern template std::ostream& operator<< <arma::uword>(std::ostream& os, const arma::Col<arma::uword>& v);
     extern template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Col<Complex>& v);
 
-    /// @ingroup Utilities
     template<typename T> std::ostream& operator<<(std::ostream& os, const arma::Mat<T>& m)
     {
         auto w = static_cast<int>(os.width());
@@ -358,29 +350,28 @@ namespace Sgt
         ss << std::endl << "]" << std::endl;
         return os << ss.str();
     }
+
+    /// @}
+    
     extern template std::ostream& operator<< <double>(std::ostream& os, const arma::Mat<double>& v);
     extern template std::ostream& operator<< <float>(std::ostream& os, const arma::Mat<float>& v);
     extern template std::ostream& operator<< <int>(std::ostream& os, const arma::Mat<int>& v);
     extern template std::ostream& operator<< <arma::uword>(std::ostream& os, const arma::Mat<arma::uword>& v);
     extern template std::ostream& operator<< <Complex>(std::ostream& os, const arma::Mat<Complex>& v);
 
-    /// @}
-
-    /// @name Time
+    /// @addtogroup Time
     /// @{
-
-    /// @brief Simulation times and durations.
+    
+    /// @brief Times and durations.
     ///
     /// For simplicity, we don't distinguish between time points and durations. The interpretation is context
     /// dependent, and time points are treated as an offset from the posix epoch. This means we don't have any
     /// confusion about things like leap seconds and the like. 
-    /// @ingroup Utilities
     using Time = boost::posix_time::time_duration;
 
     /// @brief PIMPL wrapper class for Boost local_time_zone_ptr.
     ///
     /// Hides the machinery of Boost's time_zone_ptr mechanism, as we wish to not be tied to Boost.
-    /// @ingroup Utilities
     class Timezone
     {
         public:
@@ -398,71 +389,51 @@ namespace Sgt
 
     using TimeSpecialValues = boost::date_time::special_values;
 
-    /// @ingroup Utilities
     using microseconds = boost::posix_time::microseconds;
-    /// @ingroup Utilities
     using milliseconds = boost::posix_time::milliseconds;
-    /// @ingroup Utilities
     using seconds = boost::posix_time::seconds;
-    /// @ingroup Utilities
     using minutes = boost::posix_time::minutes;
-    /// @ingroup Utilities
     using hours = boost::posix_time::hours;
 
-    /// @ingroup Utilities
     inline double dSeconds(const Time& d)
     {
         return double(d.ticks()) / Time::ticks_per_second();
     }
 
-    /// @ingroup Utilities
     Time timeFromDSeconds(double dSeconds);
 
-    /// @ingroup Utilities
     inline Time timeFromDurationString(const std::string& durString)
     {
         return boost::posix_time::duration_from_string(durString);
     }
 
-    /// @ingroup Utilities
     Time timeFromUtcTimeString(const std::string& utcTimeString);
 
-    /// @ingroup Utilities
     std::string utcTimeString(const Time& t);
 
-    /// @ingroup Utilities
     Time timeFromLocalTimeString(const std::string& localTimeString, Timezone zone = timezone());
 
-    /// @ingroup Utilities
     std::string localTimeString(const Time& t, Timezone zone = timezone());
-
-    /// @}
 
     /// @name Boost ptime and time_t access
     /// @brief Useful only in a few select cases, e.g. involving parsing.
     ///
     /// Not part of the normal treatment of time points!
     /// @{
-
-    /// @ingroup Utilities
+    
     Time timeFromUtcPtime(const boost::posix_time::ptime& utcPtime);
 
-    /// @ingroup Utilities
     boost::posix_time::ptime utcPtime(const Time& t);
 
-    /// @ingroup Utilities
     Time timeFromLocalPtime(const boost::posix_time::ptime& localPtime, Timezone zone = timezone());
 
-    /// @ingroup Utilities
     boost::posix_time::ptime localPtime(const Time& t, Timezone zone = timezone());
 
-    /// @ingroup Utilities
     inline Time timeFromUtcTimeT(std::time_t timeT)
     {
         return timeFromUtcPtime(boost::posix_time::from_time_t(timeT));
     }
 
-    /// @ingroup Utilities
     inline std::time_t utcTimeT(const Time& t)
     {
         // return boost::posix_time::to_time_t(utcPtime(t));
@@ -472,6 +443,8 @@ namespace Sgt
         return std::time_t(dur.total_seconds()); 
     }
 
+    /// @}
+    
     /// @}
 
     /// @name LatLongs
@@ -487,10 +460,7 @@ namespace Sgt
 
     /// @}
 
-    /// @addtogroup Utilities
-    /// @{
-
-    /// @name Constants
+    /// @addtogroup Constants
     /// @{
 
     constexpr double pi = 3.141592653589793238462643383279502884;
@@ -513,15 +483,11 @@ namespace Sgt
     constexpr LatLong greenwich{51.4791, 0.0};
 
     /// @}
-
-    /// @}
 }
-
-/// @name JSON.
-/// @{
 
 namespace Sgt
 {
+    /// @ingroup JSON
     using json = nlohmann::json;
 
     /// @brief Deduce if toJson() member function exists.

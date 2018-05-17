@@ -7,7 +7,7 @@ var searchData=
   ['tbinit',['TbInit',['../class_sgt_1_1_simple_building.html#ae8b594ce92a152e3755ff8e21b958b82',1,'Sgt::SimpleBuilding']]],
   ['tcell',['TCell',['../class_sgt_1_1_solar_pv.html#ae963e33e7bdb2d8e6f54758ab127a849',1,'Sgt::SolarPv::TCell(const Time &amp;t) const'],['../class_sgt_1_1_solar_pv.html#a49ac60cb98756a4f965787a53cad710e',1,'Sgt::SolarPv::TCell() const']]],
   ['te',['Te',['../class_sgt_1_1_simple_building.html#adca3900f3e08b735505e3bda77e03657',1,'Sgt::SimpleBuilding']]],
-  ['time',['Time',['../group___utilities.html#ga9708691c24e9b5f10ed7e9abd15f27e6',1,'Sgt']]],
+  ['time',['Time',['../group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6',1,'Sgt::Time()'],['../group___time.html',1,'(Global Namespace)']]],
   ['timeseries',['TimeSeries',['../class_sgt_1_1_time_series.html',1,'Sgt::TimeSeries&lt; T, V &gt;'],['../class_sgt_1_1_simulation.html#a6627d97f2604c8e29331c8941695a8ac',1,'Sgt::Simulation::timeSeries() const'],['../class_sgt_1_1_simulation.html#a47f224f531d53ff3dd1489817a30b744',1,'Sgt::Simulation::timeSeries()']]],
   ['timeseriesbase',['TimeSeriesBase',['../class_sgt_1_1_time_series_base.html',1,'Sgt']]],
   ['timeseriesdcpowersource',['TimeSeriesDcPowerSource',['../class_sgt_1_1_time_series_dc_power_source.html',1,'Sgt']]],
