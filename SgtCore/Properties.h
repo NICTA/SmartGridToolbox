@@ -30,18 +30,21 @@ namespace Sgt
 {
     using NoneType = std::nullptr_t;
 
+    /// @ingroup Properties
     class NotGettableException : public std::logic_error
     {
         public:
         NotGettableException() : std::logic_error("Property is not gettable") {}
     };
 
+    /// @ingroup Properties
     class NotSettableException : public std::logic_error
     {
         public:
         NotSettableException() : std::logic_error("Property is not settable") {}
     };
 
+    /// @ingroup Properties
     class BadTargException : public std::logic_error
     {
         public:
@@ -138,7 +141,7 @@ namespace Sgt
         std::function<void(TargType&, SetterArgType)> set_;
     };
 
-    /// @ingroup Foundation
+    /// @ingroup Properties
     class PropertyAbc
     {
         public:
@@ -187,7 +190,7 @@ namespace Sgt
     ///
     /// A property can have a getter and a setter. It can generically get its value and set via strings,
     /// or can get and set its the particular template type, if we know what that is.
-    /// @ingroup Foundation
+    /// @ingroup Properties
     template<typename GetterRetType, typename SetterArgType> class Property : public PropertyAbc
     {
         public:
@@ -270,6 +273,7 @@ namespace Sgt
     };
 
     /// @brief A collection of properties.
+    /// @ingroup Properties
     class Properties
     {
         public:
@@ -326,7 +330,7 @@ namespace Sgt
     };
 
     /// @brief Abstract base class for an object with properties.
-    /// @ingroup Foundation
+    /// @ingroup Properties
     class HasProperties
     {
         public:
@@ -335,9 +339,10 @@ namespace Sgt
     };
 }
 
+/// @ingroup Properties
 #define SGT_PROPS_INIT(Type) \
-    using TargType = Type; \
-    static Sgt::Properties& sProperties() \
+using TargType = Type; \
+static Sgt::Properties& sProperties() \
 { \
     static Sgt::Properties props; \
     return props; \
@@ -346,8 +351,9 @@ virtual Sgt::Properties& properties() const override {return sProperties();}
 
 /// Copy all properties from the base class into this class. This allows an override mechanism, just like method
 /// overrides. 
+/// @ingroup Properties
 #define SGT_PROPS_INHERIT(Base) \
-    struct Inherit ## Base \
+struct Inherit ## Base \
 { \
     Inherit ## Base () {sProperties().insert(Base::sProperties().begin(), Base::sProperties().end());} \
 }; \
@@ -357,17 +363,18 @@ struct DoInherit ## Base \
 } doinherit ## Base \
 
 /// Use a member function as a property getter.
+/// @ingroup Properties
 #define SGT_PROP_GET(name, getter, GetterRetType) \
-    struct InitProp_ ## name \
+struct InitProp_ ## name \
 { \
     InitProp_ ## name() \
     { \
         sProperties().addGetProperty<TargType, GetterRetType>( \
                 [](const TargType& targ)->GetterRetType {return targ.getter();}, \
-#name); \
+                #name); \
     } \
 }; \
-                struct Prop_ ## name \
+struct Prop_ ## name \
 { \
     Prop_ ## name() \
     { \
@@ -375,37 +382,39 @@ struct DoInherit ## Base \
     } \
 } prop_ ## name;
 
-                /// Use a member function as a property setter.
+/// Use a member function as a property setter.
+/// @ingroup Properties
 #define SGT_PROP_SET(name, setter, SetterArgType) \
-                    struct InitProp_ ## name \
+struct InitProp_ ## name \
 { \
     InitProp_ ## name() \
     { \
         sProperties().addSetProperty<TargType, SetterArgType>( \
                 [](TargType& targ, SetterArgType val) {targ.setter(val);}, \
-#name); \
+                #name); \
     } \
 }; \
-                struct Prop_ ## name { \
-                    Prop_ ## name() \
-                    { \
-                        static InitProp_ ## name _; \
-                    } \
-                } prop_ ## name
+struct Prop_ ## name { \
+    Prop_ ## name() \
+    { \
+        static InitProp_ ## name _; \
+    } \
+} prop_ ## name
 
-                /// Use member functions as a property getters and setters.
+/// Use member functions as a property getters and setters.
+/// @ingroup Properties
 #define SGT_PROP_GET_SET(name, getter, GetterRetType, setter, SetterArgType) \
-                    struct InitProp_ ## name \
+struct InitProp_ ## name \
 { \
     InitProp_ ## name() \
     { \
         sProperties().addGetSetProperty<TargType, GetterRetType, SetterArgType>( \
                 [](const TargType& targ)->GetterRetType {return targ.getter();}, \
                 [](TargType& targ, SetterArgType val) {targ.setter(val);}, \
-#name); \
+                #name); \
     } \
 }; \
-                struct Prop_ ## name \
+struct Prop_ ## name \
 { \
     Prop_ ## name() \
     { \

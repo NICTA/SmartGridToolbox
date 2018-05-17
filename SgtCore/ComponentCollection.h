@@ -30,6 +30,7 @@ namespace Sgt
     template<typename T> class MutableComponentCollection;
 
     /// @brief Pointer type to a member of ComponentCollection.
+    /// @ingroup Components
     template<typename B, typename D = B, bool isConst = false> class ComponentPtr
     {
         // static_assert(std::is_base_of<B, D>(), "ComponentPtr<B, D, isConst>: B must be a base class of D.");
@@ -160,9 +161,11 @@ namespace Sgt
             }
     };
 
+    /// @ingroup Components
     template<typename B, typename D = B> using ConstComponentPtr = ComponentPtr<B, D, true>;
 
     /// @brief Utility container type combining aspects of map and vector.
+    /// @ingroup Components
     ///
     /// May be iterated over or indexed by a string key or an integer index.
     /// ComponentPtr and ConstComponentPtr are a kind of smart pointer to elements in the container.
@@ -224,6 +227,7 @@ namespace Sgt
         std::vector<Ptr> vec_;
     };
 
+    /// @ingroup Components
     template<typename T> class MutableComponentCollection : public ComponentCollection<T>
     {
         public:

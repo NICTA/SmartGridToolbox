@@ -3,6 +3,31 @@
 
 /// @defgroup Foundation Foundation
 /// @brief Foundation classes, functions etc. for the whole of SmartGridToolbox
+/// @{
+
+/// @defgroup Components 
+/// @brief Components and component collections.
+///
+/// Components are, basically, objects in a collection with a unique ID. They are mainly used for two purposes in
+/// SmartGridToolbox: as objects in an electricity network (buses, branches, zip loads, generators), and as objects
+/// in simulations.
+///
+/// Components may be stored in a ComponentCollection. Elements of a ComponentCollection may be referenced by a
+/// ComponentPtr. The special thing about ComponentPtrs, which distinguishes them from other pointers, is that if a
+/// Component with a certain id is replaced by a different component with the same id, a ComponentPtr that previously
+/// pointed to the first component will now point to the second. This is useful in providing flexibility, for example,
+/// components of a simulation may be changed without having to rebuild all the dependencies on these components.
+
+/// @defgroup Properties Properties
+/// @brief Dynamic properties.
+
+/// @defgroup ActionEvent Action Event Mechanism
+/// @brief Architecture for event-based simulations 
+
+/// @defgroup Parsing Parsing
+/// @brief Parsing classes, functions etc.
+    
+/// @}
 
 /// @defgroup PowerFlowCore Power Flow Core
 /// @brief Core power flow classes of SmartGridToolbox.
