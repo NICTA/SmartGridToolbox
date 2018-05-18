@@ -105,79 +105,23 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aeac5048221929b8f7558d1698dd0fb3a"><td class="memItemLeft" align="right" valign="top"><a id="aeac5048221929b8f7558d1698dd0fb3a"></a>
 <a class="el" href="classnlohmann_1_1detail_1_1input__stream__adapter.html">input_stream_adapter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classnlohmann_1_1detail_1_1input__stream__adapter.html">input_stream_adapter</a> &amp;)=delete</td></tr>
 <tr class="separator:aeac5048221929b8f7558d1698dd0fb3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0760af923583de6354725e901d1869d"><td class="memItemLeft" align="right" valign="top">std::char_traits&lt; char &gt;::int_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1input__stream__adapter.html#ae0760af923583de6354725e901d1869d">get_character</a> () override</td></tr>
-<tr class="memdesc:ae0760af923583de6354725e901d1869d"><td class="mdescLeft">&#160;</td><td class="mdescRight">get a character [0,255] or std::char_traits&lt;char&gt;::eof().  <a href="#ae0760af923583de6354725e901d1869d">More...</a><br /></td></tr>
+<tr class="memitem:ae0760af923583de6354725e901d1869d"><td class="memItemLeft" align="right" valign="top"><a id="ae0760af923583de6354725e901d1869d"></a>
+std::char_traits&lt; char &gt;::int_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1input__stream__adapter.html#ae0760af923583de6354725e901d1869d">get_character</a> () override</td></tr>
+<tr class="memdesc:ae0760af923583de6354725e901d1869d"><td class="mdescLeft">&#160;</td><td class="mdescRight">get a character [0,255] or std::char_traits&lt;char&gt;::eof(). <br /></td></tr>
 <tr class="separator:ae0760af923583de6354725e901d1869d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6a65d3816ce4027ef4d2013a13ee697"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1input__stream__adapter.html#ab6a65d3816ce4027ef4d2013a13ee697">unget_character</a> () override</td></tr>
-<tr class="memdesc:ab6a65d3816ce4027ef4d2013a13ee697"><td class="mdescLeft">&#160;</td><td class="mdescRight">restore the last non-eof() character to input  <a href="#ab6a65d3816ce4027ef4d2013a13ee697">More...</a><br /></td></tr>
+<tr class="memitem:ab6a65d3816ce4027ef4d2013a13ee697"><td class="memItemLeft" align="right" valign="top"><a id="ab6a65d3816ce4027ef4d2013a13ee697"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1input__stream__adapter.html#ab6a65d3816ce4027ef4d2013a13ee697">unget_character</a> () override</td></tr>
+<tr class="memdesc:ab6a65d3816ce4027ef4d2013a13ee697"><td class="mdescLeft">&#160;</td><td class="mdescRight">restore the last non-eof() character to input <br /></td></tr>
 <tr class="separator:ab6a65d3816ce4027ef4d2013a13ee697"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae0760af923583de6354725e901d1869d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0760af923583de6354725e901d1869d">&#9670;&nbsp;</a></span>get_character()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::char_traits&lt;char&gt;::int_type nlohmann::detail::input_stream_adapter::get_character </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>get a character [0,255] or std::char_traits&lt;char&gt;::eof(). </p>
-
-<p>Implements <a class="el" href="structnlohmann_1_1detail_1_1input__adapter__protocol.html#aac10a6a4048a8ce8e2ed50277692a3ca">nlohmann::detail::input_adapter_protocol</a>.</p>
-
-</div>
-</div>
-<a id="ab6a65d3816ce4027ef4d2013a13ee697"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6a65d3816ce4027ef4d2013a13ee697">&#9670;&nbsp;</a></span>unget_character()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void nlohmann::detail::input_stream_adapter::unget_character </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>restore the last non-eof() character to input </p>
-
-<p>Implements <a class="el" href="structnlohmann_1_1detail_1_1input__adapter__protocol.html#aeb5cac3e86e8df6cfe48cc42de2e9225">nlohmann::detail::input_adapter_protocol</a>.</p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>/Users/dan/Devel/SmartGridToolbox/SgtCore/<a class="el" href="json_8h_source.html">json.h</a></li>
 </ul>
 </div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.14-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri May 18 2018 10:39:35 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated by SmartGridToolbox &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

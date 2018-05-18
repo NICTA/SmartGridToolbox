@@ -127,8 +127,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6b1d8756dd56195c7b0c07ca12995758"><td class="memItemLeft" align="right" valign="top">virtual const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#a6b1d8756dd56195c7b0c07ca12995758">componentType</a> () const override</td></tr>
 <tr class="memdesc:a6b1d8756dd56195c7b0c07ca12995758"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the component type string.  <a href="#a6b1d8756dd56195c7b0c07ca12995758">More...</a><br /></td></tr>
 <tr class="separator:a6b1d8756dd56195c7b0c07ca12995758"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afbc5738d813bddfd91e362e0aa3ebe17"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classnlohmann_1_1basic__json.html">json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#afbc5738d813bddfd91e362e0aa3ebe17">toJson</a> () const override</td></tr>
-<tr class="memdesc:afbc5738d813bddfd91e362e0aa3ebe17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Produce a JSON representation of the component.  <a href="#afbc5738d813bddfd91e362e0aa3ebe17">More...</a><br /></td></tr>
+<tr class="memitem:afbc5738d813bddfd91e362e0aa3ebe17"><td class="memItemLeft" align="right" valign="top"><a id="afbc5738d813bddfd91e362e0aa3ebe17"></a>
+virtual <a class="el" href="classnlohmann_1_1basic__json.html">json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#afbc5738d813bddfd91e362e0aa3ebe17">toJson</a> () const override</td></tr>
+<tr class="memdesc:afbc5738d813bddfd91e362e0aa3ebe17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Produce a JSON representation of the component. <br /></td></tr>
 <tr class="separator:afbc5738d813bddfd91e362e0aa3ebe17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Phase accessors:</div></td></tr>
 <tr class="memitem:adb2924c76f5fe9a4f869c9c3bbc4dfe4"><td class="memItemLeft" align="right" valign="top"><a id="adb2924c76f5fe9a4f869c9c3bbc4dfe4"></a>
@@ -163,24 +164,29 @@ virtual arma::Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bo
 <tr class="memitem:a221e4f445a06610e1c6fc805746b85f0"><td class="memItemLeft" align="right" valign="top"><a id="a221e4f445a06610e1c6fc805746b85f0"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>SGT_PROP_GET</b> (Y, Y, arma::Mat&lt; Complex &gt;)</td></tr>
 <tr class="separator:a221e4f445a06610e1c6fc805746b85f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a426971fd529122fbca8a1db8ed8df23c"><td class="memItemLeft" align="right" valign="top">virtual arma::Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#a426971fd529122fbca8a1db8ed8df23c">inServiceY</a> () const =0</td></tr>
-<tr class="memdesc:a426971fd529122fbca8a1db8ed8df23c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The admittance whenever isInService.  <a href="#a426971fd529122fbca8a1db8ed8df23c">More...</a><br /></td></tr>
+<tr class="memitem:a426971fd529122fbca8a1db8ed8df23c"><td class="memItemLeft" align="right" valign="top"><a id="a426971fd529122fbca8a1db8ed8df23c"></a>
+virtual arma::Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#a426971fd529122fbca8a1db8ed8df23c">inServiceY</a> () const =0</td></tr>
+<tr class="memdesc:a426971fd529122fbca8a1db8ed8df23c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The admittance whenever isInService. <br /></td></tr>
 <tr class="separator:a426971fd529122fbca8a1db8ed8df23c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24eadec2f0abc1b666df8286eca9b200"><td class="memItemLeft" align="right" valign="top"><a id="a24eadec2f0abc1b666df8286eca9b200"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>SGT_PROP_GET</b> (<a class="el" href="class_sgt_1_1_branch_abc.html#a426971fd529122fbca8a1db8ed8df23c">inServiceY</a>, <a class="el" href="class_sgt_1_1_branch_abc.html#a426971fd529122fbca8a1db8ed8df23c">inServiceY</a>, arma::Mat&lt; Complex &gt;)</td></tr>
 <tr class="separator:a24eadec2f0abc1b666df8286eca9b200"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Events.</div></td></tr>
-<tr class="memitem:acfa28ff76c84383bac26abd772a75ada"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="class_sgt_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#acfa28ff76c84383bac26abd772a75ada">isInServiceChanged</a> () const</td></tr>
-<tr class="memdesc:acfa28ff76c84383bac26abd772a75ada"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_event.html" title="An event, when triggered, performs all of its registered actions.Actions are stored as a set in the e...">Event</a> triggered when I go in or out of service.  <a href="#acfa28ff76c84383bac26abd772a75ada">More...</a><br /></td></tr>
+<tr class="memitem:acfa28ff76c84383bac26abd772a75ada"><td class="memItemLeft" align="right" valign="top"><a id="acfa28ff76c84383bac26abd772a75ada"></a>
+virtual const <a class="el" href="class_sgt_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#acfa28ff76c84383bac26abd772a75ada">isInServiceChanged</a> () const</td></tr>
+<tr class="memdesc:acfa28ff76c84383bac26abd772a75ada"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_event.html" title="An event, when triggered, performs all of its registered actions.Actions are stored as a set in the e...">Event</a> triggered when I go in or out of service. <br /></td></tr>
 <tr class="separator:acfa28ff76c84383bac26abd772a75ada"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec9a79f0aa6200657999bbd8741623e3"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_sgt_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#aec9a79f0aa6200657999bbd8741623e3">isInServiceChanged</a> ()</td></tr>
-<tr class="memdesc:aec9a79f0aa6200657999bbd8741623e3"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_event.html" title="An event, when triggered, performs all of its registered actions.Actions are stored as a set in the e...">Event</a> triggered when I go in or out of service.  <a href="#aec9a79f0aa6200657999bbd8741623e3">More...</a><br /></td></tr>
+<tr class="memitem:aec9a79f0aa6200657999bbd8741623e3"><td class="memItemLeft" align="right" valign="top"><a id="aec9a79f0aa6200657999bbd8741623e3"></a>
+virtual <a class="el" href="class_sgt_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#aec9a79f0aa6200657999bbd8741623e3">isInServiceChanged</a> ()</td></tr>
+<tr class="memdesc:aec9a79f0aa6200657999bbd8741623e3"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_event.html" title="An event, when triggered, performs all of its registered actions.Actions are stored as a set in the e...">Event</a> triggered when I go in or out of service. <br /></td></tr>
 <tr class="separator:aec9a79f0aa6200657999bbd8741623e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0f641870a6f1479a592b45e617ef05a"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="class_sgt_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#ab0f641870a6f1479a592b45e617ef05a">admittanceChanged</a> () const</td></tr>
-<tr class="memdesc:ab0f641870a6f1479a592b45e617ef05a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_event.html" title="An event, when triggered, performs all of its registered actions.Actions are stored as a set in the e...">Event</a> triggered when my admittance changes.  <a href="#ab0f641870a6f1479a592b45e617ef05a">More...</a><br /></td></tr>
+<tr class="memitem:ab0f641870a6f1479a592b45e617ef05a"><td class="memItemLeft" align="right" valign="top"><a id="ab0f641870a6f1479a592b45e617ef05a"></a>
+virtual const <a class="el" href="class_sgt_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#ab0f641870a6f1479a592b45e617ef05a">admittanceChanged</a> () const</td></tr>
+<tr class="memdesc:ab0f641870a6f1479a592b45e617ef05a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_event.html" title="An event, when triggered, performs all of its registered actions.Actions are stored as a set in the e...">Event</a> triggered when my admittance changes. <br /></td></tr>
 <tr class="separator:ab0f641870a6f1479a592b45e617ef05a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a067b91e3693e2ed59df10d7348284dce"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="class_sgt_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#a067b91e3693e2ed59df10d7348284dce">admittanceChanged</a> ()</td></tr>
-<tr class="memdesc:a067b91e3693e2ed59df10d7348284dce"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_event.html" title="An event, when triggered, performs all of its registered actions.Actions are stored as a set in the e...">Event</a> triggered when my admittance changes.  <a href="#a067b91e3693e2ed59df10d7348284dce">More...</a><br /></td></tr>
+<tr class="memitem:a067b91e3693e2ed59df10d7348284dce"><td class="memItemLeft" align="right" valign="top"><a id="a067b91e3693e2ed59df10d7348284dce"></a>
+virtual <a class="el" href="class_sgt_1_1_event.html">Event</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#a067b91e3693e2ed59df10d7348284dce">admittanceChanged</a> ()</td></tr>
+<tr class="memdesc:a067b91e3693e2ed59df10d7348284dce"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_event.html" title="An event, when triggered, performs all of its registered actions.Actions are stored as a set in the e...">Event</a> triggered when my admittance changes. <br /></td></tr>
 <tr class="separator:a067b91e3693e2ed59df10d7348284dce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">attached buses:</div></td></tr>
 <tr class="memitem:af97d90fc47d2aa5e094fdb28dbc556a5"><td class="memItemLeft" align="right" valign="top"><a id="af97d90fc47d2aa5e094fdb28dbc556a5"></a>
@@ -202,20 +208,24 @@ std::array&lt; <a class="el" href="group___components.html#gafbc790478d415c6ea12
 std::array&lt; <a class="el" href="class_sgt_1_1_component_ptr.html">ComponentPtr</a>&lt; <a class="el" href="class_sgt_1_1_bus.html">Bus</a> &gt;, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>buses</b> ()</td></tr>
 <tr class="separator:a3ae3818a7f69c148137fe6fd30ef4283"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Utility functions</div></td></tr>
-<tr class="memitem:a54b4ebfd4e8aaccc886d50069ab3015c"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; Complex &gt;, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#a54b4ebfd4e8aaccc886d50069ab3015c">VBus</a> () const</td></tr>
-<tr class="memdesc:a54b4ebfd4e8aaccc886d50069ab3015c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Voltage at each bus, mapped to the branch terminals.  <a href="#a54b4ebfd4e8aaccc886d50069ab3015c">More...</a><br /></td></tr>
+<tr class="memitem:a54b4ebfd4e8aaccc886d50069ab3015c"><td class="memItemLeft" align="right" valign="top"><a id="a54b4ebfd4e8aaccc886d50069ab3015c"></a>
+std::array&lt; <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; Complex &gt;, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#a54b4ebfd4e8aaccc886d50069ab3015c">VBus</a> () const</td></tr>
+<tr class="memdesc:a54b4ebfd4e8aaccc886d50069ab3015c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Voltage at each bus, mapped to the branch terminals. <br /></td></tr>
 <tr class="separator:a54b4ebfd4e8aaccc886d50069ab3015c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a952d82fa045c12aea85f05cc16cfcaf3"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; Complex &gt;, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#a952d82fa045c12aea85f05cc16cfcaf3">IBus</a> () const</td></tr>
-<tr class="memdesc:a952d82fa045c12aea85f05cc16cfcaf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current out of each bus, mapped to the branch terminals.  <a href="#a952d82fa045c12aea85f05cc16cfcaf3">More...</a><br /></td></tr>
+<tr class="memitem:a952d82fa045c12aea85f05cc16cfcaf3"><td class="memItemLeft" align="right" valign="top"><a id="a952d82fa045c12aea85f05cc16cfcaf3"></a>
+std::array&lt; <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; Complex &gt;, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#a952d82fa045c12aea85f05cc16cfcaf3">IBus</a> () const</td></tr>
+<tr class="memdesc:a952d82fa045c12aea85f05cc16cfcaf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current out of each bus, mapped to the branch terminals. <br /></td></tr>
 <tr class="separator:a952d82fa045c12aea85f05cc16cfcaf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47d488f78aa4d69fd9df4188fcb12f33"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; Complex &gt;, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#a47d488f78aa4d69fd9df4188fcb12f33">SBus</a> () const</td></tr>
-<tr class="memdesc:a47d488f78aa4d69fd9df4188fcb12f33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Power out of each bus, mapped to the branch terminals.  <a href="#a47d488f78aa4d69fd9df4188fcb12f33">More...</a><br /></td></tr>
+<tr class="memitem:a47d488f78aa4d69fd9df4188fcb12f33"><td class="memItemLeft" align="right" valign="top"><a id="a47d488f78aa4d69fd9df4188fcb12f33"></a>
+std::array&lt; <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; Complex &gt;, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_branch_abc.html#a47d488f78aa4d69fd9df4188fcb12f33">SBus</a> () const</td></tr>
+<tr class="memdesc:a47d488f78aa4d69fd9df4188fcb12f33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Power out of each bus, mapped to the branch terminals. <br /></td></tr>
 <tr class="separator:a47d488f78aa4d69fd9df4188fcb12f33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_sgt_1_1_component"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_sgt_1_1_component')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_sgt_1_1_component.html">Sgt::Component</a></td></tr>
 <tr class="memitem:a4c92ed17f833ebcf15268dc22ff78593 inherit pub_methods_class_sgt_1_1_component"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_component.html#a4c92ed17f833ebcf15268dc22ff78593">Component</a> ()</td></tr>
 <tr class="separator:a4c92ed17f833ebcf15268dc22ff78593 inherit pub_methods_class_sgt_1_1_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f9f8e8f3cca786e627973151fbb770b inherit pub_methods_class_sgt_1_1_component"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_component.html#a7f9f8e8f3cca786e627973151fbb770b">Component</a> (const std::string &amp;<a class="el" href="class_sgt_1_1_component.html#abd86a192d90e4e193a2b981ac0eaa740">id</a>)</td></tr>
-<tr class="memdesc:a7f9f8e8f3cca786e627973151fbb770b inherit pub_methods_class_sgt_1_1_component"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_component.html" title="Base class for all Components. ">Component</a> constructor.  <a href="class_sgt_1_1_component.html#a7f9f8e8f3cca786e627973151fbb770b">More...</a><br /></td></tr>
+<tr class="memitem:a7f9f8e8f3cca786e627973151fbb770b inherit pub_methods_class_sgt_1_1_component"><td class="memItemLeft" align="right" valign="top"><a id="a7f9f8e8f3cca786e627973151fbb770b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_component.html#a7f9f8e8f3cca786e627973151fbb770b">Component</a> (const std::string &amp;<a class="el" href="class_sgt_1_1_component.html#abd86a192d90e4e193a2b981ac0eaa740">id</a>)</td></tr>
+<tr class="memdesc:a7f9f8e8f3cca786e627973151fbb770b inherit pub_methods_class_sgt_1_1_component"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_component.html" title="Base class for all Components. ">Component</a> constructor. <br /></td></tr>
 <tr class="separator:a7f9f8e8f3cca786e627973151fbb770b inherit pub_methods_class_sgt_1_1_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0b8e4e1f2aefdd58567ef7a70d47ed4 inherit pub_methods_class_sgt_1_1_component"><td class="memItemLeft" align="right" valign="top"><a id="ad0b8e4e1f2aefdd58567ef7a70d47ed4"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Component</b> (const <a class="el" href="class_sgt_1_1_component.html">Component</a> &amp;from)=delete</td></tr>
@@ -223,11 +233,13 @@ std::array&lt; <a class="el" href="class_sgt_1_1_component_ptr.html">ComponentPt
 <tr class="memitem:a19db473a9c2ec3761f3d22c711c41d19 inherit pub_methods_class_sgt_1_1_component"><td class="memItemLeft" align="right" valign="top"><a id="a19db473a9c2ec3761f3d22c711c41d19"></a>
 virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~Component</b> () override=default</td></tr>
 <tr class="separator:a19db473a9c2ec3761f3d22c711c41d19 inherit pub_methods_class_sgt_1_1_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd86a192d90e4e193a2b981ac0eaa740 inherit pub_methods_class_sgt_1_1_component"><td class="memItemLeft" align="right" valign="top">virtual const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_component.html#abd86a192d90e4e193a2b981ac0eaa740">id</a> () const</td></tr>
-<tr class="memdesc:abd86a192d90e4e193a2b981ac0eaa740 inherit pub_methods_class_sgt_1_1_component"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_component.html" title="Base class for all Components. ">Component</a> ID.  <a href="class_sgt_1_1_component.html#abd86a192d90e4e193a2b981ac0eaa740">More...</a><br /></td></tr>
+<tr class="memitem:abd86a192d90e4e193a2b981ac0eaa740 inherit pub_methods_class_sgt_1_1_component"><td class="memItemLeft" align="right" valign="top"><a id="abd86a192d90e4e193a2b981ac0eaa740"></a>
+virtual const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_component.html#abd86a192d90e4e193a2b981ac0eaa740">id</a> () const</td></tr>
+<tr class="memdesc:abd86a192d90e4e193a2b981ac0eaa740 inherit pub_methods_class_sgt_1_1_component"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_component.html" title="Base class for all Components. ">Component</a> ID. <br /></td></tr>
 <tr class="separator:abd86a192d90e4e193a2b981ac0eaa740 inherit pub_methods_class_sgt_1_1_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6805f02176ff0a399a3bf18e51091977 inherit pub_methods_class_sgt_1_1_component"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_component.html#a6805f02176ff0a399a3bf18e51091977">print</a> (std::ostream &amp;os) const</td></tr>
-<tr class="memdesc:a6805f02176ff0a399a3bf18e51091977 inherit pub_methods_class_sgt_1_1_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print component description to an <code>ostream</code>.  <a href="class_sgt_1_1_component.html#a6805f02176ff0a399a3bf18e51091977">More...</a><br /></td></tr>
+<tr class="memitem:a6805f02176ff0a399a3bf18e51091977 inherit pub_methods_class_sgt_1_1_component"><td class="memItemLeft" align="right" valign="top"><a id="a6805f02176ff0a399a3bf18e51091977"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_component.html#a6805f02176ff0a399a3bf18e51091977">print</a> (std::ostream &amp;os) const</td></tr>
+<tr class="memdesc:a6805f02176ff0a399a3bf18e51091977 inherit pub_methods_class_sgt_1_1_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print component description to an <code>ostream</code>. <br /></td></tr>
 <tr class="separator:a6805f02176ff0a399a3bf18e51091977 inherit pub_methods_class_sgt_1_1_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fc7adcd942eea436e27ff8704273638 inherit pub_methods_class_sgt_1_1_component"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classnlohmann_1_1basic__json.html">json</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_component.html#a1fc7adcd942eea436e27ff8704273638">userData</a> () const</td></tr>
 <tr class="memdesc:a1fc7adcd942eea436e27ff8704273638 inherit pub_methods_class_sgt_1_1_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">User data.  <a href="class_sgt_1_1_component.html#a1fc7adcd942eea436e27ff8704273638">More...</a><br /></td></tr>
@@ -250,8 +262,9 @@ Static Public Member Functions</h2></td></tr>
 static const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>sComponentType</b> ()</td></tr>
 <tr class="separator:ad0cba12740a385115f9dbaa093782255"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_class_sgt_1_1_component"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_class_sgt_1_1_component')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="class_sgt_1_1_component.html">Sgt::Component</a></td></tr>
-<tr class="memitem:a1676eea467c2f985eac0255a13d227b6 inherit pub_static_methods_class_sgt_1_1_component"><td class="memItemLeft" align="right" valign="top">static const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_component.html#a1676eea467c2f985eac0255a13d227b6">sComponentType</a> ()</td></tr>
-<tr class="memdesc:a1676eea467c2f985eac0255a13d227b6 inherit pub_static_methods_class_sgt_1_1_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a component type string.  <a href="class_sgt_1_1_component.html#a1676eea467c2f985eac0255a13d227b6">More...</a><br /></td></tr>
+<tr class="memitem:a1676eea467c2f985eac0255a13d227b6 inherit pub_static_methods_class_sgt_1_1_component"><td class="memItemLeft" align="right" valign="top"><a id="a1676eea467c2f985eac0255a13d227b6"></a>
+static const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_component.html#a1676eea467c2f985eac0255a13d227b6">sComponentType</a> ()</td></tr>
+<tr class="memdesc:a1676eea467c2f985eac0255a13d227b6 inherit pub_static_methods_class_sgt_1_1_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a component type string. <br /></td></tr>
 <tr class="separator:a1676eea467c2f985eac0255a13d227b6 inherit pub_static_methods_class_sgt_1_1_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
@@ -293,239 +306,15 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>Network</b></td></tr
 
 </div>
 </div>
-<a id="afbc5738d813bddfd91e362e0aa3ebe17"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afbc5738d813bddfd91e362e0aa3ebe17">&#9670;&nbsp;</a></span>toJson()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classnlohmann_1_1basic__json.html">json</a> Sgt::BranchAbc::toJson </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Produce a JSON representation of the component. </p>
-
-<p>Reimplemented from <a class="el" href="class_sgt_1_1_component.html#a5208c39b69f38203f57255663717a0bf">Sgt::Component</a>.</p>
-
-<p>Reimplemented in <a class="el" href="class_sgt_1_1_common_branch.html#a5896630a951a803889b1a2348002fc92">Sgt::CommonBranch</a>.</p>
-
-</div>
-</div>
-<a id="a426971fd529122fbca8a1db8ed8df23c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a426971fd529122fbca8a1db8ed8df23c">&#9670;&nbsp;</a></span>inServiceY()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual arma::Mat&lt;Complex&gt; Sgt::BranchAbc::inServiceY </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The admittance whenever isInService. </p>
-
-<p>Implemented in <a class="el" href="class_sgt_1_1_generic_branch.html#ae94cbca0b4bde5d5378845b4309ec187">Sgt::GenericBranch</a>, <a class="el" href="class_sgt_1_1_common_branch.html#a205e903ded36fa1322cfe694d4fad591">Sgt::CommonBranch</a>, <a class="el" href="class_sgt_1_1_overhead_line.html#aa3f3ecaf786996426206787c8594cee4">Sgt::OverheadLine</a>, <a class="el" href="class_sgt_1_1_underground_line.html#ab5e9af7813d846555a4026c2f66079e9">Sgt::UndergroundLine</a>, and <a class="el" href="class_sgt_1_1_transformer_abc.html#aae66c37ba5e5b4a9891ae548e6aa1a54">Sgt::TransformerAbc</a>.</p>
-
-</div>
-</div>
-<a id="acfa28ff76c84383bac26abd772a75ada"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfa28ff76c84383bac26abd772a75ada">&#9670;&nbsp;</a></span>isInServiceChanged() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual const <a class="el" href="class_sgt_1_1_event.html">Event</a>&amp; Sgt::BranchAbc::isInServiceChanged </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p><a class="el" href="class_sgt_1_1_event.html" title="An event, when triggered, performs all of its registered actions.Actions are stored as a set in the e...">Event</a> triggered when I go in or out of service. </p>
-
-</div>
-</div>
-<a id="aec9a79f0aa6200657999bbd8741623e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec9a79f0aa6200657999bbd8741623e3">&#9670;&nbsp;</a></span>isInServiceChanged() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="class_sgt_1_1_event.html">Event</a>&amp; Sgt::BranchAbc::isInServiceChanged </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p><a class="el" href="class_sgt_1_1_event.html" title="An event, when triggered, performs all of its registered actions.Actions are stored as a set in the e...">Event</a> triggered when I go in or out of service. </p>
-
-</div>
-</div>
-<a id="ab0f641870a6f1479a592b45e617ef05a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab0f641870a6f1479a592b45e617ef05a">&#9670;&nbsp;</a></span>admittanceChanged() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual const <a class="el" href="class_sgt_1_1_event.html">Event</a>&amp; Sgt::BranchAbc::admittanceChanged </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p><a class="el" href="class_sgt_1_1_event.html" title="An event, when triggered, performs all of its registered actions.Actions are stored as a set in the e...">Event</a> triggered when my admittance changes. </p>
-
-</div>
-</div>
-<a id="a067b91e3693e2ed59df10d7348284dce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a067b91e3693e2ed59df10d7348284dce">&#9670;&nbsp;</a></span>admittanceChanged() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="class_sgt_1_1_event.html">Event</a>&amp; Sgt::BranchAbc::admittanceChanged </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p><a class="el" href="class_sgt_1_1_event.html" title="An event, when triggered, performs all of its registered actions.Actions are stored as a set in the e...">Event</a> triggered when my admittance changes. </p>
-
-</div>
-</div>
-<a id="a54b4ebfd4e8aaccc886d50069ab3015c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a54b4ebfd4e8aaccc886d50069ab3015c">&#9670;&nbsp;</a></span>VBus()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">array&lt; <a class="el" href="classarma_1_1_col.html">Col</a>&lt; Complex &gt;, 2 &gt; Sgt::BranchAbc::VBus </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Voltage at each bus, mapped to the branch terminals. </p>
-
-</div>
-</div>
-<a id="a952d82fa045c12aea85f05cc16cfcaf3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a952d82fa045c12aea85f05cc16cfcaf3">&#9670;&nbsp;</a></span>IBus()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt; <a class="el" href="classarma_1_1_col.html">Col</a>&lt; Complex &gt;, 2 &gt; Sgt::BranchAbc::IBus </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Current out of each bus, mapped to the branch terminals. </p>
-
-</div>
-</div>
-<a id="a47d488f78aa4d69fd9df4188fcb12f33"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a47d488f78aa4d69fd9df4188fcb12f33">&#9670;&nbsp;</a></span>SBus()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt; <a class="el" href="classarma_1_1_col.html">Col</a>&lt; Complex &gt;, 2 &gt; Sgt::BranchAbc::SBus </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Power out of each bus, mapped to the branch terminals. </p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>/Users/dan/Devel/SmartGridToolbox/SgtCore/<a class="el" href="_branch_8h_source.html">Branch.h</a></li>
 <li>/Users/dan/Devel/SmartGridToolbox/SgtCore/Branch.cc</li>
 </ul>
 </div><!-- contents -->
+<!-- HTML footer for doxygen 1.8.14-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri May 18 2018 10:39:35 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated by SmartGridToolbox &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>
