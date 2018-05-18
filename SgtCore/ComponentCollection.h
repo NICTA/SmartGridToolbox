@@ -29,7 +29,7 @@ namespace Sgt
     template<typename T> class ComponentCollection;
     template<typename T> class MutableComponentCollection;
 
-    /// @brief Pointer type to a member of ComponentCollection.
+    /// @brief Pointer type to a member of `ComponentCollection`.
     /// @ingroup Components
     template<typename B, typename D = B, bool isConst = false> class ComponentPtr
     {
@@ -141,7 +141,7 @@ namespace Sgt
         /// @brief Comparison to nullptr.
         bool operator!=(const std::nullptr_t& rhs) const {return !operator==(rhs);}
 
-        /// @brief Compare two ComponentPtrs.
+        /// @brief Compare two `ComponentPtrs`.
         ///
         /// Undefined behaviour if they come from different ComponentCollection containers.
         template<typename RhsD, bool rhsIsConst>
@@ -151,7 +151,7 @@ namespace Sgt
                 return (it_ == rhs.it_) || shared() == rhs.shared();
             }
 
-        /// @brief Compare two ComponentPtrs.
+        /// @brief Compare two `ComponentPtr`s.
         ///
         /// Undefined behaviour if they come from different ComponentCollection containers.
         template<typename RhsD, bool rhsIsConst>
@@ -161,6 +161,7 @@ namespace Sgt
             }
     };
 
+    /// @brief Pointer type to a constant member of `ComponentCollection`.
     /// @ingroup Components
     template<typename B, typename D = B> using ConstComponentPtr = ComponentPtr<B, D, true>;
 
@@ -168,10 +169,10 @@ namespace Sgt
     /// @ingroup Components
     ///
     /// May be iterated over or indexed by a string key or an integer index.
-    /// ComponentPtr and ConstComponentPtr are a kind of smart pointer to elements in the container.
+    /// `ComponentPtr` and `ConstComponentPtr` are a kind of smart pointer to elements in the container.
     /// They are effectively equivalent to storing an iterator to a map, and as such, are stable under
-    /// changes to the mapped type. Thus we can obtain a ComponentPtr, and later replace the value 
-    /// stored at the given key with another value, and the ComponentPtr will reference the newly replaced
+    /// changes to the mapped type. Thus we can obtain a `ComponentPtr`, and later replace the value 
+    /// stored at the given key with another value, and the `ComponentPtr` will reference the newly replaced
     /// value.
     template<typename T> class ComponentCollection
     {

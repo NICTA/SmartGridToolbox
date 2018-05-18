@@ -25,8 +25,12 @@
 
 namespace Sgt
 {
+    /// @brief Assert a field is present in a YAML mapping.
+    /// @ingroup Parsing
     void assertFieldPresent(const YAML::Node& nd, const std::string& field);
 
+    /// @brief Get the top node of a YAML file.
+    /// @ingroup Parsing
     YAML::Node getTopNode(const std::string& fname);
 
     template<typename T> class Parser;

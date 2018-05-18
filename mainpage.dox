@@ -1,5 +1,8 @@
-/** @mainpage
- *  This is the documentation for SmartGridToolbox. */
+/// @mainpage
+/// This is the documentation for SmartGridToolbox.
+/// 
+/// This is the API reference for SmartGridToolbox. For a structued overview, please start with the
+/// <a href="modules.html">Modules</a> page.
 
 /// @defgroup Foundation Foundation
 /// @brief Foundation classes, functions etc. for the whole of SmartGridToolbox
@@ -18,15 +21,20 @@
 /// pointed to the first component will now point to the second. This is useful in providing flexibility, for example,
 /// components of a simulation may be changed without having to rebuild all the dependencies on these components.
 
+/// @defgroup Parsing Parsing
+/// @brief Parsing classes, functions etc.
+///
+/// SmartGridToolbox uses the [YAML]{http://yaml.org} language for human readable configuration files. It provides
+/// a `Parser` class to parse YAML into any object, via the `Parser<T>::parse(...)` command. The ability to parse
+/// specific YAML constructs is handled in a modular and extensible way, using derived classes of the `ParserPlugin`
+/// class.
+
 /// @defgroup Properties Properties
 /// @brief Dynamic properties.
 
 /// @defgroup ActionEvent Action Event Mechanism
 /// @brief Architecture for event-based simulations 
 
-/// @defgroup Parsing Parsing
-/// @brief Parsing classes, functions etc.
-    
 /// @}
 
 /// @defgroup PowerFlowCore Power Flow Core
