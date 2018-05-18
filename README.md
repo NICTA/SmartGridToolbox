@@ -6,7 +6,7 @@
 
 ## Getting Started
 
-Detailed installation instructions can be found below. Additional information and documentation is available at the [SmartGridToolbox homepage](http://nicta.github.io/SmartGridToolbox), including [doxygen documentation](http://nicta.github.io/SmartGridToolbox/doxygen_docs/index.html) and [tutorials](http://nicta.github.io/SmartGridToolbox/#tutorials). Examples may be found in the *examples* subdirectory.
+Detailed installation instructions can be found below. The API reference is available [here](http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/index.html). Additional information and documentation is available at the [SmartGridToolbox homepage](http://nicta.github.io/SmartGridToolbox), including [doxygen documentation](http://nicta.github.io/SmartGridToolbox/doxygen_docs/index.html) and [tutorials](http://nicta.github.io/SmartGridToolbox/#tutorials). Examples may be found in the *examples* subdirectory.
 
 ## License
 
