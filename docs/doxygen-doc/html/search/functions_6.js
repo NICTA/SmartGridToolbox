@@ -12,5 +12,6 @@ var searchData=
   ['get_5fptr',['get_ptr',['../classnlohmann_1_1basic__json.html#aefa46bd2d96bb77a38d1c8b431eab44f',1,'nlohmann::basic_json::get_ptr() noexcept'],['../classnlohmann_1_1basic__json.html#a14abd48803a8d5447faf5f583fa8e2a1',1,'nlohmann::basic_json::get_ptr() const noexcept']]],
   ['get_5fref',['get_ref',['../classnlohmann_1_1basic__json.html#afbd800010b67619463c0fce6e74f7878',1,'nlohmann::basic_json::get_ref()'],['../classnlohmann_1_1basic__json.html#ac382f3d2bc6a5d52d936e4e40593f03b',1,'nlohmann::basic_json::get_ref() const']]],
   ['get_5ftoken_5fstring',['get_token_string',['../classnlohmann_1_1detail_1_1lexer.html#a4aef7e72e539be04e139c34872421f2a',1,'nlohmann::detail::lexer']]],
+  ['gettopnode',['getTopNode',['../group___parsing.html#ga3d65856ebe43f4b9b15d03496da1541c',1,'Sgt']]],
   ['grounddiffuseirradiance',['groundDiffuseIrradiance',['../namespace_sgt.html#a6b920e44629fbe8972be79019eebaf5e',1,'Sgt']]]
 ];

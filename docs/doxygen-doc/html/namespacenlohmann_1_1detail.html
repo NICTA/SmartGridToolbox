@@ -75,10 +75,11 @@ $(function() {
 <div class="title">nlohmann::detail Namespace Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>unnamed namespace with internal helper functions  
-<a href="#details">More...</a></p>
-<table class="memberdecls">
+<a name="details" id="details"></a><h2 class="groupheader">Description</h2>
+<div class="textblock"><p>unnamed namespace with internal helper functions </p>
+<p>This namespace collects some functions that could not be defined inside the <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a> class.</p>
+<dl class="section since"><dt>Since</dt><dd>version 2.1.0 </dd></dl>
+</div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1binary__reader.html">binary_reader</a></td></tr>
@@ -241,14 +242,12 @@ template&lt;typename T &gt; </td></tr>
 template&lt;typename... Ts&gt; </td></tr>
 <tr class="memitem:a24800493c6ec02ce033dcbb47b7fd28e"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>index_sequence_for</b> = <a class="el" href="structnlohmann_1_1detail_1_1make__index__sequence.html">make_index_sequence</a>&lt; sizeof...(Ts)&gt;</td></tr>
 <tr class="separator:a24800493c6ec02ce033dcbb47b7fd28e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae132f8cd5bb24c5e9b40ad0eafedf1c2"><td class="memItemLeft" align="right" valign="top"><a id="ae132f8cd5bb24c5e9b40ad0eafedf1c2"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenlohmann_1_1detail.html#ae132f8cd5bb24c5e9b40ad0eafedf1c2">input_adapter_t</a> = std::shared_ptr&lt; <a class="el" href="structnlohmann_1_1detail_1_1input__adapter__protocol.html">input_adapter_protocol</a> &gt;</td></tr>
-<tr class="memdesc:ae132f8cd5bb24c5e9b40ad0eafedf1c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">a type to simplify interfaces <br /></td></tr>
+<tr class="memitem:ae132f8cd5bb24c5e9b40ad0eafedf1c2"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacenlohmann_1_1detail.html#ae132f8cd5bb24c5e9b40ad0eafedf1c2">input_adapter_t</a> = std::shared_ptr&lt; <a class="el" href="structnlohmann_1_1detail_1_1input__adapter__protocol.html">input_adapter_protocol</a> &gt;</td></tr>
+<tr class="memdesc:ae132f8cd5bb24c5e9b40ad0eafedf1c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">a type to simplify interfaces  <a href="#ae132f8cd5bb24c5e9b40ad0eafedf1c2">More...</a><br /></td></tr>
 <tr class="separator:ae132f8cd5bb24c5e9b40ad0eafedf1c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b680ddfb58f27eb53a67229447fc556"><td class="memTemplParams" colspan="2"><a id="a9b680ddfb58f27eb53a67229447fc556"></a>
-template&lt;typename CharType &gt; </td></tr>
+<tr class="memitem:a9b680ddfb58f27eb53a67229447fc556"><td class="memTemplParams" colspan="2">template&lt;typename CharType &gt; </td></tr>
 <tr class="memitem:a9b680ddfb58f27eb53a67229447fc556"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacenlohmann_1_1detail.html#a9b680ddfb58f27eb53a67229447fc556">output_adapter_t</a> = std::shared_ptr&lt; <a class="el" href="structnlohmann_1_1detail_1_1output__adapter__protocol.html">output_adapter_protocol</a>&lt; CharType &gt; &gt;</td></tr>
-<tr class="memdesc:a9b680ddfb58f27eb53a67229447fc556"><td class="mdescLeft">&#160;</td><td class="mdescRight">a type to simplify interfaces <br /></td></tr>
+<tr class="memdesc:a9b680ddfb58f27eb53a67229447fc556"><td class="mdescLeft">&#160;</td><td class="mdescRight">a type to simplify interfaces  <a href="#a9b680ddfb58f27eb53a67229447fc556">More...</a><br /></td></tr>
 <tr class="separator:a9b680ddfb58f27eb53a67229447fc556"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
@@ -432,11 +431,42 @@ template&lt;typename BasicJsonType , typename... Args&gt; </td></tr>
 <tr class="memitem:a8b99ec9b29f3f20a18fc4281fb784e49"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_json</b> (const BasicJsonType &amp;j, std::tuple&lt; Args... &gt; &amp;t)</td></tr>
 <tr class="separator:a8b99ec9b29f3f20a18fc4281fb784e49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>unnamed namespace with internal helper functions </p>
-<p>This namespace collects some functions that could not be defined inside the <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a> class.</p>
-<dl class="section since"><dt>Since</dt><dd>version 2.1.0 </dd></dl>
-</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="ae132f8cd5bb24c5e9b40ad0eafedf1c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae132f8cd5bb24c5e9b40ad0eafedf1c2">&#9670;&nbsp;</a></span>input_adapter_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacenlohmann_1_1detail.html#ae132f8cd5bb24c5e9b40ad0eafedf1c2">nlohmann::detail::input_adapter_t</a> = typedef std::shared_ptr&lt;<a class="el" href="structnlohmann_1_1detail_1_1input__adapter__protocol.html">input_adapter_protocol</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>a type to simplify interfaces </p>
+
+</div>
+</div>
+<a id="a9b680ddfb58f27eb53a67229447fc556"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b680ddfb58f27eb53a67229447fc556">&#9670;&nbsp;</a></span>output_adapter_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename CharType &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacenlohmann_1_1detail.html#a9b680ddfb58f27eb53a67229447fc556">nlohmann::detail::output_adapter_t</a> = typedef std::shared_ptr&lt;<a class="el" href="structnlohmann_1_1detail_1_1output__adapter__protocol.html">output_adapter_protocol</a>&lt;CharType&gt; &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>a type to simplify interfaces </p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a90aa5ef615aa8305e9ea20d8a947980f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a90aa5ef615aa8305e9ea20d8a947980f">&#9670;&nbsp;</a></span>value_t</h2>
 
@@ -532,7 +562,7 @@ template&lt;typename BasicJsonType , typename... Args&gt; </td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 17 2018 13:11:09 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 18 2018 10:39:35 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

@@ -77,10 +77,53 @@ $(function() {
 <div class="title">nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+<a name="details" id="details"></a><h2 class="groupheader">Description</h2>
+<div class="textblock"><h3>template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType = std::string, class BooleanType = bool, class NumberIntegerType = std::int64_t, class NumberUnsignedType = std::uint64_t, class NumberFloatType = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt;<br />
+class nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;</h3>
 
-<p>a class to store JSON values  
- <a href="classnlohmann_1_1basic__json.html#details">More...</a></p>
-
+<p>a class to store JSON values </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">ObjectType</td><td>type for JSON objects (<code>std::map</code> by default; will be used in object_t) </td></tr>
+    <tr><td class="paramname">ArrayType</td><td>type for JSON arrays (<code>std::vector</code> by default; will be used in <a class="el" href="classnlohmann_1_1basic__json.html#ae095578e03df97c5b3991787f1056374">array_t</a>) </td></tr>
+    <tr><td class="paramname">StringType</td><td>type for JSON strings and object keys (<code>std::string</code> by default; will be used in <a class="el" href="classnlohmann_1_1basic__json.html#a61f8566a1a85a424c7266fb531dca005">string_t</a>) </td></tr>
+    <tr><td class="paramname">BooleanType</td><td>type for JSON booleans (<code>bool</code> by default; will be used in <a class="el" href="classnlohmann_1_1basic__json.html#a4c919102a9b4fe0d588af64801436082">boolean_t</a>) </td></tr>
+    <tr><td class="paramname">NumberIntegerType</td><td>type for JSON integer numbers (<code>int64_t</code> by default; will be used in <a class="el" href="classnlohmann_1_1basic__json.html#a98e611d67b7bd75307de99c9358ab2dc">number_integer_t</a>) </td></tr>
+    <tr><td class="paramname">NumberUnsignedType</td><td>type for JSON unsigned integer numbers (<code><code>uint64_t</code></code> by default; will be used in <a class="el" href="classnlohmann_1_1basic__json.html#ab906e29b5d83ac162e823ada2156b989">number_unsigned_t</a>) </td></tr>
+    <tr><td class="paramname">NumberFloatType</td><td>type for JSON floating-point numbers (<code>double</code> by default; will be used in <a class="el" href="classnlohmann_1_1basic__json.html#a88d6103cb3620410b35200ee8e313d97">number_float_t</a>) </td></tr>
+    <tr><td class="paramname">AllocatorType</td><td>type of the allocator to use (<code>std::allocator</code> by default) </td></tr>
+    <tr><td class="paramname">JSONSerializer</td><td>the serializer to resolve internal calls to <code>to_json()</code> and <code>from_json()</code> (<a class="el" href="structnlohmann_1_1adl__serializer.html">adl_serializer</a> by default)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The class satisfies the following concept requirements:</p><ul>
+<li>Basic</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/DefaultConstructible">DefaultConstructible</a>: JSON values can be default constructed. The result will be a JSON null value.</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/MoveConstructible">MoveConstructible</a>: A JSON value can be constructed from an rvalue argument.</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/CopyConstructible">CopyConstructible</a>: A JSON value can be copy-constructed from an lvalue expression.</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/MoveAssignable">MoveAssignable</a>: A JSON value van be assigned from an rvalue argument.</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/CopyAssignable">CopyAssignable</a>: A JSON value can be copy-assigned from an lvalue expression.</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/Destructible">Destructible</a>: JSON values can be destructed.</li>
+<li>Layout</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/StandardLayoutType">StandardLayoutType</a>: JSON values have <a href="http://en.cppreference.com/w/cpp/language/data_members#Standard_layout">standard layout</a>: All non-static data members are private and standard layout types, the class has no virtual functions or (virtual) base classes.</li>
+<li>Library-wide</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/EqualityComparable">EqualityComparable</a>: JSON values can be compared with <code>==</code>, see <a class="el" href="classnlohmann_1_1basic__json.html#a122640e7e2db1814fc7bbb3c122ec76e">operator==(const_reference,const_reference)</a>.</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/LessThanComparable">LessThanComparable</a>: JSON values can be compared with <code>&lt;</code>, see <a class="el" href="classnlohmann_1_1basic__json.html#aacd442b66140c764c594ac8ad7dfd5b3">operator&lt;(const_reference,const_reference)</a>.</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/Swappable">Swappable</a>: Any JSON lvalue or rvalue of can be swapped with any lvalue or rvalue of other compatible types, using unqualified function call <a class="el" href="classnlohmann_1_1basic__json.html#a8c9d932353e1ab98a7dc2fc27e002031">swap()</a>.</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/NullablePointer">NullablePointer</a>: JSON values can be compared against <code>std::nullptr_t</code> objects which are used to model the <code>null</code> value.</li>
+<li>Container</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/Container">Container</a>: JSON values can be used like STL containers and provide iterator access.</li>
+<li><a href="http://en.cppreference.com/w/cpp/concept/ReversibleContainer">ReversibleContainer</a>; JSON values can be used like STL containers and provide reverse iterator access.</li>
+</ul>
+<dl class="section invariant"><dt>Invariant</dt><dd>The member variables <em>m_value</em> and <em>m_type</em> have the following relationship:<ul>
+<li>If <code>m_type == <a class="el" href="namespacenlohmann_1_1detail.html#a90aa5ef615aa8305e9ea20d8a947980faa8cfde6331bd59eb2ac96f8911c4b666" title="object (unordered set of name/value pairs) ">value_t::object</a></code>, then <code>m_value.object != nullptr</code>.</li>
+<li>If <code>m_type == <a class="el" href="namespacenlohmann_1_1detail.html#a90aa5ef615aa8305e9ea20d8a947980faf1f713c9e000f5d3f280adbd124df4f5" title="array (ordered collection of values) ">value_t::array</a></code>, then <code>m_value.array != nullptr</code>.</li>
+<li>If <code>m_type == <a class="el" href="namespacenlohmann_1_1detail.html#a90aa5ef615aa8305e9ea20d8a947980fab45cffe084dd3d20d928bee85e7b0f21" title="string value ">value_t::string</a></code>, then <code>m_value.string != nullptr</code>. The invariants are checked by member function assert_invariant().</li>
+</ul>
+</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a href="http://rfc7159.net/rfc7159">RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format</a></dd></dl>
+<dl class="section since"><dt>Since</dt><dd>version 1.0.0 </dd></dl>
+</div>
 <p><code>#include &lt;<a class="el" href="json_8h_source.html">json.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
@@ -113,9 +156,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:af4ac14224fbdd29d3547fcb11bb55c8f"><td class="memItemLeft" align="right" valign="top"><a id="af4ac14224fbdd29d3547fcb11bb55c8f"></a>
-static <a class="el" href="classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350">allocator_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#af4ac14224fbdd29d3547fcb11bb55c8f">get_allocator</a> ()</td></tr>
-<tr class="memdesc:af4ac14224fbdd29d3547fcb11bb55c8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the allocator associated with the container <br /></td></tr>
+<tr class="memitem:af4ac14224fbdd29d3547fcb11bb55c8f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350">allocator_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#af4ac14224fbdd29d3547fcb11bb55c8f">get_allocator</a> ()</td></tr>
+<tr class="memdesc:af4ac14224fbdd29d3547fcb11bb55c8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the allocator associated with the container  <a href="#af4ac14224fbdd29d3547fcb11bb55c8f">More...</a><br /></td></tr>
 <tr class="separator:af4ac14224fbdd29d3547fcb11bb55c8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef6d0eeccee7c5c7e1317c2ea1607fab"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#aef6d0eeccee7c5c7e1317c2ea1607fab">meta</a> ()</td></tr>
 <tr class="memdesc:aef6d0eeccee7c5c7e1317c2ea1607fab"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns version information on the library  <a href="#aef6d0eeccee7c5c7e1317c2ea1607fab">More...</a><br /></td></tr>
@@ -167,53 +209,41 @@ exceptions</h2></td></tr>
 container types</h2></td></tr>
 <tr><td class="ititle" colspan="2"><p><a class="anchor" id="amgrp6618fa684bc6d5a05e2c88bfff1c0d66"></a>The canonic container types to use <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a> like any other STL container. </p>
 </td></tr>
-<tr class="memitem:a2b3297873b70c080837e8eedc4fec32f"><td class="memItemLeft" align="right" valign="top"><a id="a2b3297873b70c080837e8eedc4fec32f"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a2b3297873b70c080837e8eedc4fec32f">value_type</a> = <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a></td></tr>
-<tr class="memdesc:a2b3297873b70c080837e8eedc4fec32f"><td class="mdescLeft">&#160;</td><td class="mdescRight">the type of elements in a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container <br /></td></tr>
+<tr class="memitem:a2b3297873b70c080837e8eedc4fec32f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a2b3297873b70c080837e8eedc4fec32f">value_type</a> = <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a></td></tr>
+<tr class="memdesc:a2b3297873b70c080837e8eedc4fec32f"><td class="mdescLeft">&#160;</td><td class="mdescRight">the type of elements in a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container  <a href="#a2b3297873b70c080837e8eedc4fec32f">More...</a><br /></td></tr>
 <tr class="separator:a2b3297873b70c080837e8eedc4fec32f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6a5eddd156c776ac75ff54cfe54a5bc"><td class="memItemLeft" align="right" valign="top"><a id="ac6a5eddd156c776ac75ff54cfe54a5bc"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#ac6a5eddd156c776ac75ff54cfe54a5bc">reference</a> = <a class="el" href="classnlohmann_1_1basic__json.html#a2b3297873b70c080837e8eedc4fec32f">value_type</a> &amp;</td></tr>
-<tr class="memdesc:ac6a5eddd156c776ac75ff54cfe54a5bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">the type of an element reference <br /></td></tr>
+<tr class="memitem:ac6a5eddd156c776ac75ff54cfe54a5bc"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#ac6a5eddd156c776ac75ff54cfe54a5bc">reference</a> = <a class="el" href="classnlohmann_1_1basic__json.html#a2b3297873b70c080837e8eedc4fec32f">value_type</a> &amp;</td></tr>
+<tr class="memdesc:ac6a5eddd156c776ac75ff54cfe54a5bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">the type of an element reference  <a href="#ac6a5eddd156c776ac75ff54cfe54a5bc">More...</a><br /></td></tr>
 <tr class="separator:ac6a5eddd156c776ac75ff54cfe54a5bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4057c5425f4faacfe39a8046871786ca"><td class="memItemLeft" align="right" valign="top"><a id="a4057c5425f4faacfe39a8046871786ca"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a4057c5425f4faacfe39a8046871786ca">const_reference</a> = const <a class="el" href="classnlohmann_1_1basic__json.html#a2b3297873b70c080837e8eedc4fec32f">value_type</a> &amp;</td></tr>
-<tr class="memdesc:a4057c5425f4faacfe39a8046871786ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">the type of an element const reference <br /></td></tr>
+<tr class="memitem:a4057c5425f4faacfe39a8046871786ca"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a4057c5425f4faacfe39a8046871786ca">const_reference</a> = const <a class="el" href="classnlohmann_1_1basic__json.html#a2b3297873b70c080837e8eedc4fec32f">value_type</a> &amp;</td></tr>
+<tr class="memdesc:a4057c5425f4faacfe39a8046871786ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">the type of an element const reference  <a href="#a4057c5425f4faacfe39a8046871786ca">More...</a><br /></td></tr>
 <tr class="separator:a4057c5425f4faacfe39a8046871786ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe7c1303357e19cea9527af4e9a31d8f"><td class="memItemLeft" align="right" valign="top"><a id="afe7c1303357e19cea9527af4e9a31d8f"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#afe7c1303357e19cea9527af4e9a31d8f">difference_type</a> = std::ptrdiff_t</td></tr>
-<tr class="memdesc:afe7c1303357e19cea9527af4e9a31d8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">a type to represent differences between iterators <br /></td></tr>
+<tr class="memitem:afe7c1303357e19cea9527af4e9a31d8f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#afe7c1303357e19cea9527af4e9a31d8f">difference_type</a> = std::ptrdiff_t</td></tr>
+<tr class="memdesc:afe7c1303357e19cea9527af4e9a31d8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">a type to represent differences between iterators  <a href="#afe7c1303357e19cea9527af4e9a31d8f">More...</a><br /></td></tr>
 <tr class="separator:afe7c1303357e19cea9527af4e9a31d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39f2cd0b58106097e0e67bf185cc519b"><td class="memItemLeft" align="right" valign="top"><a id="a39f2cd0b58106097e0e67bf185cc519b"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a39f2cd0b58106097e0e67bf185cc519b">size_type</a> = std::size_t</td></tr>
-<tr class="memdesc:a39f2cd0b58106097e0e67bf185cc519b"><td class="mdescLeft">&#160;</td><td class="mdescRight">a type to represent container sizes <br /></td></tr>
+<tr class="memitem:a39f2cd0b58106097e0e67bf185cc519b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a39f2cd0b58106097e0e67bf185cc519b">size_type</a> = std::size_t</td></tr>
+<tr class="memdesc:a39f2cd0b58106097e0e67bf185cc519b"><td class="mdescLeft">&#160;</td><td class="mdescRight">a type to represent container sizes  <a href="#a39f2cd0b58106097e0e67bf185cc519b">More...</a><br /></td></tr>
 <tr class="separator:a39f2cd0b58106097e0e67bf185cc519b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86ce930490cf7773b26f5ef49c04a350"><td class="memItemLeft" align="right" valign="top"><a id="a86ce930490cf7773b26f5ef49c04a350"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350">allocator_type</a> = AllocatorType&lt; <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a> &gt;</td></tr>
-<tr class="memdesc:a86ce930490cf7773b26f5ef49c04a350"><td class="mdescLeft">&#160;</td><td class="mdescRight">the allocator type <br /></td></tr>
+<tr class="memitem:a86ce930490cf7773b26f5ef49c04a350"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350">allocator_type</a> = AllocatorType&lt; <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a> &gt;</td></tr>
+<tr class="memdesc:a86ce930490cf7773b26f5ef49c04a350"><td class="mdescLeft">&#160;</td><td class="mdescRight">the allocator type  <a href="#a86ce930490cf7773b26f5ef49c04a350">More...</a><br /></td></tr>
 <tr class="separator:a86ce930490cf7773b26f5ef49c04a350"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aefee1f777198c68724bd127e0c8abbe4"><td class="memItemLeft" align="right" valign="top"><a id="aefee1f777198c68724bd127e0c8abbe4"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#aefee1f777198c68724bd127e0c8abbe4">pointer</a> = typename std::allocator_traits&lt; <a class="el" href="classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350">allocator_type</a> &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#aefee1f777198c68724bd127e0c8abbe4">pointer</a></td></tr>
-<tr class="memdesc:aefee1f777198c68724bd127e0c8abbe4"><td class="mdescLeft">&#160;</td><td class="mdescRight">the type of an element pointer <br /></td></tr>
+<tr class="memitem:aefee1f777198c68724bd127e0c8abbe4"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#aefee1f777198c68724bd127e0c8abbe4">pointer</a> = typename std::allocator_traits&lt; <a class="el" href="classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350">allocator_type</a> &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#aefee1f777198c68724bd127e0c8abbe4">pointer</a></td></tr>
+<tr class="memdesc:aefee1f777198c68724bd127e0c8abbe4"><td class="mdescLeft">&#160;</td><td class="mdescRight">the type of an element pointer  <a href="#aefee1f777198c68724bd127e0c8abbe4">More...</a><br /></td></tr>
 <tr class="separator:aefee1f777198c68724bd127e0c8abbe4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff3d5cd2a75612364b888d8693231b58"><td class="memItemLeft" align="right" valign="top"><a id="aff3d5cd2a75612364b888d8693231b58"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#aff3d5cd2a75612364b888d8693231b58">const_pointer</a> = typename std::allocator_traits&lt; <a class="el" href="classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350">allocator_type</a> &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#aff3d5cd2a75612364b888d8693231b58">const_pointer</a></td></tr>
-<tr class="memdesc:aff3d5cd2a75612364b888d8693231b58"><td class="mdescLeft">&#160;</td><td class="mdescRight">the type of an element const pointer <br /></td></tr>
+<tr class="memitem:aff3d5cd2a75612364b888d8693231b58"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#aff3d5cd2a75612364b888d8693231b58">const_pointer</a> = typename std::allocator_traits&lt; <a class="el" href="classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350">allocator_type</a> &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#aff3d5cd2a75612364b888d8693231b58">const_pointer</a></td></tr>
+<tr class="memdesc:aff3d5cd2a75612364b888d8693231b58"><td class="mdescLeft">&#160;</td><td class="mdescRight">the type of an element const pointer  <a href="#aff3d5cd2a75612364b888d8693231b58">More...</a><br /></td></tr>
 <tr class="separator:aff3d5cd2a75612364b888d8693231b58"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a099316232c76c034030a38faa6e34dca"><td class="memItemLeft" align="right" valign="top"><a id="a099316232c76c034030a38faa6e34dca"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a099316232c76c034030a38faa6e34dca">iterator</a> = <a class="el" href="classnlohmann_1_1detail_1_1iter__impl.html">iter_impl</a>&lt; <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a> &gt;</td></tr>
-<tr class="memdesc:a099316232c76c034030a38faa6e34dca"><td class="mdescLeft">&#160;</td><td class="mdescRight">an iterator for a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container <br /></td></tr>
+<tr class="memitem:a099316232c76c034030a38faa6e34dca"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a099316232c76c034030a38faa6e34dca">iterator</a> = <a class="el" href="classnlohmann_1_1detail_1_1iter__impl.html">iter_impl</a>&lt; <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a> &gt;</td></tr>
+<tr class="memdesc:a099316232c76c034030a38faa6e34dca"><td class="mdescLeft">&#160;</td><td class="mdescRight">an iterator for a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container  <a href="#a099316232c76c034030a38faa6e34dca">More...</a><br /></td></tr>
 <tr class="separator:a099316232c76c034030a38faa6e34dca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41a70cf9993951836d129bb1c2b3126a"><td class="memItemLeft" align="right" valign="top"><a id="a41a70cf9993951836d129bb1c2b3126a"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a41a70cf9993951836d129bb1c2b3126a">const_iterator</a> = <a class="el" href="classnlohmann_1_1detail_1_1iter__impl.html">iter_impl</a>&lt; const <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a> &gt;</td></tr>
-<tr class="memdesc:a41a70cf9993951836d129bb1c2b3126a"><td class="mdescLeft">&#160;</td><td class="mdescRight">a const iterator for a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container <br /></td></tr>
+<tr class="memitem:a41a70cf9993951836d129bb1c2b3126a"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a41a70cf9993951836d129bb1c2b3126a">const_iterator</a> = <a class="el" href="classnlohmann_1_1detail_1_1iter__impl.html">iter_impl</a>&lt; const <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a> &gt;</td></tr>
+<tr class="memdesc:a41a70cf9993951836d129bb1c2b3126a"><td class="mdescLeft">&#160;</td><td class="mdescRight">a const iterator for a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container  <a href="#a41a70cf9993951836d129bb1c2b3126a">More...</a><br /></td></tr>
 <tr class="separator:a41a70cf9993951836d129bb1c2b3126a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac223d5560c2b05a208c88de67376c5f2"><td class="memItemLeft" align="right" valign="top"><a id="ac223d5560c2b05a208c88de67376c5f2"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#ac223d5560c2b05a208c88de67376c5f2">reverse_iterator</a> = <a class="el" href="classnlohmann_1_1detail_1_1json__reverse__iterator.html">json_reverse_iterator</a>&lt; typename <a class="el" href="classnlohmann_1_1basic__json.html#a099316232c76c034030a38faa6e34dca">basic_json::iterator</a> &gt;</td></tr>
-<tr class="memdesc:ac223d5560c2b05a208c88de67376c5f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">a reverse iterator for a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container <br /></td></tr>
+<tr class="memitem:ac223d5560c2b05a208c88de67376c5f2"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#ac223d5560c2b05a208c88de67376c5f2">reverse_iterator</a> = <a class="el" href="classnlohmann_1_1detail_1_1json__reverse__iterator.html">json_reverse_iterator</a>&lt; typename <a class="el" href="classnlohmann_1_1basic__json.html#a099316232c76c034030a38faa6e34dca">basic_json::iterator</a> &gt;</td></tr>
+<tr class="memdesc:ac223d5560c2b05a208c88de67376c5f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">a reverse iterator for a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container  <a href="#ac223d5560c2b05a208c88de67376c5f2">More...</a><br /></td></tr>
 <tr class="separator:ac223d5560c2b05a208c88de67376c5f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72be3c24bfa24f0993d6c11af03e7404"><td class="memItemLeft" align="right" valign="top"><a id="a72be3c24bfa24f0993d6c11af03e7404"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a72be3c24bfa24f0993d6c11af03e7404">const_reverse_iterator</a> = <a class="el" href="classnlohmann_1_1detail_1_1json__reverse__iterator.html">json_reverse_iterator</a>&lt; typename <a class="el" href="classnlohmann_1_1basic__json.html#a41a70cf9993951836d129bb1c2b3126a">basic_json::const_iterator</a> &gt;</td></tr>
-<tr class="memdesc:a72be3c24bfa24f0993d6c11af03e7404"><td class="mdescLeft">&#160;</td><td class="mdescRight">a const reverse iterator for a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container <br /></td></tr>
+<tr class="memitem:a72be3c24bfa24f0993d6c11af03e7404"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1basic__json.html#a72be3c24bfa24f0993d6c11af03e7404">const_reverse_iterator</a> = <a class="el" href="classnlohmann_1_1detail_1_1json__reverse__iterator.html">json_reverse_iterator</a>&lt; typename <a class="el" href="classnlohmann_1_1basic__json.html#a41a70cf9993951836d129bb1c2b3126a">basic_json::const_iterator</a> &gt;</td></tr>
+<tr class="memdesc:a72be3c24bfa24f0993d6c11af03e7404"><td class="mdescLeft">&#160;</td><td class="mdescRight">a const reverse iterator for a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container  <a href="#a72be3c24bfa24f0993d6c11af03e7404">More...</a><br /></td></tr>
 <tr class="separator:a72be3c24bfa24f0993d6c11af03e7404"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
@@ -778,53 +808,7 @@ JSON Patch functions</h2></td></tr>
 <tr class="memdesc:a81e0c41a4a9dff4df2f6973f7f8b2a83"><td class="mdescLeft">&#160;</td><td class="mdescRight">applies a JSON patch  <a href="#a81e0c41a4a9dff4df2f6973f7f8b2a83">More...</a><br /></td></tr>
 <tr class="separator:a81e0c41a4a9dff4df2f6973f7f8b2a83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType = std::string, class BooleanType = bool, class NumberIntegerType = std::int64_t, class NumberUnsignedType = std::uint64_t, class NumberFloatType = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt;<br />
-class nlohmann::basic_json&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;</h3>
-
-<p>a class to store JSON values </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">ObjectType</td><td>type for JSON objects (<code>std::map</code> by default; will be used in object_t) </td></tr>
-    <tr><td class="paramname">ArrayType</td><td>type for JSON arrays (<code>std::vector</code> by default; will be used in <a class="el" href="classnlohmann_1_1basic__json.html#ae095578e03df97c5b3991787f1056374">array_t</a>) </td></tr>
-    <tr><td class="paramname">StringType</td><td>type for JSON strings and object keys (<code>std::string</code> by default; will be used in <a class="el" href="classnlohmann_1_1basic__json.html#a61f8566a1a85a424c7266fb531dca005">string_t</a>) </td></tr>
-    <tr><td class="paramname">BooleanType</td><td>type for JSON booleans (<code>bool</code> by default; will be used in <a class="el" href="classnlohmann_1_1basic__json.html#a4c919102a9b4fe0d588af64801436082">boolean_t</a>) </td></tr>
-    <tr><td class="paramname">NumberIntegerType</td><td>type for JSON integer numbers (<code>int64_t</code> by default; will be used in <a class="el" href="classnlohmann_1_1basic__json.html#a98e611d67b7bd75307de99c9358ab2dc">number_integer_t</a>) </td></tr>
-    <tr><td class="paramname">NumberUnsignedType</td><td>type for JSON unsigned integer numbers (<code><code>uint64_t</code></code> by default; will be used in <a class="el" href="classnlohmann_1_1basic__json.html#ab906e29b5d83ac162e823ada2156b989">number_unsigned_t</a>) </td></tr>
-    <tr><td class="paramname">NumberFloatType</td><td>type for JSON floating-point numbers (<code>double</code> by default; will be used in <a class="el" href="classnlohmann_1_1basic__json.html#a88d6103cb3620410b35200ee8e313d97">number_float_t</a>) </td></tr>
-    <tr><td class="paramname">AllocatorType</td><td>type of the allocator to use (<code>std::allocator</code> by default) </td></tr>
-    <tr><td class="paramname">JSONSerializer</td><td>the serializer to resolve internal calls to <code>to_json()</code> and <code>from_json()</code> (<a class="el" href="structnlohmann_1_1adl__serializer.html">adl_serializer</a> by default)</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>The class satisfies the following concept requirements:</p><ul>
-<li>Basic</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/DefaultConstructible">DefaultConstructible</a>: JSON values can be default constructed. The result will be a JSON null value.</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/MoveConstructible">MoveConstructible</a>: A JSON value can be constructed from an rvalue argument.</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/CopyConstructible">CopyConstructible</a>: A JSON value can be copy-constructed from an lvalue expression.</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/MoveAssignable">MoveAssignable</a>: A JSON value van be assigned from an rvalue argument.</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/CopyAssignable">CopyAssignable</a>: A JSON value can be copy-assigned from an lvalue expression.</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/Destructible">Destructible</a>: JSON values can be destructed.</li>
-<li>Layout</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/StandardLayoutType">StandardLayoutType</a>: JSON values have <a href="http://en.cppreference.com/w/cpp/language/data_members#Standard_layout">standard layout</a>: All non-static data members are private and standard layout types, the class has no virtual functions or (virtual) base classes.</li>
-<li>Library-wide</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/EqualityComparable">EqualityComparable</a>: JSON values can be compared with <code>==</code>, see <a class="el" href="classnlohmann_1_1basic__json.html#a122640e7e2db1814fc7bbb3c122ec76e">operator==(const_reference,const_reference)</a>.</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/LessThanComparable">LessThanComparable</a>: JSON values can be compared with <code>&lt;</code>, see <a class="el" href="classnlohmann_1_1basic__json.html#aacd442b66140c764c594ac8ad7dfd5b3">operator&lt;(const_reference,const_reference)</a>.</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/Swappable">Swappable</a>: Any JSON lvalue or rvalue of can be swapped with any lvalue or rvalue of other compatible types, using unqualified function call <a class="el" href="classnlohmann_1_1basic__json.html#a8c9d932353e1ab98a7dc2fc27e002031">swap()</a>.</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/NullablePointer">NullablePointer</a>: JSON values can be compared against <code>std::nullptr_t</code> objects which are used to model the <code>null</code> value.</li>
-<li>Container</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/Container">Container</a>: JSON values can be used like STL containers and provide iterator access.</li>
-<li><a href="http://en.cppreference.com/w/cpp/concept/ReversibleContainer">ReversibleContainer</a>; JSON values can be used like STL containers and provide reverse iterator access.</li>
-</ul>
-<dl class="section invariant"><dt>Invariant</dt><dd>The member variables <em>m_value</em> and <em>m_type</em> have the following relationship:<ul>
-<li>If <code>m_type == <a class="el" href="namespacenlohmann_1_1detail.html#a90aa5ef615aa8305e9ea20d8a947980faa8cfde6331bd59eb2ac96f8911c4b666" title="object (unordered set of name/value pairs) ">value_t::object</a></code>, then <code>m_value.object != nullptr</code>.</li>
-<li>If <code>m_type == <a class="el" href="namespacenlohmann_1_1detail.html#a90aa5ef615aa8305e9ea20d8a947980faf1f713c9e000f5d3f280adbd124df4f5" title="array (ordered collection of values) ">value_t::array</a></code>, then <code>m_value.array != nullptr</code>.</li>
-<li>If <code>m_type == <a class="el" href="namespacenlohmann_1_1detail.html#a90aa5ef615aa8305e9ea20d8a947980fab45cffe084dd3d20d928bee85e7b0f21" title="string value ">value_t::string</a></code>, then <code>m_value.string != nullptr</code>. The invariants are checked by member function assert_invariant().</li>
-</ul>
-</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a href="http://rfc7159.net/rfc7159">RFC 7159: The JavaScript Object Notation (JSON) Data Interchange Format</a></dd></dl>
-<dl class="section since"><dt>Since</dt><dd>version 1.0.0 </dd></dl>
-</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a9a0aced019cb1d65bb49703406c84970"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9a0aced019cb1d65bb49703406c84970">&#9670;&nbsp;</a></span>exception</h2>
 
@@ -1125,6 +1109,222 @@ template&lt;template&lt; typename U, typename V, typename... Args &gt; class Obj
 <a class="el" href="classnlohmann_1_1basic__json.html#a28f7c2f087274a0012eb7a2333ee1580">out_of_range</a> for exceptions indicating access out of the defined range</dd></dl>
 <p>{The following code shows how an <code>other_error</code> exception can be caught.,other_error}</p>
 <dl class="section since"><dt>Since</dt><dd>version 3.0.0 </dd></dl>
+
+</div>
+</div>
+<a id="a2b3297873b70c080837e8eedc4fec32f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b3297873b70c080837e8eedc4fec32f">&#9670;&nbsp;</a></span>value_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#a2b3297873b70c080837e8eedc4fec32f">value_type</a> =  <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>the type of elements in a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container </p>
+
+</div>
+</div>
+<a id="ac6a5eddd156c776ac75ff54cfe54a5bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6a5eddd156c776ac75ff54cfe54a5bc">&#9670;&nbsp;</a></span>reference</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#ac6a5eddd156c776ac75ff54cfe54a5bc">reference</a> =  <a class="el" href="classnlohmann_1_1basic__json.html#a2b3297873b70c080837e8eedc4fec32f">value_type</a>&amp;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>the type of an element reference </p>
+
+</div>
+</div>
+<a id="a4057c5425f4faacfe39a8046871786ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4057c5425f4faacfe39a8046871786ca">&#9670;&nbsp;</a></span>const_reference</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#a4057c5425f4faacfe39a8046871786ca">const_reference</a> =  const <a class="el" href="classnlohmann_1_1basic__json.html#a2b3297873b70c080837e8eedc4fec32f">value_type</a>&amp;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>the type of an element const reference </p>
+
+</div>
+</div>
+<a id="afe7c1303357e19cea9527af4e9a31d8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe7c1303357e19cea9527af4e9a31d8f">&#9670;&nbsp;</a></span>difference_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#afe7c1303357e19cea9527af4e9a31d8f">difference_type</a> =  std::ptrdiff_t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>a type to represent differences between iterators </p>
+
+</div>
+</div>
+<a id="a39f2cd0b58106097e0e67bf185cc519b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39f2cd0b58106097e0e67bf185cc519b">&#9670;&nbsp;</a></span>size_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#a39f2cd0b58106097e0e67bf185cc519b">size_type</a> =  std::size_t</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>a type to represent container sizes </p>
+
+</div>
+</div>
+<a id="a86ce930490cf7773b26f5ef49c04a350"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86ce930490cf7773b26f5ef49c04a350">&#9670;&nbsp;</a></span>allocator_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350">allocator_type</a> =  AllocatorType&lt;<a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>the allocator type </p>
+
+</div>
+</div>
+<a id="aefee1f777198c68724bd127e0c8abbe4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aefee1f777198c68724bd127e0c8abbe4">&#9670;&nbsp;</a></span>pointer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#aefee1f777198c68724bd127e0c8abbe4">pointer</a> =  typename std::allocator_traits&lt;<a class="el" href="classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350">allocator_type</a>&gt;::<a class="el" href="classnlohmann_1_1basic__json.html#aefee1f777198c68724bd127e0c8abbe4">pointer</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>the type of an element pointer </p>
+
+</div>
+</div>
+<a id="aff3d5cd2a75612364b888d8693231b58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff3d5cd2a75612364b888d8693231b58">&#9670;&nbsp;</a></span>const_pointer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#aff3d5cd2a75612364b888d8693231b58">const_pointer</a> =  typename std::allocator_traits&lt;<a class="el" href="classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350">allocator_type</a>&gt;::<a class="el" href="classnlohmann_1_1basic__json.html#aff3d5cd2a75612364b888d8693231b58">const_pointer</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>the type of an element const pointer </p>
+
+</div>
+</div>
+<a id="a099316232c76c034030a38faa6e34dca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a099316232c76c034030a38faa6e34dca">&#9670;&nbsp;</a></span>iterator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#a099316232c76c034030a38faa6e34dca">iterator</a> =  <a class="el" href="classnlohmann_1_1detail_1_1iter__impl.html">iter_impl</a>&lt;<a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>an iterator for a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container </p>
+
+</div>
+</div>
+<a id="a41a70cf9993951836d129bb1c2b3126a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41a70cf9993951836d129bb1c2b3126a">&#9670;&nbsp;</a></span>const_iterator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#a41a70cf9993951836d129bb1c2b3126a">const_iterator</a> =  <a class="el" href="classnlohmann_1_1detail_1_1iter__impl.html">iter_impl</a>&lt;const <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>a const iterator for a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container </p>
+
+</div>
+</div>
+<a id="ac223d5560c2b05a208c88de67376c5f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac223d5560c2b05a208c88de67376c5f2">&#9670;&nbsp;</a></span>reverse_iterator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#ac223d5560c2b05a208c88de67376c5f2">reverse_iterator</a> =  <a class="el" href="classnlohmann_1_1detail_1_1json__reverse__iterator.html">json_reverse_iterator</a>&lt;typename <a class="el" href="classnlohmann_1_1basic__json.html#a099316232c76c034030a38faa6e34dca">basic_json::iterator</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>a reverse iterator for a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container </p>
+
+</div>
+</div>
+<a id="a72be3c24bfa24f0993d6c11af03e7404"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72be3c24bfa24f0993d6c11af03e7404">&#9670;&nbsp;</a></span>const_reverse_iterator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::<a class="el" href="classnlohmann_1_1basic__json.html#a72be3c24bfa24f0993d6c11af03e7404">const_reverse_iterator</a> =  <a class="el" href="classnlohmann_1_1detail_1_1json__reverse__iterator.html">json_reverse_iterator</a>&lt;typename <a class="el" href="classnlohmann_1_1basic__json.html#a41a70cf9993951836d129bb1c2b3126a">basic_json::const_iterator</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>a const reverse iterator for a <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> container </p>
 
 </div>
 </div>
@@ -1970,6 +2170,35 @@ template&lt;template&lt; typename U, typename V, typename... Args &gt; class Obj
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="af4ac14224fbdd29d3547fcb11bb55c8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4ac14224fbdd29d3547fcb11bb55c8f">&#9670;&nbsp;</a></span>get_allocator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename U, typename V, typename... Args &gt; class ObjectType = std::map, template&lt; typename U, typename... Args &gt; class ArrayType = std::vector, class StringType  = std::string, class BooleanType  = bool, class NumberIntegerType  = std::int64_t, class NumberUnsignedType  = std::uint64_t, class NumberFloatType  = double, template&lt; typename U &gt; class AllocatorType = std::allocator, template&lt; typename T, typename SFINAE=void &gt; class JSONSerializer = adl_serializer&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350">allocator_type</a> <a class="el" href="classnlohmann_1_1basic__json.html">nlohmann::basic_json</a>&lt; ObjectType, ArrayType, StringType, BooleanType, NumberIntegerType, NumberUnsignedType, NumberFloatType, AllocatorType, JSONSerializer &gt;::get_allocator </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>returns the allocator associated with the container </p>
+
+</div>
+</div>
 <a id="aef6d0eeccee7c5c7e1317c2ea1607fab"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aef6d0eeccee7c5c7e1317c2ea1607fab">&#9670;&nbsp;</a></span>meta()</h2>
 
@@ -9301,7 +9530,7 @@ template&lt;template&lt; typename U, typename V, typename... Args &gt; class Obj
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 17 2018 13:11:09 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 18 2018 10:39:35 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

@@ -73,10 +73,9 @@ $(function() {
 <div class="title">nlohmann::detail::input_buffer_adapter Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>input adapter for buffer input  
- <a href="classnlohmann_1_1detail_1_1input__buffer__adapter.html#details">More...</a></p>
-
+<a name="details" id="details"></a><h2 class="groupheader">Description</h2>
+<div class="textblock"><p>input adapter for buffer input </p>
+</div>
 <p><code>#include &lt;<a class="el" href="json_8h_source.html">json.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for nlohmann::detail::input_buffer_adapter:</div>
@@ -106,24 +105,79 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0871125057d993684ba8e45fb2b8a76b"><td class="memItemLeft" align="right" valign="top"><a id="a0871125057d993684ba8e45fb2b8a76b"></a>
 <a class="el" href="classnlohmann_1_1detail_1_1input__buffer__adapter.html">input_buffer_adapter</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classnlohmann_1_1detail_1_1input__buffer__adapter.html">input_buffer_adapter</a> &amp;)=delete</td></tr>
 <tr class="separator:a0871125057d993684ba8e45fb2b8a76b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9e195b04f3551fafb0925aafba00124"><td class="memItemLeft" align="right" valign="top"><a id="ae9e195b04f3551fafb0925aafba00124"></a>
-std::char_traits&lt; char &gt;::int_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1input__buffer__adapter.html#ae9e195b04f3551fafb0925aafba00124">get_character</a> () noexcept override</td></tr>
-<tr class="memdesc:ae9e195b04f3551fafb0925aafba00124"><td class="mdescLeft">&#160;</td><td class="mdescRight">get a character [0,255] or std::char_traits&lt;char&gt;::eof(). <br /></td></tr>
+<tr class="memitem:ae9e195b04f3551fafb0925aafba00124"><td class="memItemLeft" align="right" valign="top">std::char_traits&lt; char &gt;::int_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1input__buffer__adapter.html#ae9e195b04f3551fafb0925aafba00124">get_character</a> () noexcept override</td></tr>
+<tr class="memdesc:ae9e195b04f3551fafb0925aafba00124"><td class="mdescLeft">&#160;</td><td class="mdescRight">get a character [0,255] or std::char_traits&lt;char&gt;::eof().  <a href="#ae9e195b04f3551fafb0925aafba00124">More...</a><br /></td></tr>
 <tr class="separator:ae9e195b04f3551fafb0925aafba00124"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2464d8e963d2ae617b080f2df2550a1"><td class="memItemLeft" align="right" valign="top"><a id="ae2464d8e963d2ae617b080f2df2550a1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1input__buffer__adapter.html#ae2464d8e963d2ae617b080f2df2550a1">unget_character</a> () noexcept override</td></tr>
-<tr class="memdesc:ae2464d8e963d2ae617b080f2df2550a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">restore the last non-eof() character to input <br /></td></tr>
+<tr class="memitem:ae2464d8e963d2ae617b080f2df2550a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1input__buffer__adapter.html#ae2464d8e963d2ae617b080f2df2550a1">unget_character</a> () noexcept override</td></tr>
+<tr class="memdesc:ae2464d8e963d2ae617b080f2df2550a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">restore the last non-eof() character to input  <a href="#ae2464d8e963d2ae617b080f2df2550a1">More...</a><br /></td></tr>
 <tr class="separator:ae2464d8e963d2ae617b080f2df2550a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>input adapter for buffer input </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ae9e195b04f3551fafb0925aafba00124"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9e195b04f3551fafb0925aafba00124">&#9670;&nbsp;</a></span>get_character()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::char_traits&lt;char&gt;::int_type nlohmann::detail::input_buffer_adapter::get_character </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>get a character [0,255] or std::char_traits&lt;char&gt;::eof(). </p>
+
+<p>Implements <a class="el" href="structnlohmann_1_1detail_1_1input__adapter__protocol.html#aac10a6a4048a8ce8e2ed50277692a3ca">nlohmann::detail::input_adapter_protocol</a>.</p>
+
+</div>
+</div>
+<a id="ae2464d8e963d2ae617b080f2df2550a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2464d8e963d2ae617b080f2df2550a1">&#9670;&nbsp;</a></span>unget_character()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nlohmann::detail::input_buffer_adapter::unget_character </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>restore the last non-eof() character to input </p>
+
+<p>Implements <a class="el" href="structnlohmann_1_1detail_1_1input__adapter__protocol.html#aeb5cac3e86e8df6cfe48cc42de2e9225">nlohmann::detail::input_adapter_protocol</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>/Users/dan/Devel/SmartGridToolbox/SgtCore/<a class="el" href="json_8h_source.html">json.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 17 2018 13:11:09 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 18 2018 10:39:35 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

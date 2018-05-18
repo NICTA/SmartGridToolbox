@@ -20,6 +20,7 @@ var searchData=
   ['get_5ftoken_5fstring',['get_token_string',['../classnlohmann_1_1detail_1_1lexer.html#a4aef7e72e539be04e139c34872421f2a',1,'nlohmann::detail::lexer']]],
   ['getter',['Getter',['../class_sgt_1_1_getter.html',1,'Sgt']]],
   ['getterabc',['GetterAbc',['../class_sgt_1_1_getter_abc.html',1,'Sgt']]],
+  ['gettopnode',['getTopNode',['../group___parsing.html#ga3d65856ebe43f4b9b15d03496da1541c',1,'Sgt']]],
   ['gmrneut_5f',['gmrNeut_',['../class_sgt_1_1_underground_line.html#ad690109616841c8e022d5c65b489a885',1,'Sgt::UndergroundLine']]],
   ['gmrphase_5f',['gmrPhase_',['../class_sgt_1_1_underground_line.html#a0f25b5bf132cf295e53701c61825ddbc',1,'Sgt::UndergroundLine']]],
   ['grounddiffuseirradiance',['groundDiffuseIrradiance',['../namespace_sgt.html#a6b920e44629fbe8972be79019eebaf5e',1,'Sgt']]]

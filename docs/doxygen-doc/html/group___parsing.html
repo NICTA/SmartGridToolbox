@@ -63,14 +63,15 @@ $(function() {
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">Parsing</div>  </div>
+<div class="title">Parsing<div class="ingroups"><a class="el" href="group___foundation.html">Foundation</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>Parsing classes, functions etc.  
-<a href="#details">More...</a></p>
+<a name="details" id="details"></a><h2 class="groupheader">Description</h2>
+<p>Parsing classes, functions etc. </p>
+<p>SmartGridToolbox uses the [YAML]{<a href="http://yaml.org">http://yaml.org</a>} language for human readable configuration files. It provides a <code>Parser</code> class to parse YAML into any object, via the <code>Parser&lt;T&gt;::parse(...)</code> command. The ability to parse specific YAML constructs is handled in a modular and extensible way, using derived classes of the <code>ParserPlugin</code> class. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -119,13 +120,71 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_sim_global_parser_plugin.html">Sgt::SimGlobalParserPlugin</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object. ">ParserPlugin</a> that parses simulation information.  <a href="class_sgt_1_1_sim_global_parser_plugin.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ga4787bd31665e19a0284e8413a404c699"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___parsing.html#ga4787bd31665e19a0284e8413a404c699">Sgt::assertFieldPresent</a> (const YAML::Node &amp;nd, const std::string &amp;field)</td></tr>
+<tr class="memdesc:ga4787bd31665e19a0284e8413a404c699"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assert a field is present in a YAML mapping.  <a href="group___parsing.html#ga4787bd31665e19a0284e8413a404c699">More...</a><br /></td></tr>
+<tr class="separator:ga4787bd31665e19a0284e8413a404c699"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3d65856ebe43f4b9b15d03496da1541c"><td class="memItemLeft" align="right" valign="top">YAML::Node&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___parsing.html#ga3d65856ebe43f4b9b15d03496da1541c">Sgt::getTopNode</a> (const std::string &amp;fname)</td></tr>
+<tr class="memdesc:ga3d65856ebe43f4b9b15d03496da1541c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the top node of a YAML file.  <a href="group___parsing.html#ga3d65856ebe43f4b9b15d03496da1541c">More...</a><br /></td></tr>
+<tr class="separator:ga3d65856ebe43f4b9b15d03496da1541c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<p>Parsing classes, functions etc. </p>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ga4787bd31665e19a0284e8413a404c699"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4787bd31665e19a0284e8413a404c699">&#9670;&nbsp;</a></span>assertFieldPresent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Sgt::assertFieldPresent </td>
+          <td>(</td>
+          <td class="paramtype">const YAML::Node &amp;&#160;</td>
+          <td class="paramname"><em>nd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>field</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Assert a field is present in a YAML mapping. </p>
+
+</div>
+</div>
+<a id="ga3d65856ebe43f4b9b15d03496da1541c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3d65856ebe43f4b9b15d03496da1541c">&#9670;&nbsp;</a></span>getTopNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">YAML::Node Sgt::getTopNode </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>fname</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the top node of a YAML file. </p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 17 2018 13:11:09 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 18 2018 10:39:34 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

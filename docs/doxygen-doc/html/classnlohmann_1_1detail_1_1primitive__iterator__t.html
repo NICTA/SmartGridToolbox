@@ -75,10 +75,10 @@ $(function() {
 <div class="title">nlohmann::detail::primitive_iterator_t Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>an iterator for primitive JSON types  
- <a href="classnlohmann_1_1detail_1_1primitive__iterator__t.html#details">More...</a></p>
-
+<a name="details" id="details"></a><h2 class="groupheader">Description</h2>
+<div class="textblock"><p>an iterator for primitive JSON types </p>
+<p>This class models an iterator for primitive JSON types (boolean, number, string). It's only purpose is to allow the iterator/const_iterator classes to "iterate" over primitive values. Internally, the iterator is modeled by a <code>difference_type</code> variable. Value begin_value (<code>0</code>) models the begin, end_value (<code>1</code>) models past the end. </p>
+</div>
 <p><code>#include &lt;<a class="el" href="json_8h_source.html">json.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
@@ -92,21 +92,17 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae952990886ca1756229f916661a8af81"><td class="memItemLeft" align="right" valign="top"><a id="ae952990886ca1756229f916661a8af81"></a>
 constexpr difference_type&#160;</td><td class="memItemRight" valign="bottom"><b>get_value</b> () const noexcept</td></tr>
 <tr class="separator:ae952990886ca1756229f916661a8af81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d9b005906106e12aed738f97d7fee42"><td class="memItemLeft" align="right" valign="top"><a id="a9d9b005906106e12aed738f97d7fee42"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1primitive__iterator__t.html#a9d9b005906106e12aed738f97d7fee42">set_begin</a> () noexcept</td></tr>
-<tr class="memdesc:a9d9b005906106e12aed738f97d7fee42"><td class="mdescLeft">&#160;</td><td class="mdescRight">set iterator to a defined beginning <br /></td></tr>
+<tr class="memitem:a9d9b005906106e12aed738f97d7fee42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1primitive__iterator__t.html#a9d9b005906106e12aed738f97d7fee42">set_begin</a> () noexcept</td></tr>
+<tr class="memdesc:a9d9b005906106e12aed738f97d7fee42"><td class="mdescLeft">&#160;</td><td class="mdescRight">set iterator to a defined beginning  <a href="#a9d9b005906106e12aed738f97d7fee42">More...</a><br /></td></tr>
 <tr class="separator:a9d9b005906106e12aed738f97d7fee42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad26a823483846a12d890c3feed3097eb"><td class="memItemLeft" align="right" valign="top"><a id="ad26a823483846a12d890c3feed3097eb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1primitive__iterator__t.html#ad26a823483846a12d890c3feed3097eb">set_end</a> () noexcept</td></tr>
-<tr class="memdesc:ad26a823483846a12d890c3feed3097eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">set iterator to a defined past the end <br /></td></tr>
+<tr class="memitem:ad26a823483846a12d890c3feed3097eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1primitive__iterator__t.html#ad26a823483846a12d890c3feed3097eb">set_end</a> () noexcept</td></tr>
+<tr class="memdesc:ad26a823483846a12d890c3feed3097eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">set iterator to a defined past the end  <a href="#ad26a823483846a12d890c3feed3097eb">More...</a><br /></td></tr>
 <tr class="separator:ad26a823483846a12d890c3feed3097eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d1a7d46b3fcd06edd034f04ededb5e4"><td class="memItemLeft" align="right" valign="top"><a id="a8d1a7d46b3fcd06edd034f04ededb5e4"></a>
-constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1primitive__iterator__t.html#a8d1a7d46b3fcd06edd034f04ededb5e4">is_begin</a> () const noexcept</td></tr>
-<tr class="memdesc:a8d1a7d46b3fcd06edd034f04ededb5e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether the iterator can be dereferenced <br /></td></tr>
+<tr class="memitem:a8d1a7d46b3fcd06edd034f04ededb5e4"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1primitive__iterator__t.html#a8d1a7d46b3fcd06edd034f04ededb5e4">is_begin</a> () const noexcept</td></tr>
+<tr class="memdesc:a8d1a7d46b3fcd06edd034f04ededb5e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether the iterator can be dereferenced  <a href="#a8d1a7d46b3fcd06edd034f04ededb5e4">More...</a><br /></td></tr>
 <tr class="separator:a8d1a7d46b3fcd06edd034f04ededb5e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45a7e301c23b5b90417baf2277f40b1d"><td class="memItemLeft" align="right" valign="top"><a id="a45a7e301c23b5b90417baf2277f40b1d"></a>
-constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1primitive__iterator__t.html#a45a7e301c23b5b90417baf2277f40b1d">is_end</a> () const noexcept</td></tr>
-<tr class="memdesc:a45a7e301c23b5b90417baf2277f40b1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether the iterator is at end <br /></td></tr>
+<tr class="memitem:a45a7e301c23b5b90417baf2277f40b1d"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1primitive__iterator__t.html#a45a7e301c23b5b90417baf2277f40b1d">is_end</a> () const noexcept</td></tr>
+<tr class="memdesc:a45a7e301c23b5b90417baf2277f40b1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether the iterator is at end  <a href="#a45a7e301c23b5b90417baf2277f40b1d">More...</a><br /></td></tr>
 <tr class="separator:a45a7e301c23b5b90417baf2277f40b1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a092b20d1f229be095ed974db136e6234"><td class="memItemLeft" align="right" valign="top"><a id="a092b20d1f229be095ed974db136e6234"></a>
 <a class="el" href="classnlohmann_1_1detail_1_1primitive__iterator__t.html">primitive_iterator_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>operator+</b> (difference_type i)</td></tr>
@@ -145,16 +141,122 @@ constexpr difference_type&#160;</td><td class="memItemRight" valign="bottom"><b>
 std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, <a class="el" href="classnlohmann_1_1detail_1_1primitive__iterator__t.html">primitive_iterator_t</a> it)</td></tr>
 <tr class="separator:a653e8be3b4fb047e8b4460cd932f2b52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>an iterator for primitive JSON types </p>
-<p>This class models an iterator for primitive JSON types (boolean, number, string). It's only purpose is to allow the iterator/const_iterator classes to "iterate" over primitive values. Internally, the iterator is modeled by a <code>difference_type</code> variable. Value begin_value (<code>0</code>) models the begin, end_value (<code>1</code>) models past the end. </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a9d9b005906106e12aed738f97d7fee42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d9b005906106e12aed738f97d7fee42">&#9670;&nbsp;</a></span>set_begin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nlohmann::detail::primitive_iterator_t::set_begin </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>set iterator to a defined beginning </p>
+
+</div>
+</div>
+<a id="ad26a823483846a12d890c3feed3097eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad26a823483846a12d890c3feed3097eb">&#9670;&nbsp;</a></span>set_end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nlohmann::detail::primitive_iterator_t::set_end </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>set iterator to a defined past the end </p>
+
+</div>
+</div>
+<a id="a8d1a7d46b3fcd06edd034f04ededb5e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d1a7d46b3fcd06edd034f04ededb5e4">&#9670;&nbsp;</a></span>is_begin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool nlohmann::detail::primitive_iterator_t::is_begin </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>return whether the iterator can be dereferenced </p>
+
+</div>
+</div>
+<a id="a45a7e301c23b5b90417baf2277f40b1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45a7e301c23b5b90417baf2277f40b1d">&#9670;&nbsp;</a></span>is_end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool nlohmann::detail::primitive_iterator_t::is_end </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>return whether the iterator is at end </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>/Users/dan/Devel/SmartGridToolbox/SgtCore/<a class="el" href="json_8h_source.html">json.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 17 2018 13:11:09 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 18 2018 10:39:35 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

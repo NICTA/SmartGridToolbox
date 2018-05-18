@@ -74,11 +74,13 @@ $(function() {
 <div class="title">Sgt::DataTimeSeries&lt; T, V &gt; Class Template Reference<div class="ingroups"><a class="el" href="group___sim_core.html">Simulation Core</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+<a name="details" id="details"></a><h2 class="groupheader">Description</h2>
+<div class="textblock"><h3>template&lt;typename T, typename V&gt;<br />
+class Sgt::DataTimeSeries&lt; T, V &gt;</h3>
 
 <p>Base class for <a class="el" href="class_sgt_1_1_time_series.html" title="Base class for time series objects: functions of time. ">TimeSeries</a> object that stores a time/value table. <br />
-  
- <a href="class_sgt_1_1_data_time_series.html#details">More...</a></p>
-
+ </p>
+</div>
 <p><code>#include &lt;<a class="el" href="_time_series_8h_source.html">TimeSeries.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Sgt::DataTimeSeries&lt; T, V &gt;:</div>
@@ -121,13 +123,11 @@ auto&#160;</td><td class="memItemRight" valign="bottom"><b>rbegin</b> () const</
 <tr class="memitem:a67e64bd7e0818dcfc4f6af9e37d3ce71"><td class="memItemLeft" align="right" valign="top"><a id="a67e64bd7e0818dcfc4f6af9e37d3ce71"></a>
 auto&#160;</td><td class="memItemRight" valign="bottom"><b>rend</b> () const</td></tr>
 <tr class="separator:a67e64bd7e0818dcfc4f6af9e37d3ce71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7405d7e535ead0feec9db685f5e753cf"><td class="memItemLeft" align="right" valign="top"><a id="a7405d7e535ead0feec9db685f5e753cf"></a>
-auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_data_time_series.html#a7405d7e535ead0feec9db685f5e753cf">lowerBound</a> (const T &amp;t) const</td></tr>
-<tr class="memdesc:a7405d7e535ead0feec9db685f5e753cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterator to element with largest key &lt;= t, or rend if no such key exists. <br /></td></tr>
+<tr class="memitem:a7405d7e535ead0feec9db685f5e753cf"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_data_time_series.html#a7405d7e535ead0feec9db685f5e753cf">lowerBound</a> (const T &amp;t) const</td></tr>
+<tr class="memdesc:a7405d7e535ead0feec9db685f5e753cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterator to element with largest key &lt;= t, or rend if no such key exists.  <a href="#a7405d7e535ead0feec9db685f5e753cf">More...</a><br /></td></tr>
 <tr class="separator:a7405d7e535ead0feec9db685f5e753cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bd973675547be29587aa64536517ba8"><td class="memItemLeft" align="right" valign="top"><a id="a5bd973675547be29587aa64536517ba8"></a>
-auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_data_time_series.html#a5bd973675547be29587aa64536517ba8">upperBound</a> (const T &amp;t) const</td></tr>
-<tr class="memdesc:a5bd973675547be29587aa64536517ba8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterator to element with smallest key &gt;= t, or rend if no such key exists. <br /></td></tr>
+<tr class="memitem:a5bd973675547be29587aa64536517ba8"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_data_time_series.html#a5bd973675547be29587aa64536517ba8">upperBound</a> (const T &amp;t) const</td></tr>
+<tr class="memdesc:a5bd973675547be29587aa64536517ba8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterator to element with smallest key &gt;= t, or rend if no such key exists.  <a href="#a5bd973675547be29587aa64536517ba8">More...</a><br /></td></tr>
 <tr class="separator:a5bd973675547be29587aa64536517ba8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad9249dcd9e8e8bd3ba0803351c3e025"><td class="memItemLeft" align="right" valign="top"><a id="aad9249dcd9e8e8bd3ba0803351c3e025"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>removePoint</b> (const typename std::map&lt; T, V &gt;::const_iterator &amp;it)</td></tr>
@@ -159,19 +159,74 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>TimeTipe</b> = T</td
 using&#160;</td><td class="memItemRight" valign="bottom"><b>ValType</b> = V</td></tr>
 <tr class="separator:a2462bc2c94b32f3729b23316eba86bad inherit pub_types_class_sgt_1_1_time_series"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename T, typename V&gt;<br />
-class Sgt::DataTimeSeries&lt; T, V &gt;</h3>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a7405d7e535ead0feec9db685f5e753cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7405d7e535ead0feec9db685f5e753cf">&#9670;&nbsp;</a></span>lowerBound()</h2>
 
-<p>Base class for <a class="el" href="class_sgt_1_1_time_series.html" title="Base class for time series objects: functions of time. ">TimeSeries</a> object that stores a time/value table. <br />
- </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename V &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto <a class="el" href="class_sgt_1_1_data_time_series.html">Sgt::DataTimeSeries</a>&lt; T, V &gt;::lowerBound </td>
+          <td>(</td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Iterator to element with largest key &lt;= t, or rend if no such key exists. </p>
+
+</div>
+</div>
+<a id="a5bd973675547be29587aa64536517ba8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bd973675547be29587aa64536517ba8">&#9670;&nbsp;</a></span>upperBound()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename V &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto <a class="el" href="class_sgt_1_1_data_time_series.html">Sgt::DataTimeSeries</a>&lt; T, V &gt;::upperBound </td>
+          <td>(</td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Iterator to element with smallest key &gt;= t, or rend if no such key exists. </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>/Users/dan/Devel/SmartGridToolbox/SgtSim/<a class="el" href="_time_series_8h_source.html">TimeSeries.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 17 2018 13:11:09 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 18 2018 10:39:35 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

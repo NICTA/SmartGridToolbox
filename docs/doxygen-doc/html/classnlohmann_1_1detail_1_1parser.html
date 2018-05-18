@@ -74,10 +74,13 @@ $(function() {
 <div class="title">nlohmann::detail::parser&lt; BasicJsonType &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+<a name="details" id="details"></a><h2 class="groupheader">Description</h2>
+<div class="textblock"><h3>template&lt;typename BasicJsonType&gt;<br />
+class nlohmann::detail::parser&lt; BasicJsonType &gt;</h3>
 
-<p>syntax analysis  
- <a href="classnlohmann_1_1detail_1_1parser.html#details">More...</a></p>
-
+<p>syntax analysis </p>
+<p>This class implements a recursive decent parser. </p>
+</div>
 <p><code>#include &lt;<a class="el" href="json_8h_source.html">json.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
@@ -99,9 +102,8 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>parser_callback_t</b
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a693aa2a6c0cc665e0e45bacf055460e6"><td class="memItemLeft" align="right" valign="top"><a id="a693aa2a6c0cc665e0e45bacf055460e6"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1parser.html#a693aa2a6c0cc665e0e45bacf055460e6">parser</a> (<a class="el" href="namespacenlohmann_1_1detail.html#ae132f8cd5bb24c5e9b40ad0eafedf1c2">detail::input_adapter_t</a> adapter, const parser_callback_t cb=nullptr, const bool allow_exceptions_=true)</td></tr>
-<tr class="memdesc:a693aa2a6c0cc665e0e45bacf055460e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">a parser reading from an input adapter <br /></td></tr>
+<tr class="memitem:a693aa2a6c0cc665e0e45bacf055460e6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1parser.html#a693aa2a6c0cc665e0e45bacf055460e6">parser</a> (<a class="el" href="namespacenlohmann_1_1detail.html#ae132f8cd5bb24c5e9b40ad0eafedf1c2">detail::input_adapter_t</a> adapter, const parser_callback_t cb=nullptr, const bool allow_exceptions_=true)</td></tr>
+<tr class="memdesc:a693aa2a6c0cc665e0e45bacf055460e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">a parser reading from an input adapter  <a href="#a693aa2a6c0cc665e0e45bacf055460e6">More...</a><br /></td></tr>
 <tr class="separator:a693aa2a6c0cc665e0e45bacf055460e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14338d8f3174601c0b2b7ef28752ab17"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1parser.html#a14338d8f3174601c0b2b7ef28752ab17">parse</a> (const bool strict, BasicJsonType &amp;result)</td></tr>
 <tr class="memdesc:a14338d8f3174601c0b2b7ef28752ab17"><td class="mdescLeft">&#160;</td><td class="mdescRight">public parser interface  <a href="#a14338d8f3174601c0b2b7ef28752ab17">More...</a><br /></td></tr>
@@ -110,13 +112,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a20997b42262856935b60fc91bf05bf3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">public accept interface  <a href="#a20997b42262856935b60fc91bf05bf3f">More...</a><br /></td></tr>
 <tr class="separator:a20997b42262856935b60fc91bf05bf3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename BasicJsonType&gt;<br />
-class nlohmann::detail::parser&lt; BasicJsonType &gt;</h3>
-
-<p>syntax analysis </p>
-<p>This class implements a recursive decent parser. </p>
-</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a37ac88c864dda495f72cb62776b0bebe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a37ac88c864dda495f72cb62776b0bebe">&#9670;&nbsp;</a></span>parse_event_t</h2>
 
@@ -152,6 +148,53 @@ template&lt;typename BasicJsonType &gt; </div>
 <tr><td class="fieldname"><a id="a37ac88c864dda495f72cb62776b0bebea2063c1608d6e0baf80249c42e2be5804"></a>value&#160;</td><td class="fielddoc"><p>the parser finished reading a JSON value </p>
 </td></tr>
 </table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a693aa2a6c0cc665e0e45bacf055460e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a693aa2a6c0cc665e0e45bacf055460e6">&#9670;&nbsp;</a></span>parser()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename BasicJsonType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classnlohmann_1_1detail_1_1parser.html">nlohmann::detail::parser</a>&lt; BasicJsonType &gt;::<a class="el" href="classnlohmann_1_1detail_1_1parser.html">parser</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacenlohmann_1_1detail.html#ae132f8cd5bb24c5e9b40ad0eafedf1c2">detail::input_adapter_t</a>&#160;</td>
+          <td class="paramname"><em>adapter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const parser_callback_t&#160;</td>
+          <td class="paramname"><em>cb</em> = <code>nullptr</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>allow_exceptions_</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>a parser reading from an input adapter </p>
 
 </div>
 </div>
@@ -254,7 +297,7 @@ template&lt;typename BasicJsonType &gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 17 2018 13:11:09 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 18 2018 10:39:35 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

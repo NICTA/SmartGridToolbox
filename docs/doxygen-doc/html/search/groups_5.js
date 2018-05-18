@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['random_20numbers',['Random Numbers',['../group___random.html',1,'']]]
+  ['parsing',['Parsing',['../group___parsing.html',1,'']]],
+  ['power_20flow_20core',['Power Flow Core',['../group___power_flow_core.html',1,'']]],
+  ['properties',['Properties',['../group___properties.html',1,'']]]
 ];

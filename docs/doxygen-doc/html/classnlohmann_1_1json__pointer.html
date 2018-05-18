@@ -74,10 +74,12 @@ $(function() {
 <div class="title">nlohmann::json_pointer Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>JSON Pointer.  
- <a href="classnlohmann_1_1json__pointer.html#details">More...</a></p>
-
+<a name="details" id="details"></a><h2 class="groupheader">Description</h2>
+<div class="textblock"><p>JSON Pointer. </p>
+<p>A JSON pointer defines a string syntax for identifying a specific value within a JSON document. It can be used with functions <code>at</code> and <code>operator[]</code>. Furthermore, JSON pointers are the base for JSON patches.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://tools.ietf.org/html/rfc6901">RFC 6901</a></dd></dl>
+<dl class="section since"><dt>Since</dt><dd>version 2.0.0 </dd></dl>
+</div>
 <p><code>#include &lt;<a class="el" href="json_8h_source.html">json.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -94,9 +96,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:ada3100cdb8700566051828f1355fa745"><td class="memItemLeft" align="right" valign="top"><a id="ada3100cdb8700566051828f1355fa745"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1json__pointer.html#ada3100cdb8700566051828f1355fa745">basic_json</a></td></tr>
-<tr class="memdesc:ada3100cdb8700566051828f1355fa745"><td class="mdescLeft">&#160;</td><td class="mdescRight">allow <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> to access private members <br /></td></tr>
+<tr class="memitem:ada3100cdb8700566051828f1355fa745"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1json__pointer.html#ada3100cdb8700566051828f1355fa745">basic_json</a></td></tr>
+<tr class="memdesc:ada3100cdb8700566051828f1355fa745"><td class="mdescLeft">&#160;</td><td class="mdescRight">allow <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> to access private members  <a href="#ada3100cdb8700566051828f1355fa745">More...</a><br /></td></tr>
 <tr class="separator:ada3100cdb8700566051828f1355fa745"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4667ef558c8c3f8a646bfda0c6654653"><td class="memItemLeft" align="right" valign="top"><a id="a4667ef558c8c3f8a646bfda0c6654653"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (<a class="el" href="classnlohmann_1_1json__pointer.html">json_pointer</a> const &amp;lhs, <a class="el" href="classnlohmann_1_1json__pointer.html">json_pointer</a> const &amp;rhs) noexcept</td></tr>
@@ -105,12 +106,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (<a cl
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (<a class="el" href="classnlohmann_1_1json__pointer.html">json_pointer</a> const &amp;lhs, <a class="el" href="classnlohmann_1_1json__pointer.html">json_pointer</a> const &amp;rhs) noexcept</td></tr>
 <tr class="separator:a6779edcf28e6f018a3bbb29c0b4b5e1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>JSON Pointer. </p>
-<p>A JSON pointer defines a string syntax for identifying a specific value within a JSON document. It can be used with functions <code>at</code> and <code>operator[]</code>. Furthermore, JSON pointers are the base for JSON patches.</p>
-<dl class="section see"><dt>See also</dt><dd><a href="https://tools.ietf.org/html/rfc6901">RFC 6901</a></dd></dl>
-<dl class="section since"><dt>Since</dt><dd>version 2.0.0 </dd></dl>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a203910314c0be11c6b2b2cb53a9ad3aa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a203910314c0be11c6b2b2cb53a9ad3aa">&#9670;&nbsp;</a></span>json_pointer()</h2>
 
@@ -218,13 +214,38 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (<a cl
 
 </div>
 </div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a id="ada3100cdb8700566051828f1355fa745"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada3100cdb8700566051828f1355fa745">&#9670;&nbsp;</a></span>basic_json</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classnlohmann_1_1basic__json.html">basic_json</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>allow <a class="el" href="classnlohmann_1_1basic__json.html" title="a class to store JSON values ">basic_json</a> to access private members </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>/Users/dan/Devel/SmartGridToolbox/SgtCore/<a class="el" href="json_8h_source.html">json.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 17 2018 13:11:09 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 18 2018 10:39:35 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

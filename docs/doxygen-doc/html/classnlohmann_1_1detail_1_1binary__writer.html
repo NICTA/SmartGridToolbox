@@ -73,10 +73,12 @@ $(function() {
 <div class="title">nlohmann::detail::binary_writer&lt; BasicJsonType, CharType &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+<a name="details" id="details"></a><h2 class="groupheader">Description</h2>
+<div class="textblock"><h3>template&lt;typename BasicJsonType, typename CharType&gt;<br />
+class nlohmann::detail::binary_writer&lt; BasicJsonType, CharType &gt;</h3>
 
-<p>serialization to CBOR and MessagePack values  
- <a href="classnlohmann_1_1detail_1_1binary__writer.html#details">More...</a></p>
-
+<p>serialization to CBOR and MessagePack values </p>
+</div>
 <p><code>#include &lt;<a class="el" href="json_8h_source.html">json.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -84,21 +86,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a373289af95a946c19bb4a58a5df71a78"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1binary__writer.html#a373289af95a946c19bb4a58a5df71a78">binary_writer</a> (<a class="el" href="namespacenlohmann_1_1detail.html#a9b680ddfb58f27eb53a67229447fc556">output_adapter_t</a>&lt; CharType &gt; adapter)</td></tr>
 <tr class="memdesc:a373289af95a946c19bb4a58a5df71a78"><td class="mdescLeft">&#160;</td><td class="mdescRight">create a binary writer  <a href="#a373289af95a946c19bb4a58a5df71a78">More...</a><br /></td></tr>
 <tr class="separator:a373289af95a946c19bb4a58a5df71a78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0ab8d27fd88a33a2f801413ac4c7fbc"><td class="memItemLeft" align="right" valign="top"><a id="aa0ab8d27fd88a33a2f801413ac4c7fbc"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1binary__writer.html#aa0ab8d27fd88a33a2f801413ac4c7fbc">write_cbor</a> (const BasicJsonType &amp;j)</td></tr>
-<tr class="memdesc:aa0ab8d27fd88a33a2f801413ac4c7fbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">[in] j JSON value to serialize <br /></td></tr>
+<tr class="memitem:aa0ab8d27fd88a33a2f801413ac4c7fbc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1binary__writer.html#aa0ab8d27fd88a33a2f801413ac4c7fbc">write_cbor</a> (const BasicJsonType &amp;j)</td></tr>
+<tr class="memdesc:aa0ab8d27fd88a33a2f801413ac4c7fbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">[in] j JSON value to serialize  <a href="#aa0ab8d27fd88a33a2f801413ac4c7fbc">More...</a><br /></td></tr>
 <tr class="separator:aa0ab8d27fd88a33a2f801413ac4c7fbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4e0852b64102ce4b07d99f08f828b7c"><td class="memItemLeft" align="right" valign="top"><a id="ae4e0852b64102ce4b07d99f08f828b7c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1binary__writer.html#ae4e0852b64102ce4b07d99f08f828b7c">write_msgpack</a> (const BasicJsonType &amp;j)</td></tr>
-<tr class="memdesc:ae4e0852b64102ce4b07d99f08f828b7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">[in] j JSON value to serialize <br /></td></tr>
+<tr class="memitem:ae4e0852b64102ce4b07d99f08f828b7c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classnlohmann_1_1detail_1_1binary__writer.html#ae4e0852b64102ce4b07d99f08f828b7c">write_msgpack</a> (const BasicJsonType &amp;j)</td></tr>
+<tr class="memdesc:ae4e0852b64102ce4b07d99f08f828b7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">[in] j JSON value to serialize  <a href="#ae4e0852b64102ce4b07d99f08f828b7c">More...</a><br /></td></tr>
 <tr class="separator:ae4e0852b64102ce4b07d99f08f828b7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename BasicJsonType, typename CharType&gt;<br />
-class nlohmann::detail::binary_writer&lt; BasicJsonType, CharType &gt;</h3>
-
-<p>serialization to CBOR and MessagePack values </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a373289af95a946c19bb4a58a5df71a78"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a373289af95a946c19bb4a58a5df71a78">&#9670;&nbsp;</a></span>binary_writer()</h2>
 
@@ -135,13 +130,74 @@ template&lt;typename BasicJsonType , typename CharType &gt; </div>
 
 </div>
 </div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="aa0ab8d27fd88a33a2f801413ac4c7fbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0ab8d27fd88a33a2f801413ac4c7fbc">&#9670;&nbsp;</a></span>write_cbor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename BasicJsonType , typename CharType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classnlohmann_1_1detail_1_1binary__writer.html">nlohmann::detail::binary_writer</a>&lt; BasicJsonType, CharType &gt;::write_cbor </td>
+          <td>(</td>
+          <td class="paramtype">const BasicJsonType &amp;&#160;</td>
+          <td class="paramname"><em>j</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>[in] j JSON value to serialize </p>
+
+</div>
+</div>
+<a id="ae4e0852b64102ce4b07d99f08f828b7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4e0852b64102ce4b07d99f08f828b7c">&#9670;&nbsp;</a></span>write_msgpack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename BasicJsonType , typename CharType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classnlohmann_1_1detail_1_1binary__writer.html">nlohmann::detail::binary_writer</a>&lt; BasicJsonType, CharType &gt;::write_msgpack </td>
+          <td>(</td>
+          <td class="paramtype">const BasicJsonType &amp;&#160;</td>
+          <td class="paramname"><em>j</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>[in] j JSON value to serialize </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>/Users/dan/Devel/SmartGridToolbox/SgtCore/<a class="el" href="json_8h_source.html">json.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 17 2018 13:11:09 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 18 2018 10:39:35 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

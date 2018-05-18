@@ -73,10 +73,12 @@ $(function() {
 <div class="title">Sgt::LerpTimeSeries&lt; T, V &gt; Class Template Reference<div class="ingroups"><a class="el" href="group___sim_core.html">Simulation Core</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+<a name="details" id="details"></a><h2 class="groupheader">Description</h2>
+<div class="textblock"><h3>template&lt;typename T, typename V&gt;<br />
+class Sgt::LerpTimeSeries&lt; T, V &gt;</h3>
 
-<p><a class="el" href="class_sgt_1_1_time_series.html" title="Base class for time series objects: functions of time. ">TimeSeries</a> that uses linear interpolation between tabulated times.  
- <a href="class_sgt_1_1_lerp_time_series.html#details">More...</a></p>
-
+<p><a class="el" href="class_sgt_1_1_time_series.html" title="Base class for time series objects: functions of time. ">TimeSeries</a> that uses linear interpolation between tabulated times. </p>
+</div>
 <p><code>#include &lt;<a class="el" href="_time_series_8h_source.html">TimeSeries.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Sgt::LerpTimeSeries&lt; T, V &gt;:</div>
@@ -126,13 +128,11 @@ auto&#160;</td><td class="memItemRight" valign="bottom"><b>rbegin</b> () const</
 <tr class="memitem:a67e64bd7e0818dcfc4f6af9e37d3ce71 inherit pub_methods_class_sgt_1_1_data_time_series"><td class="memItemLeft" align="right" valign="top"><a id="a67e64bd7e0818dcfc4f6af9e37d3ce71"></a>
 auto&#160;</td><td class="memItemRight" valign="bottom"><b>rend</b> () const</td></tr>
 <tr class="separator:a67e64bd7e0818dcfc4f6af9e37d3ce71 inherit pub_methods_class_sgt_1_1_data_time_series"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7405d7e535ead0feec9db685f5e753cf inherit pub_methods_class_sgt_1_1_data_time_series"><td class="memItemLeft" align="right" valign="top"><a id="a7405d7e535ead0feec9db685f5e753cf"></a>
-auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_data_time_series.html#a7405d7e535ead0feec9db685f5e753cf">lowerBound</a> (const T &amp;t) const</td></tr>
-<tr class="memdesc:a7405d7e535ead0feec9db685f5e753cf inherit pub_methods_class_sgt_1_1_data_time_series"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterator to element with largest key &lt;= t, or rend if no such key exists. <br /></td></tr>
+<tr class="memitem:a7405d7e535ead0feec9db685f5e753cf inherit pub_methods_class_sgt_1_1_data_time_series"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_data_time_series.html#a7405d7e535ead0feec9db685f5e753cf">lowerBound</a> (const T &amp;t) const</td></tr>
+<tr class="memdesc:a7405d7e535ead0feec9db685f5e753cf inherit pub_methods_class_sgt_1_1_data_time_series"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterator to element with largest key &lt;= t, or rend if no such key exists.  <a href="class_sgt_1_1_data_time_series.html#a7405d7e535ead0feec9db685f5e753cf">More...</a><br /></td></tr>
 <tr class="separator:a7405d7e535ead0feec9db685f5e753cf inherit pub_methods_class_sgt_1_1_data_time_series"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bd973675547be29587aa64536517ba8 inherit pub_methods_class_sgt_1_1_data_time_series"><td class="memItemLeft" align="right" valign="top"><a id="a5bd973675547be29587aa64536517ba8"></a>
-auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_data_time_series.html#a5bd973675547be29587aa64536517ba8">upperBound</a> (const T &amp;t) const</td></tr>
-<tr class="memdesc:a5bd973675547be29587aa64536517ba8 inherit pub_methods_class_sgt_1_1_data_time_series"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterator to element with smallest key &gt;= t, or rend if no such key exists. <br /></td></tr>
+<tr class="memitem:a5bd973675547be29587aa64536517ba8 inherit pub_methods_class_sgt_1_1_data_time_series"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_data_time_series.html#a5bd973675547be29587aa64536517ba8">upperBound</a> (const T &amp;t) const</td></tr>
+<tr class="memdesc:a5bd973675547be29587aa64536517ba8 inherit pub_methods_class_sgt_1_1_data_time_series"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterator to element with smallest key &gt;= t, or rend if no such key exists.  <a href="class_sgt_1_1_data_time_series.html#a5bd973675547be29587aa64536517ba8">More...</a><br /></td></tr>
 <tr class="separator:a5bd973675547be29587aa64536517ba8 inherit pub_methods_class_sgt_1_1_data_time_series"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad9249dcd9e8e8bd3ba0803351c3e025 inherit pub_methods_class_sgt_1_1_data_time_series"><td class="memItemLeft" align="right" valign="top"><a id="aad9249dcd9e8e8bd3ba0803351c3e025"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>removePoint</b> (const typename std::map&lt; T, V &gt;::const_iterator &amp;it)</td></tr>
@@ -158,18 +158,13 @@ std::map&lt; T, V &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>poi
 V&#160;</td><td class="memItemRight" valign="bottom"><b>defaultV_</b></td></tr>
 <tr class="separator:a7ba464b10f0c142e01627ca1422080e8 inherit pro_attribs_class_sgt_1_1_data_time_series"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename T, typename V&gt;<br />
-class Sgt::LerpTimeSeries&lt; T, V &gt;</h3>
-
-<p><a class="el" href="class_sgt_1_1_time_series.html" title="Base class for time series objects: functions of time. ">TimeSeries</a> that uses linear interpolation between tabulated times. </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>/Users/dan/Devel/SmartGridToolbox/SgtSim/<a class="el" href="_time_series_8h_source.html">TimeSeries.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 17 2018 13:11:09 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 18 2018 10:39:35 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>

@@ -71,18 +71,8 @@ $(function() {
 <div class="title">Logging and Errors<div class="ingroups"><a class="el" href="group___utilities.html">Utilities</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>Logging and Errors.  
-<a href="#details">More...</a></p>
-<div class="dynheader">
-Collaboration diagram for Logging and Errors:</div>
-<div class="dyncontent">
-<center><table><tr><td><img src="group___logging_and_errors.png" border="0" alt="" usemap="#group______logging__and__errors"/>
-<map name="group______logging__and__errors" id="group______logging__and__errors">
-<area shape="rect" id="node2" href="group___utilities.html" title="Utility classes, functions and constants. " alt="" coords="5,5,70,31"/>
-</map>
-</td></tr></table></center>
-</div>
+<a name="details" id="details"></a><h2 class="groupheader">Description</h2>
+<p>Logging and Errors. </p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -95,81 +85,364 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:gaa1f6de5cb0f7f907efd261195928b4d8"><td class="memItemLeft" align="right" valign="top"><a id="gaa1f6de5cb0f7f907efd261195928b4d8"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gaa1f6de5cb0f7f907efd261195928b4d8">sgtLogMessage</a>(...)&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_MESSAGE, __VA_ARGS__)</td></tr>
-<tr class="memdesc:gaa1f6de5cb0f7f907efd261195928b4d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a message.E.g. <a class="el" href="group___logging_and_errors.html#gaa1f6de5cb0f7f907efd261195928b4d8" title="Log a message.E.g. sgtLogMessage(LogLevel::VERBOSE) &lt;&lt; &quot;this is a message: number = &quot; &lt;&lt; 5 &lt;&lt; std::en...">sgtLogMessage(LogLevel::VERBOSE)</a> &lt;&lt; "this is a message: number = " &lt;&lt; 5 &lt;&lt; std::endl; Parameter is optional and defaults to LogLevel::NORMAL. <br /></td></tr>
+<tr class="memitem:gaa1f6de5cb0f7f907efd261195928b4d8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gaa1f6de5cb0f7f907efd261195928b4d8">sgtLogMessage</a>(...)&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_MESSAGE, __VA_ARGS__)</td></tr>
+<tr class="memdesc:gaa1f6de5cb0f7f907efd261195928b4d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a message.E.g. <a class="el" href="group___logging_and_errors.html#gaa1f6de5cb0f7f907efd261195928b4d8" title="Log a message.E.g. sgtLogMessage(LogLevel::VERBOSE) &lt;&lt; &quot;this is a message: number = &quot; &lt;&lt; 5 &lt;&lt; std::en...">sgtLogMessage(LogLevel::VERBOSE)</a> &lt;&lt; "this is a message: number = " &lt;&lt; 5 &lt;&lt; std::endl; Parameter is optional and defaults to LogLevel::NORMAL.  <a href="#gaa1f6de5cb0f7f907efd261195928b4d8">More...</a><br /></td></tr>
 <tr class="separator:gaa1f6de5cb0f7f907efd261195928b4d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2284d43f1289ee3e3e956806d0fa559d"><td class="memItemLeft" align="right" valign="top"><a id="ga2284d43f1289ee3e3e956806d0fa559d"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga2284d43f1289ee3e3e956806d0fa559d">sgtLogWarning</a>(...)&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_WARNING, __VA_ARGS__)</td></tr>
-<tr class="memdesc:ga2284d43f1289ee3e3e956806d0fa559d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a warning.E.g. <a class="el" href="group___logging_and_errors.html#ga2284d43f1289ee3e3e956806d0fa559d" title="Log a warning.E.g. sgtLogWarning(LogLevel::VERBOSE) &lt;&lt; &quot;this is a warning: number = &quot; &lt;&lt; 5 &lt;&lt; std::en...">sgtLogWarning(LogLevel::VERBOSE)</a> &lt;&lt; "this is a warning: number = " &lt;&lt; 5 &lt;&lt; std::endl; Parameter is optional and defaults to LogLevel::NORMAL. <br /></td></tr>
+<tr class="memitem:ga2284d43f1289ee3e3e956806d0fa559d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga2284d43f1289ee3e3e956806d0fa559d">sgtLogWarning</a>(...)&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_WARNING, __VA_ARGS__)</td></tr>
+<tr class="memdesc:ga2284d43f1289ee3e3e956806d0fa559d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a warning.E.g. <a class="el" href="group___logging_and_errors.html#ga2284d43f1289ee3e3e956806d0fa559d" title="Log a warning.E.g. sgtLogWarning(LogLevel::VERBOSE) &lt;&lt; &quot;this is a warning: number = &quot; &lt;&lt; 5 &lt;&lt; std::en...">sgtLogWarning(LogLevel::VERBOSE)</a> &lt;&lt; "this is a warning: number = " &lt;&lt; 5 &lt;&lt; std::endl; Parameter is optional and defaults to LogLevel::NORMAL.  <a href="#ga2284d43f1289ee3e3e956806d0fa559d">More...</a><br /></td></tr>
 <tr class="separator:ga2284d43f1289ee3e3e956806d0fa559d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3893d2917066af52470ff85305922b8e"><td class="memItemLeft" align="right" valign="top"><a id="ga3893d2917066af52470ff85305922b8e"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga3893d2917066af52470ff85305922b8e">sgtLogError</a>(...)&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_ERROR, __VA_ARGS__)</td></tr>
-<tr class="memdesc:ga3893d2917066af52470ff85305922b8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log an error.E.g. <a class="el" href="group___logging_and_errors.html#ga3893d2917066af52470ff85305922b8e" title="Log an error.E.g. sgtLogError(LogLevel::VERBOSE) &lt;&lt; &quot;this is an error: number = &quot; &lt;&lt; 5 &lt;&lt; std::endl; ...">sgtLogError(LogLevel::VERBOSE)</a> &lt;&lt; "this is an error: number = " &lt;&lt; 5 &lt;&lt; std::endl; Parameter is optional and defaults to LogLevel::NORMAL. <br /></td></tr>
+<tr class="memitem:ga3893d2917066af52470ff85305922b8e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga3893d2917066af52470ff85305922b8e">sgtLogError</a>(...)&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_ERROR, __VA_ARGS__)</td></tr>
+<tr class="memdesc:ga3893d2917066af52470ff85305922b8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log an error.E.g. <a class="el" href="group___logging_and_errors.html#ga3893d2917066af52470ff85305922b8e" title="Log an error.E.g. sgtLogError(LogLevel::VERBOSE) &lt;&lt; &quot;this is an error: number = &quot; &lt;&lt; 5 &lt;&lt; std::endl; ...">sgtLogError(LogLevel::VERBOSE)</a> &lt;&lt; "this is an error: number = " &lt;&lt; 5 &lt;&lt; std::endl; Parameter is optional and defaults to LogLevel::NORMAL.  <a href="#ga3893d2917066af52470ff85305922b8e">More...</a><br /></td></tr>
 <tr class="separator:ga3893d2917066af52470ff85305922b8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaebbce22c98d2493318e8e2b5887a7a4a"><td class="memItemLeft" align="right" valign="top"><a id="gaebbce22c98d2493318e8e2b5887a7a4a"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gaebbce22c98d2493318e8e2b5887a7a4a">sgtLogDebug</a>(...)&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_DEBUG, __VA_ARGS__)</td></tr>
-<tr class="memdesc:gaebbce22c98d2493318e8e2b5887a7a4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a debug message.E.g. <a class="el" href="group___logging_and_errors.html#gaebbce22c98d2493318e8e2b5887a7a4a" title="Log a debug message.E.g. sgtLogDebug(LogLevel::VERBOSE) &lt;&lt; &quot;this is a debug message: number = &quot; &lt;&lt; 5 ...">sgtLogDebug(LogLevel::VERBOSE)</a> &lt;&lt; "this is a debug message: number = " &lt;&lt; 5 &lt;&lt; std::endl; Parameter is optional and defaults to LogLevel::NORMAL. <br /></td></tr>
+<tr class="memitem:gaebbce22c98d2493318e8e2b5887a7a4a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gaebbce22c98d2493318e8e2b5887a7a4a">sgtLogDebug</a>(...)&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_DEBUG, __VA_ARGS__)</td></tr>
+<tr class="memdesc:gaebbce22c98d2493318e8e2b5887a7a4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a debug message.E.g. <a class="el" href="group___logging_and_errors.html#gaebbce22c98d2493318e8e2b5887a7a4a" title="Log a debug message.E.g. sgtLogDebug(LogLevel::VERBOSE) &lt;&lt; &quot;this is a debug message: number = &quot; &lt;&lt; 5 ...">sgtLogDebug(LogLevel::VERBOSE)</a> &lt;&lt; "this is a debug message: number = " &lt;&lt; 5 &lt;&lt; std::endl; Parameter is optional and defaults to LogLevel::NORMAL.  <a href="#gaebbce22c98d2493318e8e2b5887a7a4a">More...</a><br /></td></tr>
 <tr class="separator:gaebbce22c98d2493318e8e2b5887a7a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1d1f55df8197fce165e3cd58db3f27cc"><td class="memItemLeft" align="right" valign="top"><a id="ga1d1f55df8197fce165e3cd58db3f27cc"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga1d1f55df8197fce165e3cd58db3f27cc">sgtLogIndent</a>(...)&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_INDENT, __VA_ARGS__)</td></tr>
-<tr class="memdesc:ga1d1f55df8197fce165e3cd58db3f27cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indent the logs.Indent lasts until the end of the current scope. <br /></td></tr>
+<tr class="memitem:ga1d1f55df8197fce165e3cd58db3f27cc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga1d1f55df8197fce165e3cd58db3f27cc">sgtLogIndent</a>(...)&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_INDENT, __VA_ARGS__)</td></tr>
+<tr class="memdesc:ga1d1f55df8197fce165e3cd58db3f27cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indent the logs.Indent lasts until the end of the current scope.  <a href="#ga1d1f55df8197fce165e3cd58db3f27cc">More...</a><br /></td></tr>
 <tr class="separator:ga1d1f55df8197fce165e3cd58db3f27cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad56590ffec984b1df59c3d2f96ff5f2c"><td class="memItemLeft" align="right" valign="top"><a id="gad56590ffec984b1df59c3d2f96ff5f2c"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gad56590ffec984b1df59c3d2f96ff5f2c">sgtError</a>(msg)&#160;&#160;&#160;{std::ostringstream ss; ss &lt;&lt; &quot;SmartGridToolbox: &quot; &lt;&lt; __PRETTY_FUNCTION__ &lt;&lt; &quot;: &quot; &lt;&lt; msg; throw std::runtime_error(ss.str());}</td></tr>
-<tr class="memdesc:gad56590ffec984b1df59c3d2f96ff5f2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Report an error and throw an exception. <br /></td></tr>
+<tr class="memitem:gad56590ffec984b1df59c3d2f96ff5f2c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gad56590ffec984b1df59c3d2f96ff5f2c">sgtError</a>(msg)&#160;&#160;&#160;{std::ostringstream ss; ss &lt;&lt; &quot;SmartGridToolbox: &quot; &lt;&lt; __PRETTY_FUNCTION__ &lt;&lt; &quot;: &quot; &lt;&lt; msg; throw std::runtime_error(ss.str());}</td></tr>
+<tr class="memdesc:gad56590ffec984b1df59c3d2f96ff5f2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Report an error and throw an exception.  <a href="#gad56590ffec984b1df59c3d2f96ff5f2c">More...</a><br /></td></tr>
 <tr class="separator:gad56590ffec984b1df59c3d2f96ff5f2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:ga15fe38ceb2ccd81e932f662f2478b916"><td class="memItemLeft" align="right" valign="top"><a id="ga15fe38ceb2ccd81e932f662f2478b916"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">Sgt::LogLevel</a> { <b>NONE</b>, 
+<tr class="memitem:ga15fe38ceb2ccd81e932f662f2478b916"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">Sgt::LogLevel</a> { <b>NONE</b>, 
 <b>NORMAL</b>, 
 <b>VERBOSE</b>
  }</td></tr>
-<tr class="memdesc:ga15fe38ceb2ccd81e932f662f2478b916"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logging levels. <br /></td></tr>
+<tr class="memdesc:ga15fe38ceb2ccd81e932f662f2478b916"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logging levels.  <a href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">More...</a><br /></td></tr>
 <tr class="separator:ga15fe38ceb2ccd81e932f662f2478b916"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:gafd86bff8ffc62823b305838483b7a77d"><td class="memItemLeft" align="right" valign="top"><a id="gafd86bff8ffc62823b305838483b7a77d"></a>
-<a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gafd86bff8ffc62823b305838483b7a77d">Sgt::messageLogLevel</a> ()</td></tr>
-<tr class="memdesc:gafd86bff8ffc62823b305838483b7a77d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current message logging level. <br /></td></tr>
+<tr class="memitem:gafd86bff8ffc62823b305838483b7a77d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gafd86bff8ffc62823b305838483b7a77d">Sgt::messageLogLevel</a> ()</td></tr>
+<tr class="memdesc:gafd86bff8ffc62823b305838483b7a77d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current message logging level.  <a href="group___logging_and_errors.html#gafd86bff8ffc62823b305838483b7a77d">More...</a><br /></td></tr>
 <tr class="separator:gafd86bff8ffc62823b305838483b7a77d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga17581faf2394899167f22071638f2042"><td class="memItemLeft" align="right" valign="top"><a id="ga17581faf2394899167f22071638f2042"></a>
-<a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga17581faf2394899167f22071638f2042">Sgt::warningLogLevel</a> ()</td></tr>
-<tr class="memdesc:ga17581faf2394899167f22071638f2042"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current warning logging level. <br /></td></tr>
+<tr class="memitem:ga17581faf2394899167f22071638f2042"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga17581faf2394899167f22071638f2042">Sgt::warningLogLevel</a> ()</td></tr>
+<tr class="memdesc:ga17581faf2394899167f22071638f2042"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current warning logging level.  <a href="group___logging_and_errors.html#ga17581faf2394899167f22071638f2042">More...</a><br /></td></tr>
 <tr class="separator:ga17581faf2394899167f22071638f2042"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab82f84114b33f094ce5c75a18716bc5d"><td class="memItemLeft" align="right" valign="top"><a id="gab82f84114b33f094ce5c75a18716bc5d"></a>
-<a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gab82f84114b33f094ce5c75a18716bc5d">Sgt::errorLogLevel</a> ()</td></tr>
-<tr class="memdesc:gab82f84114b33f094ce5c75a18716bc5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current error logging level. <br /></td></tr>
+<tr class="memitem:gab82f84114b33f094ce5c75a18716bc5d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gab82f84114b33f094ce5c75a18716bc5d">Sgt::errorLogLevel</a> ()</td></tr>
+<tr class="memdesc:gab82f84114b33f094ce5c75a18716bc5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current error logging level.  <a href="group___logging_and_errors.html#gab82f84114b33f094ce5c75a18716bc5d">More...</a><br /></td></tr>
 <tr class="separator:gab82f84114b33f094ce5c75a18716bc5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga571562b5fa5ff4d80decb22f6be9ddd7"><td class="memItemLeft" align="right" valign="top"><a id="ga571562b5fa5ff4d80decb22f6be9ddd7"></a>
-<a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga571562b5fa5ff4d80decb22f6be9ddd7">Sgt::debugLogLevel</a> ()</td></tr>
-<tr class="memdesc:ga571562b5fa5ff4d80decb22f6be9ddd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current debug logging level. <br /></td></tr>
+<tr class="memitem:ga571562b5fa5ff4d80decb22f6be9ddd7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga571562b5fa5ff4d80decb22f6be9ddd7">Sgt::debugLogLevel</a> ()</td></tr>
+<tr class="memdesc:ga571562b5fa5ff4d80decb22f6be9ddd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current debug logging level.  <a href="group___logging_and_errors.html#ga571562b5fa5ff4d80decb22f6be9ddd7">More...</a><br /></td></tr>
 <tr class="separator:ga571562b5fa5ff4d80decb22f6be9ddd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga42f0e65f2ab6566477765caffa287083"><td class="memItemLeft" align="right" valign="top"><a id="ga42f0e65f2ab6566477765caffa287083"></a>
-std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga42f0e65f2ab6566477765caffa287083">Sgt::messageLogFilter</a> ()</td></tr>
-<tr class="memdesc:ga42f0e65f2ab6566477765caffa287083"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current message logging level. <br /></td></tr>
+<tr class="memitem:ga42f0e65f2ab6566477765caffa287083"><td class="memItemLeft" align="right" valign="top">std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga42f0e65f2ab6566477765caffa287083">Sgt::messageLogFilter</a> ()</td></tr>
+<tr class="memdesc:ga42f0e65f2ab6566477765caffa287083"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current message logging level.  <a href="group___logging_and_errors.html#ga42f0e65f2ab6566477765caffa287083">More...</a><br /></td></tr>
 <tr class="separator:ga42f0e65f2ab6566477765caffa287083"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab1f050b4089120985d959d4e69c1af19"><td class="memItemLeft" align="right" valign="top"><a id="gab1f050b4089120985d959d4e69c1af19"></a>
-std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gab1f050b4089120985d959d4e69c1af19">Sgt::warningLogFilter</a> ()</td></tr>
-<tr class="memdesc:gab1f050b4089120985d959d4e69c1af19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current warning logging level. <br /></td></tr>
+<tr class="memitem:gab1f050b4089120985d959d4e69c1af19"><td class="memItemLeft" align="right" valign="top">std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gab1f050b4089120985d959d4e69c1af19">Sgt::warningLogFilter</a> ()</td></tr>
+<tr class="memdesc:gab1f050b4089120985d959d4e69c1af19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current warning logging level.  <a href="group___logging_and_errors.html#gab1f050b4089120985d959d4e69c1af19">More...</a><br /></td></tr>
 <tr class="separator:gab1f050b4089120985d959d4e69c1af19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gacd14e5cbf34229271120a960eea46922"><td class="memItemLeft" align="right" valign="top"><a id="gacd14e5cbf34229271120a960eea46922"></a>
-std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gacd14e5cbf34229271120a960eea46922">Sgt::errorLogFilter</a> ()</td></tr>
-<tr class="memdesc:gacd14e5cbf34229271120a960eea46922"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current error logging level. <br /></td></tr>
+<tr class="memitem:gacd14e5cbf34229271120a960eea46922"><td class="memItemLeft" align="right" valign="top">std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#gacd14e5cbf34229271120a960eea46922">Sgt::errorLogFilter</a> ()</td></tr>
+<tr class="memdesc:gacd14e5cbf34229271120a960eea46922"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current error logging level.  <a href="group___logging_and_errors.html#gacd14e5cbf34229271120a960eea46922">More...</a><br /></td></tr>
 <tr class="separator:gacd14e5cbf34229271120a960eea46922"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9591040b430f7dac48e1c0639c2f9b8f"><td class="memItemLeft" align="right" valign="top"><a id="ga9591040b430f7dac48e1c0639c2f9b8f"></a>
-std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga9591040b430f7dac48e1c0639c2f9b8f">Sgt::debugLogFilter</a> ()</td></tr>
-<tr class="memdesc:ga9591040b430f7dac48e1c0639c2f9b8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current debug logging level. <br /></td></tr>
+<tr class="memitem:ga9591040b430f7dac48e1c0639c2f9b8f"><td class="memItemLeft" align="right" valign="top">std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___logging_and_errors.html#ga9591040b430f7dac48e1c0639c2f9b8f">Sgt::debugLogFilter</a> ()</td></tr>
+<tr class="memdesc:ga9591040b430f7dac48e1c0639c2f9b8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a reference to the current debug logging level.  <a href="group___logging_and_errors.html#ga9591040b430f7dac48e1c0639c2f9b8f">More...</a><br /></td></tr>
 <tr class="separator:ga9591040b430f7dac48e1c0639c2f9b8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<p>Logging and Errors. </p>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="gaa1f6de5cb0f7f907efd261195928b4d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa1f6de5cb0f7f907efd261195928b4d8">&#9670;&nbsp;</a></span>sgtLogMessage</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define sgtLogMessage</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em></td><td>)</td>
+          <td>&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_MESSAGE, __VA_ARGS__)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Log a message.E.g. <a class="el" href="group___logging_and_errors.html#gaa1f6de5cb0f7f907efd261195928b4d8" title="Log a message.E.g. sgtLogMessage(LogLevel::VERBOSE) &lt;&lt; &quot;this is a message: number = &quot; &lt;&lt; 5 &lt;&lt; std::en...">sgtLogMessage(LogLevel::VERBOSE)</a> &lt;&lt; "this is a message: number = " &lt;&lt; 5 &lt;&lt; std::endl; Parameter is optional and defaults to LogLevel::NORMAL. </p>
+
+</div>
+</div>
+<a id="ga2284d43f1289ee3e3e956806d0fa559d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2284d43f1289ee3e3e956806d0fa559d">&#9670;&nbsp;</a></span>sgtLogWarning</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define sgtLogWarning</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em></td><td>)</td>
+          <td>&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_WARNING, __VA_ARGS__)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Log a warning.E.g. <a class="el" href="group___logging_and_errors.html#ga2284d43f1289ee3e3e956806d0fa559d" title="Log a warning.E.g. sgtLogWarning(LogLevel::VERBOSE) &lt;&lt; &quot;this is a warning: number = &quot; &lt;&lt; 5 &lt;&lt; std::en...">sgtLogWarning(LogLevel::VERBOSE)</a> &lt;&lt; "this is a warning: number = " &lt;&lt; 5 &lt;&lt; std::endl; Parameter is optional and defaults to LogLevel::NORMAL. </p>
+
+</div>
+</div>
+<a id="ga3893d2917066af52470ff85305922b8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3893d2917066af52470ff85305922b8e">&#9670;&nbsp;</a></span>sgtLogError</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define sgtLogError</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em></td><td>)</td>
+          <td>&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_ERROR, __VA_ARGS__)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Log an error.E.g. <a class="el" href="group___logging_and_errors.html#ga3893d2917066af52470ff85305922b8e" title="Log an error.E.g. sgtLogError(LogLevel::VERBOSE) &lt;&lt; &quot;this is an error: number = &quot; &lt;&lt; 5 &lt;&lt; std::endl; ...">sgtLogError(LogLevel::VERBOSE)</a> &lt;&lt; "this is an error: number = " &lt;&lt; 5 &lt;&lt; std::endl; Parameter is optional and defaults to LogLevel::NORMAL. </p>
+
+</div>
+</div>
+<a id="gaebbce22c98d2493318e8e2b5887a7a4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaebbce22c98d2493318e8e2b5887a7a4a">&#9670;&nbsp;</a></span>sgtLogDebug</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define sgtLogDebug</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em></td><td>)</td>
+          <td>&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_DEBUG, __VA_ARGS__)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Log a debug message.E.g. <a class="el" href="group___logging_and_errors.html#gaebbce22c98d2493318e8e2b5887a7a4a" title="Log a debug message.E.g. sgtLogDebug(LogLevel::VERBOSE) &lt;&lt; &quot;this is a debug message: number = &quot; &lt;&lt; 5 ...">sgtLogDebug(LogLevel::VERBOSE)</a> &lt;&lt; "this is a debug message: number = " &lt;&lt; 5 &lt;&lt; std::endl; Parameter is optional and defaults to LogLevel::NORMAL. </p>
+
+</div>
+</div>
+<a id="ga1d1f55df8197fce165e3cd58db3f27cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga1d1f55df8197fce165e3cd58db3f27cc">&#9670;&nbsp;</a></span>sgtLogIndent</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define sgtLogIndent</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em></td><td>)</td>
+          <td>&#160;&#160;&#160;SGT_VA_SELECT(SGT_LOG_INDENT, __VA_ARGS__)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Indent the logs.Indent lasts until the end of the current scope. </p>
+
+</div>
+</div>
+<a id="gad56590ffec984b1df59c3d2f96ff5f2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gad56590ffec984b1df59c3d2f96ff5f2c">&#9670;&nbsp;</a></span>sgtError</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define sgtError</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">msg</td><td>)</td>
+          <td>&#160;&#160;&#160;{std::ostringstream ss; ss &lt;&lt; &quot;SmartGridToolbox: &quot; &lt;&lt; __PRETTY_FUNCTION__ &lt;&lt; &quot;: &quot; &lt;&lt; msg; throw std::runtime_error(ss.str());}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Report an error and throw an exception. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="ga15fe38ceb2ccd81e932f662f2478b916"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga15fe38ceb2ccd81e932f662f2478b916">&#9670;&nbsp;</a></span>LogLevel</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">Sgt::LogLevel</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Logging levels. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="gafd86bff8ffc62823b305838483b7a77d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafd86bff8ffc62823b305838483b7a77d">&#9670;&nbsp;</a></span>messageLogLevel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp; Sgt::messageLogLevel </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a reference to the current message logging level. </p>
+
+</div>
+</div>
+<a id="ga17581faf2394899167f22071638f2042"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga17581faf2394899167f22071638f2042">&#9670;&nbsp;</a></span>warningLogLevel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp; Sgt::warningLogLevel </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a reference to the current warning logging level. </p>
+
+</div>
+</div>
+<a id="gab82f84114b33f094ce5c75a18716bc5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab82f84114b33f094ce5c75a18716bc5d">&#9670;&nbsp;</a></span>errorLogLevel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp; Sgt::errorLogLevel </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a reference to the current error logging level. </p>
+
+</div>
+</div>
+<a id="ga571562b5fa5ff4d80decb22f6be9ddd7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga571562b5fa5ff4d80decb22f6be9ddd7">&#9670;&nbsp;</a></span>debugLogLevel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group___logging_and_errors.html#ga15fe38ceb2ccd81e932f662f2478b916">LogLevel</a> &amp; Sgt::debugLogLevel </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a reference to the current debug logging level. </p>
+
+</div>
+</div>
+<a id="ga42f0e65f2ab6566477765caffa287083"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga42f0e65f2ab6566477765caffa287083">&#9670;&nbsp;</a></span>messageLogFilter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string &amp; Sgt::messageLogFilter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a reference to the current message logging level. </p>
+
+</div>
+</div>
+<a id="gab1f050b4089120985d959d4e69c1af19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab1f050b4089120985d959d4e69c1af19">&#9670;&nbsp;</a></span>warningLogFilter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string &amp; Sgt::warningLogFilter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a reference to the current warning logging level. </p>
+
+</div>
+</div>
+<a id="gacd14e5cbf34229271120a960eea46922"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gacd14e5cbf34229271120a960eea46922">&#9670;&nbsp;</a></span>errorLogFilter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string &amp; Sgt::errorLogFilter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a reference to the current error logging level. </p>
+
+</div>
+</div>
+<a id="ga9591040b430f7dac48e1c0639c2f9b8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9591040b430f7dac48e1c0639c2f9b8f">&#9670;&nbsp;</a></span>debugLogFilter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string &amp; Sgt::debugLogFilter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a reference to the current debug logging level. </p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 17 2018 13:11:09 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri May 18 2018 10:39:34 for SmartGridToolbox by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.14
 </small></address>
