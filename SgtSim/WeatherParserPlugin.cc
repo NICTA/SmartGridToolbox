@@ -34,7 +34,7 @@ namespace Sgt
         }
         else
         {
-            weather->setDt(minutes(5.0));
+            weather->setDt(minutes(5));
         }
 
         const auto& temperatureNd = nd["temperature"];

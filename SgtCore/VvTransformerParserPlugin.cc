@@ -37,7 +37,8 @@ namespace Sgt
             const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
-        assertFieldPresent(nd, "nom_ratio");
+        assertFieldPresent(nd, "nom_ratio_w1");
+        assertFieldPresent(nd, "nom_ratio_w2");
         assertFieldPresent(nd, "leakage_impedance_w1");
         assertFieldPresent(nd, "leakage_impedance_w2");
         assertFieldPresent(nd, "phases_0");
