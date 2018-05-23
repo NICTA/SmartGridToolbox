@@ -5,7 +5,7 @@ cd third_party
 cd ..
 
 ./autogen.sh
-./configure CXX=$CXX --with-klu || exit $?
+./configure CXX=$CXX || exit $?
 make || exit $?
 cd tests
 make tests
