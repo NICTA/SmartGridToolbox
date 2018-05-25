@@ -16,7 +16,7 @@
     solver: nr # Newton-Raphson power flow solver.
 - matpower: # Load in a matpower file into sim_network (easy way to create network).
     sim_network_id: network
-    input_file: data/input_mod.m
+    input_file: input.m
     default_kV_base: 11
 - loop: # Like a for loop...
     loop_variable: [i, 0, <n_ld_buses>, 1] # loop i through the range [0, n_ld_buses - 1].
@@ -34,7 +34,7 @@
             id: load_<ld_buses(<i>)> # e.g. load_1
             sim_network_id: network
             bus_id: bus_<ld_buses(<i>)> # for bus_1
-            phases: [BAL] # Balanced (one phase) power flow.
+            phases: [BAL] # Balanced (single phase modelled)
             time_series_id: load_<ld_buses(<i>)>_series # e.g. load_1_series, see above
             dt: 00:10:00 # Signal that the zip updates its value every 10 minutes
             matrix_elements: [[0, 0]] # List of matrix elements, showing phasing of the load components.
