@@ -19,12 +19,12 @@
 #include <SgtCore/Parser.h>
 
 #include <SgtSim/Inverter.h>
-#include <SgtSim/SimGen.h>
+#include <SgtSim/SimNetwork.h>
 #include <SgtSim/SimParser.h>
 
 namespace Sgt
 {
-    class PvInverter : public SimpleInverterAbc, public SimGenAbc, public GenericGen
+    class PvInverter : public SimpleInverterAbc, public SimGen
     {
         public:
 
@@ -41,11 +41,11 @@ namespace Sgt
 
             /// @}
 
-            PvInverter(const std::string& id) :
+            PvInverter(const std::string& id, const ComponentPtr<Gen>& gen) :
                 Component(id),
-                GenericGen(id, Phase::BAL)
+                SimGen(gen)
             {
-                setPMin(0.0);
+                gen->setPMax(0.0);
             }
 
             /// @name ComponentInterface virtual overridden functions.
@@ -69,21 +69,6 @@ namespace Sgt
 
             /// @}
 
-            /// @name SimGenAbc virtual overridden functions.
-            /// @{
-            
-            virtual const GenAbc& gen() const override
-            {
-                return *this;
-            }
-
-            virtual GenAbc& gen() override
-            {
-                return *this;
-            }
-
-            /// @}
-            
             /// @name PvInverter specific functions.
             /// @{
             
@@ -95,17 +80,6 @@ namespace Sgt
             void setMaxSMag(double maxSMag)
             {
                 maxSMag_ = maxSMag;
-            }
-            
-            double maxQ() const
-            {
-                return QMax();
-            }
-
-            void setMaxQ(double maxQ)
-            {
-                setQMax(maxQ);
-                setQMin(-maxQ);
             }
             
             /// @}

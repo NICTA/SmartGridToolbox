@@ -16,12 +16,14 @@
 
 #include <SgtSim/Simulation.h>
 
+using namespace std;
+
 namespace Sgt
 {
     void PvInverter::PChanged()
     {
-        double PMax = availableP();
-        setPMax(PMax);
+        double PMax = requestedPDc();
+        gen()->setPMax(PMax);
     }
 
     void PvInverterParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
@@ -33,11 +35,16 @@ namespace Sgt
         string id = parser.expand<std::string>(nd["id"]);
         const std::string busId = parser.expand<std::string>(nd["bus_id"]);
 
-        auto inverter = sim.newSimComponent<PvInverter>(id);
+        const std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
+        auto simNetw = sim.simComponent<SimNetwork>(networkId);
+        auto gen = simNetw->network().addGen(std::make_shared<Gen>(id, Phase::BAL), busId);
+
+        auto inverter = sim.newSimComponent<PvInverter>(id, gen);
 
         if (nd["efficiency"])
         {
-            inverter->setEfficiency(parser.expand<double>(nd["efficiency"]));
+            inverter->setEfficiencyDcToAc(parser.expand<double>(nd["efficiency"]));
+            inverter->setEfficiencyAcToDc(parser.expand<double>(nd["efficiency"]));
         }
 
         if (nd["max_S_mag"])
@@ -47,12 +54,9 @@ namespace Sgt
         
         if (nd["max_Q"])
         {
-            inverter->setMaxQ(parser.expand<double>(nd["max_Q"]));
+            inverter->gen()->setQMax(parser.expand<double>(nd["max_Q"]));
         }
 
-        const std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
-        auto network = sim.simComponent<SimNetwork>(networkId);
-        network->network().addGen(shared<GenAbc>(inverter->gen()), busId);
-        link(inverter, *network);
+        simNetw->addSimGen(inverter);
     }
 }

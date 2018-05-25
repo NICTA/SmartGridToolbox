@@ -23,6 +23,11 @@
 
 namespace Sgt
 {
+    void PvDemoSolver::addPvInverter(const SimComponentPtr<PvInverter>& inv)
+    {
+        invs_.push_back(inv);
+    }
+
     std::unique_ptr<PowerModel> PvDemoSolver::makeModel()
     {
         auto powerMod = std::unique_ptr<PowerModel>(new PowerModel(ACRECT, ptNetw_.get(), ipopt));
@@ -71,28 +76,21 @@ namespace Sgt
             }
         }
             
-        for (auto bus : sgtNetw_->buses())
+        for (auto& inv : invs_)
         {
-            for (auto gen : bus->gens())
-            {
-                auto inverter = gen.as<PvInverter>();
-                if (inverter != nullptr)
-                {
-                    // Add an extra constraint for max apparent power.
-                    auto ptBus = ptNetw_->nodeID.at(bus->id());
-                    auto genId = inverter->id();
-                    auto ptGen = std::find_if(ptBus->_gen.begin(), ptBus->_gen.end(), 
-                            [genId](Gen* g){return g->_name == genId;});
-                    assert(ptGen != ptBus->_gen.end());
-                    Constraint c("PVD_SPECIAL_A");
-                    c += ((**ptGen).pg^2) + ((**ptGen).qg^2);
-                    double maxSMag = sgtNetw_->S2Pu(inverter->maxSMag());
-                    c <= pow(maxSMag, 2);
-                    mod->addConstraint(c);
-
-                    // *mod->_obj += (**ptGen).qg^2; // Only use Q if we have to.
-                }
-            }
+            auto bus = inv->gen()->bus();
+            // Add an extra constraint for max apparent power.
+            auto ptBus = ptNetw_->nodeID.at(bus->id());
+            auto genId = inv->id();
+            auto ptGen = std::find_if(ptBus->_gen.begin(), ptBus->_gen.end(), 
+                    [genId](::Gen* g){return g->_name == genId;});
+            assert(ptGen != ptBus->_gen.end());
+            Constraint c("PVD_SPECIAL_A");
+            c += ((**ptGen).pg^2) + ((**ptGen).qg^2);
+            double maxSMag = sgtNetw_->S2Pu(inv->maxSMag());
+            c <= pow(maxSMag, 2);
+            mod->addConstraint(c);
+            // *mod->_obj += (**ptGen).qg^2; // Only use Q if we have to.
         }
         return powerMod;
     }

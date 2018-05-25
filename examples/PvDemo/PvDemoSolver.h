@@ -15,6 +15,8 @@
 #ifndef PV_DEMO_SOLVER_DOT_H
 #define PV_DEMO_SOLVER_DOT_H
 
+#include "PvInverter.h"
+
 #include <SgtCore/PowerFlowPtSolver.h>
 
 #include <PowerTools++/var.h>
@@ -28,10 +30,16 @@ namespace Sgt
 
     class PvDemoSolver : public PowerFlowPtSolver
     {
+        public:
+
+        void addPvInverter(const SimComponentPtr<PvInverter>& inv);
+
         protected:
+
             virtual std::unique_ptr<PowerModel> makeModel() override;
             var<> V2SlackA_;
             var<> V2SlackB_;
+            std::list<SimComponentPtr<PvInverter>> invs_;
     };
 }
 

@@ -47,6 +47,23 @@ int main(int argc, const char ** argv)
     p.parse(configName, sim);
     SimNetwork& simNetwork = *sim.simComponent<SimNetwork>("network");
     Network& network = simNetwork.network();
+
+    std::list<SimComponentPtr<PvInverter>> invs;
+    for (const auto& simComp : sim.simComponents())
+    {
+        auto inv = simComp.as<PvInverter>();
+        if (inv != nullptr)
+        {
+            invs.push_back(inv);
+        }
+    }
+
+    auto solver = make_unique<PvDemoSolver>();
+    for (const auto& inv : invs) 
+    {
+        solver->addPvInverter(inv);
+    }
+
     network.setSolver(std::unique_ptr<Sgt::PowerFlowSolverInterface>(new PvDemoSolver));
     network.setUseFlatStart(true);
 
@@ -70,28 +87,29 @@ int main(int argc, const char ** argv)
         }
     }
 
-    std::vector<PvInverter*> invs;
-    std::vector<GenAbc*> otherGens;
-    for (auto gen : network.gens())
+    set<string> invIds;
+    for (const auto& inv : invs) invIds.insert(inv->gen()->id());
+    std::list<ComponentPtr<Sgt::Gen>> otherGens;
+    for (const auto& gen : network.gens())
     {
-        auto inv = gen.as<PvInverter>();
-        if (inv != nullptr)
-        {
-            if (!useQ)
-            {
-                inv->setMaxQ(0.0);
-            }
-            invs.push_back(inv);
-        }
-        else
+        if (invIds.find(gen->id()) == invIds.end())
         {
             otherGens.push_back(gen);
         }
     }
 
-    auto sumLoad = [&] () {Complex x = 0; for (auto bus : network.buses()) x += bus->SZip()(0); return x;};
-    auto sumGen = [&] () {Complex x = 0; for (auto gen : otherGens) x += gen->S()(0); return x;};
-    auto sumInv = [&] () {Complex x = 0; for (auto inv : invs) x += inv->gen().S()(0); return x;};
+    for (auto inv : invs)
+    {
+        if (!useQ)
+        {
+            inv->gen()->setQMax(0.0);
+        }
+        invs.push_back(inv);
+    }
+
+    auto sumLoad = [&] () {Sgt::Complex x = 0; for (auto bus : network.buses()) x += bus->SZip()(0, 0); return x;};
+    auto sumGen = [&] () {Sgt::Complex x = 0; for (auto gen : otherGens) x += gen->S()(0); return x;};
+    auto sumInv = [&] () {Sgt::Complex x = 0; for (auto inv : invs) x += inv->gen()->S()(0); return x;};
     auto minV = [&] () {
         double minV = 100;
         for (auto bus : network.buses())
@@ -119,11 +137,11 @@ int main(int argc, const char ** argv)
 
     auto print = [&] () {
         double h = dSeconds(sim.currentTime() - sim.startTime()) / 3600.0;
-        Complex SLoad = sumLoad();
-        Complex SNormalGen = sumGen();
-        Complex SInvGen = sumInv();
-        Complex VMin = minV();
-        Complex VMax = maxV();
+        Sgt::Complex SLoad = sumLoad();
+        Sgt::Complex SNormalGen = sumGen();
+        Sgt::Complex SInvGen = sumInv();
+        Sgt::Complex VMin = minV();
+        Sgt::Complex VMax = maxV();
         outFile << h << " " << SLoad << " " << SNormalGen << " " << SInvGen << " " 
             << VMin << " " << VMax << " " << std::endl;
     };
