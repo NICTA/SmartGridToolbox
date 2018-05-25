@@ -1,4 +1,4 @@
-third_party/* linguist-vendored
-experimental/SgtClient/components/* linguist-vendored
-docs/* linguist-documentation
+third_party/** linguist-vendored
+experimental/SgtClient/components/** linguist-vendored
+docs/** linguist-documentation
 *.m linguist-detectable=false
