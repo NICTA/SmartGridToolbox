@@ -29,8 +29,7 @@ namespace Sgt
     /// @brief An action that gets performed when an event is triggered.
     /// @ingroup ActionEvent
     ///
-    /// Actions are stored as a set in the event in question. Anyone may register an action. Deregistration is
-    /// not currently supported.
+    /// Actions are stored as a set in the event in question. Anyone may register an action.
     /// @ingroup Foundation
     class Action
     {
@@ -78,8 +77,7 @@ namespace Sgt
     /// @brief An event, when triggered, performs all of its registered actions.
     /// @ingroup ActionEvent
     ///
-    /// Actions are stored as a set in the event in question. Anyone may register an action. Deregistration is
-    /// not currently supported.
+    /// Actions are stored as a set in the event in question. Anyone may register an action.
     class Event
     {
         friend class Action;
