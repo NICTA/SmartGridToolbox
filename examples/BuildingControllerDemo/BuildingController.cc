@@ -87,7 +87,7 @@ namespace Sgt
         for (int i = 0; i < N; ++i)
         {
             Time ti = t + timeFromDSeconds((i + 0.5) * dtSecs); // Use midpoint of timestep for consts.
-            PUncontrolledLoad.push_back(-(solar_->PDc(ti) + real(loadSeries_->value(ti)[2])));
+            PUncontrolledLoad.push_back(-(solar_->requestedPDc(ti) + real(loadSeries_->value(ti)[2])));
                 // Change from inj. to draw.
             price.push_back(priceSeries_->value(ti));
             TExt.push_back(TExtSeries_->value(ti));
@@ -195,7 +195,7 @@ namespace Sgt
     void BuildingControllerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         string id = parser.expand<std::string>(nd["id"]);
-        Time dt = posix_time::minutes(5);
+        Time dt = minutes(5);
         auto contr = sim.newSimComponent<BuildingController>(id, dt);
         
         auto ndDt = nd["dt"];

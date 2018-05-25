@@ -19,7 +19,7 @@
 
 #include <SgtSim/Battery.h>
 #include <SgtSim/Heartbeat.h>
-#include <SgtSim/SimBus.h>
+#include <SgtSim/SimNetwork.h>
 #include <SgtSim/SimParser.h>
 #include <SgtSim/Simulation.h>
 #include <SgtSim/SolarPv.h>
@@ -32,85 +32,91 @@ namespace Sgt
 
     class BuildingController : public Heartbeat
     {
+        friend class BuildingControllerParserPlugin;
+
         public:
 
-            using LoadSeries = TimeSeries<Time, arma::Col<Complex>>; 
-            using PriceSeries = TimeSeries<Time, double>;
-            using TempSeries = TimeSeries<Time, double>;
+        using LoadSeries = TimeSeries<Time, arma::Col<Complex>>; 
+        using PriceSeries = TimeSeries<Time, double>;
+        using TempSeries = TimeSeries<Time, double>;
 
-            BuildingController(const std::string& id, const Time& dt);
+        BuildingController(const std::string& id, const Time& dt);
 
-            void setBatt(const SimComponentPtr<Battery>& batt);
-            
-            void setBuild(const SimComponentPtr<Building>& build);
-            
-            void setSolar(const SimComponentPtr<SolarPv>& solar);
+        void setBatt(const SimComponentPtr<Battery>& batt);
 
-            void setLoadSeries(const ConstTimeSeriesPtr<LoadSeries>& loadSeries)
-            {
-                loadSeries_ = loadSeries;
-            }
-            
-            void setPriceSeries(const ConstTimeSeriesPtr<PriceSeries>& priceSeries)
-            {
-                priceSeries_ = priceSeries;
-            }
-            
-            void setTExtSeries(const ConstTimeSeriesPtr<TempSeries>& TExtSeries)
-            {
-                TExtSeries_ = TExtSeries;
-            }
+        void setBuild(const SimComponentPtr<Building>& build);
 
-            void setFeedInTariff(double feedInTariff)
-            {
-                feedInTariff_ = feedInTariff;
-            }
-            
-            void setComfortFactor(double comfortFactor)
-            {
-                comfortFactor_ = comfortFactor;
-            }
-            
-            void setTSetp(double TSetp)
-            {
-                TSetp_ = TSetp;
-            }
-            
-            void setTMaxDev(double TMaxDev)
-            {
-                TMaxDev_ = TMaxDev;
-            }
+        void setSolar(const SimComponentPtr<SolarPv>& solar);
+
+        void setLoadSeries(const ConstTimeSeriesPtr<LoadSeries>& loadSeries)
+        {
+            loadSeries_ = loadSeries;
+        }
+
+        void setPriceSeries(const ConstTimeSeriesPtr<PriceSeries>& priceSeries)
+        {
+            priceSeries_ = priceSeries;
+        }
+
+        void setTExtSeries(const ConstTimeSeriesPtr<TempSeries>& TExtSeries)
+        {
+            TExtSeries_ = TExtSeries;
+        }
+
+        void setFeedInTariff(double feedInTariff)
+        {
+            feedInTariff_ = feedInTariff;
+        }
+
+        void setComfortFactor(double comfortFactor)
+        {
+            comfortFactor_ = comfortFactor;
+        }
+
+        void setTSetp(double TSetp)
+        {
+            TSetp_ = TSetp;
+        }
+
+        void setTMaxDev(double TMaxDev)
+        {
+            TMaxDev_ = TMaxDev;
+        }
 
         protected:
-            virtual void updateState(const Time& t) override;
+
+        virtual void updateState(const Time& t) override;
 
         private:
-            SimComponentPtr<Battery> batt_;
-            SimComponentPtr<Building> build_;
-            SimComponentPtr<SolarPv> solar_;
 
-            ConstTimeSeriesPtr<LoadSeries> loadSeries_;
-            ConstTimeSeriesPtr<PriceSeries> priceSeries_;
-            ConstTimeSeriesPtr<TempSeries> TExtSeries_;
+        SimComponentPtr<Battery> batt_;
+        SimComponentPtr<Building> build_;
+        SimComponentPtr<SolarPv> solar_;
 
-            double feedInTariff_; // Objective paid for power injected back into grid.
-            double comfortFactor_; // Objective per degree away from setpoint.
-            double TSetp_; // Temperature setpoint.
-            double TMaxDev_; // Max allowable deviation from setpoint before incurring cost.
+        ConstTimeSeriesPtr<LoadSeries> loadSeries_;
+        ConstTimeSeriesPtr<PriceSeries> priceSeries_;
+        ConstTimeSeriesPtr<TempSeries> TExtSeries_;
 
-            GRBEnv env_;
+        double feedInTariff_; // Objective paid for power injected back into grid.
+        double comfortFactor_; // Objective per degree away from setpoint.
+        double TSetp_; // Temperature setpoint.
+        double TMaxDev_; // Max allowable deviation from setpoint before incurring cost.
+
+        GRBEnv env_;
     };
 
     class BuildingControllerParserPlugin : public SimParserPlugin
     {
         public:
-            virtual const char* key() override
-            {
-                return "building_controller";
-            }
+
+        virtual const char* key() const override
+        {
+            return "building_controller";
+        }
 
         public:
-            virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
+
+        virtual void parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const override;
     };
 };
 

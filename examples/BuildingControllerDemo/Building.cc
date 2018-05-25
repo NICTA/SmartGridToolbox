@@ -25,7 +25,7 @@ namespace Sgt
 
     void Building::updateState(const Time& t)
     {
-        double dt = lastUpdated() == posix_time::neg_infin ? 0 : dSeconds(t - lastUpdated());
+        double dt = lastUpdated() == TimeSpecialValues::neg_infin ? 0 : dSeconds(t - lastUpdated());
 
         // Solve dT/dt = -(kb/Cb)(T - TExt) + copHeat PHeat/Cb - copCool PCool/Cb
         // => dT/dt = a T + b
@@ -43,6 +43,10 @@ namespace Sgt
         double dSv = d(dt);
         double cSv = c(lastUpdated(), t);
         Tb_ = dSv * Tb_ + (1.0 - dSv) * cSv;
+
+        zip()->setSConst({std::initializer_list<Complex>{Complex(1e-6 * (PHeat() + PCool()), 0.0)}});
+            // Need to convert from W to MW.
+
     }
 
     void Building::setWeather(const ConstSimComponentPtr<Weather>& weather)
@@ -66,7 +70,17 @@ namespace Sgt
 
         assertFieldPresent(nd, "id");
         std::string id = parser.expand<std::string>(nd["id"]);
-        auto build = sim.newSimComponent<Building>(id);
+
+        assertFieldPresent(nd, "sim_network_id");
+        std::string simNetworkId = parser.expand<std::string>(nd["sim_network_id"]);
+
+        assertFieldPresent(nd, "bus_id");
+        const std::string busId = parser.expand<std::string>(nd["bus_id"]);
+
+        auto simNetw = sim.simComponent<SimNetwork>(simNetworkId);
+        auto zip = simNetw->network().addZip(std::make_shared<Zip>(id, Phase::BAL), busId);
+
+        auto build = sim.newSimComponent<Building>(id, zip);
 
         subNd = nd["dt"];
         if (subNd) build->set_dt(parser.expand<Time>(subNd));
@@ -106,16 +120,6 @@ namespace Sgt
             sgtAssert(series != nullptr, "Parsing building: couldn't find time series " << id << ".");
             build->setPThIntSeries(series);
         }
-
-        assertFieldPresent(nd, "sim_network_id");
-        std::string networkId = parser.expand<std::string>(nd["sim_network_id"]);
-
-        assertFieldPresent(nd, "bus_id");
-        const std::string busId = parser.expand<std::string>(nd["bus_id"]);
-
-        auto netw = sim.simComponent<SimNetwork>(networkId);
-        netw->network().addZip(shared<ZipAbc>(build->zip()), busId);
-        link(build, *netw);
 
         const auto& weatherNd = nd["weather"];
         if (weatherNd)
