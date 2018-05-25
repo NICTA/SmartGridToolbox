@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <SgtCore.h>
+#include <SgtCore.h> // Include SgtCore headers.
 
-// The following tutorial sets up a network by parsing in a YAML file, and
-// solves it using the Newton Raphson solver. Compare to solve_network.cc.
+// The following tutorial sets up a network by parsing in a YAML file, and solves it using the Newton Raphson solver.
 int main(int argc, char** argv)
 {
     using namespace Sgt;
     
-    Network nw; // Create a network named "network".
+    Network nw;
+        // Create a network named "network".
     Parser<Network> p; 
         // Make a network parser to parse information into the network.
     p.parse("network.yaml", nw);
@@ -29,11 +29,11 @@ int main(int argc, char** argv)
     nw.solvePowerFlow();
         // Solve the power flow problem, using default Newton-Raphson solver.
     
-    // Below, we show how to retrieve some information:
+    // We show below how to retrieve some information:
     auto bus = nw.buses()["bus_2"];
-    Log().message() << "Bus " << bus->id() << ": " << " voltage is "
-                    << bus->V() << std::endl;
-    
-    // Print the network:
+    Log().message() << "Bus " << bus->id() << ": " << " voltage is " << bus->V() << std::endl;
+        // Note logging...
+
     Log().message() << "Network: " << nw << std::endl;
+        // Print the network.
 }
