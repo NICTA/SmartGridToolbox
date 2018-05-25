@@ -1,3 +1,5 @@
+[//]: # (Render using the grip python package: grip --export compiling_and_linking.md)
+
 ### To Compile and Link your Executable
 SmartGridToolbox is bundled as two libraries: `SgtCore`, and `SgtSim`. To use SmartGridToolbox, your program should include the headers from these libraries. Most headers can be included with the two following `#include` statements:
 ```

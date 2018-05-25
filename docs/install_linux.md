@@ -1,5 +1,7 @@
+[//]: # (Render using the grip python package: grip --export install_linux.md)
+
 # Installing SmartGridToolbox on Linux
-These instructions require a reasonably up to date version of Linux - for example, Ubuntu 17 (Artful Aardvark) or greater, or Debian 9 (Stretch) or greater. Working with older versions is possible, but will require special measures to use more up to date version of g++, which can create complications.
+These instructions require a reasonably up to date version of Linux - for example, Ubuntu 17 (Artful Aardvark) or greater, or Debian 9 (Stretch) or greater. If you would like to install using a slightly older version of Linux, for example, Ubuntu 14 (Trusty Tahr), you will need to make special provisions to compile using a more up to date version of g++ than the default. g++-7 has been tested, and works. While we don't make any guarantees, you may be able to get an idea of how this can be done by looking at SmartGridToolbox's [`.travis.yml`](https://github.com/NICTA/SmartGridToolbox/blob/master/.travis.yml) file.
 
 The instructions will get you started with a basic installation of SmartGridToolbox, without extras or extensions.
 
@@ -43,3 +45,6 @@ cd ..
 make -j4
 make install
 ```
+
+## Compiling and linking your executable
+Please see [here](http://nicta.github.io/SmartGridToolbox/compiling_and_linking.html) for instructions about how to compile and link your executable with SmartGridToolbox.

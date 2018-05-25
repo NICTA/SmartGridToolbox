@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>install_macos.md - Grip</title>
+  <title>compiling_and_linking.md - Grip</title>
   <link rel="icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEACABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAKCgr/FRUX/xYWGP8YGBr/GRkb/xsbHP8dHR7/Hh4f/x4eIP8fHyD/ICAh/yMjJP8kJCX/JiYo/ygoKv8pKSr/LCwu/y0tLv80NDT/QUFC/0ZGR/9MTE7/UFBR/1JSUv9bW1v/XFxc/2BgYP9hYWP/aGhp/2xsbP9ycnL/d3d3/3l5e/98fHz/f3+A/2dn/P9z3a//cNX8/4CAgP+Xl5f/nZ2e/56en/+fn5//n5+h/6amp/+rq6v/rKys/7CvsP+zs7T/uLi5/7u7u/+8vLz/wMDA/8fHx//Kysr/zc3N/9HR0f/d3d3/3t7e/+Xl5f/q6ur/6+vr/+3t7f/z8/P/9fX1//b29v/39/f/+Pj4//n5+f/6+vr/+/v7//z8/P/9/f3//v7+//////8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/NCYmJiYmJiYmJiYmJiYmNCZKSkpKSkpKSkpKSkpKSiYmSkpKRisdRkMbMklKSkomJkpKSSEiNUhEEQwpSUpKJiZKSi8LHhhAPAwBDDZKSiYmSkoWACA7SEc6HAEaSkomJkpKBxI/SkpKSj4ICkpKJiZKSgUTR0pKSkpGDwZKSiYmSkoTED1KSkpKOQQVSkomJkpKKgowMy4sNycIMUpKJiZKSkEZDgkDAgsNH0VKSiYmSkpKQigUBgkXLUhKSkomJkpKSkpKSkpKSkpKSkpKJiYmJiYmJiYmJiYmJiYmJiYmIyUkNDQ0NDQ0NDQ0NDQmOCYmJiYmJiYmJiYmJiYmOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" />
   <link rel="stylesheet" href="/__/grip/static/octicons/octicons.css" />
   <style>
@@ -68,46 +68,24 @@
               
                 <h3>
                   <span class="octicon octicon-book"></span>
-                  install_macos.md
+                  compiling_and_linking.md
                 </h3>
               
               <article class="markdown-body entry-content" itemprop="text" id="grip-content">
-                <h1>
-<a id="user-content-installing-smartgridtoolbox-on-macos" class="anchor" href="#installing-smartgridtoolbox-on-macos" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installing SmartGridToolbox on MacOS</h1>
-<p>These instructions require a reasonably up to date version of MacOS - we have tested the current version on High Sierra. You will also need to have installed an up to date version of Xcode, as well as <a href="https://brew.sh" rel="nofollow">Homebrew</a>.</p>
-<p>The instructions will get you started with a basic installation of SmartGridToolbox, without extras or extensions.</p>
-<h2>
-<a id="user-content-third-party-packages" class="anchor" href="#third-party-packages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Third Party Packages</h2>
-<pre><code>brew update
-brew upgrade
-brew install cmake
-brew install autoconf  
-brew install automake
-brew install libtool
-brew install boost  
+                <h3>
+<a id="user-content-to-compile-and-link-your-executable" class="anchor" href="#to-compile-and-link-your-executable" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>To Compile and Link your Executable</h3>
+<p>SmartGridToolbox is bundled as two libraries: <code>SgtCore</code>, and <code>SgtSim</code>. To use SmartGridToolbox, your program should include the headers from these libraries. Most headers can be included with the two following <code>#include</code> statements:</p>
+<pre><code>#include &lt;SgtCore.h&gt;
+#include &lt;SgtSim.h&gt;
 </code></pre>
-<h2>
-<a id="user-content-smartgridtoolbox" class="anchor" href="#smartgridtoolbox" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SmartGridToolbox</h2>
-<h3>
-<a id="user-content-obtain-the-smartgridtoolbox-source" class="anchor" href="#obtain-the-smartgridtoolbox-source" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Obtain the SmartGridToolbox source</h3>
-<pre><code>git clone -b dev https://github.com/NICTA/SmartGridToolbox.git
+<p>If you wish to include individual headers, you can do the following, e.g.:</p>
+<pre><code>#include &lt;SgtCore/Common.h&gt;
+#include &lt;SgtSim/Simulation.h&gt;
 </code></pre>
-<h3>
-<a id="user-content-build-and-install-third-party-dependencies" class="anchor" href="#build-and-install-third-party-dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Build and install third party dependencies</h3>
-<pre><code>cd SmartGridToolbox
-git submodule init
-git pull
-git submodule update
-cd third_party
-./install_third_party.sh clang++ /usr/local
-</code></pre>
-<h3>
-<a id="user-content-build-and-install-smartgridtoolbox" class="anchor" href="#build-and-install-smartgridtoolbox" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Build and install SmartGridToolbox</h3>
-<pre><code>cd ..
-./autogen.sh
-./configure
-make -j4
-sudo make install
+<p>Most SmartGridToolbox objects are in the <code>Sgt</code> namespace.</p>
+<p>You will also need to set link to the correct libraries. If you wish to build using GNU autotools, have a look at <code>examples/PvDemo/Makefile.am</code>. You could copy <code>examples/PvDemo</code> to use as a template for your project.</p>
+<p>Otherwise, the following compile/link command would apply, if using clang++, for example:</p>
+<pre><code>clang++ {options} -o myprogram myprogram.cc -lSgtSim -lSgtCore -larmadillo -lboost_date_time -lyaml-cpp -lklu -lamd -lcolamd -lbtf
 </code></pre>
 
               </article>

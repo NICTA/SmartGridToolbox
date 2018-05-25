@@ -1,3 +1,5 @@
+[//]: # (Render using the grip python package: grip --export install_macos.md)
+
 # Installing SmartGridToolbox on MacOS
 These instructions require a reasonably up to date version of MacOS - we have tested the current version on High Sierra. You will also need to have installed an up to date version of Xcode, as well as [Homebrew](https://brew.sh).
 
@@ -39,3 +41,6 @@ cd ..
 make -j4
 sudo make install
 ```
+
+## Compiling and linking your executable
+Please see [here](http://nicta.github.io/SmartGridToolbox/compiling_and_linking.html) for instructions about how to compile and link your executable with SmartGridToolbox.
