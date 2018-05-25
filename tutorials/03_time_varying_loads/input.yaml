@@ -1,11 +1,15 @@
+# Each of these parameters may be later referred to using angle brackets, e.g. <start_time> is substituted with
+# 2013-01-02 00:00:00. Arrays may be accessed like, e.g., <ld_buses(3)>. Constructs such as
+# load_<ld_buses(3)>_series may be created. 
 - parameters:
     start_time: 2013-01-02 00:00:00
     end_time: 2013-01-05 00:00:00
     loads_start_time: 2013-01-02 00:00:00
     n_ld_buses: 42
+    # Note array definition, below:
     ld_buses: [01, 02, 03, 05, 06, 08, 09, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 25, 27, 28, 29, 30, 31, 32, 33, 35, 38, 41, 42, 43, 44, 47, 49, 50, 51, 52, 53, 54, 55, 56, 57]
 - simulation: 
-    start_time: <start_time>
+    start_time: <start_time> # Note parameter substitution.
     end_time: <end_time>
     lat_long: [-35.3075, 149.1244]                                                 
     timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03 # Timezone info for Canberra.
@@ -18,9 +22,12 @@
     sim_network_id: network
     input_file: input.m
     default_kV_base: 11
-- loop: # Like a for loop...
+# Below, we see the loop construct used by SmartGridToolbox. The YAML material within the loop is repeated, just like
+# a for loop. At each repetition of the loop, the variable <i> is updated.
+- loop:
     loop_variable: [i, 0, <n_ld_buses>, 1] # loop i through the range [0, n_ld_buses - 1].
     loop_body: 
+        # Create the ith time series.
         - time_series: # Specify some time series data...
             id: load_<ld_buses(<i>)>_series # e.g. for i = 0 we have load_1_series
             value_type: complex_vector
@@ -30,6 +37,7 @@
             relative_to_time: <loads_start_time>
             time_unit: m
             interp_type: lerp
+        # Create the ith time varying load.
         - time_series_zip: # The load itself
             id: load_<ld_buses(<i>)> # e.g. load_1
             sim_network_id: network
