@@ -51,8 +51,8 @@ namespace Sgt
         
         if (ndNetwork)
         {
-            NetworkParserPlugin netwParser;
-            netwParser.parse(ndNetwork, *nw, parser);
+            NetworkParser netwParser;
+            netwParser.parse(ndNetwork, *nw);
         }
 
         sim.newSimComponent<SimNetwork>(id, std::move(nw));
