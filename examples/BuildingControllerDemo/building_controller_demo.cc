@@ -44,9 +44,11 @@ int main(int argc, const char ** argv)
     p.parse(configName, sim);
 
     sim.initialize();
+    
+    auto simNetw = sim.simComponent<SimNetwork>("network");
 
     auto price = sim.timeSeries()["price"].as<BuildingController::PriceSeries>();
-    auto genTrans = sim.simComponent<SimGen>("gen_trans");
+    auto genTrans = simNetw->network().gens()["gen_trans"];
     auto buildingLoad = sim.simComponent<TimeSeriesZip>("load_build");
     auto building = sim.simComponent<Building>("build");
     auto pvInverter = sim.simComponent<Inverter>("pv_inverter");
@@ -58,13 +60,13 @@ int main(int argc, const char ** argv)
         datFile 
             << (dSeconds(sim.currentTime() - sim.startTime()) / 3600.0) << " "  // 1: Time
             << price->value(sim.currentTime()) << " "                           // 2: Price
-            << -real(buildingLoad->zip()->SConst()(0)) << " "                    // 3: Load uncontrolled inj
-            << -real(pvInverter->zip()->SConst()(0)) << " "                      // 4: Pv uncontrolled inj
-            << real(genTrans->gen()->S()(0)) << " "                              // 5: Grid inj
+            << -real(buildingLoad->zip()->SConst()(0, 0)) << " "                // 3: Load uncontrolled inj
+            << -real(pvInverter->zip()->SConst()(0, 0)) << " "                  // 4: Pv uncontrolled inj
+            << real(genTrans->S()(0)) << " "                                    // 5: Grid inj
             << building->Te() << " "                                            // 6: Extern temp 
-            << -real(building->zip()->SConst()(0)) << " "                        // 7: Building HVAC inj
+            << -real(building->zip()->SConst()(0, 0)) << " "                    // 7: Building HVAC inj
             << building->Tb() << " "                                            // 8: Building temp 
-            << -real(battInv->zip()->SConst()(0)) << " "                         // 9: Battery inj 
+            << -real(battInv->zip()->SConst()(0, 0)) << " "                     // 9: Battery inj 
             << batt->soc() << std::endl;                                        // 10: Battery SOC
         sim.doTimestep();
     }
