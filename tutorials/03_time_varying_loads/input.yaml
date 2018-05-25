@@ -37,4 +37,6 @@
             phases: [BAL] # Balanced (one phase) power flow.
             time_series_id: load_<ld_buses(<i>)>_series # e.g. load_1_series, see above
             dt: 00:10:00 # Signal that the zip updates its value every 10 minutes
-            scale_factor_S: 1.2
+            matrix_elements: [[0, 0]] # List of matrix elements, showing phasing of the load components.
+            data_indices_S: [0] # Which columns in the data file are used by the constant-S component of the load?
+            scale_factor_S: 1.2 # The data for constant-S component gets scaled by this number.

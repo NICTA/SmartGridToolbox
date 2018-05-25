@@ -21,17 +21,8 @@ int main(int argc, const char ** argv)
 {
     using namespace Sgt;
 
-    // messageLogLevel() = LogLevel::VERBOSE;
-    // warningLogLevel() = LogLevel::VERBOSE;
-    // debugLogLevel() = LogLevel::VERBOSE;
-
-    // const char * configName = argv[1];
     std::string configName = "input.yaml";
-    // const char * outputName = argv[2];
     std::string outputName = "out.txt";
-
-    std::cout << "Configuration filename = " << configName << std::endl;
-    std::cout << "Output filename        = " << outputName << std::endl;
 
     std::ofstream outFile(outputName);
 
@@ -72,7 +63,7 @@ int main(int argc, const char ** argv)
 
     auto print = [&] () {
         double h = dSeconds(sim.currentTime() - sim.startTime()) / 3600.0;
-        outFile << h << " " << sumLoad() << " " << sumGen() << " " << minV() << " " << maxV() << " " << std::endl;
+        outFile << h << "\t" << sumLoad() << "\t" << sumGen() << "\t" << minV() << "\t" << maxV() << "\t" << std::endl;
     };
 
     sim.initialize();
