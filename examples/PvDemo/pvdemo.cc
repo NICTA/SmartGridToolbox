@@ -141,8 +141,8 @@ int main(int argc, const char ** argv)
         Sgt::Complex SInvGen = sumInv();
         Sgt::Complex VMin = minV();
         Sgt::Complex VMax = maxV();
-        outFile << h << " " << SLoad << " " << SNormalGen << " " << SInvGen << " " 
-            << VMin << " " << VMax << " " << std::endl;
+        outFile << h << "\t" << SLoad << "\t" << SNormalGen << "\t" << SInvGen << "\t" 
+            << VMin << "\t" << VMax << "\t" << std::endl;
     };
 
     sim.initialize();
