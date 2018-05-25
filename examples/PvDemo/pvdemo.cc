@@ -104,7 +104,6 @@ int main(int argc, const char ** argv)
         {
             inv->gen()->setQMax(0.0);
         }
-        invs.push_back(inv);
     }
 
     auto sumLoad = [&] () {Sgt::Complex x = 0; for (auto bus : network.buses()) x += bus->SZip()(0, 0); return x;};
