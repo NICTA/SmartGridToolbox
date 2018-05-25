@@ -1,0 +1,3 @@
+third_party/* linguist-vendored
+docs/* linguist-documentation
+*.m linguist-detectable=false
