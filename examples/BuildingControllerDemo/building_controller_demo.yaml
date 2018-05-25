@@ -1,18 +1,11 @@
-- sgt_gui:
-    bar_power_scaling: 0.01
-    V_mag_min: 0.92
-    V_mag_max: 1.0
-
 - parameters:
     start_time: 2013-06-10 00:00:00
     end_time: 2013-06-15 00:00:00
-
 - simulation: 
     start_time: <start_time>
     end_time: <end_time>
     lat_long: [-35.3075, 149.1244]
     timezone: AEST10AEDT,M10.5.0/02,M3.5.0/03
-
 - time_series:
     id: load_build
     value_type: complex_vector
@@ -22,7 +15,6 @@
     relative_to_time: <start_time>
     time_unit: m
     interp_type: lerp
-
 - time_series:
     id: price
     value_type: real_scalar
@@ -31,7 +23,6 @@
     relative_to_time: <start_time>
     time_unit: m
     interp_type: lerp
-
 - time_series:
     id: temperature
     value_type: real_scalar
@@ -40,7 +31,6 @@
     relative_to_time: 2013-01-01 00:00:00
     time_unit: h
     interp_type: lerp
- 
 - time_series:
     id: cloud
     value_type: real_vector
@@ -50,7 +40,6 @@
     relative_to_time: <start_time>
     time_unit: m
     interp_type: lerp
- 
 - time_series:
     id: internal_thermal_power
     value_type: real_scalar
@@ -59,7 +48,6 @@
     relative_to_time: <start_time>
     time_unit: m
     interp_type: lerp
-      
 - weather:
     id: weather
     dt: 00:05:00
@@ -71,96 +59,43 @@
         series: cloud
     wind:
         constant: 0
-
 - sim_network:
     id: network
     P_base: 1
     freq_Hz: 60
     solver: nr_rect
-
-- sim_bus:
-    id: bus_trans
-    sim_network_id: network
-    bus:
-        bus:
+    network:
+        - bus:
             id: bus_trans
+            network_id: network
             phases: [BAL]
             V_base: 415
             V_nom: [415]
             type: SL
-
-- sim_gen:
-    id: gen_trans
-    sim_network_id: network
-    bus_id: bus_trans
-    gen:
-        gen:
+        - gen:
             id: gen_trans
             bus_id: bus_trans
+            network_id: network
             phases: [BAL]
-
-- sim_bus:
-    id: bus_build
-    sim_network_id: network
-    bus:
-        bus:
+        - bus:
             id: bus_build
+            network_id: network
             phases: [BAL]
             V_base: 415
             V_nom: [415]
             type: PQ
-
-- time_series_zip:
-    id: load_build
-    sim_network_id: network
-    bus_id: bus_build
-    phases: [BAL]
-    time_series_id: load_build
-    dt: 00:05:00
-    scale_factor_S: 1
-
-- inverter:
-    id: battery_inverter
-    phases: [BAL]
-    sim_network_id: network
-    bus_id: bus_build
-    efficiency_dc_to_ac: 0.95
-    efficiency_ac_to_dc: 0.95
-
-- battery:
-    id: battery
-    dt: 00:05:00
-    inverter_id: battery_inverter
-    init_soc: 0
-    max_soc: 0.1 # 100 kWh, ~ 10 large sized Tesla Powerwalls
-    max_charge_power: 0.02 # 20 kW, assume similar to discharge rate.
-    max_discharge_power: 0.02 # 20 kW, ~ 10 large sized Tesla Powerwalls
-    charge_efficiency: 0.96 # Something like Tesla Powerwall.
-    discharge_efficiency: 0.96 # Something like Tesla Powerwall.
-    requested_power: 0.0
-        
-- inverter:
-    id: pv_inverter
-    phases: [BAL]
-    sim_network_id: network
-    bus_id: bus_build
-    efficiency_dc_to_ac: 0.95
-    efficiency_ac_to_dc: 0.95
-
-- solar_pv:
-    id: solar_pv
-    weather: weather
-    inverter_id: pv_inverter
-    zenith_degrees: 45 
-    azimuth_degrees: 35
-    n_panels: 120 
-    panel_area_m2: 1.64 
-    irradiance_ref_W_per_m2: 1000 
-    T_cell_ref_C: 25 
-    P_max_ref_W: 265
-    temp_coeff_P_max_per_C: -0.004
-    NOCT_C: 44
-
+        - overhead_line:
+            id: branch_trans_build
+            bus_0_id: bus_trans
+            bus_1_id: bus_build
+            phases_0: [BAL]
+            phases_1: [BAL]
+            length: 100
+            subcond_R_per_L: [1.9014e-04]
+            earth_resist: 100
+            cond_dist: [[0]]
+            subcond_gmr: [0.007]
+            freq: 50
 - building:
     id: build
     sim_network_id: network
@@ -178,24 +113,54 @@
     Ts: 20
     internal_heat_power: internal_thermal_power
     weather: weather
-    
-- sim_branch:
-    id: branch_trans_build
+- time_series_zip:
+    id: load_build
     sim_network_id: network
-    branch:
-        overhead_line:
-            id: branch_trans_build
-            bus_0_id: bus_trans
-            bus_1_id: bus_build
-            phases_0: [BAL]
-            phases_1: [BAL]
-            length: 100
-            subcond_R_per_L: [1.9014e-04]
-            earth_resist: 100
-            cond_dist: [[0]]
-            subcond_gmr: [0.007]
-            freq: 50
-
+    bus_id: bus_build
+    zip_id: build
+    time_series_id: load_build
+    matrix_elements: [[0, 0]]
+    data_idxs_S: [0]
+    dt: 00:05:00
+    scale_factor_S: 1
+- inverter:
+    id: battery_inverter
+    phases: [BAL]
+    sim_network_id: network
+    bus_id: bus_build
+    efficiency_dc_to_ac: 0.95
+    efficiency_ac_to_dc: 0.95
+- battery:
+    id: battery
+    dt: 00:05:00
+    inverter_id: battery_inverter
+    init_soc: 0
+    max_soc: 0.1 # 100 kWh, ~ 10 large sized Tesla Powerwalls
+    max_charge_power: 0.02 # 20 kW, assume similar to discharge rate.
+    max_discharge_power: 0.02 # 20 kW, ~ 10 large sized Tesla Powerwalls
+    charge_efficiency: 0.96 # Something like Tesla Powerwall.
+    discharge_efficiency: 0.96 # Something like Tesla Powerwall.
+    requested_power: 0.0
+- inverter:
+    id: pv_inverter
+    phases: [BAL]
+    sim_network_id: network
+    bus_id: bus_build
+    efficiency_dc_to_ac: 0.95
+    efficiency_ac_to_dc: 0.95
+- solar_pv:
+    id: solar_pv
+    weather: weather
+    inverter_id: pv_inverter
+    zenith_degrees: 45 
+    azimuth_degrees: 35
+    n_panels: 120 
+    panel_area_m2: 1.64 
+    irradiance_ref_W_per_m2: 1000 
+    T_cell_ref_C: 25 
+    P_max_ref_W: 265
+    temp_coeff_P_max_per_C: -0.004
+    NOCT_C: 44
 - building_controller:
     id: controller
     dt: 00:10:00
