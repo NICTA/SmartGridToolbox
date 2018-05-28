@@ -1,4 +1,4 @@
-AC_INIT([SmartGridToolbox], [v6.0.2], [dan.gordon@anu.edu.au], [SmartGridToolbox])
+AC_INIT([SmartGridToolbox], [v6.0.3], [dan.gordon@anu.edu.au], [SmartGridToolbox])
 AC_CONFIG_SRCDIR([src/run_config.cc])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
