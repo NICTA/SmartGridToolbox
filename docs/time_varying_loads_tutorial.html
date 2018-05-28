@@ -19,10 +19,10 @@
 					In this tutorial, we will see how time series load data can be incorporated into a simulation.
 				</p>
 				<p>
-					The tutorial can be found in the <code>tutorials/03_time_varying_loads</code> subdirectory of the SmartGridToolbox directory. Copy this directory into a convenient work directory. <code>cd</code> into the directory, run <code>./autogen.sh</code> (if needed) and <code>./configure</code>. Now <code>make</code> to build the executable, <code>simulation</code>.
+					The tutorial can be found in the <code>tutorials/time_varying_loads</code> subdirectory of the SmartGridToolbox directory. Copy this directory into a convenient work directory. <code>cd</code> into the directory, run <code>./autogen.sh</code> (if needed) and <code>./configure</code>. Now <code>make</code> to build the executable, <code>simulation</code>.
 				</p>
 				<p>
-					Briefly, <code>tvloads.cc</code> parses the file <a href="https://github.com/NICTA/SmartGridToolbox/blob/master/tutorials/03_time_varying_loads/input.yaml"><code>input.yaml</code></a> into a <code>Simulation</code> object, and then runs the simulation. All of the interesting detail is in the <a href="https://github.com/NICTA/SmartGridToolbox/blob/master/tutorials/03_time_varying_loads/input.yaml">YAML input file</a>. This file is self documenting; please take a look at it. Briefly, a loop is set up to create a set of 57 time series objects, which are then used as inputs to a set of 57 <code>TimeSeriesZip</code> simulation objects.
+					Briefly, <code>tvloads.cc</code> parses the file <a href="https://github.com/NICTA/SmartGridToolbox/blob/master/tutorials/time_varying_loads/input.yaml"><code>input.yaml</code></a> into a <code>Simulation</code> object, and then runs the simulation. All of the interesting detail is in the <a href="https://github.com/NICTA/SmartGridToolbox/blob/master/tutorials/time_varying_loads/input.yaml">YAML input file</a>. This file is self documenting; please take a look at it. Briefly, a loop is set up to create a set of 57 time series objects, which are then used as inputs to a set of 57 <code>TimeSeriesZip</code> simulation objects.
 										
 					Run the simulation by typing <code>tvloads</code>. The output of the program is stored in the file <code>output.txt</code>. A python script, <code>plot_results.py</code>, is included to plot the contents of this file. To make the plotting script work, you may need to install the python packages numpy and matplotlib, using, e.g. <code>pip3 install numpy; pip3 install matplotlib</code>.
 				</p>

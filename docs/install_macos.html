@@ -90,24 +90,23 @@ brew install boost
 <a id="user-content-smartgridtoolbox" class="anchor" href="#smartgridtoolbox" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SmartGridToolbox</h2>
 <h3>
 <a id="user-content-obtain-the-smartgridtoolbox-source" class="anchor" href="#obtain-the-smartgridtoolbox-source" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Obtain the SmartGridToolbox source</h3>
-<pre><code>git clone -b dev https://github.com/NICTA/SmartGridToolbox.git
+<pre><code>git clone https://github.com/NICTA/SmartGridToolbox.git
+cd SmartGridToolbox
+git submodule init
+git submodule update
 </code></pre>
 <h3>
 <a id="user-content-build-and-install-third-party-dependencies" class="anchor" href="#build-and-install-third-party-dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Build and install third party dependencies</h3>
-<pre><code>cd SmartGridToolbox
-git submodule init
-git pull
-git submodule update
-cd third_party
+<pre><code>cd third_party
 ./install_third_party.sh clang++ /usr/local
+cd ..
 </code></pre>
 <h3>
 <a id="user-content-build-and-install-smartgridtoolbox" class="anchor" href="#build-and-install-smartgridtoolbox" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Build and install SmartGridToolbox</h3>
-<pre><code>cd ..
-./autogen.sh
+<pre><code>./autogen.sh
 ./configure
 make -j4
-sudo make install
+make install
 </code></pre>
 <h2>
 <a id="user-content-compiling-and-linking-your-executable" class="anchor" href="#compiling-and-linking-your-executable" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compiling and linking your executable</h2>

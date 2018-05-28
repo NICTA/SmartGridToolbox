@@ -20,26 +20,25 @@ brew install boost
 
 ### Obtain the SmartGridToolbox source
 ```
-git clone -b dev https://github.com/NICTA/SmartGridToolbox.git
+git clone https://github.com/NICTA/SmartGridToolbox.git
+cd SmartGridToolbox
+git submodule init
+git submodule update
 ```
 
 ### Build and install third party dependencies
 ```
-cd SmartGridToolbox
-git submodule init
-git pull
-git submodule update
 cd third_party
 ./install_third_party.sh clang++ /usr/local
+cd ..
 ```
 
 ### Build and install SmartGridToolbox
 ```
-cd ..
 ./autogen.sh
 ./configure
 make -j4
-sudo make install
+make install
 ```
 
 ## Compiling and linking your executable
