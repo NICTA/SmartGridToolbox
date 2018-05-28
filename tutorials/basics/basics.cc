@@ -67,9 +67,37 @@ int main(int argc, char** argv)
         Mat<Complex> m{{{1.0, 0.0}, {2.0, 1.0}}, {{3.0, 10.0}, {4.0, 20.0}}};
         sgtLogMessage() << "Complex matrix:" << endl << m << endl;
     }
+
     {
         sgtLogMessage() << "----------------" << endl;
         sgtLogMessage() << "Time:" << endl;
         sgtLogMessage() << "----------------" << endl;
+
+        sgtLogMessage() << "Setting the global timezone." << endl;
+        Sgt::timezone() = Timezone("AEST10AEDT,M10.5.0/02,M3.5.0/03");
+
+        Time t1 = seconds(6); 
+        sgtLogMessage() << "t1 = " << t1 << endl;
+
+        Time t2 = minutes(6); 
+        sgtLogMessage() << "t2 = " << t2 << " " << dSeconds(t2) << endl;
+        
+        Time t3 = timeFromDSeconds(124.8); 
+        sgtLogMessage() << "t3 = " << t3 << " " << dSeconds(t3) << endl;
+
+        Time t4 = timeFromUtcTimeString("2018-04-07 20:00:00");
+        sgtLogMessage() << "t4 = " << localTimeString(t4) << endl;
+        sgtLogMessage() << "Note formatting as a duration. For time formatting, do this:" << endl;
+        sgtLogMessage() << "t4 = " << localTimeString(t4) << endl;
+
+        Time t5 = timeFromLocalTimeString("2018-04-07 20:00:00");
+        sgtLogMessage() << "t5 = " << localTimeString(t5) << endl;
+
+        Time t6 = TimeSpecialValues::pos_infin;
+        Time t7 = TimeSpecialValues::neg_infin;
+        Time t8 = TimeSpecialValues::not_a_date_time;
+        sgtLogMessage() << "t6 = " << t6 << endl;
+        sgtLogMessage() << "t7 = " << t7 << endl;
+        sgtLogMessage() << "t8 = " << t8 << endl;
     }
 }

@@ -1,5 +1,5 @@
 AC_INIT([tutorials], [0.1], [dan.gordon@nicta.com.au])
-AC_CONFIG_SRCDIR([network.cc])
+AC_CONFIG_SRCDIR([basics.cc])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 LT_INIT([disable-shared])
