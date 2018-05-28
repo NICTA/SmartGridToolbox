@@ -100,4 +100,15 @@ int main(int argc, char** argv)
         sgtLogMessage() << "t7 = " << t7 << endl;
         sgtLogMessage() << "t8 = " << t8 << endl;
     }
+
+    {
+        sgtLogMessage() << "----------------" << endl;
+        sgtLogMessage() << "JSON:" << endl;
+        sgtLogMessage() << "----------------" << endl;
+        sgtLogMessage() << "JSON in SmartGridToolbox is handled using the nlohmann::json library." << endl;
+        sgtLogMessage() << "Please see the documentation for this library." << endl;
+        sgtLogMessage() << "We use the alias Sgt::json = nlohmann::json." << endl;
+        json obj = {{"key_1", 1}, {"key_2", {2, 3, 4, nullptr}}};
+        sgtLogMessage() << "obj = " << obj.dump(2) << endl;
+    }
 }
