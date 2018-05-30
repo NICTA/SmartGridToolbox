@@ -72,8 +72,12 @@ int main(int argc, char** argv)
         sgtLogMessage() << "----------------" << endl;
         sgtLogMessage() << "Time:" << endl;
         sgtLogMessage() << "----------------" << endl;
+        
+        sgtLogMessage() << 
+            "SmartGridToolbox uses boost::posix_time::time_duration to represent both durations and absolute times."
+            << endl;
 
-        sgtLogMessage() << "Setting the global timezone." << endl;
+        sgtLogMessage() << "Setting the global timezone using a timezone/DST rule." << endl;
         Sgt::timezone() = Timezone("AEST10AEDT,M10.5.0/02,M3.5.0/03");
 
         Time t1 = seconds(6); 
