@@ -21,6 +21,8 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @brief Parses the `tap_changer` keyword, adding a TapChanger to the simulation.
+    /// @ingroup SimParserPlugins
     class TapChangerParserPlugin : public SimParserPlugin
     {
         public:

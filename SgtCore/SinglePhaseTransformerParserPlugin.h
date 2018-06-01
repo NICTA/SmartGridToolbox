@@ -22,8 +22,8 @@ namespace Sgt
     class SinglePhaseTransformer;
     class Network;
 
-    /// @brief ParserPlugin that parses SinglePhaseTransformer objects.
-    /// @ingroup Parsing
+    /// @brief Parses the `single_phase_transformer` keyword, adding a SinglePhaseTransformer to the network.
+    /// @ingroup NetworkParserPlugins
     class SinglePhaseTransformerParserPlugin : public NetworkParserPlugin
     {
         public:

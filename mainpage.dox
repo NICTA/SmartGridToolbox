@@ -22,10 +22,24 @@
 /// @defgroup Parsing Parsing
 /// @brief Parsing classes, functions etc.
 ///
-/// SmartGridToolbox uses the [YAML]{http://yaml.org} language for human readable configuration files. It provides
+/// SmartGridToolbox uses the [YAML](http://yaml.org) language for human readable configuration files. It provides
 /// a `Parser` class to parse YAML into any object, via the `Parser<T>::parse(...)` command. The ability to parse
 /// specific YAML constructs is handled in a modular and extensible way, using derived classes of the `ParserPlugin`
 /// class.
+/// @{
+/// @defgroup NetworkYamlSpec YAML specification for Networks
+/// @{
+/// @}
+/// @defgroup SimYamlSpec YAML specification for Simulations
+/// @{
+/// @}
+/// @defgroup NetworkParserPlugins ParserPlugin<Network> derived classes
+/// @{
+/// @}
+/// @defgroup SimParserPlugins ParserPlugin<Simulation> derived classes
+/// @{
+/// @}
+/// @}
 
 /// @defgroup Properties Properties
 /// @brief Dynamic properties.

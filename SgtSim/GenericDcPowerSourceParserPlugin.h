@@ -21,6 +21,8 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @brief Parses the `generic_dc_power_source` keyword, adding a GenericDcPowerSource to the simulation.
+    /// @ingroup SimParserPlugins
     class GenericDcPowerSourceParserPlugin : public SimParserPlugin
     {
         public:

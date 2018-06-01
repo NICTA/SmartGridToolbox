@@ -21,6 +21,8 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @brief Parses the weather keyword, adding a Weather component to the simulation.
+    /// @ingroup SimParserPlugins
     class WeatherParserPlugin : public SimParserPlugin
     {
         public:

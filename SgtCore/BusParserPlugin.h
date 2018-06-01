@@ -22,8 +22,22 @@ namespace Sgt
     class Bus;
     class Network;
 
-    /// @brief ParserPlugin that parses Bus objects.
-    /// @ingroup Parsing
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// Network YAML schema for `bus` keyword:
+    /// ```
+    /// - bus:
+    ///     id: <component_id> # Unique id of component.
+    ///     phases: <phases> # Phases, e.g. [A, B, C]
+    ///     type: <type> # AC power flow type: SL/PV/PQ
+    ///     V_base: <v_base> # Base voltage e.g. 11
+    ///     V_nom: <v_nom> # Nominal voltage e.g. [11, 11D120, 11D-120]
+    ///     coords: <coords> # Physical coordinates, [x, y], e.g. [1000, 12787]
+    /// ```
+    /// @}
+
+    /// @brief Parses the `bus` keyword, adding a Bus to the network.
+    /// @ingroup NetworkParserPlugins
     class BusParserPlugin : public NetworkParserPlugin
     {
         public:

@@ -21,6 +21,8 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @brief Parses the time_series_zip keyword, adding a TimeSeriesZip to a simulation.
+    /// @ingroup SimParserPlugins
     class TimeSeriesZipParserPlugin : public SimParserPlugin
     {
         public:

@@ -22,7 +22,8 @@ namespace Sgt
 {
     class Simulation;
 
-    /// @brief ParserPlugin that parses the sim_network keyword, adding a new SimNetwork to the model.
+    /// @brief Parses the `sim_network` keyword, adding a SimNetwork to the simulation.
+    /// @ingroup SimParserPlugins
     class SimNetworkParserPlugin : public SimParserPlugin
     {
         public:

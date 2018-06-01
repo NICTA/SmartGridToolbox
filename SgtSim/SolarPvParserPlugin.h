@@ -21,6 +21,8 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @brief Parses the `solar_pv` keyword, adding a SolarPv to the simulation.
+    /// @ingroup SimParserPlugins
     class SolarPvParserPlugin : public SimParserPlugin
     {
         public:

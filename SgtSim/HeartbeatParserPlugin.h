@@ -21,6 +21,8 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @brief Parses the `heartbeat` keyword, adding a Heartbeat to the simulation.
+    /// @ingroup SimParserPlugins
     class HeartbeatParserPlugin : public SimParserPlugin
     {
         public:

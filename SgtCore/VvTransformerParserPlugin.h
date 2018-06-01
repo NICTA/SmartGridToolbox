@@ -22,8 +22,8 @@ namespace Sgt
     class VvTransformer;
     class Network;
 
-    /// @brief ParserPlugin that parses VvTransformer objects.
-    /// @ingroup PowerFlowCore
+    /// @brief Parses the `vv_transformer` keyword, adding a VvTransformer to the network.
+    /// @ingroup NetworkParserPlugins
     class VvTransformerParserPlugin : public NetworkParserPlugin
     {
         public:

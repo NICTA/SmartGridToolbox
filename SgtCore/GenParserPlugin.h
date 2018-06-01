@@ -22,8 +22,8 @@ namespace Sgt
     class Gen;
     class Network;
 
-    /// @brief ParserPlugin that parses Gen objects.
-    /// @ingroup Parsing
+    /// @brief Parses the `gen` keyword, adding a Gen to the network.
+    /// @ingroup NetworkParserPlugins
     class GenParserPlugin : public NetworkParserPlugin
     {
         public:

@@ -22,6 +22,8 @@ namespace Sgt
     class SimpleBuilding;
     class Simulation;
 
+    /// @brief Parses the `simple_building` keyword, adding a SimpleBuilding to the simulation.
+    /// @ingroup SimParserPlugins
     class SimpleBuildingParserPlugin : public SimParserPlugin
     {
         public:

@@ -21,6 +21,8 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @brief Parses the `battery` keyword, adding a Battery to the simulation.
+    /// @ingroup SimParserPlugins
     class BatteryParserPlugin : public SimParserPlugin
     {
         public:

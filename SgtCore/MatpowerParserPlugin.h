@@ -21,8 +21,8 @@ namespace Sgt
 {
     class Network;
 
-    /// @brief ParserPlugin that parses Matpower files.
-    /// @ingroup Parsing
+    /// @brief Parses the `matpower` keyword, reading a matpower file into the network.
+    /// @ingroup NetworkParserPlugins
     class MatpowerParserPlugin : public NetworkParserPlugin
     {
         public:

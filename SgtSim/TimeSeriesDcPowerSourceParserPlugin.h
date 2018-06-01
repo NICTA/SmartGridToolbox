@@ -21,6 +21,8 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @brief Parses the time_series_dc_power_source keyword, adding a TimeSeriesDcPowerSource to the simulation.
+    /// @ingroup SimParserPlugins
     class TimeSeriesDcPowerSourceParserPlugin : public SimParserPlugin
     {
         public:

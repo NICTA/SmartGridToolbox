@@ -22,8 +22,8 @@ namespace Sgt
     class Network;
     class OverheadLine;
 
-    /// @brief ParserPlugin that parses OverheadLine objects.
-    /// @ingroup Parsing
+    /// @brief Parses the `overhead_line` keyword, adding an OverheadLine to the network.
+    /// @ingroup NetworkParserPlugins
     class OverheadLineParserPlugin : public NetworkParserPlugin
     {
         public:

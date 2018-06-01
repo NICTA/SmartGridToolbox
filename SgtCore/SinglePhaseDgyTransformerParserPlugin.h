@@ -22,8 +22,8 @@ namespace Sgt
     class SinglePhaseDgyTransformer;
     class Network;
 
-    /// @brief ParserPlugin that parses SinglePhaseDgyTransformer objects.
-    /// @ingroup PowerFlowCore
+    /// @brief Parses the `single_phase_dgy_transformer` keyword, adding a SinglePhaseDgyTransformer to the network.
+    /// @ingroup NetworkParserPlugins
     class SinglePhaseDgyTransformerParserPlugin : public NetworkParserPlugin
     {
         public:

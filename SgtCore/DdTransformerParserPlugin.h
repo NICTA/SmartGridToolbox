@@ -22,8 +22,8 @@ namespace Sgt
     class DdTransformer;
     class Network;
 
-    /// @brief ParserPlugin that parses DdTransformer objects.
-    /// @ingroup Parsing
+    /// @brief Parses the `dd_transformer` keyword, adding a DdTransformer to the network.
+    /// @ingroup NetworkParserPlugins
     class DdTransformerParserPlugin : public NetworkParserPlugin
     {
         public:

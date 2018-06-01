@@ -22,8 +22,8 @@ namespace Sgt
 {
     class Simulation;
 
-    /// @brief ParserPlugin that parses simulation information.
-    /// @ingroup Parsing
+    /// @brief Parses the `simulation` keyword, setting global information for the simulation.
+    /// @ingroup SimParserPlugins
     class SimGlobalParserPlugin : public SimParserPlugin
     {
         public:

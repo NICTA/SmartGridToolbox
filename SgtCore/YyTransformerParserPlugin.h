@@ -22,8 +22,8 @@ namespace Sgt
     class YyTransformer;
     class Network;
 
-    /// @brief ParserPlugin that parses YyTransformer objects.
-    /// @ingroup Parsing
+    /// @brief Parses the `yy_transformer` keyword, adding a YyTransformer to the network.
+    /// @ingroup NetworkParserPlugins
     class YyTransformerParserPlugin : public NetworkParserPlugin
     {
         public:

@@ -22,8 +22,8 @@ namespace Sgt
     class Network;
     class Zip;
 
-    /// @brief ParserPlugin that parses Zip objects.
-    /// @ingroup Parsing
+    /// @brief Parses the `zip` keyword, adding a Zip to the network.
+    /// @ingroup NetworkParserPlugins
     class ZipParserPlugin : public NetworkParserPlugin
     {
         public:

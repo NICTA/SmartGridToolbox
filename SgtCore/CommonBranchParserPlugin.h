@@ -22,8 +22,8 @@ namespace Sgt
     class CommonBranch;
     class Network;
 
-    /// @brief ParserPlugin that parses CommonBranch objects.
-    /// @ingroup Parsing
+    /// @brief Parses the `common_branch` keyword, adding a CommonBranch to the network.
+    /// @ingroup NetworkParserPlugins
     class CommonBranchParserPlugin : public NetworkParserPlugin
     {
         public:

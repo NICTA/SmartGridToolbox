@@ -22,8 +22,8 @@ namespace Sgt
     class Network;
     class UndergroundLine;
 
-    /// @brief ParserPlugin that parses UndergroundLine objects.
-    /// @ingroup Parsing
+    /// @brief Parses the `underground_line` keyword, adding an UndergroundLine to the network.
+    /// @ingroup NetworkParserPlugins
     class UndergroundLineParserPlugin : public NetworkParserPlugin
     {
         public:

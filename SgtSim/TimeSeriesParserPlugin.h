@@ -22,7 +22,8 @@ namespace Sgt
 {
     class Simulation;
 
-    /// @brief ParserPlugin that parses TimeSeries objects.
+    /// @brief Parses the time_series keyword, adding a TimeSeries to the simulation.
+    /// @ingroup SimParserPlugins
     class TimeSeriesParserPlugin : public SimParserPlugin
     {
         public:

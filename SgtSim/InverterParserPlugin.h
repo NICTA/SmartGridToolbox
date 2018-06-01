@@ -21,6 +21,8 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @brief Parses the `inverter` keyword, adding an Inverter to the simulation.
+    /// @ingroup SimParserPlugins
     class InverterParserPlugin : public SimParserPlugin
     {
         public:

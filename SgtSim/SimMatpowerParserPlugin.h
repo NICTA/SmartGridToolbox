@@ -21,7 +21,8 @@ namespace Sgt
 {
     class Simulation;
 
-    /// @brief ParserPlugin that parses matpower networks.
+    /// @brief Parses the `matpower` keyword, adding a SimNetwork based on a matpower file to the simulation.
+    /// @ingroup SimParserPlugins
     class SimMatpowerParserPlugin : public SimParserPlugin
     {
         public:
