@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['parserplugin_3cnetwork_3e_20derived_20classes',['ParserPlugin&lt;Network&gt; derived classes',['../group___network_parser_plugins.html',1,'']]],
   ['pac',['PAc',['../class_sgt_1_1_inverter_abc.html#a5b538433045a5ce15f1c7dc5d10e2f05',1,'Sgt::InverterAbc']]],
   ['parse',['parse',['../classnlohmann_1_1detail_1_1parser.html#a14338d8f3174601c0b2b7ef28752ab17',1,'nlohmann::detail::parser::parse()'],['../classnlohmann_1_1basic__json.html#aa9676414f2e36383c4b181fe856aa3c0',1,'nlohmann::basic_json::parse(detail::input_adapter i, const parser_callback_t cb=nullptr, const bool allow_exceptions=true)'],['../classnlohmann_1_1basic__json.html#af3501e04d3c7a824bffb05a5a45ba884',1,'nlohmann::basic_json::parse(detail::input_adapter &amp;i, const parser_callback_t cb=nullptr, const bool allow_exceptions=true)'],['../classnlohmann_1_1basic__json.html#ab330c13ba254ea41fbc1c52c5c610f45',1,'nlohmann::basic_json::parse(IteratorType first, IteratorType last, const parser_callback_t cb=nullptr, const bool allow_exceptions=true)']]],
   ['parse_5fcbor',['parse_cbor',['../classnlohmann_1_1detail_1_1binary__reader.html#a04bcdc8f55b26fafa9775a2f89e48fc2',1,'nlohmann::detail::binary_reader']]],
@@ -39,5 +40,6 @@ var searchData=
   ['properties',['Properties',['../class_sgt_1_1_properties.html',1,'Sgt::Properties'],['../group___properties.html',1,'(Global Namespace)']]],
   ['property',['Property',['../class_sgt_1_1_property.html',1,'Sgt']]],
   ['propertyabc',['PropertyAbc',['../class_sgt_1_1_property_abc.html',1,'Sgt']]],
-  ['push_5fback',['push_back',['../classnlohmann_1_1basic__json.html#ac8e523ddc8c2dd7e5d2daf0d49a9c0d7',1,'nlohmann::basic_json::push_back(basic_json &amp;&amp;val)'],['../classnlohmann_1_1basic__json.html#ab4384af330b79de0e5f279576803a2c7',1,'nlohmann::basic_json::push_back(const basic_json &amp;val)'],['../classnlohmann_1_1basic__json.html#ae11a3a51782c058fff2f6550cdfb9b3c',1,'nlohmann::basic_json::push_back(const typename object_t::value_type &amp;val)'],['../classnlohmann_1_1basic__json.html#a1be31ef2d2934d37a818083a4af44f99',1,'nlohmann::basic_json::push_back(initializer_list_t init)']]]
+  ['push_5fback',['push_back',['../classnlohmann_1_1basic__json.html#ac8e523ddc8c2dd7e5d2daf0d49a9c0d7',1,'nlohmann::basic_json::push_back(basic_json &amp;&amp;val)'],['../classnlohmann_1_1basic__json.html#ab4384af330b79de0e5f279576803a2c7',1,'nlohmann::basic_json::push_back(const basic_json &amp;val)'],['../classnlohmann_1_1basic__json.html#ae11a3a51782c058fff2f6550cdfb9b3c',1,'nlohmann::basic_json::push_back(const typename object_t::value_type &amp;val)'],['../classnlohmann_1_1basic__json.html#a1be31ef2d2934d37a818083a4af44f99',1,'nlohmann::basic_json::push_back(initializer_list_t init)']]],
+  ['parserplugin_3csimulation_3e_20derived_20classes',['ParserPlugin&lt;Simulation&gt; derived classes',['../group___sim_parser_plugins.html',1,'']]]
 ];

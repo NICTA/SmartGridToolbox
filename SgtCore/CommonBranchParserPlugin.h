@@ -22,6 +22,26 @@ namespace Sgt
     class CommonBranch;
     class Network;
 
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// YAML schema for `common_branch` keyword.
+    ///
+    /// The `common_branch` keyword adds a new CommonBranch to the Network.
+    ///
+    /// ```
+    /// - common_branch:
+    ///     id:                 <string>    # Unique id of component.
+    ///     bus_0_id:           <string>    # ID of bus 0 of the branch.
+    ///     bus_1_id:           <string>    # ID of bus 0 of the branch.
+    ///     Y_series:           <complex>   # Complex series admittance parameter.
+    ///     Y_shunt:            <complex>   # Complex shunt admittance parameter.
+    ///     complex_tap_ratio:  <complex>   # Complex tap ratio parameter.
+    ///     rate_A:             <real>      # Line limit A.
+    ///     rate_B:             <real>      # Line limit B.
+    ///     rate_C:             <real>      # Line limit C.
+    /// ```
+    /// @}
+
     /// @brief Parses the `common_branch` keyword, adding a CommonBranch to the network.
     /// @ingroup NetworkParserPlugins
     class CommonBranchParserPlugin : public NetworkParserPlugin

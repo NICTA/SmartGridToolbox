@@ -22,6 +22,25 @@ namespace Sgt
     class DdTransformer;
     class Network;
 
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// YAML schema for `dd_transformer` keyword.
+    ///
+    /// The `dd_transformer` keyword adds a new DdTransformer to the Network.
+    ///
+    /// ```
+    /// - dd_transformer:
+    ///     id:                     <string>    # Unique id of component.
+    ///     bus_0_id:               <string>    # ID of bus 0 of the branch.
+    ///     bus_1_id:               <string>    # ID of bus 0 of the branch.
+    ///     phases_0:               <string>    # Phases of connection to bus_0.
+    ///     phases_1:               <string>    # Phases of connection to bus_1.
+    ///     complex_turns_ratio_01: <complex>   # Complex turns ratio, side_0 / side_1.
+    ///     leakage_impedance:      <complex>   # Leakage impedance parameter.
+    ///     magnetizing_admittance: <complex>   # Magnetizing admittance parameter.
+    /// ```
+    /// @}
+
     /// @brief Parses the `dd_transformer` keyword, adding a DdTransformer to the network.
     /// @ingroup NetworkParserPlugins
     class DdTransformerParserPlugin : public NetworkParserPlugin

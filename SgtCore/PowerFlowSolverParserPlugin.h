@@ -21,6 +21,17 @@ namespace Sgt
 {
     class Network;
 
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// YAML schema for `power_flow_solver` keyword.
+    ///
+    /// The `power_flow_solver` keyword sets the solver for a Network.
+    ///
+    /// ```
+    /// - power_flow_solver:    <string>    # nr_rect for AC Newton-Raphson, or opf_pt for PowerTools-based AC OPF.
+    /// ```
+    /// @}
+
     /// @brief Parses the `power_flow_solver` keyword, setting the network's solver.
     /// @ingroup NetworkParserPlugins
     class PowerFlowSolverParserPlugin : public NetworkParserPlugin

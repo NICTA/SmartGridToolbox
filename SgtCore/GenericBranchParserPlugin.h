@@ -22,6 +22,29 @@ namespace Sgt
     class GenericBranch;
     class Network;
 
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// YAML schema for `generic_branch` keyword.
+    ///
+    /// The `generic_branch` keyword adds a matpower-style GenericBranch to the Network.
+    ///
+    /// ```
+    /// - generic_branch:
+    ///     id:                     <string>        # Unique id of component.
+    ///     bus_0_id:               <string>        # ID of bus 0 of the branch.
+    ///     bus_1_id:               <string>        # ID of bus 0 of the branch.
+    ///     phases_0:               <string>        # Phases of connection to bus_0.
+    ///     phases_1:               <string>        # Phases of connection to bus_1.
+    ///     Y:                                      # Alternative 1:
+    ///         matrix:             <complex_mat>
+    ///     Y:                                      # Alternative 2:
+    ///         approximate_phase_impedance:         
+    ///             Z+:             <real>          # +ve/-ve sequence impedance.
+    ///             Z0:             <real>          # Zero sequence impedance.
+    ///     impedance_multiplier:   <string>        # Optional multiplier for all admittances.
+    /// ```
+    /// @}
+
     /// @brief Parses the `generic_branch` keyword, adding a GenericBranch to the network.
     /// @ingroup NetworkParserPlugins
     class GenericBranchParserPlugin : public NetworkParserPlugin

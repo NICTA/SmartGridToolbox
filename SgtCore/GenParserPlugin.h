@@ -22,6 +22,29 @@ namespace Sgt
     class Gen;
     class Network;
 
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// YAML schema for `gen` keyword.
+    ///
+    /// The `gen` keyword adds a new Gen to the Network.
+    ///
+    /// ```
+    /// - gen:
+    ///     id: <string>        # Unique id of component.
+    ///     bus_id: <string>    # Bus ID.
+    ///     phases: <phases>    # Connection phases at bus e.g. [A, B, C]
+    ///     S: <complex_vec>    # Complex power setpoint.
+    ///     P_min: <real>       # Minimum P setpoint.
+    ///     P_max: <real>       # Maximum P setpoint.
+    ///     Q_min: <real>       # Minimum Q setpoint.
+    ///     Q_max: <real>       # Maximum Q setpoint.
+    ///     J: <real>           # Angular momentum.
+    ///     C0: <real>          # Constant cost coefficient.
+    ///     C1: <real>          # Linear cost coefficient.
+    ///     C2: <real>          # Quadratic cost coefficient.
+    /// ```
+    /// @}
+
     /// @brief Parses the `gen` keyword, adding a Gen to the network.
     /// @ingroup NetworkParserPlugins
     class GenParserPlugin : public NetworkParserPlugin

@@ -64,7 +64,7 @@ namespace Sgt
         const YAML::Node ndImpedMult = ndY["impedance_multiplier"];
         if (ndImpedMult)
         {
-            Y *= ndImpedMult.as<double>();
+            Y /= ndImpedMult.as<double>();
         }
 
         std::unique_ptr<GenericBranch> branch(new GenericBranch(id, phases0, phases1));
