@@ -18,8 +18,7 @@
 using namespace Sgt;
 using namespace std;
 
-// Please start by skipping ahead to the main(...) function.
-
+// Please begin reading by skipping ahead to the main(...) function.
 namespace Sgt
 {
     class SillyPlugin: public ParserPlugin<Network>
@@ -34,7 +33,7 @@ namespace Sgt
             assertFieldPresent(nd, "silly_int");
 
             // Parser the YAML in node nd:
-            string sillyString = parser.expand<string>(nd["silly_prefix"]);
+            string sillyString = parser.expand<string>(nd["silly_string"]);
             int sillyInt = parser.expand<int>(nd["silly_int"]);
 
             // Create prefix based on YAML:
@@ -44,14 +43,40 @@ namespace Sgt
             for (auto b : netw.buses()) b->userData()["silly_name"] = sillyPrefix + b->id();
         }
     };
+   
+    // The following ParserPlugin<int> parses an int and adds it to an int:
+    class IntAdderParserPlugin: public ParserPlugin<int>
+    {
+        public:
+
+        virtual const char* key() const override {return "int";} // Parse YAML under the "int" key.
+        
+        virtual void parse(const YAML::Node& nd, int& i, const ParserBase& parser) const override
+        {
+            sgtLogMessage() << "IntAdderParserPlugin: adding node " << nd << " onto int." << endl;
+            sgtLogMessage() << "Old i = " << i << endl;
+            i += parser.expand<int>(nd); // Add to existing .
+            sgtLogMessage() << "New i = " << i << endl;
+        }
+    };
+
+    // We can implement Parser<T> for any type T. We do, however, need to make sure there is a 
+    // corresponding registerParserPlugins<T> function defined.
+    // Here, we implement a Parser<int>. Because IntAdderParserPlugin is registered inside registerParserPlugins,
+    // it doesn't need to be separately registered after the parser is created.
+    template <> void registerParserPlugins<int>(Parser<int>& p)
+    {
+        p.registerParserPlugin<IntAdderParserPlugin>();
+    }
 }
 
 int main(int argc, char** argv)
 {
     {
+        sgtLogMessage() << "NetworkParsers: " << endl;
         // An empty network:
         Network netw;
-        sgtLogMessage() << "Before parsing: " << endl;
+        sgtLogMessage() << "Before parsing network: " << endl;
         sgtLogMessage() << netw << endl;
 
         // Create a parser that is able to modify netw based on a YAML config:
@@ -59,7 +84,7 @@ int main(int argc, char** argv)
 
         // Parse a yaml file into netw;
         p.parse("network.yaml", netw);
-        sgtLogMessage() << "After parsing: " << endl;
+        sgtLogMessage() << "After parsing network: " << endl;
         sgtLogMessage() << netw << endl;
 
         // Now we'll show how to add custom parsing code.
@@ -71,11 +96,23 @@ int main(int argc, char** argv)
         // Lets try it now:
         Network netwB;
         p.parse("network.yaml", netwB);
-        sgtLogMessage() << "After parsing (including SillyPlugin): " << endl;
+        sgtLogMessage() << "After parsing network (including SillyPlugin): " << endl;
         sgtLogMessage() << netwB << endl;
         for (const auto& b : netwB.buses())
         {
             std::cout << "Bus " << b->id() << " user data : " << b->userData().dump() << endl;
         }
+    }
+
+    {
+        sgtLogMessage() << "IntAdderParserPlugin: " << endl;
+        sgtLogMessage() << 
+            "Please take a look at int.yaml."
+            "It demonstrates several things including parser parameters and parser loops." << endl;
+        int i = 3;
+        sgtLogMessage() << "Before parsing: " << i << endl;
+        Parser<int> p; // An alias for this is "NetworkParser".
+        p.parse("int.yaml", i);
+        sgtLogMessage() << "After parsing: " << i << endl;
     }
 }

@@ -1,7 +1,3 @@
-- sgt_gui:
-    bar_power_scaling: 0.01
-    V_mag_min: 0.97
-    V_mag_max: 1.07
 - parameters:
     start_time: 2013-01-02 07:00:00
     end_time: 2013-01-05 00:00:00
