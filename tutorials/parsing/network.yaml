@@ -1,0 +1,29 @@
+- bus:
+    id: bus_1
+    phases: [BAL]
+    type: SL
+    V_base: 11
+    V_nom: [11]
+- gen:
+    id: gen_1
+    bus_id: bus_1
+    phases: [BAL]
+- bus:
+    id: bus_2
+    phases: [BAL]
+    type: PQ
+    V_base: 11
+    V_nom: [11]
+- zip:
+    id: load_2
+    bus_id: bus_2
+    phases: [BAL]
+    S_const: [[0.1D-5.0]] # 0.1 @ -5 degrees.
+- common_branch:
+    id: line
+    bus_0_id: bus_1
+    bus_1_id: bus_2
+    Y_series: 0.005-0.05j
+- silly:
+    silly_string: iamsilly
+    silly_int: 42
