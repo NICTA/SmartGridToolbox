@@ -614,6 +614,38 @@ BOOST_AUTO_TEST_CASE (test_phases_C)
     BOOST_CHECK_SMALL(abs(diff), 1e-9);
 }
 
+BOOST_AUTO_TEST_CASE (test_line_flows)
+{
+    Network netw;
+    Parser<Network> p;
+    p.parse("test_line_flows.yaml", netw);
+    netw.solvePowerFlow();
+
+    Complex y{0.1, -0.1};
+    Complex s{0.1, 0.05};
+
+    const auto& bus1 = *netw.buses()["bus_1"];
+    const auto& bus2 = *netw.buses()["bus_2"];
+    const auto& branch = *netw.branches()["branch_1_2"];
+
+    // Documentation says SBus is power out of bus, mapped to branch terms.
+    // This means SGen = SBus[0] and SLoad = -SBus[1]
+    auto SGen = bus1.SGen();
+    Col<Complex> SLoad = bus2.SZip().diag();
+    auto SBus = branch.SBus();
+
+    BOOST_CHECK_SMALL(sum(abs(SGen - SBus[0])), 1e-9);
+    BOOST_CHECK_SMALL(sum(abs(SLoad + SBus[1])), 1e-9);
+
+    // Check currents are correct:
+    auto IBus = branch.IBus();
+    auto IV0 = conj(IBus[0]) % bus1.V();
+    auto IV1 = conj(IBus[1]) % bus2.V();
+
+    BOOST_CHECK_SMALL(sum(abs(IV0 - SBus[0])), 1e-9);
+    BOOST_CHECK_SMALL(sum(abs(IV1 - SBus[1])), 1e-9);
+}
+
 BOOST_AUTO_TEST_CASE (test_vv_transformer)
 {
     Network netw;

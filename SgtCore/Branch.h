@@ -195,10 +195,10 @@ namespace Sgt
         /// @brief Voltage at each bus, mapped to the branch terminals.
         std::array<arma::Col<Complex>, 2> VBus() const;
 
-        /// @brief Current out of each bus, mapped to the branch terminals.
+        /// @brief Current out of each bus into branch, mapped to the branch terminals.
         std::array<arma::Col<Complex>, 2> IBus() const;
 
-        /// @brief Power out of each bus, mapped to the branch terminals.
+        /// @brief Power out of each bus into branch, mapped to the branch terminals.
         std::array<arma::Col<Complex>, 2> SBus() const;
 
         /// @}
