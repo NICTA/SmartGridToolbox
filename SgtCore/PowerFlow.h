@@ -23,6 +23,7 @@
 
 namespace Sgt
 {
+    /// @brief Bus control type for PowerFlow problems.
     /// @ingroup PowerFlowCore
     enum class BusType
     {
@@ -49,6 +50,7 @@ namespace Sgt
         type = from_string<BusType>(js);
     }
 
+    /// @brief Electrical phase.
     /// @ingroup PowerFlowCore
     enum class Phase : std::uint8_t // Max of 255
     {
@@ -233,6 +235,7 @@ namespace Sgt
             const Phases& srcPhases, const Phases& dstPhases);
 
     /// @brief Move lower diagonal elements to upper.
+    /// @ingroup PowerFlowCore
     ///
     /// This is useful in making sure delta-type loads are correctly represented by an upper triangular matrix,
     /// as required by the load model.
@@ -253,6 +256,7 @@ namespace Sgt
     extern template arma::Mat<Complex>& makeUpper<Complex>(arma::Mat<Complex>& m);
 
     /// @brief Map phases and move lower diagonal elements to upper.
+    /// @ingroup PowerFlowCore
     ///
     /// This is useful in making sure delta-type loads are correctly represented by an upper triangular matrix,
     /// as required by the load model.
@@ -264,7 +268,61 @@ namespace Sgt
     }
 
     /// @brief Convert a set of phase-ground (wye) voltages to phase-phase (delta) voltages.
+    /// @ingroup PowerFlowCore
     arma::Col<Complex> toDelta(const arma::Col<Complex> V);
+    
+    /// @brief Extract the delta components e.g. (01, 12, 20) from a load matrix.
+    /// @ingroup PowerFlowCore
+    template<typename T> arma::Col<T> deltaComponentsFromMat(const arma::Mat<T> m)
+    {
+        arma::uword n = m.n_rows;
+        switch (n)
+        {
+            case 3:
+                return {m(0, 1), m(1, 2), m(0, 2)};
+                break;
+            case 2:
+                return {m(0, 1)};
+                break;
+            case 1:
+                return {};
+                break;
+            default:
+                sgtError("Bad matrix size for extracting delta components.");
+        }
+    }
+
+    /// @brief Construct a load matrix from delta components
+    /// @ingroup PowerFlowCore
+    template<typename T> arma::Mat<T> matFromDeltaComponents(const arma::Col<T> v)
+    {
+        arma::uword n = v.size();
+        switch (n)
+        {
+            case 3:
+                return {{0, v(0), v(2)}, {0, 0, v(1)}};
+                break;
+            case 1:
+                return {{0, v(0)},{0, 0}};
+                break;
+            default:
+                sgtError("Bad vector size for delta components.");
+        }
+    }
+
+    /// @brief Extract the wye components i.e. the main diagonal from a load matrix.
+    /// @ingroup PowerFlowCore
+    template<typename T> arma::Col<T> wyeComponentsFromMat(const arma::Mat<T> m)
+    {
+        return m.diag();
+    }
+
+    /// @brief Construct a load matrix from wye components i.e. a diagonal matrix.
+    /// @ingroup PowerFlowCore
+    template<typename T> arma::Mat<T> matFromWyeComponents(const arma::Col<T> v)
+    {
+        return arma::diagmat(v);
+    }
 
     /// @brief Apply Carson's equations.
     /// @param nWire The number of wires.
@@ -380,6 +438,7 @@ namespace Sgt
     /// @param ZPlus Positive sequence impedance
     /// @param Z0 Zero sequence impedance
     /// @return The approximate phase impedance matrix.
+    /// @ingroup PowerFlowCore
     ///
     /// Uses the usual sequence components.
     /// Often, we only know the + and 0 sequence impedances, which can typically be derived by noting the phase to
