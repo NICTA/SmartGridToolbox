@@ -28,7 +28,7 @@ namespace Sgt
     ///
     /// The `overhead_line` keyword adds an OverheadLine to the Network.
     ///
-    /// ```
+    /// ~~~{.yaml}
     /// - overhead_line:
     ///     id:                 <string>    # Unique id of component.
     ///     bus_0_id:           <string>    # ID of bus 0 of the branch.
@@ -43,7 +43,7 @@ namespace Sgt
     ///     earth_resist:       <real>      # Earth resistivity.
     ///     n_in_bundle:        <real>      # Optional number of subconductors in each bundle if stranded.
     ///     adj_subcond_dist:   <real>      # Distance between adjacent subconductors if stranded.
-    /// ```
+    /// ~~~
     /// @}
 
     /// @brief Parses the `overhead_line` keyword, adding an OverheadLine to the network.

@@ -28,7 +28,7 @@ namespace Sgt
     ///
     /// The `common_branch` keyword adds a new CommonBranch to the Network.
     ///
-    /// ```
+    /// ~~~{.yaml}
     /// - common_branch:
     ///     id:                 <string>    # Unique id of component.
     ///     bus_0_id:           <string>    # ID of bus 0 of the branch.
@@ -39,7 +39,7 @@ namespace Sgt
     ///     rate_A:             <real>      # Line limit A.
     ///     rate_B:             <real>      # Line limit B.
     ///     rate_C:             <real>      # Line limit C.
-    /// ```
+    /// ~~~
     /// @}
 
     /// @brief Parses the `common_branch` keyword, adding a CommonBranch to the network.

@@ -28,7 +28,7 @@ namespace Sgt
     ///
     /// The `gen` keyword adds a new Gen to the Network.
     ///
-    /// ```
+    /// ~~~{.yaml}
     /// - gen:
     ///     id: <string>        # Unique id of component.
     ///     bus_id: <string>    # Bus ID.
@@ -42,7 +42,7 @@ namespace Sgt
     ///     C0: <real>          # Constant cost coefficient.
     ///     C1: <real>          # Linear cost coefficient.
     ///     C2: <real>          # Quadratic cost coefficient.
-    /// ```
+    /// ~~~
     /// @}
 
     /// @brief Parses the `gen` keyword, adding a Gen to the network.

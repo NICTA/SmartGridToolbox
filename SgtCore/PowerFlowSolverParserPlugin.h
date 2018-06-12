@@ -27,9 +27,9 @@ namespace Sgt
     ///
     /// The `power_flow_solver` keyword sets the solver for a Network.
     ///
-    /// ```
+    /// ~~~{.yaml}
     /// - power_flow_solver:    <string>    # nr_rect for AC Newton-Raphson, or opf_pt for PowerTools-based AC OPF.
-    /// ```
+    /// ~~~
     /// @}
 
     /// @brief Parses the `power_flow_solver` keyword, setting the network's solver.

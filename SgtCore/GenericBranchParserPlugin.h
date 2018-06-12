@@ -28,7 +28,7 @@ namespace Sgt
     ///
     /// The `generic_branch` keyword adds a matpower-style GenericBranch to the Network.
     ///
-    /// ```
+    /// ~~~{.yaml}
     /// - generic_branch:
     ///     id:                     <string>        # Unique id of component.
     ///     bus_0_id:               <string>        # ID of bus 0 of the branch.
@@ -42,7 +42,7 @@ namespace Sgt
     ///             Z+:             <real>          # +ve/-ve sequence impedance.
     ///             Z0:             <real>          # Zero sequence impedance.
     ///     impedance_multiplier:   <string>        # Optional multiplier for all admittances.
-    /// ```
+    /// ~~~
     /// @}
 
     /// @brief Parses the `generic_branch` keyword, adding a GenericBranch to the network.

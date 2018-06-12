@@ -28,7 +28,7 @@ namespace Sgt
     ///
     /// The `bus` keyword adds a new Bus to the Network.
     ///
-    /// ```
+    /// ~~~{.yaml}
     /// - bus:
     ///     id:     <string>    # Unique id of component.
     ///     phases: <phases>    # Phases, e.g. [A, B, C]
@@ -36,7 +36,7 @@ namespace Sgt
     ///     V_base: <real>      # Base voltage e.g. 11
     ///     V_nom:  <real>      # Nominal voltage e.g. [11, 11D120, 11D-120]
     ///     coords: <real_vec>  # (Optional) Physical coordinates, [x, y], e.g. [1000, 12787]
-    /// ```
+    /// ~~~
     /// @}
 
     /// @brief Parses the `bus` keyword, adding a Bus to the network.

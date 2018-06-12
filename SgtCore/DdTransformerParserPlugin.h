@@ -28,7 +28,7 @@ namespace Sgt
     ///
     /// The `dd_transformer` keyword adds a new DdTransformer to the Network.
     ///
-    /// ```
+    /// ~~~{.yaml}
     /// - dd_transformer:
     ///     id:                     <string>    # Unique id of component.
     ///     bus_0_id:               <string>    # ID of bus 0 of the branch.
@@ -38,7 +38,7 @@ namespace Sgt
     ///     complex_turns_ratio_01: <complex>   # Complex turns ratio, side_0 / side_1.
     ///     leakage_impedance:      <complex>   # Leakage impedance parameter.
     ///     magnetizing_admittance: <complex>   # Magnetizing admittance parameter.
-    /// ```
+    /// ~~~
     /// @}
 
     /// @brief Parses the `dd_transformer` keyword, adding a DdTransformer to the network.
